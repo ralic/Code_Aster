@@ -1,4 +1,4 @@
-#@ MODIF __init__ Accas  DATE 04/02/2004   AUTEUR CAMBIER S.CAMBIER 
+#@ MODIF __init__ Accas  DATE 06/09/2004   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,17 +16,26 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
-"""
-   Ce package contient les classes qui seront effectivement utilisées dans les applications. 
-   C'est dans ce package que sont réalisées les combinaisons de classes de base
-   avec les classes MIXIN qui implémentent les fonctionnalités qui ont été séparées
-   du noyau pour des raisons de modularité afin de faciliter la maintenance et
-   l'extensibilité.
 
-   De plus toutes les classes utilisables par les applications sont remontées au
-   niveau du package afin de rendre le plus indépendant possible l'utilisation des
-   classes et leur implémentation.
+# -*- coding: iso-8859-1 -*-
+
 """
+   Ce package contient les classes qui seront effectivement utilisees dans les applications. 
+   C'est dans ce package que sont realisees les combinaisons de classes de base
+   avec les classes MIXIN qui implementent les fonctionnalites qui ont ete separees
+   du noyau pour des raisons de modularite afin de faciliter la maintenance et
+   l'extensibilite.
+
+   De plus toutes les classes utilisables par les applications sont remontees au
+   niveau du package afin de rendre le plus independant possible l'utilisation des
+   classes et leur implementation.
+"""
+
+# permet de se proteger de l'oubli de carte coding
+# ce warning deviendra fatal en python 2.4
+# import warnings
+# warnings.filterwarnings('error','Non-ASCII character.*pep-0263',DeprecationWarning)
+
 from A_JDC_CATA import JDC_CATA
 from A_OPER import OPER
 from A_PROC import PROC

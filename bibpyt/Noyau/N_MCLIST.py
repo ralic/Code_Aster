@@ -1,4 +1,4 @@
-#@ MODIF N_MCLIST Noyau  DATE 17/08/2004   AUTEUR DURAND C.DURAND 
+#@ MODIF N_MCLIST Noyau  DATE 06/09/2004   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,6 +18,9 @@
 #                                                                       
 #                                                                       
 # ======================================================================
+
+# -*- coding: iso-8859-1 -*-
+
 """ 
     Ce module contient la classe MCList qui sert à controler la valeur
     d'une liste de mots-clés facteur par rapport à sa définition portée par un objet

@@ -1,4 +1,4 @@
-# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 06/09/2004   AUTEUR MCOURTOI M.COURTOIS 
 # TITRE CYLINDRE DANS UN ALESAGE AVEC CONTACT ET FROTTEMENT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -31,7 +31,7 @@
 
 from Macro.recal import EXTRACT
 import Numeric
-import Gnuplot
+# import Gnuplot
 
 DEBUT(CODE=_F( NOM = 'SSNV127D',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),PAR_LOT='NON');
 

@@ -1,4 +1,4 @@
-#@ MODIF E_MACRO_ETAPE Execution  DATE 26/09/2003   AUTEUR DURAND C.DURAND 
+#@ MODIF E_MACRO_ETAPE Execution  DATE 06/09/2004   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,6 +18,9 @@
 #                                                                       
 #                                                                       
 # ======================================================================
+
+# -*- coding: iso-8859-1 -*-
+
 import E_ETAPE
 
 class MACRO_ETAPE(E_ETAPE.ETAPE):

@@ -1,7 +1,7 @@
       CHARACTER*8 FUNCTION NOPAR2(NOMOPT,NOMGD,STATUT)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 04/02/2004   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 06/09/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -33,6 +33,10 @@ C              RQUE : ERREUR <F> SI ON EN TROUVE : 0,2,3,...
 C              RQUE : SI INOUT, ON CHERCHE D'ABORD DANS OUT ET SI ON NE
 C                     TROUVE PAS, ON CHERCHE DANS IN
 
+C     SI NOMGD=' ' ET SI STATUT='OUT' :
+C         - SI L'OPTION N'A QU'UN PARAMETRE 'OUT', ON LE REND
+C         - SI L'OPTION A PLUSIEURS PARAMETRES 'OUT' => ERREUR <F>
+
 C ----------------------------------------------------------------------
 
 
@@ -58,7 +62,7 @@ C DEB-------------------------------------------------------------------
       STATU2=STATUT
 
       CALL JENONU(JEXNOM('&CATA.OP.NOMOPT',NOMOP2),OPT)
-      CALL JENONU(JEXNOM('&CATA.GD.NOMGD',NOMGD2),GD)
+      IF (NOMGD2.NE.' ') CALL JENONU(JEXNOM('&CATA.GD.NOMGD',NOMGD2),GD)
       CALL JEVEUO(JEXNUM('&CATA.OP.DESCOPT',OPT),'L',IADESC)
       CALL JEVEUO(JEXNUM('&CATA.OP.OPTPARA',OPT),'L',IAOPPA)
       NBIN = ZI(IADESC-1+2)
@@ -68,14 +72,21 @@ C DEB-------------------------------------------------------------------
 
 
       IF (STATU2.EQ.'OUT') THEN
-        DO 1,KK=1,NBOUT
-          GD2 = ZI(IADESC-1+4+NBIN+KK)
-          IF (GD.EQ.GD2) THEN
-            NBTROU=NBTROU+1
-            ITROU=KK
-            OUTROU='OUT'
-          END IF
-1       CONTINUE
+        IF (NOMGD2.EQ.' ') THEN
+          CALL ASSERT(NBOUT.EQ.1)
+          NBTROU=NBTROU+1
+          ITROU=1
+          OUTROU='OUT'
+        ELSE
+          DO 1,KK=1,NBOUT
+            GD2 = ZI(IADESC-1+4+NBIN+KK)
+            IF (GD.EQ.GD2) THEN
+              NBTROU=NBTROU+1
+              ITROU=KK
+              OUTROU='OUT'
+            END IF
+1         CONTINUE
+        END IF
 
       ELSE IF (STATU2.EQ.'IN') THEN
         DO 2,KK=1,NBIN

@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 06/09/2004   AUTEUR CIBHHLV L.VIVAN 
 # TITRE MUR PLAN EN THERMIQUE STATIONNAIRE (QUAD8/TRIA6)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -130,14 +130,16 @@ TEST_RESU(RESU=(
 # ----------------------------------------------------------
 
 MA2=CREA_MAILLAGE(  MAILLAGE=MAIL,
-        ECLA_PG=_F( MODELE = MOTH,  SHRINK = 0.80)
+        ECLA_PG=_F( MODELE = MOTH,  
+                    SHRINK = 0.80,
+                    NOM_CHAM = 'FLUX_ELGA_TEMP',),
                        )
 
 U2B=CREA_RESU( OPERATION='ECLA_PG', TYPE_RESU='EVOL_THER',
             ECLA_PG=_F(  MODELE_INIT = MOTH,
                       RESU_INIT = TEMPE,
                       MAILLAGE = MA2,
-                      NOM_CHAM = ('FLUX_ELGA_TEMP',),
+                      NOM_CHAM = 'FLUX_ELGA_TEMP',
                       INST = (0.,10.,))
                  )
 

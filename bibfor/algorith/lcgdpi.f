@@ -1,8 +1,8 @@
-      SUBROUTINE LCGDPI (NDIM,IMATE,COMPOR,TM,
-     &                   TP,TREF,FM,DF,SIGM,VIM,
+      SUBROUTINE LCGDPI (NDIM,IMATE,COMPOR,CRIT,INSTAM,INSTAP,
+     &                   TM,TP,TREF,FM,DF,SIGM,VIM,
      &                   OPTION,SIGP,VIP,DSIGDF, IRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 06/09/2004   AUTEUR SMICHEL S.MICHEL-PONNELLE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -28,14 +28,18 @@ C TOLE CRP_20
       REAL*8             DF(3,3),FM(3,3)
       REAL*8             VIM(3),VIP(3)
       REAL*8             SIGM(*),SIGP(*),DSIGDF(6,3,3)
-
+      REAL*8             CRIT(3),INSTAM,INSTAP
 C.......................................................................
 C       INTEGRATION DE LA LOI DE COMPORTEMENT PLASTIQUE ISOTROPE
 C              EN GRANDES DEFORMATIONS DE TYPE SIMO-MIEHE
+C              AINSI QUE SA VERSION VISQUEUSE (LOI SINH)
 C.......................................................................
 C IN  NDIM    : DIMENSION DE L'ESPACE
 C IN  IMATE   : ADRESSE DU MATERIAU CODE
 C IN  COMPOR  : COMPORTEMENT
+C IN  CRIT    : CRITERE DE CONVERGENCE LOCAUX
+C IN  INSTAM  : INSTANT PRECEDENT
+C IN  INSTAP  : INSTANT COURANT
 C IN  TM      : TEMPERATURE A L INSTANT PRECEDENT
 C IN  TP      : TEMPERATURE A L'INSTANT DU CALCUL
 C IN  TREF    : TEMPERATURE DE REFERENCE
@@ -81,6 +85,7 @@ C.......................................................................
       REAL*8  COEFF1,COEFF2,COEFF3,COEFF4,COEFF5,COEFF6,COEFF7
       REAL*8  MAT0(3,3),MAT1(3,3),MAT2(6,3,3),MAT4(3,3)
       REAL*8  H(6,3,3),HT(6),TA(6),DVTA(6)
+      REAL*8  SIGM0,EPSI0,COEFM,DT,RPRTMP,ARG,RB
       CHARACTER*2 BL2,FB2,CODRET(3)
       CHARACTER*8 NOMRES(3)
       REAL*8      KR(6),PDTSCA(6)
@@ -115,7 +120,7 @@ C   ON CALCULE MU ET 3K
       BL2 = '  '
       FB2 = 'F '
 
-      IF (COMPOR(1)(1:14).EQ.'VMIS_ISOT_TRAC') THEN
+      IF (COMPOR(1)(6:14).EQ.'ISOT_TRAC') THEN
         CALL RCVALA(IMATE,' ','ELAS',1,'TEMP',TM,1,
      &              NOMRES(2),VALRES(2),CODRET(2),FB2)
         NUM=VALRES(2)
@@ -161,7 +166,7 @@ C - POUR VMIS-ISOT-LINE, ON RECUPERE DSDE, SIGY. ON CALCULE RPRIM ET RM
 C - POUR VMIS-ISOT-TRAC, ON RECUPERE E,SIGY,RPRIM ET RM.
 C   ON CALCULE MU ET 3K
 
-      IF (COMPOR(1)(1:9).EQ.'VMIS_ISOT') THEN
+      IF (COMPOR(1)(6:9).EQ.'ISOT') THEN
        PLASTI=(VIM(2).GE.0.5D0)
        IF(COMPOR(1)(10:14).EQ.'_LINE') THEN
         NOMRES(1)='D_SIGM_EPSI'
@@ -210,6 +215,20 @@ C   ON CALCULE MU ET 3K
        PLASTI=.FALSE.
       ENDIF
 
+C    RECUPERATION DES CARACTERISTIQUES VISQUEUSES SI BESOIN
+       IF ((COMPOR(1).EQ.'VISC_ISOT_LINE').OR.
+     &      (COMPOR(1).EQ.'VISC_ISOT_TRAC')) THEN
+          NOMRES(1)= 'SIGM_0'
+          NOMRES(2)= 'EPSI_0'
+          NOMRES(3)= 'M'
+          CALL RCVALA(IMATE,' ','VISC_SINH',  0, ' ', R8BID, 3,
+     &                   NOMRES(1),  VALRES(1),  CODRET(1), FB2 )
+          SIGM0=VALRES(1)
+          EPSI0=VALRES(2)
+          COEFM= VALRES(3)
+        
+          DT = INSTAP -INSTAM
+       ENDIF
 
 C CALCUL DE JM=DET(FM),DJ=DET(DF),J=JM*DJ ET DFB
 
@@ -313,60 +332,94 @@ C CORRECTION PLASTIQUE
       IF(OPTION(1:9).EQ.'RAPH_MECA'.OR.
      &   OPTION(1:9).EQ.'FULL_MECA') THEN
 
-       IF(COMPOR(1)(1:4).EQ.'ELAS') THEN
-        DO 140 I=1,6
-         TAU(I)=DVTEL(I)+KR(I)*TRTAU/3.D0
- 140    CONTINUE
-        DO 150 I=1,4
-         SIGP(I)=TAU(I)/J         
-150     CONTINUE
-        IF(NDIM.EQ.3)THEN
+        IF(COMPOR(1)(1:4).EQ.'ELAS') THEN
+          DO 140 I=1,6
+            TAU(I)=DVTEL(I)+KR(I)*TRTAU/3.D0
+ 140      CONTINUE
+          DO 150 I=1,4
+            SIGP(I)=TAU(I)/J         
+150       CONTINUE
+          IF(NDIM.EQ.3)THEN
            SIGP(5)=TAU(5)/J
            SIGP(6)=TAU(6)/J
-       ENDIF
-       ELSE IF (COMPOR(1)(1:9).EQ.'VMIS_ISOT') THEN
-        IF (SEUIL.LE.0.D0) THEN
-         VIP(1)=VIM(1)
-         VIP(2)=0.D0
-         DO 170 I=1,6
-          TAU(I)=DVTEL(I)+KR(I)*TRTAU/3.D0
- 170     CONTINUE
-         IF(NDIM.EQ.2)THEN
-          DO 180 I=1,4
-           SIGP(I)=TAU(I)/J
- 180      CONTINUE
-         ELSE
-          DO 190 I=1,6
-           SIGP(I)=TAU(I)/J
- 190      CONTINUE
-         ENDIF
-        ELSE
-         VIP(2)=1.D0
-         IF(COMPOR(1)(10:14).EQ.'_LINE') THEN
-          DP=SEUIL/(RPRIM+MU*TRBEL)
-          RP=SIGY+RPRIM*(VIM(1)+DP)
-         ELSE
-          ETILDE=E*TRBEL/3.D0
-          CALL RCFONC('E','TRACTION',JPROLP,JVALEP,NBVALP,R8BID,
+          ENDIF
+        ELSE IF (COMPOR(1)(6:9).EQ.'ISOT') THEN
+          IF (SEUIL.LE.0.D0) THEN
+            VIP(1)=VIM(1)
+            VIP(2)=0.D0
+            DO 170 I=1,6
+              TAU(I)=DVTEL(I)+KR(I)*TRTAU/3.D0
+ 170        CONTINUE
+            IF(NDIM.EQ.2)THEN
+              DO 180 I=1,4
+                SIGP(I)=TAU(I)/J
+ 180          CONTINUE
+            ELSE
+              DO 190 I=1,6
+                SIGP(I)=TAU(I)/J
+ 190          CONTINUE
+            ENDIF
+          ELSE
+            VIP(2)=1.D0
+            IF (COMPOR(1)(1:4).EQ.'VISC') THEN
+C          CAS VISQUEUX :CALCUL DE DP PAR RESOLUTION DE          
+C          FPLAS - (R'+MU TR BEL)DP - PHIv(DP) = 0
+
+              CALL CALCDP(CRIT,SEUIL,DT,RPRIM,MU*TRBEL,
+     &                    SIGM0,EPSI0,COEFM,DP)
+C           CALCUL DE L'ECROUISSAGE R       
+              IF (COMPOR(1)(10:14).EQ.'_LINE')  THEN
+                RP = SIGY+RPRIM*(VIM(1)+DP)
+              ELSE  
+                CALL RCFONC('V','TRACTION',JPROLP,JVALEP,NBVALP,R8BID,
+     &             R8BID,R8BID,VIM(1)+DP,RP,RPRTMP,R8BID,R8BID,R8BID)
+C        VERIFICATION QUE L ON A UTILISE LA BONNE PENTE RPRIM
+                DO 195 I = 1,NBVALP
+                  IF (ABS(RPRIM-RPRTMP).LE.1.D-3) THEN
+                    GOTO 999
+                  ELSE
+                    RPRIM=RPRTMP
+                    SEUIL = EQTEL - ( RP - RPRIM*DP)
+                    CALL CALCDP(CRIT,SEUIL,DT,RPRIM,MU*TRBEL,
+     &                          SIGM0,EPSI0,COEFM,DP)
+                    CALL RCFONC('V','TRACTION',JPROLP,JVALEP,
+     &                NBVALP,R8BID,R8BID,R8BID,VIM(1)+DP,RP,RPRTMP,
+     &                R8BID,R8BID,R8BID)
+                  ENDIF
+ 195            CONTINUE    
+ 
+ 999           CONTINUE                
+
+              ENDIF
+            ELSE            
+C ---------- CAS PUREMENT PLASTIQUE           
+              IF(COMPOR(1)(10:14).EQ.'_LINE') THEN
+                DP=SEUIL/(RPRIM+MU*TRBEL)
+                RP=SIGY+RPRIM*(VIM(1)+DP)
+              ELSE
+                ETILDE=E*TRBEL/3.D0
+                CALL RCFONC('E','TRACTION',JPROLP,JVALEP,NBVALP,R8BID,
      &                ETILDE,NU,VIM(1),RP,RPRIM,AIRERP,EQTEL,DP)
-         ENDIF
-         VIP(1)=VIM(1)+DP
-         DO 200 I=1,6
-          DVTAU(I)=RP*DVTEL(I)/EQTEL
-          TAU(I)=DVTAU(I)+KR(I)*TRTAU/3.D0
- 200     CONTINUE
-         IF(NDIM.EQ.2)THEN
-          DO 210 I=1,4
-           SIGP(I)=TAU(I)/J
- 210      CONTINUE
-         ELSE
-          DO 220 I=1,6
-           SIGP(I)=TAU(I)/J
- 220      CONTINUE
-         ENDIF
+              ENDIF
+            ENDIF
+C       MISE A JOUR DES CONTRAINTES              
+            VIP(1)=VIM(1)+DP
+            DO 200 I=1,6
+              DVTAU(I)=DVTEL(I)-MU*DP*TRBEL*DVTEL(I)/EQTEL
+              TAU(I)=DVTAU(I)+KR(I)*TRTAU/3.D0
+ 200        CONTINUE
+            IF(NDIM.EQ.2)THEN
+              DO 210 I=1,4
+                SIGP(I)=TAU(I)/J
+ 210          CONTINUE
+            ELSE
+              DO 220 I=1,6
+                SIGP(I)=TAU(I)/J
+ 220          CONTINUE
+            ENDIF
+          ENDIF
+          PLASTI=(VIP(2).GE.0.5D0)
         ENDIF
-        PLASTI=(VIP(2).GE.0.5D0)
-       ENDIF
       ENDIF
 
 C - CALCUL DE LA MATRICE TANGENTE DSIGDF
@@ -419,19 +472,31 @@ C DEFINITION DE DIFFERENTS COEFFICIENTS POUR CALCULER DSIGDF
          DVTA(I)=DVTAUM(I)
  300    CONTINUE
        ELSE
-        COEFF1=(RP+MU*DP*TRBEL)/RP
+C       CORRECTION LOI VISQUEUSE
+         IF (COMPOR(1)(1:4).EQ.'VISC') THEN
+           ARG = (DP/DT/EPSI0)**(1.D0/COEFM)
+           RB = RPRIM + SIGM0 / SQRT(ARG**2+1.D0) / COEFM /
+     &         (DT*EPSI0)**(1.D0/COEFM) * DP**(1.D0/COEFM - 1)
+         ELSE
+           RB=RPRIM
+         ENDIF 
+         EQTAU = 0.D0   
+         DO 310 I=1,6
+          TA(I)=TAU(I)
+          DVTA(I)=DVTAU(I)
+          EQTAU=EQTAU+PDTSCA(I)*(DVTAU(I)**2.D0)
+ 310    CONTINUE
+        EQTAU =SQRT(1.5D0 *EQTAU)
+                           
+        COEFF1=1.D0 + MU*DP*TRBEL/EQTAU
         COEFF2=MU/COEFF1
         COEFF3=-2.D0*MU/(3.D0*COEFF1)
-        COEFF4=3.D0*(MU**2.D0)*TRBEL*(RPRIM*DP-RP)
-        COEFF4=COEFF4/((RP**2.D0)*(RP+MU*DP*TRBEL)
-     &        *(RPRIM+MU*TRBEL))
-        COEFF5=-2.D0*MU*DP*RPRIM/(RP*(RPRIM+MU*TRBEL))
+        COEFF4=3.D0*(MU**2.D0)*TRBEL*(RB*DP-EQTAU)
+        COEFF4=COEFF4/((EQTAU**2.D0)*(EQTAU+MU*DP*TRBEL)
+     &          *(RB+MU*TRBEL))     
+        COEFF5=-2.D0*MU*DP*RB/(EQTAU*(RB+MU*TRBEL))
         COEFF7=(TROISK*J/3.D0)-TROISK*ALPHA*(TP-TREF)
      1        *(1.D0-(J**(-2.D0)))/2.D0
-        DO 310 I=1,6
-         TA(I)=TAU(I)
-         DVTA(I)=DVTAU(I)
- 310    CONTINUE
        ENDIF
        COEFF6=0.D0
        DO 320 I=1,6

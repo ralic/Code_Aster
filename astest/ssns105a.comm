@@ -1,4 +1,4 @@
-# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 06/09/2004   AUTEUR SMICHEL S.MICHEL-PONNELLE 
 # TITRE TEST NAPPE D'ARMATURE (MODELISATION GRILLE_MEMBRANE)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -165,6 +165,14 @@ LEDEP=CALC_NO( reuse = LEDEP,
                  RESULTAT   = LEDEP,
                )
 
+LEDEP=CALC_ELEM( reuse = LEDEP,
+                 OPTION     = ('SIEF_ELNO_ELGA','VARI_ELNO_ELGA'),
+                 RESULTAT   = LEDEP,
+               )
+               
+               
+               
+
 # 
 # -------------------------------------------------
 # POST TRAITEMENT DES RESULTATS
@@ -215,6 +223,15 @@ TEST_RESU(RESU=(
             _F( RESULTAT = LEDEP,
              INST = 1.,
              NOM_CHAM = 'SIEF_ELGA',
+             NOM_CMP = 'SIXX',
+             MAILLE = 'BMA1',
+             POINT = 1,
+             REFERENCE='AUTRE_ASTER',
+             VALE = 2.0E11,
+            ),
+            _F( RESULTAT = LEDEP,
+             INST = 1.,
+             NOM_CHAM = 'SIEF_ELNO_ELGA',
              NOM_CMP = 'SIXX',
              MAILLE = 'BMA1',
              POINT = 1,
@@ -319,6 +336,15 @@ TEST_RESU(RESU=(
             ),
             _F( RESULTAT = LEDEP,
              INST = 2.,
+             NOM_CHAM = 'SIEF_ELNO_ELGA',
+             NOM_CMP = 'SIXX',
+             MAILLE = 'BMA1',
+             POINT = 1,
+             REFERENCE='AUTRE_ASTER',
+             VALE = 2.20000E+11,
+            ),
+            _F( RESULTAT = LEDEP,
+             INST = 2.,
              NOM_CHAM = 'SIEF_ELGA',
              NOM_CMP = 'SIXX',
              MAILLE = 'MA1',
@@ -371,6 +397,15 @@ TEST_RESU(RESU=(
              REFERENCE='AUTRE_ASTER',
              VALE = 0.9,
             ),
+            _F( RESULTAT = LEDEP,
+             INST = 2.,
+             NOM_CHAM = 'VARI_ELNO_ELGA',
+             NOM_CMP = 'V1',
+             MAILLE = 'BMA1',
+             POINT = 1,
+             REFERENCE='AUTRE_ASTER',
+             VALE = 0.9,
+            ),
             ))
 
 TEST_RESU(RESU=(
@@ -417,6 +452,15 @@ TEST_RESU(RESU=(
             _F( RESULTAT = LEDEP,
              INST = 10.,
              NOM_CHAM = 'SIEF_ELGA',
+             NOM_CMP = 'SIXX',
+             MAILLE = 'BMA1',
+             POINT = 1,
+             REFERENCE='AUTRE_ASTER',
+             VALE = 3.80000E+11,
+            ),
+            _F( RESULTAT = LEDEP,
+             INST = 10.,
+             NOM_CHAM = 'SIEF_ELNO_ELGA',
              NOM_CMP = 'SIXX',
              MAILLE = 'BMA1',
              POINT = 1,
@@ -480,6 +524,15 @@ TEST_RESU(RESU=(
             _F( RESULTAT = LEDEP,
              INST = 10.,
              NOM_CHAM = 'VARI_ELGA',
+             NOM_CMP = 'V1',
+             MAILLE = 'MA1',
+             POINT = 1,
+             REFERENCE='AUTRE_ASTER',
+             VALE = 6.72865E-01,
+            ),
+            _F( RESULTAT = LEDEP,
+             INST = 10.,
+             NOM_CHAM = 'VARI_ELNO_ELGA',
              NOM_CMP = 'V1',
              MAILLE = 'MA1',
              POINT = 1,

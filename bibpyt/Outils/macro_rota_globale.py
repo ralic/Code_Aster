@@ -1,4 +1,4 @@
-#@ MODIF macro_rota_globale Outils  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
+#@ MODIF macro_rota_globale Outils  DATE 06/09/2004   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -126,6 +126,9 @@ def macr_rota_globale_ops(self,RESULTAT,GROUP_NO_ORIG,GROUP_NO_EXTR,**args):
 #            B
 #  
 # ===========================================================================
+
+# -*- coding: iso-8859-1 -*-
+
 
 MACR_ROTA_GLOBALE=MACRO(nom="MACR_ROTA_GLOBALE",op=macr_rota_globale_ops,sd_prod=fonction_sdaster,
                        docu="",reentrant='n',

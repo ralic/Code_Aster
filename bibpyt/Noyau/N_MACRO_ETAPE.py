@@ -1,4 +1,4 @@
-#@ MODIF N_MACRO_ETAPE Noyau  DATE 16/03/2004   AUTEUR GNICOLAS G.NICOLAS 
+#@ MODIF N_MACRO_ETAPE Noyau  DATE 06/09/2004   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,6 +18,9 @@
 #                                                                       
 #                                                                       
 # ======================================================================
+
+# -*- coding: iso-8859-1 -*-
+
 """ 
     Ce module contient la classe MACRO_ETAPE qui sert à vérifier et à exécuter
     une commande

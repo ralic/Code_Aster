@@ -1,4 +1,4 @@
-#@ MODIF lecture Lecture_Cata_Ele  DATE 08/09/2003   AUTEUR VABHHTS J.PELLET 
+#@ MODIF lecture Lecture_Cata_Ele  DATE 06/09/2004   AUTEUR MCOURTOI M.COURTOIS 
 # RESPONSABLE VABHHTS J.PELLET
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -35,6 +35,9 @@ ERR=ut.ERR
 
 def lire_cata(nomfic,format='cata'):
 #==================================
+
+# -*- coding: iso-8859-1 -*-
+
 #   lire un fichier .cata et construire  un catalogue  python (capy)
         global spark
         spark.FIC_CATA = nomfic

@@ -1,4 +1,4 @@
-# MODIF  DATE 16/09/2003   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 06/09/2004   AUTEUR SMICHEL S.MICHEL-PONNELLE 
 #
 # TITRE TEST DE NON REGRESSION DU MODELE DE ROUSSELIER
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -71,7 +71,7 @@ ACIER_V=DEFI_MATERIAU(ELAS=_F(NU=0.3,
                                   D=2.0,
                                   SIGM_1=600.0,
                                   PORO_ACCE=1.0,),
-                    ROUSS_VISC=_F(SIGM_0=27.0,
+                    VISC_SINH=_F(SIGM_0=27.0,
                                   EPSI_0=1.E-2,
                                   M=2.,),
                     TRACTION=_F(SIGM=ECR,),)

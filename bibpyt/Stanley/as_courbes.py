@@ -1,4 +1,4 @@
-#@ MODIF as_courbes Stanley  DATE 05/04/2004   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF as_courbes Stanley  DATE 06/09/2004   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -45,6 +45,9 @@ def Extr_colonne (table, para, *l_crit) :
 # =========================================================================
 #                     Courbes a deux parametres (x,y)
 # =========================================================================
+
+# -*- coding: iso-8859-1 -*-
+
 
 class Courbe :
 

@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 06/09/2004   AUTEUR SMICHEL S.MICHEL-PONNELLE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,26 +49,31 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
       INTEGER ICHG,ICHN,IPOIDS,IVF,JTAB(7),LGPG1,NDIM,IRET
-      INTEGER NNO,NPG,NCMP,NNOS,NCMP2,LGPG,IDFDE,JGANO
+      INTEGER NNO,NPG,NCMP,NNOS,LGPG,IDFDE,JGANO
 C     ------------------------------------------------------------------
 
       CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
 
 C NOMBRE DE COMPOSANTES DES CONTRAINTES SUPPLEMENTAIRES
-      NCMP2 = 0
-      IF ((NOMTE(1:2).EQ.'SO') .OR. (NOMTE(1:2).EQ.'SN')) THEN
-        NCMP2 = 7
-      ELSEIF (NOMTE(1:2).EQ.'MI') THEN
-        NCMP2 = 1
-      END IF
+C      NCMP2 = 0
+C CMP SUPPLEMENTAIRES POUR SOSU_ARETE3 (3D_JOINT_CT)
+C ET MINC_*  INCOMPRESSIBLES
+C      IF ((NOMTE(1:2).EQ.'SO') .OR. (NOMTE(1:2).EQ.'SN')) THEN
+C        NCMP2 = 7
+C      ELSEIF (NOMTE(1:2).EQ.'MI') THEN
+C        NCMP2 = 1
+C      END IF
 
 
 C
       IF (OPTION.EQ.'SIEF_ELNO_ELGA  ') THEN
 C     ---------------------------------------
-        NCMP = 4 + NCMP2
+C        NCMP = 4 + NCMP2
+C        CALL JEVECH('PCONTRR','L',ICHG)
+        CALL TECACH('OOO','PCONTRR',3,JTAB,IRET)
+        NCMP=JTAB(2)/JTAB(3)
         LGPG = NCMP
-        CALL JEVECH('PCONTRR','L',ICHG)
+        ICHG=JTAB(1)
         CALL JEVECH('PSIEFNOR','E',ICHN)
 
 

@@ -2,7 +2,7 @@
      &                  TYPE)
       IMPLICIT REAL*8 (A-H,O-Z)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
+C MODIF ASSEMBLA  DATE 06/09/2004   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,8 +21,7 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_20
 
-      CHARACTER*(*) VEC,TLIVEC(*),VECPRO,BASE
-      CHARACTER*(*) NU
+      CHARACTER*(*) VEC,TLIVEC(*),VECPRO,BASE,NU
       CHARACTER*4 MOTCLE
       INTEGER NBVEC,TYPE
       REAL*8 LICOEF(*),RCOEF,R
@@ -48,7 +47,6 @@ C       20/11/03 (OB): AJOUT POUR SOLVEUR FETI.
 C----------------------------------------------------------------------
 C     FONCTIONS JEVEUX
 C ----------------------------------------------------------------------
-      CHARACTER*32 JEXNUM,JEXNOM,JEXATR
 C ----------------------------------------------------------------------
 C     COMMUNS   JEVEUX
 C ----------------------------------------------------------------------
@@ -76,23 +74,19 @@ C     VARIABLES LOCALES
 C ---------------------------------------------------------------------
       PARAMETER (NBECMX=10)
       
-      INTEGER      NBSD,IDIME,IDD,ILOGI,IFETN,IFETC,IREFN,NBREFN
-      CHARACTER*8  NOMSD,K8BID
+      CHARACTER*1  K1BID,BAS      
+      CHARACTER*8  NOMSD,K8BID,VECEL,MA,MO,MO2,NOGDSI,NOGDCO,NOMCAS,
+     &             KBID
       CHARACTER*11 K11B
-      CHARACTER*14 K14B
-      CHARACTER*19 K19B      
-      CHARACTER*24 METHOD,SDFETI,K24B,SDFETS,KNUEQ
+      CHARACTER*14 K14B,NUDEV
+      CHARACTER*19 K19B,VECAS,VPROF      
+      CHARACTER*24 METHOD,SDFETI,K24B,SDFETS,KNUEQ,KMAILA,K24PRN,
+     &             KNULIL,KVELIL,KVEREF,KVEDSC,RESU,NOMLI,KNEQUA,
+     &             KVALE,NOMOPT,NOMLOG
+      CHARACTER*32 JEXNUM,JEXNOM,JEXATR     
       LOGICAL      LFETI      
-      INTEGER ICODLA(NBECMX),ICODGE(NBECMX)
-      CHARACTER*1 BAS
-      CHARACTER*8 VECEL,MA,MO,MO2,NOGDSI,NOGDCO,NOMCAS
-      CHARACTER*8 KBID
-      CHARACTER*14 NUDEV
-      CHARACTER*19 VECAS,VPROF
-      CHARACTER*24 KMAILA,K24PRN,KNULIL,KVELIL,KVEREF,KVEDSC,RESU,NOMLI,
-     &             KNEQUA,KVALE,NOMOPT
-      CHARACTER*1 K1BID
-      INTEGER NBEC, EPDMS, JPDMS
+      INTEGER      ICODLA(NBECMX),ICODGE(NBECMX),NBEC,EPDMS,JPDMS,NBSD,
+     &             IDIME,IDD,ILOGI,IFETN,IFETC,IREFN,NBREFN
 C ----------------------------------------------------------------------
 C     FONCTIONS LOCALES D'ACCES AUX DIFFERENTS CHAMPS DES
 C     S.D. MANIPULEES DANS LE SOUS PROGRAMME
@@ -373,8 +367,8 @@ C --- ALLOCATION .VALE EN R OU C SUIVANT TYPE
         IF ((LFETI).AND.(IDD.GT.0)) THEN
 C OBJET JEVEUX VECTEUR DE LOGICAL POUR SIGNIFIER L'APPARTENANCE D'UNE
 C MAILLE A UN SOUS-DOMAINE
-          K24B='&&'//SDFETS(1:8)//'.'//NOMSD(1:8)//'.LOGI'
-          CALL JEVEUO(K24B,'L',ILOGI)                   
+          NOMLOG=SDFETS(1:8)//'.LOGI'
+          CALL JEVEUO(JEXNOM(NOMLOG,NOMSD),'L',ILOGI)
         ENDIF
          
 C --- REMPLISSAGE DE .VALE
@@ -757,6 +751,7 @@ C        WRITE (IFM,*) ' -   REFE(1) = MAILLAGE        ',ZK24(IDVERF)
 C        WRITE (IFM,*) ' -   REFE(2) = NUMEROTATION    ',ZK24(IDVERF+1)
 C        WRITE (IFM,*) ' --------------------------- '
 C      END IF
+      IF (LFETI) CALL JEDETR(SDFETS(1:8)//'.LOGI')
       CALL JEDETR('&&ASSVEC.POSDDL')
       CALL JEDETR('&&ASSVEC.NUMLOC')
       CALL JEDEMA()

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 17/08/2004   AUTEUR ROMEO R.FERNANDES 
+#& MODIF COMMANDE  DATE 06/09/2004   AUTEUR SMICHEL S.MICHEL-PONNELLE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -423,7 +423,7 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
              AN              =SIMP(statut='f',typ='R',defaut= 0. ),
              VERI_P          =SIMP(statut='c',typ='TXM',max='**',defaut=("TEMP",) ),
            ),
-           ROUSS_VISC      =FACT(statut='f',
+           VISC_SINH      =FACT(statut='f',
              SIGM_0          =SIMP(statut='o',typ='R'),
              EPSI_0          =SIMP(statut='o',typ='R'),
              M               =SIMP(statut='o',typ='R'),

@@ -1,4 +1,4 @@
-#@ MODIF macro_matr_ajou_ops Macro  DATE 17/08/2004   AUTEUR DURAND C.DURAND 
+#@ MODIF macro_matr_ajou_ops Macro  DATE 06/09/2004   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,6 +16,9 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
+
+# -*- coding: iso-8859-1 -*-
+
 def macro_matr_ajou_ops(self,MAILLAGE,GROUP_MA_FLUIDE,GROUP_MA_INTERF,MODELISATION,MODE_MECA,DEPL_IMPO,
                              NUME_DDL_GENE,MODELE_GENE,MATR_MASS_AJOU,MATR_AMOR_AJOU,MATR_RIGI_AJOU,
                              NOEUD_DOUBLE,FLUIDE,DDL_IMPO,DIST_REFE,SOLVEUR,INFO,AVEC_MODE_STAT,

@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 07/05/2004   AUTEUR CIBHHGB G.BERTRAND 
+%& MODIF TYPELEM  DATE 06/09/2004   AUTEUR MCOURTOI M.COURTOIS 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -44,6 +44,7 @@ MODE_LOCAL__
                                         X7       X8       X9       X10      )
     CNUMMOD  = NUMMOD   ELEM__         (NUM      )
     CPRESSF  = PRES_F   ELEM__         (PRES     )
+    CPRES_R  = PRES_R   ELEM__         (PRES     )
     EPRESNO  = PRES_R   ELNO__ IDEN__  (PRES     )
 
 VECTEUR__
@@ -102,4 +103,6 @@ OPTION__
                               OUT__  MMATUUR  PMATUUR
     TOU_INI_ELNO        99    IN__   NGEOMER  PGEOMER
                               OUT__  EPRESNO  PPRES_R
+    TOU_INI_ELEM        99    IN__   NGEOMER  PGEOMER
+                              OUT__  CPRES_R  PPRES_R
 

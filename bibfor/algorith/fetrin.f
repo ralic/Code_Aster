@@ -3,7 +3,7 @@
      &                  DIMGI,IRR,JGI,JGITGI)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/08/2004   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGORITH  DATE 06/09/2004   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -352,9 +352,6 @@ C ----------------------------------------------------------------------
 C ----  FIN BOUCLE SUR LES SOUS-DOMAINES
 C ----------------------------------------------------------------------
 
-      IF (OPTION.EQ.2) THEN
-        CALL JEDETR('&&FETI.FETRIN.LOGI')
-        IF (LRIGID) CALL JEDETR('&&FETI.ALPHA.MCR')
-      ENDIF             
+      IF ((OPTION.EQ.2).AND.(LRIGID)) CALL JEDETR('&&FETI.ALPHA.MCR')
       CALL JEDEMA()
       END

@@ -1,4 +1,4 @@
-#@ MODIF fiabilite_fichier Macro  DATE 16/01/2004   AUTEUR GNICOLAS G.NICOLAS 
+#@ MODIF fiabilite_fichier Macro  DATE 06/09/2004   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -265,6 +265,9 @@ class fiabilite_fichier :
 #
 #=======================================================================================
 #=======================================================================================
+
+# -*- coding: iso-8859-1 -*-
+
 #
 #
 if __name__ == "__main__" :

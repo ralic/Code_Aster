@@ -1,0 +1,358 @@
+# MODIF  DATE 06/09/2004   AUTEUR SMICHEL S.MICHEL-PONNELLE 
+# TITRE : VALIDATION DE LA LOI VISC_ISOT_TRAC SUR ESSAI DE TRACTION
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+#        CAS AXISYMETRIQUE
+DEBUT(CODE=_F( NOM = 'SSNL129C',NIV_PUB_WEB='INTERNET'));
+
+PRE_GIBI();
+
+MAIL=LIRE_MAILLAGE();
+
+MAIL=DEFI_GROUP(reuse =MAIL,
+                MAILLAGE=MAIL,
+                CREA_GROUP_NO=(_F(GROUP_MA='L23',),
+                               _F(GROUP_MA='L41',) ,),);
+
+MO=AFFE_MODELE(MAILLAGE=MAIL,
+               INFO=2,
+               VERIF='MAILLE',
+               AFFE=_F(GROUP_MA='MAILLAGE',
+                       PHENOMENE='MECANIQUE',
+                       MODELISATION='AXIS',),);
+                       
+# DEFINITION & AFFECTATION DES PROPRIETES MECANIQUES
+# ----------------------------------------------------------------
+#xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx#
+# Courbe Sigma=f(epsilon_totale) du CEA
+#xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx#
+
+SIGM_F=DEFI_FONCTION(NOM_PARA='EPSI',
+                     VALE=
+                    (0.002409731,477.1267177,
+                     0.010088627,512.5481424,
+                     0.020280218,550.4832447,
+                     0.030431091,580.3560802,
+                     0.040551839,604.2641624,
+                     0.050650258,623.7511615,
+                     0.060732087,639.9532866,
+                     0.07080155 ,653.7069759,
+                     0.080861758,665.6281229,
+                     0.090915002,676.1703617,
+                     0.100962969,685.6679458,
+                     0.111006906,694.3672945,
+                     0.121047728,702.4501998,
+                     0.131086116,710.0509006,
+                     0.138111812,715.1387392,
+                     0.141122569,717.2686429,
+                     0.151157459,724.1769214,
+                     0.201315999,755.5677203,
+                     0.301585802,808.9887868,
+                     0.401811696,853.7159011,
+                     0.502001836,891.3634826,
+                     0.602161926,923.0614179,
+                     0.702296719,949.7503941,
+                     0.802410212,972.221955,
+                     0.90250577 ,991.1425412,
+                     1.002586229,1007.073281,),
+                     PROL_DROITE='LINEAIRE',);
+
+MA_EPR=DEFI_MATERIAU(ELAS=_F(E=215000.0,
+                             NU=0.3,
+                             ALPHA=0.0,),
+                     TRACTION=_F(SIGM=SIGM_F,),
+                     ECRO_LINE=_F(  D_SIGM_EPSI = 1000.,
+                                    SY = 477.1267117),
+                     VISC_SINH=_F(
+                                   SIGM_0=6176.,
+                                   EPSI_0=3.31131121483e13,
+                                   M=6.76,),
+                     ROUSSELIER=_F(D=0.0001,
+                                   SIGM_1=1575.0,
+                                   PORO_INIT=5e-09,), );
+
+CM=AFFE_MATERIAU(MAILLAGE=MAIL,
+                 AFFE=(_F(TOUT='OUI',
+                          MATER=MA_EPR,),),);
+CH=AFFE_CHAR_MECA(MODELE=MO,
+                  DDL_IMPO=(
+                            _F(GROUP_NO='L41',
+                               DY=0.0,),),);
+CHT=AFFE_CHAR_MECA(MODELE=MO,
+                   DDL_IMPO=_F(GROUP_NO='L23',
+                                DY=1.),);
+# ------------------------------------------------------------
+
+#  PREMIER CALCUL : VITESSE LENTE  10-3 s-1
+# ------------------------------------------------------------
+
+IFIN = 2000.0;
+
+FCT_L=DEFI_FONCTION(NOM_PARA='INST',
+                    VALE=(0.0,0.0,IFIN,2.0,),
+                    PROL_DROITE='EXCLU',
+                    PROL_GAUCHE='EXCLU',);
+
+L_INSTL=DEFI_LIST_REEL(DEBUT=0.0,
+                       INTERVALLE=(_F(JUSQU_A=IFIN,
+                                      NOMBRE=100,),),);
+
+L_ARCH_L=DEFI_LIST_REEL(DEBUT=0.0,
+                        INTERVALLE=_F(JUSQU_A=IFIN,
+                                      NOMBRE=20,),);
+
+UL=STAT_NON_LINE(MODELE=MO,
+                 CHAM_MATER=CM,
+                 EXCIT=(_F(CHARGE=CH,),
+                        _F(CHARGE=CHT,
+                           FONC_MULT = FCT_L),),
+                 COMP_INCR=_F(RELATION='VISC_ISOT_TRAC',
+                              DEFORMATION='SIMO_MIEHE',),
+                 INCREMENT=_F(LIST_INST=L_INSTL,
+                              SUBD_PAS=3,
+                              SUBD_PAS_MINI=1e-10,),
+                 NEWTON=_F(REAC_INCR=1,
+                           MATRICE='TANGENTE',
+                           REAC_ITER=1,),
+                 CONVERGENCE=_F(RESI_GLOB_RELA=1e-06,
+                                ITER_GLOB_MAXI=10,
+                                ARRET='OUI',
+                                RESI_INTE_RELA=1e-09,
+                                ITER_INTE_MAXI=10,),
+                 ARCHIVAGE=_F(LIST_INST=L_ARCH_L,),);
+
+UL=CALC_ELEM(reuse =UL,
+             RESULTAT=UL,
+             OPTION='SIEF_ELNO_ELGA',);
+
+UL=CALC_NO(reuse =UL,
+           RESULTAT=UL,
+           OPTION='REAC_NODA',);
+# ------------------------------------------------------------
+
+#  DEUXIEME CALCUL : VITESSE MOYENNE  10E1 s-1
+# ------------------------------------------------------------
+
+IFIN = 0.2;
+
+FCT_M=DEFI_FONCTION(NOM_PARA='INST',
+                    VALE=(0.0,0.0,IFIN,2.0,),
+                    PROL_DROITE='EXCLU',
+                    PROL_GAUCHE='EXCLU',);
+
+L_INSTM=DEFI_LIST_REEL(DEBUT=0.0,
+                       INTERVALLE=(_F(JUSQU_A=IFIN,
+                                      NOMBRE=100,),),);
+
+L_ARCH_M=DEFI_LIST_REEL(DEBUT=0.0,
+                        INTERVALLE=_F(JUSQU_A=IFIN,
+                                      NOMBRE=20,),);
+
+UM=STAT_NON_LINE(MODELE=MO,
+                 CHAM_MATER=CM,
+                 EXCIT=(_F(CHARGE=CH,),
+                        _F(CHARGE=CHT,
+                           FONC_MULT = FCT_M),),
+                 COMP_INCR=_F(RELATION='VISC_ISOT_TRAC',
+                              DEFORMATION='SIMO_MIEHE',),
+                 INCREMENT=_F(LIST_INST=L_INSTM,
+                              SUBD_PAS=3,
+                              SUBD_PAS_MINI=1e-10,),
+                 NEWTON=_F(REAC_INCR=1,
+                           MATRICE='TANGENTE',
+                           REAC_ITER=1,),
+                 CONVERGENCE=_F(RESI_GLOB_RELA=1e-06,
+                                ITER_GLOB_MAXI=10,
+                                ARRET='OUI',
+                                RESI_INTE_RELA=1e-09,
+                                ITER_INTE_MAXI=10,),
+                 ARCHIVAGE=_F(LIST_INST=L_ARCH_M,),);
+
+UM=CALC_ELEM(reuse =UM,
+             RESULTAT=UM,
+             OPTION='SIEF_ELNO_ELGA',);
+
+UM=CALC_NO(reuse =UM,
+           RESULTAT=UM,
+           OPTION='REAC_NODA');
+         
+# ------------------------------------------------------------
+
+#  TROISIEME CALCUL : VITESSE RAPIDE  10E3 s-1
+# ------------------------------------------------------------
+
+IFIN = 0.002;
+
+FCT_R=DEFI_FONCTION(NOM_PARA='INST',
+                    VALE=(0.0,0.0,IFIN,2.0,),
+                    PROL_DROITE='EXCLU',
+                    PROL_GAUCHE='EXCLU',);
+
+L_INSTR=DEFI_LIST_REEL(DEBUT=0.0,
+                       INTERVALLE=(_F(JUSQU_A=IFIN,
+                                      NOMBRE=100,),),);
+
+L_ARCH_R=DEFI_LIST_REEL(DEBUT=0.0,
+                        INTERVALLE=_F(JUSQU_A=IFIN,
+                                      NOMBRE=20,),);
+
+UR=STAT_NON_LINE(MODELE=MO,
+                 CHAM_MATER=CM,
+                 EXCIT=(_F(CHARGE=CH,),
+                        _F(CHARGE=CHT,
+                           FONC_MULT = FCT_R),),
+                 COMP_INCR=_F(RELATION='VISC_ISOT_TRAC',
+                              DEFORMATION='SIMO_MIEHE',),
+                 INCREMENT=_F(LIST_INST=L_INSTR,
+                              SUBD_PAS=3,
+                              SUBD_PAS_MINI=1e-10,),
+                 NEWTON=_F(REAC_INCR=1,
+                           MATRICE='TANGENTE',
+                           REAC_ITER=1,),
+                 CONVERGENCE=_F(RESI_GLOB_RELA=1e-06,
+                                ITER_GLOB_MAXI=10,
+                                ARRET='OUI',
+                                RESI_INTE_RELA=1e-09,
+                                ITER_INTE_MAXI=10,),
+                 ARCHIVAGE=_F(LIST_INST=L_ARCH_R,),);
+
+UR=CALC_ELEM(reuse =UR,
+             RESULTAT=UR,
+             OPTION='SIEF_ELNO_ELGA',);
+
+UR=CALC_NO(reuse =UR,
+           RESULTAT=UR,
+           OPTION='REAC_NODA');
+
+#-----------------------------------------------------------
+# IMPRESSION DES RESULTATS AU FORMAT 'POST_RELEVE' 
+# ----------------------------------------------------------
+DEPL=POST_RELEVE_T(ACTION=_F(INTITULE='deplacement',
+                               GROUP_NO='P3',
+                               RESULTAT=UL,
+                               NOM_CHAM='DEPL',
+                               NOM_CMP='DY',
+                               OPERATION='EXTRACTION',),);
+FORCE_L=POST_RELEVE_T(ACTION=_F(INTITULE='force',
+                               GROUP_NO='L23',
+                               RESULTAT=UL,
+                               NOM_CHAM='REAC_NODA',
+                               RESULTANTE='DY',
+                               OPERATION='EXTRACTION',),);
+PLAS_L=POST_RELEVE_T(ACTION=_F(INTITULE='plasticite',
+                               GROUP_NO='P3',
+                               RESULTAT=UL,
+                               NOM_CHAM='SIEF_ELNO_ELGA',
+                               NOM_CMP='SIYY',
+                               OPERATION='EXTRACTION',),);
+FORCE_M=POST_RELEVE_T(ACTION=_F(INTITULE='force',
+                               GROUP_NO='L23',
+                               RESULTAT=UM,
+                               NOM_CHAM='REAC_NODA',
+                               RESULTANTE='DY',
+                               OPERATION='EXTRACTION',),);
+PLAS_M=POST_RELEVE_T(ACTION=_F(INTITULE='plasticite',
+                               GROUP_NO='P3',
+                               RESULTAT=UM,
+                               NOM_CHAM='SIEF_ELNO_ELGA',
+                               NOM_CMP='SIYY',
+                               OPERATION='EXTRACTION',),);
+FORCE_R=POST_RELEVE_T(ACTION=_F(INTITULE='force',
+                               GROUP_NO='L23',
+                               RESULTAT=UR,
+                               NOM_CHAM='REAC_NODA',
+                               RESULTANTE='DY',
+                               OPERATION='EXTRACTION',),);
+PLAS_R=POST_RELEVE_T(ACTION=_F(INTITULE='plasticite',
+                               GROUP_NO='P3',
+                               RESULTAT=UR,
+                               NOM_CHAM='SIEF_ELNO_ELGA',
+                               NOM_CMP='SIYY',
+                               OPERATION='EXTRACTION',),);                               
+IMPR_TABLE(TABLE=DEPL,NOM_PARA='DY')
+IMPR_TABLE(TABLE=FORCE_L, NOM_PARA='DY')
+IMPR_TABLE(TABLE=FORCE_M, NOM_PARA='DY')
+IMPR_TABLE(TABLE=FORCE_R, NOM_PARA='DY')
+IMPR_TABLE(TABLE=PLAS_L, NOM_PARA = 'SIYY')
+IMPR_TABLE(TABLE=PLAS_M, NOM_PARA = 'SIYY')
+IMPR_TABLE(TABLE=PLAS_R, NOM_PARA = 'SIYY')
+
+TEST_TABLE( TABLE=FORCE_L,
+            NOM_PARA='DY',
+            FILTRE=_F(NOM_PARA = 'NUME_ORDRE', VALE_I = 1),
+            VALE =319.604,
+            PRECISION=0.2E-2,
+               REFERENCE='AUTRE_ASTER'
+           )
+TEST_TABLE( TABLE=FORCE_M,
+            NOM_PARA='DY',
+            FILTRE=_F( NOM_PARA = 'NUME_ORDRE', VALE_I = 1),
+            VALE = 348.483,
+            PRECISION=0.2E-2,
+               REFERENCE='AUTRE_ASTER'
+           )
+TEST_TABLE( TABLE=FORCE_R,
+            NOM_PARA='DY',
+            FILTRE=_F( NOM_PARA = 'NUME_ORDRE', VALE_I = 1),
+            VALE = 386.388,
+            PRECISION=0.2E-2,
+               REFERENCE='AUTRE_ASTER'
+           )           
+TEST_TABLE( TABLE=FORCE_L,
+            NOM_PARA='DY',
+            FILTRE=_F(NOM_PARA = 'NUME_ORDRE', VALE_I = 10),
+            VALE = 242.457,
+            PRECISION=0.2E-2,
+               REFERENCE='AUTRE_ASTER'
+           )
+TEST_TABLE( TABLE=FORCE_M,
+            NOM_PARA='DY',
+            FILTRE=_F( NOM_PARA = 'NUME_ORDRE', VALE_I = 10),
+            VALE = 257.078,
+            PRECISION=0.2E-2,
+               REFERENCE='AUTRE_ASTER'
+           )
+TEST_TABLE( TABLE=FORCE_R,
+            NOM_PARA='DY',
+            FILTRE=_F( NOM_PARA = 'NUME_ORDRE', VALE_I = 10),
+            VALE = 276.269,
+            PRECISION=0.2E-2,
+               REFERENCE='AUTRE_ASTER'
+           )           
+TEST_TABLE( TABLE=FORCE_L,
+            NOM_PARA='DY',
+            FILTRE=_F(NOM_PARA = 'NUME_ORDRE', VALE_I = 20),
+            VALE = 174.061,
+            PRECISION=0.2E-2,
+               REFERENCE='AUTRE_ASTER'
+           )
+TEST_TABLE( TABLE=FORCE_M,
+            NOM_PARA='DY',
+            FILTRE=_F( NOM_PARA = 'NUME_ORDRE', VALE_I = 20),
+            VALE = 183.251,
+            PRECISION=0.2E-2,
+               REFERENCE='AUTRE_ASTER'
+           )
+TEST_TABLE( TABLE=FORCE_R,
+            NOM_PARA='DY',
+            FILTRE=_F( NOM_PARA = 'NUME_ORDRE', VALE_I = 20),
+            VALE = 195.314,
+            PRECISION=0.2E-2,
+               REFERENCE='AUTRE_ASTER'
+           )             
+FIN();

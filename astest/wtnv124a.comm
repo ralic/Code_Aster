@@ -1,4 +1,4 @@
-# MODIF  DATE 17/08/2004   AUTEUR JOUMANA J.EL-GHARIB 
+# MODIF  DATE 06/09/2004   AUTEUR JOUMANA J.EL-GHARIB 
 # RESPONSABLE JOUMANA J.EL-GHARIB
 # TITRE DESATURATION -CONSOLIDATION AVEC LE MODELE DE BARCELONE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -347,15 +347,6 @@ TEST_RESU(RESU=(
                        VALE = -5.607E-02,        
                      ),
 
-                _F(    RESULTAT = U1,  
-                       REFERENCE = 'ANALYTIQUE',  
-                       NOEUD = 'NO8',      
-                       NOM_CHAM = 'DEPL',    
-                       NOM_CMP = 'DZ',     
-                       INST=5.5,  
-                       PRECISION = (2.E-3,1.E-5), 
-                       VALE = -7.441E-02,        
-                     ),
 
                 _F(    RESULTAT = U1,  
                        REFERENCE = 'ANALYTIQUE',  
@@ -398,15 +389,6 @@ TEST_RESU(RESU=(
                        VALE = 3.E7 ,        
                      ),
 
-                _F(    RESULTAT = U1,    
-                       REFERENCE = 'ANALYTIQUE',  
-                       NOEUD = 'NO8',      
-                       NOM_CHAM = 'VARI_NOEU_ELGA',    
-                       NOM_CMP = 'V1',     
-                       INST=5.5,  
-                       PRECISION = (2.E-3,1.E-5),    
-                       VALE = 5.4943E+08 ,        
-                     ),
 
                 _F(    RESULTAT = U1,    
                        REFERENCE = 'ANALYTIQUE',  
@@ -446,6 +428,7 @@ TEST_RESU(RESU=(
                        INST=1.,  
                        PRECISION = (1.E-5,1.E-5),    
                        VALE = 0. ,        
+                       CRITERE = 'ABSOLU',       
                      ),
 
                 _F(    RESULTAT = U1,    
@@ -453,18 +436,10 @@ TEST_RESU(RESU=(
                        NOEUD = 'NO8',      
                        NOM_CHAM = 'VARI_NOEU_ELGA',    
                        NOM_CMP = 'V2',     
-                       INST=5.5,  
-                       PRECISION = (2.E-2,1.E-5),    
-                       VALE = 0. ,        
-                     ),
-                _F(    RESULTAT = U1,    
-                       REFERENCE = 'ANALYTIQUE',  
-                       NOEUD = 'NO8',      
-                       NOM_CHAM = 'VARI_NOEU_ELGA',    
-                       NOM_CMP = 'V2',     
                        INST=6.,  
                        PRECISION = (2.E-2,1.E-5),    
-                       VALE = 0. ,        
+                       VALE = 0. , 
+                       CRITERE = 'ABSOLU',       
                      ),
 
                 _F(    RESULTAT = U1,    
@@ -475,6 +450,7 @@ TEST_RESU(RESU=(
                        INST=10.,  
                        PRECISION = (2.E-2,1.E-5),    
                        VALE = 0. ,        
+                       CRITERE = 'ABSOLU',       
                      ),
 
                 _F(    RESULTAT = U1,    
@@ -496,16 +472,6 @@ TEST_RESU(RESU=(
                        INST=1.,  
                        PRECISION = (1.E-5,1.E-5),      
                        VALE =  6.00000E+07,       
-                     ),
-
-                _F(    RESULTAT = U1,    
-                       REFERENCE = 'ANALYTIQUE',  
-                       NOEUD = 'NO8',      
-                       NOM_CHAM = 'VARI_NOEU_ELGA',    
-                       NOM_CMP = 'V3',     
-                       INST=5.5,  
-                       PRECISION = (1.E-5,1.E-5),      
-                       VALE =  6.00000E+07,        
                      ),
 
                 _F(    RESULTAT = U1,    
@@ -537,6 +503,7 @@ TEST_RESU(RESU=(
                        PRECISION = (1.E-5,1.E-5),     
                        VALE =  1.10811E+10,        
                      ),
+                     
 #INDICATEUR D'IRREVERSIBILITE HYDRIQUE                                          
                 _F(    RESULTAT = U1,    
                        REFERENCE = 'ANALYTIQUE',  
@@ -546,17 +513,9 @@ TEST_RESU(RESU=(
                        INST=1.,  
                        PRECISION = (1.E-5,1.E-5),    
                        VALE = 0. ,        
+                       CRITERE = 'ABSOLU',       
                      ),
 
-                _F(    RESULTAT = U1,    
-                       REFERENCE = 'ANALYTIQUE',  
-                       NOEUD = 'NO8',      
-                       NOM_CHAM = 'VARI_NOEU_ELGA',    
-                       NOM_CMP = 'V4',     
-                       INST=5.5,  
-                       PRECISION = (2.E-2,1.E-5),    
-                       VALE = 5.23223E-01 ,        
-                     ),
                 _F(    RESULTAT = U1,    
                        REFERENCE = 'ANALYTIQUE',  
                        NOEUD = 'NO8',      
@@ -575,6 +534,7 @@ TEST_RESU(RESU=(
                        INST=10.,  
                        PRECISION = (2.E-2,1.E-5),    
                        VALE = 0. ,        
+                       CRITERE = 'ABSOLU',       
                      ),
 
                 _F(    RESULTAT = U1,    
@@ -585,6 +545,7 @@ TEST_RESU(RESU=(
                        INST=20.,  
                        PRECISION = (2.E-2,1.E-5),    
                        VALE = 0. ,        
+                       CRITERE = 'ABSOLU',       
                      ),
                      ),)
                      

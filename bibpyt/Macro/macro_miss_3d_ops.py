@@ -1,4 +1,4 @@
-#@ MODIF macro_miss_3d_ops Macro  DATE 23/08/2004   AUTEUR CIBHHLV L.VIVAN 
+#@ MODIF macro_miss_3d_ops Macro  DATE 06/09/2004   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,6 +16,9 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
+
+# -*- coding: iso-8859-1 -*-
+
 
 def macro_miss_3d_ops(self,UNITE_IMPR_ASTER,UNITE_OPTI_MISS,
                            UNITE_MODELE_SOL,UNITE_RESU_IMPE,

@@ -1,4 +1,4 @@
-#@ MODIF __init__ Validation  DATE 27/03/2002   AUTEUR DURAND C.DURAND 
+#@ MODIF __init__ Validation  DATE 06/09/2004   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,6 +18,9 @@
 #                                                                       
 #                                                                       
 # ======================================================================
+
+# -*- coding: iso-8859-1 -*-
+
 """
    Ce package contient la fonctionnalité de validation des objets de type OBJECT. 
    Cette fonctionnalité est implémentée sous la forme de classes de type MIXIN qui

@@ -1,4 +1,4 @@
-#@ MODIF utilit Lecture_Cata_Ele  DATE 01/04/2003   AUTEUR VABHHTS J.PELLET 
+#@ MODIF utilit Lecture_Cata_Ele  DATE 06/09/2004   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -662,6 +662,9 @@ def detruire_cata(capy,unigest) :
 
 def ut_qui_use_cmp(capy,nomgd,nomcmp):
 #=====================================
+
+# -*- coding: iso-8859-1 -*-
+
 # pour écrire quels sont les triplets (modelisation,typelem,option)
 # qui utilisent une CMP d'une grandeur :
 

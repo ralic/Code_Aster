@@ -2,7 +2,7 @@
      &                   INSTAM,INSTAP,TM,TP,TREF,DEPS,SIGM,PCRM,
      &                   OPTION,SIGP,PCRP,DSIDEP)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 17/08/2004   AUTEUR JOUMANA J.EL-GHARIB 
+C MODIF ALGORITH  DATE 06/09/2004   AUTEUR JOUMANA J.EL-GHARIB 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -217,7 +217,7 @@ C     --------------------------------
         DEPSTH(K) = DEPS(K)
  110  CONTINUE
       DO 111 K=1,3
-        DEPSTH(K) = DEPSTH(K) + COEF
+        DEPSTH(K) = DEPSTH(K) - COEF
         DEPSMO = DEPSMO + DEPSTH(K)      
  111  CONTINUE 
       DEPSMO = -DEPSMO

@@ -1,4 +1,4 @@
-#@ MODIF V_MCCOMPO Validation  DATE 09/10/2002   AUTEUR DURAND C.DURAND 
+#@ MODIF V_MCCOMPO Validation  DATE 06/09/2004   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,6 +18,9 @@
 #                                                                       
 #                                                                       
 # ======================================================================
+
+# -*- coding: iso-8859-1 -*-
+
 """
    Ce module contient la classe  de base MCCOMPO qui sert à factoriser
    les traitements des objets composites de type OBJECT

@@ -1,6 +1,6 @@
       SUBROUTINE TE0530(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ELEMENTS  DATE 07/09/2004   AUTEUR CIBHHPD S.VANDENBERGHE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -215,20 +215,28 @@ C ----     CONTRAINTES DE STABILISATION
 C ---- PARAMETRES EN SORTIE
 C ----     VECTEUR DES FORCES INTERNES (BT*SIGMA)
         CALL JEVECH('PVECTUR','E',IVECTU)
-        CALL JEVECH('PCOMPOR','L',ICOMPO)
+        
+        CALL TECACH('ONN','PCOMPOR',1,ICOMPO,IRET)
+        IF (ICOMPO.NE.0) THEN
+          CALL JEVECH('PCOMPOR','L',ICOMPO)
 
-
+        ENDIF
 C        =============================================
 C        -  ACTUALISATION : GEOM ORIG + DEPL DEBUT PAS
 C        =============================================
-        IF (ZK16(ICOMPO+2) (1:5).NE.'PETIT') THEN
-          DO 150 I = 1,3*NNO
-            ZR(IGEOM+I-1) = ZR(IGEOM+I-1) + ZR(IDEPLM+I-1)
-            WORK(100+I) = ZR(IDEPLM+I-1)
-  150     CONTINUE
-        ELSE
-          CALL R8INIR(24,0.D0,WORK(101),1)
-        END IF
+          IF ((ZK16(ICOMPO+2) (1:5).EQ.'GREEN')) THEN
+            DO 150 I = 1,3*NNO
+              ZR(IGEOM+I-1) = ZR(IGEOM+I-1) + ZR(IDEPLM+I-1)
+              WORK(100+I) = ZR(IDEPLM+I-1)
+  150       CONTINUE
+          ELSE IF ((ZK16(ICOMPO+2) (1:5).EQ.'PETIT')) THEN
+            CALL R8INIR(24,0.D0,WORK(101),1)
+          ELSE
+            DO 152 I = 1,3*NNO
+              WORK(100+I) = ZR(IDEPLM+I-1)
+  152       CONTINUE
+            
+          END IF
 
 C ----      CALCUL DES FORCES INTERNES BT.SIGMA
 C           -----------------------------------
@@ -269,6 +277,7 @@ C           FORCES DE STABIBILISATION DANS CONTM(7,7+12)
         CALL SHBCSF(ZR(ICONTM),SIGMA,FSTAB)
         CALL SHB8PS(SOPTIO,ZR(IGEOM),WORK,WORK(101),SIGMA,FSTAB,
      &            ZR(IVECTU))
+
 
       END IF
 

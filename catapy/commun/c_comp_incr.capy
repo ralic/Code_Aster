@@ -1,4 +1,4 @@
-#& MODIF COMMUN  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMUN  DATE 06/09/2004   AUTEUR SMICHEL S.MICHEL-PONNELLE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,7 +20,9 @@ def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',  #COMMUN#
            RELATION        =SIMP(statut='o',typ='TXM',defaut="VMIS_ISOT_TRAC",
                                  into=( "ELAS",
                                         "VMIS_ISOT_TRAC",
+                                        "VISC_ISOT_TRAC",
                                         "VMIS_ISOT_LINE",
+                                        "VISC_ISOT_LINE",
                                         "VMIS_ECMI_TRAC",
                                         "VMIS_ECMI_LINE",
                                         "LABORD_1D",
@@ -116,12 +118,14 @@ def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',  #COMMUN#
                                      ) ),
           ELAS            =SIMP(statut='c',typ='I',defaut=1,into=(1,)),
           SANS            =SIMP(statut='c',typ='I',defaut=1,into=(1,)),
-          CORR_ACIER       =SIMP(statut='c',typ='I',defaut=3,into=(3,)),        
+          CORR_ACIER      =SIMP(statut='c',typ='I',defaut=3,into=(3,)),        
           VMIS_ISOT_TRAC  =SIMP(statut='c',typ='I',defaut=2,into=(2,)),
+          VISC_ISOT_TRAC  =SIMP(statut='c',typ='I',defaut=3,into=(3,)),
           VMIS_ISOT_LINE  =SIMP(statut='c',typ='I',defaut=2,into=(2,)),
+          VISC_ISOT_LINE  =SIMP(statut='c',typ='I',defaut=3,into=(3,)),
           VMIS_ECMI_TRAC  =SIMP(statut='c',typ='I',defaut=8,into=(8,)),
           VMIS_ECMI_LINE  =SIMP(statut='c',typ='I',defaut=8,into=(8,)),
-          LABORD_1D   =SIMP(statut='c',typ='I',defaut=5,into=(5,)),
+          LABORD_1D       =SIMP(statut='c',typ='I',defaut=5,into=(5,)),
           ENDO_FRAGILE    =SIMP(statut='c',typ='I',defaut=2,into=(2,)),
           ENDO_ISOT_BETON =SIMP(statut='c',typ='I',defaut=2,into=(2,)),
           MAZARS          =SIMP(statut='c',typ='I',defaut=3,into=(3,)),

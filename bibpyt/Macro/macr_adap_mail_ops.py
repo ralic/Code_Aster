@@ -1,4 +1,4 @@
-#@ MODIF macr_adap_mail_ops Macro  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
+#@ MODIF macr_adap_mail_ops Macro  DATE 06/09/2004   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,6 +16,9 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
+
+# -*- coding: iso-8859-1 -*-
+
 # RESPONSABLE GNICOLAS G.NICOLAS
 #
 def macr_adap_mail_ops ( self,

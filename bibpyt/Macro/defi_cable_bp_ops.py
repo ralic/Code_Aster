@@ -1,4 +1,4 @@
-#@ MODIF defi_cable_bp_ops Macro  DATE 17/08/2004   AUTEUR DURAND C.DURAND 
+#@ MODIF defi_cable_bp_ops Macro  DATE 06/09/2004   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -42,6 +42,9 @@
 #  - INFO               1 / 2
 #
 # ===========================================================================
+
+# -*- coding: iso-8859-1 -*-
+
 
 def defi_cable_bp_ops(self,MAILLAGE,MODELE,CHAM_MATER,CARA_ELEM,GROUP_MA_BETON,
                            DEFI_CABLE,TYPE_ANCRAGE,TENSION_INIT,RECUL_ANCRAGE,

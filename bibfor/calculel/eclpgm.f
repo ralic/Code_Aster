@@ -1,7 +1,7 @@
       SUBROUTINE ECLPGM ()
       IMPLICIT   NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 05/04/2004   AUTEUR ASSIRE A.ASSIRE 
+C MODIF CALCULEL  DATE 06/09/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,16 +40,17 @@ C
 C
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C
-      INTEGER K,NBGREL,TE,TABNO(27),TYPELE
+      INTEGER K,NBGREL,TE,TABNO(27),TYPELE,IRET1,JOBJ,NUMA,NCH
       INTEGER IGR,IEL,IACOOR,IAMACO,ILMACO,IALIEL,ILLIEL,NBELEM
       INTEGER DIMGEO,IACOSE,IBID,NBPG,INO,INO1,INO2
       INTEGER NUMGLM,NBMAIL,NBNOEU,NBCOOR,IADIME,IPG
       INTEGER NBNO2T,IANNO2,IATYPM,NUNO2,NUPOI2
-      INTEGER NDIM,NPG1,NBPI,IAGEPI,IAGESE,NNO2,NBNOMA,NUPG
+      INTEGER NPG1,NBPI,IAGEPI,IAGESE,NNO2,NBNOMA,NUPG
       INTEGER IMA,NBELGR,NUMAIL,NUPOIN,NPOINI,ITERM,IPOINI
-      CHARACTER*8 MO, MA1,MA2,NOM ,KBID,FAMIL
-      CHARACTER*16 TYPRES,NOMCMD,NOMTE
-      CHARACTER*19 LIGREL
+      CHARACTER*8 MO, MA1,MA2,NOM ,KBID, ELREFA, FAPG, FAMIL, NOMPAR
+      CHARACTER*16 TYPRES,NOMCMD,NOMTE,NCHAM
+      CHARACTER*19 LIGREL, CEL
+      CHARACTER*24 NOMOBJ
       REAL*8 X,XC,XM,SHRINK,LONMIN
 
 C ----------------------------------------------------------------------
@@ -90,6 +91,29 @@ C DEB ------------------------------------------------------------------
       CALL GETVR8('ECLA_PG','SHRINK'     ,1,1,1,SHRINK,IBID)
       CALL GETVR8('ECLA_PG','TAILLE_MIN' ,1,1,1,LONMIN,IBID)
 
+      NOMOBJ = '&&ECLPGM.NOMOBJ'
+      CALL GETVTX('ECLA_PG','NOM_CHAM'   ,1,1,1,NCHAM ,NCH)
+      IF ( NCH .EQ. 0 ) THEN
+         FAMIL = 'RIGI'
+      ELSE
+         CEL = '&&ECLPGM.CHAM_ELEM'
+         CALL DISMOI('F','NOM_LIGREL',MO,'MODELE',IBID,LIGREL,IBID)
+
+         NOMPAR = ' '
+         CALL ALCHML(LIGREL,NCHAM,NOMPAR,'V',CEL,IRET1,' ')
+         IF (IRET1.NE.0) THEN
+            CALL UTMESS('F','ECLPGM','PROBLEME CREATION CHAMP')
+         ENDIF
+
+         CALL CELFPG ( CEL, NOMOBJ )
+         CALL JEEXIN ( NOMOBJ, IRET1 )
+         IF (IRET1.GT.0) THEN
+            CALL JEVEUO ( NOMOBJ, 'L', JOBJ )
+         ELSE
+            CALL UTMESS('F','ECLPGM','BUG')
+         ENDIF
+      ENDIF
+
       CALL DISMOI('F','NOM_MAILLA',MO,'MODELE',IBID,MA1,IBID)
       CALL JEVEUO(MA1//'.COORDO    .VALE','L',IACOOR)
       CALL JEVEUO(MA1//'.CONNEX','L',IAMACO)
@@ -100,29 +124,37 @@ C DEB ------------------------------------------------------------------
       CALL JEVEUO(LIGREL//'.LIEL','L',IALIEL)
       CALL JEVEUO(JEXATR(LIGREL//'.LIEL','LONCUM'),'L',ILLIEL)
 
-      FAMIL='FAMI_PG1'
-      DIMGEO=3
-
+      DIMGEO = 3
 
 
 C     1. ON COMPTE LES POINTS DE GAUSS (ET LES FUTURS SOUS-ELEMENTS)
 C        ET LES POINT_I ET LES NOEUDS DU FUTUR MAILLAGE
 C     ---------------------------------------------------------------
-      NBPG=0
-      NBPI=0
-      NBNO2T=0
-      DO 1,IGR = 1,NBGREL(LIGREL)
+      NBPG   = 0
+      NBPI   = 0
+      NBNO2T = 0
+      DO 1,IGR = 1 , NBGREL(LIGREL)
          TE = TYPELE(LIGREL,IGR)
          NBELGR = NBELEM(LIGREL,IGR)
          CALL JENUNO(JEXNUM('&CATA.TE.NOMTE',TE),NOMTE)
-         CALL ECLATY (NOMTE,FAMIL,NDIM,NPG1,
-     &                   NPOINI,NTERM1,NSOMM1,CSOMM1,
-     &                   TYMA,NBNO2,CONNX,
-     &                   MXNBN2,MXNBPG,MXNBPI,MXNBTE)
-         NBPG=NBPG+NBELGR*NPG1
-         NBPI=NBPI+NBELGR*NPOINI
-         DO 500,IPG=1,NPG1
-           NBNO2T=NBNO2T+NBELGR*NBNO2(IPG)
+
+         IF ( NCH .NE. 0 ) THEN
+            NUMA   = NUMAIL(IGR,1)
+            ELREFA = ZK16(JOBJ-1+NUMA)(1:8)
+            FAPG   = ZK16(JOBJ-1+NUMA)(9:16)
+         ELSE
+            FAMIL = 'RIGI'
+            CALL ECLAU1 ( NOMTE, FAMIL, ELREFA, FAPG )
+         ENDIF
+         IF ( FAPG .EQ. ' ' ) GOTO 1
+
+         CALL ECLATY ( NOMTE, ELREFA, FAPG, NPG1, NPOINI,
+     &                 NTERM1, NSOMM1, CSOMM1, TYMA, NBNO2, CONNX,
+     &                 MXNBN2, MXNBPG, MXNBPI, MXNBTE )
+         NBPG = NBPG+NBELGR*NPG1
+         NBPI = NBPI+NBELGR*NPOINI
+         DO 500,IPG = 1,NPG1
+           NBNO2T = NBNO2T+NBELGR*NBNO2(IPG)
 500      CONTINUE
 1     CONTINUE
 
@@ -149,17 +181,27 @@ C     3. ON CALCULE DES COORDONNEES DES SOUS-ELEMENTS
 C        ET LEUR CONNECTIVITE
 C     ---------------------------------------------------------------
 
-      NUPG=0
-      NUPOIN=0
-      NUNO2=0
+      NUPG   = 0
+      NUPOIN = 0
+      NUNO2  = 0
       DO 2,IGR = 1,NBGREL(LIGREL)
          TE = TYPELE(LIGREL,IGR)
          NBELGR = NBELEM(LIGREL,IGR)
          CALL JENUNO(JEXNUM('&CATA.TE.NOMTE',TE),NOMTE)
-         CALL ECLATY (NOMTE,FAMIL,NDIM,NPG1,
-     &                   NPOINI,NTERM1,NSOMM1,CSOMM1,
-     &                   TYMA,NBNO2,CONNX,
-     &                   MXNBN2,MXNBPG,MXNBPI,MXNBTE)
+
+         IF ( NCH .NE. 0 ) THEN
+            NUMA   = NUMAIL(IGR,1)
+            ELREFA = ZK16(JOBJ-1+NUMA)(1:8)
+            FAPG   = ZK16(JOBJ-1+NUMA)(9:16)
+         ELSE
+            FAMIL = 'RIGI'
+            CALL ECLAU1 ( NOMTE, FAMIL, ELREFA, FAPG )
+         ENDIF
+         IF ( FAPG .EQ. ' ' ) GOTO 2
+
+         CALL ECLATY ( NOMTE, ELREFA, FAPG, NPG1, NPOINI,
+     &                 NTERM1, NSOMM1, CSOMM1, TYMA, NBNO2, CONNX,
+     &                 MXNBN2, MXNBPG, MXNBPI, MXNBTE )
          IF (NPG1.EQ.0) GO TO 2
 
          DO 3,IEL = 1,NBELGR
@@ -210,6 +252,8 @@ C           DANS LE CAS DU QUADRILATERE ON CONTROLE L'APPLATISSEMENT
 3        CONTINUE
 2     CONTINUE
 
+          CALL JEDETR ( NOMOBJ )
+          CALL DETRSD('CHAMP_GD',CEL)
 
 C     3. CONSTRUCTION DES OBJETS DU MAILLAGE RESULTAT :
 C     -------------------------------------------------

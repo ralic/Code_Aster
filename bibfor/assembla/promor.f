@@ -4,7 +4,7 @@
       CHARACTER*1 TYPMAT,BASE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 31/08/2004   AUTEUR VABHHTS J.PELLET 
+C MODIF ASSEMBLA  DATE 06/09/2004   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -141,7 +141,11 @@ C----------------------------------------------------------------------
       NU = NUZ
 
       CALL DISMOI('F','NOM_MODELE',NU,'NUME_DDL',IBID,MO,IER)
-      CALL DISMOI('F','NB_SS_ACTI',MO,'MODELE',NBSS,KBID,IERD)
+      IF (MO.EQ.' ') THEN
+        NBSS=0
+      ELSE
+        CALL DISMOI('F','NB_SS_ACTI',MO,'MODELE',NBSS,KBID,IERD)
+      ENDIF
       CALL DISMOI('F','NUM_GD_SI',NU,'NUME_DDL',IGD,KBID,IER)
       CALL DISMOI('F','NOM_MAILLA',NU,'NUME_DDL',IBID,MA,IER)
 

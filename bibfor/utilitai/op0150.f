@@ -1,7 +1,7 @@
       SUBROUTINE OP0150(IER)
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 22/07/2003   AUTEUR LAVERNE J.LAVERNE 
+C MODIF UTILITAI  DATE 06/09/2004   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,7 +22,7 @@ C TOLE CRP_20 CRS_512
 C     LECTURE D'UN RESULTAT SUR FICHIER EXTERNE AU FORMAT
 C         - UNV (IDEAS)
 C         - ENSIGHT
-C         _ MED
+C         - MED
 
 C     -----------------------------------------------------------------
 
@@ -604,22 +604,23 @@ C     =============================
            IF (NOCH(1:4).EQ.'TEMP')      THEN 
                NOMGD  = 'TEMP_R  '
                TYPCHA = 'NOEU    '
-           ENDIF
-           IF (NOCH(1:4).EQ.'DEPL')      THEN 
+           ELSEIF (NOCH(1:4).EQ.'DEPL')      THEN 
                NOMGD  = 'DEPL_R  '
                TYPCHA = 'NOEU    '
-           ENDIF
-           IF (NOCH(1:9).EQ.'SIEF_ELNO') THEN 
+           ELSEIF (NOCH(1:9).EQ.'SIEF_ELNO') THEN 
                NOMGD  = 'SIEF_R'
                TYPCHA = 'ELNO    '
-           ENDIF
-           IF (NOCH(1:9).EQ.'EPSA_ELNO') THEN 
+           ELSEIF (NOCH(1:9).EQ.'EPSA_ELNO') THEN 
                NOMGD  = 'EPSA_R'
                TYPCHA = 'ELNO    '
-           ENDIF
-           IF (NOCH(1:9).EQ.'VARI_ELNO') THEN 
+           ELSEIF (NOCH(1:9).EQ.'VARI_ELNO') THEN 
                NOMGD  = 'VARI_R'
                TYPCHA = 'ELNO    '
+           ELSEIF (NOCH(1:4).EQ.'PRES')      THEN 
+               NOMGD  = 'PRES_R  '
+               TYPCHA = 'ELEM    '
+           ELSE
+               CALL UTMESS('F',NOMPRO,'CHAMP NON PREVU : '//NOCH)
            ENDIF
 
 C          ==> NOM DES COMPOSANTES VOULUES
@@ -633,7 +634,8 @@ C          ==> C'EST PAR IDENTITE DE NOMS
              IF (REP.EQ.'OUI') THEN
                NBCMPV = 0
              ELSE
-               CALL UTMESS('F',NOMPRO,'NOM_CMP_IDEM EST CURIEUX :'//REP)
+               CALL UTMESS('F',NOMPRO,
+     &                     'NOM_CMP_IDEM EST CURIEUX : '//REP)
              END IF
            ELSE
 
@@ -663,7 +665,7 @@ C          ==> C'EST PAR ASSOCIATION DE LISTE
 
            CALL CODENT(MFICH,'G',SAUX08)
            NOFIMD = 'fort.'//SAUX08
-           WRITE (IFM,*) NOMPRO,' : NOM DU FICHIER MED : ',NOFIMD
+           WRITE (IFM,*) '<',NOMPRO,'> NOM DU FICHIER MED : ',NOFIMD
 
 C                    12   345678   90123456789
            PREFIX = '&&'//NOMPRO//'.MED'
@@ -676,6 +678,11 @@ C     --------------------------------------------
              TYPENT  = EDNOEU
              TYPGOM  = TYPNOE
              CALL MDCHIN(NOFIMD,NOCHMD,TYPENT,TYPGOM,PREFIX,NPAS,IRET)
+             IF(NPAS.EQ.0)THEN
+               CALL UTMESS('A',NOMPRO,
+     &                     'CHAMP MED INTROUVABLE : '//NOCHMD)
+               GOTO 72
+             ENDIF
              CALL JEVEUO(PREFIX//'.INST','L',IPAS)
              CALL JEVEUO(PREFIX//'.NUME','L',INUM)
 C

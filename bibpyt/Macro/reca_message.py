@@ -1,4 +1,4 @@
-#@ MODIF reca_message Macro  DATE 13/01/2003   AUTEUR PABHHHH N.TARDIEU 
+#@ MODIF reca_message Macro  DATE 06/09/2004   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,6 +20,9 @@
 import os,Numeric
 
 #===========================================================================================
+
+# -*- coding: iso-8859-1 -*-
+
 # AFFICHAGE DES MESSAGES
 
 class Message :

@@ -1,4 +1,4 @@
-#@ MODIF N_SIMP Noyau  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
+#@ MODIF N_SIMP Noyau  DATE 06/09/2004   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,6 +18,9 @@
 #                                                                       
 #                                                                       
 # ======================================================================
+
+# -*- coding: iso-8859-1 -*-
+
 """ Ce module contient la classe de definition SIMP
     qui permet de spécifier les caractéristiques des mots clés simples
 """

@@ -1,4 +1,4 @@
-#@ MODIF courbes Utilitai  DATE 30/06/2004   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF courbes Utilitai  DATE 06/09/2004   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -130,3 +130,6 @@ def COURBES(listcourb,titre=' ',soustitre=' ',legx=' ',legy=' ',bornex=None,born
   k=0
 
 #===========================================
+
+# -*- coding: iso-8859-1 -*-
+

@@ -1,4 +1,4 @@
-#@ MODIF genpy Execution  DATE 23/08/2004   AUTEUR DURAND C.DURAND 
+#@ MODIF genpy Execution  DATE 06/09/2004   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,6 +18,9 @@
 #                                                                       
 #                                                                       
 # ======================================================================
+
+# -*- coding: iso-8859-1 -*-
+
 """
    Ce module contient la classe VISITEUR genpy
    Cette classe parcourt l'arborescence d'une ETAPE et produit

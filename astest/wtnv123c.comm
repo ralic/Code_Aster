@@ -1,4 +1,4 @@
-# MODIF  DATE 17/08/2004   AUTEUR JOUMANA J.EL-GHARIB 
+# MODIF  DATE 06/09/2004   AUTEUR JOUMANA J.EL-GHARIB 
 # RESPONSABLE JOUMANA J.EL-GHARIB
 # TITRE ESSAI TRIAXIAL A SUCCION FIXEE AVEC LE MODELE DE BARCELONE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -682,7 +682,8 @@ TEST_RESU(RESU=(
                        NOM_CMP = 'V2',     
                        INST=6.,  
                        PRECISION = 1.E-5,   
-                       VALE = 0.,        
+                       VALE = 0.,
+                       CRITERE = 'ABSOLU',        
                      ),
 
                 _F(    RESULTAT = U1,    
@@ -703,6 +704,7 @@ TEST_RESU(RESU=(
                        INST=34.,  
                        PRECISION = 1.E-5,   
                        VALE = 0.,        
+                       CRITERE = 'ABSOLU',        
                      ),
 
                 _F(    RESULTAT = U1,    
@@ -713,6 +715,7 @@ TEST_RESU(RESU=(
                        INST=46.,  
                        PRECISION = 1.E-5,   
                        VALE = 0.,        
+                       CRITERE = 'ABSOLU',        
                      ),
 
                 _F(    RESULTAT = U1,    
@@ -733,6 +736,7 @@ TEST_RESU(RESU=(
                        INST=6.,  
                        PRECISION = 1.E-5,   
                        VALE = 0.,        
+                       CRITERE = 'ABSOLU',        
                      ),
 
                 _F(    RESULTAT = U1,    
@@ -743,6 +747,7 @@ TEST_RESU(RESU=(
                        INST=20.,  
                        PRECISION = 1.E-5,   
                        VALE = 0.,        
+                       CRITERE = 'ABSOLU',        
                      ),
                      
                 _F(    RESULTAT = U1,    
@@ -753,6 +758,7 @@ TEST_RESU(RESU=(
                        INST=34.,  
                        PRECISION = 1.E-5,   
                        VALE = 0.,        
+                       CRITERE = 'ABSOLU',        
                      ),
 
                 _F(    RESULTAT = U1,    
@@ -763,6 +769,7 @@ TEST_RESU(RESU=(
                        INST=46.,  
                        PRECISION = 1.E-5,   
                        VALE = 0.,        
+                       CRITERE = 'ABSOLU',        
                      ),
 
                 _F(    RESULTAT = U1,    
@@ -773,6 +780,7 @@ TEST_RESU(RESU=(
                        INST=60.,  
                        PRECISION = 1.E-5,   
                        VALE = 0.,        
+                       CRITERE = 'ABSOLU',        
                      ),
 
                      ),)

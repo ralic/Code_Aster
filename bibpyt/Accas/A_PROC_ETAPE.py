@@ -1,4 +1,4 @@
-#@ MODIF A_PROC_ETAPE Accas  DATE 27/03/2002   AUTEUR DURAND C.DURAND 
+#@ MODIF A_PROC_ETAPE Accas  DATE 06/09/2004   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,6 +18,9 @@
 #                                                                       
 #                                                                       
 # ======================================================================
+
+# -*- coding: iso-8859-1 -*-
+
 from Noyau import N_PROC_ETAPE
 from Validation import V_PROC_ETAPE
 from Build import B_PROC_ETAPE

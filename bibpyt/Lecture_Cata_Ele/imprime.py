@@ -1,4 +1,4 @@
-#@ MODIF imprime Lecture_Cata_Ele  DATE 08/09/2003   AUTEUR VABHHTS J.PELLET 
+#@ MODIF imprime Lecture_Cata_Ele  DATE 06/09/2004   AUTEUR MCOURTOI M.COURTOIS 
 # RESPONSABLE VABHHTS J.PELLET
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -33,6 +33,9 @@ ERR=ut.ERR
 
 def impr_cata(capy,nomfic,format,seq='oui'):
 #==========================================
+
+# -*- coding: iso-8859-1 -*-
+
 #   imprimer un catalogue python (capy) sur un fichier à un format donné
 #       seq='non' permet de demander le "split" en autant de fichiers qu'il y a de catalogues
 
