@@ -1,7 +1,7 @@
       SUBROUTINE LCJOBA (NDIM, TYPMOD, IMATE, CRIT, SU,
-     &                   DEPS, VIM,OPTION, SIG, VIP,  DSIDEP)
+     &                    VIM,OPTION, SIG, VIP,  DSIDEP)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/11/2004   AUTEUR NDOMING N.DOMINGUEZ 
+C MODIF ALGORITH  DATE 29/11/2004   AUTEUR KBBHHDB G.DEBRUYNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -23,7 +23,7 @@ C ----------------------------------------------------------------------
       CHARACTER*8        TYPMOD(2)
       CHARACTER*16       OPTION
       INTEGER            NDIM, IMATE
-      REAL*8             SU(2), EPSM(4), DEPS(4), VIM(6)
+      REAL*8             SU(2),  VIM(6)
       REAL*8             SIG(2), VIP(6), DSIDEP(2,2),CRIT(3)
 C ----------------------------------------------------------------------
 C     LOI DE COMPORTEMENT ENDOMMAGEABLE DE LA LIAISON ACIER-BETON :
@@ -34,15 +34,14 @@ C IN :
 C     NDIM    : DIMENSION DE L'ESPACE
 C     TYPMOD  : TYPE DE MODELISATION
 C     IMATE   : NATURE DU MATERIAU
-C     EPSM    : DEFORMATION EN T-
-C     DEPS    : INCREMENT DE DEFORMATION
+C     SU      : SAUT DE DEFORMATION
 C     VIM     : VARIABLES INTERNES EN T-
 C     OPTION  : OPTION DEMANDEE
 C                 RIGI_MECA_TANG ->     DSIDEP
 C                 FULL_MECA      -> SIG DSIDEP VIP
 C                 RAPH_MECA      -> SIG        VIP
 C OUT :
-C     SIG     : CONTRAINTE
+C     SIG     : CONTRAINTE SIG(1)= = SIG_N, SIG(2)=SIG_T
 C     VIP     : VARIABLES INTERNES
 C       1   -> VALEUR DE L'ENDOMMAGEMENT DIRECTION NORMALE
 C       2   -> VALEUR DE L'ENDOMMAGEMENT DIRECTION TANGENTIELLE
@@ -54,6 +53,7 @@ C              PAR FROTTEMENT DES FISSURES
 C     DSIDEP  : MATRICE TANGENTE
 C
 C ON A BESOIN DE 
+C   HPEN   = PENETRATION 
 C   GAMD0  = DEFORMATION TANGENTIELLE SEUIL ELASTIQUE REGION 1
 C   AD1    = CONSTANTE A D'ENDOMMAGEMENT TANGENTIEL REGION 1
 C   BD1    = CONSTANTE B D'ENDOMMAGEMENT TANGENTIEL REGION 1
@@ -70,8 +70,8 @@ C ----------------------------------------------------------------------
       LOGICAL     RIGI, RESI, CONV, TRAC, ADHER
       CHARACTER*2 CODRET(14)
       CHARACTER*8 NOMRES(14)
-      INTEGER     I,J,K,L,ITER,ITEMAX,NDIMSI
-      REAL*8      EPS(4),EPSE(4),E,GTT,HPEN
+      INTEGER     I,J,K,L,ITER,ITEMAX
+      REAL*8      EPS(2),E,GTT,HPEN
       REAL*8      BDN, ADN, EPSTR0
       REAL*8      BD1, AD1, GAMD0,BD2, AD2, GAMD2
       REAL*8      FC,FA,VIFROT,SIGNO,I1
@@ -92,7 +92,6 @@ C -- OPTION ET MODELISATION
       ITEMAX   = NINT(CRIT(1))
       ADHER  = .TRUE.
       EPSCO  = 1.0D0
-      NDIMSI = 2*NDIM
       D0N    = 0.0D0
       D0T    = 0.0D0
       DF0T   = 0.0D0
@@ -158,37 +157,16 @@ C--------------------------------------------------------
 
 C  - TRANSFORMATION DES SAUTS EN DEFORMATIONS
 
-      CALL R8INIR(4, 0.D0, EPSM,1)
+C      DEFORMATIONS : EPS(1) = EPS_N , EPS(2) = EPS_T
+      CALL R8INIR(2, 0.D0, EPS,1)
 
-      EPSM(2) = SU(1)/HPEN
-      EPSM(4) = SU(2)/HPEN
-
-C  -  MISE A JOUR DE LA DEFORMATION TOTALE
-
-      CALL R8INIR(4, 0.D0, EPS,1)
-      CALL R8INIR(4, 0.D0, DEPS,1)
-      IF (RESI) THEN
-        DO  10 K = 2, NDIMSI
-          EPS(K) = EPSM(K) + DEPS(K)
-10      CONTINUE        
-      ELSE
-        DO 20 K=2,NDIMSI
-          EPS(K)=EPSM(K)
-20      CONTINUE
-      ENDIF  
-
-C    CALCUL DE LA DEFORMATION ELASTIQUE (LA SEULE QUI CONTRIBUE 
-C    A FAIRE EVOLUER L'ENDOMMAGEMENT)
-
-      CALL R8INIR(4, 0.D0, EPSE,1)
-      DO 30 K=1,NDIMSI
-        EPSE(K) = EPS(K)
-30    CONTINUE 
+      EPS(1) = SU(1)/HPEN
+      EPS(2) = SU(2)/HPEN
 
 C    DETERMINATION DE L'OUVERTURE OU FERMETURE DE L'ELEMENT
-      IF (EPSE(2).GT.0.D0) THEN
+      IF (EPS(1).GT.0.D0) THEN
           TRAC  = .TRUE.
-        IF (EPSE(2).GT.EPSTR0) ADHER = .FALSE.
+        IF (EPS(1).GT.EPSTR0) ADHER = .FALSE.
       ELSE
           TRAC  = .FALSE.
       ENDIF
@@ -205,7 +183,7 @@ C    MATRICE DE COMPORTEMENT
         DSIDEP(2,2)=GTT                
 
 C    CALCUL DU CONFINEMENT 
-        SIGNO = DSIDEP(1,1)*EPSE(2)
+        SIGNO = DSIDEP(1,1)*EPS(1)
         I1 = SIGNO/3
         CONFI = FC*I1
         IF(CONFI .GT. 0.D0) CONFI=0.D0
@@ -221,7 +199,7 @@ C    SEUIL D'ADHERENCE NORMALE PARFAITE
           Y0N = 0.5D0*DSIDEP(1,1)*(EPSCO**2)
         ENDIF
         
-        YIN = 0.5D0*DSIDEP(1,1)*(EPSE(2)**2)
+        YIN = 0.5D0*DSIDEP(1,1)*(EPS(1)**2)
 
 C    ENDOMMAGEMENT DANS LA DIRECTION NORMALE
 
@@ -248,7 +226,7 @@ C      SEUILS D'ENDOMMAGEMENT DE LA LIAISON DANS LA
 C      DIRECTION TANGENTIELLE 
         
         Y0T = 0.5D0*DSIDEP(2,2)*(GAMD0**2)
-        YIT = 0.5D0*DSIDEP(2,2)*(EPSE(4)**2)
+        YIT = 0.5D0*DSIDEP(2,2)*(EPS(2)**2)
         Y2T = 0.5D0*DSIDEP(2,2)*(GAMD2**2)
 
 C      CRITERES D'ENDOMMAGEMENT
@@ -296,13 +274,13 @@ C----------------------------------------------------------------
 C         CALCUL DE LA CONTRAINTE PAR FROTTEMENT DES FISSURES
 
 
-           TAOFRO = DSIDEP(2,2)*DFT*(EPSE(4)-GAMFRO)
+           TAOFRO = DSIDEP(2,2)*DFT*(EPS(2)-GAMFRO)
            FINI = ABS(TAOFRO-X0) + CONFI       
 
            IF (FINI.GT.0.D0) THEN
               CONV = .FALSE.
               DO 40 K= 1,ITEMAX 
-                TAOFRO = DSIDEP(2,2)*DFT*(EPSE(4)-GAMFRO)
+                TAOFRO = DSIDEP(2,2)*DFT*(EPS(2)-GAMFRO)
                 IF ((TAOFRO-X0).GE.0.D0) THEN
                    XMUL = +1.D0
                 ELSE
@@ -344,9 +322,9 @@ C----------------------------------------------------------------
 
         CALL R8INIR(2, 0.D0, SIG,1)
 
-        SIG(1)=DSIDEP(1,1)*(1.D0-DFN)*EPSE(2)
-        SIG(2)=DSIDEP(2,2)*(1.D0-DFT)*EPSE(4)
-        TAOFRO=DSIDEP(2,2)*DFT*(EPSE(4)-GAMFRO)
+        SIG(1)=DSIDEP(1,1)*(1.D0-DFN)*EPS(1)
+        SIG(2)=DSIDEP(2,2)*(1.D0-DFT)*EPS(2)
+        TAOFRO=DSIDEP(2,2)*DFT*(EPS(2)-GAMFRO)
         IF(TRAC .AND. (.NOT.ADHER)) TAOFRO=0.D0
         SIG(2)=SIG(2)+TAOFRO
       

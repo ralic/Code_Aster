@@ -1,4 +1,4 @@
-# MODIF  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 29/11/2004   AUTEUR KBBHHDB G.DEBRUYNE 
 # TITRE REPONSE A DES CHEMINS MIXTES DE SATURATION - CONSOLIDATION EN 3D
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -584,7 +584,7 @@ TEST_RESU(RESU=(
                        NOM_CMP = 'DZ',     
                        INST=12.,  
                        PRECISION = (1.5E-2, 1.E-6),  
-                       VALE = -2.9085E-02,        
+                       VALE = -4.0542801917093E-02,        
                      ),
 # ETAT PLASTIQUE MECANIQUE
                 _F(    RESULTAT = U1,    
@@ -622,7 +622,7 @@ TEST_RESU(RESU=(
                        NOM_CMP = 'DZ',     
                        INST=12.,  
                        PRECISION = (1.5E-2, 1.E-6),  
-                       VALE = -3.2689E-02,        
+                       VALE = -4.0542832445573E-02,        
                      ),
 # ETAT PLASTIQUE MECANIQUE
                 _F(    RESULTAT = U3,    
@@ -723,7 +723,7 @@ TEST_RESU(RESU=(
                        NOM_CMP = 'DZ',     
                        INST=12.,  
                        PRECISION = (1.5E-2,1.E-6),   
-                       VALE = -1.4766E-02,        
+                       VALE = -2.0906762986855E-02,        
                      ),
 # ETAT PLASTIQUE MECANIQUE
                 _F(    RESULTAT = U4,    
@@ -761,7 +761,7 @@ TEST_RESU(RESU=(
                        NOM_CMP = 'DZ',     
                        INST=24.,  
                        PRECISION = (1.5E-2,1.E-6),   
-                       VALE = -4.0334E-02,        
+                       VALE = -4.9815170299811E-02,        
                      ),
 # ETAT PLASTIQUE MECANIQUE
                 _F(    RESULTAT = U1,    

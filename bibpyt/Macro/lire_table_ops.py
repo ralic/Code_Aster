@@ -1,4 +1,4 @@
-#@ MODIF lire_table_ops Macro  DATE 14/09/2004   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF lire_table_ops Macro  DATE 30/11/2004   AUTEUR MCOURTOI M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,26 +18,21 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 
-
-
 import string
 
-from Utilitai.transpose import transpose
-
-######################################################################
-####  méthode de construction du dictionnaire
-####  PARAMETRE / LISTE DE VALEURS
-######################################################################
+# ------------------------------------------------------------------------------
 def lecture_table(texte,nume,separ):
+  """Méthode de construction du dictionnaire PARAMETRE / LISTE DE VALEURS
+  format ASTER
+  Les lignes contenant autre chose que des séquences de nombres
+  réels et de séparateurs sont considérées comme délimitant deux
+  fonctions différentes. Cette situation correspond à l exception
+  ValueError levée par le map de float. Le deuxieme indice de
+  VALE_PARA et VALE_RESU est l indice permettant de pointer sur la
+  fonction voulue, au sens de ce découpage.
+  """
 
-  # format ASTER
-  # Les lignes contenant autre chose que des séquences de nombres
-  # réels et de séparateurs sont considérées comme délimitant deux
-  # fonctions différentes. Cette situation correspond à l exception
-  # ValueError levée par le map de float. Le deuxieme indice de
-  # VALE_PARA et VALE_RESU est l indice permettant de pointer sur la
-  # fonction voulue, au sens de ce découpage.
-
+  from Utilitai.transpose import transpose
   if string.strip(separ)=='' : separ=None
   tab_lue={}
   nume_lign=[]
@@ -115,11 +110,12 @@ def lecture_table(texte,nume,separ):
 
   return 0,None,titre_tab,list_para,tab_lue
 
-######################################################################
-####  méthode corps de la macro LIRE_TABLE
-######################################################################
+
+# ------------------------------------------------------------------------------
 def lire_table_ops(self,UNITE,FORMAT,NUME_TABLE,SEPARATEUR,
                         TYPE_TABLE,PARA,TITRE,**args):   
+  """Méthode corps de la macro LIRE_TABLE
+  """
   from Accas import _F
   import os
 

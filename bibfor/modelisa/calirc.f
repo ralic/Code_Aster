@@ -3,7 +3,7 @@
       CHARACTER*(*) CHARGZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 16/02/2004   AUTEUR MJBHHPE J.L.FLEJOU 
+C MODIF MODELISA  DATE 25/11/2004   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -138,6 +138,15 @@ C ----------------------------------------------------------------------
       CORRES = '&&CALIRC.CORRES'
 
       DO 240 IOCC = 1,NOCC
+
+C         IL FAUT REMETTRE à ZERO CES 2 OBJETS ENTRE 2 OCCURENCES :
+          DO 241, KK=1,IDMAX
+            ZI(IDIMEN-1+KK)=0
+ 241      CONTINUE
+          DO 242, KK=1,3*IDMAX
+            ZR(IDIREC-1+KK)=0.D0
+ 242      CONTINUE
+
 C
         DNOR = .FALSE.
         IF (TYPLIA.EQ.'DEPL') THEN

@@ -1,4 +1,4 @@
-#@ MODIF Graph Utilitai  DATE 22/11/2004   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF Graph Utilitai  DATE 30/11/2004   AUTEUR MCOURTOI M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -21,6 +21,7 @@
 # RESPONSABLE MCOURTOI M.COURTOIS
 
 import sys
+import os
 import os.path
 import string
 import types
@@ -37,13 +38,15 @@ except ImportError:
 
 try:
    from Utilitai.Utmess import UTMESS
-   if not sys.modules.has_key('Table'):
-      from Utilitai import Table
 except ImportError:
    def UTMESS(code,sprg,texte):
       fmt='\n <%s> <%s> %s\n\n'
       print fmt % (code,sprg,texte)
-   if not sys.modules.has_key('Table'):
+
+if not sys.modules.has_key('Table'):
+   try:
+      from Utilitai import Table
+   except ImportError:
       import Table
    
 
@@ -815,7 +818,7 @@ class TraceXmgrace(TraceGraph):
             it=it+1
             fich.write('@target g0.s'+str(it)+'\n')
             fich.write('@type xy'+'\n')
-            listX, listY = Tri(dCi['Tri'], lx=dCi['Abs'], ly=dCi['Ord'][k])
+            listX, listY = Tri(g.Tri, lx=dCi['Abs'], ly=dCi['Ord'][k])
             for j in range(dCi['NbPts']):
                svX=self.DicForm['formR'] % listX[j]
                svY=self.DicForm['formR'] % listY[j]
@@ -836,10 +839,16 @@ class TraceXmgrace(TraceGraph):
          # ligne de commande
          if pilo=='X11':
             lcmde=xmgr+' '+self.NomFich[0]
+            if not os.environ.has_key('DISPLAY') or os.environ['DISPLAY']=='':
+               os.environ['DISPLAY']=':0.0'
+               UTMESS('A','TraceXmgrace','Variable DISPLAY non définie')
+            UTMESS('I','TraceXmgrace','on fixe le DISPLAY à %s' % os.environ['DISPLAY'])
          else:
-            lcmde=xmgr+' -hardcopy -hdevice '+pilo+' -printfile '+nfhard+' '+self.NomFich[0]
+            if os.path.exists(os.path.join(aster.repout(),'gracebat')):
+               xmgr=os.path.join(aster.repout(),'gracebat')
+            lcmde=xmgr+' -hdevice '+pilo+' -hardcopy -printfile '+nfhard+' '+self.NomFich[0]
          # appel xmgrace
-         print ' <I> Lancement de : '+lcmde
+         UTMESS('I','TraceXmgrace','Lancement de : '+lcmde)
          if not os.path.exists(xmgr):
             UTMESS('S','TraceXmgrace','Fichier inexistant : '+xmgr)
          iret=os.system(lcmde)
@@ -1013,6 +1022,7 @@ def ValCycl(val,vmin,vmax,vdef):
       return v
    else:
       return (((v-vmin) % (vmax+1-vmin))+vmin)
+
 # ------------------------------------------------------------------------------
 def Tri(tri, lx, ly):
    """Retourne les listes triées selon la valeur de tri ('X','Y','XY','YX').
@@ -1027,4 +1037,22 @@ def Tri(tri, lx, ly):
          icol=dNumCol[tri[-i]]
          tab = Numeric.take(tab, Numeric.argsort(tab[:,icol]))
    return [ tab[:,0].tolist(), tab[:,1].tolist() ]
+
+# ------------------------------------------------------------------------------
+def AjoutParaCourbe(dCourbe, args):
+   """Ajoute les arguments fournis par l'utilisateur (args) dans le dictionnaire
+   décrivant la courbe (dCourbe).
+   """
+   # correspondance : mot-clé Aster / clé du dico de l'objet Graph
+   keys={
+      'LEGENDE'         : 'Leg',
+      'STYLE'           : 'Sty',
+      'COULEUR'         : 'Coul',
+      'MARQUEUR'        : 'Marq',
+      'FREQ_MARQUEUR'   : 'FreqM',
+      'TRI'             : 'Tri',
+   }
+   for mc, key in keys.items():
+      if args.has_key(mc):
+         dCourbe[key]=args[mc]
 

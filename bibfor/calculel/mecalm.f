@@ -6,7 +6,7 @@
 C
 C TOLE CRP_20
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 15/11/2004   AUTEUR ROMEO R.FERNANDES 
+C MODIF CALCULEL  DATE 29/11/2004   AUTEUR BOYERE E.BOYERE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -207,11 +207,10 @@ C=======================================================================
         IF (CONCEP.EQ.'MODE_MECA' .OR. CONCEP.EQ.'DYNA_TRANS' .OR.
      &      CONCEP.EQ.'MODE_ACOU' .OR. CONCEP.EQ.'DYNA_HARMO') THEN
           REFE = RESUCO
+          CALL RSEXCH(RESUCO,'DEPL',1,CHDEPL,IRET)
+          CALL JELIRA(CHDEPL(1:19)//'.VALE','LONMAX',NEQ,K8B)
           CALL JEVEUO(REFE//'.REFE','L',LREFE)
           MASSE = ZK24(LREFE) (1:19)
-          CALL MTDSCR(MASSE)
-          CALL JEVEUO(MASSE(1:19)//'.&INT','E',LMAT)
-          NEQ = ZI(LMAT+2)
           CALL DISMOI('I','SUR_OPTION',MASSE,'MATR_ASSE',IBID,SOP,IE)
           IF (IE.EQ.0) THEN
             IF (SOP(1:14).EQ.'MASS_MECA_DIAG') INUME = 0
@@ -219,10 +218,11 @@ C=======================================================================
           CHDYNR = '&&'//NOMPRO//'.M.GAMMA'
           IF (CONCEP.EQ.'MODE_MECA' .OR. CONCEP.EQ.'DYNA_TRANS' .OR.
      &        CONCEP.EQ.'MODE_ACOU') THEN
-            CALL VTCREM(CHDYNR,MASSE,'V','R')
+            CALL COPICH('V',CHDEPL(1:19),CHDYNR)
           ELSE
-            CALL VTCREM(CHDYNR,MASSE,'V','C')
+            CALL COPICH('V',CHDEPL(1:19),CHDYNR)
           END IF
+          CALL JELIRA(CHDYNR//'.VALE','LONMAX',NEQ,K8B)
           CALL JEVEUO(CHDYNR//'.VALE','E',LVALE)
         END IF
 C --- VERIFIE L'UNICITE DE LA CHARGE REPARTIE

@@ -1,4 +1,4 @@
-#@ MODIF lire_fonction_ops Macro  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
+#@ MODIF lire_fonction_ops Macro  DATE 30/11/2004   AUTEUR MCOURTOI M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -20,21 +20,19 @@
 
 import string,os,Numeric
 
-from Utilitai.transpose import transpose
-
-######################################################################
-####  méthode de construction du VALE pour le format libre
-######################################################################
+# ------------------------------------------------------------------------------
 def m_format_libre(texte,INDIC_PARA,INDIC_RESU,SEPAR):
+  """Méthode de construction du VALE pour le format libre
+  format LIBRE
+  Les lignes contenant autre chose que des séquences de nombres
+  réels et de séparateurs sont considérées comme délimitant deux
+  fonctions différentes. Cette situation correspond à l exception
+  ValueError levée par le map de float. Le deuxieme indice de
+  INDIC_PARA et INDIC_RESU est l indice permettant de pointer sur la
+  fonction voulue, au sens de ce découpage.
+  """
 
-  # format LIBRE
-  # Les lignes contenant autre chose que des séquences de nombres
-  # réels et de séparateurs sont considérées comme délimitant deux
-  # fonctions différentes. Cette situation correspond à l exception
-  # ValueError levée par le map de float. Le deuxieme indice de
-  # INDIC_PARA et INDIC_RESU est l indice permettant de pointer sur la
-  # fonction voulue, au sens de ce découpage.
-
+  from Utilitai.transpose import transpose
   l_fonc=[]
   fonc  =[]
   ier   =0
@@ -92,11 +90,10 @@ def m_format_libre(texte,INDIC_PARA,INDIC_RESU,SEPAR):
   liste_vale=reduce(add,liste_vale)
   return ier,'',liste_vale
 
-######################################################################
-####  recherche d une liste simple
-######################################################################
+# ------------------------------------------------------------------------------
 def liste_simple(texte,INDIC_PARA,SEPAR):
-
+  """recherche d'une liste simple
+  """
   # format LIBRE
   # liste simple
 
@@ -136,12 +133,12 @@ def liste_simple(texte,INDIC_PARA,SEPAR):
   vale_1=l_fonc[ind_para[0]][:,ind_para[1]]
   return ier,'',vale_1.tolist()
 
-######################################################################
-####  méthode corps de la macro
-######################################################################
+# ------------------------------------------------------------------------------
 def lire_fonction_ops(self,FORMAT,TYPE,SEPAR,INDIC_PARA,UNITE,
                       NOM_PARA,NOM_RESU,INTERPOL,PROL_DROITE,
                       PROL_GAUCHE,VERIF,INFO,TITRE,**args):
+  """Méthode corps de la macro
+  """
   ier=0
 
   from Accas import _F

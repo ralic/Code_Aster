@@ -1,4 +1,4 @@
-#@ MODIF partition Utilitai  DATE 23/11/2004   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF partition Utilitai  DATE 29/11/2004   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -23,10 +23,8 @@ import aster
 import string, os, time, sys, UserList, types
 import Numeric as N
 
-
 from Accas import _F
 from Noyau.N_utils import AsType
-
 
 # ------------------------------------------------------------------ #
 
@@ -45,23 +43,6 @@ def enleve_doublons_liste(liste):
   liste2=N.take(liste,liste_indice)                   # [1, 2, 3, 4, 5]
   return liste2
 
-
-# ------------------------------------------------------------------ #
-
-def elimine_doublons_liste(liste):
-  """ A partir d une liste qui peut contenir des doublons, on renvoie une liste 
-      dont les valeurs en double sont completement éliminées
-  """
-
-  """ Au cas ou ca ne serait pas deja un vecteur numpy """
-  liste=N.sort(N.array(liste,copy=0))
-  liste_diff=liste[1:]-liste[:-1]
-  liste_temp=N.nonzero(liste_diff)
-  liste_indice=N.zeros(liste_temp.shape[0]+1)
-  liste_indice[0]=0
-  liste_indice[1:]=liste_temp+1
-  liste2=N.take(liste,liste_indice)
-  return liste2
 
 # ============================================================================ #
 
@@ -492,7 +473,7 @@ class PARTITION:
     self.liste_sd = self.Lecture_fichier_sdd(self.fichier_out, self.liste_mailles)
 
     # Traitement des mailles de bords (on les reinjecte dans un SD)
-    self.Affectation_Mailles_de_bords(_LST_BD)
+    self.Affectation_Mailles_de_bords(_LST_BD, _DIM)
 
     t1 = time.clock()
     print "--- FIN PARTITIONNEMENT : ", t1 - self.t00
@@ -759,31 +740,31 @@ class PARTITION:
     # _LST_OK :   Mailles de dim N-i qui ne sont pas un bord des mailles de dim N
     # _LST_BD :   Mailles de dim N-i qui sont un bord
     #
-    if self.OPTIONS['INFO']>=5: print '\nElimination des mailles de bord de DIM', _DIM - 1
+    if self.OPTIONS['INFO']>=5: print '\n\nElimination des mailles de bord de DIM', _DIM - 1
 
     _LST4 = _D_DIM_MAILLES[ _DIM - 1 ]
     _LST_IND = N.arange( len(_LST4) ) + 1  # on ajoute 1 pour eviter le premier 0 dans les test nonzero plus bas
 
-    if self.OPTIONS['INFO']>=5: print 'Mailles impactées=',_LST4
+    if self.OPTIONS['INFO']>=5: print '  Mailles concernées=',_LST4
 
     i=0
     for m in _LST4:
-      if self.OPTIONS['INFO']>=5: print '\nMaille de dim N-1:',m, ' Aster:',string.strip(_LST_MAI[m]), ' TMA:',self.MAILLAGE_Python.tm[m], ' CO:',self.MAILLAGE_Python.co[m], '(noeuds de cette maille)'
+      if self.OPTIONS['INFO']>=5: print '\n  Maille de dim N-1:',m, ' Aster:',string.strip(_LST_MAI[m]), ' TMA:',self.MAILLAGE_Python.tm[m], ' CO:',self.MAILLAGE_Python.co[m], '(noeuds de cette maille)'
       nb = maille2nb[ self.MAILLAGE_Python.tm[m] ]
       ll = self.MAILLAGE_Python.co[m][0:nb]
       ll = N.sort(ll)
       ll = ll.tolist()
       ll = tuple(ll)
-      if self.OPTIONS['INFO']>=5: print 'Bord (lineaire)', ll, nb
+      if self.OPTIONS['INFO']>=5: print '  Bord (lineaire)', ll, nb
 
       try:
-        if self.OPTIONS['INFO']>=5: print 'CIA=', self.MAILLAGE_Python.cia[ ll ], '(mailles de dim N qui ont cette maille pour bord)'
+        if self.OPTIONS['INFO']>=5: print '  CIA=', self.MAILLAGE_Python.cia[ ll ], '(mailles de dim N qui ont cette maille pour bord)'
         _tmp=[]
         for maille in self.MAILLAGE_Python.cia[ ll ]:
-          if self.OPTIONS['INFO']>=5: print 'Maille N:', maille, 'Aster:', string.strip(_LST_MAI[maille]), ' TMA:', self.MAILLAGE_Python.tm[maille]
+          if self.OPTIONS['INFO']>=5: print '  Maille N:', maille, 'Aster:', string.strip(_LST_MAI[maille]), ' TMA:', self.MAILLAGE_Python.tm[maille]
 #        self.liste_mailles_bord.append(m)
       except:
-        if self.OPTIONS['INFO']>=5: print 'Maille non-bord'
+        if self.OPTIONS['INFO']>=5: print '  Maille non-bord'
         _LST_IND[i] = 0
 
       i+=1
@@ -796,48 +777,56 @@ class PARTITION:
     _LST_OK = N.nonzero(_LST_OK)
     _LST_OK = N.take(_LST4,_LST_OK)
 
-    if self.OPTIONS['INFO']>=5: print '\nListe Maille de bords=',_LST_BD
-    if self.OPTIONS['INFO']>=5: print 'Liste Maille non-bords=',_LST_OK
+    if self.OPTIONS['INFO']>=5: print '\nListe Maille de bords de DIM', _DIM - 1,' :',_LST_BD
+    if self.OPTIONS['INFO']>=5: print 'Liste Maille de DIM', _DIM - 1,'qui ne sont pas des bords :',_LST_OK
 
     print "--- FIN Maille de bords de DIM",_DIM - 1, " : ", time.clock() - t0
     t0 = time.clock()
 
 
     # On cherche à marier les mailles de dimension N-2, N-3
-    # Probablement pas optimal car on utilise la connectivité !
-
-#     if self.OPTIONS['INFO']>=5: 
-#       for k in self.MAILLAGE_Python.cia.keys():
-#         print 'cia:',k, '     ', self.MAILLAGE_Python.cia[k]
-#       for k in self.MAILLAGE_Python.ca.keys():
-#         print 'ca: ',k, '     ', self.MAILLAGE_Python.ca[k]
+    # Peut etre lent car on utilise la connectivité ! Mais pour le moment on a rien d'autre.
 
     _LST_BD0 = []
     _LST_OK0 = []
+    _D_BD = {}
     for d in range(_DIM-1):
       _LST4 = _D_DIM_MAILLES[ d ]
-      if self.OPTIONS['INFO']>=5: print '\nElimination des mailles de bord de DIM', d
-      if self.OPTIONS['INFO']>=5: print 'Mailles impactées=',_LST4
+      if self.OPTIONS['INFO']>=5: print '\n\nElimination des mailles de bord de DIM', d
+      if self.OPTIONS['INFO']>=5: print '  Mailles concernées=',_LST4
       for mai in _LST4:
-        if self.OPTIONS['INFO']>=5: print '\nmaille:', mai, 'co:', self.MAILLAGE_Python.co[mai]
-        _tmp = self.MAILLAGE_Python.co[mai]
+        if self.OPTIONS['INFO']>=5: print '\n  Maille:', mai, ' Aster:',string.strip(_LST_MAI[mai]), ' TMA:',self.MAILLAGE_Python.tm[mai], ' CO:',self.MAILLAGE_Python.co[mai], '(noeuds de cette maille)'
+
+        nb = maille2nb[ self.MAILLAGE_Python.tm[mai] ]
+        ll = self.MAILLAGE_Python.co[mai][0:nb]
+        ll = N.sort(ll)
+        ll = ll.tolist()
+        _tmp = tuple(ll)
+#        _tmp = self.MAILLAGE_Python.co[mai]
+
+        if self.OPTIONS['INFO']>=5: print '  Bord (lineaire):', _tmp, nb
+
         ok=0
         for arete in self.MAILLAGE_Python.cia:
           _nb=0
           for noe in _tmp:
             if noe in arete: _nb+=1
           if _nb == len(_tmp):
-            try:
-              if self.OPTIONS['INFO']>=5: print 'OK:', _tmp, arete, self.MAILLAGE_Python.ca[arete]
-            except: pass
+            if self.OPTIONS['INFO']>=5: print '  Maille N+i:', self.MAILLAGE_Python.cia[arete], '- Arete:', arete
             _LST_BD0.append( mai )
             ok=1
+#             if not _D_BD.has_key( mai ): _D_BD[mai] = []
+#             _D_BD[mai].append( self.MAILLAGE_Python.cia[arete] )
             break
         if ok == 0:
           _LST_OK0.append( mai )
 
-      if self.OPTIONS['INFO']>=5: print '\nListe Maille de bords=',_LST_BD0
-      if self.OPTIONS['INFO']>=5: print 'Liste Maille non-bords=',_LST_OK0,'\n'
+#        print 'Mai:',mai, '_D_BD[mai]=',_D_BD[mai]
+
+
+      if self.OPTIONS['INFO']>=5: print '\nListe Maille de bords de DIM', d,' :',_LST_BD0
+      if self.OPTIONS['INFO']>=5: print 'Liste Maille de DIM', d,'qui ne sont pas des bords :',_LST_OK0
+
 
       print '--- FIN Maille de bords de DIM', d, ' :',time.clock() - t0
       t0 = time.clock()
@@ -856,14 +845,16 @@ class PARTITION:
 
 # ---------------------------------------------------------------------------- #
 
-  def Affectation_Mailles_de_bords(self, _LST_BD):
+  def Affectation_Mailles_de_bords(self, _LST_BD, _DIM):
     """
     Affectation a un SD des mailles de bords (mailles incluses dans un bord d une autre maille)
     """
 
     if self.OPTIONS['INFO']>=5:
       print 'liste_mailles_bord=', self.liste_mailles_bord
-      print 'liste_sd_bord)', self.liste_sd_bord
+      print 'liste_sd_bord', self.liste_sd_bord
+      print '_LST_BD=',_LST_BD
+
 
     MAILLAGE = self.ASTER['MAILLAGE']
     _LST_TMA = self.MAILLAGE_Python.tm
@@ -881,42 +872,53 @@ class PARTITION:
 
     i = 0
     for m in _LST_BD:
-      if self.OPTIONS['INFO']>=5: print '\nMaille de dim N-1:',m, ' Aster:',string.strip(_LST_MAI[m]), ' TMA:',self.MAILLAGE_Python.tm[m], ' CO:',self.MAILLAGE_Python.co[m], '(noeuds de cette maille)'
+      if self.OPTIONS['INFO']>=5: print '\n  Maille de dim N-1:',m, ' Aster:',string.strip(_LST_MAI[m]), ' TMA:',self.MAILLAGE_Python.tm[m], ' CO:',self.MAILLAGE_Python.co[m], '(noeuds de cette maille)'
       nb = maille2nb[ self.MAILLAGE_Python.tm[m] ]
       ll = self.MAILLAGE_Python.co[m][0:nb]
       ll = N.sort(ll)
       ll = ll.tolist()
       ll = tuple(ll)
-      if self.OPTIONS['INFO']>=5: print 'Bord (lineaire)', ll, nb
+      if self.OPTIONS['INFO']>=5: print '  Bord (lineaire)', ll, nb
 
-      # Cas particulier des POI
-      if (nb==1):
+      # Cas particulier des POI1 en 2D et 3D (ils ne peuvent etre des bords d'elements 2D ou 3D)
+      if ( (nb==1) and (_DIM>=2) ):
         _tmp=[]
         for arete in self.MAILLAGE_Python.cia.keys():
           if ll[0] in arete:
-            if self.OPTIONS['INFO']>=5: print "arete=", arete
             for maille in self.MAILLAGE_Python.cia[ arete ]:
-              if self.OPTIONS['INFO']>=5: print "maille=", maille
+              if self.OPTIONS['INFO']>=5: print '  Maille N+i:', maille, ' Aster:',string.strip(_LST_MAI[maille]), ' Arete:', arete
+              _tmp.append( self.liste_sd[maille] )
+
+      # Cas particulier des SEG en 3D (ils ne peuvent etre des bords d'elements 3D)
+      elif ( (nb==2) and (_DIM==3) ):
+        _tmp=[]
+        for arete in self.MAILLAGE_Python.cia.keys():
+          _nb=0
+          for noe in ll:
+            if noe in arete: _nb+=1
+          if _nb == len(ll):
+            for maille in self.MAILLAGE_Python.cia[arete]:
+              if self.OPTIONS['INFO']>=5: print '  Mailles N+i:', maille, ' Aster:',string.strip(_LST_MAI[maille]), ' Arete:', arete
               _tmp.append( self.liste_sd[maille] )
 
       # Autres mailles de bord
       else:
-        if self.OPTIONS['INFO']>=5: print 'CIA=', self.MAILLAGE_Python.cia[ ll ], '(mailles de dim N qui ont cette maille pour bord)'
+        if self.OPTIONS['INFO']>=5: print '  CIA=', self.MAILLAGE_Python.cia[ ll ], '(mailles de dim N qui ont cette maille pour bord)'
         _tmp=[]
         for maille in self.MAILLAGE_Python.cia[ ll ]:
-          if self.OPTIONS['INFO']>=5: print 'Maille N:', maille, 'Aster:', string.strip(_LST_MAI[maille]), ' SD:', self.liste_sd[maille], ' TMA:', self.MAILLAGE_Python.tm[maille]
+          if self.OPTIONS['INFO']>=5: print '  Maille N+i:', maille, 'Aster:', string.strip(_LST_MAI[maille]), ' SD:', self.liste_sd[maille], ' TMA:', self.MAILLAGE_Python.tm[maille]
           _tmp.append( self.liste_sd[maille] )
-        _tmp.sort()
 
-      if self.OPTIONS['INFO']>=5: print '---> Maille:',m,'integree au SD:', _tmp[0]
-
+      # integre la maille au SD le plus faible (pour que des groupes de bords se retrouvent dans le meme SD)
+      _tmp.sort()
       self.liste_mailles_bord.append(m)
       self.liste_sd_bord.append( _tmp[0] )
       i += 1
+      if self.OPTIONS['INFO']>=5: print '  ---> Maille:',m,'integree au SD:', _tmp[0]
 
     if self.OPTIONS['INFO']>=5:
-      print 'liste_mailles_bord=', self.liste_mailles_bord
-      print 'liste_sd_bord)', self.liste_sd_bord
+      print '\n\nliste_mailles_bord=', self.liste_mailles_bord
+      print 'liste_sd_bord=', self.liste_sd_bord
 
 
     print "--- FIN Affectation des mailles de bords : ", time.clock() - t0
@@ -955,29 +957,15 @@ class PARTITION:
 
     t0 = time.clock()
 
-#     # Restriction des mailles du graphe aux mailles à prendre en compte
-#     # A optimiser !!! Note AA :c'est fait en amont
-#     for mai in self.liste_mailles:
-#       _tmp = enleve_doublons_liste(self.GRAPH[mai])  # coute cher!
-#       _tmp = calcul_intersection_listes(_tmp, self.liste_mailles)  # coute cher!
-# #       _tmp = []
-# #       for mai2 in self.GRAPH[mai]:
-# #         if mai2 in self.liste_mailles: _tmp.append(mai2)
-#       self.GRAPH[mai] = _tmp
-# 
-#     print "--- FIN Restriction des mailles du graphe : ", time.clock() - t0
-#     t0 = time.clock()
-
-
     # Elimination des connectivités à interface nulle
     maille2dim = self.maille2dim
     _lst2 = []
     for mai in self.liste_mailles:
-      if self.OPTIONS['INFO']>=4: print '\nmai:', mai, 'co:', self.MAILLAGE_Python.co[mai], 'tm:', self.MAILLAGE_Python.tm[mai]
+      if self.OPTIONS['INFO']>=5: print '\nmai:', mai, 'co:', self.MAILLAGE_Python.co[mai], 'tm:', self.MAILLAGE_Python.tm[mai]
       _DIM1 = maille2dim[ self.MAILLAGE_Python.tm[mai] ]
       _tmp2 =[]
       for mai2 in self.GRAPH[mai]:
-        if self.OPTIONS['INFO']>=4: print 'mai2:', mai2, 'co:', self.MAILLAGE_Python.co[mai2], 'tm:', self.MAILLAGE_Python.tm[mai2]
+        if self.OPTIONS['INFO']>=5: print 'mai2:', mai2, 'co:', self.MAILLAGE_Python.co[mai2], 'tm:', self.MAILLAGE_Python.tm[mai2]
         # calcule le nombre de noeuds communs aux deux mailles
         _nb = 0
         for noe in self.MAILLAGE_Python.co[mai2]:
@@ -1108,11 +1096,24 @@ class PARTITION:
       i+=1
 
 
+    # Generation des listes de noms de groupes
+    _l_sd = []
+    _l_bord = []
+    for i in range(NB_PART):
+      if d_gma[i] != []:
+        _l_sd.append( NOM + str(i) )
+      if d_gma_bord[i] != []:
+        _l_bord.append( NOM2 + str(i) )
+
+    # Stockage
+    self.ASTER['GROUP_MA']        = _l_sd
+    self.ASTER['GROUP_MA_BORD']   = _l_bord
+
+
     # Creation des groupes de mailles dans le Maillage Python
     for i in range(NB_PART):
-      self.MAILLAGE_Python.gma[NOM+str(i)]  = d_gma[i][0]
-      self.MAILLAGE_Python.gma[NOM2+str(i)] = d_gma_bord[i][0]
-
+      self.MAILLAGE_Python.gma[NOM+str(i)]  = d_gma[i]
+      self.MAILLAGE_Python.gma[NOM2+str(i)] = d_gma_bord[i]
 
     print "--- FIN creation du dictionnaire des listes des mailles par SD ", time.clock() - t0
 
@@ -1206,3 +1207,4 @@ class PARTITION:
 
     return
 
+# ---------------------------------------------------------------------------- #

@@ -1,6 +1,6 @@
       SUBROUTINE MISAZL(DEPPLU,DEFICO)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/04/2002   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 29/11/2004   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,9 +50,9 @@ C.......................................................................
 C FIN DECLARATION JEVEUX
 C.......................................................................
 
-      INTEGER      JNOCO,JNOESC,JDIM,NTNO,NOO(1000)
+      INTEGER      JNOCO,JNOESC,JDIM,NTNO
       INTEGER      INOE,POSNO,NUNOE,INO,IECPCO
-      INTEGER      IBID,COMP,IER,JCNS1B,JCNS1D,JCNS1E
+      INTEGER      IBID,COMP,IER,JCNS1B,JCNS1D,JCNS1E,JTAB
       LOGICAL      LCUMUL(4)
       REAL*8       LCOEFR(4)
       CHARACTER*19 CNS1,CNS1B,CNS1C,CNS1D,CNS1E,PRNO,LICHS(4)
@@ -60,6 +60,7 @@ C.......................................................................
 C----------------------------------------------------------------------
 
       CALL JEMARQ()
+
 
 C --- REMPLISSAGE DE NU ABS DES NOEUDS
 
@@ -77,12 +78,17 @@ C
       NTNO = ZI(JDIM+4)
       COMP = 0
 C
+C --- TABLEAU TEMPORAIRE
+C
+      CALL WKVECT('&&MISAZL.NNO','V V I',3*NTNO,JTAB)
+C
+
       DO 10 INOE = 1,NTNO
         POSNO = INOE
         IF (ZR(JNOESC+10*(POSNO-1)+1).NE.(-1.D0)) GOTO 10
         COMP=COMP+1
         NUNOE = ZI(JNOCO+POSNO-1)
-        NOO(COMP)=NUNOE
+        ZI(JTAB+COMP-1) = NUNOE
  10     CONTINUE
 C
       CNS1 ='&&MISAZL.CNS1'
@@ -98,9 +104,9 @@ C     CNS1 : CHAMP AUX NOEUDS SIMPLE
 C
 C     CNS1B :CNR LAGS_C
 C
-      CALL CNSRED(CNS1,COMP,NOO,1,'LAGS_C','V',CNS1B)
-      CALL CNSRED(CNS1,COMP,NOO,1,'LAGS_F1','V',CNS1D)
-      CALL CNSRED(CNS1,COMP,NOO,1,'LAGS_F2','V',CNS1E)
+      CALL CNSRED(CNS1,COMP,ZI(JTAB),1,'LAGS_C','V',CNS1B)
+      CALL CNSRED(CNS1,COMP,ZI(JTAB),1,'LAGS_F1','V',CNS1D)
+      CALL CNSRED(CNS1,COMP,ZI(JTAB),1,'LAGS_F2','V',CNS1E)
       CALL JEVEUO(CNS1B//'.CNSV','E',JCNS1B)
       CALL JEVEUO(CNS1D//'.CNSV','E',JCNS1D)
       CALL JEVEUO(CNS1E//'.CNSV','E',JCNS1E)
@@ -108,9 +114,9 @@ C
 C     MIAZ
 
       DO 11,INO = 1,COMP
-        ZR(JCNS1B-1+NOO(INO))=0.D0
-        ZR(JCNS1D-1+NOO(INO))=0.D0
-        ZR(JCNS1E-1+NOO(INO))=0.D0
+        ZR(JCNS1B-1+ZI(JTAB+INO-1))=0.D0
+        ZR(JCNS1D-1+ZI(JTAB+INO-1))=0.D0
+        ZR(JCNS1E-1+ZI(JTAB+INO-1))=0.D0
  11   CONTINUE
 
       LICHS(1)=CNS1
@@ -139,5 +145,7 @@ C     CONSTRUCTION DE DEPPLU A PARTIR DE CNS (CNS1C)
       CALL DETRSD('CHAM_NO_S',CNS1D)
       CALL DETRSD('CHAM_NO_S',CNS1E)
 110    CONTINUE
+
+      CALL JEDETR('&&MISAZL.NNO')
       CALL JEDEMA()
       END

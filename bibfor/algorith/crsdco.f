@@ -2,7 +2,7 @@
 
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 02/11/2004   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 29/11/2004   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -140,9 +140,10 @@ C
 C
 C --- SI METHODE CONTINUE, ON SORT
 C
-      IF (TYPALC.EQ.3) THEN
+      IF (ABS(TYPALC).EQ.3) THEN
          GOTO 9999
       ENDIF
+
 
 C ----------------------------------------------------------------------
 C 
@@ -153,13 +154,14 @@ C ----------------------------------------------------------------------
         WRITE (IFM,*) '<CONTACT> CREATION DE LA SD RESULTAT DE CONTACT'
       END IF
 
+      NDIMCO = DEFICO(1:16)//'.NDIMCO'
+      CALL JEVEUO (NDIMCO, 'E',JDIM)
+      NDIM = ZI(JDIM)
+
       ATMU   = RESOCO(1:14)//'.ATMU'
       CALL JEEXIN (ATMU,IER)
       IF (IER.EQ.0) CALL WKVECT (ATMU,'V V R',NEQ,JBID)
 
-      NDIMCO = DEFICO(1:16)//'.NDIMCO'
-      CALL JEVEUO (NDIMCO, 'E',JDIM)
-      NDIM = ZI(JDIM)
 
 C --- ARGUMENT POUR PREMIERE UTILISATION DU CONTACT OU NON
       CALL WKVECT (RESOCO(1:14) // '.PREM','V V L',1,JBID)

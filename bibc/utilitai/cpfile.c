@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF CPFILE UTILITAI  DATE 23/09/2002   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF CPFILE UTILITAI  DATE 30/11/2004   AUTEUR D6BHHHH M.ASA */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -25,40 +25,33 @@
  
 extern int errno;
 
-#if defined CRAY
-#include <fortran.h>
-void cpfile(_fcd nom1F,_fcd nom2F)
-
-#elif defined SOLARIS || IRIX || P_LINUX || TRU64 || SOLARIS64 
-void cpfile_(char *nom1, char *nom2,  unsigned long lnom1, unsigned long lnom2)
+#if defined SOLARIS || IRIX || P_LINUX || TRU64 || SOLARIS64 
+void cpfile_(char *action, char *nom1, char *nom2, unsigned long la, unsigned long lnom1, unsigned long lnom2)
 
 #elif defined HPUX
-void cpfile(char *nom1, char *nom2, unsigned long lnom1, unsigned long lnom2)
+void cpfile(char *action, char *nom1, char *nom2, unsigned long la, unsigned long lnom1, unsigned long lnom2)
 
 #elif defined PPRO_NT
-void __stdcall CPFILE(char *nom1 ,unsigned long lnom1,char *nom2 ,unsigned long lnom2)
+void __stdcall CPFILE(char *action, unsigned long la, char *nom1, unsigned long lnom1,char *nom2 ,unsigned long lnom2)
 
 #endif
 {
    char nomcmd[165];char *ncmd;
    long i,l,ldeb,num;
    int ier;
-#if defined CRAY
-   char *nom1,*nom2;unsigned long lnom1,lnom2;
-   nom1  = _fcdtocp(nom1F);
-   lnom1 = _fcdlen(nom1F);
-   nom2  = _fcdtocp(nom2F);
-   lnom2 = _fcdlen(nom2F);
-#endif
 #if defined PPRO_NT
    num = _flushall();
-   ncmd = "copy ";
    ldeb = 5;
+   if ( *action == 'C' ) {ncmd = "copy ";}
+   else if ( *action == 'M' ) {ncmd = "move ";}
+   else {ncmd = " ? ";ldeb = 3;}
 #else
    num = fflush(stderr);
    num = fflush(stdout);
-   ncmd = "cp ";
    ldeb = 3;
+   if ( *action == 'C' ) {ncmd = "cp ";}
+   else if ( *action == 'M' ) {ncmd = "mv ";}
+   else {ncmd = " ? ";ldeb = 3;}
 #endif
    if (lnom1 > 80) { lnom1 = 80; }
    if (lnom2 > 80) { lnom2 = 80; }

@@ -1,4 +1,4 @@
-# MODIF  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 29/11/2004   AUTEUR KBBHHDB G.DEBRUYNE 
 # TITRE ESSAI HYDROSTATIQUE SUIVI D UN TRIAXIAL A SUCCION FIXE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -344,7 +344,7 @@ TEST_RESU(RESU=(
                        NOM_CMP = 'DZ',     
                        INST=6.,  
                        PRECISION = 1.E-5,   
-                       VALE = -7.03158E-02,        
+                       VALE = -6.2844849744425E-02,        
                      ),
 
                 _F(    RESULTAT = U1,    
@@ -354,7 +354,7 @@ TEST_RESU(RESU=(
                        NOM_CMP = 'DZ',     
                        INST=20.,  
                        PRECISION = 1.E-5,   
-                       VALE = -2.06462E-01 ,        
+                       VALE = -1.9912415717930E-01,        
                      ),
 # PRESSION CRITIQUE
                 _F(    RESULTAT = U1,    
@@ -374,7 +374,7 @@ TEST_RESU(RESU=(
                        NOM_CMP = 'V1',     
                        INST=20.,  
                        PRECISION = 1.E-5,   
-                       VALE = 3.43710E+07,        
+                       VALE = 3.4440753228891E+07,        
                      ),
 # SEUIL HYDRIQUE
                 _F(    RESULTAT = U1,    
@@ -394,7 +394,7 @@ TEST_RESU(RESU=(
                        NOM_CMP = 'V3',     
                        INST=20.,  
                        PRECISION = 1.E-5,   
-                       VALE = 7.79806E+07,        
+                       VALE = 7.8526571511480E+07,        
                      ),
 
 # INDICATEUR DE PLASTICITE MECANIQUE

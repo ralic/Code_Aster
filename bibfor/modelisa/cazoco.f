@@ -2,7 +2,7 @@
      +                  IWRITE)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 02/11/2004   AUTEUR MABBAS M.ABBAS 
+C MODIF MODELISA  DATE 29/11/2004   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -110,6 +110,21 @@ C
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
+C
+C --- INITIALISATIONS
+C
+      COCAU  = 0.D0
+      COFAU  = 0.D0
+      COEFPT = 0.D0
+      COEFPN = 0.D0
+      COEFTE = 0.D0
+      COEFRO = 0.D0
+      COEF   = 0.D0
+      SEUIL  = 0.D0
+      DIST1  = 0.D0
+      DIST2  = 0.D0
+      LAMB   = 0.D0
+
       CALL GETRES(K8BID,K16BID,NOMCMD)     
 C 
 C --- RECUPERATION DU NOM DU PHENOMENE ET DE LA  MODELISATION          
@@ -412,6 +427,7 @@ C
 C 
 C --- INFORMATION SUR LA MODELISATION DU FROTTEMENT 
 C 
+
       CALL GETVTX(MOTFAC,'FROTTEMENT',IREAD,1,1,TYPF,NOCC)
       IF (TYPF.EQ.'COULOMB') THEN
          ZR(JCMCF+6* (IWRITE-1)+5) = 3.D0

@@ -1,4 +1,4 @@
-#@ MODIF xmgrace Stanley  DATE 23/11/2004   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF xmgrace Stanley  DATE 30/11/2004   AUTEUR MCOURTOI M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -82,7 +82,12 @@ class Xmgr :
 
     else:
       TERMINAL = 0
-      UTMESS('A','XMGRACE',"Aucune variable d'environnement DISPLAY définie!\n               XMGRACE ne pourra pas fonctionner. On l'ignore.\n\n               Si vous etes en Interactif, cochez le bouton Suivi Interactif\n               dans ASTK.")
+      UTMESS('A','XMGRACE',
+            """Aucune variable d'environnement DISPLAY définie !
+               XMGRACE ne pourra pas fonctionner. On l'ignore.
+
+               Si vous etes en Interactif, cochez le bouton Suivi Interactif
+               dans ASTK.""")
 
 # --------------------------------------------------------------------
 

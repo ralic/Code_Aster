@@ -1,7 +1,7 @@
       SUBROUTINE OP0058(IER)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 11/10/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF CALCULEL  DATE 30/11/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -76,7 +76,8 @@ C
 
       CALL GETVID(' ','RESULTAT',1,1,1,RESUCO,N0)
       NEWCAL = .FALSE.
-      IF (RESUC1.NE.RESUCO) NEWCAL = .TRUE.
+      CALL JEEXIN(RESUC1//'           .DESC',IRET)
+      IF (IRET.EQ.0) NEWCAL = .TRUE.
       CALL GETTCO(RESUCO,TYSD)
 
       CALL GETVR8(' ','PRECISION',1,1,1,PREC,NP)

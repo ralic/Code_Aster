@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 17/05/2004   AUTEUR CIBHHBC M.LOPES 
+C MODIF ALGORITH  DATE 29/11/2004   AUTEUR BOYERE E.BOYERE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -103,9 +103,9 @@ C
 C     --- RECUPERATION DES ENTITES DU MAILLAGE SUR LESQUELLES ---
 C     ---                PORTE LA RESTITUTION                 ---
       TOUSNO = .TRUE.
-      CALL GETVEM(MAILLA,'GROUP_NO', ' ','GROUP_NO',1,1,0,K8B,N1)
-      CALL GETVEM(MAILLA,'NOEUD'   , ' ','NOEUD'   ,1,1,0,K8B,N2)
-      IF ( N1+N2 .NE. 0 ) TOUSNO = .FALSE.
+C      CALL GETVEM(MAILLA,'GROUP_NO', ' ','GROUP_NO',1,1,0,K8B,N1)
+C      CALL GETVEM(MAILLA,'NOEUD'   , ' ','NOEUD'   ,1,1,0,K8B,N2)
+C      IF ( N1+N2 .NE. 0 ) TOUSNO = .FALSE.
 C
 C     --- RECUPERATION DE LA BASE MODALE ---
 C
@@ -335,7 +335,7 @@ C
             END IF
 
             NOMCHA = NOMCHA(1:19)//'.VALE'
-            IF (LEFFOR .OR. .NOT.TOUSNO) 
+            IF (LEFFOR)
      &       CALL JELIRA(NOMCHA,'LONMAX',NEQ,K1BID)
             CALL WKVECT('&&TRAN75.BASE','V V R',NBMODE*NEQ,IDBASE)
             IF ( TOUSNO ) THEN
@@ -491,7 +491,7 @@ C
             ELSE
               NOMCHA(20:24)='.CELV'
             END IF
-            IF (LEFFOR .OR. .NOT.TOUSNO) 
+            IF (LEFFOR)
      &       CALL JELIRA(NOMCHA,'LONMAX',NEQ,K1BID)
             CALL WKVECT('&&TRAN75.BASE','V V R',NBMODE*NEQ,IDBASE)
             IF ( TOUSNO ) THEN

@@ -1,4 +1,4 @@
-#@ MODIF impr_table_ops Macro  DATE 15/11/2004   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF impr_table_ops Macro  DATE 30/11/2004   AUTEUR MCOURTOI M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -26,7 +26,6 @@ import re
 from types import ListType, TupleType, StringTypes
 EnumTypes=(ListType, TupleType)
 
-from Utilitai.Utmess import UTMESS
 
 # ------------------------------------------------------------------------------
 def impr_table_ops(self, FORMAT, TABLE, INFO, **args):
@@ -38,6 +37,7 @@ def impr_table_ops(self, FORMAT, TABLE, INFO, **args):
    import aster
    from Accas import _F
    from Cata.cata import table_jeveux
+   from Utilitai.Utmess import UTMESS
    ier=0
    # La macro compte pour 1 dans la numerotation des commandes
    self.set_icmd(1)
@@ -60,7 +60,7 @@ def impr_table_ops(self, FORMAT, TABLE, INFO, **args):
    if nomfich and os.path.exists(nomfich):
       if FORMAT=='XMGRACE':
          UTMESS('A',macro,'Le fichier '+nomfich+' existe déjà, on écrit ' \
-                'à la suite.',self)
+                'à la suite.')
 
    # 0.2. Création des dictionnaires des FILTRES
    Filtre=[]
@@ -95,9 +95,9 @@ def impr_table_ops(self, FORMAT, TABLE, INFO, **args):
                   ltab.append([tabs, sdtab])
             if not trouv:
                UTMESS('A',macro,'Dérivée de %s par rapport à %s non disponible'\
-                     % (TABLE.get_name(), ps), self)
+                     % (TABLE.get_name(), ps))
       else:
-         UTMESS('A',macro,'Pas de calcul de sensibilité accessible.', self)
+         UTMESS('A',macro,'Pas de calcul de sensibilité accessible.')
    else:
       ltab.append([TABLE.EXTR_TABLE(), TABLE])
 
@@ -148,11 +148,13 @@ def impr_table_ops(self, FORMAT, TABLE, INFO, **args):
 
       # ----- 4. Impression
       timp=tab[nom_para]
-      kargs={
+      # passage des mots-clés de mise en forme à la méthode Impr
+      kargs=args.copy()
+      kargs.update({
          'FORMAT'    : FORMAT,
          'FICHIER'   : nomfich,
          'dform'     : {},
-      }
+      })
       # pour l'impression des fonctions
       kfonc={
          'FORMAT'    : FORMAT,

@@ -1,4 +1,4 @@
-# MODIF  DATE 16/09/2003   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 29/11/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE POUTRE SOUMISE A UNE EXCITATION FLUIDELASTIQUE AXIALE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -261,33 +261,6 @@ RG = EXTR_TABLE ( TYPE_RESU = 'MATR_ASSE_GENE_R',
                                     VALE_I = 2  ),
                 ) ;
 
-#TESTS DES VALEURS DES MATRICES
-
-TEST_RESU ( OBJET =(
-
-_F(NOM='MG                 .DESC', S_I=           6, PRECISION=0.   ,
-   REFERENCE = 'NON_REGRESSION', VERSION = '7.1.17' ),
-_F(NOM='MG                 .CONL', S_R= 2.00000E+00, PRECISION=1.E-5,
-   REFERENCE = 'NON_REGRESSION', VERSION = '7.1.17' ),
-_F(NOM='MG                 .VALE', S_R= 3.08407E-02, PRECISION=1.E-5,
-   REFERENCE = 'NON_REGRESSION', VERSION = '7.1.17' ),
-
-_F(NOM='AG                 .DESC', S_I=           6, PRECISION=0.   ,
-   REFERENCE = 'NON_REGRESSION', VERSION = '7.1.17' ),
-_F(NOM='AG                 .CONL', S_R= 2.00000E+00, PRECISION=1.E-5,
-   REFERENCE = 'NON_REGRESSION', VERSION = '7.1.17' ),
-_F(NOM='AG                 .VALE', S_R= 2.17134E-01, PRECISION=1.E-5,
-   REFERENCE = 'NON_REGRESSION', VERSION = '7.1.17' ),
-
-_F(NOM='RG                 .DESC', S_I=           6, PRECISION=0.   ,
-   REFERENCE = 'NON_REGRESSION', VERSION = '7.1.17' ),
-_F(NOM='RG                 .CONL', S_R= 2.00000E+00, PRECISION=1.E-5,
-   REFERENCE = 'NON_REGRESSION', VERSION = '7.1.17' ),
-_F(NOM='RG                 .VALE', S_R= 5.94749E+01, PRECISION=1.E-5,
-   REFERENCE = 'NON_REGRESSION', VERSION = '7.1.17' ),
-         ), ) ;
-
-#
 #-------------------------------
 # MODIFICATION DE LA BASE MODALE
 #-------------------------------

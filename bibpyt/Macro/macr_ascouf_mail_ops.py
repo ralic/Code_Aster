@@ -1,4 +1,4 @@
-#@ MODIF macr_ascouf_mail_ops Macro  DATE 14/09/2004   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF macr_ascouf_mail_ops Macro  DATE 30/11/2004   AUTEUR MCOURTOI M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -21,15 +21,14 @@
 
 
 from math import sqrt,cos,sin,pi,tan,log,fabs,ceil,fmod,floor
-from Utilitai import funct_root
 
-################################################################################
-################################################################################
-################################################################################
+# ------------------------------------------------------------------------------
 def ASCFON(RC,RM,EP,ORIEN,AZIM,AXEC,POS,Y):
-#     FONCTION F(CP)=CC
-#     OU CC EST LA TAILLE DE LA FISSURE SUR LE COUDE 
-#     ET CP LA TAILLE DE FISSURE SUR LA PLAQUE
+  """
+  FONCTION F(CP)=CC
+  OU CC EST LA TAILLE DE LA FISSURE SUR LE COUDE 
+  ET CP LA TAILLE DE FISSURE SUR LA PLAQUE
+  """
   AZIMR = AZIM*2.*pi/360.
   if POS=='DEB_INT': X = RM-EP/2.
   else             : X = RM+EP/2.
@@ -54,42 +53,42 @@ def ASCFON(RC,RM,EP,ORIEN,AZIM,AXEC,POS,Y):
                                                   )                  \
                     - 2.0*AXEC 
   return f_ASCFON
-#
-################################################################################
-################################################################################
-################################################################################
-#     MACR_ASCOUF_MAIL ASCFIS
-#     taille initiale du defaut fissure sur la plaque en
-#     fonction des donnees sur le coude ou le tube suivant la
-#     transformation choisie
-#
-#-----------------DONNEES FOURNIES PAR L UTILISATEUR--------------------
-#
-#     ALPHA = ANGLE DU COUDE
-#     RM    = RAYON MOYEN DU COUDE
-#     RC    = RAYON DE CINTRAGE DU COUDE
-#     EP    = EPAISSEUR DU COUDE
-#     SUREP = VALEUR DE LA SUREPAISSEUR
-#     GEOM  = TYPE DE GEOMETRIE MODELISEE (COUDE OU TUBE)   
-#     AXEA  = PROFONDEUR FISSURE (DEMI PETIT AXE)
-#     AXEC  = DEMI GRAND AXE FISSURE
-#     AZIM  = POSITION AZIMUTALE DU CENTRE DE LA FISSURE 
-#     POS   = POSITION EN PEAU (EXTERNE OU INTERNE)
-#     SF    = ABCISSE CURVILIGNE LONGITUDINALE DU CENTRE DE LA FISSURE
-#     DSF   = BOOLEEN EXPRESSION POSITION CENTRE FISSURE 
-#     BETA  = POSITION ANGULAIRE DU CENTRE DE LA FISSURE
-#     ORIEN = ORIENTATION DE LA FISSURE
-#
-#----------------------DONNEES RENVOYEES-----------------------
-#
-#     AXEAP = PROFONDEUR DE LA FISSURE (PETIT AXE) SUR LA PLAQUE
-#     AXECP = LONGUEUR DE LA FISSURE (GRAND AXE) SUR LA PLAQUE
-#     SFP   = ABCISSE CURVILIGNE LONGITUDINALE CENTRE FISSURE
-#             SUR LA PLAQUE
-#
+
+# ------------------------------------------------------------------------------
 def ASCFIS(ALPHA, RM, RC, EP, SUREP, GEOM, AXEA,
            AXEC, AZIM, POS, SF, DSF, BETA, ORIEN):
+  """
+  MACR_ASCOUF_MAIL ASCFIS
+  taille initiale du defaut fissure sur la plaque en
+  fonction des donnees sur le coude ou le tube suivant la
+  transformation choisie
 
+  ------------DONNEES FOURNIES PAR L UTILISATEUR--------------------
+
+  ALPHA = ANGLE DU COUDE
+  RM    = RAYON MOYEN DU COUDE
+  RC    = RAYON DE CINTRAGE DU COUDE
+  EP    = EPAISSEUR DU COUDE
+  SUREP = VALEUR DE LA SUREPAISSEUR
+  GEOM  = TYPE DE GEOMETRIE MODELISEE (COUDE OU TUBE)   
+  AXEA  = PROFONDEUR FISSURE (DEMI PETIT AXE)
+  AXEC  = DEMI GRAND AXE FISSURE
+  AZIM  = POSITION AZIMUTALE DU CENTRE DE LA FISSURE 
+  POS   = POSITION EN PEAU (EXTERNE OU INTERNE)
+  SF    = ABCISSE CURVILIGNE LONGITUDINALE DU CENTRE DE LA FISSURE
+  DSF   = BOOLEEN EXPRESSION POSITION CENTRE FISSURE 
+  BETA  = POSITION ANGULAIRE DU CENTRE DE LA FISSURE
+  ORIEN = ORIENTATION DE LA FISSURE
+
+  -----------------DONNEES RENVOYEES-----------------------
+
+  AXEAP = PROFONDEUR DE LA FISSURE (PETIT AXE) SUR LA PLAQUE
+  AXECP = LONGUEUR DE LA FISSURE (GRAND AXE) SUR LA PLAQUE
+  SFP   = ABCISSE CURVILIGNE LONGITUDINALE CENTRE FISSURE
+          SUR LA PLAQUE
+
+  """
+  from Utilitai import funct_root
   if POS=='DEB_INT':
      if (AZIM>=120.) and (AZIM<=240.0): X = RM-EP/2.0 - SUREP
      else:                              X = RM-EP/2.0
@@ -235,23 +234,24 @@ def ASCFIS(ALPHA, RM, RC, EP, SUREP, GEOM, AXEA,
   else: AXEAP = AXEA
 #
   return AXEAP,AXECP,SFP 
-################################################################################
-################################################################################
-################################################################################
-#     MACR_ASCOUF_MAIL ASCSEP
-#     taille initiale sur la plaque des sous-epaisseurs
-#
-#-----------------DONNEES FOURNIES PAR L UTILISATEUR--------------------
-#
-#     ALPHA = ANGLE DU COUDE
-#     RM    = RAYON MOYEN DU COUDE
-#     RC    = RAYON DE CINTRAGE DU COUDE
-#     EP    = EPAISSEUR DU COUDE
-#     GEOM  = TYPE DE GEOMETRIE MODELISEE (COUDE OU TUBE)  
-#     SYME  = QUART DE STRUCTURE SI 'OUI'
-#    
 
+
+# ------------------------------------------------------------------------------
 def ASCSEP(MCL_SOUS_EPAIS,ALPHA,RM,RC,EP,GEOM,SYME):
+  """
+  MACR_ASCOUF_MAIL ASCSEP
+  taille initiale sur la plaque des sous-epaisseurs
+
+  ------------DONNEES FOURNIES PAR L UTILISATEUR--------------------
+
+  ALPHA = ANGLE DU COUDE
+  RM    = RAYON MOYEN DU COUDE
+  RC    = RAYON DE CINTRAGE DU COUDE
+  EP    = EPAISSEUR DU COUDE
+  GEOM  = TYPE DE GEOMETRIE MODELISEE (COUDE OU TUBE)  
+  SYME  = QUART DE STRUCTURE SI 'OUI'
+ 
+  """
   ier=0
   CG=pi/180.
 #
@@ -403,25 +403,26 @@ def ASCSEP(MCL_SOUS_EPAIS,ALPHA,RM,RC,EP,GEOM,SYME):
       print '<=> TAILLE EQUIVALENTE PAR RAPPORT A L ANGLE DU COUDE (DEGRES): %.2f'%(ssep.ILONP*360/(2*pi*RC))  
 #
   return ier
-################################################################################
-################################################################################
-################################################################################
-#     MACR_ASCOUF_MAIL ASCTCI
-#     APPELEE DANS : ASCSYM et ASCPRE
-#     CALCUL TABLEAU TRIE DES ABSCISSES DES CENTRES DE SOUS-EPAISSEURS
-#
-#-----------------DONNEES FOURNIES PAR L UTILISATEUR--------------------
-#
-#     RM    = RAYON MOYEN DU COUDE
-#
-#----------------------DONNEES RENVOYEES-----------------------
-#
-#     IABSC1 = CORRESPONDANCE ABSC. CURVI. CIRCONF. SOUS-EP. I
-#     IABSC2 = CORRESPONDANCE ABSC. GAUCHE ET DROITE CIRCONF. SOUS-EP. I
-#     COORXD = ABSC. DU BORD DROIT DE LA SOUS-EP I
-#     COORXG = ABSC. DU BORD GAUCHE DE LA SOUS-EP I
-#
+
+# ------------------------------------------------------------------------------
 def ASCTCI(MCL_SOUS_EPAIS,RM):
+  """
+  MACR_ASCOUF_MAIL ASCTCI
+  APPELEE DANS : ASCSYM et ASCPRE
+  CALCUL TABLEAU TRIE DES ABSCISSES DES CENTRES DE SOUS-EPAISSEURS
+
+  ------------DONNEES FOURNIES PAR L UTILISATEUR--------------------
+
+  RM    = RAYON MOYEN DU COUDE
+
+  -----------------DONNEES RENVOYEES-----------------------
+
+  IABSC1 = CORRESPONDANCE ABSC. CURVI. CIRCONF. SOUS-EP. I
+  IABSC2 = CORRESPONDANCE ABSC. GAUCHE ET DROITE CIRCONF. SOUS-EP. I
+  COORXD = ABSC. DU BORD DROIT DE LA SOUS-EP I
+  COORXG = ABSC. DU BORD GAUCHE DE LA SOUS-EP I
+
+  """
 #
 # --- tri du tableau des abscisses curvilignes circonf. plaque
 #
@@ -484,29 +485,29 @@ def ASCTCI(MCL_SOUS_EPAIS,RM):
        print '%d) SOUS-EP NO %d <> XD = %.2f'%(j+1,IABSC1[IABSC2[j]/2-1],TAMPON[j][0])
 #    
   return TAMPON,IABSC1,IABSC2,COORXD,COORXG
-#
-################################################################################
-################################################################################
-################################################################################
-#     MACR_ASCOUF_MAIL ASCTLO
-#     APPELEE DANS : ASCSYM et ASCPRE
-#     CALCUL TABLEAU TRIE DES ORDONNEES DES CENTRES DE SOUS-EPAISSEURS
-#
-#-----------------DONNEES FOURNIES PAR L UTILISATEUR--------------------
-#
-#     RC     = RAYON MOYEN DU COUDE
-#     ALPHA  = ANGLE DU COUDE
-#     LTCHAR = LONGUEUR DE L'EMBOUT DU COTE CHARGEMENT
-#     LTCLIM  = LONGUEUR DE L'EMBOUT DU COTE CONDITIONS AUX LIMITES
-#
-#----------------------DONNEES RENVOYEES-----------------------
-#
-#     IORDO1 = CORRESPONDANCE ORDO. CURVI. LONGIT. SOUS-EP. I
-#     IORDO2 = CORRESPONDANCE ORDO. GAUCHE ET DROITE LONGIT. SOUS-EP. I
-#     COORYI = ORDONNEE. DU BORD INTERIEUR DE LA SOUS-EP I
-#     COORYS = ORDONNEE. DU BORD SUPERIEUR DE LA SOUS-EP I
-#
+
+# ------------------------------------------------------------------------------
 def ASCTLO(MCL_SOUS_EPAIS,RC,ALPHA,LTCHAR,LTCLIM):
+  """
+  MACR_ASCOUF_MAIL ASCTLO
+  APPELEE DANS : ASCSYM et ASCPRE
+  CALCUL TABLEAU TRIE DES ORDONNEES DES CENTRES DE SOUS-EPAISSEURS
+
+  ------------DONNEES FOURNIES PAR L UTILISATEUR--------------------
+
+  RC     = RAYON MOYEN DU COUDE
+  ALPHA  = ANGLE DU COUDE
+  LTCHAR = LONGUEUR DE L'EMBOUT DU COTE CHARGEMENT
+  LTCLIM  = LONGUEUR DE L'EMBOUT DU COTE CONDITIONS AUX LIMITES
+
+  -----------------DONNEES RENVOYEES-----------------------
+
+  IORDO1 = CORRESPONDANCE ORDO. CURVI. LONGIT. SOUS-EP. I
+  IORDO2 = CORRESPONDANCE ORDO. GAUCHE ET DROITE LONGIT. SOUS-EP. I
+  COORYI = ORDONNEE. DU BORD INTERIEUR DE LA SOUS-EP I
+  COORYS = ORDONNEE. DU BORD SUPERIEUR DE LA SOUS-EP I
+
+  """
 #
 # tri du tableau des abscisses curvilignes axiales plaque
 #
@@ -623,6 +624,7 @@ def ASCTLO(MCL_SOUS_EPAIS,RC,ALPHA,LTCHAR,LTCLIM):
 #     NLX = NOMBRE TOTAL D'ELEMENTS CIRCONF. DE LA SOUS-EPAISSEUR K
 #     NLY = NOMBRE TOTAL D'ELEMENTS LONGIT. DE LA SOUS-EPAISSEUR K
 #
+# ------------------------------------------------------------------------------
 def ASCNBE(MCL_SOUS_EPAIS,COORXG,COORXD,COORYI,COORYS,BD,BG,BS,BI,DNX,DNY,RM,RC,
            INDSEX,INDSEY,IABSC1,IORDO1):
 #
@@ -697,6 +699,7 @@ def ASCNBE(MCL_SOUS_EPAIS,COORXG,COORXD,COORYI,COORYS,BD,BG,BS,BI,DNX,DNY,RM,RC,
 #     NZONEX = NOMBRE DE ZONES CIRCONFERENTIELLES
 #     NZONEY = NOMBRE DE ZONES LONGITUDINALES       
 #
+# ------------------------------------------------------------------------------
 def ASCSYM(MCL_SOUS_EPAIS,RM,RC,ALPHA,LTCHAR,LTCLIM):
   ier=0
   DERAFC = 18.
@@ -855,6 +858,7 @@ def ASCSYM(MCL_SOUS_EPAIS,RM,RC,ALPHA,LTCHAR,LTCLIM):
 #     NZONEX = NOMBRE DE ZONES CIRCONFERENTIELLES
 #     NZONEY = NOMBRE DE ZONES LONGITUDINALES       
 #
+# ------------------------------------------------------------------------------
 def ASCPRE(MCL_SOUS_EPAIS,RM,RC,ALPHA,SYME,LTCHAR,LTCLIM):
   ier=0
   ALPHAR = 2.*ALPHA*pi/360.
@@ -1398,6 +1402,7 @@ def ASCPRE(MCL_SOUS_EPAIS,RM,RC,ALPHA,SYME,LTCHAR,LTCLIM):
 #     "PLAQUE FISSUREE"
 #
 
+# ------------------------------------------------------------------------------
 def write_file_dgib_ASCFDO(nomFichierDATG,RM,RC,ALPHA,NBTRAN,EP1,EP2,EPI,TETA1,
                            TETA2,LTRAN,SUREP,LTCHAR,LTCLIM,TYPBOL,AXEAP,AXECP,NT,NS,NC,
                            SFP,ORIEN,AZIM,RC0,RC2,RC3,POSIT,EPSI,NIVMAG,SYME, loc_datg) :
@@ -1487,6 +1492,7 @@ def write_file_dgib_ASCFDO(nomFichierDATG,RM,RC,ALPHA,NBTRAN,EP1,EP2,EPI,TETA1,
 #     NLX = NOMBRE D'ELEMENTS CIRCONF. DE LA SOUS-EPAISSEUR
 #     NLY = NOMBRE D'ELEMENTS LONGI DE LA SOUS-EPAISSEUR
 
+# ------------------------------------------------------------------------------
 def write_file_dgib_ASCSQO(nomFichierDATG,TYPELE,RM,RC,ALPHA,NBTRAN,EP1,EP2,
                            EPI,TETA1,MCL_SOUS_EPAIS,TETA2,LTRAN,LTCHAR,LTCLIM,GEOM,
                            SYME,NBEP,NLX,NLY,NIVMAG,loc_datg) :
@@ -1594,6 +1600,7 @@ def write_file_dgib_ASCSQO(nomFichierDATG,TYPELE,RM,RC,ALPHA,NBTRAN,EP1,EP2,
 #     texte = chaine de caracteres contenant des instructions gibi
 #             de post-traitements
 #
+# ------------------------------------------------------------------------------
 def write_subpart_file_pgib_POST(MCL_SOUS_EPAIS,NLX,NLY):
   CAR3 = ('fdro','exdr','extr','exga','fgau','inga','intr','indr')
   
@@ -1655,6 +1662,7 @@ def write_subpart_file_pgib_POST(MCL_SOUS_EPAIS,NLX,NLY):
 #     NLX = NOMBRE TOTAL D'ELEMENTS CIRCONF. DE LA SOUS-EPAISSEUR K
 #     NLY = NOMBRE TOTAL D'ELEMENTS LONGIT. DE LA SOUS-EPAISSEUR K
 
+# ------------------------------------------------------------------------------
 def write_file_pgib_ASCSQ2(MCL_SOUS_EPAIS,NLX,NLY):
   POIVIR = ' ;\n'
   texte=write_subpart_file_pgib_POST(MCL_SOUS_EPAIS,NLX,NLY)
@@ -1680,6 +1688,7 @@ def write_file_pgib_ASCSQ2(MCL_SOUS_EPAIS,NLX,NLY):
 #     IL S'AGIT DE LA PREMIERE PARTIE ( AVANT LES DONNEES UTILISATEUR )
 #
 #
+# ------------------------------------------------------------------------------
 def write_file_dgib_ASCSP1(nomFichierDATG,TYPELE,MCL_SOUS_EPAIS,NIVMAG,loc_datg):
 
   POIVIR = ' ;\n'
@@ -1748,6 +1757,7 @@ def write_file_dgib_ASCSP1(nomFichierDATG,TYPELE,MCL_SOUS_EPAIS,NIVMAG,loc_datg)
 #     NZONEX = NOMBRE DE ZONES CIRCONFERENTIELLES
 #     NZONEY = NOMBRE DE ZONES LONGITUDINALES  
 #
+# ------------------------------------------------------------------------------
 def write_file_pgib_ASCSDO(RM,RC,ALPHA,EP,LTCLIM,LTCHAR,NBEP,
                            NZONEX,NZONEY,BG,BD,BI,BS,INDBG,INDBD,INDBI,INDBS,
                            DNX,DNY,MCL_SOUS_EPAIS,GEOM,SYME):
@@ -1858,6 +1868,7 @@ def write_file_pgib_ASCSDO(RM,RC,ALPHA,EP,LTCLIM,LTCHAR,NBEP,
 ################################################################################
 ################################################################################
 
+# ------------------------------------------------------------------------------
 def write_file_pgib_ASCSP2(MCL_SOUS_EPAIS,NLX,NLY):
 
   POIVIR = ' ;\n'
@@ -1921,6 +1932,7 @@ def write_file_pgib_ASCSP2(MCL_SOUS_EPAIS,NLX,NLY):
 ################################################################################
 ################################################################################
 
+# ------------------------------------------------------------------------------
 def write_file_dgib_ASCRDO(nomFichierDATG,TYPELE,NIVMAG,TYPBOL,ALPHA,RC,RM,EP,SUREP,
                            LTCLIM,LTCHAR,NBEP,loc_datg):
 
@@ -1984,6 +1996,7 @@ def write_file_dgib_ASCRDO(nomFichierDATG,TYPELE,NIVMAG,TYPBOL,ALPHA,RC,RM,EP,SU
 ################################################################################
 ################################################################################
 ################################################################################
+# ------------------------------------------------------------------------------
 def macr_ascouf_mail_ops(self,EXEC_MAILLAGE,TYPE_ELEM,COUDE,
                               SOUS_EPAIS_COUDE,SOUS_EPAIS_MULTI,
                               FISS_COUDE,IMPRESSION,INFO,**args):

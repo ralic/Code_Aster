@@ -7,7 +7,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 28/09/2004   AUTEUR GRANET S.GRANET 
+C MODIF ALGORITH  DATE 29/11/2004   AUTEUR KBBHHDB G.DEBRUYNE 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -61,7 +61,10 @@ C --- VARIABLES LOCALES POUR BARCELONE-------------------------------
 C ======================================================================
       REAL*8       TFINAL,CRIT(*)
       REAL*8       DSIDP1(6),DSIDEP(6,6),DEPS(6)    
-      REAL*8       DSDEME(6,6)   
+      REAL*8       DSDEME(6,6)
+CCCC    SIP NECESSAIRE POUR CALCULER LES CONTRAINTES TOTALES
+CCCC    ET ENSUITE CONTRAINTES NETTES POUR BARCELONE
+      REAL*8  SIPM,SIPP         
 C ======================================================================
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       INTEGER ZI
@@ -352,13 +355,15 @@ C --- TERMES SPECIAL BARCELONE --------------------------------------
 C =====================================================================
       IF ((YAMEC.EQ.1).AND.(MECA.EQ.'BARCELONE')) THEN
         TFINAL = T+DT
+        SIPM=CONGEM(ADCOME+6)
+        SIPP=CONGEP(ADCOME+6)
         CALL NMBARC(  NDIM,  IMATE,  CRIT, SAT, BIOT,
-     &                      T,TFINAL, 
-     >                      DEPS, 
-     >                      CONGEM(ADCOME), VINTM, OPTION, 
-     >                      CONGEP(ADCOME), VINTP, 
+     &                      T,TFINAL,
+     >                      DEPS,
+     >                      CONGEM(ADCOME), VINTM, OPTION,
+     >                      CONGEP(ADCOME), VINTP,
      >                      DSDEME,P1,P2,DP1,DP2,
-     &                      DSIDP1)
+     &                      DSIDP1,SIPM,SIPP)
          IF ((OPTION(1:9).EQ.'RIGI_MECA') .OR.
      &       (OPTION(1:9).EQ.'FULL_MECA')) THEN
 C --- DSIGM/DEPP1

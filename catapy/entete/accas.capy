@@ -1,4 +1,4 @@
-#& MODIF ENTETE  DATE 23/11/2004   AUTEUR ASSIRE A.ASSIRE 
+#& MODIF ENTETE  DATE 30/11/2004   AUTEUR MCOURTOI M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -31,9 +31,6 @@ try:
   import aster
 except:
   pass
-
-from Utilitai.Graph import Graph
-from Utilitai.Table import Table
 
 #
 __version__="$Name:  $"
@@ -388,6 +385,7 @@ class fonction_class(ASSD):
       return dico
    def Trace(self,FORMAT='TABLEAU',**kargs):
       """Tracé d'une fonction"""
+      from Utilitai.Graph import Graph
       gr=Graph()
       gr.AjoutCourbe(Val=self.Valeurs(),
             Lab=[self.Parametres()['NOM_PARA'],self.Parametres()['NOM_RESU']])
@@ -464,6 +462,7 @@ class fonction_c(fonction_class):
       return self.Valeurs()[2]
    def Trace(self,FORMAT='TABLEAU',**kargs):
       """Tracé d'une fonction complexe"""
+      from Utilitai.Graph import Graph
       gr=Graph()
       gr.AjoutCourbe(Val=self.Valeurs(),
        Lab=[self.Parametres()['NOM_PARA'],self.Parametres()['NOM_RESU'],'IMAG'])
@@ -513,6 +512,7 @@ class nappe_sdaster(fonction_class):
       return [dico,lparf]
    def Trace(self,FORMAT='TABLEAU',**kargs):
       """Tracé d'une nappe"""
+      from Utilitai.Graph import Graph
       gr=Graph()
       lv=self.Valeurs()[1]
       dp=self.Parametres()[0]
@@ -566,6 +566,9 @@ class table_sdaster(ASSD):
       if l2==0 : return None
       else     : return l1
   def EXTR_TABLE(self) :
+      """Produit un objet Table à partir du contenu d'une table Aster
+      """
+      from Utilitai.Table import Table
       tblp=string.ljust(self.get_name(),19)+'.TBLP'
       tabnom=list(aster.getvectjev(tblp))
       nparam=len(tabnom)/4

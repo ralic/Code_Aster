@@ -1,6 +1,6 @@
       SUBROUTINE JEDEBU ( NBFI, LZON, IADZON, LMO, CMES, CVIG, IDB )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 24/05/2004   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF JEVEUX  DATE 30/11/2004   AUTEUR D6BHHJP J.P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -130,7 +130,7 @@ C -----------------  ENVIRONNEMENT MACHINE -----------------------------
       IF (VAL .LE. 0 ) THEN
          MFIC = MOFIEM()
       ELSE 
-         MFIC = VAL*1024*1024
+         MFIC = VAL*1024
       ENDIF
       LBIS = LBISEM()
       LOR8 = LOR8EM()

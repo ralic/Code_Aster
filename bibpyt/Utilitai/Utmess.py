@@ -1,4 +1,4 @@
-#@ MODIF Utmess Utilitai  DATE 03/11/2004   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF Utmess Utilitai  DATE 30/11/2004   AUTEUR MCOURTOI M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -21,7 +21,7 @@
 import sys
 import aster
 
-def UTMESS(code, sprg, texte, jdc=None):
+def UTMESS(code, sprg, texte):
    """Utilitaire analogue à la routine fortran UTMESS.
       code  : 'A', 'E', 'S', 'F'
       sprg  : nom du module, classe ou fonction python où l'on se trouve
@@ -34,10 +34,14 @@ def UTMESS(code, sprg, texte, jdc=None):
       #'ERREUR' : 9,
    }
    # On importe la définition des commandes à utiliser dans la macro
-   # Le nom de la variable doit etre obligatoirement le nom de la commande
-   if jdc:
-      DEFI_FICHIER     = jdc.get_cmd('DEFI_FICHIER')
-   else:
+#    if jdc:
+#       DEFI_FICHIER     = jdc.get_cmd('DEFI_FICHIER')
+#    else:
+#       # on se limite au print !
+#       UL={ 'MESSAGE' : 6, }
+   try:
+      from Cata.cata import DEFI_FICHIER
+   except ImportError:
       # on se limite au print !
       UL={ 'MESSAGE' : 6, }
 

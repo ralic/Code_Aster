@@ -1,4 +1,4 @@
-# MODIF  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 29/11/2004   AUTEUR KBBHHDB G.DEBRUYNE 
 # RESPONSABLE JOUMANA J.EL-GHARIB
 # TITRE DESATURATION -CONSOLIDATION AVEC LE MODELE DE BARCELONE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -344,7 +344,7 @@ TEST_RESU(RESU=(
                        NOM_CMP = 'DZ',     
                        INST=1.,  
                        PRECISION = (3.E-3,1.E-5),  
-                       VALE = -5.607E-02,        
+                       VALE = -4.6279842400214E-02,        
                      ),
 
 
@@ -355,7 +355,7 @@ TEST_RESU(RESU=(
                        NOM_CMP = 'DZ',     
                        INST=6.,  
                        PRECISION = (1.5E-2,1.E-5),    
-                       VALE = -7.565E-02,        
+                       VALE = -6.6828566030080E-02,        
                      ),
 
                 _F(    RESULTAT = U1,  
@@ -365,7 +365,7 @@ TEST_RESU(RESU=(
                        NOM_CMP = 'DZ',     
                        INST=10.,  
                        PRECISION = (1.5E-2,1.E-5),    
-                       VALE = -1.30970E-01,        
+                       VALE = -1.3269482951752E-01,        
                      ),
 
                 _F(    RESULTAT = U1,  
@@ -375,7 +375,7 @@ TEST_RESU(RESU=(
                        NOM_CMP = 'DZ',     
                        INST=20.,  
                        PRECISION = (1.5E-2,1.E-5),    
-                       VALE = -2.11952E-01,        
+                       VALE = -2.1372053738184E-01,        
                      ),
 
 # PRESSION CRITIQUE
@@ -397,7 +397,7 @@ TEST_RESU(RESU=(
                        NOM_CMP = 'V1',     
                        INST=6.,  
                        PRECISION = (2.E-2,1.E-5),    
-                       VALE = 5.666E+08 ,        
+                       VALE = 5.7459609849833E+08 ,        
                      ),
 
                 _F(    RESULTAT = U1,    
@@ -407,7 +407,7 @@ TEST_RESU(RESU=(
                        NOM_CMP = 'V1',     
                        INST=10.,  
                        PRECISION = (2.E-2,1.E-5),    
-                       VALE = 5.74596E+08 ,        
+                       VALE = 5.7459609849833E+08 ,        
                      ),
 
                 _F(    RESULTAT = U1,    
@@ -417,7 +417,7 @@ TEST_RESU(RESU=(
                        NOM_CMP = 'V1',     
                        INST=20.,  
                        PRECISION = (2.E-2,1.E-5),    
-                       VALE = 2.50631E+09 ,        
+                       VALE = 2.5000519164127E+09 ,        
                      ),
 # INDICATEUR DE PLASTICITE MECANIQUE
                 _F(    RESULTAT = U1,    
@@ -501,7 +501,7 @@ TEST_RESU(RESU=(
                        NOM_CMP = 'V3',     
                        INST=20.,  
                        PRECISION = (1.E-5,1.E-5),     
-                       VALE =  1.10811E+10,        
+                       VALE =  1.0986381071483E+10,        
                      ),
                      
 #INDICATEUR D'IRREVERSIBILITE HYDRIQUE                                          

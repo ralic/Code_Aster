@@ -1,4 +1,4 @@
-#@ MODIF Table Utilitai  DATE 15/11/2004   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF Table Utilitai  DATE 30/11/2004   AUTEUR MCOURTOI M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -31,15 +31,16 @@ NumberTypes=(IntType, LongType, FloatType, ComplexType)
 # try/except pour utiliser hors aster
 try:
    from Utilitai.Utmess import UTMESS
-   if not sys.modules.has_key('Graph'):
-      from Utilitai import Graph
 except ImportError:
    def UTMESS(code,sprg,texte):
       fmt='\n <%s> <%s> %s\n\n'
       print fmt % (code,sprg,texte)
-   if not sys.modules.has_key('Graph'):
-      import Graph
 
+if not sys.modules.has_key('Graph'):
+   try:
+      from Utilitai import Graph
+   except ImportError:
+      import Graph
 
 # formats de base (identiques à ceux du module Graph)
 DicForm={
@@ -47,7 +48,7 @@ DicForm={
    'ccom'  : '#',       # commentaire
    'cdeb'  : '',        # début de ligne
    'cfin'  : '\n',      # fin de ligne
-   'formK' : '%-12s',   # chaines
+   'formK' : '%-8s',    # chaines
    'formR' : '%12.5E',  # réels
    'formI' : '%8d'      # entiers
 }
@@ -119,7 +120,7 @@ class TableBase(object):
          try:
             lnup=eval(s)
          except SyntaxError, s:
-            UTMESS('F','Table','Erreur lors de la constuction des n-uplets')
+            UTMESS('F','Table','Erreur lors de la construction des n-uplets')
          # pour chaque n-uplet, on imprime la sous-table
          for nup in lnup:
             tab=self
@@ -159,11 +160,17 @@ class TableBase(object):
       txt=[]
       # ['']+ pour ajouter un séparateur en début de ligne
       lspa=['',]
+      # lmax : largeur max des colonnes = max(form{K,R,I},len(parametre))
+      lmax=[]
       for p in para:
          t=typ[para.index(p)]
-         lspa.append(FMT(dform,'formK',t) % p)
+         larg_max=max([len(p)] + \
+               [len(FMT(dform,k,t) % 0) for k in ('formK','formR','formI')])
+         lspa.append(FMT(dform,'formK',t,larg_max,p) % p)
+         lmax.append(larg_max)
       if typdef:
-         stype=dform['csep'].join(['']+[FMT(dform,'formK',t) % t for t in typ])
+         stype=dform['csep'].join([''] + \
+          [FMT(dform,'formK',typ[i],lmax[i]) % typ[i] for i in range(len(para))])
       txt.append('')
       txt.append('-'*80)
       txt.append('')
@@ -182,24 +189,25 @@ class TableBase(object):
          lig=['']
          empty=True
          for v in para:
-            t=typ[para.index(v)]
+            i=para.index(v)
+            t=typ[i]
             rep=r.get(v,None)
             if type(rep) is FloatType:
-               lig.append(FMT(dform,'formR',t) % rep)
+               lig.append(FMT(dform,'formR',t,lmax[i]) % rep)
                empty=False
             elif type(rep) is IntType:
-               lig.append(FMT(dform,'formI',t) % rep)
+               lig.append(FMT(dform,'formI',t,lmax[i]) % rep)
                empty=False
             else:
                if rep==None:
                   rep='-'
                else:
                   empty=False
-               fmt=FMT(dform,'formK',t)
+               s=FMT(dform,'formK',t,lmax[i],rep) % str(rep)
                # format AGRAF = TABLEAU + '\' devant les chaines de caractères !
                if FORMAT=='AGRAF':
-                  fmt='\\'+fmt
-               lig.append(fmt % str(rep))
+                  s='\\'+s
+               lig.append(s)
          if not empty:
             txt.append(dform['csep'].join(lig))
       if ASTER:
@@ -217,15 +225,39 @@ class TableBase(object):
    def ImprGraph(self,**kargs):
       """Impression au format XMGRACE : via le module Graph
       """
+      args=kargs.copy()
       if len(self.para)<>2:
          UTMESS('A','Table','La table doit avoir exactement deux paramètres.')
          return
-      lx, ly = [[v for v in getattr(self,p).values() if v] for p in self.para]
+      lx, ly = [[v for v in getattr(self,p).values() if v<>None] for p in self.para]
       # objet Graph
-      gr=Graph.Graph()
-      gr.AjoutCourbe(Val=[lx, ly], Lab=self.para)
+      graph=Graph.Graph()
+      dicC={
+         'Val' : [lx, ly],
+         'Lab' : self.para,
+      }
+      if args['LEGENDE']==None: del args['LEGENDE']
+      Graph.AjoutParaCourbe(dicC, args)
+      graph.AjoutCourbe(**dicC)
+      
+      # Surcharge des propriétés du graphique et des axes
+      # (bloc quasiment identique dans impr_fonction_ops)
+      if args.get('TITRE'):            graph.Titre=args['TITRE']
+      if args.get('BORNE_X'):
+                                       graph.Min_X=args['BORNE_X'][0]
+                                       graph.Max_X=args['BORNE_X'][1]
+      if args.get('BORNE_Y'):
+                                       graph.Min_Y=args['BORNE_Y'][0]
+                                       graph.Max_Y=args['BORNE_Y'][1]
+      if args.get('LEGENDE_X'):        graph.Legende_X=args['LEGENDE_X']
+      if args.get('LEGENDE_Y'):        graph.Legende_Y=args['LEGENDE_Y']
+      if args.get('ECHELLE_X'):        graph.Echelle_X=args['ECHELLE_X']
+      if args.get('ECHELLE_Y'):        graph.Echelle_Y=args['ECHELLE_Y']
+      if args.get('GRILLE_X'):         graph.Grille_X=args['GRILLE_X']
+      if args.get('GRILLE_Y'):         graph.Grille_Y=args['GRILLE_Y']
+      
       try:
-         gr.Trace(**kargs)
+         graph.Trace(**args)
       except TypeError:
          UTMESS('A','Table','Les cellules ne doivent contenir que des nombres réels')
 
@@ -256,7 +288,7 @@ class Table(TableBase):
       """Constructeur de la Table :
          rows : liste des lignes (dict)
          para : liste des paramètres
-         typ  : liste des types des paramètres
+         type : liste des types des paramètres
          titr : titre de la table
       """
       self.rows=[r for r in rows if r.values()<>[None]*len(r.values())]
@@ -290,7 +322,7 @@ class Table(TableBase):
          ORDRE : CROISSANT ou DECROISSANT (de longueur 1 ou len(keys))
       """
       # par défaut, on prend tous les paramètres
-      if not CLES:
+      if CLES==None:
          CLES=self.para[:]
       if not type(CLES) in EnumTypes:
          CLES=[CLES,]
@@ -500,7 +532,7 @@ class Colonne(TableBase):
    def ABS_MAXI(self):
       # important pour les performances de récupérer le max une fois pour toutes
       abs_maxi=max([abs(v) for v in self.values() if type(v) in NumberTypes])
-      return self._extract(lambda v: v==abs_maxi)
+      return self._extract(lambda v: v==abs_maxi or v==-abs_maxi)
 
    def ABS_MINI(self):
       # important pour les performances de récupérer le min une fois pour toutes
@@ -570,11 +602,14 @@ def sort_table(rows,l_para,w_para,reverse=False):
    return new_rows
 
 # ------------------------------------------------------------------------------
-def FMT(dform, nform, typAster=None):
+def FMT(dform, nform, typAster=None, larg=0, val=''):
    """Retourne un format d'impression Python à partir d'un type Aster ('R','I',
    'K8', 'K16'...). Si typAster==None, retourne dform[nform].
+      larg : largeur minimale du format (val permet de ne pas ajouter des blancs
+      si la chaine à afficher est plus longue que le format, on prend le partie
+      de ne pas tronquer les chaines)
    """
-   if not typAster:
+   if typAster==None:
       fmt=dform[nform]
    elif typAster in ('I', 'R'):
       if nform=='formK':
@@ -586,6 +621,9 @@ def FMT(dform, nform, typAster=None):
    else:
       # typAster = Kn
       fmt='%-'+typAster[1:]+'s'
+   # on ajoute éventuellement des blancs pour atteindre la largeur demandée
+   if larg<>0:
+      fmt=' '*max(min(larg-len(val),larg-len(fmt % 0)),0) + fmt
    return fmt
 
 # ------------------------------------------------------------------------------

@@ -1,10 +1,10 @@
       SUBROUTINE NMBARC (NDIM,IMATE,CRIT,SAT,BIOT,
      &                   TM,TP,DEPS,SBISM,VIM,
      &                   OPTION,SBISP,VIP,DSIDEP,P1,P2,DP1,DP2,
-     &                   DSIDP1)
+     &                   DSIDP1,SIPM,SIPP)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/10/2004   AUTEUR ROMEO R.FERNANDES 
+C MODIF ALGORITH  DATE 29/11/2004   AUTEUR KBBHHDB G.DEBRUYNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -30,6 +30,7 @@ C  TOLE CRP_21
       REAL*8             DEPS(6),DEUXMU,BIOT,SAT,P1,P2,DP1,DP2
       REAL*8             SBISM(6),VIM(5),SBISP(6),VIP(5),DSIDEP(6,6)
       REAL*8             DSIDP1(6)
+      REAL*8             SIPM,SIPP
 C ----------------------------------------------------------------------
 C     REALISE LA LOI DE BARCELONE DES MILIEUX NON-SATURES
 C     EN ELASTOPLASTICITE MECANIQUE ET HYDRIQUE UTILISABLE
@@ -220,7 +221,9 @@ C    DERIVEE DE LAMBB PAR RAPPORT A P1
 C--- CALCUL DES COEFFICIENTS KS ET K0S DE LA COURBE HYDROSTATIQUE
 C--- HYDRIQUE
          XK0S = (1.D0+E0)/KAPAS
-         XKS= (1.D0+E0)/(LAMBS-KAPAS) 
+         XKS= (1.D0+E0)/(LAMBS-KAPAS)
+C--- ACTUALISATION DE SIP
+         SIPP=SIPM+BIOT*SAT*DP1-BIOT*DP2
 C
 C     -- 3 CALCUL DE DEPSMO ET DEPSDV :
 C     --------------------------------
@@ -244,7 +247,7 @@ C     ---------------------
       P2M=P2-DP2
       P1M=P1-DP1
       DO 113 K=1,NDIMSI
-        SBARM(K)   = SBISM(K) + ((1.D0-BIOT)*P2M+BIOT*SAT*P1M)*KRON(K)
+        SBARM(K)   = SBISM(K) + (SIPM-P2M)*KRON(K)
  113  CONTINUE
 C     -- 5 CALCUL DE SIGMMO, SIGMDV, SIGEL,SIMOEL,SIELEQ, SIEQM :
 C     -------------------------------------------------------------
@@ -313,8 +316,7 @@ C     -- REACTUALISATION DES CONTRAINTES
               SIGPDV(K) = SIGEL(K)
               SBARP(K)  = SIGEL(K)-SIMOEL*KRON(K)
 C     -- CALCUL DES CONTRAINTES DE BISHOP
-              SBISP(K) = SBARP(K)+(BIOT-1.D0)*P2*KRON(K)-
-     &                              SAT*BIOT*P1*KRON(K)
+              SBISP(K) = SBARP(K)-(SIPP-P2)*KRON(K)
  118  CONTINUE
         ELSE
 C     -- PLASTIFICATION : CALCUL DE LA DEFORMATION 
@@ -331,8 +333,7 @@ C     -- CRITERE HYDRIQUE EST ATTEINT
        DO 114 K = 1,NDIMSI
        SIGPDV(K) = SIGEL(K)
        SBARP(K) = SIGPDV(K)-SIGPMO*KRON(K)
-       SBISP(K) = SBARP(K)+(BIOT-1.D0)*P2*KRON(K)-
-     &                           SAT*BIOT*P1*KRON(K)
+       SBISP(K) = SBARP(K)-(SIPP-P2)*KRON(K)
  114  CONTINUE
        F1 = SIMOEL*EXP(-XK0*DEPPMO)
        F2 = SIMOEL*EXP(-XK0*DEPPMO)-2.D0*PCRMP1
@@ -469,16 +470,16 @@ C     -- REACTUALISATION DU SEUIL HYDRIQUE
         PC0P(1) = (PC0M(1)+PA)*EXP(XKS*DEPPMO)-PA
         PSP = -KPMAX
 C
-C     -- REACTUALISATION DES CONTRAINTES BARCELONE
-        SIGPMO = SIGMMO*EXP(XK0*(DEPSMO-DEPPMO))
+C     -- REACTUALISATION DES CONTRAINTES NETTES DE BARCELONE
+        SIGPMO = SIGMMO*EXP(XK0*(DEPSMO-DEPPMO))/
+     &   ((P1+PA)/(P1M+PA))**(XK0/XK0S)
        CALL R8INIR(6,0.D0,SIGPDV,1)        
          DO 119 K=1,NDIMSI
            SIGPDV(K) = SIGEL(K)/(1.D0+(6.D0*DEUXMU/2.D0*ALPHAB*
      &         DEPPMO)/(M*M*(2.D0*SIGPMO-2.D0*PCRP(1)+KPMAX)))
            SBARP(K) = SIGPDV(K)-SIGPMO*KRON(K)
 C     -- CALCUL DES CONTRAINTES DE BISHOP
-           SBISP(K) = SBARP(K)+(BIOT-1.D0)*P2*KRON(K)-
-     &                           SAT*BIOT*P1*KRON(K)
+           SBISP(K) = SBARP(K)-(SIPP-P2)*KRON(K)
  119  CONTINUE 
 C 
       ENDIF

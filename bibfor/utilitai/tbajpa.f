@@ -4,7 +4,7 @@
       CHARACTER*(*)       NOMTA,        NOMPAR(*), TYPPAR(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 27/09/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF UTILITAI  DATE 29/11/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -71,7 +71,7 @@ C
 C
       CALL JEVEUO ( NOMTAB//'.TBNP' , 'E', JTBNP )
       NBPARA = ZI(JTBNP  )
-      NBLIGN = MAX ( ZI(JTBNP+1) , 7 )
+      NBLIGN = MAX ( ZI(JTBNP+1) , 10 )
 C
 C ----------------------------------------------------------------------
 C
@@ -118,6 +118,15 @@ C
          CALL JELIRA ( NOMTAB//'.TBLP', 'LONMAX', NBPM, K8B)
          CALL JELIRA ( NOMTAB//'.TBLP', 'LONUTI', NBPU, K8B)
          CALL JEVEUO ( NOMTAB//'.TBLP' , 'L', JTBLP )
+C
+C        IL FAUT INITIALISER LES COLONNES AU LONMAX ET NON PAS A NBLIGN
+C        QUI EST LE NOMBRE DE LIGNES EVENTUELLEMENT REMPLI
+C        ON RECUPERE LE PREMIER PARAMETRE DE LA TABLE
+C
+         J = 1
+         CALL CODENT ( J ,'D0',KNUME)
+         NOMJV = NOMTAB(1:17)//'LG.'//KNUME
+         CALL JELIRA ( NOMJV, 'LONMAX', NBLIGN, K8B)
 C
 C        --- ON VERIFIE QUE LES PARAMETRES N'EXISTENT PAS ---
          NBPAR1 = 0

@@ -1,7 +1,7 @@
       SUBROUTINE TFIMPR(NOM)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 04/03/97   AUTEUR KXBADNG N.GAY 
+C MODIF MODELISA  DATE 30/11/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -191,7 +191,7 @@ C
                 ELSE IF(IR.LT.200) THEN
                    WRITE(IFM,101) TXRES3(IR-100)
                 ELSE
-                   WRITE(IFM,101) TXRES4(IR-200)
+                   WRITE(IFM,101) TXRES4(IR-1000)
                 ENDIF
   10          CONTINUE
             ELSE

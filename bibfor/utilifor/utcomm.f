@@ -1,6 +1,6 @@
       SUBROUTINE UTCOMM( ICOM, NUM, RAISON )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILIFOR  DATE 22/11/2004   AUTEUR DURAND C.DURAND 
+C MODIF UTILIFOR  DATE 30/11/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -100,8 +100,6 @@ C     ------------------------------------------------------------------
 CC SI L EXCEPTION EST TRAPPEE PAR LE SUPERVISEUR
 CC ON NETTOIE LA BASE VOLATILE AU CAS OU ON RECREE LE CONCEPT
 CC DANS LE EXCEPT
-         CALL JEDETC('V','&&',1)
-         CALL JEDETC('V','_',1)
          CALL GETRES(SPVR,CBID,CBID)
          CALL JEDETC('V',SPVR(1:6),1)
          IF ( SPVR .NE. '  ' ) THEN
@@ -116,6 +114,7 @@ CC DANS LE EXCEPT
  1             CONTINUE
             ENDIF
          ENDIF
+         CALL JEDETV()
       ENDIF
 
       IF(ICOM)THEN

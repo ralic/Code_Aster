@@ -7,7 +7,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 09/11/2004   AUTEUR SMICHEL S.MICHEL-PONNELLE 
+C MODIF ALGORITH  DATE 29/11/2004   AUTEUR KBBHHDB G.DEBRUYNE 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -93,6 +93,9 @@ C
 C ======================================================================
 C    VARIABLES LOCALES POUR L'APPEL AU MODELE DE BARCELONE
       REAL*8  DSIDP1(6),DP1,DP2,SAT,BIOT
+CCCC    SIP NECESSAIRE POUR CALCULER LES CONTRAINTES TOTALES
+CCCC    ET ENSUITE CONTRAINTES NETTES DANS LE MODELE DE BARCELONE
+      REAL*8  SIPM,SIPP      
 C ======================================================================
       INTEGER NDT,NDI
       COMMON /TDIM/   NDT  , NDI
@@ -278,13 +281,15 @@ C --- LOI BARCELONE ----------------------------------------------------
 C ======================================================================
       IF (MECA.EQ.'BARCELONE') THEN
         TF = T + DT
-        CALL NMBARC(  NDIM, IMATE, CRIT, SAT, BIOT,
-     &                      T,TF, 
-     >                      DEPS, 
-     >                      CONGEM(ADCOME), VINTM, OPTION, 
-     >                      CONGEP(ADCOME), VINTP, 
+        SIPM=CONGEM(ADCOME+6)
+        SIPP=CONGEP(ADCOME+6)
+         CALL NMBARC(  NDIM, IMATE, CRIT, SAT, BIOT,
+     &                      T,TF,
+     >                      DEPS,
+     >                      CONGEM(ADCOME), VINTM, OPTION,
+     >                      CONGEP(ADCOME), VINTP,
      >                      DSDEME,P1,P2,DP1,DP2,
-     &                      DSIDP1)
+     &                      DSIDP1,SIPM,SIPP)
         IF ((OPTION(1:16).EQ.'RIGI_MECA_TANG').OR.
      >            (OPTION(1:9).EQ.'FULL_MECA')) THEN
           DO 412 I = 1 , 2*NDIM
