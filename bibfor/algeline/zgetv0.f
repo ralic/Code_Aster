@@ -4,7 +4,7 @@
 C----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGELINE  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -115,11 +115,11 @@ C
 C\ROUTINES CALLED:
 C   ZVOUT   ARPACK UTILITY ROUTINE THAT PRINTS VECTORS.
 C   GLARNV  LAPACK ROUTINE FOR GENERATING A RANDOM VECTOR. 
-C   GLGEMV   LEVEL 2 BLAS ROUTINE FOR MATRIX VECTOR MULTIPLICATION.
-C   GLCOPY   LEVEL 1 BLAS THAT COPIES ONE VECTOR TO ANOTHER.
-C   GLDOTC   LEVEL 1 BLAS THAT COMPUTES THE SCALAR PRODUCT OF TWO 
+C   ZGEMV   LEVEL 2 BLAS ROUTINE FOR MATRIX VECTOR MULTIPLICATION.
+C   ZCOPY   LEVEL 1 BLAS THAT COPIES ONE VECTOR TO ANOTHER.
+C   ZDOTC   LEVEL 1 BLAS THAT COMPUTES THE SCALAR PRODUCT OF TWO 
 C            VECTORS.
-C   GLNRM2  LEVEL 1 BLAS THAT COMPUTES THE NORM OF A VECTOR. 
+C   DZNRM2  LEVEL 1 BLAS THAT COMPUTES THE NORM OF A VECTOR. 
 C
 C\AUTHOR
 C     DANNY SORENSEN               PHUONG VU
@@ -190,8 +190,8 @@ C     %--------------------%
 C     | EXTERNAL FUNCTIONS |
 C     %--------------------%
 C
-      REAL*8  GLNRM2, FLAPY2
-      COMPLEX*16 GLDOTC
+      REAL*8  DZNRM2, FLAPY2
+      COMPLEX*16 ZDOTC
 C
 C     %-----------------%
 C     | DATA STATEMENTS |
@@ -253,7 +253,7 @@ C
             NOPX = NOPX + 1
             IPNTR(1) = 1
             IPNTR(2) = N + 1
-            CALL GLCOPY (N, RESID, 1, WORKD, 1)
+            CALL ZCOPY (N, RESID, 1, WORKD, 1)
             IDO = -1
             GO TO 9000
          END IF
@@ -279,23 +279,23 @@ C
       FIRST = .TRUE.
       IF (BMAT .EQ. 'G') THEN
          NBX = NBX + 1
-         CALL GLCOPY (N, WORKD(N+1), 1, RESID, 1)
+         CALL ZCOPY (N, WORKD(N+1), 1, RESID, 1)
          IPNTR(1) = N + 1
          IPNTR(2) = 1
          IDO = 2
          GO TO 9000
       ELSE IF (BMAT .EQ. 'I') THEN
-         CALL GLCOPY (N, RESID, 1, WORKD, 1)
+         CALL ZCOPY (N, RESID, 1, WORKD, 1)
       END IF
 C 
    20 CONTINUE
 C 
       FIRST = .FALSE.
       IF (BMAT .EQ. 'G') THEN
-          CNORM  = GLDOTC (N, RESID, 1, WORKD, 1)
+          CNORM  = ZDOTC (N, RESID, 1, WORKD, 1)
           RNORM0 = SQRT(FLAPY2(DBLE(CNORM),DIMAG(CNORM)))
       ELSE IF (BMAT .EQ. 'I') THEN
-           RNORM0 = GLNRM2(N, RESID, 1)
+           RNORM0 = DZNRM2(N, RESID, 1)
       END IF
       RNORM  = RNORM0
 C
@@ -320,9 +320,9 @@ C
       ORTH = .TRUE.
    30 CONTINUE
 C
-      CALL GLGEMV ('C', N, J-1, ONE, V, LDV, WORKD, 1, 
+      CALL ZGEMV ('C', N, J-1, ONE, V, LDV, WORKD, 1, 
      &            ZERO, WORKD(N+1), 1)
-      CALL GLGEMV ('N', N, J-1, -ONE, V, LDV, WORKD(N+1), 1, 
+      CALL ZGEMV ('N', N, J-1, -ONE, V, LDV, WORKD(N+1), 1, 
      &            ONE, RESID, 1)
 C 
 C     %----------------------------------------------------------%
@@ -331,22 +331,22 @@ C     %----------------------------------------------------------%
 C
       IF (BMAT .EQ. 'G') THEN
          NBX = NBX + 1
-         CALL GLCOPY (N, RESID, 1, WORKD(N+1), 1)
+         CALL ZCOPY (N, RESID, 1, WORKD(N+1), 1)
          IPNTR(1) = N + 1
          IPNTR(2) = 1
          IDO = 2
          GO TO 9000
       ELSE IF (BMAT .EQ. 'I') THEN
-         CALL GLCOPY (N, RESID, 1, WORKD, 1)
+         CALL ZCOPY (N, RESID, 1, WORKD, 1)
       END IF
 C 
    40 CONTINUE
 C 
       IF (BMAT .EQ. 'G') THEN
-         CNORM = GLDOTC (N, RESID, 1, WORKD, 1)
+         CNORM = ZDOTC (N, RESID, 1, WORKD, 1)
          RNORM = SQRT(FLAPY2(DBLE(CNORM),DIMAG(CNORM)))
       ELSE IF (BMAT .EQ. 'I') THEN
-         RNORM = GLNRM2(N, RESID, 1)
+         RNORM = DZNRM2(N, RESID, 1)
       END IF
 C
 C     %--------------------------------------%

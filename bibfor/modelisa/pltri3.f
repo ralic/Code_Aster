@@ -1,6 +1,6 @@
       SUBROUTINE PLTRI3(SC,NS,FS,NF,VM,ZL,TET,NT)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 08/11/2004   AUTEUR DURAND C.DURAND 
+C MODIF MODELISA  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -40,7 +40,7 @@ C ----------------------------------------------------------------------
       IMPLICIT NONE
 
 C --- FONCTIONS
-      REAL*8  R8DOT,PLVOL3
+      REAL*8  DDOT,PLVOL3
 
 C --- VARIABLES
       INTEGER FS(3,*),TET(4,*),NS,NS0,NF,F,A,B,C,S,NT
@@ -77,8 +77,8 @@ C --- VERIFICATION QUE LE POLYEDRE EST ETOILE EN G
         C = FS(3,F)
 
         CALL PROVE3(SC(1,A),SC(1,B),SC(1,C),N)
-        R0 = R8DOT(3,N,1,SC(1,A),1)
-        R1 = R8DOT(3,N,1,SC(1,NS),1) - R0
+        R0 = DDOT(3,N,1,SC(1,A),1)
+        R1 = DDOT(3,N,1,SC(1,NS),1) - R0
 
         IF (ABS(R1).LT.VM) GOTO 30
  
@@ -91,7 +91,7 @@ C --- VERIFICATION QUE LE POLYEDRE EST ETOILE EN G
 
           IF (ZL(S).OR.(S.EQ.A).OR.(S.EQ.B).OR.(S.EQ.C)) GOTO 40
 
-          R2 = R8DOT(3,N,1,SC(1,S),1) - R0
+          R2 = DDOT(3,N,1,SC(1,S),1) - R0
           IF (((R1.LT.0.D0).EQV.(R2.LT.0.D0)).OR.(ABS(R2).LT.VM))GOTO 40
 
           R2 = R1/(R1 - R2)
@@ -100,13 +100,13 @@ C --- VERIFICATION QUE LE POLYEDRE EST ETOILE EN G
           SI(3) = (1-R2)*SC(3,NS) + R2*SC(3,S)
 
           CALL PROVE3(SC(1,A),SC(1,B),SI,V)
-          IF (R8DOT(3,N,1,V,1).LT.0.D0) GOTO 40
+          IF (DDOT(3,N,1,V,1).LT.0.D0) GOTO 40
 
           CALL PROVE3(SC(1,B),SC(1,C),SI,V)
-          IF (R8DOT(3,N,1,V,1).LT.0.D0) GOTO 40
+          IF (DDOT(3,N,1,V,1).LT.0.D0) GOTO 40
 
           CALL PROVE3(SC(1,C),SC(1,A),SI,V)
-          IF (R8DOT(3,N,1,V,1).LT.0.D0) GOTO 40
+          IF (DDOT(3,N,1,V,1).LT.0.D0) GOTO 40
 
           IR = .TRUE.
       
@@ -141,7 +141,7 @@ C            ITERER SUR LES COMPOSANTES CONNEXES
           N(2) = SC(2,A)-SC(2,S)
           N(3) = SC(3,A)-SC(3,S)
           CALL PROVE3(SC(1,S),SC(1,B),SC(1,C),V)
-          R1 = R1 + R8DOT(3,N,1,V,1)
+          R1 = R1 + DDOT(3,N,1,V,1)
  60     CONTINUE
         R1 = R1/6.D0
         CALL INFMAJ()

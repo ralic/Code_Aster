@@ -4,7 +4,7 @@
       INTEGER NDIM, NNO2
       REAL*8  COOR(NDIM,NNO2), LONMIN
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 05/04/2004   AUTEUR ASSIRE A.ASSIRE 
+C MODIF CALCULEL  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -34,7 +34,7 @@ C                 OUT -> VALEURS APRES CORRECTION (AFFINITE)
 C ----------------------------------------------------------------------
 
       REAL*8  CORR, L1, L2, D1(3),D2(3),PREC
-      REAL*8  R8NRM2
+      REAL*8  DNRM2
       INTEGER I
       PARAMETER (PREC = 1.D-5)
 C ----------------------------------------------------------------------
@@ -48,8 +48,8 @@ C ----------------------------------------------------------------------
           D2(I) = (COOR(I,3)+COOR(I,4)-COOR(I,1)-COOR(I,2))/2
  10     CONTINUE
          
-        L1 = R8NRM2(NDIM,D1,1)
-        L2 = R8NRM2(NDIM,D2,1)
+        L1 = DNRM2(NDIM,D1,1)
+        L2 = DNRM2(NDIM,D2,1)
         
 C      ELEMENTS PLATS        
         IF (MIN(L1,L2)/MAX(L1,L2) .LT. PREC) THEN
@@ -57,7 +57,7 @@ C      ELEMENTS PLATS
             CALL R8INIR(NDIM,0.D0,D1,1)
             D1(1) =  D2(2)
             D1(2) = -D2(1)
-            CORR  = LONMIN/2.D0/R8NRM2(NDIM,D1,1)
+            CORR  = LONMIN/2.D0/DNRM2(NDIM,D1,1)
             DO 12 I = 1,NDIM
               COOR(I,1) = COOR(I,1) - CORR*D1(I)
               COOR(I,2) = COOR(I,2) + CORR*D1(I)
@@ -68,7 +68,7 @@ C      ELEMENTS PLATS
             CALL R8INIR(NDIM,0.D0,D2,1)
             D2(1) = -D1(2)
             D2(2) =  D1(1)
-            CORR  = LONMIN/2.D0/R8NRM2(NDIM,D2,1)
+            CORR  = LONMIN/2.D0/DNRM2(NDIM,D2,1)
             DO 15 I = 1,NDIM
               COOR(I,1) = COOR(I,1) - CORR*D2(I)
               COOR(I,2) = COOR(I,2) - CORR*D2(I)

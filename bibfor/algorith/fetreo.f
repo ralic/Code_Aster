@@ -2,7 +2,7 @@
      &                  IDDRO,IPSRO,GS,IGSMKP,RMIN,IRH,SDFETI)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/11/2004   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGORITH  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -68,7 +68,7 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       
 C DECLARATION VARIABLES LOCALES
-      REAL*8       R8DOT,RAUX,NORMAV,NORMAP,RGSKP2,BETAN,BETAD,BETA,RMIN
+      REAL*8       DDOT,RAUX,NORMAV,NORMAP,RGSKP2,BETAN,BETAD,BETA,RMIN
       INTEGER      IAUX1,IAUX2,IAUX3,I,J,ITER1,NBI1,IAD,IFM,NIV,IINF
       CHARACTER*24 INFOFE
             
@@ -130,40 +130,40 @@ C CALCUL DE BETAKI=-(HK+1.(FI*PK))/(PK.(FI*PK)) (ETAPE 2.1)
 C -------------- 
           IAUX1=IDDFRO+I*NBI
           IF (GS) THEN            
-            RAUX=-R8DOT(NBI,ZR(IRH),1,ZR(IAUX1),1)/ZR(IPSRO+I)
+            RAUX=-DDOT(NBI,ZR(IRH),1,ZR(IAUX1),1)/ZR(IPSRO+I)
           ELSE
-            RAUX=-R8DOT(NBI,ZR(IRP),1,ZR(IAUX1),1)/ZR(IPSRO+I)
+            RAUX=-DDOT(NBI,ZR(IRP),1,ZR(IAUX1),1)/ZR(IPSRO+I)
           ENDIF     
           IAUX1=IDDRO+I*NBI
-          IF (IGSMKP) NORMAV=R8DOT(NBI,ZR(IRP),1,ZR(IRP),1)
+          IF (IGSMKP) NORMAV=DDOT(NBI,ZR(IRP),1,ZR(IRP),1)
 
 C --------------
 C CALCUL NOUVELLE DIRECTION DE DESCENTE ORTHOGONALISEE (ETAPE 2.2)
 C (ZR(IRP)) PK+1_PRIM = PK+1 + BETAKI * PI
 C --------------
-          CALL R8AXPY(NBI,RAUX,ZR(IAUX1),1,ZR(IRP),1)
+          CALL DAXPY(NBI,RAUX,ZR(IAUX1),1,ZR(IRP),1)
 
 C --------------
 C PREMIER TEST (ETAPE 2.3) SI IGSM DE TYPE KAHN-PARLETT
 C --------------
           IF (IGSMKP) THEN
-            NORMAP=R8DOT(NBI,ZR(IRP),1,ZR(IRP),1)
+            NORMAP=DDOT(NBI,ZR(IRP),1,ZR(IRP),1)
             IF (NORMAP.LT.(RGSKP2 * NORMAV)) THEN
 C --------------
 C CALCUL DE BETAKI_PRIM=-(PK+1_PRIM.(FI*PK))/(PK.(FI*PK)) (ETAPE 3.1)
 C --------------
               IAUX1=IDDFRO+I*NBI
-              RAUX=-R8DOT(NBI,ZR(IRP),1,ZR(IAUX1),1)/ZR(IPSRO+I)
+              RAUX=-DDOT(NBI,ZR(IRP),1,ZR(IAUX1),1)/ZR(IPSRO+I)
               IAUX1=IDDRO+I*NBI  
 C --------------
 C CALCUL NOUVELLE DIRECTION DE DESCENTE ORTHOGONALISEE (ETAPE 3.2)
 C (ZR(IRP)) PK+1_SEC = PK+1_PRIM + BETAKI_PRIM * PI
 C --------------
-              CALL R8AXPY(NBI,RAUX,ZR(IAUX1),1,ZR(IRP),1)
+              CALL DAXPY(NBI,RAUX,ZR(IAUX1),1,ZR(IRP),1)
 C --------------
 C SECOND TEST (ETAPE 3.3)
 C --------------
-              NORMAV=R8DOT(NBI,ZR(IRP),1,ZR(IRP),1)
+              NORMAV=DDOT(NBI,ZR(IRP),1,ZR(IRP),1)
               IF (NORMAV.LT.(RGSKP2 * NORMAP)) THEN
                 DO 58 J=0,NBI1
                   ZR(IRP+J)=0.D0
@@ -178,7 +178,7 @@ C SORTIE PREVUE POUR LE TEST 3.3
    61   CONTINUE 
 
 C CALCUL DE ALPHAN = GK+1.PK+1  
-        ALPHAN=R8DOT(NBI,ZR(IRG),1,ZR(IRP),1)
+        ALPHAN=DDOT(NBI,ZR(IRG),1,ZR(IRP),1)
                 
       ELSE
       
@@ -195,7 +195,7 @@ C ----  PAS DE REORTHOGONALISATION (ELLE EST IMPLICITE)
 C ---------------------------------------------------
 C ON REORTHOGONALISE SEULEMENT PAR RAPPORT A LA DERNIERE DD
 C CALCUL DE BETAK = HK+1.GK+1/HK.GK = BETANK/BETADK     
-        BETAN=R8DOT(NBI,ZR(IRG),1,ZR(IRH),1)
+        BETAN=DDOT(NBI,ZR(IRG),1,ZR(IRH),1)
         BETAD=ALPHAN
         IF (BETAD.LT.RMIN) THEN
           BETAD=RMIN

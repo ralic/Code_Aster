@@ -3,7 +3,7 @@
      &                   PONDER, DVIDA , ENER  , VIP   )
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -62,7 +62,7 @@ C ----------------------------------------------------------------------
       INTEGER NDIMSI, K
       REAL*8  EPS(6), W, TREPS, EPSEPS
       REAL*8  N0, NG, AL0, ALG(3), ALG2
-      REAL*8  R8DOT
+      REAL*8  DDOT
 C ----------------------------------------------------------------------
 
 
@@ -77,7 +77,7 @@ C -- INITIALISATION
  10   CONTINUE
       IF (TYPMOD .EQ. 'C_PLAN') EPS(3) = -NU/(1-NU)*(EPS(1)+EPS(2))
       TREPS  = EPS(1)+EPS(2)+EPS(3)
-      EPSEPS = R8DOT(NDIMSI,EPS,1,EPS,1)
+      EPSEPS = DDOT(NDIMSI,EPS,1,EPS,1)
       W      = 0.5D0 * (LAMBDA*TREPS**2 + DEUXMU*EPSEPS)
 
       N0 = 2*W + GC/(2*C)
@@ -109,7 +109,7 @@ C -- GRADIENT DE LA DENSITE DE FISSURES
 
 C -- ENERGIE
 
-      ALG2 = R8DOT(NDIM, ALG,1, ALG,1)
+      ALG2 = DDOT(NDIM, ALG,1, ALG,1)
       ENER = ( (1-AL0)**2 + RIGMIN ) * W
      &     + GC/(4*C) * (AL0**2 + (2*C)**2 * ALG2)
 
@@ -133,6 +133,6 @@ C -- STOCKAGE DES RESULTATS
       CALL R8INIR(NDIM, NG, PONDER(1),1)
 
       VIP(1) = AL0
-      CALL R8COPY(NDIM, ALG,1, VIP(2),1)
+      CALL DCOPY(NDIM, ALG,1, VIP(2),1)
 
       END

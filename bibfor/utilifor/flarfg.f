@@ -1,6 +1,6 @@
       SUBROUTINE FLARFG( N, ALPHA, X, INCX, TAU )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILIFOR  DATE 12/12/2002   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF UTILIFOR  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) LAPACK
 C ======================================================================
@@ -86,7 +86,7 @@ C     .. LOCAL SCALARS ..
       REAL*8   BETA, RSAFMN, SAFMIN, XNORM
 C     ..
 C     .. EXTERNAL FUNCTIONS ..
-      REAL*8   R8PREM, R8MIEM, FLAPY2, BLNRM2
+      REAL*8   R8PREM, R8MIEM, FLAPY2, DNRM2
 C     ..
 C     .. EXECUTABLE STATEMENTS ..
 C
@@ -95,7 +95,7 @@ C
          GOTO 1000
       END IF
 C
-      XNORM = BLNRM2( N-1, X, INCX )
+      XNORM = DNRM2( N-1, X, INCX )
 C
       IF( XNORM.EQ.ZERO ) THEN
 C
@@ -116,7 +116,7 @@ C
             KNT = 0
    10       CONTINUE
             KNT = KNT + 1
-            CALL BLSCAL( N-1, RSAFMN, X, INCX )
+            CALL DSCAL( N-1, RSAFMN, X, INCX )
             BETA = BETA*RSAFMN
             ALPHA = ALPHA*RSAFMN
             IF( ABS( BETA ).LT.SAFMIN )
@@ -124,10 +124,10 @@ C
 C
 C           NEW BETA IS AT MOST 1, AT LEAST SAFMIN
 C
-            XNORM = BLNRM2( N-1, X, INCX )
+            XNORM = DNRM2( N-1, X, INCX )
             BETA = -SIGN( FLAPY2( ALPHA, XNORM ), ALPHA )
             TAU = ( BETA-ALPHA ) / BETA
-            CALL BLSCAL( N-1, ONE / ( ALPHA-BETA ), X, INCX )
+            CALL DSCAL( N-1, ONE / ( ALPHA-BETA ), X, INCX )
 C
 C           IF ALPHA IS SUBNORMAL, IT MAY LOSE RELATIVE ACCURACY
 C
@@ -137,7 +137,7 @@ C
    20       CONTINUE
          ELSE
             TAU = ( BETA-ALPHA ) / BETA
-            CALL BLSCAL( N-1, ONE / ( ALPHA-BETA ), X, INCX )
+            CALL DSCAL( N-1, ONE / ( ALPHA-BETA ), X, INCX )
             ALPHA = BETA
          END IF
       END IF

@@ -4,7 +4,7 @@
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 24/08/2004   AUTEUR CIBHHPD S.VANDENBERGHE 
+C MODIF MODELISA  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -208,12 +208,12 @@ C
   40           CONTINUE
                IF ( DMAX.EQ.0.0D0 ) DMAX = 1.0D0
                IF ( DBLE(ABS(EXCENT))/DMAX.LT.EPSG ) EXCENT = 0.0D0
-               CALL R8COPY(3,X3DCA(1),1,X3DP(1),1)
+               CALL DCOPY(3,X3DCA(1),1,X3DP(1),1)
                IF ( EXCENT.NE.0.0D0 ) THEN
-                  CALL R8AXPY(3,-EXCENT,NORMAL(1),1,X3DP(1),1)
+                  CALL DAXPY(3,-EXCENT,NORMAL(1),1,X3DP(1),1)
                   IF ( EXCENT.LT.0.0D0 ) THEN
                      EXCENT = DBLE(ABS(EXCENT))
-                     CALL R8SCAL(3,-1.0D0,NORMAL(1),1)
+                     CALL DSCAL(3,-1.0D0,NORMAL(1),1)
                   ENDIF
                ENDIF
 C

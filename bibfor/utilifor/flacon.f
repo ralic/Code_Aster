@@ -1,6 +1,6 @@
       SUBROUTINE FLACON( N, V, X, ISGN, EST, KASE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILIFOR  DATE 12/12/2002   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF UTILIFOR  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) LAPACK
 C ======================================================================
@@ -148,7 +148,7 @@ C     ................ ENTRY   (JUMP = 3)
 C     X HAS BEEN OVERWRITTEN BY A*X.
 C
    70 CONTINUE
-      CALL BLCOPY( N, X, 1, V, 1 )
+      CALL DCOPY( N, X, 1, V, 1 )
       ESTOLD = EST
       EST = LDASUM( N, V, 1 )
       DO 80 I = 1, N
@@ -200,7 +200,7 @@ C
   140 CONTINUE
       TEMP = TWO*( LDASUM( N, X, 1 ) / DBLE( 3*N ) )
       IF( TEMP.GT.EST ) THEN
-         CALL BLCOPY( N, X, 1, V, 1 )
+         CALL DCOPY( N, X, 1, V, 1 )
          EST = TEMP
       END IF
 C

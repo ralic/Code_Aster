@@ -6,7 +6,7 @@
       CHARACTER*19        NOMSTO, NOMNUM
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/03/2004   AUTEUR OUGLOVA A.OUGLOVA 
+C MODIF ALGORITH  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,7 +50,7 @@ C
      +             IACONL, IAREFE, IADESC, I, J, IMATRA, IADIA, IABLO, 
      +             IHCOL, IBLO, LDBLO, N1BLOC, N2BLOC, IADMOD, IRET,
      +             IDVEC2, IDBASE
-      REAL*8       PIJ, R8DOT
+      REAL*8       PIJ, DDOT
       CHARACTER*8  K8B
       CHARACTER*16 TYPBAS
       CHARACTER*19 MATR, RESU, NOMCHA
@@ -142,7 +142,7 @@ C
 C
 C ------------ PRODUIT SCALAIRE VECTASS * MODE
 C
-               PIJ = R8DOT( NEQ, ZR(IDBASE+(J-1)*NEQ),1,ZR(IDVEC2),1)
+               PIJ = DDOT( NEQ, ZR(IDBASE+(J-1)*NEQ),1,ZR(IDVEC2),1)
 C
 C ------------ STOCKAGE DANS LE .VALE A LA BONNE PLACE (1 BLOC)
 C

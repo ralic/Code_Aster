@@ -21,7 +21,7 @@ C ======================================================================
       LOGICAL       GRILLE
       CHARACTER*16  OPTION , NOMTE
 C     ------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 15/06/2004   AUTEUR MABBAS M.ABBAS 
+C MODIF ELEMENTS  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
 C
 C     MATRICE DE RIGIDITE DE L'ELEMENT DE PLAQUE DKT
 C     ------------------------------------------------------------------
@@ -109,8 +109,8 @@ C     ------ CALCUL DE LA MATRICE BM -----------------------------------
       AIRE = ZR(LZR-1+LAIRE)
 C
 C     ------ CALCUL DU PRODUIT BMT.DM.BM -------------------------------
-      CALL R8COPY(9,DM,1,DMF2,1)
-      CALL R8SCAL(9,AIRE,DMF2,1)
+      CALL DCOPY(9,DM,1,DMF2,1)
+      CALL DSCAL(9,AIRE,DMF2,1)
       CALL UTBTAB('ZERO',3,6,DMF2,BM,XAB1,MEMB)
 C
 C     ------------------------------------------------------------------
@@ -122,24 +122,24 @@ C     ------------------------------------------------------------------
 C        ----- CALCUL DE LA MATRICE BF AU POINT QSI ETA ------------
         CALL DKTBF(INT,ZR(LZR),BF)
 C        ----- CALCUL DU PRODUIT BFT.DF.BF -------------------------
-        CALL R8COPY(9,DF,1,DF2,1)
-        CALL R8SCAL(9,WGT,DF2,1)
+        CALL DCOPY(9,DF,1,DF2,1)
+        CALL DSCAL(9,WGT,DF2,1)
         CALL UTBTAB('CUMU',3,9,DF2,BF,XAB1,FLEX)
         IF (MULTIC.EQ.2) THEN
 C        ----- CALCUL DU PRODUIT BMT.DMF.BF ------------------------
-          CALL R8COPY(9,DMF,1,DMF2,1)
-          CALL R8SCAL(9,WGT,DMF2,1)
+          CALL DCOPY(9,DMF,1,DMF2,1)
+          CALL DSCAL(9,WGT,DMF2,1)
           CALL UTCTAB('CUMU',3,9,6,DMF2,BF,BM,XAB1,MEFL)
         END IF
 C
         IF ( GRILLE ) THEN
           WGT0 = DISTN*DISTN*WGT
-          CALL R8COPY(9,DM,1,DF2,1)
-          CALL R8SCAL(9,WGT0,DF2,1)
+          CALL DCOPY(9,DM,1,DF2,1)
+          CALL DSCAL(9,WGT0,DF2,1)
           CALL UTBTAB('CUMU',3,9,DF2,BF,XAB1,FLEX)
           WGT0 = DISTN*WGT
-          CALL R8COPY(9,DM,1,DMF2,1)
-          CALL R8SCAL(9,WGT0,DMF2,1)
+          CALL DCOPY(9,DM,1,DMF2,1)
+          CALL DSCAL(9,WGT0,DMF2,1)
           CALL UTCTAB('CUMU',3,9,6,DMF2,BF,BM,XAB1,MEFL)
         END IF
    10 CONTINUE

@@ -3,7 +3,7 @@
      &                  D     , A     , YISI  )
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/08/2000   AUTEUR GJBHHEL E.LORENTZ 
+C MODIF ALGORITH  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,7 +49,7 @@ C ----------------------------------------------------------------------
 
       INTEGER DEB, FIN, NCPL, N, I, IND
       REAL*8  YS, YDY, SDM1S,  AIMBI, DELTA0, NOS, NOY
-      REAL*8  R8DOT
+      REAL*8  DDOT
 
 
 
@@ -70,13 +70,13 @@ C    GESTION DU STOCKAGE CYCLIQUE SUR MCP COUPLES
       END IF
 
 C    CALCUL DU NOUVEAU COUPLE (S,Y)
-      CALL R8COPY(NDDL, X,1, S(1,FIN),1)
-      CALL R8AXPY(NDDL, -1.D0, XM,1, S(1,FIN),1)
-      CALL R8COPY(NDDL, G,1, Y(1,FIN),1)
-      CALL R8AXPY(NDDL, -1.D0, GM,1, Y(1,FIN),1)
+      CALL DCOPY(NDDL, X,1, S(1,FIN),1)
+      CALL DAXPY(NDDL, -1.D0, XM,1, S(1,FIN),1)
+      CALL DCOPY(NDDL, G,1, Y(1,FIN),1)
+      CALL DAXPY(NDDL, -1.D0, GM,1, Y(1,FIN),1)
 
-      NOS = R8DOT(NDDL, S(1,FIN),1, S(1,FIN),1)
-      NOY = R8DOT(NDDL, Y(1,FIN),1, Y(1,FIN),1)
+      NOS = DDOT(NDDL, S(1,FIN),1, S(1,FIN),1)
+      NOY = DDOT(NDDL, Y(1,FIN),1, Y(1,FIN),1)
 
       IF (NOS.EQ.0) CALL UTMESS('F','ALBFG2','POINTS CONFONDUS')
       IF (NOY.EQ.0) CALL UTMESS('F','ALBFG2','GRADIENTS CONFONDUS')
@@ -91,8 +91,8 @@ C ======================================================================
       IF (ITER.EQ.1) THEN
 
 C      INITIALISATION PAR DELTA0.ID
-        DELTA0 = R8DOT(NDDL, Y(1,FIN),1, S(1,FIN),1)
-     &         / R8DOT(NDDL, Y(1,FIN),1, Y(1,FIN),1)
+        DELTA0 = DDOT(NDDL, Y(1,FIN),1, S(1,FIN),1)
+     &         / DDOT(NDDL, Y(1,FIN),1, Y(1,FIN),1)
         DO 10 N = 1,NDDL
           W0(N) = DELTA0
  10     CONTINUE
@@ -100,7 +100,7 @@ C      INITIALISATION PAR DELTA0.ID
       ELSE
 
 C      CONSTRUCTION DES PRODUITS SCALAIRES COMMUNS
-        YS    = R8DOT(NDDL, Y(1,FIN),1, S(1,FIN),1)
+        YS    = DDOT(NDDL, Y(1,FIN),1, S(1,FIN),1)
         YDY   = 0
         SDM1S = 0
         DO 20 N = 1,NDDL
@@ -121,13 +121,13 @@ C ======================================================================
 C             CALCUL DE LA NOUVELLE DIRECTION DE DESCENTE -W.G
 C ======================================================================
 
-      CALL R8COPY(NDDL, G,1, D,1)
+      CALL DCOPY(NDDL, G,1, D,1)
 
       DO 30 I = NCPL, 1, -1
         IND     = MOD( I-1+DEB - 1, MCPL) + 1
-        YISI(I) = R8DOT(NDDL, Y(1,IND),1, S(1,IND),1)
-        A(I)    = R8DOT(NDDL, D,1, S(1,IND),1) / YISI(I)
-        CALL R8AXPY(NDDL, -A(I), Y(1,IND),1, D,1)
+        YISI(I) = DDOT(NDDL, Y(1,IND),1, S(1,IND),1)
+        A(I)    = DDOT(NDDL, D,1, S(1,IND),1) / YISI(I)
+        CALL DAXPY(NDDL, -A(I), Y(1,IND),1, D,1)
  30   CONTINUE
 
       DO 40 N = 1,NDDL
@@ -136,8 +136,8 @@ C ======================================================================
 
       DO 50 I = 1, NCPL
         IND     = MOD( I-1+DEB - 1, MCPL) + 1
-        AIMBI = A(I) - R8DOT(NDDL, Y(1,IND),1, D,1) / YISI(I)
-        CALL R8AXPY(NDDL, AIMBI, S(1,IND),1, D,1)
+        AIMBI = A(I) - DDOT(NDDL, Y(1,IND),1, D,1) / YISI(I)
+        CALL DAXPY(NDDL, AIMBI, S(1,IND),1, D,1)
  50   CONTINUE
 
       DO 60 N = 1, NDDL

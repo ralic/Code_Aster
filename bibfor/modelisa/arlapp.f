@@ -1,6 +1,6 @@
       SUBROUTINE ARLAPP(MAIL,NOM1Z,NOM2Z,NNORMZ,NMAX,NTM,COL,NMC,NAPP)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 08/11/2004   AUTEUR DURAND C.DURAND 
+C MODIF MODELISA  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
 C======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -84,7 +84,7 @@ C --- VARIABLES
       LOGICAL       COL(*),IR
 
 C --- FONCTION
-      REAL*8        R8DOT
+      REAL*8        DDOT
       INTEGER       NSOMMT
 
       NOM1 = NOM1Z
@@ -201,7 +201,7 @@ C --------- PAN
             P0 = C3 + DD2*(P0-1) 
 
             DO 60 K = 1, N
-              R = R8DOT(DIME,ZR(P0),1,ZR(Z1),1) + ZR(P0+DIME)
+              R = DDOT(DIME,ZR(P0),1,ZR(Z1),1) + ZR(P0+DIME)
               IF (R.GT.0.D0) GOTO 40
               P0 = P0 + DD2
  60         CONTINUE
@@ -268,7 +268,7 @@ C ------- PAN
           P0 = B3 + DD2*(P0-1) 
 
           DO 100 K = 1, N
-            R = R8DOT(DIME,ZR(P0),1,NO,1) + ZR(P0+DIME)
+            R = DDOT(DIME,ZR(P0),1,NO,1) + ZR(P0+DIME)
             IF (R.GT.0.D0) GOTO 140
             P0 = P0 + DD2
  100      CONTINUE

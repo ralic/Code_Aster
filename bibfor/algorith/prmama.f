@@ -3,7 +3,7 @@
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/05/2000   AUTEUR KXBADNG T.KESTENS 
+C MODIF ALGORITH  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -75,8 +75,8 @@ C -----------------
 C
 C FONCTIONS EXTERNES
 C ------------------
-      REAL*8     R8DOT
-C     EXTERNAL   R8DOT
+      REAL*8     DDOT
+C     EXTERNAL   DDOT
 C
 C-------------------   DEBUT DU CODE EXECUTABLE    ---------------------
 C
@@ -133,7 +133,7 @@ C
 C
       DO 310 J = 1,NB2
          DO 320 I = 1,NA2
-            CMAT(I,J) = R8DOT(NB1,AMAT(1,I),1,BMAT(1,J),1)
+            CMAT(I,J) = DDOT(NB1,AMAT(1,I),1,BMAT(1,J),1)
  320     CONTINUE
  310  CONTINUE
 C

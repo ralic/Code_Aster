@@ -1,6 +1,6 @@
       SUBROUTINE FLARFX( SIDE, M, N, V, TAU, C, LDC, WORK )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILIFOR  DATE 12/12/2002   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF UTILIFOR  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) LAPACK
 C ======================================================================
@@ -108,13 +108,13 @@ C        CODE FOR GENERAL M
 C
 C        W := C'*V
 C
-C DUE TO CRP102 CALL BLGEMV('TRANSPOSE',M,N,ONE,C,LDC,V,1,ZERO,WORK,
-         CALL BLGEMV( 'T', M, N, ONE, C, LDC, V, 1, ZERO, WORK,
+C DUE TO CRP102 CALL DGEMV('TRANSPOSE',M,N,ONE,C,LDC,V,1,ZERO,WORK,
+         CALL DGEMV( 'T', M, N, ONE, C, LDC, V, 1, ZERO, WORK,
      &               1 )
 C
 C        C := C - TAU * V * W'
 C
-         CALL BLSGER( M, N, -TAU, V, 1, WORK, 1, C, LDC )
+         CALL DGER( M, N, -TAU, V, 1, WORK, 1, C, LDC )
          GO TO 410
    10    CONTINUE
 C
@@ -382,13 +382,13 @@ C        CODE FOR GENERAL N
 C
 C        W := C * V
 C
-C DUE TO CRP102 CALL BLGEMV('NO TRANSPOSE',M,N,ONE,C,LDC,V,1,ZERO,
-         CALL BLGEMV( 'N', M, N, ONE, C, LDC, V, 1, ZERO,
+C DUE TO CRP102 CALL DGEMV('NO TRANSPOSE',M,N,ONE,C,LDC,V,1,ZERO,
+         CALL DGEMV( 'N', M, N, ONE, C, LDC, V, 1, ZERO,
      &               WORK, 1 )
 C
 C        C := C - TAU * W * V'
 C
-         CALL BLSGER( M, N, -TAU, WORK, 1, V, 1, C, LDC )
+         CALL DGER( M, N, -TAU, WORK, 1, V, 1, C, LDC )
          GO TO 410
   210    CONTINUE
 C

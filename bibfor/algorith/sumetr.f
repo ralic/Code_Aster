@@ -1,6 +1,6 @@
       SUBROUTINE SUMETR(COVA,METR,JAC)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/01/96   AUTEUR GJBHHEL E.LORENTZ 
+C MODIF ALGORITH  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -31,13 +31,13 @@ C OUT JAC     JACOBIEN DE LA METRIQUE
 C.......................................................................
 
       INTEGER I,J
-      REAL*8  R8DOT
+      REAL*8  DDOT
 
 
 C    CALCUL DE LA METRIQUE
       DO 10 I = 1,2
         DO 20 J = 1,2
-          METR(I,J) = R8DOT(3,COVA(1,I),1,COVA(1,J),1)
+          METR(I,J) = DDOT(3,COVA(1,I),1,COVA(1,J),1)
  20     CONTINUE
  10   CONTINUE
 

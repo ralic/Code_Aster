@@ -1,8 +1,9 @@
-      SUBROUTINE SHAKSG(K,R)
+      FUNCTION DCABS2(C)
+      IMPLICIT REAL*8 (A-H,O-Z)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -17,30 +18,16 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
-C--------------------------------------------------------
-C ELEMENT SHB8-PS A.COMBESCURE, S.BAGUET INSA LYON 2003 /
-C-------------------------------------------------------
-C TOURNE KSTAB VERS LE REPERE GLOBAL
-      IMPLICIT REAL*8 (A-H,O-Z)
-      REAL*8 K(24,24),R(3,3),KRT(24,24),TMP(24,24),KR(24,24)
-      INTEGER I,J,KK
-CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
-C      CALL ZDANUL(KRT,576)
-C      CALL ZDANUL(KR,576)
-      CALL R8INIR(576,0.D0,KRT,1)
-      CALL R8INIR(576,0.D0,KR,1)
-      DO 30 KK = 1,8
-        DO 20 J = 1,3
-          DO 10 I = 1,3
-CCCCCCC ATTENTION< INVERSE LE 3 NOVEMBRE 2001
-            KR((KK-1)*3+I, (KK-1)*3+J) = R(I,J)
-            KRT((KK-1)*3+I, (KK-1)*3+J) = R(J,I)
-   10     CONTINUE
-   20   CONTINUE
-   30 CONTINUE
-      CALL MULMAT(24,24,24,K,KR,TMP)
-      CALL MULMAT(24,24,24,KRT,TMP,KR)
-C      CALL SHIFTD(KR,K,576)
-      CALL DCOPY(576,KR,1,K,1)
-
+C-----------------------------------------------------------------------
+C CALCUL DU MODULE D'UN NOMBRE COMPLEXE
+C-----------------------------------------------------------------------
+C  IN : C : NOMBRE COMPLEXE DONT ON VEUT CALCULER LE MODULE
+C-----------------------------------------------------------------------
+      REAL*8     DCABS2
+      COMPLEX*16 C
+      COMPLEX*16 CBAR,CCBAR
+C-----------------------------------------------------------------------
+      CBAR = DCONJG(C)
+      CCBAR = C*CBAR
+      DCABS2 = DBLE(SQRT(DBLE(CCBAR)))
       END

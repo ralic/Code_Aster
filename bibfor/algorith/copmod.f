@@ -7,7 +7,7 @@
       CHARACTER*(*)       CHAMZ
 C***********************************************************************
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 31/08/1999   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -80,7 +80,7 @@ C
 
          CALL JEVEUO ( NOMCHA, 'L', IADMOD )
 
-         CALL R8COPY ( NEQ, ZR(IADMOD), 1, BMODAL((I-1)*NEQ+1), 1 )
+         CALL DCOPY ( NEQ, ZR(IADMOD), 1, BMODAL((I-1)*NEQ+1), 1 )
          IF ( CHAMP .EQ. 'DEPL' ) THEN
             CALL ZERLAG ( BMODAL((I-1)*NEQ+1), NEQ, ZI(IDDEEQ) )
          ENDIF

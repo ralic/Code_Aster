@@ -4,7 +4,7 @@
 C---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 17/02/2003   AUTEUR NICOLAS O.NICOLAS 
+C MODIF ALGELINE  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -132,9 +132,9 @@ C     DLABAD  LAPACK ROUTINE FOR DEFINING THE UNDERFLOW AND OVERFLOW
 C             LIMITS.
 C     DLAMCH  LAPACK ROUTINE THAT DETERMINES MACHINE CONSTANTS.
 C     FLAPY2  LAPACK ROUTINE TO COMPUTE SQRT(X**2+Y**2) CAREFULLY.
-C     GLGEMV   LEVEL 2 BLAS ROUTINE FOR MATRIX VECTOR MULTIPLICATION.
-C     GLAXPY   LEVEL 1 BLAS THAT COMPUTES A VECTOR TRIAD.
-C     GLCOPY   LEVEL 1 BLAS THAT COPIES ONE VECTOR TO ANOTHER.
+C     ZGEMV   LEVEL 2 BLAS ROUTINE FOR MATRIX VECTOR MULTIPLICATION.
+C     ZAXPY   LEVEL 1 BLAS THAT COMPUTES A VECTOR TRIAD.
+C     ZCOPY   LEVEL 1 BLAS THAT COPIES ONE VECTOR TO ANOTHER.
 C     ZLSCAL   LEVEL 1 BLAS THAT SCALES A VECTOR.
 C
 C\AUTHOR
@@ -151,7 +151,7 @@ C
 C\REMARKS
 C  1. IN THIS VERSION, EACH SHIFT IS APPLIED TO ALL THE SUBLOCKS OF
 C     THE HESSENBERG MATRIX H AND NOT JUST TO THE SUBMATRIX THAT IT
-C     COMES FROM. DEFLATION AS IN LAPACK ROUTINE GLAHQR (QR ALGORITHM
+C     COMES FROM. DEFLATION AS IN LAPACK ROUTINE ZLAHQR (QR ALGORITHM
 C     FOR UPPER HESSENBERG MATRICES ) IS USED.
 C     UPON OUTPUT, THE SUBDIAGONALS OF H ARE ENFORCED TO BE NON-NEGATIVE
 C     REAL NUMBERS.
@@ -235,7 +235,7 @@ C        %-----------------------------------------------%
 C        | SET MACHINE-DEPENDENT CONSTANTS FOR THE       |
 C        | STOPPING CRITERION. IF NORM(H) <= SQRT(OVFL), |
 C        | OVERFLOW SHOULD NOT OCCUR.                    |
-C        | REFERENCE: LAPACK SUBROUTINE GLAHQR           |
+C        | REFERENCE: LAPACK SUBROUTINE ZLAHQR           |
 C        %-----------------------------------------------%
 C
 
@@ -292,7 +292,7 @@ C
 C           %----------------------------------------%
 C           | CHECK FOR SPLITTING AND DEFLATION. USE |
 C           | A STANDARD TEST AS IN THE QR ALGORITHM |
-C           | REFERENCE: LAPACK SUBROUTINE GLAHQR    |
+C           | REFERENCE: LAPACK SUBROUTINE ZLAHQR    |
 C           %----------------------------------------%
 C
             TST1 = ZABS1( H( I, I ) ) + ZABS1( H( I+1, I+1 ) )
@@ -429,7 +429,7 @@ C
 C        %--------------------------------------------%
 C        | FINAL CHECK FOR SPLITTING AND DEFLATION.   |
 C        | USE A STANDARD TEST AS IN THE QR ALGORITHM |
-C        | REFERENCE: LAPACK SUBROUTINE GLAHQR.       |
+C        | REFERENCE: LAPACK SUBROUTINE ZLAHQR.       |
 C        | NOTE: SINCE THE SUBDIAGONALS OF THE        |
 C        | COMPRESSED H ARE NONNEGATIVE REAL NUMBERS, |
 C        | WE TAKE ADVANTAGE OF THIS.                 |
@@ -451,7 +451,7 @@ C     | OF H WOULD BE ZERO AS IN EXACT ARITHMETIC.      |
 C     %-------------------------------------------------%
 C
       IF ( DBLE( H(KEV+1,KEV) ) .GT. RZERO )
-     &   CALL GLGEMV ('N', N, KPLUSP, ONE, V, LDV, Q(1,KEV+1), 1, ZERO, 
+     &   CALL ZGEMV ('N', N, KPLUSP, ONE, V, LDV, Q(1,KEV+1), 1, ZERO, 
      &                WORKD(N+1), 1)
 C 
 C     %----------------------------------------------------------%
@@ -460,9 +460,9 @@ C     | TAKING ADVANTAGE OF THE UPPER HESSENBERG STRUCTURE OF Q. |
 C     %----------------------------------------------------------%
 C
       DO 140 I = 1, KEV
-         CALL GLGEMV ('N', N, KPLUSP-I+1, ONE, V, LDV,
+         CALL ZGEMV ('N', N, KPLUSP-I+1, ONE, V, LDV,
      &               Q(1,KEV-I+1), 1, ZERO, WORKD, 1)
-         CALL GLCOPY (N, WORKD, 1, V(1,KPLUSP-I+1), 1)
+         CALL ZCOPY (N, WORKD, 1, V(1,KPLUSP-I+1), 1)
   140 CONTINUE
 C
 C     %-------------------------------------------------%
@@ -476,7 +476,7 @@ C     | COPY THE (KEV+1)-ST COLUMN OF (V*Q) IN THE APPROPRIATE PLACE |
 C     %--------------------------------------------------------------%
 C
       IF ( DBLE( H(KEV+1,KEV) ) .GT. RZERO )
-     &   CALL GLCOPY (N, WORKD(N+1), 1, V(1,KEV+1), 1)
+     &   CALL ZCOPY (N, WORKD(N+1), 1, V(1,KEV+1), 1)
 C 
 C     %-------------------------------------%
 C     | UPDATE THE RESIDUAL VECTOR:         |
@@ -488,7 +488,7 @@ C     %-------------------------------------%
 C
       CALL ZLSCAL (N, Q(KPLUSP,KEV), RESID, 1)
       IF ( DBLE( H(KEV+1,KEV) ) .GT. RZERO )
-     &   CALL GLAXPY (N, H(KEV+1,KEV), V(1,KEV+1), 1, RESID, 1)
+     &   CALL ZAXPY (N, H(KEV+1,KEV), V(1,KEV+1), 1, RESID, 1)
 C
       IF (MSGLVL .GT. 1) THEN
          CALL ZVOUT (LOGFIL, 1, Q(KPLUSP,KEV), NDIGIT,

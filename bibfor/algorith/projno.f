@@ -2,7 +2,7 @@
      &                  NBNO,JEU)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/10/2004   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -66,7 +66,7 @@ C
       INTEGER      NO,K
       CHARACTER*24 CONTNO
       INTEGER      JNOCO,JCOOR
-      REAL*8       COORDM(3),PM(3),R8DOT
+      REAL*8       COORDM(3),PM(3),DDOT
 C ----------------------------------------------------------------------
       CALL JEMARQ ()
 C
@@ -83,7 +83,7 @@ C
       DO 10 K = 1,3
         PM(K) = COORDM(K)-COORDP(K)
 10    CONTINUE
-      JEU = R8DOT(3,NORM,1,PM,1)
+      JEU = DDOT(3,NORM,1,PM,1)
 C
       CALL JEDEMA()
 C ----------------------------------------------------------------------

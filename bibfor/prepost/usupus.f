@@ -2,7 +2,7 @@
       IMPLICIT REAL *8 (A-H,O-Z)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 09/02/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF PREPOST  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -129,7 +129,7 @@ C
 C
             CALL WKVECT(KFORN,'V V R',NBPT,JFN)
             CALL WKVECT(KVGLI,'V V R',NBPT,JVG)
-            CALL R8COPY(NBPT,ZR(JWK1),1,ZR(JFN),1)
+            CALL DCOPY(NBPT,ZR(JWK1),1,ZR(JFN),1)
             DO 20 I = 0 , NBPT-1
                ZR(JVG+I) = SQRT( ZR(JWK2+I)**2 + ZR(JWK3+I)**2 )
  20         CONTINUE

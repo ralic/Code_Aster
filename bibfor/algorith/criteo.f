@@ -2,7 +2,7 @@
      &                   ECROD,SEUIL,CRIT,CRITP)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 04/10/2004   AUTEUR GODARD V.GODARD 
+C MODIF ALGORITH  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -57,7 +57,7 @@ C ----------------------------------------------------------------------
       REAL*8      RTEMP,TREB,TREPS,TREM,DCOEFD,ENE,COUPL
       REAL*8      TOLE,RAC2,KRON(6)
 
-      REAL*8      R8DOT
+      REAL*8      DDOT
 
       DATA  KRON/1.D0,1.D0,1.D0,0.D0,0.D0,0.D0/
 
@@ -272,7 +272,7 @@ C----------------------------------------------------------------
         EPSDR(I)=EPSDR(I)*RAC2
 52    CONTINUE
 
-      CRITP=R8DOT(6,DFDE,1,EPSDR,1)
+      CRITP=DDOT(6,DFDE,1,EPSDR,1)
 
       
       END

@@ -3,7 +3,7 @@
      &     IPNTR, WORKD, IERR, ALPHA)
 C----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 12/12/2002   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF ALGELINE  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) LAPACK
 C ======================================================================
@@ -97,10 +97,10 @@ C
 C ROUTINES CALLED:
 C     DVOUT   ARPACK UTILITY ROUTINE FOR VECTOR OUTPUT.
 C     FLARNV  LAPACK ROUTINE FOR GENERATING A RANDOM VECTOR.
-C     BLGEMV   LEVEL 2 BLAS ROUTINE FOR MATRIX VECTOR MULTIPLICATION.
-C     BLCOPY   LEVEL 1 BLAS THAT COPIES ONE VECTOR TO ANOTHER.
-C     BLSDOT    LEVEL 1 BLAS THAT COMPUTES THE SCALAR PRODUCT .
-C     BLNRM2   LEVEL 1 BLAS THAT COMPUTES THE NORM OF A VECTOR.
+C     DGEMV   LEVEL 2 BLAS ROUTINE FOR MATRIX VECTOR MULTIPLICATION.
+C     DCOPY   LEVEL 1 BLAS THAT COPIES ONE VECTOR TO ANOTHER.
+C     DDOT    LEVEL 1 BLAS THAT COMPUTES THE SCALAR PRODUCT .
+C     DNRM2   LEVEL 1 BLAS THAT COMPUTES THE NORM OF A VECTOR.
 C
 C INTRINSIC FUNCTIONS
 C     ABS, SQRT
@@ -176,7 +176,7 @@ C     %-----------%
 C     | FUNCTIONS |
 C     %-----------%
 
-      REAL*8 BLSDOT, BLNRM2
+      REAL*8 DDOT, DNRM2
 
 C     %-----------------%
 C     | DATA STATEMENTS |
@@ -237,7 +237,7 @@ C        %----------------------------------------------------------%
             NOPX = NOPX + 1
             IPNTR(1) = 1
             IPNTR(2) = N + 1
-            CALL BLCOPY (N, RESID, 1, WORKD, 1)
+            CALL DCOPY (N, RESID, 1, WORKD, 1)
             IDO = -1
             GO TO 9000
          END IF
@@ -263,23 +263,23 @@ C     %------------------------------------------------------%
       FIRST = .TRUE.
       IF (BMAT .EQ. 'G') THEN
          NBX = NBX + 1
-         CALL BLCOPY (N, WORKD(N+1), 1, RESID, 1)
+         CALL DCOPY (N, WORKD(N+1), 1, RESID, 1)
          IPNTR(1) = N + 1
          IPNTR(2) = 1
          IDO = 2
          GO TO 9000
       ELSE IF (BMAT .EQ. 'I') THEN
-         CALL BLCOPY (N, RESID, 1, WORKD, 1)
+         CALL DCOPY (N, RESID, 1, WORKD, 1)
       END IF
 
    20 CONTINUE
 
       FIRST = .FALSE.
       IF (BMAT .EQ. 'G') THEN
-          RNORM0 = BLSDOT (N, RESID, 1, WORKD, 1)
+          RNORM0 = DDOT (N, RESID, 1, WORKD, 1)
           RNORM0 = SQRT(ABS(RNORM0))
       ELSE IF (BMAT .EQ. 'I') THEN
-           RNORM0 = BLNRM2(N, RESID, 1)
+           RNORM0 = DNRM2(N, RESID, 1)
       END IF
       RNORM  = RNORM0
 
@@ -304,9 +304,9 @@ C     %---------------------------------------------------------------%
       ORTH = .TRUE.
    30 CONTINUE
 
-      CALL BLGEMV ('T', N, J-1, ONE, V, LDV, WORKD, 1,
+      CALL DGEMV ('T', N, J-1, ONE, V, LDV, WORKD, 1,
      &            ZERO, WORKD(N+1), 1)
-      CALL BLGEMV ('N', N, J-1, -ONE, V, LDV, WORKD(N+1), 1,
+      CALL DGEMV ('N', N, J-1, -ONE, V, LDV, WORKD(N+1), 1,
      &            ONE, RESID, 1)
 
 C     %----------------------------------------------------------%
@@ -315,22 +315,22 @@ C     %----------------------------------------------------------%
 
       IF (BMAT .EQ. 'G') THEN
          NBX = NBX + 1
-         CALL BLCOPY (N, RESID, 1, WORKD(N+1), 1)
+         CALL DCOPY (N, RESID, 1, WORKD(N+1), 1)
          IPNTR(1) = N + 1
          IPNTR(2) = 1
          IDO = 2
          GO TO 9000
       ELSE IF (BMAT .EQ. 'I') THEN
-         CALL BLCOPY (N, RESID, 1, WORKD, 1)
+         CALL DCOPY (N, RESID, 1, WORKD, 1)
       END IF
 
    40 CONTINUE
 
       IF (BMAT .EQ. 'G') THEN
-         RNORM = BLSDOT (N, RESID, 1, WORKD, 1)
+         RNORM = DDOT (N, RESID, 1, WORKD, 1)
          RNORM = SQRT(ABS(RNORM))
       ELSE IF (BMAT .EQ. 'I') THEN
-         RNORM = BLNRM2(N, RESID, 1)
+         RNORM = DNRM2(N, RESID, 1)
       END IF
 
 C     %--------------------------------------%

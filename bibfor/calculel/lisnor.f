@@ -1,7 +1,7 @@
       SUBROUTINE LISNOR(CARA,DIME,NNORMZ,NTANGZ)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 08/11/2004   AUTEUR DURAND C.DURAND 
+C MODIF CALCULEL  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -59,7 +59,7 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 
 C --- FONCTIONS
-      REAL*8        R8NRM2
+      REAL*8        DNRM2
 
 C --- VARIABLES
       CHARACTER*8   CARA,MAIL,K
@@ -176,7 +176,7 @@ C --- CALCUL DES NORMALES LISSEES
 
               Q3 = Q0 + 2*(INO-1)
 
-              R = EP/R8NRM2(2,TANG(P7),1)
+              R = EP/DNRM2(2,TANG(P7),1)
               
               ZR(Q3  ) = ZR(Q3  ) - TANG(P7+1)*R
               ZR(Q3+1) = ZR(Q3+1) + TANG(P7  )*R
@@ -192,9 +192,9 @@ C --- CALCUL DES NORMALES LISSEES
               W(2) = TANG(P7+2)*TANG(P7+3)-TANG(P7  )*TANG(P7+5)
               W(3) = TANG(P7  )*TANG(P7+4)-TANG(P7+1)*TANG(P7+3)
 
-              R = EP/R8NRM2(3,W,1)
-              CALL R8AXPY(3,R,W,1,ZR(Q3),1)
-              CALL R8COPY(3,TANG(P7),1,ZR(Q4),1)
+              R = EP/DNRM2(3,W,1)
+              CALL DAXPY(3,R,W,1,ZR(Q3),1)
+              CALL DCOPY(3,TANG(P7),1,ZR(Q4),1)
 
               P7 = P7 + 6
 
@@ -214,7 +214,7 @@ C --- MOYENNE
           
           IF (DIME.EQ.2) THEN
 
-            R = R8NRM2(2,ZR(Q0),1)
+            R = DNRM2(2,ZR(Q0),1)
             ZR(Q1  ) = ZR(Q0+1)/R
             ZR(Q1+1) =-ZR(Q0  )/R
 
@@ -222,22 +222,22 @@ C --- MOYENNE
 
             CALL PROVEC(ZR(Q0),ZR(Q1),ZR(Q1+3))
 
-            R = R8NRM2(3,ZR(Q1+3),1)
+            R = DNRM2(3,ZR(Q1+3),1)
             IF (R.EQ.0.D0) CALL UTMESS('F','LISNOR','NORMALE MOYENNE '//
      &                 'NULLE : ATTENTION A L''ORIENTATION DES MAILLES')
 
             R = 1.D0/R
-            CALL R8SCAL(3,R,ZR(Q1+3),1)
+            CALL DSCAL(3,R,ZR(Q1+3),1)
 
             CALL PROVEC(ZR(Q1+3),ZR(Q0),ZR(Q1))
 
-            R = 1.D0/R8NRM2(3,ZR(Q1),1)
-            CALL R8SCAL(3,R,ZR(Q1),1)
+            R = 1.D0/DNRM2(3,ZR(Q1),1)
+            CALL DSCAL(3,R,ZR(Q1),1)
 
           ENDIF
 
           R = 1.D0/NN
-          CALL R8SCAL(DIME,R,ZR(Q0),1)
+          CALL DSCAL(DIME,R,ZR(Q0),1)
 
         ENDIF
 

@@ -4,7 +4,7 @@
      &   WORKD, WORKL, LWORKL, INFO)
 C---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 12/12/2002   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF ALGELINE  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) LAPACK
 C ======================================================================
@@ -247,11 +247,11 @@ C             FACTORED FORM.
 C     FTREVC  LAPACK ROUTINE TO COMPUTE THE EIGENVECTORS OF A MATRIX
 C             IN UPPER QUASI-TRIANGULAR FORM.
 C     FTRSEN  LAPACK ROUTINE THAT RE-ORDERS THE SCHUR FORM.
-C     BLTRMM   LEVEL 3 BLAS MATRIX TIMES AN UPPER TRIANGULAR MATRIX.
-C     BLSGER    LEVEL 2 BLAS RANK ONE UPDATE TO A MATRIX.
-C     BLCOPY   LEVEL 1 BLAS THAT COPIES ONE VECTOR TO ANOTHER .
-C     BLNRM2   LEVEL 1 BLAS THAT COMPUTES THE NORM OF A VECTOR.
-C     BLSCAL   LEVEL 1 BLAS THAT SCALES A VECTOR.
+C     DTRMM   LEVEL 3 BLAS MATRIX TIMES AN UPPER TRIANGULAR MATRIX.
+C     DGER    LEVEL 2 BLAS RANK ONE UPDATE TO A MATRIX.
+C     DCOPY   LEVEL 1 BLAS THAT COPIES ONE VECTOR TO ANOTHER .
+C     DNRM2   LEVEL 1 BLAS THAT COMPUTES THE NORM OF A VECTOR.
+C     DSCAL   LEVEL 1 BLAS THAT SCALES A VECTOR.
 C
 C     R8PREM  ASTER UTILITY ROUTINE THAT GIVES THE MACHINE PRECISION.
 C     R8MIEM  ASTER UTILITY ROUTINE THAT GIVES THE MINIMUN VALUES.
@@ -372,7 +372,7 @@ C     %--------------------%
 C     | EXTERNAL FUNCTIONS |
 C     %--------------------%
 
-      REAL*8 FLAPY2, BLNRM2, R8MIEM, R8PREM
+      REAL*8 FLAPY2, DNRM2, R8MIEM, R8PREM
 
 C     %-----------------------%
 C     | EXECUTABLE STATEMENTS |
@@ -638,14 +638,14 @@ C        | MAKE A COPY OF THE UPPER HESSENBERG MATRIX.               |
 C        | INITIALIZE THE SCHUR VECTOR MATRIX Q TO THE IDENTITY.     |
 C        %-----------------------------------------------------------%
 
-         CALL BLCOPY (LDH*NCV, WORKL(IH), 1, WORKL(IUPTRI), 1)
+         CALL DCOPY (LDH*NCV, WORKL(IH), 1, WORKL(IUPTRI), 1)
 C DUE TO CRP_102 CALL FLASET ('ALL', NCV, NCV, ZERO, ONE,
 C WORKL(INVSUB), LDQ)
          CALL FLASET ('A', NCV, NCV, ZERO, ONE, WORKL(INVSUB), LDQ)
          CALL FLAHQR (.TRUE., .TRUE., NCV, 1, NCV, WORKL(IUPTRI), LDH,
      &        WORKL(IHEIGR), WORKL(IHEIGI), 1, NCV,
      &        WORKL(INVSUB), LDQ, IERR)
-         CALL BLCOPY (NCV, WORKL(INVSUB+NCV-1), LDQ, WORKL(IHBDS), 1)
+         CALL DCOPY (NCV, WORKL(INVSUB+NCV-1), LDQ, WORKL(IHBDS), 1)
 
          IF (IERR .NE. 0) THEN
             INFO = -8
@@ -699,7 +699,7 @@ C        | TO COMPUTE THE RITZ ESTIMATES OF      |
 C        | CONVERGED RITZ VALUES.                |
 C        %---------------------------------------%
 
-         CALL BLCOPY(NCV, WORKL(INVSUB+NCV-1), LDQ, WORKL(IHBDS), 1)
+         CALL DCOPY(NCV, WORKL(INVSUB+NCV-1), LDQ, WORKL(IHBDS), 1)
 
 C        %----------------------------------------------------%
 C        | PLACE THE COMPUTED EIGENVALUES OF H INTO DR AND DI |
@@ -707,8 +707,8 @@ C        | IF A SPECTRAL TRANSFORMATION WAS NOT USED.         |
 C        %----------------------------------------------------%
 
          IF (TYPE .EQ. 'REGULR') THEN
-            CALL BLCOPY (NCONV, WORKL(IHEIGR), 1, DR, 1)
-            CALL BLCOPY (NCONV, WORKL(IHEIGI), 1, DI, 1)
+            CALL DCOPY (NCONV, WORKL(IHEIGR), 1, DR, 1)
+            CALL DCOPY (NCONV, WORKL(IHEIGI), 1, DI, 1)
          END IF
 
 C        %----------------------------------------------------------%
@@ -749,8 +749,8 @@ C           | MATRIX CONSISTING OF PLUS OR MINUS ONES           |
 C           %---------------------------------------------------%
 
             IF (WORKL(INVSUB+(J-1)*LDQ+J-1) .LT. ZERO) THEN
-               CALL BLSCAL (NCONV, -ONE, WORKL(IUPTRI+J-1), LDQ)
-               CALL BLSCAL (NCONV, -ONE, WORKL(IUPTRI+(J-1)*LDQ), 1)
+               CALL DSCAL (NCONV, -ONE, WORKL(IUPTRI+J-1), LDQ)
+               CALL DSCAL (NCONV, -ONE, WORKL(IUPTRI+(J-1)*LDQ), 1)
             END IF
 
  20      CONTINUE
@@ -796,8 +796,8 @@ C                 %----------------------%
 C                 | REAL EIGENVALUE CASE |
 C                 %----------------------%
 
-                  TEMP = BLNRM2( NCV, WORKL(INVSUB+(J-1)*LDQ), 1 )
-                  CALL BLSCAL ( NCV, ONE / TEMP,
+                  TEMP = DNRM2( NCV, WORKL(INVSUB+(J-1)*LDQ), 1 )
+                  CALL DSCAL ( NCV, ONE / TEMP,
      &                 WORKL(INVSUB+(J-1)*LDQ), 1 )
 
                ELSE
@@ -811,11 +811,11 @@ C                 | SQUARE ROOT OF TWO.                       |
 C                 %-------------------------------------------%
 
                  IF (ICONJ .EQ. 0) THEN
-                   TEMP = FLAPY2( BLNRM2( NCV, WORKL(INVSUB+(J-1)*LDQ),
-     &                    1 ), BLNRM2( NCV, WORKL(INVSUB+J*LDQ),  1) )
-                   CALL BLSCAL ( NCV, ONE / TEMP,
+                   TEMP = FLAPY2( DNRM2( NCV, WORKL(INVSUB+(J-1)*LDQ),
+     &                    1 ), DNRM2( NCV, WORKL(INVSUB+J*LDQ),  1) )
+                   CALL DSCAL ( NCV, ONE / TEMP,
      &                    WORKL(INVSUB+(J-1)*LDQ), 1 )
-                   CALL BLSCAL ( NCV, ONE / TEMP,
+                   CALL DSCAL ( NCV, ONE / TEMP,
      &                    WORKL(INVSUB+J*LDQ), 1 )
                    ICONJ = 1
                  ELSE
@@ -826,7 +826,7 @@ C                 %-------------------------------------------%
 
  40         CONTINUE
 
-            CALL BLGEMV('T', NCV, NCONV, ONE, WORKL(INVSUB),
+            CALL DGEMV('T', NCV, NCONV, ONE, WORKL(INVSUB),
      &                LDQ, WORKL(IHBDS), 1, ZERO,  WORKEV, 1)
 
             ICONJ = 0
@@ -850,7 +850,7 @@ C                 %-------------------------------------------%
  45         CONTINUE
 
             IF (MSGLVL .GT. 2) THEN
-                CALL BLCOPY(NCV, WORKL(INVSUB+NCV-1), LDQ,
+                CALL DCOPY(NCV, WORKL(INVSUB+NCV-1), LDQ,
      &                    WORKL(IHBDS), 1)
                 CALL DVOUT (LOGFIL, NCV, WORKL(IHBDS), NDIGIT,
      &              '_NEUPD: LAST ROW OF THE EIGENVECTOR MATRIX FOR T')
@@ -864,7 +864,7 @@ C           %---------------------------------------%
 C           | COPY RITZ ESTIMATES INTO WORKL(IHBDS) |
 C           %---------------------------------------%
 
-            CALL BLCOPY(NCONV, WORKEV, 1, WORKL(IHBDS), 1)
+            CALL DCOPY(NCONV, WORKEV, 1, WORKL(IHBDS), 1)
 
 C           %---------------------------------------------------------%
 C           | COMPUTE THE QR FACTORIZATION OF THE EIGENVECTOR MATRIX  |
@@ -888,8 +888,8 @@ C     &         WORKL(INVSUB), LDQ, WORKEV, Z, LDZ, WORKD(N+1), IERR)
             CALL FORM2R ('R', 'N', N, NCV, NCONV,
      &           WORKL(INVSUB), LDQ, WORKEV, Z, LDZ, WORKD(N+1), IERR)
 
-C DUE TO CRP102 CALL BLTRMM('RIGHT','UPPER','NO TRANSPOSE','NON-UNIT',
-            CALL BLTRMM ('R', 'U', 'N', 'N',
+C DUE TO CRP102 CALL DTRMM('RIGHT','UPPER','NO TRANSPOSE','NON-UNIT',
+            CALL DTRMM ('R', 'U', 'N', 'N',
      &                  N, NCONV, ONE, WORKL(INVSUB), LDQ, Z, LDZ)
 
          END IF
@@ -901,11 +901,11 @@ C        | AN APPROXIMATE INVARIANT SUBSPACE IS NOT NEEDED.     |
 C        | PLACE THE RITZ VALUES COMPUTED DNAUPD INTO DR AND DI |
 C        %------------------------------------------------------%
 
-         CALL BLCOPY (NCONV, WORKL(RITZR), 1, DR, 1)
-         CALL BLCOPY (NCONV, WORKL(RITZI), 1, DI, 1)
-         CALL BLCOPY (NCONV, WORKL(RITZR), 1, WORKL(IHEIGR), 1)
-         CALL BLCOPY (NCONV, WORKL(RITZI), 1, WORKL(IHEIGI), 1)
-         CALL BLCOPY (NCONV, WORKL(BOUNDS), 1, WORKL(IHBDS), 1)
+         CALL DCOPY (NCONV, WORKL(RITZR), 1, DR, 1)
+         CALL DCOPY (NCONV, WORKL(RITZI), 1, DI, 1)
+         CALL DCOPY (NCONV, WORKL(RITZR), 1, WORKL(IHEIGR), 1)
+         CALL DCOPY (NCONV, WORKL(RITZI), 1, WORKL(IHEIGI), 1)
+         CALL DCOPY (NCONV, WORKL(BOUNDS), 1, WORKL(IHBDS), 1)
       END IF
 
 C     %------------------------------------------------%
@@ -917,7 +917,7 @@ C     %------------------------------------------------%
       IF (TYPE .EQ. 'REGULR') THEN
 
          IF (RVEC)
-     &      CALL BLSCAL (NCV, RNORM, WORKL(IHBDS), 1)
+     &      CALL DSCAL (NCV, RNORM, WORKL(IHBDS), 1)
 
       ELSE
 
@@ -930,7 +930,7 @@ C        %---------------------------------------%
          IF (TYPE .EQ. 'SHIFTI') THEN
 
             IF (RVEC)
-     &         CALL BLSCAL (NCV, RNORM, WORKL(IHBDS), 1)
+     &         CALL DSCAL (NCV, RNORM, WORKL(IHBDS), 1)
 
             DO 50 K=1, NCV
               TEMP = FLAPY2( WORKL(IHEIGR+K-1),
@@ -1005,13 +1005,13 @@ C
 
  80         CONTINUE
 C
-            CALL BLCOPY (NCONV, WORKL(IHEIGR), 1, DR, 1)
-            CALL BLCOPY (NCONV, WORKL(IHEIGI), 1, DI, 1)
+            CALL DCOPY (NCONV, WORKL(IHEIGR), 1, DR, 1)
+            CALL DCOPY (NCONV, WORKL(IHEIGI), 1, DI, 1)
 C
          ELSE IF (TYPE .EQ. 'REALPT' .OR. TYPE .EQ. 'IMAGPT') THEN
 C
-            CALL BLCOPY (NCONV, WORKL(IHEIGR), 1, DR, 1)
-            CALL BLCOPY (NCONV, WORKL(IHEIGI), 1, DI, 1)
+            CALL DCOPY (NCONV, WORKL(IHEIGR), 1, DR, 1)
+            CALL DCOPY (NCONV, WORKL(IHEIGI), 1, DI, 1)
 C
          END IF
 C
@@ -1116,7 +1116,7 @@ C        | PERFORM A RANK ONE UPDATE TO Z AND    |
 C        | PURIFY ALL THE RITZ VECTORS TOGETHER. |
 C        %---------------------------------------%
 
-         CALL BLSGER (N, NCONV, ONE, RESID, 1, WORKEV, 1, Z, LDZ)
+         CALL DGER (N, NCONV, ONE, RESID, 1, WORKEV, 1, Z, LDZ)
 
       END IF
 

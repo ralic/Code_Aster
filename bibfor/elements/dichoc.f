@@ -9,7 +9,7 @@ C ----------------------------------------------------------------------
       REAL*8  VARMO(7),VARPL(7)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ELEMENTS  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -90,14 +90,14 @@ C      VITN = DVL(1+NC)-DVL(1)
       VIT2 = DVL(2+NC)-DVL(2)
       VIT3 = DVL(3+NC)-DVL(3)
       CALL VDIFF(3,XL(4),XL(1),XD)
-      CALL R8COPY(3,DPE(1),1,DIRL,1)
-      CALL R8COPY(3,DPE(1+NC),1,DIRL(4),1)
+      CALL DCOPY(3,DPE(1),1,DIRL,1)
+      CALL DCOPY(3,DPE(1+NC),1,DIRL(4),1)
       DEPX = XD(1) - DIST12 + UTOT + DIRL(4) - DIRL(1)
       DEPX = DEPX - EPSI
       DEPY = XD(2) + UTL(2+NC) - UTL(2) + DIRL(5) - DIRL(2)
       DEPZ = XD(3) + UTL(3+NC) - UTL(3) + DIRL(6) - DIRL(3)
-      CALL R8COPY(3,DVE(1),1,DIRL,1)
-      CALL R8COPY(3,DVE(1+NC),1,DIRL(4),1)
+      CALL DCOPY(3,DVE(1),1,DIRL,1)
+      CALL DCOPY(3,DVE(1+NC),1,DIRL(4),1)
 C      VITX = VITN + DIRL(4) - DIRL(1)
       VITY = VIT2 + DIRL(5) - DIRL(2)
       VITZ = VIT3 + DIRL(6) - DIRL(3)
@@ -188,11 +188,11 @@ C
 C      VITN = DVL(1)
       VIT2 = DVL(2)
       VIT3 = DVL(3)
-      CALL R8COPY(3,DPE(1),1,DIRL,1)
+      CALL DCOPY(3,DPE(1),1,DIRL,1)
       DEPX = UTL(1) + DIST12 + DIRL(1) - DIST0
       DEPY = UTL(2) + DIRL(2)
       DEPZ = UTL(3) + DIRL(3)
-      CALL R8COPY(3,DVE(1),1,DIRL,1)
+      CALL DCOPY(3,DVE(1),1,DIRL,1)
 C      VITX = VITN + DIRL(1)
       VITY = VIT2 + DIRL(2)
       VITZ = VIT3 + DIRL(3)

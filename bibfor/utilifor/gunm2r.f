@@ -2,7 +2,7 @@
      $                   WORK, INFO )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILIFOR  DATE 17/02/2003   AUTEUR NICOLAS O.NICOLAS 
+C MODIF UTILIFOR  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) LAPACK
 C ======================================================================
@@ -197,7 +197,7 @@ C
          END IF
          AII = A( I, I )
          A( I, I ) = ONE
-         CALL GLARF( SIDE, MI, NI, A( I, I ), 1, TAUI, C( IC, JC ), LDC,
+         CALL ZLARF( SIDE, MI, NI, A( I, I ), 1, TAUI, C( IC, JC ), LDC,
      $               WORK )
          A( I, I ) = AII
    10 CONTINUE

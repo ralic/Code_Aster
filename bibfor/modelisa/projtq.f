@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 02/09/98   AUTEUR CIBHHLV L.VIVAN 
+C MODIF MODELISA  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -77,7 +77,7 @@ C -----------------
       REAL*8        D, DX, DY, DZ, EPSG, NRM2
       LOGICAL       NOTLIN
 C
-      REAL*8        R8NRM2, R8PREM
+      REAL*8        DNRM2, R8PREM
 C
 C-------------------   DEBUT DU CODE EXECUTABLE    ---------------------
 C
@@ -193,7 +193,7 @@ C 4.1    TEST DE COINCIDENCE AVEC UN NOEUD MILIEU
 C ---
          IF ( IPROJ.GT.10 ) THEN
             INO = IPROJ - 10 + NBSOM
-            NRM2 = R8NRM2(3,XYZMA(1,INO),1)
+            NRM2 = DNRM2(3,XYZMA(1,INO),1)
             IF ( NRM2.EQ.0.0D0 ) NRM2 = 1.0D0
             DX = XYZMA(1,INO) - X3DP(1)
             DY = XYZMA(2,INO) - X3DP(2)
@@ -205,7 +205,7 @@ C
 C 4.2    TEST DE COINCIDENCE AVEC LE NOEUD CENTRAL POUR UNE MAILLE QUAD9
 C ---
          IF ( (IPROJ.EQ.0).AND.(NBCNX.EQ.9) ) THEN
-            NRM2 = R8NRM2(3,XYZMA(1,9),1)
+            NRM2 = DNRM2(3,XYZMA(1,9),1)
             IF ( NRM2.EQ.0.0D0 ) NRM2 = 1.0D0
             DX = XYZMA(1,9) - X3DP(1)
             DY = XYZMA(2,9) - X3DP(2)

@@ -7,7 +7,7 @@
 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/10/2004   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -73,7 +73,7 @@ C              A LA MAILLE MAITRE (PM.NORM)
 C ----------------------------------------------------------------------
 
       INTEGER K
-      REAL*8 NUMER,DENOM,R8DOT,COEFA,COEFC,COEFD
+      REAL*8 NUMER,DENOM,DDOT,COEFA,COEFC,COEFD
       REAL*8 AB(3),AM(3),ABSAM,COEFB,COEFF,XNORM(3),VECSEG(3)
 
 C
@@ -127,7 +127,7 @@ C --- CALCUL DU JEU ET DE LA DIRECTION DE PROJECTION (UNITAIRE)
         DO 20 K = 1,3
           NORM(K) = COORDM(K) - COORDP(K)
    20   CONTINUE
-        OLDJEU = SQRT(R8DOT(3,NORM,1,NORM,1))
+        OLDJEU = SQRT(DDOT(3,NORM,1,NORM,1))
         IF (NDIM.EQ.3) THEN
           VECSEG(1) = (COORDB(1)-COORDA(1))/SQRT(DENOM)
           VECSEG(2) = (COORDB(2)-COORDA(2))/SQRT(DENOM)
@@ -232,7 +232,7 @@ C --- PROJECTION HORS ZONE DE LA MAILLE
         DO 50 K = 1,3
           XNORM(K) = COORDM(K) - COORDP(K)
    50   CONTINUE
-        OLDJEU = SQRT(R8DOT(3,XNORM,1,XNORM,1))
+        OLDJEU = SQRT(DDOT(3,XNORM,1,XNORM,1))
       END IF
 C ----------------------------------------------------------------------
 C                                JEUX

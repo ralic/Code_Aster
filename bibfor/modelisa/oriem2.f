@@ -1,6 +1,6 @@
       SUBROUTINE ORIEM2(TMA,NO)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 08/11/2004   AUTEUR DURAND C.DURAND 
+C MODIF MODELISA  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -30,7 +30,7 @@ C ----------------------------------------------------------------------
       IMPLICIT NONE
 
 C --- FONCTION
-      REAL*8      R8DOT
+      REAL*8      DDOT
 
 C --- VARIABLES
       CHARACTER*8 TMA
@@ -83,7 +83,7 @@ C --- SELECTION SUIVANT TYPE DE MAILLE
         W(3) = NO(12) - NO(3)
 
         CALL PROVEC(V,W,XN)
-        IF (R8DOT(3,U,1,XN,1).GT.0.D0) GOTO 20
+        IF (DDOT(3,U,1,XN,1).GT.0.D0) GOTO 20
         L = TMA(6:6).EQ.'4'
         DIM = 3
         I = 3
@@ -101,7 +101,7 @@ C --- SELECTION SUIVANT TYPE DE MAILLE
         W(3) = NO(18) + NO(9) - NO(12) - NO(3)
 
         CALL PROVEC(V,W,XN)
-        IF (R8DOT(3,U,1,XN,1).GT.0.D0) GOTO 20
+        IF (DDOT(3,U,1,XN,1).GT.0.D0) GOTO 20
         L = TMA(6:6).EQ.'6'
         DIM = 3
         I = 4
@@ -120,7 +120,7 @@ C --- SELECTION SUIVANT TYPE DE MAILLE
 
       
         CALL PROVEC(V,W,XN)
-        IF (R8DOT(3,U,1,XN,1).GT.0.D0) GOTO 20
+        IF (DDOT(3,U,1,XN,1).GT.0.D0) GOTO 20
         L = TMA(5:5).EQ.'8'
         DIM = 3
         I = 5

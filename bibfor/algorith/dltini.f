@@ -8,7 +8,7 @@
       INTEGER NRPASE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/03/2004   AUTEUR A3BHHAE H.ANDRIAMBOLOLONA 
+C MODIF ALGORITH  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -115,7 +115,7 @@ C        --- RECUPERATION DES CHAMPS DEPL VITE ET ACCE ---
      &                      'TROUVE DANS LE CONCEPT DYNA_TRANS '//DYNA1)
          ELSE
             CALL JEVEUO(CHAMP//'.VALE','L',JVALE)
-            CALL R8COPY(NEQ,ZR(JVALE),1,DEPINI,1)
+            CALL DCOPY(NEQ,ZR(JVALE),1,DEPINI,1)
          ENDIF
          CALL RSEXCH(DYNA1,'VITE',NUME,CHAMP,IRET)
          IF ( IRET .NE. 0 ) THEN
@@ -123,7 +123,7 @@ C        --- RECUPERATION DES CHAMPS DEPL VITE ET ACCE ---
      &                      'TROUVE DANS LE CONCEPT DYNA_TRANS '//DYNA1)
          ELSE
             CALL JEVEUO(CHAMP//'.VALE','L',JVALE)
-            CALL R8COPY(NEQ,ZR(JVALE),1,VITINI,1)
+            CALL DCOPY(NEQ,ZR(JVALE),1,VITINI,1)
          ENDIF
          CALL RSEXCH(DYNA1,'ACCE',NUME,CHAMP,IRET)
          IF ( IRET .NE. 0 ) THEN
@@ -131,7 +131,7 @@ C        --- RECUPERATION DES CHAMPS DEPL VITE ET ACCE ---
      &                      'TROUVE DANS LE CONCEPT DYNA_TRANS '//DYNA1)
          ELSE
             CALL JEVEUO(CHAMP//'.VALE','L',JVALE)
-            CALL R8COPY(NEQ,ZR(JVALE),1,ACCINI,1)
+            CALL DCOPY(NEQ,ZR(JVALE),1,ACCINI,1)
          ENDIF
 C
 C        --- CREE-T-ON UNE NOUVELLE STRUCTURE ? ---
@@ -168,7 +168,7 @@ C
      &          'CALCULS DE SENSIBILITE')
               CALL UTFINM()
             ENDIF
-            CALL R8COPY(NEQ,ZR(JVALE),1,DEPINI,1)
+            CALL DCOPY(NEQ,ZR(JVALE),1,DEPINI,1)
          ELSE
             CALL UTMESS('I',NOMCMD,'DEPLACEMENTS INITIAUX NULS.')
          ENDIF
@@ -191,7 +191,7 @@ C
      &          'CALCULS DE SENSIBILITE')
               CALL UTFINM()
             ENDIF
-            CALL R8COPY(NEQ,ZR(JVALE),1,VITINI,1)
+            CALL DCOPY(NEQ,ZR(JVALE),1,VITINI,1)
          ELSE
             CALL UTMESS('I',NOMCMD,'VITESSES INITIALES NULLES.')
          ENDIF

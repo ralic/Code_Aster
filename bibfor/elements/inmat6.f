@@ -1,6 +1,6 @@
       SUBROUTINE INMAT6(ELREFA,FAPG,MGANOS)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,7 +39,6 @@ C DEB ------------------------------------------------------------------
       CALL ASSERT(NPG.LE.27)
 
 C     CAS DU SHB8 NON INVERSIBLE
-
       IF (FAPG.EQ.'SHB5') THEN
         CALL R8INIR(27*27,0.D0,MGANOS,1)
         DO 10 I = 1,4
@@ -51,6 +50,17 @@ C     CAS DU SHB8 NON INVERSIBLE
         ELREF2 = ELREFA
         GO TO 100
       END IF
+
+C     CAS DU QU4/FIS2 NON INVERSIBLE
+      IF (ELREFA.EQ.'QU4'.AND. FAPG.EQ.'FIS2') THEN
+        CALL R8INIR(27*27,0.D0,MGANOS,1)
+        MGANOS(1,1) = 1.D0
+        MGANOS(1,4) = 1.D0
+        MGANOS(2,2) = 1.D0
+        MGANOS(2,3) = 1.D0
+        GO TO 100
+      END IF
+
 
       IF ((ELREFA.EQ.'H20') .OR. (ELREFA.EQ.'H27')) THEN
         ELREF2 = 'HE8'

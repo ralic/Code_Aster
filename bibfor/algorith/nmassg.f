@@ -10,7 +10,7 @@ C ----------------------------------------------------------------------
       PARAMETER   (NCOEFG = 3)
       REAL*8      COEFGR(NCOEFG)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 15/06/2004   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -95,6 +95,6 @@ C
          IF (CODRES(3).NE.'OK') THEN 
            VALRES(3) = 1.D0
          ENDIF
-         CALL R8COPY (NCOEFG,VALRES,1,COEFGR,1)
+         CALL DCOPY (NCOEFG,VALRES,1,COEFGR,1)
 C
       END

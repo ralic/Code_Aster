@@ -6,7 +6,7 @@
       CHARACTER*8         NOMFON(*) 
 C----------------------------------------------------------------------*
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/03/2004   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -63,12 +63,12 @@ C
       DO 10 I = 1 , NBEXCI
          IF (IDESCF(I).EQ.1) THEN
            CALL FOINTE('F ',NOMFON(I),1,NOMPAR,T,ALPHA,IER)
-           CALL R8AXPY ( NEQ , ALPHA , ZR(LIAD(I)) , 1 , F , 1 )
+           CALL DAXPY ( NEQ , ALPHA , ZR(LIAD(I)) , 1 , F , 1 )
          ELSEIF(IDESCF(I).EQ.2) THEN
            CALL FOINTE('F ',NOMFON(I),1,NOMPAR,T,ALPHA,IER)
            F(INUMOR(I))=F(INUMOR(I))+ALPHA
          ELSEIF(IDESCF(I).EQ.3) THEN
-           CALL R8AXPY ( NEQ , COEFM(I) , ZR(LIAD(I)) , 1 , F , 1 )
+           CALL DAXPY ( NEQ , COEFM(I) , ZR(LIAD(I)) , 1 , F , 1 )
          ELSEIF(IDESCF(I).EQ.4) THEN
            F(INUMOR(I))=F(INUMOR(I))+COEFM(I)
          ENDIF

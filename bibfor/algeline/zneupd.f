@@ -7,7 +7,7 @@
 C---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 17/02/2003   AUTEUR NICOLAS O.NICOLAS 
+C MODIF ALGELINE  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -255,7 +255,7 @@ C     ZVOUT    ARPACK UTILITY ROUTINE THAT PRINTS VECTORS.
 C     GGEQR2   LAPACK ROUTINE THAT COMPUTES THE QR FACTORIZATION OF 
 C             A MATRIX.
 C     GLACPY   LAPACK MATRIX COPY ROUTINE.
-C     GLAHQR   LAPACK ROUTINE THAT COMPUTES THE SCHUR FORM OF A
+C     ZLAHQR   LAPACK ROUTINE THAT COMPUTES THE SCHUR FORM OF A
 C             UPPER HESSENBERG MATRIX.
 C     GLASET   LAPACK MATRIX INITIALIZATION ROUTINE.
 C     GTREVC   LAPACK ROUTINE TO COMPUTE THE EIGENVECTORS OF A MATRIX
@@ -263,13 +263,13 @@ C             IN UPPER TRIANGULAR FORM.
 C     GTRSEN   LAPACK ROUTINE THAT RE-ORDERS THE SCHUR FORM.
 C     GUNM2R   LAPACK ROUTINE THAT APPLIES AN ORTHOGONAL MATRIX IN 
 C             FACTORED FORM.
-C     GLTRMM    LEVEL 3 BLAS MATRIX TIMES AN UPPER TRIANGULAR MATRIX.
-C     GLGERU    LEVEL 2 BLAS RANK ONE UPDATE TO A MATRIX.
-C     GLCOPY    LEVEL 1 BLAS THAT COPIES ONE VECTOR TO ANOTHER .
-C     ZLSCAL    LEVEL 1 BLAS THAT SCALES A VECTOR.
-C     GLSCAL   LEVEL 1 BLAS THAT SCALES A COMPLEX VECTOR BY A REAL 
+C     ZTRMM    LEVEL 3 BLAS MATRIX TIMES AN UPPER TRIANGULAR MATRIX.
+C     ZGERU    LEVEL 2 BLAS RANK ONE UPDATE TO A MATRIX.
+C     ZCOPY    LEVEL 1 BLAS THAT COPIES ONE VECTOR TO ANOTHER .
+C     ZSCAL    LEVEL 1 BLAS THAT SCALES A VECTOR.
+C     ZDSCAL   LEVEL 1 BLAS THAT SCALES A COMPLEX VECTOR BY A REAL 
 C              NUMBER.
-C     GLNRM2   LEVEL 1 BLAS THAT COMPUTES THE NORM OF A COMPLEX VECTOR.
+C     DZNRM2   LEVEL 1 BLAS THAT COMPUTES THE NORM OF A COMPLEX VECTOR.
 C
 C\REMARKS
 C
@@ -361,9 +361,9 @@ C     %--------------------%
 C     | EXTERNAL FUNCTIONS |
 C     %--------------------%
 C
-      REAL*8     GLNRM2 , FLAPY2 , R8MIEM, R8PREM
+      REAL*8     DZNRM2 , FLAPY2 , R8MIEM, R8PREM
 C
-      COMPLEX*16 GLDOTC 
+      COMPLEX*16 ZDOTC 
 C
 C     %-----------------------%
 C     | EXECUTABLE STATEMENTS |
@@ -593,22 +593,22 @@ C
          END IF
 C
 C        %-------------------------------------------------------%
-C        | CALL LAPACK ROUTINE GLAHQR  TO COMPUTE THE SCHUR FORM |
+C        | CALL LAPACK ROUTINE ZLAHQR  TO COMPUTE THE SCHUR FORM |
 C        | OF THE UPPER HESSENBERG MATRIX RETURNED BY ZNAUPD .   |
 C        | MAKE A COPY OF THE UPPER HESSENBERG MATRIX.           |
 C        | INITIALIZE THE SCHUR VECTOR MATRIX Q TO THE IDENTITY. |
 C        %-------------------------------------------------------%
 C
-         CALL GLCOPY (LDH*NCV, WORKL(IH), 1, WORKL(IUPTRI), 1)
+         CALL ZCOPY (LDH*NCV, WORKL(IH), 1, WORKL(IUPTRI), 1)
          CALL GLASET ('A', NCV, NCV          , 
      &                ZERO , ONE, WORKL(INVSUB),
      &                LDQ)
-         CALL GLAHQR (.TRUE., .TRUE.       , NCV          , 
+         CALL ZLAHQR (.TRUE., .TRUE.       , NCV          , 
      &                1     , NCV          , WORKL(IUPTRI),
      &                LDH   , WORKL(IHEIG) , 1            ,
      &                NCV   , WORKL(INVSUB), LDQ          ,
      &                IERR)
-         CALL GLCOPY (NCV         , WORKL(INVSUB+NCV-1), LDQ,
+         CALL ZCOPY (NCV         , WORKL(INVSUB+NCV-1), LDQ,
      &               WORKL(IHBDS), 1)
 C
          IF (IERR .NE. 0) THEN
@@ -664,7 +664,7 @@ C        | TO COMPUTE THE RITZ ESTIMATES OF CONVERGED  |
 C        | RITZ VALUES.                                |
 C        %---------------------------------------------%
 C
-         CALL GLCOPY (NCV         , WORKL(INVSUB+NCV-1), LDQ,
+         CALL ZCOPY (NCV         , WORKL(INVSUB+NCV-1), LDQ,
      &               WORKL(IHBDS), 1)
 C 
 C        %--------------------------------------------%
@@ -673,7 +673,7 @@ C        | IF A SPECTRAL TRANSFORMATION WAS NOT USED. |
 C        %--------------------------------------------%
 C
          IF (TYPE .EQ. 'REGULR') THEN
-            CALL GLCOPY (NCONV, WORKL(IHEIG), 1, D, 1)
+            CALL ZCOPY (NCONV, WORKL(IHEIG), 1, D, 1)
          END IF
 C
 C        %----------------------------------------------------------%
@@ -717,8 +717,8 @@ C           %---------------------------------------------------%
 C
             IF ( DBLE ( WORKL(INVSUB+(J-1)*LDQ+J-1) ) .LT. 
      &                  DBLE (ZERO) ) THEN
-               CALL ZLSCAL (NCONV, -ONE, WORKL(IUPTRI+J-1), LDQ)
-               CALL ZLSCAL (NCONV, -ONE, WORKL(IUPTRI+(J-1)*LDQ), 1)
+               CALL ZSCAL (NCONV, -ONE, WORKL(IUPTRI+J-1), LDQ)
+               CALL ZSCAL (NCONV, -ONE, WORKL(IUPTRI+(J-1)*LDQ), 1)
             END IF
 C
  20      CONTINUE
@@ -758,9 +758,9 @@ C           | MAGNITUDE 1.                                   |
 C           %------------------------------------------------%
 C
             DO 40 J=1, NCONV
-                  RTEMP = GLNRM2 (NCV, WORKL(INVSUB+(J-1)*LDQ), 1)
+                  RTEMP = DZNRM2 (NCV, WORKL(INVSUB+(J-1)*LDQ), 1)
                   RTEMP = DBLE (ONE) / RTEMP
-                  CALL GLSCAL  ( NCV, RTEMP,
+                  CALL ZDSCAL  ( NCV, RTEMP,
      &                 WORKL(INVSUB+(J-1)*LDQ), 1 )
 C
 C                 %------------------------------------------%
@@ -772,12 +772,12 @@ C                 | UPPER TRIANGULAR, THUS THE LENGTH OF THE |
 C                 | INNER PRODUCT CAN BE SET TO J.           |
 C                 %------------------------------------------%
 C 
-                  WORKEV(J) = GLDOTC (J, WORKL(IHBDS), 1,
+                  WORKEV(J) = ZDOTC (J, WORKL(IHBDS), 1,
      &                        WORKL(INVSUB+(J-1)*LDQ), 1)
  40         CONTINUE
 C
             IF (MSGLVL .GT. 2) THEN
-               CALL GLCOPY (NCONV, WORKL(INVSUB+NCV-1), LDQ,
+               CALL ZCOPY (NCONV, WORKL(INVSUB+NCV-1), LDQ,
      &                    WORKL(IHBDS), 1)
                CALL ZVOUT  (LOGFIL, NCONV, WORKL(IHBDS), NDIGIT,
      &            '_NEUPD: LAST ROW OF THE EIGENVECTOR MATRIX FOR T')
@@ -792,14 +792,14 @@ C           %---------------------------------------%
 C           | COPY RITZ ESTIMATES INTO WORKL(IHBDS) |
 C           %---------------------------------------%
 C 
-            CALL GLCOPY (NCONV, WORKEV, 1, WORKL(IHBDS), 1)
+            CALL ZCOPY (NCONV, WORKEV, 1, WORKL(IHBDS), 1)
 C
 C           %----------------------------------------------%
 C           | THE EIGENVECTOR MATRIX Q OF T IS TRIANGULAR. |
 C           | FORM Z*Q.                                    |
 C           %----------------------------------------------%
 C
-            CALL GLTRMM ('R'   , 'U'      , 'N',
+            CALL ZTRMM ('R'   , 'U'      , 'N',
      &                  'N', N            , NCONV         ,
      &                  ONE       , WORKL(INVSUB), LDQ           ,
      &                  Z         , LDZ)
@@ -812,9 +812,9 @@ C        | AN APPROXIMATE INVARIANT SUBSPACE IS NOT NEEDED. |
 C        | PLACE THE RITZ VALUES COMPUTED ZNAUPD  INTO D.    |
 C        %--------------------------------------------------%
 C
-         CALL GLCOPY (NCONV, WORKL(RITZ), 1, D, 1)
-         CALL GLCOPY (NCONV, WORKL(RITZ), 1, WORKL(IHEIG), 1)
-         CALL GLCOPY (NCONV, WORKL(BOUNDS), 1, WORKL(IHBDS), 1)
+         CALL ZCOPY (NCONV, WORKL(RITZ), 1, D, 1)
+         CALL ZCOPY (NCONV, WORKL(RITZ), 1, WORKL(IHEIG), 1)
+         CALL ZCOPY (NCONV, WORKL(BOUNDS), 1, WORKL(IHBDS), 1)
 C
       END IF
 C
@@ -827,7 +827,7 @@ C
       IF (TYPE .EQ. 'REGULR') THEN
 C
          IF (RVEC) 
-     &      CALL ZLSCAL (NCV, RNORM, WORKL(IHBDS), 1)
+     &      CALL ZSCAL (NCV, RNORM, WORKL(IHBDS), 1)
 C      
       ELSE
 C     
@@ -838,7 +838,7 @@ C        |   RITZ VALUES IN THE ORIGINAL SYSTEM. |
 C        %---------------------------------------%
 C
          IF (RVEC) 
-     &      CALL ZLSCAL (NCV, RNORM, WORKL(IHBDS), 1)
+     &      CALL ZSCAL (NCV, RNORM, WORKL(IHBDS), 1)
 C    
          DO 50 K=1, NCV
             TEMP = WORKL(IHEIG+K-1)
@@ -916,7 +916,7 @@ C        | PERFORM A RANK ONE UPDATE TO Z AND    |
 C        | PURIFY ALL THE RITZ VECTORS TOGETHER. |
 C        %---------------------------------------%
 C
-         CALL GLGERU  (N, NCONV, ONE, RESID, 1, WORKEV, 1, Z, LDZ)
+         CALL ZGERU  (N, NCONV, ONE, RESID, 1, WORKEV, 1, Z, LDZ)
 C
       END IF
 C

@@ -4,7 +4,7 @@
      &     Q, LDQ, WORKL, IPNTR, WORKD, INFO, NEQACT, ALPHA)
 C---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
+C MODIF ALGELINE  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) LAPACK
 C ======================================================================
@@ -151,10 +151,10 @@ C     IVOUT   ARPACK UTILITY ROUTINE THAT PRINTS INTEGERS.
 C     DMOUT   ARPACK UTILITY ROUTINE THAT PRINTS MATRICES
 C     DVOUT   ARPACK UTILITY ROUTINE THAT PRINTS VECTORS.
 C     FLAPY2  LAPACK ROUTINE TO COMPUTE SQRT(X**2+Y**2) CAREFULLY.
-C     BLCOPY   LEVEL 1 BLAS THAT COPIES ONE VECTOR TO ANOTHER .
-C     BLSDOT    LEVEL 1 BLAS THAT COMPUTES THE SCALAR PRODUCT.
-C     BLNRM2   LEVEL 1 BLAS THAT COMPUTES THE NORM OF A VECTOR.
-C     BLSWAP   LEVEL 1 BLAS THAT SWAPS TWO VECTORS.
+C     DCOPY   LEVEL 1 BLAS THAT COPIES ONE VECTOR TO ANOTHER .
+C     DDOT    LEVEL 1 BLAS THAT COMPUTES THE SCALAR PRODUCT.
+C     DNRM2   LEVEL 1 BLAS THAT COMPUTES THE NORM OF A VECTOR.
+C     DSWAP   LEVEL 1 BLAS THAT SWAPS TWO VECTORS.
 C
 C     R8PREM  ASTER UTILITY ROUTINE THAT GIVES MACHINE PRECISION
 C
@@ -246,7 +246,7 @@ C     %-----------%
 C     | FUNCTIONS |
 C     %-----------%
 
-      REAL*8 BLSDOT, BLNRM2, FLAPY2, R8PREM
+      REAL*8 DDOT, DNRM2, FLAPY2, R8PREM
 
 C     %-----------------------%
 C     | EXECUTABLE STATEMENTS |
@@ -455,9 +455,9 @@ C        | MAKE A COPY OF EIGENVALUES AND CORRESPONDING ERROR |
 C        | BOUNDS OBTAINED FROM DNEIGH.                       |
 C        %----------------------------------------------------%
 
-         CALL BLCOPY(KPLUSP, RITZR, 1, WORKL(KPLUSP**2+1), 1)
-         CALL BLCOPY(KPLUSP, RITZI, 1, WORKL(KPLUSP**2+KPLUSP+1), 1)
-         CALL BLCOPY(KPLUSP, BOUNDS, 1, WORKL(KPLUSP**2+2*KPLUSP+1), 1)
+         CALL DCOPY(KPLUSP, RITZR, 1, WORKL(KPLUSP**2+1), 1)
+         CALL DCOPY(KPLUSP, RITZI, 1, WORKL(KPLUSP**2+KPLUSP+1), 1)
+         CALL DCOPY(KPLUSP, BOUNDS, 1, WORKL(KPLUSP**2+2*KPLUSP+1), 1)
 
 C        %---------------------------------------------------%
 C        | SELECT THE WANTED RITZ VALUES AND THEIR BOUNDS    |
@@ -483,7 +483,7 @@ C        %-------------------%
 C        | CONVERGENCE TEST. |
 C        %-------------------%
 
-         CALL BLCOPY (NEV, BOUNDS(NP+1), 1, WORKL(2*NP+1), 1)
+         CALL DCOPY (NEV, BOUNDS(NP+1), 1, WORKL(2*NP+1), 1)
          CALL DNCONV (NEV, RITZR(NP+1), RITZI(NP+1), WORKL(2*NP+1),
      &        TOL, NCONV)
 
@@ -722,8 +722,8 @@ C            | RITZR, RITZI TO FREE UP WORKL    |
 C            | FOR NON-EXACT SHIFT CASE.        |
 C            %----------------------------------%
 
-             CALL BLCOPY (NP, WORKL,       1, RITZR, 1)
-             CALL BLCOPY (NP, WORKL(NP+1), 1, RITZI, 1)
+             CALL DCOPY (NP, WORKL,       1, RITZR, 1)
+             CALL DCOPY (NP, WORKL(NP+1), 1, RITZI, 1)
          END IF
 
          IF (MSGLVL .GT. 2) THEN
@@ -757,7 +757,7 @@ C        %---------------------------------------------%
          CNORM = .TRUE.
          IF (BMAT .EQ. 'G') THEN
             NBX = NBX + 1
-            CALL BLCOPY (N, RESID, 1, WORKD(N+1), 1)
+            CALL DCOPY (N, RESID, 1, WORKD(N+1), 1)
             IPNTR(1) = N + 1
             IPNTR(2) = 1
             IDO = 2
@@ -768,7 +768,7 @@ C           %----------------------------------%
 
             GO TO 9000
          ELSE IF (BMAT .EQ. 'I') THEN
-            CALL BLCOPY (N, RESID, 1, WORKD, 1)
+            CALL DCOPY (N, RESID, 1, WORKD, 1)
          END IF
 
   100    CONTINUE
@@ -779,10 +779,10 @@ C        | WORKD(1:N) := B*RESID            |
 C        %----------------------------------%
 
          IF (BMAT .EQ. 'G') THEN
-            RNORM = BLSDOT (N, RESID, 1, WORKD, 1)
+            RNORM = DDOT (N, RESID, 1, WORKD, 1)
             RNORM = SQRT(ABS(RNORM))
          ELSE IF (BMAT .EQ. 'I') THEN
-            RNORM = BLNRM2(N, RESID, 1)
+            RNORM = DNRM2(N, RESID, 1)
          END IF
          CNORM = .FALSE.
 

@@ -14,7 +14,7 @@ C
       REAL*8       ZG(*),HG(*),DG(*),TG(*),CDG(*),CPG(*),RUGG(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 25/10/2004   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF ALGELINE  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -348,10 +348,10 @@ C
             JJ = N + NBMOD*(NV0-1)
             KK = 3*(N-1) + NBMOD*(NV0-1)
             CALL PMAVEC('ZERO',NBMOD,ZR(IMATM),ZR(IMATV+II),ZR(IVEC))
-            MASG(JJ) = R8DOT(NBMOD,ZR(IMATV+II),1,ZR(IVEC),1)
-            FACT(KK+1) = R8DOT(NBMOD,ZR(IVEC),1,FACPAR,1)
-            FACT(KK+2) = R8DOT(NBMOD,ZR(IVEC),1,FACPAR(NBMOD+1),1)
-            FACT(KK+3) = R8DOT(NBMOD,ZR(IVEC),1,FACPAR(2*NBMOD+1),1)
+            MASG(JJ) = DDOT(NBMOD,ZR(IMATV+II),1,ZR(IVEC),1)
+            FACT(KK+1) = DDOT(NBMOD,ZR(IVEC),1,FACPAR,1)
+            FACT(KK+2) = DDOT(NBMOD,ZR(IVEC),1,FACPAR(NBMOD+1),1)
+            FACT(KK+3) = DDOT(NBMOD,ZR(IVEC),1,FACPAR(2*NBMOD+1),1)
   20     CONTINUE
 C
          DO 30 J = 1, NBMOD
@@ -453,10 +453,10 @@ C........MATRICES DE MASSES GENERALISEES, FREQUENCE, AMORTISSEMENT
             JJ = N + NBMOD*(NV-1)
             KK = 3*(N-1) + NBMOD*(NV-1)
             CALL PMAVEC('ZERO',NBMOD,ZR(IMATM),ZR(IMATV+II),ZR(IVEC))
-            MASG(JJ) = R8DOT(NBMOD,ZR(IMATV+II),1,ZR(IVEC),1)
-            FACT(KK+1) = R8DOT(NBMOD,ZR(IVEC),1,FACPAR,1)
-            FACT(KK+2) = R8DOT(NBMOD,ZR(IVEC),1,FACPAR(NBMOD+1),1)
-            FACT(KK+3) = R8DOT(NBMOD,ZR(IVEC),1,FACPAR(2*NBMOD+1),1)
+            MASG(JJ) = DDOT(NBMOD,ZR(IMATV+II),1,ZR(IVEC),1)
+            FACT(KK+1) = DDOT(NBMOD,ZR(IVEC),1,FACPAR,1)
+            FACT(KK+2) = DDOT(NBMOD,ZR(IVEC),1,FACPAR(NBMOD+1),1)
+            FACT(KK+3) = DDOT(NBMOD,ZR(IVEC),1,FACPAR(2*NBMOD+1),1)
   60     CONTINUE
 C
          DO 70 J = 1,NBMOD

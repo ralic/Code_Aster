@@ -5,7 +5,7 @@
       CHARACTER*8         BASEMO
       CHARACTER*14        NU
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/05/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ALGORITH  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -98,11 +98,11 @@ C ------ TEST COMPARANT NOMA A MAILLAGE(NU)
             CALL VTCREA ( CHAMP, CREFE, 'V', TYP1, NEQ )
             CALL VTCOPY ( NOMCHA, CHAMP, IRET )
             CALL JEVEUO ( CHAMP(1:19)//'.VALE', 'L', JVAL )
-            CALL R8COPY ( NEQ, ZR(JVAL), 1, BMODAL((I-1)*NEQ+1), 1 )
+            CALL DCOPY ( NEQ, ZR(JVAL), 1, BMODAL((I-1)*NEQ+1), 1 )
             CALL DETRSD ( 'CHAM_NO', CHAMP )
          ELSE
             CALL JEVEUO ( NOMCHA(1:19)//'.VALE', 'L', JVAL )
-            CALL R8COPY ( NEQ,ZR(JVAL), 1, BMODAL((I-1)*NEQ+1), 1 )
+            CALL DCOPY ( NEQ,ZR(JVAL), 1, BMODAL((I-1)*NEQ+1), 1 )
             CALL JELIBE ( NOMCHA(1:19)//'.VALE' )
          ENDIF 
 

@@ -1,7 +1,7 @@
       SUBROUTINE GCPC(M,IN,IP,AC,INPC,IPPC,ACPC,BF,XP,R,RR,P,IREP,
      &                NITER,EPSI,CRITER)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGELINE  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -76,8 +76,8 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 
 C DECLARATION VARIABLES LOCALES
-      REAL*8 ZERO,BNORM,R8NRM2,ANORM,EPSIX,ANORMX,RRRI,GAMA,RRRIM1,
-     &       PARAAF,ANORXX,RAU,R8DOT
+      REAL*8 ZERO,BNORM,DNRM2,ANORM,EPSIX,ANORMX,RRRI,GAMA,RRRIM1,
+     &       PARAAF,ANORXX,RAU,DDOT
       INTEGER IFM,NIV,I,JCRI,JCRR,JCRK,ITER,INIGPC,IRET
            
 C-----RECUPERATION DU NIVEAU D'IMPRESSION
@@ -98,7 +98,7 @@ C-----INITS DIVERS
 C-----CALCULS PRELIMINAIRES
 
 C      ---- CALCUL DE NORME DE BF
-      BNORM = R8NRM2(M,BF,1)
+      BNORM = DNRM2(M,BF,1)
       IF (BNORM.EQ.ZERO) THEN
         DO 10 I = 1,M
           XP(I) = ZERO
@@ -122,7 +122,7 @@ C       ---- INITIALISATION PAR X PRECEDENT: CALCUL DE R1 = A*X1 - B
         DO 30 I = 1,M
           R(I) = R(I) - BF(I)
    30   CONTINUE
-        ANORM = R8NRM2(M,R,1)
+        ANORM = DNRM2(M,R,1)
         EPSIX = EPSI*ANORM
         IF (NIV.EQ.2) WRITE (IFM,1020) ANORM,EPSIX,EPSI
       END IF
@@ -157,7 +157,7 @@ C        ELSE IF (PREC.EQ.'LDLT') THEN
 C        END IF
 
 C                                             RRRI <--- (RK,ZK)
-        RRRI = R8DOT(M,R,1,RR,1)
+        RRRI = DDOT(M,R,1,RR,1)
 C       ---- NOUVELLE DIRECTION DE DESCENTE:
 C                                    BETAK = (RK,ZK)/(RK-1,ZK-1)
 C                                               BETAK <--- GAMA
@@ -182,12 +182,12 @@ C                                      RK+1 = RK + ALPHAK * ZZK
 C                                                 ZZK <--- RR()
 C                                                 XK  <--- XP()
         CALL GCAX(M,IN,IP,AC,P,RR) 
-        RAU = -RRRI/R8DOT(M,P,1,RR,1)
-        CALL R8AXPY(M,RAU,P,1,XP,1)
-        CALL R8AXPY(M,RAU,RR,1,R,1)
+        RAU = -RRRI/DDOT(M,P,1,RR,1)
+        CALL DAXPY(M,RAU,P,1,XP,1)
+        CALL DAXPY(M,RAU,RR,1,R,1)
 
 C       ---- CALCUL TEST D'ARRET ET AFFICHAGE
-        ANORM = R8NRM2(M,R,1)
+        ANORM = DNRM2(M,R,1)
         IF (ANORM.LE.ANORMX*PARAAF) THEN
           IF (NIV.EQ.2) WRITE (*,1041) ITER,ANORM,ANORM/ANORXX
           ANORMX = ANORM

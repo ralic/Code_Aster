@@ -2,7 +2,7 @@
       IMPLICIT   NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/09/2002   AUTEUR GREFFET N.GREFFET 
+C MODIF ALGORITH  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -58,7 +58,7 @@ C
       CHARACTER*19  GEOMI
       CHARACTER*24  COORJV
       REAL*8        ANGL, NORMD, PT(3), D(3),
-     +              P1MX, P1MY, P1MZ, CA, SA, P1M, PREC, R8DGRD, R8NRM2
+     +              P1MX, P1MY, P1MZ, CA, SA, P1M, PREC, R8DGRD, DNRM2
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
@@ -80,10 +80,10 @@ C     -- ON TRAITE LE CAS 2D SEPAREMENT POUR OPTIMISER :
             ZR(IADCOO+3*(I-1)+2)=PT(2)+CA*P1MY+SA*P1MX
  10      CONTINUE
       ELSE   
-         IF ( R8NRM2(3,D,1) .LT. PREC ) THEN
+         IF ( DNRM2(3,D,1) .LT. PREC ) THEN
             CALL UTMESS('F','ROTAMA','AXE DE ROTATION INDEFINI.')
          ELSE
-            P1M=R8NRM2(3,D,1)
+            P1M=DNRM2(3,D,1)
             D(1)=D(1)/P1M
             D(2)=D(2)/P1M
             D(3)=D(3)/P1M

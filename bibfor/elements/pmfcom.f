@@ -12,7 +12,7 @@
      &                  MODF,SIGF,VARIP,ISECAN,CODRET) 
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 03/11/2004   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ELEMENTS  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
 C TOLE CRP_21
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -229,7 +229,7 @@ C       RECUPERATION DES CARACTERISTIQUES DES LOIS DE FLUAGE
           IF ((OPTION(1:9).EQ.'FULL_MECA') .OR.
      &        (OPTION(1:9).EQ.'RAPH_MECA')) THEN     
                NBVARI = NBVALC*NF
-               CALL R8COPY(NBVARI,VARIMP,1,VARIP,1)
+               CALL DCOPY(NBVARI,VARIMP,1,VARIP,1)
           ENDIF
 
           DO 57 I = 1,NF
@@ -265,7 +265,7 @@ C       PAR UNE EXTENSION DE LA METHODE DE DEBORST
           IF ((OPTION(1:9).EQ.'FULL_MECA') .OR.
      &        (OPTION(1:9).EQ.'RAPH_MECA')) THEN     
                NBVARI = NBVALC*NF
-               CALL R8COPY(NBVARI,VARIMP,1,VARIP,1)
+               CALL DCOPY(NBVARI,VARIMP,1,VARIP,1)
           ENDIF
           DO 70 I = 1,NF
             IVARI = NBVALC* (I-1) + 1

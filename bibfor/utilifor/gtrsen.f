@@ -2,7 +2,7 @@
      $                   SEP, WORK, LWORK, INFO )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILIFOR  DATE 17/02/2003   AUTEUR NICOLAS O.NICOLAS 
+C MODIF UTILIFOR  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) LAPACK
 C ======================================================================
@@ -304,7 +304,7 @@ C
          EST = ZERO
          KASE = 0
    30    CONTINUE
-         CALL GLACON( NN, WORK( NN+1 ), WORK, EST, KASE )
+         CALL ZLACON( NN, WORK( NN+1 ), WORK, EST, KASE )
          IF( KASE.NE.0 ) THEN
             IF( KASE.EQ.1 ) THEN
 C

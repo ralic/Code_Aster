@@ -1,7 +1,7 @@
       SUBROUTINE CERNE(M,DIM,CELL,PAN,NMA,ILIMA)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 08/11/2004   AUTEUR DURAND C.DURAND 
+C MODIF CALCULEL  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -42,7 +42,7 @@ C ---------------------------------------------------------------------
       IMPLICIT NONE
 
 C --- FONCTIONS
-      REAL*8  R8DOT
+      REAL*8  DDOT
 
 C --- VARIABLES
       INTEGER DIM,CELL(3,*),NMA,ILIMA,ICELL,IPAN
@@ -54,7 +54,7 @@ C --- DESCENTE DE L'ARBRE
  10   CONTINUE
       IPAN = CELL(1,ICELL)
       IF (IPAN.GT.0) THEN
-        R = R8DOT(DIM,M,1,PAN(IPAN),1) + PAN(IPAN+DIM)
+        R = DDOT(DIM,M,1,PAN(IPAN),1) + PAN(IPAN+DIM)
         IF (R.LE.0.D0) THEN 
           ICELL = CELL(2,ICELL)
         ELSE

@@ -18,7 +18,7 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
       IMPLICIT REAL*8 (A-H,O-Z)
 C-----------------------------------------------------------------------
-C MODIF ALGORITH  DATE 15/01/2002   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ALGORITH  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
 C
 C  BUT:      < RESTITUTI0N MAC-NEAL ECLATEE >
 C
@@ -272,7 +272,7 @@ C
 C
           FACT  = 1.D0 / (PARA(1)**0.5D0)
           GENEK = (ZR(LLFREQ+ICOMP-1)*DEPI)**2
-          CALL R8AXPY(NEQ,FACT,ZR(LTVERE),1,ZR(LLCHAM),1)
+          CALL DAXPY(NEQ,FACT,ZR(LTVERE),1,ZR(LLCHAM),1)
           ZR(LDFRE) = ZR(LLFREQ+ICOMP-1)
           ZR(LDKGE) = GENEK
           ZR(LDMGE) = 1.D0
@@ -309,7 +309,7 @@ C
 C
             FACT  = 1.D0 / (PARA(2)**0.5D0)
             GENEK = (ZR(LLFREQ+ICOMP-1)*DEPI)**2
-            CALL R8AXPY(NEQ,FACT,ZR(LTVERE),1,ZR(LLCHAM),1)
+            CALL DAXPY(NEQ,FACT,ZR(LTVERE),1,ZR(LLCHAM),1)
             ZR(LDFRE) = ZR(LLFREQ+ICOMP-1)
             ZR(LDKGE) = GENEK
             ZR(LDMGE) = 1.D0

@@ -1,7 +1,7 @@
       SUBROUTINE FLASY2( LTRANL, LTRANR, ISGN, N1, N2, TL, LDTL, TR,
      &                   LDTR, B, LDB, SCALE, X, LDX, XNORM, INFO )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILIFOR  DATE 12/12/2002   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF UTILIFOR  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) LAPACK
 C ======================================================================
@@ -285,7 +285,7 @@ C
      &       ABS( TL( 2, 1 ) ), ABS( TL( 2, 2 ) ) )
       SMIN = MAX( EPS*SMIN, SMLNUM )
       BTMP( 1 ) = ZERO
-      CALL BLCOPY( 16, BTMP, 0, T16, 1 )
+      CALL DCOPY( 16, BTMP, 0, T16, 1 )
       T16( 1, 1 ) = TL( 1, 1 ) + SGN*TR( 1, 1 )
       T16( 2, 2 ) = TL( 2, 2 ) + SGN*TR( 1, 1 )
       T16( 3, 3 ) = TL( 1, 1 ) + SGN*TR( 2, 2 )
@@ -331,13 +331,13 @@ C
    60       CONTINUE
    70    CONTINUE
          IF( IPSV.NE.I ) THEN
-            CALL BLSWAP( 4, T16( IPSV, 1 ), 4, T16( I, 1 ), 4 )
+            CALL DSWAP( 4, T16( IPSV, 1 ), 4, T16( I, 1 ), 4 )
             TEMP = BTMP( I )
             BTMP( I ) = BTMP( IPSV )
             BTMP( IPSV ) = TEMP
          END IF
          IF( JPSV.NE.I )
-     &      CALL BLSWAP( 4, T16( 1, JPSV ), 1, T16( 1, I ), 1 )
+     &      CALL DSWAP( 4, T16( 1, JPSV ), 1, T16( 1, I ), 1 )
          JPIV( I ) = JPSV
          IF( ABS( T16( I, I ) ).LT.SMIN ) THEN
             INFO = 1

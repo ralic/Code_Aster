@@ -28,7 +28,7 @@ C
 C
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -165,7 +165,7 @@ C     --- CONDITIONS INITIALES ---
      &            IRET)
       IF (IRET.NE.0) GOTO 9999
       IF (NBCHOC.GT.0) THEN
-         CALL R8COPY(NBCHOC,ZR(JVINT),1,ZR(JCHOR+13*NBCHOC),1)
+         CALL DCOPY(NBCHOC,ZR(JVINT),1,ZR(JCHOR+13*NBCHOC),1)
       ENDIF         
 C
 C     --- FORCES EXTERIEURES ---

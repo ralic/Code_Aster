@@ -2,7 +2,7 @@
      &  (WANTT, N, ILO, IHI, H, LDH, WR, WI, Z, INFO )
 C----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 12/12/2002   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF ALGELINE  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) LAPACK
 C ======================================================================
@@ -78,8 +78,8 @@ C     FLANHS  LAPACK ROUTINE THAT COMPUTES VARIOUS NORMS OF A MATRIX.
 C     FLANV2  LAPACK ROUTINE THAT COMPUTES THE SCHUR FACTORIZATION OF
 C             2 BY 2 NONSYMMETRIC MATRIX IN STANDARD FORM.
 C     FLARFG  LAPACK HOUSEHOLDER REFLECTION CONSTRUCTION ROUTINE.
-C     BLCOPY   LEVEL 1 BLAS THAT COPIES ONE VECTOR TO ANOTHER.
-C     BLSROT    LEVEL 1 BLAS THAT APPLIES A ROTATION TO A 2 BY 2 MATRIX.
+C     DCOPY   LEVEL 1 BLAS THAT COPIES ONE VECTOR TO ANOTHER.
+C     DROT    LEVEL 1 BLAS THAT APPLIES A ROTATION TO A 2 BY 2 MATRIX.
 C
 C     R8PREM  ASTER UTILITY ROUTINE THAT GIVES THE MACHINE PRECISION.
 C     R8MIEM  ASTER UTILITY ROUTINE THAT GIVES THE MINIMUN VALUES.
@@ -364,7 +364,7 @@ C           ------------------------------------------------------------
 
             NR = MIN( 3, I-K+1 )
             IF( K.GT.M )
-     &         CALL BLCOPY( NR, H( K, K-1 ), 1, V, 1 )
+     &         CALL DCOPY( NR, H( K, K-1 ), 1, V, 1 )
             CALL FLARFG( NR, V( 1 ), V( 2 ), 1, T1 )
             IF( K.GT.M ) THEN
                H( K, K-1 ) = V( 1 )
@@ -489,9 +489,9 @@ C           | AS REQUIRED.                                        |
 C           %-----------------------------------------------------%
 
             IF( I2.GT.I )
-     &         CALL BLSROT( I2-I, H( I-1, I+1 ), LDH, H( I, I+1 ), LDH,
+     &         CALL DROT( I2-I, H( I-1, I+1 ), LDH, H( I, I+1 ), LDH,
      &                    CS, SN )
-            CALL BLSROT( I-I1-1, H( I1, I-1 ), 1, H( I1, I ), 1,CS,SN)
+            CALL DROT( I-I1-1, H( I1, I-1 ), 1, H( I1, I ), 1,CS,SN)
             SUM      = CS*Z( I-1 ) + SN*Z( I )
             Z( I )   = CS*Z( I )   - SN*Z( I-1 )
             Z( I-1 ) = SUM

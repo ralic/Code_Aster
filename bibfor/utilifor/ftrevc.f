@@ -1,7 +1,7 @@
       SUBROUTINE FTREVC( SIDE, HOWMNY, SELECT, N, T, LDT, VL, LDVL, VR,
      &                   LDVR, MM, M, WORK, INFO )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILIFOR  DATE 12/12/2002   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF UTILIFOR  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) LAPACK
 C ======================================================================
@@ -182,7 +182,7 @@ C     ..
 C     .. EXTERNAL FUNCTIONS ..
       LOGICAL            LLSAME
       INTEGER            IDAMAX, ISBAEM
-      REAL*8   BLSDOT, R8PREM, R8MIEM
+      REAL*8   DDOT, R8PREM, R8MIEM
 C     ..
 C     .. LOCAL ARRAYS ..
       REAL*8   X( 2, 2 )
@@ -373,12 +373,12 @@ C
 C                    SCALE IF NECESSARY
 C
                      IF( SCALE.NE.ONE )
-     &                  CALL BLSCAL( KI, SCALE, WORK( 1+N ), 1 )
+     &                  CALL DSCAL( KI, SCALE, WORK( 1+N ), 1 )
                      WORK( J+N ) = X( 1, 1 )
 C
 C                    UPDATE RIGHT-HAND SIDE
 C
-                     CALL BLAXPY( J-1, -X( 1, 1 ), T( 1, J ), 1,
+                     CALL DAXPY( J-1, -X( 1, 1 ), T( 1, J ), 1,
      &                           WORK( 1+N ), 1 )
 C
                   ELSE
@@ -405,15 +405,15 @@ C
 C                    SCALE IF NECESSARY
 C
                      IF( SCALE.NE.ONE )
-     &                  CALL BLSCAL( KI, SCALE, WORK( 1+N ), 1 )
+     &                  CALL DSCAL( KI, SCALE, WORK( 1+N ), 1 )
                      WORK( J-1+N ) = X( 1, 1 )
                      WORK( J+N ) = X( 2, 1 )
 C
 C                    UPDATE RIGHT-HAND SIDE
 C
-                     CALL BLAXPY( J-2, -X( 1, 1 ), T( 1, J-1 ), 1,
+                     CALL DAXPY( J-2, -X( 1, 1 ), T( 1, J-1 ), 1,
      &                           WORK( 1+N ), 1 )
-                     CALL BLAXPY( J-2, -X( 2, 1 ), T( 1, J ), 1,
+                     CALL DAXPY( J-2, -X( 2, 1 ), T( 1, J ), 1,
      &                           WORK( 1+N ), 1 )
                   END IF
    60          CONTINUE
@@ -421,24 +421,24 @@ C
 C              COPY THE VECTOR X OR Q*X TO VR AND NORMALIZE.
 C
                IF( .NOT.OVER ) THEN
-                  CALL BLCOPY( KI, WORK( 1+N ), 1, VR( 1, IS ), 1 )
+                  CALL DCOPY( KI, WORK( 1+N ), 1, VR( 1, IS ), 1 )
 C
                   II = IDAMAX( KI, VR( 1, IS ), 1 )
                   REMAX = ONE / ABS( VR( II, IS ) )
-                  CALL BLSCAL( KI, REMAX, VR( 1, IS ), 1 )
+                  CALL DSCAL( KI, REMAX, VR( 1, IS ), 1 )
 C
                   DO 70 K = KI + 1, N
                      VR( K, IS ) = ZERO
    70             CONTINUE
                ELSE
                   IF( KI.GT.1 )
-     &               CALL BLGEMV( 'N', N, KI-1, ONE, VR, LDVR,
+     &               CALL DGEMV( 'N', N, KI-1, ONE, VR, LDVR,
      &                           WORK( 1+N ), 1, WORK( KI+N ),
      &                           VR( 1, KI ), 1 )
 C
                   II = IDAMAX( N, VR( 1, KI ), 1 )
                   REMAX = ONE / ABS( VR( II, KI ) )
-                  CALL BLSCAL( N, REMAX, VR( 1, KI ), 1 )
+                  CALL DSCAL( N, REMAX, VR( 1, KI ), 1 )
                END IF
 C
             ELSE
@@ -505,17 +505,17 @@ C
 C                    SCALE IF NECESSARY
 C
                      IF( SCALE.NE.ONE ) THEN
-                        CALL BLSCAL( KI, SCALE, WORK( 1+N ), 1 )
-                        CALL BLSCAL( KI, SCALE, WORK( 1+N2 ), 1 )
+                        CALL DSCAL( KI, SCALE, WORK( 1+N ), 1 )
+                        CALL DSCAL( KI, SCALE, WORK( 1+N2 ), 1 )
                      END IF
                      WORK( J+N ) = X( 1, 1 )
                      WORK( J+N2 ) = X( 1, 2 )
 C
 C                    UPDATE THE RIGHT-HAND SIDE
 C
-                     CALL BLAXPY( J-1, -X( 1, 1 ), T( 1, J ), 1,
+                     CALL DAXPY( J-1, -X( 1, 1 ), T( 1, J ), 1,
      &                           WORK( 1+N ), 1 )
-                     CALL BLAXPY( J-1, -X( 1, 2 ), T( 1, J ), 1,
+                     CALL DAXPY( J-1, -X( 1, 2 ), T( 1, J ), 1,
      &                           WORK( 1+N2 ), 1 )
 C
                   ELSE
@@ -545,8 +545,8 @@ C
 C                    SCALE IF NECESSARY
 C
                      IF( SCALE.NE.ONE ) THEN
-                        CALL BLSCAL( KI, SCALE, WORK( 1+N ), 1 )
-                        CALL BLSCAL( KI, SCALE, WORK( 1+N2 ), 1 )
+                        CALL DSCAL( KI, SCALE, WORK( 1+N ), 1 )
+                        CALL DSCAL( KI, SCALE, WORK( 1+N2 ), 1 )
                      END IF
                      WORK( J-1+N ) = X( 1, 1 )
                      WORK( J+N ) = X( 2, 1 )
@@ -555,13 +555,13 @@ C
 C
 C                    UPDATE THE RIGHT-HAND SIDE
 C
-                     CALL BLAXPY( J-2, -X( 1, 1 ), T( 1, J-1 ), 1,
+                     CALL DAXPY( J-2, -X( 1, 1 ), T( 1, J-1 ), 1,
      &                           WORK( 1+N ), 1 )
-                     CALL BLAXPY( J-2, -X( 2, 1 ), T( 1, J ), 1,
+                     CALL DAXPY( J-2, -X( 2, 1 ), T( 1, J ), 1,
      &                           WORK( 1+N ), 1 )
-                     CALL BLAXPY( J-2, -X( 1, 2 ), T( 1, J-1 ), 1,
+                     CALL DAXPY( J-2, -X( 1, 2 ), T( 1, J-1 ), 1,
      &                           WORK( 1+N2 ), 1 )
-                     CALL BLAXPY( J-2, -X( 2, 2 ), T( 1, J ), 1,
+                     CALL DAXPY( J-2, -X( 2, 2 ), T( 1, J ), 1,
      &                           WORK( 1+N2 ), 1 )
                   END IF
    90          CONTINUE
@@ -569,8 +569,8 @@ C
 C              COPY THE VECTOR X OR Q*X TO VR AND NORMALIZE.
 C
                IF( .NOT.OVER ) THEN
-                  CALL BLCOPY( KI, WORK( 1+N ), 1, VR( 1, IS-1 ), 1 )
-                  CALL BLCOPY( KI, WORK( 1+N2 ), 1, VR( 1, IS ), 1 )
+                  CALL DCOPY( KI, WORK( 1+N ), 1, VR( 1, IS-1 ), 1 )
+                  CALL DCOPY( KI, WORK( 1+N2 ), 1, VR( 1, IS ), 1 )
 C
                   EMAX = ZERO
                   DO 100 K = 1, KI
@@ -579,8 +579,8 @@ C
   100             CONTINUE
 C
                   REMAX = ONE / EMAX
-                  CALL BLSCAL( KI, REMAX, VR( 1, IS-1 ), 1 )
-                  CALL BLSCAL( KI, REMAX, VR( 1, IS ), 1 )
+                  CALL DSCAL( KI, REMAX, VR( 1, IS-1 ), 1 )
+                  CALL DSCAL( KI, REMAX, VR( 1, IS ), 1 )
 C
                   DO 110 K = KI + 1, N
                      VR( K, IS-1 ) = ZERO
@@ -590,15 +590,15 @@ C
                ELSE
 C
                   IF( KI.GT.2 ) THEN
-                     CALL BLGEMV( 'N', N, KI-2, ONE, VR, LDVR,
+                     CALL DGEMV( 'N', N, KI-2, ONE, VR, LDVR,
      &                           WORK( 1+N ), 1, WORK( KI-1+N ),
      &                           VR( 1, KI-1 ), 1 )
-                     CALL BLGEMV( 'N', N, KI-2, ONE, VR, LDVR,
+                     CALL DGEMV( 'N', N, KI-2, ONE, VR, LDVR,
      &                           WORK( 1+N2 ), 1, WORK( KI+N2 ),
      &                           VR( 1, KI ), 1 )
                   ELSE
-                     CALL BLSCAL( N, WORK( KI-1+N ), VR( 1, KI-1 ), 1 )
-                     CALL BLSCAL( N, WORK( KI+N2 ), VR( 1, KI ), 1 )
+                     CALL DSCAL( N, WORK( KI-1+N ), VR( 1, KI-1 ), 1 )
+                     CALL DSCAL( N, WORK( KI+N2 ), VR( 1, KI ), 1 )
                   END IF
 C
                   EMAX = ZERO
@@ -607,8 +607,8 @@ C
      &                      ABS( VR( K, KI ) ) )
   120             CONTINUE
                   REMAX = ONE / EMAX
-                  CALL BLSCAL( N, REMAX, VR( 1, KI-1 ), 1 )
-                  CALL BLSCAL( N, REMAX, VR( 1, KI ), 1 )
+                  CALL DSCAL( N, REMAX, VR( 1, KI-1 ), 1 )
+                  CALL DSCAL( N, REMAX, VR( 1, KI ), 1 )
                END IF
             END IF
 C
@@ -695,13 +695,13 @@ C                    THE RIGHT-HAND SIDE.
 C
                      IF( WORK( J ).GT.VCRIT ) THEN
                         REC = ONE / VMAX
-                        CALL BLSCAL( N-KI+1, REC, WORK( KI+N ), 1 )
+                        CALL DSCAL( N-KI+1, REC, WORK( KI+N ), 1 )
                         VMAX = ONE
                         VCRIT = BIGNUM
                      END IF
 C
                      WORK( J+N ) = WORK( J+N ) -
-     &                             BLSDOT( J-KI-1, T( KI+1, J ), 1,
+     &                             DDOT( J-KI-1, T( KI+1, J ), 1,
      &                             WORK( KI+1+N ), 1 )
 C
 C                    SOLVE (T(J,J)-WR)'*X = WORK
@@ -713,7 +713,7 @@ C
 C                    SCALE IF NECESSARY
 C
                      IF( SCALE.NE.ONE )
-     &                  CALL BLSCAL( N-KI+1, SCALE, WORK( KI+N ), 1 )
+     &                  CALL DSCAL( N-KI+1, SCALE, WORK( KI+N ), 1 )
                      WORK( J+N ) = X( 1, 1 )
                      VMAX = MAX( ABS( WORK( J+N ) ), VMAX )
                      VCRIT = BIGNUM / VMAX
@@ -728,17 +728,17 @@ C
                      BETA = MAX( WORK( J ), WORK( J+1 ) )
                      IF( BETA.GT.VCRIT ) THEN
                         REC = ONE / VMAX
-                        CALL BLSCAL( N-KI+1, REC, WORK( KI+N ), 1 )
+                        CALL DSCAL( N-KI+1, REC, WORK( KI+N ), 1 )
                         VMAX = ONE
                         VCRIT = BIGNUM
                      END IF
 C
                      WORK( J+N ) = WORK( J+N ) -
-     &                             BLSDOT( J-KI-1, T( KI+1, J ), 1,
+     &                             DDOT( J-KI-1, T( KI+1, J ), 1,
      &                             WORK( KI+1+N ), 1 )
 C
                      WORK( J+1+N ) = WORK( J+1+N ) -
-     &                               BLSDOT( J-KI-1, T( KI+1, J+1 ), 1,
+     &                               DDOT( J-KI-1, T( KI+1, J+1 ), 1,
      &                               WORK( KI+1+N ), 1 )
 C
 C                    SOLVE
@@ -752,7 +752,7 @@ C
 C                    SCALE IF NECESSARY
 C
                      IF( SCALE.NE.ONE )
-     &                  CALL BLSCAL( N-KI+1, SCALE, WORK( KI+N ), 1 )
+     &                  CALL DSCAL( N-KI+1, SCALE, WORK( KI+N ), 1 )
                      WORK( J+N ) = X( 1, 1 )
                      WORK( J+1+N ) = X( 2, 1 )
 C
@@ -766,11 +766,11 @@ C
 C              COPY THE VECTOR X OR Q*X TO VL AND NORMALIZE.
 C
                IF( .NOT.OVER ) THEN
-                  CALL BLCOPY( N-KI+1, WORK( KI+N ), 1, VL( KI, IS ),1)
+                  CALL DCOPY( N-KI+1, WORK( KI+N ), 1, VL( KI, IS ),1)
 C
                   II = IDAMAX( N-KI+1, VL( KI, IS ), 1 ) + KI - 1
                   REMAX = ONE / ABS( VL( II, IS ) )
-                  CALL BLSCAL( N-KI+1, REMAX, VL( KI, IS ), 1 )
+                  CALL DSCAL( N-KI+1, REMAX, VL( KI, IS ), 1 )
 C
                   DO 180 K = 1, KI - 1
                      VL( K, IS ) = ZERO
@@ -779,13 +779,13 @@ C
                ELSE
 C
                   IF( KI.LT.N )
-     &               CALL BLGEMV( 'N', N, N-KI, ONE,VL( 1, KI+1 ),LDVL,
+     &               CALL DGEMV( 'N', N, N-KI, ONE,VL( 1, KI+1 ),LDVL,
      &                           WORK( KI+1+N ), 1, WORK( KI+N ),
      &                           VL( 1, KI ), 1 )
 C
                   II = IDAMAX( N, VL( 1, KI ), 1 )
                   REMAX = ONE / ABS( VL( II, KI ) )
-                  CALL BLSCAL( N, REMAX, VL( 1, KI ), 1 )
+                  CALL DSCAL( N, REMAX, VL( 1, KI ), 1 )
 C
                END IF
 C
@@ -843,17 +843,17 @@ C                    FORMING THE RIGHT-HAND SIDE ELEMENTS.
 C
                      IF( WORK( J ).GT.VCRIT ) THEN
                         REC = ONE / VMAX
-                        CALL BLSCAL( N-KI+1, REC, WORK( KI+N ), 1 )
-                        CALL BLSCAL( N-KI+1, REC, WORK( KI+N2 ), 1 )
+                        CALL DSCAL( N-KI+1, REC, WORK( KI+N ), 1 )
+                        CALL DSCAL( N-KI+1, REC, WORK( KI+N2 ), 1 )
                         VMAX = ONE
                         VCRIT = BIGNUM
                      END IF
 C
                      WORK( J+N ) = WORK( J+N ) -
-     &                             BLSDOT( J-KI-2, T( KI+2, J ), 1,
+     &                             DDOT( J-KI-2, T( KI+2, J ), 1,
      &                             WORK( KI+2+N ), 1 )
                      WORK( J+N2 ) = WORK( J+N2 ) -
-     &                              BLSDOT( J-KI-2, T( KI+2, J ), 1,
+     &                              DDOT( J-KI-2, T( KI+2, J ), 1,
      &                              WORK( KI+2+N2 ), 1 )
 C
 C                    SOLVE (T(J,J)-(WR-I*WI))*(X11+I*X12)= WK+I*WK2
@@ -865,8 +865,8 @@ C
 C                    SCALE IF NECESSARY
 C
                      IF( SCALE.NE.ONE ) THEN
-                        CALL BLSCAL( N-KI+1, SCALE, WORK( KI+N ), 1 )
-                        CALL BLSCAL( N-KI+1, SCALE, WORK( KI+N2 ), 1 )
+                        CALL DSCAL( N-KI+1, SCALE, WORK( KI+N ), 1 )
+                        CALL DSCAL( N-KI+1, SCALE, WORK( KI+N2 ), 1 )
                      END IF
                      WORK( J+N ) = X( 1, 1 )
                      WORK( J+N2 ) = X( 1, 2 )
@@ -884,26 +884,26 @@ C
                      BETA = MAX( WORK( J ), WORK( J+1 ) )
                      IF( BETA.GT.VCRIT ) THEN
                         REC = ONE / VMAX
-                        CALL BLSCAL( N-KI+1, REC, WORK( KI+N ), 1 )
-                        CALL BLSCAL( N-KI+1, REC, WORK( KI+N2 ), 1 )
+                        CALL DSCAL( N-KI+1, REC, WORK( KI+N ), 1 )
+                        CALL DSCAL( N-KI+1, REC, WORK( KI+N2 ), 1 )
                         VMAX = ONE
                         VCRIT = BIGNUM
                      END IF
 C
                      WORK( J+N ) = WORK( J+N ) -
-     &                             BLSDOT( J-KI-2, T( KI+2, J ), 1,
+     &                             DDOT( J-KI-2, T( KI+2, J ), 1,
      &                             WORK( KI+2+N ), 1 )
 C
                      WORK( J+N2 ) = WORK( J+N2 ) -
-     &                              BLSDOT( J-KI-2, T( KI+2, J ), 1,
+     &                              DDOT( J-KI-2, T( KI+2, J ), 1,
      &                              WORK( KI+2+N2 ), 1 )
 C
                      WORK( J+1+N ) = WORK( J+1+N ) -
-     &                               BLSDOT( J-KI-2, T( KI+2, J+1 ), 1,
+     &                               DDOT( J-KI-2, T( KI+2, J+1 ), 1,
      &                               WORK( KI+2+N ), 1 )
 C
                      WORK( J+1+N2 ) = WORK( J+1+N2 ) -
-     &                                BLSDOT( J-KI-2, T( KI+2, J+1 ), 1,
+     &                                DDOT( J-KI-2, T( KI+2, J+1 ), 1,
      &                                WORK( KI+2+N2 ), 1 )
 C
 C                    SOLVE 2-BY-2 COMPLEX LINEAR EQUATION
@@ -917,8 +917,8 @@ C
 C                    SCALE IF NECESSARY
 C
                      IF( SCALE.NE.ONE ) THEN
-                        CALL BLSCAL( N-KI+1, SCALE, WORK( KI+N ), 1 )
-                        CALL BLSCAL( N-KI+1, SCALE, WORK( KI+N2 ), 1 )
+                        CALL DSCAL( N-KI+1, SCALE, WORK( KI+N ), 1 )
+                        CALL DSCAL( N-KI+1, SCALE, WORK( KI+N2 ), 1 )
                      END IF
                      WORK( J+N ) = X( 1, 1 )
                      WORK( J+N2 ) = X( 1, 2 )
@@ -935,8 +935,8 @@ C              COPY THE VECTOR X OR Q*X TO VL AND NORMALIZE.
 C
   210          CONTINUE
                IF( .NOT.OVER ) THEN
-                  CALL BLCOPY( N-KI+1, WORK( KI+N ), 1, VL( KI, IS ),1)
-                  CALL BLCOPY( N-KI+1, WORK( KI+N2 ), 1, VL( KI, IS+1 ),
+                  CALL DCOPY( N-KI+1, WORK( KI+N ), 1, VL( KI, IS ),1)
+                  CALL DCOPY( N-KI+1, WORK( KI+N2 ), 1, VL( KI, IS+1 ),
      &                        1 )
 C
                   EMAX = ZERO
@@ -945,8 +945,8 @@ C
      &                      ABS( VL( K, IS+1 ) ) )
   220             CONTINUE
                   REMAX = ONE / EMAX
-                  CALL BLSCAL( N-KI+1, REMAX, VL( KI, IS ), 1 )
-                  CALL BLSCAL( N-KI+1, REMAX, VL( KI, IS+1 ), 1 )
+                  CALL DSCAL( N-KI+1, REMAX, VL( KI, IS ), 1 )
+                  CALL DSCAL( N-KI+1, REMAX, VL( KI, IS+1 ), 1 )
 C
                   DO 230 K = 1, KI - 1
                      VL( K, IS ) = ZERO
@@ -954,15 +954,15 @@ C
   230             CONTINUE
                ELSE
                   IF( KI.LT.N-1 ) THEN
-                     CALL BLGEMV( 'N', N, N-KI-1, ONE, VL( 1, KI+2 ),
+                     CALL DGEMV( 'N', N, N-KI-1, ONE, VL( 1, KI+2 ),
      &                           LDVL, WORK( KI+2+N ), 1, WORK( KI+N ),
      &                           VL( 1, KI ), 1 )
-                     CALL BLGEMV( 'N', N, N-KI-1, ONE, VL( 1, KI+2 ),
+                     CALL DGEMV( 'N', N, N-KI-1, ONE, VL( 1, KI+2 ),
      &                           LDVL, WORK( KI+2+N2 ), 1,
      &                           WORK( KI+1+N2 ), VL( 1, KI+1 ), 1 )
                   ELSE
-                     CALL BLSCAL( N, WORK( KI+N ), VL( 1, KI ), 1 )
-                     CALL BLSCAL( N, WORK( KI+1+N2 ), VL( 1, KI+1 ), 1 )
+                     CALL DSCAL( N, WORK( KI+N ), VL( 1, KI ), 1 )
+                     CALL DSCAL( N, WORK( KI+1+N2 ), VL( 1, KI+1 ), 1 )
                   END IF
 C
                   EMAX = ZERO
@@ -971,8 +971,8 @@ C
      &                      ABS( VL( K, KI+1 ) ) )
   240             CONTINUE
                   REMAX = ONE / EMAX
-                  CALL BLSCAL( N, REMAX, VL( 1, KI ), 1 )
-                  CALL BLSCAL( N, REMAX, VL( 1, KI+1 ), 1 )
+                  CALL DSCAL( N, REMAX, VL( 1, KI ), 1 )
+                  CALL DSCAL( N, REMAX, VL( 1, KI+1 ), 1 )
 C
                END IF
 C

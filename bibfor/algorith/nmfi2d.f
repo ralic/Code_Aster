@@ -1,9 +1,9 @@
       SUBROUTINE NMFI2D( NPG,LGPG,MATE,OPTION,GEOM,DEPLM,DDEPL,
      &                   SIGMA,FINT,KTAN,VIM,VIP,CRIT,
-     &                   COMPOR,TYPMOD,INSTM,INSTP)
+     &                   COMPOR,TYPMOD,INSTM,INSTP,TM,TP)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/11/2004   AUTEUR KBBHHDB G.DEBRUYNE 
+C MODIF ALGORITH  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,11 +24,13 @@ C
 C ======================================================================
 
       IMPLICIT NONE
-      INTEGER MATE,NPG,LGPG
-      REAL*8  GEOM(2,4),DEPLM(2,4),DDEPL(2,4),INSTM,INSTP
+      INTEGER MATE,NPG,LGPG,N
+      REAL*8  GEOM(2,4),DEPLM(2,4),DDEPL(2,4),INSTM,INSTP,TM(4),TP(4)
       REAL*8  FINT(8),KTAN(8,8),SIGMA(2,NPG),VIM(LGPG,NPG),VIP(LGPG,NPG)
       CHARACTER*8  TYPMOD(*)
       CHARACTER*16 OPTION, COMPOR(*)
+      REAL*8             ZR
+      COMMON  / RVARJE / ZR(1)
 C-----------------------------------------------------------------------
 C
 C BUT: DEVELOPPEMENT D'UN ELEMENT DE JOINT.
@@ -52,17 +54,22 @@ C-----------------------------------------------------------------------
 
       LOGICAL RESI, RIGI, AXI
       INTEGER I,J,Q,S, IBID,KPG
+      INTEGER NDIM,NNO,NNOS,IPOIDS,IVF,IDFDE,JGANO
       REAL*8 DSIDEP(2,2),B(2,8),RBID,R8VIDE
       REAL*8 SU(2),U(8),AIRE,POIDS(2),SIG(2),VIMOIN(LGPG),VIPLUS(LGPG)
+      REAL*8 VALRES,HPEN,LONG
       REAL*8 CRIT
+      REAL*8 TEMPM(2),TEMPP(2),TREF
+      REAL*8 EPS(4),DEPS(4)
       REAL*8 SIGN,EPSANM,EPSANP
       REAL*8 COD(NPG),ANGMAS(3)
-
+      CHARACTER*2 CODRET
+      CHARACTER*8 NOMRES
 
       CALL R8INIR(8 , 0.D0, FINT,1)
       CALL R8INIR(64, 0.D0, KTAN,1)
       CALL R8INIR(4,  0.D0, SIGMA ,1)
-      
+
 C --- ANGLE DU MOT_CLEF MASSIF (AFFE_CARA_ELEM)
 C --- INITIALISE A R8VIDE (ON NE S'EN SERT PAS)
       CALL R8INIR(3,  R8VIDE(), ANGMAS ,1)
@@ -77,9 +84,9 @@ C --- INITIALISE A R8VIDE (ON NE S'EN SERT PAS)
 C DEFINITION DU DEPLACEMENT A L'INSTANT A T+
 
 C     U=U-
-      CALL R8COPY(8, DEPLM,1, U,1)
+      CALL DCOPY(8, DEPLM,1, U,1)
 C     SI RESI ALORS U=U+
-      IF (RESI) CALL R8AXPY(8, 1.D0, DDEPL,1, U,1)
+      IF (RESI) CALL DAXPY(8, 1.D0, DDEPL,1, U,1)
 
 C CALCUL DE L'AIRE DES PAROIS DE LA FISSURE :
 C  * EN 2D ON CONSIDERE QUE L'EPAISSEUR EST DE 1 DONC
@@ -88,14 +95,25 @@ C  * EN AXIS ON MULTIPLIE CETTE LONGEUR PAR LA DISTANCE DU CENTRE DE
 C    L'ELEMENT A L'AXE DE SYMETRIE.
 
       AIRE = SQRT( (GEOM(1,2)-GEOM(1,1))**2 + (GEOM(2,2)-GEOM(2,1))**2 )
+      LONG=AIRE
       IF (AXI) AIRE = AIRE * (GEOM(1,1)+GEOM(1,2))/2.D0
-
+      CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,
+     &                  JGANO)
       DO 11 KPG=1,NPG
 
 C POIDS DU POINT DE GAUSS COURANT :
 
         POIDS(KPG) = AIRE/2
-
+C
+C - CALCUL DE LA TEMPERATURE AU POINT DE GAUSS
+C
+        TEMPM(KPG) = 0.D0
+        TEMPP(KPG) = 0.D0
+C
+        DO 12 N=1,NNO
+          TEMPM(KPG) = TEMPM(KPG) + TM(N)*ZR(IVF+N+(KPG-1)*NNO-1)
+          TEMPP(KPG) = TEMPP(KPG) + TP(N)*ZR(IVF+N+(KPG-1)*NNO-1)
+ 12     CONTINUE
 C CALCUL DE LA MATRICE B DONNANT LES SAUT PAR ELEMENTS A PARTIR DES
 C DEPLACEMENTS AUX NOEUDS :
 C LE CHANGEMENT DE REPERE EST INTEGRE DANS LA MATRICE B (VOIR NMFISA)
@@ -111,7 +129,19 @@ C CALCUL DU SAUT DE DEPLACEMENT DANS L'ELEMENT (SU_N,SU_T) = B U :
  10     CONTINUE
 
         IF (COMPOR(1)(7:8).EQ.'BA') THEN
-          
+          CALL RCVALA(MATE,' ','JOINT_BA',0,' ',0.D0,1,
+     &               'HPEN',VALRES,CODRET,'FM')
+          HPEN   = VALRES
+
+          DO 15 J = 1,4
+            EPS (J)=0.D0
+            DEPS(J)=0.D0
+15        CONTINUE
+
+          EPS(1) = SU(2)/LONG
+          EPS(2) = SU(1)/HPEN
+          EPS(4) = SU(2)/HPEN
+
           DO 18 J=1,LGPG
             VIMOIN(J)=VIM(J,KPG)
 18        CONTINUE
@@ -125,7 +155,7 @@ C -   APPEL A LA LOI DE COMPORTEMENT
      &               RBID,RBID,
      &               RBID,RBID,RBID,
      &               -1.D0,-1.D0,
-     &               SU,RBID,
+     &               EPS,DEPS,
      &               SIGN,VIMOIN,
      &               OPTION,
      &               EPSANM,EPSANP,
@@ -136,7 +166,7 @@ C -   APPEL A LA LOI DE COMPORTEMENT
      &               SIG,VIPLUS,DSIDEP,IBID)
 
 
-        IF (RESI) THEN               
+        IF (RESI) THEN
           SIGMA(1,KPG)=SIG(1)
           SIGMA(2,KPG)=SIG(2)
           DO 28 J=1,LGPG
@@ -144,7 +174,7 @@ C -   APPEL A LA LOI DE COMPORTEMENT
 28        CONTINUE
         ENDIF
 
-      ELSE        
+      ELSE
 
 C CALCUL DE LA CONTRAINTE DANS L'ELEMENT AINSI QUE LA DERIVEE
 C DE CELLE-CI PAR RAPPORT AU SAUT DE DEPLACEMENT (SIGMA ET DSIDEP) :
@@ -158,7 +188,7 @@ C DE CELLE-CI PAR RAPPORT AU SAUT DE DEPLACEMENT (SIGMA ET DSIDEP) :
 C -   APPEL A LA LOI DE COMPORTEMENT
           CALL NMCOMP (2,TYPMOD,MATE,COMPOR,RBID,
      &               RBID,RBID,
-     &               RBID,RBID,RBID,
+     &               TEMPM(KPG),TEMPP(KPG),RBID,
      &               RBID,RBID,
      &               RBID,RBID,RBID,
      &               R8VIDE(),R8VIDE(),

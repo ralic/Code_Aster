@@ -2,7 +2,7 @@
      &                  DEPTOT,ITERAT,LREAC,CONV,DEPDEL)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/11/2004   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -326,7 +326,7 @@ C
             CALL CALATM (NEQ,NBDDL,XMU,ZR(JAPCOE+JDECAL),
      &                                ZI(JAPDDL+JDECAL),ZR(JCM1A))
             ZR(JMU-1+NBLIAC) = -ZR(JAPJEU+II-1)*ZR(IPENA-1+2*II-1)
-            CALL R8AXPY(NEQ,ZR(JMU-1+NBLIAC),ZR(JCM1A),1,ZR(JATMU),1) 
+            CALL DAXPY(NEQ,ZR(JMU-1+NBLIAC),ZR(JCM1A),1,ZR(JATMU),1) 
          ENDIF
          CALL JELIBE(JEXNUM(CM1A,II))
  50   CONTINUE

@@ -3,7 +3,7 @@
       IMPLICIT NONE
 C---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -60,7 +60,7 @@ C     --- FIN DES COMMUNS JEVEUX ------------------------------------
       INTEGER       IABLO,IRANG,JRANG,I,J,IBLO,LDBLO,IVZ,ITPZ,IADIRG
       INTEGER       IBLODI,LDIABL,NBLOC,N1BLOC,N2BLOC,NBMO,N8,NN
       INTEGER       IFM,NIV
-      REAL*8        MIJ,RX,RY,RZ,R8DOT
+      REAL*8        MIJ,RX,RY,RZ,DDOT
       CHARACTER*2   MODEL
       CHARACTER*8   REPON
       CHARACTER*8   NOMRES
@@ -147,11 +147,11 @@ C-----------STOCKAGE DANS LA MATR_ASSE_GENE  ------
 
            CALL JEVEUO(ZK24(IPRSTO+J-1)(1:19)//'.VALE','L',IPRES)
 
-           RX= R8DOT(NBPRES,ZR(IPRES), 1,ZR(IVX),1)
-           RY= R8DOT(NBPRES,ZR(IPRES), 1,ZR(IVY),1)
+           RX= DDOT(NBPRES,ZR(IPRES), 1,ZR(IVX),1)
+           RY= DDOT(NBPRES,ZR(IPRES), 1,ZR(IVY),1)
 
            IF (MODEL.EQ.'3D') THEN
-             RZ= R8DOT(NBPRES,ZR(IPRES), 1,ZR(IVZ),1)
+             RZ= DDOT(NBPRES,ZR(IPRES), 1,ZR(IVZ),1)
              MIJ = RX+RY+RZ
            ELSE
              MIJ = RX+RY

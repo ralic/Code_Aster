@@ -2,7 +2,7 @@
       IMPLICIT  NONE
       CHARACTER*16        OPTION, NOMTE
 C     ------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 16/10/2004   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF ELEMENTS  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -356,7 +356,7 @@ C                 SIGXY=NXY/E + Z*MXY*12:E**3
                   SIGTOT(4) = EFFGT(IEFF+3)/EPTOT + 
      &                    X3I*EFFGT(IEFF+3+3)/EPTOT/EPTOT/EPTOT*12.D0
                   ICONTP=JTAB(1)+(6*NBSP)*(IPG-1)+6*(ISP-1)
-                  CALL R8COPY(6,SIGTOT,1,ZR(ICONTP),1)
+                  CALL DCOPY(6,SIGTOT,1,ZR(ICONTP),1)
 217            CONTINUE
 216         CONTINUE
 

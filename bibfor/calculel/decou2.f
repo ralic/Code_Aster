@@ -2,7 +2,7 @@
      &                      DEDIME,NDEMA,SEP,NSEP,MASEP,NMASEP,NMA)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 02/04/2002   AUTEUR RATEAU G.RATEAU 
+C MODIF CALCULEL  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -52,7 +52,7 @@ C ---------------------------------------------------------------------
       IMPLICIT NONE
 
 C --- FONCTION
-      REAL*8   R8DOT, R8NRM1
+      REAL*8   DDOT, R8NRM1
 
 C --- VARIABLES
       INTEGER  DIM,NN0,MA,NDEMA,NSEP,NSONO(*),NMA(*),TYPE(*),NCOTE
@@ -163,7 +163,7 @@ C ------- CALCUL DES PANS SEPARATEURS
      &                        - DENO(1,N1) * DENO(2,N2)
 
                 R0 = 1.D0/R8NRM1(2,SEP(1,NSEP+I),1)
-                CALL R8SCAL(3,R0,SEP(1,NSEP+I),1)
+                CALL DSCAL(3,R0,SEP(1,NSEP+I),1)
 
  30           CONTINUE
 
@@ -184,10 +184,10 @@ C ------- CALCUL DES PANS SEPARATEURS
                 SEP(1,NSEP+I) = R(2)*S(3) - R(3)*S(2)
                 SEP(2,NSEP+I) = R(3)*S(1) - R(1)*S(3)
                 SEP(3,NSEP+I) = R(1)*S(2) - R(2)*S(1)
-                SEP(4,NSEP+I) =-R8DOT(3,SEP(1,NSEP+I),1,DENO(1,N1),1)
+                SEP(4,NSEP+I) =-DDOT(3,SEP(1,NSEP+I),1,DENO(1,N1),1)
 
                 R0 = 1.D0/R8NRM1(3,SEP(1,NSEP+I),1)
-                CALL R8SCAL(4,R0,SEP(1,NSEP+I),1)
+                CALL DSCAL(4,R0,SEP(1,NSEP+I),1)
 
  40           CONTINUE          
 

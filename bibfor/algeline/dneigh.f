@@ -2,7 +2,7 @@
      &  (RNORM, N, H, LDH, RITZR, RITZI, BOUNDS, Q, LDQ, WORKL, IERR)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 12/12/2002   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF ALGELINE  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) LAPACK
 C ======================================================================
@@ -70,10 +70,10 @@ C     FLACPY  LAPACK MATRIX COPY ROUTINE.
 C     FLAPY2  LAPACK ROUTINE TO COMPUTE SQRT(X**2+Y**2) CAREFULLY.
 C     FTREVC  LAPACK ROUTINE TO COMPUTE THE EIGENVECTORS OF A MATRIX
 C             IN UPPER QUASI-TRIANGULAR FORM
-C     BLGEMV   LEVEL 2 BLAS ROUTINE FOR MATRIX VECTOR MULTIPLICATION.
-C     BLCOPY   LEVEL 1 BLAS THAT COPIES ONE VECTOR TO ANOTHER .
-C     BLNRM2   LEVEL 1 BLAS THAT COMPUTES THE NORM OF A VECTOR.
-C     BLSCAL   LEVEL 1 BLAS THAT SCALES A VECTOR.
+C     DGEMV   LEVEL 2 BLAS ROUTINE FOR MATRIX VECTOR MULTIPLICATION.
+C     DCOPY   LEVEL 1 BLAS THAT COPIES ONE VECTOR TO ANOTHER .
+C     DNRM2   LEVEL 1 BLAS THAT COMPUTES THE NORM OF A VECTOR.
+C     DSCAL   LEVEL 1 BLAS THAT SCALES A VECTOR.
 C
 C INTRINSIC FUNCTIONS
 C
@@ -147,7 +147,7 @@ C     %-----------%
 C     | FUNCTIONS |
 C     %-----------%
 
-      REAL*8 FLAPY2, BLNRM2
+      REAL*8 FLAPY2, DNRM2
 
 C     %-----------------------%
 C     | EXECUTABLE STATEMENTS |
@@ -214,8 +214,8 @@ C     %------------------------------------------------%
 C           %----------------------%
 C           | REAL EIGENVALUE CASE |
 C           %----------------------%
-            TEMP = BLNRM2( N, Q(1,I), 1 )
-            CALL BLSCAL ( N, ONE / TEMP, Q(1,I), 1 )
+            TEMP = DNRM2( N, Q(1,I), 1 )
+            CALL DSCAL ( N, ONE / TEMP, Q(1,I), 1 )
          ELSE
 
 C           %-------------------------------------------%
@@ -227,10 +227,10 @@ C           | SQUARE ROOT OF TWO.                       |
 C           %-------------------------------------------%
 
             IF (ICONJ .EQ. 0) THEN
-               TEMP = FLAPY2( BLNRM2( N, Q(1,I), 1 ),
-     &                        BLNRM2( N, Q(1,I+1), 1 ) )
-               CALL BLSCAL ( N, ONE / TEMP, Q(1,I), 1 )
-               CALL BLSCAL ( N, ONE / TEMP, Q(1,I+1), 1 )
+               TEMP = FLAPY2( DNRM2( N, Q(1,I), 1 ),
+     &                        DNRM2( N, Q(1,I+1), 1 ) )
+               CALL DSCAL ( N, ONE / TEMP, Q(1,I), 1 )
+               CALL DSCAL ( N, ONE / TEMP, Q(1,I+1), 1 )
                ICONJ = 1
             ELSE
                ICONJ = 0
@@ -238,7 +238,7 @@ C           %-------------------------------------------%
          END IF
    10 CONTINUE
 
-      CALL BLGEMV ('T', N, N, ONE, Q, LDQ, BOUNDS, 1, ZERO, WORKL, 1)
+      CALL DGEMV ('T', N, N, ONE, Q, LDQ, BOUNDS, 1, ZERO, WORKL, 1)
 
       IF (MSGLVL .GT. 1) THEN
           CALL DVOUT (LOGFIL, N, WORKL, NDIGIT,

@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 26/05/98   AUTEUR H1BAXBG M.LAINET 
+C MODIF ALGELINE  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -96,8 +96,8 @@ C
             IF ( JMAX.NE.J ) THEN
                W(JMAX) = W(J)
                W(J) = WMAX
-               IF ( MATU ) CALL R8SWAP(M,U(1,J),1,U(1,JMAX),1)
-               IF ( MATV ) CALL R8SWAP(N,V(1,J),1,V(1,JMAX),1)
+               IF ( MATU ) CALL DSWAP(M,U(1,J),1,U(1,JMAX),1)
+               IF ( MATV ) CALL DSWAP(N,V(1,J),1,V(1,JMAX),1)
             ENDIF
   10     CONTINUE
       ENDIF
@@ -111,8 +111,8 @@ C
       ELSE
          RGMAX = MIN(M,N)
          IF ( RGMAX.GT.1 ) THEN
-            CALL R8COPY(RGMAX,W(1),1,RV1(1),1)
-            CALL R8SCAL(RGMAX,1.0D0/RV1(1),RV1(1),1)
+            CALL DCOPY(RGMAX,W(1),1,RV1(1),1)
+            CALL DSCAL(RGMAX,1.0D0/RV1(1),RV1(1),1)
             DO 30 J = 2, RGMAX
                IF ( RV1(J).LT.EPS ) GO TO 40
   30        CONTINUE

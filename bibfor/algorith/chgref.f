@@ -2,7 +2,7 @@
       IMPLICIT   NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/09/2002   AUTEUR GREFFET N.GREFFET 
+C MODIF ALGORITH  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -55,7 +55,7 @@ C
       CHARACTER*8   K8BID
       CHARACTER*19  GEOMI
       CHARACTER*24  COORJV
-      REAL*8        X(3), Y(3), Z(3), P(3), PREC, R8NRM2, R8DOT, R1, R2
+      REAL*8        X(3), Y(3), Z(3), P(3), PREC, DNRM2, DDOT, R1, R2
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
@@ -67,7 +67,7 @@ C
       IADCOO=IADCOO-1
 C     -- ON TRAITE LE CAS 2D SEPAREMENT POUR OPTIMISER :
       IF ( BIDIM ) THEN
-         R1=R8NRM2(2,X,1)
+         R1=DNRM2(2,X,1)
          IF ( R1 .GT. PREC ) THEN
             X(1)=X(1)/R1
             X(2)=X(2)/R1
@@ -77,17 +77,17 @@ C     -- ON TRAITE LE CAS 2D SEPAREMENT POUR OPTIMISER :
             DO 10 I=1,N1
                P(1)=ZR(IADCOO+3*(I-1)+1)
                P(2)=ZR(IADCOO+3*(I-1)+2)
-               ZR(IADCOO+3*(I-1)+1)=R8DOT(2,X,1,P,1)
-               ZR(IADCOO+3*(I-1)+2)=R8DOT(2,Y,1,P,1)
+               ZR(IADCOO+3*(I-1)+1)=DDOT(2,X,1,P,1)
+               ZR(IADCOO+3*(I-1)+2)=DDOT(2,Y,1,P,1)
  10         CONTINUE
          ELSE
             CALL UTMESS('F','CHGREP','CE MOT CLE DE MODI_MAILLAGE'
      +      //' ATTEND UN VECTEUR DE NORME NON NULLE.')
          ENDIF
       ELSE
-         R1=R8NRM2(3,X,1)
-         R2=R8NRM2(3,Y,1)
-         IF ( ( R8DOT(3,X,1,Y,1) .LT. PREC ) .AND. 
+         R1=DNRM2(3,X,1)
+         R2=DNRM2(3,Y,1)
+         IF ( ( DDOT(3,X,1,Y,1) .LT. PREC ) .AND. 
      +   ( (R1*R2) .GT. 0.D0 ) ) THEN
             X(1)=X(1)/R1
             X(2)=X(2)/R1
@@ -100,9 +100,9 @@ C     -- ON TRAITE LE CAS 2D SEPAREMENT POUR OPTIMISER :
                P(1)=ZR(IADCOO+3*(I-1)+1)
                P(2)=ZR(IADCOO+3*(I-1)+2)
                P(3)=ZR(IADCOO+3*(I-1)+3)
-               ZR(IADCOO+3*(I-1)+1)=R8DOT(3,X,1,P,1)
-               ZR(IADCOO+3*(I-1)+2)=R8DOT(3,Y,1,P,1)
-               ZR(IADCOO+3*(I-1)+3)=R8DOT(3,Z,1,P,1)
+               ZR(IADCOO+3*(I-1)+1)=DDOT(3,X,1,P,1)
+               ZR(IADCOO+3*(I-1)+2)=DDOT(3,Y,1,P,1)
+               ZR(IADCOO+3*(I-1)+3)=DDOT(3,Z,1,P,1)
  20         CONTINUE
          ELSE
             CALL UTMESS('F','CHGREP','LE MOT CLE REPERE DE'

@@ -9,7 +9,7 @@
       CHARACTER*8     NOECHO(*), INTITU(*)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -144,7 +144,7 @@ C
           DXMINT = -DXMAXT
 C
           IDEC=3*(I-1)+J
-          CALL R8COPY(NBPT,DLOC(IDEC),3*NBOBST,WK1(1),1)
+          CALL DCOPY(NBPT,DLOC(IDEC),3*NBOBST,WK1(1),1)
 C
           DO 30 IBL=1,NBLOC
             DXMOY  = ZERO
@@ -189,8 +189,8 @@ C       --------------------------------------------------------
 C       --- ANALYSE DES DEPLACEMENTS EN COORDONNEES POLAIRES ---
 C       --------------------------------------------------------
 C
-        CALL R8COPY(NBPT,DLOC(3*(I-1)+2),3*NBOBST,WK1,1)
-        CALL R8COPY(NBPT,DLOC(3*(I-1)+3),3*NBOBST,WK2,1)
+        CALL DCOPY(NBPT,DLOC(3*(I-1)+2),3*NBOBST,WK1,1)
+        CALL DCOPY(NBPT,DLOC(3*(I-1)+3),3*NBOBST,WK2,1)
         DO 12 IN = 1,NBPT
           WK3(IN) = SQRT( WK1(IN)*WK1(IN) + WK2(IN)*WK2(IN) )
  12     CONTINUE
@@ -304,7 +304,7 @@ C
         FXMAXT = ZERO
         FXMINT = ZERO
         TXCHOC = ZERO
-        CALL R8COPY(NBPT,FCHO(3*(I-1)+1),3*NBOBST,WK1,1)
+        CALL DCOPY(NBPT,FCHO(3*(I-1)+1),3*NBOBST,WK1,1)
         DO 22 IBL = 1,NBLOC
           FNMOYT = ZERO
           FNMOYC = ZERO
@@ -363,7 +363,7 @@ C
           FYRMSC = ZERO
           FYMAXT = ZERO
           FYMINT = ZERO
-          CALL R8COPY(NBPT,FCHO(3*(I-1)+J),3*NBOBST,WK1,1)
+          CALL DCOPY(NBPT,FCHO(3*(I-1)+J),3*NBOBST,WK1,1)
           DO 23 IBL = 1,NBLOC
             FTMOYE = ZERO
             FTETYP = ZERO
@@ -421,7 +421,7 @@ C
         TCHOMI = ZERO
         TCHOMA = ZERO
         TCHOMY = ZERO
-        CALL R8COPY(NBPT,FCHO(3*(I-1)+1),3*NBOBST,WK1,1)
+        CALL DCOPY(NBPT,FCHO(3*(I-1)+1),3*NBOBST,WK1,1)
         DO 24 IBL=1,NBLOC
           TCHOCM = ZERO
           TCHOCT = ZERO

@@ -4,7 +4,7 @@
 C---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGELINE  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -162,15 +162,15 @@ C     GLASCL  LAPACK ROUTINE FOR CAREFUL SCALING OF A MATRIX.
 C     DLABAD  LAPACK ROUTINE FOR DEFINING THE UNDERFLOW AND OVERFLOW
 C             LIMITS.
 C     FLAPY2  LAPACK ROUTINE TO COMPUTE SQRT(X**2+Y**2) CAREFULLY.
-C     GLGEMV   LEVEL 2 BLAS ROUTINE FOR MATRIX VECTOR MULTIPLICATION.
-C     GLAXPY   LEVEL 1 BLAS THAT COMPUTES A VECTOR TRIAD.
-C     GLCOPY   LEVEL 1 BLAS THAT COPIES ONE VECTOR TO ANOTHER .
-C     GLDOTC   LEVEL 1 BLAS THAT COMPUTES THE SCALAR PRODUCT OF TWO 
+C     ZGEMV   LEVEL 2 BLAS ROUTINE FOR MATRIX VECTOR MULTIPLICATION.
+C     ZAXPY   LEVEL 1 BLAS THAT COMPUTES A VECTOR TRIAD.
+C     ZCOPY   LEVEL 1 BLAS THAT COPIES ONE VECTOR TO ANOTHER .
+C     ZDOTC   LEVEL 1 BLAS THAT COMPUTES THE SCALAR PRODUCT OF TWO 
 C              VECTORS. 
-C     ZLSCAL   LEVEL 1 BLAS THAT SCALES A VECTOR.
-C     GLSCAL  LEVEL 1 BLAS THAT SCALES A COMPLEX VECTOR BY A REAL 
+C     ZSCAL   LEVEL 1 BLAS THAT SCALES A VECTOR.
+C     ZDSCAL  LEVEL 1 BLAS THAT SCALES A COMPLEX VECTOR BY A REAL 
 C             NUMBER. 
-C     GLNRM2  LEVEL 1 BLAS THAT COMPUTES THE NORM OF A VECTOR.
+C     DZNRM2  LEVEL 1 BLAS THAT COMPUTES THE NORM OF A VECTOR.
 C
 C\AUTHOR
 C     DANNY SORENSEN               PHUONG VU
@@ -295,8 +295,8 @@ C     | EXTERNAL FUNCTIONS |
 C     %--------------------%
 C
       INTEGER ISBAEM
-      COMPLEX*16 GLDOTC 
-      REAL*8     GLNRM2, HLANHS, FLAPY2, R8PREM, R8MIEM
+      COMPLEX*16 ZDOTC 
+      REAL*8     DZNRM2, HLANHS, FLAPY2, R8PREM, R8MIEM
 C
 C     %-----------------%
 C     | DATA STATEMENTS |
@@ -315,7 +315,7 @@ C        | SET MACHINE-DEPENDENT CONSTANTS FOR THE |
 C        | THE SPLITTING AND DEFLATION CRITERION.  |
 C        | IF NORM(H) <= SQRT(OVFL),               |
 C        | OVERFLOW SHOULD NOT OCCUR.              |
-C        | REFERENCE: LAPACK SUBROUTINE GLAHQR     |
+C        | REFERENCE: LAPACK SUBROUTINE ZLAHQR     |
 C        %-----------------------------------------%
 C
          UNFL = R8MIEM()
@@ -455,11 +455,11 @@ C        | WHEN RECIPROCATING A SMALL RNORM, TEST AGAINST LOWER    |
 C        | MACHINE BOUND.                                          |
 C        %---------------------------------------------------------%
 C
-         CALL GLCOPY (N, RESID, 1, V(1,J), 1)
+         CALL ZCOPY (N, RESID, 1, V(1,J), 1)
          IF ( RNORM .GE. UNFL) THEN
              TEMP1 = RONE / RNORM
-             CALL GLSCAL (N, TEMP1, V(1,J), 1)
-             CALL GLSCAL (N, TEMP1, WORKD(IPJ), 1)
+             CALL ZDSCAL (N, TEMP1, V(1,J), 1)
+             CALL ZDSCAL (N, TEMP1, WORKD(IPJ), 1)
          ELSE
 C
 C            %-----------------------------------------%
@@ -480,7 +480,7 @@ C        %------------------------------------------------------%
 C
          STEP3 = .TRUE.
          NOPX  = NOPX + 1
-         CALL GLCOPY (N, V(1,J), 1, WORKD(IVJ), 1)
+         CALL ZCOPY (N, V(1,J), 1, WORKD(IVJ), 1)
          IPNTR(1) = IVJ
          IPNTR(2) = IRJ
          IPNTR(3) = IPJ
@@ -505,7 +505,7 @@ C        %------------------------------------------%
 C        | PUT ANOTHER COPY OF OP*V_{J} INTO RESID. |
 C        %------------------------------------------%
 C
-         CALL GLCOPY (N, WORKD(IRJ), 1, RESID, 1)
+         CALL ZCOPY (N, WORKD(IRJ), 1, RESID, 1)
 C 
 C        %---------------------------------------%
 C        | STEP 4:  FINISH EXTENDING THE ARNOLDI |
@@ -525,7 +525,7 @@ C           %-------------------------------------%
 C 
             GO TO 9000
          ELSE IF (BMAT .EQ. 'I') THEN
-            CALL GLCOPY (N, RESID, 1, WORKD(IPJ), 1)
+            CALL ZCOPY (N, RESID, 1, WORKD(IPJ), 1)
          END IF
    60    CONTINUE
 C 
@@ -543,10 +543,10 @@ C        | COMPUTE THE B-NORM OF OP*V_{J}.     |
 C        %-------------------------------------%
 C
          IF (BMAT .EQ. 'G') THEN  
-             CNORM = GLDOTC (N, RESID, 1, WORKD(IPJ), 1)
+             CNORM = ZDOTC (N, RESID, 1, WORKD(IPJ), 1)
              WNORM = SQRT( FLAPY2(DBLE(CNORM),DIMAG(CNORM)) )
          ELSE IF (BMAT .EQ. 'I') THEN
-             WNORM = GLNRM2(N, RESID, 1)
+             WNORM = DZNRM2(N, RESID, 1)
          END IF
 C
 C        %-----------------------------------------%
@@ -563,7 +563,7 @@ C        | COMPUTE THE J FOURIER COEFFICIENTS W_{J} |
 C        | WORKD(IPJ:IPJ+N-1) CONTAINS B*OP*V_{J}.  |
 C        %------------------------------------------%
 C 
-         CALL GLGEMV ('C', N, J, ONE, V, LDV, WORKD(IPJ), 1,
+         CALL ZGEMV ('C', N, J, ONE, V, LDV, WORKD(IPJ), 1,
      &               ZERO, H(1,J), 1)
 C
 C        %--------------------------------------%
@@ -571,7 +571,7 @@ C        | ORTHOGONALIZE R_{J} AGAINST V_{J}.   |
 C        | RESID CONTAINS OP*V_{J}. SEE STEP 3. | 
 C        %--------------------------------------%
 C
-         CALL GLGEMV ('N', N, J, -ONE, V, LDV, H(1,J), 1,
+         CALL ZGEMV ('N', N, J, -ONE, V, LDV, H(1,J), 1,
      &               ONE, RESID, 1)
 C
          IF (J .GT. 1) H(J,J-1) = DCMPLX(BETAJ, RZERO)
@@ -581,7 +581,7 @@ C
 C 
          IF (BMAT .EQ. 'G') THEN
             NBX = NBX + 1
-            CALL GLCOPY (N, RESID, 1, WORKD(IRJ), 1)
+            CALL ZCOPY (N, RESID, 1, WORKD(IRJ), 1)
             IPNTR(1) = IRJ
             IPNTR(2) = IPJ
             IDO = 2
@@ -592,7 +592,7 @@ C           %----------------------------------%
 C 
             GO TO 9000
          ELSE IF (BMAT .EQ. 'I') THEN
-            CALL GLCOPY (N, RESID, 1, WORKD(IPJ), 1)
+            CALL ZCOPY (N, RESID, 1, WORKD(IPJ), 1)
          END IF 
    70    CONTINUE
 C 
@@ -608,10 +608,10 @@ C        | COMPUTE THE B-NORM OF R_{J}. |
 C        %------------------------------%
 C
          IF (BMAT .EQ. 'G') THEN         
-            CNORM = GLDOTC (N, RESID, 1, WORKD(IPJ), 1)
+            CNORM = ZDOTC (N, RESID, 1, WORKD(IPJ), 1)
             RNORM = SQRT( FLAPY2(DBLE(CNORM),DIMAG(CNORM)) )
          ELSE IF (BMAT .EQ. 'I') THEN
-            RNORM = GLNRM2(N, RESID, 1)
+            RNORM = DZNRM2(N, RESID, 1)
          END IF
 C 
 C        %-----------------------------------------------------------%
@@ -660,7 +660,7 @@ C        | COMPUTE V_{J}^T * B * R_{J}.                       |
 C        | WORKD(IRJ:IRJ+J-1) = V(:,1:J)'*WORKD(IPJ:IPJ+N-1). |
 C        %----------------------------------------------------%
 C
-         CALL GLGEMV ('C', N, J, ONE, V, LDV, WORKD(IPJ), 1, 
+         CALL ZGEMV ('C', N, J, ONE, V, LDV, WORKD(IPJ), 1, 
      &               ZERO, WORKD(IRJ), 1)
 C
 C        %---------------------------------------------%
@@ -670,14 +670,14 @@ C        | THE CORRECTION TO H IS V(:,1:J)*H(1:J,1:J)  |
 C        | + V(:,1:J)*WORKD(IRJ:IRJ+J-1)*E'_J.         |
 C        %---------------------------------------------%
 C
-         CALL GLGEMV ('N', N, J, -ONE, V, LDV, WORKD(IRJ), 1, 
+         CALL ZGEMV ('N', N, J, -ONE, V, LDV, WORKD(IRJ), 1, 
      &               ONE, RESID, 1)
-         CALL GLAXPY (J, ONE, WORKD(IRJ), 1, H(1,J), 1)
+         CALL ZAXPY (J, ONE, WORKD(IRJ), 1, H(1,J), 1)
 C 
          ORTH2 = .TRUE.
          IF (BMAT .EQ. 'G') THEN
             NBX = NBX + 1
-            CALL GLCOPY (N, RESID, 1, WORKD(IRJ), 1)
+            CALL ZCOPY (N, RESID, 1, WORKD(IRJ), 1)
             IPNTR(1) = IRJ
             IPNTR(2) = IPJ
             IDO = 2
@@ -689,7 +689,7 @@ C           %-----------------------------------%
 C 
             GO TO 9000
          ELSE IF (BMAT .EQ. 'I') THEN
-            CALL GLCOPY (N, RESID, 1, WORKD(IPJ), 1)
+            CALL ZCOPY (N, RESID, 1, WORKD(IPJ), 1)
          END IF 
    90    CONTINUE
 C
@@ -702,10 +702,10 @@ C        | COMPUTE THE B-NORM OF THE CORRECTED RESIDUAL R_{J}. |
 C        %-----------------------------------------------------%
 C 
          IF (BMAT .EQ. 'G') THEN         
-             CNORM  = GLDOTC (N, RESID, 1, WORKD(IPJ), 1)
+             CNORM  = ZDOTC (N, RESID, 1, WORKD(IPJ), 1)
              RNORM1 = SQRT( FLAPY2(DBLE(CNORM),DIMAG(CNORM)) )
          ELSE IF (BMAT .EQ. 'I') THEN
-             RNORM1 = GLNRM2(N, RESID, 1)
+             RNORM1 = DZNRM2(N, RESID, 1)
          END IF
 C 
          IF (MSGLVL .GT. 0 .AND. ITER .GT. 0 ) THEN
@@ -783,7 +783,7 @@ C
 C              %--------------------------------------------%
 C              | CHECK FOR SPLITTING AND DEFLATION.         |
 C              | USE A STANDARD TEST AS IN THE QR ALGORITHM |
-C              | REFERENCE: LAPACK SUBROUTINE GLAHQR        |
+C              | REFERENCE: LAPACK SUBROUTINE ZLAHQR        |
 C              %--------------------------------------------%
 C     
                TST1 = FLAPY2(DBLE(H(I,I)),DIMAG(H(I,I)))

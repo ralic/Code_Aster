@@ -4,7 +4,7 @@
       IMPLICIT   NONE
       CHARACTER*16 OPTION
 C ......................................................................
-C MODIF ELEMENTS  DATE 03/11/2004   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ELEMENTS  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
 C TOLE CRP_20
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -198,7 +198,7 @@ C     --- RECUPERATION DES ORIENTATIONS ---
         CALL JEVECH('PVARIPR','E',IVARIP)
         NDIMV = NPG*NBVARI* (2*NBSEC+1)* (2*NBCOU+1)
         CALL JEVECH('PVARIMP','L',IVARIX)
-        CALL R8COPY(NDIMV,ZR(IVARIX),1,ZR(IVARIP),1)
+        CALL DCOPY(NDIMV,ZR(IVARIX),1,ZR(IVARIP),1)
       ELSE
 C       -- POUR AVOIR UN TABLEAU BIDON A DONNER A NMCOMP :
         IVARIP = IVARIM

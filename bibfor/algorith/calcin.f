@@ -2,7 +2,7 @@
      &                  MODY,MODZ,I,J,MIJ)
 C-------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/02/96   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -82,8 +82,8 @@ C----------ET MATRICE MAY * CHAMNO MODY------------------------------
 
 C--PRODUITS SCALAIRES VECTEURS PRESSION PAR MAX*MODX ET MAY*MODY
 
-           RX= R8DOT(NBPRES,ZR(IPRES), 1,ZR(IVECX),1)
-           RY= R8DOT(NBPRES,ZR(IPRES), 1,ZR(IVECY),1)
+           RX= DDOT(NBPRES,ZR(IPRES), 1,ZR(IVECX),1)
+           RY= DDOT(NBPRES,ZR(IPRES), 1,ZR(IVECY),1)
 
 C
 C---------------- MENAGE SUR LA VOLATILE ---------------------------
@@ -108,7 +108,7 @@ C--------------------------+ PRESSION*MAZ*MODZ  EN 3D---------------
              CALL MTDSCR(MAZ)
              CALL JEVEUO(MAZ(1:19)//'.&INT','E',IMATZ)
              CALL MRMULT('ZERO',IMATZ,ZR(IMODZ),'R',ZR(IVECZ),1)
-             RZ= R8DOT(NBPRES,ZR(IPRES), 1,ZR(IVECZ),1)
+             RZ= DDOT(NBPRES,ZR(IPRES), 1,ZR(IVECZ),1)
              CALL JEDETR('&&CALCIN.VECTZ')
              CALL JEDETC('V',MODZ,1)
              MIJ = RX+RY+RZ

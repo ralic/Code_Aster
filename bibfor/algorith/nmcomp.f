@@ -16,22 +16,22 @@
 
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/11/2004   AUTEUR KBBHHDB G.DEBRUYNE 
+C MODIF ALGORITH  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE PBADEL P.BADEL
 C TOLE CRP_20
@@ -133,7 +133,7 @@ C
       CHARACTER*16 OPTIO2
       LOGICAL CP
       INTEGER CPL,NVV
-      
+
       CODRET = 0
       R8BID=R8VIDE()
 
@@ -141,21 +141,21 @@ C
 C      CONTRAINTES PLANES
       CALL NMCPL1(COMPOR,TYPMOD,OPTION,VIP,DEPS,OPTIO2,CPL,NVV)
       CP=(CPL.NE.0)
-      
-      
+
+
 C ----------------------------------------------------------------------
 C                        CAS DES LOIS GRAD_VARI
 C ----------------------------------------------------------------------
 
       IF (TYPMOD(2) .EQ. 'GRADVARI') THEN
-      
+
         IF (INT(CRIT(6)) .NE. 0)  CALL UTMESS('F','NMCOMP',
      &        'INTEGRATION EXPLICITE DU COMPORTEMENT NON PROGRAMMEE')
 
 C -- ENDOMMAGEMENT FRAGILE (COURBE DE TRACTION BI-LINEAIRE)
 
         IF (COMPOR(1) .EQ. 'ENDO_FRAGILE') THEN
-          CALL LCFRGV (NDIM  , TYPMOD, OPTION, IMATE , EPSM  , 
+          CALL LCFRGV (NDIM  , TYPMOD, OPTION, IMATE , EPSM  ,
      &                 DEPS  , VIM   , R8BID  , R8BID , R8BID  ,
      &                 R8BID, R8BID , R8BID  , SIGP   , VIP   ,
      &                 DSIDEP)
@@ -174,7 +174,7 @@ C -- PLASTICITE ISOTROPE A GRADIENT
 
         IF ( COMPOR(1) .EQ. 'VMIS_ISOT_LINE'
      & .OR. COMPOR(1) .EQ. 'VMIS_ISOT_TRAC') THEN
-          CALL LCPLGR (COMPOR, NDIM, OPTION, IMATE, CRIT,TREF, TM, TP, 
+          CALL LCPLGR (COMPOR, NDIM, OPTION, IMATE, CRIT,TREF, TM, TP,
      &                 EPSM, DEPS,SIGM, VIM, 1.D0, R8BID, R8BID,
      &                 VIP, R8BID, R8BID, R8BID, SIGP)
           GOTO 9000
@@ -189,19 +189,19 @@ C -- RUPTURE DUCTILE : LOI DE ROUSSELIER
      &                 VIM,VIP,SIGP,DSIDEP)
           GOTO 9000
         END IF
-        
+
       END IF
-          
+
 
 C ----------------------------------------------------------------------
-C                        CAS DES LOIS GRAD_EPSI 
+C                        CAS DES LOIS GRAD_EPSI
 C ----------------------------------------------------------------------
 
       IF (TYPMOD(2) .EQ. 'GRADEPSI') THEN
-      
+
         IF (INT(CRIT(6)) .NE. 0)  CALL UTMESS('F','NMCOMP',
      &        'INTEGRATION EXPLICITE DU COMPORTEMENT NON PROGRAMMEE')
-          
+
 C -- ENDOMMAGEMENT FRAGILE (COURBE DE TRACTION BI-LINEAIRE)
 
         IF (COMPOR(1) .EQ. 'ENDO_FRAGILE') THEN
@@ -229,7 +229,7 @@ C -- DRUCKER - PRAGER
         IF (COMPOR(1) .EQ. 'DRUCKER_PRAGER') THEN
           CALL LCDPNL(TYPMOD,NDIM,OPTION,IMATE,SIGM,EPSM,
      &                  TM,TP,TREF,DEPS,VIM,VIP,SIGP,DSIDEP,CODRET)
-          GOTO 9000 
+          GOTO 9000
         END IF
 
 C -- MAZARS
@@ -240,11 +240,11 @@ C -- MAZARS
      &                   OPTION, SIGP, VIP,  DSIDEP)
           GOTO 9000
         END IF
-        
+
 
       END IF
-          
-          
+
+
       IF (COMPOR(3).EQ.'SIMO_MIEHE') THEN
         IF (INT(CRIT(6)) .NE. 0) CALL UTMESS('F','NMCOMP',
      &      'INTEGRATION EXPLICITE IMPOSSIBLE')
@@ -343,13 +343,13 @@ C PETITES DEFORMATIONS
      &                   OPTION, SIGP, VIP,  DSIDEP)
           ENDIF
         ELSE IF ( COMPOR(1) .EQ. 'JOINT_BA' ) THEN
-          CALL LCJOBA(NDIM, TYPMOD, IMATE, CRIT, EPSM, 
+          CALL LCJOBA(NDIM, TYPMOD, IMATE, CRIT, EPSM,
      &                 VIM, OPTION, SIGP, VIP,  DSIDEP)
         ELSE IF ( COMPOR(1) .EQ. 'DRUCKER_PRAGER' ) THEN
           CALL LCDRPR(TYPMOD,OPTION,IMATE,SIGM,TM,TP,TREF,
      &                            DEPS,VIM,VIP,SIGP,DSIDEP,CODRET)
         ELSE IF ( COMPOR(1)(1:10) .EQ. 'BARENBLATT' ) THEN
-          CALL LCBARE(IMATE, OPTION, EPSM, SIGP, DSIDEP, VIM, VIP)
+          CALL LCBARE(IMATE, OPTION, EPSM, TM,TP,SIGP, DSIDEP, VIM, VIP)
         ELSE IF (COMPOR(1).EQ. 'META_P_IL       '.OR.
      &           COMPOR(1).EQ. 'META_P_IL_PT    '.OR.
      &           COMPOR(1).EQ. 'META_P_IL_RE    '.OR.
@@ -534,13 +534,13 @@ C-- INTEGRATION IMPLICITE: METHODE D'EULER
         ELSEIF ( COMPOR(1)(1:8)  .EQ. 'LEMAITRE') THEN
           IF ( INT(CRIT(6)) .EQ. 0 ) THEN
             CALL NMVPLE ( NDIM,  IMATE, COMPOR,CRIT,TYPMOD,
-     &                  INSTAM,INSTAP,TM,    TP,    TREF, 
+     &                  INSTAM,INSTAP,TM,    TP,    TREF,
      &                  DEPS,  SIGM,  VIM,   OPTION, DEFAM, DEFAP,
      &                  SIGP, VIP, DSIDEP )
           ELSE
             CALL UTMESS('F','NMCOMP_1','INTEGRATION EXPLICITE DU
      &      COMPORTEMENT NON PROGRAMMEE')
-          ENDIF   
+          ENDIF
         ELSEIF ( COMPOR(1)(1:3) .EQ. 'CJS' ) THEN
           IF ( INT(CRIT(6)) .NE. 0 )  THEN
               CALL UTMESS('F','NMCOMP_1',
@@ -552,7 +552,7 @@ C-- INTEGRATION IMPLICITE: METHODE D'EULER
      &                     INSTAM, INSTAP, TM, TP, TREF, EPSM,
      &                     DEPS, SIGM, VIM, OPTION, SIGP, VIP, DSIDEP)
             ENDIF
-        ELSEIF ( COMPOR(1)(1:9) .EQ. 'CAM_CLAY ') THEN  
+        ELSEIF ( COMPOR(1)(1:9) .EQ. 'CAM_CLAY ') THEN
         IF ( INT(CRIT(6)) .NE. 0 )  THEN
               CALL UTMESS('F','NMCOMP_1',
      &          'INTEGRATION EXPLICITE DU COMPORTEMENT NON PROGRAMMEE')
@@ -560,7 +560,7 @@ C-- INTEGRATION IMPLICITE: METHODE D'EULER
             CALL NMCCAM (NDIM,  TYPMOD, IMATE, COMPOR,CRIT,INSTAM,
      &                   INSTAP,TM,TP,TREF,DEPS,SIGM,VIM,
      &                   OPTION,SIGP,VIP,DSIDEP)
-          ENDIF            
+          ENDIF
         ELSEIF ( COMPOR(1)(1:6) .EQ. 'LAIGLE' ) THEN
           IF ( INT(CRIT(6)) .NE. 0 )  THEN
               CALL UTMESS('F','NMCOMP_1',
@@ -592,14 +592,14 @@ C -- FLUAGE PROPRE UMLV
           END IF
 C----LOI D'ACIER CORRODE
         ELSEIF ( COMPOR(1)(1:10) .EQ. 'CORR_ACIER') THEN
-          IF ( INT(CRIT(6)) .NE. 0 )  THEN              
+          IF ( INT(CRIT(6)) .NE. 0 )  THEN
               CALL UTMESS('F','NMCOMP_1',
      &          'INTEGRATION EXPLICITE DU COMPORTEMENT NON PROGRAMMEE')
-          ELSE  
+          ELSE
           CALL NM3DCO(NDIM,OPTION,IMATE,TM,TP,SIGM,
      &           EPSM,DEPS,VIM,DEFAM,DEFAP,SIGP,VIP,DSIDEP,
      &            CORRM,CORRP)
-        END IF                 
+        END IF
 C -- COMPORTEMENT VIDE
         ELSEIF ( COMPOR(1)(1:4) .EQ. 'SANS' ) THEN
            CALL LCSANS (NDIM,OPTION,SIGP,DSIDEP)
@@ -627,13 +627,13 @@ C
      &           HYDRM, HYDRP, SECHM, SECHP,SREF, EPSM, DEPS,
      &           SIGM, VIM,OPTION, ELGEOM,SIGP, VIP, DSIDEP)
           ENDIF
-        
-CCC    MONOCRISTAL      
-          
+
+CCC    MONOCRISTAL
+
         ELSEIF ( COMPOR(1)(1:8) .EQ. 'MONOCRIS' ) THEN
           IF ( INT(CRIT(6)) .EQ. 0 ) THEN
             CALL REDECE ( NDIM,  TYPMOD,  IMATE,COMPOR,CRIT,
-     &                  INSTAM,INSTAP, TM,   TP,    TREF, 
+     &                  INSTAM,INSTAP, TM,   TP,    TREF,
      &                  HYDRM, HYDRP,SECHM, SECHP, SREF,EPSM, DEPS,
      &           SIGM, VIM,OPTION,ELGEOM,ANGMAS, SIGP, VIP, DSIDEP)
           ELSE
@@ -641,15 +641,15 @@ CCC    MONOCRISTAL
      &                  INSTAM,INSTAP, TM,   TP,    TREF, EPSM,
      &       DEPS,  SIGM,   VIM,  OPTION,ANGMAS,SIGP, VIP, DSIDEP)
           ENDIF
-          
-CCC    FIN MONOCRISTAL      
-          
-CCC    POLYCRISTAL      
-          
+
+CCC    FIN MONOCRISTAL
+
+CCC    POLYCRISTAL
+
         ELSEIF ( COMPOR(1)(1:8) .EQ. 'POLYCRIS' ) THEN
           IF ( INT(CRIT(6)) .EQ. 0 ) THEN
             CALL REDECE ( NDIM,  TYPMOD,  IMATE,COMPOR,CRIT,
-     &                  INSTAM,INSTAP, TM,   TP,    TREF, 
+     &                  INSTAM,INSTAP, TM,   TP,    TREF,
      &                  HYDRM, HYDRP,SECHM, SECHP, SREF,EPSM, DEPS,
      &           SIGM, VIM,OPTION,ELGEOM,ANGMAS, SIGP, VIP, DSIDEP)
           ELSE
@@ -657,15 +657,15 @@ CCC    POLYCRISTAL
      &                  INSTAM,INSTAP, TM,   TP,    TREF, EPSM,
      &       DEPS,  SIGM,   VIM,  OPTION,ANGMAS,SIGP, VIP, DSIDEP)
           ENDIF
-          
-CCC    FIN POLYCRISTAL      
-          
+
+CCC    FIN POLYCRISTAL
+
         ELSE
           CALL UTMESS('F','NMCOMP_1','LOI DE COMPORTEMENT INEXISTANTE')
         ENDIF
       END IF
-      
-      
+
+
 C      CONTRAINTES PLANES METHODE DE BORST
  9000 CONTINUE
       IF (CP) CALL NMCPL2(COMPOR,TYPMOD,OPTION,OPTIO2,CPL,NVV,CRIT,DEPS,

@@ -2,7 +2,7 @@
      &                   IDFDE1 , DFDI, GEOM  ,  SIG   ,
      &                   DEPLM,GONFLM, FINTU , FINTA )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ALGORITH  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -68,7 +68,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       INTEGER      KPG,N,I
       REAL*8       TMP, RAC2, RBID,DEF(6,20,3)
       REAL*8       F(3,3),POIDS,EPSM(6),SIGMA(6)
-      REAL*8       GM,DIVUM,  R8DOT
+      REAL*8       GM,DIVUM,  DDOT
 C --------------------------------------------------------------------
 
 C - PRE REQUIS
@@ -120,7 +120,7 @@ C      CALCUL DES CONTRAINTES MECANIQUES A L'EQUILIBRE
 C        CALCUL DE FINT_U
         DO 3 N=1,NNO1
           DO 2 I=1,3
-            TMP = R8DOT(6, SIGMA,1, DEF(1,N,I),1)
+            TMP = DDOT(6, SIGMA,1, DEF(1,N,I),1)
             FINTU(I,N) = FINTU(I,N) + TMP*POIDS
  2        CONTINUE
  3      CONTINUE

@@ -4,7 +4,7 @@
       REAL *8 D(*), E(*), EVEC(LDEVEC,*)
       LOGICAL    VECTOR
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 02/10/95   AUTEUR GIBHHAY A.Y.PORTABILITE 
+C MODIF ALGELINE  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,7 +49,7 @@ C-----------------------------------------------------------------------
 C
       IF (N .EQ. 1) GO TO 9000
 C
-      CALL R8COPY (N-1, E(2), 1, E(1), 1)
+      CALL DCOPY (N-1, E(2), 1, E(1), 1)
       E(N) = 0.0D0
 C
       TINY = 100.0D0*R8MIEM()
@@ -93,7 +93,7 @@ C
             D(I+1) = G + P
             G = C*R - B
 C
-            IF (VECTOR) CALL R8ROT (N, EVEC(1,I+1), 1, EVEC(1,I), 1, C,
+            IF (VECTOR) CALL DROT (N, EVEC(1,I+1), 1, EVEC(1,I), 1, C,
      &          S)
 C
    40    CONTINUE
@@ -123,7 +123,7 @@ C
          IF (K .NE. I) THEN
             D(K) = D(I)
             D(I) = P
-            IF (VECTOR) CALL R8SWAP (N, EVEC(1,I), 1, EVEC(1,K), 1)
+            IF (VECTOR) CALL DSWAP (N, EVEC(1,I), 1, EVEC(1,K), 1)
          END IF
 C
    80    CONTINUE
@@ -134,7 +134,7 @@ C          --- NORMALISATION DES VECTEURS PROPRES ---
          DO 100  J=1, N
             I = IDAMAX(N,EVEC(1,J),1)
             SCALE = EVEC(I,J)
-            CALL R8SCAL (N, 1.0D0/SCALE, EVEC(1,J), 1)
+            CALL DSCAL (N, 1.0D0/SCALE, EVEC(1,J), 1)
   100    CONTINUE
       END IF
 C

@@ -2,7 +2,7 @@
      &                  TESTCO,NBREOR,TYREOR,PRECO,SCALIN)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 22/11/2004   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGELINE  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -78,7 +78,7 @@ C DECLARATION VARIABLES LOCALES
      &             OPTIOP,IVLAGB,IDO,NFREQ,NBVECT,ITEST1,
      &             IPARAM(11),IPNTR(14),ITEST2,LONWL,ITEST3,ITEST4,
      &             ITEST5,ITEST6,INFO,ITEST7,ITEST8,IINF
-      REAL*8       R8NRM2,ANORM,ANORMK,ANORM0,EPSIK,PARAAF,R8DOT,ALPHA,
+      REAL*8       DNRM2,ANORM,ANORMK,ANORM0,EPSIK,PARAAF,DDOT,ALPHA,
      &             ALPHAN,ALPHAD,BETA,BETAD,BETAN,R8MIEM,RMIN,RAUX,TOL
       CHARACTER*8  NOMSD,K8BID
       CHARACTER*24 COLAUX,COLAUI,COLAU2,NOMGI,NOMGGT,INFOFE
@@ -298,7 +298,7 @@ C ---------------------------------------------------
 C ---------------------------------------------------
 C CALCUL DE ALPHAN0 = G0.P0 (=G0.G0 SI NON PRECOND)
 C ---------------------------------------------------      
-      ALPHAN=R8DOT(NBI,ZR(IRG),1,ZR(IRP),1)
+      ALPHAN=DDOT(NBI,ZR(IRG),1,ZR(IRP),1)
 
       DO 25 I=0,NBI1
         ZR(IRR+I)=ZR(IRG+I)
@@ -310,7 +310,7 @@ C ---------------------------------------------------
       OPTIOP=1
       CALL FETPRJ(NBI,ZR(IRR),ZR(IR1),ZR(JGI),JGITGI,LRIGID,DIMGI,
      &            OPTIOP,SDFETI)
-      ANORM=R8NRM2(NBI,ZR(IR1),1)
+      ANORM=DNRM2(NBI,ZR(IR1),1)
       EPSIK=EPSI*ANORM 
       IF (NIV.GE.2) WRITE (IFM,1020)ANORM,EPSIK,EPSI
 
@@ -447,7 +447,7 @@ C STOCKAGE ZK=FI*PK SI REORTHO
 C ---------------------------------------------------
 C ----  CALCUL DE ALPHAK = GK.PK/ZK.PK = ALPHANK/ALPHADK
 C ---------------------------------------------------
-        ALPHAD=R8DOT(NBI,ZR(IRP),1,ZR(IRZ),1)
+        ALPHAD=DDOT(NBI,ZR(IRP),1,ZR(IRZ),1)
         IF (ALPHAD.LT.RMIN) THEN
           ALPHAD=RMIN
           CALL UTMESS('A','ALFETI','PB DIVISION PAR ZERO'//
@@ -480,8 +480,8 @@ C ----  CALCUL NOUVEAUX VECTEUR D'INTERFACE ET RESIDU
 C ---- (ZR(IVLAGI)) LANDAK+1 = LANDAK + ALPHAK * PK  
 C ---- (ZR(IRR)))   RK+1     = RK     - ALPHAK * ZK
 C ---------------------------------------------------   
-        CALL R8AXPY(NBI,ALPHA,ZR(IRP),1,ZR(IVLAGI),1)        
-        CALL R8AXPY(NBI,-ALPHA,ZR(IRZ),1,ZR(IRR),1)
+        CALL DAXPY(NBI,ALPHA,ZR(IRP),1,ZR(IVLAGI),1)        
+        CALL DAXPY(NBI,-ALPHA,ZR(IRZ),1,ZR(IRR),1)
 
 C ---------------------------------------------------
 C ----  CALCUL DE LA PROJECTION 1 (ZR(IRG)): GK+1 = P * RK+1
@@ -492,16 +492,16 @@ C ---------------------------------------------------
      
 C TEST ORTHOGONALITE DU GCPPC     
         IF (INFOFE(8:8).EQ.'T') THEN
-          RAUX=R8DOT(NBI,ZR(IRG),1,ZR(ITEST),1)
+          RAUX=DDOT(NBI,ZR(IRG),1,ZR(ITEST),1)
           WRITE(IFM,*)'TEST <PRI,PRI-1>',RAUX
-          RAUX=R8DOT(NBI,ZR(IRG),1,ZR(IRP),1)
+          RAUX=DDOT(NBI,ZR(IRG),1,ZR(IRP),1)
           WRITE(IFM,*)'TEST <PRI,DI-1>',RAUX
         ENDIF
                 
 C ---------------------------------------------------
 C ----  CALCUL TEST D'ARRET ET AFFICHAGE
 C ---------------------------------------------------
-        ANORM=R8NRM2(NBI,ZR(IRG),1)
+        ANORM=DNRM2(NBI,ZR(IRG),1)
         IF (ANORM.LE.ANORMK) THEN
           IF (NIV.EQ.1) WRITE (*,1041)ITER1,ANORM,ANORM/ANORM0
           ANORMK=ANORM*PARAAF
@@ -576,7 +576,7 @@ C ---------------------------------------------------
 
 C TEST ORTHOGONALITE DU GCPPC     
         IF (INFOFE(8:8).EQ.'T') THEN
-          RAUX=R8DOT(NBI,ZR(IRZ),1,ZR(IRP),1)
+          RAUX=DDOT(NBI,ZR(IRZ),1,ZR(IRP),1)
           WRITE(IFM,*)'TEST <DI,FI*DI-1>',RAUX
         ENDIF  
           

@@ -8,7 +8,7 @@
      +                   AMORED(*), FREQ(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF UTILITAI  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -348,7 +348,7 @@ C
 C
       IF ( TYPI(1:5).NE.'CRAIG' .OR. IMPMEC.EQ.'OUI' ) THEN
          DO 50 J = 1,NBMODE
-            CALL R8COPY(NEQ,ZR(IDBASE+(J-1)*NEQ),1,ZR(IADMO1),1)
+            CALL DCOPY(NEQ,ZR(IDBASE+(J-1)*NEQ),1,ZR(IADMO1),1)
             WRITE(IFMIS,'(''MODE DYNA INTER'',1X,I6)') J
             DO 52 INO = 1,NBNO
                INOE = ZI(IDNO+INO-1)
@@ -371,7 +371,7 @@ C
       IF ( TYPI(1:5).NE.'CRAIG' .OR. IMPMOD.EQ.'OUI' ) THEN
          DO 60 J = 1,NBMODS
             J2 = J + NBMODE
-            CALL R8COPY(NEQ,ZR(IDBASE+(J2-1)*NEQ),1,ZR(IADMO2),1)
+            CALL DCOPY(NEQ,ZR(IDBASE+(J2-1)*NEQ),1,ZR(IADMO2),1)
             WRITE(IFMIS,'(''MODE STAT INTER'',1X,I6)') J
             DO 62 INO = 1,NBNO
                INOE = ZI(IDNO+INO-1)

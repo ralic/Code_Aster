@@ -1,7 +1,7 @@
       SUBROUTINE OP0072(IERR)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/10/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -52,7 +52,7 @@ C
       CHARACTER*24 NOMCHA,MATRIC,CHAMNO,KBID,DEEQ
       CHARACTER*72 K72B
       COMPLEX*16   CBID
-      REAL*8       R8DOT
+      REAL*8       DDOT
 C
 C     ------------------------------------------------------------------
 C     ------------------------------------------------------------------
@@ -168,7 +168,7 @@ C
 C
 C --------- RECOPIE DU IEME MODE
 C
-          CALL R8COPY(NEQ,ZR(IDBASE+(I-1)*NEQ),1,ZR(IDVECT),1)          
+          CALL DCOPY(NEQ,ZR(IDBASE+(I-1)*NEQ),1,ZR(IDVECT),1)          
 C          
 C
 C ------- MISE A ZERO DES DDLS DE LAGRANGE
@@ -177,7 +177,7 @@ C
 C
 C ------- PRODUIT SCALAIRE VECTASS * MODE
 C
-          ZR(IAVALE+I-1) = R8DOT(NEQ,ZR(IDVECT),1,ZR(IADVEC),1)
+          ZR(IAVALE+I-1) = DDOT(NEQ,ZR(IDVECT),1,ZR(IADVEC),1)
 10      CONTINUE
       ELSE
 C
@@ -193,7 +193,7 @@ C
 C
 C ----- RECOPIE DU IEME MODE
 C
-          CALL R8COPY(NEQ,ZR(IDBASE+(I-1)*NEQ),1,ZR(IDVEC1),1)
+          CALL DCOPY(NEQ,ZR(IDBASE+(I-1)*NEQ),1,ZR(IDVEC1),1)
 C
 C ------- MISE A ZERO DES DDLS DE LAGRANGE
 C
@@ -205,14 +205,14 @@ C
 C
 C ------- RECOPIE DU JEME MODE
 C
-            CALL R8COPY(NEQ,ZR(IDBASE+(J-1)*NEQ),1,ZR(IDVEC2),1)
+            CALL DCOPY(NEQ,ZR(IDBASE+(J-1)*NEQ),1,ZR(IDVEC2),1)
 C --------- MISE A ZERO DES DDLS DE LAGRANGE
 C
             CALL ZERLAG(ZR(IDVEC2),NEQ,ZI(IDDEEQ))
 C
 C --------- PRODUIT SCALAIRE VECTASS * MODE
 C
-            PIJ = R8DOT(NEQ,ZR(IDVEC1),1,ZR(IDVEC2),1)
+            PIJ = DDOT(NEQ,ZR(IDVEC1),1,ZR(IDVEC2),1)
             ZR(IAMATR+I+ (J-1)*NBMODE-1) = PIJ
             ZR(IAMATR+J+ (I-1)*NBMODE-1) = PIJ
 20      CONTINUE
@@ -223,7 +223,7 @@ C
 C
 C ------- RECOPIE DU IEME MODE
 C
-          CALL R8COPY(NEQ,ZR(IDBASE+(I-1)*NEQ),1,ZR(IDVEC1),1)          
+          CALL DCOPY(NEQ,ZR(IDBASE+(I-1)*NEQ),1,ZR(IDVEC1),1)          
 C
 C ------- MISE A ZERO DES DDLS DE LAGRANGE
 C
@@ -231,7 +231,7 @@ C
 C
 C ------- PRODUIT SCALAIRE VECTASS * MODE
 C
-          ZR(IDVEC2+I-1) = R8DOT(NEQ,ZR(IDVEC1),1,ZR(IADVEC),1)
+          ZR(IDVEC2+I-1) = DDOT(NEQ,ZR(IDVEC1),1,ZR(IADVEC),1)
 30      CONTINUE
 C
 C ----- FACTORISATION ET RESOLUTION SYSTEME
@@ -242,7 +242,7 @@ C
      +        'LA BASE CONSTITUEE NE FORME PAS UNE FAMILLE LIBRE ')
         ENDIF
         CALL RRLDS(ZR(IAMATR),NBMODE,NBMODE,ZR(IDVEC2),1)
-        CALL R8COPY(NBMODE,ZR(IDVEC2),1,ZR(IAVALE),1)
+        CALL DCOPY(NBMODE,ZR(IDVEC2),1,ZR(IAVALE),1)
       ENDIF    
 C
       CALL JEDEMA()

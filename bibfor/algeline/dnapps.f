@@ -3,7 +3,7 @@
      &     WORKL, WORKD)
 C---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 12/12/2002   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF ALGELINE  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) LAPACK
 C ======================================================================
@@ -108,10 +108,10 @@ C             A MATRIX.
 C     FLARFG  LAPACK HOUSEHOLDER REFLECTION CONSTRUCTION ROUTINE.
 C     FLARTG  LAPACK GIVENS ROTATION CONSTRUCTION ROUTINE.
 C     FLASET  LAPACK MATRIX INITIALIZATION ROUTINE.
-C     BLGEMV   LEVEL 2 BLAS ROUTINE FOR MATRIX VECTOR MULTIPLICATION.
-C     BLAXPY   LEVEL 1 BLAS THAT COMPUTES A VECTOR TRIAD.
-C     BLCOPY   LEVEL 1 BLAS THAT COPIES ONE VECTOR TO ANOTHER .
-C     BLSCAL   LEVEL 1 BLAS THAT SCALES A VECTOR.
+C     DGEMV   LEVEL 2 BLAS ROUTINE FOR MATRIX VECTOR MULTIPLICATION.
+C     DAXPY   LEVEL 1 BLAS THAT COMPUTES A VECTOR TRIAD.
+C     DCOPY   LEVEL 1 BLAS THAT COPIES ONE VECTOR TO ANOTHER .
+C     DSCAL   LEVEL 1 BLAS THAT SCALES A VECTOR.
 C
 C     R8PREM  ASTER UTILITY ROUTINE THAT GIVES THE MACHINE PRECISION.
 C     R8MIEM  ASTER UTILITY ROUTINE THAT GIVES THE MINIMUN VALUES.
@@ -549,9 +549,9 @@ C     %--------------------------------------------------%
 
       DO 120 J=1,KEV
          IF ( H(J+1,J) .LT. ZERO ) THEN
-              CALL BLSCAL( KPLUSP-J+1, -ONE, H(J+1,J), LDH )
-              CALL BLSCAL( MIN(J+2, KPLUSP), -ONE, H(1,J+1), 1 )
-              CALL BLSCAL( MIN(J+NP+1,KPLUSP), -ONE, Q(1,J+1), 1 )
+              CALL DSCAL( KPLUSP-J+1, -ONE, H(J+1,J), LDH )
+              CALL DSCAL( MIN(J+2, KPLUSP), -ONE, H(1,J+1), 1 )
+              CALL DSCAL( MIN(J+NP+1,KPLUSP), -ONE, Q(1,J+1), 1 )
          END IF
  120  CONTINUE
 
@@ -579,7 +579,7 @@ C     | OF H WOULD BE ZERO AS IN EXACT ARITHMETIC.      |
 C     %-------------------------------------------------%
 
       IF (H(KEV+1,KEV) .GT. ZERO)
-     & CALL BLGEMV('N', N, KPLUSP, ONE, V, LDV, Q(1,KEV+1), 1, ZERO,
+     & CALL DGEMV('N', N, KPLUSP, ONE, V, LDV, Q(1,KEV+1), 1, ZERO,
      &              WORKD(N+1), 1)
 
 C     %----------------------------------------------------------%
@@ -588,9 +588,9 @@ C     | TAKING ADVANTAGE OF THE UPPER HESSENBERG STRUCTURE OF Q. |
 C     %----------------------------------------------------------%
 
       DO 140 I = 1, KEV
-         CALL BLGEMV ('N', N, KPLUSP-I+1, ONE, V, LDV,
+         CALL DGEMV ('N', N, KPLUSP-I+1, ONE, V, LDV,
      &               Q(1,KEV-I+1), 1, ZERO, WORKD, 1)
-         CALL BLCOPY (N, WORKD, 1, V(1,KPLUSP-I+1), 1)
+         CALL DCOPY (N, WORKD, 1, V(1,KPLUSP-I+1), 1)
   140 CONTINUE
 
 C     %-------------------------------------------------%
@@ -604,7 +604,7 @@ C     | COPY THE (KEV+1)-ST COLUMN OF (V*Q) IN THE APPROPRIATE PLACE |
 C     %--------------------------------------------------------------%
 
       IF (H(KEV+1,KEV) .GT. ZERO)
-     &   CALL BLCOPY (N, WORKD(N+1), 1, V(1,KEV+1), 1)
+     &   CALL DCOPY (N, WORKD(N+1), 1, V(1,KEV+1), 1)
 
 C     %-------------------------------------%
 C     | UPDATE THE RESIDUAL VECTOR:         |
@@ -614,9 +614,9 @@ C     |    SIGMAK = (E_(KPLUSP)'*Q)*E_(KEV) |
 C     |    BETAK = E_(KEV+1)'*H*E_(KEV)     |
 C     %-------------------------------------%
 
-      CALL BLSCAL (N, Q(KPLUSP,KEV), RESID, 1)
+      CALL DSCAL (N, Q(KPLUSP,KEV), RESID, 1)
       IF (H(KEV+1,KEV) .GT. ZERO)
-     &   CALL BLAXPY (N, H(KEV+1,KEV), V(1,KEV+1), 1, RESID, 1)
+     &   CALL DAXPY (N, H(KEV+1,KEV), V(1,KEV+1), 1, RESID, 1)
 
       IF (MSGLVL .GT. 1) THEN
          CALL DVOUT (LOGFIL, 1, Q(KPLUSP,KEV), NDIGIT,

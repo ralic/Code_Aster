@@ -6,7 +6,7 @@
       CHARACTER*(*) ELREFZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 18/05/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -508,7 +508,7 @@ C     ------------------------------------------------------------------
         NBPG(3) = 1
         NBPG(4) = 3
         NBPG(5) = 3
-        
+
         FAPG(1) = 'NOEU'
         FAPG(2) = 'NOEU_S'
         FAPG(3) = 'FPG1'
@@ -614,21 +614,21 @@ C     ------------------------------------------------------------------
         NNOS = 4
         VOL = 4.D0
 
-        NBFPG = 5
-CCC        NBFPG = 6
+
+        NBFPG = 6
         NBPG(1) = NNO
         NBPG(2) = NNOS
         NBPG(3) = 1
         NBPG(4) = 4
         NBPG(5) = 9
-CCC        NBPG(6) = 2
+        NBPG(6) = 2
 
         FAPG(1) = 'NOEU'
         FAPG(2) = 'NOEU_S'
         FAPG(3) = 'FPG1'
         FAPG(4) = 'FPG4'
         FAPG(5) = 'FPG9'
-CCC        FAPG(6) = 'FIS2'
+        FAPG(6) = 'FIS2'
 
         XIN(1) = -1.D0
         YIN(1) = -1.D0

@@ -8,7 +8,7 @@
 C
 C**********************************************************************
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/01/98   AUTEUR CIBHHLB L.BOURHRARA 
+C MODIF ALGORITH  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,9 +50,9 @@ C----------------------------------------------------------------------
 C
       MUN    = -1.D0
       CALL MRMULT('ZERO', RIGID , D0 ,'R',  F0 , 1 )
-      CALL R8AXPY ( NEQ , MUN , F0 , 1 , F , 1 )
+      CALL DAXPY ( NEQ , MUN , F0 , 1 , F , 1 )
       IF (LAMORT) THEN
          CALL MRMULT('ZERO', AMORT , V0 , 'R', F0 , 1 )
-         CALL R8AXPY ( NEQ , MUN , F0 ,  1 , F , 1 )
+         CALL DAXPY ( NEQ , MUN , F0 ,  1 , F , 1 )
       ENDIF
       END

@@ -3,7 +3,7 @@
      &                    IDEBUT,NBLOC,NBVAL,IFIRES,INOE,IMPR, PUSURN )
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 09/02/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF PREPOST  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -38,10 +38,10 @@ C-----------------------------------------------------------------------
       INTEGER  IWK4(*),IADH(*)
 C
       PUSURN = 0.D0
-      CALL R8COPY(NBPT,FCHO(3*(INOE-1)+1),3*NBOBST,WK1,1)
-      CALL R8COPY(NBPT,VGLI(3*(INOE-1)+2),3*NBOBST,WK2,1)
-      CALL R8COPY(NBPT,VGLI(3*(INOE-1)+3),3*NBOBST,WK3,1)
-C     CALL R8COPY(NBPT,IADH(1*(INOE-1)+1),NBOBST,IWK4,1)
+      CALL DCOPY(NBPT,FCHO(3*(INOE-1)+1),3*NBOBST,WK1,1)
+      CALL DCOPY(NBPT,VGLI(3*(INOE-1)+2),3*NBOBST,WK2,1)
+      CALL DCOPY(NBPT,VGLI(3*(INOE-1)+3),3*NBOBST,WK3,1)
+C     CALL DCOPY(NBPT,IADH(1*(INOE-1)+1),NBOBST,IWK4,1)
       DO 5 I = 1,NBPT
          IWK4(I) = IADH(1*(INOE-1)+1+(I-1)*NBOBST)
  5    CONTINUE

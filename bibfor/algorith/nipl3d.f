@@ -8,7 +8,7 @@
      &                  SIGM,VIM,DFDI,SIGP,VIP,
      &                  FINTU, FINTA,KUU , KUA , KAA ,CODRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/11/2004   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ALGORITH  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -117,7 +117,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       REAL*8       R,SIGMA(6),SIGMAM(6)
       REAL*8       PM,GM,DP,DG, DIVUM, DDIVU, SIGTR
       REAL*8       DEF(6,27,3), DEFD(6,27,3), DEFTR(27,3)
-      REAL*8       RBID, R8DOT,R8VIDE
+      REAL*8       RBID, DDOT,R8VIDE
 
 C - INITIALISATION
 
@@ -204,8 +204,8 @@ C     CALCUL DE B0 ET BD
 
 C      DEFORMATION POUR LA LOI DE COMPORTEMENT
 
-        CALL R8COPY(6, EPSM,1, EPSLDC,1)
-        CALL R8COPY(6, DEPS,1, DEPLDC,1)
+        CALL DCOPY(6, EPSM,1, EPSLDC,1)
+        CALL DCOPY(6, DEPS,1, DEPLDC,1)
 
         DO 60 J = 1,3
           EPSLDC(J) = EPSM(J) + (GM - DIVUM)/3.D0
@@ -337,7 +337,7 @@ C        CALCUL DE FINT_U
 
           DO 140 N=1,NNO1
             DO 139 I=1,3
-              TMP = R8DOT(6, SIGMA,1, DEF(1,N,I),1)
+              TMP = DDOT(6, SIGMA,1, DEF(1,N,I),1)
               FINTU(I,N) = FINTU(I,N) + TMP*POIDS
  139        CONTINUE
  140      CONTINUE

@@ -2,7 +2,7 @@
      $                   LDC, SCALE, INFO )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILIFOR  DATE 17/02/2003   AUTEUR NICOLAS O.NICOLAS 
+C MODIF UTILIFOR  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) LAPACK
 C ======================================================================
@@ -115,7 +115,7 @@ C     ..
 C     .. EXTERNAL FUNCTIONS ..
       LOGICAL            LLSAME
       REAL*8             GLANGE, R8PREM, R8MIEM
-      COMPLEX*16         GLDOTC, GLDOTU
+      COMPLEX*16         ZDOTC, ZDOTU
       INTEGER            IDAMAX, ISBAEM
 C     ..
 C     .. EXECUTABLE STATEMENTS ..
@@ -185,9 +185,9 @@ C
          DO 30 L = 1, N
             DO 20 K = M, 1, -1
 C
-               SUML = GLDOTU( M-K, A( K, MIN( K+1, M ) ), LDA,
+               SUML = ZDOTU( M-K, A( K, MIN( K+1, M ) ), LDA,
      $                C( MIN( K+1, M ), L ), 1 )
-               SUMR = GLDOTU( L-1, C( K, 1 ), LDC, B( 1, L ), 1 )
+               SUMR = ZDOTU( L-1, C( K, 1 ), LDC, B( 1, L ), 1 )
                VEC = C( K, L ) - ( SUML+SGN*SUMR )
 C
                SCALOC = ONE
@@ -207,7 +207,7 @@ C
 C
                IF( SCALOC.NE.ONE ) THEN
                   DO 10 J = 1, N
-                     CALL GLSCAL( M, SCALOC, C( 1, J ), 1 )
+                     CALL ZDSCAL( M, SCALOC, C( 1, J ), 1 )
    10             CONTINUE
                   SCALE = SCALE*SCALOC
                END IF
@@ -233,8 +233,8 @@ C
          DO 60 L = 1, N
             DO 50 K = 1, M
 C
-               SUML = GLDOTC( K-1, A( 1, K ), 1, C( 1, L ), 1 )
-               SUMR = GLDOTU( L-1, C( K, 1 ), LDC, B( 1, L ), 1 )
+               SUML = ZDOTC( K-1, A( 1, K ), 1, C( 1, L ), 1 )
+               SUMR = ZDOTU( L-1, C( K, 1 ), LDC, B( 1, L ), 1 )
                VEC = C( K, L ) - ( SUML+SGN*SUMR )
 C
                SCALOC = ONE
@@ -255,7 +255,7 @@ C
 C
                IF( SCALOC.NE.ONE ) THEN
                   DO 40 J = 1, N
-                     CALL GLSCAL( M, SCALOC, C( 1, J ), 1 )
+                     CALL ZDSCAL( M, SCALOC, C( 1, J ), 1 )
    40             CONTINUE
                   SCALE = SCALE*SCALOC
                END IF
@@ -284,8 +284,8 @@ C
          DO 90 L = N, 1, -1
             DO 80 K = 1, M
 C
-               SUML = GLDOTC( K-1, A( 1, K ), 1, C( 1, L ), 1 )
-               SUMR = GLDOTC( N-L, C( K, MIN( L+1, N ) ), LDC,
+               SUML = ZDOTC( K-1, A( 1, K ), 1, C( 1, L ), 1 )
+               SUMR = ZDOTC( N-L, C( K, MIN( L+1, N ) ), LDC,
      $                B( L, MIN( L+1, N ) ), LDB )
                VEC = C( K, L ) - ( SUML+SGN*DCONJG( SUMR ) )
 C
@@ -307,7 +307,7 @@ C
 C
                IF( SCALOC.NE.ONE ) THEN
                   DO 70 J = 1, N
-                     CALL GLSCAL( M, SCALOC, C( 1, J ), 1 )
+                     CALL ZDSCAL( M, SCALOC, C( 1, J ), 1 )
    70             CONTINUE
                   SCALE = SCALE*SCALOC
                END IF
@@ -333,9 +333,9 @@ C
          DO 120 L = N, 1, -1
             DO 110 K = M, 1, -1
 C
-               SUML = GLDOTU( M-K, A( K, MIN( K+1, M ) ), LDA,
+               SUML = ZDOTU( M-K, A( K, MIN( K+1, M ) ), LDA,
      $                C( MIN( K+1, M ), L ), 1 )
-               SUMR = GLDOTC( N-L, C( K, MIN( L+1, N ) ), LDC,
+               SUMR = ZDOTC( N-L, C( K, MIN( L+1, N ) ), LDC,
      $                B( L, MIN( L+1, N ) ), LDB )
                VEC = C( K, L ) - ( SUML+SGN*DCONJG( SUMR ) )
 C
@@ -357,7 +357,7 @@ C
 C
                IF( SCALOC.NE.ONE ) THEN
                   DO 100 J = 1, N
-                     CALL GLSCAL( M, SCALOC, C( 1, J ), 1 )
+                     CALL ZDSCAL( M, SCALOC, C( 1, J ), 1 )
   100             CONTINUE
                   SCALE = SCALE*SCALOC
                END IF

@@ -17,7 +17,7 @@ C
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -107,7 +107,7 @@ C     EXTERNAL      ADIMVE, CALCMD, CALCMI, CALFMN, CALFNL, COUPLA,
 C    &              ESTIVD, INITMA, INITVE, NEWTON, PROJMD,
 C    &              PROJVD, SOMMMA, TESTCH, UTMESS
 C DEBUG
-C     EXTERNAL      R8COPY
+C     EXTERNAL      DCOPY
 C DEBUG
 C
 C-------------------   DEBUT DU CODE EXECUTABLE    ---------------------
@@ -350,8 +350,8 @@ C ......... TEMPOREL AYANT PERMIS D'ATTEINDRE LE CHANGEMENT DE CONF.
 C DEBUG
 C            IF ( DTC.NE.0.0D0 ) DT = MIN(DT0,ABS(DTC))
             IF ( DTC.EQ.0.0D0 ) THEN
-               CALL R8COPY ( NBM,DEPGE(1),1,DEPGC(1),1)
-               CALL R8COPY ( NBM,VITGE(1),1,VITGC(1),1)
+               CALL DCOPY ( NBM,DEPGE(1),1,DEPGC(1),1)
+               CALL DCOPY ( NBM,VITGE(1),1,VITGC(1),1)
             ELSE
                DT = MIN(DT0,ABS(DTC))
             ENDIF

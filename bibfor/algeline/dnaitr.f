@@ -3,7 +3,7 @@
      &    IPNTR, WORKD, INFO, ALPHA)
 C---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGELINE  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) LAPACK
 C ======================================================================
@@ -135,12 +135,12 @@ C     DMOUT   ARPACK UTILITY ROUTINE THAT PRINTS MATRICES
 C     DVOUT   ARPACK UTILITY ROUTINE THAT PRINTS VECTORS.
 C     FLASCL  LAPACK ROUTINE FOR CAREFUL SCALING OF A MATRIX.
 C     FLANHS  LAPACK ROUTINE THAT COMPUTES VARIOUS NORMS OF A MATRIX.
-C     BLGEMV  LEVEL 2 BLAS ROUTINE FOR MATRIX VECTOR MULTIPLICATION.
-C     BLAXPY  LEVEL 1 BLAS THAT COMPUTES A VECTOR TRIAD.
-C     BLSCAL  LEVEL 1 BLAS THAT SCALES A VECTOR.
-C     BLCOPY  LEVEL 1 BLAS THAT COPIES ONE VECTOR TO ANOTHER .
-C     BLSDOT  LEVEL 1 BLAS THAT COMPUTES THE SCALAR PRODUCT OF VECTORS.
-C     BLNRM2  LEVEL 1 BLAS THAT COMPUTES THE NORM OF A VECTOR.
+C     DGEMV  LEVEL 2 BLAS ROUTINE FOR MATRIX VECTOR MULTIPLICATION.
+C     DAXPY  LEVEL 1 BLAS THAT COMPUTES A VECTOR TRIAD.
+C     DSCAL  LEVEL 1 BLAS THAT SCALES A VECTOR.
+C     DCOPY  LEVEL 1 BLAS THAT COPIES ONE VECTOR TO ANOTHER .
+C     DDOT  LEVEL 1 BLAS THAT COMPUTES THE SCALAR PRODUCT OF VECTORS.
+C     DNRM2  LEVEL 1 BLAS THAT COMPUTES THE NORM OF A VECTOR.
 C
 C     R8PREM  ASTER UTILITY ROUTINE THAT GIVES THE MACHINE PRECISION
 C     R8MIEM  ASTER UTILITY ROUTINE THAT GIVES THE MINIMUN VALUES
@@ -279,7 +279,7 @@ C     | FUNCTIONS |
 C     %-----------%
 
       INTEGER ISBAEM
-      REAL*8 BLSDOT, BLNRM2, FLANHS, R8PREM, R8MIEM
+      REAL*8 DDOT, DNRM2, FLANHS, R8PREM, R8MIEM
 
 C     %-----------------%
 C     | DATA STATEMENTS |
@@ -438,11 +438,11 @@ C        | WHEN RECIPROCATING A SMALL RNORM, TEST AGAINST LOWER    |
 C        | MACHINE BOUND.                                          |
 C        %---------------------------------------------------------%
 
-         CALL BLCOPY (N, RESID, 1, V(1,J), 1)
+         CALL DCOPY (N, RESID, 1, V(1,J), 1)
          IF (RNORM .GE. UNFL) THEN
              TEMP1 = ONE / RNORM
-             CALL BLSCAL (N, TEMP1, V(1,J), 1)
-             CALL BLSCAL (N, TEMP1, WORKD(IPJ), 1)
+             CALL DSCAL (N, TEMP1, V(1,J), 1)
+             CALL DSCAL (N, TEMP1, WORKD(IPJ), 1)
          ELSE
 
 C            %-----------------------------------------%
@@ -465,7 +465,7 @@ C        %------------------------------------------------------%
 
          STEP3 = .TRUE.
          NOPX  = NOPX + 1
-         CALL BLCOPY (N, V(1,J), 1, WORKD(IVJ), 1)
+         CALL DCOPY (N, V(1,J), 1, WORKD(IVJ), 1)
          IPNTR(1) = IVJ
          IPNTR(2) = IRJ
          IPNTR(3) = IPJ
@@ -490,7 +490,7 @@ C        %------------------------------------------%
 C        | PUT ANOTHER COPY OF OP*V_(J) INTO RESID. |
 C        %------------------------------------------%
 
-         CALL BLCOPY (N, WORKD(IRJ), 1, RESID, 1)
+         CALL DCOPY (N, WORKD(IRJ), 1, RESID, 1)
 
 C        %---------------------------------------%
 C        | STEP 4:  FINISH EXTENDING THE ARNOLDI |
@@ -510,7 +510,7 @@ C           %-------------------------------------%
 
             GO TO 9000
          ELSE IF (BMAT .EQ. 'I') THEN
-            CALL BLCOPY (N, RESID, 1, WORKD(IPJ), 1)
+            CALL DCOPY (N, RESID, 1, WORKD(IPJ), 1)
          END IF
    60    CONTINUE
 
@@ -528,10 +528,10 @@ C        | COMPUTE THE B-NORM OF OP*V_(J).     |
 C        %-------------------------------------%
 
          IF (BMAT .EQ. 'G') THEN
-             WNORM = BLSDOT (N, RESID, 1, WORKD(IPJ), 1)
+             WNORM = DDOT (N, RESID, 1, WORKD(IPJ), 1)
              WNORM = SQRT(ABS(WNORM))
          ELSE IF (BMAT .EQ. 'I') THEN
-            WNORM = BLNRM2(N, RESID, 1)
+            WNORM = DNRM2(N, RESID, 1)
          END IF
 
 C        %-----------------------------------------%
@@ -547,7 +547,7 @@ C        | COMPUTE THE J FOURIER COEFFICIENTS W_(J) |
 C        | WORKD(IPJ:IPJ+N-1) CONTAINS B*OP*V_(J).  |
 C        %------------------------------------------%
 
-         CALL BLGEMV ('T', N, J, ONE, V, LDV, WORKD(IPJ), 1,
+         CALL DGEMV ('T', N, J, ONE, V, LDV, WORKD(IPJ), 1,
      &               ZERO, H(1,J), 1)
 
 C        %--------------------------------------%
@@ -555,14 +555,14 @@ C        | ORTHOGONALIZE R_(J) AGAINST V_(J).   |
 C        | RESID CONTAINS OP*V_(J). SEE STEP 3. |
 C        %--------------------------------------%
 
-         CALL BLGEMV ('N', N, J, -ONE, V, LDV, H(1,J), 1,
+         CALL DGEMV ('N', N, J, -ONE, V, LDV, H(1,J), 1,
      &               ONE, RESID, 1)
 
          IF (J .GT. 1) H(J,J-1) = BETAJ
          ORTH1 = .TRUE.
          IF (BMAT .EQ. 'G') THEN
             NBX = NBX + 1
-            CALL BLCOPY (N, RESID, 1, WORKD(IRJ), 1)
+            CALL DCOPY (N, RESID, 1, WORKD(IRJ), 1)
             IPNTR(1) = IRJ
             IPNTR(2) = IPJ
             IDO = 2
@@ -573,7 +573,7 @@ C           %----------------------------------%
 
             GO TO 9000
          ELSE IF (BMAT .EQ. 'I') THEN
-            CALL BLCOPY (N, RESID, 1, WORKD(IPJ), 1)
+            CALL DCOPY (N, RESID, 1, WORKD(IPJ), 1)
          END IF
    70    CONTINUE
 
@@ -589,10 +589,10 @@ C        | COMPUTE THE B-NORM OF R_(J). |
 C        %------------------------------%
 
          IF (BMAT .EQ. 'G') THEN
-            RNORM = BLSDOT (N, RESID, 1, WORKD(IPJ), 1)
+            RNORM = DDOT (N, RESID, 1, WORKD(IPJ), 1)
             RNORM = SQRT(ABS(RNORM))
          ELSE IF (BMAT .EQ. 'I') THEN
-            RNORM = BLNRM2(N, RESID, 1)
+            RNORM = DNRM2(N, RESID, 1)
          END IF
 
 C        %-----------------------------------------------------------%
@@ -640,7 +640,7 @@ C        | COMPUTE V_(J)T * B * R_(J)                         |
 C        | WORKD(IRJ:IRJ+J-1) = V(:,1:J)'*WORKD(IPJ:IPJ+N-1). |
 C        %----------------------------------------------------%
 
-         CALL BLGEMV ('T', N, J, ONE, V, LDV, WORKD(IPJ), 1,
+         CALL DGEMV ('T', N, J, ONE, V, LDV, WORKD(IPJ), 1,
      &               ZERO, WORKD(IRJ), 1)
 
 C        %---------------------------------------------%
@@ -650,14 +650,14 @@ C        | THE CORRECTION TO H IS V(:,1:J)*H(1:J,1:J)  |
 C        | + V(:,1:J)*WORKD(IRJ:IRJ+J-1)*E'_J.         |
 C        %---------------------------------------------%
 
-         CALL BLGEMV ('N', N, J, -ONE, V, LDV, WORKD(IRJ), 1,
+         CALL DGEMV ('N', N, J, -ONE, V, LDV, WORKD(IRJ), 1,
      &               ONE, RESID, 1)
-         CALL BLAXPY (J, ONE, WORKD(IRJ), 1, H(1,J), 1)
+         CALL DAXPY (J, ONE, WORKD(IRJ), 1, H(1,J), 1)
 
          ORTH2 = .TRUE.
          IF (BMAT .EQ. 'G') THEN
             NBX = NBX + 1
-            CALL BLCOPY (N, RESID, 1, WORKD(IRJ), 1)
+            CALL DCOPY (N, RESID, 1, WORKD(IRJ), 1)
             IPNTR(1) = IRJ
             IPNTR(2) = IPJ
             IDO = 2
@@ -669,7 +669,7 @@ C           %-----------------------------------%
 
             GO TO 9000
          ELSE IF (BMAT .EQ. 'I') THEN
-            CALL BLCOPY (N, RESID, 1, WORKD(IPJ), 1)
+            CALL DCOPY (N, RESID, 1, WORKD(IPJ), 1)
          END IF
    90    CONTINUE
 
@@ -682,10 +682,10 @@ C        | COMPUTE THE B-NORM OF THE CORRECTED RESIDUAL R_(J). |
 C        %-----------------------------------------------------%
 C
          IF (BMAT .EQ. 'G') THEN
-             RNORM1 = BLSDOT (N, RESID, 1, WORKD(IPJ), 1)
+             RNORM1 = DDOT (N, RESID, 1, WORKD(IPJ), 1)
              RNORM1 = SQRT(ABS(RNORM1))
          ELSE IF (BMAT .EQ. 'I') THEN
-             RNORM1 = BLNRM2(N, RESID, 1)
+             RNORM1 = DNRM2(N, RESID, 1)
          END IF
 C
          IF (MSGLVL .GT. 0 .AND. ITER .GT. 0) THEN

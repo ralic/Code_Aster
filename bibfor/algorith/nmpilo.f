@@ -3,7 +3,7 @@
      &                  VALMOI, NBATTE, NBEFFE, ETA   , LICCVG)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -87,7 +87,7 @@ C ---------- FIN  DECLARATIONS  NORMALISEES  JEVEUX -------------------
       INTEGER      NEQ, N, JU0, JU1, I, JDEPM, J
       INTEGER      JDEPDE, JLINE, JDEP0, JDEP1, JDDEPL, JCOEF
       REAL*8       DTAU, UM, DU, RN, RD
-      REAL*8       R8DOT, R8VIDE, CONMIN, CONMAX
+      REAL*8       DDOT, R8VIDE, CONMIN, CONMAX
       CHARACTER*8  K8BID
       CHARACTER*16 TYPILO
       CHARACTER*19 CNDEP0, CNDEP1, PROFCH, LIGRPI, CARTYP, CARETA
@@ -145,9 +145,9 @@ C ======================================================================
 
         CALL JEVEUO (DEPDEL(1:19) // '.VALE','L',JDEPDE)
         CALL JEVEUO (PILOTE //'.PLCR.VALE','L',JLINE)
-        RN = R8DOT(NEQ,ZR(JDEP0) ,1,ZR(JLINE),1)
-        RD = R8DOT(NEQ,ZR(JDEP1) ,1,ZR(JLINE),1)
-        DU = R8DOT(NEQ,ZR(JDEPDE),1,ZR(JLINE),1)
+        RN = DDOT(NEQ,ZR(JDEP0) ,1,ZR(JLINE),1)
+        RD = DDOT(NEQ,ZR(JDEP1) ,1,ZR(JLINE),1)
+        DU = DDOT(NEQ,ZR(JDEPDE),1,ZR(JLINE),1)
         IF (RD.EQ.0.D0) CALL UTMESS ('F','NMPILO','DENOMINATEUR NUL '
      &      // 'DANS LE CALCUL DE ETA_PILOTAGE')
         ETA(1) = (DTAU - DU - RN) / RD
@@ -167,10 +167,10 @@ C ======================================================================
         CALL JEVEUO (DEPDEL(1:19) // '.VALE','L',JDEPDE)
         K24BID = '&&OP0070.CNFEPI'
         CALL JEVEUO (K24BID(1:19) // '.VALE','L',JLINE)
-        UM = R8DOT(NEQ,ZR(JDEPM) ,1,ZR(JLINE),1)
-        DU = R8DOT(NEQ,ZR(JDEPDE),1,ZR(JLINE),1)
-        RN = R8DOT(NEQ,ZR(JDEP0) ,1,ZR(JLINE),1)
-        RD = R8DOT(NEQ,ZR(JDEP1) ,1,ZR(JLINE),1)
+        UM = DDOT(NEQ,ZR(JDEPM) ,1,ZR(JLINE),1)
+        DU = DDOT(NEQ,ZR(JDEPDE),1,ZR(JLINE),1)
+        RN = DDOT(NEQ,ZR(JDEP0) ,1,ZR(JLINE),1)
+        RD = DDOT(NEQ,ZR(JDEP1) ,1,ZR(JLINE),1)
         IF (RD.EQ.0.D0) CALL UTMESS ('F','NMPILO','DENOMINATEUR NUL '
      &      // 'DANS LE CALCUL DE ETA_PILOTAGE')
         ETA(1) = (1 - UM - DU - RN) / RD

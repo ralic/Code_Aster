@@ -1,7 +1,7 @@
       SUBROUTINE CRITET(EPSP,EPSD,ETA,LAMBDA,DEUXMU,FPD,SEUIL,
      &            CRIT,CRITP)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/03/2003   AUTEUR GODARD V.GODARD 
+C MODIF ALGORITH  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,7 +43,7 @@ C ----------------------------------------------------------------------
       REAL*8      TREPS,TREPSM,TREPSD,SIGEL(3),PPEPS(6),DFDE(6)
 
 
-      REAL*8      R8DOT
+      REAL*8      DDOT
 
       RAC2=SQRT(2.D0)
 
@@ -74,7 +74,7 @@ C -- CALCUL DU CRITERE
           SIGEL(K) = SIGEL(K) + DEUXMU*EPM(K)
         ENDIF
  25   CONTINUE
-      CRIT= FPD * 0.5D0 * R8DOT(3,EPM,1,SIGEL,1) - SEUIL
+      CRIT= FPD * 0.5D0 * DDOT(3,EPM,1,SIGEL,1) - SEUIL
 
       DO 48 I=1,3
         IF (EPM(I).LT.0.D0) THEN
@@ -104,7 +104,7 @@ C -- CALCUL DE LA DERIVEE DU CRITERE
         EPSD(I)=EPSD(I)*RAC2
 52    CONTINUE
 
-      CRITP=R8DOT(6,DFDE,1,EPSD,1)
+      CRITP=DDOT(6,DFDE,1,EPSD,1)
 
       DO 53 I=4,6
         EPSD(I)=EPSD(I)/RAC2

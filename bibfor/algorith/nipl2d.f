@@ -10,7 +10,7 @@
      &                      FINTU, FINTA ,KUU , KUA , KAA , CODRET)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/11/2004   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ALGORITH  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -112,7 +112,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       REAL*8 EPSM(6), DEF(4,9,2), DEFD(4,9,2), DEFTR(9,2), SIGTR
       REAL*8 DIVUM, DDIVU, RBID, TMP, TMP2
       REAL*8 PM, GM, DP, DG, POIDS, VFF1, VFF2, VFFN, VFFM
-      REAL*8 R8DOT,R8VIDE
+      REAL*8 DDOT,R8VIDE
 
 C-----------------------------------------------------------------------
 C - INITIALISATION
@@ -204,8 +204,8 @@ C       CALCUL DE LA TRACE ET DEVIATEUR DE B
 
 C      DEFORMATION POUR LA LOI DE COMPORTEMENT
 
-        CALL R8COPY(6, EPSM,1, EPSLDC,1)
-        CALL R8COPY(6, DEPS,1, DEPLDC,1)
+        CALL DCOPY(6, EPSM,1, EPSLDC,1)
+        CALL DCOPY(6, DEPS,1, DEPLDC,1)
 
         DO 80 J = 1,3
           EPSLDC(J) = EPSM(J) + (GM - DIVUM)/3.D0
@@ -345,7 +345,7 @@ C        CONTRAINTES A L'EQUILIBRE
 C        CALCUL DE FINT_U
           DO 190 N=1,NNO1
             DO 189 I=1,2
-              TMP = R8DOT(4, SIGMA,1, DEF(1,N,I),1)
+              TMP = DDOT(4, SIGMA,1, DEF(1,N,I),1)
               FINTU(I,N) = FINTU(I,N) + TMP*POIDS
  189        CONTINUE
  190      CONTINUE

@@ -4,7 +4,7 @@
      +                    D0 , V0 , A0 , F1 , F2 , F )
 C**********************************************************************
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 30/01/95   AUTEUR G8BHHAC A.Y.PORTABILITE 
+C MODIF ALGORITH  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -65,17 +65,17 @@ C
       ZERO  = 0.D0
       UN    = 1.D0
       CALL R8INIR ( NEQ , ZERO , F1 , 1 )
-      CALL R8AXPY ( NEQ , C0 , D0 , 1 , F1 , 1 )
-      CALL R8AXPY ( NEQ , C1 , V0 , 1 , F1 , 1 )
-      CALL R8AXPY ( NEQ , C2 , A0 , 1 , F1 , 1 )
+      CALL DAXPY ( NEQ , C0 , D0 , 1 , F1 , 1 )
+      CALL DAXPY ( NEQ , C1 , V0 , 1 , F1 , 1 )
+      CALL DAXPY ( NEQ , C2 , A0 , 1 , F1 , 1 )
       CALL MRMULT('ZERO', MASSE , F1 ,'R',  F2 , 1 )
-      CALL R8AXPY ( NEQ , UN , F2 , 1 , F , 1 )
+      CALL DAXPY ( NEQ , UN , F2 , 1 , F , 1 )
       IF (LAMORT) THEN
          CALL R8INIR ( NEQ , ZERO , F1 , 1  )
-         CALL R8AXPY ( NEQ , C3 , D0 , 1 , F1 , 1 )
-         CALL R8AXPY ( NEQ , C4 , V0 , 1 , F1 , 1 )
-         CALL R8AXPY ( NEQ , C5 , A0 , 1 , F1 , 1 )
+         CALL DAXPY ( NEQ , C3 , D0 , 1 , F1 , 1 )
+         CALL DAXPY ( NEQ , C4 , V0 , 1 , F1 , 1 )
+         CALL DAXPY ( NEQ , C5 , A0 , 1 , F1 , 1 )
          CALL MRMULT('ZERO', AMORT , F1 , 'R', F2 , 1 )
-         CALL R8AXPY ( NEQ , UN , F2 ,  1 , F , 1 )
+         CALL DAXPY ( NEQ , UN , F2 ,  1 , F , 1 )
       ENDIF
       END

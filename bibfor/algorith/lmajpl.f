@@ -3,7 +3,7 @@
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/06/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -92,7 +92,7 @@ C
         CALL LCEQVN ( NVI-1,  VIND , YD(NDT+1) )
         CALL LCEQVN ( NVI-1,  VINF , YF(NDT+1) )
         CALL LCEQVN ( NR,  YF , DY )
-        CALL R8AXPY( NR, -1.D0, YD, 1,DY, 1)
+        CALL DAXPY( NR, -1.D0, YD, 1,DY, 1)
 
 C       RECALCUL DE LA MATRICE JACOBIENNE SUR LA SOLUTION FINALE
         CALL LMAJAC ( MOD, NMAT, MATER, TIMED, TIMEF,

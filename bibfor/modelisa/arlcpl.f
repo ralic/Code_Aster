@@ -1,7 +1,7 @@
       SUBROUTINE ARLCPL(MAIL,QUADZ,NOMCZ,NOM1Z,CINE1,
      &                 NOM2Z,CINE2,NTM,NORMZ,TANGZ,L,APP)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 08/11/2004   AUTEUR DURAND C.DURAND 
+C MODIF MODELISA  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -75,7 +75,7 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 
 C --- FUNCTION
-      REAL*8        R8DOT,PROVE2
+      REAL*8        DDOT,PROVE2
 
 C --- PARAMETRES
       REAL*8  PREC0
@@ -260,7 +260,7 @@ C --------- INTEGRATION SUR MA1
 
              DO 70 K = 1, NG
 
-              CALL R8COPY(DIM*NN1,DFG(P1),1,DF1(P3),1)
+              CALL DCOPY(DIM*NN1,DFG(P1),1,DF1(P3),1)
               CALL MTPROD(NO1,DIM,0,DIM,0,NN1,DF1(P3),DIM,0,DIM,0,G)
               CALL MGAUST(G,DF1(P3),DIM,DIM,NN1,R,IR)
               IF (.NOT.IR) GOTO 140
@@ -293,7 +293,7 @@ C --------- INTEGRATION SUR MA2
 
              DO 80 K = 1, NG
 
-              CALL R8COPY(DIM*NN2,DFG(P1),1,DF2(P4),1)
+              CALL DCOPY(DIM*NN2,DFG(P1),1,DF2(P4),1)
               CALL MTPROD(NO2,DIM,0,DIM,0,NN2,DF2(P4),DIM,0,DIM,0,G)
               CALL MGAUST(G,DF2(P4),DIM,DIM,NN2,R,IR)
               IF (.NOT.IR) GOTO 140
@@ -356,7 +356,7 @@ C ----------- CALCUL DU VOLUME DU TRIANGLE OU TETRAEDRE
                G1(3) = ZR(P3+2) - ZR(P0+2)
 
                CALL PROVE3(ZR(P0),ZR(P1),ZR(P2),G2)
-               R = ABS(R8DOT(3,G1,1,G2,1))
+               R = ABS(DDOT(3,G1,1,G2,1))
 
              ENDIF
              

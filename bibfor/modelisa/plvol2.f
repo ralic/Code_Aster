@@ -1,6 +1,6 @@
       FUNCTION PLVOL2(DIM,SC,N,IS,NS)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 08/11/2004   AUTEUR DURAND C.DURAND 
+C MODIF MODELISA  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -33,7 +33,7 @@ C ----------------------------------------------------------------------
       IMPLICIT NONE
 
 C --- FONCTION
-      REAL*8  R8DOT
+      REAL*8  DDOT
 
 C --- VARIABLES
       INTEGER DIM,IS(*),NS,A,B,I
@@ -85,7 +85,7 @@ C --- CAS 3D
           ENDIF
 
           CALL PROVEC(SC(1,A),SC(1,B),T)
-          V = V + R8DOT(3,N,1,T,1)
+          V = V + DDOT(3,N,1,T,1)
         
  20     CONTINUE
 

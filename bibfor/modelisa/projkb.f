@@ -4,7 +4,7 @@
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 02/09/98   AUTEUR CIBHHLV L.VIVAN 
+C MODIF MODELISA  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -119,7 +119,7 @@ C -----------------
       CHARACTER*24  CONXMA, COORNO
       LOGICAL       DEJAVU
 C
-      REAL*8        R8NRM2, R8PREM
+      REAL*8        DNRM2, R8PREM
 C
 C-------------------   DEBUT DU CODE EXECUTABLE    ---------------------
 C
@@ -224,7 +224,7 @@ C
                IPROJ = I1 + 10
 C............. TEST DE COINCIDENCE AVEC LE NOEUD MILIEU DU BORD (NOEUD
 C............. BETON LE PLUS PROCHE)
-               NRM2 = R8NRM2(3,XYZMA(1,ICNX),1)
+               NRM2 = DNRM2(3,XYZMA(1,ICNX),1)
                IF ( NRM2.EQ.0.0D0 ) NRM2 = 1.0D0
                DX = XYZMA(1,ICNX) - X3DP(1)
                DY = XYZMA(2,ICNX) - X3DP(2)

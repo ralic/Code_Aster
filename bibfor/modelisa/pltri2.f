@@ -1,6 +1,6 @@
       SUBROUTINE PLTRI2(DIM,SC,N,IS,NS,TRI,NTRI)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 08/11/2004   AUTEUR DURAND C.DURAND 
+C MODIF MODELISA  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -40,7 +40,7 @@ C --- PARAMETRE
       PARAMETER (PREC = 1.D-7)
 
 C --- FONCTIONS
-      REAL*8  PROVE2,R8DOT,PLVOL2
+      REAL*8  PROVE2,DDOT,PLVOL2
 
 C --- VARIABLES
       INTEGER IS(*),TRI(3,*),DIM,NS,NTRI,N0,I,J,K,A,B,C,D,E,F
@@ -101,7 +101,7 @@ C --- ALIGNEMENT DE B, C ET D
         R2 = PROVE2(SC(1,B),SC(1,D),SC(1,C))
       ELSE
         CALL PROVE3(SC(1,B),SC(1,D),SC(1,C),V)
-        R2 = R8DOT(3,N,1,V,1)
+        R2 = DDOT(3,N,1,V,1)
       ENDIF
 
       IF (ABS(R2).LT.SM) THEN
@@ -130,9 +130,9 @@ C --- ORIENTATION INTERIEURE DE LA DIAGONALE BD
       ELSE
 
         CALL PROVE3(SC(1,A),SC(1,B),SC(1,C),V)
-        R0 = R8DOT(3,N,1,V,1)
+        R0 = DDOT(3,N,1,V,1)
         CALL PROVE3(SC(1,B),SC(1,D),SC(1,A),V)
-        R1 = R8DOT(3,N,1,V,1)
+        R1 = DDOT(3,N,1,V,1)
 
       ENDIF
 
@@ -161,9 +161,9 @@ C --- PAS D'INTERSECTION DE LA DIAGONALE BD
         ELSE
 
           CALL PROVE3(SC(1,B),SC(1,D),SC(1,E),V)
-          R1 = R8DOT(3,N,1,V,1)
+          R1 = DDOT(3,N,1,V,1)
           CALL PROVE3(SC(1,B),SC(1,D),SC(1,F),V)
-          R2 = R8DOT(3,N,1,V,1)
+          R2 = DDOT(3,N,1,V,1)
       
         ENDIF
 
@@ -178,9 +178,9 @@ C --- PAS D'INTERSECTION DE LA DIAGONALE BD
         ELSE
 
           CALL PROVE3(SC(1,E),SC(1,F),SC(1,B),V)
-          R1 = R8DOT(3,N,1,V,1)
+          R1 = DDOT(3,N,1,V,1)
           CALL PROVE3(SC(1,E),SC(1,F),SC(1,D),V)
-          R2 = R8DOT(3,N,1,V,1)
+          R2 = DDOT(3,N,1,V,1)
         
         ENDIF
 
@@ -214,7 +214,7 @@ C --- DERNIER TRIANGLE
         R0 = PROVE2(SC(1,IS(1)),SC(1,IS(2)),SC(1,IS(3)))
       ELSE
         CALL PROVE3(SC(1,IS(1)),SC(1,IS(2)),SC(1,IS(3)),V)
-        R0 = R8DOT(3,N,1,V,1)
+        R0 = DDOT(3,N,1,V,1)
       ENDIF
 
       IF ((NTRI.EQ.0).OR.(R0.GT.SM)) THEN

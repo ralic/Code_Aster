@@ -1,7 +1,7 @@
       SUBROUTINE OP0045(IER)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 05/10/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGELINE  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -175,7 +175,7 @@ C     --- RECUPERATION DES ARGUMENTS MATRICIELS ---
 C     --- TEST DU TYPE (COMPLEXE OU REELLE) DE LA MATRICE DE RAIDEUR ---
       IF (IER.EQ.0) THEN
         CALL JELIRA(RAIDE//'.VALE','TYPE',IBID,KTYP)
-      ENDIF  
+      ENDIF
 C     --- METHODE DE RESOLUTION CHOISIE ---
 C     METHOD : 'TRI_DIAG','JACOBI' OU 'SORENSEN'
       CALL GETVTX(' ','METHODE',1,1,1,METHOD,LMET)
@@ -243,18 +243,22 @@ C     --- LISTES DES FREQUENCES ---
       CALL GETVR8('CALC_FREQ','FREQ',1,1,0,RBID,NNFREQ)
       CALL GETVR8('CALC_FREQ','CHAR_CRIT',1,1,0,RBID,NNCRIT)
 
-      LBORFR = 0
       IF (NNFREQ.LT.0) THEN
          NNFREQ = -NNFREQ
          CALL WKVECT(CBORFR,' V V R',NNFREQ,LBORFR)
          CALL GETVR8('CALC_FREQ','FREQ',1,1,NNFREQ,ZR(LBORFR),L)
+      ELSE
+         CALL WKVECT(CBORFR,' V V R',1,LBORFR)
+         ZR(LBORFR)=0.D0
       ENDIF
 
-      LBORCR = 0
       IF (NNCRIT.LT.0) THEN
          NNCRIT = -NNCRIT
          CALL WKVECT(CBORCR,' V V R',NNCRIT,LBORCR)
          CALL GETVR8('CALC_FREQ','CHAR_CRIT',1,1,NNCRIT,ZR(LBORCR),L)
+      ELSE
+         CALL WKVECT(CBORCR,' V V R',1,LBORCR)
+         ZR(LBORCR)=0.D0
       ENDIF
 
 C     --- APPROCHE (CAS AVEC AMORTISSEMENT) ---
@@ -290,7 +294,7 @@ C     --- REGLES D'EXCLUSION ---
             CALL UTMESS('F','OP0045.18','OPTION BANDE NON AUTORISEE'
      +                // ' POUR UN PROBLEME AVEC AMORTISSEMENT')
          ENDIF
-         IF (((APPR.EQ.'I').OR.(APPR.EQ.'C')).AND.(ZR(LBORFR).EQ.0.D0)) 
+         IF (((APPR.EQ.'I').OR.(APPR.EQ.'C')).AND.(ZR(LBORFR).EQ.0.D0))
      +    THEN
             CALL UTMESS('F','OP0045.19','APPROCHE IMAGINAIRE OU'//
      +      ' COMPLEXE ET FREQUENCE NULLE INCOMPATIBLE')
@@ -306,7 +310,7 @@ C     --- REGLES D'EXCLUSION ---
       ENDIF
       IF (KTYP.EQ.'C') THEN
         IF (METHOD .NE. 'SORENSEN') THEN
-           CALL UTMESS('F','OP0045.21','POUR LE PROBLEME'// 
+           CALL UTMESS('F','OP0045.21','POUR LE PROBLEME'//
      +    ' GENERALISE OU QUADRATIQUE COMPLEXE'//
      +    ' ON UTILISE SEULEMENT L''ALGORITHME DE SORENSEN')
         ENDIF
@@ -319,7 +323,7 @@ C     --- REGLES D'EXCLUSION ---
      +                  'FREQUENCE NULLE INCOMPATIBLE')
          ENDIF
       ENDIF
-      IF ((METHOD.EQ.'SORENSEN').AND.(ZR(LBORFR).EQ.0.D0).AND. 
+      IF ((METHOD.EQ.'SORENSEN').AND.(ZR(LBORFR).EQ.0.D0).AND.
      +   (LAMOR.NE.0)) THEN
             CALL UTMESS('F','OP0045.19','CALCUL QUADRATIQUE PAR '//
      +       'LA METHODE DE SORENSEN ET FREQUENCE NULLE INCOMPATIBLE')
@@ -708,7 +712,7 @@ C        --- CAS SANS AMORTISSEMENT : PROBLEME GENERALISE ---
      +                  ZR(LVALPR),NBVECT,ZI(LRESUI),ZR(LRESUR),NFREQ)
             CALL VPBOST(TYPRES,NFREQ,NBVECT,OMESHI,ZR(LVALPR),NBVECT,
      +                  VPINF, VPMAX,PRECDC,METHOD,OMECOR,STURM)
-C          tri par valeur absolule     
+C          tri par valeur absolule
            IF (TYPRES .EQ. 'DYNAMIQUE') THEN
              CALL VPORDI (1,0,NFREQ,ZR(LRESUR+MXRESF),ZR(LVEC),NEQ,
      +                  ZI(LRESUI))
@@ -753,7 +757,7 @@ C NOMBRE DE MODES CONVERGES
      +                  ZR(LDIAGR),NBVECT,ZI(LRESUI),ZR(LRESUR),NFREQ)
             CALL VPBOST(TYPRES,NFREQ,NBVECT,OMESHI,ZR(LDIAGR),NBVECT,
      +                  VPINF, VPMAX,PRECDC,METHOD,OMECOR,STURM)
-C          tri par valeur absolule     
+C          tri par valeur absolule
            IF (TYPRES .EQ. 'DYNAMIQUE') THEN
              CALL VPORDI (1,0,NFREQ,ZR(LRESUR+MXRESF),ZR(LVEC),NEQ,
      +                  ZI(LRESUI))
@@ -801,7 +805,7 @@ C        --- CAS AVEC AMORTISSEMENT : PROBLEME QUADRATIQUE ---
 C NOMBRE DE MODES CONVERGES
          NCONV = NFREQ
          ENDIF
-         
+
        ELSE IF (METHOD.EQ.'SORENSEN') THEN
            IF (NIV.EQ.2) THEN
              PRIRAM(1) = 2
@@ -830,7 +834,7 @@ C     TRI DE CES MODES
      &       ZR(LDSOR), NFREQ+1, ZI(LRESUI), ZR(LRESUR), NFREQ)
            CALL VPBOST (TYPRES, NCONV, NCONV, OMESHI, ZR(LDSOR),
      &       NFREQ+1, VPINF, VPMAX, PRECDC, METHOD, OMECOR, STURM)
-C          tri par valeur absolule     
+C          tri par valeur absolule
            IF (TYPRES .EQ. 'DYNAMIQUE') THEN
              CALL VPORDI (1,0,NCONV,ZR(LRESUR+MXRESF),ZR(LVEC),NEQ,
      &                  ZI(LRESUI))
@@ -878,8 +882,8 @@ C CALCUL DES MODES PROPRES
               CALL WPSORN (APPR, LMASSE, LAMOR, LMATRA,
      &         NEQ, NBVECT, NFREQ, TOLSOR, ZC(LVEC), ZR(LRESID),
      &         ZR(LWORKD), ZR(LWORKL), LONWL, ZL(LSELEC), ZR(LDSOR),
-     &         ZR(LSURDR),ZR(LDIAGR), 
-     &         SIGMA, ZR(LAUX), ZR(LWORKV), ZI(LPROD), ZI(LDDL),  
+     &         ZR(LSURDR),ZR(LDIAGR),
+     &         SIGMA, ZR(LAUX), ZR(LWORKV), ZI(LPROD), ZI(LDDL),
      &         NEQACT,MAXITR, IFM, NIV, PRIRAM, ALPHA, NCONV, FLAGE,
      &         ZR(LAUR), ZC(LAUC), ZC(LAUL))
 C TRI DE CES MODES
@@ -891,43 +895,43 @@ C TRI DE CES MODES
 C     - APPROCHE EN ARITHMETIQUE COMPLEXE -
               CALL WPSORC (LMASSE, LAMOR, LMATRA,
      &         NEQ, NBVECT, NFREQ, TOLSOR, ZC(LVEC), ZC(LRESID),
-     &         ZC(LWORKD), ZC(LWORKL), LONWL, ZL(LSELEC), ZC(LDSOR), 
-     &         SIGMA, ZC(LAUX), ZC(LWORKV), ZI(LPROD), ZI(LDDL), 
+     &         ZC(LWORKD), ZC(LWORKL), LONWL, ZL(LSELEC), ZC(LDSOR),
+     &         SIGMA, ZC(LAUX), ZC(LWORKV), ZI(LPROD), ZI(LDDL),
      &         NEQACT,MAXITR, IFM, NIV, PRIRAM, ALPHA, NCONV, FLAGE,
      &         ZC(LAUC),ZR(LAUR))
               NFREQ = NCONV / 2
               CALL WP4VEC(NFREQ,NCONV,NEQ,SIGMA,
      &         ZC(LDSOR),ZC(LVEC),MXRESF,
-     &         ZI(LRESUI),ZR(LRESUR),ZI(LPROD),ZC(LAUC)) 
-            ENDIF           
+     &         ZI(LRESUI),ZR(LRESUR),ZI(LPROD),ZC(LAUC))
+            ENDIF
             DO 378 IMET = 1,NFREQ
               ZI(LRESUI-1+MXRESF+IMET) = 0
               ZR(LRESUR-1+IMET) = FREQOM(ZR(LRESUR-1+MXRESF+IMET))
               ZK24(LRESUK-1+MXRESF+IMET) = 'SORENSEN'
  378        CONTINUE
 C NOMBRE DE MODES CONVERGES
-            NCONV = NFREQ 
+            NCONV = NFREQ
 C     --- SORENSEN : CAS COMPLEXE QUADRATIQUE ---
-          ELSE IF ((KTYP.EQ.'C').AND.(LAMOR.NE.0)) THEN          
+          ELSE IF ((KTYP.EQ.'C').AND.(LAMOR.NE.0)) THEN
               CALL WPSORC (LMASSE, LAMOR, LMATRA,
      &         NEQ, NBVECT, NFREQ, TOLSOR, ZC(LVEC), ZC(LRESID),
-     &         ZC(LWORKD), ZC(LWORKL), LONWL, ZL(LSELEC), ZC(LDSOR), 
-     &         SIGMA, ZC(LAUX), ZC(LWORKV), ZI(LPROD), ZI(LDDL), 
+     &         ZC(LWORKD), ZC(LWORKL), LONWL, ZL(LSELEC), ZC(LDSOR),
+     &         SIGMA, ZC(LAUX), ZC(LWORKV), ZI(LPROD), ZI(LDDL),
      &         NEQACT,MAXITR, IFM, NIV, PRIRAM, ALPHA, NCONV, FLAGE,
      &         ZC(LAUC),ZR(LAUR))
               NFREQ = NCONV / 2
               CALL WP5VEC(OPTIOF,NFREQ,NCONV,NEQ,
      &         ZC(LDSOR),ZC(LVEC),MXRESF,
-     &         ZI(LRESUI),ZR(LRESUR),ZC(LAUC)) 
+     &         ZI(LRESUI),ZR(LRESUR),ZC(LAUC))
            DO 379 IMET = 1,NFREQ
               ZI(LRESUI-1+MXRESF+IMET) = 0
               ZR(LRESUR-1+IMET) = FREQOM(ZR(LRESUR-1+MXRESF+IMET))
               ZK24(LRESUK-1+MXRESF+IMET) = 'SORENSEN'
  379       CONTINUE
 C NOMBRE DE MODES CONVERGES
-             NCONV = NFREQ        
+             NCONV = NFREQ
           ENDIF
-             NCONV = NFREQ        
+             NCONV = NFREQ
          ENDIF
 
 C     ------------------------------------------------------------------
@@ -975,7 +979,7 @@ C     POSITION MODALE NEGATIVE DES MODES INTERDITE
       ENDIF
 
 C     --- IMPRESSIONS LIEES A LA METHODE ---
-      
+
       CALL VPWECF (' ', TYPRES, NCONV, MXRESF, ZI(LRESUI), ZR(LRESUR),
      &  ZK24(LRESUK), LAMOR,KTYP)
 

@@ -1,7 +1,7 @@
       SUBROUTINE FLAHQR( WANTT, WANTZ, N, ILO, IHI, H, LDH, WR, WI,
      &                   ILOZ, IHIZ, Z, LDZ, INFO )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILIFOR  DATE 12/12/2002   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF UTILIFOR  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) LAPACK
 C ======================================================================
@@ -287,7 +287,7 @@ C           SUBMATRIX. NR IS THE ORDER OF G.
 C
             NR = MIN( 3, I-K+1 )
             IF( K.GT.M )
-     &         CALL BLCOPY( NR, H( K, K-1 ), 1, V, 1 )
+     &         CALL DCOPY( NR, H( K, K-1 ), 1, V, 1 )
             CALL FLARFG( NR, V( 1 ), V( 2 ), 1, T1 )
             IF( K.GT.M ) THEN
                H( K, K-1 ) = V( 1 )
@@ -398,15 +398,15 @@ C
 C           APPLY THE TRANSFORMATION TO THE REST OF H.
 C
             IF( I2.GT.I )
-     &         CALL BLSROT( I2-I, H( I-1, I+1 ), LDH, H( I, I+1 ), LDH,
+     &         CALL DROT( I2-I, H( I-1, I+1 ), LDH, H( I, I+1 ), LDH,
      &                    CS, SN )
-            CALL BLSROT( I-I1-1, H( I1, I-1 ), 1, H( I1, I ), 1,CS,SN)
+            CALL DROT( I-I1-1, H( I1, I-1 ), 1, H( I1, I ), 1,CS,SN)
          END IF
          IF( WANTZ ) THEN
 C
 C           APPLY THE TRANSFORMATION TO Z.
 C
-            CALL BLSROT( NZ, Z( ILOZ, I-1 ), 1, Z( ILOZ, I ), 1,CS,SN)
+            CALL DROT( NZ, Z( ILOZ, I-1 ), 1, Z( ILOZ, I ), 1,CS,SN)
          END IF
       END IF
 C

@@ -5,7 +5,7 @@
 C---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
+C MODIF ALGELINE  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -167,11 +167,11 @@ C     ZMOUT    ARPACK UTILITY ROUTINE THAT PRINTS MATRICES
 C     ZVOUT    ARPACK UTILITY ROUTINE THAT PRINTS VECTORS.
 C     DVOUT    ARPACK UTILITY ROUTINE THAT PRINTS VECTORS.
 C     FLAPY2   LAPACK ROUTINE TO COMPUTE SQRT(X**2+Y**2) CAREFULLY.
-C     GLCOPY    LEVEL 1 BLAS THAT COPIES ONE VECTOR TO ANOTHER .
-C     GLDOTC    LEVEL 1 BLAS THAT COMPUTES THE SCALAR PRODUCT OF TWO 
+C     ZCOPY    LEVEL 1 BLAS THAT COPIES ONE VECTOR TO ANOTHER .
+C     ZDOTC    LEVEL 1 BLAS THAT COMPUTES THE SCALAR PRODUCT OF TWO 
 C               VECTORS. 
 C     GLSWAP    LEVEL 1 BLAS THAT SWAPS TWO VECTORS.
-C     GLNRM2   LEVEL 1 BLAS THAT COMPUTES THE NORM OF A VECTOR.
+C     DZNRM2   LEVEL 1 BLAS THAT COMPUTES THE NORM OF A VECTOR.
 C
 C\AUTHOR
 C     DANNY SORENSEN               PHUONG VU
@@ -263,8 +263,8 @@ C     %--------------------%
 C     | EXTERNAL FUNCTIONS |
 C     %--------------------%
 C
-      COMPLEX*16  GLDOTC 
-      REAL*8      GLNRM2 , FLAPY2 , R8PREM
+      COMPLEX*16  ZDOTC 
+      REAL*8      DZNRM2 , FLAPY2 , R8PREM
 C
 C     %-----------------------%
 C     | EXECUTABLE STATEMENTS |
@@ -488,8 +488,8 @@ C        | MAKE A COPY OF RITZ VALUES AND THE CORRESPONDING |
 C        | RITZ ESTIMATES OBTAINED FROM ZNEIGH .             |
 C        %--------------------------------------------------%
 C
-         CALL GLCOPY (KPLUSP,RITZ,1,WORKL(KPLUSP**2+1),1)
-         CALL GLCOPY (KPLUSP,BOUNDS,1,WORKL(KPLUSP**2+KPLUSP+1),1)
+         CALL ZCOPY (KPLUSP,RITZ,1,WORKL(KPLUSP**2+1),1)
+         CALL ZCOPY (KPLUSP,BOUNDS,1,WORKL(KPLUSP**2+KPLUSP+1),1)
 C
 C        %---------------------------------------------------%
 C        | SELECT THE WANTED RITZ VALUES AND THEIR BOUNDS    |
@@ -719,7 +719,7 @@ C            | RITZ, TO FREE UP WORKL           |
 C            | FOR NON-EXACT SHIFT CASE.        |
 C            %----------------------------------%
 C
-             CALL GLCOPY  (NP, WORKL, 1, RITZ, 1)
+             CALL ZCOPY  (NP, WORKL, 1, RITZ, 1)
          END IF
 C
          IF (MSGLVL .GT. 2) THEN 
@@ -751,7 +751,7 @@ C
          CNORM = .TRUE.
          IF (BMAT .EQ. 'G') THEN
             NBX = NBX + 1
-            CALL GLCOPY  (N, RESID, 1, WORKD(N+1), 1)
+            CALL ZCOPY  (N, RESID, 1, WORKD(N+1), 1)
             IPNTR(1) = N + 1
             IPNTR(2) = 1
             IDO = 2
@@ -762,7 +762,7 @@ C           %----------------------------------%
 C 
             GO TO 9000
          ELSE IF (BMAT .EQ. 'I') THEN
-            CALL GLCOPY  (N, RESID, 1, WORKD, 1)
+            CALL ZCOPY  (N, RESID, 1, WORKD, 1)
          END IF
 C 
   100    CONTINUE
@@ -774,10 +774,10 @@ C        %----------------------------------%
 C
 C 
          IF (BMAT .EQ. 'G') THEN         
-            CPNORM = GLDOTC  (N, RESID, 1, WORKD, 1)
+            CPNORM = ZDOTC  (N, RESID, 1, WORKD, 1)
             RNORM = SQRT(FLAPY2 (DBLE (CPNORM),DIMAG (CPNORM)))
          ELSE IF (BMAT .EQ. 'I') THEN
-            RNORM = GLNRM2 (N, RESID, 1)
+            RNORM = DZNRM2 (N, RESID, 1)
          END IF
          CNORM = .FALSE.
 C

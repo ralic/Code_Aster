@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 05/10/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF PREPOST  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -175,7 +175,7 @@ C
 C
 C-----      RECOPIE DU JEME MODE
 C
-            CALL R8COPY(NEQ,ZR(IDBASE+(J-1)*NEQ),1,ZR(IDVEC2),1)
+            CALL DCOPY(NEQ,ZR(IDBASE+(J-1)*NEQ),1,ZR(IDVEC2),1)
 C
 C-----       MISE A ZERO DES DDLS DE LAGRANGE
 C
@@ -183,7 +183,7 @@ C
 C
 C-----       PRODUIT SCALAIRE VECTASS * MODE
 C
-            PIJ = R8DOT(NEQ,ZR(IDVEC1),1,ZR(IDVEC2),1)
+            PIJ = DDOT(NEQ,ZR(IDVEC1),1,ZR(IDVEC2),1)
             ZR(JVECT+J-1) = PIJ + PETIR8
   71     CONTINUE
          DO 72 J = 1,NBMODS
@@ -191,7 +191,7 @@ C
 C-----      RECOPIE DU JEME MODE
 C
             J2 = J + NBMODE
-            CALL R8COPY(NEQ,ZR(IDBASE+(J2-1)*NEQ),1,ZR(IDVEC2),1)
+            CALL DCOPY(NEQ,ZR(IDBASE+(J2-1)*NEQ),1,ZR(IDVEC2),1)
 C
 C-----       MISE A ZERO DES DDLS DE LAGRANGE
 C
@@ -199,7 +199,7 @@ C
 C
 C-----       PRODUIT SCALAIRE VECTASS * MODE
 C
-            PIJ = R8DOT(NEQ,ZR(IDVEC1),1,ZR(IDVEC2),1)
+            PIJ = DDOT(NEQ,ZR(IDVEC1),1,ZR(IDVEC2),1)
             ZR(ISVECT+J-1) = PIJ + PETIR8
   72     CONTINUE
          IF (NIV.GT.1) WRITE(IFM,'(''DYNA CHAR'',1X,I6)') IC

@@ -20,7 +20,7 @@ C ======================================================================
       REAL*8        XYZL(4,*), PGL(*), RIG(*), ENER(*)
       CHARACTER*16  OPTION , NOMTE
 C     ------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 21/01/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
 C
 C     MATRICE DE RIGIDITE DE L'ELEMENT DE PLAQUE DKQ
 C     ------------------------------------------------------------------
@@ -105,22 +105,22 @@ C        ----- CALCUL DU JACOBIEN SUR LE QUADRANGLE --------------------
 C        -- FLEXION :
         CALL DKQBF(INT,ZR(LZR),BF)
 C        ----- CALCUL DU PRODUIT BFT.DF.BF -----------------------------
-        CALL R8COPY(9,DF,1,DF2,1)
-        CALL R8SCAL(9,WGT,DF2,1)
+        CALL DCOPY(9,DF,1,DF2,1)
+        CALL DSCAL(9,WGT,DF2,1)
         CALL UTBTAB('CUMU',3,12,DF2,BF,XAB1,FLEX)
 
 C        -- MEMBRANE :
         CALL DXQBM(INT,ZR(LZR),BM)
 C        ----- CALCUL DU PRODUIT BMT.DM.BM -----------------------------
-        CALL R8COPY(9,DM,1,DM2,1)
-        CALL R8SCAL(9,WGT,DM2,1)
+        CALL DCOPY(9,DM,1,DM2,1)
+        CALL DSCAL(9,WGT,DM2,1)
         CALL UTBTAB('CUMU',3,8,DM2,BM,XAB1,MEMB)
 
 C        -- COUPLAGE :
         IF (MULTIC.EQ.2.OR.EXCE) THEN
 C           ----- CALCUL DU PRODUIT BMT.DMF.BF -------------------------
-          CALL R8COPY(9,DMF,1,DMF2,1)
-          CALL R8SCAL(9,WGT,DMF2,1)
+          CALL DCOPY(9,DMF,1,DMF2,1)
+          CALL DSCAL(9,WGT,DMF2,1)
           CALL UTCTAB('CUMU',3,12,8,DMF2,BF,BM,XAB1,MEFL)
         END IF
    10 CONTINUE

@@ -1,7 +1,7 @@
       SUBROUTINE FLAEXC( WANTQ, N, T, LDT, Q, LDQ, J1, N1, N2, WORK,
      &                   INFO )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILIFOR  DATE 12/12/2002   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF UTILIFOR  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) LAPACK
 C ======================================================================
@@ -140,9 +140,9 @@ C
 C        APPLY TRANSFORMATION TO THE MATRIX T.
 C
          IF( J3.LE.N )
-     &      CALL BLSROT( N-J1-1, T( J1, J3 ), LDT, T( J2, J3 ), LDT, CS,
+     &      CALL DROT( N-J1-1, T( J1, J3 ), LDT, T( J2, J3 ), LDT, CS,
      &                 SN )
-         CALL BLSROT( J1-1, T( 1, J1 ), 1, T( 1, J2 ), 1, CS, SN )
+         CALL DROT( J1-1, T( 1, J1 ), 1, T( 1, J2 ), 1, CS, SN )
 C
          T( J1, J1 ) = T22
          T( J2, J2 ) = T11
@@ -151,7 +151,7 @@ C
 C
 C           ACCUMULATE TRANSFORMATION IN THE MATRIX Q.
 C
-            CALL BLSROT( N, Q( 1, J1 ), 1, Q( 1, J2 ), 1, CS, SN )
+            CALL DROT( N, Q( 1, J1 ), 1, Q( 1, J2 ), 1, CS, SN )
          END IF
 C
       ELSE
@@ -330,11 +330,11 @@ C           STANDARDIZE NEW 2-BY-2 BLOCK T11
 C
             CALL FLANV2( T( J1, J1 ), T( J1, J2 ), T( J2, J1 ),
      &                   T( J2, J2 ), WR1, WI1, WR2, WI2, CS, SN )
-            CALL BLSROT( N-J1-1, T( J1, J1+2 ), LDT, T( J2, J1+2 ), LDT,
+            CALL DROT( N-J1-1, T( J1, J1+2 ), LDT, T( J2, J1+2 ), LDT,
      &                 CS, SN )
-            CALL BLSROT( J1-1, T( 1, J1 ), 1, T( 1, J2 ), 1, CS, SN )
+            CALL DROT( J1-1, T( 1, J1 ), 1, T( 1, J2 ), 1, CS, SN )
             IF( WANTQ )
-     &         CALL BLSROT( N, Q( 1, J1 ), 1, Q( 1, J2 ), 1, CS, SN )
+     &         CALL DROT( N, Q( 1, J1 ), 1, Q( 1, J2 ), 1, CS, SN )
          END IF
 C
          IF( N1.EQ.2 ) THEN
@@ -346,11 +346,11 @@ C
             CALL FLANV2( T( J3, J3 ), T( J3, J4 ), T( J4, J3 ),
      &                   T( J4, J4 ), WR1, WI1, WR2, WI2, CS, SN )
             IF( J3+2.LE.N )
-     &         CALL BLSROT( N-J3-1, T( J3, J3+2 ), LDT, T( J4, J3+2 ),
+     &         CALL DROT( N-J3-1, T( J3, J3+2 ), LDT, T( J4, J3+2 ),
      &                    LDT, CS, SN )
-            CALL BLSROT( J3-1, T( 1, J3 ), 1, T( 1, J4 ), 1, CS, SN )
+            CALL DROT( J3-1, T( 1, J3 ), 1, T( 1, J4 ), 1, CS, SN )
             IF( WANTQ )
-     &         CALL BLSROT( N, Q( 1, J3 ), 1, Q( 1, J4 ), 1, CS, SN )
+     &         CALL DROT( N, Q( 1, J3 ), 1, Q( 1, J4 ), 1, CS, SN )
          END IF
 C
       END IF

@@ -3,7 +3,7 @@
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/02/2004   AUTEUR MJBHHPE J.L.FLEJOU 
+C MODIF ALGORITH  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -52,7 +52,7 @@ C
       CHARACTER*24 COORJV
       CHARACTER*19 GEOMI
       CHARACTER*8  K8BID
-      REAL*8       NORM,PREC,XD,PTI(3),PT(3),PERP(3),DIST,R8DOT,R8NRM2
+      REAL*8       NORM,PREC,XD,PTI(3),PT(3),PERP(3),DIST,DDOT,DNRM2
       INTEGER      I, IADCOO, N1
 
 C ----------------------------------------------------------------------
@@ -67,7 +67,7 @@ C     RECUPERATION DE L'ADRESSE DES COORDONNEES ET DU NOMBRE DE POINTS
 
 C     NORMALISATION DE PERP
       PREC=1.D-14
-      NORM = R8NRM2(3,PERP,1)
+      NORM = DNRM2(3,PERP,1)
       IF ( NORM .LT. PREC ) THEN
         CALL UTMESS('F','SYMEMA','VECTEUR DE NORME TROP PETITE')      
       ENDIF
@@ -75,14 +75,14 @@ C     NORMALISATION DE PERP
       PERP(2) = PERP(2)/NORM
       PERP(3) = PERP(3)/NORM
 C     LE PLAN PASSE PAR "PT"
-      XD = -R8DOT(3,PERP,1,PT,1)
+      XD = -DDOT(3,PERP,1,PT,1)
 
 C     BOUCLE SUR TOUS LES POINTS
       DO 10 I=1 , N1
         PTI(1) = ZR(IADCOO+3*(I-1)+1)
         PTI(2) = ZR(IADCOO+3*(I-1)+2)
         PTI(3) = ZR(IADCOO+3*(I-1)+3)
-        DIST =  R8DOT(3,PERP,1,PTI,1) + XD
+        DIST =  DDOT(3,PERP,1,PTI,1) + XD
         ZR(IADCOO+3*(I-1)+1) = -2.0D0*DIST*PERP(1) + PTI(1)
         ZR(IADCOO+3*(I-1)+2) = -2.0D0*DIST*PERP(2) + PTI(2)
         ZR(IADCOO+3*(I-1)+3) = -2.0D0*DIST*PERP(3) + PTI(3)

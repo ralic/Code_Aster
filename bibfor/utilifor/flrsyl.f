@@ -1,7 +1,7 @@
       SUBROUTINE FLRSYL( TRANA, TRANB, ISGN, M, N, A, LDA, B, LDB, C,
      &                   LDC, SCALE, INFO )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILIFOR  DATE 12/12/2002   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF UTILIFOR  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) LAPACK
 C ======================================================================
@@ -126,7 +126,7 @@ C     ..
 C     .. EXTERNAL FUNCTIONS ..
       LOGICAL LLSAME
       INTEGER ISBAEM
-      REAL*8 BLSDOT, FLANGE, R8MIEM, R8PREM
+      REAL*8 DDOT, FLANGE, R8MIEM, R8PREM
 C     ..
 C     .. EXECUTABLE STATEMENTS ..
 C
@@ -241,9 +241,9 @@ C
                END IF
 C
                IF( L1.EQ.L2 .AND. K1.EQ.K2 ) THEN
-                  SUML = BLSDOT( M-K1, A( K1, MIN( K1+1, M ) ), LDA,
+                  SUML = DDOT( M-K1, A( K1, MIN( K1+1, M ) ), LDA,
      &                   C( MIN( K1+1, M ), L1 ), 1 )
-                  SUMR = BLSDOT( L1-1, C( K1, 1 ), LDC, B( 1, L1 ), 1 )
+                  SUMR = DDOT( L1-1, C( K1, 1 ), LDC, B( 1, L1 ), 1 )
                   VEC( 1, 1 ) = C( K1, L1 ) - ( SUML+SGN*SUMR )
                   SCALOC = ONE
 C
@@ -263,7 +263,7 @@ C
 C
                   IF( SCALOC.NE.ONE ) THEN
                      DO 10 J = 1, N
-                        CALL BLSCAL( M, SCALOC, C( 1, J ), 1 )
+                        CALL DSCAL( M, SCALOC, C( 1, J ), 1 )
    10                CONTINUE
                      SCALE = SCALE*SCALOC
                   END IF
@@ -271,14 +271,14 @@ C
 C
                ELSE IF( L1.EQ.L2 .AND. K1.NE.K2 ) THEN
 C
-                  SUML = BLSDOT( M-K2, A( K1, MIN( K2+1, M ) ), LDA,
+                  SUML = DDOT( M-K2, A( K1, MIN( K2+1, M ) ), LDA,
      &                   C( MIN( K2+1, M ), L1 ), 1 )
-                  SUMR = BLSDOT( L1-1, C( K1, 1 ), LDC, B( 1, L1 ), 1 )
+                  SUMR = DDOT( L1-1, C( K1, 1 ), LDC, B( 1, L1 ), 1 )
                   VEC( 1, 1 ) = C( K1, L1 ) - ( SUML+SGN*SUMR )
 C
-                  SUML = BLSDOT( M-K2, A( K2, MIN( K2+1, M ) ), LDA,
+                  SUML = DDOT( M-K2, A( K2, MIN( K2+1, M ) ), LDA,
      &                   C( MIN( K2+1, M ), L1 ), 1 )
-                  SUMR = BLSDOT( L1-1, C( K2, 1 ), LDC, B( 1, L1 ), 1 )
+                  SUMR = DDOT( L1-1, C( K2, 1 ), LDC, B( 1, L1 ), 1 )
                   VEC( 2, 1 ) = C( K2, L1 ) - ( SUML+SGN*SUMR )
 C
                   CALL FLALN2( .FALSE., 2, 1, SMIN, ONE, A( K1, K1 ),
@@ -289,7 +289,7 @@ C
 C
                   IF( SCALOC.NE.ONE ) THEN
                      DO 20 J = 1, N
-                        CALL BLSCAL( M, SCALOC, C( 1, J ), 1 )
+                        CALL DSCAL( M, SCALOC, C( 1, J ), 1 )
    20                CONTINUE
                      SCALE = SCALE*SCALOC
                   END IF
@@ -298,14 +298,14 @@ C
 C
                ELSE IF( L1.NE.L2 .AND. K1.EQ.K2 ) THEN
 C
-                  SUML = BLSDOT( M-K1, A( K1, MIN( K1+1, M ) ), LDA,
+                  SUML = DDOT( M-K1, A( K1, MIN( K1+1, M ) ), LDA,
      &                   C( MIN( K1+1, M ), L1 ), 1 )
-                  SUMR = BLSDOT( L1-1, C( K1, 1 ), LDC, B( 1, L1 ), 1 )
+                  SUMR = DDOT( L1-1, C( K1, 1 ), LDC, B( 1, L1 ), 1 )
                   VEC( 1, 1 ) = SGN*( C( K1, L1 )-( SUML+SGN*SUMR ) )
 C
-                  SUML = BLSDOT( M-K1, A( K1, MIN( K1+1, M ) ), LDA,
+                  SUML = DDOT( M-K1, A( K1, MIN( K1+1, M ) ), LDA,
      &                   C( MIN( K1+1, M ), L2 ), 1 )
-                  SUMR = BLSDOT( L1-1, C( K1, 1 ), LDC, B( 1, L2 ), 1 )
+                  SUMR = DDOT( L1-1, C( K1, 1 ), LDC, B( 1, L2 ), 1 )
                   VEC( 2, 1 ) = SGN*( C( K1, L2 )-( SUML+SGN*SUMR ) )
 C
                   CALL FLALN2( .TRUE., 2, 1, SMIN, ONE, B( L1, L1 ),
@@ -316,7 +316,7 @@ C
 C
                   IF( SCALOC.NE.ONE ) THEN
                      DO 30 J = 1, N
-                        CALL BLSCAL( M, SCALOC, C( 1, J ), 1 )
+                        CALL DSCAL( M, SCALOC, C( 1, J ), 1 )
    30                CONTINUE
                      SCALE = SCALE*SCALOC
                   END IF
@@ -325,24 +325,24 @@ C
 C
                ELSE IF( L1.NE.L2 .AND. K1.NE.K2 ) THEN
 C
-                  SUML = BLSDOT( M-K2, A( K1, MIN( K2+1, M ) ), LDA,
+                  SUML = DDOT( M-K2, A( K1, MIN( K2+1, M ) ), LDA,
      &                   C( MIN( K2+1, M ), L1 ), 1 )
-                  SUMR = BLSDOT( L1-1, C( K1, 1 ), LDC, B( 1, L1 ), 1 )
+                  SUMR = DDOT( L1-1, C( K1, 1 ), LDC, B( 1, L1 ), 1 )
                   VEC( 1, 1 ) = C( K1, L1 ) - ( SUML+SGN*SUMR )
 C
-                  SUML = BLSDOT( M-K2, A( K1, MIN( K2+1, M ) ), LDA,
+                  SUML = DDOT( M-K2, A( K1, MIN( K2+1, M ) ), LDA,
      &                   C( MIN( K2+1, M ), L2 ), 1 )
-                  SUMR = BLSDOT( L1-1, C( K1, 1 ), LDC, B( 1, L2 ), 1 )
+                  SUMR = DDOT( L1-1, C( K1, 1 ), LDC, B( 1, L2 ), 1 )
                   VEC( 1, 2 ) = C( K1, L2 ) - ( SUML+SGN*SUMR )
 C
-                  SUML = BLSDOT( M-K2, A( K2, MIN( K2+1, M ) ), LDA,
+                  SUML = DDOT( M-K2, A( K2, MIN( K2+1, M ) ), LDA,
      &                   C( MIN( K2+1, M ), L1 ), 1 )
-                  SUMR = BLSDOT( L1-1, C( K2, 1 ), LDC, B( 1, L1 ), 1 )
+                  SUMR = DDOT( L1-1, C( K2, 1 ), LDC, B( 1, L1 ), 1 )
                   VEC( 2, 1 ) = C( K2, L1 ) - ( SUML+SGN*SUMR )
 C
-                  SUML = BLSDOT( M-K2, A( K2, MIN( K2+1, M ) ), LDA,
+                  SUML = DDOT( M-K2, A( K2, MIN( K2+1, M ) ), LDA,
      &                   C( MIN( K2+1, M ), L2 ), 1 )
-                  SUMR = BLSDOT( L1-1, C( K2, 1 ), LDC, B( 1, L2 ), 1 )
+                  SUMR = DDOT( L1-1, C( K2, 1 ), LDC, B( 1, L2 ), 1 )
                   VEC( 2, 2 ) = C( K2, L2 ) - ( SUML+SGN*SUMR )
 C
                   CALL FLASY2( .FALSE., .FALSE., ISGN, 2, 2,
@@ -353,7 +353,7 @@ C
 C
                   IF( SCALOC.NE.ONE ) THEN
                      DO 40 J = 1, N
-                        CALL BLSCAL( M, SCALOC, C( 1, J ), 1 )
+                        CALL DSCAL( M, SCALOC, C( 1, J ), 1 )
    40                CONTINUE
                      SCALE = SCALE*SCALOC
                   END IF
@@ -426,8 +426,8 @@ C
                END IF
 C
                IF( L1.EQ.L2 .AND. K1.EQ.K2 ) THEN
-                  SUML = BLSDOT( K1-1, A( 1, K1 ), 1, C( 1, L1 ), 1 )
-                  SUMR = BLSDOT( L1-1, C( K1, 1 ), LDC, B( 1, L1 ), 1 )
+                  SUML = DDOT( K1-1, A( 1, K1 ), 1, C( 1, L1 ), 1 )
+                  SUMR = DDOT( L1-1, C( K1, 1 ), LDC, B( 1, L1 ), 1 )
                   VEC( 1, 1 ) = C( K1, L1 ) - ( SUML+SGN*SUMR )
                   SCALOC = ONE
 C
@@ -447,7 +447,7 @@ C
 C
                   IF( SCALOC.NE.ONE ) THEN
                      DO 70 J = 1, N
-                        CALL BLSCAL( M, SCALOC, C( 1, J ), 1 )
+                        CALL DSCAL( M, SCALOC, C( 1, J ), 1 )
    70                CONTINUE
                      SCALE = SCALE*SCALOC
                   END IF
@@ -455,12 +455,12 @@ C
 C
                ELSE IF( L1.EQ.L2 .AND. K1.NE.K2 ) THEN
 C
-                  SUML = BLSDOT( K1-1, A( 1, K1 ), 1, C( 1, L1 ), 1 )
-                  SUMR = BLSDOT( L1-1, C( K1, 1 ), LDC, B( 1, L1 ), 1 )
+                  SUML = DDOT( K1-1, A( 1, K1 ), 1, C( 1, L1 ), 1 )
+                  SUMR = DDOT( L1-1, C( K1, 1 ), LDC, B( 1, L1 ), 1 )
                   VEC( 1, 1 ) = C( K1, L1 ) - ( SUML+SGN*SUMR )
 C
-                  SUML = BLSDOT( K1-1, A( 1, K2 ), 1, C( 1, L1 ), 1 )
-                  SUMR = BLSDOT( L1-1, C( K2, 1 ), LDC, B( 1, L1 ), 1 )
+                  SUML = DDOT( K1-1, A( 1, K2 ), 1, C( 1, L1 ), 1 )
+                  SUMR = DDOT( L1-1, C( K2, 1 ), LDC, B( 1, L1 ), 1 )
                   VEC( 2, 1 ) = C( K2, L1 ) - ( SUML+SGN*SUMR )
 C
                   CALL FLALN2( .TRUE., 2, 1, SMIN, ONE, A( K1, K1 ),
@@ -471,7 +471,7 @@ C
 C
                   IF( SCALOC.NE.ONE ) THEN
                      DO 80 J = 1, N
-                        CALL BLSCAL( M, SCALOC, C( 1, J ), 1 )
+                        CALL DSCAL( M, SCALOC, C( 1, J ), 1 )
    80                CONTINUE
                      SCALE = SCALE*SCALOC
                   END IF
@@ -480,12 +480,12 @@ C
 C
                ELSE IF( L1.NE.L2 .AND. K1.EQ.K2 ) THEN
 C
-                  SUML = BLSDOT( K1-1, A( 1, K1 ), 1, C( 1, L1 ), 1 )
-                  SUMR = BLSDOT( L1-1, C( K1, 1 ), LDC, B( 1, L1 ), 1 )
+                  SUML = DDOT( K1-1, A( 1, K1 ), 1, C( 1, L1 ), 1 )
+                  SUMR = DDOT( L1-1, C( K1, 1 ), LDC, B( 1, L1 ), 1 )
                   VEC( 1, 1 ) = SGN*( C( K1, L1 )-( SUML+SGN*SUMR ) )
 C
-                  SUML = BLSDOT( K1-1, A( 1, K1 ), 1, C( 1, L2 ), 1 )
-                  SUMR = BLSDOT( L1-1, C( K1, 1 ), LDC, B( 1, L2 ), 1 )
+                  SUML = DDOT( K1-1, A( 1, K1 ), 1, C( 1, L2 ), 1 )
+                  SUMR = DDOT( L1-1, C( K1, 1 ), LDC, B( 1, L2 ), 1 )
                   VEC( 2, 1 ) = SGN*( C( K1, L2 )-( SUML+SGN*SUMR ) )
 C
                   CALL FLALN2( .TRUE., 2, 1, SMIN, ONE, B( L1, L1 ),
@@ -496,7 +496,7 @@ C
 C
                   IF( SCALOC.NE.ONE ) THEN
                      DO 90 J = 1, N
-                        CALL BLSCAL( M, SCALOC, C( 1, J ), 1 )
+                        CALL DSCAL( M, SCALOC, C( 1, J ), 1 )
    90                CONTINUE
                      SCALE = SCALE*SCALOC
                   END IF
@@ -505,20 +505,20 @@ C
 C
                ELSE IF( L1.NE.L2 .AND. K1.NE.K2 ) THEN
 C
-                  SUML = BLSDOT( K1-1, A( 1, K1 ), 1, C( 1, L1 ), 1 )
-                  SUMR = BLSDOT( L1-1, C( K1, 1 ), LDC, B( 1, L1 ), 1 )
+                  SUML = DDOT( K1-1, A( 1, K1 ), 1, C( 1, L1 ), 1 )
+                  SUMR = DDOT( L1-1, C( K1, 1 ), LDC, B( 1, L1 ), 1 )
                   VEC( 1, 1 ) = C( K1, L1 ) - ( SUML+SGN*SUMR )
 C
-                  SUML = BLSDOT( K1-1, A( 1, K1 ), 1, C( 1, L2 ), 1 )
-                  SUMR = BLSDOT( L1-1, C( K1, 1 ), LDC, B( 1, L2 ), 1 )
+                  SUML = DDOT( K1-1, A( 1, K1 ), 1, C( 1, L2 ), 1 )
+                  SUMR = DDOT( L1-1, C( K1, 1 ), LDC, B( 1, L2 ), 1 )
                   VEC( 1, 2 ) = C( K1, L2 ) - ( SUML+SGN*SUMR )
 C
-                  SUML = BLSDOT( K1-1, A( 1, K2 ), 1, C( 1, L1 ), 1 )
-                  SUMR = BLSDOT( L1-1, C( K2, 1 ), LDC, B( 1, L1 ), 1 )
+                  SUML = DDOT( K1-1, A( 1, K2 ), 1, C( 1, L1 ), 1 )
+                  SUMR = DDOT( L1-1, C( K2, 1 ), LDC, B( 1, L1 ), 1 )
                   VEC( 2, 1 ) = C( K2, L1 ) - ( SUML+SGN*SUMR )
 C
-                  SUML = BLSDOT( K1-1, A( 1, K2 ), 1, C( 1, L2 ), 1 )
-                  SUMR = BLSDOT( L1-1, C( K2, 1 ), LDC, B( 1, L2 ), 1 )
+                  SUML = DDOT( K1-1, A( 1, K2 ), 1, C( 1, L2 ), 1 )
+                  SUMR = DDOT( L1-1, C( K2, 1 ), LDC, B( 1, L2 ), 1 )
                   VEC( 2, 2 ) = C( K2, L2 ) - ( SUML+SGN*SUMR )
 C
                   CALL FLASY2( .TRUE., .FALSE., ISGN, 2, 2, A( K1, K1 ),
@@ -529,7 +529,7 @@ C
 C
                   IF( SCALOC.NE.ONE ) THEN
                      DO 100 J = 1, N
-                        CALL BLSCAL( M, SCALOC, C( 1, J ), 1 )
+                        CALL DSCAL( M, SCALOC, C( 1, J ), 1 )
   100                CONTINUE
                      SCALE = SCALE*SCALOC
                   END IF
@@ -601,8 +601,8 @@ C
                END IF
 C
                IF( L1.EQ.L2 .AND. K1.EQ.K2 ) THEN
-                  SUML = BLSDOT( K1-1, A( 1, K1 ), 1, C( 1, L1 ), 1 )
-                  SUMR = BLSDOT( N-L1, C( K1, MIN( L1+1, N ) ), LDC,
+                  SUML = DDOT( K1-1, A( 1, K1 ), 1, C( 1, L1 ), 1 )
+                  SUMR = DDOT( N-L1, C( K1, MIN( L1+1, N ) ), LDC,
      &                   B( L1, MIN( L1+1, N ) ), LDB )
                   VEC( 1, 1 ) = C( K1, L1 ) - ( SUML+SGN*SUMR )
                   SCALOC = ONE
@@ -623,7 +623,7 @@ C
 C
                   IF( SCALOC.NE.ONE ) THEN
                      DO 130 J = 1, N
-                        CALL BLSCAL( M, SCALOC, C( 1, J ), 1 )
+                        CALL DSCAL( M, SCALOC, C( 1, J ), 1 )
   130                CONTINUE
                      SCALE = SCALE*SCALOC
                   END IF
@@ -631,13 +631,13 @@ C
 C
                ELSE IF( L1.EQ.L2 .AND. K1.NE.K2 ) THEN
 C
-                  SUML = BLSDOT( K1-1, A( 1, K1 ), 1, C( 1, L1 ), 1 )
-                  SUMR = BLSDOT( N-L2, C( K1, MIN( L2+1, N ) ), LDC,
+                  SUML = DDOT( K1-1, A( 1, K1 ), 1, C( 1, L1 ), 1 )
+                  SUMR = DDOT( N-L2, C( K1, MIN( L2+1, N ) ), LDC,
      &                   B( L1, MIN( L2+1, N ) ), LDB )
                   VEC( 1, 1 ) = C( K1, L1 ) - ( SUML+SGN*SUMR )
 C
-                  SUML = BLSDOT( K1-1, A( 1, K2 ), 1, C( 1, L1 ), 1 )
-                  SUMR = BLSDOT( N-L2, C( K2, MIN( L2+1, N ) ), LDC,
+                  SUML = DDOT( K1-1, A( 1, K2 ), 1, C( 1, L1 ), 1 )
+                  SUMR = DDOT( N-L2, C( K2, MIN( L2+1, N ) ), LDC,
      &                   B( L1, MIN( L2+1, N ) ), LDB )
                   VEC( 2, 1 ) = C( K2, L1 ) - ( SUML+SGN*SUMR )
 C
@@ -649,7 +649,7 @@ C
 C
                   IF( SCALOC.NE.ONE ) THEN
                      DO 140 J = 1, N
-                        CALL BLSCAL( M, SCALOC, C( 1, J ), 1 )
+                        CALL DSCAL( M, SCALOC, C( 1, J ), 1 )
   140                CONTINUE
                      SCALE = SCALE*SCALOC
                   END IF
@@ -658,13 +658,13 @@ C
 C
                ELSE IF( L1.NE.L2 .AND. K1.EQ.K2 ) THEN
 C
-                  SUML = BLSDOT( K1-1, A( 1, K1 ), 1, C( 1, L1 ), 1 )
-                  SUMR = BLSDOT( N-L2, C( K1, MIN( L2+1, N ) ), LDC,
+                  SUML = DDOT( K1-1, A( 1, K1 ), 1, C( 1, L1 ), 1 )
+                  SUMR = DDOT( N-L2, C( K1, MIN( L2+1, N ) ), LDC,
      &                   B( L1, MIN( L2+1, N ) ), LDB )
                   VEC( 1, 1 ) = SGN*( C( K1, L1 )-( SUML+SGN*SUMR ) )
 C
-                  SUML = BLSDOT( K1-1, A( 1, K1 ), 1, C( 1, L2 ), 1 )
-                  SUMR = BLSDOT( N-L2, C( K1, MIN( L2+1, N ) ), LDC,
+                  SUML = DDOT( K1-1, A( 1, K1 ), 1, C( 1, L2 ), 1 )
+                  SUMR = DDOT( N-L2, C( K1, MIN( L2+1, N ) ), LDC,
      &                   B( L2, MIN( L2+1, N ) ), LDB )
                   VEC( 2, 1 ) = SGN*( C( K1, L2 )-( SUML+SGN*SUMR ) )
 C
@@ -676,7 +676,7 @@ C
 C
                   IF( SCALOC.NE.ONE ) THEN
                      DO 150 J = 1, N
-                        CALL BLSCAL( M, SCALOC, C( 1, J ), 1 )
+                        CALL DSCAL( M, SCALOC, C( 1, J ), 1 )
   150                CONTINUE
                      SCALE = SCALE*SCALOC
                   END IF
@@ -685,23 +685,23 @@ C
 C
                ELSE IF( L1.NE.L2 .AND. K1.NE.K2 ) THEN
 C
-                  SUML = BLSDOT( K1-1, A( 1, K1 ), 1, C( 1, L1 ), 1 )
-                  SUMR = BLSDOT( N-L2, C( K1, MIN( L2+1, N ) ), LDC,
+                  SUML = DDOT( K1-1, A( 1, K1 ), 1, C( 1, L1 ), 1 )
+                  SUMR = DDOT( N-L2, C( K1, MIN( L2+1, N ) ), LDC,
      &                   B( L1, MIN( L2+1, N ) ), LDB )
                   VEC( 1, 1 ) = C( K1, L1 ) - ( SUML+SGN*SUMR )
 C
-                  SUML = BLSDOT( K1-1, A( 1, K1 ), 1, C( 1, L2 ), 1 )
-                  SUMR = BLSDOT( N-L2, C( K1, MIN( L2+1, N ) ), LDC,
+                  SUML = DDOT( K1-1, A( 1, K1 ), 1, C( 1, L2 ), 1 )
+                  SUMR = DDOT( N-L2, C( K1, MIN( L2+1, N ) ), LDC,
      &                   B( L2, MIN( L2+1, N ) ), LDB )
                   VEC( 1, 2 ) = C( K1, L2 ) - ( SUML+SGN*SUMR )
 C
-                  SUML = BLSDOT( K1-1, A( 1, K2 ), 1, C( 1, L1 ), 1 )
-                  SUMR = BLSDOT( N-L2, C( K2, MIN( L2+1, N ) ), LDC,
+                  SUML = DDOT( K1-1, A( 1, K2 ), 1, C( 1, L1 ), 1 )
+                  SUMR = DDOT( N-L2, C( K2, MIN( L2+1, N ) ), LDC,
      &                   B( L1, MIN( L2+1, N ) ), LDB )
                   VEC( 2, 1 ) = C( K2, L1 ) - ( SUML+SGN*SUMR )
 C
-                  SUML = BLSDOT( K1-1, A( 1, K2 ), 1, C( 1, L2 ), 1 )
-                  SUMR = BLSDOT( N-L2, C( K2, MIN( L2+1, N ) ), LDC,
+                  SUML = DDOT( K1-1, A( 1, K2 ), 1, C( 1, L2 ), 1 )
+                  SUMR = DDOT( N-L2, C( K2, MIN( L2+1, N ) ), LDC,
      &                   B( L2, MIN( L2+1, N ) ), LDB )
                   VEC( 2, 2 ) = C( K2, L2 ) - ( SUML+SGN*SUMR )
 C
@@ -713,7 +713,7 @@ C
 C
                   IF( SCALOC.NE.ONE ) THEN
                      DO 160 J = 1, N
-                        CALL BLSCAL( M, SCALOC, C( 1, J ), 1 )
+                        CALL DSCAL( M, SCALOC, C( 1, J ), 1 )
   160                CONTINUE
                      SCALE = SCALE*SCALOC
                   END IF
@@ -785,9 +785,9 @@ C
                END IF
 C
                IF( L1.EQ.L2 .AND. K1.EQ.K2 ) THEN
-                  SUML = BLSDOT( M-K1, A( K1, MIN( K1+1, M ) ), LDA,
+                  SUML = DDOT( M-K1, A( K1, MIN( K1+1, M ) ), LDA,
      &                   C( MIN( K1+1, M ), L1 ), 1 )
-                  SUMR = BLSDOT( N-L1, C( K1, MIN( L1+1, N ) ), LDC,
+                  SUMR = DDOT( N-L1, C( K1, MIN( L1+1, N ) ), LDC,
      &                   B( L1, MIN( L1+1, N ) ), LDB )
                   VEC( 1, 1 ) = C( K1, L1 ) - ( SUML+SGN*SUMR )
                   SCALOC = ONE
@@ -808,7 +808,7 @@ C
 C
                   IF( SCALOC.NE.ONE ) THEN
                      DO 190 J = 1, N
-                        CALL BLSCAL( M, SCALOC, C( 1, J ), 1 )
+                        CALL DSCAL( M, SCALOC, C( 1, J ), 1 )
   190                CONTINUE
                      SCALE = SCALE*SCALOC
                   END IF
@@ -816,15 +816,15 @@ C
 C
                ELSE IF( L1.EQ.L2 .AND. K1.NE.K2 ) THEN
 C
-                  SUML = BLSDOT( M-K2, A( K1, MIN( K2+1, M ) ), LDA,
+                  SUML = DDOT( M-K2, A( K1, MIN( K2+1, M ) ), LDA,
      &                   C( MIN( K2+1, M ), L1 ), 1 )
-                  SUMR = BLSDOT( N-L2, C( K1, MIN( L2+1, N ) ), LDC,
+                  SUMR = DDOT( N-L2, C( K1, MIN( L2+1, N ) ), LDC,
      &                   B( L1, MIN( L2+1, N ) ), LDB )
                   VEC( 1, 1 ) = C( K1, L1 ) - ( SUML+SGN*SUMR )
 C
-                  SUML = BLSDOT( M-K2, A( K2, MIN( K2+1, M ) ), LDA,
+                  SUML = DDOT( M-K2, A( K2, MIN( K2+1, M ) ), LDA,
      &                   C( MIN( K2+1, M ), L1 ), 1 )
-                  SUMR = BLSDOT( N-L2, C( K2, MIN( L2+1, N ) ), LDC,
+                  SUMR = DDOT( N-L2, C( K2, MIN( L2+1, N ) ), LDC,
      &                   B( L1, MIN( L2+1, N ) ), LDB )
                   VEC( 2, 1 ) = C( K2, L1 ) - ( SUML+SGN*SUMR )
 C
@@ -836,7 +836,7 @@ C
 C
                   IF( SCALOC.NE.ONE ) THEN
                      DO 200 J = 1, N
-                        CALL BLSCAL( M, SCALOC, C( 1, J ), 1 )
+                        CALL DSCAL( M, SCALOC, C( 1, J ), 1 )
   200                CONTINUE
                      SCALE = SCALE*SCALOC
                   END IF
@@ -845,15 +845,15 @@ C
 C
                ELSE IF( L1.NE.L2 .AND. K1.EQ.K2 ) THEN
 C
-                  SUML = BLSDOT( M-K1, A( K1, MIN( K1+1, M ) ), LDA,
+                  SUML = DDOT( M-K1, A( K1, MIN( K1+1, M ) ), LDA,
      &                   C( MIN( K1+1, M ), L1 ), 1 )
-                  SUMR = BLSDOT( N-L2, C( K1, MIN( L2+1, N ) ), LDC,
+                  SUMR = DDOT( N-L2, C( K1, MIN( L2+1, N ) ), LDC,
      &                   B( L1, MIN( L2+1, N ) ), LDB )
                   VEC( 1, 1 ) = SGN*( C( K1, L1 )-( SUML+SGN*SUMR ) )
 C
-                  SUML = BLSDOT( M-K1, A( K1, MIN( K1+1, M ) ), LDA,
+                  SUML = DDOT( M-K1, A( K1, MIN( K1+1, M ) ), LDA,
      &                   C( MIN( K1+1, M ), L2 ), 1 )
-                  SUMR = BLSDOT( N-L2, C( K1, MIN( L2+1, N ) ), LDC,
+                  SUMR = DDOT( N-L2, C( K1, MIN( L2+1, N ) ), LDC,
      &                   B( L2, MIN( L2+1, N ) ), LDB )
                   VEC( 2, 1 ) = SGN*( C( K1, L2 )-( SUML+SGN*SUMR ) )
 C
@@ -865,7 +865,7 @@ C
 C
                   IF( SCALOC.NE.ONE ) THEN
                      DO 210 J = 1, N
-                        CALL BLSCAL( M, SCALOC, C( 1, J ), 1 )
+                        CALL DSCAL( M, SCALOC, C( 1, J ), 1 )
   210                CONTINUE
                      SCALE = SCALE*SCALOC
                   END IF
@@ -874,27 +874,27 @@ C
 C
                ELSE IF( L1.NE.L2 .AND. K1.NE.K2 ) THEN
 C
-                  SUML = BLSDOT( M-K2, A( K1, MIN( K2+1, M ) ), LDA,
+                  SUML = DDOT( M-K2, A( K1, MIN( K2+1, M ) ), LDA,
      &                   C( MIN( K2+1, M ), L1 ), 1 )
-                  SUMR = BLSDOT( N-L2, C( K1, MIN( L2+1, N ) ), LDC,
+                  SUMR = DDOT( N-L2, C( K1, MIN( L2+1, N ) ), LDC,
      &                   B( L1, MIN( L2+1, N ) ), LDB )
                   VEC( 1, 1 ) = C( K1, L1 ) - ( SUML+SGN*SUMR )
 C
-                  SUML = BLSDOT( M-K2, A( K1, MIN( K2+1, M ) ), LDA,
+                  SUML = DDOT( M-K2, A( K1, MIN( K2+1, M ) ), LDA,
      &                   C( MIN( K2+1, M ), L2 ), 1 )
-                  SUMR = BLSDOT( N-L2, C( K1, MIN( L2+1, N ) ), LDC,
+                  SUMR = DDOT( N-L2, C( K1, MIN( L2+1, N ) ), LDC,
      &                   B( L2, MIN( L2+1, N ) ), LDB )
                   VEC( 1, 2 ) = C( K1, L2 ) - ( SUML+SGN*SUMR )
 C
-                  SUML = BLSDOT( M-K2, A( K2, MIN( K2+1, M ) ), LDA,
+                  SUML = DDOT( M-K2, A( K2, MIN( K2+1, M ) ), LDA,
      &                   C( MIN( K2+1, M ), L1 ), 1 )
-                  SUMR = BLSDOT( N-L2, C( K2, MIN( L2+1, N ) ), LDC,
+                  SUMR = DDOT( N-L2, C( K2, MIN( L2+1, N ) ), LDC,
      &                   B( L1, MIN( L2+1, N ) ), LDB )
                   VEC( 2, 1 ) = C( K2, L1 ) - ( SUML+SGN*SUMR )
 C
-                  SUML = BLSDOT( M-K2, A( K2, MIN( K2+1, M ) ), LDA,
+                  SUML = DDOT( M-K2, A( K2, MIN( K2+1, M ) ), LDA,
      &                   C( MIN( K2+1, M ), L2 ), 1 )
-                  SUMR = BLSDOT( N-L2, C( K2, MIN( L2+1, N ) ), LDC,
+                  SUMR = DDOT( N-L2, C( K2, MIN( L2+1, N ) ), LDC,
      &                   B( L2, MIN( L2+1, N ) ), LDB )
                   VEC( 2, 2 ) = C( K2, L2 ) - ( SUML+SGN*SUMR )
 C
@@ -906,7 +906,7 @@ C
 C
                   IF( SCALOC.NE.ONE ) THEN
                      DO 220 J = 1, N
-                        CALL BLSCAL( M, SCALOC, C( 1, J ), 1 )
+                        CALL DSCAL( M, SCALOC, C( 1, J ), 1 )
   220                CONTINUE
                      SCALE = SCALE*SCALOC
                   END IF

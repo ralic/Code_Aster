@@ -1,7 +1,7 @@
       SUBROUTINE BOITEA(CNOEUD,NOAR,PAAR,NARE,NPAN,DIME,MINMAX,PAN)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 08/11/2004   AUTEUR DURAND C.DURAND 
+C MODIF CALCULEL  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,7 +40,7 @@ C ---------------------------------------------------------------------
       IMPLICIT NONE
 
 C --- FONCTIONS
-      REAL*8  R8DOT
+      REAL*8  DDOT
 
 C --- VARIABLES
       INTEGER DIME,NOAR(3,*),PAAR(DIME-1,*),NARE,NPAN,I,J,K1,K2,K3
@@ -88,12 +88,12 @@ C ----- PANS CONVEXE ENGLOBANT
 
         DO 40 J = 1, NPAN
 
-          R2 = R8DOT(DIME,PAN(1,J),1,X2,1)
-          R3 = R8DOT(DIME,PAN(1,J),1,X3,1)
+          R2 = DDOT(DIME,PAN(1,J),1,X2,1)
+          R3 = DDOT(DIME,PAN(1,J),1,X3,1)
 
           IF (ABS(R2).LT.(2.D0*ABS(R3))) THEN
  
-            R = 0.125D0*R2*R2/R3 - R8DOT(DIME,PAN(1,J),1,X1,1)
+            R = 0.125D0*R2*R2/R3 - DDOT(DIME,PAN(1,J),1,X1,1)
             IF (R.LT.PAN(K2,J)) PAN(K2,J) = R
 
           ENDIF
@@ -107,12 +107,12 @@ C ----- PANS CONVEXE INSCRIT
         DO 10 J = 1, DIME-1
 
           K3 = PAAR(J,I)
-          R2 = R8DOT(DIME,PAN(1,K3),1,X2,1)
-          R3 = R8DOT(DIME,PAN(1,K3),1,X3,1)
+          R2 = DDOT(DIME,PAN(1,K3),1,X2,1)
+          R3 = DDOT(DIME,PAN(1,K3),1,X3,1)
 
           IF (ABS(R2).LT.(2.D0*ABS(R3))) THEN
  
-            R = 0.125D0*R2*R2/R3 - R8DOT(DIME,PAN(1,K3),1,X1,1)
+            R = 0.125D0*R2*R2/R3 - DDOT(DIME,PAN(1,K3),1,X1,1)
             IF (R.GT.PAN(K2,K3)) PAN(K2,K3) = R
 
           ENDIF

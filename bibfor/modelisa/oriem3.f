@@ -1,6 +1,6 @@
       SUBROUTINE ORIEM3(MA,TMA,CNO,CNX,CNXC,CNXMA)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 08/11/2004   AUTEUR DURAND C.DURAND 
+C MODIF MODELISA  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -34,7 +34,7 @@ C ----------------------------------------------------------------------
       IMPLICIT NONE
 
 C --- FONCTION
-      REAL*8      R8DOT
+      REAL*8      DDOT
 
 C --- VARIABLES
       CHARACTER*8 TMA
@@ -105,7 +105,7 @@ C --- SELECTION SUIVANT TYPE DE MAILLE
         W(3) = CNO(3,D)-CNO(3,A)
 
         CALL PROVEC(V,W,N)
-        L = (R8DOT(3,U,1,N,1).LE.0.D0)
+        L = (DDOT(3,U,1,N,1).LE.0.D0)
         Q = INDEX(3)
 
       ELSEIF ((TMA(1:5).EQ.'PENTA').AND.
@@ -129,7 +129,7 @@ C --- SELECTION SUIVANT TYPE DE MAILLE
         W(3) = CNO(3,F)+CNO(3,C)-CNO(3,D)-CNO(3,A)
 
         CALL PROVEC(V,W,N)
-        L = (R8DOT(3,U,1,N,1).LE.0.D0)
+        L = (DDOT(3,U,1,N,1).LE.0.D0)
         Q = INDEX(4)
 
       ELSEIF ((TMA(1:4).EQ.'HEXA').AND.
@@ -155,7 +155,7 @@ C --- SELECTION SUIVANT TYPE DE MAILLE
         W(3) = CNO(3,F)+CNO(3,E)-CNO(3,D)-CNO(3,C)
 
         CALL PROVEC(V,W,N)
-        L = (R8DOT(3,U,1,N,1).LE.0.D0)
+        L = (DDOT(3,U,1,N,1).LE.0.D0)
         Q = INDEX(5)
         
       ELSE

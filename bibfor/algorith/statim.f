@@ -11,7 +11,7 @@
       CHARACTER*(*) NOMRES
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -125,8 +125,8 @@ C
         VALEK(3) = TVAR(1)
 C
         NBCHOC = 0
-        CALL R8COPY ( NBPAS, FCHO(3*(I-1)+1), 3*NBOBST, WK1, 1 )
-        CALL R8COPY ( NBPAS, VGLI(3*(I-1)+1), 3*NBOBST, WK2, 1 )
+        CALL DCOPY ( NBPAS, FCHO(3*(I-1)+1), 3*NBOBST, WK1, 1 )
+        CALL DCOPY ( NBPAS, VGLI(3*(I-1)+1), 3*NBOBST, WK2, 1 )
         CALL IMPACT ( NOMRES, NBPAS, WK1(IDEBUT), WK2(IDEBUT), WK3, 
      +                OFFSET, TEMPS(IDEBUT), TREPOS, NBCHOC, FNMAXA,
      +                FNMMOY, FNMETY, NPARI, LPARI, VALEK )

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/11/2004   AUTEUR NDOMING N.DOMINGUEZ 
+#& MODIF COMMANDE  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -608,7 +608,7 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
              A               =SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster,formule)),
              S               =SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster,formule)),
              VERI_P          =SIMP(statut='c',typ='TXM',max='**',defaut=("TEMP",) ),
-           ),  
+           ),
            ZIRC_EPRI       =FACT(statut='f',
              FLUX_PHI        =SIMP(statut='o',typ='R'),
              R_P             =SIMP(statut='o',typ='R'),
@@ -1053,7 +1053,7 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
              ECRO_K           =SIMP(statut='o',typ='R'),
              ECRO_M           =SIMP(statut='o',typ='R'),
              SY              =SIMP(statut='o',typ='R'),
-             ),                    
+             ),
 #
 # comportement thermique
 #
@@ -2629,6 +2629,12 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
              SIGM_C          =SIMP(statut='f',typ='R'),
              SAUT_C          =SIMP(statut='f',typ='R'),
            ),
+           RUPT_FRAG_FO   =FACT(statut='f',
+             GC              =SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster,formule)),
+             SIGM_C          =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
+             SAUT_C          =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
+             VERI_P          =SIMP(statut='c',typ='TXM',max='**',defaut=("TEMP",) ),
+           ),
            RCCM            =FACT(statut='f',
              SY_02           =SIMP(statut='f',typ='R'),
              SM              =SIMP(statut='f',typ='R'),
@@ -2680,7 +2686,7 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
              ),
            ),
 ####  MONOCRISTAL
-           
+
            ECOU_VISC1      =FACT(statut='f',
              TYPE_PARA       =SIMP(statut='f',typ='TXM',into=("ECOU_VISC",),),
              N               =SIMP(statut='o',typ='R'),
@@ -2734,9 +2740,9 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
              PM              =SIMP(statut='o',typ='R'),
              C               =SIMP(statut='o',typ='R'),
            ),
-           
+
 ####  MONOCRISTAL
-           
+
            DRUCK_PRAGER_FO  =FACT(statut='f',
              ALPHA           =SIMP(statut='o',typ=(fonction_sdaster,formule)),
              SY              =SIMP(statut='o',typ=(fonction_sdaster,formule)),
@@ -2753,7 +2759,7 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
                     TYPE_DP         =SIMP(statut='c',typ='R',defaut= 2.0,),
              ),
            ),
-           
-           
+
+
            INFO            =SIMP(statut='f',typ='I',defaut=1,into=(1,2) ),
 )  ;

@@ -3,7 +3,7 @@
      &                  DIMGI,IRR,JGI,JGITGI)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/11/2004   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGORITH  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -290,7 +290,7 @@ C COMPOSANTES DES MODES DE CORPS RIGIDES
 C COEFF. ALPHAI MULTIPLICATEUR      
               ALPHA=-ZR(IDECAA)               
 C USOLI = USOLI + BI * ALPHAI         
-              CALL R8AXPY(NBDDL,ALPHA,ZR(IDECAI),1,ZR(JXSOL),1)
+              CALL DAXPY(NBDDL,ALPHA,ZR(IDECAI),1,ZR(JXSOL),1)
               IDECAI=IDECAI+NBDDL
               IDECAA=IDECAA+1
    32       CONTINUE      

@@ -4,7 +4,7 @@
      &                  VIP   , ENER  , DPDA  , PONDER, SIGP)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -74,7 +74,7 @@ C ----------------------------------------------------------------------
       REAL*8      A0TR, AGTR(3), FTR
       REAL*8      ENEREL, ENERPL, ENERDI
 
-      REAL*8      R8NRM2, R8DOT
+      REAL*8      DNRM2, DDOT
 
       REAL*8      KRON(6)
       DATA        KRON /1.D0, 1.D0, 1.D0, 0.D0, 0.D0, 0.D0/
@@ -177,7 +177,7 @@ C    DEVIATEUR ET TRACE DES CONTRAINTES ELASTIQUES
       DO 40 K = 1, NDIMSI
         SIGTR(K) = DEUXMU * (EPSDV(K) - EPM(K))
  40   CONTINUE
-      STREQ = SQRT(1.5D0) * R8NRM2(NDIMSI, SIGTR,1)
+      STREQ = SQRT(1.5D0) * DNRM2(NDIMSI, SIGTR,1)
       SIGH  = TROISK * (EPSH - EPSTH)
 
 
@@ -212,7 +212,7 @@ C ======================================================================
 C -- INTIALISATION
 
       P0M = VIM(1)
-      CALL R8COPY(NDIM, VIM(2),1, PGM,1)
+      CALL DCOPY(NDIM, VIM(2),1, PGM,1)
 
 
 C -- PREDICTION ELASTIQUE
@@ -232,7 +232,7 @@ C -- EVOLUTION DU GRADIENT
       DO 205 K = 1, NDIM
         PG(K) = PGM(K) + AGTR(K)/COEF
  205  CONTINUE                      
-      PG2 = R8DOT(NDIM, PG,1, PG,1)
+      PG2 = DDOT(NDIM, PG,1, PG,1)
       
       
 C -- SOLUTION ELASTIQUE
@@ -289,7 +289,7 @@ C -- STOCKAGE DES VARIABLES INTERNES
        
       P0   = P0M + DP0
       VIP(1) = P0
-      CALL R8COPY(NDIM, PG,1, VIP(2),1)
+      CALL DCOPY(NDIM, PG,1, VIP(2),1)
       VIP(5) = 0.D0
       VIP(6) = CAS
 

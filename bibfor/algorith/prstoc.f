@@ -3,7 +3,7 @@
 
 C--------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 31/05/96   AUTEUR BIBERON G.ROUSSEAU 
+C MODIF ALGORITH  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -79,7 +79,7 @@ C
 
 C-------------STOCKAGE DANS LE VECTEUR CREE -------------------------
 
-            CALL R8COPY(NBVEC,ZR(IVALE),1,ZR(IVALP),1)
+            CALL DCOPY(NBVEC,ZR(IVALE),1,ZR(IVALP),1)
 
             DO 13 KB = 1,NBDESC
               ZI(IDESP+KB-1) = ZI(IDESC+KB-1)

@@ -1,6 +1,6 @@
       SUBROUTINE NEWACC( NEQ , C1 , C2 , C3 , D0 , V0 , A0 , D1 , A1 )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/01/95   AUTEUR G8BHHAC A.Y.PORTABILITE 
+C MODIF ALGORITH  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,9 +44,9 @@ C
       REAL *8        SCAL
 C
       SCAL = -1.D0
-      CALL R8COPY( NEQ , D1 , 1 , A1 , 1 )
-      CALL R8AXPY( NEQ , SCAL , D0 ,  1 , A1 , 1 )
-      CALL R8SCAL( NEQ , C1 , A1 , 1  )
-      CALL R8AXPY( NEQ , C2   , V0 , 1 , A1 , 1 )
-      CALL R8AXPY( NEQ , C3   , A0 , 1 , A1 , 1 )
+      CALL DCOPY( NEQ , D1 , 1 , A1 , 1 )
+      CALL DAXPY( NEQ , SCAL , D0 ,  1 , A1 , 1 )
+      CALL DSCAL( NEQ , C1 , A1 , 1  )
+      CALL DAXPY( NEQ , C2   , V0 , 1 , A1 , 1 )
+      CALL DAXPY( NEQ , C3   , A0 , 1 , A1 , 1 )
       END

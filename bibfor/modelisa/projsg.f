@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 02/09/98   AUTEUR CIBHHLV L.VIVAN 
+C MODIF MODELISA  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -71,7 +71,7 @@ C -----------------
      &              DZ12, EPSG, N1N1, N1N2, N2N2, NRM2, PLAN1(4),
      &              PLAN2(4)
 C
-      REAL*8        R8DOT, R8NRM2, R8PREM
+      REAL*8        DDOT, DNRM2, R8PREM
 C
 C-------------------   DEBUT DU CODE EXECUTABLE    ---------------------
 C
@@ -82,7 +82,7 @@ C%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 C
       EPSG = 1.0D+08 * R8PREM()
 C
-      NRM2 = DBLE(MAX(R8NRM2(3,X3D1(1),1),R8NRM2(3,X3D2(1),1)))
+      NRM2 = DBLE(MAX(DNRM2(3,X3D1(1),1),DNRM2(3,X3D2(1),1)))
       IF ( NRM2.EQ.0.0D0 ) THEN
          IPROJ = -1
          GO TO 9999
@@ -194,12 +194,12 @@ C
 C
 C 1.2 EXCENTRICITE ET COORDONNEES DU POINT PROJETE
 C ---
-      N1N1 = R8DOT(3,PLAN1(1),1,PLAN1(1),1)
-      N1N2 = R8DOT(3,PLAN1(1),1,PLAN2(1),1)
-      N2N2 = R8DOT(3,PLAN2(1),1,PLAN2(1),1)
+      N1N1 = DDOT(3,PLAN1(1),1,PLAN1(1),1)
+      N1N2 = DDOT(3,PLAN1(1),1,PLAN2(1),1)
+      N2N2 = DDOT(3,PLAN2(1),1,PLAN2(1),1)
 C
-      ALPHA1 = R8DOT(3,PLAN1(1),1,X3DCA(1),1) + PLAN1(4)
-      ALPHA2 = R8DOT(3,PLAN2(1),1,X3DCA(1),1) + PLAN2(4)
+      ALPHA1 = DDOT(3,PLAN1(1),1,X3DCA(1),1) + PLAN1(4)
+      ALPHA2 = DDOT(3,PLAN2(1),1,X3DCA(1),1) + PLAN2(4)
 C
       BETA1 = -N2N2 * ALPHA1 + N1N2 * ALPHA2
       BETA2 =  N1N2 * ALPHA1 - N1N1 * ALPHA2
@@ -214,18 +214,18 @@ C
       DX3D(1) = X3DCA(1) - X3D1(1)
       DX3D(2) = X3DCA(2) - X3D1(2)
       DX3D(3) = X3DCA(3) - X3D1(3)
-      NRM2 = R8NRM2(3,DX3D(1),1)
+      NRM2 = DNRM2(3,DX3D(1),1)
       DX3D(1) = X3DCA(1) - X3D2(1)
       DX3D(2) = X3DCA(2) - X3D2(2)
       DX3D(3) = X3DCA(3) - X3D2(3)
-      NRM2 = DBLE(MAX(NRM2,R8NRM2(3,DX3D(1),1)))
+      NRM2 = DBLE(MAX(NRM2,DNRM2(3,DX3D(1),1)))
       IF ( NRM2.EQ.0.0D0 ) THEN
          IPROJ = -1
          GO TO 9999
       ENDIF
       IF ( DBLE(ABS(EXCENT))/NRM2.LT.EPSG ) EXCENT = 0.0D0
 C
-      CALL R8COPY(3,X3DCA(1),1,X3DP(1),1)
+      CALL DCOPY(3,X3DCA(1),1,X3DP(1),1)
       IF ( EXCENT.GT.0.0D0 ) THEN
          NORMAL(1) = ( PLAN1(1) * BETA1 + PLAN2(1) * BETA2 )
      &               / ( N1N1 * N2N2 - N1N2 * N1N2 )
@@ -233,8 +233,8 @@ C
      &               / ( N1N1 * N2N2 - N1N2 * N1N2 )
          NORMAL(3) = ( PLAN1(3) * BETA1 + PLAN2(3) * BETA2 )
      &               / ( N1N1 * N2N2 - N1N2 * N1N2 )
-         CALL R8AXPY(3,1.0D0,NORMAL(1),1,X3DP(1),1)
-         CALL R8SCAL(3,-1.0D0/EXCENT,NORMAL(1),1)
+         CALL DAXPY(3,1.0D0,NORMAL(1),1,X3DP(1),1)
+         CALL DSCAL(3,-1.0D0/EXCENT,NORMAL(1),1)
       ELSE
          CALL R8INIR(3,0.0D0,NORMAL(1),1)
       ENDIF

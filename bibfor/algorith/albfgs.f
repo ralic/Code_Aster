@@ -2,7 +2,7 @@
      &                  X     , G     , D     )
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/05/2000   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,7 +41,7 @@ C ----------------------------------------------------------------------
       INTEGER DEB, FIN, NCPL, N, I, IND
       INTEGER IW0, IXM, IGM, IS, IY, IA, IYISI
       REAL*8  YS, YDY, SDM1S, AIMBI
-      REAL*8  R8DOT
+      REAL*8  DDOT
 
 
       IW0   = 1
@@ -81,7 +81,7 @@ C ======================================================================
 C                    STOCKAGE DU POINT ET DU GRADIENT
 C ======================================================================
 
-      CALL R8COPY(NDDL, X,1, MEM(IXM),1)
-      CALL R8COPY(NDDL, G,1, MEM(IGM),1)
+      CALL DCOPY(NDDL, X,1, MEM(IXM),1)
+      CALL DCOPY(NDDL, G,1, MEM(IGM),1)
 
       END

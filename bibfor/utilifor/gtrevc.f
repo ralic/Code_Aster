@@ -2,7 +2,7 @@
      $                   LDVR, MM, M, WORK, RWORK, INFO )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILIFOR  DATE 17/02/2003   AUTEUR NICOLAS O.NICOLAS 
+C MODIF UTILIFOR  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) LAPACK
 C ======================================================================
@@ -162,8 +162,8 @@ C     .. LOCAL SCALARS ..
 C     ..
 C     .. EXTERNAL FUNCTIONS ..
       LOGICAL            LLSAME
-      INTEGER            GLAMAX, ISBAEM
-      REAL*8             GLASUM, R8PREM, R8MIEM
+      INTEGER            IZAMAX, ISBAEM
+      REAL*8             DZASUM, R8PREM, R8MIEM
 C     ..
 C     .. STATEMENT FUNCTIONS ..
       REAL*8             CABS1
@@ -240,7 +240,7 @@ C     PART OF T TO CONTROL OVERFLOW IN TRIANGULAR SOLVER.
 C
       RWORK( 1 ) = ZERO
       DO 30 J = 2, N
-         RWORK( J ) = GLASUM( J-1, T( 1, J ), 1 )
+         RWORK( J ) = DZASUM( J-1, T( 1, J ), 1 )
    30 CONTINUE
 C
       IF( RIGHTV ) THEN
@@ -274,7 +274,7 @@ C
    50       CONTINUE
 C
             IF( KI.GT.1 ) THEN
-               CALL GLATRS( 'U', 'N', 'N', 'Y',
+               CALL ZLATRS( 'U', 'N', 'N', 'Y',
      $                      KI-1, T, LDT, WORK( 1 ), SCALE, RWORK,
      $                      INFO )
                WORK( KI ) = SCALE
@@ -283,23 +283,23 @@ C
 C           COPY THE VECTOR X OR Q*X TO VR AND NORMALIZE.
 C
             IF( .NOT.OVER ) THEN
-               CALL GLCOPY( KI, WORK( 1 ), 1, VR( 1, IS ), 1 )
+               CALL ZCOPY( KI, WORK( 1 ), 1, VR( 1, IS ), 1 )
 C
-               II = GLAMAX( KI, VR( 1, IS ), 1 )
+               II = IZAMAX( KI, VR( 1, IS ), 1 )
                REMAX = ONE / CABS1( VR( II, IS ) )
-               CALL GLSCAL( KI, REMAX, VR( 1, IS ), 1 )
+               CALL ZDSCAL( KI, REMAX, VR( 1, IS ), 1 )
 C
                DO 60 K = KI + 1, N
                   VR( K, IS ) = CMZERO
    60          CONTINUE
             ELSE
                IF( KI.GT.1 )
-     $            CALL GLGEMV( 'N', N, KI-1, CMONE, VR, LDVR, WORK( 1 ),
+     $            CALL ZGEMV( 'N', N, KI-1, CMONE, VR, LDVR, WORK( 1 ),
      $                        1, DCMPLX( SCALE ), VR( 1, KI ), 1 )
 C
-               II = GLAMAX( N, VR( 1, KI ), 1 )
+               II = IZAMAX( N, VR( 1, KI ), 1 )
                REMAX = ONE / CABS1( VR( II, KI ) )
-               CALL GLSCAL( N, REMAX, VR( 1, KI ), 1 )
+               CALL ZDSCAL( N, REMAX, VR( 1, KI ), 1 )
             END IF
 C
 C           SET BACK THE ORIGINAL DIAGONAL ELEMENTS OF T.
@@ -343,7 +343,7 @@ C
   100       CONTINUE
 C
             IF( KI.LT.N ) THEN
-               CALL GLATRS( 'U', 'C', 'N',
+               CALL ZLATRS( 'U', 'C', 'N',
      $                      'Y', N-KI, T( KI+1, KI+1 ), LDT,
      $                      WORK( KI+1 ), SCALE, RWORK, INFO )
                WORK( KI ) = SCALE
@@ -352,24 +352,24 @@ C
 C           COPY THE VECTOR X OR Q*X TO VL AND NORMALIZE.
 C
             IF( .NOT.OVER ) THEN
-               CALL GLCOPY( N-KI+1, WORK( KI ), 1, VL( KI, IS ), 1 )
+               CALL ZCOPY( N-KI+1, WORK( KI ), 1, VL( KI, IS ), 1 )
 C
-               II = GLAMAX( N-KI+1, VL( KI, IS ), 1 ) + KI - 1
+               II = IZAMAX( N-KI+1, VL( KI, IS ), 1 ) + KI - 1
                REMAX = ONE / CABS1( VL( II, IS ) )
-               CALL GLSCAL( N-KI+1, REMAX, VL( KI, IS ), 1 )
+               CALL ZDSCAL( N-KI+1, REMAX, VL( KI, IS ), 1 )
 C
                DO 110 K = 1, KI - 1
                   VL( K, IS ) = CMZERO
   110          CONTINUE
             ELSE
                IF( KI.LT.N )
-     $            CALL GLGEMV( 'N', N, N-KI, CMONE, VL( 1, KI+1 ), LDVL,
+     $            CALL ZGEMV( 'N', N, N-KI, CMONE, VL( 1, KI+1 ), LDVL,
      $                        WORK( KI+1 ), 1, DCMPLX( SCALE ),
      $                        VL( 1, KI ), 1 )
 C
-               II = GLAMAX( N, VL( 1, KI ), 1 )
+               II = IZAMAX( N, VL( 1, KI ), 1 )
                REMAX = ONE / CABS1( VL( II, KI ) )
-               CALL GLSCAL( N, REMAX, VL( 1, KI ), 1 )
+               CALL ZDSCAL( N, REMAX, VL( 1, KI ), 1 )
             END IF
 C
 C           SET BACK THE ORIGINAL DIAGONAL ELEMENTS OF T.

@@ -6,7 +6,7 @@
       REAL*8          KTAN(*), BTSIG(6,*)
       CHARACTER*16    NOMTE, OPT
 
-C MODIF ELEMENTS  DATE 03/11/2004   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ELEMENTS  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -323,7 +323,7 @@ C     NBCOU : NOMBRE DE COUCHES
       IF (VECTEU) THEN
         NDIMV=NPG*NBSP*NBVAR
         CALL JEVECH('PVARIMP','L',IVARIX)
-        CALL R8COPY(NDIMV,ZR(IVARIX),1,ZR(IVARIP),1)
+        CALL DCOPY(NDIMV,ZR(IVARIX),1,ZR(IVARIP),1)
       END IF
 
 C===============================================================
@@ -600,11 +600,11 @@ C         -- COUPLAGE:
 C         ------------
           IF (GRILLE) THEN
             POIDS2 = DISTN*DISTN
-            CALL R8COPY(9,DM,1,DM2,1)
-            CALL R8SCAL(9,POIDS2,DM2,1)
+            CALL DCOPY(9,DM,1,DM2,1)
+            CALL DSCAL(9,POIDS2,DM2,1)
             CALL UTBTAB('CUMU',3,3*NNOEL,DM2,BF,WORK,FLEX)
-            CALL R8COPY(9,DM,1,DMF,1)
-            CALL R8SCAL(9,DISTN,DMF,1)
+            CALL DCOPY(9,DM,1,DMF,1)
+            CALL DSCAL(9,DISTN,DMF,1)
           END IF
           CALL UTCTAB('CUMU',3,3*NNOEL,2*NNOEL,DMF,BF,BM,WORK,MEFL)
         END IF

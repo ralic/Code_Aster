@@ -4,7 +4,7 @@
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 02/09/98   AUTEUR CIBHHLV L.VIVAN 
+C MODIF MODELISA  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,7 +55,7 @@ C                    PLUS PROCHE
 C  OUT    : NORMAL : REAL*8 , VECTEUR DE DIMENSION 3
 C                    COORDONNEES DANS LE REPERE GLOBAL DU VECTEUR
 C                    ---------->          ---------->
-C                    NOEBE,NOECA / R8NRM2(NOEBE,NOECA)
+C                    NOEBE,NOECA / DNRM2(NOEBE,NOECA)
 C  OUT    : ITRIA  : INTEGER , SCALAIRE
 C                    INDICATEUR DU SOUS-DOMAINE AUQUEL APPARTIENT LE
 C                    NOEUD BETON LE PLUS PROCHE :
@@ -103,7 +103,7 @@ C -----------------
       CHARACTER*1   K1B
       CHARACTER*24  CONXMA, COORNO
 C
-      REAL*8        R8NRM2, R8PREM
+      REAL*8        DNRM2, R8PREM
 C
 C-------------------   DEBUT DU CODE EXECUTABLE    ---------------------
 C
@@ -163,14 +163,14 @@ C ---
       NORMAL(1) = X3DCA(1) - XYZMA(1,ICNX)
       NORMAL(2) = X3DCA(2) - XYZMA(2,ICNX)
       NORMAL(3) = X3DCA(3) - XYZMA(3,ICNX)
-      EXCENT = R8NRM2(3,NORMAL(1),1)
-      NRM2 = DBLE(MAX(R8NRM2(3,X3DCA(1),1),R8NRM2(3,XYZMA(1,ICNX),1)))
+      EXCENT = DNRM2(3,NORMAL(1),1)
+      NRM2 = DBLE(MAX(DNRM2(3,X3DCA(1),1),DNRM2(3,XYZMA(1,ICNX),1)))
       IF ( NRM2.EQ.0.0D0 ) NRM2 = 1.0D0
       IF ( DBLE(ABS(EXCENT))/NRM2.LT.EPSG ) THEN
          EXCENT = 0.0D0
          CALL R8INIR(3,0.0D0,NORMAL(1),1)
       ELSE
-         CALL R8SCAL(3,1.0D0/EXCENT,NORMAL(1),1)
+         CALL DSCAL(3,1.0D0/EXCENT,NORMAL(1),1)
       ENDIF
 C.... AFFECTATION DE IPROJ
       IPROJ = 2

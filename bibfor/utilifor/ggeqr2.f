@@ -1,7 +1,7 @@
       SUBROUTINE GGEQR2( M, N, A, LDA, TAU, WORK, INFO )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILIFOR  DATE 17/02/2003   AUTEUR NICOLAS O.NICOLAS 
+C MODIF UTILIFOR  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) LAPACK
 C ======================================================================
@@ -108,7 +108,7 @@ C
 C
 C        GENERATE ELEMENTARY REFLECTOR H(I) TO ANNIHILATE A(I+1:M,I)
 C
-         CALL GLARFG( M-I+1, A( I, I ), A( MIN( I+1, M ), I ), 1,
+         CALL ZLARFG( M-I+1, A( I, I ), A( MIN( I+1, M ), I ), 1,
      $                TAU( I ) )
          IF( I.LT.N ) THEN
 C
@@ -116,7 +116,7 @@ C           APPLY H(I)' TO A(I:M,I+1:N) FROM THE LEFT
 C
             ALPHA = A( I, I )
             A( I, I ) = ONE
-            CALL GLARF( 'L', M-I+1, N-I, A( I, I ), 1,
+            CALL ZLARF( 'L', M-I+1, N-I, A( I, I ), 1,
      $                  DCONJG( TAU( I ) ), A( I, I+1 ), LDA, WORK )
             A( I, I ) = ALPHA
          END IF

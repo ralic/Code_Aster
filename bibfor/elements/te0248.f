@@ -4,7 +4,7 @@
       CHARACTER*(*) OPTIOZ,NOMTEZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 03/11/2004   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ELEMENTS  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -358,7 +358,7 @@ C     ------------
                CALL TECACH('OON','PVARIMP',7,JTAB,IRET)
                NBVARI = MAX(JTAB(6),1)*JTAB(7)
                IVARMP=JTAB(1)       
-               CALL R8COPY(NBVARI,ZR(IVARMP),1,ZR(IVARIP),1)
+               CALL DCOPY(NBVARI,ZR(IVARMP),1,ZR(IVARIP),1)
             ENDIF
             
           CALL COMP1D(OPTION,

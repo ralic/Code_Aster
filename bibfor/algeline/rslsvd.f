@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 26/05/98   AUTEUR H1BAXBG M.LAINET 
+C MODIF ALGELINE  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -78,7 +78,7 @@ C -----------------
       REAL*8      ALPHAJ
       LOGICAL     MATUV
 C
-      REAL*8      R8DOT
+      REAL*8      DDOT
 C
 C-------------------   DEBUT DU CODE EXECUTABLE    ---------------------
 C
@@ -113,10 +113,10 @@ C
       DO 10 IB = 1, NB
          CALL R8INIR(N,0.0D0,RVNM(1),1)
          DO 20 J = 1, RG
-            ALPHAJ = R8DOT(M,U(1,J),1,B(1,IB),1) / W(J)
-            CALL R8AXPY(N,ALPHAJ,V(1,J),1,RVNM(1),1)
+            ALPHAJ = DDOT(M,U(1,J),1,B(1,IB),1) / W(J)
+            CALL DAXPY(N,ALPHAJ,V(1,J),1,RVNM(1),1)
   20     CONTINUE
-         CALL R8COPY(N,RVNM(1),1,B(1,IB),1)
+         CALL DCOPY(N,RVNM(1),1,B(1,IB),1)
   10  CONTINUE
 C
 9999  CONTINUE

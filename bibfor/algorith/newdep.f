@@ -1,6 +1,6 @@
       SUBROUTINE NEWDEP( NEQ , C , DT , D0 , V0 , A0 , D1 , A1 )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/01/95   AUTEUR G8BHHAC A.Y.PORTABILITE 
+C MODIF ALGORITH  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -42,8 +42,8 @@ C   E.D.F DER   JACQUART G. 47-65-49-41      LE 19 JUILLET 1990
 C**********************************************************************
 C
       REAL *8         D0(*) , D1(*) , V0(*) , A0(*) ,A1(*) , C , DT
-      CALL R8COPY( NEQ , D0 , 1 , D1 , 1 )
-      CALL R8AXPY( NEQ , DT , V0, 1 , D1 , 1 )
-      CALL R8AXPY( NEQ , C  , A1, 1 , D1 , 1 )
-      CALL R8AXPY( NEQ , 2*C, A0, 1 , D1 , 1 )
+      CALL DCOPY( NEQ , D0 , 1 , D1 , 1 )
+      CALL DAXPY( NEQ , DT , V0, 1 , D1 , 1 )
+      CALL DAXPY( NEQ , C  , A1, 1 , D1 , 1 )
+      CALL DAXPY( NEQ , 2*C, A0, 1 , D1 , 1 )
       END

@@ -9,7 +9,7 @@
      *          WA1(N),WA2(N),WA3(N),WA4(N),GEOM1(*),CFPCD1(*)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PUBLIC  DATE 29/10/2003   AUTEUR BOYERE E.BOYERE 
+C MODIF PUBLIC  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
 C TOLE CRP_21
 C-----------------------------------------------------------------------
 C COPYRIGHT (C) ARGONNE NATIONAL LABORATORY. MINPACK PROJECT. MARCH 1980
@@ -160,7 +160,7 @@ C-----------------------------------------------------------------------
       INTEGER  IWA(1)
       LOGICAL  JEVAL,SING
       REAL*8   ACTRED,DELTA,EPSMCH,FNORM,FNORM1,ONE,PNORM,PRERED,P1,
-     *         P5,P001,P0001,RATIO,SUM,TEMP,XNORM,ZERO,R8PREM,BLNRM2
+     *         P5,P001,P0001,RATIO,SUM,TEMP,XNORM,ZERO,R8PREM,DNRM2
 C
       DATA   ONE,   P1,     P5,     P001,   P0001,  ZERO
      *     / 1.0D0, 1.0D-1, 5.0D-1, 1.0D-3, 1.0D-4, 0.0D0 /
@@ -193,7 +193,7 @@ C
      +            URM1)
       NFEV = 1
       IF (IFLAG .LT. 0) GO TO 300
-      FNORM = BLNRM2(N,FVEC,1)
+      FNORM = DNRM2(N,FVEC,1)
 C
 C     DETERMINE THE NUMBER OF CALLS TO FCN NEEDED TO COMPUTE
 C     THE JACOBIAN MATRIX.
@@ -242,7 +242,7 @@ C
          DO 60 J = 1, N
             WA3(J) = DIAG(J)*X(J)
    60       CONTINUE
-         XNORM = BLNRM2(N,WA3,1)
+         XNORM = DNRM2(N,WA3,1)
          DELTA = FACTOR*XNORM
          IF (DELTA .EQ. ZERO) DELTA = FACTOR
    70    CONTINUE
@@ -317,7 +317,7 @@ C
                WA2(J) = X(J) + WA1(J)
                WA3(J) = DIAG(J)*WA1(J)
   200          CONTINUE
-            PNORM = BLNRM2(N,WA3,1)
+            PNORM = DNRM2(N,WA3,1)
 C
 C           ON THE FIRST ITERATION, ADJUST THE INITIAL STEP BOUND.
 C
@@ -330,7 +330,7 @@ C
      +                  ITDASH,URM1)
             NFEV = NFEV + 1
             IF (IFLAG .LT. 0) GO TO 300
-            FNORM1 = BLNRM2(N,WA4,1)
+            FNORM1 = DNRM2(N,WA4,1)
 C
 C           COMPUTE THE SCALED ACTUAL REDUCTION.
 C
@@ -348,7 +348,7 @@ C
   210             CONTINUE
                WA3(I) = QTF(I) + SUM
   220          CONTINUE
-            TEMP = BLNRM2(N,WA3,1)
+            TEMP = DNRM2(N,WA3,1)
             PRERED = ZERO
             IF (TEMP .LT. FNORM) PRERED = ONE - (TEMP/FNORM)**2
 C
@@ -384,7 +384,7 @@ C
                WA2(J) = DIAG(J)*X(J)
                FVEC(J) = WA4(J)
   250          CONTINUE
-            XNORM = BLNRM2(N,WA2,1)
+            XNORM = DNRM2(N,WA2,1)
             FNORM = FNORM1
             ITER = ITER + 1
   260       CONTINUE

@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 27/06/2001   AUTEUR DURAND C.DURAND 
+C MODIF MODELISA  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -144,7 +144,7 @@ C
          CALL RSLSVD(4,4,NBSOM,A(1,1),S(1),U(1,1),V(1,1),
      &               1,B(1),EPS,IERR,WORK(1))
          IF ( IERR.NE.0 ) GO TO 9999
-         CALL R8COPY(NBSOM,B(1),1,XBAR(1),1)
+         CALL DCOPY(NBSOM,B(1),1,XBAR(1),1)
 C
       ELSE
 C

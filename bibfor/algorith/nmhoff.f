@@ -1,6 +1,6 @@
       SUBROUTINE NMHOFF (NDIM,IMATE,INST,EPSM,DEPS,OPTION,SIGP,DSIDEP)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,7 +44,7 @@ C --------------------------------------------------------------------
       CHARACTER*2  COD
       REAL*8       SY, M, AM
       REAL*8       EPS(6), EPSNO
-      REAL*8       COEF, RAC23, R8NRM2
+      REAL*8       COEF, RAC23, DNRM2
 C -----------------------------------------------------------------
 
 
@@ -57,9 +57,9 @@ C -- INITIALISATION
       RIGI = OPTION.EQ.'RIGI_MECA_TANG' .OR. OPTION.EQ.'FULL_MECA'
       ELAS = OPTION.EQ.'RIGI_MECA_ELAS'
 
-      CALL R8COPY(NDIMSI, EPSM,1, EPS,1)
-      IF (RESI) CALL R8AXPY(NDIMSI, 1.D0, DEPS,1, EPS,1)
-      EPSNO = R8NRM2(NDIMSI, EPS,1)
+      CALL DCOPY(NDIMSI, EPSM,1, EPS,1)
+      IF (RESI) CALL DAXPY(NDIMSI, 1.D0, DEPS,1, EPS,1)
+      EPSNO = DNRM2(NDIMSI, EPS,1)
 
       LINE = INST.EQ.1 .OR. EPSNO.EQ.0.D0
 

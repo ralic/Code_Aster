@@ -15,7 +15,7 @@
 C-----------------------------------------------------------------------
 C CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 18/10/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+C MODIF ELEMENTS  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -64,13 +64,13 @@ C     --------------------------------------------
 C           IDENTIFICATION DE PLAMOM A PLAMO1
             N=3
             CALL LCEQVE(PLAMO1,PLAMOM)
-            CALL R8COPY(9,DC1,1,DC,1)
+            CALL DCOPY(9,DC1,1,DC,1)
 C
          ELSE
 C           IDENTIFICATION DE PLAMOM A PLAMO2
             N=3
             CALL LCEQVE(PLAMO2,PLAMOM)
-            CALL R8COPY(9,DC2,1,DC,1)
+            CALL DCOPY(9,DC2,1,DC,1)
 C
          ENDIF
          POINT1(1)=PLAMO1(1)

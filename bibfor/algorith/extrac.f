@@ -6,7 +6,7 @@
       CHARACTER*(*)     INTERP,     CRIT
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/06/2000   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ALGORITH  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,12 +46,12 @@ C
       PREC2 = PREC
       IF ( CRIT(1:7).EQ.'RELATIF') PREC2 = PREC * TI(1)
       IF ( ABS( TEMPS - TI(1) ).LE.PREC2 ) THEN
-         CALL R8COPY(NEQ,Y(1),1,XTRACT,1)
+         CALL DCOPY(NEQ,Y(1),1,XTRACT,1)
          GOTO 9999
       ENDIF
       IF ( CRIT(1:7).EQ.'RELATIF') PREC2 = PREC * TI(NBINST)
       IF ( ABS( TEMPS - TI(NBINST) ).LE.PREC2 ) THEN
-         CALL R8COPY(NEQ,Y((NBINST-1)*NEQ+1),1,XTRACT,1)
+         CALL DCOPY(NEQ,Y((NBINST-1)*NEQ+1),1,XTRACT,1)
          GOTO 9999
       ENDIF
 C
@@ -69,7 +69,7 @@ C        --- PAS D'INTERPOLATION ---
          DO 20 I = 2, NBINST-1
             IF ( CRIT(1:7).EQ.'RELATIF') PREC2 = PREC * TI(I)
             IF ( ABS( TEMPS - TI(I) ).LE.PREC2 ) THEN
-               CALL R8COPY(NEQ,Y((I-1)*NEQ+1),1,XTRACT,1)
+               CALL DCOPY(NEQ,Y((I-1)*NEQ+1),1,XTRACT,1)
                GOTO 9999
             ENDIF
  20      CONTINUE
@@ -80,9 +80,9 @@ C        --- INTERPOLATION LINEAIRE ---
          DO 30 I = 1, NBINST-1
             IF ( TEMPS.GE.TI(I) .AND. TEMPS.LT.TI(I+1) ) THEN
                ALPHA = ( TEMPS - TI(I) ) / ( TI(I+1) - TI(I) )
-               CALL R8COPY(NEQ,Y((I-1)*NEQ+1),1,XTRACT,1)
-               CALL R8SCAL(NEQ,(1.D0-ALPHA),XTRACT,1)
-               CALL R8AXPY(NEQ,ALPHA,Y(I*NEQ+1),1,XTRACT,1)
+               CALL DCOPY(NEQ,Y((I-1)*NEQ+1),1,XTRACT,1)
+               CALL DSCAL(NEQ,(1.D0-ALPHA),XTRACT,1)
+               CALL DAXPY(NEQ,ALPHA,Y(I*NEQ+1),1,XTRACT,1)
                GOTO 9999
             ENDIF
  30      CONTINUE

@@ -5,7 +5,7 @@
       REAL*8     A(LDA,N), RDIAG(N), ACNORM(N), WA(N)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PUBLIC  DATE 29/10/2003   AUTEUR BOYERE E.BOYERE 
+C MODIF PUBLIC  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
 C-----------------------------------------------------------------------
 C COPYRIGHT (C) ARGONNE NATIONAL LABORATORY. MINPACK PROJECT. MARCH 1980
 C               BURTON S. GARBOW, KENNETH E. HILLSTROM, JORGE J. MORE
@@ -74,7 +74,7 @@ C       WA IS A WORK ARRAY OF LENGTH N. IF PIVOT IS FALSE, THEN WA
 C         CAN COINCIDE WITH RDIAG.
 C-----------------------------------------------------------------------
       INTEGER  I, J, JP1, K, KMAX, MINMN
-      REAL*8   AJNORM,EPSMCH,ONE,P05,SUM,TEMP,ZERO,R8PREM,BLNRM2
+      REAL*8   AJNORM,EPSMCH,ONE,P05,SUM,TEMP,ZERO,R8PREM,DNRM2
 C
       DATA  ONE, P05, ZERO / 1.0D0, 5.0D-2, 0.0D0 /
 C     ------------------------------------------------------------------
@@ -86,7 +86,7 @@ C
 C     COMPUTE THE INITIAL COLUMN NORMS AND INITIALIZE SEVERAL ARRAYS.
 C
       DO 10 J = 1, N
-         ACNORM(J) = BLNRM2(M,A(1,J),1)
+         ACNORM(J) = DNRM2(M,A(1,J),1)
          RDIAG(J) = ACNORM(J)
          WA(J) = RDIAG(J)
          IF (PIVOT) IPVT(J) = J
@@ -120,7 +120,7 @@ C
 C        COMPUTE THE HOUSEHOLDER TRANSFORMATION TO REDUCE THE
 C        J-TH COLUMN OF A TO A MULTIPLE OF THE J-TH UNIT VECTOR.
 C
-         AJNORM = BLNRM2(M-J+1,A(J,J),1)
+         AJNORM = DNRM2(M-J+1,A(J,J),1)
          IF (AJNORM .EQ. ZERO) GO TO 100
          IF (A(J,J) .LT. ZERO) AJNORM = -AJNORM
          DO 50 I = J, M
@@ -146,7 +146,7 @@ C
             TEMP = A(J,K)/RDIAG(K)
             RDIAG(K) = RDIAG(K)*SQRT(MAX(ZERO,ONE-TEMP**2))
             IF (P05*(RDIAG(K)/WA(K))**2 .GT. EPSMCH) GO TO 80
-            RDIAG(K) = BLNRM2(M-J,A(JP1,K),1)
+            RDIAG(K) = DNRM2(M-J,A(JP1,K),1)
             WA(K) = RDIAG(K)
    80       CONTINUE
    90       CONTINUE

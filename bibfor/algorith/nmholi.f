@@ -2,7 +2,7 @@
      &                  IVF   , IDFDE , IMATE ,
      &                  INST  , GEOM  , DEPL  , CHLIM )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,7 +48,7 @@ C -------------------------------------------------------------------
 
       INTEGER KPG, NDIMSI
       REAL*8  EPS(6), POIDS, EPSNO, SY, M, AM, EPSH
-      REAL*8  DFDI(27,3), FBID(3,3), R, R8NRM2
+      REAL*8  DFDI(27,3), FBID(3,3), R, DNRM2
       REAL*8  RAC23
 
       CHARACTER*2 COD
@@ -78,7 +78,7 @@ C -- DEFORMATION
         EPS(1)=EPS(1)-EPSH
         EPS(2)=EPS(2)-EPSH
         EPS(3)=EPS(3)-EPSH
-        EPSNO = R8NRM2(NDIMSI, EPS,1)
+        EPSNO = DNRM2(NDIMSI, EPS,1)
 
 C - CALCUL DES TERME ELEMENTAIRES
 

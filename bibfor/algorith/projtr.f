@@ -7,7 +7,7 @@
 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/10/2004   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
 C TOLE CRP_21
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -108,7 +108,7 @@ C ----------------------------------------------------------------------
 C
       INTEGER K
       REAL*8  AP(3),AB(3),AC(3),BC(3),ABAC(3),LONG,SIGNE,COEFD
-      REAL*8  DENOM,KSI1,KSI2,KSI3,R8DOT,W(3),COORA2(3)
+      REAL*8  DENOM,KSI1,KSI2,KSI3,DDOT,W(3),COORA2(3)
       REAL*8  COORB2(3),COORC2(3),COORM2(3),B2A2(3),C2A2(3)
       REAL*8  LAB,LAC,LBC,ABSAC,ACSAB,ABSBC,ACSBC,LAMBDA,LAMBDB
       REAL*8  COEFA,COEFB,COEFC,COEFF,XNORM(3),LAMBDC
@@ -164,9 +164,9 @@ C
 C --- CALCUL DES COORDONNEES PARAMETRIQUES KSI1 ET KSI2 DE M DANS ABC
 C
          CALL PROVEC (AB,AC,ABAC)
-         CALL R8COPY (3,ABAC,1,NORM,1)
+         CALL DCOPY (3,ABAC,1,NORM,1)
 C
-         DENOM = R8DOT (3,ABAC,1,NORM,1)
+         DENOM = DDOT (3,ABAC,1,NORM,1)
 C
          IF (DENOM.EQ.0) THEN
             CALL UTMESS ('F','PROJTR_01','UNE MAILLE MAITRE A UNE '
@@ -174,8 +174,8 @@ C
          END IF
 C
          CALL PROVEC (AP,NORM,W)
-         KSI1 = - R8DOT (3,W,1,AC,1) / DENOM
-         KSI2 =   R8DOT (3,W,1,AB,1) / DENOM
+         KSI1 = - DDOT (3,W,1,AC,1) / DENOM
+         KSI2 =   DDOT (3,W,1,AB,1) / DENOM
          KSI3 = 1.D0 - KSI1 - KSI2
 C --- SAUVEGARDE DES VALEURS AVANT EVENTUEL RABATTEMENT
          KSI1P = KSI1
@@ -184,10 +184,10 @@ C --- SAUVEGARDE DES VALEURS AVANT EVENTUEL RABATTEMENT
 C --- ON RABAT EVENTUELLEMENT LA PROJECTION SUR L'ARETE
          IF ((KSI1.LT.0.D0).OR.(KSI2.LT.0.D0).OR.
      &           (KSI3.LT.0.D0)) THEN
-            ABSAC = R8DOT (3,AB,1,AC,1) / LAC
-            ACSAB = R8DOT (3,AB,1,AC,1) / LAB
-            ABSBC = R8DOT (3,AB,1,BC,1) / LBC
-            ACSBC = R8DOT (3,AC,1,BC,1) / LBC
+            ABSAC = DDOT (3,AB,1,AC,1) / LAC
+            ACSAB = DDOT (3,AB,1,AC,1) / LAB
+            ABSBC = DDOT (3,AB,1,BC,1) / LBC
+            ACSBC = DDOT (3,AC,1,BC,1) / LBC
             IF (KSI1.LT.0.D0) THEN 
                OUTSID(1) = ABS(KSI1)
             END IF
@@ -221,7 +221,7 @@ C
             NORM(K) = COORDM(K) - COORDP(K)
  50      CONTINUE
 
-         OLDJEU = SQRT(R8DOT(3,NORM,1,NORM,1))
+         OLDJEU = SQRT(DDOT(3,NORM,1,NORM,1))
 
          IF ((LISSA.EQ.0).AND.(MOYEN.EQ.0)) THEN
             LONG = ABAC(1)**2 + ABAC(2)**2 + ABAC(3)**2
@@ -381,10 +381,10 @@ C --- SAUVEGARDE DES VALEURS AVANT EVENTUEL RABATTEMENT
 C --- ON RABAT EVENTUELLEMENT LA PROJECTION SUR L'ARETE 
          IF ((KSI1.LT.0.D0).OR.(KSI2.LT.0.D0).OR.
      &       (KSI3.LT.0.D0)) THEN
-            ABSAC = R8DOT (3,AB,1,AC,1) / LAC
-            ACSAB = R8DOT (3,AB,1,AC,1) / LAB
-            ABSBC = R8DOT (3,AB,1,BC,1) / LBC
-            ACSBC = R8DOT (3,AC,1,BC,1) / LBC
+            ABSAC = DDOT (3,AB,1,AC,1) / LAC
+            ACSAB = DDOT (3,AB,1,AC,1) / LAB
+            ABSBC = DDOT (3,AB,1,BC,1) / LBC
+            ACSBC = DDOT (3,AC,1,BC,1) / LBC
             IF (KSI1.LT.0.D0) THEN 
                OUTSID(1) = ABS(KSI1)
             END IF
@@ -411,7 +411,7 @@ C
          DO 51 K = 1,3
             XNORM(K) = COORDM(K) - COORDP(K)
  51      CONTINUE
-         OLDJEU = SQRT(R8DOT(3,XNORM,1,XNORM,1))
+         OLDJEU = SQRT(DDOT(3,XNORM,1,XNORM,1))
 C
          IF ((LISSA.EQ.1).AND.(MOYEN.EQ.1)) THEN
              NORM(1) = COEF(1)*VLISSA(1)  + COEF(2)*VLISSA(4)  +

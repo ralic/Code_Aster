@@ -1,7 +1,7 @@
       SUBROUTINE PIPEDP(NDIM, TYPMOD, IMATE, EPSM, SIGM, VIM,
      &                  EPSP, EPSD, ELGEOM, A0, A1)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/12/2001   AUTEUR PBBHHPB P.BADEL 
+C MODIF ALGORITH  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,7 +50,7 @@ C ----------------------------------------------------------------------
       REAL*8      E, NU, LAMBDA, DEUXMU, GAMMA
       REAL*8      FC , FT , BETA
       REAL*8      A, B, C, D
-      REAL*8      R8NRM2
+      REAL*8      DNRM2
       REAL*8      UN, D23, D13, RACI2, DEUX, TROIS ,NEUF
       PARAMETER   ( UN   =  1.D0   )
       PARAMETER   ( DEUX =  2.D0   )
@@ -63,7 +63,7 @@ C ----------------------------------------------------------------------
       CHARACTER*8 NOMRES(3)
       REAL*8      VALRES(3)
 
-      REAL*8      R8DOT
+      REAL*8      DDOT
 
       INTEGER     NDT, NDI, NR, NVI, NMAT
       PARAMETER   ( NMAT = 90     )
@@ -130,11 +130,11 @@ C
  20   CONTINUE
  
 C     CRITERE DE TRACTION
-      P0 = D13*R8DOT(NDIMSI,PP,1,PP,1)-(D*FT)**2+D23*C*D*FT*TRSIGP
+      P0 = D13*DDOT(NDIMSI,PP,1,PP,1)-(D*FT)**2+D23*C*D*FT*TRSIGP
      &                                -C**2/NEUF*TRSIGP**2
-      P1 = D13*R8DOT(NDIMSI,PP,1,DD,1)+ D13*C*D*FT*TRSIGD
+      P1 = D13*DDOT(NDIMSI,PP,1,DD,1)+ D13*C*D*FT*TRSIGD
      &                                -C**2/NEUF*TRSIGP*TRSIGD
-      P2 = D13*R8DOT(NDIMSI,DD,1,DD,1)-C**2/NEUF*TRSIGD**2
+      P2 = D13*DDOT(NDIMSI,DD,1,DD,1)-C**2/NEUF*TRSIGD**2
       
       P0=P0/(D*FTP)**2
       P1=P1/(D*FTP)**2
@@ -142,11 +142,11 @@ C     CRITERE DE TRACTION
       
 C    CRITERE DE COMPRESSION      
 
-      Q0 = D13*R8DOT(NDIMSI,PP,1,PP,1)-(B*FC)**2+D23*A*B*FC*TRSIGP
+      Q0 = D13*DDOT(NDIMSI,PP,1,PP,1)-(B*FC)**2+D23*A*B*FC*TRSIGP
      &                                -A**2/NEUF*TRSIGP**2
-      Q1 = D13*R8DOT(NDIMSI,PP,1,DD,1)+ D13*A*B*FC*TRSIGD
+      Q1 = D13*DDOT(NDIMSI,PP,1,DD,1)+ D13*A*B*FC*TRSIGD
      &                                -A**2/NEUF*TRSIGP*TRSIGD
-      Q2 = D13*R8DOT(NDIMSI,DD,1,DD,1)-A**2/NEUF*TRSIGD**2
+      Q2 = D13*DDOT(NDIMSI,DD,1,DD,1)-A**2/NEUF*TRSIGD**2
       
       Q0=Q0/(B*FCP)**2
       Q1=Q1/(B*FCP)**2
@@ -175,8 +175,8 @@ C     ---------------------------------------------------------
                EPS1(K) = EPSP(K) + RAC2(1) * EPSD(K) - EPSM(K)
                EPS2(K) = EPSP(K) + RAC2(2) * EPSD(K) - EPSM(K)
  30         CONTINUE  
-            D1 = R8NRM2(NDIMSI, EPS1,1)
-            D2 = R8NRM2(NDIMSI, EPS2,1)
+            D1 = DNRM2(NDIMSI, EPS1,1)
+            D2 = DNRM2(NDIMSI, EPS2,1)
             IF (D1 .LE. D2) THEN
                 ETA = RAC2(1)
             ELSE
@@ -198,8 +198,8 @@ C     ---------------------------------------------------------
                EPS1(K) = EPSP(K) + RAC1(1) * EPSD(K) - EPSM(K)
                EPS2(K) = EPSP(K) + RAC1(2) * EPSD(K) - EPSM(K)
  40         CONTINUE  
-            D1 = R8NRM2(NDIMSI, EPS1,1)
-            D2 = R8NRM2(NDIMSI, EPS2,1)
+            D1 = DNRM2(NDIMSI, EPS1,1)
+            D2 = DNRM2(NDIMSI, EPS2,1)
             IF (D1 .LE. D2) THEN
                 ETA = RAC1(1)
             ELSE
@@ -227,8 +227,8 @@ C        LA DROITE COUPE LE CRITERE DE TRACTION
                   EPS1(K) = EPSP(K) + RAC1(1) * EPSD(K) - EPSM(K)
                   EPS2(K) = EPSP(K) + RAC1(2) * EPSD(K) - EPSM(K)
  50            CONTINUE  
-               D1 = R8NRM2(NDIMSI, EPS1,1)
-               D2 = R8NRM2(NDIMSI, EPS2,1)
+               D1 = DNRM2(NDIMSI, EPS1,1)
+               D2 = DNRM2(NDIMSI, EPS2,1)
                IF (D1 .LE. D2) THEN
                   ETA1 = RAC1(1)
             ELSE
@@ -257,8 +257,8 @@ C        LA DROITE COUPE LE CRITERE DE COMPRESSION
                   EPS1(K) = EPSP(K) + RAC2(1) * EPSD(K) - EPSM(K)
                   EPS2(K) = EPSP(K) + RAC2(2) * EPSD(K) - EPSM(K)
  60            CONTINUE  
-               D1 = R8NRM2(NDIMSI, EPS1,1)
-               D2 = R8NRM2(NDIMSI, EPS2,1)
+               D1 = DNRM2(NDIMSI, EPS1,1)
+               D2 = DNRM2(NDIMSI, EPS2,1)
                IF (D1 .LE. D2) THEN
                   ETA2 = RAC2(1)
                ELSE
@@ -283,8 +283,8 @@ C
                   EPS1(K) = EPSP(K) + ETA1 * EPSD(K) - EPSM(K)
                   EPS2(K) = EPSP(K) + ETA2 * EPSD(K) - EPSM(K)
  70            CONTINUE  
-               D1 = R8NRM2(NDIMSI, EPS1,1)
-               D2 = R8NRM2(NDIMSI, EPS2,1)
+               D1 = DNRM2(NDIMSI, EPS1,1)
+               D2 = DNRM2(NDIMSI, EPS2,1)
                IF (D1 .LE. D2) THEN
                   ETA = ETA1
                   A0 = - P2 * ETA**2 + P0
@@ -309,8 +309,8 @@ C
                   EPS1(K) = EPSP(K) + ETA1 * EPSD(K) - EPSM(K)
                   EPS2(K) = EPSP(K) + ETA2 * EPSD(K) - EPSM(K)
  80            CONTINUE  
-               D1 = R8NRM2(NDIMSI, EPS1,1)
-               D2 = R8NRM2(NDIMSI, EPS2,1)
+               D1 = DNRM2(NDIMSI, EPS1,1)
+               D2 = DNRM2(NDIMSI, EPS2,1)
                IF (D1 .LE. D2) THEN
                   ETA = ETA1
                   A0 = - P2 * ETA**2 + P0

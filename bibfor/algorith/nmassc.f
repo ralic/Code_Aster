@@ -15,7 +15,7 @@ C ----------------------------------------------------------------------
       REAL*8     COECYR(NBCCYR),COEEPR(NBCEPR),COEINT(NBCINT)
       INTEGER    ICAS
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/11/2004   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ALGORITH  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -152,7 +152,7 @@ C
      &    CODCYR(1).NE.'OK'.AND.
      &    CODEPR(1).NE.'OK'.AND.
      &    CODINT(1).NE.'OK') THEN     
-         CALL R8COPY (NBCLMA,VALLMA,1,COELMA,1)
+         CALL DCOPY (NBCLMA,VALLMA,1,COELMA,1)
          ICAS = 1
       ELSEIF (CODLMA(1).NE.'OK'.AND.
      &    CODLEM(1).EQ.'OK'.AND.
@@ -160,7 +160,7 @@ C
      &    CODCYR(1).NE.'OK'.AND.
      &    CODEPR(1).NE.'OK'.AND.
      &    CODINT(1).NE.'OK') THEN   
-         CALL R8COPY (NBCLEM,VALLEM,1,COELEM,1)
+         CALL DCOPY (NBCLEM,VALLEM,1,COELEM,1)
          ICAS = 2
       ELSEIF (CODLMA(1).NE.'OK'.AND.
      &    CODLEM(1).NE.'OK'.AND.
@@ -168,7 +168,7 @@ C
      &    CODCYR(1).NE.'OK'.AND.
      &    CODEPR(1).NE.'OK'.AND.
      &    CODINT(1).NE.'OK') THEN      
-         CALL R8COPY (NBCVIL,VALVIL,1,COEVIL,1)
+         CALL DCOPY (NBCVIL,VALVIL,1,COEVIL,1)
          ICAS = 3       
       ELSEIF (CODLMA(1).NE.'OK'.AND.
      &    CODLEM(1).NE.'OK'.AND.
@@ -176,7 +176,7 @@ C
      &    CODCYR(1).EQ.'OK'.AND.
      &    CODEPR(1).NE.'OK'.AND.
      &    CODINT(1).NE.'OK') THEN    
-         CALL R8COPY (NBCCYR,VALCYR,1,COECYR,1)
+         CALL DCOPY (NBCCYR,VALCYR,1,COECYR,1)
          ICAS = 4   
       ELSEIF (CODLMA(1).NE.'OK'.AND.
      &    CODLEM(1).NE.'OK'.AND.
@@ -184,7 +184,7 @@ C
      &    CODCYR(1).NE.'OK'.AND.
      &    CODEPR(1).EQ.'OK'.AND.
      &    CODINT(1).NE.'OK') THEN    
-         CALL R8COPY (NBCEPR,VALEPR,1,COEEPR,1)
+         CALL DCOPY (NBCEPR,VALEPR,1,COEEPR,1)
          ICAS = 5       
       ELSEIF (CODLMA(1).NE.'OK'.AND.
      &    CODLEM(1).NE.'OK'.AND.
@@ -192,7 +192,7 @@ C
      &    CODCYR(1).NE.'OK'.AND.
      &    CODEPR(1).NE.'OK'.AND.
      &    CODINT(1).EQ.'OK') THEN    
-         CALL R8COPY (NBCINT,VALINT,1,COEINT,1)
+         CALL DCOPY (NBCINT,VALINT,1,COEINT,1)
          ICAS = 6       
       ELSE
          CALL UTMESS ('F','NMASSC',

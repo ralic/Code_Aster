@@ -5,7 +5,7 @@
 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/10/2004   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -74,7 +74,7 @@ C
 C ----------------------------------------------------------------------
 
        INTEGER K,J
-       REAL*8 DENOM,R8DOT
+       REAL*8 DENOM,DDOT
        REAL*8 DIST,DIST1,DIST2,LAMBD1,LAMBD2,PREC
        REAL*8 COEF(3),VECSEG(3)
 
@@ -168,7 +168,7 @@ C --- CALCUL DU JEU ET DE LA DIRECTION DE PROJECTION (UNITAIRE)
        DO 30 K = 1,3
          NORM(K) = COORDM(K) - COORDP(K)
    30  CONTINUE
-       OLDJEU = SQRT(R8DOT(3,NORM,1,NORM,1))
+       OLDJEU = SQRT(DDOT(3,NORM,1,NORM,1))
        IF (NDIM.EQ.3) THEN
          VECSEG(1) = (COORDB(1)-COORDA(1))/SQRT(DENOM)
          VECSEG(2) = (COORDB(2)-COORDA(2))/SQRT(DENOM)
