@@ -5,7 +5,7 @@
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/10/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 08/11/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -105,7 +105,7 @@ C
 C       ----------------------------------------------------------------
         INTEGER         IMAT,   NDIM,   NDT, NDI, NR, NVI
 C
-        INTEGER         I, NCHAI, ICP
+        INTEGER         I, NCHAI, ICP, NBPHAS
 C
         INTEGER         ITMAX,  ICOMP, IREP
         INTEGER         NMAT,   IOPTIO, IDNR, NBMAT
@@ -282,9 +282,12 @@ C     POUR EVITER LES 1/0 DANS RKDVEC
       ENDIF
 C --  FIN   TRAITEMENT DE VENDOCHAB --
 
+C      POUR POLYCRISTAL
+      
+      NBPHAS=NBCOMM(1,1)
 
 
-      CALL GERPAS(COMP,MOD,IMAT,MATCST,NBCOMM,CPMONO,
+      CALL GERPAS(COMP,MOD,IMAT,MATCST,NBCOMM,CPMONO,NBPHAS,
      &              NVI,NMAT,VINF,DTIME,TOLER,YMFS,COTHE,
      &              COEFF,DCOTHE,DCOEFF,E,NU,ALPHA,COEL,PGL,
      &              SIGI,EPSD,DETOT,TPERD,DTPER,TPEREF,BZ,X)

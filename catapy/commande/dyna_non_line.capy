@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 28/09/2004   AUTEUR LAMARCHE S.LAMARCHE 
+#& MODIF COMMANDE  DATE 09/11/2004   AUTEUR NICOLAS O.NICOLAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -42,7 +42,7 @@ DYNA_NON_LINE=OPER(nom="DYNA_NON_LINE",op= 70,sd_prod=evol_noli,reentrant='f',
            NOEUD           =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
            GROUP_NO        =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
          ),
-         SOUS_STRUC      =FACT(statut='f',min=01,
+         SOUS_STRUC      =FACT(statut='f',min=01,max='**',
                 regles=(UN_PARMI('TOUT','MAILLE'),),
                 CAS_CHARGE  =SIMP(statut='o',typ='TXM' ),
                 TOUT        =SIMP(statut='f',typ='TXM',into=("OUI",) ),

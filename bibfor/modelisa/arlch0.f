@@ -1,7 +1,7 @@
-      SUBROUTINE ARLCH0(DIME,IAN,IAC,NNC,ILGN,MX,PREC,B,NT)
+      SUBROUTINE ARLCH0(DIME,IAN,IAC,NNC,ILGN,MX,PREC,EQ,B,NT)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 02/04/2002   AUTEUR RATEAU G.RATEAU 
+C MODIF MODELISA  DATE 08/11/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,7 +21,7 @@ C
 C                                                                       
 C ======================================================================
 C ----------------------------------------------------------------------
-C      COMPTE NOMBRE DE TERMES NON-NEGLIGEABLES ET ADIMENSIONEMENT 
+C      COMPTE NOMBRE DE TERMES NON-NEGLIGEABLES ET ADIMENSIONNEMENT 
 C             DES RELATIONS LINEAIRES DE COUPLAGE ARLEQUIN
 C ----------------------------------------------------------------------
 C VARIABLES D'ENTREE 
@@ -33,9 +33,10 @@ C INTEGER   ILGN(NNC) : LONGUEUR CUMULEE COLLECTION NOEUDS COLONNES DE B
 C REAL*8    MX(2,NNC) : MAXIMA EN VALEUR ABSOLUE SUIVANT LIGNES DE B
 C                       POUR TRANSLATION ET ROTATION (CF ARLMAX) 
 C REAL*8    PREC      : PRECISION RELATIVE SUR LES TERMES DE B
+C LOGICAL   EQ(5,NNC) : EQUATIONS SELECTIONNEES
 C
 C VARIABLE D'ENTREE / SORTIE
-C REAL*8    B(*)      : VALEURS DE LA MATRICE ARLEQUIN MORSE (CF ARLCAL)
+C REAL*8    B(*)      : VALEURS DE LA MATRICE ARLEQUIN MORSE (CF ARLCPL)
 C INTEGER   NT        : NOMBRE DE TERMES NON-NEGLIGEABLES DANS LES 
 C                       RELATIONS LINEAIRES DE COUPLAGE ARLEQUIN
 C ----------------------------------------------------------------------
@@ -44,10 +45,14 @@ C ----------------------------------------------------------------------
 
 C --- VARIABLES
       INTEGER  DIME,NNC,ILGN(*),NT
-      INTEGER  P0,P1,P2,I,J,K,L
+      INTEGER  P0,P1,P2,I,J,K,L,DR,OF
       REAL*8   B(*),PREC,MX(2,*),R
-      LOGICAL  IAN,IAC
+      LOGICAL  IAN,IAC,EQ(5,*)
 
+C --- PARCOURS DES LIGNES
+
+      DR = 2*DIME - 3 
+      OF = DIME - 1
       P1 = ILGN(1)
       P2 = 0
 
@@ -55,51 +60,78 @@ C --- VARIABLES
 
         P0 = P1
         P1 = ILGN(I+1)
-
-        DO 10 J = 1, P1-P0
+         
+        DO 20 J = 1, P1-P0
 
 C ------- COUPLAGE TRANSLATION / TRANSLATION
 
-          P2 = P2 + 1
-          R = B(P2)/MX(1,I)
-          B(P2) = R
-          IF (ABS(R).GT.PREC) NT = NT + DIME
-
-C ------- COUPLAGE TRANSLATION / ROTATION
-
-          IF (IAN) THEN
-            DO 20 K = 1, DIME
-              P2 = P2 + 1
-              R = B(P2)/MX(1,I)
-              B(P2) = R
-              IF (ABS(R).GT.PREC) NT = NT + DIME-1 
- 20         CONTINUE
-          ENDIF
+          DO 30 K = 1, DIME
+            IF (.NOT.EQ(K,I)) THEN
+              P2 = P2 + DIME
+            ELSE
+              DO 40 L = 1, DIME
+                P2 = P2 + 1
+                R = B(P2)/MX(1,I)
+                B(P2) = R
+                IF (ABS(R).GT.PREC) NT = NT + 1
+ 40           CONTINUE
+            ENDIF
+ 30       CONTINUE
 
 C ------- COUPLAGE ROTATION / TRANSLATION
 
           IF (IAC) THEN
-            DO 30 K = 2, DIME
-              DO 30 L = 1, DIME
-                P2 = P2 + 1
-                R = B(P2)/MX(2,I)
-                B(P2) = R
-                IF (ABS(R).GT.PREC) NT = NT + 1
- 30         CONTINUE
-
-C --------- COUPLAGE ROTATION / ROTATION
-
-            IF (IAN) THEN
-              DO 40 K = 2, DIME
-                DO 40 L = 1, 2*DIME-3
+            DO 50 K = 2, DIME
+              IF (.NOT.EQ(OF+K,I)) THEN
+                P2 = P2 + DIME
+              ELSE
+                DO 60 L = 1, DIME
                   P2 = P2 + 1
                   R = B(P2)/MX(2,I)
                   B(P2) = R
                   IF (ABS(R).GT.PREC) NT = NT + 1
- 40           CONTINUE
+ 60             CONTINUE
+              ENDIF
+ 50         CONTINUE
+          ENDIF
+
+C ------- COUPLAGE TRANSLATION / ROTATION
+
+          IF (IAN) THEN
+
+            DO 70 K = 1, DIME
+              IF (.NOT.EQ(K,I)) THEN
+                P2 = P2 + DR
+              ELSE
+                DO 80 L = 1, DR
+                  P2 = P2 + 1
+                  R = B(P2)/MX(1,I)
+                  B(P2) = R
+                  IF (ABS(R).GT.PREC) NT = NT + 1 
+ 80             CONTINUE
+              ENDIF
+ 70         CONTINUE
+
+C --------- COUPLAGE ROTATION / ROTATION
+
+            IF (IAC) THEN
+              DO 90 K = 2, DIME
+                IF (.NOT.EQ(OF+K,I)) THEN
+                  P2 = P2 + DR
+                ELSE
+                  DO 100 L = 1, DR
+                    P2 = P2 + 1
+                    R = B(P2)/MX(2,I)
+                    B(P2) = R
+                    IF (ABS(R).GT.PREC) NT = NT + 1
+ 100              CONTINUE
+                ENDIF
+ 90           CONTINUE
             ENDIF
 
           ENDIF
+ 
+ 20     CONTINUE
 
  10   CONTINUE
 

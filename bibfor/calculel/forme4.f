@@ -1,7 +1,7 @@
-      SUBROUTINE FORME4(TYPEMA,W,NNO,NCMP)
+      SUBROUTINE FORME4(M,TYPEMA,W,NNO,NCMP)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
+C MODIF CALCULEL  DATE 08/11/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -25,6 +25,7 @@ C ----------------------------------------------------------------------
 C     CALCUL DES DERIVEES QUATRIEMES DES FONCTIONS DE FORME
 C ----------------------------------------------------------------------
 C     VARIABLES D'ENTREE
+C     REAL*8      M(*)      : POINT SUR MAILLE DE REFERENCE (X,[Y],[Z])
 C     CHARACTER*8 TYPEMA     : TYPE DE LA MAILLE
 C       
 C     VARIABLES DE SORTIE
@@ -36,7 +37,7 @@ C     INTEGER     NCMP       : NOMBRE DE COMPOSANTES
 C
 C     VARIABLES
       CHARACTER*8 TYPEMA
-      REAL*8      W(*)
+      REAL*8      M(*),W(*)
       INTEGER     NNO,NCMP
 
       IF (TYPEMA(1:5).EQ.'QUAD9') THEN              

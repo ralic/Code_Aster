@@ -1,7 +1,7 @@
-      SUBROUTINE ARLAS4(DIM,DD,CNX,CNXC,T1,EP,NN1,IM1,NO2,NN2,IJ,B0,B)
+      SUBROUTINE ARLAS4(DIM,L2,NORM,TANG,MA1,NN1,MA2,NN2,IJ,CK,C)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 02/04/2002   AUTEUR RATEAU G.RATEAU 
+C MODIF MODELISA  DATE 08/11/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,234 +24,203 @@ C ----------------------------------------------------------------------
 C  ASSEMBLAGE MATRICE ELEMENTAIRE ARLEQUIN MAILLE COQUE / MAILLE COQUE
 C ----------------------------------------------------------------------
 C VARIABLES D'ENTREE 
-C INTEGER   DIM              : DIMENSION DE L'ESPACE             
-C INTEGER   DD               : LONGUEUR MATRICE POINT (CF ARLFAC)
-C INTEGER   CNX(*)           : COLLECTION CONNECTIVITE DU MAILLAGE
-C INTEGER   CNXC(*)          : LONGUEUR CUMULEE ASSOCIEE A CNX
-C REAL*8    T1(DIM,DIM-1,*)  : TANGENTES LISSEES COQUE (CF LISNOR)
-C REAL*8    EP               : EPAISSEUR COQUE
-C INTEGER   NN1              : NOMBRE DE COLONNES DE B0
-C INTEGER   IM1              : MAILLE LIGNE DANS B (INDEX CNXC)
-C REAL*8    NO2              : COORDONNEES NOEUDS MAILLE COLONNE DANS B
-C INTEGER   NN2              : NOMBRE DE LIGNES DE B0             
-C INTEGER   IJ(NN2,NN1)      : POINTEURS DANS B (CF ARLAS0)
+C INTEGER  DIM                    : DIMENSION DE L'ESPACE             
+C REAL*8   L2                     : PARAMETRE L*L/2
+C REAL*8   NORM(DIM,*)            : NORMALES LISSEES COQUE (CF LISNOR)
+C REAL*8   TANG(DIM,DIM-1,*)      : TANGENTES LISSEES COQUE (CF LISNOR)
+C INTEGER  MA1(*)                 : CONNECTIVITE MAILLE 1
+C INTEGER  NN1                    : NOMBRE DE NOEUDS MAILLE 1
+C INTEGER  MA2(*)                 : CONNECTIVITE MAILLE 2
+C INTEGER  NN2                    : NOMBRE DE NOEUDS MAILLE 2   
+C INTEGER  IJ(NN2/2,NN1/2)        : POINTEURS DANS C (CF ARLAS0)
 C
 C VARIABLE D'ENTREE/SORTIE
-C REAL*8    B0(NN2,NN1)      : MATRICE ELEMENTAIRE ARLEQUIN
-C REAL*8    B(*)             : MATRICE ARLEQUIN MORSE (CF ARLFAC)
-C ----------------------------------------------------------------------
-C                   ATTENTION : B0 EST REMISE A ZERO
+C REAL*8   CK(*)                  : MATRICES ELEMENTAIRES (CF ARLTE)
+C REAL*8   C(*)                   : MATRICE MORSE (CF ARLFAC)
+C
+C MATRICE PONCTUELLE DANS C : (X1.X2, X1.Y2, [X1.Z2], Y1.X2, ...,
+C                              T1.X2, T1.Y2, [T1.Z2, T2.X2, ...],
+C        (N X X1.*2).1, [(N X X1.*2).2, ...,] (N X Y1.*2).1, ...,
+C        (N X T1.*2).1, [(N X T1.*2).2, ..., (N X T2.*2).1, ...] )
 C ----------------------------------------------------------------------
 
       IMPLICIT NONE
       
-C --- FONCTIONS
-      REAL*8  R8NRM2
-
 C --- VARIABLES
-      INTEGER DIM,DD,CNX(*),CNXC(*),NN1,IM1,NN2,NR1,NR2,IJ(NN2/2,*)
-      INTEGER NOCOQ1(2,9),NOCOQ2(2,9),N1,P0,P1,P2,Q,I,J,I1,I2,J1,J2
-      REAL*8  T1(DIM*(DIM-1),*),NO2(*),EP,B0(NN2,*),B(*)
-      REAL*8  N(3),T2(54),R11,R12,R21,R22,R
+      INTEGER DIM,NN1,NN2,IJ(NN2/2,*),MA1(*),MA2(*),NR1,NR2,NN12,IN1,IN2
+      INTEGER D,D2,DT,DR,DTR,D2N2,NOCOQ1(2,9),NOCOQ2(2,9),I1,I2,J1,J2
+      INTEGER I,J,K,P,P1,P2,P3,P4,P5,P6,Q,Q1,Q2,Q3,Q4,Q5,Q6
+      REAL*8  NORM(DIM,*),TANG(DIM*(DIM-1),*),CK(*),C(*)
+      REAL*8  C1(9),B2(9),C2(6),B3(9),C3(9),B4(9),C4(6)
+      REAL*8  L2,TR1,TR2,TR3,TR4,R1,R2,R3,R4,S1,S2,S3,S4
+
+      IF (DIM.EQ.2) THEN
+        D2 = 4
+        DT = 2
+        DR = 2
+        DTR = 1
+        D = 9
+      ELSE
+        D2 = 9
+        DT = 6
+        DR = 9
+        DTR = 6
+        D = 30
+      ENDIF
 
       NR1 = NN1/2
       NR2 = NN2/2
+      NN12 = NN1*NN2
+      D2N2 = D2*NN2
 
-      P0 = CNXC(IM1)
+C --- ASSEMBLAGE DE LA MATRICE ELEMENTAIRE CK
 
       CALL NOCOQU(DIM,NR1,NOCOQ1)
       CALL NOCOQU(DIM,NR2,NOCOQ2)
 
-C --- COQUE 2D
+      DO 10 I = 1, NR1
 
-      IF (DIM.EQ.2) THEN
+        IN1 = MA1(I)
 
-        CALL TANGNT(NO2,NR2,DIM,0,1,T2)
+        I1 = NOCOQ1(2,I)
+        I2 = NOCOQ1(1,I)
 
-        P2 = 1
+        P5 = NN2*(I1-1)
+        P6 = NN2*(I2-1)
+        Q5 = NN12 + D2N2*(I1-1)
+        Q6 = NN12 + D2N2*(I2-1)
 
         DO 10 J = 1, NR2
 
-          R = EP / R8NRM2(2,T2(P2),1)
+          Q = 1 + D*(IJ(J,I)-1)
 
-          N(1) = -T2(P2+1)*R
-          N(2) =  T2(P2)*R
+          IN2 = MA2(J)
 
-          P2 = P2 + 2
+          J1 = NOCOQ2(2,J)
+          J2 = NOCOQ2(1,J)
 
-          J1 = NOCOQ2(1,J)
-          J2 = NOCOQ2(2,J)
+          P1 = P5 + J1 
+          P2 = P6 + J1
+          P3 = P5 + J2
+          P4 = P6 + J2 
 
-          P1 = P0
+          Q1 = Q5 + D2*(J1-1)
+          Q2 = Q6 + D2*(J1-1)
+          Q3 = Q5 + D2*(J2-1)
+          Q4 = Q6 + D2*(J2-1)
 
-          DO 10 I = 1, NR1
+C ------- CALCUL DE LA TRACE DE CK++, CK-+, CK+- ET CK--
 
-            N1 = CNX(P1)
-            P1 = P1 + 1
+          TR1 = 0.D0
+          TR2 = 0.D0
+          TR3 = 0.D0
+          TR4 = 0.D0
 
-            I1 = NOCOQ1(1,I)
-            I2 = NOCOQ1(2,I)
+          P = 1
+          DO 20 K = 1, DIM
 
-            R11 = B0(J1,I1)
-            R21 = B0(J2,I1)
-            R12 = B0(J1,I2)
-            R22 = B0(J2,I2)
+            TR1 = TR1 + CK(Q1+P)
+            TR2 = TR2 + CK(Q2+P)
+            TR3 = TR3 + CK(Q3+P)
+            TR4 = TR4 + CK(Q4+P)
 
-            B0(J1,I1) = 0.D0
-            B0(J2,I1) = 0.D0
-            B0(J1,I2) = 0.D0
-            B0(J2,I2) = 0.D0
+            P = P + DIM + 1
 
-            Q = 1 + DD*(IJ(J,I)-1)
-
-            R = R22 + R21 + R12 + R11
-            B(Q) = B(Q) + R
-            Q = Q + 1
-
-            R = R22 + R21 - R12 - R11
-            CALL R8AXPY(2,R,N,1,B(Q),1)
-            Q = Q + 2
-            
-            R = R22 - R21 + R12 - R11 
-            CALL R8AXPY(2,R,T1(1,N1),1,B(Q),1)
-            Q = Q + 2
-
-            R = R22 - R21 - R12 + R11
-            B(Q) = B(Q) + R*(N(1)*T1(2,N1) - N(2)*T1(1,N1))
-            Q = Q + 1
-
- 10     CONTINUE
-            
-C --- COQUE FACETTE
-        
-      ELSEIF ((NR2.EQ.3).OR.(NR2.EQ.4)) THEN
-
-        CALL TANGNT(NO2,NR2,DIM,1,1,T2)
-
-        N(1) = T2(2)*T2(6) - T2(5)*T2(3)
-        N(2) = T2(3)*T2(4) - T2(6)*T2(1)
-        N(3) = T2(1)*T2(5) - T2(4)*T2(2)
-
-        R = EP / R8NRM2(3,N,1)
-        CALL R8SCAL(3,R,N,1)
-
-        DO 20 I = 1, NR1
-
-          N1 = CNX(P0)
-          P0 = P0 + 1
-
-          I1 = NOCOQ1(1,I)
-          I2 = NOCOQ1(2,I)
+ 20       CONTINUE
           
-          DO 20 J = 1, NR2
+C ------- CALCUL DES MATRICES PONCTUELLES C1, C2, C3 ET C4
 
-            J1 = NOCOQ2(1,J)
-            J2 = NOCOQ2(2,J)
-            
-            R11 = B0(J1,I1)
-            R21 = B0(J2,I1)
-            R12 = B0(J1,I2)
-            R22 = B0(J2,I2)
+          DO 30 K = 1, D2
 
-            B0(J1,I1) = 0.D0
-            B0(J2,I1) = 0.D0
-            B0(J1,I2) = 0.D0
-            B0(J2,I2) = 0.D0
+            Q1 = Q1 + 1
+            Q2 = Q2 + 1
+            Q3 = Q3 + 1
+            Q4 = Q4 + 1
 
-            Q = 1 + DD*(IJ(J,I)-1)
+            S1 = CK(Q1)
+            S2 = CK(Q2)
+            S3 = CK(Q3)
+            S4 = CK(Q4)
 
-            R = R22 + R21 + R12 + R11
-            B(Q) = B(Q) + R
+            C1(K) = L2*(S1+S2+S3+S4)
+            B2(K) = L2*(S1-S2+S3-S4)
+            B3(K) = L2*(S1+S2-S3-S4)
+            B4(K) = L2*(S1-S2-S3+S4)
+
+ 30       CONTINUE
+
+          S1 = CK(P1)
+          S2 = CK(P2)
+          S3 = CK(P3)
+          S4 = CK(P4)
+
+          R1 = S1 + S2 + S3 + S4 + L2*(TR1+TR2+TR3+TR4)
+          R2 = S1 - S2 + S3 - S4 + L2*(TR1-TR2+TR3-TR4)
+          R3 = S1 + S2 - S3 - S4 + L2*(TR1+TR2-TR3-TR4)
+          R4 = S1 - S2 - S3 + S4 + L2*(TR1-TR2-TR3+TR4)
+ 
+          P = 1
+          DO 40 K = 1, DIM
+
+            C1(P) = C1(P) + R1
+            B2(P) = B2(P) + R2
+            B3(P) = B3(P) + R3
+            B4(P) = B4(P) + R4
+
+            P = P + DIM + 1
+
+ 40       CONTINUE  
+
+          CALL MMPROD(B2,DIM,0,DIM,0,DIM,TANG(1,IN1),DIM,0,0,DIM-1,C2)
+          CALL MMPROD(B4,DIM,0,DIM,0,DIM,TANG(1,IN1),DIM,0,0,DIM-1,B2)
+
+          IF (DIM.EQ.2) THEN
+
+            R1 = NORM(1,IN2)
+            R2 = NORM(2,IN2)
+
+            C3(1) = R1*B3(2) - R2*B3(1)
+            C3(2) = R1*B3(4) - R2*B3(3)
+            C4(1) = R1*B2(2) - R2*B2(1)
+
+          ELSE
+
+            P = 1
+            DO 50 K = 1, DIM
+              CALL PROVEC(NORM(1,IN2),B3(P),C3(P))
+              P = P + DIM
+ 50         CONTINUE
+
+            P = 1
+            DO 60 K = 2, DIM
+              CALL PROVEC(NORM(1,IN2),B2(P),C4(P))
+              P = P + DIM
+ 60         CONTINUE
+
+          ENDIF
+
+C ------- ASSEMBLAGE DES MATRICES PONCTUELLES
+
+          DO 70 K = 1, D2
+            C(Q) = C(Q) + C1(K)
             Q = Q + 1
+ 70       CONTINUE
 
-            R = R22 + R21 - R12 - R11
-            CALL R8AXPY(3,R,N,1,B(Q),1)
-            Q = Q + 3
-            
-            R = R22 - R21 + R12 - R11 
-            CALL R8AXPY(6,R,T1(1,N1),1,B(Q),1)
-            Q = Q + 6
+          DO 80 K = 1, DT
+            C(Q) = C(Q) + C2(K)
+            Q = Q + 1
+ 80       CONTINUE
 
-            R = R22 - R21 - R12 + R11
-            B(Q  ) = B(Q  ) + R*(N(2)*T1(3,N1) - N(3)*T1(2,N1))
-            B(Q+1) = B(Q+1) + R*(N(3)*T1(1,N1) - N(1)*T1(3,N1))
-            B(Q+2) = B(Q+2) + R*(N(1)*T1(2,N1) - N(2)*T1(1,N1))
-            B(Q+3) = B(Q+3) + R*(N(2)*T1(6,N1) - N(3)*T1(5,N1))
-            B(Q+4) = B(Q+4) + R*(N(3)*T1(4,N1) - N(1)*T1(6,N1))
-            B(Q+5) = B(Q+5) + R*(N(1)*T1(5,N1) - N(2)*T1(4,N1))
-            Q = Q + 6
+          DO 90 K = 1, DR
+            C(Q) = C(Q) + C3(K)
+            Q = Q + 1
+ 90       CONTINUE
 
- 20     CONTINUE
+          DO 100 K = 1, DTR
+            C(Q) = C(Q) + C4(K)
+            Q = Q + 1
+ 100      CONTINUE
 
-C --- COQUE VOLUMIQUE
-
-      ELSE
-
-        CALL TANGNT(NO2,NR2,DIM,0,1,T2)
-
-        DO 30 J = 1, NR2
-
-          N(1) = T2(P2+1)*T2(P2+5) - T2(P2+4)*T2(P2+2)
-          N(2) = T2(P2+2)*T2(P2+3) - T2(P2+5)*T2(P2  )          
-          N(3) = T2(P2  )*T2(P2+4) - T2(P2+3)*T2(P2+1)
-
-          R = EP / R8NRM2(3,N,1)
-          CALL R8SCAL(3,R,N,1)
-
-          P2 = P2 + 6
-
-          J1 = NOCOQ2(1,J)
-          J2 = NOCOQ2(2,J)
-
-          P1 = P0
-
-          DO 30 I = 1, NR1
-
-            N1 = CNX(P1)
-            P1 = P1 + 1
-
-            I1 = NOCOQ1(1,I)
-            I2 = NOCOQ1(2,I)
-
-            R11 = B0(J1,I1)
-            R21 = B0(J2,I1)
-            R12 = B0(J1,I2)
-            R22 = B0(J2,I2)
-
-            B0(J1,I1) = 0.D0
-            B0(J2,I1) = 0.D0
-            B0(J1,I2) = 0.D0
-            B0(J2,I2) = 0.D0
-
-            Q = 1 + DD*(IJ(J,I)-1)
-
-            IF (J.NE.NR2) THEN
-          
-              R = R22 + R21 + R12 + R11
-              B(Q) = B(Q) + R
-              Q = Q + 1
-
-              R = R22 + R21 - R12 - R11
-              CALL R8AXPY(3,R,N,1,B(Q),1)
-              Q = Q + 3
-
-            ENDIF
-
-            R = R22 - R21 + R12 - R11 
-            CALL R8AXPY(6,R,T1(1,N1),1,B(Q),1)
-            Q = Q + 6
-
-            R = R22 - R21 - R12 + R11
-            B(Q  ) = B(Q  ) + R*(N(2)*T1(3,N1) - N(3)*T1(2,N1))
-            B(Q+1) = B(Q+1) + R*(N(3)*T1(1,N1) - N(1)*T1(3,N1))
-            B(Q+2) = B(Q+2) + R*(N(1)*T1(2,N1) - N(2)*T1(1,N1))
-            B(Q+3) = B(Q+3) + R*(N(2)*T1(6,N1) - N(3)*T1(5,N1))
-            B(Q+4) = B(Q+4) + R*(N(3)*T1(4,N1) - N(1)*T1(6,N1))
-            B(Q+5) = B(Q+5) + R*(N(1)*T1(5,N1) - N(2)*T1(4,N1))
-            Q = Q + 6
-
- 30     CONTINUE
-
-      ENDIF
+ 10   CONTINUE
 
       END

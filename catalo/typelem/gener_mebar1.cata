@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 11/08/2004   AUTEUR CIBHHPD S.VANDENBERGHE 
+%& MODIF TYPELEM  DATE 09/11/2004   AUTEUR SMICHEL S.MICHEL-PONNELLE 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -118,14 +118,14 @@ OPTION__
                                      EEFGEGA  PCONTMR  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER
                                      CTEMPSR  PINSTMR  CTEMPSR  PINSTPR  CMATERC  PMATERC  NTEMPER  PTEMPMR
                                      NTEMPER  PTEMPPR  CTEREFE  PTEREF   ZVARIPG  PVARIMR  ZVARIPG  PVARIMP
-                                                         ECORR_R  PCORRMR  ECORR_R  PCORRPR
+                                     ECORR_R  PCORRMR  ECORR_R  PCORRPR
                               OUT__  ECODRET  PCODRET  EEFGEGA  PCONTPR  MMATUUR  PMATUUR  ZVARIPG  PVARIPR
                                      MVECTUR  PVECTUR
     FULL_MECA_ELAS      248   IN__   CCAGNBA  PCAGNBA  CCAORIE  PCAORIE  CCARCRI  PCARCRI  CCOMPOR  PCOMPOR
                                      EEFGEGA  PCONTMR  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER
                                      CTEMPSR  PINSTMR  CTEMPSR  PINSTPR  CMATERC  PMATERC  NTEMPER  PTEMPMR
-                                     NTEMPER  PTEMPPR  CTEREFE  PTEREF   ZVARIPG  PVARIMR  ECORR_R  PCORRMR
-                                                         ECORR_R  PCORRPR
+                                     NTEMPER  PTEMPPR  CTEREFE  PTEREF   ZVARIPG  PVARIMR  ZVARIPG  PVARIMP 
+                                     ECORR_R  PCORRMR  ECORR_R  PCORRPR
                               OUT__  ECODRET  PCODRET  EEFGEGA  PCONTPR  MMATUUR  PMATUUR  ZVARIPG  PVARIPR
                                      MVECTUR  PVECTUR
     INDU_MUTU           -1    IN__   XXXXXX   XXXXXX

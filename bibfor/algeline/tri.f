@@ -1,7 +1,7 @@
       SUBROUTINE TRI(CLEF,TAB,NTAB,N)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 02/04/2002   AUTEUR RATEAU G.RATEAU 
+C MODIF ALGELINE  DATE 08/11/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,7 +39,7 @@ C ----------------------------------------------------------------------
 C --- PARAMETRES
       INTEGER BLOCMX, NPILE
       PARAMETER (BLOCMX = 14)
-      PARAMETER (NPILE = 19)
+      PARAMETER (NPILE = 59)
 
 C --- VARIABLES
       INTEGER N,NTAB,CLEF(*),TAB(N,*)
@@ -59,7 +59,7 @@ C --- DECOUPAGE
 
       CALL TRIRAP(CLEF,TAB,NTAB,N,G,D,M)
       
-      IF ((M-G).LT.(D-M)) THEN
+      IF ((M-G).GT.(D-M)) THEN
         GS = G
         DS = M - 1
         G  = M + 1

@@ -1,7 +1,7 @@
       SUBROUTINE FETCRF(SDFET1)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 23/08/2004   AUTEUR DURAND C.DURAND 
+C MODIF ELEMENTS  DATE 09/11/2004   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -68,8 +68,8 @@ C DECLARATION VARIABLES LOCALES
      &             NBNOI3,NBNOG,NBCHAR,MULTC
       CHARACTER*8  K8BID,K8BUFF,NOMSD(10)
       CHARACTER*19 SDFETI
-C      CHARACTER*24 NOMSDD,NOMSDE
-      CHARACTER*24 NOMSDA,NOMSDB,NOMSDI,NOMSDG,NOMSDM,NOMSDH,NOMSDJ
+      CHARACTER*24 NOMSDA,NOMSDB,NOMSDI,NOMSDG,NOMSDM,NOMSDH,NOMSDJ,
+     &             NOMSLN,NOMSLI,NOMSLM
       CHARACTER*32 JEXNOM
       
       INTEGER      NBID,ITMP,JVALE,NBGRMN,IALIK8,IALII1,IALII2,
@@ -79,10 +79,10 @@ C      CHARACTER*24 NOMSDD,NOMSDE
      &             LINOMA,IALSMA,IND,JNOMA,JPRNM,NEC,N,INO,DDLC,
      &             IALSK,NUMSD,IALSPO,IPOS,IAJADR,JTMP,IALSTR,IALSTB,
      &             JADRI,JADRJ,IALSFG,NBMATO,NBVM,NGMA(100),NMA(100),
-     &             NBRD(100),NBMABD(100),IALSML,IALSMD,IALSCR
+     &             NBRD(100),NBMABD(100),IALSML,IALSMD,IALSCR,NBMAMA
       CHARACTER*4  K4TMP
       CHARACTER*8  LSTGMA(100),LSTMA(100),KTMP,NOM,MA,K8B,NOMGMA,NOMO,
-     &             LSTBRD(100),NOMCHA(01)
+     &             LSTBRD(100),NOMCHA(2)
       CHARACTER*16 CONCEP,CMD,OPTION, MOTCLE, TYPMCL, MOTFAC
       CHARACTER*19 LIGRMO
       CHARACTER*24 NOMNOE,GRPNOE,COOVAL,LISNO,LISNOM,NOMREF
@@ -96,16 +96,18 @@ C CORPS DU PROGRAMME
 
 C INITIALISATIONS
       SDFETI=SDFET1
-      NOMREF=SDFETI//'.REFE'            
-      NOMSDM=SDFETI//'.DIME'      
+      NOMREF=SDFETI//'.FREF'            
+      NOMSDM=SDFETI//'.FDIM'      
       NOMSDA=SDFETI//'.FETA'
       NOMSDB=SDFETI//'.FETB'
-C      NOMSDD=SDFETI//'.FETD'
-C      NOMSDE=SDFETI//'.FETE'
       NOMSDI=SDFETI//'.FETI'
       NOMSDG=SDFETI//'.FETG'
       NOMSDH=SDFETI//'.FETH'
       NOMSDJ=SDFETI//'.FETJ'
+
+      NOMSLN=SDFETI//'.FLIN'
+      NOMSLI=SDFETI//'.FLII'
+      NOMSLM=SDFETI//'.FLIM'
 
 C --- RECONSTRUCTION DES NOMS JEVEUX DU CONCEPT MODELE
       CALL GETVID(' ','MODELE',1,1,1,NOMO,NBVM)
@@ -118,11 +120,13 @@ C CREATION DES DIFFERENTS ATTRIBUTS DE LA S.D. SD_FETI
 C .REFE
 
 C NBRE DE CHARGE
-      NBCHAR=1
+      NBCHAR=4
 
 C LISTE DES CHARGES
       NOMCHA(1)='CH1'
-
+      NOMCHA(2)='CH2'
+      NOMCHA(3)='CH3'
+      NOMCHA(4)='CH4'
       INTBUF=NBCHAR+1
       CALL WKVECT(NOMREF,'G V K8',INTBUF,JADR)
       ZK8(JADR)=NOMO
@@ -487,148 +491,6 @@ C            --- PERMUTATION DES VALEURS ---
 
       CALL JXVERI('MESSAGE',' ')
 
-
-C ----------------------------------------------------------------------
-C CONSTRUCTION DES LISTES DES NOEUDS D'INTERFACE, DE LEUR MULTIPLICITE
-C   (IE LES NOEUDS PRESENTS AU MOINS DEUX FOIS DANS LA LISTE PRECEDENTE)
-C   ET DE LA LISTE DES SD AUXQUELS ILS APPARTIENNENT :
-C    ZI(IALSNO-1+K)  , K=1,NBFETE  : LISTE DES NOEUDS D'INTERFACE
-C    ZI(IALSMU-1+K)  , K=1,NBFETE  : LISTE DE LEUR MULTIPLICITE
-C    ZI(IALSMA-1+KK) , KK=1,(SOMME DES PRECEDENTS) : LISTE DES SD
-C ----------------------------------------------------------------------
-
-C Note AA : Ancienne version
-C       CALL WKVECT('&&FETCRF.LST_ORDO ','V V I',NB,IALSNO)
-C       CALL WKVECT('&&FETCRF.LST_MULT ','V V I',NB,IALSMU)
-C       CALL WKVECT('&&FETCRF.LST_GMA  ','V V I',NB,IALSMA)
-C 
-C       WRITE(6,*) '**************************'
-C       K=1
-C       KK=1
-C       DO 28 I = 1,NB
-C         JJ=1
-C         DO 29 J = KK,NB
-C           IF ( ZI(IALINO-1+I).EQ.ZI(IALINO-1+J) ) THEN
-C             IF (I.NE.J) THEN
-C               WRITE(6,*) '-------------'
-C               WRITE(6,*) 'IDEM=',ZI(IALINO-1+I),ZI(LINOMA-1+I),I
-C               WRITE(6,*) 'IDEM=',ZI(IALINO-1+J),ZI(LINOMA-1+J),J
-C C             AJOUT DU GMA OU DES GMA
-C              1. 1ER NOEUD DE LA LISTE : ON AJOUTE LES DEUX PREMIERS SD
-C               IF (KK.EQ.1) THEN
-C                 ZI(IALSMA-1+KK)=ZI(LINOMA-1+I)
-C                 ZI(IALSMA-1+KK+1)=ZI(LINOMA-1+J)
-C 
-C                 WRITE(6,*) 'bla1',KK
-C 
-C             WRITE(6,*) 'ZI(IALINO-1+I)=  ',ZI(IALINO-1+I)
-C             WRITE(6,*) 'ZI(LINOMA-1+I)= ',ZI(LINOMA-1+I)
-C             WRITE(6,*) 'ZI(IALSPO-1+I)=',ZI(IALSPO-1+I)
-C                 JADR=ZI(IAJADR-1+ZI(LINOMA-1+I))
-C             WRITE(6,*) 'JADR=',JADR
-C             WRITE(6,*) 'NOEUD=',-1*ABS(ZI(JADR+2*ZI(IALSPO-1+I)-1-1))
-C                 ZI(JADR+2*ZI(IALSPO-1+I)-1-1)=
-C      &            -1*ABS(ZI(JADR+2*ZI(IALSPO-1+I)-1-1))
-C             WRITE(6,*) 'ZI(IALINO-1+J)=  ',ZI(IALINO-1+J)
-C             WRITE(6,*) 'ZI(LINOMA-1+J)= ',ZI(LINOMA-1+J)
-C             WRITE(6,*) 'ZI(IALSPO-1+J)=',ZI(IALSPO-1+J)
-C                 JADR=ZI(IAJADR-1+ZI(LINOMA-1+J))
-C             WRITE(6,*) 'JADR=',JADR
-C             WRITE(6,*) 'NOEUD=',-1*ABS(ZI(JADR+2*ZI(IALSPO-1+J)-1-1))
-C                 ZI(JADR+2*ZI(IALSPO-1+J)-1-1)=
-C      &            -1*ABS(ZI(JADR+2*ZI(IALSPO-1+J)-1-1))
-C                 KK=KK+2
-C                 JJ=JJ+1
-C              2. N-IEME APPARITION : ON COMPLETE LA LISTE DES SD (FETJ)
-C               ELSE
-C                 WRITE(6,*) '--- ',ZI(IALSNO-1+K-1),ZI(IALINO-1+I)
-C C               2.1 LE NOEUD EST DEJA PRIS EN COMPTE
-C                 IF ( ZI(IALSNO-1+K-1).EQ.ZI(IALINO-1+I) ) THEN
-C                   ZI(IALSMA-1+KK)=ZI(LINOMA-1+J)
-C                   WRITE(6,*) 'bla2',KK
-C 
-C             WRITE(6,*) 'ZI(IALINO-1+I)=  ',ZI(IALINO-1+I)
-C             WRITE(6,*) 'ZI(LINOMA-1+I)= ',ZI(LINOMA-1+I)
-C             WRITE(6,*) 'ZI(IALSPO-1+I)=',ZI(IALSPO-1+I)
-C                   JADR=ZI(IAJADR-1+ZI(LINOMA-1+I))
-C             WRITE(6,*) 'JADR=',JADR
-C             WRITE(6,*) 'NOEUD=',-1*ABS(ZI(JADR+2*ZI(IALSPO-1+I)-1-1))
-C                   ZI(JADR+2*ZI(IALSPO-1+I)-1-1)=
-C      &              -1*ABS(ZI(JADR+2*ZI(IALSPO-1+I)-1-1))
-C 
-C             WRITE(6,*) 'ZI(IALINO-1+J)=  ',ZI(IALINO-1+J)
-C             WRITE(6,*) 'ZI(LINOMA-1+J)= ',ZI(LINOMA-1+J)
-C             WRITE(6,*) 'ZI(IALSPO-1+J)=',ZI(IALSPO-1+J)
-C                   JADR=ZI(IAJADR-1+ZI(LINOMA-1+J))
-C             WRITE(6,*) 'JADR=',JADR
-C             WRITE(6,*) 'NOEUD=',-1*ABS(ZI(JADR+2*ZI(IALSPO-1+J)-1-1))
-C                   ZI(JADR+2*ZI(IALSPO-1+J)-1-1)=
-C      &              -1*ABS(ZI(JADR+2*ZI(IALSPO-1+J)-1-1))
-C 
-C                   KK=KK+1
-C C               2.2 LE NOEUD N'EST PAS DEJA PRIS EN COMPTE
-C                 ELSE
-C                   ZI(IALSMA-1+KK)=ZI(LINOMA-1+I)
-C                   ZI(IALSMA-1+KK+1)=ZI(LINOMA-1+J)
-C                   WRITE(6,*) 'bla3',KK
-C 
-C             WRITE(6,*) 'ZI(IALINO-1+I)=  ',ZI(IALINO-1+I)
-C             WRITE(6,*) 'ZI(LINOMA-1+I)= ',ZI(LINOMA-1+I)
-C             WRITE(6,*) 'ZI(IALSPO-1+I)=',ZI(IALSPO-1+I)
-C                   JADR=ZI(IAJADR-1+ZI(LINOMA-1+I))
-C             WRITE(6,*) 'JADR=',JADR
-C             WRITE(6,*) 'NOEUD=',-1*ABS(ZI(JADR+2*ZI(IALSPO-1+I)-1-1))
-C                   ZI(JADR+2*ZI(IALSPO-1+I)-1-1)=
-C      &              -1*ABS(ZI(JADR+2*ZI(IALSPO-1+I)-1-1))
-C 
-C             WRITE(6,*) 'ZI(IALINO-1+J)=  ',ZI(IALINO-1+J)
-C             WRITE(6,*) 'ZI(LINOMA-1+J)= ',ZI(LINOMA-1+J)
-C             WRITE(6,*) 'ZI(IALSPO-1+J)=',ZI(IALSPO-1+J)
-C                   JADR=ZI(IAJADR-1+ZI(LINOMA-1+J))
-C             WRITE(6,*) 'JADR=',JADR
-C             WRITE(6,*) 'NOEUD=',-1*ABS(ZI(JADR+2*ZI(IALSPO-1+J)-1-1))
-C                   ZI(JADR+2*ZI(IALSPO-1+J)-1-1)=
-C      &              -1*ABS(ZI(JADR+2*ZI(IALSPO-1+J)-1-1))
-C 
-C                   KK=KK+2
-C                   JJ=JJ+1
-C                 ENDIF
-C               ENDIF
-C C              JJ=JJ+1
-C               WRITE(6,*) '+++++++++++++'
-C             ENDIF
-C           ELSEIF ( (JJ.GT.1).AND.
-C      &           ( ZI(IALINO-1+K-1).NE.ZI(IALINO-1+I) ) ) THEN
-C             ZI(IALSNO-1+K)=ZI(IALINO-1+I)
-C             ZI(IALSMU-1+K)=JJ
-C 
-C             IF (JJ.GT.2) THEN
-C               DO 39 II=1,JJ
-C                 WRITE(6,*) 'OK=',ZI(IALSMA-1+KK-JJ+II-1)
-C             
-C    39         CONTINUE
-C             
-C             ENDIF
-C 
-C             WRITE(6,*) 'ZI(IALSNO-1+K)=',ZI(IALSNO-1+K)
-C             WRITE(6,*) 'JJ=',JJ
-C             WRITE(6,*) 'I=',I
-C             WRITE(6,*) 'J=',J
-C 
-C 
-C             K=K+1
-C             JJ=1
-C 
-C             GOTO 28
-C           ENDIF
-C    29   CONTINUE
-C    28 CONTINUE
-
-
-
-
-
-
 C     TABLEAU NBSDxNBSD CONTENANT LE NB DE NOEUD D'INTERFACE ENTRE 2 SD
       CALL WKVECT('&&FETCRF.LST_TBL  ','V V I',NBSD*NBSD,IALSTB)
       DO 49 I = 1,NBSD
@@ -982,7 +844,6 @@ C                   SI LE SD COURANT EST PLUS FAIBLE QUE LE 2IEME SD
         CALL JEECRA(JEXNOM(NOMSDG,K8BUFF),'LONMAX',INTBUF,K8BID)
         CALL JEVEUO(JEXNOM(NOMSDG,K8BUFF),'E',JADR)
         DO 610 J=1,NN
-C C          ZI(JADR+J-1)=ZI(IALSFG-1+J)
           ZI(JADR+2*(J-1))  =ZI(IALSFG+2*(J-1))
           ZI(JADR+2*(J-1)+1)=ZI(IALSFG+2*(J-1)+1)
   610   CONTINUE                      
@@ -995,123 +856,91 @@ C FIN BOUCLE SUR LES SD
 
 
 C CREATION DES DIFFERENTS ATTRIBUTS DE LA S.D. SD_FETI
-C .DIME                 
+C .FDIM                 
 
 C     ON COMPTE LES MAILLES DE BORDS DANS LE TOTAL DES MAILLES
       DO 93 I=1,NBSD
         NBMATO=NBMATO+NBMABD(I)
   93  CONTINUE
 
+      CALL JELIRA(NOMO(1:8)//'.MAILLE','LONMAX',NBMAMA,K8B)
       CALL WKVECT(NOMSDM,'G V I',5,JADR)
       ZI(JADR)=NBSD
       ZI(JADR+1)=NBFETE
-      ZI(JADR+2)=NBMATO
+      ZI(JADR+2)=NBMAMA
       ZI(JADR+3)=NBFETE*2
       ZI(JADR+4)=NBNOTO
-            
       IF (NIV.GE.3) THEN 
              WRITE(IFM,*)
         WRITE(IFM,*)'DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD'      
         WRITE (IFM,*)'<FETCRF.F> CREATION OBJET JEVEUX ',NOMSDM 
       ENDIF 
 
-C C .FETA
-C C voir comment ajouter les mailles de peau
-C       CALL JECREC(NOMSDA,'G V I','NO','DISPERSE','VARIABLE',NBSD)
-C       DO 100 I=1,NBSD
-C         K8BUFF=NOMSD(I)
-C         CALL JECROC(JEXNOM(NOMSDA,K8BUFF))
-C C        INTBUF=NBMA(I)
-C         INTBUF=ZI(IANBMA-1+I)
-C         CALL JEECRA(JEXNOM(NOMSDA,K8BUFF),'LONMAX',INTBUF,K8BID)
-C         CALL JEVEUO(JEXNOM(NOMSDA,K8BUFF),'E',JADR)
-C         DO 90 J=1,INTBUF
-C C        ZI(JADR+J-1)=LISTMA(J,I)
-C           ZI(JADR+J-1)=ZI(IALIMA-1+J)
-C    90   CONTINUE                        
-C   100 CONTINUE
-C       IF (NIV.GE.3) 
-C      &  WRITE (IFM,*)'CREATION OBJET JEVEUX ',NOMSDA   
-  
-C C .FETB
-C       CALL JECREC(NOMSDB,'G V I','NO','DISPERSE','VARIABLE',NBSD)
-C       DO 200 I=1,NBSD
-C         K8BUFF=NOMSD(I)      
-C         CALL JECROC(JEXNOM(NOMSDB,K8BUFF))
-C            INTBUF=2*NBNO(I)
-C            CALL JEECRA(JEXNOM(NOMSDB,K8BUFF),'LONMAX',INTBUF,K8BID)
-C         CALL JEVEUO(JEXNOM(NOMSDB,K8BUFF),'E',JADR)
-C            DO 210 J=1,INTBUF
-C              ZI(JADR+J-1)=LISTNO(J,I)
-C   210   CONTINUE                      
-C   200 CONTINUE
-C       IF (NIV.GE.3) 
-C      &  WRITE (IFM,*)'CREATION OBJET JEVEUX ',NOMSDB   
-
-C C .FETD
-C       CALL JECREC(NOMSDD,'G V I','NO','DISPERSE','VARIABLE',NBSD)
-C       DO 300 I=1,NBSD
-C         K8BUFF=NOMSD(I)      
-C         CALL JECROC(JEXNOM(NOMSDD,K8BUFF))
-C       INTBUF=3*NBVO(I)
-C       CALL JEECRA(JEXNOM(NOMSDD,K8BUFF),'LONMAX',INTBUF,K8BID)
-C         CALL JEVEUO(JEXNOM(NOMSDD,K8BUFF),'E',JADR)
-C       DO 310 J=1,INTBUF
-C         ZI(JADR+J-1)=LISTCO(J,I)
-C   310   CONTINUE                      
-C   300 CONTINUE
-C       IF (NIV.GE.3) 
-C      &  WRITE (IFM,*)'CREATION OBJET JEVEUX ',NOMSDD   
-
-C C .FETE                 
-C       CALL WKVECT(NOMSDE,'G V I',NBFETE,JADR)
-C       DO 400 I=1,NBFETE
-C         ZI(JADR+I-1)=LISTFE(I)
-C   400 CONTINUE
-C       IF (NIV.GE.3) 
-C      &  WRITE (IFM,*)'CREATION OBJET JEVEUX ',NOMSDE   
-     
-C C .FETI
-C       NBNOI3=3*NBNOIN                
-C       CALL WKVECT(NOMSDI,'G V I',NBNOI3,JADR)
-C       DO 500 I=1,NBNOI3
-C         ZI(JADR+I-1)=LISTNI(I)
-C   500 CONTINUE
-C       IF (NIV.GE.3) 
-C      &  WRITE (IFM,*)'CREATION OBJET JEVEUX ',NOMSDI   
-
-
-C C .FETG
-C       CALL JECREC(NOMSDG,'G V I','NO','DISPERSE','VARIABLE',NBSD)
-C       DO 600 I=1,NBSD
-C         K8BUFF=NOMSD(I)      
-C         CALL JECROC(JEXNOM(NOMSDG,K8BUFF))
-C       INTBUF=2*NBPR(I)
-C       CALL JEECRA(JEXNOM(NOMSDG,K8BUFF),'LONMAX',INTBUF,K8BID)
-C         CALL JEVEUO(JEXNOM(NOMSDG,K8BUFF),'E',JADR)
-C       DO 610 J=1,INTBUF
-C         ZI(JADR+J-1)=LISTPR(J,I)
-C   610   CONTINUE                      
-C   600 CONTINUE
-C       IF (NIV.GE.3) 
-C      &  WRITE (IFM,*)'CREATION OBJET JEVEUX ',NOMSDG
 
 C.FETH
       CALL WKVECT(NOMSDH,'G V I',NBSD,JADR)
       DO 700 I=1,NBSD
-C        ZI(JADR+I-1)=NBDDL(I)
         ZI(JADR+I-1)=ZI(IALSK-1+I)
   700 CONTINUE
       IF (NIV.GE.3) 
      &  WRITE (IFM,*)'CREATION OBJET JEVEUX ',NOMSDH
               
-C       IF (NIV.GE.4)
-C      &  CALL UTIMSD(IFM,2,.FALSE.,.TRUE.,SDFETI(1:19),1,' ')
-C       IF (NIV.GE.3) THEN        
-C         WRITE(IFM,*)'EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE'
-C              WRITE(IFM,*)
-C       ENDIF
 
+C CORRECTION .FETH
+      ZI(JADR)=20
+      ZI(JADR+1)=14
+      ZI(JADR+2)=22
+      ZI(JADR+3)=14
+      
+C CREATION '.FLIN'
+      CALL JECREC(NOMSLN,'G V K24','NO','DISPERSE','VARIABLE',NBSD)
+
+      CALL JECROC(JEXNOM(NOMSLN,NOMSD(1)))
+      CALL JEECRA(JEXNOM(NOMSLN,NOMSD(1)),'LONMAX',2,K8BID)
+      CALL JEVEUO(JEXNOM(NOMSLN,NOMSD(1)),'E',JADR)
+      ZK24(JADR)='CH4     .CHME.LIGRE'
+      ZK24(JADR+1)='CH3     .CHME.LIGRE'
+      CALL JECROC(JEXNOM(NOMSLN,NOMSD(3)))
+      CALL JEECRA(JEXNOM(NOMSLN,NOMSD(3)),'LONMAX',2,K8BID)
+      CALL JEVEUO(JEXNOM(NOMSLN,NOMSD(3)),'E',JADR)
+      ZK24(JADR)='CH4     .CHME.LIGRE'
+      ZK24(JADR+1)='CH2     .CHME.LIGRE'      
+      
+C CREATION '.FLII'
+      CALL JECREC(NOMSLI,'G V I','NO','DISPERSE','VARIABLE',NBSD)
+
+      CALL JECROC(JEXNOM(NOMSLI,NOMSD(1)))
+      CALL JEECRA(JEXNOM(NOMSLI,NOMSD(1)),'LONMAX',4,K8BID)
+      CALL JEVEUO(JEXNOM(NOMSLI,NOMSD(1)),'E',JADR)
+      ZI(JADR)=4
+      ZI(JADR+1)=2
+      ZI(JADR+2)=1
+      ZI(JADR+3)=1      
+      CALL JECROC(JEXNOM(NOMSLI,NOMSD(3)))
+      CALL JEECRA(JEXNOM(NOMSLI,NOMSD(3)),'LONMAX',4,K8BID)
+      CALL JEVEUO(JEXNOM(NOMSLI,NOMSD(3)),'E',JADR)
+      ZI(JADR)=4
+      ZI(JADR+1)=2
+      ZI(JADR+2)=2
+      ZI(JADR+3)=2      
+                              
+C CREATION '.FLIM' (- NUMERO DES LIGRE.LIEL)
+      CALL JECREC(NOMSLM,'G V I','NO','DISPERSE','VARIABLE',NBSD)
+
+      CALL JECROC(JEXNOM(NOMSLM,NOMSD(1)))
+      CALL JEECRA(JEXNOM(NOMSLM,NOMSD(1)),'LONMAX',3,K8BID)
+      CALL JEVEUO(JEXNOM(NOMSLM,NOMSD(1)),'E',JADR)
+      ZI(JADR)=1
+      ZI(JADR+1)=2
+      ZI(JADR+2)=1
+      CALL JECROC(JEXNOM(NOMSLM,NOMSD(3)))
+      CALL JEECRA(JEXNOM(NOMSLM,NOMSD(3)),'LONMAX',4,K8BID)
+      CALL JEVEUO(JEXNOM(NOMSLM,NOMSD(3)),'E',JADR)
+      ZI(JADR)=3
+      ZI(JADR+1)=4
+      ZI(JADR+2)=1
+      ZI(JADR+3)=2
+                             
       CALL JXVERI('MESSAGE','FIN')
       CALL JEDEMA()
       END

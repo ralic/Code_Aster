@@ -1,22 +1,22 @@
       SUBROUTINE OP0150(IER)
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 03/11/2004   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF UTILITAI  DATE 09/11/2004   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
-C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
-C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_20 CRS_512
 C     LECTURE D'UN RESULTAT SUR FICHIER EXTERNE AU FORMAT
@@ -55,7 +55,7 @@ C 0.3. ==> VARIABLES LOCALES
       PARAMETER (NTYMAX=48)
 
       INTEGER LXLGUT
-      INTEGER NDIM, TYPGEO(NTYMAX),LETYPE
+      INTEGER NDIM,TYPGEO(NTYMAX),LETYPE
       INTEGER NBTYP,NNOTYP(NTYMAX)
       INTEGER RENUMD(NTYMAX)
 
@@ -107,7 +107,7 @@ C 0.3. ==> VARIABLES LOCALES
       CHARACTER*8 CHANOM,NOMGD
       INTEGER NUMPT,NUMORD,INUM
       INTEGER NBCMPV,IAUX
-C
+
       INTEGER IINST
       REAL*8 INST
 
@@ -137,35 +137,45 @@ C     -----------------------------------------------------------------
 
 
 C     --- FORMAT ---
-
       CALL GETVTX(' ','FORMAT',0,1,1,FORM,NFOR)
       CALL GETVIS(' ','UNITE',0,1,1,MFICH,N1)
       IF ((N1.GT.0) .AND. (FORM.NE.'MED')) THEN
         K16NOM = ' '
-        IF ( ULISOP ( MFICH, K16NOM ) .EQ. 0 )  THEN 
-          CALL ULOPEN ( MFICH,' ',' ','NEW','O')
-        ENDIF 
-      ENDIF
+        IF (ULISOP(MFICH,K16NOM).EQ.0) THEN
+          CALL ULOPEN(MFICH,' ',' ','NEW','O')
+        END IF
+      END IF
       CALL GETVTX(' ','NOM_FICHIER',0,1,1,FICH,N1)
 
-C     --- RESULTAT , CHAMPS ---
 
-      CALL GETVTX(' ','NOM_CHAM',0,1,100,LINOCH,NBNOCH)
-      IF (NBNOCH.LT.0) THEN
-        CALL UTMESS('F',NOMPRO,'LE NOMBRE DE CHAMPS A LIRE '//
-     &              'EST SUPERIEUR A 100')
+C     ---  LISTE DES CHAMPS A LIRE ---
+      CALL GETFAC('FORMAT_MED',N1)
+      IF (N1.GT.0) THEN
+        NBNOCH = N1
+        IF (NBNOCH.GT.100) THEN
+          NBNOCH = -NBNOCH
+        ELSE
+          DO 10,I = 1,NBNOCH
+            CALL GETVTX('FORMAT_MED','NOM_CHAM',I,1,1,LINOCH(I),N1)
+   10     CONTINUE
+        END IF
+      ELSE
+        CALL GETVTX(' ','NOM_CHAM',0,1,100,LINOCH,NBNOCH)
       END IF
+      IF (NBNOCH.LT.0) CALL UTMESS('F',NOMPRO,
+     &                  'LE NOMBRE DE CHAMPS A LIRE EST SUPERIEUR A 100'
+     &                             )
+
 
 C     --- NOMBRE DE VARIABLES INTERNES A LIRE ---
-
       CALL GETVIS(' ','NB_VARI',0,1,1,NBVARI,NVAR)
 
-C     --- MAILLAGE ---
 
+C     --- MAILLAGE ---
       CALL GETVID(' ','MAILLAGE',0,1,1,NOMA,NBV)
 
-C     --- MODELE ---
 
+C     --- MODELE ---
       CALL GETVID(' ','MODELE',0,1,1,NOMO,NBV)
       IF (NBV.NE.0) THEN
         LIGREL = NOMO//'.MODELE'
@@ -173,13 +183,13 @@ C     --- MODELE ---
         NOMA = ZK8(LNOMA)
       END IF
 
-C     --- QUELS SONT LES INSTANTS A RELIRE ---
 
+C     --- QUELS SONT LES INSTANTS A RELIRE ---
       CALL GETVTX(' ','TOUT_ORDRE',0,1,1,K8B,NTO)
       IF (NTO.NE.0) THEN
         ACCES = 'TOUT_ORDRE'
         NBORDR = 100
-        GO TO 10
+        GO TO 20
       END IF
 
       CALL GETVIS(' ','NUME_ORDRE',0,1,0,IBID,NNU)
@@ -189,7 +199,7 @@ C     --- QUELS SONT LES INSTANTS A RELIRE ---
         NBORDR = -NNU
         CALL WKVECT(LISTIS//'.VALE','V V I',NBORDR,JNUME)
         CALL GETVIS(' ','NUME_ORDRE',0,1,NBORDR,ZI(JNUME),N1)
-        GO TO 10
+        GO TO 20
       END IF
 
       CALL GETVID(' ','LIST_ORDRE',0,1,1,LISTIS,NNU)
@@ -197,7 +207,7 @@ C     --- QUELS SONT LES INSTANTS A RELIRE ---
         ACCES = 'LIST_ORDRE'
         CALL JEVEUO(LISTIS//'.VALE','L',JNUME)
         CALL JELIRA(LISTIS//'.VALE','LONMAX',NBORDR,K8B)
-        GO TO 10
+        GO TO 20
       END IF
 
       CALL GETVR8(' ','INST',0,1,0,RBID,NIS)
@@ -207,7 +217,7 @@ C     --- QUELS SONT LES INSTANTS A RELIRE ---
         NBORDR = -NIS
         CALL WKVECT(LISTR8//'.VALE','V V R',NBORDR,JLIST)
         CALL GETVR8(' ','INST',0,1,NBORDR,ZR(JLIST),N1)
-        GO TO 10
+        GO TO 20
       END IF
 
       CALL GETVID(' ','LIST_INST',0,1,1,LISTR8,NIS)
@@ -215,7 +225,7 @@ C     --- QUELS SONT LES INSTANTS A RELIRE ---
         ACCES = 'LIST_INST'
         CALL JEVEUO(LISTR8//'.VALE','L',JLIST)
         CALL JELIRA(LISTR8//'.VALE','LONMAX',NBORDR,K8B)
-        GO TO 10
+        GO TO 20
       END IF
 
       CALL GETVR8(' ','FREQ',0,1,0,RBID,NIS)
@@ -225,7 +235,7 @@ C     --- QUELS SONT LES INSTANTS A RELIRE ---
         NBORDR = -NIS
         CALL WKVECT(LISTR8//'.VALE','V V R',NBORDR,JLIST)
         CALL GETVR8(' ','FREQ',0,1,NBORDR,ZR(JLIST),N1)
-        GO TO 10
+        GO TO 20
       END IF
 
       CALL GETVID(' ','LIST_FREQ',0,1,1,LISTR8,NIS)
@@ -233,10 +243,10 @@ C     --- QUELS SONT LES INSTANTS A RELIRE ---
         ACCES = 'LIST_FREQ'
         CALL JEVEUO(LISTR8//'.VALE','L',JLIST)
         CALL JELIRA(LISTR8//'.VALE','LONMAX',NBORDR,K8B)
-        GO TO 10
+        GO TO 20
       END IF
 
-   10 CONTINUE
+   20 CONTINUE
       NBORLU = NBORDR
 
 C     --- LECTURE DE LA PRECISION ET DU CRITERE ---
@@ -256,7 +266,7 @@ C     --- CREATION DE LA STRUCTURE DE DONNEES RESULTAT ---
 
 C- ON VERIFIE SI LE CHAMP DEMANDE EST COMPATIBLE AVEC LE TYPE DE RESUTAT
 
-      DO 20 ICH = 1,NBNOCH
+      DO 30 ICH = 1,NBNOCH
         CALL RSUTCH(RESU,LINOCH(ICH),1,NOMCH,IRET)
         IF (IRET.NE.0) THEN
           CALL UTDEBM('F',NOMCMD,'LE CHAMP DEMANDE EST INCOMPATIBLE'//
@@ -265,7 +275,7 @@ C- ON VERIFIE SI LE CHAMP DEMANDE EST COMPATIBLE AVEC LE TYPE DE RESUTAT
           CALL UTIMPK('L','     NOM DU CHAMP :',1,LINOCH(ICH))
           CALL UTFINM
         END IF
-   20 CONTINUE
+   30 CONTINUE
 
 
 
@@ -347,12 +357,12 @@ C     ================================
 
         CALL GETVTX(' ','NOM_FICHIER',0,1,1,FICH,NFIC)
         LL = LEN(FICH)
-        DO 30 I = 1,LL
-          IF (FICH(I:I).NE.' ') GO TO 30
+        DO 40 I = 1,LL
+          IF (FICH(I:I).NE.' ') GO TO 40
           LONG = I - 1
-          GO TO 40
-   30   CONTINUE
+          GO TO 50
    40   CONTINUE
+   50   CONTINUE
 C              1234567890123456
         DIR = 'DONNEES_ENSIGHT/'
         FIC80B = FICH
@@ -361,52 +371,52 @@ C              1234567890123456
 
 C  LECTURE DU FICHIER RESULTS (PAS DE TEMPS
 C                              ET FICHIERS GEOM ET PRES)
-        READ (99,'(3I8)',ERR=260,END=260,IOSTAT=IO) NSCAL,NVECT,
+        READ (99,'(3I8)',ERR=290,END=290,IOSTAT=IO) NSCAL,NVECT,
      &    NFLAG
-        READ (99,'(1I8)',ERR=260,END=260,IOSTAT=IO) NPAS
+        READ (99,'(1I8)',ERR=290,END=290,IOSTAT=IO) NPAS
 
         CALL WKVECT('&&'//NOMPRO//'.INST','V V R',NPAS,IPAS)
-        READ (99,'(6(E12.5))',ERR=260,END=260,
+        READ (99,'(6(E12.5))',ERR=290,END=290,
      &    IOSTAT=IO) (ZR(IPAS-1+I),I=1,NPAS)
         I1 = 0
         I2 = 0
         IF (NFLAG.GT.0) THEN
-          READ (99,'(2I8)',ERR=260,END=260,IOSTAT=IO) I1,I2
+          READ (99,'(2I8)',ERR=290,END=290,IOSTAT=IO) I1,I2
         ELSE
           IF (NPAS.NE.1) THEN
             CALL UTMESS('F',NOMPRO,'NFLAG ETANT EGAL A 0, ON NE '//
      &                  'PEUT PAS AVOIR PLUS D''UN INSTANT.')
           END IF
         END IF
-        READ (99,'(A80)',ERR=260,END=260,IOSTAT=IO) FIGEOM
+        READ (99,'(A80)',ERR=290,END=290,IOSTAT=IO) FIGEOM
         LONG = LXLGUT(FIGEOM)
         FIGEOM(1:16+LONG) = DIR//FIGEOM(1:LONG)
-        READ (99,'(A80)',ERR=260,END=260,IOSTAT=IO) FIPRES
+        READ (99,'(A80)',ERR=290,END=290,IOSTAT=IO) FIPRES
         LONG = LXLGUT(FIGEOM)
         FIPRES(1:16+LONG) = DIR//FIPRES(1:LONG)
 
         FIC80B = FIGEOM
         OPEN (98,FILE=FIGEOM)
 C  LECTURE DU FICHIER GEOM (NUMEROS DE NOEUDS)
-        READ (98,'(A80)',ERR=260,END=260,IOSTAT=IO) K80B
-        READ (98,'(A80)',ERR=260,END=260,IOSTAT=IO) K80B
-        READ (98,'(1I8)',ERR=260,END=260,IOSTAT=IO) NBNO
+        READ (98,'(A80)',ERR=290,END=290,IOSTAT=IO) K80B
+        READ (98,'(A80)',ERR=290,END=290,IOSTAT=IO) K80B
+        READ (98,'(1I8)',ERR=290,END=290,IOSTAT=IO) NBNO
         CALL WKVECT('&&'//NOMPRO//'.NUMNOEU','V V I',NBNO,INOPR)
-        DO 50 I = 1,NBNO
-          READ (98,'(1I8)',ERR=260,IOSTAT=IO) ZI(INOPR-1+I)
-   50   CONTINUE
+        DO 60 I = 1,NBNO
+          READ (98,'(1I8)',ERR=290,IOSTAT=IO) ZI(INOPR-1+I)
+   60   CONTINUE
 
         NSTAR = 0
         NCARLU = 0
         LL = LEN(FIPRES)
-        DO 60 I = 1,LL
+        DO 70 I = 1,LL
           IF (FIPRES(I:I).EQ.'*') THEN
             NSTAR = NSTAR + 1
           END IF
-          IF (NSTAR.GT.0 .AND. FIPRES(I:I).EQ.' ') GO TO 70
+          IF (NSTAR.GT.0 .AND. FIPRES(I:I).EQ.' ') GO TO 80
           NCARLU = NCARLU + 1
-   60   CONTINUE
    70   CONTINUE
+   80   CONTINUE
         LL = NCARLU
         IF (NSTAR.GE.8) THEN
           CALL UTDEBM('F',NOMCMD,
@@ -440,7 +450,7 @@ C       -- ON VERIFIE QUE LE CHAM_ELEM N'EST PAS TROP DYNAMIQUE :
 C  BOUCLE SUR LES PAS DE TEMPS ET LECTURE DES PRESSIONS
 C  ----------------------------------------------------
 
-        DO 210 ITPS = 1,NPAS
+        DO 220 ITPS = 1,NPAS
 
           I21 = I1 + (ITPS-1)*I2
           CALL CODENT(I21,'D0',CHAINE)
@@ -449,15 +459,15 @@ C  ----------------------------------------------------
           END IF
           FIC80B = FIPRES
           OPEN (97,FILE=FIPRES)
-          READ (97,'(A80)',ERR=260,END=260,IOSTAT=IO) K80B
+          READ (97,'(A80)',ERR=290,END=290,IOSTAT=IO) K80B
           CALL WKVECT('&&'//NOMPRO//'.PRES.'//CHAINE,'V V R',NBNO,IPRES)
           NLIG = NBNO/6
-          DO 80 I = 1,NLIG
+          DO 90 I = 1,NLIG
             READ (97,'(6(E12.5))') (ZR(IPRES-1+6* (I-1)+J),J=1,6)
-   80     CONTINUE
+   90     CONTINUE
           IREST = NBNO - 6*NLIG
           IF (IREST.GT.0) THEN
-            READ (97,'(6(E12.5))',ERR=260,END=260,
+            READ (97,'(6(E12.5))',ERR=290,END=290,
      &        IOSTAT=IO) (ZR(IPRES-1+6*NLIG+J),J=1,IREST)
           END IF
 
@@ -469,7 +479,7 @@ C  REMPLISSAGE DU .VALE DU CHAM_ELEM DE PRES_R
 
           IF (NDIM.GE.3) THEN
             NFACHA = 0
-            DO 140 IGR = 1,NBGR
+            DO 150 IGR = 1,NBGR
               IDEC = ZI(JCELD-1+ZI(JCELD-1+4+IGR)+8)
               TE = TYPELE(LIGRMO,IGR)
               CALL JENUNO(JEXNUM('&CATA.TE.NOMTE',TE),NOMTE)
@@ -481,42 +491,42 @@ C  REMPLISSAGE DU .VALE DU CHAM_ELEM DE PRES_R
      &            NOMTE.EQ.'MEGRDKT') THEN
                 NBELGR = NBELEM(LIGRMO,IGR)
                 CALL JEVEUO(JEXNUM(NOLIEL,IGR),'L',LIEL)
-                DO 130 IEL = 1,NBELGR
+                DO 140 IEL = 1,NBELGR
                   IMA = ZI(LIEL-1+IEL)
                   CALL JEVEUO(JEXNUM(CONNEX,IMA),'L',IADNO)
                   CALL JELIRA(JEXNUM(CONNEX,IMA),'LONMAX',NNO,KBID)
-                  DO 90 INO = 1,NNO
+                  DO 100 INO = 1,NNO
                     II = INDIIS(ZI(INOPR),ZI(IADNO-1+INO),1,NBNO)
-                    IF (II.EQ.0) GO TO 110
-   90             CONTINUE
+                    IF (II.EQ.0) GO TO 120
+  100             CONTINUE
 
 C   LA MAILLE IMA EST CHARGEE EN PRESSION
 
                   NFACHA = NFACHA + 1
                   IAD = JCELV - 1 + IDEC - 1 + NNO* (IEL-1)
-                  DO 100 I = 1,NNO
+                  DO 110 I = 1,NNO
                     II = INDIIS(ZI(INOPR),ZI(IADNO-1+I),1,NBNO)
                     ZR(IAD+I) = ZR(IPRES-1+II)
-  100             CONTINUE
-                  GO TO 130
   110             CONTINUE
+                  GO TO 140
+  120             CONTINUE
 
 C   LA MAILLE IMA N'EST PAS CHARGEE EN PRESSION
 
                   IAD = JCELV - 1 + IDEC - 1 + NNO* (IEL-1)
-                  DO 120 I = 1,NNO
+                  DO 130 I = 1,NNO
                     ZR(IAD+I) = 0.0D0
-  120             CONTINUE
+  130             CONTINUE
 
-  130           CONTINUE
+  140           CONTINUE
               ELSE
                 CALL UTMESS('A',NOMPRO,'ELEMENT NON PREVU '//NOMTE)
               END IF
-  140       CONTINUE
+  150       CONTINUE
           END IF
 
           IF (NDIM.EQ.2 .OR. (NDIM.GE.3.AND.NFACHA.EQ.0)) THEN
-            DO 200 IGR = 1,NBGR
+            DO 210 IGR = 1,NBGR
               IDEC = ZI(JCELD-1+ZI(JCELD-1+4+IGR)+8)
               TE = TYPELE(LIGRMO,IGR)
               CALL JENUNO(JEXNUM('&CATA.TE.NOMTE',TE),NOMTE)
@@ -525,36 +535,36 @@ C   LA MAILLE IMA N'EST PAS CHARGEE EN PRESSION
      &            NOMTE.EQ.'MEPLSE3' .OR. NOMTE.EQ.'MEAXSE3') THEN
                 NBELGR = NBELEM(LIGRMO,IGR)
                 CALL JEVEUO(JEXNUM(NOLIEL,IGR),'L',LIEL)
-                DO 190 IEL = 1,NBELGR
+                DO 200 IEL = 1,NBELGR
                   IMA = ZI(LIEL-1+IEL)
                   CALL JEVEUO(JEXNUM(CONNEX,IMA),'L',IADNO)
                   CALL JELIRA(JEXNUM(CONNEX,IMA),'LONMAX',NNO,KBID)
-                  DO 150 INO = 1,NNO
+                  DO 160 INO = 1,NNO
                     II = INDIIS(ZI(INOPR),ZI(IADNO-1+INO),1,NBNO)
-                    IF (II.EQ.0) GO TO 170
-  150             CONTINUE
+                    IF (II.EQ.0) GO TO 180
+  160             CONTINUE
 
 C   LA MAILLE IMA EST CHARGEE EN PRESSION
 
                   IAD = JCELV - 1 + IDEC - 1 + 2*NNO* (IEL-1)
-                  DO 160 I = 1,NNO
+                  DO 170 I = 1,NNO
                     II = INDIIS(ZI(INOPR),ZI(IADNO-1+I),1,NBNO)
                     ZR(IAD+2*I-1) = ZR(IPRES-1+II)
                     ZR(IAD+2*I) = 0.0D0
-  160             CONTINUE
-                  GO TO 190
   170             CONTINUE
+                  GO TO 200
+  180             CONTINUE
 
 C   LA MAILLE IMA N'EST PAS CHARGEE EN PRESSION
 
                   IAD = JCELV - 1 + IDEC - 1 + 2*NNO* (IEL-1)
-                  DO 180 I = 1,2*NNO
+                  DO 190 I = 1,2*NNO
                     ZR(IAD+I) = 0.0D0
-  180             CONTINUE
+  190             CONTINUE
 
-  190           CONTINUE
+  200           CONTINUE
               END IF
-  200       CONTINUE
+  210       CONTINUE
 
           END IF
 
@@ -578,182 +588,171 @@ C   LA MAILLE IMA N'EST PAS CHARGEE EN PRESSION
 
           CALL JEDETR('&&'//NOMPRO//'.PRES.'//CHAINE)
 
-  210   CONTINUE
+  220   CONTINUE
 
 
 
       ELSE IF (FORM.EQ.'MED') THEN
 C     =============================
-        CALL GETFAC('FORMAT_MED',N1)
-        IF (N1.NE.NBNOCH) THEN
-          CALL UTMESS('F','LIRE_RESU','OCCURENCES DE FORMAT_MED '//
-     &    'DIFFERENTES DU NOMBRE DE CHAMPS DEMANDES')
-        ENDIF
-        DO 220 I=1,NBNOCH
-           CALL GETVTX('FORMAT_MED','NOM_CHAM_MED',I,1,1,NOCHMD,N1)
+        DO 260 I = 1,NBNOCH
+          CALL GETVTX('FORMAT_MED','NOM_CHAM_MED',I,1,1,NOCHMD,N1)
 
-           IF (N1.EQ.0) THEN
-              CALL UTMESS('F','LIRE_RESU','NOM_CHAM_MED ? (SVP)')
-           END IF
+          IF (N1.EQ.0) THEN
+            CALL UTMESS('F','LIRE_RESU','NOM_CHAM_MED ? (SVP)')
+          END IF
 
-           CALL GETVTX('FORMAT_MED','NOM_CHAM',I,1,1,NOCH,N1)
-           IF ((TYPRES(1:9).EQ.'EVOL_THER').AND.
-     &                     (NOCH(1:4).NE.'TEMP')) THEN
-         CALL UTMESS('F','LIRE_RESU','EVOL_THER - CHAMP TEMP UNIQMT')
-           ENDIF
-           IF (NOCH(1:4).EQ.'TEMP')      THEN 
-               NOMGD  = 'TEMP_R  '
-               TYPCHA = 'NOEU    '
-           ELSEIF (NOCH(1:4).EQ.'DEPL')      THEN 
-               NOMGD  = 'DEPL_R  '
-               TYPCHA = 'NOEU    '
-           ELSEIF (NOCH(1:9).EQ.'SIEF_ELNO') THEN 
-               NOMGD  = 'SIEF_R'
-               TYPCHA = 'ELNO    '
-           ELSEIF (NOCH(1:9).EQ.'EPSA_ELNO') THEN 
-               NOMGD  = 'EPSA_R'
-               TYPCHA = 'ELNO    '
-           ELSEIF (NOCH(1:9).EQ.'VARI_ELNO') THEN 
-               NOMGD  = 'VARI_R'
-               TYPCHA = 'ELNO    '
-           ELSEIF (NOCH(1:4).EQ.'PRES')      THEN 
-               NOMGD  = 'PRES_R  '
-               TYPCHA = 'ELEM    '
-           ELSE
-               CALL UTMESS('F',NOMPRO,'CHAMP NON PREVU : '//NOCH)
-           ENDIF
+          CALL GETVTX('FORMAT_MED','NOM_CHAM',I,1,1,NOCH,N1)
+          IF ((TYPRES(1:9).EQ.'EVOL_THER') .AND.
+     &        (NOCH(1:4).NE.'TEMP')) THEN
+            CALL UTMESS('F','LIRE_RESU','EVOL_THER - CHAMP TEMP UNIQMT')
+          END IF
+          IF (NOCH(1:4).EQ.'TEMP') THEN
+            NOMGD = 'TEMP_R  '
+            TYPCHA = 'NOEU    '
+          ELSE IF (NOCH(1:4).EQ.'DEPL') THEN
+            NOMGD = 'DEPL_R  '
+            TYPCHA = 'NOEU    '
+          ELSE IF (NOCH(1:9).EQ.'SIEF_ELNO') THEN
+            NOMGD = 'SIEF_R'
+            TYPCHA = 'ELNO    '
+          ELSE IF (NOCH(1:9).EQ.'EPSA_ELNO') THEN
+            NOMGD = 'EPSA_R'
+            TYPCHA = 'ELNO    '
+          ELSE IF (NOCH(1:9).EQ.'VARI_ELNO') THEN
+            NOMGD = 'VARI_R'
+            TYPCHA = 'ELNO    '
+          ELSE IF (NOCH(1:4).EQ.'PRES') THEN
+            NOMGD = 'PRES_R  '
+            TYPCHA = 'ELEM    '
+          ELSE
+            CALL UTMESS('F',NOMPRO,'CHAMP NON PREVU : '//NOCH)
+          END IF
 
 C          ==> NOM DES COMPOSANTES VOULUES
- 
-           NCMPVA = '&&'//NOMPRO//'.'//LCMPVA
-           NCMPVM = '&&'//NOMPRO//'.'//LCMPVM
-           CALL GETVTX('FORMAT_MED','NOM_CMP_IDEM',I,1,1,REP,IAUX)
+
+          NCMPVA = '&&'//NOMPRO//'.'//LCMPVA
+          NCMPVM = '&&'//NOMPRO//'.'//LCMPVM
+          CALL GETVTX('FORMAT_MED','NOM_CMP_IDEM',I,1,1,REP,IAUX)
 
 C          ==> C'EST PAR IDENTITE DE NOMS
-           IF (IAUX.NE.0) THEN
-             IF (REP.EQ.'OUI') THEN
-               NBCMPV = 0
-             ELSE
-               CALL UTMESS('F',NOMPRO,
-     &                     'NOM_CMP_IDEM EST CURIEUX : '//REP)
-             END IF
-           ELSE
+          IF (IAUX.NE.0) THEN
+            IF (REP.EQ.'OUI') THEN
+              NBCMPV = 0
+            ELSE
+              CALL UTMESS('F',NOMPRO,'NOM_CMP_IDEM EST CURIEUX : '//REP)
+            END IF
+          ELSE
 
 C          ==> C'EST PAR ASSOCIATION DE LISTE
-  
-             CALL GETVTX('FORMAT_MED',LCMPVA,I,1,0,REP,IAUX)
-             IF (IAUX.LT.0) THEN
-               NBCMPV = -IAUX
-             END IF
 
-             CALL GETVTX('FORMAT_MED',LCMPVM,I,1,0,REP,IAUX)
-             IF (-IAUX.NE.NBCMPV) THEN
-               CALL UTMESS('F',NOMPRO,LCMPVA//' ET '//LCMPVM//
-     &                     ' : NOMBRE '//'DE COMPOSANTES INCOMPATIBLE.')
-             END IF
+            CALL GETVTX('FORMAT_MED',LCMPVA,I,1,0,REP,IAUX)
+            IF (IAUX.LT.0) THEN
+              NBCMPV = -IAUX
+            END IF
 
-             IF (NBCMPV.GT.0) THEN
-               CALL WKVECT(NCMPVA,'V V K8',NBCMPV,JCMPVA)
-               CALL GETVTX('FORMAT_MED',LCMPVA,I,1,NBCMPV,ZK8(JCMPVA),
-     &                     IAUX)
-               CALL WKVECT(NCMPVM,'V V K16',NBCMPV,JCMPVM)
-               CALL GETVTX('FORMAT_MED',LCMPVM,I,1,NBCMPV,ZK16(JCMPVM),
-     &                     IAUX)
-             END IF
+            CALL GETVTX('FORMAT_MED',LCMPVM,I,1,0,REP,IAUX)
+            IF (-IAUX.NE.NBCMPV) THEN
+              CALL UTMESS('F',NOMPRO,LCMPVA//' ET '//LCMPVM//
+     &                    ' : NOMBRE '//'DE COMPOSANTES INCOMPATIBLE.')
+            END IF
 
-           END IF
+            IF (NBCMPV.GT.0) THEN
+              CALL WKVECT(NCMPVA,'V V K8',NBCMPV,JCMPVA)
+              CALL GETVTX('FORMAT_MED',LCMPVA,I,1,NBCMPV,ZK8(JCMPVA),
+     &                    IAUX)
+              CALL WKVECT(NCMPVM,'V V K16',NBCMPV,JCMPVM)
+              CALL GETVTX('FORMAT_MED',LCMPVM,I,1,NBCMPV,ZK16(JCMPVM),
+     &                    IAUX)
+            END IF
 
-           CALL CODENT(MFICH,'G',SAUX08)
-           NOFIMD = 'fort.'//SAUX08
-           WRITE (IFM,*) '<',NOMPRO,'> NOM DU FICHIER MED : ',NOFIMD
+          END IF
+
+          CALL CODENT(MFICH,'G',SAUX08)
+          NOFIMD = 'fort.'//SAUX08
+          WRITE (IFM,*) '<',NOMPRO,'> NOM DU FICHIER MED : ',NOFIMD
 
 C                    12   345678   90123456789
-           PREFIX = '&&'//NOMPRO//'.MED'
-           CALL JEDETC('V',PREFIX,1)
+          PREFIX = '&&'//NOMPRO//'.MED'
+          CALL JEDETC('V',PREFIX,1)
 
 C     -- RECUPERATION DU NOMBRE DE PAS DE TEMPS DANS LE CHAMP
 C     --------------------------------------------
 
-           IF (TYPCHA(1:2).EQ.'NO') THEN
-             TYPENT  = EDNOEU
-             TYPGOM  = TYPNOE
-             CALL MDCHIN(NOFIMD,NOCHMD,TYPENT,TYPGOM,PREFIX,NPAS,IRET)
-             IF(NPAS.EQ.0)THEN
-               CALL UTMESS('A',NOMPRO,
-     &                     'CHAMP MED INTROUVABLE : '//NOCHMD)
-               GOTO 72
-             ENDIF
-             CALL JEVEUO(PREFIX//'.INST','L',IPAS)
-             CALL JEVEUO(PREFIX//'.NUME','L',INUM)
-C
+          IF (TYPCHA(1:2).EQ.'NO') THEN
+            TYPENT = EDNOEU
+            TYPGOM = TYPNOE
+            CALL MDCHIN(NOFIMD,NOCHMD,TYPENT,TYPGOM,PREFIX,NPAS,IRET)
+            IF (NPAS.EQ.0) THEN
+              CALL UTMESS('A',NOMPRO,'CHAMP MED INTROUVABLE : '//NOCHMD)
+              GO TO 240
+            END IF
+            CALL JEVEUO(PREFIX//'.INST','L',IPAS)
+            CALL JEVEUO(PREFIX//'.NUME','L',INUM)
+
 C CREATION D UN PROF_CHNO COMMUN A TOUS LES CHAM_NO
-C
-             CALL GCNCON('_',NPRFCN)
-             NOMPRN=NPRFCN//'.PROF_CHNO '
-C
-           ELSEIF (TYPCHA(1:2).EQ.'EL') THEN
-             CALL MDEXPM ( NOFIMD, NOMAMD, EXISTM, NDIM, IRET )
-             CALL LRMTYP ( NBTYP, NOMTYP,
-     &                     NNOTYP, TYPGEO, RENUMD )
-             TYPENT = EDMAIL
-             NOMPRN = ' '
-             DO 71 , LETYPE = 1 , NBTYP
-               IAUX    = RENUMD(LETYPE)
-               TYPGOM  = TYPGEO(IAUX)
-               CALL MDCHIN(NOFIMD,NOCHMD,TYPENT,TYPGOM,PREFIX,
-     &                     NPAS,IRET)
-               IF (NPAS.NE.0) THEN
-                 CALL JEVEUO(PREFIX//'.INST','L',IPAS)
-                 CALL JEVEUO(PREFIX//'.NUME','L',INUM)
-                 GOTO 72
-               ENDIF
- 71          CONTINUE
-           ENDIF
- 72        CONTINUE
+
+            CALL GCNCON('_',NPRFCN)
+            NOMPRN = NPRFCN//'.PROF_CHNO '
+
+          ELSE IF (TYPCHA(1:2).EQ.'EL') THEN
+            CALL MDEXPM(NOFIMD,NOMAMD,EXISTM,NDIM,IRET)
+            CALL LRMTYP(NBTYP,NOMTYP,NNOTYP,TYPGEO,RENUMD)
+            TYPENT = EDMAIL
+            NOMPRN = ' '
+            DO 230,LETYPE = 1,NBTYP
+              IAUX = RENUMD(LETYPE)
+              TYPGOM = TYPGEO(IAUX)
+              CALL MDCHIN(NOFIMD,NOCHMD,TYPENT,TYPGOM,PREFIX,NPAS,IRET)
+              IF (NPAS.NE.0) THEN
+                CALL JEVEUO(PREFIX//'.INST','L',IPAS)
+                CALL JEVEUO(PREFIX//'.NUME','L',INUM)
+                GO TO 240
+              END IF
+  230       CONTINUE
+          END IF
+  240     CONTINUE
 
 C     -- BOUCLE SUR LES PAS DE TEMPS
 C     --------------------------------------------
 
-           DO 230 ITPS = 1,NPAS
-             CHANOM = '&&CHTEMP'
-             K32B = '                                '
-             NUMPT  = ZI(INUM+2*ITPS-2)
-             NUMORD = ZI(INUM+2*ITPS-1)
-             IINST  = 0
-             CALL LRCHME ( CHANOM, NOCHMD, K32B,
-     &                     NOMA, TYPCHA, NOMGD,
-     &                     NBCMPV, NCMPVA, NCMPVM,
-     &                     IINST, NUMPT, NUMORD, INST, CRIT, EPSI,
-     &                     MFICH, NOMPRN, IRET )
+          DO 250 ITPS = 1,NPAS
+            CHANOM = '&&CHTEMP'
+            K32B = '                                '
+            NUMPT = ZI(INUM+2*ITPS-2)
+            NUMORD = ZI(INUM+2*ITPS-1)
+            IINST = 0
+            CALL LRCHME(CHANOM,NOCHMD,K32B,NOMA,TYPCHA,NOMGD,NBCMPV,
+     &                  NCMPVA,NCMPVM,IINST,NUMPT,NUMORD,INST,CRIT,EPSI,
+     &                  MFICH,NOMPRN,IRET)
 
-             IF ( NUMORD.EQ.EDNONO ) THEN
-               NUMORD = NUMPT
-             END IF
+            IF (NUMORD.EQ.EDNONO) THEN
+              NUMORD = NUMPT
+            END IF
 
-             CALL RSEXCH(RESU,LINOCH(I),NUMORD,NOMCH,IRET)
-             IF (IRET.EQ.100) THEN
-             ELSE IF (IRET.EQ.110) THEN
-               CALL RSAGSD(RESU,0)
-               CALL RSEXCH(RESU,LINOCH(I),NUMORD,NOMCH,IRET)
-             ELSE
-               CALL UTDEBM('F',NOMCMD,'APPEL ERRONE')
-               CALL UTIMPK('L','  RESULTAT : ',1,RESU)
-               CALL UTIMPI('L','  ARCHIVAGE NUMERO : ',1,ITPS)
-               CALL UTIMPI('L','  CODE RETOUR DE RSEXCH : ',1,IRET)
-               CALL UTIMPK('L','  PROBLEME CHAMP : ',1,CHANOM)
-               CALL UTFINM()
-             END IF
-             CALL COPISD('CHAMP_GD','G',CHANOM,NOMCH)
-             CALL RSNOCH(RESU,LINOCH(I),NUMORD,' ')
-             CALL RSADPA(RESU,'E',1,'INST',NUMORD,0,JINST,K8B)
-             ZR(JINST) = ZR(IPAS-1+ITPS)
-             IF (TYPCHA(1:2).EQ.'NO') THEN
-                 CALL DETRSD('CHAM_NO',CHANOM)
-             ELSE
-                 CALL DETRSD('CHAM_ELEM',CHANOM)
-             ENDIF
-  230      CONTINUE
-  220   CONTINUE
+            CALL RSEXCH(RESU,LINOCH(I),NUMORD,NOMCH,IRET)
+            IF (IRET.EQ.100) THEN
+            ELSE IF (IRET.EQ.110) THEN
+              CALL RSAGSD(RESU,0)
+              CALL RSEXCH(RESU,LINOCH(I),NUMORD,NOMCH,IRET)
+            ELSE
+              CALL UTDEBM('F',NOMCMD,'APPEL ERRONE')
+              CALL UTIMPK('L','  RESULTAT : ',1,RESU)
+              CALL UTIMPI('L','  ARCHIVAGE NUMERO : ',1,ITPS)
+              CALL UTIMPI('L','  CODE RETOUR DE RSEXCH : ',1,IRET)
+              CALL UTIMPK('L','  PROBLEME CHAMP : ',1,CHANOM)
+              CALL UTFINM()
+            END IF
+            CALL COPISD('CHAMP_GD','G',CHANOM,NOMCH)
+            CALL RSNOCH(RESU,LINOCH(I),NUMORD,' ')
+            CALL RSADPA(RESU,'E',1,'INST',NUMORD,0,JINST,K8B)
+            ZR(JINST) = ZR(IPAS-1+ITPS)
+            IF (TYPCHA(1:2).EQ.'NO') THEN
+              CALL DETRSD('CHAM_NO',CHANOM)
+            ELSE
+              CALL DETRSD('CHAM_ELEM',CHANOM)
+            END IF
+  250     CONTINUE
+  260   CONTINUE
 
 
       ELSE
@@ -779,16 +778,16 @@ C     -- MESSAGE D'INFORMATION SUR CE QU'ON A LU :
 C     --------------------------------------------
       IF (NIV.GE.1) THEN
         WRITE (IFM,*) ' LECTURE DES CHAMPS:'
-        DO 240 ICH = 1,NBNOCH
+        DO 270 ICH = 1,NBNOCH
           WRITE (IFM,*) '    CHAMP : ',LINOCH(ICH)
-  240   CONTINUE
+  270   CONTINUE
 
         IF (NIV.GE.2) THEN
-          DO 250 IORD = 1,NBORDR
+          DO 280 IORD = 1,NBORDR
             CALL RSADPA(RESU,'L',1,ACCE,ZI(LORDR+IORD-1),0,JINST,K8B)
             WRITE (IFM,*) '    NUMERO D''ORDRE : ',ZI(LORDR+IORD-1),
      &        '    '//ACCES//' : ',ZR(JINST)
-  250     CONTINUE
+  280     CONTINUE
         END IF
       END IF
 
@@ -801,9 +800,9 @@ C     --------------------------------------------
 
 
       CALL TITRE
-      GO TO 280
+      GO TO 300
 
-  260 CONTINUE
+  290 CONTINUE
 
 
 C     -- MESSAGE D'ERREUR DE LECTURE :
@@ -818,8 +817,8 @@ C     --------------------------------------------
       END IF
       CALL UTIMPK('L',' PROBLEME POUR LE FICHIER: ',1,FIC80B)
       CALL UTFINM
-C
-  280 CONTINUE
+
+  300 CONTINUE
 
       CALL JEDEMA()
       END

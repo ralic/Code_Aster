@@ -1,14 +1,16 @@
         SUBROUTINE LCMMOP( COMP,NBCOMM,CPMONO,NMAT,NVI,VINI,  
      &                     X,  DTIME, E,NU,ALPHA,PGL2,MOD,COEFT,SIGI,
      &                     EPSD, DETOT, TPERD, DTPER, TPEREF,
-     &                     COEL,DVIN )
+     &                     COEL,NBPHAS,NBFSYM,TOUTMS,DVIN )
         IMPLICIT NONE
-        INTEGER NMAT,NBCOMM(NMAT,3),NVI
+        INTEGER NMAT,NBCOMM(NMAT,3),NVI,NBFSYM,NBPHAS
         REAL*8 VINI(*),DVIN(*),NU,E,ALPHA,X,DTIME,COEFT(NMAT),COEL(NMAT)
         REAL*8 SIGI(6),EPSD(6),DETOT(6),TPERD,DTPER,TPEREF,PGL(3,3)
+C       POUR GAGNER EN TEMPS CPU      
+        REAL*8 TOUTMS(NBPHAS,NBFSYM,12,6)
         CHARACTER*16 COMP(*)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/10/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 08/11/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -123,9 +125,9 @@ C     ----------------------------------------------------------------
       REAL*8 VIS(3),DT,GAMMA,EVG(6),ANG(3),PGL2(3,3),DL,DA,GAMMAS
       REAL*8 EVI(6),SIGI33(3,3),SIGG(6),RP,DEVG(6),FV,R8DGRD
       REAL*8 DEVI(6),MS(6),TAUS,DGAMMA,DALPHA,DP,SIG33(3,3),WORK(3,3)
-      REAL*8 DEVGEQ,LCNRTS,DBETA,BETA,DVINEQ,GRANB(6)
+      REAL*8 DEVGEQ,LCNRTS,DBETA,BETA,DVINEQ,GRANB(6),SQ
       INTEGER ITENS,NBFSYS,I,NUVI,IFA,ICOMPO,NBSYS,IS,IV,NUMS,NVLOC
-      INTEGER NBPHAS,INDPHA,INDFV,INDORI,DECAL,IPHAS,INDCP,NVIG,INDFA
+      INTEGER INDPHA,INDFV,INDORI,DECAL,IPHAS,INDCP,NVIG,INDFA
 C     ----------------------------------------------------------------
 C --  VARIABLES INTERNES
 C
@@ -139,7 +141,7 @@ C
       
 C LOCALISATION
 C   RECUPERATION DU NOMBRE DE PHASES
-      NBPHAS=NBCOMM(1,1)
+C      NBPHAS=NBCOMM(1,1)
       LOCA=CPMONO(1)
 C     CALCUL DE  B      
          DO 53 I=1,6
@@ -151,23 +153,24 @@ C     CALCUL DE  B
             FV=COEFT(INDFV)
             GRANB(I)=GRANB(I)+FV*VINI(7+6*(IPHAS-1)+I)
 54        CONTINUE      
+
+
 C     DEBUT DES VARIABLES INTERNES DES SYSTEMES DE GLISSEMENT      
       NUVI=7+6*NBPHAS
       DECAL=NUVI
+
+
+
       DO 1 IPHAS=1,NBPHAS         
 C        INDPHA indice debut phase IPHAS dans NBCOMM
          INDPHA=NBCOMM(1+IPHAS,1)
          INDFV=NBCOMM(1+IPHAS,3)
          
 C         recuperer l'orientation de la phase et la proportion
-         INDORI=INDFV+1
+C         INDORI=INDFV+1
          FV=COEFT(INDFV)
          CALL LCLOCA(COEFT,E,NU,NMAT,NBCOMM,NBPHAS,SIGI,VINI,
      &               IPHAS,GRANB,LOCA,SIGG)
-         ANG(1)=COEFT(INDORI)*R8DGRD()
-         ANG(2)=COEFT(INDORI+1)*R8DGRD()
-         ANG(3)=COEFT(INDORI+2)*R8DGRD()
-         CALL MATROT(ANG,PGL)
          NBFSYS=NBCOMM(INDPHA,1)
          NUMS=0
          INDCP=NBCOMM(1+IPHAS,2)     
@@ -187,7 +190,6 @@ C        Nombre de variables internes de la phase (=monocristal)
       
             CALL LCMMSG(NOMFAM,NBSYS,0,PGL,MS)
          
-            IF (NBSYS.EQ.0) CALL UTMESS('F','LCMMON','NBSYS=0')
 C           indice de la famille IFA            
             INDFA=INDPHA+IFA
             
@@ -200,11 +202,13 @@ C              VARIABLES INTERNES DU SYST GLIS
                   VIS(IV)=VINI(NUVI)
   8            CONTINUE
   
-C              CALCUL DE LA SCISSION REDUITE =
+C              CALCUL DE LA SCISSION REDUITE 
 C              PROJECTION DE SIG SUR LE SYSTEME DE GLISSEMENT
 C              TAU      : SCISSION REDUITE TAU=SIG:MS
-               CALL LCMMSG(NOMFAM,NBSYS,IS,PGL,MS)
-            
+               DO 101 I=1,6
+                  MS(I)=TOUTMS(IPHAS,IFA,IS,I)
+ 101            CONTINUE  
+ 
                TAUS=0.D0
                DO 10 I=1,6
                   TAUS=TAUS+SIGG(I)*MS(I)
@@ -216,8 +220,7 @@ C              DECAL est le début des systemes de glissement de la
 C              phase en cours
 C              NVIG est le nombre de variables internes dela phase G
                CALL LCMMEI(COEFT,INDFA,NMAT,NBCOMM,NECRIS,
-     &                  NUMS,VIS,NVIG,VINI(DECAL+1),RP)
-C     &                  NUMS,VIS,NVIG,VINI,DECAL+1,RP)
+     &                  NUMS,VIS,NVIG,VINI(DECAL+1),RP,SQ)
 C
 C              ECOULEMENT VISCOPLASTIQUE:
 C              ROUTINE COMMUNE A L'IMPLICITE (PLASTI-LCPLNL)
@@ -229,27 +232,35 @@ C              D'OU :
 C            
                CALL LCMMFL(TAUS,COEFT,INDFA,NMAT,NBCOMM,NECOUL,RP,
      &            NUMS,VIS,NVIG,VINI(DECAL+1),DT,DT,DGAMMA,DP,TPERD)
+     
+               IF (DP.GT.0.D0) THEN
 C
-C              ECROUISSAGE CINEMATIQUE
+C                 ECROUISSAGE CINEMATIQUE
 C
-               CALL LCMMEC(TAUS,COEFT,INDFA,NMAT,NBCOMM,NECRCI,VIS,
+                  CALL LCMMEC(TAUS,COEFT,INDFA,NMAT,NBCOMM,NECRCI,VIS,
      &                  DGAMMA,DP,DALPHA)
-C              DEVG designe ici DEPSVPG            
-               DO 9 ITENS=1,6
-                  DEVG(ITENS)=DEVG(ITENS)+MS(ITENS)*DGAMMA
-  9            CONTINUE
+     
+C                 DEVG designe ici DEPSVPG            
+                  DO 9 ITENS=1,6
+                     DEVG(ITENS)=DEVG(ITENS)+MS(ITENS)*DGAMMA
+  9               CONTINUE
   
-C             EVG designe ici EPSVPG      
-               IF (LOCA.EQ.'BETA') THEN     
-                  GAMMAS=VIS(2) 
-                  DO 19 ITENS=1,6
-                     EVG(ITENS)=EVG(ITENS)+MS(ITENS)*GAMMAS
-  19               CONTINUE
-               ENDIF
+C                 EVG designe ici EPSVPG      
+                  IF (LOCA.EQ.'BETA') THEN     
+                      GAMMAS=VIS(2) 
+                      DO 19 ITENS=1,6
+                         EVG(ITENS)=EVG(ITENS)+MS(ITENS)*GAMMAS
+  19                  CONTINUE
+                  ENDIF
             
-               DVIN(NUVI-2)=DALPHA
-               DVIN(NUVI-1)=DGAMMA
-               DVIN(NUVI  )=DP
+                  DVIN(NUVI-2)=DALPHA
+                  DVIN(NUVI-1)=DGAMMA
+                  DVIN(NUVI  )=DP
+               ELSE
+                  DVIN(NUVI-2)=0.D0
+                  DVIN(NUVI-1)=0.D0
+                  DVIN(NUVI  )=0.D0
+               ENDIF  
   7        CONTINUE
   
   6      CONTINUE
@@ -295,5 +306,5 @@ C     Norme de DEVP cumulée
       ELSE
          DVIN(NVI)=1
       ENDIF
-      CALL ASSERT(NVI.EQ.(DECAL+1))
+
       END

@@ -1,7 +1,7 @@
       SUBROUTINE FETSCA(NBI,VI,VO,SCALIN,SDFETI)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/05/2004   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGORITH  DATE 09/11/2004   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -94,7 +94,7 @@ C ----  SCALING PAR MULTPLICITE
 C ----------------------------------------------------------------------
 
 C ADRESSE NBRE DE NOEUDS D'INTERFACE (NBNI)
-        CALL JEVEUO(SDFETI(1:19)//'.DIME','L',IDIME)
+        CALL JEVEUO(SDFETI(1:19)//'.FDIM','L',IDIME)
         NBNI=ZI(IDIME+1)
               
 C ADRESSE JEVEUX DE L'OBJET DECRIVANT LE VECTEUR D'INTERFACE

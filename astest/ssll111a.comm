@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 08/11/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE  POUTRE EULER_BERNOULLI MULTIFIBRES (STATIQUE LINEAIRE)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -50,7 +50,8 @@ POUCA=AFFE_CARA_ELEM(MODELE=MOPOU,    INFO=2,
            POUTRE=_F(GROUP_MA=('POUTRE','POU_AC'),
                      SECTION='GENERALE',
                      CARA = ('A','IY','IZ','JX'),
-                     VALE = (1., 1., 1., 1.3333),),
+                     VALE = (4.57e-2, 4.657e-4, 1.6806e-4, 9.77e-5),
+                     PREC_INERTIE=3.188e-1),
            ORIENTATION=_F(GROUP_MA=('POUTRE','POU_AC'),
                           CARA='ANGL_VRIL', VALE=-90.0,),
            AFFE_SECT = _F ( GROUP_MA = 'POUTRE',
@@ -172,7 +173,8 @@ POUCAG=AFFE_CARA_ELEM(MODELE=MOPOU,    INFO=2,
            POUTRE=_F(GROUP_MA=('POUTRE','POU_AC'),
                      SECTION='GENERALE',
                      CARA = ('A','IY','IZ','JX'),
-                     VALE = (1., 1., 1., 1.3333),),
+                     VALE = (4.57e-2, 4.657e-4, 1.6806e-4, 9.77e-5),
+                     PREC_INERTIE=3.188e-1),
            ORIENTATION=_F(GROUP_MA=('POUTRE','POU_AC'),
                           CARA='ANGL_VRIL', VALE=-90.0,),
            AFFE_SECT = _F ( GROUP_MA = 'POUTRE',

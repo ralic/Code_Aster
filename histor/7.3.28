@@ -1,0 +1,1700 @@
+
+
+-----------------------------------------------------------------------
+--- AUTEUR assire A.ASSIRE   DATE  le 08/11/2004 a 17:48:12
+
+------------------------------------------------------------------------------
+REALISATION EL 2004-119
+   NB_JOURS_TRAV  : 40.
+   INTERET_UTILISATEUR : OUI
+   TITRE  Partitionneur automatique de maillages
+   FONCTIONNALITE
+   La macro-commande DEFI_PART_FETI permet dorenavent de faire du
+   partitionnement de maillage automatiquement, en appelant Metis.
+
+   DEFI_PART_FETI=(
+                o    MAILLAGE     = maillage,
+                f    MODELE       = modele,
+                o    NB_PART      = int,
+                f    EXCIT
+                       CHARGE     = chargements,
+                o    METHODE      = PMETIS, KMETIS ou AUTRE
+                f    LOGICIEL     = si AUTRE alors chemin vers executable
+                f    NOM_GROUP_MA = txt (defaut='SD'),
+                f    INFO         = 1 ou 2,
+                   );
+
+   Point d'entrée obligatoire : un maillage ou un modele Aster.
+
+   DETAILS
+   La commande DEFI_PART_OPS, qui permet de definir manuellement un
+   partitionnement, existe deja dans le code et s'occupe de generer la
+   structure de donnees sd_feti à partir des elements de la partition. Elle
+   etait utilisée par les developpeurs pour tester le solveur Feti.
+
+   Dans cette restitution, la commande DEFI_PART_OPS a été modifiée pour
+   prendre en compte les Dirichlet via AFFE_CHAR_CINE/MECA. Le mot-clé EXCIT a
+   ainsi été ajouté. On en dit pas plus sur cette commande car elle est sensée
+   ne plus etre utilisée directement.
+
+   On cree une nouvelle macro-commande DEFI_PART_FETI qui lancera DEFI_PART_OPS
+   apres le calcul d'un partitionnement.
+
+   Cette macro-commande contient une grosse partie de python pour generer
+   l'arbre de connectivité des aretes, un appel a Metis via os.system pour
+   calculer une partition, et enfin appelle la commande Fortran DEFI_PART_OPS
+   pour generer la SD feti.
+
+   En pratique, on a redefini en python une SD maillage et on travaille sur
+   ce maillage python. De plus, une classe python Partition est définie, avec
+   des méthodes propres. On peut utiliser le partitionement directement a
+   partir de la macro-commande (compatible Eficas), ou bien en utilisant les
+   commandes éclatées et méthodes de la classe Partition (PAR_LOT='NON'
+   obligatoire).
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_U : U4.23.05
+       EXPL_ : Doc d'utilisation de DEFI_PART_FETI
+     DOC V :  V1.04.102
+       EXPL_ : Cas test FETI
+   VALIDATION
+     feti003b.
+
+
+-----------------------------------------------------------------------
+--- AUTEUR boiteau O.BOITEAU   DATE  le 09/11/2004 a 17:05:46
+
+------------------------------------------------------------------------------
+REALISATION EL 2003-218
+   INTERET_UTILISATEUR : OUI
+   TITRE
+   -----
+               INTRODUCTION D'UN SOLVEUR LINEAIRE DE TYPE FETI (PART III)
+
+   FONCTIONNALITE
+   --------------
+   cf histor de la 7.3.3 et 7.3.17
+   Avec cette restitution on etoffe le perimetre d'utilisation de FETI pour
+   qu il puisse prendre en compte les conditions de Dirichlet simple via
+   AFFE_CHAR_MECA  DDL_IMPO et FACE_IMPO
+   Que ces Dirichlets soient homogenes ou non, partages entre plusieurs sous
+   domaines ou non et bien sur quelque soit leur agencement dans une suite
+   d'AFFE_CHAR_MECA.		
+   Pour ce faire il a fallu prendre en compte:
+   * des mailles et noeuds tardifs dont la numerotation est locale a
+     chaque ligrel de charge et sans trou,
+   * decoupage de LIGREL de charge entre sous-domaines et gestion des
+     numerotations locales recrees,
+   * assemblages des matrices et seconds membres locaux dans une algorithmique
+     (ASSMAM, ASSVEC) basees sur des ligrels globaux non decoupes
+     avec facteurs de scaling globaux.
+   * algorithme FETI avec noeuds physiques + noeuds tardifs
+   * reconstruction des valeurs aux noeuds dans le CHAM_NO global pour
+     les noeuds tardifs renumerotes ou non.
+   via notamment des objets JEVEUX
+   permanents: SD_FETI.FLIN,.FLII et .FLIM
+   ou temporaires: charge a mailles tardives .FEL1, .FEL2 et .FEL3
+
+   Divers:
+   * pour JP renommage des objets SDFETI.REF en .FREF et .DIME en .FDIM
+   * changement des regles de nommages des SD esclaves de types
+     SOLVEUR, LIGREL, NUME_DDL, MATR_ASSE et CHAM_NO
+   * verification que NUME_DDL.NUEQ=ID si FETI (NUMERO.F) vu avec JP.
+  
+    Limitations actuelles (qui seront levees progressivement):
+      Systeme lineaire SPD gere par MECA_STATIQUE
+      Pas de Dirichlet simple via AFFE_CHAR_CINE
+      Pas de Dirichlet generalises: LIAISON_DDL/OBLIQUE/GROUP/MAIL/CHAMNO
+      Interfaces vides de tout chargement, Dirichlet generalise, mailles N-1...
+      Pas de parallelisation par sous-domaine (seul MULT_FRONT)
+      Solveurs internes homogenes.
+      Sans doute de nombreux cas particuliers: EF de raccord...
+
+   RESU_FAUX_VERSION_EXPLOITATION  :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : OUI
+   --------------------
+       DOC D : D4.06.10
+       EXPL_ :  SD MATR_ASSE
+       DOC D : D4.06.11
+       EXPL_ :  SD SOLVEUR
+       DOC D : D4.06.05
+       EXPL_ : SD CHAM_NO
+       DOC D : D4.06.07
+       EXPL_ : SD NUME_DDL
+       DOC_D : D4.06.21
+       EXPL_ : SD SD_FETI
+       DOC_V :  V1.04.102
+       EXPL_ : FETI003A: Cas test FETI, plaque a 4 SD avec point de jonction
+               et deux sous-domaines flottants en diagonale, plus
+               Dirichlet simples (DDL_IMPO + FACE_IMPO) via AFFE_CHAR_MECA
+               Dirichlet homogene et inhomogene, partage entre sous-domaines
+               ou non.
+  
+   VALIDATION
+   -----------
+     Diverses combinaisons en 2D en variant configurations de blocage et leur
+     agencement dans des AFFE_CHAR_MECA.
+
+     RESTITUTION du  cas-test FETI003A (PLAQUE 2D)
+
+   DETAILS
+   --------
+
+   ROUTINES IMPACTEES: <N> pour nouvelle routine, <M> pour modifiee,
+   <S> pour supprimer
+
+     ALGO. FETI
+     -----------
+   ALFETI.F <M>: CHEF D'ORCHESTRE DE L'ALGO FETI-1
+   FETFIV.F <M>: PRODUIT OPERATEUR FETI (FI) * VECTEUR QCQ (V)
+   FETINL.F <M>: INITIALISATION DU VECTEUR D'INTERFACE
+   FETRIN.F <M>: CALCUL DU RESIDU INITIAL OU RECONSTRUCTION U GLOBAL
+   FETGGT.F <M>: CALCUL GI ET (GIGIT) POUR LAMBDA0 ET PROJECTION.
+   FETING.F <M>: REMPLISSAGE SD TEMPORAIRE PERMETTANT DE FAIRE LE LIEN
+                 ENTRE LA NUMEROTATION DU VECTEUR D'INTERFACE ET CELLE
+                 DES SOUS-DOMAINES.
+   FETSCA.F <M>: OPERATEUR DE SCALING <SI PRECOND, SANS OU MULT>
+  
+     PARTITIONNEMENT
+     ---------------
+   FETCRF.F <M>: CREATION DES OBJETS SDFETI.FLIN, .FLII ET .FLIM
+    SERA ECRASE PAR LA RESTIT. DE AA SUR LE PARTITIONNEMENT DE DOMAINE.
+   OBTEMP.F <S>: SUPPRESION DE CETTE ROUTINE TEMPORAIRE LIEE AU TEST
+                 FETI001A.
+
+     CHARGES
+     --------
+   MEACMV.F <M>: ASSEMBLAGE ET CONCATENATION DES SECONDS MEMBRES MECA
+
+     ASSEMBLAGE
+     ----------
+   ASSMAM.F <M>: ASSEMBLAGE EFFECTIF DES MATRICES DE RIGIDITE GLOBALE
+               OU PAR SOUS-DOMAINE
+   ASSVEC.F <M>: ASSEMBLAGE DU SECOND MEMBRE GLOBAL OU PAR SOUS-DOMAINE
+
+     PREPARATION DE LA RESOLUTION
+     ----------------------------
+   CRESOL.F <M>: LECTURE PARAMETRES SOLVEUR DE L'OP ET APPEL A CRESO1
+   CRESO1.F <M>: REMPLISSAGE DE LA SD SOLVEUR PAR SOUS-DOMAINE OU GLOBAL
+   PRERES.F <M>: FACTORISATION DES MATRICES DE RIGIDITE
+   TLDLG2.F <M>: RECHERCHE EFFECTIVES DES MODES.
+   MESTAT.F <M>: CHEF D'ORCHESTRE DE KU=F POUR TOUT LES PAS DE TEMPS.
+                 APPEL MERESO ET GERE LES RESOLUTIONS POUR MECA_STATIQUE
+   RESFET.F <M>: APPEL ALFETI VIA RESOUD
+   RESOUD.F <M>: LECTURE DONNEES SD SOLVEUR ET CHEF D'ORCHESTRE RESOLUTION
+
+     MANIPULATION DE STRUCTURES DE DONNEES
+     -------------------------------------
+   EXLIM2.F <M>: DECOUPAGE DE LIGREL DE CHARGE ET CRATION OBJETS TEMPORAIRES
+                 .FEL1, .FEL2 ET .FEL3.
+   NUMER2.F <M>: CONSTITUER UN NUME_DDL PAR SOUS-DOMAINE OU GLOBAL
+   NUMERO.F <M>: CONSTITUER LISTE DE NUME_DDL VIA APPEL A NUMER2
+   VTCMBL.F <M>: COMBINAISONS LINEAIRES DE CHAM_NOS ETENDUS OU NON
+   VTCREB.F <M>: CHEF D'ORCHESTRE CREATION CHAM_NO ET APPEL VTCRE1
+   VTDEFS.F <M>: CHEF D'ORCGHESTRE RECOPIE CHAM_NO ET APPEL VTDEF1
+
+   NB_JOURS_TRAV  : 30
+
+
+-----------------------------------------------------------------------
+--- AUTEUR boyere E.BOYERE   DATE  le 08/11/2004 a 14:21:06
+
+------------------------------------------------------------------------------
+CORRECTION AL 2004-388
+   NB_JOURS_TRAV  : 1.5
+   INTERET_UTILISATEUR : NON
+   TITRE
+     Inversion dans le signe des conditions de suintement avec AFFE_CHAR_MECA
+   FONCTIONNALITE
+     Pour etre coherent avec AFFE_CHAR_MECA_F et eviter les confusions
+     je change le signe du seuil de suintement (COEF_IMPO dans AFFE_CHAR_MECA).
+     On entre P0 et non plus -P0.
+
+     CHARUE=AFFE_CHAR_MECA( MODELE=MODELE,
+                      CONTACT=_F(APPARIEMENT='NON',
+                                 GROUP_MA_ESCL=('GROUMACON'),
+                                 NOM_CHAM='PRE1',
+                                 COEF_IMPO= + P0,
+                                           ^^^
+                                 COEF_MULT_2=1.0,),);
+
+   DETAILS
+     modif dans PROJCO pour inverser le signe du jeu de contact
+     dans le cas des conditions unilaterales sur PRE1 ou PRE2
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_U : U4.44.01
+       EXPL_ : changement du signe de la pression de consigne
+   VALIDATION
+     modification du cas test wtnp109a
+
+------------------------------------------------------------------------------
+REALISATION EL 2004-190
+  NB_JOURS_TRAV  : 1.5
+  INTERET_UTILISATEUR : NON
+  TITRE  AOM : effet d'une force centrifuge sur un disque
+  FONCTIONNALITE
+  Le probleme est relatif aux resultats en deplacement d'une structure soumise
+  a une force centrifuge (definie par ROTATION dans AFFE_CHAR_MECA).
+  La structure est constituee de deux anneaux concentriques :
+  un en acier l'autre realise dans un materiau mou.
+  Les noeuds internes de l'anneau "mou" sont bloques en x et y.
+  Sous l'effet de la force centrifuge l'anneau mou se "cisaille" suivant -y,
+  alors que l'on attendrait une dilatation radiale.
+  En revanche si l'on choisit des materiaux peu differents
+  (rapport 1000 entre les modules d'Young) pour les deux anneaux,
+  les deformation sont correctes (dilatation radiale).
+
+  Si l'on observe les cartes de contraintes, on verifie
+  qu'elles respectent bien les formules analytiques donnees
+  dans le formulaire des deformations et contraintes de Roark.
+  Comme l'utilisateur le fait remarquer, la clef du probleme
+  tient dans la difference de module d'Young entre le disque
+  central (tres mou) qui sert a bloquer le systeme en translation
+  et le disque exterieur en acier.
+  On aboutit a un systeme mal conditionne.
+  La bonne methode pour bloquer la structure est de bloquer
+  un point pour chaque direction.
+
+  RESU_FAUX_VERSION_EXPLOITATION    :  NON
+  RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+  RESTITUTION_VERSION_EXPLOITATION  :  NON
+  RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+  IMPACT_DOCUMENTAIRE : NON
+  VALIDATION
+
+
+-----------------------------------------------------------------------
+--- AUTEUR cibhhlv L.VIVAN   DATE  le 08/11/2004 a 15:38:36
+
+-----------------------------------------------------------------------
+CORRECTION AL 2004-358
+   POUR_LE_COMPTE_DE : M.COURTOIS
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : OUI
+   TITRE : PRE_GIBI et gibi2003
+   FONCTIONNALITE
+     Si on utilise gibi2003, ca plante avec le message ci-dessous :
+       <S> <JEVEUO01> OBJET INEXISTANT DANS LES BASES OUVERTES
+           >&&GILIRE.NOMOBJ                 <
+     gibi2003 génère un niveau 13
+   DETAIL
+     routine gilir2.f :
+     on ne traitait que les niveaux < 11
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+
+--------------------------------------------------------------------------
+CORRECTION AL 2004-393
+   POUR_LE_COMPTE_DE : M.COURTOIS
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : OUI
+   TITRE : IMPR_RESU format CASTEM
+   FONCTIONNALITE
+     Comme le dit la doc U7.05.11 :
+     si le modèle a été spécifié, on imprime au format CASTEM un objet
+     CASTEM de type maillage contenant toutes las mailles affectées
+     dans le modèle ASTER et accessible par le nom du modèle ASTER.
+     Cette fonctionnalité ne fonctionnait plus depuis la 6.4, le nom
+     du modèle ASTER n'était pas imprimé.
+   DETAIL
+     routine irmaca.f :
+     le nom du modèle n'était pas stocké dans &&IRMACA.NOMO2
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  OUI
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+
+
+-----------------------------------------------------------------------
+--- AUTEUR vabhhts C.DURAND   DATE  le 09/11/2004 a 14:20:59
+
+--------------------------------------------------------------------------
+RESTITUTION HORS AREX
+   NB_JOURS_TRAV  : 0.5
+   FONCTIONNALITE : POST_GOUJ2E
+   INTERET_UTILISATEUR : NON
+   TITRE : suppression de la commande POST_GOUJ2E
+   DETAILS :
+   On supprime la commande POST_GOUJ2E qui ne faisait pas grand chose :
+   produire une table des réactions cumulées, ramenées en base 100, à
+   partir de réactions prises dans une autre table.
+   Ceci est désormais très facilement faisable, en quelques lignes, avec
+   la faculté de récupérer des tables dans des listes python ... puis de
+   les manipuler. On crée ainsi une macro commande POST_GOUJ, en tout point
+   isofonctionnelle avec la précédente, mais incluse dans les 2 cas tests
+   zzzz120a et zzzz120b et plus documentée et visible comme une commande
+   à part entière pour tout utilisateur.
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_U : U4.GJ.30
+        EXPL_ : Résorption de la commande, donc suppression de cette doc.
+                Penser à intégrer les (maigres) explications de ce document
+                dans la doc V de zzzz120a (V1.01.120)
+     DOC_V : V1.01.120
+        EXPL_ : intégrer les infos des docs U de POST_GOUJ2E dans cette doc V
+   VALIDATION : zzzz120a et zzzz120b
+--------------------------------------------------------------------------
+REALISATION EL 2002-122
+   INTERET_UTILISATEUR : OUI
+   TITRE  méthode ARLEQUIN
+   FONCTIONNALITE
+   Restitution travaux G. Rateau (thèse ECP avec H. Ben Dhia)
+   Méthode ARLEQUIN : calcul multi-échelles et traitement de raccords
+   de maillages incompatibles
+   DETAILS
+   Cette restitution cumule les travaux de G. Rateau durant la deuxième
+   partie de sa thèse (cf précédente restitution dans le code de avril 2002
+   avec les développements complémentaires réalisés par lui-même, dans le
+   cadre d'ASTER-libre depuis son départ d'EDF (juin 2003). Ces travaux
+   complémentaires ont en particulier permis de résoudre des difficultés
+   de convergence pour les cas 3D.
+
+   Pour plus de détails concernant la méthode, se reporter sur le rapport
+   de thèse de G. Rateau et la doc R à paraitre.
+
+   VALIDATION
+   cas test sslp313c (fissure inclinée dans plaque infinie) : inchangé
+   cas test sslp104a : cantilever 2D, modification des maillages pour
+                       qu'ils soient tout à fait non coincidents sur la
+                       zone de collage.
+   cas test sslp104b : nouveau test, idem sslp104a en 3D
+
+   RESU_FAUX_VERSION_EXPLOITATION  :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+
+   IMPACT_DOCUMENTAIRE : OUI
+   DOC_V : V3.02.104
+       EXPL_ : ajout de la modélisation B, modification maillage mod. A
+   DOC_U : U4.44.01
+       EXPL_ : modification du mcfact ARLEQUIN dans AFFE_CHAR_MECA
+   NB_JOURS_TRAV  : 5 (hors travaux G. Rateau)
+------------------------------------------------------------------------
+
+
+-----------------------------------------------------------------------
+--- AUTEUR g8bhhxd X.DESROCHES   DATE  le 04/11/2004 a 15:54:14
+
+--------------------------------------------------------------------------
+CORRECTION AL 2004-368
+   NB_JOURS_TRAV  : 2.0
+   INTERET_UTILISATEUR : OUI
+   TITRE : AFFE_CHAR_MECA_F LIAISON_SOLIDE :
+           ecrasement possible version Linux
+           résultats faux possibles sur alphaserver
+   FONCTIONNALITE
+      LIAISON_SOLIDE ne fonctionne pas toujours correctement dans
+      AFFE_CHAR_MECA_F. En particulier, si la charge contenant
+      LIAISON_SOLIDE contient aussi des DDL_IMPO, on peut avoir
+      un écrasement amont ou aval sur Linux et des résultats faux
+      sur clayastr. Si LIAISON_SOLIDE est seul dans la charge, pas de pb.
+      Ceci était du au fait que le type du second membre de la
+      liaison solide était initialisé en dur à REEL dans tous les cas.
+      On corrige en tenant compte de la commande (AFFE_CHAR_MECA ou
+      AFFE_CHAR_MECA_F).
+      Modification des routines drz02d drz03d drz12d drz13d .
+   RESU_FAUX_VERSION_EXPLOITATION    :  OUI   DEPUIS : 3.4.3
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  OUI   DEPUIS : 3.4.3
+   RESTITUTION_VERSION_EXPLOITATION  :  OUI
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+   V3.04.114 : on modifie le cas-test sslv114b pour tester
+               AFFE_CHAR_MECA_F LIAISON_SOLIDE
+
+------------------------------------------------------------------------------
+CORRECTION AL 2004-205
+   NB_JOURS_TRAV  : 2.
+   INTERET_UTILISATEUR : OUI
+   TITRE : Cas-test SSLV130D : calcul d'erreur ERRE_ELGA_NORE
+   FONCTIONNALITE
+      Dans l'appel à ERRE_ELGA_NORE dans CALC_ELEM, il manquait la charge.
+      Le calcul d'erreur ne prenait pas en compte le 3-ème terme d'erreur
+      (erreur entre les contraintes normales et le chargement imposé), les
+      résultats étaient donc faux. On modifie les TEST_RESU sur l'erreur
+      relative de ce cas-test.(TEST_RESU de non régression)
+      On en profite pour supprimer des impressions parasites dans resloc.f
+      et te0375.f.
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+    on modifie le cas-test sslv130d en tenant compte de la charge.
+    De même, les TEST_RESU dans les cas-tests sslv07b et sslv130b doivent
+    être modifiés.
+
+------------------------------------------------------------------------------
+CORRECTION AL 2004-208
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : OUI
+   TITRE : Cas-test SSLV07B : calcul d'erreur ERRE_ELGA_NORE
+   FONCTIONNALITE
+      Dans l'appel à ERRE_ELGA_NORE dans CALC_ELEM, il manquait la charge.
+      Le calcul d'erreur ne prenait pas en compte le 3-ème terme d'erreur
+      (erreur entre les contraintes normales et le chargement imposé), les
+      résultats étaient donc faux. On modifie les TEST_RESU sur l'erreur
+      relative de ce cas-test.
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+      on modifie le cas-test sslv07b en tenant compte de la charge
+
+------------------------------------------------------------------------------
+CORRECTION AL 2004-107
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : OUI
+   TITRE : Mauvais appel à la routine UTJAC
+   FONCTIONNALITE
+      Dans la routine TE0375 (option ERRE_ELGA_NORE) l'appel à la routine
+      UTJAC inverse les directions (1 3 2 au lieu de 1 2 3) et change de
+      ce fait le signe du jacobien. On supprime l'appel et on calcule le
+      jacobien par DFDM3D.
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+
+------------------------------------------------------------------------------
+CORRECTION AL 2004-178
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : OUI
+   TITRE : Le cas-test mac3coeur ne passe plus
+   FONCTIONNALITE
+      Ce cas-test correspond à une ancienne version de Mac3coeur qui ne sera
+      plus jamais utilisée. On résorbe donc ce cas-test en attendant un cas-
+      test validant la nouvelle version.
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+
+
+-----------------------------------------------------------------------
+--- AUTEUR galenne E.GALENNE   DATE  le 08/11/2004 a 14:10:50
+
+--------------------------------------------------------------------------
+CORRECTION AL 2003-231
+   NB_JOURS_TRAV  : 1
+   INTERET_UTILISATEUR : NON
+   TITRE Cas test SSLV110 (fissure elliptique)
+   FONCTIONNALITE
+   Cette fiche a été émise suite à un mail d'un utilisateur extérieur signalant une erreur
+   dans la solution analytique du cas test SSLV110 (fissure elliptique dans un milieu
+   infini).
+   Il y avait bien une erreur dans le calcul d'une intégrale elliptique servant ensuite
+   au calcul des facteurs d'intensité de contraintes... Cette erreur était cependant
+   miraculeusement compensée dans les fichiers de commande Aster, où la condition de
+   symétrie pour les lèvres de la fissure (mot clé SYME_CHAR) avait été oubliée dans les
+   opérateurs calc_g*.
+   On corrige donc en conséquence les valeurs de références des quatre modélisations du
+   cas test et on ajoute la condition de symétrie. La précision des résultats est bonne
+   compte tenu de maillage peu raffiné.
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : OUI
+      DOC_V : V3.04.110
+   VALIDATION
+
+
+-----------------------------------------------------------------------
+--- AUTEUR godard V.GODARD   DATE  le 09/11/2004 a 09:11:02
+
+------------------------------------------------------------------------------
+RESTITUTION HORS AREX
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : NON
+   TITRE : NOUVEAU CAS TESTS ENDO_ORTH_BETON
+   FONCTIONNALITE : introduction des nouveaux cas tests
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : OUI
+   VALIDATION : cas test de ENDO_ORTH_BETON
+        DOC_V : V6.04.176
+        DOC_V : V6.04.177
+        DOC_V : V6.04.175
+        DOC_V : V6.03.127
+   DETAILS: CAS TESTS: AJOUT :
+        ssnv176e  : essais biaxiaux
+                    traction,compression, traction-compression
+                    Ce cas test permet d'identifier les paramètres
+                    en fonction des contraintes de rupture en traction
+                    et en compression
+        ssnv175   : barreau 3D en traction version non locale
+        ssnv177   : test de Willam (rotation de fissure)
+                    on fait le test sur l'angle du repère des déformations
+                    et celui de repère propre de l'endommagement
+        ssnp127a  : barreau 2D en traction version non locale CP
+        ssnp127b  : barreau 2D en traction version non locale DP
+
+------------------------------------------------------------------------------
+CORRECTION AL 2004-346
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : NON
+   TITRE : probleme de 3D_GRAD_EPSI à cause de nmpl3g.f
+   FONCTIONNALITE : les tests ssnv157a et ssnv157d avec absence de convergence
+   DETAILS: j'avais modifié les matrices de rigidité et les vecteurs forces
+            dans nmpl3g pour prendre en compte l'arret de la regularisation
+            avec endo_orth_beton lorsque l'endommagement est total
+            Pour cela, j'introduisais un projecteur calculé dans la routine et utile
+            pour les matrices de rigidité (RIGI_MECA et FULL_MECA) et le vecteur force
+            (RAPH_MECA et FULL_MECA)
+            Or, le projecteur n'était pas calculé pour RAPH_MECA donc ça plantait
+            lorsqu'il voulait calculer seulement les forces.
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION: ssnv157a
+
+------------------------------------------------------------------------------
+CORRECTION AL 2004-353
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : NON
+   TITRE : probleme de 3D_GRAD_EPSI à cause de nmpl3g.f
+   FONCTIONNALITE : le test ssnp113b s'arretait en erreur fatale
+   DETAILS: IDEM que AL 2004-346
+            j'avais modifié les matrices de rigidité et les vecteurs forces
+            dans nmpl3g pour prendre en compte l'arret de la regularisation
+            avec endo_orth_beton lorsque l'endommagement est total
+            Pour ça, j'introduisais un projecteur calculé dans la routine et utile
+            pour les matrices de rigidité (RIGI_MECA et FULL_MECA) et le vecteur force
+            (RAPH_MECA et FULL_MECA)
+            Or, le projecteur n'était pas calculé pour RAPH_MECA donc ça plantait
+            lorsqu'il voulait calculer seulement les forces.
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION: ssnp113b
+
+
+-----------------------------------------------------------------------
+--- AUTEUR granet S.GRANET   DATE  le 08/11/2004 a 11:28:55
+
+--------------------------------------------------------------------------
+REALISATION EL 2004-241
+   réalisation partielle
+   NB_JOURS_TRAV  : 3.
+   POUR_LE_COMPTE_DE   : S.GRANET
+   INTERET_UTILISATEUR : NON
+   TITRE  Introduction de nouveaux cas tests du plan de qualification d'Alliances
+   FONCTIONNALITE
+     On introduit ici deux nouveaux cas tests correspondant au plan de
+     qualification d'Alliances (cas 3.1 et 3.2).
+     Le premier cas test correspond a la resaturation d'une colonne et
+     le second a la resaturation d'une alveole.
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   VALIDATION
+      Plan de qualification Alliances
+      cas-tests ajoutés :
+        wtnp112a,wtnp112b,wtnp112c,wtnp112d, wtnp113a, wtnp113b
+   IMPACT_DOCUMENTAIRE : OUI
+      DOC_V : V7.32.112
+         EXPL_ : Doc V : resaturation d'une colonne
+      DOC_V : V7.32.113
+         EXPL_ : Doc V : resaturation d'une alveole
+
+
+-----------------------------------------------------------------------
+--- AUTEUR jmbhh01 J.M.PROIX   DATE  le 08/11/2004 a 12:28:49
+
+CORRECTION AL 2004-374
+   INTERET_UTILISATEUR : NON
+   NB_JOURS_TRAV  : 1
+   TITRE
+    Materiau POLYCRISTALLIN test SSNV125A en ARRET_CPU sur LINUX
+   FONCTIONNALITE
+   Avec la version NEW7.3.25 compilee sous Linux Calibre3, le tests
+   ssnv125a s'arrete par manque de temps CPU.
+   En rajoutant 100 secondes, on a toujours le meme probleme.
+
+   La restitution consiste a commencer a optimiser le temps cpu :
+   en utilisant les outils décrits par Mickael, je me suis apercu
+   que l'on passait beaucoup de temps dans la routine LCMMSG, qui
+   calcule les tenseurs d'orientation pour chaque  systeme de glissement
+   de chaque phase (dans le cas présent 12 systemes et 40 phases).
+   A chaque fois on fait un changement de repere. Or cette routine
+   etait appelee dans l'integration du comportement, c'est a dire tres
+   souvent, puisque le coomportement est ici géré par Runge-Kutta avec
+   subdivision automatique du pas de temps. Je déplace donc le calcul
+   des tenseurs d'orientation (appel une seule fois par point de Gauss)
+   et je stocke les valeurs dans un tableau transmis aux différentes
+   routines de comportement. Ce tableau a pour dimensions :
+   MS(NBPHAS,NBFSYS,12,6)
+
+   De plus dans la routine qui gère l'écrouissage isotrope, on recalculait
+   pour chaque systeme de glissement les déformations plastiques cumulées
+   de tous les systemes, soit 12 fois trop de calculs (dans le cas
+   octaedrique) de type evaluation d'exponentielle.
+
+   Ces deux modifications impliquent que le temps CPU de STAT_NON_LINE pour
+   POLYCRISTAL, sur ce test passe, de 277s a 89s sur alphaserveur
+   et de 724s a 194s sur linux.
+
+
+   RESU_FAUX_VERSION_EXPLOITATION   :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT  :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+   SSNV125A
+   DETAILS
+
+
+
+-----------------------------------------------------------------------
+--- AUTEUR lebouvie F.LEBOUVIER   DATE  le 08/11/2004 a 16:29:21
+
+-------------------------------------------------------------------------------
+REALISATION EL 2004-230
+   NB_JOURS_TRAV : 5.0
+   POUR LE COMPTE DE : J.L. FLEJOU
+   INTERET_UTILISATEUR : OUI
+   TITRE : PMF, verification de coherence
+   FONCTIONNALITE :
+   DETAIL :
+   - L'objectif de ce développement est vérifier la cohérence des informations
+   (AIRE et INERTIE) fournies d'une part par le mot clé POUTRE et d'autre part
+   par les mots clés AFFE_SECT et AFFE_FIBRE. Le critère d'erreur est basé sur
+   l'erreur relative et sera comparer à une valeur par défaut, ou donnée par
+   l'utilisateur via la commande AFFE_CARA_ELEM sous le mot clé facteur POUTRE
+   avec les mots clés PREC_AIRE et PREC_INERTIE.
+
+   CAEL=AFFE_CARA_ELEM(POUTRE=_F( ...,
+                     PREC_AIRE    =  / epsa ,
+                                     / 1.E-2 ,  [DEFAUT]
+                     PREC_INERITE =  / epsi ,
+                                     / 1.E-1    [DEFAUT]
+                                  )
+                       )
+   Si le critère n'est pas satisfait Aster s'arrête en erreur fatale <F>.
+   - L'erreur relative est calculée de la manière suivante :
+
+   AIRE(POUTRE)-(AIRE(AFFE_SECT)+AIRE(AFFE_FIBRE))
+   -----------------------------------------------  <= PREC_AIRE
+                       AIRE(POUTRE)
+
+   INERTIE(POUTRE)-( INERTIE(AFFE_SECT)+ INERTIE(AFFE_FIBRE))
+   ---------------------------------------------------------- <= PREC_ INERTIE
+                       INERTIE(POUTRE)
+
+   - Cette évolution a conduit à la modification des 14 cas-tests suivants:
+     sdll122a, sdll130b, sdll132a, sdnl130a, ssll102j, ssll111a
+     ssnl106g, ssnl106h, ssnl119a, ssnl119b, ssnl120a, ssnl122a
+     ssnl123a, ssnl127b, ssnl127c, ssnl128a
+     Les modifications apportées ont consistés à ajouter les mots clés PREC_AIRE
+     et PREC_INERTIE afin d'ajuster la tolérence au cas-test, sauf pour le
+     cas-test sdll132a ou un ajustement de la section des fibres a été effectué
+   - Fichier Fortran modifié: pmfd00.f
+   - Catalogue modifié : affec_cara_elem
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   VALIDATION :
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_U : U4.42.01
+       EXPL_ : AFFE_CARA_ELEM: ajout des mots clés PREC_AIRE et PREC_INERTIE plus
+               explications
+     DOC_V : V5.02.130
+       EXPL_ : SDNL130: explication sur la présence des mots clés PREC_AIRE et
+               PREC_INERTIE dans le cas-test
+     DOC_V : V6.02.119
+       EXPL_ : SSNL119: explication sur la présence des mots clés PREC_AIRE et
+               PREC_INERTIE dans le cas-test
+     DOC_V : V6.02.120
+       EXPL_ : SSNL120: explication sur la présence des mots clés PREC_AIRE et
+               PREC_INERTIE dans le cas-test
+     DOC_V : V6.02.127
+       EXPL_ : SSNL127: explication sur la présence des mots clés PREC_AIRE et
+               PREC_INERTIE dans le cas-test
+
+
+-----------------------------------------------------------------------
+--- AUTEUR mabbas M.ABBAS   DATE  le 08/11/2004 a 13:43:37
+
+--------------------------------------------------------------------------
+CORRECTION AL 2004-383
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : NON
+   TITRE METHODE CONTINUE, FORMULATION EN VITESSE
+   FONCTIONNALITE
+     Corriger le te0365 qui ne prend pas en compte le déplacment
+     de la surface maitre dans le calcul du contact avec la formulation
+     en vitesse
+   DETAILS
+     Dans la routine elementaire de contact te0365.f de la formulation
+     continue en vitesse, on calcule les champs de deplacement des points
+     maitres et esclaves a l'instant actuel et a l'instant d'avant.
+     Le calcul du deplacement du point maitre a l'instant d'avant faisait
+     appel au pointeur du deplacement actuel!
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  OUI   DEPUIS : 7.3.18
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_V : V5.02.111
+       EXPL_ : Ajout de modélisation F
+   VALIDATION
+   SDNL111F : test du contact entre deux poutres 3D en mouvement
+     (adaptation simple du cas où une des poutres est encastrée)
+
+-----------------------------------------------------------------------
+CORRECTION AL 2004-255
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : NON
+   TITRE SDNL111e, contact méthode continue
+   FONCTIONNALITE
+     Ajout d'amortissement numérique pour le calcul du SDNL111e
+   DETAILS
+     Le cas test avait été restitué avec un amortissement numérique nul,
+     ce qui le rendait très fragile. Il est corrigé ici avec un coefficient
+     HHT de 0,3 (valeur par défaut).
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+
+
+-----------------------------------------------------------------------
+--- AUTEUR nicolas O.NICOLAS   DATE  le 09/11/2004 a 07:19:22
+
+------------------------------------------------------------------------------
+CORRECTION AL 2004-376
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : NON
+   TITRE : DEFI_MODELE_GENE
+   FONCTIONNALITE : DEFI_MODELE_GENE
+   DETAILS
+      Dans la boucle pour detecter la presence de redondance dans les
+      macro-elements pris dans des liaisons, on a :
+          ZI(LTDESC)=ZI(LTLIA)
+          DO 70 I=1,NBSST
+             NUDEP=ZI(LTDESC+(I-1)*3)
+             ...
+     Or LTLIA n'est relatif qu'aux liaisons et pas aux sous-structures
+     presentes dans le modele.
+     En clair, on fait evoluer NUDEP en (I-1)*2 au lieu de (I-1)*3
+     comme dans la boucle.
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  OUI
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   VALIDATION : Cas test de la base + etude utilisateur
+   IMPACT_DOCUMENTAIRE : NON
+
+------------------------------------------------------------------------------
+REALISATION EL 2004-176
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : NON
+   TITRE : IMPR_RESU format MED et données harmoniques
+   FONCTIONNALITE : IMPR_RESU
+   DETAILS
+     On permet l'écriture d'un champ au format MED pour des evolutions
+     frequentielles (modes propres ou dyna_harmo)
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   VALIDATION
+   IMPACT_DOCUMENTAIRE : NON
+
+------------------------------------------------------------------------------
+CORRECTION AL 2004-382
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : NON
+   TITRE : DEFI_MODELE_GENE
+   FONCTIONNALITE : DEFI_MODELE_GENE
+   DETAILS
+      En fait le plantage en matrice singuliere est tout a fait normal.
+      Du fait de l'utilisation de multiplicateurs de Lagranges en
+      sous-structuration dynamique et parceque l'interface dynamique est
+      réduite à 1 point, le calcul des modes statiques donne un mode de
+      corps rigide. Du coup, l'energie de déformation étant nulle, la
+      matrice assemblée généralisée final possède un zéro sur sa
+      diagonale qui la rend singulière.
+      On precise dans la doc la limitation d'utilisation de la méthode.
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   VALIDATION : Cas test de la base + etude utilisateur
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_U : U4.64.01
+       EXPL_ : On precise l'obligation d'avoir plusieurs noeuds
+       d'interface pour la methode Craig-Bampton lorsqu'une des
+       sous-structures est libre.
+     DOC_R : R4.06.02,R4.06.03,R4.06.04
+
+------------------------------------------------------------------------------
+REALISATION EL 2004-195
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : NON
+   TITRE : test sslp100
+   FONCTIONNALITE : MACR_ELEM_STAT
+   DETAILS
+     On remet au carré les cas tests sslp100c et sslp100d qui
+     presentaient des differences sur la nature du chargement alors que
+     le premier valide le second.
+     On modifie de plus le catalogue de stat et dyna non line pour
+     permettre plusieurs cas de chargements sur des sous-structures.
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   VALIDATION : Cas test sslp100c et sslp100d
+   IMPACT_DOCUMENTAIRE : NON
+
+
+
+-----------------------------------------------------------------------
+--- AUTEUR smichel S.MICHEL-PONNELLE   DATE  le 09/11/2004 a 15:02:44
+
+CORRECTION AL 2004-377
+   INTERET_UTILISATEUR : NON
+   TITRE cables de précontrainte et elements discrets
+   FONCTIONNALITE
+   on ne peut pas mettre en tension des câbles si des éléments discrets sont présents
+   dans le modèle. Ceci est dû au fait que l'option ADD_SIGM n'est pas présente dans les
+   catalogues des éléments discrets. On y remédie en ajoutant
+       ADD_SIGM            581   IN__   EEFGEGA  PEPCON1  EEFGEGA  PEPCON2
+                                 OUT__  EEFGEGA  PEPCON3
+   dans les catalogues :
+         gener_medit0.cata
+         gener_medit1.cata
+         gener_medtr0.cata
+         gener_medtr1.cata
+
+
+   RESU_FAUX_VERSION_EXPLOITATION   :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT  :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   OUI
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION :
+   etude de Sechaud&Metz
+   DETAILS
+   NB_JOURS_TRAV  : 0.5
+------------------------------------------------------------------------------
+CORRECTION AL 2004-337
+   INTERET_UTILISATEUR : NON
+   POUR LE COMPTE DE Y. Le Pape
+   TITRE BETON_UMLV_FP
+   FONCTIONNALITE
+   il y avait une erreur d'un facteur 2 sur les termes de cisaillement dans la
+   matrice de Hooke. Les résultats étaient donc faux lorsque le cisaillement
+   était activé.
+   RESU_FAUX_VERSION_EXPLOITATION   :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT  :   OUI   DEPUIS : 7.0.4
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION :
+   Yann restituera un cas-test très prochainement
+   DETAILS
+   modification de lcumme.f
+   NB_JOURS_TRAV  : 1
+------------------------------------------------------------------------------
+
+REALISATION EL 2004-243
+   INTERET_UTILISATEUR : OUI
+   POUR LE COMPTE DE Y. Le Pape
+   TITRE Fluage BETON_UMLV_FP, prise en compte du fluage de dessiccation et du
+   retrait thermique
+
+   FONCTIONNALITE
+     La loi de comportement BETON_UMLV_FP modélise le fluage propre du béton.
+     La réalisation d'un calcul d'enceinte nécessite de prendre en compte toute
+     les composantes de déformations différées (retrait thermique, retrait
+     endogène et de dessiccation - cf. EL 2004-180 -, fluage propre et fluage
+     de dessiccation.
+     L'évolution réalisée consiste à prendre en compte le retrait thermique et
+     le fluage de dessiccation (loi de BAZANT_FD)
+
+
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC R : R7.01.06
+     DOC_V : V6.04.180 SSNV180 - Prise en compte de la dilatation thermique et du fluage de
+     dessiccation dans le modèle BETON_ULMV_FP
+
+   VALIDATION
+     nouveau cas-test : SSNV180 (solution numérique obtenue avec Scilab 2.7.2,
+     1 modélisation : 3D)
+
+   DETAILS
+   - modification de defi_materiau.capy pour ajouter le paramètre facultatif ETA_FD de
+     la loi BAZANT (LAMBDA=1/ETA_FD).
+   - modification de lcumfp.f (routine principale de la loi de comportement)
+     pour ajouter la récupération éventuelle de ETA_FD et le branchement de la
+     déformation de fluage de dessiccation.
+   - ajout de lcumfb.f qui calcul les matrices de fluage pour la loi de fluage de
+     dessiccation de BAZANT
+   - modification de lcummd.f (calcul des matrices de fluage total) et de lcumsf.f
+     (sauvegarde des variabmes internes) pour permettre le branchement de lcumfb.f
+   - pour la dilatation thermique : passage de TM,TP,TREF comme parametre de la loi
+      lcumfp appelée par nmcomp
+
+   NB_JOURS_TRAV  : 3.5
+------------------------------------------------------------------------------
+
+CORRECTION AL 2004-390
+   INTERET_UTILISATEUR : NON
+   TITRE loi de comportement VISC_ISOT_TRAC
+   FONCTIONNALITE
+ Lors d'un calcul avec la loi de comportement VISC_ISOT_TRAC,
+ il arrive que le code s'arrête en erreur fatale pour cause de : "Floating point
+ exception". Cet arrêt a lieu lorsqu'on calcule une meilleure borne que le DPplastique :
+ DPvp = DT*EPSI0*SINH(FPLAS/SIGM0)**COEFM, au moment du calcul de la puissance.
+ Lorsque le problème survient, le calcul de DPvp ne donnera pas une meilleure borne que
+ le cas purement plastique, on propose donc, avant de faire le calcul de DPvp de s'assurer
+ que celui-ci donnera une valeur plus petite que le DPplastique.
+
+   RESU_FAUX_VERSION_EXPLOITATION   :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT  :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION :
+   passage de l'étude d'A. Parrot ayant exhibé cette erreur fatale
+   DETAILS
+   ajout d'un test dans calcdp.
+   NB_JOURS_TRAV  : 0.5
+------------------------------------------------------------------------------
+CORRECTION AL 2004-392
+   INTERET_UTILISATEUR : NON
+   TITRE FULL_MECA_ELAS avec les barres
+   FONCTIONNALITE
+   Le calcul SANDIA plantait avec ce message :
+    <E> <STAT_NON_LINE> <TECAC2> LE PARAMETRE:PVARIMP  N'EST PAS UN PARAMETRE DE
+     L'OPTION:FULL_MECA_ELAS   POUR LE TYPE_ELEMENT: MECA_BARRE
+
+   Après examen du catalogue gener_mebar1.cata, il s'avère que le couple
+   ZVARIPG  PVARIMP est absent de l'option FULL_MECA_ELAS. On le rajoute.
+
+   RESU_FAUX_VERSION_EXPLOITATION   :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT  :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION :
+   passage de l'étude ayant mis en avant le problème
+   DETAILS
+   NB_JOURS_TRAV  : 0.5
+------------------------------------------------------------------------------
+ REALISATION EL 2004-232
+   INTERET_UTILISATEUR : NON
+   TITRE AOM Mazars et Deborst
+   FONCTIONNALITE
+   L'utilisateur avait réalisé 2 maillages pour modéliser une tour aéroréfrigérante :
+   l'un avec des éléments 3D, l'autre avec des éléments coque. Le calcul 3D converge
+   alors que le calcul en coque_3D diverge.
+   Première remarque : il n'est pas nécessaire d'utiliser Deborst avec Mazars car le
+   traitement C_PLAN est fait. La convergence est toutefois similaire dans les 2 cas.
+   Deuxième remarque : le problème de convergence est observé dès le premier pas de temps
+   avec le chargement suivant
+   - Conditions aux limites
+   - pesanteur
+   - gradient thermique
+   En enlevant le gradient thermique, le calcul avec les coques converge mais il y a
+   une série d'éléments (mailles 1 à 56) où l'endommagement vaut entre 0.85 et0.96. Ce
+   qui est beaucoup en 1 pas de temps ! Dans le calcul 3D, l'endommagement est
+   parfaitement nul avec ce chargement. Le problème n'est donc lié au modèle de Mazars
+   mais plutôt à un problème de modélisation puisque les 2 modélisations ne sont
+   pas identiques. Il conviendrait donc de regarder avec plus de précisions
+   les conditions aux limites appliquées sur le modèle coque et les données rentrées
+   dans AFFE_CARA_ELEM.
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   NON
+   VALIDATION
+   IMPACT_DOCUMENTAIRE : NON
+   DETAILS
+   NB_JOURS_TRAV  : 1.
+------------------------------------------------------------------------------
+REALISATION EL 2004-244
+   INTERET_UTILISATEUR : OUI
+   TITRE ENDO_ISOT_BETON
+
+   FONCTIONNALITE
+   On inclut le retrait de dessiccation et le retrait endogène dans la loi de comportement
+   ENDO_ISOT_BETON de telle sorte que EPSE = EPS - EPSth - EPSrd - EPSend
+
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC R : R7.01.04
+     DOC_V : V3.06.103 ajout d'1 modélisation
+
+   VALIDATION
+   on ajoute 1 modélisation au cas-test ssla103
+   DETAILS
+    - nmcomp/lcldsb : ajout des paramètres sechm,sechp,sref,hydrm et hydrf
+    - calcul des déformations de retrait dans lcldsb
+
+   NB_JOURS_TRAV  : 0.5
+------------------------------------------------------------------------------
+
+
+-----------------------------------------------------------------------
+--- AUTEUR vabhhts J.PELLET   DATE  le 09/11/2004 a 09:55:59
+
+------------------------------------------------------------------------------
+CLASSEMENT SANS SUITE AL 2004-074
+   NB_JOURS_TRAV : 0.3
+   INTERET_UTILISATEUR : NON
+   TITRE  "Contact méthode continue : beaucoup de temps 'system'"
+   FONCTIONNALITE
+   Le test sdnl111e consomme beaucoup de temps "system" (plus que du temps "user"! )
+   Pourquoi ?
+
+   Mickaël Abbas avait déjà remarqué que ce temps system était lié à la renumérotation METIS.
+
+   Je l'ai effectivement constaté (avec les sources d'aujourd'hui).
+
+   Pour ce test (sdnl111e) :
+                           user          system       total
+   MULT_FRONT / METIS      530s           776s        1306
+   MULT_FRONT / MDA        824s            15s         840
+   LDLT       / SANS       770s            19s         789
+
+   Ce test est particulier : il s'agit d'un petit maillage et de la commande DYNA_NON_LINE.
+   Il y a de nombreux pas de temps et de nombreuses itérations de contact (méthode continue).
+   La méthode de contact "continue" qui change la connectivité du modèle au cours des réappariements
+   exige donc de recommencer l'étape "NUME_DDL" à chaque itération.
+   L'exécutable Métis est ainsi appelé 2445 fois dans ce test.
+
+   L'utilisation de Metis se fait via des fichiers (en entrée et en sortie) qui sont lus et écrits
+   par l'exécutable indépendant "onmetis".
+
+   On peut penser que les temps "system" est lié à ces écritures (et lectures) dans des fichiers
+   qu'il faut à chaque fois "ouvrir" et "fermer".
+
+   Si l'on considère que tout le temps system du test est consommé par les 2445 appels à Metis,
+   chaque appel ne coute que  0.3s , ce qui reste acceptable.
+
+   En résumé, le temps "system" anormalement élévé pour ce test, vient du fait que MULT_FRONT/METIS
+   (le solveur par défaut) n'est pas le meilleur solveur pour résoudre les petits problèmes de
+   contact avec la méthode "continue". Il vaut mieux alors utiliser RENUM='MDA' (voire LDLT, RENUM='SANS').
+
+   Je propose donc de classer cette fiche "sans suite".
+
+   remarque :
+   -----------
+   Dans la réponse préliminaire, on se demandait s'il ne faudrait pas réécrire l'appel
+   à Metis en passant directement les tableaux du fortran au C (sans passer par des fichiers).
+   Je ne le fais pas car je pense que cette décision relève plus de l'architecture souhaitée
+   (sources Metis intégrés dans Code_Aster ou exécutable indépendant) que d'un problème de performance
+   qui ne touche que les petits tests (académiques).
+
+   Mathieu Courtois penchait pour une "intégration" des sources metis dans Code_Aster. Si l'EDA
+   le souhaite, on peut émettre une fiche à réaliser en 2005.
+
+   IMPACT_DOCUMENTAIRE : NON
+
+------------------------------------------------------------------------------
+CLASSEMENT SANS SUITE AL 2004-288
+   NB_JOURS_TRAV : 0.3
+   INTERET_UTILISATEUR : NON
+   TITRE  "Contact méthode continue : on ne peut pas utiliser LDLT/RENUM=RCMK"
+   FONCTIONNALITE
+   C'est exact !
+   La méthode "continue" nécessite de recalculer le profil de la matrice pour tenir
+   compte du changement de connectivité lié à l'évolution du contact (glissement
+   des surfaces de contact en vis à vis).
+   Vu la programmation de la "fonction NUME_DDL" (assez embrouillée actuellement !)
+   nous avons fait le choix de "tout" recalculer (numérotation des inconnues et
+   profil de stockage) à chaque fois. Si l'étape de renumérotation (RCMK)
+   conduit à une numérotation des inconnues différentes (ce qui doit arriver lorsque
+   les surfaces de contact ont suffisamment glissé), le code s'arrête avec le
+   message "LES DDLS ONT BOUGE". Il faut en effet arrêter le code car il existe dans
+   STAT_NON_LINE plusieurs routines qui suppossent que d'une iération à l'autre, les
+   inconnues sont numérotées de la même façon. Par exemple, quand on "somme" des
+   objets ".VALE" sans controle.
+
+   Bien sur, on pourrait faire des choses :
+   1) recalculer le profil de la matrice en conservant l'ordre des ddls
+   2) faire un VTCOPY après chaque résolution pour rétablir la numérotation initiale
+   3) ...
+
+   mais je pense que le solveur LDLT a "vécu" et qu'il ne mérite pas tant d'efforts !
+
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_U : U4.44.01
+     EXPL_: dire que pour la méthode "continue" du contact, si on souhaite utiliser
+     le solveur LDLT, il faut imposer RENUM='SANS'
+
+------------------------------------------------------------------------------
+CORRECTION AL 2004-319
+   NB_JOURS_TRAV : 0.5
+   INTERET_UTILISATEUR : NON
+   TITRE programmation de LIRE_RESU au format MED
+   FONCTIONNALITE
+     Comme le dit très justement l'auteur de la fiche, le mot clé  NOM_CHAM
+     de plus haut niveau de la commande LIRE_RESU est inutile au format MED
+     (cat NOM_CHAMP est obligatoire dans le mot clé facteur FORMAT_MED)
+     On supprime donc ce mot clé.
+   DETAILS
+     Je modifie les 6 tests qui faisaient du LIRE_RESU au format MED
+     pour leur retirer le mot clé inutile.
+     Etant en conflit de notation avec M. Courtois sur yyyy106a,b, ce
+     dernier m'autorise à supprimer dans ces tests les appels à IMPR_COURBE
+     Liste des fichiers modifiés:
+       op0150.f
+       lire_resu.capy
+       ssnp115b.comm  yyyy106a.comm  yyyy106b.comm  zzzz161a.comm
+       zzzz162a.comm  zzzz162b.comm
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   VALIDATION
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_U : U2.07.01
+     EXPL_: supprimer le mot cle NOM_CHAM de plsu haut niveau pour le format MED
+
+------------------------------------------------------------------------------
+RESTITUTION HORS AREX   (H7)
+   NB_JOURS_TRAV : 0.3
+   INTERET_UTILISATEUR : NON
+   FONCTIONNALITE
+     PROJ_CHAMP se plante si on utilise plus de 2 occurences du mot clé
+     facteur VIS_A_VIS.
+     On corrige la routine PJEFTE.
+   DETAILS
+     Liste des fichiers modifiés:  pjefte.f
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  OUI
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+
+------------------------------------------------------------------------------
+REALISATION EL 2004-245
+   NB_JOURS_TRAV : 10
+   INTERET_UTILISATEUR : OUI
+   TITRE  "PROJ_CHAMP pour projeter des cham_elem 'ELEM' ou 'ELNO'"
+   FONCTIONNALITE
+     On souhaite que la commande PROJ_CHAMP sache aussi projeter les champs
+     CHAM_ELEM/ELNO et CHAM_ELEM/ELEM.
+     Ce développement permet par exemple de lire un evol_char contenant des
+     champs de pression ELEM (ou ELNO) (produit par un code de thermo-hydraulique)
+     et de projeter cet evol_char sur un maillage "mécanique".
+     Demande faite oralement par M. Courtois dans le cadre du projet Nicodeme
+     (suite EL 2004-181)
+
+     Suite à ce développement, la commande PROJ_CHAMP sait donc projeter
+     (avec la méthode 'ELEM'):
+       - les champs aux noeuds              (NOEU)
+       - les champs par éléments aux noeuds (ELNO)
+       - les champs par éléments constants  (ELEM)
+
+
+Le principe de projection retenu est le suivant :
+-------------------------------------------------
+Dans la structure de données à projeter, on boucle sur les NOM_CHAM demandés (tous par défaut).
+Si le champ est de type NOEU ou ELEM ou ELNO, on le projette pour créer dans la nouvelle structure
+de données résultat, un champ similaire (NOEU/ELEM/ELNO) et de même nom (NOM_CHAM).
+
+Remarques importantes :
+1) cette logique de projection des CHAM_ELEM est adaptée au cas où l'utilisateur souhaite changer
+   de maillage mais en en conservant la nature (2D, 3D "coque"), car les cham_elem des 2 modèles
+   ont les mêmes composantes.
+2) en revanche, cette projection des CHAM_ELEM est inutilisable par MACR_LIGN_COUPE (par exemple) car
+   alors, on veut projeter un cham_elem de type "3D" (par exemple) sur un modele de type "barre" et
+   les composantes du champ ne coincident pas ! Par exemple, pour un champ SIGM_ELNO_DEPL, le modele de
+   barre attend des efforts généralisés : N, ...
+
+Numériquement, que fait-on ?
+----------------------------
+- Champs de type NOEU : pour chaque noeud du maillage 2, on cherche la maille du maillage 1 qui contient
+ce noeud et on interpole les valeurs portées par cette maille.
+- Champs de type ELNO : pour chaque maille du maillage 2, on parcourt les noeuds de cette maille et on
+ calcule la valeur de chaque noeud comme on le ferait pour un champ de type NOEU. Le résultat de cette
+ projection est donc (par construction), un champ ELNO qui est continu entre les éléments.
+ - Champs de type ELEM (constant par maille) : la valeur portée par une maille du maillage 2 est obtenue
+ par moyenne arithmétique des valeurs portées par ses noeuds (calculées comme pour un champ ELNO).
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_U : U4.72.05
+     EXPL_: ajouter les nouvelles possibilités de PROJ_CHAMP à sa doc U
+   VALIDATION
+   modification du test zzzz110a pour qu'il projette :
+      - un champ ELNO (SIGM_ELNO_DEPL)
+      - un champ ELEM (EPOT_ELEM_DEPL)
+
+   DETAILS
+    Bien entendu commme la projection des champs interpole les valeurs numériques,
+    elle ne s'applique qu'aux champs réels ou complexes (et pas aux champs d'entiers
+    ou de chaines de caractères).
+
+    Limitation actuelle : on ne traite que les SD_RESULTAT de type "evol_XXXX" mais cette limite
+    pourrait aisément être levée.
+
+    Remarque : On peut parfois être surpris par le résultat de la projection :
+
+    Par exemple, quand on projette un champ ELNO sur le même maillage que celui associé au champ
+    initial, on ne retrouve pas (en général) le champ initial. La raison en est que, par nature,
+    les champs par éléments ne sont pas continus entre les éléments.Le champ ELNO projeté est lui
+    toujours continu. Lorsque l'on cherche la valeur du champ sur la frontière entre 2 éléments,
+    on peut (au hasard) prendre la valeur portée par un élément ou la valeur portée par son voisin.
+
+
+   Liste des fichiers modifiés:
+     cesimp.f  cesprj.f  cnsprj.f  mpmod2.f  op0166.f
+     pj2dtr.f  pj3dtr.f  pjefch.f  pjefpr.f  pjefte.f  pjfuco.f
+
+------------------------------------------------------------------------------
+CORRECTION AL 2004-389
+   NB_JOURS_TRAV : 0.5
+   INTERET_UTILISATEUR : OUI
+   TITRE   "CREA_CHAMP / OPERATION='DISC' : résultats parfois faux"
+   FONCTIONNALITE
+   En résumé : Résultats FAUX si :
+   -------------------------------
+   CH2= CREA_CHAMP(OPERATION='DISC', TYPE_CHAM= XXXX  , CHAM_GD= CH1, ...
+    avec :
+        - XXXX = ELNO_xxx ou ELGA_xxx   avec  type(CH1)= CHAM_ELEM/ELEM  ou  CARTE
+        - XXXX = ELEM_xxx               avec  type(CH1)= CHAM_ELEM/ELNO  ou  CHAM_ELEM/ELGA
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  OUI   DEPUIS : 6.0.0
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  OUI   DEPUIS : 7.0.0
+   RESTITUTION_VERSION_EXPLOITATION  :  OUI
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION : 1 petit essai chez moi
+   DETAILS
+   Correction de 2 fautes de frappe dans la routine CESCES lorsque l'on transforme un cham_elem_s
+    'ELEM' en 'ELNO/ELGA' (ou l'inverse). Dans les 2 cas, les valeurs du champ résultat étaient toutes
+    fausses !
+
+    Cette fonctionalité mal programmée était utilisée dans la commande CREA_CHAMP/OPERATION='DISC' dans
+    les cas suivants :
+        CART -> ELNO/ELGA
+        ELEM -> ELNO/ELGA
+        ELNO/ELGA -> ELEM
+
+    J'ai vérifié : il n'y avait aucun cas test de ces fonctionalités. Ce qui n'a rien de bien étonnant
+    car :
+      a) il y a très peu de champs d'Aster qui soient naturellement "ELEM". En effet de tels champs
+      sont en principe des champs contenant le résultat d'une intégrale sur l'élément. Par exemple :
+      EPOT_ELEM_DEPL. Ce serait une erreur d'utiliser l'operation 'DISC' sur de tels champs car il
+      n'y a pas lieu de les interpoler.
+      b) il n'y a pas beaucoup d'intéret à transformer les CARTES en cham_elem ELNO (ou ELGA) : on perd
+      de la place inutilement.
+
+   Liste des fichiers modifiés: cesces.f
+
+------------------------------------------------------------------------------
+REALISATION EL 2003-071
+   NB_JOURS_TRAV : 1
+   INTERET_UTILISATEUR : OUI
+   TITRE "CREA_MAILLAGE/ECLA_PG et CREA_RESU/ECLA_PG à résorber"
+   FONCTIONNALITE
+   La demande de résorption avait été émise avec un double but :
+      1) permettre de faire "ECLA_PG" sur un groupe de mailles
+      2) rassembler dans une seule commande les 2 parties de la commande
+         actuellement disponibles dans CREA_MAILLAGE et CREA_RESU.
+
+   Cette demande est malheureusement impossible à réaliser actuellement :
+   une commande fortran ne peut avoir qu'un seul concept "out" et la commande
+   préssentie doit en créer 2 : une SD_RESULTAT et un MAILLAGE (pour la visualisation).
+
+   D'autre part, la possibilité de post-traiter uniquement une liste de mailles
+   a déjà été introduite dans la version 7.2.25. L'objectif 1 est donc déjà possible.
+
+   Cela permet de gagner du temps CPU et de l'espace disque pour ce post-traitement.
+
+   Pour gagner en simplicité d'utilisation (et limiter le risque d'erreur d'incohérences
+   entre les 2 commandes), on décide de développer une nouvelle macro commande.
+
+   Au lieu de taper :
+
+   MA2=CREA_MAILLAGE(  MAILLAGE=MAIL,NOM_CHAM = ('FLUX_ELGA_TEMP',),
+               ECLA_PG=_F( MODELE = MOTH, GROUP_MA=('G1','G7'), SHRINK = 0.80) )
+
+   U2B=CREA_RESU( OPERATION='ECLA_PG', TYPE_RESU='EVOL_THER',
+               ECLA_PG=_F(  MODELE_INIT = MOTH, GROUP_MA=('G1','G7'),
+                            RESU_INIT = TEMPE,
+                            MAILLAGE = MA2,
+                            NOM_CHAM = ('FLUX_ELGA_TEMP',),
+                            INST = (0.,10.,)) )
+
+
+   on peut maintenant taper :
+   MACR_ECLA_PG(  RESU_INIT=TEMPE, MODELE_INIT=MOTH, GROUP_MA=('G1','G7'),
+                  NOM_CHAM = ('FLUX_ELGA_TEMP',),INST = (0.,10.,),
+                  RESULTAT = CO("U2B"), MAILLAGE = CO("MA2B"),)
+
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_U: U4.44.99 : nouvelle commande MACR_ECLA_PG
+               EXPL_: retirer de CREA_RESU et CREA_MAILLAGE les elements de doc concernant ECLA_PG
+                      et les rassembler dans un nouveau document.
+            U4.44.12 (CREA_RESU)	
+               EXPL_:  Dans CREA_MAILLAGE et CREA_RESU faire référence au nouveau document.
+            U4.23.02 (CREA_MAILLAGE)
+               EXPL_:  Dans CREA_MAILLAGE et CREA_RESU faire référence au nouveau document.
+
+   VALIDATION : modification du test tpll01b pour qu'il utilise la nouvelle commmande.
+
+   DETAILS
+   1) j'ai du assouplir la commande CREA_MAILLAGE :
+      ne plus imposer le mot clé MAILLAGE si ECLA_PG : cela évite à l'utilisateur de
+      fournir un argument inutile.
+   2) j'ai du modifier le nom d'un concept dans le test tpll01b :
+        le chemin de dépouillement qui s'appelait "CO" a été renommé CHEM1
+        car le nom "CO" entrait en collision avec le "CO" qui permet de "typer"
+        le résultat des macro_commandes. J'ai émis une AL concernant ce problème.
+
+   Liste des fichiers modifiés:
+     eclpgm.f  eclpgr.f
+     macr_ecla_pg_ops.py   crea_maillage.capy    macr_ecla_pg.capy
+     tpll01b.comm
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+ CASTEST AJOUT feti003a                      boiteau O.BOITEAU          239    239      0
+ CASTEST AJOUT feti003b                       assire A.ASSIRE           244    244      0
+ CASTEST AJOUT sdnl111f                       mabbas M.ABBAS            212    212      0
+ CASTEST AJOUT ssla103e                      smichel S.MICHEL-PONNELLE    175    175      0
+ CASTEST AJOUT sslp104b                       durand C.DURAND           129    129      0
+ CASTEST AJOUT ssnp127a                       godard V.GODARD           154    154      0
+ CASTEST AJOUT ssnp127b                       godard V.GODARD           154    154      0
+ CASTEST AJOUT ssnv175a                       godard V.GODARD           147    147      0
+ CASTEST AJOUT ssnv176e                       godard V.GODARD           395    395      0
+ CASTEST AJOUT ssnv177a                       godard V.GODARD           248    248      0
+ CASTEST AJOUT ssnv180a                      smichel S.MICHEL-PONNELLE    278    278      0
+ CASTEST AJOUT wtnp112a                       granet S.GRANET           257    257      0
+ CASTEST AJOUT wtnp112b                       granet S.GRANET           274    274      0
+ CASTEST AJOUT wtnp112c                       granet S.GRANET           284    284      0
+ CASTEST AJOUT wtnp112d                       granet S.GRANET           262    262      0
+ CASTEST AJOUT wtnp113a                       granet S.GRANET           437    437      0
+ CASTEST AJOUT wtnp113b                       granet S.GRANET           452    452      0
+ CASTEST MODIF sdll122a                     lebouvie F.LEBOUVIER        146      4      3
+ CASTEST MODIF sdll130b                     lebouvie F.LEBOUVIER        298      3      1
+ CASTEST MODIF sdll132a                     lebouvie F.LEBOUVIER        653     40     36
+ CASTEST MODIF sdnl111e                       mabbas M.ABBAS            179      2      2
+ CASTEST MODIF sdnl130a                     lebouvie F.LEBOUVIER        135      4      2
+ CASTEST MODIF ssll102j                     lebouvie F.LEBOUVIER        119      4      4
+ CASTEST MODIF ssll111a                     lebouvie F.LEBOUVIER        201      5      3
+ CASTEST MODIF sslp100c                      nicolas O.NICOLAS          224     19     18
+ CASTEST MODIF sslp100d                      nicolas O.NICOLAS          428     24     22
+ CASTEST MODIF sslp104a                       durand C.DURAND           229     25     19
+ CASTEST MODIF sslv07a                       g8bhhxd X.DESROCHES        464      5      4
+ CASTEST MODIF sslv07b                       g8bhhxd X.DESROCHES        146      9      5
+ CASTEST MODIF sslv110a                      galenne E.GALENNE          509     47     47
+ CASTEST MODIF sslv110b                      galenne E.GALENNE          273     21     21
+ CASTEST MODIF sslv110c                      galenne E.GALENNE          376     34     34
+ CASTEST MODIF sslv110d                      galenne E.GALENNE          286     23     23
+ CASTEST MODIF sslv110e                      galenne E.GALENNE          364      4      4
+ CASTEST MODIF sslv114b                      g8bhhxd X.DESROCHES        153     13      5
+ CASTEST MODIF sslv130b                      g8bhhxd X.DESROCHES        371      5      5
+ CASTEST MODIF sslv130d                      g8bhhxd X.DESROCHES        391      6      6
+ CASTEST MODIF ssnl119a                     lebouvie F.LEBOUVIER        186      4      2
+ CASTEST MODIF ssnl119b                     lebouvie F.LEBOUVIER        193      4      2
+ CASTEST MODIF ssnl120a                     lebouvie F.LEBOUVIER        148      3      2
+ CASTEST MODIF ssnl122a                     lebouvie F.LEBOUVIER        340      2      1
+ CASTEST MODIF ssnl123a                     lebouvie F.LEBOUVIER        367      2      1
+ CASTEST MODIF ssnl127b                     lebouvie F.LEBOUVIER        149      6      4
+ CASTEST MODIF ssnl127c                     lebouvie F.LEBOUVIER        149      4      2
+ CASTEST MODIF ssnl128a                     lebouvie F.LEBOUVIER        566      2      1
+ CASTEST MODIF ssnp115b                      vabhhts J.PELLET           178      1      2
+ CASTEST MODIF ssnv125a                      jmbhh01 J.M.PROIX          651      1      1
+ CASTEST MODIF tpll01b                       vabhhts J.PELLET           182     20     17
+ CASTEST MODIF wtnp109a                       boyere E.BOYERE           143      6      8
+ CASTEST MODIF yyyy106a                      vabhhts J.PELLET           922      1     48
+ CASTEST MODIF yyyy106b                      vabhhts J.PELLET           748      1     42
+ CASTEST MODIF zzzz110a                      vabhhts J.PELLET           119     65     61
+ CASTEST MODIF zzzz120a                       durand C.DURAND           658     61     11
+ CASTEST MODIF zzzz120b                       durand C.DURAND           655     61     12
+ CASTEST MODIF zzzz161a                      vabhhts J.PELLET           227      1      2
+ CASTEST MODIF zzzz162a                      vabhhts J.PELLET           284      1      3
+ CASTEST MODIF zzzz162b                      vabhhts J.PELLET           222      1      3
+ CASTEST SUPPR mac3c01a.comm                 g8bhhxd X.DESROCHES        494      0    494
+CATALOGU MODIF typelem/gener_mebar1          smichel S.MICHEL-PONNELLE    193      3      3
+CATALOGU MODIF typelem/gener_medit0          smichel S.MICHEL-PONNELLE    159      3      1
+CATALOGU MODIF typelem/gener_medit1          smichel S.MICHEL-PONNELLE    165      3      1
+CATALOGU MODIF typelem/gener_medtr0          smichel S.MICHEL-PONNELLE    167      3      1
+CATALOGU MODIF typelem/gener_medtr1          smichel S.MICHEL-PONNELLE    199      3      1
+CATALOGU SUPPR commande/post_gouj2e           durand C.DURAND            23      0     23
+CATALOPY AJOUT commande/macr_ecla_pg         vabhhts J.PELLET            62     62      0
+CATALOPY MODIF commande/affe_cara_elem      lebouvie F.LEBOUVIER        426      3      1
+CATALOPY MODIF commande/affe_char_meca        durand C.DURAND           788     11      8
+CATALOPY MODIF commande/crea_maillage        vabhhts J.PELLET           136      5      2
+CATALOPY MODIF commande/defi_materiau        smichel S.MICHEL-PONNELLE   2759      2      1
+CATALOPY MODIF commande/defi_part_feti        assire A.ASSIRE            37     18      6
+CATALOPY MODIF commande/defi_part_ops         assire A.ASSIRE            36      6      7
+CATALOPY MODIF commande/dyna_non_line        nicolas O.NICOLAS          304      2      2
+CATALOPY MODIF commande/lire_resu            vabhhts J.PELLET           171      1      2
+CATALOPY MODIF commande/stat_non_line        nicolas O.NICOLAS          267      2      2
+ FORTRAN AJOUT algorith/calcms               jmbhh01 J.M.PROIX           82     82      0
+ FORTRAN AJOUT algorith/lcumfb               smichel S.MICHEL-PONNELLE    123    123      0
+ FORTRAN AJOUT calculel/arface                durand C.DURAND           127    127      0
+ FORTRAN AJOUT calculel/arlpnd                durand C.DURAND           526    526      0
+ FORTRAN AJOUT calculel/arlsup                durand C.DURAND           196    196      0
+ FORTRAN AJOUT calculel/cesprj               vabhhts J.PELLET           253    253      0
+ FORTRAN AJOUT calculel/coquno                durand C.DURAND           149    149      0
+ FORTRAN AJOUT calculel/elbord                durand C.DURAND           372    372      0
+ FORTRAN AJOUT calculel/nafint                durand C.DURAND           223    223      0
+ FORTRAN AJOUT calculel/nsommt                durand C.DURAND            38     38      0
+ FORTRAN AJOUT calculel/pjefch               vabhhts J.PELLET            88     88      0
+ FORTRAN AJOUT modelisa/arete3                durand C.DURAND            94     94      0
+ FORTRAN AJOUT modelisa/arlclr                durand C.DURAND           172    172      0
+ FORTRAN AJOUT modelisa/arlcol                durand C.DURAND            99     99      0
+ FORTRAN AJOUT modelisa/arlcpl                durand C.DURAND           465    465      0
+ FORTRAN AJOUT modelisa/arlfc1                durand C.DURAND           343    343      0
+ FORTRAN AJOUT modelisa/arlfc2                durand C.DURAND           392    392      0
+ FORTRAN AJOUT modelisa/arlfg                 durand C.DURAND           100    100      0
+ FORTRAN AJOUT modelisa/arlflt                durand C.DURAND           245    245      0
+ FORTRAN AJOUT modelisa/arlte                 durand C.DURAND           108    108      0
+ FORTRAN AJOUT modelisa/echmap                durand C.DURAND           167    167      0
+ FORTRAN AJOUT modelisa/echmc2                durand C.DURAND            69     69      0
+ FORTRAN AJOUT modelisa/echmc3                durand C.DURAND           477    477      0
+ FORTRAN AJOUT modelisa/exlim2               boiteau O.BOITEAU          311    311      0
+ FORTRAN AJOUT modelisa/intmad                durand C.DURAND           247    247      0
+ FORTRAN AJOUT modelisa/intmam                durand C.DURAND           349    349      0
+ FORTRAN AJOUT modelisa/noaret                durand C.DURAND           522    522      0
+ FORTRAN AJOUT modelisa/oriem2                durand C.DURAND           163    163      0
+ FORTRAN AJOUT modelisa/oriem3                durand C.DURAND           185    185      0
+ FORTRAN AJOUT modelisa/plcent                durand C.DURAND           113    113      0
+ FORTRAN AJOUT modelisa/plint2                durand C.DURAND           293    293      0
+ FORTRAN AJOUT modelisa/plint3                durand C.DURAND           622    622      0
+ FORTRAN AJOUT modelisa/pltri2                durand C.DURAND           231    231      0
+ FORTRAN AJOUT modelisa/pltri3                durand C.DURAND           155    155      0
+ FORTRAN AJOUT modelisa/plvol2                durand C.DURAND            96     96      0
+ FORTRAN AJOUT modelisa/plvol3                durand C.DURAND            68     68      0
+ FORTRAN AJOUT utilitai/prove2                durand C.DURAND            36     36      0
+ FORTRAN AJOUT utilitai/prove3                durand C.DURAND            41     41      0
+ FORTRAN MODIF algeline/alfeti               boiteau O.BOITEAU          551      3      3
+ FORTRAN MODIF algeline/mmprod                durand C.DURAND           245      1      1
+ FORTRAN MODIF algeline/mtprod                durand C.DURAND           245      1      1
+ FORTRAN MODIF algeline/preres               boiteau O.BOITEAU          181      2      2
+ FORTRAN MODIF algeline/resfet               boiteau O.BOITEAU          101      2      2
+ FORTRAN MODIF algeline/resoud               boiteau O.BOITEAU          192      2      2
+ FORTRAN MODIF algeline/tri                   durand C.DURAND           117      3      3
+ FORTRAN MODIF algeline/triins                durand C.DURAND            84      1      1
+ FORTRAN MODIF algeline/trirap                durand C.DURAND           122      1      1
+ FORTRAN MODIF algeline/vtcmbl               boiteau O.BOITEAU          376      7      3
+ FORTRAN MODIF algeline/vtcreb               boiteau O.BOITEAU          131      8      5
+ FORTRAN MODIF algeline/vtdefs               boiteau O.BOITEAU          158      8      4
+ FORTRAN MODIF algorith/arg126               nicolas O.NICOLAS          402      4      2
+ FORTRAN MODIF algorith/calcdp               smichel S.MICHEL-PONNELLE    124      8      5
+ FORTRAN MODIF algorith/calcme               smichel S.MICHEL-PONNELLE    856      2      2
+ FORTRAN MODIF algorith/cresol               boiteau O.BOITEAU          261     38     31
+ FORTRAN MODIF algorith/fetfiv               boiteau O.BOITEAU          188      6      1
+ FORTRAN MODIF algorith/fetggt               boiteau O.BOITEAU          208      1      1
+ FORTRAN MODIF algorith/feting               boiteau O.BOITEAU          192     10      6
+ FORTRAN MODIF algorith/fetinl               boiteau O.BOITEAU          236      1      1
+ FORTRAN MODIF algorith/fetrex               boiteau O.BOITEAU          194      1      1
+ FORTRAN MODIF algorith/fetrin               boiteau O.BOITEAU          500    166     23
+ FORTRAN MODIF algorith/fetsca               boiteau O.BOITEAU          156      2      2
+ FORTRAN MODIF algorith/gerpas               jmbhh01 J.M.PROIX          228     14      5
+ FORTRAN MODIF algorith/lcdsbe               smichel S.MICHEL-PONNELLE    379      4      3
+ FORTRAN MODIF algorith/lceib1               smichel S.MICHEL-PONNELLE    148     24     11
+ FORTRAN MODIF algorith/lcldsb               smichel S.MICHEL-PONNELLE    427     20      7
+ FORTRAN MODIF algorith/lcmmei               jmbhh01 J.M.PROIX          131     41     40
+ FORTRAN MODIF algorith/lcmmon               jmbhh01 J.M.PROIX          152      3      3
+ FORTRAN MODIF algorith/lcmmop               jmbhh01 J.M.PROIX          310     28     17
+ FORTRAN MODIF algorith/lcmmre               jmbhh01 J.M.PROIX          158      3      3
+ FORTRAN MODIF algorith/lcmmsg               jmbhh01 J.M.PROIX          389     16     13
+ FORTRAN MODIF algorith/lcmmvx               jmbhh01 J.M.PROIX           95      3      3
+ FORTRAN MODIF algorith/lcumfp               smichel S.MICHEL-PONNELLE    529     65     29
+ FORTRAN MODIF algorith/lcummd               smichel S.MICHEL-PONNELLE    125     10      3
+ FORTRAN MODIF algorith/lcumme               smichel S.MICHEL-PONNELLE    113      9      5
+ FORTRAN MODIF algorith/lcumsf               smichel S.MICHEL-PONNELLE    284      9      9
+ FORTRAN MODIF algorith/meacmv               boiteau O.BOITEAU          467      1      1
+ FORTRAN MODIF algorith/mestat               boiteau O.BOITEAU          305     64     69
+ FORTRAN MODIF algorith/mpmod2               vabhhts J.PELLET           398      3      2
+ FORTRAN MODIF algorith/nmcomp               smichel S.MICHEL-PONNELLE    673      4      3
+ FORTRAN MODIF algorith/nmcoup               smichel S.MICHEL-PONNELLE    185      2      2
+ FORTRAN MODIF algorith/nmpl3g                godard V.GODARD           690     10      8
+ FORTRAN MODIF algorith/nmvprk               jmbhh01 J.M.PROIX          337      6      3
+ FORTRAN MODIF algorith/numer2               boiteau O.BOITEAU          124      1      1
+ FORTRAN MODIF algorith/op0166               vabhhts J.PELLET           245      2      2
+ FORTRAN MODIF algorith/projco                boyere E.BOYERE           185      8      1
+ FORTRAN MODIF algorith/rdif01               jmbhh01 J.M.PROIX          120      7      5
+ FORTRAN MODIF algorith/rk21co               jmbhh01 J.M.PROIX          108     10      8
+ FORTRAN MODIF assembla/assmam               boiteau O.BOITEAU          909    139     43
+ FORTRAN MODIF assembla/assvec               boiteau O.BOITEAU          839    123     42
+ FORTRAN MODIF assembla/numero               boiteau O.BOITEAU          317     63     36
+ FORTRAN MODIF calculel/arlpan                durand C.DURAND           188     90     29
+ FORTRAN MODIF calculel/bissec                durand C.DURAND           344      5      9
+ FORTRAN MODIF calculel/boite                 durand C.DURAND           406     42     17
+ FORTRAN MODIF calculel/boitea                durand C.DURAND           122      1      1
+ FORTRAN MODIF calculel/boitel                durand C.DURAND           201      5     21
+ FORTRAN MODIF calculel/boiteq                durand C.DURAND           472      5      5
+ FORTRAN MODIF calculel/cerne                 durand C.DURAND            69      7     17
+ FORTRAN MODIF calculel/cesces               vabhhts J.PELLET           304      3      3
+ FORTRAN MODIF calculel/cesimp               vabhhts J.PELLET           211      5      1
+ FORTRAN MODIF calculel/cnsprj               vabhhts J.PELLET           180     26      5
+ FORTRAN MODIF calculel/conoeu                durand C.DURAND            92      7     94
+ FORTRAN MODIF calculel/cotang                durand C.DURAND           433      1      1
+ FORTRAN MODIF calculel/dedans                durand C.DURAND            79     19     48
+ FORTRAN MODIF calculel/eclpgm               vabhhts J.PELLET           364     20      8
+ FORTRAN MODIF calculel/forme0                durand C.DURAND           570      1      1
+ FORTRAN MODIF calculel/forme1                durand C.DURAND          1086      1      1
+ FORTRAN MODIF calculel/forme2                durand C.DURAND           218      1      1
+ FORTRAN MODIF calculel/forme3                durand C.DURAND           130      1      1
+ FORTRAN MODIF calculel/forme4                durand C.DURAND            67      4      3
+ FORTRAN MODIF calculel/formen                durand C.DURAND           181     37     55
+ FORTRAN MODIF calculel/grmama                durand C.DURAND           197      1      1
+ FORTRAN MODIF calculel/hasard                durand C.DURAND            82      1      1
+ FORTRAN MODIF calculel/lisnor                durand C.DURAND           255     23     33
+ FORTRAN MODIF calculel/mgauss                durand C.DURAND           170      1      2
+ FORTRAN MODIF calculel/mgaust                durand C.DURAND           164      1      1
+ FORTRAN MODIF calculel/minclu                durand C.DURAND           122     16     19
+ FORTRAN MODIF calculel/minter                durand C.DURAND           119     16     29
+ FORTRAN MODIF calculel/noareq                durand C.DURAND           281      1      1
+ FORTRAN MODIF calculel/nopan                 durand C.DURAND           567    104    104
+ FORTRAN MODIF calculel/npgaus                durand C.DURAND           103      1      1
+ FORTRAN MODIF calculel/panarq                durand C.DURAND           155     25     25
+ FORTRAN MODIF calculel/panno                 durand C.DURAND           163     16     16
+ FORTRAN MODIF calculel/pgaus1                durand C.DURAND            74      1      1
+ FORTRAN MODIF calculel/pgaus2                durand C.DURAND           271      1      1
+ FORTRAN MODIF calculel/pgaus3                durand C.DURAND           453      1      1
+ FORTRAN MODIF calculel/pgausn                durand C.DURAND            68      1      1
+ FORTRAN MODIF calculel/pgauss                durand C.DURAND            59      1      1
+ FORTRAN MODIF calculel/pj2dtr               vabhhts J.PELLET           208      4      2
+ FORTRAN MODIF calculel/pj3dtr               vabhhts J.PELLET           279      5      3
+ FORTRAN MODIF calculel/pjefpr               vabhhts J.PELLET           152     56     69
+ FORTRAN MODIF calculel/pjefte               vabhhts J.PELLET           293     13      9
+ FORTRAN MODIF calculel/pjfuco               vabhhts J.PELLET           153     10      4
+ FORTRAN MODIF calculel/refere                durand C.DURAND           132     39     33
+ FORTRAN MODIF calculel/resloc               g8bhhxd X.DESROCHES        283      1     15
+ FORTRAN MODIF calculel/smplx2                durand C.DURAND           145      1      1
+ FORTRAN MODIF calculel/sommet                durand C.DURAND            65      1      1
+ FORTRAN MODIF calculel/tangnt                durand C.DURAND           184      1      1
+ FORTRAN MODIF elements/creso1               boiteau O.BOITEAU          196     41     19
+ FORTRAN MODIF elements/fetcrf               boiteau O.BOITEAU          946     73    244
+ FORTRAN MODIF elements/te0365                mabbas M.ABBAS            595      2      2
+ FORTRAN MODIF elements/te0375               g8bhhxd X.DESROCHES        819      8     11
+ FORTRAN MODIF modelisa/arlapp                durand C.DURAND           413    236    128
+ FORTRAN MODIF modelisa/arlas0                durand C.DURAND           111      1      1
+ FORTRAN MODIF modelisa/arlas1                durand C.DURAND            94     53     16
+ FORTRAN MODIF modelisa/arlas2                durand C.DURAND           134     82     31
+ FORTRAN MODIF modelisa/arlas3                durand C.DURAND           151     83     98
+ FORTRAN MODIF modelisa/arlas4                durand C.DURAND           226    140    171
+ FORTRAN MODIF modelisa/arlass                durand C.DURAND            65      1      1
+ FORTRAN MODIF modelisa/arlch0                durand C.DURAND           138     56     24
+ FORTRAN MODIF modelisa/arlch1                durand C.DURAND            99     24     13
+ FORTRAN MODIF modelisa/arlch2                durand C.DURAND           152     54     34
+ FORTRAN MODIF modelisa/arlch3                durand C.DURAND           100     18     25
+ FORTRAN MODIF modelisa/arlch4                durand C.DURAND           163     40     72
+ FORTRAN MODIF modelisa/arlcha                durand C.DURAND           311     89     51
+ FORTRAN MODIF modelisa/arldeg                durand C.DURAND            81     12     10
+ FORTRAN MODIF modelisa/arlfam                durand C.DURAND           284    112    129
+ FORTRAN MODIF modelisa/arlmax                durand C.DURAND           107     19     14
+ FORTRAN MODIF modelisa/arlver                durand C.DURAND           269     64     49
+ FORTRAN MODIF modelisa/caarle                durand C.DURAND           499    310    152
+ FORTRAN MODIF modelisa/drz02d               g8bhhxd X.DESROCHES        367     12      2
+ FORTRAN MODIF modelisa/drz03d               g8bhhxd X.DESROCHES        842     12      2
+ FORTRAN MODIF modelisa/drz12d               g8bhhxd X.DESROCHES        295     12      2
+ FORTRAN MODIF modelisa/drz13d               g8bhhxd X.DESROCHES        356     12      2
+ FORTRAN MODIF modelisa/nocoqu                durand C.DURAND           185      3      4
+ FORTRAN MODIF modelisa/pmfd00              lebouvie F.LEBOUVIER        751    339     19
+ FORTRAN MODIF modelisa/tmacoq                durand C.DURAND            94      1      1
+ FORTRAN MODIF prepost/cncinv                 durand C.DURAND           210      1      1
+ FORTRAN MODIF prepost/gilir2                cibhhlv L.VIVAN            182      3      4
+ FORTRAN MODIF prepost/irchme                nicolas O.NICOLAS          215     13      5
+ FORTRAN MODIF prepost/irmaca                cibhhlv L.VIVAN            618      6      2
+ FORTRAN MODIF utilitai/copisd               vabhhts J.PELLET           484      2      1
+ FORTRAN MODIF utilitai/detrsd               vabhhts J.PELLET           496      2      1
+ FORTRAN MODIF utilitai/op0150               vabhhts J.PELLET           824    131    132
+ FORTRAN SUPPR calculel/decoup                durand C.DURAND           348      0    348
+ FORTRAN SUPPR calculel/divise                durand C.DURAND           498      0    498
+ FORTRAN SUPPR calculel/divitr                durand C.DURAND           354      0    354
+ FORTRAN SUPPR calculel/divsel                durand C.DURAND           141      0    141
+ FORTRAN SUPPR calculel/locali                durand C.DURAND           110      0    110
+ FORTRAN SUPPR calculel/posref                durand C.DURAND            86      0     86
+ FORTRAN SUPPR elements/obtemp               boiteau O.BOITEAU          485      0    485
+ FORTRAN SUPPR modelisa/arlcal                durand C.DURAND           393      0    393
+ FORTRAN SUPPR modelisa/arlte2                durand C.DURAND           101      0    101
+ FORTRAN SUPPR modelisa/arlte3                durand C.DURAND           110      0    110
+ FORTRAN SUPPR modelisa/arlte4                durand C.DURAND           110      0    110
+ FORTRAN SUPPR modelisa/arlte5                durand C.DURAND           122      0    122
+ FORTRAN SUPPR modelisa/arlte6                durand C.DURAND           122      0    122
+  PYTHON AJOUT Macro/defi_part_feti_ops       assire A.ASSIRE           124    124      0
+  PYTHON AJOUT Macro/macr_ecla_pg_ops        vabhhts J.PELLET            71     71      0
+  PYTHON AJOUT Utilitai/partition             assire A.ASSIRE          1033   1033      0
+  PYTHON MODIF Utilitai/Graph                 durand C.DURAND          1026      5      5
+  PYTHON MODIF Utilitai/Table                 durand C.DURAND           664      8      8
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :   59       13971     13971            +13971
+ MODIF :  191       58505      4282    3190     +1092
+ SUPPR :   15        3497              3497     -3497
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :  265       75973     18253    6687    +11566 

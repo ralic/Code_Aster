@@ -1,13 +1,13 @@
         SUBROUTINE RDIF01( COMP,   MOD,   IMAT,   MATCST,NBCOMM, 
-     &                     CPMONO,NVI,    NMAT,   VINI,
-     &                     COTHE, COEFF, DCOTHE, DCOEFF,PGL, E,
+     &                     CPMONO,NBFSYM,TOUTMS, NVI,    NMAT, VINI,
+     &                     COTHE, COEFF, DCOTHE, DCOEFF,PGL,NBPHAS, E,
      &                     NU,    ALPHA, COEL,X,   DTIME,  SIGI,
      &                     EPSD,  DETOT, TPERD,  DTPER,  TPEREF,
      &                     DVIN,  BZ )
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 27/09/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 08/11/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -56,7 +56,7 @@ C           TPEREF  :  TEMPERATURE DE REFERENCE
 C           DVIN    :  DERIVEES DES VARIABLES INTERNES A T
 C           BZ      :  VARIABLE LOGIQUE
 C       ----------------------------------------------------------------
-        INTEGER IMAT,I,NMAT,NVI,NBCOMM(NMAT,3),NCOE
+        INTEGER IMAT,I,NMAT,NVI,NBCOMM(NMAT,3),NCOE,NBPHAS,NBFSYM
         CHARACTER*16 LOI,COMP(*),CPMONO(5*NMAT+1)
         CHARACTER*8 MOD
         CHARACTER*3 MATCST
@@ -70,6 +70,8 @@ C       ----------------------------------------------------------------
         REAL*8 COEFT(NMAT)
         REAL*8 VINI(NVI)
         REAL*8 DVIN(NVI)
+C       POUR GAGNER EN TEMPS CPU      
+        REAL*8 TOUTMS(NBPHAS,NBFSYM,12,6)
 C
         LOI=COMP(1)
         IF (LOI(1:8).EQ.'MONOCRIS') THEN
@@ -86,7 +88,7 @@ C
      &                E,NU,ALPHA,NMAT,COEL)
           CALL LCMMOP(COMP,NBCOMM,CPMONO,NMAT,NVI,VINI,X,DTIME,E,NU,
      &     ALPHA,PGL,MOD,COEFT,SIGI,EPSD,DETOT,TPERD,DTPER,TPEREF,
-     &     COEL,DVIN)
+     &     COEL,NBPHAS,NBFSYM,TOUTMS,DVIN)
 
         ELSEIF (LOI(1:9).EQ.'VISCOCHAB') THEN
           NCOE=25

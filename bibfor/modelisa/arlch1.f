@@ -1,7 +1,7 @@
-      SUBROUTINE ARLCH1(DIM,NC,S,NU,B,INO,INC,E,ND,NE,NL0,IP,ML,LL,NM)
+      SUBROUTINE ARLCH1(D,NC,S,NU,B,INO,INC,E,EQ,ND,NE,NL0,IP,ML,LL,NM)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 04/04/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 08/11/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,15 +24,16 @@ C ----------------------------------------------------------------------
 C ECRITURE RELATIONS LINEAIRES COUPLAGE ARLEQUIN MAILLE SOLIDE / SOLIDE
 C ----------------------------------------------------------------------
 C VARIABLES D'ENTREE 
-C INTEGER   DIM       : DIMENSION DE L'ESPACE
+C INTEGER   D         : DIMENSION DE L'ESPACE
 C INTEGER   NC        : NOMBRE DE NOEUDS DOMAINE DE COLLAGE
 C INTEGER   S         : SIGNE DEVANT LA MATRICE B (0 : +, 1 : -)
 C INTEGER   NU(6)     : NUMERO DES ELEMENTS DE LIAISON 'D_DEPL_R_*'
 C                       * = (DX, DY, DZ, DRX, DRY, DRZ)
-C REAL*8    B(*)      : VALEURS DE LA MATRICE ARLEQUIN MORSE (CF ARLCAL)
+C REAL*8    B(*)      : VALEURS DE LA MATRICE ARLEQUIN MORSE (CF ARLCPL)
 C INTEGER   INO(*)    : COLLECTION NOEUDS COLONNES DE B   
 C INTEGER   INC(NC)   : LONGUEUR CUMULEE ASSOCIEE A INO
 C REAL*8    E         : PRECISION RELATIVE SUR LES TERMES DE B
+C LOGICAL   EQ(5,*)   : EQUATIONS SELECTIONNEES
 C
 C VARIABLES D'ENTREE / SORTIE
 C INTEGER   ND        : NOMBRE DE TERMES
@@ -47,37 +48,47 @@ C ----------------------------------------------------------------------
       IMPLICIT NONE
 
 C --- VARIABLES
-      INTEGER DIM,S,ND,NE,NL0,NC,NU(*),INO(*),INC(*),LL(*),NM(*)
-      INTEGER NO,I,J,K,P0,P1,NL
+      INTEGER D,S,ND,NE,NL0,NC,NU(*),INO(*),INC(*),LL(*),NM(*)
+      INTEGER NO,I,J,K,L,P0,P1,Q,NL
       REAL*8  B(*),IP(*),ML(*),E,R
-      
+      LOGICAL EQ(5,*)
+
+      Q = 0
       P1 = INC(1)
 
       DO 10 I = 1, NC
 
         P0 = P1
         P1 = INC(1+I)
-          
+         
         DO 20 J = P0, P1-1 
 
-          R = B(J)
           NO = INO(J)
           NL = NL0
 
 C ------- RELATIONS COUPLAGE TRANSLATION / TRANSLATION
 
-          IF (ABS(R).GT.E) THEN
+          DO 20 K = 1, D
 
-            DO 30 K = 1, DIM
-              CALL ARLASS(S,NO,NU,K,R,ND,NE,NL,IP,ML,LL,NM)
+            IF (.NOT.EQ(K,I)) THEN
+
+              Q = Q + D
+
+            ELSE
+ 
+              DO 30 L = 1, D
+
+                Q = Q + 1
+                R = B(Q)
+                IF (ABS(R).GT.E) THEN
+                  CALL ARLASS(S,NO,NU,L,R,ND,NE,NL,IP,ML,LL,NM)
+                ENDIF
+
+ 30           CONTINUE
+
               NL = NL + 2
- 30         CONTINUE
 
-          ELSE
-
-            NL = NL + 2*DIM
-
-          ENDIF
+            ENDIF
 
  20     CONTINUE
 

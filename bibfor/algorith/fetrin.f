@@ -3,7 +3,7 @@
      &                  DIMGI,IRR,JGI,JGITGI)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/09/2004   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGORITH  DATE 09/11/2004   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -61,7 +61,7 @@ C CORPS DU PROGRAMME
 
 C DECLARATION PARAMETRES D'APPELS
       INTEGER      NBSD,NBI,VDDL(NBSD),VSDF(NBSD),OPTION,DIMGI,JGITGI,
-     &             JGI,IRR
+     &             JGI,IRR,I1
       REAL*8       VDO(NBI),VD1(NBI),VLAGI(NBI),TESTCO
       CHARACTER*19 MATAS,CHSECM,SDFETI,CHSOL
       CHARACTER*24 COLAUX,COLAUI
@@ -88,13 +88,17 @@ C DECLARATION VARIABLES LOCALES
       INTEGER      IDD,IFETM,NBDDL,IDD1,JXSOL,NEQ1,IFETS,IVALE,IVALG,
      &             NBSOL,LMAT,IFETC,NBBLOC,TYPSYM,J,IFM,NIV,NEQ,NBSDF,
      &             OPTIOB,IREFE,IDEEQ,INO,ICMP,NBDDL1,IPRNO,LPRNO,NEC2,
-     &             IDIME,NBNO,ILPRN,IVALS,DVALG,IVALCS,IMSG(2),NBMC,
-     &             IFETP,NBMC1,JXSOL1,IALPHA,OPTIOP,IFETR,IDECAI,IDECAA
-      CHARACTER*8  K8BID
-      CHARACTER*19 MATDD,CHSMDD,PRFCHN,CHAMLS
-      CHARACTER*24 NOMSDP,NOMSDR
-      CHARACTER*32 JEXNUM
+     &             IDIME,NBNO,IVALS,DVALG,IVALCS,IMSG(2),NBMC,INLAGR,
+     &             IFETP,NBMC1,JXSOL1,IALPHA,OPTIOP,IFETR,IDECAI,IDECAA,
+     &             NBLILI,ILIL,LPRNOL,IPRNOL,NBCMP,IRET,IKFLIN,ILIG,
+     &             NBCHA,ICHA,IFETL1,K,IFETL3,LFETL3,IPRNOG,ILILIL
+      CHARACTER*8  K8BID,NOMSD
+      CHARACTER*19 MATDD,CHSMDD,PRFCHN,CHAMLS,PRFCHG
+      CHARACTER*24 NOMSDP,NOMSDR,K24B,LILIL,LIGRL,PRNOL,KFLIN,LIGR2,
+     &             NOMSDA
+      CHARACTER*32 JEXNUM,JEXNOM
       REAL*8       EPS,RAUX,RAUXL,RMIN,R8MIEM,RAUX1,UMOY,ALPHA
+      LOGICAL      LLAGR,LDUP
       
 C CORPS DU PROGRAMME
       CALL JEMARQ()
@@ -111,6 +115,7 @@ C INIT. NBRE DE SECOND MEMBRES SOLUTION POUR RLTFR8
 C INIT. NOM OBJET JEVEUX POUR PRODUIT PAR PSEUDO-INVERSE LOCALE      
       NOMSDP=MATAS//'.FETP'
       NOMSDR=MATAS//'.FETR'
+
      
       IF (OPTION.EQ.1) THEN
 C INIT. VECTEUR SOLUTION LOCAL ET AUX.
@@ -123,13 +128,11 @@ C OBJETS JEVEUX POINTANT SUR LA LISTE DES CHAM_NOS LOCAUX
         CALL JEVEUO(CHSOL//'.FETC','L',IFETS)
 C PROF_CHNO DU DOMAINE GLOBAL   
         CALL JEVEUO(CHSOL//'.REFE','L',IREFE)
-        PRFCHN=ZK24(IREFE+1)(1:19)
-        CALL JEVEUO(PRFCHN//'.PRNO','L',IPRNO)
-        CALL JEVEUO(PRFCHN//'.LPRN','L',ILPRN)
-C LONGUEUR DU PREMIER ELEMENT DE LA COLLECTION .PRNO    
-        LPRNO=ZI(ILPRN)
+        PRFCHG=ZK24(IREFE+1)(1:19)
+        CALL JEVEUO(PRFCHG//'.PRNO','L',IPRNO)
+        CALL JELIRA(JEXNUM(PRFCHG//'.PRNO',1),'LONMAX',LPRNO,K8BID)     
 C NBRE DE NOEUDS DU MAILLAGE
-        CALL JEVEUO(SDFETI//'.DIME','L',IDIME)  
+        CALL JEVEUO(SDFETI//'.FDIM','L',IDIME)  
         NBNO=ZI(IDIME+4)
 C LONGUEUR DU VECTEUR D'ENTIERS CODES + 2
         NEC2=LPRNO/NBNO
@@ -143,7 +146,11 @@ C CALCUL ALPHA SI MODES DE CORPS RIGIDES
            CALL FETPRJ(NBI,ZR(IRR),ZR(IALPHA),ZR(JGI),JGITGI,LRIGID,
      &                 DIMGI,OPTIOP)
            IDECAA=IALPHA           
-        ENDIF   
+        ENDIF
+C OBJET POUR RECONSTRUCTION DES DIRICHLETS
+        KFLIN=SDFETI(1:19)//'.FLIN'
+C POUR RECUPERER LE NOM DES SOUS-DOMAINES PAR JENUNO      
+        NOMSDA=SDFETI(1:19)//'.FETA'             
       ELSE
         CALL UTMESS('F','FETRIN','OPTION DE CALCUL NON PREVUE !')
       ENDIF 
@@ -158,8 +165,9 @@ C ----  BOUCLE SUR LES SOUS-DOMAINES
 C ----------------------------------------------------------------------
 C NOMBRE DE SOUS-DOMAINES FLOTTANTS      
       NBSDF=0
-      DO 40 IDD=1,NBSD
+      DO 100 IDD=1,NBSD
         IDD1=IDD-1
+        IF (OPTION.EQ.2) CALL JENUNO(JEXNUM(NOMSDA,IDD),NOMSD)
         
 C MATR_ASSE ASSOCIEE AU SOUS-DOMAINE IDD      
         MATDD=ZK24(IFETM+IDD1)(1:19)              
@@ -185,6 +193,10 @@ C RECOPIE DE FIDD - (RIDD)T*LANDA (0 OU SOL) DANS VECTEUR AUX
         DO 20 J=0,NBDDL1
           ZR(JXSOL+J)=ZR(IVALE+J)-ZR(JXSOL+J)
    20   CONTINUE
+
+C SCALING VIA ALPHA DES COMPOSANTES DU SECOND MEMBRE DUES AUX LAGRANGES
+C SYSTEME: K * U= ALPHA * F ---> K * U/ALPHA = F
+        CALL MRCONL(LMAT,0,'R',ZR(JXSOL),1)   
 C -------------------------------------------------
 C ----  SOUS-DOMAINE NON FLOTTANT
 C -------------------------------------------------
@@ -196,18 +208,18 @@ C CALCUL DE (KI)-FI PAR MULT_FRONT
           CALL RLTFR8(MATDD,NBDDL,ZR(JXSOL),NBSOL,TYPSYM)
           
 C MONITORING
-        IF (NIV.GE.3) THEN
-          WRITE(IFM,*)
-          WRITE(IFM,*)'DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD'
-          IF (OPTION.EQ.1) THEN
+          IF (NIV.GE.3) THEN
+            WRITE(IFM,*)
+            WRITE(IFM,*)'DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD'
+            IF (OPTION.EQ.1) THEN
           WRITE(IFM,*)'<FETI/FETRIN> CALCUL (KI)-*(FI-RIT*LANDA0) I= ',
      &        IDD
-          ELSE
+            ELSE
           WRITE(IFM,*)'<FETI/FETRIN> CALCUL (KI)-*(FI-RIT*LANDAS) I= ',
      &        IDD           
-          ENDIF                                   
-          WRITE(IFM,*)'NBDDL/NBBLOC/TYPSYM',NBDDL,NBBLOC,TYPSYM
-        ENDIF         
+            ENDIF                                   
+            WRITE(IFM,*)'NBDDL/NBBLOC/TYPSYM',NBDDL,NBBLOC,TYPSYM
+          ENDIF         
 
         ELSE
 C -------------------------------------------------
@@ -238,7 +250,9 @@ C MONITORING
             WRITE(IFM,*)'NBMC/NBSDF',NBMC,NBSDF
           ENDIF
         ENDIF
-
+C SCALING DES COMPOSANTES DE ZR(LXSOL) POUR CONTENIR LA SOL. REELLE U
+        CALL MRCONL(LMAT,0,'R',ZR(JXSOL),1)
+        
 C -------------------------------------------------
 C ----  CALCUL RESIDU INITIAL
 C -------------------------------------------------
@@ -289,7 +303,7 @@ C .VALE DU CHAM_NO LOCAL IDD
           CALL JEVEUO(CHAMLS//'.VALE','L',IVALCS)
           
 C --------------------------------
-C ----  BOUCLE SUR LES DDLS DU CHAM_NO LOCAL
+C ----  BOUCLE SUR LES DDLS PHYSIQUE DU CHAM_NO LOCAL
 C --------------------------------        
           DO 35 J=0,NBDDL1
           
@@ -297,47 +311,174 @@ C NUMERO DU NOEUD DU MAILLAGE (INO) ET DE SA COMPOSANTE (ICMP) CORRES
 C PONDANT A L'EQUATION J DU CHAM_NO LOCAL       
             INO=ZI(IDEEQ+2*J)
             ICMP=ZI(IDEEQ+2*J+1)
-C TESTS DE COHERENCE   
-            CALL ASSERT(INO.GT.0)
-            CALL ASSERT(ICMP.GT.0)
+            
+            IF (ICMP*INO.GT.0) THEN
+C NOEUD PHYSIQUE            
 C DECALAGE DANS LE .VALE DU CHAM_NO GLOBAL CORRESPONDANT A (INO,ICMP)
-            DVALG=ZI(IPRNO+(INO-1)*NEC2) + ICMP-1
+              DVALG=ZI(IPRNO+(INO-1)*NEC2) + ICMP-1
+              
 C VALEUR UI A TRANSFERRER SUR LE CHAM_NO GLOBAL ET SUR LE LOCAL
-            RAUXL=ZR(JXSOL+J)
-            ZR(IVALCS+J)=RAUXL      
+              RAUXL=ZR(JXSOL+J)
+              ZR(IVALCS+J)=RAUXL      
 C TEST POUR VERIFIER LA CONTINUITE AUX INTERFACES
-            IVALG=IVALS-1+DVALG
-            RAUX=ZR(IVALG)
-            IF (ABS(ZR(IVALG)).GT.RMIN) THEN
-              UMOY=(RAUX+RAUXL)*0.5D0       
-              RAUX1=ABS((RAUX-RAUXL)/UMOY)
-              IF (RAUX1.GT.TESTCO) THEN
-                IMSG(1)=INO
-                IMSG(2)=ICMP
-                RAUX1=100.D0*RAUX1
+              IVALG=IVALS-1+DVALG
+              RAUX=ZR(IVALG)
+              IF (ABS(ZR(IVALG)).GT.RMIN) THEN
+                UMOY=(RAUX+RAUXL)*0.5D0       
+                RAUX1=ABS((RAUX-RAUXL)/UMOY)
+                IF (RAUX1.GT.TESTCO) THEN
+                  IMSG(1)=INO
+                  IMSG(2)=ICMP
+                  RAUX1=100.D0*RAUX1
                 CALL UTDEBM('A','FETRIN','PB POTENTIEL DE CONTINUITE ?')
-                CALL UTIMPI('L','INTERFACE (INO,ICMP)= ',2,IMSG)
-                CALL UTIMPR('L','ERREUR INTERFACE (EN %)= ',1,RAUX1)
-                CALL UTFINM()         
+                  CALL UTIMPI('L','INTERFACE (INO,ICMP)= ',2,IMSG)
+                  CALL UTIMPR('L','ERREUR INTERFACE (EN %)= ',1,RAUX1)
+                  CALL UTFINM()         
+                ENDIF
+              ELSE
+                UMOY=RAUXL           
               ENDIF
-            ELSE
-              UMOY=RAUXL           
-            ENDIF
              
 C AFFECTATION EFFECTIVE DE UI VERS U         
-            ZR(IVALG)=UMOY
+              ZR(IVALG)=UMOY
 
 C MONITORING
+              IF (NIV.GE.5) THEN
+                WRITE(IFM,*)'NOEUD PHYSIQUE '
+                WRITE(IFM,*)IDD,J,INO,ICMP,RAUX,RAUXL
+              ENDIF
+            ELSE
+C MONITORING
             IF (NIV.GE.5) THEN
-              WRITE(IFM,*)NEC2
-              WRITE(IFM,*)IDD,J,INO,ICMP,RAUX,RAUXL
+              WRITE(IFM,*)'NOEUD TARDIF NON PRIS DANS CETTE PASSE '
+              WRITE(IFM,*)IDD,J,INO,ICMP
+            ENDIF           
             ENDIF 
    35     CONTINUE
    
 C --------------------------------
-C ----  FIN BOUCLE SUR LES DDLS DU CHAM_NO LOCAL
+C ----  FIN BOUCLE SUR LES DDLS PHYSIQUE DU CHAM_NO LOCAL
 C --------------------------------              
 
+C --------------------------------
+C ----  BOUCLE SUR LES LIGRELS TARDIFS DU CHAM_NO LOCAL
+C --------------------------------
+
+          LILIL=PRFCHN//'.LILI'
+          PRNOL=PRFCHN//'.PRNO'
+          CALL JELIRA(LILIL,'NOMMAX',NBLILI,K8BID)
+C LILI(1)=MAILLAGE, LILI(2)=MODELE, LILI(3...)=LIGREL TARDIF 
+C SI NECESSAIRE
+          CALL JEEXIN(JEXNOM(KFLIN,NOMSD),IRET)
+          IF (NBLILI.LE.2) THEN
+            IF (IRET.NE.0)
+     &        CALL UTMESS('F','FETRIN','INCOHERENCE 1 .LILI ET .FLIN !')
+          ELSE
+            IF (IRET.EQ.0) THEN
+              CALL UTMESS('F','FETRIN','INCOHERENCE 2 .LILI ET .FLIN !')
+            ELSE
+              CALL JEVEUO(JEXNOM(KFLIN,NOMSD),'L',IKFLIN)
+              IKFLIN=IKFLIN-1
+              CALL JELIRA(JEXNOM(KFLIN,NOMSD),'LONMAX',NBCHA,K8BID)
+            ENDIF
+          ENDIF           
+          DO 90 ILIL=3,NBLILI
+C NOM DU LIGREL ILI, LIGRL
+            CALL JENUNO(JEXNUM(LILIL,ILIL),LIGRL)
+            CALL JELIRA(JEXNUM(PRNOL,ILIL),'LONMAX',LPRNOL,K8BID)
+            CALL JEVEUO(JEXNUM(PRNOL,ILIL),'L',IPRNOL)
+            LPRNOL=LPRNOL/NEC2
+C --------------------------------            
+C BOUCLE SUR LES NOEUDS TARDIFS DU LIGREL LIGRL
+C --------------------------------              
+            DO 80 INO=1,LPRNOL
+C ADRESSE DANS LE CHAM_NO LOCAL       
+              J=ZI(IPRNOL+(INO-1)*NEC2)
+              CALL ASSERT(J.GT.0)               
+C NOMBRE DE COMPOSANTE
+              NBCMP=ZI(IPRNOL+(INO-1)*NEC2+1)
+              CALL ASSERT(NBCMP.EQ.1)
+
+C --------------------------------              
+C ON PARCOURT LA LISTE DES LIGRELS TARDIFS DU SOUS-DOMAINE IDD POUR
+C CONFIRMER LE NOM DU LIGREL A RECHERCHER DANS LE PRNO GLOBAL
+C --------------------------------              
+              DO 50 ICHA=1,NBCHA
+                LIGR2=ZK24(IKFLIN+ICHA)
+                IF (LIGR2.EQ.LIGRL) THEN
+C LIGREL TARDIF NON DUPLIQUE DE NOM LIGR2=LIGRL
+                  LDUP=.FALSE.            
+                  GOTO 55
+                ELSE
+C ON PARCOURT LES FILS DU LIGREL POUR LE SOUS-DOMAINE CONCERNE
+                  CALL JEVEUO(LIGR2(1:19)//'.FEL1','L',IFETL1)
+                  K24B=ZK24(IFETL1+IDD-1)
+C ON A TROUVE LE LIGREL DE CHARGE                 
+                  IF (K24B.EQ.LIGRL) THEN
+C LIGRL LIGREL TARDIF DUPLIQUE DE PERE LIGR2                
+                    LDUP=.TRUE.
+                    GOTO 55
+                  ENDIF
+                ENDIF  
+   50         CONTINUE
+              CALL UTMESS('F','FETRIN','INCOHERENCE 3 .LILI ET .FLIN !')
+   55         CONTINUE
+
+C SI LIGREL DUPLIQUE, IL FAUT RETROUVER SON INDICE DANS LE  PRNO GLOBAL
+              IF (LDUP) THEN
+                CALL JEVEUO(LIGR2(1:19)//'.FEL3','L',IFETL3)
+                CALL JELIRA(LIGR2(1:19)//'.FEL3','LONMAX',LFETL3,K8BID)
+                LFETL3=LFETL3/2
+                DO 60 K=1,LFETL3
+                  IF (ZI(IFETL3+2*(K-1)+1).EQ.IDD) THEN
+C K EST L'INDICE GLOBAL RECHERCHE                   
+                    IF (ZI(IFETL3+2*(K-1)).EQ.-INO) GOTO 65
+                  ENDIF
+   60           CONTINUE
+                CALL UTMESS('F','FETRIN','INCOHERENCE .LILI ET .FEL3 !')
+   65           CONTINUE
+              ELSE
+                K=INO
+              ENDIF
+C INFO DU PRNO GLOBAL
+              CALL JENONU(JEXNOM(PRFCHG//'.LILI',LIGR2),ILIG)
+              CALL JEVEUO(JEXNUM(PRFCHG//'.PRNO',ILIG),'L',IPRNOG)
+C DECALAGE DANS LE .VALE DU CHAM_NO GLOBAL              
+              DVALG=ZI(IPRNOG+(K-1)*NEC2)
+
+C VALEUR UI A TRANSFERRER SUR LE CHAM_NO GLOBAL ET SUR LE LOCAL
+              RAUXL=ZR(JXSOL+J)
+              ZR(IVALCS+J)=RAUXL      
+C TEST POUR VERIFIER LA CONTINUITE AUX INTERFACES
+              IVALG=IVALS-1+DVALG
+              RAUX=ZR(IVALG)
+              IF (ABS(ZR(IVALG)).GT.RMIN) THEN
+                UMOY=(RAUX+RAUXL)*0.5D0       
+                RAUX1=ABS((RAUX-RAUXL)/UMOY)
+                IF (RAUX1.GT.TESTCO) THEN
+                  RAUX1=100.D0*RAUX1
+                  CALL UTDEBM('A',
+     &                'FETRIN','PB POTENTIEL DE CONTINUITE ?')
+                  CALL UTIMPI('L','LAGRANGE INO= ',1,-INO)
+                  CALL UTIMPK('L','DU LIGREL TARDIF ',1,LIGRL)
+                  CALL UTIMPR('L','ERREUR INTERFACE (EN %)= ',1,RAUX1)
+                  CALL UTFINM()         
+                ENDIF
+              ELSE
+                UMOY=RAUXL           
+              ENDIF
+             
+C AFFECTATION EFFECTIVE DE UI VERS U         
+              ZR(IVALG)=UMOY
+
+C MONITORING
+              IF (NIV.GE.5) THEN
+                WRITE(IFM,*)'NOEUD TARDIF',LDUP
+                WRITE(IFM,*)IDD,LIGRL,INO,J,K,RAUX,RAUXL
+              ENDIF             
+   80       CONTINUE
+   90     CONTINUE
+          
 C MONITORING
           IF (NIV.GE.3) THEN
             WRITE(IFM,*)'CALCUL  UI = (KI)+*(FI-RIT*LANDAS) '       
@@ -347,11 +488,13 @@ C MONITORING
      &      CALL UTIMSD(IFM,2,.FALSE.,.TRUE.,CHAMLS(1:19),1,' ')
         ENDIF
                 
-   40 CONTINUE
+  100 CONTINUE
 C ----------------------------------------------------------------------
 C ----  FIN BOUCLE SUR LES SOUS-DOMAINES
 C ----------------------------------------------------------------------
 
-      IF ((OPTION.EQ.2).AND.(LRIGID)) CALL JEDETR('&&FETI.ALPHA.MCR')
+      IF (OPTION.EQ.2) THEN
+        IF (LRIGID) CALL JEDETR('&&FETI.ALPHA.MCR')
+      ENDIF     
       CALL JEDEMA()
       END

@@ -1,4 +1,4 @@
-# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 08/11/2004   AUTEUR DURAND C.DURAND 
 # TITRE POUTRE CANTILEVER . VALIDATION DE LA METHODE ARLEQUIN
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,7 +22,7 @@
 # FIN ET GROSSIER
 #
 
-DEBUT(  CODE=_F(  NOM = 'SSLP104A',NIV_PUB_WEB='INTERNET') );
+DEBUT(  CODE=_F(  NOM = 'SSLP104A',NIV_PUB_WEB='INTERNET'),PAR_LOT='NON' );
 
 PRE_GMSH(UNITE_GMSH=19,UNITE_MAILLAGE=20);
 
@@ -70,6 +70,7 @@ ARL=AFFE_CHAR_MECA(MODELE=MOD,
                    ARLEQUIN=_F(GROUP_MA_1='GM2',
                                GROUP_MA_2='GM3',
                                GROUP_MA_COLL='GM2',
+                               COLLAGE='GROUP_MA_1',
                                POIDS_1=0.99,),);
 
 LINST=DEFI_LIST_REEL(DEBUT=0.0,
@@ -87,6 +88,10 @@ RES=STAT_NON_LINE(MODELE=MOD,
 
 RES=CALC_ELEM(reuse =RES,
               OPTION='SIEF_ELNO_ELGA',
+              RESULTAT=RES,);
+
+RES=CALC_NO(reuse =RES,
+              OPTION=('SIEF_NOEU_ELGA',),
               RESULTAT=RES,);
 
 SGM=CREA_CHAMP(TYPE_CHAM='ELNO_SIEF_R',
@@ -134,9 +139,9 @@ TEST_TABLE( TABLE = S229,
             NOM_PARA = 'SIXX',
             FILTRE = _F( NOM_PARA = 'NOEUD',
                          VALE_K = 'N66'),
-            VALE = 5.17142E-01,
+            VALE = 5.21345E-01,
             REFERENCE = 'NON_REGRESSION',
-            VERSION= '7.02.04',
+            VERSION= '7.03.28',
             PRECISION = 4.0E-3,
             CRITERE = 'ABSOLU', )
 
@@ -144,9 +149,9 @@ TEST_TABLE( TABLE = S229,
             NOM_PARA = 'SIYY',
             FILTRE = _F( NOM_PARA = 'NOEUD',
                          VALE_K = 'N66'),
-            VALE = 4.32994E-02,
+            VALE = 3.81427E-02,
             REFERENCE = 'NON_REGRESSION',
-            VERSION= '7.02.04',
+            VERSION= '7.03.28',
             PRECISION = 3.0E-3,
             CRITERE = 'ABSOLU', )
 
@@ -154,9 +159,9 @@ TEST_TABLE( TABLE = S229,
             NOM_PARA = 'SIXY',
             FILTRE = _F( NOM_PARA = 'NOEUD',
                          VALE_K = 'N66'),
-            VALE = -1.64789E-02,
+            VALE = -1.82788E-02,
             REFERENCE = 'NON_REGRESSION',
-            VERSION= '7.02.04',
+            VERSION= '7.03.28',
             PRECISION = 3.0E-3,
             CRITERE = 'ABSOLU', )
 
@@ -166,7 +171,7 @@ TEST_TABLE( TABLE = S164,
                          VALE_K = 'N44'),
             VALE = 3.61106E-01,
             REFERENCE = 'NON_REGRESSION',
-            VERSION= '7.02.04',
+            VERSION= '7.03.28',
             PRECISION = 3.0E-3,
             CRITERE = 'ABSOLU', )
 
@@ -174,9 +179,9 @@ TEST_TABLE( TABLE = S164,
             NOM_PARA = 'SIYY',
             FILTRE = _F( NOM_PARA = 'NOEUD',
                          VALE_K = 'N44'),
-            VALE = 2.55503E-02,
+            VALE = 1.1689E-02,
             REFERENCE = 'NON_REGRESSION',
-            VERSION= '7.02.04',
+            VERSION= '7.03.28',
             PRECISION = 3.0E-3,
             CRITERE = 'ABSOLU', )
 
@@ -184,9 +189,9 @@ TEST_TABLE( TABLE = S164,
             NOM_PARA = 'SIXY',
             FILTRE = _F( NOM_PARA = 'NOEUD',
                          VALE_K = 'N44'),
-            VALE = -9.578E-03,
+            VALE = -2.2537E-02,
             REFERENCE = 'NON_REGRESSION',
-            VERSION= '7.02.04',
+            VERSION= '7.03.28',
             PRECISION = 3.0E-3,
             CRITERE = 'ABSOLU', )
 
@@ -194,9 +199,9 @@ TEST_TABLE( TABLE = S429,
             NOM_PARA = 'SIXX',
             FILTRE = _F( NOM_PARA = 'NOEUD',
                          VALE_K = 'N355'),
-            VALE = 3.55106E-01,
+            VALE = 3.91363E-01,
             REFERENCE = 'NON_REGRESSION',
-            VERSION= '7.02.04',
+            VERSION= '7.03.28',
             PRECISION = 3.0E-3,
             CRITERE = 'ABSOLU', )
 
@@ -204,9 +209,9 @@ TEST_TABLE( TABLE = S429,
             NOM_PARA = 'SIYY',
             FILTRE = _F( NOM_PARA = 'NOEUD',
                          VALE_K = 'N355'),
-            VALE = 1.83894E-02,
+            VALE = 1.39138E-02,
             REFERENCE = 'NON_REGRESSION',
-            VERSION= '7.02.04',
+            VERSION= '7.03.28',
             PRECISION = 3.0E-3,
             CRITERE = 'ABSOLU', )
 
@@ -214,10 +219,11 @@ TEST_TABLE( TABLE = S429,
             NOM_PARA = 'SIXY',
             FILTRE = _F( NOM_PARA = 'NOEUD',
                          VALE_K = 'N355'),
-            VALE = -1.21316E-02,
+            VALE = -3.9485E-04,
             REFERENCE = 'NON_REGRESSION',
-            VERSION= '7.02.04',
+            VERSION= '7.03.28',
             PRECISION = 3.0E-3,
             CRITERE = 'ABSOLU', )
+
 
 FIN();

@@ -1,7 +1,7 @@
       SUBROUTINE ARLMAX(DIME,IAN,IAC,NNC,B,ILGN,MX)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 02/04/2002   AUTEUR RATEAU G.RATEAU 
+C MODIF MODELISA  DATE 08/11/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,10 +44,11 @@ C ----------------------------------------------------------------------
 
 C --- VARIABLES
       INTEGER  DIME,NNC,ILGN(*)
-      INTEGER  P0,P1,P2,I,J,K,L
+      INTEGER  P0,P1,P2,I,J,K,L,DR
       REAL*8   B(*),MX(2,*),R
       LOGICAL  IAN,IAC
       
+      DR = 2*DIME - 3
       P1 = ILGN(1)
       P2 = 0
 
@@ -60,19 +61,12 @@ C --- VARIABLES
 
 C ------- COUPLAGE TRANSLATION / TRANSLATION
 
-          P2 = P2 + 1
-          R = ABS(B(P2))
-          IF (R.GT.MX(1,I)) MX(1,I) = R
-
-C ------- COUPLAGE TRANSLATION / ROTATION
-
-          IF (IAN) THEN
-            DO 20 K = 1, DIME
+          DO 20 K = 1, DIME
+            DO 20 L = 1, DIME
               P2 = P2 + 1
               R = ABS(B(P2))
-              IF (R.GT.MX(1,I)) MX(1,I) = R 
- 20         CONTINUE
-          ENDIF
+              IF (R.GT.MX(1,I)) MX(1,I) = R
+ 20       CONTINUE
 
 C ------- COUPLAGE ROTATION / TRANSLATION
 
@@ -83,16 +77,27 @@ C ------- COUPLAGE ROTATION / TRANSLATION
                 R = ABS(B(P2))
                 IF (R.GT.MX(2,I)) MX(2,I) = R
  30         CONTINUE
+          ENDIF
+
+C ------- COUPLAGE TRANSLATION / ROTATION
+
+          IF (IAN) THEN
+            DO 40 K = 1, DIME
+              DO 40 L = 1, DR 
+                P2 = P2 + 1
+                R = ABS(B(P2))
+                IF (R.GT.MX(1,I)) MX(1,I) = R 
+ 40         CONTINUE
 
 C --------- COUPLAGE ROTATION / ROTATION
 
-            IF (IAN) THEN
-              DO 40 K = 2, DIME
-                DO 40 L = 1, 2*DIME-3
+            IF (IAC) THEN
+              DO 50 K = 2, DIME
+                DO 50 L = 1, DR
                   P2 = P2 + 1
                   R = ABS(B(P2))
                   IF (R.GT.MX(2,I)) MX(2,I) = R
- 40           CONTINUE
+ 50           CONTINUE
             ENDIF
 
           ENDIF

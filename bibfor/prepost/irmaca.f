@@ -7,7 +7,7 @@
       LOGICAL      LMOD
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF PREPOST  DATE 08/11/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -317,7 +317,11 @@ C
  202      CONTINUE
           NBOBJ = ZI(JGRELE-1+1)
           ZI(JNUM-1+NBGRM+1+I) = NBOBJ
-          IF (I.EQ.1) ZK8(JNOM-1+NBGMA+NBGNO+2) = ZK24(JMODL+I-1)(1:8)
+          IF (I.EQ.1) THEN
+             ZK8(JNOM-1+NBGMA+NBGNO+2) = ZK24(JMODL+I-1)(1:8)
+             ZK8(JNO2-1+NBGMA+NBGNO+2) = ZK24(JMODL+I-1)(1:8)
+             CALL LXCAPS(ZK8(JNO2-1+NBGMA+NBGNO+2))
+          ENDIF
           IF ( NBOBJ.GT.1) THEN
             IF (I.EQ.1)
      +         ZI(JPOS-1+NBGMA+NBGNO+2)=ZI(JPOS-1+NBGMA+NBGNO+1)+NBOBJ+1

@@ -1,4 +1,4 @@
-# MODIF  DATE 18/07/2002   AUTEUR CIBHHAB S.VANDENBERGHE 
+# MODIF  DATE 08/11/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE  REPONSE SISMIQUE D'UNE POUTRE EN BETON ARME RECTANGULAIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -83,6 +83,8 @@ CHMAT=AFFE_MATERIAU(MAILLAGE=MAPOU,
 POUCA=AFFE_CARA_ELEM(MODELE=MOPOU,
                      POUTRE=_F(GROUP_MA=('POUTRE','POU_AC'),
                                SECTION='RECTANGLE',
+                               PREC_AIRE=1.71e-2,
+                               PREC_INERTIE=2.948e-1,
                                CARA=('HY','HZ'),
                                VALE=(0.20000000000000001,0.5),),
                      ORIENTATION=_F(GROUP_MA=('POUTRE','POU_AC'),

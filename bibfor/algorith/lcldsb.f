@@ -1,7 +1,8 @@
       SUBROUTINE LCLDSB (NDIM, TYPMOD, IMATE, COMPOR, EPSM, DEPS,
-     &                   VIM, TM,TP,TREF,OPTION, SIG, VIP,  DSIDEP)
+     &                   VIM, TM,TP,TREF,HYDRM,HYDRP,SECHM,SECHP,SREF,
+     &                   OPTION, SIG, VIP,  DSIDEP)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 02/12/2003   AUTEUR PBADEL P.BADEL 
+C MODIF ALGORITH  DATE 09/11/2004   AUTEUR SMICHEL S.MICHEL-PONNELLE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,7 +23,8 @@ C ======================================================================
       CHARACTER*8        TYPMOD(2)
       CHARACTER*16       COMPOR(*),OPTION
       INTEGER            NDIM, IMATE
-      REAL*8             EPSM(6), DEPS(6), VIM(2), TM, TP, TREF
+      REAL*8             EPSM(6), DEPS(6), VIM(2)
+      REAL*8             TM, TP, TREF,HYDRM,HYDRP,SECHM,SECHP,SREF
       REAL*8             SIG(6), VIP(2), DSIDEP(6,12)
 C ----------------------------------------------------------------------
 C     LOI DE COMPORTEMENT ENDO_ISOT_BETON (EN LOCAL)
@@ -36,6 +38,11 @@ C IN  VIM     : VARIABLES INTERNES EN T-
 C IN  TM      : TEMPERATURE EN T-
 C IN  TP      : TEMPERATURE EN T+
 C IN  TREF    : TEMPERATURE DE REFERENCE
+C IN  HYDRM   : HYDRATATION EN T-
+C IN  HYDRP   : HYDRATATION EN T+
+C IN  SECHMM  : SECHAGE EN T-
+C IN  SECHP   : SECHAGE EN T+
+C IN  SREF    : SECHAGE DE REFERENCE
 C IN  OPTION  : OPTION DEMANDEE
 C                 RIGI_MECA_TANG ->     DSIDEP
 C                 FULL_MECA      -> SIG DSIDEP VIP
@@ -54,7 +61,8 @@ C LOC EDFRC1  COMMON CARACTERISTIQUES DU MATERIAU (AFFECTE DANS EDFRMA)
       REAL*8      TR(6), RTEMP2
       REAL*8      EPSP(3), VECP(3,3), DSPDEP(6,6),VECP2(3,3)
       REAL*8      DEUMUD(3), LAMBDD, SIGP(3),RTEMP,RTEMP3,RTEMP4
-      REAL*8      E, NU, ALPHA, LAMBDA, DEUXMU, GAMMA, SEUIL,TREPSM
+      REAL*8      E, NU, ALPHA, KDESS, BENDO, LAMBDA, DEUXMU, GAMMA
+      REAL*8      SEUIL,TREPSM
       REAL*8      R8DOT
       REAL*8      TPS(6)
       PARAMETER  (RIGMIN = 1.D-5)
@@ -74,18 +82,23 @@ C -- OPTION ET MODELISATION
 C -- INITIALISATION
 
       CALL LCEIB1 (IMATE, COMPOR, NDIM, EPSM, T, LAMBDA, DEUXMU,
-     &                   ALPHA, GAMMA, SEUIL,COUP)
+     &                   ALPHA, KDESS, BENDO, GAMMA, SEUIL, COUP)
 
 
 C -- MAJ DES DEFORMATIONS ET PASSAGE AUX DEFORMATIONS REELLES 3D
 
       IF (RESI) THEN
         DO 10 K = 1, NDIMSI
-          EPS(K) = EPSM(K) + DEPS(K)- ALPHA * (TP - TREF) * KRON(K)
+          EPS(K) = EPSM(K) + DEPS(K) 
+     &                   - KRON(K) *  (  ALPHA * (TP - TREF) 
+     &                                 - KDESS * (SREF-SECHP)
+     &                                 - BENDO *  HYDRP     )    
  10     CONTINUE
       ELSE
         DO 40 K=1,NDIMSI
-          EPS(K) = EPSM(K) - ALPHA * (TM - TREF) * KRON(K)
+          EPS(K) = EPSM(K) - (  ALPHA * (TM - TREF) 
+     &                       - KDESS * (SREF-SECHM)
+     &                       - BENDO *  HYDRM  )     * KRON(K)
 40      CONTINUE
       ENDIF
       

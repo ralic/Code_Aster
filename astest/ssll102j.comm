@@ -1,4 +1,4 @@
-# MODIF  DATE 17/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 08/11/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE POUTRE ENCASTREE A UNE EXTREMITE ET CHARGEE PAR DES FORCES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -48,9 +48,9 @@ CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
 CAREL=AFFE_CARA_ELEM(MODELE=MO,INFO=2,
                      POUTRE=_F(GROUP_MA = 'G1',
                                SECTION='GENERALE',
-                               CARA = ('A','IY','IZ','JX',),
-                               VALE = ( 1.,  1.,  1.,
-                                          4.5776e-5,)),         
+                               CARA = ('A','IY','IZ','JX','RY','RZ','RT'),
+                               VALE = ( 0.02,  0.166666666666e-4,  0.666666666666e-4, 
+                                        4.5776e-5,  0.1,  0.05,  0.0892632 )),
                  ORIENTATION=_F(GROUP_MA=('G1'),
                           CARA='ANGL_VRIL', VALE=0.0,),
                           

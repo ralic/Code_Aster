@@ -1,13 +1,13 @@
       SUBROUTINE RK21CO( COMP,   MOD,     IMAT, MATCST,NBCOMM,CPMONO,
-     &                   NVI,    NMAT,    Y,
-     &                   KP,    EE,      A,       H, PGL,COTHE,
+     &                   NBFSYM, TOUTMS, NVI,    NMAT,    Y,
+     &                   KP,    EE,      A,       H, PGL,NBPHAS,COTHE,
      &                   COEFF, DCOTHE,  DCOEFF,  E,      NU,
      &                   ALPHA, COEL, X,       PAS,     SIGI,   EPSD,
      &                   DETOT, TPERD,   DTPER,   TPEREF, BZ )
       IMPLICIT NONE
 C     ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/08/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 08/11/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -64,7 +64,7 @@ C                   'VRAI' ON UTILISE LE MODELE POLY PILVIN
 C                   'FAUX' ON UTILISE LE MODELE POLY B.Z.
 C     ----------------------------------------------------------------
       
-      INTEGER    NMAT,IMAT , NBCOMM(NMAT,3),KP,NVI,I
+      INTEGER    NMAT,IMAT , NBCOMM(NMAT,3),KP,NVI,I,NBFSYM,NBPHAS
       CHARACTER*16 COMP(*),CPMONO(5*NMAT+1)
       CHARACTER*8 MOD
       CHARACTER*3     MATCST
@@ -78,10 +78,12 @@ C     ----------------------------------------------------------------
       REAL*8 F(NVI)
       REAL*8 COEFF(NMAT),DCOEFF(NMAT)
       REAL*8 EE(NVI),A(NVI)
+C      POUR GAGNER EN TEMPS CPU      
+      REAL*8 TOUTMS(NBPHAS,NBFSYM,12,6)
 C
       IF (KP.EQ.1) THEN
-        CALL RDIF01(COMP,MOD,IMAT,MATCST,NBCOMM,CPMONO,
-     &              NVI,NMAT,Y,COTHE,COEFF,DCOTHE,DCOEFF,PGL,
+        CALL RDIF01(COMP,MOD,IMAT,MATCST,NBCOMM,CPMONO,NBFSYM,TOUTMS,
+     &              NVI,NMAT,Y,COTHE,COEFF,DCOTHE,DCOEFF,PGL,NBPHAS,
      &              E,NU,ALPHA,COEL,X,PAS,SIGI,EPSD,DETOT,TPERD,DTPER,
      &              TPEREF,F,BZ)
         DO 10 I=1,NVI
@@ -94,8 +96,8 @@ C
    11   CONTINUE
       END IF
       X=X+H
-      CALL RDIF01(COMP,MOD,IMAT,MATCST,NBCOMM,CPMONO,
-     &            NVI,NMAT,Y,COTHE,COEFF,DCOTHE,DCOEFF,PGL,
+      CALL RDIF01(COMP,MOD,IMAT,MATCST,NBCOMM,CPMONO,NBFSYM,TOUTMS,
+     &            NVI,NMAT,Y,COTHE,COEFF,DCOTHE,DCOEFF,PGL,NBPHAS,
      &            E,NU,ALPHA,COEL,X,PAS,SIGI,EPSD,DETOT,TPERD,DTPER,
      &            TPEREF,F,BZ)
       HS2=0.5D0*H

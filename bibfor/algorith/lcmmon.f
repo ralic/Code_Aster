@@ -8,7 +8,7 @@
         REAL*8 SIGI(6),EPSD(6),DETOT(6),TPERD,DTPER,TPEREF,PGL(3,3)
         CHARACTER*16 COMP(*)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 27/09/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 08/11/2004   AUTEUR JMBHH01 J.M.PROIX 
 C RESPONSABLE JMBHH01 J.M.PROIX
 C TOLE CRP_21 
 C ======================================================================
@@ -57,7 +57,7 @@ C     ----------------------------------------------------------------
       CHARACTER*8 MOD
       CHARACTER*16 NOMFAM,NMATER,NECOUL,NECRIS,NECRCI,CPMONO(5*NMAT+1)
       REAL*8 VIS(3),DT
-      REAL*8 EVI(6),SIGI33(3,3),SIGG(6),RP
+      REAL*8 EVI(6),SIGI33(3,3),SIGG(6),RP,SQ
       REAL*8 DEVI(6),MS(6),TAUS,DGAMMA,DALPHA,DP,SIG33(3,3),WORK(3,3)
       INTEGER ITENS,NBFSYS,I,NUVI,IFA,ICOMPO,NBSYS,IS,IV,NUMS
 C     ----------------------------------------------------------------
@@ -110,7 +110,7 @@ C
 C           ECROUISSAGE ISOTROPE
 C
             CALL LCMMEI(COEFT,IFA,NMAT,NBCOMM,NECRIS,
-     &                  NUMS,VIS,NVI,VINI(7),RP)
+     &                  NUMS,VIS,NVI,VINI(7),RP,SQ)
 C
 C           ECOULEMENT VISCOPLASTIQUE:
 C           ROUTINE COMMUNE A L'IMPLICITE (PLASTI-LCPLNL)

@@ -1,12 +1,12 @@
         SUBROUTINE LCMMEI( COEFT,IFA,NMAT,NBCOMM,NECRIS,
-     &                     NUMS,VIS,NVI,VINI,RP )
+     &                     NUMS,VIS,NVI,VINI,RP,SQ )
         IMPLICIT NONE
         INTEGER IFA,NMAT,NBCOMM(NMAT,3),NVI,NUMS
         REAL*8 COEFT(NMAT),VIS(3),DP
-        REAL*8 VINI(NVI)
+        REAL*8 VINI(NVI),SQ,QS
         CHARACTER*16 NECRIS
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/10/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 08/11/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -41,7 +41,7 @@ C ======================================================================
 
 C     ----------------------------------------------------------------
       REAL*8 C,P,R0,Q,H,B,RP,K,N,FTAU,CRIT,B1,B2,Q1,Q2,A,GAMMA0,V,D
-      REAL*8 TPERD,TABS,PR,DRDP,DDVIR(NVI),DRDPR
+      REAL*8 TPERD,TABS,PR,DRDP,DDVIR(NVI),DRDPR,B1P
       INTEGER IEI,TNS,NS,IS
 C     ----------------------------------------------------------------
 
@@ -51,44 +51,44 @@ C     DANS VIS : 1 = ALPHA, 2=GAMMA, 3=P
       P=VIS(3)
 C     NS=NOMBRE TOTAL DE SYSTEMES DE GLISSEMENT         
       NS=(NVI-1-6)/3
-      TNS=3*NS+1+6
-      CALL ASSERT(TNS.EQ.NVI)
       
 
 C--------------------------------------------------------------------
 C     POUR UN NOUVEAU TYPE D'ECROUISSAGE ISOTROPE, AJOUTER UN BLOC IF
 C--------------------------------------------------------------------
-
       IF (NECRIS.EQ.'ECRO_ISOT1') THEN
+
          R0=COEFT(IEI-1+1)
          Q=COEFT(IEI-1+2)
          B=COEFT(IEI-1+3)
          H=COEFT(IEI-1+4)
          
          RP=R0
-C        R(PS)=R0+Q*SOMME(HSR*(1-EXP(-B*PR))         
-         DO 10 IS=1,NS
-C           HSR=H(1-DELTA_RS)+DELTA_RS
-            IF (IS.EQ.NUMS) THEN
-               IF (ABS(B*P).GT.100.D0) THEN
-                  RP=RP+Q
-               ELSE
-                  RP=RP+Q*(1.D0-EXP(-B*P))
-               ENDIF
-C               DRDP=Q*B*EXP(-B*P)
-            ELSE
-C               PR=VINI(6+3*(IS-1)+3)
+C        R(PS)=R0+Q*SOMME(HSR*(1-EXP(-B*PR))       
+         IF (NUMS.EQ.1) THEN
+            SQ=0.D0
+            DO 1 IS=1,NS
+C           POUR GAGNER DU TEMSP CALCUL DE SOMME DE QI UNE SEULE FOIS
+C
+C           CAR RS=Q((1-H)QS + H(SOMME(QR))
                PR=VINI(3*(IS-1)+3)
                IF (ABS(B*PR).GT.100.D0) THEN
-                  RP=RP+Q*H
+                  SQ=SQ+1
                ELSE
-                  RP=RP+Q*H*(1.D0-EXP(-B*PR))
+                  SQ=SQ+(1.D0-EXP(-B*PR))
                ENDIF
-C               DRDPR=Q*H*B*EXP(-B*PR)
-            ENDIF
-C            DDVIR(IS)=DRDPR
- 10      CONTINUE
+ 1         CONTINUE         
+         ENDIF  
+         
+         IF (ABS(B*P).GT.100.D0) THEN
+            QS=1.D0
+         ELSE
+            QS=(1.D0-EXP(-B*P))
+         ENDIF
+         RP=RP+Q*((1.D0-H)*QS+H*SQ)
+
       ELSEIF (NECRIS.EQ.'ECRO_ISOT2') THEN
+
          R0=COEFT(IEI-1+1)
          Q1=COEFT(IEI-1+2)
          B1=COEFT(IEI-1+3)
@@ -98,33 +98,34 @@ C            DDVIR(IS)=DRDPR
 
          RP=R0
 C        R(PS)=R0+Q1*SOMME(HSR*(1-EXP(-B1*PR))+Q2*(1-EXP(-B2*PR)        
-         DO 20 IS=1,NS
-C           HSR=H(1-DELTA_RS)+DELTA_RS
-            IF (IS.EQ.NUMS) THEN
-               IF (ABS(B1*P).GT.100.D0) THEN
-                  RP=RP+Q1
-               ELSE
-                  RP=RP+Q1*(1.D0-EXP(-B1*P))
-               ENDIF
-C               DRDP=Q1*B1*EXP(-B1*P)
-            ELSE
-C               PR=VINI(6+3*(IS-1)+3)
+         IF (NUMS.EQ.1) THEN
+            SQ=0.D0
+            DO 11 IS=1,NS
+C           POUR GAGNER DU TEMSP CALCUL DE SOMME DE QI UNE SEULE FOIS
+C
+C           CAR RS=Q1((1-H)Q1S + H(SOMME(Q1R))+Q2*Q2s
                PR=VINI(3*(IS-1)+3)
                IF (ABS(B1*PR).GT.100.D0) THEN
-                  RP=RP+Q1*H
+                  SQ=SQ+1
                ELSE
-                  RP=RP+Q1*H*(1.D0-EXP(-B1*PR))
-                ENDIF
-C               DRDPR=Q1*H*B1*EXP(-B1*PR)
-            ENDIF
-C            DDVIR(IS)=DRDPR
- 20      CONTINUE
+                  SQ=SQ+(1.D0-EXP(-B1*PR))
+               ENDIF
+ 11         CONTINUE         
+         ENDIF  
+         
+         B1P=B1*P
+         IF (B1P.GT.100.D0) THEN
+            QS=1.D0
+         ELSE
+            QS=(1.D0-EXP(-B1P))
+         ENDIF
+         RP=RP+Q1*((1.D0-H)*QS+H*SQ)
          IF (ABS(B2*P).GT.100.D0) THEN
             RP=RP+Q2
          ELSE
             RP=RP+Q2*(1.D0-EXP(-B2*P))
          ENDIF
-C         DRDP=DRDP+Q2*B2*EXP(-B2*P)
+
       ENDIF
            
       END

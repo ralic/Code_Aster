@@ -2,7 +2,7 @@
      &                   COMP,NBCOMM, CPMONO, PGL, NR, NVI, SEUIL)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 27/09/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 08/11/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -33,7 +33,7 @@ C     ----------------------------------------------------------------
       INTEGER         ITENS,NBFSYS,I,NUVI,IFA,ICOMPO,NBSYS,IS,IV
 C
       REAL*8          SIGF(6),VIN(NVI),RP,TEMPF
-      REAL*8          MATERF(NMAT*2),SEUIL,DT
+      REAL*8          MATERF(NMAT*2),SEUIL,DT,SQ
       REAL*8          VIS(3),MS(6),TAUS,DGAMMA,DALPHA,DP
 C
       CHARACTER*8     MOD      
@@ -80,7 +80,7 @@ C
 C           ECROUISSAGE ISOTROPE
 C
             CALL LCMMEI(MATERF(NMAT+1),IFA,NMAT,NBCOMM,NECRIS,
-     &                  NUMS,VIS,NVI,VIN(7),RP)
+     &                  NUMS,VIS,NVI,VIN(7),RP,SQ)
 C
 C           ECOULEMENT VISCOPLASTIQUE
 C            

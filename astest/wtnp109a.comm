@@ -1,4 +1,4 @@
-# MODIF  DATE 11/10/2004   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 08/11/2004   AUTEUR BOYERE E.BOYERE 
 # TITRE CONDITION DE SUINTEMENT SUR UN BLOC SATURE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -97,7 +97,7 @@ CHAR1=AFFE_CHAR_MECA(MODELE=MODELE,
                      CONTACT=_F(APPARIEMENT='NON',
                                GROUP_MA_ESCL=('GM14','GM16'),
                                 NOM_CHAM='PRE1',
-                                COEF_IMPO=0.0,
+                                COEF_IMPO=3.0,
                                 COEF_MULT_ESCL=1.0,),);
 
 CHARG0=AFFE_CHAR_MECA(MODELE=MODELE,
@@ -127,19 +127,17 @@ TEST_RESU(RESU=_F(RESULTAT=MESTAT,
                   NOM_CHAM='DEPL',
                   NOM_CMP='PRE1',
                   NOEUD='N96',
-                  VALE=0.0,
-                  CRITERE='ABSOLU',
-                  PRECISION=1.E-6,
+                  VALE=3.0,
                   REFERENCE='NON_REGRESSION',
-                  VERSION = '7.3.14', ),)
+                  VERSION = '7.3.27', ),)
 
 TEST_RESU(RESU=_F(RESULTAT=MESTAT,
                   NUME_ORDRE=3,
                   NOM_CHAM='DEPL',
                   NOM_CMP='PRE1',
                   NOEUD='N444',
-                  VALE=-1.9242869541564E-02,
+                  VALE= 2.9807640599334,
                   REFERENCE='NON_REGRESSION',
-                  VERSION = '7.3.14', ),)
+                  VERSION = '7.3.27', ),)
 
 FIN();

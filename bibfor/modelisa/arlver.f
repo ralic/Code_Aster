@@ -1,7 +1,7 @@
       SUBROUTINE ARLVER(MOD,LGMA,NGMA,NOMZ,MODEL,CINE,DM)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 02/04/2002   AUTEUR RATEAU G.RATEAU 
+C MODIF MODELISA  DATE 08/11/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -34,15 +34,15 @@ C                              SORTIE : NOMBRE DE MAILLES DANS .GROUPEMA
 C
 C VARIABLES DE SORTIE 
 C CHARACTER*8    MODEL      :  MODELISATION ASSOCIEE AUX MAILLES
-C                              '3D      ','C_PLAN   ' OU 'D_PLAN    '
+C                              '3D','AXIS', 'CPLAN' OU 'DPLAN'
 C CHARACTER*8    CINE       :  CINEMATIQUE ASSOCIEE AUX MAILLES
-C                              'SOLIDE  ' OU 'COQUE   '
-C INTEGER        DM         :  DIMENSION MINIMALE
+C                              'SOLIDE' OU 'COQUE'
+C INTEGER        DM         :  DIMENSION DE LA VARIETE
 C                              SI SOLIDE : DIMENSION DE L'ESPACE
 C                              SI COQUE  : DIMENSION DE L'ESPACE - 1
 C
 C SD DE SORTIE
-C NOM.GROUPEMA : LISTES DES MAILLES DU DOMAINE NOM (MA1,MA2,...) 
+C NOM.GROUPEMA : LISTE TRIEE DES MAILLES DU DOMAINE NOM (MA1,MA2,...) 
 C ---------------------------------------------------------------------
 
       IMPLICIT NONE
@@ -70,7 +70,7 @@ C --- VARIABLES
       CHARACTER*10  NOM
       CHARACTER*16  NOMTE
       CHARACTER*(*) NOMZ
-      INTEGER       DM,NGMA,NMA,NTOT,NLI,IMA,ILI,N,P0,P1,P2,Q0,Q1,I,J
+      INTEGER       DM,NGMA,NMA,NTOT,NLI,IMA,ILI,N,P0,P1,P2,Q0,Q1,Q2,I,J
 
       NOM = NOMZ
 
@@ -98,7 +98,7 @@ C --- LIEL UTILISEES PAR LGMA
 
         CALL JEEXIN(JEXNOM(MAIL//'.GROUPEMA',LGMA(I)),J)
         IF (J.EQ.0) THEN
-          CALL UTMESS('F','ARLVER',LGMA(I)//' N''EXISTANT PAS')
+          CALL UTMESS('F','ARLVER',LGMA(I)//' N''EXISTE PAS')
         ENDIF
 
         CALL JEVEUO(JEXNOM(MAIL//'.GROUPEMA',LGMA(I)),'L',P0)
@@ -142,6 +142,12 @@ C --- VERIFICATION COHERENCE MODELISATION / CINEMATIQUE
           CINEZ = 'SOLIDE'
           IF ((NOMTE(5:6).EQ.'TR').OR.(NOMTE(5:6).EQ.'QU')) GOTO 40
 
+        ELSEIF (NOMTE(1:4).EQ.'MEAX') THEN
+
+          MODELZ = 'AXIS'
+          CINEZ = 'SOLIDE'
+          IF ((NOMTE(5:6).EQ.'TR').OR.(NOMTE(5:6).EQ.'QU')) GOTO 40
+
         ELSEIF (NOMTE(1:5).EQ.'MECA_') THEN
 
           MODELZ = '3D'
@@ -150,42 +156,48 @@ C --- VERIFICATION COHERENCE MODELISATION / CINEMATIQUE
      &        (NOMTE(6:9).EQ.'PENT').OR.
      &        (NOMTE(6:9).EQ.'HEXA')) GOTO 40
             
-C        ELSEIF (NOMTE(1:4).EQ.'METD') THEN
-C
-C          MODELZ = 'DPLAN'
-C          CINEZ = 'COQUE'
-C          GOTO 40
-C            
-C        ELSEIF (NOMTE(1:4).EQ.'METC') THEN
-C
-C          MODELZ = 'CPLAN'
-C          CINEZ = 'COQUE'
-C          GOTO 40
-C
-C        ELSEIF (NOMTE(1:4).EQ.'MEDK') THEN
-C
-C          MODELZ = '3D'
-C          CINEZ = 'COQUE'
-C          GOTO 40
-C
-C        ELSEIF (NOMTE(1:4).EQ.'MEDS') THEN
-C
-C          MODELZ = '3D'
-C          CINEZ = 'COQUE'
-C          GOTO 40
-C
-C        ELSEIF (NOMTE(1:4).EQ.'MEQ4') THEN
-C
-C          MODELZ = '3D'
-C          CINEZ = 'COQUE'
-C          GOTO 40          
-C              
-C        ELSEIF (NOMTE(1:4).EQ.'MEC3') THEN
-C
-C          MODELZ = '3D'
-C          CINEZ = 'COQUE'
-C          GOTO 40
-C
+        ELSEIF (NOMTE(1:4).EQ.'METD') THEN
+
+          MODELZ = 'DPLAN'
+          CINEZ = 'COQUE'
+          GOTO 40
+            
+        ELSEIF (NOMTE(1:4).EQ.'METC') THEN
+
+          MODELZ = 'CPLAN'
+          CINEZ = 'COQUE'
+          GOTO 40
+
+        ELSEIF (NOMTE(1:4).EQ.'MECX') THEN
+
+          MODELZ = 'AXIS'
+          CINEZ = 'COQUE'
+          GOTO 40
+
+        ELSEIF (NOMTE(1:4).EQ.'MEDK') THEN
+
+          MODELZ = '3D'
+          CINEZ = 'COQUE'
+          GOTO 40
+
+        ELSEIF (NOMTE(1:4).EQ.'MEDS') THEN
+
+          MODELZ = '3D'
+          CINEZ = 'COQUE'
+          GOTO 40
+
+        ELSEIF (NOMTE(1:4).EQ.'MEQ4') THEN
+
+          MODELZ = '3D'
+          CINEZ = 'COQUE'
+          GOTO 40          
+              
+        ELSEIF (NOMTE(1:4).EQ.'MEC3') THEN
+
+          MODELZ = '3D'
+          CINEZ = 'COQUE'
+          GOTO 40
+
         ENDIF
 
         ZI(Q0-1+ILI) = 0
@@ -197,9 +209,9 @@ C
           MODEL = MODELZ
           CINE = CINEZ
         ELSE
-          IF (MODELZ.NE.MODEL) CALL UTMESS('F','AFFE_CHAR_MECA',
+          IF (MODELZ.NE.MODEL) CALL UTMESS('F','ARLVER',
      &      'PLUSIEURS MODELISATIONS POUR UN MEME GROUPE DE MAILLES')
-          IF (CINEZ.NE.CINE) CALL UTMESS('F','AFFE_CHAR_MECA',
+          IF (CINEZ.NE.CINE) CALL UTMESS('F','ARLVER',
      &      'PLUSIEURS CINEMATIQUES POUR UN MEME GROUPE DE MAILLES')
         ENDIF
 
@@ -207,10 +219,10 @@ C
 
  30   CONTINUE
 
-      IF (NTOT.EQ.0) CALL UTMESS('F','AFFE_CHAR_MECA',
+      IF (NTOT.EQ.0) CALL UTMESS('F','ARLVER',
      &                            'MODELISATION INDISPONIBLE')
 
-C --- DIMENSION MINIMALE
+C --- DIMENSION DE LA VARIETE
 
       IF (MODEL(1:2).EQ.'3D') THEN
         DM = 3
@@ -223,9 +235,11 @@ C --- DIMENSION MINIMALE
 C --- ALLOCATION .GROUPEMA
 
       CALL WKVECT(NOM//'.GROUPEMA','V V I',NTOT,Q1)
- 
+
 C --- COPIE DES MAILLES VALIDES
 
+      Q2 = Q1
+ 
       DO 50 I = 1, NGMA
 
         CALL JEVEUO(JEXNOM(MAIL//'.GROUPEMA',LGMA(I)),'L',P0)
@@ -237,13 +251,14 @@ C --- COPIE DES MAILLES VALIDES
           ILI = ZI(P1+2*(IMA-1))
 
           IF ((ILI.NE.0).AND.(ZI(Q0-1+ILI).NE.0)) THEN
-            ZI(Q1) = IMA
-            Q1 = Q1 + 1
+            ZI(Q2) = IMA
+            Q2 = Q2 + 1
           ENDIF
 
  50   CONTINUE
 
       NGMA = NTOT
+      CALL TRI(ZI(Q1),ZI,0,NGMA)
 
 C --- DESALLOCATION 
 

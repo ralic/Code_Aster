@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 06/09/2004   AUTEUR CIBHHLV L.VIVAN 
+#& MODIF COMMANDE  DATE 09/11/2004   AUTEUR VABHHTS J.PELLET 
 # RESPONSABLE MCOURTOI M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -36,7 +36,10 @@ CREA_MAILLAGE=OPER(nom="CREA_MAILLAGE",op= 167,sd_prod=maillage_sdaster,
                  EXCLUS('COQU_VOLU','CREA_GROUP_MA'),
                  EXCLUS('COQU_VOLU','DETR_GROUP_MA'),
                  ),
-         MAILLAGE        =SIMP(statut='o',typ=maillage_sdaster ),
+                 
+         # le MAILLAGE est inutile si ECLA_PG
+         MAILLAGE        =SIMP(statut='f',typ=maillage_sdaster ),
+         
          CREA_POI1       =FACT(statut='f',max='**',fr="Création de mailles de type POI1 à partir de noeuds",
            regles=(AU_MOINS_UN('TOUT','GROUP_MA','MAILLE','GROUP_NO','NOEUD' ),),
            NOM_GROUP_MA    =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),

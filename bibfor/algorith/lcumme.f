@@ -1,7 +1,7 @@
       SUBROUTINE LCUMME(YOUN,XNU,IFOU,DEP)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 09/11/2004   AUTEUR SMICHEL S.MICHEL-PONNELLE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -79,7 +79,8 @@ C
          DEP(3,1)=E1*XNU
          DEP(3,2)=E1*XNU
          DEP(3,3)=E1*(1.D0-XNU)
-         DEP(4,4)=E1*(1.D0-2.D0*XNU)/2.D0
+         DEP(4,4)=E1*(1.D0-2.D0*XNU)
+C         DEP(4,4)=E1*(1.D0-2.D0*XNU)/2.D0
          GOTO 100
       ELSEIF (IFOU.EQ.2) THEN
 C
@@ -95,9 +96,12 @@ C
          DEP(3,1)=E1*XNU
          DEP(3,2)=E1*XNU
          DEP(3,3)=E1*(1.D0-XNU)
-         DEP(4,4)=E1*(1.D0-2.D0*XNU)/2.D0
-         DEP(5,5)=E1*(1.D0-2.D0*XNU)/2.D0
-         DEP(6,6)=E1*(1.D0-2.D0*XNU)/2.D0
+         DEP(4,4)=E1*(1.D0-2.D0*XNU)
+         DEP(5,5)=E1*(1.D0-2.D0*XNU)
+         DEP(6,6)=E1*(1.D0-2.D0*XNU)
+C         DEP(4,4)=E1*(1.D0-2.D0*XNU)/2.D0
+C         DEP(5,5)=E1*(1.D0-2.D0*XNU)/2.D0
+C         DEP(6,6)=E1*(1.D0-2.D0*XNU)/2.D0
          GOTO 100
       ENDIF
 C

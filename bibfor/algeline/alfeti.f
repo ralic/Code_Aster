@@ -2,7 +2,7 @@
      &                  TESTCO,NBREOR,TYREOR,PRECO,SCALIN)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 23/08/2004   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGELINE  DATE 09/11/2004   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -95,7 +95,7 @@ C (SI ON GAGNE PARAAF * 100%)
 C ----------------------------------------------------------------------
 C ----  PREPARATION DES DONNEES
 C ----------------------------------------------------------------------
-      CALL JEVEUO(SDFETI(1:19)//'.DIME','L',IDIME)
+      CALL JEVEUO(SDFETI(1:19)//'.FDIM','L',IDIME)
 C NOMBRE DE SOUS-DOMAINES       
       NBSD=ZI(IDIME)      
 C NOMBRE DE DDLS D'INTERFACE
@@ -155,7 +155,7 @@ C COLLECTIONS TEMPORAIRES DE VECTEURS AUXILAIRES DE TAILLES VARIABLES
           CALL JEECRA(JEXNOM(COLAU2,NOMSD),'LONMAX',NB,K8BID)   
         ENDIF
    10 CONTINUE
-      CALL FETING(NBSD,SDFETI,CHSECM,ZI(IFETH),COLAUI)
+      CALL FETING(NBSD,SDFETI,CHSECM,COLAUI)
 
 C ---------------------------------------------------
 C SI REORTHOGONALISATION DES DIRECTIONS DE DESCENTE

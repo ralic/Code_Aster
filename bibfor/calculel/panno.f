@@ -1,7 +1,7 @@
       SUBROUTINE PANNO(TYPEMA,PAN,NSOM)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 02/04/2002   AUTEUR RATEAU G.RATEAU 
+C MODIF CALCULEL  DATE 08/11/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -94,28 +94,28 @@ C --- VARIABLES
         NSOM = 6
 
         PAN(1) = 1
-        PAN(2) = 3
-        PAN(3) = 5
+        PAN(2) = 2
+        PAN(3) = 4
  
         PAN(4) = 1
-        PAN(5) = 3
-        PAN(6) = 4
+        PAN(5) = 2
+        PAN(6) = 3
 
         PAN(7) = 1
-        PAN(8) = 4
-        PAN(9) = 5
+        PAN(8) = 3
+        PAN(9) = 4
 
-        PAN(10) = 2
-        PAN(11) = 3
-        PAN(12) = 5
+        PAN(10) = 5
+        PAN(11) = 2
+        PAN(12) = 4
 
-        PAN(13) = 2
-        PAN(14) = 3
-        PAN(15) = 4
+        PAN(13) = 5
+        PAN(14) = 2
+        PAN(15) = 3
 
-        PAN(16) = 2
-        PAN(17) = 4
-        PAN(18) = 5
+        PAN(16) = 5
+        PAN(17) = 3
+        PAN(18) = 4
 
 
       ELSEIF (TYPEMA(1:4).EQ.'HEXA') THEN

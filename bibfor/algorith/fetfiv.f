@@ -2,7 +2,7 @@
      &                  COLAUI,SDFETI)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/08/2004   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGORITH  DATE 09/11/2004   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -116,7 +116,10 @@ C VECTEUR AUXILIAIRE DE TAILLE NDDL(SOUS_DOMAINE_IDD)
 C EXTRACTION DU VECTEUR V AU SOUS-DOMAINE IDD: (RIDD)T * V
         OPTION=2        
         CALL FETREX(OPTION,IDD,NBI,VD1,NBDDL,ZR(JXSOL),SDFETI,COLAUI)
-                        
+
+C SCALING VIA ALPHA DES COMPOSANTES DU SECOND MEMBRE DUES AUX LAGRANGES
+C SYSTEME: K * U= ALPHA * F ---> K * U/ALPHA = F
+        CALL MRCONL(LMAT,0,'R',ZR(JXSOL),1)                        
 C -------------------------------------------------
 C ----  SOUS-DOMAINE NON FLOTTANT
 C -------------------------------------------------
@@ -162,6 +165,8 @@ C MONITORING
             WRITE(IFM,*)'NBMC/NBSDF',NBMC,NBSDF
           ENDIF
         ENDIF
+C SCALING DES COMPOSANTES DE ZR(LXSOL) POUR CONTENIR LA SOL. REELLE U
+        CALL MRCONL(LMAT,0,'R',ZR(JXSOL),1)
 
 C RESTRICTION DU SOUS-DOMAINE IDD SUR L'INTERFACE: (RIDD) * ...
         OPTION=1        

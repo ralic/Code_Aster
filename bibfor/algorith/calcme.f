@@ -7,7 +7,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 06/08/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 09/11/2004   AUTEUR SMICHEL S.MICHEL-PONNELLE 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -345,7 +345,7 @@ C ======================================================================
         CALL LCLDSB(  NDIM, TYPMOD,  IMATE, COMPOR,
      &                      DEFGEM(ADDEME+NDIM), 
      >                      DEPS, 
-     >                      VINTM, T, TF, TREF,
+     >                      VINTM, T, TF, TREF,0.D0,0.D0,0.D0,0.D0,0.D0,
      >                      OPTION, CONGEP(ADCOME), VINTP, 
      >                      DSDEME)
         IF ((OPTION(1:16).EQ.'RIGI_MECA_TANG').OR.

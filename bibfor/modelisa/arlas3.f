@@ -1,7 +1,7 @@
-      SUBROUTINE ARLAS3(DIM,DD,EP,NN1,NO2,NN2,IJ,B0,B)
+      SUBROUTINE ARLAS3(DIM,L2,NORM,NN1,MA2,NN2,IJ,CK,C)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 02/04/2002   AUTEUR RATEAU G.RATEAU 
+C MODIF MODELISA  DATE 08/11/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,143 +24,128 @@ C ----------------------------------------------------------------------
 C  ASSEMBLAGE MATRICE ELEMENTAIRE ARLEQUIN MAILLE SOLIDE / MAILLE COQUE
 C ----------------------------------------------------------------------
 C VARIABLES D'ENTREE 
-C INTEGER      DIM         : DIMENSION DE L'ESPACE             
-C INTEGER      DD          : LONGUEUR MATRICE NOEUD (CF ARLFAC)
-C REAL*8       EP          : EPAISSEUR COQUE
-C INTEGER      NN1         : NOMBRE DE COLONNES DE B0
-C REAL*8       NO2         : COORDONNEES NOEUDS MAILLE COLONNE DANS B
-C INTEGER      NN2         : NOMBRE DE LIGNES DE B0             
-C INTEGER      IJ(NN2,NN1) : POINTEURS DANS B (CF ARLAS0)
+C INTEGER  DIM                    : DIMENSION DE L'ESPACE             
+C REAL*8   L2                     : PARAMETRE L*L/2
+C REAL*8   NORM(DIM,*)            : NORMALES LISSEES COQUE (CF LISNOR)
+C INTEGER  NN1                    : NOMBRE DE NOEUDS MAILLE 1
+C INTEGER  MA2(*)                 : CONNECTIVITE MAILLE 2
+C INTEGER  NN2                    : NOMBRE DE NOEUDS MAILLE 2   
+C INTEGER  IJ(NN2/2,NN1)          : POINTEURS DANS C (CF ARLAS0)
 C
 C VARIABLE D'ENTREE/SORTIE
-C REAL*8       B0(NN2,NN1) : MATRICE ELEMENTAIRE ARLEQUIN
-C REAL*8       B(*)        : MATRICE ARLEQUIN MORSE (CF ARLFAC)
-C ----------------------------------------------------------------------
-C                  ATTENTION : B0 EST REMISE A ZERO
+C REAL*8   CK(*)                  : MATRICES ELEMENTAIRES (CF ARLTE)
+C REAL*8   C(*)                   : MATRICE MORSE (CF ARLFAC)
+C
+C MATRICE PONCTUELLE DANS C : (X1.X2, X1.Y2, [X1.Z2], Y1.X2, ...,
+C                 (N X X1.*2).1, (N X X1.*2).2, ..., (N X Y1.*2).1, ...)
 C ----------------------------------------------------------------------
 
       IMPLICIT NONE
 
-C --- FONCTIONS
-      REAL*8  R8NRM2
-
 C --- VARIABLES
-      INTEGER DIM,DD,NN1,NN2,NNR,IJ(NN2/2,*)
-      INTEGER NOECOQ(2,9),P,Q,I,J,J1,J2
-      REAL*8  NO2(*),EP,B0(NN2,*),B(*)
-      REAL*8  R,R1,R2,NORMAL(3),TANG(54)
-
-      P = 1
-      NNR = NN2 / 2
-      CALL NOCOQU(DIM,NNR,NOECOQ)
-
-C --- COQUE 2D
+      INTEGER DIM,MA2(*),NOECOQ(2,9),NN1,NN2,NN12,D,D2,DR,D2N2
+      INTEGER IJ(NN2/2,*),NNR,IN2,I,J,K,J1,J2,P,P0,P1,P2,Q,Q1,Q2
+      REAL*8  L2,NORM(DIM,*),CK(*),C(*),TR1,TR2,R1,R2,C1(9),B2(9),C2(9)
 
       IF (DIM.EQ.2) THEN
+        D2 = 4
+        DR = 2
+        D = 6
+      ELSE
+        D2 = 9
+        DR = 9
+        D = 18
+      ENDIF
 
-        CALL TANGNT(NO2,NNR,DIM,0,1,TANG)
+      NNR = NN2/2
+      NN12 = NN1*NN2
+
+C --- ASSEMBLAGE DE LA MATRICE ELEMENTAIRE CK
+
+      P0 = -NN2
+
+      CALL NOCOQU(DIM,NNR,NOECOQ)
+
+      DO 10 I = 1, NN1
+
+        P0 = P0 + NN2
 
         DO 10 J = 1, NNR
 
-          R = EP / R8NRM2(2,TANG(P),1)
-    
-          NORMAL(1) = -TANG(P+1)*R
-          NORMAL(2) =  TANG(P)*R
+          Q = 1 + D*(IJ(J,I)-1)
 
-          P = P + 2
+          IN2 = MA2(J)
 
-          J1 = NOECOQ(1,J)
-          J2 = NOECOQ(2,J)
+          J1 = NOECOQ(2,J)
+          J2 = NOECOQ(1,J)
 
-          DO 10 I = 1, NN1
+          P1 = P0 + J1
+          P2 = P0 + J2
 
-            R1 = B0(J1,I)
-            R2 = B0(J2,I)
-            B0(J1,I) = 0.D0
-            B0(J2,I) = 0.D0
+          Q1 = NN12 + D2*(P1-1)
+          Q2 = NN12 + D2*(P2-1)
 
-            Q = 1 + DD*(IJ(J,I)-1)
+C ------- CALCUL DE LA TRACE DE CK+ ET CK-
 
-            B(Q) = B(Q) + R2 + R1
-            Q = Q + 1
+          TR1 = 0.D0
+          TR2 = 0.D0
 
-            CALL R8AXPY(2,R2 - R1,NORMAL,1,B(Q),1)
-            Q = Q + 2
+          P = 1
+          DO 20 K = 1, DIM
+            TR1 = TR1 + CK(Q1+P)
+            TR2 = TR2 + CK(Q2+P)
+            P = P + DIM + 1
+ 20       CONTINUE
+          
+C ------- CALCUL DES MATRICES PONCTUELLES C1 ET C2
 
- 10     CONTINUE
+          DO 30 K = 1, D2
+            Q1 = Q1 + 1
+            Q2 = Q2 + 1
+            C1(K) = L2*(CK(Q1)+CK(Q2))
+            B2(K) = L2*(CK(Q1)-CK(Q2))
+ 30       CONTINUE
 
-C --- COQUE FACETTE
+          R1 = CK(P1) + CK(P2) + L2*(TR1+TR2)
+          R2 = CK(P1) - CK(P2) + L2*(TR1-TR2)
 
-      ELSEIF ((NNR.EQ.3).OR.(NNR.EQ.4)) THEN
+          P = 1
+          DO 40 K = 1, DIM
+            C1(P) = C1(P) + R1
+            B2(P) = B2(P) + R2
+            P = P + DIM + 1
+ 40       CONTINUE  
 
-        CALL TANGNT(NO2,NNR,DIM,1,1,TANG)
+          IF (DIM.EQ.2) THEN
 
-        NORMAL(1) = TANG(2)*TANG(6) - TANG(5)*TANG(3)
-        NORMAL(2) = TANG(3)*TANG(4) - TANG(6)*TANG(1)
-        NORMAL(3) = TANG(1)*TANG(5) - TANG(4)*TANG(2)
+            R1 = NORM(1,IN2)
+            R2 = NORM(2,IN2)
+
+            C2(1) = R1*B2(2) - R2*B2(1)
+            C2(2) = R1*B2(4) - R2*B2(3)
+
+          ELSE
          
-        R = EP / R8NRM2(3,NORMAL,1)
-        CALL R8SCAL(3,R,NORMAL,1)
+            P = 1
+            DO 50 K = 1, DIM
+              CALL PROVEC(NORM(1,IN2),B2(P),C2(P))
+              P = P + DIM
+ 50         CONTINUE
 
-        DO 20 J = 1, NNR
+          ENDIF
 
-          J1 = NOECOQ(1,J)
-          J2 = NOECOQ(2,J)
+C ------- ASSEMBLAGE DES MATRICES PONCTUELLES C1 ET C2
 
-          DO 20 I = 1, NN1
-
-            R1 = B0(J1,I)
-            R2 = B0(J2,I)
-            B0(J1,I) = 0.D0
-            B0(J2,I) = 0.D0
-
-            Q = 1 + DD*(IJ(J,I)-1)
-
-            B(Q) = B(Q) + R2 + R1
+          DO 60 K = 1, D2
+            C(Q) = C(Q) + C1(K)
             Q = Q + 1
+ 60       CONTINUE
 
-            CALL R8AXPY(3,R2 - R1,NORMAL,1,B(Q),1)
-            Q = Q + 3
-
- 20     CONTINUE
-
-C --- COQUE VOLUMIQUE
-
-      ELSE
-
-        CALL TANGNT(NO2,NNR,DIM,0,1,TANG)
-
-        DO 30 J = 1, NNR
-
-          NORMAL(1) = TANG(P+1)*TANG(P+5) - TANG(P+4)*TANG(P+2)
-          NORMAL(2) = TANG(P+2)*TANG(P+3) - TANG(P+5)*TANG(P  )
-          NORMAL(3) = TANG(P  )*TANG(P+4) - TANG(P+3)*TANG(P+1)
-         
-          R = EP / R8NRM2(3,NORMAL,1)
-          CALL R8SCAL(3,R,NORMAL,1)
-
-          P = P + 6
-
-          J1 = NOECOQ(1,J)
-          J2 = NOECOQ(2,J)
-
-          DO 30 I = 1, NN1
-
-            R1 = B0(J1,I)
-            R2 = B0(J2,I)
-            B0(J1,I) = 0.D0
-            B0(J2,I) = 0.D0
-
-            Q = 1 + DD*(IJ(J,I)-1)
-
-            IF (J.NE.NNR) B(Q) = B(Q) + R2 + R1
+          DO 70 K = 1, DR
+            C(Q) = C(Q) + C2(K)
             Q = Q + 1
+ 70       CONTINUE
 
-            CALL R8AXPY(3,R2 - R1,NORMAL,1,B(Q),1)
-            Q = Q + 3
-
- 30     CONTINUE
-
-      ENDIF
+ 10   CONTINUE
 
       END

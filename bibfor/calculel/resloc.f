@@ -4,7 +4,7 @@
       CHARACTER*(*) LIGREL,MATE
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 28/10/2003   AUTEUR G8BHHXD X.DESROCHES 
+C MODIF CALCULEL  DATE 04/11/2004   AUTEUR G8BHHXD X.DESROCHES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -77,7 +77,6 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
       CHARACTER*19 CARTE1,CARTE2,NOMGD1,NOMGD2
       COMPLEX*16 CCMP
       INTEGER ICMP(12)
-      REAL*8 TPS1(4)
 
 C DEB-------------------------------------------------------------------
       BASE = 'V'
@@ -266,20 +265,7 @@ C    SI ABSENCE D'UN CHAMP DE FORCES, CREATION D'UN CHAMP NUL
       LPAOUT(1) = 'PERREUR'
       LCHOUT(1) = RESU
       OPTION = 'ERRE_ELGA_NORE'
-      CALL UTTCPU (2,'INIT',4,TPS1)
-      CALL UTTCPU (2,'DEBUT',4,TPS1)
-      WRITE(6,*) ' DEBUT CALCUL'
-      WRITE(6,*) 'TPS1(1) =',TPS1(1)
-      WRITE(6,*) 'TPS1(2) =',TPS1(2)
-      WRITE(6,*) 'TPS1(3) =',TPS1(3)
-      WRITE(6,*) 'TPS1(4) =',TPS1(4)
       CALL CALCUL('C',OPTION,LIGREL,10,LCHIN,LPAIN,1,LCHOUT,LPAOUT,'G')
-      CALL UTTCPU (2,'FIN',4,TPS1)
-      WRITE(6,*) ' FIN CALCUL'
-      WRITE(6,*) 'TPS1(1) =',TPS1(1)
-      WRITE(6,*) 'TPS1(2) =',TPS1(2)
-      WRITE(6,*) 'TPS1(3) =',TPS1(3)
-      WRITE(6,*) 'TPS1(4) =',TPS1(4)
       CALL EXISD('CHAMP_GD',LCHOUT(1),IRET)
       IF (IRET.EQ.0) THEN
           CALL UTMESS('A','CALC_ELEM','OPTION '//OPTION//' NON '//

@@ -1,6 +1,6 @@
       SUBROUTINE CESCES(CESA,TYPCES,CESMOZ,MNOGAZ,BASE,CESB)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF CALCULEL  DATE 09/11/2004   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -253,7 +253,7 @@ C     ------------------------------------------------------
                 CALL CESEXI('C',JCESD,JCESL,IMA,IPT,ISP,ICMP,IAD)
                 IF (IAD.GE.0) CALL UTMESS('F','CESCES','STOP 3')
                 ZL(JCESL-1-IAD) = .TRUE.
-                ZR(JCESV-1-IAD) = ZR(JCES1V-1-IAD1)
+                ZR(JCESV-1-IAD) = ZR(JCES1V-1+IAD1)
   100         CONTINUE
   110       CONTINUE
 
@@ -275,7 +275,7 @@ C     ------------------------------------------------------
                 CALL CESEXI('C',JCES1D,JCES1L,IMA,IPT1,ISP,ICMP,IAD1)
                 IF (IAD1.LE.0) GO TO 140
                 NBV = NBV + 1
-                V = V + ZR(JCES1V-1-IAD1)
+                V = V + ZR(JCES1V-1+IAD1)
   140         CONTINUE
               IF (NBV.GT.0) THEN
                 CALL CESEXI('C',JCESD,JCESL,IMA,1,ISP,ICMP,IAD)

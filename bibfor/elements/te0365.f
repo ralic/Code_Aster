@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 31/08/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ELEMENTS  DATE 08/11/2004   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -337,7 +337,7 @@ C  --MAITRE------------
         DO 117 J = 1,NNM
           DEPLM(I) = DEPLM(I) +FFM(J)*ZR(IDEPL+NNE*(2*NDIM)+(J-1)*
      &                                                NDIM+I-1)
-          DEPLMM(I) = DEPLMM(I) +FFM(J)*ZR(IDEPL+NNE*(2*NDIM)+(J-1)*
+          DEPLMM(I) = DEPLMM(I) +FFM(J)*ZR(IDEPM+NNE*(2*NDIM)+(J-1)*
      &                                                NDIM+I-1)     
 117     CONTINUE
 214   CONTINUE

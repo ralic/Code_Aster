@@ -1,7 +1,7 @@
       SUBROUTINE BOITE(MAIL,NGRMZ,NNORMZ,DIME,NTM,NBOITZ)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 02/04/2002   AUTEUR RATEAU G.RATEAU 
+C MODIF CALCULEL  DATE 08/11/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -72,9 +72,10 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 
-C --- PARAMETRE
-      REAL*8        R8MAX
+C --- PARAMETRES
+      REAL*8        R8MAX, PREC
       PARAMETER     (R8MAX = 1.D92)
+      PARAMETER     (PREC = 1.D-8)
 
 C --- VARIABLES
       CHARACTER*(*) NGRMZ,NBOITZ,NNORMZ
@@ -84,7 +85,7 @@ C --- VARIABLES
       INTEGER       NMA,DIME,NPAN,NSOM,NNO,NARE,MA,I,J,L,LCPAN,LCSOM
       INTEGER       P0,P1,P2,P3,P4,P5,P6,Q0,Q1,Q2,Q3,Q4,Q5,Q6
       INTEGER       NOEPAN(60),NOAR(36),PANNOE(24),PAAR(24)
-      REAL*8        CNO(81),H
+      REAL*8        CNO(81),H,R
       
       NGRMA = NGRMZ
       NBOITE = NBOITZ
@@ -207,9 +208,9 @@ C --------- TRIA6
               CALL BOITEL(CNO,TYPEMA,NOEPAN,NPAN,DIME,ZR(Q1),ZR(Q3))
               CALL BOITEA(CNO,NOAR,PAAR,NARE,NPAN,DIME,ZR(Q1),ZR(Q3))
               CALL SOMMET(PANNOE,DIME,ZR(Q3),NSOM,ZR(Q4))
+
             ENDIF 
   
-            Q3 = Q3 + 12
             Q4 = Q4 + 6
 
           ELSE
@@ -237,21 +238,34 @@ C --------- QUAD6/QUAD8/QUAD9
 
             ENDIF 
 
-            Q3 = Q3 + 16
             Q4 = Q4 + 8
 
           ENDIF
 
           Q6 = Q0
-          H = R8MAX
+          H = 1.D0
           DO 50 J = 1,DIME 
+            R = ZR(Q1+1)-ZR(Q1)
+            H = H*R
+            R = PREC*R
+            ZR(Q1) = ZR(Q1) - R
+            ZR(Q1+1) = ZR(Q1+1) + R 
             IF (ZR(Q1).LT.ZR(Q6)) ZR(Q6) = ZR(Q1)
             IF (ZR(Q1+1).GT.ZR(Q6+1)) ZR(Q6+1) = ZR(Q1+1)
-            IF ((ZR(Q1+1)-ZR(Q1)).LT.H) H = ZR(Q1+1)-ZR(Q1)
             Q1 = Q1 + 2
             Q6 = Q6 + 2
  50       CONTINUE
-
+          
+          DO 60 J = 1, NPAN
+            DO 70 L = 1, 4
+              ZR(Q3) = ZR(Q3)/H
+              Q3 = Q3 + 1
+ 70         CONTINUE
+            ZR(Q3-2) = ZR(Q3-2) - PREC
+            ZR(Q3-1) = ZR(Q3-1) + PREC
+ 60       CONTINUE
+          
+          H = H**0.5D0
           LCPAN = LCPAN + NPAN
           LCSOM = LCSOM + NSOM
           ZI(Q2) = LCPAN
@@ -268,7 +282,7 @@ C --------- QUAD6/QUAD8/QUAD9
 
 C ----- MAILLES 3D
  
-        DO 60 I = 1, NMA
+        DO 80 I = 1, NMA
 
           MA = ZI(P0)
           TYPEMA = NTM(ZI(P1-1+MA))
@@ -301,7 +315,6 @@ C --------- TETRA10
   
             ENDIF
 
-            Q3 = Q3 + 20
             Q4 = Q4 + 12
 
 C ------- PENTAEDRE
@@ -324,7 +337,6 @@ C --------- PENTA12 / PENTA14 / PENTA15
             ENDIF 
 
             CALL SOMMET(PANNOE,DIME,ZR(Q3),NSOM,ZR(Q4))
-            Q3 = Q3 + 25
             Q4 = Q4 + 18
 
 C ------- HEXAEDRE
@@ -347,21 +359,34 @@ C --------- HEXA16 / HEXA18 / HEXA20 / HEXA27
             ENDIF 
 
             CALL SOMMET(PANNOE,DIME,ZR(Q3),NSOM,ZR(Q4))
-            Q3 = Q3 + 30
             Q4 = Q4 + 24
 
           ENDIF
 
           Q6 = Q0
-          H = R8MAX
-          DO 70 J = 1,DIME 
+          H = 1.D0
+          DO 90 J = 1,DIME 
+            R = ZR(Q1+1)-ZR(Q1)
+            H = H*R
+            R = R*PREC
+            ZR(Q1) = ZR(Q1) - R
+            ZR(Q1+1) = ZR(Q1+1) + R 
             IF (ZR(Q1).LT.ZR(Q6)) ZR(Q6) = ZR(Q1)
             IF (ZR(Q1+1).GT.ZR(Q6+1)) ZR(Q6+1) = ZR(Q1+1)
-            IF ((ZR(Q1+1)-ZR(Q1)).LT.H) H = ZR(Q1+1)-ZR(Q1)
             Q1 = Q1 + 2
             Q6 = Q6 + 2
- 70       CONTINUE
+ 90       CONTINUE
 
+          DO 100 J = 1, NPAN
+            DO 110 L = 1, 5
+              ZR(Q3) = ZR(Q3)/H
+              Q3 = Q3 + 1
+ 110        CONTINUE
+            ZR(Q3-2) = ZR(Q3-2) - PREC
+            ZR(Q3-1) = ZR(Q3-1) + PREC
+ 100      CONTINUE
+            
+          H = H**(1.D0/3.D0)
           LCPAN = LCPAN + NPAN
           LCSOM = LCSOM + NSOM
           ZI(Q2) = LCPAN
@@ -372,7 +397,7 @@ C --------- HEXA16 / HEXA18 / HEXA20 / HEXA27
           ZR(Q5) = H
           Q5 = Q5 + 1
 
- 60     CONTINUE
+ 80     CONTINUE
 
       ENDIF
 

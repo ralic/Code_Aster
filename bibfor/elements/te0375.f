@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ELEMENTS  DATE 04/11/2004   AUTEUR G8BHHXD X.DESROCHES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -67,7 +67,7 @@ C
       REAL*8 SPG11,SPG22,SPG33,SPG12,SPG13,SPG23
       REAL*8 DSX,DSY,DSZ,SX(9,9),SY(9,9),SZ(9,9)
       REAL*8 TER,ERREST,NOR,NORSIG,SIGCAL,NUEST,COEFF
-      REAL*8 TER2,TER3,HF,NORM,NX,NY,NZ,JACO,JACOB
+      REAL*8 TER2,TER3,HF,NORM,NX,NY,NZ,JACO
       REAL*8 PR(9),VALPAR(4),INST,ZERO
       LOGICAL PRES,FORC,FAUX
       CHARACTER*2 CODRET
@@ -110,11 +110,6 @@ C     ------------------------------------------------------------------
       IAD   = ITAB(1)
       NBCMP = ITAB(2)/NNO
 
-C -------- VERIFICATION DU SIGNE DU JACOBIEN :ARRET SI JACOB < 0
-C
-C   VOIR FICHE AREX 007652
-C
-CCC      CALL UTJAC(.FALSE.,IGEOM,1,IDFDE,1,IFM,NNO,JACOB)
 C
 C -------- CALCUL DU DIAMETRE H ---------------------------------------
 
@@ -606,7 +601,10 @@ C --- CALCUL DE LA NORMALE AU POINT IPG  -----------------
 
 C   JACOBIEN
               JACO = SQRT(NX*NX+NY*NY+NZ*NZ)
-
+              NX=NX/JACO
+              NY=NY/JACO
+              NZ=NZ/JACO
+C
               INO = NOE(IPG,IFA,ITYP)
               IDEC = NBCMP* (INO-1)
 
@@ -692,20 +690,19 @@ C --- CALCUL DU PRODUIT SCALAIRE SIGMA . N - G ----------------
      &                 PR(IPG)*NX)**2+ (NX*SIGDIF(4)+NY*SIGDIF(2)+
      &                 NZ*SIGDIF(6)+PR(IPG)*NY)**2+
      &                 (NX*SIGDIF(5)+NY*SIGDIF(6)+NZ*SIGDIF(3)+
-     &                 PR(IPG)*NZ)**2)*POIDS(IPG)/JACO
+     &                 PR(IPG)*NZ)**2)*POIDS(IPG)
               END IF
               IF (FORC) THEN
                 NORM = NORM + ((NX*SIGDIF(1)+NY*SIGDIF(4)+NZ*SIGDIF(5)-
      &                 FX(IPG))**2+ (NX*SIGDIF(4)+NY*SIGDIF(2)+
      &                 NZ*SIGDIF(6)-FY(IPG))**2+
      &                 (NX*SIGDIF(5)+NY*SIGDIF(6)+NZ*SIGDIF(3)-
-     &                 FZ(IPG))**2)*POIDS(IPG)/JACO
+     &                 FZ(IPG))**2)*POIDS(IPG)
               END IF
   250       CONTINUE
 
             IF (NORM.LT.0.D0) NORM = -NORM
             TER3 = TER3 + SQRT(HF)*SQRT(NORM)
-
 
 C ---------- CALCUL DU DEUXIEME TERME ----------------------------------
 

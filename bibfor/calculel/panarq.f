@@ -1,7 +1,7 @@
       SUBROUTINE PANARQ(TYPEMA,PAN,NARE)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 02/04/2002   AUTEUR RATEAU G.RATEAU 
+C MODIF CALCULEL  DATE 08/11/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -73,37 +73,37 @@ C --- VARIABLES
      &    .OR.(TYPEMA(1:7).EQ.'PENTA14')) THEN
         NARE = 6
         PAN(1) = 1
-        PAN(2) = 3
+        PAN(2) = 2
         PAN(3) = 1
-        PAN(4) = 4
+        PAN(4) = 3
         PAN(5) = 1
-        PAN(6) = 5
-        PAN(7) = 2
-        PAN(8) = 3
-        PAN(9) = 2
-        PAN(10) = 4
-        PAN(11) = 2
-        PAN(12) = 5 
+        PAN(6) = 4
+        PAN(7) = 5
+        PAN(8) = 2
+        PAN(9) = 5
+        PAN(10) = 3
+        PAN(11) = 5
+        PAN(12) = 4 
       ELSEIF (TYPEMA(1:7).EQ.'PENTA15') THEN
         NARE = 9
         PAN(1) = 1
-        PAN(2) = 3
+        PAN(2) = 2
         PAN(3) = 1
-        PAN(4) = 4
+        PAN(4) = 3
         PAN(5) = 1
-        PAN(6) = 5
-        PAN(7) = 3
-        PAN(8) = 5
-        PAN(9) = 3
-        PAN(10) = 4
-        PAN(11) = 4
-        PAN(12) = 5
-        PAN(13) = 2
-        PAN(14) = 3
-        PAN(15) = 2
-        PAN(16) = 4
-        PAN(17) = 2
-        PAN(18) = 5
+        PAN(6) = 4
+        PAN(7) = 2
+        PAN(8) = 4
+        PAN(9) = 2
+        PAN(10) = 3
+        PAN(11) = 3
+        PAN(12) = 4
+        PAN(13) = 5
+        PAN(14) = 2
+        PAN(15) = 5
+        PAN(16) = 3
+        PAN(17) = 5
+        PAN(18) = 4
       ELSEIF((TYPEMA(1:6).EQ.'HEXA16').OR.(TYPEMA(1:6).EQ.'HEXA18'))THEN
         NARE = 8
         PAN(1) = 1

@@ -1,7 +1,7 @@
-      SUBROUTINE ARLAS2(DIM,DD,CNX,CNXC,TANG,NN1,IM1,NN2,IJ,B0,B)
+      SUBROUTINE ARLAS2(DIM,L2,TANG,MA1,NN1,NN2,IJ,CK,C)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 04/04/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 08/11/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,59 +24,110 @@ C ----------------------------------------------------------------------
 C  ASSEMBLAGE MATRICE ELEMENTAIRE ARLEQUIN MAILLE COQUE / MAILLE SOLIDE
 C ----------------------------------------------------------------------
 C VARIABLES D'ENTREE 
-C INTEGER      DIM               : DIMENSION DE L'ESPACE             
-C INTEGER      DD                : LONGUEUR MATRICE NOEUD (CF ARLFAC)
-C INTEGER      CNX(*)            : COLLECTION CONNECTIVITE DU MAILLAGE
-C INTEGER      CNXC(*)           : LONGUEUR CUMULEE ASSOCIEE A CNX
-C REAL*8       TANG(DIM,DIM-1,*) : TANGENTES LISSEES COQUE (CF LISNOR)
-C INTEGER      NN1               : NOMBRE DE COLONNES DE B0
-C INTEGER      IM1               : MAILLE LIGNE DANS B (INDEX CNXC)
-C INTEGER      NN2               : NOMBRE DE LIGNES DE B0             
-C INTEGER      IJ(NN2,NN1)       : POINTEURS DANS B (CF ARLAS0)
+C INTEGER  DIM                    : DIMENSION DE L'ESPACE             
+C REAL*8   L2                     : PARAMETRE L*L/2
+C REAL*8   TANG(DIM,DIM-1,*)      : TANGENTES LISSEES COQUE (CF LISNOR)
+C INTEGER  MA1(*)                 : CONNECTIVITE MAILLE 1
+C INTEGER  NN1                    : NOMBRE DE NOEUDS MAILLE 1
+C INTEGER  NN2                    : NOMBRE DE NOEUDS MAILLE 2          
+C INTEGER  IJ(NN2,NN1/2)          : POINTEURS DANS C (CF ARLAS0)
 C
 C VARIABLE D'ENTREE/SORTIE
-C REAL*8       B0(NN2,NN1)       : MATRICE ELEMENTAIRE ARLEQUIN
-C REAL*8       B(*)              : MATRICE ARLEQUIN MORSE (CF ARLFAC)
-C ----------------------------------------------------------------------
-C                    ATTENTION : B0 EST REMISE A ZERO
+C REAL*8   CK(*)                  : MATRICES ELEMENTAIRES (CF ARLTE)
+C REAL*8   C(*)                   : MATRICE MORSE (CF ARLFAC)
+C
+C MATRICE PONCTUELLE DANS C : (X1.X2, X1.Y2, [X1.Z2], Y1.X2, ...,
+C                              T1.X2, T1.Y2, [T1.Z2, T2.X2, ...] )
 C ----------------------------------------------------------------------
 
       IMPLICIT NONE
 
 C --- VARIABLES
-      INTEGER DIM,DD,CNX(*),CNXC(*),IM1,NN1,NN2,IJ(NN2,*)
-      INTEGER NOECOQ(2,9),NNR,DTG,INO1,I,J,I1,I2,P,Q
-      REAL*8  TANG(DIM*(DIM-1),*),B0(NN2,*),B(*),R1,R2
+      INTEGER DIM,MA1(*),NOECOQ(2,9),NN1,NN2,IJ(NN2,*),NNR,NN12
+      INTEGER D,D2,DT,D2N2,IN1,I,J,K,I1,I2,P,P1,P2,Q,Q1,Q2
+      REAL*8  L2,TANG(DIM*(DIM-1),*),CK(*),C(*)
+      REAL*8  TR1,TR2,R1,R2,C1(9),B2(9),C2(6)
 
-C --- ASSEMBLAGE
+      IF (DIM.EQ.2) THEN
+        D2 = 4
+        DT = 2
+        D = 6
+      ELSE
+        D2 = 9
+        DT = 6
+        D = 15
+      ENDIF
 
       NNR = NN1/2
-      P = CNXC(IM1)
-      DTG = DIM*(DIM-1)
+      NN12 = NN1*NN2
+      D2N2 = D2*NN2
+
+C --- ASSEMBLAGE DE LA MATRICE ELEMENTAIRE CK
 
       CALL NOCOQU(DIM,NNR,NOECOQ)
 
       DO 10 I = 1, NNR
 
-        I1 = NOECOQ(1,I)
-        I2 = NOECOQ(2,I)
+        IN1 = MA1(I)
 
-        INO1 = CNX(P)
-        P = P + 1
+        I1 = NOECOQ(2,I)
+        I2 = NOECOQ(1,I)
+
+        P1 = 1 + NN2*(I1-1)
+        P2 = 1 + NN2*(I2-1)
+        Q1 = NN12 + D2N2*(I1-1)
+        Q2 = NN12 + D2N2*(I2-1)
 
         DO 10 J = 1, NN2
 
-          R1 = B0(J,I1)
-          R2 = B0(J,I2)
-          B0(J,I1) = 0.D0
-          B0(J,I2) = 0.D0
-          Q = 1 + DD*(IJ(J,I)-1)
+          Q = 1 + D*(IJ(J,I)-1)
 
-          B(Q) = B(Q) + R2 + R1
-          Q = Q + 1
+C ------- CALCUL DE LA TRACE DE CK+ ET CK-
 
-          CALL R8AXPY(DTG,R2 - R1,TANG(1,INO1),1,B(Q),1)
-          Q = Q + DTG
+          TR1 = 0.D0
+          TR2 = 0.D0
+
+          P = 1
+          DO 20 K = 1, DIM
+            TR1 = TR1 + CK(Q1+P)
+            TR2 = TR2 + CK(Q2+P)
+            P = P + DIM + 1
+ 20       CONTINUE
+          
+C ------- CALCUL DES MATRICES PONCTUELLES C1 ET C2
+
+          DO 30 K = 1, D2
+            Q1 = Q1 + 1
+            Q2 = Q2 + 1
+            C1(K) = L2*(CK(Q1)+CK(Q2))
+            B2(K) = L2*(CK(Q1)-CK(Q2))
+ 30       CONTINUE
+
+          R1 = CK(P1) + CK(P2) + L2*(TR1+TR2)
+          R2 = CK(P1) - CK(P2) + L2*(TR1-TR2)
+          P1 = P1 + 1
+          P2 = P2 + 1
+
+          P = 1
+          DO 40 K = 1, DIM
+            C1(P) = C1(P) + R1
+            B2(P) = B2(P) + R2
+            P = P + DIM + 1
+ 40       CONTINUE  
+
+          CALL MMPROD(B2,DIM,0,DIM,0,DIM,TANG(1,IN1),DIM,0,0,DIM-1,C2)
+
+C ------- ASSEMBLAGE DES MATRICES PONCTUELLES C1 ET C2
+
+          DO 50 K = 1, D2
+            C(Q) = C(Q) + C1(K)
+            Q = Q + 1
+ 50       CONTINUE
+
+          DO 60 K = 1, DT
+            C(Q) = C(Q) + C2(K)
+            Q = Q + 1
+ 60       CONTINUE
 
  10   CONTINUE
 

@@ -1,4 +1,4 @@
-#@ MODIF Table Utilitai  DATE 03/11/2004   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF Table Utilitai  DATE 08/11/2004   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -31,14 +31,14 @@ NumberTypes=(IntType, LongType, FloatType, ComplexType)
 # try/except pour utiliser hors aster
 try:
    from Utilitai.Utmess import UTMESS
-   if not sys.modules.has_key('Utilitai.Graph'):
-      from Utilitai.Graph import Graph
+   if not sys.modules.has_key('Graph'):
+      from Utilitai import Graph
 except ImportError:
    def UTMESS(code,sprg,texte):
       fmt='\n <%s> <%s> %s\n\n'
       print fmt % (code,sprg,texte)
    if not sys.modules.has_key('Graph'):
-      from Graph import Graph
+      import Graph
 
 
 # formats de base (identiques à ceux du module Graph)
@@ -220,9 +220,9 @@ class TableBase(object):
       if len(self.para)<>2:
          UTMESS('A','Table','La table doit avoir exactement deux paramètres.')
          return
-      lx, ly = [getattr(self,p).values() for p in self.para]
+      lx, ly = [[v for v in getattr(self,p).values() if v] for p in self.para]
       # objet Graph
-      gr=Graph()
+      gr=Graph.Graph()
       gr.AjoutCourbe(Val=[lx, ly], Lab=self.para)
       try:
          gr.Trace(**kargs)
@@ -259,7 +259,7 @@ class Table(TableBase):
          typ  : liste des types des paramètres
          titr : titre de la table
       """
-      self.rows=rows
+      self.rows=[r for r in rows if r.values()<>[None]*len(r.values())]
       self.para=list(para)
       if len(typ)==len(self.para):
          self.type=list(typ)
@@ -654,7 +654,7 @@ if __name__ == "__main__":
    tg=tabc['INST','DX'].DX.NON_VIDE()
    #tg.Impr(FORMAT='XMGRACE')
    
-   g=Graph()
+   g=Graph.Graph()
    g.Titre="Tracé d'une fonction au format TABLEAU"
    g.AjoutCourbe(Val=[tg.INST.values(), tg.DX.values()], Lab=['INST','DX'])
    g.Trace(FORMAT='TABLEAU')

@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2004   AUTEUR JMBHH01 J.M.PROIX 
+# MODIF  DATE 04/11/2004   AUTEUR G8BHHXD X.DESROCHES 
 # TITRE CYLINDRE EN INCOMPRESSIBLE (TRIA6 QUAD8) AXISYM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -36,7 +36,7 @@ DEBUT(CODE=_F(  NOM = 'SSLV130D',NIV_PUB_WEB='INTERNET') )
 
 M=LIRE_MAILLAGE(   )
 
-PRES = FORMULE(REEL="""(REEL:X,REEL:Y) =  60.""")
+PRES = FORMULE(NOM_PARA=('X','Y'),VALE='60.')
 
 MO=AFFE_MODELE( MAILLAGE=M,
                 VERIF='MAILLE',
@@ -368,8 +368,8 @@ TEST_RESU(RESU=(
                POINT = 1,
                MAILLE='M2',    
                NOM_CMP = 'NUEST',      
-               VALE = 4.0066061474426E-02, 
-               REFERENCE = 'NON_REGRESSION',VERSION = '7.2.10'),
+               VALE = 7.3641910355225, 
+               REFERENCE = 'NON_REGRESSION',VERSION = '7.3.25'),
              ),
             );
 
@@ -382,8 +382,8 @@ TEST_RESU(RESU=(
                GROUP_NO= 'A',
                MAILLE='M2',    
                NOM_CMP = 'ERREST',      
-               VALE =  7.2594903573683E-05, 
-               REFERENCE = 'NON_REGRESSION',VERSION = '7.2.10'),
+               VALE =  1.3379359201846E-02, 
+               REFERENCE = 'NON_REGRESSION',VERSION = '7.3.25'),
              ),
             );
 

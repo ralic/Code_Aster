@@ -1,4 +1,5 @@
-# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
+
+# MODIF  DATE 04/11/2004   AUTEUR G8BHHXD X.DESROCHES 
 # TITRE PARALLEPEPIPEDE SOUS SON PROPRE POIDS (HEXA20 GROSSIER)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -419,9 +420,9 @@ TEST_RESU(RESU=(_F(RESULTAT=DEPLD2,
                    NOM_CMP='NUEST',
                    MAILLE='M10',
                    POINT=1,
-                   VALE=7.5285872917951E+01,
+                   VALE=1.2078931185632E-03,
                    REFERENCE='NON_REGRESSION',
-                   VERSION='7.02.10',),
+                   VERSION='7.03.26',),
                 _F(RESULTAT=DEPLD2,
                    NUME_ORDRE=10,
                    NOM_CHAM='ERRE_ELNO_ELGA',
@@ -430,7 +431,7 @@ TEST_RESU(RESU=(_F(RESULTAT=DEPLD2,
                    NOEUD='N96',
                    VALE=9.9102820670140E-02,
                    REFERENCE='NON_REGRESSION',
-                   VERSION='7.02.10',),
+                   VERSION='7.03.26',),
                 ),
           )
 #---------------------------------------------------------------------

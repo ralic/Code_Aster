@@ -1,0 +1,395 @@
+# MODIF  DATE 09/11/2004   AUTEUR GODARD V.GODARD 
+# TITRE ESSAIS BIAXIAUX EN 3D - COMPORTEMENT ENDO_ORTH_BETON
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+
+#----------------------------------------------------------------------
+#   TEST MODELE ENDO_ORTH_BETON EN FORCE IMPOSE
+#   U_1:ESSAI DE TRACTION SIMPLE   
+#   U_2:ESSAI DE COMPRESSION SIMPLE
+#   U_3:ESSAI BIAXIAL COMPRESSION(DX)-TRACTION(DY)
+#       AVEC SIGMA_TRACTION/SIGMA_COMPRESSION=0.2
+#
+#   CE TEST PERMET DE CALIBRER LES PARAMETRES EN FONCTIONS DE CONTRAINTES
+#   DE RUPTURE. LE U_3 PERMET DE VERIFIER QU'ON NE DEPASSE PAS LA CONTRAINTE
+#   DE RUPTURE EN TRACTION POUR UN CHARGEMENT BIAXIAL
+#----------------------------------------------------------------------
+
+
+DEBUT( CODE=_F( NOM = 'SSNV176E',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),PAR_LOT='NON',);
+
+MA=LIRE_MAILLAGE();
+
+
+MO=AFFE_MODELE(MAILLAGE=MA,
+              AFFE=_F(TOUT='OUI',
+                       PHENOMENE='MECANIQUE',
+                       MODELISATION='3D',),
+                       );
+
+L_INST = DEFI_LIST_REEL (
+              DEBUT=0.0,
+              INTERVALLE=(_F(JUSQU_A=1.00,NOMBRE=1,),
+                          _F(JUSQU_A=2.00,NOMBRE=20,),
+                          _F(JUSQU_A=4.00,NOMBRE=20,),
+                          _F(JUSQU_A=8.00,NOMBRE=40,),
+                          ),);
+
+L_ARCH=DEFI_LIST_REEL(DEBUT=0.0,
+              INTERVALLE=(_F(JUSQU_A=1.00,NOMBRE=1,),
+                          _F(JUSQU_A=2.00,NOMBRE=20,),
+                          _F(JUSQU_A=4.00,NOMBRE=20,),
+                          _F(JUSQU_A=8.00,NOMBRE=40,),
+                          ),);
+
+
+
+r33 = 3**-0.5
+
+
+C_RIGIDE = AFFE_CHAR_MECA(
+  MODELE = MO,
+  DDL_IMPO = _F(NOEUD = 'N0',DX = 0,DY = 0,DZ = 0),
+  LIAISON_DDL = (
+    _F(NOEUD=('N2','N1'),DDL=('DX','DY'),COEF_MULT=(1,-1),COEF_IMPO=0),
+    _F(NOEUD=('N3','N1'),DDL=('DX','DZ'),COEF_MULT=(1,-1),COEF_IMPO=0),
+    _F(NOEUD=('N3','N2'),DDL=('DY','DZ'),COEF_MULT=(1,-1),COEF_IMPO=0),
+    )
+  );
+
+
+U_CONS=DEFI_FONCTION(NOM_PARA='INST',
+                    VALE=(0.,0.,1.,1.,4.,2.),
+                    PROL_DROITE='CONSTANT',);
+
+BETON= DEFI_MATERIAU(
+              ELAS = _F(E = 32000.,  NU = 0.2), 
+              ENDO_ORTH_BETON = _F(ALPHA = 0.87,
+                                   K0 = 3.e-4,
+                                   K1 = 10.5,
+                                   K2 = 6.e-4,
+                                   ECROB=1.e-3,
+                                   ECROD=0.06,
+                                   ),);
+
+
+CHP_M=AFFE_MATERIAU(MAILLAGE=MA,
+                     AFFE=_F(TOUT='OUI',
+                             MATER=BETON,),);
+
+
+CHR_1 = AFFE_CHAR_MECA( MODELE = MO,
+                       FORCE_FACE = (
+                          _F(MAILLE='F1', FX= -1.),
+                          _F(MAILLE='F4', FX= r33*1.),
+                                     ),
+                      );
+
+CHR_2 = AFFE_CHAR_MECA( MODELE = MO,
+                       FORCE_FACE = (
+                          _F(MAILLE='F1', FX= 1.),
+                          _F(MAILLE='F4', FX= -r33*1.),
+                                     ),
+                      );
+
+CHR_3 = AFFE_CHAR_MECA( MODELE = MO,
+                       FORCE_FACE = (
+                           _F(MAILLE='F2', FY= -0.2),
+                          _F(MAILLE='F4', FY= r33*0.2),
+                          _F(MAILLE='F1', FX= 1.),
+                          _F(MAILLE='F4', FX= -r33*1.),
+                                     ),
+                      );
+
+
+
+U_1=STAT_NON_LINE(MODELE=MO,
+              CHAM_MATER=CHP_M,
+              EXCIT=(
+                     _F(CHARGE=C_RIGIDE,),
+                     _F(CHARGE=CHR_1,
+                        FONC_MULT=U_CONS,),),
+              COMP_INCR=_F(RELATION='ENDO_ORTH_BETON',
+                           DEFORMATION='PETIT',),
+              INCREMENT=_F(LIST_INST=L_INST,
+                           INST_FIN=4., 
+                           SUBD_PAS=4,
+                           SUBD_PAS_MINI=1.E-05,),
+              NEWTON=_F(MATRICE='TANGENTE',
+                        REAC_ITER=1,),
+              CONVERGENCE=_F(RESI_GLOB_RELA=1.E-06,
+                             ITER_GLOB_MAXI=50,
+                             RESI_INTE_RELA=1.E-06,
+                             ITER_INTE_MAXI=20,),
+             ARCHIVAGE=_F(LIST_INST=L_ARCH),
+             );
+
+U_1=STAT_NON_LINE(reuse=U_1,
+                  ETAT_INIT=_F(EVOL_NOLI=U_1),
+                  MODELE=MO,
+                  CHAM_MATER=CHP_M,
+                  EXCIT=(
+                  _F(CHARGE=C_RIGIDE,),
+                  _F(CHARGE=CHR_1,
+                     TYPE_CHARGE='FIXE_PILO',),
+                     ),
+                  COMP_INCR=_F(RELATION='ENDO_ORTH_BETON',
+                               DEFORMATION='PETIT',),
+                  INCREMENT=_F(LIST_INST=L_INST,
+                               INST_FIN=8., 
+                               SUBD_PAS=4,
+                               SUBD_PAS_MINI=1.E-05,),
+                  NEWTON=_F(MATRICE='TANGENTE',
+                            PAS_MINI_ELAS=0.03,
+                            REAC_ITER=1,),
+                  CONVERGENCE=_F(RESI_GLOB_RELA=1.E-05,
+                                 ITER_GLOB_MAXI=20,
+                                 RESI_INTE_RELA=1.E-10,
+                                 ITER_INTE_MAXI=20,),
+                  PILOTAGE=_F(TYPE='PRED_ELAS',
+                              ETA_PILO_MIN=1.E-6,
+                              ETA_PILO_R_MIN=0.,
+                              ETA_PILO_MAX=50.,
+                              COEF_MULT=1.,
+                              SELECTION='RESIDU',
+                              ),
+                  ARCHIVAGE=_F(LIST_INST=L_ARCH),
+                  );
+
+U_2=STAT_NON_LINE(MODELE=MO,
+              CHAM_MATER=CHP_M,
+              EXCIT=(
+                     _F(CHARGE=C_RIGIDE,),
+                     _F(CHARGE=CHR_2,
+                        FONC_MULT=U_CONS,),),
+              COMP_INCR=_F(RELATION='ENDO_ORTH_BETON',
+                           DEFORMATION='PETIT',),
+              INCREMENT=_F(LIST_INST=L_INST,
+                           INST_FIN=4., 
+                           SUBD_PAS=4,
+                           SUBD_PAS_MINI=1.E-05,),
+              NEWTON=_F(MATRICE='TANGENTE',
+                        REAC_ITER=1,),
+              CONVERGENCE=_F(RESI_GLOB_RELA=1.E-06,
+                             ITER_GLOB_MAXI=50,
+                             RESI_INTE_RELA=1.E-06,
+                             ITER_INTE_MAXI=20,),
+             ARCHIVAGE=_F(LIST_INST=L_ARCH),
+             );
+
+
+U_2=STAT_NON_LINE(reuse=U_2,
+                  ETAT_INIT=_F(EVOL_NOLI=U_2),
+                  MODELE=MO,
+                  CHAM_MATER=CHP_M,
+                  EXCIT=(
+                  _F(CHARGE=C_RIGIDE,),
+                  _F(CHARGE=CHR_2,
+                     TYPE_CHARGE='FIXE_PILO',),
+                     ),
+                  COMP_INCR=_F(RELATION='ENDO_ORTH_BETON',
+                               DEFORMATION='PETIT',),
+                  INCREMENT=_F(LIST_INST=L_INST,
+                               INST_FIN=8., 
+                               SUBD_PAS=4,
+                               SUBD_PAS_MINI=1.E-05,),
+                  NEWTON=_F(MATRICE='TANGENTE',
+                            PAS_MINI_ELAS=0.03,
+                            REAC_ITER=1,),
+                  CONVERGENCE=_F(RESI_GLOB_RELA=1.E-05,
+                                 ITER_GLOB_MAXI=20,
+                                 RESI_INTE_RELA=1.E-10,
+                                 ITER_INTE_MAXI=20,),
+                  PILOTAGE=_F(TYPE='PRED_ELAS',
+                              ETA_PILO_MIN=1.E-6,
+                              ETA_PILO_R_MIN=0.,
+                              ETA_PILO_MAX=50.,
+                              COEF_MULT=0.5,
+                              SELECTION='RESIDU',
+                              ),
+                  ARCHIVAGE=_F(LIST_INST=L_ARCH),
+                  );
+
+U_3=STAT_NON_LINE(MODELE=MO,
+              CHAM_MATER=CHP_M,
+              EXCIT=(
+                     _F(CHARGE=C_RIGIDE,),
+                    _F(CHARGE=CHR_3,
+                       FONC_MULT=U_CONS,),),
+              COMP_INCR=_F(RELATION='ENDO_ORTH_BETON',
+                           DEFORMATION='PETIT',),
+              INCREMENT=_F(LIST_INST=L_INST,
+                           INST_FIN=4., 
+                           SUBD_PAS=4,
+                           SUBD_PAS_MINI=1.E-05,),
+              NEWTON=_F(MATRICE='TANGENTE',
+                        REAC_ITER=1,),
+              CONVERGENCE=_F(RESI_GLOB_RELA=1.E-06,
+                             ITER_GLOB_MAXI=50,
+                             RESI_INTE_RELA=1.E-06,
+                             ITER_INTE_MAXI=20,),
+             ARCHIVAGE=_F(LIST_INST=L_ARCH),
+             );
+
+U_3=STAT_NON_LINE(reuse=U_3,
+                  ETAT_INIT=_F(EVOL_NOLI=U_3),
+                  MODELE=MO,
+                  CHAM_MATER=CHP_M,
+                  EXCIT=(
+                  _F(CHARGE=C_RIGIDE,),
+                  _F(CHARGE=CHR_3,
+                     TYPE_CHARGE='FIXE_PILO',),
+                     ),
+                  COMP_INCR=_F(RELATION='ENDO_ORTH_BETON',
+                               DEFORMATION='PETIT',),
+                  INCREMENT=_F(LIST_INST=L_INST,
+                               INST_FIN=8., 
+                               SUBD_PAS=4,
+                               SUBD_PAS_MINI=1.E-05,),
+                  NEWTON=_F(MATRICE='TANGENTE',
+                            PAS_MINI_ELAS=0.03,
+                            REAC_ITER=1,),
+                  CONVERGENCE=_F(RESI_GLOB_RELA=1.E-05,
+                                 ITER_GLOB_MAXI=20,
+                                 RESI_INTE_RELA=1.E-10,
+                                 ITER_INTE_MAXI=20,),
+                  PILOTAGE=_F(TYPE='PRED_ELAS',
+                              ETA_PILO_MIN=1.E-6,
+                              ETA_PILO_R_MIN=0.,
+                              ETA_PILO_MAX=50.,
+                              COEF_MULT=1.,
+                              SELECTION='RESIDU',
+                              ),
+                  ARCHIVAGE=_F(LIST_INST=L_ARCH),
+                  );
+
+
+
+U_1 = CALC_ELEM(
+   reuse = U_1,
+   MODELE    =MO,
+   CHAM_MATER=CHP_M,
+   RESULTAT  =U_1,
+   OPTION    =('EPSI_ELGA_DEPL'),
+   );
+    
+U_2 = CALC_ELEM(
+   reuse = U_2,
+   MODELE    =MO,
+   CHAM_MATER=CHP_M,
+   RESULTAT  =U_2,
+   OPTION    =('EPSI_ELGA_DEPL'),
+   );
+
+U_3 = CALC_ELEM(
+   reuse = U_3,
+   MODELE    =MO,
+   CHAM_MATER=CHP_M,
+   RESULTAT  =U_3,
+   OPTION    =('EPSI_ELGA_DEPL'),
+   );
+
+
+
+
+                 
+SIXX1=RECU_FONCTION(RESULTAT=U_1,
+                 NOM_CHAM='SIEF_ELGA',
+                 TOUT_ORDRE='OUI',
+                 NOM_CMP='SIXX',
+                 MAILLE='VOLUME',
+                 POINT=1,);
+
+                 
+SIXX2=RECU_FONCTION(RESULTAT=U_2,
+                 NOM_CHAM='SIEF_ELGA',
+                 TOUT_ORDRE='OUI',
+                 NOM_CMP='SIXX',
+                 MAILLE='VOLUME',
+                 POINT=1,);
+
+                 
+SIXX3=RECU_FONCTION(RESULTAT=U_3,
+                 NOM_CHAM='SIEF_ELGA',
+                 TOUT_ORDRE='OUI',
+                 NOM_CMP='SIXX',
+                 MAILLE='VOLUME',
+                 POINT=1,);
+
+
+tab_si1=CREA_TABLE(FONCTION=_F(FONCTION=SIXX1),);
+tab_si2=CREA_TABLE(FONCTION=_F(FONCTION=SIXX2),);
+tab_si3=CREA_TABLE(FONCTION=_F(FONCTION=SIXX3),);
+
+IMPR_TABLE(TABLE=tab_si1,
+            FORMAT='ASTER',
+            FILTRE=_F(NOM_PARA='SIXX',
+                      CRIT_COMP='ABS_MAXI'),
+           );
+
+IMPR_TABLE(TABLE=tab_si2,
+           FORMAT='ASTER',
+           FILTRE=_F(NOM_PARA='SIXX',
+                     CRIT_COMP='ABS_MAXI'),
+           );
+
+IMPR_TABLE(TABLE=tab_si3,
+            FORMAT='ASTER',
+            FILTRE=_F(NOM_PARA='SIXX',
+                      CRIT_COMP='ABS_MAXI'),
+            );
+
+
+
+TEST_RESU(RESU=(
+              _F(
+              RESULTAT = U_1,
+              REFERENCE = 'NON_REGRESSION',
+              INST = 4.1,
+              MAILLE = 'VOLUME',
+              POINT = 1,
+              NOM_CHAM = 'SIEF_ELGA',
+              NOM_CMP = 'SIXX',
+              VALE = 3.20684E+00),
+              _F(
+              RESULTAT = U_2,
+              REFERENCE = 'NON_REGRESSION',
+              INST = 7.5,
+              MAILLE = 'VOLUME',
+              POINT = 1,
+              NOM_CHAM = 'SIEF_ELGA',
+              NOM_CMP = 'SIXX',
+              VALE = -3.18000E+01),
+              _F(
+              RESULTAT = U_3,
+              REFERENCE = 'NON_REGRESSION',
+              INST = 7.3,
+              MAILLE = 'VOLUME',
+              POINT = 1,
+              NOM_CHAM = 'SIEF_ELGA',
+              NOM_CMP = 'SIXX',
+              VALE = -1.42038E+01),
+              ),
+            );
+
+
+
+
+
+FIN();

@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 08/11/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE  POUTRE EULER_BERNOULLI MULTIFIBRES (STATIQUE NON-LINEAIRE LABORDERIE)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -44,7 +44,8 @@ POUCA=AFFE_CARA_ELEM(MODELE=MOPOU,            INFO=1,
            POUTRE=_F(GROUP_MA=('POUTRE'),
                      SECTION='RECTANGLE',
                      CARA=('H'),
-                     VALE=(1.),),
+                     VALE=(1.),
+                     PREC_INERTIE=0.334),
            ORIENTATION=_F(GROUP_MA=('POUTRE'),
                           CARA='ANGL_VRIL',
                           VALE=0.,),

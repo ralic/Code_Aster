@@ -1,7 +1,7 @@
       SUBROUTINE BISSEC(NOMZ)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 02/04/2002   AUTEUR RATEAU G.RATEAU 
+C MODIF CALCULEL  DATE 08/11/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -45,7 +45,7 @@ C                     CELL*.1 : - NOMBRE DE MAILLES CANDIDATES
 C                     CELL*.2 : POINTEUR DANS NOM.ARBRE.LIMA DES MAILLES
 C                               CANDIDATES
 C ---------------------------------------------------------------------
-C             POUR SON UTILISATION : CF CERNE ET LOCALI
+C                  POUR SON UTILISATION : CF CERNE
 C ---------------------------------------------------------------------
 
       IMPLICIT NONE
@@ -72,10 +72,10 @@ C --- PARAMETRES
       INTEGER IMAX,NMIN
       PARAMETER (IMAX = 15)
       PARAMETER (NMIN = 8)
-      REAL*8  GAMMA0,GAMMA1,PREC00
+      REAL*8  GAMMA0,GAMMA1,PREC
       PARAMETER (GAMMA0 = 0.17D0)
       PARAMETER (GAMMA1 = 0.90D0)
-      PARAMETER (PREC00 = 0.00001D0)
+      PARAMETER (PREC = 1.D-8)
 
 C --- GENERATEUR PSEUDO-ALEATOIRE
       INTEGER GRAIN0,GRAIN1,GRAINS(32),GRAMAX
@@ -88,7 +88,7 @@ C --- VARIABLES
       INTEGER        H,I,J,K,L,P0,P1,P2,P3,P4,P5,P6,Q0,Q1,Q2,Q3,Q4
       CHARACTER*(*)  NOMZ
       CHARACTER*10   NOM
-      REAL*8         PREC,PREC0,R,R0
+      REAL*8         R,R0
 
       NOM = NOMZ
 
@@ -98,7 +98,6 @@ C --- LECTURE DONNEES
       CALL JEVEUO(NOM//'.BOITE.DIME','L',P0)
       CALL JEVEUO(NOM//'.BOITE.PAN','L',P1)
       CALL JEVEUO(NOM//'.BOITE.SOMMET','L',P2)
-      CALL JEVEUO(NOM//'.BOITE.H','L',P3)
 
       DIME = ZI(P0)
       NMA = ZI(P0+1)
@@ -155,8 +154,7 @@ C ----- CHOIX DU PAN SEPARATEUR
         DO 40 I = 1, IMAX
 
           CALL HASARD(GRAIN0,GRAIN1,GRAINS,32)
-          IMA = ZI(Q2+GRAIN1/MODNMA)
-          PREC = PREC00*ZR(P3-1+IMA) 
+          IMA = ZI(Q2+GRAIN1/MODNMA) 
           P6 = P0+2*IMA
           IPAN = ZI(P6)
           NPAN = ZI(P6+2)-IPAN
@@ -234,7 +232,6 @@ C ------- QUALITE DU PAN
             IPAN0 = IPAN
             NN0 = NN + NZ
             NP0 = NP + NZ
-            PREC0 = PREC
             IF (NGAMA0.LT.NGAM00) GOTO 130
           ENDIF
  
@@ -267,7 +264,6 @@ C --------- ECRITURE CELLULES
             Q4 = Q3 + LN
             P4 = P1-1+IPAN0
             R0 = ZR(P4+DIME)          
-            PREC = PREC0
 
 C --------- ECRITURE LIMA
 

@@ -1,7 +1,7 @@
-      SUBROUTINE ARLAS1(DD,NN1,NN2,IJ,B0,B)
+      SUBROUTINE ARLAS1(DIM,L2,NN1,NN2,IJ,CK,C)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 02/04/2002   AUTEUR RATEAU G.RATEAU 
+C MODIF MODELISA  DATE 08/11/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,33 +24,70 @@ C ----------------------------------------------------------------------
 C ASSEMBLAGE MATRICE ELEMENTAIRE ARLEQUIN MAILLE SOLIDE / MAILLE SOLIDE
 C ----------------------------------------------------------------------
 C VARIABLES D'ENTREE 
-C INTEGER           DD          : LONGUEUR MATRICE NOEUD (CF ARLFAC)
-C INTEGER           NN1         : NOMBRE DE COLONNES DE B0
-C INTEGER           NN2         : NOMBRE DE LIGNES DE B0             
-C INTEGER           IJ(NN2,NN1) : POINTEURS DANS B (CF ARLAS0)
+C INTEGER  DIM                        : DIMENSION DE L'ESPACE
+C REAL*8   L2                         : PARAMETRE L*L/2
+C INTEGER  NN1                        : NOMBRE DE NOEUDS MAILLE 1
+C INTEGER  NN2                        : NOMBRE DE NOEUDS MAILLE 2
+C INTEGER  IJ(NN2,NN1)                : POINTEURS DANS C (CF ARLAS0)
+C REAL*8   CK(*)                      : MATRICES ELEMENTAIRES (CF ARLTE)
 C
 C VARIABLE D'ENTREE/SORTIE
-C REAL*8            B0(NN2,NN1) : MATRICE ELEMENTAIRE ARLEQUIN
-C REAL*8            B(*)        : MATRICE ARLEQUIN MORSE (CF ARLFAC)
-C ----------------------------------------------------------------------
-C                     ATTENTION : B0 EST REMISE A ZERO
+C REAL*8   C(*)                       : MATRICE MORSE (CF ARLFAC)
+C
+C MATRICE PONCTUELLE DANS C : (X1.X2, X1.Y2, [X1.Z2], Y1.X2, ...)  
 C ----------------------------------------------------------------------
 
       IMPLICIT NONE
 
 C --- VARIABLES
-      INTEGER DD,NN1,NN2,IJ(NN2,*),I,J,Q
-      REAL*8  B0(NN2,*),B(*)
+      INTEGER  DIM,NN1,NN2,IJ(NN2,NN1),D2
+      INTEGER  I,J,K,P1,Q1,P,Q
+      REAL*8   L2,TR,R,CK(*),C(*),C0(9)
 
-C --- ASSEMBLAGE
+C --- ASSEMBLAGE DE LA MATRICE ELEMENTAIRE CK
+
+      P1 = 1
+      Q1 = NN1*NN2
+      D2 = DIM*DIM
 
       DO 10 I = 1, NN1
 
         DO 10 J = 1, NN2
 
-          Q = 1 + DD*(IJ(J,I)-1)
-          B(Q) = B(Q) + B0(J,I)
-          B0(J,I) = 0.D0
+          Q = 1 + D2*(IJ(J,I)-1)
+
+C ------- CALCUL DE LA TRACE DE CK
+
+          TR = 0.D0
+
+          P = 1
+          DO 20 K = 1, DIM
+            TR = TR + CK(Q1+P)
+            P = P + DIM + 1
+ 20       CONTINUE
+
+C ------- CALCUL DE LA MATRICE PONCTUELLE C0
+
+          DO 30 K = 1, D2
+            Q1 = Q1 + 1
+            C0(K) = L2*CK(Q1)
+ 30       CONTINUE
+
+          R = CK(P1) + L2*TR
+          P1 = P1 + 1
+
+          P = 1
+          DO 40 K = 1, DIM
+            C0(P) = C0(P) + R
+            P = P + DIM + 1
+ 40       CONTINUE
+
+C ------- ASSEMBLAGE DE LA MATRICE PONCTUELLE C0
+
+          DO 50 K = 1, D2
+            C(Q) = C(Q) + C0(K)
+            Q = Q + 1
+ 50       CONTINUE
 
  10   CONTINUE
 

@@ -2,7 +2,7 @@
      +                    CHASOL, CRITEZ )
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 05/05/2004   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGELINE  DATE 09/11/2004   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -94,7 +94,7 @@ C CORPS DU PROGRAMME
 C FETI OR NOT ?
       IF (METRES(1:4).EQ.'FETI') THEN
         SDFETI=ZK24(ISLVK+5)
-        CALL JEVEUO(SDFETI(1:19)//'.DIME','L',IDIME)
+        CALL JEVEUO(SDFETI(1:19)//'.FDIM','L',IDIME)
 C NOMBRE DE SOUS-DOMAINES       
         NBSD=ZI(IDIME)
         CALL JEVEUO(MATAS//'.FETM','L',IFETM)

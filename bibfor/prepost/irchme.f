@@ -6,7 +6,7 @@
      >                    CODRET )
 C_______________________________________________________________________
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
+C MODIF PREPOST  DATE 09/11/2004   AUTEUR NICOLAS O.NICOLAS 
 C RESPONSABLE GNICOLAS G.NICOLAS
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -58,7 +58,7 @@ C
 C
       LOGICAL LRESU
 C
-      INTEGER NUMORD, NBCMP, IFI
+      INTEGER NUMORD, NBCMP, IFI, IRET
       INTEGER NBNOEC, NBMAEC
       INTEGER LINOEC(*), LIMAEC(*)
 C
@@ -146,10 +146,18 @@ C
       IF ( CODRET.EQ.0 ) THEN
 C
       IF ( LRESU ) THEN
-C
-        CALL RSADPA ( NORESU, 'L', 1, 'INST', NUMORD, 0, IAUX, SAUX08 )
-        INSTAN = ZR(IAUX)
-C
+         CALL JEEXIN ( NORESU(1:8)//'           .INST', IRET )
+         IF ( IRET .NE. 0 ) THEN
+           CALL RSADPA ( NORESU, 'L', 1, 'INST', NUMORD, 0, IAUX, 
+     &                   SAUX08 )
+           INSTAN = ZR(IAUX)
+         ENDIF
+         CALL JEEXIN ( NORESU(1:8)//'           .FREQ', IRET )
+         IF ( IRET .NE. 0 ) THEN
+           CALL RSADPA ( NORESU, 'L', 1, 'FREQ', NUMORD, 0, IAUX, 
+     &                   SAUX08 )
+           INSTAN = ZR(IAUX)
+         ENDIF
         NUMPT = NUMORD
 C                 12345678
         UNIINS = 'INCONNUE'

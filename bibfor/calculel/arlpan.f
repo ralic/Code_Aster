@@ -1,7 +1,7 @@
-      SUBROUTINE ARLPAN(NNR,ARE,NPAN)
+      SUBROUTINE ARLPAN(TMA,ARE,NARE,NPAN)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 02/04/2002   AUTEUR RATEAU G.RATEAU 
+C MODIF CALCULEL  DATE 08/11/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -25,27 +25,27 @@ C ----------------------------------------------------------------------
 C              ARETES LINEAIRES DES FACES DES MAILLES 3D
 C ----------------------------------------------------------------------
 C VARIABLES D'ENTREE 
-C INTEGER  NNR   : NOMBRE DE NOEUDS DE LA MAILLE LINEAIRE
-C                    NNR = 4 : TETRAEDRE
-C                    NNR = 6 : PENTAEDRE
-C                    NNR = 8 : HEXAEDRE
+C CHARACTER*8  TMA  : TYPE DE MAILLE
 C
 C VARIABLE DE SORTIE
-C INTEGER ARE(*) : ARETES LINEAIRES ASSOCIEES AUX FACES
-C                 ( NB ARETES FACE.1, FACE.1.ARETE.1, FACE.1.ARETE.2,
-C                   ..., NB ARETES FACE.2, FACE.2.ARETE.1, ... )
-C                    FACE.* INDEX SUIVANT PANNO 
-C                    ARETE.* INDEX SUIVANT NOAREL
-C                    SI ARETE.* > 0 : MEME SENS QUE DANS NOAREL
-C                    SI ARETE.* < 0 : SENS OPPOSE
-C INTEGER NPAN   : NOMBRE DE FACE DE LA MAILLE
+C INTEGER ARE(*)    : ARETES LINEAIRES ASSOCIEES AUX FACES
+C                    ( NB ARETES FACE.1, FACE.1.ARETE.1, FACE.1.ARETE.2,
+C                      ..., NB ARETES FACE.2, FACE.2.ARETE.1, ... )
+C                      FACE.* INDEX SUIVANT PANNO 
+C                      ARETE.* INDEX SUIVANT NOARET
+C                      SI ARETE.* > 0 : MEME SENS QUE DANS NOAREL
+C                      SI ARETE.* < 0 : SENS OPPOSE
+C INTEGER NPAN      : NOMBRE DE FACES
+C INTEGER NARE      : NOMBRE D'ARETES
 
       IMPLICIT NONE
 
 C --- VARIABLES
-      INTEGER     NNR,ARE(*),NPAN
+      CHARACTER*8  TMA
+      INTEGER      ARE(*),NPAN,NARE
 
-      IF (NNR.EQ.4) THEN
+      IF (TMA(1:5).EQ.'TETRA') THEN
+        NARE = 6
         NPAN = 4
         ARE(1) = 3
           ARE(2) = -3
@@ -63,63 +63,124 @@ C --- VARIABLES
           ARE(14) = 2
           ARE(15) = -6
           ARE(16) = 5
-      ELSEIF (NNR.EQ.6) THEN
+      ELSEIF (TMA(1:5).EQ.'PENTA') THEN
+        NARE = 9
         NPAN = 5
-        ARE(1) = 3
-          ARE(2) = -3
-          ARE(3) = -2
-          ARE(4) = -1
-        ARE(5) = 3
-          ARE(6) = 7
-          ARE(7) = 8
-          ARE(8) = 9
-        ARE(9) = 4
-          ARE(10) = 1
-          ARE(11) = 5
-          ARE(12) = -7
-          ARE(13) = -4
-        ARE(14) = 4
-          ARE(15) = 2
-          ARE(16) = 6
-          ARE(17) = -8
-          ARE(18) = -5
-        ARE(19) = 4
+        IF ((TMA(6:7).EQ.'12').OR.(TMA(6:7).EQ.'14')) THEN
+          ARE(1) = 3
+            ARE(2) = -3
+            ARE(3) = -2
+            ARE(4) = -1
+          ARE(5) = 4
+            ARE(6) = 1
+            ARE(7) = 5
+            ARE(8) = -7
+            ARE(9) = -4
+          ARE(10) = 4
+            ARE(11) = 2
+            ARE(12) = 6
+            ARE(13) = -8
+            ARE(14) = -5
+          ARE(15) = 4
+            ARE(16) = 3
+            ARE(17) = 4
+            ARE(18) = -9
+            ARE(19) = -6
           ARE(20) = 3
-          ARE(21) = 4
-          ARE(22) = -9
-          ARE(23) = -6
-      ELSEIF (NNR.EQ.8) THEN
+            ARE(21) = 7
+            ARE(22) = 8
+            ARE(23) = 9
+        ELSE
+          ARE(1) = 3
+            ARE(2) = -3
+            ARE(3) = -2
+            ARE(4) = -1
+          ARE(5) = 4
+            ARE(6) = 1
+            ARE(7) = 5
+            ARE(8) = -7
+            ARE(9) = -4
+          ARE(10) = 4
+            ARE(11) = 2
+            ARE(12) = 6
+            ARE(13) = -8
+            ARE(14) = -5
+          ARE(15) = 4
+            ARE(16) = 4
+            ARE(17) = -9
+            ARE(18) = -6
+            ARE(19) = 3
+          ARE(20) = 3
+            ARE(21) = 7
+            ARE(22) = 8
+            ARE(23) = 9
+        ENDIF
+      ELSEIF (TMA(1:4).EQ.'HEXA') THEN
+        NARE = 12
         NPAN = 6 
-        ARE(1) = 4
-          ARE(2) = -4
-          ARE(3) = -3
-          ARE(4) = -2
-          ARE(5) = -1
-        ARE(6) = 4
-          ARE(7) = 1
-          ARE(8) = 6
-          ARE(9) = -9
-          ARE(10) = -5
-        ARE(11) = 4
-          ARE(12) = 2
-          ARE(13) = 7
-          ARE(14) = -10
-          ARE(15) = -6
-        ARE(16) = 4
-          ARE(17) = 3
-          ARE(18) = 8
-          ARE(19) = -11
-          ARE(20) = -7
-        ARE(21) = 4
-          ARE(22) = 4
-          ARE(23) = 5
-          ARE(24) = -12
-          ARE(25) = -8
-        ARE(26) = 4
-          ARE(27) = 9
-          ARE(28) = 10
-          ARE(29) = 11
-          ARE(30) = 12
+        IF ((TMA(5:6).EQ.'16').OR.(TMA(5:6).EQ.'18')) THEN
+          ARE(1) = 4
+            ARE(2) = -4
+            ARE(3) = -3
+            ARE(4) = -2
+            ARE(5) = -1
+          ARE(6) = 4
+            ARE(7) = 6
+            ARE(8) = -9
+            ARE(9) = -5
+            ARE(10) = 1
+          ARE(11) = 4
+            ARE(12) = 2
+            ARE(13) = 7
+            ARE(14) = -10
+            ARE(15) = -6
+          ARE(16) = 4
+            ARE(17) = 8
+            ARE(18) = -11
+            ARE(19) = -7
+            ARE(20) = 3
+          ARE(21) = 4
+            ARE(22) = 4
+            ARE(23) = 5
+            ARE(24) = -12
+            ARE(25) = -8
+          ARE(26) = 4
+            ARE(27) = 10
+            ARE(28) = 11
+            ARE(29) = 12
+            ARE(30) = 9
+        ELSE
+          ARE(1) = 4
+            ARE(2) = -4
+            ARE(3) = -3
+            ARE(4) = -2
+            ARE(5) = -1
+          ARE(6) = 4
+            ARE(7) = 1
+            ARE(8) = 6
+            ARE(9) = -9
+            ARE(10) = -5
+          ARE(11) = 4
+            ARE(12) = 2
+            ARE(13) = 7
+            ARE(14) = -10
+            ARE(15) = -6
+          ARE(16) = 4
+            ARE(17) = 3
+            ARE(18) = 8
+            ARE(19) = -11
+            ARE(20) = -7
+          ARE(21) = 4
+            ARE(22) = 4
+            ARE(23) = 5
+            ARE(24) = -12
+            ARE(25) = -8
+          ARE(26) = 4
+            ARE(27) = 9
+            ARE(28) = 10
+            ARE(29) = 11
+            ARE(30) = 12
+        ENDIF
       ELSE
         CALL UTMESS('F','ARLPAN','TYPE DE MAILLE INDISPONIBLE')
       ENDIF  

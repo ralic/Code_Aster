@@ -1,21 +1,21 @@
-# MODIF  DATE 23/08/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 09/11/2004   AUTEUR VABHHTS J.PELLET 
 # TITRE VALIDATION LIRE_RESU AU FORMAT MED
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 DEBUT(CODE=_F( NOM = 'ZZZZ162A',NIV_PUB_WEB='INTERNET'));
@@ -174,7 +174,6 @@ TEMPE=LIRE_RESU(TYPE_RESU='EVOL_THER',
                 FORMAT='MED',
                 MAILLAGE=MAIL,
                 UNITE=70,
-                NOM_CHAM='TEMP',
                 FORMAT_MED=_F(   NOM_CHAM_MED='TEMPE1__TEMP____________________',
                                  NOM_CMP_IDEM='OUI',
                                  NOM_CHAM    ='TEMP',),
@@ -218,21 +217,20 @@ UUU=LIRE_RESU(TYPE_RESU='EVOL_NOLI',
                               NOM_CHAM    ='VARI_ELNO'),
                          ) ,
               UNITE=71,
-              NOM_CHAM=('DEPL','SIEF_ELNO','VARI_ELNO',),
               TOUT_ORDRE='OUI',);
 
-TEST_RESU ( RESU=(  _F(  RESULTAT   = UUU, 
+TEST_RESU ( RESU=(  _F(  RESULTAT   = UUU,
                          NOM_CHAM   = 'SIEF_ELNO',
                          NUME_ORDRE = 4,
-                         REFERENCE  = 'AUTRE_ASTER', 
+                         REFERENCE  = 'AUTRE_ASTER',
                          MAILLE     = 'M1',
                          POINT      = 1,
                          NOM_CMP    = 'SIYY',
                          VALE       = -87.5       ),
-                    _F(  RESULTAT   = UUU, 
+                    _F(  RESULTAT   = UUU,
                          NOM_CHAM   = 'DEPL',
                          NUME_ORDRE = 5,
-                         REFERENCE  = 'AUTRE_ASTER', 
+                         REFERENCE  = 'AUTRE_ASTER',
                          NOEUD      = 'N1',
                          NOM_CMP    = 'DX',
                          VALE       = 1.275E-03  ),),  )

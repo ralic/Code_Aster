@@ -1,7 +1,7 @@
       SUBROUTINE NOCOQU(DIME,NNO,NOECOQ)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 02/04/2002   AUTEUR RATEAU G.RATEAU 
+C MODIF MODELISA  DATE 08/11/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -130,7 +130,6 @@ C ----- HEXA8
           NOECOQ(2,3) = 7
           NOECOQ(1,4) = 5
           NOECOQ(2,4) = 6
-
 C ----- HEXA16
 
         ELSEIF (NNO.EQ.8) THEN
@@ -172,8 +171,8 @@ C ----- HEXA18
           NOECOQ(2,7) = 15
           NOECOQ(1,8) = 11
           NOECOQ(2,8) = 12
-          NOECOQ(1,9) = 17
-          NOECOQ(2,9) = 18
+          NOECOQ(1,9) = 18
+          NOECOQ(2,9) = 17
 
         ELSE
 

@@ -1,7 +1,7 @@
       SUBROUTINE FORMEN(TYPEMA,TYPEDG,DEGRE)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 02/04/2002   AUTEUR RATEAU G.RATEAU 
+C MODIF CALCULEL  DATE 08/11/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,19 +46,17 @@ C                                 TYPEMA = PENTA -> TYPEDG = 2
 C                                 TYPEMA = HEXA  -> TYPEDG = 3
 C
 C VARIABLE DE SORTIE
-C INTEGER       DEGRE(4,2) :  1,* -> DEGRE A L'ORDRE 0
-C                             2,* -> DEGRE A L'ORDRE 1 
-C                             3,* -> DEGRE DU JACOBIEN
-C                             4,* -> DEGRE COMATRICE JACOBIENNE
-C                             *,1 -> POUR LA MAILLE DONNEE
-C                             *,2 -> POUR LA MAILLE LINEAIRE ASSOCIEE
+C INTEGER       DEGRE(4)   :  1 -> DEGRE A L'ORDRE 0
+C                             2 -> DEGRE A L'ORDRE 1 
+C                             3 -> DEGRE DU JACOBIEN
+C                             4 -> DEGRE COMATRICE JACOBIENNE
 C ----------------------------------------------------------------------
 
       IMPLICIT NONE
 
 C --- VARIABLES
       CHARACTER*8 TYPEMA
-      INTEGER     TYPEDG,INDEX1,INDEX2,I,DEGRE(4,2)
+      INTEGER     TYPEDG,INDEX,I,DEGRE(4)
 
 C --- TABLES
       INTEGER DEGRES(4,3,20)
@@ -90,110 +88,94 @@ C --- TABLES
 
       IF (TYPEMA(1:3).EQ.'SEG') THEN
 
-        INDEX2 = 1
-
         IF (TYPEMA(4:4).EQ.'2') THEN
-          INDEX1 = 1
+          INDEX = 1
         ELSEIF (TYPEMA(4:4).EQ.'3') THEN
-          INDEX1 = 2
+          INDEX = 2
         ELSE
-          GOTO 30
+          GOTO 20
         ENDIF
 
       ELSEIF (TYPEMA(1:4).EQ.'TRIA') THEN
 
-        INDEX2 = 3
-
         IF (TYPEMA(5:5).EQ.'3') THEN
-          INDEX1 = 3
+          INDEX = 3
         ELSEIF (TYPEMA(5:5).EQ.'6') THEN
-          INDEX1 = 4
+          INDEX = 4
         ELSEIF (TYPEMA(5:5).EQ.'7') THEN
-          INDEX1 = 5
+          INDEX = 5
         ELSE
-          GOTO 30
+          GOTO 20
         ENDIF
 
       ELSEIF (TYPEMA(1:4).EQ.'QUAD') THEN
 
-        INDEX2 = 6
-
         IF (TYPEMA(5:5).EQ.'4') THEN
-          INDEX1 = 6
+          INDEX = 6
         ELSEIF (TYPEMA(5:5).EQ.'6') THEN
-          INDEX1 = 7
+          INDEX = 7
         ELSEIF (TYPEMA(5:5).EQ.'8') THEN
-          INDEX1 = 8
+          INDEX = 8
         ELSEIF (TYPEMA(5:5).EQ.'9') THEN
-          INDEX1 = 9
+          INDEX = 9
         ELSE
-          GOTO 30        
+          GOTO 20        
         ENDIF
 
       ELSEIF (TYPEMA(1:5).EQ.'TETRA') THEN
 
-        INDEX2 = 10
-
         IF (TYPEMA(6:6).EQ.'4') THEN
-          INDEX1 = 10
+          INDEX = 10
         ELSEIF (TYPEMA(6:7).EQ.'10') THEN
-          INDEX1 = 11
+          INDEX = 11
         ELSE
-          GOTO 30
+          GOTO 20
         ENDIF
 
       ELSEIF (TYPEMA(1:5).EQ.'PENTA') THEN
 
-        INDEX2 = 12
-
         IF (TYPEMA(6:6).EQ.'6') THEN 
-          INDEX1 = 12
+          INDEX = 12
         ELSEIF (TYPEMA(6:7).EQ.'12') THEN
-          INDEX1 = 13
+          INDEX = 13
         ELSEIF (TYPEMA(6:7).EQ.'14') THEN
-          INDEX1 = 14
+          INDEX = 14
         ELSEIF (TYPEMA(6:7).EQ.'15') THEN
-          INDEX1 = 15
+          INDEX = 15
         ELSE
-          GOTO 30
+          GOTO 20
         ENDIF
 
       ELSEIF (TYPEMA(1:4).EQ.'HEXA') THEN
 
-        INDEX2 = 16
-
         IF (TYPEMA(5:5).EQ.'8') THEN
-          INDEX1 = 16
+          INDEX = 16
         ELSEIF (TYPEMA(5:6).EQ.'16') THEN
-          INDEX1 = 17
+          INDEX = 17
         ELSEIF (TYPEMA(5:6).EQ.'18') THEN
-          INDEX1 = 18
+          INDEX = 18
         ELSEIF (TYPEMA(5:6).EQ.'20') THEN
-          INDEX1 = 19
+          INDEX = 19
         ELSEIF (TYPEMA(5:6).EQ.'27') THEN
-          INDEX1 = 20
+          INDEX = 20
         ELSE
-          GOTO 30
+          GOTO 20
         ENDIF
 
       ELSE
-        GOTO 30
+        GOTO 20
       ENDIF
 
       DO 10 I = 1, 4
-        DEGRE(I,1) = DEGRES(I,TYPEDG,INDEX1)
+        DEGRE(I) = DEGRES(I,TYPEDG,INDEX)
  10   CONTINUE
 
-      DO 20 I = 1, 4
-        DEGRE(I,2) = DEGRES(I,TYPEDG,INDEX2)
+      GOTO 30
+
  20   CONTINUE
-
-      GOTO 40
-
- 30   CONTINUE
         
       CALL UTMESS('F','FORMEN','TYPE DE MAILLE INDISPONIBLE')
 
- 40   CONTINUE
-
-      END
+ 30   CONTINUE
+ 
+       END

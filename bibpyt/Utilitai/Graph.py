@@ -1,4 +1,4 @@
-#@ MODIF Graph Utilitai  DATE 03/11/2004   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF Graph Utilitai  DATE 08/11/2004   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -37,14 +37,14 @@ except ImportError:
 
 try:
    from Utilitai.Utmess import UTMESS
-   if not sys.modules.has_key('Utilitai.Table'):
-      from Utilitai.Table import Table
+   if not sys.modules.has_key('Table'):
+      from Utilitai import Table
 except ImportError:
    def UTMESS(code,sprg,texte):
       fmt='\n <%s> <%s> %s\n\n'
       print fmt % (code,sprg,texte)
    if not sys.modules.has_key('Table'):
-      from Table import Table
+      import Table
    
 
 # ------------------------------------------------------------------------------
@@ -410,7 +410,7 @@ class TraceTableau(TraceGraph):
                   msg.append("     Utilisez IMPR_FONCTION pour interpoler " \
                         "les valeurs sur la première liste d'abscisses.")
          # objet Table
-         Tab=Table()
+         Tab=Table.Table()
          # titre / sous-titre
          tit=[]
          tit.append(self.DicForm['ccom']+' '+g.Titre)

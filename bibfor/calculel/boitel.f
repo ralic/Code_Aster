@@ -1,7 +1,7 @@
       SUBROUTINE BOITEL(CNO,TYPEMA,NOEPAN,NPAN,DIME,MINMAX,PAN)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 02/04/2002   AUTEUR RATEAU G.RATEAU 
+C MODIF CALCULEL  DATE 08/11/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,7 +43,10 @@ C --- VARIABLES
       INTEGER      NOEPAN(*),NPAN,DIME,I,J,K1,K2,N,NNR,P0
       REAL*8       CNO(DIME,*),MINMAX(2,*),PAN(DIME+2,*)
       REAL*8       X1(3),X2(3),X3(3),R1,R2,R3,R,S1,S2
-      LOGICAL      SENS
+
+C --- ORIENTATION DE LA MAILLE
+      
+      CALL ORIEM2(TYPEMA,CNO)
 
 C --- NNR
 
@@ -89,14 +92,6 @@ C --- PAN
 
 C ----- PAN 2D
 
-C ----- ORIENTATION DE LA MAILLE
-
-        R1 = CNO(1,1)
-        R2 = CNO(2,1)
-        S1 = (CNO(1,2)-R1)*(CNO(2,3)-R2)
-        S2 = (CNO(2,2)-R2)*(CNO(1,3)-R1)
-        SENS = (S1.GT.S2)
-
 C ----- CALCUL DES PANS
 
         DO 30 I = 1, NPAN
@@ -111,20 +106,9 @@ C ----- CALCUL DES PANS
  40       CONTINUE
           P0 = P0 + N
 
-          IF (SENS) THEN
-
-            R1 = X2(2) - X1(2)
-            R2 = X1(1) - X2(1)
-            S1 = X1(1)*X2(2) - X1(2)*X2(1)
-
-          ELSE
-
-            R1 = X1(2) - X2(2)
-            R2 = X2(1) - X1(1)
-            S1 = X2(1)*X1(2) - X2(2)*X1(1)
-
-          ENDIF
-
+          R1 = X2(2) - X1(2)
+          R2 = X1(1) - X2(1)
+          S1 = X1(1)*X2(2) - X1(2)*X2(1)
           S2 = S1
 
           IF ((NNR.EQ.4).AND.(TYPEMA(5:5).NE.'4')) THEN

@@ -1,0 +1,248 @@
+# MODIF  DATE 09/11/2004   AUTEUR GODARD V.GODARD 
+# TITRE TEST DE WILLAM AVEC LA LOI ENDO_ORTH_BETON
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+#----------------------------------------------------------------------
+#   TEST DE WILLAM:
+#   ON OBSERVE LA ROTATION DU REPERE PROPRE D'ENDOMMAGEMENT LORSQUE
+#   LE REPERE PROPRE DES DEFORMATION TOURNE
+#
+#   LE CHARGEMENT SE DECOMPOSE EN DEUX PHASES:
+#
+#   - PHASE 1: TRACTION SIMPLE DX JUSQU'A LA LIMITE D'ELASTICITE
+#
+#   - PHASE 2: BI-TRACTION + CISAILLEMENT AVEC LES INCREMENTS DE DEFO
+#              dEPS_XX=0.5
+#              dEPS_YY=0.5
+#              dEPS_XY=0.75
+#
+#    (Voir doc V pour figure)
+#
+#----------------------------------------------------------------------
+
+
+DEBUT( CODE=_F( NOM = 'SSNV177A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),PAR_LOT='NON',);
+
+import Numeric as N
+import LinearAlgebra as LA
+
+MA=LIRE_MAILLAGE();
+
+
+MO=AFFE_MODELE(MAILLAGE=MA,
+              AFFE=_F(TOUT='OUI',
+                       PHENOMENE='MECANIQUE',
+                       MODELISATION='3D',),
+                       );
+
+L_INST = DEFI_LIST_REEL (
+              DEBUT=0.0,
+              INTERVALLE=(_F(JUSQU_A=1.00,NOMBRE=2,),
+                          _F(JUSQU_A=2.00,NOMBRE=50,),
+                          ),);
+
+L_ARCH=DEFI_LIST_REEL(DEBUT=0.0,
+              INTERVALLE=(_F(JUSQU_A=1.00,NOMBRE=2,),
+                          _F(JUSQU_A=2.00,NOMBRE=5,),
+                          ),);
+
+
+
+r33 = 3**-0.5
+
+
+C_RIGIDE = AFFE_CHAR_MECA(
+  MODELE = MO,
+  DDL_IMPO = _F(NOEUD = 'N0',DX = 0,DY = 0,DZ = 0),
+  LIAISON_DDL = (
+    _F(NOEUD=('N2','N1'),DDL=('DX','DY'),COEF_MULT=(1,-1),COEF_IMPO=0),
+    _F(NOEUD=('N3','N1'),DDL=('DX','DZ'),COEF_MULT=(1,-1),COEF_IMPO=0),
+    _F(NOEUD=('N3','N2'),DDL=('DY','DZ'),COEF_MULT=(1,-1),COEF_IMPO=0),
+    )
+  );
+
+
+U_CHAR=DEFI_FONCTION(NOM_PARA='INST',
+                     VALE=(0.,0.,1.,0.9375e-4,2.,2.e-3),
+                     PROL_DROITE='CONSTANT',);
+
+U_CIS=DEFI_FONCTION(NOM_PARA='INST',
+                     VALE=(1.,0.,2.,5.e-4),
+                     PROL_DROITE='CONSTANT',);
+
+
+
+
+CHR_T = AFFE_CHAR_MECA(
+                        MODELE = MO,
+                        DDL_IMPO = (_F(NOEUD='N1', DX=1.),),
+                        );
+   
+CHR_C = AFFE_CHAR_MECA(
+                       MODELE = MO,
+                       DDL_IMPO = (_F(NOEUD='N1', DX=0.5,DY=0.5),
+                                   _F(NOEUD='N2', DY=0.75),),
+                       );
+
+
+BETON= DEFI_MATERIAU(NON_LOCAL=_F(LONG_CARA=3.0,),
+              ELAS = _F(E = 32000.,  NU = 0.2), 
+              ENDO_ORTH_BETON = _F(ALPHA = 0.87,
+                                   K0 = 2.634e-4,
+                                   K1 = 10.5,
+                                   K2 = 6.e-4,
+                                   ECROB=0.e-3,
+                                   ECROD=0.06,
+                                   ),);
+
+
+CHP_M=AFFE_MATERIAU(MAILLAGE=MA,
+                     AFFE=_F(TOUT='OUI',
+                             MATER=BETON,),);
+
+
+U=STAT_NON_LINE(MODELE=MO,
+              CHAM_MATER=CHP_M,
+              EXCIT=(_F(CHARGE=CHR_T,
+                       FONC_MULT=U_CHAR,),
+                     _F(CHARGE=C_RIGIDE,),),
+              COMP_INCR=_F(RELATION='ENDO_ORTH_BETON',
+                           DEFORMATION='PETIT',),
+              INCREMENT=_F(LIST_INST=L_INST,
+                           INST_FIN=1., 
+                           SUBD_PAS=4,
+                           SUBD_PAS_MINI=1.E-05,),
+              NEWTON=_F(MATRICE='TANGENTE',
+                        REAC_ITER=1,),
+              CONVERGENCE=_F(RESI_GLOB_RELA=1.E-15,
+                             ITER_GLOB_MAXI=15,
+                             RESI_INTE_RELA=1.E-06,
+                             ITER_INTE_MAXI=20,),
+             ARCHIVAGE=_F(LIST_INST=L_INST),
+             );
+
+U=STAT_NON_LINE(reuse=U,
+                ETAT_INIT=_F(EVOL_NOLI=U),
+                MODELE=MO,
+                CHAM_MATER=CHP_M,
+                EXCIT=(_F(CHARGE=CHR_C,
+                         FONC_MULT=U_CIS,
+                         TYPE_CHARGE='DIDI',),
+                       _F(CHARGE=C_RIGIDE,),),
+                         COMP_INCR=_F(RELATION='ENDO_ORTH_BETON',
+                                      DEFORMATION='PETIT',),
+                INCREMENT=_F(LIST_INST=L_INST,
+                             INST_FIN=2., 
+                             SUBD_PAS=4,
+                             SUBD_PAS_MINI=1.E-07,),
+                NEWTON=_F(MATRICE='TANGENTE',
+                          REAC_ITER=1,),
+                CONVERGENCE=_F(RESI_GLOB_RELA=1.E-06,
+                               ITER_GLOB_MAXI=15,
+                               RESI_INTE_RELA=1.E-06,
+                               ITER_INTE_MAXI=20,),
+                ARCHIVAGE=_F(LIST_INST=L_INST),
+              );
+
+
+U = CALC_ELEM(
+   reuse = U,
+   MODELE    =MO,
+   CHAM_MATER=CHP_M,
+   RESULTAT  =U,
+   OPTION    =('EPSI_ELGA_DEPL','SIEF_ELNO_ELGA','VARI_ELNO_ELGA'),
+   );
+    
+ENDO = CREA_CHAMP(TYPE_CHAM='ELGA_VARI_R',
+       OPERATION='EXTR',                  
+       INST = 2.,
+       RESULTAT = U,
+       NOM_CHAM = 'VARI_ELGA'
+      )
+DEFO = CREA_CHAMP(TYPE_CHAM='ELGA_EPSI_R',
+       OPERATION='EXTR',                  
+       INST = 2.,
+       RESULTAT = U,
+       NOM_CHAM = 'EPSI_ELGA_DEPL'
+      )
+
+D_xx = ENDO.EXTR_COMP('V1',[])
+D_yy = ENDO.EXTR_COMP('V2',[])
+D_xy = ENDO.EXTR_COMP('V4',[])
+
+EPSI_xx = DEFO.EXTR_COMP('EPXX',[])
+EPSI_yy = DEFO.EXTR_COMP('EPYY',[])
+EPSI_xy = DEFO.EXTR_COMP('EPXY',[])
+
+nb=EPSI_xx.valeurs.shape[0]
+
+print 'nb = ',nb
+
+tenseurD=N.zeros((2,2),N.Float)
+tenseurD[0,0]=D_xx.valeurs[0]
+tenseurD[0,1]=D_xy.valeurs[0]
+tenseurD[1,0]=D_xy.valeurs[0]
+tenseurD[1,1]=D_yy.valeurs[0]
+
+tenseurE=N.zeros((2,2),N.Float)
+tenseurE[0,0]=EPSI_xx.valeurs[0]
+tenseurE[0,1]=EPSI_xy.valeurs[0]
+tenseurE[1,0]=EPSI_xy.valeurs[0]
+tenseurE[1,1]=EPSI_yy.valeurs[0]
+
+evalues_epsi,evectors_epsi = LA.eigenvectors(tenseurE)
+evalues_endo,evectors_endo = LA.eigenvectors(tenseurD)
+
+print 'evalues_epsi,evectors_epsi :',evalues_epsi,evectors_epsi
+print 'evalues_endo,evectors_endo :',evalues_endo,evectors_endo
+
+pi=3.1415927
+
+angle_defi=180/pi*N.arccos(evectors_epsi[0,1])
+angle_endo=180/pi*N.arccos(evectors_endo[0,0])
+
+print angle_defi
+print angle_endo
+
+
+ROT_EPSI=DEFI_FONCTION(NOM_PARA='INST',
+                     VALE=(1.,angle_defi),
+                     PROL_DROITE='CONSTANT',);
+
+ROT_ENDO=DEFI_FONCTION(NOM_PARA='INST',
+                     VALE=(1.,angle_endo),
+                     PROL_DROITE='CONSTANT',);
+ 
+TEST_FONCTION(VALEUR=_F(FONCTION=ROT_EPSI,
+                        VALE_PARA=1.,
+                        VALE_REFE=4.57160E+01,
+                        REFERENCE = 'NON_REGRESSION',),);
+
+TEST_FONCTION(VALEUR=_F(FONCTION=ROT_ENDO,
+                        VALE_PARA=1.,
+                        VALE_REFE=2.04527E+01,
+                        REFERENCE = 'NON_REGRESSION',),);
+
+
+
+FIN()
+
+
+
+

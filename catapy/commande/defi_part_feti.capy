@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 08/11/2004   AUTEUR ASSIRE A.ASSIRE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,9 +17,21 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 # RESPONSABLE BOITEAU O.BOITEAU
-DEFI_PART_FETI=OPER(nom="DEFI_PART_FETI",op=21,sd_prod=sd_feti_sdaster,
-                   fr="Creation partitionnement en sous-domaines pour FETI",
-                   reentrant='n',
-            UIinfo={"groupes":("Résolution",)},
-         INFO            =SIMP(statut='f',typ='I',defaut=1,into=(1,2,3,4) ),
-)  ;
+
+from Macro.defi_part_feti_ops import defi_part_feti_ops
+
+DEFI_PART_FETI=MACRO(nom="DEFI_PART_FETI",op=defi_part_feti_ops,sd_prod=sd_feti_sdaster,
+                     reentrant='n',
+                     fr="Creation partitionnement en sous-domaines pour FETI",
+         MAILLAGE        =SIMP(statut='o',typ=maillage_sdaster),
+         MODELE          =SIMP(statut='f',typ=modele_sdaster),
+         NB_PART         =SIMP(statut='o',typ='I'),
+         EXCIT           =FACT(statut='f',max='**',
+           CHARGE          =SIMP(statut='f',typ=(char_meca,char_cine_meca)),),
+         METHODE         =SIMP(statut='o',typ='TXM',into=("PMETIS","KMETIS","AUTRE",), defaut="PMETIS" ),
+         b_methode       =BLOC(condition="METHODE == 'AUTRE'", fr="Autre logiciel",
+             LOGICIEL        =SIMP(statut='f',typ='TXM'),
+             ),
+         NOM_GROUP_MA    =SIMP(statut='f',typ='TXM',defaut='SD' ),
+         INFO            =SIMP(statut='f',typ='I',into=(1, 2, 3, 4,5), defaut=1),
+);

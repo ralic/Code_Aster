@@ -1,7 +1,7 @@
-      SUBROUTINE FETING(NBSD,SDFETI,CHSECM,VDDL,COLAUI)
+      SUBROUTINE FETING(NBSD,SDFETI,CHSECM,COLAUI)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 09/11/2004   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -31,7 +31,6 @@ C     IN     NBSD  :  IN : NOMBRE DE SOUS-DOMAINES
 C     IN     SDFETI: CH19: SD DECRIVANT LE PARTIONNEMENT FETI
 C     IN    CHSECM : CH19: CHAM_NO SECOND MEMBRE GLOBAL POUR RECUPERER
 C                          LES INFOS RELATIVES AUX PROF_CHNOS
-C     IN    VDDL  : VIN  : VECTEUR DES NBRES DE DDLS DES SOUS-DOMAINES
 C     IN/OUT COLAUI : CH24: NOM DE LA COLLECTION TEMPORAIRE
 C
 C ATTENTION: ON SUPPOSE QUE LA RENUMEROTATION A L'ORIGINE DU PROF_CHNO
@@ -46,7 +45,7 @@ C CORPS DU PROGRAMME
       IMPLICIT NONE
 
 C DECLARATION PARAMETRES D'APPELS
-      INTEGER      NBSD,VDDL(NBSD)
+      INTEGER      NBSD
       CHARACTER*19 SDFETI,CHSECM
       CHARACTER*24 COLAUI
 
@@ -97,9 +96,10 @@ C PROF_CHNO DU SOUS-DOMAINE IDD
         PRFCHN=ZK24(IREFE+1)(1:19)
 
 C NOMBRE DE DDL DU SOUS-DOMAINE IDD
-        NBDDL=VDDL(IDD)
-        NBDDL1=NBDDL-1
         CALL JEVEUO(PRFCHN//'.DEEQ','L',IDEEQ)
+        CALL JELIRA(PRFCHN//'.DEEQ','LONMAX',NBDDL,K8BID)
+        NBDDL1=(NBDDL/2)-1
+        
         CALL JEVEUO(JEXNUM(CH24B,IDD),'L',IFETG)
         CALL JELIRA(JEXNUM(CH24B,IDD),'LONMAX',NB,K8BID)
 
@@ -126,6 +126,7 @@ C NUMERO DU NOEUD DANS LE MAILLAGE
           
           FIRST=.TRUE.
           NBCMP=0
+          IEQ=0
 C----------------------------------------------------------------------
 C BOUCLE SUR LES ELEMENTS DE PROF_CHNO(IDD).DEEQ
 C----------------------------------------------------------------------
@@ -139,26 +140,29 @@ C ON A TROUVE LE MEME NOEUD DU MAILLAGE QUE DANS .FETG
 C SON NUMERO DE COMPOSANTE          
               IAUX3=ZI(IDEEQ+2*J+1)
               
-              IF (FIRST) THEN
-                FIRST=.FALSE.
+              IF (IAUX3.GT.0) THEN
+C CE N'EST PAS UN NOEUD DE DUALISATION DE LAGRANGE            
+                IF (FIRST) THEN
+                  FIRST=.FALSE.
 C PREMIER NUMERO DE COMPOSANTE TROUVE POUR LE NOEUD IAUX2               
-                ICMP=IAUX3
+                  ICMP=IAUX3
 C NUMERO D'EQUATION CORRESPONDANTE              
-                IEQ=J+1
-              ENDIF
+                  IEQ=J+1
+                ENDIF
 
 C TESTS DE VALIDITE POUR VERIFIER QUE LES COMPOSANTES SONT PAR ORDRE
 C CROISSANT (RENUMEROTATION MD, MDA ET METIS)         
-              IF (IAUX3.LT.ICMP) THEN
-                CALL UTDEBM('F','FETING','ICMP DANS LE DESORDRE POUR')
-                CALL UTIMPI('S',' NOEUD= ',1,IAUX2)
-                CALL UTIMPI('L',' ET SOUS-DOMAINE= ',1,IDD)
-                CALL UTFINM
-              ELSE IF (IAUX3.GT.ICMP) THEN
-                ICMP=IAUX3                            
-              ENDIF
+                IF (IAUX3.LT.ICMP) THEN
+                  CALL UTDEBM('F','FETING','ICMP DANS LE DESORDRE POUR')
+                  CALL UTIMPI('S',' NOEUD= ',1,IAUX2)
+                  CALL UTIMPI('L',' ET SOUS-DOMAINE= ',1,IDD)
+                  CALL UTFINM
+                ELSE IF (IAUX3.GT.ICMP) THEN
+                  ICMP=IAUX3                            
+                ENDIF
               
-              NBCMP=NBCMP+1
+                NBCMP=NBCMP+1
+              ENDIF
             ENDIF 
           
    30     CONTINUE

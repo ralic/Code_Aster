@@ -3,7 +3,7 @@
       INTEGER    NFIC, NIV, NDIM, NBOBO
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF PREPOST  DATE 08/11/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -97,10 +97,9 @@ C
 C
 C -- LECTURE D'UNE PILE  ----
 C
-          IF(NIV.EQ.3.OR.NIV.EQ.4.OR.NIV.EQ.5.OR.NIV.EQ.6) THEN
+          IF( NIV .LE. 6 ) THEN
              READ(NFIC,1005) K4BID,K6BID,IPILE,NBOBNO,NBOBLU
-          ELSEIF(NIV.EQ.8.OR.NIV.EQ.9.OR.NIV.EQ.10
-     +             .OR.NIV.EQ.11) THEN
+          ELSEIF ( NIV .GT. 6 ) THEN
              READ(NFIC,1006) K4BID,K6BID,IPILE,NBOBNO,NBOBLU
           ENDIF
 C

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 21/09/2004   AUTEUR PBADEL P.BADEL 
+#& MODIF COMMANDE  DATE 09/11/2004   AUTEUR NICOLAS O.NICOLAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -31,7 +31,7 @@ STAT_NON_LINE=OPER(nom="STAT_NON_LINE",op=70,sd_prod=evol_noli,
            TYPE_CHARGE     =SIMP(statut='f',typ='TXM',defaut="FIXE_CSTE",
                                  into=("FIXE_CSTE","FIXE_PILO","SUIV","DIDI")),
          ),
-         SOUS_STRUC      =FACT(statut='f',min=01,
+         SOUS_STRUC      =FACT(statut='f',min=01,max='**',
                 regles=(UN_PARMI('TOUT','MAILLE'),),
                 CAS_CHARGE  =SIMP(statut='o',typ='TXM' ),
                 TOUT        =SIMP(statut='f',typ='TXM',into=("OUI",) ),

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 02/11/2004   AUTEUR MABBAS M.ABBAS 
+#& MODIF COMMANDE  DATE 08/11/2004   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -511,15 +511,18 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca
              KXY             =SIMP(statut='f',typ='R' ),
            ),
 
-         ARLEQUIN        =FACT(statut='f',max='**',
-           GROUP_MA_1     =SIMP(statut='o',typ=grma,validators=NoRepeat(),max='**'),
-           GROUP_MA_2     =SIMP(statut='o',typ=grma,validators=NoRepeat(),max='**'),
-           GROUP_MA_COLL  =SIMP(statut='o',typ=grma,validators=NoRepeat(),max='**'),
-           CARA_ELEM      =SIMP(statut='f',typ=(cara_elem) ),
-           regles        =(UN_PARMI('POIDS_1','POIDS_2'),),
-           POIDS_1       =SIMP(statut='f',typ='R'),
-           POIDS_2       =SIMP(statut='f',typ='R'),
-         ),
+         ARLEQUIN        =FACT(statut='f',min=1,max='**',
+           GROUP_MA_1     =SIMP(statut='o',typ=grma,max='**'),
+           GROUP_MA_2     =SIMP(statut='o',typ=grma,max='**'),
+           GROUP_MA_COLL  =SIMP(statut='f',typ=grma,max='**'),
+           CARA_ELEM      =SIMP(statut='f',typ=cara_elem ),
+           COND_LIM       =SIMP(statut='f',typ=char_meca ),
+           COLLAGE        =SIMP(statut='f',typ='TXM',defaut="GROSSIER",into=("GROSSIER","FIN","GROUP_MA_1","GROUP_MA_2"),),
+           regles         =(UN_PARMI('POIDS_1','POIDS_2','POIDS_GROSSIER','POIDS_FIN',),),
+           POIDS_1        =SIMP(statut='f',typ='R'),
+           POIDS_2        =SIMP(statut='f',typ='R'),
+           POIDS_GROSSIER =SIMP(statut='f',typ='R'),
+           POIDS_FIN      =SIMP(statut='f',typ='R'),),
 
         FORCE_POUTRE    =FACT(statut='f',fr="Appliquer des forces linéiques sur des poutres",max='**',
              regles=(AU_MOINS_UN('TOUT','GROUP_MA','MAILLE'),
