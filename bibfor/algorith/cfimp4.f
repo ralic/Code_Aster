@@ -1,7 +1,7 @@
       SUBROUTINE CFIMP4(DEFICO,RESOCO,NOMA,IFM)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/10/2004   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 16/11/2004   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -442,36 +442,36 @@ C
 4009  FORMAT (' <CONTACT_DVLP>  * PREMIER APPARIEMENT ')
 
 4015  FORMAT ((' <CONTACT_DVLP>  * DDL ESCL. CONTACT ( ',A8,'):',
-     &           3(I5,2X),' / ',
+     &           3(I8,2X),' / ',
      &           3(1E10.3,2X)))
 
 
 4016  FORMAT ((' <CONTACT_DVLP>  * DDL ESCL. FROT1   ( ',A8,'):',
-     &           3(I5,2X),' / ',
+     &           3(I8,2X),' / ',
      &           3(1E10.3,2X)))
 4017  FORMAT ((' <CONTACT_DVLP>  * DDL ESCL. FROT2   ( ',A8,'):',
-     &           3(I5,2X),' / ',
+     &           3(I8,2X),' / ',
      &           3(1E10.3,2X)))
 5001  FORMAT ((' <CONTACT_DVLP>  * DDL MAIT. CONTACT ( ',A8,
      &           '/',A8,'):',
-     &           3(I5,2X),' / ',
+     &           3(I8,2X),' / ',
      &           3(1E10.3,2X)))
 5002  FORMAT ((' <CONTACT_DVLP>  * DDL MAIT. FROT1   ( ',A8,
      &           '/',A8,'):',
-     &           3(I5,2X),' / ',
+     &           3(I8,2X),' / ',
      &           3(1E10.3,2X)))
 5003  FORMAT ((' <CONTACT_DVLP>  * DDL MAIT. FROT2   ( ',A8,
      &           '/',A8,'):',
-     &           3(I5,2X),' / ',
+     &           3(I8,2X),' / ',
      &           3(1E10.3,2X)))
 5011  FORMAT ((' <CONTACT_DVLP>  * DDL MAIT. CONTACT ( ',A8,'):',
-     &           3(I5,2X),' / ',
+     &           3(I8,2X),' / ',
      &           3(1E10.3,2X)))
 5012  FORMAT ((' <CONTACT_DVLP>  * DDL MAIT. FROT1   ( ',A8,'):',
-     &           3(I5,2X),' / ',
+     &           3(I8,2X),' / ',
      &           3(1E10.3,2X)))
 5013  FORMAT ((' <CONTACT_DVLP>  * DDL MAIT. FROT2   ( ',A8,'):',
-     &           3(I5,2X),' / ',
+     &           3(I8,2X),' / ',
      &           3(1E10.3,2X)))
 C
       CALL JEDEMA()

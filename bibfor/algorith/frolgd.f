@@ -2,7 +2,7 @@
      &                   DEPTOT,ITERAT,LREAC,CONV,DEPDEL,LICCVG)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION 
-C MODIF ALGORITH  DATE 02/11/2004   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 16/11/2004   AUTEUR MABBAS M.ABBAS 
 C TOLE CRP_20 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -230,7 +230,7 @@ C ======================================================================
       CALL JEVEUO(MU,    'E',JMU) 
       CALL JEVEUO(COEFMU,'L',JCMU) 
       CALL JEVEUO(ATMU,  'E',JATMU) 
-      CALL JEVEUO(AFMU , 'E', JAFMU ) 
+      CALL JEVEUO(AFMU , 'E',JAFMU ) 
       CALL JEVEUO(DELT0, 'E',JDELT0) 
       CALL JEVEUO(DELTA, 'E',JDELTA) 
       CALL JEVEUO(RESU(1:19)//'.VALE'  ,'E',JRESU) 
@@ -426,7 +426,7 @@ C --- A-T-ON DEPASSE LE NOMBRE D'ITERATIONS DE CONTACT AUTORISE ?
 C
       IF (ITER.GT.ITEMAX+1) THEN
         LICCVG(3) = 1
-        GOTO 999
+        GOTO 9990
       END IF
 C 
 C ======================================================================
@@ -482,7 +482,7 @@ C --- LA MATRICE DE CONTACT EST-ELLE SINGULIERE ?
 C
            IF (IER.GT.ISTO) THEN
              LICCVG(4) = 1
-             GOTO 999
+             GOTO 9990
            END IF
          END IF
 C ======================================================================
@@ -600,6 +600,7 @@ C ======================================================================
      &                  ZR(JAPJEU-1+NUMIN),JAPPAR,JNOCO,JMACO)
          END IF 
          IF (ITERAT.EQ.0) THEN
+
 C ======================================================================
 C -  ON NE PREND PAS EN COMPTE UNE LIAISON A PIVOT NUL 
 C ======================================================================
@@ -644,6 +645,7 @@ C ======================================================================
          DO 84 KK = 1, NEQ 
             ZR(JRESU-1+KK) = ZR(JRESU-1+KK) + RHORHO*ZR(JDELTA-1+KK) 
  84      CONTINUE 
+
          GOTO 100 
       ENDIF 
 
@@ -682,6 +684,7 @@ C ======================================================================
       LFMIN1 = 0
       LFMIN2 = 0
       COMPT0 = 0
+
       IF ( (LLF+LLF1+LLF2).LT.NBLIAC ) THEN
          NMGLI1 = '&&FROLGD.GLI1'
          NMGLI2 = '&&FROLGD.GLI2'
@@ -760,7 +763,7 @@ C --- LA LIAISON EST A PIVOT NUL SUIVANT LA PREMIERE DIRECTION ---------
 C ======================================================================
                          LFMIN2 = LFMIN2 + 1 
                          ZI(JGLI2-1+LFMIN2) = LLIAC 
-                         GO TO 156 
+                         GOTO 156 
                       ENDIF
                       CALL CFELPV(LLIAC,TYPEF2,RESOCO,NBLIAI,GLISS2)
                       IF (GLISS2) THEN
@@ -769,7 +772,7 @@ C --- LA LIAISON EST A PIVOT NUL SUIVANT LA PREMIERE DIRECTION ---------
 C ======================================================================
                            LFMIN1 = LFMIN1 + 1 
                            ZI(JGLI1-1+LFMIN1) = LLIAC 
-                           GO TO 156 
+                           GOTO 156 
                       ENDIF 
                       LFMIN = LFMIN + 1 
                       ZI(JADHR-1+LFMIN) = LLIAC 
@@ -788,18 +791,30 @@ C ======================================================================
                POSIT = NBLIAC + LLF + LLF1 + LLF2 + 1
                CALL CFTABL(INDIC,NBLIAC,AJLIAI,SPLIAI,LLF,LLF1,LLF2, 
      +                              RESOCO,TYPEAJ,POSIT,LLIAC,TYPEF0)
+               IF (NIV.GE.2) THEN
+                CALL CFIMP2(IFM,NOMA,LLIAC,TYPEF0,TYPEAJ,'ADH',0.D0,
+     &                      JAPPAR,JNOCO,JMACO)
+               ENDIF
  197        CONTINUE 
             DO 198 LL=1,LFMIN1 
                LLIAC = ZI(JGLI1-1+LL) 
                POSIT = NBLIAC + LLF + LLF1 + LLF2 + 1
                CALL CFTABL(INDIC,NBLIAC,AJLIAI,SPLIAI,LLF,LLF1,LLF2, 
      +                              RESOCO,TYPEAJ,POSIT,LLIAC,TYPEF1)
+               IF (NIV.GE.2) THEN
+                CALL CFIMP2(IFM,NOMA,LLIAC,TYPEF1,TYPEAJ,'ADH',0.D0,
+     &                      JAPPAR,JNOCO,JMACO)
+               ENDIF
  198        CONTINUE 
             DO 199 LL=1,LFMIN2 
                LLIAC = ZI(JGLI2-1+LL) 
                POSIT = NBLIAC + LLF + LLF1 + LLF2 + 1
                CALL CFTABL(INDIC,NBLIAC,AJLIAI,SPLIAI,LLF,LLF1,LLF2, 
      +                              RESOCO,TYPEAJ,POSIT,LLIAC,TYPEF2)
+               IF (NIV.GE.2) THEN
+                CALL CFIMP2(IFM,NOMA,LLIAC,TYPEF2,TYPEAJ,'ADH',0.D0,
+     &                      JAPPAR,JNOCO,JMACO)
+               ENDIF
  199        CONTINUE 
             CALL JEDETR(NMGLI1) 
             CALL JEDETR(NMGLI2) 
@@ -809,7 +824,7 @@ C ======================================================================
                XMUL = XMUL*SQRT(10.D0) 
             ENDIF 
             ZR(JMU+6*NBLIAI-1) = XMUL 
-            GO TO 100 
+            GOTO 100 
          ENDIF 
          CALL JEDETR(NMGLI1) 
          CALL JEDETR(NMGLI2) 
@@ -928,6 +943,7 @@ C ======================================================================
 C ======================================================================
 C --- CREATION DE LA MATRICE ATA 
 C ======================================================================
+
       CALL ATA000(CM2A,NUMEDD,400.D0,MAF1,'V',NBLIAI*(NDIM-1)) 
 C ======================================================================
 C --- CREATION DU VECTEUR DE CISAILLEMENT 
@@ -1055,26 +1071,26 @@ C ======================================================================
         WRITE(IFM,2006) LLF1
         WRITE(IFM,3006) LLF2
         WRITE(IFM,*)'<CONTACT> <> LIAISONS FINALES '
-        CALL CFIMP1(DEFICO,RESOCO,NOMA,NBLIAI,NBLIAC,IFM)
+        CALL CFIMP1(DEFICO,RESOCO,NOMA,NBLIAI,IFM)
       END IF
 C ======================================================================
  9990 CONTINUE 
 C ======================================================================
       CALL JEDEMA () 
 C ======================================================================
- 1000 FORMAT (' <CONTACT> <> NOMBRE DE LIAISONS POSSIBLES: ',I6)
+ 1000 FORMAT (' <CONTACT> <> NBRE DE LIAISONS POSSIBLES: ',I6)
  1001 FORMAT (' <CONTACT> <> DEBUT DES ITERATIONS (MAX: ',I6,')')
  1002 FORMAT (' <CONTACT> <> FIN DES ITERATIONS (NBR: ',I6,')')
- 1003 FORMAT (' <CONTACT> <> NOMBRE DE LIAISONS ACTIVES FINALES:',
+ 1003 FORMAT (' <CONTACT> <> NBRE DE LIAISONS CONTACT FINALES:',
      &       I6,')')
- 1005 FORMAT (' <CONTACT> <> NOMBRE DE LIAISONS ACTIVES INITIALES:',
+ 1005 FORMAT (' <CONTACT> <> NBRE DE LIAISONS CONTACT INITIALES:',
      &       I6,')')
- 1006 FORMAT (' <CONTACT> <> NOMBRE DE LIAISONS ADHERENTES FINALES'//
-     &       ' (DIR. 1 ET 2):',I6,')')
- 1007 FORMAT (' <CONTACT> <> NOMBRE DE LIAISONS ADHERENTES INITIALES'//
-     &       ' (DIR. 1 ET 2):',I6,')')
- 2006 FORMAT (' <CONTACT> <> NOMBRE DE LIAISONS ADHERENTES FINALES'//
-     &       ' (DIR. 1 UNIQ.):',I6,')')
- 3006 FORMAT (' <CONTACT> <> NOMBRE DE LIAISONS ADHERENTES FINALES'//
-     &       ' (DIR. 2 UNIQ.):',I6,')')
+ 1006 FORMAT (' <CONTACT> <> NBRE DE LIAISONS ADH. FINALES (1 ET 2):'
+     &       ,I6,')')
+ 1007 FORMAT (' <CONTACT> <> NBRE DE LIAISONS ADH. INITIALES (1 ET 2):'
+     &       ,I6,')')
+ 2006 FORMAT (' <CONTACT> <> NBRE DE LIAISONS ADH. FINALES (1 UNIQ.):'
+     &       ,I6,')')
+ 3006 FORMAT (' <CONTACT> <> NBRE DE LIAISONS ADH. FINALES (2 UNIQ.):'
+     &       ,I6,')')
       END 

@@ -1,5 +1,5 @@
 
-# MODIF  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 15/11/2004   AUTEUR MCOURTOI M.COURTOIS 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE TEST PHI2AS NUMERO 1 MODELISATION BARRE ECROUISSAGE CINEMATIQUE LINEAIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -305,12 +305,9 @@ TEST_FONCTION(TEST_NOOK='NON',
                          PRECISION=1.E-3,
                          REFERENCE='ANALYTIQUE',),),);
 
-IMPR_COURBE(UNITE=8,
-            FORMAT='EXCEL',
-          #  TITRE_GRAPHIQUE=TITRE,
-          #  LEGENDE_X='T (S)',
-          #  LEGENDE_Y='EPYY ',
-            COURBE=(
+IMPR_FONCTION(UNITE=8,
+              FORMAT='TABLEAU',
+              COURBE=(
                      _F(FONCTION=TEMP7,
                        LEGENDE='TEMPER',),
                     _F(FONCTION=FU2,
@@ -321,8 +318,6 @@ IMPR_COURBE(UNITE=8,
                        LEGENDE='ESPP_YY CINE',),
                     _F(FONCTION=EPSP2,
                        LEGENDE='ESPP_YY ECMI',),
-                  #  _F(FONCTION=EPSP3,
-                  #     LEGENDE='ESPP_YY CHAB',),
                        ),);
 
 

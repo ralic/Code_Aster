@@ -1,4 +1,4 @@
-#@ MODIF impr_table_ops Macro  DATE 03/11/2004   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF impr_table_ops Macro  DATE 15/11/2004   AUTEUR MCOURTOI M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -59,8 +59,8 @@ def impr_table_ops(self, FORMAT, TABLE, INFO, **args):
       nomfich='fort.'+str(args['UNITE'])
    if nomfich and os.path.exists(nomfich):
       if FORMAT=='XMGRACE':
-         UTMESS('A', macro, 'Le fichier '+nomfich+' existe déjà, on écrase' \
-               ' le contenu précédent', self)
+         UTMESS('A',macro,'Le fichier '+nomfich+' existe déjà, on écrit ' \
+                'à la suite.',self)
 
    # 0.2. Création des dictionnaires des FILTRES
    Filtre=[]
@@ -121,8 +121,8 @@ def impr_table_ops(self, FORMAT, TABLE, INFO, **args):
       if INFO==2:
          print 'IMPRESSION DE LA TABLE : %s' % sdtab.get_name()
 
-      if args['TITRE_TABLE']:
-         tab.titr=args['TITRE_TABLE'] + '\n' + tab.titr
+      if args['TITRE']:
+         tab.titr=args['TITRE'] + '\n' + tab.titr
 
       # ----- 2. Filtres
       for Fi in Filtre:

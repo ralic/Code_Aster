@@ -1,5 +1,5 @@
 
-# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 15/11/2004   AUTEUR MCOURTOI M.COURTOIS 
 # RESPONSABLE ADBHHPM P.MASSIN
 # DATE   : 08/06/2000
 # AUTEUR : F. LEBOUVIER (DELTACAD)
@@ -138,20 +138,20 @@ SIGY=RECU_FONCTION(TABLE=SIGMA,
                    PARA_X='ABSC_CURV',
                    PARA_Y='SIYY',);
 
-IMPR_COURBE(UNITE=8,
+IMPR_FONCTION(
             FORMAT='AGRAF',
-            TITRE_GRAPHIQUE='dep_norm fonction de abscisse curviligne',
+            TITRE='dep_norm fonction de abscisse curviligne',
             COURBE=(_F(FONCTION=DEPZ,),
                     _F(FONCTION=DEPNOR,),),);
 
-IMPR_COURBE(UNITE=8,
+IMPR_FONCTION(UNITE=27, UNITE_DIGR=28,
             FORMAT='AGRAF',
-            TITRE_GRAPHIQUE='sigma XX fonction de abscisse curviligne',
+            TITRE='sigma XX fonction de abscisse curviligne',
             COURBE=_F(FONCTION=SIGX,),);
 
-IMPR_COURBE(UNITE=8,
+IMPR_FONCTION(UNITE=29, UNITE_DIGR=30,
             FORMAT='AGRAF',
-            TITRE_GRAPHIQUE='sigma YY fonction de abscisse curviligne',
+            TITRE='sigma YY fonction de abscisse curviligne',
             COURBE=_F(FONCTION=SIGY,),);
 
 #

@@ -1,4 +1,4 @@
-# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 15/11/2004   AUTEUR MCOURTOI M.COURTOIS 
 # TITRE CHOC DE 3 POUTRES ENTRE ELLES : SOUS-STRUCTURATION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -532,40 +532,22 @@ FONC2=RECU_FONCTION(   RESU_GENE=TRAN_GE1,
 #
 ## IMPRESSION D'UN DEPLACEMENT
 #
-IMPR_COURBE(UNITE=24,
-              FORMAT='POSTSCRIPT',
-              SORTIE='MONOCHROME',
-                DATE='NON',
-               TITRE='EULER - DY NOEUD N8',
-             LABEL_X='TEMPS(S)',
-             LABEL_Y='DEPLACEMENT(M)',
+IMPR_FONCTION(FORMAT='XMGRACE',
+              PILOTE='POSTSCRIPT',
+              TITRE='EULER - DY NOEUD N8',
+              LEGENDE_X='TEMPS(S)',
+              LEGENDE_Y='DEPLACEMENT(M)',
               COURBE=_F( FONCTION = FONC1))
 
 #
 ## IMPRESSION D'UN PARAMETRE DE CHOC
 #
-IMPR_COURBE(UNITE=24,
-              FORMAT='POSTSCRIPT',
-              SORTIE='MONOCHROME',
-                DATE='NON',
-               TITRE='EULER - FN NOEUD N8',
-             LABEL_X='TEMPS(S)',
-             LABEL_Y='DEPLACEMENT(M)',
-              COURBE=_F( FONCTION = FONC2))
-
-#
-IMPR_COURBE(UNITE=24,
-              FORMAT='POSTSCRIPT',
-              SORTIE='MONOCHROME',
-                DATE='NON',
-               TITRE='EULER - FN NOEUD N8',
-              COURBE=_F( RESU_GENE = TRAN_GE1,
-                      NOEUD_CHOC = 'N8',
-                      SOUS_STRUC = 'BARRE2',
-                      LIST_PARA = LISTINST,
-                      PARA_X = 'INST',
-                      PARA_Y = 'FN',
-                      INTITULE = 'CHOC1'))
+IMPR_FONCTION(FORMAT='XMGRACE', UNITE=30,
+              PILOTE='POSTSCRIPT',
+              TITRE='EULER - FN NOEUD N8',
+              LEGENDE_X='TEMPS(S)',
+              LEGENDE_Y='DEPLACEMENT(M)',
+              COURBE=_F( FONCTION = FONC2),)
 
 #
 ## CALCULS STATISTIQUES

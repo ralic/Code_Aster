@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 05/10/2004   AUTEUR CIBHHLV L.VIVAN 
+%& MODIF TYPELEM  DATE 15/11/2004   AUTEUR ROMEO R.FERNANDES 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -100,8 +100,7 @@ OPTION__
                                      CMATERC  PMATERC  CTEREFE  PTEREF   ZVARIPG  PVARIMR
                               OUT__  ECODRET  PCODRET  ECONTPG  PCONTPR  MMATUNS  PMATUNS  ZVARIPG  PVARIPR
                                      MVECTUR  PVECTUR
-    INDI_LOCA_ELGA      30    IN__   CMATERC  PMATERC  ECONTPG  PCONTPR  CCOMPOR  PCOMPOR   ZVARIPG  PVARIMR
-                                     ZVARIPG  PVARIPR
+    INDI_LOCA_ELGA      30    IN__   CMATERC  PMATERC  ECONTPG  PCONTPR  CCOMPOR  PCOMPOR  ZVARIPG  PVARIPR
                               OUT__  EGINDLO  PINDLOC
     MATR_NO_PG          118   IN__   NGEOMER  PGEOMER
                               OUT__  ZVARI1   PMANOPG

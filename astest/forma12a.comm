@@ -1,4 +1,4 @@
-# MODIF  DATE 28/09/2004   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 15/11/2004   AUTEUR MCOURTOI M.COURTOIS 
 # TITRE TP DYNAMIQUE TRANSITOIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -171,11 +171,6 @@ DEPYB=RECU_FONCTION(RESU_GENE=DYNAMO,
                     NOM_CMP='DY',
                     NOEUD='B',);
 
-IMPR_COURBE(
-            TITRE_GRAPHIQUE='MODAL',
-            FORMAT='AGRAF',
-            COURBE=_F(FONCTION=DEPYB,),);
-
 DYNATR=DYNA_LINE_TRAN(MATR_MASS=MATASSM1,
                       MATR_RIGI=MATASSR1,
                       NEWMARK=_F(),
@@ -194,9 +189,13 @@ DTYB=RECU_FONCTION(RESULTAT=DYNATR,
                    NOM_CMP='DY',
                    NOEUD='B',);
 
-IMPR_COURBE(
-            TITRE_GRAPHIQUE='DIRECT',
-            FORMAT='AGRAF',
-            COURBE=_F(FONCTION=DTYB,),);
+IMPR_FONCTION(
+            TITRE='COMPARAISON DYNA_TRAN_MODAL/DYNA_LINE_TRAN',
+            FORMAT='XMGRACE',
+            UNITE=29,
+            COURBE=(_F(FONCTION=DEPYB,
+                       LEGENDE='MODAL'),
+                    _F(FONCTION=DTYB,
+                       LEGENDE='DIRECT'),),)
 
 FIN();

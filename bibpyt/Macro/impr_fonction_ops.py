@@ -1,4 +1,4 @@
-#@ MODIF impr_fonction_ops Macro  DATE 03/11/2004   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF impr_fonction_ops Macro  DATE 15/11/2004   AUTEUR MCOURTOI M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -21,7 +21,7 @@
 # RESPONSABLE MCOURTOI M.COURTOIS
 
 import os.path
-from Utilitai.Graph  import Graph
+from Utilitai import Graph
 from Utilitai.Utmess import UTMESS
 
 # ------------------------------------------------------------------------------
@@ -57,18 +57,24 @@ def impr_fonction_ops(self, FORMAT, COURBE, INFO, **args):
       if INFO==2:
          print ' Nom du fichier :',nomfich
    if nomfich and os.path.exists(nomfich):
-      print ' <A> Le fichier '+nomfich+' existe déjà.'
-      if FORMAT=='TABLEAU':
-         print '     On écrit à la suite du fichier'
+      if FORMAT=='XMGRACE':
+         niv='A'
       else:
-         print '     On écrase le contenu précédent'
+         niv='I'
+      UTMESS(niv,macro,'Le fichier '+nomfich+' existe déjà, on écrit ' \
+             'à la suite.',self)
 
    # 0.2. Récupération des valeurs sous COURBE
    unparmi=('FONCTION','LIST_RESU','FONC_X','ABSCISSE')
 
+   # i0 : indice du mot-clé facteur qui contient LIST_PARA, sinon i0=0
+   i0=0
    Courbe=[]
+   iocc=-1
    for Ci in COURBE:
+      iocc+=1
       dC = Ci.cree_dict_valeurs(Ci.mc_liste)
+      if dC.has_key('LIST_PARA') and i0==0: i0=iocc
       for mc in dC.keys():
          if dC[mc]==None: del dC[mc]
       Courbe.append(dC)
@@ -81,7 +87,7 @@ def impr_fonction_ops(self, FORMAT, COURBE, INFO, **args):
    interp=False
    if FORMAT=='TABLEAU':
       interp=True
-      dCi=Courbe[0]
+      dCi=Courbe[i0]
       if dCi.has_key('LIST_PARA'):
          linter__=dCi['LIST_PARA']
       else:
@@ -112,10 +118,10 @@ def impr_fonction_ops(self, FORMAT, COURBE, INFO, **args):
    # 1. Récupération des valeurs des N courbes sous forme
    #    d'une liste de N listes
    #----------------------------------------------
-   graph=Graph()
+   graph=Graph.Graph()
    iocc=-1
    for dCi in Courbe:
-      iocc=iocc+1
+      iocc+=1
 
       # 1.1. Type d'objet à traiter
       obj=None
@@ -227,13 +233,17 @@ def impr_fonction_ops(self, FORMAT, COURBE, INFO, **args):
          # peut-on blinder au niveau du catalogue
          if typ=="nappe_sdaster" or ob2.__class__.__name__=="nappe_sdaster":
             UTMESS('S',macro,"FONC_X/FONC_Y ne peuvent pas etre des nappes !",self)
+         if interp and iocc>0:
+            UTMESS('S',macro,"""Au format 'TABLEAU' ,FONC_X/FONC_Y ne peut apparaitre qu'une seule fois
+     et à la première occurence de COURBE""",self)
          ftmp__=obj
          dpar=ftmp__.Parametres()
          ftm2__=ob2
          dpa2=ftm2__.Parametres()
          intloc=False
-         if interp:
-            intloc=True
+         if interp and not dCi.has_key('LIST_PARA'):
+            # dans ce cas, linter__ contient les ordonnées de FONC_X
+            intloc=False
             li__=linter__
          elif dCi.has_key('LIST_PARA'):
             intloc=True
@@ -261,7 +271,8 @@ def impr_fonction_ops(self, FORMAT, COURBE, INFO, **args):
          
          lbid,ly=ftm2__.Valeurs()
          # on stocke les données dans le Graph
-         if interp:
+         # on imprime la liste des paramètres seulement si LIST_PARA
+         if intloc:
             dicC={
                'Val' : [lt,lx,ly],
                'Lab' : [dpar['NOM_PARA'],dpar['NOM_RESU'],dpa2['NOM_RESU']]
@@ -269,7 +280,7 @@ def impr_fonction_ops(self, FORMAT, COURBE, INFO, **args):
          else:
             dicC={
                'Val' : [lx,ly],
-               'Lab' : [dpar['NOM_PARA'],dpa2['NOM_RESU']]
+               'Lab' : [dpar['NOM_RESU'],dpa2['NOM_RESU']]
             }
          AjoutParaCourbe(dicC, args=dCi)
          graph.AjoutCourbe(**dicC)
@@ -292,9 +303,11 @@ def impr_fonction_ops(self, FORMAT, COURBE, INFO, **args):
          AjoutParaCourbe(dicC, args=dCi)
          graph.AjoutCourbe(**dicC)
 
-      # 1.2.99. ménage
-      DETRUIRE(CONCEPT=_F(NOM=('li__','ftmp__','ftm2__'),),
-               ALARME='NON',INFO=1)
+      # 1.2.9. ménage
+      DETRUIRE(CONCEPT=_F(NOM=('li__','ftmp__','ftm2__'),),ALARME='NON',INFO=1)
+
+   # 1.2.99. ménage hors boucle
+   DETRUIRE(CONCEPT=_F(NOM=('linter__'),), ALARME='NON',INFO=1)
 
    # 1.3. dbg
    if INFO==2:

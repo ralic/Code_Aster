@@ -1,4 +1,4 @@
-# MODIF  DATE 28/09/2004   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 15/11/2004   AUTEUR MCOURTOI M.COURTOIS 
 # TITRE TP DYNAMIQUE TRANSITOIRE NON LINEAIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -188,9 +188,9 @@ DTYBEL=RECU_FONCTION(RESULTAT=DYNAEL,
                    NOM_CMP='DY',
                    NOEUD='B',);
 
-IMPR_COURBE(
-            TITRE_GRAPHIQUE='DIRECT',
-            FORMAT='AGRAF',
+IMPR_FONCTION(
+            TITRE='DIRECT',
+            FORMAT='TABLEAU',
             COURBE=_F(FONCTION=DTYBEL,),);
             
 DYNANL=DYNA_NON_LINE(
@@ -236,9 +236,9 @@ DTYBNL=RECU_FONCTION(RESULTAT=DYNANL,
                    NOM_CMP='DY',
                    NOEUD='B',);
 
-IMPR_COURBE(
-            TITRE_GRAPHIQUE='DIRECT',
-            FORMAT='AGRAF',
+IMPR_FONCTION(
+            TITRE='DIRECT',
+            FORMAT='TABLEAU',
             COURBE=_F(FONCTION=DTYBNL,),);
 
 FIN();

@@ -1,4 +1,4 @@
-#& MODIF ENTETE  DATE 03/11/2004   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF ENTETE  DATE 15/11/2004   AUTEUR MCOURTOI M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -397,7 +397,7 @@ class fonction_sdaster(fonction_class):
       """
       Retourne deux listes de valeurs : abscisses et ordonnees
       """
-      if self.etape.nom=='DEFI_FONCTION' :
+      if hasattr(self,'etape') and self.etape.nom=='DEFI_FONCTION' :
         lbl=list(self.etape['VALE'])
         dim=len(lbl)
         lx=[lbl[i] for i in range(0,dim,2)]

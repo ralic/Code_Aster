@@ -2,7 +2,7 @@
      &                  JAPPAR,JNOCO,JMACO)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 02/11/2004   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 16/11/2004   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -55,7 +55,8 @@ C                'S' : SUPPRIMER UNE LIAISON
 C IN  TYPEOU : LIEU OU L'OPERATION A ETE FAITE
 C                'ALG' : ALGO PRINCIPAL DE CONTACT
 C                'NEG' : SUPPRESSION D'UNE LIAISON A PRESSION NEGATIVE
-C                'ADH' : SUPPRESSION D'UNE LIAISON ADHERENTE
+C                'GLI' : SUPPRESSION D'UNE LIAISON GLISSANTE
+C                'ADH' : AJOUT D'UNE LIAISON ADHERENTE
 C                'PIV' : SUPPRESSION D'UNE LIAISON A PIVOT NUL 
 C IN  JAPPAR : POINTEUR VERS RESOCO(1:14)//'.APPARI'
 C IN  JNOCO  : POINTEUR VERS DEFICO(1:16)//'.NOEUCO'
@@ -142,12 +143,17 @@ C --- PREPARATION DES CHAINES POUR LES NOMS
       ELSE IF (TYPEOU.EQ.'PIV') THEN
         CHAIAC = ' PIVOT NUL         ('
         WRITE (IFM,1001) ILIAI,'(',NOMESC,TYPE2,NOMMAI,'): ',
-     &                   CHAIAC,',TYPE: ',TYPLI,
+     &                   CHAIAC,' TYPE: ',TYPLI,
+     &                   ')'
+      ELSE IF (TYPEOU.EQ.'GLI') THEN
+        CHAIAC = ' GLISSANTE - SUPP. ('
+        WRITE (IFM,1001) ILIAI,'(',NOMESC,TYPE2,NOMMAI,'): ',
+     &                   CHAIAC,' TYPE: ',TYPLI,
      &                   ')'
       ELSE IF (TYPEOU.EQ.'ADH') THEN
-        CHAIAC = ' NON ADHERENTE     ('
+        CHAIAC = ' ADHERENTE - ADD.  ('
         WRITE (IFM,1001) ILIAI,'(',NOMESC,TYPE2,NOMMAI,'): ',
-     &                   CHAIAC,',TYPE: ',TYPLI,
+     &                   CHAIAC,' TYPE: ',TYPLI,
      &                   ')'
       ENDIF
 

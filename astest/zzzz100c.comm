@@ -1,6 +1,6 @@
-# MODIF  DATE 23/08/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 15/11/2004   AUTEUR MCOURTOI M.COURTOIS 
 # RESPONSABLE MCOURTOI M.COURTOIS
-# TITRE VALIDATION IMPR_COURBE AU FORMAT SEISME
+# TITRE VALIDATION IMPR_FONCTION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,7 +21,7 @@
 #===================================================
 #
 
-DEBUT(   CODE=_F(  NOM = 'ZZZZ100C',NIV_PUB_WEB='INTERNET') )
+DEBUT(   CODE=_F(  NOM = 'ZZZZ100C',NIV_PUB_WEB='INTERNET'), )
 
 DEUX=2
 
@@ -46,22 +46,18 @@ DFC2=DEFI_FONCTION(     NOM_PARA='INST',    NOM_RESU='AMOR',
 L03=DEFI_LIST_REEL(  DEBUT=0.,
                          INTERVALLE=_F(  JUSQU_A = 4.,  NOMBRE = 8) )
 
-IMPR_COURBE(COURBE=(_F(  FONCTION = DFC1),
+IMPR_FONCTION(COURBE=(_F(  FONCTION = DFC1),
                     _F(  FONCTION = DFC2)),
-              )
-
-IMPR_COURBE(COURBE=(_F(  FONCTION = DFC1),
-                    _F(  FONCTION = DFC2)),
-            FORMAT='EXCEL'
+              TITRE='DFC1 et DFC2',
               )
 
 #-----------------------------------------------------------------------
 
-IMPR_COURBE(   COURBE=_F(  FONC_X = DFC1,
+IMPR_FONCTION(   COURBE=_F(  FONC_X = DFC1,
                            FONC_Y = DFC2) )
 
-IMPR_COURBE(   UNITE = 50,
-               FORMAT='EXCEL',
+IMPR_FONCTION(   UNITE = 50,
+               FORMAT='TABLEAU', TITRE='LU DANS FF1',
                COURBE=_F(  FONC_X = DFC1,
                            FONC_Y = DFC2) )
 
@@ -69,8 +65,9 @@ DEFI_FICHIER( ACTION="LIBERER", UNITE = 50 )
                         
 FF1=LIRE_FONCTION(        UNITE=50,
                           NOM_PARA='FREQ',
-                          NOM_RESU='AMOR'
+                          NOM_RESU='AMOR',
                        )
+
 TEST_FONCTION(VALEUR=(  
   _F(   FONCTION = FF1, VALE_PARA = 1.,  VALE_REFE = 2.), 
   _F(   FONCTION = FF1, VALE_PARA = 2.,  VALE_REFE = 3.), 
@@ -82,21 +79,21 @@ TEST_FONCTION(VALEUR=(
 
 #-----------------------------------------------------------------------
 
-IMPR_COURBE(   COURBE=_F(  FONC_X = DFC1,
-                           FONC_Y = DFC2, 
-                           PARA = 'FONC_Y') )
+IMPR_FONCTION(   COURBE=_F(  FONC_Y = DFC1,
+                           FONC_X = DFC2, ) )
 
-IMPR_COURBE(   UNITE = 51,
-               FORMAT='EXCEL',
-               COURBE=_F(  FONC_X = DFC1,
-                           FONC_Y = DFC2, 
-                           PARA = 'FONC_Y') )
+IMPR_FONCTION(   UNITE = 51,
+               FORMAT='TABLEAU', TITRE='LU DANS FF2',
+               COURBE=_F(  FONC_Y = DFC1,
+                           FONC_X = DFC2, ) )
 
 DEFI_FICHIER( ACTION="LIBERER", UNITE = 51 )
 
 FF2=LIRE_FONCTION(     UNITE=51,
+                       NOM_PARA='FREQ',
                        NOM_RESU='AMOR',
-                       NOM_PARA='FREQ'
+                       INDIC_PARA=(1,2),
+                       INDIC_RESU=(1,1),
                        )
 
 TEST_FONCTION(VALEUR=(  
@@ -112,13 +109,13 @@ TEST_FONCTION(VALEUR=(
 #-----------------------------------------------------------------------
 
 
-IMPR_COURBE(   COURBE=_F(  FONC_X = DFC1,
+IMPR_FONCTION(   COURBE=_F(  FONC_X = DFC1,
                            FONC_Y = DFC2,
-                           LIST_PARA = L03)
+                           LIST_PARA = L03), INFO=2,
                   )
 
-IMPR_COURBE(   UNITE = 52,
-               FORMAT='EXCEL',
+IMPR_FONCTION(   UNITE = 52, INFO=2,
+               FORMAT='TABLEAU', TITRE='LU DANS FF3',
                COURBE=_F(  FONC_X = DFC1,
                            FONC_Y = DFC2,
                            LIST_PARA = L03)
@@ -127,8 +124,10 @@ IMPR_COURBE(   UNITE = 52,
 DEFI_FICHIER( ACTION="LIBERER", UNITE = 52) 
 
 FF3=LIRE_FONCTION(        UNITE=52,
+                          NOM_PARA='FREQ',
                           NOM_RESU='AMOR',
-                          NOM_PARA='FREQ'
+                          INDIC_PARA=(1,2),
+                          INDIC_RESU=(1,3),
                        )
 
 TEST_FONCTION(VALEUR=(  
@@ -149,11 +148,11 @@ TEST_FONCTION(VALEUR=(
 #-----------------------------------------------------------------------
 
 
-IMPR_COURBE(   COURBE=_F(  FONC_X = DFC2,
+IMPR_FONCTION(   COURBE=_F(  FONC_X = DFC2,
                            FONC_Y = DFC1) )
 
-IMPR_COURBE(   UNITE = 53, 
-               FORMAT='EXCEL',
+IMPR_FONCTION(   UNITE = 53, 
+               FORMAT='TABLEAU', TITRE='LU DANS FF4',
                COURBE=_F(  FONC_X = DFC2,
                            FONC_Y = DFC1) )
 
@@ -161,7 +160,7 @@ DEFI_FICHIER( ACTION="LIBERER", UNITE = 53 )
 
 FF4=LIRE_FONCTION(        UNITE=53,
                           NOM_PARA='AMOR',
-                          NOM_RESU='FREQ'
+                          NOM_RESU='FREQ',
                        )
 
 TEST_FONCTION(VALEUR=(  

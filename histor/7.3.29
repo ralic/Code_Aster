@@ -1,0 +1,810 @@
+
+
+-----------------------------------------------------------------------
+--- AUTEUR assire A.ASSIRE   DATE  le 15/11/2004 a 18:44:13
+
+------------------------------------------------------------------------------
+CORRECTION AL 2004-408
+   NB_JOURS_TRAV  : 6.
+   INTERET_UTILISATEUR : OUI
+   TITRE  Complements sur le partitionement de maillages
+   FONCTIONNALITE
+     Suite à la restitution du partitionnement de maillage, il restait encore 
+     des choses non traitées et quelques coquilles.
+     Les chargements avec Dirichlet sont gérés directement par DEFI_PART_FETI.
+   DETAILS
+    - fetcrf.f (commande DEFI_PART_OPS) pour prendre en compte les Dirichlets.
+    - fetcrf.f : ajout d'un <F> si un noeud de l'interface est dans un 
+      chargement.
+    - partition.py : utilisation de INFO_EXEC_ASTER pour récuperer les unités
+      logiques pour travailler avec Metis (avant on utilisait fort.66 et 68).
+    - partition.py : bug dans la reaffectation dans les SD des SEG.
+    - partition.py : nettoyages divers.
+    - feti003b : le cas-test a été adapté pour lancer le partitionnement auto
+      puis le solveur FETI.
+    - feti001 et 002 : ils sont corrigés pour tenir compte de la nouvelle 
+      version de FETCRF (on ajoute EXCIT dans l'appel DEFI_PART_OPS).
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+      feti001a, feti002a, feti003b
+
+
+-----------------------------------------------------------------------
+--- AUTEUR cibhhlv L.VIVAN   DATE  le 15/11/2004 a 14:05:16
+
+--------------------------------------------------------------------------
+CORRECTION AL 2004-414
+   NB_JOURS_TRAV  : 0.5
+   POUR_LE_COMPTE_DE   : E.LONGATTE-LACAZEDIEU
+   INTERET_UTILISATEUR : NON
+   TITRE : GRAPPE_FLUIDE en POURSUITE
+   FONCTIONNALITE
+     Le problème se pose lorsque l'on fait un calcul en POURSUITE dont
+     le calcul précédent n'avait pas de chargement de type GRAPPE_FLUIDE.
+   DETAIL
+     dans la routine GFINIT qui initialise les commons GRAPPE_FLUIDE,
+     on vérifie que le premier parametre que l'on récupère est différent
+     de R8VIDE (les paramètres d'une SD Resultat sont initialisés à R8VIDE)
+   RESU_FAUX_VERSION_EXPLOITATION    : NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   : NON
+   RESTITUTION_VERSION_EXPLOITATION  : NON
+   RESTITUTION_VERSION_DEVELOPPEMENT : OUI
+   VALIDATION 
+     étude associée
+   IMPACT_DOCUMENTAIRE : NON
+
+
+-----------------------------------------------------------------------
+--- AUTEUR durand C.DURAND   DATE  le 15/11/2004 a 11:28:09
+
+------------------------------------------------------------------------------
+CORRECTION AL 2004-421
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : NON
+   TITRE : affe_cara_elem et miss05a
+   FONCTIONNALITE AFFE_CARA_ELEM
+   DETAILS
+     modif VARI_SECT=CONSTANT dans miss05a.14
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+     miss05a
+
+------------------------------------------------------------------------------
+CORRECTION AL 2004-411
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : NON
+   TITRE : affe_cara_elem et AFFE_FIBRE sous linux
+   FONCTIONNALITE AFFE_CARA_ELEM
+   DETAILS
+     suppression de l'objet temporaire, inutilisé, &&VERIF_FIBRE_MAIL.
+     le plantage venait d'une confusion entre vecteurs ZR et ZI.
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+     cas tests cassés sur linux sdll122a et autres.
+
+------------------------------------------------------------------------------
+CORRECTION AL 2004-409
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : NON
+   TITRE : arlequin et tests sslp104b et sslp313c
+   FONCTIONNALITE ARLEQUIN
+   DETAILS
+     1. oubli de correction dans le fichier de commande sslp104b pour pointer 
+     sur un bon nom de group_ma.
+     2. concernant sslp313c, je change le maillage d'origine, qui devait
+     satisfaire la contrainte que les bords du bloc fissure soient des bords
+     de mailles de la plaque. Donc non seulement le maillage est désormais
+     beau et plus généraliste, mais en plus ca permet de considérablement 
+     resserrer toutes les tolérances à 1% par rapport au calcul avec maillage
+     unique (non arlequin).
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+     sslp104b et sslp313c
+
+------------------------------------------------------------------------------
+RESTITUTION HORS AREX
+   NB_JOURS_TRAV  : 0.5
+   FONCTIONNALITE : ssnp116a, ssnp116b, ssnp116c
+   INTERET_UTILISATEUR : NON
+   TITRE : ssnp116a et ssnp116b en mode debug
+   DETAILS :
+     ajustement de tolérances trop sévères pour ces deux tests qui faisaient 
+     des NOOK en execution debug.
+     pour  VALE=7.357178E-07,
+     on passe de  PRECISION=1.E-4 à 2.E-4
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION : execution des tests en mode debug
+
+--------------------------------------------------------------------------
+CORRECTION AL 2004-141
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : NON
+   TITRE : ssnv166c nook sur linux
+   FONCTIONNALITE CALC_G_LOCAL_T
+   DETAILS
+     je relache la tolérance (de 4.5% à 5%) sur un test_table
+     je doublonne les tests de sorte à comparer, à la solution analytique
+     et aussi faire de la non régression.
+     Au passage, je corrige dans OP0077 l'initialisation à zéro de IORD.
+     Cela polluait en effet la table produite dans le cas d'un DEPL fourni et
+     non un résultat car IORD n'était pas initialisé.
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+     ssnv166c
+
+
+-----------------------------------------------------------------------
+--- AUTEUR f1bhhaj J.ANGLES   DATE  le 15/11/2004 a 13:32:32
+
+--------------------------------------------------------------------------
+RESTITUTION HORS AREX
+   NB_JOURS_TRAV : 0.5 
+   INTERET_UTILISATEUR : NON
+   FONCTIONNALITE : Certains tests de SSLV135C étaient NOOK parce que 
+     deux plans correspondent au même endomagement. Nous utilisons la 
+     fonctionalité EXTR_COMP pour distinguer les deux cas licites et 
+     exclure tous les autres.
+   DETAILS : Tests NOOK dans le cas test SSLV135C, restitution en lien
+     avec la fiche 2004-055.
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION : SSLV135 C sous machine linux et Tru64.
+
+
+-----------------------------------------------------------------------
+--- AUTEUR galenne E.GALENNE   DATE  le 15/11/2004 a 16:40:15
+
+--------------------------------------------------------------------------
+CORRECTION AL 2004-413 
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : NON
+   TITRE POST_K1_K2_K3
+   FONCTIONNALITE
+     En 3D, il est possible de calculer K par interpolation des sauts de
+     déplacements de manière automatique pour chaque noeud du fond de 
+     fissure en donnant comme argument le concept FOND_FISS.
+     Dans ce cas cependant, la valeur de K calculée selon la méthode 3 
+     n'était pas imprimée dans le fichier résultat, alors qu'elle était
+     bien calculée. L'erreur provenait de la routine PKFOND.
+     J'en profite pour générer un message d'alarme plus explicite dans 
+     PKFOND, dans les cas où il y a moins de 3 noeuds pour l'interpolation
+     (jusqu'à présent erreur numérique dans PKCALC).
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON   
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON   
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+      Cas test SSLV134b (ajout du calcul de K à partir de fond_fiss)
+
+
+-----------------------------------------------------------------------
+--- AUTEUR lebouvie F.LEBOUVIER   DATE  le 15/11/2004 a 16:17:02
+
+-------------------------------------------------------------------------------
+CORRECTION AL 2004-380
+   NB_JOURS_TRAV : 0.5
+   POUR LE COMPTE DE :  C. DURAND
+   INTERET_UTILISATEUR : OUI
+   TITRE : Liste d'instant croissante dans les opérateurs de thermique
+   FONCTIONNALITE :  
+   DETAIL : 
+   Les opérateurs de thermique THER_LINEAIRE et THER_NON_LINE utilisent la routine
+   NSINST pour connaitre la liste des instants définis par l'utilisateur. On 
+   ajoute dans cette routine une vérification sur la croissance de la liste
+   d'instant: 
+         DELMIN = ZR(JVAL+1) - ZR(JVAL)
+         DO 10 I = 0,NBINST-2
+          DELTAT = ZR(JVAL + I+1) - ZR(JVAL + I)
+          DELMIN = MIN(DELTAT,DELMIN)
+          IF (DELTAT.LE.0) CALL UTMESS('F',
+       &     'NTINST','LISTE D''INSTANTS NON CROISSANTE')
+   10     CONTINUE
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   VALIDATION : Passage de l'étude, et des tests de thermique de la 
+                liste_restriente
+   IMPACT_DOCUMENTAIRE : NON
+
+
+-----------------------------------------------------------------------
+--- AUTEUR mabbas M.ABBAS   DATE  le 16/11/2004 a 15:38:34
+
+-----------------------------------------------------------------------
+CORRECTION AL 2004-381 
+   NB_JOURS_TRAV  : 1
+   INTERET_UTILISATEUR : NON
+   TITRE : ssnv167d contact
+   FONCTIONNALITE
+     NEW7.3.26, le test ssnv167d s'arrete en <F>_ERREUR sur Linux et
+     Alphaserver
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON  
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON  
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+     Tous les cas-tests de contact
+   DETAILS
+   Il s'agit, une fois de plus, d'un probleme de projection sur
+    les quadrangles. Le test ssnv167d est un test academique (deux
+    HEXA8 en contact). 
+
+   Reprenons l'historique:
+    Suite aux tests ssnv167, nous mettons en evidence le probleme
+    de projection sur les pseudos diagonales, qui empeche la convergence
+    (reactualisation geometrique automatique) ou donne des resultats
+    faux (reactualisation geometrique "manuelle"). Le probleme est 
+    identifie et corrige en forcant la projection sur un des quatre
+    triangles lorsque le noeud se projette exactement sur une diagonale.
+    (AL2004-112)
+
+    Lors du passage sur Linux, on constate qu'un cas particulier n'avait
+    pas ete tres bien traite et provoquer des ecarts entre les differentes
+    machines, suivant leur precision en particulier.
+    (AL2004-344)
+
+    Ici, le probleme reapparait parce que la correction precedente etait
+    trop severe.
+    En gros:
+
+    IF (OLDJ(3).LE.OLDJ(1)) THEN
+       KMIN = 3
+    ENDIF
+
+    est remplace par
+    ECAN = ABS((OLDJ(3)-OLDJ(1)))
+    IF (ECAN.LE.1D-15) THEN
+      KMIN = 3
+    ENDIF
+    
+    Ceci evite que les tres petits ecarts, du a des problemes de 
+    precision machine provoquent des resultats nettement differents, 
+    surtout avec un maillage aussi rustique !
+
+-----------------------------------------------------------------------
+CORRECTION AL 2004-344 
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : NON
+   TITRE : ssnv506c sur Linux
+   FONCTIONNALITE
+     Avec la version NEW7.3.26 compilée sous linux Calibre3, 
+
+ssnv506c
+========
+---- RESULTAT:  SSNV506  NUME_ORDRE:  11 NOM_CHAM: VALE_CONT
+REFERENCE: NON_REGRESSION   VERSION: 7.3.23
+NOOK RN           RELA    -2.391 % VALE: 1.7651627253652E+04
+         N349     TOLE     0.001 % REFE: 1.8083947024158E+04
+
+   DETAILS
+    la variation inter machine est corrigee par l'AL2004-381
+    On change aussi les valeurs de reference de hsna120a 
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON  
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON  
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+     Tous les cas-tests de contact
+
+-----------------------------------------------------------------------
+CORRECTION AL 2004-400 
+   NB_JOURS_TRAV  : 0.1
+   INTERET_UTILISATEUR : NON
+   TITRE : htna100a
+   FONCTIONNALITE
+     NEW7.3.27, le test htna100a termine en NOOK
+   DETAILS
+     Mauvais changement des valeurs de reference, pas verifiees au 
+     moment la restit (le test est gros, 4000s).
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON  
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON  
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+     Tous les cas-tests de contact
+
+-----------------------------------------------------------------------
+CLASSEMENT SANS SUITE AL 2004-189 
+   NB_JOURS_TRAV  : 3
+   INTERET_UTILISATEUR : NON
+   TITRE : CONTACT - Pivot nul sur un contact plaque/poutre
+   FONCTIONNALITE
+     Une simple poutre qui glisse sur une plaque s'arrete en pivot nul
+     lorsqu'on introduit le frottement alors qu'elle passe en contact 
+     simple
+   DETAILS
+    Ce n'est plus le cas en NEW7 (7.3.28).
+    Pour que l'etude passe: mettre NORMALE='MAIT' et non NORMALE='MAIT_ESCL'.
+    En lagrangien total, le noeud du bout de la poutre oscille entre
+    deux etats: collant/glissant. Echec par boucle infinie.
+    En lagrangien/penalisation, le calcul passe sans problemes.
+
+    Ce test n'est malheureusement pas equivalent a l'AOM qui avait
+    ete soldee EL2003-208.
+
+    Nous reemettrons une fiche apres etre sur d'avoir bien identifie
+   le probleme (penetrations illicites d'une poutre dans une plaque)
+
+   RESU_FAUX_VERSION_EXPLOITATION   :   NON  
+   RESU_FAUX_VERSION_DEVELOPPEMENT  :   NON  
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_U : U4.44.01
+       EXPL_ : AFFE_CHAR_MECA , preciser le perimetre d'utilisation
+               de NORMALE='MAIT_ESCL'
+   VALIDATION
+     Etude jointe
+
+-----------------------------------------------------------------------
+RESTITUTION HORS AREX
+   NB_JOURS_TRAV  : 0.5 
+   INTERET_UTILISATEUR : OUI
+   TITRE : Bugs dans nouveaux affichages du contact
+   FONCTIONNALITE
+   DETAILS
+     Lors de l'EL 2004-109, on a introduit quelques bugs lors 
+     des affichages d'infos sur le contact:
+     - affichage incorrect de la direction du pivot nul en frottement
+     - affichage laid sur deux lignes a la fin du frottement
+     - virgules qui trainent aux mauvais endroits
+     - petits defauts d'alignement
+     - timidite dans la taille des entiers attaches aux DDLs (I5 -> I8)
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON  
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON  
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+
+-----------------------------------------------------------------------
+RESTITUTION HORS AREX
+   NB_JOURS_TRAV  : 0.5 
+   INTERET_UTILISATEUR : OUI
+   TITRE : Bug dans frolgd
+   FONCTIONNALITE
+   DETAILS
+     Mauvais branchement de la fin de boucle en cas de depassement du
+     nombre d'iterations maximum ou de matrice signuliere.
+     Le calcul continuait malgre l'erreur.
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON  
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON  
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+
+
+-----------------------------------------------------------------------
+--- AUTEUR mcourtoi M.COURTOIS   DATE  le 15/11/2004 a 09:08:45
+
+------------------------------------------------------------------------------
+CORRECTION AL 2004-402
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : NON
+   TITRE : ssls502d : FORMAT='MOT_CLE' supprimé d'IMPR_TABLE
+   FONCTIONNALITE
+      On laisse IMPR_TABLE au format par défaut.
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+
+------------------------------------------------------------------------------
+REALISATION EL 2004-197
+   NB_JOURS_TRAV  : 2
+   INTERET_UTILISATEUR : NON
+   TITRE : Résorption d'IMPR_COURBE
+   FONCTIONNALITE
+      Les appels à IMPR_COURBE sont remplacés par IMPR_FONCTION ou IMPR_TABLE
+      selon ce que l'on imprime.
+      Pour IMPR_TABLE au format XMGRACE, on dispose des mots-clés de mise en
+      forme comme dans IMPR_FONCTION (LEGENDE/_X/Y, BORNE_X/Y...).
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+   DETAILS
+      Erreur b_forme (IMPR_FONCTION) : les mots-clés sont hors du bloc car 
+      l'attribut position='global' n'est pas pris en compte.
+      Suppression de :
+         zzzz100e
+         impr_courbe commande
+         op0141 foecag foeccf foecfd foecff foecfn foecgn foecgv foiexc
+         fotraj
+      Cas-tests non modifiés (car en erreur) : miss03a, ssls502d, ssns101c
+
+   ssls501a : 
+   ==========
+      # POUR COMPARER LES DEUX COURBES IL FAUT FAIRE
+      # DANS LA COURBE ASTER ABSC = 57766.1-ABSC
+      # ET PRENDRE ABS(MT)
+
+      IMPR_FONCTION(
+       ...
+            _F(ABSCISSE = [57766.1-x for x in MTAST.Absc()],
+               ORDONNEE = [abs(y)    for y in MTAST.Ordo()],
+               LEGENDE = 'ASTER recalé',
+               COULEUR=2,
+            ),
+       ...
+
+------------------------------------------------------------------------------
+RESTITUTION HORS AREX
+   NB_JOURS_TRAV  : 1
+   INTERET_UTILISATEUR : NON
+   TITRE
+      Anomalies : - Méthode Valeurs des fonctions en poursuite
+                  - Ecrasement non détecté par JXVERI
+                  - Décalage d'adresse dans CALCFO (appelé par CALC_FONC_INTERP)
+   FONCTIONNALITE
+    * Le test sur le nom de l'étape qui a produit la fonction plantait en
+      poursuite (car on ne la stocke pas).
+      Restrictions sur l'utilisation de cette méthode :
+      - après DEBUT :
+         . en PAR_LOT='OUI' :
+            * ok après un DEFI_FONCTION
+            * ne fonctionne pas si la fonction vient de CALC_FONCTION
+         . en PAR_LOT='NON' : ok
+      - en POURSUITE :
+         . en PAR_LOT='OUI' : ne fonctionne pas (sauf si le DEFI_FONCTION est
+           fait dans la poursuite !)
+         . en PAR_LOT='NON' : ok
+    * JXVERI pas de chance, une division entière faisait qu'on retrouvait les
+      délimiteurs attendus alors qu'ils étaient faux !
+    * CALCF : appel à FOINTC les indices de la partie réelle et imaginaire
+      étaient décalés de 1, le dernier débordait donc.
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON  (CALCFO : depuis 7.3.17)
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+ 
+------------------------------------------------------------------------------
+CORRECTION AL 2004-416
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : NON
+   TITRE : Plantage IMPR_RESU, FORMAT='IDEAS' si NOM_CMP présent
+   FONCTIONNALITE
+      Problème de JEDETR mal placés, je remplace par un JEDETC en fin de
+      routine.
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+ 
+------------------------------------------------------------------------------
+CLASSEMENT SANS SUITE AL 2004-361
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : NON
+   TITRE : Différence IMPR_RESU, format CASTEM entre Solaris et TRU64
+   FONCTIONNALITE
+      Il y a sans doute un problème avec la version Solaris ; mais :
+      - il s'agit d'une "ancienne" version (7.2),
+      - je n'ai pas pu reproduire le pb en 7.3 sous Linux (y compris version
+      sous Calibre 3 dont on sait qu'elle pose problème parfois à cause du
+      compilateurs standard),
+      - on s'est engagé à fournir une version Linux en 2005 (pour la 7.4) avec
+      la même qualité de service que sur le serveur Aster (Alphaserver), mais
+      ce ne sera pas possible sur plus de plates-formes (donc pas sous Solaris).
+   IMPACT_DOCUMENTAIRE : NON
+
+
+-----------------------------------------------------------------------
+--- AUTEUR romeo R.FERNANDES   DATE  le 15/11/2004 a 11:29:37
+
+------------------------------------------------------------------------------
+CORRECTION AL 2003-227
+   NB_JOURS_TRAV  : 5.0
+   INTERET_UTILISATEUR : OUI
+   TITRE : WTNV121A et sensibilite à la renumerotation
+   FONCTIONNALITE
+     Perméabilité fonction de l'endommagement.
+   DETAILS
+   Cas-test qui combine de fortes non-linéarités :
+    - cas non saturé avec présence d'eau et de gaz
+    - perméabilité variable en fonction de l'endommagement
+    - Modélisation mécanique : ENDO_ISOT_BETON
+
+   Conditions Initiales : Pc = Pgz - Plq = 6.9E7 Pa
+                          Pgz            = 0.0   Pa
+   
+   Pour provoquer un endommagement sur le beton on applique un
+   choc "hydraulique" qui se traduit par la condition au limite :
+   Pc = 3.7E7. L'avantage de ce choc est d'obtenir un endommagement
+   instantané du materiau. L'inconvénient est qu'il intoduit un
+   front raide. C'est cette condition qui engendre des difficultés
+   numériques importantes. La modélisation lumpée permet d'améliorer
+   dans ce cas la stabilité du calcul.
+   
+   La modélisation b du cas test wtnv121 utilise la loi de comportement
+   de Mazars. On retrouve en fait les memes difficultés de convergence
+   qu'avec la modélisation a. La différence est que le calcul n'est fait
+   que sur 1 seconde. En utilisant la meme discrétisation en temps
+   que la modelisation a le calcul ne converge pas. De plus, l'utilisation
+   des éléments lumpés dans ce cas détériore la stabilité numérique!
+   
+   On propose ici de restituer la modélisation a sur une simulation
+   a 1 seconde. Ce cas-test a uniquement pour but de valider le couplage
+   perméabilité fonction de l'endommagement.
+   
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   VALIDATION
+     wtnv121a, wtnv121b
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_V : V7.31.121
+
+-------------------------------------------------------------------
+CORRECTION AL 2003-298
+   NB_JOURS_TRAV  : 0.1
+   INTERET_UTILISATEUR : NON
+   TITRE : ENDO_ISOT_BETON/THM
+   FONCTIONNALITE
+     Perméabilité fonction de l'endommagement.
+   DETAILS
+     idem AL 2003-227
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   VALIDATION
+     wtnv121a, wtnv121b
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_V : V7.31.121
+
+-------------------------------------------------------------------
+CORRECTION AL 2004-331
+   NB_JOURS_TRAV  : 0.1
+   INTERET_UTILISATEUR : NON
+   TITRE : wtnv121a NOOK
+   FONCTIONNALITE
+     Perméabilité fonction de l'endommagement.
+   DETAILS
+     idem AL 2003-227
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   VALIDATION
+     wtnv121a, wtnv121b
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_V : V7.31.121
+
+-------------------------------------------------------------------
+RESTITUTION HORS AREX
+   NB_JOURS_TRAV  : 1.0
+   INTERET_UTILISATEUR : NON
+   TITRE : Nettoyage routines INDI_LOCA_ELGA
+   FONCTIONNALITE
+     Calcul de l'indicateur de localisation
+   DETAILS
+   Ce nettoyage concerne un précédent développement pour le calcul
+   de l'indicateur de localisation (indicateur de Rice - 7.3.8).
+   Initialement le calcul de l'indicateur de Rice nécessitait
+   un appel aux variables internes aux instants plus et moins.
+   Or ce calcul ne dépend en fait que de l'instant plus. On
+   supprime donc dans tous les catalogues et tous les fortrans
+   les vérifications sur la présence des variables internes
+   à l'instant moins.
+
+   routines modifiées : mecalc mecalm nsdrpr redrpr te0030
+   catalogue : gener_meaa22 gener_meaa32 gener_meah12 gener_meah22
+               gener_meah42 gener_meah52 gener_meax_2 gener_meda22
+               gener_meda32 gener_medh12 gener_medh22 gener_medh42
+	       gener_medh52 gener_medpl2 indi_loca_elga
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   VALIDATION
+     Passage des cas tests INDI_LOCA_ELGA
+   IMPACT_DOCUMENTAIRE : NON
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+ CASTEST MODIF demo003a                     mcourtoi M.COURTOIS         198      4      3
+ CASTEST MODIF elsa01c                      mcourtoi M.COURTOIS         250      9      7
+ CASTEST MODIF feti001a                       assire A.ASSIRE           237      8      2
+ CASTEST MODIF feti002a                       assire A.ASSIRE           243      7      1
+ CASTEST MODIF feti003b                       assire A.ASSIRE           244    183    183
+ CASTEST MODIF forma01c                     mcourtoi M.COURTOIS         342      1      1
+ CASTEST MODIF forma01d                     mcourtoi M.COURTOIS         359      3      3
+ CASTEST MODIF forma03a                     mcourtoi M.COURTOIS         150      1      1
+ CASTEST MODIF forma03b                     mcourtoi M.COURTOIS         248      3      3
+ CASTEST MODIF forma06b                     mcourtoi M.COURTOIS         190      9     17
+ CASTEST MODIF forma08b                     mcourtoi M.COURTOIS         381      8     26
+ CASTEST MODIF forma09a                     mcourtoi M.COURTOIS         162      6     14
+ CASTEST MODIF forma09b                     mcourtoi M.COURTOIS         371     12     22
+ CASTEST MODIF forma12a                     mcourtoi M.COURTOIS         201      9     10
+ CASTEST MODIF forma12b                     mcourtoi M.COURTOIS         244      7      7
+ CASTEST MODIF hsna120a                       mabbas M.ABBAS            763      2      2
+ CASTEST MODIF hsns101a                     mcourtoi M.COURTOIS         540     16     22
+ CASTEST MODIF hsnv124a                     mcourtoi M.COURTOIS         502     11     17
+ CASTEST MODIF hsnv124b                     mcourtoi M.COURTOIS         405     18     20
+ CASTEST MODIF hsnv124c                     mcourtoi M.COURTOIS         354      7     22
+ CASTEST MODIF hsnv124d                     mcourtoi M.COURTOIS         353      7     21
+ CASTEST MODIF hsnv124e                     mcourtoi M.COURTOIS         397      3      8
+ CASTEST MODIF hsnv125a                     mcourtoi M.COURTOIS         450      4      3
+ CASTEST MODIF hsnv125b                     mcourtoi M.COURTOIS         396      4      3
+ CASTEST MODIF hsnv125c                     mcourtoi M.COURTOIS         559      4      3
+ CASTEST MODIF hsnv125f                     mcourtoi M.COURTOIS         466      9      6
+ CASTEST MODIF htna100a                       mabbas M.ABBAS            991      4      4
+ CASTEST MODIF miss05a                        durand C.DURAND          2080      1      1
+ CASTEST MODIF rccm02a                      mcourtoi M.COURTOIS         353      1      1
+ CASTEST MODIF rccm02b                      mcourtoi M.COURTOIS         354      1      1
+ CASTEST MODIF rccm03a                      mcourtoi M.COURTOIS        4279      1      1
+ CASTEST MODIF sdld102a                     mcourtoi M.COURTOIS         747      4      5
+ CASTEST MODIF sdnd102c                     mcourtoi M.COURTOIS         242      2     10
+ CASTEST MODIF sdnl105a                     mcourtoi M.COURTOIS         426      9     23
+ CASTEST MODIF sdnl105b                     mcourtoi M.COURTOIS         564     10     28
+ CASTEST MODIF sdnl112b                     mcourtoi M.COURTOIS         490      2      2
+ CASTEST MODIF sdnl120a                     mcourtoi M.COURTOIS         528      1      1
+ CASTEST MODIF sdnv102a                     mcourtoi M.COURTOIS         663     45     45
+ CASTEST MODIF sdnv102b                     mcourtoi M.COURTOIS          29      1      1
+ CASTEST MODIF sdnv102c                     mcourtoi M.COURTOIS          30      1      1
+ CASTEST MODIF sdnv103b                     mcourtoi M.COURTOIS         402     18     17
+ CASTEST MODIF sdnv103c                     mcourtoi M.COURTOIS         244     18     17
+ CASTEST MODIF ssll501a                     mcourtoi M.COURTOIS         401      5     26
+ CASTEST MODIF sslp104b                       durand C.DURAND           129      3      3
+ CASTEST MODIF sslp313c                       durand C.DURAND           262     39     33
+ CASTEST MODIF ssls502a                     mcourtoi M.COURTOIS         257      7      8
+ CASTEST MODIF ssls502b                     mcourtoi M.COURTOIS         258      7      7
+ CASTEST MODIF ssls502c                     mcourtoi M.COURTOIS         258     10     10
+ CASTEST MODIF sslv134b                      galenne E.GALENNE          621     57      1
+ CASTEST MODIF sslv135c                      f1bhhaj J.ANGLES          1176    389     20
+ CASTEST MODIF ssna109a                     mcourtoi M.COURTOIS         693      8      8
+ CASTEST MODIF ssna110a                     mcourtoi M.COURTOIS        2118      1      1
+ CASTEST MODIF ssna111a                     mcourtoi M.COURTOIS         213      2      3
+ CASTEST MODIF ssna111b                     mcourtoi M.COURTOIS         222      6      6
+ CASTEST MODIF ssna112a                     mcourtoi M.COURTOIS         399      7      7
+ CASTEST MODIF ssnl106e                     mcourtoi M.COURTOIS         304      2      3
+ CASTEST MODIF ssnl106f                     mcourtoi M.COURTOIS         380      9     10
+ CASTEST MODIF ssnl106g                     mcourtoi M.COURTOIS         240      7      8
+ CASTEST MODIF ssnl106h                     mcourtoi M.COURTOIS         240      7      8
+ CASTEST MODIF ssnl501a                     mcourtoi M.COURTOIS         182     10     10
+ CASTEST MODIF ssnl501b                     mcourtoi M.COURTOIS         222      7      7
+ CASTEST MODIF ssnl501c                     mcourtoi M.COURTOIS         203      7      7
+ CASTEST MODIF ssnl501d                     mcourtoi M.COURTOIS         183     10     10
+ CASTEST MODIF ssnl501e                     mcourtoi M.COURTOIS         180     10     10
+ CASTEST MODIF ssnl501f                     mcourtoi M.COURTOIS         164     10     10
+ CASTEST MODIF ssnl502a                     mcourtoi M.COURTOIS         357      7      7
+ CASTEST MODIF ssnl502b                     mcourtoi M.COURTOIS         373      7      7
+ CASTEST MODIF ssnl502c                     mcourtoi M.COURTOIS         454      8      8
+ CASTEST MODIF ssnp115c                     mcourtoi M.COURTOIS         210      9      9
+ CASTEST MODIF ssnp116a                       durand C.DURAND           784      4      4
+ CASTEST MODIF ssnp116b                       durand C.DURAND           592      5      5
+ CASTEST MODIF ssnp116c                       durand C.DURAND           646      4      4
+ CASTEST MODIF ssnp126a                     mcourtoi M.COURTOIS         388      5      5
+ CASTEST MODIF ssns101a                     mcourtoi M.COURTOIS         380      5      5
+ CASTEST MODIF ssns101b                     mcourtoi M.COURTOIS         266      7      7
+ CASTEST MODIF ssns102a                     mcourtoi M.COURTOIS         434      7      7
+ CASTEST MODIF ssns501a                     mcourtoi M.COURTOIS         257      5      5
+ CASTEST MODIF ssns501b                     mcourtoi M.COURTOIS         253      5      5
+ CASTEST MODIF ssnv141b                     mcourtoi M.COURTOIS         177      3     13
+ CASTEST MODIF ssnv166c                       durand C.DURAND           229     20      2
+ CASTEST MODIF ssnv506c                       mabbas M.ABBAS            231      3      3
+ CASTEST MODIF wtnv121a                        romeo R.FERNANDES        378     79     71
+ CASTEST MODIF zzzz100a                     mcourtoi M.COURTOIS        1789     14     21
+ CASTEST MODIF zzzz100c                     mcourtoi M.COURTOIS         178     30     31
+ CASTEST MODIF zzzz100d                     mcourtoi M.COURTOIS         416      1      1
+ CASTEST SUPPR zzzz100e.comm                mcourtoi M.COURTOIS          67      0     67
+CATALOGU MODIF options/indi_loca_elga          romeo R.FERNANDES         29      1      2
+CATALOGU MODIF typelem/gener_meaa22            romeo R.FERNANDES        132      2      3
+CATALOGU MODIF typelem/gener_meaa32            romeo R.FERNANDES        130      2      3
+CATALOGU MODIF typelem/gener_meah12            romeo R.FERNANDES        134      2      3
+CATALOGU MODIF typelem/gener_meah22            romeo R.FERNANDES        132      2      3
+CATALOGU MODIF typelem/gener_meah42            romeo R.FERNANDES        137      2      3
+CATALOGU MODIF typelem/gener_meah52            romeo R.FERNANDES        135      2      3
+CATALOGU MODIF typelem/gener_meax_2            romeo R.FERNANDES        551      2      3
+CATALOGU MODIF typelem/gener_meda22            romeo R.FERNANDES        138      2      3
+CATALOGU MODIF typelem/gener_meda32            romeo R.FERNANDES        136      2      3
+CATALOGU MODIF typelem/gener_medh12            romeo R.FERNANDES        147      2      3
+CATALOGU MODIF typelem/gener_medh22            romeo R.FERNANDES        145      2      3
+CATALOGU MODIF typelem/gener_medh42            romeo R.FERNANDES        149      2      3
+CATALOGU MODIF typelem/gener_medh52            romeo R.FERNANDES        147      2      3
+CATALOGU MODIF typelem/gener_medpl2            romeo R.FERNANDES        558      2      3
+CATALOGU SUPPR commande/impr_courbe         mcourtoi M.COURTOIS         151      0    151
+CATALOPY MODIF commande/defi_part_feti        assire A.ASSIRE            37      1      1
+CATALOPY MODIF commande/impr_fonction       mcourtoi M.COURTOIS         134     13     10
+CATALOPY MODIF commande/impr_table          mcourtoi M.COURTOIS         107     37      6
+CATALOPY MODIF entete/accas                 mcourtoi M.COURTOIS         649      2      2
+ FORTRAN MODIF algorith/algocl                mabbas M.ABBAS            665      4      4
+ FORTRAN MODIF algorith/algoco                mabbas M.ABBAS            683      4      4
+ FORTRAN MODIF algorith/algocp                mabbas M.ABBAS            363      4      4
+ FORTRAN MODIF algorith/cfadh                 mabbas M.ABBAS            333      3      3
+ FORTRAN MODIF algorith/cfimp1                mabbas M.ABBAS            203     20      8
+ FORTRAN MODIF algorith/cfimp2                mabbas M.ABBAS            168     11      5
+ FORTRAN MODIF algorith/cfimp4                mabbas M.ABBAS            479     10     10
+ FORTRAN MODIF algorith/elpiv2                mabbas M.ABBAS            358      5      4
+ FORTRAN MODIF algorith/fro2gd                mabbas M.ABBAS            746      7      7
+ FORTRAN MODIF algorith/frogdp                mabbas M.ABBAS            631      4      4
+ FORTRAN MODIF algorith/frolgd                mabbas M.ABBAS           1096     35     19
+ FORTRAN MODIF algorith/fropgd                mabbas M.ABBAS            842      5      5
+ FORTRAN MODIF algorith/gfinit               cibhhlv L.VIVAN            252     20      2
+ FORTRAN MODIF algorith/nsdrpr                 romeo R.FERNANDES        567      2      2
+ FORTRAN MODIF algorith/ntinst              lebouvie F.LEBOUVIER        142     14      2
+ FORTRAN MODIF algorith/projq1                mabbas M.ABBAS            551     44     12
+ FORTRAN MODIF algorith/redrpr                 romeo R.FERNANDES         87      3      3
+ FORTRAN MODIF calculel/mecalc                 romeo R.FERNANDES        513      1      2
+ FORTRAN MODIF calculel/mecalm                 romeo R.FERNANDES       2257      3      6
+ FORTRAN MODIF calculel/op0077                durand C.DURAND           575      2      1
+ FORTRAN MODIF elements/fetcrf                assire A.ASSIRE          1440    593     99
+ FORTRAN MODIF elements/te0030                 romeo R.FERNANDES        191      2      4
+ FORTRAN MODIF jeveux/jxveri                mcourtoi M.COURTOIS         121     10      7
+ FORTRAN MODIF modelisa/pmfd00                durand C.DURAND           748      2      5
+ FORTRAN MODIF prepost/irdesr               mcourtoi M.COURTOIS         327      3     10
+ FORTRAN MODIF prepost/pkfond                galenne E.GALENNE          751     17      4
+ FORTRAN MODIF utilitai/calcfo              mcourtoi M.COURTOIS          89      2      2
+ FORTRAN SUPPR utilitai/foecag              mcourtoi M.COURTOIS         377      0    377
+ FORTRAN SUPPR utilitai/foeccf              mcourtoi M.COURTOIS         205      0    205
+ FORTRAN SUPPR utilitai/foecfd              mcourtoi M.COURTOIS         166      0    166
+ FORTRAN SUPPR utilitai/foecff              mcourtoi M.COURTOIS          89      0     89
+ FORTRAN SUPPR utilitai/foecfn              mcourtoi M.COURTOIS          42      0     42
+ FORTRAN SUPPR utilitai/foecgn              mcourtoi M.COURTOIS         430      0    430
+ FORTRAN SUPPR utilitai/foecgv              mcourtoi M.COURTOIS         130      0    130
+ FORTRAN SUPPR utilitai/foiexc              mcourtoi M.COURTOIS         164      0    164
+ FORTRAN SUPPR utilitai/fotraj              mcourtoi M.COURTOIS         208      0    208
+ FORTRAN SUPPR utilitai/op0141              mcourtoi M.COURTOIS         364      0    364
+  PYTHON MODIF Macro/defi_part_feti_ops       assire A.ASSIRE           182     74     16
+  PYTHON MODIF Macro/impr_fonction_ops      mcourtoi M.COURTOIS         409     29     16
+  PYTHON MODIF Macro/impr_table_ops         mcourtoi M.COURTOIS         230      5      5
+  PYTHON MODIF Utilitai/Graph               mcourtoi M.COURTOIS        1026      3      3
+  PYTHON MODIF Utilitai/Table               mcourtoi M.COURTOIS         664      2      2
+  PYTHON MODIF Utilitai/partition             assire A.ASSIRE          1145    191     79
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :    0           0         0                +0
+ MODIF :  137       62085      2538    1443     +1095
+ SUPPR :   12        2393              2393     -2393
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :  149       64478      2538    3836     -1298 

@@ -1,4 +1,4 @@
-# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 15/11/2004   AUTEUR MCOURTOI M.COURTOIS 
 # TITRE HEMISPHERE TROUEEE DOUBLEMENT PINCEE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -98,19 +98,9 @@ DEPY=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                              RESULTAT=NONLIN,
                              NOM_CHAM='DEPL',),);
 
-IMPR_COURBE(COURBE=_F(TABLE=DEPX,
-                      PARA_X='INST',
-                      PARA_Y='DX',),
-            UNITE=25,
-            FORMAT='AGRAF',
-            TITRE_GRAPHIQUE='deplacement x',);
+IMPR_TABLE(TABLE=DEPX,);
 
-IMPR_COURBE(COURBE=_F(TABLE=DEPY,
-                      PARA_X='INST',
-                      PARA_Y='DY',),
-            UNITE=25,
-            FORMAT='AGRAF',
-            TITRE_GRAPHIQUE='deplacement y',);
+IMPR_TABLE(TABLE=DEPY,),
 
 TEST_RESU(RESU=_F(NOM_CHAM='DEPL',
                   RESULTAT=NONLIN,

@@ -1,4 +1,4 @@
-# MODIF  DATE 23/08/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 15/11/2004   AUTEUR MCOURTOI M.COURTOIS 
 # RESPONSABLE MABBAS M.ABBAS
 #
 # TITRE INDENTATION D'UN MASSIF PAR UN POINCON
@@ -187,11 +187,12 @@ DY=RECU_FONCTION(RESULTAT=RESU,
                  NOM_CMP='DY',
                  GROUP_NO='GM16')
 
-IMPR_COURBE(FORMAT='AGRAF',
-            UNITE=8,
-            LEGENDE_X='Deplacement (mm)',
-            LEGENDE_Y='Force (N/rd)',
-            COURBE=(_F(FONC_X = DY,
-                       FONC_Y = FY,)));
+IMPR_FONCTION(FORMAT='AGRAF',
+              UNITE=25,
+              UNITE_DIGR=26,
+              LEGENDE_X='Deplacement (mm)',
+              LEGENDE_Y='Force (N/rd)',
+              COURBE=(_F(FONC_X = DY,
+                         FONC_Y = FY,)));
 
 FIN();

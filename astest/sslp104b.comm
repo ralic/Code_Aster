@@ -1,4 +1,4 @@
-# MODIF  DATE 08/11/2004   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 15/11/2004   AUTEUR DURAND C.DURAND 
 # TITRE POUTRE CANTILEVER . VALIDATION DE LA METHODE ARLEQUIN
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -78,8 +78,8 @@ DPL=AFFE_CHAR_MECA(MODELE=MOD,
 
 ARL=AFFE_CHAR_MECA(MODELE=MOD,
                    ARLEQUIN=_F(GROUP_MA_1='GM4002',
-                               GROUP_MA_2='GM4001_0',
-                               GROUP_MA_COLL='GM4001_0',
+                               GROUP_MA_2='GM3001',
+                               GROUP_MA_COLL='GM3001',
                                COLLAGE='GROUP_MA_2',
                                POIDS_1=0.99,),);
 

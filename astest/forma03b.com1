@@ -56,12 +56,12 @@ F_FY_P=RECU_FONCTION(TABLE=FHAUTP,
                      PARA_Y='DY',
                      INTERPOL='LIN',);
 
-IMPR_COURBE(UNITE=81,
-            FORMAT='EXCEL',
-            COURBE=(_F(FONCTION=F_DY_P,
-                       LEGENDE='Deplacement suivant Y au point G',),
-                    _F(FONCTION=F_FY_P,
-                       LEGENDE='Resultante de forces nodale suivant Y sur FG',),),);
+IMPR_FONCTION(UNITE=81,
+              FORMAT='TABLEAU',
+              COURBE=(_F(FONCTION=F_DY_P,
+                         LEGENDE='Deplacement suivant Y au point G',),
+                      _F(FONCTION=F_FY_P,
+                         LEGENDE='Resultante de forces nodale suivant Y sur FG',),),);
 
 
 # COURBES AVEC XMGRACE EN INTERACTIF
@@ -135,12 +135,12 @@ F_FY_G=RECU_FONCTION(TABLE=FHAUT,
                      PARA_Y='DY',
                      INTERPOL='LIN',);
 
-IMPR_COURBE( UNITE=83,
-             FORMAT='EXCEL',
-             COURBE=(_F(FONCTION=F_DY_G,
-                        LEGENDE='Deplacement suivant Y au point G',),
-                     _F(FONCTION=F_FY_G,
-                        LEGENDE='Resultante de forces nodale suivant Y sur FG',),),);
+IMPR_FONCTION( UNITE=83,
+               FORMAT='TABLEAU',
+               COURBE=(_F(FONCTION=F_DY_G,
+                          LEGENDE='Deplacement suivant Y au point G',),
+                       _F(FONCTION=F_FY_G,
+                          LEGENDE='Resultante de forces nodale suivant Y sur FG',),),);
 
 
 

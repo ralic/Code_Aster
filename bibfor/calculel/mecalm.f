@@ -6,7 +6,7 @@
 C
 C TOLE CRP_20
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 11/10/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF CALCULEL  DATE 15/11/2004   AUTEUR ROMEO R.FERNANDES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -1969,7 +1969,7 @@ C ---- VERIF SENSIBILITE FIN
   400      CONTINUE
 
 C     ------------------------------------------------------------------
-C     --- OPTION "INDI_LOCA_ELGA"
+C     --- OPTION: INDI_LOCA_ELGA
 C     ------------------------------------------------------------------
           ELSE IF (OPTION.EQ.'INDI_LOCA_ELGA')  THEN
 C ---- VERIF SENSIBILITE
@@ -1984,9 +1984,7 @@ C ---- VERIF SENSIBILITE FIN
      &                    RESUCO,IORDR)
               CALL JEVEUO(KCHA,'L',JCHA)
               CALL MECARA(CARA,EXICAR,CHCARA)
-              IF (IORDR.EQ.1) GO TO 1410
           CALL RSEXC2(1,1,RESUCO,'SIEF_ELGA',IORDR,CHSIG2,OPTION,IRET)
-          CALL RSEXC2(1,1,RESUCO,'VARI_ELGA',IORDR-1,CHVAR1,OPTION,IRET)
           CALL RSEXC2(1,1,RESUCO,'VARI_ELGA',IORDR,CHVAR2,OPTION,IRET)
               IF (IRET.GT.0) GO TO 1410
               CALL RSEXCH(RESUCO,'COMPORTEMENT',IORDR,COMPOR,IRET1)
@@ -1994,12 +1992,11 @@ C ---- VERIF SENSIBILITE FIN
               CALL MECALC(OPTION,MODELE,CHVAR2,K24B,MATE,K24B,K24B,
      &                    K24B,K24B,K24B,K24B,CHSIG2,K24B,K24B,K24B,
      &                    K24B,K24B,K24B,ZERO,CZERO,K24B,SOP,CHELEM,
-     &                    LIGREL,BASE,K24B,K24B,K24B,CHVAR1,COMPOR,
+     &                    LIGREL,BASE,K24B,K24B,K24B,K24B,COMPOR,
      &                    CHTESE,CHDESE,NOPASE,TYPESE,IRET)
               IF (IRET.GT.0) GO TO 1410
               CALL RSNOCH(LERES1,OPTION,IORDR,' ')
  1410      CONTINUE
-
 
 C     ------------------------------------------------------------------
 C     --- OPTION " VARI_ELNO_ELGA"

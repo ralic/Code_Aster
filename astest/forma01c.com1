@@ -33,17 +33,13 @@ IMPR_TABLE(TABLE=TABDEP0,);
 
 TITRE='TEMPERATURE AU TRAVERS DE LA PAROI';
 
-IMPR_COURBE(UNITE=25,
-            FORMAT='AGRAF',
-            TITRE_GRAPHIQUE=TITRE,LEGENDE_X='ABSCISSE',
-                                  LEGENDE_Y='TEMP',
-                                  COURBE=(_F(TABLE=TABDEPT,
-                                             PARA_X='ABSC_CURV',
-                                             PARA_Y='TEMP',
-                                             LEGENDE='TEMPERATURE ',
-                                             COULEUR='BLEU',
-                                             MARQUEUR='CARRE',),),);
-
+IMPR_TABLE(
+   FORMAT='XMGRACE',
+   UNITE=29,
+   TABLE=TABDEPT,
+   NOM_PARA=('ABSC_CURV','TEMP'),
+   TITRE=TITRE,
+)
 
 FIN()
 #

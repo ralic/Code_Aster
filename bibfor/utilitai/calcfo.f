@@ -6,7 +6,7 @@
       CHARACTER*16        NOPARA
       CHARACTER*19        NOMFIN, NOMFON
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 27/09/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF UTILITAI  DATE 15/11/2004   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -61,7 +61,7 @@ C
          ZR(LVALE+IVAL) = VALE(IVAL+1)
          IF ( COMPL ) THEN
             CALL FOINTC( NOMFIN, 1, NOPARA, ZR(LVALE+IVAL),
-     +                   ZR(LFON+2*IVAL+1), ZR(LFON+2*IVAL+2), IER )
+     +                   ZR(LFON+2*IVAL), ZR(LFON+2*IVAL+1), IER )
             IF (IER.NE.0) THEN
                 CALL UTMESS('F','CALCFO','ERREUR DANS FOINTC') 
             ENDIF

@@ -5,7 +5,7 @@
      &                  CHSREF,CHVARI,COMPOR,CHTESE,CHDESE,NOPASE,
      &                  TYPESE,CODRET)
 C ----------------------------------------------------------------------
-C MODIF CALCULEL  DATE 04/05/2004   AUTEUR SMICHEL S.MICHEL-PONNELLE 
+C MODIF CALCULEL  DATE 15/11/2004   AUTEUR ROMEO R.FERNANDES 
 C TOLE CRP_20 CRP_21
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -184,7 +184,6 @@ C ----------------------------------------------------------------------
         ELSE IF (OPTIO2.EQ.'INDI_LOCA_ELGA') THEN
            CALL AJCHCA('PMATERC',CHMATE,LPAIN,LCHIN,NBIN,MAXIN,'N')
            CALL AJCHCA('PCOMPOR',COMPOR,LPAIN,LCHIN,NBIN,MAXIN,'N')
-           CALL AJCHCA('PVARIMR',CHVARI,LPAIN,LCHIN,NBIN,MAXIN,'N')
            CALL AJCHCA('PVARIPR',CHDEPL,LPAIN,LCHIN,NBIN,MAXIN,'N')
            CALL AJCHCA('PCONTPR',CHSIG, LPAIN,LCHIN,NBIN,MAXIN,'N')
            LPAOUT(1) = 'PINDLOC'

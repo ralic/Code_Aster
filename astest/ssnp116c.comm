@@ -1,4 +1,4 @@
-# MODIF  DATE 05/07/2004   AUTEUR SMICHEL S.MICHEL-PONNELLE 
+# MODIF  DATE 15/11/2004   AUTEUR DURAND C.DURAND 
 # TITRE COUPLAGE FLUAGE/NADAI_B - TRACTION UNIAXIALE EN C_PLAN
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -436,7 +436,7 @@ TEST_TABLE(  TABLE=RELEVE_3,
               _F(  NOM_PARA = 'INTITULE', VALE_K = 'EPSF'),
                   _F(  NOM_PARA = 'INST',     VALE = 10.)),
                     VALE=7.357178E-07,
-               PRECISION=1.E-4,
+               PRECISION=2.E-4,
                REFERENCE='NON_REGRESSION',
                VERSION = '7.3.9',
            )
@@ -525,7 +525,7 @@ TEST_TABLE(  TABLE=RELEVE_4,
               _F(  NOM_PARA = 'INTITULE', VALE_K = 'EPSF'),
                   _F(  NOM_PARA = 'INST',     VALE = 10.)),
                     VALE=7.357178E-07,
-               PRECISION=1.E-4,
+               PRECISION=2.E-4,
                REFERENCE='NON_REGRESSION',
                VERSION = '7.3.9',
            )
@@ -616,7 +616,7 @@ TEST_TABLE(  TABLE=RELEVE_5,
               _F(  NOM_PARA = 'INTITULE', VALE_K = 'EPSF'),
                   _F(  NOM_PARA = 'INST',     VALE = 10.)),
                     VALE=7.357178E-07,
-               PRECISION=1.E-4,
+               PRECISION=2.E-4,
                REFERENCE='NON_REGRESSION',
                VERSION = '7.3.9',
            )

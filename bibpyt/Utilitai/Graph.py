@@ -1,4 +1,4 @@
-#@ MODIF Graph Utilitai  DATE 08/11/2004   AUTEUR DURAND C.DURAND 
+#@ MODIF Graph Utilitai  DATE 15/11/2004   AUTEUR MCOURTOI M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -234,8 +234,8 @@ class Graph:
       """
       para={
          'TABLEAU' : { 'mode' : 'a', 'driver' : TraceTableau, },
-         'XMGRACE' : { 'mode' : 'w', 'driver' : TraceXmgrace, },
-         'AGRAF'   : { 'mode' : 'w', 'driver' : TraceAgraf,   },
+         'XMGRACE' : { 'mode' : 'a', 'driver' : TraceXmgrace, },
+         'AGRAF'   : { 'mode' : 'a', 'driver' : TraceAgraf,   },
       }
       kargs={}
       if self.LastTraceArgs=={}:

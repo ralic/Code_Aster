@@ -2,7 +2,7 @@
      &                    DEPTOT,ITERAT,LREAC,DEPDEL,RESU,LICCVG)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 02/11/2004   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 16/11/2004   AUTEUR MABBAS M.ABBAS 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -723,23 +723,23 @@ C ======================================================================
         WRITE(IFM,1003) NBLIAC
         WRITE(IFM,1006) LLF
         WRITE(IFM,*)'<CONTACT> <> LIAISONS FINALES '
-        CALL CFIMP1(DEFICO,RESOCO,NOMA,NBLIAI,NBLIAC,IFM)
+        CALL CFIMP1(DEFICO,RESOCO,NOMA,NBLIAI,IFM)
       END IF
 C
  999  CONTINUE
 C ======================================================================
       CALL JEDEMA ()
 C ======================================================================
- 1000 FORMAT (' <CONTACT> <> NOMBRE DE LIAISONS POSSIBLES: ',I6)
+ 1000 FORMAT (' <CONTACT> <> NBRE DE LIAISONS POSSIBLES: ',I6)
  1001 FORMAT (' <CONTACT> <> DEBUT DES ITERATIONS (MAX: ',I6,')')
  1002 FORMAT (' <CONTACT> <> FIN DES ITERATIONS (NBR: ',I6,')')
- 1003 FORMAT (' <CONTACT> <> NOMBRE DE LIAISONS ACTIVES FINALES:',
+ 1003 FORMAT (' <CONTACT> <> NBRE DE LIAISONS CONTACT FINALES:',
      &       I6,')')
- 1005 FORMAT (' <CONTACT> <> NOMBRE DE LIAISONS ACTIVES INITIALES:',
+ 1005 FORMAT (' <CONTACT> <> NBRE DE LIAISONS CONTACT INITIALES:',
      &       I6,')')
- 1006 FORMAT (' <CONTACT> <> NOMBRE DE LIAISONS ADHERENTES FINALES:',
+ 1006 FORMAT (' <CONTACT> <> NBRE DE LIAISONS ADH. FINALES:',
      &       I6,')')
- 1007 FORMAT (' <CONTACT> <> NOMBRE DE LIAISONS ADHERENTES INITIALES:',
+ 1007 FORMAT (' <CONTACT> <> NBRE DE LIAISONS ADH. INITIALES:',
      &       I6,')')
  
 C ======================================================================

@@ -1,7 +1,7 @@
-      SUBROUTINE REDRPR( MOD, IMATE, SIGP, VIM, VIP, DSDE, ICODE )
+      SUBROUTINE REDRPR( MOD, IMATE, SIGP, VIP, DSDE, ICODE )
 C =====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/06/2004   AUTEUR ROMEO R.FERNANDES 
+C MODIF ALGORITH  DATE 15/11/2004   AUTEUR ROMEO R.FERNANDES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -21,7 +21,7 @@ C ======================================================================
 C =====================================================================
       IMPLICIT      NONE
       INTEGER       IMATE, ICODE
-      REAL*8        VIM(*), VIP(*), SIGP(*), DSDE(6,6)
+      REAL*8        VIP(*), SIGP(*), DSDE(6,6)
       CHARACTER*8   MOD
 C =====================================================================
 C --- ROUTINE POUR LES RECUPERATIONS DES DONNES -----------------------

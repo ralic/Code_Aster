@@ -1,4 +1,4 @@
-# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 15/11/2004   AUTEUR MCOURTOI M.COURTOIS 
 # TITRE IMPACT D UNE BARRE DE TAYLOR ELASTOPLASTIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -166,23 +166,24 @@ DEPL_B1=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL EN B1',
                                 NOM_CMP='DY',
                                 OPERATION='EXTRACTION',),);
 
-IMPR_COURBE(FORMAT='AGRAF',
-            UNITE=25,
-            LEGENDE_X='INSTANT (S)',
-            LEGENDE_Y='DEPLACEMENT DY',
-            COURBE=(_F(TABLE=VITE_A2,
-                       PARA_X='INST',
-                       PARA_Y='DY',
-                       LEGENDE='VITE EN A2',),
-                   _F(TABLE=DEPL_A1,
-                       PARA_X='INST',
-                       PARA_Y='DY',
-                       LEGENDE='DEPL EN A1',),
-                   _F(TABLE=DEPL_B1,
-                       PARA_X='INST',
-                       PARA_Y='DY',
-                       LEGENDE='DEPL EN B1',),
-                                           ));
+
+IMPR_TABLE(FORMAT='AGRAF',
+           UNITE=25, 
+           TABLE=VITE_A2,
+           NOM_PARA=('INST','DY',),
+           TITRE='VITE EN A2',)
+
+IMPR_TABLE(FORMAT='AGRAF',
+           UNITE=25, 
+           TABLE=DEPL_A1,
+           NOM_PARA=('INST','DY',),
+           TITRE='DEPL EN A1',)
+
+IMPR_TABLE(FORMAT='AGRAF',
+           UNITE=25, 
+           TABLE=DEPL_B1,
+           NOM_PARA=('INST','DY',),
+           TITRE='DEPL EN B1',)
 
 #####################################################
 # TESTS DE DEPLACEMENTS, VITESSES ET ACCELERATIONS

@@ -1,4 +1,4 @@
-#@ MODIF Table Utilitai  DATE 08/11/2004   AUTEUR DURAND C.DURAND 
+#@ MODIF Table Utilitai  DATE 15/11/2004   AUTEUR MCOURTOI M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -76,7 +76,7 @@ class TableBase(object):
       para={
          'TABLEAU'         : { 'mode' : 'a', 'driver' : self.ImprTableau,   },
          'ASTER'           : { 'mode' : 'a', 'driver' : self.ImprTableau,   },
-         'XMGRACE'         : { 'mode' : 'w', 'driver' : self.ImprGraph,     },
+         'XMGRACE'         : { 'mode' : 'a', 'driver' : self.ImprGraph,     },
          'AGRAF'           : { 'mode' : 'a', 'driver' : self.ImprTableau,   },
          'TABLEAU_CROISE'  : { 'mode' : 'a', 'driver' : self.ImprTabCroise, },
       }

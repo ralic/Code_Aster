@@ -23,25 +23,24 @@ FR_02a = CALC_FONCTION( LISS_ENVELOP=_F( FONCTION = F02 ),
 
 # IMPRESSION FORMAT AGRAF
 
-IMPR_COURBE(UNITE = 25,
+IMPR_FONCTION(UNITE = 25,
             FORMAT  ='AGRAF',
             ECHELLE_X='LOG',
             ECHELLE_Y='LOG',
-            TITRE_GRAPHIQUE='parametres par defaut F02',
+            TITRE='parametres par defaut F02',
             LEGENDE_X='frequence',
             LEGENDE_Y='acceleration',
-            FREQ_MARQUEUR=1,
             COURBE=(_F( FONCTION =F02,
                         LEGENDE='spectre brut',
-                        COULEUR='NOIR'  ),
+                        COULEUR=0  ),
                     _F( FONCTION =FR_02a,
                         LEGENDE='spectre lisse',
-                        COULEUR='ROUGE',
-                        MARQUEUR='CARRE',),
+                        COULEUR=3,
+                        MARQUEUR=1,),
                    )
            ),
             
-IMPR_COURBE( COURBE=_F( FONCTION =FR_02a) ),           
+IMPR_FONCTION( COURBE=_F( FONCTION =FR_02a) ),           
 
                                 
 # F02 avec TOLE_LISS=10
@@ -57,25 +56,24 @@ FR_02b = CALC_FONCTION(LISS_ENVELOP=_F( FONCTION = F02,
 
 # IMPRESSION FORMAT AGRAF
 
-IMPR_COURBE(UNITE = 25,
+IMPR_FONCTION(UNITE=27, UNITE_DIGR=28,
             FORMAT  ='AGRAF',
             ECHELLE_X='LOG',
             ECHELLE_Y='LOG',
-            TITRE_GRAPHIQUE='F02 TOLE_LISS=10',
+            TITRE='F02 TOLE_LISS=10',
             LEGENDE_X='frequence',
             LEGENDE_Y='acceleration',
-            FREQ_MARQUEUR=1,
             COURBE=(_F( FONCTION =F02,
                         LEGENDE='spectre brut',
-                        COULEUR='NOIR' ),
+                        COULEUR=0 ),
                     _F( FONCTION =FR_02b,
                         LEGENDE='spectre lisse',
-                        COULEUR='ROUGE',
-                        MARQUEUR='CARRE',),
+                        COULEUR=3,
+                        MARQUEUR=1,),
                    )
            ),
            
-IMPR_COURBE( COURBE=_F(FONCTION =FR_02b),  ),           
+IMPR_FONCTION( COURBE=_F(FONCTION =FR_02b),  ),           
 
            
 # F02 avec TOLE_LISS=50
@@ -89,25 +87,24 @@ FR_02c = CALC_FONCTION(LISS_ENVELOP=_F( FONCTION = F02,
 
 # IMPRESSION FORMAT AGRAF
 
-IMPR_COURBE(UNITE = 25,
+IMPR_FONCTION(UNITE=29, UNITE_DIGR=30,
             FORMAT  ='AGRAF',
             ECHELLE_X='LOG',
             ECHELLE_Y='LOG',
-            TITRE_GRAPHIQUE='F02 TOLE_LISS=50',
+            TITRE='F02 TOLE_LISS=50',
             LEGENDE_X='frequence',
             LEGENDE_Y='acceleration',
-            FREQ_MARQUEUR=1,
             COURBE=(_F( FONCTION =F02,
                         LEGENDE='spectre brut',
-                        COULEUR='NOIR' ),
+                        COULEUR=0 ),
                     _F( FONCTION =FR_02c,
                         LEGENDE='spectre lisse',
-                        COULEUR='ROUGE',
-                        MARQUEUR='CARRE',),
+                        COULEUR=3,
+                        MARQUEUR=1,),
                    )
            ),
            
-IMPR_COURBE( COURBE=_F(FONCTION =FR_02c), ),           
+IMPR_FONCTION( COURBE=_F(FONCTION =FR_02c), ),           
  
           
 #  F02 echantillonnage force 
@@ -120,23 +117,22 @@ FR_02d = CALC_FONCTION( LISS_ENVELOP=_F( FONCTION = F02,
                         INFO = 2,
                       ) ;
 
-IMPR_COURBE( COURBE=_F(FONCTION =FR_02d), )
+IMPR_FONCTION( COURBE=_F(FONCTION =FR_02d), )
          
-IMPR_COURBE(UNITE = 25,
+IMPR_FONCTION(UNITE=31, UNITE_DIGR=32,
             FORMAT  ='AGRAF',
             ECHELLE_X='LOG',
             ECHELLE_Y='LOG',
-            TITRE_GRAPHIQUE='echantillonnage force F02',
+            TITRE='echantillonnage force F02',
             LEGENDE_X='frequence',
             LEGENDE_Y='acceleration',
-            FREQ_MARQUEUR=1,
             COURBE=(_F( FONCTION =F02,
                         LEGENDE='spectre brut',
-                        COULEUR='NOIR' ),
+                        COULEUR=0 ),
                     _F( FONCTION =FR_02d,
                         LEGENDE='spectre lisse',
-                        COULEUR='ROUGE',
-                        MARQUEUR='CARRE',),
+                        COULEUR=3,
+                        MARQUEUR=1,),
                    )
            ),
            
@@ -150,23 +146,22 @@ FR_02e = CALC_FONCTION(LISS_ENVELOP=_F( FONCTION = F02,
                        INFO = 2,
                     );
 
-IMPR_COURBE( COURBE=_F(FONCTION =FR_02e), )
+IMPR_FONCTION( COURBE=_F(FONCTION =FR_02e), )
          
-IMPR_COURBE(UNITE = 25,
+IMPR_FONCTION(UNITE=33, UNITE_DIGR=34,
             FORMAT  ='AGRAF',
             ECHELLE_X='LOG',
             ECHELLE_Y='LOG',
-            TITRE_GRAPHIQUE='F02 TOLE_LISS=50, freq_creux=7.85',
+            TITRE='F02 TOLE_LISS=50, freq_creux=7.85',
             LEGENDE_X='frequence',
             LEGENDE_Y='acceleration',
-            FREQ_MARQUEUR=1,
             COURBE=(_F( FONCTION =F02,
                         LEGENDE='spectre brut',
-                        COULEUR='NOIR' ),
+                        COULEUR=0 ),
                     _F( FONCTION =FR_02e,
                         LEGENDE='spectre lisse',
-                        COULEUR='ROUGE',
-                        MARQUEUR='CARRE',),
+                        COULEUR=3,
+                        MARQUEUR=1,),
                    )
            ),
                      
@@ -180,35 +175,34 @@ FR_05a = CALC_FONCTION( LISS_ENVELOP=_F( FONCTION = F05 ),
 
        
            
-IMPR_COURBE(
-         FORMAT='EXCEL',
+IMPR_FONCTION(
+         FORMAT='TABLEAU',
          COURBE=_F(FONCTION =FR_05a),         
             ),
 
 # IMPRESSION FORMAT AGRAF
 
-IMPR_COURBE(
-            UNITE = 25,
+IMPR_FONCTION(
+            UNITE=35, UNITE_DIGR=36,
             FORMAT  ='AGRAF',
             ECHELLE_X='LOG',
             ECHELLE_Y='LOG',
-            TITRE_GRAPHIQUE='parametres par defaut F05a',
+            TITRE='parametres par defaut F05a',
             LEGENDE_X='frequence',
             LEGENDE_Y='acceleration',
             BORNE_X=(0.01,100.0),
             BORNE_Y=(0.01,10.0),
-            FREQ_MARQUEUR=1,
             COURBE=(
                _F(
                FONCTION =F05,
                LEGENDE='spectre brut',
-               COULEUR='NOIR',
+               COULEUR=0,
                   ),
                _F(
                FONCTION =FR_05a,
                LEGENDE='spectre lisse',
-               COULEUR='ROUGE',
-               MARQUEUR='CARRE',
+               COULEUR=3,
+               MARQUEUR=1,
                   ),
                    )
            ),           
@@ -223,35 +217,34 @@ FR_05b = CALC_FONCTION( LISS_ENVELOP=_F( FONCTION = F05,
                         INFO = 2,
                       ) ;
            
-IMPR_COURBE(
-         FORMAT='EXCEL',
+IMPR_FONCTION(
+         FORMAT='TABLEAU',
          COURBE=_F(FONCTION =FR_05b),         
             ),
 
 # IMPRESSION FORMAT AGRAF
 
-IMPR_COURBE(
-            UNITE = 25,
+IMPR_FONCTION(
+            UNITE=37, UNITE_DIGR=38,
             FORMAT  ='AGRAF',
             ECHELLE_X='LOG',
             ECHELLE_Y='LOG',
-            TITRE_GRAPHIQUE=' F05b avec FREQ_CREUX ',
+            TITRE=' F05b avec FREQ_CREUX ',
             LEGENDE_X='frequence',
             LEGENDE_Y='acceleration',
             BORNE_X=(0.01,100.0),
             BORNE_Y=(0.01,10.0),
-            FREQ_MARQUEUR=1,
             COURBE=(
                _F(
                FONCTION =F05,
                LEGENDE='spectre brut',
-               COULEUR='NOIR',
+               COULEUR=0,
                   ),
                _F(
                FONCTION =FR_05b,
                LEGENDE='spectre lisse',
-               COULEUR='ROUGE',
-               MARQUEUR='CARRE',
+               COULEUR=3,
+               MARQUEUR=1,
                   ),
                    )
            ),           
@@ -268,28 +261,27 @@ SRa = CALC_FONCTION( LISS_ENVELOP=_F( FONCTION = SPECTB ),
                      INFO = 2,
                    ) ;                      
 
-IMPR_COURBE(
-            UNITE = 25,
+IMPR_FONCTION(
+            UNITE=39, UNITE_DIGR=40,
             FORMAT  ='AGRAF',
             ECHELLE_X='LOG',
             ECHELLE_Y='LOG',
-            TITRE_GRAPHIQUE='SRA parametres par defauts ',
+            TITRE='SRA parametres par defauts ',
             LEGENDE_X='frequence',
             LEGENDE_Y='acceleration',
             BORNE_X=(0.01,100.0),
             BORNE_Y=(0.01,10.0),
-            FREQ_MARQUEUR=1,
             COURBE=(
                _F(
                FONCTION =SPECTB,
                LEGENDE='spectre brut',
-               COULEUR='NOIR',
+               COULEUR=0,
                   ),
                _F(
                FONCTION =SRa,
                LEGENDE='spectre lisse',
-               COULEUR='ROUGE',
-               MARQUEUR='CARRE',
+               COULEUR=3,
+               MARQUEUR=1,
                   ),
                    )
            ),
@@ -310,26 +302,25 @@ SRb = CALC_FONCTION( LISS_ENVELOP=_F( FONCTION = SPECTB,
                     
                                          
 
-IMPR_COURBE(
-            UNITE = 25,
+IMPR_FONCTION(
+            UNITE=41, UNITE_DIGR=42,
             FORMAT  ='AGRAF',
             ECHELLE_X='LOG',
             ECHELLE_Y='LOG',
-            TITRE_GRAPHIQUE='SRB echantillonnage force ',
+            TITRE='SRB echantillonnage force ',
             LEGENDE_X='frequence',
             LEGENDE_Y='acceleration',
-            FREQ_MARQUEUR=1,
             COURBE=(
                _F(
                FONCTION =SPECTB,
                LEGENDE='spectre brut',
-               COULEUR='NOIR',
+               COULEUR=0,
                   ),
                _F(
                FONCTION =SRb,
                LEGENDE='spectre lisse',
-               COULEUR='ROUGE',
-               MARQUEUR='CARRE',
+               COULEUR=3,
+               MARQUEUR=1,
                   ),
                    )
            ),

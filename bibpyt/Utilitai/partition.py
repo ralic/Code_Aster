@@ -1,4 +1,4 @@
-#@ MODIF partition Utilitai  DATE 08/11/2004   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF partition Utilitai  DATE 15/11/2004   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -17,6 +17,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
+# RESPONSABLE ASSIRE A.ASSIRE
 
 import aster
 import string, os, time, sys, UserList
@@ -214,7 +215,7 @@ class MAIL_PY :
     """
       Impression au format ASTER
     """
-  
+
     l = []
     l.append('TITRE')
     l.append('%  CLASSE PY_MAIL -> MAIL')
@@ -228,7 +229,7 @@ class MAIL_PY :
       ch = 'N'+repr(i)+'  '+`self.cn[i,0]` + '  ' + `self.cn[i,1]` + '  ' + `self.cn[i,2]`
       l.append(ch)
 
-    ind = argsort(self.tm)
+    ind = N.argsort(self.tm)
     ty = 0
     for m in ind :
       if self.tm[m] <> ty :
@@ -268,7 +269,7 @@ class MAIL_PY :
 
 class PARTITION:
 
-  def __init__(self, jdc=None,nb=0):
+  def __init__(self, jdc=None ,nb=0):
 
     self.jdc = jdc
 
@@ -280,22 +281,24 @@ class PARTITION:
 
     self.MAILLAGE_Python    = None
 
-    self.RELATIONS      = { 'C_plus': None,
+    self.RELATIONS      = { 'C_plus' : None,
                             'C_moins': None,
                             'nr': 0 }
 
-    self.ASTER          = { 'MAILLAGE': None,
-                            'MODELE': None,
-                            'GROUP_MA': None,
-                            'GROUP_MA_BORD': None,
-                            'DICO_SD_MAILLES': None,
+    self.ASTER          = { 'MAILLAGE'        : None,
+                            'MODELE'          : None,
+                            'GROUP_MA'        : None,
+                            'GROUP_MA_BORD'   : None,
+                            'DICO_SD_MAILLES' : None,
                              }
 
-    self.OPTIONS        = { 'NB_PART': '',
-                            'ALGO': '',
-                            'INFO': '',
-                            'rep_metis': aster.repout(),
-                            'exe_metis': '',
+    self.OPTIONS        = { 'NB_PART'     : '',
+                            'ALGO'        : '',
+                            'INFO'        : '',
+                            'rep_metis'   : aster.repout(),
+                            'exe_metis'   : aster.repout() + 'pmetis',
+                            'fichier_in'  : 'fort.66',
+                            'fichier_out' : 'fort.68',
                              }
 
     self.Creation_Dico_Correspondance_Type_Maille()
@@ -323,7 +326,7 @@ class PARTITION:
 
 # ---------------------------------------------------------------------------- #
 
-  def Partitionne_Aster(self, MAILLAGE, NB_PART, MODELE=None, ALGO='kmetis', INFO=1):
+  def Partitionne_Aster(self, MAILLAGE, NB_PART, MODELE=None, METHODE=None, LOGICIEL=None, INFO=1):
 
     self.t00 = time.clock()
 
@@ -345,27 +348,31 @@ class PARTITION:
     MAILLAGE_Python.FromAster(MAILLAGE.nom)
 
     # Partitionne le maillage Python avec la liste de mailles _LST_MA
-    self.Partitionne_Maillage(MAILLAGE_Python, NB_PART, MAILLE=_LST_MA, ALGO=ALGO, INFO=INFO)
+    self.Partitionne_Maillage(MAILLAGE_Python, NB_PART, MAILLE=_LST_MA, METHODE=METHODE, LOGICIEL=LOGICIEL, INFO=INFO)
 
     return
 
 
 # ---------------------------------------------------------------------------- #
 
-  def Partitionne_Maillage(self, MAILLAGE_Python, NB_PART, MAILLE=None, ALGO='kmetis', INFO=1):
+  def Partitionne_Maillage(self, MAILLAGE_Python, NB_PART, MAILLE=None, METHODE=None, LOGICIEL=None, INFO=1):
 
     self.t00 =  time.clock()
 
-    f_metis   = 'fort.66'
-    fw_metis  = 'fort.68'
-    exe_metis = self.OPTIONS['exe_metis']
-
-    _LST_MA = MAILLE
+    if METHODE:
+      self.OPTIONS['exe_metis'] = aster.repout() + string.lower(METHODE)
+    elif LOGICIEL:
+      self.OPTIONS['exe_metis'] = LOGICIEL
 
     self.OPTIONS['NB_PART'] = NB_PART
-    self.OPTIONS['ALGO']    = ALGO
     self.OPTIONS['INFO']    = INFO
     self.MAILLAGE_Python = MAILLAGE_Python
+
+    exe_metis = self.OPTIONS['exe_metis']
+    f_metis   = self.OPTIONS['fichier_in']
+    fw_metis  = self.OPTIONS['fichier_out']
+
+    _LST_MA = MAILLE
 
     # On initialise la connectivité et la connectivité inverse des aretes
     self.MAILLAGE_Python.ca = {}
@@ -373,6 +380,15 @@ class PARTITION:
 
     _DIM = self.MAILLAGE_Python.dime_maillage[5]
     _LST_TMA = self.MAILLAGE_Python.tm
+
+    if self.OPTIONS['INFO']>=5:
+      print 'cn=', self.MAILLAGE_Python.cn 
+      print 'tm=', self.MAILLAGE_Python.tm 
+      print 'co=', self.MAILLAGE_Python.co 
+      print 'gma=', self.MAILLAGE_Python.gma
+      print 'gno=', self.MAILLAGE_Python.gno
+      print 'dim=', self.MAILLAGE_Python.dime_maillage
+    if self.OPTIONS['INFO']>=5: print '_LST_MA=', _LST_MA
 
     # Liste des mailles à prendre en compte : dimension _DIM
     _D_DIM_MAILLES = self.Creation_Listes_Mailles_Par_Dim(self.MAILLAGE_Python.tm, _LST_MA=_LST_MA)
@@ -386,11 +402,16 @@ class PARTITION:
     _LST, _LST_BD = self.Elimination_Mailles_de_bords(MAILLAGE_Python, _D_DIM_MAILLES, _DIM)
     self.liste_mailles = N.concatenate( (self.liste_mailles,N.array(_LST)) )
 
+    if self.OPTIONS['INFO']>=5:
+      print '_LST_BD=',_LST_BD
+      print '_LST=',_LST
+
+
     # Restriction des connectivités aux mailles à prendre en compte
     self.Connectivite_Aretes(OPTION='all', _LST_OK=self.liste_mailles)
 
     # Creation de l'arbre de connectivité des bords
-    self.Creation_Graphe(_DIM)
+    self.Creation_Graphe()
 
     # Reduction de l'arbre de connectivité des bords
     _nb = self.Reduction_Graphe(_DIM)
@@ -398,7 +419,7 @@ class PARTITION:
     # Ecriture du fichier pour Metis/Chaco/Jostle
     _D_CORRES = self.Ecrire_Graphe(f_metis, _nb)
 
-    # Lancement de metis sur le fichier fort.66 (production de fort.66.part.N)
+    # Lancement de metis sur le fichier fort.UL (production de fort.UL.part.N)
     txt = exe_metis + ' ' + f_metis + ' ' + str(NB_PART)
     print 'Commande : ',txt
     os.system( txt )
@@ -407,7 +428,7 @@ class PARTITION:
     self.fichier_out = f_metis + '.part.' + str(NB_PART)
     self.liste_sd = self.Lecture_fichier_sdd(self.fichier_out, self.liste_mailles)
 
-    # Traitment des mailles de bords (on les reinjecte dans un SD)
+    # Traitement des mailles de bords (on les reinjecte dans un SD)
     self.Affectation_Mailles_de_bords(_LST_BD)
 
     t1 = time.clock()
@@ -457,6 +478,33 @@ class PARTITION:
     maille2aretes[25] = maille2aretes[26] =  maille2aretes[24]
 
 
+    # dictionnaire de correspondance entre type_maille -> nb noeud (maille linéaire)
+    maille2nb={}
+    # POI
+    maille2nb[1]  = 1
+    # SEG
+    maille2nb[2]  = 2
+    maille2nb[3]  = maille2nb[4] = maille2nb[5] = maille2nb[6] = maille2nb[2]
+    # TRIA
+    maille2nb[7]  = 3
+    maille2nb[8]  = maille2nb[9] = maille2nb[10] = maille2nb[11] = maille2nb[7]
+    # QUAD
+    maille2nb[12] = 4
+    maille2nb[13] = maille2nb[14] = maille2nb[15] = maille2nb[16] = maille2nb[17] = maille2nb[12]
+    # TETRA
+    maille2nb[18] = 4
+    maille2nb[19] = maille2nb[18]
+    # PENTA
+    maille2nb[20] = 5
+    maille2nb[21] = maille2nb[20]
+    # PYRAM
+    maille2nb[22] = 5
+    maille2nb[23] = maille2nb[22]
+    # HEXA
+    maille2nb[24] = 6
+    maille2nb[25] = maille2nb[26] =  maille2nb[24]
+
+
     # dictionnaire de correspondance entre type_maille -> dimension
     maille2dim = {}
     # POI
@@ -485,6 +533,7 @@ class PARTITION:
 
     # On stocke les dictionnaires
     self.maille2aretes = maille2aretes
+    self.maille2nb     = maille2nb
     self.maille2dim    = maille2dim
 
     return
@@ -503,6 +552,11 @@ class PARTITION:
       ll.extend( _DIC_MA[type_maille][0:-1] )
     _LST_MA = N.array( ll ) - 1
 
+    if self.OPTIONS['INFO']>=5:
+      print '\n# ----- MODELE ----- #\n'
+      print '_LST_MA=',len(_LST_MA),_LST_MA
+      print '_DIC_MA=',len(_DIC_MA),_DIC_MA
+
     return _LST_MA
 
 
@@ -515,28 +569,38 @@ class PARTITION:
     # Si _LST_MA est renseigné on extrait la liste des TMA correspondante aux mailles de _LST_MA
     if _LST_MA != None:
       _LST_TMA = N.take(_LST_TMA,_LST_MA)
+    else:
+      _LST_MA = N.arange(len(_LST_TMA))
 
     _D_DIM_MAILLES = {}
 
     # Liste des mailles 3D (type maille de 18 à 26)
     _lst = N.where( _LST_TMA>=18, -3, _LST_TMA )
     _tmp = N.where( _lst==-3, -1, 0 )
-    _D_DIM_MAILLES[3] = N.nonzero( _tmp )
+#    _D_DIM_MAILLES[3] = N.nonzero( _tmp )
+    _D_DIM_MAILLES[3] = N.take(_LST_MA, N.nonzero( _tmp ) )
 
     # Liste des mailles 2D (type maille de 7 à 17)
     _lst = N.where( _lst>=7, -2, _lst )
     _tmp = N.where( _lst==-2, -1, 0 )
-    _D_DIM_MAILLES[2] = N.nonzero( _tmp )
+    _D_DIM_MAILLES[2] = N.take(_LST_MA, N.nonzero( _tmp ) )
 
     # Liste des mailles 1D (type maille de 2 à 6)
     _lst = N.where( _lst>=2, -1, _lst )
     _tmp = N.where( _lst==-1, -1, 0 )
-    _D_DIM_MAILLES[1] = N.nonzero( _tmp )
+    _D_DIM_MAILLES[1] = N.take(_LST_MA, N.nonzero( _tmp ) )
 
     # Liste des mailles 0D (type maille 1)
     _lst = N.where( _lst>=1, -4, _lst )
     _tmp = N.where( _lst==-4, -1, 0 )
-    _D_DIM_MAILLES[0] = N.nonzero( _tmp )
+    _D_DIM_MAILLES[0] = N.take(_LST_MA, N.nonzero( _tmp ) )
+
+
+    if self.OPTIONS['INFO']>=5:
+      for i in _D_DIM_MAILLES.keys():
+        print "-----------------"
+        print 'Dim:',i, _D_DIM_MAILLES[i]
+      print "-----------------"
 
     print "--- FIN Creation des listes de mailles par Dim : ", time.clock() - t0
 
@@ -551,6 +615,8 @@ class PARTITION:
 
     # Si _LST_OK n'est pas renseigné on prend toutes les mailles
     if not _LST_OK: _LST_OK = N.arange(len(self.MAILLAGE_Python.tm))
+
+    if self.OPTIONS['INFO']>=5: print '_LST_OK (ca)=',_LST_OK
 
     maille2aretes = self.maille2aretes
 
@@ -592,6 +658,15 @@ class PARTITION:
 #           except KeyError:
 #             self.MAILLAGE_Python.cia[ll]=[n]
 
+
+    if self.OPTIONS['INFO']>=5: 
+      for k in self.MAILLAGE_Python.cia.keys():
+        print 'cia:',k, '     ', self.MAILLAGE_Python.cia[k]
+      if OPTION:
+        for k in self.MAILLAGE_Python.ca.keys():
+          print 'ca: ',k, '     ', self.MAILLAGE_Python.ca[k]
+
+
     print "--- FIN Creation de la connectivite simple et inverse des aretes : ", time.clock() - t0
 
     return
@@ -613,29 +688,25 @@ class PARTITION:
       nommail = string.ljust(MAILLAGE.nom,8)
       _LST_MAI = aster.getvectjev(nommail.ljust(8)+'.NOMMAI')
 
-    # Le dico elem2nb donne le nombre de noeuds definissant un bord (lineaire)
-    elem2nb = {}
-    for i in range(1, ( len(self.maille2aretes.keys()) + 1 ) ):
-      elem2nb[i] = len(self.maille2aretes[i])
-
-    if self.OPTIONS['INFO']>=5:
-      for d in range( _DIM - 1  ):
-        print 'd=',d
-      try:
-        print self.MAILLAGE_Python.cia
-        print self.MAILLAGE_Python.cia.keys()
-      except: pass
+    # Le dico maille2nb donne le nombre de noeuds definissant un bord (lineaire)
+    maille2nb = self.maille2nb
 
 
-    # On cherche à marier les mailles de dimension N-1
+    # construction des listes des mailles de dim N-1 :
+    # _LST_OK :   Mailles de dim N-i qui ne sont pas un bord des mailles de dim N
+    # _LST_BD :   Mailles de dim N-i qui sont un bord
+    #
+    if self.OPTIONS['INFO']>=5: print '\nElimination des mailles de bord de DIM', _DIM - 1
+
     _LST4 = _D_DIM_MAILLES[ _DIM - 1 ]
     _LST_IND = N.arange( len(_LST4) ) + 1  # on ajoute 1 pour eviter le premier 0 dans les test nonzero plus bas
 
-    if self.OPTIONS['INFO']>=5: print '_LST4=',_LST4
+    if self.OPTIONS['INFO']>=5: print 'Mailles impactées=',_LST4
+
     i=0
     for m in _LST4:
       if self.OPTIONS['INFO']>=5: print '\nMaille de dim N-1:',m, ' Aster:',string.strip(_LST_MAI[m]), ' TMA:',self.MAILLAGE_Python.tm[m], ' CO:',self.MAILLAGE_Python.co[m], '(noeuds de cette maille)'
-      nb = elem2nb[ self.MAILLAGE_Python.tm[m] ]
+      nb = maille2nb[ self.MAILLAGE_Python.tm[m] ]
       ll = self.MAILLAGE_Python.co[m][0:nb]
       ll = N.sort(ll)
       ll = ll.tolist()
@@ -647,21 +718,14 @@ class PARTITION:
         _tmp=[]
         for maille in self.MAILLAGE_Python.cia[ ll ]:
           if self.OPTIONS['INFO']>=5: print 'Maille N:', maille, 'Aster:', string.strip(_LST_MAI[maille]), ' TMA:', self.MAILLAGE_Python.tm[maille]
-        self.liste_mailles_bord.append(m)
+#        self.liste_mailles_bord.append(m)
       except:
         if self.OPTIONS['INFO']>=5: print 'Maille non-bord'
         _LST_IND[i] = 0
 
       i+=1
 
-    print "--- FIN Maille de bords 1 : ", time.clock() - t0
-    t0 = time.clock()
-
-
-    # construction des listes des mailles de dim N-i :
-    # _LST_OK :   Mailles de dim N-i qui ne sont pas un bord des mailles de dim N
-    # _LST_BD :   Mailles de dim N-i qui sont un bord
-    #
+    # Recuperation des mailles de bords et non-bords
     _LST_BD = N.nonzero(_LST_IND)
     _LST_BD = N.take(_LST4,_LST_BD)
 
@@ -669,20 +733,30 @@ class PARTITION:
     _LST_OK = N.nonzero(_LST_OK)
     _LST_OK = N.take(_LST4,_LST_OK)
 
-    print "--- FIN Maille de bords 2 : ", time.clock() - t0
+    if self.OPTIONS['INFO']>=5: print '\nListe Maille de bords=',_LST_BD
+    if self.OPTIONS['INFO']>=5: print 'Liste Maille non-bords=',_LST_OK
+
+    print "--- FIN Maille de bords de DIM",_DIM - 1, " : ", time.clock() - t0
     t0 = time.clock()
 
 
     # On cherche à marier les mailles de dimension N-2, N-3
-    # Probablement pas optimal !
+    # Probablement pas optimal car on utilise la connectivité !
+
+#     if self.OPTIONS['INFO']>=5: 
+#       for k in self.MAILLAGE_Python.cia.keys():
+#         print 'cia:',k, '     ', self.MAILLAGE_Python.cia[k]
+#       for k in self.MAILLAGE_Python.ca.keys():
+#         print 'ca: ',k, '     ', self.MAILLAGE_Python.ca[k]
+
     _LST_BD0 = []
     _LST_OK0 = []
     for d in range(_DIM-1):
-      if self.OPTIONS['INFO']>=5: print 'dim=', d
       _LST4 = _D_DIM_MAILLES[ d ]
-      if self.OPTIONS['INFO']>=5: print _LST4
+      if self.OPTIONS['INFO']>=5: print '\nElimination des mailles de bord de DIM', d
+      if self.OPTIONS['INFO']>=5: print 'Mailles impactées=',_LST4
       for mai in _LST4:
-        if self.OPTIONS['INFO']>=5: print 'maille:', mai, 'co:', self.MAILLAGE_Python.co[mai]
+        if self.OPTIONS['INFO']>=5: print '\nmaille:', mai, 'co:', self.MAILLAGE_Python.co[mai]
         _tmp = self.MAILLAGE_Python.co[mai]
         ok=0
         for arete in self.MAILLAGE_Python.cia:
@@ -690,17 +764,29 @@ class PARTITION:
           for noe in _tmp:
             if noe in arete: _nb+=1
           if _nb == len(_tmp):
-            if self.OPTIONS['INFO']>=5: print 'OK:', _tmp, arete, self.MAILLAGE_Python.ca[arete]
+            try:
+              if self.OPTIONS['INFO']>=5: print 'OK:', _tmp, arete, self.MAILLAGE_Python.ca[arete]
+            except: pass
             _LST_BD0.append( mai )
             ok=1
             break
         if ok == 0:
           _LST_OK0.append( mai )
 
+      if self.OPTIONS['INFO']>=5: print '\nListe Maille de bords=',_LST_BD0
+      if self.OPTIONS['INFO']>=5: print 'Liste Maille non-bords=',_LST_OK0,'\n'
+
+      print '--- FIN Maille de bords de DIM', d, ' :',time.clock() - t0
+      t0 = time.clock()
+
+
     _LST_OK = N.concatenate( (_LST_OK, N.array(_LST_OK0)) )
     _LST_BD = N.concatenate( (_LST_BD, N.array(_LST_BD0)) )
 
-    print "--- FIN Maille de bords 3 : ", time.clock() - t0
+    if self.OPTIONS['INFO']>=5: print '\nTotal:\nListe Maille de bords=',_LST_BD
+    if self.OPTIONS['INFO']>=5: print 'Liste Maille non-bords=',_LST_OK,'\n'
+
+#    print "--- FIN Maille de bords 3 : ", time.clock() - t0
 
     return _LST_OK, _LST_BD
 
@@ -711,6 +797,10 @@ class PARTITION:
     """
     Affectation a un SD des mailles de bords (mailles incluses dans un bord d une autre maille)
     """
+
+    if self.OPTIONS['INFO']>=5:
+      print 'liste_mailles_bord=', self.liste_mailles_bord
+      print 'liste_sd_bord)', self.liste_sd_bord
 
     MAILLAGE = self.ASTER['MAILLAGE']
     _LST_TMA = self.MAILLAGE_Python.tm
@@ -723,41 +813,57 @@ class PARTITION:
 
     # Affectation des mailles de bords à chacun des SD
 
-    # Le dico elem2nb donne le nombre de noeud definissant un bord (lineaire)
-    elem2nb = {}
-    for i in range(1, 26):
-      try:
-        elem2nb[i] = len(self.maille2aretes[i])
-      except: pass
+    # Le dico maille2nb donne le nombre de noeuds definissant un bord (lineaire)
+    maille2nb = self.maille2nb
 
-    _LST4 = _LST_BD
     i = 0
-    for m in _LST4:
+    for m in _LST_BD:
       if self.OPTIONS['INFO']>=5: print '\nMaille de dim N-1:',m, ' Aster:',string.strip(_LST_MAI[m]), ' TMA:',self.MAILLAGE_Python.tm[m], ' CO:',self.MAILLAGE_Python.co[m], '(noeuds de cette maille)'
-      nb = elem2nb[ self.MAILLAGE_Python.tm[m] ]
+      nb = maille2nb[ self.MAILLAGE_Python.tm[m] ]
       ll = self.MAILLAGE_Python.co[m][0:nb]
       ll = N.sort(ll)
       ll = ll.tolist()
       ll = tuple(ll)
       if self.OPTIONS['INFO']>=5: print 'Bord (lineaire)', ll, nb
-      if self.OPTIONS['INFO']>=5: print 'CIA=', self.MAILLAGE_Python.cia[ ll ], '(mailles de dim N qui ont cette maille pour bord)'
-      _tmp=[]
-      for maille in self.MAILLAGE_Python.cia[ ll ]:
-        if self.OPTIONS['INFO']>=5: print 'Maille N+1:', maille, 'Aster:', string.strip(_LST_MAI[maille]), ' SD:', self.liste_sd[maille], ' TMA:', self.MAILLAGE_Python.tm[maille]
-        _tmp.append( self.liste_sd[maille] )
-      _tmp.sort()
+
+      # Cas particulier des POI
+      if (nb==1):
+        _tmp=[]
+        for arete in self.MAILLAGE_Python.cia.keys():
+          if ll[0] in arete:
+            if self.OPTIONS['INFO']>=5: print "arete=", arete
+            for maille in self.MAILLAGE_Python.cia[ arete ]:
+              if self.OPTIONS['INFO']>=5: print "maille=", maille
+              _tmp.append( self.liste_sd[maille] )
+
+      # Autres mailles de bord
+      else:
+        if self.OPTIONS['INFO']>=5: print 'CIA=', self.MAILLAGE_Python.cia[ ll ], '(mailles de dim N qui ont cette maille pour bord)'
+        _tmp=[]
+        for maille in self.MAILLAGE_Python.cia[ ll ]:
+          if self.OPTIONS['INFO']>=5: print 'Maille N:', maille, 'Aster:', string.strip(_LST_MAI[maille]), ' SD:', self.liste_sd[maille], ' TMA:', self.MAILLAGE_Python.tm[maille]
+          _tmp.append( self.liste_sd[maille] )
+        _tmp.sort()
+
       if self.OPTIONS['INFO']>=5: print '---> Maille:',m,'integree au SD:', _tmp[0]
 
       self.liste_mailles_bord.append(m)
       self.liste_sd_bord.append( _tmp[0] )
       i += 1
 
+    if self.OPTIONS['INFO']>=5:
+      print 'liste_mailles_bord=', self.liste_mailles_bord
+      print 'liste_sd_bord)', self.liste_sd_bord
+
+
     print "--- FIN Affectation des mailles de bords : ", time.clock() - t0
 
     return
 
 
-  def Creation_Graphe(self, _DIM):
+# ---------------------------------------------------------------------------- #
+
+  def Creation_Graphe(self):
 
     t0 = time.clock()
 
@@ -773,10 +879,14 @@ class PARTITION:
       _tmp.remove(mai)
       self.GRAPH[mai] = _tmp
 
+      if self.OPTIONS['INFO']>=5: print 'self.GRAPH['+str(mai)+']=', self.GRAPH[mai]
+
     print "--- FIN Creation du graphe complet : ", time.clock() - t0
 
     return
 
+
+# ---------------------------------------------------------------------------- #
 
   def Reduction_Graphe(self, _DIM):
 
@@ -831,8 +941,6 @@ class PARTITION:
         _v = i
         _nb += 1
 
-    print "--- FIN Calcul du nombre d aretes : ", time.clock() - t0
-
 
     if self.OPTIONS['INFO']>=5:
       print '----------------------------------------------'
@@ -854,13 +962,12 @@ class PARTITION:
     for i in N.arange(len(self.liste_mailles)):
       _D_CORRES[ self.liste_mailles[i] ] = i
 
-    # Ecriture du fichier fort.66 pour metis
+    # Ecriture du fichier fort.UL pour metis
     fw = open(f_metis,'w')
     fw.write( str(len(self.liste_mailles)) + ' ' +  str(_nb) + '\n')
     for l in self.liste_mailles:
 #      try:
         _tmp = []
-        if self.OPTIONS['INFO']>=5: print self.GRAPH[l]
         for t in self.GRAPH[l]:
           try:
             t = _D_CORRES[t]
@@ -887,7 +994,7 @@ class PARTITION:
     try:
       f = open( fichier, 'r' )
     except:
-      print 'ERREUR: le fichier est introuvable! Le partitionneur ne s est probablement pas lancé'
+      print "\n\n          ERREUR: le fichier est introuvable! Le partitionneur \n          ne s'est probablement pas lancé.\n\n"
       sys.exit(1)
     else:
       _tmp = []
@@ -898,6 +1005,8 @@ class PARTITION:
 
       # Pour garder le fichier metis
       os.system( 'mv ' + fichier + ' REPE_OUT/' )
+
+      if self.OPTIONS['INFO']>=5: print '_l_domaines=',_l_domaines
   
       print "--- FIN Lecture du fichier produit par metis : ", time.clock() - t0
 
@@ -978,7 +1087,7 @@ class PARTITION:
     for i in range(NB_PART):
       d_gma_bord[i] = []
 
-    # On inclus directement les mailles de bords dans les SD0
+    # On inclus directement les mailles de bords dans les SD
     if INCLUSE=='OUI':
       m=0
       for sdd in self.liste_sd_bord:
@@ -999,28 +1108,31 @@ class PARTITION:
     # Creation et lancement de la commande DEFI_GROUP associée
     try:
       DEFI_GROUP = self.jdc.get_cmd('DEFI_GROUP')
-
-      _tmp  = []
-      _l_sd = []
-      _l_bord = []
-      for i in range(NB_PART):
-        if d_gma[i] != []:
-          _tmp.append( {'MAILLE': d_gma[i],'NOM': NOM + str(i)} )
-          _l_sd.append( NOM + str(i) )
-        if d_gma_bord[i] != []:
-          _tmp.append( {'MAILLE': d_gma_bord[i],'NOM': NOM2 + str(i)} )
-          _l_bord.append( NOM2 + str(i) )
-
-      motscle2= {'CREA_GROUP_MA': _tmp }
-
-      DEFI_GROUP( reuse=MAILLAGE,
-                  MAILLAGE=MAILLAGE,
-                  INFO=1,
-                  **motscle2
-                 ) ;
-
     except:
-      print "ERREUR : il faut lancer ce programme depuis Aster pour pouvoir générer les groupes de mailles Aster."
+      try:
+        from Cata.cata import DEFI_GROUP
+      except:
+        print "\n\nERREUR : il faut lancer ce programme depuis Aster pour pouvoir \ngénérer les groupes de mailles Aster.\n\n"
+        return
+
+    _tmp  = []
+    _l_sd = []
+    _l_bord = []
+    for i in range(NB_PART):
+      if d_gma[i] != []:
+        _tmp.append( {'MAILLE': d_gma[i],'NOM': NOM + str(i)} )
+        _l_sd.append( NOM + str(i) )
+      if d_gma_bord[i] != []:
+        _tmp.append( {'MAILLE': d_gma_bord[i],'NOM': NOM2 + str(i)} )
+        _l_bord.append( NOM2 + str(i) )
+
+    motscle2= {'CREA_GROUP_MA': _tmp }
+
+    DEFI_GROUP( reuse=MAILLAGE,
+                MAILLAGE=MAILLAGE,
+                INFO=1,
+                **motscle2
+               ) ;
 
     # Stockage
     self.ASTER['DICO_SD_MAILLES'] = d_gma

@@ -1,5 +1,5 @@
 
-# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 15/11/2004   AUTEUR MCOURTOI M.COURTOIS 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE TP THERMOPLASTICITE : TUBE SOUMIS A UN CHOC FROID
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -188,17 +188,18 @@ TN8R2=RECU_FONCTION(RESULTAT=TEMPE2,
                     NOEUD='N8',
                     TITRE='T=f(t) NOEUD N8 MILIEU BAS AXIS_DIAG',);
 
-IMPR_COURBE(UNITE=25,
-            FORMAT='AGRAF',
-            COURBE=(_F(FONCTION=TN8R1,),
-                    _F(FONCTION=TN8R2,),
-                    _F(FONCTION=TP1R3,),),);
+IMPR_FONCTION(UNITE=29,
+              FORMAT='XMGRACE',
+              COURBE=(_F(FONCTION=TN8R1,),
+                      _F(FONCTION=TN8R2,),
+                      _F(FONCTION=TP1R3,),),);
 
-IMPR_COURBE(UNITE=24,
-            FORMAT='POSTSCRIPT',
-            COURBE=(_F(FONCTION=TN8R1,),
-                    _F(FONCTION=TN8R2,),
-                    _F(FONCTION=TP1R3,),),);
+IMPR_FONCTION(UNITE=30,
+              FORMAT='XMGRACE',
+              PILOTE='POSTSCRIPT',
+              COURBE=(_F(FONCTION=TN8R1,),
+                      _F(FONCTION=TN8R2,),
+                      _F(FONCTION=TP1R3,),),);
 
 IMPR_RESU(MODELE=MOTHER,FORMAT='CASTEM',
           RESU=_F(MAILLAGE=MA,
@@ -226,23 +227,12 @@ T2LBAS=POST_RELEVE_T(ACTION=_F(INTITULE='TEMP',
                                OPERATION='EXTRACTION',),
                      TITRE='TEMPERATURES EN BAS A 4 S DIAG',);
 
-IMPR_COURBE(UNITE=25,
-            FORMAT='AGRAF',
-            COURBE=(_F(TABLE=T1LBAS,
-                       PARA_X='ABSC_CURV',
-                       PARA_Y='TEMP',),
-                    _F(TABLE=T2LBAS,
-                       PARA_X='ABSC_CURV',
-                       PARA_Y='TEMP',),),);
-#
-IMPR_COURBE(UNITE=24,
-            FORMAT='POSTSCRIPT',
-            COURBE=(_F(TABLE=T1LBAS,
-                       PARA_X='ABSC_CURV',
-                       PARA_Y='TEMP',),
-                    _F(TABLE=T2LBAS,
-                       PARA_X='ABSC_CURV',
-                       PARA_Y='TEMP',),),);
+IMPR_TABLE(FORMAT='AGRAF',
+           TABLE=T1LBAS,
+           NOM_PARA=('ABSC_CURV','TEMP',),)
+IMPR_TABLE(FORMAT='AGRAF',
+           TABLE=T2LBAS,
+           NOM_PARA=('ABSC_CURV','TEMP',),)
 #
 # PREMIER CALCUL MECANIQUE : LE HAUT EST LIBRE
 # MAIS LES CONTRAINTES NE SONT PAS NULLES

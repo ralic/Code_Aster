@@ -1,5 +1,5 @@
 
-# MODIF  DATE 24/05/2004   AUTEUR GALENNE E.GALENNE 
+# MODIF  DATE 15/11/2004   AUTEUR DURAND C.DURAND 
 # TITRE FISSURE INCLINEE DANS UNE PLAQUE ILLIMITEE . METHODE ARLEQUIN
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -30,14 +30,19 @@ PRE_GIBI();
 
 MA=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='OUI'),);
 
+MA=MODI_MAILLAGE( reuse=MA,   MAILLAGE=MA,
+                  MODI_MAILLE=_F( OPTION = 'NOEUD_QUART',
+                                  GROUP_NO_FOND = 'P0'),
+                  INFO=2
+                      )
+
 MO=AFFE_MODELE(MAILLAGE=MA,
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
                        MODELISATION='C_PLAN',),);
 
 MAT=DEFI_MATERIAU(ELAS=_F(E=2.E11,
-                          NU=0.29999999999999999,
-                          RHO=1.0,
+                          NU=0.3,
                           ALPHA=0.0,),);
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
@@ -45,20 +50,21 @@ CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
                             MATER=MAT,),);
 
 BL=AFFE_CHAR_MECA(MODELE=MO,
-                  DDL_IMPO=(_F(GROUP_MA='LL5',
+                  DDL_IMPO=(_F(GROUP_MA='L34',
                                DY=0.0,),
                             _F(GROUP_NO='PS4',
                                DX=0.0,),),);
 
 CH=AFFE_CHAR_MECA(MODELE=MO,
-                  FORCE_CONTOUR=_F(GROUP_MA='LL2',
+                  FORCE_CONTOUR=_F(GROUP_MA='L12',
                                    FY=1.E8,),);
 
 AR=AFFE_CHAR_MECA(MODELE=MO,
                   ARLEQUIN=_F(GROUP_MA_1=('COUR','FISS'),
                               GROUP_MA_2='PLAQ',
                               GROUP_MA_COLL='COUR',
-                              POIDS_1=0.99999000000000005,),);
+                              COLLAGE='GROUP_MA_1',
+                              POIDS_1=0.99999,),);
 
 LINST=DEFI_LIST_REEL(DEBUT=0.0,
                      INTERVALLE=_F(JUSQU_A=1.0,
@@ -80,14 +86,14 @@ DEPL=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
 
 FOND1=DEFI_FOND_FISS(MAILLAGE=MA,
                      FOND_FISS=_F(GROUP_NO='P0',),
-                     NORMALE=(-0.6018,0.79859999999999998,0.0),);
+                     NORMALE=(-0.6018,0.7986,0.0),);
 
 THETA01=CALC_THETA(MODELE=MO,
-                   DIRECTION=(0.79859999999999998,0.6018,0.0),
+                   DIRECTION=(0.7986,0.6018,0.0),
                    THETA_2D=_F(GROUP_NO='P0',
                                MODULE=1.0,
-                               R_INF=1.8749999999999998E-05,
-                               R_SUP=7.4999999999999993E-05,),);
+                               R_INF=1.875E-05,
+                               R_SUP=7.5E-05,),);
 
 G01=CALC_G_THETA_T(MODELE=MO,
                    CHAM_MATER=CHMAT,
@@ -135,19 +141,19 @@ TABL_K=POST_K1_K2_K3(MODELISATION='C_PLAN',
                      MATER=MAT,
                      TABL_DEPL_SUP=DEPH,
                      TABL_DEPL_INF=DEPB,
-                     ABSC_CURV_MAXI=7.5099999999999996E-05,
+                     ABSC_CURV_MAXI=7.51E-05,
                      INST=1.0,
                      VECT_K1=(0.0,1.0,0.0),);
 
 TEST_TABLE(TABLE=GK01,
            NOM_PARA='K1',
-           VALE=3.5749680869999998E6,
+           VALE=3.574968087E6,
            PRECISION=1.E-2,
            REFERENCE='AUTRE_ASTER',);
 
 TEST_TABLE(TABLE=GK01,
            NOM_PARA='K2',
-           VALE=2.6939316809999999E6,
+           VALE=2.693931681E6,
            PRECISION=1.E-2,
            REFERENCE='AUTRE_ASTER',);
 
@@ -161,32 +167,32 @@ TEST_TABLE(TABLE=TABL_K,
            FILTRE=_F(NOM_PARA='METHODE',
                      VALE_I=1,),
            NOM_PARA='K1_MAX',
-           VALE=3.5749680869999998E6,
-           PRECISION=0.015,
+           VALE=3.574968087E6,
+           PRECISION=1.E-2,
            REFERENCE='AUTRE_ASTER',);
 
 TEST_TABLE(TABLE=TABL_K,
            FILTRE=_F(NOM_PARA='METHODE',
                      VALE_I=1,),
            NOM_PARA='K1_MIN',
-           VALE=3.5749680869999998E6,
-           PRECISION=0.15,
+           VALE=3.574968087E6,
+           PRECISION=1.5E-2,
            REFERENCE='AUTRE_ASTER',);
 
 TEST_TABLE(TABLE=TABL_K,
            FILTRE=_F(NOM_PARA='METHODE',
                      VALE_I=1,),
            NOM_PARA='K2_MAX',
-           VALE=2.6939316809999999E6,
-           PRECISION=0.035,
+           VALE=2.693931681E6,
+           PRECISION=1.E-2,
            REFERENCE='AUTRE_ASTER',);
 
 TEST_TABLE(TABLE=TABL_K,
            FILTRE=_F(NOM_PARA='METHODE',
                      VALE_I=1,),
            NOM_PARA='K2_MIN',
-           VALE=2.6939316809999999E6,
-           PRECISION=0.35,
+           VALE=2.693931681E6,
+           PRECISION=1.E-2,
            REFERENCE='AUTRE_ASTER',);
 
 TEST_TABLE(TABLE=TABL_K,
@@ -194,7 +200,7 @@ TEST_TABLE(TABLE=TABL_K,
                      VALE_I=1,),
            NOM_PARA='G_MAX',
            VALE=100.1883,
-           PRECISION=0.05,
+           PRECISION=1.E-2,
            REFERENCE='AUTRE_ASTER',);
 
 TEST_TABLE(TABLE=TABL_K,
@@ -202,39 +208,39 @@ TEST_TABLE(TABLE=TABL_K,
                      VALE_I=1,),
            NOM_PARA='G_MIN',
            VALE=100.1883,
-           PRECISION=0.35,
+           PRECISION=1.E-2,
            REFERENCE='AUTRE_ASTER',);
 
 TEST_TABLE(TABLE=TABL_K,
            FILTRE=_F(NOM_PARA='METHODE',
                      VALE_I=2,),
            NOM_PARA='K1_MAX',
-           VALE=3.5749680869999998E6,
-           PRECISION=0.025,
+           VALE=3.574968087E6,
+           PRECISION=1.5E-2,
            REFERENCE='AUTRE_ASTER',);
 
 TEST_TABLE(TABLE=TABL_K,
            FILTRE=_F(NOM_PARA='METHODE',
                      VALE_I=2,),
            NOM_PARA='K1_MIN',
-           VALE=3.5749680869999998E6,
-           PRECISION=0.075,
+           VALE=3.574968087E6,
+           PRECISION=3.E-2,
            REFERENCE='AUTRE_ASTER',);
 
 TEST_TABLE(TABLE=TABL_K,
            FILTRE=_F(NOM_PARA='METHODE',
                      VALE_I=2,),
            NOM_PARA='K2_MAX',
-           VALE=2.6939316809999999E6,
-           PRECISION=0.038,
+           VALE=2.693931681E6,
+           PRECISION=1.E-2,
            REFERENCE='AUTRE_ASTER',);
 
 TEST_TABLE(TABLE=TABL_K,
            FILTRE=_F(NOM_PARA='METHODE',
                      VALE_I=2,),
            NOM_PARA='K2_MIN',
-           VALE=2.6939316809999999E6,
-           PRECISION=0.18,
+           VALE=2.693931681E6,
+           PRECISION=1.5E-2,
            REFERENCE='AUTRE_ASTER',);
 
 TEST_TABLE(TABLE=TABL_K,
@@ -242,7 +248,7 @@ TEST_TABLE(TABLE=TABL_K,
                      VALE_I=2,),
            NOM_PARA='G_MAX',
            VALE=100.1883,
-           PRECISION=0.06,
+           PRECISION=1.E-2,
            REFERENCE='AUTRE_ASTER',);
 
 TEST_TABLE(TABLE=TABL_K,
@@ -250,7 +256,7 @@ TEST_TABLE(TABLE=TABL_K,
                      VALE_I=2,),
            NOM_PARA='G_MIN',
            VALE=100.1883,
-           PRECISION=0.25,
+           PRECISION=5.E-2,
            REFERENCE='AUTRE_ASTER',);
 
 FIN();

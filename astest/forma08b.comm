@@ -1,4 +1,4 @@
-# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 15/11/2004   AUTEUR MCOURTOI M.COURTOIS 
 # RESPONSABLE sellali N.SELLALI
 # TITRE CORRIGE DU TP3D DE LA FORMATION POST TRAITEMENT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -243,35 +243,17 @@ SIGSUP=POST_RELEVE_T(ACTION=_F(INTITULE='GENE_SUP',
 #
 TITRE='LE LONG DE GEN_SUP';
 
-IMPR_COURBE(UNITE=25,
-            FORMAT='AGRAF',
-            TITRE_GRAPHIQUE=TITRE,
-            LEGENDE_X='ABSCISSE [M]',
-            COURBE=_F(TABLE=DEPSUP,
-                      PARA_X='ABSC_CURV',
-                      PARA_Y='DY',
-                      LEGENDE='DY SUR GENERATRICE SUP',
-                      COULEUR='BLEU',
-                      MARQUEUR='CARRE',),);
+IMPR_TABLE(UNITE=25,
+           FORMAT='AGRAF',
+           TITRE=TITRE,
+           TABLE=DEPSUP,
+           NOM_PARA=('ABSC_CURV','DY',),)
 
-IMPR_COURBE(UNITE=25,
-            FORMAT='AGRAF',
-            TITRE_GRAPHIQUE=TITRE,
-            LEGENDE_X='ABSCISSE [M]',
-            COURBE=_F(TABLE=SIGSUP,
-                      PARA_X='ABSC_CURV',
-                      PARA_Y='SIXX',
-                      LEGENDE='SIXX SUR GENERATRICE SUP',
-                      COULEUR='ROUGE',
-                      MARQUEUR='PLUS',),);
-
-IMPR_COURBE(UNITE=24,
-            FORMAT='POSTSCRIPT',
-            TITRE=TITRE,
-            COURBE=_F(TABLE=SIGSUP,
-                      PARA_X='ABSC_CURV',
-                      PARA_Y='SIXX',
-                      LEGENDE='SIXX SUR GENERATRICE SUP',),);
+IMPR_TABLE(UNITE=25,
+           FORMAT='AGRAF',
+           TITRE=TITRE,
+           TABLE=SIGSUP,
+           NOM_PARA=('ABSC_CURV','SIXX',),)
 
 #
 # 3.2. IMPRESSION DES CONTRAINTES SUR DES SEGMENTS 

@@ -1,5 +1,5 @@
 
-# MODIF  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 15/11/2004   AUTEUR MCOURTOI M.COURTOIS 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE POUTRE ENCASTREE A UNE EXTREMITE ET CHARGEE PAR UNE TRACTION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -184,7 +184,7 @@ RDXB=RECU_FONCTION(RESULTAT=REST,
                     GROUP_NO='B',);
 
 
-IMPR_COURBE(COURBE=_F(FONC_Y=RDXB,FONC_X=DXB,),)
+IMPR_FONCTION(COURBE=_F(FONC_Y=RDXB,FONC_X=DXB,),)
 
 # TEST PAR RAPPORT A LA SOLUTION ANALYTIQUE
 #
@@ -347,7 +347,7 @@ RDRZB=RECU_FONCTION(RESULTAT=RESM,
                     GROUP_NO='B',);
 
 
-IMPR_COURBE(COURBE=_F(FONC_Y=RDRZB,FONC_X=DRZB,),)
+IMPR_FONCTION(COURBE=_F(FONC_Y=RDRZB,FONC_X=DRZB,),)
 
 CAa = FORMULE(NOM_PARA='DRZ',VALE='''
 ME*2*DRZ/pi/RE*(asin(RE/DRZ)+RE/DRZ*(1-(RE/DRZ)**2)**(0.5))''');
@@ -361,21 +361,20 @@ CA=CALC_FONC_INTERP(        FONCTION=CAa,    LIST_PARA=LI1,
                             PROL_GAUCHE='CONSTANT',  PROL_DROITE='CONSTANT',
                             INTERPOL='LIN', 
                             TITRE=' FONCTION ANALYTIQUE '    )
-IMPR_COURBE(UNITE=8,
+IMPR_FONCTION(UNITE=25, UNITE_DIGR=26,
             FORMAT='AGRAF',
-            TITRE_GRAPHIQUE='TUYAU EN FLEXION. COURBE MOMENT ROTATION',
+            TITRE='TUYAU EN FLEXION. COURBE MOMENT ROTATION',
             LEGENDE_X='ROTATION IMPOSEE',
             LEGENDE_Y='MOMENT',
             COURBE=(_F(FONC_X=DRZB,
                        FONC_Y=RDRZB,
                        LEGENDE='ELEMENTS COQUE 9 NOEUDS',
-                       STYLE='LIGNE',
-                       COULEUR='ROUGE',
-                       MARQUEUR='CERCLE',),
+                       COULEUR=1,
+                       MARQUEUR=1,),
                     _F(FONCTION=CA,
                        LEGENDE='ANALYTIQUE',
-                       COULEUR='BLEU',
-                       MARQUEUR='CARRE',),),);
+                       COULEUR=3,
+                       MARQUEUR=3,),),);
 
 FIN();
 #

@@ -7,7 +7,7 @@
      &                  DIAG,ARETE,NOEUD,DEBORD)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/10/2004   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 16/11/2004   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -131,7 +131,7 @@ C
       REAL*8       OLDJ(4),NEWJ(4),COORM(12),NORMAL(12),COEFFI(12)
       REAL*8       R8GAEM,TANGEN(24),KSI1,KSI2,JEUMIN
       REAL*8       AM(3), AB(3), BC(3), AD(3), DC(3)
-      REAL*8       LAB, LBC, LAD, LDC
+      REAL*8       LAB, LBC, LAD, LDC,ECAN
       REAL*8       DEBEN(4)
       REAL*8       OUTSID(2)
       INTEGER      ARETT1(3)
@@ -294,51 +294,81 @@ C
           IF ((OLDJ(K).LE.JEUMIN).AND.
      &        (ABS(OLDJ(K)-JEUMIN).GT.1D-15)) THEN
 
+
            KMIN = K
 C
-C   GESTION DES CONFLITS D'ARETES
+C   GESTION DES CONFLITS EN CAS DE PROJECTION SUR DIAGONALES
 C
            IF ((KMIN.EQ.1).AND.DIAG(1).EQ.1) THEN
              IF (OLDJ(3).LT.OLDJ(4)) THEN
-               IF (OLDJ(3).LE.OLDJ(1)) THEN
+               ECAN = ABS((OLDJ(3)-OLDJ(1)))
+               IF (ECAN.LE.1D-15) THEN
                  KMIN = 3
+               ELSE
+                 KMIN = 1
                ENDIF
              ELSE
-               IF (OLDJ(4).LE.OLDJ(1)) THEN
+               ECAN = ABS((OLDJ(4)-OLDJ(1)))
+               IF (ECAN.LE.1D-15) THEN
                  KMIN = 4
+               ELSE
+                 KMIN = 1
                ENDIF
              ENDIF
            ENDIF
+
            IF ((KMIN.EQ.2).AND.DIAG(1).EQ.1) THEN
              IF (OLDJ(3).LT.OLDJ(4)) THEN
-               IF (OLDJ(3).LE.OLDJ(2)) THEN
+               ECAN = ABS((OLDJ(3)-OLDJ(2)))
+               IF (ECAN.LE.1D-15) THEN
+                 KMIN = 3
+               ELSE
+                 KMIN = 2
+               ENDIF
+             ELSE
+               ECAN = ABS((OLDJ(4)-OLDJ(2)))
+               IF (ECAN.LE.1D-15) THEN
+                 KMIN = 4
+               ELSE
+                 KMIN = 2
+               ENDIF
+             ENDIF
+           ENDIF
+
+
+           IF ((KMIN.EQ.3).AND.DIAG(2).EQ.1) THEN
+             IF (OLDJ(1).LT.OLDJ(2)) THEN
+               ECAN = ABS((OLDJ(1)-OLDJ(3)))
+               IF (ECAN.LE.1D-15) THEN
+                 KMIN = 1
+               ELSE
                  KMIN = 3
                ENDIF
              ELSE
-               IF (OLDJ(4).LE.OLDJ(2)) THEN
-                 KMIN = 4
-               ENDIF
-             ENDIF
-           ENDIF
-           IF ((KMIN.EQ.3).AND.DIAG(2).EQ.1) THEN
-             IF (OLDJ(1).LT.OLDJ(2)) THEN
-               IF (OLDJ(1).LE.OLDJ(3)) THEN
-                 KMIN = 1
-               ENDIF
-             ELSE
-               IF (OLDJ(2).LE.OLDJ(3)) THEN
+               ECAN = ABS((OLDJ(2)-OLDJ(3)))
+               IF (ECAN.LE.1D-15) THEN
                  KMIN = 2
+               ELSE
+                 KMIN = 3
                ENDIF
              ENDIF
            ENDIF
+
+
            IF ((KMIN.EQ.4).AND.DIAG(2).EQ.1) THEN
              IF (OLDJ(1).LT.OLDJ(2)) THEN
-               IF (OLDJ(1).LE.OLDJ(4)) THEN
+               ECAN = ABS((OLDJ(1)-OLDJ(4)))
+               IF (ECAN.LE.1D-15) THEN
                  KMIN = 1
+               ELSE
+                 KMIN = 4
                ENDIF
              ELSE
-               IF (OLDJ(2).LE.OLDJ(4)) THEN
+               ECAN = ABS((OLDJ(2)-OLDJ(4)))
+               IF (ECAN.LE.1D-15) THEN
                  KMIN = 2
+               ELSE
+                 KMIN = 4
                ENDIF
              ENDIF
            ENDIF
@@ -346,7 +376,6 @@ C
            IF ((DIAG(1).EQ.1).AND.(DIAG(2).EQ.1)) THEN
              KMIN = 1
            ENDIF
-
            JEUMIN = OLDJ(KMIN)
           END IF
  20     CONTINUE
@@ -513,7 +542,10 @@ C --- VERIFICATIONS DES PROJECTIONS SUR ARETES ET NOEUDS
      &               ARETE,NOEUD)
       ENDIF
 
+
  999  CONTINUE
+
+
 
 
       END

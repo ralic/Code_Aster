@@ -3,7 +3,7 @@
      &                  LLF,LLF1,LLF2)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 02/11/2004   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 16/11/2004   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -251,7 +251,7 @@ C ======================================================================
              CALL CFTABL(INDIC,NBLIAC,AJLIAI,SPLIAI,
      +             LLF,LLF1,LLF2,RESOCO,TYPESP,POSIT,LIAISO,TYPLIA)
              IF (NIV.GE.2) THEN
-              CALL CFIMP2(IFM,NOMA,LIAISO,TYPLIA,TYPESP,'ADH',0.D0,
+              CALL CFIMP2(IFM,NOMA,LIAISO,TYPLIA,TYPESP,'GLI',0.D0,
      &                    JAPPAR,JNOCO,JMACO)
              ENDIF
  60       CONTINUE
@@ -321,7 +321,7 @@ C ======================================================================
                CALL CFTABL(INDIC,NBLIAC,AJLIAI,SPLIAI,
      +                  LLF,LLF1,LLF2,RESOCO,TYPESP,POSIT,LIAISO,TYPLIA)
                IF (NIV.GE.2) THEN
-                CALL CFIMP2(IFM,NOMA,LIAISO,'F3',TYPESP,'ADH',0.D0,
+                CALL CFIMP2(IFM,NOMA,LIAISO,'F3',TYPESP,'GLI',0.D0,
      &                      JAPPAR,JNOCO,JMACO)
                ENDIF
  160    CONTINUE

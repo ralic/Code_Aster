@@ -1,6 +1,6 @@
       SUBROUTINE JXVERI ( CUNIT , CMESS )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 16/03/2003   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF JEVEUX  DATE 15/11/2004   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -36,6 +36,8 @@ C ----------------------------------------------------------------------
 C ----------------------------------------------------------------------
       INTEGER          ISSTAT
       COMMON /ICONJE/  ISSTAT
+      INTEGER          ISTAT
+      COMMON /ISTAJE/  ISTAT(4)
       PARAMETER  ( N = 5 )
       CHARACTER*1      GENR    , TYPE
       CHARACTER*4      DOCU
@@ -56,13 +58,13 @@ C DEB ------------------------------------------------------------------
  10     CONTINUE
         IS = ISZON ( JISZON + ID )
         IF ( IS .NE. 0 ) THEN
-          ISD  = ISZON(JISZON + ID + 3) / ISSTAT
+          ISD  = ISZON(JISZON + ID + 3)
           IDOS = ISZON(JISZON + ID + 2)
-          ISF  = ISZON(JISZON + IS - 4) / ISSTAT
+          ISF  = ISZON(JISZON + IS - 4)
           ICL  = ISZON(JISZON + IS - 2)
           IDCO = ISZON(JISZON + IS - 3)
           NOM32 = ' '
-          IF ( ISF .NE. 1 .AND. IDOS .NE. 0 ) THEN
+          IF ( ISF .NE. ISTAT(1) .AND. IDOS .NE. 0 ) THEN
              IF ( IDCO .EQ. 0 ) THEN
                 NOM32 = RNOM(JRNOM(ICL)+IDOS)
              ELSE
@@ -70,13 +72,14 @@ C DEB ------------------------------------------------------------------
                 WRITE ( NOM32(25:32) , '(I8)') IDOS
              ENDIF
           ENDIF
-          IF ( ISD .EQ. 1 .AND. ISF .EQ. 1 ) THEN
+          IF ( ISD .EQ. ISTAT(1) .AND. ISF .EQ. ISTAT(1) ) THEN
             NOM32 = '<<<<    ZONE LIBRE          >>>>'
           ENDIF
-          IF ( (ISD.LT.1.OR.ISD.GT.2) ) THEN
+          IF ( (ISD.LT.ISTAT(1).OR.ISD.GT.ISTAT(2)) ) THEN
             CALL JVMESS ('F','JXVERI01',' ECRASEMENT AMONT, L''OBJET :<'
      &                  //NOM32//'> EST PEUT ETRE ECRASE' )
-          ELSE IF ( (ISF.NE.1).AND.(ISF.LT.3 .OR. ISF.GT.4)) THEN
+          ELSE IF ( (ISF.NE.ISTAT(1)).AND.(ISF.LT.ISTAT(3)
+     &        .OR. ISF.GT.ISTAT(4))) THEN
             CALL JVMESS ('F','JXVERI02',' ECRASEMENT AVAL, L''OBJET :<'
      &                  //NOM32//'> EST PEUT ETRE ECRASE' )
           ENDIF

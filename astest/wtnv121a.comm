@@ -1,4 +1,4 @@
-# MODIF  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 15/11/2004   AUTEUR ROMEO R.FERNANDES 
 # RESPONSABLE JOUMANA J.EL-GHARIB
 # TITRE MOUILLAGE D'UNE COLONNE EN BETON AVEC LOI D'ENDOMMMAGEMENT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -38,7 +38,7 @@ L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                                   NOMBRE = 10),
 #1 AN
                                  _F(JUSQU_A=31536.E3,
-                                    NOMBRE=20,),
+                                    NOMBRE=10,),
                                 ),
                                  );
 PRE_GIBI()
@@ -56,24 +56,17 @@ MO=AFFE_MODELE(
                 AFFE=_F(
                TOUT='OUI',
                PHENOMENE = 'MECANIQUE',
-               MODELISATION = '3D_HHM')
+               MODELISATION = '3D_HHMD')
              )
 
 #
 # PROPRIETES DU MATERIAU
 #
-
-BIDON=DEFI_CONSTANTE(VALE=1.)
-UN=DEFI_CONSTANTE(VALE=1.)
-ZERO=DEFI_CONSTANTE(VALE=0.)
-
-LAMBLIQ=DEFI_CONSTANTE(VALE=0.6,);
-LAMBGAZ=DEFI_CONSTANTE(VALE=0.03,);
-LAMBMAT=DEFI_CONSTANTE(VALE=2.55,);
 VISCOLIQ=DEFI_CONSTANTE(VALE=1.E-3)
 VISCOGAZ=DEFI_CONSTANTE(VALE=1.8E-5)
 DVISCOL=DEFI_CONSTANTE(VALE=0.)
 DVISCOG=DEFI_CONSTANTE(VALE=0.)
+ZERO=DEFI_CONSTANTE(VALE=0.)
 
 # PERMEABILITE INTRINSEQUE AU MATERIAU
 
@@ -84,11 +77,11 @@ LI3=DEFI_LIST_REEL(DEBUT=0.0,
 EN = FORMULE(NOM_PARA='ENDO',VALE='(1.e-13*(1.+1.e6*ENDO**3))')
 
 KENDO=CALC_FONC_INTERP(FONCTION=EN,
-                      LIST_PARA=LI3,
+                       LIST_PARA=LI3,
                        NOM_PARA='ENDO',
-                      PROL_DROITE='CONSTANT',
-                      PROL_GAUCHE='CONSTANT',
-                      INFO=2,);
+                       PROL_DROITE='CONSTANT',
+                       PROL_GAUCHE='CONSTANT',
+                       INFO=2,);
 
 ####  FONCTION SATURATION ET SA DERIVEE : UNITE DE PRESSION : PA
 LI2=DEFI_LIST_REEL(DEBUT=0.0,
@@ -99,7 +92,7 @@ SL = FORMULE(NOM_PARA='PCAP',VALE='(1.+(PCAP*2.1433E-8)**1.825)**(-0.57609)')
 
 SATU=CALC_FONC_INTERP(FONCTION=SL,
                       LIST_PARA=LI2,
-                       NOM_PARA='PCAP',
+                      NOM_PARA='PCAP',
                       PROL_DROITE='CONSTANT',
                       PROL_GAUCHE='CONSTANT',
                       INFO=2,);
@@ -130,7 +123,7 @@ PERML=CALC_FONC_INTERP(FONCTION=PERM,
                        PROL_GAUCHE='CONSTANT',
                        INFO=2,);
 
-DPERM = FORMULE(NOM_PARA='SAT',VALE=''' 0.5*SAT**(-0.5)  
+DPERM = FORMULE(NOM_PARA='SAT',VALE=''' 0.5*SAT**(-0.5)
                     *(1.-(1.-SAT**(1. / 0.57609))**0.57609)**2  
                     +2.*SAT**0.5*(SAT**((1.-0.57609) / 0.57609)  
                     *(1.-SAT**(1. / 0.57609))**(0.57609-1.))*(1.-(1.-SAT  
@@ -170,9 +163,9 @@ DPERMG=CALC_FONC_INTERP(FONCTION=DPG,
 
 
 MATERIAU=DEFI_MATERIAU(
-                  ELAS=_F(E = 39.5E9,
-                            NU = 0.245,
-                            RHO = 2370.,
+                  ELAS=_F(  E     = 39.5E9,
+                            NU    = 0.245,
+                            RHO   = 2370.,
                             ALPHA = 1.E-5,
                             ),
                   COMP_THM = 'LIQU_GAZ',
@@ -181,27 +174,17 @@ MATERIAU=DEFI_MATERIAU(
                   THM_LIQU=_F(
                                 RHO = 1000.,
                                 UN_SUR_K = 0.5E-9,
-                                ALPHA = 0.66193E-4,
-                                CP = 4180.,
                                 VISC = VISCOLIQ,
                                 D_VISC_TEMP = DVISCOL,
                                         ),
                    THM_GAZ=_F(
                                 MASS_MOL = 28.96E-3,
-                                CP = 1000.,
                                 VISC = VISCOGAZ,
                                 D_VISC_TEMP = DVISCOG,
                                   ),
-                    THM_VAPE_GAZ=_F(
-                                MASS_MOL = 18.E-3,
-                                CP = 1870.,
-                                VISC = VISCOGAZ,
-                                D_VISC_TEMP = ZERO,
-                                 ),
                     THM_DIFFU=_F(
                                 R_GAZ = 8.315,
                                 RHO = 2265.,
-                                CP = 1000.,
                                 BIOT_COEF = 1.,
                                 SATU_PRES = SATU,
                                 D_SATU_PRES = DSATU,
@@ -215,13 +198,10 @@ MATERIAU=DEFI_MATERIAU(
                                 D_PERM_SATU_GAZ = DPERMG,
                                 D_PERM_PRES_GAZ = ZERO,
                                  ),
-                    THM_INIT=_F(
-                                TEMP = 293.,
+                    THM_INIT=_F(TEMP = 293.0,
                                 PRE1 = 0.0,
                                 PRE2 = 0.1013E6,
                                 PORO = 0.149,
-                                PRES_VAPE = 1725.04,
-                                DEGR_SATU = 0.74
                                 )
                               );
 
@@ -238,16 +218,13 @@ CHMAT=AFFE_MATERIAU(
 CLIM=AFFE_CHAR_MECA(
                MODELE=MO,
                DDL_IMPO=(_F( GROUP_NO=('FIXE','FIXE1') , DZ=0),
-                         _F( GROUP_NO=('ABFE','CDHG') , DY=0),
-                         _F( GROUP_NO=('DAEH','BCGF') , DX=0),),
+                         _F( GROUP_NO=('ABFE','CDHG' ) , DY=0),
+                         _F( GROUP_NO=('DAEH','BCGF' ) , DX=0),),
               )
 
-
-#
 #CHARGEMENT - MOUILLAGE
 CHARGT = AFFE_CHAR_MECA(MODELE=MO,
                           DDL_IMPO=(_F( GROUP_NO=('FIXE1') ,PRE1=1.0),),);
-
 
 CAP = DEFI_FONCTION(NOM_PARA='INST',
                      VALE=( 0.,         3.7144951E7,
@@ -283,32 +260,26 @@ SIGINIT=CREA_CHAMP(MAILLAGE=MA,
                            0.0,0.0,0.0,0.0,0.0,0.0,
                             0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0),),);
 
-REPONSE=STAT_NON_LINE(
-                     MODELE=MO,
-                     CHAM_MATER=CHMAT,
-                     EXCIT=(
-                           _F( CHARGE = CLIM),
-                           _F( CHARGE = CHARGT,FONC_MULT=CAP)
-                           ),
-                     COMP_INCR  =_F(RELATION='KIT_HHM',
-                                    DEFORMATION='PETIT',
-                                    RELATION_KIT = (
-                  'ENDO_ISOT_BETON',
-                  'LIQU_GAZ',
-                  'HYDR_ENDO',  ),
-                                ),
-                      ETAT_INIT = _F(SIGM=SIGINIT,DEPL=DEPINIT),
-                     INCREMENT=_F(
-                                  LIST_INST = L_INST,),
-                     NEWTON=_F(
-                                  MATRICE = 'TANGENTE',
-                                 REAC_ITER = 1),
-                     SOLVEUR = _F(RENUM='MDA',),
-                      PARM_THETA=0.56999999999999995,
-                     CONVERGENCE=_F(
-                                   RESI_GLOB_RELA = 1.E-6,
-                                   ITER_GLOB_MAXI = 200)
-             )
+REPONSE=STAT_NON_LINE( MODELE     = MO,
+                       CHAM_MATER = CHMAT,
+                       EXCIT      = ( _F( CHARGE = CLIM),
+                                      _F( CHARGE = CHARGT, FONC_MULT=CAP)),
+                       COMP_INCR  = _F( RELATION     = 'KIT_HHM',
+                                        DEFORMATION  = 'PETIT',
+                                        RELATION_KIT = ( 'ENDO_ISOT_BETON',
+                                                         'LIQU_GAZ',
+                                                         'HYDR_ENDO',      ),),
+                      ETAT_INIT   = _F( SIGM      = SIGINIT,
+                                        DEPL      = DEPINIT),
+                      INCREMENT   = _F( INST_FIN  = 1.0,
+                                        LIST_INST = L_INST,),
+                      NEWTON      = _F( MATRICE   = 'TANGENTE',
+                                        REAC_ITER = 1     ),
+                      SOLVEUR     = _F( RENUM     = 'MDA',),
+                      PARM_THETA  = 0.56999999999999995,
+                      CONVERGENCE = _F( RESI_GLOB_RELA = 1.E-6,
+                                        ITER_GLOB_MAXI = 20)
+                     )
 
 REPONSE=CALC_ELEM(reuse =REPONSE,
                RESULTAT=REPONSE,
@@ -321,50 +292,87 @@ REPONSE=CALC_NO(reuse =REPONSE,
                PRECISION = 1.E-10,
                OPTION=('SIEF_NOEU_ELGA','VARI_NOEU_ELGA'),
                TOUT='OUI');
-#-------------------------
-#    TEST_RESU AU GROUP_NO E
-#-------------------------
 
 TEST_RESU(RESU=(
-
 # CONTRAINTE SIZZ
-                _F(  RESULTAT = REPONSE,
-                       GROUP_NO = 'E',
-                       NOM_CHAM = 'SIEF_NOEU_ELGA',
-                       NOM_CMP = 'SIZZ',
-                       INST = 1.E-01,
-                       REFERENCE='NON_REGRESSION',
-                       PRECISION = 1.E-3,
-                       VALE = 1.2054298E+07,
+                _F(  RESULTAT = REPONSE,    
+                       GROUP_NO = 'E',      
+                       NOM_CHAM = 'SIEF_NOEU_ELGA',    
+                       NOM_CMP = 'SIZZ',     
+                       INST = 0.5, 
+                       REFERENCE='NON_REGRESSION', 
+                       PRECISION = 1.E-5,   
+                       VALE = 5.77301E+06,        
                      ),
-                 _F(  RESULTAT = REPONSE,
-                       GROUP_NO = 'E',
-                       NOM_CHAM = 'SIEF_NOEU_ELGA',
-                       NOM_CMP = 'SIZZ',
-                       INST = 1.,
-                       REFERENCE='NON_REGRESSION',
-                       PRECISION = 1.E-6,
-                       VALE = 7.4496505E+06,
-                     ),
-                 _F(  RESULTAT = REPONSE,
-                       GROUP_NO = 'E',
-                       NOM_CHAM = 'SIEF_NOEU_ELGA',
-                       NOM_CMP = 'SIZZ',
-                       INST = 3.15360E+07,
-                       REFERENCE='NON_REGRESSION',
-                       PRECISION = 2.E-2,
-                       VALE = -6.0027349533703E+06
+                _F(  RESULTAT = REPONSE,    
+                       GROUP_NO = 'E',      
+                       NOM_CHAM = 'SIEF_NOEU_ELGA',    
+                       NOM_CMP = 'SIZZ',     
+                       INST = 1., 
+                       REFERENCE='NON_REGRESSION', 
+                       PRECISION = 1.E-5,   
+                       VALE = 5.59655E+06,        
                      ),
 
-# CAPILLARITE PRE1
-                 _F(  RESULTAT = REPONSE,
-                       GROUP_NO = 'E',
-                       NOM_CHAM = 'DEPL',
-                       NOM_CMP = 'PRE1',
-                       INST = 1.,
-                       REFERENCE='NON_REGRESSION',
-                       PRECISION = 1.E-5,
-                       VALE = 3.714495E+07,
+# CAPILLARITE : PRE1
+                 _F(  RESULTAT = REPONSE,   
+                       GROUP_NO = 'E',      
+                       NOM_CHAM = 'DEPL',    
+                       NOM_CMP = 'PRE1',     
+                       INST = 0.5,  
+                       REFERENCE='NON_REGRESSION', 
+                       PRECISION = 1.E-5,   
+                       VALE = 3.714495E+07,        
                      ),
-                     ))
-FIN () ;
+                 _F(  RESULTAT = REPONSE,   
+                       GROUP_NO = 'E',      
+                       NOM_CHAM = 'DEPL',    
+                       NOM_CMP = 'PRE1',     
+                       INST = 1.,  
+                       REFERENCE='NON_REGRESSION', 
+                       PRECISION = 1.E-5,   
+                       VALE = 3.714495E+07,        
+                     ),
+
+# GAZ : PRE2
+                 _F(  RESULTAT = REPONSE,   
+                       GROUP_NO = 'E',      
+                       NOM_CHAM = 'DEPL',    
+                       NOM_CMP = 'PRE2',     
+                       INST = 0.5,  
+                       REFERENCE='NON_REGRESSION', 
+                       PRECISION = 1.E-5,   
+                       VALE = 5.94425E+04,        
+                     ),
+                 _F(  RESULTAT = REPONSE,   
+                       GROUP_NO = 'E',      
+                       NOM_CHAM = 'DEPL',    
+                       NOM_CMP = 'PRE2',     
+                       INST = 1.,  
+                       REFERENCE='NON_REGRESSION', 
+                       PRECISION = 1.E-5,   
+                       VALE = 6.27490E+04,        
+                     ),
+
+# ENDOMMAGEMENT
+                 _F(  RESULTAT = REPONSE,   
+                       GROUP_NO = 'E',      
+                       NOM_CHAM = 'VARI_NOEU_ELGA',    
+                       NOM_CMP = 'V1',     
+                       INST = 0.5,  
+                       REFERENCE='NON_REGRESSION', 
+                       PRECISION = 1.E-5,   
+                       VALE = 7.78955E-04,
+                     ),
+                 _F(  RESULTAT = REPONSE,   
+                       GROUP_NO = 'E',      
+                       NOM_CHAM = 'VARI_NOEU_ELGA',    
+                       NOM_CMP = 'V1',     
+                       INST = 1.0,  
+                       REFERENCE='NON_REGRESSION', 
+                       PRECISION = 1.E-5,   
+                       VALE = 7.78955E-04,
+                     ),
+                    )
+                    )
+FIN () ;  

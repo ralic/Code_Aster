@@ -1,4 +1,4 @@
-# MODIF  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 15/11/2004   AUTEUR MCOURTOI M.COURTOIS 
 # TITRE FORMATION DE BASE A L'UTILISATION D'ASTER - TP DYNAMIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -255,15 +255,15 @@ DY_D=RECU_FONCTION(RESU_GENE=TRANGEN1,
 #
 
 
-IMPR_COURBE(UNITE=25,
-            FORMAT='AGRAF',
-            TITRE_GRAPHIQUE='DEPLACEMENT DU TUYAU EN B C D ',
-            COURBE=(_F(FONCTION=DY_B,
-                       LEGENDE='DY_B',),
-                    _F(FONCTION=DY_C,
-                       LEGENDE='DY_C',),
-                   _F(FONCTION=DY_D,
-                      LEGENDE='DY_D',),),);
+IMPR_FONCTION(UNITE=25,
+              FORMAT='AGRAF',
+              TITRE='DEPLACEMENT DU TUYAU EN B C D ',
+              COURBE=(_F(FONCTION=DY_B,
+                         LEGENDE='DY_B',),
+                      _F(FONCTION=DY_C,
+                         LEGENDE='DY_C',),
+                      _F(FONCTION=DY_D,
+                         LEGENDE='DY_D',),),);
 #
 #
 # VALEURS MIN ET MAX DES CONTRAINTES DUES AUX EFFORTS GENERALISES

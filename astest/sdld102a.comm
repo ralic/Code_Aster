@@ -1,4 +1,4 @@
-# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 15/11/2004   AUTEUR MCOURTOI M.COURTOIS 
 # TITRE SOUS-STRUCTURATION TRANSITOIRE : SYSTEME MASSES-RESSORTS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -680,13 +680,12 @@ PAS1=RECU_FONCTION(       NOM_CHAM='PTEM',
                            RESU_GENE=TRANG4,   
                            LIST_INST=LISTEIMP   )
 
-IMPR_COURBE(  UNITE=24,
-                FORMAT='POSTSCRIPT',
-                SORTIE='MONOCHROME',
-               DATE='OUI',
-               TITRE='PAS DE TEMPS (LOG)',
-              COURBE=_F(  FONCTION = PAS1)
-            )
+IMPR_FONCTION(  UNITE=24,
+                FORMAT='XMGRACE',
+                PILOTE='POSTSCRIPT',
+                TITRE='PAS DE TEMPS (LOG)',
+                COURBE=_F(  FONCTION = PAS1)
+              )
 
 #
 #

@@ -58,10 +58,10 @@ STTAC=CALC_FONC_INTERP(FONCTION=STTA,NOM_PARA='S',
                        LIST_PARA=LISABS,
                        INTERPOL='LIN',);
 
-IMPR_COURBE(UNITE=81,
-            FORMAT='EXCEL',
-            COURBE=(_F(FONCTION=STTAC,),
-                    _F(FONCTION=STCALC,),),);
+IMPR_FONCTION(UNITE=81,
+              FORMAT='TABLEAU',
+              COURBE=(_F(FONCTION=STTAC,),
+                      _F(FONCTION=STCALC,),),);
 
 # COURBES AVEC XMGRACE EN INTERACTIF
 
@@ -104,12 +104,12 @@ F_SYY_G=RECU_FONCTION(TABLE=SYY_G,
                       PARA_Y='SIYY',
                       INTERPOL='LIN',);
 
-IMPR_COURBE(UNITE=82,
-            FORMAT='EXCEL',
-            COURBE=(_F(FONCTION=F_DY_G,
-                       LEGENDE='Dy au point G',),
-                    _F(FONCTION=F_SYY_G,
-                       LEGENDE='Sigma YY au  point G',),),);
+IMPR_FONCTION(UNITE=82,
+              FORMAT='TABLEAU',
+              COURBE=(_F(FONCTION=F_DY_G,
+                         LEGENDE='Dy au point G',),
+                      _F(FONCTION=F_SYY_G,
+                         LEGENDE='Sigma YY au  point G',),),);
 
 
 # COURBES AVEC XMGRACE EN INTERACTIF
@@ -153,12 +153,12 @@ F_FY_G=RECU_FONCTION(TABLE=FHAUT,
                      PARA_Y='DY',
                      INTERPOL='LIN',);
 
-IMPR_COURBE(UNITE=83,
-            FORMAT='EXCEL',
-            COURBE=(_F(FONCTION=F_DY_G,
-                       LEGENDE='Deplacement suivant Y au point G',),
-                    _F(FONCTION=F_FY_G,
-                       LEGENDE='Resultante de forces nodales suivant Y sur FG',),),);
+IMPR_FONCTION(UNITE=83,
+              FORMAT='TABLEAU',
+              COURBE=(_F(FONCTION=F_DY_G,
+                         LEGENDE='Deplacement suivant Y au point G',),
+                      _F(FONCTION=F_FY_G,
+                         LEGENDE='Resultante de forces nodales suivant Y sur FG',),),);
 
 
 

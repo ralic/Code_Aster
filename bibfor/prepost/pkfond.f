@@ -3,7 +3,7 @@
       CHARACTER*8         FOND
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 17/08/2004   AUTEUR DURAND C.DURAND 
+C MODIF PREPOST  DATE 15/11/2004   AUTEUR GALENNE E.GALENNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,7 +54,7 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       PARAMETER  ( NBPAR1=12 )
       REAL*8       R8B, COEFD, COEFD3, COEFG, COEFG3, X0(3), D1, D2,
      +             D, RMAX, EPSI, VECNOR(3), X1, X2, Y1, Y2, Z1, Z2,
-     +             KG2(10),KG1(10),KGBID(10),VECTY(3),VO(3),VE(3),
+     +             KG2(10),KG1(10),KG3(10),VECTY(3),VO(3),VE(3),
      +             RMAXEM,DMAX, ABSC, VP(3), TGOR(3), TGEX(3), DINST,
      +             PRECI, PREC, PRECV, PRECN
       COMPLEX*16   CBID
@@ -545,8 +545,18 @@ C ------ NOEUDS TROUVES ET ABSCISSES CURVILIGNES
             CALL UTIMPI('L',' NOMBRE DE POINTS INFERIEURE ',1,NBVAI)
             CALL UTFINM
             GOTO 202
-         ELSE
-            NBVAL = NBVAS
+         ENDIF
+
+         NBVAL = NBVAS
+
+         IF ( NBVAL .LT. 3 ) THEN
+            CALL UTDEBM('A',NOMCMD,'IL FAUT AU MOINS TROIS NOEUDS '//
+     +    'DANS LE PLAN DEFINI PAR LES LEVRES ET PERPENDICULAIRE '//
+     +    'AU NOEUD')
+            CALL UTIMPK('S',' DU FOND DE FISSURE ',1,ZK8(JNOFO+INF-1))
+            CALL UTIMPK('L',' AUGMENTER ',1,'ABSC_CURV_MAXI')
+            CALL UTFINM
+            GOTO 202
          ENDIF
 
 C ------ EXTRAIRE DANS LA TABLE LES DEPLACEMENTS AUX NOEUDS
@@ -666,7 +676,7 @@ C ------ ON CALCULE LES K1, K2, K3
 
          CALL PKCALC ( NDIM, NBVAL, ABSSUP, DXSUP, DYSUP, DZSUP,
      +                 ABSINF, DXINF, DYINF, DZINF,
-     +                 COEFD,COEFD3,COEFG,COEFG3,KG1(3),KG2(3),KGBID(3))
+     +                 COEFD,COEFD3,COEFG,COEFG3,KG1(3),KG2(3),KG3(3))
 
          IF ( INF .EQ. 1 ) THEN
             ABSC = 0.D0
@@ -680,13 +690,16 @@ C ------ ON CALCULE LES K1, K2, K3
          ENDIF
          KG1(2) = ABSC
          KG2(2) = ABSC
+         KG3(2) = ABSC
          K8B = ZK8(JNOFO+INF-1)
 
          KG1(1) = DINST
          KG2(1) = DINST
+         KG3(1) = DINST
 
          CALL TBAJLI ( NOMRES, NBPAR1, NOMPA1, 1, KG1, CBID, K8B, 0 )
          CALL TBAJLI ( NOMRES, NBPAR1, NOMPA1, 2, KG2, CBID, K8B, 0 )
+         CALL TBAJLI ( NOMRES, NBPAR1, NOMPA1, 3, KG3, CBID, K8B, 0 )
 
  202     CONTINUE
 

@@ -1,7 +1,7 @@
-      SUBROUTINE CFIMP1(DEFICO,RESOCO,NOMA,NBLIAI,NBLIAC,IFM)
+      SUBROUTINE CFIMP1(DEFICO,RESOCO,NOMA,NBLIAI,IFM)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 02/11/2004   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 16/11/2004   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -23,7 +23,6 @@ C
       CHARACTER*8  NOMA
       CHARACTER*24 DEFICO
       CHARACTER*24 RESOCO
-      INTEGER      NBLIAC
       INTEGER      IFM
       INTEGER      NBLIAI
 C
@@ -36,7 +35,6 @@ C
 C IN  DEFICO : SD DE DEFINITION DU CONTACT (ISSUE D'AFFE_CHAR_MECA)
 C IN  RESOCO : SD DE TRAITEMENT NUMERIQUE DU CONTACT
 C IN  NOMA   : NOM DU MAILLAGE
-C IN  NBLIAC : NOMBRE TOTAL DE LIAISONS ACTIVES
 C IN  NBLIAI : NOMBRE TOTAL DE LIAISONS 
 C IN  IFM    : UNITE D'IMPRESSION DU MESSAGE
 C
@@ -71,8 +69,10 @@ C
       CHARACTER*10 TYPLI
       CHARACTER*24 CONTNO,CONTMA,NOZOCO,APPARI,APJEU
       INTEGER      JNOCO,JMACO,JZOCO,JAPPAR,JAPJEU
-      CHARACTER*19 LIAC,CONVEC
-      INTEGER      JLIAC,JVECC
+      CHARACTER*19 LIAC,CONVEC,COCO
+      INTEGER      JLIAC,JVECC,JCOCO
+      INTEGER      BTOTAL,NBLIAC
+      INTEGER      LLF,LLF1,LLF2,NDIM
 C
 C ----------------------------------------------------------------------
 C
@@ -98,6 +98,14 @@ C
         JVECC = 0
       ENDIF
       CALL JEVEUO(APJEU,'L',JAPJEU)
+
+      COCO     = RESOCO(1:14)//'.COCO'
+      CALL JEVEUO(COCO,'L',JCOCO)
+
+      CALL CFDISD(JCOCO,
+     &            NDIM,NBLIAC,LLF,LLF1,LLF2)
+
+      BTOTAL = NBLIAC+LLF+LLF1+LLF2
 C
       DO 500 ILIAI = 1,NBLIAI
 C
@@ -117,8 +125,9 @@ C
 C
 C --- ACTIF OU NON ?
 C
-        DO 10 ILIAC = 1,NBLIAC
-          ACTIF = 0
+        ACTIF = 0
+
+        DO 10 ILIAC = 1,BTOTAL
           IF (ZI(JLIAC-1+ILIAC).EQ.ILIAI) THEN 
             ACTIF  = 1
 C
@@ -130,7 +139,11 @@ C
               IF (TYPLIA.EQ.'C0') THEN
                 TYPLI = 'CONT.     '
               ELSE IF (TYPLIA.EQ.'F0') THEN
-                TYPLI = 'FROT. 1&2 '
+                IF (NDIM.EQ.3) THEN
+                  TYPLI = 'FROT. 1&2 '
+                ELSE
+                  TYPLI = 'FROT.     '
+                ENDIF
               ELSE IF (TYPLIA.EQ.'F1') THEN
                 TYPLI = 'FROT. 1   '
               ELSE IF (TYPLIA.EQ.'F2') THEN
@@ -138,8 +151,7 @@ C
               ELSE IF (TYPLIA.EQ.'F3') THEN
                 TYPLI = 'FROT.     '
               ENDIF
-            ENDIF
-            GOTO 20          
+            ENDIF         
           ENDIF
   10    CONTINUE
   20    CONTINUE

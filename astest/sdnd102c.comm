@@ -1,4 +1,4 @@
-# MODIF  DATE 28/09/2004   AUTEUR BOYERE E.BOYERE 
+# MODIF  DATE 15/11/2004   AUTEUR MCOURTOI M.COURTOIS 
 # TITRE TEST DE DYNA_TRAN_EXPLI SUR UN SYSTEME MASSES-RESSORTS NON LINEAIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -205,21 +205,13 @@ NOB_DXAR = RECU_FONCTION( NOEUD= 'NO2',  NOM_CMP='DX' ,
                      PROL_GAUCHE= 'LINEAIRE',
                      RESULTAT=  TRAN_DY2  );
                      
-IMPR_COURBE(UNITE=25,
-            FORMAT='AGRAF',
-            COURBE=(
+IMPR_FONCTION(UNITE=25,
+              FORMAT='AGRAF',
+              COURBE=(
                     _F(FONCTION=NOA_DXDR, ),
                     _F(FONCTION=NOB_DXDR, ),
-            )),
-IMPR_COURBE(UNITE=25,
-            FORMAT='AGRAF',
-            COURBE=(
                     _F(FONCTION=NOA_DXVR, ),
                     _F(FONCTION=NOB_DXVR, ),
-            )),
-IMPR_COURBE(UNITE=25,
-            FORMAT='AGRAF',
-            COURBE=(
                     _F(FONCTION=NOA_DXAR, ),
                     _F(FONCTION=NOB_DXAR, ),
             )),

@@ -1,4 +1,4 @@
-# MODIF  DATE 03/11/2004   AUTEUR MCOURTOI M.COURTOIS 
+# MODIF  DATE 16/11/2004   AUTEUR MABBAS M.ABBAS 
 # TITRE INDENTATION ELASTOPLASTIQUE D'UN DEMI-PLAN
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -191,7 +191,7 @@ TEST_RESU(RESU=_F(RESULTAT=SSNV506,
                   NOM_CHAM='VALE_CONT',
                   NOM_CMP='RN',
                   VALE=1.76516E+04,
-                  PRECISION=1.E-5,
+                  PRECISION=5.E-5,
                   REFERENCE='NON_REGRESSION',
                   VERSION='7.3.23',),);
 
@@ -213,7 +213,7 @@ TEST_RESU(RESU=_F(RESULTAT=SSNV506,
                   NOM_CHAM='VALE_CONT',
                   NOM_CMP='RN',
                   VALE=1.79178E+04,
-                  PRECISION=1.E-5,
+                  PRECISION=5.E-5,
                   REFERENCE='NON_REGRESSION',
                   VERSION='7.3.23',),);
 

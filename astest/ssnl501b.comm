@@ -1,4 +1,4 @@
-# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 15/11/2004   AUTEUR MCOURTOI M.COURTOIS 
 # RESPONSABLE ADBHHPM P.MASSIN
 # DATE   : 12/04/2000
 # AUTEUR : F. LEBOUVIER (DELTACAD)
@@ -171,19 +171,19 @@ ETA=RECU_FONCTION (   RESULTAT = RESULTAT,
                           NOM_PARA_RESU = 'ETA_PILOTAGE',
                           TOUT_ORDRE = 'OUI')
 
-IMPR_COURBE ( UNITE=25,FORMAT='AGRAF',
+IMPR_FONCTION ( UNITE=25, UNITE_DIGR=26,FORMAT='AGRAF',
                COURBE=_F( FONCTION = DEPX),
-    TITRE_GRAPHIQUE='Depx en fonction du temps'
+    TITRE='Depx en fonction du temps'
               )
 
-IMPR_COURBE (UNITE=25, FORMAT='AGRAF',
+IMPR_FONCTION (UNITE=27, UNITE_DIGR=28, FORMAT='AGRAF',
                COURBE=_F( FONCTION = ETA),
-    TITRE_GRAPHIQUE='Eta en fonction du temps'
+    TITRE='Eta en fonction du temps'
               )
 
-IMPR_COURBE (UNITE=25,FORMAT='AGRAF',
+IMPR_FONCTION (UNITE=29, UNITE_DIGR=30,FORMAT='AGRAF',
                COURBE=_F( FONCTION = DEPY),
-    TITRE_GRAPHIQUE='Depy en fonction du temps'
+    TITRE='Depy en fonction du temps'
               )
 
 

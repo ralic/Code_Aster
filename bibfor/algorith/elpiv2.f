@@ -2,7 +2,7 @@
      &                  LLF,LLF1,LLF2,NOMA,DEFICO,RESOCO)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 02/11/2004   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 16/11/2004   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -211,13 +211,14 @@ C ======================================================================
                   GOTO 90
                ELSE
 C ======================================================================
-C --- ELIMINATION DU PIVOT NUL SUIVANT LA PREMIERE DIRECTION 
+C --- ELIMINATION DU PIVOT NUL SUIVANT LA SECONDE DIRECTION 
 C ======================================================================
                   ZI(JLIOT+4*NBLIAI+3) = ZI(JLIOT+4*NBLIAI+3) + 1
                   NOTE2 = ZI(JLIOT+4*NBLIAI+3)
                   ZI(JLIOT-1+NOTE2+3*NBLIAI) = LLIAC
 C ======================================================================
 C --- MISE A JOUR DU VECTEUR DES LIAISONS DE FROTTEMENT 
+C --- ON SUPPRIME LA DOUBLE (F0), ON AJOUTE LA F1 -> LA F2 EST SUPPRIMEE
 C ======================================================================
                   CALL CFTABL(INDIC,NBLIAC,AJLIAI,SPLIAI,LLF,LLF1,LLF2,
      &                                 RESOCO,TYPESP,ILIAC,LLIAC,TYPEF0)
@@ -225,7 +226,7 @@ C ======================================================================
                   CALL CFTABL(IBID,NBLIAC,AJLIAI,SPLIAI,LLF,LLF1,LLF2,
      &                                 RESOCO,TYPEAJ,POSIT,LLIAC,TYPEF1)
 
-                  CALL CFIMP2(IFM,NOMA,LLIAC,TYPEF1,TYPESP,'PIV',0.D0,
+                  CALL CFIMP2(IFM,NOMA,LLIAC,TYPEF2,TYPESP,'PIV',0.D0,
      &               JAPPAR,JNOCO,JMACO)
                   GOTO 100
                ENDIF
@@ -245,7 +246,7 @@ C ======================================================================
                   POSIT = NBLIAC + LLF + LLF1 + LLF2 + 1
                   CALL CFTABL(IBID,NBLIAC,AJLIAI,SPLIAI,LLF,LLF1,LLF2,
      +                                 RESOCO,TYPEAJ,POSIT,LLIAC,TYPEF2)
-                  CALL CFIMP2(IFM,NOMA,LLIAC,TYPEF2,TYPESP,'PIV',0.D0,
+                  CALL CFIMP2(IFM,NOMA,LLIAC,TYPEF1,TYPESP,'PIV',0.D0,
      &               JAPPAR,JNOCO,JMACO)
                   GOTO 100
                ELSE

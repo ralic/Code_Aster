@@ -1,7 +1,7 @@
       SUBROUTINE TE0030(OPTION,NOMTE)
 C =====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 08/06/2004   AUTEUR ROMEO R.FERNANDES 
+C MODIF ELEMENTS  DATE 15/11/2004   AUTEUR ROMEO R.FERNANDES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -47,7 +47,7 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX --------------------
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX --------------------
 C =====================================================================
       LOGICAL      LOGTHM
-      INTEGER      IMATE, ICOMPO, IVARIM, IVARIP, ICONTP, ILOCAL
+      INTEGER      IMATE, ICOMPO, IVARIP, ICONTP, ILOCAL
       INTEGER      NBVARI, NBRAC4, RINDIC, KPG, II, NBSIG
       INTEGER      NBSIGM, ICODE, IRET, TABTHM(3), DIMMAX, NPGU
       INTEGER      NDIM, NNO, NNOS, NPG, IPOIDS, IVF, IDFDE, JGANO
@@ -110,7 +110,6 @@ C --- PARAMETRES EN ENTREE --------------------------------------------
 C =====================================================================
          CALL JEVECH('PMATERC','L',IMATE )
          CALL JEVECH('PCOMPOR','L',ICOMPO)
-         CALL JEVECH('PVARIMR','L',IVARIM)
          CALL JEVECH('PVARIPR','L',IVARIP)
          IF (LOGTHM) THEN
 C =====================================================================
@@ -166,7 +165,6 @@ C =====================================================================
 C --- LOI DE TYPE DRUCKER_PRAGER --------------------------------------
 C =====================================================================
                CALL REDRPR(MOD,ZI(IMATE),ZR(ICONTP-1+(KPG-1)*NBSIG+1 ),
-     +                                   ZR(IVARIM-1+(KPG-1)*NBVARI+1),
      +                                   ZR(IVARIP-1+(KPG-1)*NBVARI+1),
      +                                                      DSDE,ICODE)
                IF (ICODE.EQ.0) GO TO 10

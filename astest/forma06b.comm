@@ -1,4 +1,4 @@
-# MODIF  DATE 05/10/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 15/11/2004   AUTEUR MCOURTOI M.COURTOIS 
 # RESPONSABLE PABHHHH N.TARDIEU
 
 # TITRE CORRIGE TP POUTRE FORMATION POST TRAITEMENT
@@ -175,24 +175,16 @@ TAB2=POST_RELEVE_T(ACTION=_F(INTITULE='MOMENT SUR LE SEGMENT AB',
                              MOYE_NOEUD='NON',
                              OPERATION='EXTRACTION',),);
 
-IMPR_COURBE(UNITE=8,
-            FORMAT='AGRAF',
-            TITRE_GRAPHIQUE='MOMENT MFZ SUIVANT DB',
-            LEGENDE_X='ABS_CURV',
-            LEGENDE_Y='MFZ',
-            COURBE=_F(TABLE=TAB1,
-                      PARA_X='ABSC_CURV',
-                      PARA_Y='MFZ',
-                      LEGENDE='AVEC GROUP_NO & ABS_CURV',),);
+IMPR_TABLE(UNITE=8,
+           FORMAT='AGRAF',
+           TITRE='MOMENT MFZ SUIVANT DB',
+           TABLE=TAB1,
+           NOM_PARA=('ABSC_CURV','MFZ',),)
 
-IMPR_COURBE(UNITE=8,
-            FORMAT='AGRAF',
-            TITRE_GRAPHIQUE='MOMENT MFZ SUIVANT DB ORDONNE',
-            LEGENDE_X='ABS_CURV',
-            LEGENDE_Y='MFZ',
-            COURBE=_F(TABLE=TAB2,
-                      PARA_X='ABSC_CURV',
-                      PARA_Y='MFZ',
-                      LEGENDE='AVEC GROUP_NO ORDONNE & ABS_CURV',),);
+IMPR_TABLE(UNITE=8,
+           FORMAT='AGRAF',
+           TITRE='MOMENT MFZ SUIVANT DB ORDONNE',
+           TABLE=TAB2,
+           NOM_PARA=('ABSC_CURV','MFZ',),)
 
 FIN();
