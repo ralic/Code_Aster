@@ -1,4 +1,4 @@
-#@ MODIF lire_table_ops Macro  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
+#@ MODIF lire_table_ops Macro  DATE 21/06/2004   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -44,7 +44,7 @@ def lecture_table(texte,nume,separ):
   if nume>texte.count(idt_deb) :
      message=        "<F> <CREA_TABLE> NUME_TABLE :le nombre de blocs de tables dans "
      message=message+"le fichier est "+str(texte.count(idt_deb))
-     return 1,message,None,None
+     return 1,message,None,None,None
   for i in range(nume):
      texte=texte[texte.index(idt_deb)+1:]
   texte=texte[:texte.index(idt_fin)]
@@ -61,7 +61,7 @@ def lecture_table(texte,nume,separ):
     if len(line)!=nb_para :
        message=        "<F> <CREA_TABLE> incoherence dans le nombre de colonnes "
        message=message+"de la table a lire"
-       return 1,message,None,None
+       return 1,message,None,None,None
   texte_tab=transpose(texte_tab)
   for i in range(nb_para):
     col_type=list_type[i]

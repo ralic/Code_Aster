@@ -15,7 +15,7 @@
 
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 15/06/2004   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 21/06/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -35,7 +35,7 @@ C ======================================================================
 C RESPONSABLE PBADEL P.BADEL
 C TOLE CRP_20
 C TOLE CRP_21
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INTEGER            NDIM,IMATE,NZ,CODRET
       CHARACTER*8        TYPMOD(*)
       CHARACTER*16       COMPOR(*), OPTION
@@ -125,11 +125,13 @@ C      LA MATRICE TANGENTE EST DE LA FORME
 C         DSIDEP(6, 3,3)  = DSIG(IJ) / DF(K,L)
 C ----------------------------------------------------------------------
 C
-      REAL*8 R8BID
+      REAL*8 R8BID,R8VIDE
       CHARACTER*16 OPTIO2
       LOGICAL CP
-      INTEGER CPL
+      INTEGER CPL,NVV
+      
       CODRET = 0
+      R8BID=R8VIDE()
 
 
 C      CONTRAINTES PLANES
@@ -294,7 +296,7 @@ C PETITES DEFORMATIONS
             CALL NMISOT ( NDIM,  TYPMOD, IMATE, COMPOR,CRIT,
      &                    INSTAM,INSTAP,TM,TP,TREF,HYDRM,HYDRP,SECHM,
      &                    SECHP,SREF,DEPS,SIGM,VIM,OPTION,SIGP,VIP,
-     &                    DSIDEP,RBID,RBID)
+     &                    DSIDEP,R8BID,R8BID)
           ELSE
             CALL UTMESS('F','NMCOMP_1','INTEGRATION EXPLICITE DU
      &      COMPORTEMENT NON PROGRAMMEE')
@@ -444,10 +446,7 @@ C
         ELSE IF ( COMPOR(1)(1:8) .EQ. 'ROUSS_PR'   .OR.
      &            COMPOR(1)(1:10).EQ. 'ROUSS_VISC' .OR.
      &            COMPOR(1)(1:8) .EQ. 'CHABOCHE'   .OR.
-     &            COMPOR(1)(1:8) .EQ. 'BENALLAL'   .OR.
-     &            COMPOR(1)(1:6) .EQ. 'BURLET'     .OR.
      &            COMPOR(1)(1:4) .EQ. 'OHNO'       .OR.
-     &            COMPOR(1)(1:6) .EQ. 'TAHERI'     .OR.
      &            COMPOR(1)(1:5) .EQ. 'LMARC'      .OR.
      &            COMPOR(1)(1:15).EQ. 'BETON_DOUBLE_DP'.OR.
      &            COMPOR(1)(1:7) .EQ. 'NADAI_B'        ) THEN
@@ -575,7 +574,7 @@ C----LOI D'ACIER CORRODE
               CALL UTMESS('F','NMCOMP_1',
      &          'INTEGRATION EXPLICITE DU COMPORTEMENT NON PROGRAMMEE')
           ELSE  
-          CALL NM3DCO(NDIM,OPTION,IMATE,TM,TP,E,SIGM,
+          CALL NM3DCO(NDIM,OPTION,IMATE,TM,TP,SIGM,
      &           EPSM,DEPS,VIM,DEFAM,DEFAP,SIGP,VIP,DSIDEP,
      &            CORRM,CORRP)
         END IF                 

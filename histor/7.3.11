@@ -1,0 +1,312 @@
+
+
+-----------------------------------------------------------------------
+--- AUTEUR durand C.DURAND   DATE  le 21/06/2004 a 11:07:56
+
+--------------------------------------------------------------------------
+CORRECTION AL 2004-228
+   NB_JOURS_TRAV  : 0
+   INTERET_UTILISATEUR : NON
+   TITRE : getvectjev en mode debug jeveux
+   FONCTIONNALITE
+   DETAILS
+     Dans la routine GETCON, on récupère l'adresse d'un objet par un LOC,
+     transmis a astermodule.c. Mais un JEMARQ et JEDEMA dans GETCON rendait
+     cette adresse invalide en mode debug jeveux : on supprime ces 2 appels
+     et on libère l'objet par un CALL_JELIBE depuis astermodule.c [routine
+     getvectjev] une fois que l'info a été recopiée dans un objet python.
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+     forma04a lancé en mode debug jeveux
+
+--------------------------------------------------------------------------
+CORRECTION AL 2004-227
+   NB_JOURS_TRAV  : 0
+   INTERET_UTILISATEUR : NON
+   TITRE : impression de l'entete de la commande DETRUIRE dans le .mess
+   FONCTIONNALITE
+   DETAILS
+     On avait supprimé en version 7.0.7 l'impression du texte de la commande
+     [méthode AfficheTexteCommande de E_ETAPE.py] pour les macros fortran
+     [macro à op négatif]. On rétablit l'appel systématique à la méthode.
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+     test privé, tous cas tests utilisant DETRUIRE
+
+--------------------------------------------------------------------------
+CORRECTION AL 2004-234
+   NB_JOURS_TRAV  : 0
+   INTERET_UTILISATEUR : NON
+   TITRE : zzzz100c et IMPR_COURBE
+   FONCTIONNALITE
+   DETAILS
+     modification du format d'écriture dans FOIEXC.f et FOECGV.f
+     En effet, les réels sont au format 12D5 (ce qui les rend illisibles
+     par python en général et lire_fonction en particulier).
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+     zzzz100c
+
+---------------------------------------------------------------------------------
+CORRECTION AL 2004-237
+   NB_JOURS_TRAV  : 0
+   INTERET_UTILISATEUR : NON
+   TITRE : ssls109b et critere absolu
+   FONCTIONNALITE
+   DETAILS
+     critere absolu pour 2 valeurs nulles
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+     ssls109b
+
+--------------------------------------------------------------------------
+CLASSEMENT SANS SUITE AL 2004-001
+   POUR_LE_COMPTE_DE : R. FERNANDES
+   NB_JOURS_TRAV  : 0.
+   INTERET_UTILISATEUR : NON
+   TITRE : wtnv121a cassé en version 7.2.8
+   FONCTIONNALITE : THM
+   DETAILS :
+   le cas test fonctionne à nouveau depuis. La fiche AL2003-298 demeure.
+   Si Romeo finit par trouver rétrospectivement, très bien. Sinon : abandon.
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+   IMPACT_DOCUMENTAIRE : NON
+
+---------------------------------------------------------------------------------
+CLASSEMENT SANS SUITE EL 2001-171
+   POUR_LE_COMPTE_DE : T. KESTENS
+   NB_JOURS_TRAV  : 0.
+   INTERET_UTILISATEUR : NON
+   TITRE : defi_flui_stru et calc_flui_stru
+   FONCTIONNALITE : defi_flui_stru et calc_flui_stru
+   DETAILS :
+   Le travail aurait été fait par CS mais T. Kestens ne l'a jamais recetté
+   et encore moins intégré dans le code ... on abandonne.
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+   IMPACT_DOCUMENTAIRE : NON
+
+---------------------------------------------------------------------------------
+CLASSEMENT SANS SUITE EL 2001-204
+   NB_JOURS_TRAV  : 0.
+   INTERET_UTILISATEUR : NON
+   TITRE : commande DEFI_UNITE
+   FONCTIONNALITE : commande DEFI_UNITE
+   DETAILS :
+   demande G. Nicolas suite groupe de travail MED.
+   On a pu s'en passer depuis octobre 2001 ... c'est deplus contraire à un
+   dogme bien connu d'ASTER.
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+   IMPACT_DOCUMENTAIRE : NON
+
+---------------------------------------------------------------------------------
+CLASSEMENT SANS SUITE EL 2002-046
+   POUR_LE_COMPTE_DE : S. GENIAUT
+   NB_JOURS_TRAV  : 0.
+   INTERET_UTILISATEUR : NON
+   TITRE : fond de fissure helicoidal
+   FONCTIONNALITE : XFEM
+   DETAILS :
+   Compte tenu de l'intégration en cours de la méthode X-FEM, qui permettra
+   le calcul de K par la méthode théta quelle que soit la forme du front de
+   fissure, cette fiche est à classer sans suite.
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+   IMPACT_DOCUMENTAIRE : NON
+
+---------------------------------------------------------------------------------
+CLASSEMENT SANS SUITE EL 2000-216
+   POUR_LE_COMPTE_DE : J.P. LEFEBVRE
+   NB_JOURS_TRAV  : 0.
+   INTERET_UTILISATEUR : NON
+   TITRE : defi_materiau
+   FONCTIONNALITE : defi_materiau
+   DETAILS :
+   il s'agissait d'introduire un mot clé TYPE_COMPOR dans defi_materiau pour
+   regrouper les matériaux par familles et guider l'utilisateur dans son choix
+   de materiau.
+   On classe la fiche en attendant qu'elle revienne motivée par des utilisateurs
+   d'EFICAS en particulier.
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+   IMPACT_DOCUMENTAIRE : NON
+
+
+-----------------------------------------------------------------------
+--- AUTEUR galenne E.GALENNE   DATE  le 21/06/2004 a 18:11:52
+
+--------------------------------------------------------------------------
+CORRECTION AL 2004-242
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : NON
+   TITRE CALC_G* et EXCIT
+   FONCTIONNALITE
+   Suite à la réalisation de l'EL2004-039 (introduction de EXCIT dans CALC_G), il y a un arret
+   anormal quand on utilise calc_g* dans une boucle python, ou plus généralement quand le nom
+   des chargements est différent d'un pas de temps à l'autre.
+   Le plantage provient d'une erreur de programmation dans la routine gcharg.f que l'on corrige
+   en conséquence.
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+
+
+-----------------------------------------------------------------------
+--- AUTEUR jmbhh01 J.M.PROIX   DATE  le 21/06/2004 a 15:51:45
+
+------------------------------------------------------------------------------
+CORRECTION AL 2004-240
+   INTERET_UTILISATEUR : NON
+   NB_JOURS_TRAV  : 0.5
+   TITRE   NEW7.3.10, les tests SSNP103A,B SSNP104A,B SSNP106A,B
+           s'arretent en ARRET_ANORMAL
+   FONCTIONNALITE
+  Il s'agissait d'une omission dans la restitution 7.3.10 concernant le
+  comportement NADAI_B (tous les tests ci-dessus) : en effet dans
+  les routines qui gèrent le comportement NADAI_B, on définit 33
+  variables internes. Mais la taille du systeme non lineaire a resoudre
+  est plus petite...
+  En effet dans PLASTI, on doit résoudre par la méthode de Newton :
+  R(Y)=0, de dimension NR. Or dans NADAI_B, NR vaut NDT+1,
+  ou NDT est le nombre de composantes du tenseur des contraintes. Il n'y
+  a donc qu'une variable interne qui intervient dans le systeme non linéaire.
+  Que deviennent les autres variables ? Sur le test ssnp103A, elles sont nulles....
+  Bref, je pensais naivement que la taille du systeme non lineaire était toujours
+  de NDT+NVI, ce n'est visiblement pas le cas ici.
+  Il ne m'appartient pas de modifier NADAI_B. Je modifie donc
+  le dimensionnement des tableaux (automatiques, merci F90) dans LCPLNL
+  pour que Y soit de dimension suffisante (NDT+NVI). Par contre le systeme
+  a resoudre a bien NR termes, donc la matrice jacobienne est (NR,NR).
+  Au passage je nettoie NMCOMP : il restait des références au comportements
+  BENALLAL, BURLET, (tous deux résorbés) et TAHERI (remplacé par VISC_TAHERI)
+  Je supprime l'argument E de NM3DCO qui visiblement ne sert à rien.
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+     SSNP103A, SSNP103B, SSNP104A, SSNP104B, SSNP106A, SSNP106B
+
+------------------------------------------------------------------------------
+CORRECTION AL 2004-241
+   INTERET_UTILISATEUR : NON
+   NB_JOURS_TRAV  : 0.5
+   TITRE   NEW7.3.10, les tests SSNV117A ET B, SSNV118A et B
+           s'arretent en ERR_NUMERIQUE
+   FONCTIONNALITE
+  Il s'agissait d'un oubli dans la restitution 7.3.10 : en effet dans
+  les routines qui calculent la matrice tangente pour LMARC et
+  VISCOCHAB, on passe la matrice jacobiennne par l'intermediaire de
+  COMMON, qui ont été supprimés en 7.3.10. Je vais donc jusqu'au bout
+  du ménage en supprimant complètement ces COMMON.
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+     SSNV117A, SSNV117B, SSNV118A, SSNV118B
+
+------------------------------------------------------------------------------
+CLASSEMENT SANS SUITE AL 2004-117
+   NB_JOURS_TRAV : 1
+   INTERET_UTILISATEUR : NON
+   TITRE : STAT_NON_LINE et CALC_ELEM
+   FONCTIONNALITE :Dans l'exécution de CALC_ELEM on a le plantage suivant :
+ <F> <ASTER  7. 2.22 24/03/2004 >
+ <F> <CALC_ELEM> <"FLOATING POINT EXCEPTION"> IL Y A PROBABLEMENT UNE ERREUR
+ DANS LA PROGRAMMATION
+Après investigations on a vu qu'une composante du tenseur des contraintes
+au point de Gauss avait une valeur curieuse :
+ JMAT, (I-1)              16037204                     0
+ NPG, J                    27                    25
+ (JMAT-1+ (I-1)*NPG+J)              16037228
+ ZR(JMAT-1+ (I-1)*NPG+J)  9.538341114945229E-002
+ NCMP, (J-1)                     6                    24
+ IC, (NCMP* (J-1)+IC)                     3                   147
+ VPG(NCMP* (J-1)+IC)  5.256858471750863E-321
+----------------------------------------------
+Ce pb ne se produit pas si CALC_ELEM suit un MECA_STATIQUE.
+Ce pb se produit également si l'on fait CALC_FATIGUE (aux points de Gauss)
+après STAT_NON_LINE ; il ne se produit pas si l'on fait la même chose après
+MECA_STATIQUE.
+
+En accord avec Jean,
+je classe cette fiche sans suite, car il ne peut
+reproduire le probleme : c'était en NEW72.22, on en est à la 7.3.10,
+et CALC_ELEM a beaucoup changé. On verra bien si cela se reproduit.
+
+  RESU_FAUX_VERSION_EXPLOITATION    :  NON
+  RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+  RESTITUTION_VERSION_EXPLOITATION  :  NON
+  RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+  IMPACT_DOCUMENTAIRE : NON
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+       C MODIF supervis/astermodule           durand C.DURAND          4246      8      1
+ CASTEST MODIF ssls109b                       durand C.DURAND           709      3      1
+ FORTRAN MODIF algorith/cvmjpl               jmbhh01 J.M.PROIX          374     88     78
+ FORTRAN MODIF algorith/cvmmat               jmbhh01 J.M.PROIX          197     11      4
+ FORTRAN MODIF algorith/lcjplc               jmbhh01 J.M.PROIX           59      8      6
+ FORTRAN MODIF algorith/lcplli               jmbhh01 J.M.PROIX          124     13     14
+ FORTRAN MODIF algorith/lcplnl               jmbhh01 J.M.PROIX          233     10      7
+ FORTRAN MODIF algorith/lmajpl               jmbhh01 J.M.PROIX          212     47     33
+ FORTRAN MODIF algorith/nmcomp               jmbhh01 J.M.PROIX          635      8      9
+ FORTRAN MODIF algorith/plasti               jmbhh01 J.M.PROIX          465      3      3
+ FORTRAN MODIF calculel/gcharg               galenne E.GALENNE          376      9      9
+ FORTRAN MODIF modelisa/nm3dco               jmbhh01 J.M.PROIX          621      2      2
+ FORTRAN MODIF supervis/getcon                durand C.DURAND           196      1      4
+ FORTRAN MODIF utilitai/foecgv                durand C.DURAND           130      2      2
+ FORTRAN MODIF utilitai/foiexc                durand C.DURAND           164      2      2
+  PYTHON MODIF Execution/E_ETAPE              durand C.DURAND           224      4      2
+  PYTHON MODIF Macro/lire_table_ops           durand C.DURAND           130      3      3
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :    0           0         0                +0
+ MODIF :   17        9095       222     180       +42
+ SUPPR :    0           0                 0        +0
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :   17        9095       222     180       +42 

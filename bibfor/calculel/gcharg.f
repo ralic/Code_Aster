@@ -8,7 +8,7 @@
       REAL*8  TIME
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 24/05/2004   AUTEUR GALENNE E.GALENNE 
+C MODIF CALCULEL  DATE 21/06/2004   AUTEUR GALENNE E.GALENNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -81,7 +81,7 @@ C
               CALL JEVEUO(VCHAR,'L',JVAL)
               CALL JELIRA(VCHAR  ,'LONMAX',NBVALE,K8B)
               CALL JEEXIN(LCHAR(I) // '.F3D3D.INIT',IRET)
-              IF (IORD .EQ. 1 .AND. IRET .EQ. 0) THEN
+              IF (IRET .EQ. 0) THEN
                 VOLU0 = LCHAR(I) // '.F3D3D.INIT'
                 CALL WKVECT(VOLU0,'V V R',NBVALE,ICHA0)
                 DO 101 IN = 1,NBVALE
@@ -116,7 +116,7 @@ C
               CALL JEVEUO(VCHAR,'L',JVAL)
               CALL JELIRA(VCHAR  ,'LONMAX',NBVALE,K8B)
               CALL JEEXIN(LCHAR(I) // '.F2D2D.INIT',IRET)
-              IF (IORD .EQ. 1 .AND. IRET .EQ. 0) THEN
+              IF (IRET .EQ. 0) THEN
                 VOLU0 = LCHAR(I) // '.F2D2D.INIT'
                 CALL WKVECT(VOLU0,'V V R',NBVALE,ICHA0)
                 DO 103 IN = 1,NBVALE
@@ -151,7 +151,7 @@ C
               CALL JEVEUO(VCHAR,'L',JVAL)
               CALL JELIRA(VCHAR  ,'LONMAX',NBVALE,K8B)
               CALL JEEXIN(LCHAR(I) // '.F1D2D.INIT',IRET)
-              IF (IORD .EQ. 1 .AND. IRET .EQ. 0) THEN
+              IF (IRET .EQ. 0) THEN
                 C1D2D0 = LCHAR(I) // '.F1D2D.INIT'
                 CALL WKVECT(C1D2D0,'V V R',NBVALE,ICHA0)
                 DO 105 IN = 1,NBVALE
@@ -186,7 +186,7 @@ C
               CALL JEVEUO(VCHAR,'L',JVAL)
               CALL JELIRA(VCHAR  ,'LONMAX',NBVALE,K8B)
               CALL JEEXIN(LCHAR(I) // '.F2D3D.INIT',IRET)
-              IF (IORD .EQ. 1 .AND. IRET .EQ. 0) THEN
+              IF (IRET .EQ. 0) THEN
                 C2D3D0 = LCHAR(I) // '.F2D3D.INIT'
                 CALL WKVECT(C2D3D0,'V V R',NBVALE,ICHA0)
                 DO 107 IN = 1,NBVALE
@@ -221,7 +221,7 @@ C
               CALL JEVEUO(VCHAR,'L',JVAL)
               CALL JELIRA(VCHAR  ,'LONMAX',NBVALE,K8B)
               CALL JEEXIN(LCHAR(I) // '.PRESS.INIT',IRET)
-              IF (IORD .EQ. 1 .AND. IRET .EQ. 0) THEN
+              IF (IRET .EQ. 0) THEN
                 PRES0 = LCHAR(I) // '.PRESS.INIT'
                 CALL WKVECT(PRES0,'V V R',NBVALE,ICHA0)
                 DO 109 IN = 1,NBVALE
@@ -257,7 +257,7 @@ C
               CALL JEVEUO(VCHAR,'L',JVAL)
               CALL JELIRA(VCHAR  ,'LONMAX',NBVALE,K8B)
               CALL JEEXIN(LCHAR(I) // '.EPSIN.INIT',IRET)
-              IF (IORD .EQ. 1 .AND. IRET .EQ. 0) THEN
+              IF (IRET .EQ. 0) THEN
                 EPSI0 = LCHAR(I) // '.EPSIN.INIT'
                 CALL WKVECT(EPSI0,'V V R',NBVALE,ICHA0)
                 DO 111 IN = 1,NBVALE
@@ -292,7 +292,7 @@ C
               CALL JEVEUO(VCHAR,'L',JVAL)
               CALL JELIRA(VCHAR  ,'LONMAX',NBVALE,K8B)
               CALL JEEXIN(LCHAR(I) // '.PESAN.INIT',IRET)
-              IF (IORD .EQ. 1 .AND. IRET .EQ. 0) THEN
+              IF (IRET .EQ. 0) THEN
                 PESA0 = LCHAR(I) // '.PESAN.INIT'
                 CALL WKVECT(PESA0,'V V R',NBVALE,ICHA0)
                 DO 113 IN = 1,NBVALE
@@ -327,7 +327,7 @@ C
               CALL JEVEUO(VCHAR,'L',JVAL)
               CALL JELIRA(VCHAR  ,'LONMAX',NBVALE,K8B)
               CALL JEEXIN(LCHAR(I) // '.ROTAT.INIT',IRET)
-              IF (IORD .EQ. 1 .AND. IRET .EQ. 0) THEN
+              IF (IRET .EQ. 0) THEN
                 ROTA0 = LCHAR(I) // '.ROTAT.INIT'
                 CALL WKVECT(ROTA0,'V V R',NBVALE,ICHA0)
                 DO 115 IN = 1,NBVALE

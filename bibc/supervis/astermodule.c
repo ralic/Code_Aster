@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF astermodule supervis  DATE 07/06/2004   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF astermodule supervis  DATE 21/06/2004   AUTEUR DURAND C.DURAND */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -2692,6 +2692,8 @@ PyObject *args;
 
 #define CALL_GETCON(nomsd,iob,ctype,lcon,iaddr,nomob) CALLSPPPPS(GETCON,getcon,nomsd,iob,ctype,lcon,iaddr,nomob)
 void DEFSPPPPS(GETCON,getcon,char *,int,INTEGER *,INTEGER *,INTEGER *,char **,char *,int);
+#define CALL_JELIBE(nomsd) CALLS(JELIBE,jelibe,nomsd)
+void DEFS(JELIBE,jelibe,char *,int);
 
 static char getvectjev_doc[]=
 "getvectjev(nomsd)->valsd      \n\
@@ -2823,6 +2825,8 @@ PyObject *args;
             _FIN(aster_getvectjev) ;
             return tup;
           }
+                                   SSCRUTE(nomsd);
+          CALL_JELIBE(nomsd);
         }
         catch(CodeAbortAster){
           /* une exception a ete levee, elle est destinee a etre traitee dans l'appelant */
@@ -2834,6 +2838,8 @@ PyObject *args;
 
 #define CALL_TAILSD(nom, nomsd, val, nbval) CALLSSPP(TAILSD,tailsd,nom, nomsd, val, nbval)
 void DEFSSPP(TAILSD,tailsd,char *,int,char *,int,INTEGER *, INTEGER *);
+#define CALL_JELIBE(nomsd) CALLS(JELIBE,jelibe,nomsd)
+void DEFS(JELIBE,jelibe,char *,int);
 
 static char getcolljev_doc[]=
 "getcolljev(nomsd)->valsd      \n\
@@ -2973,6 +2979,7 @@ PyObject *args;
             }
             PyDict_SetItem(dico,key,tup);
           }
+          CALL_JELIBE(nomsd);
          }
          return dico;
          _FIN(aster_getcolljev) ;

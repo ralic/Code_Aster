@@ -1,10 +1,10 @@
         SUBROUTINE CVMMAT ( MOD,    IMAT,   NMAT,   TEMPD,    TEMPF,
      1                      MATERD, MATERF, MATCST, TYPMA,    NDT,
      2                      NDI,    NR,     NVI )
-        IMPLICIT REAL*8 (A-H,O-Z)
+        IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 21/06/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,7 +49,7 @@ C           NR     :  NB DE COMPOSANTES SYSTEME NL
 C           NVI    :  NB DE VARIABLES INTERNES
 C       ----------------------------------------------------------------
         INTEGER         NMAT, NDT , NDI  , NR , NVI
-        INTEGER         IOPTIO, IDNR, NVIRK
+        INTEGER         IOPTIO, IDNR, NVIRK, I, J, IMAT
         REAL*8          MATERD(NMAT,2) ,MATERF(NMAT,2) , TEMPD , TEMPF
         REAL*8          EPSI , C1D , C2D
         CHARACTER*8     MOD, NOM , NOMC(28) , TYPMA
@@ -65,6 +65,12 @@ C       ----------------------------------------------------------------
 C
 C -     NB DE COMPOSANTES / VARIABLES INTERNES -------------------------
 C
+CJMP    APPAREMMENT, NVI EST LE NOMBRE MAXI DE VARIABLES INTERNES
+C       X1(6), X2(6), P, R, Q + XXI(6) SI ETA.NE.1.D0 + INDICATEUR
+C       CE QUI CONDUIT A NDT+NDT+3(+NDT)+1
+C       DU COUP NR DOIT VALOIR :
+C          NDT (SIGMA) + 2*NDT+3 SI ETA.EQ.1.D0 
+C       ET NDT (SIGMA) + 3*NDT+3 SI ETA.NE.1.D0 
 C -     POUR INTEGRATION PAR METHODE EXPLICITE
 C -     ON RESTE DIMENSIONNE EN 3D
 C
@@ -161,13 +167,14 @@ C
 C
 C -     PARAMETRES DES LOIS DE COMPORTEMENT A 2 SEUILS
 C
-
+C       SI ETA=1, PAS DE MEMOIRE D'ECROUISSAGE
         IF ( MATERD(14,2) .EQ. 1.D0 ) THEN
           IOPTIO = 0
           IDNR = 0
         ELSE
           IOPTIO = 2
           IDNR = NDT
+          NR=NR+NDT
         ENDIF
 C
 C -     MATERIAU CONSTANT ?

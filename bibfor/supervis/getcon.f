@@ -1,6 +1,6 @@
       SUBROUTINE GETCON(NOMRES,IOB,CTYPE,LCON,IADVAR,NOMOB)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
+C MODIF SUPERVIS  DATE 21/06/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -55,8 +55,6 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER         JRES,IRET,IBID,I,LOBJ,IAD,KK
       CHARACTER*32    NOML32, JEXNUM
 C     ------------------------------------------------------------------
-      CALL JEMARQ()
-
       NOML32=NOMRES
       CALL JJVERN(NOML32,0,IRET)
       CALL JELIRA(NOML32,'XOUS',IBID,XOUS)
@@ -195,5 +193,4 @@ C     ------------------------------------------------------------------
       ENDIF
 
  999  CONTINUE
-      CALL JEDEMA()
       END

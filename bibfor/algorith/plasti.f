@@ -3,10 +3,10 @@
      2                       SECHD, SECHF, SREF, EPSDT, DEPST, SIGD, 
      3                       VIND,OPT,SIGF, VINF, DSDE, ICOMP, NVI, 
      4                       IRTETI)
-        IMPLICIT REAL*8 (A-H,O-Z)
+        IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/06/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 21/06/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -426,7 +426,7 @@ C   ------> VISCOPLASTICITE  ==>  TYPMA = 'COHERENT '
 
                 CALL LCJPLC ( LOI  , MOD ,  NMAT, MATERF,
      &            TIMED, TIMEF, COMP,NBCOMM, CPMONO, PGL,NR,NVI,
-     &                  SIGF,VINF,SIGD,VIND, 
+     &                  EPSD,DEPS,SIGF,VINF,SIGD,VIND, 
      &                   DSDE )
 
                 ELSEIF ( TYPMA .EQ. 'VITESSE ' ) THEN

@@ -1,4 +1,4 @@
-#@ MODIF E_ETAPE Execution  DATE 26/09/2003   AUTEUR DURAND C.DURAND 
+#@ MODIF E_ETAPE Execution  DATE 21/06/2004   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -66,7 +66,9 @@ class ETAPE:
       assert(type(self.definition.op)==types.IntType),"type(self.definition.op)="+`type(self.definition.op)`
 
       ier=0
-      if self.definition.op > 0 and self.modexec == 2:
+### CD pourquoi ne plus imprimer le texte des macros fortrans ?
+### CD if self.definition.op > 0 and self.modexec == 2:
+      if self.modexec == 2:
            # affichage du texte de la commande
            self.AfficheTexteCommande()       
 

@@ -1,9 +1,9 @@
         SUBROUTINE LCPLLI ( MOD, NMAT, NR, NVI,EPSD,
      2                      SIGD, VIND, SIGF, VINF)
-        IMPLICIT REAL*8 (A-H,O-Z)
+        IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 21/06/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -37,29 +37,28 @@ C           NVI    :  NB VARIABLES INTERNES
 C       OUT SIGF   :  CONTRAINTE A T+DT
 C           VINF   :  VARIABLES INTERNES A T+DT
 C       ----------------------------------------------------------------
-C           NMOD   :  DIMENSION R , DRDY
+C           NR   :  DIMENSION R , DRDY
 C           R      :  VECTEUR SECOND MEMBRE
 C           DRDY   :  OPERATEUR LINEAIRE
 C           DY     :  INCREMENT DES VARIABLES = ( DSIG  DVIN  (DEPS3)  )
 C           YD     :  VARIABLES A T   = ( SIGD  VIND  (EPSD3)   )
 C           YF     :  VARIABLES A T+DT= ( SIGF  VINF  (EPSF3)   )
 C       ----------------------------------------------------------------
-        INTEGER         NMAT,    NMOD
+        INTEGER         NMAT,    NR
         REAL*8          ZERO   , UN
 C
-        PARAMETER       ( NMOD = 25     )
         PARAMETER       ( ZERO = 0.D0   )
         PARAMETER       ( UN   = 1.D0   )
 C
-        INTEGER         NR,     NDT,    NDI,    NVI
+        INTEGER         NDT,    NDI,    NVI
 C
         LOGICAL         FAUX
 C
         REAL*8          HOOK(6,6),      EPSD(6)
         REAL*8          SIGD(6),        SIGF(6)
         REAL*8          VIND(*),        VINF(*)
-        REAL*8          R(NMOD),        DRDY(NMOD,NMOD)
-        REAL*8          DY(NMOD),       YD(NMOD) , YF(NMOD)
+        REAL*8          R(NR),        DRDY(NR,NR)
+        REAL*8          DY(NR),       YD(NR) , YF(NR)
         REAL*8          Z
 C
         CHARACTER*8     MOD
@@ -69,9 +68,9 @@ C       ----------------------------------------------------------------
         INTEGER I,J
         FAUX = .FALSE.
         Z = 0.D0
-        DO 200  I = 1 , NMOD
+        DO 200  I = 1 , NR
         R( I ) = 0.D0
-        DO 210  J = 1 , NMOD
+        DO 210  J = 1 , NR
         DRDY( I , J ) = 0.D0
   210           CONTINUE
         DY( I ) = 0.D0
@@ -85,17 +84,17 @@ C --    INITIALISATION YD = ( SIGD , VIND , (EPSD(3)) )
 C
         CALL LCEQVN ( NDT  ,  SIGD , YD )
         CALL LCEQVN ( NVI-1,  VIND , YD(NDT+1) )
-        IF(MOD.EQ.'C_PLAN') YD (NR) = EPSD(3)
+        IF(MOD.EQ.'C_PLAN') YD (NDT+NVI) = EPSD(3)
 C
 C         RESOLUTION DU SYSTEME LINEAIRE DRDY DY  = R
 C
 C --      CALCUL DES TERMES DU SYSTEME A T+DT = R
 C
-          CALL LCPL2M (NMAT,NMOD)
+          CALL LCPL2M (NMAT,NR)
 C
 C --      CALCUL DE L OPERATEUR LINEAIRE DU SYSTEME  = DRDY
 C
-          CALL LCPLMA (NMAT,NMOD)
+          CALL LCPLMA (NMAT,NR)
 C
 C --      RESOLUTION DU SYSTEME LINEAIRE DRDY.DY = R
 C
@@ -110,7 +109,7 @@ C
                 ENDIF
 C
           CALL LCEQVN ( NR ,   R ,  DY )
-          CALL MGAUSS ( DRDY , DY , NMOD , NR , 1, Z, FAUX )
+          CALL MGAUSS ( DRDY , DY , NR , NR , 1, Z, FAUX )
 C
 C --      INCREMENTATION DE YF = YD + DY
 C

@@ -3,10 +3,10 @@
      2                      TEMPF,TIMED, TIMEF, DEPS,  EPSD, SIGD, VIND,
      3                      COMP,NBCOMM, CPMONO, PGL,
      3                      SIGF, VINF, ICOMP, IRTETI)
-        IMPLICIT REAL*8 (A-H,O-Z)
+        IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/06/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 21/06/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -89,7 +89,7 @@ C
 C      DIMENSIONNEMENT DYNAMIQUE (MERCI F90)
         REAL*8          R(NR),        DRDY(NR,NR), RINI(NR)
         REAL*8          DRDY1(NR,NR)
-        REAL*8          DDY(NR),      DY(NR),  YD(NR) , YF(NR)
+        REAL*8          DDY(NDT+NVI),DY(NDT+NVI),YD(NDT+NVI),YF(NDT+NVI)
         REAL*8          MATERD(NMAT,2) ,MATERF(NMAT,2)
         REAL*8          TEMPD, TEMPF,   TIMED, TIMEF
 C
@@ -99,7 +99,7 @@ C
 C       ----------------------------------------------------------------
         COMMON /TDIM/   NDT  , NDI
 C       ----------------------------------------------------------------
-        INTEGER I
+        INTEGER I, INTG, IRTET, IRTETI
         
         INTEGER         NBCOMM(NMAT,3)
         REAL*8          PGL(3,3)
@@ -114,11 +114,14 @@ C
 C       DIMENSION DYNAMIQUE DE YD,YF,DY,R,DDY
         DO 100  I = 1 , NR
            R( I ) = 0.D0
+ 100   CONTINUE
+
+        DO 101 I = 1 , (NDT+NVI)
            DDY( I ) = 0.D0
            DY( I ) = 0.D0
            YD( I ) = 0.D0
            YF( I ) = 0.D0
- 100   CONTINUE
+ 101   CONTINUE
 
         ZERO = 0.D0
         FAUX = .FALSE.
@@ -164,7 +167,6 @@ C
         CALL LCRESI ( LOI,   MOD,   IMAT, NMAT, MATERD,MATERF,
      3                COMP,NBCOMM, CPMONO, PGL,NR,NVI,
      &                TEMPF,TIMED,TIMEF,YD,YF,DEPS,EPSD,DY,R )
-C               CALL LCIMVN ( 'R =' , NR , R )
 
 C       SAUVEGARDE DE R(DY0) POUR TEST DE CONVERGENCE
         IF(ITER.EQ.1) THEN
@@ -192,7 +194,8 @@ C
 C --    REACTUALISATION DE DY = DY + DDY
 C
         CALL LCSOVN ( NR , DDY , DY , DY )
-                IF ( MOD(1:6).EQ.'C_PLAN' ) DEPS(3) = DY(NR)
+
+        IF ( MOD(1:6).EQ.'C_PLAN' ) DEPS(3) = DY(NR)
 
 C
 C --    VERIFICATION DE LA CONVERGENCE EN DY  ET RE-INTEGRATION ?
@@ -203,7 +206,7 @@ C
 C
 C --    CONVERGENCE > INCREMENTATION DE  YF = YD + DY
 C
-        CALL LCSOVN ( NR , YD , DY , YF )
+        CALL LCSOVN ( NDT+NVI , YD , DY , YF )
 C
 C --    MISE A JOUR DE SIGF , VINF
 C

@@ -4,7 +4,7 @@
       INTEGER                  IUL,IND
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
+C MODIF UTILITAI  DATE 21/06/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -155,7 +155,7 @@ C     --- IMPRESSION DES NOMS DE RESULTATS
       WRITE(SFORM1,'(A,I3,A)') '(',NBCOUR+1,'(A12,1X))'
       WRITE(IUL,SFORM1) (ZK24(LRES-1+NC),NC=1,NBCOUR+1)
 C     --- IMPRESSION DE VTOT
-      WRITE(SFORM2,'(A,I3,A)') '(',NBCOUR+1,'(1PD12.5,1X))'
+      WRITE(SFORM2,'(A,I3,A)') '(',NBCOUR+1,'(1PE12.5,1X))'
       WRITE(IUL,SFORM2) ((ZR(LVT-1+(NC*NBVAL)+I),NC=0,NBCOUR),I=1,NBVAL)
 C
       CALL JEDETC('V','&&FOIEXC',1)

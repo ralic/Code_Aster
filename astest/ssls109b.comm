@@ -1,4 +1,4 @@
-# MODIF  DATE 15/06/2004   AUTEUR MABBAS M.ABBAS 
+# MODIF  DATE 21/06/2004   AUTEUR DURAND C.DURAND 
 # TITRE PLAQUE ENCASTREE EN TRACTION CONSTITUEE DE 3 NAPPES D'ARMATURES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -558,6 +558,7 @@ TEST_RESU(RESU=(
                 NOEUD = 'NO2',      
                 NOM_CMP = 'SIYY',   
                 REFERENCE='NON_REGRESSION',VALE= 0.,       
+                CRITERE = 'ABSOLU',    
                 ),
                 _F( 
                 RESULTAT = RESU0,   
@@ -597,6 +598,7 @@ TEST_RESU(RESU=(
                 NOEUD = 'NO2',      
                 NOM_CMP = 'SIYY',   
                 REFERENCE='NON_REGRESSION',VALE= 0.,       
+                CRITERE = 'ABSOLU',    
                 ),
                 _F( 
                 RESULTAT = RESU0,   

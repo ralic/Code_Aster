@@ -1,8 +1,9 @@
-        SUBROUTINE LMAJPL ( MOD, NMAT, MATER, DSDE )
-        IMPLICIT REAL*8 (A-H,O-Z)
+        SUBROUTINE LMAJPL ( MOD, NMAT, MATER, 
+     &                TIMED, TIMEF,SIGF,VINF,SIGD,VIND,NVI,NR,DSDE )
+        IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/02/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 21/06/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -27,7 +28,7 @@ C       ----------------------------------------------------------------
 C       IN  MOD    :  TYPE DE MODELISATION
 C           NMAT   :  DIMENSION MATER
 C           MATER  :  COEFFICIENTS MATERIAU
-C           NMOD   :  DIMENSION DRDY
+C           NR   :  DIMENSION DRDY
 C           DRDY   :  MATRICE JACOBIENNE
 C
 C           DRDY  = ( DGDS  DGDX  DGDX1  DGDX2  DGDV  )
@@ -39,13 +40,16 @@ C
 C       OUT DSDE   :  MATRICE DE COMPORTEMENT TANGENT = DSIG/DEPS
 C       ----------------------------------------------------------------
         LOGICAL         FAUX
-        INTEGER         NDT , NDI , NMAT , NMOD
+        INTEGER         NDT , NDI , NMAT , NR, NVI
         INTEGER         N1,  N2,  N3,  N4
         REAL*8          UN , ZERO, Z
         PARAMETER       ( UN   =  1.D0   )
         PARAMETER       ( ZERO =  0.D0   )
-        PARAMETER       ( NMOD = 40     )
 
+C DIMENSIONNEMENT DYNAMIQUE : TABLEAUX AUTOMATIQUES FORTRAN 90
+        REAL*8          DRDY(NR,NR),YD(NR),YF(NR),DY(NR)
+        
+        REAL*8 TIMED,TIMEF,SIGF(*),VINF(*),SIGD(*),VIND(*)
         REAL*8          MATER(NMAT,2)
 C
         REAL*8          DGDS(6,6) , DGDX(6,6) , DGDX1(6,6)
@@ -62,7 +66,6 @@ C
 C
         REAL*8          HOOKF(6,6), DSDE(6,6),  I4(6,6)
 C
-        REAL*8          DRDY(NMOD,NMOD)
 C
         REAL*8          MATA(6,6),  MATB(6,6),  MATC(6,6),  MATD(6,6)
         REAL*8          MATE(6,6),  MTMP(6,6),  MTMP1(6,6), MTMP2(6,6)
@@ -72,7 +75,6 @@ C
 C
 C       ----------------------------------------------------------------
         COMMON /TDIM/   NDT   , NDI
-        COMMON /JACOB/  DRDY
 C       ----------------------------------------------------------------
         DATA  I4        /UN     , ZERO  , ZERO  , ZERO  ,ZERO  ,ZERO,
      1                   ZERO   , UN    , ZERO  , ZERO  ,ZERO  ,ZERO,
@@ -84,7 +86,19 @@ C       ----------------------------------------------------------------
 C
         FAUX = .FALSE.
         Z = 0.D0
-C
+
+        CALL LCEQVN ( NDT  ,  SIGD , YD )
+        CALL LCEQVN ( NDT  ,  SIGF , YF )
+        CALL LCEQVN ( NVI-1,  VIND , YD(NDT+1) )
+        CALL LCEQVN ( NVI-1,  VINF , YF(NDT+1) )
+        CALL LCEQVN ( NR,  YF , DY )
+        CALL R8AXPY( NR, -1.D0, YD, 1,DY, 1)
+
+C       RECALCUL DE LA MATRICE JACOBIENNE SUR LA SOLUTION FINALE
+        CALL LMAJAC ( MOD, NMAT, MATER, TIMED, TIMEF,
+     &                  YF,  DY,   NR,  DRDY )
+
+C 
 C - RECUPERER LES SOUS-MATRICES BLOC
 C
         N1 =   NDT + 1
@@ -92,35 +106,35 @@ C
         N3 = 3*NDT + 1
         N4 = 4*NDT + 1
 C
-        CALL LCICMA (DRDY,NMOD,NMOD,NDT,NDT,1,1 ,DGDS ,6,6,1,1)
-        CALL LCICMA (DRDY,NMOD,NMOD,NDT,NDT,1,N1,DGDX ,6,6,1,1)
-        CALL LCICMA (DRDY,NMOD,NMOD,NDT,NDT,1,N2,DGDX1,6,6,1,1)
-        CALL LCICMA (DRDY,NMOD,NMOD,NDT,NDT,1,N3,DGDX2,6,6,1,1)
-        CALL LCICMA (DRDY,NMOD,NMOD,NDT,1  ,1,N4,DGDV ,6,1,1,1)
+        CALL LCICMA (DRDY,NR,NR,NDT,NDT,1,1 ,DGDS ,6,6,1,1)
+        CALL LCICMA (DRDY,NR,NR,NDT,NDT,1,N1,DGDX ,6,6,1,1)
+        CALL LCICMA (DRDY,NR,NR,NDT,NDT,1,N2,DGDX1,6,6,1,1)
+        CALL LCICMA (DRDY,NR,NR,NDT,NDT,1,N3,DGDX2,6,6,1,1)
+        CALL LCICMA (DRDY,NR,NR,NDT,1  ,1,N4,DGDV ,6,1,1,1)
 C
-        CALL LCICMA (DRDY,NMOD,NMOD,NDT,NDT,N1,1 ,DLDS ,6,6,1,1)
-        CALL LCICMA (DRDY,NMOD,NMOD,NDT,NDT,N1,N1,DLDX ,6,6,1,1)
-        CALL LCICMA (DRDY,NMOD,NMOD,NDT,NDT,N1,N2,DLDX1,6,6,1,1)
-        CALL LCICMA (DRDY,NMOD,NMOD,NDT,NDT,N1,N3,DLDX2,6,6,1,1)
-        CALL LCICMA (DRDY,NMOD,NMOD,NDT,1  ,N1,N4,DLDV ,6,1,1,1)
+        CALL LCICMA (DRDY,NR,NR,NDT,NDT,N1,1 ,DLDS ,6,6,1,1)
+        CALL LCICMA (DRDY,NR,NR,NDT,NDT,N1,N1,DLDX ,6,6,1,1)
+        CALL LCICMA (DRDY,NR,NR,NDT,NDT,N1,N2,DLDX1,6,6,1,1)
+        CALL LCICMA (DRDY,NR,NR,NDT,NDT,N1,N3,DLDX2,6,6,1,1)
+        CALL LCICMA (DRDY,NR,NR,NDT,1  ,N1,N4,DLDV ,6,1,1,1)
 C
-        CALL LCICMA (DRDY,NMOD,NMOD,NDT,NDT,N2,1 ,DJDS ,6,6,1,1)
-        CALL LCICMA (DRDY,NMOD,NMOD,NDT,NDT,N2,N1,DJDX ,6,6,1,1)
-        CALL LCICMA (DRDY,NMOD,NMOD,NDT,NDT,N2,N2,DJDX1,6,6,1,1)
-        CALL LCICMA (DRDY,NMOD,NMOD,NDT,NDT,N2,N3,DJDX2,6,6,1,1)
-        CALL LCICMA (DRDY,NMOD,NMOD,NDT,1  ,N2,N4,DJDV ,6,1,1,1)
+        CALL LCICMA (DRDY,NR,NR,NDT,NDT,N2,1 ,DJDS ,6,6,1,1)
+        CALL LCICMA (DRDY,NR,NR,NDT,NDT,N2,N1,DJDX ,6,6,1,1)
+        CALL LCICMA (DRDY,NR,NR,NDT,NDT,N2,N2,DJDX1,6,6,1,1)
+        CALL LCICMA (DRDY,NR,NR,NDT,NDT,N2,N3,DJDX2,6,6,1,1)
+        CALL LCICMA (DRDY,NR,NR,NDT,1  ,N2,N4,DJDV ,6,1,1,1)
 C
-        CALL LCICMA (DRDY,NMOD,NMOD,NDT,NDT,N3,1 ,DIDS ,6,6,1,1)
-        CALL LCICMA (DRDY,NMOD,NMOD,NDT,NDT,N3,N1,DIDX ,6,6,1,1)
-        CALL LCICMA (DRDY,NMOD,NMOD,NDT,NDT,N3,N2,DIDX1,6,6,1,1)
-        CALL LCICMA (DRDY,NMOD,NMOD,NDT,NDT,N3,N3,DIDX2,6,6,1,1)
-        CALL LCICMA (DRDY,NMOD,NMOD,NDT,1  ,N3,N4,DIDV ,6,1,1,1)
+        CALL LCICMA (DRDY,NR,NR,NDT,NDT,N3,1 ,DIDS ,6,6,1,1)
+        CALL LCICMA (DRDY,NR,NR,NDT,NDT,N3,N1,DIDX ,6,6,1,1)
+        CALL LCICMA (DRDY,NR,NR,NDT,NDT,N3,N2,DIDX1,6,6,1,1)
+        CALL LCICMA (DRDY,NR,NR,NDT,NDT,N3,N3,DIDX2,6,6,1,1)
+        CALL LCICMA (DRDY,NR,NR,NDT,1  ,N3,N4,DIDV ,6,1,1,1)
 C
-        CALL LCICMA (DRDY,NMOD,NMOD,  1,NDT,N4,1 ,DKDS ,1,6,1,1)
-        CALL LCICMA (DRDY,NMOD,NMOD,  1,NDT,N4,N1,DKDX ,1,6,1,1)
-        CALL LCICMA (DRDY,NMOD,NMOD,  1,NDT,N4,N2,DKDX1,1,6,1,1)
-        CALL LCICMA (DRDY,NMOD,NMOD,  1,NDT,N4,N3,DKDX2,1,6,1,1)
-        CALL LCICMA (DRDY,NMOD,NMOD,  1,  1,N4,N4,DKDV ,1,1,1,1)
+        CALL LCICMA (DRDY,NR,NR,  1,NDT,N4,1 ,DKDS ,1,6,1,1)
+        CALL LCICMA (DRDY,NR,NR,  1,NDT,N4,N1,DKDX ,1,6,1,1)
+        CALL LCICMA (DRDY,NR,NR,  1,NDT,N4,N2,DKDX1,1,6,1,1)
+        CALL LCICMA (DRDY,NR,NR,  1,NDT,N4,N3,DKDX2,1,6,1,1)
+        CALL LCICMA (DRDY,NR,NR,  1,  1,N4,N4,DKDV ,1,1,1,1)
 C
 C       ----------------------------------------------------------------
 C

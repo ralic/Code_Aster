@@ -4,7 +4,7 @@
       CHARACTER*19       NOMFON,        FONRES
 C     ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 17/12/2002   AUTEUR CIBHHGB G.BERTRAND 
+C MODIF UTILITAI  DATE 21/06/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -124,7 +124,7 @@ C
 C
  1000 FORMAT('#NOM DE LA FONCTION: ',A)
  1020 FORMAT('#NOM DE LA NAPPE: ',A,' , ',A,':',F8.4)
- 1040 FORMAT(1X,1P,D12.5,1X,D12.5)
+ 1040 FORMAT(1X,1P,E12.5,1X,E12.5)
 C
       CALL JEDEMA()
       END
