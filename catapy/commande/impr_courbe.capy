@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 23/08/2004   AUTEUR CIBHHLV L.VIVAN 
+#& MODIF COMMANDE  DATE 20/10/2004   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,7 +19,7 @@
 # RESPONSABLE MCOURTOI M.COURTOIS
 IMPR_COURBE=PROC(nom="IMPR_COURBE",op= 141,fr="Impression, sur fichiers",
                  UIinfo={"groupes":("Fonction",)},
-         FORMAT          =SIMP(statut='f',typ='TXM',position='global',defaut="RESULTAT",
+         FORMAT          =SIMP(statut='f',typ='TXM',defaut="RESULTAT",
                                into=("AGRAF","EXCEL","POSTSCRIPT","RESULTAT","COMMANDE","SEISME") ),
 
          b__agraf  =BLOC(condition="FORMAT=='AGRAF'",

@@ -1,6 +1,6 @@
       SUBROUTINE DFDM1D ( NNO,POIDS,DFRDK,COOR,DFDX,COUR,JACP,COSA,SINA)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 10/11/1999   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 25/10/2004   AUTEUR D6BHHJP J.P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,7 +19,7 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
       IMPLICIT REAL*8 (A-H,O-Z)
       INTEGER             NNO
-      REAL*8                  DFRDK(1),COOR(1),DFDX(1)
+      REAL*8                  DFRDK(1),COOR(*),DFDX(1)
       REAL*8                  DXDK,DYDK,COUR,JAC,JACP,POIDS,SINA,COSA
 C ......................................................................
 C    - FONCTION REALISEE:  CALCUL DES DERIVEES DE LA FONCTION DE FORME

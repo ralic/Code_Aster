@@ -7,7 +7,7 @@
      &                  DIAG,ARETE,NOEUD,DEBORD)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/10/2004   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 25/10/2004   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -201,6 +201,7 @@ C
 C --- PROJECTION SUR LES 4 TRIANGLES
 C
 
+
         NORMAL(1) = NORM(1)
         NORMAL(2) = NORM(2)
         NORMAL(3) = NORM(3)
@@ -288,6 +289,7 @@ C --- ECRITE ENTRE LE NOEUD ESCLAVE ET LES 3 SOMMETS DE CE TRIANGLE.
 C
         JEUMIN = R8GAEM()
         DO 20 K = 1,4
+        
 
           IF ((OLDJ(K).LE.JEUMIN).AND.
      &        (ABS(OLDJ(K)-JEUMIN).GT.1D-15)) THEN
@@ -298,40 +300,56 @@ C   GESTION DES CONFLITS D'ARETES
 C
            IF ((KMIN.EQ.1).AND.DIAG(1).EQ.1) THEN
              IF (OLDJ(3).LT.OLDJ(4)) THEN
-               KMIN = 3
+               IF (OLDJ(3).LE.OLDJ(1)) THEN
+                 KMIN = 3
+               ENDIF
              ELSE
-               KMIN = 4
+               IF (OLDJ(4).LE.OLDJ(1)) THEN
+                 KMIN = 4
+               ENDIF
              ENDIF
            ENDIF
            IF ((KMIN.EQ.2).AND.DIAG(1).EQ.1) THEN
              IF (OLDJ(3).LT.OLDJ(4)) THEN
-               KMIN = 3
+               IF (OLDJ(3).LE.OLDJ(2)) THEN
+                 KMIN = 3
+               ENDIF
              ELSE
-               KMIN = 4
+               IF (OLDJ(4).LE.OLDJ(2)) THEN
+                 KMIN = 4
+               ENDIF
              ENDIF
            ENDIF
            IF ((KMIN.EQ.3).AND.DIAG(2).EQ.1) THEN
              IF (OLDJ(1).LT.OLDJ(2)) THEN
-               KMIN = 1
+               IF (OLDJ(1).LE.OLDJ(3)) THEN
+                 KMIN = 1
+               ENDIF
              ELSE
-               KMIN = 2
+               IF (OLDJ(2).LE.OLDJ(3)) THEN
+                 KMIN = 2
+               ENDIF
              ENDIF
            ENDIF
            IF ((KMIN.EQ.4).AND.DIAG(2).EQ.1) THEN
              IF (OLDJ(1).LT.OLDJ(2)) THEN
-               KMIN = 1
+               IF (OLDJ(1).LE.OLDJ(4)) THEN
+                 KMIN = 1
+               ENDIF
              ELSE
-               KMIN = 2
+               IF (OLDJ(2).LE.OLDJ(4)) THEN
+                 KMIN = 2
+               ENDIF
              ENDIF
            ENDIF
 
            IF ((DIAG(1).EQ.1).AND.(DIAG(2).EQ.1)) THEN
              KMIN = 1
            ENDIF
+
            JEUMIN = OLDJ(KMIN)
           END IF
  20     CONTINUE
-
         IF (KMIN.EQ.0) THEN
           CALL UTMESS('F','PROJQ1',
      &         'LE NOEUD ESCLAVE N A PAS PU S APPARIER')

@@ -1,6 +1,6 @@
       SUBROUTINE DXFNMB (NOMTE, X, Y, N)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 18/11/2003   AUTEUR LEBOUVIE F.LEBOUVIER 
+C MODIF ELEMENTS  DATE 25/10/2004   AUTEUR D6BHHJP J.P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,7 +19,7 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
       IMPLICIT REAL*8 (A-H,O-Z)
       CHARACTER*16 NOMTE
-      REAL*8       N(1) 
+      REAL*8       N(*) 
 C     ------------------------------------------------------------------
 C --- CALCUL DES FONCTION DE FORME DE MEMBRANE N DES ELEMENTS
 C --- TRIANGLE A 3 NOEUDS ET QUADRANGLE A 4 NOEUDS AU POINT (X,Y)

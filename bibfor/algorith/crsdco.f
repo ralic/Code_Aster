@@ -6,7 +6,7 @@
       CHARACTER*24       NUMEDD, DEFICO, RESOCO
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 11/08/2004   AUTEUR BOYERE E.BOYERE 
+C MODIF ALGORITH  DATE 25/10/2004   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -76,7 +76,7 @@ C
       CHARACTER*24 APCOFR,APJEFX,APJEFY,METHCO,MAESCL
       CHARACTER*24 NORINI,NORMCO,TANGCO
       INTEGER      IFM,NIV
-      INTEGER      TYPALC,TYPALF,FROT3D,MATTAN
+      INTEGER      TYPALC,TYPALF,FROT3D,MATTAN,VERDIM
       REAL*8       TMAX,JEVTBL,TVALA,TVMAX,TV
       INTEGER      ITBLOC
       INTEGER      IDADIA,IDHCOL,IDABLO,IDIABL,IDDESC
@@ -136,8 +136,10 @@ C ----------------------------------------------------------------------
       IF (IER.EQ.0) CALL WKVECT (ATMU,'V V R',NEQ,JBID)
 
       NDIMCO = DEFICO(1:16)//'.NDIMCO'
-      CALL JEVEUO (NDIMCO, 'L',JDIM)
+      CALL JEVEUO (NDIMCO, 'E',JDIM)
       NDIM = ZI(JDIM)
+
+
 
 C --- ARGUMENT POUR PREMIERE UTILISATION DU CONTACT OU NON
       CALL WKVECT (RESOCO(1:14) // '.PREM','V V L',1,JBID)
@@ -159,6 +161,28 @@ C
       CALL WKVECT (PDDL,'V V I',NNOCO+1,JPDDL)
       ZI(JPDDL) = 0
       NDDL = 0
+C
+C --- VERIFICATION DE LA COHERENCE DES DIMENSIONS
+C
+      VERDIM = 0
+      IF (NDIM.GT.3) THEN
+         DO 24 INO = 1,NNOCO
+           NUMNO = ZI(JNOCO+INO-1)
+           CALL JENUNO (JEXNUM(NOMA//'.NOMNOE',NUMNO),NOMNO)
+           IZONE = ZI(JZOCO+INO-1)
+           ICHAM = ZI(JCHAM+IZONE-1)
+
+           IF ((ICHAM.EQ.1).OR.(ICHAM.EQ.-1)) THEN
+            CALL POSDDL ('NUME_DDL',NUMEDD,NOMNO,'DZ',
+     &                              JBID,VERDIM)
+           END IF
+           IF (VERDIM.NE.0) THEN
+            CALL UTMESS('F','CRSDCO','MELANGE 2D ET 3D DANS LE CONTACT')
+           ENDIF
+ 24     CONTINUE
+        ZI(JDIM) = 2
+        NDIM = 2
+      ENDIF
 C
       DO 20 INO = 1,NNOCO
         IZONE = ZI(JZOCO+INO-1)

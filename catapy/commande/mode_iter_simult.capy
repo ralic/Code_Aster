@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 11/08/2004   AUTEUR A3BHHAE H.ANDRIAMBOLOLONA 
+#& MODIF COMMANDE  DATE 20/10/2004   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -31,8 +31,8 @@ MODE_ITER_SIMULT=OPER(nom="MODE_ITER_SIMULT",op=  45,sd_prod=mode_iter_simult_pr
             UIinfo={"groupes":("Résolution",)},
          MATR_A          =SIMP(statut='o',typ=(matr_asse_depl_r,matr_asse_depl_c,matr_asse_gene_r,matr_asse_pres_r ) ),
          MATR_B          =SIMP(statut='o',typ=(matr_asse_depl_r,matr_asse_gene_r,matr_asse_pres_r ) ),
-         MATR_C          =SIMP(statut='f',position='global',typ=(matr_asse_depl_r,matr_asse_gene_r) ),
-         METHODE         =SIMP(statut='f',position='global',typ='TXM',defaut="SORENSEN",
+         MATR_C          =SIMP(statut='f',typ=(matr_asse_depl_r,matr_asse_gene_r) ),
+         METHODE         =SIMP(statut='f',typ='TXM',defaut="SORENSEN",
                                into=("TRI_DIAG","JACOBI","SORENSEN") ),
          b_tri_diag =BLOC(condition = "METHODE == 'TRI_DIAG'",
            PREC_ORTHO      =SIMP(statut='f',typ='R',defaut= 1.E-12,val_min=0.E+0 ),

@@ -1,0 +1,998 @@
+
+
+-----------------------------------------------------------------------
+--- AUTEUR a3baxdp A.PARROT   DATE  le 26/10/2004 a 09:01:40
+
+CORRECTION AL 2004-322
+   INTERET_UTILISATEUR : OUI
+   TITRE POST_ELEM option WEIBULL en 3D
+   FONCTIONNALITE
+   La commande POST_ELEM option WEIBULL en 3D comportait un bug pour le calcul de la contrainte
+   de Weibull sans prendre en compte la correction de plasticité. Pour évaluer la contrainte principale
+   maximale, le maximum des valeurs absolues des contraintes principales est calculé ce qui conduit à
+   des contraintes de Weibull non nulles en compression et donc à des résultats faux. Il faut prendre
+   le maximum des 3 contraintes principales et non le maximum des valeurs absolues.
+   RESU_FAUX_VERSION_EXPLOITATION   :   OUI   DEPUIS : 6.0.0
+   RESU_FAUX_VERSION_DEVELOPPEMENT  :   OUI   DEPUIS : 6.0.0
+   RESTITUTION_VERSION_EXPLOITATION  :   OUI
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION : cente01a,ssna103a,ssna108a,ssnv148a
+   DETAILS
+   Dans la routine TE0338.f :
+     2.1.3 CALCUL DE SIGM_W
+C           ----------------------
+          CALL FGEQUI(SIGM,'SIGM',NBVP,EQUI)
+          SIG1 = MAX(ABS(EQUI(3)),ABS(EQUI(4)),ABS(EQUI(5)))
+
+    est remplacé par
+      2.1.3 CALCUL DE SIGM_W
+C           ----------------------
+          CALL FGEQUI(SIGM,'SIGM',NBVP,EQUI)
+          SIG1 = MAX(EQUI(3),EQUI(4),EQUI(5))
+
+   NB_JOURS_TRAV  : 0.5
+
+-------------------------------------------------------------------------------
+
+CORRECTION AL 2003-066
+   INTERET_UTILISATEUR : OUI
+   TITRE POST_ELEM option WEIBULL pour la loi de LEMAITRE
+   FONCTIONNALITE
+   La commande POST_ELEM option WEIBULL a été modifiée de façon à ce que l'amorçage de la rupture par
+   clivage ne soit possible que lorsque la plasticité est active. Pour cela une condition a été
+   introduite sur l'indicateur de plasticité. La loi de LEMAITRE ne dispose pas d'une variable interne
+   correspondant à l'indicateur de plasticité, la contrainte de Weibull calculée est toujours nulle.
+   Pour pouvoir utiliser POST_ELEM WEIBULL avec LEMAITRE on considérera que l'amorçage de la rupture
+   par clivage nécessite qu'il y ait eu de la plasticité (condition p>0 au lieu de ppoint>0). On affecte
+   1 à l'indicateur de plasticité si p>pseuil et  0 sinon si (ZK16(ICOMPO).EQ.'LEMAITRE').
+   Cette modification concerne POST_ELEM option WEIBULL en 2D (TE0331.f) et en 3D (TE0338.f).
+   RESU_FAUX_VERSION_EXPLOITATION   :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT  :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   OUI
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_U : U4.81.22
+       EXPL_ : Préciser que pour pouvoir utiliser la commande avec la loi de LEMAITRE, on considère que la rupture
+       par clivage nécessite qu'il y ait eu de la plasticité et non que la plasticité soit active. Loi non
+       recommandée pour les calculs type WPS.
+   VALIDATION : cente01a,ssna103a,ssna108a,ssnv148a
+   DETAILS
+   Dans les routines TE0338.f et TE0331.f:
+            PPT =ZR(IVARIG+NBVARI*(KP-1)+IPOPPT-1)
+   est remplacé par
+ IF ((ZK16(ICOMPO).EQ.'LEMAITRE').AND.(PP.GE.SEUIL)) THEN
+  PPT = 1.D0
+ ELSE
+  PPT =ZR(IVARIG+NBVARI*(KP-1)+IPOPPT-1)
+ END IF
+   NB_JOURS_TRAV  : 0.5
+
+-------------------------------------------------------------------------------
+
+RESTITUTION  HORS AREX
+   INTERET_UTILISATEUR : OUI
+   TITRE POST_ELEM option WEIBULL pour la loi VISC_ISOT_TRAC
+   FONCTIONNALITE
+   La loi de comportement VISC_ISOT_TRAC a été développée dans le cadre du projet CONTRECS. On souhaite
+   pouvoir utiliser la commande POST_ELEM option WEIBULL en post-traitement d'un calcul effectué en
+   utilisant cette loi. On ajoute donc cette loi dans les lois admissibles pour POST_ELEM WEIBULL et on
+   indique dans quelles variables internes se trouvent la déformation plastique cumulée et l'indicateur
+   de plasticité. Cette modification concerne POST_ELEM option WEIBULL en 2D (TE0331.f) et en 3D
+   (TE0338.f).
+   RESU_FAUX_VERSION_EXPLOITATION   :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT  :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_U : U4.81.22
+       EXPL_ : Préciser que la loi de comportement VISC_ISOT_TRAC est admissible avec POST_ELEM option WEIBULL.
+     DOC_V : V1.02.001-A
+       EXPL_ : Le cas test cente01 a été modifié. Un calcul avec la loi VISC_ISOT_TRAC a été introduit. L'incrément
+       de temps auquel le test de non régression était réalisé a été modifié de façon à ce que la contrainte de
+       Weibull calculée ne soit plus nulle.
+   VALIDATION : cente01a
+   DETAILS
+   Dans les routines TE0338.f et TE0331.f:
+      IF (     (ZK16(ICOMPO).EQ.'VMIS_ISOT_TRAC')
+     &     .OR.(ZK16(ICOMPO).EQ.'VMIS_ISOT_LINE')
+     &     .OR.(ZK16(ICOMPO).EQ.'LEMAITRE')
+     &     .OR.(ZK16(ICOMPO).EQ.'VMIS_ECMI_TRAC')
+     &     .OR.(ZK16(ICOMPO).EQ.'VMIS_ECMI_LINE')
+     &     .OR.(ZK16(ICOMPO).EQ.'VISC_CIN1_CHAB')
+     &     .OR.(ZK16(ICOMPO).EQ.'VISC_CIN2_CHAB') ) THEN
+        IPOPP  = 1
+        IPOPPT = 2
+   est remplacé par
+      IF (     (ZK16(ICOMPO).EQ.'VMIS_ISOT_TRAC')
+     &     .OR.(ZK16(ICOMPO).EQ.'VMIS_ISOT_LINE')
+     &     .OR.(ZK16(ICOMPO).EQ.'VISC_ISOT_TRAC')
+     &     .OR.(ZK16(ICOMPO).EQ.'LEMAITRE')
+     &     .OR.(ZK16(ICOMPO).EQ.'VMIS_ECMI_TRAC')
+     &     .OR.(ZK16(ICOMPO).EQ.'VMIS_ECMI_LINE')
+     &     .OR.(ZK16(ICOMPO).EQ.'VISC_CIN1_CHAB')
+     &     .OR.(ZK16(ICOMPO).EQ.'VISC_CIN2_CHAB') ) THEN
+        IPOPP  = 1
+        IPOPPT = 2
+   NB_JOURS_TRAV  : 0.5
+
+
+-----------------------------------------------------------------------
+--- AUTEUR assire A.ASSIRE   DATE  le 26/10/2004 a 13:23:33
+
+------------------------------------------------------------------------------
+CORRECTION AL 2004-347
+   INTERET_UTILISATEUR : OUI
+   TITRE  Probleme de tolerance sur Linux
+   FONCTIONNALITE
+   On teste une somme absolue d'equi_elga_sigm avec une tolerance tres
+   stricte.
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_V : V3.02.201
+   VALIDATION
+   sslp201a, sslp201b
+   DETAILS
+   On reajuste la tolerance pour couvrir la variation Linux.
+   NB_JOURS_TRAV  : 0.5
+
+------------------------------------------------------------------------------
+
+CORRECTION AL 2004-207
+   INTERET_UTILISATEUR : OUI
+   TITRE  Bug DEFI_CABLE_BP / Option CONE
+   FONCTIONNALITE
+   Il y avait un bug sous Linux, dans l'operateur DEFI_CABLE_BP avec l'option
+   CONE, qui se declarait sous une cascade de circonstances. Le code
+   s'arretait car il trouvait un ddl de rotation DRZ a un noeud alors que ca
+   n'etait pas vrai.
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+   Cette fiche a été ouverte via le site Web, on fait passer l'etude de
+   l'utilisateur.
+   DETAILS
+   Un DISMOI mal placé recuperait dans certains cas une valeur pour l'entier
+   codé NBEC qui etait fausse, ce qui provoquait des tests dans des mauvaises
+   parties de la memoire.
+   NB_JOURS_TRAV  : 2.
+
+------------------------------------------------------------------------------
+
+
+-----------------------------------------------------------------------
+--- AUTEUR boyere E.BOYERE   DATE  le 25/10/2004 a 15:30:11
+
+REALISATION EL 2004-210
+AOM
+   INTERET_UTILISATEUR : NON
+   TITRE charge due a une rotation variant dans le temps
+   FONCTIONNALITE
+L'option ROTATION d'AFFE_CHAR_MECA permet de prendre en compte les efforts
+d'inertie soumis a une structure en rotation.
+Or l'intensite de la rotation entree dans la commande est une constante.
+Cela peut laisser penser qu'il n'est donc pas possible de simuler
+des transitoires au cours desquels la vitesse de rotation est censée évoluer.
+Mais ce n'est pas le cas, pour le moins dans le cas des petites deformations.
+
+En effet, on peut multiplier le chargement de rotation par un FONC_MULT
+a l'interieur de l'EXCIT du calcul transitoire,
+et ainsi decomposer de facon multiplicative la force en espace et en temps.
+Cette approche est licite des que les deformations sont faibles,
+ce qui est vrai dans la plupart des etudes.
+En revanche il faut etre un peu attentif a la fonction que l'on met derriere le FONC_MULT.
+
+Voici le petit raisonnement que j'ai tenu :
+
+Le chargement au point X(t) du a la rotation s'ecrit rho (w x X) x w  ou w est le vecteur de rotation.
+Si on ecrit w = w0 . f(t) on a donc un chargement qui devient alors :
+ [ rho (w0 x X) x w0 ] . f(t)^2
+
+Or en linéaire, dans DYNA_LINE_TRAN avec chargement par vecteur assemble au second membre
+et dans DYNA_TRAN_MODAL, on neglige les deformations au cours du temps de la structure : X=X0=cst.
+Pour DYNA_NON_LINE, c'est aussi vrai dans bien des cas.
+Dans ce cas, la decomposition multiplicative en espace et en temps suit d'elle-meme :
+charge = R0 . F(t)
+avec R0 le chargement de rotation pour la configuration initiale et F(t) = f(t)^2.
+
+Conclusion : pour tenir compte de la variation de vitesse dans le temps,
+FONC_MULT est bien indique a condition de faire attention a la fonction
+multiplicatrice qui vaut le carre de l'evolution en temps de la vitesse de
+rotation.
+
+Rq : cette fiche a ete requalifiee en AOM.
+
+   RESU_FAUX_VERSION_EXPLOITATION  :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   NON
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+   DETAILS
+   NB_JOURS_TRAV  : 1.5
+
+
+
+
+
+-----------------------------------------------------------------------
+--- AUTEUR cibhhlv L.VIVAN   DATE  le 25/10/2004 a 09:46:09
+
+-----------------------------------------------------------------------
+CORRECTION AL 2004-357
+   POUR_LE_COMPTE_DE : J.PELLET
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : NON
+   TITRE : DEFI_GROUP
+   FONCTIONNALITE
+     L'utilisateur veut ordonner un ensemble de noeuds situés sur un
+     segment de droite P1-P0 :
+              CREA_GROUP_NO=_F(OPTION='SEGM_DROI_ORDO',
+                               NOM='GROU1',
+                               GROUP_NO_ORIG='P1',
+                               GROUP_NO_EXTR='P0',
+                               PRECISION=0.001,
+                               CRITERE='ABSOLU',),
+     mais il manque l'ensemble des noeuds qu'il veut ordonner.
+              CREA_GROUP_NO=_F(OPTION='SEGM_DROI_ORDO',
+                               NOM='GROU1',
+                    --->       o / NOEUD = ...
+                    --->         / GROUP_NO = ...
+                               GROUP_NO_ORIG='P1',
+                               GROUP_NO_EXTR='P0',
+                               PRECISION=0.001,
+                               CRITERE='ABSOLU',),
+   DETAIL
+   0- Pour les futurs développements sous le mot clé CREA_GROUP_NO, il
+      est souhaitable d'utiliser OPTION.
+   1-catalogue defi_group.capy, mot clé facteur CREA_GROUP_NO :
+       redefinition des blocs
+       premier bloc : OPTION == None  ce qui permet d'imposer une règle
+          UN_PARMI('TOUT_GROUP_MA','GROUP_MA','GROUP_NO',
+                                   'NOEUD','INTERSEC','UNION','DIFFE'),
+       puis un bloc par OPTION
+   2-routine cgnoso.f : test sur NBNO retour de RELIEM
+     si NBNO=0, le code émet un message Fatal :
+     <F> <DEFI_GROUP> <CGNOSO> IL MANQUE L'ENSEMBLE DES NOEUDS QUE
+      L'ON VEUT ORDONNER, MOTS CLES "NOEUD" ET/OU "GROUP_NO".
+
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+      555 tests validant CREA_GROUP_NO passés
+
+--------------------------------------------------------------------------
+REALISATION EL 2003-195
+   NB_JOURS_TRAV  : 10
+   POUR_LE_COMPTE_DE   : E.LONGATTE-LACAZEDIEU
+   INTERET_UTILISATEUR : OUI
+   TITRE : compléménts de dvpt pour GRAPPE_FLUIDE
+
+   FONCTIONNALITE
+   1/ calcul en POURSUITE des forces fluides
+
+      Ajout dans la SD EVOL_NOLI de paramètres supplémentaires:
+       - ITER_DASHPOT : itération dans le dashpot
+       - GFUM  : vitesse du fluide dans la section de passage Am
+       - GFUA  : vitesse du fluide dans la section de passage Aa
+       - GFUML : vitesse du fluide dans la section de passage Aml
+       - GFUI  : vitesse du fluide dans la section de passage Ai
+       - GFVFD : variable pour le dashpot
+       - GFVAG : variable pour le dashpot
+       - GFVAD : vitesse du fluide dans le guide
+      modification de nmarch.f pour stocker ces paramètres.
+      modification de gfinit.f pour relire ces paramètres.
+
+   2/ possibilite de localiser les forces selon leur type et leurs zones
+      d'application
+
+      Rappel :
+      nmgrfl calcule un ensemble de forces :
+         - force d'archimède
+         - dans le mécanisme de levée
+              force ponctuelle en haut de la tige
+              force de pression due au mécanisme de levée
+         - dans le guidage continu
+              force de pression
+         - dans le tube guide
+              force ponctuelle en bas du crayon
+              force de pression avant le retreint
+              force de pression apres le retreint
+      Toutes ces forces sont additionnées et réparties uniformément.
+      Le vecteur directeur est déterminé à partir des extrémités
+      de la grappe.
+
+      Ajout de nouveaux mots clés sous le mot clé facteur GRAPPE_FLUIDE
+         application de la force d'archimède
+             APPL_FORC_ARCHI  = / 'REPARTIE'               defaut
+                                / 'CDG'
+         application de la force de plaquage dans le guidage continu
+             APPL_FORC_FPLAQ  = / 'REPARTIE'               defaut
+                                / 'CDG'
+                                / 'ZONE'
+                                / 'MILIEU'
+                                / 'DISTRI'
+         application de la force dans le mécanisme de levée
+             APPL_FORC_FMEC   = / 'REPARTIE'               defaut
+                                / 'CDG'
+                                / 'ZONE'
+                                / 'PTREP'
+         application de la force avant et apres le retreint
+             APPL_FORC_FTG    = / 'REPARTIE'               defaut
+                                / 'CDG'
+                                / 'ZONE'
+                                / 'PTREP'
+         pour une application au CDG
+             MASS_INER        = table_mass_iner
+         unité d'impression des forces
+             UNITE_IMPR_FORCE = unit
+         unité d'impression des noeuds par zone
+             UNITE_IMPR_NOEUD = unit
+         direction d'application de la force de plaquage
+             DIRE_FORC_FPLAQ  = ( x , y, z )
+
+         REPARTIE : la force est répartie uniformément le long de la grappe
+                    Vecteur directeur élémentaire.
+         CDG      : la force est appliquée au centre de gravité de la grappe
+                    Vecteur directeur déterminé à partir des extrémités
+                    de la grappe.
+         ZONE     : la force est répartie uniformément dans sa zone :
+                    partie de la grappe qui se situe dans le mécanisme de levée
+                    partie de la grappe qui se situe dans le guidage continu
+                    partie de la grappe qui se situe avant et apres le retreint
+                    Vecteur directeur élémentaire.
+         MILIEU   : la force est appliquée au milieu du guidage continu
+                    Vecteur directeur déterminé à partir des extrémités
+                    de la grappe.
+         DISTRI   : la force est répartie selon une distribution particulière
+                    Vecteur directeur élémentaire.
+         PTREP    : la force ponctuelle est appliquée à l'extrémité de la grappe
+                    la force de pression est répartie sur sa zone
+                    Vecteur directeur élémentaire.
+
+   RESU_FAUX_VERSION_EXPLOITATION    : NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   : NON
+   RESTITUTION_VERSION_EXPLOITATION  : NON
+   RESTITUTION_VERSION_DEVELOPPEMENT : OUI
+
+   VALIDATION
+     Le test fdnl100a modélise la chute d'une grappe
+     Les différentes applications des forces ont été validées par MFTT
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_U : U4.44.01 commande AFFE_CHAR_MECA
+       EXPL_ : Complément GRAPPE_FLUIDE
+
+
+-----------------------------------------------------------------------
+--- AUTEUR cibhhpd L.SALMONA   DATE  le 26/10/2004 a 09:48:17
+
+REALISATION EL 2004-040
+   POUR_LE_COMPTE_DE : S. GRANET
+   NB_JOURS_TRAV  : 4.5
+   INTERET_UTILISATEUR : OUI
+   TITRE : Coherence loi de couplage et KIT_THM
+   FONCTIONNALITE : Les differentes combinaisons de loi de couplage et de
+   modelisation ne sont pas toutes valides. Or le code ne verifiait pas les
+   donnees entre par l'utilisateur.
+
+   DETAILS :
+
+   Dans la routine NMTHMC qui valide la coherence pour la THM, on ajoute une
+   partie pour verifier sur les mailles affectes dans RELATION_KIT (par defaut
+   toute) que la loi de couplage est bien compatible avec la(les)
+   modelisation(s) mise(s). Cette verification se fait maille par maille.
+   Les differentes combinaisons autorisees sont donnees dans la doc U2.04.05.
+   En accord avec J. Pellet , on en profite pour corriger un bug dans dismmo
+   qui ne retournait pas la bonne modélisation en présence de maille de bord
+   (pas toujours mais cela arrivait)
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION : verification sur des cas tests modifies de la base pour
+   verifier la présence des messsages d'erreurs+ passage des cas tests de THM
+
+
+-----------------------------------------------------------------------
+--- AUTEUR d6bhhjp J.P.LEFEBVRE   DATE  le 25/10/2004 a 13:58:02
+
+CORRECTION AL 2004-298
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : NON
+   TITRE : compilation Linux
+   FONCTIONNALITE : messages d'alarme émise par le compilateur
+   DETAILS :
+   G.Nicolas avait signalé quelques messages d'alarme obtenus avec le
+   compilateur g77 qui concernaient essentiellement le dimensionnement
+   de tableaux locaux. TAB(1) --> TAB(*)
+                       ARR(*) --> ARR(0:*)
+
+  ./NEW7/bibfor/algeline/cccssl.f: Dans la sous-routine `cccssl':
+  ./NEW7/bibfor/algeline/cccssl.f:60: AVERTISSEMENT:
+         IL2 = IABLO(2)
+                     ^
+   Valeur de l'élément du tableau (^) en dehors de la plage définie
+
+   On corrige aussi un bloc conditionnel dans la routine cnscno qui contenait
+   une etiquette et un goto d'un bloc à l'autre.
+
+   RESU_FAUX_VERSION_EXPLOITATION    : NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   : NON
+   RESTITUTION_VERSION_EXPLOITATION  : NON
+   RESTITUTION_VERSION_DEVELOPPEMENT : OUI
+   IMPACT_DOCUMENTAIRE:  NON
+   VALIDATION : 	
+-------------------------------------------------------------------------
+CORRECTION AL 2004-340
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : NON
+   TITRE : portage sur Itanium 64
+   FONCTIONNALITE :
+   Traitement des adresses JEVEUX < 0
+   DETAILS :
+   Suite à la correction de la fiche AL2004-341 (correction effectuée en
+   version NEW7.3.25 concernant les appels à TECACH et l'exploitation de
+   la valeur de l'adresse renvoyée en argument), on a vérifié que les tests
+   signalés dans la fiche fonctionnent correctement sous une distribution
+   Fedora avec la version de dévelopement. A l'occasion, il faudra refaire
+   passer les tests sous Itanium 64.
+   RESU_FAUX_VERSION_EXPLOITATION    : NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   : NON
+   RESTITUTION_VERSION_EXPLOITATION  : NON
+   RESTITUTION_VERSION_DEVELOPPEMENT : OUI
+   IMPACT_DOCUMENTAIRE:  NON
+   VALIDATION : 	
+-------------------------------------------------------------------------
+CLASSEMENT SANS SUITE AL 2004-370
+   NB_JOURS_TRAV  : 0.
+   INTERET_UTILISATEUR : NON
+   TITRE : gestion des bases - arret cpu ?
+   FONCTIONNALITE :
+   DETAILS :
+   C'est peut être un problème de quota disque sous le compte utilisateur.
+   Mais en l'absence des fichiers error et output associés au job, il est
+   difficile de conclure de manière définitive.
+   A suivre
+   RESU_FAUX_VERSION_EXPLOITATION    : NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   : NON
+   RESTITUTION_VERSION_EXPLOITATION  : NON
+   RESTITUTION_VERSION_DEVELOPPEMENT : NON
+   IMPACT_DOCUMENTAIRE:  NON
+   VALIDATION : 	
+-------------------------------------------------------------------------
+CORRECTION AL 2004-292
+   NB_JOURS_TRAV  : 0.
+   INTERET_UTILISATEUR : NON
+   TITRE : Desaturation-consolidation avec le modele de Barcelone
+   FONCTIONNALITE :
+   Avec la version NEW7.3.16 compilée sous linux, le test wtnv124a s'arrete en NOOK
+   Avec la version NEW7.3.25 le test est OK
+   DETAILS :
+   RESU_FAUX_VERSION_EXPLOITATION    : NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   : NON
+   RESTITUTION_VERSION_EXPLOITATION  : NON
+   RESTITUTION_VERSION_DEVELOPPEMENT : NON
+   IMPACT_DOCUMENTAIRE:  NON
+   VALIDATION : 	
+-------------------------------------------------------------------------
+CORRECTION AO 2003-071
+   fiche déjà signalée mais non validée
+   NB_JOURS_TRAV  : 0.
+   INTERET_UTILISATEUR : NON
+   TITRE : asterix et astk avec enchainement de fichiers de commande
+   FONCTIONNALITE :
+   Corrigé dans astk (ASTK_REF)
+
+   Afin de pouvoir récupérer la base Globale, cette dernière est maintenant
+   sauvegardée non plus sous le répertoire d'exécution temporaire (détruit
+   lorsque le job s'arrete) mais sous le /tmp sous un un nom construit à
+   partir du numéro du job. Il est alors possible de récupérer les fichiers
+   en cas d'arrêt brutal (dans la limite de la durée d'existence des fichiers
+   sous /tmp).
+   DETAILS :
+   RESU_FAUX_VERSION_EXPLOITATION    : NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   : NON
+   RESTITUTION_VERSION_EXPLOITATION  : NON
+   RESTITUTION_VERSION_DEVELOPPEMENT : NON
+   IMPACT_DOCUMENTAIRE:  NON
+   VALIDATION : 	
+
+
+
+-----------------------------------------------------------------------
+--- AUTEUR durand C.DURAND   DATE  le 20/10/2004 a 17:37:03
+
+--------------------------------------------------------------------------
+REALISATION EL 2004-222
+   NB_JOURS_TRAV  : 3.
+   INTERET_UTILISATEUR : NON
+   TITRE : amélioration des performances des formules
+   FONCTIONNALITE
+   suite à la restitution des formules en python, j'avais demandé à
+   Christian Caremoli de voir si on pouvait améliorer leurs performances.
+   En particulier l'usage de chaine compilée (qui était un temps incompatible
+   avec le picklage de l'objet formule). De même, il y avait des voies
+   d'amélioration : usage d'un contexte autre que le contexte global pour ne
+   pas polluer ce dernier ; appel à get_sd* plutot que gettco ; mémorisation
+   de la formule dans un dictionnaire local à la commande ; évaluation directe
+   dans fiintf.
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+     cas test perso.
+     Un calc_fonc_interp sur une liste de 100.000 réels :
+     STA7 (anciennes formules fortran) : 0.96 secondes
+     NEW7 (avant modifs Christian)     : 40. secondes (sans "compile" de la chaine)
+     NEW7 (avec  modifs Christian)     : 3.19 secondes
+     Un rapport 3 donc avec les anciennes formules : ca devient très acceptable
+     (bravo Christian)
+
+--------------------------------------------------------------------------
+RESTITUTION HORS AREX
+   NB_JOURS_TRAV  : 0.
+   FONCTIONNALITE : superviseur et suivi évolutions noyau hors aster
+   INTERET_UTILISATEUR : NON
+   TITRE : attribut position des MCSIMP
+   DETAILS :
+   Restitution pour Christian Caremoli
+   Suite à une utilisation d'Eficas pour Homard par Pascale Noyret, Christian
+   a identifié un bug sur la prise en compte de l'argument position d'un mot
+   clé simple.
+
+   Cette fonctionnalité ne devait pas marcher jusqu'à présent. L'attribut
+   était présent (à tord) dans les catalogues de impr_courbe, mode_iter_inv
+   mode_iter_simult : je corrige.
+
+   En revanche, il semble etre utilisé à raison dans impr_fonction  ... est ce
+   un défaut de validation qui fait qu'on n'a rien vu jusqu'à présent ?
+
+   Cela permet de rendre un MCSIMP visible pour évalaution dans des "conditions"
+   à tous les niveaux de la commande (donc sous les mcfact et blocs, sans la
+   contrainte d'etre au meme niveau que le bloc lui meme)
+
+   modification de N_MCCOMPO.py
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION : néant
+--------------------------------------------------------------------------
+
+
+-----------------------------------------------------------------------
+--- AUTEUR galenne E.GALENNE   DATE  le 25/10/2004 a 14:38:32
+
+CORRECTION AL 2004-356
+   INTERET_UTILISATEUR : NON
+   TITRE CALC_G* (suite de EL2004-154)
+   FONCTIONNALITE
+   Lors de la réalisation de l'EL2004-154 (qui constiste à transmettre la SD modèle,
+   matériau, excit dans calc_g_* via la SD résultat), des messages d'alarme ont été émis
+   dans les cinq cas-tests suivants :
+   hplp100b, sslp101c, sslp102b, sslv110a, ssnp102a
+
+   Ces alarmes étaient provoquées par des chargements ou des fonctions multiplicatrices
+   différents entre le calcul mécanique et le calcul de G.
+   Soit il s'agit d'une erreur dans le cas-test (sslv110a, ssnp102a,sslp101c) et on met
+   le mot clé EXCIT de CALC_G* en cohérence avec celui du calcul mécanique ;
+   Soit il s'agit d'un test purement informatique sur le calcul de G (sslp102b) et on
+   remplace alors le mot clé RESULTAT par DEPL. Dans ce cas en effet, les SD modèle,
+   matériau et excit ne sont pas transmis à CALC_G* ;
+   Soit il s'agit d'un test informatique avec calcul de sensibilité (hplp100b), pour
+   lequel il est nécessaire de mettre le mot-clé RESULTAT dans l'opérateur calc_g*. Dans
+   ce cas, on accepte de terminer en alarme.
+
+   RESU_FAUX_VERSION_EXPLOITATION   :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT  :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+   DETAILS
+   NB_JOURS_TRAV  : 0.5
+
+
+
+
+-----------------------------------------------------------------------
+--- AUTEUR lebouvie F.LEBOUVIER   DATE  le 25/10/2004 a 13:58:56
+
+-------------------------------------------------------------------------------
+CORRECTION AL 2004-372
+   POUR LE COMPTE DE : E. GALENNE
+   INTERET_UTILISATEUR : OUI
+   TITRE :
+   FONCTIONNALITE :
+   DETAIL :
+   Avec la version NEW7.3.24 compilee sous linux (calibre 3) les tests hplp101b,
+   sslp101f et sslv110c bouclent dans le calcul de G.
+   Le problème venait de la variable NEXCI a la ligne 354 qui n'était pas
+   initialisée. On ajoute la ligne "CALL GETFAC('EXCIT',NEXCI)" pour
+   l'initialisation.
+   Pour info NEXCI valait 0 sur CLAYASTR et sur LINUX RED HAT
+   Routines modifiées : OP0053.f
+   RESU_FAUX_VERSION_EXPLOITATION    : NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   : NON
+   RESTITUTION_VERSION_EXPLOITATION  : NON
+   RESTITUTION_VERSION_DEVELOPPEMENT : OUI
+   VALIDATION : Passage de la liste restreinte + cas-tests  hplp101b,
+                sslp101f et sslv110
+   IMPACT_DOCUMENTAIRE : NON
+   NB_JOURS_TRAV : 0.5
+-------------------------------------------------------------------------------
+
+
+-----------------------------------------------------------------------
+--- AUTEUR mabbas M.ABBAS   DATE  le 25/10/2004 a 13:40:01
+
+CORRECTION AL 2004-371
+   INTERET_UTILISATEUR : NON
+   TITRE
+    cabri02a en  CPU limit
+   FONCTIONNALITE
+   RESU_FAUX_VERSION_EXPLOITATION   :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT  :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+    NSPP
+   DETAILS
+    Le para etait un peu limite. Il existait d'ailleurs une
+  ancienne fiche (AL2004-096) qui faisait etat de cette derive.
+   On passe de 720s a 1000.
+   NB_JOURS_TRAV  : 0.5
+-----------------------------------------------------------------------
+CORRECTION AL 2004-096
+   INTERET_UTILISATEUR : NON
+   TITRE
+    cabri02a en  CPU limit
+   FONCTIONNALITE
+   RESU_FAUX_VERSION_EXPLOITATION   :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT  :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+    NSPP
+   DETAILS
+    Le para etait un peu limite. Corrige par AL2004-371
+   NB_JOURS_TRAV  : 0
+-----------------------------------------------------------------------
+CORRECTION AL 2004-360
+   INTERET_UTILISATEUR : OUI
+   TITRE
+    Contact et projec01
+   FONCTIONNALITE
+    On reçoit le message d'erreur PROJEC_01
+
+ON NE PEUT PAS AVOIR PLUS DE 3 DDLS IMPLIQUES
+     DANS LA MEME RELATION UNILATERALE
+
+   sans qu'on comprenne bien pourquoi.
+
+L'étude contient un maillage 3D : des rectangles copl dans le plan
+ x y et des discrets dans le plan x - y. tout est bloqué en z.
+appariement maître esclave.
+les gr_no des maîtres-esclaves ne contiennent pas les noeuds
+ des discrets.
+
+
+   RESU_FAUX_VERSION_EXPLOITATION   :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT  :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+    L'etude de la fiche
+   DETAILS
+    La modelisation melange du volumique et du surfacique
+    Dans ce cas, la "dimension" du modele est '23'.
+    Ce qui fait planter la routine principale de projection (projec)
+    sur un message incomprehensible dans ce contexte.
+    On blinde en autorisant les melanges 2D/3D pour le contact, a
+    condition que toutes les zones de contact soient effectivement 2D.
+    Ce qu'on verifie effectivement dans crsdco, qui cree les SD de
+    contact au debut de STAT_NON_LINE.
+    Si melange -> erreur fatale.
+    Sinon -> la modelisation du contact ne se fait que sur des elements 2D
+   NB_JOURS_TRAV  : 1
+-----------------------------------------------------------------------
+CORRECTION AL 2004-354
+   INTERET_UTILISATEUR : OUI
+   TITRE
+    Demo002a NOOK
+   FONCTIONNALITE
+   RESU_FAUX_VERSION_EXPLOITATION   :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT  :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+   le cas-test
+   DETAILS
+     Ce cas-test fait doublon avec sdns02a dont les valeurs de reference
+   ont bien ete modifiees en 7.3.23.
+   On fait les reports dans demo002a et on supprime le cas-test sdns02a.
+
+   NB_JOURS_TRAV  : 0.5
+-----------------------------------------------------------------------
+CORRECTION AL 2004-352
+   INTERET_UTILISATEUR : OUI
+   TITRE
+    htna100a NOOK
+   FONCTIONNALITE
+   RESU_FAUX_VERSION_EXPLOITATION   :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT  :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+
+   DETAILS
+    Modification des valeurs de non-regression. La projection
+   hors maille est mieux controlee depuis 7.3.23.
+   Avant, pour les noeuds esclaves se projetant en dehors d'une maille
+   maitre, on se contentait de multiplier le jeu par 1E14,
+   pour que la liaison ne soit pas activee.
+   Desormais, on exclut directement le noeud esclave de la liste des
+   liaisons de contact activables.
+   Ce cas-test avait echappee aux modifs
+   NB_JOURS_TRAV  : 0.5
+-----------------------------------------------------------------------
+CORRECTION AL 2004-351
+   INTERET_UTILISATEUR : OUI
+   TITRE
+    hsna120a en  CPU limit
+   FONCTIONNALITE
+   RESU_FAUX_VERSION_EXPLOITATION   :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT  :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+
+   DETAILS
+    Le para etait un peu limite. Le test passait en 2003s pour
+   un para de 2000s !
+   On passe de 2000s a 3000s.
+   NB_JOURS_TRAV  : 0.5
+-----------------------------------------------------------------------
+CORRECTION AL 2004-350
+   INTERET_UTILISATEUR : NON
+   TITRE
+    ssna102d et ssnv501c sont casses
+   FONCTIONNALITE
+   RESU_FAUX_VERSION_EXPLOITATION   :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT  :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+
+   DETAILS
+    Pour ssna102d, on augmente la memoire dans le para 100Mo -> 200Mo
+    Pour ssnv501c, l'ecrasement memoire etait du a une coquille dans
+   mmacon (fabrication des tableaux pour le contact methode continue)
+    Le vecteur "METHCO" de la SD de contact a change de dimension
+   suite a l'EL2003-133.
+   Il restait l'ancienne valeur dans MMACON:
+      MET=ZI(JMETH +10*(IZONE-1)+6)
+   Que l'on change en:
+      MET=ZI(JMETH +ZMETH*(IZONE-1)+6)
+    avec
+      INTEGER      ZMETH
+      PARAMETER    (ZMETH=8)
+    ZMETH avait ete propage dans toutes les routines du contact depuis
+    l'EL2003-133. Sauf dans mmacon !
+
+   NB_JOURS_TRAV  : 0.5
+-----------------------------------------------------------------------
+CORRECTION AL 2004-345
+   INTERET_UTILISATEUR : NON
+   TITRE
+    ssnv505b casse sur Linux
+   FONCTIONNALITE
+   RESU_FAUX_VERSION_EXPLOITATION   :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT  :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+
+   DETAILS
+    Des problemes d'arrondis lors de la projection provoque des appariements
+   maitre-esclave legerement differents entre les deux plate-formes.
+   Typiquement un noeud esclave qui se projette presque sur un noeud
+   entre deux mailles maitres "choisira" une des deux mailles suivant
+   la plate-forme.
+   Le probleme etant fortement non lineaire, l'erreur se propage geome
+    triquement et nuit a la convergence.
+
+   Le blindage est fait dans chmano. Le choix des deux mailles se fait
+   a la condition que l'ecart entre deux jeux ne soit pas trop petit
+   (1E-15 en relatif).
+   Si ce n'est pas le cas, on garde toujours le premier.
+
+
+   NB_JOURS_TRAV  : 0.5
+-----------------------------------------------------------------------
+CORRECTION AL 2004-344
+   INTERET_UTILISATEUR : NON
+   TITRE
+    ssnv506c/ssnv506d casses sur Linux
+   FONCTIONNALITE
+   RESU_FAUX_VERSION_EXPLOITATION   :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT  :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+
+   DETAILS
+    Toujours des problemes d'arrondis lors de la projection.
+
+    Dans ce cas, il s'agit de la verification de la projection sur
+    la pseudo-diagonale (un QUAD est divise en deux fois deux triangles)
+    Pour eviter certaines oscillations, on fixe arbitrairement le
+    "bon" triangle de projection lorsqu'on est sur la diagonale du
+    quadrangle.
+
+    En effet, le quadrangle est divise en quatre triangles T1, T2, T3, T4.
+    Lorsqu'on se projette sur la diagonale entre T1 et T2, on choississait
+    de prendre T3 ou T4 pour "eviter" la diagonale.
+
+    Probleme: ce choix arbitraire n'etait pas robuste.
+    Puisqu'on ne verifiait pas que le jeu entre T3 etait effectivement
+    au plus le meme que celui du cas de projection sur la diagonale !
+    Pour eviter la diagonale, on projettait alors sur le mauvais triangle.
+    On blinde projq1, ce qui change tres legerement les valeurs de reference
+    sur les deux plateformes. Mais ces valeurs sont desormais identiques.
+
+
+   NB_JOURS_TRAV  : 0.5
+-----------------------------------------------------------------------
+RESTITUTION HORS AREX
+   INTERET_UTILISATEUR : OUI
+   TITRE
+    Bug dans CFNORM
+   FONCTIONNALITE
+   RESU_FAUX_VERSION_EXPLOITATION   :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT  :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+
+   DETAILS
+        Lors de l'EL2003-133, l'ancienne routine acnorm a ete renommee
+   en cfnorm. On en a profite pour introduire un bug lors du calcul
+   des normales (appel a canorm):
+              CALL CANORM(COORMA,VECSEG,NDIM,NUTYP,0)
+    au lieu de
+              CALL CANORM(COORMA,VECSEG,NDIM,NUTYP,1)
+    Ce qui provoquait le message d'erreur
+     POUR LES SEG EN 3D, IL FAUT RENSEIGNER VECT_Y
+    Message incorrect.
+
+   NB_JOURS_TRAV  : 0.5
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+ CASTEST MODIF cente01a                      a3baxdp A.PARROT          1064    222    262
+ CASTEST MODIF demo002a                       mabbas M.ABBAS            497      5      5
+ CASTEST MODIF fdnl100a                      cibhhlv L.VIVAN            333     30     10
+ CASTEST MODIF hplp100b                      galenne E.GALENNE          421     32     16
+ CASTEST MODIF htna100a                       mabbas M.ABBAS            991      5      5
+ CASTEST MODIF sslp101c                      galenne E.GALENNE          431     13     19
+ CASTEST MODIF sslp102b                      galenne E.GALENNE          275     28     38
+ CASTEST MODIF sslp201a                       assire A.ASSIRE          1185      4      4
+ CASTEST MODIF sslp201b                       assire A.ASSIRE          1188      4      4
+ CASTEST MODIF sslv110a                      galenne E.GALENNE          509     55     35
+ CASTEST MODIF ssnp102a                      galenne E.GALENNE          504     21     14
+ CASTEST MODIF ssnv104b                       mabbas M.ABBAS            478      7      7
+ CASTEST MODIF ssnv104f                       mabbas M.ABBAS            620     11     11
+ CASTEST MODIF ssnv501b                       mabbas M.ABBAS            244      3      1
+ CASTEST MODIF ssnv506c                       mabbas M.ABBAS            231      3      3
+ CASTEST MODIF ssnv506d                       mabbas M.ABBAS            227      3      3
+ CASTEST SUPPR sdns02a.comm                   mabbas M.ABBAS            460      0    460
+CATALOPY MODIF commande/affe_char_meca       cibhhlv L.VIVAN            785     23      1
+CATALOPY MODIF commande/defi_group           cibhhlv L.VIVAN            199     32     19
+CATALOPY MODIF commande/formule               durand C.DURAND            32      5     12
+CATALOPY MODIF commande/impr_courbe           durand C.DURAND           151      2      2
+CATALOPY MODIF commande/mode_iter_inv         durand C.DURAND            94      2      2
+CATALOPY MODIF commande/mode_iter_simult      durand C.DURAND           140      3      3
+ FORTRAN AJOUT algorith/distri               cibhhlv L.VIVAN             50     50      0
+ FORTRAN AJOUT algorith/noeudg               cibhhlv L.VIVAN             55     55      0
+ FORTRAN AJOUT algorith/pptite               cibhhlv L.VIVAN             79     79      0
+ FORTRAN MODIF algeline/cccssl               d6bhhjp J.P.LEFEBVRE        80      2      2
+ FORTRAN MODIF algeline/cccssm               d6bhhjp J.P.LEFEBVRE        97      2      2
+ FORTRAN MODIF algeline/ccrssl               d6bhhjp J.P.LEFEBVRE        81      2      2
+ FORTRAN MODIF algeline/ccrssm               d6bhhjp J.P.LEFEBVRE        98      2      2
+ FORTRAN MODIF algeline/crcssl               d6bhhjp J.P.LEFEBVRE        82      2      2
+ FORTRAN MODIF algeline/crcssm               d6bhhjp J.P.LEFEBVRE        98      2      2
+ FORTRAN MODIF algeline/crrssl               d6bhhjp J.P.LEFEBVRE        81      2      2
+ FORTRAN MODIF algeline/crrssm               d6bhhjp J.P.LEFEBVRE        98      2      2
+ FORTRAN MODIF algeline/mefist               d6bhhjp J.P.LEFEBVRE       538      6      6
+ FORTRAN MODIF algeline/mefmat               d6bhhjp J.P.LEFEBVRE       470      2      2
+ FORTRAN MODIF algeline/mefrot               d6bhhjp J.P.LEFEBVRE       429      2      2
+ FORTRAN MODIF algeline/rcissl               d6bhhjp J.P.LEFEBVRE        85      2      2
+ FORTRAN MODIF algeline/rcissm               d6bhhjp J.P.LEFEBVRE       102      2      2
+ FORTRAN MODIF algeline/rcrssl               d6bhhjp J.P.LEFEBVRE        81      2      2
+ FORTRAN MODIF algeline/rcrssm               d6bhhjp J.P.LEFEBVRE        98      2      2
+ FORTRAN MODIF algeline/rrrnnl               d6bhhjp J.P.LEFEBVRE        99      2      2
+ FORTRAN MODIF algeline/rrrnnm               d6bhhjp J.P.LEFEBVRE       108      2      2
+ FORTRAN MODIF algeline/rrrnsl               d6bhhjp J.P.LEFEBVRE        90      2      2
+ FORTRAN MODIF algeline/rrrnsm               d6bhhjp J.P.LEFEBVRE       103      2      2
+ FORTRAN MODIF algeline/rrrss2               d6bhhjp J.P.LEFEBVRE       139      2      2
+ FORTRAN MODIF algeline/rrrssl               d6bhhjp J.P.LEFEBVRE        81      2      2
+ FORTRAN MODIF algeline/rrrssm               d6bhhjp J.P.LEFEBVRE        97      2      2
+ FORTRAN MODIF algorith/ajustt                mabbas M.ABBAS            115      8      2
+ FORTRAN MODIF algorith/cfnorm                mabbas M.ABBAS            212      2      2
+ FORTRAN MODIF algorith/chmano                mabbas M.ABBAS            537      7      4
+ FORTRAN MODIF algorith/crsdco                mabbas M.ABBAS            581     27      3
+ FORTRAN MODIF algorith/gfacc0               cibhhlv L.VIVAN            152      4      4
+ FORTRAN MODIF algorith/gfinit               cibhhlv L.VIVAN            234     33      8
+ FORTRAN MODIF algorith/gflect               cibhhlv L.VIVAN            565     35      7
+ FORTRAN MODIF algorith/mmacon                mabbas M.ABBAS            231      4      3
+ FORTRAN MODIF algorith/nmarch               cibhhlv L.VIVAN            305     32      2
+ FORTRAN MODIF algorith/nmdorc               cibhhpd L.SALMONA          498      3      2
+ FORTRAN MODIF algorith/nmgrfl               cibhhlv L.VIVAN            706    457     83
+ FORTRAN MODIF algorith/nmsens               cibhhlv L.VIVAN            226      5      4
+ FORTRAN MODIF algorith/nmthmc               cibhhpd L.SALMONA          545    153      8
+ FORTRAN MODIF algorith/op0069               cibhhlv L.VIVAN            658      4      3
+ FORTRAN MODIF algorith/op0070               cibhhlv L.VIVAN            833      4      3
+ FORTRAN MODIF algorith/projq1                mabbas M.ABBAS            519     20      2
+ FORTRAN MODIF calculel/cnscno               d6bhhjp J.P.LEFEBVRE       233      7      4
+ FORTRAN MODIF calculel/op0053              lebouvie F.LEBOUVIER        746      4     10
+ FORTRAN MODIF elements/btdbmc               d6bhhjp J.P.LEFEBVRE       230      2      2
+ FORTRAN MODIF elements/dfdm1d               d6bhhjp J.P.LEFEBVRE        78      2      2
+ FORTRAN MODIF elements/dxfnmb               d6bhhjp J.P.LEFEBVRE        59      2      2
+ FORTRAN MODIF elements/resr3d               d6bhhjp J.P.LEFEBVRE        73      2      2
+ FORTRAN MODIF elements/te0331               a3baxdp A.PARROT           431     21      2
+ FORTRAN MODIF elements/te0338               a3baxdp A.PARROT           406     24      7
+ FORTRAN MODIF modelisa/cagrf1               cibhhlv L.VIVAN            190     69     15
+ FORTRAN MODIF modelisa/cagrfl               cibhhlv L.VIVAN            669    210      9
+ FORTRAN MODIF modelisa/caprec                assire A.ASSIRE           532      3      3
+ FORTRAN MODIF modelisa/cgnoso               cibhhlv L.VIVAN            113      5      1
+ FORTRAN MODIF modelisa/surfco                mabbas M.ABBAS            383      5     45
+ FORTRAN MODIF supervis/ibmain               d6bhhjp J.P.LEFEBVRE        84      2      2
+ FORTRAN MODIF supervis/prtitr               d6bhhjp J.P.LEFEBVRE        91      2      2
+ FORTRAN MODIF utilitai/dismmo               cibhhpd L.SALMONA          259      2      2
+ FORTRAN MODIF utilitai/rscrsd               cibhhlv L.VIVAN            842      6      4
+  PYTHON MODIF Build/B_ETAPE                  durand C.DURAND           702     24      8
+  PYTHON MODIF Noyau/N_FONCTION               durand C.DURAND            81     38      5
+  PYTHON MODIF Noyau/N_MCCOMPO                durand C.DURAND           380      7      4
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :    3         184       184              +184
+ MODIF :   80       27333      1796     795     +1001
+ SUPPR :    1         460               460      -460
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :   84       27977      1980    1255      +725 

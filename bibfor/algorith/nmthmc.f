@@ -1,7 +1,7 @@
-      SUBROUTINE NMTHMC(COMP, MOCLEF, K, COMEL, NCOMEL, NBNVI)
+      SUBROUTINE NMTHMC(COMP, MODELE, MOCLEF, K, COMEL, NCOMEL, NBNVI)
 C =====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 17/05/2004   AUTEUR ROMEO R.FERNANDES 
+C MODIF ALGORITH  DATE 26/10/2004   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -19,25 +19,50 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
 C RESPONSABLE UFBHHLL C.CHAVANT
+C TOLE CRP_20
 C =====================================================================
 C --- BUT : DETERMINER LA COHERENCE DE LA RELATION DE COUPLAGE THM ----
 C =====================================================================
       IMPLICIT      NONE
       INTEGER       NCOMEL, NBNVI(*), K
       CHARACTER*16  COMP, MOCLEF, COMEL(NCOMEL)
+      CHARACTER*24  MODELE
+C ----------------------------------------------------------------------
+C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
+
+      INTEGER ZI
+      COMMON /IVARJE/ZI(1)
+      REAL*8 ZR
+      COMMON /RVARJE/ZR(1)
+      COMPLEX*16 ZC
+      COMMON /CVARJE/ZC(1)
+      LOGICAL ZL
+      COMMON /LVARJE/ZL(1)
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32
+      CHARACTER*80 ZK80
+      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+      CHARACTER*32     JEXNUM, JEXNOM, JEXATR
+
+C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C =====================================================================
 C --- DEFINITION DES DIMENSIONS DES VECTEURS DE POSSIBILITE DES LOIS --
 C =====================================================================
-      LOGICAL       LTHMC, LHYDR, LMECA, EXIST, GETEXM
-      INTEGER       DMTHMC, DMHYDR, DMMECA, N1
+      LOGICAL       LTHMC, LHYDR, LMECA, EXIST, GETEXM, TOUT
+      INTEGER       DMTHMC, DMHYDR, DMMECA, N1, JMAIL, ITYPEL
+      INTEGER       NBMA, IERD, IBID, JNOMA, JMESM
       PARAMETER   ( DMTHMC = 9  )
       PARAMETER   ( DMHYDR = 3  )
       PARAMETER   ( DMMECA = 12 )
-      CHARACTER*16  POTHMC(DMTHMC)
+      CHARACTER*16  POTHMC(DMTHMC), MODELI, NOMTE,KBID
       CHARACTER*16  POHYDR(DMHYDR), POMECA(DMMECA)
-      CHARACTER*16  THMC, THER, HYDR, MECA
+      CHARACTER*16  THMC, THER, HYDR, MECA, MOCLES(2)
+      CHARACTER*8   NOMA, TYPMCL(2)
+      CHARACTER*24  MESMAI
 C
-      INTEGER       JJ, II
+      INTEGER       JJ, II, IM, IMA
 C *********************************************************************
 C --- DEBUT INITIALISATION ------------------------------------------ *
 C *********************************************************************
@@ -81,13 +106,133 @@ C =====================================================================
 C *********************************************************************
 C --- FIN INITIALISATION -------------------------------------------- *
 C *********************************************************************
+      CALL JEVEUO(MODELE(1:8)//'.MAILLE','L',JMAIL)
+      CALL JEVEUO(MODELE(1:8)//'.MODELE    .NOMA','L',JNOMA)
+      NOMA = ZK8(JNOMA)
 C =====================================================================
 C --- LE COMPORTEMENT DEFINIT EST-IL COHERENT ? -----------------------
 C =====================================================================
       LTHMC = .FALSE.
       LHYDR = .FALSE.
       LMECA = .FALSE.
-      DO 10 JJ = 1, NCOMEL
+      TOUT = .FALSE.
+      MOCLES(1) = 'GROUP_MA'
+      MOCLES(2) = 'MAILLE'
+      TYPMCL(1) = 'GROUP_MA'
+      TYPMCL(2) = 'MAILLE'
+      MESMAI = '&&NMTHMC.MES_MAILLES'
+
+      CALL RELIEM(MODELE,NOMA,'NU_MAILLE',MOCLEF,K,2,MOCLES,
+     &           TYPMCL,MESMAI,NBMA)
+     
+      IF (NBMA.EQ.0) THEN
+         CALL JELIRA(MODELE(1:8)//'.MAILLE','LONUTI',NBMA,KBID)
+         TOUT=.TRUE.
+      ELSE 
+      CALL JEVEUO(MESMAI,'L',JMESM)
+      ENDIF
+
+      DO 1 IM = 1,NBMA
+C =====================================================================
+C --- COHERENCE DE LA LOI DE COUPLAGE ---------------------------------
+C =====================================================================
+         IF (TOUT) THEN
+            IMA = IM
+         ELSE
+            IMA = ZI(JMESM+IM-1)
+         ENDIF
+         ITYPEL = ZI(JMAIL-1+IMA)
+         IF (ITYPEL.NE.0) THEN
+            CALL JENUNO(JEXNUM('&CATA.TE.NOMTE',ITYPEL),NOMTE)
+            CALL DISMTE('F','MODELISATION',NOMTE,IBID,MODELI,IERD)
+            DO 5 JJ = 1, NCOMEL
+              IF ((COMEL(JJ)(1:3).EQ.'GAZ').OR.
+     &            (COMEL(JJ)(1:9).EQ.'LIQU_SATU').OR.
+     &            (COMEL(JJ)(1:12).EQ.'LIQU_GAZ_ATM')) THEN
+
+                  IF ((MODELI(1:6).NE.'3D_THM').AND.
+     &               (MODELI(1:5).NE.'3D_HM').AND.
+     &               (MODELI(1:6).NE.'3D_HMD').AND.
+     &               (MODELI(1:7).NE.'3D_THMD').AND.
+     &               (MODELI(1:8).NE.'AXIS_THM').AND.
+     &               (MODELI(1:9).NE.'AXIS_THMD').AND.
+     &               (MODELI(1:7).NE.'AXIS_HM').AND.
+     &               (MODELI(1:8).NE.'AXIS_HMD').AND.
+     &               (MODELI(1:10).NE.'D_PLAN_THM').AND.
+     &               (MODELI(1:11).NE.'D_PLAN_THMD').AND.
+     &               (MODELI(1:9).NE.'D_PLAN_HM').AND.
+     &               (MODELI(1:10).NE.'D_PLAN_HMD').AND.
+     &               (MODELI.NE.' ')) THEN
+
+                        CALL UTMESS('F','NMTHMC','INCOMPATIBILITE '//
+     &                     'ENTRE LA LOI DE COUPLAGE '//COMEL(JJ)//
+     &                     ' ET LA MODELISATION CHOISI '//MODELI)
+                  ENDIF
+
+               ELSEIF ((COMEL(JJ)(1:13).EQ.'LIQU_VAPE_GAZ').OR.
+     &                      (COMEL(JJ)(1:8).EQ.'LIQU_GAZ')) THEN
+   
+                  IF ((MODELI(1:7).NE.'3D_THHM').AND.
+     &                (MODELI(1:6).NE.'3D_THH').AND.
+     &                (MODELI(1:6).NE.'3D_HHM').AND.
+     &                (MODELI(1:7).NE.'3D_HHMD').AND.
+     &                (MODELI(1:7).NE.'3D_THHD').AND.
+     &                (MODELI(1:8).NE.'3D_THHMD').AND.
+     &                (MODELI(1:9).NE.'AXIS_THHM').AND.
+     &                (MODELI(1:8).NE.'AXIS_THH').AND.
+     &                (MODELI(1:8).NE.'AXIS_HHM').AND.
+     &                (MODELI(1:9).NE.'AXIS_HHMD').AND.
+     &                (MODELI(1:9).NE.'AXIS_THHD').AND.
+     &                (MODELI(1:10).NE.'AXIS_THHMD').AND.
+     &                (MODELI(1:11).NE.'D_PLAN_THHM').AND.
+     &                (MODELI(1:10).NE.'D_PLAN_THH').AND.
+     &                (MODELI(1:10).NE.'D_PLAN_HHM').AND.
+     &                (MODELI(1:11).NE.'D_PLAN_HHMD').AND.
+     &                (MODELI(1:11).NE.'D_PLAN_THHD').AND.
+     &                (MODELI(1:12).NE.'D_PLAN_THHMD').AND.
+     &                (MODELI.NE.' ')) THEN
+
+                     CALL UTMESS('F','NMTHMC','INCOMPATIBILITE '//
+     &                     'ENTRE LA LOI DE COUPLAGE '//COMEL(JJ)//
+     &                     ' ET LA MODELISATION CHOISI '//MODELI)
+
+                  ENDIF
+
+               ELSEIF   (COMEL(JJ)(1:9).EQ.'LIQU_VAPE') THEN
+
+                  IF ((MODELI(1:7).NE.'3D_THVD').AND.
+     &                (MODELI(1:9).NE.'AXIS_THVD').AND.
+     &                (MODELI(1:11).NE.'D_PLAN_THVD').AND.
+     &                (MODELI.NE.' ')) THEN
+
+                      CALL UTMESS('F','NMTHMC','INCOMPATIBILITE '//
+     &                  'ENTRE LA LOI DE COUPLAGE '//COMEL(JJ)//
+     &                  ' ET LA MODELISATION CHOISI '//MODELI)
+                  ENDIF
+
+               ELSEIF  (COMEL(JJ)(1:16).EQ.'LIQU_AD_GAZ_VAPE') THEN
+
+                  IF ((MODELI(1:10).NE.'AXIS_HH2MD').AND.
+     &                (MODELI(1:10).NE.'AXIS_THH2D').AND.
+     &                (MODELI(1:11).NE.'AXIS_THH2MD').AND.
+     &                (MODELI(1:12).NE.'D_PLAN_HH2MD').AND.
+     &                (MODELI(1:12).NE.'D_PLAN_THH2D').AND.
+     &                (MODELI(1:13).NE.'D_PLAN_THH2MD').AND.
+     &                (MODELI.NE.' ')) THEN
+
+
+                     CALL UTMESS('F','NMTHMC','INCOMPATIBILITE '//
+     &                'ENTRE LA LOI DE COUPLAGE '//COMEL(JJ)//
+     &                ' ET LA MODELISATION CHOISI '//MODELI)
+                  ENDIF
+
+               ENDIF
+
+   5        CONTINUE
+         ENDIF  
+   1  CONTINUE
+
+      DO 10 JJ=1, NCOMEL
 C =====================================================================
 C --- DEFINITION DE LA LOI DE COUPLAGE --------------------------------
 C =====================================================================

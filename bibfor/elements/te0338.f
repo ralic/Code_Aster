@@ -3,7 +3,7 @@
       CHARACTER*(*) OPTION,NOMTE
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ELEMENTS  DATE 26/10/2004   AUTEUR A3BAXDP A.PARROT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -86,6 +86,7 @@ C     READ (ZK16(ICOMPO+1),'(I16)') NBVARI
 
       IF ((ZK16(ICOMPO).EQ.'VMIS_ISOT_TRAC') .OR.
      &    (ZK16(ICOMPO).EQ.'VMIS_ISOT_LINE') .OR.
+     &    (ZK16(ICOMPO).EQ.'VISC_ISOT_TRAC') .OR.
      &    (ZK16(ICOMPO).EQ.'LEMAITRE') .OR.
      &    (ZK16(ICOMPO).EQ.'VMIS_ECMI_TRAC') .OR.
      &    (ZK16(ICOMPO).EQ.'VMIS_ECMI_LINE') .OR.
@@ -192,7 +193,11 @@ C           --- TEMPERATURE MOYENNE
    30       CONTINUE
           END IF
 C VOLUME PLASTIQUE ACTIF
-          PPT = ZR(IVARIG+NBVARI* (KP-1)+IPOPPT-1)
+          IF ((ZK16(ICOMPO).EQ.'LEMAITRE').AND.(PP.GE.SEUIL)) THEN
+             PPT = 1.D0
+          ELSE
+             PPT =ZR(IVARIG+NBVARI*(KP-1)+IPOPPT-1)
+          END IF
           IF (PPT.EQ. (1.D0)) THEN
             DVPG = POIDS
             VKPACT = VKP + DVPG
@@ -216,7 +221,7 @@ C           --------------------------------------------------------
 C           2.1.3 CALCUL DE SIGM_W
 C           ----------------------
           CALL FGEQUI(SIGM,'SIGM',NBVP,EQUI)
-          SIG1 = MAX(ABS(EQUI(3)),ABS(EQUI(4)),ABS(EQUI(5)))
+          SIG1 = MAX(EQUI(3),EQUI(4),EQUI(5))
           SIG1 = SIG1/SREF
         END IF
 
@@ -256,7 +261,11 @@ C           --- TEMPERATURE AU PG
    70       CONTINUE
           END IF
 C VOLUME PLASTIQUE ACTIF
-          PPT = ZR(IVARIG+NBVARI* (KP-1)+IPOPPT-1)
+          IF ((ZK16(ICOMPO).EQ.'LEMAITRE').AND.(PP.GE.SEUIL)) THEN
+             PPT = 1.D0
+          ELSE
+             PPT =ZR(IVARIG+NBVARI*(KP-1)+IPOPPT-1)
+          END IF
           IF (PPT.EQ. (1.D0)) THEN
             DVPG = POIDS
             VKPACT = VKPACT + DVPG
@@ -306,7 +315,11 @@ C     -------------------------------------------------------------
             CALL DFDM3D ( NNO, KP, IPOIDS, IDFDE,
      &                    ZR(IGEOM),DFDBID,DFDBID,DFDBID,POIDS)
             DVPG = POIDS
-            PPT = ZR(IVARIG+NBVARI* (KP-1)+IPOPPT-1)
+          IF ((ZK16(ICOMPO).EQ.'LEMAITRE').AND.(PP.GE.SEUIL)) THEN
+             PPT = 1.D0
+          ELSE
+             PPT =ZR(IVARIG+NBVARI*(KP-1)+IPOPPT-1)
+          END IF
             IF (PPT.EQ. (1.D0)) THEN
               DO 100,I = 1,6,1
                 SIGM(I) = ZR(ICONG+6*KP+I-7)
@@ -345,14 +358,18 @@ C     ----------------------------------------------------
             CALL DFDM3D ( NNO, KP, IPOIDS, IDFDE,
      &                    ZR(IGEOM),DFDBID,DFDBID,DFDBID,POIDS)
             DVPG = POIDS
-            PPT = ZR(IVARIG+NBVARI* (KP-1)+IPOPPT-1)
+          IF ((ZK16(ICOMPO).EQ.'LEMAITRE').AND.(PP.GE.SEUIL)) THEN
+             PPT = 1.D0
+          ELSE
+             PPT =ZR(IVARIG+NBVARI*(KP-1)+IPOPPT-1)
+          END IF
             SIG1 = 0.D0
             IF (PPT.EQ. (1.D0)) THEN
               DO 130,I = 1,6,1
                 SIGM(I) = ZR(ICONG+6*KP+I-7)
   130         CONTINUE
               CALL FGEQUI(SIGM,'SIGM',NBVP,EQUI)
-              SIG1 = MAX(ABS(EQUI(3)),ABS(EQUI(4)),ABS(EQUI(5)))
+              SIG1 = MAX(EQUI(3),EQUI(4),EQUI(5))
 C           --- TEMPERATURE AU PG
               TPG = 0.D0
               DO 140 INO = 1,NNO

@@ -1,4 +1,4 @@
-# MODIF  DATE 23/08/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 25/10/2004   AUTEUR CIBHHLV L.VIVAN 
 # TITRE CALCUL DES FORCE_FLUIDE LORS D'UNE CHUTTE DE GRAPPE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -177,8 +177,15 @@ F_FLUIDE=AFFE_CHAR_MECA(MODELE=MODELE,
                                         CARA_PDC = C_PDC ,
                                         VALE_PDC = V_PDC ,
                                       ),
-                                    _F( CARA_GRAPPE = 'M' ,
+                                    _F( APPL_FORC_FMEC  = 'REPARTIE',
+                                        APPL_FORC_FPLAQ = 'REPARTIE',
+                                        APPL_FORC_ARCHI = 'CDG',
+                                        APPL_FORC_FTG   = 'REPARTIE',
+                                        MASS_INER = MASSESTR,
+                                        CARA_GRAPPE = 'M' ,
                                         VALE_GRAPPE = 126.418 ,
+                                        UNITE_IMPR_FORCE = 38 ,
+                                        UNITE_IMPR_NOEUD = 37 ,
                                       ),
                                    ),
                         ) ;
@@ -193,19 +200,32 @@ L_INST=DEFI_LIST_REEL( DEBUT=0.0,
                      ) ;
 
 #
-# avec DEBUG=.TRUE. dans les routines nmgrfl.f et gfforc.f, on imprime
-# - sur l'unite 38 les forces fluides calculees
-# - sur l'unite 37 le nombre de noeuds dans chaque zone
 #
-#UNIT_37=DEFI_FICHIER( FICHIER='IMPR_NOEUD', UNITE=37 );
-#UNIT_38=DEFI_FICHIER( FICHIER='IMPR_FORCE', UNITE=38 );
-#
+DEFI_FICHIER( UNITE=37 );
+DEFI_FICHIER( UNITE=38 );
 
 RESU=DYNA_NON_LINE( MODELE=MODELE,
                 CHAM_MATER=CHAMPMAT,
                 CARA_ELEM=CHAMPCAR,
                 EXCIT=(_F(CHARGE=F_FLUIDE,),
                        _F(CHARGE=CHARGE,),),
+                COMP_INCR=_F(RELATION='ELAS',
+                             TOUT='OUI',),
+                INCREMENT=_F(LIST_INST=L_INST,
+###                             INST_FIN = TFIN,
+                             NUME_INST_FIN   = 3 ,
+                            ),
+                 NEWMARK=_F(),
+                 ARCHIVAGE=_F( INST=( 0.700, 1.400, 1.787 ), ),
+            );
+
+
+RESU=DYNA_NON_LINE( reuse=RESU, MODELE=MODELE,
+                CHAM_MATER=CHAMPMAT,
+                CARA_ELEM=CHAMPCAR,
+                EXCIT=(_F(CHARGE=F_FLUIDE,),
+                       _F(CHARGE=CHARGE,),),
+                ETAT_INIT=_F( EVOL_NOLI = RESU ),
                 COMP_INCR=_F(RELATION='ELAS',
                              TOUT='OUI',),
                 INCREMENT=_F(LIST_INST=L_INST,
@@ -263,7 +283,7 @@ TEST_RESU(RESU=(
 #        REFERENCE = 'SOURCE_EXTERNE',  PRECISION = 0.180, 
 #        GROUP_NO = 'PHTDC',  NOM_CMP = 'DY',       VALE = ACCE_1 ),
    _F(  RESULTAT = RESU,     INST = 1.40000E+00,   NOM_CHAM = 'ACCE',
-        REFERENCE = 'SOURCE_EXTERNE',  PRECISION = ( 0.035, 0.001 ), 
+        REFERENCE = 'SOURCE_EXTERNE',  PRECISION = ( 0.060, 0.001 ), 
         GROUP_NO = 'PHTDC',  NOM_CMP = 'DY',       VALE = ACCE_2 ),
 #   _F(  RESULTAT = RESU,     INST = 1.78700E+00,   NOM_CHAM = 'ACCE',
 #        REFERENCE = 'SOURCE_EXTERNE',  PRECISION = ( 25.000, 0.001 ), 
@@ -302,7 +322,7 @@ TEST_RESU(RESU=(
 #        REFERENCE = 'SOURCE_EXTERNE',  PRECISION = ( 0.400, 0.001 ), 
 #        GROUP_NO = 'PBCRA',  NOM_CMP = 'DY',       VALE = ACCE_1 ),
    _F(  RESULTAT = RESU,     INST = 1.40000E+00,   NOM_CHAM = 'ACCE',
-        REFERENCE = 'SOURCE_EXTERNE',  PRECISION = ( 0.015, 0.001 ), 
+        REFERENCE = 'SOURCE_EXTERNE',  PRECISION = ( 0.020, 0.001 ), 
         GROUP_NO = 'PBCRA',  NOM_CMP = 'DY',       VALE = ACCE_2 ),
 #   _F(  RESULTAT = RESU,     INST = 1.78700E+00,   NOM_CHAM = 'ACCE',
 #        REFERENCE = 'SOURCE_EXTERNE',  PRECISION = ( 0.700, 0.001 ), 

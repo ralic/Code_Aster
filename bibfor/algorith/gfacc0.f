@@ -5,7 +5,7 @@
       CHARACTER*24        NUMEDD, ACCMOI, CHGRFL
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 25/10/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -120,9 +120,9 @@ C
 
       NDIM = 3
       NBNO = ZI(JIFL-1+5)
-      VDIR(1) = ZR(JFFL-1+I18+1)
-      VDIR(2) = ZR(JFFL-1+I18+2)
-      VDIR(3) = ZR(JFFL-1+I18+3)
+      VDIR(1) = ZR(JFFL-1+I18+3*(NBNO-1)+1)
+      VDIR(2) = ZR(JFFL-1+I18+3*(NBNO-1)+2)
+      VDIR(3) = ZR(JFFL-1+I18+3*(NBNO-1)+3)
 C
       CALL DISMOI('F','NB_EC','DEPL_R','GRANDEUR',NEC,K8B,IER)
       CALL JELIRA(NUMEDD(1:14)//'.NUME.PRNO','NMAXOC',NLILI,K8B)

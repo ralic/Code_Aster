@@ -1,4 +1,4 @@
-# MODIF  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 25/10/2004   AUTEUR GALENNE E.GALENNE 
 # TITRE PLAQUE FISSUREE AVEC PRESSION LEVRE FISSURE (CALCUL G,K1,K2 )
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -39,12 +39,6 @@ CH=AFFE_CHAR_MECA(  MODELE=MO,DDL_IMPO=(
                             _F(  GROUP_NO = 'GRNM5', DY = 0.),
                                      _F(  NOEUD = 'N451',  DX = 0.)),
                             PRES_REP=_F(  GROUP_MA = 'GRMA4', PRES = 1.) )
-
-PRESF  = FORMULE(NOM_PARA=('X','Y'),VALE='1.')
-
-CHFONC=AFFE_CHAR_MECA_F(  MODELE=MO, 
-                            PRES_REP=_F(  GROUP_MA = 'GRMA4',
-                                           PRES = PRESF)    )
 
 L_INST=DEFI_LIST_REEL(  DEBUT=0.0,
                INTERVALLE=_F( JUSQU_A = 2.0, NOMBRE = 2)
@@ -112,7 +106,7 @@ FOND=DEFI_FOND_FISS( MAILLAGE=MA,
 G1=CALC_G_THETA_T(         MODELE=MO,
                          RESULTAT=RESU,
                             THETA=THETA1,
-                           EXCIT=_F(CHARGE=CHFONC,),
+                           EXCIT=_F(CHARGE=CH,),
                         SYME_CHAR='SYME',
                         COMP_ELAS=_F( RELATION = 'ELAS',
                                    DEFORMATION = 'PETIT'),
@@ -123,14 +117,14 @@ GK1=CALC_G_THETA_T(         MODELE=MO,
                              THETA=THETA1,
                               FOND_FISS=FOND,
                          SYME_CHAR='SYME',
-                            EXCIT=_F(CHARGE=CHFONC,),
+                            EXCIT=_F(CHARGE=CH,),
                         CHAM_MATER=CHMAT,
                             OPTION='CALC_K_G')
 
 G2=CALC_G_THETA_T(         MODELE=MO,
                          RESULTAT=RESU,
                             THETA=THETA2,
-                           EXCIT=_F(CHARGE=CHFONC,),
+                           EXCIT=_F(CHARGE=CH,),
                         SYME_CHAR='SYME',
                         COMP_ELAS=_F( RELATION = 'ELAS',
                                    DEFORMATION = 'PETIT'),
@@ -141,14 +135,14 @@ GK2=CALC_G_THETA_T(         MODELE=MO,
                              THETA=THETA2,
                               FOND_FISS=FOND,
                          SYME_CHAR='SYME',
-                            EXCIT=_F(CHARGE=CHFONC,),
+                            EXCIT=_F(CHARGE=CH,),
                         CHAM_MATER=CHMAT,
                             OPTION='CALC_K_G')
 
 G3=CALC_G_THETA_T(         MODELE=MO,
                          RESULTAT=RESU,
                             THETA=THETA3,
-                           EXCIT=_F(CHARGE=CHFONC,),
+                           EXCIT=_F(CHARGE=CH,),
                         SYME_CHAR='SYME',
                         COMP_ELAS=_F( RELATION = 'ELAS',
                                    DEFORMATION = 'PETIT'),
@@ -159,14 +153,14 @@ GK3=CALC_G_THETA_T(         MODELE=MO,
                              THETA=THETA3,
                               FOND_FISS=FOND,
                          SYME_CHAR='SYME',
-                            EXCIT=_F(CHARGE=CHFONC,),
+                            EXCIT=_F(CHARGE=CH,),
                         CHAM_MATER=CHMAT,
                             OPTION='CALC_K_G')
 
 G4=CALC_G_THETA_T(         MODELE=MO,
                          RESULTAT=RESU,
                             THETA=THETA4,
-                           EXCIT=_F(CHARGE=CHFONC,),
+                           EXCIT=_F(CHARGE=CH,),
                         SYME_CHAR='SYME',
                         COMP_ELAS=_F( RELATION = 'ELAS',
                                    DEFORMATION = 'PETIT'),
@@ -177,14 +171,14 @@ GK4=CALC_G_THETA_T(         MODELE=MO,
                              THETA=THETA4,
                               FOND_FISS=FOND,
                          SYME_CHAR='SYME',
-                            EXCIT=_F(CHARGE=CHFONC,),
+                            EXCIT=_F(CHARGE=CH,),
                         CHAM_MATER=CHMAT,
                             OPTION='CALC_K_G')
 
 G5=CALC_G_THETA_T(         MODELE=MO,
                          RESULTAT=RESU,
                             THETA=THETA5,
-                           EXCIT=_F(CHARGE=CHFONC,),
+                           EXCIT=_F(CHARGE=CH,),
                         SYME_CHAR='SYME',
                         COMP_ELAS=_F( RELATION = 'ELAS',
                                    DEFORMATION = 'PETIT'),
@@ -195,14 +189,14 @@ GK5=CALC_G_THETA_T(         MODELE=MO,
                              THETA=THETA5,
                               FOND_FISS=FOND,
                          SYME_CHAR='SYME',
-                            EXCIT=_F(CHARGE=CHFONC,),
+                            EXCIT=_F(CHARGE=CH,),
                         CHAM_MATER=CHMAT,
                             OPTION='CALC_K_G')
 
 G6=CALC_G_THETA_T(         MODELE=MO,
                          RESULTAT=RESU,
                             THETA=THETA6,
-                           EXCIT=_F(CHARGE=CHFONC,),
+                           EXCIT=_F(CHARGE=CH,),
                         SYME_CHAR='SYME',
                         COMP_ELAS=_F( RELATION = 'ELAS',
                                    DEFORMATION = 'PETIT'),
@@ -213,7 +207,7 @@ GK6=CALC_G_THETA_T(         MODELE=MO,
                              THETA=THETA6,
                               FOND_FISS=FOND,
                          SYME_CHAR='SYME',
-                            EXCIT=_F(CHARGE=CHFONC,),
+                            EXCIT=_F(CHARGE=CH,),
                         CHAM_MATER=CHMAT,
                             OPTION='CALC_K_G')
 

@@ -1,10 +1,10 @@
-      SUBROUTINE CAGRF1 ( CHAR, NOMA, Z0 )
+      SUBROUTINE CAGRF1 ( CHAR, NOMA, Z0, CDG, Z22, DIRGC )
       IMPLICIT   NONE
-      REAL*8              Z0
+      REAL*8              Z0, CDG(3), Z22, DIRGC(3)
       CHARACTER*8         CHAR, NOMA
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 18/11/2003   AUTEUR CIBHHLV L.VIVAN 
+C MODIF MODELISA  DATE 25/10/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -49,7 +49,10 @@ C     ----- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------
       CHARACTER*32       JEXNOM
 C     ----- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       INTEGER       N1, I, J, NBM, NBNO, JMAIL, IDNONO, JVMA, JVNO, 
-     +              ICOOR, JVAL, JABSC
+     +              ICOOR, JVAL, JABSC, IAPL, INO
+      INTEGER       IZONE, IPNOEU, IDNOEU, NG, NOEUDG, NM
+      REAL*8        XM1, XM2, YM1, YM2, ZM1, ZM2, XM, YM, ZM
+      REAL*8        COTE
       REAL*8        S, X1, Y1, Z1, X2, Y2, Z2, X12, Y12, Z12, V1(3)
       CHARACTER*8   K8B, GRMA, PREFIX
       CHARACTER*16  MOTCLF, MOTCLE, TYPMCL
@@ -96,22 +99,39 @@ C
 C
       CALL JEVEUO ( NOMA//'.COORDO    .VALE', 'L', ICOOR )
 C
+C --- VECTEUR DIRECTEUR ELEMENTAIRE
+C
+      CALL WKVECT ( CHAR//'.CHME.GRFLU.VDIR', 'G V R', 3*NBNO+3, JVAL )
+C
+      DO 100 INO = 1, NBNO-1
+         S = 0.D0
+         DO 110 I = 1 , 3
+            X1 = ZR(ICOOR+3*(ZI(JVNO-1+INO  )-1)+I-1)
+            X2 = ZR(ICOOR+3*(ZI(JVNO-1+INO+1)-1)+I-1)
+            V1(I) = X2 - X1
+            S = S + V1(I)**2
+ 110     CONTINUE
+         S = SQRT( S )
+         DO 112 I = 1 , 3
+            ZR(JVAL-1+3*(INO-1)+I) = V1(I) / S
+ 112     CONTINUE
+ 100  CONTINUE
       S = 0.D0
-      DO 30 I = 1 , 3
-         X1 = ZR(ICOOR+3*(ZI(JVNO       )-1)+I-1)
-         X2 = ZR(ICOOR+3*(ZI(JVNO+NBNO-1)-1)+I-1)
+      DO 114 I = 1 , 3
+         X1 = ZR(ICOOR+3*(ZI(JVNO-1+1   )-1)+I-1)
+         X2 = ZR(ICOOR+3*(ZI(JVNO-1+NBNO)-1)+I-1)
          V1(I) = X2 - X1
          S = S + V1(I)**2
- 30   CONTINUE
+ 114  CONTINUE
       S = SQRT( S )
-      DO 32 I = 1 , 3
-         V1(I) = V1(I) / S
- 32   CONTINUE
+      DO 116 I = 1 , 3
+         ZR(JVAL-1+3*(NBNO-1)+I) = V1(I) / S
+ 116  CONTINUE
+      ZR(JVAL-1+3*NBNO+1) = DIRGC(1)
+      ZR(JVAL-1+3*NBNO+2) = DIRGC(2)
+      ZR(JVAL-1+3*NBNO+3) = DIRGC(3)
 C
-      CALL WKVECT ( CHAR//'.CHME.GRFLU.VDIR', 'G V R', 3, JVAL )
-      DO 34 I = 1 , 3
-         ZR(JVAL+I-1) = V1(I)
- 34   CONTINUE
+C --- CALCUL DES ABSCISSES CURVILIGNES
 C
       CALL WKVECT ( CHAR//'.CHME.GRFLU.ABSC', 'G V R', NBNO, JABSC )
 C
@@ -131,6 +151,40 @@ C
          ZR(JABSC+J-1) = ZR(JABSC+J-2) -
      &                     SQRT(X12*X12 + Y12 *Y12 + Z12*Z12)
  40   CONTINUE
+C
+C --- RECHERCHE DU NOEUD LE PLUS PROCHE DU CDG
+C
+      CALL JEVEUO(CHAR//'.CHME.GRFLU.APPL','L',IAPL)
+      IF (((ZI(IAPL-1+1)).EQ.2).OR.
+     +    ((ZI(IAPL-1+2)).EQ.2).OR.
+     +    ((ZI(IAPL-1+3)).EQ.2).OR.
+     +    ((ZI(IAPL-1+4)).EQ.2)) THEN
+         NG = NOEUDG(ICOOR,NBNO,JVNO,CDG(1),CDG(2),CDG(3))
+         ZI(IAPL-1+6) = NG
+      ENDIF
+C
+C
+C --- RECHERCHE DU NOEUD LE PLUS PROCHE DU MILIEU DU 
+C --- GUIDAGE CONTINU :
+C     ---------------
+      IZONE = 0
+      DO 50 I = 1, NBNO
+         COTE = ZR(JABSC-1+I)
+         IF ( COTE.GE.Z22.AND. COTE.LE.0.0D0 )  IZONE = IZONE + 1
+         IF ( IZONE.EQ.1)  IPNOEU = I
+ 50   CONTINUE
+      IDNOEU = IPNOEU + IZONE
+      XM1 = ZR(ICOOR+3*(ZI(JVNO+IPNOEU)-1)+1-1)
+      YM1 = ZR(ICOOR+3*(ZI(JVNO+IPNOEU)-1)+2-1)
+      ZM1 = ZR(ICOOR+3*(ZI(JVNO+IPNOEU)-1)+3-1)
+      XM2 = ZR(ICOOR+3*(ZI(JVNO+IDNOEU)-1)+1-1)
+      YM2 = ZR(ICOOR+3*(ZI(JVNO+IDNOEU)-1)+2-1)
+      ZM2 = ZR(ICOOR+3*(ZI(JVNO+IDNOEU)-1)+3-1)
+      XM = 0.5D0*(XM1+XM2)
+      YM = 0.5D0*(YM1+YM2)
+      ZM = 0.5D0*(ZM1+ZM2)
+      NM = NOEUDG(ICOOR,NBNO,JVNO,XM,YM,ZM)
+      ZI(IAPL-1+5) = NM
 C
       CALL JEDEMA()
       END

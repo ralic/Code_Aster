@@ -6,7 +6,7 @@
       CHARACTER*24        NUMEDD, DEPMOI, VITPLU, ACCPLU, CHGRFL
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/10/2003   AUTEUR BOYERE E.BOYERE 
+C MODIF ALGORITH  DATE 25/10/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -47,7 +47,7 @@ C
 C
 C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
       INTEGER      I2, I3, I6, I7, I8, I9, I10, I14, I15, I16, I18,
-     +             II, JFFL, JIFL,
+     +             I19, II, JFFL, JIFL, JPARA,
      &             NBNO, NEC, NLILI, NDIM, INO, IVAL, IDIM, I, K, IER,
      &             IAPRNO, JDEPL, JVITE, JACC0
       REAL*8       C7, C8, C9, PI, R8PI, UM, UA, UML, UI, UMM1, UAM1,
@@ -55,11 +55,13 @@ C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
      +             DTM, ROTIGE, LTIGE, VARAI, CDML, CDI, ROARAI, 
      +             ROCRAY, LCRAY, LI, LML, ROI, NUI, A, AC, AM, AI,
      +             AML, AT, DHML, DHI, Z, DZ, D2Z, VDIR(3)
-      CHARACTER*8  K8B
+      CHARACTER*8  K8B, RESULT
+      CHARACTER*16 K16B, CMD
       CHARACTER*24 NOLILI
 C ----------------------------------------------------------------------
       CALL JEMARQ()
 
+      CALL GETRES ( RESULT, K16B, CMD )
       PI = R8PI()
 C
       CALL JEVEUO ( CHGRFL, 'E', JFFL ) 
@@ -76,6 +78,7 @@ C
       I15 = ZI(JIFL-1+II+15)
       I16 = ZI(JIFL-1+II+16)
       I18 = ZI(JIFL-1+II+18)
+      I19 = ZI(JIFL-1+II+19)
 C
       CALL DISMOI('F','NB_EC','DEPL_R','GRANDEUR',NEC,K8B,IER)
       NDIM = 3
@@ -86,9 +89,9 @@ C     -----------------------------------------------------
 C
 C --- RECUPERATION DU VECTEUR UNITAIRE ORIENTANT LE CRAYON :
 C     ----------------------------------------------------
-      VDIR(1) = ZR(JFFL-1+I18+1)
-      VDIR(2) = ZR(JFFL-1+I18+2)
-      VDIR(3) = ZR(JFFL-1+I18+3)
+      VDIR(1) = ZR(JFFL-1+I18+3*(NBNO-1)+1)
+      VDIR(2) = ZR(JFFL-1+I18+3*(NBNO-1)+2)
+      VDIR(3) = ZR(JFFL-1+I18+3*(NBNO-1)+3)
 C
 C --- RECUPERATION DE L'ADRESSAGE DES CHAMPS : 
 C ---   .PRNO ASSOCIE AU MAILLAGE :
@@ -180,20 +183,42 @@ C
 C
 CCC      COMMON/MECANISME1/um,ua,uml,ui,ug,umm1,uam1,umlm1,uim1,pm,pa,
 C                          pml,ps,Cfm,Cfg,Cfi,Cfa
-      UM = AT/AM*DZ
-      UA = 0.D0
-      UMM1 = UM
-      UAM1 = UA
-      C7 = ROML*CDML-ROI*CDI*(AML/AI)**2
-      C8 = 96*ROML*NUML*LML/DHML**2 + 96*ROI*NUI*LI/DHI**2*AML/AI
-     &                        + 2*ROI*CDI*AT*AML/AI**2*DZ
-      C9 = -ROI*CDI*(AT/AI)**2*DZ**2-96*ROML*NUML*LI/DHI**2*AT/AI*DZ
-      IF (C7.NE.0.D0) THEN
-         UML = (-C8+SQRT(C8**2-4*C7*C9))/C7/2
+      IF ( NUME .EQ. 0 ) THEN
+         UM = AT/AM*DZ
+         UA = 0.D0
+         C7 = ROML*CDML-ROI*CDI*(AML/AI)**2
+         C8 = 96*ROML*NUML*LML/DHML**2 + 96*ROI*NUI*LI/DHI**2*AML/AI
+     &                                 + 2*ROI*CDI*AT*AML/AI**2*DZ
+         C9 = -ROI*CDI*(AT/AI)**2*DZ**2-96*ROML*NUML*LI/DHI**2*AT/AI*DZ
+         IF (C7.NE.0.D0) THEN
+            UML = (-C8+SQRT(C8**2-4*C7*C9))/C7/2
+         ELSE
+            UML = AT*DZ/(AI*ROML*LML/DHML**2/(ROI*LI/DHI**2)+AML)
+         ENDIF
+         UI = AT/AI*DZ - AML/AI*UML
       ELSE
-         UML = AT*DZ/(AI*ROML*LML/DHML**2/(ROI*LI/DHI**2)+AML)
+         CALL RSADPA(RESULT,'L',1,'GFUM',NUME,0,JPARA,K8B)
+         UM = ZR(JPARA)
+         CALL RSADPA(RESULT,'L',1,'GFUA',NUME,0,JPARA,K8B)
+         UA = ZR(JPARA)
+         CALL RSADPA(RESULT,'L',1,'GFUML',NUME,0,JPARA,K8B)
+         UML = ZR(JPARA)
+         CALL RSADPA(RESULT,'L',1,'GFUI',NUME,0,JPARA,K8B)
+         UI = ZR(JPARA)
+C
+         CALL RSADPA(RESULT,'L',1,'GFVAG',NUME,0,JPARA,K8B)
+         ZR(JFFL-1+I16+1) = ZR(JPARA)
+C
+         CALL RSADPA(RESULT,'L',1,'ITER_DASHPOT',NUME,0,JPARA,K8B)
+         ZI(JIFL-1+4) = ZI(JPARA)
+         CALL RSADPA(RESULT,'L',1,'GFVFD',NUME,0,JPARA,K8B)
+         ZR(JFFL-1+I19+1) = ZR(JPARA)
+         CALL RSADPA(RESULT,'L',1,'GFVAD',NUME,0,JPARA,K8B)
+         ZR(JFFL-1+I19+2) = ZR(JPARA)
+C
       ENDIF
-      UI = AT/AI*DZ - AML/AI*UML
+      UMM1  = UM
+      UAM1  = UA
       UMLM1 = UML
       UIM1  = UI
       ZR(JFFL-1+I15+1) = UM

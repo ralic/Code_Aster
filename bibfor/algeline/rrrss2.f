@@ -1,12 +1,12 @@
       SUBROUTINE RRRSS2(IABLO, IHCOL, IHCOIN, IABLIN, IBLOIN, 
      +                  IDLEXC, COEF, MATIN, MATRES)
       IMPLICIT REAL*8 (A-H,O-Z)
-      INTEGER          IABLO(1),IHCOL(1),IHCOIN(1),IDLEXC(1)
+      INTEGER          IABLO(*),IHCOL(1),IHCOIN(1),IDLEXC(1)
       INTEGER          IABLIN(1), IBLOIN(1)
       REAL*8           COEF, MATIN(1), MATRES(1)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 20/04/99   AUTEUR CIBHHGB G.BERTRAND 
+C MODIF ALGELINE  DATE 25/10/2004   AUTEUR D6BHHJP J.P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

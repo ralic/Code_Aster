@@ -1,4 +1,4 @@
-#@ MODIF B_ETAPE Build  DATE 05/10/2004   AUTEUR CIBHHLV L.VIVAN 
+#@ MODIF B_ETAPE Build  DATE 20/10/2004   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -27,6 +27,7 @@ import types,string,repr
 import traceback
 
 # Module Eficas
+import Noyau.N_FONCTION
 from Noyau.N_utils import prbanner
 from Noyau.N_utils import AsType
 from Noyau import N_MCSIMP,N_MCFACT,N_MCBLOC,N_MCLIST,N_ASSD
@@ -416,18 +417,33 @@ class ETAPE(B_OBJECT.OBJECT,CODE):
          Cette methode permet d'appeler une formule python depuis le fortran
          Elle évalue les concepts FORMULE
       """
-      nom_fonction=string.strip(nom_fonction)
       nom_param   =map(string.strip,nom_param)
-      objet_sd    =self.parent.get_sd_avant_etape(nom_fonction,self)
+      if not hasattr(self,"func_dic"):
+         self.func_dic={}
+
+      if self.func_dic.has_key(nom_fonction):
+         objet_sd =self.func_dic[nom_fonction]
+      else:
+         objet_sd =self.parent.get_sd_avant_etape(string.strip(nom_fonction),self)
+         self.func_dic[nom_fonction]=objet_sd
+
       if len(nom_param)!=len(val) :
          self.cr.fatal("""<E> <FORMULE> nombre de valeurs différent du nombre de paramètres""")
          return None
 # appel de fonction definie dans le corps du jeu de commandes
-      if self.gettco(nom_fonction)=='FORMULE':
-           send_val=[]
-           for param in objet_sd.nompar :
-               send_val.append(val[nom_param.index(param)])
-           res = objet_sd(*send_val)
+      try:
+           context={}
+           i=0
+           for param in nom_param :
+               context[param]=val[i]
+               i=i+1
+           res=eval(objet_sd.code,self.jdc.const_context,context)
+      except:
+           traceback.print_exc()
+           print 75*'!'
+           print '! '+string.ljust('Erreur evaluation formule '+objet_sd.nom,72)+'!'
+           print 75*'!'
+           return None
       return res
 
    def getvr8(self,nom_motfac,nom_motcle,iocc,iarg,mxval):

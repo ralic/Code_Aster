@@ -1,5 +1,5 @@
 
-# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 25/10/2004   AUTEUR MABBAS M.ABBAS 
 # TITRE EMBOUTISSAGE D'UNE TOLE PAR UN POINCON HEMISPHERIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -167,6 +167,7 @@ CH2=AFFE_CHAR_MECA(MODELE=MODEL,
                                RECHERCHE='NOEUD_BOUCLE',
                                METHODE='LAGRANGIEN',
                                FROTTEMENT='COULOMB',
+                               TOLE_PROJ_EXT = 3,
                                COULOMB=0.14999999999999999,
                                GROUP_MA_MAIT='LFC2',
                                GROUP_MA_ESCL='LC1D',
@@ -175,6 +176,7 @@ CH2=AFFE_CHAR_MECA(MODELE=MODEL,
                                RECHERCHE='NOEUD_BOUCLE',
                                METHODE='LAGRANGIEN',
                                FROTTEMENT='COULOMB',
+                               TOLE_PROJ_EXT = 3,
                                COULOMB=0.14999999999999999,
                                GROUP_MA_MAIT='LEA2',
                                GROUP_MA_ESCL='LA1B',

@@ -4,7 +4,7 @@
       INTEGER NBORDR
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+C MODIF UTILITAI  DATE 25/10/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -74,7 +74,7 @@ C     ------------------------------------------------------------------
 C     ------------------------------------------------------------------
 C                          E V O L _ N O L I
 C     ------------------------------------------------------------------
-      PARAMETER (NPEVNO=13,NAEVNO=7)
+      PARAMETER (NPEVNO=21,NAEVNO=8)
       CHARACTER*16 PAEVNO(NPEVNO)
 C     ------------------------------------------------------------------
 C                          E V O L _ T H E R
@@ -144,9 +144,10 @@ C     ------------------------------------------------------------------
 C                          E V O L _ N O L I
 C     ------------------------------------------------------------------
       DATA PAEVNO/'INST','MODELE','CHAMPMAT','CARAELEM','EXCIT',
-     &     'ITER_GLOB','ITER_LINE','RESI_GLOB_RELA',
+     &     'ITER_GLOB','ITER_LINE','ITER_DASHPOT','RESI_GLOB_RELA',
      &     'RESI_GLOB','CHAR_MINI','ETA_PILOTAGE','RESI_GLOB_MOINS',
-     &     'CHAR_CRIT'/
+     &     'CHAR_CRIT','GFUM','GFUA','GFUML','GFUI','GFVAG','GFVFD',
+     &     'GFVAD'/
 C     ------------------------------------------------------------------
 C                          E V O L _ T H E R
 C     ------------------------------------------------------------------
@@ -417,6 +418,7 @@ C     ------------------------------------------------------------------
         CALL UTACCE('A',NOMSD,'INST','INST','R',NBORDR)
         CALL UTACCE('P',NOMSD,'ITER_GLOB','ITEG','I',NBORDR)
         CALL UTACCE('P',NOMSD,'ITER_LINE','ITEL','I',NBORDR)
+        CALL UTACCE('P',NOMSD,'ITER_DASHPOT','ITDA','I',NBORDR)
         CALL UTACCE('P',NOMSD,'MODELE','MODL','K8',NBORDR)
         CALL UTACCE('P',NOMSD,'CHAMPMAT','MATE','K8',NBORDR)
         CALL UTACCE('P',NOMSD,'CARAELEM','CARA','K8',NBORDR)

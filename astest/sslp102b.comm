@@ -1,4 +1,4 @@
-# MODIF  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 25/10/2004   AUTEUR GALENNE E.GALENNE 
 # TITRE TAUX DE RESTITUTION AVEC ETAT INITIAL
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -140,55 +140,62 @@ THETA4=CALC_THETA(       MODELE=MO,
 #  CALCUL DE G AVEC DEFORMATIONS INITIALES
 #--------------------------------------------------------------------
 
-G1=CALC_G_THETA_T(        MODELE=MO,
-                          RESULTAT=RESU,
-                        NUME_ORDRE=1,
-                        CHAM_MATER=CM,
-                            EXCIT=_F(CHARGE=CH,),
-                             THETA=THETA1 )
+G1=CALC_G_THETA_T(MODELE=MO,
+                  RESULTAT=RESU,
+                  NUME_ORDRE=1,
+                  CHAM_MATER=CM,
+                  EXCIT=_F(CHARGE=CH,
+                           FONC_MULT = F),
+                  THETA=THETA1 );
 
-G2=CALC_G_THETA_T(        MODELE=MO,
-                          RESULTAT=RESU,
-                        NUME_ORDRE=1,
-                        CHAM_MATER=CM,
-                            EXCIT=_F(CHARGE=CH,),
-                             THETA=THETA2 )
+G2=CALC_G_THETA_T(MODELE=MO,
+                  RESULTAT=RESU,
+                  NUME_ORDRE=1,
+                  CHAM_MATER=CM,
+                  EXCIT=_F(CHARGE=CH,
+                           FONC_MULT = F),
+                  THETA=THETA2 );
 
-G3=CALC_G_THETA_T(        MODELE=MO,
-                          RESULTAT=RESU,
-                        CHAM_MATER=CM,
-                        NUME_ORDRE=1,
-                            EXCIT=_F(CHARGE=CH,),
-                             THETA=THETA3 )
+G3=CALC_G_THETA_T(MODELE=MO,
+                  RESULTAT=RESU,
+                  NUME_ORDRE=1,
+                  CHAM_MATER=CM,
+                  EXCIT=_F(CHARGE=CH,
+                           FONC_MULT = F),
+                  THETA=THETA3 );
 
-G4=CALC_G_THETA_T(        MODELE=MO,
-                          RESULTAT=RESU,
-                        CHAM_MATER=CM,
-                            EXCIT=_F(CHARGE=CH,),
-                             THETA=THETA4 )
+G4=CALC_G_THETA_T(MODELE=MO,
+                  RESULTAT=RESU,
+                  NUME_ORDRE=1,
+                  CHAM_MATER=CM,
+                  EXCIT=_F(CHARGE=CH,
+                           FONC_MULT = F),
+                  THETA=THETA4 );                                    
 
 #--------------------------------------------------------------------
 #  CALCUL DE G AVEC DEFORMATIONS INITIALES + ETAT INITIAL
 #--------------------------------------------------------------------
 
 
-G13=CALC_G_THETA_T(        MODELE=MO,
-                           RESULTAT=RESU,
-                         NUME_ORDRE=1,
-                         CHAM_MATER=CM,
-                             EXCIT=_F(CHARGE=CH,),
-                          ETAT_INIT=_F( DEPL = DEPLA),
-#                                     SIGM : SIGMA)
-                              THETA=THETA3 )
+G13=CALC_G_THETA_T(MODELE=MO,
+                   RESULTAT=RESU,
+                   NUME_ORDRE=1,
+                   CHAM_MATER=CM,
+                   EXCIT=_F(CHARGE=CH,
+                            FONC_MULT = F),
+                   ETAT_INIT=_F( DEPL = DEPLA),
+#                               SIGM : SIGMA)
+                   THETA=THETA3 )
 
-G14=CALC_G_THETA_T(        MODELE=MO,
-                           RESULTAT=RESU,
-                         NUME_ORDRE=1,
-                         CHAM_MATER=CM,
-                             EXCIT=_F(CHARGE=CH,),
-                          ETAT_INIT=_F( DEPL = DEPLA),
-#                                     SIGM : SIGMA)
-                              THETA=THETA4 )
+G14=CALC_G_THETA_T(MODELE=MO,
+                   RESULTAT=RESU,
+                   NUME_ORDRE=1,
+                   CHAM_MATER=CM,
+                   EXCIT=_F(CHARGE=CH,
+                            FONC_MULT = F),
+                   ETAT_INIT=_F( DEPL = DEPLA),
+#                              SIGM : SIGMA)
+                   THETA=THETA4 )
 
 #--------------------------------------------------------------------
 #  POUR TEST INFORMATIQUE: CHARGEMENT PESANTEUR ET FORCE_INTERNE
@@ -202,23 +209,14 @@ CHPESA1=AFFE_CHAR_MECA(       MODELE=MO,
 CHPESA2=AFFE_CHAR_MECA_F(           MODELE=MO,
                                FORCE_INTERNE=_F( TOUT = 'OUI', FY = DIX))
 
-G21=CALC_G_THETA_T(        MODELE=MO,
-                           RESULTAT=RESU,
-                         NUME_ORDRE=1,
-                         CHAM_MATER=CM,
-                            EXCIT=(_F(CHARGE=CH),
-                                   _F(CHARGE= CHPESA1),
-                                   _F(CHARGE= CHPESA2,),),
-                              THETA=THETA1 )
+G21=CALC_G_THETA_T(MODELE=MO,
+                   DEPL = DEPLA,
+                   CHAM_MATER=CM,
+                   EXCIT=(_F(CHARGE=CH),
+                             _F(CHARGE= CHPESA1),
+                             _F(CHARGE= CHPESA2,),),
+                   THETA=THETA1 );
 
-G31=CALC_G_THETA_T(        MODELE=MO,
-                           RESULTAT=RESU,
-                         NUME_ORDRE=1,
-                         CHAM_MATER=CM,
-                         EXCIT=(_F(CHARGE=CH),
-                                _F(CHARGE= CHPESA1),
-                                _F(CHARGE= CHPESA2,),),
-                              THETA=THETA1 )
 
 #--------------------------------------------------------------------
 #                TESTS DES RESULTATS                                #
@@ -268,18 +266,10 @@ TEST_TABLE(       TABLE=G14,
                       PRECISION=2.E-2   )
 
 TEST_TABLE(       TABLE=G21,
-                         FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                  VALE_I = 1),
-                       NOM_PARA='G',
+                   NOM_PARA='G',
                            VALE=1.8E-1,
                       PRECISION=1.E-3   )
 
-TEST_TABLE(       TABLE=G31,
-                         FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                  VALE_I = 1),
-                       NOM_PARA='G',
-                           VALE=1.8E-1,
-                      PRECISION=1.E-3   )
 
 FIN( )
 #

@@ -2,7 +2,7 @@
      &                  RESOCO,IESCL)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/10/2004   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 25/10/2004   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -92,7 +92,7 @@ C
       INTEGER      PROJ,POSNO(10),DDL(30)
       REAL*8       JEUMIN,R8GAEM,OLDJEU,JEU
       REAL*8       NORM(3),TANG(6),COEF(30),COFX(30),COFY(30)
-      REAL*8       CMULT,ECAN
+      REAL*8       CMULT,ECAN,R8MIEM,R8PREM
       LOGICAL      MULNOR
       CHARACTER*3  PROJOP
       INTEGER      REAC,PROYES,POSMIN,PROMIN
@@ -359,7 +359,9 @@ C
              ECAN = ABS((OLDJEU-JEUMIN)/JEUMIN)
           ENDIF
 
-          IF (OLDJEU.LE.JEUMIN) THEN
+          IF ((OLDJEU.LE.JEUMIN).AND. 
+     &           (ECAN.GT.1D-15)) THEN
+
             JEUMIN = OLDJEU
             POSMIN = POSMA
             PROMIN = PROYES
@@ -388,6 +390,7 @@ C
                PROJOP =  'NOP'
             ENDIF
           ENDIF
+
 
           IF ((PROJOP.EQ.'ADD').OR.(PROJOP.EQ.'STC').OR.
      &        (PROJOP.EQ.'PIV')) THEN
@@ -490,7 +493,6 @@ C
 C
 C --- CHOIX DU BOUCLAGE
 C
-
         IF (TYPSUP.EQ.0) THEN
 C
 C --- BOUCLAGE SUR LE NOEUD ESCLAVE SUIVANT
@@ -509,6 +511,7 @@ C
 
           NESCL  = NESCL -1
           IESCL  = IESCL -1
+
         ENDIF
 
       IF (IND.LE.(IESCL0 + NESCL - 1)) THEN

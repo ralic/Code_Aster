@@ -1,6 +1,6 @@
       SUBROUTINE RESR3D ( ROTA, COOR, FF, RHO, NNO, NPG, FRX, FRY, FRZ )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 17/02/95   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF ELEMENTS  DATE 25/10/2004   AUTEUR D6BHHJP J.P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,7 +39,7 @@ C                  FRY       -->  FORCE AU POINT DE GAUSS EN Y
 C                  FRZ       -->  FORCE AU POINT DE GAUSS EN Z
 C ......................................................................
 C
-      REAL*8             ROTA(1), COOR(1), FF(1) 
+      REAL*8             ROTA(*), COOR(1), FF(1) 
       REAL*8             FX(27), FY(27), FZ(27)  
       REAL*8             FRX(27), FRY(27), FRZ(27) 
       REAL*8             OMO, OMM, OM1, OM2, OM3 

@@ -4,7 +4,7 @@
       CHARACTER*24        CHGRFL
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/10/2003   AUTEUR BOYERE E.BOYERE 
+C MODIF ALGORITH  DATE 25/10/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -49,6 +49,7 @@ C
      +             II, JFFL, JIFL, INO
       INTEGER      IDRDH, IDRGR, IDRMC, IDRMA, IDRTG, IDRAS, IDRPC,
      +             IDVDIR, IDGEOM, IDABSC, NBNO, IDLINO
+      INTEGER      IAPPL, IMPF, IMPN
       REAL*8       Q, ROC, ROD, ROP, ROM, ROML, ROG, NUC, NUM, NUML,
      +             NUG, P2, P3, P4, G
       REAL*8       M, DTIGE, DTM, ROTIGE, LTIGE, LLT, LCT, VARAI,
@@ -69,6 +70,7 @@ C
      +             AMT, ACMT, DH, DHR, DH0, DHM, DHA, DHI, DHML, DHG
       REAL*8       CGG, NRET
       REAL*8       DEMI, QUATRE, R8PI, PI, PIS4
+      LOGICAL      ULEXIS
       CHARACTER*8  K8BID
 C.========================= DEBUT DU CODE EXECUTABLE ==================
 C
@@ -247,8 +249,8 @@ C
 C --- INITIALISATION DES "COMMON" PEGASE :
 C     ----------------------------------
 C
-      CALL WKVECT ( CHGRFL, 'V V R', 2*NBNO+1000, JFFL ) 
-      CALL WKVECT ( '&&GFLECT.INDICE', 'V V I', NBNO+30, JIFL ) 
+      CALL WKVECT ( CHGRFL, 'V V R', 5*NBNO+1000, JFFL ) 
+      CALL WKVECT ( '&&GFLECT.INDICE', 'V V I', NBNO+50, JIFL ) 
 C
 C
 CCC      COMMON/CARTER/Li,Lml,Lig,deml,diml,dcsp,roml,numl,Aml,Ai,Dhml,
@@ -466,10 +468,10 @@ C
 C --- RECUPERATION DU VECTEUR UNITAIRE ORIENTANT LE CRAYON :
 C     ----------------------------------------------------
       CALL JEVEUO(NOMCHA//'.CHME.GRFLU.VDIR','L',IDVDIR)
-      ZR(JFFL-1+I18+1) = ZR(IDVDIR-1+1)
-      ZR(JFFL-1+I18+2) = ZR(IDVDIR-1+2)
-      ZR(JFFL-1+I18+3) = ZR(IDVDIR-1+3)
-      I19 = I18 + 3
+      DO 8 INO = 1 , 3*NBNO+3
+         ZR(JFFL-1+I18+INO) = ZR(IDVDIR-1+INO)
+ 8    CONTINUE
+      I19 = I18 + 3*NBNO+3
 C
 C     YY : VITESSE DU FLUIDE (DASHPOT)
 C
@@ -532,6 +534,32 @@ C
       ZI(JIFL-1+II+21) = I21
       ZI(JIFL-1+II+22) = I22
 C
+C --- RECUPERATION DES DONNEES SUR LIEU APPLICATION FORCES :
+C     ----------------------------------------------------
+      CALL JEVEUO ( NOMCHA//'.CHME.GRFLU.APPL', 'L', IAPPL )
+      ZI(JIFL-1+II+23) = ZI( IAPPL-1+1 )
+      ZI(JIFL-1+II+24) = ZI( IAPPL-1+2 )
+      ZI(JIFL-1+II+25) = ZI( IAPPL-1+3 )
+      ZI(JIFL-1+II+26) = ZI( IAPPL-1+4 )
+      ZI(JIFL-1+II+27) = ZI( IAPPL-1+5 )
+      ZI(JIFL-1+II+28) = ZI( IAPPL-1+6 )
+      ZI(JIFL-1+II+29) = ZI( IAPPL-1+7 )
+      ZI(JIFL-1+II+30) = ZI( IAPPL-1+8 )
+      ZI(JIFL-1+II+31) = ZI( IAPPL-1+9 )
+      ZI(JIFL-1+II+32) = ZI( IAPPL-1+10)
+      IMPF = ZI(IAPPL-1+7)
+      IF ( IMPF .GT. 0 ) THEN
+        IF ( .NOT. ULEXIS( IMPF ) ) THEN
+           CALL ULOPEN ( IMPF, ' ', ' ', 'NEW', 'O' )
+        ENDIF
+      ENDIF
+      IMPN = ZI(IAPPL-1+8)
+      IF ( IMPN .GT. 0 ) THEN
+        IF ( .NOT. ULEXIS( IMPN ) ) THEN
+           CALL ULOPEN ( IMPN, ' ', ' ', 'NEW', 'O' )
+        ENDIF
+      ENDIF
+
       CALL JEDEMA()
 C.============================ FIN DE LA ROUTINE ======================
       END

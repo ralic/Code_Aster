@@ -4,7 +4,7 @@
       CHARACTER*(*)  QUESTI, CODMES, NOMOBZ, REPKZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 17/06/2003   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 26/10/2004   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -153,7 +153,7 @@ C            ------------------------
             CALL JENUNO(JEXNUM('&CATA.TE.NOMTE',ITYPEL),NOMTE)
             CALL DISMTE(CODMES,'MODELISATION',NOMTE,REPI,REPK,IERD)
             NOMOD2=REPK(1:16)
-            IF (NOMODL.NE.NOMOD2) THEN
+            IF ((NOMODL.NE.NOMOD2).AND.(NOMOD2.NE.' ')) THEN
               ICO =ICO+1
               NOMODL=NOMOD2
             END IF

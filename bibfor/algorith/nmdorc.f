@@ -19,7 +19,7 @@ C ======================================================================
       IMPLICIT NONE
       CHARACTER*(*) MODELZ,COMPOZ
 C ----------------------------------------------------------------------
-C MODIF ALGORITH  DATE 27/09/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 26/10/2004   AUTEUR CIBHHPD L.SALMONA 
 C     SAISIE ET VERIFICATION DE LA RELATION DE COMPORTEMENT UTILISEE
 C
 C IN  MODELZ  : NOM DU MODELE
@@ -340,7 +340,8 @@ C  POUR COMPORTEMENT KIT_
                 DO 122 INV = 1, DIMANV
                    NBNVI(INV) = 0
  122            CONTINUE
-                CALL NMTHMC(COMP,MOCLEF(I),K,COMEL(1),NCOMEL,NBNVI(1))
+                CALL NMTHMC(COMP,MODELE,MOCLEF(I),K,COMEL(1),NCOMEL,
+     &          NBNVI(1))
               END IF
             ELSE IF (COMP(1:4).EQ.'META') THEN
               EXIST = GETEXM(MOCLEF(I),COMP)

@@ -1,4 +1,4 @@
-#@ MODIF N_FONCTION Noyau  DATE 28/09/2004   AUTEUR DURAND C.DURAND 
+#@ MODIF N_FONCTION Noyau  DATE 20/10/2004   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -30,19 +30,52 @@ class formule(ASSD):
       ASSD.__init__(self,**args)
       self.nompar    =None
       self.expression=None
+
    def __call__(self,*val):
-      context=self.jdc.const_context
+      context={}
       i=0
       for param in self.nompar : 
          context[param]=val[i]
          i=i+1
       try :
-       exec(self.expression) in context
+       res=eval(self.expression,self.jdc.const_context, context)
       except :
        print 75*'!'
        print '! '+string.ljust('Erreur evaluation formule '+self.nom,72)+'!'
        print 75*'!'
        raise
-      res=context['____x']
-      del(context)
       return res
+
+   def setFormule(self,nom_para,texte):
+      """
+         Cette methode sert a initialiser les attributs
+         nompar, expression et code qui sont utilisés
+         dans l'évaluation de la formule
+      """
+      self.nompar     = nom_para
+      self.expression = texte
+      try :
+        self.code=compile(texte,texte,'eval')
+      except SyntaxError :
+        print 75*'!'
+        print '! '+string.ljust('Erreur evaluation formule '+self.nom,72)+'!'
+        print 75*'!'
+        raise
+
+   def __setstate__(self,state):
+      """
+         Cette methode sert a restaurer l'attribut code
+         lors d'un unpickle
+      """
+      self.__dict__.update(state)                  # update attributes
+      self.setFormule(self.nompar,self.expression) # restore code attribute
+      
+   def __getstate__(self):
+      """
+         Pour les formules, il faut enlever l'attribut code
+         qui n'est pas picklable
+      """
+      d=ASSD.__getstate__(self)
+      del d['code']
+      return d
+

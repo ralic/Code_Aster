@@ -3,7 +3,7 @@
       CHARACTER*(*)     CH,TEXTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 06/01/95   AUTEUR G8BHHAC A.Y.PORTABILITE 
+C MODIF SUPERVIS  DATE 25/10/2004   AUTEUR D6BHHJP J.P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -56,7 +56,7 @@ C
       CH1 = CH(1:1)
       CH2 = ' '
       IF ( LEN(CH).GT.1 ) CH2 = CH(2:2)
-      LONG  = LEN(TEXTE)
+      LONG  = MIN (LEN(TEXTE),NBCOLS)
       IF ( CH1.EQ.'C') THEN
 C
          IBL   = (NBCOLS - LONG ) / 2

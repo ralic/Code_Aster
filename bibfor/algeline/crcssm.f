@@ -1,12 +1,12 @@
       SUBROUTINE CRCSSM(IABLO, IHCOL, IADIA, IDLEXC, COEF, MATIN,
      +                  MATRES)
       IMPLICIT REAL*8 (A-H,O-Z)
-      INTEGER          IABLO(1), IHCOL(1), IADIA(1), IDLEXC(1)
+      INTEGER          IABLO(*), IHCOL(1), IADIA(1), IDLEXC(1)
       REAL*8           MATIN(1)
       COMPLEX*16       MATRES(1), COEF
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 12/05/95   AUTEUR CIBHHGB G.BERTRAND 
+C MODIF ALGELINE  DATE 25/10/2004   AUTEUR D6BHHJP J.P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

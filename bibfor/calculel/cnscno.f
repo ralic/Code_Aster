@@ -2,7 +2,7 @@
 C RESPONSABLE VABHHTS J.PELLET
 C A_UTIL
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 30/09/2003   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 25/10/2004   AUTEUR D6BHHJP J.P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -197,8 +197,13 @@ C     -----------------------------------
         INO = ZI(JDEEQ-1+2* (IEQ2-1)+1)
         ICMP = ZI(JDEEQ-1+2* (IEQ2-1)+2)
         IF (INO*ICMP.GT.0) THEN
+          NOMCMP = ZK8(JCMPGD-1+ICMP)
           ICMP1 = ZI(JNUCMP-1+ICMP)
-          IF (ICMP1.EQ.0) GO TO 59
+          IF (ICMP1.EQ.0 ) THEN
+            CALL JENUNO(JEXNUM(MA//'.NOMNOE',INO),NOMNO)
+            CALL UTMESS('F','CNSCNO','IL MANQUE LA CMP:'//NOMCMP//
+     +                  ' SUR LE NOEUD:'//NOMNO)
+          ENDIF
           IF (ZL(JCNSL-1+ (INO-1)*NCMP1+ICMP1)) THEN
             IF (TSCA.EQ.'R') THEN
               ZR(JVALE-1+IEQ2) = ZR(JCNSV-1+ (INO-1)*NCMP1+ICMP1)
@@ -214,8 +219,6 @@ C     -----------------------------------
               CALL UTMESS('F','CNSCNO','STOP 3')
             END IF
           ELSE
-   59       CONTINUE
-            NOMCMP = ZK8(JCMPGD-1+ICMP)
             CALL JENUNO(JEXNUM(MA//'.NOMNOE',INO),NOMNO)
             CALL UTMESS('F','CNSCNO','IL MANQUE LA CMP:'//NOMCMP//
      +                  ' SUR LE NOEUD:'//NOMNO)

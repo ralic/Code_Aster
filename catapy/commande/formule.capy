@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 20/10/2004   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,20 +17,13 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
 def form_pyth_ops(self,d):
-  import types
+  import types,string
   NOM_PARA=self.etape['NOM_PARA']
   VALE    =self.etape['VALE']
   if type(NOM_PARA) not in (types.ListType,types.TupleType) : NOM_PARA=[NOM_PARA,]
-  self.sd.nompar     = NOM_PARA
-  texte='____x='+string.join(VALE.splitlines())
-  try : 
-    compile(texte,texte,'exec')
-  except SyntaxError : 
-    print 75*'!'
-    print '! '+string.ljust('Erreur evaluation formule '+self.sd.nom,72)+'!'
-    print 75*'!'
-    raise
-  self.sd.expression = texte
+  texte=string.join(VALE.splitlines())
+
+  self.sd.setFormule(NOM_PARA,string.strip(texte))
 
 FORMULE=FORM(nom="FORMULE",op_init=form_pyth_ops,op=-5,
              sd_prod=formule,UIinfo={"groupes":("Fonction",)},

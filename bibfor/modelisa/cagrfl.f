@@ -3,7 +3,8 @@
       CHARACTER*8       CHAR, NOMA
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/10/2003   AUTEUR BOYERE E.BOYERE 
+C MODIF MODELISA  DATE 25/10/2004   AUTEUR CIBHHLV L.VIVAN 
+C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -50,7 +51,34 @@ C     CHAR//'.CHME.GF_AS.NCMP' : NOM DES COMPOSANTES POUR "AS"
 C     CHAR//'.CHME.GF_AS.VALE' : VALEUR DES COMPOSANTES POUR "AS"
 C     CHAR//'.CHME.GF_PC.NCMP' : NOM DES COMPOSANTES POUR "PC"
 C     CHAR//'.CHME.GF_PC.VALE' : VALEUR DES COMPOSANTES POUR "PC"
-C
+C     CHAR//'.CHME.GRFLU.APPL' : VECTEUR DE 10 ENTIERS CONTENANT 
+C				 LES INFORMATIONS RELATIVES AUX LIEUX 
+C				 D'APPLICATION DES FORCES FLUIDES
+C				 ENTIER 1      LIEU APPLICATION FARCHI
+C					       1 => REPARTIE
+C					       2 => CDG
+C				 ENTIER 2      LIEU APPLICATION FPLAQ
+C					       1 => REPARTIE
+C					       2 => CDG
+C					       3 => ZONE
+C				 ENTIER 3      LIEU APPLICATION FMEC
+C					       1 => REPARTIE
+C					       2 => CDG
+C					       3 => ZONE
+C				 ENTIER 4      LIEU APPLICATION FTG
+C					       1 => REPARTIE
+C					       2 => CDG
+C					       3 => ZONE
+C				 ENTIER 5      NUMERO DU NOEUD LE PLUS 
+C   					       PROCHE DU MILIEU DE LA
+C					       GAINE DE CONTROLE
+C				 ENTIER 6      NUMERO DU NOEUD LE PLUS 
+C   					       PROCHE DU CENTRE DE 
+C					       GRAVITE DE LA GRAPPE
+C				 ENTIER 7      UNITE IMPRESSION FORCES (38)
+C				 ENTIER 8      UNITE IMPRESSION NOEUDS (37)
+C				 ENTIER 9      VIDE
+C				 ENTIER 10     VIDE
 C ----------------------------------------------------------------------
 C     ----- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------
       INTEGER            ZI
@@ -69,16 +97,27 @@ C     ----- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C     ----- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       INTEGER       NDH, NGR, NMC, NMA, NTG, NAS, NPC, JGEO
+      INTEGER       IMPF, IMPN
+      INTEGER       NKAR, NKFP, NKFM, NKF, NKIN
       PARAMETER    ( NDH = 16 , NGR = 20 , NMC = 11 , NMA = 11 ,
      +               NTG = 12 , NAS = 11 , NPC = 10 )
       CHARACTER*8   FFDH(NDH) , FFGR(NGR) , FFMC(NMC) , FFMA(NMA),
      +              FFTG(NTG) , FFAS(NAS) , FFPC(NPC)
       INTEGER       I, J, N1, N2, IOC, NBFFL, INDIK8, NBV, JNOMA,
      +              JCDH, JCGR, JCMC, JCMA, JCTG, JCAS, JCPC,
-     +              JVDH, JVGR, JVMC, JVMA, JVTG, JVAS, JVPC
-      REAL*8        VALR(NGR), Z0
-      CHARACTER*8   K8B, VALK(NGR)
-      CHARACTER*16  MOTCLF
+     +              JVDH, JVGR, JVMC, JVMA, JVTG, JVAS, JVPC,
+     +              IRET, JAPL, JDIR
+      REAL*8        R8B, VALR(NGR), Z0, CDG(3), Z2, VDIR(3), NORM,
+     +              R8VIDE
+      COMPLEX*16    C16B
+      CHARACTER*8   K8B, VALK(NGR),KCRIT
+      CHARACTER*8   K8ARC, K8PLA, K8MEC, K8TG, K8TIN
+      CHARACTER*16  MOTCLF, VALEK(2),CRIT(2)      
+      INTEGER       IBID
+      INTEGER       CDGXI, CDGYI, CDGZI
+      REAL*8        CDGXR, CDGYR, CDGZR
+      COMPLEX*16    CDGXC, CDGYC, CDGZC
+      CHARACTER*8   CDGXK, CDGYK, CDGZK, TYPVAL      
 C
 C --- DONNEES HYDRAULIQUES
 C
@@ -122,6 +161,10 @@ C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
 C
+      VDIR(1) = R8VIDE()
+      VDIR(2) = R8VIDE()
+      VDIR(3) = R8VIDE()
+C
       MOTCLF = 'GRAPPE_FLUIDE'
       CALL GETFAC ( MOTCLF , NBFFL )
       IF ( NBFFL .EQ. 0 ) GOTO 9999
@@ -144,6 +187,7 @@ C
       CALL WKVECT ( CHAR//'.CHME.GF_PC.NCMP', 'G V K8', NPC, JCPC )
       CALL WKVECT ( CHAR//'.CHME.GF_PC.VALE', 'G V R' , NPC, JVPC )
       CALL WKVECT ( CHAR//'.CHME.GRFLU.GEOM', 'G V R' ,   8, JGEO )
+      CALL WKVECT ( CHAR//'.CHME.GRFLU.APPL', 'G V I' ,  10, JAPL )
 C
       DO 11 I = 1, NDH
          ZK8(JCDH-1+I) = FFDH(I)
@@ -191,6 +235,50 @@ C
       IF ( N1 .EQ. 0 ) THEN
          CALL UTMESS('F','CAGRFL','LE MOT CLE "Z0" DOIT ETRE '//
      +                            'PRESENT A LA PREMIERE OCCURENCE')
+      ENDIF
+C
+C --- LECTURE DES DONNEES SUR LIEUX D'APP. DES FORCES FLUIDES
+C
+      CALL GETVTX ( MOTCLF, 'APPL_FORC_ARCHI',1,1,1, K8ARC, NKAR)
+      IF ( K8ARC .EQ. 'REPARTIE' ) THEN
+         ZI(JAPL-1+1) = 1
+      ELSEIF ( K8ARC .EQ. 'CDG' ) THEN
+         ZI(JAPL-1+1) = 2
+      ENDIF
+C  
+      CALL GETVTX ( MOTCLF, 'APPL_FORC_FPLAQ',1,1,1, K8PLA, NKFP)
+      IF ( K8PLA .EQ. 'REPARTIE' ) THEN
+         ZI(JAPL-1+2) = 1
+      ELSEIF ( K8PLA .EQ. 'CDG' ) THEN
+         ZI(JAPL-1+2) = 2
+      ELSEIF ( K8PLA .EQ. 'ZONE' ) THEN
+         ZI(JAPL-1+2) = 3
+      ELSEIF ( K8PLA .EQ. 'MILIEU' ) THEN
+         ZI(JAPL-1+2) = 4
+      ELSEIF ( K8PLA .EQ. 'DISTRI' ) THEN
+         ZI(JAPL-1+2) = 5
+      ENDIF
+C     
+      CALL GETVTX ( MOTCLF, 'APPL_FORC_FMEC' ,1,1,1, K8MEC, NKFM)
+      IF ( K8MEC .EQ. 'REPARTIE' ) THEN
+         ZI(JAPL-1+3) = 1
+      ELSEIF ( K8MEC .EQ. 'CDG' ) THEN
+         ZI(JAPL-1+3) = 2
+      ELSEIF ( K8MEC .EQ. 'ZONE' ) THEN
+         ZI(JAPL-1+3) = 3
+      ELSEIF ( K8MEC .EQ. 'PTREP' ) THEN
+         ZI(JAPL-1+3) = 4
+      ENDIF
+C      
+      CALL GETVTX ( MOTCLF, 'APPL_FORC_FTG' ,1,1,1, K8TG, NKF)
+      IF ( K8TG .EQ. 'REPARTIE' ) THEN
+         ZI(JAPL-1+4) = 1
+      ELSEIF ( K8TG .EQ. 'CDG' ) THEN
+         ZI(JAPL-1+4) = 2
+      ELSEIF ( K8TG .EQ. 'ZONE' ) THEN
+         ZI(JAPL-1+4) = 3
+      ELSEIF ( K8TG .EQ. 'PTREP' ) THEN
+         ZI(JAPL-1+4) = 4
       ENDIF
 C
 C --- LECTURE DES DONNEES HYDRAULIQUES
@@ -256,7 +344,7 @@ C
      +         'NOMBRE CARA_MANCHETTE DIFFERENT DE VALE_MANCHETTE')
       ENDIF
       IF ( N1 .NE. NMA ) THEN
-         CALL UTDEBM('F','CAGRFL',' IL MANQUE DES DONNEES')
+         CALL UTDEBM('F','CAGRFL',' IL JCINMANQUE DES DONNEES')
          CALL UTIMPK('L','   DONNEES RECUES ', ABS(N1), VALK )
          CALL UTIMPK('L','   DONNEES ATTENDUES ',  NMA, FFMA )
       ENDIF
@@ -323,6 +411,26 @@ C --- LECTURE DU Z0
 C
       CALL GETVR8 ( MOTCLF, 'Z0', 1, 1, 1, Z0, N1 )
       ZR(JVGR-1+NGR) = Z0
+C
+C --- LECTURE DE LA DIRECTION D'APPLICATION DE FPLAQ
+C
+      CALL GETVR8 ( MOTCLF, 'DIRE_FORC_FPLAQ', 1, 1, 0, R8B, N1 )
+      IF ( N1 .NE. 0 ) THEN
+         CALL GETVR8 ( MOTCLF, 'DIRE_FORC_FPLAQ', 1, 1, 3, VDIR, N1 )
+         NORM = SQRT( VDIR(1)**2 + VDIR(2)**2 + VDIR(3)**2 )
+         VDIR(1) = VDIR(1) / NORM
+         VDIR(2) = VDIR(2) / NORM
+         VDIR(3) = VDIR(3) / NORM
+      ENDIF
+C      
+C --- ON RECUPERE LES UNITES D'IMPRESSION POUR NOEUDS ET FORCES
+C
+      IMPF = 0
+      IMPN = 0
+      CALL GETVIS ( MOTCLF, 'UNITE_IMPR_FORCE', 1, 1, 1, IMPF, N2 )
+      CALL GETVIS ( MOTCLF, 'UNITE_IMPR_NOEUD', 1, 1, 1, IMPN, N2 )
+      ZI(JAPL-1+7) = IMPF
+      ZI(JAPL-1+8) = IMPN
 C
 C --- LES OCCURENCES SUIVANTES SERVENT A SURCHARGER
 C
@@ -432,8 +540,100 @@ C
              ZR(JVPC-1+J) = VALR(I)
  207      CONTINUE
         ENDIF
+C
+        CALL GETVR8 ( MOTCLF, 'DIRE_FORC_FPLAQ', IOC,1,0, R8B, N1 )
+        IF ( N1 .NE. 0 ) THEN
+          CALL GETVR8 ( MOTCLF, 'DIRE_FORC_FPLAQ', IOC,1,3, VDIR, N1 )
+          NORM = SQRT( VDIR(1)**2 + VDIR(2)**2 + VDIR(3)**2 )
+          VDIR(1) = VDIR(1) / NORM
+          VDIR(2) = VDIR(2) / NORM
+          VDIR(3) = VDIR(3) / NORM
+        ENDIF
+C      
+        CALL GETVIS ( MOTCLF, 'UNITE_IMPR_FORCE', IOC,1,1, IMPF, N1 )
+        IF ( N1 .NE. 0 )  ZI(JAPL-1+7) = IMPF
+        CALL GETVIS ( MOTCLF, 'UNITE_IMPR_NOEUD', IOC,1,1, IMPN, N2 )
+        IF ( N2 .NE. 0 )  ZI(JAPL-1+8) = IMPN
+C
+        CALL GETVTX ( MOTCLF, 'APPL_FORC_ARCHI',IOC,1,1, K8ARC, NKAR)
+        IF ( K8ARC .EQ. 'REPARTIE' ) THEN
+           ZI(JAPL-1+1) = 1
+        ELSEIF ( K8ARC .EQ. 'CDG' ) THEN
+           ZI(JAPL-1+1) = 2
+        ENDIF
+C  
+        CALL GETVTX ( MOTCLF, 'APPL_FORC_FPLAQ',IOC,1,1, K8PLA, NKFP)
+        IF ( K8PLA .EQ. 'REPARTIE' ) THEN
+           ZI(JAPL-1+2) = 1
+        ELSEIF ( K8PLA .EQ. 'CDG' ) THEN
+           ZI(JAPL-1+2) = 2
+        ELSEIF ( K8PLA .EQ. 'ZONE' ) THEN
+           ZI(JAPL-1+2) = 3
+        ELSEIF ( K8PLA .EQ. 'MILIEU' ) THEN
+           ZI(JAPL-1+2) = 4
+        ELSEIF ( K8PLA .EQ. 'DISTRI' ) THEN
+           ZI(JAPL-1+2) = 5
+        ENDIF
+C     
+        CALL GETVTX ( MOTCLF, 'APPL_FORC_FMEC' ,IOC,1,1, K8MEC, NKFM)
+        IF ( K8MEC .EQ. 'REPARTIE' ) THEN
+           ZI(JAPL-1+3) = 1
+        ELSEIF ( K8MEC .EQ. 'CDG' ) THEN
+           ZI(JAPL-1+3) = 2
+        ELSEIF ( K8MEC .EQ. 'ZONE' ) THEN
+           ZI(JAPL-1+3) = 3
+        ELSEIF ( K8MEC .EQ. 'PTREP' ) THEN
+           ZI(JAPL-1+3) = 4
+        ENDIF
+C        
+        CALL GETVTX ( MOTCLF, 'APPL_FORC_FTG' ,IOC,1,1, K8TG, NKF)
+        IF ( K8TG .EQ. 'REPARTIE' ) THEN
+           ZI(JAPL-1+4) = 1
+        ELSEIF ( K8TG .EQ. 'CDG' ) THEN
+           ZI(JAPL-1+4) = 2
+        ELSEIF ( K8TG .EQ. 'ZONE' ) THEN
+           ZI(JAPL-1+4) = 3
+        ELSEIF ( K8TG .EQ. 'PTREP' ) THEN
+           ZI(JAPL-1+4) = 4
+        ENDIF
+C
  200  CONTINUE
-
+C      
+C --- ON RECUPERE LES COORDONNEES DU CDG DE LA GRAPPE DANS LA TABLE
+C --- DANS LE CAS OU UNE OU PLUSIEURS FORCES Y SONT APPLIQUEES
+C
+      IF (((ZI(JAPL-1+1)).EQ.2).OR.
+     +    ((ZI(JAPL-1+2)).EQ.2).OR.
+     +    ((ZI(JAPL-1+3)).EQ.2).OR.
+     +    ((ZI(JAPL-1+4)).EQ.2)) THEN
+         DO 300 IOC = 1, NBFFL
+            CALL GETVID ( MOTCLF, 'MASS_INER' ,IOC,1,1, K8TIN, NKIN)
+            IF (NKIN.NE.0) GOTO 302
+ 300     CONTINUE
+         CALL UTMESS('F','CAGRFL','ERREUR: OUBLI DE LA TABLE '//
+     +                       '"MASS_INER" DANS FICHIER DE COMMANDES.')
+ 302     CONTINUE
+         CALL GETVID ( MOTCLF, 'GROUP_MA', 1, 1, 1, KCRIT, N1)
+         VALEK(1) = 'LIEU'
+         VALEK(2) = 'ENTITE'
+         CRIT(1) = KCRIT
+         CRIT(2) = 'GROUP_MA'
+         CALL TBLIVA ( K8TIN,2,VALEK,IBID,R8B,C16B,CRIT,K8B,R8B,'CDG_X',
+     +                 TYPVAL,CDGXI,CDGXR,CDGXC,CDGXK,IRET)
+         IF (IRET.NE.0) CALL UTMESS('F','CAGRFL',
+     +             'PROBLEME POUR RECUPERER LE "CDG_X" DANS '//K8TIN)
+         CDG(1) = CDGXR
+         CALL TBLIVA ( K8TIN,2,VALEK,IBID,R8B,C16B,CRIT,K8B,R8B,'CDG_Y',
+     +                 TYPVAL,CDGYI,CDGYR,CDGYC,CDGYK,IRET)
+         IF (IRET.NE.0) CALL UTMESS('F','CAGRFL',
+     +             'PROBLEME POUR RECUPERER LE "CDG_Y" DANS '//K8TIN)
+         CDG(2) = CDGYR
+         CALL TBLIVA ( K8TIN,2,VALEK,IBID,R8B,C16B,CRIT,K8B,R8B,'CDG_Z',
+     +                 TYPVAL,CDGZI,CDGZR,CDGZC,CDGZK,IRET)
+         IF (IRET.NE.0) CALL UTMESS('F','CAGRFL',
+     +             'PROBLEME POUR RECUPERER LE "CDG_Z" DANS '//K8TIN)
+         CDG(3) = CDGZR
+      ENDIF
 C
 C --- Q EST DONNEE EN M3/H
 C
@@ -455,12 +655,13 @@ C     LGDC
       ZR(JGEO+5-1) = 4.297D0 - 1.217D0
 C     HGC 
       ZR(JGEO+6-1) = 1.217D0
+      Z2 = (-1)*ZR(JGEO+6-1)
 C     L1
       ZR(JGEO+7-1) = ZR(JVTG-1+3)
 C     L2
       ZR(JGEO+8-1) = ZR(JVTG-1+4)
 C
-      CALL CAGRF1 ( CHAR, NOMA, Z0 )
+      CALL CAGRF1 ( CHAR, NOMA, Z0, CDG, Z2, VDIR )
 C
  9999 CONTINUE
 C

@@ -1,4 +1,4 @@
-#@ MODIF N_MCCOMPO Noyau  DATE 14/09/2004   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF N_MCCOMPO Noyau  DATE 20/10/2004   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -206,8 +206,11 @@ class MCCOMPO(N_OBJECT.OBJECT):
       etape = self.get_etape()
       if etape :
         dict_mc_globaux_fac = self.recherche_mc_globaux_facultatifs()
-        dict_mc_globaux_fac.update(etape.mc_globaux)
-        if self.jdc : dict_mc_globaux_fac.update(self.jdc.mc_globaux)
+        for k,v in etape.mc_globaux.items():
+           dict_mc_globaux_fac[k]=v.get_valeur()
+        if self.jdc : 
+           for k,v in self.jdc.mc_globaux.items():
+              dict_mc_globaux_fac[k]=v.get_valeur()
         return dict_mc_globaux_fac
       else :
         return {}
@@ -225,7 +228,7 @@ class MCCOMPO(N_OBJECT.OBJECT):
          if v.position != 'global' : continue
          if v.statut == 'o':continue
          obj = v(val=None,nom=k,parent=etape)
-         dico[k]=obj
+         dico[k]=obj.get_valeur()
       return dico
 
    def supprime(self):

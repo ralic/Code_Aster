@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 11/08/2004   AUTEUR A3BHHAE H.ANDRIAMBOLOLONA 
+#& MODIF COMMANDE  DATE 20/10/2004   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -31,7 +31,7 @@ MODE_ITER_INV=OPER(nom="MODE_ITER_INV",op=  44,sd_prod=mode_iter_inv_prod
          MATR_A          =SIMP(statut='o',typ=(matr_asse_depl_r,matr_asse_gene_r,matr_asse_pres_r ) ),
          MATR_B          =SIMP(statut='o',typ=(matr_asse_depl_r,matr_asse_gene_r,matr_asse_pres_r ) ),
          MATR_C          =SIMP(statut='f',typ=matr_asse_depl_r ),
-         TYPE_RESU       =SIMP(statut='f',position='global',typ='TXM',defaut="DYNAMIQUE",   
+         TYPE_RESU       =SIMP(statut='f',typ='TXM',defaut="DYNAMIQUE",   
                                into=("MODE_FLAMB","DYNAMIQUE"),fr="Type d analyse" ),
          b_dynam         =BLOC(condition = "TYPE_RESU == 'DYNAMIQUE'",
            CALC_FREQ       =FACT(statut='o',fr="Choix des paramètres pour le calcul des valeurs propres",

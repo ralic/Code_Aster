@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 25/10/2004   AUTEUR GALENNE E.GALENNE 
 # TITRE CALCUL DE G POUR UN PB ELASTOPLASTIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -147,6 +147,7 @@ UP=CALC_ELEM( reuse=UP,
                        OPTION=('EPSP_ELNO','EPSI_ELGA_DEPL')
                   )
 
+              
 UP2=STAT_NON_LINE( 
                             MODELE=MO,
                         CHAM_MATER=CM,
@@ -235,7 +236,6 @@ TEST_TABLE(TABLE=ENER_TO2,
           VALE= 2.99841E-01 )
 
 
-
 # ****************************************************************
 #     CALCUL DU TAUX DE RESTITUTION D'ENERGIE G SUR 4 COURONNES
 # ****************************************************************
@@ -273,49 +273,54 @@ THET4=CALC_THETA(       MODELE=MO,
                        DIRECTION=(1.,0.,0.,)
                    )
 
-G1=CALC_G_THETA_T(         MODELE=MO,
-                           RESULTAT=UP,
-                         CHAM_MATER=CM,
-                              THETA=THET1,
-                            EXCIT=_F(CHARGE=CH,),
-                          SYME_CHAR='SYME',
-                          COMP_INCR=_F(  RELATION = 'VMIS_ISOT_TRAC',
-                                      DEFORMATION = 'PETIT'),
-                             OPTION='CALC_G'
-                     )
+G1=CALC_G_THETA_T(  MODELE=MO,
+                    RESULTAT=UP,
+                    CHAM_MATER=CM,
+                    THETA=THET1,
+                    EXCIT=_F(CHARGE=CH,
+                             FONC_MULT = F),
+                    SYME_CHAR='SYME',
+                    COMP_INCR=_F(RELATION = 'VMIS_ISOT_TRAC',
+                                 DEFORMATION = 'PETIT'),
+                    OPTION='CALC_G'
+                     );
 
-G2=CALC_G_THETA_T(         MODELE=MO,
-                           RESULTAT=UP,
-                         CHAM_MATER=CM,
-                              THETA=THET2,
-                            EXCIT=_F( CHARGE=CH,),
-                          SYME_CHAR='SYME',
-                          COMP_INCR=_F(  RELATION = 'VMIS_ISOT_TRAC',
-                                      DEFORMATION = 'PETIT'),
-                             OPTION='CALC_G'
-                     )
 
-G3=CALC_G_THETA_T(         MODELE=MO,
-                           RESULTAT=UP,
-                         CHAM_MATER=CM,
-                              THETA=THET3,
-                            EXCIT=_F( CHARGE=CH,),
-                          SYME_CHAR='SYME',
-                          COMP_INCR=_F(  RELATION = 'VMIS_ISOT_TRAC',
-                                      DEFORMATION = 'PETIT'),
-                             OPTION='CALC_G'
-                     )
+G2=CALC_G_THETA_T(  MODELE=MO,
+                    RESULTAT=UP,
+                    CHAM_MATER=CM,
+                    THETA=THET2,
+                    EXCIT=_F(CHARGE=CH,
+                             FONC_MULT = F),
+                    SYME_CHAR='SYME',
+                    COMP_INCR=_F(RELATION = 'VMIS_ISOT_TRAC',
+                                 DEFORMATION = 'PETIT'),
+                    OPTION='CALC_G'
+                     );
 
-G4=CALC_G_THETA_T(         MODELE=MO,
-                           RESULTAT=UP,
-                         CHAM_MATER=CM,
-                              THETA=THET4,
-                            EXCIT=_F( CHARGE=CH,),
-                          SYME_CHAR='SYME',
-                          COMP_INCR=_F(  RELATION = 'VMIS_ISOT_TRAC',
-                                      DEFORMATION = 'PETIT'),
-                             OPTION='CALC_G'
-                     )
+G3=CALC_G_THETA_T(  MODELE=MO,
+                    RESULTAT=UP,
+                    CHAM_MATER=CM,
+                    THETA=THET3,
+                    EXCIT=_F(CHARGE=CH,
+                             FONC_MULT = F),
+                    SYME_CHAR='SYME',
+                    COMP_INCR=_F(RELATION = 'VMIS_ISOT_TRAC',
+                                 DEFORMATION = 'PETIT'),
+                    OPTION='CALC_G'
+                     );
+
+G4=CALC_G_THETA_T(  MODELE=MO,
+                    RESULTAT=UP,
+                    CHAM_MATER=CM,
+                    THETA=THET4,
+                    EXCIT=_F(CHARGE=CH,
+                             FONC_MULT = F),
+                    SYME_CHAR='SYME',
+                    COMP_INCR=_F(RELATION = 'VMIS_ISOT_TRAC',
+                                 DEFORMATION = 'PETIT'),
+                    OPTION='CALC_G'
+                     );                                          
 
 #
 # ****************************************************************
@@ -352,6 +357,7 @@ TEST_TABLE(       TABLE=G4,
                        NOM_PARA='G',
                            VALE=2.769,
                       PRECISION=3.5E-2   )
+
 
 TEST_TABLE(       TABLE=G1,
                          FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
@@ -471,6 +477,7 @@ TEST_TABLE(       TABLE=G1,
                        NOM_PARA='G',
                            VALE=6.052,
                       PRECISION=5.E-2   )
+
 
 TEST_TABLE(       TABLE=G2,
                          FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',

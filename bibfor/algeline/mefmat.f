@@ -5,7 +5,7 @@
 C
       INTEGER       NDIM(14),NUMGRP(*),NBMOD
       REAL*8        MATMA(*),DCENT(*)
-      REAL*8        CP(*),CF(*),VIT(*),RHO(*),PSTAT(*),DPSTAT(*)
+      REAL*8        CP(*),CF(*),VIT(0:*),RHO(0:*),PSTAT(*),DPSTAT(*)
       REAL*8        MATM(NBMOD,NBMOD),RINT(*),PHIX(NBZ*NBGRP,NBMOD),
      &              PHIY(NBZ*NBGRP,NBMOD),Z(*)
       REAL*8        MATR(NBMOD,NBMOD),MATA(NBMOD,NBMOD)
@@ -14,7 +14,7 @@ C
       REAL*8        ZG(*),AXG(*),RHOG(*),VITG(*),CDG(*),CPG(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
+C MODIF ALGELINE  DATE 25/10/2004   AUTEUR D6BHHJP J.P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

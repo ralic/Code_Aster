@@ -6,7 +6,7 @@
 C
       INTEGER       NDIM(14)
       REAL*8        SOM(9),VIT0,Z(*),RU,RINT(*),RE(*),CP(*),CF(*),DH
-      REAL*8        VIT(*),RHO(*),VISC(*)
+      REAL*8        VIT(0:*),RHO(0:*),VISC(*)
       CHARACTER*8   PROMAS,PROVIS
 C
       INTEGER       ITYPG(*)
@@ -15,7 +15,7 @@ C
       REAL*8        CFG(*),VITG(*),RHOG(*),VISCG(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 20/09/2000   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ALGELINE  DATE 25/10/2004   AUTEUR D6BHHJP J.P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

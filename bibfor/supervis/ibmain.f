@@ -4,7 +4,7 @@
       INTEGER                 IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 03/06/2003   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF SUPERVIS  DATE 25/10/2004   AUTEUR D6BHHJP J.P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -66,7 +66,7 @@ C     --- INITIALISATION TEMPS CPU TOTAL  ---
       CALL UTTCPU(-10,'DEBUT',6,TEMPS)
 C
 C     --- INITIALISATION DES ROUTINES DE MESSAGE ---
-      CALL PRDEFC( 80 )
+      CALL PRDEFC( 132 )
       CALL PRINIT( 0 , 0)
       CALL UTINIT( 2 , 80 , 1 )
       CALL JVINIT( 2 , 80 , 1 )

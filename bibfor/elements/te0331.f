@@ -3,7 +3,7 @@
       CHARACTER*(*)     OPTION,NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION II
-C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ELEMENTS  DATE 26/10/2004   AUTEUR A3BAXDP A.PARROT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -95,6 +95,7 @@ C     READ (ZK16(ICOMPO+1),'(I16)') NBVARI
 C
       IF (     (ZK16(ICOMPO).EQ.'VMIS_ISOT_TRAC')
      &     .OR.(ZK16(ICOMPO).EQ.'VMIS_ISOT_LINE')
+     &     .OR.(ZK16(ICOMPO).EQ.'VISC_ISOT_TRAC')
      &     .OR.(ZK16(ICOMPO).EQ.'LEMAITRE')
      &     .OR.(ZK16(ICOMPO).EQ.'VMIS_ECMI_TRAC')
      &     .OR.(ZK16(ICOMPO).EQ.'VMIS_ECMI_LINE')
@@ -191,7 +192,11 @@ C           --- TEMPERATURE MOYENNE
  168           CONTINUE
             ENDIF
 C VOLUME PLASTIQUE ACTIF
-            PPT =ZR(IVARIG+NBVARI*(KP-1)+IPOPPT-1)
+          IF ((ZK16(ICOMPO).EQ.'LEMAITRE').AND.(PP.GE.SEUIL)) THEN
+             PPT = 1.D0
+          ELSE
+             PPT =ZR(IVARIG+NBVARI*(KP-1)+IPOPPT-1)
+          END IF
             IF (PPT.EQ.(1.0D0)) THEN
                DVOL=POIDS
                VOLACT=VOLACT+DVOL
@@ -242,7 +247,12 @@ C=================================================================
                CONG(II)=ZR(ICONG+4*KP+II-5)
                EPSQ(II)=ZR(IDEFG+4*KP+II-5)
  180        CONTINUE
-            PPT =ZR(IVARIG+NBVARI*(KP-1)+IPOPPT-1)
+            PP=ZR(IVARIG+NBVARI*(KP-1)+IPOPP-1)
+          IF ((ZK16(ICOMPO).EQ.'LEMAITRE').AND.(PP.GE.SEUIL)) THEN
+             PPT = 1.D0
+          ELSE
+             PPT =ZR(IVARIG+NBVARI*(KP-1)+IPOPPT-1)
+          END IF
 C
             SIGNEW = 0.D0
             IF (PPT.EQ.(1.D0)) THEN
@@ -317,7 +327,11 @@ C           --- TEMPERATURE MOYENNE
 225            CONTINUE
             ENDIF
 C VOL PLASTIQUE ACTIF
-            PPT =ZR(IVARIG+NBVARI*(KP-1)+IPOPPT-1)
+          IF ((ZK16(ICOMPO).EQ.'LEMAITRE').AND.(PP.GE.SEUIL)) THEN
+             PPT = 1.D0
+          ELSE
+             PPT =ZR(IVARIG+NBVARI*(KP-1)+IPOPPT-1)
+          END IF
             IF (PPT.EQ.(1.0D0)) THEN
                DVOL=POIDS
                VOLACT=VOLACT+DVOL
@@ -375,7 +389,12 @@ C=================================================================
             VOLUME=POIDS
 C
             SIGI = 0.D0
-            PPT=ZR(IVARIG+NBVARI*(KP-1)+IPOPPT-1)
+          PP=ZR(IVARIG+NBVARI*(KP-1)+IPOPP-1)
+          IF ((ZK16(ICOMPO).EQ.'LEMAITRE').AND.(PP.GE.SEUIL)) THEN
+             PPT = 1.D0
+          ELSE
+             PPT =ZR(IVARIG+NBVARI*(KP-1)+IPOPPT-1)
+          END IF
             IF (PPT.EQ.(1.D0)) THEN
 C CALCUL DE SIGI
                CALL VPRI2D(CONG,SIGI)
