@@ -2,7 +2,7 @@
      +                   INSTAM,INSTAP,TM,TP,TREF,DEPS,SIGM,VIM,
      +                   OPTION,SIGP,VIP,DSIDEP)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/01/2003   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -202,9 +202,9 @@ C     ============================================
 C
 C ---  CARACTERISTIQUES A L'INSTANT PRECEDENT :
 C      --------------------------------------
-      CALL RCVALA ( IMATE,'ELAS',1,'TEMP',TM,2,
+      CALL RCVALA(IMATE,' ','ELAS',1,'TEMP',TM,2,
      +              NOMRES(1),VALRES(1),CODRET(1), FB2 )
-      CALL RCVALA ( IMATE,'ELAS',1,'TEMP',TM,1,
+      CALL RCVALA(IMATE,' ','ELAS',1,'TEMP',TM,1,
      +              NOMRES(3),VALRES(3),CODRET(3), BL2 )
       IF ( CODRET(3) .NE. 'OK' ) VALRES(3) = ZERO
       EM     = VALRES(1)
@@ -215,10 +215,10 @@ C      --------------------------------------
 C
 C ---  CARACTERISTIQUES A L'INSTANT ACTUEL :
 C      -----------------------------------
-      CALL RCVALA ( IMATE,'ELAS',1,'TEMP',TP,2,
+      CALL RCVALA(IMATE,' ','ELAS',1,'TEMP',TP,2,
      +              NOMRES(1),VALRES(1),CODRET(1), FB2 )
 C
-       CALL RCVALA ( IMATE,'ELAS',1,'TEMP',TP,1,
+       CALL RCVALA(IMATE,' ','ELAS',1,'TEMP',TP,1,
      +               NOMRES(3),VALRES(3),CODRET(3), BL2 )
        IF ( CODRET(3) .NE. 'OK' ) VALRES(3) = ZERO
        E      = VALRES(1)
@@ -239,7 +239,7 @@ C     ===============================================
        IF (NBVAR.EQ.1) THEN
           NOMRES(4) = 'C_I'
           NOMRES(7) = 'G_0'
-          CALL RCVALA(IMATE,'CIN1_CHAB',1,'TEMP',TP,8
+          CALL RCVALA(IMATE,' ','CIN1_CHAB',1,'TEMP',TP,8
      +             ,NOMRES,VALRES,CODRET,'FM')
        ELSEIF (NBVAR.EQ.2) THEN
           NOMRES(4) = 'C1_I'
@@ -247,7 +247,7 @@ C     ===============================================
           NOMRES(9) = 'C2_I'
           NOMRES(10) = 'G2_0'
 
-          CALL RCVALA(IMATE,'CIN2_CHAB',1,'TEMP',TP,10
+          CALL RCVALA(IMATE,' ','CIN2_CHAB',1,'TEMP',TP,10
      +             ,NOMRES,VALRES,CODRET,'FM')
        ENDIF
           R0     = VALRES(1)
@@ -287,7 +287,7 @@ C     ============================================
       NOMRES(1) = 'N'
       NOMRES(2) = 'UN_SUR_K'
       NOMRES(3) = 'UN_SUR_M'
-      CALL RCVALA (IMATE,'LEMAITRE',1,'TEMP',TP,3
+      CALL RCVALA (IMATE,' ','LEMAITRE',1,'TEMP',TP,3
      +             ,NOMRES,VALRES,CODRET,BL2)
 C
       IF (CODRET(1).EQ.'OK') THEN

@@ -9,7 +9,7 @@ C ----------------------------------------------------------------------
       REAL*8  VARMO(7),VARPL(7)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
+C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -73,9 +73,9 @@ C
 C     MOT_CLE RIGI_NOR OBLIGATOIRE
 C
       NBRE2 = 1
-      CALL RCVALA ( ICODMA,'DIS_CONTACT',NBPAR,NOMPAR,VALPAR,NBRE2,
+      CALL RCVALA(ICODMA,' ','DIS_CONTACT',NBPAR,NOMPAR,VALPAR,NBRE2,
      &                            NOMRE1,VALRE1,CODRE1,'FM')
-      CALL RCVALA ( ICODMA,'DIS_CONTACT',NBPAR,NOMPAR,VALPAR,NBRE1,
+      CALL RCVALA(ICODMA,' ','DIS_CONTACT',NBPAR,NOMPAR,VALPAR,NBRE1,
      &                            NOMRE1,VALRE1,CODRE1, ' ' )
       RIGNOR = VALRE1(1)
       RIGTAN = VALRE1(2)
@@ -173,7 +173,7 @@ C
 C
 C --- CARACTERISTIQUES DU MATERIAU
 C
-      CALL RCVALA ( ICODMA,'DIS_CONTACT',NBPAR,NOMPAR,VALPAR,NBRE1,
+      CALL RCVALA(ICODMA,' ','DIS_CONTACT',NBPAR,NOMPAR,VALPAR,NBRE1,
      &                            NOMRE1,VALRE1,CODRE1, ' ' )
       RIGNOR = VALRE1(1)
       RIGTAN = VALRE1(2)

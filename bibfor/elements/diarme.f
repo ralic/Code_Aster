@@ -7,7 +7,7 @@ C ----------------------------------------------------------------------
       REAL*8  KLV(NBT),VARIP,KTY2,DULY
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 26/02/97   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -64,7 +64,7 @@ C
 C
 C --- CARACTERISTIQUES DU MATERIAU
 C
-      CALL RCVALA ( ICODMA,'ARME',NBPAR,NOMPAR,VALPAR,NBRE2,
+      CALL RCVALA(ICODMA,' ','ARME',NBPAR,NOMPAR,VALPAR,NBRE2,
      &                            NOMRE2,VALRE2,CODRE2, 'FM' )
 C
       KYE = VALRE2(1)

@@ -3,7 +3,7 @@
       CHARACTER*(*)     OPTION,NOMTE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 06/05/2003   AUTEUR CIBHHPD D.NUNEZ 
+C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -145,7 +145,7 @@ C     --- RECUPERATION DES CARACTERISTIQUES GENERALES DES SECTIONS ---
          A = ZR(LSECT)
 C        --- RECUPERATION DES CARACTERISTIQUES MATERIAUX ---
          CALL JEVECH ('PMATERC', 'L', LMATER)
-         CALL RCVALA ( ZI(LMATER),'ELAS',0,' ',R8BID,1,'RHO',RHO,
+         CALL RCVALA(ZI(LMATER),' ','ELAS',0,' ',R8BID,1,'RHO',RHO,
      +                 CODRES, 'FM' )
 C
          CALL JEVECH('PPESANR','L',LPESA)
@@ -432,9 +432,10 @@ C     --- RECUPERATION DES CARACTERISTIQUES GENERALES DES SECTIONS ---
          A = ZR(LSECT)
 C        --- RECUPERATION DES CARACTERISTIQUES MATERIAUX ---
          CALL JEVECH ('PMATERC', 'L', LMATER)
-         CALL RCVALA(ZI(LMATER),'ELAS',0,' ',R8BID,1,'E',E,CODRES,'FM')
-         CALL RCVALA(ZI(LMATER),'ELAS',0,' ',R8BID,1,'ALPHA',
-     +                                              ALPHAT,CODRES,'FM')
+         CALL RCVALA(ZI(LMATER),' ','ELAS',0,' ',R8BID,1,'E',E,
+     &               CODRES,'FM')
+         CALL RCVALA(ZI(LMATER),' ','ELAS',0,' ',R8BID,1,'ALPHA',
+     +                                      ALPHAT,CODRES,'FM')
 C
 C        TEMPERATURE DE REFERENCE
          CALL JEVECH('PTEREF','L',LTREF)

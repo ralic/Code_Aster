@@ -8,7 +8,7 @@
       REAL*8            A,A2,XL,RAD,ANGS2
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 06/05/2003   AUTEUR CIBHHPD D.NUNEZ 
+C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -124,10 +124,10 @@ C
 C
          CALL JEVECH('PMATERC','L',LMATE)
          IF ( IST .EQ. 1 ) THEN
-            CALL RCVALA ( ZI(LMATE),'ELAS',0,' ',R8BID,1,
+            CALL RCVALA(ZI(LMATE),' ','ELAS',0,' ',R8BID,1,
      +                              'RHO',RHO,CODRET, 'FM' )
          ELSE
-            CALL RCVALA ( ZI(LMATE),'ELAS',0,' ',R8BID,1,
+            CALL RCVALA(ZI(LMATE),' ','ELAS',0,' ',R8BID,1,
      +                              'RHO',RHO,CODRET, BL2 )
             IF (CODRET.NE.'OK' ) RHO = ZERO
          ENDIF

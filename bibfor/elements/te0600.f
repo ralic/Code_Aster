@@ -2,7 +2,7 @@
       IMPLICIT NONE
       CHARACTER*16 OPTION,NOMTE,PHENOM
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C =====================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -453,7 +453,7 @@ C***********************************************************************
         CALL JEVECH('PVECTUR','E',IVECTU)
 
         CALL RCCOMA(ZI(IMATE),'THM_DIFFU',PHENOM,CODRET)
-        CALL RCVALA(ZI(IMATE),PHENOM,1,' ',R8BID,1,'RHO',RHO,CODRET,
+        CALL RCVALA(ZI(IMATE),' ',PHENOM,1,' ',R8BID,1,'RHO',RHO,CODRET,
      &              'FM')
         IF (NDIM.EQ.3) THEN
 C  CAS 3D

@@ -1,6 +1,6 @@
       SUBROUTINE MATRTH(NNO,YOUNG,NU,ALPHA,INDITH)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
+C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -59,7 +59,7 @@ C
       ELSEIF ( PHENOM .EQ. 'ELAS_ORTH' )  THEN
          NOMRES(1)='ALPHA_L'
          NOMRES(2)='ALPHA_T'
-         CALL RCVALA(ZI(JMATE),PHENOM,0,NOMPAR,VALPAR,2 ,NOMRES,
+         CALL RCVALA(ZI(JMATE),' ',PHENOM,0,NOMPAR,VALPAR,2 ,NOMRES,
      &                                            VALRES,CODRET, 'FM')
          IF (CODRET(1).NE.'OK') THEN
             INDITH = -1
@@ -120,11 +120,11 @@ C===============================================================
 C
       IF ( PHENOM .EQ. 'ELAS' )  THEN
 C
-      CALL RCVALA(ZI(JMATE),PHENOM,NBPAR,NOMPAR,VALPAR,2  ,NOMRES,
+      CALL RCVALA(ZI(JMATE),' ',PHENOM,NBPAR,NOMPAR,VALPAR,2  ,NOMRES,
      &                                            VALRES,CODRET, 'FM')
 C
-      CALL RCVALA(ZI(JMATE),PHENOM,NBPAR,NOMPAR,VALPAR,1  ,NOMRES(3),
-     &                                      VALRES(3),CODRET(3), BL2 )
+      CALL RCVALA(ZI(JMATE),' ',PHENOM,NBPAR,NOMPAR,VALPAR,1  ,
+     &                          NOMRES(3), VALRES(3),CODRET(3), BL2 )
 C
       IF (CODRET(3) .NE. 'OK') THEN
          INDITH = -1

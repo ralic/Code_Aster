@@ -3,7 +3,7 @@
       CHARACTER*16        OPTION , NOMTE
 C.......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -148,7 +148,7 @@ C
           TPG  = TPG + ZR(ITEMPE+I-1) * ZR(IVF+K+I-1)
 300     CONTINUE
 C
-        CALL RCVALA (MATER,'ELAS',1,'TEMP',TPG,3,NOMRES,
+        CALL RCVALA(MATER,' ','ELAS',1,'TEMP',TPG,3,NOMRES,
      &                VALRES, CODRET, 'FM' )
 C
         CP1 = VALRES(1)/(1.D0 -VALRES(2)*VALRES(2))

@@ -1,6 +1,6 @@
       SUBROUTINE DXDMUL(ICOU,INIV,T1VE,T2VE,H,D1I,D2I,X3I)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 26/02/2002   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -70,8 +70,8 @@ C     ----- RAPPEL DES CARACTERISTIQUES DU MONOCOUCHE ------------------
         CALL CODENT(I,'G',VAL)
         NOMRES(I) = 'C'//NUM//'_V'//VAL
    10 CONTINUE
-      CALL RCVALA(ZI(JMATE),'ELAS_COQMU',0,' ',R8BID,9,NOMRES,VALRES,
-     &            CODRET,'FM')
+      CALL RCVALA(ZI(JMATE),' ','ELAS_COQMU',0,' ',R8BID,9,NOMRES,
+     &           VALRES, CODRET,'FM')
       EPI = VALRES(1)
       ORDI = VALRES(3)
       H(1,1) = VALRES(4)
@@ -107,14 +107,14 @@ C     ----- CALCUL DE D1I ET D2I ---------------------------------------
           CALL CODENT(I,'G',VAL)
           NOMRES(I) = 'C'//NUM//'_V'//VAL
    60   CONTINUE
-        CALL RCVALA(ZI(JMATE),'ELAS_COQMU',0,' ',R8BID,1,NOMRES,VALRES,
-     &              CODRET,'FM')
+        CALL RCVALA(ZI(JMATE),' ','ELAS_COQMU',0,' ',R8BID,1,NOMRES,
+     &             VALRES, CODRET,'FM')
         EPI = VALRES(1)
-        CALL RCVALA(ZI(JMATE),'ELAS_COQMU',0,' ',R8BID,1,NOMRES(3),
+        CALL RCVALA(ZI(JMATE),' ','ELAS_COQMU',0,' ',R8BID,1,NOMRES(3),
      &              VALRES(3),CODRET(3),'FM')
         ORDI = VALRES(3)
-        CALL RCVALA(ZI(JMATE),'ELAS_COQMU',0,' ',R8BID,12,NOMRES(16),
-     &              VALRES(16),CODRET(16),'FM')
+        CALL RCVALA(ZI(JMATE),' ','ELAS_COQMU',0,' ',R8BID,12,
+     &            NOMRES(16),  VALRES(16),CODRET(16),'FM')
 C
 C      RECUP MATRICE AI = H(Z).HF-1
 C

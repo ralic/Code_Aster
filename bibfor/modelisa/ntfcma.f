@@ -1,6 +1,6 @@
-      SUBROUTINE NTFCMA(IMATE,IFON)
+      SUBROUTINE NTFCMA(JMAT,IFON)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 05/01/99   AUTEUR KBBHHDB G.DEBRUYNE 
+C MODIF MODELISA  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,7 +19,7 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C ----------------------------------------------------------------------
       IMPLICIT REAL*8 (A-H,O-Z)
-      INTEGER           IMATE,IFON(3)
+      INTEGER           IMATE,IFON(3),MAT
 C ----------------------------------------------------------------------
 C     OBTENTION DES ADRESSES DES FONCTIONS BETA ET LAMBDA DANS LE
 C     MATERIAU CODE IMATE
@@ -49,13 +49,18 @@ C
 C
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C
-      INTEGER            IPI,K
+      INTEGER            IPI,K,NBMAT
 C ----------------------------------------------------------------------
 C PARAMETER ASSOCIE AU MATERIAU CODE
 C
       PARAMETER        ( LMAT = 7 , LFCT = 9 )
 C DEB ------------------------------------------------------------------
 C
+
+      NBMAT=ZI(JMAT)
+      CALL ASSERT(NBMAT.EQ.1)
+      IMATE = JMAT+ZI(JMAT+NBMAT+1)
+      
       DO 10 K=1,ZI(IMATE+1)
         IF ('THER_NL '.EQ. ZK16(ZI(IMATE)+K-1)(1:8)) THEN
           IPI = ZI(IMATE+2+K-1)

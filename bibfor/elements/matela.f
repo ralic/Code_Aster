@@ -4,7 +4,7 @@
       INTEGER ICODMA,ITEMP
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 26/05/97   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,9 +53,9 @@ C
       DO 10 I=1, NBRES
         VALRES(I) = 0.D0
  10   CONTINUE
-      CALL RCVALA ( ICODMA,'ELAS',NBPAR,NOMPAR,VALPAR,2,
+      CALL RCVALA(ICODMA,' ','ELAS',NBPAR,NOMPAR,VALPAR,2,
      +              NOMRES, VALRES, CODRES, 'FM' )
-      CALL RCVALA ( ICODMA,'ELAS',NBPAR,NOMPAR,VALPAR,1,
+      CALL RCVALA(ICODMA,' ','ELAS',NBPAR,NOMPAR,VALPAR,1,
      +              NOMRES(3), VALRES(3), CODRES(3), BL2 )
       IF ( CODRES(3) .NE. 'OK' )  VALRES(3) = 0.D0
       E      = VALRES(1)

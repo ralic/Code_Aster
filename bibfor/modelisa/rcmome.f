@@ -1,7 +1,7 @@
-      SUBROUTINE RCMOME(IMATE,JPROL,JVALE,NBVALE,E,ITRAC)
+      SUBROUTINE RCMOME(JMAT,JPROL,JVALE,NBVALE,E,ITRAC)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 17/12/2002   AUTEUR CIBHHGB G.BERTRAND 
+C MODIF MODELISA  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,7 +20,7 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C ----------------------------------------------------------------------
       IMPLICIT REAL*8 (A-H,O-Z)
-      INTEGER            IMATE, JPROL, JVALE, NBVALE,ITRAC
+      INTEGER            IMATE, JPROL, JVALE, NBVALE,ITRAC,JMAT
       REAL*8             E
 C ----------------------------------------------------------------------
 C     DETERMINATION DU MODULE DE YOUNG ET DE LA FONCTION D'ECROUISSAGE
@@ -55,7 +55,7 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 
       LOGICAL       PROCON
       INTEGER       ICOMP, IPI, IDF, NBF, IVALK, IK, IPIF, IPIFC, JPRO
-      INTEGER       JVALF1, NBVF1, K
+      INTEGER       JVALF1, NBVF1, K, NBMAT
       INTEGER       JVALN, NBVN, I, J, JVALF2, NBVF2, NBV
       REAL*8        COEF
 C ----------------------------------------------------------------------
@@ -65,6 +65,11 @@ C PARAMETER ASSOCIE AU MATERIAU CODE
       INTEGER            NBPTMS
       COMMON/ICOELJ/      NBPTMS
 C DEB ------------------------------------------------------------------
+
+      NBMAT=ZI(JMAT)
+      CALL ASSERT(NBMAT.EQ.1)
+      IMATE = JMAT+ZI(JMAT+NBMAT+1)
+      
       ITRAC=1
       DO 10 ICOMP=1,ZI(IMATE+1)
         IF ( 'DIS_CONTACT' .EQ. ZK16(ZI(IMATE)+ICOMP-1)(1:11) ) THEN

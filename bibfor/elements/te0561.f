@@ -1,6 +1,6 @@
       SUBROUTINE TE0561 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -95,13 +95,13 @@ C
             Y   = Y   + ZR(IGEOM+2*I-1)*ZR(IVF+K+I-1)
             TPG = TPG + ZR(ITEMPE+I-1) *ZR(IVF+K+I-1)
 102       CONTINUE
-          CALL RCVALA ( ZI(IMATE),'ELAS',1,'TEMP',TPG,2,NOMRES,
+          CALL RCVALA(ZI(IMATE),' ','ELAS',1,'TEMP',TPG,2,NOMRES,
      &                  VALRES, CODRET, 'FM' )
-          CALL RCVALA ( ZI(IMATE),'ELAS',1,'TEMP',TPG,1,NOMRES(3),
+          CALL RCVALA(ZI(IMATE),' ','ELAS',1,'TEMP',TPG,1,NOMRES(3),
      &                  VALRES(3), CODRET(3), '  ' )
           IF ( CODRET(3) .NE. 'OK' ) VALRES(3) = 0.D0
-          CALL RCVALA ( ZI(IMATE),'ECRO_LINE',1,'TEMP',TPG,1,NOMRES(4),
-     &                  VALRES(4), CODRET(4), 'FM' )
+          CALL RCVALA(ZI(IMATE),' ','ECRO_LINE',1,'TEMP',TPG,1,
+     &                  NOMRES(4),VALRES(4), CODRET(4), 'FM' )
 C
           C = 2.D0/3.D0*(VALRES(1)*VALRES(4))/(VALRES(1)-VALRES(4))
           DO 103 I=1,5

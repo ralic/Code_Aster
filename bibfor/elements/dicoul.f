@@ -10,7 +10,7 @@ C ----------------------------------------------------------------------
       CHARACTER*16 OPTION
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
+C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
 C TOLE CRP_21
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -146,15 +146,15 @@ C --- CARACTERISTIQUES DU MATERIAU
       NBPAR = 0
       NOMPAR = '   '
       RBID = 0.D0
-      CALL RCVALA(ICODMA,'DIS_CONTACT',NBPAR,NOMPAR,RBID,1,NOMRE2(1),
-     &            VALRE2(1),CODRE2(1),'  ')
-      CALL RCVALA(ICODMA,'DIS_CONTACT',NBPAR,NOMPAR,RBID,2,NOMRE2(4),
-     &            VALRE2(4),CODRE2(4),'  ')
+      CALL RCVALA(ICODMA,' ','DIS_CONTACT',NBPAR,NOMPAR,RBID,1,
+     &            NOMRE2(1),VALRE2(1),CODRE2(1),'  ')
+      CALL RCVALA(ICODMA,' ','DIS_CONTACT',NBPAR,NOMPAR,RBID,2,
+     &            NOMRE2(4),VALRE2(4),CODRE2(4),'  ')
       NBPAR = 1
       NOMPAR = 'INST'
       RBID = TP
-      CALL RCVALA(ICODMA,'DIS_CONTACT',NBPAR,NOMPAR,RBID,1,NOMRE2(2),
-     &            VALRE2(2),CODRE2(2),'  ')
+      CALL RCVALA(ICODMA,' ','DIS_CONTACT',NBPAR,NOMPAR,RBID,1,
+     &            NOMRE2(2),VALRE2(2),CODRE2(2),'  ')
       IF (ITEMP.EQ.0) THEN
         NBPAR = 0
         NOMPAR = '   '
@@ -164,8 +164,8 @@ C --- CARACTERISTIQUES DU MATERIAU
         NOMPAR = 'TEMP'
         RBID = 0.5D0* (TEMPM+TEMPP)
       END IF
-      CALL RCVALA(ICODMA,'DIS_CONTACT',NBPAR,NOMPAR,RBID,1,NOMRE2(3),
-     &            VALRE2(3),CODRE2(3),'  ')
+      CALL RCVALA(ICODMA,' ','DIS_CONTACT',NBPAR,NOMPAR,RBID,1,
+     &            NOMRE2(3),VALRE2(3),CODRE2(3),'  ')
 
       IF ((CODRE2(1).EQ.'OK') .AND. (CODRE2(3).EQ.'OK') .AND.
      &    (CODRE2(5).EQ.'OK')) THEN
@@ -182,8 +182,8 @@ C          PRISE EN COMPTE DE L'IRRADIATION
           IF (IIRRAP.NE.0) THEN
             NBPAR = 1
             NOMPAR = 'INST'
-            CALL RCVALA(ICODMA,'DIS_CONTACT',NBPAR,NOMPAR,ZR(IIRRAP),
-     &                  NBRE3,NOMRE3,VALRE3,CODRE3,' ')
+            CALL RCVALA(ICODMA,' ','DIS_CONTACT',NBPAR,NOMPAR,
+     &                 ZR(IIRRAP), NBRE3,NOMRE3,VALRE3,CODRE3,' ')
             FKN = VALRE3(1)
           ELSE
             CALL UTMESS('F','DICOUL','LE CHAMP D''IRRADIATION EST '//

@@ -1,6 +1,6 @@
       SUBROUTINE TE0111 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -84,7 +84,7 @@ C
           R   = R + ZR(IGEOM+2*(I-1))*ZR(IVF+K+I-1)
 102     CONTINUE
         POIDS = POIDS*R
-        CALL RCVALA ( ZI(IMATE),'ELAS',1,'TEMP',TPG,1,'RHO',
+        CALL RCVALA(ZI(IMATE),' ','ELAS',1,'TEMP',TPG,1,'RHO',
      &                                   RHO,CODRET,'FM')
 C
          DO 106 I=1,NNO

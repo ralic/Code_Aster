@@ -1,7 +1,7 @@
       SUBROUTINE TE0003(OPTION,NOMTE)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -299,8 +299,8 @@ C RECHERCHE DE LA VALEUR DE RHO*CP EN LINEAIRE ET EN NON-LINEAIRE
       IF (CODRET.EQ.'OK') THEN
         IF (PHENOM.EQ.'THER') THEN
           LNONLI = .FALSE.
-          CALL RCVALA(ZI(IMATE),PHENOM,1,'INST',INST,1,'RHO_CP',RHOCP,
-     &                CODRET,'FM')
+          CALL RCVALA(ZI(IMATE),' ',PHENOM,1,'INST',INST,1,'RHO_CP',
+     &               RHOCP, CODRET,'FM')
           IF (CODRET.NE.'OK') CALL UTMESS('F','TE0003',
      &                             '! PB RCVALA RHOCP !')
         ELSE IF (PHENOM.EQ.'THER_NL') THEN

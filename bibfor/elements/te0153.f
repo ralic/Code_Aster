@@ -3,7 +3,7 @@
       CHARACTER*(*)     OPTION,NOMTE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 27/06/2001   AUTEUR CIBHHPD D.NUNEZ 
+C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -87,14 +87,16 @@ C
 C     --- CALCUL DES MATRICES ELEMENTAIRES ----
       CALL JEVECH ('PMATERC', 'L', IMATE)
       IF ( OPTION.EQ.'RIGI_MECA'  ) THEN
-         CALL RCVALA(ZI(IMATE),'ELAS',0,' ',R8B,1,'E',E,CODRES,'FM')
+         CALL RCVALA(ZI(IMATE),' ','ELAS',0,' ',R8B,1,'E',E,
+     &               CODRES,'FM')
          XRIG = E * A / XL
          MAT( 1) =  XRIG
          MAT( 7) = -XRIG
          MAT(10) =  XRIG
 C
       ELSE IF ( OPTION.EQ.'MASS_MECA'  ) THEN
-         CALL RCVALA(ZI(IMATE),'ELAS',0,' ',R8B,1,'RHO',RHO,CODRES,'FM')
+         CALL RCVALA(ZI(IMATE),' ','ELAS',0,' ',R8B,1,'RHO',RHO,
+     &               CODRES,'FM')
          XMAS = RHO * A * XL / 6.D0
          MAT( 1) = XMAS * 2.D0
          MAT( 7) = XMAS

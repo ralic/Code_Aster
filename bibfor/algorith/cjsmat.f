@@ -4,7 +4,7 @@
 
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/12/1999   AUTEUR UFBHHLL C.CHAVANT 
+C MODIF ALGORITH  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -80,12 +80,12 @@ C
 C
 C -     RECUPERATION MATERIAU A TEMPF (T+DT)
 C
-        CALL RCVALA ( IMAT, 'ELAS', 1, 'TEMP', TEMPF, 3,
+        CALL RCVALA(IMAT,' ', 'ELAS', 1, 'TEMP', TEMPF, 3,
      1                 NOMC(1),  MATERF(1,1),  CERR(1), BL2 )
         IF ( CERR(3) .NE. 'OK' ) MATERF(3,1) = 0.D0
-        CALL RCVALA (  IMAT, 'CJS', 1, 'TEMP', TEMPF, 12,
+        CALL RCVALA(IMAT,' ', 'CJS', 1, 'TEMP', TEMPF, 12,
      1                 NOMC(4),  MATERF(1,2),  CERR(4), FB2 )
-        CALL RCVALA (  IMAT, 'CJS', 1, 'TEMP', TEMPF, 2,
+        CALL RCVALA(IMAT,' ', 'CJS', 1, 'TEMP', TEMPF, 2,
      1                 NOMC(16),  MATERF(13,2),  CERR(16), BL2 )
         IF ( CERR(16).EQ.'NO') THEN
          MATERF(13,2) = 0.D0

@@ -3,7 +3,7 @@
       CHARACTER*16        OPTION , NOMTE
 C----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -70,7 +70,7 @@ C----RECUPERATION DES CARACTERISTIQUES
         NOMRES(3) = 'F3_DURT'
         NOMRES(4) = 'F4_DURT'
         NOMRES(5) = 'C_DURT'
-        CALL RCVALA(MATOS,'DURT_META',1,'TEMP',0.D0,5,NOMRES,
+        CALL RCVALA(MATOS,' ','DURT_META',1,'TEMP',0.D0,5,NOMRES,
      &              VALRES,CODRET,'F ')
 C
 C

@@ -3,7 +3,7 @@
      &                   DDEPL1   , DTAU     , COPILO  ,TYPMOD  )
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/07/2003   AUTEUR LAVERNE J.LAVERNE 
+C MODIF ALGORITH  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -71,7 +71,7 @@ C RECUPERATION DES PARAMETRES DU MODELE :
       NOMRES(2) = 'SIGM_C'
       NOMRES(3) = 'SAUT_C'
       
-      CALL RCVALA ( MATE,'RUPT_FRAG',0,' ',0.D0,3,
+      CALL RCVALA(MATE,' ','RUPT_FRAG',0,' ',0.D0,3,
      &                 NOMRES,VALRES,CODRET, 'F ' )
      
                                          

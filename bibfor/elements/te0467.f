@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C     ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 21/01/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -81,9 +81,9 @@ C
       VALPAR = 0.D0
       NOMRES(1) = 'E_N'
       NOMRES(2) = 'E_TAN'
-      CALL RCVALA ( ZI(JMATE), PHENOM, NBPAR, NOMPAR, VALPAR, 1,
+      CALL RCVALA(ZI(JMATE),' ', PHENOM, NBPAR, NOMPAR, VALPAR, 1,
      +                         NOMRES, VALRES, CODRET, 'FM' )
-      CALL RCVALA ( ZI(JMATE), PHENOM, NBPAR, NOMPAR, VALPAR, 1,
+      CALL RCVALA(ZI(JMATE),' ', PHENOM, NBPAR, NOMPAR, VALPAR, 1,
      +                         NOMRES(2), VALRES(2), CODRET(2), '  ' )
       IF ( CODRET(2) .NE. 'OK' )  VALRES(2) = 0.D0
 C

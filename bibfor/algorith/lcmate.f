@@ -1,11 +1,12 @@
-        SUBROUTINE LCMATE ( LOI,   MOD,   IMAT,   NMAT,   TEMPD,  TEMPF,
+        SUBROUTINE LCMATE ( COMP,   MOD,   IMAT,   NMAT, TEMPD, TEMPF,
      1                      HYDRD, HYDRF, SECHD,  SECHF,
-     2                      TYPMA, BZ,    MATERD, MATERF, MATCST, NDT,
-     3                      NDI,   NR,    NVI,    VIND)
+     2                      TYPMA, BZ,    MATERD, MATERF, MATCST, 
+     3                      NBCOMM, CPMONO, PGL,
+     4                      NDT, NDI,   NR,    NVI,    VIND)
         IMPLICIT   NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -25,7 +26,7 @@ C ======================================================================
 C TOLE CRP_21
 C       ----------------------------------------------------------------
 C       RECUPERATION DU MATERIAU A TEMPF ET TEMPD
-C       IN  LOI    :  NOM DU MODELE DE COMPORTEMENT
+C       IN  COMP   :  COMPORTEMENT
 C           MOD    :  TYPE DE MODELISATION
 C           IMAT   :  ADRESSE DU MATERIAU CODE
 C           NMAT   :  DIMENSION 1 DE MATER
@@ -45,16 +46,20 @@ C                                    I = 1  CARACTERISTIQUES ELASTIQUES
 C                                    I = 2  CARACTERISTIQUES PLASTIQUES
 C           MATCST :  'OUI' SI  MATERIAU A T = MATERIAU A T+DT
 C                     'NON' SINON OU 'NAP' SI NAPPE DANS 'VECMAT.F'
+C           NBCOMM :  NB DE PARAMETRES POUR CHAQUE LOI MONOCRISTAL
+C           CPMONO  :  LOIS MONOCRIST
+C           PGL    : MATRICE DE PASSAGE 
 C           NDT    :  NB TOTAL DE COMPOSANTES TENSEURS
 C           NDI    :  NB DE COMPOSANTES DIRECTES  TENSEURS
 C           NR     :  NB DE COMPOSANTES SYSTEME NL
 C           NVI    :  NB DE VARIABLES INTERNES
 C       ----------------------------------------------------------------
         INTEGER         IMAT, NMAT, NDT , NDI  , NR , NVI, I
+        INTEGER         NBCOMM(NMAT,3)
         REAL*8          MATERD(NMAT,2) ,MATERF(NMAT,2) , TEMPD , TEMPF
-        REAL*8          VIND(*)
+        REAL*8          VIND(*), PGL(3,3)
         REAL*8          HYDRD , HYDRF , SECHD , SECHF
-        CHARACTER*16    LOI
+        CHARACTER*16    LOI, COMP(*), CPMONO(5*NMAT+1)
         CHARACTER*8     MOD,    TYPMA
         CHARACTER*3     MATCST
         LOGICAL         BZ
@@ -69,6 +74,7 @@ C
          MATERF(I,2) = 0.D0
  10   CONTINUE
 C
+      LOI = COMP(1)
       IF     ( LOI(1:8) .EQ. 'ROUSS_PR' ) THEN
          CALL RSLMAT ( MOD,   IMAT,  NMAT,  TEMPD,  TEMPF,  HYDRD,
      1                 HYDRF, SECHD, SECHF, MATERD, MATERF, MATCST,
@@ -114,6 +120,10 @@ C
       ELSEIF ( LOI(1:6) .EQ. 'LAIGLE' ) THEN
          CALL LGLMAT ( MOD, IMAT, NMAT, TEMPD, MATERD,
      1                 MATERF, MATCST, NDT, NDI, NR, NVI )
+     
+      ELSEIF ( LOI(1:8) .EQ. 'MONOCRIS' ) THEN
+         CALL LCMMAT ( COMP, MOD, IMAT, NMAT, TEMPD, TEMPF,PGL, MATERD,
+     1            MATERF, MATCST, NBCOMM,CPMONO,NDT, NDI, NR, NVI )
       ENDIF
 C
       END

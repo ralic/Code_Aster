@@ -4,7 +4,7 @@
         IMPLICIT REAL*8 (A-H,O-Z)
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 27/03/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -140,10 +140,10 @@ C
 C
 C -     RECUPERATION MATERIAU A TEMPD (T)
 C
-          CALL RCVALA (  IMAT,    'ELAS',       1,  'TEMP', TEMPD, 3,
+          CALL RCVALA(IMAT,' ', 'ELAS',  1,  'TEMP', TEMPD, 3,
      1                   NOMC(1),  MATERD(1,1),  CERR(1), BL2 )
           IF ( CERR(3) .NE. 'OK' ) MATERD(3,1) = 0.D0
-          CALL RCVALA (  IMAT,    'VISCOCHAB',   1,  'TEMP', TEMPD, 25,
+          CALL RCVALA(IMAT,' ', 'VISCOCHAB', 1,  'TEMP', TEMPD, 25,
      1                   NOMC(4),  MATERD(1,2),  CERR(4), FB2 )
 C
 C -     MISE A JOUR DU COMMUN COED POUR TRAITER LE CAS ANISOTHERME
@@ -153,10 +153,10 @@ C
 C
 C -     RECUPERATION MATERIAU A TEMPF (T+DT)
 C
-          CALL RCVALA (  IMAT,    'ELAS',       1,  'TEMP', TEMPF, 3,
+          CALL RCVALA(IMAT,' ', 'ELAS',  1,  'TEMP', TEMPF, 3,
      1                   NOMC(1),  MATERF(1,1),  CERR(1), BL2 )
           IF ( CERR(3) .NE. 'OK' ) MATERF(3,1) = 0.D0
-          CALL RCVALA (  IMAT,    'VISCOCHAB',   1,  'TEMP', TEMPF, 25,
+          CALL RCVALA(IMAT,' ', 'VISCOCHAB', 1,  'TEMP', TEMPF, 25,
      1                   NOMC(4),  MATERF(1,2),  CERR(4), FB2 )
 C
 C -     PARAMETRES DES LOIS DE COMPORTEMENT A 2 SEUILS

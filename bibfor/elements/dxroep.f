@@ -3,7 +3,7 @@
       REAL*8              RHO , EPAIS
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 14/11/2000   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,7 +54,7 @@ C
          NOMRES(1) = 'HOM_19'
          NOMRES(2) = 'HOM_20'
          NBV  = 2
-         CALL RCVALA ( ZI(JMATE), PHENOM, 0, ' ', R8BID, NBV,
+         CALL RCVALA(ZI(JMATE),' ', PHENOM, 0, ' ', R8BID, NBV,
      &                 NOMRES, VALRES, CODRET, 'FM' )
          EPAIS = VALRES(1)
          RHO   = VALRES(2)
@@ -77,7 +77,7 @@ C
      &         PHENOM .EQ. 'ELAS_ORTH_FO'  )  THEN
          NOMRES(1) = 'RHO'
          NBV = 1
-         CALL RCVALA ( ZI(JMATE),PHENOM,0,' ',R8BID,NBV,
+         CALL RCVALA(ZI(JMATE),' ',PHENOM,0,' ',R8BID,NBV,
      &                 NOMRES,VALRES,CODRET, 'FM' )
          RHO   = VALRES(1)
          CALL JEVECH ('PCACOQU' , 'L' , JCOQU)

@@ -1,6 +1,6 @@
       SUBROUTINE TE0358(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -158,7 +158,7 @@ C PARAMETRES EN ENTREE
         DO 20 I = 1,NNO
           TPG = TPG + ZR(ITEMPE+I-1)*ZR(IVF+K+I-1)
    20   CONTINUE
-        CALL RCVALA(MATER,'ELAS_META',1,'TEMP',TPG,2,NOMRES,VALRES,
+        CALL RCVALA(MATER,' ','ELAS_META',1,'TEMP',TPG,2,NOMRES,VALRES,
      &              CODRET,'FM')
         E = VALRES(1)
         NU = VALRES(2)
@@ -166,7 +166,7 @@ C PARAMETRES EN ENTREE
 
         IF (COMPOR(1:5).EQ.'ACIER') THEN
 
-          CALL RCVALA(MATER,'META_PT',1,'TEMP',TPG,4,NOMRES(3),
+          CALL RCVALA(MATER,' ','META_PT',1,'TEMP',TPG,4,NOMRES(3),
      &                VALRES(3),CODRET(3),' ')
 
           DO 30 I = 3,6
@@ -189,7 +189,7 @@ C PARAMETRES EN ENTREE
             DELTAZ = (ZVARIP-ZVARIM)
             IF (DELTAZ.GT.0) THEN
               J = 6 + I
-              CALL RCVALA(MATER,'META_PT',1,'META',ZFBM,1,NOMRES(J),
+              CALL RCVALA(MATER,' ','META_PT',1,'META',ZFBM,1,NOMRES(J),
      &                    VALRES(J),CODRET(J),'  ')
               IF (CODRET(J).NE.'OK') VALRES(J) = 0.D0
 
@@ -197,7 +197,7 @@ C PARAMETRES EN ENTREE
             END IF
    50     CONTINUE
 
-          CALL RCVALA(MATER,'META_VISC',5,'TEMP',TPG,1,NOMRES(17),
+          CALL RCVALA(MATER,' ','META_VISC',5,'TEMP',TPG,1,NOMRES(17),
      &                VALRES(17),CODRET(17),' ')
           TEST = 'NO'
           DO 60 I = 17,21
@@ -206,8 +206,8 @@ C PARAMETRES EN ENTREE
           IF ((ZR(IVARI+ (KP-1)*LGPG+5).GT.0.5D0) .AND.
      &        (TEST.EQ.'NO')) THEN
 
-            CALL RCVALA(MATER,'ELAS_META',1,'META',ZFBM,1,NOMRES(11),
-     &                  VALRES(11),CODRET(11),'  ')
+            CALL RCVALA(MATER,' ','ELAS_META',1,'META',ZFBM,1,
+     &                NOMRES(11),  VALRES(11),CODRET(11),'  ')
             IF (CODRET(11).NE.'OK') THEN
               VALRES(11) = ZFBM
             END IF
@@ -221,7 +221,7 @@ C PARAMETRES EN ENTREE
             IF (ZK16(ICOMPO) (1:9).EQ.'META_P_IL' .OR.
      &          ZK16(ICOMPO) (1:9).EQ.'META_V_IL') THEN
 
-              CALL RCVALA(MATER,'META_ECRO_LINE',1,'TEMP',TPG,5,
+              CALL RCVALA(MATER,' ','META_ECRO_LINE',1,'TEMP',TPG,5,
      &                    NOMRES(12),VALRES(12),CODRET(12),'FM')
               R0(1) = VALRES(12)*E/ (E-VALRES(12))
               R0(2) = VALRES(13)*E/ (E-VALRES(13))
@@ -231,7 +231,7 @@ C PARAMETRES EN ENTREE
             END IF
             IF (ZK16(ICOMPO) (1:9).EQ.'META_P_CL' .OR.
      &          ZK16(ICOMPO) (1:9).EQ.'META_V_CL') THEN
-              CALL RCVALA(MATER,'META_ECRO_LINE',1,'TEMP',TPG,5,
+              CALL RCVALA(MATER,' ','META_ECRO_LINE',1,'TEMP',TPG,5,
      &                    NOMRES(12),VALRES(12),CODRET(12),'FM')
               R0(1) = (2.D0/3.D0)*VALRES(12)*E/ (E-VALRES(12))
               R0(2) = (2.D0/3.D0)*VALRES(13)*E/ (E-VALRES(13))
@@ -271,7 +271,7 @@ C PARAMETRES EN ENTREE
           END IF
 
         ELSE IF (COMPOR(1:4).EQ.'ZIRC') THEN
-          CALL RCVALA(MATER,'META_PT',1,'TEMP',TPG,2,NOMRES(3),
+          CALL RCVALA(MATER,' ','META_PT',1,'TEMP',TPG,2,NOMRES(3),
      &                VALRES(3),CODRET(3),' ')
 
           DO 80 I = 3,4
@@ -291,7 +291,7 @@ C PARAMETRES EN ENTREE
 
           TRANS = 0.D0
           IF (DELTAZ.GT.0) THEN
-            CALL RCVALA(MATER,'META_PT',1,'META',ZFBM,1,NOMRES(5),
+            CALL RCVALA(MATER,' ','META_PT',1,'META',ZFBM,1,NOMRES(5),
      &                  VALRES(5),CODRET(5),'  ')
             IF (CODRET(5).NE.'OK') VALRES(5) = 0.D0
 
@@ -304,7 +304,7 @@ C PARAMETRES EN ENTREE
           DELTAZ = (ZVARIP-ZVARIM)
           IF (DELTAZ.GT.0) THEN
 
-            CALL RCVALA(MATER,'META_PT',1,'META',ZFBM,1,NOMRES(6),
+            CALL RCVALA(MATER,' ','META_PT',1,'META',ZFBM,1,NOMRES(6),
      &                  VALRES(6),CODRET(6),'  ')
             IF (CODRET(6).NE.'OK') VALRES(6) = 0.D0
 
@@ -312,7 +312,7 @@ C PARAMETRES EN ENTREE
           END IF
 
 
-          CALL RCVALA(MATER,'META_VISC',3,'TEMP',TPG,1,NOMRES(14),
+          CALL RCVALA(MATER,' ','META_VISC',3,'TEMP',TPG,1,NOMRES(14),
      &                VALRES(14),CODRET(14),' ')
           TEST = 'NO'
           DO 90 I = 14,16
@@ -321,8 +321,8 @@ C PARAMETRES EN ENTREE
           IF ((ZR(IVARI+ (KP-1)*LGPG+3).GT.0.5D0) .AND.
      &        (TEST.EQ.'NO')) THEN
 
-            CALL RCVALA(MATER,'ELAS_META',1,'META',ZALPHA,1,NOMRES(7),
-     &                  VALRES(7),CODRET(7),'  ')
+            CALL RCVALA(MATER,' ','ELAS_META',1,'META',ZALPHA,1,
+     &                 NOMRES(7), VALRES(7),CODRET(7),'  ')
             IF (CODRET(7).NE.'OK') THEN
               VALRES(7) = ZALPHA
             END IF
@@ -334,7 +334,7 @@ C PARAMETRES EN ENTREE
 
             IF (ZK16(ICOMPO) (1:9).EQ.'META_P_IL' .OR.
      &          ZK16(ICOMPO) (1:9).EQ.'META_V_IL') THEN
-              CALL RCVALA(MATER,'META_ECRO_LINE',1,'TEMP',TPG,3,
+              CALL RCVALA(MATER,' ','META_ECRO_LINE',1,'TEMP',TPG,3,
      &                    NOMRES(8),VALRES(8),CODRET(8),'FM')
               R0(1) = VALRES(8)*E/ (E-VALRES(8))
               R0(2) = VALRES(9)*E/ (E-VALRES(9))
@@ -342,7 +342,7 @@ C PARAMETRES EN ENTREE
             END IF
             IF (ZK16(ICOMPO) (1:9).EQ.'META_P_CL' .OR.
      &          ZK16(ICOMPO) (1:9).EQ.'META_V_CL') THEN
-              CALL RCVALA(MATER,'META_ECRO_LINE',1,'TEMP',TPG,5,
+              CALL RCVALA(MATER,' ','META_ECRO_LINE',1,'TEMP',TPG,5,
      &                    NOMRES(8),VALRES(8),CODRET(8),'FM')
               R0(1) = (2.D0/3.D0)*VALRES(8)*E/ (E-VALRES(8))
               R0(2) = (2.D0/3.D0)*VALRES(9)*E/ (E-VALRES(9))

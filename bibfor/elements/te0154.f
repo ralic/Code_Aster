@@ -19,7 +19,7 @@ C ======================================================================
       IMPLICIT  NONE
       CHARACTER*(*)     OPTION,NOMTE
 C ----------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 02/10/2002   AUTEUR CIBHHGB G.BERTRAND 
+C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
 C     CALCUL
 C       - DU VECTEUR ELEMENTAIRE EFFORT GENERALISE,
 C       - DU VECTEUR ELEMENTAIRE CONTRAINTE
@@ -80,8 +80,9 @@ C
 C     --- RECUPERATION DES CARACTERISTIQUES MATERIAUX ---
       BL2 = '  '
       CALL JEVECH ('PMATERC', 'L', LMATER)
-      CALL RCVALA(ZI(LMATER),'ELAS',0,' ',R8BID,1,'E',E,CODRES, 'FM' )
-      CALL RCVALA(ZI(LMATER),'ELAS',0,' ',R8BID,1,'ALPHA',ALPHAT,
+      CALL RCVALA(ZI(LMATER),' ','ELAS',0,' ',R8BID,1,'E',E,
+     &            CODRES, 'FM' )
+      CALL RCVALA(ZI(LMATER),' ','ELAS',0,' ',R8BID,1,'ALPHA',ALPHAT,
      +            CODRES , BL2 )
       IF ( CODRES .EQ. 'OK' ) LTEIMP = .TRUE.
 C
@@ -182,7 +183,7 @@ C
          ENDIF
 C
       ELSEIF( OPTION .EQ. 'ECIN_ELEM_DEPL' ) THEN
-         CALL RCVALA ( ZI(LMATER),'ELAS',0,' ',R8BID,1,'RHO',RHO,
+         CALL RCVALA ( ZI(LMATER),' ','ELAS',0,' ',R8BID,1,'RHO',RHO,
      +                 CODRES , 'FM' )
          CALL JEVECH ('PENERCR', 'E', JENDE)
          CALL JEVECH ('PFREQR' , 'L', JFREQ)

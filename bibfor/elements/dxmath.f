@@ -8,7 +8,7 @@ C TOLE CRP_20
       LOGICAL GRILLE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 06/05/2003   AUTEUR CIBHHPD D.NUNEZ 
+C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -203,10 +203,10 @@ C        ET T2VE INVERSE DE T2EV
         R(LT1VE+8) = R(LT1VE) - R(LT1VE+3)
 
 C
-        CALL RCVALA(ZI(JMATE),PHENOM,0,' ',0.0D0,1,'MEMB_L  ',
+        CALL RCVALA(ZI(JMATE),' ',PHENOM,0,' ',0.0D0,1,'MEMB_L  ',
      +              VALRES(1),CODRET,' ')
         IF (CODRET(1).EQ.'NO') THEN
-          CALL RCVALA(ZI(JMATE),PHENOM,0,' ',0.0D0,1,'M_LLLL  ',
+          CALL RCVALA(ZI(JMATE),' ',PHENOM,0,' ',0.0D0,1,'M_LLLL  ',
      +                VALRES(1),CODRET,' ')
           IF (CODRET(1).EQ.'NO') THEN
             CALL UTMESS('F','DXMATE','IMPOSSIBILITE : VOUS AVEZ UN '//
@@ -339,10 +339,10 @@ C        ------ MATERIAU ISOTROPE ------------------------------------
 
         MULTIC = 0
 
-        CALL RCVALA(ZI(JMATE),PHENOM,NBPAR,NOMPAR,VALPAR,2,NOMRES,
+        CALL RCVALA(ZI(JMATE),' ',PHENOM,NBPAR,NOMPAR,VALPAR,2,NOMRES,
      +              VALRES,CODRET,'FM')
-        CALL RCVALA(ZI(JMATE),PHENOM,NBPAR,NOMPAR,VALPAR,2,NOMRES(3),
-     +              VALRES(3),CODRET(3),BL2)
+        CALL RCVALA(ZI(JMATE),' ',PHENOM,NBPAR,NOMPAR,VALPAR,2,
+     +             NOMRES(3), VALRES(3),CODRET(3),BL2)
         IF (CODRET(3).NE.'OK') THEN
           INDITH = -1
           GO TO 90
@@ -404,14 +404,14 @@ C        --- DANS LE CAS D'UN EXCENTREMENT                     --------
 C        ---------------------------------------------------------------
       ELSE IF (PHENOM.EQ.'ELAS_COQUE') THEN
         MULTIC = 0
-        CALL RCVALA(ZI(JMATE),PHENOM,NBPAR,NOMPAR,VALPAR,NBV,NOMRES,
+        CALL RCVALA(ZI(JMATE),' ',PHENOM,NBPAR,NOMPAR,VALPAR,NBV,NOMRES,
      +              VALRES,CODRET,'FM')
         IF (ELASCO.EQ.1) THEN
           INDALF = 11
         ELSEIF (ELASCO.EQ.2) THEN
           INDALF = 34
         ENDIF
-        CALL RCVALA(ZI(JMATE),PHENOM,NBPAR,NOMPAR,VALPAR,1,
+        CALL RCVALA(ZI(JMATE),' ',PHENOM,NBPAR,NOMPAR,VALPAR,1,
      +              NOMRES(INDALF),VALRES(INDALF),CODRET(INDALF),BL2)
         IF (CODRET(INDALF).NE.'OK') THEN
           INDITH = -1
@@ -482,11 +482,11 @@ C        ----------- MATRICES DANS LE REPERE INTRINSEQUE DE L'ELEMENT --
 
       ELSE IF (PHENOM.EQ.'ELAS_COQMU') THEN
 C        ------ MATERIAU MULTICOUCHE -----------------------------------
-        CALL RCVALA(ZI(JMATE),PHENOM,NBPAR,NOMPAR,VALPAR,1,NOMRES(19),
-     +              VALRES(19),CODRET(19),BL2)
+        CALL RCVALA(ZI(JMATE),' ',PHENOM,NBPAR,NOMPAR,VALPAR,1,
+     +             NOMRES(19), VALRES(19),CODRET(19),BL2)
         EPAIS = VALRES(19)
-        CALL RCVALA(ZI(JMATE),PHENOM,NBPAR,NOMPAR,VALPAR,27,NOMRES(30),
-     +              VALRES(30),CODRET(30),BL2)
+        CALL RCVALA(ZI(JMATE),' ',PHENOM,NBPAR,NOMPAR,VALPAR,27,
+     +              NOMRES(30),VALRES(30),CODRET(30),BL2)
         DM(1,1) = VALRES(30)
         DM(1,2) = VALRES(31)
         DM(1,3) = VALRES(32)

@@ -2,7 +2,7 @@
      &                   VARMS,VARM,SIGM,VARP,SIGP,SIGPS,VARPS,STYPSE)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -102,10 +102,10 @@ C     ---------------------------------------
       NOMRES(2) = 'NU'
       NOMRES(3) = 'ALPHA'
 
-      CALL RCVALA(IMATE,'ELAS',3,NOMPAR,VALPAP,2,NOMRES(1),VALRES(1),
-     &            CODRET(1),FB2)
-      CALL RCVALA(IMATE,'ELAS',3,NOMPAR,VALPAP,1,NOMRES(3),VALRES(3),
-     &            CODRET(3),BL2)
+      CALL RCVALA(IMATE,' ','ELAS',3,NOMPAR,VALPAP,2,NOMRES(1),
+     &           VALRES(1), CODRET(1),FB2)
+      CALL RCVALA(IMATE,' ','ELAS',3,NOMPAR,VALPAP,1,NOMRES(3),
+     &           VALRES(3), CODRET(3),BL2)
       IF (CODRET(3).NE.'OK') VALRES(3) = 0.D0
       E = VALRES(1)
       NU = VALRES(2)
@@ -117,8 +117,8 @@ C     ---------------------------------------
       IF (COMPOR(1)(1:14).EQ.'VMIS_ISOT_LINE') THEN
         NOMRES(1) = 'D_SIGM_EPSI'
         NOMRES(2) = 'SY'
-        CALL RCVALA(IMATE,'ECRO_LINE',3,NOMPAR,VALPAP,2,NOMRES,VALRES,
-     &              CODRET,FB2)
+        CALL RCVALA(IMATE,' ','ECRO_LINE',3,NOMPAR,VALPAP,2,NOMRES,
+     &             VALRES, CODRET,FB2)
         DSDE = VALRES(1)
         SIGY = VALRES(2)
         RPRIM = DSDE*E/ (E-DSDE)

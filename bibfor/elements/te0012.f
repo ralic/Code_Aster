@@ -2,7 +2,7 @@
       IMPLICIT   NONE
 C.......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -97,8 +97,8 @@ C    BOUCLE SUR LES POINTS DE GAUSS
         DO 60 I = 1,NNO
           TPG = TPG + ZR(ITEMPE+I-1)*ZR(IVF+L+I-1)
    60   CONTINUE
-        CALL RCVALA(ZI(IMATE),PHENOM,1,'TEMP',TPG,1,'RHO',RHO,CODRET,
-     &              'FM')
+        CALL RCVALA(ZI(IMATE),' ',PHENOM,1,'TEMP',TPG,1,'RHO',RHO,
+     &              CODRET,'FM')
         DO 80 I = 1,NNO
           DO 70 J = 1,I
             A(1,1,I,J) = A(1,1,I,J) + RHO*POIDS*ZR(IVF+L+I-1)*

@@ -1,13 +1,13 @@
-      SUBROUTINE RK21CO( LOI,   MOD,     IMAT,     MATCST,
+      SUBROUTINE RK21CO( COMP,   MOD,     IMAT, MATCST,NBCOMM,CPMONO,
      &                   N0,    NMAT,    Y,
-     &                   KP,    EE,      A,       H,      COTHE,
+     &                   KP,    EE,      A,       H, PGL,COTHE,
      &                   COEFF, DCOTHE,  DCOEFF,  E,      NU,
      &                   ALPHA, X,       PAS,     SIGI,   EPSD,
      &                   DETOT, TPERD,   DTPER,   TPEREF, BZ )
       IMPLICIT REAL*8 (A-H,O-Z)
 C     ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/01/97   AUTEUR C7BAXDP P.DUPAS 
+C MODIF ALGORITH  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -31,7 +31,7 @@ C     PAR UNE METHODE DE RUNGE KUTTA
 C
 C     CALCUL DE LA SOLUTION A L ORDRE 1 ET A L ORDRE 2
 C     ----------------------------------------------------------------
-C     IN  LOI     :  NOM DU MODELE DE COMPORTEMENT
+C     IN  COMP     :  NOM DU MODELE DE COMPORTEMENT
 C         MOD     :  TYPE DE MODELISATION
 C         IMAT    :  CODE DU MATERIAU CODE
 C         MATCST  : 'OUI'  'NAP'  'NON' 
@@ -63,13 +63,13 @@ C         BZ      :  VARIABLE LOGIQUE :
 C                   'VRAI' ON UTILISE LE MODELE POLY PILVIN
 C                   'FAUX' ON UTILISE LE MODELE POLY B.Z.
 C     ----------------------------------------------------------------
-      CHARACTER*16 LOI
+      CHARACTER*16 COMP(*),CPMONO(5*NMAT+1)
       CHARACTER*8 MOD
-      INTEGER         IMAT 
+      INTEGER         IMAT , NBCOMM(NMAT,3)
       CHARACTER*3     MATCST
       LOGICAL BZ
       PARAMETER (NF=1688)
-      REAL*8 E, NU, ALPHA
+      REAL*8 E, NU, ALPHA, PGL(3,3)
       REAL*8 X, PAS
       REAL*8 TPERD, DTPER, TPEREF
       REAL*8 COTHE(3),DCOTHE(3)
@@ -80,8 +80,8 @@ C     ----------------------------------------------------------------
       REAL*8 EE(NF),A(NF)
 C
       IF (KP.EQ.1) THEN
-        CALL RDIF01(LOI,MOD,IMAT,MATCST,
-     &              N0,NMAT,Y,COTHE,COEFF,DCOTHE,DCOEFF,
+        CALL RDIF01(COMP,MOD,IMAT,MATCST,NBCOMM,CPMONO,
+     &              N0,NMAT,Y,COTHE,COEFF,DCOTHE,DCOEFF,PGL,
      &              E,NU,ALPHA,X,PAS,SIGI,EPSD,DETOT,TPERD,DTPER,
      &              TPEREF,F,BZ)
         DO 10 I=1,N0
@@ -94,8 +94,8 @@ C
    11   CONTINUE
       END IF
       X=X+H
-      CALL RDIF01(LOI,MOD,IMAT,MATCST,
-     &            N0,NMAT,Y,COTHE,COEFF,DCOTHE,DCOEFF,
+      CALL RDIF01(COMP,MOD,IMAT,MATCST,NBCOMM,CPMONO,
+     &            N0,NMAT,Y,COTHE,COEFF,DCOTHE,DCOEFF,PGL,
      &            E,NU,ALPHA,X,PAS,SIGI,EPSD,DETOT,TPERD,DTPER,
      &            TPEREF,F,BZ)
       HS2=0.5D0*H

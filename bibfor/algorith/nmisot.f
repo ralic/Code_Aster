@@ -3,7 +3,7 @@
      &                   SECHM,SECHP,DEPS,SIGM,VIM,
      &                   OPTION,SIGP,VIP,DSIDEP,DEMU,CINCO)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/04/2004   AUTEUR JOUMANA J.EL-GHARIB 
+C MODIF ALGORITH  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -147,26 +147,26 @@ C
       VALPAP(3) = SECHP
 C
       IF (COMPOR(1)(1:14) .EQ. 'VMIS_ISOT_TRAC' ) THEN
-         CALL RCVALA ( IMATE,'ELAS',3,NOMPAR,VALPAM,1,
+         CALL RCVALA(IMATE,' ','ELAS',3,NOMPAR,VALPAM,1,
      +                 NOMRES(2),VALRES(2),CODRET(2), FB2 )
          NUM = VALRES(2)
-         CALL RCVALA ( IMATE,'ELAS',3,NOMPAR,VALPAM,1,
+         CALL RCVALA(IMATE,' ','ELAS',3,NOMPAR,VALPAM,1,
      +                 NOMRES(3),VALRES(3),CODRET(3), BL2 )
          IF ( CODRET(3) .NE. 'OK' ) VALRES(3) = 0.D0
          ALPHAM = VALRES(3)
-         CALL RCVALA ( IMATE,'ELAS',3,NOMPAR,VALPAP,1,
+         CALL RCVALA(IMATE,' ','ELAS',3,NOMPAR,VALPAP,1,
      +                 NOMRES(2),VALRES(2),CODRET(2), FB2 )
          NU = VALRES(2)
-         CALL RCVALA ( IMATE,'ELAS',3,NOMPAR,VALPAP,1,
+         CALL RCVALA(IMATE,' ','ELAS',3,NOMPAR,VALPAP,1,
      +                 NOMRES(3),VALRES(3),CODRET(3), BL2 )
          IF ( CODRET(3) .NE. 'OK' ) VALRES(3) = 0.D0
          ALPHAP = VALRES(3)
       ELSE
-         CALL RCVALA ( IMATE,'ELAS',3,NOMPAR,VALPAM,2,
+         CALL RCVALA(IMATE,' ','ELAS',3,NOMPAR,VALPAM,2,
      +                 NOMRES(1),VALRES(1),CODRET(1), FB2 )
          EM  = VALRES(1)
          NUM = VALRES(2)
-         CALL RCVALA ( IMATE,'ELAS',3,NOMPAR,VALPAM,1,
+         CALL RCVALA(IMATE,' ','ELAS',3,NOMPAR,VALPAM,1,
      +                 NOMRES(3),VALRES(3),CODRET(3), BL2 )
          IF ( CODRET(3) .NE. 'OK' ) VALRES(3) = 0.D0
          ALPHAM = VALRES(3)
@@ -176,9 +176,9 @@ C
          ELSE
            TROIKM = EM/(1.D0-2.D0*NUM)
          ENDIF
-         CALL RCVALA ( IMATE,'ELAS',3,NOMPAR,VALPAP,2,
+         CALL RCVALA(IMATE,' ','ELAS',3,NOMPAR,VALPAP,2,
      +                 NOMRES(1),VALRES(1),CODRET(1), FB2 )
-         CALL RCVALA ( IMATE,'ELAS',3,NOMPAR,VALPAP,1,
+         CALL RCVALA(IMATE,' ','ELAS',3,NOMPAR,VALPAP,1,
      +                 NOMRES(3),VALRES(3),CODRET(3), BL2 )
          IF ( CODRET(3) .NE. 'OK' ) VALRES(3) = 0.D0
          E      = VALRES(1)
@@ -197,22 +197,22 @@ C --- RETRAIT ENDOGENE ET RETRAIT DE DESSICCATION
 C
       NOMRES(1)='B_ENDOGE'
       NOMRES(2)='K_DESSIC'
-      CALL RCVALA(IMATE,'ELAS',3,NOMPAR,VALPAM,1,
+      CALL RCVALA(IMATE,' ','ELAS',3,NOMPAR,VALPAM,1,
      +            NOMRES(1),VALRES(1),CODRET(1), BL2 )
       IF ( CODRET(1) .NE. 'OK' ) VALRES(1) = 0.D0
       BENDOM = VALRES(1)
 C
-      CALL RCVALA(IMATE,'ELAS',3,NOMPAR,VALPAP,1,
+      CALL RCVALA(IMATE,' ','ELAS',3,NOMPAR,VALPAP,1,
      +            NOMRES(1),VALRES(1),CODRET(1), BL2 )
       IF ( CODRET(1) .NE. 'OK' ) VALRES(1) = 0.D0
       BENDOP = VALRES(1)
 C
-      CALL RCVALA(IMATE,'ELAS',3,NOMPAR,VALPAM,1,
+      CALL RCVALA(IMATE,' ','ELAS',3,NOMPAR,VALPAM,1,
      +            NOMRES(2),VALRES(2),CODRET(2), BL2 )
       IF ( CODRET(2) .NE. 'OK' ) VALRES(2) = 0.D0
       KDESSM = VALRES(2)
 C
-      CALL RCVALA(IMATE,'ELAS',3,NOMPAR,VALPAP,1,
+      CALL RCVALA(IMATE,' ','ELAS',3,NOMPAR,VALPAP,1,
      +            NOMRES(2),VALRES(2),CODRET(2), BL2 )
       IF ( CODRET(2) .NE. 'OK' ) VALRES(2) = 0.D0
       KDESSP = VALRES(2)
@@ -226,7 +226,7 @@ C     ---------------------------------------
           LINE=1.D0
           NOMRES(1)='D_SIGM_EPSI'
           NOMRES(2)='SY'
-          CALL RCVALA(IMATE,'ECRO_LINE',3,NOMPAR,VALPAP,2
+          CALL RCVALA(IMATE,' ','ECRO_LINE',3,NOMPAR,VALPAP,2
      &                                 ,NOMRES,VALRES,CODRET, FB2 )
           DSDE=VALRES(1)
           SIGY=VALRES(2)

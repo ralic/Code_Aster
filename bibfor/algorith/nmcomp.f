@@ -4,7 +4,7 @@
      &                   OPTION,DEFAM,DEFAP,NZ,PHASM, PHASP,ELGEOM,
      &                   SIGP,VIP,DSIDEP,CODRET,CORRM,CORRP)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/03/2004   AUTEUR OUGLOVA A.OUGLOVA 
+C MODIF ALGORITH  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -574,6 +574,23 @@ C
      &           HYDRM, HYDRP, SECHM, SECHP, EPSM, DEPS,
      &           SIGM, VIM,OPTION, ELGEOM,SIGP, VIP, DSIDEP)
           ENDIF
+        
+CCC    MONOCRISTAL      
+          
+        ELSEIF ( COMPOR(1)(1:8) .EQ. 'MONOCRIS' ) THEN
+          IF ( INT(CRIT(6)) .EQ. 0 ) THEN
+            CALL REDECE ( NDIM,  TYPMOD,  IMATE,COMPOR,CRIT,
+     &                  INSTAM,INSTAP, TM,   TP,    TREF,
+     &                  HYDRM, HYDRP,SECHM, SECHP,EPSM, DEPS,
+     &                  SIGM, VIM,OPTION,ELGEOM,SIGP, VIP, DSIDEP)
+          ELSE
+            CALL NMVPRK ( NDIM,  TYPMOD,  IMATE,COMPOR,CRIT,
+     &                  INSTAM,INSTAP, TM,   TP,    TREF, EPSM,
+     &                  DEPS,  SIGM,   VIM,  OPTION,SIGP, VIP, DSIDEP)
+          ENDIF
+          
+CCC    FIN MONOCRISTAL      
+          
         ELSE
           CALL UTMESS('F','NMCOMP_1','LOI DE COMPORTEMENT INEXISTANTE')
         ENDIF

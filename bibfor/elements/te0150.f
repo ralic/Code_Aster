@@ -3,7 +3,7 @@
       CHARACTER*(*)     OPTION,NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 06/05/2003   AUTEUR CIBHHPD D.NUNEZ 
+C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -82,8 +82,8 @@ C
          VALPAR = ZR(ITEMPE)
       ENDIF
 C
-      CALL RCVALA(ZI(LMATER),'ELAS',NBPAR,NOMPAR,VALPAR,NBRES,NOMRES,
-     +                                           VALRES,CODRES,'FM')
+      CALL RCVALA(ZI(LMATER),' ','ELAS',NBPAR,NOMPAR,VALPAR,NBRES,
+     +                                  NOMRES,VALRES,CODRES,'FM')
 C
       E      = VALRES(1)
       NU     = VALRES(2)

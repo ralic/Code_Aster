@@ -10,7 +10,7 @@
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 18/11/2003   AUTEUR LEBOUVIE F.LEBOUVIER 
+C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -68,14 +68,14 @@ C
 C
       NOMRES(1)  = 'MEX1'
       NOMRES(2)  = 'MEX2'   
-      CALL RCVALA( ZI(IMATE),PHENOM,1,'NORM',NORTH(1),2,NOMRES,
+      CALL RCVALA(ZI(IMATE),' ',PHENOM,1,'NORM',NORTH(1),2,NOMRES,
      +                 VALRES,CODRET,'FM')
       MP1(1)   = VALRES(1)
       MP2(1)   = VALRES(2)
 C                       
       NOMRES(1)  = 'MEY1'
       NOMRES(2)  = 'MEY2'
-      CALL RCVALA( ZI(IMATE),PHENOM,1,'NORM',NORTH(2),2,NOMRES,
+      CALL RCVALA(ZI(IMATE),' ',PHENOM,1,'NORM',NORTH(2),2,NOMRES,
      +                 VALRES,CODRET,'FM')      
       MP1(2)  = VALRES(1)
       MP2(2)  = VALRES(2)

@@ -6,7 +6,7 @@
      &                 PROJEC, RESIDU, GRAD, ENEREL, VARIP)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ALGORITH  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -198,7 +198,7 @@ C     &                ZR(IVF1+N+(KPG-1)*NNO2-1)
 
 C -- MULTIPLICATEURS DE LAGRANGE PHYSIQUES
 
-        CALL RCVALA(IMATE, 'NON_LOCAL', 0, ' ',0.D0,1,'LONG_CAR',
+        CALL RCVALA(IMATE,' ', 'NON_LOCAL', 0, ' ',0.D0,1,'LONG_CAR',
      &            LB, K2BID, 'F ')
         DI(0) = 1.D0
         DI(1) = LB

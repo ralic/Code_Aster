@@ -4,7 +4,7 @@
         IMPLICIT REAL*8 (A-H,O-Z)
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -92,9 +92,9 @@ C
 C
 C -     RECUPERATION MATERIAU A TEMPD (T)
 C
-          CALL RCVALA (  IMAT,    'ELAS',       1,  'TEMP', TEMPD, 3,
+          CALL RCVALA(IMAT,' ',    'ELAS',  1,  'TEMP', TEMPD, 3,
      1                   NOMC(1),  MATERD(1,1),  CERR(1), BL2 )
-          CALL RCVALA (  IMAT,    'POLY_CFC',   1,  'TEMP', TEMPD, 13,
+          CALL RCVALA(IMAT,' ',    'POLY_CFC', 1, 'TEMP', TEMPD, 13,
      1                   NOMC(4),  MATERD(1,2),  CERR(4), BL2 )
           IF (CERR(4).EQ.'OK'.AND.CERR(5).EQ.'OK') THEN
           BZ=.TRUE.
@@ -112,9 +112,9 @@ C
 C
 C -     RECUPERATION MATERIAU A TEMPF (T+DT)
 C
-          CALL RCVALA (  IMAT,    'ELAS',       1,  'TEMP', TEMPF, 3,
+          CALL RCVALA(IMAT,' ', 'ELAS',  1,  'TEMP', TEMPF, 3,
      1                   NOMC(1),  MATERF(1,1),  CERR(1), BL2 )
-          CALL RCVALA (  IMAT,    'POLY_CFC',   1,  'TEMP', TEMPF, 13,
+          CALL RCVALA(IMAT,' ', 'POLY_CFC',1,  'TEMP', TEMPF, 13,
      1                   NOMC(4),  MATERF(1,2),  CERR(4), BL2 )
           IF (CERR(4).EQ.'OK'.AND.CERR(5).EQ.'OK') THEN
           BZ=.TRUE.

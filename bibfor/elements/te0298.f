@@ -3,7 +3,7 @@
       CHARACTER*16        OPTION , NOMTE
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -146,9 +146,9 @@ C TRANSPORT.
           CALL FOINTE('FM',ZK8(IDEFI+2),2,NOMPAR,VALPAR,EZZ,IE4)
           ENDIF
 C
-        CALL RCVALA ( MATER,'ELAS',1,'TEMP',TPG,2,NOMRES,
+        CALL RCVALA(MATER,' ','ELAS',1,'TEMP',TPG,2,NOMRES,
      &                VALRES, CODRET, 'FM' )
-        CALL RCVALA ( MATER,'ELAS',1,'TEMP',TPG,1,NOMRES(3),
+        CALL RCVALA(MATER,' ','ELAS',1,'TEMP',TPG,1,NOMRES(3),
      &                VALRES(3), CODRET(3), BL2 )
         IF ( CODRET(3) .NE. 'OK' )  VALRES(3) = 0.D0
         TPG = TPG - ZR(ITREF)

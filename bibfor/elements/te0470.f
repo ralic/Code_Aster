@@ -1,6 +1,6 @@
       SUBROUTINE TE0470( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 20/03/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -138,7 +138,7 @@ C     ---------------------------------------------------
      &        'COMPORTEMENT COEUR HOMOGENEISE INEXISTANT')
       ENDIF
       TPG = 0.D0
-      CALL RCVALA (ZI(IMATE),PHENOM,0,'   ',TPG,NBV,NOMRES,VALRES,
+      CALL RCVALA(ZI(IMATE),' ',PHENOM,0,'   ',TPG,NBV,NOMRES,VALRES,
      &             CODRET,'FM')
       RHOPOU  = VALRES(1)
       CALL RCCOMA(ZI(IMATE),'FLUIDE',PHENOM,CODRET)
@@ -150,7 +150,7 @@ C     ---------------------------------------------------
      &        'COMPORTEMENT COEUR HOMOGENEISE INEXISTANT')
       ENDIF
       TPG = 0.D0
-      CALL RCVALA (ZI(IMATE),PHENOM,0,'   ',TPG,NBV,NOMRES,VALRES,
+      CALL RCVALA(ZI(IMATE),' ',PHENOM,0,'   ',TPG,NBV,NOMRES,VALRES,
      &             CODRET,'FM')
       RHOFLU  = VALRES(1)
 C     ----------------------------------------------------------------

@@ -4,7 +4,7 @@
       CHARACTER*16  NOMRC
       INTEGER       NBMTCM,NBMTRC
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 21/02/96   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -35,13 +35,12 @@ C     !                                                                !
 C     ==================================================================
 C IN  ! CHMAT  ! K8  ! NOM DU CONCEPT CHAM_MATER                       !
 C IN  ! NOMRC  ! K8  ! NOM DE LA RC CHERCHEE                           !
-C IN  ! NBMTCH ! IS  ! NOMBRE DE MAT DU CHAM_MATER                     !
+C IN  ! NBMTCH ! IS  ! LONGUEUR DU .VALE DU CHAM_MATER                 !
 C OUT ! NBMTRC ! IS  ! NOMBRE DE MAT QUI UTILISE LA RC                 !
 C OUT ! NOMMAT ! K8  !LISTE DES MAT DU CHAM_MATER QUI UTILISENT LA RC  !
 C     ==================================================================
 C
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
-C-DEL CHARACTER*32 JEXNUM,JEXNOM,JEXATR,JEXR8
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
@@ -65,7 +64,6 @@ C --- VARIABLES LOCALES ---
 C
 C ====================== DEBUT DU PROGRAMME ============================
 C
-C-DBG WRITE(6,*)'========= CHMRCK : IN ==================='
       CALL JEMARQ()
       KCHMVA = CHMAT//'.CHAMP_MAT .VALE'
       CRPBID = 'ARG_OUT_DE_JELIRA       '
@@ -74,6 +72,7 @@ C
       NBMTRC = 0
       DO 100, IMAT = 1, NBMTCM, 1
          KMAT = ZK8(ACHMVA-1 + IMAT)
+         IF (KMAT.EQ.' ') GOTO 100
          KRC  = KMAT//'.MATERIAU.NOMRC'
          CALL JEVEUO(KRC,'L',ARC)
          CALL JELIRA(KRC,'LONMAX',NBRC,CRPBID)
@@ -83,7 +82,6 @@ C
             NOMMAT(NBMTRC) = KMAT
           ENDIF
 100   CONTINUE
-C-DBG WRITE(6,*)'========= CHMRCK : OUT =================='
 C
       CALL JEDEMA()
       END

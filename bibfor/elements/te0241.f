@@ -3,7 +3,7 @@
       CHARACTER*(*)     OPTION,NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/02/2000   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -78,7 +78,7 @@ C     --- RECUPERATION DES CARACTERISTIQUES MATERIAUX ---
       NOMRES(2) = 'NU'
       NOMRES(3) = 'RHO'
 C
-      CALL RCVALA ( ZI(LMATER),'ELAS',NBPAR,NOMPAR,VALPAR,NBRES,
+      CALL RCVALA(ZI(LMATER),' ','ELAS',NBPAR,NOMPAR,VALPAR,NBRES,
      +              NOMRES, VALRES, CODRES, 'FM' )
       E      = VALRES(1)
       NU     = VALRES(2)
@@ -89,7 +89,7 @@ C
       VALRES(2) = 0.D0
       NOMRES(1) = 'RHO'
       NOMRES(2) = 'CELE_R'
-      CALL RCVALA ( ZI(LMATER),'FLUIDE',NBPAR,NOMPAR,VALPAR,2,
+      CALL RCVALA(ZI(LMATER),' ','FLUIDE',NBPAR,NOMPAR,VALPAR,2,
      +              NOMRES, VALRES, CODRES, 'FM' )
       ROF    = VALRES(1)
       CELER = VALRES(2)

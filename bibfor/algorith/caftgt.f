@@ -4,7 +4,7 @@
      +                  CONGEP,DSDE,P1,T,GRAT,SAT)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -67,7 +67,7 @@ C
       IF (((THMC.EQ.'LIQU_VAPE_GAZ').OR.(THMC.EQ.'LIQU_GAZ')).OR.
      &      (THMC.EQ.'LIQU_GAZ_ATM')) THEN
          IF (HYDR.EQ.'HYDR_UTIL') THEN
-            CALL RCVALA(IMATE,'THM_DIFFU',1,'PCAP',P1,
+            CALL RCVALA(IMATE,' ','THM_DIFFU',1,'PCAP',P1,
      &            NSAT,NCRA1,SATUR,CODRET,'FM')
             SAT=SATUR(1)
             DSATP1=SATUR(2)            
@@ -76,7 +76,7 @@ C
          ENDIF
       ENDIF
 C
-         CALL RCVALA(IMATE,'THM_DIFFU',1,'TEMP',T,
+         CALL RCVALA(IMATE,' ','THM_DIFFU',1,'TEMP',T,
      &             1,'LAMBDA',CONDU,CODRET,'FM')
          LAMBDT(1)=CONDU
          LAMBDT(2)=0.D0

@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 26/01/2004   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -113,9 +113,9 @@ C---- COMME POUR LA LONGUEUR
             TPG = TPG1* (UN-X3**2) + X3* (TPG3* (UN+X3)-TPG2* (UN-X3))/
      &            DEUX
             ALPHAE = ZERO
-            CALL RCVALA(ZI(IMATE),'ELAS',1,'TEMP',TPG,2,NOMRES,VALRES,
-     &                  CODRET,'FM')
-            CALL RCVALA(ZI(IMATE),'ELAS',1,'TEMP',TPG,1,NOMRES(3),
+            CALL RCVALA(ZI(IMATE),' ','ELAS',1,'TEMP',TPG,2,NOMRES,
+     &                 VALRES, CODRET,'FM')
+            CALL RCVALA(ZI(IMATE),' ','ELAS',1,'TEMP',TPG,1,NOMRES(3),
      &                  VALRES(3),CODRET(3),BL2)
             IF (CODRET(3).EQ.'OK') ALPHAE = VALRES(3)*VALRES(1)
             NU = VALRES(2)

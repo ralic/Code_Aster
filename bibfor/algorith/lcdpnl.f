@@ -2,7 +2,7 @@
      &                         TM,TP,TREF,DEPS,VIM,VIP,SIG,DSIDPT,IRET)
 C =====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/12/2003   AUTEUR GRANET S.GRANET 
+C MODIF ALGORITH  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -65,7 +65,8 @@ C =====================================================================
 C =====================================================================
 C --- CARACTERISTIQUES MATERIAU ---------------------------------------
 C =====================================================================
-      CALL RCVALA(IMATE,'ELAS',0,' ',0.D0,2,NOMRES,VALRES,CODRET,'F ')
+      CALL RCVALA(IMATE,' ','ELAS',0,' ',0.D0,2,
+     &            NOMRES,VALRES,CODRET,'F ')
       YOUNG  = VALRES(1)
       NU     = VALRES(2)
       DEUXMU = YOUNG / ( 1.0D0 + NU )

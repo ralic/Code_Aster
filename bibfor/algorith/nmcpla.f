@@ -5,7 +5,7 @@
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/04/2004   AUTEUR JOUMANA J.EL-GHARIB 
+C MODIF ALGORITH  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -285,12 +285,12 @@ C
 C -      RECUPERATION MATERIAU A TEMPD (T)
 C
          FB2 = 'F '
-         CALL RCVALA (IMAT,   'ELAS',     3,       NOMPAR,VALPAD, 1,
+         CALL RCVALA(IMAT,' ',   'ELAS',     3,       NOMPAR,VALPAD, 1,
      1                NOMC(2), MATERD(2), CERR(1), FB2 )
 C
 C -      RECUPERATION MATERIAU A TEMPF (T+DT)
 C
-         CALL RCVALA (IMAT,   'ELAS',     3,       NOMPAR,VALPAF, 1,
+         CALL RCVALA(IMAT,' ',   'ELAS',     3,       NOMPAR,VALPAF, 1,
      1                NOMC(2), MATERF(2), CERR(1), FB2 )
 C
          MATERD(1) = 1.D0
@@ -368,7 +368,7 @@ C
 C -      RECUPERATION MATERIAU A TEMPD (T)
 C
          FB2 = 'F '
-         CALL RCVALA (IMAT,   'ELAS',     3,       NOMPAR,VALPAD, 5,
+         CALL RCVALA(IMAT,' ',   'ELAS',     3,       NOMPAR,VALPAD, 5,
      1                NOMC(1), MATERD(1), CERR(1), FB2 )
 C
          IF ( CERR(3) .NE. 'OK' ) MATERD(3) = 0.D0
@@ -377,7 +377,7 @@ C
 C
 C -      RECUPERATION MATERIAU A TEMPF (T+DT)
 C
-         CALL RCVALA (IMAT,   'ELAS',     3,       NOMPAR,VALPAF, 5,
+         CALL RCVALA(IMAT,' ',   'ELAS',     3,       NOMPAR,VALPAF, 5,
      1                NOMC(1), MATERF(1), CERR(1), FB2 )
 C
          IF ( CERR(3) .NE. 'OK' ) MATERF(3) = 0.D0

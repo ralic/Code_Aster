@@ -4,7 +4,7 @@
         IMPLICIT REAL*8 (A-H,O-Z)
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/12/2000   AUTEUR CIBHHBC B.CIREE 
+C MODIF ALGORITH  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -105,27 +105,27 @@ C
 C
 C -     RECUPERATION MATERIAU A TEMPD (T)
 C
-        CALL RCVALA (  IMAT,    'ELAS',           3,NOMPAR,VALPAD, 5,
+        CALL RCVALA (  IMAT,' ','ELAS',           3,NOMPAR,VALPAD, 5,
      1                 NOMC(1),  MATERD(1,1),  CERR(1),  BL2 )
         IF ( CERR(3) .NE. 'OK' ) MATERD(3,1) = 0.D0
         IF ( CERR(4) .NE. 'OK' ) MATERD(4,1) = 0.D0
         IF ( CERR(5) .NE. 'OK' ) MATERD(5,1) = 0.D0
-        CALL RCVALA (  IMAT,    'BETON_DOUBLE_DP',3,NOMPAR,VALPAD, 8,
+        CALL RCVALA (  IMAT,' ','BETON_DOUBLE_DP',3,NOMPAR,VALPAD, 8,
      1                 NOMC(6),  MATERD(1,2),  CERR(6),  FB2 )
-        CALL RCVALA (  IMAT,    'BETON_DOUBLE_DP',3,NOMPAR,VALPAD, 1,
+        CALL RCVALA (  IMAT,' ','BETON_DOUBLE_DP',3,NOMPAR,VALPAD, 1,
      1                 NOMC(14), MATERD(9,2),  CERR(14), BL2 )
         IF ( CERR(14).NE. 'OK' ) MATERD(9,2) = -1.D0
 C
 C -     RECUPERATION MATERIAU A TEMPF (T+DT)
 C
-        CALL RCVALA (  IMAT,    'ELAS',           3,NOMPAR,VALPAF, 5,
+        CALL RCVALA (  IMAT,' ','ELAS',           3,NOMPAR,VALPAF, 5,
      1                 NOMC(1),  MATERF(1,1),  CERR(1),  BL2 )
         IF ( CERR(3) .NE. 'OK' ) MATERF(3,1) = 0.D0
         IF ( CERR(4) .NE. 'OK' ) MATERF(4,1) = 0.D0
         IF ( CERR(5) .NE. 'OK' ) MATERF(5,1) = 0.D0
-        CALL RCVALA (  IMAT,    'BETON_DOUBLE_DP',3,NOMPAR,VALPAF, 8,
+        CALL RCVALA (  IMAT,' ','BETON_DOUBLE_DP',3,NOMPAR,VALPAF, 8,
      1                 NOMC(6),  MATERF(1,2),  CERR(6),  FB2 )
-        CALL RCVALA (  IMAT,    'BETON_DOUBLE_DP',3,NOMPAR,VALPAF, 1,
+        CALL RCVALA (  IMAT,' ','BETON_DOUBLE_DP',3,NOMPAR,VALPAF, 1,
      1                 NOMC(14), MATERF(9,2),  CERR(14), BL2 )
         IF ( CERR(14).NE. 'OK' ) MATERF(9,2) = -1.D0
 C

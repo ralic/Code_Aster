@@ -3,7 +3,7 @@
       CHARACTER*(*) OPTION,NOMTE
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -142,9 +142,9 @@ C     ARRET
         TMOY = 0.D0
       END IF
 
-      CALL RCVALA(ZI(IMATE),PHENOM,0,' ',DFDBID(1),3,NOMRES,VALRES,
+      CALL RCVALA(ZI(IMATE),' ',PHENOM,0,' ',DFDBID(1),3,NOMRES,VALRES,
      &            CODRET,'FM')
-      CALL RCVALA(ZI(IMATE),PHENOM,0,' ',DFDBID(1),1,NOMRES(3),
+      CALL RCVALA(ZI(IMATE),' ',PHENOM,0,' ',DFDBID(1),1,NOMRES(3),
      &            VALRES(3),CODRET(3),'FM')
       IF (CODRET(3).NE.'OK') VALRES(3) = 1.0D-6
       M = VALRES(1)
@@ -209,7 +209,7 @@ C           --------------------------------------------------------
    50     CONTINUE
 
           TMOY = TMOY/VKP
-          CALL RCVALA(ZI(IMATE),PHENOM,1,'TEMP',TMOY,1,NOMRES(4),
+          CALL RCVALA(ZI(IMATE),' ',PHENOM,1,'TEMP',TMOY,1,NOMRES(4),
      &                VALRES(4),CODRET(4),'FM')
           SREF = VALRES(4)
 
@@ -273,7 +273,7 @@ C           --------------------------------------------------------
    90     CONTINUE
 
           TMOY = TMOY/VKP
-          CALL RCVALA(ZI(IMATE),PHENOM,1,'TEMP',TMOY,1,NOMRES(4),
+          CALL RCVALA(ZI(IMATE),' ',PHENOM,1,'TEMP',TMOY,1,NOMRES(4),
      &                VALRES(4),CODRET(4),'FM')
           SREF = VALRES(4)
 
@@ -318,7 +318,7 @@ C           --- TEMPERATURE AU PG
               DO 110 INO = 1,NNO
                 TPG = TPG + ZR(ITEMPE+INO-1)*ZR(IVF+KT+INO-1)
   110         CONTINUE
-              CALL RCVALA(ZI(IMATE),PHENOM,1,'TEMP',TPG,1,NOMRES(4),
+              CALL RCVALA(ZI(IMATE),' ',PHENOM,1,'TEMP',TPG,1,NOMRES(4),
      &                    VALRES(4),CODRET(4),'FM')
               SREF = VALRES(4)
               SIGNEW = (SIG1/SREF)*EXP(-EPS1*0.5D0)
@@ -358,7 +358,7 @@ C           --- TEMPERATURE AU PG
               DO 140 INO = 1,NNO
                 TPG = TPG + ZR(ITEMPE+INO-1)*ZR(IVF+KT+INO-1)
   140         CONTINUE
-              CALL RCVALA(ZI(IMATE),PHENOM,1,'TEMP',TPG,1,NOMRES(4),
+              CALL RCVALA(ZI(IMATE),' ',PHENOM,1,'TEMP',TPG,1,NOMRES(4),
      &                    VALRES(4),CODRET(4),'FM')
               SREF = VALRES(4)
               SIG1 = SIG1/SREF

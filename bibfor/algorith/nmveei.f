@@ -3,7 +3,7 @@
      &                   OPTION,SIGP,VIP,DSIDEP)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -103,6 +103,7 @@ C
 C
       INTEGER       ITMAX, I, IER, ITER
       INTEGER       NDT, NVI, NRV, NDI, K, L
+      INTEGER         NBCOMM(NMAT,3)
 C
       REAL*8        TOLER, DELTX, SUMX, DT, SE2
       REAL*8        VIND(NI), MATM(NMAT,2), A(6,6), B(6)
@@ -113,10 +114,10 @@ C
       REAL*8        DRPDB(NP,NB), DRPDP(NP,NP), DRBDE(NB,NB)
       REAL*8        DRPDE(NP,NB), EPTHM(NB)
       REAL*8        DBETA(NB), DP(NP), DSEDB(NB), DSEDB2(NB,NB), SE
-      REAL*8        HYDRD , HYDRF , SECHD , SECHF
+      REAL*8        HYDRD , HYDRF , SECHD , SECHF,  PGL(3,3)
 C
       CHARACTER*3   MATCST
-      CHARACTER*16  LOI
+      CHARACTER*16  LOI, CPMONO(5*NMAT+1)
       CHARACTER*11  METING
       CHARACTER*8   MOD, TYPMA
       CHARACTER*7   ETATF(3)
@@ -160,9 +161,10 @@ C
 C-- 1.2. RECUPERATION COEF(TEMP(T))) LOI ELASTO-PLASTIQUE A T ET/OU T+DT
 C        NB DE CMP DIRECTES/CISAILLEMENT + NB VAR. INTERNES
 C-----------------------------------------------------------------------
-      CALL LCMATE ( LOI, MOD, IMATE, NMAT, TM, TP, HYDRD, HYDRF, SECHD,
-     1              SECHF, TYPMA,  BZ, MATM, MATE,
-     2              MATCST, NDT, NDI, NRV, NVI, VIND )
+      CALL LCMATE (COMPOR,MOD, IMATE, NMAT, TM, TP, HYDRD, HYDRF, SECHD,
+     1              SECHF, TYPMA,  BZ, MATM, MATE,MATCST,
+     3               NBCOMM, CPMONO, PGL,
+     2               NDT, NDI, NRV, NVI, VIND )
       IF (NDT.NE.NB.AND.NVI.NE.NI.AND.NRV.NE.NR) GOTO 800
 C
 C-- 1.3. OPERATEUR DE HOOK

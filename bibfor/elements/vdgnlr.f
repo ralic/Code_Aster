@@ -1,5 +1,5 @@
       SUBROUTINE VDGNLR ( OPTION , NOMTE )
-C MODIF ELEMENTS  DATE 06/05/2003   AUTEUR CIBHHPD D.NUNEZ 
+C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -703,7 +703,7 @@ C
                VALPAR = TPC
                NBV = 1
                NOMRES  = 'ALPHA'
-               CALL RCVALA ( ZI(JMATE) , PHENOM , NBPAR , NOMPAR,
+               CALL RCVALA(ZI(JMATE),' ' , PHENOM , NBPAR , NOMPAR,
      +             VALPAR,  NBV , NOMRES , VALRES , CODRET , '  ' )
                IF (CODRET.NE.'OK') VALRES = ZERO
                ALPHA = VALRES

@@ -1,6 +1,6 @@
       SUBROUTINE TE0431(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -165,7 +165,7 @@ C - RIGI_MECA : ON DONNE LA RIGIDITE ELASTIQUE
 
         IF (OPTION.EQ.'RIGI_MECA') THEN
           NOMRES(1) = 'E'
-          CALL RCVALA (ZI(IMATE),'ELAS',0,' ',0.D0,1,
+          CALL RCVALA(ZI(IMATE),' ','ELAS',0,' ',0.D0,1,
      &                 NOMRES,VALRES,CODRES, 'FM')
           RIG=VALRES(1)
         ENDIF
@@ -190,7 +190,7 @@ C - CHAR_MECA_TEMP_R : SIG = SIGMA THERMIQUE
 
           NOMRES(1) = 'ALPHA'
           NOMRES(2) = 'E'
-          CALL RCVALA (ZI(IMATE),'ELAS',1,'TEMP',TEMPM,2,
+          CALL RCVALA(ZI(IMATE),' ','ELAS',1,'TEMP',TEMPM,2,
      &                 NOMRES,VALRES,CODRES, 'FM')
      
           SIG=VALRES(1)*VALRES(2)*(TEMPM-ZR(ITREF))
@@ -251,7 +251,7 @@ C     &                'ALPHA',ALPHAP,CODRES,' ')
 C          IF (CODRES.NE.'OK') ALPHAP = 0.D0
 C          
 C          NOMRES(1) = 'E'
-C          CALL RCVALA (ZI(IMATE),'ELAS',0,' ',0.D0,1,
+C          CALL RCVALA(ZI(IMATE),' ','ELAS',0,' ',0.D0,1,
 C     &                 NOMRES,VALRES,CODRET, 'FM')
 
 C          write (6,*) 'OPTION = ',OPTION,

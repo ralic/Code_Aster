@@ -1,13 +1,13 @@
-      SUBROUTINE GERPAS( LOI,     MOD,    IMAT, MATCST,
-     &                   N,     NMAT,  Y,
+      SUBROUTINE GERPAS( COMP,    MOD,    IMAT, MATCST,NBCOMM,
+     &                   CPMONO, N,     NMAT,  Y,
      &                   PAS,     EPS,    TOLY,  COTHE, COEFF,
-     &                   DCOTHE,  DCOEFF, E,     NU,    ALPHA,
+     &                   DCOTHE,  DCOEFF, E,     NU,    ALPHA,PGL,
      &                   SIGI,    EPSD,   DETOT, TPERD, DTPER,
      &                   TPEREF, BZ, X )
       IMPLICIT REAL*8 (A-H,O-Z)
 C     ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/01/98   AUTEUR CIBHHLB L.BOURHRARA 
+C MODIF ALGORITH  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -61,10 +61,10 @@ C                   'VRAI' ON UTILISE LE MODELE POLY PILVIN
 C                   'FAUX' ON UTILISE LE MODELE POLY B.Z.
 C     OUT X       :  INSTANT COURANT
 C     ----------------------------------------------------------------
-      CHARACTER*16 LOI
+      CHARACTER*16 LOI,COMP(*),CPMONO(5*NMAT+1)
       CHARACTER*8  MOD
       PARAMETER (NF=1688,N3F=3*NF)
-      INTEGER      IMAT
+      INTEGER      IMAT,NBCOMM(NMAT,3)
       CHARACTER*3  MATCST
       LOGICAL BZ
       REAL*8 E, NU, ALPHA
@@ -73,7 +73,7 @@ C     ----------------------------------------------------------------
       REAL*8 Y(NF)
       REAL*8 COTHE(3),DCOTHE(3)
       REAL*8 COEFF(NMAT),DCOEFF(NMAT)
-      REAL*8 SIGI(6),EPSD(6),DETOT(6)
+      REAL*8 SIGI(6),EPSD(6),DETOT(6),PGL(3,3)
       REAL*8 WK(N3F),YMFS(NF)
       REAL*8 MAXOUT
       REAL*8 MAXDOM
@@ -81,6 +81,7 @@ C     ----------------------------------------------------------------
 C
 C
       DMG1=0.0D0
+      LOI=COMP(1)
 C
       MAXOUT=MAXDOM-(EPS)
       NE=0
@@ -104,8 +105,8 @@ C
    50 CONTINUE
       XR=X
    60 CONTINUE
-      CALL RK21CO(LOI,MOD,IMAT,MATCST,
-     &            N,NMAT,Y,KPOK,WK(NE+1),WK(NA+1),H,
+      CALL RK21CO(COMP,MOD,IMAT,MATCST,NBCOMM,CPMONO,
+     &            N,NMAT,Y,KPOK,WK(NE+1),WK(NA+1),H,PGL,
      &            COTHE,COEFF,DCOTHE,DCOEFF,E,NU,ALPHA,X,PAS,
      &            SIGI,EPSD,DETOT,TPERD,DTPER,TPEREF,BZ)
       W=ABS(WK(1))/YMFS(1)

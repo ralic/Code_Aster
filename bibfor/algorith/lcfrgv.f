@@ -5,7 +5,7 @@
 
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/01/2003   AUTEUR GJBHHEL E.LORENTZ 
+C MODIF ALGORITH  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -86,9 +86,12 @@ C -- LECTURE DES CARACTERISTIQUES MATERIAU
       NOM(4) = 'D_SIGM_EPSI'
       NOM(5) = 'LONG_CARA'
 
-      CALL RCVALA(IMATE,'ELAS'     ,0,' ',0.D0,2,NOM(1),VAL(1),RET,'F ')
-      CALL RCVALA(IMATE,'ECRO_LINE',0,' ',0.D0,2,NOM(3),VAL(3),RET,'F ')
-      CALL RCVALA(IMATE,'NON_LOCAL',0,' ',0.D0,1,NOM(5),VAL(5),RET,'F ')
+      CALL RCVALA(IMATE,' ','ELAS'     ,0,' ',0.D0,
+     &             2,NOM(1),VAL(1),RET,'F ')
+      CALL RCVALA(IMATE,' ','ECRO_LINE',0,' ',0.D0,
+     &             2,NOM(3),VAL(3),RET,'F ')
+      CALL RCVALA(IMATE,' ','NON_LOCAL',0,' ',0.D0,
+     &             1,NOM(5),VAL(5),RET,'F ')
 
       NU     = VAL(2)
       LAMBDA = VAL(1)*VAL(2) / (1-2*VAL(2)) / (1+VAL(2))

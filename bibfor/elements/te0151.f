@@ -19,7 +19,7 @@ C ======================================================================
       IMPLICIT  REAL*8  (A-H,O-Z)
       CHARACTER*(*)       OPTION , NOMTE
 C     ------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 06/05/2003   AUTEUR CIBHHPD D.NUNEZ 
+C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
 C TOLE CRP_6
 C     CALCUL
 C       - ENERGIE DE DEFORMATION
@@ -84,12 +84,12 @@ C
       ENDIF
 C
       BL2 = '  '
-      CALL RCVALA ( ZI(LMATER),'ELAS',NBPAR,NOMPAR,VALPAR,2,
+      CALL RCVALA(ZI(LMATER),' ','ELAS',NBPAR,NOMPAR,VALPAR,2,
      +              NOMRES,VALRES,CODRES,'FM')
-      CALL RCVALA ( ZI(LMATER),'ELAS',NBPAR,NOMPAR,VALPAR,1,
+      CALL RCVALA(ZI(LMATER),' ','ELAS',NBPAR,NOMPAR,VALPAR,1,
      +              NOMRES(3),VALRES(3),CODRES(3),BL2)
       IF ( CODRES(3) .NE. 'OK' ) VALRES(3) = ZERO
-      CALL RCVALA ( ZI(LMATER),'ELAS',NBPAR,NOMPAR,VALPAR,1,
+      CALL RCVALA(ZI(LMATER),' ','ELAS',NBPAR,NOMPAR,VALPAR,1,
      +              NOMRES(4),VALRES(4),CODRES(4),'FM')
 C
       E      = VALRES(1)

@@ -1,7 +1,7 @@
       SUBROUTINE TE0140(OPTION,NOMTE)
       IMPLICIT REAL*8 (A-H,O-Z)
 C     ------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 06/05/2003   AUTEUR CIBHHPD D.NUNEZ 
+C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -91,7 +91,7 @@ C     --- RECUPERATION DES CARACTERISTIQUES MATERIAUX ---
         NOMPAR = 'TEMP'
         VALPAR = ZR(ITEMPE)
       END IF
-      CALL RCVALA(ZI(IMATE),OPTI,NBPAR,NOMPAR,VALPAR,NBRES,NOMRES,
+      CALL RCVALA(ZI(IMATE),' ',OPTI,NBPAR,NOMPAR,VALPAR,NBRES,NOMRES,
      &            VALRES,CODRES,'FM')
       E = VALRES(1)
       XNU = VALRES(2)

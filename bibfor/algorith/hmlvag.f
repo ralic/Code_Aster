@@ -8,7 +8,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -138,8 +138,8 @@ C =====================================================================
 C --- RECUPERATION DES COEFFICIENTS MECANIQUES ------------------------
 C =====================================================================
       IF (YAMEC.EQ.1) THEN
-          CALL RCVALA(IMATE,'ELAS',0,' ',0.D0,NELAS,NCRA1,ELAS,CODRET,
-     &                'FM')
+          CALL RCVALA(IMATE,' ','ELAS',0,' ',0.D0,NELAS,NCRA1,ELAS,
+     &                CODRET,'FM')
           YOUNG  = ELAS(1)
           NU     = ELAS(2)
           ALPHA0 = ELAS(4)

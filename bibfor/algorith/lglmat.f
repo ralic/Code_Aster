@@ -8,7 +8,7 @@ C
         CHARACTER*8  MOD
 C =================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -100,9 +100,9 @@ C      NOMC(17) = 'SIGMA_P2 '
 C =================================================================
 C --- RECUPERATION DES PARAMETRES MATERIAU ------------------------
 C =================================================================
-      CALL RCVALA ( IMAT, 'ELAS', 1, 'TEMP', TEMPD, 3,
+      CALL RCVALA(IMAT,' ', 'ELAS', 1, 'TEMP', TEMPD, 3,
      +               NOMC(1),  MATERD(1,1),  CERR(1), ' ')
-      CALL RCVALA ( IMAT, 'LAIGLE', 1, 'TEMP', TEMPD, 14,
+      CALL RCVALA(IMAT,' ', 'LAIGLE', 1, 'TEMP', TEMPD, 14,
      +               NOMC(4),  MATERD(1,2),  CERR(4), ' ' )
 C =================================================================
 C - CALCUL DES MODULES DE CISAILLEMENT ET DE DEFORMATION VOLUMIQUE-

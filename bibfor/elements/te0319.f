@@ -1,6 +1,6 @@
       SUBROUTINE TE0319(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -67,7 +67,7 @@ C FIN ------------------------------------------------------------------
 
       IF (PHENOM.EQ.'THER') THEN
         NOMRES(1) = 'LAMBDA'
-        CALL RCVALA(ZI(IMATE),PHENOM,1,'INST',ZR(ITEMPS),1,NOMRES,
+        CALL RCVALA(ZI(IMATE),' ',PHENOM,1,'INST',ZR(ITEMPS),1,NOMRES,
      &              VALRES,CODRET,'FM')
         LAMBDA = VALRES(1)
         ANISO = .FALSE.
@@ -75,7 +75,7 @@ C FIN ------------------------------------------------------------------
         NOMRES(1) = 'LAMBDA_L'
         NOMRES(2) = 'LAMBDA_T'
         NOMRES(3) = 'LAMBDA_N'
-        CALL RCVALA(ZI(IMATE),PHENOM,1,'INST',ZR(ITEMPS),3,NOMRES,
+        CALL RCVALA(ZI(IMATE),' ',PHENOM,1,'INST',ZR(ITEMPS),3,NOMRES,
      &              VALRES,CODRET,'FM')
         LAMBOR(1) = VALRES(1)
         LAMBOR(2) = VALRES(2)
@@ -142,8 +142,8 @@ C     CALCUL DU GRADIENT DE TEMPERATURE AUX POINTS DE GAUSS
    20   CONTINUE
 
         IF (PHENOM.EQ.'THER_NL') THEN
-          CALL RCVALA(ZI(IMATE),PHENOM,1,'TEMP',TPG,1,'LAMBDA',LAMBDA,
-     &                CODRET,'FM')
+          CALL RCVALA(ZI(IMATE),' ',PHENOM,1,'TEMP',TPG,1,'LAMBDA',
+     &                LAMBDA,CODRET,'FM')
         END IF
 
         IF (.NOT.ANISO) THEN

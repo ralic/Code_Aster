@@ -1,6 +1,6 @@
       SUBROUTINE  D1MACP(MATER,TEMPE,INSTAN,REPERE,D1)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 06/03/2002   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -37,7 +37,7 @@ C
 C
 C.========================= DEBUT DES DECLARATIONS ====================
 C -----  ARGUMENTS
-           REAL*8       REPERE(7), D1(4,1), INSTAN
+           REAL*8       REPERE(7), D1(4,*), INSTAN
 C -----  VARIABLES LOCALES
            PARAMETER (NBRES = 7)
 C
@@ -84,8 +84,8 @@ C
 C ----   INTERPOLATION DES COEFFICIENTS EN FONCTION DE LA TEMPERATURE
 C ----   ET DU TEMPS
 C        -----------
-          CALL RCVALA(MATER,PHENOM,2,NOMPAR,VALPAR,NBV,NOMRES,VALRES,
-     +                CODRET, 'FM' )
+          CALL RCVALA(MATER,' ',PHENOM,2,NOMPAR,VALPAR,NBV,NOMRES,
+     +                VALRES,CODRET, 'FM' )
 C
           E  = VALRES(1)
           NU = VALRES(2)
@@ -112,8 +112,8 @@ C
 C ----   INTERPOLATION DES COEFFICIENTS EN FONCTION DE LA TEMPERATURE
 C ----   ET DU TEMPS
 C        -----------
-          CALL RCVALA(MATER,PHENOM,2,NOMPAR,VALPAR,NBV,NOMRES,VALRES,
-     +                CODRET, 'FM' )
+          CALL RCVALA(MATER,' ',PHENOM,2,NOMPAR,VALPAR,NBV,NOMRES,
+     +                VALRES,CODRET, 'FM' )
 C
           E1    = VALRES(1)
           E2    = VALRES(2)
@@ -161,8 +161,8 @@ C
 C ----   INTERPOLATION DES COEFFICIENTS EN FONCTION DE LA TEMPERATURE
 C ----   ET DU TEMPS
 C        -----------
-          CALL RCVALA(MATER,PHENOM,2,NOMPAR,VALPAR,NBV,NOMRES,VALRES,
-     +                CODRET, 'FM' )
+          CALL RCVALA(MATER,' ',PHENOM,2,NOMPAR,VALPAR,NBV,NOMRES,
+     +               VALRES, CODRET, 'FM' )
 C
           E     = VALRES(1)
           NU    = VALRES(2)

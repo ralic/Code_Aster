@@ -7,7 +7,7 @@
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -163,7 +163,7 @@ C **********************************************************************
 C   RECUPERATION DES COEFFICIENTS 
 C
 
-      CALL RCVALA(IMATE,'THM_DIFFU',1,'ABSC',P1,
+      CALL RCVALA(IMATE,' ','THM_DIFFU',1,'ABSC',P1,
      &            NHOM,NCRA5,HOM,CODRET,'FM')
       R      =HOM(1)
       PESA(1)=HOM(5)
@@ -172,7 +172,7 @@ C
       IF (((THMC.EQ.'LIQU_VAPE_GAZ').OR.(THMC.EQ.'LIQU_GAZ')).OR.
      &    (THMC.EQ.'LIQU_GAZ_ATM')) THEN
           IF (HYDR.EQ.'HYDR_UTIL') THEN
-             CALL RCVALA(IMATE,'THM_DIFFU',1,'PCAP',P1,NSAT,
+             CALL RCVALA(IMATE,' ','THM_DIFFU',1,'PCAP',P1,NSAT,
      >                   NCRA6,SATUR,CODRET,'FM')
              SAT=SATUR(1)
              DSATP1=SATUR(2)             
@@ -197,18 +197,18 @@ C
       VALPAR(4)=P2
 C
       IF (HYDR.EQ.'HYDR_UTIL') THEN
-          CALL RCVALA(IMATE,'THM_DIFFU',NPAR,NOMPAR,VALPAR,
+          CALL RCVALA(IMATE,' ','THM_DIFFU',NPAR,NOMPAR,VALPAR,
      &             NCONU,NCRA4,COND,CODRET,'FM')
-          CALL RCVALA(IMATE,'THM_LIQU',NPAR,NOMPAR,VALPAR,
+          CALL RCVALA(IMATE,' ','THM_LIQU',NPAR,NOMPAR,VALPAR,
      &             2,NCRA1(7),COND(12),CODRET,'FM')
-          CALL RCVALA(IMATE,'THM_GAZ',NPAR,NOMPAR,VALPAR,
+          CALL RCVALA(IMATE,' ','THM_GAZ',NPAR,NOMPAR,VALPAR,
      &             2,NCRA2(5),COND(14),CODRET,'FM')
       ELSE
           CALL PERMEA(IMATE,HYDR,PHI,T,SAT,NCON,COND)
       ENDIF
       
       IF (THMC.EQ.'LIQU_SATU') THEN
-         CALL RCVALA(IMATE,'THM_LIQU',1,'TEMP',T,NLIQ,NCRA1,
+         CALL RCVALA(IMATE,' ','THM_LIQU',1,'TEMP',T,NLIQ,NCRA1,
      &               LIQ,CODRET,'FM')
          CLIQ=LIQ(2)
          ALPLIQ=LIQ(3)
@@ -218,7 +218,7 @@ C
          DKREL=0.D0
       ENDIF
       IF (THMC.EQ.'LIQU_SATU_GAT') THEN
-         CALL RCVALA(IMATE,'THM_LIQU',1,'TEMP',T,NLIQ,NCRA1,
+         CALL RCVALA(IMATE,' ','THM_LIQU',1,'TEMP',T,NLIQ,NCRA1,
      &               LIQ,CODRET,'FM')
          CLIQ=LIQ(2)
          ALPLIQ=LIQ(3)
@@ -226,8 +226,8 @@ C
          DVISCO=LIQ(6)
          KREL=1.D0
          DKREL=0.D0
-            CALL RCVALA(IMATE,'THM_AIR_DISS',0,' ',0.D0,NCOF,BGCR9,
-     &               COFGAT,CODRET,'FM')
+            CALL RCVALA(IMATE,' ','THM_AIR_DISS',0,' ',0.D0,NCOF,
+     &               BGCR9,COFGAT,CODRET,'FM')
             HENRY=COFGAT(1)
 C
 C     CALCUL DE LA COMPRESSIBILITE DU FLUIDE
@@ -235,7 +235,7 @@ C
       COMPW=CLIQ
       IF(COMPW.GT.0.D0) GO TO 10
       IF(SAT.GE.0.999D0) GO TO 10
-      CALL RCVALA(IMATE,'THM_INIT',0,' ',0.D0,NINIG,BGCR3,
+      CALL RCVALA(IMATE,' ','THM_INIT',0,' ',0.D0,NINIG,BGCR3,
      &               INIGAT,CODRET,'FM')
       ATMP = INIGAT(2)
       COMPW=(1.D0-SAT+SAT*HENRY)*ATMP/(ATMP+P1)**2.D0
@@ -244,7 +244,7 @@ C
       ENDIF
 C      
       IF (THMC.EQ.'GAZ') THEN
-         CALL RCVALA(IMATE,'THM_GAZ',1,'TEMP',T,NGAZ,NCRA2,
+         CALL RCVALA(IMATE,' ','THM_GAZ',1,'TEMP',T,NGAZ,NCRA2,
      &               GAZ,CODRET,'FM')
          MAMOLG=GAZ(1)
          VISCO=GAZ(3)
@@ -253,7 +253,7 @@ C
          DKREL=0.D0
       ENDIF
       IF (THMC.EQ.'LIQU_GAZ_ATM') THEN
-         CALL RCVALA(IMATE,'THM_LIQU',1,'TEMP',T,NLIQ,NCRA1,
+         CALL RCVALA(IMATE,' ','THM_LIQU',1,'TEMP',T,NLIQ,NCRA1,
      &               LIQ,CODRET,'FM')
          CLIQ=LIQ(2)
          ALPLIQ=LIQ(3)
@@ -264,11 +264,11 @@ C
       ENDIF
 C
       IF ((THMC.EQ.'LIQU_VAPE_GAZ').OR.(THMC.EQ.'LIQU_GAZ')) THEN
-         CALL RCVALA(IMATE,'THM_LIQU',1,'TEMP',T,NLIQ,NCRA1,
+         CALL RCVALA(IMATE,' ','THM_LIQU',1,'TEMP',T,NLIQ,NCRA1,
      &               LIQ,CODRET,'FM')
-         CALL RCVALA(IMATE,'THM_VAPE_GAZ',1,'TEMP',T,NVAP,NCRA3,
+         CALL RCVALA(IMATE,' ','THM_VAPE_GAZ',1,'TEMP',T,NVAP,NCRA3,
      &               VAP,CODRET,'FM')
-         CALL RCVALA(IMATE,'THM_GAZ',1,'TEMP',T,NGAZ,NCRA2,
+         CALL RCVALA(IMATE,' ','THM_GAZ',1,'TEMP',T,NGAZ,NCRA2,
      &               GAZ,CODRET,'FM')
          CLIQ=LIQ(2)
          ALPLIQ=LIQ(3)
@@ -299,11 +299,11 @@ C
 C
       IF ((THMC.EQ.'LIQU_NSAT_GAT')) THEN
 C
-         CALL RCVALA(IMATE,'THM_LIQU',1,'TEMP',T,NLIQ,NCRA1,
+         CALL RCVALA(IMATE,' ','THM_LIQU',1,'TEMP',T,NLIQ,NCRA1,
      &               LIQ,CODRET,'FM')
-         CALL RCVALA(IMATE,'THM_VAPE_GAZ',1,'TEMP',T,NVAP,NCRA3,
+         CALL RCVALA(IMATE,' ','THM_VAPE_GAZ',1,'TEMP',T,NVAP,NCRA3,
      &               VAP,CODRET,'FM')
-         CALL RCVALA(IMATE,'THM_GAZ',1,'TEMP',T,NGAZ,NCRA2,
+         CALL RCVALA(IMATE,' ','THM_GAZ',1,'TEMP',T,NGAZ,NCRA2,
      &               GAZ,CODRET,'FM')
          CLIQ=LIQ(2)
          ALPLIQ=LIQ(3)
@@ -313,25 +313,25 @@ C
          MAMOLG=GAZ(1)
          TLANA=GAZ(5)
          MAMOLV=VAP(1)
-         CALL RCVALA(IMATE,'THM_DIFFU',NPAR,NOMPAR,VALPAR,
+         CALL RCVALA(IMATE,' ','THM_DIFFU',NPAR,NOMPAR,VALPAR,
      &             NCONU,NCRA4,COND,CODRET,'FM')
          KREL=COND(2)
          DKREL=COND(3)*(G1F-G2)
-            CALL RCVALA(IMATE,'THM_AIR_DISS',0,' ',0.D0,NCOF,BGCR9,
-     &               COFGAT,CODRET,'FM')
+            CALL RCVALA(IMATE,' ','THM_AIR_DISS',0,' ',0.D0,NCOF,
+     &               BGCR9,COFGAT,CODRET,'FM')
             HENRY=COFGAT(1)
-            CALL RCVALA(IMATE,'THM_INIT',0,' ',0.D0,NINIG,BGCR3,
+            CALL RCVALA(IMATE,' ','THM_INIT',0,' ',0.D0,NINIG,BGCR3,
      &               INIGAT,CODRET,'FM')
             ATMP = INIGAT(2)
-          CALL RCVALA(IMATE,'THM_DIFFU',1,'PSIG',T,NDIFF,
+          CALL RCVALA(IMATE,' ','THM_DIFFU',1,'PSIG',T,NDIFF,
      &            BGCR6,VDIFF,CODRET,'FM')
          SIGT =VDIFF(1)
          DSIGT=VDIFF(2)
-         CALL RCVALA(IMATE,'THM_DIFFU',NPAR,NOMPAR,VALPAR,NDIFF,
+         CALL RCVALA(IMATE,' ','THM_DIFFU',NPAR,NOMPAR,VALPAR,NDIFF,
      &            BGCR6,VDIFF,CODRET,'FM')
          KINTG=VDIFF(3)
          HFG=VDIFF(4)
-         CALL RCVALA(IMATE,'THM_DIFFU',1,'PSIG',T0,NDIFF,
+         CALL RCVALA(IMATE,' ','THM_DIFFU',1,'PSIG',T0,NDIFF,
      &            BGCR6,VDIFF,CODRET,'FM')
          SIGR =VDIFF(1)
          LAMBD2(1)=KINTG*COND(4)/GAZ(3)

@@ -1,7 +1,7 @@
       SUBROUTINE TUMASS(NOMTE,NBRDDL,NVEC,TNVEC,MASS1,MASS,
      &                  PASS,KTEMP)
       IMPLICIT NONE
-C MODIF ELEMENTS  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
+C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -162,8 +162,8 @@ C          ------------------------------------------------------------
 C ======   OPTION MASS_MECA    =======
 
       NOMRES(1) = 'RHO'
-      CALL RCVALA(ZI(IMATE),'ELAS',NBPAR,NOMPAR,VALPAR,1,NOMRES,VALRES,
-     &            CODRET,'FM')
+      CALL RCVALA(ZI(IMATE),' ','ELAS',NBPAR,NOMPAR,VALPAR,1,NOMRES,
+     &            VALRES,CODRET,'FM')
       RHO = VALRES(1)
       CALL JEVECH('PMATUUR','E',IMASS)
       DO 70 I = 1,NBRDDL

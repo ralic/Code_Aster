@@ -3,7 +3,7 @@
       CHARACTER*(*)       OPTION , NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
+C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -96,7 +96,7 @@ CJMP            EP2   =  ZR(LSECR+12)
          ENDIF
         CALL JEVECH ( 'PABSCUR', 'L', LABSC )
         ABSMOY = ( ZR(LABSC-1+1) + ZR(LABSC-1+2) ) /2.D0
-        CALL RCVALA ( ZI(LMATER),'ELAS_FLUI',1,'ABSC',ABSMOY,NBREF,
+        CALL RCVALA(ZI(LMATER),' ','ELAS_FLUI',1,'ABSC',ABSMOY,NBREF,
      +                                      NOMREF,VALREF,CODREF,'FM')
         E     = VALREF(1)
         NU   = VALREF(2)
@@ -114,9 +114,9 @@ CJMP            EP2   =  ZR(LSECR+12)
         CALL RHOEQU(RHO,RHOS,RHOFI,RHOFE,CM,PHII,PHIE)
 C
       ELSE
-         CALL RCVALA ( ZI(LMATER),'ELAS',NBPAR,NOMPAR,VALPAR,
+         CALL RCVALA(ZI(LMATER),' ','ELAS',NBPAR,NOMPAR,VALPAR,
      +                                2,NOMRES,VALRES,CODRES,'FM')
-         CALL RCVALA ( ZI(LMATER),'ELAS',NBPAR,NOMPAR,VALPAR,
+         CALL RCVALA(ZI(LMATER),' ','ELAS',NBPAR,NOMPAR,VALPAR,
      +                         2,NOMRES(3),VALRES(3),CODRES(3),'  ')
          IF ( CODRES(3) .NE. 'OK' ) VALRES(3) = ZERO
          IF ( CODRES(4) .NE. 'OK' ) VALRES(4) = ZERO

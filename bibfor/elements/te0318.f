@@ -1,6 +1,6 @@
       SUBROUTINE TE0318 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -69,14 +69,14 @@ C
 C
       IF ( PHENOM .EQ. 'THER') THEN
          NOMRES(1) = 'LAMBDA'
-         CALL RCVALA ( ZI(IMATE), PHENOM, 1, 'INST', ZR(ITEMP),
+         CALL RCVALA(ZI(IMATE),' ', PHENOM, 1, 'INST', ZR(ITEMP),
      &                            1, NOMRES, VALRES, CODRET, 'FM' )
          LAMBDA = VALRES(1)
          ANISO  = .FALSE.
       ELSEIF ( PHENOM .EQ. 'THER_ORTH') THEN
          NOMRES(1) = 'LAMBDA_L'
          NOMRES(2) = 'LAMBDA_T'
-         CALL RCVALA ( ZI(IMATE), PHENOM, 1, 'INST', ZR(ITEMP),
+         CALL RCVALA(ZI(IMATE),' ', PHENOM, 1, 'INST', ZR(ITEMP),
      &                            2, NOMRES, VALRES, CODRET, 'FM' )
          LAMBOR(1) = VALRES(1)
          LAMBOR(2) = VALRES(2)
@@ -137,7 +137,7 @@ C
  110    CONTINUE
 C
         IF ( PHENOM .EQ. 'THER_NL') THEN
-          CALL RCVALA ( ZI(IMATE), PHENOM, 1, 'TEMP', TPG,
+          CALL RCVALA(ZI(IMATE),' ', PHENOM, 1, 'TEMP', TPG,
      &                             1, 'LAMBDA', LAMBDA, CODRET, 'FM' )
         ENDIF
 C

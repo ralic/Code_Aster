@@ -2,7 +2,7 @@
       IMPLICIT  NONE
       CHARACTER*16        OPTION, NOMTE
 C     ------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 20/04/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -325,7 +325,7 @@ C RECALCUL DE L'EPAISSEUR
             CALL CODENT(ICOU,'G',NUM)
             CALL CODENT(1,'G',VAL)
             NOMRES = 'C'//NUM//'_V'//VAL
-            CALL RCVALA(ZI(JMATE),'ELAS_COQMU',0,' ',R8BID,
+            CALL RCVALA(ZI(JMATE),' ','ELAS_COQMU',0,' ',R8BID,
      &         1,NOMRES,EPI,CODRET,' ')
             IF (CODRET.EQ.'OK') THEN
                 EPTOT=EPTOT+EPI

@@ -1,10 +1,10 @@
-      SUBROUTINE RCEXIS ( IMAT, PHENOM, NOMRES, CODRET )
+      SUBROUTINE RCEXIS ( JMAT, PHENOM, NOMRES, CODRET )
       IMPLICIT NONE
-      INTEGER            IMAT
+      INTEGER            IMAT,JMAT
       CHARACTER*2        CODRET
       CHARACTER*(*)      PHENOM, NOMRES
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 02/06/2003   AUTEUR G8BHHXD X.DESROCHES 
+C MODIF MODELISA  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -63,7 +63,7 @@ C     --- FIN DECLARATIONS NORMALISEES JEVEUX --------------------------
 C     ------------------------------------------------------------------
 C --- PARAMETER ASSOCIE AU MATERIAU CODE
 C
-      INTEGER       ICOMP, IPI, NBR, NBC, NBF, IVALK,IR, IK
+      INTEGER       ICOMP, IPI, NBR, NBC, NBF, IVALK,IR, IK,NBMAT
       CHARACTER*10  NOMPHE
 C DEB ------------------------------------------------------------------
 C
@@ -71,6 +71,11 @@ C
       NOMPHE = PHENOM
       CODRET = 'NO'
 
+
+      NBMAT=ZI(JMAT)
+      CALL ASSERT(NBMAT.EQ.1)
+      IMAT = JMAT+ZI(JMAT+NBMAT+1)
+      
       DO 20 ICOMP = 1 , ZI(IMAT+1)
         IF ( NOMPHE .EQ. ZK16(ZI(IMAT)+ICOMP-1)(1:10) ) THEN
           IPI = ZI(IMAT+2+ICOMP-1)

@@ -2,7 +2,7 @@
      &                   INSTAM,INSTAP,TM,TP,TREF,DEPS,SIGM,PCRM,
      &                   OPTION,SIGP,PCRP,DSIDEP)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH DATE 26/09/2003 AUTEUR DURAND C.DURAND
+C MODIF ALGORITH  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -131,32 +131,32 @@ C
       VALPAM(1) = TM
 C
       IF (COMPOR(1)(1:9) .EQ. 'CAM_CLAY ' ) THEN
-         CALL RCVALA ( IMATE,'ELAS',1,NOMPAR,VALPAM,1,
+         CALL RCVALA(IMATE,' ','ELAS',1,NOMPAR,VALPAM,1,
      +                 NOMRES(1),VALRES(1),CODRET(1), FB2 )
          E  = VALRES(1)
-         CALL RCVALA ( IMATE,'ELAS',2,NOMPAR,VALPAM,1,
+         CALL RCVALA(IMATE,' ','ELAS',2,NOMPAR,VALPAM,1,
      +                 NOMRES(2),VALRES(2),CODRET(2), FB2 )
          NU = VALRES(2)
-         CALL RCVALA ( IMATE,'ELAS',3,NOMPAR,VALPAM,1,
+         CALL RCVALA(IMATE,' ','ELAS',3,NOMPAR,VALPAM,1,
      +                 NOMRES(3),VALRES(3),CODRET(3), BL2 )
          IF ( CODRET(3) .NE. 'OK' ) VALRES(3) = 0.D0
          ALPHA = VALRES(3)
-         CALL RCVALA ( IMATE,'CAM_CLAY ',6,NOMPAR,VALPAM,1,
+         CALL RCVALA(IMATE,' ','CAM_CLAY ',6,NOMPAR,VALPAM,1,
      +                 NOMRES(4),VALRES(4),CODRET(4), FB2 )
          PORO = VALRES(4)
-         CALL RCVALA ( IMATE,'CAM_CLAY ',6,NOMPAR,VALPAM,1,
+         CALL RCVALA(IMATE,' ','CAM_CLAY ',6,NOMPAR,VALPAM,1,
      +                 NOMRES(5),VALRES(5),CODRET(5), FB2 )
          LAMBDA = VALRES(5)
-         CALL RCVALA ( IMATE,'CAM_CLAY ',6,NOMPAR,VALPAM,1,
+         CALL RCVALA(IMATE,' ','CAM_CLAY ',6,NOMPAR,VALPAM,1,
      +                 NOMRES(6),VALRES(6),CODRET(6), FB2 )
          KAPA = VALRES(6)
-         CALL RCVALA ( IMATE,'CAM_CLAY ',6,NOMPAR,VALPAM,1,
+         CALL RCVALA(IMATE,' ','CAM_CLAY ',6,NOMPAR,VALPAM,1,
      +                 NOMRES(7),VALRES(7),CODRET(7), FB2 )
          M     = VALRES(7)
-         CALL RCVALA ( IMATE,'CAM_CLAY ',6,NOMPAR,VALPAM,1,
+         CALL RCVALA(IMATE,' ','CAM_CLAY ',6,NOMPAR,VALPAM,1,
      +                 NOMRES(8),VALRES(8),CODRET(8), FB2 )
          PRESCR = VALRES(8)
-         CALL RCVALA ( IMATE,'CAM_CLAY ',6,NOMPAR,VALPAM,1,
+         CALL RCVALA(IMATE,' ','CAM_CLAY ',6,NOMPAR,VALPAM,1,
      +                 NOMRES(9),VALRES(9),CODRET(9), FB2 )
          PA = VALRES(9)
       ENDIF
@@ -165,36 +165,36 @@ C
      &     (COMPOR(1)(1:7) .EQ. 'KIT_THM') .OR.
      &     (COMPOR(1)(1:8) .EQ. 'KIT_THHM')).AND.
      &     (COMPOR(11)(1:9) .EQ. 'CAM_CLAY ')) THEN
-         CALL RCVALA ( IMATE,'ELAS',4,NOMPAR,VALPAM,1,
+         CALL RCVALA(IMATE,' ','ELAS',4,NOMPAR,VALPAM,1,
      +                 NOMRES(1),VALRES(1),CODRET(1), FB2 )
          E  = VALRES(1)
-         CALL RCVALA ( IMATE,'ELAS',4,NOMPAR,VALPAM,1,
+         CALL RCVALA(IMATE,' ','ELAS',4,NOMPAR,VALPAM,1,
      +                 NOMRES(2),VALRES(2),CODRET(2), FB2 )
          NU = VALRES(2)
-         CALL RCVALA ( IMATE,'ELAS',4,NOMPAR,VALPAM,1,
+         CALL RCVALA(IMATE,' ','ELAS',4,NOMPAR,VALPAM,1,
      +                 NOMRES(3),VALRES(3),CODRET(3), BL2 )
          IF ( CODRET(3) .NE. 'OK' ) VALRES(3) = 0.D0
          ALPHA = VALRES(3)
-         CALL RCVALA ( IMATE,'CAM_CLAY ',6,NOMPAR,VALPAM,1,
+         CALL RCVALA(IMATE,' ','CAM_CLAY ',6,NOMPAR,VALPAM,1,
      +                 NOMRES(4),VALRES(4),CODRET(4), FB2 )
          PORO = VALRES(4)
          PORO1 = PORO
-         CALL RCVALA ( IMATE,'CAM_CLAY ',6,NOMPAR,VALPAM,1,
+         CALL RCVALA(IMATE,' ','CAM_CLAY ',6,NOMPAR,VALPAM,1,
      +                 NOMRES(5),VALRES(5),CODRET(5), FB2 )
          LAMBDA = VALRES(5)
-         CALL RCVALA ( IMATE,'CAM_CLAY ',6,NOMPAR,VALPAM,1,
+         CALL RCVALA(IMATE,' ','CAM_CLAY ',6,NOMPAR,VALPAM,1,
      +                 NOMRES(6),VALRES(6),CODRET(6), FB2 )
          KAPA = VALRES(6)
-         CALL RCVALA ( IMATE,'CAM_CLAY ',6,NOMPAR,VALPAM,1,
+         CALL RCVALA(IMATE,' ','CAM_CLAY ',6,NOMPAR,VALPAM,1,
      +                 NOMRES(7),VALRES(7),CODRET(7), FB2 )
          M     = VALRES(7)
-         CALL RCVALA ( IMATE,'CAM_CLAY ',6,NOMPAR,VALPAM,1,
+         CALL RCVALA(IMATE,' ','CAM_CLAY ',6,NOMPAR,VALPAM,1,
      +                 NOMRES(8),VALRES(8),CODRET(8), FB2 )
          PRESCR = VALRES(8)
-         CALL RCVALA ( IMATE,'CAM_CLAY ',6,NOMPAR,VALPAM,1,
+         CALL RCVALA(IMATE,' ','CAM_CLAY ',6,NOMPAR,VALPAM,1,
      +                 NOMRES(9),VALRES(9),CODRET(9), FB2 )
          PA = VALRES(9)
-         CALL RCVALA ( IMATE,'THM_INIT',5,NOMPAR,VALPAM,1,
+         CALL RCVALA(IMATE,' ','THM_INIT',5,NOMPAR,VALPAM,1,
      +                 NOMRES(4),VALRES(4),CODRET(4), FB2 )
          PORO = VALRES(4)
          PORO2 = PORO

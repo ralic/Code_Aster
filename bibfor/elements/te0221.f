@@ -19,7 +19,7 @@ C ======================================================================
       IMPLICIT REAL*8 (A-H,O-Z)
       CHARACTER*16 OPTION,NOMTE
 C ......................................................................
-C MODIF ELEMENTS  DATE 26/01/2004   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
 C    - FONCTION REALISEE:  CALCUL DES MATRICES ELEMENTAIRES
 C                          COQUE 1D
 C                          OPTION : 'RIGI_MECA      '
@@ -142,7 +142,7 @@ C     -- SI LA TEMPERATURE N'EST PAS DONNEE:
 C===============================================================
         TEST = ABS(H*COUR/DEUX)
         IF (TEST.GE.UN) CORREC = ZERO
-        CALL RCVALA(ZI(IMATE),'ELAS',NBPAR,NOMPAR,VALPAR,2,NOMRES,
+        CALL RCVALA(ZI(IMATE),' ','ELAS',NBPAR,NOMPAR,VALPAR,2,NOMRES,
      &              VALRES,CODRET,'FM')
 
         NU = VALRES(2)

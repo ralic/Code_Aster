@@ -1,4 +1,5 @@
-#@ MODIF properties Accas DATE 29/04/2004 AUTEUR d6bhhhh M.ASA
+#@ MODIF properties Accas DATE 29/04/2004 AUTEUR gcbhhhh M.ADMINISTRATEUR
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
 # RESPONSABLE D6BHHHH J-P.LEFEBVRE
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,5 +20,5 @@
 #     IDENTIFICATION DU GESTIONNAIRE DE COMMANDE ACCAS A PARTIR
 #     DE LA VERSION DU CODE_ASTER ASSOCIE
 #----------------------------------------------------------------------
-version = "7.3.0"
+version = "7.3.1"
 date = "29/04/2004"

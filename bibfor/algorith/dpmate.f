@@ -1,7 +1,7 @@
         SUBROUTINE DPMATE ( MOD, IMAT, MATERF, NDT, NDI, NVI, TYPEDP)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/12/2003   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -52,9 +52,9 @@ C ======================================================================
 C --- RECUPERATION DONNEES MATERIAU ELAS -------------------------------
 C ======================================================================
         MATERF(3,1) = 0.0D0
-        CALL RCVALA(IMAT, 'ELAS', 0, ' ', 0.D0,
+        CALL RCVALA(IMAT,' ', 'ELAS', 0, ' ', 0.D0,
      +                            2, NOMC(1), MATERF(1,1), CODRET, 'FM')
-        CALL RCVALA(IMAT, 'ELAS', 0, ' ', 0.D0,
+        CALL RCVALA(IMAT,' ', 'ELAS', 0, ' ', 0.D0,
      +                            1, NOMC(3), MATERF(3,1), CODRET, '  ')
 C ======================================================================
 C --- DEFINITION PARAMETRES MATERIAU DRUCKER ---------------------------
@@ -66,7 +66,7 @@ C ======================================================================
 C --- RECUPERATION MATERIAU SUIVANT LE TYPE D ECROUISSAGE --------------
 C ======================================================================
         TYPED = R8VIDE()
-        CALL RCVALA(IMAT, 'DRUCKER_PRAGER', 0, ' ', 0.D0,
+        CALL RCVALA(IMAT,' ', 'DRUCKER_PRAGER', 0, ' ', 0.D0,
      +                               1, 'TYPE_DP',TYPED, CODRET, ' ')
         IF (TYPED.EQ.1.0D0) THEN
 C ======================================================================
@@ -74,7 +74,7 @@ C --- CAS LINEAIRE -----------------------------------------------------
 C ======================================================================
            TYPEDP = 1
            NOMC(7) = 'H'
-           CALL RCVALA(IMAT, 'DRUCKER_PRAGER', 0, ' ', 0.D0,
+           CALL RCVALA(IMAT,' ', 'DRUCKER_PRAGER', 0, ' ', 0.D0,
      +                            4, NOMC(4), TABTMP(1), CODRET, 'FM')
 C ======================================================================
 C --- POUR DES COMMODITES DE PROGRAMMATION ON DEFINIT LES PARAMETRES ---
@@ -96,7 +96,7 @@ C --- CAS PARABOLIQUE --------------------------------------------------
 C ======================================================================
            TYPEDP = 2
            NOMC(7) = 'SY_ULTM'
-           CALL RCVALA(IMAT, 'DRUCKER_PRAGER', 0, ' ', 0.D0,
+           CALL RCVALA(IMAT,' ', 'DRUCKER_PRAGER', 0, ' ', 0.D0,
      +                            4, NOMC(4), TABTMP(1), CODRET, 'FM')
 C ======================================================================
 C --- POUR DES COMMODITES DE PROGRAMMATION ON DEFINIT LES PARAMETRES ---

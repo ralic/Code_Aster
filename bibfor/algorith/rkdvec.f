@@ -6,7 +6,7 @@
         IMPLICIT REAL*8(A-H,O-Z)
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 27/03/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -133,7 +133,7 @@ C
         VPAR(1) = TEMP
         VPAR(2) = SEDVP
 C
-        CALL RCVALA (IMAT, 'VENDOCHAB', 2,  NOMPAR, VPAR, 1,
+        CALL RCVALA(IMAT,' ', 'VENDOCHAB', 2,  NOMPAR, VPAR, 1,
      1              NOMCOE,  KD,  CERR, 'F ' )
       ELSE
         KD    = COEFT(9)

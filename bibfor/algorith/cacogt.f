@@ -8,7 +8,7 @@
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -176,8 +176,8 @@ C
             NBPAR  = 0
             VALPAR = 0.D0
             NOMPAR = ' '
-             CALL RCVALA ( IMATE,'SURF_ETAT_NSAT',NBPAR,NOMPAR,VALPAR,
-     &              NSATB,BGCR5,VALSAT,CODRET, 'FM' )
+             CALL RCVALA(IMATE,' ','SURF_ETAT_NSAT',NBPAR,NOMPAR,
+     &             VALPAR, NSATB,BGCR5,VALSAT,CODRET, 'FM' )
 
             SRAS    = VALSAT(1)
             SRBS    = VALSAT(2)        
@@ -194,7 +194,7 @@ C
         
 C   CALCUL DES COEFFICIENTS
 C       
-      CALL RCVALA(IMATE,'THM_DIFFU',1,'PCAP',P1,NHOM,
+      CALL RCVALA(IMATE,' ','THM_DIFFU',1,'PCAP',P1,NHOM,
      &            NCRA5,HOM,CODRET,'FM')
       R = HOM(1)
       IF (YATE.EQ.1) CSIGM=HOM(3) 
@@ -211,7 +211,7 @@ C
             NBPAR  = 0
             VALPAR = 0.D0
             NOMPAR = ' '
-             CALL RCVALA ( IMATE,'ELAS_THM',NBPAR,NOMPAR,VALPAR,
+             CALL RCVALA(IMATE,' ','ELAS_THM',NBPAR,NOMPAR,VALPAR,
      &                      NNELA,BGCR1,VALRES,CODRET, 'FM' )
             RHOS   = VALRES(1)
             COMPS  = VALRES(2)        
@@ -238,12 +238,12 @@ C
             NBPAR  = 0
             VALPAR = 0.D0
             NOMPAR = ' '
-             CALL RCVALA ( IMATE,'ELAS_THM',NBPAR,NOMPAR,VALPAR,
+             CALL RCVALA(IMATE,' ','ELAS_THM',NBPAR,NOMPAR,VALPAR,
      &                      2,BGCR1,VALRES,CODRET, 'FM' )
             RHOS   = VALRES(1)
             COMPS  = VALRES(2)
-            CALL RCVALA ( IMATE, 'SURF_ETAT_SATU' ,NBPAR,NOMPAR,VALPAR,
-     &              NSATM,BGCR7,VSATSU,CODRET, 'FM' )        
+            CALL RCVALA(IMATE,' ','SURF_ETAT_SATU' ,NBPAR,NOMPAR,
+     &              VALPAR,NSATM,BGCR7,VSATSU,CODRET, 'FM' )        
             ELOAD   = VSATSU(1)
             EUNLD   = VSATSU(2)
             XN      = VSATSU(3)
@@ -260,7 +260,7 @@ C
             COHES   = VSATSU(14)
             TEN     = VSATSU(15)
 C
-            CALL RCVALA(IMATE,'THM_INIT',0,' ',0.D0,NINIG,BGCR3,
+            CALL RCVALA(IMATE,' ','THM_INIT',0,' ',0.D0,NINIG,BGCR3,
      &               INIGAT,CODRET,'FM')
             ATMP = INIGAT(2)
             CALL PRCIPE(CONGEP,DIMCON,S1,S2,S3,NDIM)
@@ -363,11 +363,11 @@ C
       NBPAR  = 0
       VALPAR = 0.D0
       NOMPAR = ' '
-      CALL RCVALA ( IMATE,'ELAS_THM',NBPAR,NOMPAR,VALPAR,
+      CALL RCVALA(IMATE,' ','ELAS_THM',NBPAR,NOMPAR,VALPAR,
      &                      2,BGCR1,VALRES,CODRET, 'FM' )
             RHOS   = VALRES(1)
             COMPS  = VALRES(2)
-      CALL RCVALA ( IMATE,'CAM_CLAY_THM',NBPAR,NOMPAR,VALPAR,
+      CALL RCVALA(IMATE,' ','CAM_CLAY_THM',NBPAR,NOMPAR,VALPAR,
      &              NNPLA,BGCR8,VALPES,CODRET, 'FM' )
 C       
        TKAPA  = VALPES(3)
@@ -402,17 +402,17 @@ C
       RDBBDT=-RDKBDT*COMPS
           ENDIF       
           IF (MECA.EQ.'SURF_ETAT_NSAT')THEN
-            CALL RCVALA(IMATE,'THM_AIR_DISS',0,' ',0.D0,NCOF,BGCR9,
-     &               COFGAT,CODRET,'FM')
+            CALL RCVALA(IMATE,' ','THM_AIR_DISS',0,' ',0.D0,NCOF,
+     &              BGCR9, COFGAT,CODRET,'FM')
             HENRY=COFGAT(1)
-            CALL RCVALA(IMATE,'THM_INIT',0,' ',0.D0,NINIG,BGCR3,
+            CALL RCVALA(IMATE,' ','THM_INIT',0,' ',0.D0,NINIG,BGCR3,
      &               INIGAT,CODRET,'FM')
             ATMP = INIGAT(2)
 C         LIRE MASSE VOLUMISUE ET COMPRESSIBILITE
             NBPAR  = 0
             VALPAR = 0.D0
             NOMPAR = ' '
-             CALL RCVALA ( IMATE,'ELAS_THM',NBPAR,NOMPAR,VALPAR,
+             CALL RCVALA(IMATE,' ','ELAS_THM',NBPAR,NOMPAR,VALPAR,
      &                      2,BGCR1,VALRES,CODRET, 'FM' )
             RHOS   = VALRES(1)
             COMPS  = VALRES(2)
@@ -422,7 +422,7 @@ C
 C   COEFFICIENTS HYDRAULIQUES
 C
       IF (THMC.EQ.'LIQU_SATU') THEN
-         CALL RCVALA(IMATE,'THM_LIQU',1,'TEMP',T,NLIQ,NCRA2,
+         CALL RCVALA(IMATE,' ','THM_LIQU',1,'TEMP',T,NLIQ,NCRA2,
      &               LIQ,CODRET,'FM')
          RHO110=LIQ(1)
          CLIQ=LIQ(2)
@@ -430,16 +430,16 @@ C
          CP11=LIQ(4)
       ENDIF
       IF (THMC.EQ.'LIQU_SATU_GAT') THEN
-         CALL RCVALA(IMATE,'THM_LIQU',1,'TEMP',T,NLIQ,NCRA2,
+         CALL RCVALA(IMATE,' ','THM_LIQU',1,'TEMP',T,NLIQ,NCRA2,
      &               LIQ,CODRET,'FM')
          RHO110=LIQ(1)
          CLIQ=LIQ(2)
          ALPLIQ=LIQ(3)
          CP11=LIQ(4)
-            CALL RCVALA(IMATE,'THM_AIR_DISS',0,' ',0.D0,NCOF,BGCR9,
-     &               COFGAT,CODRET,'FM')
+            CALL RCVALA(IMATE,' ','THM_AIR_DISS',0,' ',0.D0,NCOF,
+     &              BGCR9, COFGAT,CODRET,'FM')
             HENRY=COFGAT(1)
-            CALL RCVALA(IMATE,'THM_INIT',0,' ',0.D0,NINIG,BGCR3,
+            CALL RCVALA(IMATE,' ','THM_INIT',0,' ',0.D0,NINIG,BGCR3,
      &               INIGAT,CODRET,'FM')
             SAT  = INIGAT(1)
             ATMP = INIGAT(2)
@@ -454,7 +454,7 @@ C
 C
       ENDIF
       IF (THMC.EQ.'GAZ') THEN
-         CALL RCVALA(IMATE,'THM_GAZ',1,'TEMP',T,NGAZ,NCRA3,
+         CALL RCVALA(IMATE,' ','THM_GAZ',1,'TEMP',T,NGAZ,NCRA3,
      &               GAZ,CODRET,'FM')
          MAMOLG=GAZ(1)
          CP11=GAZ(2)
@@ -462,11 +462,11 @@ C
       ENDIF
       IF (((THMC.EQ.'LIQU_VAPE_GAZ').OR.(THMC.EQ.'LIQU_GAZ')).
      &     OR.(THMC.EQ.'LIQU_GAZ_ATM')) THEN
-         CALL RCVALA(IMATE,'THM_LIQU',1,'TEMP',T,NLIQ,NCRA2,
+         CALL RCVALA(IMATE,' ','THM_LIQU',1,'TEMP',T,NLIQ,NCRA2,
      &               LIQ,CODRET,'FM')
-         CALL RCVALA(IMATE,'THM_VAPE_GAZ',1,'TEMP',T,NVAP,NCRA4,
+         CALL RCVALA(IMATE,' ','THM_VAPE_GAZ',1,'TEMP',T,NVAP,NCRA4,
      &               VAP,CODRET,'FM')
-         CALL RCVALA(IMATE,'THM_GAZ',1,'TEMP',T,NGAZ,NCRA3,
+         CALL RCVALA(IMATE,' ','THM_GAZ',1,'TEMP',T,NGAZ,NCRA3,
      &               GAZ,CODRET,'FM')
          RHO110=LIQ(1)
          CLIQ=LIQ(2)
@@ -486,7 +486,7 @@ C
             RHO210=MAMOLG*(P20-PVP0)/R/T0
          ENDIF
          IF (HYDR.EQ.'HYDR_UTIL') THEN     
-             CALL RCVALA(IMATE,'THM_DIFFU',1,'PCAP',P1,NSAT,
+             CALL RCVALA(IMATE,' ','THM_DIFFU',1,'PCAP',P1,NSAT,
      &            NCRA6,SATUR,CODRET,'FM')
              SAT=SATUR(1)
              DSATP1=SATUR(2)
@@ -494,7 +494,7 @@ C
              CALL SATURA(HYDR,P1,SAT,DSATP1)
          ENDIF
          IF (HYDR.EQ.'HYDR_UTIL') THEN     
-             CALL RCVALA(IMATE,'THM_DIFFU',1,'PCAP',P1-DP1,NSAT,
+             CALL RCVALA(IMATE,' ','THM_DIFFU',1,'PCAP',P1-DP1,NSAT,
      &            NCRA6,SATUR,CODRET,'FM')
              SATM=SATUR(1)
              DSATP1=SATUR(2)
@@ -504,21 +504,21 @@ C
       ENDIF
 C
         IF (THMC.EQ.'LIQU_NSAT_GAT')THEN
-         CALL RCVALA(IMATE,'THM_LIQU',1,'TEMP',T,NLIQ,NCRA2,
+         CALL RCVALA(IMATE,' ','THM_LIQU',1,'TEMP',T,NLIQ,NCRA2,
      &               LIQ,CODRET,'FM')
-         CALL RCVALA(IMATE,'THM_VAPE_GAZ',1,'TEMP',T,NVAP,NCRA4,
+         CALL RCVALA(IMATE,' ','THM_VAPE_GAZ',1,'TEMP',T,NVAP,NCRA4,
      &               VAP,CODRET,'FM')
-         CALL RCVALA(IMATE,'THM_GAZ',1,'TEMP',T,NGAZ,NCRA3,
+         CALL RCVALA(IMATE,' ','THM_GAZ',1,'TEMP',T,NGAZ,NCRA3,
      &               GAZ,CODRET,'FM')
 
          RHO110=LIQ(1)
          CLIQ=LIQ(2)
          ALPLIQ=LIQ(3)
          CP11=LIQ(4)
-         CALL RCVALA(IMATE,'THM_AIR_DISS',0,' ',0.D0,NCOF,BGCR9,
+         CALL RCVALA(IMATE,' ','THM_AIR_DISS',0,' ',0.D0,NCOF,BGCR9,
      &               COFGAT,CODRET,'FM')
             HENRY=COFGAT(1)
-            CALL RCVALA(IMATE,'THM_INIT',0,' ',0.D0,NINIG,BGCR3,
+            CALL RCVALA(IMATE,' ','THM_INIT',0,' ',0.D0,NINIG,BGCR3,
      &               INIGAT,CODRET,'FM')
             ATMP = INIGAT(2)
          MAMOLG=GAZ(1)
@@ -567,12 +567,12 @@ C         LIRE LES COEFFICIENTS CALCUL LES LOIS
             NBPAR  = 0
             VALPAR = 0.D0
             NOMPAR = ' '
-             CALL RCVALA ( IMATE,'ELAS_THM',NBPAR,NOMPAR,VALPAR,
+             CALL RCVALA(IMATE,' ','ELAS_THM',NBPAR,NOMPAR,VALPAR,
      &                      2,BGCR1,VALRES,CODRET, 'FM' )
             RHOS   = VALRES(1)
             COMPS  = VALRES(2)
-             CALL RCVALA ( IMATE,'SURF_ETAT_NSAT',NBPAR,NOMPAR,VALPAR,
-     &              NSUREV,BGCR4,SUREV,CODRET, 'FM' )
+             CALL RCVALA(IMATE,' ','SURF_ETAT_NSAT',NBPAR,NOMPAR,
+     &             VALPAR, NSUREV,BGCR4,SUREV,CODRET, 'FM' )
             EVAE    = SUREV(1)
             EVBE    = SUREV(2)        
             EVCTE   = SUREV(3)

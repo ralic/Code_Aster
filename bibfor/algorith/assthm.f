@@ -10,7 +10,7 @@
      >                   NVOMAX,NNOMAX,NSOMAX,NBVOS,VOISIN,P2P1,CODRET)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ALGORITH  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -169,7 +169,7 @@ C *********************************************************************
 C     CALCUL POUR CHAQUE POINT DE GAUSS : BOUCLE SUR KPG
 
       LOI = ' '
-      CALL RCVALA(IMATE, 'THM_INIT', 0, ' ', 0.D0, 1, 'COMP_THM',
+      CALL RCVALA(IMATE,' ','THM_INIT', 0, ' ', 0.D0, 1, 'COMP_THM',
      +                                             RTHMC, CODMES, 'FM')
       THMC = COMPOR(8)
       IF ( (RTHMC-1.0D0).LT.R8PREM() ) THEN

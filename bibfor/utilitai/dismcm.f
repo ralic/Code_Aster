@@ -1,6 +1,6 @@
       SUBROUTINE DISMCM(CODMES,QUESTI,NOMOBZ,REPI,REPKZ,IERD)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 17/06/2003   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -100,6 +100,7 @@ C     --------------------------------------
 C
          DO 10, I=1,NMAT
            MATER= ZK8(IAVALE-1+I)
+           IF (MATER.EQ.' ') GOTO 10
            CALL JEVEUO(MATER//'.MATERIAU.NOMRC','L',IANORC)
            CALL JELIRA(MATER//'.MATERIAU.NOMRC','LONMAX',NBRC,KBID)
            DO 11, IRC=1,NBRC
@@ -137,6 +138,7 @@ C     --------------------------------------
 C
          DO 20, I=1,NMAT
            MATER= ZK8(IAVALE-1+I)
+           IF (MATER.EQ.' ') GOTO 20
            CALL JEVEUO(MATER//'.MATERIAU.NOMRC','L',IANORC)
            CALL JELIRA(MATER//'.MATERIAU.NOMRC','LONMAX',NBRC,KBID)
            DO 21, IRC=1,NBRC
@@ -174,6 +176,7 @@ C     --------------------------------------
 C
          DO 30, I=1,NMAT
            MATER= ZK8(IAVALE-1+I)
+           IF (MATER.EQ.' ') GOTO 30
            CALL JEVEUO(MATER//'.MATERIAU.NOMRC','L',IANORC)
            CALL JELIRA(MATER//'.MATERIAU.NOMRC','LONMAX',NBRC,KBID)
            DO 31, IRC=1,NBRC
@@ -211,6 +214,7 @@ C     --------------------------------------
 C
          DO 40, I=1,NMAT
            MATER= ZK8(IAVALE-1+I)
+           IF (MATER.EQ.' ') GOTO 40
            CALL JEVEUO(MATER//'.MATERIAU.NOMRC','L',IANORC)
            CALL JELIRA(MATER//'.MATERIAU.NOMRC','LONMAX',NBRC,KBID)
            DO 41, IRC=1,NBRC

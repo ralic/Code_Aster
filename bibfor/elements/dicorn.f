@@ -9,7 +9,7 @@ C ----------------------------------------------------------------------
       REAL*8  KLV(NBT),KLV2(NBT),VARIP1,VARIP2,VARIP3
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 05/05/97   AUTEUR ACBHHCD G.DEVESA 
+C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -74,7 +74,7 @@ C
 C --- CARACTERISTIQUES DU MATERIAU
 C    (LES DEFINITIONS DE DRYU1 ET DRYU2 SYMETRISENT LA MATRICE)
 C
-      CALL RCVALA (ICODMA,'ASSE_CORN',NBPAR,NOMPAR,VALPAR,NBRE1,
+      CALL RCVALA(ICODMA,' ','ASSE_CORN',NBPAR,NOMPAR,VALPAR,NBRE1,
      &             NOMRE1,VALRE1,CODRE1, 'FM' )
 C
       NU1   = VALRE1(1)

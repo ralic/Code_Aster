@@ -2,7 +2,7 @@
       IMPLICIT NONE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 31/05/2000   AUTEUR D6BHHAR A.RAZAKANAIVO 
+C MODIF ALGORITH  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -38,7 +38,7 @@ C.......................................................................
       REAL*8      A,M,QSR,AR,BR
       REAL*8      TDC0,TDR0
 
-      REAL*8      INSTM,INSTP, ZBETA,VALRES(11),Z1,ZERO,Z0,DZ
+      REAL*8      INSTM,INSTP, ZBETA,VALRES(12),Z1,ZERO,Z0,DZ
       REAL*8      TPOINT,ZPOINT,ZALPHA,DTEMP1,ZBETEQ,DZ1,DZ2,DZ3,DZ4
       REAL*8      T,TI1, TI2 ,TDC,TDR,TEQ ,EPS
       CHARACTER*24 NOMRES(12)
@@ -60,7 +60,7 @@ C----CARACTERISTIQUE MATERIAU-------------------------------------------
       NOMRES(8)='TDC'
       NOMRES(9)='TDR'
 
-      CALL RCVALA (MATOS, 'META_ZIRC', 1, 'TEMP', TP, 9, NOMRES,
+      CALL RCVALA(MATOS,' ','META_ZIRC', 1, 'TEMP', TP, 9, NOMRES,
      &                 VALRES, CODRET, 'FM' )
       TDEQ = VALRES(1)
       K=VALRES(2)
@@ -76,7 +76,7 @@ C----CARACTERISTIQUE MATERIAU-------------------------------------------
 
       NOMRES(10)='QSR_K'
 
-      CALL RCVALA(MATOS, 'META_ZIRC', 1, 'TEMP', TP, 3, NOMRES(9),
+      CALL RCVALA(MATOS,' ','META_ZIRC', 1, 'TEMP', TP, 3, NOMRES(9),
      &                VALRES(9), CODRET(9), ' ' )
       IF (CODRET(6) .NE. 'OK') VALRES(10)=0.D0
       IF (CODRET(7) .NE. 'OK') VALRES(11)=0.D0

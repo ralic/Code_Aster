@@ -3,7 +3,7 @@
       CHARACTER*(*)     OPTION,NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 06/05/2003   AUTEUR CIBHHPD D.NUNEZ 
+C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -105,7 +105,7 @@ C     ------------------------------------------------------------------
 C
       IF ( OPTION.EQ.'CHAR_MECA_PESA_R') THEN
 C
-         CALL RCVALA(ZI(LMATE),'ELAS',0,NOMPAR,VALPAR,
+         CALL RCVALA(ZI(LMATE),' ','ELAS',0,NOMPAR,VALPAR,
      +                                1,'RHO',RHO,CODRET,'FM')
 C
          CALL JEVECH('PPESANR','L',LPESA)
@@ -151,7 +151,7 @@ C
         NOMRES(1) = 'E'
         NOMRES(2) = 'NU'
         NOMRES(3) = 'ALPHA'
-        CALL RCVALA(ZI(LMATE),'ELAS',NBPAR,NOMPAR,VALPAR,3,NOMRES,
+        CALL RCVALA(ZI(LMATE),' ','ELAS',NBPAR,NOMPAR,VALPAR,3,NOMRES,
      &                                     VALRES,CODRET, 'FM' )
          E      = VALRES(1)
          NU     = VALRES(2)

@@ -2,7 +2,7 @@
      &                  IVF   , IDFDE , IMATE ,
      &                  INST  , GEOM  , DEPL  , CHLIM )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ALGORITH  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -64,7 +64,7 @@ C -- INITIALISATION
 
 C -- CARACTERISTIQUES
 
-      CALL RCVALA(IMATE,'ECRO_LINE',0,' ',0.D0,1,'SY',SY,COD,'F ')
+      CALL RCVALA(IMATE,' ','ECRO_LINE',0,' ',0.D0,1,'SY',SY,COD,'F ')
       M  = 1 + 10**(1-INST)
       AM = SY * RAC23**M
 

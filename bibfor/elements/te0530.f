@@ -1,6 +1,6 @@
       SUBROUTINE TE0530(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 15/12/2003   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -94,8 +94,8 @@ C        -----------
         DO 401 I = 1,NNO
             TEMPM = TEMPM + ZR(ITEMPE+I-1)/NNO
   401   CONTINUE
-        CALL RCVALA(ZI(IMATE),'ELAS',1,'TEMP',TEMPM,NBV,NOMRES,VALRES,
-     &              CODRET,'FM')
+        CALL RCVALA(ZI(IMATE),' ','ELAS',1,'TEMP',TEMPM,NBV,NOMRES,
+     &              VALRES,CODRET,'FM')
         E = VALRES(1)
         NU = VALRES(2)
 C ----  PARAMETRES MATERIAUX
@@ -254,8 +254,8 @@ C        -----------
         NOMRES(1) = 'E'
         NOMRES(2) = 'NU'
         NBV = 2
-        CALL RCVALA(ZI(IMATE),'ELAS',1,'TEMP',TEMPM,NBV,NOMRES,VALRES,
-     &              CODRET,'FM')
+        CALL RCVALA(ZI(IMATE),' ','ELAS',1,'TEMP',TEMPM,NBV,NOMRES,
+     &             VALRES, CODRET,'FM')
         E = VALRES(1)
         NU = VALRES(2)
         WORK(1) = E
@@ -316,8 +316,8 @@ C        -----------
         DO 403 I = 1,NNO
             TEMPM = TEMPM + ZR(ITEMPE+I-1)/NNO
   403   CONTINUE
-        CALL RCVALA(ZI(IMATE),'ELAS',1,'TEMP',TEMPM,NBV,NOMRES,VALRES,
-     &              CODRET,'FM')
+        CALL RCVALA(ZI(IMATE),' ','ELAS',1,'TEMP',TEMPM,NBV,NOMRES,
+     &             VALRES, CODRET,'FM')
         E = VALRES(1)
         NU = VALRES(2)
 C ----   PARAMETRES MATERIAU

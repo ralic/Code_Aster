@@ -4,7 +4,7 @@
      &                  VIP   , ENER  , DPDA  , PONDER, SIGP)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/03/2002   AUTEUR GJBHHEL E.LORENTZ 
+C MODIF ALGORITH  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -100,7 +100,8 @@ C -- COEFFICIENT DE CISAILLEMENT EN T-
       NOMRES(1) = 'E'
       NOMRES(2) = 'NU'
       
-      CALL RCVALA(IMATE,'ELAS',1,'TEMP',TM,2,NOMRES,VALRES,CODRET,'F ' )
+      CALL RCVALA(IMATE,' ','ELAS',1,'TEMP',TM,2,NOMRES,VALRES,
+     &           CODRET,'F ' )
       DEUMUM = VALRES(1) / (1+VALRES(2))
 
 
@@ -113,18 +114,18 @@ C -- CARACTERISTIQUES MATERIAU EN T+
       NOMRES(5) = 'SY'
       NOMRES(6) = 'LONG_CARA'
 
-      CALL RCVALA (IMATE, 'ELAS', 1,'TEMP',TP,2,NOMRES,
+      CALL RCVALA (IMATE, ' ','ELAS', 1,'TEMP',TP,2,NOMRES,
      &             VALRES,CODRET, 'F ' )
-      CALL RCVALA (IMATE, 'ELAS', 1,'TEMP',TP,1,NOMRES(3),
+      CALL RCVALA (IMATE, ' ','ELAS', 1,'TEMP',TP,1,NOMRES(3),
      &             VALRES(3),CODRET(3), '  ' )
       IF ( CODRET(3) .NE. 'OK' ) VALRES(3) = 0.D0
-      CALL RCVALA(IMATE, 'NON_LOCAL', 1, 'TEMP',TP,1,NOMRES(6),
+      CALL RCVALA(IMATE,' ', 'NON_LOCAL', 1, 'TEMP',TP,1,NOMRES(6),
      &            VALRES(6), CODRET(6), 'F ')
 
 
       IF (COMPOR .EQ. 'VMIS_ISOT_LINE') THEN
         LINE = .TRUE.
-        CALL RCVALA(IMATE, 'ECRO_LINE', 1,'TEMP',TP,2, NOMRES(4),
+        CALL RCVALA(IMATE,' ', 'ECRO_LINE', 1,'TEMP',TP,2, NOMRES(4),
      &            VALRES(4), CODRET(4), 'F ' )
         H      = VALRES(4)*VALRES(1) / (VALRES(1) - VALRES(4))
         SY     = VALRES(5)

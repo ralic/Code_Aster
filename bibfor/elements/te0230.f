@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 26/01/2004   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -137,10 +137,10 @@ C===============================================================
         NOMRES(1) = 'E'
         NOMRES(2) = 'NU'
         NOMRES(3) = 'ALPHA'
-        CALL RCVALA(ZI(IMATE),'ELAS',NBPAR,NOMPAR,VALPAR,2,NOMRES,
+        CALL RCVALA(ZI(IMATE),' ','ELAS',NBPAR,NOMPAR,VALPAR,2,NOMRES,
      &              VALRES,CODRET,'FM')
-        CALL RCVALA(ZI(IMATE),'ELAS',NBPAR,NOMPAR,VALPAR,1,NOMRES(3),
-     &              VALRES(3),CODRET(3),BL2)
+        CALL RCVALA(ZI(IMATE),' ','ELAS',NBPAR,NOMPAR,VALPAR,1,
+     &              NOMRES(3),VALRES(3),CODRET(3),BL2)
         E = VALRES(1)
         NU = VALRES(2)
         IF (CODRET(3).NE.'OK') THEN

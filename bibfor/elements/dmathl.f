@@ -8,7 +8,7 @@
       LOGICAL GRILLE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 06/05/2003   AUTEUR CIBHHPD D.NUNEZ 
+C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -266,10 +266,10 @@ C        ------ MATERIAU ISOTROPE ------------------------------------
 
         MULTIC = 0
 
-        CALL RCVALA(ZI(JMATE),PHENOM,NBPAR,NOMPAR,VALPAR,2,NOMRES,
+        CALL RCVALA(ZI(JMATE),' ',PHENOM,NBPAR,NOMPAR,VALPAR,2,NOMRES,
      +              VALRES,CODRET,'FM')
-        CALL RCVALA(ZI(JMATE),PHENOM,NBPAR,NOMPAR,VALPAR,2,NOMRES(3),
-     +              VALRES(3),CODRET(3),BL2)
+        CALL RCVALA(ZI(JMATE),' ',PHENOM,NBPAR,NOMPAR,VALPAR,2,
+     +              NOMRES(3),VALRES(3),CODRET(3),BL2)
         IF (CODRET(3).NE.'OK') THEN
           INDITH = -1
           GO TO 70
@@ -323,10 +323,10 @@ C        ---- CALCUL DE LA MATRICE DE RIGIDITE EN MEMBRANE -------------
 C        ---------------------------------------------------------------
       ELSE IF (PHENOM.EQ.'ELAS_COQUE') THEN
         MULTIC = 0
-        CALL RCVALA(ZI(JMATE),PHENOM,NBPAR,NOMPAR,VALPAR,NBV,NOMRES,
+        CALL RCVALA(ZI(JMATE),' ',PHENOM,NBPAR,NOMPAR,VALPAR,NBV,NOMRES,
      +              VALRES,CODRET,'FM')
-        CALL RCVALA(ZI(JMATE),PHENOM,NBPAR,NOMPAR,VALPAR,1,NOMRES(11),
-     +              VALRES(11),CODRET(11),BL2)
+        CALL RCVALA(ZI(JMATE),' ',PHENOM,NBPAR,NOMPAR,VALPAR,1,
+     +            NOMRES(11),  VALRES(11),CODRET(11),BL2)
         IF (CODRET(11).NE.'OK') THEN
           INDITH = -1
           GO TO 70
@@ -351,17 +351,17 @@ C        ----------- MATRICES DANS LE REPERE INTRINSEQUE DE L'ELEMENT --
 
       ELSE IF (PHENOM.EQ.'ELAS_COQMU') THEN
 C        ------ MATERIAU MULTICOUCHE -----------------------------------
-        CALL RCVALA(ZI(JMATE),PHENOM,NBPAR,NOMPAR,VALPAR,1,NOMRES(19),
-     +              VALRES(19),CODRET(19),'FM')
+        CALL RCVALA(ZI(JMATE),' ',PHENOM,NBPAR,NOMPAR,VALPAR,1,
+     +             NOMRES(19), VALRES(19),CODRET(19),'FM')
         EPAIS = VALRES(19)
-        CALL RCVALA(ZI(JMATE),PHENOM,NBPAR,NOMPAR,VALPAR,1,NOMRES(57),
-     +              VALRES(57),CODRET(57),'FM')
+        CALL RCVALA(ZI(JMATE),' ',PHENOM,NBPAR,NOMPAR,VALPAR,1,
+     +             NOMRES(57), VALRES(57),CODRET(57),'FM')
         EPI = VALRES(57)
-        CALL RCVALA(ZI(JMATE),PHENOM,NBPAR,NOMPAR,VALPAR,1,NOMRES(59),
-     +              VALRES(59),CODRET(59),'FM')
+        CALL RCVALA(ZI(JMATE),' ',PHENOM,NBPAR,NOMPAR,VALPAR,1,
+     +              NOMRES(59),VALRES(59),CODRET(59),'FM')
         ORDI = VALRES(59)
-        CALL RCVALA(ZI(JMATE),PHENOM,NBPAR,NOMPAR,VALPAR,27,NOMRES(102),
-     +              VALRES(102),CODRET(102),'FM')
+        CALL RCVALA(ZI(JMATE),' ',PHENOM,NBPAR,NOMPAR,VALPAR,27,
+     +             NOMRES(102), VALRES(102),CODRET(102),'FM')
         DM(1,1) = VALRES(102)
         DM(1,2) = VALRES(103)
         DM(1,3) = VALRES(104)

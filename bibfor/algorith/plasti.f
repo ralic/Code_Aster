@@ -5,7 +5,7 @@
         IMPLICIT REAL*8 (A-H,O-Z)
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -229,6 +229,7 @@ C       ----------------------------------------------------------------
 C
         PARAMETER       ( EPSI = 1.D-15 )
         PARAMETER       ( NMAT = 90     )
+        INTEGER         NBCOMM(NMAT,3)
 C
         REAL*8          CRIT(*)
         REAL*8          VIND(*),     VINF(*)
@@ -240,13 +241,13 @@ C
 C
         REAL*8          SEUIL, THETA, DT, DEVG(6), DEVGII
 C
-        REAL*8          DSDE(6,6)
+        REAL*8          DSDE(6,6),  PGL(3,3)
 C
         REAL*8          MATERD(NMAT,2) , MATERF(NMAT,2)
 C
         CHARACTER*7     ETATD  ,     ETATF
         CHARACTER*8     MOD    ,     TYPMA,   TYPMOD(*)
-        CHARACTER*16    COMP(*),     OPT,        LOI
+        CHARACTER*16    COMP(*),     OPT,        LOI, CPMONO(5*NMAT+1)
         CHARACTER*3     MATCST
 C       ----------------------------------------------------------------
         COMMON /TDIM/   NDT  , NDI
@@ -290,9 +291,10 @@ C
 C --    RECUPERATION COEF(TEMP(T))) LOI ELASTO-PLASTIQUE A T ET/OU T+DT
 C                    NB DE CMP DIRECTES/CISAILLEMENT + NB VAR. INTERNES
 C
-        CALL LCMATE ( LOI, MOD, IMAT, NMAT, TEMPD, TEMPF, HYDRD, HYDRF,
-     1                SECHD, SECHF, TYPMA, BZ, MATERD,
-     2                MATERF, MATCST, NDT , NDI , NR, NVI, VIND)
+        CALL LCMATE (COMP, MOD, IMAT, NMAT, TEMPD, TEMPF, HYDRD, HYDRF,
+     1                SECHD, SECHF, TYPMA, BZ, MATERD,MATERF, MATCST,
+     3                NBCOMM, CPMONO, PGL,
+     2                NDT , NDI , NR, NVI, VIND)
 C
 C --    RETRAIT INCREMENT DE DEFORMATION DUE A LA DILATATION THERMIQUE
 C

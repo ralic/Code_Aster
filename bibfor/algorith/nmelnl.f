@@ -3,7 +3,7 @@
      &                   DLAGTG, DEPS, DENERG, DSIG)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 02/12/2003   AUTEUR PBADEL P.BADEL 
+C MODIF ALGORITH  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -152,17 +152,17 @@ C====================================================================
       NOMRES(3)='ALPHA'
 
       IF (ELAS .OR. LINE) THEN
-         CALL RCVALA ( IMATE,'ELAS',1,'TEMP',TEMP,2,
+         CALL RCVALA ( IMATE,' ','ELAS',1,'TEMP',TEMP,2,
      +                 NOMRES,VALRES,CODRET, FB2 )
-         CALL RCVALA ( IMATE,'ELAS',1,'TEMP',TEMP,1,
+         CALL RCVALA ( IMATE,' ','ELAS',1,'TEMP',TEMP,1,
      +                 NOMRES(3),VALRES(3),CODRET(3), BL2 )
          IF ( CODRET(3) .NE. 'OK' ) VALRES(3) = 0.D0
       ELSE
          CALL RCTRAC(IMATE,'TRACTION','SIGM',TEMP,JPROL,
      +               JVALE,NBVALE,VALRES(1))
-         CALL RCVALA ( IMATE,'ELAS',1,'TEMP',TEMP,1,
+         CALL RCVALA ( IMATE,' ','ELAS',1,'TEMP',TEMP,1,
      +                 NOMRES(2),VALRES(2),CODRET(2), FB2 )
-         CALL RCVALA ( IMATE,'ELAS',1,'TEMP',TEMP,1,
+         CALL RCVALA ( IMATE,' ','ELAS',1,'TEMP',TEMP,1,
      +                 NOMRES(3),VALRES(3),CODRET(3), BL2 )
          IF ( CODRET(3) .NE. 'OK' ) VALRES(3) = 0.D0
       ENDIF
@@ -185,7 +185,7 @@ C====================================================================
       IF (LINE) THEN
         NOMRES(1)='D_SIGM_EPSI'
         NOMRES(2)='SY'
-        CALL RCVALA(IMATE,'ECRO_LINE',1,'TEMP',TEMP,2,NOMRES,VALRES,
+        CALL RCVALA(IMATE,' ','ECRO_LINE',1,'TEMP',TEMP,2,NOMRES,VALRES,
      &              CODRET , FB2 )
         DSDE  = VALRES(1)
         SIGY  = VALRES(2)

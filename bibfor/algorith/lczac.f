@@ -2,7 +2,7 @@
      &                  EPS   , SIG   , DSIDEP)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 02/12/2003   AUTEUR PBADEL P.BADEL 
+C MODIF ALGORITH  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -68,9 +68,9 @@ C -- LECTURE DES CARACTERISTIQUES MATERIAUX
       NOMRES(2) = 'NU'
       NOMRES(3) = 'D_SIGM_EPSI'
 
-      CALL RCVALA (IMATE, 'ELAS'      ,1,'TEMP',TZAC,
+      CALL RCVALA(IMATE,' ', 'ELAS'      ,1,'TEMP',TZAC,
      &             2,NOMRES(1), VALRES(1),CODRET(1), 'F ' )
-      CALL RCVALA (IMATE, 'ECRO_LINE' ,1,'TEMP',TZAC,
+      CALL RCVALA(IMATE,' ', 'ECRO_LINE' ,1,'TEMP',TZAC,
      &             1,NOMRES(3), VALRES(3),CODRET(3), 'F ' )
      
       E     = VALRES(1)

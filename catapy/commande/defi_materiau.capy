@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 25/03/2004   AUTEUR OUGLOVA A.OUGLOVA 
+#& MODIF COMMANDE  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -2585,5 +2585,63 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater,
                     TYPE_DP         =SIMP(statut='c',typ='R',defaut= 2.0,),
              ),
            ),
+####  MONOCRISTAL
+           
+           ECOU_VISC1      =FACT(statut='f',
+             TYPE_PARA       =SIMP(statut='f',typ='TXM',into=("ECOU_VISC",),),
+             N               =SIMP(statut='o',typ='R'),
+             K               =SIMP(statut='o',typ='R'),
+             C               =SIMP(statut='o',typ='R'),
+           ),
+           ECOU_VISC2      =FACT(statut='f',
+             TYPE_PARA       =SIMP(statut='f',typ='TXM',into=("ECOU_VISC",),),
+             N               =SIMP(statut='o',typ='R'),
+             K               =SIMP(statut='o',typ='R'),
+             C               =SIMP(statut='o',typ='R'),
+             D               =SIMP(statut='o',typ='R'),
+             A               =SIMP(statut='o',typ='R'),
+           ),
+           ECOU_VISC3      =FACT(statut='f',
+             TYPE_PARA       =SIMP(statut='f',typ='TXM',into=("ECOU_VISC",),),
+             K               =SIMP(statut='o',typ='R'),
+             V               =SIMP(statut='o',typ='R'),
+             GAMMA0          =SIMP(statut='o',typ='R'),
+           ),
+           ECOU_PLAS1      =FACT(statut='f',
+             TYPE_PARA       =SIMP(statut='f',typ='TXM',into=("ECOU_PLAS",),),
+             C               =SIMP(statut='o',typ='R'),
+           ),
+           ECRO_ISOT1      =FACT(statut='f',
+             TYPE_PARA       =SIMP(statut='f',typ='TXM',into=("ECRO_ISOT",),),
+             R_0             =SIMP(statut='o',typ='R'),
+             Q               =SIMP(statut='o',typ='R'),
+             B               =SIMP(statut='o',typ='R'),
+             H               =SIMP(statut='o',typ='R'),
+           ),
+           ECRO_ISOT2      =FACT(statut='f',
+             TYPE_PARA       =SIMP(statut='f',typ='TXM',into=("ECRO_ISOT",),),
+             R_0             =SIMP(statut='o',typ='R'),
+             Q1              =SIMP(statut='o',typ='R'),
+             B1              =SIMP(statut='o',typ='R'),
+             H               =SIMP(statut='o',typ='R'),
+             Q2              =SIMP(statut='o',typ='R'),
+             B2              =SIMP(statut='o',typ='R'),
+           ),
+           ECRO_CINE1      =FACT(statut='f',
+             TYPE_PARA       =SIMP(statut='f',typ='TXM',into=("ECRO_CINE",),),
+             D               =SIMP(statut='o',typ='R'),
+           ),
+           ECRO_CINE2      =FACT(statut='f',
+             TYPE_PARA       =SIMP(statut='f',typ='TXM',into=("ECRO_CINE",),),
+             D               =SIMP(statut='o',typ='R'),
+             GM              =SIMP(statut='o',typ='R'),
+             PM              =SIMP(statut='o',typ='R'),
+           ),
+           
+####  MONOCRISTAL
+           
+           
+           
+           
            INFO            =SIMP(statut='f',typ='I',defaut=1,into=(1,2) ),
 )  ;

@@ -2,7 +2,7 @@
      &                   DEPS, VIM, TM,TP,TREF,
      &                   OPTION, SIG, VIP,  DSIDEP)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/09/2003   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -116,9 +116,9 @@ C    LECTURE DES CARACTERISTIQUES ELASTIQUES A TMAX
      &     (COMPOR(1)(1:8) .EQ. 'KIT_THHM')).AND.
      &     (COMPOR(11)(1:6) .EQ. 'MAZARS')).OR.
      &     (COMPOR(1)(1:6) .EQ. 'MAZARS'))      THEN
-      CALL RCVALA ( IMATE,'ELAS',1,'TEMP',TMAX,2,
+      CALL RCVALA(IMATE,' ','ELAS',1,'TEMP',TMAX,2,
      &              NOMRES,VALRES,CODRET, 'FM')
-      CALL RCVALA ( IMATE,'ELAS',1,'TEMP',TMAX,1,
+      CALL RCVALA(IMATE,' ','ELAS',1,'TEMP',TMAX,1,
      &              NOMRES(3),VALRES(3),CODRET(3), ' ')
       IF ( CODRET(3) .NE. 'OK' ) VALRES(3) = 0.D0
       E     = VALRES(1)
@@ -141,7 +141,7 @@ C    LECTURE DES CARACTERISTIQUES D'ENDOMMAGEMENT
      &     (COMPOR(1)(1:8) .EQ. 'KIT_THHM')).AND.
      &     (COMPOR(11)(1:6) .EQ. 'MAZARS')).OR.
      &     (COMPOR(1)(1:6) .EQ. 'MAZARS' ))THEN
-       CALL RCVALA(IMATE,'MAZARS',1,'TEMP',TMAX,6,
+       CALL RCVALA(IMATE,' ','MAZARS',1,'TEMP',TMAX,6,
      &            NOMRES,VALRES,CODRET,'FM')
       EPSD0 = VALRES(1)
       BETA  = VALRES(2)

@@ -19,7 +19,7 @@ C ======================================================================
       IMPLICIT NONE
       CHARACTER*(*) MODELZ,COMPOZ
 C ----------------------------------------------------------------------
-C MODIF ALGORITH  DATE 02/03/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
 C     SAISIE ET VERIFICATION DE LA RELATION DE COMPORTEMENT UTILISEE
 C
 C IN  MODELZ  : NOM DU MODELE
@@ -46,7 +46,7 @@ C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
       INTEGER NCMPMA,DIMAKI,N2,N3,IBID,NBOCC,I,ICMP,ICOMEL,II,JMA,JNCMP,
      &        JNOMA,JVALV,K,N1,NBAP,NBET,NBMA,NBMO1,NBVARI,NC1,NC2,
-     &        NBMAT,JMAIL,NCOMEL,NS1,JMESM,IMA,IM,IRET
+     &        NBMAT,JMAIL,NCOMEL,NS1,JMESM,IMA,IM,IRET,ICPRI,NBSYST
       REAL*8 RBID
       COMPLEX*16 CBID
       LOGICAL      BUG, NIVO
@@ -54,7 +54,7 @@ C    DIMAKI = DIMENSION MAX DE LA LISTE DES RELATIONS KIT
       PARAMETER (DIMAKI=9)
       PARAMETER (NCMPMA=7+DIMAKI)
       LOGICAL EXIST,GETEXM,EXICP,EXI1D
-      CHARACTER*8 NOMA,NOMGRD,NOMCMP(NCMPMA),K8B,TYPMCL(2)
+      CHARACTER*8 NOMA,NOMGRD,NOMCMP(NCMPMA),K8B,TYPMCL(2),SDCOMP
       CHARACTER*16 COMP,DEFO,MOCLEF(2),K16BID,NOMCMD,MOCLES(2)
       CHARACTER*16 VALCMP(NCMPMA),TXCP,TX1D
       CHARACTER*19 COMPOR
@@ -281,6 +281,8 @@ C     ------------------------------------------------------------------
 
           DO 150 K = 1,NBOCC
 
+            ZK16(JVALV-1+6) = ' '
+            ZK16(JVALV-1+7) = ' '
             NBVARI = 0
             TXCP = 'ANALYTIQUE      '
             DEFO = ' '
@@ -359,6 +361,19 @@ C  POUR COMPORTEMENT KIT_
                   NBVARI = NBVARI*NBVEL(1) + NBVARI + 1
                 END IF
               END IF
+              
+CCC MONOCRISTAL
+              
+            ELSEIF (COMP(1:8).EQ.'MONOCRIS') THEN
+                CALL GETVID(MOCLEF(I),'COMPOR',K,1,1,SDCOMP,N1)
+                CALL JEVEUO(SDCOMP//'.CPRI','L',ICPRI)
+                NBSYST=ZI(ICPRI-1+1)
+                NBVARI=ZI(ICPRI-1+3)
+                ZK16(JVALV-1+6) = SDCOMP//'.CPRK'             
+                WRITE (ZK16(JVALV-1+7),'(I16)') NBSYST
+              
+CCC FIN MONOCRISTAL              
+              
             ELSE
               EXIST = GETEXM(MOCLEF(I),COMP)
               IF (EXIST) THEN
@@ -416,8 +431,8 @@ C ET META_XXX_INL
             ZK16(JVALV-1+3) = DEFO
             ZK16(JVALV-1+4) = MOCLEF(I)
             ZK16(JVALV-1+5) = TXCP
-            ZK16(JVALV-1+6) = ' '
-            ZK16(JVALV-1+7) = ' '
+CCC            ZK16(JVALV-1+6) = ' '
+CCC            ZK16(JVALV-1+7) = ' '
 
 C  POUR COMPORTEMENT KIT_
 

@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 08/09/2003   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -82,8 +82,8 @@ C     MATERIAU FERRITIQUE
 
 
         NOMRES = 'MS0'
-        CALL RCVALA(ZI(IMATE),'META_ACIER',1,'INST',0.D0,1,NOMRES,MS0,
-     &              CODRET,'FM')
+        CALL RCVALA(ZI(IMATE),' ','META_ACIER',1,'INST',0.D0,1,NOMRES,
+     &            MS0,  CODRET,'FM')
         DO 50 KP = 1,NPG1
           K = (KP-1)*NNO
           TPG0 = ZERO

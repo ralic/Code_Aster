@@ -1,6 +1,6 @@
       SUBROUTINE TE0598 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -205,7 +205,7 @@ C
       IF ( PHENOM .EQ. 'THER') THEN
          NOMRES(1) = 'RHO_CP'
          NOMRES(2) = 'LAMBDA'
-         CALL RCVALA ( ZI(IMATE), PHENOM, 1, 'INST', ZR(ITEMPS),
+         CALL RCVALA(ZI(IMATE),' ', PHENOM, 1, 'INST', ZR(ITEMPS),
      &                            2, NOMRES, VALRES, CODRET, 'FM' )
          CP     = VALRES(1)
          LAMBDA = VALRES(2)
@@ -214,7 +214,7 @@ C
          NOMRES(1) = 'RHO_CP'
          NOMRES(2) = 'LAMBDA_L'
          NOMRES(3) = 'LAMBDA_T'
-         CALL RCVALA ( ZI(IMATE), PHENOM, 1, 'INST', ZR(ITEMPS),
+         CALL RCVALA(ZI(IMATE),' ', PHENOM, 1, 'INST', ZR(ITEMPS),
      &                            3, NOMRES, VALRES, CODRET, 'FM' )
          CP        = VALRES(1)
          LAMBOR(1) = VALRES(2)

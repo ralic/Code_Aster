@@ -1,6 +1,6 @@
       SUBROUTINE RCDIFF ( IMATE, COMP, TEMP, C, DIFF )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/02/99   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -73,7 +73,7 @@ C
          NOMRES(2) = 'B'
          NOMRES(3) = 'QSR_K'
          NOMRES(4) = 'TEMP_0_C'
-         CALL RCVALA(IMATE,PHENOM,NBPAR,NOMPAR,VALPAR,4,
+         CALL RCVALA(IMATE,' ',PHENOM,NBPAR,NOMPAR,VALPAR,4,
      &                   NOMRES, VALRES, CODRET, 'FM' )
          DIFF = VALRES(1) * EXP(VALRES(2)*C)
      &            *((TEMP+TZ0)/(VALRES(4)+TZ0))
@@ -86,7 +86,7 @@ C
          VALPAR(1) = TEMP
          NOMRES(1) = 'A'
          NOMRES(2) = 'B'
-         CALL RCVALA(IMATE,PHENOM,NBPAR,NOMPAR,VALPAR,2,
+         CALL RCVALA(IMATE,' ',PHENOM,NBPAR,NOMPAR,VALPAR,2,
      &                   NOMRES, VALRES, CODRET, 'FM' )
          DIFF = VALRES(1) * EXP(VALRES(2)*C)
 C
@@ -98,7 +98,7 @@ C
          NOMRES(2) = 'ALPHA_BA'
          NOMRES(3) = 'N'
          NOMRES(4) = 'FONC_DES'
-         CALL RCVALA(IMATE,PHENOM,NBPAR,NOMPAR,VALPAR,4,
+         CALL RCVALA(IMATE,' ',PHENOM,NBPAR,NOMPAR,VALPAR,4,
      &                   NOMRES, VALRES, CODRET, 'FM' )
          RAP = ((1.D0 - VALRES(4)) / 0.25D0) ** VALRES(3)
          DIFF = VALRES(1) * (VALRES(2)+ (1.D0 - VALRES(2))/(1.D0+RAP))
@@ -110,7 +110,7 @@ C
          NOMPAR(2) = 'TSEC'
          VALPAR(2) =  TEMP
          NOMRES(1) = 'FONCTION'
-         CALL RCVALA(IMATE,PHENOM,NBPAR,NOMPAR,VALPAR,1,
+         CALL RCVALA(IMATE,' ',PHENOM,NBPAR,NOMPAR,VALPAR,1,
      &                   NOMRES, VALRES, CODRET, 'FM' )
          DIFF = VALRES(1)
 C

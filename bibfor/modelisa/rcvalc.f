@@ -1,7 +1,7 @@
-      SUBROUTINE RCVALC( IMAT,PHENOM,NBPAR,NOMPAR,VALPAR,
+      SUBROUTINE RCVALC( JMAT,PHENOM,NBPAR,NOMPAR,VALPAR,
      &                   NBRES,NOMRES,VALRES,CODRET, STOP )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 22/03/2004   AUTEUR DURAND C.DURAND 
+C MODIF MODELISA  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,7 +19,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
       IMPLICIT REAL*8 (A-H,O-Z)
-      INTEGER            IMAT,NBPAR,NBRES
+      INTEGER            IMAT,NBPAR,NBRES,JMAT,NBMAT
       CHARACTER*(*)      PHENOM, NOMPAR(NBPAR), NOMRES(NBRES), STOP
       CHARACTER*2        CODRET(NBRES)
       CHARACTER*8        NOMMAT
@@ -68,6 +68,11 @@ C
 C ----------------------------------------------------------------------
 C PARAMETER ASSOCIE AU MATERIAU CODE
 C DEB ------------------------------------------------------------------
+
+      NBMAT=ZI(JMAT)
+      CALL ASSERT(NBMAT.EQ.1)
+      IMAT = JMAT+ZI(JMAT+NBMAT+1)
+      
 
       DO 130 IRES = 1, NBRES
         CODRET(IRES) = 'NO'

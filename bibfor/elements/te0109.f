@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -88,7 +88,8 @@ C     -----------------------------
 C
         MUL = .TRUE.
         NOMRES(1) = 'HOM_28'
-        CALL RCVALA(MATER,'THER',0,' ',R8B,1,NOMRES,VALRES,CODRET,'FM')
+        CALL RCVALA(MATER,' ','THER',0,' ',R8B,1,NOMRES,VALRES,
+     &                 CODRET,'FM')
         H = VALRES(1)/2.D0
         IC = ZI(INUMCO)
         CALL CODENT(IC,'G',NUM)
@@ -96,7 +97,8 @@ C
           CALL CODENT(I,'G',VAL)
           NOMRES(I) = 'C'//NUM//'_V'//VAL
     1   CONTINUE
-        CALL RCVALA(MATER,'THER',0,' ',R8B,3,NOMRES,VALRES,CODRET,'FM')
+        CALL RCVALA(MATER,' ','THER',0,' ',R8B,3,NOMRES,VALRES,
+     &                      CODRET,'FM')
         CODE = ZI(INUMCO+1)
         EP  = VALRES(1)
         FI  = VALRES(2)
@@ -104,7 +106,8 @@ C
         NOMRES(1) = 'LAMBDAIL'
         NOMRES(2) = 'LAMBDAT'
         NOMRES(3) = 'LAMBDAN'
-        CALL RCVALA(MATER,'THER',0,' ',R8B,3,NOMRES,VALRES,CODRET,'FM')
+        CALL RCVALA(MATER,' ','THER',0,' ',R8B,3,NOMRES,VALRES,
+     &              CODRET,'FM')
         C = COS(FI*R8PI()/180.D0)
         S = SIN(FI*R8PI()/180.D0)
         C2 = C*C
@@ -121,8 +124,8 @@ C     ------------------------
 C
         MUL = .FALSE.
         NOMRES(1) = 'LAMBDA'
-        CALL RCVALA(MATER,'THER',1,'INST',ZR(ITEMPS),1,NOMRES,VALRES,
-     +              CODRET, 'FM' )
+        CALL RCVALA(MATER,' ','THER',1,'INST',ZR(ITEMPS),1,NOMRES,
+     +           VALRES,   CODRET, 'FM' )
         CONDUC = VALRES(1)
         H = ZR(ICACOQ)/2.D0
         ORD = 0.D0

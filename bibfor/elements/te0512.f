@@ -4,7 +4,7 @@
 C.......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 08/03/2004   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -193,7 +193,7 @@ C        -----------------------------------------------------------
      +      'POUR CALCULER LE DOMMAGE DE LEMAITRE_SERMAGE '
      +      //' IL FAUT DEFINIR LE COMPORTEMENT ELAS_FO'
      +      //' DANS DEFI_MATERIAU')
-         CALL RCVALA(ZI(IMATE),PHENOM,NBPAR2,NOMPR2,VALPR2,NBRES,
+         CALL RCVALA(ZI(IMATE),' ',PHENOM,NBPAR2,NOMPR2,VALPR2,NBRES,
      +               NOMRES,VALRES,CODRES,'FM')
 
          PHENO2 = 'DOMMA_LEMAITRE'
@@ -202,7 +202,7 @@ C        -----------------------------------------------------------
      +      'POUR CALCULER LE DOMMAGE DE LEMAITRE-SERMAGE '
      +      //' IL FAUT DEFINIR LE COMPORTEMENT DOMMA_LEMAITRE'
      +      //' DANS DEFI_MATERIAU')
-         CALL RCVALA(ZI(IMATE),PHENM2,NBPAR2,NOMPR2,VALPR2,NBRES2,
+         CALL RCVALA(ZI(IMATE),' ',PHENM2,NBPAR2,NOMPR2,VALPR2,NBRES2,
      +               NOMRE2,VALRE2,CODRE2,'FM')
 C
 C ---    ASSIGNATION DES VALEURS DES PARAMETRES DE LA LOI DE

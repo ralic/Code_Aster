@@ -1,7 +1,7 @@
-      SUBROUTINE RCTYPE(IMATE,NBPU,NOMPU,VALPU,RESU,TYPE)
+      SUBROUTINE RCTYPE(JMAT,NBPU,NOMPU,VALPU,RESU,TYPE)
 C -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 17/12/2002   AUTEUR CIBHHGB G.BERTRAND 
+C MODIF MODELISA  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,7 +20,7 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C ----------------------------------------------------------------------
       IMPLICIT REAL*8 (A-H,O-Z)
-      INTEGER           IMATE,NBPU
+      INTEGER           IMATE,NBPU,JMAT
       REAL*8                              VALPU(*),RESU
       CHARACTER*(*)                 NOMPU(*),       TYPE
 C ----------------------------------------------------------------------
@@ -54,12 +54,18 @@ C
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C
       INTEGER       ICOMP, IPI, IDF, NBF, IVALK, IK, IPIF, IPIFC, JPRO
-      INTEGER       JVALF1, NBVF1, K, NPAR(2)
+      INTEGER       JVALF1, NBVF1, K, NPAR(2), NBMAT
       CHARACTER*16  NOMPF(2)
 C ----------------------------------------------------------------------
 C PARAMETER ASSOCIE AU MATERIAU CODE
       PARAMETER        ( LMAT = 7 , LFCT = 9 )
 C DEB ------------------------------------------------------------------
+
+      NBMAT=ZI(JMAT)
+C     UTILISABLE SEULEMENT AVEC UN MATERIAU PAR MAILLE
+      CALL ASSERT(NBMAT.EQ.1)
+      IMATE = JMAT+ZI(JMAT+NBMAT+1)
+      
       DO 10 ICOMP=1,ZI(IMATE+1)
         IF ( 'TRACTION' .EQ. ZK16(ZI(IMATE)+ICOMP-1)(1:8) ) THEN
           IPI = ZI(IMATE+2+ICOMP-1)

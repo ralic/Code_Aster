@@ -1,7 +1,7 @@
       SUBROUTINE TE0096(OPTION,NOMTE)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -331,7 +331,8 @@ C =====================================================================
 C CORRECTION DES FORCES VOLUMIQUES
       IF ((IPESA.NE.0).OR.(IROTA.NE.0)) THEN
         CALL RCCOMA(MATCOD,'ELAS',PHENOM,CODRET)
-        CALL RCVALA(MATCOD,PHENOM,1,' ',RBID,1,'RHO',RHO,CODRET,'FM')
+        CALL RCVALA(MATCOD,' ',PHENOM,1,' ',RBID,1,'RHO',RHO,
+     &              CODRET,'FM')
         IF (IPESA.NE.0) THEN
           DO 95 I=1,NNO
             IJ = NDIM*(I-1)

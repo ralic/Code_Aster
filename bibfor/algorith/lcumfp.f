@@ -2,7 +2,7 @@
      &                    TINSTP,SECHM,SECHP,EPSM,DEPS,SIGM,
      &                    VIM,OPTION,SIGP,VIP,DSIDEP)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -238,7 +238,7 @@ C RECUPERATION DES VALEURS DES PARAMETRES MATERIAU
 C
       NOMRES(1)='E'
       NOMRES(2)='NU'
-      CALL RCVALA(IMATE,'ELAS',1,'TEMP',0.D0,2,
+      CALL RCVALA(IMATE,' ','ELAS',1,'TEMP',0.D0,2,
      &             NOMRES,VALRES,CODRET, 'F ' )
       YOUN   = VALRES(1)
       XNU    = VALRES(2)
@@ -253,7 +253,7 @@ C
       NOMRES(6)='ETA_RD'
       NOMRES(7)='ETA_ID'
     
-      CALL RCVALA(IMATE,'BETON_UMLV_FP',0,' ',RBID,7,NOMRES,
+      CALL RCVALA(IMATE,' ','BETON_UMLV_FP',0,' ',RBID,7,NOMRES,
      &                               VALRES,CODRET,'F ')
       KRS     = VALRES(1)
       ETARS   = VALRES(2)
@@ -266,7 +266,7 @@ C
 C  ------- CARACTERISTIQUES HYGROMETRIE H
 C
       NOMRES(1)='FONC_DESORP'
-      CALL RCVALA(IMATE,'ELAS',1,'SECH',SECHM,1,
+      CALL RCVALA(IMATE,' ','ELAS',1,'SECH',SECHM,1,
      &               NOMRES(1),VALRES(1),CODRET(1), 'F ')
          IF  (CODRET(1) .NE. 'OK')  THEN
              CALL UTMESS ('F','RCVALA_01',
@@ -275,7 +275,7 @@ C
      &          AVEC SECH COMME PARAMETRE')
          ENDIF
       HYGRM=VALRES(1)
-      CALL RCVALA(IMATE,'ELAS',1,'SECH',SECHP,1,
+      CALL RCVALA(IMATE,' ','ELAS',1,'SECH',SECHP,1,
      &               NOMRES(1),VALRES(1),CODRET(1), 'F ')
          IF  (CODRET(1) .NE. 'OK')  THEN
              CALL UTMESS ('F','RCVALA_01',

@@ -5,7 +5,7 @@
       REAL*8              XYZL(3,*),PGL(3,*), DEPL(*), CDL(*)
       CHARACTER*16        NOMTE, OPTION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 21/01/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -617,7 +617,7 @@ C           ------ SF = BF.DEPF ---------------------------------------
               CALL CODENT ( IC, 'G', NUM )
               CALL CODENT (  1, 'G', VAL )
               NOMRES = 'C'//NUM//'_V'//VAL
-              CALL RCVALA ( ZI(JMATE), 'ELAS_COQMU', 0, ' ', R8BID,
+              CALL RCVALA(ZI(JMATE),' ', 'ELAS_COQMU', 0, ' ', R8BID,
      +                      1, NOMRES, EPAIS, CODRET, 'FM' )
             END IF
             HIC  =  EPAIS/ICOU

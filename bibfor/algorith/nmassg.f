@@ -6,7 +6,7 @@ C ----------------------------------------------------------------------
       PARAMETER (NCOEFG = 3)
       REAL*8  COEFGR(NCOEFG)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 02/03/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -69,19 +69,19 @@ C
          NOMPAR(1) = ' '
          VALPAR(1) = 0.D0
 C
-         CALL RCVALA ( ICODMA,'GRAN_IRRA',NBPAR,NOMPAR,VALPAR,
+         CALL RCVALA(ICODMA,' ','GRAN_IRRA',NBPAR,NOMPAR,VALPAR,
      &              1,NOMGRD(1),VALRES(1),CODRES(1), FB2 )
          NBPAR  = 0
          NOMPAR(1) = ' '
          VALPAR(1) = 0.D0
 C
-         CALL RCVALA ( ICODMA,'GRAN_IRRA',NBPAR,NOMPAR,VALPAR,
+         CALL RCVALA(ICODMA,' ','GRAN_IRRA',NBPAR,NOMPAR,VALPAR,
      &              1,NOMGRD(2),VALRES(2),CODRES(2), FB2 )
          NBPAR  = 0
          NOMPAR(1) = ' '
          VALPAR(1) = 0.D0
 C
-         CALL RCVALA ( ICODMA,'GRAN_IRRA',NBPAR,NOMPAR,VALPAR,
+         CALL RCVALA(ICODMA,' ','GRAN_IRRA',NBPAR,NOMPAR,VALPAR,
      &              1,NOMGRD(3),VALRES(3),CODRES(3), BL2 )
          IF (CODRES(3).NE.'OK') VALRES(3) = 1.D0
          CALL R8COPY (NCOEFG,VALRES,1,COEFGR,1)

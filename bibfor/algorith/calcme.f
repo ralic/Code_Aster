@@ -11,7 +11,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -125,7 +125,7 @@ C ======================================================================
      +      (MECA.EQ.'DRUCKER_PRAGER')  .OR.
      +      (MECA.EQ.'MAZARS')          .OR.
      +      (MECA.EQ.'ENDO_ISOT_BETON') ) THEN
-         CALL RCVALA(IMATE,'ELAS',0,' ',0.D0,NELAS,
+         CALL RCVALA(IMATE,' ','ELAS',0,' ',0.D0,NELAS,
      +                                           NCRA1,ELAS,CODRET,'FM')
          YOUNG  = ELAS(1)
          NU     = ELAS(2)
@@ -377,7 +377,7 @@ C
       NBPAR  = 0
       VALPAR = 0.D0
       NOMPAR = ' '
-      CALL RCVALA ( IMATE,'ELAS_THM',NBPAR,NOMPAR,VALPAR,
+      CALL RCVALA(IMATE,' ','ELAS_THM',NBPAR,NOMPAR,VALPAR,
      &              NNELA,BGCR1,VALRES,CODRET, 'FM' )
        XKL    = VALRES(3)
        XKB    = VALRES(4)
@@ -467,8 +467,8 @@ C
             NBPAR  = 0
             VALPAR = 0.D0
             NOMPAR = ' '
-            CALL RCVALA ( IMATE, 'SURF_ETAT_SATU' ,NBPAR,NOMPAR,VALPAR,
-     &              NSATM,BGCR7,VSATSU,CODRET, 'FM' )
+            CALL RCVALA(IMATE,' ', 'SURF_ETAT_SATU' ,NBPAR,NOMPAR,
+     &              VALPAR,NSATM,BGCR7,VSATSU,CODRET, 'FM' )
             ELOAD   = VSATSU(1)
             EUNLD   = VSATSU(2)
             XN      = VSATSU(3)
@@ -484,7 +484,7 @@ C
             COHES   = VSATSU(14)
             TEN     = VSATSU(15)
 C
-            CALL RCVALA(IMATE,'THM_INIT',0,' ',0.D0,NINIG,BGCR3,
+            CALL RCVALA(IMATE,' ','THM_INIT',0,' ',0.D0,NINIG,BGCR3,
      &               INIGAT,CODRET,'FM')
             ATMP = INIGAT(2)
             CALL PRCIPE(CONGEP,DIMCON,S1,S2,S3,NDIM)
@@ -658,8 +658,8 @@ C
             NBPAR  = 0
             VALPAR = 0.D0
             NOMPAR = ' '
-            CALL RCVALA ( IMATE,'SURF_ETAT_NSAT',NBPAR,NOMPAR,VALPAR,
-     &              NSURM,BGCR2,VALSUR,CODRET, 'FM' )
+            CALL RCVALA(IMATE,' ','SURF_ETAT_NSAT',NBPAR,NOMPAR,
+     &              VALPAR,NSURM,BGCR2,VALSUR,CODRET, 'FM' )
             ELOAD   = VALSUR(1)
             EUNLD   = VALSUR(2)        
             XN      = VALSUR(3)
@@ -673,7 +673,7 @@ C
             SUCP2   = VALSUR(13)
             TEN     = VALSUR(14)
 C
-            CALL RCVALA(IMATE,'THM_INIT',0,' ',0.D0,NINIG,BGCR3,
+            CALL RCVALA(IMATE,' ','THM_INIT',0,' ',0.D0,NINIG,BGCR3,
      &               INIGAT,CODRET,'FM')
             ATMP = INIGAT(2)
             CALL PRCIPE(CONGEP,DIMCON,S1,S2,S3,NDIM)

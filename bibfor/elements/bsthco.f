@@ -5,7 +5,7 @@
       CHARACTER*8         NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 09/02/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -386,7 +386,7 @@ C
             VALPAR = TEMPG
             NBV = 1
             NOMRES(1)  = 'ALPHA'
-            CALL RCVALA ( ZI(IMATE) , PHENOM , NBPAR , NOMPAR, VALPAR,
+            CALL RCVALA ( ZI(IMATE) ,' ',PHENOM ,NBPAR ,NOMPAR, VALPAR,
      +                    NBV , NOMRES , VALRES , CODRET , '  ' )
             IF (CODRET.NE.'OK') VALRES = ZERO
             ALPHA = VALRES 

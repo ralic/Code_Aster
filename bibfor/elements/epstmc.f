@@ -1,7 +1,7 @@
       SUBROUTINE  EPSTMC(MODELI, TEMPE, TREF, HYDR, SECH, INSTAN, MATER,
      &                   OPTION, EPSTH)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 27/06/2000   AUTEUR CIBHHBC B.CIREE 
+C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -84,8 +84,8 @@ C
 C ----      INTERPOLATION DE B_ENDOGENE EN FONCTION DE LA TEMPERATURE
 C           DE L HYDRATATION OU DU SECHAGE
 C           ----------------------------------------------------------
-            CALL RCVALA(MATER,PHENOM,4,NOMPAR,VALPAR,NBV,NOMRES,VALRES,
-     +                  CODRET, BL2 )
+            CALL RCVALA(MATER,' ',PHENOM,4,NOMPAR,VALPAR,NBV,NOMRES,
+     +                VALRES,  CODRET, BL2 )
 C
             IF (CODRET(1).EQ.'OK') THEN
 C
@@ -121,8 +121,8 @@ C
 C ----      INTERPOLATION DE K_DESSICCA EN FONCTION DE LA TEMPERATURE
 C           DE L HYDRATATION OU DU SECHAGE
 C           ----------------------------------------------------------
-            CALL RCVALA(MATER,PHENOM,4,NOMPAR,VALPAR,NBV,NOMRES,VALRES,
-     +                  CODRET, BL2 )
+            CALL RCVALA(MATER,' ',PHENOM,4,NOMPAR,VALPAR,NBV,NOMRES,
+     +                 VALRES, CODRET, BL2 )
 C
             IF (CODRET(1).NE.'OK') VALRES(1)=0.D0
 C
@@ -157,8 +157,8 @@ C
 C
 C ----   INTERPOLATION DE ALPHA EN FONCTION DE LA TEMPERATURE
 C        ----------------------------------------------------
-          CALL RCVALA(MATER,PHENOM,4,NOMPAR,VALPAR,NBV,NOMRES,VALRES,
-     +                CODRET, BL2 )
+          CALL RCVALA(MATER,' ',PHENOM,4,NOMPAR,VALPAR,NBV,NOMRES,
+     +               VALRES, CODRET, BL2 )
 C
           IF (CODRET(1).NE.'OK') VALRES(1) = ZERO
 C
@@ -184,8 +184,8 @@ C
 C
 C ----   INTERPOLATION DES COEFFICIENTS EN FONCTION DE LA TEMPERATURE
 C        ------------------------------------------------------------
-          CALL RCVALA(MATER,PHENOM,4,NOMPAR,VALPAR,NBV,NOMRES,VALRES,
-     +                CODRET, BL2 )
+          CALL RCVALA(MATER,' ',PHENOM,4,NOMPAR,VALPAR,NBV,NOMRES,
+     +                VALRES,CODRET, BL2 )
 C
           IF (CODRET(1).NE.'OK') VALRES(1) = ZERO
           IF (CODRET(2).NE.'OK') VALRES(2) = ZERO
@@ -214,8 +214,8 @@ C
 C
 C ----   INTERPOLATION DES COEFFICIENTS EN FONCTION DE LA TEMPERATURE
 C        ------------------------------------------------------------
-          CALL RCVALA(MATER,PHENOM,4,NOMPAR,VALPAR,NBV,NOMRES,VALRES,
-     +                CODRET, BL2 )
+          CALL RCVALA(MATER,' ',PHENOM,4,NOMPAR,VALPAR,NBV,NOMRES,
+     +              VALRES,  CODRET, BL2 )
 C
           IF (CODRET(1).NE.'OK') VALRES(1) = ZERO
           IF (CODRET(2).NE.'OK') VALRES(2) = ZERO

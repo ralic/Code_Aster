@@ -1,6 +1,6 @@
       SUBROUTINE TE0050 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -105,10 +105,10 @@ C     --------------------------------
         NOMRES(2)='AMOR_BETA'
         VALRES(1) = 0.D0
         VALRES(2) = 0.D0
-        CALL RCVALA ( MATER,'ELAS',NPARA,NOMPAR,VALPAR,
+        CALL RCVALA(MATER,' ','ELAS',NPARA,NOMPAR,VALPAR,
      +                2,NOMRES,VALRES,CODRET, BL2 )
         IF ( CODRET(1) .NE. 'OK' .OR. CODRET(2) .NE. 'OK') THEN
-          CALL RCVALA ( MATER,'CABLE',NPARA,NOMPAR,VALPAR,
+          CALL RCVALA(MATER,' ','CABLE',NPARA,NOMPAR,VALPAR,
      +                2,NOMRES,VALRES,CODRET, BL2 )
           IF ( CODRET(1) .NE. 'OK' .OR. CODRET(2) .NE. 'OK') THEN
             VALRES(1) = 0.D0
@@ -120,7 +120,7 @@ C
       ELSE IF (OPTION.EQ.'RIGI_MECA_HYST') THEN
 C     ------------------------------------------
         NOMRES(1)='AMOR_HYST'
-        CALL RCVALA ( MATER,'ELAS',NPARA,NOMPAR,VALPAR,
+        CALL RCVALA(MATER,' ','ELAS',NPARA,NOMPAR,VALPAR,
      +                1,NOMRES,VALRES,CODRET, 'FM' )
       ELSE
         CALL UTMESS('F','TE0050','MESSAGE VIDE    ')

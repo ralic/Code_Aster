@@ -2,7 +2,7 @@
       IMPLICIT NONE
        CHARACTER*16       OPTION, NOMTE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 04/02/2004   AUTEUR CIBHHPD D.NUNEZ 
+C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -104,7 +104,7 @@ C     ----------------------------------------------
          NOMRES(J) = 'C'//NUM//'_V'//VAL
    11  CONTINUE
  
-       CALL RCVALA(MATCOD,'ELAS_COQMU',0,' ',R8BID,5,NOMRES,LIM,
+       CALL RCVALA(MATCOD,' ','ELAS_COQMU',0,' ',R8BID,5,NOMRES,LIM,
      &            CODRET,'FM')
 
 C     LIMITE EN TRACTION SUIVANT L 
@@ -129,7 +129,7 @@ C     -------------------------------------------
          NOMRES(J) = 'C'//NUM//'_V'//VAL
    12  CONTINUE
  
-       CALL RCVALA(MATCOD,'ELAS_COQMU',0,' ',R8BID,2,NOMRES,VAR,
+       CALL RCVALA(MATCOD,' ','ELAS_COQMU',0,' ',R8BID,2,NOMRES,VAR,
      &            CODRET,'FM')
      
        ORIEN= VAR(2) 

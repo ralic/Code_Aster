@@ -2,7 +2,7 @@
      &             ,NBTRC,TPG0,TPG1,TPG2,DT10,DT21,TAMP,METAPG)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 04/07/2000   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -88,7 +88,7 @@ C
          NOMRES(5) = 'AC3'
          NOMRES(6) = 'TAUX_1'
          NOMRES(7) = 'TAUX_3'
-         CALL RCVALA ( MATOS, 'META_ACIER', 1, 'INST', 0.D0, 7, NOMRES,
+         CALL RCVALA(MATOS,' ','META_ACIER', 1, 'INST', 0.D0, 7, NOMRES,
      &                 CTES, CODRET, 'FM' )
          AR3   = CTES(1)
          AC1   = CTES(4)
@@ -100,7 +100,7 @@ C
          NOMRES(9) = 'QSR_K'
          NOMRES(10)= 'D10'
          NOMRES(11)= 'WSR_K'
-         CALL RCVALA ( MATOS, 'META_ACIER', 1, 'INST', 0.D0, 4,
+         CALL RCVALA(MATOS,' ','META_ACIER', 1, 'INST', 0.D0, 4,
      &                 NOMRES(8),CTES(8), CODRET(8), '  ' )
 
          IF (CODRET(8) .EQ. 'NO') CTES(8) = 0.D0

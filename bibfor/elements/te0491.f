@@ -1,6 +1,6 @@
       SUBROUTINE TE0491(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -344,10 +344,10 @@ C --- RECUPERATION DES CARACTERISTIQUES DU MATERIAU :
           NOMRES(2) = 'NU'
           NOMRES(3) = 'ALPHA'
 
-          CALL RCVALA(ZI(IMATE),'ELAS',1,'TEMP',TEMPG,2,NOMRES,VALRES,
-     &                CODRET,FB2)
+          CALL RCVALA(ZI(IMATE),' ','ELAS',1,'TEMP',TEMPG,2,NOMRES,
+     &                VALRES,CODRET,FB2)
 
-          CALL RCVALA(ZI(IMATE),'ELAS',1,'TEMP',TEMPG,1,NOMRES(3),
+          CALL RCVALA(ZI(IMATE),' ','ELAS',1,'TEMP',TEMPG,1,NOMRES(3),
      &                VALRES(3),CODRET(3),BL2)
 
           E = VALRES(1)
@@ -466,8 +466,8 @@ C --- ET DE LA PENTE DE LA COURBE DE TRACTION D_SIGM_EPSI :
             NOMRES(1) = 'D_SIGM_EPSI'
             NOMRES(2) = 'SY'
 
-            CALL RCVALA(ZI(IMATE),'ECRO_LINE',1,'TEMP',TEMPG,2,NOMRES,
-     &                  VALRES,CODRET,FB2)
+            CALL RCVALA(ZI(IMATE),' ','ECRO_LINE',1,'TEMP',TEMPG,2,
+     &                 NOMRES, VALRES,CODRET,FB2)
 
             DSDE = VALRES(1)
             SIGY = VALRES(2)
@@ -650,8 +650,8 @@ C --- ET DE LA PENTE DE LA COURBE DE TRACTION D_SIGM_EPSI :
             NOMRES(1) = 'D_SIGM_EPSI'
             NOMRES(2) = 'SY'
 
-            CALL RCVALA(ZI(IMATE),'ECRO_LINE',1,'TEMP',TEMPG,2,NOMRES,
-     &                  VALRES,CODRET,FB2)
+            CALL RCVALA(ZI(IMATE),' ','ECRO_LINE',1,'TEMP',TEMPG,2,
+     &                 NOMRES, VALRES,CODRET,FB2)
 
             DSDE = VALRES(1)
             SIGY = VALRES(2)
@@ -786,10 +786,10 @@ C ---      RECUPERATION DES CARACTERISTIQUES DU MATERIAU :
           NOMRES(2) = 'NU'
           NOMRES(3) = 'ALPHA'
 
-          CALL RCVALA(ZI(IMATE),'ELAS',1,'TEMP',TEMPG,2,NOMRES,VALRES,
-     &                CODRET,FB2)
+          CALL RCVALA(ZI(IMATE),' ','ELAS',1,'TEMP',TEMPG,2,NOMRES,
+     &                VALRES,CODRET,FB2)
 
-          CALL RCVALA(ZI(IMATE),'ELAS',1,'TEMP',TEMPG,1,NOMRES(3),
+          CALL RCVALA(ZI(IMATE),' ','ELAS',1,'TEMP',TEMPG,1,NOMRES(3),
      &                VALRES(3),CODRET(3),BL2)
 
           E = VALRES(1)
@@ -867,8 +867,8 @@ C ---          ET DE LA PENTE DE LA COURBE DE TRACTION D_SIGM_EPSI :
             NOMRES(1) = 'D_SIGM_EPSI'
             NOMRES(2) = 'SY'
 
-            CALL RCVALA(ZI(IMATE),'ECRO_LINE',1,'TEMP',TEMPG,2,NOMRES,
-     &                  VALRES,CODRET,FB2)
+            CALL RCVALA(ZI(IMATE),' ','ECRO_LINE',1,'TEMP',TEMPG,2,
+     &                  NOMRES,VALRES,CODRET,FB2)
 
             DSDE = VALRES(1)
             SIGY = VALRES(2)

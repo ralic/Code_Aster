@@ -2,7 +2,7 @@
      &                  DEPS,VIM,OPTION,SIGP,VIP,DSDE)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 02/12/2003   AUTEUR PBADEL P.BADEL 
+C MODIF ALGORITH  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -63,14 +63,14 @@ C     ------------------------------------------------------------------
       NBPAR = 1
       NOMPAR = 'TEMP'
       FB2 = 'FM'
-      CALL RCVALA(IMATE,'ECRO_LINE',NBPAR,NOMPAR,VALPAR,1,NOMECL,VALRES,
-     &            CODRES,FB2)
+      CALL RCVALA(IMATE,' ','ECRO_LINE',NBPAR,NOMPAR,VALPAR,1,NOMECL,
+     &          VALRES,  CODRES,FB2)
       ETM = VALRES(1)
       HM = EM*ETM/ (EM-ETM)
 
       VALPAR = TEMPP
-      CALL RCVALA(IMATE,'ECRO_LINE',NBPAR,NOMPAR,VALPAR,2,NOMECL,VALRES,
-     &            CODRES,FB2)
+      CALL RCVALA(IMATE,' ','ECRO_LINE',NBPAR,NOMPAR,VALPAR,2,NOMECL,
+     &            VALRES,CODRES,FB2)
       ETP = VALRES(1)
       HP = EP*ETP/ (EP-ETP)
       SIGY = VALRES(2)

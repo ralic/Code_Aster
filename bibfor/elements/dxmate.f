@@ -23,7 +23,7 @@ C ======================================================================
       REAL*8 PGL(3,3),R(*)
       LOGICAL GRILLE,ELASCQ
 C     ------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 18/11/2003   AUTEUR LEBOUVIE F.LEBOUVIER 
+C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
 C TOLE CRP_20
 C     ------------------------------------------------------------------
 C     CALCUL DES MATRICES DE RIGIDITE DE FLEXION, MEMBRANE , COUPLAGE
@@ -199,10 +199,10 @@ C        ET T2VE INVERSE DE T2EV
         R(LT1VE+5) = R(LT1VE+6) + R(LT1VE+6)
         R(LT1VE+8) = R(LT1VE) - R(LT1VE+3)
 
-        CALL RCVALA(ZI(JMATE),PHENOM,0,' ',ZERO,1,'MEMB_L  ',
+        CALL RCVALA(ZI(JMATE),' ',PHENOM,0,' ',ZERO,1,'MEMB_L  ',
      +              VALRES(1),CODRET,' ')
         IF (CODRET(1).EQ.'NO') THEN
-          CALL RCVALA(ZI(JMATE),PHENOM,0,' ',ZERO,1,'M_LLLL  ',
+          CALL RCVALA(ZI(JMATE),' ',PHENOM,0,' ',ZERO,1,'M_LLLL  ',
      +                VALRES(1),CODRET,' ')
           IF (CODRET(1).EQ.'NO') THEN
             CALL UTMESS('F','DXMATE','IMPOSSIBILITE : VOUS AVEZ UN '//
@@ -274,8 +274,8 @@ C
 C
 
       IF (PHENOM.EQ.'ELAS') THEN
-        CALL RCVALA(ZI(JMATE),PHENOM,NBPAR,NOMPAR,VALPAR,NBV,NOMRES,
-     +              VALRES,CODRET,'FM')
+        CALL RCVALA(ZI(JMATE),' ',PHENOM,NBPAR,NOMPAR,VALPAR,NBV,
+     +             NOMRES, VALRES,CODRET,'FM')
 
         MULTIC = 0
 
@@ -360,8 +360,8 @@ C        --- DANS LE CAS D'UN EXCENTREMENT                     --------
         END IF
 
       ELSE IF (PHENOM.EQ.'ELAS_COQUE') THEN
-        CALL RCVALA(ZI(JMATE),PHENOM,NBPAR,NOMPAR,VALPAR,NBV,NOMRES,
-     +              VALRES,CODRET,'FM')
+        CALL RCVALA(ZI(JMATE),' ',PHENOM,NBPAR,NOMPAR,VALPAR,NBV,
+     +              NOMRES,VALRES,CODRET,'FM')
         IF (ELASCO.EQ.1) THEN
           MULTIC = 0
           IF (GRILLE) CALL UTMESS('F','DXMATE','STOP 1')
@@ -502,7 +502,7 @@ C        ----------- MATRICES DANS LE REPERE INTRINSEQUE DE L'ELEMENT --
 C 
       ELSE IF (PHENOM.EQ.'ELAS_COQMU') THEN
 C        ------ MATERIAU MULTICOUCHE -----------------------------------
-        CALL RCVALA(ZI(JMATE),PHENOM,NBPAR,NOMPAR,VALPAR,18,NOMRES,
+        CALL RCVALA(ZI(JMATE),' ',PHENOM,NBPAR,NOMPAR,VALPAR,18,NOMRES,
      +              VALRES,CODRET,'FM')
         DM(1,1) = VALRES(1)
         DM(1,2) = VALRES(2)
@@ -531,8 +531,8 @@ C        ------ MATERIAU MULTICOUCHE -----------------------------------
         DF(2,1) = DF(1,2)
         DF(3,1) = DF(1,3)
         DF(3,2) = DF(2,3)
-        CALL RCVALA(ZI(JMATE),PHENOM,NBPAR,NOMPAR,VALPAR,6,NOMRES(21),
-     +              VALRES(21),CODRET(21),'FM')
+        CALL RCVALA(ZI(JMATE),' ',PHENOM,NBPAR,NOMPAR,VALPAR,6,
+     +             NOMRES(21), VALRES(21),CODRET(21),'FM')
         DCI(1,1) = VALRES(21)
         DCI(2,2) = VALRES(22)
         DCI(1,2) = VALRES(23)

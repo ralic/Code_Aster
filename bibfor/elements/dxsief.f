@@ -4,7 +4,7 @@
       REAL*8          XYZL(3,4), DEPL(*), PGL(3,3), SIGMA(*)
       CHARACTER*16    NOMTE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHPD S.VANDENBERGHE 
+C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -287,7 +287,7 @@ C         -------------------------------------------
               CALL FOINTE('FM',ZK8(ITEMP),NBPAR,NOMPAR,VALPU,TEMPG,IRET)
             END IF
 
-            CALL RCVALA ( MATER, 'ELAS', NBPAR,NOMPAR,VALPU,
+            CALL RCVALA(MATER,' ', 'ELAS', NBPAR,NOMPAR,VALPU,
      +                                   1,'ALPHA',ALPHA,CODRET, '  ' )
             IF ( CODRET.NE.'OK' ) ALPHA = ZERO
 
@@ -315,7 +315,7 @@ C
                EPSG(2)=EPS2D(2)-EPSTH(2)
                EPSG(3)=EPS2D(4)
                CALL INSDRF(EPSG,PHI,EPSL)
-               CALL RCVALA(MATER,'ELAS',1,'TEMP',TEMPG,
+               CALL RCVALA(MATER,' ','ELAS',1,'TEMP',TEMPG,
      &                     1,'E',E,CODRET,'FM')
                SIGL(1)=E*EPSL(1)
                SIGL(2)=E*EPSL(2)

@@ -4,7 +4,7 @@
       CHARACTER*8         CHMAT, NOMAIL, NOMODE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 17/06/2003   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -42,7 +42,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
 C ----------------------------------------------------------------------
 C
-      INTEGER IBID, NOCC, I, NM, NT, JNCMP, JVALV, NBMA,JMAIL
+      INTEGER IBID, NOCC, I, NM, NT, JNCMP, JVALV, NBMA,JMAIL,IER,NBCMP
       CHARACTER*4   OUI
       CHARACTER*8   K8B, NOMMAT, TYPMCL(2)
       CHARACTER*16  MOTCLE(2)
@@ -53,10 +53,17 @@ C
       CALL JEMARQ()
       CHAMAT = CHMAT//'.CHAMP_MAT'
 C
-      CALL ALCART ( 'G', CHAMAT, NOMAIL, 'MATE_F', NBAPNO, MXMATA )
+      CALL ALCART ( 'G', CHAMAT, NOMAIL, 'NEUT_F', NBAPNO, MXMATA )
       CALL JEVEUO ( CHAMAT(1:19)//'.NCMP', 'E', JNCMP )
       CALL JEVEUO ( CHAMAT(1:19)//'.VALV', 'E', JVALV )
-      ZK8(JNCMP) = 'MATE'
+      OUI = 'X'
+C 
+      CALL DISMOI('F','NB_CMP_MAX','NEUT_F','GRANDEUR',NBCMP,K8B,IER)
+C
+      DO 5 I=1,NBCMP
+        CALL CODENT(I,'G',OUI(2:4))
+        ZK8(JNCMP+I-1) = OUI
+ 5    CONTINUE
 C
       CALL GETFAC ( 'AFFE' , NOCC )
 C
@@ -68,19 +75,23 @@ C
       MESMAI = '&&RCMATE.MES_MAILLES'
 C
       DO 10 I = 1 , NOCC
-         CALL GETVID ( 'AFFE', 'MATER' , I,1,1, NOMMAT, NM )
-         ZK8(JVALV) = NOMMAT
+         CALL GETVID ( 'AFFE', 'MATER' , I,1,1,  NOMMAT, NM )
+         IF (NM .LT. -1) NM = -NM
+         IF (NM .GT. NBCMP) THEN
+           CALL UTMESS('F','RCMATE','LE NOMBRE DE MATERIAU EST '//    
+     +      'SUPERIEUR AU NOMBRE DE COMPOSANTES DE LA GRANDEUR NEUT_F')
+         ENDIF
+         CALL GETVID ( 'AFFE', 'MATER' , I,1,NM, ZK8(JVALV), NM )
          CALL GETVTX ( 'AFFE', 'TOUT'  , I,1,1, OUI   , NT )
-
          IF ( NT .NE. 0 ) THEN
-            CALL NOCART ( CHAMAT, 1, K8B, K8B, 0, K8B, IBID, ' ', 1 )
+            CALL NOCART ( CHAMAT, 1, K8B, K8B, 0, K8B, IBID, ' ', NM )
          ELSE
             CALL RELIEM(NOMODE,NOMAIL,'NU_MAILLE','AFFE',I,2,MOTCLE(1),
      +                                      TYPMCL(1), MESMAI, NBMA )
             IF ( NBMA .NE. 0 ) THEN
                CALL JEVEUO ( MESMAI, 'L', JMAIL )
                CALL NOCART ( CHAMAT, 3, K8B, 'NUM', NBMA, K8B,
-     +                                              ZI(JMAIL), ' ', 1 )
+     +                                              ZI(JMAIL), ' ', NM )
                CALL JEDETR ( MESMAI )
             ENDIF
          ENDIF

@@ -3,7 +3,7 @@
       CHARACTER*(*)       CHMAT , MATE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 11/12/2001   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF ALGORITH  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,7 +23,7 @@ C ======================================================================
 C
 C     CREATION DE LA CARTE DU MATERIAU CODE A PARTIR DU CHAMP_MATER
 C
-C IN  MODELE  : NOM DU CHAMP_MATER
+C IN  CHMAT  :  NOM UTILISATEUR DU CHAMP_MATER
 C VAR MATE    : NOM DE LA CARTE DE MATERIAU CODE
 C ----------------------------------------------------------------------
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
@@ -42,13 +42,15 @@ C
       CHARACTER*32                                    ZK32
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
-      CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
+      CHARACTER*32       JEXNUM , JEXNOM  , JEXATR
 C
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C
       INTEGER        NBVAL, JCART, IRET, IRETC, JVALE, IGD, JDESC, KK
+      INTEGER        NBGRP, I, ICOMPT, IGRP, INGRP,NBCMP,IER,J,K,NBMAT
+      INTEGER        INBMAT
       CHARACTER*4    KNUMAT
-      CHARACTER*8    K8B, MATERI
+      CHARACTER*8    K8B, MATERI,NOMGD
       CHARACTER*19   CODI, CH19
       CHARACTER*24   CH24
 C     ------------------------------------------------------------------
@@ -67,22 +69,68 @@ C
         IF ( IRETC .NE. 0 ) GOTO 9999
       ENDIF
 C
+      CALL JEVEUO ( CH24(1:19)//'.DESC', 'L', JDESC )            
+      CALL JENUNO(JEXNUM('&CATA.GD.NOMCMP',ZI(JDESC)),NOMGD)
+      CALL DISMOI('F','NB_CMP_MAX',NOMGD,'GRANDEUR',NBCMP,K8B,IER)
+      CALL ASSERT((NBVAL/NBCMP)*NBCMP.EQ.NBVAL)
+C
       CALL COPISD ( 'CHAMP_GD', 'V', CH24(1:19), MATE(1:19) )
       CALL JEDETR ( MATE(1:19)//'.VALE' )
-      CALL WKVECT ( MATE(1:19)//'.VALE', 'V V I', NBVAL, JVALE )
+      NBGRP=NBVAL/NBCMP
+      CALL WKVECT ( MATE(1:19)//'.VALE', 'V V I', NBGRP, JVALE )
       CALL JENONU ( JEXNOM('&CATA.GD.NOMGD','ADRSJEVE'), IGD )
       CALL JEVEUO ( MATE(1:19)//'.DESC', 'E', JDESC )
       ZI(JDESC) = IGD
 C
 C     --- CODAGE DU MATERIAU ---
 C
+      ICOMPT=0
+      DO 9 I=1,NBVAL
+         IF (ZK8(JCART-1+I).NE.' ') ICOMPT=ICOMPT+1      
+  9   CONTINUE
+      CALL ASSERT(ICOMPT.GT.0)
+      
+      CALL JEEXIN (MATERI//'.MATE_CODE.GRP' , IRET )
+      IF ( IRET .NE. 0 ) THEN
+         CALL JEDETR (MATERI//'.MATE_CODE.GRP' )
+      ENDIF
+      CALL JEEXIN (MATERI//'.MATE_CODE.NGRP', IRET )
+      IF ( IRET .NE. 0 ) THEN
+         CALL JEDETR (MATERI//'.MATE_CODE.NGRP')
+      ENDIF
+      CALL WKVECT(MATERI//'.MATE_CODE.GRP' ,'V V K8',ICOMPT,IGRP)
+      CALL WKVECT(MATERI//'.MATE_CODE.NGRP','V V I',NBGRP,INGRP)
+      
+      ICOMPT=0
+      INBMAT=0
+      DO 11 I=1,NBGRP
+         DO 12 J=1,NBCMP
+            K=(I-1)*NBCMP+J
+            IF (ZK8(JCART-1+K).NE.' ') THEN
+               ZK8(IGRP+ICOMPT)=ZK8(JCART-1+K)
+               ICOMPT=ICOMPT+1      
+               INBMAT=INBMAT+1      
+            ENDIF
+  12     CONTINUE
+         ZI(INGRP-1+I)=INBMAT
+         INBMAT=0
+  11  CONTINUE
+      
       CODI = ' '
-      DO 10 KK = 1,NBVAL
-         CALL RCMACO ( CHMAT(1:8), ZK8(JCART+KK-1), KK )
+      CALL JEVEUT(MATERI//'.MATE_CODE.GRP' ,'L',IGRP)
+      CALL JEVEUT(MATERI//'.MATE_CODE.NGRP','L',INGRP)
+      ICOMPT=0
+      DO 10 KK = 1,NBGRP
+         NBMAT=ZI(INGRP-1+KK)
+         CALL RCMACO ( CHMAT(1:8), ICOMPT,NBMAT, KK )
          CALL CODENT ( KK, 'D0', KNUMAT )
-         CODI(1:8)  = ZK8(JCART+KK-1)
+         
+C  LE NOM DU CODI EST CELUI DU PREMIER MATERIAU DU GROUPE KK
+
+         CODI(1:8)  = ZK8(IGRP+ICOMPT)
          CODI(9:13) = '.'//KNUMAT
          CALL JEVEUO ( CODI//'.CODI', 'L', ZI(JVALE+KK-1) )
+         ICOMPT=ICOMPT+NBMAT
  10   CONTINUE
 C
  9999 CONTINUE

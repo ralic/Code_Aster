@@ -1,6 +1,6 @@
       SUBROUTINE TE0347(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 06/05/2003   AUTEUR CIBHHPD D.NUNEZ 
+C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -150,7 +150,7 @@ C
                  NOMPAR = 'TEMP'
                  VALPAR = ZR(ITEMPE)
               ENDIF
-              CALL RCVALA (ZI(IMATE),'ELAS',NBPAR,NOMPAR,VALPAR,2,
+              CALL RCVALA(ZI(IMATE),' ','ELAS',NBPAR,NOMPAR,VALPAR,2,
      +                              NOMRES, VALRES, CODRES, ' ' )
 
               E  = VALRES(1)

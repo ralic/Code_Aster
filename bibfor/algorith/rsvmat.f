@@ -4,7 +4,7 @@
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/01/2003   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -102,14 +102,14 @@ C
 C
 C -     RECUPERATION MATERIAU A TEMPD (T)
 C
-          CALL RCVALA (  IMAT,    'ELAS',       3,  NOMPAR,VALPAD, 5,
+          CALL RCVALA(IMAT,' ',    'ELAS',       3,  NOMPAR,VALPAD, 5,
      1                   NOMC(1),  MATERD(1,1),  CERR(1), BL2 )
           IF ( CERR(3) .NE. 'OK' ) MATERD(3,1) = 0.D0
           IF ( CERR(4) .NE. 'OK' ) MATERD(4,1) = 0.D0
           IF ( CERR(5) .NE. 'OK' ) MATERD(5,1) = 0.D0
-          CALL RCVALA (  IMAT,    'ROUSSELIER',  1, 'TEMP', TEMPD, 7,
+          CALL RCVALA(IMAT,' ',    'ROUSSELIER',  1, 'TEMP', TEMPD, 7,
      1                   NOMC(6),  MATERD(1,2),  CERR(6), FB2 )
-          CALL RCVALA (  IMAT,    'ROUSS_VISC',  0, ' ', R8BID, 3,
+          CALL RCVALA(IMAT,' ',    'ROUSS_VISC',  0, ' ', R8BID, 3,
      1                   NOMC(13),  MATERD(8,2),  CERR(13), FB2 )
 C
 C         RECUPERATION DE E(TEMPD) VIA LES COURBES DE TRACTION MONOTONES
@@ -121,14 +121,14 @@ C
 C
 C -     RECUPERATION MATERIAU A TEMPF (T+DT)
 C
-          CALL RCVALA (  IMAT,    'ELAS',       3,  NOMPAR,VALPAF, 5,
+          CALL RCVALA(IMAT,' ',    'ELAS',       3,  NOMPAR,VALPAF, 5,
      1                   NOMC(1),  MATERF(1,1),  CERR(1), BL2 )
           IF ( CERR(3) .NE. 'OK' ) MATERF(3,1) = 0.D0
           IF ( CERR(4) .NE. 'OK' ) MATERF(4,1) = 0.D0
           IF ( CERR(5) .NE. 'OK' ) MATERF(5,1) = 0.D0
-          CALL RCVALA (  IMAT,    'ROUSSELIER',  1, 'TEMP', TEMPF, 7,
+          CALL RCVALA(IMAT,' ',    'ROUSSELIER',  1, 'TEMP', TEMPF, 7,
      1                   NOMC(6),  MATERF(1,2),  CERR(6), FB2 )
-          CALL RCVALA (  IMAT,    'ROUSS_VISC',  0, ' ', R8BID, 3,
+          CALL RCVALA(IMAT,' ',    'ROUSS_VISC',  0, ' ', R8BID, 3,
      1                   NOMC(13),  MATERF(8,2),  CERR(13), FB2 )
 C
 C         RECUPERATION DE E(TEMPF) VIA LES COURBES DE TRACTION MONOTONES

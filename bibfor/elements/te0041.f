@@ -3,7 +3,7 @@
       CHARACTER*16      OPTION,NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 06/05/2003   AUTEUR CIBHHPD D.NUNEZ 
+C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -142,7 +142,7 @@ C
          VALRES(2) = ZERO
          VALRES(3) = ZERO 
          CALL UTPSGL ( NNO, NC, PGL, ZR(JDR), MATV )
-         CALL RCVALA ( ZI(JMA),'DIS_CONTACT',0,' ',VALPAR,3,
+         CALL RCVALA ( ZI(JMA),' ','DIS_CONTACT',0,' ',VALPAR,3,
      &                            NOMRES,VALRES,CODRET, ' ' )
          IF (CODRET(1).EQ.'OK'.AND.VALRES(1).NE.ZERO) THEN 
            IF (CODRET(2).EQ.'OK') MATA1(1)=MATV(1)*VALRES(2)/VALRES(1)

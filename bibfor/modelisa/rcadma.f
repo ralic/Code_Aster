@@ -1,11 +1,11 @@
-      SUBROUTINE RCADMA ( IMATE, PHENOM, NOMRES, VALRES, CODRET, STOP )
+      SUBROUTINE RCADMA ( JMAT, PHENOM, NOMRES, VALRES, CODRET, STOP )
       IMPLICIT   NONE
       CHARACTER*(*)       PHENOM, NOMRES, STOP
       CHARACTER*2         CODRET
-      INTEGER             IMATE, VALRES
+      INTEGER             JMAT, VALRES
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 08/09/98   AUTEUR CIBHHLV L.VIVAN 
+C MODIF MODELISA  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,7 +54,7 @@ C
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
       INTEGER            LMAT, ICOMP, IPI, IPIF, IPIFC, IADZI, IAZK24,
-     +                   NBK, IVALK, IK, NBR, NBC, LFCT
+     +                   NBK, IVALK, IK, NBR, NBC, LFCT, IMATE, NBMAT
       PARAMETER        ( LMAT = 7 , LFCT = 9)
       CHARACTER*2        STOP2
       CHARACTER*8        NOMAIL
@@ -65,6 +65,10 @@ C
       NOMPHE = PHENOM
       STOP2 = STOP
 C
+      NBMAT=ZI(JMAT)
+      CALL ASSERT(NBMAT.EQ.1)
+      IMATE = JMAT+ZI(JMAT+NBMAT+1)
+      
       DO 10 ICOMP = 1,ZI(IMATE+1)
         IF ( NOMPHE .EQ. ZK16(ZI(IMATE)+ICOMP-1)(1:10) ) THEN
           IPI = ZI(IMATE+2+ICOMP-1)

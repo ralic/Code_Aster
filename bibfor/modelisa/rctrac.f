@@ -1,7 +1,7 @@
-      SUBROUTINE RCTRAC(IMATE,NOMRC,NOMCL,TEMP,JPROL,JVALE,NBVALE,E)
+      SUBROUTINE RCTRAC(JMAT,NOMRC,NOMCL,TEMP,JPROL,JVALE,NBVALE,E)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 17/12/2002   AUTEUR CIBHHGB G.BERTRAND 
+C MODIF MODELISA  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,7 +20,7 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C ----------------------------------------------------------------------
       IMPLICIT REAL*8 (A-H,O-Z)
-      INTEGER            IMATE, JPROL, JVALE, NBVALE
+      INTEGER            IMATE, JPROL, JVALE, NBVALE, JMAT, NBMAT
       REAL*8             TEMP, E
       CHARACTER*(*)      NOMRC,NOMCL
 C ----------------------------------------------------------------------
@@ -80,6 +80,12 @@ C PARAMETER ASSOCIE AU MATERIAU CODE
 C DEB ------------------------------------------------------------------
 C      TOLE=R8PREM() TROP PETIT
       TOLE=1.D-6
+
+      NBMAT=ZI(JMAT)
+C     UTILISABLE SEULEMENT AVEC UN MATERIAU PAR MAILLE
+      CALL ASSERT(NBMAT.EQ.1)
+      IMATE = JMAT+ZI(JMAT+NBMAT+1)
+      
 
 C - COURBE DE TRACTION SANS METALLURGIE
 

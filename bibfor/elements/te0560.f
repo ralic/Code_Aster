@@ -3,7 +3,7 @@
       CHARACTER*16        OPTION , NOMTE, PHENOM
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -79,7 +79,7 @@ C     ---------------------------------------------------
       NBV = 1
       TPG = 0.0D0
       VALRES(1) = 0.0D0
-      CALL RCVALA (ZI(IMATE),PHENOM,0,'   ',TPG,NBV,NOMRES,VALRES,
+      CALL RCVALA(ZI(IMATE),' ',PHENOM,0,'   ',TPG,NBV,NOMRES,VALRES,
      &             CODRET,'F')
       ENDIF
 C     --------------------------------------------------
