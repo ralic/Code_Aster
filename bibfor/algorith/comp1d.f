@@ -1,17 +1,18 @@
       SUBROUTINE COMP1D(OPTION,
      &                  SIGX,EPSX,DEPX,
      &                  TEMPM,TEMPP,TREF,
+     &                  IRRAM,IRRAP,
      &                  CORRM,CORRP,
      &                  ANGMAS,
      &                  VIM,VIP,SIGXP,ETAN,CODRET)
       IMPLICIT NONE
       CHARACTER*16   OPTION
       INTEGER        CODRET
-      REAL*8         TEMPM,TEMPP,TREF,ANGMAS(3)
+      REAL*8         TEMPM,TEMPP,TREF,IRRAM,IRRAP,ANGMAS(3)
       REAL*8         VIM(*),VIP(*),SIGX,SIGXP,EPSX,DEPX,ETAN
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 15/06/2004   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 03/11/2004   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -58,6 +59,8 @@ C     DEPX      : DELTA-EPSI XX A L'INSTANT ACTUEL
 C     TREF      : TEMPERATURE DE REFERENCE
 C     TEMPM     : TEMPERATURE A L'INSTANT MOINS
 C     TEMPP     : TEMPERATURE A L'INSTANT PLUS
+C     IRRAM     : IRRADIATION A L'INSTANT MOINS
+C     IRRAP     : IRRDIATION A L'INSTANT PLUS
 C     CORRM     : CORROSION A L'INSTANT MOINS
 C     CORRP     : CORROSION A L'INSTANT PLUS
 C     VIM       : VARIABLES INTERNES A L'INSTANT MOINS
@@ -99,7 +102,7 @@ C
       REAL*8         HYDRGM,HYDRGP,SECHGM,SECHGP,SREF
       REAL*8         EPSANM(6),EPSANP(6),PHASM(7),PHASP(7)
       REAL*8         LC(10,27),CORRM,CORRP
-      REAL*8         SIGM(6),SIGP(6),EPS(6),DEPS(6)
+      REAL*8         SIGM(6),SIGP(6),EPS(6),DEPS(6),R8VIDE
 C
       CHARACTER*8    TYPMOD(2)
 C
@@ -156,6 +159,7 @@ C -    APPEL A LA LOI DE COMPORTEMENT
      &               TEMPM,TEMPP,TREF,
      &               HYDRGM,HYDRGP,
      &               SECHGM,SECHGP,SREF,
+     &               IRRAM,IRRAP,
      &               EPS,DEPS,
      &               SIGM,VIM,
      &               OPTION,

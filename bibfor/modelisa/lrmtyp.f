@@ -1,8 +1,8 @@
-      SUBROUTINE LRMTYP ( NDIM, NBTYP, NOMTYP,
-     >                    NNOTYP, NITTYP, TYPGEO, RENUMD )
+      SUBROUTINE LRMTYP ( NBTYP, NOMTYP,
+     >                    NNOTYP, TYPGEO, RENUMD )
 C_____________________________________________________________________
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 22/07/2003   AUTEUR LAVERNE J.LAVERNE 
+C MODIF MODELISA  DATE 03/11/2004   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -27,8 +27,8 @@ C
 C
 C 0.1. ==> ARGUMENTS
 C
-      INTEGER         NBTYP, NDIM
-      INTEGER         NNOTYP(*), TYPGEO(*), NITTYP(*), RENUMD(*)
+      INTEGER         NBTYP
+      INTEGER         NNOTYP(*), TYPGEO(*), RENUMD(*)
       CHARACTER*8     NOMTYP(*)        
 C
 C 0.2. ==> COMMUNS
@@ -59,7 +59,7 @@ C
       CHARACTER*6 NOMPRO
       PARAMETER ( NOMPRO = 'LRMTYP' )
 C
-      INTEGER         NUMMED(NBTMAX), NSUP3D(NBTMAX), NSUP2D(NBTMAX)
+      INTEGER         NUMMED(NBTMAX)
       INTEGER         IAUX, JAUX
       CHARACTER*8     NOMAST(NBTMAX)
       CHARACTER*1     K1
@@ -94,32 +94,6 @@ C     (LIE A LORDRE DEFINI DANS LE CATALOGUE TYPE_MAILLE.CATA)
      +              0,         0,         0,         0,
      +              0,         0,         0,         0,
      +              0,         0,         0/
-      DATA NSUP3D  /0,         1,         0,         1,    
-     +              0,         0,
-     +                         1,         0,         1,
-     +              0,         0,         1,         0,
-     +              1,         0,         0,         0,
-     +              0,         0,         0,         0,
-     +              0,         0,         0,         0,
-     +              0,         0,         0,         0,
-     +              0,         0,         0,         0,
-     +              0,         0,         0,         0,
-     +              0,         0,         0,         0,
-     +              0,         0,         0,         0,
-     +              0,         0,         0/
-      DATA NSUP2D  /0,         1,         0,         1,    
-     +              0,         0,
-     +                         0,         0,         0,
-     +              0,         0,         0,         0,
-     +              0,         0,         0,         0,
-     +              0,         0,         0,         0,
-     +              0,         0,         0,         0,
-     +              0,         0,         0,         0,
-     +              0,         0,         0,         0,
-     +              0,         0,         0,         0,
-     +              0,         0,         0,         0,
-     +              0,         0,         0,         0,
-     +              0,         0,         0/
 C     ------------------------------------------------------------------
       CALL JEMARQ ( )
 C
@@ -142,13 +116,6 @@ C
          CALL JEVEUO (JEXNUM('&CATA.TM.NBNO' ,ITYP),'L',J)
          NNOTYP(ITYP) = ZI(J)
          TYPGEO(ITYP) = NUMMED(ITYP)
-         IF ( NDIM .EQ. 3 ) THEN
-           NITTYP(ITYP) = NNOTYP(ITYP) + NSUP3D(ITYP)
-         ELSEIF ( NDIM .EQ. 2 ) THEN
-           NITTYP(ITYP) = NNOTYP(ITYP) + NSUP2D(ITYP)
-         ELSE
-           CALL UTMESS('F',NOMPRO,'LA DIMENSION NE VAUT NI 2, NI 3.')
-         ENDIF
 C       
   1   CONTINUE
 C

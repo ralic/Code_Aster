@@ -4,6 +4,7 @@
      &                    TM,TP,TREF,
      &                    HYDRM,HYDRP,
      &                    SECHM,SECHP,SREF,
+     &                    IRRAM,IRRAP,
      &                    NZ,PHASM,PHASP,
      &                    CORRM,CORRP,
      &                    DEPLM,DEPLP,
@@ -13,7 +14,7 @@
      &                    MATSYM,DFDI,DEF,SIGP,VIP,MATUU,VECTU,CODRET)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/08/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 03/11/2004   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,6 +44,7 @@ C
        REAL*8        INSTAM,INSTAP,ANGMAS(3)
        REAL*8        GEOM(3,NNO), CRIT(3), TM(NNO),TP(NNO)
        REAL*8        HYDRM(NPG), HYDRP(NPG), SECHM(NNO), SECHP(NNO)
+       REAL*8        IRRAM(NNO), IRRAP(NNO)
        REAL*8        PHASM(NZ,NPG),PHASP(NZ,NPG),TREF
        REAL*8        DEPLM(1:3,1:NNO),DEPLP(1:3,1:NNO),DFDI(NNO,3)
        REAL*8        DEF(6,NNO,3),EPAM(*),EPAP(*)
@@ -96,6 +98,8 @@ C IN  HYDRM   : HYDRATATION AUX POINTS DE GAUSS EN T-
 C IN  HYDRP   : HYDRATATION AUX POINTS DE GAUSS EN T+
 C IN  SECHM   : SECHAGE AUX NOEUDS EN T-
 C IN  SECHP   : SECHAGE AUX NOEUDS EN T+
+C IN  IRRAM   : IRRADIATION AUX NOEUDS EN T-
+C IN  IRRAP   : IRRADIATION AUX NOEUDS EN T+
 C IN  SREF    : SECHAGE DE REFERENCE
 C IN  NZ      : NOMBRE DE PHASES METALLURGIQUES
 C IN  PHASM   : PHASES METALLURGIQUES EN T-
@@ -126,8 +130,8 @@ C......................................................................
 
       REAL*8 DSIDEP(6,6),F(3,3),EPS(6),DEPS(6),R,SIGMA(6),SIGN(6),SIG(6)
       REAL*8 POIDS,TEMPM,TEMPP,TMP,RAC2,EPSANP(6),EPSANM(6)
-      REAL*8 HYDRGM, HYDRGP, SECHGM, SECHGP, SREF, ELGEOM(10,27)
-      REAL*8 R8VIDE
+      REAL*8 HYDRGM, HYDRGP, SECHGM, SECHGP, SREF, IRRAGM, IRRAGP
+      REAL*8 R8VIDE,ELGEOM(10,27)
 C - INITIALISATION
 
       RAC2   = SQRT(2.D0)
@@ -157,6 +161,8 @@ C - ET DES DEFORMATIONS ANELASTIQUES AU POINT DE GAUSS
         HYDRGP = HYDRP(KPG)
         SECHGM = 0.D0
         SECHGP = 0.D0
+        IRRAGM = 0.D0
+        IRRAGP = 0.D0
         DO 5 J = 1,6
           EPSANM(J)=0.D0
           EPSANP(J)=0.D0
@@ -175,6 +181,8 @@ C
           TEMPP = TEMPP + TP(N)*ZR(IVF+N+(KPG-1)*NNO-1)
           SECHGM = SECHGM + SECHM(N)*ZR(IVF+N+(KPG-1)*NNO-1)
           SECHGP = SECHGP + SECHP(N)*ZR(IVF+N+(KPG-1)*NNO-1)
+          IRRAGM = IRRAGM + IRRAM(N)*ZR(IVF+N+(KPG-1)*NNO-1)
+          IRRAGP = IRRAGP + IRRAP(N)*ZR(IVF+N+(KPG-1)*NNO-1)
  10     CONTINUE
 
 
@@ -224,6 +232,7 @@ C -    APPEL A LA LOI DE COMPORTEMENT
      &              TEMPM,TEMPP, TREF,
      &              HYDRGM,HYDRGP,
      &              SECHGM,SECHGP,SREF,
+     &              IRRAGM,IRRAGP,
      &              EPS,DEPS,
      &              SIGN,VIM(1,KPG),
      &              OPTION,

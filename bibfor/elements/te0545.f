@@ -1,7 +1,7 @@
       SUBROUTINE TE0545(OPTION,NOMTE)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 16/10/2004   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF ELEMENTS  DATE 03/11/2004   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -38,6 +38,7 @@ C ......................................................................
       INTEGER IINSTM,IINSTP,IDEPLM,IDEPLP,ICOMPO,ICARCR
       INTEGER IVECTU,ICONTP,IVARIP,LI,IDEFAM,IDEFAP,NNOS,JGANO
       INTEGER IHYDRM,IHYDRP,ISECHM,ISECHP,ISREF,IVARIX,IRET
+      INTEGER IIRRAM,IIRRAP
       INTEGER NDDL,KK,NI,MJ,JTAB(7),IADZI,IAZK24,NZ,JCRET,CODRET
       REAL*8  MATNS(2*9*2*9)
       REAL*8  VECT1(54), VECT2(4*27*27), VECT3(4*27*2)
@@ -126,6 +127,8 @@ C - VARIABLES DE COMMANDE
       CALL JEVECH('PSECHMR','L',ISECHM)
       CALL JEVECH('PSECHPR','L',ISECHP)
       CALL JEVECH('PSECREF','L',ISREF)
+      CALL JEVECH('PIRRAMR','L',IIRRAM)
+      CALL JEVECH('PIRRAPR','L',IIRRAP)
 
 C PARAMETRES EN SORTIE
 
@@ -198,6 +201,7 @@ CCDIR$ IVDEP
      &                ZR(ITEMPM),ZR(ITEMPP),
      &                ZR(IHYDRM),ZR(IHYDRP),ZR(ITREF),
      &                ZR(ISECHM),ZR(ISECHP),ZR(ISREF),
+     &                ZR(IIRRAM),ZR(IIRRAP),
      &                NZ,ZR(IPHASM),ZR(IPHASP),
      &                ZR(IDEPLM),ZR(IDEPLP),ZR(IDEFAM),ZR(IDEFAP),
      &                DEFANE,
@@ -217,6 +221,7 @@ C      GRANDES DEFORMATIONS : FORMULATION SIMO - MIEHE
      &                ZR(ITEMPM),ZR(ITEMPP),ZR(ITREF),
      &                ZR(IHYDRM),ZR(IHYDRP),
      &                ZR(ISECHM),ZR(ISECHP),ZR(ISREF),
+     &                ZR(IIRRAM),ZR(IIRRAP),
      &                NZ,ZR(IPHASM),ZR(IPHASP),
      &                ZR(IDEPLM),ZR(IDEPLP),
      &                ANGMAS,
@@ -251,6 +256,7 @@ C 7.3 - GRANDES ROTATIONS ET PETITES DEFORMATIONS
      &                ZR(ITEMPM),ZR(ITEMPP),ZR(ITREF),
      &                ZR(IHYDRM),ZR(IHYDRP),
      &                ZR(ISECHM),ZR(ISECHP),ZR(ISREF),
+     &                ZR(IIRRAM),ZR(IIRRAP),
      &                NZ,ZR(IPHASM),ZR(IPHASP),
      &                ZR(IDEPLM),ZR(IDEPLP),ZR(IDEFAM),ZR(IDEFAP),
      &                DEFANE,

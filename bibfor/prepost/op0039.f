@@ -19,7 +19,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C MODIF PREPOST  DATE 05/10/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF PREPOST  DATE 03/11/2004   AUTEUR MCOURTOI M.COURTOIS 
 C TOLE CRP_20
 C     PROCEDURE IMPR_RESU
 C     ------------------------------------------------------------------
@@ -160,6 +160,7 @@ C
       NUMEMO = 0
       NOMJV  = '&&OP0039.NOM_MODELE'
       IF ( FORM .EQ. 'CASTEM' ) THEN
+        INFMAI = 0
          DO 200 IOCC = 1,NOCC
             IF ( NUMEMO .EQ. 0 ) THEN
                IF ( LMOD ) THEN
@@ -251,6 +252,17 @@ C        *** VARIABLE DE TYPE RESULTAT (NR!=0) OU CHAMP_GD (NC!=0)
          CALL GETVID('RESU','RESULTAT',IOCC,1,1,RESU,NR)
          CALL GETVID('RESU','CHAM_GD' ,IOCC,1,1,RESU,NC)
          LRESU = NR.NE.0
+C          --- TEST PRESENCE DU MOT CLE INFO_MAILLAGE (FORMAT 'MED')
+         INFMAI = 1
+         CALL GETVTX('RESU','INFO_MAILLAGE',IOCC,1,1,SAUX03,N01)
+         IF (N01.NE.0) THEN
+           IF (SAUX03.EQ.'OUI'.AND.FORM.EQ.'MED') THEN
+             INFMAI = 2
+           ELSEIF (SAUX03.EQ.'OUI'.AND.FORM.NE.'MED') THEN
+             CALL UTMESS('A',NOMCMD,'LE MOT CLE "INFO_MAILLAGE" '
+     >               //'EST RESERVE AU FORMAT MED')
+           ENDIF
+         ENDIF
 C
 C        --- NOMBRE DE PASSAGES POUR LA SENSIBILITE ---
 C
@@ -303,17 +315,6 @@ C             IRTITR SE RESUME ALORS A L'ECRITURE D'UN TITRE DANS UN K80
 C
 C        ---  IMPRESSION DU MAILLAGE AU PREMIER PASSAGE -----
          IF( NM.NE.0 .AND. FORM.NE.'CASTEM' .AND. NRPASS.EQ.1 ) THEN
-C          --- TEST PRESENCE DU MOT CLE INFO_MAILLAGE (FORMAT 'MED')
-           INFMAI = 0
-           CALL GETVTX('RESU','INFO_MAILLAGE',IOCC,1,1,SAUX03,N01)
-           IF (N01.NE.0) THEN
-             IF (SAUX03.EQ.'OUI'.AND.FORM.EQ.'MED') THEN
-               INFMAI = 1
-             ELSEIF (SAUX03.EQ.'OUI'.AND.FORM.NE.'MED') THEN
-               CALL UTMESS('A',NOMCMD,'LE MOT CLE "INFO_MAILLAGE" '
-     >                 //'EST RESERVE AU FORMAT MED')
-             ENDIF
-           ENDIF
            IF (FORM(1:4).NE.'GMSH'.OR.NR.EQ.0) THEN
              CALL IRMAIL ( FORM, IFI, VERSIO, NOMA, LMOD, MODELE, NIVE,
      >                     INFMAI )
@@ -794,6 +795,5 @@ C
          ENDIF
       ENDIF
 
- 9999 CONTINUE
       CALL JEDEMA()
       END

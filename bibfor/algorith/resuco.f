@@ -2,7 +2,7 @@
      &                  DDEPLA,NOMA,CNSINR,ITERAT)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/06/2004   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 02/11/2004   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,11 +21,16 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_20
       IMPLICIT     NONE
-      INTEGER NUMORD,ITERAT
-      REAL*8 INSTAP
-      CHARACTER*8 NOMA
+      INTEGER      NUMORD
+      INTEGER      ITERAT
+      REAL*8       INSTAP
+      CHARACTER*8  NOMA
       CHARACTER*19 CNSINR
-      CHARACTER*24 DEFICO,RESOCO,DEPDEL,DDEPLA
+      CHARACTER*24 DEFICO
+      CHARACTER*24 RESOCO
+      CHARACTER*24 DEPDEL
+      CHARACTER*24 DDEPLA
+C
 C ======================================================================
 C COMMANDE STAT_NON_LINE / CONTACT UNILATERAL
 C ECRITURE DANS LE FICHIER MESSAGE DES COUPLES NOEUD / MAILLE (OU NOEUD)
@@ -37,9 +42,9 @@ C     IN   DEFICO : SD DE DEFINITION DU CONTACT
 C     IN   RESOCO : SD DE TRAITEMENT NUMERIQUE DU CONTACT
 C     IN   NOMA   : NOM DU MAILLAGE
 C     OUT  CNSINR : CHAM_NO_S POUR L'ARCHIVAGE DU CONTACT
-C ======================================================================
+C
 C ------------- DEBUT DECLARATIONS NORMALISEES JEVEUX -----------------
-      CHARACTER*32 JEXNUM,JEXNOM,JEXATR
+C
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
       REAL*8 ZR
@@ -54,22 +59,25 @@ C ------------- DEBUT DECLARATIONS NORMALISEES JEVEUX -----------------
       CHARACTER*32 ZK32
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+C
 C --------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------
-C ======================================================================
-      LOGICAL LBID
-      INTEGER IFM,NIV,ICONTA,POS1,POS2,NUM1,NUM2,NDIM,II,JJ,KK
+C 
+      INTEGER      ZMETH
+      PARAMETER    (ZMETH=8)
+      INTEGER      ZAPPAR
+      PARAMETER    (ZAPPAR=3)
+      INTEGER      IFM,NIV,ICONTA,POS1,NUM1,NDIM,II,KK
       INTEGER JAPPAR,JCOCO,JLIAC,NBLIAC,JNOCO,JMACO,LLIAC,NBLIAI,NESCL
       INTEGER JAPJEU,JDEPDE,JDDEPL,IPENA
-      INTEGER IBID,JCNSVR,JCNSLR,JDIM
+      INTEGER      IBID,JCNSVR,JCNSLR,JDIM
       INTEGER JATMU,JAFMU,JMU,JDECAL,JAPPTR,JAPCOE,JAPDDL,NBDDL,NEQ,LMAT
-      INTEGER JAPJFY,JAPJFX,JAPCOF,JMETH,LLF,LLF1,LLF2,NESMAX
-      INTEGER JNORMO,JTANGO,JVECC
-      REAL*8 AJEUFX,AJEUFY,AJEUFT,RN,R,COE,TESTMU,TESTCF,PROD
-      REAL*8 VAL1,VAL2,VARC,R8BID,R8PREM,R8MIEM,PROJ,PROJ1,PROJ2
-      REAL*8 RNX,RNY,RNZ,RX,RY,RZ,RTAX,RTAY,RTAZ,RTGX,RTGY,RTGZ
-      CHARACTER*2  TYPEC0, TYPEF0, TYPEF1, TYPEF2
-      CHARACTER*7  CHAIN
-      CHARACTER*8  NOM1,NOM2,LICMPR(19),KVEC,FTMP
+      INTEGER      JAPJFY,JAPJFX,JAPCOF,JMETH,LLF,LLF1,LLF2,NESMAX
+      INTEGER      JNORMO,JTANGO,JVECC,IMETH,IZONE
+      REAL*8       AJEUFX,AJEUFY,AJEUFT,RN,R,TESTMU,TESTCF
+      REAL*8       VAL1,VAL2,VARC,R8PREM,R8MIEM,PROJ,PROJ1,PROJ2
+      REAL*8       RNX,RNY,RNZ,RX,RY,RZ,RTAX,RTAY,RTAZ,RTGX,RTGY,RTGZ
+      CHARACTER*2  TYPEC0,TYPEF0,TYPEF1,TYPEF2
+      CHARACTER*8  LICMPR(19)
 
       CHARACTER*19 COCO,LIAC,ATMU,AFMU,MU,MATASS,CONVEC
 
@@ -120,8 +128,7 @@ C --- CARACTERISTIQUES DU CONTACT
 
 
         CALL CFDISD(JCOCO,
-     &              NDIM,IBID,NBLIAC,IBID,IBID,
-     &              LLF,LLF1,LLF2)
+     &              NDIM,NBLIAC,LLF,LLF1,LLF2)
 
 
         CONTNO = DEFICO(1:16)//'.NOEUCO'
@@ -174,27 +181,6 @@ C CAS DE LA METHODE PENALISEE: ON UTILISE AFMU
 
         NESMAX = ZI(JDIM+8)
 
-C --- ECRITURE DES RELATIONS DE CONTACT A LA FIN DU PAS DE TEMPS
-
-        IF (NIV.EQ.2) THEN
-          WRITE (IFM,*)
-          WRITE (IFM,'(''<CONTACT_2> '',10X,153(''*''))')
-          WRITE (IFM,'(''<CONTACT_2> '',10X,''*'',11X,A28,112X,''*'')')
-     &      'LISTE DES COUPLES EN CONTACT'
-          WRITE (IFM,
-     &    '(''<CONTACT_2> '',10X,''*'',15X,A14,I6,116X,          ''*'')'
-     &      ) 'NUMERO D''ORDRE',NUMORD
-          WRITE (IFM,
-     &'(''<CONTACT_2> '',10X,''*'',15X,A7,3X,1PE12.5,
-     &  114X,''*'')') 'INSTANT',INSTAP
-          WRITE (IFM,'(''<CONTACT_2> '',10X,153(''*''))')
-
-          IF (NBLIAC.EQ.0) WRITE (IFM,
-     &'(''<CONTACT_2> '',10X,''*'',
-     &                               18X,
-     &A14,135X,''*'')') 'PAS DE CONTACT'
-        END IF
-
 C ---- RECUPERATION DES DONNEES POUR CHAQUE LIAISON
 C ---- PREPARATION POUR L'ARCHIVAGE
 C --- CREATION DU CHAM_NO_S POUR LE CONTACT
@@ -224,7 +210,7 @@ C --- CREATION DU CHAM_NO_S POUR LE CONTACT
         CALL JEVEUO(CNSINR//'.CNSL','E',JCNSLR)
 
         DO 10 II = 1,NBLIAI
-           POS1 = ZI(JAPPAR+3*(II-1)+1)
+           POS1 = ZI(JAPPAR+ZAPPAR*(II-1)+1)
            NUM1 = ZI(JNOCO +POS1    -1)
            ZR(JCNSVR-1+ (NUM1-1)*19+1 ) = 0.0D0
            ZR(JCNSVR-1+ (NUM1-1)*19+2 ) = ZR(JAPJEU+II-1)
@@ -245,9 +231,31 @@ C --- CREATION DU CHAM_NO_S POUR LE CONTACT
            ZR(JCNSVR-1+ (NUM1-1)*19+17) = 0.0D0
            ZR(JCNSVR-1+ (NUM1-1)*19+18) = 0.0D0
            ZR(JCNSVR-1+ (NUM1-1)*19+19) = 0.0D0
+           ZL(JCNSLR-1+ (NUM1-1)*19+1 ) = .TRUE.
+           ZL(JCNSLR-1+ (NUM1-1)*19+2 ) = .TRUE.
+           ZL(JCNSLR-1+ (NUM1-1)*19+3 ) = .TRUE.
+           ZL(JCNSLR-1+ (NUM1-1)*19+4 ) = .TRUE.
+           ZL(JCNSLR-1+ (NUM1-1)*19+5 ) = .TRUE.
+           ZL(JCNSLR-1+ (NUM1-1)*19+6 ) = .TRUE.
+           ZL(JCNSLR-1+ (NUM1-1)*19+7 ) = .TRUE.
+           ZL(JCNSLR-1+ (NUM1-1)*19+8 ) = .TRUE.
+           ZL(JCNSLR-1+ (NUM1-1)*19+9 ) = .TRUE.
+           ZL(JCNSLR-1+ (NUM1-1)*19+10) = .TRUE.
+           ZL(JCNSLR-1+ (NUM1-1)*19+11) = .TRUE.
+           ZL(JCNSLR-1+ (NUM1-1)*19+12) = .TRUE.
+           ZL(JCNSLR-1+ (NUM1-1)*19+13) = .TRUE.
+           ZL(JCNSLR-1+ (NUM1-1)*19+14) = .TRUE.
+           ZL(JCNSLR-1+ (NUM1-1)*19+15) = .TRUE.
+           ZL(JCNSLR-1+ (NUM1-1)*19+16) = .TRUE.
+           ZL(JCNSLR-1+ (NUM1-1)*19+17) = .TRUE.
+           ZL(JCNSLR-1+ (NUM1-1)*19+18) = .TRUE.
+           ZL(JCNSLR-1+ (NUM1-1)*19+19) = .TRUE.
  10     CONTINUE
 C
-        IF ( ZI(JMETH+6).EQ.-1 ) THEN
+        IZONE = 1
+        IMETH = ZI(JMETH+ZMETH*(IZONE-1)+6)
+
+        IF ( IMETH.EQ.-1 ) THEN
 C ======================================================================
 C -- CAS DU CONTACT PENALISE -------------------------------------------
 C ======================================================================
@@ -276,7 +284,7 @@ C ======================================================================
               RZ     = RNZ
               R      = SQRT(RX**2+RY**2+RZ**2)
 
-              POS1 = ZI(JAPPAR+3*(LLIAC-1)+1)
+              POS1 = ZI(JAPPAR+ZAPPAR*(LLIAC-1)+1)
               NUM1 = ZI(JNOCO +POS1    -1)
               ZR(JCNSVR-1+ (NUM1-1)*19+1)  = VARC
               ZR(JCNSVR-1+ (NUM1-1)*19+3)  = RN
@@ -288,8 +296,8 @@ C ======================================================================
               ZR(JCNSVR-1+ (NUM1-1)*19+18) = RZ
               ZR(JCNSVR-1+ (NUM1-1)*19+19) = R
  20        CONTINUE
-        ELSE IF ( ZI(JMETH+6).EQ.0 .OR.
-     +            ZI(JMETH+6).EQ.1      ) THEN
+        ELSE IF ( IMETH.EQ.0 .OR.
+     +            IMETH.EQ.1      ) THEN
 C ======================================================================
 C -- CAS DU CONTACT EN CONTRAINTES ACTIVES OU LAGRANGIEN ---------------
 C ======================================================================
@@ -317,7 +325,7 @@ C ======================================================================
               RY     = RNY
               RZ     = RNZ
               R      = SQRT(RX**2+RY**2+RZ**2)
-              POS1 = ZI(JAPPAR+3*(LLIAC-1)+1)
+              POS1 = ZI(JAPPAR+ZAPPAR*(LLIAC-1)+1)
               NUM1 = ZI(JNOCO +POS1    -1)
               ZR(JCNSVR-1+ (NUM1-1)*19+1)  = VARC
               ZR(JCNSVR-1+ (NUM1-1)*19+3)  = RN
@@ -329,7 +337,7 @@ C ======================================================================
               ZR(JCNSVR-1+ (NUM1-1)*19+18) = RZ
               ZR(JCNSVR-1+ (NUM1-1)*19+19) = R
  30        CONTINUE
-        ELSE IF ( ZI(JMETH+6).EQ.2 ) THEN
+        ELSE IF ( IMETH.EQ.2 ) THEN
 C ======================================================================
 C -- CAS DU FROTTEMENT LAGRANGIEN EN DIMENSION 2 -----------------------
 C ======================================================================
@@ -383,7 +391,7 @@ C ======================================================================
                  RX     = RNX + RTAX + RTGX
                  RY     = RNY + RTAY + RTGY
                  R      = SQRT(RX**2+RY**2)
-                 POS1 = ZI(JAPPAR+3*(LLIAC-1)+1)
+                 POS1 = ZI(JAPPAR+ZAPPAR*(LLIAC-1)+1)
                  NUM1 = ZI(JNOCO +POS1    -1)
                  ZR(JCNSVR-1+ (NUM1-1)*19+1 ) = VARC
                  ZR(JCNSVR-1+ (NUM1-1)*19+3 ) = RN
@@ -399,7 +407,7 @@ C ======================================================================
                  ZR(JCNSVR-1+ (NUM1-1)*19+19) = R
               ENDIF
  40        CONTINUE
-        ELSE IF ( ZI(JMETH+6).EQ.3 ) THEN
+        ELSE IF ( IMETH.EQ.3 ) THEN
 C ======================================================================
 C -- CAS DU FROTTEMENT PENALISE ----------------------------------------
 C ======================================================================
@@ -478,7 +486,7 @@ C ======================================================================
               RZ     = RNZ + RTAZ + RTGZ
               R      = SQRT(RX**2+RY**2+RZ**2)
 
-              POS1 = ZI(JAPPAR+3*(LLIAC-1)+1)
+              POS1 = ZI(JAPPAR+ZAPPAR*(LLIAC-1)+1)
               NUM1 = ZI(JNOCO +POS1    -1)
               ZR(JCNSVR-1+ (NUM1-1)*19+1 ) = VARC
               ZR(JCNSVR-1+ (NUM1-1)*19+3 ) = RN
@@ -500,7 +508,7 @@ C ======================================================================
               ZR(JCNSVR-1+ (NUM1-1)*19+19) = R
 
  60        CONTINUE
-        ELSE IF ( ZI(JMETH+6).EQ.4 ) THEN
+        ELSE IF ( IMETH.EQ.4 ) THEN
 C ======================================================================
 C -- CAS DU FROTTEMENT LAGRANGIEN EN DIMENSION 3 -----------------------
 C ======================================================================
@@ -627,7 +635,7 @@ C ======================================================================
                  RZ     = RNZ + RTAZ + RTGZ
                  R      = SQRT(RX**2+RY**2+RZ**2)
 
-                 POS1 = ZI(JAPPAR+3*(LLIAC-1)+1)
+                 POS1 = ZI(JAPPAR+ZAPPAR*(LLIAC-1)+1)
                  NUM1 = ZI(JNOCO +POS1    -1)
                  ZR(JCNSVR-1+ (NUM1-1)*19+1 ) = VARC
                  ZR(JCNSVR-1+ (NUM1-1)*19+3 ) = RN
@@ -650,7 +658,7 @@ C ======================================================================
 
               ENDIF
  80        CONTINUE
-        ELSE IF ( ZI(JMETH+6).EQ.5 ) THEN
+        ELSE IF ( IMETH.EQ.5 ) THEN
 C ======================================================================
 C -- CAS DU FROTTEMENT PENALISE EN CONTACT -----------------------------
 C ======================================================================
@@ -729,7 +737,7 @@ C ======================================================================
               RZ     = RNZ + RTAZ + RTGZ
               R      = SQRT(RX**2+RY**2+RZ**2)
 
-              POS1 = ZI(JAPPAR+3*(LLIAC-1)+1)
+              POS1 = ZI(JAPPAR+ZAPPAR*(LLIAC-1)+1)
               NUM1 = ZI(JNOCO +POS1    -1)
               ZR(JCNSVR-1+ (NUM1-1)*19+1 ) = VARC
               ZR(JCNSVR-1+ (NUM1-1)*19+3 ) = RN
@@ -752,93 +760,13 @@ C ======================================================================
 
  110       CONTINUE
         ENDIF
-
-        DO 120 II = 1,NBLIAI
-
-C ----- RECHERCHE CONNECTIVITE
-           POS1 = ZI(JAPPAR+3* (II-1)+1)
-           NUM1 = ZI(JNOCO+POS1-1)
-           CALL JENUNO(JEXNUM(NOMA//'.NOMNOE',NUM1),NOM1)
-           POS2 = ZI(JAPPAR+3* (II-1)+2)
-           IF (POS2.GT.0) THEN
-              CHAIN = 'MAILLE '
-              NUM2 = ZI(JMACO+POS2-1)
-              CALL JENUNO(JEXNUM(NOMA//'.NOMMAI',NUM2),NOM2)
-           ELSE IF (POS2.LT.0) THEN
-              CHAIN = 'NOEUD '
-              NUM2 = ZI(JNOCO+ABS(POS2)-1)
-              CALL JENUNO(JEXNUM(NOMA//'.NOMNOE',NUM2),NOM2)
-           ELSE IF (POS2.EQ.0) THEN
-              CHAIN = ' '
-              NOM2 = ' '
-           ENDIF
-C ----- FIN RECHERCHE CONNECTIVITE
-           RN = ZR(JCNSVR-1+ (NUM1-1)*19+3 )
-           R  = ZR(JCNSVR-1+ (NUM1-1)*19+19)
-
-C RAPPORT REACTION_TANGENTIELLE/REACTION_NORMALE           
-
-           COE = 0.0D0
-           IF ( RN.NE.0.D0 ) THEN
-              PROD = (ABS(R)-ABS(RN))
-              
-C  ON VERIFIE QUE LA RAECTION TANGENTIELLE EXISTE ET EST POSITIVE
-
-              IF ( PROD/ABS(R).LT.-R8PREM() ) THEN
-                 CALL UTMESS('F','RESUCO','NORME TANGENTIELLE
-     &             DE FROTTEMENT NEGATIVE')
-              ENDIF
-C               OUI -> CALCUL DU RAPPORT
-              COE = PROD/RN
-           ENDIF
-
-           IF (NIV.EQ.2) THEN
-              VARC   = ZR(JCNSVR-1+ (NUM1-1)*19+1 )
-              AJEUFT = ZR(JCNSVR-1+ (NUM1-1)*19+9 )
-              IF (VARC.NE.0.0D0) THEN
-              WRITE (IFM,1001) '* ','LIAISON ACTIVE   ',II,' * NOEUD ',
-     &          NOM1,' * ',CHAIN,NOM2,' *','JEU ',ZR(JAPJEU+II-1),' *',
-     &          'RN ',RN,' *','GLI ',AJEUFT,' *','R  ',R,
-     &          ' *','RT/RN  ',COE,' *'
-              ELSE
-              WRITE (IFM,1001) '* ','LIAISON INACTIVE ',II,' * NOEUD ',
-     &          NOM1,' * ',CHAIN,NOM2,' *','JEU ',ZR(JAPJEU+II-1),' *',
-     &          'RN ',RN,' *','GLI ',AJEUFT,' *','R  ',R,
-     &          ' *','RT/RN  ',COE,' *'
-              ENDIF
-           ENDIF
-
-           ZL(JCNSLR-1+ (NUM1-1)*19+1 ) = .TRUE.
-           ZL(JCNSLR-1+ (NUM1-1)*19+2 ) = .TRUE.
-           ZL(JCNSLR-1+ (NUM1-1)*19+3 ) = .TRUE.
-           ZL(JCNSLR-1+ (NUM1-1)*19+4 ) = .TRUE.
-           ZL(JCNSLR-1+ (NUM1-1)*19+5 ) = .TRUE.
-           ZL(JCNSLR-1+ (NUM1-1)*19+6 ) = .TRUE.
-           ZL(JCNSLR-1+ (NUM1-1)*19+7 ) = .TRUE.
-           ZL(JCNSLR-1+ (NUM1-1)*19+8 ) = .TRUE.
-           ZL(JCNSLR-1+ (NUM1-1)*19+9 ) = .TRUE.
-           ZL(JCNSLR-1+ (NUM1-1)*19+10) = .TRUE.
-           ZL(JCNSLR-1+ (NUM1-1)*19+11) = .TRUE.
-           ZL(JCNSLR-1+ (NUM1-1)*19+12) = .TRUE.
-           ZL(JCNSLR-1+ (NUM1-1)*19+13) = .TRUE.
-           ZL(JCNSLR-1+ (NUM1-1)*19+14) = .TRUE.
-           ZL(JCNSLR-1+ (NUM1-1)*19+15) = .TRUE.
-           ZL(JCNSLR-1+ (NUM1-1)*19+16) = .TRUE.
-           ZL(JCNSLR-1+ (NUM1-1)*19+17) = .TRUE.
-           ZL(JCNSLR-1+ (NUM1-1)*19+18) = .TRUE.
-           ZL(JCNSLR-1+ (NUM1-1)*19+19) = .TRUE.
-
- 120   CONTINUE
-C ======================================================================
-       IF (NIV.EQ.2) THEN
-          WRITE (IFM,'(''<CONTACT_2> '',10X,153(''*''))')
-          WRITE (IFM,*)
-       ENDIF
+C --- ECRITURE DES RELATIONS DE CONTACT A LA FIN DU PAS DE TEMPS
+        IF (NIV.GE.2) THEN
+          CALL CFIMP3(DEFICO,RESOCO,NOMA,IFM,NUMORD,INSTAP,NBLIAI,
+     &                NBLIAC,JCNSVR)
+        ENDIF
       ENDIF
 C ======================================================================
       CALL JEDEMA()
-C ======================================================================
- 1001 FORMAT ('<CONTACT_2> ',10X,A2,A17,I5,A9,A8,A3,A7,A8,A2,A4,1PE12.5,
-     &       A2,A4,1PE12.5,A2,A4,1PE12.5,A2,A4,1PE12.5,A2,A6,1PE12.5,A2)
 C ======================================================================
       END

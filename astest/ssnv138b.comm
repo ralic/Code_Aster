@@ -1,4 +1,4 @@
-# MODIF  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 03/11/2004   AUTEUR MCOURTOI M.COURTOIS 
 # TITRE VERSION POUTRE DE LA PLAQUE EN GRANDES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -160,7 +160,7 @@ DRY_CALC=RECU_FONCTION(TABLE=TAB_DEPL,
                        
 
 IMPR_TABLE(TABLE=TAB_DEPL,
-           FORMAT='EXCEL',);
+           FORMAT='TABLEAU',);
 
 TAB_EFFO=POST_RELEVE_T(ACTION=_F(INTITULE='MOMENTS',
                                  NOEUD='NO01',
@@ -170,7 +170,7 @@ TAB_EFFO=POST_RELEVE_T(ACTION=_F(INTITULE='MOMENTS',
                                  OPERATION='EXTRACTION',),);
 
 IMPR_TABLE(TABLE=TAB_EFFO,
-           FORMAT='EXCEL',);
+           FORMAT='TABLEAU',);
 
 
 

@@ -2,6 +2,7 @@
      &                  NF,
      &                  INSTAM,INSTAP,
      &                  TEMPM,TEMPP,TREF,
+     &                  IRRAM,IRRAP,
      &                  E,ALPHA,
      &                  ICDMAT,NBVALC,
      &                  DEFAM,DEFAP,
@@ -11,7 +12,7 @@
      &                  MODF,SIGF,VARIP,ISECAN,CODRET) 
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 15/06/2004   AUTEUR MABBAS M.ABBAS 
+C MODIF ELEMENTS  DATE 03/11/2004   AUTEUR CIBHHPD L.SALMONA 
 C TOLE CRP_21
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -35,7 +36,7 @@ C ======================================================================
       REAL*8 E,VARIM(NBVALC*NF),CONTM(NF),DEFM(NF),DEFP(NF),MODF(NF),
      +       SIGF(NF),VARIMP(NBVALC*NF),VARIP(NBVALC*NF),CORRM
       REAL*8 TEMPM,TEMPP,ALPHA,DSIDEP,TREF,SIGX,SIGXP,EPSX,DEPSX,CORRP
-      REAL*8 CRIT(*),INSTAM,INSTAP
+      REAL*8 CRIT(*),INSTAM,INSTAP,IRRAM,IRRAP
       REAL*8 DEFAP(*), DEFAM(*)
 C     ------------------------------------------------------------------
 C     AIGUILLAGE COMPORTEMENT DES ELEMENTS DE POUTRE MULTIFIBRES
@@ -45,6 +46,8 @@ C IN  CRIT  : CRITERES DE CONVERGENCE LOCAUX
 C IN  NF    : NOMBRE DE FIBRES
 C IN  INSTAM: INSTANT DU CALCUL PRECEDENT
 C IN  INSTAP: INSTANT DU CALCUL
+C IN  IRRAM: IRRADIATION DU CALCUL PRECEDENT
+C IN  IRRAP: IRRADIATION DU CALCUL
 C IN  E     : MODULE D'YOUNG (ELASTIQUE)
 C IN  ICDMAT: CODE MATERIAU
 C IN  NV    : NOMBRE DE VARIABLES INTERNES DU MODELE
@@ -72,10 +75,10 @@ C     ------------------------------------------------------------------
       CHARACTER*8 NOMPAR,NOECLB(9),NOMPIM(12)
       REAL*8 A1,A2,BETA1,BETA2,Y01,Y02,B1,B2,SIGF1
       REAL*8 CSTPM(13),EPSM,ANGMAS(3),R8VIDE
-      INTEGER    NBCLMA, NBCLEM, NBCVIL, NBCCYR,NBCEPR
-      PARAMETER (NBCLMA=12, NBCLEM=7, NBCVIL=5, NBCCYR=3, NBCEPR=3)
+      INTEGER    NBCLMA, NBCLEM, NBCVIL, NBCCYR,NBCEPR,NBCINT
+      PARAMETER (NBCLMA=12,NBCLEM=7,NBCVIL=5,NBCCYR=3,NBCEPR=3,NBCINT=2)
       REAL*8     COELMA(NBCLMA),COELEM(NBCLEM),COEVIL(NBCVIL)
-      REAL*8     COECYR(NBCCYR),COEEPR(NBCEPR)
+      REAL*8     COECYR(NBCCYR),COEEPR(NBCEPR),COEINT(NBCINT)
       INTEGER I,IVARI,CODRET,ICAS
       DATA ARRET,RETOUR/'FM','  '/
       DATA NOECLB/'Y01','Y02','A1','A2','B1','B2','BETA1','BETA2',
@@ -198,7 +201,7 @@ C --- CARACTERISTIQUES ELASTIQUES A TPLUS
 C       RECUPERATION DES CARACTERISTIQUES DES LOIS DE FLUAGE            
         CALL NMASSC(ICDMAT,
      &              '  ',R8VIDE(),R8VIDE(),'  ',
-     &              COELMA,COELEM,COEVIL,COECYR,COEEPR,
+     &              COELMA,COELEM,COEVIL,COECYR,COEEPR,COEINT,
      &              ICAS)
 
           IF (ICAS.EQ.3) THEN
@@ -208,14 +211,19 @@ C       RECUPERATION DES CARACTERISTIQUES DES LOIS DE FLUAGE
               CALL NM1VIL(ICDMAT,CRIT,
      &                   INSTAM,INSTAP,
      &                   TEMPM,TEMPP,TREF,                
+     &                   IRRAM,IRRAP,
      &                   DEFP(I),
      &                   CONTM(I),VARIM(IVARI),
      &                   OPTION,
      &                   DEFAM(1),DEFAP(1),
      &                   ANGMAS,
      &                   SIGF(I),VARIP(IVARI),MODF(I))
-
 56          CONTINUE
+
+          ELSEIF (ICAS.EQ.6) THEN
+              CALL UTMESS('F','PMF',
+     &     'LOI LEMA_SEUIL NON IMPLEMENTE '//
+     &      'AVEC LES POUTRES MULTI FIBRES')
           ENDIF
         ELSE
           IF ((OPTION(1:9).EQ.'FULL_MECA') .OR.
@@ -232,6 +240,7 @@ C       RECUPERATION DES CARACTERISTIQUES DES LOIS DE FLUAGE
             CALL COMP1D(OPTION,
      &                  SIGX,EPSX,DEPSX,
      &                  TEMPM,TEMPP,TREF,
+     &                  IRRAM,IRRAP,
      &                  CORRM,CORRP,
      &                  ANGMAS,
      &                  VARIM(IVARI),VARIP(IVARI),SIGF(I),MODF(I),
@@ -266,6 +275,7 @@ C       PAR UNE EXTENSION DE LA METHODE DE DEBORST
             CALL COMP1D(OPTION,
      &                  SIGX,EPSX,DEPSX,
      &                  TEMPM,TEMPP,TREF,
+     &                  IRRAM,IRRAP,
      &                  CORRM,CORRP,
      &                  ANGMAS,
      &                  VARIM(IVARI),VARIP(IVARI),SIGF(I),MODF(I),

@@ -1,4 +1,4 @@
-#@ MODIF impr_fonction_ops Macro  DATE 14/09/2004   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF impr_fonction_ops Macro  DATE 03/11/2004   AUTEUR MCOURTOI M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,18 +18,20 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 
-
 # RESPONSABLE MCOURTOI M.COURTOIS
 
 import os.path
-from Utilitai import Graph
+from Utilitai.Graph  import Graph
+from Utilitai.Utmess import UTMESS
 
+# ------------------------------------------------------------------------------
 def impr_fonction_ops(self, FORMAT, COURBE, INFO, **args):
    """
    Macro IMPR_FONCTION permettant d'imprimer dans un fichier des fonctions,
    colonnes de table...
    Erreurs<S> dans IMPR_FONCTION pour ne pas perdre la base.
    """
+   macro='IMPR_FONCTION'
    import aster
    from Accas import _F
    ier=0
@@ -40,19 +42,21 @@ def impr_fonction_ops(self, FORMAT, COURBE, INFO, **args):
    # Le nom de la variable doit etre obligatoirement le nom de la commande
    CALC_FONC_INTERP = self.get_cmd('CALC_FONC_INTERP')
    DEFI_LIST_REEL   = self.get_cmd('DEFI_LIST_REEL')
+   DEFI_FICHIER     = self.get_cmd('DEFI_FICHIER')
    DETRUIRE         = self.get_cmd('DETRUIRE')
 
    #----------------------------------------------
    # 0. Traitement des arguments, initialisations
+   # unité logique des fichiers réservés
+   ul_reserve=(8,)
 
    # 0.1. Fichier
-   if args.has_key('UNITE'):
+   nomfich=None
+   if args['UNITE'] and args['UNITE']<>6:
       nomfich='fort.'+str(args['UNITE'])
-   else:
-      nomfich='impr_fonction.out'
-   if INFO==2:
-      print ' Nom du fichier :',nomfich
-   if os.path.exists(nomfich):
+      if INFO==2:
+         print ' Nom du fichier :',nomfich
+   if nomfich and os.path.exists(nomfich):
       print ' <A> Le fichier '+nomfich+' existe déjà.'
       if FORMAT=='TABLEAU':
          print '     On écrit à la suite du fichier'
@@ -60,7 +64,7 @@ def impr_fonction_ops(self, FORMAT, COURBE, INFO, **args):
          print '     On écrase le contenu précédent'
 
    # 0.2. Récupération des valeurs sous COURBE
-   unparmi=('FONCTION','LIST_RESU','FONC_X')
+   unparmi=('FONCTION','LIST_RESU','FONC_X','ABSCISSE')
 
    Courbe=[]
    for Ci in COURBE:
@@ -74,9 +78,9 @@ def impr_fonction_ops(self, FORMAT, COURBE, INFO, **args):
    # 0.3. Devra-t-on interpoler globalement ?
    #      Dans ce cas, linter__ est le LIST_PARA
    #      ou, à défaut, les abscisses de la première courbe
-   interp=0
+   interp=False
    if FORMAT=='TABLEAU':
-      interp=1
+      interp=True
       dCi=Courbe[0]
       if dCi.has_key('LIST_PARA'):
          linter__=dCi['LIST_PARA']
@@ -88,7 +92,7 @@ def impr_fonction_ops(self, FORMAT, COURBE, INFO, **args):
                typ=obj.__class__.__name__
                break
          if obj==None:
-            raise aster.error, '<S> <IMPR_FONCTION> incohérence entre le catalogue et la macro.'
+            UTMESS('S',macro,'incohérence entre le catalogue et la macro.', self)
          if typi=='FONCTION':
             if typ=='nappe_sdaster':
                lpar,lval=obj.Valeurs()
@@ -97,6 +101,8 @@ def impr_fonction_ops(self, FORMAT, COURBE, INFO, **args):
                linterp=obj.Valeurs()[0]
          elif typi=='FONC_X':
             lbid,linterp=obj.Valeurs()
+         elif typi=='ABSCISSE':
+            linterp=obj
          linter__=DEFI_LIST_REEL(VALE=linterp)
       if INFO==2:
          print ' Interpolation globale sur la liste :\n',linter__.Valeurs()
@@ -106,7 +112,7 @@ def impr_fonction_ops(self, FORMAT, COURBE, INFO, **args):
    # 1. Récupération des valeurs des N courbes sous forme
    #    d'une liste de N listes
    #----------------------------------------------
-   graph=Graph.Graph()
+   graph=Graph()
    iocc=-1
    for dCi in Courbe:
       iocc=iocc+1
@@ -119,7 +125,7 @@ def impr_fonction_ops(self, FORMAT, COURBE, INFO, **args):
             typ=obj.__class__.__name__
             break
       if obj==None:
-         raise aster.error, '<S> <IMPR_FONCTION> incohérence entre le catalogue et la macro.'
+         UTMESS('S',macro,'incohérence entre le catalogue et la macro.',self)
 
       # 1.2. Extraction des valeurs
 
@@ -142,9 +148,9 @@ def impr_fonction_ops(self, FORMAT, COURBE, INFO, **args):
                      li__=DEFI_LIST_REEL(VALE=lx)
                # compléter les paramètres d'interpolation
                dic=dico.copy()
-               for k,v in ldicf[i].items(): dic[k]=v
+               dic.update(ldicf[i])
                
-               if interp or dCi.has_key('LIST_PARA') or i>0:
+               if (interp or dCi.has_key('LIST_PARA')) and i>0:
                   ftmp__=CALC_FONC_INTERP(
                      FONCTION=obj,
                      VALE_PARA=p,
@@ -159,11 +165,7 @@ def impr_fonction_ops(self, FORMAT, COURBE, INFO, **args):
                   'Val' : [lx,ly],
                   'Lab' : [dic['NOM_PARA_FONC'],dic['NOM_RESU']]
                }
-               if dCi.has_key('LEGENDE'):       dicC['Leg']=dCi['LEGENDE']
-               if dCi.has_key('STYLE'):         dicC['Sty']=dCi['STYLE']
-               if dCi.has_key('COULEUR'):       dicC['Coul']=dCi['COULEUR']
-               if dCi.has_key('MARQUEUR'):      dicC['Marq']=dCi['MARQUEUR']
-               if dCi.has_key('FREQ_MARQUEUR'): dicC['FreqM']=dCi['FREQ_MARQUEUR']
+               AjoutParaCourbe(dicC, args=dCi)
                graph.AjoutCourbe(**dicC)
          else:
             ftmp__=obj
@@ -196,33 +198,25 @@ def impr_fonction_ops(self, FORMAT, COURBE, INFO, **args):
                   'Val' : [lx,lr],
                   'Lab' : [dpar['NOM_PARA'],dpar['NOM_RESU']]
                }
-            if dCi.has_key('LEGENDE'):       dicC['Leg']=dCi['LEGENDE']
-            if dCi.has_key('STYLE'):         dicC['Sty']=dCi['STYLE']
-            if dCi.has_key('COULEUR'):       dicC['Coul']=dCi['COULEUR']
-            if dCi.has_key('MARQUEUR'):      dicC['Marq']=dCi['MARQUEUR']
-            if dCi.has_key('FREQ_MARQUEUR'): dicC['FreqM']=dCi['FREQ_MARQUEUR']
+            AjoutParaCourbe(dicC, args=dCi)
             graph.AjoutCourbe(**dicC)
 
       # 1.2.2. Mot-clé LIST_RESU
       elif typi=='LIST_RESU':
          if interp and iocc>0:
-            raise aster.error, """<S> Il n'y a pas de règles d'interpolation pour LIST_PARA/LIST_RESU,
+            UTMESS('S',macro,"""Il n'y a pas de règles d'interpolation pour LIST_PARA/LIST_RESU,
      LIST_PARA/LIST_RESU ne peut donc apparaitre qu'une seule fois
-     et à la première occurence de COURBE"""
+     et à la première occurence de COURBE""",self)
          lx=dCi['LIST_PARA'].Valeurs()
          lr=obj.Valeurs()
-         if len(lx)!=len(lr):
-            raise aster.error, "<S> LIST_PARA et LIST_RESU n'ont pas la meme taille"
+         if len(lx)<>len(lr):
+            UTMESS('S',macro,"LIST_PARA et LIST_RESU n'ont pas la meme taille",self)
          # on stocke les données dans le Graph
          dicC={
             'Val' : [lx,lr],
             'Lab' : [dCi['LIST_PARA'].get_name(),obj.get_name()]
          }
-         if dCi.has_key('LEGENDE'):       dicC['Leg']=dCi['LEGENDE']
-         if dCi.has_key('STYLE'):         dicC['Sty']=dCi['STYLE']
-         if dCi.has_key('COULEUR'):       dicC['Coul']=dCi['COULEUR']
-         if dCi.has_key('MARQUEUR'):      dicC['Marq']=dCi['MARQUEUR']
-         if dCi.has_key('FREQ_MARQUEUR'): dicC['FreqM']=dCi['FREQ_MARQUEUR']
+         AjoutParaCourbe(dicC, args=dCi)
          graph.AjoutCourbe(**dicC)
 
       # 1.2.3. Mot-clé FONC_X
@@ -232,17 +226,17 @@ def impr_fonction_ops(self, FORMAT, COURBE, INFO, **args):
          ob2=dCi['FONC_Y']
          # peut-on blinder au niveau du catalogue
          if typ=="nappe_sdaster" or ob2.__class__.__name__=="nappe_sdaster":
-            raise aster.error, "<S> FONC_X/FONC_Y ne peuvent pas etre des nappes !"
+            UTMESS('S',macro,"FONC_X/FONC_Y ne peuvent pas etre des nappes !",self)
          ftmp__=obj
          dpar=ftmp__.Parametres()
          ftm2__=ob2
          dpa2=ftm2__.Parametres()
-         intloc=0
+         intloc=False
          if interp:
-            intloc=1
+            intloc=True
             li__=linter__
          elif dCi.has_key('LIST_PARA'):
-            intloc=1
+            intloc=True
             li__=dCi['LIST_PARA']
          if intloc:
             ftmp__=CALC_FONC_INTERP(
@@ -277,15 +271,30 @@ def impr_fonction_ops(self, FORMAT, COURBE, INFO, **args):
                'Val' : [lx,ly],
                'Lab' : [dpar['NOM_PARA'],dpa2['NOM_RESU']]
             }
-         if dCi.has_key('LEGENDE'):       dicC['Leg']=dCi['LEGENDE']
-         if dCi.has_key('STYLE'):         dicC['Sty']=dCi['STYLE']
-         if dCi.has_key('COULEUR'):       dicC['Coul']=dCi['COULEUR']
-         if dCi.has_key('MARQUEUR'):      dicC['Marq']=dCi['MARQUEUR']
-         if dCi.has_key('FREQ_MARQUEUR'): dicC['FreqM']=dCi['FREQ_MARQUEUR']
+         AjoutParaCourbe(dicC, args=dCi)
+         graph.AjoutCourbe(**dicC)
+
+      # 1.2.4. Mot-clé ABSCISSE / ORDONNEE
+      elif typi=='ABSCISSE':
+         if interp and iocc>0:
+            UTMESS('S',macro,"""Il n'y a pas de règles d'interpolation pour ABSCISSE/ORDONNEE,
+     ABSCISSE/ORDONNEE ne peut donc apparaitre qu'une seule fois
+     et à la première occurence de COURBE""",self)
+         lx=obj
+         lr=dCi['ORDONNEE']
+         if len(lx)<>len(lr):
+            UTMESS('S',macro,"ABSCISSE et ORDONNEE n'ont pas la meme taille",self)
+         # on stocke les données dans le Graph
+         dicC={
+            'Val' : [lx,lr],
+            'Lab' : ['Absc','Ordo']
+         }
+         AjoutParaCourbe(dicC, args=dCi)
          graph.AjoutCourbe(**dicC)
 
       # 1.2.99. ménage
-      DETRUIRE(CONCEPT=_F(NOM=('li__','ftmp__','ftm2__'),),)
+      DETRUIRE(CONCEPT=_F(NOM=('li__','ftmp__','ftm2__'),),
+               ALARME='NON',INFO=1)
 
    # 1.3. dbg
    if INFO==2:
@@ -293,65 +302,95 @@ def impr_fonction_ops(self, FORMAT, COURBE, INFO, **args):
       print graph
       print '-'*70+'\n'
 
-   # 1.99. ménage
-   DETRUIRE(CONCEPT=_F(NOM='linter__',),)
-
    #----------------------------------------------
    # 2. Impression du 'tableau' de valeurs
    #----------------------------------------------
 
    # 2.0. Surcharge des propriétés du graphique et des axes
-   if args['TITRE']!=None:          graph.Titre=args['TITRE']
-   if args['SOUS_TITRE']!=None:     graph.SousTitre=args['SOUS_TITRE']
+   if args['TITRE']<>None:          graph.Titre=args['TITRE']
+   if args['SOUS_TITRE']<>None:     graph.SousTitre=args['SOUS_TITRE']
    if FORMAT in ('XMGRACE','AGRAF'):
-      if args['BORNE_X']!=None:
+      if args['BORNE_X']<>None:
                                        graph.Min_X=args['BORNE_X'][0]
                                        graph.Max_X=args['BORNE_X'][1]
-      if args['BORNE_Y']!=None:
+      if args['BORNE_Y']<>None:
                                        graph.Min_Y=args['BORNE_Y'][0]
                                        graph.Max_Y=args['BORNE_Y'][1]
-      if args['LEGENDE_X']!=None:      graph.Legende_X=args['LEGENDE_X']
-      if args['LEGENDE_Y']!=None:      graph.Legende_Y=args['LEGENDE_Y']
-      if args['ECHELLE_X']!=None:      graph.Echelle_X=args['ECHELLE_X']
-      if args['ECHELLE_Y']!=None:      graph.Echelle_Y=args['ECHELLE_Y']
-      if args['GRILLE_X']!=None:       graph.Grille_X=args['GRILLE_X']
-      if args['GRILLE_Y']!=None:       graph.Grille_Y=args['GRILLE_Y']
-      if args['TRI']!=None:            graph.Tri=args['TRI']
+      if args['LEGENDE_X']<>None:      graph.Legende_X=args['LEGENDE_X']
+      if args['LEGENDE_Y']<>None:      graph.Legende_Y=args['LEGENDE_Y']
+      if args['ECHELLE_X']<>None:      graph.Echelle_X=args['ECHELLE_X']
+      if args['ECHELLE_Y']<>None:      graph.Echelle_Y=args['ECHELLE_Y']
+      if args['GRILLE_X']<>None:       graph.Grille_X=args['GRILLE_X']
+      if args['GRILLE_Y']<>None:       graph.Grille_Y=args['GRILLE_Y']
 
+   kargs={
+      'FORMAT'    : FORMAT,
+      'FICHIER'   : nomfich,
+   }
+   
    # 2.1. au format TABLEAU
    if FORMAT=='TABLEAU':
       # surcharge par les formats de l'utilisateur
-      dico_formats={
+      kargs['dform']={
          'csep'  : args['SEPARATEUR'],
          'ccom'  : args['COMMENTAIRE'],
          'cdeb'  : args['DEBUT_LIGNE'],
          'cfin'  : args['FIN_LIGNE']
       }
-      tab=Graph.ImprTableau(graph,nomfich,fmod='a',dform=dico_formats)
-      tab.Trace()
 
    # 2.2. au format AGRAF
    elif FORMAT=='AGRAF':
-      nomdigr='fort.'+str(args['UNITE_DIGR'])
-      dico_formats={ 'formR' : '%12.5E' }
-      agraf=Graph.ImprAgraf(graph,[nomfich,nomdigr],dform=dico_formats)
-      agraf.Trace()
+      nomdigr=None
+      if args['UNITE_DIGR']<>6:
+         nomdigr='fort.'+str(args['UNITE_DIGR'])
+      kargs['FICHIER']=[nomfich, nomdigr]
+      kargs['dform']={ 'formR' : '%12.5E' }
 
    # 2.3. au format XMGRACE et dérivés
    elif FORMAT=='XMGRACE':
-      dico_formats={ 'formR' : '%.8g' }
-      # parametres, valeurs par défaut :
-      if graph.Tri != '' and graph.Tri != 'N':
-         print ' <A> TRI non traité au format XMGRACE'
-
-      grace=Graph.ImprXmgrace(graph,nomfich,dform=dico_formats)
-      grace.Pilote=args['PILOTE']
-      grace.Trace()
+      kargs['dform']={ 'formR' : '%.8g' }
+      kargs['PILOTE']=args['PILOTE']
 
    # 2.39. Format inconnu
    else:
-      raise aster.error,'<S> <IMPR_FONCTION> Format inconnu : '+FORMAT
+      UTMESS('S',macro,'Format inconnu : '+FORMAT,self)
 
-   #----------------------------------------------
-   # 9. Fin
+   # Traiter le cas des UL réservées
+   if args['UNITE'] and args['UNITE'] in ul_reserve:
+      DEFI_FICHIER( ACTION='LIBERER', UNITE=args['UNITE'], )
+   if FORMAT=='AGRAF' and args['UNITE_DIGR']<>args['UNITE'] \
+         and args['UNITE_DIGR'] in ul_reserve:
+      DEFI_FICHIER( ACTION='LIBERER', UNITE=args['UNITE_DIGR'], )
+
+   # 2.4. On trace !
+   graph.Trace(**kargs)
+
+   # 99. Traiter le cas des UL réservées
+   if args['UNITE'] and args['UNITE'] in ul_reserve:
+      DEFI_FICHIER( ACTION='ASSOCIER', UNITE=args['UNITE'],
+            TYPE='ASCII', ACCES='APPEND' )
+   if FORMAT=='AGRAF' and args['UNITE_DIGR']<>args['UNITE'] \
+         and args['UNITE_DIGR'] in ul_reserve:
+      DEFI_FICHIER( ACTION='ASSOCIER', UNITE=args['UNITE_DIGR'],
+            TYPE='ASCII', ACCES='APPEND' )
+
    return ier
+
+# ------------------------------------------------------------------------------
+def AjoutParaCourbe(dCourbe, args):
+   """Ajoute les arguments fournis par l'utilisateur (args) dans le dictionnaire
+   décrivant la courbe (dCourbe).
+   """
+   # correspondance : mot-clé Aster / clé du dico de l'objet Graph
+   keys={
+      'LEGENDE'         : 'Leg',
+      'STYLE'           : 'Sty',
+      'COULEUR'         : 'Coul',
+      'MARQUEUR'        : 'Marq',
+      'FREQ_MARQUEUR'   : 'FreqM',
+      'TRI'             : 'Tri',
+   }
+   for mc, key in keys.items():
+      if args.has_key(mc):
+         dCourbe[key]=args[mc]
+

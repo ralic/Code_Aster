@@ -3,7 +3,7 @@
       INTEGER ICMD,ICOND,IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
+C MODIF SUPERVIS  DATE 03/11/2004   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,6 +43,7 @@ C
 C     ------------------------------------------------------------------
       CHARACTER*1 KLAS
       CHARACTER*8 KBID
+      CHARACTER*3 ALARME
       CHARACTER*32 KCH
       CHARACTER*16 TYPECO
       INTEGER LBID, IEX
@@ -52,6 +53,7 @@ C
          CALL JEMARQ()
          CALL INFNIV(IFM,NIV)
          IF (NIV.GT.1) LBID=JVINFO('AFFECT', NIV)
+         CALL GETVTX(' ','ALARME',0,1,1,ALARME,LBID)
          CALL GETFAC('CONCEPT',NBOCC)
          DO 3 IOCC = 1,NBOCC
             CALL GETVID('CONCEPT','NOM',IOCC,1,0,KBID,NCON)
@@ -63,10 +65,10 @@ C
                CALL GCDETC(ICMD,ZK8(LCON-1+II))
 C
                CALL GCUCON(0,ZK8(LCON-1+II),' ',IEX)
-               IF (IEX.EQ.0) THEN
+               IF ( IEX.EQ.0 .AND. ALARME.NE.'NON' ) THEN
 C
 C   SI LE CONCEPT A DETRUIRE N EXISTE PAS : ALARME
-C
+C   (SAUF SI ON DEMANDE A LES SUPPRIMER DANS UNE MACRO PAR EXEMPLE)
                  CALL UTMESS('A','DETRUIRE','LE CONCEPT '//
      &                       'DE NOM '' ' // ZK8(LCON-1+II) //
      &                       ' '' N''EXISTE PAS')

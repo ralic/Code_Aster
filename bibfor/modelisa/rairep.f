@@ -1,12 +1,12 @@
       SUBROUTINE RAIREP(NOMA,IOC,KM,RIGI,NBGR,LIGRMA,NBNO,
-     +  TABNOE,RIGNOE,RIGTO,AMOTO)
+     +  TABNOE,RIGNOE,RIGTO,AMOTO,IREP)
       IMPLICIT REAL*8 (A-H,O-Z)
-      INTEGER      IOC, NBGR, NBNO
-      CHARACTER*8  NOMA, LIGRMA(NBGR), TABNOE(*)
+      INTEGER      IOC, NBGR, NBNO,IREP
+      CHARACTER*8  NOMA, LIGRMA(NBGR), TABNOE(*),KM
       REAL*8       RIGNOE(*), RIGTO(*), AMOTO(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 05/08/2004   AUTEUR ACBHHCD G.DEVESA 
+C MODIF MODELISA  DATE 03/11/2004   AUTEUR ACBHHCD G.DEVESA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -42,21 +42,29 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32     JEXNOM, JEXNUM
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
-      CHARACTER*1  KM
       CHARACTER*4  CTYP
-      CHARACTER*8  K8B, RESU
+      CHARACTER*8  K8B, RESU, REPERE
       CHARACTER*14 NUME
       CHARACTER*24 NOMCH1, NOMCH2
       CHARACTER*8  NOMGR, NOMNOE, NOMFON
       CHARACTER*24 MAGRNO, MANONO, MAGRMA, MANOMA
-      REAL*8       R8B, ZERO, PREC, X(8), Y(8), Z(8), RIGI(6)
+      REAL*8       R8B, ZERO, PREC, X(9), Y(9), Z(9), RIGI(6)
       REAL*8       A(3), B(3), C(3), U(3)
       LOGICAL      LFONC
+      INTEGER LOREP,LOKM,LONO
 C
       CALL JEMARQ()
       ZERO = 0.D0
       IFR = IUNIFI('RESULTAT')
       LFONC = .FALSE.
+      IF ( IREP .EQ. 1) THEN
+         REPERE = 'GLOBAL'
+         LOREP  = 6
+      ELSE
+         REPERE = 'LOCAL'
+         LOREP  = 5
+      ENDIF
+      
 C
 C
 C     --- ON RECUPERE LES POINTS D'ANCRAGE ---
@@ -168,17 +176,19 @@ C
            A(1) = X(3) - X(1)
            A(2) = Y(3) - Y(1)
            A(3) = Z(3) - Z(1)
-           IF (NM.EQ.3.OR.NM.EQ.6) THEN
+           IF (NM.EQ.3.OR.NM.EQ.6.OR.NM.EQ.7) THEN
              B(1) = X(2) - X(1)
              B(2) = Y(2) - Y(1)
              B(3) = Z(2) - Z(1)
-           ELSEIF (NM.EQ.4.OR.NM.EQ.8) THEN
+           ELSEIF (NM.EQ.4.OR.NM.EQ.8.OR.NM.EQ.9) THEN
              B(1) = X(4) - X(2)
              B(2) = Y(4) - Y(2)
              B(3) = Z(4) - Z(2)
            ELSE
              CALL UTMESS('F','RAIREP.01',
-     +       'UN ELEMENT N''EST NI TRIA3 NI TRIA6 NI QUAD4 NI QUAD8')
+     +  'UN ELEMENT N''EST NI TRIA3 NI TRIA6 NI TRIA7 NI QUAD4 NI QUAD8 
+     +NI QUAD9')
+
            ENDIF
            CALL PROVEC(A,B,C)
            CALL PSCAL(3,C,C,SURF)
@@ -222,7 +232,7 @@ C
  31   CONTINUE
       NBMA = IM
 C
-C     CALCUL DES RAIDEURS DE TORSION
+C     CALCUL DES RAIDEURS DE ROTATION
 C
       II = 0
       RIG4 = ZERO
@@ -243,13 +253,27 @@ C
          RIG45 = RIG45 - RIGI(3)*XX*YY*ZR(ICOEF+IJ-1)
          RIG46 = RIG46 - RIGI(2)*XX*ZZ*ZR(ICOEF+IJ-1)
          RIG56 = RIG56 - RIGI(1)*YY*ZZ*ZR(ICOEF+IJ-1)
-         CALL JENUNO(JEXNUM(MANONO,IJ),NOMNOE)
  50   CONTINUE
       NBNO = II
-      RIG4 = RIGI(4) - RIG4
-      RIG5 = RIGI(5) - RIG5
-      RIG6 = RIGI(6) - RIG6
-      WRITE(IFR,1001) RIG4,RIG5,RIG6
+
+      IF ( (KM(1:7) .EQ. 'K_T_D_N').OR.
+     &     (KM(1:7) .EQ. 'A_T_D_N') ) THEN
+         LOKM = 7
+C        PAS DE RAIDEUR EN ROTATION SUR LES DISCRETS
+         RIGI(4) = ZERO
+         RIGI(5) = ZERO
+         RIGI(6) = ZERO
+         RIG4 = ZERO
+         RIG5 = ZERO
+         RIG6 = ZERO
+         WRITE(IFR,1000) KM(1:LOKM)
+      ELSE
+         LOKM = 8
+         RIG4 = RIGI(4) - RIG4
+         RIG5 = RIGI(5) - RIG5
+         RIG6 = RIGI(6) - RIG6
+         WRITE(IFR,1001) KM(1:LOKM),RIG4,RIG5,RIG6
+      ENDIF
 C
       II = 0
       DO 51 IJ = 1, NOEMAX
@@ -262,7 +286,7 @@ C
          R5 = RIG5*ZR(ICOEF+IJ-1)
          R6 = RIG6*ZR(ICOEF+IJ-1)
          CALL JENUNO(JEXNUM(MANONO,IJ),NOMNOE)
-         IF (KM.EQ.'K') THEN
+         IF (KM(1:1).EQ.'K') THEN
            RIGTO(6*(IJ-1)+1) = R1 + RIGTO(6*(IJ-1)+1)
            RIGTO(6*(IJ-1)+2) = R2 + RIGTO(6*(IJ-1)+2)
            RIGTO(6*(IJ-1)+3) = R3 + RIGTO(6*(IJ-1)+3)
@@ -275,7 +299,7 @@ C
            R4 = RIGTO(6*(IJ-1)+4)
            R5 = RIGTO(6*(IJ-1)+5)
            R6 = RIGTO(6*(IJ-1)+6)
-         ELSEIF (KM.EQ.'A') THEN
+         ELSEIF (KM(1:1).EQ.'A') THEN
            AMOTO(6*(IJ-1)+1) = R1 + AMOTO(6*(IJ-1)+1)
            AMOTO(6*(IJ-1)+2) = R2 + AMOTO(6*(IJ-1)+2)
            AMOTO(6*(IJ-1)+3) = R3 + AMOTO(6*(IJ-1)+3)
@@ -296,16 +320,32 @@ C
          RIGNOE(6*(II-1)+5) = R5
          RIGNOE(6*(II-1)+6) = R6
          TABNOE(II) = NOMNOE
-         WRITE(IFR,1000) NOMNOE,KM,R1,R2,R3,R4,R5,R6
+
+         IF ( (KM(1:7) .EQ. 'K_T_D_N').OR.
+     &        (KM(1:7) .EQ. 'A_T_D_N') ) THEN
+            WRITE(IFR,1010) NOMNOE,KM(1:LOKM),
+     &                      R1,R2,R3,REPERE(1:LOREP)
+         ELSE
+            WRITE(IFR,1011) NOMNOE,KM(1:LOKM),
+     &                      R1,R2,R3,R4,R5,R6,REPERE(1:LOREP)
+         ENDIF
  51   CONTINUE
 C
- 1000 FORMAT(1X,'_F ( NOEUD=''',A8,''',',1X,'CARA= ''',A1,
-     +      '_TR_D_N'', ',
-     +      /4X,'VALE=(',2(/1X,3(1X,1PE12.5,',')),/9X,'),',
-     +      /'   ),')
- 1001 FORMAT(1X,'RAIDEURS DE ROTATION A REPARTIR:',/
-     +      1X,' KRX: ',1X,1PE12.5,' KRY: ',1X,1PE12.5,
-     +      ' KRZ: ',1X,1PE12.5)
+
+ 1010 FORMAT(' _F(NOEUD=''',A8,''', CARA=''',A,''',',/,
+     +       '    VALE=(',3(1X,1PE12.5,','),'),',/,
+     +       '    REPERE=''',A,'''),')
+
+ 1011 FORMAT(' _F(NOEUD=''',A8,''', CARA=''',A,''',',/,
+     +       '    VALE=(',3(1X,1PE12.5,','),/,
+     +       '          ',3(1X,1PE12.5,','),'),',/,
+     +       '    REPERE=''',A,'''),')
+
+
+ 1000 FORMAT(/,' PAS DE REPARTITION EN ROTATION POUR DES ',A,/)
+ 1001 FORMAT(/,' RAIDEURS DE ROTATION A REPARTIR POUR DES ',A,/
+     +        ,'  KRX: ',1PE12.5,' KRY: ',1PE12.5,' KRZ: ',1PE12.5,/)
+
  9999 CONTINUE
       CALL JEDETR('&&RAIREP.COEGRO')
       CALL JEDETR('&&RAIREP.FONGRO')

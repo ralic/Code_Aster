@@ -1,4 +1,4 @@
-#@ MODIF Graph Utilitai  DATE 14/09/2004   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF Graph Utilitai  DATE 03/11/2004   AUTEUR MCOURTOI M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,18 +18,38 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 
-
 # RESPONSABLE MCOURTOI M.COURTOIS
 
-import aster
+import sys
 import os.path
 import string
 import types
+import time
+import Numeric
 
-#-------------------------------------------------
+# try/except pour utiliser hors aster
+try:
+   import aster
+except ImportError:
+   class fake_aster:
+      def repout(self): return '/opt/aster/outils'
+   aster=fake_aster()
+
+try:
+   from Utilitai.Utmess import UTMESS
+   if not sys.modules.has_key('Utilitai.Table'):
+      from Utilitai.Table import Table
+except ImportError:
+   def UTMESS(code,sprg,texte):
+      fmt='\n <%s> <%s> %s\n\n'
+      print fmt % (code,sprg,texte)
+   if not sys.modules.has_key('Table'):
+      from Table import Table
+   
+
+# ------------------------------------------------------------------------------
 class Graph:
-   """
-   Cette classe définit l'objet Graph pour Code_Aster.
+   """Cette classe définit l'objet Graph pour Code_Aster.
    
    Important :  Utiliser les méthodes dédiées à la manipulation des données
       (AjoutCourbe, ...) car elles tiennent à jour les attributs "privés"
@@ -45,6 +65,8 @@ class Graph:
       .Couleurs  : liste des indices de couleurs
       .Marqueurs : liste des indices de symboles/marqueurs
       .FreqMarq  : liste des fréquences des marqueurs
+      .Tri       : liste du tri à effectuer sur les données ('N', 'X', 'Y',
+         'XY' ou 'YX')
      Pour Lignes, Couleurs, Marqueurs, FreqMarq, -1 signifie valeur par défaut
      du traceur.
 
@@ -58,16 +80,15 @@ class Graph:
       .Echelle_X, .Echelle_Y : type d'échelle (LIN, LOG)
       .Grille_X, .Grille_Y : paramètre de la grille (pas ou fréquence au choix
          de l'utilisateur en fonction du traceur qu'il veut utiliser)
-      .Tri      : tri à effectuer sur les données
 
    Attributs privés (modifiés uniquement par les méthodes de la classe) :
       .NbCourbe : nombre de courbes
       .BBXmin, BBXmax, BBYmin, BBYmax : extrema globaux (bounding box)
+      .LastTraceArgs, LastTraceFormat : données utilisées lors du dernier tracé
    """
-#-------------------------------------------------
+# ------------------------------------------------------------------------------
    def __init__(self):
-      """
-      Construction + valeurs par défaut des attributs
+      """Construction + valeurs par défaut des attributs
       """
       self.Valeurs   = []
       self.Legendes  = []
@@ -76,6 +97,7 @@ class Graph:
       self.Couleurs  = []
       self.Marqueurs = []
       self.FreqMarq  = []
+      self.Tri       = []
       self.Titre     = ''
       self.SousTitre = ''
       self.Min_X     =  1.e+99
@@ -88,29 +110,31 @@ class Graph:
       self.Echelle_Y = 'LIN'
       self.Grille_X  = -1
       self.Grille_Y  = -1
-      self.Tri       = ''
       # attributs que l'utilisateur ne doit pas modifier
       self.NbCourbe  = len(self.Valeurs)
       self.BBXmin    = self.Min_X
       self.BBXmax    = self.Max_X
       self.BBYmin    = self.Min_Y
       self.BBYmax    = self.Max_Y
+      # pour conserver les paramètres du dernier tracé
+      self.LastTraceArgs = {}
+      self.LastTraceFormat = ''
       return
-#-------------------------------------------------
-   def SetExtrema(self):
+# ------------------------------------------------------------------------------
+   def SetExtrema(self,marge=0.):
+      """Remplit les limites du tracé (Min/Max_X/Y) avec les valeurs de la
+      bounding box +/- avec une 'marge'*(Max-Min)/2
       """
-      Remplit les limites du tracé (Min/Max_X/Y) avec les valeurs de la
-      bounding box
-      """
-      self.Min_X = self.BBXmin
-      self.Max_X = self.BBXmax
-      self.Min_Y = self.BBYmin
-      self.Max_Y = self.BBYmax
+      dx=max(self.BBXmax-self.BBXmin,0.01*self.BBXmax)
+      self.Min_X = self.BBXmin - marge*dx/2.
+      self.Max_X = self.BBXmax + marge*dx/2.
+      dy=max(self.BBYmax-self.BBYmin,0.01*self.BBYmax)
+      self.Min_Y = self.BBYmin - marge*dy/2.
+      self.Max_Y = self.BBYmax + marge*dy/2.
       return
-#-------------------------------------------------
+# ------------------------------------------------------------------------------
    def AutoBB(self,debut=-1):
-      """
-      Met à jour automatiquement la "bounding box"
+      """Met à jour automatiquement la "bounding box"
       (extrema toutes courbes confondues)
       Appelé par les méthodes de manipulation des données
       """
@@ -138,10 +162,9 @@ class Graph:
       self.BBYmin = Y0
       self.BBYmax = Y1
       return
-#-------------------------------------------------
-   def AjoutCourbe(self,Val,Lab,Leg='',Sty=-1,Coul=-1,Marq=-1,FreqM=-1):
-      """
-      Ajoute une courbe dans les données
+# ------------------------------------------------------------------------------
+   def AjoutCourbe(self,Val,Lab,Leg='',Sty=-1,Coul=-1,Marq=-1,FreqM=-1,Tri='N'):
+      """Ajoute une courbe dans les données
          Val   : liste de 2 listes (ou 3 si complexe) : abs, ord[, imag]
          Leg   : une chaine
          Lab   : liste de 2 chaines (ou 3 si complexe)
@@ -149,6 +172,7 @@ class Graph:
          Coul  : un entier
          Marq  : un entier
          FreqM : un entier
+         Tri   : chaine de caractères : N, X, Y, XY ou YX
       Met à jour les attributs : NbCourbe, BBXmin/Xmax/Ymin/Ymax
       """
       nbc = len(Val)   # nombre de colonnes : 2 ou 3
@@ -159,10 +183,10 @@ class Graph:
          type(Val[1]) in (types.ListType, types.TupleType) and \
          (nbc==2 or type(Val[2]) in (types.ListType, types.TupleType)) and \
          len(Val[0]) == len(Val[1]) and (nbc==2 or len(Val[0]) == len(Val[2])) ):
-            self.Error('<Graph.AjoutCourbe> "Val" doit etre une liste de 2 ou 3 listes de rééls de meme longueur')
+            UTMESS('S','Graph','"Val" doit etre une liste de 2 ou 3 listes de rééls de meme longueur')
       
-      if len(Lab) != nbc:
-            self.Error('<Graph.AjoutCourbe> "Lab" doit etre une liste de 2 ou 3 chaines')
+      if len(Lab) <> nbc:
+            UTMESS('S','Graph','"Lab" doit etre une liste de 2 ou 3 chaines')
             
       # ajout dans les données
       self.Legendes.append(str(Leg))
@@ -172,14 +196,14 @@ class Graph:
       self.Couleurs.append(Coul)
       self.Marqueurs.append(Marq)
       self.FreqMarq.append(FreqM)
+      self.Tri.append(Tri)
 
       self.NbCourbe = self.NbCourbe + 1
       self.AutoBB()
       return
-#-------------------------------------------------
+# ------------------------------------------------------------------------------
    def Courbe(self,n):
-      """
-      Permet de récupérer les données de la courbe d'indice n sous forme
+      """Permet de récupérer les données de la courbe d'indice n sous forme
       d'un dictionnaire.
       """
       dico={
@@ -193,54 +217,63 @@ class Graph:
          'Sty'    : self.Styles[n],             # style de la ligne
          'Coul'   : self.Couleurs[n],           # couleur
          'Marq'   : self.Marqueurs[n],          # marqueur
-         'FreqM'  : self.FreqMarq[n]            # fréquence du marqueur
+         'FreqM'  : self.FreqMarq[n],           # fréquence du marqueur
+         'Tri'    : self.Tri[n],                # ordre de tri des données
       }
       if(dico['NbCol'] == 3):
          dico['LabOrd'].append(self.Labels[n][2]) # labels de la partie imaginaire
          dico['Ord'].append(self.Valeurs[n][2])   # liste des ordonnées partie imaginaire
       return dico
-#-------------------------------------------------
-   def Error(self,msg):
+# ------------------------------------------------------------------------------
+   def Trace(self,FICHIER=None,FORMAT=None,dform=None,**opts):
+      """Tracé du Graph selon le format spécifié.
+         FICHIER : nom du(des) fichier(s). Si None, on dirige vers stdout
+         dform : dictionnaire de formats d'impression (format des réels,
+            commentaires, saut de ligne...)
+         opts  : voir TraceGraph.
       """
-      Gère l'affichage d'un message d'erreur et lève une exception aster
-      """
-      raise aster.error, ' <S> '+msg
-      return
-#-------------------------------------------------
+      para={
+         'TABLEAU' : { 'mode' : 'a', 'driver' : TraceTableau, },
+         'XMGRACE' : { 'mode' : 'w', 'driver' : TraceXmgrace, },
+         'AGRAF'   : { 'mode' : 'w', 'driver' : TraceAgraf,   },
+      }
+      kargs={}
+      if self.LastTraceArgs=={}:
+         kargs['FICHIER']=FICHIER
+         kargs['dform']=dform
+         kargs['opts']=opts
+      else:
+         kargs=self.LastTraceArgs.copy()
+         if FORMAT==None:
+            FORMAT=self.LastTraceFormat
+         if FICHIER<>None:
+            kargs['FICHIER']=FICHIER
+         if dform<>None:
+            kargs['dform']=dform
+         if opts<>{}:
+            kargs['opts']=opts
+      if not FORMAT in para.keys():
+         print ' <A> <Objet Graph> Format inconnu : %s' % FORMAT
+      else:
+         kargs['fmod']=para[FORMAT]['mode']
+         self.LastTraceArgs   = kargs.copy()
+         self.LastTraceFormat = FORMAT
+         # call the associated driver
+         para[FORMAT]['driver'](self,**kargs)
+# ------------------------------------------------------------------------------
    def __repr__(self):
-      """
-      Affichage du contenu d'un Graph
-      """
+      """Affichage du contenu d'un Graph"""
       srep=''
       for attr in ['NbCourbe','Legendes','Labels','Valeurs','Min_X','Max_X','Min_Y','Max_Y','BBXmax','BBXmin','BBYmax','BBYmin','Legende_X','Legende_Y','Echelle_X','Echelle_Y','Grille_X','Grille_Y','Tri']:
          srep=srep + '%-10s : %s\n' % (attr,str(getattr(self,attr)))
       return srep
 
-
-#-------------------------------------------------
-#-------------------------------------------------
-#-------------------------------------------------
-def ValCycl(val,vmin,vmax,vdef):
+# ------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+class TraceGraph:
    """
-   Retourne une valeur entre vmin et vmax (bornes incluses) :
-      - si val<vmin, on utilise val=vdef,
-      - si val>vmax, on cycle tel que val=vmax+1 retourne vmin, etc.
-      - si vmax<vmin, il n'y a pas de max
-   """
-   v = val
-   if v < vmin:
-      v = vdef
-   if vmax < vmin:
-      return v
-   else:
-      return (((v-vmin) % (vmax+1-vmin))+vmin)
-
-#-------------------------------------------------
-#-------------------------------------------------
-#-------------------------------------------------
-class ImprGraph:
-   """
-   Cette classe définit l'impression d'un objet Graph dans un fichier.
+   Cette classe définit le tracé d'un objet Graph dans un fichier.
    
    Attributs :
       .NomFich : liste de noms de fichier de sortie
@@ -251,31 +284,43 @@ class ImprGraph:
       .DicForm : dictionnaire des formats de base (séparateur, format des réels...)
    
    Les méthodes Entete, DescrCourbe, Trace (définition de l'entete, partie descriptive
-   d'une courbe, méthode de tracé/impressiion) sont définies dans une classe dérivée.
+   d'une courbe, méthode de tracé/impression) sont définies dans une classe dérivée.
    """
-#-------------------------------------------------
-   def __init__(self,graph,nomfich,fmod='w',dform=None):
+# ------------------------------------------------------------------------------
+   def __init__(self,graph,FICHIER,fmod='w',dform=None,opts={}):
+      """Construction, ouverture du fichier, surcharge éventuelle du formatage
+      (dform), mode d'ouverture du fichier (fmod).
+      opts  : dictionnaire dont les valeurs seront affectées comme attributs
+         de l'objet (A utiliser pour les propriétés spécifiques
+         à un format, exemple 'PILOTE' pour Xmgrace).
       """
-      Construction, ouverture du fichier, surcharge éventuelle du formatage (dform),
-      mode d'ouverture du fichier (fmod)
-      """
+      # attributs optionnels (au début pour éviter un écrasement maladroit !)
+      for k,v in opts.items():
+         setattr(self,k,v)
+
       # Ouverture du(des) fichier(s)
       self.NomFich=[]
-      if type(nomfich) is types.StringType:
-         self.NomFich.append(nomfich)
-      elif type(nomfich) in (types.ListType, types.TupleType):
-         self.NomFich=nomfich
+      if type(FICHIER) is types.StringType:
+         self.NomFich.append(FICHIER)
+      elif type(FICHIER) in (types.ListType, types.TupleType):
+         self.NomFich=FICHIER[:]
+      else:
+         # dans ce cas, on écrira sur stdout (augmenter le 2 éventuellement)
+         self.NomFich=[None]*2
       self.Fich=[]
       for ff in self.NomFich:
-         self.Fich.append(open(ff,fmod))
+         if ff<>None:
+            self.Fich.append(open(ff,fmod))
+         else:
+            self.Fich.append(sys.stdout)
       
-      # objet Graph
+      # objet Graph sous-jacent
       self.Graph=graph
       # si Min/Max incohérents
       if graph.Min_X > graph.Max_X or graph.Min_Y > graph.Max_Y:
-         graph.SetExtrema()
+         graph.SetExtrema(marge=0.05)
       
-      # formats de base
+      # formats de base (identiques à ceux du module Table)
       self.DicForm={
          'csep'  : ' ',       # séparateur
          'ccom'  : '#',       # commentaire
@@ -285,117 +330,133 @@ class ImprGraph:
          'formR' : '%12.5E',  # réels
          'formI' : '%12d'     # entiers
       }
-      if dform!=None and type(dform)==types.DictType:
-         for k,v in dform.items():  self.DicForm['k']=v
+      if dform<>None and type(dform)==types.DictType:
+         self.DicForm.update(dform)
+      
+      # let's go
+      self.Trace()
       return
-#-------------------------------------------------
+# ------------------------------------------------------------------------------
    def __del__(self):
-      """
-      Fermeture du(des) fichier(s) à la destruction
-      """
+      """Fermeture du(des) fichier(s) à la destruction"""
+      if hasattr(self,'Fich'):
+         self._FermFich()
+# ------------------------------------------------------------------------------
+   def _FermFich(self):
+      """Fermeture du(des) fichier(s)"""
       for fp in self.Fich:
-         fp.close()
-      return
-#-------------------------------------------------
+         if fp<>sys.stdout:
+            fp.close()
+# ------------------------------------------------------------------------------
+   def _OuvrFich(self):
+      """Les fichiers sont ouverts par le constructeur. S'ils ont été fermés,
+      par un appel au Tracé, _OuvrFich ouvre de nouveau les fichiers dans le
+      meme mode"""
+      n=len(self.NomFich)
+      for i in range(n):
+         if self.Fich[i].closed:
+            self.Fich[i]=open(self.NomFich[i],self.Fich[i].mode)
+
+# ------------------------------------------------------------------------------
    def Entete(self):
-      """
-      Retourne l'entete
-      """
+      """Retourne l'entete"""
       raise StandardError, "Cette méthode doit etre définie par la classe fille."
-#-------------------------------------------------
+# ------------------------------------------------------------------------------
    def DescrCourbe(self,**args):
-      """
-      Retourne la chaine de caractères décrivant les paramètres de la courbe.
+      """Retourne la chaine de caractères décrivant les paramètres de la courbe.
       """
       raise StandardError, "Cette méthode doit etre définie par la classe fille."
-#-------------------------------------------------
+# ------------------------------------------------------------------------------
    def Trace(self):
-      """
-      Méthode pour 'tracer' l'objet Graph dans un fichier.
+      """Méthode pour 'tracer' l'objet Graph dans un fichier.
       Met en page l'entete, la description des courbes et les valeurs selon
       le format et ferme le fichier.
       """
       raise StandardError, "Cette méthode doit etre définie par la classe fille."
 
 
-#-------------------------------------------------
-#-------------------------------------------------
-#-------------------------------------------------
-class ImprTableau(ImprGraph):
+# ------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+class TraceTableau(TraceGraph):
    """
    Impression d'un objet Graph sous forme d'un tableau de colonnes,
-   on suppose que les courbes partagent la meme liste d'abscisse.
+   on suppose que les courbes partagent la meme liste d'abscisse à 'EPSILON'
+   près, sinon on alarme.
    """
-#-------------------------------------------------
-   def Entete(self):
-      """
-      Entete du tableau
-      """
-      entete=[]
-      g=self.Graph
-      # titre / sous-titre
-      entete.append(self.DicForm['ccom']+' '+g.Titre+self.DicForm['cfin'])
-      entete.append(self.DicForm['ccom']+' '+g.SousTitre+self.DicForm['cfin'])
-      # legendes
-      for i in range(g.NbCourbe):
-         entete.append(self.DicForm['ccom']+' Courbe '+str(i)+' '+g.Legendes[i]+self.DicForm['cfin'])
-      # labels de colonne
-      entete.append(self.DicForm['formK'] % g.Labels[0][0])
-      for i in range(g.NbCourbe):
-         for lab in g.Labels[i][1:]:
-            entete.append(self.DicForm['csep']+(self.DicForm['formK'] % lab))
-      entete.append(self.DicForm['cfin'])
-      return entete
-#-------------------------------------------------
-   def DescrCourbe(self,**args):
-      """
-      Retourne la chaine de caractères décrivant les paramètres de la courbe.
-      Sans objet pour un tableau.
-      """
-      pass
-#-------------------------------------------------
+   EPSILON=1.e-4
+# ------------------------------------------------------------------------------
    def Trace(self):
-      """
-      Méthode pour 'tracer' l'objet Graph dans un fichier.
+      """Méthode pour 'tracer' l'objet Graph dans un fichier.
       Met en page l'entete, la description des courbes et les valeurs selon
       le format et ferme le fichier.
+      L'ouverture et la fermeture du fichier sont gérées par l'objet Table.
       """
-      fich=self.Fich[0]
       g=self.Graph
-      if g.NbCourbe < 1:
-         fich.close()
-         return
-      # entete
-      for lig in self.Entete():
-         fich.write(lig)
-      # valeurs
-      dC0=g.Courbe(0)
-      for j in range(dC0['NbPts']):
-         sv=self.DicForm['formR'] % dC0['Abs'][j]
-         fich.write(sv)
+      msg=[]
+      if g.NbCourbe > 0:
+         # validité des données (abscisses identiques)
+         t0=Numeric.array(g.Courbe(0)['Abs'])
+         max0=max(abs(t0))
+         for i in range(1,g.NbCourbe):
+            if g.Courbe(i)['NbPts']<>g.Courbe(0)['NbPts']:
+               msg.append(" <A> <TraceTableau> La courbe %d n'a pas le meme " \
+                     "nombre de points que la 1ère." % i)
+            else:
+               ti=Numeric.array(g.Courbe(i)['Abs'])
+               if max(abs((ti-t0).flat)) > self.EPSILON*max0:
+                  msg.append(" <A> <TraceTableau> Courbe %d : écart entre les "\
+                        "abscisses supérieur à %9.2E" % (i+1,self.EPSILON))
+                  msg.append("     Utilisez IMPR_FONCTION pour interpoler " \
+                        "les valeurs sur la première liste d'abscisses.")
+         # objet Table
+         Tab=Table()
+         # titre / sous-titre
+         tit=[]
+         tit.append(self.DicForm['ccom']+' '+g.Titre)
+         tit.append(self.DicForm['ccom']+' '+g.SousTitre)
+         # legendes
          for i in range(g.NbCourbe):
-            dCi=g.Courbe(i)
-            for k in range(dCi['NbCol']-1):
-               sv=self.DicForm['formR'] % dCi['Ord'][k][j]
-               fich.write(self.DicForm['csep']+sv)
-         fich.write(self.DicForm['cfin'])
-      fich.close()
+            tit.append(self.DicForm['ccom']+' Courbe '+str(i)+' '+g.Legendes[i])
+         Tab.titr=self.DicForm['cfin'].join(tit)
+         # noms des paramètres/colonnes
+         Tab.para.append(g.Labels[0][0])
+         for i in range(g.NbCourbe):
+            for lab in g.Labels[i][1:]:
+               Tab.para.append(lab)
+         # types
+         Tab.type=['R']*len(Tab.para)
+         # lignes de la Table
+         dC0=g.Courbe(0)
+         for j in range(dC0['NbPts']):
+            row={}
+            row[dC0['LabAbs']]=dC0['Abs'][j]
+            for i in range(g.NbCourbe):
+               dCi=g.Courbe(i)
+               for k in range(dCi['NbCol']-1):
+                  try:
+                     row[dCi['LabOrd'][k]]=dCi['Ord'][k][j]
+                  except IndexError:
+                     row[dCi['LabOrd'][k]]=None
+            Tab.append(row)
+         Tab.Impr(FICHIER=self.NomFich[0], FORMAT='TABLEAU')
+         # erreurs ?
+         if msg:
+            print '\n'.join(msg)
       return
 
-
-#-------------------------------------------------
-#-------------------------------------------------
-#-------------------------------------------------
-class ImprXmgrace(ImprGraph):
+# ------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+class TraceXmgrace(TraceGraph):
    """
    Impression d'un objet Graph au format XMGRACE.
-   Attribut supplémentaire : .Pilote
+   Attribut supplémentaire : .PILOTE
    """
-   Pilote=''
-#-------------------------------------------------
+   PILOTE=''
+# ------------------------------------------------------------------------------
    def Entete(self):
-      """
-      Retourne l'entete du fichier .agr correspondant à la mise en forme
+      """Retourne l'entete du fichier .agr correspondant à la mise en forme
       """
       dic_ech={ 'LIN' : 'Normal', 'LOG' : 'Logarithmic' }
       g=self.Graph
@@ -532,7 +593,7 @@ class ImprXmgrace(ImprGraph):
 @    xaxis  tick major grid on
 @    xaxis  tick minor color 1
 @    xaxis  tick minor linewidth 1.0
-@    xaxis  tick minor linestyle 1
+@    xaxis  tick minor linestyle 2
 @    xaxis  tick minor grid off
 @    xaxis  tick minor size 0.500000
 @    xaxis  ticklabel on
@@ -644,10 +705,9 @@ class ImprXmgrace(ImprGraph):
       entete.append('@    world ymin '+str(g.Min_Y)+'\n')
       entete.append('@    world ymax '+str(g.Max_Y)+'\n')
       return entete
-#-------------------------------------------------
+# ------------------------------------------------------------------------------
    def DescrCourbe(self,**args):
-      """
-      Retourne la chaine de caractères décrivant les paramètres de la courbe.
+      """Retourne la chaine de caractères décrivant les paramètres de la courbe.
       """
       # valeurs par défaut
       sty   = str(ValCycl(args['Sty'],0,8,1))
@@ -710,17 +770,20 @@ class ImprXmgrace(ImprGraph):
       descr.append('@    s'+sn+' errorbar color '+color+'\n')
       descr.append('@    s'+sn+' legend "'+args['Leg']+'"\n')
       return descr
-#-------------------------------------------------
+# ------------------------------------------------------------------------------
    def Trace(self):
-      """
-      Méthode pour 'tracer' l'objet Graph dans un fichier.
+      """Méthode pour 'tracer' l'objet Graph dans un fichier.
       Met en page l'entete, la description des courbes et les valeurs selon
       le format et ferme le fichier.
       """
+      if self.PILOTE=='INTERACTIF' and self.Fich[0]==sys.stdout:
+         self.NomFich[0]='Trace_'+time.strftime('%y%m%d%H%M%S',time.localtime())+'.dat'
+         self.Fich[0]=open(self.NomFich[0],'w')
+      self._OuvrFich()
       fich=self.Fich[0]
       g=self.Graph
       if g.NbCourbe < 1:
-         fich.close()
+         self._FermFich()
          return
       # cohérence des valeurs par défaut
       if g.Grille_X<0 or g.Grille_Y<0:
@@ -752,16 +815,17 @@ class ImprXmgrace(ImprGraph):
             it=it+1
             fich.write('@target g0.s'+str(it)+'\n')
             fich.write('@type xy'+'\n')
+            listX, listY = Tri(dCi['Tri'], lx=dCi['Abs'], ly=dCi['Ord'][k])
             for j in range(dCi['NbPts']):
-               svX=self.DicForm['formR'] % dCi['Abs'][j]
-               svY=self.DicForm['formR'] % dCi['Ord'][k][j]
+               svX=self.DicForm['formR'] % listX[j]
+               svY=self.DicForm['formR'] % listY[j]
                fich.write(svX+' '+svY+'\n')
             fich.write('&'+'\n')
-      fich.close()
+      self._FermFich()
       
       # Production du fichier postscript, jpeg ou lancement interactif
-      pilo=self.Pilote
-      if self.Pilote!='':
+      pilo=self.PILOTE
+      if self.PILOTE<>'':
          xmgr=os.path.join(aster.repout(),'xmgrace')
          nfhard=self.NomFich[0]+'.hardcopy'
          # nom exact du pilote
@@ -777,29 +841,26 @@ class ImprXmgrace(ImprGraph):
          # appel xmgrace
          print ' <I> Lancement de : '+lcmde
          if not os.path.exists(xmgr):
-            raise aster.error, ' <S> <ImprXmgrace> Fichier inexistant : '+xmgr
+            UTMESS('S','TraceXmgrace','Fichier inexistant : '+xmgr)
          iret=os.system(lcmde)
-         if iret==0:
+         if iret==0 or os.path.exists(nfhard):
             if pilo not in ['','X11']:
                os.remove(self.NomFich[0])             # necessaire sous windows
                os.rename(nfhard,self.NomFich[0])
          else:
-            raise aster.error, " <S> <ImprXmgrace> Erreur lors de l'utilisation du filtre "+pilo+"\nLe fichier retourné est le fichier '.agr'"
+            UTMESS('A','TraceXmgrace',"Erreur lors de l'utilisation du filtre "+pilo+"\nLe fichier retourné est le fichier '.agr'")
       return
 
-
-#-------------------------------------------------
-#-------------------------------------------------
-#-------------------------------------------------
-class ImprAgraf(ImprGraph):
+# ------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+class TraceAgraf(TraceGraph):
    """
    Impression d'un objet Graph au format AGRAF.
    """
-#-------------------------------------------------
+# ------------------------------------------------------------------------------
    def Entete(self):
-      """
-      Retourne l'entete des directives Agraf
-      """
+      """Retourne l'entete des directives Agraf"""
       dic_ech={ 'LIN' : '0', 'LOG' : '1' }
       g=self.Graph
       entete=[]
@@ -855,15 +916,15 @@ GRAPHIQUE:
       if g.Titre=='':
          g.Titre='GRAPHIQUE CODE_ASTER'
       entete.append('Titre :'+g.Titre+'\n')
-      if g.SousTitre!='':
+      if g.SousTitre<>'':
          entete.append('Commentaire :'+g.SousTitre+'\n')
       entete.append('Frequence Grille X :'+str(int(g.Grille_X))+'\n')
       entete.append('Frequence Grille Y :'+str(int(g.Grille_Y))+'\n')
       entete.append('Echelle X :'+dic_ech[g.Echelle_X]+'\n')
       entete.append('Echelle Y :'+dic_ech[g.Echelle_Y]+'\n')
-      if g.Legende_X!='':
+      if g.Legende_X<>'':
          entete.append('Legende X :'+g.Legende_X+'\n')
-      if g.Legende_Y!='':
+      if g.Legende_Y<>'':
          entete.append('Legende Y :'+g.Legende_Y+'\n')
       entete.append('Min X : '+str(g.Min_X)+'\n')
       entete.append('Max X : '+str(g.Max_X)+'\n')
@@ -871,10 +932,9 @@ GRAPHIQUE:
       entete.append('Max Y : '+str(g.Max_Y)+'\n')
 
       return entete
-#-------------------------------------------------
+# ------------------------------------------------------------------------------
    def DescrCourbe(self,**args):
-      """
-      Retourne la chaine de caractères décrivant les paramètres de la courbe.
+      """Retourne la chaine de caractères décrivant les paramètres de la courbe.
       """
       # valeurs par défaut
       sty   = str(ValCycl(args['Sty'],0,2,0))
@@ -888,51 +948,79 @@ GRAPHIQUE:
       descr.append('     Couleur :'+color+'\n')
       descr.append('     Marqueur :'+symbol+'\n')
       descr.append('     Frequence Marqueur :'+freqm+'\n')
-      if args['Leg']!='':
+      if args['Leg']<>'':
          descr.append('     Legende :'+args['Leg']+'\n')
-      descr.append('     Tri :'+str(self.Graph.Tri)+'\n')
+      descr.append('     Tri :'+args['Tri']+'\n')
       descr.append('     Abscisses : [ '+str(args['Bloc'])+', '+str(args['ColX'])+']\n')
       descr.append('     Ordonnees : [ '+str(args['Bloc'])+', '+str(args['ColY'])+']\n')
       return descr
-#-------------------------------------------------
+# ------------------------------------------------------------------------------
    def Trace(self):
-      """
-      Méthode pour 'tracer' l'objet Graph dans un fichier.
+      """Méthode pour 'tracer' l'objet Graph dans un fichier.
       Met en page l'entete, la description des courbes et les valeurs selon
       le format et ferme le fichier.
       """
+      self._OuvrFich()
       fdogr=self.Fich[0]
       fdigr=self.Fich[1]
       g=self.Graph
-      if g.NbCourbe < 1:
-         fdogr.close()
-         fdigr.close()
-         return
-      # cohérence des valeurs par défaut
-      if g.Grille_X<0 or g.Grille_Y<0:
-         g.Grille_X=0
-         g.Grille_Y=0
-      # entete
-      for lig in self.Entete():
-         fdigr.write(lig)
-      # valeurs
-      for i in range(g.NbCourbe):
-         dCi=g.Courbe(i)
-         dCi['NumSet']=i
-         # partie directives (.digr)
-         for k in range(dCi['NbCol']-1):
-            dCi['Bloc']=i+1
-            dCi['ColX']=1
-            dCi['ColY']=k+2
-            for lig in self.DescrCourbe(**dCi):
-               fdigr.write(lig)
-         # partie données (.dogr)
-         fdogr.write('#NOM DE LA FONCTION: COURBE_'+str(i)+'\n')
-         for j in range(dCi['NbPts']):
-            for k in range(dCi['NbCol']):
-               sv=self.DicForm['formR'] % g.Valeurs[i][k][j]
-               fdogr.write(' '+sv)
-            fdogr.write('\n')
-      fdogr.close()
-      fdigr.close()
-      return
+      if g.NbCourbe > 0:
+         # cohérence des valeurs par défaut
+         if g.Grille_X<0 or g.Grille_Y<0:
+            g.Grille_X=0
+            g.Grille_Y=0
+         # entete
+         for lig in self.Entete():
+            fdigr.write(lig)
+         # valeurs
+         for i in range(g.NbCourbe):
+            dCi=g.Courbe(i)
+            dCi['NumSet']=i
+            # partie directives (.digr)
+            for k in range(dCi['NbCol']-1):
+               dCi['Bloc']=i+1
+               dCi['ColX']=1
+               dCi['ColY']=k+2
+               for lig in self.DescrCourbe(**dCi):
+                  fdigr.write(lig)
+            # partie données (.dogr)
+            fdogr.write('#NOM DE LA FONCTION: COURBE_'+str(i)+'\n')
+            for j in range(dCi['NbPts']):
+               for k in range(dCi['NbCol']):
+                  sv=self.DicForm['formR'] % g.Valeurs[i][k][j]
+                  fdogr.write(' '+sv)
+               fdogr.write('\n')
+      self._FermFich()
+
+# ------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+def ValCycl(val,vmin,vmax,vdef):
+   """
+   Retourne une valeur entre vmin et vmax (bornes incluses) :
+      - si val<vmin, on utilise val=vdef,
+      - si val>vmax, on cycle tel que val=vmax+1 retourne vmin, etc.
+      - si vmax<vmin, il n'y a pas de max
+   """
+   v = val
+   if v < vmin:
+      v = vdef
+   if vmax < vmin:
+      return v
+   else:
+      return (((v-vmin) % (vmax+1-vmin))+vmin)
+# ------------------------------------------------------------------------------
+def Tri(tri, lx, ly):
+   """Retourne les listes triées selon la valeur de tri ('X','Y','XY','YX').
+   """
+   dNumCol={ 'X' : 0, 'Y' : 1 }
+   tab=Numeric.array((lx,ly),Numeric.Float64)
+   tab=Numeric.transpose(tab)
+   li=range(len(tri))
+   li.reverse()
+   for i in li:
+      if tri[-i] in dNumCol.keys():
+         icol=dNumCol[tri[-i]]
+         tab = Numeric.take(tab, Numeric.argsort(tab[:,icol]))
+   return [ tab[:,0].tolist(), tab[:,1].tolist() ]
+

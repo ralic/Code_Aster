@@ -1,8 +1,9 @@
-      SUBROUTINE CFNEG(RESOCO, NDIM, INDIC, NBLIAI, NBLIAC, AJLIAI,
-     +                                          SPLIAI, LLF, LLF1, LLF2)
+      SUBROUTINE CFNEG(RESOCO,DEFICO,NOMA,NDIM, 
+     &                 INDIC,NBLIAI,NBLIAC,AJLIAI,SPLIAI, 
+     &                 LLF,LLF1,LLF2)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/06/2003   AUTEUR PABHHHH N.TARDIEU 
+C MODIF ALGORITH  DATE 02/11/2004   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -19,20 +20,55 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
-C ======================================================================
-       IMPLICIT      NONE
-       INTEGER       NDIM, INDIC, NBLIAI, NBLIAC, AJLIAI, SPLIAI
-       INTEGER       LLF, LLF1, LLF2
-       CHARACTER*24  RESOCO
-C ======================================================================
+C
+      IMPLICIT     NONE
+      CHARACTER*24 RESOCO
+      CHARACTER*24 DEFICO 
+      CHARACTER*8  NOMA
+      INTEGER      NDIM
+      INTEGER      INDIC
+      INTEGER      NBLIAC
+      INTEGER      AJLIAI
+      INTEGER      SPLIAI
+      INTEGER      LLF
+      INTEGER      LLF1
+      INTEGER      LLF2
+      INTEGER      NBLIAI
+C
 C ----------------------------------------------------------------------
-C --- BUT : ON VERIFIE QUE LES MULTIPLICATEURS DE LAGRANGE SONT A ------
-C ------- : VALEURS POSITIVES ------------------------------------------
+C ROUTINE APPELEE PAR : ALGOCL/FRO2GD/FROLGD/FROPGD
 C ----------------------------------------------------------------------
-C ======================================================================
-C --------------- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------
-C ======================================================================
-      CHARACTER*32       JEXNUM , JEXNOM
+C
+C  VERIFICATION QUE LES MULTIPLICATEURS DE LAGRANGE SONT A VALEURS
+C   POSITIVES (PRESSION DE CONTACT POSITIVE)
+C
+C IN  DEFICO : SD DE DEFINITION DU CONTACT (ISSUE D'AFFE_CHAR_MECA)
+C IN  RESOCO : SD DE TRAITEMENT NUMERIQUE DU CONTACT
+C                'E': RESOCO(1:14)//'.LIAC'
+C                'E': RESOCO(1:14)//'.CONVEC'
+C                'E': RESOCO(1:14)//'.MU'
+C IN  NOMA   : NOM DU MAILLAGE
+C IN  NDIM   : DIMENSION DU PROBLEME
+C OUT INDIC  :+1 ON A RAJOUTE UNE LIAISON 
+C             -1 ON A ENLEVE UNE LIAISON
+C IN  NBLIAI : NOMBRE DE LIAISONS DE CONTACT
+C I/O NBLIAC : NOMBRE DE LIAISONS ACTIVES 
+C I/O AJLIAI : INDICE DANS LA LISTE DES LIAISONS ACTIVES DE LA DERNIERE
+C              LIAISON CORRECTE DU CALCUL 
+C              DE LA MATRICE DE CONTACT ACM1AT
+C I/O SPLIAI : INDICE DANS LA LISTE DES LIAISONS ACTIVES DE LA DERNIERE
+C              LIAISON AYANT ETE CALCULEE POUR LE VECTEUR CM1A
+C I/O LLF    : NOMBRE DE LIAISONS DE FROTTEMENT (EN 2D)
+C              NOMBRE DE LIAISONS DE FROTTEMENT SUIVANT LES DEUX 
+C               DIRECTIONS SIMULTANEES (EN 3D)
+C I/O LLF1   : NOMBRE DE LIAISONS DE FROTTEMENT SUIVANT LA 
+C               PREMIERE DIRECTION (EN 3D)
+C I/O LLF2   : NOMBRE DE LIAISONS DE FROTTEMENT SUIVANT LA 
+C               SECONDE DIRECTION (EN 3D)
+C
+C
+C -------------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ----------------
+C
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
@@ -47,39 +83,62 @@ C ======================================================================
       CHARACTER*32                                    ZK32
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
-C ======================================================================
+C
 C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
+C
+      INTEGER      IFM,NIV
+      INTEGER      DEKLAG, DEKLN, DEKLF0, DEKLF1
+      INTEGER      DEKLF2, POSIT, JSPNBL, JSPLF0, JSPLF1, JSPLF2
+      INTEGER      JJ, KK, LL, MM, ILIAC, LLIAC, LLJAC, JSPLIA
+      INTEGER      COMPT0, COMPT1, COMPT2, NBINI, IDEBUT, IFIN, JSTO
+      REAL*8       LAMBDA
+      CHARACTER*1  TYPESP
+      CHARACTER*2  TYPEC0, TYPEF0, TYPEF1, TYPEF2
+      CHARACTER*19 LIAC,MU,CONVEC
+      INTEGER      JLIAC,JMU,JVECC
+      CHARACTER*24 APPARI,CONTNO,CONTMA
+      INTEGER      JAPPAR,JNOCO,JMACO
+C
 C ======================================================================
-      INTEGER       JLIAC, JMU, JVECC, DEKLAG, DEKLN, DEKLF0, DEKLF1
-      INTEGER       DEKLF2, POSIT, JSPNBL, JSPLF0, JSPLF1, JSPLF2
-      INTEGER       II, JJ, KK, LL, MM, ILIAC, LLIAC, LLJAC, JSPLIA
-      INTEGER       COMPT0, COMPT1, COMPT2, NBINI, IDEBUT, IFIN, JSTO
-      CHARACTER*1   TYPESP
-      CHARACTER*2   TYPEC0, TYPEF0, TYPEF1, TYPEF2
-      CHARACTER*19  LIAC, MU, CONVEC
+C
+      CALL INFNIV(IFM,NIV)
+      CALL JEMARQ()
+C
+      IF (NBLIAC.EQ.0) THEN 
+        GOTO 999
+      ENDIF
 C ======================================================================
-      CALL JEMARQ ()
-      IF (NBLIAC.EQ.0) GOTO 999
+C --- LECTURE DES STRUCTURES DE DONNEES DE CONTACT
 C ======================================================================
-      TYPESP = 'S'
-      TYPEC0 = 'C0'
-      TYPEF0 = 'F0'
-      TYPEF1 = 'F1'
-      TYPEF2 = 'F2'
-C ======================================================================
+      APPARI = RESOCO(1:14)//'.APPARI'
+      CONTNO = DEFICO(1:16)//'.NOEUCO'
+      CONTMA = DEFICO(1:16)//'.MAILCO'
       LIAC   = RESOCO(1:14)//'.LIAC'
       CONVEC = RESOCO(1:14)//'.CONVEC'
       MU     = RESOCO(1:14)//'.MU'
 C ======================================================================
-      CALL JEVEUO (LIAC,  'E',JLIAC )
-      CALL JEVEUO (CONVEC,'E',JVECC)
-      CALL JEVEUO (MU,    'E',JMU   )
+      CALL JEVEUO(CONTNO,'L',JNOCO)
+      CALL JEVEUO(CONTMA,'L',JMACO)
+      CALL JEVEUO(APPARI,'L',JAPPAR)
+      CALL JEVEUO(LIAC,  'E',JLIAC )
+      CALL JEVEUO(CONVEC,'E',JVECC)
+      CALL JEVEUO(MU,    'E',JMU   )
+C ======================================================================
+C --- INITIALISATION DES VARIABLES 
 C ======================================================================
       DEKLAG = 0
       DEKLN  = 0
       DEKLF0 = 0
       DEKLF1 = 0
       DEKLF2 = 0
+      TYPESP = 'S'
+      TYPEC0 = 'C0'
+      TYPEF0 = 'F0'
+      TYPEF1 = 'F1'
+      TYPEF2 = 'F2'
+C ======================================================================
+C --- CREATION D'OBJETS TEMPORAIRES
+C ======================================================================
       CALL WKVECT ('&&CPNOTE.SUPNBL','V V I',NBLIAC ,JSPNBL)
       CALL WKVECT ('&&CPNOTE.SPLIAC','V V I',NBLIAC ,JSPLIA)
       IF (LLF.NE.0) THEN
@@ -92,12 +151,13 @@ C ======================================================================
          CALL WKVECT ('&&CPNOTE.SUPLF2','V V I',LLF2,JSPLF2)
       ENDIF
 C ======================================================================
-C --- LES VALEURS DU VECTEUR SUPNBL SONT NECESSAIREMENT CROISSANTES ----
-C --- ATTENTION CE N'EST PAS NECESSAIREMENT LE CAS DU VECTEUR SUPLLF ---
+C --- LES VALEURS DU VECTEUR SUPNBL SONT NECESSAIREMENT CROISSANTES 
+C --- ATTENTION CE N'EST PAS NECESSAIREMENT LE CAS DU VECTEUR SUPLLF  
 C ======================================================================
       NBINI  = 1
       DO 10 ILIAC = 1, NBLIAC
-         IF ( ZR(JMU-1+ILIAC).LT.0.0D0 ) THEN
+         LAMBDA = ZR(JMU-1+ILIAC)
+         IF ( LAMBDA.LT.0.0D0 ) THEN
             DEKLN = DEKLN + 1
             DO 20 JJ = NBINI, NBLIAC + LLF + LLF1 + LLF2
                IF (ZK8(JVECC-1+JJ).EQ.TYPEC0) THEN
@@ -127,20 +187,20 @@ C ======================================================================
                         IF (LLJAC.EQ.LLIAC) THEN
                            GOTO (1000, 2000, 3000, 4000) POSIT
 C ======================================================================
-C --- CAS IMPOSSIBLE ---------------------------------------------------
+C --- CAS IMPOSSIBLE 
 C ======================================================================
  1000                      CONTINUE
-                           CALL UTMESS ('F','CPNOTE_1','CAS IMPOSSIBLE')
+                           CALL UTMESS ('F','CPNEG_1','CAS IMPOSSIBLE')
 C ======================================================================
-C --- CAS DU FROTTEMENT ADHERENT SUIVANT LES DEUX DIRECTIONS EN 3D -----
-C --- OU CAS GENERAL EN 2D ---------------------------------------------
+C --- CAS DU FROTTEMENT ADHERENT SUIVANT LES DEUX DIRECTIONS EN 3D 
+C --- OU CAS GENERAL EN 2D 
 C ======================================================================
  2000                      CONTINUE
                            DEKLF0 = DEKLF0 + 1
                            ZI(JSPLF0-1+DEKLF0) = COMPT0
                            GOTO 10
 C ======================================================================
-C --- CAS DU FROTTEMENT ADHERENT SUIVANT LA PREMIERE DIRECTION ---------
+C --- CAS DU FROTTEMENT ADHERENT SUIVANT LA PREMIERE DIRECTION  
 C ======================================================================
  3000                      CONTINUE
                            DO 3100 LL = 0, DEKLF1-1
@@ -157,7 +217,7 @@ C ======================================================================
                            ZI(JSPLF1-1+DEKLF1) = COMPT1
                            GOTO 10
 C ======================================================================
-C --- CAS DU FROTTEMENT ADHERENT SUIVANT LA SECONDE DIRECTION ----------
+C --- CAS DU FROTTEMENT ADHERENT SUIVANT LA SECONDE DIRECTION  
 C ======================================================================
  4000                      CONTINUE
                            DO 4100 LL = 0, DEKLF2-1
@@ -187,8 +247,8 @@ C            CALL UTMESS ('F','CPNOTE_2','CAS IMPOSSIBLE')
          GOTO 999
       ENDIF
 C ======================================================================
-C --- MISE A JOUR DE MU POUR LE CONTACT ET DU VECTEUR DES LIAISONS -----
-C --- DE CONTACT ET DE FROTTEMENT ADHERENT -----------------------------
+C --- MISE A JOUR DE MU POUR LE CONTACT ET DU VECTEUR DES LIAISONS 
+C --- DE CONTACT ET DE FROTTEMENT ADHERENT 
 C ======================================================================
       JSTO = ZI(JSPNBL) - 1
       DO 100 ILIAC = 1, DEKLN-1
@@ -211,12 +271,16 @@ C ======================================================================
          LLIAC = ZI(JLIAC -1+POSIT)
          ZR(JMU+3*NBLIAI-1+LLIAC) = 0.0D0
          CALL CFTABL( INDIC, NBLIAC, AJLIAI, SPLIAI, LLF,
-     +                 LLF1, LLF2, RESOCO, TYPESP, POSIT, LLIAC, TYPEC0)
+     &                 LLF1, LLF2, RESOCO, TYPESP, POSIT, LLIAC, TYPEC0)
+         IF (NIV.GE.2) THEN
+            CALL CFIMP2(IFM,NOMA,LLIAC,TYPEC0,TYPESP,'NEG',LAMBDA,
+     &                  JAPPAR,JNOCO,JMACO)
+         ENDIF
  111  CONTINUE
 C ======================================================================
-C --- MISE A JOUR DE MU POUR LE FROTTEMENT -----------------------------
+C --- MISE A JOUR DE MU POUR LE FROTTEMENT 
 C ======================================================================
-C --- FROTTEMENT ADHERENT DE TYPE LLF ----------------------------------
+C --- FROTTEMENT ADHERENT DE TYPE LLF 
 C ======================================================================
       IF (LLF.NE.0) THEN
          IF (DEKLF0.NE.0) THEN
@@ -241,7 +305,7 @@ C ======================================================================
             ZR(JMU-1+JSTO) = ZR(JMU-1+DEKLN+DEKLF0+JJ)
  230     CONTINUE
 C ======================================================================
-C --- CAS DE LA SECONDE DIRECTION EN 3D --------------------------------
+C --- CAS DE LA SECONDE DIRECTION EN 3D 
 C ======================================================================
          IF (NDIM.EQ.3) THEN
             IF (DEKLF0.NE.0) THEN
@@ -269,7 +333,7 @@ C ======================================================================
          ENDIF
       ENDIF
 C ======================================================================
-C --- FROTTEMENT ADHERENT DE TYPE LLF1 ---------------------------------
+C --- FROTTEMENT ADHERENT DE TYPE LLF1 
 C ======================================================================
       IF (LLF1.NE.0) THEN
          IF (DEKLF1.NE.0) THEN
@@ -295,7 +359,7 @@ C ======================================================================
  330     CONTINUE
       ENDIF
 C ======================================================================
-C --- FROTTEMENT ADHERENT DE TYPE LLF2 ---------------------------------
+C --- FROTTEMENT ADHERENT DE TYPE LLF2
 C ======================================================================
       IF (LLF2.NE.0) THEN
          IF (DEKLF2.NE.0) THEN

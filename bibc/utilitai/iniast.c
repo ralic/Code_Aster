@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF iniast utilitai  DATE 24/02/2004   AUTEUR D6BHHJP J.P.LEFEBVRE */
+/* MODIF iniast utilitai  DATE 03/11/2004   AUTEUR MCOURTOI M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -73,19 +73,11 @@ char vdate[9];
  DATE(&v[0]);
 /* calcul du nombre de jours à la louche */
  delta=(a3-v[0]-1900)*365+(a2+15-v[1])*30+a1-v[2];
- delta=100;
-if (delta == 0 ) {
-     printf ("\nCETTE VERSION DE CODE_ASTER EXPIRE CE SOIR A MINUIT \n");
-}
-else if (delta < 0 ) {
-     printf ("\nCETTE VERSION DE CODE_ASTER EST EXPIREE \n");
-#if defined TRU64
+ if (delta < 0 ) {
+#if defined TRU64 || NO_EXPIR
 #else
      ERRLIC();
 #endif
-}
-else if (delta < 60 ) {
-     printf ("\nCETTE VERSION DE CODE_ASTER EXPIRE DANS : %d  JOUR(S) \n",delta);
 }
  srand( (unsigned int) v[4]+v[5] );
  vrand = rand();

@@ -1,7 +1,7 @@
       SUBROUTINE MDEXPM ( NOFIMD, NOMAMD, EXISTM, NDIM, CODRET )
 C_____________________________________________________________________
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 25/01/2002   AUTEUR GNICOLAS G.NICOLAS 
+C MODIF PREPOST  DATE 03/11/2004   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,13 +55,16 @@ C
       PARAMETER ( NOMPRO = 'MDEXPM' )
       INTEGER EDLECT
       PARAMETER (EDLECT=0)
+      INTEGER EDNSTR
+      PARAMETER (EDNSTR=0)
 C
       INTEGER LXLGUT
 C
       INTEGER IDFIMD, NBMAIE
-      INTEGER IAUX, JAUX, KAUX
+      INTEGER IAUX, JAUX, KAUX, TYAUX
 C
       CHARACTER*32 SAUX32
+      CHARACTER*200 DAUX
 C ______________________________________________________________________
 C
 C====
@@ -106,7 +109,7 @@ C
 C                 12345678901234567890123456789012
         SAUX32 = '                                '
         IAUX = 1
-        CALL EFMAAI ( IDFIMD, IAUX, SAUX32, KAUX, CODRET )
+        CALL EFMAAI ( IDFIMD, IAUX, SAUX32, KAUX, TYAUX, DAUX, CODRET )
         IF ( CODRET.NE.0 ) THEN
           CALL UTDEBM ( 'A', NOMPRO, 'FICHIER ' )
           CALL UTIMPK ( 'S', 'MED : ', 1, NOFIMD )
@@ -115,6 +118,9 @@ C                 12345678901234567890123456789012
           CALL UTFINM ()
           CALL UTMESS ( 'F', NOMPRO,
      >             'PROBLEME DANS LA LECTURE DU NOM DU MAILLAGE.' )
+        ELSEIF ( TYAUX .NE. EDNSTR ) THEN
+          CALL UTMESS('A',NOMPRO,'ATTENTION IL S''AGIT D''UN MAILLAGE'
+     >            //' STRUCTURE')
         ENDIF
 C
         IAUX = LEN(NOMAMD)

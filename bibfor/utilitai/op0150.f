@@ -1,7 +1,7 @@
       SUBROUTINE OP0150(IER)
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 05/10/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF UTILITAI  DATE 03/11/2004   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -56,7 +56,7 @@ C 0.3. ==> VARIABLES LOCALES
 
       INTEGER LXLGUT
       INTEGER NDIM, TYPGEO(NTYMAX),LETYPE
-      INTEGER NBTYP,NNOTYP(NTYMAX),NITTYP(NTYMAX)
+      INTEGER NBTYP,NNOTYP(NTYMAX)
       INTEGER RENUMD(NTYMAX)
 
       INTEGER NTO,NNU,JLIST,NBORDR,NBNOCH,NVAR
@@ -656,8 +656,8 @@ C          ==> C'EST PAR ASSOCIATION DE LISTE
                CALL WKVECT(NCMPVA,'V V K8',NBCMPV,JCMPVA)
                CALL GETVTX('FORMAT_MED',LCMPVA,I,1,NBCMPV,ZK8(JCMPVA),
      &                     IAUX)
-               CALL WKVECT(NCMPVM,'V V K8',NBCMPV,JCMPVM)
-               CALL GETVTX('FORMAT_MED',LCMPVM,I,1,NBCMPV,ZK8(JCMPVM),
+               CALL WKVECT(NCMPVM,'V V K16',NBCMPV,JCMPVM)
+               CALL GETVTX('FORMAT_MED',LCMPVM,I,1,NBCMPV,ZK16(JCMPVM),
      &                     IAUX)
              END IF
 
@@ -693,8 +693,8 @@ C
 C
            ELSEIF (TYPCHA(1:2).EQ.'EL') THEN
              CALL MDEXPM ( NOFIMD, NOMAMD, EXISTM, NDIM, IRET )
-             CALL LRMTYP ( NDIM, NBTYP, NOMTYP,
-     &                     NNOTYP, NITTYP, TYPGEO, RENUMD )
+             CALL LRMTYP ( NBTYP, NOMTYP,
+     &                     NNOTYP, TYPGEO, RENUMD )
              TYPENT = EDMAIL
              NOMPRN = ' '
              DO 71 , LETYPE = 1 , NBTYP

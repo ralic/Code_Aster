@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 03/11/2004   AUTEUR ACBHHCD G.DEVESA 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -27,7 +27,8 @@ MACRO_MISS_3D=MACRO(nom="MACRO_MISS_3D",op=macro_miss_3d_ops,fr=" ",
            MODULE          =SIMP(statut='f',typ='TXM',into=("PRE_MISS","MISS_EVOL","MISS_IMPE")),
          ),
          PROJET          =SIMP(statut='o',typ='TXM'),  
-         REPERTOIRE      =SIMP(statut='f',typ='TXM'),  
+         REPERTOIRE      =SIMP(statut='f',typ='TXM'),
+         VERSION         =SIMP(statut='f',typ='TXM',into=("V1_2","V1_3",),defaut="V1_2"),
          UNITE_IMPR_ASTER=SIMP(statut='f',typ='I',defaut=25),  
          UNITE_OPTI_MISS =SIMP(statut='f',typ='I',defaut=26),  
          UNITE_MODELE_SOL=SIMP(statut='f',typ='I',defaut=27),  

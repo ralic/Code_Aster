@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 25/10/2004   AUTEUR CIBHHLV L.VIVAN 
+#& MODIF COMMANDE  DATE 02/11/2004   AUTEUR MABBAS M.ABBAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -315,7 +315,7 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca
            MAILLE_ESCL     =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
            TOLE_PROJ_EXT   =SIMP(statut='f',typ='R',defaut=0.50),
            TOLE_PROJ_INT   =SIMP(statut='f',typ='R',defaut=0.001),
-           ITER_MULT_MAX   =SIMP(statut='f',typ='I',defaut=4),
+           ITER_MULT_MAXI  =SIMP(statut='f',typ='I',defaut=4),
              
            b_active        =BLOC(condition = "METHODE == 'CONTRAINTE' ",
                                  fr="Paramètres de la méthode des contraintes actives (contact uniquement)",

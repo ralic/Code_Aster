@@ -1,5 +1,5 @@
 
-# MODIF  DATE 25/10/2004   AUTEUR MABBAS M.ABBAS 
+# MODIF  DATE 03/11/2004   AUTEUR MCOURTOI M.COURTOIS 
 # TITRE INDENTATION ELASTOPLASTIQUE D'UN DEMI-PLAN
 #  PAR UN INDENTEUR SPHERIQUE ELASTIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -171,7 +171,7 @@ TAB_REAC=POST_RELEVE_T(ACTION=_F(INTITULE='FORCE',
                                  OPERATION = 'EXTRACTION'),); 
                                                             
 IMPR_TABLE(TABLE=TAB_REAC,
-           FORMAT='EXCEL',);
+           FORMAT='TABLEAU',);
 
 
 #----------------------------------------------------------------------

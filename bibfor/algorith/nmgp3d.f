@@ -4,6 +4,7 @@
      &                   TM, TP, TREF,
      &                   HYDRM, HYDRP, 
      &                   SECHM, SECHP, SREF,
+     &                   IRRAM,IRRAP,
      &                   NZ,PHASM, PHASP, 
      &                   CORRM,CORRP ,
      &                   DEPLM, DDEPL, 
@@ -13,7 +14,7 @@
      &                   SIGP, VIP, MATNS, VECTU, CODRET)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 15/06/2004   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 03/11/2004   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,6 +41,7 @@ C TOLE CRP_21
        REAL*8        GEOMI(3,NNO), CRIT(3), INSTM, INSTP
        REAL*8        TM(NNO), TP(NNO), PHASM(NZ,NPG),PHASP(NZ,NPG),TREF
        REAL*8        HYDRM(NNO), HYDRP(NNO), SECHM(NNO),SECHP(NNO),SREF
+       REAL*8        IRRAM(NNO),IRRAP(NNO)
        REAL*8        DEPLM(3,NNO), DDEPL(3,NNO), SIGM(6,NPG)
        REAL*8        VIM(LGPG,NPG), DFDIM(NNO,3),DFDIP(NNO,3)
        REAL*8        SIGP(6,NPG), VIP(LGPG,NPG),CORRM,CORRP
@@ -75,6 +77,8 @@ C IN  HYDRP   : HYDRATATION AUX POINTS DE GAUSS EN T+
 C IN  SECHM   : SECHAGE AUX NOEUDS EN T-
 C IN  SECHP   : SECHAGE AUX NOEUDS EN T+
 C IN  SREF    : SECHAGE DE REFERENCE
+C IN  IRRAM   : IRRADIATION AUX NOEUDS EN T-
+C IN  IRRAP   : IRRADIATION AUX NOEUDS EN T+
 C IN  NZ      : NOMBRE DE PHASES METALLURGIQUES
 C IN  PHASM   : PHASES METALLURGIQUES EN T-
 C IN  PHASP   : PHASES METALLURGIQUES EN T+
@@ -117,7 +121,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       REAL*8  DSIDEP(6,3,3)
       REAL*8  SIGDF(3,27), DSIDF(3,3,3,27)
       REAL*8  TEMPM, TEMPP, HYDRGM, HYDRGP, SECHGM, SECHGP
-      REAL*8  DEFAM, DEFAP
+      REAL*8  IRRAGM, IRRAGP, DEFAM, DEFAP
       REAL*8  ELGEOM(10,27)
       REAL*8  R8VIDE
       INTEGER IND(3,3),COD(27)
@@ -162,11 +166,15 @@ C - DE L HYDRATATION ET DU SECHAGE AU POINT DE GAUSS
         HYDRGP = HYDRP(KPG)
         SECHGM = 0.D0
         SECHGP = 0.D0
+        IRRAGM = 0.D0
+        IRRAGP = 0.D0
         DO 15 N=1,NNO
           TEMPM = TEMPM + TM(N)*ZR(IVF+N+(KPG-1)*NNO-1)
           TEMPP = TEMPP + TP(N)*ZR(IVF+N+(KPG-1)*NNO-1)
           SECHGM = SECHGM + SECHM(N)*ZR(IVF+N+(KPG-1)*NNO-1)
           SECHGP = SECHGP + SECHP(N)*ZR(IVF+N+(KPG-1)*NNO-1)
+          IRRAGM = IRRAGM + IRRAM(N)*ZR(IVF+N+(KPG-1)*NNO-1)
+          IRRAGP = IRRAGP + IRRAP(N)*ZR(IVF+N+(KPG-1)*NNO-1)
  15     CONTINUE
 
 
@@ -192,6 +200,7 @@ C - LOI DE COMPORTEMENT
      &              TEMPM,TEMPP,TREF,
      &              HYDRGM,HYDRGP,
      &              SECHGM,SECHGP,SREF,
+     &              IRRAGM,IRRAGP,
      &              FM,DF,
      &              SIGM(1,KPG),VIM(1,KPG),
      &              OPTION,

@@ -1,5 +1,5 @@
 
-# MODIF  DATE 11/10/2004   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 03/11/2004   AUTEUR MCOURTOI M.COURTOIS 
 # TITRE CONTACT DE DEUX POUTRES EN GRANDS DEPLACEMENTS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -109,6 +109,7 @@ CH2=AFFE_CHAR_MECA(MODELE=MODE,
                               SANS_GROUP_NO=('LBB1','LCC1'),
                               DIST_MAIT=31.75,
                               DIST_ESCL=31.75,
+                              TOLE_PROJ_EXT=0.25,
                               ),
                   INFO=2);
 
@@ -171,7 +172,7 @@ TAB_DEPL=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
                                  NOM_CHAM='DEPL',
                                  NOM_CMP='DY',
                                  OPERATION='EXTRACTION',),);
-IMPR_TABLE(FORMAT='EXCEL',
+IMPR_TABLE(FORMAT='TABLEAU',
            TABLE=TAB_DEPL,);
 
 TAB_REAC=POST_RELEVE_T(ACTION=_F(INTITULE='FORCE',

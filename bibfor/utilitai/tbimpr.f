@@ -3,7 +3,7 @@
      >                    NPARPG, LIPAPG, FORMAR, FORMAC )
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 07/10/2004   AUTEUR GNICOLAS G.NICOLAS 
+C MODIF UTILITAI  DATE 03/11/2004   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -28,8 +28,8 @@ C IN  : FORMAZ : FORMAT D'IMPRESSION DE LA TABLE
 C IN  : IFR    : UNITE LOGIQUE D'IMPRESSION
 C IN  : NPARIM : NOMBRE DE PARAMETRES D'IMPRESSION
 C IN  : LIPAIM : LISTE DES PARAMETRES D'IMPRESSION
-C IN  : NPARPG : NOMBRE DE PARAMETRES DE PAGINATION
-C IN  : LIPAPG : LISTE DES PARAMETRES DE PAGINATION
+C IN  : NPARPG : PLUS UTILISE (DOIT ETRE PASSE A ZERO)
+C IN  : LIPAPG : PLUS UTILISE
 C IN  : FORMAR : FORMAT D'IMPRESSION DES REELS
 C IN  : FORMAC : FORMAT D'IMPRESSION DES COMPLEXES
 C ----------------------------------------------------------------------
@@ -145,16 +145,9 @@ C
             CALL TBIMTA ( TABLE, IFR, NPARIM, LIPAIM, FORMAR)
          ENDIF
       ELSE
-C     ------------------------------------------------------------------
-C
 C               --- TRAITEMENT DE LA "PAGINATION" ---
-C
-C     ------------------------------------------------------------------
-         NEWTAB = '&&'//NOMPRO//'.PAGI'
-         CALL TBEXCP ( TABLE, 'V', NEWTAB, NPARIM, LIPAIM )
-         CALL TBIMPG ( NEWTAB, IFR, NPARIM, LIPAIM, NPARPG, LIPAPG,
-     +                                      FORMAT, FORMAR)
-         CALL DETRSD ( 'TABLE' , NEWTAB )
+         CALL UTMESS('F',NOMPRO,'PAGINATION SUPPRIMEE,'
+     +               //' UTILISER IMPR_TABLE')
 C
       ENDIF
 C

@@ -2,7 +2,7 @@
      >                    NOCHMD, NUMPT, NUMORD, TYPENT, TYPGEO,
      >                    NBVAL, CODRET )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 05/03/2002   AUTEUR GNICOLAS G.NICOLAS 
+C MODIF PREPOST  DATE 03/11/2004   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -69,11 +69,16 @@ C
 C
       INTEGER EDLECT
       PARAMETER (EDLECT=0)
+      INTEGER EDCOMP
+      PARAMETER (EDCOMP=2)
 C
       INTEGER IDFIMD
       INTEGER IAUX
 C
       CHARACTER*8 SAUX08
+      CHARACTER*32 NOMAMD
+      LOGICAL EXISTM
+      INTEGER NDIM
 C ______________________________________________________________________
 C
 C====
@@ -95,9 +100,18 @@ C====
 C 2. COMBIEN DE VALEURS ?
 C====
 C
+C       CALL EFNVAL ( IDFIMD, NOCHMD, TYPENT, TYPGEO,
+C      >              NUMPT, NUMORD,
+C      >              NBVAL, CODRET )
+C
+C pas de trace de MED_NOREF dans med.hf ?????
+C
+C NOMAMD doit passer en argument ou ' '
+      CALL MDEXPM ( NOFIMD, NOMAMD, EXISTM, NDIM, CODRET )
+
       CALL EFNVAL ( IDFIMD, NOCHMD, TYPENT, TYPGEO,
-     >              NUMPT, NUMORD,
-     >              NBVAL, CODRET )
+     >              NUMPT,  NUMORD, NOMAMD, EDCOMP,
+     >              NBVAL,  CODRET )
       IF ( CODRET.NE.0 ) THEN
         CALL CODENT ( CODRET,'G',SAUX08 )
         CALL UTMESS ('F',NOMPRO,'MED: ERREUR EFNVAL NUMERO '//SAUX08)

@@ -1,4 +1,4 @@
-# MODIF  DATE 20/09/2004   AUTEUR BOYERE E.BOYERE 
+# MODIF  DATE 03/11/2004   AUTEUR MCOURTOI M.COURTOIS 
 # TITRE TP ANALYSE SISMIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -409,7 +409,7 @@ TEFSCR=POST_RELEVE_T(
             )
 IMPR_TABLE(
           TABLE=TEFSCR,
-         FORMAT='EXCEL',
+         FORMAT='TABLEAU',
                )
 
 ###########################################################
@@ -566,7 +566,7 @@ TDPSCA=POST_RELEVE_T(
 
 IMPR_TABLE(
           TABLE=TDPSCA,
-         FORMAT='EXCEL',
+         FORMAT='TABLEAU',
                )
                
 # EFFORTS               
@@ -603,7 +603,7 @@ TEFSCA=POST_RELEVE_T(
             )
 IMPR_TABLE(
           TABLE=TEFSCA,
-         FORMAT='EXCEL',
+         FORMAT='TABLEAU',
                )
 
 
@@ -642,7 +642,7 @@ TDPSCR2=POST_RELEVE_T(
             
 IMPR_TABLE(
           TABLE=TDPSCR2,
-         FORMAT='EXCEL',
+         FORMAT='TABLEAU',
                )
 
 # EFFORTS
@@ -680,7 +680,7 @@ TEFSCR2=POST_RELEVE_T(
             
 IMPR_TABLE(
           TABLE=TEFSCR2,
-         FORMAT='EXCEL',
+         FORMAT='TABLEAU',
                )
 
 ###########################################################
@@ -741,7 +741,7 @@ EFSPEC=POST_RELEVE_T(
             
 IMPR_TABLE(
           TABLE=EFSPEC,
-         FORMAT='EXCEL',
+         FORMAT='TABLEAU',
                )
 
 DPSPEC=POST_RELEVE_T( 
@@ -759,7 +759,7 @@ DPSPEC=POST_RELEVE_T(
             
 IMPR_TABLE(
           TABLE=DPSPEC,
-         FORMAT='EXCEL',
+         FORMAT='TABLEAU',
                )                        
                 
 

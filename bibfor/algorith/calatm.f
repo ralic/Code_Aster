@@ -1,6 +1,6 @@
       SUBROUTINE CALATM (NEQ,NBDDL,MU,COEF,DDL,ATMU)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 30/11/98   AUTEUR D6BHHIV I.VAUTIER 
+C MODIF ALGORITH  DATE 02/11/2004   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,12 +20,18 @@ C ======================================================================
 C
       IMPLICIT NONE
 C
-      INTEGER NEQ,NBDDL,DDL(NBDDL)
-      REAL*8  MU,COEF(NBDDL),ATMU(NEQ)
+      INTEGER       NEQ
+      INTEGER       NBDDL
+      INTEGER       DDL(NBDDL)
+      REAL*8        MU
+      REAL*8        COEF(NBDDL)
+      REAL*8        ATMU(NEQ)
 C
 C ----------------------------------------------------------------------
-C ROUTINE APPELEE PAR : ALGOCO
+C ROUTINE APPELEE PAR : ALGOCL/ALGOCO/ALGOCP/CFACA1/CFATMU
+C                       FRO2GD/FROGDP/FROLGD/FROPGD
 C ----------------------------------------------------------------------
+C
 C CALCUL DE LA CONTRIBUTION D'UNE LIAISON DE CONTACT AU VECTEUR AT.MU.
 C
 C IN  NEQ    : NOMBRE D'EQUATIONS
@@ -34,7 +40,7 @@ C IN  MU     : MULTIPLICATEUR DE LAGRANGE ASSOCIE AU CONTACT POUR
 C              LA LIAISON ETUDIEE
 C IN  COEF   : COEFFICIENTS IMPLIQUES DANS LA LIAISON UNILATERALE
 C IN  DDL    : NUMEROS DES DDLS IMPLIQUES DANS LA LIAISON UNILATERALE
-C IN  ATMU   : VECTEUR AT.MU
+C I/O ATMU   : VECTEUR AT.MU
 C
 C ----------------------------------------------------------------------
 C

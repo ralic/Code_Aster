@@ -5,7 +5,7 @@
      &                  TM, TP, TREF, 
      &                  SIGP, VIP, DSIDEP,CODRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 15/06/2004   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 03/11/2004   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -127,6 +127,7 @@ C --- CARACTERISTIQUES ELASTIQUES A TPLUS
         CALL COMP1D(OPTION,
      &              SIGM,EPSM,DEPS,
      &              TM,TP,TREF,
+     &              -1.D0,-1.D0,
      &              R8VIDE(),R8VIDE(),
      &              ANGMAS,
      &              VIM,VIP,SIGP,DSIDEP,CODRET)

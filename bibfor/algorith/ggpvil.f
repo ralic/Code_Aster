@@ -2,7 +2,7 @@
      *                  DEUXMU,PREC,NITER,
      *                  G,DGDST,DGDEV)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 15/06/2004   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 02/11/2004   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -59,9 +59,14 @@ C     ET LA DERIVEE TOTALE DE CETTE FONCTION G PAR RAPPORT A SIGMA
 C---------------------------------------------------------------
 C
       REAL*8 TPS,F1,FP1,FS1,F2,FP2,FS2
-      REAL*8 G1,DG1DS,G2,DG2DS
+      REAL*8 G1,DG1DS,G2,DG2DS,R8PREM
 C
       IF (S.EQ.0.D0.OR.DPC.EQ.0.D0.OR.FLUPHI.EQ.0.D0)THEN
+        G = 0.D0
+        DGDST = 0.D0
+        DGDEV = 0.D0
+        GO TO 99 
+      ELSE IF ((A.LE.R8PREM()).AND.(B.LE.R8PREM()))THEN
         G = 0.D0
         DGDST = 0.D0
         DGDEV = 0.D0

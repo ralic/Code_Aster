@@ -1,4 +1,4 @@
-# MODIF  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 03/11/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE THERMO-HYDRATATION EN ADIABATIQUE 2D AXI QUAD4
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -372,7 +372,7 @@ MAT=DEFI_MATERIAU(             THER=_F( RHO_CP = 0.0E-3,
 CM=AFFE_MATERIAU(    MAILLAGE=MAIL,
                             AFFE=_F( TOUT = 'OUI',
                                   MATER = MAT,
-                                  TEMP_REF = 0.)       )
+                                  TEMP_REF = 20.9)       )
 
 #
 
@@ -386,7 +386,8 @@ CHMECA=AFFE_CHAR_MECA(
 
 #
 LISTMECA=DEFI_LIST_REEL( 
-                            DEBUT=1.0,INTERVALLE=(
+                            DEBUT=0.0,INTERVALLE=(
+                            _F(  JUSQU_A = 1.,   NOMBRE = 1),
                             _F(  JUSQU_A = 5.,   NOMBRE = 5),
                             _F(  JUSQU_A = 15.,  NOMBRE = 5),
                             _F(  JUSQU_A = 20.,  NOMBRE = 5),
@@ -423,7 +424,7 @@ RESUMECA=CALC_ELEM( reuse=RESUMECA,
 CHU1=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
 RESULTAT=RESUMECA,
                             NOM_CHAM='DEPL',
-                          NUME_ORDRE=20          )
+                          NUME_ORDRE=21          )
 
 #
 
@@ -431,7 +432,9 @@ TEST_RESU(
     CHAM_NO=_F(  CHAM_GD = CHU1,
               GROUP_NO = 'B',
               NOM_CMP = 'DX',
-              VALE = 5.74E-04,
+              VALE = 5.79E-04,
+              REFERENCE='NON_REGRESSION',
+              VERSION='7.3.24',
               PRECISION = 1.E-3)
             )
 
@@ -451,7 +454,7 @@ RESUSTAT=MECA_STATIQUE(
 CHV1=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
 RESULTAT=RESUSTAT,
                             NOM_CHAM='DEPL',
-                          NUME_ORDRE=20        )
+                          NUME_ORDRE=21        )
 
 #
 
@@ -459,7 +462,9 @@ TEST_RESU(
     CHAM_NO=_F(  CHAM_GD = CHV1,
               GROUP_NO = 'B',
               NOM_CMP = 'DX',
-              VALE = 7.82E-04,
+              VALE = 5.73E-04,
+              REFERENCE='NON_REGRESSION',
+              VERSION='7.3.24',
               PRECISION = 1.E-3)
             )
 

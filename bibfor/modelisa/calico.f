@@ -1,7 +1,7 @@
-      SUBROUTINE CALICO(CHARZ,NOMAZ,NOMOZ,NDIM,MOTFAZ)
+      SUBROUTINE CALICO(CHARZ,NOMAZ,LIGRMZ,NDIM,FONREE)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 11/10/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF MODELISA  DATE 02/11/2004   AUTEUR MABBAS M.ABBAS 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -23,9 +23,10 @@ C
       IMPLICIT      NONE
       CHARACTER*(*) CHARZ
       CHARACTER*(*) NOMAZ
-      CHARACTER*(*) NOMOZ
+      CHARACTER*(*) LIGRMZ
       INTEGER       NDIM
-      CHARACTER*(*) MOTFAZ 
+      CHARACTER*4   FONREE
+C      CHARACTER*(*) MOTFAZ 
 C
 C ----------------------------------------------------------------------
 C ROUTINE APPELEE PAR : CHARME
@@ -34,10 +35,10 @@ C
 C TRAITEMENT DU MOT-FACTEUR 'CONTACT' DANS AFFE_CHAR_MECA.
 C
 C IN  CHARZ  : NOM UTILISATEUR DU CONCEPT DE CHARGE
-C IN  MOTFAZ : MOT-CLE FACTEUR (VALANT 'CONTACT')
 C IN  NOMAZ  : NOM DU MAILLAGE
-C IN  NOMOZ  : NOM DU MODELE
+C IN  LIGRMZ : NOM DU LIGREL DU MODELE
 C IN  NDIM   : NOMBRE DE DIMENSIONS DU PROBLEME
+C IN  FONREE : FONC OU REEL SUIVANT L'OPERATEUR
 C
 C LES RESULTATS SONT STOCKES DANS LA SD CHAR(1:8)//'.CONTACT'//
 C '.METHCO'  : CARACTERISTIQUES DE LA METHODE                  (METHCO)
@@ -267,10 +268,12 @@ C ======================================================================
       
 C ======================================================================
       CALL GETRES(K8BID,K16BID,NOMCMD)
+
+      MOTFAC = 'CONTACT'
+      NOMO = LIGRMZ(1:8)
       CHAR = CHARZ
       NOMA = NOMAZ
-      NOMO = NOMOZ
-      MOTFAC = MOTFAZ
+
 C ======================================================================
 C --- RECUPERATION DU NOM DU PHENOMENE ET DE LA  MODELISATION          
 C ======================================================================
@@ -389,7 +392,19 @@ C ======================================================================
       CALL DIMECO(CHAR,NOMA,NDIM,NZOCO,NSUCO,NMACO,NNOCO,
      &                  NMANO,NNOMA,NMAMA) 
 
-
+C ======================================================================
+C --- RELATIONS LINEAIRES POUR MAILLES QUADRATIQUES SURFACIQUES 
+C ---  RELATION LINEAIRE ENTRE NOEUD MILIEU ET NOEUDS SOMMETS
+C ---  ELIMINATION DES NOEUDS MILIEUX DU CONTACT DANS EXNOEL
+C --- CECI EST FAIT:
+C ---   POUR LES QUAD8 ET TRIA6 -> SYSTEMATIQUEMENT
+C ---   POUR LES QUAD9 ET TRIA7 -> SEULEMENT POUR LES COQUE_3D
+C --- POUR TOUTES LES AUTRES MAILLES QUADRATIQUES EN CONTACT,
+C --- LES NOEUDS MILIEUX SONT DANS
+C ======================================================================
+      IF (FONREE.NE.'COMP') THEN
+         CALL CACOEQ(FONREE,CHAR,NOMA)
+      ENDIF
 C ======================================================================
 C --- IMPRESSIONS SUR LES ZONES/SURFACES/MAILLES/NOEUDS DE CONTACT 
 C ======================================================================

@@ -5,7 +5,7 @@
       CHARACTER*8       NOMA,NOMO
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 04/11/2003   AUTEUR ACBHHCD G.DEVESA 
+C MODIF MODELISA  DATE 03/11/2004   AUTEUR ACBHHCD G.DEVESA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -153,20 +153,37 @@ C ---    "GROUP_MA" = TOUTES LES MAILLES DE TOUS LES GROUPES DE MAILLES
          IF (NG.GT.0) THEN
            II = 0
            DO 34 NC = 1,NCARAC
-            IF (CAR(NC).EQ.'K_TR_D_N') THEN
-              DO 37 J = 1,6
+            IF (NC.EQ.2.AND.CAR(1)(1:1).EQ.CAR(2)(1:1))
+     +                   CALL UTMESS('F','ACEARP.00',
+     +        'SI 2 CARACTERISTIQUES 1 AMOR ET 1 RIGI OBLIGATOIRES')   
+            IF (CAR(NC)(1:8) .EQ.'K_TR_D_N') THEN
+              DO 57 J = 1,6
                  VALE(J) = VAL(II+J)
- 37           CONTINUE
-              CALL RAIREP(NOMA,IOC,'K',VALE,NG,ZK8(JDLS),NBNO,
-     +         ZK8(ITBNO),ZR(IRGNO),ZR(IRGTO),ZR(IAMTO))
+ 57           CONTINUE
+              CALL RAIREP(NOMA,IOC,CAR(NC),VALE,NG,ZK8(JDLS),NBNO,
+     +         ZK8(ITBNO),ZR(IRGNO),ZR(IRGTO),ZR(IAMTO),IREP)
               II = II + 6
-            ELSEIF (CAR(NC).EQ.'A_TR_D_N') THEN
-              DO 38 J = 1,6
+            ELSEIF (CAR(NC)(1:7) .EQ.'K_T_D_N') THEN
+              DO 58 J = 1,3
                  VALE(J) = VAL(II+J)
- 38           CONTINUE
-              CALL RAIREP(NOMA,IOC,'A',VALE,NG,ZK8(JDLS),NBNO,
-     +         ZK8(ITBNO),ZR(IRGNO),ZR(IRGTO),ZR(IAMTO))
+ 58           CONTINUE
+              CALL RAIREP(NOMA,IOC,CAR(NC),VALE,NG,ZK8(JDLS),NBNO,
+     +         ZK8(ITBNO),ZR(IRGNO),ZR(IRGTO),ZR(IAMTO),IREP)
+              II = II + 3
+            ELSEIF (CAR(NC)(1:8) .EQ.'A_TR_D_N') THEN
+              DO 59 J = 1,6
+                 VALE(J) = VAL(II+J)
+ 59           CONTINUE
+              CALL RAIREP(NOMA,IOC,CAR(NC),VALE,NG,ZK8(JDLS),NBNO,
+     +         ZK8(ITBNO),ZR(IRGNO),ZR(IRGTO),ZR(IAMTO),IREP)
               II = II + 6
+            ELSEIF (CAR(NC)(1:7) .EQ.'A_T_D_N') THEN
+              DO 60 J = 1,3
+                 VALE(J) = VAL(II+J)
+ 60           CONTINUE
+              CALL RAIREP(NOMA,IOC,CAR(NC),VALE,NG,ZK8(JDLS),NBNO,
+     +         ZK8(ITBNO),ZR(IRGNO),ZR(IRGTO),ZR(IAMTO),IREP)
+              II = II + 3
             ELSE
               CALL UTMESS('F','ACEARP.01',
      +        'CARACTERISTIQUE NON ADMISE ACTUELLEMENT')

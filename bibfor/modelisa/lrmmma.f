@@ -1,11 +1,11 @@
       SUBROUTINE LRMMMA ( FID, NOMAMD, NDIM, NBMAIL, NBNOMA,
-     >                    NBTYP, TYPGEO, NOMTYP, NITTYP, NNOTYP, RENUMD,
+     >                    NBTYP, TYPGEO, NOMTYP, NNOTYP, RENUMD,
      >                    NMATYP,
      >                    NOMMAI, CONNEX, TYPMAI,
      >                    PREFIX,
      >                    INFMED )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2004   AUTEUR MJBHHPE J.L.FLEJOU 
+C MODIF MODELISA  DATE 03/11/2004   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,7 +55,7 @@ C
       INTEGER NDIM
       INTEGER NBMAIL, NBNOMA
       INTEGER NBTYP
-      INTEGER NMATYP(*), NITTYP(*)
+      INTEGER NMATYP(*)
       INTEGER NNOTYP(*), TYPGEO(*)
       INTEGER RENUMD(*)
       INTEGER INFMED
@@ -110,7 +110,7 @@ C
       INTEGER TABAUX(1)
       INTEGER NROMAI
 C
-      CHARACTER*7 SAUX07
+      CHARACTER*15 SAUX15
       CHARACTER*8 SAUX08
 C
 C     ------------------------------------------------------------------
@@ -136,11 +136,11 @@ C
 C
         IF ( NMATYP(ITYP).NE.0 ) THEN
 C
-          CALL WKVECT ('&&'//NOMPRO//'.NOM.'//NOMTYP(ITYP),'V V K8',
+          CALL WKVECT ('&&'//NOMPRO//'.NOM.'//NOMTYP(ITYP),'V V K16',
      >                  NMATYP(ITYP),JNOMTY(ITYP))
           CALL WKVECT ('&&'//PREFIX//'.NUM.'//NOMTYP(ITYP),'V V I',
      >                  NMATYP(ITYP),JNUMTY(ITYP))
-          IAUX = NMATYP(ITYP) * NITTYP(ITYP)
+          IAUX = NMATYP(ITYP) * NNOTYP(ITYP)
           CALL WKVECT ('&&'//NOMPRO//'.CNX.'//NOMTYP(ITYP),'V V I',
      >                  IAUX,JCXTYP(ITYP) )
 C
@@ -201,7 +201,7 @@ C          SI LE FICHIER NE CONTIENT PAS DE NOMMAGE DES MAILLES, ON LEUR
 C          DONNE UN NOM PAR DEFAUT FORME AVEC LE PREFIXE 'M' SUIVI DE
 C          LEUR NUMERO
 C
-          CALL EFNOML ( FID, NOMAMD, ZK8(JNOMTY(ITYP)), NMATYP(ITYP),
+          CALL EFNOML ( FID, NOMAMD, ZK16(JNOMTY(ITYP)), NMATYP(ITYP),
      >                  EDMAIL, TYPGEO(ITYP), CODRET )
 C
           IF ( CODRET.NE.0 ) THEN
@@ -211,8 +211,8 @@ C
             ENDIF
             DO 221 , IAUX = 1, NMATYP(ITYP)
               CODE = ZI(JNUMTY(ITYP)+IAUX-1)
-              CALL CODLET(CODE,'G',SAUX07)
-              ZK8(JNOMTY(ITYP)+IAUX-1) = 'M'//SAUX07
+              CALL CODLET(CODE,'G',SAUX15)
+              ZK16(JNOMTY(ITYP)+IAUX-1) = 'M'//SAUX15
   221       CONTINUE
             CODRET = 0
           ENDIF
@@ -233,9 +233,14 @@ C
           DO 231 , IMATYP = 1 , NMATYP(ITYP)
             IMA = ZI(JNUMTY(ITYP)+IMATYP-1)
             IF ( IMA.GT.NBMAIL ) THEN
-              CALL UTMESS ('F',NOMPRO,'NBMAIL:-(PB PROGRAMMATION')
+              CALL UTDEBM ('F',NOMPRO,'LE NUMERO DE LA MAILLE DE TYPE '
+     >            //NOMTYP(ITYP)//' EST SUPERIEUR AU NOMBRE TOTAL DE '
+     >            //'MAILLES :')
+              CALL UTIMPI ('L', 'NUMERO DE LA MAILLE : ', 1, IMA)
+              CALL UTIMPI ('L', 'NOMBRE DE MAILLES   : ', 1, NBMAIL)
+              CALL UTFINM()
             ENDIF
-            ZK8(JNOMMA+IMA-1) = ZK8(JNOMTY(ITYP)+IMATYP-1)
+            ZK8(JNOMMA+IMA-1) = ZK16(JNOMTY(ITYP)+IMATYP-1)(1:8)
             ZI (JTYPMA+IMA-1) = ITYP
             IDEC   = (IMA-1)*2
             ZI(JMATYP+IDEC)   = ITYP
@@ -261,7 +266,7 @@ C
          CALL JEVEUO(JEXNUM(CONNEX,IMA),'E',JCNXMA)
 C
          IMATYP = ZI(JMATYP+IDEC+1)
-         IDEC = (IMATYP-1)*NITTYP(ITYP)
+         IDEC = (IMATYP-1)*NNOTYP(ITYP)
          DO 311 , JAUX = 1 , NNOTYP(ITYP)
            ZI(JCNXMA+JAUX-1) = ZI(JCXTYP(ITYP)+JAUX-1+IDEC)
   311   CONTINUE 

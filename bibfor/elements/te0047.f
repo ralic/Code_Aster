@@ -4,7 +4,7 @@
       CHARACTER*(*) OPTIOZ,NOMTEZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 16/10/2004   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF ELEMENTS  DATE 03/11/2004   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -460,7 +460,7 @@ C
 C
           CALL TECACH('ONN','PIRRAMR',1,IRRAMR,IRETM)
           CALL TECACH('ONN','PIRRAPR',1,IRRAPR,IRETP)
-          IF ((IRETM.EQ.0).AND.(IRETP.EQ.0)) THEN
+          IF ((IRETM.EQ.0).AND.(IRETP.EQ.0).AND.(ZR(IRRAPR).GT.0)) THEN
              IRRAP = 0.5D0 * ( ZR(IRRAPR) + ZR(IRRAPR+1) )
           ELSE
              IRRAP = 0.D0 

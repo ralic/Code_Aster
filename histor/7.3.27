@@ -1,0 +1,1898 @@
+
+
+-----------------------------------------------------------------------
+--- AUTEUR acbhhcd G.DEVESA   DATE  le 03/11/2004 a 10:14:32
+
+------------------------------------------------------------------------
+REALISATION EL 2004-227
+   INTERET_UTILISATEUR : OUI
+   TITRE  "RIGI_PARASOL et éléments COQUE_3D"
+
+   FONCTIONNALITE
+   On peut traiter des radiers surfaciques constitués de COQUE_3D en
+   autorisant des TRIA7 et des QUAD9 dans l'appel à la routine RAIREP.
+   Il suffit d'y elargir un test sur le nombre de noeuds par élément et
+   d'augmenter la dimension de tableaux de coordonnées par élément à 9.
+
+   VALIDATION
+   On crée un nouveau cas test ZZZZ200C à partir du test ZZZZ200A
+   modifié avec essentiellement des COQUE_3D à la place des DST.
+   On retrouve les 6 premières fréquences propres.
+
+   RESU_FAUX_VERSION_EXPLOITATION  :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+	
+   IMPACT_DOCUMENTAIRE : OUI
+   DOC_V : V8.01.200
+       EXPL_ : ajout de la modélisation ZZZZ200C
+   NB_JOURS_TRAV  : 1
+------------------------------------------------------------------------
+REALISATION EL 2004-239
+   INTERET_UTILISATEUR : OUI
+   TITRE  "RIGI_PARASOL et éléments DIS_T"
+
+   FONCTIONNALITE
+   On peut maintenant affecter des éléments DIS_T avec caractéristiques
+    K_T_D_N et A_T_D_N aux noeuds d'un radier en répartissant seulement
+   des caractéristiques en translation comme précédemment.
+   On fusionne dans RAIREP les modifications de source de Jean-Luc
+   Fléjou avec celles nécessaires a l'EL 2004-227. La routine ACEARP est
+   elle aussi un peu modifiée.
+
+   VALIDATION
+   On reprend le test ZZZZ200A légèrement modifié et on utilise avec des
+    K_TR_D_N 3 valeurs de rigidité globale de rotation équivalentes à la
+    contribution en moment des raideurs ponctuelles de translation
+   réparties. Ainsi on affecte a chaque noeud des raideurs de rotation
+   complémentaires nulles et on est équivalent au cas d'affectation de
+   raideurs de translation uniquement. Avec KRX=KRY=1.13128E+14,
+   KRZ=2.075E14 pour les DIS_TR, on obtient ainsi les mêmes frequences
+   propres que pour les DIS_T : 3.34 Hz pour les 2 premières.
+
+   RESU_FAUX_VERSION_EXPLOITATION  :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+	
+   IMPACT_DOCUMENTAIRE : OUI
+   DOC_U : U4.42.01
+       EXPL_ : ajout de l'entrée K_T_D_N derrière CARA
+   NB_JOURS_TRAV  : 2
+------------------------------------------------------------------------
+REALISATION EL 2004-240
+   INTERET_UTILISATEUR : NON
+   TITRE  "MACRO_MISS_3D et version de MISS3D"
+
+   FONCTIONNALITE
+   On ajoute dans le catalogue de MACRO_MISS_3D un mot clef VERSION qui
+   peut prendre 2 valeurs pour décrire l'état de version de MISS3D :
+   V1_2 par défaut pour la version AQ et V1_3 pour la version de
+   développement.
+
+   VALIDATION
+   le cas test ZZZZ200B.
+
+   RESU_FAUX_VERSION_EXPLOITATION  :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+	
+   IMPACT_DOCUMENTAIRE : OUI
+   DOC_U : U7.03.11
+       EXPL_ : ajout du mot clef VERSION
+   NB_JOURS_TRAV  : 1.5
+
+
+
+-----------------------------------------------------------------------
+--- AUTEUR cibhhpd L.SALMONA   DATE  le 03/11/2004 a 16:53:34
+
+REALISATION EL 2004-048
+   NB_JOURS_TRAV : 13.5
+   POUR_LE_COMPTE_DE : S. LECLERCQ
+   INTERET_UTILISATEUR : OUI
+   TITRE : Loi de fluage sous irradiation du 304L
+   FONCTIONNALITE : On introduit une nouvelle loi de comportement LEMA_SEUIL
+   dérivée d'une loi de LEMAITRE classique
+
+   DETAIL : Cette loi est une loi à seuil. Lorsque le seuil est activé, la loi se
+   comporte comme un cas particulier de la loi de LEMAITRE et en-dessous du
+   seuil la loi est purement élastique. Cette loi nécessite deux paramètres matériaux
+   (en plus des paramètres élastiques).
+
+   MAT = DEFI_MATERIAU(
+            ELAS=_F( E = 1., NU = 0.3, ALPHA = 0.),
+            LEMA_SEUIL=_F( A=0.866025403785,S=1.E-10)
+           )
+
+   Le paramètre A correspond à la susceptibilité du matériau à  fluer sous irradiation
+   alors que S défini le seuil à partir duquel le fluage se manifeste. Ces paramètres
+   peuvent être définis sous forme d'une fonction de la température via LEMA_SEUIL_F
+
+   On a donc dans NMVPIR fait un branchement informatique sur une loi de
+   LEMAITRE classique en testant par une prédiction élastique la valeur du seuil
+   à l'instant suivant.
+
+   De plus, le flux d'irradiation (variable VARI_COMM dans STAT_NON_LINE) a été
+   passé en argument de la routine NMCOMP au même titre que les autres variables
+   de commande tel que le séchage ou la corrosion. Le flux d'irradiation peut
+   désormais être défini comme une carte sur le maillage. De plus, par défaut
+   lorsqu'aucun champ d'irradiation n'est renseigné par l'utilisateur, on remplit
+   par un champ constant égal à -1. Ainsi cela nous permet de vérifié dans les routines
+   nécessitant un champ qu'il a bien été renseigné par l'utilisateur.
+
+   REMARQUE:
+
+   La loi LEMA_SEUIL est seulement accessible pour des modélisations 3D et 2D.
+   L'unité prise pour le flux doit etre compatible avec celle prise pour la
+   susceptibilité du matériau.
+
+   Les validations ont été faites sur deux nouveaux cas tests.
+   L'objectif de ces cas tests est de valider les differents aspects de la loi.
+   Ainsi, un premier cas test ssna104b qui est une nouvelle modélisation d'un
+   cas test déja existant a été réalisé pour comparer les résultats à une
+   loi de LEMAITRE en prenant délibérement le seuil tres faible pour etre tout
+   de suite dans une situation de LEMAITRE classique.
+   Ensuite, un nouveau cas test ssnv179a a pour but de verifier sur une solution
+   analytique l'activation du seuil de manière précise.
+   Un troisième cas test plus physique sera réalisé ultérieurement par S.Leclercq.
+
+
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   VALIDATION : ssna104b+ssnv179a+liste complete
+   IMPACT_DOCUMENTAIRE : OUI
+   DOC_V : V6.01.104-A
+      EXPL_ : Ajout de la nouvelle modelisation
+   DOC_V : V6.04.179-A
+      EXPL_ : Doc du nouveau cas test
+   DOC_R : R5.03.08-A
+      EXPL_ : Nouveau paragraphe sur la loi LEMA_SEUIL
+   DOC_U : U4.43.01
+      EXPL_ : Description des nouveaux parametres materiaux
+   DOC_U : U4.51.11-A1
+      EXPL_ : Ajout d'un paragraphe sur la nouvelle loi dans 'ASSE_COMBU'
+
+
+-----------------------------------------------------------------------
+--- AUTEUR lebouvie F.LEBOUVIER   DATE  le 03/11/2004 a 17:36:42
+
+-------------------------------------------------------------------------------
+CORRECTION AL 2004-312
+   POUR LE COMPTE DE :  G. DEBRUYNE
+   INTERET_UTILISATEUR : OUI
+   TITRE :
+   FONCTIONNALITE :
+   DETAIL :
+   En 7.3.18, il a été restitué une vérification dans STAT_NON_LINE : si l'état
+   initial (avant le premier instant de calcul) est tel que les variables de
+   commande (température, hydratation, séchage...) conduisent à des contraintes
+   non équilibrées, on obtient des alarmes supplémentaires  :
+   <A> <STAT_NON_LINE> <OP0070> LES VARIABLES DE COMMANDES INITIALES
+   INDUISENT DES CONTRAINTES INCOMPATIBLES													
+
+   Dans le test ttnl03b, les variables de commandes sont l'hydratation et la
+   température, l'alarme émise est justifiée. Il y a un calcul d'hydratation avec
+   THER_NON_LINE puis deux calculs mécanique, l'un avec STAT_NON_LINE, l'autre
+   avec MECA_STATIQUE. La température de référence valait 0 alors que
+   la température initiale valait 20.9. On met donc cette valeur comme
+   TEMP_REF pour le calcul non linéaire. De plus l'instant de calcul intial
+   était 1, alors qu'à ce moment, l'hydratation est non nulle. On avait donc
+   une alarme. En partant de l'instant 0, on n'a plus d'alarme.
+   Avec cette modification on trouve a quelque chose près le même résultat
+   entre STAT_NON_LINE et MECA_STATIQUE
+
+   STAT_NON_LINE: DX= 5.7945895969414D-04
+   MECA_STATIQUE: DX= 5.7332691781489D-04
+
+   RESU_FAUX_VERSION_EXPLOITATION    : NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   : NON
+   RESTITUTION_VERSION_EXPLOITATION  : NON
+   RESTITUTION_VERSION_DEVELOPPEMENT : OUI
+   VALIDATION : ttnl03b
+   IMPACT_DOCUMENTAIRE : NON
+   NB_JOURS_TRAV : 0.5
+-------------------------------------------------------------------------------
+
+
+-----------------------------------------------------------------------
+--- AUTEUR mabbas M.ABBAS   DATE  le 02/11/2004 a 16:41:34
+
+REALISATION EL 2004-109
+
+   INTERET_UTILISATEUR : OUI
+
+   TITRE
+    Contact - Affichages
+
+   FONCTIONNALITE
+    On se propose d'ameliorer les messages de diagnostic du contact
+    et de reformer le traitement du mot-clef CONTACT dans la phase de
+    preparation. Pour ce dernier point, il s'agit surtout
+    d'améliorations de type structure et programmation.
+
+   RESU_FAUX_VERSION_EXPLOITATION  :   NON   DEPUIS : 6.0.0
+   RESU_FAUX_VERSION_DEVELOPPEMENT :   NON   DEPUIS : 6.0.0
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_D : D4.06.14
+       EXPL_ : Nouvelles SD de contact
+     DOC_D : D4.05.00
+       EXPL_ : Mise en oeuvre informatique du contact
+     DOC_U : U4.44.01
+       EXPL_ : AFFE_CHAR_MECA , nveau mot-clef ITER_MULT_MAX
+
+   VALIDATION
+    Tous les cas-tests de contact.
+
+   DETAILS
+    Cette EL permet l'amelioration de la programmation du contact
+
+   * Nouveaux affichages:
+    Afin d'etre coherent avec les nouveaux messages introduits dans les
+   EL de contact precedentes (comme EL2003-133).
+    La majorite de ces affichages se produisent lors d'un niveau INFO=2
+   dans STAT_NON_LINE. Voir CFIMP1, CFIMP2 et CFIMP3
+
+   * Reformes de structure du contact:
+    Appel global pour le traitement du contact: NMCOFR (NMCONT n'existe
+   plus)
+    Traitement geometrique (appariement, projection): CFGEOM
+    Traitement mecanique proprement dit: CFALGO
+
+    Changements de noms:
+      frot05 devient cffrot (evaluation de la matrice tangente de
+                             frottement)
+      frot07 devient cfdiag (evaluation des termes de la matrice pour
+                             detection des pivots nuls)
+
+    La liaison lineaire pour les QUAD8 etait faite dans la
+    routine CACOEQ, au niveau du traitement d'AFFE_CHAR_MECA (CHARME.F).
+    Afin de garder une certaine coherence, On descend la routine dans
+    le fortran principal de traitement du contact (CALICO).
+
+    Nettoyage des routines, commentaires, mise au carre.
+    Il reste toutefois des routines sans IMPLICIT NONE: ATASMO, ATALC2
+
+    Creation d'une nouvelle SD contenant les infos sur la convergence
+    du contact "DEFICO.CONV":
+     - STOP_SINGULIER
+     - NB_RESOL
+     _ ITER_MULT_MAX
+
+
+   * Nouvelle fonctionnalite:
+    Via le mot-clef ITER_MULT_MAX, on peut desormais entrer le nombre
+   maximum d'iterations de contact/frottement sous la forme:
+        NbIterationsContactMax = ITER_MULT_MAXI * NbNoeudsEsclaves
+    Si l'on depasse ce nombre d'iterations, il y a remontee d'erreur et
+   possibilite (si l'utilisateur l'a propose) de redecouper le pas de
+   temps. Par defaut, ITER_MULT_MAXI = 4, sauf pour la methode des
+   contraintes actives pour laquelle le resultat theorique permet de
+   fixer ITER_MULT_MAXI a 2 (l'utilisateur ne peut changer cette valeur)
+     Cette fonctionnalite permettra d'eviter les bouclages infinis
+   pendant le contact/frottement. En cas de difficultes de convergence
+   (oscillations), on ne s'arretait alors qu'en CPU_LIMIT, sans aucune
+   information (sauf pour la methode des contraintes actives, qui
+   s'arretait proprement).
+
+   NB_JOURS_TRAV  : 7
+-----------------------------------------------------------------------
+CORRECTION AL 2004-362
+
+   INTERET_UTILISATEUR : OUI
+
+   TITRE
+    VISC_IRRA_LOG
+
+   FONCTIONNALITE
+   Suite à discussion avec Mickaël ABBAS lors de la réunion MAC3 du
+   5 octobre 2004, voici les fichiers concernés par l'anomalie
+   rencontrée lors d'un calcul de grandissement sous irradiation.
+
+   RESU_FAUX_VERSION_EXPLOITATION   :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT  :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+
+   IMPACT_DOCUMENTAIRE : NON
+
+   VALIDATION
+    Etude jointe
+
+   DETAILS
+    Le plantage se produisait dans la recherche de zero de la fonction
+   de fluage. ZEROF2.
+   Cette routine permet de trouver le x de f(x) = 0 par une methode de
+   dichotomie+secante amelioree.
+   Pour trouver ce zero, il faut proceder a une recherche entre f(a)
+   et f(b) avec f(a)>0 et f(b)<0.
+   zerof2 n'est utilisable que si f est strictement croissante. Mais
+   la routine n'est pas suffisament blindee contre les fonctions
+   pathologiques. En l'occurrence, on avait une division par zero lors
+   de l'evaluation de la fonction fluage de VISC_IRRA_LOG.
+     On a souvent besoin de faire du calcul de grandissement SANS fluage.
+   La loi de Lemaitre le permet grace a un traitement particulier de
+   ses coefficients (si UN_SUR_K = 0, on ne fait pas de fluage, seulement
+   du grandissement).
+   La loi VISC_IRRA_LOG n'etait pas prevue pour ca, et le fait de mettre
+   certains de ses coefficients a  "presque zero" rendait la fonction
+   de fluage tres mal conditionnee numeriquement.
+   On pouvait arriver a des situations comme:
+      f = 1E-16 +1.0E7
+   Et ceci, malgre les precautions prises (le flux neutronique n'etait
+   pas en 1E21 mais en 1E2 par exemple).
+   Dans certains cas, la fonction devenait constante (a la precision
+   numerique pres), dans d'autres cas, la pente etait tres grande (1E19)
+   Ces deux pathologies empeche la recherche du zero dans ZEROF2.
+   Actions:
+   - Blinder les cas pathologiques de VISC_IRRA_LOG (valeurs des
+   constantes "presque nulles", contrainte elastique d'essai
+   disproportionnee, fluence neutronique presque nulle, etc.)
+   - Blinder zerof2 en ajoutant des tests, et des messages d'erreurs
+   plus explicites. Ajouter l'affichage des valeurs de la fonction sur
+   une vingtaine de points en cas de problemes, pour diagnostiquer
+   le plantage.
+
+   NB_JOURS_TRAV  : 5
+
+-----------------------------------------------------------------------
+CLASSEMENT SANS SUITE AL 2004-153
+
+   INTERET_UTILISATEUR : NON
+
+   TITRE
+    CONTACT - Bug sur un cas simple
+
+   FONCTIONNALITE
+     Une fois de plus, Nicolas nous fait part d'un petit souci
+   qu'il a eu sur un cas de contact simplissime.
+     Une fois de plus, il s'agit d'un cube (un HEXA8) sur un autre
+   cube (un HEXA8).
+     Les résultats sont clairement faux (disymétrie importante ou
+   non-convergence en réactualisation automatique).
+   La projection sur aretes fictives ne semble pas en cause comme
+   dans les precedentes anomalies.
+
+   RESU_FAUX_VERSION_EXPLOITATION   :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT  :   NON
+
+   IMPACT_DOCUMENTAIRE : NON
+
+   VALIDATION
+    Etude jointe
+
+   DETAILS
+    Effectivement, la projection sur aretes fictives n'etait pas en
+   cause. La cause etait simple: le maillage n'etait pas exactement
+   symetrique !
+   Et donc, le resultat disymetrique etait normal.
+   Pour se rattraper, NT a etendu le maillage en faisant 8 cubes.
+   Nous avons une vraie pathologie, qui a donne lieu a l'emission d'une
+   EL.
+
+   NB_JOURS_TRAV  : 1 (NT)
+
+-----------------------------------------------------------------------
+CORRECTION AL 2004-379
+
+   INTERET_UTILISATEUR : OUI
+
+   TITRE
+    CONTACT - Suintement
+
+   FONCTIONNALITE
+    Si on déclare des conditions aux limites de suintement on obtient
+   des résultats FAUX si la convergence n'est pas obtenue dès la
+   première itération.
+     Il s'agit d'un écrasement, qui se produit uniquement pour les
+   conditions de suintement, au niveau de la routine algoco.
+
+   RESU_FAUX_VERSION_EXPLOITATION   :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT  :   OUI DEPUIS : 7.3.15
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+
+   IMPACT_DOCUMENTAIRE : NON
+
+   VALIDATION
+    Etude jointe (MoMas)
+
+   DETAILS
+    L'emetteur de la fiche (RF) a trouve tout seul le probleme. Il
+   s'agit effectivement d'une mauvaise initialisation des "jeux" dans
+   certaines conditions de convergence.
+    Au debut du traitement du contact, on initialise les jeux pour
+   les problemes unilateraux qui ne concerne pas les deplacements mais
+   seulement la temperature ou la pression. Cette operation est commune
+   a tous les algorithmes de contact/frottement. On la factorise donc
+   en creant la routine cfthmp, appelee dans cfalgo.
+
+   NB_JOURS_TRAV  : 1
+
+-----------------------------------------------------------------------
+CLASSEMENT SANS SUITE EL 2002-138
+
+   INTERET_UTILISATEUR : NON
+
+   TITRE
+    Cette semaine P. Massin a introduit une nouvelle glute dans ASMATR :
+         IF (TLIMA2(K).EQ.'&&ASCOMA') INDSUI=.TRUE.
+    C'est une glute car INDSUIV est calculé en regardant si le nom
+    de l'un des MATR_ELEM que l'on assemble commence par &&ASCOMA.
+    C'est un passage d'argument sous-terrain qu'il vaut mieux éviter.
+
+    Je pense que PM veut savoir s'il existe un chargement suiveur ...
+
+    Heureusement pour le reste des utilisateurs, cette glute ne sert
+    que dans un bloc (lignes 90 à 100) qui ne concerne (je l'espère)
+    que le contact méthode CONTINUE.
+
+     Il se trouve que ce bloc a été introduit le 21/12/00 par P. Massin
+    (sans mon accord puisque je n'en était pas officiellement
+    responsable) sous forme d'une glute qui commence par :
+
+      CALL JEEXIN('&&CFMMEL.LISTE_RESU',IRET)
+
+      La aussi la programmation est vraiment vilaine puisqu'il s'agit
+     d'ajouter (s'il existe) le MATR_ELEM '&&CFMMEL.LISTE_RESU' à la
+     liste des MATR_ELEM que l'on demande à assembler.
+
+     C'est encore un passage d'argument en sous-terrain inacceptable.
+
+      J'aimerais donc que les responsables de la méthode
+     CONTACT/CONTINUE fassent un peu de ménage dans la routine ASMATR.
+
+   FONCTIONNALITE
+
+   Le principe est de construire les matrices (de rigidite et de masse)
+   et d'ajouter explicitement, via un CALL JEEXIN kivabien, les termes
+   provenant de la methode de contact continue.
+   Problemes:
+   - Cette routine est appellee directement ou indirectement par une
+   soixantaine d'autres.
+   - On ne sait pas tres bien quels morceaux de amtrices il faut ajouter
+
+   Le nettoyage anti-glutesque s'apparente a celui des ecuries d'Augias.
+   N'etant pas un demi-Dieu et en accord avec le Seigneur d'ASMATR, on
+   laisse cette glute tel quelle, puisqu'elle reste suffisamment robuste.
+   L'objet CFMMEL n'existe que s'il y a du contact methode continue
+
+
+   RESU_FAUX_VERSION_EXPLOITATION   :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT  :   NON
+
+   IMPACT_DOCUMENTAIRE : NON
+
+   VALIDATION
+    Neant
+
+   DETAILS
+
+
+   NB_JOURS_TRAV  : 1
+
+
+-----------------------------------------------------------------------
+--- AUTEUR mcourtoi M.COURTOIS   DATE  le 03/11/2004 a 21:24:15
+
+CORRECTION AL 2004-343
+   INTERET_UTILISATEUR : NON
+   TITRE
+      TEST_FICHIER ne décode pas les nombres réels accollés
+   FONCTIONNALITE
+      ssnv102c était NOOK sous Linux car il y a des lignes du type :
+
+   -1.54000E-04-4.00400E-04 4.62000E-05-1.35525E-20-3.04932E-20 4.62000E-05
+
+   et donc les 1.E-20 n'étaient pas remplacés par 0.
+
+   RESU_FAUX_VERSION_EXPLOITATION   :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT  :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+      ssnv102c (Linux + TRU64) en activant EXPR_IGNORE pour ignorer la date
+   DETAILS
+      C'est '-' derrière un chiffre qui déclenche la découpe :
+         string.split(re.sub('([0-9]+)\-','\g<1> -',ligne))
+   NB_JOURS_TRAV  : 0.5
+------------------------------------------------------------------------------
+RESTITUTION HORS AREX
+   INTERET_UTILISATEUR : NON
+   FONCTIONNALITE
+    IMPR_FONCTION / Class Graph (tracé de courbes) :
+
+      1. possibilité de demander une marge lors du calcul automatique de la
+         bounding box (5% par exemple, c'est bcp plus joli !)
+
+      2. Mot-clés ABSCISSE/ORDONNEE équivalents à LIST_PARA/LIST_RESU
+         pour donner directement des listes python sans passer
+         par DEFI_LIST_REEL.
+
+      3. Le mot-clé TRI n'était pas sous le MCF COURBE.
+         Pour Agraf, on écrit simplement la valeur du tri dans le .digr.
+         Pour Xmgrace, on écrit les valeurs préalablement triées.
+
+      4. Ajout de méthodes aux sd fonction : Absc, Ordo, OrdoImg triviales
+         plus parlantes aux utilisateurs :
+            def Absc(self):
+               """Retourne la liste des abscisses"""
+               return self.Valeurs()[0]
+         Et une méthode Trace().
+
+   RESU_FAUX_VERSION_EXPLOITATION   :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT  :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_U : U4.33.01
+       EXPL_ : ajout des mots-clés ABSCISSE et ORDONNEE
+   VALIDATION
+      zzzz140a : nouveau test
+   DETAILS
+   - demo001a :
+      IMPR_FONCTION(
+         FORMAT='XMGRACE',
+         UNITE=53,
+         PILOTE=pilote,
+         COURBE=(
+            _F(
+               ABSCISSE=[0.]+A5.Absc(),
+               ORDONNEE=[0.]+A5.Ordo(),
+               COULEUR=2,
+            ),
+         ),
+         TITRE='Courbe de traction',
+         SOUS_TITRE='avec un palier horizontal',
+         LEGENDE_X='Deformation',
+         LEGENDE_Y='Contrainte',
+      )
+      + correction des DEFI_FICHIER (retirer FICHIER)
+      + Supprimer demo001a.19, demo001a.53, demo001a.datg
+
+   - zzzz140a :
+      sur une fonction et une nappe :
+         IMPR_FONCTION et fonction.Trace() + TEST_FICHIER
+
+   NB_JOURS_TRAV  : 0.5
+------------------------------------------------------------------------------
+REALISATION EL 2004-233
+   INTERET_UTILISATEUR : NON
+   TITRE
+      Passage de MED 2.1 à MED 2.2
+   FONCTIONNALITE
+      Cette EL se contente de réaliser la transition de la bibliothèque
+      Med-Fichier 2.1.5 à 2.2.1, seuls les changements de l'API sont pris en
+      compte :
+      - mode d'ouverture des fichiers (RAS en lecture, en écriture, on utilise
+        le mode MED_LECTURE_AJOUT)
+      - vérification du type de maillage : alarme si on trouve un maillage
+        structuré (pas d'erreur car on n'est dans une routine d'info).
+      - lecture des infos sur les familles séparée dans 3 routines.
+
+      Mini-évolutions :
+      - on tolère (<A>larme) les familles vides, c'est à dire ne contenant ni
+        attribut ni groupe (Salomé/SMesh crée de telles familles).
+      - clarification du message quand on trouve une maille dont le numéro MED
+        est plus grand que le nombre total de mailles (numérotation à trous).
+
+   RESU_FAUX_VERSION_EXPLOITATION  :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_U : U7.01.21
+       EXPL_ : LIRE_MAILLAGE au format MED
+     DOC_U : U7.02.01
+       EXPL_ : LIRE_RESU au format MED (nom des composantes §3.4.3)
+     DOC_U : U7.05.21
+       EXPL_ : IMPR_RESU au format MED
+   VALIDATION
+   DETAILS
+
+op0150, op0192, lrcmva, lrcmve, mdexch, utlicm :
+passage des noms de composantes MED de K8 en K16.
+
+36 routines MED appelées par 24 fortran Aster
+
+# INFORMATIONS
+
+mdchii    efchai : ZK8-ZK16 pas d'impact sur l'appelant
+mdchii    efncha
+mdchii    efnpdt
+mdchii    efpdti : chgt api
+- nbre de tableaux de valeurs, liste des pas de temps pour un champ et un maillage
+
+mdchin    efferm
+mdchin    efouvr : ok
+- nbre de tableaux de valeurs, liste des pas de temps pour un champ et un maillage
+
+mdexcc    efchai : ZK8-ZK16
+mdexcc    efferm
+mdexcc    efncha
+mdexcc    efouvr : ok
+- existence d'un champ, nbre de composantes
+- appelé par mdexch, mdexch appelé par lrcame/ircame
+
+mdexcv    efferm
+mdexcv    efnval
+mdexcv    efouvr : ok
+- existence d'un champ, nbre de valeurs
+
+mdexma    efferm
+mdexma    efmaai émission <A> si maillage structuré
+mdexma    efnmaa
+mdexma    efouvr : ok
+- existence d'un maillage, dimension
+
+mdexpm    efferm
+mdexpm    efmaai émission <A> si maillage structuré
+mdexpm    efnmaa
+mdexpm    efouvr : ok
+- existence d'un premier maillage, dimension
+
+# MAILLAGE - LECTURE
+
+lrmhdf    efferm
+lrmhdf    effoco
+lrmhdf    efouvr : ok
+- lecture d'un maillage au format med
+
+lrmmdi    efnema
+- lecture d'un maillage au format med, les dimensions
+
+lrmmfa    effami
+lrmmfa    effaml
+lrmmfa    efnfam : remplacé par efnfam + efnatt et efngro
+- lecture d'un maillage au format med, familles
+
+lrmmma    efconl : ok (modif lrmtyp)
+lrmmma    efnoml : ZK16 + conv K16-K8
+lrmmma    efnuml
+- lecture d'un maillage au format med, mailles
+
+lrmmno    efcool
+lrmmno    efnoml : ZK16 + conv K16-K8
+- lecture d'un maillage au format med, noeuds
+
+# MAILLAGE - ECRITURE
+
+irmhdf    efferm
+irmhdf    efmaac : ok EDNSTR = MED_NON_STRUCTURE
+irmhdf    efouvr : ok
+- écriture d'un maillage au format med
+
+irmmfa    effamc
+irmmfa    effame : mode suppr
+- écriture d'un maillage, familles
+
+irmmma    efcone : ok (modif lrmtyp)
+irmmma    efnome : ZK16
+irmmma    efnume : mode suppr
+- écriture d'un maillage, mailles
+
+irmmno    efcooe : K16 ok
+irmmno    efnome : conv K8-K16
+- écriture d'un maillage, noeuds
+
+irmdes    effide : ok
+- écriture au format med, description
+
+# CHAMP - LECTURE
+
+lrcame    efferm
+lrcame    effoco
+lrcame    efnema
+lrcame    efnuml
+lrcame    efouvr : ok
+- lecture d'un champ au format med
+
+lrcmle    efchrl : chgt api (efchal pour les réels)
+(pour le moment, on ne traite pas le nom de l'élément de référence)
+- lecture d'un champ au format med, lecture
+
+lrcmpr    efnpfl
+lrcmpr    efpfll
+- lecture d'un champ au format med, profil
+
+lrmdes    effien
+lrmdes    eflfde
+- lecture d'un champ au format med, description
+
+# CHAMP - ECRITURE
+
+ircame    efferm
+ircame    efouvr : ok
+- écriture d'un champ med
+
+ircmcc    efchac : ZK8-ZK16
+- écriture d'un champ med, création du champ
+
+ircmec    efchre
+- écriture d'un champ med, écriture
+
+ircmpf    efferm
+ircmpf    efnpro
+ircmpf    efouvr : ok
+ircmpf    efpfle
+ircmpf    efpfll
+ircmpf    efproi
+- écriture d'un champ med, profil
+
+irmdes : voir écriture maillage
+
+   NB_JOURS_TRAV  : 2.5
+------------------------------------------------------------------------------
+RESTITUTION HORS AREX
+   INTERET_UTILISATEUR : NON
+   FONCTIONNALITE
+      Message d'avertissement pour les vieilles versions.
+
+      Aujourd'hui, 15 mois après la stabilisation, on arrête en <F>atal.
+      Cà semble un peu sévère, on met maintenant un avertissement dans
+      les fichiers message, résultat et erreur :
+
+######################################################################
+######################################################################
+######################################################################
+
+  <I> <INIAST> VOUS UTILISEZ UNE VIEILLE VERSION DE CODE_ASTER.
+
+  EN METTANT A JOUR VOTRE VERSION, VOUS BENEFICIEREZ DES
+  DERNIERES AMELIORATIONS APPORTEES AU CODE DEPUIS 15 MOIS
+  SI VOUS AVEZ DES DEVELOPPEMENTS PRIVES, VOUS RISQUEZ
+  D'AVOIR UN TRAVAIL IMPORTANT DE REINGENIERIE SI VOUS NE
+  SUIVEZ PAS LES MISES A JOUR.
+
+######################################################################
+######################################################################
+######################################################################
+
+   RESU_FAUX_VERSION_EXPLOITATION   :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT  :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+   DETAILS
+      iniast + errlic
+   NB_JOURS_TRAV  : 0.5
+------------------------------------------------------------------------------
+RESTITUTION HORS AREX
+   INTERET_UTILISATEUR : NON
+   FONCTIONNALITE
+      Suite de l'EL2004-181 (relecture d'un champ de pression produit par
+      Code_Saturne) : on souhaite utiliser un champ de pression calculé
+      par Saturne (sur les mailles volumiques du fluide) comme condition aux
+      limites sur une face d'un maillage 3D dans Aster.
+
+      On pensait partir d'un fichier MED avec le maillage fluide 3D, les
+      mailles de bord, et le champ défini sur ces mailles de bord.
+      => compliqué de produire un tel fichier pour Saturne.
+
+      On demande donc à Saturne de produire un fichier MED contenant uniquement
+      le maillage de bord et le champ de pression défini sur ces mailles de
+      bord.
+
+      Pour cela, on ajoute le champ de pression ELEM dans l'option TOU_INI_ELEM
+      des éléments DKT TRIA3/QUAD4 (gener_medkt2.cata).
+
+   RESU_FAUX_VERSION_EXPLOITATION   :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT  :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+      fichier med produit par Saturne
+   DETAILS
+      Attention : suite à passage à MED 2.2, il faut convertir le fichier
+      de Saturne (en MED 2.1.5) en utilisant /aster/outils/medimport.
+   NB_JOURS_TRAV  : 4 (sur le projet NICODEME)
+------------------------------------------------------------------------------
+REALISATION EL 2004-235
+   INTERET_UTILISATEUR : NON
+   TITRE
+      Pouvoir désactiver l'émission d'alarme dans DETRUIRE.
+   FONCTIONNALITE
+      On souhaite désactiver l'émission d'alarme quand on est dans une macro
+      et que l'on supprime des objets temporaires créés ou non selon dans
+      quelles branches de la programmation on est passé.
+
+      On ajoute un mot clé ALARME='OUI' par défaut.
+      Quand ALARME='NON', l'UTMESS('A',...) n'est pas appelé.
+   RESU_FAUX_VERSION_EXPLOITATION  :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : OUI
+      DOC_U : U4.14.01
+       EXPL_ : Mot clé ALARME permet de désactiver l'émission d'une alarme
+   VALIDATION
+      utilisé dans test_fichier quand on détruit les objets temporaires
+   DETAILS
+   NB_JOURS_TRAV  : 0.5
+------------------------------------------------------------------------------
+REALISATION EL 2004-198
+   INTERET_UTILISATEUR : OUI
+   TITRE
+      Refonte d'IMPR_TABLE en python
+   FONCTIONNALITE
+   - Pour l'utilisateur :
+      FORMAT :
+         . 'EXCEL' devient 'TABLEAU' (homogénéisation avec ce qui existait
+         dans IMPR_COURBE et maintenant dans IMPR_FONCTION),
+         . 'TABLEAU' devient 'TABLEAU_CROISE' (un paramètre fonction
+         de 2 autres donc len(NOM_PARA)=3),
+         . 'ASTER', 'AGRAF' inchangé (NB : le format AGRAF ne contient aucune
+         directive alors que IMPR_FONCTION produit digr et dogr)
+         . 'XMGRACE' nouveau : on crée un objet Graph et on appelle la méthode
+         Trace(),
+         . 'MOT_CLE' supprimé (c'était toujours au format V5).
+
+      FILTRE : inchangé (on a conservé VALE, VALE_I, VALE_R, VALE_K alors que
+      dans la macro le type n'est pas utilisé), tous les critères ont été repris
+      à l'identique, CRITERE/PRECISION sont disponibles pour les critères
+      d'égalité et d'inégalité.
+
+      TRI :
+         . on peut toujours trier selon N paramètres : en cas d'égalité, sur un
+            paramètre, on utilise le suivant par ex. : NOM_PARA=('INST', 'TEMP')
+         . on ne peut plus trier par 'INST' croissant et 'TEMP' décroissant,
+         ORDRE ne contient plus qu'une valeur 'CROISSANT' ou 'DECROISSANT'.
+         [
+          ce serait assez compliqué car on trie une liste de dictionnaires ;
+          de plus, il y avait un bug dans le catalogue :
+           ORDRE=SIMP(...validators=NoRepeat(),into=('CROISSANT','DECROISSANT'))
+          on était donc limité à deux paramètres sinon impossible de ne pas se
+          répéter et l'un dans un sens, l'autre inversé !
+         ]
+         . CRITERE/PRECISION supprimés
+
+      TOUT_PARA='OUI' est supprimé, c'est équivalent à omettre NOM_PARA.
+
+      PAGINATION : nombre illimité de paramètres.
+
+      FORMAT_R : fmtF2PY() dans impr_table_ops.py pour convertir un format
+         Fortran en format Python/C.
+
+      FORMAT_C : à faire !
+
+      IMPR_FONCTION='OUI' conservé
+
+   - Macro impr_table_ops.py :
+      Le plus gros du travail est fait par le module Table qui permet de
+      récupérer en python les données des tables jeveux, appliquer des filtres
+      et trier la table (voir DETAILS).
+      La macro se contente d'appeler la méthode EXTR_TABLE des table_sdaster
+      pour créer une instance de la classe Table.
+
+      . Pour la sensibilité, elle interroge (getvectev) la sd &NOSENSI.MEMO.CORR
+      qui contient le nom des tables dérivées.
+      Pour cela, un type table_jeveux a été ajouté dans accas qui permet de
+      construire une table_sdaster à partir du nom jeveux :
+         class table_jeveux(table_sdaster):
+            """Classe permettant d'accéder à une table jeveux qui n'a pas
+            d'ASSD associée, c'est le cas des concepts résultats (table,
+            evol_xxxx) dérivés.
+            """
+            def __init__(self,nom_jeveux):
+               self.nom=nom_jeveux
+      On dispose ensuite de la méthode EXTR_TABLE sur cet objet.
+
+      . IMPR_FONCTION='OUI'...
+      On parcourt les cellules de la table de type string, et (comme avant)
+      si getvectjev(string+'.PROL')<>None, on en conclut qu'il s'agit d'une
+      fonction.
+      On récupère ensuite la fonction avec f=RECU_FONCTION(TABLE=...)
+      et on "imprime" la fonction avec f.Trace(**kargs).
+
+   - Modif de l'objet Graph et (indirectement IMPR_FONCTION) :
+      Echange de bons procédés, pour un tracé au format 'TABLEAU', TraceTableau
+      construit un objet Table et appelle la méthode Impr().
+
+   RESU_FAUX_VERSION_EXPLOITATION  :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : OUI
+      DOC_U : U4.91.03
+       EXPL_ : reprendre les changements de syntaxe
+   VALIDATION (tests modifiés)
+      aspic01b, forma03a, forma12c : FORMAT='EXCEL' changé en 'TABLEAU'
+      epicu01a, b : FORMAT_R="E12.5E2" ?!
+
+      ssll501a.comm : ORDRE = ('DECROISSANT', 'CROISSANT',)) => 'DECROISSANT'
+
+   DETAILS
+      Modif de GETCON (pour aster.getvectjev) :
+      =========================================
+         La longueur de l'objet récupéré était lue dans l'attribut LONUTI
+         (ou NOMUTI), on lit maintenant LONMAX (ou NOMMAX).
+
+      Détail du module Table :
+      ========================
+    class Table(TableBase)
+     |  Une table est construite comme une liste de lignes, chaque ligne est
+     |  un dictionnaire.
+     |  On crée puis on ajoute les lignes avec la méthode append :
+     |     t=Table()
+     |     t.append(dict(a=1,b=2))
+     |     t.append(dict(a=3,b=4))
+     |  La méthode __iter__ définit un itérateur sur les lignes de la table,
+     |  __repr__ retourne une représentation de la table, utilisée par "print t".
+     |  Grace à la classe Colonne et à sa méthode _extract, il est possible
+     |  de construire une sous-table qui satisfait un critère donné.
+     |  Le critère est donné par une fonction Python qui retourne vrai
+     |  ou faux si la valeur d'une colonne respecte le critère ou non.
+     |  Exemple:
+     |    def critere(valeur):
+     |        return valeur < 10
+     |    soustable = t.a._extract(critere)
+     |  t.a retourne un objet intermédiaire de la classe Colonne qui mémorise
+     |  le nom de la colonne demandée (a, ici).
+     |
+     |  Methods defined here:
+     |
+     |  Croise(self)
+     |      Retourne un tableau croisé P3(P1,P2) à partir d'une table ayant
+     |      trois paramètres (P1, P2, P3).
+     |
+     |  __and__(self, other)
+     |      Intersection de deux tables (opérateur &)
+     |
+     |  __delitem__(self, args)
+     |      Supprime les colonnes correspondantes aux éléments de args
+     |
+     |  __getattr__(self, column)
+     |      Construit un objet intermediaire (couple table, colonne)
+     |
+     |  __getitem__(self, args)
+     |      Extrait la sous table composée des colonnes dont les paramètres sont dans args
+     |
+     |  __init__(self, rows=[], para=[], typ=[], titr='')
+     |      Constructeur de la Table :
+     |      rows : liste des lignes (dict)
+     |      para : liste des paramètres
+     |      typ  : liste des types des paramètres
+     |      titr : titre de la table
+     |
+     |  __iter__(self)
+     |      Itère sur les lignes de la Table
+     |
+     |  __or__(self, other)
+     |      Union de deux tables (opérateur |)
+     |
+     |  append(self, obj)
+     |      Ajoute une ligne (type dict) à la Table
+     |
+     |  sort(self, *keys, **kargs)
+     |      Tri de la table.
+     |      keys  : liste des clés de tri
+     |      order : CROISSANT ou DECROISSANT (de longueur 1 ou len(keys))
+     |
+     |  values(self)
+     |      Renvoie la table sous la forme d'un dictionnaire de listes dont les
+     |      clés sont les paramètres.
+
+    class TableBase(__builtin__.object)
+     |  Classe pour partager les méthodes d'impression entre Table et Colonne
+     |  (c'est surtout utile pour vérifier que l'extraction et les filtres sur les
+     |  colonnes sont corrects).
+     |
+     |  Methods defined here:
+     |
+     |  Croise(self, **kargs)
+     |
+     |  Impr(self, FICHIER=None, FORMAT='TABLEAU', dform=None, **opts)
+     |      Impresssion de la Table selon le format spécifié.
+     |      FICHIER : nom du(des) fichier(s). Si None, on dirige vers stdout
+     |      dform : dictionnaire de formats d'impression (format des réels,
+     |         commentaires, saut de ligne...)
+     |      opts  : selon FORMAT.
+     |
+     |  ImprGraph(self, **kargs)
+     |      Impression au format XMGRACE : via le module Graph
+     |
+     |  ImprTabCroise(self, **kargs)
+     |      Impression au format TABLEAU_CROISE d'une table ayant 3 paramètres.
+     |
+     |  ImprTableau(self, **kargs)
+     |      Impression au format TABLEAU ou ASTER
+     |
+     |  ReprTable(self, FORMAT='TABLEAU', dform={'ccom': '#', 'cdeb': '', 'cfin': '\n', 'csep': ' ', 'formI': '%8d', 'formK': '%-12s', 'formR': '%12.5E'}, **ignore)
+     |      Représentation d'une Table ou d'une Colonne sous forme d'un tableau.
+     |
+     |  __repr__(self)
+
+    class Colonne(TableBase)
+     |  Classe intermédiaire pour mémoriser un couple (table, nom de colonne)
+     |  et exprimer les critères d'extraction sous une forme naturelle en python
+     |  en surchargeant les operateurs <, >, <> et =.
+     |  Alors on peut écrire la requête simple :
+     |    soustable=t.a<10
+     |  Ainsi que des requêtes plus complexes :
+     |    soustable=t.a<10 & t.b <4
+     |  ou
+     |    soustable=t.a<10 | t.b <4
+     |  Les "alias" EQ, NE, LE, LT, GE, GT permettent à la macro IMPR_TABLE
+     |  d'utiliser directement le mot-clé utilisateur CRIT_COMP défini dans le
+     |  catalogue : getattr(Table,CRIT_COMP).
+     |
+     |  Methods defined here:
+     |
+     |  ABS_MAXI(self)
+     |
+     |  ABS_MINI(self)
+     |
+     |  EQ = __eq__(self, VALE, CRITERE='RELATIF', PRECISION=0.0)
+     |
+     |  GE = __ge__(self, VALE)
+     |
+     |  GT = __gt__(self, VALE)
+     |
+     |  LE = __le__(self, VALE)
+     |
+     |  LT = __lt__(self, VALE)
+     |
+     |  MAXI(self)
+     |
+     |  MINI(self)
+     |
+     |  NE = __ne__(self, VALE, CRITERE='RELATIF', PRECISION=0.0)
+     |
+     |  NON_VIDE(self)
+     |
+     |  VIDE(self)
+     |
+     |  __eq__(self, VALE, CRITERE='RELATIF', PRECISION=0.0)
+     |
+     |  __ge__(self, VALE)
+     |
+     |  __getitem__(self, i)
+     |      Retourne la ième valeur d'une colonne
+     |
+     |  __gt__(self, VALE)
+     |
+     |  __init__(self, table, column, typ=None)
+     |      Constructeur (objet Table associé, paramètre de la colonne, type du
+     |      paramètre).
+     |
+     |  __iter__(self)
+     |      Itère sur les éléments de la colonne
+     |
+     |  __le__(self, VALE)
+     |
+     |  __lt__(self, VALE)
+     |
+     |  __ne__(self, VALE, CRITERE='RELATIF', PRECISION=0.0)
+     |
+     |  values(self)
+     |      Renvoie la liste des valeurs
+
+   NB_JOURS_TRAV  : 5
+------------------------------------------------------------------------------
+REALISATION EL 2004-144
+   INTERET_UTILISATEUR : NON
+   TITRE
+      Donner aux macros un équivalent à UTMESS
+   FONCTIONNALITE
+      Si on utilise simplement 'print' pour afficher un message, cela n'aura
+      aucun impact sur le diagnostic du job car les messages d'alarme et
+      d'erreur doivent être imprimés dans les fichiers ERREUR (unité 9) et/ou
+      'RESULTAT' (unité 8).
+      Le fortran verrouille le fichier ERREUR, on n'a pas le droit de le fermer.
+
+      On souhaite donc imprimer dans le fichier RESULTAT depuis une macro.
+      Pour cela, on ferme le fichier RESULTAT (via DEFI_FICHIER), on fait nos
+      impressions, puis on ouvre le fichier RESULTAT en mode APPEND.
+
+      Problème : depuis que les DDNAME ne sont plus accessibles à l'utilisateur
+      (suppression de FICHIER, NOM_SYSTEME remplacé par FICHIER), on ne peut
+      pas dire que l'unité 8 est toujours associée à RESULTAT.
+
+      On recopie le DATA de IBIMPR dans IUNIFI pour que celui-ci retourne
+      systématiquement (sans lire dans le COMMON) :
+         IUNIFI('MESSAGE')  = 6
+         IUNIFI('RESULTAT') = 8
+
+      On ajoute un module Utmess dans Utilitai qui définit la fonction :
+         UTMESS(code, sprg, texte, jdc)
+             Utilitaire analogue à la routine fortran UTMESS.
+             code  : 'A', 'E', 'S', 'F'
+             sprg  : nom du module, classe ou fonction python où l'on se trouve
+             texte : contenu du message
+
+      Exemple d'utilisation :
+         from Utilitai.Utmess import UTMESS
+         UTMESS('A',macro,'Dérivée de %s par rapport à %s non disponible' \
+               % (TABLE.get_name(), ps), self)
+
+
+   RESU_FAUX_VERSION_EXPLOITATION  :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : OUI
+      DOC_U : D5.01.02
+       EXPL_ : en parler dans la doc "comment écrire une macro"
+   VALIDATION
+   DETAILS
+      Reste à voir si l'on peut supprimer l'argument jdc qui sert à définir
+      la commande DEFI_FICHIER=jdc.get_cmd('DEFI_FICHIER').
+
+   NB_JOURS_TRAV  : 0.5
+------------------------------------------------------------------------------
+CORRECTION AL 2004-259
+   INTERET_UTILISATEUR : NON
+   TITRE
+      Méthode __getitem__ des tables
+   FONCTIONNALITE
+      La méthode __getitem__ des tables ne tenait pas compte de l'indicateur
+      qui dit si la valeur est définie ou non.
+      EXTR_TABLE qui crée un objet Table rend __getitem__ obsolète, on la
+      conserve néanmoins pour les cas où l'on ne souhaite récupèrer qu'une
+      valeur particulière dans une table.
+   RESU_FAUX_VERSION_EXPLOITATION   :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT  :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   VALIDATION
+      ssnl117b
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_U : U1.03.02
+       EXPL_ : Description des méthodes Python des objets Aster
+   DETAILS
+      Si la valeur n'est pas définie, on lève l'exception KeyError.
+      EXTRACT devrait plutôt utiliser EXTR_TABLE maintenant pour être plus
+      efficace et faire moins d'appel à getvectjev (un par valeur actuellement).
+   NB_JOURS_TRAV  : 0.5
+------------------------------------------------------------------------------
+RESTITUTION HORS AREX
+   INTERET_UTILISATEUR : NON
+   FONCTIONNALITE
+      Le passage à MED 2.2 impose à HOMARD de suivre le mouvement.
+      Une pré-version est disponible sur le serveur Aster (7.n) qui sera
+      stabilisée en 7.1 quand Aster sera prêt !
+
+      ==> les échanges homard/aster/homard risquent d'être perturbés le temps
+         d'une semaine (le temps de la 7.3.27)
+
+      ==> idem sur les versions locales tant que homard 7.1 n'y sera pas
+         installé
+
+   RESU_FAUX_VERSION_EXPLOITATION   :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT  :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+   DETAILS
+      macr_info_mail.capy et macr_adap_mail.capy : version V7_1 par défaut.
+   NB_JOURS_TRAV  : 0.5
+------------------------------------------------------------------------------
+
+
+-----------------------------------------------------------------------
+--- AUTEUR vabhhts J.PELLET   DATE  le 02/11/2004 a 14:17:49
+
+
+------------------------------------------------------------------------------
+CORRECTION AL 2004-243
+   NB_JOURS_TRAV : 0.6
+   INTERET_UTILISATEUR : OUI
+   TITRE "MULT_FRONT plus lent que LDLT"
+
+   FONCTIONNALITE
+   C. Durand avait remarqué que contrairement à la croyance populaire, MULT_FRONT
+   était parfois beaucoup plus couteux que LDLT. Au moment de son diagnostic, il
+   avait même observé un rapport 15 pour le test sdnv104b !
+
+   Pour le test sdnv104b en version 7.3.17 :
+                    temps "user"      temps "système"      temps "total"
+   LDLT                84.38                1.02               85.40
+   MULT_FRONT/METIS   450.82              109.08              569.50    => rapport 6.7
+
+   Il avait également remarqué que ces tests consommaient beaucoup de temps "système"
+   (à l'époque sdnv104b : 792s de temps système).
+
+   Suite aux améliorations apportées la semaine dernière à la combinaison linéaire
+   des matrices morse, on observe maintenant :
+                    temps "user"      temps "système"      temps "total"
+   LDLT                84.38                1.02               85.40
+   MULT_FRONT/METIS   174.50              165.32              339.82    => rapport 4.0
+   MULT_FRONT/MDA     156.65                5.47              163.12    => rapport 1.9
+
+   MULT_FRONT reste donc plus couteux que LDLT. Pourquoi ?
+   La réponse me semble être due au système linéaire à résoudre : METIS a été choisi
+   comme defaut au vu de grosses études. Pour sdnv104b, il y a seulement 104 ddls. En
+   revanche, on factorise 2300 fois la matrice ! Chaque factorisation ne coute que 0.15s.
+   Pour un système aussi trivial à résoudre, il n'est pas choquant qu'un solveur rustique
+   comme LDLT soit le plus rapide.
+
+   Concernant la bizarrerie du temps système, on remarque que même si on n'observe
+   pas de chiffres aussi que gros que ceux annoncés dans la fiche (792s), la méthode METIS
+   consomme beaucoup plus de temps système que les autres. On peut supposer que cela est du
+   aux nombreuses écriture/lecture faits par cette méthode (le passage d'argument
+   pour METIS se fait par fichier).
+   Cette hypothèse est confirmée par le fait que MULT_FRONT/MDA ne fait
+   pas apparaitre de temps système.
+   Dans ce test, il faut noter que le cout système unitaire du à un appel à METIS
+   est de 165/2300= 0.07 secondes
+
+   Faut-il changer le "passage d'argument" pour METIS (fichier -> vrais arguments) ?
+   Pour l'instant, on décide de ne rien faire :
+     -Soit le système est gros et le cout système de METIS devient négligeable devant le
+      cout total.
+     -Soit le système est petit et l'on peut toujours utiliser MDA (ou LDLT)
+
+
+   RESU_FAUX_VERSION_EXPLOITATION   :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT  :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   NON
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_U : U4.50.01 (mot clé SOLVEUR)
+     EXPL_: dire que pour les petits systèmes ayant peu de ddls, le solveur
+            choisi par défaut (MULT_FRONT/METIS) n'est pas toujours le meilleur :
+            Par exemple :
+            test sdnv104b : LDLT 4 fois plus rapide que MULT_FRONT/METIS
+            test ssnv128i : MDA  25% plus rapide que METIS
+   VALIDATION
+
+   DETAILS
+   La fiche citait également le test ssnv128i.
+   J'ai refait passer ce test (le 1er STAT_NON_LINE) :
+
+   7.3.17 :
+     * STAT_NON_LINE    :     114.37 :      12.38 :     126.75 *  METIS
+
+   après les évolutions de la semaine dernière :
+     * STAT_NON_LINE    :      83.45 :       2.05 :      85.50 *  LDLT
+     * STAT_NON_LINE    :      51.90 :       8.42 :      60.32 *  METIS
+     * STAT_NON_LINE    :      45.92 :       1.67 :      47.58 *  MDA
+
+   Pour ce test (7500 ddls), MULT_FRONT est maintenant plus rapide que LDLT.
+   En revanche, MDA est encore préférable à METIS.
+
+------------------------------------------------------------------------------
+CORRECTION AL 2004-296
+   NB_JOURS_TRAV : 10
+   INTERET_UTILISATEUR : OUI
+
+   TITRE  "STAT_NON_LINE et éléments D_PLAN_INCO"
+          ----------------------------------------
+
+   FONCTIONNALITE
+   L'utilisatrice s'était aperçue que la modélisation D_PLAN_INCO posait
+   parfois des problèmes dans STAT_NON_LINE:
+   - la convergence n'était pas la même selon la plateforme de calcul
+   - il fallait parfois plusieurs iérations pour converger en "elastique"
+   - le comportement "erratique" dépendait de la taille du problème  et du
+     solveur choisi.
+
+   La raison en est que la modélisation D_PLAN_INCO (et toutes les autres
+   modélisations incompressibles ?) conduit a une matrice de rigidité qui n'est pas
+   positive (même sans tenir compte de la dualisation des conditions cinématiques).
+   Les livres d'analyse numérique disent alors que pour "bien" résoudre ces systèmes
+   linéaires (au sens de la précision du résultat), il faut "pivoter" les
+   lignes et/ou les colonnes du sytème. Pour les matrices définies positives, un "miracle"
+   fait que ce pivotage est inutile.
+
+   Malheureusement, le pivotage préconisé dans les livres est facile à programmer
+   pour les matrices stockées pleines mais il est autrement difficile à mettre en
+   oeuvre pour les matrices creuses :
+      - pour le solveur LDLT : le stockage ligne de ciel adopté pour la matrice
+        (qui est calculé très en amont du programme, avant de connaitre le contenu
+         numérique de la matrice) doit etre modifié si on pivote lignes ou colonnes.
+      - pour le solveur MULT_FRONT : le stockage morse de la matrice initiale ne pose
+        pas de problème ; en revanche, l'idée même de la factorisation symbolique
+        (pour déterminer l'odre d'élimination des ddls) est contradictoire avec le
+        pivotage.
+
+   Nous n'avons donc pas de solution actuellement pour bien résoudre les matrices
+   qui ne sont pas positives. Ce problème concerne à ma connaissance :
+     - les éléments incompressibles
+     - la méthode XFEM avec contact (en préparation chez Samuel Géniaut)
+   mais il y en a peut-etre d'autres ...
+
+   Que faire de plus ?
+   ===================
+     - sur le fond, j'ai émis une fiche d'EL pour se poser la question :
+       "faut-il développer un nouveau solveur plus robuste permettant de bien
+        résoudre les matrices non définies positives ?" J'ai commencé à regarder si le
+        solveur MUMPS répond à cette demande. En théorie oui, mais mes essais ne
+        sont pas encore totalement concluants.
+     - en attendant un nouveau solveur : que faire pour alerter l'utilisateur
+       de résulats imprécis ? Jusqu'à présent, on l'alertait avec un message :
+       "pivot presque nul à la ligne ..."
+       Ce message était déclanché par le fait qu'un terme diagonal initial de la matrice (d)
+       était devenu (suite à la factorisation)  d' tel que:  abs(d') << abs(d).
+
+       Le raisonnement était le suivant. Théoriquement d' est obtenu par une formule du genre :
+       d'= d - d1. Donc si d' est très petit devant d, c'est que d1 est très voisin de d et donc
+       que la soustraction d - d1 est très imprécise. Si d' est de l'ordre de 10**-10 fois d,
+       c'est que d' a perdu 10 chiffres significatifs (au moins).
+
+       Mais sur le problème soulevé par cette fiche, l'alerte ne fonctionnait pas : aucun pivot ne
+       rétrécissait exagérément !
+
+       Je me suis dit alors que si je m'alarmais lorsque qu'un pivot s'amenuisait, je
+       pouvais aussi m'inquiéter si un pivot "explosait". En effet, si d1 est très supérieur
+       à d, la soustraction écrase toute la précision intiale de d.
+       Et si la valeur initiale (non nulle) d'un terme diagonal est sans importance pour
+       la solution finale, cela se saurait surement !
+
+       Bref, c'est un raisonnement "à la petite semaine" mais je n'ai pas mieux à proposer pour
+       l'instant et c'est ce que j'ai programmé.
+
+       Le message "pivot quasi nul ..." est donc devenu :
+           'PROBLEME: LE PIVOT DEVIENT TRES PETIT A LA LIGNE ...'
+        ou 'PROBLEME: LE PIVOT DEVIENT TRES GRAND A LA LIGNE ...'
+
+        Pour l'étude jointe à la fiche, la valeur (par défaut) de 8 décimales perdues
+        qui déclanche l'erreur n'est pas atteinte : on n'en perd que 7 ! mais pour un système
+        aussi modeste : 2300 dlls, celà traduit une difficulté numérique.
+
+  Dernière minute :
+  -----------------
+  J'ai d'abord essayé de provoquer une erreur fatale si un pivot devenait trop grand (exactement
+  comme on le fait actuellement lorsque le pivot devient trop petit).
+  Mais je me suis rendu compte que cela plantait certains tests :
+
+  1) le test sdls01d (MACR_ELEM_STAT) s'arrete en erreur <F> " LE PIVOT DEVIENT TRES GRAND ...".
+  2) les tests de recherche de valeurs propres : sdls01g et sdls03b s'arretent aussi en erreur fatale.
+     Je pense que le code retour != 0 lié à ces pivots devenant grands perturbent le comportement
+     de l'algorithme de recherche de modes propres qui considère qu'un code retour non nul doit
+     etre interprêté comme le symptome d'une matrice singulière.
+
+  J'ai alors réduit mes ambitions :
+     1) si on cherche des modes propres : on ne change rien (on ignore les pivots "grands")
+     2) sinon : on émet une <A>larme.
+
+  Mais là encore, cela n'a pas marché ! Car on imprimait des alarmes indues dans certains tests de plaque
+  (par exemple hsns100b). En effet, lorsque l'on résoud un problème de plaque plane, les ddls DRZ des
+  éléments finis sont "fictifs". En toute rigueur, il faudrait les supprimer du problème. Dans la pratique,
+  On leur affecte par défaut une "petite" rigidité fictive (COEF_RIGI_DRZ=1.d-5). Par ailleurs, on conseille
+  aussi parfois aux utilisateurs de "bloquer" ces ddls fictifs. C'est ce qui est fait dans le test hsns100b.
+
+  On se retrouve alors avec des pivots qui théoriquement sont "nuls" et qui deviennent non nuls lors
+  de la factorisation grace aux ddls de Lagrange de blocage. Dans ce cas : pivot  0 -> X, on n'émet pas
+  d'alarme. Malheureusement, le COEF_RIGI_DRZ a rendu non nuls les pivots initiaux ce qui provoque l'alarme.
+  J'ai alors forcé COEF_RIGI_DRZ=0 et effectivement l'alarme a disparue pour ce test.
+
+  Pour ne pas perturber les utilisateurs des modèles de plaque, j'ai donc du réduire encore mes
+  ambitions :
+      => je modifie la stratégie liée aux pivots qui deviennent très grands : on n'imprime le
+         message "LE PIVOT DEVIENT TRES GRAND ..." que si INFO=2. Cette vérification reste donc
+         pour l'instant une "information" de niveau 2 plus utile aux développeurs/debugueurs
+         qu'aux utilisateurs finaux.
+
+
+   RESU_FAUX_VERSION_EXPLOITATION   :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT  :   NON
+
+   En l'état de mes connaissances actuelles, je ne sais pas répondre à la question des
+   éventuels résultats FAUX :
+      - je suis persuadé que certaines modélisations conduisent à des systèmes linéaires
+        qui sont mal résolus par les solveurs actuels d'Aster.
+      - tant que le solveur n'est utilisé que comme "prédicteur" de solution, ce n'est pas
+        très grave, l'algorithme itère plus que nécessaire mais s'il converge, c'est forcément
+        vers la bonne solution. Il se trouve que les éléments incompressibles ne sont
+        utilisables qu'à travers la commande STAT_NON_LINE. Ils ne peuvent donc pas avoir
+        donnés de résulats faux du fait de ce problème.
+      - suite à cette anomalie, j'ai amélioré (???) la détection de problèmes numériques
+        rencontrés lors de la factorisation. On verra si cette évolution permet de détecter
+        d'autres modélisations "dangereuses".
+
+
+   RESTITUTION_VERSION_EXPLOITATION  :   OUI
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_U : U3.14.06 U3.13.07
+     EXPL_:   (ou bien  R3.06.05 et R3.06.08 ?)
+            Dire que les éléments incompressibles conduisent à des matrices
+            non positives et que les solveurs actuels ne savent pas toujours
+            bien résoudre les systèmes linéaires associés à ces matrices.
+
+            Heureusement, ces éléments incompressibles ne sont utilisables
+            que dans STAT_NON_LINE. Donc soit le calcul concverge et c'est tant mieux
+            soit il ne converge pas et on ne peut pas faire grand chose d'autre que
+            d'essayer un autre "solveur" (ou une autre renumérotation) en espérant
+            avoir plus de chance.
+
+   VALIDATION
+
+   DETAILS
+
+   1) après modification de la routine TLDLGG, on imprime maintenant 2 nouveaux messages pour cette étude :
+      1.1) si INFO=2 :
+         <FACTOR>  NB DECIMALES PERDUES  : 7
+         ce qui montre (pour un problème de taille aussi modeste) qu'il y a un problème numérique.
+      1.2) si INFO=2 :
+         <FACTOR> MATRICE NON POSITIVE.
+         <FACTOR> IL EXISTE  121  ZEROS SUR LA DIAGONALE.
+         ce qui confirme que les solveurs actuels ne sont pas adaptés à la matrice traitée.
+
+
+   Liste des fichiers modifiés:
+  diagav.f   tldlgg.f
+
+------------------------------------------------------------------------------
+CLASSEMENT SANS SUITE AL 2004-364
+   NB_JOURS_TRAV : 0.3
+   INTERET_UTILISATEUR : OUI
+
+   TITRE  CREA_MAILLAGE / LINE_QUAD ne fait pas bien son boulot
+
+   FONCTIONNALITE
+   L'utilisateur se plaignait de s'arreter en erreur fatale sur un pivot nul
+   concernant un noeud NSxxx ajouté par la commande CREA_MAILLAGE / LINE_QUAD.
+   Il en déduisait à tort que ce noeud n'était pas bien ajouté au maillage car
+   il n'était relié à aucun élément volumique.
+
+   En réalité, CREA_MAILLAGE / LINE_QUAD n'y est pour rien : un message d'erreur
+   de même nature se serait produit sur le maillage linéaire initial.
+
+   Le problème vient du maillage initial (produit par gmsh) : il contient des tetraèdres
+   et des triangles mais tous les triangles ne sont pas des faces de tétraèdres.
+   Lorsque l'on affecte un modele 3D sur "TOUT='OUI'", on définit implicitement des ddls
+   sur les noeuds de toutes les facettes. Celles qui ne sont pas reliées à des éléments
+   3D n'ont pas de rigidité et on s'arrete alors sur le message "pivot nul".
+
+   Remarque : ce problème sera mieux décelé par l'utilisateur après le traitement de la fiche
+   EL 2004-217 car il sera arrêté par une erreur fatale dès la commande AFFE_MODELE.
+
+
+   IMPACT_DOCUMENTAIRE : NON
+
+   DETAILS
+   le noeud NS76 cité dans la fiche appartient à la maille M37.
+   Cette maille de connectivité intiale : N6 N8 N2 ne correspond à aucun
+   tetraèdre.
+
+------------------------------------------------------------------------------
+CORRECTION AL 2004-365
+   NB_JOURS_TRAV : 0.5
+   INTERET_UTILISATEUR : NON
+   TITRE "CREA_MAILLAGE / ECLA_PG / NOM_CHAM='VARI_ELGA' plante "
+
+   FONCTIONNALITE
+   Lorsque l'on utilise Stanley pour visualiser aux points de Gauss
+   les champs VARI_ELGA (ou SIEF_ELGA) d'un calcul non-linéaire,
+   On génère la commande :
+   CREA_MAILLAGE/ECLA_PG/NOM_CHAM='VARI_ELGA'  et cette commande se plante
+   avec un message obscur.
+
+   La commande essaye de se servir de NOM_CHAM (VARI_ELGA ici) pour déterminer
+   le schéma de points de gauss associé à ce champ. Malheureusement, ce "NOM_CHAM"
+   n'est pas un nom d'option de calcul (comme l'est 'SIEF_ELGA_DEPL' par exemple)
+   et l'on ne sait pas quel catalogue d'option consulter pour déterminer le schéma
+   de point de Gauss.
+
+   On corrige cela en adoptant la logique suivante :
+   Si l'utilisateur (ou Stanley) utilise le mot clé NOM_CHAM dans la commande
+   CREA_MAILLAGE/ECLA_PG, et si NOM_CHAM n'est pas une option de calcul, on
+   ignore NOM_CHAM ; ce qui revient en pratique à utiliser le schéma "par défaut"
+   associé à la famille de points de Gauss appalée "RIGI" dans les catalogues
+   d'éléments finis.
+
+   RESU_FAUX_VERSION_EXPLOITATION   :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT  :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION  : un petit essai perso
+   DETAILS
+   une petite évolution dans la routine eclpgm.f
+
+   Liste des fichiers modifiés:
+  eclpgm.f
+
+------------------------------------------------------------------------------
+CLASSEMENT SANS SUITE EL 2004-139
+   NB_JOURS_TRAV : 0
+   INTERET_UTILISATEUR : NON
+
+   TITRE  "Relations linéaires à coefficients complexes"
+
+   FONCTIONNALITE
+   Finalement, Olivier a préféré traiter son problème "complexe" comme un double problème "réel"
+   (en dédoublant le maillage) reliés entre eux par des relations linéaires réelles
+   (pour assurer la continuité du déplacement avec déphasage).
+
+   Il n'a donc plus besoin de développer des relations linéaires avec coefficients complexes.
+
+   On classe donc la fiche "sans suite"
+
+   IMPACT_DOCUMENTAIRE : NON
+   DETAILS
+
+------------------------------------------------------------------------------
+REALISATION EL 2004-072
+   NB_JOURS_TRAV : 0
+   INTERET_UTILISATEUR : OUI
+   TITRE "PROJ_CHAMP : améliorer le comportement du mot clé VIS_A_VIS"
+
+   FONCTIONNALITE
+   On souhaitait que le type de projection : 3D:2D/"coque" utilisé dans PROJ_CHAMP
+   soit déterminé à chaque occurrence du mot clé VIS_A_VIS.
+   En réalité, cette fonctionalité était déjà opérationnelle depuis un certain temps.
+   Il n'y a donc rien à faire si ce n'est le préciser dans la documentation d'utilisation.
+
+   RESU_FAUX_VERSION_EXPLOITATION  :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_U : U4.72.05
+     EXPL_: dans la doc de PROJ_CHAMP, expliquer que le type de projection :
+       3D / 2D (plan) / "surface plongée en 3D" est déterminé à chaque occurrence
+       du mot clé VIS_A_VIS en fonction de la topologie des mailles du maillage 1
+       qui sont mises en vis à vis.
+   VALIDATION
+   DETAILS
+
+------------------------------------------------------------------------------
+REALISATION EL 2004-164
+   NB_JOURS_TRAV : 2
+   INTERET_UTILISATEUR : OUI
+
+   TITRE  PROJ_CHAMP sur un modèle mixte : massif béton + "liner" acier
+
+   FONCTIONNALITE
+
+   Cett fiche concerne la projection d'un champ de temperature d'un modele (3D + coques thermiques)
+   sur un autre maillage (adapté à la mécanique) et le calcul mécanique qui suit cette projection.
+   Les calculs incriminés ont été faits en mai 2004 avec la version STA6.
+
+   Remarque : cette fiche fait suite à la fiche EL 2004-073 et certaines explications ont déjà été données.
+
+   La fiche de cet utilisateur se compose de 4 points un peu différents :
+
+   pb1) : Si on projette le modele complet sur un autre maillage (3D + coque),
+          on se plante dans le calcul mécanique suivant (message : "on n'a pas pu extraire certaines CMPS ...")
+          Cet état de fait a été expliqué dans la fiche EL 2004-073. Cette erreur ne se produit plus en version
+          NEW7 (et STA7) car les éléments de coque mécanique ont baissé leurs exigences : si un noeud de
+          coque ne porte qu'un seul DDL (TEMP) et que TEMP_INF et TEMP_SUP ne sont pas trouvés, le code
+          continue en supposant que la température est constante dans l'épaisseur.
+
+          ==> Malheureusement, ce n'est pas parce que le code ne s'arrête plus en erreur fatale en version 7
+              que le calcul est bon !!!
+              La recommandation faite dans la fiche  EL 2004-073 reste valable : il faut faire PROJ_CHAMP
+              en 2 fois en utilisant le mot clé VIS_A_VIS. Sinon, les ddls TEMP_INF et TEMP_SUP des coques
+              thermiques sont perdus.
+
+   pb2 et pb3) : Quand il fait PROJ_CHAMP avec 2 occurrences de VIS_A_VIS, l'utilisateur est arrêté par
+         un message du style "STOP 1" dans la commande PROJ_CHAMP.
+         J'ai essayé le code (NEW7) sur un petit modèle 3D + coque et je n'ai pas eu de problème. J'ai envoyé
+         à l'auteur de la fiche ce petit exemple pour qu'il puisse l'examiner et qu'il réemmette la fiche avec
+         des fichiers joints si l'anomalie existe encore en version 7.
+
+   pb4) : L'utilisateur qui avait pu contourner les problèmes précédents avec de nombreuses contorsions,
+          réclamait que le code évolue pour pouvoir projeter correctement les températures des éléments de
+          coques thermiques.
+          Réponse : de mon point de vue, cette fonctionnalité est OK en version 7
+
+
+
+  Remarques finales sur la modélisation de ce problème :
+  ------------------------------------------------------
+
+  Le problème soulevé vient du fait que l'on veut modéliser le "liner" par des coques en mécanique
+  et en thermique. Indépendamment des difficultés informatiques rencontrées, on peut se demander
+  si l'utilisation des coques thermiques est une bonne idée dans ce cas :
+
+     1) la doc de référence des éléments de coque thermique (R3.11.01) indique que cette modélisation n'est pas
+        adaptée pour "capter" des gradients de température important dans l'épaisseur de la coque.
+        Ici il s'agit d'un choc thermique assez violent. La modélisation "3D" faite précédemment (avec
+        3 éléments quadratiques dans l'épaisseur) est sans doute meilleure.
+
+     2) De plus, pour bien résoudre un problème d'une peau métallique posée sur un massif de béton, il
+        faut le modéliser de façon plus subtile en dédoublant tous les noeuds de la peau.
+        Un noeud est affecté à l'élément 3D et un autre noeud (géométriquement confondu) est
+        affecté à l'élément de coque thermique. Il faut ensuite "relier" les 2 odèles disjoints
+        en ajoutant la condition de continuité : TEMP(3D) = TEMP_SUP(coque) (ou TEMP_INF selon l'orientation
+        de la surface de peau). Si l'on ne prend pas cette précaution, on relie la température du solide
+        à la température du feuillet moyen de la coque et c'est un peu comme si l'on perdait la moitié
+        de l'épaisseur du "liner".
+
+
+   RESU_FAUX_VERSION_EXPLOITATION  :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_U : U4.72.05
+     EXPL_: dans la doc de PROJ_CHAMP, attirer l'attention sur le problème de mélange de modélisations.
+   VALIDATION
+   DETAILS
+
+
+------------------------------------------------------------------------------
+RESTITUTION HORS AREX   (H1)
+   NB_JOURS_TRAV : 0.4  (+ travail de Luc Davenne)
+   INTERET_UTILISATEUR : OUI
+
+   FONCTIONNALITE
+   Correction d'une anomalie détectée par M. Nguyen (site Web).
+   La loi de comportement LABOR1D n'était pas "blindée" et il
+   pouvait arriver que le coefficient D13 s'approche trop de la
+   valeur 1. et que cela entraine un arret brutal du code :
+   "Erreur Numérique ..."
+
+   En Juin, C. Durand avait fait une première correction pour
+   se protéger de celà. On testait la valeur de D13 et on arrêtait
+   proprement si on s'approchait de 1.
+
+   Maintenant, Luc Davenne propose une correction différente:
+   si D13 dépasse : 0.99999999, on le borne par par cette valeur
+   et ON CONTINUE LE CALCUL.
+
+   RESU_FAUX_VERSION_EXPLOITATION   :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT  :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION  : cette correction permet de faire passer l'étude jointe par M. Nguyen
+                 au delà du pas de temps 240
+   DETAILS
+   correction de la routine nmcb13.f
+
+   Liste des fichiers modifiés:
+  nmcb13.f
+
+------------------------------------------------------------------------------
+REALISATION EL 2004-217
+   NB_JOURS_TRAV : 0.7
+   INTERET_UTILISATEUR : OUI
+
+   TITRE  AFFE_MODELE doit faire plus de vérifications
+
+   FONCTIONNALITE
+   La commande AFFE_MODELE émet une alarme si l'utilisateur
+   a affecté des éléments finis de "bord" sans que ceux-ci soient véritablement
+   "collés" à des éléments finis "principaux".
+
+   Exemple de message :
+   <A> <AFFE_MODELE> <INITEL> LA MAILLE Q1       PORTE UN ELEMENT FINI DE BORD.
+       MAIS ELLE NE BORDE AUCUN ELEMENT AYANT UNE "RIGIDITE".
+       CELA PEUT ENTRAINER DES PROBLEMES DE "PIVOT NUL" LORS DE LA RESOLUTION
+
+
+   RESU_FAUX_VERSION_EXPLOITATION  :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+     DOC_D : D6.07.05
+     EXPL_: 1 nouvelle question DISMOI sur les TYPE_ELEM :
+        CALC_RIGI : OUI/NON si l'élément fini sait calculer une matrice de rigidité
+             Cette question permet de savoir si un élément fini est un élément
+             principal ou un élément de "bord".
+   VALIDATION : un petit essai chez moi.
+   DETAILS
+
+   Liste des fichiers modifiés:
+  dismte.f  initel.f
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+       C MODIF utilitai/iniast              mcourtoi M.COURTOIS          89      3     10
+ CASTEST AJOUT ssna104b                      cibhhpd L.SALMONA          139    139      0
+ CASTEST AJOUT ssnv179a                      cibhhpd L.SALMONA          234    234      0
+ CASTEST AJOUT zzzz140a                     mcourtoi M.COURTOIS         131    131      0
+ CASTEST AJOUT zzzz200c                      acbhhcd G.DEVESA           468    468      0
+ CASTEST MODIF aspic01b                     mcourtoi M.COURTOIS         618      5      5
+ CASTEST MODIF demo001a                     mcourtoi M.COURTOIS         287     25     10
+ CASTEST MODIF epicu01a                     mcourtoi M.COURTOIS         909      2      3
+ CASTEST MODIF epicu01b                     mcourtoi M.COURTOIS         879      2      3
+ CASTEST MODIF forma03a                     mcourtoi M.COURTOIS         150      1      1
+ CASTEST MODIF forma12c                     mcourtoi M.COURTOIS         773      8      8
+ CASTEST MODIF ssll501a                     mcourtoi M.COURTOIS         422      2      2
+ CASTEST MODIF ssls502c                     mcourtoi M.COURTOIS         258      1      2
+ CASTEST MODIF ssna113a                     mcourtoi M.COURTOIS         331      5      5
+ CASTEST MODIF ssnp115b                     mcourtoi M.COURTOIS         179      1      1
+ CASTEST MODIF ssnv102c                     mcourtoi M.COURTOIS         298     17     24
+ CASTEST MODIF ssnv138b                     mcourtoi M.COURTOIS         318      3      3
+ CASTEST MODIF ssnv505a                     mcourtoi M.COURTOIS         233      3      2
+ CASTEST MODIF ssnv506a                     mcourtoi M.COURTOIS         225      2      2
+ CASTEST MODIF ssnv506b                     mcourtoi M.COURTOIS         227      2      2
+ CASTEST MODIF ssnv506c                     mcourtoi M.COURTOIS         231      2      2
+ CASTEST MODIF ssnv506d                     mcourtoi M.COURTOIS         227      2      2
+ CASTEST MODIF ttnl03b                      lebouvie F.LEBOUVIER        473     12      7
+ CASTEST MODIF yyyy106a                     mcourtoi M.COURTOIS         969      2      2
+ CASTEST MODIF yyyy106b                     mcourtoi M.COURTOIS         789      2      2
+ CASTEST MODIF zzzz121a                     mcourtoi M.COURTOIS         271      3      3
+ CASTEST MODIF zzzz121c                     mcourtoi M.COURTOIS         377      1      4
+ CASTEST MODIF zzzz121d                     mcourtoi M.COURTOIS         466      1      1
+ CASTEST MODIF zzzz132a                     mcourtoi M.COURTOIS         334      1      1
+ CASTEST MODIF zzzz175a                     mcourtoi M.COURTOIS         624      1      1
+CATALOGU MODIF typelem/gener_medkt2         mcourtoi M.COURTOIS         288      3      2
+CATALOPY MODIF commande/affe_cara_elem       acbhhcd G.DEVESA           424      4      3
+CATALOPY MODIF commande/affe_char_meca        mabbas M.ABBAS            785      2      2
+CATALOPY MODIF commande/affe_char_meca_f      mabbas M.ABBAS            485      2      2
+CATALOPY MODIF commande/defi_materiau        cibhhpd L.SALMONA         2758     12      2
+CATALOPY MODIF commande/detruire            mcourtoi M.COURTOIS          34      2      1
+CATALOPY MODIF commande/impr_fonction       mcourtoi M.COURTOIS         131     16     11
+CATALOPY MODIF commande/impr_table          mcourtoi M.COURTOIS          76     30     15
+CATALOPY MODIF commande/macr_adap_mail      mcourtoi M.COURTOIS         325      3      3
+CATALOPY MODIF commande/macr_info_mail      mcourtoi M.COURTOIS         104      3      3
+CATALOPY MODIF commande/macro_miss_3d        acbhhcd G.DEVESA            36      2      1
+CATALOPY MODIF commun/c_type_cham_into       cibhhpd L.SALMONA           50      2      2
+CATALOPY MODIF entete/accas                 mcourtoi M.COURTOIS         649     82      4
+ FORTRAN AJOUT algorith/cfalgo                mabbas M.ABBAS            182    182      0
+ FORTRAN AJOUT algorith/cfdiag                mabbas M.ABBAS            106    106      0
+ FORTRAN AJOUT algorith/cffrot                mabbas M.ABBAS            101    101      0
+ FORTRAN AJOUT algorith/cfimp1                mabbas M.ABBAS            191    191      0
+ FORTRAN AJOUT algorith/cfimp2                mabbas M.ABBAS            162    162      0
+ FORTRAN AJOUT algorith/cfimp3                mabbas M.ABBAS            165    165      0
+ FORTRAN AJOUT algorith/cfjefi                mabbas M.ABBAS             97     97      0
+ FORTRAN AJOUT algorith/cfthmp                mabbas M.ABBAS            104    104      0
+ FORTRAN MODIF algeline/diagav               vabhhts J.PELLET           142      2      2
+ FORTRAN MODIF algeline/tldlgg               vabhhts J.PELLET           317     49     12
+ FORTRAN MODIF algorith/adhc01              mcourtoi M.COURTOIS         571      6      4
+ FORTRAN MODIF algorith/algocl                mabbas M.ABBAS            665    305    231
+ FORTRAN MODIF algorith/algoco                mabbas M.ABBAS            683    332    332
+ FORTRAN MODIF algorith/algocp                mabbas M.ABBAS            363    170    120
+ FORTRAN MODIF algorith/caladu                mabbas M.ABBAS             58     12      6
+ FORTRAN MODIF algorith/calatm                mabbas M.ABBAS             57     11      5
+ FORTRAN MODIF algorith/cfacat                mabbas M.ABBAS             78     37      8
+ FORTRAN MODIF algorith/cfadh                 mabbas M.ABBAS            333     94     47
+ FORTRAN MODIF algorith/cfadu                 mabbas M.ABBAS            173     51     23
+ FORTRAN MODIF algorith/cfatmu                mabbas M.ABBAS            180     66     29
+ FORTRAN MODIF algorith/cfdisd                mabbas M.ABBAS             69      3     13
+ FORTRAN MODIF algorith/cfelpv                mabbas M.ABBAS            110     40     28
+ FORTRAN MODIF algorith/cfmaju                mabbas M.ABBAS            153     66     37
+ FORTRAN MODIF algorith/cfneg                 mabbas M.ABBAS            396    109     45
+ FORTRAN MODIF algorith/cftabl                mabbas M.ABBAS            235     63     20
+ FORTRAN MODIF algorith/comp1d               cibhhpd L.SALMONA          177      7      3
+ FORTRAN MODIF algorith/crsdco                mabbas M.ABBAS            597     47     31
+ FORTRAN MODIF algorith/elpiv1                mabbas M.ABBAS            154     59     39
+ FORTRAN MODIF algorith/elpiv2                mabbas M.ABBAS            357    102    114
+ FORTRAN MODIF algorith/fro2gd                mabbas M.ABBAS            746    339    259
+ FORTRAN MODIF algorith/frogdp                mabbas M.ABBAS            631    220    136
+ FORTRAN MODIF algorith/frolgd                mabbas M.ABBAS           1080    404    363
+ FORTRAN MODIF algorith/fropgd                mabbas M.ABBAS            842    329    273
+ FORTRAN MODIF algorith/ggpvil                mabbas M.ABBAS             94      7      2
+ FORTRAN MODIF algorith/nigp2d               cibhhpd L.SALMONA          499      2      1
+ FORTRAN MODIF algorith/nigp3d               cibhhpd L.SALMONA          447      2      1
+ FORTRAN MODIF algorith/nipl2d               cibhhpd L.SALMONA          373      2      1
+ FORTRAN MODIF algorith/nipl3d               cibhhpd L.SALMONA          367      2      1
+ FORTRAN MODIF algorith/nm1vil               cibhhpd L.SALMONA          277     11     11
+ FORTRAN MODIF algorith/nmarch                mabbas M.ABBAS            303     12     14
+ FORTRAN MODIF algorith/nmas2d               cibhhpd L.SALMONA          548     10      2
+ FORTRAN MODIF algorith/nmassc               cibhhpd L.SALMONA          201     37     14
+ FORTRAN MODIF algorith/nmco1d               cibhhpd L.SALMONA          139      2      1
+ FORTRAN MODIF algorith/nmcofr                mabbas M.ABBAS            172     26     65
+ FORTRAN MODIF algorith/nmcomp               cibhhpd L.SALMONA          672      7      2
+ FORTRAN MODIF algorith/nmdeir               cibhhpd L.SALMONA          103      4      4
+ FORTRAN MODIF algorith/nmfi2d               cibhhpd L.SALMONA          234      3      1
+ FORTRAN MODIF algorith/nmgp2d               cibhhpd L.SALMONA          322     11      2
+ FORTRAN MODIF algorith/nmgp3d               cibhhpd L.SALMONA          275     11      2
+ FORTRAN MODIF algorith/nmgr2d               cibhhpd L.SALMONA          405     11      2
+ FORTRAN MODIF algorith/nmgr3d               cibhhpd L.SALMONA          420     15      3
+ FORTRAN MODIF algorith/nminit                mabbas M.ABBAS            368     16      8
+ FORTRAN MODIF algorith/nmpl2d               cibhhpd L.SALMONA          343     13      3
+ FORTRAN MODIF algorith/nmpl2g               cibhhpd L.SALMONA          672      2      1
+ FORTRAN MODIF algorith/nmpl3d               cibhhpd L.SALMONA          356     12      3
+ FORTRAN MODIF algorith/nmpl3g               cibhhpd L.SALMONA          688      2      1
+ FORTRAN MODIF algorith/nmvcaf               cibhhpd L.SALMONA           99      5      2
+ FORTRAN MODIF algorith/nmvpir               cibhhpd L.SALMONA          582    100     35
+ FORTRAN MODIF algorith/resuco                mabbas M.ABBAS            772     63    135
+ FORTRAN MODIF algorith/te0350               cibhhpd L.SALMONA          207      5      1
+ FORTRAN MODIF algorith/tpsvil                mabbas M.ABBAS            144      1      1
+ FORTRAN MODIF algorith/vpavil                mabbas M.ABBAS            101     16      3
+ FORTRAN MODIF calculel/eclpgm               vabhhts J.PELLET           352      9      2
+ FORTRAN MODIF calculel/initel               vabhhts J.PELLET           161     99     10
+ FORTRAN MODIF calculel/op0175               cibhhpd L.SALMONA          561     11      4
+ FORTRAN MODIF elements/dktnli               cibhhpd L.SALMONA          625      2      1
+ FORTRAN MODIF elements/nmcb13               vabhhts J.PELLET           108      9     12
+ FORTRAN MODIF elements/pmfcom               cibhhpd L.SALMONA          292     17      7
+ FORTRAN MODIF elements/te0047               cibhhpd L.SALMONA          641      2      2
+ FORTRAN MODIF elements/te0100               cibhhpd L.SALMONA          286      7      1
+ FORTRAN MODIF elements/te0139               cibhhpd L.SALMONA          274      8      2
+ FORTRAN MODIF elements/te0239               cibhhpd L.SALMONA          496      2      1
+ FORTRAN MODIF elements/te0247               cibhhpd L.SALMONA          330      8      8
+ FORTRAN MODIF elements/te0248               cibhhpd L.SALMONA          451      2      1
+ FORTRAN MODIF elements/te0516               cibhhpd L.SALMONA          435      9      3
+ FORTRAN MODIF elements/te0535               cibhhpd L.SALMONA          295      2      1
+ FORTRAN MODIF elements/te0539               cibhhpd L.SALMONA          280      7      2
+ FORTRAN MODIF elements/te0545               cibhhpd L.SALMONA          279      7      1
+ FORTRAN MODIF elements/te0546               cibhhpd L.SALMONA          272      7      1
+ FORTRAN MODIF elements/tufull               cibhhpd L.SALMONA          517     12      3
+ FORTRAN MODIF elements/vdpnlr               cibhhpd L.SALMONA         1331      2      1
+ FORTRAN MODIF elements/vdxnlr               cibhhpd L.SALMONA          496      2      1
+ FORTRAN MODIF elements/zerof2                mabbas M.ABBAS            171     53      4
+ FORTRAN MODIF modelisa/acearm               acbhhcd G.DEVESA           203      1      3
+ FORTRAN MODIF modelisa/acearp               acbhhcd G.DEVESA           269     28     11
+ FORTRAN MODIF modelisa/ata000                mabbas M.ABBAS            102     46     53
+ FORTRAN MODIF modelisa/atalc2                mabbas M.ABBAS            424      1      1
+ FORTRAN MODIF modelisa/atasmo                mabbas M.ABBAS            354      1      1
+ FORTRAN MODIF modelisa/calico                mabbas M.ABBAS            419     24      9
+ FORTRAN MODIF modelisa/cazoco                mabbas M.ABBAS            552      3      3
+ FORTRAN MODIF modelisa/charme                mabbas M.ABBAS            378      2      6
+ FORTRAN MODIF modelisa/lrmdes              mcourtoi M.COURTOIS         151      1      1
+ FORTRAN MODIF modelisa/lrmhdf              mcourtoi M.COURTOIS         301     46      9
+ FORTRAN MODIF modelisa/lrmmdi              mcourtoi M.COURTOIS         186      1      1
+ FORTRAN MODIF modelisa/lrmmfa              mcourtoi M.COURTOIS         485      9     14
+ FORTRAN MODIF modelisa/lrmmma              mcourtoi M.COURTOIS         295     17     12
+ FORTRAN MODIF modelisa/lrmmno              mcourtoi M.COURTOIS         207      7      7
+ FORTRAN MODIF modelisa/lrmtyp              mcourtoi M.COURTOIS         142      6     39
+ FORTRAN MODIF modelisa/rairep               acbhhcd G.DEVESA           357     63     23
+ FORTRAN MODIF prepost/ircame               mcourtoi M.COURTOIS         413     18     21
+ FORTRAN MODIF prepost/ircmcc               mcourtoi M.COURTOIS         121      5      5
+ FORTRAN MODIF prepost/ircmec               mcourtoi M.COURTOIS         235     55      8
+ FORTRAN MODIF prepost/ircmpf               mcourtoi M.COURTOIS         306      7      7
+ FORTRAN MODIF prepost/irmdes               mcourtoi M.COURTOIS         178      6      9
+ FORTRAN MODIF prepost/irmhdf               mcourtoi M.COURTOIS         284     53     16
+ FORTRAN MODIF prepost/irmmfa               mcourtoi M.COURTOIS         593      5      7
+ FORTRAN MODIF prepost/irmmma               mcourtoi M.COURTOIS         262     12     13
+ FORTRAN MODIF prepost/irmmno               mcourtoi M.COURTOIS         210     22     13
+ FORTRAN MODIF prepost/lrcame               mcourtoi M.COURTOIS         619     51     17
+ FORTRAN MODIF prepost/lrcmle               mcourtoi M.COURTOIS         125     17      5
+ FORTRAN MODIF prepost/lrcmpr               mcourtoi M.COURTOIS         144      1      1
+ FORTRAN MODIF prepost/lrcmva               mcourtoi M.COURTOIS         263     13      9
+ FORTRAN MODIF prepost/lrcmve               mcourtoi M.COURTOIS         259     15     18
+ FORTRAN MODIF prepost/mdchii               mcourtoi M.COURTOIS         291     30     13
+ FORTRAN MODIF prepost/mdchin               mcourtoi M.COURTOIS         105      2      2
+ FORTRAN MODIF prepost/mdexcc               mcourtoi M.COURTOIS         258     22     14
+ FORTRAN MODIF prepost/mdexch               mcourtoi M.COURTOIS         141      4      4
+ FORTRAN MODIF prepost/mdexcv               mcourtoi M.COURTOIS         135     16      2
+ FORTRAN MODIF prepost/mdexma               mcourtoi M.COURTOIS         189     15      5
+ FORTRAN MODIF prepost/mdexpm               mcourtoi M.COURTOIS         159      9      3
+ FORTRAN MODIF prepost/mdnofa               mcourtoi M.COURTOIS          83      6     28
+ FORTRAN MODIF prepost/op0039               mcourtoi M.COURTOIS         799     13     13
+ FORTRAN MODIF supervis/getcon              mcourtoi M.COURTOIS         199      9      7
+ FORTRAN MODIF supervis/ops007              mcourtoi M.COURTOIS         109      5      3
+ FORTRAN MODIF utilifor/iunifi              mcourtoi M.COURTOIS          85     27      5
+ FORTRAN MODIF utilitai/dismca               cibhhpd L.SALMONA          124      7      2
+ FORTRAN MODIF utilitai/dismte               vabhhts J.PELLET           193     22      1
+ FORTRAN MODIF utilitai/errlic              mcourtoi M.COURTOIS          72     51     12
+ FORTRAN MODIF utilitai/op0150              mcourtoi M.COURTOIS         825      6      6
+ FORTRAN MODIF utilitai/op0192              mcourtoi M.COURTOIS         236      3      3
+ FORTRAN MODIF utilitai/tbimpr              mcourtoi M.COURTOIS         164      5     12
+ FORTRAN MODIF utilitai/utlicm              mcourtoi M.COURTOIS         150      7      6
+ FORTRAN SUPPR algorith/frot05                mabbas M.ABBAS             77      0     77
+ FORTRAN SUPPR algorith/frot07                mabbas M.ABBAS             93      0     93
+ FORTRAN SUPPR utilitai/op0155              mcourtoi M.COURTOIS         221      0    221
+ FORTRAN SUPPR utilitai/tbexcp              mcourtoi M.COURTOIS         143      0    143
+ FORTRAN SUPPR utilitai/tbext2              mcourtoi M.COURTOIS         317      0    317
+ FORTRAN SUPPR utilitai/tbim50              mcourtoi M.COURTOIS         156      0    156
+ FORTRAN SUPPR utilitai/tbim51              mcourtoi M.COURTOIS          90      0     90
+ FORTRAN SUPPR utilitai/tbim52              mcourtoi M.COURTOIS          75      0     75
+ FORTRAN SUPPR utilitai/tbimfo              mcourtoi M.COURTOIS         163      0    163
+ FORTRAN SUPPR utilitai/tbimpa              mcourtoi M.COURTOIS         141      0    141
+ FORTRAN SUPPR utilitai/tbimpg              mcourtoi M.COURTOIS         275      0    275
+ FORTRAN SUPPR utilitai/tbimtr              mcourtoi M.COURTOIS          77      0     77
+  PYTHON AJOUT Macro/impr_table_ops         mcourtoi M.COURTOIS         230    230      0
+  PYTHON AJOUT Utilitai/Table               mcourtoi M.COURTOIS         664    664      0
+  PYTHON AJOUT Utilitai/Utmess              mcourtoi M.COURTOIS          62     62      0
+  PYTHON MODIF Macro/impr_fonction_ops      mcourtoi M.COURTOIS         396    114     75
+  PYTHON MODIF Macro/macro_miss_3d_ops       acbhhcd G.DEVESA            76      5      3
+  PYTHON MODIF Macro/test_fichier_ops       mcourtoi M.COURTOIS         195      9      6
+  PYTHON MODIF Utilitai/Graph               mcourtoi M.COURTOIS        1026    286    198
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :   15        3036      3036             +3036
+ MODIF :  167       59952      5091    3494     +1597
+ SUPPR :   12        1828              1828     -1828
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :  194       64816      8127    5322     +2805 

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 17/08/2004   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 03/11/2004   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -29,5 +29,6 @@ DETRUIRE=PROC(nom="DETRUIRE",op=-7,
                CHAINE      =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**'),
                POSITION    =SIMP(statut='f',typ='I'  ,max='**'),
             ),
+            ALARME        =SIMP(statut='f',typ='TXM',into=('OUI','NON'),defaut='OUI',),
             INFO          =SIMP(statut='f',typ='I',into=(1,2),defaut=2, ),           
 );

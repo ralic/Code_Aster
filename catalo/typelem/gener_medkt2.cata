@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 11/08/2004   AUTEUR CIBHHPD S.VANDENBERGHE 
+%& MODIF TYPELEM  DATE 03/11/2004   AUTEUR MCOURTOI M.COURTOIS 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -109,6 +109,7 @@ MODE_LOCAL__
     CPESANR  = PESA_R   ELEM__         (G        AG       BG       CG       )
     CPRESSF  = PRES_F   ELEM__         (PRES     )
     EPRESNF  = PRES_F   ELNO__ IDEN__  (PRES     )
+    CPRES_R  = PRES_R   ELEM__         (PRES     )
     EPRESNO  = PRES_R   ELNO__ IDEN__  (PRES     )
     ESIGMNOC = SIEF_C   ELNO__ IDEN__  (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     )
     EEFGENOC = SIEF_C   ELNO__ IDEN__  (NXX      NYY      NXY      MXX      MYY      MXY
@@ -273,7 +274,7 @@ OPTION__
                                      CNUMCOR  PNUMCOR  NTEMPER  PTEMPER  CTEREFE  PTEREF
                               OUT__  ESIGMNOC PCONTRC
     TOU_INI_ELEM        99    IN__   NGEOMER  PGEOMER
-                              OUT__  ENBSP_I  PNBSP_I
+                              OUT__  ENBSP_I  PNBSP_I  CPRES_R  PPRES_R
     TOU_INI_ELGA        99    IN__   NGEOMER  PGEOMER
                               OUT__  EHYDRER  PHYDR_R  ECONTPG  PSIEF_R  ZVARIPG  PVARI_R
     TOU_INI_ELNO        99    IN__   NGEOMER  PGEOMER

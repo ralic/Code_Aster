@@ -1,5 +1,5 @@
       SUBROUTINE VDPNLR ( OPTION , NOMTE , CODRET )
-C MODIF ELEMENTS  DATE 16/10/2004   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF ELEMENTS  DATE 03/11/2004   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -841,6 +841,7 @@ C -    APPEL A LA LOI DE COMPORTEMENT
      &                    TMC,TPC,ZR(ITREF),
      &                    HYDRGM,HYDRGP,
      &                    SECHGM,SECHGP,SREF,
+     &                    -1.D0,-1.D0,
      &                    EPS2D,DEPS2D,
      &                    SIGN,ZR(IVARIM+K2),
      &                    OPTION,

@@ -1,4 +1,4 @@
-# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 03/11/2004   AUTEUR MCOURTOI M.COURTOIS 
 # TITRE INDENTATION ELASTOPLASTIQUE D'UN DEMI-PLAN
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -149,7 +149,7 @@ TAB_REAC=POST_RELEVE_T(ACTION=_F(INTITULE='REAC',
                                  OPERATION='EXTRACTION',),);
 
 IMPR_TABLE(TABLE=TAB_REAC,
-           FORMAT='EXCEL',);
+           FORMAT='TABLEAU',);
 
 
 #------------------------------------------------------------------ 

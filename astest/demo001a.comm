@@ -1,4 +1,4 @@
-# MODIF  DATE 17/08/2004   AUTEUR ASSIRE A.ASSIRE 
+# MODIF  DATE 03/11/2004   AUTEUR MCOURTOI M.COURTOIS 
 # TITRE DEMONSTRATION DE LA JOURNE ASTER LIBRE DU 14 OCTOBRE 2003
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -30,7 +30,6 @@ import os
 # Execution interactive : 1=OUI, 0=NON
 interactif  = 0
 fic_ps='fort.55'
-fic_ps2='fort.56'
 
 
 MAIL=[None]*5
@@ -101,7 +100,7 @@ for k in range(3):
                 INTERPENETRATION='NON'
               )
               
-   DEFI_FICHIER(FICHIER='MAIL2',UNITE=51)
+   DEFI_FICHIER(UNITE=51)
    
    IMPR_RESU(FORMAT='GMSH',UNITE=51,MODELE=MO,
              RESU=_F( RESULTAT=RESUELAS,NOM_CHAM='ERRE_ELGA_NORE',NOM_CMP='ERREST'),)
@@ -122,7 +121,7 @@ MAIL2=CREA_MAILLAGE(MAILLAGE=MAIL[k+1])
 #MAIL2=CREA_MAILLAGE( MAILLAGE  = MAIL1,
 #                    LINE_QUAD = _F(TOUT='OUI'))
 
-DEFI_FICHIER(FICHIER='MAIL2',UNITE=52)
+DEFI_FICHIER(UNITE=52)
 IMPR_RESU(FORMAT='GMSH',UNITE=52,RESU=_F(MAILLAGE=MAIL2))
 DEFI_FICHIER(ACTION='LIBERER',UNITE=52)
 
@@ -131,12 +130,6 @@ if interactif == 1:
    os.system(os.path.join(aster.repout(),'gmsh') +  ' fort.52')
 
 # COURBE DE TRACTION
-
-if interactif == 1:
-   os.system(os.path.join(aster.repout(),'xmgrace') + ' -noask fort.53')
-else:
-   os.system(os.path.join(aster.repout(),'xmgrace') + ' ./fort.53 -hardcopy -printfile ' + fic_ps2)
-
 A5=DEFI_FONCTION(   NOM_RESU='SIGM',
                     NOM_PARA='EPSI',
                    VALE=(0.002,400.0,
@@ -150,6 +143,28 @@ A5=DEFI_FONCTION(   NOM_RESU='SIGM',
                     PROL_DROITE='CONSTANT',
                     PROL_GAUCHE='LINEAIRE',
                     );
+
+if interactif == 1:
+   pilote='INTERACTIF'
+else:
+   pilote='POSTSCRIPT'
+
+IMPR_FONCTION(
+   FORMAT='XMGRACE',
+   UNITE=53,
+   PILOTE=pilote,
+   COURBE=(
+      _F(
+         ABSCISSE=[0.]+A5.Absc(),
+         ORDONNEE=[0.]+A5.Ordo(),
+         COULEUR=2,
+      ),
+   ),
+   TITRE='Courbe de traction',
+   SOUS_TITRE='avec un palier horizontal',
+   LEGENDE_X='Deformation',
+   LEGENDE_Y='Contrainte',
+)
 
 MA=DEFI_MATERIAU( ELAS=_F( E  = 200000., NU  = 0.3, ),
                   TRACTION=_F(SIGM=A5,),

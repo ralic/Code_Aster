@@ -17,7 +17,7 @@ C                EST DEJA FAITE (CF ULDEFI)
 C     REMARQUE : SI L'INITIALISATION N'A PAS ETE FAITE LA ROUTINE S'EN
 C                CHARGERA (APPEL A ULINIT)
 C     ------------------------------------------------------------------
-C MODIF UTILIFOR  DATE 10/10/2003   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF UTILIFOR  DATE 03/11/2004   AUTEUR MCOURTOI M.COURTOIS 
 C RESPONSABLE D6BHHJP J.P.LEFEBVRE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
@@ -37,6 +37,8 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
 C
+      INTEGER       MXIMPR
+      PARAMETER   ( MXIMPR = 5)
       INTEGER          MXF
       PARAMETER       (MXF=100)
       CHARACTER*1      TYPEFI(MXF),ACCEFI(MXF),ETATFI(MXF),MODIFI(MXF)
@@ -48,16 +50,36 @@ C
 C
       CHARACTER*16     NAME16
       INTEGER          I
+C     ------------------------------------------------------------------
+C     CONSERVER LA COHERENCE AVEC IBIMPR
+      CHARACTER*16  NOMPR (MXIMPR)
+      CHARACTER*1   TYPPR (MXIMPR) , AUTPR(MXIMPR)
+      INTEGER       UNITPR (MXIMPR)   , PRESPR(MXIMPR)
+      DATA          NOMPR  /'VIGILE'  , 'MESSAGE'   , 'RESULTAT',
+     +                      'ERREUR'  ,  'MED'      /
+      DATA          UNITPR /    0     ,      6      ,     8     ,
+     +                          9     ,    80       /
+C     ------------------------------------------------------------------
 C
       IF ( FIRST .NE. 17111990 ) CALL ULINIT
 C
       NAME16 = NAME
       IUNIFI = 0
-      DO 1 I = 1, NBFILE
+C
+C     VALEUR PAR DEFAUT POUR LES NOMS INTERNES
+      DO 10 I = 1, MXIMPR
+        IF( NAME16 .EQ. NOMPR(I) ) THEN
+          IUNIFI = UNITPR(I)
+          GOTO 99
+        ENDIF
+  10  CONTINUE
+C
+      DO 20 I = 1, NBFILE
         IF( NAME16 .EQ. DDNAME(I) ) THEN
           IUNIFI = UNITFI(I)
-          GOTO 2
+          GOTO 99
         ENDIF
-   1  CONTINUE
-   2  CONTINUE
+  20  CONTINUE
+C
+  99  CONTINUE
       END

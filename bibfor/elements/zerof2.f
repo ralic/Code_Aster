@@ -1,6 +1,6 @@
       SUBROUTINE ZEROF2(F,F0,XAP,EPSI,NITMAX,SOLU)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 20/07/98   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ELEMENTS  DATE 02/11/2004   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,20 +43,27 @@ C     OUT:
 C         SOLU: VALEUR DE LA RACINE CHERCHEE.
 C
 C ----------------------------------------------------------------------
-      REAL*8 FY,FZ,X,Y,Z,A,B,FA,FB
-      INTEGER N
+      REAL*8 FY,FZ,X,Y,Z,A,B,FA,FB,FDBG(20),XDBG(20),ECRESD,FX
+      INTEGER N,K,ND
 C DEB-------------------------------------------------------------------
 C
 C     INITIALISATIONS
 C
+
+
       N = 1
       X = 0.D0
       FX = F0
       Y = XAP
       FY = F(Y)
+
       IF (ABS(FY).LT.EPSI) THEN
         Z = Y
         GO TO 90
+      ENDIF
+
+      IF (ABS(X-Y).LE.1D-15) THEN
+           GOTO 100
       ENDIF
 C
 C     DEBUT DES ITERATIONS
@@ -78,6 +85,7 @@ C       ND = INT(SQRT(DBLE(NITMAX)))
 C
         N = N + 1
         FZ = F(Z)
+
         IF (ABS(FZ).LT.EPSI) GO TO 90
         ECRESD = ABS(B-A)
 C SOLUTION PROVISOIRE PERMETTANT DE PASSER LES CAS 
@@ -94,13 +102,26 @@ C IL FAUDRAIT FAIRE MIEUX....
         ENDIF
         GO TO 20
       ELSE
+
         IF (FY.LT.FX) GO TO 99
+
+        IF (FY.EQ.FX) THEN 
+          GOTO 100
+        ENDIF
+
         Z = (X*FY-Y*FX)/(FY-FX)
+
+
+        IF (ABS(Z-Y).LE.1D-15) THEN
+           GOTO 100
+        ENDIF
+
         N = N + 1
         X = Y
         FX = FY
         Y = Z
         FY = F(Z)
+
 C
         IF (ABS(FY).LT.EPSI) GO TO 90
         IF (N.GT.NITMAX) GO TO 98
@@ -116,7 +137,35 @@ C
      &            //' (AUGMENTER ITER_INTE_MAXI)' )
 C
    99 CONTINUE
-      CALL UTMESS('F','ZEROF2','ECHEC DE LA RECHERCHE DE ZERO')
+      DO 21 K=1,20
+        XDBG(K) = XAP/(21-K)
+        FDBG(K) = F((XAP)/(21-K))
+   21 CONTINUE
+      CALL UTDEBM ('F','ZEROF2','ECHEC DE LA RECHERCHE DE ZERO')
+      CALL UTIMPI ('S',' A L''ITERATION : ',1,N)
+      CALL UTIMPR ('L',' FONCTION DECROISSANTE - POUR X=A: ',1,X)
+      CALL UTIMPR ('S',' / FONCTION(A): ',1,FX)
+      CALL UTIMPR ('L','                         ET   X=B: ',1,Y)
+      CALL UTIMPR ('S',' / FONCTION(B): ',1,FY)
+      CALL UTIMPR ('L',' FONCTION X=: ',20,XDBG)
+      CALL UTIMPR ('L',' FONCTION F=: ',20,FDBG)
+      CALL UTFINM ()
+
+  100 CONTINUE
+      DO 22 K=1,20
+        XDBG(K) = XAP/(21-K)
+        FDBG(K) = F((XAP)/(21-K))
+   22 CONTINUE
+      CALL UTDEBM ('F','ZEROF2','ECHEC DE LA RECHERCHE DE ZERO')
+      CALL UTIMPI ('S',' A L''ITERATION : ',1,N)
+      CALL UTIMPR ('L',' FONCTION CONSTANTE    - POUR X=A: ',1,X)
+      CALL UTIMPR ('S',' / FONCTION(A): ',1,FX)
+      CALL UTIMPR ('L','                         ET   X=B: ',1,Y)
+      CALL UTIMPR ('S',' / FONCTION(B): ',1,FY)
+      CALL UTIMPR ('L',' FONCTION X=: ',20,XDBG)
+      CALL UTIMPR ('L',' FONCTION F=: ',20,FDBG)
+
+      CALL UTFINM ()
 C
  9999 CONTINUE
       END

@@ -2,7 +2,7 @@
      >                    NBNOEU, COORDO, NOMNOE,
      >                    INFMED )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
+C MODIF PREPOST  DATE 03/11/2004   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,7 +44,7 @@ C
 C
       REAL*8 COORDO(*)
 C
-      CHARACTER*8  NOMNOE(*)
+      CHARACTER*(*)  NOMNOE(*)
       CHARACTER*(*)  NOMAMD
 C
 C 0.2. ==> COMMUNS
@@ -71,8 +71,6 @@ C
       CHARACTER*6 NOMPRO
       PARAMETER ( NOMPRO = 'IRMMNO' )
 C
-      INTEGER EDECRI
-      PARAMETER (EDECRI=1)
       INTEGER EDFUIN
       PARAMETER (EDFUIN=0)
       INTEGER EDCART
@@ -83,12 +81,13 @@ C
       PARAMETER (TYGENO=0)
 C
       INTEGER CODRET
-      INTEGER IAUX
+      INTEGER IAUX, INO
       INTEGER JCOORD
       INTEGER IFM, NIVINF
+      INTEGER ADNOMN
 C
       CHARACTER*8 SAUX08
-      CHARACTER*8 NOMCOO(3), UNICOO(3)
+      CHARACTER*16 NOMCOO(3), UNICOO(3)
 C
 C====
 C 1. PREALABLES
@@ -106,13 +105,13 @@ C====
 C
 C 2.1. ==> NOMS ET UNITES
 C
-      NOMCOO(1) = 'X       '
-      NOMCOO(2) = 'Y       '
-      NOMCOO(3) = 'Z       '
+      NOMCOO(1) = 'X               '
+      NOMCOO(2) = 'Y               '
+      NOMCOO(3) = 'Z               '
 C
-      UNICOO(1) = 'INCONNUE'
-      UNICOO(2) = 'INCONNUE'
-      UNICOO(3) = 'INCONNUE'
+      UNICOO(1) = 'INCONNUE        '
+      UNICOO(2) = 'INCONNUE        '
+      UNICOO(3) = 'INCONNUE        '
 C
       IF ( INFMED.GT.1 ) THEN
         CALL UTMESS ('I',NOMPRO,
@@ -140,7 +139,7 @@ C
       IF ( NDIM.EQ.3 ) THEN
 C
         CALL EFCOOE ( IDFIMD, NOMAMD, NDIM, COORDO, EDFUIN, NBNOEU,
-     >                EDECRI, EDCART, NOMCOO, UNICOO, CODRET )
+     >                EDCART, NOMCOO, UNICOO, CODRET )
 C
       ELSE
 C
@@ -162,7 +161,7 @@ C
         ENDIF
 C
         CALL EFCOOE ( IDFIMD, NOMAMD, NDIM, ZR(JCOORD), EDFUIN, NBNOEU,
-     >                EDECRI, EDCART, NOMCOO, UNICOO, CODRET)
+     >                EDCART, NOMCOO, UNICOO, CODRET)
 C
         CALL JEDETR ('&&'//NOMPRO//'.COORDO')
 C
@@ -177,8 +176,16 @@ C====
 C 3. LES NOMS DES NOEUDS
 C====
 C
-      CALL EFNOME ( IDFIMD, NOMAMD, NOMNOE, NBNOEU,
-     >              EDECRI, EDNOEU, TYGENO, CODRET )
+      CALL WKVECT ('&&'//NOMPRO//'NOMNOE',
+     >             'V V K16',  NBNOEU, ADNOMN )
+C
+      DO 3 INO=1, NBNOEU
+        ZK16(ADNOMN+INO-1) = NOMNOE(INO)//'        '
+C                                          12345678
+ 3    CONTINUE
+C
+      CALL EFNOME ( IDFIMD, NOMAMD, ZK16(ADNOMN), NBNOEU,
+     >              EDNOEU, TYGENO, CODRET )
 C
       IF ( CODRET.NE.0 ) THEN
         CALL CODENT ( CODRET,'G',SAUX08 )
@@ -195,6 +202,8 @@ C
 C====
 C 5. LA FIN
 C====
+C
+      CALL JEDETC ('V','&&'//NOMPRO,1)
 C
       CALL JEDEMA()
 C

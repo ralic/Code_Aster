@@ -1,6 +1,6 @@
       SUBROUTINE GETCON(NOMRES,IOB,CTYPE,LCON,IADVAR,NOMOB)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 11/10/2004   AUTEUR DURAND C.DURAND 
+C MODIF SUPERVIS  DATE 03/11/2004   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -120,10 +120,11 @@ C     ------------------------------------------------------------------
 C     CET OBJET EXISTE ET EST SIMPLE. ON PEUT AVOIR SA VALEUR
 C     ------------------------------------------------------------------
          CALL JEVEUO(NOML32,'L',JRES)
-         CALL JELIRA(NOML32,'LONUTI',LCON,K8BID)
-         IF (LCON.EQ.0) THEN
-             CALL JELIRA(NOML32,'LONMAX',LCON,K8BID)
-         ENDIF
+C          CALL JELIRA(NOML32,'LONUTI',LCON,K8BID)
+C          IF (LCON.EQ.0) THEN
+C              CALL JELIRA(NOML32,'LONMAX',LCON,K8BID)
+C          ENDIF
+         CALL JELIRA(NOML32,'LONMAX',LCON,K8BID)
          CALL JELIRA(NOML32,'TYPELONG',IBID,TYPE)
          IF(TYPE.EQ.'R')THEN
 C     LES VALEURS SONT REELLES
@@ -165,10 +166,11 @@ C     TYPE INCONNU
 C     ------------------------------------------------------------------
 C     CET OBJET EST SIMPLE MAIS C EST UN REPERTOIRE DE NOMS
 C     ------------------------------------------------------------------
-         CALL JELIRA(NOML32,'NOMUTI',LCON,K8BID)
-         IF (LCON.EQ.0) THEN
-             CALL JELIRA(NOML32,'NOMMAX',LCON,K8BID)
-         ENDIF
+C          CALL JELIRA(NOML32,'NOMUTI',LCON,K8BID)
+C          IF (LCON.EQ.0) THEN
+C              CALL JELIRA(NOML32,'NOMMAX',LCON,K8BID)
+C          ENDIF
+         CALL JELIRA(NOML32,'NOMMAX',LCON,K8BID)
          CALL JELIRA(NOML32,'TYPELONG',IBID,TYPE)
          CALL JEDETR('&&GETCON.PTEUR_NOM')
          CALL WKVECT('&&GETCON.PTEUR_NOM','V V '//TYPE,LCON,IAD)

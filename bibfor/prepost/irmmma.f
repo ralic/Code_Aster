@@ -2,11 +2,11 @@
      >                    NDIM, NBMAIL,
      >                    CONNEX, POINT, TYPMA, NOMMAI,
      >                    PREFIX,
-     >                    NBTYP, TYPGEO, NOMTYP, NNOTYP, NITTYP, RENUMD,
+     >                    NBTYP, TYPGEO, NOMTYP, NNOTYP, RENUMD,
      >                    NMATYP,
      >                    INFMED )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 22/07/2003   AUTEUR LAVERNE J.LAVERNE 
+C MODIF PREPOST  DATE 03/11/2004   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -57,7 +57,7 @@ C
       INTEGER FID 
       INTEGER NDIM, NBMAIL, NBTYP
       INTEGER CONNEX(*), TYPMA(*), POINT(*)
-      INTEGER TYPGEO(*), NNOTYP(*), NITTYP(*), NMATYP(*)
+      INTEGER TYPGEO(*), NNOTYP(*), NMATYP(*)
       INTEGER RENUMD(*)
       INTEGER INFMED
 C
@@ -86,8 +86,6 @@ C
 C
       INTEGER NTYMAX
       PARAMETER (NTYMAX = 48)
-      INTEGER EDECRI
-      PARAMETER (EDECRI=1)
       INTEGER EDFUIN
       PARAMETER (EDFUIN=0)
       INTEGER EDMAIL
@@ -151,12 +149,12 @@ C
 C
         IF ( NMATYP(ITYP).NE.0 ) THEN
 C
-          CALL WKVECT('&&'//NOMPRO//'.NOM.'//NOMTYP(ITYP),'V V K8',
+          CALL WKVECT('&&'//NOMPRO//'.NOM.'//NOMTYP(ITYP),'V V K16',
      >                 NMATYP(ITYP),JNOMMA(ITYP))
           CALL WKVECT('&&'//PREFIX//'.NUM.'//NOMTYP(ITYP),'V V I',
      >                 NMATYP(ITYP),JNUMMA(ITYP))
           CALL WKVECT('&&'//NOMPRO//'.CNX.'//NOMTYP(ITYP),'V V I',
-     >                 NITTYP(ITYP)*NMATYP(ITYP),JCNXMA(ITYP))
+     >                 NNOTYP(ITYP)*NMATYP(ITYP),JCNXMA(ITYP))
 C
         ENDIF
 C
@@ -180,12 +178,13 @@ C
         IPOIN  = POINT(IMA)
         NMATYP(ITYP) = NMATYP(ITYP) + 1
 C       NOM DE LA MAILLE DE TYPE ITYP DANS VECT NOM MAILLES
-        ZK8(JNOMMA(ITYP)-1+NMATYP(ITYP)) = NOMMAI(IMA)
+        ZK16(JNOMMA(ITYP)-1+NMATYP(ITYP)) = NOMMAI(IMA)//'        '
+C                                                         12345678
 C       NUMERO ASTER DE LA MAILLE DE TYPE ITYP DANS VECT NUM MAILLES
         ZI(JNUMMA(ITYP)-1+NMATYP(ITYP))  = IMA
 C       CONNECTIVITE DE LA MAILLE TYPE ITYP DANS VECT CNX
         DO 2421 , INO = 1, NNOTYP(ITYP)
-          ZI(JCNXMA(ITYP)-1+(NMATYP(ITYP)-1)*NITTYP(ITYP)+INO) = 
+          ZI(JCNXMA(ITYP)-1+(NMATYP(ITYP)-1)*NNOTYP(ITYP)+INO) = 
      >     CONNEX(IPOIN-1+INO)
  2421   CONTINUE
 C
@@ -224,7 +223,7 @@ C          C'EST CE QUE MED APPELLE LE MODE ENTRELACE
 C
           CALL EFCONE ( FID, NOMAMD, NDIM, ZI(JCNXMA(ITYP)), EDFUIN,
      >                  NMATYP(ITYP),
-     >                  EDECRI, EDMAIL, TYPGEO(ITYP), EDNODA, CODRET )
+     >                  EDMAIL, TYPGEO(ITYP), EDNODA, CODRET )
           IF ( CODRET.NE.0 ) THEN
            CALL CODENT ( CODRET,'G',SAUX08 )
            CALL UTMESS ('F',NOMPRO,'MED: ERREUR EFCONE NUMERO '//SAUX08)
@@ -232,8 +231,8 @@ C
 C
 C 3.2. ==> LE NOM DES MAILLES
 C
-          CALL EFNOME ( FID, NOMAMD, ZK8(JNOMMA(ITYP)), NMATYP(ITYP),
-     >                  EDECRI, EDMAIL, TYPGEO(ITYP), CODRET )        
+          CALL EFNOME ( FID, NOMAMD, ZK16(JNOMMA(ITYP)), NMATYP(ITYP),
+     >                  EDMAIL, TYPGEO(ITYP), CODRET )        
           IF ( CODRET.NE.0 ) THEN
            CALL CODENT ( CODRET,'G',SAUX08 )
            CALL UTMESS ('F',NOMPRO,'MED: ERREUR EFNOME NUMERO '//SAUX08)
@@ -242,7 +241,7 @@ C
 C 3.3. ==> LE NUMERO DES MAILLES
 C
           CALL EFNUME ( FID, NOMAMD, ZI(JNUMMA(ITYP)), NMATYP(ITYP),
-     >                  EDECRI, EDMAIL, TYPGEO(ITYP), CODRET )        
+     >                  EDMAIL, TYPGEO(ITYP), CODRET )        
           IF ( CODRET.NE.0 ) THEN
            CALL CODENT ( CODRET,'G',SAUX08 )
            CALL UTMESS ('F',NOMPRO,'MED: ERREUR EFNUME NUMERO '//SAUX08)

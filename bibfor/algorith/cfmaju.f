@@ -1,8 +1,8 @@
-      SUBROUTINE CFMAJU(RESOCO, NEQ, NDIM, NBLIAI, NBLIAC, LLF, LLF1, 
-     +                                                             LLF2)
+      SUBROUTINE CFMAJU(RESOCO,NEQ,NDIM,
+     &                  NBLIAI,NBLIAC,LLF,LLF1,LLF2)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/05/2003   AUTEUR PABHHHH N.TARDIEU 
+C MODIF ALGORITH  DATE 02/11/2004   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -19,18 +19,41 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
-C ======================================================================
-       IMPLICIT      NONE 
-       INTEGER       NEQ, NDIM, NBLIAI, NBLIAC, LLF, LLF1, LLF2 
-       CHARACTER*24  RESOCO 
-C ======================================================================
+      IMPLICIT     NONE 
+      INTEGER      NEQ
+      INTEGER      NDIM
+      INTEGER      NBLIAI
+      INTEGER      NBLIAC
+      INTEGER      LLF
+      INTEGER      LLF1
+      INTEGER      LLF2 
+      CHARACTER*24 RESOCO 
+C
 C ----------------------------------------------------------------------
-C --- BUT : MISE A JOUR DU VECTEUR DU ----------------------------------
+C ROUTINE APPELEE PAR : ALGOCL/ALGOCO/FRO2GD/FROLGD/FROPGD
 C ----------------------------------------------------------------------
-C ======================================================================
-C --------------- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------
-C ======================================================================
-      CHARACTER*32       JEXNUM , JEXNOM 
+C
+C  MISE A JOUR DU VECTEUR DEPLACEMENT <DU> CORRIGE PAR LE CONTACT
+C     VECTEUR STOCKE DANS RESOCO(1:14)//'.DELT'
+C
+C IN  RESOCO : SD DE TRAITEMENT NUMERIQUE DU CONTACT
+C                'E': RESOCO(1:14)//'.DELT'
+C IN  NEQ    : NOMBRE D'EQUATIONS
+C IN  NDIM   : DIMENSION DU PROBLEME
+C IN  NBLIAI : NOMBRE DE LIAISONS DE CONTACT
+C IN  NBLIAC : NOMBRE DE LIAISONS ACTIVES
+C IN  LLF    : NOMBRE DE LIAISONS DE FROTTEMENT (EN 2D)
+C              NOMBRE DE LIAISONS DE FROTTEMENT SUIVANT LES DEUX 
+C               DIRECTIONS SIMULTANEES (EN 3D)
+C IN  LLF1   : NOMBRE DE LIAISONS DE FROTTEMENT SUIVANT LA 
+C               PREMIERE DIRECTION (EN 3D)
+C IN  LLF2   : NOMBRE DE LIAISONS DE FROTTEMENT SUIVANT LA 
+C               SECONDE DIRECTION (EN 3D)
+C
+C
+C -------------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ----------------
+C
+      CHARACTER*32       JEXNUM 
       INTEGER            ZI 
       COMMON  / IVARJE / ZI(1) 
       REAL*8             ZR 
@@ -45,47 +68,53 @@ C ======================================================================
       CHARACTER*32                                    ZK32 
       CHARACTER*80                                              ZK80 
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1) 
-C ======================================================================
+C
 C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
-C ======================================================================
-      INTEGER       JDELTA, JCM1A, JMU, ILIAC, JLIAC, LLIAC, POSIT, KK 
-      INTEGER       POSNBL, POSLF0, POSLF1, POSLF2
-      CHARACTER*19  DELTA, MU, CM1A, LIAC 
-C ======================================================================
+C
+      INTEGER       ILIAC,LLIAC,POSIT 
+      INTEGER       POSNBL,POSLF0,POSLF1,POSLF2
+      CHARACTER*19  DELTA,MU,CM1A,LIAC 
+      INTEGER       JDELTA,JMU,JCM1A,JLIAC
+C
+C ----------------------------------------------------------------------
+C
       CALL JEMARQ () 
-C ======================================================================
+C
+C ----------------------------------------------------------------------
+C
       MU       = RESOCO(1:14)//'.MU' 
       DELTA    = RESOCO(1:14)//'.DELT' 
       CM1A     = RESOCO(1:14)//'.CM1A' 
       LIAC     = RESOCO(1:14)//'.LIAC' 
-C ======================================================================
       CALL JEVEUO (DELTA, 'E', JDELTA) 
       CALL JEVEUO (MU,    'L', JMU   ) 
       CALL JEVEUO (LIAC,  'L', JLIAC ) 
-C ======================================================================
+C
+C ----------------------------------------------------------------------
+C
       POSNBL = 0
       POSLF0 = NBLIAC
       POSLF1 = NBLIAC + (NDIM-1)*LLF
       POSLF2 = NBLIAC + (NDIM-1)*LLF + LLF1
-C ======================================================================
-C --- CALCUL DE DELTA = DELT0 - C-1.AT.MU ------------------------------
-C ======================================================================
+C 
+C --- CALCUL DE DELTA = DELT0 - C-1.AT.MU 
+C 
       DO 10 ILIAC = 1, NBLIAC + LLF + LLF1 + LLF2
          LLIAC = ZI(JLIAC-1+ILIAC) 
          CALL CFTYLI(RESOCO, ILIAC, POSIT) 
          GOTO (1000, 2000, 3000, 4000) POSIT 
-C ======================================================================
-C --- CALCUL DE DELTA = DELT0 - C-1.AT.MU - LIAISON DE CONTACT ---------
-C ======================================================================
+C 
+C --- CALCUL DE DELTA = DELT0 - C-1.AT.MU - LIAISON DE CONTACT 
+C 
  1000    CONTINUE
          POSNBL = POSNBL + 1
          CALL JEVEUO (JEXNUM(CM1A,LLIAC),'L',JCM1A)
          CALL R8AXPY(NEQ,-ZR(JMU-1+POSNBL),ZR(JCM1A),1, ZR(JDELTA),1) 
          CALL JELIBE (JEXNUM(CM1A,LLIAC)) 
          GOTO 10 
-C ======================================================================
-C --- CALCUL DE DELTA = DELT0 - C-1.AT.MU - LIAISON DE FROTTEMENT ------
-C ======================================================================
+C 
+C --- CALCUL DE DELTA = DELT0 - C-1.AT.MU - LIAISON DE FROTTEMENT 
+C 
  2000    CONTINUE
          POSLF0 = POSLF0 + 1
          CALL JEVEUO (JEXNUM(CM1A,LLIAC+NBLIAI),'L',JCM1A) 
@@ -98,20 +127,20 @@ C ======================================================================
             CALL JELIBE (JEXNUM(CM1A,LLIAC+(NDIM-1)*NBLIAI)) 
          ENDIF 
          GOTO 10 
-C ======================================================================
-C --- CALCUL DE DELTA = DELT0 - C-1.AT.MU - LIAISON DE FROTTEMENT ------
-C --- SUIVANT LA PREMIERE DIRECTION ------------------------------------
-C ======================================================================
+C 
+C --- CALCUL DE DELTA = DELT0 - C-1.AT.MU - LIAISON DE FROTTEMENT 
+C --- SUIVANT LA PREMIERE DIRECTION 
+C 
  3000    CONTINUE
          POSLF1 = POSLF1 + 1
          CALL JEVEUO (JEXNUM(CM1A,LLIAC+NBLIAI),'L',JCM1A) 
          CALL R8AXPY(NEQ,-ZR(JMU-1+POSLF1),ZR(JCM1A),1, ZR(JDELTA),1) 
          CALL JELIBE (JEXNUM(CM1A,LLIAC+NBLIAI)) 
          GOTO 10 
-C ======================================================================
-C --- CALCUL DE DELTA = DELT0 - C-1.AT.MU - LIAISON DE FROTTEMENT ------
-C --- SUIVANT LA SECONDE DIRECTION -------------------------------------
-C ======================================================================
+C 
+C --- CALCUL DE DELTA = DELT0 - C-1.AT.MU - LIAISON DE FROTTEMENT 
+C --- SUIVANT LA SECONDE DIRECTION 
+C 
  4000    CONTINUE
          POSLF2 = POSLF2 + 1
          CALL JEVEUO (JEXNUM(CM1A,LLIAC+(NDIM-1)*NBLIAI),'L',JCM1A) 

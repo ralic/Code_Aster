@@ -1,8 +1,8 @@
-      SUBROUTINE CFADU(RESOCO, DEPDEL, NEQ, NDIM, NBLIAC, LLF,
-     +                                               LLF1, LLF2, NESMAX)
+      SUBROUTINE CFADU(RESOCO,DEPDEL,NEQ,NDIM,NBLIAC,LLF,
+     &                 LLF1,LLF2,NESMAX)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/06/2004   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 02/11/2004   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -19,18 +19,44 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
-C ======================================================================
-       IMPLICIT      NONE
-       INTEGER       NEQ, NDIM, NBLIAC, LLF, LLF1, LLF2, NESMAX
-       CHARACTER*24  RESOCO, DEPDEL
-C ======================================================================
+C
+       IMPLICIT     NONE
+       INTEGER      NEQ
+       INTEGER      NDIM
+       INTEGER      NBLIAC
+       INTEGER      LLF
+       INTEGER      LLF1
+       INTEGER      LLF2
+       INTEGER      NESMAX
+       CHARACTER*24 RESOCO
+       CHARACTER*24 DEPDEL
+C
 C ----------------------------------------------------------------------
-C --- BUT : ROUTINE MERE POUR LE CALCUL DU SECOND MEMBRE ---------------
+C ROUTINE APPELEE PAR : ALGOCL/ALGOCO/FRO2GD/FROLGD/FROPGD
 C ----------------------------------------------------------------------
-C ======================================================================
-C --------------- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------
-C ======================================================================
-      CHARACTER*32       JEXNUM , JEXNOM
+C
+C  ROUTINE MERE POUR LE CALCUL DU SECOND MEMBRE
+C
+C IN  RESOCO : SD DE TRAITEMENT NUMERIQUE DU CONTACT
+C                'E': RESOCO(1:14)//'.MU'
+C IN  DEPDEL : INCREMENT DE DEPLACEMENT CUMULE
+C IN  NEQ    : NOMBRE D'EQUATIONS
+C IN  NDIM   : DIMENSION DU PROBLEME
+C IN  NBLIAC : NOMBRE DE LIAISONS ACTIVES
+C IN  LLF    : NOMBRE DE LIAISONS DE FROTTEMENT (EN 2D)
+C              NOMBRE DE LIAISONS DE FROTTEMENT SUIVANT LES DEUX 
+C               DIRECTIONS SIMULTANEES (EN 3D)
+C IN  LLF1   : NOMBRE DE LIAISONS DE FROTTEMENT SUIVANT LA 
+C               PREMIERE DIRECTION (EN 3D)
+C IN  LLF2   : NOMBRE DE LIAISONS DE FROTTEMENT SUIVANT LA 
+C               SECONDE DIRECTION (EN 3D)
+C IN  NESMAX : NOMBRE MAXI DE NOEUDS ESCLAVES
+C              SERT AU DECALAGE DANS LES ROUTINES DE FROTTEMENT 3D
+C              (VAUT DONC ZERO SI SANS FROTTEMENT OU FROTTEMENT 2D)
+C 
+C
+C -------------- DEBUT DECLARATIONS NORMALISEES JEVEUX -----------------
+C
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
@@ -45,15 +71,16 @@ C ======================================================================
       CHARACTER*32                                    ZK32
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
-C ======================================================================
-C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
-C ======================================================================
-      INTEGER       ILIAC, JAPPTR, JAPDDL, JLIAC, JAPCOE, JAPCOF, JMU
-      INTEGER       LLIAC, JAPJEU, JDECAL, NBDDL, POSIT, JDEPDE, DEKLAG
-      INTEGER       JDELT0
-      REAL*8        VAL, VAL1, VAL2
-      CHARACTER*19  LIAC, MU, DELT0
-      CHARACTER*24  APPOIN, APDDL, APCOEF, APCOFR, APJEU
+C
+C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
+C
+      INTEGER       ILIAC,NBDDL,POSIT 
+      INTEGER       LLIAC,JDECAL,JDEPDE,DEKLAG
+      REAL*8        VAL,VAL1,VAL2
+      CHARACTER*19  LIAC,MU,DELT0
+      INTEGER       JLIAC,JMU,JDELT0
+      CHARACTER*24  APPOIN,APDDL,APCOEF,APCOFR,APJEU
+      INTEGER       JAPPTR,JAPDDL,JAPCOE,JAPCOF,JAPJEU
 C ======================================================================
       CALL JEMARQ ()
 C ======================================================================
@@ -95,7 +122,8 @@ C ======================================================================
          ZR(JMU+ILIAC+DEKLAG-1) = ZR(JAPJEU+LLIAC-1) - VAL
          GOTO 10
 C ======================================================================
-C --- CALCUL DE MU_SG SUIVANT LES DEUX DIRECTIONS ----------------------
+C --- CALCUL DE MU_SG SUIVANT LES DEUX DIRECTIONS (3D) -----------------
+C --- OU SUIVANT LA DIRECTION (2D)                     -----------------
 C --- DEPUIS LE DEBUT DU PAS DE TEMPS ----------------------------------
 C ======================================================================
  2000     CONTINUE
@@ -128,7 +156,7 @@ C ======================================================================
           ZR(JMU+ILIAC+DEKLAG-1) = ZR(JMU+ILIAC+DEKLAG-1) - VAL
           GOTO 10
 C ======================================================================
-C --- CALCUL DE MU_SG SUIVANT LA PREMIERE DIRECTION --------------------
+C --- CALCUL DE MU_SG SUIVANT LA SECONDE DIRECTION --------------------
 C --- DEPUIS LE DEBUT DU PAS DE TEMPS ----------------------------------
 C ======================================================================
  4000     CONTINUE

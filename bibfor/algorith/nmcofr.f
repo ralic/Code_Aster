@@ -3,7 +3,7 @@
 C
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/10/2004   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 02/11/2004   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,20 +21,19 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
 C
-      IMPLICIT      NONE
-      
-      CHARACTER*8   NOMA
-      CHARACTER*24  DEPPLU
-      CHARACTER*24  DEPDEL
-      CHARACTER*24  DDEPLA      
-      CHARACTER*24  DEFICO 
-      CHARACTER*24  RESOCO
-      CHARACTER*24  CNCINE
-      INTEGER       ITERAT
-      REAL*8        INST
-      REAL*8        CONV(*)
-      INTEGER       LICCVG(*)
-      LOGICAL       LREAC(4)
+      IMPLICIT     NONE
+      CHARACTER*8  NOMA
+      CHARACTER*24 DEPPLU
+      CHARACTER*24 DEPDEL
+      CHARACTER*24 DDEPLA      
+      CHARACTER*24 DEFICO 
+      CHARACTER*24 RESOCO
+      CHARACTER*24 CNCINE
+      INTEGER      ITERAT
+      REAL*8       INST
+      REAL*8       CONV(*)
+      INTEGER      LICCVG(*)
+      LOGICAL      LREAC(4)
 C
 C ======================================================================
 C ROUTINE APPELEE PAR : NMDEPL
@@ -73,7 +72,6 @@ C              (4) = TRUE  SI MODELISATION DU CONTACT
 C
 C -------------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ----------------
 C
-      CHARACTER*32       JEXNUM
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
@@ -91,18 +89,10 @@ C
 C
 C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C
-      INTEGER      ZMETH
-      PARAMETER    (ZMETH=8)
-      INTEGER      ZCONV
-      PARAMETER    (ZCONV=3)
       LOGICAL      PREMIE
       INTEGER      ICONTA,JPREM
       INTEGER      IFM,NIV
-      INTEGER      ISTO,JMETH,IZONE,JCONV,IMETH
-      CHARACTER*24 METHCO,CONVCO
-      INTEGER      LDSCON,LMAT
-      CHARACTER*19 MATR,MATASS
-      CHARACTER*24 CNNUL
+      REAL*8       TPS1(4),TPS2(4),TPSGEO,TPSALG
 C
 C ----------------------------------------------------------------------
 C
@@ -120,7 +110,6 @@ C
       IF (NIV.GE.2) THEN
          WRITE (IFM,*) '<CONTACT> *** DEBUT DU TRAITEMENT *** <CONTACT>'
       ENDIF
-
 C
 C --- PREMIERE UTILISATION DU CONTACT OU NON
 C
@@ -132,12 +121,25 @@ C
       ENDIF
 C
 C ======================================================================
-C     REACTUALISATION GEOMETRIQUE
+C --- TIMING CONTACT
 C ======================================================================
 C
+      CALL UTTCPU (10,'INIT',4,TPS1)
+      CALL UTTCPU (20,'INIT',4,TPS2)
+C
+C ======================================================================
+C --- REACTUALISATION GEOMETRIQUE
+C ======================================================================
+C
+      CALL UTTCPU (10,'DEBUT',4,TPS1)
+
       CALL CFGEOM(PREMIE,LREAC(1),ITERAT,INST,
      &            NOMA,DEFICO,RESOCO,
      &            DEPPLU,DEPDEL)
+
+      CALL UTTCPU (10,'FIN',4,TPS1)
+
+      TPSGEO = TPS1(4)
 C
 C ======================================================================
 C     PREPARATION DES DONNEES POUR CONTACT EN THM (PRESSION/TEMPERATURE)
@@ -145,63 +147,22 @@ C ======================================================================
 C
       CALL CFTHM(DEFICO,RESOCO)
 C
-C --- RECUPERATION DU DESCRIPTEUR DE LA MATRICE DE CONTACT
+C ======================================================================
+C     ALGORITHMES DE CONTACT
+C ======================================================================
 C
-      MATR = RESOCO(1:14)//'.MATR'
-      CALL MTDSCR ( MATR )
-      CALL JEVEUO ( MATR(1:19)//'.&INT', 'E', LDSCON )
-C
-C --- RECUPERATION DU DESCRIPTEUR DE LA MATRICE MECANIQUE
-C     
-      CALL NMMAFR(ITERAT,RESOCO(1:14),DEFICO,MATASS)
-      CALL JEVEUO ( MATASS//'.&INT', 'E', LMAT )
-C
-C --- INITIALISATION POUR LA DETERMINATION DE POINTS FIXE
-C
-      LREAC(2) = .FALSE.
+      CALL UTTCPU (20,'DEBUT',4,TPS2)
+      CALL CFALGO(NOMA,ITERAT,CONV,
+     &            DEFICO,RESOCO,
+     &            DEPPLU,DDEPLA,DEPDEL,CNCINE,
+     &            LICCVG,LREAC)
+      CALL UTTCPU (20,'FIN',4,TPS2)
 
-      CNNUL = CNCINE
-C 
-C --- ARRET OU NON SI MATRICE DE CONTACT SINGULIERE
-C 
-      CONVCO = DEFICO(1:16)//'.CONVCO'
-      CALL JEVEUO(CONVCO,'L',JCONV)
-      IZONE = 1
-      ISTO  = ZI(JCONV+ZCONV*(IZONE-1))
-C
-C ======================================================================
-C     CHOIX DE L'ALGO DE CONTACT
-C ======================================================================
-C
-      METHCO = DEFICO(1:16)//'.METHCO'
-      CALL JEVEUO (METHCO,'L',JMETH)
-      IZONE = 1
-      IMETH = ZI(JMETH+ZMETH*(IZONE-1)+6)
-      
-      IF(IMETH.EQ.-1) THEN
-         CALL ALGOCP(DEFICO,RESOCO,LMAT,LDSCON,DDEPLA,
-     &        DEPPLU,LREAC,DEPDEL)    
-      ELSE IF(IMETH.EQ.0) THEN
-         CALL ALGOCO(DEFICO,RESOCO,LMAT,LDSCON,NOMA,CNNUL,DDEPLA,
-     &   DEPPLU,LICCVG,ISTO)
-      ELSE IF(IMETH.EQ.1) THEN
-         CALL ALGOCL(DEFICO,RESOCO,LMAT,LDSCON,NOMA,CNNUL,DDEPLA,
-     &        DEPPLU,ITERAT,LREAC,ISTO)
-      ELSE IF(IMETH.EQ.2) THEN
-         CALL FRO2GD(DEFICO,RESOCO,LMAT,LDSCON,NOMA,CNNUL,DDEPLA,
-     &        DEPPLU,ITERAT,LREAC,DEPDEL,ISTO)
-      ELSE IF(IMETH.EQ.3) THEN
-         CALL FROPGD(DEFICO,RESOCO,LMAT,LDSCON,NOMA,CNNUL,DDEPLA,
-     &        DEPPLU,ITERAT,LREAC,CONV,DEPDEL,ISTO)
-      ELSE IF(IMETH.EQ.4) THEN
-         CALL FROLGD(DEFICO,RESOCO,LMAT,LDSCON,NOMA,CNNUL,DDEPLA,
-     &        DEPPLU,ITERAT,LREAC,CONV,DEPDEL,ISTO)
-      ELSE IF(IMETH.EQ.5) THEN
-         CALL FROGDP(DEFICO,RESOCO,LMAT,LDSCON,DDEPLA,
-     &        DEPPLU,ITERAT,LREAC,CONV,DEPDEL)
-      ENDIF
+      TPSALG = TPS2(4)
 C
       IF (NIV.GE.2) THEN
+         WRITE (IFM,*) '<CONTACT> TEMPS CPU POUR GEOMETRIE : ',TPSGEO
+         WRITE (IFM,*) '<CONTACT> TEMPS CPU POUR ALGORITHME: ',TPSALG
          WRITE (IFM,*) '<CONTACT> *** FIN DU TRAITEMENT *** <CONTACT>'
       ENDIF
 C

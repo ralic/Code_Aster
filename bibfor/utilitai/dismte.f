@@ -1,6 +1,6 @@
       SUBROUTINE DISMTE(CODMES,QUESTI,NOMOBZ,REPI,REPKZ,IERD)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 17/06/2003   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 02/11/2004   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -58,6 +58,11 @@ C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*8 KBID
 C---------------- FIN COMMUNS NORMALISES  JEVEUX  --------------------
       INTEGER ITE,NBPHEN,NBTM,ICO,IPHEN,NBMODL,IMODL,IAMODL,II,INDIIS
+      INTEGER IAOPTE,NBOPT,IOPT,IOPTTE,NRIG,IRIG
+      PARAMETER (NRIG=5)
+      CHARACTER*16  OPTRIG(NRIG)
+      DATA OPTRIG /'RIGI_ACOU'      ,'RIGI_THER'   ,'RIGI_MECA',
+     &             'RIGI_MECA_TANG' ,'FULL_MECA'/
 C
 C
 C
@@ -156,6 +161,22 @@ C     --------------------------------------
 C     --------------------------------------
         CALL JEVEUO('&CATA.TE.DIM_GEOM','L',IBID)
         REPI=ZI(IBID-1+ITE)
+
+
+      ELSE IF (QUESTI.EQ.'CALC_RIGI') THEN
+C     --------------------------------------
+        REPK='NON'
+        CALL JEVEUO('&CATA.TE.OPTTE','L',IAOPTE)
+        CALL JELIRA('&CATA.OP.NOMOPT','NOMMAX',NBOPT,KBID)
+        DO 71,IRIG=1,NRIG
+           CALL JENONU(JEXNOM('&CATA.OP.NOMOPT',OPTRIG(IRIG)),IOPT)
+           CALL ASSERT(IOPT.GT.0)
+           IOPTTE = ZI(IAOPTE-1+ (ITE-1)*NBOPT+IOPT)
+           IF (IOPTTE.EQ.0) GO TO 71
+           REPK='OUI'
+           GO TO 72
+ 71     CONTINUE
+ 72     CONTINUE
 
 
       ELSE

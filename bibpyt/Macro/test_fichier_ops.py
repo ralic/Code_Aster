@@ -1,4 +1,4 @@
-#@ MODIF test_fichier_ops Macro  DATE 05/10/2004   AUTEUR CIBHHLV L.VIVAN 
+#@ MODIF test_fichier_ops Macro  DATE 03/11/2004   AUTEUR MCOURTOI M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,6 +18,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 
+#-------------------------------------------------------------------------------
 def test_fichier_ops(self, UNITE, FICHIER, NB_CHIFFRE, EPSILON, VALE_K, INFO, **args):
    """
      Macro TEST_FICHIER permettant de tester la non-regression d'un fichier
@@ -119,10 +120,12 @@ def test_fichier_ops(self, UNITE, FICHIER, NB_CHIFFRE, EPSILON, VALE_K, INFO, **
                  CRITERE='ABSOLU',
                  REFERENCE=args['REFERENCE'],)
 
-   DETRUIRE(CONCEPT=_F(NOM=('tinfo__','tab1__'),),)
+   DETRUIRE(CONCEPT=_F(NOM=('tinfo__','tab1__'),),
+            ALARME='NON',INFO=1,)
    return ier
 
 
+#-------------------------------------------------------------------------------
 def md5file(fich,nbch,epsi,regexp_ignore=[],info=0):
    """
    Cette methode retourne le md5sum d'un fichier en arrondissant les nombres
@@ -156,8 +159,6 @@ def md5file(fich,nbch,epsi,regexp_ignore=[],info=0):
       i=i+1
       if info>=2:
          print 'LIGNE',i,
-      # pour decouper 123E+987-1.2345
-   #    r=re.split(' +|([0-9]+)\-+',ligne)
       keep=True
       for exp in regexp_ignore:
          if re.search(exp,ligne):
@@ -166,7 +167,9 @@ def md5file(fich,nbch,epsi,regexp_ignore=[],info=0):
                print ' >>>>>>>>>> IGNOREE <<<<<<<<<<',
             break
       if keep:
-         r=string.split(ligne)
+         #r=string.split(ligne)
+         # découpe des nombres collés : 1.34E-142-1.233D+09
+         r=string.split(re.sub('([0-9]+)\-','\g<1> -',ligne))
          for x in r:
             try:
                if abs(float(x))<epsi:
@@ -176,7 +179,7 @@ def md5file(fich,nbch,epsi,regexp_ignore=[],info=0):
             except ValueError:
                s=x
             if info>=2:
-               print ' %s' % s,
+               print (' %'+str(nbch+7)+'s') % s,
             m.update(s)
       if info>=2:
          print

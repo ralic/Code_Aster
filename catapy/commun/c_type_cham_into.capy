@@ -1,4 +1,4 @@
-#& MODIF COMMUN  DATE 08/06/2004   AUTEUR CIBHHLV L.VIVAN 
+#& MODIF COMMUN  DATE 03/11/2004   AUTEUR CIBHHPD L.SALMONA 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -35,7 +35,7 @@ def C_TYPE_CHAM_INTO() : return  ("ACCE",    #COMMUN#
                              "NOEU_HYDR_R",  "ELEM_HYDR_R",  "ELNO_HYDR_R",  "ELGA_HYDR_R",
                              "NOEU_INST_R",  "ELEM_INST_R",  "ELNO_INST_R",  "ELGA_INST_R",
                              "NOEU_INTE_R",  "ELEM_INTE_R",  "ELNO_INTE_R",  "ELGA_INTE_R",
-                             "NOEU_IRRA_R",  "ELEM_IRRA_R",  "ELNO_IRRA_R",  "ELGA_IRRA_R",
+             "CART_IRRA_R",  "NOEU_IRRA_R",  "ELEM_IRRA_R",  "ELNO_IRRA_R",  "ELGA_IRRA_R",
                              "NOEU_META_R",  "ELEM_META_R",  "ELNO_META_R",  "ELGA_META_R",
                              "NOEU_NEUT_F",  "ELEM_NEUT_F",  "ELNO_NEUT_F",  "ELGA_NEUT_F",
              "CART_NEUT_R",  "NOEU_NEUT_R",  "ELEM_NEUT_R",  "ELNO_NEUT_R",  "ELGA_NEUT_R",

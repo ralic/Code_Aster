@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 11/10/2004   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 03/11/2004   AUTEUR CIBHHPD L.SALMONA 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -33,7 +33,8 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
                EXCLUS('CIN2_CHAB','CIN2_CHAB_FO'),
                EXCLUS('VISCOCHAB','VISCOCHAB_FO'),
                EXCLUS('POLY_CFC','POLY_CFC_FO'),
-               EXCLUS('LEMAITRE','LEMAITRE_FO','ZIRC_CYRA2','ZIRC_EPRI','VISC_IRRA_LOG'),
+               EXCLUS('LEMAITRE','LEMAITRE_FO','ZIRC_CYRA2','ZIRC_EPRI','VISC_IRRA_LOG',
+               'LEMA_SEUIL','LEMA_SEUIL_FO'),
                EXCLUS('OHNO','OHNO_FO'),
                EXCLUS('LMARC','LMARC_FO'),
                EXCLUS('VMIS_POUTRE','VMIS_POUTRE_FO'),
@@ -599,6 +600,15 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
              ENER_ACT        =SIMP(statut='f',typ='R',defaut= 5000.),
              FLUX_PHI        =SIMP(statut='o',typ='R',),
            ),
+          LEMA_SEUIL   =FACT(statut='f',
+             A               =SIMP(statut='o',typ='R',),
+             S               =SIMP(statut='o',typ='R',),
+           ),
+          LEMA_SEUIL_FO=FACT(statut='f',
+             A               =SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster,formule)),
+             S               =SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster,formule)),
+             VERI_P          =SIMP(statut='c',typ='TXM',max='**',defaut=("TEMP",) ),
+           ),  
            ZIRC_EPRI       =FACT(statut='f',
              FLUX_PHI        =SIMP(statut='o',typ='R'),
              R_P             =SIMP(statut='o',typ='R'),

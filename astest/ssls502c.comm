@@ -1,5 +1,5 @@
 
-# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 03/11/2004   AUTEUR MCOURTOI M.COURTOIS 
 # RESPONSABLE ADBHHPM P.MASSIN
 # DATE   : 08/06/2000
 # AUTEUR : F. LEBOUVIER (DELTACAD)
@@ -152,7 +152,6 @@ IMPR_COURBE(UNITE=8,
             COURBE=_F(FONCTION=SIGY,),);
 
 IMPR_TABLE(TABLE=SIGMA,
-           FORMAT='MOT_CLE',
            NOM_PARA=('NOEUD','SIXX','SIYY',),);
 #
 #---------------------------------------------------------------------

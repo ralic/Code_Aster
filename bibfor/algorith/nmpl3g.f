@@ -14,7 +14,7 @@
      &                    MATRIG,VECTF,CODRET)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 04/10/2004   AUTEUR GODARD V.GODARD 
+C MODIF ALGORITH  DATE 03/11/2004   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -362,6 +362,7 @@ C -    APPEL A LA LOI DE COMPORTEMENT
      &             TEMPM,TEMPP,TREF,
      &             HYDRGM,HYDRGP,
      &             SECHGM,SECHGP,SREF,
+     &             -1.D0,-1.D0,
      &             EPSTM,DEPST,
      &             SIGN,VIM(1,KPG),
      &             OPTION,

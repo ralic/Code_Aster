@@ -1,7 +1,7 @@
-      SUBROUTINE ALGOCP(DEFICO,RESOCO,LMAT,LDSCON,
-     &           RESU,DEPTOT,LREAC,DEPDEL)
+      SUBROUTINE ALGOCP(DEFICO,RESOCO,LMAT,LDSCON,NOMA,
+     &                  RESU,DEPTOT,LREAC,DEPDEL)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/06/2004   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 02/11/2004   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,15 +18,26 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
-      IMPLICIT      NONE
-      LOGICAL       LREAC(4)
-      INTEGER       LMAT,LDSCON
-      CHARACTER*24  DEFICO,RESOCO,RESU,DEPTOT,DEPDEL
-C ----------------------------------------------------------------------
-C ROUTINE APPELEE PAR : NMCONT
-C ----------------------------------------------------------------------
+      IMPLICIT     NONE
+      LOGICAL      LREAC(4)
+      INTEGER      LMAT
+      INTEGER      LDSCON
+      CHARACTER*8  NOMA
+      CHARACTER*24 DEFICO
+      CHARACTER*24 RESOCO
+      CHARACTER*24 RESU
+      CHARACTER*24 DEPTOT
+      CHARACTER*24 DEPDEL
 C
-C METHODE PENALISEE POUR LE CONTACT UNILATERAL.
+C ======================================================================
+C ROUTINE APPELEE PAR : CFALGO
+C ======================================================================
+C
+C ALGO DE CONTACT
+C
+C ALGO. POUR CONTACT	: PENALISATION
+C ALGO. POUR FROTTEMENT : SANS
+C
 C
 C RESOLUTION DE : C.DU + k ATA.DU  = F- k ATA(E-U)
 C                 A(U+DU)      <= E (= POUR LES LIAISONS ACTIVES)
@@ -45,15 +56,31 @@ C
 C      F = ( L - QT.SIG - BT.LAM  ) AU COURS D'UNE ITERATION DE NEWTON
 C          (           0          )
 C
-C IN  DEFICO  : SD DE DEFINITION DU CONTACT (ISSUE D'AFFE_CHAR_MECA)
-C IN  RESOCO  : SD DE TRAITEMENT NUMERIQUE DU CONTACT
-C IN  LMAT    : DESCRIPTEUR DE LA MATR_ASSE DU SYSTEME MECANIQUE
-C IN  LDSCON  : DESCRIPTEUR DE LA MATRICE -A.C-1.AT
-C IN  DEPTOT  : DEPLACEMENT TOTAL OBTENU A L'ISSUE DE L'ITERATION
-C               DE NEWTON PRECEDENTE
-C VAR RESU    : INCREMENT "DDEPLA" DE DEPLACEMENT DEPUIS DEPTOT
+C IN  DEFICO : SD DE DEFINITION DU CONTACT (ISSUE D'AFFE_CHAR_MECA)
+C IN  RESOCO : SD DE TRAITEMENT NUMERIQUE DU CONTACT
+C                'E':  RESOCO(1:14)//'.APJEU'
+C                'E':  RESOCO(1:14)//'.LIAC'
+C                'E':  RESOCO(1:14)//'.MU'
+C                'E':  RESOCO(1:14)//'.DEL0'
+C                'E':  RESOCO(1:14)//'.DELT'
+C                'E':  RESOCO(1:14)//'.COCO'
+C                'E':  RESOCO(1:14)//'.CM1A'
+C                'E':  RESOCO(1:14)//'.AFMU'
+C                'E':  RESOCO(1:14)//'.ATMU'
+C IN  LMAT   : DESCRIPTEUR DE LA MATR_ASSE DU SYSTEME MECANIQUE
+C IN  LDSCON : DESCRIPTEUR DE LA MATRICE -A.C-1.AT
+C IN  NOMA   : NOM DU MAILLAGE
+C VAR RESU   : INCREMENT "DDEPLA" DE DEPLACEMENT DEPUIS DEPTOT
 C                 EN ENTREE : SOLUTION OBTENUE SANS TRAITER LE CONTACT
 C                 EN SORTIE : SOLUTION CORRIGEE PAR LE CONTACT
+C IN  DEPTOT : DEPLACEMENT TOTAL OBTENU A L'ISSUE DE L'ITERATION
+C               DE NEWTON PRECEDENTE
+C IN  LREAC  : ETAT DU CONTACT 
+C              (1) = TRUE  SI REACTUALISATION A FAIRE  
+C              (2) = TRUE  SI ATTENTE POINT FIXE CONTACT
+C              (3) = TRUE  SI METHODE CONTINUE
+C              (4) = TRUE  SI MODELISATION DU CONTACT
+C IN  DEPDEL : INCREMENT DE DEPLACEMENT CUMULE
 C
 C ON UTILISE UNIQUEMENT LE VECTEUR AFMU CAR LES DONNEES DE ATMU SONT
 C NECESSAIRE POUR LE CALCUL DE LA MATRICE TANGENTE QUI SE FAIT
@@ -61,7 +88,7 @@ C A L'AIDE DU VECTEUR AFMU
 C
 C --------------- DEBUT DECLARATIONS NORMALISEES JEVEUX ---------------
 C
-      CHARACTER*32       JEXNUM , JEXNOM
+      CHARACTER*32       JEXNUM
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
@@ -79,26 +106,27 @@ C
 C
 C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C
-      LOGICAL      TROUAC,DELPOS
-      INTEGER      IBID,IER,IFM,NIV,ICONTA,II,JJ,KK
-      INTEGER      JRESU,JDEPP,JMU,JATMU,JAFMU,POSMA,NEQMAX
-      INTEGER      JDEPDE,JDELT0,JDELTA,JLIAC,JCOCO,JCM1A
-      INTEGER      NEQ,NESCL,NBLIAC,NBLIAI,NBLCIN,KKMIN,LLMIN
-      INTEGER      POS1,POS2,NUM1,NUM2,JDECAL,NBDDL,IPENA
-      INTEGER      JAPPAR,JAPPTR,JAPCOE,JAPJEU,JAPDDL,JNOCO,JMACO
-      INTEGER      AJLIAI, SPLIAI, LLF, LLF1, LLF2, POSIT, INDIC
-      REAL*8       AJEU,VAL,XMU
-      COMPLEX*16   CBID
+      INTEGER      IFM,NIV
+      CHARACTER*24 APPARI,ATMU,AFMU,DELT0,DELTA,APCOEF,APDDL
+      INTEGER      JAPPAR,JATMU,JAFMU,JDELT0,JDELTA,JAPCOE,JAPDDL
+      CHARACTER*24 APJEU,MU,CM1A,PENAL
+      INTEGER      JAPJEU,JMU,JCM1A,IPENA,JCOCO
+      CHARACTER*24 CONTNO,CONTMA,LIAC,NOZOCO,COCO,APPOIN
+      INTEGER      JNOCO,JMACO,JLIAC,JZOCO,JAPPTR
+      INTEGER      NESCL,NBLIAI,NEQ,NBLIAC,AJLIAI,SPLIAI,INDIC
+      INTEGER      NBDDL,NBLCIN,NBLIG,LLF,LLF1,LLF2
+      CHARACTER*24 MACONT
+      CHARACTER*19 MAFROT
+      INTEGER      IBID,II,IER,KK
+      CHARACTER*19 MAT
+      CHARACTER*14 NUMEDD
       CHARACTER*1  TYPEAJ
       CHARACTER*2  TYPEC0
-      CHARACTER*8  NOM1,NOM2
-      CHARACTER*14 CHAIN,NUMEDD
-      CHARACTER*19 AFMU,MAT,CM1A,MAFROT
-      CHARACTER*19 LIAC,MU,ATMU,DELT0,DELTA,COCO
-      CHARACTER*24 APPARI,APPOIN,APCOEF,APJEU,APDDL
-      CHARACTER*24 MACONT,CONTNO,CONTMA,PENAL
+      INTEGER      JRESU,JDEPP,JDEPDE
+      INTEGER      POSMA,JDECAL,POSIT
+      REAL*8       VAL,XMU
 C
-C ----------------------------------------------------------------------
+C ======================================================================
 C
 C ======================================================================
 C             INITIALISATIONS DES OBJETS ET DES ADRESSES
@@ -113,20 +141,16 @@ C DELTA  : INCREMENT DONNE PAR CHAQUE ITERATION DE CONTRAINTES ACTIVES.
 C          C'EST D/K+1.
 C DELT0  : INCREMENT DE DEPLACEMENT DEPUIS LA DERNIERE ITERATION DE
 C          NEWTON SANS TRAITER LE CONTACT. C'EST C-1.F.
-C
+C ======================================================================
       CALL INFNIV (IFM,NIV)
+      IF(NIV.GE.2) THEN
+        WRITE (IFM,*) '<CONTACT> <> ALGO_CONTACT   : PENALISATION' 
+        WRITE (IFM,*) '<CONTACT> <> ALGO_FROTTEMENT: SANS' 
+      ENDIF
       CALL JEMARQ ()
-C
-C --- LE CONTACT DOIT-IL ETRE MODELISE ?
-C
-      APPARI = RESOCO(1:14)//'.APPARI'
-      CALL JEEXIN (APPARI,ICONTA)
-      IF (ICONTA.EQ.0) GO TO 99999
-      CALL JEVEUO (APPARI,'L',JAPPAR)
-      NESCL = ZI(JAPPAR)
-C
+C ======================================================================
 C --- LECTURE DES STRUCTURES DE DONNEES DE CONTACT
-C
+C ======================================================================
 C LIAC   : LISTE DES INDICES DES LIAISONS ACTIVES
 C MU     : MULTIPLICATEURS DE LAGRANGE DU CONTACT (DOIVENT ETRE > 0)
 C COEFMU : COEFFICIENT PAR LEQUEL IL FAUT MULTIPLIER MU AVANT DE
@@ -134,10 +158,11 @@ C          TESTER SON SIGNE (-1 SI CONDITION EN PRESSION OU TEMPERATURE)
 C ATMU   : FORCES DE CONTACT
 C CM1A   : C-1.AT AVEC C MATRICE DE RIGIDITE TANGENTE,
 C          ET A MATRICE DE CONTACT (AT SA TRANSPOSEE)
-C
+C ======================================================================
+      APPARI   = RESOCO(1:14)//'.APPARI'
       CONTNO   = DEFICO(1:16)//'.NOEUCO'
       CONTMA   = DEFICO(1:16)//'.MAILCO'
-      APPARI   = RESOCO(1:14)//'.APPARI'
+      NOZOCO   = DEFICO(1:16)//'.NOZOCO'
       APPOIN   = RESOCO(1:14)//'.APPOIN'
       APCOEF   = RESOCO(1:14)//'.APCOEF'
       APJEU    = RESOCO(1:14)//'.APJEU'
@@ -151,10 +176,13 @@ C
       CM1A     = RESOCO(1:14)//'.CM1A'
       MAFROT   = RESOCO(1:8)//'.MAFR'
       PENAL    = DEFICO(1:16)//'.PENAL'
-C
+      COCO     = RESOCO(1:14)//'.COCO'
+      MACONT   = ZK24(ZI(LDSCON+1))
+      MAT      = ZK24(ZI(LMAT+1))
+C ======================================================================
       CALL JEVEUO (CONTNO,'L',JNOCO)
+      CALL JEVEUO (NOZOCO,'L',JZOCO)
       CALL JEVEUO (CONTMA,'L',JMACO)
-      CALL JEVEUO (APPARI,'L',JAPPAR)
       CALL JEVEUO (APPOIN,'L',JAPPTR)
       CALL JEVEUO (APCOEF,'L',JAPCOE)
       CALL JEVEUO (APJEU, 'E',JAPJEU)
@@ -168,77 +196,82 @@ C
       CALL JEVEUO (RESU(1:19)//'.VALE'  ,'L',JRESU)
       CALL JEVEUO (DEPTOT(1:19)//'.VALE','L',JDEPP)
       CALL JEVEUO (DEPDEL(1:19)//'.VALE', 'L', JDEPDE)
-      CALL JEVEUO (PENAL,'L',IPENA)
-C
-      NBLIAI = NESCL
-C
-      MACONT = ZK24(ZI(LDSCON+1))
-      CALL JEECRA (MACONT(1:19)//'.REFA','DOCU',IBID,'ASSE')
-      NEQ = ZI(LMAT+2)
-      MAT = ZK24(ZI(LMAT+1))
-      CALL DISMOI ('F','NOM_NUME_DDL',MAT,'MATR_ASSE',IBID,NUMEDD,IER)
-C
-C --- SOUVENIRS DE L'ETAT DE CONTACT -> ON NE PEUT PAS S'EN SERVIR
-C --- AU DEBUT CAR SI ON A REAPPARIE LES LIAISONS SONT DIFFERENTES
-C
-C NBLIAC : NOMBRE DE LIAISONS ACTIVES
-C LLMIN  : NUMERO DE LA LIAISON LA PLUS "VIOLEE"
-C KKMIN  : NUMERO DE LA LIAISON LA PLUS "DECOLLEE"
-C
-      COCO   = RESOCO(1:14)//'.COCO'
       CALL JEVEUO (COCO,'E',JCOCO)
-      NBLIAC = ZI(JCOCO+2)
+      CALL JEVEUO (PENAL,'L',IPENA)
+      CALL JEVEUO (APPARI,'L',JAPPAR)
+      CALL JEECRA (MACONT(1:19)//'.REFA','DOCU',IBID,'ASSE')     
+C ======================================================================
+C --- INITIALISATION DE VARIABLES 
+C --- NESCL  : NOMBRE DE NOEUDS ESCLAVES SUSCEPTIBLES D'ETRE EN CONTACT
+C --- NBLIAI : NOMBRE DE LIAISONS DE CONTACT
+C --- NEQ    : NOMBRE D'EQUATIONS DU MODELE
+C --- INDIC  : 0  INITIALISATION, 
+C             +1 ON A RAJOUTE UNE LIAISON 
+C             -1 ON A ENLEVE UNE LIAISON  
+C --- SPLIAI : INDICE DANS LA LISTE DES LIAISONS ACTIVES DE LA DERNIERE
+C              LIAISON AYANT ETE CALCULEE POUR LE VECTEUR CM1A
+C --- AJLIAI : INDICE DANS LA LISTE DES LIAISONS ACTIVES DE LA DERNIERE
+C              LIAISON CORRECTE DU CALCUL 
+C              DE LA MATRICE DE CONTACT ACM1AT
+C --- LLF    : NOMBRE DE LIAISONS DE FROTTEMENT (EN 2D)
+C              NOMBRE DE LIAISONS DE FROTTEMENT SUIVANT LES DEUX 
+C               DIRECTIONS SIMULTANEES (EN 3D)
+C                          -- ZERO --
+C --- LLF1   : NOMBRE DE LIAISONS DE FROTTEMENT SUIVANT LA 
+C               PREMIERE DIRECTION (EN 3D)
+C                          -- ZERO --
+C --- LLF2   : NOMBRE DE LIAISONS DE FROTTEMENT SUIVANT LA 
+C               SECONDE DIRECTION (EN 3D)
+C                          -- ZERO --
+C ======================================================================
+      NESCL  = ZI(JAPPAR)
+      NBLIAI = NESCL
+      NEQ    = ZI(LMAT+2)   
+      LLF    = 0 
+      LLF1   = 0 
+      LLF2   = 0   
+      CALL DISMOI ('F','NOM_NUME_DDL',MAT,'MATR_ASSE',IBID,NUMEDD,IER)
+      TYPEAJ = 'A'
+      TYPEC0 = 'C0'
       AJLIAI = 0
       SPLIAI = 0
       INDIC  = 0
-      LLF    = 0
-      LLF1   = 0
-      LLF2   = 0
-      TYPEAJ = 'A'
-      TYPEC0 = 'C0'
-C
 C ======================================================================
-C                             INITIALISATIONS
+C --- SOUVENIRS DE L'ETAT DE CONTACT -> ON NE PEUT PAS S'EN SERVIR
+C --- AU DEBUT CAR SI ON A REAPPARIE LES LIAISONS SONT DIFFERENTES
 C ======================================================================
-C
-C --- CREATION DE DELTA = C-1B
-C
+      CALL CFDISD(JCOCO,
+     &            IBID,NBLIAC,IBID,IBID,IBID)
+
+C ======================================================================
+C --- RECOPIE DANS DELT0 DU CHAMP DE DEPLACEMENTS OBTENU SANS
+C --- TRAITER LE CONTACT (LE DDEPLA DONNE PAR STAT_NON_LINE)
+C --- CREATION DE DELTA0 = C-1B
+C --- INITIALISATION DE AFMU CAR LES DONNEES DE AFMU SONT
+C --- NECESSAIRE POUR LE CALCUL DE LA MATRICE TANGENTE QUI SE FAIT
+C --- A L'AIDE DU VECTEUR AFMU
+C ======================================================================
       DO 1 II = 1, NEQ
-         ZR(JATMU+II-1)  = 0.0D0
          ZR(JAFMU+II-1)  = 0.0D0
          ZR(JDELT0-1+II) = ZR(JRESU-1+II)
          ZR(JDELTA-1+II) = ZR(JRESU-1+II)+ZR(JDEPDE-1+II)
  1    CONTINUE
 C
-C --- CALCUL DE -A.DEPTOT ET RANGEMENT DANS APJEU
-C --- (UNIQUEMENT POUR LES CL SANS APPARIEMENT,
-C --- C'EST-A-DIRE POUR P, T, OU U RIGIDE : LORSQUE POSMA = 0)
-C
-      DO 2 II = 1,NBLIAI
-         POSMA = ZI(JAPPAR+3*(II-1)+2)
-         IF (POSMA.EQ.0) THEN
-            JDECAL = ZI(JAPPTR+II-1)
-            NBDDL  = ZI(JAPPTR+II) - ZI(JAPPTR+II-1)
-            CALL CALADU (NEQ,NBDDL,ZR(JAPCOE+JDECAL),
-     &           ZI(JAPDDL+JDECAL),ZR(JDEPP),VAL)
-            ZR(JAPJEU+II-1) = ZR(JAPJEU+II-1) - VAL
-         END IF
- 2    CONTINUE
-C
-C ======================================================================
 C ======================================================================
 C      
       NBLCIN = NBLIAC
-      IF ( NIV .EQ. 2 ) WRITE(IFM,*)'NBLIACI',NBLCIN
 C
-CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
-C
-C --- RECUPERATION DES JEUX NEGATIFS ET CREATION DU SECOND
-C --- MEMBRE -E_N*AT*JEU
-C
-CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+      IF ( NIV .GE. 2 ) THEN 
+        WRITE(IFM,1000) NBLIAI
+        WRITE(IFM,1005) NBLIAC
+      ENDIF 
 C
       NBLIAC = 0
+C ======================================================================
+C --- RECUPERATION DES JEUX NEGATIFS ET CREATION DU SECOND
+C --- MEMBRE AFMU = -E_N*AT*JEU 
+C ======================================================================
+
       DO 50 II = 1,NBLIAI
          ZR(JMU-1+II) = 0.0D0
          JDECAL = ZI(JAPPTR+II-1)
@@ -253,21 +286,26 @@ C
          IF ( ZR(JAPJEU+II-1).LT.0.0D0 ) THEN
             POSIT  = NBLIAC + 1 
             CALL CFTABL(INDIC,NBLIAC,AJLIAI,SPLIAI,LLF,LLF1,LLF2, 
-     +                                   RESOCO,TYPEAJ,POSIT,II,TYPEC0) 
+     &                  RESOCO,TYPEAJ,POSIT,II,TYPEC0) 
+            IF (NIV.GE.2) THEN
+               CALL CFIMP2(IFM,NOMA,II,TYPEC0,TYPEAJ,'ALG',
+     &                  ZR(JAPJEU+II-1),JAPPAR,JNOCO,JMACO)
+            END IF 
             XMU    = 1.D0
             CALL CALATM (NEQ,NBDDL,XMU,ZR(JAPCOE+JDECAL),
-     &                                ZI(JAPDDL+JDECAL),ZR(JCM1A))
+     &                   ZI(JAPDDL+JDECAL),ZR(JCM1A))
             ZR(JMU-1+NBLIAC) = -ZR(JAPJEU+II-1)*ZR(IPENA-1+2*II-1)
             CALL R8AXPY(NEQ,ZR(JMU-1+NBLIAC),ZR(JCM1A),1,ZR(JAFMU),1) 
          ENDIF
          CALL JELIBE(JEXNUM(CM1A,II))
  50   CONTINUE
-      IF (NBLIAC.EQ.0) GOTO 99999
-CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 C
-C --- CREATION DE E_N*ATA 
-C
-CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+      IF (NBLIAC.EQ.0) THEN 
+        GOTO 999
+      ENDIF
+C ======================================================================
+C --- CREATION DE LA MATRICE DE CONTACT CM1A = E_N*AT
+C ======================================================================
       DO 210 II = 1, NBLIAI
          CALL JEVEUO ( JEXNUM(CM1A,II), 'E', JCM1A )
          DO 200 KK = 1, NEQ
@@ -276,38 +314,50 @@ CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
          IF ( ZR(JAPJEU+II-1).LT.0.0D0 ) THEN
             JDECAL = ZI(JAPPTR+II-1)
             NBDDL  = ZI(JAPPTR+II)-ZI(JAPPTR+II-1)
-            XMU  = SQRT(ZR(IPENA-1+2*II-1))
-               CALL CALATM (NEQ,NBDDL,XMU,ZR(JAPCOE+JDECAL),
-     &                      ZI(JAPDDL+JDECAL),ZR(JCM1A))
+            XMU    = SQRT(ZR(IPENA-1+2*II-1))
+            CALL CALATM (NEQ,NBDDL,XMU,ZR(JAPCOE+JDECAL),
+     &                   ZI(JAPDDL+JDECAL),ZR(JCM1A))
          ENDIF
          CALL JELIBE(JEXNUM(CM1A,II))
  210  CONTINUE
-C
-      CALL ATA000 (CM1A,NUMEDD,400.D0,MAFROT,'V',RESOCO,NBLIAI)
-      CALL DETRSD ('MATR_ASSE', MAT   )
-C
+C ======================================================================
+C --- CREATION DE MAFROT = E_N*AT*A 
+C ======================================================================
+      NBLIG = NBLIAI
+      CALL ATA000(CM1A,NUMEDD,400.D0,MAFROT,'V',NBLIG)
+      CALL DETRSD('MATR_ASSE', MAT   )
+C ======================================================================
+C --- CALCUL DES FORCES DE CONTACT (AT.MU) 
+C ======================================================================
+      DO 211 II = 1, NEQ
+         ZR(JATMU+II-1)  = 0.0D0
+ 211  CONTINUE
+C ======================================================================
 C --- STOCKAGE DE L'ETAT DE CONTACT DEFINITIF
-C
-      IF ( NIV .EQ. 2 ) WRITE(IFM,*)'NBLIACF',NBLIAC
-      IF ( NIV .EQ. 2 ) WRITE(IFM,*)'NBLIACI',NBLCIN
-C
-      IF ( NBLIAC.NE.NBLCIN ) LREAC(2) = .TRUE.
-C
+C ======================================================================
+C --- ATTENTE POINT FIXE
+      IF ( NBLIAC.NE.NBLCIN ) THEN 
+        LREAC(2) = .TRUE.
+      ENDIF
       ZI(JCOCO+2) = NBLIAC
-C
-      IF (NIV.GE.2) THEN
-         DO 500 II = 1,NBLIAI
-            WRITE (IFM,1010) '<FROPGD> JEU FINAL LIAISON ',II,' : ',
-     &           ZR(JAPJEU+II-1)
- 500     CONTINUE
+C ======================================================================
+C --- AFFICHAGE FINAL
+C ======================================================================
+      IF ( NIV .GE. 2 ) THEN 
+        WRITE(IFM,1003) NBLIAC
+        WRITE(IFM,*)'<CONTACT> <> LIAISONS FINALES '
+        CALL CFIMP1(DEFICO,RESOCO,NOMA,NBLIAI,NBLIAC,IFM)
       END IF
 C
-99999 CONTINUE
-      CALL JEDEMA ()
+ 999  CONTINUE
 C
+      CALL JEDEMA()
+C
+ 1000 FORMAT (' <CONTACT> <> NOMBRE DE LIAISONS POSSIBLES: ',I6)
+ 1003 FORMAT (' <CONTACT> <> NOMBRE DE LIAISONS ACTIVES FINALES:',
+     &       I6,')')
+ 1005 FORMAT (' <CONTACT> <> NOMBRE DE LIAISONS ACTIVES INITIALES:',
+     &       I6,')')
 C ======================================================================
-C
- 1000 FORMAT ('<CONTACT_2> ',A9,A8,A14,A14,A8)
- 1010 FORMAT ('<CONTACT_3> ',A27,I5,A3,E10.3)
-C
+
       END

@@ -1,4 +1,4 @@
-#& MODIF ENTETE  DATE 11/10/2004   AUTEUR DURAND C.DURAND 
+#& MODIF ENTETE  DATE 03/11/2004   AUTEUR MCOURTOI M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -31,6 +31,9 @@ try:
   import aster
 except:
   pass
+
+from Utilitai.Graph import Graph
+from Utilitai.Table import Table
 
 #
 __version__="$Name:  $"
@@ -383,6 +386,12 @@ class fonction_class(ASSD):
          'PROL_GAUCHE' : TypeProl[prol[4][1]],
       }
       return dico
+   def Trace(self,FORMAT='TABLEAU',**kargs):
+      """Tracé d'une fonction"""
+      gr=Graph()
+      gr.AjoutCourbe(Val=self.Valeurs(),
+            Lab=[self.Parametres()['NOM_PARA'],self.Parametres()['NOM_RESU']])
+      gr.Trace(FORMAT=FORMAT,**kargs)
 class fonction_sdaster(fonction_class):
    def Valeurs(self) :
       """
@@ -401,6 +410,12 @@ class fonction_sdaster(fonction_class):
         lx=lbl[0:dim]
         ly=lbl[dim:2*dim]
         return [lx,ly]
+   def Absc(self):
+      """Retourne la liste des abscisses"""
+      return self.Valeurs()[0]
+   def Ordo(self):
+      """Retourne la liste des ordonnées"""
+      return self.Valeurs()[1]
    def __call__(self,val):
       lx,ly=self.Valeurs()
       n=len(lx)
@@ -438,6 +453,21 @@ class fonction_c(fonction_class):
            lr.append(lbl[dim+2*i])
            li.append(lbl[dim+2*i+1])
         return [lx,lr,li]
+   def Absc(self):
+      """Retourne la liste des abscisses"""
+      return self.Valeurs()[0]
+   def Ordo(self):
+      """Retourne la liste des parties réelles des ordonnées"""
+      return self.Valeurs()[1]
+   def OrdoImg(self):
+      """Retourne la liste des parties imaginaires des ordonnées"""
+      return self.Valeurs()[2]
+   def Trace(self,FORMAT='TABLEAU',**kargs):
+      """Tracé d'une fonction complexe"""
+      gr=Graph()
+      gr.AjoutCourbe(Val=self.Valeurs(),
+       Lab=[self.Parametres()['NOM_PARA'],self.Parametres()['NOM_RESU'],'IMAG'])
+      gr.Trace(FORMAT=FORMAT,**kargs)
 class nappe_sdaster(fonction_class):
    def Valeurs(self):
       """
@@ -481,6 +511,14 @@ class nappe_sdaster(fonction_class):
          }
          lparf.append(dicf)
       return [dico,lparf]
+   def Trace(self,FORMAT='TABLEAU',**kargs):
+      """Tracé d'une nappe"""
+      gr=Graph()
+      lv=self.Valeurs()[1]
+      dp=self.Parametres()[0]
+      for lx,ly in lv:
+         gr.AjoutCourbe(Val=[lx,ly], Lab=[dp['NOM_PARA_FONC'],dp['NOM_RESU']])
+      gr.Trace(FORMAT=FORMAT,**kargs)
 
 # matr_asse :
 #--------------------------------
@@ -511,7 +549,6 @@ class matr_elem_temp_r(matr_elem):pass
 
 # table :
 #--------------------------------
-
 class table_sdaster(ASSD):
   def __getitem__(self,key):
       requete=string.ljust(key[0],24)
@@ -520,8 +557,49 @@ class table_sdaster(ASSD):
       for i in range(len(tabnom)) :
          if tabnom[i]==requete: break
       resu=aster.getvectjev(tabnom[i+2])
-      if key[1]>len(resu) : raise KeyError
-      else                : return resu[key[1]-1]
+      exist=aster.getvectjev(tabnom[i+3])
+      if key[1]>len(resu) or exist[key[1]-1]==0:
+         raise KeyError
+      else:
+         return resu[key[1]-1]
+  def Nonefy(self,l1,l2) :
+      if l2==0 : return None
+      else     : return l1
+  def EXTR_TABLE(self) :
+      tblp=string.ljust(self.get_name(),19)+'.TBLP'
+      tabnom=list(aster.getvectjev(tblp))
+      nparam=len(tabnom)/4
+      lparam=[tabnom[4*i:4*i+4] for i in range(nparam)]
+      dval={}
+      # liste des paramètres et des types
+      lpar=[]
+      ltyp=[]
+      for i in lparam :
+         value=list(aster.getvectjev(i[2]))
+         exist=aster.getvectjev(i[3])
+         dval[string.strip(i[0])]=map(self.Nonefy,value,exist)
+         lpar.append(string.strip(i[0]))
+         ltyp.append(string.strip(i[1]))
+      n=len(dval[lpar[0]])
+      # contenu : liste de dict
+      lisdic=[]
+      for i in range(n) :
+        d={}
+        for p in lpar : d[p]=dval[p][i]
+        lisdic.append(d)
+      # titre
+      titj=aster.getvectjev(self.get_name().ljust(19)+'.TITR')
+      if titj<>None:
+         titr='\n'.join(titj)
+      else:
+         titr=''
+      return Table(lisdic, lpar, ltyp, titr)
+
+class table_jeveux(table_sdaster):
+   """Classe permettant d'accéder à une table jeveux qui n'a pas d'ASSD associée,
+   c'est le cas des concepts résultats (table, evol_xxxx) dérivés."""
+   def __init__(self,nom_jeveux):
+      self.nom=nom_jeveux
 
 class tabl_aire_int   (table_sdaster):pass
 class tabl_calc_g_loca(table_sdaster):pass

@@ -1,0 +1,191 @@
+      SUBROUTINE CFIMP1(DEFICO,RESOCO,NOMA,NBLIAI,NBLIAC,IFM)
+C
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 02/11/2004   AUTEUR MABBAS M.ABBAS 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C
+      IMPLICIT     NONE
+      CHARACTER*8  NOMA
+      CHARACTER*24 DEFICO
+      CHARACTER*24 RESOCO
+      INTEGER      NBLIAC
+      INTEGER      IFM
+      INTEGER      NBLIAI
+C
+C ----------------------------------------------------------------------
+C ROUTINE APPELEE PAR : ALGOCL/ALGOCO/ALGOCP/FRO2GD/FROGDP/FROLGD/FROPGD
+C ----------------------------------------------------------------------
+C
+C IMPRESSION DES LIAISONS ESCLAVE/MAITRE
+C
+C IN  DEFICO : SD DE DEFINITION DU CONTACT (ISSUE D'AFFE_CHAR_MECA)
+C IN  RESOCO : SD DE TRAITEMENT NUMERIQUE DU CONTACT
+C IN  NOMA   : NOM DU MAILLAGE
+C IN  NBLIAC : NOMBRE TOTAL DE LIAISONS ACTIVES
+C IN  NBLIAI : NOMBRE TOTAL DE LIAISONS 
+C IN  IFM    : UNITE D'IMPRESSION DU MESSAGE
+C
+C -------------- DEBUT DECLARATIONS NORMALISEES JEVEUX -----------------
+C
+      CHARACTER*32 JEXNUM
+      INTEGER ZI
+      COMMON /IVARJE/ZI(1)
+      REAL*8 ZR
+      COMMON /RVARJE/ZR(1)
+      COMPLEX*16 ZC
+      COMMON /CVARJE/ZC(1)
+      LOGICAL ZL
+      COMMON /LVARJE/ZL(1)
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32
+      CHARACTER*80 ZK80
+      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+C
+C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
+C
+      INTEGER      ZAPPAR
+      PARAMETER    (ZAPPAR=3)
+      INTEGER      POSESC,NUMESC,NUMMAI,POSMAI,ILIAC,ILIAI,ACTIF,IBID
+      CHARACTER*8  NOMESC,NOMMAI
+      CHARACTER*14 CHAIAC
+      CHARACTER*4  TYPE2
+      CHARACTER*2  TYPLIA
+      REAL*8       JEU
+      CHARACTER*10 TYPLI
+      CHARACTER*24 CONTNO,CONTMA,NOZOCO,APPARI,APJEU
+      INTEGER      JNOCO,JMACO,JZOCO,JAPPAR,JAPJEU
+      CHARACTER*19 LIAC,CONVEC
+      INTEGER      JLIAC,JVECC
+C
+C ----------------------------------------------------------------------
+C
+      CALL JEMARQ ()
+C
+      CONTNO = DEFICO(1:16)//'.NOEUCO'
+      CONTMA = DEFICO(1:16)//'.MAILCO'
+      NOZOCO = DEFICO(1:16)//'.NOZOCO'
+      APPARI = RESOCO(1:14)//'.APPARI'
+      LIAC   = RESOCO(1:14)//'.LIAC'
+      CONVEC = RESOCO(1:14)//'.CONVEC'
+      APJEU  = RESOCO(1:14)//'.APJEU'
+C
+      CALL JEVEUO(APPARI,'L',JAPPAR)
+      CALL JEVEUO(CONTNO,'L',JNOCO)
+      CALL JEVEUO(CONTMA,'L',JMACO)
+      CALL JEVEUO(NOZOCO,'L',JZOCO)
+      CALL JEVEUO(LIAC,'L',JLIAC)
+      CALL JEEXIN(CONVEC,IBID)
+      IF (IBID.NE.0) THEN 
+        CALL JEVEUO(CONVEC,'L',JVECC) 
+      ELSE
+        JVECC = 0
+      ENDIF
+      CALL JEVEUO(APJEU,'L',JAPJEU)
+C
+      DO 500 ILIAI = 1,NBLIAI
+C
+C --- REPERAGE DE L'ESCLAVE
+C
+        POSESC = ZI(JAPPAR+ZAPPAR*(ILIAI-1)+1)
+        NUMESC = ZI(JNOCO+POSESC-1)
+        CALL JENUNO(JEXNUM(NOMA//'.NOMNOE',NUMESC),NOMESC)
+C
+C --- REPERAGE DU MAITRE
+C
+        POSMAI = ZI(JAPPAR+ZAPPAR*(ILIAI-1)+2)
+C
+C --- JEU
+C
+        JEU = ZR(JAPJEU-1+ILIAI)
+C
+C --- ACTIF OU NON ?
+C
+        DO 10 ILIAC = 1,NBLIAC
+          ACTIF = 0
+          IF (ZI(JLIAC-1+ILIAC).EQ.ILIAI) THEN 
+            ACTIF  = 1
+C
+C --- TYPE LIAISON
+C
+            TYPLI = 'CONT.     '
+            IF (JVECC.NE.0) THEN
+              TYPLIA = ZK8(JVECC-1+ILIAC)
+              IF (TYPLIA.EQ.'C0') THEN
+                TYPLI = 'CONT.     '
+              ELSE IF (TYPLIA.EQ.'F0') THEN
+                TYPLI = 'FROT. 1&2 '
+              ELSE IF (TYPLIA.EQ.'F1') THEN
+                TYPLI = 'FROT. 1   '
+              ELSE IF (TYPLIA.EQ.'F2') THEN
+                TYPLI = 'FROT. 2   '
+              ELSE IF (TYPLIA.EQ.'F3') THEN
+                TYPLI = 'FROT.     '
+              ENDIF
+            ENDIF
+            GOTO 20          
+          ENDIF
+  10    CONTINUE
+  20    CONTINUE
+C
+C --- PREPARATION DES CHAINES POUR LES NOMS
+C
+        IF (POSMAI.GT.0) THEN
+          TYPE2 ='/EL '
+          NUMMAI = ZI(JMACO+POSMAI-1)
+          CALL JENUNO(JEXNUM(NOMA//'.NOMMAI',NUMMAI),NOMMAI)
+        ELSE IF (POSMAI.LT.0) THEN   
+          TYPE2 ='/ND '
+          NUMMAI = ZI(JNOCO+ABS(POSMAI)-1)
+          CALL JENUNO(JEXNUM(NOMA//'.NOMNOE',NUMMAI),NOMMAI)
+        ELSE IF (POSMAI.EQ.0) THEN
+          TYPE2 ='    '
+          IF (ZI(JZOCO+POSESC-1).EQ.-1) THEN
+            NOMMAI = 'RIGIDE  '
+          ELSE IF (ZI(JZOCO+POSESC-1).EQ.-2) THEN
+            NOMMAI = 'PRESSION'
+          ELSE IF (ZI(JZOCO+POSESC-1).EQ.-3) THEN
+            NOMMAI = 'TEMPERAT'
+          ENDIF
+        END IF
+C
+C --- IMPRESSION
+C
+        IF (ACTIF.EQ.1) THEN
+          CHAIAC = ' ACTIVE (JEU: '
+        
+          WRITE (IFM,1000) ILIAI,'(',NOMESC,TYPE2,NOMMAI,'): ',
+     &                     CHAIAC,JEU,',TYPE: ',TYPLI,')'
+        ELSE
+          CHAIAC = ' LIBRE  (JEU: '
+          WRITE (IFM,1010) ILIAI,'(',NOMESC,TYPE2,NOMMAI,'): ',
+     &                     CHAIAC,JEU,')'
+
+        ENDIF
+  500 CONTINUE
+   
+ 1000 FORMAT (' <CONTACT> <> LIAISON ',I5,A1,A8,A4,A8,A3,A14,E10.3,
+     &         A7,A10,A1)
+
+ 1010 FORMAT (' <CONTACT> <> LIAISON ',I5,A1,A8,A4,A8,A3,A14,E10.3,
+     &         A1)
+C
+      CALL JEDEMA()
+C
+      END

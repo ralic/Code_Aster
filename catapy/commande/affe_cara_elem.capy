@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 05/10/2004   AUTEUR CIBHHLV L.VIVAN 
+#& MODIF COMMANDE  DATE 03/11/2004   AUTEUR ACBHHCD G.DEVESA 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -354,8 +354,9 @@ AFFE_CARA_ELEM=OPER(nom="AFFE_CARA_ELEM",op=  19,sd_prod=cara_elem,
            FONC_GROUP      =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
            COEF_GROUP      =SIMP(statut='f',typ='R',max='**'),
            REPERE          =SIMP(statut='f',typ='TXM',into=("LOCAL","GLOBAL") ),
-           CARA            =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max=1,
-                                 into=("K_TR_D_N","A_TR_D_N") ),
+           CARA            =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max=2,
+                                 into=("K_TR_D_N","A_TR_D_N",
+                                       "K_T_D_N", "A_T_D_N") ),
            VALE            =SIMP(statut='o',typ='R',max='**'),
            GROUP_NO_CENTRE =SIMP(statut='f',typ=grno),
            NOEUD_CENTRE    =SIMP(statut='f',typ=no),

@@ -6,7 +6,7 @@
       REAL*8          KTAN(*), BTSIG(6,*)
       CHARACTER*16    NOMTE, OPT
 
-C MODIF ELEMENTS  DATE 11/10/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+C MODIF ELEMENTS  DATE 03/11/2004   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -489,6 +489,7 @@ C --- INITIALISE A R8VIDE (ON NE S'EN SERT PAS)
      &                  TMC,TPC,ZR(ITREF),
      &                  HYDRGM,HYDRGP,
      &                  SECHGM,SECHGP,SREF,
+     &                  -1.D0,-1.D0,
      &                  EPS2D,DEPS2D,
      &                  SIGM,ZR(IVARIM+IVPG),
      &                  OPT,

@@ -3,7 +3,7 @@
      >                    CODRET )
 C_____________________________________________________________________
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 28/01/2003   AUTEUR DURAND C.DURAND 
+C MODIF PREPOST  DATE 03/11/2004   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,7 +40,7 @@ C                 PREFIX//'.NUME' : T(2I-1) = NUMERO DE PAS DE TEMPS
 C                                   T(2I)   = NUMERO D'ORDRE
 C                 PREFIX//'.INST' : T(I) = INSTANT S'IL EXISTE
 C                 PREFIX//'.MAIL' : T(I) = NOM DU MAILLAGE (K32)
-C                 PREFIX//'.UNII' : T(I) = UNITE DE L'INSTANT (K8)
+C                 PREFIX//'.UNII' : T(I) = UNITE DE L'INSTANT (K16)
 C      SORTIES:
 C        NBTV   : NOMBRE DE TABLEAUX DE VALEURS DU CHAMP
 C        CODRET : CODE DE RETOUR (0 : PAS DE PB, NON NUL SI PB)

@@ -1,4 +1,4 @@
-#@ MODIF macro_miss_3d_ops Macro  DATE 05/10/2004   AUTEUR CIBHHLV L.VIVAN 
+#@ MODIF macro_miss_3d_ops Macro  DATE 03/11/2004   AUTEUR ACBHHCD G.DEVESA 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,7 +22,7 @@
 
 def macro_miss_3d_ops(self,UNITE_IMPR_ASTER,UNITE_OPTI_MISS,
                            UNITE_MODELE_SOL,UNITE_RESU_IMPE,
-                           PROJET,REPERTOIRE,OPTION,**args):
+                           PROJET,REPERTOIRE,OPTION,VERSION,**args):
   """
      Ecriture de la macro MACRO_MISS_3D
   """
@@ -43,6 +43,7 @@ def macro_miss_3d_ops(self,UNITE_IMPR_ASTER,UNITE_OPTI_MISS,
   import aster 
   loc_fic=aster.repout()
   miss3d=loc_fic+'miss3d'
+  #miss3d='/home/acbhhcd/MISS3D/V6.4/miss3d.csh'
 
   if OPTION['TOUT']!=None:
       MODUL2='COMPLET'
@@ -68,7 +69,8 @@ def macro_miss_3d_ops(self,UNITE_IMPR_ASTER,UNITE_OPTI_MISS,
                           _F(NOM_PARA=paste),
                           _F(NOM_PARA=popti),
                           _F(NOM_PARA=pdsol),
-                          _F(NOM_PARA=primp)    ),
+                          _F(NOM_PARA=primp),
+                          _F(NOM_PARA=VERSION),  ),
                 )
 
   return ier

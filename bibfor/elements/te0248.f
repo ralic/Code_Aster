@@ -4,7 +4,7 @@
       CHARACTER*(*) OPTIOZ,NOMTEZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 15/06/2004   AUTEUR MABBAS M.ABBAS 
+C MODIF ELEMENTS  DATE 03/11/2004   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -364,6 +364,7 @@ C     ------------
           CALL COMP1D(OPTION,
      &                SIGX,EPSX,DEPX,
      &                TEMPM,TEMPP,TREF,
+     &                -1.D0,-1.D0,
      &                CORRM,CORRP,
      &                ANGMAS,
      &                ZR(IVARIM),ZR(IVARIP),SIGXP,ETAN,CODRET)

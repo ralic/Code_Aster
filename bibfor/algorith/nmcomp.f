@@ -3,6 +3,7 @@
      &                   TM,TP,TREF,
      &                   HYDRM,HYDRP,
      &                   SECHM,SECHP,SREF,
+     &                   IRRAM,IRRAP,
      &                   EPSM,DEPS,
      &                   SIGM,VIM,
      &                   OPTION,
@@ -15,7 +16,7 @@
 
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 04/10/2004   AUTEUR GODARD V.GODARD 
+C MODIF ALGORITH  DATE 03/11/2004   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,7 +41,8 @@ C TOLE CRP_21
       CHARACTER*8        TYPMOD(*)
       CHARACTER*16       COMPOR(*), OPTION
       REAL*8             CRIT(*), INSTAM, INSTAP, TM, TP, TREF, SREF
-      REAL*8             HYDRM, HYDRP, SECHM, SECHP ,PHASM(NZ),PHASP(NZ)
+      REAL*8             HYDRM, HYDRP, SECHM, SECHP ,IRRAM,IRRAP
+      REAL*8             PHASM(NZ),PHASP(NZ)
       REAL*8             EPSM(*), DEPS(*), DSIDEP(*)
       REAL*8             SIGM(*), VIM(*), SIGP(*), VIP(*)
       REAL*8             ELGEOM(*),CORRM,CORRP
@@ -85,6 +87,8 @@ C     HYDRP   : HYDRATATION A L'INSTANT DU CALCUL
 C     SECHM   : SECHAGE A L'INSTANT PRECEDENT
 C     SECHP   : SECHAGE A L'INSTANT DU CALCUL
 C     SREF    : SECHAGE DE REFERENCE
+C     IRRAM   : IRRADIATION A L'INSTANT PRECEDENT
+C     IRRAP   : IRRADIATION A L'INSTANT DU CALCUL
 C     EPSM    : DEFORMATIONS A L'INSTANT DU CALCUL PRECEDENT
 C     DEPS    : INCREMENT DE DEFORMATION TOTALE :
 C                DEPS(T) = DEPS(MECANIQUE(T)) + DEPS(DILATATION(T))
@@ -515,6 +519,7 @@ C-- INTEGRATION IMPLICITE: METHODE D'EULER
             CALL NMVPIR (NDIM,TYPMOD,IMATE,COMPOR,CRIT,
      &                  INSTAM,INSTAP,
      &                  TM,TP,TREF,
+     &                  IRRAM,IRRAP,
      &                  DEPS,
      &                  SIGM,VIM,
      &                  OPTION,

@@ -1,4 +1,4 @@
-# MODIF  DATE 06/09/2004   AUTEUR SMICHEL S.MICHEL-PONNELLE 
+# MODIF  DATE 03/11/2004   AUTEUR MCOURTOI M.COURTOIS 
 # TITRE : EPROUVETTE ENTAILLE EN VISCOPLASTICITE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -210,11 +210,11 @@ EFFORT_R =  POST_RELEVE_T (
                           RESULTANTE = ('DY'),
                           OPERATION= 'EXTRACTION',),);
                           
-IMPR_TABLE ( FORMAT = 'EXCEL',
+IMPR_TABLE ( FORMAT = 'TABLEAU',
              TABLE = EFFORT_R,
              NOM_PARA=('INST','DY'));
 
-IMPR_TABLE ( FORMAT = 'EXCEL',
+IMPR_TABLE ( FORMAT = 'TABLEAU',
              TABLE = CONTR_R,
              NOM_PARA=('INST','DX'));
 
@@ -277,11 +277,11 @@ EFFORT_L =  POST_RELEVE_T (
                           RESULTANTE = ('DY'),
                           OPERATION= 'EXTRACTION',),);
                           
-IMPR_TABLE ( FORMAT = 'EXCEL',
+IMPR_TABLE ( FORMAT = 'TABLEAU',
              TABLE = EFFORT_L,
              NOM_PARA=('INST','DY'));
 
-IMPR_TABLE ( FORMAT = 'EXCEL',
+IMPR_TABLE ( FORMAT = 'TABLEAU',
              TABLE = CONTR_L,
              NOM_PARA=('INST','DX'));
 

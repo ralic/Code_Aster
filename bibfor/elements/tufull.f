@@ -4,7 +4,7 @@
       IMPLICIT   NONE
       CHARACTER*16 OPTION
 C ......................................................................
-C MODIF ELEMENTS  DATE 16/10/2004   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF ELEMENTS  DATE 03/11/2004   AUTEUR CIBHHPD L.SALMONA 
 C TOLE CRP_20
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -68,7 +68,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       REAL*8 PASS(NBRDDL,NBRDDL),KTEMP(NBRDDL,NBRDDL)
       REAL*8 PGL(3,3),TMC,TPC,OMEGA,VTEMP(NBRDDL)
       REAL*8 PGL1(3,3),PGL2(3,3),PGL3(3,3),RAYON,THETA
-      REAL*8 HYDRGM,HYDRGP,SECHGM,SECHGP,SREF,LC,ANGMAS(3)
+      REAL*8 HYDRGM,HYDRGP,SECHGM,SECHGP,SREF,IRRAGM,IRRAGP,LC,ANGMAS(3)
       INTEGER NNO,NPG,NBCOU,NBSEC,M,ICOMPO,NDIMV,IVARIX
       INTEGER IPOIDS,IVF,NBVARI,LGPG,JTAB(7)
       INTEGER IMATE,ITEMP,IMATUU,ICAGEP,IGEOM,NBPAR,ITABM(8),ITABP(8)
@@ -77,6 +77,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       INTEGER IINSTM,IINSTP,IDEPLM,IDEPLP,ICARCR,NBV,ICOUDE,K1,K2
       INTEGER ITEMPM,ITEMPP,INO,IER,ICOUD2,MMT,NZ,CODRET,COD
       INTEGER JNBSPI,IRET
+      INTEGER IIRRAM,IIRRAP
       INTEGER NDIM,NNOS,JCOOPG,IDFDK,JDFD2,JGANO
       LOGICAL VECTEU,MATRIC,TEMPNO
 
@@ -241,7 +242,7 @@ C     POUR AVOIR UN TABLEAU BIDON A DONNER A NMCOMP
       END IF
 
 C===============================================================
-C     -- RECUPERATION DE LA TEMPERATURE :
+C     -- RECUPERATION DE LA TEMPERATURE ET DE L IRRADIATION :
 C     1- SI LA TEMPERATURE EST CONNUE AUX NOEUDS :
 C        -----------------------------------------
       CALL TECACH('ONN','PTEMPMR',8,ITABM,IRET)
@@ -253,6 +254,9 @@ C        -----------------------------------------
         CALL TECACH('OON','PTEMPPR',8,ITABP,IRET)
         ITEMPP = ITABP(1)
 
+      CALL JEVECH('PIRRAMR','L',IIRRAM)
+      CALL JEVECH('PIRRAPR','L',IIRRAP)
+
 C       -- CALCUL DES TEMPERATURES INF, SUP ET MOY
 C          (MOYENNE DES NNO NOEUDS) ET DES COEF. DES POLY. DE DEGRE 2 :
 C          ------------------------------------------------------------
@@ -262,16 +266,20 @@ C          ------------------------------------------------------------
         TPINF = 0.D0
         TPMOY = 0.D0
         TPSUP = 0.D0
+        IRRAGM= 0.D0
+        IRRAGP= 0.D0
         DO 90,INO = 1,NNO
           CALL DXTPIF(ZR(ITEMPM+3* (INO-1)),ZL(ITABM(8)+3* (INO-1)))
           TMMOY = TMMOY + ZR(ITEMPM-1+3* (INO-1)+1)/DBLE(NNO)
           TMINF = TMINF + ZR(ITEMPM-1+3* (INO-1)+2)/DBLE(NNO)
           TMSUP = TMSUP + ZR(ITEMPM-1+3* (INO-1)+3)/DBLE(NNO)
+          IRRAGM = IRRAGM + ZR(IIRRAM-1+INO)/DBLE(NNO)
 
           CALL DXTPIF(ZR(ITEMPP+3* (INO-1)),ZL(ITABP(8)+3* (INO-1)))
           TPMOY = TPMOY + ZR(ITEMPP-1+3* (INO-1)+1)/DBLE(NNO)
           TPINF = TPINF + ZR(ITEMPP-1+3* (INO-1)+2)/DBLE(NNO)
           TPSUP = TPSUP + ZR(ITEMPP-1+3* (INO-1)+3)/DBLE(NNO)
+          IRRAGP = IRRAGP + ZR(IIRRAP-1+INO)/DBLE(NNO)
    90   CONTINUE
         CM1 = TMMOY
         CP1 = TPMOY
@@ -408,6 +416,7 @@ C           ORIENTATION DU MASSIF
      &                  TMC,TPC,ZR(ITREF),
      &                  HYDRGM,HYDRGP,
      &                  SECHGM,SECHGP,SREF, 
+     &                  IRRAGM,IRRAGP, 
      &                  EPS2D,DEPS2D,
      &                  SIGN,ZR(IVARIM+K2),
      &                  OPTION,

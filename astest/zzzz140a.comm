@@ -1,0 +1,131 @@
+# MODIF  DATE 03/11/2004   AUTEUR MCOURTOI M.COURTOIS 
+# TITRE TEST IMPR_FONCTION ET METHODES PYTHON DE TRACE
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+DEBUT(CODE=_F(NOM = 'ZZZZ140A', NIV_PUB_WEB='INTERNET', VISU_EFICAS='NON', ),
+   PAR_LOT='NON',
+)
+
+# ------------------------------------------------------------------------------
+# COURBE DE TRACTION
+
+A5=DEFI_FONCTION(
+   NOM_RESU='SIGM',
+   NOM_PARA='EPSI',
+   VALE=(0.002,400.0,
+         0.003,500.0,
+         0.0045,550.0,
+         0.0065,580.0,
+         0.008,590.0,
+         0.01,600.0,
+         0.02,600.0,
+   ),
+   PROL_DROITE='CONSTANT',
+   PROL_GAUCHE='LINEAIRE',
+)
+                 
+# ------------------------------------------------------------------------------
+# NAPPE
+FCT1=DEFI_FONCTION(
+   NOM_PARA='EPSI',
+   VALE=(0.002,400.0,0.004,500.0,),
+   PROL_DROITE='LINEAIRE',
+   PROL_GAUCHE='LINEAIRE',
+)
+
+FCT2=DEFI_FONCTION(
+   NOM_PARA='EPSI',
+   VALE=(0.001,200.0,0.003,300.0,),
+   PROL_DROITE='LINEAIRE',
+   PROL_GAUCHE='LINEAIRE',
+)
+
+CTRACB=DEFI_NAPPE(
+   NOM_PARA='TEMP',
+   PARA=(0.0,50.0,),
+   FONCTION=(FCT1,FCT2,),
+   PROL_DROITE='LINEAIRE',
+   PROL_GAUCHE='LINEAIRE',
+)
+
+# ------------------------------------------------------------------------------
+IMPR_FONCTION(
+   FORMAT='XMGRACE',
+   UNITE=53,
+   COURBE=(
+      _F(
+         ABSCISSE=[0.]+A5.Absc(),
+         ORDONNEE=[0.]+A5.Ordo(),
+         COULEUR=2,
+      ),
+   ),
+   TITRE='Courbe de traction',
+   SOUS_TITRE='avec un palier horizontal',
+   LEGENDE_X='Deformation',
+   LEGENDE_Y='Contrainte',
+)
+TEST_FICHIER(
+   FICHIER='fort.53',
+   VALE_K='c8764b52df5d0fe81e8cc6a750ba1733',
+   REFERENCE='NON_REGRESSION',
+   VERSION='7.4.0',
+)
+
+# ------------------------------------------------------------------------------
+A5.Trace(FORMAT='AGRAF',FICHIER=('A5.dogr','A5.digr'))
+TEST_FICHIER(
+   FICHIER='A5.dogr',
+   VALE_K='8869480960c43875ba2ee3ec0588c9e3',
+   REFERENCE='NON_REGRESSION',
+   VERSION='7.4.0',
+)
+TEST_FICHIER(
+   FICHIER='A5.digr',
+   VALE_K='9283df657c2fa170d6c422e6d94b4dc4',
+   REFERENCE='NON_REGRESSION',
+   VERSION='7.4.0',
+)
+
+# ------------------------------------------------------------------------------
+IMPR_FONCTION(
+   FORMAT='XMGRACE',
+   UNITE=54,
+   COURBE=(
+      _F(
+         FONCTION=CTRACB,
+      ),
+   ),
+)
+TEST_FICHIER(
+   FICHIER='fort.54',
+   VALE_K='5240b40cde07662e033754e1b6a6e1ad',
+   REFERENCE='NON_REGRESSION',
+   VERSION='7.4.0',
+)
+
+# ------------------------------------------------------------------------------
+CTRACB.Trace(FORMAT='XMGRACE',FICHIER='fort.55')
+TEST_FICHIER(
+   FICHIER='fort.55',
+   VALE_K='5240b40cde07662e033754e1b6a6e1ad',
+   REFERENCE='NON_REGRESSION',
+   VERSION='7.4.0',
+)
+
+FIN()
