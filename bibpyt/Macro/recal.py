@@ -1,4 +1,4 @@
-#@ MODIF recal Macro  DATE 14/09/2004   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF recal Macro  DATE 14/03/2005   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -29,7 +29,6 @@ import Gnuplot
 import Cata
 from Cata.cata import INCLUDE,DETRUIRE
 from Accas import _F
-from Utilitai.extract import EXTRACT
 
 import os
 
@@ -151,13 +150,14 @@ def calcul_F(self,UL,para,val,reponses):
       
       Fichier_Resu.append(post_bloc)
       #--------------------------------------------------------------------------------
-      #on va ajouter la fonction EXTRACT 
+      #on va ajouter la fonction d'extraction du numarray de la table par la méthode Array 
       #et on stocke les réponses calculées dans la liste Lrep
       #qui va etre retournée par la fonction calcul_F
       self.g_context['Lrep'] = []
       Fichier_Resu.append('Lrep=[]'+'\n')
       for i in range(len(reponses)):
-         Fichier_Resu.append('F = EXTRACT('+str(reponses[i][0])+','+"'"+str(reponses[i][1])+"'"+','+"'"+str(reponses[i][2])+"'"+')'+'\n')
+         Fichier_Resu.append('t'+str(reponses[i][0])+'='+str(reponses[i][0])+'.EXTR_TABLE()'+'\n')
+         Fichier_Resu.append('F = '+'t'+str(reponses[i][0])+'.Array('+"'"+str(reponses[i][1])+"'"+','+"'"+str(reponses[i][2])+"'"+')'+'\n')
          Fichier_Resu.append('Lrep.append(F)'+'\n')
       
       #ouverture du fichier fort.3 et mise a jour de celui ci

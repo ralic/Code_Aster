@@ -1,6 +1,6 @@
       SUBROUTINE JXLOCS ( ITAB, GENR, LTYP, LONO, IADM , LDEPS, JITAB)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 28/06/2004   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF JEVEUX  DATE 14/03/2005   AUTEUR D6BHHJP J.P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,7 +46,7 @@ C ----------------------------------------------------------------------
 C
       CHARACTER*75     CMESS
       INTEGER          IDEC
-      INTEGER*8        VALLOC,IA
+      INTEGER*8        VALLOC,IA,LTYP2
 C DEB-------------------------------------------------------------------
       KADM = IADM
       LADM = ISZON(JISZON + KADM - 3)
@@ -54,7 +54,8 @@ C DEB-------------------------------------------------------------------
       VALLOC = LOC(ITAB)
       IA = (ILOC-VALLOC)*LOUA + KADM*LOIS
       IR = 0
-      IDEC = MOD(IA,LTYP)
+      LTYP2 = LTYP
+      IDEC = MOD(IA,LTYP2)
       IF ( IDEC .NE. 0 .AND. GENR(1:1) .NE. 'N' ) THEN
         IF ( IDEC .GT. 0 ) THEN
           IR = LTYP - IDEC

@@ -2,7 +2,7 @@
       IMPLICIT  NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 15/02/2005   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ALGORITH  DATE 14/03/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -141,8 +141,7 @@ C
             PROFCH = NOOJB(1:19)
             CALL COPISD ( 'PROF_CHNO', 'G', PCHN1, PROFCH )
           ELSE
-            CALL GETVID ( 'AFFE', 'CHAM_GD', IOCC-1,1,1, CHAMP1, N1 )
-            CALL DISMOI('F','PROF_CHNO',CHAMP1,'CHAM_NO',IBID,PCHN1,IER)
+            CALL DISMOI('F','PROF_CHNO',CHAMP,'CHAM_NO',IBID,PCHN1,IER)
             IF ( .NOT. IDENSD('PROF_CHNO',PROFCH,PCHN1) ) THEN
               NOOJB = '12345678.PRCHN00000.PRNO'
               CALL GNOMSD ( NOOJB,15,19 )
@@ -150,8 +149,6 @@ C
               CALL COPISD ( 'PROF_CHNO', 'G', PCHN1, PROFCH )
             ENDIF
           ENDIF
-        ELSE
-          PROFCH = ' '
         ENDIF
 C
 C ----- MOT CLE "NOM_CAS", "NUME_MODE" PRESENT :
@@ -310,7 +307,7 @@ C
             O1=CHAMP//'.DESC'
             O2=NOMCH//'.DESC'
             CALL JEDUPO ( O1, 'G', O2, .FALSE. )
-C 
+C
             O1=CHAMP//'.REFE'
             O2=NOMCH//'.REFE'
             CALL JEDUPO ( O1, 'G', O2, .FALSE. )

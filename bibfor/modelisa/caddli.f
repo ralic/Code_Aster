@@ -1,18 +1,18 @@
       SUBROUTINE CADDLI(NOMCMD,MOTFAC,FONREE,CHAR)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 23/08/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF MODELISA  DATE 14/03/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
 C (AT YOUR OPTION) ANY LATER VERSION.
-C
+
 C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
 C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
 C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
 C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
-C
+
 C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
@@ -70,14 +70,14 @@ C---------------- DECLARATION DES VARIABLES LOCALES  -------------------
       CHARACTER*16 MOTCLE(NMOCL),MOTCL2(5),TYMOC2(5)
       CHARACTER*19 LIGRMO,LISREL
       CHARACTER*24 NOMNOE
- 
-C--- Variables pour le mot-clef "LIAISON = ENCASTRE"      
+
+C--- Variables pour le mot-clef "LIAISON = ENCASTRE"
       CHARACTER*72 VALLIA
       INTEGER NDLIA,LIAIMP
-      INTEGER  ICMP1,ICMP2,ICMP3,ICMP4,ICMP5,ICMP6,ICMP7  
-      LOGICAL EXISDG 
+      INTEGER ICMP1,ICMP2,ICMP3,ICMP4,ICMP5,ICMP6,ICMP7
+      LOGICAL EXISDG
       INTEGER INDIK8
-      CHARACTER*8  NOMG,NOMCMP(NMOCL)
+      CHARACTER*8 NOMG,NOMCMP(NMOCL)
       INTEGER INOM,NBCMP
       CHARACTER*9 NOMTE
 C-------------------------------------------------------------
@@ -94,23 +94,23 @@ C-------------------------------------------------------------
       TYMOC2(4) = 'GROUP_MA'
       MOTCL2(5) = 'TOUT'
       TYMOC2(5) = 'TOUT'
-C
+
       LISREL = '&&CADDLI.RLLISTE'
       CALL GETFAC(MOTFAC,NDDLI)
-      IF (NDDLI.EQ.0) GO TO 9999
-C
-C --- RECUPERATION DES NOMS DES DDLS DISPO 
+      IF (NDDLI.EQ.0) GO TO 110
+
+C --- RECUPERATION DES NOMS DES DDLS DISPO
 C       -> STOCKAGE DANS NOMCMP (TABLEAU K8 de LONGUEUR NBCMP)
-C
+
       NOMG = 'DEPL_R'
       CALL JEVEUO(JEXNOM('&CATA.GD.NOMCMP',NOMG),'L',INOM)
       CALL JELIRA(JEXNOM('&CATA.GD.NOMCMP',NOMG),'LONMAX',NBCMP,K1BID)
 
-      NBCMP = NBCMP -1
+      NBCMP = NBCMP - 1
 
-      DO 14 I = 1,NBCMP
+      DO 10 I = 1,NBCMP
         NOMCMP(I) = ZK8(INOM-1+I)
- 14   CONTINUE
+   10 CONTINUE
 
 C --- MODELE ASSOCIE AU LIGREL DE CHARGE ---
       CALL DISMOI('F','NOM_MODELE',CHAR(1:8),'CHARGE',IBID,MOD,IER)
@@ -121,8 +121,8 @@ C --- MODELE ASSOCIE AU LIGREL DE CHARGE ---
       NBEC = N2/N1
       IF (NBEC.GT.10) THEN
         CALL UTMESS('F','CADDLI',
-     +              'LE DESCRIPTEUR_GRANDEUR ASSOCIE AU MODELE'//
-     +              ' NE TIENT PAS SUR DIX ENTIERS CODES')
+     &              'LE DESCRIPTEUR_GRANDEUR ASSOCIE AU MODELE'//
+     &              ' NE TIENT PAS SUR DIX ENTIERS CODES')
       END IF
 
 C --- MAILLAGE ASSOCIE AU MODELE ---
@@ -141,60 +141,60 @@ C --------------------------------------------------------------
 C 3   BOUCLE SUR LES OCCURENCES DU MOT-CLE FACTEUR DDL IMPOSE
 C --------------------------------------------------------------
 
-      DO 60 I = 1,NDDLI
+      DO 100 I = 1,NDDLI
 
 C ---------------------------------------------------
 C 1.  RECUPERATION DES MOTS-CLES DDL SOUS XXX_IMPO
 C     MOTCLE(J) : K8 CONTENANT LE J-EME MOT-CLE DDL
 C     NDDLA     : NOMBRE DE MOTS CLES DU TYPE DDL
 C ---------------------------------------------------
-      CALL GETMJM(MOTFAC,I-1,0,MOTCLE,TYMOCL,N)
-      NMCL = ABS(N)
-      IF (NMCL.GT.NMOCL) THEN
-        CALL UTDEBM('F','CADDLI','NOMBRE DE MOTCLES SUPERIEUR AU MAX')
-        CALL UTIMPI('L','NMAXOCL= ',1,NMOCL)
-        CALL UTIMPI('L','NMOCL  = ',1,NMCL)
-        CALL UTFINM()
-      END IF
-      CALL GETMJM(MOTFAC,I-1,NMCL,MOTCLE,TYMOCL,N)
+        CALL GETMJM(MOTFAC,I-1,0,MOTCLE,TYMOCL,N)
+        NMCL = ABS(N)
+        IF (NMCL.GT.NMOCL) THEN
+          CALL UTDEBM('F','CADDLI','NOMBRE DE MOTCLES SUPERIEUR AU MAX')
+          CALL UTIMPI('L','NMAXOCL= ',1,NMOCL)
+          CALL UTIMPI('L','NMOCL  = ',1,NMCL)
+          CALL UTFINM()
+        END IF
+        CALL GETMJM(MOTFAC,I-1,NMCL,MOTCLE,TYMOCL,N)
 
 C --- RECUPERATION DU MOT-CLEF "LIAISON"
 
 
-      NDDLA = 1
-      DO 10 J = 1,NMCL
-        IF (MOTCLE(J).NE.'TOUT' .AND. MOTCLE(J).NE.'GROUP_NO' .AND.
-     +      MOTCLE(J).NE.'NOEUD' .AND. MOTCLE(J).NE.'GROUP_MA' .AND.
-     +      MOTCLE(J).NE.'MAILLE' .AND. MOTCLE(J).NE.'EVOL_THER' .AND.
-     +      MOTCLE(J).NE.'DDL'.AND.MOTCLE(J).NE.'LIAISON') THEN
-          MOTCLE(NDDLA) = MOTCLE(J)
-          NDDLA = NDDLA + 1
-        END IF
-       
-   10 CONTINUE
-      NDDLA = NDDLA - 1
+        NDDLA = 1
+        DO 20 J = 1,NMCL
+          IF (MOTCLE(J).NE.'TOUT' .AND. MOTCLE(J).NE.'GROUP_NO' .AND.
+     &        MOTCLE(J).NE.'NOEUD' .AND. MOTCLE(J).NE.'GROUP_MA' .AND.
+     &        MOTCLE(J).NE.'MAILLE' .AND. MOTCLE(J).NE.'EVOL_THER' .AND.
+     &        MOTCLE(J).NE.'DDL' .AND. MOTCLE(J).NE.'LIAISON') THEN
+            MOTCLE(NDDLA) = MOTCLE(J)
+            NDDLA = NDDLA + 1
+          END IF
 
-      NDLIA= 0
-      DO 9 J = 1,NMCL
-        IF (MOTCLE(J).EQ.'LIAISON') THEN
-               NDLIA = 1
-               NDDLA = 6
-               MOTCLE(1)='DX'
-               MOTCLE(2)='DY'
-               MOTCLE(3)='DZ'
-               MOTCLE(4)='DRX'
-               MOTCLE(5)='DRY'
-               MOTCLE(6)='DRZ'
-C
-               ICMP1 = INDIK8(NOMCMP,MOTCLE(1)(1:8),1,NBCMP)
-               ICMP2 = INDIK8(NOMCMP,MOTCLE(2)(1:8),1,NBCMP)
-               ICMP3 = INDIK8(NOMCMP,MOTCLE(3)(1:8),1,NBCMP)
-               ICMP4 = INDIK8(NOMCMP,MOTCLE(4)(1:8),1,NBCMP)
-               ICMP5 = INDIK8(NOMCMP,MOTCLE(5)(1:8),1,NBCMP)
-               ICMP6 = INDIK8(NOMCMP,MOTCLE(6)(1:8),1,NBCMP)
-        ENDIF
-   9  CONTINUE      
-      
+   20   CONTINUE
+        NDDLA = NDDLA - 1
+
+        NDLIA = 0
+        DO 30 J = 1,NMCL
+          IF (MOTCLE(J).EQ.'LIAISON') THEN
+            NDLIA = 1
+            NDDLA = 6
+            MOTCLE(1) = 'DX'
+            MOTCLE(2) = 'DY'
+            MOTCLE(3) = 'DZ'
+            MOTCLE(4) = 'DRX'
+            MOTCLE(5) = 'DRY'
+            MOTCLE(6) = 'DRZ'
+
+            ICMP1 = INDIK8(NOMCMP,MOTCLE(1) (1:8),1,NBCMP)
+            ICMP2 = INDIK8(NOMCMP,MOTCLE(2) (1:8),1,NBCMP)
+            ICMP3 = INDIK8(NOMCMP,MOTCLE(3) (1:8),1,NBCMP)
+            ICMP4 = INDIK8(NOMCMP,MOTCLE(4) (1:8),1,NBCMP)
+            ICMP5 = INDIK8(NOMCMP,MOTCLE(5) (1:8),1,NBCMP)
+            ICMP6 = INDIK8(NOMCMP,MOTCLE(6) (1:8),1,NBCMP)
+          END IF
+   30   CONTINUE
+
 
 C ---------------------------------------------------
 C 2   ALLOCATION DE TABLEAUX DE TRAVAIL
@@ -207,144 +207,143 @@ C                         DIM NBNOEU * NBCOMP
 C        -  VECTEUR (IS) CONTENANT LE DESCRIPTEUR GRANDEUR ASSOCIE AUX
 C                         DDLS IMPOSES PAR NOEUD
 
-      IF (NDDLA.NE.0) THEN
-      IF (FONREE.EQ.'REEL') THEN
-        CALL WKVECT('&&CADDLI.VALDDL','V V R',NDDLA*NBNOEU,JVAL)
-      ELSE IF (FONREE.EQ.'COMP') THEN
-        CALL WKVECT('&&CADDLI.VALDDL','V V C',NDDLA*NBNOEU,JVAL)
-      ELSE IF (FONREE.EQ.'FONC') THEN
-        CALL WKVECT('&&CADDLI.VALDDL','V V K8',NDDLA*NBNOEU,JVAL)
-      ELSE
-        CALL UTMESS('F','CADDLI','STOP 1')
-      END IF
-      CALL WKVECT('&&CADDLI.DIRECT','V V R',3*NBNOEU,JDIREC)
-      CALL WKVECT('&&CADDLI.DIMENSION','V V I',NBNOEU,JDIMEN)
-      ENDIF
+        IF (NDDLA.NE.0) THEN
+          IF (FONREE.EQ.'REEL') THEN
+            CALL WKVECT('&&CADDLI.VALDDL','V V R',NDDLA*NBNOEU,JVAL)
+          ELSE IF (FONREE.EQ.'COMP') THEN
+            CALL WKVECT('&&CADDLI.VALDDL','V V C',NDDLA*NBNOEU,JVAL)
+          ELSE IF (FONREE.EQ.'FONC') THEN
+            CALL WKVECT('&&CADDLI.VALDDL','V V K8',NDDLA*NBNOEU,JVAL)
+          ELSE
+            CALL UTMESS('F','CADDLI','STOP 1')
+          END IF
+          CALL WKVECT('&&CADDLI.DIRECT','V V R',3*NBNOEU,JDIREC)
+          CALL WKVECT('&&CADDLI.DIMENSION','V V I',NBNOEU,JDIMEN)
+        END IF
 
 C        3.1- RECUPERATION DE LA LISTE DES NOEUDS :
 C        ----------------------------------------------
         CALL RELIEM(MOD,NOMA,'NU_NOEUD',MOTFAC,I,5,MOTCL2,TYMOC2,
-     +              '&&CADDLI.NUNOTMP',NBNO)
+     &              '&&CADDLI.NUNOTMP',NBNO)
         CALL JEVEUO('&&CADDLI.NUNOTMP','L',IALINO)
 
 
 
 C        3.2- RECUPERATION DE LA VALEUR IMPOSEE  (MOCLE(J)):
-C        ---------------------------------------------------        
+C        ---------------------------------------------------
         IF (FONREE.EQ.'REEL') THEN
-          DO 20 J = 1,NDDLA
+          DO 40 J = 1,NDDLA
             CALL GETVR8(MOTFAC,MOTCLE(J),I,1,1,VALIMR(J),DDLIMP(J))
-   20     CONTINUE
+   40     CONTINUE
 
         ELSE IF (FONREE.EQ.'COMP') THEN
-          DO 30 J = 1,NDDLA
+          DO 50 J = 1,NDDLA
             CALL GETVC8(MOTFAC,MOTCLE(J),I,1,1,VALIMC(J),DDLIMP(J))
-   30     CONTINUE
+   50     CONTINUE
 
 
         ELSE IF (FONREE.EQ.'FONC') THEN
-          DO 40 J = 1,NDDLA
+          DO 60 J = 1,NDDLA
             CALL GETVID(MOTFAC,MOTCLE(J),I,1,1,VALIMF(J),DDLIMP(J))
-   40     CONTINUE
+   60     CONTINUE
         END IF
 
 
-                              
+
 C        3.3- AFFECTATION DES RELATIONS LINEAIRES :
 C        ----------------------------------------------
 C       -- ON VERIFIE QUE SI EVOL_THER, IL EST EMPLOYE SEUL :
-        IEVOL=0
+        IEVOL = 0
         IF (NOMCMD.EQ.'AFFE_CHAR_THER_F') THEN
           CALL GETVID('TEMP_IMPO','EVOL_THER',I,1,1,EVOTH,IEVOL)
           IF (IEVOL.EQ.1) THEN
-          DO 41 J = 1,NDDLA
-            CALL GETVID(MOTFAC,MOTCLE(J),I,1,1,VALIMF(J),DDLIMP(J))
-            IF (DDLIMP(J).NE.0) CALL UTMESS('F','CADDLI',
-     &    'LE MOT CLEF EVOL_THER EST INCOMPATIBLE AVEC:'//MOTCLE(J))
-   41     CONTINUE
+            DO 70 J = 1,NDDLA
+              CALL GETVID(MOTFAC,MOTCLE(J),I,1,1,VALIMF(J),DDLIMP(J))
+              IF (DDLIMP(J).NE.0) CALL UTMESS('F','CADDLI',
+     &                    'LE MOT CLEF EVOL_THER EST INCOMPATIBLE AVEC:'
+     &                                 //MOTCLE(J))
+   70       CONTINUE
           END IF
         END IF
 
 
-        DO 50 K = 1,NBNO
+        DO 90 K = 1,NBNO
           INO = ZI(IALINO-1+K)
           CALL JENUNO(JEXNUM(NOMNOE,INO),NOMN)
 C---  GESTION DU MOT-CLEF "LIAISON"
-          DO 21 J = 1,NDLIA         
+          DO 80 J = 1,NDLIA
             CALL GETVTX(MOTFAC,'LIAISON',I,1,1,VALLIA,LIAIMP)
             IF (VALLIA.EQ.'ENCASTRE') THEN
-               IF (EXISDG(ZI(JPRNM-1+(INO-1)*NBEC+1),ICMP1)) THEN
-                  VALIMR(1) =  0.D0
-                  VALIMC(1) = (0.D0,0.D0)
-                  VALIMF(1) = '&FOZERO'
-                  DDLIMP(1) = 1
-               ENDIF
-               IF (EXISDG(ZI(JPRNM-1+(INO-1)*NBEC+1),ICMP2)) THEN
-                  VALIMR(2) =  0.D0
-                  VALIMC(2) = (0.D0,0.D0)
-                  VALIMF(2) = '&FOZERO'
-                  DDLIMP(2) = 1
-               ENDIF
-               IF (EXISDG(ZI(JPRNM-1+(INO-1)*NBEC+1),ICMP3)) THEN
-                  VALIMR(3) =  0.D0
-                  VALIMC(3) = (0.D0,0.D0)
-                  VALIMF(3) = '&FOZERO'
-                  DDLIMP(3) = 1
-               ENDIF               
-               IF (EXISDG(ZI(JPRNM-1+(INO-1)*NBEC+1),ICMP4)) THEN
-                  VALIMR(4) =  0.D0
-                  VALIMC(4) = (0.D0,0.D0)
-                  VALIMF(4) = '&FOZERO'
-                  DDLIMP(4) = 1
-               ENDIF     
-               IF (EXISDG(ZI(JPRNM-1+(INO-1)*NBEC+1),ICMP5)) THEN
-                  VALIMR(5) =  0.D0
-                  VALIMC(5) = (0.D0,0.D0)
-                  VALIMF(5) = '&FOZERO'
-                  DDLIMP(5) = 1
-               ENDIF
-               IF (EXISDG(ZI(JPRNM-1+(INO-1)*NBEC+1),ICMP6)) THEN
-                  VALIMR(6) =  0.D0
-                  VALIMC(6) = (0.D0,0.D0)
-                  VALIMF(6) = '&FOZERO'
-                  DDLIMP(6) = 1
-               ENDIF
-            ENDIF
-   21   CONTINUE 
-C
+              IF (EXISDG(ZI(JPRNM-1+ (INO-1)*NBEC+1),ICMP1)) THEN
+                VALIMR(1) = 0.D0
+                VALIMC(1) = (0.D0,0.D0)
+                VALIMF(1) = '&FOZERO'
+                DDLIMP(1) = 1
+              END IF
+              IF (EXISDG(ZI(JPRNM-1+ (INO-1)*NBEC+1),ICMP2)) THEN
+                VALIMR(2) = 0.D0
+                VALIMC(2) = (0.D0,0.D0)
+                VALIMF(2) = '&FOZERO'
+                DDLIMP(2) = 1
+              END IF
+              IF (EXISDG(ZI(JPRNM-1+ (INO-1)*NBEC+1),ICMP3)) THEN
+                VALIMR(3) = 0.D0
+                VALIMC(3) = (0.D0,0.D0)
+                VALIMF(3) = '&FOZERO'
+                DDLIMP(3) = 1
+              END IF
+              IF (EXISDG(ZI(JPRNM-1+ (INO-1)*NBEC+1),ICMP4)) THEN
+                VALIMR(4) = 0.D0
+                VALIMC(4) = (0.D0,0.D0)
+                VALIMF(4) = '&FOZERO'
+                DDLIMP(4) = 1
+              END IF
+              IF (EXISDG(ZI(JPRNM-1+ (INO-1)*NBEC+1),ICMP5)) THEN
+                VALIMR(5) = 0.D0
+                VALIMC(5) = (0.D0,0.D0)
+                VALIMF(5) = '&FOZERO'
+                DDLIMP(5) = 1
+              END IF
+              IF (EXISDG(ZI(JPRNM-1+ (INO-1)*NBEC+1),ICMP6)) THEN
+                VALIMR(6) = 0.D0
+                VALIMC(6) = (0.D0,0.D0)
+                VALIMF(6) = '&FOZERO'
+                DDLIMP(6) = 1
+              END IF
+            END IF
+   80     CONTINUE
+
 C         -- CAS EVOL_THER/DDL (POUR AFFE_CHAR_THER_F):
 C         ---------------------------------------------
           IF (IEVOL.EQ.1) THEN
             CALL GCNCON('_',NOMFON)
-            DDL='TEMP'
-            CALL FOCRR1(NOMFON,EVOTH,'G','TEMP',' ',NOMN,
-     &                   DDL,0,0)
-            COEFR=1.D0
-            CALL AFRELA (COEFR,CBID,DDL,NOMN,0,RBID,1,RBID,CBID,
-     +                   NOMFON,'REEL','FONC','12',LISREL)
+            DDL = 'TEMP'
+            CALL FOCRR1(NOMFON,EVOTH,'G','TEMP',' ',NOMN,DDL,0,0)
+            COEFR = 1.D0
+            CALL AFRELA(COEFR,CBID,DDL,NOMN,0,RBID,1,RBID,CBID,NOMFON,
+     &                  'REEL','FONC','12',0.D0,LISREL)
 
 
 C         -- AUTRES CAS:
 C         ---------------
           ELSE
-               CALL AFDDLI(ZR(JVAL),ZK8(JVAL),ZC(JVAL),
-     +                ZI(JPRNM-1+ (INO-1)*NBEC+1),NDDLA,FONREE,NOMN,INO,
-     +                DDLIMP,VALIMR,VALIMF,VALIMC,MOTCLE,
-     +                NBEC,ZR(JDIREC+3* (INO-1)),0,
-     +                LISREL)
-            ENDIF
-   50   CONTINUE
+            CALL AFDDLI(ZR(JVAL),ZK8(JVAL),ZC(JVAL),
+     &                  ZI(JPRNM-1+ (INO-1)*NBEC+1),NDDLA,FONREE,NOMN,
+     &                  INO,DDLIMP,VALIMR,VALIMF,VALIMC,MOTCLE,NBEC,
+     &                  ZR(JDIREC+3* (INO-1)),0,LISREL)
+          END IF
+   90   CONTINUE
 
-      CALL JEDETR('&&CADDLI.VALDDL')
-      CALL JEDETR('&&CADDLI.DIRECT')
-      CALL JEDETR('&&CADDLI.DIMENSION')
-      CALL JEDETR('&&CADDLI.NUNOTMP')
+        CALL JEDETR('&&CADDLI.VALDDL')
+        CALL JEDETR('&&CADDLI.DIRECT')
+        CALL JEDETR('&&CADDLI.DIMENSION')
+        CALL JEDETR('&&CADDLI.NUNOTMP')
 
-   60 CONTINUE
+  100 CONTINUE
 
       CALL AFLRCH(LISREL,CHAR)
 
 
-9999  CONTINUE
+  110 CONTINUE
       CALL JEDEMA()
       END

@@ -1,27 +1,26 @@
-      SUBROUTINE CALYRC ( CHARGZ )
+      SUBROUTINE CALYRC(CHARGZ)
       IMPLICIT NONE
       CHARACTER*(*) CHARGZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 15/02/2005   AUTEUR NICOLAS O.NICOLAS 
+C MODIF MODELISA  DATE 14/03/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C
+
 C TOLE CRP_20
 
 C     CREER LES CARTES CHAR.CHXX.CMULT ET CHAR.CHXX.CIMPO
@@ -70,14 +69,14 @@ C---------------- FIN COMMUNS NORMALISES  JEVEUX  ----------------------
       CHARACTER*24 GEOM3,MAILMA
       CHARACTER*1 KB
       REAL*8 RBID
-      REAL*8   COEF11,COEF12,COEF3
-      INTEGER  ICOEF1,ICOEF2,ICOEF3,IAGNO3,NBNO3,NBMA3,IDMAI3
+      REAL*8 COEF11,COEF12,COEF3
+      INTEGER ICOEF1,ICOEF2,ICOEF3,IAGNO3,NBNO3,NBMA3,IDMAI3
 C ----------------------------------------------------------------------
 
       CALL JEMARQ()
       MOTFAC = 'LIAISON_CYCL'
       CALL GETFAC(MOTFAC,NOCC)
-      IF (NOCC.EQ.0) GO TO 250
+      IF (NOCC.EQ.0) GO TO 310
 
       CALL GETRES(KB,KB,NOMCMD)
       IF (NOMCMD.EQ.'AFFE_CHAR_MECA') THEN
@@ -144,14 +143,14 @@ C ----------------------------------------------------------------------
       CORES1 = '&&CALYRC.CORES1'
       CORES2 = '&&CALYRC.CORES2'
 
-      DO 240 IOCC = 1,NOCC
-C
+      DO 300 IOCC = 1,NOCC
+
         DNOR = .FALSE.
         IF (TYPLIA.EQ.'DEPL') THEN
           CALL GETVTX(MOTFAC,'DDL_ESCL',IOCC,1,1,DDL2,NDDL2)
-          IF (NDDL2.GT.0)  DNOR = .TRUE.
+          IF (NDDL2.GT.0) DNOR = .TRUE.
         END IF
-C
+
 C        1.1 RECUPERATION DE LA LISTE DES MAILLE_MAIT :
 C        ----------------------------------------------
 C        -- 1er groupe maitre --
@@ -185,8 +184,8 @@ C        --------------------------------------------
           TYMOCL(3) = 'MAILLE'
           MOTCLE(4) = 'GROUP_MA_ESCL'
           TYMOCL(4) = 'GROUP_MA'
-          CALL RELIEM(MO,NOMA,'NU_NOEUD',MOTFAC,IOCC,4,MOTCLE,
-     &                TYMOCL,'&&CALYRC.LINONU',NBNO3)
+          CALL RELIEM(MO,NOMA,'NU_NOEUD',MOTFAC,IOCC,4,MOTCLE,TYMOCL,
+     &                '&&CALYRC.LINONU',NBNO3)
           CALL JEVEUO('&&CALYRC.LINONU','L',IAGNO3)
 
         ELSE
@@ -197,29 +196,30 @@ C        ---------------------------------------------
           TYMOCL(1) = 'MAILLE'
           MOTCLE(2) = 'GROUP_MA_ESCL'
           TYMOCL(2) = 'GROUP_MA'
-          CALL RELIEM(MO,NOMA,'NU_MAILLE',MOTFAC,IOCC,2,MOTCLE,
-     &                TYMOCL,'&&CALYRC.LIMANU3',NBMA3)
-          IF ( NBMA3 .EQ. 0 ) THEN
-             CALL UTDEBM('F','CALYRC','LA DIRECTION NORMALE EST '//
-     &       'CALCULEE SUR LA FACE ESCLAVE. IL FAUT DONNER DES MAIILES')
-             CALL UTIMPK('S',' DE FACETTES, MOTS CLES : ', 2, MOTCLE)
-             CALL UTFINM()
-          ENDIF
+          CALL RELIEM(MO,NOMA,'NU_MAILLE',MOTFAC,IOCC,2,MOTCLE,TYMOCL,
+     &                '&&CALYRC.LIMANU3',NBMA3)
+          IF (NBMA3.EQ.0) THEN
+            CALL UTDEBM('F','CALYRC','LA DIRECTION NORMALE EST '//
+     &        'CALCULEE SUR LA FACE ESCLAVE. IL FAUT DONNER DES MAIILES'
+     &                  )
+            CALL UTIMPK('S',' DE FACETTES, MOTS CLES : ',2,MOTCLE)
+            CALL UTFINM()
+          END IF
           CALL JEVEUO('&&CALYRC.LIMANU3','L',IDMAI3)
 
           DO 10 I = 1,NBMA3
             CALL JENUNO(JEXNUM(MAILMA,ZI(IDMAI3+I-1)),NOMAIL)
-            CALL ORIEMA ( NOMAIL, MO, LREORI, NORIEN )
-            IF ( NORIEN .NE. 0 ) THEN
-               IER = IER + 1
-               CALL UTDEBM('E','CALYRC','MAILLE MAL ORIENTEE')
-               CALL UTIMPK('S',' : ', 1, NOMAIL)
-               CALL UTFINM()
-            ENDIF
+            CALL ORIEMA(NOMAIL,MO,LREORI,NORIEN)
+            IF (NORIEN.NE.0) THEN
+              IER = IER + 1
+              CALL UTDEBM('E','CALYRC','MAILLE MAL ORIENTEE')
+              CALL UTIMPK('S',' : ',1,NOMAIL)
+              CALL UTFINM()
+            END IF
    10     CONTINUE
-          IF ( IER .NE. 0 ) THEN
-             CALL UTMESS('F','CALYRC','ARRET SUR ERREUR(S)')
-          ENDIF
+          IF (IER.NE.0) THEN
+            CALL UTMESS('F','CALYRC','ARRET SUR ERREUR(S)')
+          END IF
 
 C ---        CREATION DU TABLEAU DES NUMEROS DES NOEUDS '&&NBNLMA.LN'
 C ---        ET DES NOMBRES D'OCCURENCES DE CES NOEUDS '&&NBNLMA.NBN'
@@ -296,18 +296,18 @@ C       =================
 C        -- 1er groupe maitre --
         CALL GETVR8(MOTFAC,'COEF_MAIT1',IOCC,1,1,COEF11,ICOEF1)
         IF (ICOEF1.LE.0) THEN
-          COEF11=1.D0
-        ENDIF
+          COEF11 = 1.D0
+        END IF
 C        -- 2eme groupe maitre --
         CALL GETVR8(MOTFAC,'COEF_MAIT2',IOCC,1,1,COEF12,ICOEF2)
         IF (ICOEF2.LE.0) THEN
-          COEF12=1.D0
-        ENDIF
+          COEF12 = 1.D0
+        END IF
 C        -- 1er groupe esclave --
         CALL GETVR8(MOTFAC,'COEF_ESCL',IOCC,1,1,COEF3,ICOEF3)
         IF (ICOEF3.LE.0) THEN
-          COEF3=1.D0
-        ENDIF
+          COEF3 = 1.D0
+        END IF
 
 C       3.1 CAS "DEPL" :
 C       =================
@@ -318,12 +318,12 @@ C       -------------------------------------
           IF (.NOT.LROTA) THEN
             IDCAL1 = 0
             IDCAL2 = 0
-            DO 80 INO2 = 1,NBNO3
+            DO 90 INO2 = 1,NBNO3
 C           NNO11: NB DE NOEUD_MAIT LIES A INO2 SELON CORES1
               NNO11 = ZI(ICONB1-1+INO2)
 C           NNO12: NB DE NOEUD_MAIT LIES A INO2 SELON CORES2
               NNO12 = ZI(ICONB2-1+INO2)
-              IF ((NNO11.EQ.0).AND.(NNO12.EQ.0)) GO TO 80
+              IF ((NNO11.EQ.0) .AND. (NNO12.EQ.0)) GO TO 90
 
               NUNO2 = INO2
               CALL JENUNO(JEXNUM(NOMA//'.NOMNOE',NUNO2),NONO2)
@@ -338,50 +338,48 @@ C           NNO12: NB DE NOEUD_MAIT LIES A INO2 SELON CORES2
                 ZK8(IDNOMN+INO1) = NONO1
                 ZR(IDCOEF+INO1) = COEF1*COEF11
    30         CONTINUE
-              DO 31,INO1 = 1,NNO12
+              DO 40,INO1 = 1,NNO12
                 NUNO1 = ZI(ICONU2+IDCAL2-1+INO1)
                 COEF1 = ZR(ICOCF2+IDCAL2-1+INO1)
                 CALL JENUNO(JEXNUM(NOMA//'.NOMNOE',NUNO1),NONO1)
                 ZK8(IDNOMN+NNO11+INO1) = NONO1
                 ZR(IDCOEF+NNO11+INO1) = COEF1*COEF12
-   31         CONTINUE
+   40         CONTINUE
 
 C           -- AFFECTATION DES RELATIONS CONCERNANT LE NOEUD INO2 :
 C           -----------------------------------------------------
               IF (DNOR) THEN
-                DO 50 INO1 = 1,NNO11+NNO12 + 1
+                DO 60 INO1 = 1,NNO11 + NNO12 + 1
                   ZI(IDIMEN+INO1-1) = NDIM
                   ZK8(IDNOMD-1+INO1) = 'DEPL'
-                  DO 40 IDIM = 1,NDIM
+                  DO 50 IDIM = 1,NDIM
                     ZR(IDIREC+ (INO1-1)*NDIM1+IDIM-1) = ZR(JNORM+
      &                (ZI(INDIRE+INO2-1)-1)*NDIM+IDIM-1)
-   40             CONTINUE
-   50           CONTINUE
+   50             CONTINUE
+   60           CONTINUE
                 CALL AFRELA(ZR(IDCOEF),ZC(JCMUC),ZK8(IDNOMD),
      &                      ZK8(IDNOMN),ZI(IDIMEN),ZR(IDIREC),
-     &                      NNO11+NNO12+1,
-     &                      BETA,BETAC,KBETA,TYPCOE,FONREE,TYPLAG,
-     &                      LISREL)
+     &                      NNO11+NNO12+1,BETA,BETAC,KBETA,TYPCOE,
+     &                      FONREE,TYPLAG,1.D-6,LISREL)
               ELSE
-                DO 70,K = 1,NDIM
+                DO 80,K = 1,NDIM
                   IF (K.EQ.1) CMP = 'DX'
                   IF (K.EQ.2) CMP = 'DY'
                   IF (K.EQ.3) CMP = 'DZ'
-                  DO 60,INO1 = 1,NNO11+NNO12 + 1
+                  DO 70,INO1 = 1,NNO11 + NNO12 + 1
                     ZK8(IDNOMD-1+INO1) = CMP
-   60             CONTINUE
+   70             CONTINUE
                   CALL AFRELA(ZR(IDCOEF),ZC(JCMUC),ZK8(IDNOMD),
      &                        ZK8(IDNOMN),ZI(IDIMEN),ZR(IDIREC),
-     &                        NNO11+NNO12+1,
-     &                        BETA,BETAC,KBETA,TYPCOE,FONREE,TYPLAG,
-     &                        LISREL)
+     &                        NNO11+NNO12+1,BETA,BETAC,KBETA,TYPCOE,
+     &                        FONREE,TYPLAG,1.D-6,LISREL)
                   CALL IMPREL(MOTFAC,NNO11+NNO12+1,ZR(IDCOEF),
      &                        ZK8(IDNOMD),ZK8(IDNOMN),BETA)
-   70           CONTINUE
+   80           CONTINUE
               END IF
               IDCAL1 = IDCAL1 + NNO11
               IDCAL2 = IDCAL2 + NNO12
-   80       CONTINUE
+   90       CONTINUE
 
 C       -- 3.1.2  S'IL Y A UNE ROTATION :
 C       ---------------------------------
@@ -389,22 +387,22 @@ C       ---------------------------------
             IDCAL1 = 0
             IDCAL2 = 0
 
-            DO 200 INO2 = 1,NBNO2
+            DO 250 INO2 = 1,NBNO2
 
 C ---       NNO1: NB DE NOEUD_MAIT LIES A INO2 :
 C           ------------------------------------
               NNO11 = ZI(ICONB1-1+INO2)
               NNO12 = ZI(ICONB2-1+INO2)
-              IF ((NNO11.EQ.0).AND.(NNO12.EQ.0)) GO TO 200
-              DO 100 K = 1,IDMAX
+              IF ((NNO11.EQ.0) .AND. (NNO12.EQ.0)) GO TO 250
+              DO 110 K = 1,IDMAX
                 ZK8(IDNOMN+K-1) = M8BLAN
                 ZK8(IDNOMD+K-1) = M8BLAN
                 ZR(IDCOEF+K-1) = ZERO
                 ZI(IDIMEN+K-1) = 0
-                DO 90 KK = 1,3
+                DO 100 KK = 1,3
                   ZR(IDIREC+3* (K-1)+KK-1) = ZERO
-   90           CONTINUE
-  100         CONTINUE
+  100           CONTINUE
+  110         CONTINUE
 
               NORMAL(1) = ZERO
               NORMAL(2) = ZERO
@@ -419,91 +417,89 @@ C           ------------------------------------
                 IJ = NDIM
               END IF
 
-              DO 110,INO1 = 1,NNO11
+              DO 120,INO1 = 1,NNO11
                 NUNO1 = ZI(ICONU1+IDCAL1-1+INO1)
                 COEF1 = ZR(ICOCF1+IDCAL1-1+INO1)
                 CALL JENUNO(JEXNUM(NOMA//'.NOMNOE',NUNO1),NONO1)
                 ZK8(IDNOMN+IJ+INO1-1) = NONO1
                 ZR(IDCOEF+IJ+INO1-1) = COEF1*COEF11
-  110         CONTINUE
-              DO 111,INO1 = 1,NNO12
+  120         CONTINUE
+              DO 130,INO1 = 1,NNO12
                 NUNO1 = ZI(ICONU2+IDCAL2-1+INO1)
                 COEF1 = ZR(ICOCF2+IDCAL2-1+INO1)
                 CALL JENUNO(JEXNUM(NOMA//'.NOMNOE',NUNO1),NONO1)
                 ZK8(IDNOMN+NNO11+IJ+INO1-1) = NONO1
                 ZR(IDCOEF+NNO11+IJ+INO1-1) = COEF1*COEF12
-  111         CONTINUE
+  130         CONTINUE
 
 
 C           -- AFFECTATION DES RELATIONS CONCERNANT LE NOEUD INO2 :
 C           -----------------------------------------------------
               IF (DNOR) THEN
-                DO 130 IDIM = 1,NDIM
-                  DO 120 JDIM = 1,NDIM
+                DO 150 IDIM = 1,NDIM
+                  DO 140 JDIM = 1,NDIM
                     NORMAL(IDIM) = NORMAL(IDIM) +
      &                             MROTA(JDIM,IDIM)*ZR(JNORM+
      &                             (ZI(INDIRE+INO2-1)-1)*NDIM+JDIM-1)
-  120             CONTINUE
-  130           CONTINUE
+  140             CONTINUE
+  150           CONTINUE
                 ZR(IDCOEF+1-1) = 1.0D0*COEF3
                 ZK8(IDNOMN+1-1) = NONO2
                 ZK8(IDNOMD+1-1) = 'DEPL'
                 ZI(IDIMEN+1-1) = NDIM
-                DO 140 IDIM = 1,NDIM
+                DO 160 IDIM = 1,NDIM
                   ZR(IDIREC+IDIM-1) = ZR(JNORM+
      &                                (ZI(INDIRE+INO2-1)-1)*NDIM+IDIM-1)
-  140           CONTINUE
-                DO 160 INO1 = 2,NNO11 + 1
+  160           CONTINUE
+                DO 180 INO1 = 2,NNO11 + 1
                   ZI(IDIMEN+INO1-1) = NDIM
                   ZK8(IDNOMD-1+INO1) = 'DEPL'
-                  DO 150 IDIM = 1,NDIM
+                  DO 170 IDIM = 1,NDIM
                     ZR(IDIREC+ (INO1-1)*NDIM1+IDIM-1) = -NORMAL(IDIM)
-  150             CONTINUE
-  160           CONTINUE
-                DO 161 INO1 = 2,NNO12 + 1
+  170             CONTINUE
+  180           CONTINUE
+                DO 200 INO1 = 2,NNO12 + 1
                   ZI(IDIMEN+NNO11+INO1-1) = NDIM
                   ZK8(IDNOMD-1+NNO11+INO1) = 'DEPL'
-                  DO 151 IDIM = 1,NDIM
-                    ZR(IDIREC+ NNO11+(INO1-1)*NDIM1+IDIM-1) = 
-     &               -NORMAL(IDIM)
-  151             CONTINUE
-  161           CONTINUE
+                  DO 190 IDIM = 1,NDIM
+                    ZR(IDIREC+NNO11+ (INO1-1)*NDIM1+IDIM-
+     &                1) = -NORMAL(IDIM)
+  190             CONTINUE
+  200           CONTINUE
                 CALL AFRELA(ZR(IDCOEF),ZC(JCMUC),ZK8(IDNOMD),
      &                      ZK8(IDNOMN),ZI(IDIMEN),ZR(IDIREC),
-     &                      NNO11+NNO12+1,
-     &                      BETA,BETAC,KBETA,TYPCOE,FONREE,TYPLAG,
-     &                      LISREL)
+     &                      NNO11+NNO12+1,BETA,BETAC,KBETA,TYPCOE,
+     &                      FONREE,TYPLAG,1.D-6,LISREL)
               ELSE
-                DO 190,K = 1,NDIM
+                DO 240,K = 1,NDIM
                   IF (K.EQ.1) CMP = 'DX'
                   IF (K.EQ.2) CMP = 'DY'
                   IF (K.EQ.3) CMP = 'DZ'
-                  DO 170,INO1 = 1,NNO11
+                  DO 210,INO1 = 1,NNO11
                     ZK8(IDNOMD+NDIM+INO1-1) = CMP
-  170             CONTINUE
-                  DO 171,INO1 = 1,NNO12
+  210             CONTINUE
+                  DO 220,INO1 = 1,NNO12
                     ZK8(IDNOMD+NNO11+NDIM+INO1-1) = CMP
-  171             CONTINUE
-                  DO 180 KK = 1,NDIM
+  220             CONTINUE
+                  DO 230 KK = 1,NDIM
                     IF (KK.EQ.1) CMP = 'DX'
                     IF (KK.EQ.2) CMP = 'DY'
                     IF (KK.EQ.3) CMP = 'DZ'
                     ZK8(IDNOMN+KK-1) = NONO2
                     ZK8(IDNOMD+KK-1) = CMP
                     ZR(IDCOEF+KK-1) = -MROTA(KK,K)*COEF3
-  180             CONTINUE
+  230             CONTINUE
                   CALL AFRELA(ZR(IDCOEF),ZC(JCMUC),ZK8(IDNOMD),
      &                        ZK8(IDNOMN),ZI(IDIMEN),ZR(IDIREC),
-     &                        NNO11+NNO12+NDIM,
-     &                        BETA,BETAC,KBETA,TYPCOE,FONREE,
-     &                        TYPLAG,LISREL)
+     &                        NNO11+NNO12+NDIM,BETA,BETAC,KBETA,TYPCOE,
+     &                        FONREE,TYPLAG,1.D-6,LISREL)
                   CALL IMPREL(MOTFAC,NNO11+NNO12+NDIM,ZR(IDCOEF),
      &                        ZK8(IDNOMD),ZK8(IDNOMN),BETA)
-  190           CONTINUE
+  240           CONTINUE
               END IF
               IDCAL1 = IDCAL1 + NNO11
               IDCAL2 = IDCAL2 + NNO12
-  200       CONTINUE
+  250       CONTINUE
           END IF
 
 
@@ -512,11 +508,11 @@ C       =================
         ELSE IF (TYPLIA.EQ.'TEMP') THEN
           IDCAL1 = 0
           IDCAL2 = 0
-          DO 230 INO2 = 1,NBNO2
+          DO 290 INO2 = 1,NBNO2
 C           NNO1: NB DE NOEUD_MAIT LIES A INO2
             NNO11 = ZI(ICONB1-1+INO2)
             NNO12 = ZI(ICONB2-1+INO2)
-            IF ((NNO11.EQ.0).AND.(NNO12.EQ.0)) GO TO 230
+            IF ((NNO11.EQ.0) .AND. (NNO12.EQ.0)) GO TO 290
 
             NUNO2 = INO2
             CALL JENUNO(JEXNUM(NOMA//'.NOMNOE',NUNO2),NONO2)
@@ -524,36 +520,35 @@ C           NNO1: NB DE NOEUD_MAIT LIES A INO2
             ZK8(IDNOMN-1+1) = NONO2
             ZR(IDCOEF-1+1) = -1.D0*COEF3
 
-            DO 210,INO1 = 1,NNO11
+            DO 260,INO1 = 1,NNO11
               NUNO1 = ZI(ICONU1+IDCAL1-1+INO1)
               COEF1 = ZR(ICOCF1+IDCAL1-1+INO1)
               CALL JENUNO(JEXNUM(NOMA//'.NOMNOE',NUNO1),NONO1)
               ZK8(IDNOMN+INO1) = NONO1
               ZR(IDCOEF+INO1) = COEF1*COEF11
-  210       CONTINUE
-            DO 211,INO1 = 1,NNO12
+  260       CONTINUE
+            DO 270,INO1 = 1,NNO12
               NUNO1 = ZI(ICONU2+IDCAL2-1+INO1)
               COEF1 = ZR(ICOCF2+IDCAL2-1+INO1)
               CALL JENUNO(JEXNUM(NOMA//'.NOMNOE',NUNO1),NONO1)
               ZK8(IDNOMN+NNO11+INO1) = NONO1
               ZR(IDCOEF+NNO11+INO1) = COEF1*COEF12
-  211       CONTINUE
+  270       CONTINUE
 
 C           -- AFFECTATION DE LA RELATION CONCERNANT LE NOEUD INO2 :
 C           -----------------------------------------------------
             CMP = 'TEMP'
-            DO 220,INO1 = 1,NNO11+NNO12 + 1
+            DO 280,INO1 = 1,NNO11 + NNO12 + 1
               ZK8(IDNOMD-1+INO1) = CMP
-  220       CONTINUE
+  280       CONTINUE
             CALL AFRELA(ZR(IDCOEF),ZC(JCMUC),ZK8(IDNOMD),ZK8(IDNOMN),
-     &                  ZI(IDIMEN),ZR(IDIREC),NNO11+NNO12+1,
-     &                  BETA,BETAC,KBETA,
-     &                  TYPCOE,FONREE,TYPLAG,LISREL)
-            CALL IMPREL(MOTFAC,NNO11+NNO12+1,ZR(IDCOEF),
-     &                  ZK8(IDNOMD),ZK8(IDNOMN),BETA)
+     &                  ZI(IDIMEN),ZR(IDIREC),NNO11+NNO12+1,BETA,BETAC,
+     &                  KBETA,TYPCOE,FONREE,TYPLAG,1.D-6,LISREL)
+            CALL IMPREL(MOTFAC,NNO11+NNO12+1,ZR(IDCOEF),ZK8(IDNOMD),
+     &                  ZK8(IDNOMN),BETA)
             IDCAL1 = IDCAL1 + NNO11
             IDCAL2 = IDCAL2 + NNO12
-  230     CONTINUE
+  290     CONTINUE
         ELSE
           CALL UTMESS('F','CALYRC','STOP 2')
         END IF
@@ -571,7 +566,7 @@ C           -----------------------------------------------------
         CALL JEDETR('&&NBNLMA.NBN')
         CALL JEDETR('&&CANORT.NORMALE')
 
-  240 CONTINUE
+  300 CONTINUE
 
       CALL JEDETR('&&CALYRC.COEMUC')
       CALL JEDETR('&&CALYRC.NOMNOE')
@@ -584,6 +579,6 @@ C --- AFFECTATION DE LA LISTE DE RELATIONS A LA CHARGE :
 C     ------------------------------------------------
       CALL AFLRCH(LISREL,CHARGE)
 
-  250 CONTINUE
+  310 CONTINUE
       CALL JEDEMA()
       END

@@ -1,0 +1,481 @@
+
+
+-----------------------------------------------------------------------
+--- AUTEUR cibhhlv L.VIVAN   DATE  le 14/03/2005 a 13:40:03
+
+--------------------------------------------------------------------------
+CORRECTION AL 2005-078
+   NB_JOURS_TRAV  : 0.5
+   POUR_LE_COMPTE_DE   : J.PELLET
+   INTERET_UTILISATEUR : OUI
+   TITRE : DEFI_GROUP + NOEUD_ORDO
+   FONCTIONNALITE
+     vérification du GROUP_MA fourni par l'utilisateur:
+     - la ligne possède au plus 2 extrémités,
+     - un noeud est l'extrémité au plus de 2 segments;
+     sinon le code émet un message fatal:
+ <F> <DEFI_GROUP> <FONFIS> CREA_GROUP_NO  OCCURRENCE  1
+     LES MAILLES SPECIFIEES NE PERMETTENT PAS DE DEFINIR UNE LIGNE
+     CONTINUE >ARRET EN ERREUR<
+
+   RESU_FAUX_VERSION_EXPLOITATION    : NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   : NON
+   RESTITUTION_VERSION_EXPLOITATION  : OUI
+   RESTITUTION_VERSION_DEVELOPPEMENT : OUI
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_U : U4.22.01 commande DEFI_GROUP / OPTION='NOEUD_ORDO'
+       EXPL_ : la ligne doit etre une ligne ouverte et contigue
+   VALIDATION
+     passage des 85 cas tests validant DEFI_GROUP/NOEUD_ORDO et
+     DEFI_FOND_FISS
+--------------------------------------------------------------------------
+CORRECTION AL 2004-399
+   NB_JOURS_TRAV  : 0.
+   POUR_LE_COMPTE_DE   : E.GALENNE
+   INTERET_UTILISATEUR : NON
+   TITRE : commande POST_RCCM et temps systeme
+   FONCTIONNALITE
+     Depuis la réalisation de la fiche EL 2005-011, le temps systeme
+     est devenu nul dans cet opérateur.
+   RESU_FAUX_VERSION_EXPLOITATION    : NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   : NON
+   RESTITUTION_VERSION_EXPLOITATION  : NON
+   RESTITUTION_VERSION_DEVELOPPEMENT : OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+
+
+-----------------------------------------------------------------------
+--- AUTEUR d6bhhjp J.P.LEFEBVRE   DATE  le 14/03/2005 a 11:04:23
+
+RESTITUTION HORS AREX
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : NON
+   TITRE  Correction erreurs de compilations detectées avec g95
+   FONCTIONNALITE
+   DETAILS
+   La compilation de l'ensemble des sources avec le compilateur du domaine
+   public g95 sous plate-forme linux a permis de détecter 4 routines qui
+   renvoient une erreur liée à la déclaration des INTEGER.
+   CALCFT : les indices I et J étaient déclarés REAL*8.
+   ASSMAT : la fonction en ligne POSDD2 n'était pas déclarée.
+   JXLOCS : la fonction MOD refuse de mélanger les types INTEGER*8 et INTEGER,
+            on passe par une variable intermédiaire.
+   GETCON : la fonction LOC n'était pas déclarée.	
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   OUI
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   VALIDATION :
+   IMPACT_DOCUMENTAIRE : NON
+
+
+-----------------------------------------------------------------------
+--- AUTEUR durand C.DURAND   DATE  le 14/03/2005 a 13:54:42
+
+-----------------------------------------------------------------------
+CLASSEMENT SANS SUITE EL 2005-034
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : NON
+   TITRE : fiche AOM sans suite, l'utilisateur s'en est sorti seul
+   FONCTIONNALITE : température de référence sur cables de précontrainte
+   DETAILS :
+   RESU_FAUX_VERSION_EXPLOITATION    : NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   : NON
+   RESTITUTION_VERSION_EXPLOITATION  : NON
+   RESTITUTION_VERSION_DEVELOPPEMENT : NON
+   IMPACT_DOCUMENTAIRE:  NON
+   VALIDATION :
+-----------------------------------------------------------------------
+RESTITUTION HORS AREX
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : NON
+   TITRE  suppression utilitaire python EXTRACT
+   FONCTIONNALITE tables python
+   DETAILS
+   Pour les besoins de macr_recal, un utilitaire Extract.EXTRACT avait
+   été introduit. Je le remplace par une méthode de la classe Table :
+   Table.Array()
+   Il permet de récupérer dans un Numarray le contenu de deux colonnes
+   de réels.
+   Modif en conséquence des fichiers python liés à MACR_RECAL, de ssnl117b,
+   de macro_rota_globale.py
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   VALIDATION : ssnl117b et cas tests macr_recal
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_U : U1.03.02 méthodes python d'accès aux SD aster
+       EXPL_ : documenter la méthode
+-----------------------------------------------------------------------
+REALISATION EL 2005-018
+   NB_JOURS_TRAV  : 5
+   INTERET_UTILISATEUR : NON
+   TITRE : AOM - CREA_CHAMP et thermique
+   FONCTIONNALITE
+   DETAILS
+      Solution apportée par TMA Deltacad et Jacques Pellet.
+      CREA_CHAMP doit produire un champ unique et donc qu'on ne peut pas
+      utiliser TOUT_ORDRE='OUI' puisque la SD_RESULTAT contenait plusieurs
+      pas de temps. La solution consiste faire son calcul sans chercher à
+      concaténer plusieurs evol_ther (chose que l'on ne sait pas faire
+      simplement aujourd'hui dans Aster) et donc sans chercher à utiliser
+      CREA_CHAMP.
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+-----------------------------------------------------------------------
+
+
+-----------------------------------------------------------------------
+--- AUTEUR vabhhts J.PELLET   DATE  le 14/03/2005 a 11:36:06
+
+------------------------------------------------------------------------------
+CORRECTION AL 2004-443
+   NB_JOURS_TRAV : 2
+   INTERET_UTILISATEUR : NON
+   TITRE "le test ssnv166b se plante par manque de mémoire sur Linux"
+   Ce plantage par manque de mémoire était a priori surprenant car sur Linux,
+   avec une même zone mémoire, on devrait passer plus facilement que sur alphaserver
+   car les entiers prennent 2 fois moins de place.
+   La raison de ce comportement est multiple :
+   1) la méthode multi-frontale lorsqu'elle cherchait de la place pour allouer
+      ses gros objets supposait que les entiers et les réels étaient de même longueur.
+      Ceci est vrai sur alphaserver mais pas sur Linux (clp50a8).
+      Je corrige un peu la routine MULFR8 et j'ai émis ce matin (11/3) une fiche
+      d'EL pour que C. Rose se penche un peu sur ce problème.
+   2) la matrice factorisée était sensiblement plus volumineuse sur Linux (50%).
+      La taille supérieure de la matrice factorisée sur Linux est due à 2 causes :
+        - l'utilisation de LIAISON_MAILLE
+        - l'utilisation de Metis
+      Concernant Metis, j'ai émis aujoud'hui (11/3) une fiche d'AL pour demander s'il est
+      normal que Metis conduise à des numérotations différentes à partir d'un meme
+      fichier de données. Ce phénomène ne se produit pas pour la numérotation MDA.
+   3) Utilisation d'un chargement de type LIAISON_MAILLE. En effet les relations
+      linéaires engendrées par LIAISON_MAILLE sont obtenues par des considérations
+      géométriques (utilisation de routines de PROJ_CHAMP) et comme les calculs
+      réels ne sont rigoureusement identiques sur les 2 plateformes, ces relations
+      sont légèrement différentes : par exemple, un noeud esclave N2 géométriquement
+      confondu avec un noeud maitre N1 connecté à 2 mailles M11 et M12 pourra selon
+      la précision des calculs être relié aux noeuds de M11 ou aux noeuds de M12.
+      De plus, la routine qui gère les relations linéaires (AFRELA) supprime les
+      termes des relations qui sont rigoureusement nuls. Pour une raison qui m'échappe,
+      il y avait plus de termes 0. sur alphaserver que sur Linux (1.d-16).
+      J'ai modifié AFRELA pour supprimer les termes < 1.d-6. Grace à cette correction,
+      les matrices initiales (et donc les factorisées) sont de même taille sur les
+      2 plateformes (pour la renumérotation 'MDA').
+
+      Taille de la matrice factorisée :
+        ---------------------------------------------------------------------------
+        !   METIS                              !  MDA
+        !   -------                            !  -------
+        !   avant :                            !
+        !      - alphaserver =   73 935 510    !
+        !      - Linux       =  114 518 580    !
+        !                                      !
+        !   après :                            !  après :
+        !      - alphaserver =   66 423 660    !     - alphaserver =  105 887 220
+        !      - Linux       =   92 863 275    !     - Linux       =  105 887 220
+        ---------------------------------------------------------------------------
+
+      Le test va maintenant jusqu'au bout (Metis) sur les 2 plateformes avec 1Go de mémoire
+      (mémoire inchangée).
+
+      Remarques :
+      1) la correction de LIAISON_MAILLE fait maigrir la matrice factorisée et
+         en conséquence fait gagner du temps CPU : 558s -> 413s (alphaserver)
+      2) Le choix de la méthode de renumérotation de MULT_FRONT est très sensible
+         pour ce test (alphaserver) :
+          - METIS : taille factorisée =  66 423 660  CPU= 413s
+          - MDA   : taille factorisée = 105 887 220  CPU= 854s
+
+   RESU_FAUX_VERSION_EXPLOITATION   :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT  :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION  : passage du test sur clp50a8 (et clayastr)
+   DETAILS
+   1) amélioration de la routine d'aide au debuggage imptou.f : Cette routine
+      imprime pour chaque objet JEVEUX un résumé de cet objet sur une ligne.
+      Pour les objets de type "entier" et" caractère", le résumé était différent
+      entre les plateformes I4 et I8. Je corrige ce défaut pour que l'on puisse
+      facilement comparer une exécution sur 2 plateformes différentes.
+   2) correction d'un bug dans la routine cbondp (ONDE_PLANE) : elle crée
+      systématiquement des objets mal initialisés même si l'utilisateur
+      n'utilise pas ONDE_PLANE. Ces objets empêchent l'utilisation de la
+      routine de debuggage imptou.
+   3) amélioration de la fonctionalité LIAISON_MAILLE :
+      Lorsque l'on lie un noeud esclave aux noeuds de la maille maitre en vis-à-vis,
+      On écrivait des relations linéaires avec tous les noeuds de cette maille pour
+      lesquels le coefficient n'était pas STRICTEMENT nul.
+      J'ai ajouté un argument (EPSI) à la routine AFRELA pour demander à cette
+      routine de négliger les termes de la relation dont le coefficient est
+      inférieur à EPSI.
+      Lorsque qu'un noeud esclave est "presque pile poil" en face un noeud maitre,
+      cela permet de simplifier la relation linéaire et ainsi de diminuer
+      la connectivité de la matrice.
+      Pour tous les appelants de AFRELA, cet argument est mis = 0.D0 sauf
+      pour les routines CALIRC et CALYRC pour lesquelles j'ai choisi 1.D-6.
+
+   Liste des fichiers modifiés:
+  afddli.f  afrela.f  afretu.f  cacoeq.f  caddli.f  cafaci.f
+  cagrou.f  caimch.f  caliag.f  caliai.f  calich.f  caliob.f
+  calirc.f  calyrc.f  cbondp.f  drz02d.f  drz03d.f  drz12d.f
+  drz13d.f  mulfr8.f  numero.f  preml1.f  rapo3d.f  rapoco.f
+  reci2d.f  reci3d.f  tstk2i.f  tstobj.f  tstvec.f  xdelco.f
+  xdeldl.f
+
+ Ajout de C TOLE CRP_6 : appel à la fonction ICHAR dans tstk2i
+ Ajout de C TOLE CRP_4 : utilisation d'INTEGER*8 dans tstvec et tstobj
+
+------------------------------------------------------------------------------
+CORRECTION AL 2005-095
+   NB_JOURS_TRAV : 0.5
+   INTERET_UTILISATEUR : OUI
+   TITRE  "CREA_RESU/AFFE : résultats faux si les cham_nos n'ont pas le même profil"
+   FONCTIONNALITE
+   La réalisation de l'EL 2003-216 qui demandait l'économie des profils des cham_no
+   affectés dans CREA_RESU/AFFE n'était pas correcte.
+   La structure de données produite n'était pas correcte si on faisait :
+
+     RES1 = CREA_RESU ( OPERATION  = 'AFFE' , TYPE_RESU = 'EVOL_THER' , NOM_CHAM  = 'TEMP' ,
+                   AFFE = (_F ( INST = 1.0 , CHAM_GD = CH1 , ),
+                           _F ( INST = 2.0 , CHAM_GD = CH2 , ),)
+                   , )
+   et que CH1 et CH2 n'avaient pas le même profil (i. e. n'avaient pas les mêmes CMPS sur les
+   memes noeuds)
+   Le champ de RES1 correspondant à INST=2 était complètement faux (même là où CH2 était défini)
+
+   RESU_FAUX_VERSION_EXPLOITATION   :   OUI   DEPUIS : 7.3.8
+   RESU_FAUX_VERSION_DEVELOPPEMENT  :   OUI   DEPUIS : 8.0.0
+   RESTITUTION_VERSION_EXPLOITATION  :   OUI
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+   DETAILS
+   Dans la routine CRTYPE, on comparait par erreur 2 PROF_CHNO qui étaient
+   toujours identiques !
+   Liste des fichiers modifiés:
+   cnocno.f  crtype.f
+------------------------------------------------------------------------------
+   NB_JOURS_TRAV : 0.2
+   INTERET_UTILISATEUR : OUI
+   TITRE  AOM PROJ_CHAMP
+   FONCTIONNALITE
+   L'utilisateur était surpris par des messages du genre :
+     Le noeud Nxxx est projeté sur une maille un peu distante.
+     Diamètre de la maille: xxx, distance: xxx (xx%).
+
+   Ce message est effectivement surprenant car la projection se faisait
+   entre 2 maillage géométriquement confondus : tout noeud du maillage 2
+   a un vis à vis dans le maillage 1 situé à une distance théoriquement nulle.
+   Le problème (l'alarme) vient du fait que le maillage est courbe et quadratique.
+   L'algorithme de PROJ_CHAMP, pour rendre linéaire le problème de recherche de
+   la maille de projection, linéarise les mailles quadratiques en "oubliant" leurs noeuds
+   milieux.
+   Soit par exemple un cylindre. Les noeuds milieux des mailles de la peau externe,
+   se retrouvent (du fait de la linéarisation des facettes), à l'EXTéRIEUR du solide.
+   Si la courbure du maillage est suffisante (par rapport à sa discrétisation), il peut
+   alors apparaitre les alarmes incriminées.
+
+   RESU_FAUX_VERSION_EXPLOITATION  :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   NON
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_U : U4.72.05
+     EXPL_: faire une remarque expliquant ce problème des mailles quadratiques.
+   VALIDATION :
+   Je n'ai pas regardé les fichiers de cette fiche.
+   Je me suis fié à la discussion que j'ai eue avec Louis Ratier : il m'a dit avoir
+   effectivement observé ces alarmes sur les noeuds milieux des peaux en zone de forte
+   courbure.
+   DETAILS
+------------------------------------------------------------------------------
+CLASSEMENT SANS SUITE EL 2004-224
+   NB_JOURS_TRAV : 0.5
+   INTERET_UTILISATEUR : NON
+   TITRE "accepter des maillages où les mailles et les noeuds ne sont pas nommés"
+
+   FONCTIONNALITE
+   La fiche que j'avais émise faisait état de 2 étapes :
+   1) modifier tout le code pour que les pointeurs de noms .NOMNOE et .NOMMAI
+      soient facultatifs (gros boulot)
+   2) modifier le format de fichier de maillage Aster pour faire disparaitre les
+      noms de noeuds et de mailles.
+
+   Finalement, la deuxième étape ne semble pas une bonne idée : définir un format
+   de maillage Aster ASCII sans nommer les noeuds et les mailles conduit à un
+   fichier éditable très dangereux : par exemple, il suffit d'ajouter une ligne
+   de coordonnées pour changer les coordonnées de tous les noeuds qui suivent !
+   En fait, il faudrait définir un nouveau format binaire Aster (non éditable).
+   Du coup, il faudrait complètement réécrire LIRE_MAILLAGE et aussi les procédures
+   PRE_GIBI et PRE_IDEAS ce qui fait encore beaucoup de travail.
+
+   On peut alors avoir l'idée de ne pas modifier LIRE_MAILLAGE (ni le format associé)
+   et de simplement intervenir à la fin de l'opérateur pour détruire les 2 pointeurs
+   de noms coupables. Comme ça, pour le reste du calcul, on fait l'économie des 2 pointeurs.
+
+   Là encore, ce n'est pas une bonne idée car la fiche a été émise suite aux déboires
+   de Jean-Luc Fléjou et son problème était justement de franchir l'étape LIRE_MAILLAGE.
+   L'évolution proposée ne résoud pas son problème.
+   D'ailleurs, il a résolu son problème tout seul !
+
+   Pour améliorer fortement les performances (CPU et mémoire) de LIRE_MAILLAGE,
+   il a modifié la façon de nommer les noeuds et les mailles en les "comptant" en
+   base "36" (10 chiffres + 26 lettres). On constate alors que les conflits de noms
+   dans les répertoires de noms sont bien moindres.
+
+   Je propose donc de ne pas réaliser cette évolution probablement très consommatrice
+   de ressources et qui n'a pas été réclamée par un utilisateur responsable.
+   En revanche, on pourrait peut-etre émettre une petite fiche d'EL pour voir
+   comment améliorer le "hash-coding" de jeveux : pourquoi les noms
+   N00ijkl entrent-ils souvent en conflit ?
+   Qu'en pense JPL ?
+
+   IMPACT_DOCUMENTAIRE : NON
+   DETAILS
+------------------------------------------------------------------------------
+CORRECTION AL 2005-026
+   NB_JOURS_TRAV : 0
+   INTERET_UTILISATEUR : NON
+   TITRE NEW8.0.3 : cabri02 ssna11b ssna113a ssnv175a et ssnv501c s'arretent en CPU_LIMIT
+
+   FONCTIONNALITE
+   Ces tests consommaient plus de CPU (qu'avant) du fait d'une dégradation des
+   performances de la routine CORDDL appelée abondamment dans les procédures d'assemblage.
+
+   La routine CORDDL a été corrigée par Lionel Vivan en 8.0.5 (suite de EL 2004-266).
+   Ces tests sont tous passés redevenus OK depuis cette correction.
+
+   RESU_FAUX_VERSION_EXPLOITATION   :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT  :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   NON
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+   DETAILS
+
+   Liste des fichiers modifiés:
+------------------------------------------------------------------------------
+REALISATION EL 2004-272
+   NB_JOURS_TRAV : 0.5
+   INTERET_UTILISATEUR : OUI
+
+   TITRE  "LIRE_RESU/MED profils des cham_no différents"
+
+   FONCTIONNALITE
+   Jusqu'à présent, la commande LIRE_RESU au format MED économisait
+   systématiquement les PROF_CHNO des différents champs aux noeuds stockés.
+   Tous les champs s'appuyaient sur le même profil : celui du 1er numéro d'ordre.
+   Cette programmation avait les 2 inconvénients suivants :
+     1) Si les champs de nume_ordre > 1 avaient plus de composantes que le champ 1,
+        celles-ci étaient perdues.
+     2) Si les champs de nume_ordre > 1 avaient moins de composantes que le champ 1,
+        le code s'arrêtait en erreur fatale.
+
+   Maintenant, chaque champ a, a priori, son propre profil (indépendance des numéros d'ordre)
+   mais ces profils sont économisés s'ils sont identiques pour des numéros d'ordre successifs.
+
+   RESU_FAUX_VERSION_EXPLOITATION  :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION  : un petit essai chez moi pour vérifier que le code fonctionne
+                 dans le cas de PROF_CHNO identiques ou différents.
+   DETAILS
+   Liste des fichiers modifiés:
+   lrceme.f  lrchme.f  lrcnme.f  op0150.f  op0192.f
+------------------------------------------------------------------------------
+RESTITUTION HORS AREX   (H1)
+   NB_JOURS_TRAV : 0
+   INTERET_UTILISATEUR : NON
+
+   FONCTIONNALITE
+   Suite à la correction de AL 2005-043, il restait un NOOK (sous Linux) pour EQUI_ELGA_SIGM.
+   En effet, pour ce champ, on teste 3 numéros d'ordre et la tolérance sur le 3eme
+   pas de temps était de 1.e-10 alors qu'elle était de 1.e-9 pour les 2 autres instants.
+   Je mets donc 1.e-9 de tolérance pour les 3 instants.
+
+   RESU_FAUX_VERSION_EXPLOITATION   :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT  :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION : passage du test sous Linux
+   DETAILS
+   Liste des fichiers modifiés:
+   sslp201b.comm
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+ CASTEST MODIF sslp201b                      vabhhts J.PELLET          1188      2      2
+ CASTEST MODIF ssnl117b                       durand C.DURAND           521     13     13
+ FORTRAN AJOUT calculel/cnocno               vabhhts J.PELLET            44     44      0
+ FORTRAN AJOUT calculel/tstk2i               vabhhts J.PELLET            40     40      0
+ FORTRAN MODIF algeline/mulfr8               vabhhts J.PELLET           341     20      6
+ FORTRAN MODIF algorith/calcft               d6bhhjp J.P.LEFEBVRE       154      3      2
+ FORTRAN MODIF algorith/crtype               vabhhts J.PELLET           380      2      5
+ FORTRAN MODIF assembla/assmat               d6bhhjp J.P.LEFEBVRE       694      2      2
+ FORTRAN MODIF calculel/tstobj               vabhhts J.PELLET           212     10      6
+ FORTRAN MODIF calculel/tstvec               vabhhts J.PELLET           167     21     55
+ FORTRAN MODIF elements/fonfis               cibhhlv L.VIVAN            489     29      4
+ FORTRAN MODIF jeveux/jxlocs                 d6bhhjp J.P.LEFEBVRE        81      4      3
+ FORTRAN MODIF modelisa/afddli               vabhhts J.PELLET           158     53     53
+ FORTRAN MODIF modelisa/afrela               vabhhts J.PELLET           426     10     10
+ FORTRAN MODIF modelisa/afretu               vabhhts J.PELLET           126     49     51
+ FORTRAN MODIF modelisa/cacoeq               vabhhts J.PELLET           156     61     64
+ FORTRAN MODIF modelisa/caddli               vabhhts J.PELLET           349     77     78
+ FORTRAN MODIF modelisa/cafaci               vabhhts J.PELLET           560    278    273
+ FORTRAN MODIF modelisa/cagrou               vabhhts J.PELLET           136     55     56
+ FORTRAN MODIF modelisa/caimch               vabhhts J.PELLET           312    125    129
+ FORTRAN MODIF modelisa/caliag               vabhhts J.PELLET           492    241    243
+ FORTRAN MODIF modelisa/caliai               vabhhts J.PELLET           265    119    119
+ FORTRAN MODIF modelisa/calich               vabhhts J.PELLET           321    127    130
+ FORTRAN MODIF modelisa/caliob               vabhhts J.PELLET           295    145    146
+ FORTRAN MODIF modelisa/calirc               vabhhts J.PELLET           537     95     94
+ FORTRAN MODIF modelisa/calyrc               vabhhts J.PELLET           584     99    104
+ FORTRAN MODIF modelisa/cbondp               vabhhts J.PELLET           132      8      1
+ FORTRAN MODIF modelisa/drz02d               vabhhts J.PELLET           357    138    148
+ FORTRAN MODIF modelisa/drz03d               vabhhts J.PELLET           816    376    402
+ FORTRAN MODIF modelisa/drz12d               vabhhts J.PELLET           290    115    120
+ FORTRAN MODIF modelisa/drz13d               vabhhts J.PELLET           347    138    147
+ FORTRAN MODIF modelisa/rapo3d               vabhhts J.PELLET           767     14     14
+ FORTRAN MODIF modelisa/rapoco               vabhhts J.PELLET           798     11     11
+ FORTRAN MODIF modelisa/reci2d               vabhhts J.PELLET           859    442    445
+ FORTRAN MODIF modelisa/reci3d               vabhhts J.PELLET           272    105    105
+ FORTRAN MODIF modelisa/xdelco               vabhhts J.PELLET           185     46     46
+ FORTRAN MODIF modelisa/xdeldl               vabhhts J.PELLET           222     88     85
+ FORTRAN MODIF prepost/lrceme                vabhhts J.PELLET           195      4      6
+ FORTRAN MODIF prepost/lrchme                vabhhts J.PELLET           121      9     10
+ FORTRAN MODIF prepost/lrcnme                vabhhts J.PELLET           159      6      6
+ FORTRAN MODIF supervis/getcon               d6bhhjp J.P.LEFEBVRE       202      2      2
+ FORTRAN MODIF utilitai/op0150               vabhhts J.PELLET           880     32     25
+ FORTRAN MODIF utilitai/op0192               vabhhts J.PELLET           237      5      4
+  PYTHON MODIF Macro/macr_recal_ops           durand C.DURAND           161      2      3
+  PYTHON MODIF Macro/reca_algo                durand C.DURAND           259      1      2
+  PYTHON MODIF Macro/recal                    durand C.DURAND           379      4      4
+  PYTHON MODIF Outils/macro_rota_globale      durand C.DURAND           143      9      8
+  PYTHON MODIF Utilitai/Table                 durand C.DURAND           717     14      1
+  PYTHON SUPPR Utilitai/extract               durand C.DURAND             0      0      0
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :    2          84        84               +84
+ MODIF :   46       17442      3209    3243       -34
+ SUPPR :    1           0                 0        +0
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :   49       17526      3293    3243       +50 

@@ -1,4 +1,4 @@
-#@ MODIF macr_recal_ops Macro  DATE 14/09/2004   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF macr_recal_ops Macro  DATE 14/03/2005   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -45,7 +45,7 @@ def macr_recal_ops(self,UNITE_ESCL, RESU_EXP, POIDS, LIST_PARA, RESU_CALC,
    import Macro
    from Cata import cata
    from Cata.cata import DEFI_LIST_REEL
-   from Macro.recal import gestion,transforme_list_Num,EXTRACT,calcul_F,graphique
+   from Macro.recal import gestion,transforme_list_Num,calcul_F,graphique
    from Macro import reca_message
    from Macro import reca_algo
    from Macro import reca_interp
@@ -82,7 +82,6 @@ def macr_recal_ops(self,UNITE_ESCL, RESU_EXP, POIDS, LIST_PARA, RESU_CALC,
         if v.__class__.__name__ in ('OPER','MACRO'):
            self.current_context[k]= v
    self.current_context['_F']=cata.__dict__['_F']
-   self.g_context['EXTRACT']=EXTRACT
 
    #_____________________________________________
    #

@@ -10,7 +10,7 @@ C              IL FAUT APPELER SON "CHAPEAU" : ASMATR.
       CHARACTER*4 MOTCLE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 25/01/2005   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ASSEMBLA  DATE 14/03/2005   AUTEUR D6BHHJP J.P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -88,7 +88,7 @@ C-----------------------------------------------------------------------
 C     FONCTIONS FORMULES :
 C-----------------------------------------------------------------------
       INTEGER ZZCONX,ZZNBNE,ZZLIEL,ZZNGEL,ZZNSUP,ZZNELG,ZZNELS
-      INTEGER ZZNEMA,ZZPRNO,IZZPRN,EPDMS,JPDMS
+      INTEGER ZZNEMA,ZZPRNO,IZZPRN,EPDMS,JPDMS,POSDD2
       ZZCONX(IMAIL,J) = ZI(ICONX1-1+ZI(ICONX2+IMAIL-1)+J-1)
       ZZNBNE(IMAIL) = ZI(ICONX2+IMAIL) - ZI(ICONX2+IMAIL-1)
       ZZLIEL(ILI,IGREL,J) = ZI(ZI(IADLIE+3* (ILI-1)+1)-1+

@@ -14,7 +14,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 08/06/2004   AUTEUR ROMEO R.FERNANDES 
+C MODIF ALGORITH  DATE 14/03/2005   AUTEUR D6BHHJP J.P.LEFEBVRE 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -44,7 +44,8 @@ C ======================================================================
       INTEGER       ADDETE,ADDEME,ADDEP1,ADDEP2,ADCOTE
       REAL*8        CONGEM(1:DIMCON),CONGEP(1:DIMCON)
       REAL*8        DSDE(1:DIMCON,1:DIMDEF),EPSV,P1,P2,MAMOLV
-      REAL*8        T,GRAT(3),PHI,SAT,DSATP1,PVP,LAMBDT(5),I,J,SATBID
+      INTEGER       I,J
+      REAL*8        T,GRAT(3),PHI,SAT,DSATP1,PVP,LAMBDT(5),SATBID
       REAL*8        RGAZ, RHOD, CPD, BIOT, SATM, SATUR,DSATUR, PESA(3)
       REAL*8        PERMFH, PERMLI, DPERML, PERMGZ,DPERMS, DPERMP, FICK
       REAL*8        DFICKT, DFICKG, LAMBP,DLAMBP, RHOL,UNSURK,CPL

@@ -7,7 +7,7 @@
       CHARACTER*(*)       MOTFAC, BASZ
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 03/02/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+C MODIF ELEMENTS  DATE 14/03/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,15 +46,15 @@ C
 C
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       INTEGER       IER, NBTM, N1, N2, JMAIL, IM, EXISTE, IN, ND,
-     +              JTYPM, IATYMA, JNOE, NIG,
+     +              JTYPM, IATYMA, JNOE, NIG, NBNOT,
      +              NID, NUMNO, IRET, TROUV, IBID, NUMMA
       CHARACTER*1   BASE
       CHARACTER*8   K8B, NOMMA, TYPM, TYPMP, NDORIG, NDEXTR
       CHARACTER*8   NOEUD, NOEUD1, NOEUD2, NOEUD3, NOEUD4
       CHARACTER*16  K16BID, NOMCMD
       CHARACTER*24  CONEC, TYPP, NOMMAI, NOMNOE, MESMAI
-      INTEGER       NJONC,N,I,K,ARDM,JCOUR1,JCOUR2,JCOUR3,NBNO
-      LOGICAL       GETEXM
+      INTEGER       NJONC,N,I,K,ARDM,JCOUR1,JCOUR2,JCOUR3,JCOUR4,NBNO
+      LOGICAL       GETEXM, BUG
 C DEB-------------------------------------------------------------------
       CALL JEMARQ()
 C
@@ -71,6 +71,7 @@ C
      &              'LES GROUP_NO ET LES LISTES DE NOEUDS. ')
       ENDIF
       CALL JEVEUO ( MESMAI, 'L', JMAIL )
+      CALL DISMOI('F','NB_NO_MAILLA',NOMAIL,'MAILLAGE',NBNOT,K8B,IER)
 C
       CONEC  = NOMAIL//'.CONNEX         '
       TYPP   = NOMAIL//'.TYPMAIL        '
@@ -132,6 +133,7 @@ C
       CALL WKVECT('&&FONFIS.VERI_MAIL1','V V I',3*NBTM,JCOUR1)
       CALL WKVECT('&&FONFIS.VERI_MAIL2','V V I',3*NBTM,JCOUR2)
       CALL WKVECT('&&FONFIS.VERI_MAIL3','V V I',2*NBTM,JCOUR3)
+      CALL WKVECT('&&FONFIS.VERI_MAIL4','V V I',NBNOT ,JCOUR4)
       DO 20, IM = 1 , NBTM , 1
          CALL JENONU ( JEXNOM(NOMMAI,ZK8(JMAIL+IM-1)), IBID )
          ZI(JCOUR1+IM-1) = IBID
@@ -140,7 +142,29 @@ C
          CALL I2EXTF (ZI(JCOUR1+IM-1),1,CONEC(1:15),TYPP(1:16),NIG,NID)
          ZI(JCOUR1+  NBTM+IM-1) = NIG
          ZI(JCOUR1+2*NBTM+IM-1) = NID
+         ZI(JCOUR4+NIG-1) = ZI(JCOUR4+NIG-1) + 1
+         ZI(JCOUR4+NID-1) = ZI(JCOUR4+NID-1) + 1
  30   CONTINUE
+
+C --- VERIFICATION QUE LA LIGNE EST CONTINUE ET UNIQUE
+
+      N1 = 0
+      N2 = 0
+      BUG = .FALSE.  
+      DO 130 IM = 1 , NBNOT
+         IF ( ZI(JCOUR4+IM-1).EQ.1 ) N1 = N1 + 1
+         IF ( ZI(JCOUR4+IM-1).GT.2 ) N2 = N2 + 1
+ 130  CONTINUE
+      IF ( N1 .GT. 2 )  BUG = .TRUE.
+      IF ( N2 .NE. 0 )  BUG = .TRUE.
+      IF ( BUG ) THEN
+         CALL UTDEBM('F','FONFIS',MOTFAC)
+         CALL UTIMPI('S',' OCCURRENCE ', 1, IOCC )
+         CALL UTIMPK('L','LES MAILLES SPECIFIEES NE PERMETTENT PAS '//
+     +                   'DE DEFINIR UNE LIGNE CONTINUE',
+     +                    1,'ARRET EN ERREUR')
+         CALL UTFINM
+      ENDIF      
 
 C --- LECTURE DU NOM DU NOEUD ORIGINE (S'IL EST FOURNI)
 
@@ -456,6 +480,7 @@ C     ------------------------------------------------------------------
       CALL JEDETR ( '&&FONFIS.VERI_MAIL1' )
       CALL JEDETR ( '&&FONFIS.VERI_MAIL2' )
       CALL JEDETR ( '&&FONFIS.VERI_MAIL3' )
+      CALL JEDETR ( '&&FONFIS.VERI_MAIL4' )
       CALL JEDETR ( '&&FONFIS.MAILLE'     )
       CALL JEDETR ( MESMAI                )
 C

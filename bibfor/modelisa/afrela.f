@@ -1,7 +1,7 @@
       SUBROUTINE AFRELA(COEFR,COEFC,DDL,NOEUD,NDIM,DIRECT,NBTERM,BETAR,
-     &                  BETAC,BETAF,TYPCOE,TYPVAL,TYPLAG,LISREZ)
+     &                  BETAC,BETAF,TYPCOE,TYPVAL,TYPLAG,EPSI,LISREZ)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 25/11/2004   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 14/03/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -71,6 +71,9 @@ C                              SI = '22'  LE PREMIER LAGRANGE EST APRES
 C                                         LE NOEUD PHYSIQUE
 C                                         LE SECOND LAGRANGE EST APRES
 C----------------------------------------------------------------------
+C EPSI       - IN - R  - : VALEUR EN DECA DE LAQUELLE LES COEFFICIENTS
+C                          SONT SUPPOSES NULS
+C----------------------------------------------------------------------
 C LISREZ        - IN - K19 - : NOM DE LA SD LISTE_RELA
 C               - JXVAR    -
 C----------------------------------------------------------------------
@@ -95,7 +98,7 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
 C -----  ARGUMENTS
-      REAL*8 COEFR(NBTERM),DBLE,DIMAG
+      REAL*8 COEFR(NBTERM),DBLE,DIMAG,EPSI
       REAL*8 DIRECT(3,NBTERM)
 
       INTEGER NDIM(NBTERM)
@@ -107,7 +110,6 @@ C -----  ARGUMENTS
       CHARACTER*8 BETAF,DDL(NBTERM),NOEUD(NBTERM)
       CHARACTER*(*) LISREZ
 C ------ VARIABLES LOCALES
-      COMPLEX*16 ZEROC
 
       CHARACTER*1 K1BID
       CHARACTER*8 DDLTRA(3),DDLROT(3)
@@ -198,8 +200,6 @@ C       -- ON ALARME SI LRCOEF EST TROP DIFFERENT DE 1.
       DDLROT(3) = 'DRZ'
 
       IROT = 0
-      ZERO = 0.0D0
-      ZEROC = (0.0D0,0.0D0)
 
 C --- SI L'OBJET LISREL N'EXISTE PAS, ON LE CREE :
 C     ------------------------------------------
@@ -233,7 +233,7 @@ C     -----------------------------------
       NBTERR = 0
       DO 40 I = 1,NBTERM
         IF (TYPCO2.EQ.'COMP') THEN
-          IF (COEFC(I).NE.ZEROC) THEN
+          IF (ABS(COEFC(I)).GT.EPSI) THEN
             IF (NDIM(I).EQ.0) THEN
               NBTERR = NBTERR + 1
             ELSE
@@ -241,7 +241,7 @@ C     -----------------------------------
             END IF
           END IF
         ELSE
-          IF (COEFR(I).NE.ZERO) THEN
+          IF (ABS(COEFR(I)).GT.EPSI) THEN
             IF (NDIM(I).EQ.0) THEN
               NBTERR = NBTERR + 1
             ELSE
@@ -323,7 +323,7 @@ C     ------------------------------
       IF (TYPCO2.EQ.'COMP') THEN
         DO 60 I = 1,NBTERM
 C ---   ON NE TIENT COMPTE QUE DES COEFFICIENTS NON-NULS
-          IF (COEFC(I).NE.ZEROC) THEN
+          IF (ABS(COEFC(I)).GT.EPSI) THEN
             IF (NDIM(I).EQ.0) THEN
               K = K + 1
               ZC(IDCOEF+IPOINT+K-1) = COEFC(I)/RCOEF
@@ -364,7 +364,7 @@ C     --------------------------
       ELSE
         DO 80 I = 1,NBTERM
 C ---   ON NE TIENT COMPTE QUE DES COEFFICIENTS NON-NULS
-          IF (COEFR(I).NE.ZERO) THEN
+          IF (ABS(COEFR(I)).GT.EPSI) THEN
             IF (NDIM(I).EQ.0) THEN
               K = K + 1
               ZR(IDCOEF+IPOINT+K-1) = COEFR(I)/RCOEF

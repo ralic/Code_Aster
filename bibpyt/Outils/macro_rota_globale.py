@@ -1,4 +1,4 @@
-#@ MODIF macro_rota_globale Outils  DATE 14/09/2004   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF macro_rota_globale Outils  DATE 14/03/2005   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,7 +18,6 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 from Cata.cata import *
-from Utilitai.extract import EXTRACT
 
 # ===========================================================================
 #           CORPS DE LA MACRO "MACR_ROTA_GLOBALE"
@@ -78,12 +77,14 @@ def macr_rota_globale_ops(self,RESULTAT,GROUP_NO_ORIG,GROUP_NO_EXTR,**args):
                                 NOM_CMP=('DRX','DRY','DRZ',),
                                 OPERATION='EXTRACTION',),);
   
-  __DRXC  = EXTRACT(__ROTAC,'INST','DRX')
-  __DRYC  = EXTRACT(__ROTAC,'INST','DRY')
-  __DRZC  = EXTRACT(__ROTAC,'INST','DRZ')
-  __DRXB  = EXTRACT(__ROTAB,'INST','DRX')
-  __DRYB  = EXTRACT(__ROTAB,'INST','DRY')
-  __DRZB  = EXTRACT(__ROTAB,'INST','DRZ')
+  __ROTABt=__ROTAB.EXTR_TABLE()
+  __ROTACt=__ROTAC.EXTR_TABLE()
+  __DRXC  = __ROTACt.Array('INST','DRX')
+  __DRYC  = __ROTACt.Array('INST','DRY')
+  __DRZC  = __ROTACt.Array('INST','DRZ')
+  __DRXB  = __ROTABt.Array('INST','DRX')
+  __DRYB  = __ROTABt.Array('INST','DRY')
+  __DRZB  = __ROTABt.Array('INST','DRZ')
   __DRXBC = __DRXC-__DRXB
   __DRYBC = __DRYC-__DRYB
   __DRZBC = __DRZC-__DRZB

@@ -1,100 +1,99 @@
-      SUBROUTINE CALIAG(FONREZ, CHARGZ)
+      SUBROUTINE CALIAG(FONREZ,CHARGZ)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
-C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
-C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
       IMPLICIT REAL*8 (A-H,O-Z)
-      CHARACTER*(*)     FONREZ, CHARGZ
+      CHARACTER*(*) FONREZ,CHARGZ
 C ----------------------------------------------------------------------
-C MODIF MODELISA  DATE 06/11/2001   AUTEUR CIBHHLV L.VIVAN 
-C
+C MODIF MODELISA  DATE 14/03/2005   AUTEUR VABHHTS J.PELLET 
+
 C     CREER LES CARTES CHAR.CHME.CMULT ET CHAR.CHME.CIMPO
 C          ET REMPLIR LIGRCH, POUR LE MOT-CLE LIAISON_GROUP
-C
+
 C IN  : FONREE : 'REEL' OU 'FONC'
 C IN  : CHARGE : NOM UTILISATEUR DU RESULTAT DE CHARGE
 C-----------------------------------------------------------------------
 C     ----------- COMMUNS NORMALISES  JEVEUX  --------------------------
-      INTEGER           ZI
-      COMMON / IVARJE / ZI(1)
-      REAL*8            ZR
-      COMMON / RVARJE / ZR(1)
-      COMPLEX*16        ZC
-      COMMON / CVARJE / ZC(1)
-      LOGICAL           ZL
-      COMMON / LVARJE / ZL(1)
-      CHARACTER*8       ZK8
-      CHARACTER*16              ZK16
-      CHARACTER*24                       ZK24
-      CHARACTER*32                                ZK32
-      CHARACTER*80                                         ZK80
-      COMMON / KVARJE / ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
-      CHARACTER*32      JEXNOM, JEXNUM
+      INTEGER ZI
+      COMMON /IVARJE/ZI(1)
+      REAL*8 ZR
+      COMMON /RVARJE/ZR(1)
+      COMPLEX*16 ZC
+      COMMON /CVARJE/ZC(1)
+      LOGICAL ZL
+      COMMON /LVARJE/ZL(1)
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32
+      CHARACTER*80 ZK80
+      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+      CHARACTER*32 JEXNOM,JEXNUM
 C---------------- FIN COMMUNS NORMALISES  JEVEUX  ----------------------
-C
-      INTEGER       I, J, K, IRET, IER, IOCC, IBID, IFM, NIV, NMOCL
-      PARAMETER     (NMOCL=300)
-      REAL*8        RBID, BETA
-      COMPLEX*16    BETAC
-      LOGICAL       EXISDG, DNOR
-      CHARACTER*2   TYPLAG
-      CHARACTER*4   FONREE, TYPCOE
-      CHARACTER*7   TYPCHA
-      CHARACTER*8   NOMNO1, NOMNO2, CHARGE, NOMG, NOMA, MOD, K8BID,
-     +              NOMDEP, KBETA, CMP, NOMCMP(NMOCL)
-      CHARACTER*16  MOTFAC, MCGREX, MCEX
-      CHARACTER*19  PREFIX, LIGRMO, LISREL
-      CHARACTER*24  CONI, CONR, NOMDD1, NOMDD2, COEF1, COEF2,
-     +              LISIN1, LISIN2
+
+      INTEGER I,J,K,IRET,IER,IOCC,IBID,IFM,NIV,NMOCL
+      PARAMETER (NMOCL=300)
+      REAL*8 RBID,BETA
+      COMPLEX*16 BETAC
+      LOGICAL EXISDG,DNOR
+      CHARACTER*2 TYPLAG
+      CHARACTER*4 FONREE,TYPCOE
+      CHARACTER*7 TYPCHA
+      CHARACTER*8 NOMNO1,NOMNO2,CHARGE,NOMG,NOMA,MOD,K8BID,NOMDEP,KBETA,
+     &            CMP,NOMCMP(NMOCL)
+      CHARACTER*16 MOTFAC,MCGREX,MCEX
+      CHARACTER*19 PREFIX,LIGRMO,LISREL
+      CHARACTER*24 CONI,CONR,NOMDD1,NOMDD2,COEF1,COEF2,LISIN1,LISIN2
       CHARACTER*123 TEXTE
 C ----------------------------------------------------------------------
-C
+
       CALL JEMARQ()
       MOTFAC = 'LIAISON_GROUP'
-      CALL GETFAC ( MOTFAC, NLIAG )
-      IF (NLIAG.EQ.0) GOTO 9999
-C
+      CALL GETFAC(MOTFAC,NLIAG)
+      IF (NLIAG.EQ.0) GO TO 170
+
       FONREE = FONREZ
       CHARGE = CHARGZ
-C
+
       TYPCOE = 'REEL'
-      IF (FONREE.EQ.'COMP')  TYPCOE = 'COMP'
-C
+      IF (FONREE.EQ.'COMP') TYPCOE = 'COMP'
+
       LISREL = '&&CALIAG.RLLISTE'
       LISIN1 = '&&CALIAG.LISNO1'
       LISIN2 = '&&CALIAG.LISNO2'
       BETAC = (1.0D0,0.0D0)
       NOMDEP = 'DEPL'
       TYPLAG = '12'
-C
+
 C --- MODELE ASSOCIE AU LIGREL DE CHARGE ---
-C
+
       CALL DISMOI('F','NOM_MODELE',CHARGE(1:8),'CHARGE',IBID,MOD,IER)
-C
+
 C ---  LIGREL DU MODELE ---
-C
+
       LIGRMO = MOD(1:8)//'.MODELE'
-C
+
 C --- MAILLAGE ASSOCIE AU MODELE ---
-C
+
       CALL JEVEUO(LIGRMO//'.NOMA','L',JNOMA)
       NOMA = ZK8(JNOMA)
-C
+
       MCGREX = 'SANS_GROUP_NO'
-      MCEX   = 'SANS_NOEUD'
+      MCEX = 'SANS_NOEUD'
       PREFIX = CHARGE//'.LIAG.COUPL'
       CONI = PREFIX//'.CONI'
       CALL JECREC(CONI,'V V I','NU','DISPERSE','VARIABLE',NLIAG)
@@ -108,24 +107,23 @@ C
       CALL JECREC(COEF1,'V V R','NU','DISPERSE','VARIABLE',NLIAG)
       COEF2 = PREFIX(1:13)//'.CMULT2'
       CALL JECREC(COEF2,'V V R','NU','DISPERSE','VARIABLE',NLIAG)
-C
-      DO 10 IOCC = 1,NLIAG
-C
+
+      DO 30 IOCC = 1,NLIAG
+
 C --- LECTURE DES MOTS CLES GROUP_MA_1 OU 2 OU MAILLE_1 OU 2 OU ---
 C --- GROUP_NO_1 OU 2 OU NOEUD_1 OU 2)                          ---
-C
-        CALL CALEMN(MOTFAC,NOMA,IOCC,LISIN1,LONLI1,LISIN2,
-     +              LONLI2)
-C
+
+        CALL CALEMN(MOTFAC,NOMA,IOCC,LISIN1,LONLI1,LISIN2,LONLI2)
+
 C --- CONSTRUCTION DES VIS A VIS DES LISTES DE NOEUDS         ---
 C --- LISIN1 ET LISIN2 DANS L'OJB CONI(IOCC)                  ---
-C
-        CALL CALINN(PREFIX,NOMA,MOTFAC,IOCC,LISIN1,LONLI1,LISIN2,
-     +              LONLI2,MOD)
-C
+
+        CALL CALINN(PREFIX,NOMA,MOTFAC,IOCC,LISIN1,LONLI1,LISIN2,LONLI2,
+     &              MOD)
+
 C --- LECTURE DES MOTS CLES SANS_GROUP_NO ET SANS_NOEUD ---
 C --- MISE A JOUR DE CONI ET CONR SI IL EXISTE          ---
-C
+
         CALL CAEXNO(CONI,NOMA,MOTFAC,MCGREX,MCEX,IOCC)
         CALL JEVEUO(JEXNUM(CONI,IOCC),'L',IDCONI)
         NBNO = ZI(IDCONI)
@@ -134,340 +132,340 @@ C
           DNOR = .FALSE.
         ELSE
           DNOR = .TRUE.
-        ENDIF
-C
+        END IF
+
 C --- LECTURE DES DDLS IMPOSES SUR LA LISTE 1 ---
-C
-        CALL GETVTX (MOTFAC,'DDL_1',IOCC,1,0,' ',NDDL1)
+
+        CALL GETVTX(MOTFAC,'DDL_1',IOCC,1,0,K8BID,NDDL1)
         NDDL1 = -NDDL1
-C
+
 C --- LECTURE DES COEF. MULT. ASSOCIES AUX DDLS IMPOSES ---
 C --- SUR LA LISTE 1                                    ---
-C
-        CALL GETVR8 (MOTFAC,'COEF_MULT_1',IOCC,1,0,RBID,NMULT1)
+
+        CALL GETVR8(MOTFAC,'COEF_MULT_1',IOCC,1,0,RBID,NMULT1)
         NMULT1 = -NMULT1
         IF (NDDL1.NE.NMULT1) THEN
-          CALL UTDEBM('F','CALIAG','LE NOMBRE DE DDL_1 FIGURANT DANS'
-     +    //' LA LIAISON N''EST PAS EGAL AU NOMBRE DE COEF_MULT_1 :')
+          CALL UTDEBM('F','CALIAG','LE NOMBRE DE DDL_1 FIGURANT DANS'//
+     &          ' LA LIAISON N''EST PAS EGAL AU NOMBRE DE COEF_MULT_1 :'
+     &                )
           CALL UTIMPI('S',' ',1,NDDL1)
           CALL UTIMPI('S',' ',1,NMULT1)
           CALL UTFINM()
-        ENDIF
-C
+        END IF
+
         CALL JECROC(JEXNUM(NOMDD1,IOCC))
         CALL JEECRA(JEXNUM(NOMDD1,IOCC),'LONMAX',NDDL1,' ')
         CALL JEVEUO(JEXNUM(NOMDD1,IOCC),'E',IDDL1)
         CALL JEECRA(JEXNUM(NOMDD1,IOCC),'LONUTI',NDDL1,' ')
-        CALL GETVTX (MOTFAC,'DDL_1',IOCC,1,NDDL1,ZK8(IDDL1),NDDL1)
-        DO 20 K=1,NDDL1
+        CALL GETVTX(MOTFAC,'DDL_1',IOCC,1,NDDL1,ZK8(IDDL1),NDDL1)
+        DO 10 K = 1,NDDL1
           CALL LXCAPS(ZK8(IDDL1-1+K))
           CALL LXCADR(ZK8(IDDL1-1+K))
-20     CONTINUE
-C
+   10   CONTINUE
+
         CALL JECROC(JEXNUM(COEF1,IOCC))
         CALL JEECRA(JEXNUM(COEF1,IOCC),'LONMAX',NDDL1,' ')
         CALL JEVEUO(JEXNUM(COEF1,IOCC),'E',IMULT1)
-        CALL GETVR8 (MOTFAC,'COEF_MULT_1',IOCC,1,NDDL1,ZR(IMULT1),NDDL1)
-C
+        CALL GETVR8(MOTFAC,'COEF_MULT_1',IOCC,1,NDDL1,ZR(IMULT1),NDDL1)
+
 C --- CAS DE DNOR : ON VA GENERE UNE LIAISON SUR DX,DY DZ POUR ---
 C --- CHAQUE COUPLE DE LA LIST(UN GREL PAR COUPLE)             ---
-C
-        IF ((NDDL1.EQ.1).AND.(ZK8(IDDL1).EQ.'DNOR')) THEN
+
+        IF ((NDDL1.EQ.1) .AND. (ZK8(IDDL1).EQ.'DNOR')) THEN
           IF (.NOT.DNOR) THEN
-            CALL UTMESS('F','CALIAG_01',' LIAISON_GROUP : ON NE SAIT'
-     +  //' PAS CALCULER LA NORMALE A UN NOEUD IL FAUT PASSER PAR LES'
-     +  //' MAILLES')
+            CALL UTMESS('F','CALIAG_01',' LIAISON_GROUP : ON NE SAIT'//
+     &      ' PAS CALCULER LA NORMALE A UN NOEUD IL FAUT PASSER PAR LES'
+     &                  //' MAILLES')
           ELSE
-          ENDIF
+          END IF
         ELSE
-        ENDIF
-C
+        END IF
+
 C --- LECTURE DES DDLS IMPOSES SUR LA LISTE 2 ---
-C
-        CALL GETVTX (MOTFAC,'DDL_2',IOCC,1,0,' ',NDDL2)
+
+        CALL GETVTX(MOTFAC,'DDL_2',IOCC,1,0,K8BID,NDDL2)
         NDDL2 = -NDDL2
-C
+
 C --- LECTURE DES COEF. MULT. ASSOCIES AUX DDLS IMPOSES ---
 C --- SUR LA LISTE 2                                    ---
-C
-        CALL GETVR8 (MOTFAC,'COEF_MULT_2',IOCC,1,0,RBID,NMULT2)
+
+        CALL GETVR8(MOTFAC,'COEF_MULT_2',IOCC,1,0,RBID,NMULT2)
         NMULT2 = -NMULT2
         IF (NDDL2.NE.NMULT2) THEN
-          CALL UTDEBM('F','CALIAG','LE NOMBRE DE DDL_2 FIGURANT DANS'
-     +    //' LA LIAISON N''EST PAS EGAL AU NOMBRE DE COEF_MULT_2 :')
+          CALL UTDEBM('F','CALIAG','LE NOMBRE DE DDL_2 FIGURANT DANS'//
+     &          ' LA LIAISON N''EST PAS EGAL AU NOMBRE DE COEF_MULT_2 :'
+     &                )
           CALL UTIMPI('S',' ',1,NDDL2)
           CALL UTIMPI('S',' ',1,NMULT2)
           CALL UTFINM()
-        ENDIF
-C
+        END IF
+
         CALL JECROC(JEXNUM(NOMDD2,IOCC))
         CALL JEECRA(JEXNUM(NOMDD2,IOCC),'LONMAX',NDDL2,' ')
         CALL JEVEUO(JEXNUM(NOMDD2,IOCC),'E',IDDL2)
         CALL JEECRA(JEXNUM(NOMDD2,IOCC),'LONUTI',NDDL2,' ')
-        CALL GETVTX (MOTFAC,'DDL_2',IOCC,1,NDDL2,ZK8(IDDL2),NDDL2)
-        DO 30 K=1,NDDL2
-            CALL LXCAPS(ZK8(IDDL2-1+K))
-            CALL LXCADR(ZK8(IDDL2-1+K))
-30     CONTINUE
-C
+        CALL GETVTX(MOTFAC,'DDL_2',IOCC,1,NDDL2,ZK8(IDDL2),NDDL2)
+        DO 20 K = 1,NDDL2
+          CALL LXCAPS(ZK8(IDDL2-1+K))
+          CALL LXCADR(ZK8(IDDL2-1+K))
+   20   CONTINUE
+
         CALL JECROC(JEXNUM(COEF2,IOCC))
         CALL JEECRA(JEXNUM(COEF2,IOCC),'LONMAX',NDDL2,' ')
         CALL JEVEUO(JEXNUM(COEF2,IOCC),'E',IMULT2)
-        CALL GETVR8 (MOTFAC,'COEF_MULT_2',IOCC,1,NDDL2,ZR(IMULT2),NDDL2)
-        IF ((NDDL2.EQ.1).AND.(ZK8(IDDL2).EQ.'DNOR')) THEN
+        CALL GETVR8(MOTFAC,'COEF_MULT_2',IOCC,1,NDDL2,ZR(IMULT2),NDDL2)
+        IF ((NDDL2.EQ.1) .AND. (ZK8(IDDL2).EQ.'DNOR')) THEN
           IF (.NOT.DNOR) THEN
-            CALL UTMESS('F','CALIAG_02',' LIAISON_GROUP : ON NE SAIT'
-     +  //' PAS CALCULER LA NORMALE A UN NOEUD IL FAUT PASSER PAR LES'
-     +  //' MAILLES')
+            CALL UTMESS('F','CALIAG_02',' LIAISON_GROUP : ON NE SAIT'//
+     &      ' PAS CALCULER LA NORMALE A UN NOEUD IL FAUT PASSER PAR LES'
+     &                  //' MAILLES')
           ELSE
-          ENDIF
+          END IF
         ELSE
-        ENDIF
-10     CONTINUE
-C
+        END IF
+   30 CONTINUE
+
 C --- TYPE DE LA CHARGE ---
-C
-      CALL DISMOI('F','TYPE_CHARGE',CHARGE(1:8),'CHARGE',IBID,
-     +             TYPCHA,IER)
-C
-      IF (TYPCHA(1:2).EQ.'TH')  THEN
+
+      CALL DISMOI('F','TYPE_CHARGE',CHARGE(1:8),'CHARGE',IBID,TYPCHA,
+     &            IER)
+
+      IF (TYPCHA(1:2).EQ.'TH') THEN
         NOMG = 'TEMP_R'
       ELSE
         NOMG = 'DEPL_R'
-      ENDIF
-C
+      END IF
+
 C --- NOMBRE D'ENTIERS CODES ASSOCIE A LA GRANDEUR ---
-C
+
       CALL DISMOI('F','NB_EC',NOMG,'GRANDEUR',NBEC,K8BID,IER)
       IF (NBEC.GT.10) THEN
-          CALL UTMESS('F','CALIAG',
-     +                   'LE DESCRIPTEUR_GRANDEUR DE LA GRANDEUR'//
-     +                   ' DE NOM '//NOMG//
-     +                   ' NE TIENT PAS SUR DIX ENTIERS CODES')
-      ENDIF
-C
+        CALL UTMESS('F','CALIAG',
+     &              'LE DESCRIPTEUR_GRANDEUR DE LA GRANDEUR'//
+     &              ' DE NOM '//NOMG//
+     &              ' NE TIENT PAS SUR DIX ENTIERS CODES')
+      END IF
+
       CALL JEVEUO(JEXNOM('&CATA.GD.NOMCMP',NOMG),'L',INOM)
       CALL JELIRA(JEXNOM('&CATA.GD.NOMCMP',NOMG),'LONMAX',NBCMP,K8BID)
-      NDDLA = NBCMP-1
+      NDDLA = NBCMP - 1
       IF (NDDLA.GT.NMOCL) THEN
         CALL UTDEBM('F','CALIAG_03','NOMBRE DE CMPS SUPERIEUR AU MAX')
         CALL UTIMPI('L','NMAXCMP= ',1,NMOCL)
         CALL UTIMPI('L','NCMP   = ',1,NDDLA)
         CALL UTFINM()
-      ENDIF
-      DO 40 I=1,NDDLA
-        NOMCMP(I)=ZK8(INOM-1+I)
-40    CONTINUE
-C
-      CALL JEVEUO (LIGRMO//'.PRNM','L',JPRNM)
-C
+      END IF
+      DO 40 I = 1,NDDLA
+        NOMCMP(I) = ZK8(INOM-1+I)
+   40 CONTINUE
+
+      CALL JEVEUO(LIGRMO//'.PRNM','L',JPRNM)
+
 C --- CREATION ET AFFECTATION DES RELATIONS A LA LISTE DE ---
 C --- RELATIONS                                           ---
-C
+
       ICMPZ = INDIK8(NOMCMP,'DZ',1,NDDLA)
-C
-      DO 50 IOCC = 1, NLIAG
+
+      DO 160 IOCC = 1,NLIAG
         IF (FONREE.EQ.'REEL') THEN
-          CALL GETVR8 (MOTFAC, 'COEF_IMPO', IOCC, 1, 1,BETA, NB)
+          CALL GETVR8(MOTFAC,'COEF_IMPO',IOCC,1,1,BETA,NB)
         ELSE
-          CALL GETVID (MOTFAC, 'COEF_IMPO', IOCC, 1, 1,KBETA, NB)
-        ENDIF
+          CALL GETVID(MOTFAC,'COEF_IMPO',IOCC,1,1,KBETA,NB)
+        END IF
         CALL JEVEUO(JEXNUM(CONI,IOCC),'L',IDCONI)
 C --- NOMBRE DE NOEUDS DE CHACUNES DES LISTES EN VIS A VIS
-        NBNO =ZI(IDCONI)
-C
+        NBNO = ZI(IDCONI)
+
         CALL JEVEUO(JEXNUM(NOMDD1,IOCC),'L',IDDL1)
         CALL JEVEUO(JEXNUM(NOMDD2,IOCC),'L',IDDL2)
         CALL JEVEUO(JEXNUM(COEF1,IOCC),'L',IDCO1)
         CALL JEVEUO(JEXNUM(COEF2,IOCC),'L',IDCO2)
-C
+
 C --- NOMBRE DE DDL IMPOSES POUR LES NOEUDS DE LA 1ERE LISTE ---
-C
+
         CALL JELIRA(JEXNUM(NOMDD1,IOCC),'LONUTI',NDDL1,K8BID)
-C
+
 C --- NOMBRE DE DDL IMPOSES POUR LES NOEUDS DE LA 2EME LISTE ---
-C
+
         CALL JELIRA(JEXNUM(NOMDD2,IOCC),'LONUTI',NDDL2,K8BID)
-C
-        IDMAX = 3*(NDDL1+NDDL2)
-C
+
+        IDMAX = 3* (NDDL1+NDDL2)
+
 C ---  ALLOCATION D'UN TABLEAU BIDON POUR AFRELA ---
-C
+
         CALL WKVECT('&&CALIAG.COEMUC','V V C',IDMAX,JCMUC)
-C
+
 C ---  ALLOCATION DU TABLEAU DES NOMS DES NOEUDS DE LA RELATION ---
-C
+
         CALL WKVECT('&&CALIAG.NOMNOE','V V K8',IDMAX,IDNOMN)
-C
+
 C ---  ALLOCATION DU TABLEAU DES NOMS DES DDLS DE LA RELATION ---
-C
+
         CALL WKVECT('&&CALIAG.NOMDDL','V V K8',IDMAX,IDNOMD)
-C
+
 C ---  ALLOCATION DU TABLEAU DES COEFFICIENTS DE LA RELATION ---
-C
+
         CALL WKVECT('&&CALIAG.COEF','V V R',IDMAX,IDCOEF)
-C
+
 C ---  ALLOCATION DU TABLEAU DES DIRECTIONS DES COMPOSANTES ---
 C ---  DE LA RELATION                                       ---
-C
+
         CALL WKVECT('&&CALIAG.DIRECT','V V R',3*IDMAX,IDIREC)
-C
+
 C ---  ALLOCATION DU TABLEAU DE LA DIMENSION DU PROBLEME  ---
 C ---  RELATIVE A CHAQUE COMPOSANTE DE LA RELATION        ---
-C
+
         CALL WKVECT('&&CALIAG.DIMENSION','V V I',IDMAX,IDIMEN)
-C
+
 C ---  ALLOCATION DU TABLEAU DES DIMENSIONS DES VECTEURS NORMAUX ---
 C ---  EN CHAQUE NOEUD POUR TOUTES LES RELATIONS                 ---
-C
+
         CALL WKVECT('&&CALIAG.NBNOR','V V I',2*NBNO,IDNBN)
-C
+
 C ---  AFFECTATION DE CE VECTEUR ---
-C
-        DO 60 J = 1, NBNO
-            INO1 = ZI(IDCONI+2*(J-1)+1)
-            INO2 = ZI(IDCONI+2*(J-1)+2)
-C
-            IEXCM1 = 0
-            IEXCM2 = 0
-            DO 61 IEC = 1, NBEC
-              IF ( ZI(JPRNM-1+(INO1-1)*NBEC+IEC).NE.0) THEN
-                 IEXCM1 = 1
-                 GO TO 62
-              ENDIF
-  61        CONTINUE
-  62        CONTINUE
-C
-            DO 63 IEC = 1, NBEC
-              IF ( ZI(JPRNM-1+(INO2-1)*NBEC+IEC).NE.0) THEN
-                 IEXCM2 = 1
-                 GO TO 64
-              ENDIF
-  63        CONTINUE
-  64        CONTINUE
-            IDG1 = JPRNM-1+(INO1-1)*NBEC+1
-            IDG2 = JPRNM-1+(INO2-1)*NBEC+1
-C
-            IF (IEXCM1.EQ.0) THEN
-              TEXTE(1:9)='LE NOEUD '
-              TEXTE(18:80)=' NE FAIT PAS PARTIE DU MODELE. '
-     &                       //MOTFAC//' IMPOSSIBLE'
-              CALL JENUNO(JEXNUM(NOMA//'.NOMNOE',INO1),NOMNO1)
-              WRITE(TEXTE(10:17),'(A)') NOMNO1
-              CALL UTMESS('F','CALIAG_04',TEXTE)
-            ENDIF
-            ZI(IDNBN-1+2*(J-1)+1) = 3
-            IF ((ICMPZ.EQ.0).OR.(.NOT.EXISDG(ZI(IDG1),ICMPZ))) THEN
-              ZI(IDNBN-1+2*(J-1)+1) = 2
-            ENDIF
-C
-            IF (IEXCM2.EQ.0) THEN
-              TEXTE(1:9)='LE NOEUD '
-              TEXTE(18:80)=' NE FAIT PAS PARTIE DU MODELE. '
-     &                       //MOTFAC//' IMPOSSIBLE'
-              CALL JENUNO(JEXNUM(NOMA//'.NOMNOE',INO2),NOMNO2)
-              WRITE(TEXTE(10:17),'(A)') NOMNO2
-              CALL UTMESS('F','CALIAG_05',TEXTE)
-            ENDIF
-            ZI(IDNBN-1+2*(J-1)+2) = 3
-            IF ((ICMPZ.EQ.0).OR.(.NOT.EXISDG(ZI(IDG2),ICMPZ))) THEN
-              ZI(IDNBN-1+2*(J-1)+2) = 2
-            ENDIF
-60      CONTINUE
-C
-C ---  AFFECTATION DES RELATIONS ---
-C
-        DO 70 J = 1, NBNO
-            K = 0
-C
-C --- PREMIER NOEUD DE LA RELATION ---
-C
-            INO1 = ZI(IDCONI+2*(J-1)+1)
+
+        DO 90 J = 1,NBNO
+          INO1 = ZI(IDCONI+2* (J-1)+1)
+          INO2 = ZI(IDCONI+2* (J-1)+2)
+
+          IEXCM1 = 0
+          IEXCM2 = 0
+          DO 50 IEC = 1,NBEC
+            IF (ZI(JPRNM-1+ (INO1-1)*NBEC+IEC).NE.0) THEN
+              IEXCM1 = 1
+              GO TO 60
+            END IF
+   50     CONTINUE
+   60     CONTINUE
+
+          DO 70 IEC = 1,NBEC
+            IF (ZI(JPRNM-1+ (INO2-1)*NBEC+IEC).NE.0) THEN
+              IEXCM2 = 1
+              GO TO 80
+            END IF
+   70     CONTINUE
+   80     CONTINUE
+          IDG1 = JPRNM - 1 + (INO1-1)*NBEC + 1
+          IDG2 = JPRNM - 1 + (INO2-1)*NBEC + 1
+
+          IF (IEXCM1.EQ.0) THEN
+            TEXTE(1:9) = 'LE NOEUD '
+            TEXTE(18:80) = ' NE FAIT PAS PARTIE DU MODELE. '//MOTFAC//
+     &                     ' IMPOSSIBLE'
             CALL JENUNO(JEXNUM(NOMA//'.NOMNOE',INO1),NOMNO1)
-            CMP = ZK8(IDDL1)
-            IF (CMP.EQ.'DNOR') THEN
-                CALL JEVEUO(JEXNUM(CONR,IOCC),'L',IDCONR)
-                IDIM = ZI(IDNBN-1+2*(J-1)+1)
-                K = K + 1
-                ZR(IDCOEF+K-1)  =  ZR(IDCO1)
-                ZK8(IDNOMN+K-1) = NOMNO1
-                ZK8(IDNOMD+K-1) = NOMDEP
-                ZI(IDIMEN+K-1) = IDIM
-                DO 80 I = 1, IDIM
-                   ZR(IDIREC+3*(K-1)+I-1)  =
-     +                                ZR(IDCONR-1+(2*3+1)*(J-1)+I)
-C     +                                ZR(IDCONR-1+(2*IDIM+1)*(J-1)+I)
-  80           CONTINUE
-            ELSE
-                DO 90 I = 1, NDDL1
-                   K = K + 1
-                   ZK8(IDNOMN+K-1) = NOMNO1
-                   ZK8(IDNOMD+K-1) = ZK8(IDDL1+I-1)
-                   ZR(IDCOEF+K-1)  =  ZR(IDCO1+I-1)
-  90           CONTINUE
-            ENDIF
-C
-C --- DEUXIEME NOEUD DE LA RELATION ---
-C
-            INO2 = ZI(IDCONI+2*(J-1)+2)
+            WRITE (TEXTE(10:17),'(A)') NOMNO1
+            CALL UTMESS('F','CALIAG_04',TEXTE)
+          END IF
+          ZI(IDNBN-1+2* (J-1)+1) = 3
+          IF ((ICMPZ.EQ.0) .OR. (.NOT.EXISDG(ZI(IDG1),ICMPZ))) THEN
+            ZI(IDNBN-1+2* (J-1)+1) = 2
+          END IF
+
+          IF (IEXCM2.EQ.0) THEN
+            TEXTE(1:9) = 'LE NOEUD '
+            TEXTE(18:80) = ' NE FAIT PAS PARTIE DU MODELE. '//MOTFAC//
+     &                     ' IMPOSSIBLE'
             CALL JENUNO(JEXNUM(NOMA//'.NOMNOE',INO2),NOMNO2)
-            CMP = ZK8(IDDL2)
-            IF (CMP.EQ.'DNOR') THEN
-                CALL JEVEUO(JEXNUM(CONR,IOCC),'L',IDCONR)
-                IDIM = ZI(IDNBN-1+2*(J-1)+2)
-                K = K + 1
-                ZR(IDCOEF+K-1) = ZR(IDCO2)
-                ZK8(IDNOMN+K-1) = NOMNO2
-                ZK8(IDNOMD+K-1) = NOMDEP
-                ZI(IDIMEN+K-1) = IDIM
-                DO 100 I = 1, IDIM
-                   ZR(IDIREC+3*(K-1)+I-1)  =
-     +                          ZR(IDCONR-1+(2*3+1)*(J-1)+3+I)
+            WRITE (TEXTE(10:17),'(A)') NOMNO2
+            CALL UTMESS('F','CALIAG_05',TEXTE)
+          END IF
+          ZI(IDNBN-1+2* (J-1)+2) = 3
+          IF ((ICMPZ.EQ.0) .OR. (.NOT.EXISDG(ZI(IDG2),ICMPZ))) THEN
+            ZI(IDNBN-1+2* (J-1)+2) = 2
+          END IF
+   90   CONTINUE
+
+C ---  AFFECTATION DES RELATIONS ---
+
+        DO 140 J = 1,NBNO
+          K = 0
+
+C --- PREMIER NOEUD DE LA RELATION ---
+
+          INO1 = ZI(IDCONI+2* (J-1)+1)
+          CALL JENUNO(JEXNUM(NOMA//'.NOMNOE',INO1),NOMNO1)
+          CMP = ZK8(IDDL1)
+          IF (CMP.EQ.'DNOR') THEN
+            CALL JEVEUO(JEXNUM(CONR,IOCC),'L',IDCONR)
+            IDIM = ZI(IDNBN-1+2* (J-1)+1)
+            K = K + 1
+            ZR(IDCOEF+K-1) = ZR(IDCO1)
+            ZK8(IDNOMN+K-1) = NOMNO1
+            ZK8(IDNOMD+K-1) = NOMDEP
+            ZI(IDIMEN+K-1) = IDIM
+            DO 100 I = 1,IDIM
+              ZR(IDIREC+3* (K-1)+I-1) = ZR(IDCONR-1+ (2*3+1)* (J-1)+I)
+C     +                                ZR(IDCONR-1+(2*IDIM+1)*(J-1)+I)
+  100       CONTINUE
+          ELSE
+            DO 110 I = 1,NDDL1
+              K = K + 1
+              ZK8(IDNOMN+K-1) = NOMNO1
+              ZK8(IDNOMD+K-1) = ZK8(IDDL1+I-1)
+              ZR(IDCOEF+K-1) = ZR(IDCO1+I-1)
+  110       CONTINUE
+          END IF
+
+C --- DEUXIEME NOEUD DE LA RELATION ---
+
+          INO2 = ZI(IDCONI+2* (J-1)+2)
+          CALL JENUNO(JEXNUM(NOMA//'.NOMNOE',INO2),NOMNO2)
+          CMP = ZK8(IDDL2)
+          IF (CMP.EQ.'DNOR') THEN
+            CALL JEVEUO(JEXNUM(CONR,IOCC),'L',IDCONR)
+            IDIM = ZI(IDNBN-1+2* (J-1)+2)
+            K = K + 1
+            ZR(IDCOEF+K-1) = ZR(IDCO2)
+            ZK8(IDNOMN+K-1) = NOMNO2
+            ZK8(IDNOMD+K-1) = NOMDEP
+            ZI(IDIMEN+K-1) = IDIM
+            DO 120 I = 1,IDIM
+              ZR(IDIREC+3* (K-1)+I-1) = ZR(IDCONR-1+ (2*3+1)* (J-1)+3+I)
 C     +                          ZR(IDCONR-1+(2*IDIM+1)*(J-1)+IDIM+I)
-  100           CONTINUE
-            ELSE
-                DO 110 I = 1, NDDL2
-                   K = K + 1
-                   ZK8(IDNOMN+K-1) = NOMNO2
-                   ZK8(IDNOMD+K-1) = ZK8(IDDL2+I-1)
-                   ZR(IDCOEF+K-1)  =  ZR(IDCO2+I-1)
-  110           CONTINUE
-            ENDIF
-C
+  120       CONTINUE
+          ELSE
+            DO 130 I = 1,NDDL2
+              K = K + 1
+              ZK8(IDNOMN+K-1) = NOMNO2
+              ZK8(IDNOMD+K-1) = ZK8(IDDL2+I-1)
+              ZR(IDCOEF+K-1) = ZR(IDCO2+I-1)
+  130       CONTINUE
+          END IF
+
 C --- NOMBRE DE TERMES DE LA RELATION ---
-C
-            NBTERM = K
-C
+
+          NBTERM = K
+
 C --- AFFECTATION DE LA RELATION ---
-C
-            CALL AFRELA(ZR(IDCOEF),ZC(JCMUC),ZK8(IDNOMD),ZK8(IDNOMN),
-     +      ZI(IDIMEN),ZR(IDIREC),NBTERM,BETA,BETAC,KBETA,TYPCOE,
-     +      FONREE,TYPLAG,LISREL)
-C
+
+          CALL AFRELA(ZR(IDCOEF),ZC(JCMUC),ZK8(IDNOMD),ZK8(IDNOMN),
+     &                ZI(IDIMEN),ZR(IDIREC),NBTERM,BETA,BETAC,KBETA,
+     &                TYPCOE,FONREE,TYPLAG,0.D0,LISREL)
+
 C --- FIN DE LA BOUCLE SUR LES RELATIONS                       ---
 C --- (I.E. LES COUPLES DE NOEUDS EN VIS A VIS POUR LE MOT-CLE ---
 C --- LIAISON-GROUP COURANT)                                   ---
-C
- 70    CONTINUE
-C
+
+  140   CONTINUE
+
 C --- IMPRESSION DES COUPLES DE NOEUDS EN VIS-A-VIS ---
-C
+
         CALL INFNIV(IFM,NIV)
         IF (NIV.EQ.2) THEN
-          WRITE(IFM,'(1X)')
-          WRITE(IFM,'(1X,A,I5,A)') 'LISTE DES NOEUDS EN VIS-A-VIS A '//
-     +                       'L''OCCURENCE: ',IOCC,' DE LIAISON_GROUP :'
-          DO 120 J = 1, NBNO
-            INO1 = ZI(IDCONI+2*(J-1)+1)
+          WRITE (IFM,'(1X)')
+          WRITE (IFM,'(1X,A,I5,A)') 'LISTE DES NOEUDS EN VIS-A-VIS A '//
+     &      'L''OCCURENCE: ',IOCC,' DE LIAISON_GROUP :'
+          DO 150 J = 1,NBNO
+            INO1 = ZI(IDCONI+2* (J-1)+1)
             CALL JENUNO(JEXNUM(NOMA//'.NOMNOE',INO1),NOMNO1)
-            INO2 = ZI(IDCONI+2*(J-1)+2)
+            INO2 = ZI(IDCONI+2* (J-1)+2)
             CALL JENUNO(JEXNUM(NOMA//'.NOMNOE',INO2),NOMNO2)
-            WRITE(IFM,1000) NOMNO1,NOMNO2
-  120     CONTINUE
-        ENDIF
-C
+            WRITE (IFM,1000) NOMNO1,NOMNO2
+  150     CONTINUE
+        END IF
+
 C --- DESTRUCTION DES TABLEAUX DE TRAVAIL  ---
-C
+
         CALL JEDETR('&&CALIAG.COEMUC')
         CALL JEDETR('&&CALIAG.NOMNOE')
         CALL JEDETR('&&CALIAG.NOMDDL')
@@ -477,18 +475,18 @@ C
         CALL JEDETR('&&CALIAG.NBNOR')
         CALL JEDETR(LISIN1)
         CALL JEDETR(LISIN2)
-C
+
 C --- FIN DE LA BOUCLE SUR LES OCCURENCES DU MOT-CLE  ---
 C --- LIAISON-GROUP                                   ---
-C
-  50  CONTINUE
-C
+
+  160 CONTINUE
+
 C --- AFFECTATION DE LA LISTE DE RELATIONS A LA CHARGE  ---
-C
-      CALL AFLRCH(LISREL, CHARGE)
-C
- 1000 FORMAT(3X,A8,1X,'<--->',1X,A8)
-C
- 9999 CONTINUE
+
+      CALL AFLRCH(LISREL,CHARGE)
+
+
+  170 CONTINUE
       CALL JEDEMA()
+ 1000 FORMAT (3X,A8,1X,'<--->',1X,A8)
       END

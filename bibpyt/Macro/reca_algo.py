@@ -1,4 +1,4 @@
-#@ MODIF reca_algo Macro  DATE 14/09/2004   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF reca_algo Macro  DATE 14/03/2005   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -26,7 +26,6 @@ import copy,os
 import LinearAlgebra 
 from Cata.cata import INFO_EXEC_ASTER
 from Cata.cata import DETRUIRE
-from Macro.recal import EXTRACT
 from Accas import _F
 
 

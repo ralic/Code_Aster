@@ -1,6 +1,7 @@
       SUBROUTINE TSTVEC(PERM,IAD,NLONG,TYPE,SOMMI,SOMMR,NBIGN)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 11/01/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 14/03/2005   AUTEUR VABHHTS J.PELLET 
+C TOLE CRP_4
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,7 +55,7 @@ C --------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       LOGICAL ZL
       CHARACTER*8 ZK8
       CHARACTER*16 ZK16
-      CHARACTER*24 ZK24
+      CHARACTER*24 ZK24,K24
       CHARACTER*32 ZK32
       CHARACTER*80 ZK80
 C --------------- FIN COMMUNS NORMALISES  JEVEUX  --------------------
@@ -62,7 +63,8 @@ C --------------- FIN COMMUNS NORMALISES  JEVEUX  --------------------
       CHARACTER*(*) PERM
       CHARACTER*8 K8
       REAL*8 X ,RUNDF,R8VIDE
-      INTEGER I,IX,C1,IAD,NLONG,ICO,K
+      INTEGER IAD,I,IX,C1,NLONG,ICO,K,TSTK2I
+      INTEGER*8 SOMMI2 ,I8
 
       EQUIVALENCE (X,IX)
       EQUIVALENCE (L,IX)
@@ -117,85 +119,49 @@ C     --------------------
 
 C     -- CALCUL DE SOMMI :
 C     --------------------
-      SOMMI = 0
+      SOMMI2 = 0
       IF (TYPE.EQ.'I') THEN
         DO 30,K = 1,NLONG
-          I = ZI(IAD-1+K)
-          SOMMI = SOMMI + (C1*MOD(K,3)+1)*I
+          I8= ZI(IAD-1+K)
+          SOMMI2 = SOMMI2 + (C1*MOD(K,3)+1)*I8
    30   CONTINUE
       ELSE IF (TYPE.EQ.'L') THEN
         DO 40,K = 1,NLONG
           L = ZL(IAD-1+K)
-          SOMMI = SOMMI + (C1*MOD(K,3)+1)*IX
+          IF (L) SOMMI2 = SOMMI2 + (C1*MOD(K,3)+1)
    40   CONTINUE
       ELSE IF (TYPE.EQ.'R') THEN
-        DO 50,K = 1,NLONG
-          X = ZR(IAD-1+K)
-          SOMMI = SOMMI + (C1*MOD(K,3)+1)*IX
+        SOMMI2=0
    50   CONTINUE
       ELSE IF (TYPE.EQ.'C') THEN
-        DO 60,K = 1,NLONG
-          X = DBLE(ZC(IAD-1+K))
-          SOMMI = SOMMI + (C1*MOD(K,3)+1)*IX
-          X = DIMAG(ZC(IAD-1+K))
-          SOMMI = SOMMI + (C1*MOD(K,3)+1)*IX
+        SOMMI2=0
    60   CONTINUE
       ELSE IF (TYPE.EQ.'K8') THEN
         DO 70,K = 1,NLONG
-          K8 = ZK8(IAD-1+K)
-          SOMMI = SOMMI + (C1*MOD(K,3)+1)*IX
+          SOMMI2 = SOMMI2 + (C1*MOD(K,3)+1)*TSTK2I(8,ZK8(IAD-1+K))
    70   CONTINUE
       ELSE IF (TYPE.EQ.'K16') THEN
         DO 80,K = 1,NLONG
-          K8 = ZK16(IAD-1+K) (1:8)
-          SOMMI = SOMMI + (C1*MOD(K,3)+1)*IX
-          K8 = ZK16(IAD-1+K) (9:16)
-          SOMMI = SOMMI + (C1*MOD(K,3)+1)*IX
+          SOMMI2 = SOMMI2 + (C1*MOD(K,3)+1)*TSTK2I(16,ZK16(IAD-1+K))
    80   CONTINUE
       ELSE IF (TYPE.EQ.'K24') THEN
         DO 90,K = 1,NLONG
-          K8 = ZK24(IAD-1+K) (1:8)
-          SOMMI = SOMMI + (C1*MOD(K,3)+1)*IX
-          K8 = ZK24(IAD-1+K) (9:16)
-          SOMMI = SOMMI + (C1*MOD(K,3)+1)*IX
-          K8 = ZK24(IAD-1+K) (17:24)
-          SOMMI = SOMMI + (C1*MOD(K,3)+1)*IX
+          SOMMI2 = SOMMI2 + (C1*MOD(K,3)+1)*TSTK2I(24,ZK24(IAD-1+K))
    90   CONTINUE
       ELSE IF (TYPE.EQ.'K32') THEN
         DO 100,K = 1,NLONG
-          K8 = ZK32(IAD-1+K) (1:8)
-          SOMMI = SOMMI + (C1*MOD(K,3)+1)*IX
-          K8 = ZK32(IAD-1+K) (9:16)
-          SOMMI = SOMMI + (C1*MOD(K,3)+1)*IX
-          K8 = ZK32(IAD-1+K) (17:24)
-          SOMMI = SOMMI + (C1*MOD(K,3)+1)*IX
-          K8 = ZK32(IAD-1+K) (25:32)
-          SOMMI = SOMMI + (C1*MOD(K,3)+1)*IX
+          SOMMI2 = SOMMI2 + (C1*MOD(K,3)+1)*TSTK2I(32,ZK32(IAD-1+K))
   100   CONTINUE
       ELSE IF (TYPE.EQ.'K80') THEN
         DO 110,K = 1,NLONG
-          K8 = ZK80(IAD-1+K) (1:8)
-          SOMMI = SOMMI + (C1*MOD(K,3)+1)*IX
-          K8 = ZK80(IAD-1+K) (9:16)
-          SOMMI = SOMMI + (C1*MOD(K,3)+1)*IX
-          K8 = ZK80(IAD-1+K) (17:24)
-          SOMMI = SOMMI + (C1*MOD(K,3)+1)*IX
-          K8 = ZK80(IAD-1+K) (25:32)
-          SOMMI = SOMMI + (C1*MOD(K,3)+1)*IX
-          K8 = ZK80(IAD-1+K) (33:40)
-          SOMMI = SOMMI + (C1*MOD(K,3)+1)*IX
-          K8 = ZK80(IAD-1+K) (41:48)
-          SOMMI = SOMMI + (C1*MOD(K,3)+1)*IX
-          K8 = ZK80(IAD-1+K) (49:56)
-          SOMMI = SOMMI + (C1*MOD(K,3)+1)*IX
-          K8 = ZK80(IAD-1+K) (57:64)
-          SOMMI = SOMMI + (C1*MOD(K,3)+1)*IX
-          K8 = ZK80(IAD-1+K) (65:72)
-          SOMMI = SOMMI + (C1*MOD(K,3)+1)*IX
-          K8 = ZK80(IAD-1+K) (73:80)
-          SOMMI = SOMMI + (C1*MOD(K,3)+1)*IX
+          SOMMI2 = SOMMI2 + (C1*MOD(K,3)+1)*TSTK2I(80,ZK80(IAD-1+K))
   110   CONTINUE
       END IF
+
+C     -- ON TRONQUE SOMMI2 (9 DERNIERS CHIFFRES) POUR AVOIR
+C        LE MEME RESULTAT SUR LES PLATEFORMES I4 ET I8 :
+      WRITE(K24,'(I24)') SOMMI2
+      READ(K24(16:24),'(I9)') SOMMI
 
 
       END

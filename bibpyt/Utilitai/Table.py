@@ -1,4 +1,4 @@
-#@ MODIF Table Utilitai  DATE 07/02/2005   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF Table Utilitai  DATE 14/03/2005   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -410,6 +410,19 @@ class Table(TableBase):
       for column in self.para:
          dico[column]=Colonne(self, column).values()
       return dico
+
+   def Array(self,Para,Champ):
+      """Renvoie sous forme de NumArray le résultat d'une extraction dans une table
+      méthode utile à macr_recal
+      """
+      import Numeric
+      __Rep = self[Para,Champ].values()
+      F=Numeric.zeros((len(__Rep[Para]),2),Numeric.Float)
+      for i in range(len(__Rep[Para])):
+       F[i][0] = __Rep[Para][i]
+       F[i][1] = __Rep[Champ][i]
+      del(__Rep)
+      return F
 
    def Croise(self):
       """Retourne un tableau croisé P3(P1,P2) à partir d'une table ayant

@@ -1,7 +1,7 @@
       SUBROUTINE OP0150(IER)
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 17/01/2005   AUTEUR REZETTE C.REZETTE 
+C MODIF UTILITAI  DATE 14/03/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -71,21 +71,21 @@ C 0.3. ==> VARIABLES LOCALES
       INTEGER IBID,NBV,NBTROU,NSTAR,J,IREST
       INTEGER TE,TYPELE,NBGREL,NFIC,NBELEM,IGR
       INTEGER MFICH,N1,PRECIS,JINST,ITPS
-      INTEGER LNOMA,IFM,NIV,ULISOP,I0
+      INTEGER LNOMA,IFM,NIV,ULISOP,I0,JREFE
       REAL*8 EPSI
       CHARACTER*1 KBID
       CHARACTER*4 ACCE
-      CHARACTER*8 RESU,NOMA,NOMO,TYPCHA,NPRFCN
+      CHARACTER*8 RESU,NOMA,NOMO,TYPCHA
       CHARACTER*8 K8B,CRIT,CHAINE
       CHARACTER*8 LPAIN(1),LPAOUT(1),K8BID
       CHARACTER*8 NOMTYP(NTYMAX)
       CHARACTER*10 ACCES
       CHARACTER*16 NOMCMD,CONCEP,TYPRES,FICH
       CHARACTER*19 LISTR8,LISTIS,NOMCH,LIGRMO,LIGREL
-      CHARACTER*19 CHPRES,NOMPRN
+      CHARACTER*19 CHPRES,PREFIX,CHANOM,PCHN1
       CHARACTER*16 DIR,NOMTE,LINOCH(100),FORM,NOCH,K16NOM
       CHARACTER*24 LCHIN(1),LCHOUT(1)
-      CHARACTER*24 NOLIEL
+      CHARACTER*24 NOLIEL,NOMPRN
       CHARACTER*80 K80B,FIRES,FIPRES,FIGEOM,FIC80B
       CHARACTER*24 CHGEOM,OPTION,CONNEX
       COMPLEX*16 CBID
@@ -101,10 +101,9 @@ C 0.3. ==> VARIABLES LOCALES
       PARAMETER (EDNONO=-1)
       INTEGER TYPNOE
       PARAMETER (TYPNOE=0)
-      CHARACTER*19 PREFIX
       CHARACTER*8 SAUX08
 
-      CHARACTER*8 CHANOM,NOMGD
+      CHARACTER*8 NOMGD
       INTEGER NUMPT,NUMORD,INUM
       INTEGER NBCMPV,IAUX,NPAS0,JSNI,ITPS0
 
@@ -121,7 +120,7 @@ C 0.3. ==> VARIABLES LOCALES
       CHARACTER*72 REP
       CHARACTER*32 K32B
 
-      LOGICAL EXISTM
+      LOGICAL EXISTM,IDENSD
 
 C     -----------------------------------------------------------------
 
@@ -131,6 +130,7 @@ C     -----------------------------------------------------------------
       CALL GETVTX(' ','TYPE_RESU',0,1,1,TYPRES,N1)
       CALL ASSERT(TYPRES.EQ.CONCEP)
       CALL GETVTX(' ','NOM_FICHIER',0,1,1,FICH,NFIC)
+      NOMPRN = RESU//'.PRFCN00000.PRNO'
 
       CALL INFMAJ
       CALL INFNIV(IFM,NIV)
@@ -617,22 +617,22 @@ C     =============================
           END IF
           IF (NOCH(1:4).EQ.'TEMP') THEN
             NOMGD = 'TEMP_R  '
-            TYPCHA = 'NOEU    '
+            TYPCHA = 'NOEU'
           ELSE IF (NOCH(1:4).EQ.'DEPL') THEN
             NOMGD = 'DEPL_R  '
-            TYPCHA = 'NOEU    '
+            TYPCHA = 'NOEU'
           ELSE IF (NOCH(1:9).EQ.'SIEF_ELNO') THEN
             NOMGD = 'SIEF_R'
-            TYPCHA = 'ELNO    '
+            TYPCHA = 'ELNO'
           ELSE IF (NOCH(1:9).EQ.'EPSA_ELNO') THEN
             NOMGD = 'EPSA_R'
-            TYPCHA = 'ELNO    '
+            TYPCHA = 'ELNO'
           ELSE IF (NOCH(1:9).EQ.'VARI_ELNO') THEN
             NOMGD = 'VARI_R'
-            TYPCHA = 'ELNO    '
+            TYPCHA = 'ELNO'
           ELSE IF (NOCH(1:4).EQ.'PRES') THEN
             NOMGD = 'PRES_R  '
-            TYPCHA = 'ELEM    '
+            TYPCHA = 'ELEM'
           ELSE
             CALL UTMESS('F',NOMPRO,'CHAMP NON PREVU : '//NOCH)
           END IF
@@ -698,15 +698,11 @@ C     --------------------------------------------
             CALL JEVEUO(PREFIX//'.INST','L',IPAS)
             CALL JEVEUO(PREFIX//'.NUME','L',INUM)
 
-C     CREATION D UN PROF_CHNO COMMUN A TOUS LES CHAM_NO
-            NPRFCN=RESU
-            NOMPRN = NPRFCN//'.PROF_CHNO '
 
           ELSE IF (TYPCHA(1:2).EQ.'EL') THEN
             CALL MDEXPM(NOFIMD,NOMAMD,EXISTM,NDIM,IRET)
             CALL LRMTYP(NBTYP,NOMTYP,NNOTYP,TYPGEO,RENUMD)
             TYPENT = EDMAIL
-            NOMPRN = ' '
             DO 230,LETYPE = 1,NBTYP
               IAUX = RENUMD(LETYPE)
               TYPGOM = TYPGEO(IAUX)
@@ -721,15 +717,15 @@ C     CREATION D UN PROF_CHNO COMMUN A TOUS LES CHAM_NO
   240     CONTINUE
 
 C
-C   
+C
          IF(ACCES.NE.'TOUT_ORDRE')THEN
              NPAS0=NBORDR
          ELSE
              NPAS0=NPAS
          ENDIF
- 
+
 C     DETERMINATION DES NUMEROS D'INSTANT POUR UNE SELECTION
-C     DE NUMEROS D'ORDRE 
+C     DE NUMEROS D'ORDRE
          IF(NNU.NE.0)THEN
             CALL JEEXIN('&&SELECT_NUM_INST',IRET)
             IF(IRET.NE.0)CALL JEDETR('&&SELECT_NUM_INST')
@@ -742,7 +738,7 @@ C     DE NUMEROS D'ORDRE
  242           CONTINUE
  243        CONTINUE
             ZI(JSNI+IORD-1)=I0
- 241        CONTINUE                    
+ 241        CONTINUE
          ENDIF
 
 
@@ -750,7 +746,7 @@ C     -- BOUCLE SUR LES PAS DE TEMPS
 C     --------------------------------------------
 
           DO 250 ITPS = 1,NPAS0
-            CHANOM = '&&CHTEMP'
+            CHANOM = '&&OP0150.TEMPOR'
             K32B = '                                '
 C
             IF(NNU.NE.0)THEN
@@ -763,11 +759,26 @@ C
             ELSEIF(NIS.NE.0)THEN
               INST = ZR(JLIST+ITPS-1)
             ENDIF
-C           
+C
             CALL LRCHME(CHANOM,NOCHMD,K32B,NOMA,TYPCHA,NOMGD,NBCMPV,
      &                  NCMPVA,NCMPVM,IINST,NUMPT,NUMORD,INST,CRIT,EPSI,
-     &                  MFICH,NOMPRN,IRET)
+     &                  MFICH,IRET)
 
+
+C        -- POUR LES CHAM_NO :
+C        -- POUR ECONOMISER L'ESPACE, ON ESSAYE DE PARTAGER LE PROF_CHNO
+C           DU CHAMP CREE AVEC LE PROF_CHNO PRECEDENT :
+            IF (TYPCHA.EQ.'NOEU') THEN
+               CALL DISMOI('F','PROF_CHNO',CHANOM,'CHAM_NO',IBID,
+     &                     PCHN1,IER)
+               IF (.NOT.IDENSD('PROF_CHNO',NOMPRN(1:19),PCHN1) )  THEN
+                  CALL GNOMSD ( NOMPRN,15,19 )
+                  CALL COPISD ( 'PROF_CHNO', 'G', PCHN1, NOMPRN )
+               END IF
+               CALL JEVEUO ( CHANOM//'.REFE', 'E', JREFE )
+               ZK24(JREFE+1) = NOMPRN(1:19)
+               CALL DETRSD ( 'PROF_CHNO', PCHN1)
+            END IF
 
             IF (NUMORD.EQ.EDNONO) THEN
               NUMORD = NUMPT
@@ -796,11 +807,7 @@ C
             ELSEIF(NTO.NE.0)THEN
                ZR(JINST) = ZR(IPAS-1+ITPS)
             ENDIF
-            IF (TYPCHA(1:2).EQ.'NO') THEN
-              CALL DETRSD('CHAM_NO',CHANOM)
-            ELSE
-              CALL DETRSD('CHAM_ELEM',CHANOM)
-            END IF
+            CALL DETRSD('CHAMP_GD',CHANOM)
   250     CONTINUE
   260   CONTINUE
 
