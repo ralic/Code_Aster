@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 30/06/2004   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF COMMANDE  DATE 31/08/2004   AUTEUR JMBHH01 J.M.PROIX 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,7 +20,7 @@ DYNA_NON_LINE=OPER(nom="DYNA_NON_LINE",op= 70,sd_prod=evol_noli,reentrant='f',
                    fr="Analyse mécanique dynamique non linéaire",
             UIinfo={"groupes":("Résolution",)},
          regles=(AU_MOINS_UN('COMP_INCR','COMP_ELAS',),
-                 UN_PARMI('NEWMARK','HHT', ),),
+                 UN_PARMI('NEWMARK','HHT','TETA_METHODE', ),),
          MODELE          =SIMP(statut='o',typ=modele_sdaster),
          CHAM_MATER      =SIMP(statut='o',typ=cham_mater),
          MODE_STAT       =SIMP(statut='f',typ=(mode_stat_depl,mode_stat_acce,mode_stat_forc,)),
@@ -148,6 +148,10 @@ DYNA_NON_LINE=OPER(nom="DYNA_NON_LINE",op= 70,sd_prod=evol_noli,reentrant='f',
          HHT             =FACT(statut='f',
            ALPHA           =SIMP(statut='f',typ='R'
                                 ,defaut= -0.29999999999999999 ),
+         ),
+         TETA_METHODE      =FACT(statut='f',
+           TETA            =SIMP(statut='f',typ='R'
+                                ,defaut= 1. ),
          ),
          NEWTON          =FACT(statut='d',
            REAC_INCR       =SIMP(statut='f',typ='I',defaut= 1 ),

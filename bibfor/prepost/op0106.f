@@ -1,7 +1,7 @@
       SUBROUTINE OP0106(IER)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+C MODIF PREPOST  DATE 31/08/2004   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -226,7 +226,7 @@ C EN OUTPUT --> INFCHA ET INPSCO
           CARAC = ' '
           CHARGE = ' '
           MATER = ' '
-C   SUPPRESSION DE LA LIGNE SUIVANTE	  
+C   SUPPRESSION DE LA LIGNE SUIVANTE	
 C          MODELE = '&&'//NOMPRO
           MODELE = ' '
           NUORD  = ZI(JORDR)
@@ -295,7 +295,7 @@ C ------- MAILLES QUI PARTICIPENT A LA MOYENNE
             CALL JEVEUO(MESMAI,'L',JMAI)
           END IF
    60     CONTINUE
-C ------- RESULTAT SUR LES NOEUDS 
+C ------- RESULTAT SUR LES NOEUDS
           NBNO = 0
           JNOE = 1
           CALL GETVID(' ','MAILLE_RESU'  ,1,1,0,K8BID,N0)
@@ -477,7 +477,7 @@ C       ================================================================
                  NBCHAR = 0
                  ICHAR = 1
               END IF
-              CALL EXLIMA(' ','G',MODELE,LERES0,LIGREL) 
+              CALL EXLIMA(' ','G',MODELE,LERES0,LIGREL)
 
               VECHMP = ' '
               VACHMP = ' '
@@ -608,7 +608,7 @@ C           --- CALCUL DES FORCES NODALES DE REACTION
 C --- CHARGES NON PILOTEES (TYPE_CHARGE: 'FIXE_CSTE')
 
                 CALL VECHME(TYPCAL,MODELE,CHARGE,INFOCH,PARTPS,CARAC,
-     &                      MATER,K24BID,LIGREL,VAPRIN,NOPASE,TYPESE,
+     &                      MATER,CHTEMP,LIGREL,VAPRIN,NOPASE,TYPESE,
      &                      STYPSE,VECHMP)
                 CALL ASASVE(VECHMP,NUME,'R',VACHMP)
                 CALL ASCOVA('D',VACHMP,FOMULT,'INST',TIME,'R',CNCHMP)

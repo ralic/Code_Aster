@@ -8,7 +8,7 @@
       CHARACTER*8 MA2
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 16/02/2004   AUTEUR MJBHHPE J.L.FLEJOU 
+C MODIF CALCULEL  DATE 31/08/2004   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -69,7 +69,7 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
       CHARACTER*8 KB,NONO2
       LOGICAL OK
 
-      LOGICAL LDMAX
+      LOGICAL LDMAX,LOIN
       REAL*8  DISTMA
 C DEB ------------------------------------------------------------------
 C     NTR3=TETR4(1)
@@ -120,8 +120,7 @@ C     -------------------------------------------------------
         ELSE
           DMIN = R8MAEM()
         ENDIF
-C       -- PARCOURS DES MAILLES CANDIDATES :
-C       DO 2,I=1,NTR3  % ON PARCOURT TOUS LES TETR4
+
 
 C       -- ON RECHERCHE LA GROSSE BOITE CANDIDATE :
         CALL PJ3DGB(INO2,GEOM2,GEOM1,TETR4,6,BTDI,BTVR,BTNB,BTLC,BTCO,
@@ -149,13 +148,21 @@ C       -- ON RECHERCHE LA GROSSE BOITE CANDIDATE :
    40     CONTINUE
    50   CONTINUE
 
-C       S'IL N'Y A PAS DE DISTANCE MINIMALE IMPOSEE, LE NOEUD EST 
+C       S'IL N'Y A PAS DE DISTANCE MINIMALE IMPOSEE, LE NOEUD EST
 C          OBLIGATOIREMENT PROJETE
 C       SI LE NOEUD EST PROJETE SUR UNE MAILLE LOINTAINE, ON INFORME :
         IF ((NIV.GT.0).AND.(.NOT.LDMAX)) THEN
           DMIN = SQRT(DMIN)
-          RTR3 = RTR3** (1.D0/3.D0)
-          IF (DMIN/RTR3.GT.1.D-1) THEN
+
+          LOIN=.FALSE.
+          IF (RTR3.EQ.0) THEN
+            LOIN=.TRUE.
+          ELSE
+            RTR3 = RTR3** (1.D0/3.D0)
+            IF (DMIN/RTR3.GT.1.D-1) LOIN=.TRUE.
+          END IF
+
+          IF (LOIN) THEN
             CALL JENUNO(JEXNUM(MA2//'.NOMNOE',INO2),NONO2)
             WRITE (IFM,*) '<PROJCH> LE NOEUD :',NONO2,
      &        ' EST PROJETE SUR UNE MAILLE DISTANTE.'

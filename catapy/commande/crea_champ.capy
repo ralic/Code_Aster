@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 30/06/2004   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF COMMANDE  DATE 31/08/2004   AUTEUR VABHHTS J.PELLET 
 # RESPONSABLE VABHHTS J.PELLET
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -27,8 +27,6 @@ def crea_champ_prod(TYPE_CHAM,**args):
      uu="cham_no_"+grandeur
   elif TYPE_CHAM[0:2] == "EL"    :
      uu="cham_elem_"+grandeur
-  elif TYPE_CHAM[0:5] == "SOUR_"    :
-     uu="cham_elem_sour_"+grandeur
   else :
      raise AsException("type de concept resultat_sdaster non prevu")
 

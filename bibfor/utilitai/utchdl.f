@@ -4,7 +4,8 @@
       INTEGER NUPO,IVARI,IDDL,NUSP
       CHARACTER*(*) CHAM19,NOMMA,NOMAIL,NONOEU,NOCMP1
 C ----------------------------------------------------------------------
-C MODIF UTILITAI  DATE 22/03/2004   AUTEUR DURAND C.DURAND 
+C MODIF UTILITAI  DATE 31/08/2004   AUTEUR VABHHTS J.PELLET 
+
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -36,7 +37,6 @@ C IN  : NUSP   : NUMERO DU SOUS_POINT A TESTER SUR LA MAILLE NOMAIL
 C                (SI NUSP=0 : IL N'Y A PAS DE SOUS-POINT)
 C IN  : NOCMP1 : NOM DU DDL A EXTRAIRE SUR LE POINT CHERCHE
 C IN  : IVARI  : NUMERO DE LA CMP (POUR VARI_R)
-
 C OUT : IDDL   : NUMERO DU DDL DANS LE .CELV
 C   CONVENTION : IDDL=0 -> ON N'A PAS TROUVE LE DDL CHERCHE
 C ----------------------------------------------------------------------
@@ -144,15 +144,11 @@ C     ------------------------------------------
         IF (K8B(1:4).NE.'ELNO') THEN
           CALL UTMESS(AOF,'UTCHDL','LE CHAMP:'//CHM19Z//
      &                'N''EST PAS UN CHAMP PAR ELEMENTS AUX NOEUDS.')
-          IDDL=0
-          GOTO 9999
         END IF
         CALL JENONU(JEXNOM(NOMMAZ//'.NOMNOE',NONOEZ),INO)
         IF (INO.LE.0) THEN
           CALL UTMESS(AOF,'UTCHDL','LE NOEUD:'//NONOEZ//
      &                'N''APPARTIENT PAS AU MAILLAGE:'//NOMMAZ)
-          IDDL=0
-          GOTO 9999
         END IF
 C        -- ON CHERCHE LE "IPO" CORRESPONDANT A INO:
         CALL JEVEUO(JEXNUM(NOMMAZ//'.CONNEX',IMA),'L',IACONX)
@@ -161,8 +157,6 @@ C        -- ON CHERCHE LE "IPO" CORRESPONDANT A INO:
         IF (IPO.LE.0) THEN
           CALL UTMESS(AOF,'UTCHDL','LE NOEUD:'//NONOEZ//
      &                'N''APPARTIENT PAS A LA MAILLE:'//NOMAIZ)
-          IDDL=0
-          GOTO 9999
         END IF
         NUPO2 = IPO
       ELSE
@@ -173,9 +167,14 @@ C        -- ON CHERCHE LE "IPO" CORRESPONDANT A INO:
 C     5. CALCUL DE IGR ET IEL :
 C     ------------------------------------------
       CALL NUMEL2(CHM19Z,IMA,IGR,IEL)
-      IF (IGR.EQ.0) CALL UTMESS(AOF,'UTCHDL','LA MAILLE:'//NOMAIZ//
+      IF ((IGR.LE.0) .OR.(IEL.LE.0))
+     & CALL UTMESS(AOF,'UTCHDL','LA MAILLE:'//NOMAIZ//
      &                          'N''EST PAS AFFECTEE DANS LE LIGREL:'//
      &                          NOLIGR)
+      NBSPT = ZI(JCELD-1+ZI(JCELD-1+4+IGR)+4+4* (IEL-1)+1)
+      ADIEL = ZI(JCELD-1+ZI(JCELD-1+4+IGR)+4+4* (IEL-1)+4)
+      NCDYN = ZI(JCELD-1+ZI(JCELD-1+4+IGR)+4+4* (IEL-1)+2)
+
 
 
 C     6. CALCUL DE IDDL :
@@ -185,17 +184,21 @@ C     ------------------------------------------
         CALL UTMESS(AOF,'UTCHDL','LA MAILLE: '//NOMAIZ//
      &        ' POSSEDE UN TYPE D''ELEMENT IGNORANT LE CHAM_ELEM TESTE.'
      &              )
-          IDDL=0
-          GOTO 9999
       END IF
       CALL JEVEUO(JEXNUM('&CATA.TE.MODELOC',IMOLO),'L',JMOLO)
 
 
 C     -- NUMERO DE SOUS_POINT :
+C     ------------------------
       IF (NUSP.EQ.0) THEN
         ISPT = 1
       ELSE
         ISPT = NUSP
+      END IF
+      IF (ISPT.GT.NBSPT) THEN
+          CALL UTMESS(AOF,'UTCHDL','NUM. DE SOUS-POINT > MAX')
+          IDDL=0
+          GOTO 9999
       END IF
 
 
@@ -204,6 +207,11 @@ C     ----------------------------
       IF (NOMGD.NE.'VARI_R') THEN
         DIFF = (ZI(JMOLO-1+4).GT.10000)
         NBPT = MOD(ZI(JMOLO-1+4),10000)
+        IF (NUPO2.GT.NBPT) THEN
+            CALL UTMESS(AOF,'UTCHDL','NUM. DE POINT > MAX')
+            IDDL=0
+            GOTO 9999
+        END IF
         CALL WKVECT('&&UTCHDL.LONG_PT','V V I',NBPT,JLPT)
         CALL WKVECT('&&UTCHDL.LONG_PT_CUMU','V V I',NBPT,JLCUPT)
 
@@ -226,8 +234,6 @@ C            ET DU CUMUL SUR LES POINTS PRECEDENTS :
         IF ((.NOT.TROUVE) .AND. (.NOT.NOGRAN)) THEN
           CALL UTMESS(AOF,'UTCHDL','L''ELEMENT N''ADMET PAS '//
      &                'LA COMPOSANTE '//NOCMP)
-          IDDL=0
-          GOTO 9999
         END IF
 
 
@@ -248,8 +254,6 @@ C            ET DU CUMUL SUR LES POINTS PRECEDENTS :
             IF (EXISDG(ZI(IADG),KCMP)) THEN
               ICO = ICO + 1
 
-              NBSPT = ZI(JCELD-1+ZI(JCELD-1+4+IGR)+4+4* (IEL-1)+1)
-              ADIEL = ZI(JCELD-1+ZI(JCELD-1+4+IGR)+4+4* (IEL-1)+4)
 
               IDDL = ADIEL - 1 + NBSPT*ZI(JLCUPT-1+IPT) +
      &               (ISPT-1)*ZI(JLPT-1+IPT) + ICO
@@ -258,6 +262,9 @@ C            ET DU CUMUL SUR LES POINTS PRECEDENTS :
             END IF
    40     CONTINUE
    50   CONTINUE
+C       -- ON N'A PAS TROUVE LE POINT LE SOUS-POINT OU LA COMPOSANTE :
+        IDDL=0
+        GO TO 9999
    60   CONTINUE
 
 
@@ -271,9 +278,6 @@ C     ----------------------------
         IF (NBPT.NE.LGCATA) CALL UTMESS(AOF,'UTCHDL','STOP 1')
 
 
-        NBSPT = ZI(JCELD-1+ZI(JCELD-1+4+IGR)+4+4* (IEL-1)+1)
-        NCDYN = ZI(JCELD-1+ZI(JCELD-1+4+IGR)+4+4* (IEL-1)+2)
-        ADIEL = ZI(JCELD-1+ZI(JCELD-1+4+IGR)+4+4* (IEL-1)+4)
         IPT = NUPO2
 
         IF (ICMP.GT.NCDYN) THEN
@@ -284,17 +288,22 @@ C     ----------------------------
           CALL UTIMPI('S','NUM. CMP DEMANDEE:',1,ICMP)
           CALL UTFINM()
           IDDL=0
-          GOTO 9999
-        END IF
+          GO TO 9999
+        ELSE
 
-        IDDL = ADIEL - 1 + ((IPT-1)*NBSPT+ISPT-1)*NCDYN + ICMP
+          IF ((ISPT.LE.NBSPT).AND.(IPT.LE.NBPT)) THEN
+            IDDL = ADIEL - 1 + ((IPT-1)*NBSPT+ISPT-1)*NCDYN + ICMP
+          ELSE
+            CALL ASSERT(.FALSE.)
+          END IF
+        END IF
       END IF
 
 
+9999  CONTINUE
       CALL JEDETR('&&UTCHDL.LONG_PT')
       CALL JEDETR('&&UTCHDL.LONG_PT_CUMU')
       CALL JEDETR('&&UTCHDL.N_CMP')
 
-9999  CONTINUE
       CALL JEDEMA()
       END

@@ -3,7 +3,7 @@
 
       IMPLICIT NONE
 
-C MODIF CALCULEL  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
+C MODIF CALCULEL  DATE 31/08/2004   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -307,22 +307,6 @@ C           5.7 ON RECOPIE DES CHAMPS LOCAUX DANS LES CHAMPS GLOBAUX:
         END IF
    80 CONTINUE
 C     ---FIN BOUCLE IGR
-
-      GO TO 100
-
-
-   90 CONTINUE
-
-C     -- SI 1 ELEMENT NE TROUVE PAS LES CHAMPS NECESSAIRES
-C     -- POUR 1 CALCUL(OPT) QU'IL SAIT FAIRE, ON ARRETE TOUT:
-C     -------------------------------------------------------
-      CALL UTMESS('F',' CALCUL  ',' PROBLEME POUR UN CHAMP PARAMETRE:'//
-     &            ' OPTION: '//OPTION//' LIGREL: '//LIGREL//
-     &            ' TYPE_ELEMENT: '//NOMTE//' PARAMETRE: '//NOMPAR//
-     &            ' ON ARRETE TOUT.')
-
-
-  100 CONTINUE
 
 
 C     6- SI DBG=.TRUE. ON FAIT DES IMPRESSIONS POUR LE DEBUG :

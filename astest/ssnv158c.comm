@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 30/08/2004   AUTEUR CIBHHLV L.VIVAN 
 # ======================================================================
 # TITRE ETUDE  : ESSAI TRIAXIAL DRAINE AVEC LE MODELE DE LAIGLE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -148,13 +148,13 @@ TEMPS2=DEFI_LIST_REEL(   DEBUT=4.,
 
 
 SIG_INI=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='ELGA_SIEF_R',
-NOM_CHAM='SIEF_ELGA', RESULTAT=U1,
-                        INST=4.
+                     NOM_CHAM='SIEF_ELGA', RESULTAT=U1,
+                     INST=4.
                       )
 
 VAR_INI=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='ELGA_VARI_R',
-NOM_CHAM='VARI_ELGA', RESULTAT=U1,
-                        INST=4.
+                     NOM_CHAM='VARI_ELGA', RESULTAT=U1,
+                     INST=4.
                       )
 
 DEPL_2=AFFE_CHAR_MECA(    MODELE=MODELE,
@@ -238,7 +238,7 @@ ROSIGY=RECU_FONCTION(RESULTAT=U2,
                      NOEUD='N4',
                      TITRE='SIG Y',);
 
-#IMPR_COURBE(FICHIER='AGRAF',
+#IMPR_COURBE(UNITE=25,
 #            FORMAT='AGRAF',
 #            TITRE_GRAPHIQUE='SRO EN X DU SOMMET DU BK ',
 #            FREQ_GRILLE_X=1,
@@ -259,8 +259,8 @@ TEST_RESU(RESU=(
                       NOM_CMP    = 'SIXX',
                       NUME_ORDRE = 5,
                       PRECISION  = 1.E-3,
-                      REFERENCE='NON_REGRESSION',
-                      VERSION = '6.2.24',
+                      REFERENCE  = 'NON_REGRESSION',
+                      VERSION    = '6.2.24',
                       VALE       = -2.0),
 
 # CONTRAINTE SIZZ
@@ -269,8 +269,8 @@ TEST_RESU(RESU=(
                       NOM_CHAM   = 'SIEF_NOEU_ELGA',
                       NOM_CMP    = 'SIZZ',
                       NUME_ORDRE = 5,
-                      REFERENCE='NON_REGRESSION',
-                      VERSION = '6.2.24',
+                      REFERENCE  = 'NON_REGRESSION',
+                      VERSION    = '6.2.24',
                       PRECISION  = 1.E-3,
                       VALE       = -2.0),
 
@@ -280,8 +280,8 @@ TEST_RESU(RESU=(
                       NOM_CHAM   = 'SIEF_NOEU_ELGA',
                       NOM_CMP    = 'SIYY',
                       NUME_ORDRE = 5,
-                      REFERENCE='NON_REGRESSION',
-                      VERSION = '6.2.24',
+                      REFERENCE  = 'NON_REGRESSION',
+                      VERSION    = '6.2.24',
                       PRECISION  = 1.E-3,
                       VALE       = -1.07188E+01),
                  _F(  RESULTAT   = U2,
@@ -289,8 +289,8 @@ TEST_RESU(RESU=(
                       NOM_CHAM   = 'SIEF_NOEU_ELGA',
                       NOM_CMP    = 'SIYY',
                       NUME_ORDRE = 10,
-                      REFERENCE='NON_REGRESSION',
-                      VERSION = '6.2.24',
+                      REFERENCE  = 'NON_REGRESSION',
+                      VERSION    = '6.2.24',
                       PRECISION  = 1.E-3,
                       VALE       = -9.79273E+00),
                  _F(  RESULTAT   = U2,
@@ -298,8 +298,8 @@ TEST_RESU(RESU=(
                       NOM_CHAM   = 'SIEF_NOEU_ELGA',
                       NOM_CMP    = 'SIYY',
                       NUME_ORDRE = 16,
-                      REFERENCE='NON_REGRESSION',
-                      VERSION = '6.2.24',
+                      REFERENCE  = 'NON_REGRESSION',
+                      VERSION    = '6.2.24',
                       PRECISION  = 1.E-3,
                       VALE       = -9.12683E+00),
                  _F(  RESULTAT   = U2,
@@ -307,8 +307,8 @@ TEST_RESU(RESU=(
                       NOM_CHAM   = 'SIEF_NOEU_ELGA',
                       NOM_CMP    = 'SIYY',
                       NUME_ORDRE = 25,
-                      REFERENCE='NON_REGRESSION',
-                      VERSION = '6.2.24',
+                      REFERENCE  = 'NON_REGRESSION',
+                      VERSION    = '6.2.24',
                       PRECISION  = 1.E-2,
                       VALE       = -6.2269619704757E+00),
                  _F(  RESULTAT   = U2,
@@ -316,8 +316,8 @@ TEST_RESU(RESU=(
                       NOM_CHAM   = 'SIEF_NOEU_ELGA',
                       NOM_CMP    = 'SIYY',
                       NUME_ORDRE = 30,
-                      REFERENCE='NON_REGRESSION',
-                      VERSION = '6.2.24',
+                      REFERENCE  = 'NON_REGRESSION',
+                      VERSION    = '6.2.24',
                       PRECISION  = 1.E-3,
                       VALE       = -6.0965109226695E+00),
                  _F(  RESULTAT   = U2,
@@ -326,8 +326,8 @@ TEST_RESU(RESU=(
                       NOM_CMP    = 'SIYY',
                       NUME_ORDRE = 40,
                       PRECISION  = 1.E-3,
-                      REFERENCE='NON_REGRESSION',
-                      VERSION = '6.2.24',
+                      REFERENCE  = 'NON_REGRESSION',
+                      VERSION    = '6.2.24',
                       VALE       = -5.9964879131357E+00),
                  _F(  RESULTAT   = U2,
                       NOEUD      = 'N4',
@@ -335,8 +335,8 @@ TEST_RESU(RESU=(
                       NOM_CMP    = 'SIYY',
                       NUME_ORDRE = 49,
                       PRECISION  = 1.E-3,
-                      REFERENCE='NON_REGRESSION',
-                      VERSION = '6.2.24',
+                      REFERENCE  = 'NON_REGRESSION',
+                      VERSION    = '6.2.24',
                       VALE       = -5.9966994353181E+00))
            )
 
@@ -349,8 +349,8 @@ TEST_RESU(RESU=(
                       NOM_CMP    = 'DX',
                       NUME_ORDRE = 1,
                       PRECISION  = 1.E-3,
-                      REFERENCE='NON_REGRESSION',
-                      VERSION = '6.2.24',
+                      REFERENCE  = 'NON_REGRESSION',
+                      VERSION    = '6.2.24',
                       VALE       = 2.16000E-03),
                  _F(  RESULTAT   = U2,
                       NOEUD      = 'N4',
@@ -358,8 +358,8 @@ TEST_RESU(RESU=(
                       NOM_CMP    = 'DX',
                       NUME_ORDRE = 10,
                       PRECISION  = 1.E-3,
-                      REFERENCE='NON_REGRESSION',
-                      VERSION = '6.2.24',
+                      REFERENCE  = 'NON_REGRESSION',
+                      VERSION    = '6.2.24',
                       VALE       = 1.15057E-02),
                  _F(  RESULTAT   = U2,
                       NOEUD      = 'N4',
@@ -367,8 +367,8 @@ TEST_RESU(RESU=(
                       NOM_CMP    = 'DX',
                       NUME_ORDRE = 40,
                       PRECISION  = 1.E-3,
-                      REFERENCE='NON_REGRESSION',
-                      VERSION = '6.2.24',
+                      REFERENCE  = 'NON_REGRESSION',
+                      VERSION    = '6.2.24',
                       VALE       = 8.0477459850549E-02),
 
 # DEPLACEMENT DY
@@ -378,16 +378,16 @@ TEST_RESU(RESU=(
                       NOM_CMP    = 'DY',
                       NUME_ORDRE = 1,
                       PRECISION  = 1.E-3,
-                      REFERENCE='NON_REGRESSION',
-                      VERSION = '6.2.24',
+                      REFERENCE  = 'NON_REGRESSION',
+                      VERSION    = '6.2.24',
                       VALE       = -8.00000E-03),
                  _F(  RESULTAT   = U2,
                       NOEUD      = 'N4',
                       NOM_CHAM   = 'DEPL',
                       NOM_CMP    = 'DY',
                       NUME_ORDRE = 5,
-                      REFERENCE='NON_REGRESSION',
-                      VERSION = '6.2.24',
+                      REFERENCE  = 'NON_REGRESSION',
+                      VERSION    = '6.2.24',
                       PRECISION  = 1.E-3,
                       VALE       = -1.38666E-02),
                  _F(  RESULTAT   = U2,
@@ -395,8 +395,8 @@ TEST_RESU(RESU=(
                       NOM_CHAM   = 'DEPL',
                       NOM_CMP    = 'DY',
                       NUME_ORDRE = 10,
-                      REFERENCE='NON_REGRESSION',
-                      VERSION = '6.2.24',
+                      REFERENCE  = 'NON_REGRESSION',
+                      VERSION    = '6.2.24',
                       PRECISION  = 1.E-3,
                       VALE       = -2.12000E-02),
                  _F(  RESULTAT   = U2,
@@ -405,8 +405,8 @@ TEST_RESU(RESU=(
                       NOM_CMP    = 'DY',
                       NUME_ORDRE = 25,
                       PRECISION  = 1.E-3,
-                      REFERENCE='NON_REGRESSION',
-                      VERSION = '6.2.24',
+                      REFERENCE  = 'NON_REGRESSION',
+                      VERSION    = '6.2.24',
                       VALE       = -1.20000E-01),
                  _F(  RESULTAT   = U2,
                       NOEUD      = 'N4',
@@ -414,8 +414,8 @@ TEST_RESU(RESU=(
                       NOM_CMP    = 'DY',
                       NUME_ORDRE = 48,
                       PRECISION  = 1.E-3,
-                      REFERENCE='NON_REGRESSION',
-                      VERSION = '6.2.24',
+                      REFERENCE  = 'NON_REGRESSION',
+                      VERSION    = '6.2.24',
                       VALE       = -1.55000E-01),
 )
 )

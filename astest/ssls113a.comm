@@ -1,5 +1,5 @@
 
-# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 31/08/2004   AUTEUR JMBHH01 J.M.PROIX 
 # TITRE PLAQUE STRATIFIEE EN FLEXION - DKT 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -368,7 +368,7 @@ STA3=MECA_STATIQUE(MODELE=MO3,
 STA3=CALC_ELEM(reuse =STA3,
                RESULTAT=STA3,
                TYPE_OPTION='SIGM_STRUCT',
-               OPTION=('SIEF_ELNO_ELGA','EFGE_ELNO_DEPL',),
+               OPTION=('EFGE_ELNO_DEPL',),
                );
                
                

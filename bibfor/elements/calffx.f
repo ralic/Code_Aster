@@ -1,6 +1,6 @@
       SUBROUTINE CALFFX(ALIAS,XI,YI,TN)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 22/07/2003   AUTEUR LAVERNE J.LAVERNE 
+C MODIF ELEMENTS  DATE 31/08/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,9 +50,10 @@ C   LES FF EN XI,YI,ZI ET LEURS D
 
       ELSE IF (ALIAS(1:3).EQ.'SG3') THEN
 
-        TN(1) = 0.5D0* (1.D0-XI)*XI
-        TN(2) = 0.5D0* (1.D0+XI)*XI
-        TN(3) = 0.5D0* (1.D0+XI)* (1-XI)
+        TN(1) = -0.5D0* (1.D0-XI)*XI
+        TN(2) =  0.5D0* (1.D0+XI)*XI
+        TN(3) =  1.0D0* (1.D0+XI)*(1-XI)
+
 
 
       ELSE IF (ALIAS(1:3).EQ.'TR3') THEN

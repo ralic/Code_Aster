@@ -1,6 +1,6 @@
       SUBROUTINE OP0069 (IER)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+C MODIF ALGORITH  DATE 31/08/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -92,7 +92,7 @@ C
       REAL*8       V0VIT,      V0ACC,      A0VIT,    A0ACC,     COEVIT
       REAL*8       COEACC,     DELTA,      TPS1(4),  TPS2(4),   TPS3(4)
       REAL*8       PARCON(5)
-      REAL*8       COEVI2, COEAC2
+      REAL*8       COEVI2, COEAC2, R8BID
 C
       CHARACTER*8  RESULT, MODEDE, MAILLA, SCONEL, MCONEL, K8BID
       CHARACTER*8  MAILL2, BASENO
@@ -263,7 +263,7 @@ C
      &               ALPHA, DELTA,  V0VIT,  V0ACC,  A0VIT, 
      &               A0ACC, NBMODS, NMODAM, VALMOD, BASMOD,
      &               NREAVI, LIMPED, LONDE, CHONDP, NONDP,
-     &               MULTIA)
+     &               MULTIA, R8BID,IBID)
            
       CALL MXMOAM(MASGEN,BASMOI,LMODAL)
            
@@ -400,7 +400,8 @@ C -- INITIALISATION DES DEPLACEMENTS, VITESSES
       CALL INITIA (NEQ,REAROT,ZI(INDRO),ZR(JDEPP),ZR(JDEPDE))
       CALL DINIT (NEQ,V0VIT,V0ACC,A0VIT,A0ACC,ALPHA,DELTA,INSTAM,
      &                 INSTAP,COEVIT,COEACC,DEPPLU,POUGD,DEPENT,VITENT,
-     &                 ACCENT,MULTIA,NBMODS,NBPASE,INPSCO)
+     &                 ACCENT,MULTIA,NBMODS,NBPASE,INPSCO,
+     &                 IBID,R8BID,IBID,CMD,DEFICO)
 
 
 C -- LECTURE DES VARIABLES DE COMMANDE A L'INSTANT COURANT
@@ -470,7 +471,7 @@ C -- ET COMMUNIQUENT PAR LA VARIABLE NIVEAU
      &            NEQ   , DEPDEL, DDEPLA, DEPPLU, LIGRCF,
      &            CARTCF, MODELE, LISCHA, SOLVEU, NUMEDD, 
      &            MCONEL, SCONEL, K24BID, K24BID, K24BID,
-     &            K24BID, K24BID, K24BID, K16BID)
+     &            K24BID, K24BID, K24BID, K16BID, INST)
 
 C ======================================================================
 C CALCUL DU SECOND MEMBRE (Fext - Fint)
@@ -536,7 +537,7 @@ C -- FIN DE BOUCLE DE CONTACT ECP
      &              MAILLA, DEFICO, OLDGEO, NEWGEO,
      &              DEPMOI, DEPGEO, MAXB,   DEPLAM,
      &              COMGEO, CSEUIL, COBCA, 
-     &              DEPPLU)
+     &              DEPPLU,INST)
       ELSE 
         NIVEAU = 0
       ENDIF 

@@ -4,7 +4,7 @@
      3                      VIND, OPT,ELGEOM,SIGF,VINF,DSDE)
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 04/05/2004   AUTEUR SMICHEL S.MICHEL-PONNELLE 
+C MODIF ALGORITH  DATE 30/08/2004   AUTEUR YLEPAPE Y.LEPAPE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -167,8 +167,8 @@ C     2                  DEPST,SIGD, VIND, OPTION,ELGEOM,SIGF,VINF,DSDE)
      &                     'UTILISER C_PLAN_DEBORST')
             ENDIF
             CALL LCUMFP ( NDIM, TYPMOD, IMAT, COMP, 
-     1                      TIMED,TIMEF,
-     &                      SECHD,SECHF,EPSDT,DEPST,
+     1                      TIMED,TIMEF,HYDRD,HYDRF,
+     &                      SECHD,SECHF,SREF,EPSDT,DEPST,
      2                      SIGD, VIND, OPTION,SIGF,VINF,DSDE)
           ENDIF
         ELSE

@@ -1,0 +1,614 @@
+# MODIF  DATE 31/08/2004   AUTEUR JMBHH01 J.M.PROIX 
+# TITRE TEST NAPPE D'ARMATURE (MODELISATION GRILLE)
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+DEBUT(    CODE=_F(  NOM = 'SSNS105C',NIV_PUB_WEB='INTERNET') )
+
+#-----------------------------------------------------------------------
+# VALIDATION DE LA MODELISATION GRILLE
+#-----------------------------------------------------------------------
+
+MAIL=LIRE_MAILLAGE(   )
+
+MAILTOT=CREA_MAILLAGE(MAILLAGE      = MAIL,
+                      CREA_GROUP_MA = _F(
+                               NOM         = 'GEOBB',
+                               GROUP_MA    = 'GEOB',
+                               PREF_MAILLE = 'B'))
+
+#
+# -----------------------------------------------------
+# DEFINITION DES MATERIAUX
+# -----------------------------------------------------
+#
+
+ACIER=DEFI_MATERIAU(
+            ELAS=_F(  E = 2.E11,   NU = 0.0),
+            ECRO_LINE=_F( D_SIGM_EPSI = 2.E10,   SY = 2.E11, )
+                          )
+
+BETON=DEFI_MATERIAU(
+            ELAS=_F(  E = 2.E10,   NU = 0.2),
+                          )
+
+#
+# -------------------------------------------------
+# AFFECTATION DES MATERIAUX
+# -------------------------------------------------
+#
+MATAF=AFFE_MATERIAU(    MAILLAGE=MAILTOT,
+                          AFFE=(_F(  GROUP_MA = ('GEOB','GEOBB'),
+                                 MATER = ACIER,),
+                                _F(  GROUP_MA = ('GEO',),
+                                 MATER = BETON,),
+                               )
+                      )
+
+#
+# -------------------------------------------------
+# AFFECTATION DES MODELES
+# -------------------------------------------------
+#
+LEMOD=AFFE_MODELE(    MAILLAGE=MAILTOT,     VERIF='MAILLE',
+                        AFFE=(_F(  GROUP_MA = ('GEOB','GEOBB'),
+                               PHENOMENE = 'MECANIQUE',
+                               MODELISATION = 'GRILLE'),
+                              _F(  GROUP_MA = ('GEO',),
+                               PHENOMENE = 'MECANIQUE',
+                               MODELISATION = '3D'), 
+                             )
+                      )
+
+# -------------------------------------------------
+# AFFECTATION DES CARACTERISTIQUES
+# -------------------------------------------------
+#
+LACAR=AFFE_CARA_ELEM(    MODELE=LEMOD,
+                       GRILLE=(_F( GROUP_MA = 'GEOB',
+                                SECTION = .1,
+                                ANGL_REP = (0., 0.0,),
+                                EXCENTREMENT = 0.0,
+                                COEF_RIGI_DRZ=0.,
+                              ),
+                              _F( GROUP_MA = 'GEOBB',
+                                SECTION = .1,
+                                ANGL_REP = (90.0, 0.0,),
+                                EXCENTREMENT = 0.0,
+                              ))
+                        )
+
+ZCHM=AFFE_CHAR_MECA(
+             MODELE=LEMOD,
+             DDL_IMPO=(
+                       _F(  NOEUD = ('NO1','NO2','NO3','NO4'),
+                          DZ = 0.,
+                       ),
+                       _F(  NOEUD = ('NO2','NO3','NO5','NO8'),
+#                          DZ = 0.,
+                            DRY = 0.,
+                       DRX = 0.,      DRZ = 0.,  
+                       ),
+                       _F(  NOEUD = ('NO1','NO2','NO5','NO6'),
+                          DY = 0.,
+                       ),
+                       _F(  NOEUD = ('NO1','NO4','NO5','NO8'),
+                          DX = 0.,
+                       ),
+                       _F(  NOEUD = ('NO3','NO4','NO7','NO8'),
+                          DY = 1.,
+                       ),
+                       _F(  NOEUD = ('NO3','NO2','NO6','NO7'),
+                          DX = 1.,
+                       ),)
+                       )
+
+f_inst=DEFI_FONCTION(NOM_PARA='INST',
+                     VALE=(0.0,  0.0,  10.,  10.),);
+
+#
+# ----------------------------------------------
+# CALCUL
+# ----------------------------------------------
+#
+
+
+ZLIST=DEFI_LIST_REEL(   DEBUT=0.,
+             INTERVALLE=(_F( JUSQU_A = 1.0,  NOMBRE = 1, ),
+                         _F( JUSQU_A = 2.0,  NOMBRE = 1, ),
+                         _F( JUSQU_A =10.0,  NOMBRE = 1, ),),
+           )
+
+LEDEP=STAT_NON_LINE(
+                            MODELE=LEMOD,
+                        CHAM_MATER=MATAF,
+                         CARA_ELEM=LACAR,
+                             EXCIT=_F(
+                CHARGE = ZCHM,
+                FONC_MULT=f_inst
+                ),
+                COMP_INCR=(_F(GROUP_MA=('GEOB','GEOBB'),
+                              RELATION = 'GRILLE_ISOT_LINE',),
+                           _F(GROUP_MA=('GEO',),
+                              RELATION = 'ELAS',)
+                ),
+                         INCREMENT=_F(
+                LIST_INST = ZLIST,
+                ),
+                            NEWTON=_F(
+                MATRICE = 'TANGENTE',
+                REAC_ITER = 1,
+                ),
+                       CONVERGENCE=_F(
+                RESI_GLOB_MAXI = 1.E-3,
+                ITER_INTE_MAXI = 30,
+                ITER_GLOB_MAXI = 30,
+                ),
+              )
+
+
+LEDEP=CALC_NO( reuse = LEDEP,
+                 OPTION     = ('FORC_NODA',),
+                 RESULTAT   = LEDEP,
+               )
+# 
+# -------------------------------------------------
+# POST TRAITEMENT DES RESULTATS
+# -------------------------------------------------
+#
+
+TEST_RESU(RESU=(
+            _F( RESULTAT = LEDEP,
+             INST = 1.,
+             NOM_CHAM = 'DEPL',
+             NOM_CMP = 'DZ',
+             NOEUD = 'NO5',
+             REFERENCE='AUTRE_ASTER',
+             VALE = -7.05990E-01,
+            ),
+            _F( RESULTAT = LEDEP,
+             INST = 1.,
+             NOM_CHAM = 'DEPL',
+             NOM_CMP = 'DZ',
+             NOEUD = 'NO6',
+             REFERENCE='AUTRE_ASTER',
+             VALE = -4.81283E-01,
+            ),
+            _F( RESULTAT = LEDEP,
+             INST = 1.,
+             NOM_CHAM = 'FORC_NODA',
+             NOM_CMP = 'DX',
+             NOEUD = 'NO1',
+             REFERENCE='AUTRE_ASTER',
+             VALE = -6.35398E+09,
+            ),
+            _F( RESULTAT = LEDEP,
+             INST = 1.,
+             NOM_CHAM = 'FORC_NODA',
+             NOM_CMP = 'DY',
+             NOEUD = 'NO1',
+             REFERENCE='AUTRE_ASTER',
+             VALE = -6.06803E+09,
+            ),
+            _F( RESULTAT = LEDEP,
+             INST = 1.,
+             NOM_CHAM = 'FORC_NODA',
+             NOM_CMP = 'DZ',
+             NOEUD = 'NO1',
+             REFERENCE='AUTRE_ASTER',
+             VALE = 5.71913E+08,
+            ),
+            _F( RESULTAT = LEDEP,
+             INST = 1.,
+             NOM_CHAM = 'SIEF_ELGA',
+             NOM_CMP = 'SIYY',
+             MAILLE = 'BMA1',
+             POINT = 1,
+             REFERENCE='AUTRE_ASTER',
+             VALE = 2.0E11,
+            ),
+            _F( RESULTAT = LEDEP,
+             INST = 1.,
+             NOM_CHAM = 'SIEF_ELGA',
+             NOM_CMP = 'SIXX',
+             MAILLE = 'MA1',
+             POINT = 1,
+             REFERENCE='AUTRE_ASTER',
+             VALE = 2.94111E10,
+            ),
+            _F( RESULTAT = LEDEP,
+             INST = 1.,
+             NOM_CHAM = 'SIEF_ELGA',
+             NOM_CMP = 'SIXX',
+             MAILLE = 'MA3',
+             POINT = 1,
+             REFERENCE='AUTRE_ASTER',
+             VALE = 2.41199E10,
+            ),
+            _F( RESULTAT = LEDEP,
+             INST = 1.,
+             NOM_CHAM = 'SIEF_ELGA',
+             NOM_CMP = 'SIYY',
+             MAILLE = 'MA3',
+             POINT = 1,
+             REFERENCE='AUTRE_ASTER',
+             VALE = 2.41199E10,
+            ),
+            _F( RESULTAT = LEDEP,
+             INST = 1.,
+             NOM_CHAM = 'SIEF_ELGA',
+             NOM_CMP = 'SIZZ',
+             MAILLE = 'MA3',
+             POINT = 1,
+             REFERENCE='AUTRE_ASTER',
+             VALE = -3.52053E+09,
+            ),
+            _F( RESULTAT = LEDEP,
+             INST = 1.,
+             NOM_CHAM = 'SIEF_ELGA',
+             NOM_CMP = 'SIXZ',
+             MAILLE = 'MA3',
+             POINT = 1,
+             REFERENCE='AUTRE_ASTER',
+             VALE = 3.95540E08,
+            )))
+
+TEST_RESU(RESU=(
+            _F( RESULTAT = LEDEP,
+             INST = 2.,
+             NOM_CHAM = 'DEPL',
+             NOM_CMP = 'DZ',
+             NOEUD = 'NO5',
+             REFERENCE='AUTRE_ASTER',
+             VALE = -1.41178E+00,
+            ),
+            _F( RESULTAT = LEDEP,
+             INST = 2.,
+             NOM_CHAM = 'DEPL',
+             NOM_CMP = 'DZ',
+             NOEUD = 'NO6',
+             REFERENCE='AUTRE_ASTER',
+             VALE = -9.62566E-01,
+            ),
+            _F( RESULTAT = LEDEP,
+             INST = 2.,
+             NOM_CHAM = 'FORC_NODA',
+             NOM_CMP = 'DX',
+             NOEUD = 'NO1',
+             REFERENCE='AUTRE_ASTER',
+             VALE =  -1.27080E+10 ,
+            ),
+            _F( RESULTAT = LEDEP,
+             INST = 2.,
+             NOM_CHAM = 'FORC_NODA',
+             NOM_CMP = 'DY',
+             NOEUD = 'NO1',
+             REFERENCE='AUTRE_ASTER',
+             VALE = -1.21361E+10,
+            ),
+            _F( RESULTAT = LEDEP,
+             INST = 2.,
+             NOM_CHAM = 'FORC_NODA',
+             NOM_CMP = 'DZ',
+             NOEUD = 'NO1',
+             REFERENCE='AUTRE_ASTER',
+             VALE = 1.14383E+09,
+            ),
+            _F( RESULTAT = LEDEP,
+             INST = 2.,
+             NOM_CHAM = 'SIEF_ELGA',
+             NOM_CMP = 'SIYY',
+             MAILLE = 'BMA1',
+             POINT = 1,
+             REFERENCE='AUTRE_ASTER',
+             VALE = 2.20000E+11,
+            ),
+            _F( RESULTAT = LEDEP,
+             INST = 2.,
+             NOM_CHAM = 'SIEF_ELGA',
+             NOM_CMP = 'SIXX',
+             MAILLE = 'MA1',
+             POINT = 1,
+             REFERENCE='AUTRE_ASTER',
+             VALE = 5.88223E+10,
+            ),
+            _F( RESULTAT = LEDEP,
+             INST = 2.,
+             NOM_CHAM = 'SIEF_ELGA',
+             NOM_CMP = 'SIXX',
+             MAILLE = 'MA3',
+             POINT = 1,
+             REFERENCE='AUTRE_ASTER',
+             VALE = 4.82397E+10,
+            ),
+            _F( RESULTAT = LEDEP,
+             INST = 2.,
+             NOM_CHAM = 'SIEF_ELGA',
+             NOM_CMP = 'SIYY',
+             MAILLE = 'MA3',
+             POINT = 1,
+             REFERENCE='AUTRE_ASTER',
+             VALE = 4.82397E+10 ,
+            ),
+            _F( RESULTAT = LEDEP,
+             INST = 2.,
+             NOM_CHAM = 'SIEF_ELGA',
+             NOM_CMP = 'SIZZ',
+             MAILLE = 'MA3',
+             POINT = 1,
+             REFERENCE='AUTRE_ASTER',
+             VALE = -7.04106E+09,
+            ),
+            _F( RESULTAT = LEDEP,
+             INST = 2.,
+             NOM_CHAM = 'SIEF_ELGA',
+             NOM_CMP = 'SIXZ',
+             MAILLE = 'MA3',
+             POINT = 1,
+             REFERENCE='AUTRE_ASTER',
+             VALE = 7.91079E+08 ,
+            ),
+            _F( RESULTAT = LEDEP,
+             INST = 2.,
+             NOM_CHAM = 'VARI_ELGA',
+             NOM_CMP = 'V1',
+             MAILLE = 'BMA1',
+             POINT = 1,
+             REFERENCE='AUTRE_ASTER',
+             VALE = 0.9,
+            ),
+            ))
+
+TEST_RESU(RESU=(
+            _F( RESULTAT = LEDEP,
+             INST = 10.,
+             NOM_CHAM = 'DEPL',
+             NOM_CMP = 'DZ',
+             NOEUD = 'NO5',
+             REFERENCE='AUTRE_ASTER',
+             VALE = -6.50474E+00,
+            ),
+            _F( RESULTAT = LEDEP,
+             INST = 10.,
+             NOM_CHAM = 'DEPL',
+             NOM_CMP = 'DZ',
+             NOEUD = 'NO6',
+             REFERENCE='AUTRE_ASTER',
+             VALE = -4.86321E+00,
+            ),
+            _F( RESULTAT = LEDEP,
+             INST = 10.,
+             NOM_CHAM = 'FORC_NODA',
+             NOM_CMP = 'DX',
+             NOEUD = 'NO1',
+             REFERENCE='AUTRE_ASTER',
+             VALE =  -6.32600E+10 ,
+            ),
+            _F( RESULTAT = LEDEP,
+             INST = 10.,
+             NOM_CHAM = 'FORC_NODA',
+             NOM_CMP = 'DY',
+             NOEUD = 'NO1',
+             REFERENCE='AUTRE_ASTER',
+             VALE = -6.11700E+10,
+            ),
+            _F( RESULTAT = LEDEP,
+             INST = 10.,
+             NOM_CHAM = 'FORC_NODA',
+             NOM_CMP = 'DZ',
+             NOEUD = 'NO1',
+             REFERENCE='AUTRE_ASTER',
+             VALE = 4.17985E+09,
+            ),
+            _F( RESULTAT = LEDEP,
+             INST = 10.,
+             NOM_CHAM = 'SIEF_ELGA',
+             NOM_CMP = 'SIYY',
+             MAILLE = 'BMA1',
+             POINT = 1,
+             REFERENCE='AUTRE_ASTER',
+             VALE = 3.80000E+11,
+            ),
+            _F( RESULTAT = LEDEP,
+             INST = 10.,
+             NOM_CHAM = 'SIEF_ELGA',
+             NOM_CMP = 'SIXX',
+             MAILLE = 'MA1',
+             POINT = 1,
+             REFERENCE='AUTRE_ASTER',
+             VALE = 2.14953E+11,
+            ),
+            _F( RESULTAT = LEDEP,
+             INST = 10.,
+             NOM_CHAM = 'SIEF_ELGA',
+             NOM_CMP = 'SIXX',
+             MAILLE = 'MA3',
+             POINT = 1,
+             REFERENCE='AUTRE_ASTER',
+             VALE = 2.43568E+11,
+            ),
+            _F( RESULTAT = LEDEP,
+             INST = 10.,
+             NOM_CHAM = 'SIEF_ELGA',
+             NOM_CMP = 'SIYY',
+             MAILLE = 'MA3',
+             POINT = 1,
+             REFERENCE='AUTRE_ASTER',
+             VALE = 2.43568E+11 ,
+            ),
+            _F( RESULTAT = LEDEP,
+             INST = 10.,
+             NOM_CHAM = 'SIEF_ELGA',
+             NOM_CMP = 'SIZZ',
+             MAILLE = 'MA3',
+             POINT = 1,
+             REFERENCE='AUTRE_ASTER',
+             VALE = -2.57299E+10,
+            ),
+            _F( RESULTAT = LEDEP,
+             INST = 10.,
+             NOM_CHAM = 'SIEF_ELGA',
+             NOM_CMP = 'SIXZ',
+             MAILLE = 'MA3',
+             POINT = 1,
+             REFERENCE='AUTRE_ASTER',
+             VALE = 2.89082E+09,
+            ),
+            _F( RESULTAT = LEDEP,
+             INST = 10.,
+             NOM_CHAM = 'VARI_ELGA',
+             NOM_CMP = 'V1',
+             MAILLE = 'BMA1',
+             POINT = 1,
+             REFERENCE='AUTRE_ASTER',
+             VALE = 8.1,
+            ),
+            _F( RESULTAT = LEDEP,
+             INST = 10.,
+             NOM_CHAM = 'VARI_ELGA',
+             NOM_CMP = 'V1',
+             MAILLE = 'MA1',
+             POINT = 1,
+             REFERENCE='AUTRE_ASTER',
+             VALE = 6.72865E-01,
+            ),
+            ))
+
+
+
+LEDEPE=MECA_STATIQUE(
+                            MODELE=LEMOD,
+                        CHAM_MATER=MATAF,
+                         CARA_ELEM=LACAR,
+                             EXCIT=_F(
+                CHARGE = ZCHM,
+                ),
+              )
+
+
+LEDEPE=CALC_NO( reuse = LEDEPE,
+                 OPTION     = ('FORC_NODA',),
+                 RESULTAT   = LEDEPE,
+               )
+
+
+# 
+# -------------------------------------------------
+# POST TRAITEMENT DES RESULTATS MECA_STATIQUE
+# -------------------------------------------------
+#
+
+TEST_RESU(RESU=(
+            _F( RESULTAT = LEDEPE,
+             INST = 0.,
+             NOM_CHAM = 'DEPL',
+             NOM_CMP = 'DZ',
+             NOEUD = 'NO5',
+             REFERENCE='AUTRE_ASTER',
+             VALE = -7.05990E-01,
+            ),
+            _F( RESULTAT = LEDEPE,
+             INST = 0.,
+             NOM_CHAM = 'DEPL',
+             NOM_CMP = 'DZ',
+             NOEUD = 'NO6',
+             REFERENCE='AUTRE_ASTER',
+             VALE = -4.81283E-01,
+            ),
+            _F( RESULTAT = LEDEPE,
+             INST = 0.,
+             NOM_CHAM = 'FORC_NODA',
+             NOM_CMP = 'DX',
+             NOEUD = 'NO1',
+             REFERENCE='AUTRE_ASTER',
+             VALE = -6.35398E+09,
+            ),
+            _F( RESULTAT = LEDEPE,
+             INST = 0.,
+             NOM_CHAM = 'FORC_NODA',
+             NOM_CMP = 'DY',
+             NOEUD = 'NO1',
+             REFERENCE='AUTRE_ASTER',
+             VALE = -6.06803E+09,
+            ),
+            _F( RESULTAT = LEDEPE,
+             INST = 0.,
+             NOM_CHAM = 'FORC_NODA',
+             NOM_CMP = 'DZ',
+             NOEUD = 'NO1',
+             REFERENCE='AUTRE_ASTER',
+             VALE = 5.71913E+08,
+            ),
+            _F( RESULTAT = LEDEPE,
+             INST = 0.,
+             NOM_CHAM = 'SIEF_ELGA_DEPL',
+             NOM_CMP = 'SIYY',
+             MAILLE = 'BMA1',
+             POINT = 1,
+             REFERENCE='AUTRE_ASTER',
+             VALE = 2.0E11,
+            ),
+            _F( RESULTAT = LEDEPE,
+             INST = 0.,
+             NOM_CHAM = 'SIEF_ELGA_DEPL',
+             NOM_CMP = 'SIXX',
+             MAILLE = 'MA1',
+             POINT = 1,
+             REFERENCE='AUTRE_ASTER',
+             VALE = 2.94111E10,
+            ),
+            _F( RESULTAT = LEDEPE,
+             INST = 0.,
+             NOM_CHAM = 'SIEF_ELGA_DEPL',
+             NOM_CMP = 'SIXX',
+             MAILLE = 'MA3',
+             POINT = 1,
+             REFERENCE='AUTRE_ASTER',
+             VALE = 2.41199E10,
+            ),
+            _F( RESULTAT = LEDEPE,
+             INST = 0.,
+             NOM_CHAM = 'SIEF_ELGA_DEPL',
+             NOM_CMP = 'SIYY',
+             MAILLE = 'MA3',
+             POINT = 1,
+             REFERENCE='AUTRE_ASTER',
+             VALE = 2.41199E10,
+            ),
+            _F( RESULTAT = LEDEPE,
+             INST = 0.,
+             NOM_CHAM = 'SIEF_ELGA_DEPL',
+             NOM_CMP = 'SIZZ',
+             MAILLE = 'MA3',
+             POINT = 1,
+             REFERENCE='AUTRE_ASTER',
+             VALE = -3.52053E+09,
+            ),
+            _F( RESULTAT = LEDEPE,
+             INST = 0.,
+             NOM_CHAM = 'SIEF_ELGA_DEPL',
+             NOM_CMP = 'SIXZ',
+             MAILLE = 'MA3',
+             POINT = 1,
+             REFERENCE='AUTRE_ASTER',
+             VALE = 3.95540E08,
+            )))
+
+FIN()
+#
+#

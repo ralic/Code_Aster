@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 11/08/2004   AUTEUR BOYERE E.BOYERE 
+#& MODIF COMMANDE  DATE 31/08/2004   AUTEUR JMBHH01 J.M.PROIX 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -385,6 +385,7 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca
                 INTEGRATION     =SIMP(statut='f',typ='TXM',defaut="NOEUD",into=("GAUSS","NOEUD","SIMPSON","SIMPSON1","SIMPSON2")),
                 COEF_REGU_CONT  =SIMP(statut='f',typ='R',defaut=100.E+0),
                 MODL_AXIS       =SIMP(statut='o',typ='TXM',into=("OUI","NON")),
+                FORMULATION     =SIMP(statut='f',typ='TXM',defaut="DEPL",into=("DEPL","VITE")),
                 DIRE_APPA       =SIMP(statut='f',typ='R',max=3,defaut=(0.,0.,0.,)),
                 ITER_GEOM_MAXI  =SIMP(statut='f',typ='I',defaut=2),
                 ITER_CONT_MAXI  =SIMP(statut='f',typ='I',defaut=30),

@@ -7,7 +7,7 @@ C TOLE CRP_20
       LOGICAL GRILLE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 15/06/2004   AUTEUR MABBAS M.ABBAS 
+C MODIF ELEMENTS  DATE 31/08/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -59,7 +59,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       REAL*8 DX,DY,DZ,S,C,NORM
       REAL*8 PS,PJDX,PJDY,PJDZ,T,TINF,TSUP,TPG1
       REAL*8 ALPHA,BETA,R8DGRD,R8PREM,ZERO,DET
-      REAL*8 YOUNG1,YOUNG2
+      REAL*8 YOUNG1,YOUNG2,CTOR
       CHARACTER*2 CODRET(134),VAL
       CHARACTER*3 NUM
       CHARACTER*8 NOMRES(134),NOMPAR,NOMPU(2),MOTCLE,NOMAIL
@@ -329,6 +329,7 @@ C        ------ MATERIAU ISOTROPE --------------------------------------
 C        ---- CALCUL DE LA MATRICE DE RIGIDITE ORTHOTROPE ------------
           YOUNG1 = YOUNG
           YOUNG2 = 0.D0
+          CTOR = ZR(JCOQU+4)
 
           CALL R8INIR(9,0.D0,DH,1)
           CALL R8INIR(9,0.D0,DMF,1)
@@ -336,7 +337,7 @@ C        ---- CALCUL DE LA MATRICE DE RIGIDITE ORTHOTROPE ------------
           CALL R8INIR(4,0.D0,DCI,1)
           DH(1,1) = YOUNG1
           DH(2,2) = YOUNG2
-          DH(3,3) = YOUNG1*1.D-7
+          DH(3,3) = YOUNG1*CTOR
 
 C   MATRICE PASSAGE DU REPERE D'ORTHOTROPIE VERS LE REPERE DE L'ELEMENT
 
@@ -352,7 +353,9 @@ C        --- CALCUL DES MATRICES DE RIGIDITE EN MEMBRANE ET FLEXION --
           DO 50 J = 1,3
             DO 40 I = 1,3
               DM(I,J) = DH(I,J)*EPAIS
-              DF(I,J) = DH(I,J)*CDF
+C              DF(I,J) = DH(I,J)*CDF
+C             PAS DE RIGIDITE DE FLEXION PROPRE
+              DF(I,J) = 0.D0
    40       CONTINUE
    50     CONTINUE
         ELSE

@@ -1,10 +1,11 @@
-      SUBROUTINE DXEFFI ( NOMTE, XYZL, PGL, CONT, EFFINT )
+      SUBROUTINE DXEFFI ( NOMTE, XYZL, PGL, CONT, IND, EFFINT )
       IMPLICIT  NONE
       REAL*8              XYZL(3,*), PGL(3,3), CONT(*), EFFINT(*)
       CHARACTER*16        NOMTE
+      INTEGER             IND
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 15/06/2004   AUTEUR MABBAS M.ABBAS 
+C MODIF ELEMENTS  DATE 31/08/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -25,6 +26,8 @@ C     ------------------------------------------------------------------
 C     IN  NOMTE  : NOM DE L'ELEMENT TRAITE
 C     IN  XYZL   : COORDONNEES DES NOEUDS
 C     IN  UL     : DEPLACEMENT A L'INSTANT T
+C     IN  IND    : =6 : 6 CMP D'EFFORT PAR NOEUD
+C     IN  IND    : =8 : 8 CMP D'EFFORT PAR NOEUD
 C     OUT EFFINT : EFFORTS INTERNES
 C     ------------------------------------------------------------------
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
@@ -50,6 +53,8 @@ C
      +         CDF, KHI(3), N(3), M(3), BF(3,9), MG(3), DH(9), DMF(9),
      +         UF(3,3), UL(6,3), ROT(9)
       LOGICAL  GRILLE
+      INTEGER   IADZI, IAZK24
+      CHARACTER*24 NOMELE
 C     ------------------------------------------------------------------
 C --DEB
       ZERO = 0.0D0
@@ -102,6 +107,13 @@ C     ---------------------------
          CALL GRDMAT(ICACOQ,ZI(IMATE),PGL,DH,ROT)
       ELSE
          NPGH = 3
+         DISTN = ZR(ICACOQ+4)
+         IF (DISTN.NE.0.D0) THEN
+            CALL TECAEL(IADZI, IAZK24)
+            NOMELE=ZK24(IAZK24-1+3)
+            CALL UTMESS('F','DXEFFI',
+     &    'PAS D EXCENTREMENT AVEC FORC_NODA MAILLE '//NOMELE)
+         ENDIF
          DISTN = ZERO
          ZMIN = -H/DEUX
       END IF
@@ -144,28 +156,24 @@ C         ------------------------------------------------------------
                N(1) = N(1) + COEF*HIC/2.D0*CONT(ICPG+1)
                N(2) = N(2) + COEF*HIC/2.D0*CONT(ICPG+2)
                N(3) = N(3) + COEF*HIC/2.D0*CONT(ICPG+4)
-               M(1) = M(1) + COEF*HIC/2.D0*ZIC*CONT(ICPG+1)
-               M(2) = M(2) + COEF*HIC/2.D0*ZIC*CONT(ICPG+2)
-               M(3) = M(3) + COEF*HIC/2.D0*ZIC*CONT(ICPG+4)
+               IF (GRILLE) THEN
+C                LES SEULS MOMENTS SONT DUS A L'EXCENTREMENT
+C                PAS DE RIGIDITE DE FLEXION PROPRE
+                 M(1) = M(1) + ZIC*HIC*CONT(ICPG+1)
+                 M(2) = M(2) + ZIC*HIC*CONT(ICPG+2)
+                 M(3) = M(3) + ZIC*HIC*CONT(ICPG+4)
+               ELSE
+                 M(1) = M(1) + COEF*HIC/2.D0*ZIC*CONT(ICPG+1)
+                 M(2) = M(2) + COEF*HIC/2.D0*ZIC*CONT(ICPG+2)
+                 M(3) = M(3) + COEF*HIC/2.D0*ZIC*CONT(ICPG+4)
+               END IF
  120        CONTINUE
  110     CONTINUE
 C
-         IF ( GRILLE ) THEN
-            CALL R8INIR ( 3, ZERO, MG, 1 )
-            CDF = HIC*HIC*HIC/12.D0
-            CALL R8COPY ( 9, DH, 1, DMF, 1 )
-            CALL R8SCAL ( 9, CDF, DMF, 1 )
-            CALL PMRVEC ( 'ZERO', 3, 3, DMF, KHI, MG )
-            DO 130,K = 1,3
-               EFFINT((IPG-1)*8+K) = N(K)
-               EFFINT((IPG-1)*8+3+K) = MG(K)
- 130        CONTINUE
-         ELSE
             DO 140,K = 1,3
-               EFFINT((IPG-1)*8+K)   = N(K)
-               EFFINT((IPG-1)*8+K+3) = M(K)
+               EFFINT((IPG-1)*IND+K)   = N(K)
+               EFFINT((IPG-1)*IND+K+3) = M(K)
  140        CONTINUE
-         ENDIF
 C
  100  CONTINUE
 C

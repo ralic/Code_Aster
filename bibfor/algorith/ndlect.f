@@ -2,10 +2,10 @@
      &                   ALPHA,  DELTA,  V0VIT,  V0ACC,  A0VIT, 
      &                   A0ACC,  NBMODS, NMODAM, VALMOD, BASMOD,
      &                   NREAVI, LIMPED, LONDE,  CHONDP, NONDP,
-     &                   MULTIA  )
+     &                   MULTIA, TETA,   IALGO)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/10/2003   AUTEUR BOYERE E.BOYERE 
+C MODIF ALGORITH  DATE 31/08/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,8 +26,8 @@ C RESPONSABLE PABHHHH N.TARDIEU
 C TOLE CRP_21
 
       IMPLICIT NONE
-      INTEGER       NBMODS, NREAVI, NONDP, NMODAM
-      REAL*8        V0VIT, V0ACC, A0VIT, A0ACC, ALPHA, DELTA
+      INTEGER       NBMODS, NREAVI, NONDP, NMODAM, IALGO
+      REAL*8        V0VIT, V0ACC, A0VIT, A0ACC, ALPHA, DELTA, TETA
       LOGICAL       LAMORT, LIMPED, LONDE
       CHARACTER*19  LISCHA
       CHARACTER*24  MODELE, MATE, STADYN, VALMOD, BASMOD, CHONDP
@@ -60,18 +60,19 @@ C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
 
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 
-      INTEGER       IRET, IRET2, NBOCC, IALGO, N1, IBID, I, NCHAR,
-     +              JCHAR, JINF
+      INTEGER       IRET, IRET2, NBOCC, N1, IBID, I, NCHAR,
+     +              JCHAR, JINF, NBOCCT, N2
       CHARACTER*8   K8B, LICMP(3), NOMCHA, REP
       CHARACTER*24  FONDEP,FONVIT,FONACC,MULTAP,PSIDEL, K24BLA
       CHARACTER*24  CHARGE, INFOCH, CHGRFL
-      REAL*8        UNDEMI,UN,DEUX,QUATRE
+      REAL*8        UNDEMI,UN,DEUX,QUATRE, ZERO
       REAL*8        ALPHA0,RCMP(3)
       COMPLEX*16    CPLX
 C
       DATA CHGRFL /'&&OP0070.GRAPPE_FLUIDE  '/
 C ----------------------------------------------------------------------
 
+         ZERO= 0.D0
          UNDEMI = 0.5D0
          UN = 1.D0
          DEUX = 2.D0
@@ -97,18 +98,38 @@ C -- PARAMETRES METHODE DE NEWMARK
              CALL GETVR8('NEWMARK','ALPHA',1,1,1,ALPHA,N1)
              CALL GETVR8('NEWMARK','DELTA',1,1,1,DELTA,N1)
          ELSE
+         CALL GETFAC('TETA_METHODE',NBOCCT)                  
+           IF(NBOCCT .EQ. 1 ) THEN
+             IALGO = 3
+             CALL GETVR8('TETA_METHODE','TETA',1,1,1,TETA,N2)
+           ELSE
              IALGO = 2
              CALL GETVR8('HHT'    ,'ALPHA',1,1,1,ALPHA,N1)
-         ENDIF
+           ENDIF
+         ENDIF 
          IF (IALGO.EQ.2) THEN
              ALPHA0 = ALPHA
              ALPHA = (UN-ALPHA0)* (UN-ALPHA0)/QUATRE
              DELTA = UNDEMI - ALPHA0
          END IF
-         V0VIT = - (DELTA-ALPHA)/ALPHA
-         V0ACC = - (DELTA-DEUX*ALPHA)/DEUX/ALPHA
-         A0VIT = -UN/ALPHA
-         A0ACC = - (UN-DEUX*ALPHA)/DEUX/ALPHA
+         
+         IF ((IALGO.EQ.1) .OR. (IALGO.EQ.2)) THEN         
+           V0VIT = - (DELTA-ALPHA)/ALPHA
+           V0ACC = - (DELTA-DEUX*ALPHA)/DEUX/ALPHA
+           A0VIT = -UN/ALPHA
+           A0ACC = - (UN-DEUX*ALPHA)/DEUX/ALPHA
+C POUR LA THETA_METHODE ON PREND THETA=1 (THETA VARIABLE A VENIR)
+         ELSEIF (IALGO.EQ.3) THEN
+           IF (TETA .NE. 1) THEN
+             CALL UTMESS('F','NDLECT','CHOISIR TETA EGALE A UN')
+           ELSE
+             V0VIT = - (UN-TETA)/TETA
+             V0ACC = ZERO
+             A0VIT = -UN/TETA
+             A0ACC = ZERO         
+           ENDIF
+         ENDIF
+         
          LICMP(1) = 'STAOUDYN'
          LICMP(2) = 'ALFNMK'
          LICMP(3) = 'DELNMK'

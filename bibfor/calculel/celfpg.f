@@ -1,0 +1,105 @@
+      SUBROUTINE CELFPG(CELZ,NOMOBJ)
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF CALCULEL  DATE 31/08/2004   AUTEUR VABHHTS J.PELLET 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C RESPONSABLE VABHHTS J.PELLET
+      IMPLICIT NONE
+      CHARACTER*(*) CELZ,NOMOBJ
+C ------------------------------------------------------------------
+C BUT : EXTRAIRE DU CHAM_ELEM (ELGA) CELZ UN OBJET JEVEUX CONTENANT
+C       LE SCHEMA DE POINT DE GAUSS DES MAILLES
+C ------------------------------------------------------------------
+C     ARGUMENTS:
+C CELZ    IN/JXIN  K19 : SD CHAM_ELEM A EXAMINER
+C         REMARQUE:   SI CELZ N'EST PAS "ELGA", NOMOBJ N'EST PAS CREE
+C NOMOBJ  IN/JXOUT K24 : OBJET JEVEUX A CREER (SUR LA BASE 'V')
+C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
+      INTEGER ZI
+      COMMON /IVARJE/ZI(1)
+      REAL*8 ZR
+      COMMON /RVARJE/ZR(1)
+      COMPLEX*16 ZC
+      COMMON /CVARJE/ZC(1)
+      LOGICAL ZL
+      COMMON /LVARJE/ZL(1)
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32
+      CHARACTER*80 ZK80
+      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+      CHARACTER*32 JEXNUM,JEXATR
+C     ------------------------------------------------------------------
+C     VARIABLES LOCALES:
+C     ------------------
+      CHARACTER*8 MA,NOMGD,KBID
+      CHARACTER*16 NOFPG
+      CHARACTER*19 CEL,LIGREL
+      INTEGER JOBJ,IBID,NBMA,JCELV,JCELD,NEC
+      INTEGER IGR,IEL,IALIEL,ILLIEL,NUMAIL,NBELEM
+      INTEGER JCELK,NBGR,IMOLO,JMOLO,NUMA,NBEL,KFPG
+
+      NUMAIL(IGR,IEL) = ZI(IALIEL-1+ZI(ILLIEL+IGR-1)+IEL-1)
+C     ------------------------------------------------------------------
+
+      CALL JEMARQ()
+      CEL = CELZ
+
+
+C     1 CALCUL DE LIGREL,NBMA,NEC :
+C     --------------------------------------------------------
+      CALL DISMOI('F','NOM_MAILLA',CEL,'CHAM_ELEM',IBID,MA,IBID)
+      CALL DISMOI('F','NOM_LIGREL',CEL,'CHAM_ELEM',IBID,LIGREL,IBID)
+      CALL DISMOI('F','NB_MA_MAILLA',MA,'MAILLAGE',NBMA,KBID,IBID)
+      CALL DISMOI('F','NOM_GD',CEL,'CHAM_ELEM',IBID,NOMGD,IBID)
+      CALL DISMOI('F','NB_EC',NOMGD,'GRANDEUR',NEC,KBID,IBID)
+
+
+
+C     2 RECUPERATION DES OBJETS DU CHAM_ELEM ET DU LIGREL :
+C     -------------------------------------------------------
+      CALL JEVEUO(CEL//'.CELK','L',JCELK)
+      IF (ZK24(JCELK-1+3).NE.'ELGA') GO TO 9999
+      CALL JEVEUO(CEL//'.CELV','L',JCELV)
+      CALL JEVEUO(CEL//'.CELD','L',JCELD)
+      CALL JEVEUO(LIGREL//'.LIEL','L',IALIEL)
+      CALL JEVEUO(JEXATR(LIGREL//'.LIEL','LONCUM'),'L',ILLIEL)
+      NBGR = ZI(JCELD-1+2)
+
+
+C     3 REPLISSAGE DE NOMOBJ :
+C     -------------------------------------------------------
+      CALL WKVECT(NOMOBJ,'V V K16',NBMA,JOBJ)
+      DO 90,IGR = 1,NBGR
+        NBEL = NBELEM(LIGREL,IGR)
+        IMOLO = ZI(JCELD-1+ZI(JCELD-1+4+IGR)+2)
+        IF (IMOLO.EQ.0) GO TO 90
+
+        CALL JEVEUO(JEXNUM('&CATA.TE.MODELOC',IMOLO),'L',JMOLO)
+        KFPG = ZI(JMOLO-1+4+NEC+1)
+        CALL JENUNO(JEXNUM('&CATA.TM.NOFPG',KFPG),NOFPG)
+
+        DO 80,IEL = 1,NBEL
+          NUMA = NUMAIL(IGR,IEL)
+          IF (NUMA.GT.0)  ZK16(JOBJ-1+NUMA)=NOFPG
+   80   CONTINUE
+   90 CONTINUE
+
+9999  CONTINUE
+      CALL JEDEMA()
+      END

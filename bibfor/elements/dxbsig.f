@@ -1,6 +1,6 @@
       SUBROUTINE DXBSIG (NOMTE, XYZL , PGL , SIGMA, BSIGMA)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 15/06/2004   AUTEUR MABBAS M.ABBAS 
+C MODIF ELEMENTS  DATE 31/08/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -72,10 +72,6 @@ C ---        -DES AIRES DES TRIANGLES CONSTITUANT L'ELEMENT
 C     -----------------------------------------------------
       DESR = '&INEL.'//NOMTE(1:8)//'.DESR'
       CALL JEVETE( DESR ,' ',LZR )
-      IF ( NOMTE(1:8).EQ.'MEGRDKT ') THEN
-         CALL JEVECH ('PCACOQU', 'L', JCOQU)
-         DISTN = ZR(JCOQU+3)
-      ENDIF
 C
       IF (NOMTE(1:8) .EQ.'MEDKTR3 '.OR.NOMTE(1:8) .EQ.'MEDSTR3 '.OR. 
      +    NOMTE(1:8) .EQ.'MEGRDKT '.OR.NOMTE(1:8) .EQ.'MEDKTG3 ') THEN
@@ -120,11 +116,7 @@ C  --      PREMIER ORDRE AUX DEPLACEMENTS AU POINT D'INTEGRATION
 C  --      COURANT : (EPS_1) = (B)*(UN)
 C          ----------------------------
 C
-           IF ( NOMTE(1:8).EQ.'MEGRDKT ') THEN
-              CALL GRILB (DISTN, LZR , IGAU, JACGAU, 8, 6, BMAT)
-           ELSE
              CALL DXBMAT(NOMTE, LZR, XYZL, PGL, IGAU, JACGAU, BMAT)
-           ENDIF
 C
 C  --        CALCUL DU PRODUIT (BT)*(SIGMA)*JACOBIEN*POIDS
 C          ---------------------------------------------

@@ -7,7 +7,7 @@
 C TOLE CRP_6
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 15/06/2004   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 31/08/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -107,7 +107,7 @@ C     DEPSL   : DEF TOTALES TEMPS PLUS - TEMPS MOINS  REPERE LOCAL
 C     DEPSG   : DEF TOTALES TEMPS PLUS - TEMPS MOINS REPERE GLOBAL
 C
 C
-      INTEGER       JGEOM,JCOQU,I,J
+      INTEGER       JGEOM,JCOQU,I,J,LT2EV,LT2VE,LT1VE
       INTEGER       NVARPI
       PARAMETER    ( NVARPI=8)
       INTEGER      NCSTPM
@@ -118,10 +118,10 @@ C
       REAL*8        ALPHA ,BETA, R8DGRD, R8PREM, PI, PHI
       REAL*8        ALPH,E,ET,SIGY
       REAL*8        DSDEP1, DSDEP2,DSDEM1, DSDEM2,DSDE1
-      REAL*8        SIGMG(3),SIGML(3)
-      REAL*8        DH(3,3),SIGL(3),DEPSG(3),DEPSL(3),EPSMG(3),EPSML(3)
+      REAL*8        SIGMG(6),SIGML(6)
+      REAL*8        DH(3,3),SIGL(6),DEPSG(6),DEPSL(6),EPSMG(6),EPSML(6)
       REAL*8        PGL(3,3),ROT(3,3), XAB1(3,3)
-      REAL*8        EM,EP,ALPHAM,ALPHAP
+      REAL*8        EM,EP,ALPHAM,ALPHAP,DHL(3,3),TAB(100)
       CHARACTER*2  CODRES
       LOGICAL       CINE,ISOT,PINTO,COM1D,VECTEU
 C
@@ -176,7 +176,10 @@ C     ------------------------------------------------
       ENDIF
 C     ------------------------------------------------
 C
-      CALL GRIROT ( ALPHA , BETA ,PGL , ROT, C, S )
+      CALL DXREPE(3,PGL,TAB)
+      LT1VE = 38
+      LT2VE=47
+      LT2EV=51
 C
 C     -- INITIALISATIONS
 C     ---------------------------------------
@@ -184,35 +187,17 @@ C     ---------------------------------------
       CALL R8INIR(36,0.D0,DSIDEP,1)
       CALL R8INIR(3,0.D0,DEPSG ,1)
       CALL R8INIR(3,0.D0,DEPSL ,1)
-      CALL R8INIR(3,0.D0,SIGL ,1)
+      CALL R8INIR(6,0.D0,SIGL ,1)
       CALL R8INIR(4,0.D0,VIP  ,1)
 C
 C
-C     DEFORMATIONS PLUS REPERE GLOBAL
+C     DEFORMATIONS  ET CONTRAINTES DANS REPERE LOCAL
 C
-      DO 1 I=1,2
-         DEPSG(I) = DEPS(I)
-         EPSMG(I) = EPSM(I)
-         SIGMG(I)= SIGM(I)
-  1   CONTINUE
-      EPSMG(3)= EPSM(4)*RAC2
-      DEPSG(3)= DEPS(4)*RAC2
-      SIGMG(3)= SIGM(4)
-C
-      PI =  4.D0*ATAN(1.D0)
-      PHI= 0.D0
-      IF(ABS(C).GT.1.D-14) PHI= (ATAN(S/C)*180.D0/PI)-90.D0
-C
-C     CONTRAINTES MOINS REPERE LOCAL
-C
-      CALL INSCRF(SIGMG,PHI,SIGML)
-C
-      SIGML(2) = 0.D0
-C
-C     DEFORMATIONS REPERE LOCAL
-C
-      CALL INSDRF(EPSMG,PHI,EPSML)
-      CALL INSDRF(DEPSG,PHI,DEPSL)
+      DEPS(4)=DEPS(4)/RAC2
+      EPSM(4)=EPSM(4)/RAC2
+      CALL DXSIRO(1,TAB(LT2EV),DEPS,DEPSL)
+      CALL DXSIRO(1,TAB(LT2EV),EPSM,EPSML)
+      CALL DXSIRO(1,TAB(LT2EV),SIGM,SIGML)
 C
 C     CALCUL DES CONTRAINTES PLUS DANS REPERE LOCAL
 C     ET VARIABLES INTERNES
@@ -226,8 +211,6 @@ C
      &            SIGL(1),VIP(1),DSDE1,CODRET)
       
 
-        CALL NMMABA (IMATE,COMPOR,E,ALPH,ET,SIGY,
-     &             NCSTPM,CSTPM)
         IF (COM1D) THEN
               SIGL(2) = 0.D0
         ELSE IF (CINE.OR.ISOT) THEN
@@ -242,18 +225,19 @@ C
         ENDIF
 
 C
-      SIGL(2) = 0.D0
-      CALL R8INIR(6,0.D0,SIGP,1)
-      CALL INSCRG ( SIGL , PHI , SIGP)
-      SIGP(4)= SIGP(3)*RAC2
-      SIGP(3)= 0.D0
+      IF ( (OPTION(1:14) .EQ. 'RAPH_MECA').OR.
+     >     ( OPTION(1:9)  .EQ. 'FULL_MECA' )) THEN
+           SIGL(2) = 0.D0
+           CALL R8INIR(6,0.D0,SIGP,1)
+           CALL DXSIRO(1,TAB(LT2VE),SIGL,SIGP)
+           SIGP(4)=SIGP(4)*RAC2
+      ENDIF
 C
       IF ( (OPTION(1:14) .EQ. 'RIGI_MECA_TANG').OR.
      >     ( OPTION(1:9)  .EQ. 'FULL_MECA' )) THEN
-          DH(1,1) = DSDE1
-          DH(2,2) = 0.D0
-          DH(3,3) = 1.D-7*DSDE1
-          CALL UTBTAB ('ZERO', 3 , 3 , DH , ROT , XAB1 , DH )
+          CALL R8INIR(9,0.D0,DHL,1)
+          DHL(1,1)=DSDE1
+          CALL UTBTAB('ZERO',3,3,DHL,TAB(LT1VE),XAB1,DH)
 C
           DO 3 I=1,2
               DO 4 J=1,2
@@ -263,7 +247,6 @@ C
               DSIDEP(I,4) = DH(I,3)*RAC2
   3        CONTINUE
            DSIDEP(4,4) = DH(3,3)*2.D0
-           DSIDEP(3,3) = 1.D-7*DSDE1
       ENDIF
       
       END

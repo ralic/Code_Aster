@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF ELEMENTS  DATE 31/08/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,16 +50,17 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
       INTEGER I,J,K,L,AXIS
-      REAL*8  COEFFF,COEFFA,COEFCA
+      REAL*8  COEFFF,COEFFA,COEFCA, DT
 
       INTEGER NNE,NNM,NDIM,INDCO,INADH
       INTEGER IGEOM,IDEPL,IVECT,JPCF,IDEPM,NDDL
-      INTEGER MGEOM,MDEPL,TYPFRO ,INDNOR
+      INTEGER MGEOM,MDEPL,TYPFRO ,INDNOR, IFORM
 
       REAL*8 XC,YC,PDS,ERR,ESS,JAC,JACM,JEU,LAMBDA,MERESE,VTMP(81)
       REAL*8 C(3,3),FFE(9),FFM(9),TAU1(3),TAU2(3),NORM(3),INTER(2),TT(3)
       REAL*8 GEOME(3),DEPLE(6),DEPLM(6),GEOMM(3),RESE(3),VECTT(3),NOOR
-      REAL*8 MCH(72,72), M(3,3),MM1(3,3),DEPLEE(3),DEPLMM(3),GAUS,ORD
+      REAL*8 MCH(72,72), M(3,3),MM1(3,3),GAUS,ORD
+      REAL*8 DEPLME(6),DEPLMM(6),DEPLEE(6),JDEPP,JDEPM      
       CHARACTER*8 ESC,MAIT
 
 C.......................................................................
@@ -213,6 +214,8 @@ C  RECUPERATION DES DONNEES PORTEES PAR LA CARTE
       INDNOR  = NINT(ZR(JPCF-1+17))
       AXIS    = NINT(ZR(JPCF-1+18))
       PDS     = ZR(JPCF-1+19)
+      DT      = ZR(JPCF-1+20)
+      IFORM   = NINT(ZR(JPCF-1+21))    
       INDNOR=1
 
       IF (INDNOR.EQ.1) GOTO 4
@@ -316,9 +319,13 @@ C  --ESCLAVE-----------
 
       DO 213 I = 1,2*NDIM
         DEPLE(I)=0.D0
+        DEPLME(I)=0.D0
         DO 114 J = 1,NNE
           DEPLE(I) = DEPLE(I) +FFE(J)*ZR(IDEPL+(J-1)*
      &                              (2*NDIM)+I-1)
+          DEPLME(I) = DEPLME(I) +FFE(J)*ZR(IDEPM+(J-1)*
+     &                              (2*NDIM)+I-1)     
+     
 114     CONTINUE
 213   CONTINUE
 
@@ -326,9 +333,12 @@ C  --MAITRE------------
 
       DO 214 I = 1,NDIM
         DEPLM(I)=0.D0
+        DEPLMM(I)=0.D0        
         DO 117 J = 1,NNM
           DEPLM(I) = DEPLM(I) +FFM(J)*ZR(IDEPL+NNE*(2*NDIM)+(J-1)*
      &                                                NDIM+I-1)
+          DEPLMM(I) = DEPLMM(I) +FFM(J)*ZR(IDEPL+NNE*(2*NDIM)+(J-1)*
+     &                                                NDIM+I-1)     
 117     CONTINUE
 214   CONTINUE
 
@@ -338,11 +348,18 @@ C  --MAITRE------------
 C
 C   ---- PAS DE CONTACT
 C
+         IF (IFORM .EQ. 1) THEN
           DO 40 I = 1,NNE
           VTMP((I-1)*(2*NDIM)+NDIM+1) =-PDS*JAC*DEPLE(NDIM+1)*
      &        FFE(I)/COEFCA
    40     CONTINUE
-
+         ELSE
+          DO 41 I = 1,NNE
+          VTMP((I-1)*(2*NDIM)+NDIM+1) =-PDS*JAC*DEPLE(NDIM+1)*
+     &        FFE(I)*DT/COEFCA
+   41     CONTINUE
+         ENDIF
+         
           GO TO 220
 
 C   ---- CONTACT
@@ -352,11 +369,19 @@ C   ---- CONTACT
 C  EVALUTION DU JEU
 
           JEU = 0.D0
-
+          JDEPP = 0.D0
+          JDEPM = 0.D0          
           DO 50 K = 1,NDIM
             JEU = JEU + (GEOME(K)+DEPLE(K)-GEOMM(K)-DEPLM(K))*NORM(K)
+            JDEPP = JDEPP + (DEPLE(K)-DEPLM(K))*NORM(K)            
+            JDEPM = JDEPM + (DEPLME(K)-DEPLMM(K))*NORM(K)
    50     CONTINUE
 
+
+  
+C FORMULATION EN DEPLACEMENT
+
+        IF (IFORM .EQ. 1) THEN
 
 C       DDL DEPLACEMENT DE LA  SURFACE CINEMATIQUE
 
@@ -382,6 +407,40 @@ C      DDL MULTIPLICATEUR CONTACT (DE LA SURFACE CINEMATIQUE)
           DO 100 I = 1,NNE
             VTMP((I-1)*(2*NDIM)+NDIM+1) = -PDS*JAC*JEU*FFE(I)
   100     CONTINUE
+  
+C FORMULATION EN VITESSE
+          ELSE
+          
+C       DDL DEPLACEMENT DE LA  SURFACE CINEMATIQUE
+
+          DO 71 I = 1,NNE
+            DO 61 J = 1,NDIM
+              VTMP((I-1)*(2*NDIM)+J) = -PDS*JAC*
+     &          (DEPLE(NDIM+1)-COEFCA*(JDEPP-JDEPM)/DT)*
+     &          FFE(I)*NORM(J)
+   61       CONTINUE
+   71     CONTINUE
+C
+C      DDL DEPLACEMENT DE LA SURFACE GEOMETRIQUE
+
+          DO 91 I = 1,NNM
+            DO 81 J = 1,NDIM
+              VTMP(NNE*(2*NDIM)+(I-1)*(NDIM)+J) = PDS*JAC*
+     &          (DEPLE(NDIM+1)-COEFCA*(JDEPP-JDEPM)/DT)*
+     &          FFM(I)*NORM(J)
+   81       CONTINUE
+   91     CONTINUE
+
+C
+C      DDL MULTIPLICATEUR CONTACT (DE LA SURFACE CINEMATIQUE)
+
+          DO 105 I = 1,NNE
+            VTMP((I-1)*(2*NDIM)+NDIM+1) = -PDS*JAC*FFE(I)*
+     &                                    (JDEPP-JDEPM) 
+  105     CONTINUE
+  
+        ENDIF          
+          
 
           GO TO 220
         ELSE
@@ -445,7 +504,7 @@ C  CALCUL DE C(I,J)
             C(I,I) = 1 + C(I,I)
   130     CONTINUE
 
-C   ON CALCULE L'ETAT DE CONATCT ADHERENT OU GLISSANT
+C   ON CALCULE L'ETAT DE CONTACT ADHERENT OU GLISSANT
 C   INADH = 1  ADHERENCE
 C   INADH = 0  GLISSEMENT
 

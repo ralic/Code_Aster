@@ -1,0 +1,426 @@
+# MODIF  DATE 31/08/2004   AUTEUR VABHHTS J.PELLET 
+# TITRE CROSSE SOUS CHARGEMENTS DIVERS (AVEC SOUS-STRUCTURATION)
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+#  CALCUL NON LINEAIRE EN STATIQUE & DYNAMIQUE
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+#CAS_TEST__: SSLP100D
+# SSLP100/D
+# CROSSE CHARGEE EN SOUS-STRUCTURATION STATIQUE.
+# MODELISATION : AVEC SOUS-STRUCTURES
+#======================================================================
+
+
+DEBUT(CODE=_F(  NOM = 'SSLP100D',NIV_PUB_WEB='INTERNET'),)
+
+MA=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='NON'),  )
+
+MA=DEFI_GROUP(reuse=MA, MAILLAGE=MA,CREA_GROUP_NO=(
+                     _F(  NOM = 'A',   NOEUD = 'N1'),
+                     _F(  NOM = 'D',   NOEUD = 'N3'))
+                    )
+
+ACIER=DEFI_MATERIAU( ELAS=_F(E = 1.5E11,  NU = 0.3, RHO=7800.) )
+
+CHMAT=AFFE_MATERIAU(MAILLAGE=MA,   AFFE=_F( TOUT = 'OUI', MATER = ACIER))
+
+#=======================================================================
+#
+#  CONSTRUCTION DU MODELE DE PLUS BAS NIVEAU (-2)
+#
+#=======================================================================
+
+
+MO_1=AFFE_MODELE(  MAILLAGE=MA,AFFE=(
+        _F( GROUP_MA = 'GRSD2',  MODELISATION = 'D_PLAN', PHENOMENE = 'MECANIQUE'),
+        _F( GROUP_MA = 'GRMA14', MODELISATION = 'D_PLAN', PHENOMENE = 'MECANIQUE')))
+
+CHBL_1=AFFE_CHAR_MECA(MODELE=MO_1,
+#             N8 :
+           DDL_IMPO=_F( NOEUD = ('N8',), DX = 0.0,   DY = 0.0),
+           )
+
+CHF1_1=AFFE_CHAR_MECA(MODELE=MO_1,
+          PRES_REP=_F( GROUP_MA = ('GRMA14',), PRES = .01) )
+
+CHF2_1=AFFE_CHAR_MECA(MODELE=MO_1,
+          FORCE_NODALE=_F( NOEUD = ('N11',), FY = -20.0))
+
+CHF3_1=AFFE_CHAR_MECA(MODELE=MO_1,
+                    PESANTEUR=(-9.81,1.0,0.0,0.0,),);
+
+#=======================================================================
+#
+#  DEFINITION DU MACRO-ELEMENT DE NIVEAU (-1)
+#
+#=======================================================================
+
+
+S_1=MACR_ELEM_STAT(
+#  ---------------------
+    DEFINITION=_F(  MODELE = MO_1,
+                    CHAM_MATER = CHMAT,
+                    CHAR_MACR_ELEM = CHBL_1),
+      EXTERIEUR=_F(  NOEUD = ('N1','N4','N7','N10',),  GROUP_NO = ('GRNM13',)))
+
+S_1=MACR_ELEM_STAT(reuse=S_1,
+#  ---------------------
+    RIGI_MECA=_F(),
+    MASS_MECA=_F(),
+    CAS_CHARGE=_F( NOM_CAS = 'CHF1',
+                   CHARGE = (CHBL_1,
+                             CHF1_1,
+                             ),
+                   SUIV = 'OUI')
+    )
+
+S_1=MACR_ELEM_STAT(reuse=S_1,
+#  ---------------------
+    CAS_CHARGE=_F( NOM_CAS = 'CHF2', CHARGE = (CHF2_1,CHF3_1), SUIV = 'NON')
+    )
+
+#=======================================================================
+#
+#  DEFINITION DU MODELE  DE NIVEAU (-1)
+#
+#=======================================================================
+
+
+MA_123=DEFI_MAILLAGE( DEFI_MAILLE=(
+#  ---------------------
+
+      _F( MACR_ELEM_STAT = S_1, MAILLE = 'S_1'),
+      _F( MACR_ELEM_STAT = S_1, MAILLE = 'S_2', ANGL_NAUT = (45.0,)),
+      _F( MACR_ELEM_STAT = S_1, MAILLE = 'S_3', ANGL_NAUT = (90.0,))),
+
+    RECO_GLOBAL=_F( TOUT = 'OUI'),DEFI_NOEUD=(
+
+    _F( TOUT = 'OUI', PREFIXE = 'NN', INDEX = (3,3,2,5,)),
+               _F( NOEUD_FIN = 'N1',   MAILLE = 'S_1', NOEUD_INIT = 'N1'),
+               _F( NOEUD_FIN = 'N4',   MAILLE = 'S_1', NOEUD_INIT = 'N4'),
+               _F( NOEUD_FIN = 'N7',   MAILLE = 'S_1', NOEUD_INIT = 'N7'),
+               _F( NOEUD_FIN = 'N10',  MAILLE = 'S_1', NOEUD_INIT = 'N10')),
+      DEFI_GROUP_NO=(
+    _F( MAILLE = 'S_3',  GROUP_NO_FIN = 'GH', GROUP_NO_INIT = 'GRNM13'),
+                  _F( MAILLE = 'S_1',  GROUP_NO_FIN = 'AB', GROUP_NO_INIT = 'GRNM11'))
+          )
+
+MO_123=AFFE_MODELE(  MAILLAGE=MA_123,
+         AFFE_SOUS_STRUC=_F(  TOUT = 'OUI'))
+
+CHBL_123=AFFE_CHAR_MECA(MODELE=MO_123,LIAISON_DDL=(
+#         GH     :
+
+_F( NOEUD = ('NN33', 'NN33', ),DDL = ('DY','DX',),COEF_MULT = (1.0,1.0,),COEF_IMPO = 0.0),
+_F( NOEUD = ('NN36', 'NN36', ),DDL = ('DY','DX',),COEF_MULT = (1.0,1.0,),COEF_IMPO = 0.0),
+_F( NOEUD = ('NN39', 'NN39', ),DDL = ('DY','DX',),COEF_MULT = (1.0,1.0,),COEF_IMPO = 0.0),
+_F( NOEUD = ('NN312','NN312',),DDL = ('DY','DX',),COEF_MULT = (1.0,1.0,),COEF_IMPO = 0.0))
+           )
+
+#=======================================================================
+#
+#  DEFINITION DU MACRO-ELEMENT DE NIVEAU 0
+#
+#=======================================================================
+
+
+S_123=MACR_ELEM_STAT(
+#  ---------------------
+    DEFINITION=_F(  MODELE = MO_123,
+                    CHAR_MACR_ELEM = CHBL_123),
+#
+    EXTERIEUR=_F(  GROUP_NO = ('GH','AB',)),
+#
+    RIGI_MECA=_F(),
+    MASS_MECA=_F(),
+    CAS_CHARGE=(
+    _F(
+        NOM_CAS = 'CHF1',
+        CHARGE = (CHBL_123),
+        SUIV = 'OUI'),
+    _F( NOM_CAS = 'CHF2',
+        CHARGE = (CHBL_123),
+        SUIV = 'NON'),
+       ),
+    )
+
+#=======================================================================
+#
+#  DEFINITION DU MODELE GLOBAL DE NIVEAU 0
+#
+#=======================================================================
+
+
+MAG0=DEFI_MAILLAGE(
+#  ---------------------
+     DEFI_MAILLE=_F( MACR_ELEM_STAT = S_123, MAILLE = 'S_123'),
+    DEFI_NOEUD=_F( TOUT = 'OUI', INDEX = (1,0,1,8,))
+          )
+
+MAG=ASSE_MAILLAGE(
+            MAILLAGE_1=MAG0,
+            MAILLAGE_2=MA,
+            OPERATION='SOUS_STR'
+                 )
+
+#  -------------------
+
+MOG=AFFE_MODELE( MAILLAGE=MAG,
+
+       AFFE=_F( GROUP_MA = 'GRSD1', MODELISATION = 'D_PLAN', PHENOMENE = 'MECANIQUE'),
+       AFFE_SOUS_STRUC=_F( MAILLE = ('S_123',)))
+
+#=======================================================================
+#
+#  RESOLUTION AU NIVEAU GLOBAL :
+#
+#=======================================================================
+
+
+CHAGBL=AFFE_CHAR_MECA(MODELE=MOG,
+           DDL_IMPO=_F( NOEUD = ('N19',), DX = 2.0E-2) )
+
+
+CHAGF2=AFFE_CHAR_MECA(MODELE=MOG,
+           FORCE_NODALE=_F( NOEUD = ('N15','N17',), FY = -20.0) )
+
+CHAGF3=AFFE_CHAR_MECA(MODELE=MOG,
+                    PESANTEUR=(-9.81,1.0,0.0,0.0,),);
+
+#  RIGIDITE:
+#  ---------
+
+ACIERNL=DEFI_MATERIAU(    ELAS=_F( E = 1.5E9,  NU = 0.3, RHO = 7800.,
+                                     ),
+                          ECRO_LINE=_F(  D_SIGM_EPSI = 1.E8,
+                                      SY = 1.5E6)
+                      )
+
+CHMATG=AFFE_MATERIAU(MAILLAGE=MAG,
+         AFFE=(_F( TOUT = 'OUI', MATER = ACIER),
+               _F( GROUP_MA = 'GRSD1', MATER = ACIERNL),
+               ),
+                    )
+
+
+LISTIN1=DEFI_LIST_REEL(DEBUT=0.,
+              INTERVALLE=_F( JUSQU_A = .1,NOMBRE = 3))
+
+LISTIN2=DEFI_LIST_REEL(DEBUT=.1,
+              INTERVALLE=_F( JUSQU_A = .2,NOMBRE = 2))
+
+
+U=STAT_NON_LINE(
+            MODELE=MOG,
+            CHAM_MATER=CHMATG,
+            EXCIT=(_F(  CHARGE = CHAGBL),
+                   _F(  CHARGE = CHAGF2),
+                   _F(  CHARGE = CHAGF3),
+                   ),
+            SOUS_STRUC=(
+                        _F( CAS_CHARGE = 'CHF2', TOUT = 'OUI'),
+                        ),
+            COMP_INCR=(_F( RELATION='ELAS', TOUT='OUI'),
+                       _F( RELATION='VMIS_ISOT_LINE', GROUP_MA='GRSD1'),
+                        ),
+            INCREMENT=_F( LIST_INST = LISTIN1),
+            NEWTON=_F(  MATRICE = 'TANGENTE',
+                        REAC_ITER=1
+                        ),
+            CONVERGENCE=_F( RESI_GLOB_RELA = 1.0E-8,
+                         ITER_GLOB_MAXI = 10,
+                         ARRET = 'NON'),
+               SOLVEUR=_F( METHODE = 'MULT_FRONT', STOP_SINGULIER='NON', )
+                   )
+
+U1=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
+              OPERATION='EXTR',
+              RESULTAT=U,
+              NOM_CHAM='DEPL',
+              TYPE_RESU='VALE',
+              NUME_ORDRE=3,);
+
+#=======================================================================
+#
+#  REDESCENTE DANS LES SOUS-STRUCTURES :
+#
+#=======================================================================
+
+
+U1S_123=DEPL_INTERNE(   DEPL_GLOBAL=U1,    MAILLE='S_123',
+                            NOM_CAS='CHF2' )
+
+U1S_1=DEPL_INTERNE(   DEPL_GLOBAL=U1S_123,  MAILLE='S_1',
+                            NOM_CAS='CHF2' )
+
+U1S_2=DEPL_INTERNE(   DEPL_GLOBAL=U1S_123,  MAILLE='S_2',
+                            NOM_CAS='CHF2' )
+
+U1S_3=DEPL_INTERNE(   DEPL_GLOBAL=U1S_123,  MAILLE='S_3',
+                            NOM_CAS='CHF2' )
+
+
+TEST_RESU(CHAM_NO=(
+#  VALEURS DE REFERENCE OBTENUES PAR ASTER SANS SOUS-STRUCTURES:
+#  -- (SSLP100A)
+#  POINTS P1, P2, P4 AU NIVEAU GLOBAL :
+ _F(  CHAM_GD = U1, NOEUD = 'N15', NOM_CMP = 'DX',
+     VALE = 1.5366515065057E-02,
+   PRECISION = 1.E-5,
+   REFERENCE = 'AUTRE_ASTER'),
+ _F(  CHAM_GD = U1, NOEUD = 'N15', NOM_CMP = 'DY',
+     VALE = -1.2161260101631E-03,
+   PRECISION = 1.E-5,
+   REFERENCE = 'AUTRE_ASTER'),
+ _F(  CHAM_GD = U1, NOEUD = 'NN312', NOM_CMP = 'DX',
+     VALE = 1.0500554825858E-06,
+   PRECISION = 1.E-5,
+   REFERENCE = 'AUTRE_ASTER'),
+ _F(  CHAM_GD = U1, NOEUD = 'NN312', NOM_CMP = 'DY',
+     VALE = -1.0500554825858E-06,
+   PRECISION = 1.E-5,
+   REFERENCE = 'AUTRE_ASTER'),
+ _F(  CHAM_GD = U1, NOEUD = 'N10', NOM_CMP = 'DX',
+     VALE = 6.8923989165176E-05,
+   PRECISION = 1.E-5,
+   REFERENCE = 'AUTRE_ASTER'),
+ _F(  CHAM_GD = U1, NOEUD = 'N10', NOM_CMP = 'DY',
+     VALE = 9.2082578360371E-05,
+   PRECISION = 1.E-5,
+   REFERENCE = 'AUTRE_ASTER'),
+
+#  POINTS  P2, P3, P4  AU NIVEAU LOCAL :
+_F( CHAM_GD = U1S_3, NOEUD = 'N12', NOM_CMP = 'DX',
+     VALE = -1.0500554825858E-06,
+     PRECISION = 1.E-5,
+     REFERENCE = 'AUTRE_ASTER'),
+_F( CHAM_GD = U1S_3, NOEUD = 'N12', NOM_CMP = 'DY',
+     VALE = -1.0500554825858E-06,
+     PRECISION = 1.E-5,
+     REFERENCE = 'AUTRE_ASTER'),
+_F( CHAM_GD = U1S_1, NOEUD = 'N10', NOM_CMP = 'DX',
+     VALE = 6.8923989165176E-05,
+     PRECISION = 1.E-5,
+     REFERENCE = 'AUTRE_ASTER'),
+_F( CHAM_GD = U1S_1, NOEUD = 'N10', NOM_CMP = 'DY',
+     VALE = 9.2082578360371E-05,
+     PRECISION = 1.E-5,
+     REFERENCE = 'AUTRE_ASTER'),
+
+   ),);
+
+
+U=DYNA_NON_LINE( reuse=U,
+            MODELE=MOG,
+            CHAM_MATER=CHMATG,
+            EXCIT=(_F(  CHARGE = CHAGBL),
+                   _F(  CHARGE = CHAGF2),
+                   _F(  CHARGE = CHAGF3),
+                   ),
+            SOUS_STRUC=(
+                        _F( CAS_CHARGE = 'CHF2', TOUT = 'OUI'),
+                        ),
+            ETAT_INIT= _F(EVOL_NOLI=U),
+            COMP_INCR=(_F( RELATION='ELAS', TOUT='OUI'),
+                       _F( RELATION='VMIS_ISOT_LINE', GROUP_MA='GRSD1'),
+                        ),
+            NEWMARK =_F(),
+            INCREMENT=_F( LIST_INST = LISTIN2),
+            NEWTON=_F(  MATRICE = 'TANGENTE',
+                        REAC_ITER=1
+                        ),
+            CONVERGENCE=_F( RESI_GLOB_RELA = 1.0E-8,
+                         ITER_GLOB_MAXI = 10,
+                         ARRET = 'NON'),
+               SOLVEUR=_F( METHODE = 'MULT_FRONT', STOP_SINGULIER='NON', )
+                   )
+
+U2=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
+              OPERATION='EXTR',
+              RESULTAT=U,
+              NOM_CHAM='DEPL',
+              TYPE_RESU='VALE',
+              NUME_ORDRE=5,);
+
+U2S_123=DEPL_INTERNE(   DEPL_GLOBAL=U2,    MAILLE='S_123',
+                            NOM_CAS='CHF2' )
+
+U2S_1=DEPL_INTERNE(   DEPL_GLOBAL=U2S_123,  MAILLE='S_1',
+                            NOM_CAS='CHF2' )
+
+U2S_2=DEPL_INTERNE(   DEPL_GLOBAL=U2S_123,  MAILLE='S_2',
+                            NOM_CAS='CHF2' )
+
+U2S_3=DEPL_INTERNE(   DEPL_GLOBAL=U2S_123,  MAILLE='S_3',
+                            NOM_CAS='CHF2' )
+
+
+
+TEST_RESU(CHAM_NO=(
+#  VALEURS DE REFERENCE OBTENUES PAR ASTER SANS SOUS-STRUCTURES:
+#  -- (SSLP100A)
+#  POINTS P1, P2, P4 AU NIVEAU GLOBAL :
+ _F(  CHAM_GD = U2, NOEUD = 'N15', NOM_CMP = 'DX',
+     VALE = 1.5366515065057E-02,
+   PRECISION = 5.E-2,
+   REFERENCE = 'AUTRE_ASTER'),
+ _F(  CHAM_GD = U2, NOEUD = 'N15', NOM_CMP = 'DY',
+     VALE = -1.2161260101631E-03,
+   PRECISION = 5.E-2,
+   REFERENCE = 'AUTRE_ASTER'),
+ _F(  CHAM_GD = U2, NOEUD = 'NN312', NOM_CMP = 'DX',
+     VALE = 1.0500554825858E-06,
+   PRECISION = 6.E-2,
+   REFERENCE = 'AUTRE_ASTER'),
+ _F(  CHAM_GD = U2, NOEUD = 'NN312', NOM_CMP = 'DY',
+     VALE = -1.0500554825858E-06,
+   PRECISION = 6.E-2,
+   REFERENCE = 'AUTRE_ASTER'),
+ _F(  CHAM_GD = U2, NOEUD = 'N10', NOM_CMP = 'DX',
+     VALE = 6.8923989165176E-05,
+   PRECISION = 5.E-2,
+   REFERENCE = 'AUTRE_ASTER'),
+ _F(  CHAM_GD = U2, NOEUD = 'N10', NOM_CMP = 'DY',
+     VALE = 9.2082578360371E-05,
+   PRECISION = 5.E-2,
+   REFERENCE = 'AUTRE_ASTER'),
+#
+_F( CHAM_GD = U2S_3, NOEUD = 'N12', NOM_CMP = 'DX',
+     VALE = -1.0500554825858E-06,
+     PRECISION = 6.E-2,
+     REFERENCE = 'AUTRE_ASTER'),
+_F( CHAM_GD = U2S_3, NOEUD = 'N12', NOM_CMP = 'DY',
+     VALE = -1.0500554825858E-06,
+     PRECISION = 6.E-2,
+     REFERENCE = 'AUTRE_ASTER'),
+_F( CHAM_GD = U2S_1, NOEUD = 'N10', NOM_CMP = 'DX',
+     VALE = 6.8923989165176E-05,
+     PRECISION = 6.E-2,
+     REFERENCE = 'AUTRE_ASTER'),
+_F( CHAM_GD = U2S_1, NOEUD = 'N10', NOM_CMP = 'DY',
+     VALE = 9.2082578360371E-05,
+     PRECISION = 6.E-2,
+     REFERENCE = 'AUTRE_ASTER'),
+ )
+   );
+
+
+
+FIN();
+

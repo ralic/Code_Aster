@@ -23,7 +23,7 @@ C ======================================================================
       REAL*8 PGL(3,3),R(*)
       LOGICAL GRILLE,ELASCQ
 C     ------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 15/06/2004   AUTEUR MABBAS M.ABBAS 
+C MODIF ELEMENTS  DATE 31/08/2004   AUTEUR JMBHH01 J.M.PROIX 
 C TOLE CRP_20
 C     ------------------------------------------------------------------
 C     CALCUL DES MATRICES DE RIGIDITE DE FLEXION, MEMBRANE , COUPLAGE
@@ -56,8 +56,9 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       INTEGER      JCOQU,JMATE,LT1VE,LT2VE,LT2EV,NBV,I,J,K,NBPAR,ELASCO
+      INTEGER      ICACOQ
       REAL*8       KCIS,CDF,CDM,CDC,GCIS,VALRES(33)
-      REAL*8       YOUNG,NU,EPAIS,VALPAR,EXCENT
+      REAL*8       YOUNG,NU,EPAIS,VALPAR,EXCENT,CTOR
       REAL*8       XAB1(3,3),XAB2(2,2),XAB3(3,2),DH(3,3),ROT(3,3)
       REAL*8       DX,DY,DZ,S,C,NORM,PS,PJDX,PJDY,PJDZ
       REAL*8       ALPHA,BETA,R8DGRD,R8PREM,DET
@@ -276,6 +277,8 @@ C        ------ MATERIAU ISOTROPE --------------------------------------
         NU = VALRES(2)
 
         IF (GRILLE) THEN
+          CALL JEVECH('PCACOQU','L',ICACOQ)
+          CTOR  = ZR(ICACOQ+4)
 C        ---- CALCUL DE LA MATRICE DE RIGIDITE ORTHOTROPE ------------
           YOUNG1 = YOUNG
           YOUNG2 = 0.D0
@@ -285,7 +288,7 @@ C        ---- CALCUL DE LA MATRICE DE RIGIDITE ORTHOTROPE ------------
           CALL R8INIR(4,0.D0,DCI,1)
           DH(1,1) = YOUNG1
           DH(2,2) = YOUNG2
-          DH(3,3) = YOUNG1*1.D-7
+          DH(3,3) = YOUNG1*CTOR
 
 C   MATRICE PASSAGE DU REPERE D'ORTHOTROPIE VERS LE REPERE DE L'ELEMENT
 
@@ -301,7 +304,9 @@ C        --- CALCUL DES MATRICES DE RIGIDITE EN MEMBRANE ET FLEXION --
           DO 40 J = 1,3
             DO 30 I = 1,3
               DM(I,J) = DH(I,J)*EPAIS
-              DF(I,J) = DH(I,J)*CDF
+C              DF(I,J) = DH(I,J)*CDF
+C              SUPPRESION DE LA RIGIDITE DE FLEXION PROPRE
+              DF(I,J) = 0.D0
    30       CONTINUE
    40     CONTINUE
         ELSE

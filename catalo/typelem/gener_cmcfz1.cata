@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 08/09/2003   AUTEUR VABHHTS J.PELLET 
+%& MODIF TYPELEM  DATE 31/08/2004   AUTEUR JMBHH01 J.M.PROIX 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -36,7 +36,7 @@ MODE_LOCAL__
     CCONFR   = NEUT_R   ELEM__         (X1       X2       X3       X4       X5       X6
                                         X7       X8       X9       X10      X11      X12
                                         X13      X14      X15      X16      X17      X18
-                                        X19      )
+                                        X19      X20      X21   )
 
 VECTEUR__
     MVECTUR = VDEP_R DDL_MECA

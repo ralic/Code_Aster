@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 30/08/2004   AUTEUR CIBHHLV L.VIVAN 
 # ======================================================================
 # TITRE ETUDE  : ESSAI TRIAXIAL DRAINE AVEC LE MODELE DE LAIGLE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -148,13 +148,13 @@ TEMPS2=DEFI_LIST_REEL(   DEBUT=4.,
 
 
 SIG_INI=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='ELGA_SIEF_R',
-NOM_CHAM='SIEF_ELGA', RESULTAT=U1,
-                        INST=4.
+                     NOM_CHAM='SIEF_ELGA', RESULTAT=U1,
+                     INST=4.
                       )
 
 VAR_INI=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='ELGA_VARI_R',
-NOM_CHAM='VARI_ELGA', RESULTAT=U1,
-                        INST=4.
+                     NOM_CHAM='VARI_ELGA', RESULTAT=U1,
+                     INST=4.
                       )
 
 DEPL_2=AFFE_CHAR_MECA(    MODELE=MODELE,
@@ -163,7 +163,7 @@ DEPL_2=AFFE_CHAR_MECA(    MODELE=MODELE,
                            )
 
 COEF2=DEFI_FONCTION(      NOM_PARA='INST',
-                           PROL_DROITE='LINEAIRE',
+                          PROL_DROITE='LINEAIRE',
                           PROL_GAUCHE='CONSTANT',
                          VALE=( 4.0,  0.0,
                                 5.0,  -0.2, )
@@ -238,7 +238,7 @@ ROSIGY=RECU_FONCTION(RESULTAT=U2,
                      NOEUD='N4',
                      TITRE='SIG Y',);
 
-#IMPR_COURBE(FICHIER='AGRAF',
+#IMPR_COURBE(UNITE=25,
 #            FORMAT='AGRAF',
 #            TITRE_GRAPHIQUE='SRO EN X DU SOMMET DU BK ',
 #            FREQ_GRILLE_X=1,
@@ -254,7 +254,8 @@ TEST_RESU(RESU=(
 
 # CONTRAINTE SIXX
                 _F(   RESULTAT   = U2,
-                      REFERENCE  = 'SOURCE_EXTERNE',
+                      REFERENCE  = 'NON_REGRESSION',
+                      VERSION    = '6.2.24',
                       NOEUD      = 'N4',
                       NOM_CHAM   = 'SIEF_NOEU_ELGA',
                       NOM_CMP    = 'SIXX',
@@ -262,7 +263,8 @@ TEST_RESU(RESU=(
                       PRECISION  = 1.E-3,
                       VALE       = -8.0),
                  _F(  RESULTAT   = U2,
-                      REFERENCE  = 'SOURCE_EXTERNE',
+                      REFERENCE  = 'NON_REGRESSION',
+                      VERSION    = '6.2.24',
                       NOEUD      = 'N4',
                       NOM_CHAM   = 'SIEF_NOEU_ELGA',
                       NOM_CMP    = 'SIXX',
@@ -272,7 +274,8 @@ TEST_RESU(RESU=(
 
 # CONTRAINTE SIZZ
                  _F(  RESULTAT   = U2,
-                      REFERENCE  = 'SOURCE_EXTERNE',
+                      REFERENCE  = 'NON_REGRESSION',
+                      VERSION    = '6.2.24',
                       NOEUD      = 'N4',
                       NOM_CHAM   = 'SIEF_NOEU_ELGA',
                       NOM_CMP    = 'SIZZ',
@@ -280,7 +283,8 @@ TEST_RESU(RESU=(
                       PRECISION  = 1.E-3,
                       VALE       = -8.0),
                  _F(  RESULTAT   = U2,
-                      REFERENCE  = 'SOURCE_EXTERNE',
+                      REFERENCE  = 'NON_REGRESSION',
+                      VERSION    = '6.2.24',
                       NOEUD      = 'N4',
                       NOM_CHAM   = 'SIEF_NOEU_ELGA',
                       NOM_CMP    = 'SIZZ',
@@ -288,9 +292,10 @@ TEST_RESU(RESU=(
                       PRECISION  = 1.E-3,
                       VALE       = -8.0),
 
-# CONTRAINTE SIZZ
+# CONTRAINTE SIYY
                  _F(  RESULTAT   = U2,
-                      REFERENCE  = 'SOURCE_EXTERNE',
+                      REFERENCE  = 'NON_REGRESSION',
+                      VERSION    = '6.2.24',
                       NOEUD      = 'N4',
                       NOM_CHAM   = 'SIEF_NOEU_ELGA',
                       NOM_CMP    = 'SIYY',
@@ -298,7 +303,8 @@ TEST_RESU(RESU=(
                       PRECISION  = 1.E-3,
                       VALE       = -3.15966E+01),
                  _F(  RESULTAT   = U2,
-                      REFERENCE  = 'SOURCE_EXTERNE',
+                      REFERENCE  = 'NON_REGRESSION',
+                      VERSION    = '6.2.24',
                       NOEUD      = 'N4',
                       NOM_CHAM   = 'SIEF_NOEU_ELGA',
                       NOM_CMP    = 'SIYY',
@@ -306,7 +312,8 @@ TEST_RESU(RESU=(
                       PRECISION  = 1.E-3,
                       VALE       = -3.11055E+01),
                  _F(  RESULTAT   = U2,
-                      REFERENCE  = 'SOURCE_EXTERNE',
+                      REFERENCE  = 'NON_REGRESSION',
+                      VERSION    = '6.2.24',
                       NOEUD      = 'N4',
                       NOM_CHAM   = 'SIEF_NOEU_ELGA',
                       NOM_CMP    = 'SIYY',
@@ -314,7 +321,8 @@ TEST_RESU(RESU=(
                       PRECISION  = 1.E-3,
                       VALE       = -2.99622E+01),
                  _F(  RESULTAT   = U2,
-                      REFERENCE  = 'SOURCE_EXTERNE',
+                      REFERENCE  = 'NON_REGRESSION',
+                      VERSION    = '6.2.24',
                       NOEUD      = 'N4',
                       NOM_CHAM   = 'SIEF_NOEU_ELGA',
                       NOM_CMP    = 'SIYY',
@@ -322,7 +330,8 @@ TEST_RESU(RESU=(
                       PRECISION  = 1.E-3,
                       VALE       = -2.63670E+01),
                  _F(  RESULTAT   = U2,
-                      REFERENCE  = 'SOURCE_EXTERNE',
+                      REFERENCE  = 'NON_REGRESSION',
+                      VERSION    = '6.2.24',
                       NOEUD      = 'N4',
                       NOM_CHAM   = 'SIEF_NOEU_ELGA',
                       NOM_CMP    = 'SIYY',
@@ -330,7 +339,8 @@ TEST_RESU(RESU=(
                       PRECISION  = 1.E-3,
                       VALE       = -2.43922E+01),
                  _F(  RESULTAT   = U2,
-                      REFERENCE  = 'SOURCE_EXTERNE',
+                      REFERENCE  = 'NON_REGRESSION',
+                      VERSION    = '6.2.24',
                       NOEUD      = 'N4',
                       NOM_CHAM   = 'SIEF_NOEU_ELGA',
                       NOM_CMP    = 'SIYY',
@@ -338,7 +348,8 @@ TEST_RESU(RESU=(
                       PRECISION  = 1.E-3,
                       VALE       = -2.40E+01),
                  _F(  RESULTAT   = U2,
-                      REFERENCE  = 'SOURCE_EXTERNE',
+                      REFERENCE  = 'NON_REGRESSION',
+                      VERSION    = '6.2.24',
                       NOEUD      = 'N4',
                       NOM_CHAM   = 'SIEF_NOEU_ELGA',
                       NOM_CMP    = 'SIYY',
@@ -351,7 +362,8 @@ TEST_RESU(RESU=(
 
 # DEPLACEMENT DX
                 _F(   RESULTAT   = U2,
-                      REFERENCE  = 'SOURCE_EXTERNE',
+                      REFERENCE='NON_REGRESSION',
+                      VERSION = '6.2.24',
                       NOEUD      = 'N4',
                       NOM_CHAM   = 'DEPL',
                       NOM_CMP    = 'DX',
@@ -359,7 +371,8 @@ TEST_RESU(RESU=(
                       PRECISION  = 1.E-3,
                       VALE       = 3.24000E-03),
                  _F(  RESULTAT   = U2,
-                      REFERENCE  = 'SOURCE_EXTERNE',
+                      REFERENCE  = 'NON_REGRESSION',
+                      VERSION    = '6.2.24',
                       NOEUD      = 'N4',
                       NOM_CHAM   = 'DEPL',
                       NOM_CMP    = 'DX',
@@ -367,7 +380,8 @@ TEST_RESU(RESU=(
                       PRECISION  = 1.E-3,
                       VALE       = 6.92805E-03),
                  _F(  RESULTAT   = U2,
-                      REFERENCE  = 'SOURCE_EXTERNE',
+                      REFERENCE  = 'NON_REGRESSION',
+                      VERSION    = '6.2.24',
                       NOEUD      = 'N4',
                       NOM_CHAM   = 'DEPL',
                       NOM_CMP    = 'DX',
@@ -377,7 +391,8 @@ TEST_RESU(RESU=(
 
 # DEPLACEMENT DY
                  _F(  RESULTAT   = U2,
-                      REFERENCE  = 'SOURCE_EXTERNE',
+                      REFERENCE  = 'NON_REGRESSION',
+                      VERSION    = '6.2.24',
                       NOEUD      = 'N4',
                       NOM_CHAM   = 'DEPL',
                       NOM_CMP    = 'DY',
@@ -385,7 +400,8 @@ TEST_RESU(RESU=(
                       PRECISION  = 1.E-3,
                       VALE       = -1.20000E-02),
                  _F(  RESULTAT   = U2,
-                      REFERENCE  = 'SOURCE_EXTERNE',
+                      REFERENCE  = 'NON_REGRESSION',
+                      VERSION    = '6.2.24',
                       NOEUD      = 'N4',
                       NOM_CHAM   = 'DEPL',
                       NOM_CMP    = 'DY',
@@ -393,7 +409,8 @@ TEST_RESU(RESU=(
                       PRECISION  = 1.E-3,
                       VALE       = -1.58000E-02),
                  _F(  RESULTAT   = U2,
-                      REFERENCE  = 'SOURCE_EXTERNE',
+                      REFERENCE  = 'NON_REGRESSION',
+                      VERSION    = '6.2.24',
                       NOEUD      = 'N4',
                       NOM_CHAM   = 'DEPL',
                       NOM_CMP    = 'DY',
@@ -401,7 +418,8 @@ TEST_RESU(RESU=(
                       PRECISION  = 1.E-3,
                       VALE       = -2.05333E-02),
                  _F(  RESULTAT   = U2,
-                      REFERENCE  = 'SOURCE_EXTERNE',
+                      REFERENCE  = 'NON_REGRESSION',
+                      VERSION    = '6.2.24',
                       NOEUD      = 'N4',
                       NOM_CHAM   = 'DEPL',
                       NOM_CMP    = 'DY',
@@ -409,7 +427,8 @@ TEST_RESU(RESU=(
                       PRECISION  = 1.E-3,
                       VALE       = -8.00000E-02),
                  _F(  RESULTAT   = U2,
-                      REFERENCE  = 'SOURCE_EXTERNE',
+                      REFERENCE  = 'NON_REGRESSION',
+                      VERSION    = '6.2.24',
                       NOEUD      = 'N4',
                       NOM_CHAM   = 'DEPL',
                       NOM_CMP    = 'DY',

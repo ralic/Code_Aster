@@ -4,11 +4,11 @@
       INTEGER NNO,MULTIC,INDITH,ICOU
       REAL*8 DF(3,3),DM(3,3),DMF(3,3)
       REAL*8 PGL(3,3),R(*)
-      REAL*8 ORDI,EPI,EPAIS
+      REAL*8 ORDI,EPI,EPAIS,CTOR
       LOGICAL GRILLE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 15/06/2004   AUTEUR MABBAS M.ABBAS 
+C MODIF ELEMENTS  DATE 31/08/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -274,9 +274,10 @@ C        ------------------------------------------------------------
 C        ---- CALCUL DE LA MATRICE DE RIGIDITE ORTHOTROPE - GRILLES -
           YOUNG1 = YOUNG
           YOUNG2 = 0.D0
+          CTOR = ZR(JCOQU+4)
           DH(1,1) = YOUNG1
           DH(2,2) = YOUNG2
-          DH(3,3) = YOUNG1*1.D-7
+          DH(3,3) = YOUNG1*CTOR
 
 C   MATRICE PASSAGE DU REPERE D'ORTHOTROPIE VERS LE REPERE DE L'ELEMENT
 
@@ -292,7 +293,9 @@ C        --- CALCUL DES MATRICES DE RIGIDITE EN MEMBRANE ET FLEXION --
           DO 50 J = 1,3
             DO 40 I = 1,3
               DM(I,J) = DH(I,J)*EPAIS
-              DF(I,J) = DH(I,J)*CDF
+C              DF(I,J) = DH(I,J)*CDF
+C              PAS DE RIGI FLEXION PROPRE
+              DF(I,J) = 0.D0
    40       CONTINUE
    50     CONTINUE
         ELSE

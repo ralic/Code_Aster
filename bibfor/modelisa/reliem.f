@@ -1,5 +1,5 @@
       SUBROUTINE RELIEM(MO,MA,TYPEM,MOTFAZ,IOCC,NBMOCL,LIMOCL,TYMOCL,
-     +                  LITROZ,NBTROU)
+     &                  LITROZ,NBTROU)
       IMPLICIT   NONE
       INTEGER IOCC,NBMOCL,NBTROU
       CHARACTER*8 MA,MODELE
@@ -7,19 +7,19 @@
       CHARACTER*(*) LITROZ,TYPEM,MOTFAZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 07/01/2003   AUTEUR PABHHHH N.TARDIEU 
+C MODIF MODELISA  DATE 31/08/2004   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
 C (AT YOUR OPTION) ANY LATER VERSION.
-C
+
 C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
 C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
 C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
 C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
-C
+
 C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
@@ -82,17 +82,17 @@ C     ------------------------------------------------------------------
       CALL JEMARQ()
       LITROU = LITROZ
       MOTFAC = MOTFAZ
-      MODELE=MO
+      MODELE = MO
       CALL INFNIV(IFM,NIV)
 
 C     --- VERIFICATIONS PRELIMINAIRES ---
 
       IF (TYPEM.NE.'NO_MAILLE' .AND. TYPEM.NE.'NO_NOEUD' .AND.
-     +    TYPEM.NE.'NU_MAILLE' .AND. TYPEM.NE.'NU_NOEUD') THEN
+     &    TYPEM.NE.'NU_MAILLE' .AND. TYPEM.NE.'NU_NOEUD') THEN
         CALL UTDEBM('F','RELIEM','ERREUR DANS LES PARAMETRES')
         CALL UTIMPK('L','VALEUR DE TYPEM : ',1,TYPEM)
         CALL UTIMPK('L','LES VALEURS POSSIBLES SONT NO_MAILLE, '//
-     +              'NO_NOEUD, NU_MAILLE ET NU_NOEUD',0,' ')
+     &              'NO_NOEUD, NU_MAILLE ET NU_NOEUD',0,' ')
         CALL UTFINM()
       END IF
 
@@ -106,18 +106,18 @@ C     --- VERIFICATIONS PRELIMINAIRES ---
             CALL UTIMPI('S','POUR L''INDICE : ',1,IMO)
             CALL UTIMPK('L','LA VALEUR DE TYMOCL EST : ',1,TYPMCL)
             CALL UTIMPK('L',
-     +                  'LES VALEURS POSSIBLES SONT MAILLE ET GROUP_MA',
-     +                  0,' ')
+     &                  'LES VALEURS POSSIBLES SONT MAILLE ET GROUP_MA',
+     &                  0,' ')
             CALL UTIMPK('L','CAR TYPE2 VAUT ',1,'MAILLE')
             CALL UTFINM()
           END IF
-        ELSE IF (TYPMCL.NE.'MAILLE' .AND. TYPMCL.NE.'GROUP_MA'
-     +     .AND. TYPMCL.NE.'TOUT' ) THEN
+        ELSE IF (TYPMCL.NE.'MAILLE' .AND. TYPMCL.NE.'GROUP_MA' .AND.
+     &           TYPMCL.NE.'TOUT') THEN
           CALL UTDEBM('F','RELIEM','ERREUR DANS LES PARAMETRES')
           CALL UTIMPI('S','POUR L''INDICE : ',1,IMO)
           CALL UTIMPK('L','LA VALEUR DE TYMOCL EST : ',1,TYPMCL)
           CALL UTIMPK('L','LES VALEURS POSSIBLES SONT MAILLE, NOEUD,',0,
-     +                ' ')
+     &                ' ')
           CALL UTIMPK('S','GROUP_MA,GROUP_NO ET TOUT',0,' ')
           CALL UTFINM()
         END IF
@@ -131,27 +131,27 @@ C     --- EN CAS D'EXISTENCE DE L'OBJET, ON LE DETRUIT ---
 C     --- CREATION DES TABLEAUX DE TRAVAIL ---
 
       CALL DISMOI('F','NB_MA_MAILLA',MA,'MAILLAGE',NBMA,K8B,IRET)
-      CALL WKVECT('&&RELIEM.INDIC_MAILLE','V V I',NBMA,ITRMA)
+      IF (NBMA.GT.0) THEN
+        CALL WKVECT('&&RELIEM.INDIC_MAILLE','V V I',MAX(NBMA,1),ITRMA)
+        IF (MODELE.NE.' ') CALL JEVEUO(MODELE//'.MAILLE','L',JMODEL)
+      END IF
       CALL DISMOI('F','NB_NO_MAILLA',MA,'MAILLAGE',NBNO,K8B,IRET)
       CALL WKVECT('&&RELIEM.INDIC_NOEUD','V V I',NBNO,ITRNO)
 
-      DO 11 K=1,NBMA
-        ZI(ITRMA-1+K)=0
-   11 CONTINUE
-      DO 12 K=1,NBNO
-        ZI(ITRNO-1+K)=0
-   12 CONTINUE
+      DO 20 K = 1,NBMA
+        ZI(ITRMA-1+K) = 0
+   20 CONTINUE
+      DO 30 K = 1,NBNO
+        ZI(ITRNO-1+K) = 0
+   30 CONTINUE
 
 
 
 C     --- CONSTITUTION DES LISTES DES MAILLES ET DES NOEUDS
 C         PAR MARQUAGE DANS LES TABLEAUX DE TRAVAIL         ---
 
-      IF (MODELE.NE.' ') THEN
-        CALL JEVEUO(MODELE//'.MAILLE','L',JMODEL)
-      ENDIF
 
-      DO 70 IMO = 1,NBMOCL
+      DO 90 IMO = 1,NBMOCL
         MOTCLE = LIMOCL(IMO)
         TYPMCL = TYMOCL(IMO)
 
@@ -161,33 +161,33 @@ C        -----------------
           CALL GETVTX(MOTFAC,MOTCLE,IOCC,1,1,OUI,NTOU)
           IF (NTOU.GT.0) THEN
             IF (TYPE2.EQ.'MAILLE') THEN
-              DO 20,K = 1,NBMA
+              DO 40,K = 1,NBMA
                 IF (MODELE.NE.' ') THEN
                   IF (ZI(JMODEL-1+K).NE.0) THEN
                     ZI(ITRMA-1+K) = 1
-                  ENDIF
-                ELSE 
+                  END IF
+                ELSE
                   ZI(ITRMA-1+K) = 1
-                ENDIF
-   20         CONTINUE
+                END IF
+   40         CONTINUE
             END IF
             IF (TYPE2.EQ.'NOEUD') THEN
-              DO 30,K = 1,NBNO
+              DO 50,K = 1,NBNO
                 ZI(ITRNO-1+K) = 1
-   30         CONTINUE
+   50         CONTINUE
             END IF
           END IF
-          GO TO 70
+          GO TO 90
         END IF
 
 
         CALL GETVEM(MA,TYPMCL,MOTFAC,MOTCLE,IOCC,1,0,KARG,NEM)
         NEM = -NEM
-        IF (NEM.EQ.0) GO TO 70
+        IF (NEM.EQ.0) GO TO 90
         CALL WKVECT('&&RELIEM.NOM_EM','V V K8',NEM,INOEM)
         CALL GETVEM(MA,TYPMCL,MOTFAC,MOTCLE,IOCC,1,NEM,ZK8(INOEM),NEM)
 
-        DO 60 IEM = 1,NEM
+        DO 80 IEM = 1,NEM
           KARG = ZK8(INOEM-1+IEM)
 
           IF (TYPMCL.EQ.'MAILLE') THEN
@@ -197,10 +197,10 @@ C        -----------------
           ELSE IF (TYPMCL.EQ.'GROUP_MA') THEN
             CALL JELIRA(JEXNOM(MA//'.GROUPEMA',KARG),'LONMAX',NMA,K8B)
             CALL JEVEUO(JEXNOM(MA//'.GROUPEMA',KARG),'L',KMA)
-            DO 40 JMA = 1,NMA
+            DO 60 JMA = 1,NMA
               IMA = ZI(KMA-1+JMA)
               ZI(ITRMA-1+IMA) = 1
-   40       CONTINUE
+   60       CONTINUE
 
           ELSE IF (TYPMCL.EQ.'NOEUD') THEN
             CALL JENONU(JEXNOM(MA//'.NOMNOE',KARG),INO)
@@ -209,28 +209,28 @@ C        -----------------
           ELSE IF (TYPMCL.EQ.'GROUP_NO') THEN
             CALL JELIRA(JEXNOM(MA//'.GROUPENO',KARG),'LONMAX',NNO,K8B)
             CALL JEVEUO(JEXNOM(MA//'.GROUPENO',KARG),'L',KNO)
-            DO 50 JNO = 1,NNO
+            DO 70 JNO = 1,NNO
               INO = ZI(KNO-1+JNO)
               ZI(ITRNO-1+INO) = 1
-   50       CONTINUE
+   70       CONTINUE
           END IF
-   60   CONTINUE
+   80   CONTINUE
         CALL JEDETR('&&RELIEM.NOM_EM')
-   70 CONTINUE
+   90 CONTINUE
 
 C     --- AJOUT DES NOEUDS DE LA LISTE DES MAILLES A CELLE DES NOEUDS
 
       IF (TYPE2.EQ.'NOEUD') THEN
-        DO 90 IMA = 1,NBMA
+        DO 110 IMA = 1,NBMA
           IF (ZI(ITRMA-1+IMA).NE.0) THEN
             CALL JEVEUO(JEXNUM(MA//'.CONNEX',IMA),'L',IACNEX)
             CALL JELIRA(JEXNUM(MA//'.CONNEX',IMA),'LONMAX',NBNOMA,K8B)
-            DO 80 INO = 1,NBNOMA
+            DO 100 INO = 1,NBNOMA
               NUMNO = ZI(IACNEX-1+INO)
               ZI(ITRNO-1+NUMNO) = 1
-   80       CONTINUE
+  100       CONTINUE
           END IF
-   90   CONTINUE
+  110   CONTINUE
       END IF
 
 
@@ -240,10 +240,10 @@ C     --- CREATION DE L'OBJET JEVEUX LITROU ---
 C        --- COMPTAGE DES MAILLES ---
 
         NBTROU = 0
-        DO 100 IMA = 1,NBMA
+        DO 120 IMA = 1,NBMA
           IF (ZI(ITRMA-1+IMA).NE.0) NBTROU = NBTROU + 1
-  100   CONTINUE
-        IF (NBTROU.EQ.0) GO TO 9999
+  120   CONTINUE
+        IF (NBTROU.EQ.0) GO TO 190
 
 
 
@@ -253,12 +253,12 @@ C        --- COMPTAGE DES MAILLES ---
 
 C           --- RANGEMENT DES NUMEROS DE MAILLES ---
           LMA = 0
-          DO 110 IMA = 1,NBMA
+          DO 130 IMA = 1,NBMA
             IF (ZI(ITRMA-1+IMA).NE.0) THEN
               LMA = LMA + 1
               ZI(ITBMA-1+LMA) = IMA
             END IF
-  110     CONTINUE
+  130     CONTINUE
 
         ELSE
           CALL WKVECT(LITROU,'V V K8',NBTROU,ITBMA)
@@ -266,12 +266,12 @@ C           --- RANGEMENT DES NUMEROS DE MAILLES ---
 
 C           --- RANGEMENT DES NOMS DE MAILLES ---
           LMA = 0
-          DO 120 IMA = 1,NBMA
+          DO 140 IMA = 1,NBMA
             IF (ZI(ITRMA-1+IMA).NE.0) THEN
               LMA = LMA + 1
               CALL JENUNO(JEXNUM(MA//'.NOMMAI',IMA),ZK8(ITBMA-1+LMA))
             END IF
-  120     CONTINUE
+  140     CONTINUE
         END IF
 
 
@@ -279,19 +279,22 @@ C           --- RANGEMENT DES NOMS DE MAILLES ---
 C       -- ON VERIFIE QUE LES MAILLES FONT PARTIE DU MODELE :
 C       ----------------------------------------------------
         IF (MODELE.NE.' ') THEN
-          IER=0
-          DO 121 IMA = 1,NBMA
+          IER = 0
+          DO 150 IMA = 1,NBMA
             IF (ZI(ITRMA-1+IMA).NE.0) THEN
               IF (ZI(JMODEL-1+IMA).EQ.0) THEN
-                 IER=IER+1
-                 CALL JENUNO(JEXNUM(MA//'.NOMMAI',IMA),NOENT)
-                 WRITE(IFM,*) ' MAILLE : ',NOENT
+                IER = IER + 1
+                CALL JENUNO(JEXNUM(MA//'.NOMMAI',IMA),NOENT)
+                WRITE (IFM,*) ' MAILLE : ',NOENT
               END IF
             END IF
-  121     CONTINUE
-          IF (IER.NE.0) CALL UTMESS('F','RELIEM','LES MAILLES IMPRIMEES'
-     & //' CI-DESSUS N''APPARTIENNENT PAS AU MODELE ET POURTANT ELLES'
-     & //' ONT ETE AFFECTEES DANS LE MOT-CLE FACTEUR :'//MOTFAC)
+  150     CONTINUE
+          IF (IER.NE.0) CALL UTMESS('F','RELIEM',
+     &                              'LES MAILLES IMPRIMEES'//
+     &     ' CI-DESSUS N''APPARTIENNENT PAS AU MODELE ET POURTANT ELLES'
+     &                              //
+     &                    ' ONT ETE AFFECTEES DANS LE MOT-CLE FACTEUR :'
+     &                              //MOTFAC)
         END IF
 
 
@@ -301,10 +304,10 @@ C       ----------------------------------------------------
 C        --- COMPTAGE DES NOEUDS ---
 
         NBTROU = 0
-        DO 130 INO = 1,NBNO
+        DO 160 INO = 1,NBNO
           IF (ZI(ITRNO-1+INO).NE.0) NBTROU = NBTROU + 1
-  130   CONTINUE
-        IF (NBTROU.EQ.0) GO TO 9999
+  160   CONTINUE
+        IF (NBTROU.EQ.0) GO TO 190
 
 
 
@@ -314,12 +317,12 @@ C        --- COMPTAGE DES NOEUDS ---
 
 C           --- RANGEMENT DES NUMEROS DE NOEUDS ---
           LNO = 0
-          DO 140 INO = 1,NBNO
+          DO 170 INO = 1,NBNO
             IF (ZI(ITRNO-1+INO).NE.0) THEN
               LNO = LNO + 1
               ZI(ITBNO-1+LNO) = INO
             END IF
-  140     CONTINUE
+  170     CONTINUE
 
         ELSE
           CALL WKVECT(LITROU,'V V K8',NBTROU,ITBNO)
@@ -327,12 +330,12 @@ C           --- RANGEMENT DES NUMEROS DE NOEUDS ---
 
 C           --- RANGEMENT DES NOMS DE NOEUDS ---
           LNO = 0
-          DO 150 INO = 1,NBNO
+          DO 180 INO = 1,NBNO
             IF (ZI(ITRNO-1+INO).NE.0) THEN
               LNO = LNO + 1
               CALL JENUNO(JEXNUM(MA//'.NOMNOE',INO),ZK8(ITBNO-1+LNO))
             END IF
-  150     CONTINUE
+  180     CONTINUE
         END IF
 
 
@@ -340,7 +343,7 @@ C           --- RANGEMENT DES NOMS DE NOEUDS ---
 
 
 C     --- DESTRUCTION DES TABLEAUX DE TRAVAIL ---
- 9999 CONTINUE
+  190 CONTINUE
       CALL JEDETR('&&RELIEM.INDIC_MAILLE')
       CALL JEDETR('&&RELIEM.INDIC_NOEUD')
 

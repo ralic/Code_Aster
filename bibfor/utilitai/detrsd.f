@@ -3,7 +3,7 @@
       CHARACTER*(*) TYPESD,NOMSD
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 25/03/2004   AUTEUR OUGLOVA A.OUGLOVA 
+C MODIF UTILITAI  DATE 31/08/2004   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,7 +26,7 @@ C  BUT : DETRUIRE UNE STRUCTURE DE DONNEE DONT ON CONNAIT LE TYPE
 C  ATTENTION : QUAND ON UTILISE TYPESD=' ', ON APPELLE LA ROUTINE JEDETC
 C              QUI EST TRES COUTEUSE EN CPU.
 C  IN   TYPESD : TYPE DE LA STRUCTURE DE DONNEE A DETRUIRE
-C          'NUME_DDL'     'PROF_CHNO'
+C          'NUME_DDL'     'PROF_CHNO'    'MLTF'
 C          'MATR_ASSE'    'VECT_ASSE'    'MATR_ASSE_GENE'
 C          'MATR_ELEM'    'VECT_ELEM'
 C          'VARI_COM'     'FONCTION'
@@ -69,7 +69,7 @@ C     ----- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       CHARACTER*14 NU,RESOCO,COM
       CHARACTER*16 DEFICO,TYP2SD,CORRES
       CHARACTER*19 CHAMP,MATAS,TABLE,SOLVEU,CNS,CES,CNO,CEL,FNC
-      CHARACTER*19 LIGREL,CARTE,NUAGE,LIGRET
+      CHARACTER*19 LIGREL,CARTE,NUAGE,LIGRET,MLTF
 
 C -DEB------------------------------------------------------------------
 
@@ -205,7 +205,7 @@ C     --------------------------------
         IF (IRET.NE.0) CALL JEDETR(TABLE//'.TITR')
 
 C     ------------------------------------------------------------------
-      ELSE IF (TYPESD.EQ.'MATR_ASSE_GENE') THEN
+      ELSE IF (TYP2SD.EQ.'MATR_ASSE_GENE') THEN
 C     -----------------------------------------
         MATAS = NOMSD
         CALL JEDETR(MATAS//'.DESC')
@@ -285,6 +285,36 @@ C     ------------------------------------
         CALL JEDETR(CEL//'.CELD')
         CALL JEDETR(CEL//'.CELK')
         CALL JEDETR(CEL//'.CELV')
+
+C     ------------------------------------------------------------------
+      ELSE IF (TYP2SD.EQ.'MLTF') THEN
+C     -----------------------------------
+        MLTF = NOMSD
+        CALL JEDETR(MLTF//'.GLOB')
+        CALL JEDETR(MLTF//'.LOCL')
+        CALL JEDETR(MLTF//'.ADNT')
+        CALL JEDETR(MLTF//'.PNTI')
+        CALL JEDETR(MLTF//'.DESC')
+        CALL JEDETR(MLTF//'.DIAG')
+        CALL JEDETR(MLTF//'.ADRE')
+        CALL JEDETR(MLTF//'.SUPN')
+        CALL JEDETR(MLTF//'.PARE')
+        CALL JEDETR(MLTF//'.FILS')
+        CALL JEDETR(MLTF//'.FRER')
+        CALL JEDETR(MLTF//'.LGSN')
+        CALL JEDETR(MLTF//'.LFRN')
+        CALL JEDETR(MLTF//'.NBAS')
+        CALL JEDETR(MLTF//'.DEBF')
+        CALL JEDETR(MLTF//'.DEFS')
+        CALL JEDETR(MLTF//'.ADPI')
+        CALL JEDETR(MLTF//'.ANCI')
+        CALL JEDETR(MLTF//'.NBLI')
+        CALL JEDETR(MLTF//'.LGBL')
+        CALL JEDETR(MLTF//'.NCBL')
+        CALL JEDETR(MLTF//'.DECA')
+        CALL JEDETR(MLTF//'.NOUV')
+        CALL JEDETR(MLTF//'.SEQU')
+        CALL JEDETR(MLTF//'.RENU')
 
 C     ------------------------------------------------------------------
       ELSE IF (TYP2SD.EQ.'NUME_DDL') THEN

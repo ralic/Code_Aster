@@ -5,7 +5,8 @@
       REAL*8          XYZL(3,*), UL(6,*), DUL(6,*), PGL(3,3)
       REAL*8          KTAN(*), BTSIG(6,*)
       CHARACTER*16    NOMTE, OPT
-C MODIF ELEMENTS  DATE 15/06/2004   AUTEUR MABBAS M.ABBAS 
+
+C MODIF ELEMENTS  DATE 31/08/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -130,8 +131,8 @@ C            DMF:    MATRICE DE RIGIDITE TANGENTE MATERIELLE (COUPLAGE)
       REAL*8 BF(3,3*NNO), BM(3,2*NNO)
 C            BF :    MATRICE "B" (FLEXION)
 C            BM :    MATRICE "B" (MEMBRANE)
-      REAL*8 FLEX(3*NNO,3*NNO), MEMB(2*NNO,2*NNO)
-      REAL*8 MEFL(2*NNO,3*NNO), WORK(3,3*NNO)
+      REAL*8 FLEX(3*NNO*3*NNO), MEMB(2*NNO*2*NNO)
+      REAL*8 MEFL(2*NNO*3*NNO), WORK(3*NNO*3*NNO)
 C           MEMB:    MATRICE DE RIGIDITE DE MEMBRANE
 C           FLEX:    MATRICE DE RIGIDITE DE FLEXION
 C           WORK:    TABLEAU DE TRAVAIL
@@ -139,7 +140,7 @@ C           MEFL:    MATRICE DE COUPLAGE MEMBRANE-FLEXION
 C             LE MATERIAU EST SUPPOSE HOMOGENE
 C             IL PEUT NEANMOINS Y AVOIR COUPLAGE PAR LA PLASTICITE
 C     ------------------ PARAMETRAGE ELEMENT ---------------------------
-      INTEGER    LDETJ,LJACO,LTOR,LQSI,LETA,LWGT,JTAB(7),COD
+      INTEGER    LDETJ,LJACO,LTOR,LQSI,LETA,LWGT,JTAB(7),COD,I
       PARAMETER (LDETJ=1)
       PARAMETER (LJACO=2)
       PARAMETER (LTOR=LJACO+4)
@@ -147,14 +148,15 @@ C     ------------------ PARAMETRAGE ELEMENT ---------------------------
       REAL*8    DEUX,RAC2
       PARAMETER (DEUX=2.D0)
       REAL*8    CTOR,EPSANP(4),EPSANM(4),PHASM(7),PHASP(7)
-      REAL*8    HYDRGM,HYDRGP,SECHGM,SECHGP,SREF,LC
+      REAL*8    HYDRGM,HYDRGP,SECHGM,SECHGP,SREF,LC,JACGAU,BMAT(6,18)
       LOGICAL   VECTEU,MATRIC,TEMPNO,GRILLE,DKT,DKQ
       REAL*8    CDF, CM1, CM2, CM3, CP1, CP2, CP3
       INTEGER   ICACOQ, ICARCR, ICOMPO, ICONTM, ICONTP, ICOU, ICPG,
      &          IER, IGAUH, IINSTM, IINSTP, IMATE, INO, IPG, IRET, ISP,
      &          ITEMP, ITEMPM, ITEMPP, ITREF, IVARIM, IVARIP, IVARIX,
      &          IVPG, J, K, LZR, NBCON, NBSP, NBVAR, NDIMV, NNOEL
-
+      INTEGER   IADZI, IAZK24
+      CHARACTER*24 NOMELE
 C     ------------------------------------------------------------------
 C --DEB
       RAC2 = SQRT(DEUX)
@@ -239,11 +241,19 @@ C     -- GRANDEURS GEOMETRIQUES :
 C     ---------------------------
       H = ZR(ICACOQ)
       DISTN = 0.D0
+      IF (.NOT.GRILLE) THEN
+         DISTN = ZR(ICACOQ+4)
+         IF (DISTN.NE.0.D0) THEN
+            CALL TECAEL(IADZI, IAZK24)
+            NOMELE=ZK24(IAZK24-1+3)
+            CALL UTMESS('F','DKTNLI',
+     &    'PAS D EXCENTREMENT AVEC STAT_NON_LINE MAILLE '//NOMELE)
+         ENDIF
+      ENDIF
       IF ( GRILLE ) THEN
-         CALL GTRIA3(XYZL,ZR(LZR))
          DISTN = ZR(ICACOQ+3)
+         CALL GTRIA3(XYZL,ZR(LZR))
          CTOR  = ZR(ICACOQ+4)
-         CALL GRDMAT(ICACOQ,ZI(IMATE),PGL,DH,ROT)
       ELSEIF ( DKT ) THEN
          CALL GTRIA3(XYZL,ZR(LZR))
          CTOR = ZR(ICACOQ+3)
@@ -463,7 +473,7 @@ C --- INITIALISE A R8VIDE (ON NE S'EN SERT PAS)
      &                     ANGMAS,
      &                     ZR(ICONTM+ICPG),ZR(IVARIM+IVPG),
      &                     TMC,TPC,ZR(ITREF),
-     &                     ZR(ICONTP+ICPG),ZR(IVARIP+IVPG),DSIDEP,COD)
+     &               ZR(ICONTP+ICPG),ZR(IVARIP+IVPG),DSIDEP,COD)
             ELSE
                DO 1 J=1,4
                SIGM(J)=ZR(ICONTM+ICPG-1+J)
@@ -507,10 +517,17 @@ C         ------------------------------------------------------------
               N(1) = N(1) + COEF*HIC/DEUX*ZR(ICONTP+ICPG-1+1)
               N(2) = N(2) + COEF*HIC/DEUX*ZR(ICONTP+ICPG-1+2)
               N(3) = N(3) + COEF*HIC/DEUX*ZR(ICONTP+ICPG-1+4)
-
+            IF (GRILLE) THEN
+C             LES SEULS MOMENTS SONT DUS A L'EXCENTREMENT
+C             PAS DE RIGIDITE DE FLEXION PROPRE
+              M(1) = M(1) + ZIC*HIC*ZR(ICONTP+ICPG-1+1)
+              M(2) = M(2) + ZIC*HIC*ZR(ICONTP+ICPG-1+2)
+              M(3) = M(3) + ZIC*HIC*ZR(ICONTP+ICPG-1+4)
+            ELSE
               M(1) = M(1) + COEF*HIC/DEUX*ZIC*ZR(ICONTP+ICPG-1+1)
               M(2) = M(2) + COEF*HIC/DEUX*ZIC*ZR(ICONTP+ICPG-1+2)
               M(3) = M(3) + COEF*HIC/DEUX*ZIC*ZR(ICONTP+ICPG-1+4)
+            END IF
             END IF
 
 C         -- CALCUL DES MATRICES TANGENTES MATERIELLES (DM,DF,DMF):
@@ -529,7 +546,8 @@ C           -- ON EXTRAIT DE DSIDEP LA SOUS-MATRICE INTERESSANTE D2D:
               IF (GRILLE) THEN
                 DO 50,K = 1,9
                   DM(K) = DM(K) + HIC*POIDS*D2D(K)
-                  DF(K) = DF(K) + HIC*HIC*HIC*POIDS*D2D(K)/12.D0
+C                 SANS EXCENTREMENT, PAS DE FLEXION PROPRE
+                  DF(K) = 0.D0
    50           CONTINUE
               ELSE
                 DO 60,K = 1,9
@@ -546,15 +564,7 @@ C       -- CALCUL DE DIV(SIGMA) ET RECOPIE DE N ET M DANS 'PCONTPR':
 C       ----------------------------------------------------------
 C       BTSIG = BTSIG + BFT*M + BMT*N
         IF (VECTEU) THEN
-          IF (GRILLE) THEN
-            KHI(1) = KHI(1) + DKHI(1)
-            KHI(2) = KHI(2) + DKHI(2)
-            KHI(3) = KHI(3) + DKHI(3)
-            CDF = HIC*HIC*HIC/12.D0
-            CALL R8COPY(9,DH,1,DMF,1)
-            CALL R8SCAL(9,CDF,DMF,1)
-          END IF
-          DO 120,INO = 1,NNOEL
+            DO 120,INO = 1,NNOEL
             DO 110,K = 1,3
               BTSIG(1,INO) = BTSIG(1,INO) +
      &                       BM(K,2* (INO-1)+1)*N(K)*POIDS
@@ -567,9 +577,10 @@ C       BTSIG = BTSIG + BFT*M + BMT*N
               BTSIG(4,INO) = BTSIG(4,INO) -
      &                       BF(K,3* (INO-1)+3)*M(K)*POIDS
   110       CONTINUE
-  120     CONTINUE
+  120       CONTINUE
         END IF
 
+        
 C       -- CALCUL DE LA MATRICE TANGENTE :
 C       ----------------------------------
 C       KTANG = KTANG + BFT*DF*BF + BMT*DM*BM + BMT*DMF*BF
@@ -581,6 +592,9 @@ C         -------------
 C         -- FLEXION :
 C         ------------
           CALL UTBTAB('CUMU',3,3*NNOEL,DF,BF,WORK,FLEX)
+          
+C         -- COUPLAGE:
+C         ------------
           IF (GRILLE) THEN
             POIDS2 = DISTN*DISTN
             CALL R8COPY(9,DM,1,DM2,1)
@@ -589,11 +603,9 @@ C         ------------
             CALL R8COPY(9,DM,1,DMF,1)
             CALL R8SCAL(9,DISTN,DMF,1)
           END IF
-
-C         -- COUPLAGE:
-C         ------------
           CALL UTCTAB('CUMU',3,3*NNOEL,2*NNOEL,DMF,BF,BM,WORK,MEFL)
         END IF
+        
 C       -- FIN BOUCLE SUR LES POINTS DE GAUSS
   130 CONTINUE
 

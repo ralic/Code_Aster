@@ -2,7 +2,7 @@
 C
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 15/06/2004   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 31/08/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,11 +53,12 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       CHARACTER*2   CODRET(1)
       CHARACTER*10  PHEN
       REAL*8        ALPHA , BETA , R8DGRD , S , C
-      REAL*8        YOUNG1, YOUNG2
+      REAL*8        YOUNG1, YOUNG2, CTOR
       REAL*8        PGL(3,3), DH(3,3), ROT(3,3), XAB1(3,3)
 C     ------------------------------------------------------------------
       ALPHA = ZR(JCOQU+1) * R8DGRD()
       BETA  = ZR(JCOQU+2) * R8DGRD()
+      CTOR  = ZR(JCOQU+4)
       CALL RCCOMA(MATER,'ELAS',PHEN,CODRET)
       CALL RCVALA(MATER,' ',PHEN,0,' ',0.D0,1,'E',VALRES,CODRET,'FM')
       YOUNG1= VALRES(1)
@@ -66,7 +67,7 @@ C     ------------------------------------------------------------------
 C
       DH(1,1) = YOUNG1
       DH(2,2) = YOUNG2
-      DH(3,3) = 1.D-7
+      DH(3,3) = YOUNG1*CTOR
       CALL GRIROT ( ALPHA , BETA ,PGL , ROT  , C, S)
       CALL UTBTAB ('ZERO', 3 , 3 , DH , ROT , XAB1 , DH )
 C

@@ -1,7 +1,7 @@
-      SUBROUTINE FRAPP2(SD1,NOMA,LIGREL,CARTE)
+      SUBROUTINE FRAPP2(SD1,NOMA,LIGREL,CARTE,INST)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/07/2003   AUTEUR LAVERNE J.LAVERNE 
+C MODIF ALGORITH  DATE 31/08/2004   AUTEUR JMBHH01 J.M.PROIX 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -23,6 +23,7 @@ C ======================================================================
       CHARACTER*8 NOMA
       CHARACTER*19 LIGREL,CARTE
       CHARACTER*24 SD1
+      REAL*8 INST(3)
 
 C    BUT : FABRIQUER UN LIGREL ET UNE CARTE
 C   IN/JXIN  SD1 : SD1(DEFICO) =>TABFIN  CARACF
@@ -644,7 +645,7 @@ C      -------------------------
       CALL JEVEUO(CARTE//'.NCMP','E',JNCMP)
       CALL JEVEUO(CARTE//'.VALV','E',JVALV)
 
-      NCMP = 19
+      NCMP = 21
       DO 100,K = 1,NCMP
         CALL CODENT(K,'G',CH2)
         ZK8(JNCMP-1+K) = 'X'//CH2
@@ -668,9 +669,12 @@ C      -------------------------
         ZR(JVALV-1+14) = ZR(JCMCF+6* (IZONE-1)+3)
         ZR(JVALV-1+15) = ZR(JCMCF+6* (IZONE-1)+4)
         ZR(JVALV-1+16) = NINT(ZR(JCMCF+6* (IZONE-1)+5))
-        ZR(JVALV-1+18) = ZI(JECPD+5* (IZONE-1)+1)
+        ZR(JVALV-1+18) = ZI(JECPD+6* (IZONE-1)+1)
         ZR(JVALV-1+19) = ZR(JTABF+16* (IPC-1)+16)
-
+        ZR(JVALV-1+20) = INST(2)        
+        ZR(JVALV-1+21) = ZI(JECPD+6* (IZONE-1)+6) 
+        
+            
         CALL NOCART(CARTE,-3,KBID,'NUM',1,KBID,-IPC,LIGREL,NCMP)
 
   110 CONTINUE

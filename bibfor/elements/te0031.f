@@ -2,7 +2,7 @@
       IMPLICIT NONE
       CHARACTER*16        OPTION , NOMTE
 C     ----------------------------------------------------------------
-C MODIF ELEMENTS  DATE 21/01/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 31/08/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -57,7 +57,7 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
-      INTEGER      NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDX,JGANO
+      INTEGER      NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDX,JGANO,IND
       INTEGER      MULTIC,JTAB(7),CODRET,JDEPM,JDEPR
       INTEGER      ICOMPO,I1,I2,J,LT2EV,JVECT
       INTEGER      ICHG,ICHN,NCMP,K,JCRET,JFREQ,IACCE
@@ -279,7 +279,8 @@ C     ------------------------------------------
      +                    'IMPLANTEE POUR LA DEFORMATION "GREEN_GR"')
           ENDIF
           CALL JEVECH ( 'PCONTRR', 'L', ICONTP )
-          CALL DXEFF2 ( NOMTE, XYZL, PGL, ZR(ICONTP), EFFINT )
+          IND=6
+          CALL DXEFFI ( NOMTE, XYZL, PGL, ZR(ICONTP), IND, EFFINT )
           CALL DXREPE ( NNO, PGL, ZR(LZR) )
           CALL DXEFR2 ( NPG, ZR(LZR-1+LT2EV), EFFINT, EFFGT )
           CALL JEVECH ( 'PSIEFNOR', 'E', ICHN   )
@@ -300,7 +301,8 @@ C
 C     -------------------------------------
 
          CALL JEVECH ( 'PCONTMR', 'L', ICONTP )
-         CALL DXEFFI ( NOMTE, XYZL, PGL, ZR(ICONTP), EFFGT )
+         IND=8
+         CALL DXEFFI ( NOMTE, XYZL, PGL, ZR(ICONTP), IND, EFFGT )
 C
 C ------ CALCUL DES EFFORTS INTERNES (I.E. SOMME_VOL(BT_SIG))
 C        ----------------------------------------------------

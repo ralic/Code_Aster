@@ -1,0 +1,223 @@
+# MODIF  DATE 31/08/2004   AUTEUR VABHHTS J.PELLET 
+# TITRE CROSSE SOUS CHARGEMENTS DIVERS (SANS SOUS-STRUCTURATION)
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+#  CALCUL NON LINEAIRE EN STATIQUE & DYNAMIQUE
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+#CAS_TEST__: SSLP100C
+# SSLP100/C
+# CROSSE CHARGEE EN SOUS-STRUCTURATION STATIQUE.
+# MODELISATION : SANS SOUS-STRUCTURES (MODELISATION DE REFERENCE).
+#======================================================================
+
+
+DEBUT(CODE=_F(  NOM = 'SSLP100C',NIV_PUB_WEB='INTERNET'),)
+
+ACIER=DEFI_MATERIAU( ELAS=_F(E = 1.5E11,  NU = 0.3, RHO=7800.) )
+
+ACIERNL=DEFI_MATERIAU(    ELAS=_F( E = 1.5E9,  NU = 0.3, RHO = 7800.,
+                                     ),
+                          ECRO_LINE=_F(  D_SIGM_EPSI = 1.E8,
+                                      SY = 1.5E6)
+                      )
+
+MA=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='NON'), )
+
+CHMAT=AFFE_MATERIAU(  MAILLAGE=MA,
+         AFFE=(_F( TOUT = 'OUI', MATER = ACIER),
+               _F( GROUP_MA = 'GRSD1', MATER = ACIERNL),
+               ),
+                    )
+
+MO=AFFE_MODELE(  MAILLAGE=MA,     AFFE=_F( TOUT = 'OUI',
+                MODELISATION = 'D_PLAN', PHENOMENE = 'MECANIQUE'))
+
+CHBL=AFFE_CHAR_MECA(MODELE=MO,DDL_IMPO=(
+#                    J , N8, N17, N25 :
+
+                    _F( NOEUD = ('N8','N17','N25',), DX = 0.0, DY = 0.0),
+                    _F( NOEUD = ('N35',), DX = 2.0E-2)
+                    ),
+                    LIAISON_DDL=(
+#           GH :
+
+  _F( NOEUD = ('N22','N22',),DDL = ('DY','DX',), COEF_MULT = (1.0,1.0,), COEF_IMPO = 0.0),
+  _F( NOEUD = ('N24','N24',),DDL = ('DY','DX',), COEF_MULT = (1.0,1.0,), COEF_IMPO = 0.0),
+  _F( NOEUD = ('N26','N26',),DDL = ('DY','DX',), COEF_MULT = (1.0,1.0,), COEF_IMPO = 0.0),
+  _F( NOEUD = ('N28','N28',),DDL = ('DY','DX',), COEF_MULT = (1.0,1.0,), COEF_IMPO = 0.0))
+            )
+
+CHF1=AFFE_CHAR_MECA(MODELE=MO,
+#           SUIVEUR:
+           PRES_REP=_F( GROUP_MA = ('GRMA14','GRMA17','GRMA20',), PRES = .01)
+                       )
+
+CHF2=AFFE_CHAR_MECA(MODELE=MO,
+#       NON-SUIVEUR:
+         FORCE_NODALE=_F( NOEUD = ('N11','N19','N27','N33','N31',), FY = -20.0)
+                       );
+
+CHF3=AFFE_CHAR_MECA(MODELE=MO,
+                    PESANTEUR=(-9.81,1.0,0.0,0.0,),);
+
+LISTIN1=DEFI_LIST_REEL(DEBUT=0.,
+              INTERVALLE=_F( JUSQU_A = .1,NOMBRE = 3))
+
+LISTIN2=DEFI_LIST_REEL(DEBUT=.1,
+              INTERVALLE=_F( JUSQU_A = .2,NOMBRE = 2))
+
+
+U=STAT_NON_LINE(
+            MODELE=MO,
+            CHAM_MATER=CHMAT,
+            EXCIT=(_F(  CHARGE = CHBL),
+                   _F(  CHARGE = CHF1),
+                   _F(  CHARGE = CHF2),
+                   _F(  CHARGE = CHF3),
+                   ),
+            COMP_INCR=(_F( RELATION='ELAS', TOUT='OUI'),
+                       _F( RELATION='VMIS_ISOT_LINE', GROUP_MA='GRSD1'),
+                        ),
+            INCREMENT=_F( LIST_INST = LISTIN1),
+            NEWTON=_F(  MATRICE = 'TANGENTE',
+                        REAC_ITER=1
+                        ),
+            CONVERGENCE=_F( RESI_GLOB_RELA = 1.0E-8,
+                         ITER_GLOB_MAXI = 10,
+                         ARRET = 'NON'),
+               SOLVEUR=_F( METHODE = 'MULT_FRONT', STOP_SINGULIER='NON',)
+                   )
+
+
+U1=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
+              OPERATION='EXTR',
+              RESULTAT=U,
+              NOM_CHAM='DEPL',
+              TYPE_RESU='VALE',
+              NUME_ORDRE=3,);
+
+
+TEST_RESU(CHAM_NO=(
+#  POINTS P1, P2, P3, P4 :
+   _F(  CHAM_GD = U1, NOEUD = 'N31', NOM_CMP = 'DX',
+     VALE = 1.5366515065057E-02,
+     PRECISION = 1.E-5,
+     REFERENCE = 'NON_REGRESSION'),
+   _F(  CHAM_GD = U1, NOEUD = 'N31', NOM_CMP = 'DY',
+     VALE = -1.2161260101631E-03,
+     PRECISION = 1.E-5,
+     REFERENCE = 'NON_REGRESSION'),
+   _F(  CHAM_GD = U1, NOEUD = 'N28', NOM_CMP = 'DX',
+     VALE = 1.0500554825858E-06,
+     PRECISION = 1.E-5,
+     REFERENCE = 'NON_REGRESSION'),
+   _F(  CHAM_GD = U1, NOEUD = 'N28', NOM_CMP = 'DY',
+     VALE = -1.0500554825858E-06,
+     PRECISION = 1.E-5,
+     REFERENCE = 'NON_REGRESSION'),
+   _F(  CHAM_GD = U1, NOEUD = 'N13', NOM_CMP = 'DX',
+     VALE = 8.0691844881313E-06,
+     PRECISION = 1.E-5,
+     REFERENCE = 'NON_REGRESSION'),
+   _F(  CHAM_GD = U1, NOEUD = 'N13', NOM_CMP = 'DY',
+     VALE = -1.5178532666465E-05,
+     PRECISION = 1.E-5,
+     REFERENCE = 'NON_REGRESSION'),
+   _F(  CHAM_GD = U1, NOEUD = 'N10', NOM_CMP = 'DX',
+     VALE = 6.8923989165176E-05,
+     PRECISION = 1.E-5,
+     REFERENCE = 'NON_REGRESSION'),
+   _F(  CHAM_GD = U1, NOEUD = 'N10', NOM_CMP = 'DY',
+     VALE = 9.2082578360371E-05,
+     PRECISION = 1.E-5,
+     REFERENCE = 'NON_REGRESSION'),),
+        );
+
+
+U=DYNA_NON_LINE(reuse=U,
+            MODELE=MO,
+            CHAM_MATER=CHMAT,
+            EXCIT=(_F(  CHARGE = CHBL),
+                   _F(  CHARGE = CHF1),
+                   _F(  CHARGE = CHF2),
+                   _F(  CHARGE = CHF3),
+                   ),
+            ETAT_INIT= _F(EVOL_NOLI=U),
+            COMP_INCR=(_F( RELATION='ELAS', TOUT='OUI'),
+                       _F( RELATION='VMIS_ISOT_LINE', GROUP_MA='GRSD1'),
+                        ),
+            INCREMENT=_F( LIST_INST = LISTIN2),
+            NEWMARK =_F(),
+            NEWTON=_F(  MATRICE = 'TANGENTE',
+                        REAC_ITER=1
+                        ),
+            CONVERGENCE=_F( RESI_GLOB_RELA = 1.0E-8,
+                         ITER_GLOB_MAXI = 10,
+                         ARRET = 'NON'),
+               SOLVEUR=_F( METHODE = 'MULT_FRONT', STOP_SINGULIER='NON',)
+                   )
+
+U2=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
+              OPERATION='EXTR',
+              RESULTAT=U,
+              NOM_CHAM='DEPL',
+              TYPE_RESU='VALE',
+              NUME_ORDRE=5,);
+
+
+TEST_RESU(CHAM_NO=(
+#  POINTS P1, P2, P3, P4 :
+   _F(  CHAM_GD = U2, NOEUD = 'N31', NOM_CMP = 'DX',
+     VALE = 1.5366515065057E-02,
+     PRECISION = 1.E-5,
+     REFERENCE = 'NON_REGRESSION'),
+   _F(  CHAM_GD = U2, NOEUD = 'N31', NOM_CMP = 'DY',
+     VALE = -1.2161260101631E-03,
+     PRECISION = 1.E-5,
+     REFERENCE = 'NON_REGRESSION'),
+   _F(  CHAM_GD = U2, NOEUD = 'N28', NOM_CMP = 'DX',
+     VALE = 1.0500554825858E-06,
+     PRECISION = 1.E-5,
+     REFERENCE = 'NON_REGRESSION'),
+   _F(  CHAM_GD = U2, NOEUD = 'N28', NOM_CMP = 'DY',
+     VALE = -1.0500554825858E-06,
+     PRECISION = 1.E-5,
+     REFERENCE = 'NON_REGRESSION'),
+   _F(  CHAM_GD = U2, NOEUD = 'N13', NOM_CMP = 'DX',
+     VALE = 8.0691844881313E-06,
+     PRECISION = 1.E-5,
+     REFERENCE = 'NON_REGRESSION'),
+   _F(  CHAM_GD = U2, NOEUD = 'N13', NOM_CMP = 'DY',
+     VALE = -1.5178532666465E-05,
+     PRECISION = 1.E-5,
+     REFERENCE = 'NON_REGRESSION'),
+   _F(  CHAM_GD = U2, NOEUD = 'N10', NOM_CMP = 'DX',
+     VALE = 6.8923989165176E-05,
+     PRECISION = 1.E-5,
+     REFERENCE = 'NON_REGRESSION'),
+   _F(  CHAM_GD = U2, NOEUD = 'N10', NOM_CMP = 'DY',
+     VALE = 9.2082578360371E-05,
+     PRECISION = 1.E-5,
+     REFERENCE = 'NON_REGRESSION'),),
+#
+        );
+
+
+FIN();
+

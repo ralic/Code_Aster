@@ -1,4 +1,4 @@
-# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 31/08/2004   AUTEUR JMBHH01 J.M.PROIX 
 # TITRE PLAQUE ENCASTREE EN TRACTION CONSTITUEE DE 3 NAPPES D'ARMATURES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -250,7 +250,7 @@ TEST_RESU(RESU=(
                 MAILLE = 'DMA1',     
                 NOEUD = 'NO2',      
                 NOM_CMP = 'DX',   
-                REFERENCE='NON_REGRESSION',VALE= 81.9373,       
+                REFERENCE='NON_REGRESSION',VALE= 8.4625868995839E+01,       
                 ),
                 _F( 
                 RESULTAT = RESU0,   
@@ -259,7 +259,7 @@ TEST_RESU(RESU=(
                 MAILLE = 'DMA1',     
                 NOEUD = 'NO2',      
                 NOM_CMP = 'DY',   
-                REFERENCE='NON_REGRESSION',VALE= -18.6398,       
+                REFERENCE='NON_REGRESSION',VALE= -2.2897294052303E+01,       
                 ),
                 _F( 
                 RESULTAT = RESU0,   
@@ -268,7 +268,7 @@ TEST_RESU(RESU=(
                 MAILLE = 'DMA1',     
                 NOEUD = 'NO2',      
                 NOM_CMP = 'DZ',   
-                REFERENCE='NON_REGRESSION',VALE= 2098.66,       
+                REFERENCE='NON_REGRESSION',VALE= 2.5418897475038E+03,       
                 ),
                 _F( 
                 RESULTAT = RESU0,   
@@ -277,7 +277,7 @@ TEST_RESU(RESU=(
                 MAILLE = 'DMA1',     
                 NOEUD = 'NO2',      
                 NOM_CMP = 'DRX',   
-                REFERENCE='NON_REGRESSION',VALE= -1239.88,       
+                REFERENCE='NON_REGRESSION',VALE= -1.3560826826939E+03,       
                 ),
                 _F( 
                 RESULTAT = RESU0,   
@@ -286,7 +286,7 @@ TEST_RESU(RESU=(
                 MAILLE = 'DMA1',     
                 NOEUD = 'NO2',      
                 NOM_CMP = 'DRY',   
-                REFERENCE='NON_REGRESSION',VALE= -3820.42,       
+                REFERENCE='NON_REGRESSION',VALE= -4.6905005808175E+03,       
                 ),
 
 # -- TEST SUR LES DEFORMATIONS DANS LE SOLIDE 1
@@ -299,7 +299,7 @@ TEST_RESU(RESU=(
                 MAILLE = 'DMA1',     
                 NOEUD = 'NO2',      
                 NOM_CMP = 'EPXX',   
-                REFERENCE='NON_REGRESSION',VALE= 21.5569,       
+                REFERENCE='NON_REGRESSION',VALE= 2.0745492846913E+01,       
                 ),
                 _F( 
                 RESULTAT = RESU0,   
@@ -308,7 +308,7 @@ TEST_RESU(RESU=(
                 MAILLE = 'DMA1',     
                 NOEUD = 'NO2',      
                 NOM_CMP = 'EPYY',   
-                REFERENCE='NON_REGRESSION',VALE= 13.7165,       
+                REFERENCE='NON_REGRESSION',VALE= 1.1531743784551E+01,       
                 ),
                 _F( 
                 RESULTAT = RESU0,   
@@ -317,7 +317,7 @@ TEST_RESU(RESU=(
                 MAILLE = 'DMA1',     
                 NOEUD = 'NO2',      
                 NOM_CMP = 'EPXY',   
-                REFERENCE='NON_REGRESSION',VALE= 37.4032,       
+                REFERENCE='NON_REGRESSION',VALE= 3.3380612297638E+01,       
                 ),
                 _F( 
                 RESULTAT = RESU0,   
@@ -336,7 +336,7 @@ TEST_RESU(RESU=(
                 MAILLE = 'EMA1',     
                 NOEUD = 'NO2',      
                 NOM_CMP = 'EPXX',   
-                REFERENCE='NON_REGRESSION',VALE= 13.7165,       
+                REFERENCE='NON_REGRESSION',VALE= 1.1531743784551E+01,       
                 ),
                 _F( 
                 RESULTAT = RESU0,   
@@ -345,7 +345,7 @@ TEST_RESU(RESU=(
                 MAILLE = 'EMA1',     
                 NOEUD = 'NO2',      
                 NOM_CMP = 'EPYY',   
-                REFERENCE='NON_REGRESSION',VALE= 21.5569,       
+                REFERENCE='NON_REGRESSION',VALE= 2.0745492846913E+01,       
                 ),
                 _F( 
                 RESULTAT = RESU0,   
@@ -354,7 +354,7 @@ TEST_RESU(RESU=(
                 MAILLE = 'EMA1',     
                 NOEUD = 'NO2',      
                 NOM_CMP = 'EPXY',   
-                REFERENCE='NON_REGRESSION',VALE= -37.4032,       
+                REFERENCE='NON_REGRESSION',VALE= -3.3380612297638E+01,       
                 ),
                 _F( 
                 RESULTAT = RESU0,   
@@ -375,7 +375,7 @@ TEST_RESU(RESU=(
                 MAILLE = 'DMA1',     
                 NOEUD = 'NO2',      
                 NOM_CMP = 'KXX',   
-                REFERENCE='NON_REGRESSION',VALE= -2963.651,       
+                REFERENCE='NON_REGRESSION',VALE= -3.4236404234436E+03,       
                 ),
                 _F( 
                 RESULTAT = RESU0,   
@@ -384,7 +384,7 @@ TEST_RESU(RESU=(
                 MAILLE = 'DMA1',     
                 NOEUD = 'NO2',      
                 NOM_CMP = 'KYY',   
-                REFERENCE='NON_REGRESSION',VALE= 397.418,       
+                REFERENCE='NON_REGRESSION',VALE= 2.4857276100072E+02,       
                 ),
                 _F( 
                 RESULTAT = RESU0,   
@@ -393,7 +393,7 @@ TEST_RESU(RESU=(
                 MAILLE = 'DMA1',     
                 NOEUD = 'NO2',      
                 NOM_CMP = 'KXY',   
-                REFERENCE='NON_REGRESSION',VALE= -1406.625,       
+                REFERENCE='NON_REGRESSION',VALE= -1.9231300070255E+03,       
                 ),
                 _F( 
                 RESULTAT = RESU0,   
@@ -402,7 +402,7 @@ TEST_RESU(RESU=(
                 MAILLE = 'EMA1',     
                 NOEUD = 'NO2',      
                 NOM_CMP = 'KXX',   
-                REFERENCE='NON_REGRESSION',VALE= 397.418,       
+                REFERENCE='NON_REGRESSION',VALE= 2.4857276100072E+02,       
                 ),
                 _F( 
                 RESULTAT = RESU0,   
@@ -411,7 +411,7 @@ TEST_RESU(RESU=(
                 MAILLE = 'EMA1',     
                 NOEUD = 'NO2',      
                 NOM_CMP = 'KYY',   
-                REFERENCE='NON_REGRESSION',VALE= -2963.651,      
+                REFERENCE='NON_REGRESSION',VALE= -3.4236404234436E+03,      
                 ),
                 _F( 
                 RESULTAT = RESU0,   
@@ -420,7 +420,7 @@ TEST_RESU(RESU=(
                 MAILLE = 'EMA1',     
                 NOEUD = 'NO2',      
                 NOM_CMP = 'KXY',   
-                REFERENCE='NON_REGRESSION',VALE= 1406.625,       
+                REFERENCE='NON_REGRESSION',VALE=  1.9231300070255E+03,       
                 ),
 # -- TEST SUR LES COURBURES DANS LE SOLIDE 2, mailles BMA1 et CMA1
                 _F( 
@@ -430,7 +430,7 @@ TEST_RESU(RESU=(
                 MAILLE = 'BMA1',     
                 NOEUD = 'NO2',      
                 NOM_CMP = 'KXX',   
-                REFERENCE='NON_REGRESSION',VALE= -2030.135,       
+                REFERENCE='NON_REGRESSION',VALE= -2.7666994678022E+03,       
                 ),
                 _F( 
                 RESULTAT = RESU0,   
@@ -439,7 +439,7 @@ TEST_RESU(RESU=(
                 MAILLE = 'BMA1',     
                 NOEUD = 'NO2',      
                 NOM_CMP = 'KYY',   
-                REFERENCE='NON_REGRESSION',VALE= -536.098,       
+                REFERENCE='NON_REGRESSION',VALE= -4.0836819464067E+02,       
                 ),
                 _F( 
                 RESULTAT = RESU0,   
@@ -448,7 +448,7 @@ TEST_RESU(RESU=(
                 MAILLE = 'BMA1',     
                 NOEUD = 'NO2',      
                 NOM_CMP = 'KXY',   
-                REFERENCE='NON_REGRESSION',VALE= 2060.280,       
+                REFERENCE='NON_REGRESSION',VALE= 2.3831250163243E+03,       
                 ),
                 _F( 
                 RESULTAT = RESU0,   
@@ -457,7 +457,7 @@ TEST_RESU(RESU=(
                 MAILLE = 'CMA1',     
                 NOEUD = 'NO2',      
                 NOM_CMP = 'KXX',   
-                REFERENCE='NON_REGRESSION',VALE= -536.098,       
+                REFERENCE='NON_REGRESSION',VALE=-4.0836819464067E+02,       
                 ),
                 _F( 
                 RESULTAT = RESU0,   
@@ -466,7 +466,7 @@ TEST_RESU(RESU=(
                 MAILLE = 'CMA1',     
                 NOEUD = 'NO2',      
                 NOM_CMP = 'KYY',   
-                REFERENCE='NON_REGRESSION',VALE= -2030.135,      
+                REFERENCE='NON_REGRESSION',VALE= -2.7666994678022E+03,      
                 ),
                 _F( 
                 RESULTAT = RESU0,   
@@ -475,7 +475,7 @@ TEST_RESU(RESU=(
                 MAILLE = 'CMA1',     
                 NOEUD = 'NO2',      
                 NOM_CMP = 'KXY',   
-                REFERENCE='NON_REGRESSION',VALE= -2060.280,       
+                REFERENCE='NON_REGRESSION',VALE= -2.3831250163243E+03,       
                 ),
 # -- TEST SUR LES COURBURES DANS LE SOLIDE 3, mailles MA1 et AMA1
                 _F( 
@@ -485,7 +485,7 @@ TEST_RESU(RESU=(
                 MAILLE = 'MA1',     
                 NOEUD = 'NO2',      
                 NOM_CMP = 'KXX',   
-                REFERENCE='NON_REGRESSION',VALE= -531.043,       
+                REFERENCE='NON_REGRESSION',VALE= -9.5898388181371E+02,       
                 ),
                 _F( 
                 RESULTAT = RESU0,   
@@ -494,7 +494,7 @@ TEST_RESU(RESU=(
                 MAILLE = 'MA1',     
                 NOEUD = 'NO2',      
                 NOM_CMP = 'KYY',   
-                REFERENCE='NON_REGRESSION',VALE= -2035.19,       
+                REFERENCE='NON_REGRESSION',VALE= -2.2160837806292E+03,       
                 ),
                 _F( 
                 RESULTAT = RESU0,   
@@ -503,7 +503,7 @@ TEST_RESU(RESU=(
                 MAILLE = 'MA1',     
                 NOEUD = 'NO2',      
                 NOM_CMP = 'KXY',   
-                REFERENCE='NON_REGRESSION',VALE= 2058.44,       
+                REFERENCE='NON_REGRESSION',VALE=2.5835327369753E+03,       
                 ),
                 _F( 
                 RESULTAT = RESU0,   
@@ -512,7 +512,7 @@ TEST_RESU(RESU=(
                 MAILLE = 'AMA1',     
                 NOEUD = 'NO2',      
                 NOM_CMP = 'KXX',   
-                REFERENCE='NON_REGRESSION',VALE= -2035.19,       
+                REFERENCE='NON_REGRESSION',VALE= -2.2160837806292E+03,       
                 ),
                 _F( 
                 RESULTAT = RESU0,   
@@ -521,7 +521,7 @@ TEST_RESU(RESU=(
                 MAILLE = 'AMA1',     
                 NOEUD = 'NO2',      
                 NOM_CMP = 'KYY',   
-                REFERENCE='NON_REGRESSION',VALE= -531.043,      
+                REFERENCE='NON_REGRESSION',VALE=-9.5898388181371E+02,      
                 ),
                 _F( 
                 RESULTAT = RESU0,   
@@ -530,7 +530,7 @@ TEST_RESU(RESU=(
                 MAILLE = 'AMA1',     
                 NOEUD = 'NO2',      
                 NOM_CMP = 'KXY',   
-                REFERENCE='NON_REGRESSION',VALE= -2060.280,       
+                REFERENCE='NON_REGRESSION',VALE= -2.5835327369753E+03,       
                 ),
 
 # -- TEST SUR LES CONTRAINTES DANS LE SOLIDE 1, mailles DMA1 et EMA1
@@ -541,7 +541,7 @@ TEST_RESU(RESU=(
                 MAILLE = 'DMA1',     
                 NOEUD = 'NO2',      
                 NOM_CMP = 'SIXX',   
-                REFERENCE='NON_REGRESSION',VALE= 64.6707,        
+                REFERENCE='NON_REGRESSION',VALE= 6.2236478540739E+01,        
                 ),
                 _F( 
                 RESULTAT = RESU0,   
@@ -581,7 +581,7 @@ TEST_RESU(RESU=(
                 MAILLE = 'EMA1',     
                 NOEUD = 'NO2',      
                 NOM_CMP = 'SIXX',   
-                REFERENCE='NON_REGRESSION',VALE= 41.1496,        
+                REFERENCE='NON_REGRESSION',VALE= 3.4595231353654E+01,        
                 ),
                 _F( 
                 RESULTAT = RESU0,   
@@ -623,7 +623,7 @@ TEST_RESU(RESU=(
                 MAILLE = 'MA1',     
                 NOEUD = 'NO1',      
                 NOM_CMP = 'NXX',   
-                REFERENCE='NON_REGRESSION',VALE= 7.2565E-01,       
+                REFERENCE='NON_REGRESSION',VALE= 8.0403123878572E-01,       
                 ),
                 _F( 
                 RESULTAT = RESU0,   
@@ -632,7 +632,7 @@ TEST_RESU(RESU=(
                 MAILLE = 'AMA1',     
                 NOEUD = 'NO1',      
                 NOM_CMP = 'NXX',   
-                REFERENCE='NON_REGRESSION',VALE= 5.6104E-01,       
+                REFERENCE='NON_REGRESSION',VALE= 6.3768921047384E-01,       
                 ),
                 _F( 
                 RESULTAT = RESU0,   
@@ -641,7 +641,7 @@ TEST_RESU(RESU=(
                 MAILLE = 'MA1',     
                 NOEUD = 'NO1',      
                 NOM_CMP = 'MXX',   
-                REFERENCE='NON_REGRESSION',VALE= -2.85932E-04,       
+                REFERENCE='NON_REGRESSION',VALE= -8.0403123878572E-03,       
                 ),
                 _F( 
                 RESULTAT = RESU0,   
@@ -650,7 +650,7 @@ TEST_RESU(RESU=(
                 MAILLE = 'AMA1',     
                 NOEUD = 'NO1',      
                 NOM_CMP = 'MXX',   
-                REFERENCE='NON_REGRESSION',VALE= -2.78516E-04,       
+                REFERENCE='NON_REGRESSION',VALE= -6.3768921047384E-03,       
                 ),
 
 # -- TEST SUR LES FORCES NODALES
@@ -669,7 +669,7 @@ TEST_RESU(RESU=(
                 NOM_CHAM = 'FORC_NODA',  
                   NOEUD = 'NO1',      
                 NOM_CMP = 'DY',   
-                REFERENCE='NON_REGRESSION',VALE= -4.1137E-01,       
+                REFERENCE='NON_REGRESSION',VALE= -4.0699083826641E-01,       
                 ),
                 _F( 
                 RESULTAT = RESU0,   
@@ -677,7 +677,7 @@ TEST_RESU(RESU=(
                 NOM_CHAM = 'FORC_NODA',  
                 NOEUD = 'NO1',      
                 NOM_CMP = 'DZ',   
-                REFERENCE='NON_REGRESSION',VALE= -2.00705E-03,       
+                REFERENCE='NON_REGRESSION',VALE= -3.5081069002394E-03,       
                 ),
                 _F( 
                 RESULTAT = RESU0,   
@@ -685,7 +685,7 @@ TEST_RESU(RESU=(
                 NOM_CHAM = 'FORC_NODA',  
                 NOEUD = 'NO1',      
                 NOM_CMP = 'DRX',   
-                REFERENCE='NON_REGRESSION',VALE= -1.4024E-03,       
+                REFERENCE='NON_REGRESSION',VALE= -2.3189339127482E-03,       
                 ),
                 _F( 
                 RESULTAT = RESU0,   
@@ -693,7 +693,7 @@ TEST_RESU(RESU=(
                 NOM_CHAM = 'FORC_NODA',  
                 NOEUD = 'NO1',      
                 NOM_CMP = 'DRY',   
-                REFERENCE='NON_REGRESSION',VALE= 3.00514E-03,       
+                REFERENCE='NON_REGRESSION',VALE= 4.0468755244076E-03,       
                 ),)
               )
 
