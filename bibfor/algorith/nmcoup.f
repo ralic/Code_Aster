@@ -1,10 +1,10 @@
         SUBROUTINE NMCOUP ( NDIM, TYPMOD, IMAT, COMP, LCPDB,CRIT,
      1                      TIMED,TIMEF, TEMPD,TEMPF,TREF,HYDRD,
-     &                      HYDRF,SECHD,SECHF,EPSDT,DEPST,SIGD,
-     2                      VIND, OPT,ELGEOM,SIGF,VINF,DSDE)
+     2                      HYDRF,SECHD,SECHF,SREF,EPSDT,DEPST,SIGD,
+     3                      VIND, OPT,ELGEOM,SIGF,VINF,DSDE)
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 02/12/2003   AUTEUR PBADEL P.BADEL 
+C MODIF ALGORITH  DATE 04/05/2004   AUTEUR SMICHEL S.MICHEL-PONNELLE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -28,7 +28,7 @@ C       ----------------------------------------------------------------
 C
         REAL*8          CRIT(*)
         REAL*8          TIMED,     TIMEF,    TEMPD,   TEMPF  , TREF
-        REAL*8          HYDRD , HYDRF , SECHD , SECHF , ELGEOM(*)
+        REAL*8          HYDRD, HYDRF, SECHD, SECHF, SREF, ELGEOM(*)
         REAL*8          EPSDT(6),  DEPST(6)
         REAL*8          SIGD(6),   SIGF(6)
         REAL*8          VIND(*),   VINF(*)
@@ -82,6 +82,7 @@ C               HYDRD   HYDRATATION A L'INSTANT PRECEDENT
 C               HYDRF   HYDRATATION A L'INSTANT DU CALCUL
 C               SECHD   SECHAGE A L'INSTANT PRECEDENT
 C               SECHF   SECHAGE A L'INSTANT DU CALCUL
+C               SREF    SECHAGE DE REFERENCE
 C               EPSDT   DEFORMATION TOTALE A T
 C               DEPST   INCREMENT DE DEFORMATION TOTALE
 C               SIGD    CONTRAINTE A T
@@ -133,15 +134,15 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       
            CALL NMCPLA ( NDIM, TYPMOD, IMAT, COMP, CRIT,
      1                      TIMED,TIMEF, TEMPD,TEMPF,TREF,HYDRD,
-     &                      HYDRF,SECHD,SECHF,EPSDT,DEPST,SIGD,
+     &                      HYDRF,SECHD,SECHF,SREF,EPSDT,DEPST,SIGD,
      2                      VIND, OPT,ELGEOM,SIGF,VINF,DSDE)
          ELSE IF (CMP2(1:10) .EQ. 'ENDO_ISOT_BETON' .OR.
      &            CMP2(1:6)  .EQ. 'MAZARS') THEN
            OPTION(2)(1:16) = CMP2(1:16)
 C          CALL NMGRAN ( NDIM, TYPMOD, IMAT, COMP, CRIT,
-C     1                      TIMED,TIMEF, TEMPD,TEMPF,TREF,HYDRD,
-C     &                      HYDRF,SECHD,SECHF,TEMPD,TEMPF,EPSDT,DEPST,
-C     2                      SIGD, VIND, OPTION,ELGEOM,SIGF,VINF,DSDE)
+C     1                  TIMED,TIMEF, TEMPD,TEMPF,TREF,HYDRD,
+C     &                  HYDRF,SECHD,SECHF,SREF,TEMPD,TEMPF,EPSDT,
+C     2                  DEPST,SIGD, VIND, OPTION,ELGEOM,SIGF,VINF,DSDE)
            CALL UTMESS('F','NMCOUP_2','GRANGER ET ENDO_ISOT_BETON'
      &      // 'OU MAZARS NON ENCORE DEVELOPPE')
      

@@ -1,7 +1,7 @@
-      SUBROUTINE MLTFLJ(N,LL,M,IT,P,FRONT,FRN,ADPER,TRAV)
+      SUBROUTINE MLTFLJ(NB,N,LL,M,IT,P,FRONT,FRN,ADPER,TRAV,C)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 09/02/2004   AUTEUR REZETTE C.REZETTE 
-C RESPONSABLE JFBHHUC C.ROSE
+C MODIF ALGELINE  DATE 04/05/2004   AUTEUR ROSE C.ROSE 
+C RESPONSABLE ROSE C.ROSE
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,15 +21,12 @@ C ======================================================================
       IMPLICIT NONE
       INTEGER N,P,ADPER(*)
       REAL*8 FRONT(*),FRN(*)
-      INTEGER NBB,DECAL,ADD,ADF,IND,NMB,I,J,L,KB,IA,IB,NLB,LL
-
-      PARAMETER (NBB=96)
+      INTEGER NB,DECAL,ADD,ADF,IND,NMB,I,J,L,KB,IA,IB,NLB,LL
       CHARACTER*1 TRANSA, TRANSB
-      INTEGER   M,  K, LDC,KI,I1,IT,JB,J1,RESTM,RESTL,NBL,NB
+      INTEGER   M,  K, LDC,KI,I1,IT,JB,J1,RESTM,RESTL,NBL
       INTEGER NPROC,NUMPRO,MLNUMP,MLNBPR
-      REAL*8     S,TRAV(P,NBB,*)
-      REAL*8  C(NBB, NBB)
-      NB=NBB
+      REAL*8     S,TRAV(P,NB,*)
+      REAL*8  C(NB,NB,*)
       NBL = P-IT+1
        NMB=M/NB
       NLB = LL/NB
@@ -40,7 +37,7 @@ C ======================================================================
       IF(NMB.GE.NPROC) THEN
 C$OMP PARALLEL DO DEFAULT(PRIVATE)
 C$OMP+SHARED(N,M,P,NMB,NBL,NLB,NB,RESTM,RESTL)
-C$OMP+SHARED(FRONT,ADPER,DECAL,FRN,TRAV,IT)
+C$OMP+SHARED(FRONT,ADPER,DECAL,FRN,TRAV,IT,C)
 C$OMP+SCHEDULE(STATIC,1)
       DO 1000 KB = 1,NMB
       NUMPRO=MLNUMP()
@@ -63,7 +60,7 @@ C
          DO 500 IB = KB,NLB
             IA = N*(IT-1)  + K + NB*(IB-KB)
             CALL DGEMX( NB,NB,NBL,FRONT(IA),N, TRAV(IT,1,NUMPRO), P,
-     %                   C, NB)
+     %                   C(1,1,NUMPRO), NB)
 C     RECOPIE
 
 C
@@ -78,7 +75,7 @@ C              IND = ADPER(K +I1) - DECAL  + NB*(IB-KB-1) +NB - I1
                   IND = ADPER(K + I1) - DECAL + NB*(IB-KB)  - I1
                ENDIF
                DO 34 J=J1,NB
-                  FRN(IND) = FRN(IND) +C(J,I)
+                  FRN(IND) = FRN(IND) +C(J,I,NUMPRO)
                   IND = IND +1
  34            CONTINUE
  35         CONTINUE
@@ -87,7 +84,7 @@ C              IND = ADPER(K +I1) - DECAL  + NB*(IB-KB-1) +NB - I1
             IB = NLB + 1
             IA =   N*(IT-1)  +K + NB*(IB-KB)
             CALL DGEMX( RESTL,NB,NBL,FRONT(IA),N, TRAV(IT,1,NUMPRO), P,
-     %                   C, NB)
+     %                   C(1,1,NUMPRO), NB)
 C           RECOPIE
 
 C
@@ -96,7 +93,7 @@ C
                J1=1
                IND = ADPER(K + I1) - DECAL + NB*(IB-KB)  - I1
                DO 44 J=J1,RESTL
-                  FRN(IND) = FRN(IND) +C(J,I)
+                  FRN(IND) = FRN(IND) +C(J,I,NUMPRO)
                   IND = IND +1
  44            CONTINUE
  45         CONTINUE
@@ -119,11 +116,11 @@ C     BLOC DIAGONAL
 C     SOUS LE BLOC DIAGONAL
 C     2EME ESSAI : DES PRODUITS DE LONGUEUR NB
 C
-
+         NUMPRO=1
          DO 2500 IB = KB,NLB
             IA = N*(IT-1)  + K + NB*(IB-KB)
             CALL DGEMX( NB,NB,NBL,FRONT(IA),N, TRAV(IT,1,1), P,
-     %                   C, NB)
+     %                   C(1,1,NUMPRO), NB)
 C     RECOPIE
 
 C
@@ -137,7 +134,7 @@ C
                   IND = ADPER(K + I1) - DECAL + NB*(IB-KB)  - I1
                ENDIF
                DO 234 J=J1,NB
-                  FRN(IND) = FRN(IND) +C(J,I)
+                  FRN(IND) = FRN(IND) +C(J,I,NUMPRO)
                   IND = IND +1
  234            CONTINUE
  235         CONTINUE
@@ -146,7 +143,7 @@ C
             IB = NLB + 1
             IA =   N*(IT-1)  +K + NB*(IB-KB)
             CALL DGEMX( RESTL,NB,NBL,FRONT(IA),N, TRAV(IT,1,1), P,
-     %                   C, NB)
+     %                   C(1,1,NUMPRO), NB)
 C           RECOPIE
 
 C
@@ -156,7 +153,7 @@ C              IND = ADPER(K +I1) - DECAL  + NB*(IB-KB-1) +NB - I1
                J1=1
                IND = ADPER(K + I1) - DECAL + NB*(IB-KB)  - I1
                DO 244 J=J1,RESTL
-                  FRN(IND) = FRN(IND) +C(J,I)
+                  FRN(IND) = FRN(IND) +C(J,I,NUMPRO)
                   IND = IND +1
  244            CONTINUE
  245         CONTINUE
@@ -183,7 +180,7 @@ C
          DO 600 IB = KB,NLB
             IA =   N*(IT-1 ) + K + NB*(IB-KB)
             CALL DGEMX( NB,RESTM,NBL,FRONT(IA),N, TRAV(IT,1,1), P,
-     %                   C, NB)
+     %                   C(1,1,NUMPRO), NB)
 C     RECOPIE
 
 C
@@ -198,7 +195,7 @@ C     IND = ADPER(K +I1) - DECAL  + NB*(IB-KB-1) +NB - I1
                   IND = ADPER(K + I1) - DECAL + NB*(IB-KB)  - I1
                ENDIF
                DO 54 J=J1,NB
-                  FRN(IND) = FRN(IND) +C(J,I)
+                  FRN(IND) = FRN(IND) +C(J,I,NUMPRO)
                   IND = IND +1
  54            CONTINUE
  55         CONTINUE
@@ -207,7 +204,7 @@ C     IND = ADPER(K +I1) - DECAL  + NB*(IB-KB-1) +NB - I1
             IB = NLB + 1
             IA =   N*(IT-1) + K + NB*(IB-KB)
             CALL DGEMX( RESTL,RESTM,NBL,FRONT(IA),N, TRAV(IT,1,1),    P,
-     %                   C, NB)
+     %                   C(1,1,NUMPRO), NB)
 C     RECOPIE
 
 C
@@ -217,7 +214,7 @@ C     IND = ADPER(K +I1) - DECAL  + NB*(IB-KB-1) +NB - I1
                J1=1
                IND = ADPER(K + I1) - DECAL + NB*(IB-KB)  - I1
                DO 64 J=J1,RESTL
-                  FRN(IND) = FRN(IND) +C(J,I)
+                  FRN(IND) = FRN(IND) +C(J,I,NUMPRO)
                   IND = IND +1
  64            CONTINUE
  65         CONTINUE

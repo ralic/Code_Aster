@@ -3,7 +3,7 @@
      +                   OPTION,ENTHTH)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 04/05/2004   AUTEUR SMICHEL S.MICHEL-PONNELLE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -79,13 +79,14 @@ C -----  VARIABLES LOCALES
            CHARACTER*16 K16BID
            REAL*8       SIGTH(162),HYDR(27),SECH(27),TREF,ZERO,RAYON
            REAL*8       EPSITH(162),ENTHPG,DFDX(27),DFDY(27),DFDZ(27)
-           REAL*8       POIDI
+           REAL*8       POIDI, RBID
 C.========================= DEBUT DU CODE EXECUTABLE ==================
 C
 C --- INITIALISATIONS :
 C     -----------------
       ZERO   = 0.0D0
       K16BID = ' '
+      RBID = 0.D0
       ENTHTH = ZERO
 C
 C --- PAS DE PRISE EN COMPTE DES VARIABLES D'HYDRATATION OU SECHAGE
@@ -98,12 +99,12 @@ C
 C --- CALCUL DES CONTRAINTES MECANIQUES AUX POINTS D'INTEGRATION
 C      ---------------------------------------------------------
       CALL EPTHMC(MODELI,NNO,NDIM,NBSIG,NPG,ZR(IVF),TEMPE,TREF,HYDR,
-     +            SECH,INSTAN,MATER,OPTION,EPSITH)
+     +            SECH,RBID,INSTAN,MATER,OPTION,EPSITH)
 C
 C --- CALCUL DES CONTRAINTES THERMIQUES AUX POINTS D'INTEGRATION
 C      ---------------------------------------------------------
       CALL SIGTMC(MODELI,NNO,NDIM,NBSIG,NPG,ZR(IVF),XYZ,TEMPE,TREF,
-     +            HYDR,SECH,INSTAN,MATER,REPERE,K16BID,SIGTH)
+     +            HYDR,SECH,RBID,INSTAN,MATER,REPERE,K16BID,SIGTH)
 C
 C --- CALCUL DES CONTRAINTES TOTALES AUX POINTS D'INTEGRATION
 C      ---------------------------------------------------------

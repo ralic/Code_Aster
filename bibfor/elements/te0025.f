@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C.......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 04/05/2004   AUTEUR SMICHEL S.MICHEL-PONNELLE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -57,7 +57,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
      &        NBSIG,IGAU,ISIG,INO,IGEOM,IDEPL,ITEMPE,ITREF,
      &        ITEMPS,IDEFO,IMATE,IHYDRE,ISECHE,IRET,JTAB(3)
       REAL*8 EPSM(162),EPSNO(162),REPERE(7),TEMPE(27)
-      REAL*8 HYDR(27),SECH(27)
+      REAL*8 HYDR(27),SECH(27),RBID
       REAL*8 NHARM,INSTAN,ZERO,TREF,S
       CHARACTER*8 MODELI
 C DEB ------------------------------------------------------------------
@@ -103,7 +103,6 @@ C ---- RECUPERATION DES COORDONNEES DES CONNECTIVITES :
 C      ----------------------------------------------
       CALL JEVECH('PGEOMER','L',IGEOM)
 
-
 C ---- RECUPERATION DU CHAMP DE DEPLACEMENT SUR L'ELEMENT :
 C      --------------------------------------------------
       CALL JEVECH('PDEPLAR','L',IDEPL)
@@ -117,8 +116,8 @@ C      --------------------------------------------------
    40   CONTINUE
       END IF
 
-C --- RECUPERATION DE L'HYDRATATION AUX POINTS DE GAUSS DE L'ELEMENT :
-C     -----------------------------------------------------
+C--- RECUPERATION DE L'HYDRATATION AUX POINTS DE GAUSS DE L'ELEMENT :
+C    -----------------------------------------------------
       CALL TECACH('NNN','PHYDRER',3,JTAB,IRET)
       IHYDRE = JTAB(1)
       IF (IHYDRE.NE.0) THEN
@@ -129,14 +128,13 @@ C     -----------------------------------------------------
       ELSE
       END IF
 
-C --- RECUPERATION DU SECHAGE AUX NOEUDS DE L'ELEMENT :
-C     -----------------------------------------------------
+C--- RECUPERATION DU SECHAGE AUX NOEUDS DE L'ELEMENT :
+C    -----------------------------------------------------
       CALL TECACH('NNN','PSECHER',1,ISECHE,IRET)
       IF (ISECHE.NE.0) THEN
         DO 60 I = 1,NNO
           SECH(I) = ZR(ISECHE+I-1)
    60   CONTINUE
-      ELSE
       END IF
 
 C ---- RECUPERATION DE LA TEMPERATURE DE REFERENCE :
@@ -145,7 +143,7 @@ C      -------------------------------------------
       IF (ITREF.NE.0) THEN
         TREF = ZR(ITREF)
       END IF
-
+      
 C ---- RECUPERATION DE L'INSTANT DE CALCUL :
 C      -----------------------------------
       CALL TECACH('NNN','PTEMPSR',1,ITEMPS,IRET)
@@ -166,7 +164,7 @@ C      ---------------------------------------
       CALL TECACH('NNN','PMATERC',1,IMATE,IRET)
       CALL EPSVMC(MODELI, NNO, NDIM, NBSIG, NPG, IPOIDS,IVF,
      +            IDFDE,ZR(IGEOM), ZR(IDEPL),
-     +            TEMPE, TREF, HYDR, SECH, INSTAN,
+     +            TEMPE, TREF, HYDR, SECH, RBID, INSTAN,
      +            ZI(IMATE), REPERE, NHARM, OPTION, EPSM)
 
       IF (OPTION(6:9).EQ.'ELGA') THEN

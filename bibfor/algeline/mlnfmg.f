@@ -1,7 +1,7 @@
-      SUBROUTINE MLNFMG(N,P,FRONTL,FRONTU,FRNL,ADPER,T1,AD)
+      SUBROUTINE MLNFMG(NB,N,P,FRONTL,FRONTU,FRNL,ADPER,T1,CL)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 07/01/2002   AUTEUR JFBHHUC C.ROSE 
-C RESPONSABLE JFBHHUC C.ROSE
+C MODIF ALGELINE  DATE 04/05/2004   AUTEUR ROSE C.ROSE 
+C RESPONSABLE ROSE C.ROSE
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,35 +18,129 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
-      INTEGER N,P,ADPER(*),AD(*)
-      REAL*8 FRONTL(*),FRONTU(*),T1(*),FRNL(*)
-      INTEGER SEUIN,SEUIK
-      PARAMETER(SEUIN=1500,SEUIK=300)
 C
-      INTEGER I,K,DECAL,DECALS,ADS
-      LOGICAL SSP
-      LDA = N
+C     VERSION AVEC APPEL A DGEMV POUR LES PRODUITS MATRICE-VECTEUR
+C     AU DELA D' UN CERTAIN SEUIL
+C     DGEMV EST APPEL A T1ERS LA FONCTION C DGEMW POUR CAR DGEMV
+C     NECESSITE  DES ARGUMENTS ENTIER INTEGER*4 REFUSES PAR ASTER
+C
+      IMPLICIT NONE
+C      IMPLICIT REAL*8 (A-H,O-Z)
+      INTEGER N,P,ADPER(*),RESTM,DECAL
+      REAL*8 FRONTL(*),FRONTU(*),FRNL(*)
+      INTEGER SEUIN,SEUIK,LDA,NB,NMB
+      CHARACTER*1 TRANSA, TRANSB
+      INTEGER I1,J1,K,M,IT,NUMPRC,MLNUMP
+      REAL*8 T1(P,NB,*)
+      REAL*8  CL(NB,NB, *)
+      INTEGER SNI,I,KB,J,IB,IA,IND,ADD
+      M=N-P
+      NMB=M/NB
+      RESTM = M -(NB*NMB)
       DECAL = ADPER(P+1) - 1
-C     CALCUL DE LA PARTIE INFERIEURE
-      DO 120 K = P + 1,N
-         NN= N-K+1
-         SSP = NN.LT.SEUIN.OR.P.LT.SEUIK
-             DO 110 I = 1,P
-             IF(SSP) THEN
-              AD(I) = ADPER(I) + K - I
-              T1(I) = FRONTU(AD(I))
-           ELSE
-              ADS = ADPER(I) + K - I
-              T1(I) = FRONTU(ADS)
-           ENDIF
-  110     CONTINUE
-C                                      PRODUIT MATRICE-VECTEUR
-C          CALL SSPMVA(N-K+1,P,FRONTL,AD,T1,FRNL(ADPER(K)-DECAL))
-           IF(SSP) THEN
-              CALL SSPMVA(N-K+1,P,FRONTL,AD,T1,FRNL(ADPER(K)-DECAL))
-           ELSE
-              CALL DGEMW(NN,P,FRONTL(K),LDA,T1,FRNL(ADPER(K)-DECAL))
-           ENDIF
-  120 CONTINUE
+C
+C$OMP PARALLEL DO DEFAULT(PRIVATE)
+C$OMP+SHARED(N,M,P,NMB,NB,RESTM,FRONTL,FRONTU,ADPER,DECAL,FRNL)
+C$OMP+SHARED(T1,CL)
+C$OMP+SCHEDULE(STATIC,1)
+      DO 1000 KB = 1,NMB
+      NUMPRC=MLNUMP()
+C     K : INDICE DE COLONNE DANS LA MATRICE FRONTALE (ABSOLU DE 1 A N)
+         K = NB*(KB-1) + 1 +P
+         DO 100 I=1,P
+            ADD= N*(I-1) + K
+            DO 50 J=1,NB
+               T1(I,J,NUMPRC) = FRONTU(ADD)
+               ADD = ADD + 1
+ 50         CONTINUE
+ 100     CONTINUE
+C     BLOC DIAGONAL
+
+C     SOUS LE BLOC DIAGONAL
+C     2EME ESSAI : DES PRODUITS DE LONGUEUR NB
+C
+         DO 500 IB = KB,NMB
+            IA = K + NB*(IB-KB)
+            IT=1
+            CALL DGEMX( NB,NB,P,FRONTL(IA),N, T1(IT,1,NUMPRC), P,
+     %                   CL(1,1,NUMPRC), NB)
+C     RECOPIE
+
+C
+            DO 501 I=1,NB
+               I1=I-1
+C     IND = ADPER(K +I1) - DECAL  + NB*(IB-KB-1) +NB - I1
+               IF(IB.EQ.KB) THEN
+                  J1= I
+                  IND = ADPER(K + I1) - DECAL
+               ELSE
+                  J1=1
+                  IND = ADPER(K + I1) - DECAL + NB*(IB-KB)  - I1
+               ENDIF
+               DO 502J=J1,NB
+                  FRNL(IND) = FRNL(IND) +CL(J,I,NUMPRC)
+                  IND = IND +1
+ 502           CONTINUE
+ 501        CONTINUE
+ 500     CONTINUE
+C
+         IF(RESTM.GT.0) THEN
+            IB = NMB + 1
+            IA = K + NB*(IB-KB)
+            IT=1
+            CALL DGEMX( RESTM,NB,P,FRONTL(IA),N, T1(IT,1,NUMPRC), P,
+     %                   CL(1,1,NUMPRC), NB)
+C     RECOPIE
+
+C
+            DO 801 I=1,NB
+               I1=I-1
+C     IND = ADPER(K +I1) - DECAL  + NB*(IB-KB-1) +NB - I1
+               J1=1
+               IND = ADPER(K + I1) - DECAL + NB*(IB-KB)  - I1
+               DO 802 J=J1,RESTM
+                  FRNL(IND) = FRNL(IND) +CL(J,I,NUMPRC)
+                  IND = IND +1
+ 802              CONTINUE
+ 801           CONTINUE
+C
+C
+         ENDIF
+ 1000 CONTINUE
+C$OMP END PARALLEL DO
+      NUMPRC = 1
+      IF(RESTM.GT.0 ) THEN
+         KB = 1+NMB
+C     K : INDICE DE COLONNE DANS LA MATRICE FRONTLALE (ABSOLU DE 1 A N)
+         K = NB*(KB-1) + 1 +P
+         DO 101 I=1,P
+            ADD= N*(I-1) + K
+            DO 51 J=1,RESTM
+              T1(I,J,1) = FRONTU(ADD)
+               ADD = ADD + 1
+ 51         CONTINUE
+ 101     CONTINUE
+C     BLOC DIAGONAL
+
+         IB = KB
+         IA = K + NB*(IB-KB)
+         IT=1
+           CALL DGEMX( RESTM,RESTM,P,FRONTL(IA),N, T1(IT,1,1),P,
+     %                   CL(1,1,NUMPRC), NB)
+C     RECOPIE
+
+C
+         DO 902 I=1,RESTM
+            I1=I-1
+C     IND = ADPER(K +I1) - DECAL  + NB*(IB-KB-1) +NB - I1
+            J1= I
+            IND = ADPER(K + I1) - DECAL
+
+            DO 901 J=J1,RESTM
+
+               FRNL(IND) = FRNL(IND) +CL(J,I,NUMPRC)
+               IND = IND +1
+ 901        CONTINUE
+ 902     CONTINUE
+      ENDIF
       END

@@ -1,6 +1,6 @@
       SUBROUTINE TE0013(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 04/05/2004   AUTEUR SMICHEL S.MICHEL-PONNELLE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -33,8 +33,8 @@ C.......................................................................
       CHARACTER*8 MODELI
       REAL*8 BSIGMA(81),SIGTH(162),REPERE(7),INSTAN
       REAL*8 NHARM
-      REAL*8 HYDRG,SECHG
-      INTEGER NBSIGM
+      REAL*8 HYDRG,SECHG,RBID
+      INTEGER NBSIGM, ISECH
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       CHARACTER*32 JEXNUM,JEXNOM,JEXR8,JEXATR
       INTEGER ZI
@@ -53,7 +53,7 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
-
+       RBID=0
 C EN PRESENCE DE METALLURGIE -> METAU2
       CALL TECACH('NNN','PPHASRR',1,META,IRET)
       IF (META.NE.0) THEN
@@ -113,7 +113,7 @@ C      --------------------------------------------------
 C ---- RECUPERATION DU CHAMP DU SECHAGE SUR L'ELEMENT
 C      --------------------------------------------------
       CALL JEVECH('PSECHER','L',ISECH)
-
+       
 C ---- RECUPERATION DE L'INSTANT
 C      -------------------------
       CALL TECACH('ONN','PTEMPSR',1,ITEMPS,IRET)
@@ -123,9 +123,8 @@ C ---- CALCUL DES CONTRAINTES THERMIQUES AUX POINTS D'INTEGRATION
 C ---- DE L'ELEMENT :
 C      ------------
       CALL SIGTMC(MODELI,NNO,NDIM,NBSIG,NPG1,ZR(IVF),ZR(IGEOM),
-     &           ZR(ITEMPE),ZR(ITREF),ZR(IHYDR),ZR(ISECH),INSTAN,
-     &           ZI(IMATE),REPERE,OPTION,SIGTH)
-
+     &           ZR(ITEMPE),ZR(ITREF),ZR(IHYDR),ZR(ISECH),RBID,
+     &           INSTAN,ZI(IMATE),REPERE,OPTION,SIGTH)
 C ---- CALCUL DU VECTEUR DES FORCES D'ORIGINE THERMIQUE/HYDRIQUE
 C ---- OU DE SECHAGE (BT*SIGTH)
 C      ----------------------------------------------------------

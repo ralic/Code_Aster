@@ -1,4 +1,4 @@
-%& MODIF OPTIONS  DATE 20/05/2003   AUTEUR G8BHHXD X.DESROCHES 
+%& MODIF OPTIONS  DATE 04/05/2004   AUTEUR SMICHEL S.MICHEL-PONNELLE 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,14 +18,13 @@
 % ======================================================================
 CHAR_MECA_HYDR_R
         << CHAR_MECA_HYDR_R (MOT-CLE: HYDR_CALCULEE) : CALCUL DU SECOND
-           MEMBRE CORRESPONDANT A UN CHAMP D'HYDRATATION ET DE TEMPERATURE>>
+           MEMBRE CORRESPONDANT A UN CHAMP D HYDRATATION ET DE TEMPERATURE>>
 OPTION__
    IN__
         PGEOMER  GEOM_R
         PMATERC  ADRSJEVE
         PTEMPER  TEMP_R
         PTEMPEF  TEMP_F
-        PTEREF   TEMP_R
         PHYDRER  HYDR_R
         PSECHER  TEMP_R
         PCACOQU  CACOQU

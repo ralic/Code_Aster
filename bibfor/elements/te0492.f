@@ -1,6 +1,6 @@
       SUBROUTINE TE0492 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 04/05/2004   AUTEUR SMICHEL S.MICHEL-PONNELLE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,7 +20,7 @@ C ======================================================================
       IMPLICIT REAL*8 (A-H,O-Z)
       CHARACTER*16        OPTION , NOMTE
 C ......................................................................
-C    - FONCTION REALISEE:  CALCUL DES VECTEURS ELEMENTAIRES
+C    - FONCTION REALISEE:  CALCUL DES VECTEURS ELEMENTAIRES EN 2D
 C                          OPTION : 'CHAR_MECA_HYDR_R'
 C
 C    - ARGUMENTS:
@@ -30,7 +30,7 @@ C ......................................................................
 C
       CHARACTER*8        MODELI
       REAL*8             BSIGMA(81), SIGTH(162), REPERE(7), INSTAN
-      REAL*8             NHARM
+      REAL*8             NHARM, RBID
       INTEGER            NBSIGM
 C
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
@@ -60,6 +60,7 @@ C     -----------------
       ZERO   = 0.0D0
       INSTAN = ZERO
       NHARM  = ZERO
+      RBID = ZERO
       MODELI(1:2) = NOMTE(3:4)
 C
 C ---- NOMBRE DE CONTRAINTES ASSOCIE A L'ELEMENT
@@ -90,10 +91,6 @@ C ---- RECUPERATION DU CHAMP DE TEMPERATURE SUR L'ELEMENT
 C      --------------------------------------------------
       CALL JEVECH('PTEMPER','L',ITEMPE)
 C
-C ---- RECUPERATION DE LA TEMPERATURE DE REFERENCE
-C      -------------------------------------------
-      CALL JEVECH('PTEREF','L',ITREF)
-C
 C ---- RECUPERATION DU CHAMP DE L'HDRATATION SUR L'ELEMENT
 C      --------------------------------------------------
       CALL JEVECH('PHYDRER','L',IHYDR)
@@ -111,7 +108,7 @@ C ---- CALCUL DES CONTRAINTES HYDRIQUES AUX POINTS D'INTEGRATION
 C ---- DE L'ELEMENT :
 C      ------------
       CALL SIGTMC(MODELI,NNO,NDIM,NBSIG,NPG,ZR(IVF),ZR(IGEOM),
-     +            ZR(ITEMPE),ZR(ITREF),ZR(IHYDR),ZR(ISECH),INSTAN,
+     +            ZR(ITEMPE),RBID,ZR(IHYDR),ZR(ISECH),RBID,INSTAN,
      +            ZI(IMATE),REPERE,OPTION,SIGTH)
 C
 C ---- CALCUL DU VECTEUR DES FORCES D'ORIGINE HYDRIQUE (BT*SIGTH)

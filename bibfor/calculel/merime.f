@@ -9,7 +9,7 @@
       CHARACTER*(1) BASE
       LOGICAL EXITIM
 C ----------------------------------------------------------------------
-C MODIF CALCULEL  DATE 11/09/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 04/05/2004   AUTEUR SMICHEL S.MICHEL-PONNELLE 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -66,7 +66,7 @@ C     ------------------------------------------------------------------
       CHARACTER*24 LIGRMO,LIGRCH,LCHIN(25),LCHOUT(2)
       CHARACTER*24 CHGEOM,CHCARA(15),CHTEMP,CHTREF,CHHARM
       CHARACTER*24 CHCHAR,ARGU,CHTIME
-      CHARACTER*24 CHHYDR,CHSECH
+      CHARACTER*24 CHHYDR,CHSECH,CHSREF
       COMPLEX*16 CBID
       DATA CHHYDR,CHSECH/'&&CHHYDR.CH_HYDR_R','&&CHSECH.CH_SECH_R'/
 
@@ -90,7 +90,8 @@ C     ------------------------------------------------------------------
 
 
       IF (NOMCMD.EQ.'MECA_STATIQUE') THEN
-        CALL MEDEHY(MODELE,NCHAR,LCHAR,MATE,EXITIM,TIME,CHHYDR,CHSECH)
+        CALL MEDEHY(MODELE,NCHAR,LCHAR,MATE,EXITIM,TIME,CHHYDR,
+     &              CHSECH,CHSREF)
       ELSE
         CHHYDR = ' '
         CHSECH = ' '

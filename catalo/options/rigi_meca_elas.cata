@@ -1,4 +1,4 @@
-%& MODIF OPTIONS  DATE 25/03/2004   AUTEUR OUGLOVA A.OUGLOVA 
+%& MODIF OPTIONS  DATE 04/05/2004   AUTEUR SMICHEL S.MICHEL-PONNELLE 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -54,6 +54,7 @@ OPTION__
         PSECHMR  TEMP_R
         PSECHPR  TEMP_R
         PSECHER  TEMP_R
+        PSECREF  TEMP_R  <<  PSECREF : SECHAGE DE REFERENCE >>
         PPHASMR  VARI_R
         PPHASPR  VARI_R
         PITERAT  NEUT_R

@@ -3,7 +3,7 @@
       CHARACTER*16        OPTION , NOMTE
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 04/05/2004   AUTEUR SMICHEL S.MICHEL-PONNELLE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -60,7 +60,7 @@ C
      +                 ISECHE
       REAL*8           EPSM(54), REPERE(7)
       REAL*8           NHARM, INSTAN, TEMPE(27)
-      REAL*8           HYDR(27), SECH(27)
+      REAL*8           HYDR(27), SECH(27), RBID
       CHARACTER*8      MODELI
       CHARACTER*16     COMPOR
 C DEB ------------------------------------------------------------------
@@ -148,7 +148,7 @@ C      -------------------------------------------
       IF (ITREF.NE.0) THEN
           TREF = ZR(ITREF)
       ENDIF
-C
+
 C ---- RECUPERATION DE L'INSTANT DE CALCUL :
 C      -----------------------------------
       CALL TECACH('ONN','PTEMPSR',1,ITEMPS,IRET)
@@ -184,7 +184,7 @@ C ----                    ET EPSI_MECA - EPSI_THERMIQUES POUR LES
 C ----                    OPTIONS EPME ET EPMG :
 C      ---------------------------------------
       CALL EPSVMC(MODELI,NNO,NDIM,NBSIG1,NPG,IPOIDS,IVF,IDFDE,
-     +            ZR(IGEOM),ZR(IDEPL),TEMPE,TREF,HYDR,SECH,INSTAN,
+     +            ZR(IGEOM),ZR(IDEPL),TEMPE,TREF,HYDR,SECH,RBID,INSTAN,
      +            ZI(IMATE),REPERE,NHARM,OPTION,EPSM)
 C
       IF (OPTION(6:9).EQ.'ELGA') THEN

@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
+%& MODIF TYPELEM  DATE 04/05/2004   AUTEUR SMICHEL S.MICHEL-PONNELLE 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -293,9 +293,8 @@ OPTION__
                                      EDEFONO  PDEFAMR  EDEFONO  PDEFAPR  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR
                                      NGEOMER  PGEOMER  EHYDRER  PHYDRMR  EHYDRER  PHYDRPR  CTEMPSR  PINSTMR
                                      CTEMPSR  PINSTPR  NIRRAER  PIRRAMR  NIRRAER  PIRRAPR  CMATERC  PMATERC
-                                     EPHASRR  PPHASMR  EPHASRR  PPHASPR  NTEMPER  PSECHMR  NTEMPER  PSECHPR
-                                     NTEMPER  PTEMPMR  NTEMPER  PTEMPPR  CTEREFE  PTEREF   ZVARIPG  PVARIMP
-                                     ZVARIPG  PVARIMR
+                                     EPHASRR  PPHASMR  EPHASRR  PPHASPR  NTEMPER  PTEMPMR  NTEMPER  PTEMPPR 
+                                     CTEREFE  PTEREF   ZVARIPG  PVARIMP  ZVARIPG  PVARIMR
                               OUT__  ECODRET  PCODRET  ECONTPG  PCONTPR  MMATUUR  PMATUUR  ZVARIPG  PVARIPR
                                      MVECTUR  PVECTUR
     FULL_MECA_ELAS      -1   IN__   CCAMASS  PCAMASS  CCARCRI  PCARCRI  CCOMPOR  PCOMPOR  ECONTPG  PCONTMR
@@ -353,9 +352,8 @@ OPTION__
                                      EDEFONO  PDEFAMR  EDEFONO  PDEFAPR  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR
                                      NGEOMER  PGEOMER  EHYDRER  PHYDRMR  EHYDRER  PHYDRPR  CTEMPSR  PINSTMR
                                      CTEMPSR  PINSTPR  NIRRAER  PIRRAMR  NIRRAER  PIRRAPR  CMATERC  PMATERC
-                                     EPHASRR  PPHASMR  EPHASRR  PPHASPR  NTEMPER  PSECHMR  NTEMPER  PSECHPR
-                                     NTEMPER  PTEMPMR  NTEMPER  PTEMPPR  CTEREFE  PTEREF   ZVARIPG  PVARIMP
-                                     ZVARIPG  PVARIMR
+                                     EPHASRR  PPHASMR  EPHASRR  PPHASPR  NTEMPER  PTEMPMR  NTEMPER  PTEMPPR  
+                                     CTEREFE  PTEREF   ZVARIPG  PVARIMP  ZVARIPG  PVARIMR
                               OUT__  ECODRET  PCODRET  ECONTPG  PCONTPR  ZVARIPG  PVARIPR  MVECTUR  PVECTUR
     REFE_FORC_NODA      -1     IN__   NGEOMER  PGEOMER  EREFCO   PREFCO
                               OUT__  MVECTUR  PVECTUR
@@ -363,7 +361,7 @@ OPTION__
                                      CSOUSOP  PSOUSOP  ZVARIPG  PVARIMR  ZVARIPG  PVARIPR
                               OUT__  ERICTRA  PRICTRA  EGNEUT1R PSDRPR
     RIGI_MECA           530    IN__   CCAMASS  PCAMASS  NGEOMER  PGEOMER  EHYDRER  PHYDRER  CMATERC  PMATERC
-                                     NTEMPER  PSECHER  NTEMPER  PTEMPER
+                                     NTEMPER  PTEMPER
                               OUT__  MMATUUR  PMATUUR
     RIGI_MECA_ELAS      -1    IN__   CCAMASS  PCAMASS  NGEOMER  PGEOMER  EHYDRER  PHYDRER  CMATERC  PMATERC
                                      NTEMPER  PSECHER  NTEMPER  PTEMPER
@@ -387,8 +385,8 @@ OPTION__
                                      EDEFONO  PDEFAMR  EDEFONO  PDEFAPR  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR
                                      NGEOMER  PGEOMER  EHYDRER  PHYDRMR  EHYDRER  PHYDRPR  CTEMPSR  PINSTMR
                                      CTEMPSR  PINSTPR  NIRRAER  PIRRAMR  NIRRAER  PIRRAPR  CMATERC  PMATERC
-                                     EPHASRR  PPHASMR  EPHASRR  PPHASPR  NTEMPER  PSECHMR  NTEMPER  PSECHPR
-                                     NTEMPER  PTEMPMR  NTEMPER  PTEMPPR  CTEREFE  PTEREF   ZVARIPG  PVARIMR
+                                     EPHASRR  PPHASMR  EPHASRR  PPHASPR  NTEMPER  PTEMPMR  NTEMPER  PTEMPPR  
+                                     CTEREFE  PTEREF   ZVARIPG  PVARIMR
                               OUT__  MMATUUR  PMATUUR
     SIEF_ELGA_DEPL      530    IN__   CCAMASS  PCAMASS  DDL_MECA PDEPLAR  NGEOMER  PGEOMER  CMATERC  PMATERC
                                      NTEMPER  PTEMPER  CTEREFE  PTEREF

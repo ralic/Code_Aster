@@ -1,6 +1,6 @@
-      SUBROUTINE RCMOM2(IMATE,TEMPP,IRRAP,VALE,E,ITRAC)
+      SUBROUTINE RCMOM2(JMAT,TEMPP,IRRAP,VALE,E,ITRAC)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 02/06/2003   AUTEUR G8BHHXD X.DESROCHES 
+C MODIF MODELISA  DATE 03/05/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -19,7 +19,7 @@ C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C ----------------------------------------------------------------------
       IMPLICIT REAL*8 (A-H,O-Z)
-      INTEGER            IMATE,ITRAC
+      INTEGER            IMATE,ITRAC,JMAT,NBMAT
       REAL*8             E,VALR(10),TEMPP,IRRAP
 C ----------------------------------------------------------------------
 C     DETERMINATION DU MODULE DE YOUNG ET DE LA FONCTION D'ECROUISSAGE
@@ -61,6 +61,12 @@ C PARAMETER ASSOCIE AU MATERIAU CODE
       INTEGER            NBPTMS
       COMMON/ICOELJ/      NBPTMS
 C DEB ------------------------------------------------------------------
+      
+      NBMAT=ZI(JMAT)
+C     UTILISABLE SEULEMENT AVEC UN MATERIAU PAR MAILLE
+      CALL ASSERT(NBMAT.EQ.1)
+      IMATE = JMAT+ZI(JMAT+NBMAT+1)
+      
       ITRAC=1
       DO 10 ICOMP=1,ZI(IMATE+1)
         IF ( 'DIS_CONTACT' .EQ. ZK16(ZI(IMATE)+ICOMP-1)(1:11) ) THEN

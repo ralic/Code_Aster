@@ -1,6 +1,6 @@
       SUBROUTINE TE0086 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 04/05/2004   AUTEUR SMICHEL S.MICHEL-PONNELLE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -33,7 +33,7 @@ C
       REAL*8           SIGMA(54), REPERE(7),SIGM2(54)
       REAL*8           NHARM, INSTAN, DEPLA(36),CONTNO(54)
       LOGICAL          CPX,LSENS
-      
+      INTEGER          IHYDR, ISECH, ISREF      
 C
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       INTEGER            ZI
@@ -120,6 +120,19 @@ C ---- RECUPERATION DE LA TEMPERATURE DE REFERENCE
 C      -------------------------------------------
       CALL JEVECH('PTEREF','L',ITREF)
 
+C ---- RECUPERATION DU CHAMP DE L'HDRATATION SUR L'ELEMENT
+C      --------------------------------------------------
+      CALL JEVECH('PHYDRER','L',IHYDR)
+
+C ---- RECUPERATION DU CHAMP DU SECHAGE SUR L'ELEMENT
+C      --------------------------------------------------
+      CALL JEVECH('PSECHER','L',ISECH)      
+
+C ---- RECUPERATION DU SECHAGE DE REFERENCE
+C      -------------------------------------------
+      CALL JEVECH('PSECREF','L',ISREF)
+
+C-----------------------------------------------------------------
 
       DO 150 ITER = 1,NITER
 
@@ -149,8 +162,9 @@ C ---- DE L'ELEMENT :
 C ---- (I.E. SIGMA_MECA - SIGMA_THERMIQUES)
 C      ------------------------------------
       CALL SIGVMC(MODELI,NNO,NDIM,NBSIG1,NPG,IPOIDS,IVF,IDFDE,
-     +            ZR(IGEOM),DEPLA,ZR(ITEMPE),
-     +            ZR(ITREF),INSTAN,REPERE,ZI(IMATE),NHARM,SIGMA,.FALSE.)
+     +            ZR(IGEOM),DEPLA,ZR(ITEMPE),ZR(ITREF),
+     +            ZR(IHYDR),ZR(ISECH),ZR(ISREF), INSTAN,REPERE,
+     +            ZI(IMATE),NHARM,SIGMA,.FALSE.)
 C
 C
 C ---- CALC DU TERME COMPLEMENTAIRE DE CONTR 'VRAIES' SUR L'ELEMENT
@@ -164,7 +178,8 @@ C      ------------------------------------
 60        CONTINUE
         CALL SIGVMC(MODELI,NNO,NDIM,NBSIG1,NPG,IPOIDS,IVF,IDFDE,
      +              ZR(IGEOM),DEPLA,ZR(ITEMPE),ZR(ITREF),
-     +              INSTAN,REPERE,ZI(IMATE),NHARM,SIGM2,.TRUE.)
+     +              ZR(IHYDR),ZR(ISECH),ZR(ISREF),INSTAN,REPERE,
+     +              ZI(IMATE),NHARM,SIGM2,.TRUE.)
         DO 70 I=1, NBSIG*NPG
           SIGMA(I) = SIGMA(I) + SIGM2(I)
 70      CONTINUE

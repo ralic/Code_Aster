@@ -1,6 +1,6 @@
       SUBROUTINE TE0490(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ELEMENTS  DATE 04/05/2004   AUTEUR SMICHEL S.MICHEL-PONNELLE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -128,7 +128,7 @@ C
       REAL*8             MU,TROISK,JAC,TAU(6),TRTAU,EQTAU,DVTAU(6)
       REAL*8             JE2,JE3,Q,D,SOL,TRBE
       INTEGER            I,JTAB(7)
-      REAL*8             KR(6),PDTSCA(6), TRAV(81)
+      REAL*8             KR(6),PDTSCA(6), TRAV(81), RBID
 
 C
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
@@ -314,7 +314,7 @@ C         ----------------------
       OPTIO2 = 'EPME_ELGA_DEPL'
       CALL EPSVMC(MODELI, NNO, NDIM, NBSIG, NPG, IPOIDS,IVF,IDFDE,
      +            ZR(IGEOM), ZR(IDEPL),
-     +            ZR(ITEMPE), ZR(ITREF), HYDR, SECH, INSTAN,
+     +            ZR(ITEMPE), ZR(ITREF), HYDR, SECH, RBID, INSTAN,
      +            ZI(IMATE), REPERE, NHARM, OPTIO2, EPSM)
 
 C                      ===========================

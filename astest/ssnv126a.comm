@@ -1,0 +1,379 @@
+# MODIF  DATE 03/05/2004   AUTEUR JMBHH01 J.M.PROIX 
+# TITRE ESSAI DE RELAXATION EN 3D VENDOCHAB
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+#----------------------------------------------------------------------
+#    TEST MODELE VISCO-PLASTIQUE COUPLE AVEC L'ENDOMMAGEMENT
+#     ISOTROPE DE CHABOCHE EN ANISOTHERME ( VENDOCHAB)
+#    ESSAI EN TRACTION (RELAXATION) EXPLICITE
+#    DEPLACEMENT IMPOSE A TEMPERATURE ANISOTHERME DANS LE TEMPS
+#----------------------------------------------------------------------
+#         ELEMENT HEXA 8 NOEUDS EN TRACTION
+#              ETAT UNIAXIAL DE CONTRAINTE DEFORMATION
+#       UNITES : NEWTON , MILLIMETRE , SECONDE (N,MM,S,->MPA)
+#
+#               Z       A                     A = 3 MM
+#               L<------------->
+#               L                             L = 30 MM
+#                / N5            N8
+#              >O--------------O      X
+#              /L             /L      L
+#         N6  / L         N7 / L      L
+#           >O--+-----------O  L      L
+#            L  L           L  L      L
+#            L  L           L  L      L
+#            L  L           L  L      L  L
+#            L  L           L  L      L
+#            L  L           L  L      L
+#            L  L           L  L      L
+#            L  L           L  L      L
+#            L  L           L  L      L
+#            L  L           L  L      L
+#            L  L/ N1       L  L N4   L
+#            L >O-----------L--O-> Y  V
+#            L /V           L /
+#         N2 L/          N3 L/
+#           >O--------------O
+#
+#          /
+#         X
+#
+#----------------------------------------------------------------------
+#
+#
+
+DEBUT(  CODE=_F( NOM = 'SSNV126A',NIV_PUB_WEB='INTERNET'))
+
+#----------------------------------------------------------------------
+#              TEST MODELE VENDOCHAB 3D
+#      PAS DE CHARGEMENT THERMIQUE (ALPHA = 0 )
+#      RELAXATION D UNE EPROUVETTE PARRALELIPIPEDIQUE
+#      EN TRACTION UNIAXIALE
+#      CHAMPS DE TEMPERATURE ANISOTHERME
+#      K_D NE DEPEND QUE DE LA TEMPERATURE (FONCTION)
+#----------------------------------------------------------------------
+#
+EPROU=LIRE_MAILLAGE( )
+
+CT1=CREA_CHAMP(OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R',
+ MAILLAGE=EPROU,AFFE=(
+   
+   _F(   NOEUD = 'N1',      NOM_CMP = 'TEMP', VALE = 1000.),
+   _F(   NOEUD = 'N2',      NOM_CMP = 'TEMP', VALE = 1000.),
+   _F(   NOEUD = 'N3',      NOM_CMP = 'TEMP', VALE = 1000.),
+   _F(   NOEUD = 'N4',      NOM_CMP = 'TEMP', VALE = 1000.),
+   _F(   NOEUD = 'N5',      NOM_CMP = 'TEMP', VALE = 1000.),
+   _F(   NOEUD = 'N6',      NOM_CMP = 'TEMP', VALE = 1000.),
+   _F(   NOEUD = 'N7',      NOM_CMP = 'TEMP', VALE = 1000.),
+   _F(   NOEUD = 'N8',      NOM_CMP = 'TEMP', VALE = 1000.))
+  )
+
+CT2=CREA_CHAMP(OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R',
+MAILLAGE=EPROU,AFFE=(
+   
+   _F(   NOEUD = 'N1',      NOM_CMP = 'TEMP', VALE = 1025.),
+   _F(   NOEUD = 'N2',      NOM_CMP = 'TEMP', VALE = 1025.),
+   _F(   NOEUD = 'N3',      NOM_CMP = 'TEMP', VALE = 1025.),
+   _F(   NOEUD = 'N4',      NOM_CMP = 'TEMP', VALE = 1025.),
+   _F(   NOEUD = 'N5',      NOM_CMP = 'TEMP', VALE = 1025.),
+   _F(   NOEUD = 'N6',      NOM_CMP = 'TEMP', VALE = 1025.),
+   _F(   NOEUD = 'N7',      NOM_CMP = 'TEMP', VALE = 1025.),
+   _F(   NOEUD = 'N8',      NOM_CMP = 'TEMP', VALE = 1025.))
+  )
+
+CTHER=CREA_RESU(    OPERATION='AFFE', TYPE_RESU='EVOL_THER',
+                      NOM_CHAM='TEMP',AFFE=(
+                     
+              _F(  CHAM_GD = CT1,   INST = 0.0),
+              _F(  CHAM_GD = CT1,   INST = 200000.0),
+              _F(  CHAM_GD = CT2,   INST = 2000000.0),
+              _F(  CHAM_GD = CT2,   INST = 3000000.0))
+  )
+
+EPD3=AFFE_MODELE(            MAILLAGE=EPROU,
+                                    AFFE=_F(   PHENOMENE = 'MECANIQUE',
+                                            MODELISATION = '3D',
+                                            MAILLE = 'MA1'))
+
+SEUIL=DEFI_CONSTANTE(   VALE=0.)
+
+A1=DEFI_CONSTANTE(   VALE=0.)
+
+A2=DEFI_CONSTANTE(   VALE=0.)
+
+N_T=DEFI_FONCTION(      NOM_PARA='TEMP',
+                            PROL_DROITE='CONSTANT',
+                           PROL_GAUCHE='CONSTANT',
+                          VALE=( 900.,     12.2,
+                                 1000.,    10.8,
+                                 1025.,    10.45,       ))
+
+M_T=DEFI_FONCTION(      NOM_PARA='TEMP',
+                            PROL_DROITE='CONSTANT',
+                           PROL_GAUCHE='CONSTANT',
+                          VALE=( 900.,    10.5,
+                                 1000.,    9.8,
+                                 1025.,    9.625,       ))
+
+K_T=DEFI_FONCTION(      NOM_PARA='TEMP',
+                            PROL_DROITE='CONSTANT',
+                           PROL_GAUCHE='CONSTANT',
+                          VALE=( 900.,     2110.,
+                                 1000.,    1450.,
+                                 1025.,    1285.,       ))
+
+A_T=DEFI_FONCTION(      NOM_PARA='TEMP',
+                            PROL_DROITE='CONSTANT',
+                           PROL_GAUCHE='CONSTANT',
+                          VALE=( 900.,     3191.62,
+                                 1000.,    2511.35,
+                                 1025.,    2341.3,     ))
+
+R_T=DEFI_FONCTION(      NOM_PARA='TEMP',
+                            PROL_DROITE='CONSTANT',
+                           PROL_GAUCHE='CONSTANT',
+                          VALE=( 900.,     6.3,
+                                 1000.,    5.2,
+                                 1025.,    4.925,       ))
+
+KD_T=DEFI_NAPPE(      NOM_PARA='TEMP',
+                         PROL_DROITE='LINEAIRE',
+                        PROL_GAUCHE='LINEAIRE',
+                               PARA=(900., 1000., 1025., 1050.,),
+                           NOM_PARA_FONC='X',DEFI_FONCTION=(
+                        _F(  PROL_DROITE = 'LINEAIRE',
+                                        PROL_GAUCHE = 'LINEAIRE',
+                                        VALE = ( .01,    14.355,
+                                               100.,   14.855,
+                                               200.,   15.355,  )),
+                                      _F(  PROL_DROITE = 'LINEAIRE',
+                                        PROL_GAUCHE = 'LINEAIRE',
+                                        VALE = ( .01,    14.5,
+                                               100.,   15.,
+                                               200.,   15.5,  )),
+                                      _F(  PROL_DROITE = 'LINEAIRE',
+                                        PROL_GAUCHE = 'LINEAIRE',
+                                        VALE = ( .01,    14.5363,
+                                               100.,   15.0363,
+                                               200.,   15.5363,  )),
+                                     _F(  PROL_DROITE = 'LINEAIRE',
+                                        PROL_GAUCHE = 'LINEAIRE',
+                                        VALE = ( .01,    14.5725,
+                                               100.,   15.0725,
+                                               200.,   15.5725,  )))
+                     )
+
+F_E=DEFI_CONSTANTE(   VALE=150000.)
+
+F_NU=DEFI_CONSTANTE(   VALE=0.3)
+
+F_ALPHA=DEFI_CONSTANTE(   VALE=0.)
+
+ACIER=DEFI_MATERIAU(      ELAS_FO=_F(    E = F_E,
+                                         NU = F_NU,
+                                         ALPHA = F_ALPHA, TEMP_DEF_ALPHA=100.0,),
+
+                         VENDOCHAB_FO=_F(   S_VP = SEUIL,
+                                           SEDVP1 = A1,
+                                           SEDVP2 = A2,
+                                           N_VP = N_T,
+                                           M_VP = M_T,
+                                           K_VP = K_T,
+                                           A_D = A_T,
+                                           R_D = R_T,
+                                           K_D = KD_T))
+
+MAT=AFFE_MATERIAU(            MAILLAGE=EPROU,
+                                    AFFE=_F(  MAILLE = 'MA1',
+                                           MATER = ACIER,
+                                           TEMP_REF = 1000.))
+
+LINST=DEFI_LIST_REEL(              DEBUT=0.,INTERVALLE=(
+                             
+                           _F(  JUSQU_A = .2,        NOMBRE = 10),
+                           _F(  JUSQU_A = 2.,        NOMBRE = 5),
+                           _F(  JUSQU_A = 20.,       NOMBRE = 5),
+                           _F(  JUSQU_A = 200.,      NOMBRE = 5),
+                           _F(  JUSQU_A = 2000.,     NOMBRE = 5),
+                           _F(  JUSQU_A = 20000.,    NOMBRE = 5),
+                           _F(  JUSQU_A = 200000.,   NOMBRE = 5),
+                           _F(  JUSQU_A = 1000000.,  NOMBRE = 10),
+                           _F(  JUSQU_A = 1600000.,  NOMBRE = 10),
+                           _F(  JUSQU_A = 1700000.,  NOMBRE = 10))
+#                           ( JUSQU_A: 1625000.  NOMBRE :  5    )
+#                           ( JUSQU_A: 1635000.  NOMBRE :  5    )
+#                           ( JUSQU_A: 1640000.  NOMBRE :  5    )
+                                         )
+
+COND_LIM=AFFE_CHAR_MECA(             MODELE=EPD3,
+                                TEMP_CALCULEE=CTHER,DDL_IMPO=(
+                                  
+                     _F( NOEUD = 'N1',         DX = 0., DY = 0., DZ = 0.),
+                     _F( NOEUD = 'N2',                DY = 0., DZ = 0.),
+                     _F( NOEUD = 'N3',                       DZ = 0.),
+                     _F( NOEUD = 'N4',         DX = 0.,        DZ = 0.),
+                     _F( NOEUD = 'N5',         DX = 0., DY = 0., DZ = 0.1),
+                     _F( NOEUD = 'N6',                DY = 0., DZ = 0.1),
+                     _F( NOEUD = 'N7',                       DZ = 0.1),
+                     _F( NOEUD = 'N8',         DX = 0.,        DZ = 0.1))
+                           )
+
+COEF_TR=DEFI_FONCTION(      NOM_PARA='INST',
+                                  VALE=(
+                                            0.,   0.,
+                                            0.1,  1.,
+                                          100.,   1.,
+                                      1500000.,   1.,
+                                      2400000.,   1.,
+                                      2450000.,   1.,
+                                      3000000.,   1.,
+                        ))
+
+SOLNL=STAT_NON_LINE( 
+                             TITRE='TEST RELAXATION SIMPLE',
+                            MODELE=EPD3,
+                        CHAM_MATER=MAT,
+                             EXCIT=_F( 
+                CHARGE = COND_LIM,
+                FONC_MULT = COEF_TR),
+                         COMP_INCR=_F( 
+                RELATION = 'VENDOCHAB',
+                DEFORMATION = 'PETIT',
+                TOUT = 'OUI'),
+                         INCREMENT=_F( 
+                LIST_INST = LINST,
+                NUME_INST_FIN = 60),
+                            NEWTON=_F( 
+                MATRICE = 'ELASTIQUE',
+                REAC_INCR = 5,
+                REAC_ITER = 3),
+                       CONVERGENCE=_F( 
+                ITER_GLOB_MAXI = 20,
+                RESI_GLOB_RELA = 1.E-6,
+                RESI_INTE_RELA = 1.E-6,
+                ITER_INTE_MAXI = 20,
+                RESO_INTE = 'RUNGE_KUTTA_2')
+              )
+
+SOLNL=CALC_ELEM( reuse=SOLNL,
+                            OPTION=(
+                  'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
+                          RESULTAT=SOLNL,
+                            MODELE=EPD3,
+                        CHAM_MATER=MAT
+              )
+
+TEST_RESU(RESU=(
+  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'SIEF_ELNO_ELGA',  NUME_ORDRE = 20,
+                 MAILLE = 'MA1',  NOEUD = 'N1',  NOM_CMP = 'SIZZ', VALE = 2.5276091E2,
+         PRECISION = 5.0E-3),
+
+  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'VARI_ELNO_ELGA',  NUME_ORDRE = 20,
+                 MAILLE = 'MA1',  NOEUD = 'N1',
+                 NOM_CMP = 'V7',            VALE = 1.64457E-3,
+         PRECISION = 5.0E-3),
+
+  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'VARI_ELNO_ELGA',  NUME_ORDRE = 20,
+                 MAILLE = 'MA1',  NOEUD = 'N1',
+                 NOM_CMP = 'V8',            VALE = 1.64451E-3,
+         PRECISION = 5.0E-3),
+
+  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'VARI_ELNO_ELGA',  NUME_ORDRE = 20,
+                 MAILLE = 'MA1',  NOEUD = 'N1',
+                 NOM_CMP = 'V9',            VALE = 2.31684E-4,
+         PRECISION = 5.0E-3),
+
+  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'SIEF_ELNO_ELGA',  NUME_ORDRE = 30,
+                 MAILLE = 'MA1',  NOEUD = 'N1',  NOM_CMP = 'SIZZ', VALE = 1.64261E2,
+         PRECISION = 5.0E-3),
+
+  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'VARI_ELNO_ELGA',  NUME_ORDRE = 30,
+                 MAILLE = 'MA1',  NOEUD = 'N1',
+                 NOM_CMP = 'V7',            VALE = 2.23188E-3,
+         PRECISION = 5.0E-3),
+
+  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'VARI_ELNO_ELGA',  NUME_ORDRE = 30,
+                 MAILLE = 'MA1',  NOEUD = 'N1',
+                 NOM_CMP = 'V8',            VALE = 2.23126E-3,
+         PRECISION = 5.0E-3),
+
+  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'VARI_ELNO_ELGA',  NUME_ORDRE = 30,
+                 MAILLE = 'MA1',  NOEUD = 'N1',
+                 NOM_CMP = 'V9',            VALE = 2.77144E-3,
+         PRECISION = 5.0E-3),
+
+  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'SIEF_ELNO_ELGA',  NUME_ORDRE = 40,
+                 MAILLE = 'MA1',  NOEUD = 'N1',  NOM_CMP = 'SIZZ', VALE = 1.01596E2,
+         PRECISION = 5.0E-3),
+
+  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'VARI_ELNO_ELGA',  NUME_ORDRE = 40,
+                 MAILLE = 'MA1',  NOEUD = 'N1',
+                 NOM_CMP = 'V7',            VALE = 2.63012E-3,
+         PRECISION = 5.0E-3),
+
+  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'VARI_ELNO_ELGA',  NUME_ORDRE = 40,
+                 MAILLE = 'MA1',  NOEUD = 'N1',
+                 NOM_CMP = 'V8',            VALE = 2.62515E-3,
+         PRECISION = 5.0E-3),
+
+  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'VARI_ELNO_ELGA',  NUME_ORDRE = 40,
+                 MAILLE = 'MA1',  NOEUD = 'N1',
+                 NOM_CMP = 'V9',            VALE = 3.22551E-2,
+         PRECISION = 5.0E-3),
+
+  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'SIEF_ELNO_ELGA',  NUME_ORDRE = 50,
+                 MAILLE = 'MA1',  NOEUD = 'N1',  NOM_CMP = 'SIZZ', VALE = 7.59785E1,
+         PRECISION = 5.0E-3),
+
+  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'VARI_ELNO_ELGA',  NUME_ORDRE = 50,
+                 MAILLE = 'MA1',  NOEUD = 'N1',
+                 NOM_CMP = 'V7',            VALE = 2.76079E-3,
+         PRECISION = 5.0E-3),
+
+  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'VARI_ELNO_ELGA',  NUME_ORDRE = 50,
+                 MAILLE = 'MA1',  NOEUD = 'N1',
+                 NOM_CMP = 'V8',            VALE = 2.7478E-3,
+         PRECISION = 5.0E-3),
+
+  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'VARI_ELNO_ELGA',  NUME_ORDRE = 50,
+                 MAILLE = 'MA1',  NOEUD = 'N1',
+                 NOM_CMP = 'V9',            VALE = 1.10134E-1,
+         PRECISION = 1.0E-2),
+
+  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'SIEF_ELNO_ELGA',  NUME_ORDRE = 60,
+                 MAILLE = 'MA1',  NOEUD = 'N1',  NOM_CMP = 'SIZZ', VALE = 5.55421E1,
+         PRECISION = 1.0E-2),
+
+  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'VARI_ELNO_ELGA',  NUME_ORDRE = 60,
+                 MAILLE = 'MA1',  NOEUD = 'N1',
+                 NOM_CMP = 'V7',            VALE = 2.81478E-3,
+         PRECISION = 5.0E-3),
+
+  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'VARI_ELNO_ELGA',  NUME_ORDRE = 60,
+                 MAILLE = 'MA1',  NOEUD = 'N1',
+                 NOM_CMP = 'V8',            VALE = 2.79276E-3,
+         PRECISION = 5.0E-3),
+
+  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'VARI_ELNO_ELGA',  NUME_ORDRE = 60,
+                 MAILLE = 'MA1',  NOEUD = 'N1',
+                 NOM_CMP = 'V9',            VALE = 2.81316E-1,
+         PRECISION = 1.0E-2))
+                 )
+
+FIN()
+#

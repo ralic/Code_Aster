@@ -1,8 +1,10 @@
-      SUBROUTINE SIGVMC (MODELI,NNO,NDIM,NBSIG,NPG,IPOIDS,IVF,IDFDE,
-     +                   XYZ,DEPL,TEMPE,TREF,INSTAN,REPERE,MATER,
-     +                   NHARM,SIGMA,LSENS)
+      SUBROUTINE SIGVMC (MODELI,NNO,NDIM,NBSIG,NPG,
+     +                    IPOIDS,IVF,IDFDE,XYZ,DEPL,
+     +                    TEMPE,TREF,HYDR,SECH,SREF,
+     +                    INSTAN, REPERE,MATER,NHARM,SIGMA,
+     +                    LSENS)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 04/05/2004   AUTEUR SMICHEL S.MICHEL-PONNELLE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,9 +23,10 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C.======================================================================
       IMPLICIT REAL*8 (A-H,O-Z)
+C TOLE CRP_21
 C
 C      SIGVMC   -- CALCUL DES  CONTRAINTES 'VRAIES'
-C                  (I.E. SIGMA_MECA - SIGMA_THERMIQUES)
+C                  (I.E. SIGMA_MECA - SIGMA_THERMIQUES- SIGMA_RETRAIT)
 C                  AUX POINTS D'INTEGRATION POUR LES ELEMENTS
 C                  ISOPARAMETRIQUES
 C
@@ -49,6 +52,9 @@ C                                   L'ELEMENT
 C    TEMPE(1)       IN     R        TEMPERATURES AUX NOEUDS DE
 C                                   L'ELEMENT
 C    TREF           IN     R        TEMPERATURE DE REFERENCE
+C    HYDR           IN     R        HYDRATATION AUX POINTS DE GAUSS
+C    SECH           IN     R        SECHAGE AUX NOEUDS
+C    SREF           IN     R        SECHAGE DE REFERENCE
 C    INSTAN         IN     R        INSTANT DE CALCUL (0 PAR DEFAUT)
 C    REPERE(7)      IN     R        VALEURS DEFINISSANT LE REPERE
 C                                   D'ORTHOTROPIE
@@ -62,12 +68,12 @@ C.========================= DEBUT DES DECLARATIONS ====================
 C -----  ARGUMENTS
            CHARACTER*8  MODELI
            REAL*8       XYZ(1), DEPL(1), TEMPE(1), REPERE(7), SIGMA(1)
-           REAL*8       INSTAN, NHARM
+           REAL*8       INSTAN, NHARM, HYDR(*), SECH(*), SREF
            LOGICAL      LSENS
            INTEGER      IPOIDS,IVF,IDFDE
 C -----  VARIABLES LOCALES
-           CHARACTER*16 K16BID
-           REAL*8       SIGTH(162),HYDR(27),SECH(27)
+           CHARACTER*16 OPTION
+           REAL*8       SIGTH(162),SIGHY(162),SIGSE(162)
 C
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       INTEGER  ZI
@@ -91,18 +97,11 @@ C
 C --- INITIALISATIONS :
 C     -----------------
       ZERO   = 0.0D0
-      K16BID = ' '
 C
       DO 10 I = 1, NBSIG*NPG
          SIGMA(I) = ZERO
  10   CONTINUE
-C
-C --- PAS DE PRISE EN COMPTE DES VARIABLES D'HYDRATATION OU SECHAGE
-C
-      DO 11 I = 1, NPG
-         HYDR(I) = ZERO
-         SECH(I) = ZERO
- 11   CONTINUE
+
 C
 C --- CALCUL DES CONTRAINTES MECANIQUES AUX POINTS D'INTEGRATION
 C      ---------------------------------------------------------
@@ -110,15 +109,29 @@ C      ---------------------------------------------------------
      +           XYZ,DEPL,TEMPE,INSTAN,REPERE,MATER,NHARM,
      +           SIGMA,LSENS)
 C
-C --- CALCUL DES CONTRAINTES THERMIQUES AUX POINTS D'INTEGRATION
+C --- CALCUL DES CONTRAINTES THERMIQUESAUX POINTS D'INTEGRATION
 C      ---------------------------------------------------------
+      OPTION = 'CALC_CONT_TEMP_R'
       CALL SIGTMC(MODELI,NNO,NDIM,NBSIG,NPG,ZR(IVF),XYZ,TEMPE,TREF,
-     +            HYDR,SECH,INSTAN,MATER,REPERE,K16BID,SIGTH)
-C
+     +            HYDR,SECH,SREF,INSTAN,MATER,REPERE,OPTION,SIGTH)
+C       
+C--- CALCUL DES CONTRAINTES DUES AUX RETRAIT DE DESSICCATION 
+C           ET D'HYDRATATION
+C      ---------------------------------------------------------
+
+      OPTION = 'CALC_CONT_HYDR_R'
+      CALL SIGTMC(MODELI,NNO,NDIM,NBSIG,NPG,ZR(IVF),XYZ,TEMPE,TREF,
+     +            HYDR,SECH,SREF,INSTAN,MATER,REPERE,OPTION,SIGHY)
+      
+      
+      OPTION = 'CALC_CONT_SECH_R'     
+      CALL SIGTMC(MODELI,NNO,NDIM,NBSIG,NPG,ZR(IVF),XYZ,TEMPE,TREF,
+     +            HYDR,SECH,SREF,INSTAN,MATER,REPERE,OPTION,SIGSE)
+       
 C --- CALCUL DES CONTRAINTES TOTALES AUX POINTS D'INTEGRATION
 C      ---------------------------------------------------------
       DO 20 I = 1, NBSIG*NPG
-         SIGMA(I) = SIGMA(I) - SIGTH(I)
+         SIGMA(I) = SIGMA(I) - SIGTH(I) - SIGHY(I) - SIGSE(I)
  20   CONTINUE
 C
 C.============================ FIN DE LA ROUTINE ======================

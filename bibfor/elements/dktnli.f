@@ -5,7 +5,7 @@
       REAL*8          XYZL(3,*), UL(6,*), DUL(6,*), PGL(3,3)
       REAL*8          KTAN(*), BTSIG(6,*)
       CHARACTER*16    NOMTE, OPT
-C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHPD S.VANDENBERGHE 
+C MODIF ELEMENTS  DATE 04/05/2004   AUTEUR SMICHEL S.MICHEL-PONNELLE 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -147,7 +147,7 @@ C     ------------------ PARAMETRAGE ELEMENT ---------------------------
       REAL*8    DEUX,RAC2
       PARAMETER (DEUX=2.D0)
       REAL*8    CTOR,EPSANP(4),EPSANM(4),PHASM(7),PHASP(7)
-      REAL*8    HYDRGM,HYDRGP,SECHGM,SECHGP,LC
+      REAL*8    HYDRGM,HYDRGP,SECHGM,SECHGP,SREF,LC
       LOGICAL   VECTEU,MATRIC,TEMPNO,GRILLE,DKT,DKQ
       REAL*8    CDF, CM1, CM2, CM3, CP1, CP2, CP3
       INTEGER   ICACOQ, ICARCR, ICOMPO, ICONTM, ICONTP, ICOU, ICPG,
@@ -363,11 +363,12 @@ C        -------------------------------------------------------
         END IF
       END IF
 
-C ---  VARIABLE D HYDRATATION ET DE SECHAGE
+C ---  VARIABLE D HYDRATATION ET DE SECHAGE 
       HYDRGM = 0.D0
       HYDRGP = 0.D0
       SECHGM = 0.D0
       SECHGP = 0.D0
+      SREF   = 0.D0
 
 C===============================================================
 
@@ -466,7 +467,7 @@ C         -----------------------------------------------------
                
                CALL NMCOMP(2,TYPMOD,ZI(IMATE),ZK16(ICOMPO),ZR(ICARCR),
      &                  ZR(IINSTM),ZR(IINSTP),TMC,TPC,ZR(ITREF),HYDRGM,
-     &                  HYDRGP,SECHGM,SECHGP,EPS2D,DEPS2D,
+     &                  HYDRGP,SECHGM,SECHGP,SREF,EPS2D,DEPS2D,
      &                  SIGM,ZR(IVARIM+IVPG),OPT,EPSANM,
      &                  EPSANP,NZ,PHASM,PHASP,LC,ZR(ICONTP+ICPG),
      &                  ZR(IVARIP+IVPG),DSIDEP,COD,R8VIDE(),R8VIDE())

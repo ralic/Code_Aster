@@ -1,4 +1,4 @@
-# MODIF  DATE 16/12/2002   AUTEUR YLEPAPE Y.LEPAPE 
+# MODIF  DATE 04/05/2004   AUTEUR SMICHEL S.MICHEL-PONNELLE 
 # RESPONSABLE YLEPAPE Y.LEPAPE
 # TITRE ESSAI DE FLUAGE PROPRE (MODELE UMLV)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -94,7 +94,10 @@ BETON=DEFI_MATERIAU( ELAS_FO =_F( E = E,
                   )
 
 CM=AFFE_MATERIAU(  MAILLAGE=M,   
-                   AFFE=_F( TOUT = 'OUI',MATER = BETON, TEMP_REF = 20.) )
+                   AFFE=_F( TOUT = 'OUI',
+                            MATER = BETON,
+                            TEMP_REF = 20.,
+                            SECH_REF = 1. ) )
 
 SECH=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R', MAILLAGE=M,
                         AFFE=_F( TOUT = 'OUI',

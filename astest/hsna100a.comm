@@ -1,4 +1,4 @@
-# MODIF  DATE 06/04/2004   AUTEUR JOUMANA J.EL-GHARIB 
+# MODIF  DATE 04/05/2004   AUTEUR SMICHEL S.MICHEL-PONNELLE 
 # TITRE SECHAGE EN 2D AXISYMETRIQUE  - QUAD8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -370,7 +370,8 @@ MAT=DEFI_MATERIAU(             THER=_F( RHO_CP = 0.0E-3,
 CM=AFFE_MATERIAU(    MAILLAGE=MAGE,
                             AFFE=_F( TOUT = 'OUI',      
                                   MATER = MAT,     
-                                  TEMP_REF = 0.,    )       )
+                                  TEMP_REF = 0.,
+                                  SECH_REF = C_0 )       )
 
 #
 
@@ -428,11 +429,12 @@ RESUMECA=STAT_NON_LINE(
               )
 
 #
-# VALEURS DE REFERENCE ASTER DE LA VERSION 7.2.25
+# VALEURS DE REFERENCE ASTER DE LA VERSION 7.3.1
 
 TEST_RESU( 
            RESU=_F(  RESULTAT = RESUMECA,   NOM_CHAM = 'DEPL',   NUME_ORDRE = 32, 
-             GROUP_NO = 'A2',   NOM_CMP = 'DX',    VALE = -1.8582096E-01, REFERENCE = 'NON_REGRESSION',   )
+             GROUP_NO = 'A2',   NOM_CMP = 'DX',    VALE = -1.8582096E-01,
+              REFERENCE = 'NON_REGRESSION', VERSION = '7.3.1'   )
             )
 
 #
@@ -451,7 +453,8 @@ RESUSTAT=MECA_STATIQUE(
 
 TEST_RESU( 
            RESU=_F(  RESULTAT = RESUSTAT,   NOM_CHAM = 'DEPL',   NUME_ORDRE = 32, 
-             GROUP_NO = 'A2',   NOM_CMP = 'DX',    VALE = -2.759E-01,    )
+             GROUP_NO = 'A2',   NOM_CMP = 'DX',    VALE = -2.745902E-01, 
+             REFERENCE = 'NON_REGRESSION', VERSION = '7.3.1' )
             )
 
 #

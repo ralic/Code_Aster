@@ -1,4 +1,4 @@
-# MODIF  DATE 06/04/2004   AUTEUR JOUMANA J.EL-GHARIB 
+# MODIF  DATE 04/05/2004   AUTEUR SMICHEL S.MICHEL-PONNELLE 
 # TITRE COUPLAGE FLUAGE/BETON_DOUBLE_DP - TRACTION UNIAXIALE EN 3D
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -191,7 +191,8 @@ TEMP2=CREA_CHAMP(   OPERATION='AFFE',
 CM=AFFE_MATERIAU(    MAILLAGE=MAIL,
                             AFFE=_F( TOUT = 'OUI',
                                   MATER = BETON,
-                                  TEMP_REF = 20.)
+                                  TEMP_REF = 20.,
+                                  SECH_REF = 0.)
                     )
 
 TEMP=CREA_RESU(  OPERATION='AFFE', TYPE_RESU='EVOL_THER',
@@ -526,7 +527,8 @@ TEST_TABLE(  TABLE=RELEVE_2,
 CM2=AFFE_MATERIAU(    MAILLAGE=MAIL,
                             AFFE=_F( TOUT = 'OUI',
                                   MATER = BETON,
-                                  TEMP_REF = 0.)
+                                  TEMP_REF = 0.,
+                                  SECH_REF = 0.)
                     )
 
 TEMPNC=CREA_RESU(  OPERATION='AFFE', TYPE_RESU='EVOL_THER',
@@ -723,9 +725,9 @@ TEST_TABLE(  TABLE=RELEVE_3,
               NOM_PARA='EPXX',FILTRE=(
               _F(  NOM_PARA = 'INTITULE', VALE_K = 'EPSP'),
                   _F(  NOM_PARA = 'INST',     VALE = 100.)),
-                    VALE=8.544565E-04,
+                    VALE=4.54456E-04,
                PRECISION=5.E-4,
-                 VERSION='7.2.25',
+                 VERSION='7.3.1',
                REFERENCE='NON_REGRESSION'
            )
 
@@ -880,9 +882,9 @@ TEST_TABLE(  TABLE=RELEVE_4,
               NOM_PARA='EPXX',FILTRE=(
               _F(  NOM_PARA = 'INTITULE', VALE_K = 'EPSP'),
                   _F(  NOM_PARA = 'INST',     VALE = 100.)),
-                    VALE=8.544567E-04,
+                    VALE=4.54456E-04,
                PRECISION=5.E-4,
-                 VERSION='7.2.25',
+                 VERSION='7.3.1',
                REFERENCE='NON_REGRESSION'
            )
 

@@ -1,7 +1,7 @@
       SUBROUTINE SLENEU(NBNODE,AMA,BMA,CMA,AMI,BMI,CMI,MIX,MAN,ITES,
      &                  DATSET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF STBTRIAS  DATE 10/02/2004   AUTEUR NICOLAS O.NICOLAS 
+C MODIF STBTRIAS  DATE 03/05/2004   AUTEUR NICOLAS O.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -93,7 +93,7 @@ C  --> DECLARATION DES ARGUMENTS
       REAL* 8 AMA,BMA,CMA,AMI,BMI,CMI
 C  --> DECLARATION DES VARIABLES LOCALES
       CHARACTER*80 CBUF
-      INTEGER NODE,I,ICNODE,IND,J
+      INTEGER NODE,I,ICNODE,IND,J,ITMP,INUS,JSYS
       REAL*8  X,Y,Z
 C
 C  ---------- FIN DECLARATION -----------
@@ -109,6 +109,9 @@ C
       NTAIL = 1000
       NITER = 1000
       NDECA = 0
+      ITMP = -6
+      INUS  = 10
+
       CALL JEEXIN ( '&&PRESUP.INFO.NOEUDS', IRE1 )
       IF ( IRE1 .NE. 0 ) CALL JEDETR( '&&PRESUP.INFO.NOEUDS' )
       CALL WKVECT('&&PRESUP.INFO.NOEUDS','V V I',3*NTAIL,JINFO)
@@ -131,23 +134,37 @@ C
           READ (IUNV,'(3E25.16)') X,Y,Z
         ENDIF
 C
-        IF ((DATSET.EQ.15.OR.DATSET.EQ.781).AND.I.NE.0) THEN
-          CALL UTMESS('A','PRESUP',' ATTENTION SYSTEME DE COORDONNES'
-     &      //' AUTRE QUE CARTESIEN NON RELU DANS ASTER.')
-C          ITES=1
-        ELSE IF (DATSET.EQ.2411) THEN
-          CALL JEEXIN('&&IDEAS.SYST',IRET)
-          IF (IRET.EQ.0) THEN
-          CALL UTMESS('F','PRESUP',' ATTENTION AUCUN SYSTEME DE '
+C -->  GESTION DES SYSTEMES DE COORDONNEES
+C
+        CALL JEEXIN('&&IDEAS.SYST',IRET)
+        IF (IRET.EQ.0) THEN
+          CALL UTMESS('A','PRESUP',' ATTENTION AUCUN SYSTEME DE '
      &      //'COORDONNES N''EST DEFINI')
-          ENDIF
-          CALL JEVEUO('&&IDEAS.SYST','L',JSYS)
-          ISYST = ZI(JSYS-1+I)
-          IF(ISYST.NE.0) THEN
+C     Il n'y a pas de sys de coord defini dans le fichier, pour ne pas 
+C     planter on en cree un bidon ici qu'on declare comme cartesien    
+           ISYST = 0
+        ELSE
+           CALL JEVEUO('&&IDEAS.SYST','L',JSYS)
+           ISYST = ZI(JSYS-1+I)           
+        ENDIF
+
+C        On ne teste ici que si le systeme de coordonnne est cartesien, 
+C        cylindrique ou autre          
+        IF(ISYST.NE.0) THEN
           CALL UTMESS('F','PRESUP',' ATTENTION SYSTEME DE COORDONNES'
      &      //' AUTRE QUE CARTESIEN NON RELU DANS ASTER.')
-          ENDIF
         ENDIF
+C        On ne teste ici que si les noeuds font reference a plusieurs
+C        systeme de coordonnne 
+C        On ne teste pas si ces systemes sont identiques juste si leur
+C        label est different        
+        IF ((I.NE.ITMP).AND.(ITMP.NE.-6)) THEN
+          CALL UTMESS('A','PRESUP',' ATTENTION VOTRE MAILLAGE UTILISE'
+     &     //'PLUSIEURS SYSTEMES DE COORDONNEES.'
+     &     //'VERIFIER QU''ILS SONT TOUS IDENTIQUES CAR ASTER'
+     &     //'NE GERE QU''UN SYSTEME DE COORDONNE CARTESIEN UNIQUE.' )
+        ENDIF
+          
 C
 C  --> INITIALISATION POUR LA RECHERCHE DES MINI ET MAXI
         IF (NBNODE.EQ.0) THEN

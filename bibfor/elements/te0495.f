@@ -1,6 +1,6 @@
       SUBROUTINE TE0495(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 04/05/2004   AUTEUR SMICHEL S.MICHEL-PONNELLE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -33,8 +33,8 @@ C.......................................................................
       CHARACTER*8 MODELI
 
       REAL*8 BSIGMA(81),SIGTH(162),REPERE(7),INSTAN
-      REAL*8 NHARM
-      INTEGER NBSIGM
+      REAL*8 NHARM, RBID
+      INTEGER NBSIGM, ISREF
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       CHARACTER*32 JEXNUM,JEXNOM,JEXR8,JEXATR
       INTEGER ZI
@@ -63,6 +63,7 @@ C     -----------------
       ZERO = 0.0D0
       INSTAN = ZERO
       NHARM = ZERO
+      RBID = ZERO
       MODELI(1:2) = NOMTE(3:4)
 
 C ---- NOMBRE DE CONTRAINTES ASSOCIE A L'ELEMENT
@@ -93,10 +94,6 @@ C ---- RECUPERATION DU CHAMP DE TEMPERATURE SUR L'ELEMENT
 C      --------------------------------------------------
       CALL JEVECH('PTEMPER','L',ITEMPE)
 
-C ---- RECUPERATION DE LA TEMPERATURE DE REFERENCE
-C      -------------------------------------------
-      CALL JEVECH('PTEREF','L',ITREF)
-
 C ---- RECUPERATION DU CHAMP DE L'HDRATATION SUR L'ELEMENT
 C      --------------------------------------------------
       CALL JEVECH('PHYDRER','L',IHYDR)
@@ -105,6 +102,9 @@ C ---- RECUPERATION DU CHAMP DU SECHAGE SUR L'ELEMENT
 C      --------------------------------------------------
       CALL JEVECH('PSECHER','L',ISECH)
 
+C ---- RECUPERATION DU SECHAGE DE REFERENCE
+C      -------------------------------------------
+      CALL JEVECH('PSECREF','L',ISREF)
 C ---- RECUPERATION DE L'INSTANT
 C      -------------------------
       CALL TECACH('ONN','PTEMPSR',1,ITEMPS,IRET)
@@ -114,8 +114,8 @@ C ---- CALCUL DES CONTRAINTES DE SECHAGE AUX POINTS D'INTEGRATION
 C ---- DE L'ELEMENT :
 C      ------------
       CALL SIGTMC(MODELI,NNO,NDIM,NBSIG,NPG1,ZR(IVF),ZR(IGEOM),
-     &            ZR(ITEMPE),ZR(ITREF),ZR(IHYDR),ZR(ISECH),INSTAN,
-     &            ZI(IMATE),REPERE,OPTION,SIGTH)
+     &            ZR(ITEMPE),RBID,ZR(IHYDR),ZR(ISECH),ZR(ISREF),
+     &            INSTAN,ZI(IMATE),REPERE,OPTION,SIGTH)
 
 C ---- CALCUL DU VECTEUR DES FORCES D'ORIGINE DE SECHAGE (BT*SIGTH)
 C      ----------------------------------------------------------

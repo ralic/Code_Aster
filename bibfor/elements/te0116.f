@@ -1,6 +1,6 @@
       SUBROUTINE TE0116 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 04/05/2004   AUTEUR SMICHEL S.MICHEL-PONNELLE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -31,7 +31,7 @@ C ......................................................................
 C
       CHARACTER*8      MODELI
       CHARACTER*16     OPTION, NOMTE
-      REAL*8           SIGMA(54), REPERE(7)
+      REAL*8           SIGMA(54), REPERE(7), R8BID1(9),R8BID2
       REAL*8           NHARM, INSTAN
       INTEGER          NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO,DIMMOD
 C
@@ -71,6 +71,9 @@ C     -----------------
       ZERO     = 0.0D0
       INSTAN   = ZERO
       NHARM    = ZERO
+      R8BID2 =0.D0
+      CALL R8INIR(9,0.D0,R8BID1,1)
+
 C
       DO 10 I = 1, NBSIG*NPG
          SIGMA(I) = ZERO
@@ -109,6 +112,7 @@ C
 C ---- RECUPERATION DU VECTEUR DES CONTRAINTES EN SORTIE
 C      -------------------------------------------------
       CALL JEVECH('PCONTRR','E',ICONT)
+      
 C
 C ---- CALCUL DES CONTRAINTES 'VRAIES' AUX POINTS D'INTEGRATION
 C ---- DE L'ELEMENT :
@@ -116,8 +120,8 @@ C ---- (I.E. SIGMA_MECA - SIGMA_THERMIQUES)
 C      ------------------------------------
       CALL SIGVMC(MODELI,NNO,DIMMOD,NBSIG,NPG,IPOIDS,IVF,IDFDE,
      +            ZR(IGEOM),ZR(IDEPL),ZR(ITEMPE),
-     +            ZR(ITREF),INSTAN,REPERE,ZI(IMATE),
-     +            NHARM,SIGMA,.FALSE.)
+     +            ZR(ITREF),R8BID1,R8BID1,R8BID2,INSTAN,REPERE,
+     +            ZI(IMATE),NHARM,SIGMA,.FALSE.)
 C
       CALL PPGAN2(JGANO,NBSIG,SIGMA,ZR(ICONT))
 C

@@ -2,7 +2,7 @@
      &                  NBNOP, NUMPAQ, TSPAQ, NOMCRI, NOMMAI,
      &                  PROAXE, CNSR)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
+C MODIF PREPOST  DATE 03/05/2004   AUTEUR F1BHHAJ J.ANGLES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -84,7 +84,7 @@ C-----------------------------------------------------------------------
       INTEGER       JCNRD, JCNRL, JCNRV, IRET, ICESD, ICESL, ICESV
       INTEGER       TNECES, TDISP2, LOR8EM, LOISEM, JVECNO, IBID, N, K
       INTEGER       NUNOE, IDEB, DIM, J, NGAM, TAB2(18), IFIN
-      INTEGER       L, CNBNO, KWORK, SOMNOW, INOP 
+      INTEGER       L, CNBNO, IBIDNO, KWORK, SOMNOW, INOP 
       INTEGER       NBMA, ADRMA, JTYPMA, NBVEC, NVAL, VNORMX
       INTEGER       ICMP, JAD
 C
@@ -223,6 +223,7 @@ C NOEUDS DU PAQUET DE MAILLES.
       CNBNO = 0
       KWORK = 0
       SOMNOW = 0
+      IBIDNO = 1
 C
       DO 400 INOP=NNOINI, NNOINI+(NBNOP-1)
 C
@@ -265,7 +266,7 @@ C
          NBVEC = 209
          CALL PROPLA(NBVEC, ZR(JVECTN), ZR(JVECTU), ZR(JVECTV),
      &               NBORDR, KWORK, SOMNOW, VWORK, TDISP, TSPAQ,
-     &               INOP, ZR(JVECNO))
+     &               IBIDNO, ZR(JVECNO))
 C
 C CALCUL DU DOMMAGE MAX ET DU VECTEUR NORMAL ASSOCIE POUR
 C LE NOEUD COURANT DE LA MAILLE COURANTE.
@@ -349,7 +350,7 @@ C
 C
             CALL AVSIGN(NBVEC, NBORDR, ZR(JVECTN),
      &                  VWORK, TDISP, KWORK, 
-     &                  SOMNOW, TSPAQ, INOP, ZR(JSIGN))            
+     &                  SOMNOW, TSPAQ, IBIDNO, ZR(JSIGN))            
 C
 C 5.1.2 CALCUL DE LA CONTRAINTE EQUIVALENTE AU SENS DU CRITERE DOMM_MAXI
 C
@@ -366,7 +367,7 @@ C
             CALL JXVERI('MESSAGE','VERI18')
 C
             CALL AVPHYD(NBORDR, VWORK, TDISP, KWORK, SOMNOW,
-     &                  TSPAQ, INOP, ZR(JPHYD))            
+     &                  TSPAQ, IBIDNO, ZR(JPHYD))            
 C
 C 5.2.2 CALCUL DE LA CONTRAINTE EQUIVALENTE AU SENS DU CRITERE DE
 C       DANG VAN
@@ -445,7 +446,7 @@ C
             CALL JERAZO( '&&AVGRNO.VECTNO2', 18*NBORDR, 1 )
             CALL PROPLA(NBVEC, ZR(JVECN2), ZR(JVECU2), ZR(JVECV2),
      &                  NBORDR, KWORK, SOMNOW, VWORK, TDISP, TSPAQ,
-     &                  INOP, ZR(JVNO2))
+     &                  IBIDNO, ZR(JVNO2))
          ELSE
             DGAM2 = 2.0D0*(PI/180.0D0)
             DPHI2 = DGAM2/SIN(GAMMAM)
@@ -464,7 +465,7 @@ C
             CALL JERAZO( '&&AVGRNO.VECTNO2', 18*NBORDR, 1 )
             CALL PROPLA(NBVEC, ZR(JVECN2), ZR(JVECU2), ZR(JVECV2),
      &                  NBORDR, KWORK, SOMNOW, VWORK, TDISP, TSPAQ,
-     &                  INOP, ZR(JVNO2))
+     &                  IBIDNO, ZR(JVNO2))
          ENDIF
 C
          CALL JERAZO('&&AVGRNO.AXE1', NBVEC*NBORDR, 1)
@@ -531,7 +532,7 @@ C
 C
             CALL AVSIGN(NBVEC, NBORDR, ZR(JVECN2),
      &                  VWORK, TDISP, KWORK, 
-     &                  SOMNOW, TSPAQ, INOP, ZR(JSIGN))            
+     &                  SOMNOW, TSPAQ, IBIDNO, ZR(JSIGN))            
 C
 C 9.5.1.2 CALCUL DE LA CONTRAINTE EQUIVALENTE AU SENS DU CRITERE
 C         DOMM_MAXI
@@ -549,7 +550,7 @@ C
             CALL JXVERI('MESSAGE','VERI18')
 C
             CALL AVPHYD(NBORDR, VWORK, TDISP, KWORK, SOMNOW,
-     &                  TSPAQ, INOP, ZR(JPHYD))            
+     &                  TSPAQ, IBIDNO, ZR(JPHYD))            
 C
 C 9.5.2.2 CALCUL DE LA CONTRAINTE EQUIVALENTE AU SENS DU CRITERE DE
 C         DANG VAN
@@ -628,7 +629,7 @@ C
             CALL JERAZO( '&&AVGRNO.VECTNO1', 18*NBORDR, 1 )
             CALL PROPLA(NBVEC, ZR(JVECN1), ZR(JVECU1), ZR(JVECV1),
      &                  NBORDR, KWORK, SOMNOW, VWORK, TDISP, TSPAQ,
-     &                  INOP, ZR(JVNO1))
+     &                  IBIDNO, ZR(JVNO1))
          ELSE
             DGAM2 = 1.0D0*(PI/180.0D0)
             DPHI2 = DGAM2/SIN(GAMMAM)
@@ -647,7 +648,7 @@ C
             CALL JERAZO( '&&AVGRNO.VECTNO1', 18*NBORDR, 1 )
             CALL PROPLA(NBVEC, ZR(JVECN1), ZR(JVECU1), ZR(JVECV1),
      &                  NBORDR, KWORK, SOMNOW, VWORK, TDISP, TSPAQ,
-     &                  INOP, ZR(JVNO1))
+     &                  IBIDNO, ZR(JVNO1))
          ENDIF
 C
          CALL JERAZO('&&AVGRNO.AXE1', NBVEC*NBORDR, 1)
@@ -714,7 +715,7 @@ C
 C
             CALL AVSIGN(NBVEC, NBORDR, ZR(JVECN1),
      &                  VWORK, TDISP, KWORK, 
-     &                  SOMNOW, TSPAQ, INOP, ZR(JSIGN))            
+     &                  SOMNOW, TSPAQ, IBIDNO, ZR(JSIGN))            
 C
 C 10.5.1.2 CALCUL DE LA CONTRAINTE EQUIVALENTE AU SENS DU CRITERE
 C          DOMM_MAXI
@@ -732,7 +733,7 @@ C
             CALL JXVERI('MESSAGE','VERI18')
 C
             CALL AVPHYD(NBORDR, VWORK, TDISP, KWORK, SOMNOW,
-     &                  TSPAQ, INOP, ZR(JPHYD))            
+     &                  TSPAQ, IBIDNO, ZR(JPHYD))            
 C
 C 10.5.2.2 CALCUL DE LA CONTRAINTE EQUIVALENTE AU SENS DU CRITERE DE
 C          DANG VAN

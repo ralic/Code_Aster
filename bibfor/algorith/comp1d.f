@@ -8,7 +8,7 @@
       REAL*8         VIM(*),VIP(*),SIGX,SIGXP,EPSX,DEPX,ETAN
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/03/2004   AUTEUR OUGLOVA A.OUGLOVA 
+C MODIF ALGORITH  DATE 04/05/2004   AUTEUR SMICHEL S.MICHEL-PONNELLE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -93,7 +93,7 @@ C
 C
       REAL*8         DSIDEP(6,6)
       REAL*8         ZERO,UN,DEUX,XM,XI,XS,ALPH,SIGYI,SIGYS
-      REAL*8         HYDRGM,HYDRGP,SECHGM,SECHGP
+      REAL*8         HYDRGM,HYDRGP,SECHGM,SECHGP,SREF
       REAL*8         EPSANM(6),EPSANP(6),PHASM(7),PHASP(7)
       REAL*8         LC(10,27),SIGMAY,CORRM,CORRP
       REAL*8         R8PREM,R8MIEM,NU,ALPHA,SIGXI,SIGXS
@@ -134,6 +134,7 @@ C
          HYDRGP = ZERO
          SECHGM = ZERO
          SECHGP = ZERO
+         SREF   = ZERO
 C
          CALL R8INIR (NEQ,ZERO,EPSANM,1)
 C
@@ -147,7 +148,7 @@ C
 C
          CALL NMCOMP(2,TYPMOD,ZI(IMATE),ZK16(ICOMPO),ZR(ICARCR),
      +               ZR(IINSTM),ZR(IINSTP),TEMPM,TEMPP,TREF,HYDRGM,
-     +               HYDRGP,SECHGM,SECHGP,EPS,DEPS,SIGM,
+     +               HYDRGP,SECHGM,SECHGP,SREF,EPS,DEPS,SIGM,
      +               VIM,OPTION,EPSANM,EPSANP,NZ,PHASM,
      +               PHASP,LC,SIGP,VIP,DSIDEP,
      +               CODRET,CORRM,CORRP)

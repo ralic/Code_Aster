@@ -1,10 +1,10 @@
-        SUBROUTINE VECMAT ( MOD,    IMAT,   NMAT,   TEMPD,    TEMPF,
+        SUBROUTINE VECMAT ( MOD,    JMAT,   NMAT,   TEMPD,    TEMPF,
      1                      MATERD, MATERF, MATCST, TYPMA,    NDT,
      2                      NDI,    NR,     NVI )
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 03/05/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -37,7 +37,7 @@ C                                 R_D  , A_D   , K_D
 C
 C                    VARIABLES INTERNES : EVI,  P , R , DMG, ETAT
 C    ----------------------------------------------------------------
-C       IN  IMAT   :  ADRESSE DU MATERIAU CODE
+C       IN  JMAT   :  ADRESSE DU MATERIAU CODE
 C           MOD    :  TYPE DE MODELISATION
 C           NMAT   :  DIMENSION  DE MATER
 C           TEMPD  :  TEMPERATURE  A T
@@ -66,7 +66,7 @@ C       ----------------------------------------------------------------
         COMMON /OPTI/   IOPTIO , IDNR
         COMMON /METI/   METING
 C       ----------------------------------------------------------------
-        INTEGER         LMAT,LFCT,IPI,IPIF,IK,IMAT,IVALK,I,J,JPRO,IL
+        INTEGER LMAT,LFCT,IPI,IPIF,IK,IMAT,IVALK,I,J,JPRO,IL,JMAT,NBMAT
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
@@ -144,7 +144,7 @@ C
 C            ET IPI=ZI(IMAT+2+ZI(IMAT+1)-1) LMAT=7 LFCT=9
 C            IK=(1..NBF) OU NBF=ZI(IPI+2)
 C            (NBF EST LE NOMBRE DE PARAMETRES MAIS ON PREND IK=NBF CAR
-C             C'EST LE COEFF K_D (LE DERNIER) QUI EST SUCEPTIBLE
+C             C'EST LE COEFF NBMATK_D (LE DERNIER) QUI EST SUCEPTIBLE
 C            D'ETRE UNE NAPPE
 C            ON BOUCLE SUR LES 9 (ZI(IPI+2)) FONCTIONS DU MATERIAU
 C            VENDOCHAB, QUAND ON A K_D, ON TESTE SI C EST UNE NAPPE
@@ -155,6 +155,12 @@ C
       LFCT=9
 C
       MATCST = 'OUI'
+      
+      NBMAT=ZI(JMAT)
+C     UTILISABLE SEULEMENT AVEC UN MATERIAU PAR MAILLE
+      CALL ASSERT(NBMAT.EQ.1)
+      IMAT = JMAT+ZI(JMAT+NBMAT+1)
+      
       DO 10 IK = 1, ZI(IMAT+1)
         IF(ZK16(ZI(IMAT)+IK-1)(1:9).EQ.'VENDOCHAB') THEN
           IPI=ZI(IMAT+IK+ZI(IMAT+1)-1)
@@ -205,29 +211,29 @@ C
 C
 C -     RECUPERATION MATERIAU A TEMPD (T)
 C
-          CALL RCVALA(IMAT,' ',   'ELAS',       1,  'TEMP', TEMPD, 3,
+          CALL RCVALA(JMAT,' ',   'ELAS',       1,  'TEMP', TEMPD, 3,
      1                   NOMC(1),  MATERD(1,1),  CERR(1), BL2 )
           IF ( CERR(3) .NE. 'OK' ) MATERD(3,1) = 0.D0
-          CALL RCVALA(IMAT,' ','VENDOCHAB',   1,  'TEMP', TEMPD, 8,
+          CALL RCVALA(JMAT,' ','VENDOCHAB',   1,  'TEMP', TEMPD, 8,
      1                   NOMC(4),  MATERD(1,2),  CERR(4), FB2 )
         IF (MATCST.EQ.'NAP') THEN
           MATERD(9,2)=0.0D0
         ELSE
-          CALL RCVALA(IMAT,' ','VENDOCHAB',   1,  'TEMP', TEMPD, 1,
+          CALL RCVALA(JMAT,' ','VENDOCHAB',   1,  'TEMP', TEMPD, 1,
      1                   NOMC(12),  MATERD(9,2),  CERR(12), FB2 )
         ENDIF
 C
 C -     RECUPERATION MATERIAU A TEMPF (T+DT)
 C
-          CALL RCVALA(IMAT,' ',   'ELAS',       1,  'TEMP', TEMPF, 3,
+          CALL RCVALA(JMAT,' ',   'ELAS',       1,  'TEMP', TEMPF, 3,
      1                   NOMC(1),  MATERF(1,1),  CERR(1), BL2 )
           IF ( CERR(3) .NE. 'OK' ) MATERF(3,1) = 0.D0
-          CALL RCVALA(IMAT,' ','VENDOCHAB',   1,  'TEMP', TEMPF, 8,
+          CALL RCVALA(JMAT,' ','VENDOCHAB',   1,  'TEMP', TEMPF, 8,
      1                   NOMC(4),  MATERF(1,2),  CERR(4), FB2 )
         IF (MATCST.EQ.'NAP') THEN
           MATERF(9,2)=0.0D0
         ELSE
-          CALL RCVALA(IMAT,' ','VENDOCHAB',   1,  'TEMP', TEMPF, 1,
+          CALL RCVALA(JMAT,' ','VENDOCHAB',   1,  'TEMP', TEMPF, 1,
      1                   NOMC(12),  MATERF(9,2),  CERR(12), FB2 )
         ENDIF
 C

@@ -1,12 +1,12 @@
          SUBROUTINE PLASBE ( TYPMOD, IMAT,  COMP,  CRIT,
      1                       TEMPD, TEMPF, TREF,
-     2                       HYDRD, HYDRF, SECHD, SECHF, EPSDT,
+     2                       HYDRD, HYDRF, SECHD, SECHF, SREF, EPSDT,
      3                       DEPST, SIGD,  VIND,  OPT, ELGEOM, SIGF,
      4                       VINF,  DSDE,  ICOMP, NVI,  IRTETI)
         IMPLICIT REAL*8 (A-H,O-Z)
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 04/05/2004   AUTEUR SMICHEL S.MICHEL-PONNELLE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -119,6 +119,7 @@ C               HYDRD   HYDRATATION A L'INSTANT PRECEDENT
 C               HYDRF   HYDRATATION A L'INSTANT DU CALCUL
 C               SECHD   SECHAGE A L'INSTANT PRECEDENT
 C               SECHF   SECHAGE A L'INSTANT DU CALCUL
+C               SREF    SECHAGE DE REFERENCE
 C               EPSDT   DEFORMATION TOTALE A T
 C               DEPST   INCREMENT DE DEFORMATION TOTALE
 C               SIGD    CONTRAINTE A T
@@ -190,7 +191,7 @@ C
         REAL*8          CRIT(*)
         REAL*8          VIND(*),     VINF(*)
         REAL*8          TEMPD,    TEMPF  , TREF
-        REAL*8          HYDRD , HYDRF , SECHD , SECHF , ELGEOM(*)
+        REAL*8          HYDRD , HYDRF , SECHD , SECHF , SREF, ELGEOM(*)
         REAL*8          EPSD(6),     DEPS(6),   EPSF(6)
         REAL*8          EPSDT(6),    DEPST(6)
         REAL*8          SIGD(6),     SIGF(6),   SIGE(6), DSIG(6)
@@ -256,7 +257,7 @@ C
 C --    RETRAIT ENDOGENNE ET RETRAIT DE DESSICCATION
 C
         CALL LCDEHY ( NMAT,  MATERD, MATERF, HYDRD,  HYDRF,
-     &                SECHD, SECHF, DEPS,   EPSD )
+     &                SECHD, SECHF, SREF, DEPS,   EPSD )
 C
 C --    SEUIL A T > ETAT ELASTIQUE OU PLASTIQUE A T
 C

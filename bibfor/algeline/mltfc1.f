@@ -1,11 +1,11 @@
       SUBROUTINE MLTFC1(NBLOC,NCBLOC,DECAL,SUPND,FILS,FRERE,
      +                  SEQ,LGSN,LFRONT,ADRESS,LOCAL,ADPILE,NBASS,
      +                  PILE,LGPILE,ADPER,T1,T2,FACTOL,FACTOU,TYPSYM,
-     +                  AD,EPS,IER)
+     +                  AD,EPS,IER,NBB,CL,CU)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
-C RESPONSABLE JFBHHUC C.ROSE
+C MODIF ALGELINE  DATE 04/05/2004   AUTEUR ROSE C.ROSE 
+C RESPONSABLE ROSE C.ROSE
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -28,13 +28,13 @@ C     LE STOCKAGE DES COLONNES DE LA FACTORISEE EST MODIFIE, ET AINSI
 C      ADPER LES COLONNES FORMENT UN BLOC RECTANGULAIRE
 C
       IMPLICIT NONE
-      INTEGER PMIN
+      INTEGER PMIN,NBB
       PARAMETER (PMIN=10)
       INTEGER NBLOC,NCBLOC(*),DECAL(*)
       INTEGER LGSN(*),LFRONT(*),LGPILE,TYPSYM
       INTEGER LOCAL(*),NBASS(*),ADPILE(*),FILS(*),SUPND(*)
       INTEGER ADRESS(*),FRERE(*),SEQ(*),AD(*),IER
-      REAL*8 PILE(*),EPS
+      REAL*8 PILE(*),EPS,CL(NBB,NBB,*),CU(NBB,NBB,*)
       CHARACTER*32 JEXNUM
       CHARACTER*24 FACTOL,FACTOU
 C
@@ -92,29 +92,8 @@ C         CHANGTPOUR L' APPEL A DGEMV
    30     CONTINUE
           ADFACL = IFACL - 1 + DECAL(SNI)
           IF (TYPSYM.EQ.0) ADFACU = IFACU - 1 + DECAL(SNI)
-          IF (SN.EQ.0) THEN
-            IF (P.LE.PMIN .AND. TYPSYM.NE.0) THEN
-              CALL MLTF21(P,ZR(ADFACL),PILE(ITEMP),N,T1,T2,EPS,IER)
-              IF (IER.NE.0) GO TO 9999
-            ELSE
-              IF (TYPSYM.EQ.0) THEN
-                CALL MLNFLM(N,P,ZR(ADFACL),ZR(ADFACU),ADPER,T1,T2,AD,
-     +                      EPS,IER)
-                IF (IER.NE.0) GO TO 9999
-                CALL MLNFMJ(N,P,ZR(ADFACL),ZR(ADFACU),PILE(ITEMP),
-     +                      PILE(ITEMP+LM1),ADPER,T1,T2,AD)
-              ELSE
-                CALL MLTFLM(N,P,ZR(ADFACL),ADPER,T1,AD,EPS,IER)
-                IF (IER.NE.0) GO TO 9999
-
-                CALL MLTFMJ(N,P,ZR(ADFACL),PILE(ITEMP),ADPER,T1)
-              END IF
-            END IF
-            ADPILE(SNI) = ITEMP
-            ITEMP = ITEMP + LMATF
-          ELSE
-C     DO WHILE (SN.NE.0)
    40       CONTINUE
+C     DO WHILE (SN.NE.0)
             IF (SN.NE.0) THEN
               NL = LGSN(SN)
               NB = NBASS(SN)
@@ -138,17 +117,18 @@ C     FIN DO WHILE
               IF (IER.NE.0) GO TO 9999
             ELSE
               IF (TYPSYM.EQ.0) THEN
-                CALL MLNFLM(N,P,ZR(ADFACL),ZR(ADFACU),ADPER,T1,T2,AD,
-     +                      EPS,IER)
+                CALL MLNFLM(NBB,N,P,ZR(ADFACL),ZR(ADFACU),ADPER,T1,T2,AD
+     +                      ,EPS,IER,CL,CU)
                 IF (IER.NE.0) GO TO 9999
-                CALL MLNFMJ(N,P,ZR(ADFACL),ZR(ADFACU),PILE(ITEMP),
-     +                      PILE(ITEMP+LM1),ADPER,T1,T2,AD)
+                CALL MLNFMJ(NBB,N,P,ZR(ADFACL),ZR(ADFACU),PILE(ITEMP),
+     +                      PILE(ITEMP+LM1),ADPER,T1,T2,CL,CU)
               ELSE
-                CALL MLTFLM(N,P,ZR(ADFACL),ADPER,T1,AD,EPS,IER)
+                CALL MLTFLM(NBB,N,P,ZR(ADFACL),ADPER,T1,AD,EPS,IER,CL)
                 IF (IER.NE.0) GO TO 9999
-                CALL MLTFMJ(N,P,ZR(ADFACL),PILE(ITEMP),ADPER,T1)
+                CALL MLTFMJ(NBB,N,P,ZR(ADFACL),PILE(ITEMP),ADPER,T1,CL)
               END IF
            END IF
+           IF(FILS(SNI).NE.0) THEN
             MEM = MAX(MEM, (ITEMP+LMATF-1))
 CRAY   DIR$ IVDEP
             DO 50 J = 1,LMATF
@@ -156,10 +136,12 @@ CRAY   DIR$ IVDEP
    50       CONTINUE
             ADPILE(SNI) = ADPILE(FILS(SNI))
             ITEMP = ADPILE(SNI) + LMATF
+           ELSE
+            ADPILE(SNI) = ITEMP
+            ITEMP = ITEMP + LMATF
            END IF
           MEM = MAX(MEM,ITEMP)
    60   CONTINUE
-
        CALL JELIBE(JEXNUM(FACTOL,IB))
         IF (TYPSYM.EQ.0) CALL JELIBE(JEXNUM(FACTOU,IB))
    70 CONTINUE

@@ -1,7 +1,7 @@
       SUBROUTINE EPTHMC (MODELI,NNO,NDIM,NBSIG,NPG,NI,TEMPE,TREF,
-     +                   HYDR,SECH,INSTAN,MATER,OPTION,EPSITH)
+     +                   HYDR,SECH,SREF,INSTAN,MATER,OPTION,EPSITH)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 27/06/2000   AUTEUR CIBHHBC B.CIREE 
+C MODIF ELEMENTS  DATE 04/05/2004   AUTEUR SMICHEL S.MICHEL-PONNELLE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,7 +21,7 @@ C ======================================================================
 C.======================================================================
       IMPLICIT REAL*8 (A-H,O-Z)
 C
-C      EPTHMC   -- CALCUL DES  DEFORMATIONS THERMIQUES
+C      EPTHMC   -- CALCUL DES  DEFORMATIONS THERMIQUES+RETRAIT 
 C                  AUX POINTS D'INTEGRATION
 C                  POUR LES ELEMENTS ISOPARAMETRIQUES
 C
@@ -39,6 +39,7 @@ C                                   L'ELEMENT
 C    TREF           IN     R        TEMPERATURE DE REFERENCE
 C    HYDR(1)        IN     R        HYDRATATION AUX POINTS DE GAUSS
 C    SECH(1)        IN     R        SECHAGE AUX NOEUDS DE L'ELEMENT
+C    SREF           IN     R        SECHAGE DE REFERENCE
 C    INSTAN         IN     R        INSTANT DE CALCUL (0 PAR DEFAUT)
 C    MATER          IN     I        MATERIAU
 C    OPTION         IN     K16      OPTION DE CALCUL
@@ -50,7 +51,7 @@ C -----  ARGUMENTS
            CHARACTER*8  MODELI
            CHARACTER*16 K16BID, OPTION
            REAL*8       NI(1), TEMPE(1), EPSITH(1), HYDR(1), SECH(1)
-           REAL*8       INSTAN
+           REAL*8       INSTAN, SREF
 C -----  VARIABLES LOCALES
            REAL*8       EPSTH(6),EPSHY(6),EPSSE(6)
            CHARACTER*16 OPTIO2, OPTIO3
@@ -84,7 +85,7 @@ C
 C  --      CALCUL DES DEFORMATIONS THERMIQUES  AU POINT D'INTEGRATION
 C  --      COURANT
 C          -------
-          CALL EPSTMC(MODELI, TEMPG, TREF, HYDRG, SECHG, INSTAN,
+          CALL EPSTMC(MODELI, TEMPG, TREF, HYDRG, SECHG, SREF, INSTAN,
      &                MATER, K16BID, EPSTH)
 C
 C  --      DEFORMATIONS THERMIQUES SUR L'ELEMENT
@@ -97,13 +98,14 @@ C
           IF (OPTION(1:4).EQ.'EPMH') THEN
 C  --        CALCUL DES DEFORMATIONS DE RETRAIT AU POINT
 C  --        D'INTEGRATION COURANT
+C  --    !!!    PAS D'EXISTENCE OFFICIELLE DE CETTE OPTION
 C            ---------------------
              OPTIO2 = 'EPMH_' // OPTION(6:9) // '_HYDR'
-             CALL EPSTMC(MODELI, TEMPG, TREF, HYDRG, SECHG, INSTAN,
-     &                   MATER, OPTIO2, EPSHY)
+             CALL EPSTMC(MODELI, TEMPG, TREF, HYDRG, SECHG, SREF,
+     &                   INSTAN,MATER, OPTIO2, EPSHY)
              OPTIO3 = 'EPMH_' // OPTION(6:9) // '_SECH'
-             CALL EPSTMC(MODELI, TEMPG, TREF, HYDRG, SECHG, INSTAN,
-     &                   MATER, OPTIO3, EPSSE)
+             CALL EPSTMC(MODELI, TEMPG, TREF, HYDRG, SECHG, SREF, 
+     &                   INSTAN,MATER, OPTIO3, EPSSE)
 C
 C  --        DEFORMATIONS DE RETRAIT SUR L'ELEMENT
 C            -------------------------------------

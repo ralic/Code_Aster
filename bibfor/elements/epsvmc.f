@@ -1,8 +1,8 @@
       SUBROUTINE EPSVMC (MODELI,NNO,NDIM,NBSIG,NPG,IPOIDS,IVF,IDFDE,
-     +                   XYZ,DEPL,TEMPE,TREF,HYDR,SECH,INSTAN,
+     +                   XYZ,DEPL,TEMPE,TREF,HYDR,SECH,SREF,INSTAN,
      +                   MATER,REPERE,NHARM,OPTION,EPSM)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 04/05/2004   AUTEUR SMICHEL S.MICHEL-PONNELLE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,7 +24,8 @@ C.======================================================================
       IMPLICIT REAL*8 (A-H,O-Z)
 C
 C      EPSVMC   -- CALCUL DES  DEFORMATIONS MECANIQUES
-C                  (I.E. EPS_TOTALES - EPS_THERMIQUES - EPS_RETRAIT)
+C                  (I.E. EPS_TOTALES - EPS_THERMIQUES 
+C                      - EPS_RETRAIT POUR OPTION EPMH   )
 C                  AUX POINTS D'INTEGRATION POUR LES ELEMENTS
 C                  ISOPARAMETRIQUES
 C
@@ -47,6 +48,7 @@ C                                   L'ELEMENT
 C    TREF           IN     R        TEMPERATURE DE REFERENCE
 C    HYDR(1)        IN     R        HYDRATATION AUX POINTS DE GAUSS
 C    SECH(1)        IN     R        SECHAGE AUX NOEUDS DE L'ELEMENT
+C    SREF           IN     R        SECHAGE DE REFERENCE
 C    INSTAN         IN     R        INSTANT DE CALCUL (0 PAR DEFAUT)
 C    MATER          IN     I        MATERIAU
 C    NHARM          IN     R        NUMERO D'HARMONIQUE
@@ -75,7 +77,7 @@ C -----  ARGUMENTS
            CHARACTER*8  MODELI
            CHARACTER*16 OPTION
            REAL*8       XYZ(1),  DEPL(1),  TEMPE(1), EPSM(1), REPERE(7)
-           REAL*8       HYDR(1), SECH(1),  INSTAN,   NHARM
+           REAL*8       HYDR(1), SECH(1),  SREF,  INSTAN,   NHARM
 C -----  VARIABLES LOCALES
            CHARACTER*8  MODEDP
            REAL*8       EPSTH(162), EPS2(162), XYZGAU(3), D(4,4)
@@ -109,13 +111,16 @@ C       ----------------------------------------------
       ENDIF
 C
 C --- CALCUL DES DEFORMATIONS THERMIQUES AUX POINTS D'INTEGRATION
-C --- AJOUTEES AUX DEFORMATIONS DE RETRAIT ENDOGENE/DESSICCATION:
+C --- (AJOUTEES AUX DEFORMATIONS DE RETRAIT ENDOGENE/DESSICCATION:
+C      UNIQUEMENT POUR EPMH QUI N'EXISTE PAS OFFICIELLEMENT)
 C      ----------------------------------------------------------
+
       IF (OPTION(1:4).EQ.'EPME'.OR.OPTION(1:4).EQ.'EPMG'.OR.
      +    OPTION(1:4).EQ.'EPMH') THEN
         CALL EPTHMC(MODELI,NNO,NDIM,NBSIG,NPG,ZR(IVF),TEMPE,TREF,HYDR,
-     +              SECH,INSTAN,MATER,OPTION,EPSTH)
+     +              SECH,SREF,INSTAN,MATER,OPTION,EPSTH)
       ENDIF
+
 C
 C --- CALCUL DES DEFORMATIONS MECANIQUES AUX POINTS D'INTEGRATION :
 C      ----------------------------------------------------------

@@ -1,7 +1,8 @@
-      SUBROUTINE MLNFLM(N,P,FRONTL,FRONTU,ADPER,T1,T2,AD,EPS,IER)
+      SUBROUTINE MLNFLM(NB,N,P,FRONTL,FRONTU,ADPER,TU,TL,AD,EPS,IER,
+     %                  CL,CU)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 07/01/2002   AUTEUR JFBHHUC C.ROSE 
-C RESPONSABLE JFBHHUC C.ROSE
+C MODIF ALGELINE  DATE 04/05/2004   AUTEUR ROSE C.ROSE 
+C RESPONSABLE ROSE C.ROSE
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,58 +23,94 @@ C     VERSION AVEC APPEL A DGEMV POUR LES PRODUITS MATRICE-VECTEUR
 C     AU DELA D' UN CERTAIN SEUIL
 C     DGEMV EST APPEL A TRAVERS LA FONCTION C DGEMW POUR CAR DGEMV
 C     NECESSITE DES ARGUMENTS ENTIER INTEGER*4 REFUSES PAR ASTER
-      IMPLICIT REAL*8 (A-H,O-Z)
-      INTEGER N,P,ADPER(*),AD(*),IER
-      REAL*8 FRONTL(*),FRONTU(*),T1(*),EPS,T2(*)
+C      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
+      INTEGER NB,N,P
+      INTEGER ADPER(*),AD(*),IER
+      REAL*8 FRONTL(*),FRONTU(*),TU(*),EPS,TL(*),CL(NB,NB,*),CU(NB,NB,*)
 C
-      INTEGER I,K,LDA
-      INTEGER SEUIN,SEUIK
-      PARAMETER(SEUIN=1500,SEUIK=300)
-      LDA= N
-      DO 30 K = 1,P
-C     CALCUL DE L
-         DO 10 I = 1,K - 1
-            AD(I) = ADPER(I) + K - I
-            T1(I) = FRONTU(AD(I))
-            T2(I) = FRONTL(AD(I))
- 10      CONTINUE
-         IF (K.GT.1) THEN
-C     PRODUIT MATRICE-VECTEUR
-C     CALL SSPMVA(N-K+1,K-1,FRONTL,AD,T1,FRONTL(ADPER(K)))
+      INTEGER I,KB,ADK,ADKI,DECAL,L,LDA
+      INTEGER   M,LL,  K, IND,IA,IB,J,RESTP,NPB
+      INTEGER RESTL,NLLB
+      NPB=P/NB
+      RESTP = P -(NB*NPB)
+      LL = N
 C
-            NN= N-K+1
-            KK= K-1
-            IF(NN.LT.SEUIN.OR.KK.LT.SEUIK) THEN
-               CALL SSPMVA(NN,KK,FRONTL,AD,T1,FRONTL(ADPER(K)))
-            ELSE
-               CALL DGEMW(NN,KK,FRONTL(K),LDA,T1,FRONTL(ADPER(K)))
-            END IF
-         ENDIF
-C     DIVISION PAR LE TERME
-C     DIAGONAL
-            IF (ABS(FRONTL(ADPER(K))).LE.EPS) THEN
-               IER = K
-               GO TO 40
-            END IF
-CRAY DIR$ IVDEP DIRECTIVE INHIBEE CAR DEPENDANCE AVANT
-            DO 20 I = 1,N - K
-               FRONTL(ADPER(K)+I) = FRONTL(ADPER(K)+I)/FRONTL(ADPER(K))
- 20         CONTINUE
+      DO 1000 KB = 1,NPB
+C     K : INDICE (DANS LA MATRICE FRONTALE ( DE 1 A P)),
+C     DE LA PREMIERE COLONNE DU BLOC
+         K = NB*(KB-1) + 1
+         ADK=ADPER(K)
+C     BLOC DIAGONAL
+         CALL MLNFLD(NB,FRONTL(ADK),FRONTU(ADK),ADPER,TU,TL,AD,EPS,IER)
+         IF(IER.GT.0) GOTO 9999
 C
-C     CALCUL DE U
-            IF (K.GT.1) THEN
-C     PRODUIT MATRICE-VECTEUR
-C     CALL SSPMVA(N-K+1,K-1,FRONTU,AD,T2,FRONTU(ADPER(K)))
+C     NORMALISATION DES BLOCS SOUS LE BLOC DIAGONAL
 C
-               NN= N-K+1
-               KK= K-1
-               IF(NN.LT.SEUIN.OR.KK.LT.SEUIK) THEN
-                  CALL SSPMVA(NN,KK,FRONTU,AD,T2,FRONTU(ADPER(K)))
-               ELSE
-                  CALL DGEMW(NN,KK,FRONTU(K),LDA,T2,FRONTU(ADPER(K)))
-               ENDIF
-            END IF
+         LL = LL -NB
+            IA = ADK + NB
+            DO 55 I=1,NB
+               IND = IA +N*(I-1)
+              IF(I.GT.1) THEN
+                  DO 51 L=1,I-1
+                     TU(L) = FRONTU(N*(K+L-2)+K+I-1)
+                     TL(L) = FRONTL(N*(K+L-2)+K+I-1)
+ 51                  CONTINUE
+                     ENDIF
+               CALL DGEMW(LL,I-1,FRONTL(IA),N,TU,FRONTL(IND))
+               CALL DGEMW(LL,I-1,FRONTU(IA),N,TL,FRONTU(IND))
+               ADKI = ADPER(K+I-1)
+C        LA PARTIE INFERIEURE  SEULE EST DIVISEE PAR LE TERME DIAGONAL, 
+C        PAS LA PARTIE SUPERIEURE
+               DO 53 J=1,LL
+                  FRONTL(IND) = FRONTL(IND)/FRONTL(ADKI)
+                  IND = IND +1
+ 53            CONTINUE
+ 55         CONTINUE
 C
- 30      CONTINUE
- 40      CONTINUE
-         END
+        DECAL = KB*NB
+        LL = N- DECAL
+        M = P -DECAL
+        IND =ADPER(K+NB)
+        CALL MLNFLJ(NB,N,LL,M,K,DECAL,FRONTL,FRONTU,FRONTL(IND),
+     %  FRONTU(IND),ADPER,TU,TL,CL,CU)
+ 1000 CONTINUE
+C     COLONNES RESTANTES
+      IF(RESTP.GT.0 ) THEN
+C     K : INDICE (DANS LA MATRICE FRONTALE ( DE 1 A P)),
+C     DE LA PREMIERE COLONNE DU BLOC
+         KB = NPB + 1
+         K = NB*NPB + 1
+         ADK=ADPER(K)
+C     BLOC DIAGONAL
+         CALL MLNFLD(RESTP,FRONTL(ADK),FRONTU(ADK),ADPER,TU,TL,AD,EPS,
+     %IER)
+         IF(IER.GT.0) GOTO 9999
+C
+C     NORMALISATION DES BLOCS SOUS LE BLOC DIAGONAL
+C
+         LL = N-P
+         IA = ADK +RESTP
+         DO 65 I=1,RESTP
+            IND = IA +N*(I-1)
+              IF(I.GT.1) THEN
+                  DO 59 L=1,I-1
+                     TU(L) = FRONTU(N*(K+L-2)+K+I-1)
+                     TL(L) = FRONTL(N*(K+L-2)+K+I-1)
+ 59               CONTINUE
+                     ENDIF
+               CALL DGEMW(LL,I-1,FRONTL(IA),N,TU,FRONTL(IND))
+               CALL DGEMW(LL,I-1,FRONTU(IA),N,TL,FRONTU(IND))
+               ADKI = ADPER(K+I-1)
+C              SEUL FRONTL EST DIVISE PAR LE TERME DIAGONAL
+               DO 63 J=1,LL
+                  FRONTL(IND) = FRONTL(IND)/FRONTL(ADKI)
+                  IND = IND +1
+ 63            CONTINUE
+ 65         CONTINUE
+ 600     CONTINUE
+
+       ENDIF
+ 9999 CONTINUE
+      IF(IER.GT.0) IER = IER + NB*(KB-1)
+      END

@@ -1,7 +1,7 @@
-      SUBROUTINE MLTFMJ(N,P,FRONT,FRN,ADPER,TRAV)
+      SUBROUTINE MLTFMJ(NB,N,P,FRONT,FRN,ADPER,TRAV,C)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 09/02/2004   AUTEUR REZETTE C.REZETTE 
-C RESPONSABLE JFBHHUC C.ROSE
+C MODIF ALGELINE  DATE 04/05/2004   AUTEUR ROSE C.ROSE 
+C RESPONSABLE ROSE C.ROSE
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,30 +21,28 @@ C ======================================================================
       IMPLICIT NONE
       INTEGER N,P,ADPER(*)
       REAL*8 FRONT(*),FRN(*)
-      INTEGER NBB,DECAL,ADD,IND,NMB,I,J,L,KB,IA,IB,RESTM
-      PARAMETER (NBB=96)
+      INTEGER NB,DECAL,ADD,IND,NMB,I,J,L,KB,IA,IB,RESTM
       CHARACTER*1 TRANSA, TRANSB
-      INTEGER I1,J1,K,M,IT,NB,NUMPRC,MLNUMP
-      REAL*8 S,TRAV(P,NBB,*)
-      REAL*8  C(NBB, NBB)
+      INTEGER I1,J1,K,M,IT,NUMPRO,MLNUMP
+      REAL*8 S,TRAV(P,NB,*)
+      REAL*8  C(NB, NB,*)
       M=N-P
-      NMB=M/NBB
-      RESTM = M -(NBB*NMB)
+      NMB=M/NB
+      RESTM = M -(NB*NMB)
       DECAL = ADPER(P+1) - 1
-      NB=NBB
 C
 C$OMP PARALLEL DO DEFAULT(PRIVATE)
-C$OMP+SHARED(N,M,P,NMB,NB,RESTM,FRONT,ADPER,DECAL,FRN,TRAV)
+C$OMP+SHARED(N,M,P,NMB,NB,RESTM,FRONT,ADPER,DECAL,FRN,TRAV,C)
 C$OMP+SCHEDULE(STATIC,1)
       DO 1000 KB = 1,NMB
-      NUMPRC=MLNUMP()
+      NUMPRO=MLNUMP()
 C     K : INDICE DE COLONNE DANS LA MATRICE FRONTALE (ABSOLU DE 1 A N)
          K = NB*(KB-1) + 1 +P
          DO 100 I=1,P
             S = FRONT(ADPER(I))
             ADD= N*(I-1) + K
             DO 50 J=1,NB
-               TRAV(I,J,NUMPRC) = FRONT(ADD)*S
+               TRAV(I,J,NUMPRO) = FRONT(ADD)*S
                ADD = ADD + 1
  50         CONTINUE
  100     CONTINUE
@@ -56,8 +54,8 @@ C
          DO 500 IB = KB,NMB
             IA = K + NB*(IB-KB)
             IT=1
-            CALL DGEMX( NB,NB,P,FRONT(IA),N, TRAV(IT,1,NUMPRC), P,
-     %                   C, NB)
+            CALL DGEMX( NB,NB,P,FRONT(IA),N, TRAV(IT,1,NUMPRO), P,
+     %                   C(1,1,NUMPRO), NB)
 C     RECOPIE
 
 C
@@ -72,7 +70,7 @@ C     IND = ADPER(K +I1) - DECAL  + NB*(IB-KB-1) +NB - I1
                   IND = ADPER(K + I1) - DECAL + NB*(IB-KB)  - I1
                ENDIF
                DO 502J=J1,NB
-                  FRN(IND) = FRN(IND) +C(J,I)
+                  FRN(IND) = FRN(IND) +C(J,I,NUMPRO)
                   IND = IND +1
  502           CONTINUE
  501        CONTINUE
@@ -81,8 +79,8 @@ C     IND = ADPER(K +I1) - DECAL  + NB*(IB-KB-1) +NB - I1
             IB = NMB + 1
             IA = K + NB*(IB-KB)
             IT=1
-            CALL DGEMX( RESTM,NB,P,FRONT(IA),N, TRAV(IT,1,NUMPRC), P,
-     %                   C, NB)
+            CALL DGEMX( RESTM,NB,P,FRONT(IA),N, TRAV(IT,1,NUMPRO), P,
+     %                   C(1,1,NUMPRO), NB)
 
 C     RECOPIE
 
@@ -93,7 +91,7 @@ C     IND = ADPER(K +I1) - DECAL  + NB*(IB-KB-1) +NB - I1
                J1=1
                IND = ADPER(K + I1) - DECAL + NB*(IB-KB)  - I1
                DO 802 J=J1,RESTM
-                  FRN(IND) = FRN(IND) +C(J,I)
+                  FRN(IND) = FRN(IND) +C(J,I,NUMPRO)
                   IND = IND +1
  802              CONTINUE
  801           CONTINUE
@@ -118,7 +116,7 @@ C     BLOC DIAGONAL
          IA = K + NB*(IB-KB)
          IT=1
            CALL DGEMX( RESTM,RESTM,P,FRONT(IA),N, TRAV(IT,1,1),P,
-     %                   C, NB)
+     %                   C(1,1,1), NB)
 C     RECOPIE
 
 C
@@ -128,7 +126,7 @@ C     IND = ADPER(K +I1) - DECAL  + NB*(IB-KB-1) +NB - I1
             J1= I
             IND = ADPER(K + I1) - DECAL
             DO 901 J=J1,RESTM
-               FRN(IND) = FRN(IND) +C(J,I)
+               FRN(IND) = FRN(IND) +C(J,I,1)
                IND = IND +1
  901        CONTINUE
  902     CONTINUE

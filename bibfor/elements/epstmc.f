@@ -1,7 +1,7 @@
-      SUBROUTINE  EPSTMC(MODELI, TEMPE, TREF, HYDR, SECH, INSTAN, MATER,
-     &                   OPTION, EPSTH)
+      SUBROUTINE  EPSTMC(MODELI, TEMPE, TREF, HYDR, SECH, SREF, INSTAN,
+     &                    MATER,OPTION, EPSTH)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ELEMENTS  DATE 04/05/2004   AUTEUR SMICHEL S.MICHEL-PONNELLE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -31,6 +31,7 @@ C    TEMPE          IN     R        TEMPERATURE AU POINT D'INTEGRATION
 C    TREF           IN     R        TEMPERATURE DE REFERENCE
 C    HYDR           IN     R        HYDRATATION AU POINT D'INTEGRATION
 C    SECH           IN     R        SECHAGE AU POINT D'INTEGRATION
+C    SREF           IN     R        SECHAGE DE REFERENCE
 C    INSTAN         IN     R        INSTANT DE CALCUL (0 PAR DEFAUT)
 C    MATER          IN     I        MATERIAU
 C    OPTION         IN     K16      OPTION DE CALCUL
@@ -128,12 +129,12 @@ C
 C
             KDESSI = VALRES(1)
 C
-            EPSTH(1) = - KDESSI*(SECH)
-            EPSTH(2) = - KDESSI*(SECH)
+            EPSTH(1) = - KDESSI*(SREF-SECH)
+            EPSTH(2) = - KDESSI*(SREF-SECH)
 C
             IF (MODELI(1:2).EQ.'CA'.OR.MODELI(1:2).EQ.'DP'.OR.
      +          MODELI(1:2).EQ.'FO'.OR.MODELI(1:2).EQ.'AX') THEN
-                EPSTH(3) = - KDESSI*(SECH)
+                EPSTH(3) = - KDESSI*(SREF-SECH)
             ENDIF
          ENDIF
 C

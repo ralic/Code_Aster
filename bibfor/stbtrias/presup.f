@@ -3,7 +3,7 @@
       LOGICAL             LGRCOU
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF STBTRIAS  DATE 10/02/2004   AUTEUR NICOLAS O.NICOLAS 
+C MODIF STBTRIAS  DATE 03/05/2004   AUTEUR NICOLAS O.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -31,15 +31,23 @@ C  !  DANS CETTE INTERFACE NE SONT RETENUS QUE LES DATASETS    !
 C  !  SUIVANTS :                                               !
 C  !                                                           !
 C  !  DATASET N  151 (SUPERTAB 4,6,7)  ---> TITRE              !
+C  !  DATASET N  18  (SUPERTAB 4)      ---> SYS DE COORD       !
+C  !          N  2420 (SUPERTAB 5-10)  --->                    !
 C  !  DATASET N   15 (SUPERTAB 4)      ---> COORDONNEES DES    !
 C  !          N  781 (SUPERTAB 6)      --->   NOEUDS           !
-C  !          N 2411 (SUPERTAB 7)      --->                    !
+C  !          N 2411 (SUPERTAB 7-10)   --->                    !
 C  !  DATASET N   71 (SUPERTAB 4)      ---> DESCRIPTION DES    !
 C  !          N  780 (SUPERTAB 6)      --->   ELEMENTS         !
-C  !          N 2412 (SUPERTAB 7)      --->                    !
+C  !          N 2412 (SUPERTAB 7-10)   --->                    !
 C  !  DATASET N  752 (SUPERTAB 4 & 6)  ---> GROUPES DE NOEUDS  !
 C  !          N 2417 (SUPERTAB 7)      --->   OU MAILLES       !
-C  !          N 2429 (MASTER SERIES 3) --->   OU MAILLES       !
+C  !          N 2428 (MASTER SERIES 3) --->                    !
+C  !          N 2429 (MASTER SERIES 3) --->                    !
+C  !          N 2430 (MASTER SERIES 3) --->                    !
+C  !          N 2432 (MASTER SERIES 3) --->                    !
+C  !          N 2435 (SUPERTAB 7)      --->                    !
+C  !          N 2452 (MASTER SERIES 3) --->                    !
+C  !          N 2467 (MASTER SERIES 3) --->                    !
 C  !  DATASET N  735 (SUPERTAB 4 & 6)  ---> DESCRIPTION        !
 C  !              ??                        GEOMETRIQUE        !
 C  =============================================================
@@ -129,21 +137,15 @@ C  -->   LECTURE ET ECRITURE DES  NOEUDS
          LARRET=.FALSE.
          CALL ECRNEU(NBNODE,AMA,BMA,CMA,AMI,BMI,CMI,MIN,MAN,ITES)
 C
-      ELSE IF (DATSET.EQ.18) THEN
+      ELSE IF ((DATSET.EQ.18).OR.(DATSET.EQ.2420)) THEN
 C
 C  -->   LECTURE ET ECRITURE DU(DES) SYSTEME(S) DE COORDONNEES
 C
-C  ----  L'OPTION ACTUELLE EST DE NE PAS TRAITER LES SYSTEMES DE
-C         COORDONNEES UTILISATEURS : MESSAGE D'ERREUR
-C
-         CALL UTMESS('A','PRESUP',' ATTENTION LES SYSTEMES DE'
-     &    //' COORDONNES SUPERTAB NE SONT PAS RELUS DANS ASTER.')
-C         GOTO 99999
-      ELSE IF (DATSET.EQ.2420) THEN
-         CALL SLECOR
+         CALL SLECOR(DATSET)
 C
       ELSE IF ((DATSET.EQ.71).OR.(DATSET.EQ.780)
-     &         .OR.(DATSET.EQ.2412).OR.(DATSET.EQ.82))   THEN
+     &         .OR.(DATSET.EQ.2412).OR.
+     &        (DATSET.EQ.2431).OR.(DATSET.EQ.82))   THEN
 C
 C  -->   LECTURE ET ECRITURE DES  MAILLES
          CALL SLEELT(MAXNOD,NBTYMA,INDIC,PERMUT,NBMAIL,MINT,MANT,
@@ -154,8 +156,9 @@ C  -->   LECTURE ET ECRITURE DES  MAILLES
          IF ( LGRCOU )  CALL SLECOL(NBMTOT)
 C
       ELSE IF (DATSET.EQ.752.OR.DATSET.EQ.2417.
-     &          OR.DATSET.EQ.2429.OR.DATSET.EQ.2430.
-     &          OR.DATSET.EQ.2432.OR.DATSET.EQ.2435.
+     &          OR.DATSET.EQ.2428.OR.DATSET.EQ.2429.
+     &          OR.DATSET.EQ.2430.OR.DATSET.EQ.2432.
+     &          OR.DATSET.EQ.2435.OR.DATSET.EQ.2452.
      &          OR.DATSET.EQ.2467) THEN
 C
 C  -->   LECTURE ET ECRITURE DES GROUPES DE NOEUDS OU D'MAILLES

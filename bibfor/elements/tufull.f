@@ -3,7 +3,7 @@
       IMPLICIT   NONE
       CHARACTER*16 OPTION
 C ......................................................................
-C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ELEMENTS  DATE 04/05/2004   AUTEUR SMICHEL S.MICHEL-PONNELLE 
 C TOLE CRP_20
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -67,7 +67,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       REAL*8 PASS(NBRDDL,NBRDDL),KTEMP(NBRDDL,NBRDDL)
       REAL*8 PGL(3,3),TMC,TPC,OMEGA,VTEMP(NBRDDL)
       REAL*8 PGL1(3,3),PGL2(3,3),PGL3(3,3),RAYON,THETA
-      REAL*8 HYDRGM,HYDRGP,SECHGM,SECHGP,LC
+      REAL*8 HYDRGM,HYDRGP,SECHGM,SECHGP,SREF,LC
       INTEGER NNO,NPG,NBCOU,NBSEC,M,ICOMPO,NDIMV,IVARIX
       INTEGER IPOIDS,IVF,NBVARI,LGPG,JTAB(7)
       INTEGER IMATE,ITEMP,IMATUU,ICAGEP,IGEOM,NBPAR,ITABM(8),ITABP(8)
@@ -301,6 +301,7 @@ C ---  VARIABLE D HYDRATATION ET DE SECHAGE
       HYDRGP = 0.D0
       SECHGM = 0.D0
       SECHGP = 0.D0
+      SREF   = 0.D0
 C===============================================================
 C     RECUPERATION COMPORTEMENT POUR TERME DE CISAILLEMENT
 
@@ -400,7 +401,7 @@ C         ---------------------------------------------------
 
             CALL NMCOMP(2,TYPMOD,ZI(IMATE),ZK16(ICOMPO),ZR(ICARCR),
      &                  ZR(IINSTM),ZR(IINSTP),TMC,TPC,ZR(ITREF),HYDRGM,
-     &                  HYDRGP,SECHGM,SECHGP,EPS2D,DEPS2D,SIGN,
+     &                  HYDRGP,SECHGM,SECHGP,SREF,EPS2D,DEPS2D,SIGN,
      &                  ZR(IVARIM+K2),OPTION,EPSANM,EPSANP,NZ,PHASM,
      &                  PHASP,LC,SIGMA,ZR(IVARIP+K2),DSIDEP,COD,R8VIDE()
      &,R8VIDE())

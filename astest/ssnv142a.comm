@@ -1,4 +1,4 @@
-# MODIF  DATE 01/10/2002   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 04/05/2004   AUTEUR SMICHEL S.MICHEL-PONNELLE 
 # TITRE ESSAI DE FLUAGE PROPRE (MODELE GRANGER)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -58,7 +58,10 @@ BETON=DEFI_MATERIAU(
 
 CM=AFFE_MATERIAU( 
             MAILLAGE=M,   
-           AFFE=_F( TOUT = 'OUI',MATER = BETON, TEMP_REF = 20.) )
+            AFFE=_F( TOUT = 'OUI',
+                     MATER = BETON, 
+                     TEMP_REF = 20., 
+                     SECH_REF = 1.) )
 
 SECH=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R', MAILLAGE=M,
                         AFFE=_F( TOUT = 'OUI',
@@ -104,7 +107,7 @@ CH2=AFFE_CHAR_MECA_F(
 CH3=AFFE_CHAR_MECA(
             MODELE=MO,
             TEMP_CALCULEE=TEMP1,
-             SECH_CALCULEE=SECH1
+            SECH_CALCULEE=SECH1
                           )
 
 L_INST=DEFI_LIST_REEL(  DEBUT=0.0,INTERVALLE=(

@@ -1,4 +1,4 @@
-# MODIF  DATE 06/04/2004   AUTEUR JOUMANA J.EL-GHARIB 
+# MODIF  DATE 04/05/2004   AUTEUR SMICHEL S.MICHEL-PONNELLE 
 # TITRE COUPLAGE FLUAGE/BETON_DOUBLE_DP - TRACTION UNIAXIALE EN D_PLAN
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -189,7 +189,8 @@ TEMP2=CREA_CHAMP(   OPERATION='AFFE',
 CM=AFFE_MATERIAU(    MAILLAGE=MAIL,
                             AFFE=_F( TOUT = 'OUI',
                                   MATER = BETON,
-                                  TEMP_REF = 20.)
+                                  TEMP_REF = 20.,
+                                  SECH_REF = 0.)
                     )
 
 TEMP=CREA_RESU(  OPERATION='AFFE', TYPE_RESU='EVOL_THER',
@@ -508,7 +509,8 @@ TEST_TABLE(  TABLE=RELEVE_2,
 CM2=AFFE_MATERIAU(    MAILLAGE=MAIL,
                             AFFE=_F( TOUT = 'OUI',
                                   MATER = BETON,
-                                  TEMP_REF = 0.)
+                                  TEMP_REF = 0.,
+                                  SECH_REF = 0.)
                     )
 
 TEMPNC=CREA_RESU(  OPERATION='AFFE', TYPE_RESU='EVOL_THER',
@@ -687,9 +689,9 @@ TEST_TABLE(  TABLE=RELEVE_3,
               NOM_PARA='EPXX',FILTRE=( 
               _F(  NOM_PARA = 'INTITULE', VALE_K = 'EPSP'),
                   _F(  NOM_PARA = 'INST',     VALE = 100.)),
-                    VALE=8.7007295068442E-04,
+                    VALE=6.70072955E-04,
                PRECISION=5.E-4,
-               REFERENCE='NON_REGRESSION',       VERSION='7.2.25'
+               REFERENCE='NON_REGRESSION',       VERSION='7.3.1'
            )
 
 ################################################
@@ -837,9 +839,9 @@ TEST_TABLE(  TABLE=RELEVE_4,
               NOM_PARA='EPXX',FILTRE=( 
               _F(  NOM_PARA = 'INTITULE', VALE_K = 'EPSP'),
                   _F(  NOM_PARA = 'INST',     VALE = 100.)),
-                    VALE=8.7007309579022E-04,
+                    VALE=6.70072955E-04,
                PRECISION=5.E-4,
-               REFERENCE='NON_REGRESSION',       VERSION='7.2.25'
+               REFERENCE='NON_REGRESSION',       VERSION='7.3.1'
            )
 
 FIN()

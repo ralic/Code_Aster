@@ -1,11 +1,11 @@
         SUBROUTINE REDECE ( NDIM, TYPMOD, IMAT, COMP, CRIT,
      1                      TIMED,TIMEF, TEMPD,TEMPF,TREF,HYDRD,
-     &                      HYDRF,SECHD,SECHF,EPSDT,DEPST,SIGD,
+     &                      HYDRF,SECHD,SECHF,SREF,EPSDT,DEPST,SIGD,
      2                      VIND, OPT,ELGEOM,SIGF,VINF,DSDE)
         IMPLICIT REAL*8 (A-H,O-Z)
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 04/05/2004   AUTEUR SMICHEL S.MICHEL-PONNELLE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -88,6 +88,7 @@ C               HYDRD   HYDRATATION A L'INSTANT PRECEDENT
 C               HYDRF   HYDRATATION A L'INSTANT DU CALCUL
 C               SECHD   SECHAGE A L'INSTANT PRECEDENT
 C               SECHF   SECHAGE A L'INSTANT DU CALCUL
+C               SREF    SECHAGE DE REFERENCE
 C               EPSDT   DEFORMATION TOTALE A T
 C               DEPST   INCREMENT DE DEFORMATION TOTALE
 C               SIGD    CONTRAINTE A T
@@ -100,11 +101,10 @@ C       ----------------------------------------------------------------
 C
         REAL*8          CRIT(*)
         REAL*8          TIMED,     TIMEF,    TEMPD,   TEMPF  , TREF
-        REAL*8          HYDRD , HYDRF , SECHD , SECHF , ELGEOM(*)
+        REAL*8          HYDRD , HYDRF , SECHD , SECHF , SREF, ELGEOM(*)
         REAL*8          EPSDT(6),  DEPST(6)
         REAL*8          SIGD(6),   SIGF(6)
         REAL*8          VIND(*),   VINF(*)
-C
         REAL*8          DSDE(6,6)
 C
         CHARACTER*16    COMP(*),     OPT
@@ -169,13 +169,13 @@ C
         IF ( COMP(1)(1:15) .EQ. 'BETON_DOUBLE_DP') THEN
         CALL PLASBE ( TYPMOD, IMAT,  COMP,  CRIT,
      1                TEMPD, TEMPF, TREF,
-     2                HYDRD, HYDRF, SECHD, SECHF,
+     2                HYDRD, HYDRF, SECHD, SECHF, SREF,
      3                EPSDT, DEPST, SIGD,  VIND,  OPT, ELGEOM,
      4                SIGF,  VINF,  DSDE,  ICOMP, NVI,  IRTET)
         ELSE
         CALL PLASTI ( TYPMOD, IMAT,  COMP,  CRIT,
      1                TIMED, TIMEF, TEMPD, TEMPF, TREF,
-     2                HYDRD, HYDRF, SECHD, SECHF,
+     2                HYDRD, HYDRF, SECHD, SECHF, SREF,
      3                EPSDT, DEPST, SIGD,  VIND,  OPT,
      4                SIGF,  VINF,  DSDE,  ICOMP, NVI,  IRTET)
         ENDIF
@@ -254,13 +254,13 @@ C
             IF ( COMP(1)(1:15) .EQ. 'BETON_DOUBLE_DP') THEN
               CALL PLASBE ( TYPMOD,  IMAT,   COMP,   CRIT,
      1                    TEMD,   TEMF,   TREF,  HYDD, HYDF,
-     2                    SECD, SECF, EPS,   DEPS,
+     2                    SECD, SECF, SREF, EPS,   DEPS,
      3                    SD,    VD,     OPT,  ELGEOM,  SIGF,   VINF,
      4                    DSDELO,  ICOMP,   NVI,  IRTET)
             ELSE
               CALL PLASTI ( TYPMOD,  IMAT,   COMP,   CRIT,  TD,
      1                    TF,    TEMD,   TEMF,   TREF,  HYDD, HYDF,
-     2                    SECD, SECF,   EPS,   DEPS,
+     2                    SECD, SECF, SREF,  EPS,   DEPS,
      2                    SD,    VD,     OPT,    SIGF,   VINF,
      3                    DSDELO,  ICOMP,   NVI,  IRTET)
             ENDIF

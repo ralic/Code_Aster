@@ -1,7 +1,7 @@
       SUBROUTINE DTAUNO(JRWORK, LISNOE, NBNOT, NBORDR, NNOINI, NBNOP,
      &                  NUMPAQ, TSPAQ, NOMMET, NOMCRI, NOMMAI, CNSR)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 26/01/2004   AUTEUR F1BHHAJ J.ANGLES 
+C MODIF PREPOST  DATE 03/05/2004   AUTEUR F1BHHAJ J.ANGLES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -340,7 +340,7 @@ C
 C
             NBVEC = 209
             CALL TRLONO(NBVEC, JVECTN, JVECTU, JVECTV, NBORDR, KWORK,
-     &                  SOMNOW, JRWORK, TSPAQ, INOP, JVECNO)
+     &                  SOMNOW, JRWORK, TSPAQ, JVECNO)
 C
 C CALCUL DU MAX DES DELTA_TAU MAX ET DU VECTEUR NORMAL ASSOCIE POUR
 C LE NOEUD COURANT.
@@ -364,19 +364,20 @@ C
             MNMAX(2) = 1
 C
             DO 430 I=1, NBVEC
-               IF ( (ABS(ZR(JDTAUM + (I-1)) - DTAUM(1)) .GT. EPSILO)
-     &               .AND. ( ZR(JDTAUM + (I-1)) .GT. DTAUM(1)) ) THEN
-                  DTAUM(2) = DTAUM(1)
-                  MNMAX(2) = MNMAX(1)
-                  DTAUM(1) = ZR(JDTAUM + (I-1))
-                  MNMAX(1) = I
-               ENDIF
-               IF ( (ABS(ZR(JDTAUM + (I-1)) - DTAUM(2)) .GT. EPSILO)
-     &               .AND. (ZR(JDTAUM + (I-1)) .GT. DTAUM(2))
-     &               .AND. (I .NE. MNMAX(1)) ) THEN
-                  DTAUM(2) = ZR(JDTAUM + (I-1))
-                  MNMAX(2) = I
-               ENDIF
+              IF ( ZR(JDTAUM + (I-1)) .GT. EPSILO ) THEN
+                 IF ( (ZR(JDTAUM + (I-1))-DTAUM(1))/ZR(JDTAUM + (I-1))
+     &                 .GT. EPSILO ) THEN
+                    DTAUM(2) = DTAUM(1)
+                    MNMAX(2) = MNMAX(1)
+                    DTAUM(1) = ZR(JDTAUM + (I-1))
+                    MNMAX(1) = I
+                 ENDIF
+                 IF ( ((ZR(JDTAUM + (I-1))-DTAUM(2))/ZR(JDTAUM + (I-1))
+     &                 .GT. EPSILO)  .AND. (I .NE. MNMAX(1)) ) THEN
+                    DTAUM(2) = ZR(JDTAUM + (I-1))
+                    MNMAX(2) = I
+                 ENDIF
+              ENDIF
  430        CONTINUE
 C
 C 4/ PREMIER RAFFINEMENT CONCERNANT LA DETERMINATION DU VECTEUR NORMAL
@@ -448,7 +449,7 @@ C
 C
                   NBVEC = 7
                   CALL TRLONO(NBVEC, JVECN2, JVECU2, JVECV2, NBORDR,
-     &                        KWORK, SOMNOW, JRWORK, TSPAQ, INOP, JVNO2)
+     &                        KWORK, SOMNOW, JRWORK, TSPAQ, JVNO2)
                ELSE
                   DGAM2 = 2.0D0*(PI/180.0D0)
                   DPHI2 = DGAM2/SIN(GAMMAM)
@@ -476,7 +477,7 @@ C
 C
                   NBVEC = 9
                   CALL TRLONO(NBVEC, JVECN2, JVECU2, JVECV2, NBORDR,
-     &                        KWORK, SOMNOW, JRWORK, TSPAQ, INOP, JVNO2)
+     &                        KWORK, SOMNOW, JRWORK, TSPAQ, JVNO2)
                ENDIF
 C
 C 4-1/ REMISE A ZERO DU VECTEUR DE TRAVAIL CONTENANT LES VALEURS DE
@@ -561,7 +562,7 @@ C
 C
                   NBVEC = 7
                   CALL TRLONO(NBVEC, JVECN1, JVECU1, JVECV1, NBORDR,
-     &                        KWORK, SOMNOW, JRWORK, TSPAQ, INOP, JVNO1)
+     &                        KWORK, SOMNOW, JRWORK, TSPAQ, JVNO1)
                ELSE
                   DGAM2 = 1.0D0*(PI/180.0D0)
                   DPHI2 = DGAM2/SIN(GAMMAM)
@@ -589,7 +590,7 @@ C
 C
                   NBVEC = 9
                   CALL TRLONO(NBVEC, JVECN1, JVECU1, JVECV1, NBORDR,
-     &                        KWORK, SOMNOW, JRWORK, TSPAQ, INOP, JVNO1)
+     &                        KWORK, SOMNOW, JRWORK, TSPAQ, JVNO1)
                ENDIF
 C
 C 5-1/ REMISE A ZERO DU VECTEUR DE TRAVAIL CONTENANT LES VALEURS DE
@@ -655,7 +656,7 @@ C
                C2 = VALNU/VALE
 C
                DO 540 IORDR=1, NBORDR
-                  ADRS = (IORDR-1)*TSPAQ + KWORK*SOMNOW*6 + (INOP-1)*6
+                  ADRS = (IORDR-1)*TSPAQ + KWORK*SOMNOW*6
                   SIXX = ZR(JRWORK + ADRS + 0 )
                   SIYY = ZR(JRWORK + ADRS + 1 )
                   SIZZ = ZR(JRWORK + ADRS + 2 )

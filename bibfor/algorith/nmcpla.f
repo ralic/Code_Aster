@@ -1,11 +1,11 @@
         SUBROUTINE NMCPLA ( NDIM, TYPMOD, IMAT, COMP, CRIT,
      1                      TIMED,TIMEF, TEMPD,TEMPF,TREF,HYDRD,
-     &                      HYDRF,SECHD,SECHF,EPSDT,DEPST,SIGD,
+     &                      HYDRF,SECHD,SECHF,SREF,EPSDT,DEPST,SIGD,
      2                      VIND, OPT,ELGEOM,SIGF,VINF,DSDE)
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 04/05/2004   AUTEUR SMICHEL S.MICHEL-PONNELLE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -75,6 +75,7 @@ C               HYDRD   HYDRATATION A L'INSTANT PRECEDENT
 C               HYDRF   HYDRATATION A L'INSTANT DU CALCUL
 C               SECHD   SECHAGE A L'INSTANT PRECEDENT
 C               SECHF   SECHAGE A L'INSTANT DU CALCUL
+C               SREF    SECHAGE DE REFERENCE
 C               EPSDT   DEFORMATION TOTALE A T
 C               DEPST   INCREMENT DE DEFORMATION TOTALE
 C               SIGD    CONTRAINTE A T
@@ -103,7 +104,7 @@ C       ----------------------------------------------------------------
 C
         REAL*8          CRIT(*)
         REAL*8          TIMED,     TIMEF,    TEMPD,   TEMPF  , TREF
-        REAL*8          HYDRD , HYDRF , SECHD , SECHF , ELGEOM(*)
+        REAL*8          HYDRD, HYDRF, SECHD, SECHF, SREF, ELGEOM(*)
         REAL*8          EPSDT(6),  DEPST(6)
         REAL*8          SIGD(6),   SIGF(6)
         REAL*8          VIND(*),   VINF(*)
@@ -261,7 +262,7 @@ C
       IF ( OPTFLU .EQ. 'RAPH_MECA' ) THEN
          CALL NMGRAN (NDIM,   TYPMOD,   IMAT,    CMP1,   CRIT,
      1                TIMED,  TIMEF,    TEMPD,   TEMPF,  TREF,
-     2                HYDRD,  HYDRF,    SECHD,   SECHF,  TMPDMX,
+     2                HYDRD,  HYDRF,    SECHD,   SECHF,  SREF, TMPDMX,
      3                TMPFMX, DEPST2,   SIGD,    VIND(1),OPT,
      4                SIGF2,  VINF(1),  DSDE )
 C
@@ -342,7 +343,7 @@ C
 C
           CALL NMISOT (NDIM,  TYPMOD,    IMAT,     CMP2,  CRIT,
      1                 TIMED, TIMEF,     TEMPD,    TEMPF, TREF,
-     2                 HYDRD, HYDRF,     SECHD,    SECHF,
+     2                 HYDRD, HYDRF,     SECHD,    SECHF, SREF,
      3                 DEPS , SIGD,      VIND(NN), OPT,
      4                 SIGF,  VINF(NN),  DSDE,     RBID,  RBID)
 C
@@ -355,9 +356,9 @@ C
 C
               CALL REDECE (NDIM,  TYPMOD,   IMAT,     CMP2,  CRIT,
      1                     TIMED, TIMEF,    TEMPD,    TEMPF, TREF,
-     2                     HYDRD, HYDRF,    SECHD,    SECHF, EPSDT,
-     3                     DEPS , SIGD,     VIND(NN), OPT,   ELGEOM,
-     4                     SIGF,  VINF(NN), DSDE)
+     2                     HYDRD, HYDRF,    SECHD,    SECHF, SREF,
+     3                     EPSDT, DEPS , SIGD,     VIND(NN), OPT,   
+     4                     ELGEOM, SIGF,  VINF(NN), DSDE)
       ELSE
          CALL UTMESS('F','NMCPLA_6','LOI DE COMPORTEMENT NON '
      &      // 'AUTORISEE DANS LE COUPLAGE FLUAGE/FISSURATION')
@@ -402,9 +403,9 @@ C
          BENDOF = MATERF(4)
          KDESSD = MATERD(5)
          KDESSF = MATERF(5)
-         EPSTH = ALPHAF*(TEMPF-TREF) - ALPHAD*(TEMPD-TREF)
+         EPSTH = ALPHAF*(TEMPF-TREF)  - ALPHAD*(TEMPD-TREF)
      &         - BENDOF*HYDRF        + BENDOD*HYDRD
-     &         + KDESSF*SECHF        - KDESSD*SECHD
+     &         - KDESSF*(SREF-SECHF) + KDESSD*(SREF-SECHD)
          DO 110 K=1,3
             DEPSEL(K) = DEPSEL(K) + EPSTH
  110     CONTINUE

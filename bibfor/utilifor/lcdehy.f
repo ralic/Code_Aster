@@ -1,9 +1,9 @@
-        SUBROUTINE LCDEHY ( NMAT,  MATERD, MATERF, HD, HF, SD,
-     &                      SF,    DEPSM,  EPSDM )
+        SUBROUTINE LCDEHY ( NMAT, MATERD, MATERF, HD, HF, SD,
+     &                      SF, SREF, DEPSM, EPSDM )
         IMPLICIT NONE
 C       ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILIFOR  DATE 06/04/2004   AUTEUR JOUMANA J.EL-GHARIB 
+C MODIF UTILIFOR  DATE 04/05/2004   AUTEUR SMICHEL S.MICHEL-PONNELLE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -35,7 +35,7 @@ C
 C       ON A SIG = HOOK EPSE  = HOOK ( EPST - EPSP - EPSRET )
 C                             = HOOK ( EPST - EPSP ) - HOOK EPSRET
 C       DONC            SIG   = SIGM                 + SIGRET
-C       AVEC            SIGRET= + HOOK (BETA*SECH + KAPA*HYDR) I
+C       AVEC            SIGRET= + HOOK (KAPPA*(SREF-SECH) + BETA*HYDR) I
 C                       DE SIGNE OPPOSE A LA DEFORMATION THERMIQUE
 C       OU   EN PRENANT EPS   = EPST - EPSRET
 C                       SIG   = HOOK ( EPS - EPSP )
@@ -56,7 +56,7 @@ C               EPSDM   DEFORMATION MECANIQUE A T
 C       ----------------------------------------------------------------
         INTEGER         NDT  , NDI , NMAT , K
         CHARACTER*2     CE
-        REAL*8          HD, HF, SD, SF
+        REAL*8          HD, HF, SD, SF, SREF
         REAL*8          EPSDM(6), DEPSM(6)
         REAL*8          BENDOD, BENDOF, KDESSD, KDESSF
         REAL*8          MATERD(NMAT,2) ,MATERF(NMAT,2)
@@ -71,8 +71,8 @@ C
 C
         DO 110 K = 1,NDI
             DEPSM(K) = DEPSM(K) + ( BENDOF*HF - BENDOD*HD)
-     &                          - ( KDESSF*SF - KDESSD*SD)
-            EPSDM(K) = EPSDM(K) + ( BENDOD*HD - KDESSD*SD)
+     &                         + ( KDESSF*(SREF-SF) - KDESSD*(SREF-SD))
+            EPSDM(K) = EPSDM(K) +  BENDOD*HD + KDESSD*(SREF-SD) 
  110    CONTINUE
 C
         END

@@ -1,7 +1,7 @@
-      SUBROUTINE NMVCRE(MODELZ,MATZ,COMREZ)
+      SUBROUTINE NMVCRE(MODELZ,MATZ,LISCHZ,COMREZ)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/08/1999   AUTEUR GJBHHEL E.LORENTZ 
+C MODIF ALGORITH  DATE 04/05/2004   AUTEUR SMICHEL S.MICHEL-PONNELLE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,20 +21,18 @@ C ======================================================================
 
       IMPLICIT NONE
 
-      CHARACTER*(*) MODELZ, MATZ, COMREZ
-      CHARACTER*8   MODELE, MATE
-      CHARACTER*14  COMREF
-
+      CHARACTER*(*) MODELZ, MATZ, LISCHZ, COMREZ
 C ----------------------------------------------------------------------
 C  CREATION DES VALEURS DE REFERENCE DES VARIABLES DE COMMANDE
 C ----------------------------------------------------------------------
-C IN/JXIN   MODELE  K8  SD MODELE
-C IN/JXIN   MATE    K8  SD MATERIAU
-C IN/JXOUT  COMREF  K14 SD VARI_COM
+C IN/JXIN   MODELZ  K8  SD MODELE
+C IN/JXIN   MATZ    K8  SD MATERIAU
+C IN        LISCHA  K19 SD L_CHARGES
+C IN/JXOUT  COMREZ  K14 SD VARI_COM
 C ----------------------------------------------------------------------
 
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
-C
+
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
@@ -49,35 +47,56 @@ C
       CHARACTER*32                                    ZK32
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
-C
+
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 
-      LOGICAL      EXITRF
-      CHARACTER*24 CHTREF
-      INTEGER      IBID, IRET, IEX
-      CHARACTER*8  MAILLA
+      CHARACTER*8   MODELE, MATE, K8BID
+      CHARACTER*14  COMREF
+      CHARACTER*19  LISCHA
+      CHARACTER*24  CHTREF, CHSREF
+      CHARACTER*8   MAILLA
+      INTEGER        IBID, IRET, IEX, NCHAR, JINF,NUMCH
+      LOGICAL        EXITRF, EXISRF
 
 
       CALL JEMARQ()
       MODELE = MODELZ
       MATE   = MATZ
       COMREF = COMREZ
+      LISCHA = LISCHZ
 
 
 C - EXISTENCE (NON BIDON) DES CHAMPS
       CALL DETRSD('VARI_COM', COMREF)
       CALL WKVECT(COMREF//'.EXISTENCE','V V L ',3,IEX)
-
-C - TEMPERATURE DE REFERENCE
-
+       
       CALL DISMOI('F','NOM_MAILLA',MODELE,'MODELE',IBID,MAILLA,IRET)
-      CALL METREF(MATE, MAILLA, EXITRF, CHTREF)
-
 
 C - STOCKAGE DES VALEURS DE REFERENCE DES VARIABLES DE COMMANDE
+C -------------------------------------------------------------
+C - TEMPERATURE DE REFERENCE
+   
+      CALL METREF(MATE, MAILLA, EXITRF, CHTREF)
       CALL COPISD('CHAMP_GD','V',CHTREF, COMREF // '.TEMP')
       ZL(IEX) = EXITRF
 
+C - SECHAGE DE REFERENCE
 
+       CALL MESREF(MATE, MAILLA, EXISRF, CHSREF)       
+       CALL COPISD('CHAMP_GD','V',CHSREF, COMREF // '.SECH')
+       ZL(IEX+2) = EXISRF
+
+C -  VERIFICATION PRESENCE SECHAGE + SECH_REF       
+      CALL JEEXIN(LISCHA//'.LCHA',IRET)
+      IF (IRET.NE.0) THEN
+        CALL JELIRA(LISCHA//'.LCHA','LONMAX',NCHAR,K8BID)
+        CALL JEVEUO(LISCHA//'.INFC','L',JINF)
+        NUMCH = ZI(JINF+4*NCHAR+6)
+      END IF
+      IF (NUMCH.GT.0) THEN
+        IF (.NOT.EXISRF) CALL UTMESS('F','NMVCRE','VOUS UTILISEZ UN   
+     +    CHAMP DE SECHAGE SANS AVOIR DEFINI SECH_REF' )
+      ENDIF
       CALL JEDEMA()
+      
       END

@@ -11,7 +11,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 04/05/2004   AUTEUR SMICHEL S.MICHEL-PONNELLE 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -203,7 +203,7 @@ C ======================================================================
         MECTRU = .TRUE.
         TF = T + DT
         CALL REDECE(NDIM,TYPMOD,IMATE,COMPLG,CRIT,INSTAM, INSTAP, 
-     >              T,TF,TREF,0.0D0,0.0D0,0.0D0,0.0D0,
+     >              T,TF,TREF,0.0D0,0.0D0,0.0D0,0.0D0,0.0D0,
      >              DEFGEM(ADDEME+NDIM),DEPS,CONGEM(ADCOME),
      >              VINTM,OPTION,R8BID,CONGEP(ADCOME),VINTP, 
      >              DSDEME)

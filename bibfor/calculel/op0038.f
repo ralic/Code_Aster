@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
       INTEGER IER
 C ----------------------------------------------------------------------
-C MODIF CALCULEL  DATE 30/03/2004   AUTEUR CIBHHPD S.VANDENBERGHE 
+C MODIF CALCULEL  DATE 04/05/2004   AUTEUR SMICHEL S.MICHEL-PONNELLE 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -117,7 +117,7 @@ C        ------------------------
      &              CHTREF,CHTIME,CHNUMC,CHHARM,CHSIG,CHEPS,CHFREQ,
      &              CHMASS,K24B,ZK8(JCHA),K24B,COEF,CCOEF,K24B,K24B,
      &              CHELEM,LIGREL,BASE,K24B,K24B,K24B,K24B,K24B,K24B,
-     &              K8BID,IBID,IRET)
+     &              K24B,K8BID,IBID,IRET)
 
       ELSE IF (OPTION.EQ.'SOUR_ELGA_ELEC') THEN
         CHAMGD = ' '
@@ -127,7 +127,7 @@ C        ------------------------
      &              CHTREF,CHTIME,CHNUMC,CHHARM,CHSIG,CHEPS,CHFREQ,
      &              CHMASS,K24B,ZK8(JCHA),K24B,COEF,CCOEF,K24B,K24B,
      &              CHELEM,LIGREL,BASE,K24B,K24B,K24B,K24B,K24B,K24B,
-     &              K8BID,IBID,IRET)
+     &              K24B,K8BID,IBID,IRET)
 
 C        -- OPTION POINTS DE GAUSS :
       ELSE IF (OPTION.EQ.'COOR_ELGA') THEN

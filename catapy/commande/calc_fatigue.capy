@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 26/01/2004   AUTEUR F1BHHAJ J.ANGLES 
+#& MODIF COMMANDE  DATE 03/05/2004   AUTEUR F1BHHAJ J.ANGLES 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -71,7 +71,6 @@ CALC_FATIGUE=OPER(nom="CALC_FATIGUE",op= 151,sd_prod=calc_fatigue_prod,reentrant
                DELTA_OSCI    = SIMP(statut='f',typ='R',defaut= 0.0E+0),  
            ),
            b_fati_grmano  =BLOC(condition = "(GROUP_MA != None or MAILLE != None or GROUP_NO != None or NOEUD != None)",
-               MODELE        =SIMP(statut='o',typ=modele ),
                MAILLAGE      =SIMP(statut='o',typ=maillage ),
            ),
          ),

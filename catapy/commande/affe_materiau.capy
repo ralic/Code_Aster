@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
+#& MODIF COMMANDE  DATE 04/05/2004   AUTEUR SMICHEL S.MICHEL-PONNELLE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -30,5 +30,6 @@ AFFE_MATERIAU=OPER(nom="AFFE_MATERIAU",op=6,sd_prod=cham_mater,
            MAILLE          =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
            MATER           =SIMP(statut='o',typ=mater,max=30),
            TEMP_REF        =SIMP(statut='f',typ='R',defaut= 0.E+0 ),
+           SECH_REF        =SIMP(statut='f',typ='R',val_min=0.E+0),
          ),
 )  ;

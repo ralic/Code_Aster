@@ -1,6 +1,6 @@
-      SUBROUTINE SLECOR
+      SUBROUTINE SLECOR(DATSET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF STBTRIAS  DATE 27/05/2003   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF STBTRIAS  DATE 03/05/2004   AUTEUR NICOLAS O.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -16,6 +16,10 @@ C
 C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+C  ROUTINE DE TRAITEMENT DES SYSTEMES DE COORDONNEES SUPERTAB
+C  LE DATASET 18 EST OBSOLETE DEPUIS 1987
+C  DATSET : IN :DATASET DES SYSTEMES DE COORDONNEES
 C ======================================================================
 C TOLE CRS_512
       IMPLICIT REAL*8 (A-H,O-Z)
@@ -42,6 +46,7 @@ C
       CHARACTER*6  MOINS1
       CHARACTER*80 CBUF,KBID
       REAL*8       RBID
+      INTEGER      DATSET
 C
 C  ------------ FIN DECLARATION -------------
 C
@@ -55,8 +60,13 @@ C
       CALL JEEXIN('&&IDEAS.SYST',IRET)
       IF(IRET.NE.0) THEN
         CALL JEDETR('&&IDEAS.SYST')
+        IF (DATSET.EQ.18) THEN
+        CALL UTMESS('A','SLECOR',' ATTENTION LE DATASET 18'
+     &    //' APPARAIT PLUSIEURS FOIS.')
+        ELSE
         CALL UTMESS('A','SLECOR',' ATTENTION LE DATASET 2420'
      &    //' APPARAIT PLUSIEURS FOIS.')
+       ENDIF
       ENDIF
       CALL WKVECT('&&IDEAS.SYST','V V I',INUS,JSYS)
    1  CONTINUE
@@ -64,10 +74,18 @@ C
       IF (CBUF(1:6).NE.MOINS1) THEN
 C
         IF (FIRST) THEN
-          READ(IUNV,'(A)') KBID
-          READ(IUNV,'(3I10)') INUM,ICOOR,ICOL
+          IF (DATSET.EQ.18) THEN
+            READ(IUNV,'(5I10)') INUM,ICOOR,IBID,ICOL,IBID
+          ELSE
+            READ(IUNV,'(A)') KBID
+            READ(IUNV,'(3I10)') INUM,ICOOR,ICOL
+          ENDIF  
         ELSE
-          READ(CBUF,'(3I10)') INUM,ICOOR,ICOL
+          IF (DATSET.EQ.18) THEN
+            READ(CBUF,'(5I10)') INUM,ICOOR,IBID,ICOL,IBID
+          ELSE
+            READ(CBUF,'(3I10)') INUM,ICOOR,ICOL
+          ENDIF  
         ENDIF
         IF (INUM.GT.INUS) THEN
           INUS  = INUM
@@ -76,12 +94,18 @@ C
         ENDIF
 C
         ZI(JSYS-1+INUM) = ICOOR
-        READ(IUNV,'(A)') KBID
-        READ(IUNV,'(3(1PD25.16))') RBID
-        READ(IUNV,'(3(1PD25.16))') RBID
-        READ(IUNV,'(3(1PD25.16))') RBID
-        READ(IUNV,'(3(1PD25.16))') RBID
-C
+
+        IF (DATSET.EQ.2420) THEN
+          READ(IUNV,'(A)') KBID
+          READ(IUNV,'(3(1PD25.16))') RBID
+          READ(IUNV,'(3(1PD25.16))') RBID
+          READ(IUNV,'(3(1PD25.16))') RBID
+          READ(IUNV,'(3(1PD25.16))') RBID
+        ELSE
+          READ(IUNV,'(A)') KBID
+          READ(IUNV,'(6(1PE13.5))') RBID
+          READ(IUNV,'(3(1PE13.5))') RBID
+        ENDIF
         FIRST = .FALSE.
         GOTO 1
       ENDIF

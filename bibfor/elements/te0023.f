@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C.......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 04/05/2004   AUTEUR SMICHEL S.MICHEL-PONNELLE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -57,7 +57,7 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
       LOGICAL CPX,LSENS
       INTEGER JGANO,NBSIGM,NITER,I,ICONT,IDEPL,ITER,IDEPLC,IDFDE,
      &        IGEOM,IMATE,J,INO,IPOIDS,ITEMPE,ITREF,IVF,NBINCO,
-     &        NBSIG,NDIM,NNO,NNOS,NPG,IDEPS
+     &        NBSIG,NDIM,NNO,NNOS,NPG,IDEPS,IHYDR,ISECH,ISREF
 C     ------------------------------------------------------------------
 
       MODELI(1:2) = NOMTE(3:4)
@@ -125,6 +125,17 @@ C ---- RECUPERATION DE LA TEMPERATURE DE REFERENCE
 C      -------------------------------------------
       CALL JEVECH('PTEREF','L',ITREF)
 
+C ---- RECUPERATION DU CHAMP DE L'HDRATATION SUR L'ELEMENT
+C      --------------------------------------------------
+      CALL JEVECH('PHYDRER','L',IHYDR)
+
+C ---- RECUPERATION DU CHAMP DU SECHAGE SUR L'ELEMENT
+C      --------------------------------------------------
+      CALL JEVECH('PSECHER','L',ISECH)      
+
+C ---- RECUPERATION DU SECHAGE DE REFERENCE
+C      -------------------------------------------
+      CALL JEVECH('PSECREF','L',ISREF)
       DO 140 ITER = 1,NITER
 
         DO 20 I = 1,NBSIG*NPG
@@ -149,12 +160,12 @@ C      -------------------------------------------
 
 C ---- CALCUL DES CONTRAINTES 'VRAIES' AUX POINTS D'INTEGRATION
 C ---- DE L'ELEMENT :
-C ---- (I.E. SIGMA_MECA - SIGMA_THERMIQUES)
+C ---- (I.E. SIGMA_MECA - SIGMA_THERMIQUES - SIGMA_RETRAIT)
 C      ------------------------------------
         CALL SIGVMC(MODELI,NNO,NDIM,NBSIG,NPG,IPOIDS,IVF,IDFDE,
-     &              ZR(IGEOM),DEPLA,
-     &              ZR(ITEMPE),ZR(ITREF),INSTAN,REPERE,ZI(IMATE),
-     &              NHARM,SIGMA,.FALSE.)
+     &              ZR(IGEOM),DEPLA,ZR(ITEMPE),ZR(ITREF),
+     &              ZR(IHYDR),ZR(ISECH),ZR(ISREF),INSTAN,REPERE,
+     &              ZI(IMATE),NHARM,SIGMA,.FALSE.)
 
 
 C ---- CALC DU TERME COMPLEMENTAIRE DE CONTR 'VRAIES' SUR L'ELEMENT
@@ -167,9 +178,9 @@ C      ------------------------------------
             DEPLA(I) = ZR(IDEPS-1+I)
    60     CONTINUE
           CALL SIGVMC(MODELI,NNO,NDIM,NBSIG,NPG,IPOIDS,IVF,
-     &                IDFDE,ZR(IGEOM),DEPLA, ZR(ITEMPE),
-     &                ZR(ITREF),INSTAN,REPERE,ZI(IMATE),
-     &                NHARM,SIGM2,.TRUE.)
+     &                IDFDE,ZR(IGEOM),DEPLA, ZR(ITEMPE),ZR(ITREF),
+     &                ZR(IHYDR),ZR(ISECH),ZR(ISREF),INSTAN,REPERE,
+     &                ZI(IMATE),NHARM,SIGM2,.TRUE.)
           DO 70 I = 1,NBSIG*NPG
             SIGMA(I) = SIGMA(I) + SIGM2(I)
    70     CONTINUE

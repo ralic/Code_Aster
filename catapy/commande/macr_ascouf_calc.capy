@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 10/02/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+#& MODIF COMMANDE  DATE 03/05/2004   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,6 +17,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
 # RESPONSABLE F1BHHAJ J.ANGLES
+from Macro.macr_ascouf_calc_ops import macr_ascouf_calc_ops
 def macr_ascouf_calc_prod(self,MODELE,CHAM_MATER,CARA_ELEM,FOND_FISS,CHARGE,RESU_THER,**args):
   self.type_sdprod(MODELE,modele)
   if CHAM_MATER != None:self.type_sdprod(CHAM_MATER,cham_mater)
@@ -26,7 +27,7 @@ def macr_ascouf_calc_prod(self,MODELE,CHAM_MATER,CARA_ELEM,FOND_FISS,CHARGE,RESU
   if RESU_THER  != None:self.type_sdprod(RESU_THER,evol_ther)
   return evol_noli
 
-MACR_ASCOUF_CALC=MACRO(nom="MACR_ASCOUF_CALC",op= -20,sd_prod=macr_ascouf_calc_prod,
+MACR_ASCOUF_CALC=MACRO(nom="MACR_ASCOUF_CALC",op=macr_ascouf_calc_ops,sd_prod=macr_ascouf_calc_prod,
                       fr=" ",
                       docu="U4.cf.20-b",reentrant='n',
             UIinfo={"groupes":("Outils métier",)},
@@ -137,7 +138,7 @@ MACR_ASCOUF_CALC=MACRO(nom="MACR_ASCOUF_CALC",op= -20,sd_prod=macr_ascouf_calc_p
            EVOL_NOLI       =SIMP(statut='f',typ=evol_noli),
          ),
 
-         RECH_LINEAIRE   =FACT(statut='f',
+         RECH_LINEAIRE   =FACT(statut='d',
            RESI_LINE_RELA  =SIMP(statut='f',typ='R',defaut= 1.0E-3 ),
            ITER_LINE_MAXI  =SIMP(statut='f',typ='I',defaut= 3),
          ),

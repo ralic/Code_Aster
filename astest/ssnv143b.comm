@@ -1,0 +1,325 @@
+# MODIF  DATE 04/05/2004   AUTEUR SMICHEL S.MICHEL-PONNELLE 
+# TITRE TRACTION BIAXIALE EN 3D - COMPORTEMENT BETON_DOUBLE_DP
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+#----------------------------------------------------------------------
+#   TEST MODELE BETON_DOUBLE_DP 3D (DOUBLE CRITERE DE DRUCKER PRAGER)
+#   EN DEPLACEMENT IMPOSE
+#   ESSAI EN TRACTION (XX-ZZ)
+#   CUBE INCLINE DE 30 DEGRES AUTOUR DE L'AXE DES Y
+#   CHARGE (AVEC RESULTATS DE REFERENCE) ET DECHARGE (NON REGRESSION)
+#
+#----------------------------------------------------------------------
+#                ELEMENT 3D CUBE A 8 NOEUDS
+#              ETAT HOMOGENE CONTRAINTE DEFORMATION
+#       UNITES : NEWTON , MILLIMETRE , SECONDE (N,MM,S,->MPA)
+#
+#
+#           Z           A                     A = 1 MM
+#           L    <------------->                      2
+#                                             S = 1 MM
+#                / N5            N8
+#              >O--------------O
+#              /L             /L
+#         N6  / L         N7 / L
+#           >O--+-----------O  L
+#            L  L           L  L
+#            L  L     S     L  L
+#            L  L           L  L
+#            L  L/ N1       L  L N4
+#            L >O-----------L--O-> Y
+#            L /V           L /
+#         N2 L/          N3 L/
+#           >O--------------O
+#
+#             /
+#            X
+#
+#
+#----------------------------------------------------------------------
+#
+DEBUT(     CODE=_F( NOM = 'SSNV143B',NIV_PUB_WEB='INTERNET') )
+
+CUBE=LIRE_MAILLAGE(    )
+
+TROISD=AFFE_MODELE(            MAILLAGE=CUBE,
+                                    AFFE=_F(   PHENOMENE = 'MECANIQUE',
+                                            MODELISATION = '3D',
+                                            MAILLE = 'MA1'))
+
+E=DEFI_FONCTION(   NOM_PARA='TEMP',  PROL_DROITE='LINEAIRE',
+                                         PROL_GAUCHE='LINEAIRE',
+                        VALE=(   0.E0,      37000.,
+                                20.E0,      32000.,
+                               400.E0,      15000.,
+                               800.E0,       5000., )
+                      )
+
+NU=DEFI_FONCTION(   NOM_PARA='SECH',  PROL_DROITE='LINEAIRE',
+                                         PROL_GAUCHE='LINEAIRE',
+                        VALE=(   0.E0,      .18,
+                               800.E0,      .18, )
+                      )
+
+ALPHA=DEFI_FONCTION(   NOM_PARA='TEMP',  PROL_DROITE='LINEAIRE',
+                                         PROL_GAUCHE='LINEAIRE',
+                        VALE=(   0.E0,      1.E-5,
+                               800.E0,      1.E-5,)
+                     )
+
+FC=DEFI_FONCTION(   NOM_PARA='TEMP',  PROL_DROITE='LINEAIRE',
+                                         PROL_GAUCHE='LINEAIRE',
+                        VALE=(   0.E0,      40.,
+                               400.E0,      40.,
+                               800.E0,      15., )
+                      )
+
+FT=DEFI_FONCTION(   NOM_PARA='TEMP',  PROL_DROITE='LINEAIRE',
+                                         PROL_GAUCHE='LINEAIRE',
+                        VALE=(   0.E0,      4.,
+                               400.E0,      4.,
+                               800.E0,      1.5, )
+                      )
+
+BETA=DEFI_FONCTION(   NOM_PARA='TEMP',  PROL_DROITE='LINEAIRE',
+                                         PROL_GAUCHE='LINEAIRE',
+                        VALE=(   0.E0,      1.16,
+                               800.E0,      1.16, )
+                      )
+
+GC=DEFI_FONCTION(   NOM_PARA='TEMP',  PROL_DROITE='LINEAIRE',
+                                        PROL_GAUCHE='LINEAIRE',
+                        VALE=(   0.E0,      10.,
+                               800.E0,      10., )
+                      )
+
+GT=DEFI_FONCTION(   NOM_PARA='TEMP',  PROL_DROITE='LINEAIRE',
+                                         PROL_GAUCHE='LINEAIRE',
+                        VALE=(   0.E0,      0.100,
+                               800.E0,      0.100, )
+                      )
+
+BETON=DEFI_MATERIAU(           ELAS_FO=_F( E = E,
+                                           NU = NU,
+                                           K_DESSIC = 1.E-5,
+                                           ALPHA = ALPHA,
+                                           TEMP_DEF_ALPHA=0.0),
+                          BETON_DOUBLE_DP=_F( F_C = FC,
+                                           F_T = FT,
+                                           COEF_BIAX = BETA,
+                                           ENER_COMP_RUPT = GC,
+                                           ENER_TRAC_RUPT = GT,
+                                           COEF_ELAS_COMP = 33.33333333,
+                                           ECRO_COMP_P_PIC = 'LINEAIRE',
+                                           ECRO_TRAC_P_PIC = 'LINEAIRE')
+                             )
+
+MATBET=AFFE_MATERIAU(           MAILLAGE=CUBE,
+                                    AFFE=_F(  MAILLE = 'MA1',
+                                           MATER = BETON,
+                                           SECH_REF = 20.)
+                         )
+
+CHTEMP1=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R', 
+MAILLAGE=CUBE,
+                              AFFE=_F( NOM_CMP = 'TEMP',
+                                    TOUT = 'OUI',
+                                    VALE = 20.0)
+                                   )
+
+CHTEMP2=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R', 
+MAILLAGE=CUBE,
+                              AFFE=_F( NOM_CMP = 'TEMP',
+                                    TOUT = 'OUI',
+                                    VALE = 0.0)
+                                   )
+
+TEMP=CREA_RESU(  OPERATION='AFFE', TYPE_RESU='EVOL_THER',
+                    NOM_CHAM='TEMP',AFFE=(
+                     _F(  INST = 0.,   CHAM_GD = CHTEMP2),
+                             _F(  INST = 2.5,  CHAM_GD = CHTEMP1))
+                  )
+
+SECH=CREA_RESU(  OPERATION='AFFE', TYPE_RESU='EVOL_THER',
+                    NOM_CHAM='TEMP',AFFE=(
+                     _F(  INST = 0.,   CHAM_GD = CHTEMP1),
+                             _F(  INST = 2.5,  CHAM_GD = CHTEMP2))
+                  )
+
+COND_LIM=AFFE_CHAR_MECA(   
+                     MODELE=TROISD,
+               TEMP_CALCULEE=TEMP,
+               SECH_CALCULEE=SECH,DDL_IMPO=(
+                   _F(  NOEUD = 'N1',         DY = 0.),
+                            _F(  NOEUD = 'N2',         DY = 0.),
+                   _F(  NOEUD = 'N1',         DX = 0.),
+                            _F(  NOEUD = 'N4',         DX = 0.),
+                   _F(  NOEUD = 'N1',         DZ = 0.),
+                            _F(  NOEUD = 'N4',         DZ = 0.))
+                            )
+
+TRAC=AFFE_CHAR_MECA(   
+                     MODELE=TROISD,DDL_IMPO=(
+                   _F(  NOEUD = ('N5', 'N8',),
+                              DX = -0.01,
+                              DZ = 0.01732050808),
+                   _F(  NOEUD = ('N2', 'N3',),
+                              DX = 0.00866025404,
+                              DZ = 0.005),
+                   _F(  NOEUD = ('N6', 'N7',),
+                              DX = -0.00133974596,
+                              DZ = 0.02232050808))
+                            )
+
+LINST=DEFI_LIST_REEL(              DEBUT=0.,INTERVALLE=(
+                             
+                           _F(  JUSQU_A = 1.,   NOMBRE = 20),
+                           _F(  JUSQU_A = 1.5,  NOMBRE = 10),
+                           _F(  JUSQU_A = 2.5,  NOMBRE = 10))
+                         )
+
+COEF_TR=DEFI_FONCTION( 
+                              NOM_PARA='INST',
+                                  VALE=(   0.,   0.,
+                                           1.5,   1.5,
+                                           2.5,   0.6,  )
+                        )
+
+SOLNL=STAT_NON_LINE( 
+                             TITRE='TEST LOI BETON_DOUBLE_DP',
+                            MODELE=TROISD,EXCIT=(
+                             _F( 
+                CHARGE = COND_LIM),
+                             _F( 
+                CHARGE = TRAC,
+                FONC_MULT = COEF_TR)),
+                         INCREMENT=_F( 
+                LIST_INST = LINST),
+                        CHAM_MATER=MATBET,
+                         COMP_INCR=_F( 
+                RELATION = 'BETON_DOUBLE_DP',
+                DEFORMATION = 'PETIT',
+                TOUT = 'OUI'),
+                            NEWTON=_F( 
+                MATRICE = 'TANGENTE',
+                REAC_INCR = 1,
+                REAC_ITER = 5),
+                       CONVERGENCE=_F( 
+                ITER_GLOB_MAXI = 20,
+                ITER_INTE_MAXI = 10,
+                ITER_INTE_PAS = 0,
+                RESI_GLOB_RELA = 1.E-6,
+                RESI_INTE_RELA = 1.E-6)
+              )
+
+SOLNL=CALC_ELEM( reuse=SOLNL,
+                            OPTION=(
+                  'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
+                          RESULTAT=SOLNL,
+                            MODELE=TROISD,
+                        CHAM_MATER=MATBET,EXCIT=(
+                             _F(  CHARGE = COND_LIM),
+                             _F(  CHARGE = TRAC))
+              )
+
+TEST_RESU(RESU=(
+  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'SIEF_ELNO_ELGA', NUME_ORDRE = 10,
+         NOM_CMP = 'SIXX',  MAILLE = 'MA1',              NOEUD = 'N1',
+         PRECISION = 5.E-3,  REFERENCE = 'ANALYTIQUE',
+         VALE = 1.4316781925226),
+  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'SIEF_ELNO_ELGA', NUME_ORDRE = 10,
+         NOM_CMP = 'SIZZ',  MAILLE = 'MA1',              NOEUD = 'N1',
+         PRECISION = 5.E-3,  REFERENCE = 'ANALYTIQUE',
+         VALE = 2.0915993800599),
+  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'SIEF_ELNO_ELGA', NUME_ORDRE = 10,
+         NOM_CMP = 'SIXZ',  MAILLE = 'MA1',              NOEUD = 'N1',
+         PRECISION = 8.E-3,  REFERENCE = 'ANALYTIQUE',
+         VALE = -0.57150855136435),
+  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'VARI_ELNO_ELGA', NUME_ORDRE = 10,
+         NOM_CMP = 'V2',    MAILLE = 'MA1',              NOEUD = 'N1',
+         PRECISION = 5.E-3,  REFERENCE = 'ANALYTIQUE',
+         VALE = 1.0503909336682E-02))
+         )
+
+TEST_RESU(RESU=(
+  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'SIEF_ELNO_ELGA', NUME_ORDRE = 20,
+         NOM_CMP = 'SIXX',  MAILLE = 'MA1',              NOEUD = 'N1',
+         PRECISION = 5.E-3,  REFERENCE = 'ANALYTIQUE',
+         VALE = 0.82002171920658),
+  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'SIEF_ELNO_ELGA', NUME_ORDRE = 20,
+         NOM_CMP = 'SIZZ',  MAILLE = 'MA1',              NOEUD = 'N1',
+         PRECISION = 5.E-3,  REFERENCE = 'ANALYTIQUE',
+         VALE = 1.1995775039689),
+  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'SIEF_ELNO_ELGA', NUME_ORDRE = 20,
+         NOM_CMP = 'SIXZ',  MAILLE = 'MA1',              NOEUD = 'N1',
+         PRECISION = 5.E-3,  REFERENCE = 'ANALYTIQUE',
+         VALE = -0.32870497387872),
+  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'VARI_ELNO_ELGA', NUME_ORDRE = 20,
+         NOM_CMP = 'V2',    MAILLE = 'MA1',              NOEUD = 'N1',
+         PRECISION = 5.E-3,  REFERENCE = 'ANALYTIQUE',
+         VALE = 2.1104814690295E-02))
+         )
+
+TEST_RESU(RESU=(
+  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'SIEF_ELNO_ELGA', NUME_ORDRE = 30,
+         NOM_CMP = 'SIXX',  MAILLE = 'MA1',              NOEUD = 'N1',
+         PRECISION = 5.E-3,  REFERENCE = 'ANALYTIQUE',
+         VALE = 0.20993321578318),
+  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'SIEF_ELNO_ELGA', NUME_ORDRE = 30,
+         NOM_CMP = 'SIZZ',  MAILLE = 'MA1',              NOEUD = 'N1',
+         PRECISION = 5.E-3,  REFERENCE = 'ANALYTIQUE',
+         VALE = 0.30723834142788),
+  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'SIEF_ELNO_ELGA', NUME_ORDRE = 30,
+         NOM_CMP = 'SIXZ',  MAILLE = 'MA1',              NOEUD = 'N1',
+         PRECISION = 5.E-3,  REFERENCE = 'ANALYTIQUE',
+         VALE = -8.4268716397874E-02),
+  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'VARI_ELNO_ELGA', NUME_ORDRE = 30,
+         NOM_CMP = 'V2',    MAILLE = 'MA1',              NOEUD = 'N1',
+         PRECISION = 5.E-3,  REFERENCE = 'ANALYTIQUE',
+         VALE = 3.1705738948203E-02))
+         )
+
+TEST_RESU(RESU=(
+  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'SIEF_ELNO_ELGA', NUME_ORDRE = 40,
+         NOM_CMP = 'SIXX',  MAILLE = 'MA1',              NOEUD = 'N1',
+         PRECISION = 5.E-3,  REFERENCE = 'NON_REGRESSION',  
+         VERSION = '5.4.12',
+         VALE = -4.0413847508095E+01),
+  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'SIEF_ELNO_ELGA', NUME_ORDRE = 40,
+         NOM_CMP = 'SIZZ',  MAILLE = 'MA1',              NOEUD = 'N1',
+         PRECISION = 5.E-3,  REFERENCE = 'NON_REGRESSION',  
+         VERSION = '5.4.12',
+         VALE = -4.3934261314901E+01),
+  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'SIEF_ELNO_ELGA', NUME_ORDRE = 40,
+         NOM_CMP = 'SIXZ',  MAILLE = 'MA1',              NOEUD = 'N1',
+         PRECISION = 5.E-3,  REFERENCE = 'NON_REGRESSION',  
+         VERSION = '5.4.12',
+         VALE = 3.0487677870095E+00),
+  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'VARI_ELNO_ELGA', NUME_ORDRE = 40,
+         NOM_CMP = 'V1',    MAILLE = 'MA1',              NOEUD = 'N1',
+         PRECISION = 5.E-3,  REFERENCE = 'NON_REGRESSION',  
+         VERSION = '5.4.12',
+         VALE = 2.9252720301524E-02),
+  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'VARI_ELNO_ELGA', NUME_ORDRE = 40,
+         NOM_CMP = 'V2',    MAILLE = 'MA1',              NOEUD = 'N1',
+         PRECISION = 5.E-3,  REFERENCE = 'ANALYTIQUE',
+         VALE = 3.1705738948203E-02))
+         )
+
+FIN()
+#

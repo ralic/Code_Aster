@@ -3,7 +3,7 @@
         INTEGER         IER
 C       ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
+C MODIF PREPOST  DATE 03/05/2004   AUTEUR F1BHHAJ J.ANGLES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -72,7 +72,7 @@ C       ----- DEBUT COMMUNS NORMALISES  JEVEUX  ------------------------
         CHARACTER*32       JEXNOM,JEXNUM
 C       ---------------------------------------------------------------
         CHARACTER*2     CODRET,FB,CODWO,CODBA,CODHS,CODMA
-        CHARACTER*8     NOMU,NOMRES,NOMMOD,NOMMAI,K8B,NOMMAT
+        CHARACTER*8     NOMU,NOMRES,NOMMAI,K8B,NOMMAT
         CHARACTER*8     NOMFON,NOMNAP,CARA
         CHARACTER*16    CONCEP,CMD,PHENO,PHENOM,TYPCAL,NOMCRI,NOMMET
         CHARACTER*16    PROAXE,NOMSYM,TYPCHA,NOMOPT,NOMGDE,NOMTE
@@ -130,12 +130,6 @@ C       (CHARGEMENT NON_PERIODIQUE UNIQUEMENT)
         CALL GETVTX(' ','PROJECTION',1,1,1,PROAXE,NVAL)
         IF (NVAL .EQ. 0) THEN
           PROAXE = '        '
-        ENDIF
-C
-C ---   NOM DU MODELE
-        CALL GETVID(' ','MODELE',1,1,1,NOMMOD,NVAL)
-        IF (NVAL .EQ. 0) THEN
-          NOMMOD = '        '
         ENDIF
 C
 C ---   NOM DU MAILLAGE

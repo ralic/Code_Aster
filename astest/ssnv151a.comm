@@ -1,4 +1,4 @@
-# MODIF  DATE 06/04/2004   AUTEUR JOUMANA J.EL-GHARIB 
+# MODIF  DATE 04/05/2004   AUTEUR SMICHEL S.MICHEL-PONNELLE 
 # TITRE COMPRESSION/TRACTION EN 3D - COMPORTEMENT BETON_DOUBLE_DP
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -128,7 +128,8 @@ BETON=DEFI_MATERIAU(           ELAS_FO=_F( E = E,
 
 MATBET=AFFE_MATERIAU(           MAILLAGE=CUBE,
                                     AFFE=_F(  GROUP_MA = 'CUBE',
-                                           MATER = BETON)
+                                              MATER    = BETON, 
+                                              SECH_REF = 20.0)
                          )
 
 CHTEMP1=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R', 
