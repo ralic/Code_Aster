@@ -1,11 +1,11 @@
         SUBROUTINE LCMMFL( TAUS,COEFT,IFA,NMAT,NBCOMM,NECOUL,NECRIS,
-     &                     VIS,X,DTIME,DGAMMA,DP )
+     &                     VIS,X,DTIME,DGAMMA,DP,TPERD )
         IMPLICIT NONE
         INTEGER IFA,NMAT,NBCOMM(NMAT,3)
-        REAL*8 TAUS,COEFT(NMAT),VIS(3),DGAMMA,DP,X,DTIME
+        REAL*8 TAUS,COEFT(NMAT),VIS(3),DGAMMA,DP,X,DTIME,TAUMU,TAUV
         CHARACTER*16 NECOUL,NECRIS
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 10/05/2004   AUTEUR KANIT T.KANIT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -36,7 +36,8 @@ C           DP
 C  INTEGRATION DES LOIS MONOCRISTALLINES PAR UNE METHODE DE RUNGE KUTTA
 C
 C     ----------------------------------------------------------------
-      REAL*8 C,P,R0,Q,H,B,RP,K,N,FTAU,CRIT,B1,B2,Q1,Q2
+      REAL*8 C,P,R0,Q,H,B,RP,K,N,FTAU,CRIT,B1,B2,Q1,Q2,A,GAMMA0,V,D
+      REAL*8 TPERD
       INTEGER IFL,IEI
 C     ----------------------------------------------------------------
 
@@ -80,6 +81,49 @@ C             DP=((CRIT/K)**N)*X/DTIME
              DGAMMA=0.D0
           ENDIF
        ENDIF
+      IF (NECOUL.EQ.'ECOU_VISC2') THEN
+          N=COEFT(IFL-1+1)
+          K=COEFT(IFL-1+2)
+          C=COEFT(IFL-1+3)
+          A=COEFT(IFL-1+4)
+          D=COEFT(IFL-1+5)
       
+          FTAU=TAUS-C*VIS(1)-A*VIS(2)
+          
+          CRIT=ABS(FTAU)-RP 
+          IF (CRIT.GT.0.D0) THEN
+             DP=(((CRIT+C/(2*D)*(C*VIS(1))**2)/K)**N)
+             DGAMMA=DP*FTAU/ABS(FTAU)
+          ELSE
+             DP=0.D0
+             DGAMMA=0.D0
+          ENDIF
+       ENDIF
+      IF (NECOUL.EQ.'ECOU_VISC3') THEN
+          K      =COEFT(IFL-1+1)
+          TAUMU  =COEFT(IFL-1+2)
+          GAMMA0 =COEFT(IFL-1+3)
+          V      =COEFT(IFL-1+4)
+      
+          TAUV=ABS(TAUS)-TAUMU 
+          IF (CRIT.GT.0.D0) THEN
+             DP=TAUV*V
+             DGAMMA=2*GAMMA0*SINH(TAUV*V/K*TPERD)*TAUS/ABS(TAUS)
+          ELSE
+             DP=0.D0
+             DGAMMA=0.D0
+          ENDIF
+       ENDIF
+      IF (NECOUL.EQ.'ECOU_PLAS1') THEN
+          C=COEFT(IFL-1+1)
+      
+          IF (CRIT.GT.0.D0) THEN
+             DP=ABS(TAUS-C*VIS(1))-RP
+             DGAMMA=DP
+          ELSE
+             DP=0.D0
+             DGAMMA=0.D0
+          ENDIF
+       ENDIF  
            
       END

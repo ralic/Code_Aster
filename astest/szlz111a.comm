@@ -1,0 +1,202 @@
+# MODIF  DATE 11/05/2004   AUTEUR SELLALI N.SELLALI 
+# TITRE CALCUL DU DOMMAGE DE LEMAITRE-SERMAGE (POST_FATIGUE)
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+DEBUT(  CODE=_F(  NOM = 'SZLZ111A',NIV_PUB_WEB='INTERNET')  )
+
+TAUN1=DEFI_FONCTION(    NOM_PARA='INST',
+                 VALE=(            43.11,           300.,
+                                    100.,           300.,
+                                   1000.,           300.,
+                                  10000.,           300.,
+                                  20000.,           300.,
+                                  21000.,           300.,
+                                  22000.,           300.,
+                                  22200.,           300.,
+                                  22400.,           300.,   )  )
+
+TAUN2=DEFI_FONCTION(    NOM_PARA='INST',
+                 VALE=(   43.11,          0.,
+                                   100.,            0.,
+                                  1000.,            0.,
+                                 10000.,            0.,
+                                 20000.,            0.,
+                                 21000.,            0.,
+                                 22000.,            0.,
+                                 22200.,            0.,
+                                 22400.,            0.,   )  )
+
+T_EPSP=DEFI_FONCTION(    NOM_PARA='INST',
+                  VALE=(  43.11,          0.019996,
+                                   100.,            0.046384,
+                                  1000.,            0.46384,
+                                 10000.,            4.6384,
+                                 20000.,            9.2768,
+                                 21000.,            9.74064,
+                                 22000.,           10.20448,
+                                 22200.,           10.297248,
+                                 22400.,           10.390016,   )  )
+
+
+
+T_TEMP=DEFI_FONCTION(    NOM_PARA='INST',
+                  VALE=(  43.11,         20.,
+                                   100.,           20.,
+                                  1000.,           20.,
+                                 10000.,           20.,
+                                 20000.,           20.,
+                                 21000.,           20.,
+                                 22000.,           20.,
+                                 22200.,           20.,
+                                 22400.,           20.,   )  )
+
+T_E=DEFI_FONCTION(NOM_PARA='TEMP',
+                  PROL_DROITE='CONSTANT',
+                  PROL_GAUCHE='CONSTANT', 
+                  VALE=(  20.,     2.E+5, )    )
+
+T_NU=DEFI_FONCTION(NOM_PARA='TEMP',
+                   PROL_DROITE='CONSTANT',
+                   PROL_GAUCHE='CONSTANT', 
+                   VALE=(  20.,     0.,    )    )
+
+T_S=DEFI_FONCTION(NOM_PARA='TEMP',
+                  PROL_DROITE='CONSTANT',
+                  PROL_GAUCHE='CONSTANT', 
+                  VALE=(  20.,     7.0,    )    )
+
+EPSP_S=DEFI_FONCTION(NOM_PARA='TEMP',
+                     PROL_DROITE='CONSTANT',
+                     PROL_GAUCHE='CONSTANT', 
+                     VALE=(  20.,     0.02,    )    )
+
+# --------------------------------------------------------------------
+# DEFINITION DU MATERIAU ET DES CARACTERISTIQUES D'ENDOMMAGEMENT
+# ELAS_FO=[E,NU]
+# DOMMA_LEMAITRE=[S,EPSP_SEUIL,EXP_S]
+# --------------------------------------------------------------------
+MAT1=DEFI_MATERIAU(ELAS_FO=_F(E  = T_E,
+                              NU = T_NU,),
+                   DOMMA_LEMAITRE=_F(S = T_S,
+                                     EPSP_SEUIL = EPSP_S,
+                                     EXP_S = 1.0,),);
+
+# --------------------------------------------------------------------
+# POST_FATIGUE
+# --------------------------------------------------------------------
+TAB_1=POST_FATIGUE(CHARGEMENT='QUELCONQUE',
+                   HISTOIRE=_F(SIGM_XX = TAUN1,
+                               SIGM_YY = TAUN2,
+                               SIGM_ZZ = TAUN2,
+                               SIGM_XY = TAUN2,
+                               SIGM_XZ = TAUN2,
+                               SIGM_YZ = TAUN2,
+                               EPSP = T_EPSP,
+                               TEMP = T_TEMP,),
+                   MATER=MAT1,
+                   DOMMAGE='LEMAITRE',
+                   CUMUL='LINEAIRE',);
+                   
+IMPR_TABLE(TABLE=TAB_1,
+           FORMAT='AGRAF',);
+
+# --------------------------------------------------------------------
+# VERIFICATION DES SOLUTIONS OBTENUES ...
+# --------------------------------------------------------------------
+# 1./ ... AVEC EXP_S=1.0 ET LA SOLUTION DE REFERENCE (HI-75/96/068/A)
+# ----------------------------------------------------------------
+TEST_TABLE(TABLE=TAB_1,
+           FILTRE=_F(NOM_PARA = 'INST',
+                     VALE = 43.11,),
+           NOM_PARA='DOMMAGE',
+           VALE=0.,
+           CRITERE='ABSOLU',
+           PRECISION=1.E-5,
+           REFERENCE='ANALYTIQUE',);
+
+TEST_TABLE(TABLE=TAB_1,
+           FILTRE=_F(NOM_PARA = 'INST',
+                     VALE = 100.,),
+           NOM_PARA='DOMMAGE',
+           VALE=0.000848907,
+           PRECISION=1.E-5,
+           REFERENCE='ANALYTIQUE',);
+
+TEST_TABLE(TABLE=TAB_1,
+           FILTRE=_F(NOM_PARA = 'INST',
+                     VALE = 1000.,),
+           NOM_PARA='DOMMAGE',
+           VALE=0.014474925,
+           PRECISION=1.E-5,
+           REFERENCE='ANALYTIQUE',);
+
+TEST_TABLE(TABLE=TAB_1,
+           FILTRE=_F(NOM_PARA = 'INST',
+                     VALE = 10000.,),
+           NOM_PARA='DOMMAGE',
+           VALE=0.178374238,
+           PRECISION=1.E-5,
+           REFERENCE='ANALYTIQUE',);
+
+TEST_TABLE(TABLE=TAB_1,
+           FILTRE=_F(NOM_PARA = 'INST',
+                     VALE = 20000.,),
+           NOM_PARA='DOMMAGE',
+           VALE=0.524693005,
+           PRECISION=1.E-5,
+           REFERENCE='ANALYTIQUE',);
+
+TEST_TABLE(TABLE=TAB_1,
+           FILTRE=_F(NOM_PARA = 'INST',
+                     VALE = 21000.,),
+           NOM_PARA='DOMMAGE',
+           VALE=0.602827469,
+           PRECISION=1.E-5,
+           REFERENCE='ANALYTIQUE',);
+
+TEST_TABLE(TABLE=TAB_1,
+           FILTRE=_F(NOM_PARA = 'INST',
+                     VALE = 22000.,),
+           NOM_PARA='DOMMAGE',
+           VALE=0.73829052,
+           PRECISION=1.E-5,
+           REFERENCE='ANALYTIQUE',);
+
+TEST_TABLE(TABLE=TAB_1,
+           FILTRE=_F(NOM_PARA = 'INST',
+                     VALE = 22200.,),
+           NOM_PARA='DOMMAGE',
+           VALE=0.792149807,
+           PRECISION=1.E-5,
+           REFERENCE='ANALYTIQUE',);
+
+TEST_TABLE(TABLE=TAB_1,
+           FILTRE=_F(NOM_PARA = 'INST',
+                     VALE = 22400.,),
+           NOM_PARA='DOMMAGE',
+           VALE=0.967604351,
+           PRECISION=8.E-5,
+           REFERENCE='ANALYTIQUE',);
+           
+TEST_TABLE(TABLE=TAB_1,
+           NOM_PARA='DOMM_CUMU',
+           VALE=3.819263,
+           PRECISION=3.E-5,
+           REFERENCE='ANALYTIQUE',);
+
+FIN();

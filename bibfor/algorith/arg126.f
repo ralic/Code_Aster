@@ -1,6 +1,6 @@
       SUBROUTINE  ARG126 (NOMRES)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 14/01/98   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 11/05/2004   AUTEUR NICOLAS O.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,7 +18,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
 C***********************************************************************
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C  P. RICHARD     DATE 13/10/93
 C-----------------------------------------------------------------------
 C  BUT:      < RECUPERATION DES ARGUMENTS POUR OP0126 >
@@ -57,7 +57,10 @@ C
       CHARACTER*16 CLESST,CLENOM,CLEROT,CLEMCL,CLETRA,CLELIA,CLEL(4)
       CHARACTER*24 REPSST,NOMMCL,ROTSST,FAMLI,TRASST,DEFLIA
       LOGICAL      CONOK
-      REAL*8       RBID
+      INTEGER      NBSST,ITRAN,I,J,K,IOC,IBID,LDNMCL,LDROT,NBLIA,LDLID,
+     &             IRET,LTLIA,LLDEFL,NUSST,NUSST1,NUSST2,LTDESC,LTFAC,
+     &             IREP,LDTRA,ICOMP,NUDEP,NU1,NU2,NUAR,LTTRA,LTROT,LLROT
+      REAL*8       RBID,PI
       CHARACTER*8  KBID
 C
 C-----------------------------------------------------------------------
@@ -70,7 +73,7 @@ C-----------------------------------------------------------------------
 C-----------------------------------------------------------------------
 C
       CALL JEMARQ()
-      PI=4.D+00*ATAN(1.D+00)
+      PI=4.D+00*ATAN2(1.D+00,1.D+00)
 C
 C-----TRAITEMENT DEFINITION SOUS-STRUCTURES-----------------------------
 C
@@ -143,7 +146,7 @@ C  TRAITEMENT DES ROTATIONS
 C
         CALL JENONU(JEXNOM(REPSST,NOMSST),IBID)
         CALL JEVEUO(JEXNUM(ROTSST,IBID),'E',LDROT)
-        CALL GETVR8(CLESST,CLEROT,I,1,0,BID,IOC)
+        CALL GETVR8(CLESST,CLEROT,I,1,0,RBID,IOC)
         IOC=-IOC
         IF(IOC.EQ.0) THEN
           DO 30 J=1,3
@@ -167,7 +170,7 @@ C
         IF (ITRAN.EQ.1) THEN
           CALL JENONU(JEXNOM(REPSST,NOMSST),IBID)
           CALL JEVEUO(JEXNUM(TRASST,IBID),'E',LDTRA)
-          CALL GETVR8(CLESST,CLETRA,I,1,0,BID,IOC)
+          CALL GETVR8(CLESST,CLETRA,I,1,0,RBID,IOC)
           IOC=-IOC
           IF(IOC.EQ.0) THEN
             DO 40 J=1,3
@@ -198,7 +201,7 @@ C
 C
       FAMLI=NOMRES//'      .MODG.LIDF'
       CALL JECREC(FAMLI,'G V K8','NU','DISPERSE','CONSTANT',NBLIA)
-      CALL JEECRA(FAMLI,'LONMAX',4,' ')
+      CALL JEECRA(FAMLI,'LONMAX',5,' ')
 C
 C-----BOUCLE SUR LES LIAISONS------------------------------------------
 C
@@ -265,6 +268,8 @@ C
             ENDIF
             ZK8(LDLID+(J-3)*2+1)=NOMCOU
 160     CONTINUE
+C  ON INITIALISE L'ORDONANCEMENT A NON
+        ZK8(LDLID+4)='NON'
 140   CONTINUE
 C
 C-----TRAITEMENT DES TRANSLATIONS SI NON INTRODUIT PAR L'UTILISATEUR

@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 16/02/2004   AUTEUR G8BHHXD X.DESROCHES 
+%& MODIF TYPELEM  DATE 07/05/2004   AUTEUR CIBHHGB G.BERTRAND 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -56,10 +56,10 @@ OPTION__
                                      CPRESSF  PPRESSF  CTEMPSR  PTEMPSR  DDL_MECA PTHETAR  DDL_MECA PVECTTH
                               OUT__  EGTHETA  PGTHETA
     CALC_G              0282  IN__   DDL_MECA PDEPLAR  EFORCNO  PFR1D2D  NGEOMER  PGEOMER  EPRESNO  PPRESSR
-                                     DDL_MECA PTHETAR
+                                     DDL_MECA PTHETAR  DDL_MECA PVITESS  DDL_MECA PACCELE
                               OUT__  EGTHETA  PGTHETA
     CALC_G_F            0282  IN__   DDL_MECA PDEPLAR  CFORCEF  PFF1D2D  NGEOMER  PGEOMER  CPRESSF  PPRESSF
-                                     CTEMPSR  PTEMPSR  DDL_MECA PTHETAR
+                                     CTEMPSR  PTEMPSR  DDL_MECA PTHETAR  DDL_MECA PVITESS  DDL_MECA PACCELE
                               OUT__  EGTHETA  PGTHETA
     CALC_DG_E           0282  IN__   DDL_MECA PDEPLAR  EFORCNO  PFR1D2D  NGEOMER  PGEOMER  EPRESNO  PPRESSR
                                      DDL_MECA PTHETAR  DDL_MECA PDEPLSE  

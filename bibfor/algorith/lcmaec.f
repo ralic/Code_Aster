@@ -2,7 +2,7 @@
      &                   VALPAR,MATER,NMAT)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 10/05/2004   AUTEUR KANIT T.KANIT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -53,5 +53,18 @@ C
              MATER(NVINI-1+I,2)=VALRES(I)
  1        CONTINUE
           NBCOMM(IFA,3)=NVINI+1
+      ENDIF
+      IF (NECOUL.EQ.'ECRO_CINE2') THEN
+          NBVAL=4
+          NOMRES(1)='D'
+          NOMRES(2)='GM'
+          NOMRES(3)='PM'
+          NOMRES(4)='C'
+          CALL RCVALA(IMAT,NMATER, NECOUL,1, NOMPAR,VALPAR,NBVAL,
+     &                 NOMRES, VALRES,CODRET,'FM')
+          DO 11 I=1,NBVAL
+             MATER(NVINI-1+I,2)=VALRES(I)
+ 11       CONTINUE
+          NBCOMM(IFA,3)=NVINI+NBVAL
       ENDIF
       END

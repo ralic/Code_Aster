@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
+#& MODIF COMMANDE  DATE 07/05/2004   AUTEUR CIBHHGB G.BERTRAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,12 +22,15 @@ CALC_G_LOCAL_T=OPER(nom="CALC_G_LOCAL_T",op=77,sd_prod=tabl_calc_g_loca,
          MODELE          =SIMP(statut='o',typ=modele),
          CHAM_MATER      =SIMP(statut='o',typ=cham_mater),
          regles=(UN_PARMI('RESULTAT','DEPL'),
+                 PRESENT_PRESENT('VITE','ACCE'),
                  UN_PARMI('R_INF','R_INF_FO'),
                  PRESENT_PRESENT('R_INF','R_SUP'),
                  PRESENT_PRESENT('R_INF_FO','R_SUP_FO'), ),
          FOND_FISS       =SIMP(statut='f',typ=fond_fiss),               
          DEPL            =SIMP(statut='f',typ=cham_no_depl_r),
-         RESULTAT        =SIMP(statut='f',typ=(evol_elas,evol_noli),),
+         VITE            =SIMP(statut='f',typ=cham_no_depl_r),
+         ACCE            =SIMP(statut='f',typ=cham_no_depl_r),
+         RESULTAT        =SIMP(statut='f',typ=(evol_elas,evol_noli,dyna_trans),),
          b_extrac        =BLOC(condition="RESULTAT != None",fr="extraction d un champ",
              regles=(EXCLUS('TOUT_ORDRE','NUME_ORDRE','LIST_ORDRE','INST','LIST_INST'),),
              TOUT_ORDRE      =SIMP(statut='f',typ='TXM',into=("OUI",) ),

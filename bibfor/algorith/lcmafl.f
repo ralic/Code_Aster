@@ -2,7 +2,7 @@
      &                   VALPAR,MATER,NMAT)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 10/05/2004   AUTEUR KANIT T.KANIT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -56,5 +56,45 @@ C
  1        CONTINUE
           
           NBCOMM(IFA,2)=NBCOMM(IFA,1)+3
+      ENDIF
+      IF (NECOUL.EQ.'ECOU_VISC2') THEN
+          NBVAL=5
+          NOMRES(1)='N'
+          NOMRES(2)='K'
+          NOMRES(3)='C'
+          NOMRES(4)='A'
+          NOMRES(5)='D'
+          CALL RCVALA (IMAT,NMATER, NECOUL,1, NOMPAR,VALPAR,NBVAL,
+     1                 NOMRES, VALRES,CODRET,'FM')
+          DO 11 I=1,NBVAL
+             MATER(NVINI-1+I,2)=VALRES(I)
+ 11       CONTINUE
+          
+          NBCOMM(IFA,2)=NBCOMM(IFA,1)+NBVAL
+      ENDIF
+      IF (NECOUL.EQ.'ECOU_VISC3') THEN
+          NBVAL=4
+          NOMRES(1)='K'
+          NOMRES(2)='TAUMU'
+          NOMRES(3)='GAMMA0'
+          NOMRES(4)='V'
+          CALL RCVALA (IMAT,NMATER, NECOUL,1, NOMPAR,VALPAR,NBVAL,
+     1                 NOMRES, VALRES,CODRET,'FM')
+          DO 111 I=1,NBVAL
+             MATER(NVINI-1+I,2)=VALRES(I)
+ 111      CONTINUE
+          
+          NBCOMM(IFA,2)=NBCOMM(IFA,1)+NBVAL
+      ENDIF
+      IF (NECOUL.EQ.'ECOU_PLAS1') THEN
+          NBVAL=1
+          NOMRES(1)='C'
+          CALL RCVALA (IMAT,NMATER, NECOUL,1, NOMPAR,VALPAR,NBVAL,
+     1                 NOMRES, VALRES,CODRET,'FM')
+          DO 112 I=1,NBVAL
+             MATER(NVINI-1+I,2)=VALRES(I)
+ 112      CONTINUE
+          
+          NBCOMM(IFA,2)=NBCOMM(IFA,1)+NBVAL
       ENDIF
       END

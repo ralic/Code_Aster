@@ -1,10 +1,10 @@
-      SUBROUTINE FOECFD ( NOMFON, IUL, IND, FONINS )
+      SUBROUTINE FOECFD ( NOMCON, NOMFON, IUL, IND, FONINS )
       IMPLICIT   NONE
-      INTEGER                     IUL, IND
-      CHARACTER*(*)       NOMFON,           FONINS
+      INTEGER                              IUL, IND
+      CHARACTER*(*)       NOMCON, NOMFON,           FONINS
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 09/02/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF UTILITAI  DATE 10/05/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,7 +43,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
       INTEGER       LPROL, NBPARA, NPS, IPARA, LONUTI, LVAR, LFON, 
-     +              JVAL, IVAL, NBV, LPARA, LSPECT, IRET
+     +              JVAL, IVAL, NBV, LPARA, LSPECT, IRET, NBFON, JNOMF
       REAL*8        PAS
       CHARACTER*1   K1BID
       CHARACTER*4   ORG
@@ -71,15 +71,25 @@ C     ------------------------------------------------------------------
       VALE(20:24) = '.VALE'
       PARA(20:24) = '.PARA'
       PROL(20:24) = '.PROL'
-C
+
+      CALL JELIRA(NOMCON,'LONUTI',NBFON,K1BID)
+      CALL JEVEUO(NOMCON,'L',JNOMF)
+      
 C     --- INFORMATIONS DU .PROL ---
       CALL JEVEUO ( PROL, 'L', LPROL )
       WRITE(IUL,'(A)')  '             '
-      WRITE(IUL,'(A)')  '  FONCTION   '
-      WRITE(IUL,'(A)')  '    ORIGINE = ''ASTER - IMPR_COURBE'' '
+      WRITE(IUL,'(A)')  '  FONCTION  ' 
+      IF(NBFON.EQ.1)THEN
+         WRITE(IUL,'(2A)') '    NOM_FON  = ',ZK16(JNOMF)
+      ELSE
+         WRITE(IUL,'(2A)') '    NOMFON_X = ',ZK16(JNOMF)
+         WRITE(IUL,'(2A)') '    NOMFON_Y = ',ZK16(JNOMF+1)
+      ENDIF
+      WRITE(IUL,'(A)')  '    ORIGINE  = ''ASTER - IMPR_COURBE'' '
       WRITE(IUL,'(2A)') '    NATURE   = ',ZK16(LPROL)
       WRITE(IUL,'(2A)') '    NOM_PARA = ',ZK16(LPROL+2)
       WRITE(IUL,'(2A)') '    NOM_RESU = ',ZK16(LPROL+3)
+   
 C
       IF ( ZK16(LPROL) .EQ. 'NAPPE' ) THEN
 C

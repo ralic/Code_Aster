@@ -1,6 +1,6 @@
       SUBROUTINE SLECOR(DATSET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF STBTRIAS  DATE 03/05/2004   AUTEUR NICOLAS O.NICOLAS 
+C MODIF STBTRIAS  DATE 11/05/2004   AUTEUR NICOLAS O.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,7 +22,7 @@ C  LE DATASET 18 EST OBSOLETE DEPUIS 1987
 C  DATSET : IN :DATASET DES SYSTEMES DE COORDONNEES
 C ======================================================================
 C TOLE CRS_512
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C     =================
 C
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
@@ -42,16 +42,18 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
-      LOGICAL      FIRST,EXISDG
+      LOGICAL      FIRST
       CHARACTER*6  MOINS1
-      CHARACTER*80 CBUF,KBID
+      CHARACTER*80 CBUF, KBID
       REAL*8       RBID
-      INTEGER      DATSET
+      INTEGER      DATSET,IBID,IUNV,INUS,INUM,ICOOR,JSYS,IRET,ICOL,
+     &             IUNIFI,IBID2
 C
 C  ------------ FIN DECLARATION -------------
 C
 C  -->N  D'UNITE LOGIQUE ASSOCIE AUX FICHIERS
       CALL JEMARQ()
+      
       IUNV = IUNIFI('IDEAS')
 C
       FIRST=.TRUE.
@@ -60,32 +62,34 @@ C
       CALL JEEXIN('&&IDEAS.SYST',IRET)
       IF(IRET.NE.0) THEN
         CALL JEDETR('&&IDEAS.SYST')
-        IF (DATSET.EQ.18) THEN
-        CALL UTMESS('A','SLECOR',' ATTENTION LE DATASET 18'
-     &    //' APPARAIT PLUSIEURS FOIS.')
-        ELSE
+        IF (DATSET.EQ.2420) THEN
         CALL UTMESS('A','SLECOR',' ATTENTION LE DATASET 2420'
+     &    //' APPARAIT PLUSIEURS FOIS.')
+        ELSEIF (DATSET.EQ.18) THEN
+        CALL UTMESS('A','SLECOR',' ATTENTION LE DATASET 18'
      &    //' APPARAIT PLUSIEURS FOIS.')
        ENDIF
       ENDIF
       CALL WKVECT('&&IDEAS.SYST','V V I',INUS,JSYS)
+C      
    1  CONTINUE
+C   
       READ(IUNV,'(A)') CBUF
       IF (CBUF(1:6).NE.MOINS1) THEN
 C
         IF (FIRST) THEN
-          IF (DATSET.EQ.18) THEN
-            READ(IUNV,'(5I10)') INUM,ICOOR,IBID,ICOL,IBID
-          ELSE
+          IF (DATSET.EQ.2420) THEN
             READ(IUNV,'(A)') KBID
             READ(IUNV,'(3I10)') INUM,ICOOR,ICOL
-          ENDIF  
+          ELSEIF (DATSET.EQ.18) THEN
+            READ(CBUF,'(5I10)') INUM,ICOOR,IBID,ICOL,IBID2
+          ENDIF
         ELSE
-          IF (DATSET.EQ.18) THEN
-            READ(CBUF,'(5I10)') INUM,ICOOR,IBID,ICOL,IBID
-          ELSE
+          IF (DATSET.EQ.2420) THEN
             READ(CBUF,'(3I10)') INUM,ICOOR,ICOL
-          ENDIF  
+          ELSEIF (DATSET.EQ.18) THEN
+            READ(CBUF,'(5I10)') INUM,ICOOR,IBID,ICOL,IBID2
+          ENDIF
         ENDIF
         IF (INUM.GT.INUS) THEN
           INUS  = INUM
@@ -94,7 +98,7 @@ C
         ENDIF
 C
         ZI(JSYS-1+INUM) = ICOOR
-
+C
         IF (DATSET.EQ.2420) THEN
           READ(IUNV,'(A)') KBID
           READ(IUNV,'(3(1PD25.16))') RBID
@@ -106,8 +110,11 @@ C
           READ(IUNV,'(6(1PE13.5))') RBID
           READ(IUNV,'(3(1PE13.5))') RBID
         ENDIF
+C        
         FIRST = .FALSE.
+C
         GOTO 1
+C        
       ENDIF
       CALL JEDEMA()
       END

@@ -14,7 +14,7 @@
      &                  SOLVEU, LREAC,  ETA   , LICCVG, DDEPLA)
      
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 10/05/2004   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -146,7 +146,7 @@ C    A-T-ON BESOIN DE REACTUALISER LES RIGI_ELEM OU PAS
      &                  K24BLA, K24BLA, K19BLA, K24BLA, ' '   ,
      &                  METHOD, K19BLA, PARMET, K24BLA, PARTPS,
      &                  NUMINS, ITERAT, K24BLA, K24BLA, K24BLA,
-     &                  K24BLA, K19BLA, OPTION, K24BLA, STADYN,
+     &                  K24BLA, K19BLA, OPTION, DEFICO, STADYN,
      &                  PREMIE, CMD,    DEPENT, VITENT, LAMORT,
      &                  MEMASS, MASSE,  AMORT,  COEVIT, COEACC, 
      &                  IBID)

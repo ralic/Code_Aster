@@ -1,7 +1,7 @@
       SUBROUTINE TE0096(OPTION,NOMTE)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ELEMENTS  DATE 07/05/2004   AUTEUR CIBHHGB G.BERTRAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -98,7 +98,7 @@ C
       REAL*8   THET,TREF,TG,TGDM(3),PROD,PROD1,PROD2,DIVT,VALPAR(3)
       REAL*8   TCLA,TTHE,TFOR,TPLAS,TINI,POIDS,R,RBID
       REAL*8   P,PPG,DPDM(3),RP,ENERGI(2),RHO,OM,OMO
-      REAL*8   DTDM(3,5),DER(6),DFDM(3,5),DUDM(3,4)
+      REAL*8   DTDM(3,5),DER(6),DFDM(3,5),DUDM(3,4),DVDM(3,4),VEPSCP
       REAL*8   GRADDU(3,4),GRADTH(3,4),TEMSEG,DTEMSG(3),
      &         D2DFDM(3,6),D2EPSI(6,6),D2SIGI(6,6),
      &         DLDFDM(3,3),DLDTDM(3,3),DLEPSI(6,3),DLSIGI(6,3),
@@ -107,14 +107,16 @@ C
      &         DDEPSI(6),DDSIGI(6),DFD2DI(27),
      &         DPROD1,DPROD2,DPROD3,DPROD4,TMP,RAUX,RAUX1,RAUX2,
      &         DIVTS,DLDIVT,
-     &         DTCLA,DTTHE,DTFOR,DTPLAS,DTINI
+     &         DTCLA,DTTHE,DTFOR,DTPLAS,DTINI,
+     &         ECIN,PROD3,PROD4,NU,ACCELE(3)
 
-      INTEGER  IPOIDS,IVF,IDFDE,IDFDK,IPOI1,IVF1,IDFDE1,IDFDK1
+      INTEGER  IPOIDS,IVF,IDFDE,IPOI1,IVF1,IDFDE1
       INTEGER  ICOMP,IGEOM,ITEMPS,IDEPL,ITREF,ITEMP,IMATE,JCOOPG
       INTEGER  IEPSR,IEPSF,ISIGI,IDEPI,ISIGM,IEPSP,IVARI
       INTEGER  IFORC,IFORF,ITHET,IGTHET,IROTA,IPESA,IER
+      INTEGER  IVITES,IACCEL,J1,J2
       INTEGER  NNO,NNOS,NPG,NCMP,JGANO
-      INTEGER  I,J,K,KK,L,M,KP,NDIM,COMPT,JIN,JVAL,NBVARI
+      INTEGER  I,J,K,KK,L,M,KP,NDIM,COMPT,NBVARI
       INTEGER  IDEPSE,ITHETA,IJ,IJ1,MATCOD,ITEMSE,IDFD2E,
      &         NBDIV2,IDEB,IFIN,I1,IRET,NPG1
 
@@ -165,6 +167,9 @@ C INIT. POUR LE CALCUL DE G
       TINI  = 0.D0
       CALL JEVECH('PGTHETA','E',IGTHET)
       CALL JEVECH('PTHETAR','L',ITHET)
+
+      IVITES = 0
+      IACCEL = 0
 
 C TEST SUR LA NULLITE DE THETA_FISSURE
       DERIVL = .FALSE.
@@ -263,6 +268,10 @@ C LOI DE COMPORTEMENT
       CALL TECACH('ONN','PROTATR',1,IROTA,IRET)
       CALL TECACH('ONN','PSIGINR',1,ISIGI,IRET)
       CALL TECACH('ONN','PDEPINR',1,IDEPI,IRET)
+      IF (OPTION.EQ.'CALC_G'.OR.OPTION.EQ.'CALC_G_F') THEN
+        CALL TECACH('ONN','PVITESS',1,IVITES,IRET)
+        CALL TECACH('ONN','PACCELE',1,IACCEL,IRET)
+      ENDIF
 
 C TREF PAR MAILLE ET DEFORMATION INITIALE PAR NOEUD
       TREF  = ZR(ITREF)
@@ -326,6 +335,14 @@ C =====================================================================
             EPSINO(IJ+4) = ZR(IJ1+4)*RAC2
           ENDIF
 80      CONTINUE
+      ENDIF
+
+      IF (IVITES.NE.0) THEN
+        CALL RCCOMA(MATCOD,'ELAS',PHENOM,CODRET)
+        CALL RCVALA(MATCOD,' ',PHENOM,1,' ',RBID,1,'RHO',RHO,
+     &              CODRET,'FM')
+        CALL RCVALA(MATCOD,' ',PHENOM,1,' ',RBID,1,'NU',NU,
+     &              CODRET,'FM')
       ENDIF
 
 C CORRECTION DES FORCES VOLUMIQUES
@@ -397,6 +414,7 @@ C INITIALISATIONS
           TGDM(I) = 0.D0
           DPDM(I) = 0.D0
           DTEMSG(I) = 0.D0
+          ACCELE(I) = 0.D0
           DO 200 J=1,3
             SR(I,J) = 0.D0
             DSR(I,J) = 0.D0
@@ -408,6 +426,7 @@ C INITIALISATIONS
 200       CONTINUE
           DO 210 J=1,4
             DUDM(I,J) = 0.D0
+            DVDM(I,J) = 0.D0
             DTDM(I,J) = 0.D0
             DFDM(I,J) = 0.D0
             GRADDU(I,J) = 0.D0
@@ -465,6 +484,16 @@ C   DE LA TEMPERATURE AUX POINTS DE GAUSS (TG) ET SON GRADIENT (TGDM)
               DTDM(J,K) = DTDM(J,K) + ZR(ITHET+IJ)*DER(K)
               DFDM(J,K) = DFDM(J,K) + FNO(IJ1)*DER(K)
 300         CONTINUE
+            IF (IVITES.NE.0) THEN
+              DO 305 K=1,NDIM
+                DVDM(J,K) = DVDM(J,K) + ZR(IVITES+IJ)*DER(K)
+305           CONTINUE
+              DVDM(J,4) = DVDM(J,4) + ZR(IVITES+IJ)*DER(4)
+              ACCELE(J) = ACCELE(J) + ZR(IACCEL+IJ)*DER(4)
+              IF (CP) THEN
+                VEPSCP = -NU/(1.D0-NU)*(DVDM(1,1)+DVDM(2,2))
+              ENDIF
+            ENDIF
               DUDM(J,4) = DUDM(J,4) + ZR(IDEPL+IJ)*DER(4)
               DTDM(J,4) = DTDM(J,4) + ZR(ITHET+IJ)*DER(4)
               DFDM(J,4) = DFDM(J,4) + FNO(IJ1)*DER(4)
@@ -758,11 +787,17 @@ C TRAITEMENTS DEPENDANT DE LA MODELISATION
         IF(CP) THEN
           DUDM(3,3)= EPS(3)
           IF (DERIVL) GRADDU(3,3) = DEPS(3)
+          IF (IVITES.NE.0) THEN
+            DVDM(3,3)= VEPSCP
+          ENDIF
         ENDIF
         IF (AXI) THEN
           DUDM(3,3)= DUDM(1,4)/R
           DTDM(3,3)= DTDM(1,4)/R
           DFDM(3,3)= DFDM(1,4)/R
+          IF (IVITES.NE.0) THEN
+            DVDM(3,3)= DVDM(1,4)/R
+          ENDIF
         ENDIF
 
 C CALCUL DE LA DIVERGENCE DU THETA FISSURE (DIVT), DE SA DERIVEE
@@ -904,6 +939,24 @@ C            MAIS ON A BESOIN DE PROD2 SI TSENUL EST FAUX.
 C =======================================================
         IF ( .NOT.DERIVL .OR. .NOT.TSENUL ) THEN
 
+          ECIN  = 0.D0
+          PROD3 = 0.D0
+          PROD4 = 0.D0
+          IF (IVITES.NE.0) THEN
+            DO 487 J1 = 1, NDIM
+              ECIN = ECIN + DVDM(J1,4)*DVDM(J1,4)
+  487       CONTINUE
+            DO 496 J1 = 1, NDIM
+              DO 497 J2 = 1, NDIM
+                PROD3 = PROD3 + ACCELE(J1)*DUDM(J1,J2)*DTDM(J2,4)
+                PROD4 = PROD4 + DVDM(J1,4)*DVDM(J1,J2)*DTDM(J2,4)
+  497         CONTINUE
+  496       CONTINUE
+            ECIN  = 0.5D0*RHO*ECIN
+            PROD3 = RHO*PROD3
+            PROD4 = RHO*PROD4
+          ENDIF
+
           PROD  = 0.D0
           PROD2 = 0.D0
           DO 490 I=1,3
@@ -915,6 +968,7 @@ C =======================================================
 475           CONTINUE
 480         CONTINUE
 490       CONTINUE
+          PROD  = PROD - ECIN*DIVT + PROD3 - PROD4
           PROD2 = POIDS*( PROD - ENERGI(1)*DIVT)
 
         ENDIF

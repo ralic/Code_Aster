@@ -3,7 +3,7 @@
       INTEGER            IER
 C     ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
+C MODIF UTILITAI  DATE 10/05/2004   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,7 +55,7 @@ C
       CHARACTER*19    NOMFON
       CHARACTER*24    NOMPAR,NOMVAR
       REAL*8          PAS , NORME
-      PARAMETER       (NBMOT=20, IERMAX=25)
+      PARAMETER       (NBMOT=23, IERMAX=25)
       CHARACTER*8     MOTCLE(NBMOT)
       CHARACTER*2     PROLGD, PROFGD
       CHARACTER*4     INTERP(2), INTERF(2)
@@ -65,7 +65,8 @@ C     ----------------------------------------------------------------
      +   /'DATE    ', 'AUTEUR  ', 'ORIGINE ', 'NATURE  ', 'NPS     ',
      +    'ORG     ', 'IDENT   ', 'UVA     ', 'FVA     ', 'NOM_RESU',
      +    'UFO     ', 'FFO     ', 'NORME   ', 'VALEUR  ', 'FINSF   ',
-     +    'PAS     ', 'NOM_PARA', 'NOM     ', 'NB_PARA ', 'NOM_VAR '/
+     +    'PAS     ', 'NOM_PARA', 'NOM     ', 'NB_PARA ', 'NOM_VAR ',
+     +    'NOMFON  ', 'NOMFON_X', 'NOMFON_Y'/
 C
 C
       CALL JEMARQ()
@@ -137,6 +138,11 @@ C     --- LECTURE ---
             GOTO 1
          ELSE
             CALL UTREMT(CVAL(1:IVAL),MOTCLE,NBMOT,IPLACE)
+            IF(IPLACE.EQ.21 .OR.IPLACE.EQ.22 .OR.IPLACE.EQ.23)THEN
+                  CALL LXLIRE(ICLASS,IVAL,RVAL,CVAL)  
+                  CALL LXLIRE(ICLASS,IVAL,RVAL,CVAL)  
+                  GOTO 1
+            ENDIF
             IF ( IPLACE .EQ. 0 ) THEN
                IER = IER + 1
                IF (IER .GT. IERMAX ) GOTO 999
@@ -158,7 +164,8 @@ C
 C
          ELSE
 C           --- LIRE L'ITEM SAUF SI MOT CLE = VALEUR ---
-            IF (IPLACE .NE. 14)   CALL LXLIRE(ICLASS,IVAL,RVAL,CVAL)
+            IF (IPLACE .NE. 14) CALL LXLIRE(ICLASS,IVAL,RVAL,CVAL)
+C
          ENDIF
 C
          GOTO ( 10,  20,  30,  40,  50,  60,  70,  80,  90, 100,
@@ -166,8 +173,7 @@ C
 C
 C
 C
-C
-   10    CONTINUE
+ 10      CONTINUE
 C        --- DATE ---
          IF (ICLASS.EQ.4) THEN
          ELSE

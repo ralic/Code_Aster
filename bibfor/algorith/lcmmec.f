@@ -2,7 +2,7 @@
      &                     VIS,DGAMMA,DP,DALPHA )
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 10/05/2004   AUTEUR KANIT T.KANIT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -36,7 +36,7 @@ C           DALPHA  : VARIABLE INTERNE ECROUISSAGE CINEMATIQUE
 C  INTEGRATION DES LOIS MONOCRISTALLINES PAR UNE METHODE DE RUNGE KUTTA
 C
 C     ----------------------------------------------------------------
-      REAL*8 D,ALPHA
+      REAL*8 D,ALPHA,GM,PM,C,CC
       INTEGER IEC
 C     ----------------------------------------------------------------
 
@@ -47,6 +47,19 @@ C     DANS VIS : 1 = ALPHA, 2=GAMMA, 3=P
       IF (NECRCI.EQ.'ECRO_CINE1') THEN
           D=COEFT(IEC-1+1)
           DALPHA=DGAMMA-D*ALPHA*DP
+      ENDIF
+      
+      IF (NECRCI.EQ.'ECRO_CINE2') THEN
+          D=COEFT(IEC-1+1)
+          GM=COEFT(IEC-1+2)
+          PM=COEFT(IEC-1+3)
+          C=COEFT(IEC-1+4)
+          CC=C*ALPHA
+          IF(ALPHA.EQ.0.D0) THEN
+            DALPHA=DGAMMA-D*ALPHA*DP
+          ELSE
+            DALPHA=DGAMMA-D*ALPHA*DP-((ABS(CC)/GM)**PM)*ALPHA/ABS(ALPHA)
+          ENDIF
       ENDIF
       
            

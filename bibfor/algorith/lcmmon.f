@@ -8,7 +8,7 @@
         REAL*8 SIGI(6),EPSD(6),DETOT(6),TPERD,DTPER,TPEREF,PGL(3,3)
         CHARACTER*16 COMP(*)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 10/05/2004   AUTEUR KANIT T.KANIT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -75,9 +75,9 @@ C
       
          NOMFAM=CPMONO(5*(IFA-1)+1)
 C         NMATER=CPMONO(5*(IFA-1)+2)
-         NECOUL=CPMONO(5*(IFA-1)+3) 
-         NECRIS=CPMONO(5*(IFA-1)+4) 
-         NECRCI=CPMONO(5*(IFA-1)+5) 
+         NECOUL=CPMONO(5*(IFA-1)+3)
+         NECRIS=CPMONO(5*(IFA-1)+4)
+         NECRCI=CPMONO(5*(IFA-1)+5)
       
          CALL LCMMSG(NOMFAM,NBSYS,0,PGL,MS)
          
@@ -85,15 +85,14 @@ C         NMATER=CPMONO(5*(IFA-1)+2)
          
          DO 7 IS=1,NBSYS
          
-C           VARIABLES INTERNES DU SYST GLIS          
+C           VARIABLES INTERNES DU SYST GLIS
             DO 8 IV=1,3
                NUVI=NUVI+1
                VIS(IV)=VINI(NUVI)
   8         CONTINUE
   
-            
 C           CALCUL DE LA SCISSION REDUITE =
-C           PROJECTION DE SIG SUR LE SYSTEME DE GLISSEMENT   
+C           PROJECTION DE SIG SUR LE SYSTEME DE GLISSEMENT
 C           TAU      : SCISSION REDUITE TAU=SIG:MS
             CALL LCMMSG(NOMFAM,NBSYS,IS,PGL,MS)
             
@@ -105,7 +104,7 @@ C
 C           ECOULEMENT VISCOPLASTIQUE
 C            
             CALL LCMMFL(TAUS,COEFT,IFA,NMAT,NBCOMM,NECOUL,NECRIS,
-     &                  VIS,X,DTIME,DGAMMA,DP)
+     &                  VIS,X,DTIME,DGAMMA,DP,TPERD)
 C
 C           ECROUISSAGE CINEMATIQUE
 C

@@ -2,7 +2,7 @@
       IMPLICIT   NONE
       INTEGER             IERR
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF PREPOST  DATE 11/05/2004   AUTEUR NICOLAS O.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,7 +26,7 @@ C       INTERFACE ENTRE MAILLAGE IDEAS ET FICHIER MAILLAGE ASTER
 C   - OUT :
 C       IERR   : NON UTILISE
 C     ------------------------------------------------------------
-      INTEGER      NFIE, NFIS, N, IUNIFI
+      INTEGER      NFIE, NFIS, N
       LOGICAL      LGRCOU
       CHARACTER*8  K8B
       CHARACTER*16 K16B, CMD
@@ -38,7 +38,12 @@ C
          LGRCOU = .FALSE.
          CALL GETVIS ( ' ', 'UNITE_IDEAS'    , 1,1,1, NFIE, N )
          CALL GETVTX ( ' ', 'CREA_GROUP_COUL', 1,1,1,  K8B, N )
-         IF ( K8B(1:3).EQ.'OUI' )  LGRCOU = .TRUE.
+         IF ( K8B(1:3).EQ.'OUI' )  THEN
+           LGRCOU = .TRUE.
+         ELSE
+           LGRCOU = .FALSE.
+         ENDIF
+         
 
       ELSEIF (CMD(5:8).EQ.'GMSH') THEN
          CALL GETVIS ( ' ', 'UNITE_GMSH'   , 1,1,1, NFIE, N )

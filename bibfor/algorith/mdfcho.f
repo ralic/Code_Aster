@@ -16,7 +16,7 @@
       REAL*8             TEMPS,PSIDEL(NBCHOC,NBEXCI,*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 10/05/2004   AUTEUR BOYERE E.BOYERE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -69,12 +69,38 @@ C ----------------------------------------------------------------------
      +            OLDFT(2), OLDXL(3), OLDVT(2), POND,
      +            SIGNE(2), FDISPO
 C     ------------------------------------------------------------------
+      INTEGER       IEX,IPAR
+      CHARACTER*8   NOMPAR
+      REAL*8        COEDEP(NBEXCI), COEVIT(NBEXCI), COEACC(NBEXCI)
 C
       ZERO = 0.D0
       NBSEG = 0
       ORIG(1) = ZERO
       ORIG(2) = ZERO
       ORIG(3) = ZERO
+C
+      NOMPAR = 'INST'
+      IPAR = 1
+      IF (NONMOT(1:3).NE.'NON') THEN
+         DO 11 IEX=1,NBEXCI
+           IF (NOFDEP(IEX+NBEXCI).EQ.'INTERPRE') THEN
+            CALL FIINTE('F',NOFDEP(IEX),1,IPAR,TEMPS,COEDEP(IEX),IER)
+           ELSE
+            CALL FOINTE('F',NOFDEP(IEX),1,NOMPAR,TEMPS,COEDEP(IEX),IER)
+           ENDIF
+           IF (NOFVIT(IEX+NBEXCI).EQ.'INTERPRE') THEN
+            CALL FIINTE('F',NOFVIT(IEX),1,IPAR,TEMPS,COEVIT(IEX),IER)
+           ELSE
+            CALL FOINTE('F',NOFVIT(IEX),1,NOMPAR,TEMPS,COEVIT(IEX),IER)
+           ENDIF
+           IF (NOFACC(IEX+NBEXCI).EQ.'INTERPRE') THEN
+            CALL FIINTE('F',NOFACC(IEX),1,IPAR,TEMPS,COEACC(IEX),IER)
+           ELSE
+            CALL FOINTE('F',NOFACC(IEX),1,NOMPAR,TEMPS,COEACC(IEX),IER)
+           ENDIF
+ 11      CONTINUE
+      ENDIF
+
 C
       DO 10 I = 1,NBCHOC
          FN = ZERO
@@ -110,8 +136,8 @@ C
          IF (NONMOT(1:3).EQ.'NON') THEN
             CALL TOPHYS(I,0,DPLMOD,NBCHOC,NBMODE,DEPGEN,UX1,UY1,UZ1)
          ELSE
-            CALL TOPHY2(I,0,DPLMOD,NBCHOC,NBMODE,DEPGEN,UX1,UY1,UZ1,
-     +                  TEMPS,NOFDEP,NBEXCI,PSIDEL)
+            CALL TOPHY3(I,0,DPLMOD,NBCHOC,NBMODE,DEPGEN,UX1,UY1,UZ1,
+     +                  NBEXCI,PSIDEL,COEDEP)
          ENDIF
 C        POSITION DU NOEUD 1 DANS LE REPERE GLOBAL
          DEPGLO(1) = UX1 + PARCHO(I,7)
@@ -121,8 +147,8 @@ C        VITESSE DU NOEUD 1 DANS LE REPERE GLOBAL
          IF (NONMOT(1:3).EQ.'NON') THEN
             CALL TOPHYS(I,0,DPLMOD,NBCHOC,NBMODE,VITGEN,VX1,VY1,VZ1)
          ELSE
-            CALL TOPHY2(I,0,DPLMOD,NBCHOC,NBMODE,VITGEN,VX1,VY1,VZ1,
-     +                  TEMPS,NOFVIT,NBEXCI,PSIDEL)
+            CALL TOPHY3(I,0,DPLMOD,NBCHOC,NBMODE,VITGEN,VX1,VY1,VZ1,
+     +                  NBEXCI,PSIDEL,COEVIT)
          ENDIF
          VITGLO(1) = VX1
          VITGLO(2) = VY1
@@ -131,8 +157,8 @@ C        ACCELERATION DU NOEUD 1 DANS LE REPERE GLOBAL
          IF (NONMOT(1:3).EQ.'NON') THEN
             CALL TOPHYS(I,0,DPLMOD,NBCHOC,NBMODE,ACCGEN,AX1,AY1,AZ1)
          ELSE
-            CALL TOPHY2(I,0,DPLMOD,NBCHOC,NBMODE,ACCGEN,AX1,AY1,AZ1,
-     +                  TEMPS,NOFACC,NBEXCI,PSIDEL)
+            CALL TOPHY3(I,0,DPLMOD,NBCHOC,NBMODE,ACCGEN,AX1,AY1,AZ1,
+     +                  NBEXCI,PSIDEL,COEACC)
          ENDIF
          ACCGLO(1) = AX1
          ACCGLO(2) = AY1
@@ -155,8 +181,8 @@ C
             IF (NONMOT(1:3).EQ.'NON') THEN
                CALL TOPHYS(I,3,DPLMOD,NBCHOC,NBMODE,DEPGEN,UX2,UY2,UZ2)
             ELSE
-               CALL TOPHY2(I,3,DPLMOD,NBCHOC,NBMODE,DEPGEN,UX2,UY2,UZ2,
-     +                     TEMPS,NOFDEP,NBEXCI,PSIDEL)
+               CALL TOPHY3(I,3,DPLMOD,NBCHOC,NBMODE,DEPGEN,UX2,UY2,UZ2,
+     +                     NBEXCI,PSIDEL,COEDEP)
             ENDIF
 C           POSITION DU NOEUD 2 DANS LE REPERE GLOBAL
             DEPGLO(4) = UX2 + PARCHO(I,10)
@@ -166,8 +192,8 @@ C           VITESSE DU NOEUD 2 DANS LE REPERE GLOBAL
             IF (NONMOT(1:3).EQ.'NON') THEN
                CALL TOPHYS(I,3,DPLMOD,NBCHOC,NBMODE,VITGEN,VX2,VY2,VZ2)
             ELSE
-               CALL TOPHY2(I,3,DPLMOD,NBCHOC,NBMODE,VITGEN,VX2,VY2,VZ2,
-     +                     TEMPS,NOFVIT,NBEXCI,PSIDEL)
+               CALL TOPHY3(I,3,DPLMOD,NBCHOC,NBMODE,VITGEN,VX2,VY2,VZ2,
+     +                     NBEXCI,PSIDEL,COEVIT)
             ENDIF
             VITGLO(4) = VX2
             VITGLO(5) = VY2
@@ -176,8 +202,8 @@ C           ACCELERATION DU NOEUD 2 DANS LE REPERE GLOBAL
             IF (NONMOT(1:3).EQ.'NON') THEN
                CALL TOPHYS(I,3,DPLMOD,NBCHOC,NBMODE,ACCGEN,AX2,AY2,AZ2)
             ELSE
-               CALL TOPHY2(I,3,DPLMOD,NBCHOC,NBMODE,ACCGEN,AX2,AY2,AZ2,
-     +                     TEMPS,NOFACC,NBEXCI,PSIDEL)
+               CALL TOPHY3(I,3,DPLMOD,NBCHOC,NBMODE,ACCGEN,AX2,AY2,AZ2,
+     +                     NBEXCI,PSIDEL,COEACC)
             ENDIF
             ACCGLO(4) = AX2
             ACCGLO(5) = AY2

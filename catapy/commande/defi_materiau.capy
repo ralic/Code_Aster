@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
+#& MODIF COMMANDE  DATE 10/05/2004   AUTEUR KANIT T.KANIT 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -2604,8 +2604,9 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater,
            ECOU_VISC3      =FACT(statut='f',
              TYPE_PARA       =SIMP(statut='f',typ='TXM',into=("ECOU_VISC",),),
              K               =SIMP(statut='o',typ='R'),
-             V               =SIMP(statut='o',typ='R'),
+             TAUMU           =SIMP(statut='o',typ='R'),
              GAMMA0          =SIMP(statut='o',typ='R'),
+             V               =SIMP(statut='o',typ='R'),
            ),
            ECOU_PLAS1      =FACT(statut='f',
              TYPE_PARA       =SIMP(statut='f',typ='TXM',into=("ECOU_PLAS",),),
@@ -2636,6 +2637,7 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater,
              D               =SIMP(statut='o',typ='R'),
              GM              =SIMP(statut='o',typ='R'),
              PM              =SIMP(statut='o',typ='R'),
+             C               =SIMP(statut='o',typ='R'),
            ),
            
 ####  MONOCRISTAL
