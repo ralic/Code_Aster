@@ -19,7 +19,7 @@ C ======================================================================
       IMPLICIT NONE
       CHARACTER*(*) MODELZ,COMPOZ
 C ----------------------------------------------------------------------
-C MODIF ALGORITH  DATE 26/10/2004   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ALGORITH  DATE 04/04/2005   AUTEUR MCOURTOI M.COURTOIS 
 C     SAISIE ET VERIFICATION DE LA RELATION DE COMPORTEMENT UTILISEE
 C
 C IN  MODELZ  : NOM DU MODELE
@@ -47,7 +47,7 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
       INTEGER NCMPMA,DIMAKI,N2,N3,IBID,NBOCC,I,ICMP,ICOMEL,II,JMA,JNCMP
       INTEGER JNOMA,JVALV,K,N1,NBAP,NBET,NBMA,NBMO1,NBVARI,NC1,NC2
       INTEGER NBMAT,JMAIL,NCOMEL,NS1,JMESM,IMA,IM,IRET,ICPRI,NBSYST
-      INTEGER INV,DIMANV,NBMONO
+      INTEGER INV,DIMANV,NBMONO,NUNIT
       REAL*8 RBID
       COMPLEX*16 CBID
       LOGICAL      BUG, NIVO
@@ -366,8 +366,6 @@ C  POUR COMPORTEMENT KIT_
                 END IF
               END IF
               
-CCC MONOCRISTAL
-              
             ELSEIF (COMP(1:8).EQ.'MONOCRIS') THEN
                 CALL GETVID(MOCLEF(I),'COMPOR',K,1,1,SDCOMP,N1)
                 CALL JEVEUO(SDCOMP//'.CPRI','L',ICPRI)
@@ -376,8 +374,6 @@ CCC MONOCRISTAL
                 NBVARI=ZI(ICPRI-1+3)
                 ZK16(JVALV-1+6) = SDCOMP//'.CPRK'             
                 WRITE (ZK16(JVALV-1+7),'(I16)') NBSYST
-              
-CCC POLYCRISTAL
               
             ELSEIF (COMP(1:8).EQ.'POLYCRIS') THEN
                 CALL GETVID(MOCLEF(I),'COMPOR',K,1,1,SDCOMP,N1)
@@ -388,6 +384,11 @@ CCC POLYCRISTAL
                 ZK16(JVALV-1+6) = SDCOMP 
                 WRITE (ZK16(JVALV-1+7),'(I16)') NBMONO
               
+            ELSEIF (COMP(1:4).EQ.'ZMAT') THEN
+                CALL GETVIS(MOCLEF(I),'NB_VARI',K,1,1,NBVARI,N1)
+                CALL GETVIS(MOCLEF(I),'UNITE',K,1,1,NUNIT,N1)
+                WRITE (ZK16(JVALV-1+6),'(I16)') NUNIT
+
             ELSE
               EXIST = GETEXM(MOCLEF(I),COMP)
               IF (EXIST) THEN

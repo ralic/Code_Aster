@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 08/09/2003   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 04/04/2005   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,8 +50,9 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       CHARACTER*16 COMPOR(3)
       CHARACTER*2 CODE
       REAL*8 TPG1,TPG0,TPG2,DT10,DT21,ZERO
+      REAL*8 TNO1,TNO0,TNO2
       REAL*8 METAPG(189),METAZI(81)
-      INTEGER JGANO,NNO,KP,I,J,ITEMPE,ITEMPA,ITEMPS,IADTRC
+      INTEGER JGANO,NNO,KN,KP,I,J,ITEMPE,ITEMPA,ITEMPS,IADTRC
       INTEGER IPOIDS,IVF,IMATE,NDIM,JVAL,NPG1,K
       INTEGER NBHIST,ITEMPI,NBTRC,IADCKM,NNOS,NCMP
       INTEGER IPFTRC,JFTRC,JTRC,IPHASI,IPHASN,IPHASO,ICOMPO
@@ -74,15 +75,13 @@ C     ------------------------------------------------------------------
       CALL JEVECH('PPHASIN','L',IPHASI)
 
       CALL JEVECH('PCOMPOR','L',ICOMPO)
-      CALL JEVECH('PPHASOU','E',IPHASO)
-      IF (OPTION.EQ.'META_ELNO_TEMP') THEN
-        CALL JEVECH('PPHASNOU','E',IPHASN)
-      END IF
+      CALL JEVECH('PPHASNOU','E',IPHASN)
+ 
 
 
       COMPOR(1) = ZK16(ICOMPO)
       MATOS = ZI(IMATE)
-      ZERO = 0.D0
+
 
       IF (COMPOR(1).EQ.'ACIER') THEN
         CALL JEVECH('PFTRC','L',IPFTRC)
@@ -103,70 +102,45 @@ C     ------------------------------------------------------------------
 
 
 
-        DO 40 KP = 1,NPG1
-          K = (KP-1)*NNO
-          TPG1 = ZERO
-          TPG0 = ZERO
-          TPG2 = ZERO
-          DO 20 J = 1,NNO
+        DO 40 KN = 1,NNO
+          TNO1 = ZR(ITEMPE+KN-1)
+          TNO0 = ZR(ITEMPA+KN-1)
+          TNO2 = ZR(ITEMPI+KN-1)
 
-            TPG1 = TPG1 + ZR(ITEMPE+J-1)*ZR(IVF+K+J-1)
-            TPG0 = TPG0 + ZR(ITEMPA+J-1)*ZR(IVF+K+J-1)
-            TPG2 = TPG2 + ZR(ITEMPI+J-1)*ZR(IVF+K+J-1)
-   20     CONTINUE
 
           DT10 = ZR(ITEMPS+1)
           DT21 = ZR(ITEMPS+2)
           CALL ZACIER(MATOS,NBHIST,ZR(JFTRC),ZR(JTRC),ZR(IADTRC+3),
-     &                ZR(IADTRC+IADEXP),ZR(IADTRC+IADCKM),NBTRC,TPG0,
-     &                TPG1,TPG2,DT10,DT21,ZR(IPHASI+7* (KP-1)),
-     &                METAPG(1+7* (KP-1)))
+     &                ZR(IADTRC+IADEXP),ZR(IADTRC+IADCKM),NBTRC,TNO0,
+     &                TNO1,TNO2,DT10,DT21,ZR(IPHASI+7* (KN-1)),
+     &                METAPG(1+7* (KN-1)))
 
 
           DO 30 J = 1,7
-            ZR(IPHASO+7* (KP-1)+J-1) = METAPG(1+7* (KP-1)+J-1)
+            ZR(IPHASN+7* (KN-1)+J-1) = METAPG(1+7* (KN-1)+J-1)
    30     CONTINUE
    40   CONTINUE
 
       ELSE IF (COMPOR(1) (1:4).EQ.'ZIRC') THEN
-        DO 70 KP = 1,NPG1
-          K = (KP-1)*NNO
-          TPG1 = ZERO
-          TPG2 = ZERO
-          DO 50 J = 1,NNO
+        DO 70 KN = 1,NNO
 
-            TPG1 = TPG1 + ZR(ITEMPE+J-1)*ZR(IVF+K+J-1)
-            TPG2 = TPG2 + ZR(ITEMPI+J-1)*ZR(IVF+K+J-1)
-   50     CONTINUE
+          TNO1 = ZR(ITEMPE+J-1)
+          TNO2 = ZR(ITEMPI+J-1)
 
           DT21 = ZR(ITEMPS+2)
 
-          CALL ZEDGAR(MATOS,TPG1,TPG2,DT21,ZR(IPHASI+3* (KP-1)),
-     &                METAZI(1+3* (KP-1)))
+          CALL ZEDGAR(MATOS,TNO1,TNO2,DT21,ZR(IPHASI+3* (KN-1)),
+     &                METAZI(1+3* (KN-1)))
 
           DO 60 J = 1,3
-            ZR(IPHASO+3* (KP-1)+J-1) = METAZI(1+3* (KP-1)+J-1)
+            ZR(IPHASN+3* (KN-1)+J-1) = METAZI(1+3* (KN-1)+J-1)
    60     CONTINUE
 
    70   CONTINUE
 
       END IF
 
-      IF (OPTION.EQ.'META_ELNO_TEMP') THEN
 
-        IF (COMPOR(1) (1:4).EQ.'ZIRC') THEN
-          NCMP = 3
-        ELSE
-
-          NCMP = 7
-        END IF
-
-
-C --- RECUPERATION DE LA MATRICE DE PASSAGE PTS DE GAUSS - NOEUDS
-
-        CALL PPGAN2(JGANO,NCMP,ZR(IPHASO),ZR(IPHASN))
-
-      END IF
 
       CALL JEDEMA()
       END

@@ -1,6 +1,6 @@
       SUBROUTINE TE0113(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 04/04/2005   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -30,7 +30,7 @@ C                      NOMTE        -->  NOM DU TYPE ELEMENT
 C ......................................................................
 
       CHARACTER*8 TYPMOD(2),NOMAIL,ELREFE,ELREF2
-      INTEGER NNO,NNOB,NPG,IMATUU,LGPG,LGPG1,LGPG2
+      INTEGER NNO,NNOB,NPG,I,K,KP,L,IMATUU,LGPG,LGPG1,LGPG2
       INTEGER IPOIDS,IVF,IDFDE,IGEOM,IMATE
       INTEGER IVFB,IDFDEB,NNOS,JGANO
       INTEGER ITREF,ICONTM,IVARIM,ITEMPM,ITEMPP,IPHASM,IPHASP
@@ -41,7 +41,8 @@ C ......................................................................
       INTEGER NDIM,IRET,ICAMAS
       LOGICAL DEFANE
       REAL*8  TRAV1(81), TRAV2(486), TRAV3(81),ANGMAS(3),R8VIDE,R8DGRD
-
+      REAL*8  PHASM(7*27),PHASP(7*27)
+      
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
@@ -151,8 +152,24 @@ C - VARIABLES DE COMMANDE
       IF (IPHASP.NE.0) THEN
         CALL TECACH('OON','PPHASPR',7,JTAB,IRET)
         NZ = JTAB(6)
+C  passage de PPHASMR et PPHASPR aux points de Gauss
+        DO 9 KP = 1,NPG
+          K = (KP-1)*NNO
+          DO 7 L = 1,NZ   
+            PHASM(NZ*(KP-1)+L)=0.D0
+            PHASP(NZ*(KP-1)+L)=0.D0
+            DO 5 I = 1,NNO   
+              PHASM(NZ*(KP-1)+L) = PHASM(NZ*(KP-1)+L) + 
+     +                           ZR(IPHASM+NZ*(I-1)+L-1)*ZR(IVF+K+I-1)
+              PHASP(NZ*(KP-1)+L) = PHASP(NZ*(KP-1)+L) + 
+     +                           ZR(IPHASP+NZ*(I-1)+L-1)*ZR(IVF+K+I-1)
+  5         CONTINUE        
+  7       CONTINUE          
+  9     CONTINUE
       END IF
+      
 
+  
       CALL JEVECH('PHYDRMR','L',IHYDRM)
       CALL JEVECH('PHYDRPR','L',IHYDRP)
       CALL JEVECH('PSECHMR','L',ISECHM)
@@ -193,7 +210,7 @@ C - HYPO-ELASTICITE
      &                ZR(ITEMPM),ZR(ITEMPP),ZR(ITREF),
      &                ZR(IHYDRM),ZR(IHYDRP),
      &                ZR(ISECHM),ZR(ISECHP),ZR(ISREF),
-     &                NZ,ZR(IPHASM),ZR(IPHASP),
+     &                NZ,PHASM,PHASP,
      &                ZR(IDPLGM),ZR(IDDPLG),ZR(IDEFAM),ZR(IDEFAP),
      &                DEFANE,
      &                ANGMAS,

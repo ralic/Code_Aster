@@ -3,7 +3,7 @@
       CHARACTER*16        OPTION , NOMTE
 C----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ELEMENTS  DATE 04/04/2005   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,8 +49,8 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
       CHARACTER*24       NOMRES(5)
       CHARACTER*2        CODRET(5)
-      REAL*8             PHASE(5),VALRES(5),ZALPHA,DURTPG(9)
-      INTEGER            MATOS,IMATE,IPHASI,IDURT,KP,I,NCMP
+      REAL*8             PHASE(5),VALRES(5),ZALPHA,DURTNO
+      INTEGER            MATOS,IMATE,IPHASI,IDURT,KN,I,NCMP
       INTEGER            NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO
 C DEB ------------------------------------------------------------------
       CALL JEMARQ()
@@ -62,7 +62,7 @@ C
       CALL JEVECH('PDURT_R','E',IDURT)
       MATOS = ZI(IMATE)
 C
-      DO 300 KP=1,NPG
+      DO 300 KN=1,NNO
 C
 C----RECUPERATION DES CARACTERISTIQUES
         NOMRES(1) = 'F1_DURT'
@@ -77,28 +77,23 @@ C
 C----RECUPERATION Z POUR CHAQUE PHASE
         ZALPHA = 0.D0
         DO 10 I=1,4
-           PHASE(I) = ZR(IPHASI+7*(KP-1)+I-1)
+           PHASE(I) = ZR(IPHASI+7*(KN-1)+I-1)
            ZALPHA = ZALPHA + PHASE(I)
 10      CONTINUE
            PHASE(5) = 1-ZALPHA
 C
 C----CALCUL DE LA DURETE ----------------------------------------------
 C
-        DURTPG(1+(KP-1)) = 0.D0
+        DURTNO = 0.D0
         DO 400 I=1,5
-        DURTPG(1+(KP-1)) = DURTPG(1+(KP-1))+PHASE(I)*VALRES(I)
+        DURTNO = DURTNO+PHASE(I)*VALRES(I)
 400     CONTINUE
-        IF ( OPTION .EQ. 'DURT_ELGA_META' ) THEN
-            ZR(IDURT+(KP-1))=DURTPG(1+(KP-1))
-        ENDIF
+        ZR(IDURT+(KN-1))=DURTNO
+
 C
 300   CONTINUE
 C
-      IF ( OPTION .EQ. 'DURT_ELNO_META' ) THEN
-        NCMP = 1
-        CALL PPGAN2 ( JGANO, NCMP, DURTPG, ZR(IDURT) )
-      ENDIF
-C
+
 9999  CONTINUE
       CALL JEDEMA()
       END

@@ -4,7 +4,7 @@
        IMPLICIT REAL*8 (A-H,O-Z)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF ELEMENTS  DATE 04/04/2005   AUTEUR GALENNE E.GALENNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -278,9 +278,9 @@ C
 C
       CALL WKVECT(RESU,'V V K24',NDIMTE+1,JRESU)
 C
-C BOUCLE GENERALE SUR LES NDIMTE+1 CHAMPS_NO A CREER
+C CREATION DES NDIMTE+1 CHAMPS_NO ET VALEUR SUR GAMMA0
 C
-      DO 999 K = 1 , NDIMTE+1
+      DO 400 K = 1 , NDIMTE+1
         CALL CODENT ( K , 'D0' , KIORD )
         CHAMNO = RESU(1:8)//'_CHAM'//KIORD//'     '
         ZK24(JRESU+K-1) = CHAMNO
@@ -352,54 +352,70 @@ C
               ZI(INDIC+NUM-1) = 1
 4           CONTINUE
           ENDIF
+        ELSE
+C     STOCKAGE DE LA DIRECTION DU CHAMPS THETA SUR LE FOND DE FISSURE
+          DO 450 I=1,NBNOEU
+            NUM    = ZI(IADNUM+I-1)
+            ZR(ITHETA+(NUM-1)*3+1-1) = ZR(IN2+(I-1)*3+1-1)
+            ZR(ITHETA+(NUM-1)*3+2-1) = ZR(IN2+(I-1)*3+2-1)
+            ZR(ITHETA+(NUM-1)*3+3-1) = ZR(IN2+(I-1)*3+3-1)
+450       CONTINUE
+        ENDIF
+400   CONTINUE
 C
 C         BOUCLE SUR LES NOEUDS M COURANTS DU MAILLAGE SANS GAMMO
 C         POUR CALCULER PROJ(M)=N
 C
-          DO 500 I=1,NBEL
-            IF(ZI(INDIC+I-1).NE.1) THEN
-              XM = ZR(IADRCO+(I-1)*3+1-1)
-              YM = ZR(IADRCO+(I-1)*3+2-1)
-              ZM = ZR(IADRCO+(I-1)*3+3-1)
-              DMIN = R8MAEM()
-              JMIN = 0
-              SMIN = 0.D0
-              DO 600 J=1,NBNOEU-1
-                XI1 = ZR(IADRCO+(ZI(IADNUM+J-1)-1)*3+1-1)
-                YI1 = ZR(IADRCO+(ZI(IADNUM+J-1)-1)*3+2-1)
-                ZI1 = ZR(IADRCO+(ZI(IADNUM+J-1)-1)*3+3-1)
-                XJ1 = ZR(IADRCO+(ZI(IADNUM+J+1-1)-1)*3+1-1)
-                YJ1 = ZR(IADRCO+(ZI(IADNUM+J+1-1)-1)*3+2-1)
-                ZJ1 = ZR(IADRCO+(ZI(IADNUM+J+1-1)-1)*3+3-1)
-                XIJ = XJ1-XI1
-                YIJ = YJ1-YI1
-                ZIJ = ZJ1-ZI1
-                XIM = XM-XI1
-                YIM = YM-YI1
-                ZIM = ZM-ZI1
-                S   = XIJ*XIM + YIJ*YIM + ZIJ*ZIM
-                NORM2 = XIJ*XIJ + YIJ *YIJ + ZIJ*ZIJ
-                S     = S/NORM2
-                IF((S-1).GE.EPS) THEN
-                  S = 1.D0
-                ENDIF
-                IF(S.LE.EPS) THEN
-                  S = 0.D0
-                ENDIF
-                XN = S*XIJ+XI1
-                YN = S*YIJ+YI1
-                ZN = S*ZIJ+ZI1
-                D = SQRT((XN-XM)*(XN-XM)+(YN-YM)*(YN-YM)+
+      DO 500 I=1,NBEL
+        IF(ZI(INDIC+I-1).NE.1) THEN
+          XM = ZR(IADRCO+(I-1)*3+1-1)
+          YM = ZR(IADRCO+(I-1)*3+2-1)
+          ZM = ZR(IADRCO+(I-1)*3+3-1)
+          DMIN = R8MAEM()
+          JMIN = 0
+          SMIN = 0.D0
+          DO 600 J=1,NBNOEU-1
+            XI1 = ZR(IADRCO+(ZI(IADNUM+J-1)-1)*3+1-1)
+            YI1 = ZR(IADRCO+(ZI(IADNUM+J-1)-1)*3+2-1)
+            ZI1 = ZR(IADRCO+(ZI(IADNUM+J-1)-1)*3+3-1)
+            XJ1 = ZR(IADRCO+(ZI(IADNUM+J+1-1)-1)*3+1-1)
+            YJ1 = ZR(IADRCO+(ZI(IADNUM+J+1-1)-1)*3+2-1)
+            ZJ1 = ZR(IADRCO+(ZI(IADNUM+J+1-1)-1)*3+3-1)
+            XIJ = XJ1-XI1
+            YIJ = YJ1-YI1
+            ZIJ = ZJ1-ZI1
+            XIM = XM-XI1
+            YIM = YM-YI1
+            ZIM = ZM-ZI1
+            S   = XIJ*XIM + YIJ*YIM + ZIJ*ZIM
+            NORM2 = XIJ*XIJ + YIJ *YIJ + ZIJ*ZIJ
+            S     = S/NORM2
+            IF((S-1).GE.EPS) THEN
+              S = 1.D0
+            ENDIF
+            IF(S.LE.EPS) THEN
+              S = 0.D0
+            ENDIF
+            XN = S*XIJ+XI1
+            YN = S*YIJ+YI1
+            ZN = S*ZIJ+ZI1
+            D = SQRT((XN-XM)*(XN-XM)+(YN-YM)*(YN-YM)+
      &                   (ZN-ZM)*(ZN-ZM))
-                IF(D.LT.DMIN) THEN
-                  DMIN = D
-                  JMIN = J
-                  SMIN = S
-                ENDIF
-600           CONTINUE
-              RII = (1-SMIN)*ZR(IADRT1+JMIN-1)+SMIN*ZR(IADRT1+JMIN+1-1)
-              RSI = (1-SMIN)*ZR(IADRT2+JMIN-1)+SMIN*ZR(IADRT2+JMIN+1-1)
-              ALPHA = (DMIN-RII)/(RSI-RII)
+            IF(D.LT.DMIN) THEN
+              DMIN = D
+              JMIN = J
+              SMIN = S
+            ENDIF
+600       CONTINUE
+          RII = (1-SMIN)*ZR(IADRT1+JMIN-1)+SMIN*ZR(IADRT1+JMIN+1-1)
+          RSI = (1-SMIN)*ZR(IADRT2+JMIN-1)+SMIN*ZR(IADRT2+JMIN+1-1)
+          ALPHA = (DMIN-RII)/(RSI-RII)
+          DO 700 K = 1 , NDIMTE+1
+          CALL CODENT ( K , 'D0' , KIORD )
+          CHAMNO = RESU(1:8)//'_CHAM'//KIORD//'     '
+          CHAMNO(20:24) = '.VALE'
+          CALL JEVEUO(CHAMNO,'E',ITHETA)
+            IF (K.NE.(NDIMTE+1)) THEN          
               IADRTT = IADRT3+(K-1)*NBNOEU+JMIN-1
               TEI = ZR(IADRTT)
               TEJ = ZR(IADRTT+1)
@@ -423,28 +439,16 @@ C
                 ZR(ITHETA+(I-1)*3+2-1) = (1-ALPHA)*VALY
                 ZR(ITHETA+(I-1)*3+3-1) = (1-ALPHA)*VALZ
               ENDIF
-C           ENDIF
-          ENDIF
-500     CONTINUE
-      ELSE
+            ELSE
+              ZR(ITHETA+(I-1)*3+1-1) = 0.D0
+              ZR(ITHETA+(I-1)*3+2-1) = 0.D0
+              ZR(ITHETA+(I-1)*3+3-1) = 0.D0
+            ENDIF              
+700       CONTINUE          
+        ENDIF
+500   CONTINUE
+
 C
-C     STOCKAGE DE LA DIRECTION DU CHAMPS THETA SUR LE FOND DE FISSURE
-C
-        DO 700 I=1,NBEL
-          ZR(ITHETA+(I-1)*3+1-1) = 0.D0
-          ZR(ITHETA+(I-1)*3+2-1) = 0.D0
-          ZR(ITHETA+(I-1)*3+3-1) = 0.D0
-700     CONTINUE
-C
-        DO 800 I=1,NBNOEU
-          NUM    = ZI(IADNUM+I-1)
-          ZR(ITHETA+(NUM-1)*3+1-1) = ZR(IN2+(I-1)*3+1-1)
-          ZR(ITHETA+(NUM-1)*3+2-1) = ZR(IN2+(I-1)*3+2-1)
-          ZR(ITHETA+(NUM-1)*3+3-1) = ZR(IN2+(I-1)*3+3-1)
-800     CONTINUE
-      ENDIF
-C
-999   CONTINUE
 C
 C DESTRUCTION D'OBJETS DE TRAVAIL
 C

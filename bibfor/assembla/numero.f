@@ -1,6 +1,6 @@
       SUBROUTINE NUMERO(NUPOSS,MODELZ,INFCHZ,SOLVEU,BASE,NU)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 31/01/2005   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ASSEMBLA  DATE 01/04/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -36,12 +36,12 @@ C----------------------------------------------------------------------
 C RESPONSABLE VABHHTS J.PELLET
 C CORPS DU PROGRAMME
       IMPLICIT NONE
-      
-C DECLARATION PARAMETRES D'APPELS      
+
+C DECLARATION PARAMETRES D'APPELS
       CHARACTER*(*) MODELZ,SOLVEU,INFCHZ
       CHARACTER*(*) NU,NUPOSS
       CHARACTER*2 BASE
-      
+
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
@@ -63,7 +63,7 @@ C DECLARATION VARIABLES LOCALES
       INTEGER      NCHAR,NBLIG,IRET,JCHAR,JLLIGR,K,JTYPCH,ISLVK,IDIME,
      &             I,ILIMA,NBMA,NBSD,IFM,NIV,ILISMA,IBID,ISOLFS,IREFE,
      &             IFETN,NEQUA,NBPB,NCHARF,L,IFLIN,NBCHA,IVLIGR,INUEQ,
-     &             NBNO,INLAGR,IDEEQL,NBNOL,J,COMPT,NBNO4,IPRNO,
+     &             NBNO,INLAGR,IDEEQL,NBNOL,J,COMPT,NBNO4,IPRNO,JNSLV,
      &             NEC2,LPRNO,LDEEQG,INO,ICMP,IINF,NBCHA1,IFCPU
       REAL*8       TEMPS(6)
       CHARACTER*1  K1
@@ -78,7 +78,7 @@ C DECLARATION VARIABLES LOCALES
       LOGICAL      LFETI
 
 C RECUPERATION ET MAJ DU NIVEAU D'IMPRESSION
-      CALL INFNIV(IFM,NIV) 
+      CALL INFNIV(IFM,NIV)
 
 C-----------------------------------------------------------------------
 C CONSTRUCTION D'UN OBJET JEVEUX CONTENANT LA LISTE DES CHARGES ET
@@ -99,7 +99,7 @@ C-----------------------------------------------------------------------
       NBLIG = 0
       CALL JEEXIN(MODELE//'.MODELE    .NBNO',IRET)
       IF (IRET.GT.0) THEN
-        ZK24(JLLIGR) = MODELE(1:8)//'.MODELE'      
+        ZK24(JLLIGR) = MODELE(1:8)//'.MODELE'
         NBLIG = NBLIG + 1
       ENDIF
       DO 10 K = 1,NCHAR
@@ -113,7 +113,7 @@ C-----------------------------------------------------------------------
         ENDIF
    10 CONTINUE
       CALL JEECRA(LLIGR,'LONUTI',NBLIG,K8BID)
-      
+
 C SOLVEUR FETI ?
       CALL JEVEUO(SOLVEU(1:19)//'.SLVK','L',ISLVK)
       METHOD=ZK24(ISLVK)
@@ -124,8 +124,8 @@ C SOLVEUR FETI ?
         LFETI=.FALSE.
         INFOFE='FFFFFFFF'
       ENDIF
-            
-C CALCUL TEMPS  
+
+C CALCUL TEMPS
       IF ((NIV.GE.2).OR.(LFETI)) THEN
         CALL UTTCPU(50,'INIT ',6,TEMPS)
         CALL UTTCPU(50,'DEBUT',6,TEMPS)
@@ -134,7 +134,7 @@ C --------------------------------------------------------------
 C CREATION ET REMPLISSAGE DE LA SD NUME_DDL "MAITRE"
 C --------------------------------------------------------------
       CALL NUMER2(NUPOSS,NBLIG,ZK24(JLLIGR),' ',SOLVEU,BASE,NU,NEQUA)
-             
+
       IF ((NIV.GE.2).OR.(LFETI)) THEN
         CALL UTTCPU(50,'FIN  ',6,TEMPS)
         WRITE(IFM,*)'TEMPS CPU/SYS FACT SYMB: ',TEMPS(5),
@@ -142,12 +142,12 @@ C --------------------------------------------------------------
         IF (LFETI) THEN
           CALL JEVEUO('&FETI.INFO.CPU.FACS','E',IFCPU)
           ZR(IFCPU)=TEMPS(5)+TEMPS(6)
-        ENDIF   
-      ENDIF     
+        ENDIF
+      ENDIF
 C-----------------------------------------------------------------------
 C-----------------------------------------------------------------------
       IF (LFETI) THEN
-      
+
 C STRUCTURE DE DONNEES DE TYPE SD_FETI
         SDFETI=' '
         SDFETI(1:8)=ZK24(ISLVK+5)
@@ -164,7 +164,7 @@ C MONITORING
 C VERIFICATION COHERENCE SD_FETI AVEC PARAMETRAGE OPERATEUR
         CALL JEVEUO(SDFETI(1:19)//'.FREF','L',IREFE)
         CALL JELIRA(SDFETI(1:19)//'.FREF','LONMAX',NCHARF,K8BID)
-        NCHARF=NCHARF-1   
+        NCHARF=NCHARF-1
         NBPB=0
         IF (ZK8(IREFE).NE.MODELE) NBPB=NBPB+1
         DO 17 K=1,NCHAR
@@ -180,7 +180,7 @@ C VERIFICATION COHERENCE SD_FETI AVEC PARAMETRAGE OPERATEUR
             IF (NOMCHA.EQ.ZK24(JCHAR+K-1)(1:8)) GOTO 19
    18     CONTINUE
           NBPB=NBPB+1
-   19   CONTINUE   
+   19   CONTINUE
         IF (VERIF.EQ.'OUI') THEN
           K1='F'
         ELSE
@@ -190,7 +190,7 @@ C VERIFICATION COHERENCE SD_FETI AVEC PARAMETRAGE OPERATEUR
           CALL UTDEBM(K1,'NUMERO','INCOHERENCE ENTRE SD_FETI ET ')
           CALL UTIMPI('L','LE PARAMETRAGE DE L''OPERATEUR',0,IBID)
           CALL UTIMPI('L','NOMBRE D''INCOHERENCE(S): ',1,NBPB)
-          CALL UTFINM()                   
+          CALL UTFINM()
         ENDIF
 C RECHERCHE DU PHENOMENE POUR LES NOUVEAUX LIGRELS DE SOUS-DOMAINE
 C CF DISMPH.F
@@ -200,7 +200,7 @@ C CF DISMPH.F
           MOLOC='DDL_MECA'
         ELSE IF (PHENO(1:9).EQ.'THERMIQUE') THEN
           MOLOC='DDL_THER'
-        ELSE IF (PHENO(1:9).EQ.'ACOUSTIQU') THEN        
+        ELSE IF (PHENO(1:9).EQ.'ACOUSTIQU') THEN
           MOLOC='DDL_ACOU'
         ELSE
           CALL UTMESS('F','NUMERO',
@@ -208,33 +208,33 @@ C CF DISMPH.F
         ENDIF
         IF (INFOFE(1:1).EQ.'T') THEN
           WRITE(IFM,*)
-          WRITE (IFM,*)'<FETI/NUMERO> PHENOMENE ',PHENO,MOLOC  
+          WRITE (IFM,*)'<FETI/NUMERO> PHENOMENE ',PHENO,MOLOC
           WRITE(IFM,*)
         ENDIF
 
-           
-C PREPARATION BOUCLE SUR LES SOUS-DOMAINES   
+
+C PREPARATION BOUCLE SUR LES SOUS-DOMAINES
         CALL JEVEUO(SDFETI(1:19)//'.FDIM','L',IDIME)
         NBSD=ZI(IDIME)
         NOMSDA=SDFETI(1:19)//'.FETA'
 C ADRESSE DANS L'OBJET JEVEUX SOLVEUR.FETS DES NOMS DES OBJETS
-C JEVEUX REPRESENTANT LES SOLVEURS LOCAUX               
-        CALL JEVEUO(SOLVEU(1:19)//'.FETS','L',ISOLFS)   
+C JEVEUX REPRESENTANT LES SOLVEURS LOCAUX
+        CALL JEVEUO(SOLVEU(1:19)//'.FETS','L',ISOLFS)
 
 C CONSTITUTION OBJET STOCKAGE.FETS
         CALL WKVECT(NU(1:14)//'.FETN',BASE(1:1)//' V K24',NBSD,IFETN)
-                        
+
 C BOUCLE SUR LES SOUS-DOMAINES --------------------------------------
         DO 30 I=1,NBSD
 
           IF ((NIV.GE.2).OR.(LFETI)) THEN
-            CALL UTTCPU(50,'INIT ',6,TEMPS)       
+            CALL UTTCPU(50,'INIT ',6,TEMPS)
             CALL UTTCPU(50,'DEBUT',6,TEMPS)
           ENDIF
           CALL JEMARQ()
           CALL JEVEUO(JEXNUM(NOMSDA,I),'L',ILIMA)
           CALL JELIRA(JEXNUM(NOMSDA,I),'LONMAX',NBMA,K8BID)
-          
+
 C OBJET TEMPORAIRE CONTENANT LES NOMS DES MAILLES DU SD I
           CALL JENUNO(JEXNUM(NOMSDA,I),NOMSD)
 
@@ -254,7 +254,7 @@ C NUMER2.F
           LLIGRS='&&NUMERO.LIGREL_SD'
           CALL EXLIM2(SDFETI,NOMSD,LLIGRS,LIGRSD,NBCHA,I,NBSD,INFOFE)
           CALL JEVEUO(LLIGRS,'L',IVLIGR)
-        
+
 C --------------------------------------------------------------
 C CREATION ET REMPLISSAGE DE LA SD NUME_DDL "ESCLAVE" LIEE A
 C CHAQUE SOUS-DOMAINE
@@ -271,14 +271,14 @@ C PAR NUEFFE.F
      &      NOMFE2,NEQUA)
           CALL DETRSD('LIGREL',LIGRSD)
           CALL JEDETR(LLIGRS)
-                  
+
 C REMPLISSAGE OBJET NU.FETN
           ZK24(IFETN+I-1)=NOMFE2(1:19)
-          
+
 C MONITORING
           IF (INFOFE(1:1).EQ.'T')
      &      WRITE(IFM,*)'<FETI/NUMERO> SD ',I,' ',NOMFE2(1:14)
-          IF (INFOFE(2:2).EQ.'T') 
+          IF (INFOFE(2:2).EQ.'T')
      &      CALL UTIMSD(IFM,2,.FALSE.,.TRUE.,NOMFE2(1:14),1,' ')
           IF ((NIV.GE.2).OR.(LFETI)) THEN
             CALL UTTCPU(50,'FIN  ',6,TEMPS)
@@ -289,7 +289,7 @@ C MONITORING
           CALL JEDEMA()
    30   CONTINUE
 
-C FIN DE IF METHOD='FETI'              
+C FIN DE IF METHOD='FETI'
       ENDIF
 C-----------------------------------------------------------------------
 C-----------------------------------------------------------------------
@@ -310,10 +310,19 @@ C SOUS-STRUCTURATION QUI EST ILLICITE AVEC FETI, MAIS ON NE SAIT JAMAIS)
             CALL UTIMPI('L','DE L''IDENTITE AVEC FETI',0,I)
             CALL UTIMPI('L','POUR I= ',1,I)
             CALL UTIMPI('S',' NUEQ(I)= ',1,IBID)
-            CALL UTFINM()         
-          ENDIF 
+            CALL UTFINM()
+          ENDIF
    40   CONTINUE
       ENDIF
-      CALL JEDETR(LLIGR)            
+
+
+C --- CREATION DE L'OBJET .NSLV :
+C     -------------------------------------
+      IF (METHOD.EQ.'MUMPS' ) THEN
+         CALL WKVECT(NU(1:14)//'.NSLV',BASE(1:1)//' V K24',1,JNSLV)
+         ZK24(JNSLV-1+1)=SOLVEU
+      END IF
+
+      CALL JEDETR(LLIGR)
       CALL JEDEMA()
       END

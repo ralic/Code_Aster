@@ -9,7 +9,7 @@
       CHARACTER*8         MATER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 21/03/2005   AUTEUR CIBHHLV L.VIVAN 
+C MODIF POSTRELE  DATE 01/04/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -35,7 +35,7 @@ C     ON TRAITE LES SITUATIONS COMBINABLES DANS LEUR GROUPE
 
 C     Soit 2 états stabilisés I et J appartenant aux situations P et Q
 
-C     on calcule le SALT(I,J) = 0,5*(EC/E)*Ke*Sn(P,Q)*Sp(I,J)
+C     on calcule le SALT(I,J) = 0,5*(EC/E)*Ke(Sn(P,Q))*Sp(I,J)
 
 C     avec Sn(P,Q) = Max( Sn(I,J) )
 C          Sn(I,J) = Max( Max(Sn(I,J,ThP)), Max(Sn(I,J,ThQ)) )
@@ -66,7 +66,7 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
      &        NSCY,NS,JMSN,JNSITU,NSITUP,NSITUQ,INDI,JIST
       REAL*8 PPI,PPJ,PQI,PQJ,SALTIJ,SALIJS,UG,SN,SP,SMM,SNS,SPS,MPI(6),
      &       MPJ(6),MQI(6),MQJ(6),MSE(6),MATPI(8),MATPJ(8),MATQI(8),
-     &       MATQJ(8),SALTSE, UGS,SNET,SNETS
+     &       MATQJ(8),SALTSE, SNET,SNETS
       REAL*8 TYPEKE,SPMECA,SPTHER,SPMECS,SPTHES,SPTHEM,SPMECM
       REAL*8 KEMECA,KETHER,KEMECS,KETHES,PM,PB,PMPB,PMS,PBS,PMPBS
       CHARACTER*8 K8B
@@ -108,8 +108,6 @@ C DEB ------------------------------------------------------------------
         CALL WKVECT('&&RC3201.MATRICE_SALT_S','V V R',NDIM,JMSAS)
       END IF
 C
-      UGS = 0.D0
-C
       NS = 0
       NSCY = 0
       IF (SEISME) THEN
@@ -140,7 +138,7 @@ C
      +                                                   SEISME,MSE,SN)
           VPMPB(6*(IOCS-1)+4) = SN
         ENDIF
-        IF ( OSNET ) THEN
+        IF ( OSN .AND. OSNET ) THEN
           CALL RC32SN('SN*_SITU',LIEU,NSITUP,PPI,MSE,NSITUQ,PPI,MSE,
      +                                                 SEISME,MSE,SNET)
           VPMPB(6*(IOCS-1)+6) = SNET
@@ -159,7 +157,7 @@ C
             WRITE (IFM,*) '          PMPB = ',PMPB
           ENDIF
           IF ( OSN )    WRITE (IFM,*) '  SEISME,   SN = ',SN
-          IF ( OSNET )  WRITE (IFM,*) '  SEISME,  SN* = ',SNET
+          IF ( OSN.AND.OSNET )  WRITE (IFM,*) '  SEISME,  SN* = ',SNET
           IF ( OFATIG ) WRITE (IFM,*) '  SEISME,   SP = ',SP
           IF (TYPEKE.GT.0.D0 .AND. OFATIG ) THEN
             WRITE (IFM,*) '            SPMECA = ',SPMECA
@@ -230,7 +228,7 @@ C --- SITUATION P :
      +                                                  .FALSE.,MSE,SN)
           VPMPB(6*(IS1-1)+4) = SN
         ENDIF
-        IF ( OSNET ) THEN
+        IF ( OSN .AND. OSNET ) THEN
           CALL RC32SN('SN*_SITU',LIEU,NSITUP,PPI,MPI,NSITUQ,PPJ,MPJ,
      +                                                .FALSE.,MSE,SNET)
           VPMPB(6*(IS1-1)+6) = SNET
@@ -244,7 +242,7 @@ C --- SITUATION P :
           CALL RC32SN('SN_SITU',LIEU,NSITUP,PPI,MPI,NSITUQ,PPJ,MPJ,
      +                                                  SEISME,MSE,SNS)
           ENDIF
-          IF ( OSNET ) THEN
+          IF ( OSN .AND. OSNET ) THEN
             CALL RC32SN('SN*_SITU',LIEU,NSITUP,PPI,MPI,NSITUQ,PPJ,MPJ,
      +                                                SEISME,MSE,SNETS)
           ENDIF
@@ -258,7 +256,7 @@ C --- SITUATION P :
           ELSEIF ( OSN ) THEN
             WRITE (IFM,1014) NSITUP, SN
           END IF
-          IF ( OSNET ) THEN
+          IF ( OSN .AND. OSNET ) THEN
             WRITE (IFM,1016) NSITUP, SNET
           END IF
         END IF
@@ -533,8 +531,6 @@ C --- CALCUL DU FACTEUR D'USAGE
         UTOT = UTOT + UG
       END IF
 C
-                 WRITE (IFM,2070)  UGS
-C
       IF (SEISME) THEN
         CALL JEDETR('&&RC3201.MATRICE_SALT_B')
         CALL JEDETR('&&RC3201.MATRICE_SALT_S')
@@ -546,7 +542,6 @@ C
 
  2050 FORMAT (1P,' SITUATION ',I4,' SALT =',E12.5)
  2060 FORMAT (1P,' SITUATION ',I4,' FACT_USAGE =',E12.5)
- 2070 FORMAT (1P,' SOMME(FACT_USAGE SITUATION) =',E12.5)
 
  1000 FORMAT ('=> GROUPE: ',I4,' , NOMBRE DE SITUATIONS: ',I4)
  1002 FORMAT ('=> LISTE DES NUMEROS DE SITUATION: ',100 (I4,1X))

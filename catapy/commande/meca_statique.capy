@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 24/01/2005   AUTEUR LEBOUVIE F.LEBOUVIER 
+#& MODIF COMMANDE  DATE 01/04/2005   AUTEUR VABHHTS J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -44,39 +44,51 @@ MECA_STATIQUE=OPER(nom="MECA_STATIQUE",op=46,sd_prod=evol_elas,
          SENSIBILITE     =SIMP(statut='f',typ=(para_sensi,theta_geom),validators=NoRepeat(),max='**',
                                fr="Liste des paramètres de sensibilité.",
                                ang="List of sensitivity parameters"),
+
          SOLVEUR         =FACT(statut='d',
-         METHODE         =SIMP(statut='f',typ='TXM',defaut="MULT_FRONT",into=("MULT_FRONT","LDLT","GCPC","FETI") ),
+         METHODE         =SIMP(statut='f',typ='TXM',defaut="MULT_FRONT",into=("MULT_FRONT","LDLT","GCPC","FETI","MUMPS") ),
+
            b_feti          =BLOC(condition = "METHODE == 'FETI' ",fr="Paramètres de la méthode FETI 1",
              PARTITION       =SIMP(statut='o',typ=sd_feti_sdaster),
              RENUM           =SIMP(statut='f',typ='TXM',defaut="METIS",into=("MD","MDA","METIS") ),
              RESI_RELA       =SIMP(statut='f',typ='R',defaut=1.E-6,val_min=0.),
              NMAX_ITER       =SIMP(statut='f',typ='I',defaut=0,val_min=0),
-             TYPE_REORTHO_DD =SIMP(statut='f',typ='TXM',defaut="GSM",into=("SANS","GS","GSM","IGSM") ),              
+             TYPE_REORTHO_DD =SIMP(statut='f',typ='TXM',defaut="GSM",into=("SANS","GS","GSM","IGSM") ),
              NB_REORTHO_DD   =SIMP(statut='f',typ='I',defaut=0,val_min=0),
              PRE_COND        =SIMP(statut='f',typ='TXM',defaut="LUMPE",into=("LUMPE","SANS") ),
-             SCALING         =SIMP(statut='f',typ='TXM',defaut="MULT",into=("SANS","MULT") ),                
-             VERIF_SDFETI    =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),           
+             SCALING         =SIMP(statut='f',typ='TXM',defaut="MULT",into=("SANS","MULT") ),
+             VERIF_SDFETI    =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
              TEST_CONTINU    =SIMP(statut='f',typ='R',defaut=1.E-8,val_min=0.),
              INFO_FETI       =SIMP(statut='f',typ='TXM',defaut='FFFFFFFFF'),
-             STOCKAGE_GI     =SIMP(statut='f',typ='TXM',defaut="CAL",into=("OUI","NON","CAL") ),                                   
+             STOCKAGE_GI     =SIMP(statut='f',typ='TXM',defaut="CAL",into=("OUI","NON","CAL") ),
            ),
+
            b_mult_front    =BLOC(condition = "METHODE == 'MULT_FRONT' ",fr="Paramètres de la méthode multi frontale",
              RENUM           =SIMP(statut='f',typ='TXM',defaut="METIS",into=("MD","MDA","METIS") ),
            ),
+
            b_ldlt          =BLOC(condition = "METHODE == 'LDLT' ",fr="Paramètres de la méthode LDLT",
              RENUM           =SIMP(statut='f',typ='TXM',defaut="RCMK",into=("RCMK","SANS") ),
            ),
+
            b_ldlt_mult     =BLOC(condition = "METHODE == 'LDLT' or METHODE == 'MULT_FRONT' or METHODE == 'FETI' ",
                                    fr="Paramètres relatifs à la non inversibilité de la matrice à factorise",
              NPREC           =SIMP(statut='f',typ='I',defaut=8),
              STOP_SINGULIER  =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
            ),
+
            b_gcpc         =BLOC(condition = "METHODE == 'GCPC' ", fr="Paramètres de la méthode du gradient conjugué",
              PRE_COND        =SIMP(statut='f',typ='TXM',into=("LDLT_INC",),defaut="LDLT_INC" ),
              NIVE_REMPLISSAGE=SIMP(statut='f',typ='I',defaut= 0 ),
              RENUM           =SIMP(statut='f',typ='TXM',defaut="RCMK",into=("SANS","RCMK") ),
              RESI_RELA       =SIMP(statut='f',typ='R',defaut=1.E-6),
              NMAX_ITER       =SIMP(statut='f',typ='I',defaut= 0 ),
+           ),
+
+           b_mumps          =BLOC(condition = "METHODE == 'MUMPS' ",fr="Paramètres de la méthode MUMPS",
+             TYPE_RESOL      =SIMP(statut='f',typ='TXM',defaut='AUTO',into=('NONSYM','SYMGEN','SYMDEF','AUTO')),
+             PCENT_PIVOT     =SIMP(statut='f',typ='I',defaut=20,),
+             RESI_RELA       =SIMP(statut='f',typ='R',defaut=1.E-6),
            ),
          ),
          INFO            =SIMP(statut='f',typ='I',defaut=1,into=(1,2) ),

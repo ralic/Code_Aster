@@ -13,10 +13,9 @@
      &                   ANGMAS,
      &                   ELGEOM,
      &                   SIGP,VIP,DSIDEP,CODRET)
-
-
+C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/03/2005   AUTEUR LAVERNE J.LAVERNE 
+C MODIF ALGORITH  DATE 04/04/2005   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -630,9 +629,8 @@ C
      &           HYDRM, HYDRP, SECHM, SECHP,SREF, EPSM, DEPS,
      &           SIGM, VIM,OPTION, ELGEOM,SIGP, VIP, DSIDEP)
           ENDIF
-        
+
 CCC    MONOCRISTAL      
-          
         ELSEIF ( COMPOR(1)(1:8) .EQ. 'MONOCRIS' ) THEN
           IF ( INT(CRIT(6)) .EQ. 0 ) THEN
             CALL REDECE ( NDIM,  TYPMOD,  IMATE,COMPOR,CRIT,
@@ -644,11 +642,9 @@ CCC    MONOCRISTAL
      &                  INSTAM,INSTAP, TM,   TP,    TREF, EPSM,
      &       DEPS,  SIGM,   VIM,  OPTION,ANGMAS,SIGP, VIP, DSIDEP)
           ENDIF
-          
 CCC    FIN MONOCRISTAL      
           
 CCC    POLYCRISTAL      
-          
         ELSEIF ( COMPOR(1)(1:8) .EQ. 'POLYCRIS' ) THEN
           IF ( INT(CRIT(6)) .EQ. 0 ) THEN
             CALL REDECE ( NDIM,  TYPMOD,  IMATE,COMPOR,CRIT,
@@ -660,8 +656,14 @@ CCC    POLYCRISTAL
      &                  INSTAM,INSTAP, TM,   TP,    TREF, EPSM,
      &       DEPS,  SIGM,   VIM,  OPTION,ANGMAS,SIGP, VIP, DSIDEP)
           ENDIF
-          
 CCC    FIN POLYCRISTAL      
+
+CCC    ZMAT
+        ELSEIF ( COMPOR(1)(1:4) .EQ. 'ZMAT' ) THEN
+            CALL NMZMAT( NDIM, TYPMOD, COMPOR, CRIT,
+     &                   INSTAM, INSTAP, TM, TP, TREF, EPSM, DEPS, SIGM,
+     &                   VIM, OPTION, ANGMAS, SIGP, VIP, DSIDEP, CODRET)
+CCC    FIN ZMAT      
           
         ELSE
           CALL UTMESS('F','NMCOMP_1','LOI DE COMPORTEMENT INEXISTANTE')

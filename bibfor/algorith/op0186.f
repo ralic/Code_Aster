@@ -1,6 +1,6 @@
       SUBROUTINE OP0186(IER)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/10/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 01/04/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -117,8 +117,8 @@ C               12   345678   90123
 
 C     DETERMINATION DU NOM DE LA SD INFO_CHARGE STOCKEE
 C     DANS LA SD RESULTAT
-C             12345678    90123    45678901234   
-      NOOBJ ='12345678'//'.1234'//'.EXCIT01234'      
+C             12345678    90123    45678901234
+      NOOBJ ='12345678'//'.1234'//'.EXCIT01234'
       CALL GNOMSD(NOOBJ,10,13)
       LISCHA = NOOBJ(1:19)
 
@@ -632,6 +632,9 @@ C --- CALCUL DES OPTIONS
 
       CALL TITRE()
       LIEVOL = ' '
-C ----------------------------------------------------------------------
+
+C     -- MENAGE FINAL :
+      CALL DETMAT()
+
       CALL JEDEMA()
       END

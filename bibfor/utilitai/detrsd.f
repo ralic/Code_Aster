@@ -3,7 +3,8 @@
       CHARACTER*(*) TYPESD,NOMSD
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 22/11/2004   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF UTILITAI  DATE 01/04/2005   AUTEUR VABHHTS J.PELLET 
+C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -63,9 +64,9 @@ C     ----- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     ----- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
-      INTEGER IRET,IAD,LONG,I,NBCH,ILIRES
+      INTEGER IRET,IAD,LONG,I,NBCH,ILIRES,JNSLV,IBID
       CHARACTER*1 K1BID
-      CHARACTER*8 MATEL,MAILLA
+      CHARACTER*8 MATEL,MAILLA,MUMPS
       CHARACTER*14 NU,RESOCO,COM
       CHARACTER*16 DEFICO,TYP2SD,CORRES
       CHARACTER*19 CHAMP,MATAS,TABLE,SOLVEU,CNS,CES,CNO,CEL,FNC
@@ -220,6 +221,17 @@ C     ------------------------------------------------------------------
       ELSE IF (TYP2SD.EQ.'MATR_ASSE') THEN
 C     ------------------------------------
         MATAS = NOMSD
+
+C       -- DESTRUCTION DE L'EVENTUELLE INSTANCE MUMPS :
+        CALL JEEXIN(MATAS//'.REFA',IRET)
+        IF (IRET.GT.0) THEN
+           CALL DISMOI('F','EST_MUMPS',MATAS,'MATR_ASSE',IBID,
+     &                  MUMPS,IBID)
+           IF (MUMPS.EQ.'OUI') THEN
+              CALL AMUMPS('DETR_MAT',' ',MATAS,' ',' ',' ')
+           END IF
+        END IF
+
         CALL JEDETR(MATAS//'.ABLI')
         CALL JEDETR(MATAS//'.ALIG')
         CALL JEDETR(MATAS//'.COND')
@@ -322,6 +334,8 @@ C     ------------------------------------------------------------------
       ELSE IF (TYP2SD.EQ.'NUME_DDL') THEN
 C     -----------------------------------
         NU = NOMSD
+        CALL JEDETR(NU//'.NSLV')
+
         CALL JEDETR(NU//'.NUME.DEEQ')
         CALL JEDETR(NU//'.NUME.DELG')
         CALL JEDETR(NU//'.NUME.NEQU')
@@ -378,6 +392,7 @@ C     -----------------------------------
         CALL JEDETR(NU//'.VSUIVE   ')
         CALL JEDETR(NU//'.OLDN')
         CALL JEDETR(NU//'.NEWN')
+
 C     ------------------------------------------------------------------
       ELSE IF (TYP2SD.EQ.'VARI_COM') THEN
 C     -------------------------------------

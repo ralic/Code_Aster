@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 28/01/2005   AUTEUR VABHHTS J.PELLET 
+#& MODIF COMMANDE  DATE 01/04/2005   AUTEUR VABHHTS J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -162,7 +162,7 @@ DYNA_NON_LINE=OPER(nom="DYNA_NON_LINE",op= 70,sd_prod=evol_noli,reentrant='f',
            PAS_MINI_ELAS   =SIMP(statut='f',typ='R',defaut=0.0E+0),
          ),
          SOLVEUR         =FACT(statut='d',
-           METHODE         =SIMP(statut='f',typ='TXM',defaut="MULT_FRONT",into=("MULT_FRONT","LDLT","GCPC") ),
+           METHODE         =SIMP(statut='f',typ='TXM',defaut="MULT_FRONT",into=("MULT_FRONT","LDLT","GCPC","MUMPS") ),
            b_mult_front    =BLOC(condition= "METHODE == 'MULT_FRONT' ",fr="Paramètres de la méthode multi frontale",
              RENUM           =SIMP(statut='f',typ='TXM',defaut="METIS",into=("MD","MDA","METIS") ),
            ),
@@ -173,6 +173,11 @@ DYNA_NON_LINE=OPER(nom="DYNA_NON_LINE",op= 70,sd_prod=evol_noli,reentrant='f',
                                    fr="Paramètres relatifs à la non inversibilité de la matrice à factorise",
              NPREC           =SIMP(statut='f',typ='I',defaut= 8 ),
              STOP_SINGULIER  =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON","DECOUPE") ),
+           ),
+           b_mumps          =BLOC(condition = "METHODE == 'MUMPS' ",fr="Paramètres de la méthode MUMPS",
+             TYPE_RESOL      =SIMP(statut='f',typ='TXM',defaut='AUTO',into=('NONSYM','SYMGEN','SYMDEF','AUTO')),
+             PCENT_PIVOT     =SIMP(statut='f',typ='I',defaut=20,),
+             RESI_RELA       =SIMP(statut='f',typ='R',defaut=1.E-6,),
            ),
            b_gcpc          =BLOC(condition="METHODE == 'GCPC'",fr="Paramètres de la méthode du gradient conjugué",
              PRE_COND        =SIMP(statut='f',typ='TXM',into=("LDLT_INC",),defaut="LDLT_INC" ),
@@ -268,7 +273,7 @@ into=("DEPL","VITE","ACCE","SIEF_ELGA","VARI_ELGA","DEPL_ABSOLU","VITE_ABSOLU","
                                ang="List of sensitivity parameters"),
 #-------------------------------------------------------------------
            SOLV_NON_LOCAL  =FACT(statut='f',
-             METHODE         =SIMP(statut='f',typ='TXM',defaut="MULT_FRONT",into=("MULT_FRONT","LDLT","GCPC") ),
+             METHODE         =SIMP(statut='f',typ='TXM',defaut="MULT_FRONT",into=("MULT_FRONT","LDLT","GCPC","MUMPS") ),
              b_mult_front    =BLOC(condition = "METHODE == 'MULT_FRONT' ",fr="Paramètres de la méthode multi frontale",
                RENUM           =SIMP(statut='f',typ='TXM',defaut="METIS",into=("MD","MDA","METIS") ),
              ),
@@ -279,6 +284,11 @@ into=("DEPL","VITE","ACCE","SIEF_ELGA","VARI_ELGA","DEPL_ABSOLU","VITE_ABSOLU","
                                     fr="Paramètres relatifs à la non inversibilité de la matrice à factorise",
                NPREC           =SIMP(statut='f',typ='I',defaut= 8 ),
                STOP_SINGULIER  =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
+             ),
+             b_mumps          =BLOC(condition = "METHODE == 'MUMPS' ",fr="Paramètres de la méthode MUMPS",
+               TYPE_RESOL      =SIMP(statut='f',typ='TXM',defaut='AUTO',into=('NONSYM','SYMGEN','SYMDEF','AUTO')),
+               PCENT_PIVOT     =SIMP(statut='f',typ='I',defaut=20,),
+               RESI_RELA       =SIMP(statut='f',typ='R',defaut=1.E-6,),
              ),
              b_gcpc         =BLOC(condition = "METHODE == 'GCPC' ", fr="Paramètres de la méthode du gradient conjugué",
                PRE_COND        =SIMP(statut='f',typ='TXM',into=("LDLT_INC",),defaut="LDLT_INC" ),

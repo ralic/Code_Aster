@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 04/04/2005   AUTEUR CIBHHPD L.SALMONA 
 # TITRE  THERMO_METALLO_MECANIQUE EN TRACTION SIMPLE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -140,9 +140,9 @@ TEMPE=CREA_RESU( OPERATION='AFFE', TYPE_RESU='EVOL_THER',
 TEMPE=CALC_META( reuse=TEMPE,  MODELE=MOTH,
                      CHAM_MATER=CHMAT,
                      RESULTAT=TEMPE,
-                     ETAT_INIT=_F( META_INIT = PHASINIT),
+                     ETAT_INIT=_F( META_INIT_ELNO = PHASINIT),
                      COMP_INCR=_F(  RELATION = 'ACIER',
-                                 TOUT = 'OUI')
+                                 TOUT = 'OUI'),
 
                    )
 

@@ -1,6 +1,6 @@
       SUBROUTINE TE0353(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ELEMENTS  DATE 04/04/2005   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -52,7 +52,8 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       REAL*8 DFDX(9),DFDY(9),TPG,POIDS,R,CO,KRON(6)
       REAL*8 R0(5),RPRIM,VI(5),R8BID
       REAL*8 PHAS(5),DSDE,COEF,ZVARIM,ZVARIP,DELTAZ,TRANS
-      INTEGER NNO,KP,NPG1,I,ITEMPE,IVECTU,JTAB(7)
+      REAL*8 PHASP(7),PHASM(7)
+      INTEGER NNO,KP,NPG1,I,ITEMPE,IVECTU,JTAB(7),L
       INTEGER IPOIDS,IVF,IDFDE,IGEOM,IMATE
       INTEGER JPROL,JVALE,NBVAL,NDIM,NNOS,JGANO
       DATA KRON/1.D0,1.D0,1.D0,0.D0,0.D0,0.D0/
@@ -139,15 +140,34 @@ C
         CALL DFDM2D(NNO,KP,IPOIDS,IDFDE,ZR(IGEOM),DFDX,DFDY,POIDS)
         R = 0.D0
         TPG = 0.D0
+        
+        DO 100 I=1,7
+          PHASM(I)=0.D0
+          PHASP(I)=0.D0
+ 100    CONTINUE
+          
         DO 10 I = 1,NNO
           R = R + ZR(IGEOM+2* (I-1))*ZR(IVF+K+I-1)
           TPG = TPG + ZR(ITEMPE+I-1)*ZR(IVF+K+I-1)
+C passage de PHASMR et PHASPR aux points de Gauss            
+          IF (COMPOR(1:5) .EQ. 'ACIER') THEN
+            DO 7 L=1,7
+               PHASM(L)=PHASM(L) + ZR(IPHASM+7*(I-1)+L-1)*ZR(IVF+K+I-1)
+               PHASP(L)=PHASP(L) + ZR(IPHASP+7*(I-1)+L-1)*ZR(IVF+K+I-1)
+    7       CONTINUE
+          ELSEIF (COMPOR(1:4) .EQ. 'ZIRC') THEN
+            DO 9 L=1,3
+               PHASM(L)=PHASM(L) + ZR(IPHASM+3*(I-1)+L-1)*ZR(IVF+K+I-1)
+               PHASP(L)=PHASP(L) + ZR(IPHASP+3*(I-1)+L-1)*ZR(IVF+K+I-1)
+    9      CONTINUE   
+          ENDIF
    10   CONTINUE
         CALL RCVALA(MATER,' ','ELAS_META',1,'TEMP',TPG,2,NOMRES,
      +              VALRES,CODRET,'FM')
         E = VALRES(1)
         NU = VALRES(2)
         DEUXMU = E/ (1.D0+NU)
+        
         IF (COMPOR(1:5) .EQ. 'ACIER') THEN
            CALL RCVALA(MATER,' ','META_PT',1,'TEMP',TPG,4,NOMRES(3),
      +                 VALRES(3),CODRET(3),' ')
@@ -158,14 +178,14 @@ C
                KPT(I-2) = VALRES(I)
              END IF
    20      CONTINUE
-           ZFBM = ZR(IPHASP+ (KP-1)*7)
+            ZFBM = PHASP(1)
            DO 30 I = 1,3
-             ZFBM = ZFBM + ZR(IPHASP+ (KP-1)*7+I)
+              ZFBM = ZFBM + PHASP(1+I)
    30      CONTINUE
            TRANS = 0.D0
            DO 40 I = 1,4
-             ZVARIM = ZR(IPHASM+ (KP-1)*7+I-1)
-             ZVARIP = ZR(IPHASP+ (KP-1)*7+I-1)
+             ZVARIM = PHASM(I)
+             ZVARIP = PHASP(I)
              DELTAZ = (ZVARIP-ZVARIM)
            IF (DELTAZ.GT.0) THEN
              J = 6 + I
@@ -192,10 +212,11 @@ C
                IF (CODRET(11).NE.'OK') THEN
                  VALRES(11) = ZFBM
                ENDIF
-               PHAS(1) = ZR(IPHASP+ (KP-1)*7)
-               PHAS(2) = ZR(IPHASP+ (KP-1)*7+1)
-               PHAS(3) = ZR(IPHASP+ (KP-1)*7+2)
-               PHAS(4) = ZR(IPHASP+ (KP-1)*7+3)
+
+               PHAS(1) = PHASP(1)
+               PHAS(2) = PHASP(2)
+               PHAS(3) = PHASP(3)
+               PHAS(4) = PHASP(4)
                PHAS(5) = 1.D0 - (PHAS(1)+PHAS(2)+PHAS(3)+PHAS(4))
                IF(ZK16(ICOMPO)(1:9).EQ.'META_P_IL' .OR.
      &            ZK16(ICOMPO)(1:9).EQ.'META_V_IL'   ) THEN
@@ -254,10 +275,11 @@ C
                IF (CODRET(11).NE.'OK') THEN
                  VALRES(11) = ZFBM
                ENDIF
-               PHAS(1) = ZR(IPHASP+ (KP-1)*7)
-               PHAS(2) = ZR(IPHASP+ (KP-1)*7+1)
-               PHAS(3) = ZR(IPHASP+ (KP-1)*7+2)
-               PHAS(4) = ZR(IPHASP+ (KP-1)*7+3)
+
+               PHAS(1) = PHASP(1)
+               PHAS(2) = PHASP(2)
+               PHAS(3) = PHASP(3)
+               PHAS(4) = PHASP(4)
                PHAS(5) = 1.D0 - (PHAS(1)+PHAS(2)+PHAS(3)+PHAS(4))
                CALL RCVALA(MATER,' ','META_ECRO_LINE',1,'TEMP',TPG,5,
      &                    NOMRES(12),VALRES(12),CODRET(12), 'FM' )
@@ -292,9 +314,10 @@ C
                 KPT(I-2) = VALRES(I)
               END IF
    21       CONTINUE
-            ZALPHA = ZR(IPHASP+ (KP-1)*3)+ZR(IPHASP+ (KP-1)*3+1)
-            ZVARIM = ZR(IPHASM+ (KP-1)*3)
-            ZVARIP = ZR(IPHASP+ (KP-1)*3)
+
+            ZALPHA = PHASP(1)+PHASP(2)
+            ZVARIM = PHASM(1)
+            ZVARIP = PHASP(1)            
             DELTAZ = (ZVARIP-ZVARIM)
             TRANS = 0.D0
             IF (DELTAZ.GT.0) THEN
@@ -303,8 +326,8 @@ C
               IF (CODRET(5).NE.'OK')  VALRES(5)=0.D0
               TRANS = TRANS + KPT(1)*VALRES(5)*DELTAZ
             END IF
-            ZVARIM = ZR(IPHASM+ (KP-1)*3+1)
-            ZVARIP = ZR(IPHASP+ (KP-1)*3+1)
+            ZVARIM = PHASM(2)
+            ZVARIP = PHASP(2)
             DELTAZ = (ZVARIP-ZVARIM)
             IF (DELTAZ.GT.0) THEN
                CALL RCVALA(MATER,' ','META_PT',1,'META',ZFBM,1,
@@ -325,8 +348,9 @@ C
                IF (CODRET(7).NE.'OK') THEN
                   VALRES(7) = ZALPHA
                ENDIF
-               PHAS(1) = ZR(IPHASP+ (KP-1)*3)
-               PHAS(2) = ZR(IPHASP+ (KP-1)*3+1)
+
+               PHAS(1) = PHASP(1)
+               PHAS(2) = PHASP(2)
                PHAS(3) = 1.D0 - (PHAS(1)+PHAS(2))
                IF(ZK16(ICOMPO)(1:9).EQ.'META_P_IL' .OR.
      &           ZK16(ICOMPO)(1:9).EQ.'META_V_IL' ) THEN

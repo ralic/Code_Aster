@@ -4,7 +4,7 @@
       CHARACTER*(*)             FICHDF
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 24/05/2004   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF SUPERVIS  DATE 04/04/2005   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -197,7 +197,10 @@ C        --- RE-DEFINITION DE L'ENVIRONNEMENT SELON DESIRS UTILISATEUR -
 C
 C        --- INITIALISATION DE CHAQUE BASE ---
          IF ( FICHDF .NE. ' ') THEN
-            CALL JELIHD ('GLOBALE ',FICHDF,'G')  
+            CALL JELIHD ('GLOBALE ',FICHDF,'G')
+C           --- DESTRUCTION DU FICHIER POUR QU'ON NE CONFONDE PAS PLUS
+C               TARD AVEC UNE EVENTUELLE BASE HDF EN RESULTAT ---
+            CALL RMFILE(FICHDF)  
          ENDIF   
          IDEB = 1
          IF ( FICHDF .NE. ' ') IDEB = 2

@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
+%& MODIF TYPELEM  DATE 04/04/2005   AUTEUR CIBHHPD L.SALMONA 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -75,7 +75,6 @@ MODE_LOCAL__
     ETEMPNO  = TEMP_R   ELNO__ IDEN__  (TEMP     )
     EPHASIN_ = VAR2_R   ELGA__ MASS    (V1       V2       V3       V4       V5       )
     ZVARI1   = VARI_R   ELEM__         (VARI     )
-    EPHASPG_ = VARI_R   ELGA__ RIGI    (VARI     )
     EPHASNO_ = VARI_R   ELNO__ IDEN__  (VARI     )
     EVOISIN  = VOISIN   ELEM__         (V0       V1       V2       V3       V4       V5
                                         V6       T0       T1       T2       T3       T4
@@ -135,9 +134,7 @@ OPTION__
                               OUT__  ETEMPNO  PDETENO
     DLAG_NOEU_TEMP      596   IN__   ETEMPPG  PDEULTG  NGEOMER  PGEOMER  DDL_THER PTEMPER  NDEPLAR  PVECTTH
                               OUT__  DDL_THER PDLAGTE
-    DURT_ELGA_META      551   IN__   CMATERC  PMATERC  EPHASPG_ PPHASIN
-                              OUT__  EDURTPG  PDURT_R
-    DURT_ELNO_META      551   IN__   CMATERC  PMATERC  EPHASPG_ PPHASIN
+    DURT_ELNO_META      551   IN__   CMATERC  PMATERC  EPHASNO_ PPHASIN
                               OUT__  EDURTNO  PDURT_R
     EPOT_ELEM_TEMP      220   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  DDL_THER PTEMPER  CTEMPSR  PTEMPSR
                               OUT__  EENEDNO  PENERDR
@@ -171,16 +168,11 @@ OPTION__
                               OUT__  MMATTTR  PMATTTR
     MATR_NO_PG          118   IN__   NGEOMER  PGEOMER
                               OUT__  ZVARI1   PMANOPG
-    META_ELGA_TEMP      67    IN__   CCOMPOR  PCOMPOR  CFTRC    PFTRC    CMATERC  PMATERC  EPHASPG_ PPHASIN
+    META_ELNO_TEMP      67    IN__   CCOMPOR  PCOMPOR  CFTRC    PFTRC    CMATERC  PMATERC  EPHASNO_ PPHASIN
                                      DDL_THER PTEMPAR  DDL_THER PTEMPER  DDL_THER PTEMPIR  CTEMPSR  PTEMPSR
-                              OUT__  EPHASPG_ PPHASOU
-    META_ELNO_TEMP      67    IN__   CCOMPOR  PCOMPOR  CFTRC    PFTRC    CMATERC  PMATERC  EPHASPG_ PPHASIN
-                                     DDL_THER PTEMPAR  DDL_THER PTEMPER  DDL_THER PTEMPIR  CTEMPSR  PTEMPSR
-                              OUT__  EPHASNO_ PPHASNOU EPHASPG_ PPHASOU
-    META_INIT           320   IN__   CCOMPOR  PCOMPOR  CMATERC  PMATERC  EPHASIN_ PPHASIN  DDL_THER PTEMPER
-                              OUT__  EPHASPG_ PPHASOU
+                              OUT__  EPHASNO_ PPHASNOU 
     META_INIT_ELNO      320   IN__   CCOMPOR  PCOMPOR  CMATERC  PMATERC  EPHASIN_ PPHASIN  DDL_THER PTEMPER
-                              OUT__  EPHASNO_ PPHASNOU EPHASPG_ PPHASOU
+                              OUT__  EPHASNO_ PPHASNOU 
     MTAN_RIGI_MASS      134   IN__   CCOMPOR  PCOMPOR  NGEOMER  PGEOMER  CMATERC  PMATERC  DDL_THER PTEMPEI
                                      CTEMPSR  PTEMPSR  DDL_THER PTMPCHF  DDL_THER PTMPCHI
                               OUT__  MMATTTR  PMATTTR
@@ -209,9 +201,6 @@ OPTION__
                               OUT__  ESOURCR  PSOUR_R
     SYME_MTNS_R         222   IN__   MMATTSR  PNOSYM
                               OUT__  MMATTTR  PSYM
-    TOU_INI_ELGA        99    IN__   NGEOMER  PGEOMER
-                              OUT__  EGGEOM_R PGEOM_R  EGINST_R PINST_R  EGNEUT_F PNEUT_F  EGNEUT_R PNEUT_R
-                                     EPHASPG_ PVARI_R
     TOU_INI_ELNO        99    IN__   NGEOMER  PGEOMER
                               OUT__  ENGEOM_R PGEOM_R  ENINST_R PINST_R  ENNEUT_F PNEUT_F  ENNEUT_R PNEUT_R
                                      EPHASNO_ PVARI_R

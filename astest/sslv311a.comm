@@ -1,4 +1,4 @@
-# MODIF  DATE 07/03/2005   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 04/04/2005   AUTEUR GALENNE E.GALENNE 
 # TITRE  MURAKAMI 9.39 FISSURE EN QUART D'ELLIPSE AU COIN D'UN DISQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -139,33 +139,61 @@ GLO1_LE5=CALC_G_LOCAL_T(      RESULTAT=CHAMDEPL,
 # IMPRESSION DES RESULTATS
 # ------------------------
 
-TEST_TABLE(       TABLE=GLO1_LE5,
-                   NOM_PARA='G_LOCAL',
-                     FILTRE=_F(  NOM_PARA = 'NOEUD',
-                              VALE_K = 'N8823'),
-                       VALE=21599.,
-                  PRECISION=0.12       )
+TEST_TABLE(   TABLE=GLO1_LE5,
+              NOM_PARA='G_LOCAL',
+              REFERENCE = 'ANALYTIQUE',
+              FILTRE=_F(  NOM_PARA = 'NOEUD',
+                          VALE_K = 'N8823'),
+              VALE=21599.,
+              PRECISION=0.12       )
 
-TEST_TABLE(       TABLE=GLO1_LE5,
-                   NOM_PARA='G_LOCAL',
-                     FILTRE=_F(  NOM_PARA = 'NOEUD',
-                              VALE_K = 'N8405'),
-                       VALE=21118.,
-                  PRECISION=0.08       )
+TEST_TABLE(   TABLE=GLO1_LE5,
+              NOM_PARA='G_LOCAL',
+              REFERENCE = 'ANALYTIQUE',
+              FILTRE=_F(  NOM_PARA = 'NOEUD',
+                          VALE_K = 'N8405'),
+              VALE=21118.,
+              PRECISION=0.08       )
 
-TEST_TABLE(       TABLE=GLO1_LE5,
-                   NOM_PARA='G_LOCAL',
-                     FILTRE=_F(  NOM_PARA = 'NOEUD',
-                              VALE_K = 'N6699'),
-                       VALE=15365.,
-                  PRECISION=0.085       )
+TEST_TABLE(   TABLE=GLO1_LE5,
+              NOM_PARA='G_LOCAL',
+              REFERENCE = 'ANALYTIQUE',
+              FILTRE=_F(  NOM_PARA = 'NOEUD',
+                          VALE_K = 'N6699'),
+              VALE=15365.,
+              PRECISION=0.085       )
 
-TEST_TABLE(       TABLE=GLO1_LE5,
-                   NOM_PARA='G_LOCAL',
-                     FILTRE=_F(  NOM_PARA = 'NOEUD',
-                              VALE_K = 'N4381'),
-                       VALE=8767.,
-                  PRECISION=0.07       )
+TEST_TABLE(   TABLE=GLO1_LE5,
+              NOM_PARA='G_LOCAL',
+              REFERENCE = 'ANALYTIQUE',
+              FILTRE=_F(  NOM_PARA = 'NOEUD',
+                          VALE_K = 'N4381'),
+              VALE=8767.,
+              PRECISION=0.07       )
+
+#
+# CALCUL DE G LOCAL AVEC THETA_LEGENDRE
+# -------------------------------------
+GLO2_LE5=CALC_G_LOCAL_T(      RESULTAT=CHAMDEPL,
+                              FOND_FISS=FISS1,
+                              TOUT_ORDRE='OUI',
+                              R_INF_FO=RAY_INF1,
+                              R_SUP_FO=RAY_SUP1,
+                              LISSAGE_THETA='LAGRANGE',
+                              LISSAGE_G='LAGRANGE'
+                          )
+
+#
+# IMPRESSION DES RESULTATS
+# ------------------------
+
+TEST_TABLE(    TABLE=GLO2_LE5,
+               NOM_PARA='G_LOCAL',
+               REFERENCE = 'ANALYTIQUE',
+               FILTRE=_F(  NOM_PARA = 'NOEUD',
+                           VALE_K = 'N8823'),
+               VALE=21599.,
+               PRECISION=0.12       )
 
 FIN()
 #

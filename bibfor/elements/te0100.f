@@ -1,6 +1,6 @@
       SUBROUTINE TE0100(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 04/04/2005   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,7 +29,7 @@ C                      NOMTE        -->  NOM DU TYPE ELEMENT
 C ......................................................................
 
       CHARACTER*8 TYPMOD(2),NOMAIL
-      INTEGER NNO,NPG1,I,IMATUU,LGPG,LGPG1,LGPG2
+      INTEGER NNO,NPG1,I,KP,K,L,IMATUU,LGPG,LGPG1,LGPG2
       INTEGER IPOIDS,IVF,IDFDE,IGEOM,IMATE
       INTEGER ITREF,ICONTM,IVARIM,ITEMPM,ITEMPP,IPHASM,IPHASP
       INTEGER IINSTM,IINSTP,IDEPLM,IDEPLP,ICOMPO,ICARCR
@@ -41,6 +41,7 @@ C ......................................................................
       REAL*8  MATNS(2*9*2*9)
       REAL*8  VECT1(54), VECT2(4*27*27), VECT3(4*27*2)
       REAL*8  R8VIDE,ANGMAS(3),R8DGRD
+      REAL*8  PHASM(7*27),PHASP(7*27)
       LOGICAL DEFANE,MATSYM
 
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
@@ -124,11 +125,29 @@ C - VARIABLES DE COMMANDE
       DEFANE = IDEFAM .NE. 0
       CALL TECACH('NNN','PPHASMR',1,IPHASM,IRET)
       CALL TECACH('NNN','PPHASPR',1,IPHASP,IRET)
-      IF (IPHASP.NE.0) THEN
+      IF (IRET.EQ.0) THEN
         CALL TECACH('OON','PPHASPR',7,JTAB,IRET)
         NZ = JTAB(6)
+C  passage de PPHASMR et PPHASPR aux points de Gauss
+        DO 9 KP = 1,NPG1
+          K = (KP-1)*NNO
+          DO 7 L = 1,NZ   
+            PHASM(NZ*(KP-1)+L)=0.D0
+            PHASP(NZ*(KP-1)+L)=0.D0
+            DO 5 I = 1,NNO   
+              PHASM(NZ*(KP-1)+L) = PHASM(NZ*(KP-1)+L) + 
+     +                           ZR(IPHASM+NZ*(I-1)+L-1)*ZR(IVF+K+I-1)
+              PHASP(NZ*(KP-1)+L) = PHASP(NZ*(KP-1)+L) + 
+     +                           ZR(IPHASP+NZ*(I-1)+L-1)*ZR(IVF+K+I-1)
+  5         CONTINUE        
+  7       CONTINUE          
+  9     CONTINUE
       END IF
+      
 
+
+
+            
       CALL JEVECH('PHYDRMR','L',IHYDRM)
       CALL JEVECH('PHYDRPR','L',IHYDRP)
       CALL JEVECH('PSECHMR','L',ISECHM)
@@ -209,7 +228,7 @@ CCDIR$ IVDEP
      &                ZR(IHYDRM),ZR(IHYDRP),
      &                ZR(ISECHM),ZR(ISECHP),ZR(ISREF),
      &                ZR(IIRRAM),ZR(IIRRAP),
-     &                NZ,ZR(IPHASM),ZR(IPHASP),
+     &                NZ,PHASM,PHASP,
      &                ZR(IDEPLM),ZR(IDEPLP),ZR(IDEFAM),ZR(IDEFAP),
      &                DEFANE,
      &                ANGMAS,
@@ -229,7 +248,7 @@ C      GRANDES DEFORMATIONS : FORMULATION SIMO - MIEHE
      &                ZR(IHYDRM),ZR(IHYDRP),
      &                ZR(ISECHM),ZR(ISECHP),ZR(ISREF),
      &                ZR(IIRRAM),ZR(IIRRAP),
-     &                NZ,ZR(IPHASM),ZR(IPHASP),
+     &                NZ,PHASM,PHASP,
      &                ZR(IDEPLM),ZR(IDEPLP),
      &                ANGMAS,
      &                ZR(ICONTM),ZR(IVARIM),
@@ -264,7 +283,7 @@ C 7.3 - GRANDES ROTATIONS ET PETITES DEFORMATIONS
      &                ZR(IHYDRM),ZR(IHYDRP),
      &                ZR(ISECHM),ZR(ISECHP),ZR(ISREF),
      &                ZR(IIRRAM),ZR(IIRRAP),
-     &                NZ,ZR(IPHASM),ZR(IPHASP),
+     &                NZ,PHASM,PHASP,
      &                ZR(IDEPLM),ZR(IDEPLP),ZR(IDEFAM),ZR(IDEFAP),
      &                DEFANE,
      &                ANGMAS,

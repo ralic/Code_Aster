@@ -1,4 +1,4 @@
-%& MODIF OPTIONS  DATE 30/01/2002   AUTEUR VABHHTS J.PELLET 
+%& MODIF OPTIONS  DATE 04/04/2005   AUTEUR CIBHHPD L.SALMONA 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -24,6 +24,5 @@ OPTION__
         PTEMPER  TEMP_R
         PPHASIN  VAR2_R
    OUT__
-PPHASOU VARI_R ELGA__
 PPHASNOU VARI_R ELNO__
 

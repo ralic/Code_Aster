@@ -2,7 +2,7 @@
       IMPLICIT  NONE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 11/09/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ASSEMBLA  DATE 01/04/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,9 +48,9 @@ C     VARIABLES LOCALES
 C----------------------------------------------------------------------
       INTEGER      NLIMAT
       PARAMETER   (NLIMAT=100)
-      INTEGER      IER,IFM,NBID,NBMAT,NIV,NBCHA,IACHA
+      INTEGER      IER,IFM,NBID,NBMAT,NIV,NBCHA,IACHA,JNSLV
       REAL*8       RTBLOC, JEVTBL
-      CHARACTER*2  BASE
+      CHARACTER*2  BASE,BASSLV
       CHARACTER*8  K8B, TLIMAT(NLIMAT), NUUTI, RENUM, MO, METHOD
       CHARACTER*9  STOCKA
       CHARACTER*14 NUDEV
@@ -63,26 +63,39 @@ C----------------------------------------------------------------------
       CALL INFNIV(IFM,NIV)
 C----------------------------------------------------------------------
       CHARGE = '&&OP0011.CHARGES   .LCHA'
-      SOLVEU = '&&OP0011.SOLVEUR'
       BASE ='GG'
 
 C --- RECUPERATION DU CONCEPT RESULTAT ET DE SON NOM UTILISATEUR :
 C     ----------------------------------------------------------
       CALL GETRES(NUUTI,TYPE,OPER)
-      NUDEV = NUUTI(1:8)
+      NUDEV = NUUTI
 
-C --- TRAITEMENT DU MOT CLE METHODE/RENUM :
-C     -------------------------------------
       CALL GETVTX ( ' ', 'METHODE', 0,1,1, METHOD, NBID )
       CALL GETVTX ( ' ', 'RENUM'  , 0,1,1, RENUM,  NBID )
 
 C --- DETERMINATION DU NOM DU STOCKAGE DE LA MATRICE :
 C     ----------------------------------------------
-      IF (METHOD.EQ.'MULT_FRO' .OR. METHOD.EQ.'GCPC') THEN
+      IF (    METHOD.EQ.'MULT_FRO' .OR. METHOD.EQ.'GCPC'
+     &   .OR. METHOD.EQ.'MUMPS') THEN
         STOCKA = 'MORSE'
       ELSE IF (METHOD.EQ.'LDLT') THEN
         STOCKA = 'LIGN_CIEL'
+      ELSE
+        CALL ASSERT(.FALSE.)
       END IF
+
+
+C     -- CREATION D'UNE SD SOLVEUR :
+C     --------------------------------
+      IF (METHOD.EQ.'MUMPS') THEN
+         SOLVEU=NUUTI//'.SOLVEUR'
+         BASSLV='G'
+      ELSE
+         SOLVEU = '&&OP0011.SOLVEUR'
+         BASSLV='V'
+      END IF
+      CALL CRSOLV ( METHOD, RENUM, SOLVEU, BASSLV )
+
 
 C --- TRAITEMENT DU MOT CLE MATR_RIGI OU MODELE :
 C     -----------------------------------------
@@ -96,10 +109,8 @@ C
             CALL WKVECT ( CHARGE, 'V V K24', NBCHA, IACHA )
             CALL GETVID (' ', 'CHARGE', 1,1,NBCHA, ZK24(IACHA), NBID)
          ENDIF
-         CALL CRSOLV ( METHOD, RENUM, SOLVEU, 'V' )
          CALL NUMERO (' ',MO, CHARGE(1:19), SOLVEU, BASE, NUDEV )
          CALL JEDETR ( CHARGE )
-         CALL JEDETC ( 'V', SOLVEU, 1 )
          GOTO 20
       ENDIF
 
@@ -112,7 +123,8 @@ C     -----------------------------------------
 
 C --- CREATION ET CALCUL DU DESCRIPTEUR DU STOCKAGE DE LA MATRICE :
 C     -----------------------------------------------------------
-      IF (METHOD.EQ.'MULT_FRO' .OR. METHOD.EQ.'GCPC') THEN
+      IF (   METHOD.EQ.'MULT_FRO' .OR. METHOD.EQ.'GCPC'
+     &  .OR. METHOD.EQ.'MUMPS') THEN
          CALL PROMOR ( NUDEV, 'S', 'G' )
       ELSE IF (METHOD.EQ.'LDLT') THEN
          RTBLOC=JEVTBL()
@@ -124,7 +136,17 @@ C --- ET CALCUL DES POINTEURS :
 C     -----------------------
       IF (METHOD.EQ.'MULT_FRO' ) CALL MLTPRE ( NUDEV, 'G', RENUM )
 
+
+
+C --- CREATION DE L'OBJET .NSLV :
+C     -------------------------------------
+      IF (METHOD.EQ.'MUMPS' ) THEN
+         CALL WKVECT(NUDEV//'.NSLV','G V K24',1,JNSLV)
+         ZK24(JNSLV-1+1)=SOLVEU
+      END IF
+
  20   CONTINUE
+
 C --- MENAGE :
 C     ------
       CH19 = NUDEV

@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 22/02/2005   AUTEUR LEBOUVIE F.LEBOUVIER 
+%& MODIF TYPELEM  DATE 04/04/2005   AUTEUR CIBHHPD L.SALMONA 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -106,7 +106,7 @@ MODE_LOCAL__
     CTEREFE  = TEMP_R   ELEM__         (TEMP     )
     NTEMPER  = TEMP_R   ELNO__ IDEN__  (TEMP     )
     NSECHER  = TEMP_R   ELNO__ IDEN__  (TEMP     )
-    EPHASRR  = VARI_R   ELGA__ RIGI    (VARI     )
+    EPHASRR  = VARI_R   ELNO__ IDEN__  (VARI     )
     ZVARI1   = VARI_R   ELEM__         (VARI     )
     ZVARIPG  = VARI_R   ELGA__ RIGI    (VARI     )
     ZVARINO  = VARI_R   ELNO__ IDEN__  (VARI     )

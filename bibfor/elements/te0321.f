@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ELEMENTS  DATE 04/04/2005   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,9 +51,9 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       CHARACTER*16 COMPOR(3)
 
       CHARACTER*2 CODRET
-      REAL*8 TPG0,ZERO,MS0,ZALPHA,ZBETA
+      REAL*8 TNO0,MS0,ZALPHA,ZBETA
       REAL*8 METAPG(189)
-      INTEGER JGANO,NNO,KP,I,J,K,ITEMPE,NCMP,NNOS,NPG1
+      INTEGER JGANO,NNO,KN,I,J,K,ITEMPE,NCMP,NNOS,NPG1
       INTEGER IPHASI,IPHASO,IPHASN,IDFDE
       INTEGER IPOIDS,IVF,IMATE,NDIM,JVAL,ICOMPO
 
@@ -69,81 +69,65 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       CALL JEVECH('PCOMPOR','L',ICOMPO)
       COMPOR(1) = ZK16(ICOMPO)
 
-      CALL JEVECH('PPHASOU','E',IPHASO)
-      IF (OPTION.EQ.'META_INIT_ELNO') THEN
-        CALL JEVECH('PPHASNOU','E',IPHASN)
-      END IF
+      CALL JEVECH('PPHASNOU','E',IPHASN)
 
-      ZERO = 0.D0
 
 
 C     MATERIAU FERRITIQUE
       IF (COMPOR(1).EQ.'ACIER') THEN
 
-
+C ON RECALCUL DIRECTEMENT A PARTIR DES TEMPERATURES AUX NOEUDS
         NOMRES = 'MS0'
         CALL RCVALA(ZI(IMATE),' ','META_ACIER',1,'INST',0.D0,1,NOMRES,
      &            MS0,  CODRET,'FM')
-        DO 50 KP = 1,NPG1
-          K = (KP-1)*NNO
-          TPG0 = ZERO
-
-          DO 20 J = 1,NNO
-            TPG0 = TPG0 + ZR(ITEMPE+J-1)*ZR(IVF+K+J-1)
-   20     CONTINUE
+        
+        DO 50 KN = 1,NNO
+          TNO0 = ZR(ITEMPE+KN-1)
+          
           DO 30 J = 0,5
-            METAPG(1+7* (KP-1)+J) = ZR(IPHASI+5* (KP-1)+J)
+            METAPG(1+7* (KN-1)+J) = ZR(IPHASI+5* (KN-1)+J)
    30     CONTINUE
-          METAPG(1+7* (KP-1)+6) = MS0
-          METAPG(1+7* (KP-1)+5) = TPG0
+   
+          METAPG(1+7* (KN-1)+6) = MS0
+          METAPG(1+7* (KN-1)+5) = TNO0
 
           DO 40 J = 1,7
-            ZR(IPHASO+7* (KP-1)+J-1) = METAPG(1+7* (KP-1)+J-1)
+            ZR(IPHASN+7* (KN-1)+J-1) = METAPG(1+7* (KN-1)+J-1)
    40     CONTINUE
    50   CONTINUE
 
       ELSE IF (COMPOR(1) (1:4).EQ.'ZIRC') THEN
-        DO 80 KP = 1,NPG1
-          K = (KP-1)*NNO
-          TPG0 = ZERO
-          DO 60 J = 1,NNO
-            TPG0 = TPG0 + ZR(ITEMPE+J-1)*ZR(IVF+K+J-1)
-   60     CONTINUE
+        DO 80 KN = 1,NNO
+          TNO0 = ZR(ITEMPE+KN-1)
+
 C ----------PROPORTION TOTALE DE LA PHASE ALPHA
 
-          METAPG(1+3* (KP-1)) = ZR(IPHASI+5* (KP-1))
-          METAPG(1+3* (KP-1)+1) = ZR(IPHASI+5* (KP-1)+1)
-          ZALPHA = METAPG(1+3* (KP-1)+1) + METAPG(1+3* (KP-1))
+          METAPG(1+3* (KN-1)) = ZR(IPHASI+5* (KN-1))
+          METAPG(1+3* (KN-1)+1) = ZR(IPHASI+5* (KN-1)+1)
+          ZALPHA = METAPG(1+3* (KN-1)+1) + METAPG(1+3* (KN-1))
 
 C-----------DECOMPOSITION DE LA PHASE ALPHA POUR LA MECANIQUE
 
           ZBETA = 1 - ZALPHA
           IF (ZBETA.GT.0.1D0) THEN
-            METAPG(1+3* (KP-1)) = 0.D0
+            METAPG(1+3* (KN-1)) = 0.D0
           ELSE
-            METAPG(1+3* (KP-1)) = 10* (ZALPHA-0.9D0)*ZALPHA
+            METAPG(1+3* (KN-1)) = 10* (ZALPHA-0.9D0)*ZALPHA
           END IF
-          METAPG(1+3* (KP-1)+1) = ZALPHA - METAPG(1+3* (KP-1))
+          METAPG(1+3* (KN-1)+1) = ZALPHA - METAPG(1+3* (KN-1))
 
 
-          METAPG(1+3* (KP-1)+2) = TPG0
+          METAPG(1+3* (KN-1)+2) = TNO0
 
           DO 70 J = 1,3
-            ZR(IPHASO+3* (KP-1)+J-1) = METAPG(1+3* (KP-1)+J-1)
+            ZR(IPHASN+3* (KN-1)+J-1) = METAPG(1+3* (KN-1)+J-1)
    70     CONTINUE
 
 
    80   CONTINUE
       END IF
 
-      IF (OPTION.EQ.'META_INIT_ELNO') THEN
-        IF (COMPOR(1) (1:4).EQ.'ZIRC') THEN
-          NCMP = 3
-        ELSE
-          NCMP = 7
-        END IF
-        CALL PPGAN2(JGANO,NCMP,ZR(IPHASO),ZR(IPHASN))
-      END IF
+
 
    90 CONTINUE
       END

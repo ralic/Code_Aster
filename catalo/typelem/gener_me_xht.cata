@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 25/01/2005   AUTEUR GENIAUT S.GENIAUT 
+%& MODIF TYPELEM  DATE 04/04/2005   AUTEUR CIBHHPD L.SALMONA 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -74,7 +74,7 @@ MODE_LOCAL__
                                         X7       X8       X9       )
     EHYDRER  = HYDR_R   ELGA__ RIGI     (HYDR     )
     EKTHETA  = G        ELEM__         (GTHETA   K1     K2     K3    )
-    EPHASRR  = VARI_R   ELGA__ RIGI     (VARI     )
+    EPHASRR  = VARI_R   ELNO__ IDEN__   (VARI     )
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        Z        )
     NIRRAER  = IRRA_R   ELNO__ IDEN__  (IRRA     )
     NFORCER  = FORC_R   ELNO__ IDEN__  (FX       FY       FZ       )

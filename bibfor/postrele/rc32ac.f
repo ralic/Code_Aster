@@ -4,7 +4,7 @@
       CHARACTER*8         MATER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 21/03/2005   AUTEUR CIBHHLV L.VIVAN 
+C MODIF POSTRELE  DATE 01/04/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -81,7 +81,7 @@ C
      +             UG, NADM, MPI(6), MPJ(6), SM, SN, SNET, SP, SMM,
      +             MATPI(8), MATPJ(8), MSE(6),TYPEKE,SPMECA,SPTHER,
      +             SPTHEM,SPMECM,KEMECA,KETHER, PM, PB, PMPB
-      LOGICAL      SEISME,ENDUR
+      LOGICAL      SEISME, ENDUR, CFAIT
       CHARACTER*2  CODRET
       CHARACTER*4  LIEU(2)
       CHARACTER*8  K8B
@@ -116,9 +116,11 @@ C
 C
          IF ( NIV .GE. 2 ) THEN
             IF (IM.EQ.1) THEN
-               WRITE(IFM,*)'=> ORIGINE DU SEGMENT'
+               WRITE(IFM,*)'  '
+               WRITE(IFM,*)'******* ORIGINE DU SEGMENT *******'
             ELSE
-               WRITE(IFM,*)'=> EXTREMITE DU SEGMENT'
+               WRITE(IFM,*)'  '
+               WRITE(IFM,*)'******* EXTREMITE DU SEGMENT *******'
             ENDIF
             WRITE(IFM,*) ' '
             WRITE(IFM,*)
@@ -179,15 +181,10 @@ C
          MSE(5) = 0.D0
          MSE(6) = 0.D0
 C
-         IF ( NIV .GE. 2 ) THEN
-            WRITE(IFM,*) ' '
-            WRITE(IFM,*)
-     +   '=> ON TRAITE LES SITUATIONS NON COMBINABLES DANS LEUR GROUPE'
-         ENDIF
-C
 C ------ ON TRAITE LES SITUATIONS NON COMBINABLES
 C        ----------------------------------------
 C
+         CFAIT = .FALSE.
          DO 200 IG = 1 , NBGR
 C
             NUMGR = ZI(JNUMGR+IG-1)
@@ -196,16 +193,19 @@ C
      +                                             'LONMAX',NBSIGR,K8B)
             CALL JEVEUO (JEXNUM('&&RC3200.LES_GROUPES',NUMGR),'L',JNSG)
 C
-            IF (NIV.GE.2) THEN
-               WRITE (IFM,2000) IG,NBSIGR
-               WRITE (IFM,2010) (ZI(JNSITU+ZI(JNSG+I1-1)-1),I1=1,NBSIGR)
-            END IF
-C
             NPASS = 0
 C
             DO 210 IS1 = 1 , NBSIGR
               IOC1 = ZI(JNSG+IS1-1)
               IF ( ZL(JCOMBI+IOC1-1) )  GOTO 210
+C   
+              IF ( .NOT.CFAIT .AND. NIV.GE.2 ) THEN
+                CFAIT = .TRUE.
+                WRITE(IFM,*) ' '
+                WRITE(IFM,*)
+     +   '=> ON TRAITE LES SITUATIONS NON COMBINABLES DANS LEUR GROUPE'
+              ENDIF
+              IF ( NIV.GE.2 )  WRITE (IFM,2000) IG, IOC1
 C
               NSITUP = ZI(JNSITU+IOC1-1)
 C
@@ -266,7 +266,7 @@ C
 C
 C ----------- CALCUL DU SN*
 C
-              IF ( OSNET ) THEN
+              IF ( OSN .AND. OSNET ) THEN
                  SNET = 0.D0
                  CALL RC32SN ( 'SN*_SITU', LIEU(IM), NSITUP, PPI, MPI, 
      +                         NSITUQ, PPJ, MPJ, SEISME, MSE, SNET )
@@ -342,6 +342,7 @@ C
 C ------ ON TRAITE LES SITUATIONS DE PASSAGE
 C        -----------------------------------
 C
+         CFAIT = .FALSE.
          DO 310 IG = 1 , NBGR
 C
             NUMGR = ZI(JNUMGR+IG-1)
@@ -354,9 +355,16 @@ C
               IOC1 = ZI(JNSG+IS-1)
               IF ( ZI(JPASSA+2*IOC1-2).EQ.0 .AND.
      +             ZI(JPASSA+2*IOC1-1).EQ.0 )  GOTO 320
+C   
+              IF ( .NOT.CFAIT .AND. NIV.GE.2 ) THEN
+                CFAIT = .TRUE.
+                WRITE(IFM,*) ' '
+                WRITE(IFM,*) '=> ON TRAITE LES SITUATIONS DE PASSAGE'
+              ENDIF
 C
               NUM1 = ZI(JPASSA+2*IOC1-2)
               NUM2 = ZI(JPASSA+2*IOC1-2)
+              IF ( NIV.GE.2 )  WRITE (IFM,2010) NUM1, NUM2
 C
               NPASS = ZI(JNBOCC+2*IOC1-2)
 C
@@ -391,17 +399,20 @@ C        - LE SALT
 C        - LE U_TOTAL
          ZR(JRESU+5) = UTOT
 C
+         IF ( OFATIG )  WRITE (IFM,2070) UTOT
+C
  10   CONTINUE
 C
- 2000 FORMAT ('=> GROUPE: ',I4,' , NOMBRE DE SITUATIONS: ',I4)
- 2010 FORMAT ('=> LISTE DES NUMEROS DE SITUATION: ',100 (I4,1X))
+ 2000 FORMAT ('=> GROUPE: ',I4,' , SITUATION: ',I4)
+ 2010 FORMAT ('=> PASSAGE DU GROUPE: ',I4,' AU GROUPE: ',I4)
  2020 FORMAT (1P,' SITUATION ',I4,' PM =',E12.5,
      +                            ' PB =',E12.5,' PMPB =',E12.5)
  2030 FORMAT (1P,' SITUATION ',I4,' SN =',E12.5 )
  2032 FORMAT (1P,' SITUATION ',I4,' SN* =',E12.5 )
  2040 FORMAT (1P,' SITUATION ',I4,' SP =',E12.5)
  2050 FORMAT (1P,' SITUATION ',I4,' SALT =',E12.5)
- 2060 FORMAT (1P,' SITUATION ',I4,' SALT =',E12.5)
+ 2060 FORMAT (1P,' SITUATION ',I4,' FACT_USAGE =',E12.5)
+ 2070 FORMAT (1P,' SOMME(FACT_USAGE) =',E12.5)
  1000 FORMAT(A,A8,A,A8)
  1010 FORMAT(1P,' COMBINAISON P ',I4,' SN =',E12.5,' SP =',E12.5)
  1020 FORMAT(1P,' COMBINAISON P Q ',I4,I4,' SN =',E12.5)

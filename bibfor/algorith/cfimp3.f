@@ -2,7 +2,7 @@
      &                  NBLIAC,JCNSVR)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/02/2005   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 04/04/2005   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -117,6 +117,9 @@ C
           TYPE2 ='/ND '
           NUMMAI = ZI(JNOCO+ABS(POSMAI)-1)
           CALL JENUNO(JEXNUM(NOMA//'.NOMNOE',NUMMAI),NOMMAI)
+        ELSE    
+          TYPE2  =' NON'
+          NOMMAI = ' APPARIE'
         END IF
 C
 C --- VALEURS
@@ -137,12 +140,12 @@ C
         VARC   = ZR(JCNSVR-1+ (NUMESC-1)*ZCMP+1 )
         AJEUFT = ZR(JCNSVR-1+ (NUMESC-1)*ZCMP+9 )
         IF (VARC.NE.0.0D0) THEN
-          WRITE (IFM,2000) II,' (ND',NOMESC,TYPE2,NOMMAI,
+          WRITE (IFM,2000) II,' (ND ',NOMESC,TYPE2,NOMMAI,
      &                     ') * JEU:',ZR(JAPJEU+II-1),' * RN:',RN,
      &                     ' * GLI:',AJEUFT,' * R:',R,
      &                     ' * RT/RN:',COE
         ELSE
-          WRITE (IFM,2001) II,' (  ',NOMESC,TYPE2,NOMMAI,
+          WRITE (IFM,2001) II,' (   ',NOMESC,TYPE2,NOMMAI,
      &                     ') * JEU:',ZR(JAPJEU+II-1),' * RN:',RN,
      &                     ' * GLI:',AJEUFT,' * R:',R,
      &                     ' * RT/RN:',COE
@@ -155,11 +158,11 @@ C
 1002  FORMAT (' <CONTACT>   INSTANT          : ',1PE12.5)
 1003  FORMAT (' <CONTACT>   LIAISONS         : ',I6)
 1004  FORMAT (' <CONTACT>   LIAISONS ACTIVES : ',I6)
-2000  FORMAT (' <CONTACT>   * LIAISON ACTIVE   ',I6,A4,A8,A4,A8,
+2000  FORMAT (' <CONTACT>   * LIAISON ACTIVE   ',I6,A5,A8,A4,A8,
      &        A8,1PE12.5,A6,1PE12.5,
      &        A7,1PE12.5,A5,1PE12.5,
      &        A9,1PE12.5)
-2001  FORMAT (' <CONTACT>   * LIAISON INACTIVE ',I6,A4,A8,A4,A8,
+2001  FORMAT (' <CONTACT>   * LIAISON INACTIVE ',I6,A5,A8,A4,A8,
      &        A8,1PE12.5,A6,1PE12.5,
      &        A7,1PE12.5,A5,1PE12.5,
      &        A9,1PE12.5)

@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 22/02/2005   AUTEUR LEBOUVIE F.LEBOUVIER 
+%& MODIF TYPELEM  DATE 04/04/2005   AUTEUR CIBHHPD L.SALMONA 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -112,7 +112,7 @@ MODE_LOCAL__
     DDL_NLOC = VANL_R   ELNO__ DIFF__
                                  EN1   (VANL     )
                                  EN2   ()
-    EPHASRR  = VARI_R   ELGA__ RIGI    (VARI     )
+    EPHASRR  = VARI_R   ELNO__ IDEN__    (VARI     )
     ZVARI1   = VARI_R   ELEM__         (VARI     )
     ZVARIPG  = VARI_R   ELGA__ RIGI    (VARI     )
     ZVARINO  = VARI_R   ELNO__ IDEN__  (VARI     )

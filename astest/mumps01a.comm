@@ -1,0 +1,84 @@
+# MODIF  DATE 01/04/2005   AUTEUR VABHHTS J.PELLET 
+# TITRE validation du solveur MUMPS
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+# RESPONSABLE VABHHTS J.PELLET
+
+
+DEBUT(  CODE=_F(NOM='MUMPS01A',NIV_PUB_WEB='INTERNET') )
+PRE_GIBI()
+MA=LIRE_MAILLAGE( )
+DEFI_GROUP(reuse=MA, MAILLAGE=MA, CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI',))
+
+MO=AFFE_MODELE(   MAILLAGE=MA,
+           AFFE=_F( TOUT = 'OUI',  PHENOMENE = 'MECANIQUE', MODELISATION = '3D')
+                  )
+#
+MAT=DEFI_MATERIAU(   ELAS=_F( E = 1.E+05,  NU = 0.3, RHO=9800.)  )
+
+#
+CHAM_MAT=AFFE_MATERIAU(   MAILLAGE=MA,  AFFE=_F( TOUT = 'OUI', MATER = MAT) )
+
+#
+CHAR=AFFE_CHAR_MECA( MODELE=MO,
+       DDL_IMPO=  _F( GROUP_MA = 'BASE1',  DZ = 0., DY = 0.),
+       PESANTEUR=(9.81, 0., 0., -1.,) )
+CHARP=AFFE_CHAR_MECA( MODELE=MO, PESANTEUR=(9.81, 0., 0., -1.,) )
+CHARCI=AFFE_CHAR_CINE( MODELE=MO, MECA_IMPO=  _F( GROUP_NO = 'BASE1',  DX = 10.),  )
+CHARCI3=AFFE_CHAR_CINE( MODELE=MO, MECA_IMPO=  _F( GROUP_NO = 'BASE1',  DX = 10., DY=0., DZ=0.),  )
+
+L1=DEFI_LIST_REEL(VALE=(1., 2.))
+
+# 1 : calcul de reference (METIS)
+#----------------------------------------
+RESU0=MECA_STATIQUE(       MODELE=MO, CHAM_MATER=CHAM_MAT, LIST_INST=L1,
+                           EXCIT=( _F(CHARGE = CHAR), _F(CHARGE = CHARCI)  ),
+                   SOLVEUR=_F(METHODE='MULT_FRONT',), )
+TEST_RESU( RESU=_F(  RESULTAT = RESU0,  NUME_ORDRE = 1, NOM_CHAM = 'DEPL', REFERENCE='NON_REGRESSION',
+                  GROUP_NO='C',NOM_CMP = 'DZ', VALE =-4.1607571899560E+01 ,PRECISION=5.e-2 ))
+
+
+
+
+# 2.1 : MUMPS charge_dualisee + charge_cine + SYMGEN:
+# ----------------------------------------------------
+RESU1=MECA_STATIQUE(       MODELE=MO, CHAM_MATER=CHAM_MAT, LIST_INST=L1,
+                           EXCIT=( _F(CHARGE = CHAR), _F(CHARGE = CHARCI)  ),
+                   SOLVEUR=_F(METHODE='MUMPS',TYPE_RESOL='SYMGEN',), )
+TEST_RESU( RESU=_F(  RESULTAT = RESU1,  NUME_ORDRE = 1, NOM_CHAM = 'DEPL',REFERENCE='AUTRE_ASTER',
+                  GROUP_NO='C',NOM_CMP = 'DZ', VALE =-4.1607571899560E+01 ,PRECISION=5.e-2 ))
+
+# 2.2 : MUMPS    charge_cine + SYMDEF:
+# ---------------------------------------
+RESU3=MECA_STATIQUE(       MODELE=MO, CHAM_MATER=CHAM_MAT, LIST_INST=L1,
+                           EXCIT=( _F(CHARGE = CHARCI3),_F(CHARGE = CHARP)  ),
+                   SOLVEUR=_F(METHODE='MUMPS',TYPE_RESOL='SYMDEF'), )
+TEST_RESU( RESU=_F(  RESULTAT = RESU3,  NUME_ORDRE = 1, NOM_CHAM = 'DEPL',REFERENCE='AUTRE_ASTER',
+                  GROUP_NO='C',NOM_CMP = 'DZ', VALE =-4.1607571899560E+01 ,PRECISION=5.e-2 ))
+
+#  2.3 : MUMPS charge_dualisee + charge_cine + NONSYM:
+# -----------------------------------------------------
+RESU4=MECA_STATIQUE(       MODELE=MO, CHAM_MATER=CHAM_MAT, LIST_INST=L1,
+                           EXCIT=( _F(CHARGE = CHAR), _F(CHARGE = CHARCI)  ),
+                   SOLVEUR=_F(METHODE='MUMPS',TYPE_RESOL='NONSYM',RESI_RELA=-1.,), )
+TEST_RESU( RESU=_F(  RESULTAT = RESU4,  NUME_ORDRE = 1, NOM_CHAM = 'DEPL',REFERENCE='AUTRE_ASTER',
+                  GROUP_NO='C',NOM_CMP = 'DZ', VALE =-4.1607571899560E+01 ,PRECISION=5.e-2 ))
+
+
+FIN();
+

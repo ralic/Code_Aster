@@ -1,6 +1,6 @@
-      SUBROUTINE METAU1(OPTION,NOMTE)
+       SUBROUTINE METAU1(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ELEMENTS  DATE 04/04/2005   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -30,8 +30,8 @@ C ......................................................................
       CHARACTER*8  NOMRES(NBRES)
       CHARACTER*2  CODRET(NBRES)
       REAL*8       TTRG,VK3AL,VALRES(NBRES),COEF1,COEF2,EPSTH
-      REAL*8       DFDX(9),DFDY(9),TPG,POIDS,R
-      INTEGER      NNO,KP,NPG1,I,ITEMPE,IVECTU,ITREF,NZ,JTAB(7)
+      REAL*8       DFDX(9),DFDY(9),TPG,POIDS,R,PHASPG(7)
+      INTEGER      NNO,KP,NPG1,I,ITEMPE,IVECTU,ITREF,NZ,JTAB(7),L
 
 
       INTEGER IPOIDS,IVF,IDFDE,IGEOM,IMATE,NDIM,NNOS,JGANO
@@ -85,14 +85,24 @@ C     INFORMATION DU NOMBRE DE PHASE
 
       DO 40 KP = 1,NPG1
         K = (KP-1)*NNO
+                
         CALL DFDM2D(NNO,KP,IPOIDS,IDFDE,ZR(IGEOM),DFDX,DFDY,POIDS)
         R = 0.D0
         TPG = 0.D0
         TTRG = 0.D0
+        DO 2 I=1,NZ
+          PHASPG(I)=0.D0
+    2   CONTINUE
         DO 10 I = 1,NNO
           R = R + ZR(IGEOM+2* (I-1))*ZR(IVF+K+I-1)
           TPG = TPG + ZR(ITEMPE+I-1)*ZR(IVF+K+I-1)
+C passage des noeuds aux points de gauss  
+          DO 5 L=1,NZ
+          PHASPG(L)=PHASPG(L) + ZR(IPHASE+NZ*(I-1)+L-1)*ZR(IVF+K+I-1)
+    5     CONTINUE                          
    10   CONTINUE
+        
+   
         TTRG = TPG - ZR(ITREF)
         CALL RCVALA(MATER,' ','ELAS_META',1,'TEMP',TPG,6,NOMRES,VALRES,
      &              CODRET,'FM')
@@ -106,10 +116,10 @@ C     INFORMATION DU NOMBRE DE PHASE
         END IF
 
         IF (NZ.EQ.7) THEN
-          ZALPHA = ZR(IPHASE+7* (KP-1)) + ZR(IPHASE+7*KP-6) +
-     &             ZR(IPHASE+7*KP-5) + ZR(IPHASE+7*KP-4)
+          ZALPHA = PHASPG(1) + PHASPG(2) +
+     &             PHASPG(3) + PHASPG(4)
         ELSE IF (NZ.EQ.3) THEN
-          ZALPHA = ZR(IPHASE+3*KP-3) + ZR(IPHASE+3*KP-2)
+          ZALPHA = PHASPG(1) + PHASPG(2) 
         END IF
 
 

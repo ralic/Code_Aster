@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/02/2005   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 01/04/2005   AUTEUR VABHHTS J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -56,7 +56,7 @@ MACRO_MATR_ASSE=MACRO(nom="MACRO_MATR_ASSE",op=macro_matr_asse_ops,
          NUME_DDL        =SIMP(statut='o',typ=(nume_ddl_sdaster,CO)),
          SOLVEUR         =FACT(statut='d',
            METHODE         =SIMP(statut='f',typ='TXM',defaut="MULT_FRONT",
-                                 into=("LDLT","MULT_FRONT","GCPC")),
+                                 into=("LDLT","MULT_FRONT","GCPC","MUMPS")),
            RENUM           =SIMP(statut='f',typ='TXM',into=("SANS","RCMK","MD","MDA","METIS")),
          ),
 

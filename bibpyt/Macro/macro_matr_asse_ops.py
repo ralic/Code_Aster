@@ -1,4 +1,4 @@
-#@ MODIF macro_matr_asse_ops Macro  DATE 28/01/2005   AUTEUR VABHHTS J.PELLET 
+#@ MODIF macro_matr_asse_ops Macro  DATE 01/04/2005   AUTEUR VABHHTS J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -57,6 +57,15 @@ def macro_matr_asse_ops(self,MODELE,CHAM_MATER,CARA_ELEM,MATR_ASSE,
       if renum not in ('MDA','MD','METIS'):
         ier=ier+1
         self.cr.fatal("<F> <MACRO_MATR_ASSE> Avec methode MULT_FRONT, RENUM doit etre MDA, MD ou RCMK.")
+        return ier
+    elif methode=='MUMPS':
+      if SOLVEUR['RENUM']:
+         renum=SOLVEUR['RENUM']
+      else:
+         renum='SANS'
+      if renum not in ('SANS',):
+        ier=ier+1
+        self.cr.fatal("<F> <MACRO_MATR_ASSE> Avec methode MUMPS, RENUM doit etre SANS.")
         return ier
     elif methode=='GCPC':
       if SOLVEUR['RENUM']:

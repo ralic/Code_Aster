@@ -1,4 +1,4 @@
-#& MODIF COMMUN  DATE 21/03/2005   AUTEUR LAVERNE J.LAVERNE 
+#& MODIF COMMUN  DATE 04/04/2005   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -120,6 +120,7 @@ def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',  #COMMUN#
                                         "CORR_ACIER",
                                         "MONOCRISTAL",
                                         "POLYCRISTAL",
+                                        "ZMAT",
                                      ) ),
           ELAS            =SIMP(statut='c',typ='I',defaut=1,into=(1,)),
           SANS            =SIMP(statut='c',typ='I',defaut=1,into=(1,)),
@@ -225,6 +226,10 @@ def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',  #COMMUN#
                                  fr="SD issue de DEFI_COMPOR",
                    COMPOR =SIMP(statut='o',typ=compor_sdaster,max=1),),
 #          
+           b_zmat      = BLOC(condition = "RELATION == 'ZMAT' ",
+                                 fr="Comportement de la bibliotheque Zmat",
+                   NB_VARI =SIMP(statut='o',typ='I',max=1),
+                   UNITE =SIMP(statut='o',typ='I',max=1),),
 
 
 

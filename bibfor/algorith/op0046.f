@@ -1,7 +1,7 @@
       SUBROUTINE OP0046 ( IER )
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/01/2005   AUTEUR LEBOUVIE F.LEBOUVIER 
+C MODIF ALGORITH  DATE 01/04/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -140,7 +140,7 @@ C
       ENDIF
 C
 C ---
-C      
+C
       CALL GETVID(' ','LIST_INST',0,1,1,LISTPS,N4)
       IF (N4.EQ.0) THEN
          CALL GETVR8(' ','INST',0,1,1,TEMPS,N5)
@@ -168,7 +168,7 @@ C
       CALL GETVTX(' ','OPTION',0,1,1,NOSY,N7)
 
       IF (NOSY.EQ.'SANS') GO TO 9999
-      
+
       EXIPOU = .FALSE.
 
       CALL DISMOI('F','EXI_POUX' ,MODELE,'MODELE',IBID,K8B,IERD)
@@ -238,7 +238,7 @@ C
      >               K24B,K24B,CHAMEL,LIGREL,BASE,
      >               CHHYDR,CHSECH,CHSREF,K24B,K24B,
      >               K24B, K24B, K8B, IBID, IRET )
-     
+
 
 C
          CALL RSNOCH(RESULT,NOSY,IORDR,' ')
@@ -250,8 +250,8 @@ C     ----------------------------------------------------------------
 C --- STOCKAGE POUR CHAQUE NUMERO D'ORDRE DU MODELE, DU CHAMP MATERIAU
 C     DES CARACTERISTIQUES ELEMENTAIRES ET DES CHARGES DANS LA SD RESU
 C     ----------------------------------------------------------------
-C             12345678    90123    45678901234   
-      NOOBJ ='12345678'//'.1234'//'.EXCIT01234'      
+C             12345678    90123    45678901234
+      NOOBJ ='12345678'//'.1234'//'.EXCIT01234'
       CALL GNOMSD(NOOBJ,10,13)
       LISCH2 = NOOBJ(1:19)
       CALL DISMOI('F','NB_CHAMP_UTI',RESULT,'RESULTAT',NBUTI,K8B,IERD)
@@ -267,6 +267,11 @@ C --- COPIE DE LA SD INFO_CHARGE DANS LA BASE GLOBALE
 C     -----------------------------------------------
       CALL COPISD(' ','G',LISCHA,LISCH2(1:19))
 C
+
       CALL TITRE
+
+C     -- MENAGE FINAL :
+      CALL DETMAT()
+
       CALL JEDEMA()
       END

@@ -9,7 +9,7 @@
      &                   ANGMAS,
      &                   SIGP,VIP,DSIDEP)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 15/02/2005   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ALGORITH  DATE 04/04/2005   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -76,7 +76,6 @@ C               L'ORDRE :  XX YY ZZ XY XZ YZ
 C
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
 C
-      CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
@@ -134,7 +133,7 @@ C
       INTEGER           IULMES,IUNIFI
       REAL*8            RAC2,TABS,R8T0,R8VIDE
       INTEGER           K,L
-      INTEGER           NDIMSI,IRET
+      INTEGER           NDIMSI
       REAL*8            ALPHA,BETA,CAA,SAA,CBA,SBA
       REAL*8            DEPSGR
       REAL*8            DEGRAN(6)
@@ -142,7 +141,7 @@ C
       REAL*8            DEPSDV(6),SIGDV(6),SIGEL(6),EPSMO,SIGMO
       REAL*8            SIEQM,SIEQP,D
       REAL*8            XNUMER
-      REAL*8            SIGMP(6),SIGDE(6),DELTKL,DELTP2   
+      REAL*8            SIGMP(6),DELTKL,DELTP2   
       REAL*8            A0,XAP,X,FG,FDGDST,FDGDEV
       REAL*8            COEF1,DELTEV,COEF2
       REAL*8            VPALEM,VPACYR,VPAEPR,VPAVIL
@@ -184,6 +183,10 @@ C DEFORMATION PLASTIQUE CUMULEE
       DPC = VIM(1)
 C INCREMENT DE TEMPS      
       DELTAT = INSTAP - INSTAM
+      IF (DELTAT.EQ.0.D0) THEN
+         CALL UTMESS('F','NMVPIR',
+     &    'L''INCREMENT DE TEMPS VAUT ZERO, VERIFIER VOTRE DECOUPAGE')
+      ENDIF
 C            
       DO 100 K=1,6
       DO 100 L=1,6

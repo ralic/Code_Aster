@@ -1,6 +1,6 @@
       SUBROUTINE METAU2(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ELEMENTS  DATE 04/04/2005   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -34,10 +34,10 @@ C.......................................................................
       CHARACTER*2 CODRET(NBRES)
       CHARACTER*16 NOMTE,OPTION
       REAL*8   VALRES(NBRES)
-      REAL*8   COEF1,COEF2,EPSTH
-      REAL*8   DFDX(27),DFDY(27),DFDZ(27),TPG,COEF,POIDS,NZ
-      INTEGER  IPOIDS,IVF,IDFDE,IGEOM,IMATE
-      INTEGER  JGANO,NNO,KP,NPG1,I,IVECTU,ITEMPE,JTAB(7)
+      REAL*8   COEF1,COEF2,EPSTH,PHASPG(7)
+      REAL*8   DFDX(27),DFDY(27),DFDZ(27),TPG,COEF,POIDS
+      INTEGER  IPOIDS,IVF,IDFDE,IGEOM,IMATE,NZ
+      INTEGER  JGANO,NNO,KP,NPG1,I,L,K,IVECTU,ITEMPE,JTAB(7)
 
 C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON /IVARJE/ZI(1)
@@ -82,23 +82,30 @@ C     INFORMATION DU NOMBRE DE PHASE
 
 
       DO 40 KP = 1,NPG1
-        L = (KP-1)*NNO
+        K = (KP-1)*NNO
         CALL DFDM3D ( NNO, KP, IPOIDS, IDFDE,
      &                ZR(IGEOM), DFDX, DFDY, DFDZ, POIDS )
         TPG = 0.D0
-
-        DO 20 I = 1,NNO
-          TPG = TPG + ZR(ITEMPE+I-1)*ZR(IVF+L+I-1)
-   20   CONTINUE
+        DO 2 I = 1,NZ
+          PHASPG(I)=0.D0
+   2    CONTINUE  
+        DO 10 I = 1,NNO
+          TPG = TPG + ZR(ITEMPE+I-1)*ZR(IVF+K+I-1)
+C passage des noeuds aux points de gauss
+          DO 50 L = 1,NZ
+          PHASPG(L)=PHASPG(L) + ZR(IPHASE+NZ*(I-1)+L-1)*ZR(IVF+K+I-1)
+   50     CONTINUE
+  10    CONTINUE
+  
         TTRG = TPG - ZR(ITREF)
         CALL RCVALA(MATER,' ','ELAS_META',1,'TEMP',TPG,6,NOMRES,VALRES,
      &              CODRET,'FM')
         COEF = VALRES(1)/ (1.D0-2.D0*VALRES(2))
         IF (NZ.EQ.7) THEN
-          ZALPHA = ZR(IPHASE+7*KP-7) + ZR(IPHASE+7*KP-6) +
-     &             ZR(IPHASE+7*KP-5) + ZR(IPHASE+7*KP-4)
+          ZALPHA = PHASPG(1) + PHASPG(2) +
+     &             PHASPG(3) + PHASPG(4)
         ELSE IF (NZ.EQ.3) THEN
-          ZALPHA = ZR(IPHASE+3*KP-3) + ZR(IPHASE+3*KP-2)
+          ZALPHA = PHASPG(1) + PHASPG(2)
         END IF
 
         COEF1 = (1.D0-ZALPHA)* (VALRES(4)*TTRG- (1-VALRES(5))*VALRES(6))
@@ -113,6 +120,5 @@ C     INFORMATION DU NOMBRE DE PHASE
    30   CONTINUE
    40 CONTINUE
 
-   50 CONTINUE
 
       END

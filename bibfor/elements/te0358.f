@@ -1,6 +1,6 @@
       SUBROUTINE TE0358(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ELEMENTS  DATE 04/04/2005   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,8 +53,9 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       REAL*8 ZFBM,SIG(6),KPT(5),SIGDV(6),DEUXMU
       REAL*8 DFDX(27),DFDY(27),DFDZ(27),TPG,POIDS
       REAL*8 KRON(6),R8BID,PHAS(5),RPRIM,COEF,R0(5),TRANS,VI(5)
+      REAL*8 PHASM(7),PHASP(7)
 
-      INTEGER JGANO,NNO,KP,K,NPG1,I,ITEMPE,IVECTU,NDIM
+      INTEGER JGANO,NNO,KP,K,L,NPG1,I,ITEMPE,IVECTU,NDIM
       INTEGER IPOIDS,IVF,IDFDE,JPROL,JVALE,NBVAL
       INTEGER IGEOM,IMATE,JTAB(7)
 
@@ -155,8 +156,27 @@ C PARAMETRES EN ENTREE
      &                ZR(IGEOM), DFDX, DFDY, DFDZ, POIDS )
         K = (KP-1)*NNO
         TPG = 0.D0
+        DO 15 I=1,7
+          PHASM(I)=0.D0
+           PHASP(I)=0.D0
+ 15     CONTINUE
+ 
         DO 20 I = 1,NNO
           TPG = TPG + ZR(ITEMPE+I-1)*ZR(IVF+K+I-1)
+          
+C passage de PHASMR et PHASPR aux points de Gauss
+          IF (COMPOR(1:5) .EQ. 'ACIER') THEN
+            DO 7 L=1,7
+               PHASM(L)=PHASM(L) + ZR(IPHASM+7*(I-1)+L-1)*ZR(IVF+K+I-1)
+               PHASP(L)=PHASP(L) + ZR(IPHASP+7*(I-1)+L-1)*ZR(IVF+K+I-1)
+    7       CONTINUE
+          ELSEIF (COMPOR(1:4) .EQ. 'ZIRC') THEN
+            DO 9 L=1,3
+               PHASM(L)=PHASM(L) + ZR(IPHASM+3*(I-1)+L-1)*ZR(IVF+K+I-1)
+               PHASP(L)=PHASP(L) + ZR(IPHASP+3*(I-1)+L-1)*ZR(IVF+K+I-1)
+    9       CONTINUE   
+          ENDIF
+          
    20   CONTINUE
         CALL RCVALA(MATER,' ','ELAS_META',1,'TEMP',TPG,2,NOMRES,VALRES,
      &              CODRET,'FM')
@@ -177,15 +197,15 @@ C PARAMETRES EN ENTREE
             END IF
    30     CONTINUE
 
-          ZFBM = ZR(IPHASP+ (KP-1)*7)
+          ZFBM = PHASP(1)
           DO 40 I = 1,3
-            ZFBM = ZFBM + ZR(IPHASP+ (KP-1)*7+I)
+             ZFBM = ZFBM + PHASP(1+I)
    40     CONTINUE
 
           TRANS = 0.D0
           DO 50 I = 1,4
-            ZVARIM = ZR(IPHASM+ (KP-1)*7+I-1)
-            ZVARIP = ZR(IPHASP+ (KP-1)*7+I-1)
+            ZVARIM = PHASM(I)
+            ZVARIP = PHASP(I)
             DELTAZ = (ZVARIP-ZVARIM)
             IF (DELTAZ.GT.0) THEN
               J = 6 + I
@@ -212,10 +232,11 @@ C PARAMETRES EN ENTREE
               VALRES(11) = ZFBM
             END IF
 
-            PHAS(1) = ZR(IPHASP+ (KP-1)*7)
-            PHAS(2) = ZR(IPHASP+ (KP-1)*7+1)
-            PHAS(3) = ZR(IPHASP+ (KP-1)*7+2)
-            PHAS(4) = ZR(IPHASP+ (KP-1)*7+3)
+
+            PHAS(1) = PHASP(1)
+            PHAS(2) = PHASP(2)
+            PHAS(3) = PHASP(3)
+            PHAS(4) = PHASP(4)
             PHAS(5) = 1.D0 - (PHAS(1)+PHAS(2)+PHAS(3)+PHAS(4))
 
             IF (ZK16(ICOMPO) (1:9).EQ.'META_P_IL' .OR.
@@ -282,11 +303,11 @@ C PARAMETRES EN ENTREE
             END IF
    80     CONTINUE
 
-          ZALPHA = ZR(IPHASP+ (KP-1)*3) + ZR(IPHASP+ (KP-1)*3+1)
+          ZALPHA = PHASP(1) + PHASP(2)
 
 
-          ZVARIM = ZR(IPHASM+ (KP-1)*3)
-          ZVARIP = ZR(IPHASP+ (KP-1)*3)
+          ZVARIM = PHASM(1)
+          ZVARIP = PHASP(1)
           DELTAZ = (ZVARIP-ZVARIM)
 
           TRANS = 0.D0
@@ -299,8 +320,8 @@ C PARAMETRES EN ENTREE
           END IF
 
 
-          ZVARIM = ZR(IPHASM+ (KP-1)*3+1)
-          ZVARIP = ZR(IPHASP+ (KP-1)*3+1)
+          ZVARIM = PHASM(2)
+          ZVARIP = PHASP(2)
           DELTAZ = (ZVARIP-ZVARIM)
           IF (DELTAZ.GT.0) THEN
 
@@ -327,8 +348,8 @@ C PARAMETRES EN ENTREE
               VALRES(7) = ZALPHA
             END IF
 
-            PHAS(1) = ZR(IPHASP+ (KP-1)*3)
-            PHAS(2) = ZR(IPHASP+ (KP-1)*3+1)
+            PHAS(1) = PHASP(1)
+            PHAS(2) = PHASP(2)
 
             PHAS(3) = 1.D0 - (PHAS(1)+PHAS(2))
 

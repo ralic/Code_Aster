@@ -1,4 +1,4 @@
-# MODIF  DATE 24/01/2005   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 04/04/2005   AUTEUR CIBHHPD L.SALMONA 
 # TITRE TEST DE NON-REGRESSION D'ASTER : THERMIQUE PLAN
 # RESPONSABLE VABHHTS J.PELLET
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -386,9 +386,8 @@ THL10=CALC_ELEM(reuse=THL10,
 THL10=CALC_META( reuse=THL10,  MODELE=MO,
                      CHAM_MATER=CHMAT,
                        RESULTAT=THL10,
-                      ETAT_INIT=_F( META_INIT = CARTE),
-                      COMP_INCR=_F( RELATION = 'ACIER', TOUT = 'OUI'),
-                         OPTION='META_ELNO_TEMP'
+                      ETAT_INIT=_F( META_INIT_ELNO = CARTE),
+                      COMP_INCR=_F( RELATION = 'ACIER', TOUT = 'OUI')
                    )
 
 #     -  THERMIQUE NON LINEAIRE
@@ -415,9 +414,8 @@ THNL6=THER_NON_LINE(        MODELE=MO,
 THNL6=CALC_META( reuse=THNL6,  MODELE=MO,
                      CHAM_MATER=CHMATNL,
                        RESULTAT=THNL6,
-                      ETAT_INIT=_F( META_INIT = CARTE),
-                      COMP_INCR=_F( RELATION = 'ACIER', TOUT = 'OUI'),
-                         OPTION='META_ELNO_TEMP'
+                      ETAT_INIT=_F( META_INIT_ELNO = CARTE),
+                      COMP_INCR=_F( RELATION = 'ACIER', TOUT = 'OUI')
                    )
 
 TEST_RESU(RESU=(
@@ -429,15 +427,7 @@ TEST_RESU(RESU=(
                      CRITERE = 'ABSOLU',
                      VALE = 0.0000000000000E+00  ,
                      REFERENCE = 'NON_REGRESSION',
-                     VERSION = '6.2.3'),
-                          _F(
-                     RESULTAT = THL10,
-                     NUME_ORDRE = 0,
-                     NOM_CHAM = 'META_ELGA_TEMP',
-                     TYPE_TEST = 'SOMM_ABS',
-                     VALE = 1.5022800000000E+03  ,
-                     REFERENCE = 'NON_REGRESSION',
-                     VERSION = '6.2.3'),
+                     VERSION = '6.2.3'),                          
                           _F(
                      RESULTAT = THL10,
                      NUME_ORDRE = 0,
@@ -475,18 +465,11 @@ TEST_RESU(RESU=(
                           _F(
                      RESULTAT = THL10,
                      NUME_ORDRE = 1,
-                     NOM_CHAM = 'META_ELGA_TEMP',
-                     TYPE_TEST = 'SOMM_ABS',
-                     VALE = 2.5303074946445E+03  ,
-                     REFERENCE = 'NON_REGRESSION',
-                     VERSION = '6.2.3'),
-                          _F(
-                     RESULTAT = THL10,
-                     NUME_ORDRE = 1,
                      NOM_CHAM = 'META_ELNO_TEMP',
                      TYPE_TEST = 'SOMM_ABS',
                      VALE = 3.2006586323219E+03  ,
                      REFERENCE = 'NON_REGRESSION',
+                     PRECISION = 0.002,
                      VERSION = '6.2.3'),
                            _F(
                      RESULTAT = THL10,
@@ -510,14 +493,6 @@ TEST_RESU(RESU=(
                      NOM_CHAM = 'TEMP',
                      TYPE_TEST = 'SOMM_ABS',
                      VALE = 6.9489994897893E+02  ,
-                     REFERENCE = 'NON_REGRESSION',
-                     VERSION = '6.2.3'),
-                           _F(
-                     RESULTAT = THL10,
-                     NUME_ORDRE = 2,
-                     NOM_CHAM = 'META_ELGA_TEMP',
-                     TYPE_TEST = 'SOMM_ABS',
-                     VALE = 2.6495869048330E+03  ,
                      REFERENCE = 'NON_REGRESSION',
                      VERSION = '6.2.3'),
                           _F(
@@ -564,14 +539,6 @@ TEST_RESU(RESU=(
                           _F(
                      RESULTAT = THNL6,
                      NUME_ORDRE = 0,
-                     NOM_CHAM = 'META_ELGA_TEMP',
-                     TYPE_TEST = 'SOMM_ABS',
-                     VALE = 1.5022800000000E+03  ,
-                     REFERENCE = 'NON_REGRESSION',
-                     VERSION = '6.2.3'),
-                          _F(
-                     RESULTAT = THNL6,
-                     NUME_ORDRE = 0,
                      NOM_CHAM = 'META_ELNO_TEMP',
                      TYPE_TEST = 'SOMM_ABS',
                      VALE = 1.9297799999999E+03  ,
@@ -601,14 +568,6 @@ TEST_RESU(RESU=(
                      NOM_CHAM = 'TEMP',
                      TYPE_TEST = 'SOMM_ABS',
                      VALE = 5.2320105203256E+02  ,
-                     REFERENCE = 'NON_REGRESSION',
-                     VERSION = '6.2.3'),
-                          _F(
-                     RESULTAT = THNL6,
-                     NUME_ORDRE = 2,
-                     NOM_CHAM = 'META_ELGA_TEMP',
-                     TYPE_TEST = 'SOMM_ABS',
-                     VALE = 2.4287172758984E+03  ,
                      REFERENCE = 'NON_REGRESSION',
                      VERSION = '6.2.3'),
                           _F(

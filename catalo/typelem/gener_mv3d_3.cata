@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 05/10/2004   AUTEUR CIBHHLV L.VIVAN 
+%& MODIF TYPELEM  DATE 04/04/2005   AUTEUR CIBHHPD L.SALMONA 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -116,7 +116,7 @@ MODE_LOCAL__
                                  EN1   (VANL     )
                                  EN2   ()
     ZVARI1   = VARI_R   ELEM__         (VARI     )
-    EPHASRR  = VARI_R   ELGA__ RIGI     (VARI     )
+    EPHASRR  = VARI_R   ELNO__ IDEN__   (VARI     )
     ZVARIPG  = VARI_R   ELGA__ RIGI     (VARI     )
     ZVARINO  = VARI_R   ELNO__ IDEN__  (VARI     )
     EVOISIN  = VOISIN   ELEM__         (V0       V1       V2       V3       V4       V5
