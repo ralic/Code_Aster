@@ -2,7 +2,7 @@
 
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/11/2004   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 04/01/2005   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -75,7 +75,7 @@ C
       INTEGER      JAPCOE,JAPPTR,JAPJEU,JAPDDL,JPDDL,JTANGO
       INTEGER      INO,JDIM,JNOCO,JDDL,NNOCO,NUMNO,NUNOE,NESMAX,NDDL
       INTEGER      IZONE,NZOCO,JREAC,NDIM,NBLIAI,JZOCO,JCHAM,ICHAM,IDDL
-      INTEGER      JBID,II,NBBLOC,JJEUIN,JNORMO,JNRINI
+      INTEGER      JBID,II,JJEUIN,JNORMO,JNRINI
       INTEGER      JAPCOF,JAPJFX,JAPJFY
       CHARACTER*1  K1BID
       CHARACTER*8  K8BID,CHAR,NOMNO
@@ -402,7 +402,6 @@ C
 C ----------------------------------------------------------------------
 C
       NBLIAI = NESMAX
-      NBBLOC = 1 
 C
       CM1A   = RESOCO(1:14)//'.CM1A'
       CM2A   = RESOCO(1:14)//'.CM2A'
@@ -583,15 +582,18 @@ C
       ZK8(JBID) = ' '
 C
       CALL JECREC (MATR//'.VALE','V V R','NU','DISPERSE'
-     &     ,'CONSTANT',NBBLOC)
+     &     ,'CONSTANT',NBLC)
       CALL JEECRA (MATR//'.VALE','LONMAX',
      &     NBREEL*(NBREEL+1)/2,K8BID)
-      DO 4 II = 1, NBBLOC
+      DO 4 II = 1, NBLC
          CALL JECROC (JEXNUM(MATR//'.VALE',II))
+         CALL JEECRA (MATR//'.VALE','DOCU',II,'MS')
+         CALL JEVEUO (JEXNUM(MATR//'.VALE',II),'E',JBID)
+         CALL JELIBE (JEXNUM(MATR//'.VALE',II))
  4    CONTINUE
-      CALL JEECRA (MATR//'.VALE','DOCU',1,'MS')
 C
  9999 CONTINUE
+ 
 C
 C ----------------------------------------------------------------------
 C

@@ -2,7 +2,7 @@
      +                             NESMAX, RESOCO, LMAT, NBLIAI, XJVMAX)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/06/2004   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 04/01/2005   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -20,6 +20,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
 C ======================================================================
+C TOLE CRP_20
       IMPLICIT      NONE 
       INTEGER       NDIM, NBLIAC, SPLIAI, LLF, LLF1, LLF2, INDFAC
       INTEGER       NESMAX, LMAT, NBLIAI 
@@ -53,13 +54,14 @@ C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C ======================================================================
       INTEGER       JAPPTR, JAPDDL, JLIAC, JAPCOE, JAPCOF, JCM1A, JDECAL
       INTEGER       NBDDL, JVA, JVALE, JVECC, DEKLAG, NEQ, POSIT 
-      INTEGER       ILIAC, JJ, LLIAC, LLJAC 
+      INTEGER       ILIAC, JJ, LLIAC, LLJAC, JIABL, II, DERCOL, BLOC
+      INTEGER       JABLO,JOUV,JDESC,NBBLOC
       REAL*8        VAL 
       CHARACTER*2   TYPEF0 
-      CHARACTER*19  LIAC, CM1A, MATR, CONVEC 
+      CHARACTER*19  LIAC, CM1A, MATR, CONVEC, STOC, OUVERT
       CHARACTER*24  APPOIN, APDDL, APCOEF, APCOFR 
 C ======================================================================
-      CALL JEMARQ () 
+      CALL JEMARQ ()
 C ======================================================================
       CM1A   = RESOCO(1:14)//'.CM1A' 
       APPOIN = RESOCO(1:14)//'.APPOIN' 
@@ -69,6 +71,8 @@ C ======================================================================
       APCOFR = RESOCO(1:14)//'.APCOFR' 
       MATR   = RESOCO(1:14)//'.MATR' 
       CONVEC = RESOCO(1:14)//'.CONVEC' 
+      STOC   = RESOCO(1:14)//'.SLCS'
+      
 C ======================================================================
 C ----------------------------------------------------------------------
 C ======================================================================
@@ -88,13 +92,18 @@ C ======================================================================
         ENDIF
       ENDIF
       CALL JEVEUO (CONVEC,'L',JVECC ) 
-      CALL JEVEUO (JEXNUM(MATR//'.VALE',1),'E',JVALE) 
+      CALL JEVEUO (STOC//'.IABL','L',JIABL)
+      CALL JEVEUO (STOC//'.ABLO','L',JABLO)
+      CALL JEVEUO (STOC//'.DESC','L',JDESC)
 C ======================================================================
 C --- INITIALISATIONS --------------------------------------------------
 C ======================================================================
       TYPEF0 = 'F0' 
       NEQ    = ZI(LMAT+2) 
       DEKLAG = 0 
+      NBBLOC = ZI(JDESC+2)
+      OUVERT = '&CFACA2.TRAV'
+      CALL WKVECT (OUVERT,'V V L',NBBLOC,JOUV)
       IF (NDIM.EQ.3) THEN 
          DO 100 ILIAC = 1, SPLIAI
             IF ( ZK8(JVECC-1+ILIAC).EQ.TYPEF0 ) THEN 
@@ -107,7 +116,7 @@ C --- CALCUL DE -A.C-1.AT (REDUITE AUX LIAISONS ACTIVES) ---------------
 C --- (STOCKAGE DE LA MOITIE PAR SYMETRIE) -----------------------------
 C ======================================================================
       INDFAC = MIN(INDFAC, SPLIAI+DEKLAG+1)
-      DO 210 ILIAC = SPLIAI+1, NBLIAC + LLF + LLF1 + LLF2 
+      DO 210 ILIAC = SPLIAI+1, NBLIAC + LLF + LLF1 + LLF2
          LLIAC  = ZI(JLIAC-1+ILIAC)
          CALL CFTYLI(RESOCO, ILIAC, POSIT) 
          GOTO (1000, 2000, 4000, 5000) POSIT 
@@ -116,7 +125,18 @@ C --- AJOUT D'UNE LIAISON DE CONTACT -----------------------------------
 C ======================================================================
  1000    CONTINUE 
          CALL JEVEUO(JEXNUM(CM1A,LLIAC),'L',JCM1A) 
-         JVA = JVALE-1 + (ILIAC+DEKLAG-1)*(ILIAC+DEKLAG)/2
+         II = ZI(JIABL-1+ILIAC+DEKLAG)
+         DERCOL=ZI(JABLO+II-1)
+         BLOC=DERCOL*(DERCOL+1)/2
+         IF (.NOT.ZL(JOUV-1+II)) THEN
+            IF (II.GT.1) THEN
+               CALL JELIBE(JEXNUM(MATR//'.VALE',(II-1)))
+               ZL(JOUV-2+II)=.FALSE.
+            ENDIF
+            CALL JEVEUO (JEXNUM(MATR//'.VALE',II),'E',JVALE)
+            ZL(JOUV-1+II)=.TRUE.
+         ENDIF
+         JVA = JVALE-1 + (ILIAC+DEKLAG-1)*(ILIAC+DEKLAG)/2-BLOC
          DO 10 JJ = 1, ILIAC
             LLJAC   = ZI(JLIAC-1+JJ)
             JDECAL  = ZI(JAPPTR+LLJAC-1)
@@ -180,7 +200,18 @@ C --- AJOUT D'UNE LIAISON DE FROTTEMENT --------------------------------
 C ======================================================================
  2000    CONTINUE 
          CALL JEVEUO(JEXNUM(CM1A,LLIAC+NBLIAI),'L',JCM1A) 
-         JVA = JVALE-1 + (ILIAC+DEKLAG-1)*(ILIAC+DEKLAG)/2 
+         II = ZI(JIABL-1+ILIAC+DEKLAG)
+         DERCOL=ZI(JABLO+II-1)
+         BLOC=DERCOL*(DERCOL+1)/2
+         IF (.NOT.ZL(JOUV-1+II)) THEN
+            IF (II.GT.1) THEN
+               CALL JELIBE(JEXNUM(MATR//'.VALE',(II-1)))
+               ZL(JOUV-2+II)=.FALSE.
+            ENDIF
+            CALL JEVEUO (JEXNUM(MATR//'.VALE',II),'E',JVALE)
+            ZL(JOUV-1+II)=.TRUE.
+         ENDIF
+         JVA = JVALE-1 + (ILIAC+DEKLAG-1)*(ILIAC+DEKLAG)/2-BLOC
          DO 20 JJ = 1, ILIAC - 1
             LLJAC   = ZI(JLIAC-1+JJ) 
             JDECAL  = ZI(JAPPTR+LLJAC-1) 
@@ -253,7 +284,18 @@ C --- DANS LE CAS 3D ---------------------------------------------------
 C ======================================================================
             CALL JEVEUO(JEXNUM(CM1A,LLIAC+(NDIM-1)*NBLIAI),'L',JCM1A) 
             DEKLAG = DEKLAG + 1
-            JVA = JVALE-1 + (ILIAC+DEKLAG-1)*(ILIAC+DEKLAG)/2 
+            II = ZI(JIABL-1+ILIAC+DEKLAG)
+            DERCOL=ZI(JABLO+II-1)
+            BLOC=DERCOL*(DERCOL+1)/2
+            IF (.NOT.ZL(JOUV-1+II)) THEN
+               IF (II.GT.1) THEN
+                  CALL JELIBE(JEXNUM(MATR//'.VALE',(II-1)))
+                  ZL(JOUV-2+II)=.FALSE.
+               ENDIF
+               CALL JEVEUO (JEXNUM(MATR//'.VALE',II),'E',JVALE)
+               ZL(JOUV-1+II)=.TRUE.
+            ENDIF
+            JVA = JVALE-1 + (ILIAC+DEKLAG-1)*(ILIAC+DEKLAG)/2-BLOC
             DO 30 JJ = 1, ILIAC
                LLJAC   = ZI(JLIAC-1+JJ) 
                JDECAL  = ZI(JAPPTR+LLJAC-1) 
@@ -318,7 +360,18 @@ C --- DIRECTION UNIQUEMENT ---------------------------------------------
 C ======================================================================
  4000    CONTINUE 
          CALL JEVEUO(JEXNUM(CM1A,LLIAC+NBLIAI),'L',JCM1A) 
-         JVA = JVALE-1 + (ILIAC+DEKLAG-1)*(ILIAC+DEKLAG)/2 
+         II = ZI(JIABL-1+ILIAC+DEKLAG)
+         DERCOL=ZI(JABLO+II-1)
+         BLOC=DERCOL*(DERCOL+1)/2
+         IF (.NOT.ZL(JOUV-1+II)) THEN
+            IF (II.GT.1) THEN
+               CALL JELIBE(JEXNUM(MATR//'.VALE',(II-1)))
+               ZL(JOUV-2+II)=.FALSE.
+            ENDIF
+            CALL JEVEUO (JEXNUM(MATR//'.VALE',II),'E',JVALE)
+            ZL(JOUV-1+II)=.TRUE.
+         ENDIF
+         JVA = JVALE-1 + (ILIAC+DEKLAG-1)*(ILIAC+DEKLAG)/2-BLOC
          DO 40 JJ = 1, ILIAC
             LLJAC   = ZI(JLIAC-1+JJ) 
             JDECAL  = ZI(JAPPTR+LLJAC-1) 
@@ -382,7 +435,18 @@ C --- AJOUT D'UNE LIAISON DE CONTACT -----------------------------------
 C ======================================================================
  5000    CONTINUE 
          CALL JEVEUO(JEXNUM(CM1A,LLIAC+(NDIM-1)*NBLIAI),'L',JCM1A) 
-         JVA = JVALE-1 + (ILIAC+DEKLAG-1)*(ILIAC+DEKLAG)/2 
+         II = ZI(JIABL-1+ILIAC+DEKLAG)
+         DERCOL=ZI(JABLO+II-1)
+         BLOC=DERCOL*(DERCOL+1)/2
+         IF (.NOT.ZL(JOUV-1+II)) THEN
+            IF (II.GT.1) THEN
+               CALL JELIBE(JEXNUM(MATR//'.VALE',(II-1)))
+               ZL(JOUV-2+II)=.FALSE.
+            ENDIF
+            CALL JEVEUO (JEXNUM(MATR//'.VALE',II),'E',JVALE)
+            ZL(JOUV-1+II)=.TRUE.
+         ENDIF
+         JVA = JVALE-1 + (ILIAC+DEKLAG-1)*(ILIAC+DEKLAG)/2-BLOC
          DO 50 JJ = 1, ILIAC
             LLJAC   = ZI(JLIAC-1+JJ) 
             JDECAL  = ZI(JAPPTR+LLJAC-1) 
@@ -441,8 +505,10 @@ C ======================================================================
  50      CONTINUE 
          CALL JELIBE(JEXNUM(CM1A,LLIAC+(NDIM-1)*NBLIAI)) 
  210  CONTINUE 
+
 C ======================================================================
-      SPLIAI = NBLIAC + LLF + LLF1 + LLF2 
+      SPLIAI = NBLIAC + LLF + LLF1 + LLF2
+      CALL JEDETR (OUVERT)
       CALL JEDEMA () 
 C ======================================================================
       END

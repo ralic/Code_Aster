@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 15/11/2004   AUTEUR ROMEO R.FERNANDES 
+%& MODIF TYPELEM  DATE 04/01/2005   AUTEUR CIBHHPD L.SALMONA 
 % RESPONSABLE UFBHHLL C.CHAVANT
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -63,6 +63,8 @@ MODE_LOCAL__
     ECONTNO  = SIEF_R   ELNO__ IDEN__  (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ
                                         SIP      M11      FH11X    FH11Y    ENT11    QPRIM
                                         FHTX     FHTY     )
+    EDEFOPG  = EPSI_R   ELGA__ RIGI    (EPXX     EPYY     EPZZ     EPXY     EPXZ     EPYZ     )
+    EDEFONO  = EPSI_R   ELNO__ IDEN__  (EPXX     EPYY     EPZZ     EPXY     EPXZ     EPYZ     )
     EREFCO   = PREC     ELEM__         (SIGM     FHYDR1   FHYDR2   FTHERM     )
     CTEREFE  = TEMP_R   ELEM__         (TEMP     )
     ZVARI1   = VARI_R   ELEM__         (VARI     )
@@ -84,6 +86,10 @@ OPTION__
                               OUT__  MVECTUR  PVECTUR
     CHAR_MECA_PESA_R    600   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  CPESANR  PPESANR
                               OUT__  MVECTUR  PVECTUR
+    EPSI_ELGA_DEPL      600   IN__   NGEOMER  PGEOMER  DDL_MECA PDEPLAR
+                              OUT__  EDEFOPG  PDEFORR
+    EPSI_ELNO_DEPL      600   IN__   NGEOMER  PGEOMER  DDL_MECA PDEPLAR
+                              OUT__  EDEFONO  PDEFORR
     FORC_NODA           600   IN__   ECONTPG  PCONTMR  NGEOMER  PGEOMER  CTEMPSR  PINSTMR  CTEMPSR  PINSTPR
                                      CMATERC  PMATERC
                               OUT__  MVECTUR  PVECTUR

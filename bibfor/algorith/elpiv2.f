@@ -2,7 +2,7 @@
      &                  LLF,LLF1,LLF2,NOMA,DEFICO,RESOCO)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/11/2004   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 04/01/2005   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -86,12 +86,12 @@ C
       INTEGER       KK1,KK2,JVA,NIV,ILIAC,IFM
       INTEGER       NOTE2,NOTE1,NOTE12,NOTE,NBLIAI,LLF0
       INTEGER       PIVOT2,LLIAC,IBID,POSIT
-      INTEGER       BTOTAL,DEKLAG,PIVOT
+      INTEGER       BTOTAL,DEKLAG,PIVOT,JDESC,NBBLOC,JOUV
       REAL*8        COPMAX
       CHARACTER*1   TYPEAJ, TYPESP
       CHARACTER*2   TYPEC0, TYPEF0, TYPEF1, TYPEF2
-      CHARACTER*19  LIAC,LIOT,MATR
-      INTEGER       JLIAC,JLIOT,JVALE
+      CHARACTER*19  LIAC,LIOT,MATR,STOC,OUVERT
+      INTEGER       JLIAC,JLIOT,JVALE,IIABL,II,DERCOL,BLOC,JABLO
       CHARACTER*24  APPARI,CONTNO,CONTMA
       INTEGER       JAPPAR,JNOCO,JMACO
 C ======================================================================
@@ -106,16 +106,20 @@ C ======================================================================
       LIAC   = RESOCO(1:14)//'.LIAC'
       LIOT   = RESOCO(1:14)//'.LIOT'
       MATR   = RESOCO(1:14)//'.MATR'
+      STOC   = RESOCO(1:14)//'.SLCS'
 C ======================================================================
       CALL JEVEUO(CONTNO,'L',JNOCO )
       CALL JEVEUO(APPARI,'L',JAPPAR)
       CALL JEVEUO(CONTMA,'L',JMACO)
       CALL JEVEUO(LIAC  ,'E',JLIAC )
       CALL JEVEUO(LIOT  ,'E',JLIOT )
-      CALL JEVEUO(JEXNUM(MATR//'.VALE',1),'L',JVALE)
+      CALL JEVEUO (STOC//'.IABL','L',IIABL)
+      CALL JEVEUO (STOC//'.ABLO','L',JABLO)
+      CALL JEVEUO (STOC//'.DESC','L',JDESC)
 C ======================================================================
 C --- INITIALISATION DES VARIABLES
 C ======================================================================
+      NBBLOC = ZI(JDESC+2)
       NBLIAI = ZI(JAPPAR )
       IBID   = 0
       PIVOT  = 0
@@ -126,6 +130,8 @@ C ======================================================================
       TYPEF0 = 'F0'
       TYPEF1 = 'F1'
       TYPEF2 = 'F2'
+      OUVERT='&&ELPIV2.TRAV'
+      CALL WKVECT (OUVERT,'V V L',NBBLOC,JOUV)
       COPMAX = XJVMAX * 1.0D-08
       IF (NDIM.EQ.3) THEN
          LLF0 = LLF
@@ -146,7 +152,18 @@ C ======================================================================
 C ======================================================================
 C --- ON SE TROUVE DANS LE CAS D'UNE LIAISON DE CONTACT 
 C ======================================================================
-         JVA = JVALE-1 + (ILIAC+LLF0-DEKLAG-1)*(ILIAC+LLF0-DEKLAG)/2
+         II = ZI(IIABL-1+ILIAC+LLF0-DEKLAG)
+         DERCOL=ZI(JABLO+II-1)
+         BLOC=DERCOL*(DERCOL+1)/2
+         IF (.NOT.ZL(JOUV-1+II)) THEN
+            IF ((II.LT.NBBLOC).AND.(ILIAC.NE.(BTOTAL+1))) THEN
+               CALL JELIBE(JEXNUM(MATR//'.VALE',(II+1)))
+               ZL(JOUV+II)=.FALSE.
+            ENDIF
+            CALL JEVEUO (JEXNUM(MATR//'.VALE',II),'E',JVALE)
+            ZL(JOUV-1+II)=.TRUE.
+         ENDIF
+         JVA=JVALE-1+(ILIAC+LLF0-DEKLAG-1)*(ILIAC+LLF0-DEKLAG)/2-BLOC
          DO 10 KK2 = 1, ILIAC + LLF0 - DEKLAG
             JVA = JVA + 1
             IF (ABS(ZR(JVA)).LT.COPMAX) THEN
@@ -180,7 +197,18 @@ C --- (DANS LE CAS GENERAL EN 2D/SUIVANT LES DEUX DIRECTIONS EN 3D)
 C ======================================================================
          IF (NDIM.EQ.3) THEN
             DEKLAG = DEKLAG + 1
-            JVA = JVALE-1 + (ILIAC+LLF0-DEKLAG-1)*(ILIAC+LLF0-DEKLAG)/2
+            II = ZI(IIABL-1+ILIAC+LLF0-DEKLAG)
+            DERCOL=ZI(JABLO+II-1)
+            BLOC=DERCOL*(DERCOL+1)/2
+            IF (.NOT.ZL(JOUV-1+II)) THEN
+               IF ((II.LT.NBBLOC).AND.(ILIAC.NE.(BTOTAL+1))) THEN
+                  CALL JELIBE(JEXNUM(MATR//'.VALE',(II+1)))
+                  ZL(JOUV+II)=.FALSE.
+               ENDIF
+               CALL JEVEUO (JEXNUM(MATR//'.VALE',II),'E',JVALE)
+               ZL(JOUV-1+II)=.TRUE.
+            ENDIF
+            JVA=JVALE-1+(ILIAC+LLF0-DEKLAG-1)*(ILIAC+LLF0-DEKLAG)/2-BLOC
             DO 20 KK2 = 1, ILIAC + LLF0 - DEKLAG
                JVA = JVA + 1
                IF (ABS(ZR(JVA)).LT.COPMAX) THEN
@@ -265,7 +293,18 @@ C ======================================================================
                ENDIF
             ENDIF
          ELSE
-            JVA = JVALE-1 + (ILIAC+LLF0-DEKLAG-1)*(ILIAC+LLF0-DEKLAG)/2
+            II = ZI(IIABL-1+ILIAC+LLF0-DEKLAG)
+            DERCOL=ZI(JABLO+II-1)
+            BLOC=DERCOL*(DERCOL+1)/2
+            IF (.NOT.ZL(JOUV-1+II)) THEN
+               IF ((II.LT.NBBLOC).AND.(ILIAC.NE.(BTOTAL+1))) THEN
+                  CALL JELIBE(JEXNUM(MATR//'.VALE',(II+1)))
+                  ZL(JOUV+II)=.FALSE.
+               ENDIF
+               CALL JEVEUO (JEXNUM(MATR//'.VALE',II),'E',JVALE)
+               ZL(JOUV-1+II)=.TRUE.
+            ENDIF
+            JVA=JVALE-1+(ILIAC+LLF0-DEKLAG-1)*(ILIAC+LLF0-DEKLAG)/2-BLOC
             DO 40 KK2 = 1, ILIAC + LLF0 - DEKLAG
                JVA = JVA + 1
                IF (ABS(ZR(JVA)).LT.COPMAX) THEN
@@ -295,7 +334,18 @@ C ======================================================================
 C --- ON SE TROUVE DANS LE CAS D'UNE LIAISON DE FROTTEMENT ADHERENT 
 C --- SUIVANT LA PREMIERE DIRECTION EN 3D 
 C ======================================================================
-         JVA = JVALE-1 + (ILIAC+LLF0-DEKLAG-1)*(ILIAC+LLF0-DEKLAG)/2
+         II = ZI(IIABL-1+ILIAC+LLF0-DEKLAG)
+         DERCOL=ZI(JABLO+II-1)
+         BLOC=DERCOL*(DERCOL+1)/2
+         IF (.NOT.ZL(JOUV-1+II)) THEN
+            IF ((II.LT.NBBLOC).AND.(ILIAC.NE.(BTOTAL+1))) THEN
+               CALL JELIBE(JEXNUM(MATR//'.VALE',(II+1)))
+               ZL(JOUV+II)=.FALSE.
+            ENDIF
+            CALL JEVEUO (JEXNUM(MATR//'.VALE',II),'E',JVALE)
+            ZL(JOUV-1+II)=.TRUE.
+         ENDIF
+         JVA=JVALE-1+(ILIAC+LLF0-DEKLAG-1)*(ILIAC+LLF0-DEKLAG)/2-BLOC
          DO 50 KK2 = 1, ILIAC + LLF0 - DEKLAG
             JVA = JVA + 1
             IF (ABS(ZR(JVA)).LT.COPMAX) THEN
@@ -324,7 +374,18 @@ C ======================================================================
 C --- ON SE TROUVE DANS LE CAS D'UNE LIAISON DE FROTTEMENT ADHERENT 
 C --- SUIVANT LA SECONDE DIRECTION EN 3D 
 C ======================================================================
-         JVA = JVALE-1 + (ILIAC+LLF0-DEKLAG-1)*(ILIAC+LLF0-DEKLAG)/2
+         II = ZI(IIABL-1+ILIAC+LLF0-DEKLAG)
+         DERCOL=ZI(JABLO+II-1)
+         BLOC=DERCOL*(DERCOL+1)/2
+         IF (.NOT.ZL(JOUV-1+II)) THEN
+            IF ((II.LT.NBBLOC).AND.(ILIAC.NE.(BTOTAL+1))) THEN
+               CALL JELIBE(JEXNUM(MATR//'.VALE',(II+1)))
+               ZL(JOUV+II)=.FALSE.
+            ENDIF
+            CALL JEVEUO (JEXNUM(MATR//'.VALE',II),'E',JVALE)
+            ZL(JOUV-1+II)=.TRUE.
+         ENDIF
+         JVA=JVALE-1+(ILIAC+LLF0-DEKLAG-1)*(ILIAC+LLF0-DEKLAG)/2-BLOC
          DO 60 KK2 = 1, ILIAC + LLF0 - DEKLAG
             JVA = JVA + 1
             IF (ABS(ZR(JVA)).LT.COPMAX) THEN
@@ -353,6 +414,7 @@ C ======================================================================
 C ======================================================================
  100  CONTINUE
 C ======================================================================
+      CALL JEDETR(OUVERT)
       CALL JEDEMA()
 C ======================================================================
       END

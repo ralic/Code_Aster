@@ -1,7 +1,7 @@
       SUBROUTINE ELPIV1(XJVMAX,INDIC,NBLIAC,AJLIAI,SPLIAI,SPAVAN,
      &                  NOMA,DEFICO,RESOCO)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 02/11/2004   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 04/01/2005   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -74,14 +74,14 @@ C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C
       CHARACTER*1  TYPESP
       CHARACTER*2  TYPEC0
-      CHARACTER*19 LIAC, LIOT, MATR
-      INTEGER      JLIAC,JLIOT,JVALE,JVA
+      CHARACTER*19 LIAC, LIOT, MATR, STOC,OUVERT
+      INTEGER      JLIAC,JLIOT,JVALE,JVA,JDESC,JOUV
       CHARACTER*24 APPARI,CONTNO,CONTMA
-      INTEGER      JAPPAR,JNOCO,JMACO
+      INTEGER      JAPPAR,JNOCO,JMACO,NBBLOC
       REAL*8       COPMAX
       INTEGER      KK1,KK2,KK1F,KK2F,LLF,LLF1,LLF2
-      INTEGER      NBOTE,PIVOT,NBLIAI,LLIAC  
-      INTEGER      NIV,IFM   
+      INTEGER      NBOTE,PIVOT,NBLIAI,LLIAC, II  
+      INTEGER      NIV,IFM, BLOC, IIABL, JABLO, DERCOL
 C
 C ----------------------------------------------------------------------
 C
@@ -96,13 +96,16 @@ C ======================================================================
       LIAC = RESOCO(1:14)//'.LIAC'
       LIOT = RESOCO(1:14)//'.LIOT'
       MATR = RESOCO(1:14)//'.MATR'
+      STOC   = RESOCO(1:14)//'.SLCS'
 C ======================================================================
       CALL JEVEUO(CONTNO,'L',JNOCO)
       CALL JEVEUO(CONTMA,'L',JMACO)
       CALL JEVEUO(APPARI,'L',JAPPAR)
       CALL JEVEUO(LIAC,'E',JLIAC)
       CALL JEVEUO(LIOT,'E',JLIOT)
-      CALL JEVEUO(JEXNUM(MATR//'.VALE',1),'L',JVALE)
+      CALL JEVEUO (STOC//'.IABL','L',IIABL)
+      CALL JEVEUO (STOC//'.ABLO','L',JABLO)
+      CALL JEVEUO (STOC//'.DESC','L',JDESC)
 C ======================================================================
 C --- INITIALISATION DES VARIABLES
 C ======================================================================
@@ -114,6 +117,9 @@ C ======================================================================
       LLF    = 0
       LLF1   = 0
       LLF2   = 0
+      NBBLOC=ZI(JDESC+2)
+      OUVERT='&&ELPIV2.TRAV'
+      CALL WKVECT (OUVERT,'V V L',NBBLOC,JOUV)
 C        
         DO 10 KK1=SPAVAN+1,NBLIAC
           DO 20 KK2=1,NBLIAC
@@ -124,8 +130,19 @@ C
               KK1F = KK1
               KK2F = KK2
             ENDIF
-            JVA = JVALE-1+((KK1F-1)*KK1F)/2 +KK2F
-            IF(ABS(ZR(JVA)).LT.COPMAX) THEN            
+            II = ZI(IIABL-1+KK1F)
+            DERCOL=ZI(JABLO+II-1)
+            BLOC=DERCOL*(DERCOL+1)/2
+            IF (.NOT.ZL(JOUV-1+II)) THEN
+               IF ((II.GT.1).AND.(KK1F.NE.(SPAVAN+1))) THEN
+                  CALL JELIBE(JEXNUM(MATR//'.VALE',(II-1)))
+                  ZL(JOUV-2+II)=.FALSE.
+               ENDIF
+               CALL JEVEUO (JEXNUM(MATR//'.VALE',II),'E',JVALE)
+               ZL(JOUV-1+II)=.TRUE.
+            ENDIF
+            JVA=JVALE-1+(KK1F-1)*(KK1F)/2-BLOC+KK2F
+            IF(ABS(ZR(JVA)).LT.COPMAX) THEN
               PIVOT = 1
             ELSE
               PIVOT = 0
@@ -149,6 +166,7 @@ C
  10     CONTINUE
 C  
 40      CONTINUE
+        CALL JEDETR(OUVERT)
         CALL JEDEMA()
 C
       END 
