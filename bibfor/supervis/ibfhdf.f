@@ -4,7 +4,7 @@
       CHARACTER*80              FICHDF
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 06/09/2003   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF SUPERVIS  DATE 08/06/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -25,20 +25,17 @@ C
 C     LECTURE DU MOT CLE HDF DANS LA COMMANDE DEBUT
 C
 C ----------------------------------------------------------------------
-      CHARACTER*16    CBID,NOMCMD
-      INTEGER         NBOCC,K,ILONG
+      CHARACTER*16    CBID,NOMCMD,FHDF
+      INTEGER         NFHDF
 C
       FICHDF = ' '
       CALL GETRES(CBID,CBID,NOMCMD)
       IF ( NOMCMD .EQ. 'DEBUT' .OR. NOMCMD .EQ. 'POURSUITE') THEN
-        CALL GETFAC('HDF',NBOCC)
-        IF (NBOCC .GT. 0) THEN
-           CALL GETVTX('HDF','FICHIER',1,1,1,FICHDF,K)
-           CALL GETLTX('HDF','FICHIER',1,1,1,ILONG ,K)
-           IF ( ILONG .GT. 80 ) CALL UTMESS('A',NOMCMD,'L''ARGUMENT '
-     &          //'DU MOT CLE "FICHIER" SOUS LE MOT CLE FACTEUR "HDF" '
-     &          //'EST TRONQUE A 80 CARACTERES. LE NOM DE FICHIER '
-     &          //'EST DONC "'//FICHDF//'".' )
+        CALL GETVTX(' ','FORMAT_HDF',1,1,1,FHDF,NFHDF)
+        IF (NFHDF .GT. 0) THEN
+          IF ( FHDF .EQ. 'OUI' ) THEN
+            FICHDF = 'bhdf.1'
+          ENDIF
         ENDIF
       ENDIF
 C

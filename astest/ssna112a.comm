@@ -1,0 +1,425 @@
+# MODIF  DATE 07/06/2004   AUTEUR NDOMING N.DOMINGUEZ 
+# TITRE Test de arrachement axisymmetrique(La Borderie & Pijaudier Cabot)
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+#       pour le etude de la liaison acier et beton
+
+
+DEBUT(     CODE=_F( NOM = 'ssna112a',NIV_PUB_WEB='INTERNET') );
+
+PRE_GIBI();   
+
+MALLA=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='NON'),
+                    INFO = 2,);
+
+MALLA=DEFI_GROUP(reuse =MALLA,
+                 MAILLAGE=MALLA,
+                 CREA_GROUP_MA=_F(NOM='TOUT',
+                                  TOUT='OUI',),);
+
+MALLA=DEFI_GROUP(reuse =MALLA,
+                 MAILLAGE=MALLA,
+                 CREA_GROUP_NO= (_F(GROUP_MA='ENCAST1'),
+                                 _F(GROUP_MA='EJE1'),                
+                 ),);
+
+
+MALLA = MODI_MAILLAGE (reuse = MALLA,
+                       MAILLAGE = MALLA,
+                       ORIE_CONTACT = _F(GROUP_MA = 'LIAISON'),
+                       INFO = 2,);                                  
+
+#---------------------------------
+#  Definition de modele 
+#---------------------------------
+
+MODELO=AFFE_MODELE(MAILLAGE=MALLA,
+                   VERIF='MAILLE',
+                   AFFE=(_F(GROUP_MA =('CABOT',
+                                       'ACIER',
+                                       'BETON',
+                                     ),
+                            PHENOMENE = 'MECANIQUE',
+                            MODELISATION = 'AXIS'),
+                         _F(GROUP_MA = 'LIAISON',
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION = 'AXIS_FISSURE',),
+                           ),);
+
+#---------------------------------
+#  Definition des materiaux
+#---------------------------------
+
+ACIERMAT=DEFI_MATERIAU(ELAS=_F( E  = 2.1E+5,
+                                NU = 0.3),);
+
+
+BETONMAT=DEFI_MATERIAU(ELAS     =_F(NU=0.17,
+                                    E=1.55E+4),);
+
+
+BOND=DEFI_MATERIAU(ELAS=_F(E=1.55E+4,
+                           NU=0.17,),
+                   JOINT_BA=_F(
+                                 HPEN   =  0.64, 
+                                 GTT    =  6.65E+3,
+                                 GAMD0  =  5.E-4,
+                                 AD1    =  1.0,
+                                 BD1    =  0.5,
+                                 GAMD2  =  0.96,
+                                 AD2    =  4.E-5,
+                                 BD2    =  1.0,
+                                 VIFROT =  10.0,
+                                 FA     =  4.E-1,
+                                 FC     =  1.0,
+                                 EPSTR0 =  0.9,
+                                 ADN    =  1.E-9,
+                                 BDN    =  1.5,
+                                    ),);
+
+                                    
+CHAMAT=AFFE_MATERIAU(MAILLAGE=MALLA,
+                     MODELE=MODELO,
+                     AFFE=(_F(GROUP_MA = 'BETON',
+                              MATER=BETONMAT,),
+                           _F(GROUP_MA = 'ACIER',
+                              MATER=ACIERMAT,),
+                           _F(GROUP_MA = 'LIAISON',
+                              MATER=BOND,),
+                           ),);
+#---------------------------------
+#  Conditions limits
+#---------------------------------
+
+BLOQUAGE=AFFE_CHAR_MECA(MODELE=MODELO,
+                        DDL_IMPO=(_F(GROUP_NO=('ENCAST1','PB3',),
+                                     DX=0.0,
+                                     DY=0.0,),
+                                  _F(GROUP_NO='EJE1',
+                                     DX=0.0,),
+                                     ),);
+
+
+TRACT=AFFE_CHAR_MECA(MODELE=MODELO,
+                        DDL_IMPO=(_F(GROUP_NO=('PA2','PA3',),
+                                     DY= 1.00
+                                     ),),);
+
+#---------------------------------
+#  Functions de chargement
+#---------------------------------
+
+DEPLAC=DEFI_FONCTION(NOM_PARA='INST',
+                     VALE=(0.0,0.0,
+                           1.0,0.1,),
+                     PROL_DROITE='LINEAIRE',
+                     PROL_GAUCHE='LINEAIRE',);
+
+
+L_INST1=DEFI_LIST_REEL(DEBUT=0.0,
+                       INTERVALLE=(
+                       _F(JUSQU_A=1.0, NOMBRE=20,),
+                       _F(JUSQU_A=60.0, NOMBRE=118,),
+                       ),);
+
+#---------------------------------
+#  Analyses non lineaire
+#---------------------------------
+
+
+U1=STAT_NON_LINE(MODELE=MODELO,
+                 CHAM_MATER=CHAMAT,
+                 EXCIT=(_F(CHARGE=BLOQUAGE,),
+                        _F(CHARGE=TRACT,
+                           FONC_MULT=DEPLAC,),),
+                 COMP_INCR=(_F(RELATION='ELAS',),
+                            _F(RELATION = 'JOINT_BA',
+                               GROUP_MA ='LIAISON',),
+                               ),
+                 INCREMENT=_F(LIST_INST=L_INST1,
+                              INST_FIN=60.0,
+                              SUBD_PAS=5,
+                              SUBD_PAS_MINI =1.0e-6),
+                 NEWTON=_F(MATRICE='TANGENTE',
+                           REAC_ITER=1,),
+                 CONVERGENCE=_F(ITER_GLOB_MAXI=100,
+                                RESI_GLOB_RELA=1.E-07,),);
+
+U1=CALC_ELEM(reuse =U1,
+             MODELE=MODELO,
+             CHAM_MATER=CHAMAT,
+             OPTION=('SIEF_ELNO_ELGA',
+                     'EPSI_ELNO_DEPL',
+                     'EPSI_ELGA_DEPL',),
+             RESULTAT=U1,);
+
+U1=CALC_NO(reuse =U1,
+           MODELE=MODELO,
+           OPTION=('REAC_NODA',
+                   'SIEF_NOEU_ELGA',),
+           CHAM_MATER=CHAMAT,
+           RESULTAT=U1,);
+
+
+#---------------------------------
+#  Impresion des resultats
+#---------------------------------
+
+L_INST2=DEFI_LIST_REEL(VALE =( 2., 4., 6., 8.,10.,
+                              12.,14.,16.,18.,20.,
+                              22.,24.,26.,28.,30.,
+                              32.,34.,36.,38.,40.,
+                              42.,44.,46.,48.,50.,
+                              52.,54.,56.,58.,60.,
+                              ),
+                       );
+
+
+# ---------- en format RESULTAT ----------
+
+IMPR_RESU(RESU=(_F(RESULTAT=U1,
+                  NOM_CHAM='SIEF_ELGA',
+                  TOUT_CMP='OUI',
+                  LIST_INST=L_INST2,
+                  FORM_TABL='OUI',
+                  GROUP_MA = 'LIAISON',
+                  IMPR_COOR='NON',),
+                  ),);
+
+IMPR_RESU(RESU=(_F(RESULTAT=U1,
+                  NOM_CHAM='VARI_ELGA',
+                  TOUT_CMP='OUI',
+                  LIST_INST=L_INST2,
+                  FORM_TABL='OUI',
+                  GROUP_MA = 'LIAISON',
+                  IMPR_COOR='NON',),
+                  ),);
+                  
+TEST_RESU(RESU=(_F(RESULTAT=U1,
+                  REFERENCE='SOURCE_EXTERNE',
+                  NOM_CHAM='SIEF_ELGA',
+                  NOM_CMP = 'SITX',
+                  NUME_ORDRE = 22,
+                  MAILLE ='M74',
+                  POINT = 2,
+                  VALE = -7.20E+0,
+                  PRECISION = 5.E-2,
+                  ),
+               _F(RESULTAT=U1,
+                  REFERENCE='SOURCE_EXTERNE',
+                  NOM_CHAM='SIEF_ELGA',
+                  NOM_CMP = 'SITX',
+                  NUME_ORDRE = 34,
+                  MAILLE ='M74',
+                  POINT = 2,
+                  VALE = -1.14E+1,
+                  PRECISION = 5.E-2,
+                  ),
+               _F(RESULTAT=U1,
+                  REFERENCE='SOURCE_EXTERNE',
+                  NOM_CHAM='SIEF_ELGA',
+                  NOM_CMP = 'SITX',
+                  NUME_ORDRE = 38,
+                  MAILLE ='M74',
+                  POINT = 2,
+                  VALE = -1.26E+1,
+                  PRECISION = 5.E-2,
+                  ),
+               _F(RESULTAT=U1,
+                  REFERENCE='SOURCE_EXTERNE',
+                  NOM_CHAM='SIEF_ELGA',
+                  NOM_CMP = 'SITX',
+                  NUME_ORDRE = 50,
+                  MAILLE ='M74',
+                  POINT = 2,
+                  VALE = -1.22E+1,
+                  PRECISION = 5.E-2,
+                  ),
+                  ),);
+
+
+# ---------------- fonctions ----------------------
+
+# ---- f(deplacement)
+
+UXP=RECU_FONCTION(RESULTAT=U1,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DX',
+                  GROUP_NO='PA2',
+                  TOUT_ORDRE='OUI',
+                  );
+
+UYP=RECU_FONCTION(RESULTAT=U1,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DY',
+                  GROUP_NO='PA2',
+                  TOUT_ORDRE='OUI',
+                  );
+
+# ---- f(contraintes)
+
+SXY661=RECU_FONCTION(RESULTAT=U1,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SITX',
+                   MAILLE ='M66',
+                   POINT = 1,
+                   TOUT_ORDRE='OUI',
+                   );
+
+SXY672=RECU_FONCTION(RESULTAT=U1,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SITX',
+                   MAILLE ='M67',
+                   POINT = 2,
+                   TOUT_ORDRE='OUI',
+                   );
+
+SXY681=RECU_FONCTION(RESULTAT=U1,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SITX',
+                   MAILLE ='M68',
+                   POINT = 1,
+                   TOUT_ORDRE='OUI',
+                   );
+
+SXY692=RECU_FONCTION(RESULTAT=U1,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SITX',
+                   MAILLE ='M69',
+                   POINT = 2,
+                   TOUT_ORDRE='OUI',
+                   );
+
+SXY701=RECU_FONCTION(RESULTAT=U1,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SITX',
+                   MAILLE ='M70',
+                   POINT = 1,
+                   TOUT_ORDRE='OUI',
+                   );
+
+SXY712=RECU_FONCTION(RESULTAT=U1,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SITX',
+                   MAILLE ='M71',
+                   POINT = 2,
+                   TOUT_ORDRE='OUI',
+                   );
+
+SXY721=RECU_FONCTION(RESULTAT=U1,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SITX',
+                   MAILLE ='M72',
+                   POINT = 1,
+                   TOUT_ORDRE='OUI',
+                   );
+
+SXY732=RECU_FONCTION(RESULTAT=U1,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SITX',
+                   MAILLE ='M73',
+                   POINT = 2,
+                   TOUT_ORDRE='OUI',
+                   );
+
+SXY741=RECU_FONCTION(RESULTAT=U1,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SITX',
+                   MAILLE ='M74',
+                   POINT = 1,
+                   TOUT_ORDRE='OUI',
+                   );
+
+# ---- f(variables internes)
+
+V2PG1_66=RECU_FONCTION(RESULTAT=U1,
+                   NOM_CHAM='VARI_ELGA',
+                   NOM_CMP='V2',
+                   MAILLE ='M66',
+                   POINT = 1,
+                   TOUT_ORDRE='OUI',
+                   );
+
+V2PG2_66=RECU_FONCTION(RESULTAT=U1,
+                   NOM_CHAM='VARI_ELGA',
+                   NOM_CMP='V2',
+                   MAILLE ='M66',
+                   POINT = 2,
+                   TOUT_ORDRE='OUI',
+                   );
+
+# ---------- en format AGRAF ----------
+#
+
+#DEFI_FICHIER(FICHIER='AGRAF',UNITE=25,);
+
+
+# COURBE CONTRAINTE SXY liaison AU PG EN FONCTION DE UX
+
+
+IMPR_COURBE(
+#            FICHIER='AGRAF',
+            FORMAT='AGRAF',
+            TITRE_GRAPHIQUE='PILOTAGE SXY EN FONCTION DE UX ',
+            LEGENDE_X='UX(mm)',
+            LEGENDE_Y='CONTRAINTE (MPa)',
+            COURBE=(_F(FONC_X=UYP,
+                       FONC_Y=SXY661,),
+                    _F(FONC_X=UYP,
+                       FONC_Y=SXY672,),
+                    _F(FONC_X=UYP,
+                       FONC_Y=SXY681,),
+                    _F(FONC_X=UYP,
+                       FONC_Y=SXY692,),
+                    _F(FONC_X=UYP,
+                       FONC_Y=SXY701,),
+                    _F(FONC_X=UYP,
+                       FONC_Y=SXY712,),
+                    _F(FONC_X=UYP,
+                       FONC_Y=SXY721,),
+                    _F(FONC_X=UYP,
+                       FONC_Y=SXY732,),
+                    _F(FONC_X=UYP,
+                       FONC_Y=SXY741,),
+                      ),);
+
+
+
+# COURBE CONTRAINTE SXY liaison AU PG EN FONCTION DE UX
+
+
+IMPR_COURBE(
+#            FICHIER='AGRAF',
+            FORMAT='AGRAF',
+            TITRE_GRAPHIQUE='ENDOMMAGEMENT EN FONCTION DE UX ',
+            LEGENDE_X='UX(mm)',
+            LEGENDE_Y='ENDOMMAGEMENT',
+            COURBE=(_F(FONC_X=UXP,
+                       FONC_Y=V2PG1_66,),
+                    _F(FONC_X=UXP,
+                       FONC_Y=V2PG2_66,),
+                    _F(FONC_X=UYP,
+                       FONC_Y=V2PG1_66,),
+                    _F(FONC_X=UYP,
+                       FONC_Y=V2PG2_66,),
+                      ),);
+
+
+
+FIN();
+

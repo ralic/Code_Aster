@@ -1,4 +1,4 @@
-# MODIF  DATE 10/10/2003   AUTEUR D6BHHJP J.P.LEFEBVRE 
+# MODIF  DATE 08/06/2004   AUTEUR CIBHHLV L.VIVAN 
 # TITRE TEST DE VALIDATION D'ASTER :
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -58,7 +58,7 @@ MO2=AFFE_MODELE(     MAILLAGE=MA,
        MODELISATION = '3D', PHENOMENE = 'MECANIQUE'))
 
 MATER=DEFI_MATERIAU(  ELAS=_F(  E = 1.E6,      NU = 0.3) )
-
+       
 CHMAT=AFFE_MATERIAU(   MAILLAGE=MA,
                            AFFE=_F(  TOUT = 'OUI',   MATER = MATER) )
 
@@ -80,4 +80,4 @@ CH1=MECA_STATIQUE(MODELE=MO1, CHAM_MATER=CHMAT,  CARA_ELEM=CARELEM, LIST_INST=LI
                                EXCIT=_F(  CHARGE = CHARGE)
                             )
 
-FIN(HDF=_F(FICHIER='./base.hdf'));
+FIN(FORMAT_HDF='OUI');

@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 17/05/2004   AUTEUR ROMEO R.FERNANDES 
+%& MODIF TYPELEM  DATE 08/06/2004   AUTEUR ROMEO R.FERNANDES 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -65,6 +65,7 @@ MODE_LOCAL__
     ZVARI1   = VARI_R   ELEM__         (VARI     )
     ZVARIPG  = VARI_R   ELGA__ RIGI    (VARI     )
     ZVARINO  = VARI_R   ELNO__ IDEN__  (VARI     )
+    EGINDLO  = IND_LOCA ELGA__ RIGI    (INDICE    DIR1     DIR2     DIR3    DIR4     )
 
 VECTEUR__
     MVECTUR = VDEP_R DDL_MECA
@@ -86,6 +87,14 @@ OPTION__
                                      CMATERC  PMATERC  CTEREFE  PTEREF   ZVARIPG  PVARIMR
                               OUT__  ECODRET  PCODRET  ECONTPG  PCONTPR  MMATUNS  PMATUNS  ZVARIPG  PVARIPR
                                      MVECTUR  PVECTUR
+    FULL_MECA_ELAS      600   IN__   CCARCRI  PCARCRI  CCOMPOR  PCOMPOR  ECONTPG  PCONTMR  DDL_MECA PDEPLMR
+                                     DDL_MECA PDEPLPR  NGEOMER  PGEOMER  CTEMPSR  PINSTMR  CTEMPSR  PINSTPR
+                                     CMATERC  PMATERC  CTEREFE  PTEREF   ZVARIPG  PVARIMR
+                              OUT__  ECODRET  PCODRET  ECONTPG  PCONTPR  MMATUNS  PMATUNS  ZVARIPG  PVARIPR
+                                     MVECTUR  PVECTUR
+    INDI_LOCA_ELGA      30    IN__   CMATERC  PMATERC  ECONTPG  PCONTPR  CCOMPOR  PCOMPOR   ZVARIPG  PVARIMR
+                                     ZVARIPG  PVARIPR
+                              OUT__  EGINDLO  PINDLOC
     MATR_NO_PG          118   IN__   NGEOMER  PGEOMER
                               OUT__  ZVARI1   PMANOPG
     MECA_SENS_MATE      -1    IN__   XXXXXX   XXXXXX
@@ -101,6 +110,10 @@ OPTION__
     REFE_FORC_NODA      600   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  EREFCO   PREFCO
                               OUT__  MVECTUR  PVECTUR
     RIGI_MECA_TANG      600   IN__   CCARCRI  PCARCRI  CCOMPOR  PCOMPOR  ECONTPG  PCONTMR  DDL_MECA PDEPLMR
+                                     DDL_MECA PDEPLPR  NGEOMER  PGEOMER  CTEMPSR  PINSTMR  CTEMPSR  PINSTPR
+                                     CMATERC  PMATERC  CTEREFE  PTEREF   ZVARIPG  PVARIMR
+                              OUT__  MMATUNS  PMATUNS
+    RIGI_MECA_ELAS      600   IN__   CCARCRI  PCARCRI  CCOMPOR  PCOMPOR  ECONTPG  PCONTMR  DDL_MECA PDEPLMR
                                      DDL_MECA PDEPLPR  NGEOMER  PGEOMER  CTEMPSR  PINSTMR  CTEMPSR  PINSTPR
                                      CMATERC  PMATERC  CTEREFE  PTEREF   ZVARIPG  PVARIMR
                               OUT__  MMATUNS  PMATUNS

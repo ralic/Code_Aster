@@ -8,7 +8,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 17/05/2004   AUTEUR ROMEO R.FERNANDES 
+C MODIF ALGORITH  DATE 08/06/2004   AUTEUR ROMEO R.FERNANDES 
 C RESPONSABLE GRANET S.GRANET
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -268,7 +268,7 @@ C CALCUL DE LA VARIABLE INTERNE PHI A L'INSTANT PLUS
 C **********************************************************************
 C CALCUL DE PHI  A L'INSTANT COURANT
 
-      IF (OPTION(1:16).EQ.'RIGI_MECA_TANG') THEN
+      IF (OPTION(1:9).EQ.'RIGI_MECA') THEN
         IF (YAMEC.EQ.1) THEN
           PHI = VINTM(ADVICO+VICPHI) + PHI0
         ELSE
@@ -304,7 +304,7 @@ C **********************************************************************
 C  CALCUL DE LA VARIABLE INTERNE PRESSION VAPEUR PUIS 
 C  PRESSIONS AIR SEC DISSOUS ET EAU
 
-      IF (OPTION(1:16).EQ.'RIGI_MECA_TANG') THEN
+      IF (OPTION(1:9).EQ.'RIGI_MECA') THEN
         PVP = VINTM(ADVICO+VICPVP) + PVP0
         PVPM = VINTM(ADVICO+VICPVP) + PVP0
       ELSE
@@ -355,7 +355,7 @@ C **********************************************************************
 C  CALCUL DES MASSES VOLUMIQUES  A L'INSTANT COURANT 
 C 
 
-      IF (OPTION(1:16).EQ.'RIGI_MECA_TANG') THEN
+      IF (OPTION(1:9).EQ.'RIGI_MECA') THEN
         RHO11 = VINTM(ADVIHY+VIHRHO) + RHO110
         RHO11M = VINTM(ADVIHY+VIHRHO) + RHO110
       ELSE
@@ -414,7 +414,7 @@ C CALCUL ENTHALPIES ET DERIVEES DES ENTHALPIES
 C 
 
       IF ((YATE.EQ.1)) THEN
-        IF ((OPTION(1:16).EQ.'RIGI_MECA_TANG') .OR.
+        IF ((OPTION(1:9).EQ.'RIGI_MECA') .OR.
      &      (OPTION(1:9).EQ.'FULL_MECA')) THEN
           DSDE(ADCP11+NDIM+1,ADDEP2) = DSDE(ADCP11+NDIM+1,ADDEP2) +
      &                        DP11P2 * (1.D0-3.D0*ALPLIQ*T)/RHO11
@@ -444,7 +444,7 @@ C **********************************************************************
 C  CALCUL DES ENTHALPIES INTERMEDIAIRES H11,H12,H21, H22
 
       IF ((YATE.EQ.1)) THEN
-        IF (OPTION.EQ.'RIGI_MECA_TANG') THEN
+        IF (OPTION(1:9).EQ.'RIGI_MECA') THEN
           H11 = CONGEM(ADCP11+NDIM+1)
           H12 = CONGEM(ADCP12+NDIM+1)
           H21 = CONGEM(ADCP21+NDIM+1)
@@ -461,7 +461,7 @@ C **********************************************************************
 C  CALCUL DE SIGMAP
 
       IF (((YAMEC.EQ.1))) THEN
-        IF ((OPTION(1:16).EQ.'RIGI_MECA_TANG') .OR.
+        IF ((OPTION(1:9).EQ.'RIGI_MECA') .OR.
      &      (OPTION(1:9).EQ.'FULL_MECA')) THEN
           DSDE(ADCOME+6,ADDEP1) = DSDE(ADCOME+6,ADDEP1) + BIOT*SAT
           DSDE(ADCOME+6,ADDEP2) = DSDE(ADCOME+6,ADDEP2) - BIOT
@@ -478,7 +478,7 @@ C  CALCUL DES APPORTS MASSIQUES
 
 
 
-      IF ((OPTION(1:16).EQ.'RIGI_MECA_TANG') .OR.
+      IF ((OPTION(1:9).EQ.'RIGI_MECA') .OR.
      &    (OPTION(1:9).EQ.'FULL_MECA')) THEN
         DSDE(ADCP11,ADDEP1) = DSDE(ADCP11,ADDEP1) +
      &                      RHO11* (DSATP1*PHI+SAT*PHI*CLIQ*DP11P1-
@@ -553,7 +553,7 @@ C **********************************************************************
 C    CALCUL DE LA CHALEUR REDUITE Q'
 
       IF (YATE.EQ.1) THEN
-        IF ((OPTION(1:16).EQ.'RIGI_MECA_TANG') .OR.
+        IF ((OPTION(1:9).EQ.'RIGI_MECA') .OR.
      &      (OPTION(1:9).EQ.'FULL_MECA')) THEN
 C   TERME SUIVANTE  EST SANS CONTROLE, TOUT LE MONDE Y PASSE
 C        DQ/DT

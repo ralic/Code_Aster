@@ -1,0 +1,95 @@
+# MODIF  DATE 07/06/2004   AUTEUR GALENNE E.GALENNE 
+# TITRE MURAKAMI 9.12 FISSURE CIRCULAIRE SOUMISE A UNE CHARGE ANNULAIRE
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+#
+# C/A = 0.93
+
+DEBUT( CODE=_F( NOM = 'SSLA311B',NIV_PUB_WEB='INTERNET'))
+
+PRE_GIBI()
+
+MA=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='OUI'),)
+
+MA=DEFI_GROUP( reuse=MA,   MAILLAGE=MA, 
+                     CREA_GROUP_NO=_F( 
+                         GROUP_MA = ( 'LPOP8',  'LPOP11',  'LP8P9', ))
+                 )
+
+MO=AFFE_MODELE(  MAILLAGE=MA,
+                      AFFE=_F(  TOUT = 'OUI',
+                             PHENOMENE = 'MECANIQUE',
+                             MODELISATION = 'AXIS') )
+
+MAT=DEFI_MATERIAU(ELAS=_F(  E = 2.E11,
+                             NU = 0.3,
+                             ALPHA = 0.) )
+
+CHMAT=AFFE_MATERIAU(  MAILLAGE=MA,
+                       AFFE=_F(  TOUT = 'OUI',
+                              MATER = MAT) )
+
+CH=AFFE_CHAR_MECA(  MODELE=MO,DDL_IMPO=(
+                            _F(  GROUP_NO = 'LP8P9', DX = 0.),
+                                     _F(  GROUP_NO = 'LPOP11', DY = 0.)),
+                             FORCE_NODALE=_F(  GROUP_NO = 'PB',
+                                            FY = 159.15)   )
+
+CHAMDEPL=MECA_STATIQUE(        MODELE=MO,
+                              CHAM_MATER=CHMAT,
+                              EXCIT=_F( CHARGE = CH)
+                           )
+
+DEP=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
+NOM_CHAM='DEPL', RESULTAT=CHAMDEPL,
+                   NUME_ORDRE=1       )
+
+FOND=DEFI_FOND_FISS(    MAILLAGE=MA,
+                         FOND_FISS=_F( GROUP_NO = ('P0',)),
+                           NORMALE=(0., 1., 0.,)
+                      )
+
+THETA0=CALC_THETA(    MODELE=MO,
+                        THETA_2D=_F(  GROUP_NO = ('P0',),
+                                   MODULE = 1.,
+                                   R_INF = 0.00175,
+                                   R_SUP = 0.00525),
+                         DIRECTION=(1., 0., 0.,)
+                     )
+
+G0=CALC_G_THETA_T(    MODELE=MO,
+                          DEPL=DEP,
+                         THETA=THETA0,
+                        EXCIT=_F(CHARGE=CH,),
+                        CHAM_MATER=CHMAT,
+                        SYME_CHAR='SYME'
+                    )
+
+#
+# LA VALEUR DE REFERENCE VAUT 1.086191E-3, LE RAYON LA FISSURE VAUT 0.1
+# ET DONC LA VALEUR A TESTER VAUT 1.086191E-3*0.1=1.086191E-4
+#
+
+TEST_TABLE(       TABLE=G0,
+                   NOM_PARA='G',
+                       VALE=1.086191E-4,
+                  PRECISION=0.01        )
+
+#
+FIN()
+#

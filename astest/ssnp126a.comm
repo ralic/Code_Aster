@@ -1,0 +1,393 @@
+# MODIF  DATE 07/06/2004   AUTEUR NDOMING N.DOMINGUEZ 
+# TITRE cas test de validation de la loi de comportement JOINT_BA
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+#       (liaison acier - beton) en 2D plan 
+
+DEBUT(     CODE=_F( NOM = 'ssnp126a',NIV_PUB_WEB='INTERNET') );
+
+
+MA=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='NON'),
+                 INFO = 2, );
+
+
+MO=AFFE_MODELE(
+                MAILLAGE=MA,
+                VERIF='MAILLE',
+                AFFE= (
+                _F( 
+                        MAILLE = ('CUBE','DROITE'),
+                        PHENOMENE = 'MECANIQUE',
+                        MODELISATION = 'D_PLAN'
+                     ),
+                 _F(
+                   MAILLE = 'CUBEDEG',
+                   PHENOMENE = 'MECANIQUE',
+                   MODELISATION = 'PLAN_FISSURE'
+                   )
+                 )
+              );
+
+
+ACIER=DEFI_MATERIAU(
+     ELAS=_F( 
+              E =  2.1E+6,
+              NU = 0.0),
+            );
+
+
+BOND=DEFI_MATERIAU(ELAS=_F(E=1.55E+4,
+                           NU=0.17,),
+                   JOINT_BA=_F(  HPEN   =  0.64,     #mm
+                                 GTT    =  6.65E+3,  #MPa
+                                 GAMD0  =  5.E-4,
+                                 AD1    =  1.0,      #MPa
+                                 BD1    =  0.5,
+                                 GAMD2  =  0.96,
+                                 AD2    =  6.E-5,    #MPa
+                                 BD2    =  1.0,
+                                 VIFROT =  10.0,     #MPa-1 
+                                 FA     =  4.E-1,
+                                 FC     =  1.0,
+                                 EPSTR0 =  0.9,
+                                 ADN    =  1.E-9,
+                                 BDN    =  1.5,
+                                    ),);
+
+
+
+CM=AFFE_MATERIAU(
+               MAILLAGE=MA,
+               AFFE=(_F( 
+                       TOUT = 'OUI',
+                       MATER = ACIER),
+                     _F(MAILLE = 'CUBEDEG',
+                        MATER=BOND,),
+                        ),);
+
+
+
+LIAISON=AFFE_CHAR_MECA(
+  MODELE=MO,
+  FACE_IMPO= (
+    _F(MAILLE='GAUCHE2', DX=0, DY=0),
+    ),);
+
+TRACTION=AFFE_CHAR_MECA(
+  MODELE=MO,
+  FACE_IMPO= (
+    _F(MAILLE='DROITE', DX=0.5, DY=-0.86602540378444),
+    ),);
+
+
+L_INST=DEFI_LIST_REEL(DEBUT   = 0,
+     INTERVALLE=(
+      _F( JUSQU_A = 1.0,      NOMBRE =  10 ),
+      _F( JUSQU_A = 30.0,     NOMBRE =  290 ),
+      ),);
+
+
+FC1 = DEFI_FONCTION(
+  NOM_PARA = 'INST',
+  VALE     = (0, 0,
+              1, 0.1),
+  PROL_DROITE = 'LINEAIRE',
+  PROL_GAUCHE='LINEAIRE',
+  );
+  
+
+U=STAT_NON_LINE( 
+  MODELE     = MO,
+  CHAM_MATER = CM,
+  EXCIT      = (
+    _F(CHARGE = LIAISON , ),
+    _F(CHARGE = TRACTION, FONC_MULT = FC1),
+  ),
+  COMP_INCR  = (
+          _F(RELATION = 'JOINT_BA',
+             MAILLE = 'CUBEDEG', ),
+          _F(RELATION = 'ELAS',
+             MAILLE = 'CUBE',),
+          ),               
+  INCREMENT  = _F(LIST_INST = L_INST,
+                  INST_FIN = 30.,
+                  SUBD_PAS=5,
+                  SUBD_PAS_MINI=0.0001),
+  CONVERGENCE= (_F(RESI_INTE_RELA = 1.E-6,
+                   ITER_INTE_MAXI  = 15,),
+                   ),
+  NEWTON     = _F(MATRICE = 'TANGENTE',
+                  PAS_MINI_ELAS = 0.0001,
+                  REAC_ITER=1),
+  );
+
+
+U=CALC_ELEM(reuse =U,
+             MODELE=MO,
+             CHAM_MATER=CM,
+             OPTION=('SIEF_ELNO_ELGA',
+                     'EPSI_ELGA_DEPL',),
+             RESULTAT=U,);
+             
+
+L_CAST=DEFI_LIST_REEL(VALE =( 2., 4., 6., 8.,10.,
+                             12.,14.,16.,18.,20.,
+                             22.,24.,26.,28.,30.,),);
+
+# ---------------- Resultats ----------------------
+
+IMPR_RESU(RESU=_F(RESULTAT=U,
+                  NOM_CHAM='SIEF_ELNO_ELGA',
+                  LIST_INST=L_CAST,
+                  FORM_TABL='OUI',
+                  MAILLE = 'CUBEDEG',
+                  IMPR_COOR='NON',),);
+
+
+IMPR_RESU(RESU=(_F(RESULTAT=U,
+                  NOM_CHAM='SIEF_ELGA',
+                  TOUT_CMP='OUI',
+                  LIST_INST=L_CAST,
+                  FORM_TABL='OUI',
+                  MAILLE = 'CUBEDEG',
+                  IMPR_COOR='NON',),
+                  ),);
+
+IMPR_RESU(RESU=(_F(RESULTAT=U,
+                  NOM_CHAM='VARI_ELGA',
+                  TOUT_CMP='OUI',
+                  LIST_INST=L_CAST,
+                  FORM_TABL='OUI',
+                  MAILLE = 'CUBEDEG',
+                  IMPR_COOR='NON',),
+                  ),);
+                  
+# --------- Comparaison des Resultats avec FEAP ----------------
+                  
+TEST_RESU(RESU=(_F(RESULTAT=U,
+                  REFERENCE='SOURCE_EXTERNE',
+                  NOM_CHAM='SIEF_ELGA',
+                  NOM_CMP = 'SIGN',
+                  NUME_ORDRE = 20,
+                  MAILLE = 'CUBEDEG',
+                  POINT = 1,
+                  VALE = -9.9408E-2,
+                  PRECISION = 5.E-2,
+                  ),
+               _F(RESULTAT=U,
+                  REFERENCE='SOURCE_EXTERNE',
+                  NOM_CHAM='SIEF_ELGA',
+                  NOM_CMP = 'SIGN',
+                  NUME_ORDRE = 80,
+                  MAILLE = 'CUBEDEG',
+                  POINT = 1,
+                  VALE = -1.54560E-1,
+                  PRECISION = 5.E-2,
+                  ),
+               _F(RESULTAT=U,
+                  REFERENCE='SOURCE_EXTERNE',
+                  NOM_CHAM='SIEF_ELGA',
+                  NOM_CMP = 'SIGN',
+                  NUME_ORDRE = 120,
+                  MAILLE = 'CUBEDEG',
+                  POINT = 1,
+                  VALE = -1.44060E-1,
+                  PRECISION = 5.E-2,
+                  ),
+               _F(RESULTAT=U,
+                  REFERENCE='SOURCE_EXTERNE',
+                  NOM_CHAM='SIEF_ELGA',
+                  NOM_CMP = 'SIGN',
+                  NUME_ORDRE = 300,
+                  MAILLE = 'CUBEDEG',
+                  POINT = 1,
+                  VALE = -1.06920E-1,
+                  PRECISION = 5.E-2,
+                  ),
+                  ),);
+
+TEST_RESU(RESU=(_F(RESULTAT=U,
+                  REFERENCE='SOURCE_EXTERNE',
+                  NOM_CHAM='SIEF_ELGA',
+                  NOM_CMP = 'SITX',
+                  NUME_ORDRE = 20,
+                  MAILLE = 'CUBEDEG',
+                  POINT = 1,
+                  VALE = -7.5890E+0,
+                  PRECISION = 5.E-2,
+                  ),
+               _F(RESULTAT=U,
+                  REFERENCE='SOURCE_EXTERNE',
+                  NOM_CHAM='SIEF_ELGA',
+                  NOM_CMP = 'SITX',
+                  NUME_ORDRE = 80,
+                  MAILLE = 'CUBEDEG',
+                  POINT = 1,
+                  VALE = -1.17960E+1,
+                  PRECISION = 5.E-2,
+                  ),
+               _F(RESULTAT=U,
+                  REFERENCE='SOURCE_EXTERNE',
+                  NOM_CHAM='SIEF_ELGA',
+                  NOM_CMP = 'SITX',
+                  NUME_ORDRE = 120,
+                  MAILLE = 'CUBEDEG',
+                  POINT = 1,
+                  VALE = -1.09950E+1,
+                  PRECISION = 5.E-2,
+                  ),
+               _F(RESULTAT=U,
+                  REFERENCE='SOURCE_EXTERNE',
+                  NOM_CHAM='SIEF_ELGA',
+                  NOM_CMP = 'SITX',
+                  NUME_ORDRE = 300,
+                  MAILLE = 'CUBEDEG',
+                  POINT = 1,
+                  VALE = -8.15940E+0,
+                  PRECISION = 5.E-2,
+                  ),
+                  ),);
+
+
+TEST_RESU(RESU=(_F(RESULTAT=U,
+                  REFERENCE='SOURCE_EXTERNE',
+                  NOM_CHAM='VARI_ELGA',
+                  NOM_CMP = 'V2',
+                  NUME_ORDRE = 20,
+                  MAILLE = 'CUBEDEG',
+                  POINT = 1,
+                  VALE = 9.97203E-1,
+                  PRECISION = 1.E-3,
+                  ),
+               _F(RESULTAT=U,
+                  REFERENCE='SOURCE_EXTERNE',
+                  NOM_CHAM='VARI_ELGA',
+                  NOM_CMP = 'V2',
+                  NUME_ORDRE = 80,
+                  MAILLE = 'CUBEDEG',
+                  POINT = 1,
+                  VALE = 9.98948E-1,
+                  PRECISION = 1.E-3,
+                  ),
+               _F(RESULTAT=U,
+                  REFERENCE='SOURCE_EXTERNE',
+                  NOM_CHAM='VARI_ELGA',
+                  NOM_CMP = 'V2',
+                  NUME_ORDRE = 120,
+                  MAILLE = 'CUBEDEG',
+                  POINT = 1,
+                  VALE = 9.99369E-1,
+                  PRECISION = 1.E-3,
+                  ),
+               _F(RESULTAT=U,
+                  REFERENCE='SOURCE_EXTERNE',
+                  NOM_CHAM='VARI_ELGA',
+                  NOM_CMP = 'V2',
+                  NUME_ORDRE = 300,
+                  MAILLE = 'CUBEDEG',
+                  POINT = 1,
+                  VALE = 9.99854E-1,
+                  PRECISION = 1.E-3,
+                  ),
+                  ),);
+
+
+
+# ---------------- fonctions ----------------------
+
+# ---- f(deplacement)
+
+UXP=RECU_FONCTION(RESULTAT=U,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DX',
+                  GROUP_NO='TOUTSEUL',
+                  LIST_INST=L_CAST,
+                  );
+
+SXYLI1=RECU_FONCTION(RESULTAT=U,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SITX',
+                   MAILLE ='CUBEDEG',
+                   POINT = 1,
+                   LIST_INST=L_CAST,
+                   );
+
+SXYLI2=RECU_FONCTION(RESULTAT=U,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SITX',
+                   MAILLE ='CUBEDEG',
+                   POINT = 2,
+                   LIST_INST=L_CAST,
+                   );
+
+
+# ---- f(variables internes)
+
+V21D=RECU_FONCTION(RESULTAT=U,
+                   NOM_CHAM='VARI_ELGA',
+                   NOM_CMP='V2',
+                   MAILLE ='CUBEDEG',
+                   POINT = 1,
+                   LIST_INST=L_CAST,
+                   );
+
+V22D=RECU_FONCTION(RESULTAT=U,
+                   NOM_CHAM='VARI_ELGA',
+                   NOM_CMP='V2',
+                   MAILLE ='CUBEDEG',
+                   POINT = 2,
+                   LIST_INST=L_CAST,
+                   );
+
+# ---------- en format AGRAF ----------
+#
+
+#DEFI_FICHIER(FICHIER='AGRAF',UNITE=25,);
+
+
+# COURBE CONTRAINTE SXY liaison AU PG EN FONCTION DE UX
+
+
+IMPR_COURBE(
+#            FICHIER='AGRAF',
+            FORMAT='AGRAF',
+            TITRE_GRAPHIQUE='CONTRAINTE TANGENTIELLE EN FONCTION DE UX ',
+            LEGENDE_X='UX(mm)',
+            LEGENDE_Y='CONTRAINTE (MPa)',
+            COURBE=(_F(FONC_X=UXP,
+                       FONC_Y=SXYLI1,),
+                    _F(FONC_X=UXP,
+                       FONC_Y=SXYLI2,),
+                      ),);
+
+# COURBE CONTRAINTE SXY liaison AU PG EN FONCTION DE UX
+
+
+IMPR_COURBE(
+#            FICHIER='AGRAF',
+            FORMAT='AGRAF',
+            TITRE_GRAPHIQUE='ENDOMMAGEMENT EN FONCTION DE UX ',
+            LEGENDE_X='UX(mm)',
+            LEGENDE_Y='VARIABLE D''ENDOMMAGEMENT TANGENTIEL (D)',
+            COURBE=(_F(FONC_X=UXP,
+                       FONC_Y=V21D,),
+                    _F(FONC_X=UXP,
+                       FONC_Y=V22D,),
+                       ),);
+
+FIN();

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 08/06/2004   AUTEUR CIBHHLV L.VIVAN 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -27,106 +27,13 @@ def macr_adap_mail_prod(self,MAJ_CHAM,ADAPTATION,**args):
 # Remarque : la liste qui suit doit etre conforme à son homologue de LIRE_CHAMP
   for ch in MAJ_CHAM:
     t=ch['TYPE_CHAM']
-    if t == "NOEU_DBEL_R":self.type_sdprod(ch['CHAM_MAJ'],cham_no_dbel_r)
-    if t == "NOEU_DEPL_C":self.type_sdprod(ch['CHAM_MAJ'],cham_no_depl_c)
-    if t == "NOEU_DEPL_F":self.type_sdprod(ch['CHAM_MAJ'],cham_no_depl_f)
-    if t == "NOEU_DEPL_R":self.type_sdprod(ch['CHAM_MAJ'],cham_no_depl_r)
-    if t == "NOEU_DURT_R":self.type_sdprod(ch['CHAM_MAJ'],cham_no_durt_r)
-    if t == "NOEU_ENER_R":self.type_sdprod(ch['CHAM_MAJ'],cham_no_ener_r)
-    if t == "NOEU_EPSI_R":self.type_sdprod(ch['CHAM_MAJ'],cham_no_epsi_r)
-    if t == "NOEU_ERREUR":self.type_sdprod(ch['CHAM_MAJ'],cham_no_erreur)
-    if t == "NOEU_FLUX_R":self.type_sdprod(ch['CHAM_MAJ'],cham_no_flux_r)
-    if t == "NOEU_GEOM_R":self.type_sdprod(ch['CHAM_MAJ'],cham_no_geom_r)
-    if t == "NOEU_G_DEPL_R":self.type_sdprod(ch['CHAM_MAJ'],cham_no_g_depl_r)
-    if t == "NOEU_HYDR_R":self.type_sdprod(ch['CHAM_MAJ'],cham_no_hydr_r)
-    if t == "NOEU_INST_R":self.type_sdprod(ch['CHAM_MAJ'],cham_no_inst_r)
-    if t == "NOEU_INTE_R":self.type_sdprod(ch['CHAM_MAJ'],cham_no_inte_r)
-    if t == "NOEU_META_R":self.type_sdprod(ch['CHAM_MAJ'],cham_no_meta_r)
-    if t == "NOEU_NEUT_F":self.type_sdprod(ch['CHAM_MAJ'],cham_no_neut_f)
-    if t == "NOEU_NEUT_R":self.type_sdprod(ch['CHAM_MAJ'],cham_no_neut_r)
-    if t == "NOEU_PRES_R":self.type_sdprod(ch['CHAM_MAJ'],cham_no_pres_r)
-    if t == "NOEU_SIEF_R":self.type_sdprod(ch['CHAM_MAJ'],cham_no_sief_r)
-    if t == "NOEU_SOUR_R":self.type_sdprod(ch['CHAM_MAJ'],cham_no_sour_r)
-    if t == "NOEU_TEMP_F":self.type_sdprod(ch['CHAM_MAJ'],cham_no_temp_f)
-    if t == "NOEU_TEMP_R":self.type_sdprod(ch['CHAM_MAJ'],cham_no_temp_r)
-    if t == "NOEU_VAR2_R":self.type_sdprod(ch['CHAM_MAJ'],cham_no_var2_r)
-    if t == "NOEU_VNOR_C":self.type_sdprod(ch['CHAM_MAJ'],cham_no_vnor_c)
-    if t == "ELEM_DBEL_R":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_dbel_r)
-    if t == "ELEM_DEPL_C":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_depl_c)
-    if t == "ELEM_DEPL_F":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_depl_f)
-    if t == "ELEM_DEPL_R":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_depl_r)
-    if t == "ELEM_DURT_R":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_durt_r)
-    if t == "ELEM_ENER_R":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_ener_r)
-    if t == "ELEM_EPSI_R":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_epsi_r)
-    if t == "ELEM_ERREUR":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_erreur)
-    if t == "ELEM_FLUX_R":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_flux_r)
-    if t == "ELEM_GEOM_R":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_geom_r)
+    if t[0:5] == "NOEU_":self.type_sdprod(ch['CHAM_MAJ'],eval("cham_no_"+string.lower(t[5:])))
     if t == "ELEM_G_DEPL_R":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_g_depl)
-    if t == "ELEM_HYDR_R":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_hydr_r)
-    if t == "ELEM_INST_R":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_inst_r)
-    if t == "ELEM_INTE_R":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_inte_r)
-    if t == "ELEM_META_R":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_meta_r)
-    if t == "ELEM_NEUT_F":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_neut_f)
-    if t == "ELEM_NEUT_R":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_neut_r)
-    if t == "ELEM_PRES_R":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_pres_r)
-    if t == "ELEM_SIEF_R":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_sief_r)
-    if t == "ELEM_SOUR_R":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_sour_r)
-    if t == "ELEM_TEMP_F":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_temp_f)
-    if t == "ELEM_TEMP_R":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_temp_r)
-    if t == "ELEM_VARI_R":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_vari_r)
-    if t == "ELEM_VNOR_C":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_vnor_c)
-    if t == "ELNO_DBEL_R":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_dbel_r)
-    if t == "ELNO_DEPL_C":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_depl_c)
-    if t == "ELNO_DEPL_F":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_depl_f)
-    if t == "ELNO_DEPL_R":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_depl_r)
-    if t == "ELNO_DURT_R":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_durt_r)
-    if t == "ELNO_ENER_R":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_ener_r)
-    if t == "ELNO_EPSI_R":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_epsi_r)
-    if t == "ELNO_ERREUR":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_erreur)
-    if t == "ELNO_FLUX_R":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_flux_r)
-    if t == "ELNO_GEOM_R":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_geom_r)
+    if t[0:5] == "ELEM_":self.type_sdprod(ch['CHAM_MAJ'],eval("cham_elem_"+string.lower(t[5:])))
     if t == "ELNO_G_DEPL_R":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_g_depl)
-    if t == "ELNO_HYDR_R":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_hydr_r)
-    if t == "ELNO_INST_R":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_inst_r)
-    if t == "ELNO_INTE_R":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_inte_r)
-    if t == "ELNO_META_R":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_meta_r)
-    if t == "ELNO_NEUT_F":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_neut_f)
-    if t == "ELNO_NEUT_R":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_neut_r)
-    if t == "ELNO_PRES_R":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_pres_r)
-    if t == "ELNO_SIEF_R":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_sief_r)
-    if t == "ELNO_SOUR_R":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_sour_r)
-    if t == "ELNO_TEMP_F":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_temp_f)
-    if t == "ELNO_TEMP_R":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_temp_r)
-    if t == "ELNO_VARI_R":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_vari_r)
-    if t == "ELNO_VNOR_C":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_vnor_c)
-    if t == "ELGA_DBEL_R":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_dbel_r)
-    if t == "ELGA_DEPL_C":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_depl_c)
-    if t == "ELGA_DEPL_F":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_depl_f)
-    if t == "ELGA_DEPL_R":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_depl_r)
-    if t == "ELGA_DURT_R":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_durt_r)
-    if t == "ELGA_ENER_R":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_ener_r)
-    if t == "ELGA_EPSI_R":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_epsi_r)
-    if t == "ELGA_ERREUR":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_erreur)
-    if t == "ELGA_FLUX_R":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_flux_r)
-    if t == "ELGA_GEOM_R":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_geom_r)
+    if t[0:5] == "ELNO_":self.type_sdprod(ch['CHAM_MAJ'],eval("cham_elem_"+string.lower(t[5:])))
     if t == "ELGA_G_DEPL_R":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_g_depl)
-    if t == "ELGA_HYDR_R":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_hydr_r)
-    if t == "ELGA_INST_R":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_inst_r)
-    if t == "ELGA_INTE_R":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_inte_r)
-    if t == "ELGA_META_R":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_meta_r)
-    if t == "ELGA_NEUT_F":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_neut_f)
-    if t == "ELGA_NEUT_R":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_neut_r)
-    if t == "ELGA_PRES_R":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_pres_r)
-    if t == "ELGA_SIEF_R":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_sief_r)
-    if t == "ELGA_SOUR_R":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_sour_r)
-    if t == "ELGA_TEMP_F":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_temp_f)
-    if t == "ELGA_TEMP_R":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_temp_r)
-    if t == "ELGA_VARI_R":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_vari_r)
-    if t == "ELGA_VNOR_C":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_vnor_c)
-    if t == "NOEU_IRRA_R":self.type_sdprod(ch['CHAM_MAJ'],cham_no_irra_r)
-    if t == "ELEM_IRRA_R":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_irra_r)
-    if t == "ELNO_IRRA_R":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_irra_r)
-    if t == "ELGA_IRRA_R":self.type_sdprod(ch['CHAM_MAJ'],cham_elem_irra_r)
+    if t[0:5] == "ELGA_":self.type_sdprod(ch['CHAM_MAJ'],eval("cham_elem_"+string.lower(t[5:])))
   return None
 
 MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",op=macr_adap_mail_ops,sd_prod=macr_adap_mail_prod,
@@ -341,32 +248,7 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",op=macr_adap_mail_ops,sd_prod=macr_ada
 # 7.2. Le type du champ qui contiendra le resultat de la mise a jour
 #      Remarque : la liste qui suit doit etre conforme à son homologue de LIRE_CHAMP
 #
-           TYPE_CHAM      = SIMP(statut='o',typ='TXM',
-                                 into=("NOEU_DBEL_R",  "ELEM_DBEL_R",  "ELNO_DBEL_R",  "ELGA_DBEL_R",
-                                       "NOEU_DEPL_C",  "ELEM_DEPL_C",  "ELNO_DEPL_C",  "ELGA_DEPL_C",
-                                       "NOEU_DEPL_F",  "ELEM_DEPL_F",  "ELNO_DEPL_F",  "ELGA_DEPL_F",
-                                       "NOEU_DEPL_R",  "ELEM_DEPL_R",  "ELNO_DEPL_R",  "ELGA_DEPL_R",
-                                       "NOEU_DURT_R",  "ELEM_DURT_R",  "ELNO_DURT_R",  "ELGA_DURT_R",
-                                       "NOEU_ENER_R",  "ELEM_ENER_R",  "ELNO_ENER_R",  "ELGA_ENER_R",
-                                       "NOEU_EPSI_R",  "ELEM_EPSI_R",  "ELNO_EPSI_R",  "ELGA_EPSI_R",
-                                       "NOEU_ERREUR",  "ELEM_ERREUR",  "ELNO_ERREUR",  "ELGA_ERREUR",
-                                       "NOEU_FLUX_R",  "ELEM_FLUX_R",  "ELNO_FLUX_R",  "ELGA_FLUX_R",
-                                       "NOEU_GEOM_R",  "ELEM_GEOM_R",  "ELNO_GEOM_R",  "ELGA_GEOM_R",
-                                       "NOEU_G_DEPL_R","ELEM_G_DEPL_R","ELNO_G_DEPL_R","ELGA_G_DEPL_R",
-                                       "NOEU_HYDR_R",  "ELEM_HYDR_R",  "ELNO_HYDR_R",  "ELGA_HYDR_R",
-                                       "NOEU_INST_R",  "ELEM_INST_R",  "ELNO_INST_R",  "ELGA_INST_R",
-                                       "NOEU_INTE_R",  "ELEM_INTE_R",  "ELNO_INTE_R",  "ELGA_INTE_R",
-                                       "NOEU_META_R",  "ELEM_META_R",  "ELNO_META_R",  "ELGA_META_R",
-                                       "NOEU_NEUT_F",  "ELEM_NEUT_F",  "ELNO_NEUT_F",  "ELGA_NEUT_F",
-                                       "NOEU_NEUT_R",  "ELEM_NEUT_R",  "ELNO_NEUT_R",  "ELGA_NEUT_R",
-                                       "NOEU_PRES_R",  "ELEM_PRES_R",  "ELNO_PRES_R",  "ELGA_PRES_R",
-                                       "NOEU_SIEF_R",  "ELEM_SIEF_R",  "ELNO_SIEF_R",  "ELGA_SIEF_R",
-                                       "NOEU_SOUR_R",  "ELEM_SOUR_R",  "ELNO_SOUR_R",  "ELGA_SOUR_R",
-                                       "NOEU_TEMP_F",  "ELEM_TEMP_F",  "ELNO_TEMP_F",  "ELGA_TEMP_F",
-                                       "NOEU_TEMP_R",  "ELEM_TEMP_R",  "ELNO_TEMP_R",  "ELGA_TEMP_R",
-                                       "NOEU_VAR2_R",  "ELEM_VARI_R",  "ELNO_VARI_R",  "ELGA_VARI_R",
-                                       "NOEU_VNOR_C",  "ELEM_VNOR_C",  "ELNO_VNOR_C",  "ELGA_VNOR_C",
-                                       "NOEU_IRRA_R",  "ELEM_IRRA_R",  "ELNO_IRRA_R",  "ELGA_IRRA_R",),
+           TYPE_CHAM      = SIMP(statut='o',typ='TXM',into=C_TYPE_CHAM_INTO(),
                            fr="Type du champ qui contiendra le champ mis à jour",
                            ang="Type of the field for the updated field" ),
 #

@@ -1,9 +1,9 @@
-      SUBROUTINE NMFI2D( NPG,MATE,OPTION,GEOM,DEPLM,DDEPL,
-     &                   SIGMA,FINT,KTAN,VIM,VIP,COMPOR,TYPMOD,
-     &                   INSTM,INSTP)
+      SUBROUTINE NMFI2D( NPG,LGPG,MATE,OPTION,GEOM,DEPLM,DDEPL,
+     &                   SIGMA,FINT,KTAN,VIM,VIP,CRIT,
+     &                   COMPOR,TYPMOD,INSTM,INSTP)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 04/05/2004   AUTEUR SMICHEL S.MICHEL-PONNELLE 
+C MODIF ALGORITH  DATE 07/06/2004   AUTEUR NDOMING N.DOMINGUEZ 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,9 +24,9 @@ C
 C ======================================================================
 
       IMPLICIT NONE
-      INTEGER MATE,NPG
+      INTEGER MATE,NPG,LGPG
       REAL*8  GEOM(2,4),DEPLM(2,4),DDEPL(2,4),INSTM,INSTP
-      REAL*8  FINT(8),KTAN(8,8),SIGMA(2,NPG),VIM(3,NPG),VIP(3,NPG)
+      REAL*8  FINT(8),KTAN(8,8),SIGMA(2,NPG),VIM(LGPG,NPG),VIP(LGPG,NPG)
       CHARACTER*8  TYPMOD(*)
       CHARACTER*16 OPTION, COMPOR(*)
 C-----------------------------------------------------------------------
@@ -53,16 +53,23 @@ C-----------------------------------------------------------------------
       LOGICAL RESI, RIGI, AXI
       INTEGER I,J,Q,S, IBID,KPG
       REAL*8 DSIDEP(2,2),B(2,8),RBID,R8VIDE
-      REAL*8 SU(2),U(8),AIRE,POIDS(2),SIG(2),VIMOIN(3),VIPLUS(3)
+      REAL*8 SU(2),U(8),AIRE,POIDS(2),SIG(2),VIMOIN(LGPG),VIPLUS(LGPG)
+      REAL*8 VALRES,HPEN,LONG
+      REAL*8 CRIT
+      REAL*8 TEMPM,TEMPP,TREF
+      REAL*8 EPS(4),DEPS(4),SIGN,EPSANM,EPSANP
+      REAL*8 COD(NPG)
+      CHARACTER*2 CODRET
+      CHARACTER*8 NOMRES
 
 
       CALL R8INIR(8 , 0.D0, FINT,1)
       CALL R8INIR(64, 0.D0, KTAN,1)
       CALL R8INIR(4,  0.D0, SIGMA ,1)
 
-      AXI  = TYPMOD(1) .EQ. 'AXIS'
-      RESI = OPTION.EQ.'RAPH_MECA' .OR. OPTION(1:9).EQ.'FULL_MECA'
-      RIGI = OPTION(1:9).EQ.'FULL_MECA'.OR.OPTION(1:10).EQ.'RIGI_MECA_'
+      AXI   = TYPMOD(1) .EQ. 'AXIS'
+      RESI  = OPTION.EQ.'RAPH_MECA' .OR. OPTION(1:9).EQ.'FULL_MECA'
+      RIGI  = OPTION(1:9).EQ.'FULL_MECA'.OR.OPTION(1:10).EQ.'RIGI_MECA_'
 
       IF (.NOT. RESI .AND. .NOT. RIGI)
      &  CALL UTMESS('F','NMFI2D','OPTION '//OPTION//' NON TRAITEE')
@@ -82,6 +89,7 @@ C  * EN AXIS ON MULTIPLIE CETTE LONGEUR PAR LA DISTANCE DU CENTRE DE
 C    L'ELEMENT A L'AXE DE SYMETRIE.
 
       AIRE = SQRT( (GEOM(1,2)-GEOM(1,1))**2 + (GEOM(2,2)-GEOM(2,1))**2 )
+      LONG=AIRE
       IF (AXI) AIRE = AIRE * (GEOM(1,1)+GEOM(1,2))/2.D0
 
       DO 11 KPG=1,NPG
@@ -104,24 +112,61 @@ C CALCUL DU SAUT DE DEPLACEMENT DANS L'ELEMENT (SU_N,SU_T) = B U :
           SU(2) = SU(2) + B(2,J)*U(J)
  10     CONTINUE
 
-C CALCUL DE LA CONTRAINTE DANS L'ELEMENT AINSI QUE LA DERIVEE
-C DE CELLE-CI PAR RAPPORT AU SAUT DE DEPLACEMENT (SIGMA ET DSIDEP) :
-        VIMOIN(1)=VIM(1,KPG)
-        VIMOIN(2)=VIM(2,KPG)
-        VIMOIN(3)=VIM(3,KPG)
+        IF (COMPOR(1)(7:8).EQ.'BA') THEN
+          CALL RCVALA(MATE,' ','JOINT_BA',0,' ',0.D0,1,
+     &               'HPEN',VALRES,CODRET,'FM')
+          HPEN   = VALRES
+          
+          DO 15 J = 1,4
+            EPS (J)=0.D0
+            DEPS(J)=0.D0
+15        CONTINUE
 
-        CALL R8INIR(2,  0.D0, SIG ,1)
-        CALL NMCOMP (2,TYPMOD,MATE,COMPOR,RBID,RBID,RBID,RBID,
-     &               RBID,RBID,RBID,RBID,RBID,RBID,RBID,SU,RBID,RBID,
-     &               VIMOIN,OPTION,RBID,RBID,1,RBID,RBID,RBID,
-     &               SIG,VIPLUS,DSIDEP,IBID,R8VIDE(),R8VIDE())
+          EPS(1) = SU(2)/LONG
+          EPS(2) = SU(1)/HPEN
+          EPS(4) = SU(2)/HPEN
 
-        IF (RESI) THEN
+          DO 18 J=1,LGPG
+            VIMOIN(J)=VIM(J,KPG)
+18        CONTINUE
+
+          CALL R8INIR(2,  0.D0, SIG ,1)
+          CALL NMCOMP(2,TYPMOD,MATE,COMPOR,CRIT,INSTM,INSTP,
+     &            RBID,RBID,RBID,RBID,RBID,RBID,RBID,RBID,
+     &            EPS,DEPS,SIGN,VIMOIN,OPTION,EPSANM,EPSANP,
+     &            1,RBID,RBID,RBID,
+     &            SIG,VIPLUS,DSIDEP,IBID,R8VIDE(),R8VIDE())
+
+        IF (RESI) THEN               
           SIGMA(1,KPG)=SIG(1)
           SIGMA(2,KPG)=SIG(2)
-          VIP(1,KPG)=VIPLUS(1)
-          VIP(2,KPG)=VIPLUS(2)
-          VIP(3,KPG)=VIPLUS(3)
+          DO 28 J=1,LGPG
+            VIP(J,KPG)=VIPLUS(J)
+28        CONTINUE
+        ENDIF
+
+      ELSE        
+
+C CALCUL DE LA CONTRAINTE DANS L'ELEMENT AINSI QUE LA DERIVEE
+C DE CELLE-CI PAR RAPPORT AU SAUT DE DEPLACEMENT (SIGMA ET DSIDEP) :
+          VIMOIN(1)=VIM(1,KPG)
+          VIMOIN(2)=VIM(2,KPG)
+          VIMOIN(3)=VIM(3,KPG)
+
+          CALL R8INIR(2,  0.D0, SIG ,1)
+          CALL NMCOMP (2,TYPMOD,MATE,COMPOR,RBID,RBID,RBID,RBID,
+     &                 RBID,RBID,RBID,RBID,RBID,RBID,RBID,SU,RBID,RBID,
+     &                 VIMOIN,OPTION,RBID,RBID,1,RBID,RBID,RBID,
+     &                 SIG,VIPLUS,DSIDEP,IBID,R8VIDE(),R8VIDE())
+
+          IF (RESI) THEN
+            SIGMA(1,KPG)=SIG(1)
+            SIGMA(2,KPG)=SIG(2)
+            VIP(1,KPG)=VIPLUS(1)
+            VIP(2,KPG)=VIPLUS(2)
+            VIP(3,KPG)=VIPLUS(3)
+          ENDIF
+
         ENDIF
 
 C CALCUL DES FINT (B_T SIGMA )

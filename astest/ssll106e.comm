@@ -1,5 +1,5 @@
 
-# MODIF  DATE 08/12/2003   AUTEUR JMBHH01 J.M.PROIX 
+# MODIF  DATE 08/06/2004   AUTEUR JMBHH01 J.M.PROIX 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE TUBE DROIT SOUMIS A PLUSIEURS CHARGEMENTS - ELEMENT TUYAU 4 NOEUDS AVEC MECA_STATIQUE
 #
@@ -833,13 +833,9 @@ REST2=STAT_NON_LINE(MODELE=MO,
                     COMP_INCR=_F(RELATION='ELAS',),
                     INCREMENT=_F(LIST_INST=L_INST,),);
 
-CALC_NO(reuse =REST2,
-              RESULTAT=REST2,
+CALC_NO(reuse =REST2, RESULTAT=REST2,
               OPTION='FORC_NODA',
-              MODELE=MO,
-              CHAM_MATER=CHMAT,
-              CARA_ELEM=CAREL,
-              EXCIT=_F(CHARGE=CHARTH,),);
+              );
 
 TEST_RESU(RESU=(_F(RESULTAT=REST2,
                    INST=0.0,
@@ -914,20 +910,11 @@ REST=MECA_STATIQUE(MODELE=MO,
                            _F(CHARGE=CHARTH,),),
                     );
 
-CALC_ELEM( reuse= REST ,RESULTAT= REST , MODELE=MO,
-                    CHAM_MATER=CHMAT2,
-                    CARA_ELEM=CAREL,
-                    EXCIT=(_F(CHARGE=CHAR0,),
-                           _F(CHARGE=CHARTH,),),
-                    OPTION=('EPSI_ELGA_DEPL','EFGE_ELNO_DEPL',),);
+CALC_ELEM( reuse= REST ,RESULTAT= REST , 
+          OPTION=('EPSI_ELGA_DEPL','EFGE_ELNO_DEPL',),);
 
-CALC_NO(reuse =REST,
-             RESULTAT=REST,
-             OPTION='FORC_NODA',
-             MODELE=MO,
-             CHAM_MATER=CHMAT2,
-             CARA_ELEM=CAREL,
-             EXCIT=_F(CHARGE=CHARTH,),);
+CALC_NO(reuse =REST, RESULTAT=REST,
+             OPTION='FORC_NODA',);
 
 TEST_RESU(RESU=(_F(RESULTAT=REST,
                    INST=0.0,
@@ -1047,9 +1034,6 @@ TEST_TABLE(TABLE=MASSIN,
            VALE=0.0,
            CRITERE='ABSOLU',
            REFERENCE='ANALYTIQUE',);
-#FIN();
-# CALCUL MODAL
-#
 
 
 RIGI=CALC_MATR_ELEM(OPTION='RIGI_MECA',

@@ -10,7 +10,7 @@
      +                   DVISVG,FICKAD,DFADT,CPAD,KH,PAD,EM,LAMBCT)
 C =====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 07/06/2004   AUTEUR NDOMING N.DOMINGUEZ 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -1094,6 +1094,12 @@ C
             VALPAR(1) =  PVP
             VALPAR(2) =  P2
             VALPAR(3) =  VAL25(14)
+C
+C INITIALISATION DES AUTRES COMPOSANTES FICKIENNES
+C            
+            VAL25(22) = 1.0D0
+            VAL25(23) = 1.0D0
+            VAL25(24) = 1.0D0  
             CALL RCVALA(IMATE,' ', 'THM_DIFFU', 3, NOMPAR, VALPAR,
      +                          3, NCRA25(22), VAL25(22), CODRET, ' ')
             NOMPAR(1) = 'TEMP'
@@ -1103,14 +1109,6 @@ C
             CALL RCVALA(IMATE,' ', 'THM_DIFFU', 2,NOMPAR, VALPAR,
      +                          2, NCRA25(25), VAL25(25), CODRET, ' ')
 
-
-            IF(VAL25(21).NE.0.0D0 .OR. VAL25(22).NE.0.0D0 .OR. 
-     +        VAL25(23).NE.0.0D0 .OR. VAL25(24).NE.0.0D0)THEN
-               IF (VAL25(21).EQ.0.0D0)   VAL25(21) = 1.0D0
-               IF (VAL25(22).EQ.0.0D0)   VAL25(22) = 1.0D0
-               IF (VAL25(23).EQ.0.0D0)   VAL25(23) = 1.0D0
-               IF (VAL25(24).EQ.0.0D0)   VAL25(24) = 1.0D0
-            ENDIF
 
             RGAZ    = VAL25( 1)
             PESA(1) = VAL25( 2)
@@ -1224,6 +1222,13 @@ C
             VALPAR(1) =  T
             CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, NOMPAR, VALPAR,
      +                          1, NCRA40(21), VAL40(21), CODRET, 'FM ')
+C
+C INITIALISATION DES AUTRES COMPOSANTES FICKIENNES
+C            
+            VAL40(22) = 1.0D0
+            VAL40(23) = 1.0D0
+            VAL40(24) = 1.0D0  
+C            
             NOMPAR(1) = 'PVAP'
             NOMPAR(2) = 'PGAZ'
             NOMPAR(3) = 'SAT'
@@ -1239,14 +1244,7 @@ C
             CALL RCVALA(IMATE,' ', 'THM_DIFFU', 2,NOMPAR, VALPAR,
      +                          2, NCRA40(25), VAL40(25), CODRET, ' ')
 
-
-            IF(VAL40(21).NE.0.0D0 .OR. VAL40(22).NE.0.0D0 .OR. 
-     +        VAL40(23).NE.0.0D0 .OR. VAL40(24).NE.0.0D0)THEN
-               IF (VAL40(21).EQ.0.0D0)  VAL40(21) = 1.0D0
-               IF (VAL40(22).EQ.0.0D0)  VAL40(22) = 1.0D0
-               IF (VAL40(23).EQ.0.0D0)  VAL40(23) = 1.0D0
-               IF (VAL40(24).EQ.0.0D0)  VAL40(24) = 1.0D0
-            ENDIF
+C
 C    RECUPERATION DES FONCTIONS FICK AIR DISSOUS ET LEURS DERIVEES
 C
             NOMPAR(1) = 'TEMP'
@@ -1257,19 +1255,16 @@ C
             VALPAR(2) =  PAD
             VALPAR(3) =  P2-P1
             VALPAR(4) =  VAL40(14)
+C
+C INITIALISATION DES AUTRES COMPOSANTES FICKIENNES
+C            
+            VAL40(28) = 1.0D0
+            VAL40(29) = 1.0D0
+            VAL40(30) = 1.0D0  
             CALL RCVALA(IMATE,' ', 'THM_DIFFU', 4, NOMPAR, VALPAR,
      +                          4, NCRA40(27), VAL40(27), CODRET, ' ')
             CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'TEMP', T,
      +                          1, NCRA40(31), VAL40(31), CODRET, ' ')
-
-
-            IF(VAL40(27).NE.0.0D0 .OR. VAL40(28).NE.0.0D0 .OR. 
-     +        VAL40(29).NE.0.0D0 .OR. VAL40(30).NE.0.0D0)THEN
-               IF (VAL40(27).EQ.0.0D0)  VAL40(27) = 1.0D0
-               IF (VAL40(28).EQ.0.0D0)  VAL40(28) = 1.0D0
-               IF (VAL40(29).EQ.0.0D0)  VAL40(29) = 1.0D0
-               IF (VAL40(30).EQ.0.0D0)  VAL40(30) = 1.0D0
-            ENDIF
 
 
             RGAZ    = VAL40( 1)

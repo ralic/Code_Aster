@@ -1,4 +1,4 @@
-#& MODIF COMMUN  DATE 03/05/2004   AUTEUR F1BHHAJ J.ANGLES 
+#& MODIF COMMUN  DATE 08/06/2004   AUTEUR CIBHHLV L.VIVAN 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,29 +20,31 @@
 # ce fichier contient la liste des "into" possibles pour le mot cle TYPE_CHAM
 # c'est a dire les noms des types de champ des SD RESULTAT (DATA de la routine RSCRSD)
 def C_TYPE_CHAM_INTO() : return  ("ACCE",    #COMMUN#
+             "CART_CORR_R",
                              "NOEU_DBEL_R",  "ELEM_DBEL_R",  "ELNO_DBEL_R",  "ELGA_DBEL_R",
                              "NOEU_DEPL_C",  "ELEM_DEPL_C",  "ELNO_DEPL_C",  "ELGA_DEPL_C",
-                             "NOEU_DEPL_F",  "ELEM_DEPL_F",  "ELNO_DEPL_F",  "ELGA_DEPL_F",
-                             "NOEU_DEPL_R",  "ELEM_DEPL_R",  "ELNO_DEPL_R",  "ELGA_DEPL_R",
+             "CART_DEPL_F",  "NOEU_DEPL_F",  "ELEM_DEPL_F",  "ELNO_DEPL_F",  "ELGA_DEPL_F",
+             "CART_DEPL_R",  "NOEU_DEPL_R",  "ELEM_DEPL_R",  "ELNO_DEPL_R",  "ELGA_DEPL_R",
                              "NOEU_DURT_R",  "ELEM_DURT_R",  "ELNO_DURT_R",  "ELGA_DURT_R",
-                             "NOEU_ENER_R",  "ELEM_ENER_R",  "ELNO_ENER_R",  "ELGA_ENER_R",
+             "CART_ENER_R",  "NOEU_ENER_R",  "ELEM_ENER_R",  "ELNO_ENER_R",  "ELGA_ENER_R",
                              "NOEU_EPSI_R",  "ELEM_EPSI_R",  "ELNO_EPSI_R",  "ELGA_EPSI_R",
                              "NOEU_ERREUR",  "ELEM_ERREUR",  "ELNO_ERREUR",  "ELGA_ERREUR",
                              "NOEU_FLUX_R",  "ELEM_FLUX_R",  "ELNO_FLUX_R",  "ELGA_FLUX_R",
-                             "NOEU_GEOM_R",  "ELEM_GEOM_R",  "ELNO_GEOM_R",  "ELGA_GEOM_R",
+             "CART_GEOM_R",  "NOEU_GEOM_R",  "ELEM_GEOM_R",  "ELNO_GEOM_R",  "ELGA_GEOM_R",
                              "NOEU_G_DEPL_R","ELEM_G_DEPL_R","ELNO_G_DEPL_R","ELGA_G_DEPL_R",
                              "NOEU_HYDR_R",  "ELEM_HYDR_R",  "ELNO_HYDR_R",  "ELGA_HYDR_R",
                              "NOEU_INST_R",  "ELEM_INST_R",  "ELNO_INST_R",  "ELGA_INST_R",
                              "NOEU_INTE_R",  "ELEM_INTE_R",  "ELNO_INTE_R",  "ELGA_INTE_R",
+                             "NOEU_IRRA_R",  "ELEM_IRRA_R",  "ELNO_IRRA_R",  "ELGA_IRRA_R",
                              "NOEU_META_R",  "ELEM_META_R",  "ELNO_META_R",  "ELGA_META_R",
                              "NOEU_NEUT_F",  "ELEM_NEUT_F",  "ELNO_NEUT_F",  "ELGA_NEUT_F",
-                             "NOEU_NEUT_R",  "ELEM_NEUT_R",  "ELNO_NEUT_R",  "ELGA_NEUT_R",
+             "CART_NEUT_R",  "NOEU_NEUT_R",  "ELEM_NEUT_R",  "ELNO_NEUT_R",  "ELGA_NEUT_R",
                              "NOEU_PRES_R",  "ELEM_PRES_R",  "ELNO_PRES_R",  "ELGA_PRES_R",
-                             "NOEU_SIEF_R",  "ELEM_SIEF_R",  "ELNO_SIEF_R",  "ELGA_SIEF_R",
+             "CART_SIEF_R",  "NOEU_SIEF_R",  "ELEM_SIEF_R",  "ELNO_SIEF_R",  "ELGA_SIEF_R",
                              "NOEU_SOUR_R",  "ELEM_SOUR_R",  "ELNO_SOUR_R",  "ELGA_SOUR_R",
-                             "NOEU_TEMP_F",  "ELEM_TEMP_F",  "ELNO_TEMP_F",  "ELGA_TEMP_F",
-                             "NOEU_TEMP_R",  "ELEM_TEMP_R",  "ELNO_TEMP_R",  "ELGA_TEMP_R",
-                             "NOEU_VAR2_R",  "ELEM_VARI_R",  "ELNO_VARI_R",  "ELGA_VARI_R",
-                             "NOEU_VNOR_C",  "ELEM_VNOR_C",  "ELNO_VNOR_C",  "ELGA_VNOR_C",
-                             "NOEU_IRRA_R",  "ELEM_IRRA_R",  "ELNO_IRRA_R",  "ELGA_IRRA_R",
+             "CART_TEMP_F",  "NOEU_TEMP_F",  "ELEM_SPMA_R",  "ELNO_TEMP_F",  "ELGA_TEMP_F",
+             "CART_TEMP_R",  "NOEU_TEMP_R",  "ELEM_TEMP_F",  "ELNO_TEMP_R",  "ELGA_TEMP_R",
+             "CART_VAR2_R",  "NOEU_VAR2_R",  "ELEM_TEMP_R",  "ELNO_VARI_R",  "ELGA_VARI_R",
+                             "NOEU_VNOR_C",  "ELEM_VARI_R",  "ELNO_VNOR_C",  "ELGA_VNOR_C",
+                                             "ELEM_VNOR_C",
                                  )

@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF astermodule supervis  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN */
+/* MODIF astermodule supervis  DATE 07/06/2004   AUTEUR MCOURTOI M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -387,8 +387,13 @@ void TraitementFinAster( _IN int val ) ;
 #define CodeFinAster       19
 #define CodeAbortAster     20
 #define CodeErrorAster     21
-#define CodeNonConvergenceAster     22
-#define CodeEchecComportementAster  23
+#define CodeNonConvergenceAster           22
+#define CodeEchecComportementAster        23
+#define CodeBandeFrequenceVideAster       24
+#define CodeMatriceSinguliereAster        25
+#define CodeTraitementContactAster        26
+#define CodeMatriceContactSinguliereAster 27
+#define CodeArretCPUAster                 28
 
 int exception_status=-1;
 #define REASONMAX 800
@@ -446,6 +451,21 @@ void TraiteErreur( _IN int code )
                 abort();
                 break ;
         case CodeEchecComportementAster :
+                abort();
+                break ;
+        case CodeBandeFrequenceVideAster :
+                abort();
+                break ;
+        case CodeMatriceSinguliereAster :
+                abort();
+                break ;
+        case CodeTraitementContactAster :
+                abort();
+                break ;
+        case CodeMatriceContactSinguliereAster :
+                abort();
+                break ;
+        case CodeArretCPUAster :
                 abort();
                 break ;
         default :
@@ -506,8 +526,13 @@ static PyObject *AsterError = (PyObject*)0 ; /* Ce type d'exception est levee su
 static PyObject *FatalError = (PyObject*)0 ; /* Ce type d'exception (derive de AsterError) est levee sur appel de XFINI avec le parametre 20 */
 
 /* exceptions particularisées */
-static PyObject *NonConvergenceError = (PyObject*)0 ; /* Exception non convergence */
-static PyObject *EchecComportementError = (PyObject*)0 ; /* Exception échec intégration du comportement */
+static PyObject *NonConvergenceError = (PyObject*)0 ;           /* Exception non convergence */
+static PyObject *EchecComportementError = (PyObject*)0 ;        /* Exception échec intégration du comportement */
+static PyObject *BandeFrequenceVideError = (PyObject*)0 ;       /* Exception bande de fréquence vide */
+static PyObject *MatriceSinguliereError = (PyObject*)0 ;        /* Exception matrice singuliere */
+static PyObject *TraitementContactError = (PyObject*)0 ;        /* Exception échec de traitement du contact */
+static PyObject *MatriceContactSinguliereError = (PyObject*)0 ; /* Exception matrice de contact non inversible */
+static PyObject *ArretCPUError = (PyObject*)0 ;                 /* Exception manque de temps CPU */
 
 void initExceptions(PyObject *dict)
 {
@@ -520,8 +545,24 @@ void initExceptions(PyObject *dict)
         /* Exceptions particularisées */
         NonConvergenceError = PyErr_NewException("aster.NonConvergenceError", AsterError, NULL);
         if(NonConvergenceError != NULL) PyDict_SetItemString(dict, "NonConvergenceError", NonConvergenceError);
+
         EchecComportementError = PyErr_NewException("aster.EchecComportementError", AsterError, NULL);
         if(EchecComportementError != NULL) PyDict_SetItemString(dict, "EchecComportementError", EchecComportementError);
+        
+        BandeFrequenceVideError = PyErr_NewException("aster.BandeFrequenceVideError", AsterError, NULL);
+        if(BandeFrequenceVideError != NULL) PyDict_SetItemString(dict, "BandeFrequenceVideError", BandeFrequenceVideError);
+        
+        MatriceSinguliereError = PyErr_NewException("aster.MatriceSinguliereError", AsterError, NULL);
+        if(MatriceSinguliereError != NULL) PyDict_SetItemString(dict, "MatriceSinguliereError", MatriceSinguliereError);
+        
+        TraitementContactError = PyErr_NewException("aster.TraitementContactError", AsterError, NULL);
+        if(TraitementContactError != NULL) PyDict_SetItemString(dict, "TraitementContactError", TraitementContactError);
+        
+        MatriceContactSinguliereError = PyErr_NewException("aster.MatriceContactSinguliereError", AsterError, NULL);
+        if(MatriceContactSinguliereError != NULL) PyDict_SetItemString(dict, "MatriceContactSinguliereError", MatriceContactSinguliereError);
+        
+        ArretCPUError = PyErr_NewException("aster.ArretCPUError", AsterError, NULL);
+        if(ArretCPUError != NULL) PyDict_SetItemString(dict, "ArretCPUError", ArretCPUError);
 }
 
 /*
@@ -3576,6 +3617,21 @@ void TraitementFinAster( _IN int val )
                 break ;
         case CodeEchecComportementAster :
                 PyErr_SetString(EchecComportementError, exception_reason);
+                break ;
+        case CodeBandeFrequenceVideAster :
+                PyErr_SetString(BandeFrequenceVideError, exception_reason);
+                break ;
+        case CodeMatriceSinguliereAster :
+                PyErr_SetString(MatriceSinguliereError, exception_reason);
+                break ;
+        case CodeTraitementContactAster :
+                PyErr_SetString(TraitementContactError, exception_reason);
+                break ;
+        case CodeMatriceContactSinguliereAster :
+                PyErr_SetString(MatriceContactSinguliereError, exception_reason);
+                break ;
+        case CodeArretCPUAster :
+                PyErr_SetString(ArretCPUError, exception_reason);
                 break ;
 
         default :

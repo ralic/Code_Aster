@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 08/06/2004   AUTEUR CIBHHLV L.VIVAN 
 # TITRE ESSAI DE THERMOPLASTICITE (MISES ECR. ISOT. BARRE)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -105,9 +105,7 @@ TEMPIMPO=CREA_CHAMP(  OPERATION='AFFE',
 
 TEMPRESU=CREA_RESU(  OPERATION='AFFE', TYPE_RESU='EVOL_THER',
                       NOM_CHAM='TEMP',
-                          AFFE=_F(  LIST_INST= LINST,
-                                    NUME_INIT= 0,
-                                    NUME_FIN = 7,
+                          AFFE=_F(  INST=(0.,1.,2.,3.,4.,5.,6.,7.),
                                     CHAM_GD  = TEMPIMPO)
                   )
 

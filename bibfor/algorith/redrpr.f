@@ -1,7 +1,7 @@
       SUBROUTINE REDRPR( MOD, IMATE, SIGP, VIM, VIP, DSDE, ICODE )
 C =====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ALGORITH  DATE 08/06/2004   AUTEUR ROMEO R.FERNANDES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -30,70 +30,57 @@ C --- ICODE = 0 CORRESPONDT AU CAS ELASTIQUE --------------------------
 C --- ICODE = 1 SINON -------------------------------------------------
 C =====================================================================
       INTEGER      NPG, NDT, NDI, NVI, TYPEDP
-      REAL*8       PMOINS, PPLUS, MATERF(4,2), HOOKF(6,6), DPDENO, DP
-      REAL*8       SE(6), SEQ, PLAS, ALPHA, DPLITG, DPPATG, PHI, VALEUR
-      REAL*8       SS(6), SII, SQ, YOUNG, NU, DEUXMU, UN, DEUX, TROIS
-      CHARACTER*8  TYPMOD(2)
+      REAL*8       PPLUS, MATERF(4,2), HOOKF(6,6), DPDENO, DP
+      REAL*8       SE(6), SEQ, PLAS, ALPHA, DPLITG, DPPATG, PHI
+      REAL*8       SIIE, DEUX, TROIS
 C ======================================================================
       COMMON /TDIM/   NDT, NDI
 C =====================================================================
 C --- INITIALISATION --------------------------------------------------
 C =====================================================================
-      PARAMETER  ( UN    = 1.0D0 )
       PARAMETER  ( DEUX  = 2.0D0 )
       PARAMETER  ( TROIS = 3.0D0 )
 C =====================================================================
       CALL LCINVE ( 0.0D0, SE   )
-      CALL LCINVE ( 0.0D0, SS   )
       CALL LCINMA ( 0.0D0, DSDE )
+      CALL LCINMA ( 0.0D0, HOOKF)
 C =====================================================================
 C --- RECUPERATION DES DONNEES MATERIAUX ------------------------------
 C =====================================================================
       CALL DPMATE(MOD, IMATE, MATERF, NDT, NDI, NVI, TYPEDP)
-      YOUNG  = MATERF(1,1)
-      NU     = MATERF(2,1)
-      DEUXMU = YOUNG / (UN+NU)
-      PMOINS = VIM(1)
       PPLUS  = VIP(1)
-      DP     = PPLUS - PMOINS
+      DP     = 0.0D0
       PLAS   = VIP(NVI)
-      IF (PLAS.EQ.0.0D0) THEN
-         ICODE = 0
-         GO TO 999
-      ENDIF
-      ICODE = 1
-C =====================================================================
-C --- OPERATEUR ELASTIQUE LINEAIRE ISOTROPE ---------------------------
-C =====================================================================
-      CALL LCOPLI ( 'ISOTROPE', MOD, MATERF(1,1), HOOKF )
-C =====================================================================
-C --- INTEGRATION ELASTIQUE : SIGF = HOOKF EPSP -----------------------
-C =====================================================================
-      CALL     LCDEVI(SIGP,SS)
-      CALL     PSCAL (NDT,SS,SS,SII)
-      SQ     = SQRT  (TROIS*SII/DEUX)
-      SEQ    = SQ + TROIS*DEUXMU*DP/DEUX
-      VALEUR = UN / (UN - TROIS*DEUXMU*DP/DEUX/SEQ)
-      CALL     LCPRSV( VALEUR, SS, SE )
-C =====================================================================
-C --- CALCUL DES CONTRAINTES ------------------------------------------
-C =====================================================================
+      ICODE  = 1
+      SEQ    = 0.0D0
       IF (TYPEDP.EQ.1) THEN
 C =====================================================================
-C --- RESOLUTION DU SYSTEME -------------------------------------------
+C --- RECUPERATION DE R' POUR UNE LOI DP DE TYPE LINEAIRE -------------
 C =====================================================================
          ALPHA  = MATERF(3,2)
-         DPDENO = DPLITG( MATERF, PPLUS )
+         DPDENO = DPLITG( MATERF, PPLUS, PLAS )
       ELSE IF (TYPEDP.EQ.2) THEN
 C =====================================================================
-C --- RESOLUTION DU SYSTEME -------------------------------------------
+C --- RECUPERATION DE R' POUR UNE LOI DP DE TYPE PARABOLIQUE ----------
 C =====================================================================
          PHI    = MATERF(2,2)
          ALPHA  = DEUX * SIN(PHI) / (TROIS - SIN(PHI))
-         DPDENO = DPPATG( MATERF, PPLUS )
+         DPDENO = DPPATG( MATERF, PPLUS, PLAS )
       ENDIF
-      CALL DPMATA( HOOKF, MATERF, ALPHA, DP, DPDENO,
+      IF (PLAS.EQ.0.0D0) THEN
+         ICODE = 0
+      ELSE
+         IF (PLAS.EQ.1.0D0) THEN
+C =====================================================================
+C --- INTEGRATION ELASTIQUE : SIGF = HOOKF EPSP -----------------------
+C =====================================================================
+            CALL     LCDEVI(SIGP,SE)
+            CALL     PSCAL (NDT,SE,SE,SIIE)
+            SEQ     = SQRT (TROIS*SIIE/DEUX)
+         ENDIF
+         CALL DPMATA( MOD, MATERF, ALPHA, DP, DPDENO, PPLUS,
      +                                             SE, SEQ, PLAS, DSDE)
+      ENDIF
 C =====================================================================
  999  CONTINUE
 C =====================================================================

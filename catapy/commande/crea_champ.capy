@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 08/06/2004   AUTEUR CIBHHLV L.VIVAN 
 # RESPONSABLE VABHHTS J.PELLET
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -38,7 +38,7 @@ def crea_champ_prod(TYPE_CHAM,**args):
 CREA_CHAMP=OPER(nom="CREA_CHAMP",op= 195,sd_prod=crea_champ_prod,
                 fr="  ",docu="U4.72.04-b",reentrant='n',
             UIinfo={"groupes":("Résultats et champs",)},
-         TYPE_CHAM       =SIMP(statut='o',typ='TXM',),
+         TYPE_CHAM       =SIMP(statut='o',typ='TXM',into=C_TYPE_CHAM_INTO()),
       # TYPE_CHAM doit etre de la forme : CART_xx, NOEU_xx, ELEM_xx, ELGA_xx ou ELNO_xx
       # ou xx est le nom d'une grandeur définie dans le catalogue des grandeurs
 

@@ -1,4 +1,4 @@
-# MODIF  DATE 28/03/2001   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 08/06/2004   AUTEUR JMBHH01 J.M.PROIX 
 # TITRE POUTRE ENCASTREE A UNE EXTREMITE ET CHARGEE PAR UNE TRACTION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -101,18 +101,11 @@ REST=STAT_NON_LINE(
                 ITER_GLOB_MAXI = 20)
               )
 
-REST=CALC_ELEM( reuse=REST,
-                            OPTION=(
-                  'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
-                          RESULTAT=REST,
-                            MODELE=MO,
-                        CHAM_MATER=CHMAT1,
-                         CARA_ELEM=CAREL
+CALC_ELEM( reuse=REST,RESULTAT=REST,
+        OPTION=('SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
               )
 
-REST=CALC_ELEM( reuse=REST,   MODELE=MO, 
-                     CHAM_MATER=CHMAT1,    CARA_ELEM=CAREL,
-                     RESULTAT=REST,
+CALC_ELEM( reuse=REST,   RESULTAT=REST,
                        OPTION='DEGE_ELNO_DEPL'    )
 
 TEST_RESU(RESU=(_F( RESULTAT = REST,
@@ -246,18 +239,11 @@ RESM=STAT_NON_LINE(
                 MATRICE = 'ELASTIQUE')
               )
 
-RESM=CALC_ELEM( reuse=RESM,
-                            OPTION=(
-                  'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
-                          RESULTAT=RESM,
-                            MODELE=MO,
-                        CHAM_MATER=CHMAT2,
-                         CARA_ELEM=CAREL
+CALC_ELEM( reuse=RESM,RESULTAT=RESM,
+          OPTION=('SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
               )
 
-RESM=CALC_ELEM( reuse=RESM,   MODELE=MO, 
-                     CHAM_MATER=CHMAT2,  CARA_ELEM=CAREL,
-                     RESULTAT=RESM,
+CALC_ELEM( reuse=RESM,   RESULTAT=RESM,
                        OPTION='DEGE_ELNO_DEPL'    )
 
 # RESULTATS EN PLASTICITE PARFAITE
@@ -402,16 +388,13 @@ TEST_RESU(RESU=(_F( RESULTAT = RESM, NOM_CHAM = 'REAC_NODA', NOEUD = 'R3',
 
 # TEST RCCM
 
-REST=CALC_ELEM( reuse=REST,  MODELE=MO,   CHAM_MATER=CHMAT1,   CARA_ELEM=CAREL,
-                      RESULTAT=REST,   GROUP_MA='GC1',
+CALC_ELEM( reuse=REST,   RESULTAT=REST,   GROUP_MA='GC1',
                       OPTION=('PMPB_ELGA_SIEF',))
 
-REST=CALC_ELEM( reuse=REST,  MODELE=MO,   CHAM_MATER=CHMAT1,   CARA_ELEM=CAREL,
-                      RESULTAT=REST,   GROUP_MA='GC1',
+CALC_ELEM( reuse=REST, RESULTAT=REST,   GROUP_MA='GC1',
                       OPTION=('PMPB_ELNO_SIEF',))
 
-REST=CALC_NO( reuse=REST,  CHAM_MATER=CHMAT1,   CARA_ELEM=CAREL,
-                      RESULTAT=REST,   GROUP_MA='GC1',
+CALC_NO( reuse=REST,   RESULTAT=REST,   GROUP_MA='GC1',
                       OPTION=('PMPB_NOEU_SIEF',))
 
 TEST_RESU(RESU=(
@@ -425,16 +408,13 @@ _F( RESULTAT = REST, NOM_CHAM = 'PMPB_NOEU_SIEF', NOEUD = 'C3',
 
 # TEST RCCM
 
-RESM=CALC_ELEM( reuse=RESM,  MODELE=MO,   CHAM_MATER=CHMAT2,   CARA_ELEM=CAREL,
-                      RESULTAT=RESM,   GROUP_MA='GC1',
-                      OPTION=('PMPB_ELGA_SIEF',))
+CALC_ELEM( reuse=RESM,  RESULTAT=RESM,   GROUP_MA='GC1',
+                 OPTION=('PMPB_ELGA_SIEF',))
 
-RESM=CALC_ELEM( reuse=RESM,  MODELE=MO,   CHAM_MATER=CHMAT2,   CARA_ELEM=CAREL,
-                      RESULTAT=RESM,   GROUP_MA='GC1',
-                      OPTION=('PMPB_ELNO_SIEF',))
+CALC_ELEM( reuse=RESM, RESULTAT=RESM,   GROUP_MA='GC1',
+                 OPTION=('PMPB_ELNO_SIEF',))
 
-RESM=CALC_NO( reuse=RESM,  CHAM_MATER=CHMAT2,   CARA_ELEM=CAREL,
-                      RESULTAT=RESM,   GROUP_MA='GC1',
+CALC_NO( reuse=RESM,   RESULTAT=RESM,   GROUP_MA='GC1',
                       OPTION=('PMPB_NOEU_SIEF',))
 
 TEST_RESU(RESU=(
@@ -448,10 +428,7 @@ _F( RESULTAT = RESM, NOM_CHAM = 'PMPB_NOEU_SIEF', NOEUD = 'C3',
 
 #---------------------------------------------------------------------
 
-RESM=CALC_ELEM( reuse=RESM,      MODELE=MO,
-                      CHAM_MATER=CHMAT1,
-                       CARA_ELEM=CAREL,
-                        RESULTAT=RESM,
+CALC_ELEM( reuse=RESM,   RESULTAT=RESM,
                       NUME_ORDRE=( 1,  71, ),
                           OPTION=( 'SIGM_ELNO_SIEF', 
                                    'SIPO_ELNO_SIEF', )
@@ -479,38 +456,4 @@ TEST_RESU(RESU=(
 
 #---------------------------------------------------------------------
 FIN( )
-#
-#
-#XM = RECU_FONCTION ( RESULTAT : RESM
-#                          INTITULE : 'DXM'
-#                          TOUT_INST : 'OUI'
-#                  NOM_CHAM : 'DEPL'
-#                 GROUP_NO : B
-#                 NOM_CMP: 'DRZ'
-#                        );
-#
-#   YM = RECU_FONCTION ( RESULTAT : RESM
-#                          INTITULE : 'FXM'
-#                          TOUT_INST : 'OUI'
-#                  NOM_CHAM : 'SIEF_ELNO_ELGA'
-#                 NOEUD : C3 MAILLE : SC2
-#                 NOM_CMP: 'MFZ'
-#                        );
-#
-#
-#
-# #MPR_COURBE(FORMAT    : 'AGRAF'
-#             FICHIER   : 'AGRAF'
-#          TITRE_GRAPHIQUE : 'SSNL106 AVEC POU_D_T'
-#         LEGENDE_X       : 'UX DU POINT B'
-#         LEGENDE_Y       : 'FX DU POINT B'
-#             COURBE    : (FONC_X : XM
-#                          FONC_Y : YM
-#                 LEGENDE   : 'CALCUL AVEC POU_D_T'
-#                 STYLE     : 'LIGNE'
-#                 COULEUR   : 'VERT_FONCE'
-#                 MARQUEUR  : 'FUSEE_F'
-#                 FREQ_MARQUEUR : 1
-#                           )
-#            );
 #

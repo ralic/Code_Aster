@@ -1,7 +1,7 @@
-      SUBROUTINE RESDP1( MATERF, SEQ, I1E, PMOINS,DP, DPDENO, PLAS)
+      SUBROUTINE RESDP1( MATERF, SEQ, I1E, PMOINS,DP, PLAS)
 C =====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 08/06/2004   AUTEUR ROMEO R.FERNANDES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -20,7 +20,7 @@ C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C =====================================================================
       IMPLICIT      NONE
-      REAL*8        MATERF(4,2),PMOINS,DP,SEQ,I1E,PLAS,DPDENO
+      REAL*8        MATERF(4,2),PMOINS,DP,SEQ,I1E,PLAS
 C =====================================================================
 C --- RESOLUTION NUMERIQUE --------------------------------------------
 C =====================================================================
@@ -60,7 +60,6 @@ C =====================================================================
                CALL UTMESS('F','RESDP1','INCOHERENCE DE A OU H')
             ENDIF
             DP     = FCRIT / A1
-            DPDENO = - A1
             VALCOE = PULT - PMOINS
             IF ( DP.GT.VALCOE ) THEN
                FCRIT  = SCHDP1(SEQ, I1E, SY, H, A, PULT, PULT)
@@ -69,7 +68,6 @@ C =====================================================================
                   CALL UTMESS('F','RESDP1','INCOHERENCE DE DONNEES')
                ENDIF
                DP     = FCRIT / B2
-               DPDENO = - B2
             ENDIF
          ELSE
             B2 = TROIS * DEUXMU / DEUX + TROIS * TROISK * A * A
@@ -77,7 +75,6 @@ C =====================================================================
                CALL UTMESS('F','RESDP1_2','INCOHERENCE DE A OU H')
             ENDIF
             DP = FCRIT / B2
-            DPDENO = - B2
          ENDIF
       ELSE
          PLAS   = 0.0D0
@@ -90,11 +87,6 @@ C =====================================================================
       IF ( DP.GT.VALPRO ) THEN
          DP   = VALPRO
          PLAS = 2.0D0
-         B2 = TROIS * DEUXMU / DEUX + TROIS * TROISK * A * A
-         IF (B2.EQ.0.0D0) THEN
-            CALL UTMESS('F','RESDP2','INCOHERENCE DE DONNEES')
-         ENDIF
-         DPDENO = - B2
       ENDIF
 C =====================================================================
       END

@@ -3,7 +3,7 @@
       INTEGER ICMD,ICOND,IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 11/08/2003   AUTEUR DURAND C.DURAND 
+C MODIF SUPERVIS  DATE 08/06/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,6 +41,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
 C     ------------------------------------------------------------------
+      CHARACTER*1 KLAS
       CHARACTER*8 KBID
       CHARACTER*32 KCH
       CHARACTER*16 TYPECO
@@ -85,10 +86,11 @@ C
  3       CONTINUE
          CALL GETFAC('OBJET',NBOCC)
          DO 2 IOCC = 1,NBOCC
-            CALL GETVID('OBJET','CHAINE',IOCC,1,0,KBID,NOBJ)
+            CALL GETVTX('OBJET','CLASSE',IOCC,1,1,KLAS,NOBJ)
+            CALL GETVTX('OBJET','CHAINE',IOCC,1,0,KBID,NOBJ)
             NOBJ = -NOBJ
             CALL WKVECT('&&OPS007.NOMOBJ','V V K24',NOBJ,JOBJ)
-            CALL GETVID('OBJET','CHAINE',IOCC,1,NOBJ,ZK24(JOBJ),LBID)
+            CALL GETVTX('OBJET','CHAINE',IOCC,1,NOBJ,ZK24(JOBJ),LBID)
             CALL GETVIS('OBJET','POSITION',IOCC,1,0,LBID,NIPO)
             NIPO = -NIPO
             IF (NIPO .LT. NOBJ) THEN
@@ -103,7 +105,7 @@ C
             DO 105 II =1,NOBJ
                KCH = ZK24(JOBJ+II-1)
                L=INDEX(KCH,' ')
-               IF (L.GT.0) CALL JEDETC('G',KCH(1:L-1),ZI(JPO+II-1))
+               IF (L.GT.0) CALL JEDETC(KLAS,KCH(1:L-1),ZI(JPO+II-1))
  105        CONTINUE
             CALL JEDETR('&&OPS007.NOMOBJ')
             CALL JEDETR('&&OPS007.NIPOSI')

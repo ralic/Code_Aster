@@ -1,7 +1,7 @@
       SUBROUTINE TE0030(OPTION,NOMTE)
 C =====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 08/06/2004   AUTEUR ROMEO R.FERNANDES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -46,9 +46,10 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX --------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX --------------------
 C =====================================================================
+      LOGICAL      LOGTHM
       INTEGER      IMATE, ICOMPO, IVARIM, IVARIP, ICONTP, ILOCAL
       INTEGER      NBVARI, NBRAC4, RINDIC, KPG, II, NBSIG
-      INTEGER      NBSIGM, ICODE
+      INTEGER      NBSIGM, ICODE, IRET, TABTHM(3), DIMMAX, NPGU
       INTEGER      NDIM, NNO, NNOS, NPG, IPOIDS, IVF, IDFDE, JGANO
       REAL*8       VBIFUR, RACINE(4), DSDE(6,6)
       CHARACTER*8  MOD, MODELI
@@ -64,17 +65,41 @@ C =====================================================================
 C --- VERIFICATION DE COHERENCE ---------------------------------------
 C --- LE TENSEUR ACOUSTIQUE EST DEVELOPPE EN 2D UNIQUEMENT ------------
 C =====================================================================
+C --- CAS D'UN POST-TRAITEMENT EN MECANIQUE DRAINE --------------------
+C =====================================================================
+         LOGTHM  = .FALSE.
          MODELI(1:2) = NOMTE(3:4)
-         NBSIG = NBSIGM(MODELI)
          IF (MODELI(1:2).EQ.'DP') THEN
             MOD(1:6) = 'D_PLAN'
+            NBSIG = NBSIGM(MODELI)
          ELSE IF (MODELI(1:2).EQ.'CP') THEN
             MOD(1:6) = 'C_PLAN'
+            NBSIG = NBSIGM(MODELI)
          ELSE IF (MODELI(1:2).EQ.'AX') THEN
             MOD(1:4) = 'AXIS'
+            NBSIG = NBSIGM(MODELI)
          ELSE
-            CALL UTMESS('F','TE0030','LA MODELISATION : '//MODELI//
-     +               'N''EST PAS TRAITEE.')
+C =====================================================================
+C --- CAS D'UN POST-TRAITEMENT EN MECANIQUE THM -----------------------
+C =====================================================================
+            LOGTHM  = .TRUE.
+            IF ( NOMTE(6:9) .EQ.'AXIS' .OR.
+     +           NOMTE(4:7) .EQ.'AXIS' .OR.
+     +           NOMTE(5:8) .EQ.'AXIS' .OR.
+     +           NOMTE(7:10).EQ.'AXIS'      )THEN
+               MOD(1:4) = 'AXIS'
+            ELSE IF ( NOMTE(6:7) .EQ.'DP' .OR.
+     +                NOMTE(7:8) .EQ.'DP' .OR.
+     +                NOMTE(4:5) .EQ.'DP' .OR.
+     +                NOMTE(5:6) .EQ.'DP'      )THEN
+               MOD(1:6) = 'D_PLAN'
+            ELSE
+C =====================================================================
+C --- CAS NON TRAITE --------------------------------------------------
+C =====================================================================
+               CALL UTMESS('F','TE0030','LA MODELISATION : '//NOMTE//
+     +                                           'N''EST PAS TRAITEE.')
+            ENDIF
          ENDIF
 C =====================================================================
 C --- RECUPERATION DU ELREFE ------------------------------------------
@@ -87,8 +112,31 @@ C =====================================================================
          CALL JEVECH('PCOMPOR','L',ICOMPO)
          CALL JEVECH('PVARIMR','L',IVARIM)
          CALL JEVECH('PVARIPR','L',IVARIP)
-         CALL JEVECH('PCONTPR','L',ICONTP)
-         RELCOM = ZK16(ICOMPO-1+1)
+         IF (LOGTHM) THEN
+C =====================================================================
+C --- DANS LE CADRE THM ON FAIT UN TECACH PLUTOT QU'UN JEVECH POUR ----
+C --- RECUPERER EGALEMENT LA DIMENSION DU VECTEUR QUI DIFFERE SUIVANT -
+C --- LA MODELISATION THM ---------------------------------------------
+C =====================================================================
+            CALL TECACH('OOO','PCONTPR',3,TABTHM,IRET)
+            ICONTP = TABTHM(1)
+            DIMMAX = TABTHM(2)
+            NPGU   = TABTHM(3)
+C =====================================================================
+C --- ON TESTE LA COHERENCE DES RECUPERATIONS ELREF4 ET TECACH SUR ----
+C --- LE NOMBRE DE POINTS DE GAUSS ------------------------------------
+C =====================================================================
+            CALL ASSERT(NPGU.EQ.NPG)
+            NBSIG = DIMMAX / NPG  
+C =====================================================================
+C --- DANS LE CADRE DE LA THM ON RECUPERE DIRECTEMENT LA RELATION -----
+C --- DE COMPORTEMENT DE TYPE MECANIQUE -------------------------------
+C =====================================================================
+            RELCOM = ZK16(ICOMPO-1+11)  
+         ELSE
+            CALL JEVECH('PCONTPR','L',ICONTP)
+            RELCOM = ZK16(ICOMPO-1+ 1)
+         ENDIF
 C =====================================================================
 C --- NOMBRE DE VARIABLES INTERNES ASSOCIE A LA LOI DE COMPORTEMENT ---
 C =====================================================================
@@ -101,6 +149,14 @@ C =====================================================================
 C --- BOUCLE SUR LES POINTS DE GAUSS ----------------------------------
 C =====================================================================
          DO 10 KPG = 1, NPG
+C =====================================================================
+C --- INITIALISATIONS -------------------------------------------------
+C =====================================================================
+            VBIFUR    = 0.0D0
+            RACINE(1) = 0.0D0
+            RACINE(2) = 0.0D0
+            RACINE(3) = 0.0D0
+            RACINE(4) = 0.0D0
 C =====================================================================
 C --- CALCUL DE LA MATRICE TANGENTE -----------------------------------
 C --- (FONCTION DE LA RELATION DE COMPORTEMENT) -----------------------

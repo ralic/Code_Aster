@@ -8,7 +8,7 @@
       LOGICAL                                    EXITIM
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 26/05/97   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 08/06/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -70,6 +70,7 @@ C
 C
 C     --- DEPENDANCE DE LA TEMPERATURE ---
 C
+      REPK = 'NON'
       IF ( MATE .NE. ' ' ) THEN
        CALL DISMOI('F','ELAS_F_TEMP',CHMATE,'CHAM_MATER',IBID,REPK,IERD)
       ENDIF

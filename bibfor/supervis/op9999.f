@@ -3,7 +3,7 @@
       INTEGER            ICOND , IER , IFIN
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 06/09/2003   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF SUPERVIS  DATE 08/06/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -42,7 +42,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER      IEND, IVERI, IFM, NOCC
       CHARACTER*8  K8B, OUINON, OUIPER, TYPRES, OUIHDF
-      CHARACTER*16 FCHIER
+      CHARACTER*16 FCHIER,FHDF
       CHARACTER*80 FICH
       REAL*8       XTT, TEMPS(6)
 C     ------------------------------------------------------------------
@@ -99,10 +99,13 @@ C     --- RETASSAGE EVENTUEL DE LA GLOBALE
       IF(OUINON .EQ. 'OUI') CALL JETASS('G')
 C
 C     --- SAUVEGARDE DE LA GLOBALE AU FORMAT HDF
-      CALL GETFAC ('HDF', NOCC)
-      IF (NOCC .EQ. 1) THEN
-        CALL GETVTX('HDF','FICHIER',1,1,1,FICH,L)
-        CALL JEIMHD(FICH,'G')
+      FHDF = 'NON'
+      CALL GETVTX(' ','FORMAT_HDF',1,1,1,FHDF,NFHDF)
+      IF (NFHDF .GT. 0) THEN
+        IF ( FHDF .EQ. 'OUI' ) THEN
+          FICH = 'bhdf.1'
+          CALL JEIMHD(FICH,'G')
+        ENDIF
       ENDIF
 C
 C     --- CLOTURE DES FICHIERS ---

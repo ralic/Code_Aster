@@ -7,7 +7,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 17/05/2004   AUTEUR ROMEO R.FERNANDES 
+C MODIF ALGORITH  DATE 08/06/2004   AUTEUR ROMEO R.FERNANDES 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -244,7 +244,7 @@ C =====================================================================
 C =====================================================================
 C --- EN LIQU_VAPE CALCUL DE RHO11, DES ENTHALPIES DE PVP ET RHOVP ----
 C =====================================================================
-      IF (OPTION(1:16).EQ.'RIGI_MECA_TANG') THEN
+      IF (OPTION(1:9).EQ.'RIGI_MECA') THEN
          RHO11 = VINTM(ADVIHY+VIHRHO) + RHO110
          RHO11M = VINTM(ADVIHY+VIHRHO) + RHO110
       ELSE
@@ -260,7 +260,7 @@ C =====================================================================
 C =====================================================================
 C --- CALCUL ENTHALPIES ET DERIVEES DES ENTHALPIES --------------------
 C =====================================================================
-      IF ((OPTION(1:16).EQ.'RIGI_MECA_TANG') .OR.
+      IF ((OPTION(1:9).EQ.'RIGI_MECA') .OR.
      &    (OPTION(1:9).EQ.'FULL_MECA')) THEN
         DSDE(ADCP11+NDIM+1,ADDEP1) = DSDE(ADCP11+NDIM+1,ADDEP1) +
      &                               (1.D0-3.D0*ALPLIQ*T)/RHO11
@@ -274,7 +274,7 @@ C =====================================================================
         CONGEP(ADCP12+NDIM+1) = CONGEP(ADCP12+NDIM+1) + CP12*DT
       END IF
       IF (YATE.EQ.1) THEN
-        IF (OPTION.EQ.'RIGI_MECA_TANG') THEN
+        IF (OPTION(1:9).EQ.'RIGI_MECA') THEN
           H11 = CONGEM(ADCP11+NDIM+1)
           H12 = CONGEM(ADCP12+NDIM+1)
         ELSE
@@ -287,7 +287,7 @@ C --- CALCUL DE LA VARIABLE INTERNE PRESSION VAPEUR -------------------
 C --- ET DES AUTRES MASSES VOLUMIQUES AVEC 2 FLUIDES, MAIS PAS --------
 C --- C0EPS QUI NECESSITE SAT ET PHI ----------------------------------
 C =====================================================================
-      IF (OPTION(1:16).EQ.'RIGI_MECA_TANG') THEN
+      IF (OPTION(1:9).EQ.'RIGI_MECA') THEN
         PVP = VINTM(ADVICO+VICPVP) + PVP0
         PVPM = VINTM(ADVICO+VICPVP) + PVP0
       ELSE
@@ -344,7 +344,7 @@ C =====================================================================
 C =====================================================================
 C --- CALCUL DE PHI ET DE RHO11 (SI LIQ) A L'INSTANT COURANT ----------
 C =====================================================================
-      IF (OPTION(1:16).EQ.'RIGI_MECA_TANG') THEN
+      IF (OPTION(1:9).EQ.'RIGI_MECA') THEN
         IF (YAMEC.EQ.1) THEN
           PHI = VINTM(ADVICO+VICPHI) + PHI0
         ELSE
@@ -401,7 +401,7 @@ C =====================================================================
 C --- DPVPL DERIVEE PRESSION DE VAPEUR / PRESSION DE LIQUIDE ----------
 C --- DPVPT DERIVEE PRESSION DE VAPEUR / TEMP -------------------------
 C =====================================================================
-      IF (OPTION(1:16).EQ.'RIGI_MECA_TANG') THEN
+      IF (OPTION(1:9).EQ.'RIGI_MECA') THEN
          DPVPL = RHO12M/RHO11M
          IF (YATE.EQ.1) THEN
             DPVPT = RHO12M * (CONGEM(ADCP12+NDIM+1) -
@@ -418,7 +418,7 @@ C =====================================================================
 C --- CALCUL DE SIGMAP ------------------------------------------------
 C =====================================================================
       IF ((YAMEC.EQ.1)) THEN
-        IF ((OPTION(1:16).EQ.'RIGI_MECA_TANG') .OR.
+        IF ((OPTION(1:9).EQ.'RIGI_MECA') .OR.
      &      (OPTION(1:9).EQ.'FULL_MECA')) THEN
           DSDE(ADCOME+6,ADDEP1) = DSDE(ADCOME+6,ADDEP1) - BIOT*SAT -
      &                            BIOT* (1.D0-SAT)*DPVPL
@@ -440,7 +440,7 @@ C =====================================================================
       UMS   = 1.D0 - SAT
       SAT2  = SAT*SAT
       PHIDS = PHI*DSATP1
-      IF ((OPTION(1:16).EQ.'RIGI_MECA_TANG') .OR.
+      IF ((OPTION(1:9).EQ.'RIGI_MECA') .OR.
      &    (OPTION(1:9).EQ.'FULL_MECA')) THEN
         DSDE(ADCP11,ADDEP1) = DSDE(ADCP11,ADDEP1) +
      &                        RHO11* (PHIDS-SAT2*BMPH*CS+SAT*BMPH*CS)*
@@ -482,7 +482,7 @@ C =====================================================================
 C --- CALCUL DE LA CHALEUR REDUITE Q' ---------------------------------
 C =====================================================================
       IF (YATE.EQ.1) THEN
-         IF ((OPTION(1:16).EQ.'RIGI_MECA_TANG') .OR.
+         IF ((OPTION(1:9).EQ.'RIGI_MECA') .OR.
      &       (OPTION(1:9).EQ.'FULL_MECA')) THEN
 C =====================================================================
 C --- TERME SUIVANTE  EST SANS CONTROLE, TOUT LE MONDE Y PASSE DQ/DT --

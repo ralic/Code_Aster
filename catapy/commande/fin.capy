@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 06/09/2003   AUTEUR D6BHHJP J.P.LEFEBVRE 
+#& MODIF COMMANDE  DATE 08/06/2004   AUTEUR CIBHHLV L.VIVAN 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,9 +19,8 @@
 FIN=PROC(nom="FIN",op=9999,repetable='n',fr="Fin d'une étude",
          docu="U4.11.02-g",
             UIinfo={"groupes":("Gestion du travail",)},
-         HDF             =FACT(statut='f',min=1,max=1,
-           FICHIER         =SIMP(fr="nom du fichier hdf associe",statut='o',typ='TXM'),
-         ),
+         FORMAT_HDF      =SIMP(fr="sauvegarde de la base GLOBALE au format HDF",statut='f',
+                               typ='TXM',defaut="NON",into=("OUI","NON",) ), 
          RETASSAGE       =SIMP(fr="provoque le retassage de la base GLOBALE",
                                statut='f',typ='TXM',defaut="NON",into=("OUI","NON",) ),
          PERFORMANCE     =SIMP(fr="provoque l'impression d'un résumé des mesures de temps ",

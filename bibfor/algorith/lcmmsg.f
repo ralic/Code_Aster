@@ -1,7 +1,8 @@
         SUBROUTINE LCMMSG(NOMFAM,NBSYS,NUSYS,PGL,MS)
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 10/05/2004   AUTEUR KANIT T.KANIT 
+C MODIF ALGORITH  DATE 08/06/2004   AUTEUR JMBHH01 J.M.PROIX 
+C RESPONSABLE JMBHH01 J.M.PROIX
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -52,8 +53,8 @@ C HCP LATTICE, BASAL PLANE {001}={0001}
          L(2,1)=0.D0
          L(2,2)=1.D0
          L(2,3)=0.D0
-         L(3,1)=1.D0
-         L(3,2)=1.D0
+         L(3,1)=1.D0/SQRT(2.D0)
+         L(3,2)=1.D0/SQRT(2.D0)
          L(3,3)=0.D0
       ELSE IF (NOMFAM.EQ.'PRISMATIQUE') THEN
          NBSYS=3
@@ -76,6 +77,11 @@ C HCP LATTICE, BASAL PLANE {001}={0001}
          L(3,1)=1.D0
          L(3,2)=1.D0
          L(3,3)=0.D0
+C   N ET L DOIVENT ETRE UNITAIRES
+         DO 121 J=1,3
+         DO 121 K=1,3
+            L(J,K)=L(J,K)/SQRT(2.D0)
+ 121     CONTINUE     
       ELSE IF (NOMFAM.EQ.'OCTAEDRIQUE') THEN
 C FCC LATTICE      
          NBSYS=12
@@ -159,11 +165,9 @@ C   N ET L DOIVENT ETRE UNITAIRES
          N(J,K)=N(J,K)/SQRT(3.D0)
  12   CONTINUE     
       ELSE IF (NOMFAM.EQ.'PYRAMIDAL1') THEN
-         NBSYS=1
-         IF (NUSYS.EQ.0)  GOTO 9999
+         CALL UTMESS('F','LCMMSG','PYRAMIDAL1 PAS ENCORE DISPONIBLE')
       ELSE IF (NOMFAM.EQ.'PYRAMIDAL2') THEN
-         NBSYS=1
-         IF (NUSYS.EQ.0)  GOTO 9999
+         CALL UTMESS('F','LCMMSG','PYRAMIDAL2 PAS ENCORE DISPONIBLE')
       ELSE IF (NOMFAM.EQ.'CUBIQUE') THEN
 C BCC LATTICE, {110} SLIP      
          NBSYS=12
@@ -205,7 +209,8 @@ C BCC LATTICE, {110} SLIP
          N(12,2)=-1.D0
          N(12,3)=0.D0
          L(1,1)=1.D0
-         L(1,2)=0.D0
+C         L(1,2)=0.D0 ???
+         L(1,2)=1.D0
          L(1,3)=-1.D0
          L(2,1)=1.D0
          L(2,2)=1.D0
@@ -240,22 +245,35 @@ C BCC LATTICE, {110} SLIP
          L(12,1)=1.D0
          L(12,2)=1.D0
          L(12,3)=1.D0
+C   N ET L DOIVENT ETRE UNITAIRES
+      DO 122 J=1,12
+      DO 122 K=1,3
+         L(J,K)=L(J,K)/SQRT(2.D0)
+         N(J,K)=N(J,K)/SQRT(3.D0)
+ 122   CONTINUE     
       ELSE IF (NOMFAM.EQ.'MACLAGE') THEN
 C FCC LATTICE
          NBSYS=1
-         N(1,1)=1.D0
-         N(1,2)=1.D0
-         N(1,3)=1.D0
-         L(1,1)=1.D0
-         L(1,2)=1.D0
-         L(1,3)=-2.D0
          IF (NUSYS.EQ.0)  GOTO 9999
+         N(1,1)=1.D0/SQRT(3.D0)
+         N(1,2)=1.D0/SQRT(3.D0)
+         N(1,3)=1.D0/SQRT(3.D0)
+         L(1,1)=1.D0/2.D0
+         L(1,2)=1.D0/2.D0
+         L(1,3)=-2.D0/2.D0
       ELSE IF (NOMFAM.EQ.'JOINT_GRAIN') THEN
-         NBSYS=1
-         IF (NUSYS.EQ.0)  GOTO 9999
+         CALL UTMESS('F','LCMMSG','JOINT_GRAIN PAS ENCORE DISPONIBLE')
       ELSE IF (NOMFAM.EQ.'RL') THEN
+         CALL UTMESS('F','LCMMSG','RL PAS ENCORE DISPONIBLE')
+      ELSE IF (NOMFAM.EQ.'UNIAXIAL') THEN
          NBSYS=1
          IF (NUSYS.EQ.0)  GOTO 9999
+         N(1,1)=1.D0
+         N(1,2)=0.D0
+         N(1,3)=0.D0
+         L(1,1)=1.D0
+         L(1,2)=0.D0
+         L(1,3)=0.D0
       ENDIF
 C     POUR LE SYSTEME K, EXPRESSION DE N ET L DANS REPERE GLOBAL
       K=NUSYS

@@ -1,4 +1,4 @@
-# MODIF  DATE 17/05/2004   AUTEUR CIBHHBC M.LOPES 
+# MODIF  DATE 04/06/2004   AUTEUR LAMARCHE S.LAMARCHE 
 # RESPONSABLE MABBAS M.ABBAS
 #
 # TITRE INDENTATION D'UN MASSIF PAR UN POINCON
@@ -20,9 +20,9 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 
-DEBUT(CODE=_F(  NOM = 'SSNA111a',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'));
+DEBUT(CODE=_F(  NOM = 'SSNA111A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'));
 
-PRE_GMSH();
+
 
 MA=LIRE_MAILLAGE();
 
@@ -49,24 +49,32 @@ MA=MODI_MAILLAGE(reuse =MA,
                  MODELE=MO);
 
 
-MAT=DEFI_MATERIAU(ELAS=_F(E=2.E5,
-                           NU=0.29999999999999999,),
+MAT1=DEFI_MATERIAU(ELAS=_F(E=2.E5,
+                           NU=0.3,),
                    ECRO_LINE=_F(D_SIGM_EPSI=5000.0,
-                                SY=300.0,),);
+                                SY=300.0,),
+                                );
+
+MAT2=DEFI_MATERIAU(ELAS=_F(E=2.E9,
+                           NU=0.3,),);
+
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
                     AFFE=(_F(GROUP_MA=('GM15'),
-                             MATER=MAT,),),);
+                             MATER=MAT1,),
+                          _F(GROUP_MA=('GM17',),
+                             MATER=MAT2,),
+                             ),);
 
 CHA=AFFE_CHAR_MECA(MODELE=MO,
                    DDL_IMPO=(_F(GROUP_MA='GM14',
                                 DX= 0.0,
                                 DY= 0.0,),
-                             _F(GROUP_MA=('GM9','GM10','GM11'),
+                             _F(GROUP_MA=('GM9','GM11',),
                                 DX=0.0,
                                 DY=-0.4,),
-                             _F(GROUP_MA=('GM13'),
-                                DX=0.0,),
+                             _F(GROUP_MA=('GM10',),
+                                DY=-0.4,),
                                 ),
                    CONTACT=_F(APPARIEMENT='MAIT_ESCL',
                               GROUP_MA_MAIT='GM11',
@@ -88,8 +96,14 @@ RESU=STAT_NON_LINE(MODELE=MO,
                    CHAM_MATER=CHMAT,
                    EXCIT=_F(CHARGE=CHA,
                             FONC_MULT=F,),
-                   COMP_INCR=_F(RELATION='VMIS_ISOT_LINE',
-                                DEFORMATION='SIMO_MIEHE'),
+                   COMP_INCR=(
+                              _F(RELATION='VMIS_ISOT_LINE',
+                                DEFORMATION='SIMO_MIEHE',
+                                GROUP_MA='GM15',
+                                ),
+                              _F(RELATION='ELAS',
+                                GROUP_MA='GM17',),
+                                  ),
                    INCREMENT=_F(LIST_INST=L_INST,
                                 INST_FIN=1.,
                                 SUBD_PAS=4,
@@ -137,7 +151,8 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DY',
                    GROUP_NO='GM16',
-                   VALE=-2.50000E-01,
+                   VALE=-2.4798E-01,
+                   PRECISION  = (1.E-2,1.E-3),
                    REFERENCE='NON_REGRESSION',
                    VERSION='7.1.07',),
                 _F(RESULTAT=RESU,
@@ -145,7 +160,8 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU,
                    NOM_CHAM='REAC_NODA',
                    NOM_CMP='DX',
                    GROUP_NO='GM16',
-                   VALE=-1.72144E+01,
+                   VALE=3.2482,
+                   PRECISION  = (1.E-2,1.E-3),
                    REFERENCE='NON_REGRESSION',
                    VERSION='7.1.07',),
                 _F(RESULTAT=RESU,
@@ -153,7 +169,8 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU,
                    NOM_CHAM='REAC_NODA',
                    NOM_CMP='DY',
                    GROUP_NO='GM16',
-                   VALE=-1.63087E+01,
+                   VALE=-8.7703,
+                   PRECISION  = (1.E-2,1.E-3),
                    REFERENCE='NON_REGRESSION',
                    VERSION='7.1.07',),   
                    ),);
@@ -163,7 +180,8 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DY',
                    GROUP_NO='GM16',
-                   VALE=-3.92000E-01,
+                   VALE=-3.8944E-01,
+                   PRECISION  = (1.E-2,1.E-3),
                    REFERENCE='NON_REGRESSION',
                    VERSION='7.1.07',),
                 _F(RESULTAT=RESU,
@@ -171,7 +189,8 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU,
                    NOM_CHAM='REAC_NODA',
                    NOM_CMP='DX',
                    GROUP_NO='GM16',
-                   VALE=-1.86982E+01,
+                   VALE=1.8136,
+                   PRECISION  = (1.E-2,1.E-3),
                    REFERENCE='NON_REGRESSION',
                    VERSION='7.1.07',),
                 _F(RESULTAT=RESU,
@@ -179,7 +198,8 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU,
                    NOM_CHAM='REAC_NODA',
                    NOM_CMP='DY',
                    GROUP_NO='GM16',
-                   VALE=-1.37081E+01,
+                   VALE=-4.8966,
+                   PRECISION  = (1.E-2,1.E-3),
                    REFERENCE='NON_REGRESSION',
                    VERSION='7.1.07',),   
                    ),);
@@ -199,5 +219,15 @@ IMPR_COURBE(FORMAT='AGRAF',
             LEGENDE_Y='Force (N/rd)',
             COURBE=(_F(FONC_X = DY,
                        FONC_Y = FY,)));
+
+RNY=RECU_FONCTION(RESULTAT=RESU,
+                 NOM_CHAM='REAC_NODA',
+                 NOM_CMP='DY',
+                 GROUP_NO='GM16')
+
+IMPR_COURBE(FICHIER='RESULTAT',
+            TITRE_GRAPHIQUE='RNY',
+            FORMAT='AGRAF',
+            COURBE=_F(FONCTION=RNY,),)
 
 FIN();

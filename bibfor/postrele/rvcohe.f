@@ -4,7 +4,7 @@
       INTEGER                                     I, IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 26/09/2003   AUTEUR DURAND C.DURAND 
+C MODIF POSTRELE  DATE 08/06/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -217,7 +217,7 @@ C           VERIFICATION D' EXISTENCE DES NOEUDS DANS LE MAILLAGE DU CHP
                      CALL UTDEBM('S','RVCOHE','ERREUR DANS LES DONNEES')
                         CALL UTIMPI('L','POST-TRAITEMENT NUMERO ',1,I)
                      ENDIF
-                     CALL UTIMPK('L','   LE NOEUD: ',1,NOMGRN)
+                     CALL UTIMPK('L','   LE NOEUD: ',1,NOMND)
                      CALL UTIMPK('S','NE FAIT PAS PARTI DU MAILLAGE '//
      +                  'SOUS-JACENT AU RESULTAT OU CHAMP_GD A TRAITE',
      +                                                         0,K1BID)

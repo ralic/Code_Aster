@@ -1,4 +1,4 @@
-# MODIF  DATE 25/05/2004   AUTEUR GRANET S.GRANET 
+# MODIF  DATE 08/06/2004   AUTEUR ROMEO R.FERNANDES 
 # TITRE CHAUFFAGE D UN MILIEU POREUX SANS AIR
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -327,10 +327,8 @@ U0=STAT_NON_LINE(MODELE=MODELE,
                               ),
                  NEWTON=_F(MATRICE='TANGENTE',
                            REAC_ITER=1,),
-                 RECH_LINEAIRE=_F(RESI_LINE_RELA=0.1,
-                                 ITER_LINE_MAXI=3,),
-                 CONVERGENCE=_F(RESI_GLOB_RELA=1e-07,
-                                ITER_GLOB_MAXI=1000,),
+                 CONVERGENCE=_F(RESI_GLOB_RELA=1e-12,
+                                ITER_GLOB_MAXI=30,),
                  ARCHIVAGE=_F(PAS_ARCH=1,),);
 # * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * ** * * *
 
@@ -368,14 +366,13 @@ IMPR_TABLE(TABLE=TEMPE,
            );
            
 TEST_RESU(RESU=_F(RESULTAT=U0,
-                  NUME_ORDRE=10,
+                  INST = 250.0,
                   NOM_CHAM='DEPL',
                   NOM_CMP='TEMP',
                   NOEUD='NO34',
-                  VALE=115.,
+                  VALE=1.14534E+2,
                   CRITERE='RELATIF',
-                  PRECISION=1.E-1,
+                  PRECISION=1.E-3,
                   REFERENCE='NON_REGRESSION',),);   
 
-             
 FIN();

@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 08/06/2004   AUTEUR CIBHHLV L.VIVAN 
 # TITRE ESSAI DE THERMO-PLASTICITE (MISES ECR. ISOT. C_PLAN)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -162,8 +162,8 @@ TEMPRESU=CREA_RESU(
 
                 AFFE=_F(
                 LIST_INST = L_INST,
-                NUME_INIT = 0,
-                NUME_FIN = 6,
+                NUME_INIT = 1,
+                NUME_FIN = 7,
                 CHAM_GD = TEMPIMPO)
               )
 

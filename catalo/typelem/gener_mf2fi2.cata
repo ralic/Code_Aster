@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 18/05/2004   AUTEUR CIBHHLV L.VIVAN 
+%& MODIF TYPELEM  DATE 07/06/2004   AUTEUR NDOMING N.DOMINGUEZ 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -26,6 +26,7 @@ ENTETE__ ELEMENT__ MFAXQU4          MAILLE__ QUAD4
 
 MODE_LOCAL__
     CMATERC  = ADRSJEVE ELEM__         (I1       )
+    CCARCRI  = CARCRI   ELEM__         (ITECREL  MACOMP   RESCREL  THETA    ITEDEC   INTLOC   )
     ECODRET  = CODE_I   ELEM__         (IRET     )
     CCOMPOR  = COMPOR   ELEM__         (RELCOM   NBVARI   DEFORM   INCELA   C_PLAN   )
     CCOMPO2  = COMPOR   ELEM__         (NBVARI   )
@@ -53,10 +54,12 @@ OPTION__
                               OUT__  MVECTUR  PVECTUR
     FULL_MECA           201   IN__   CCOMPOR  PCOMPOR  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER
                                      CTEMPSR  PINSTMR  CTEMPSR  PINSTPR  CMATERC  PMATERC  ZVARIPG  PVARIMR
+                                     CCARCRI  PCARCRI
                               OUT__  ECODRET  PCODRET  ECONTPG  PCONTPR  MMATUUR  PMATUUR  ZVARIPG  PVARIPR
                                      MVECTUR  PVECTUR
     FULL_MECA_ELAS      201   IN__   CCOMPOR  PCOMPOR  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER
                                      CTEMPSR  PINSTMR  CTEMPSR  PINSTPR  CMATERC  PMATERC  ZVARIPG  PVARIMR
+                                     CCARCRI  PCARCRI
                               OUT__  ECODRET  PCODRET  ECONTPG  PCONTPR  MMATUUR  PMATUUR  ZVARIPG  PVARIPR
                                      MVECTUR  PVECTUR
     MECA_SENS_MATE      -1    IN__   XXXXXX   XXXXXX
@@ -71,12 +74,14 @@ OPTION__
                               OUT__  ECOPILO  PCOPILO
     RAPH_MECA           201   IN__   CCOMPOR  PCOMPOR  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER
                                      CTEMPSR  PINSTMR  CTEMPSR  PINSTPR  CMATERC  PMATERC  ZVARIPG  PVARIMR
+                                     CCARCRI  PCARCRI
                               OUT__  ECODRET  PCODRET  ECONTPG  PCONTPR  ZVARIPG  PVARIPR  MVECTUR  PVECTUR
     RIGI_MECA_ELAS      201   IN__   CCOMPOR  PCOMPOR  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER
-                                     CMATERC  PMATERC  ZVARIPG  PVARIMR
+                                     CMATERC  PMATERC  ZVARIPG  PVARIMR  CCARCRI  PCARCRI
                               OUT__  MMATUUR  PMATUUR
     RIGI_MECA_TANG      201   IN__   CCOMPOR  PCOMPOR  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER
                                      CTEMPSR  PINSTMR  CTEMPSR  PINSTPR  CMATERC  PMATERC  ZVARIPG  PVARIMR
+                                     CCARCRI  PCARCRI
                               OUT__  MMATUUR  PMATUUR
     SIEF_ELNO_ELGA      122   IN__   ECONTPG  PCONTRR
                               OUT__  ECONTNO  PSIEFNOR

@@ -1,4 +1,4 @@
-#@ MODIF ops Cata  DATE 18/05/2004   AUTEUR DURAND C.DURAND 
+#@ MODIF ops Cata  DATE 08/06/2004   AUTEUR CIBHHLV L.VIVAN 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -70,7 +70,7 @@ def build_debut(self,**args):
    self.definition.op=None
    return ier
 
-def POURSUITE(self,PAR_LOT,CODE,HDF=None,**args):
+def POURSUITE(self,PAR_LOT,CODE,**args):
    """
        Fonction sdprod de la macro POURSUITE
    """
@@ -83,7 +83,7 @@ def POURSUITE(self,PAR_LOT,CODE,HDF=None,**args):
       self.jdc.fico=CODE['NOM']
    else:
       self.jdc.fico=None
-   if (self.codex and os.path.isfile("glob.1")) or HDF!=None:
+   if (self.codex and os.path.isfile("glob.1") or os.path.isfile("bhdf.1")):
      # Le module d'execution est accessible et glob.1 est present
      # Pour eviter de rappeler plusieurs fois la sequence d'initialisation
      # on memorise avec l'attribut fichier_init que l'initialisation

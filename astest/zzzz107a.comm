@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 07/06/2004   AUTEUR MCOURTOI M.COURTOIS 
 # TITRE TEST DE LA RECUPERATION DES EXCEPTIONS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -28,6 +28,13 @@ DEBUT(CODE=_F(NOM='ZZZZ107A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON',),PAR_LOT=
 # CE CAS TEST EST IDENTIQUE A SSNL102A. IL SERT A VALIDER
 # LA LEVEE D EXCEPTION PAR UTEXCP(numero) DANS LE FORTRAN 
 
+#
+# PRECAUTION : Eviter d'utiliser aster.error,
+#              preferer l'utilisation des exceptions particularisees.
+#
+# NE JAMAIS FAIRE DE 'except:' SANS PRECISER QUELLE EXCEPTION
+#
+
 # ======================================================================
 #                          PREMIERE PARTIE
 # ======================================================================
@@ -39,7 +46,7 @@ print sep
 is_ok = 0
 try:
    raise aster.error, \
-      "CAS 1 : declencher error sans declencher NonConvergenceError ou EchecComportement"
+      """CAS 1 : declencher error car l'exception n'est pas particularisee."""
 
 except aster.NonConvergenceError,err:
    print "Exception NonConvergence interceptee"
@@ -47,6 +54,26 @@ except aster.NonConvergenceError,err:
 
 except aster.EchecComportementError,err:
    print "Exception EchecComportement interceptee"
+   print "Raison : " + str(err)
+
+except aster.BandeFrequenceVideError,err:
+   print "Exception BandeFrequenceVide interceptee"
+   print "Raison : " + str(err)
+
+except aster.MatriceSinguliereError,err:
+   print "Exception MatriceSinguliere interceptee"
+   print "Raison : " + str(err)
+
+except aster.TraitementContactError,err:
+   print "Exception TraitementContact interceptee"
+   print "Raison : " + str(err)
+
+except aster.MatriceContactSinguliereError,err:
+   print "Exception MatriceContactSinguliere interceptee"
+   print "Raison : " + str(err)
+
+except aster.ArretCPUError,err:
+   print "Exception ArretCPU interceptee"
    print "Raison : " + str(err)
 
 except aster.error,err:
@@ -74,7 +101,7 @@ print sep
 is_ok = 0
 try:
    raise aster.NonConvergenceError, \
-      "CAS 2 : declencher NonConvergence plus precis que error"
+      'CAS 2 : declencher une exception particularisee plus precise que "error"'
 
 except aster.NonConvergenceError,err:
    is_ok = 1
@@ -105,10 +132,10 @@ print sep
 is_ok = 0
 try:
    raise aster.EchecComportementError, \
-      "CAS 3 : declencher EchecComportement sans declencher NonConvergence"
+      'CAS 3 : ne pas confondre les exceptions particularisees'
 
-except aster.NonConvergenceError,err:
-   print "Exception NonConvergence interceptee"
+except aster.BandeFrequenceVideError,err:
+   print "Exception BandeFrequenceVide interceptee"
    print "Raison : " + str(err)
 
 except aster.EchecComportementError,err:

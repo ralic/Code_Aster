@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 08/06/2004   AUTEUR CIBHHLV L.VIVAN 
 # TITRE ESSAI DE THERMOPLASTICITE (MISES ECR. ECMI.)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -113,17 +113,22 @@ TEMPIMPO=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_F',
 
 #
 
-TEMPRESU=CREA_RESU(
-
-                   OPERATION='AFFE', TYPE_RESU='EVOL_THER',
+TEMPRESU=CREA_RESU( OPERATION='AFFE', TYPE_RESU='EVOL_THER',
                     NOM_CHAM='TEMP',
+                    AFFE=_F(  LIST_INST = LINST,
+                              NUME_INIT = 1,
+                              NUME_FIN = 4,
+                              CHAM_GD = TEMPIMPO )
+                  )
 
-                AFFE=_F(
-                LIST_INST = LINST,
-                NUME_INIT = 0,
-                NUME_FIN = 7,
-                CHAM_GD = TEMPIMPO)
-              )
+TEMPRESU=CREA_RESU( reuse=TEMPRESU,
+                    OPERATION='AFFE', TYPE_RESU='EVOL_THER',
+                    NOM_CHAM='TEMP',
+                    AFFE=_F(  LIST_INST = LINST,
+                              NUME_INIT = 5,
+                              NUME_FIN = 8,
+                              CHAM_GD = TEMPIMPO )
+                  )
 
 LIAISON=AFFE_CHAR_MECA(
                              MODELE=MOD,

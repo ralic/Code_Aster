@@ -1,5 +1,5 @@
 POURSUITE(CODE=_F(NOM = 'ZZZZ119A'),
-          HDF=_F(FICHIER='./base.hdf')
+          FORMAT_HDF='OUI'
 	  );
 
 # VALIDATION DE PROJ_CHAMP/METHODE:'ELEM' EN 2.5D :

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 08/06/2004   AUTEUR CIBHHLV L.VIVAN 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -25,8 +25,9 @@ DETRUIRE=PROC(nom="DETRUIRE",op=-7,docu="U4.14.01-e",
                 NOM         =SIMP(statut='o',typ=assd,validators=NoRepeat(),max='**'),
             ),
             OBJET  =FACT(statut='f',
+               CLASSE      =SIMP(statut='f',typ='TXM',into=('G','V','L'),defaut='G'),  
                CHAINE      =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**'),
-               POSITION    =SIMP(statut='o',typ='I'  ,validators=NoRepeat(),max='**'),
+               POSITION    =SIMP(statut='f',typ='I'  ,max='**'),
             ),
             INFO          =SIMP(statut='f',typ='I',into=(1,2),defaut=2, ),           
 );

@@ -14,7 +14,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 25/05/2004   AUTEUR GRANET S.GRANET 
+C MODIF ALGORITH  DATE 08/06/2004   AUTEUR ROMEO R.FERNANDES 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -365,8 +365,8 @@ C
 C *********************************************************************
 C CALCUL DES DERIVEES DES PRESSIONS DE VAPEUR ET DES CVP
 C
-      IF ((OPTION(1:16).EQ.'RIGI_MECA_TANG').OR.
-     &   (OPTION(1:9).EQ.'FULL_MECA')) THEN
+      IF ((OPTION(1:9).EQ.'RIGI_MECA').OR.
+     &    (OPTION(1:9).EQ.'FULL_MECA')) THEN
          IF (THMC.EQ.'LIQU_VAPE_GAZ') THEN
             DP12P1=-RHO12/RHO11
             DP12P2=RHO12/RHO11
@@ -398,8 +398,8 @@ C
 C **********************************************************************
 C CALCUL DES DERIVEES DES MASSES VOLUMIQUES ET DU TERME AUXILIAIRE
 C
-      IF ((OPTION(1:16).EQ.'RIGI_MECA_TANG').OR.
-     &   (OPTION(1:9).EQ.'FULL_MECA')) THEN
+      IF ((OPTION(1:9).EQ.'RIGI_MECA').OR.
+     &    (OPTION(1:9).EQ.'FULL_MECA')) THEN
          IF (THMC.EQ.'LIQU_SATU') THEN
             DR11P1=RHO11*CLIQ
             IF (YATE.EQ.1) THEN
@@ -625,7 +625,7 @@ C **********************************************************************
 C CALCUL DES FLUX HYDRAULIQUES
 C
       IF ((OPTION(1:9).EQ.'RAPH_MECA').OR.
-     &   (OPTION(1:9).EQ.'FULL_MECA')) THEN 
+     &    (OPTION(1:9).EQ.'FULL_MECA')) THEN 
          IF (((THMC.EQ.'LIQU_SATU').OR.(THMC.EQ.'GAZ')).OR.
      &        (THMC.EQ.'LIQU_GAZ_ATM')) THEN
             DO 102 I=1,NDIM
@@ -684,8 +684,8 @@ C
       ENDIF
 C
 C
-      IF ((OPTION(1:16).EQ.'RIGI_MECA_TANG').OR.
-     &   (OPTION(1:9).EQ.'FULL_MECA')) THEN
+      IF ((OPTION(1:9).EQ.'RIGI_MECA').OR.
+     &    (OPTION(1:9).EQ.'FULL_MECA')) THEN
          IF ((THMC.EQ.'LIQU_SATU').OR.(THMC.EQ.'GAZ').OR.
      &        (THMC.EQ.'LIQU_GAZ_ATM')) THEN
             DO 108 I=1,NDIM

@@ -1,10 +1,10 @@
-      FUNCTION DPLITG (MATER, PMOINS)
+      FUNCTION DPLITG (MATER, PPLUS, PLAS)
 C
       IMPLICIT      NONE
-      REAL*8        MATER(4,2), PMOINS, DPLITG
+      REAL*8        MATER(4,2), PPLUS, PLAS, DPLITG
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 02/02/2004   AUTEUR ROMEO R.FERNANDES 
+C MODIF ALGORITH  DATE 08/06/2004   AUTEUR ROMEO R.FERNANDES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -39,10 +39,18 @@ C ======================================================================
       H      = MATER(2,2)
       ALPHA  = MATER(3,2)
       PULT   = MATER(4,2)
-      IF ( PMOINS.LT.PULT ) THEN
-         DPLITG = - (TROIS*DEUXMU/DEUX + TROIS*TROISK*ALPHA*ALPHA + H)
-      ELSE
-         DPLITG = - (TROIS*DEUXMU/DEUX + TROIS*TROISK*ALPHA*ALPHA)
+      IF (PLAS.EQ.1.0D0) THEN
+         IF (PPLUS.LT.PULT) THEN
+            DPLITG = TROIS*DEUXMU/DEUX + TROIS*TROISK*ALPHA*ALPHA + H
+         ELSE
+            DPLITG = TROIS*DEUXMU/DEUX + TROIS*TROISK*ALPHA*ALPHA
+         ENDIF
+      ELSE IF (PLAS.EQ.2.0D0) THEN
+         IF (PPLUS.LT.PULT) THEN
+            DPLITG = TROIS*TROISK*ALPHA*ALPHA + H
+         ELSE
+            DPLITG = TROIS*TROISK*ALPHA*ALPHA
+         ENDIF
       ENDIF
 C ======================================================================
       END

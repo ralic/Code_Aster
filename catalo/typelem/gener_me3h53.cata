@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 17/05/2004   AUTEUR ROMEO R.FERNANDES 
+%& MODIF TYPELEM  DATE 08/06/2004   AUTEUR ROMEO R.FERNANDES 
 % RESPONSABLE UFBHHLL C.CHAVANT
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -105,6 +105,11 @@ OPTION__
                                      CMATERC  PMATERC  CTEREFE  PTEREF   ZVARIPG  PVARIMR
                               OUT__  ECODRET  PCODRET  ECONTPG  PCONTPR  MMATUNS  PMATUNS  ZVARIPG  PVARIPR
                                      MVECTUR  PVECTUR
+    FULL_MECA_ELAS      600   IN__   CCARCRI  PCARCRI  CCOMPOR  PCOMPOR  ECONTPG  PCONTMR  DDL_MECA PDEPLMR
+                                     DDL_MECA PDEPLPR  NGEOMER  PGEOMER  CTEMPSR  PINSTMR  CTEMPSR  PINSTPR
+                                     CMATERC  PMATERC  CTEREFE  PTEREF   ZVARIPG  PVARIMR
+                              OUT__  ECODRET  PCODRET  ECONTPG  PCONTPR  MMATUNS  PMATUNS  ZVARIPG  PVARIPR
+                                     MVECTUR  PVECTUR
     MATR_NO_PG          119   IN__   NGEOMER  PGEOMER
                               OUT__  ZVARI1   PMANOPG
     MECA_SENS_MATE      -1    IN__   XXXXXX   XXXXXX
@@ -120,6 +125,10 @@ OPTION__
     REFE_FORC_NODA      600   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  EREFCO   PREFCO
                               OUT__  MVECTUR  PVECTUR
     RIGI_MECA_TANG      600   IN__   CCARCRI  PCARCRI  CCOMPOR  PCOMPOR  ECONTPG  PCONTMR  DDL_MECA PDEPLMR
+                                     DDL_MECA PDEPLPR  NGEOMER  PGEOMER  CTEMPSR  PINSTMR  CTEMPSR  PINSTPR
+                                     CMATERC  PMATERC  CTEREFE  PTEREF   ZVARIPG  PVARIMR
+                              OUT__  MMATUNS  PMATUNS
+    RIGI_MECA_ELAS      600   IN__   CCARCRI  PCARCRI  CCOMPOR  PCOMPOR  ECONTPG  PCONTMR  DDL_MECA PDEPLMR
                                      DDL_MECA PDEPLPR  NGEOMER  PGEOMER  CTEMPSR  PINSTMR  CTEMPSR  PINSTPR
                                      CMATERC  PMATERC  CTEREFE  PTEREF   ZVARIPG  PVARIMR
                               OUT__  MMATUNS  PMATUNS

@@ -7,7 +7,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 17/05/2004   AUTEUR ROMEO R.FERNANDES 
+C MODIF ALGORITH  DATE 08/06/2004   AUTEUR ROMEO R.FERNANDES 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -116,9 +116,18 @@ C ======================================================================
      +      (MECA.EQ.'CAM_CLAY')        .OR.
      +      (MECA.EQ.'BARCELONE')       .OR.
      +      (MECA.EQ.'LAIGLE')          .OR.
-     +      (MECA.EQ.'DRUCKER_PRAGER')  .OR.
      +      (MECA.EQ.'MAZARS')          .OR.
      +      (MECA.EQ.'ENDO_ISOT_BETON') ) THEN
+         IF ( OPTION(10:14).EQ.'_ELAS' ) THEN
+            CALL UTMESS('F','CALCME','OPTION SECANTE NON VALIDE ' )
+         ENDIF
+         CALL RCVALA(IMATE,' ','ELAS',0,' ',0.D0,NELAS,
+     +                                           NCRA1,ELAS,CODRET,'FM')
+         YOUNG  = ELAS(1)
+         NU     = ELAS(2)
+         ALPHA0 = ELAS(4)
+      ENDIF
+      IF ( MECA.EQ.'DRUCKER_PRAGER' ) THEN
          CALL RCVALA(IMATE,' ','ELAS',0,' ',0.D0,NELAS,
      +                                           NCRA1,ELAS,CODRET,'FM')
          YOUNG  = ELAS(1)
@@ -210,8 +219,8 @@ C ======================================================================
      +               CONGEP(ADCOME),DSDEME,RETCOM)
       ENDIF
       IF (MECTRU) THEN
-         IF ((OPTION(1:16).EQ.'RIGI_MECA_TANG').OR.
-     >               (OPTION(1:9).EQ.'FULL_MECA')) THEN
+         IF ((OPTION(1:9).EQ.'RIGI_MECA').OR.
+     >       (OPTION(1:9).EQ.'FULL_MECA')) THEN
             DO 200 I = 1 , NDT
                DO 201 J = 1 , NDT
                   DSDE(ADCOME+I-1,ADDEME+NDIM+J-1)=DSDEME(I,J)

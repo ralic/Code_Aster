@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 07/06/2004   AUTEUR NDOMING N.DOMINGUEZ 
 # TITRE MODELISATION DE LA DIFFUSION DE L AIR DISSOUS DANS L EAU
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -151,7 +151,10 @@ MATERBO=DEFI_MATERIAU(ELAS=_F(E=5.15000000E8,
                                    PERM_GAZ=UNDEMI,
                                    D_PERM_SATU_GAZ=ZERO,
                                    D_PERM_PRES_GAZ=ZERO,
-                                   FICKV_T=ZERO,
+# le coefficient de fick vapeur est pris egal a zero sous la forme un*zero
+# dans le seul but de tester cette fonction
+                                   FICKV_T=UN,
+                                   FICKV_S=ZERO,
                                    FICKA_T=FICK,
                                    LAMB_T=ZERO,),);
 

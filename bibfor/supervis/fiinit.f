@@ -4,7 +4,7 @@
       CHARACTER*(*)          NOMCMD
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 06/09/2003   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF SUPERVIS  DATE 08/06/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -95,7 +95,7 @@ C     REEL     !     0          2          12        22       32
 C     COMPLEXE !     0          5          15        25       35
 C     LOGIQUE  !     0          6          16        26       36
 C     ---------+---------------------------------------------------
-      CHARACTER*8     CBID
+      CHARACTER*8     CBID,KHDF
       REAL*8          R8PI,R8DGRD,R8RDDG
       CHARACTER*8     XXOPER(LFCSTE)
       INTEGER         XXPRIO(LFCSTE)
@@ -140,9 +140,10 @@ C
       KVALR8   = '&&SYS FI.VALEURS_R8 '
       KVALC8   = '&&SYS FI.VALEURS_C8 '
 C
-      CALL GETFAC('HDF',NBOCC)
+      KHDF = 'NON'
+      CALL GETVTX(' ','FORMAT_HDF',1,1,1,KHDF,NBOCC)
       IF ( NOMCMD .EQ. 'DEBUT' ) THEN
-         IF ( NBOCC .EQ. 0 ) THEN 
+         IF ( KHDF .EQ. 'NON' ) THEN 
            LONMAX = IPREDF + 100
            CALL WKVECT( KNOMOP ,BASE//' V K8',LONMAX,LNOMOP)
            CALL WKVECT( KARITE ,BASE//' V I ',LONMAX,LARITE)
@@ -160,7 +161,7 @@ C
       CALL JEVEUS( KVALIS ,'E',LVALIS)
       CALL JEVEUS( KVALR8 ,'E',LVALR8)
       CALL JEVEUS( KVALC8 ,'E',LVALC8)
-      IF ( NOMCMD .NE. 'DEBUT' .OR. NBOCC .GT. 0 ) THEN
+      IF ( NOMCMD .NE. 'DEBUT' .OR. KHDF .EQ. 'OUI' ) THEN
          CALL JELIRA( KNOMOP ,'LONUTI',ICSTE,CBID)
          GOTO 9999   
       ENDIF

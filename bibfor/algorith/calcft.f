@@ -14,7 +14,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 25/05/2004   AUTEUR GRANET S.GRANET 
+C MODIF ALGORITH  DATE 08/06/2004   AUTEUR ROMEO R.FERNANDES 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -121,7 +121,7 @@ C
 C =====================================================================
 C --- CALCUL DU FLUX THERMIQUE ----------------------------------------
 C =====================================================================
-      IF ((OPTION(1:16).EQ.'RIGI_MECA_TANG') .OR.
+      IF ((OPTION(1:9).EQ.'RIGI_MECA') .OR.
      +    (OPTION(1:9).EQ.'FULL_MECA')            ) THEN
          DO 100 I=1,NDIM
             DSDE(ADCOTE+I,ADDETE+I)=DSDE(ADCOTE+I,ADDETE+I)-LAMBDT(1)

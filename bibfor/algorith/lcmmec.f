@@ -2,7 +2,8 @@
      &                     VIS,DGAMMA,DP,DALPHA )
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 10/05/2004   AUTEUR KANIT T.KANIT 
+C RESPONSABLE JMBHH01 J.M.PROIX
+C MODIF ALGORITH  DATE 08/06/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -43,7 +44,7 @@ C     ----------------------------------------------------------------
 C     DANS VIS : 1 = ALPHA, 2=GAMMA, 3=P
 
       IEC=NBCOMM(IFA,2)
-      ALPHA=VIS(2)
+      ALPHA=VIS(1)
       IF (NECRCI.EQ.'ECRO_CINE1') THEN
           D=COEFT(IEC-1+1)
           DALPHA=DGAMMA-D*ALPHA*DP
@@ -55,7 +56,7 @@ C     DANS VIS : 1 = ALPHA, 2=GAMMA, 3=P
           PM=COEFT(IEC-1+3)
           C=COEFT(IEC-1+4)
           CC=C*ALPHA
-          IF(ALPHA.EQ.0.D0) THEN
+          IF(CC.EQ.0.D0) THEN
             DALPHA=DGAMMA-D*ALPHA*DP
           ELSE
             DALPHA=DGAMMA-D*ALPHA*DP-((ABS(CC)/GM)**PM)*ALPHA/ABS(ALPHA)

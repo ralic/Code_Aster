@@ -2,7 +2,7 @@
      &                                    DEPS,VIM,VIP,SIG,DSIDEP,IRET)
 C =====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 08/06/2004   AUTEUR ROMEO R.FERNANDES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -45,7 +45,7 @@ C OUT IRET    CODE RETOUR (0 = OK)
 C =====================================================================
       LOGICAL     RIGI,RESI
       INTEGER     NDT,NDI,II,JJ
-      REAL*8      TROIS,DEUX,DP,DPDENO,ALPHA,PMOINS
+      REAL*8      TROIS,DEUX,DP,DPDENO,ALPHA,PMOINS,PPLUS
       REAL*8      HOOKF(6,6),DKOOH(6,6),PLAS,DPLITG
       REAL*8      EPSP(6),EPSM2(6),SIGE(6),SE(6),SIIE,SEQ,I1E,TRACE
 C =====================================================================
@@ -57,11 +57,13 @@ C --- INITIALISATION --------------------------------------------------
 C =====================================================================
       PMOINS = VIM(1)
       IRET   = 0
-      RESI   = OPTION.EQ.'FULL_MECA' .OR. OPTION.EQ.'RAPH_MECA'
-      RIGI   = OPTION.EQ.'FULL_MECA' .OR. OPTION.EQ.'RIGI_MECA_TANG'
-      IF ( (OPTION.NE.'RIGI_MECA_TANG') .AND.
-     +     (OPTION.NE.'FULL_MECA')      .AND.
-     +     (OPTION.NE.'RAPH_MECA') )    THEN
+      RESI   = OPTION(1:9).EQ.'FULL_MECA' .OR.
+     +         OPTION     .EQ.'RAPH_MECA'
+      RIGI   = OPTION(1:9).EQ.'FULL_MECA' .OR.
+     +         OPTION(1:9).EQ.'RIGI_MECA'
+      IF ( (OPTION(1:9).NE.'RIGI_MECA') .AND.
+     +     (OPTION(1:9).NE.'FULL_MECA') .AND.
+     +     (OPTION     .NE.'RAPH_MECA') )  THEN
          CALL UTMESS('F','LCDPPA','PROBLEME SUR LE TYPE D OPTION')
       ENDIF
 C =====================================================================
@@ -84,13 +86,13 @@ C =====================================================================
       SEQ    = SQRT  (TROIS*SIIE/DEUX)
       I1E    = TRACE (NDI,SIGE)
 C =====================================================================
-C --- RESOLUTION DU SYSTEME -------------------------------------------
-C =====================================================================
-      IF (RESI) THEN
-         CALL RESDP1( MATERF, SEQ, I1E, PMOINS, DP, DPDENO, PLAS)
-C =====================================================================
 C --- CALCUL DES CONTRAINTES ------------------------------------------
 C =====================================================================
+      IF (RESI) THEN
+C =====================================================================
+C --- RESOLUTION DU SYSTEME -------------------------------------------
+C =====================================================================
+         CALL RESDP1( MATERF, SEQ, I1E, PMOINS, DP, PLAS)
          IF (PLAS.EQ.0.0D0) THEN
             DO 10 II=1,NDT
                SIG(II) = SIGE(II)
@@ -106,17 +108,26 @@ C =====================================================================
          VIP(2) = VIM(2) + TROIS*ALPHA*DP
          VIP(NVI) = PLAS
 C =====================================================================
+C --- PREPARATION AU CALCUL DE LA MATRICE TANGENTE --------------------
+C =====================================================================
+         DPDENO = DPLITG( MATERF, VIP(1), PLAS )
+         PPLUS  = VIP(1)
       ELSE
          PLAS   = VIM(NVI)
          DP     = 0.0D0
-         DPDENO = DPLITG( MATERF, PMOINS )
+         PPLUS  = 0.0D0
+         DPDENO = DPLITG( MATERF, PMOINS, PLAS )
       ENDIF
 C =====================================================================
 C --- CALCUL DE LA MATRICE TANGENTE -----------------------------------
 C =====================================================================
       IF (RIGI) THEN
-         CALL DPMATA( HOOKF, MATERF, ALPHA, DP, DPDENO,
+         IF (OPTION(10:14).EQ.'_ELAS') THEN
+            CALL LCEQMA(HOOKF, DSIDEP)
+         ELSE
+            CALL DPMATA( MOD, MATERF, ALPHA, DP, DPDENO, PPLUS,
      +                                           SE, SEQ, PLAS, DSIDEP)
+         ENDIF
       ENDIF
 C =====================================================================
       END

@@ -7,7 +7,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 17/05/2004   AUTEUR ROMEO R.FERNANDES 
+C MODIF ALGORITH  DATE 08/06/2004   AUTEUR ROMEO R.FERNANDES 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -260,7 +260,7 @@ C =====================================================================
 C =====================================================================
 C --- CALCUL DE PHI ET DE RHO11 (SI LIQ) A L'INSTANT COURANT ----------
 C =====================================================================
-      IF (OPTION(1:16).EQ.'RIGI_MECA_TANG') THEN
+      IF (OPTION(1:9).EQ.'RIGI_MECA') THEN
          IF (YAMEC.EQ.1) THEN
             PHI = VINTM(ADVICO+VICPHI) + PHI0
          ELSE
@@ -315,7 +315,7 @@ C =====================================================================
 C --- CAS LIQUIDE ET GAZ ----------------------------------------------
 C =====================================================================
       IF (YATE.EQ.1) THEN
-         IF ((OPTION(1:16).EQ.'RIGI_MECA_TANG') .OR.
+         IF ((OPTION(1:9).EQ.'RIGI_MECA') .OR.
      &       (OPTION(1:9).EQ.'FULL_MECA')) THEN
           DSDE(ADCP11+NDIM+1,ADDEP2) = DSDE(ADCP11+NDIM+1,ADDEP2) +
      &                                 (1.D0-3.D0*ALPLIQ*T)/RHO11
@@ -337,7 +337,7 @@ C =====================================================================
 C --- CALCUL DE SIGMAP ------------------------------------------------
 C =====================================================================
       IF (YAMEC.EQ.1) THEN
-         IF ((OPTION(1:16).EQ.'RIGI_MECA_TANG') .OR.
+         IF ((OPTION(1:9).EQ.'RIGI_MECA') .OR.
      &       (OPTION(1:9).EQ.'FULL_MECA')) THEN
             DSDE(ADCOME+6,ADDEP1) = DSDE(ADCOME+6,ADDEP1) + BIOT*SAT
             DSDE(ADCOME+6,ADDEP2) = DSDE(ADCOME+6,ADDEP2) - BIOT
@@ -359,7 +359,7 @@ C =====================================================================
      >                      CONGEP(ADCOME), VINTP, 
      >                      DSDEME,P1,P2,DP1,DP2,
      &                      DSIDP1)
-         IF ((OPTION(1:16).EQ.'RIGI_MECA_TANG') .OR.
+         IF ((OPTION(1:9).EQ.'RIGI_MECA') .OR.
      &       (OPTION(1:9).EQ.'FULL_MECA')) THEN
 C --- DSIGM/DEPP1
             DO 50 I = 1 , 2*NDIM
@@ -371,7 +371,7 @@ C --- DSIGM/DEPP1
 C =====================================================================
 C --- CALCUL DES APPORTS MASSIQUES ET LEURS DERIVEES ------------------
 C =====================================================================
-      IF ((OPTION(1:16).EQ.'RIGI_MECA_TANG') .OR.
+      IF ((OPTION(1:9).EQ.'RIGI_MECA') .OR.
      &    (OPTION(1:9).EQ.'FULL_MECA')) THEN
         DSDE(ADCP11,ADDEP1) = DSDE(ADCP11,ADDEP1) +
      &                        RHO11* (DSATP1*PHI-SAT*PHI*CLIQ-
@@ -409,7 +409,7 @@ C =====================================================================
 C --- CALCUL DE LA CHALEUR REDUITE Q' ---------------------------------
 C =====================================================================
       IF (YATE.EQ.1) THEN
-        IF ((OPTION(1:16).EQ.'RIGI_MECA_TANG') .OR.
+        IF ((OPTION(1:9).EQ.'RIGI_MECA') .OR.
      &      (OPTION(1:9).EQ.'FULL_MECA')) THEN
 C =====================================================================
 C --- TERME SUIVANT EST SANS CONTROLE, TOUT LE MONDE Y PASSE DQ/DT ----

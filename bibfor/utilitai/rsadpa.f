@@ -5,7 +5,7 @@
       CHARACTER*(*) NOMSD,LPARA(*),CTYPE(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 03/10/2000   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 08/06/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -61,7 +61,7 @@ C --------------- COMMUNS NORMALISES  JEVEUX  --------------------------
 C ---------------- FIN COMMUNS NORMALISES  JEVEUX  --------------------
       INTEGER IBID,NBORDR,NRANG,JORDR,I,IPARA,IER,IRANG
       CHARACTER*8 K8B,NOMOBJ,K8DEBU,K8MAXI
-      CHARACTER*16 PARAM
+      CHARACTER*16 PARAM,K16B
       CHARACTER*19 NOMS2
 C ----------------------------------------------------------------------
 
@@ -106,11 +106,11 @@ C     --- RECUPERATION DU NUMERO DE RANGEMENT ---
         PARAM = LPARA(I)
         CALL JENONU(JEXNOM(NOMS2//'.NOVA',PARAM),IPARA)
         IF (IPARA.EQ.0) THEN
-          CALL DISMOI('F','TYPE_RESU',NOMSD,'RESULTAT',IBID,K8B,IER)
+          CALL DISMOI('F','TYPE_RESU',NOMSD,'RESULTAT',IBID,K16B,IER)
           CALL JEIMPO('RESULTAT',NOMS2//'.NOVA',' ',' ')
-          CALL UTDEBM('F','RSADRA','VARIABLE INCONNUE: ')
+          CALL UTDEBM('F','RSADPA','VARIABLE INCONNUE: ')
           CALL UTIMPK('L','VARIABLE : ',1,PARAM)
-          CALL UTIMPK('S','POUR LE TYPE : ',1,K8B)
+          CALL UTIMPK('S','POUR LE TYPE : ',1,K16B)
           CALL UTFINM()
         END IF
 
