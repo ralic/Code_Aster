@@ -5,8 +5,7 @@
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ELEMENTS  DATE 18/10/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,6 +25,7 @@ C ======================================================================
 C ----------------------------------------------------------------------
 C     REALISE L'INTEGRATION DE LA LOI DE COMPORTEMENT GLRC STANDARD 
 C     POUR LES ELEMENTS DKTG <=> DKT EN PETITS DEPLAGEMENTS
+C                                DKQ EN PETITS DEPLACEMENTS
 C
 C IN  OPT    : OPTION DEMANDEE : RIGI_MECA_TANG , FULL_MECA , RAPH_MECA
 C IN  DELAS  : MATRICE ELASTIQUE EN MEMBRANE, FLEXION ET COUPLAGE

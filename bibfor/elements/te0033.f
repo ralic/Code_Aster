@@ -2,7 +2,7 @@
       IMPLICIT  NONE
       CHARACTER*16        OPTION, NOMTE
 C     ------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ELEMENTS  DATE 16/10/2004   AUTEUR D6BHHJP J.P.LEFEBVRE 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -147,7 +147,7 @@ C          -- RECUPERATION DE LA TEMPERATURE :
 C          -- SI LA TEMPERATURE EST CONNUE AUX NOEUDS :
       CALL TECACH ('NNN','PTEMPER',8,JTAB,IRET)
       ITEMP=JTAB(1)
-        IF (ITEMP.GT.0) THEN
+        IF (IRET.EQ.0 .OR. IRET.EQ.3) THEN
           DO 50 I = 1,NNO
             CALL DXTPIF(ZR(ITEMP+3*(I-1)),ZL(JTAB(8)+3*(I-1)))
             TMOY(I) = ZR(ITEMP+3* (I-1))
@@ -157,7 +157,7 @@ C          -- SI LA TEMPERATURE EST CONNUE AUX NOEUDS :
         END IF
 C          -- SI LA TEMPERATURE EST UNE FONCTION DE 'INST' ET 'EPAIS'
       CALL TECACH('NNN','PTEMPEF',1,ITEMP,IRET)
-        IF (ITEMP.GT.0) THEN
+        IF (IRET.EQ.0) THEN
           NOMPU(1) = 'INST'
           NOMPU(2) = 'EPAIS'
           CALL JEVECH('PTEMPSR','L',IBID)

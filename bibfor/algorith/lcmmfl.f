@@ -6,7 +6,7 @@
         REAL*8 VINI(NVI),RP
         CHARACTER*16 NECOUL
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/08/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 18/10/2004   AUTEUR JMBHH01 J.M.PROIX 
 C RESPONSABLE JMBHH01 J.M.PROIX
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -84,7 +84,7 @@ C------------------------------------------------------------
           
           FTAU=TAUS-C*VIS(1)-A*VIS(2)
           
-          CRIT=ABS(FTAU)-RP + (C/2/D)*(C*VIS(1))**2
+          CRIT=ABS(FTAU)-RP + 0.5D0*D*C*(VIS(1))**2
           IF (CRIT.GT.0.D0) THEN
              DP=((CRIT/K)**N)*DT
              DGAMMA=DP*FTAU/ABS(FTAU)

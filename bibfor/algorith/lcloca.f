@@ -1,15 +1,15 @@
-      SUBROUTINE LCLOCA(COEFT,COEL,NMAT,NBCOMM,NPHAS,SIGI,VINI,
-     &                  IPHAS,LOCA,SIGG)
+      SUBROUTINE LCLOCA(COEFT,E,NU,NMAT,NBCOMM,NPHAS,SIGI,VINI,
+     &                  IPHAS,GRANB,LOCA,SIGG)
 
       IMPLICIT NONE
       INTEGER NPHAS,NMAT,NBCOMM(NMAT,3),NVI,IPHAS
-      REAL*8 VINI(*),COEFT(NMAT),COEL(NMAT)
+      REAL*8 VINI(*),COEFT(NMAT),E,NU
       REAL*8 SIGI(6),LCNRTS,ALPHA,SIGG(6)
       CHARACTER*16 LOCA
-      REAL*8 MU,DEV(6),NORME,DEVP(6),R8MIEM,EVPCUM
-      INTEGER IEVPG,I
+      REAL*8 MU,DEV(6),NORME,DEVP(6),R8MIEM,EVPCUM,GRANB(6)
+      INTEGER IEVPG,I,J
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 27/09/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 18/10/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -54,7 +54,7 @@ C              3 variables Alpha, Gamma, P
 C    1 variable : indic
 C ======================================================================
 
-      MU=COEL(1)/2.D0/(1.D0+COEL(2))
+      MU=E/2.D0/(1.D0+NU)
       
 C --  METHODE LOCALISATION
       IF (LOCA.EQ.'BZ') THEN
@@ -73,11 +73,10 @@ C        EVP - EVPG(IPHAS)
 1        CONTINUE         
 
       ELSEIF (LOCA.EQ.'BETA') THEN
-      
 C        EVP - EVPG(IPHAS)      
          IEVPG=7+6*(IPHAS-1)   
          DO 2 I=1,6
-            SIGG(I)=SIGI(I)+MU*(VINI(I)-VINI(IEVPG+I))
+            SIGG(I)=SIGI(I)+MU*(GRANB(I)-VINI(IEVPG+I))
 2        CONTINUE         
 
 

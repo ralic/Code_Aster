@@ -21,7 +21,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
 C     ------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 21/01/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 16/10/2004   AUTEUR D6BHHJP J.P.LEFEBVRE 
 C     CALCUL DES TEMPERATURES AUX NOEUDS POUR LES ELEMENTS DE PLAQUE
 C     DKT, DST, DKQ, DSQ ET Q4G A PARTIR DE LA DONNEE DES TEMPERATURES
 C     EN ENTREE DE L'OPTION NON LINEAIRE .
@@ -92,7 +92,7 @@ C     -- SI LA TEMPERATURE EST CONNUE AUX NOEUDS :
 C        ---------------------------------------
       CALL TECACH ('OON','PTEMPER',8,ITAB,IRET)
       ITEMP=ITAB(1)
-      IF (ITEMP.GT.0) THEN
+      IF (IRET.EQ.0 .OR. IRET.EQ.3) THEN
         INDITH = .TRUE.
         DO 20 I = 1,NNO
             IF (IRET.EQ.3)
@@ -105,7 +105,7 @@ C        ---------------------------------------
 C     -- SI LA TEMPERATURE EST UNE FONCTION DE 'INST' ET 'EPAIS' :
 C        ------------------------------------------------------
       CALL TECACH('NNN','PTEMPEF',1,ITEMP,IRET)
-      IF (ITEMP.GT.0) THEN
+      IF (IRET.EQ.0) THEN
         INDITH = .TRUE.
         NOMPU(1) = 'INST'
         NOMPU(2) = 'EPAIS'

@@ -1,6 +1,6 @@
       SUBROUTINE TE0347(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ELEMENTS  DATE 16/10/2004   AUTEUR D6BHHJP J.P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -127,7 +127,7 @@ C        QUI CONTIENNENT DEJA LES EFFORTS AUX NOEUDS
 C
          CALL TECACH('ONN','PCOMPOR',1,ICOMPO,IRET)
          COMPOR = ' '
-         IF (ICOMPO.NE.0) THEN
+         IF (IRET.EQ.0) THEN
             COMPOR = ZK16(ICOMPO)
          ENDIF
          IF (COMPOR(1:4).EQ.'VMIS' ) THEN
@@ -141,7 +141,7 @@ C
               CALL JEVECH ( 'PCAORIE', 'L', LORIEN )
               CALL TECACH('ONN','PTEMPER',1,ITEMPE,IRET)
 C
-              IF ( ITEMPE .EQ. 0 ) THEN
+              IF ( IRET .NE. 0 ) THEN
                  NBPAR  = 0
                  NOMPAR = ' '
                  VALPAR = 0.D0
@@ -184,9 +184,8 @@ C
                  CALL JEVECH ( 'PCONTMR', 'L', ICGP   )
                  CALL JEVECH ( 'PVECTUR', 'E', ICONTN )
                  CALL TECACH('ONN','PDEPLMR',1,IDEPLM,IRET)
-                 CALL TECACH('ONN','PDEPLPR',1,IDEPLP,IRET)
 C
-                 IF ( IDEPLM .EQ. 0 ) THEN
+                 IF ( IRET .NE. 0 ) THEN
                     DO 30 I = 1,NEQ
                        UTG(I) = 0.D0
  30                 CONTINUE
@@ -196,7 +195,8 @@ C
  32                 CONTINUE
                  ENDIF
 C
-                 IF ( IDEPLP .NE. 0 ) THEN
+                 CALL TECACH('ONN','PDEPLPR',1,IDEPLP,IRET)
+                 IF ( IRET .EQ. 0 ) THEN
                     DO 34 I = 1,NEQ
                        UTG(I) = UTG(I) + ZR(IDEPLP-1+I)
  34                 CONTINUE

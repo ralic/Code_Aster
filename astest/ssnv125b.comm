@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 18/10/2004   AUTEUR JMBHH01 J.M.PROIX 
 # TITRE ESSAI DE TRACTION-CISAILLEMENT 3D (POLY_CFC_FO)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -293,19 +293,19 @@ TEST_RESU(RESU=(
           _F(  RESULTAT = SOLNL, NOM_CHAM = 'EPSI_ELNO_DEPL', NUME_ORDRE = 9,
             MAILLE = 'CUBE',  NOEUD = 'NO1',             NOM_CMP = 'EPZZ',
             VALE = 1.40215E-3,
-            PRECISION = 0.02, CRITERE = 'RELATIF'),
+            PRECISION = 0.05, CRITERE = 'RELATIF'),
           _F(  RESULTAT = SOLNL, NOM_CHAM = 'EPSI_ELNO_DEPL', NUME_ORDRE = 9,
             MAILLE = 'CUBE',  NOEUD = 'NO1',             NOM_CMP = 'EPYZ',
             VALE = 1.00001E-3,
-            PRECISION = 0.04, CRITERE = 'RELATIF'),
+            PRECISION = 0.01, CRITERE = 'RELATIF'),
           _F(  RESULTAT = SOLNL, NOM_CHAM = 'EPSI_ELNO_DEPL', NUME_ORDRE = 11,
             MAILLE = 'CUBE',  NOEUD = 'NO1',             NOM_CMP = 'EPZZ',
             VALE = 1.84150E-3,
-            PRECISION = 0.01, CRITERE = 'RELATIF'),
+            PRECISION = 0.06, CRITERE = 'RELATIF'),
           _F(  RESULTAT = SOLNL, NOM_CHAM = 'EPSI_ELNO_DEPL', NUME_ORDRE = 11,
             MAILLE = 'CUBE',  NOEUD = 'NO1',             NOM_CMP = 'EPYZ',
             VALE = 1.34782E-3,
-            PRECISION = 0.02, CRITERE = 'RELATIF')))
+            PRECISION = 0.05, CRITERE = 'RELATIF')))
 
 FIN()
 #

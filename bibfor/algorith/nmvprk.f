@@ -5,7 +5,7 @@
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 27/09/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 18/10/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -125,7 +125,7 @@ C
 C
         PARAMETER     ( MAXDOM = 0.99D0 )
 C
-        PARAMETER       ( NMAT = 90     )
+        PARAMETER       ( NMAT = 190     )
 C
         REAL*8          MATERD(NMAT,2) , MATERF(NMAT,2),R8VIDE
         INTEGER         NBCOMM(NMAT,3)

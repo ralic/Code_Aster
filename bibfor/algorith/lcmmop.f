@@ -8,7 +8,7 @@
         REAL*8 SIGI(6),EPSD(6),DETOT(6),TPERD,DTPER,TPEREF,PGL(3,3)
         CHARACTER*16 COMP(*)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 27/09/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 18/10/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -123,7 +123,7 @@ C     ----------------------------------------------------------------
       REAL*8 VIS(3),DT,GAMMA,EVG(6),ANG(3),PGL2(3,3),DL,DA,GAMMAS
       REAL*8 EVI(6),SIGI33(3,3),SIGG(6),RP,DEVG(6),FV,R8DGRD
       REAL*8 DEVI(6),MS(6),TAUS,DGAMMA,DALPHA,DP,SIG33(3,3),WORK(3,3)
-      REAL*8 DEVGEQ,LCNRTS,DBETA,BETA,DVINEQ
+      REAL*8 DEVGEQ,LCNRTS,DBETA,BETA,DVINEQ,GRANB(6)
       INTEGER ITENS,NBFSYS,I,NUVI,IFA,ICOMPO,NBSYS,IS,IV,NUMS,NVLOC
       INTEGER NBPHAS,INDPHA,INDFV,INDORI,DECAL,IPHAS,INDCP,NVIG,INDFA
 C     ----------------------------------------------------------------
@@ -141,12 +141,20 @@ C LOCALISATION
 C   RECUPERATION DU NOMBRE DE PHASES
       NBPHAS=NBCOMM(1,1)
       LOCA=CPMONO(1)
+C     CALCUL DE  B      
+         DO 53 I=1,6
+            GRANB(I)=0.D0
+53        CONTINUE      
+         DO 54 I=1,6
+         DO 54 IPHAS=1,NBPHAS
+            INDFV=NBCOMM(1+IPHAS,3)
+            FV=COEFT(INDFV)
+            GRANB(I)=GRANB(I)+FV*VINI(7+6*(IPHAS-1)+I)
+54        CONTINUE      
 C     DEBUT DES VARIABLES INTERNES DES SYSTEMES DE GLISSEMENT      
       NUVI=7+6*NBPHAS
       DECAL=NUVI
       DO 1 IPHAS=1,NBPHAS         
-         CALL LCLOCA(COEFT,COEL,NMAT,NBCOMM,NBPHAS,SIGI,VINI,
-     &               IPHAS,LOCA,SIGG)
 C        INDPHA indice debut phase IPHAS dans NBCOMM
          INDPHA=NBCOMM(1+IPHAS,1)
          INDFV=NBCOMM(1+IPHAS,3)
@@ -154,6 +162,8 @@ C        INDPHA indice debut phase IPHAS dans NBCOMM
 C         recuperer l'orientation de la phase et la proportion
          INDORI=INDFV+1
          FV=COEFT(INDFV)
+         CALL LCLOCA(COEFT,E,NU,NMAT,NBCOMM,NBPHAS,SIGI,VINI,
+     &               IPHAS,GRANB,LOCA,SIGG)
          ANG(1)=COEFT(INDORI)*R8DGRD()
          ANG(2)=COEFT(INDORI+1)*R8DGRD()
          ANG(3)=COEFT(INDORI+2)*R8DGRD()
@@ -250,7 +260,7 @@ C         "homogenesisation" des déformations viscoplastiques
           DO 20 I=1,6
              DEVI(I)=DEVI(I)+FV*DEVG(I)
  20       CONTINUE
-          DEVGEQ=LCNRTS(DEVG)
+          DEVGEQ=LCNRTS(DEVG)/1.5D0
 C         localisation BETA 
           IF (LOCA.EQ.'BETA') THEN
              DL=COEFT(NBCOMM((NBPHAS+2),1))
@@ -276,7 +286,7 @@ C
         DVIN(ITENS)= DEVI(ITENS)
    30 CONTINUE
 C     Norme de DEVP cumulée
-      DVINEQ = LCNRTS( DEVI ) 
+      DVINEQ = LCNRTS( DEVI ) / 1.5D0
       
       DVIN(7)= DVINEQ
       

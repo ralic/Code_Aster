@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
+C MODIF UTILITAI  DATE 18/10/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,11 +23,11 @@ C ======================================================================
 C     OPERATEUR   DEFI_TEXTURE
 C     ------------------------------------------------------------------
 C
-      INTEGER      NBOCG, NBOCP, IOCC, N0, N1, N2, NBPARR, IBID, ISG
+      INTEGER      NBOCG, NBOCP, IOCC, N0, N1, N2, NBPARR, IBID, ISG,J
       PARAMETER    ( NBPARR = 16 )
       REAL*8       SOMM, TOLE, VALE(6), ORIENT(9), ROTAT(9), ROTINV(9),
      +             C1, S1, C2, S2, CG, SG, R8DGRD, RADEG, AUXI(9), R2,
-     +             US2R6, USR6,
+     +     US2R6, USR6,PGL(3,3),MS3(3,3),NL(3),NG(3),LL(3),LG(3),MS(6),
      +             ZN1(12), ZN2(12), ZN3(12), ZL1(12), ZL2(12), ZL3(12)
       CHARACTER*8  K8B, RESU, TYPARR(NBPARR)
       CHARACTER*16 CONCEP, NOMCMD, NOPARR(NBPARR)
@@ -129,6 +129,11 @@ C
       DO 220 IOCC = 1 , NBOCP
          CALL GETVR8 ('PLAN', 'ANGL_NAUT' , IOCC,1,3, VALE   , N1 )
          CALL GETVR8 ('PLAN', 'PROPORTION', IOCC,1,1, VALE(4), N2 )
+         DO 10 J=1,3
+         VALE(J)=VALE(J)*RADEG
+ 10      CONTINUE
+         CALL MATROT(VALE,PGL)
+
          C1 = COS( VALE(1) * RADEG )
          S1 = SIN( VALE(1) * RADEG )
          C2 = COS( VALE(3) * RADEG )
@@ -152,8 +157,10 @@ C ------ DE CHAQUE SYSTEME DE GLISST DANS LE REPERE MATERIAU
             ORIENT(2) = ZL2(ISG)*ZN2(ISG)*USR6
             ORIENT(3) = ZL3(ISG)*ZN3(ISG)*USR6
             ORIENT(4) = (ZL1(ISG)*ZN2(ISG)+ZL2(ISG)*ZN1(ISG))*US2R6
-            ORIENT(5) = (ZL2(ISG)*ZN3(ISG)+ZL3(ISG)*ZN2(ISG))*US2R6
-            ORIENT(6) = (ZL3(ISG)*ZN1(ISG)+ZL1(ISG)*ZN3(ISG))*US2R6
+C            ORIENT(5) = (ZL2(ISG)*ZN3(ISG)+ZL3(ISG)*ZN2(ISG))*US2R6
+C            ORIENT(6) = (ZL3(ISG)*ZN1(ISG)+ZL1(ISG)*ZN3(ISG))*US2R6
+            ORIENT(6) = (ZL2(ISG)*ZN3(ISG)+ZL3(ISG)*ZN2(ISG))*US2R6
+            ORIENT(5) = (ZL3(ISG)*ZN1(ISG)+ZL1(ISG)*ZN3(ISG))*US2R6
             ORIENT(7) = ORIENT(4)
             ORIENT(8) = ORIENT(5)
             ORIENT(9) = ORIENT(6)
@@ -163,7 +170,24 @@ C ------ DE CHAQUE SYSTEME DE GLISST DANS LE REPERE MATERIAU
             ORIENT(5) = R2 * ORIENT(5)
             ORIENT(6) = R2 * ORIENT(6)
 C
-            CALL TBAJLI ( RESU, 6, NOPARR(11), IBID,ORIENT,C16B,K8B,0 )
+      NL(1)=ZN1(ISG)
+      NL(2)=ZN2(ISG)
+      NL(3)=ZN3(ISG)
+      LL(1)=ZL1(ISG)
+      LL(2)=ZL2(ISG)
+      LL(3)=ZL3(ISG)
+      CALL UTPVLG(1,3,PGL,NL,NG)
+      CALL UTPVLG(1,3,PGL,LL,LG)
+      DO 11 J=1,3
+         MS(J)=NG(J)*LG(J)*USR6
+11    CONTINUE
+C     SQRT(2) PAR HOMOGENEITE AVEC NMPL3D.
+      MS(4)=0.5D0*(NG(1)*LG(2)+NG(2)*LG(1))*SQRT(2.D0)*USR6
+      MS(5)=0.5D0*(NG(1)*LG(3)+NG(3)*LG(1))*SQRT(2.D0)*USR6
+      MS(6)=0.5D0*(NG(2)*LG(3)+NG(3)*LG(2))*SQRT(2.D0)*USR6
+            
+            CALL TBAJLI ( RESU, 6, NOPARR(11), IBID,MS,C16B,K8B,0 )
+C            CALL TBAJLI ( RESU, 6, NOPARR(11), IBID,ORIENT,C16B,K8B,0 )
 C
  230     CONTINUE
  220  CONTINUE

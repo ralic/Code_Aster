@@ -4,7 +4,7 @@
       IMPLICIT   NONE
       CHARACTER*16 OPTION
 C ......................................................................
-C MODIF ELEMENTS  DATE 15/06/2004   AUTEUR MABBAS M.ABBAS 
+C MODIF ELEMENTS  DATE 16/10/2004   AUTEUR D6BHHJP J.P.LEFEBVRE 
 C TOLE CRP_20
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -246,7 +246,7 @@ C     1- SI LA TEMPERATURE EST CONNUE AUX NOEUDS :
 C        -----------------------------------------
       CALL TECACH('ONN','PTEMPMR',8,ITABM,IRET)
       ITEMPM = ITABM(1)
-      IF (ITEMPM.GT.0) THEN
+      IF (ITEMPM.NE.0) THEN
         NBPAR = 1
         NOMPAR = 'TEMP'
         TEMPNO = .TRUE.

@@ -2,7 +2,7 @@
       IMPLICIT  NONE
       CHARACTER*16        OPTION , NOMTE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 21/01/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 16/10/2004   AUTEUR D6BHHJP J.P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -82,7 +82,7 @@ C===============================================================
 C          -- RECUPERATION DE LA TEMPERATURE :
 C          -- SI LA TEMPERATURE EST CONNUE AUX NOEUDS :
           CALL TECACH('ONN','PTEMPER',1,ITEMP,IRET)
-           IF (ITEMP.GT.0) THEN
+           IF (IRET.EQ.0) THEN
              DO 10 I=1,NNO
                 TMOY(I)=ZR(ITEMP+3*(I-1)  )
                 TINF(I)=ZR(ITEMP+3*(I-1)+1)
@@ -91,7 +91,7 @@ C          -- SI LA TEMPERATURE EST CONNUE AUX NOEUDS :
            ENDIF
 C          -- SI LA TEMPERATURE EST UNE FONCTION DE 'INST' ET 'EPAIS'
          CALL TECACH('NNN','PTEMPEF',1,ITEMPF,IRET)
-           IF (ITEMPF.GT.0) THEN
+           IF (IRET.EQ.0) THEN
              NOMPU(1)='INST'
              NOMPU(2)='EPAIS'
              CALL JEVECH ( 'PTEMPSR' ,'L', IBID )

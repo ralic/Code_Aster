@@ -6,7 +6,7 @@
         REAL*8 DDVIR(NVI),DRSDPR(NVI)
         CHARACTER*16 NECOUL,NECRIS,NECRCI
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/08/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 18/10/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -43,7 +43,7 @@ C       DP
 C     ----------------------------------------------------------------
       REAL*8 C,P,R0,Q,H,B,K,N,FTAU,CRIT,B1,B2,Q1,Q2,A,GAMMA0,D,VAL
       REAL*8 TPERD,TABS,DRDP,ALPHA,GAMMA,DP,DGAMMA,TAUMU,TAUV,GM,PM,CC
-      REAL*8 PR,DRDPR,DELTAV,DELTAG
+      REAL*8 PR,DRDPR,DELTAV,DELTAG,R8MIEM
       INTEGER IFL,NS, IS
 C     ----------------------------------------------------------------
 
@@ -100,7 +100,11 @@ C             DGAMMA=0.D0
 C             DP/DP
              DDVIS(3,3)=1.D0             
              DDVIS(2,2)=1.D0
-             DDVIS(2,3)=-FTAU/ABS(FTAU)
+             IF (ABS(FTAU).GT.R8MIEM()) THEN
+                DDVIS(2,3)=-FTAU/ABS(FTAU)
+             ELSE
+                DDVIS(2,3)=0.D0
+             ENDIF
              DVDTAU(3)=0.D0
              DDVIR(NUMS)=1.D0
          ENDIF
@@ -115,7 +119,7 @@ C             DP/DP
           
           FTAU=TAUS-C*VIS(1)-A*VIS(2)
           
-          CRIT=ABS(FTAU)-RP + (C/2/D)*(C*VIS(1))**2
+          CRIT=ABS(FTAU)-RP + 0.5D0*C*D*(VIS(1))**2
           IF (CRIT.GT.0.D0) THEN
              VAL=DT*(CRIT/K)**(N-1)
              DP=((CRIT/K)**N)*DT
@@ -125,7 +129,7 @@ C             DGAMMA=DP*FTAU/ABS(FTAU)
              DDVIS(2,2)=1.D0
              DDVIS(2,3)=-FTAU/ABS(FTAU)
              
-             DDVIS(3,1)= -N*VAL/K*(-C*FTAU/ABS(FTAU)+C*C*C/D*VIS(1))
+             DDVIS(3,1)= -N*VAL/K*(-C*FTAU/ABS(FTAU)+C*D*VIS(1))
              DDVIS(3,2)= N*VAL/K*A*FTAU/ABS(FTAU)
              DDVIS(3,3)= 1.D0+N*VAL/K*DRSDPR(NUMS)
              
@@ -146,7 +150,11 @@ C             DGAMMA=0.D0
 C             DP/DP
              DDVIS(3,3)=1.D0             
              DDVIS(2,2)=1.D0
-             DDVIS(2,3)=-FTAU/ABS(FTAU)
+             IF (ABS(FTAU).GT.R8MIEM()) THEN
+                DDVIS(2,3)=-FTAU/ABS(FTAU)
+             ELSE
+                DDVIS(2,3)=0.D0
+             ENDIF
              DVDTAU(3)=0.D0
              DDVIR(NUMS)=1.D0
           ENDIF
@@ -180,7 +188,11 @@ C     &                 *EXP(DELTAV/K/TABS*TAUV)*DRSDPR(NUMS)
           ELSE
              DDVIS(3,3)=1.D0             
              DDVIS(2,2)=1.D0
-             DDVIS(2,3)=-FTAU/ABS(FTAU)
+             IF (ABS(FTAU).GT.R8MIEM()) THEN
+                DDVIS(2,3)=-FTAU/ABS(FTAU)
+             ELSE
+                DDVIS(2,3)=0.D0
+             ENDIF
              DVDTAU(3)=0.D0
              DDVIR(NUMS)=0.D0
           ENDIF

@@ -1,6 +1,6 @@
       SUBROUTINE TE0011(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 16/10/2004   AUTEUR D6BHHJP J.P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -104,11 +104,11 @@ C      -------------------------------------------------
 
 C ---- RECUPERATION DU CHAMP DE L'HDRATATION SUR L'ELEMENT
 C      --------------------------------------------------
-      CALL TECACH('NNN','PHYDRER',1,IHYDR,IRET)
+      CALL TECACH('NNN','PHYDRER',1,IHYDR,IRETH)
 
 C ---- RECUPERATION DU CHAMP DU SECHAGE SUR L'ELEMENT
 C      --------------------------------------------------
-      CALL TECACH('NNN','PSECHER',1,ISECH,IRET)
+      CALL TECACH('NNN','PSECHER',1,ISECH,IRETS)
 
 C ---- RECUPERATION  DES DONNEEES RELATIVES AU REPERE D'ORTHOTROPIE
 C      ------------------------------------------------------------
@@ -127,7 +127,7 @@ C          -------
         XYZGAU(2) = 0.D0
         XYZGAU(3) = 0.D0
         TEMPG = 0.D0
-        IF (IHYDR.GT.0) THEN
+        IF (IRETH.EQ.0) THEN
           HYDRG = ZR(IHYDR+IGAU-1)
         ELSE
           HYDRG = 0.D0
@@ -145,7 +145,7 @@ C          -------
    30   CONTINUE
 
         SECHG = 0.D0
-        IF (ISECH.GT.0) THEN
+        IF (IRETS.EQ.0) THEN
           DO 40 I = 1,NNO
             SECHG = SECHG + ZR(IVF+I+IDECPG)*ZR(ISECH+I-1)
    40     CONTINUE

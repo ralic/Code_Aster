@@ -3,7 +3,7 @@
       CHARACTER*16  OPTION,NOMTE
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ELEMENTS  DATE 16/10/2004   AUTEUR D6BHHJP J.P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -161,12 +161,12 @@ C     -----------
       IF (NOMTE(1:8).NE.'THCPSE3 ' .AND. NOMTE(1:8).NE.'THCASE3 ' .AND.
      &    NOMTE(1:8).NE.'THCOSE3 ' .AND. NOMTE(1:8).NE.'THCOSE2 ') THEN
 C ---   CAS OU LES COEFFICIENTS D'ECHANGE SONT DES REELS :
-        IF (ICOEHR.GT.0) THEN
+        IF (ICOEHR.NE.0) THEN
           HMOIN = ZR(ICOEHR)
           HPLUS = ZR(ICOEHR+1)
         END IF
 C ---   CAS OU LES COEFFICIENTS D'ECHANGE SONT DES FONCTIONS :
-        IF (ICOEHF.GT.0) THEN
+        IF (ICOEHF.NE.0) THEN
           HFMOIN = ZK8(ICOEHF)
           HFPLUS = ZK8(ICOEHF+1)
         END IF

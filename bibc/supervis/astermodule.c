@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF astermodule supervis  DATE 11/10/2004   AUTEUR DURAND C.DURAND */
+/* MODIF astermodule supervis  DATE 15/10/2004   AUTEUR PABHHHH N.TARDIEU */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -2608,7 +2608,7 @@ PyObject *args;
                                    ISCRUTE(ctype);
                                    ISCRUTE(iaddr);
                                    SSCRUTE(nomob);
-          if(nomob[1] == ' '){
+          if(nomob[0] == ' '){
              key=PyInt_FromLong(j);
           }
           else {

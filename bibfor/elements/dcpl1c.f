@@ -8,8 +8,7 @@
       INTEGER N,ND
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 18/11/2003   AUTEUR LEBOUVIE F.LEBOUVIER 
+C MODIF ELEMENTS  DATE 18/10/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -27,7 +26,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
 C-----------------------------------------------------------------------
-C     BUT    :  CALCULS DE LAMBDA ET DE L'INCREMENT DE LA COURBURE 
+C     BUT    :  CALCULS DE LAMBDA ET DE L'INCREMENT DE COURBURE 
 C               PLASTIQUE QUAND LE CRITERE DE PLASTICITE VAUT 1
 C               PAR UNE METHODE EXPLICITE 
 C

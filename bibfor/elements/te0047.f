@@ -4,7 +4,7 @@
       CHARACTER*(*) OPTIOZ,NOMTEZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
+C MODIF ELEMENTS  DATE 16/10/2004   AUTEUR D6BHHJP J.P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -159,7 +159,7 @@ C ======================================================================
 C --- RECUPERATION DES ORIENTATIONS (ANGLES NAUTIQUES -> VECTEUR ANG)
 
       CALL TECACH ( 'ONN','PCAORIE', 1, LORIEN ,IRET)
-      IF ( LORIEN .EQ. 0 ) THEN
+      IF ( IRET .NE. 0 ) THEN
          CALL TECAEL ( IADZI, IAZK24 )
          NOMAIL = ZK24(IAZK24-1+3)(1:8)
          CALL UTDEBM ( 'F', 'TE0047', 'POUR LES ELEMENTS DISCRETS, '//
@@ -446,9 +446,9 @@ C        MATRICE DE RIGIDITE EN REPERE LOCAL
           CALL JEVECH('PCONTPR','E',ICONTP)
           CALL JEVECH('PVARIPR','E',IVARIP)
 C
-          CALL TECACH('ONN','PTEMPMR',1,ITEMPM,IRET)
-          CALL TECACH('ONN','PTEMPPR',1,ITEMPP,IRET)
-          IF ((ITEMPM.GT.0).AND.(ITEMPP.GT.0)) THEN
+          CALL TECACH('ONN','PTEMPMR',1,ITEMPM,IRETM)
+          CALL TECACH('ONN','PTEMPPR',1,ITEMPP,IRETP)
+          IF ((IRETM.EQ.0).AND.(IRETP.EQ.0)) THEN
              ITEMP = 1
              TEMPM = 0.5D0 * ( ZR(ITEMPM) + ZR(ITEMPM+1) )
              TEMPP = 0.5D0 * ( ZR(ITEMPP) + ZR(ITEMPP+1) )
@@ -458,9 +458,9 @@ C
              TEMPP = 0.D0
           ENDIF
 C
-          CALL TECACH('ONN','PIRRAMR',1,IRRAMR,IRET)
-          CALL TECACH('ONN','PIRRAPR',1,IRRAPR,IRET)
-          IF ((IRRAMR.GT.0).AND.(IRRAPR.GT.0)) THEN
+          CALL TECACH('ONN','PIRRAMR',1,IRRAMR,IRETM)
+          CALL TECACH('ONN','PIRRAPR',1,IRRAPR,IRETP)
+          IF ((IRETM.EQ.0).AND.(IRETP.EQ.0)) THEN
              IRRAP = 0.5D0 * ( ZR(IRRAPR) + ZR(IRRAPR+1) )
           ELSE
              IRRAP = 0.D0 
@@ -509,7 +509,7 @@ C --- PARAMETRES EN ENTREE
    30   CONTINUE
         CALL JEVECH('PINSTPR','L',JINST)
         CALL TECACH('ONN','PVITPLU',1,IVITP,IRET)
-        IF (IVITP.NE.0) THEN
+        IF (IRET.EQ.0) THEN
           CALL UTPVGL(NNO,NC,PGL,ZR(IVITP),DVL)
         ELSE
           DO 40 I = 1,12
@@ -517,7 +517,7 @@ C --- PARAMETRES EN ENTREE
    40     CONTINUE
         END IF
         CALL TECACH('ONN','PDEPENT',1,IDEPEN,IRET)
-        IF (IDEPEN.NE.0) THEN
+        IF (IRET.EQ.0) THEN
           CALL UTPVGL(NNO,NC,PGL,ZR(IDEPEN),DPE)
         ELSE
           DO 50 I = 1,12
@@ -525,7 +525,7 @@ C --- PARAMETRES EN ENTREE
    50     CONTINUE
         END IF
         CALL TECACH('ONN','PVITENT',1,IVITEN,IRET)
-        IF (IVITEN.NE.0) THEN
+        IF (IRET.EQ.0) THEN
           CALL UTPVGL(NNO,NC,PGL,ZR(IVITEN),DVE)
         ELSE
           DO 60 I = 1,12

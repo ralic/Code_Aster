@@ -1,6 +1,6 @@
       SUBROUTINE TURIGI(NOMTE,NBRDDL,B,K,PASS,KTEMP)
       IMPLICIT NONE
-C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ELEMENTS  DATE 16/10/2004   AUTEUR D6BHHJP J.P.LEFEBVRE 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -142,7 +142,7 @@ C          (MOYENNE DES NNO NOEUDS) ET DES COEF. DES POLY. DE DEGRE 2 :
 C          ------------------------------------------------------------
       CALL TECACH('ONN','PTEMPER',8,ITABM,IRET)
       ITEMP = ITABM(1)
-      IF (ITEMP.GT.0) THEN
+      IF (IRET.EQ.0) THEN
         NBPAR = 1
         NOMPAR = 'TEMP'
         TMINF = 0.D0

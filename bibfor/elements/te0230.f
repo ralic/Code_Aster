@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ELEMENTS  DATE 16/10/2004   AUTEUR D6BHHJP J.P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -95,7 +95,7 @@ C     -- RECUPERATION DE LA TEMPERATURE POUR LE MATERIAU:
 C     -- SI LA TEMPERATURE EST CONNUE AUX NOEUDS :
         CALL TECACH('OON','PTEMPER',8,ITAB,IRET)
         ITEMP = ITAB(1)
-        IF (ITEMP.NE.0) THEN
+        IF (IRET.EQ.0 .OR. IRET.EQ.3) THEN
           NBPAR = 1
           NOMPAR = 'TEMP'
           TPG1 = 0.D0
@@ -115,7 +115,7 @@ C     -- SI LA TEMPERATURE EST CONNUE AUX NOEUDS :
 
 C     -- SI LA TEMPERATURE EST UNE FONCTION DE 'INST' ET 'EPAIS':
           CALL TECACH('ONN','PTEMPEF',1,ITEMP,IRET)
-          IF (ITEMP.GT.0) THEN
+          IF (IRET.EQ.0) THEN
             NBPAR = 1
             NOMPAR = 'TEMP'
             NOMPU(1) = 'INST'

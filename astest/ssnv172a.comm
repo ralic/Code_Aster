@@ -1,5 +1,5 @@
 
-# MODIF  DATE 06/08/2004   AUTEUR JMBHH01 J.M.PROIX 
+# MODIF  DATE 18/10/2004   AUTEUR JMBHH01 J.M.PROIX 
 # TITRE COMPORTEMENTS ELASTOVISCOPLASTIQUES MONOCRISTALLINS
 # RESPONSABLE JMBHH01 J.M.PROIX
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -111,7 +111,7 @@ KJ=1.38E-23
 
 KeV=KJ/1.6E-19
 
-print 'K en eV=',KeV
+#print 'K en eV=',KeV
 
 # MATERIAU DE TYPE CHABOCHE, SOIT MACRO, SOIT MONOCRISTAL
 ACIER=DEFI_MATERIAU(ELAS=_F(E=145200.0,
@@ -133,7 +133,7 @@ ACIER=DEFI_MATERIAU(ELAS=_F(E=145200.0,
                     ECOU_VISC2=_F(N=10.0,
                                   K=40.0,
                                   C=10.0,
-                                  D=10000000000.0,
+                                  D=0.0,
                                   A=0.0,),
                     ECOU_VISC3=_F(K=KeV,
                                   TAUMU=75.5,
@@ -153,7 +153,7 @@ ACIER=DEFI_MATERIAU(ELAS=_F(E=145200.0,
                                   B2=0.0,),
                     ECRO_CINE1=_F(D=36.68,),
                     ECRO_CINE2=_F(D=36.68,
-                                  GM=100000000000.0,
+                                  GM=0.0,
                                   PM=0.0,
                                   C=0.0,),);
 
@@ -161,11 +161,11 @@ COEFN=8.
 COEFK=40.
 GAMMAP0=1.0/(COEFK)**COEFN
 
-print 'GAMMA_POINT_0 = ', GAMMAP0
+#print 'GAMMA_POINT_0 = ', GAMMAP0
 
 TEMP=273.5
 DELTAV=KeV*TEMP
-print 'DELTAV = ', DELTAV
+#print 'DELTAV = ', DELTAV
 
 
 ACIER3=DEFI_MATERIAU(ELAS=_F(E=145200.0,

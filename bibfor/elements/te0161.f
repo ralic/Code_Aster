@@ -1,6 +1,6 @@
       SUBROUTINE TE0161(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ELEMENTS  DATE 16/10/2004   AUTEUR D6BHHJP J.P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -111,7 +111,7 @@ C          ------------------------------
 
 C        POUR LE CAS DU VENT
         CALL TECACH('NNN','PVITER',1,IFORC,IRET)
-        IF (IFORC.NE.0) THEN
+        IF (IRET.EQ.0) THEN
           NORMAL = .TRUE.
           OKVENT = .TRUE.
         ELSE
@@ -135,7 +135,7 @@ C          ------------------------------
           NORMAL = ZK8(IFORC+3) .EQ. 'VENT'
         END IF
         CALL TECACH('NNN','PTEMPSR',1,ITEMPS,IRET)
-        IF (ITEMPS.NE.0) THEN
+        IF (IRET.EQ.0) THEN
           X(4) = ZR(ITEMPS)
           NBPAR = 4
         ELSE
@@ -238,7 +238,7 @@ C           NORME DE LA VITESSE PERPENDICULAIRE
             IF (VALPAV(1).GT.R8MIN) THEN
 C             RECUPERATION DE L'EFFORT EN FONCTION DE LA VITESSE
               CALL TECACH('ONN','PVENTCX',1,IFCX,IRET)
-              IF (IFCX.LE.0) GO TO 90
+              IF (IRET.NE.0) GO TO 90
               IF (ZK8(IFCX) (1:1).EQ.'.') GO TO 90
               CALL FOINTE('FM',ZK8(IFCX),1,NOMPAV,VALPAV,FCX,IRET)
               FCX = FCX/VALPAV(1)

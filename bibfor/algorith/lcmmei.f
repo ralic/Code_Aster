@@ -6,7 +6,7 @@
         REAL*8 VINI(NVI)
         CHARACTER*16 NECRIS
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 27/09/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 18/10/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -70,12 +70,20 @@ C        R(PS)=R0+Q*SOMME(HSR*(1-EXP(-B*PR))
          DO 10 IS=1,NS
 C           HSR=H(1-DELTA_RS)+DELTA_RS
             IF (IS.EQ.NUMS) THEN
-               RP=RP+Q*(1.D0-EXP(-B*P))
+               IF (ABS(B*P).GT.100.D0) THEN
+                  RP=RP+Q
+               ELSE
+                  RP=RP+Q*(1.D0-EXP(-B*P))
+               ENDIF
 C               DRDP=Q*B*EXP(-B*P)
             ELSE
 C               PR=VINI(6+3*(IS-1)+3)
                PR=VINI(3*(IS-1)+3)
-               RP=RP+Q*H*(1.D0-EXP(-B*PR))
+               IF (ABS(B*PR).GT.100.D0) THEN
+                  RP=RP+Q*H
+               ELSE
+                  RP=RP+Q*H*(1.D0-EXP(-B*PR))
+               ENDIF
 C               DRDPR=Q*H*B*EXP(-B*PR)
             ENDIF
 C            DDVIR(IS)=DRDPR
@@ -93,17 +101,29 @@ C        R(PS)=R0+Q1*SOMME(HSR*(1-EXP(-B1*PR))+Q2*(1-EXP(-B2*PR)
          DO 20 IS=1,NS
 C           HSR=H(1-DELTA_RS)+DELTA_RS
             IF (IS.EQ.NUMS) THEN
-               RP=RP+Q1*(1.D0-EXP(-B1*P))
+               IF (ABS(B1*P).GT.100.D0) THEN
+                  RP=RP+Q1
+               ELSE
+                  RP=RP+Q1*(1.D0-EXP(-B1*P))
+               ENDIF
 C               DRDP=Q1*B1*EXP(-B1*P)
             ELSE
 C               PR=VINI(6+3*(IS-1)+3)
                PR=VINI(3*(IS-1)+3)
-               RP=RP+Q1*H*(1.D0-EXP(-B1*PR))
+               IF (ABS(B1*PR).GT.100.D0) THEN
+                  RP=RP+Q1*H
+               ELSE
+                  RP=RP+Q1*H*(1.D0-EXP(-B1*PR))
+                ENDIF
 C               DRDPR=Q1*H*B1*EXP(-B1*PR)
             ENDIF
 C            DDVIR(IS)=DRDPR
  20      CONTINUE
-         RP=RP+Q2*(1.D0-EXP(-B2*P))
+         IF (ABS(B2*P).GT.100.D0) THEN
+            RP=RP+Q2
+         ELSE
+            RP=RP+Q2*(1.D0-EXP(-B2*P))
+         ENDIF
 C         DRDP=DRDP+Q2*B2*EXP(-B2*P)
       ENDIF
            

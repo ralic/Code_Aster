@@ -1,7 +1,8 @@
       SUBROUTINE DXGLRC(NOMTE,OPT,COMPOR,XYZL,UL,DUL,BTSIG,KTAN,
      +                  EFFINT,PGL,CODRET)
+C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 21/01/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 18/10/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -23,16 +24,15 @@ C
       IMPLICIT REAL*8 (A-H,O-Z)
       CHARACTER*16 OPT
       CHARACTER*16 NOMTE,COMPOR(*)
-      INTEGER NNO, IDECAL,NBSP,CODRET
+      INTEGER NNO, CODRET
 C
       REAL*8 XYZL(3,4),KTAN((6*4)* (6*4+1)/2),BTSIG(6,4)
       REAL*8 UL(6,4),  DUL(6,4)
       REAL*8 MG(3),    PGL(3,3), ROT(9), DH(9)
       REAL*8     R,        R8B
       INTEGER MULTIC
-      INTEGER LZR,    IMATE,  IRET,   ICONTM, IVARIM, ITREF 
-      INTEGER IINSTM, IINSTP
-      INTEGER ICOMPO, ICARCR, ICACOQ, ICONTP, IVARIP, INO,   NBCON
+      INTEGER LZR,    IMATE,  IRET,   ICONTM, IVARIM 
+      INTEGER ICOMPO, ICACOQ, ICONTP, IVARIP, INO,   NBCON
       INTEGER NBVAR,  NDIMV,  IVARIX, L,      IPG,    JVARI, IVARI
       INTEGER K
 C GLRC
@@ -42,18 +42,18 @@ C GLRC
       REAL*8 RBIB8,    RBIB1(4),  RBIB2(4),  RBIB3(6), RBIB4(6)    
       REAL*8 XAB(3,3), DEFO(2,2) ,DSIDEP(6,6)
       INTEGER I,J
-      LOGICAL GRILLE,ELASCQ
+      LOGICAL LBID,ELASCQ
 C     ------------------------------------------------------------------
-C     CALCUL DES OPTIONS NON LINEAIRES POUR L'ELEMENT DE PLAQUE DKTG
+C     CALCUL LES OPTIONS NON LINEAIRES POUR L'ELEMENT DE PLAQUE DKTG
 C     TOUTES LES ENTREES ET LES SORTIES SONT DANS LE REPERE LOCAL.
-C     (MEME SI LES TABLEAUX SONT DIMMENSIONNES EN 3D)
 C     ------------------------------------------------------------------
 C     IN  OPT  : OPTION NON LINEAIRE A CALCULER
-C                  'RAPH_MECA' ,'FULL_MECA', OU 'RIGI_MECA_TANG'
-C     IN  XYZL : COORDONNEES DES NOEUDS
+C                'RAPH_MECA' ,'FULL_MECA', OU 'RIGI_MECA_TANG'
+C     IN  XYZL : COORDONNEES DES NOEUDS DANS LE REPERE LOCAL
 C     IN  UL   : DEPLACEMENT A L'INSTANT T "-"
 C     IN  DUL  : INCREMENT DE DEPLACEMENT
-C     IN  PGL  : MATRICE DE PASSAGE GLOBAL - LOCAL ELEMENT
+C     IN  PGL  : MATRICE DE PASSAGE 
+C                DU REPERE GLOBAL AU REPERE LOCAL ELEMENT
 C     OUT KTAN : MATRICE DE RIGIDITE TANGENTE
 C                    SI 'FULL_MECA' OU 'RIGI_MECA_TANG'
 C     OUT BTSIG: DIV (SIGMA)
@@ -103,13 +103,13 @@ C           DUF:     INCREMENT DEPLACEMENT (FLEXION)
       REAL*8 EPS(3),KHI(3),DEPS(3),DKHI(3),N(3),M(3)
 C            EPS:    DEFORMATION DE MEMBRANE "-"
 C            DEPS:   INCREMENT DE DEFORMATION DE MEMBRANE
-C            KHI:    DEFORMATION DE FLEXION  "-"
-C            DKHI:   INCREMENT DE DEFORMATION DE FLEXION
+C            KHI:    DEFORMATION DE FLEXION  "-" (COURBURE)
+C            DKHI:   INCREMENT DE DEFORMATION DE FLEXION (COURBURE)
 C            N  :    EFFORT NORMAL "+"
 C            M  :    MOMENT FLECHISSANT "+"
 C
       REAL*8 EFFINT(32)
-C            EFFINT : EFFORTS DANS LE REPERE INTRINSEQUE
+C            EFFINT : EFFORTS DANS LE REPERE DE L'ELEMENT
       REAL*8 DF(9),DM(9),DMF(9)
 C            DF :    MATRICE DE RIGIDITE TANGENTE MATERIELLE (FLEXION)
 C            DM :    MATRICE DE RIGIDITE TANGENTE MATERIELLE (MEMBRANE)
@@ -125,7 +125,9 @@ C           WORK:    TABLEAU DE TRAVAIL
 C           MEFL:    MATRICE DE COUPLAGE MEMBRANE-FLEXION
 C             LE MATERIAU EST SUPPOSE HOMOGENE
 C     ------------------ PARAMETRAGE TRIANGLE --------------------------
-      INTEGER LDETJ,LJACO,LTOR,LQSI,LETA,LWGT,JTAB(7),COD
+      INTEGER   LDETJ,LJACO,LTOR,LQSI,LETA,LWGT,JTAB(7),COD
+      INTEGER   NDIM,NNOS,IPOIDS,IVF,IDFDX,JGANO
+C
       PARAMETER (LDETJ=1)
       PARAMETER (LJACO=2)
       PARAMETER (LTOR=LJACO+4)
@@ -135,6 +137,9 @@ C     ------------------ PARAMETRAGE TRIANGLE --------------------------
       REAL*8 LC
 C     ------------------------------------------------------------------
 C --DEB
+
+      CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDX,JGANO)
+
       CODRET=0
 C
 C     2 BOOLEENS COMMODES :
@@ -144,19 +149,13 @@ C     ---------------------
 C
 C     RECUPERATION DES OBJETS &INEL ET DES CHAMPS PARAMETRES :
 C     --------------------------------------------------------
-C
-C
-      IF(NOMTE(1:8).EQ.'MEDKTG3 ') THEN
-        NNO = 3   
-        NPG = 3
+      IF(NOMTE(1:8).EQ.'MEDKTG3 ') THEN   
         NC  = 0
       ELSE IF(NOMTE(1:8).EQ.'MEDKQG4 ') THEN
-        NNO = 4  
-        NPG = 4
         NC  = 4
       ELSE
-         CALL UTMESS('F','DXGLRC','LE TYPE D''ELEMENT : '//NOMTE(1:8)//
-     +                'N''EST PAS PREVU.')
+        CALL UTMESS('F','DXGLRC','LE TYPE D''ELEMENT : '//NOMTE(1:8)//
+     +              'N''EST PAS PREVU.')
       ENDIF
 C
       CALL JEVETE('&INEL.'//NOMTE(1:8)//'.DESR',' ',LZR)     
@@ -170,16 +169,7 @@ C
       ICONTM=JTAB(1)
       IF (NPG.NE.JTAB(3)) CALL UTMESS('F','DXGLRC','STOP')
       CALL JEVECH('PVARIMR','L',IVARIM)
-      CALL TECACH('OON','PVARIMR',7,JTAB,IRET)
-      NBSP = JTAB(7)
-      CALL JEVECH('PTEREF','L',ITREF)
-      CALL JEVECH('PINSTMR','L',IINSTM)
-      CALL JEVECH('PINSTPR','L',IINSTP)
-C      INSTM = ZR(IINSTM)
-C      INSTP = ZR(IINSTP)
-
       CALL JEVECH('PCOMPOR','L',ICOMPO)
-      CALL JEVECH('PCARCRI','L',ICARCR)
       CALL JEVECH('PCACOQU','L',ICACOQ)
 
       IF (VECTEU) THEN
@@ -228,10 +218,10 @@ C     -------------------------------------------------
         DUF(3,INO) = -DUL(4,INO)
    10 CONTINUE
 C
-C     -- INTEGRATIONS SUR LA SURFACE DE L'ELEMENT:
-C     --------------------------------------------
+C     -- INTEGRATION SUR LA SURFACE DE L'ELEMENT:
+C     -------------------------------------------
 C     CONTRAINTE 2D : NXX,NYY,NXY,MXX,MYY,MXY
-      NBCON = 6
+      NBCON = 8
 C     NBVAR: NOMBRE DE VARIABLES INTERNES (2D) LOI COMPORTEMENT
       READ (ZK16(ICOMPO-1+2),'(I16)') NBVAR
       CALL TECACH('OON','PVARIMR',7,JTAB,IRET)
@@ -239,7 +229,7 @@ C
 C- REMPLISSAGE DE LA MATRICE ELASTIQUE
 C
       CALL DXMATE(DFE,DME,DMFE,RBIB1,RBIB2,RBIB3,RBIB4,NNO,PGL,ZR(LZR),
-     + MULTIC,GRILLE,ELASCQ)
+     +            MULTIC,LBID,ELASCQ)
 C  
       L=0
       DO 20 I = 1,3
@@ -267,8 +257,8 @@ C     -- BOUCLE SUR LES POINTS DE GAUSS DE LA SURFACE:
 C     -------------------------------------------------
       DO 130,IPG = 1,NPG
 C
-        ICPG = (IPG-1)*NBSP*NBCON
-        ICPV = (IPG-1)*NBSP*NBVAR
+        ICPG = (IPG-1)*NBCON
+        ICPV = (IPG-1)*NBVAR
 C
         CALL R8INIR(3,0.D0,N,1)
         CALL R8INIR(3,0.D0,M,1)
@@ -284,6 +274,7 @@ C
           CALL DXQBM(IPG,ZR(LZR),BM)
           CALL DKQBF(IPG,ZR(LZR),BF)
         ENDIF
+
         POIDS = ZR(LZR-1+LWGT+IPG-1)*ZR(LZR-1+LDETJ)
 C
 C       -- CALCUL DE EPS, DEPS, KHI, DKHI : 
@@ -308,8 +299,8 @@ C
            CALL UTFINM ()
         ENDIF
 C
-C         -- CALCUL DES EFFORTS RESULTANTS (N ET M)
-C         -----------------------------------------
+C         EFFORTS RESULTANTS (N ET M)
+C         --------------------------
             IF (VECTEU) THEN
               DO 90 I= 1,3
                 N(I) = ZR(ICONTP-1+ICPG+I)

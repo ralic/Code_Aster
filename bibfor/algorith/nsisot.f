@@ -1,8 +1,8 @@
-      SUBROUTINE NSISOT(OPTION,COMPOR,NDIM,IMATE,DEPS,DEDT,
+      SUBROUTINE NSISOT(OPTION,COMPOR,NDIM,IMATE,IMATSE,DEPS,DEDT,
      & SIGMS,VARMS,VARM,SIGM,VARP,SIPAS,SIGP,SIGPS,VARPS,STYPSE)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 17/09/2004   AUTEUR F6BHHBO P.DEBONNIERES 
+C MODIF ALGORITH  DATE 19/10/2004   AUTEUR F6BHHBO P.DEBONNIERES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,7 +22,7 @@ C ======================================================================
 C
 
       IMPLICIT NONE
-      INTEGER            NDIM,IMATE
+      INTEGER            NDIM,IMATE,IMATSE
       CHARACTER*16      OPTION,COMPOR(4)
       CHARACTER*24      STYPSE
       REAL*8    DEPS(*),SIGMS(*),VARMS(*),VARPS(*),DEDT(*)
@@ -74,10 +74,13 @@ C
       REAL*8 DSDE,SIGY,TRDSIM,DRPRIM,TRDSIP
       REAL*8 KRON(6),SOUTOT,RPTM,TRSIGP,A,RP,COEF      
       REAL*8 DTROIK,DDEUMU,DSIDEP(6,6),VALPAP(3)
+      REAL*8 ES,NUS,DSDES,SIGYS
       INTEGER NDIMSI,K,I,L
       CHARACTER*2 BL2,FB2,CODRET(3)
       CHARACTER*8 NOMRES(3)
       CHARACTER*8 NOMPAR(3)
+      CHARACTER*24 BLAN24
+      PARAMETER ( BLAN24 = '                        ' )
       DATA KRON/1.D0,1.D0,1.D0,0.D0,0.D0,0.D0/
 
 C     -- 1 INITIALISATIONS
@@ -136,22 +139,38 @@ C     ------------------------------------
       DDEUMU = 0.D0
       DSY = 0.D0
 
-      IF (OPTION(1:14).EQ.'MECA_SENS_CHAR') STYPSE = '    '
+      IF (STYPSE.NE.BLAN24) THEN
 
-      IF (STYPSE(1:1).EQ.'E') THEN
-        IF (COMPOR(1)(1:9).EQ.'VMIS_ISOT') THEN
-          DRPRIM = -1.D0*DSDE*DSDE/ ((E-DSDE)* (E-DSDE))
+        NOMRES(1) = 'E'
+        NOMRES(2) = 'NU'
+        NOMRES(3) = 'ALPHA'
+        CALL RCVALA(IMATSE,' ','ELAS',0,' ',0.D0,2,
+     &           NOMRES(1),VALRES(1),CODRET(1),'FM')
+        CALL RCVALA(IMATSE,' ','ELAS',0,' ',0.D0,1,NOMRES(3),
+     &           VALRES(3), CODRET(3),BL2)
+        IF (CODRET(3).NE.'OK') VALRES(3) = 0.D0
+        ES = VALRES(1)
+        NUS = VALRES(2)
+
+        IF (COMPOR(1)(1:14).EQ.'VMIS_ISOT_LINE') THEN
+          NOMRES(1) = 'D_SIGM_EPSI'
+          NOMRES(2) = 'SY'
+          CALL RCVALA(IMATSE,' ','ECRO_LINE',3,NOMPAR,VALPAP,2,
+     &             NOMRES,VALRES, CODRET,FB2)
+          DSDES = VALRES(1)
+          SIGYS = VALRES(2)
         ENDIF
-        DTROIK = 1.D0/ (1.D0-2.D0*NU)
-        DDEUMU = 1.D0/ (1.D0+NU)
-      ELSEIF (STYPSE(1:2).EQ.'NU') THEN
-        DTROIK = 2.D0*E/((1.D0-2.D0*NU)*(1.D0-2.D0*NU))
-        DDEUMU = -E/((1.D0+NU)*(1.D0+NU))
-      ELSEIF (STYPSE(1:4).EQ.'DSDE') THEN
-        DRPRIM = E*E/((E-DSDE)*(E-DSDE))
-      ELSEIF (STYPSE(1:4).EQ.'SIGY') THEN
-        DSY = 1.D0
+
+        DTROIK = (ES*(1.D0-2.D0*NU)+2.D0*E*NUS)/
+     &          ((1.D0-2.D0*NU)*(1.D0-2.D0*NU))
+        DDEUMU = (ES*(1.D0+NU)-E*NUS)/((1.D0+NU)*(1.D0+NU))
+        IF (COMPOR(1)(1:14).EQ.'VMIS_ISOT_LINE') THEN
+          DRPRIM=(E*E*DSDES-ES*DSDE*DSDE)/((E-DSDE)*(E-DSDE))
+          DSY = SIGYS
+        ENDIF
+      
       ENDIF
+
 
 C     ------------------------------------
 C     --- CALCUL DES DERIVEES ---

@@ -5,7 +5,7 @@
       CHARACTER*8         NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ELEMENTS  DATE 16/10/2004   AUTEUR D6BHHJP J.P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -125,7 +125,6 @@ C     -----------------------------
 C
 C --- RECUPERATION DE LA CARTE DE COMPORTEMENT :
 C     ----------------------------------------
-CCC      CALL JEVECH('PCOMPOR','L',ICOMPO)
       CALL TECACH ('NNN','PCOMPOR',8,ITAB,IRET)
       ICOMPO = ITAB(1)
       IF ( ICOMPO .EQ. 0 ) THEN
@@ -200,7 +199,7 @@ C
       ELSE
 C     -- SI LA TEMPERATURE EST UNE FONCTION DE 'INST' ET 'EPAIS':
         CALL TECACH('ONN','PTEMPEF',1,ITEMPF,IRET)
-        IF (ITEMPF.GT.0) THEN
+        IF (ITEMPF.NE.0) THEN
           TEMPNO = .FALSE.
           NBPAR = 1
           NOMPAR = 'TEMP'

@@ -3,7 +3,7 @@
       CHARACTER*(*)     OPTION,NOMTE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ELEMENTS  DATE 16/10/2004   AUTEUR D6BHHJP J.P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -376,7 +376,7 @@ C          NORME DE LA VITESSE PERPENDICULAIRE
            IF ( VALPAV(1) .GT. R8MIN ) THEN
 C            RECUPERATION DE L'EFFORT EN FONCTION DE LA VITESSE
              CALL TECACH('ONN','PVENTCX',1,IFCX,IRET)
-             IF ( IFCX .LE. 0 ) GOTO  999
+             IF ( IRET .NE. 0 ) GOTO  999
              IF ( ZK8(IFCX)(1:1) .EQ. '.' ) GOTO  999
              CALL FOINTE('FM',ZK8(IFCX),1,NOMPAV,VALPAV,FCX,IRET)
              FCX = FCX / VALPAV(1)
@@ -397,7 +397,7 @@ C          NORME DE LA VITESSE PERPENDICULAIRE
            IF ( VALPAV(1) .GT. R8MIN ) THEN
 C            RECUPERATION DE L'EFFORT EN FONCTION DE LA VITESSE
              CALL TECACH('ONN','PVENTCX',1,IFCX,IRET)
-             IF ( IFCX .LE. 0 ) GOTO  999
+             IF ( IRET .NE. 0 ) GOTO  999
              IF ( ZK8(IFCX)(1:1) .EQ. '.' ) GOTO  999
              CALL FOINTE('FM',ZK8(IFCX),1,NOMPAV,VALPAV,FCX,IRET)
              FCX = FCX / VALPAV(1)

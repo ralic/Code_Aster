@@ -1,0 +1,424 @@
+
+
+-----------------------------------------------------------------------
+--- AUTEUR cibhhlv L.VIVAN   DATE  le 18/10/2004 a 17:38:44
+
+-----------------------------------------------------------------------
+CLASSEMENT SANS SUITE AL 2004-342
+   NB_JOURS_TRAV  : 0
+   POUR_LE_COMPTE_DE : J.P.LEFEBVRE
+   INTERET_UTILISATEUR : NON
+   TITRE : DEFI_FICHIER(ACTION='LIBERER')
+   FONCTIONNALITE
+     NEW7.3.22, le test zzzz200b s'arretait en ERREUR_<F>
+     suite réalisation EL2004-153 et EL2004-174 en 7.3.23
+     le test zzzz200b est OK avec les versions suivantes
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+
+
+-----------------------------------------------------------------------
+--- AUTEUR d6bhhjp J.P.LEFEBVRE   DATE  le 16/10/2004 a 08:12:37
+
+CORRECTION AL 2004-341
+   NB_JOURS_TRAV : 2.0
+   (en plus du temps passé lors de l'étape A de la fiche)
+   INTERET_UTILISATEUR : OUI
+   TITRE : Calcul des contraintes dans les coques
+   FONCTIONNALITE :
+   DETAIL :
+   Suite de la première correction effectuée par DeltaCAD.
+   L'appel à TECACH dans un certain nombre de routines renvoie un code qui n'est pas
+   exploité, c'est l'adresse JEVEUX qui est testée > 0, or sur certaines
+   plates-formes cette adresse est négative, le champ est alors considéré comme
+   non trouvé et on peut s'arreter en erreur ou prendre en compte des valeurs
+   non valides.
+   C'est l'étape B de la fiche qui est restitué cette semaine : on corrige
+   toutes les routines (56) qui testent une adresse Jeveux .GT.0 ou .LE.0.
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   VALIDATION : Passage de la liste restriente + tests sur plate-forme
+   IMPACT_DOCUMENTAIRE : NON
+
+
+-----------------------------------------------------------------------
+--- AUTEUR f1bhhaj J.ANGLES   DATE  le 18/10/2004 a 10:28:10
+
+-------------------------------------------------------------------------
+REALISATION EL 2004-219
+   NB_JOURS_TRAV : 3
+   INTERET_UTILISATEUR : OUI
+   TITRE : CALC_FATIGUE.
+   FONCTIONNALITE : L'évolution consiste à ajouter un coefficient dans
+     les critères de fatigue MATAKE, DANG_VAN_MODI_AC, DOMM_MAXI et
+     DANG_VAN_MODI_AV de manière à prendre en compte un préécrouissage.
+   DETAILS : L'évolution nous a conduit à modifier les routines deltau.f, dtauno.f,
+     avgrno.f, avcrit.f, projax.f, raxini.f rnomat.f et calc_fatigue.capy.
+     Dans calc_fatigue.capy on ajoute la ligne suivante dans le bloc b_fatigue_multi:
+     COEF_PREECROU =SIMP(statut='f',typ='R',defaut= 1.0E+0),
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_U : U4.83.02
+       EXPL_ : Ajouter le mot clef simple COEF_PREECROU
+     DOC_R : R7.04.04
+   VALIDATION : SSLV135 Calcul du RRA sur 3 secondes.
+
+
+-----------------------------------------------------------------------
+--- AUTEUR f6bhhbo P.DEBONNIERES   DATE  le 19/10/2004 a 15:26:00
+
+------------------------------------------------------------------------
+REALISATION EL 2004-024
+   NB_JOURS_TRAV : 12.
+   INTERET_UTILISATEUR : OUI
+   TITRE Extension des calculs de sensibilite en mecanique
+         non-lineaire (plasticité Von-Mises et Drucker-Prager)
+         au cas d'une structure heterogene
+   FONCTIONNALITE  STAT_NON_LINE  -  Mot-cle SENSIBILITE
+     On introduit la possibilité de calculer la sensibilite de
+     la reponse d'une structure heterogene a la variation d'un
+     parametre materiau relatif a une partie seulement de la
+     structure (par exemple le module d'Young affecte a un
+     groupe de mailles donne).
+   DETAILS
+     On recupere le materiau sensible dans vemsme et nsldc a
+     partir du nom du parametre sensible et on fait passer le
+     materiau derive code (->ajout de PMATSEN dans les catalogues)
+     aux te0540 et te0541 (elements 2D et 3D volumiques). On peut
+     donc dans nsisot et nsdrpr calculer directement les carac-
+     teristiques materiaux derivees sans utiliser STYPSE (qui lui
+     etait uniforme sur toute la structure).
+     Modification des catalogues d'elements :
+        gener_me3d_3 gener_meax_2 gener_meaxs2 gener_medpl2
+        medpqs4 medpqs8 medptr6
+     Modification des catalogues d'option :
+        meca_sens_mate  meca_sens_char  meca_sens_raph
+     Modification des routines FORTRAN :
+        nscomp,nsisot,nsdrpr,nsldc,nspl2d,nspl3d,te0540,te0541,vemsme
+     Modification des cas-tests suivants :
+        sensm10a    sensm11a
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   VALIDATION
+     Modification des cas-tests SENSM10A et SENSM11A :
+       SENSM10A : coude 3D sous pression (avec decharge)
+       SENSM11A : flexion d'une plaque epaisse circulaire (2D axi)
+   IMPACT_DOCUMENTAIRE : OUI
+   DOC_U : U4.50.02
+   EXPL_ : Extension de la validite du calcul au cas heterogene
+
+   DOC_V : V1.01.181
+   EXPL_ : On rend la structure heterogene
+
+   DOC_V : V1.01.182
+   EXPL_ : On rend la structure heterogene
+
+
+-----------------------------------------------------------------------
+--- AUTEUR jmbhh01 J.M.PROIX   DATE  le 18/10/2004 a 18:51:33
+
+-----------------------------------------------------------------------
+REALISATION EL 2004-228
+   NB_JOURS_TRAV  : 2
+   INTERET_UTILISATEUR : NON
+   TITRE
+   Test de POLYCRISTAL
+   FONCTIONNALITE
+   Pour compléter la restit de POLYCRISTAL, je le teste
+   avec 40 phases (dans SSNV125) en comparaison avec POLY_CFC.
+
+   Concernant la définition du critère et de la loi d'écoulement
+   ECOU_VISC2, analogue à celle de POLY_CFC il y une incohérence :
+   en effet dans la doc R de POLY_CFC, le terme en
+   xs**2 est c/d. Or dans le fortran de POLY_CFC (RKDBFC par ex) on
+   a programmé d/c. C'est la doc R qui est fausse (une simple
+   vérification des dimensions le montre très simplement).
+   On fait la meme chose dans  POLYCRISTAL que dans POLY_CFC (d/c)
+   Une erreur au passage corrigée dans POLY_CFC : inversion des
+   termes XZ et YZ. Cela modifie les resultats du test SSNV125a de 5%
+   Les résultats de POLYCRISTAL sont excactement égaux à ceux de
+   POLY_CFC. Actuellement, POLYCRISTAL est plus lent. Ce problème
+   est à l'étude.
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : OUI
+   DOC_V : V6.04.125
+   DOC_V : V6.04.172
+   DOC_R : R5.03.13
+   VALIDATION
+   SSNV125A, SSNV172A
+   DETAILS
+   Modifs dans les routines :
+   -LCLOCA : erreur (de ma part) dans la formule de localisation BETA
+   -LCMMEI : ajout d'un test avant d'évaluer l'exponentielle
+             pour éviter des erreurs numériques
+   -LCMMFL : ajout dun test avant d'évaluer FTAU/ABS(FTAU)
+             pour éviter des erreurs numériques
+   -LCMMJF : correction sur l'expression de ECOU_VISC2, conformément
+             a la programmation de POLY_CFC :
+                CRIT=ABS(FTAU)-RP + (C/2/D)*(C*VIS(1))**2
+                devient
+                CRIT=ABS(FTAU)-RP + 0.5D0*C*D*(VIS(1))**2
+   -LCMMOP : correction de la déformation  plastique équivalente
+              cumulée : division par 1.5.
+   -NMVPRK : NMAT (nombre de coef materiau) passe à 190
+   -OP0181 : correction des cisaillements XZ et YZ et du changement
+             de repère pour POLY_CFC
+   - test SSNV125A : ajout de POLYCRISTAL et modif des tolérances sur
+   la solution de référence POLY_CFC (non régression): 5% d'écart.
+   - test SSNV125B : modif des tolérances sur
+   la solution de référence POLY_CFC (non régression): 5% d'écart.
+   - test SSNV172A : D était très grand pour annuler le terme c/d
+   on peut maintenant prendre D=0 pour obtenir le meme résultat.
+
+
+-----------------------------------------------------------------------
+--- AUTEUR lebouvie F.LEBOUVIER   DATE  le 18/10/2004 a 13:23:03
+
+-------------------------------------------------------------------------------
+REALISATION EL 2004-095
+   NB_JOURS_TRAV : 3.5
+   POUR LE COMPTE DE : P. BADEL
+   INTERET_UTILISATEUR : OUI
+   TITRE : GRILLE_MEMBRANE
+   FONCTIONNALITE : Mise a disposition des mailles TRIA6 et QUAD8 pour
+                    la modélisation GRILLE_MEMBRANE
+   DETAIL :
+   - la nouvelle formulation grille membrane permet de disposer depuis la 7.2.21
+     d'un element geometrique surfacique de type triangle et depuis la 7.3.7 d'un
+     element d'un element geometrique surfacique de type quadrangle.
+     L'objet de cette fiche est d'étendre cette nouvelle modélisation aux mailles
+     de type TRIA6 et QUAD8.
+   - Ajout d'un nouveau cas-test (Cylindre avec armature sous pression) déclinés
+     sous deux modélisations ssnv178a (QUAD8) et ssnv178b (TRIA6).
+   RESU_FAUX_VERSION_EXPLOITATION    : NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   : NON
+   RESTITUTION_VERSION_EXPLOITATION  : NON
+   RESTITUTION_VERSION_DEVELOPPEMENT : OUI
+   VALIDATION :
+        Passage des cas-tests ssnv178a et ssnv178b.
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_U : U3.12.04 :
+       EXPL_ : Modélisation GRILLE_MEMBRANE: ajout des mailles TRIA6 et QUAD8
+               et du cas-test ssnv178
+     DOC_V : V6.04.178
+       EXPL_ : ssnv178: création d'un nouveau document décrivant le cas-test et les
+                modélisations réalisées.
+
+------------------------------------------------------------------------------
+REALISATION EL 2003-242
+   NB_JOURS_TRAV  : 2.0
+   POUR_LE_COMPTE_DE : P. KOECHLIN
+   INTERET_UTILISATEUR : NON
+   TITRE : GLRC inutilisable avec modelisation DKTG
+   FONCTIONNALITE
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION : cas-tests validant la modelisation DKTG
+   DETAILS :
+   Menage dans les elements de plaques DKTG :
+    - Suppression des champs a sous points,
+    - Suppression des informations sur les GRILLES
+    - Suppression des elements de mise au point
+    - Actualisation des commentaires
+   Routines modifiées
+     brback,crinum,dc1co2,dcpl1c,dcpl2c,dcpnmf,dfplas,
+     dncudi,dxglrc,dxktan,dxprd1,dxprd2,extmat,fplas,
+     glrcst,gplas,mpupda,mulsym,norm6,ortloc,prmrve,
+     te0409,te0496
+   Cas-tests modifiés : ssls126a, ssls126b
+
+
+-----------------------------------------------------------------------
+--- AUTEUR pabhhhh N.TARDIEU   DATE  le 15/10/2004 a 17:21:56
+
+-----------------------------------------------------------------------
+RESTITUTION HORS AREX
+   NB_JOURS_TRAV  : 0.5
+   FONCTIONNALITE : getcolljev
+   INTERET_UTILISATEUR : NON
+   TITRE : récupération de collection JEVEUX en python
+   DETAILS :
+     Quand on récupère une collection JEVEUX en python,
+     on boucle sur chacun des objets de cette collection.
+     Pour savoir si ces objets sont nommés, on teste alors
+     le 1er caractère de leur nom potentiel. Si c'est un
+     blanc, l'objet courant n'est pas nommé.
+     Or il est écrit :
+          if(nomob[1] == ' ')
+
+     Mais ainsi on ne teste pas le 1er caractère mais le
+     2ème. Il faut :
+
+          if(nomob[0] == ' ')
+
+     On perdait ainsi les noms des objets de 1 caractère!
+     Typiquement des GROUP_NO de singlotons.
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION : ssls105a
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+       C MODIF supervis/astermodule          pabhhhh N.TARDIEU         3781      2      2
+ CASTEST AJOUT ssnv178a                     lebouvie F.LEBOUVIER        323    323      0
+ CASTEST AJOUT ssnv178b                     lebouvie F.LEBOUVIER        323    323      0
+ CASTEST MODIF sensm10a                      f6bhhbo P.DEBONNIERES      381     28     18
+ CASTEST MODIF sensm11a                      f6bhhbo P.DEBONNIERES      201     46     15
+ CASTEST MODIF ssls126a                     lebouvie F.LEBOUVIER        281      1      2
+ CASTEST MODIF ssls126b                     lebouvie F.LEBOUVIER        285      1      2
+ CASTEST MODIF ssls127a                     lebouvie F.LEBOUVIER        310      1      1
+ CASTEST MODIF ssls127b                     lebouvie F.LEBOUVIER        310      1      1
+ CASTEST MODIF sslv135a                      f1bhhaj J.ANGLES          1281      1      1
+ CASTEST MODIF sslv135b                      f1bhhaj J.ANGLES          1261      1      1
+ CASTEST MODIF sslv135c                      f1bhhaj J.ANGLES           807      1      1
+ CASTEST MODIF sslv135d                      f1bhhaj J.ANGLES           771      1      1
+ CASTEST MODIF ssns104a                     lebouvie F.LEBOUVIER        385      1      1
+ CASTEST MODIF ssns104b                     lebouvie F.LEBOUVIER        384      1      1
+ CASTEST MODIF ssnv125a                      jmbhh01 J.M.PROIX          651    576    287
+ CASTEST MODIF ssnv125b                      jmbhh01 J.M.PROIX          311      5      5
+ CASTEST MODIF ssnv171a                      jmbhh01 J.M.PROIX          157      1      1
+ CASTEST MODIF ssnv171b                      jmbhh01 J.M.PROIX          332      1      1
+ CASTEST MODIF ssnv172a                      jmbhh01 J.M.PROIX          987      6      6
+CATALOGU MODIF compelem/phenomene_modelisation__   lebouvie F.LEBOUVIER        762      3      1
+CATALOGU MODIF options/meca_sens_char        f6bhhbo P.DEBONNIERES       37      2      1
+CATALOGU MODIF options/meca_sens_mate        f6bhhbo P.DEBONNIERES       37      2      1
+CATALOGU MODIF options/meca_sens_raph        f6bhhbo P.DEBONNIERES       40      2      1
+CATALOGU MODIF typelem/gener_me3d_3          f6bhhbo P.DEBONNIERES      540      4      2
+CATALOGU MODIF typelem/gener_meax_2          f6bhhbo P.DEBONNIERES      552      4      2
+CATALOGU MODIF typelem/gener_meaxs2          f6bhhbo P.DEBONNIERES      520      4      2
+CATALOGU MODIF typelem/gener_medkg1         lebouvie F.LEBOUVIER        220     21     24
+CATALOGU MODIF typelem/gener_medpl2          f6bhhbo P.DEBONNIERES      559      4      2
+CATALOGU MODIF typelem/gener_megrm2         lebouvie F.LEBOUVIER        185      5      1
+CATALOGU MODIF typelem/medpqs4               f6bhhbo P.DEBONNIERES      500      4      2
+CATALOGU MODIF typelem/medpqs8               f6bhhbo P.DEBONNIERES      505      4      2
+CATALOGU MODIF typelem/medptr6               f6bhhbo P.DEBONNIERES      539      4      2
+ FORTRAN MODIF algorith/lcloca               jmbhh01 J.M.PROIX           87      8      9
+ FORTRAN MODIF algorith/lcmmei               jmbhh01 J.M.PROIX          130     21      1
+ FORTRAN MODIF algorith/lcmmfl               jmbhh01 J.M.PROIX          128      2      2
+ FORTRAN MODIF algorith/lcmmjf               jmbhh01 J.M.PROIX          214     16      4
+ FORTRAN MODIF algorith/lcmmop               jmbhh01 J.M.PROIX          299     16      6
+ FORTRAN MODIF algorith/lcmmsg               jmbhh01 J.M.PROIX          386      1      1
+ FORTRAN MODIF algorith/nmvprk               jmbhh01 J.M.PROIX          334      2      2
+ FORTRAN MODIF algorith/nscomp               f6bhhbo P.DEBONNIERES       85      9      7
+ FORTRAN MODIF algorith/nsdrpr               f6bhhbo P.DEBONNIERES      567     79     35
+ FORTRAN MODIF algorith/nsisot               f6bhhbo P.DEBONNIERES      399     35     16
+ FORTRAN MODIF algorith/nsldc                f6bhhbo P.DEBONNIERES      264     24      3
+ FORTRAN MODIF algorith/nspl2d               f6bhhbo P.DEBONNIERES      232      7      7
+ FORTRAN MODIF algorith/nspl3d               f6bhhbo P.DEBONNIERES      217      8      8
+ FORTRAN MODIF algorith/te0350               d6bhhjp J.P.LEFEBVRE       203      2      2
+ FORTRAN MODIF algorith/vemsme               f6bhhbo P.DEBONNIERES      267     29      4
+ FORTRAN MODIF elements/brback              lebouvie F.LEBOUVIER         92      3      3
+ FORTRAN MODIF elements/bsthco               d6bhhjp J.P.LEFEBVRE       420      2      3
+ FORTRAN MODIF elements/crinum              lebouvie F.LEBOUVIER         77      1      2
+ FORTRAN MODIF elements/dc1co2              lebouvie F.LEBOUVIER        119      3      4
+ FORTRAN MODIF elements/dcpl1c              lebouvie F.LEBOUVIER         74      2      3
+ FORTRAN MODIF elements/dcpl2c              lebouvie F.LEBOUVIER        166      2      2
+ FORTRAN MODIF elements/dcpnmf              lebouvie F.LEBOUVIER         62      2      3
+ FORTRAN MODIF elements/dfplas              lebouvie F.LEBOUVIER         36      1      2
+ FORTRAN MODIF elements/dmatel               d6bhhjp J.P.LEFEBVRE       580      5      5
+ FORTRAN MODIF elements/dmathl               d6bhhjp J.P.LEFEBVRE       400      5      5
+ FORTRAN MODIF elements/dncudi              lebouvie F.LEBOUVIER        128      2      3
+ FORTRAN MODIF elements/dxglrc              lebouvie F.LEBOUVIER        377     27     36
+ FORTRAN MODIF elements/dxktan              lebouvie F.LEBOUVIER        133      3      4
+ FORTRAN MODIF elements/dxmath               d6bhhjp J.P.LEFEBVRE       534      4      4
+ FORTRAN MODIF elements/dxprd1              lebouvie F.LEBOUVIER         38      1      2
+ FORTRAN MODIF elements/dxprd2              lebouvie F.LEBOUVIER         39      1      2
+ FORTRAN MODIF elements/dxtemp               d6bhhjp J.P.LEFEBVRE       127      3      3
+ FORTRAN MODIF elements/extmat              lebouvie F.LEBOUVIER         68      2      2
+ FORTRAN MODIF elements/fplas               lebouvie F.LEBOUVIER         35      1      2
+ FORTRAN MODIF elements/glrcst              lebouvie F.LEBOUVIER        325      2      2
+ FORTRAN MODIF elements/gplas               lebouvie F.LEBOUVIER         42      1      2
+ FORTRAN MODIF elements/matrth               d6bhhjp J.P.LEFEBVRE       147      2      2
+ FORTRAN MODIF elements/mpupda              lebouvie F.LEBOUVIER        113      1      2
+ FORTRAN MODIF elements/mulsym              lebouvie F.LEBOUVIER         47      2      2
+ FORTRAN MODIF elements/norm6               lebouvie F.LEBOUVIER         42      1      2
+ FORTRAN MODIF elements/ortloc              lebouvie F.LEBOUVIER         47      1      2
+ FORTRAN MODIF elements/ortrep               d6bhhjp J.P.LEFEBVRE       158      2      2
+ FORTRAN MODIF elements/prmrve              lebouvie F.LEBOUVIER         40      1      2
+ FORTRAN MODIF elements/ptforp               d6bhhjp J.P.LEFEBVRE       380     10     10
+ FORTRAN MODIF elements/te0007               d6bhhjp J.P.LEFEBVRE       132      4      4
+ FORTRAN MODIF elements/te0008               d6bhhjp J.P.LEFEBVRE       132      4      4
+ FORTRAN MODIF elements/te0009               d6bhhjp J.P.LEFEBVRE       128      4      4
+ FORTRAN MODIF elements/te0011               d6bhhjp J.P.LEFEBVRE       210      5      5
+ FORTRAN MODIF elements/te0033               d6bhhjp J.P.LEFEBVRE       467      3      3
+ FORTRAN MODIF elements/te0035               d6bhhjp J.P.LEFEBVRE       142      3      3
+ FORTRAN MODIF elements/te0047               d6bhhjp J.P.LEFEBVRE       641     11     11
+ FORTRAN MODIF elements/te0081               d6bhhjp J.P.LEFEBVRE       205      5      5
+ FORTRAN MODIF elements/te0097               d6bhhjp J.P.LEFEBVRE        93      2      2
+ FORTRAN MODIF elements/te0100               d6bhhjp J.P.LEFEBVRE       280      2      2
+ FORTRAN MODIF elements/te0110               d6bhhjp J.P.LEFEBVRE       951      3      3
+ FORTRAN MODIF elements/te0113               d6bhhjp J.P.LEFEBVRE       214      2      2
+ FORTRAN MODIF elements/te0121               d6bhhjp J.P.LEFEBVRE       196      4      4
+ FORTRAN MODIF elements/te0139               d6bhhjp J.P.LEFEBVRE       268      4      4
+ FORTRAN MODIF elements/te0150               d6bhhjp J.P.LEFEBVRE       282      2      2
+ FORTRAN MODIF elements/te0155               d6bhhjp J.P.LEFEBVRE       486      3      3
+ FORTRAN MODIF elements/te0161               d6bhhjp J.P.LEFEBVRE       270      4      4
+ FORTRAN MODIF elements/te0190               d6bhhjp J.P.LEFEBVRE       202      5      5
+ FORTRAN MODIF elements/te0221               d6bhhjp J.P.LEFEBVRE       321      3      3
+ FORTRAN MODIF elements/te0222               d6bhhjp J.P.LEFEBVRE        93      3      3
+ FORTRAN MODIF elements/te0230               d6bhhjp J.P.LEFEBVRE       201      3      3
+ FORTRAN MODIF elements/te0239               d6bhhjp J.P.LEFEBVRE       495      3      3
+ FORTRAN MODIF elements/te0247               d6bhhjp J.P.LEFEBVRE       330      8      8
+ FORTRAN MODIF elements/te0346               d6bhhjp J.P.LEFEBVRE       188      5      5
+ FORTRAN MODIF elements/te0347               d6bhhjp J.P.LEFEBVRE       316      6      6
+ FORTRAN MODIF elements/te0409              lebouvie F.LEBOUVIER        343     66     83
+ FORTRAN MODIF elements/te0419               d6bhhjp J.P.LEFEBVRE       196      3      3
+ FORTRAN MODIF elements/te0431               d6bhhjp J.P.LEFEBVRE       292      2      2
+ FORTRAN MODIF elements/te0437               d6bhhjp J.P.LEFEBVRE       138      4      4
+ FORTRAN MODIF elements/te0449               d6bhhjp J.P.LEFEBVRE       236      2      2
+ FORTRAN MODIF elements/te0459               d6bhhjp J.P.LEFEBVRE       240      2      2
+ FORTRAN MODIF elements/te0465               d6bhhjp J.P.LEFEBVRE        83      5      5
+ FORTRAN MODIF elements/te0496              lebouvie F.LEBOUVIER        152      1     17
+ FORTRAN MODIF elements/te0516               d6bhhjp J.P.LEFEBVRE       429      5      5
+ FORTRAN MODIF elements/te0539               d6bhhjp J.P.LEFEBVRE       275      4      4
+ FORTRAN MODIF elements/te0540               f6bhhbo P.DEBONNIERES      185     10      3
+ FORTRAN MODIF elements/te0541               f6bhhbo P.DEBONNIERES      175     10      3
+ FORTRAN MODIF elements/te0545               d6bhhjp J.P.LEFEBVRE       273      4      4
+ FORTRAN MODIF elements/te0546               d6bhhjp J.P.LEFEBVRE       266      2      2
+ FORTRAN MODIF elements/te0600               d6bhhjp J.P.LEFEBVRE       679      5      5
+ FORTRAN MODIF elements/tuforc               d6bhhjp J.P.LEFEBVRE       549      3      3
+ FORTRAN MODIF elements/tufull               d6bhhjp J.P.LEFEBVRE       508      2      2
+ FORTRAN MODIF elements/tumass               d6bhhjp J.P.LEFEBVRE       301      2      2
+ FORTRAN MODIF elements/turigi               d6bhhjp J.P.LEFEBVRE       274      2      2
+ FORTRAN MODIF elements/tusief               d6bhhjp J.P.LEFEBVRE       371      3      3
+ FORTRAN MODIF elements/tutemp               d6bhhjp J.P.LEFEBVRE       313      3      3
+ FORTRAN MODIF elements/vdgnlr               d6bhhjp J.P.LEFEBVRE      1142      4      4
+ FORTRAN MODIF elements/vdpnlr               d6bhhjp J.P.LEFEBVRE      1330      3      3
+ FORTRAN MODIF elements/vdxnlr               d6bhhjp J.P.LEFEBVRE       495      3      3
+ FORTRAN MODIF elements/vdxsig               d6bhhjp J.P.LEFEBVRE       289      3      3
+ FORTRAN MODIF modelisa/op0019              lebouvie F.LEBOUVIER        523      5      5
+ FORTRAN MODIF utilitai/op0181               jmbhh01 J.M.PROIX          198     30      6
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :    2         646       646              +646
+ MODIF :  127       44028      1379     899      +480
+ SUPPR :    0           0                 0        +0
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :  129       44674      2025     899     +1126 

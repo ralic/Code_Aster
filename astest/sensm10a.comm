@@ -1,4 +1,4 @@
-# MODIF  DATE 11/10/2004   AUTEUR LEPAUL S.LEPAUL 
+# MODIF  DATE 19/10/2004   AUTEUR F6BHHBO P.DEBONNIERES 
 # RESPONSABLE F6BHHBO P.DEBONNIERES
 # TITRE COUDE SOUS PRESSION EN 3D (PLASTICITE VON-MISES ISOT LINEAIRE)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -61,7 +61,8 @@ PS_DX =DEFI_PARA_SENSI(VALE=0.00000,);
 PS_DY =DEFI_PARA_SENSI(VALE=0.00000,);
 DY_FOND =DEFI_PARA_SENSI(VALE=0.10000,);
 
-PS_E = DEFI_PARA_SENSI(VALE=210000.0,);
+PS_E1 = DEFI_PARA_SENSI(VALE=210000.0,);
+PS_E2 = DEFI_PARA_SENSI(VALE=210000.0,);
 
 PS_SIGY = DEFI_PARA_SENSI(VALE=200.0,);
 
@@ -71,7 +72,14 @@ NU = DEFI_CONSTANTE(VALE=0.3,);
 
 ALPHA = DEFI_CONSTANTE(VALE=0.00001,);
 
-ACIER=DEFI_MATERIAU(ELAS_FO=_F(E=PS_E,
+ACIER1=DEFI_MATERIAU(ELAS_FO=_F(E=PS_E1,
+                            NU=NU,
+                            ALPHA=ALPHA,
+                            TEMP_DEF_ALPHA=0.,),
+                    ECRO_LINE_FO=_F(D_SIGM_EPSI=PS_DSDE,
+                                 SY=PS_SIGY,),);
+
+ACIER2=DEFI_MATERIAU(ELAS_FO=_F(E=PS_E2,
                             NU=NU,
                             ALPHA=ALPHA,
                             TEMP_DEF_ALPHA=0.,),
@@ -79,8 +87,9 @@ ACIER=DEFI_MATERIAU(ELAS_FO=_F(E=PS_E,
                                  SY=PS_SIGY,),);
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
-                    AFFE=_F(TOUT='OUI',
-                            MATER=ACIER,),);
+                  AFFE=(_F(GROUP_MA='TUY1',MATER=ACIER1,),
+                        _F(GROUP_MA='TUY2',MATER=ACIER2,))
+                       );
 
 # DEFINITION DES CONDITIONS AUX LIMITES
 #    ENCASTREMENT SUR LA SECTION ENCAST
@@ -138,8 +147,8 @@ INSTANTS=DEFI_LIST_REEL(DEBUT=0.0,
                          );
 
 EVOL=STAT_NON_LINE(MODELE=MODMECA,
-                   CHAM_MATER=CHMAT,
-                   EXCIT=(_F(CHARGE=CHARGT,
+            CHAM_MATER=CHMAT,
+            EXCIT=(_F(CHARGE=CHARGT,
                             FONC_MULT=RAMPE,),
                           _F(CHARGE=CH_DIR1,
                             FONC_MULT=RAMPE,),
@@ -148,14 +157,15 @@ EVOL=STAT_NON_LINE(MODELE=MODMECA,
                           _F(CHARGE=CHARGD,
                             FONC_MULT=RAMPED,),
                          ),
-                   COMP_INCR=_F(RELATION='VMIS_ISOT_LINE',),
-                   INCREMENT=_F(LIST_INST=INSTANTS,
+            COMP_INCR=_F(RELATION='VMIS_ISOT_LINE',),
+            INCREMENT=_F(LIST_INST=INSTANTS,
                                 NUME_INST_FIN=10,),
-                   NEWTON=_F(REAC_INCR=1,
+            NEWTON=_F(REAC_INCR=1,
                              REAC_ITER=1,),
-                   CONVERGENCE=_F(RESI_GLOB_RELA=1.E-06,
+            CONVERGENCE=_F(RESI_GLOB_RELA=1.E-06,
                                   ITER_GLOB_MAXI=20,),
-                   SENSIBILITE=(PSP,PS_E,PS_SIGY,PS_DSDE,PS_DY,DY_FOND),);
+            SENSIBILITE=(PSP,PS_E1,PS_E2,PS_SIGY,PS_DSDE,PS_DY,DY_FOND),);
+
 
 
 # SENSIBILITE PAR RAPPORT A LA PRESSION
@@ -238,15 +248,15 @@ TEST_RESU(RESU=(
       MAILLE = 'M45',POINT = 7,
       NOM_CHAM = 'SIEF_ELGA',
       CRITERE = 'RELATIF', PRECISION = 5.E-4,
-      NOM_CMP = 'SIZZ',   SENSIBILITE = PS_E,
-      VALE = 6.56151E-5, REFERENCE = 'AUTRE_ASTER' ),
+      NOM_CMP = 'SIZZ',   SENSIBILITE = PS_E1,
+      VALE = 4.1318E-5, REFERENCE = 'AUTRE_ASTER' ),
    _F(RESULTAT = EVOL,
       INST = 0.6,
       MAILLE = 'M45',POINT = 1,
       NOM_CHAM = 'VARI_ELGA',
       CRITERE = 'RELATIF', PRECISION = 5.E-4,
-      NOM_CMP = 'V1',   SENSIBILITE = PS_E,
-      VALE = 1.07624E-8, REFERENCE = 'AUTRE_ASTER' ),
+      NOM_CMP = 'V1',   SENSIBILITE = PS_E1,
+      VALE = 6.1285E-9, REFERENCE = 'AUTRE_ASTER' ),
       ));
 
 TEST_RESU(RESU=(
@@ -255,22 +265,22 @@ TEST_RESU(RESU=(
       MAILLE = 'M45',POINT = 25,
       NOM_CHAM = 'SIEF_ELGA',
       CRITERE = 'RELATIF', PRECISION = 1.E-3,
-      NOM_CMP = 'SIXX',   SENSIBILITE = PS_E,
-      VALE = 2.54847E-5, REFERENCE = 'AUTRE_ASTER' ),
+      NOM_CMP = 'SIXX',   SENSIBILITE = PS_E2,
+      VALE = 2.8797E-5, REFERENCE = 'AUTRE_ASTER' ),
    _F(RESULTAT = EVOL,
       INST = 1.0,
       MAILLE = 'M45',POINT = 7,
       NOM_CHAM = 'SIEF_ELGA',
-      CRITERE = 'RELATIF', PRECISION = 5.E-3,
-      NOM_CMP = 'SIXZ',   SENSIBILITE = PS_E,
-      VALE = 3.5494E-6, REFERENCE = 'AUTRE_ASTER' ),
+      CRITERE = 'RELATIF', PRECISION = 1.E-3,
+      NOM_CMP = 'SIXZ',   SENSIBILITE = PS_E2,
+      VALE = 1.191E-5, REFERENCE = 'AUTRE_ASTER' ),
    _F(RESULTAT = EVOL,
       INST = 1.0,
       MAILLE = 'M45',POINT = 19,
       NOM_CHAM = 'SIEF_ELGA',
-      CRITERE = 'RELATIF', PRECISION = 5.E-4,
-      NOM_CMP = 'SIYZ',   SENSIBILITE = PS_E,
-      VALE = -2.00755E-5, REFERENCE = 'AUTRE_ASTER' ),
+      CRITERE = 'RELATIF', PRECISION = 1.5E-2,
+      NOM_CMP = 'SIYZ',   SENSIBILITE = PS_E2,
+      VALE = 1.906E-7, REFERENCE = 'AUTRE_ASTER' ),
       ));
 
 # SENSIBILITE PAR RAPPORT A E_T (D_SIGM_EPSI)
