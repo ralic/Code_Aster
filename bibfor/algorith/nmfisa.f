@@ -1,7 +1,7 @@
-      SUBROUTINE NMFISA(GEOM,B,KPG)
+      SUBROUTINE NMFISA(AXI,GEOM,KPG,POIDS,B)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/07/2003   AUTEUR LAVERNE J.LAVERNE 
+C MODIF ALGORITH  DATE 21/03/2005   AUTEUR LAVERNE J.LAVERNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,14 +22,16 @@ C
 C ======================================================================
 
       IMPLICIT NONE
+      LOGICAL AXI
       INTEGER KPG
-      REAL*8  GEOM(2,4),B(2,8)
+      REAL*8  GEOM(2,4),POIDS,B(2,8)
       
      
-C***********************************************************************
+C-----------------------------------------------------------------------
 C
 C BUT:
 C     POUR LE POINT DE GAUSS KPG :
+C     CALCUL DU POIDS DU POINT DE GAUSS
 C     CALCUL DE LA MATRICE B DONNANT LES SAUT PAR ELEMENTS A PARTIR DES 
 C     DEPLACEMENTS AUX NOEUDS : SU = B U
 C
@@ -45,13 +47,24 @@ C            SU   = BTILD ULOC
 C            ULOC = RTILD U  
 C
 C
+C IN  : AXI TRUE EN AXI
 C IN  : GEOM,KPG
-C OUT : B
-C I/O :
+C OUT : POIDS, B
 C   
-C*********************************************************************
+C-----------------------------------------------------------------------
 
-      REAL*8  CO,SI, C, S,COEF(2)
+      REAL*8  CO,SI, C, S,COEF(2), AIRE
+C-----------------------------------------------------------------------
+
+
+
+C -- CALCUL DU POIDS DU POINT DE GAUSS
+
+      AIRE = SQRT( (GEOM(1,2)-GEOM(1,1))**2 + (GEOM(2,2)-GEOM(2,1))**2 )
+      IF (AXI) AIRE = AIRE * (GEOM(1,1)+GEOM(1,2))/2.D0
+      POIDS = AIRE/2
+
+C -- CALCUL DE LA MATRICE B
 
       CALL R8INIR(16, 0.D0, B ,1)
 

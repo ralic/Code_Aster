@@ -10,7 +10,7 @@
      +             CFAO, CFAE, CSPO, CSPE, CRESU
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 08/02/2005   AUTEUR CIBHHLV L.VIVAN 
+C MODIF POSTRELE  DATE 21/03/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -51,7 +51,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C
       INTEGER      NCMP, JSIGM, JINST, NBINST, JSNO, JSNE, N1, 
-     +             IND, I1, I2, ICMP, L1, L2, NPARA, IK, IR, I, 
+     +             IND, I1, I2, ICMP, L1,L2,L3,L4, NPARA, IK, IR, I, 
      +             VAIO(5), VAIE(5), IOO1, IOO2, IOE1, IOE2, NPAR1,
      +             JSNEO, JSNEE, JSPO, JSPE, JFAO, JFAE, JNOC, JRESU
       PARAMETER  ( NCMP = 6 )
@@ -135,13 +135,13 @@ C
               TYPARA(NPARA+I) = TYPASN(I)
  18         CONTINUE
             NPARA = NPARA + NPARSN
-          ENDIF
-          IF ( FLEXIO ) THEN
-            DO 20 I = 1 , NPARSE
-              NOPARA(NPARA+I) = NOPASE(I)
-              TYPARA(NPARA+I) = TYPASE(I)
- 20         CONTINUE
-            NPARA = NPARA + NPARSE
+            IF ( FLEXIO ) THEN
+              DO 20 I = 1 , NPARSE
+                NOPARA(NPARA+I) = NOPASE(I)
+                TYPARA(NPARA+I) = TYPASE(I)
+ 20           CONTINUE
+              NPARA = NPARA + NPARSE
+            ENDIF
           ENDIF
         ENDIF
 C
@@ -173,6 +173,12 @@ C
 C --- POUR L'OPTION "PMPB"
 C
       IF ( LPMPB ) THEN
+C
+C --- LES CRITERES DE NIVEAU 0 VISENT A PREMUNIR LE MATERIEL CONTRE LES
+C     DOMMAGES DE DEFORMATION EXCESSIVE, D'INSTABILITE PLASTIQUE ET
+C     D'INSTABILITE ELASTIQUE ET ELASTOPLASTIQUE.
+C     ON NE PREND QUE LA PARTIE MECANIQUE
+C
          DO 102 I = 1 , NPARPM
             NOPARA(NPARA+I) = NOPAPM(I)
  102     CONTINUE
@@ -184,11 +190,14 @@ C
             IR = 2 + 1
             VALO(IR) = ZR(JINST+I-1)
             DO 112 ICMP = 1, NCMP
-               L1 =               NCMP*(I-1) + ICMP
-               L2 = NCMP*NBINST + NCMP*(I-1) + ICMP
-               TPM(ICMP) = ZR(JSIGM-1+L1)
-               TPB(ICMP) = ZR(JSIGM-1+L2)
+               L1 =                 NCMP*(I-1) + ICMP
+               L2 =   NCMP*NBINST + NCMP*(I-1) + ICMP
+               L3 = 2*NCMP*NBINST + NCMP*(I-1) + ICMP
+               L4 = 3*NCMP*NBINST + NCMP*(I-1) + ICMP
+               TPM(ICMP) = ZR(JSIGM-1+L1) - ZR(JSIGM-1+L3)
+               TPB(ICMP) = ZR(JSIGM-1+L2) - ZR(JSIGM-1+L4)
                TPMPBO(ICMP) = ZR(JSIGM-1+L1) - ZR(JSIGM-1+L2)
+     +                        - (ZR(JSIGM-1+L3) - ZR(JSIGM-1+L4))
  112        CONTINUE
             CALL FGEQUI ( TPM, 'SIGM', 3, EQUI )
             IR = IR + 1
@@ -206,11 +215,14 @@ C
             IR = 2 + 1
             VALE(IR) = ZR(JINST+I-1)
             DO 122 ICMP = 1, NCMP
-               L1 =               NCMP*(I-1) + ICMP
-               L2 = NCMP*NBINST + NCMP*(I-1) + ICMP
-               TPM(ICMP) = ZR(JSIGM-1+L1)
-               TPB(ICMP) = ZR(JSIGM-1+L2)
+               L1 =                 NCMP*(I-1) + ICMP
+               L2 =   NCMP*NBINST + NCMP*(I-1) + ICMP
+               L3 = 2*NCMP*NBINST + NCMP*(I-1) + ICMP
+               L4 = 3*NCMP*NBINST + NCMP*(I-1) + ICMP
+               TPM(ICMP) = ZR(JSIGM-1+L1) - ZR(JSIGM-1+L3)
+               TPB(ICMP) = ZR(JSIGM-1+L2) - ZR(JSIGM-1+L4)
                TPMPBE(ICMP) = ZR(JSIGM-1+L1) + ZR(JSIGM-1+L2)
+     +                        - (ZR(JSIGM-1+L3) + ZR(JSIGM-1+L4))
  122        CONTINUE
             CALL FGEQUI ( TPM, 'SIGM', 3, EQUI )
             IR = IR + 1

@@ -1,12 +1,11 @@
-      SUBROUTINE RC32PM ( LIEU, SEISME, PI, MI, PJ, MJ, MSE,
-     +                    PM, PB, PMPB )
+      SUBROUTINE RC32PM ( LIEU, SEISME, PI, MI, MSE, PM, PB, PMPB )
       IMPLICIT   NONE
-      REAL*8              PI, MI(*), PJ, MJ(*), MSE(*), PM, PB, PMPB
+      REAL*8              PI, MI(*), MSE(*), PM, PB, PMPB
       LOGICAL             SEISME
       CHARACTER*4         LIEU
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 23/02/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF POSTRELE  DATE 21/03/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -29,8 +28,7 @@ C     CALCUL DU PM_PB
 C
 C IN  : LIEU   : ='ORIG' : ORIGINE DU SEGEMNT, ='EXTR' : EXTREMITE
 C IN  : SEISME : =.FALSE. SI PAS DE SEISME, =.TRUE. SINON
-C IN  : MI     : EFFORTS ASSOCIEES A L'ETAT STABILISE I (6)
-C IN  : MJ     : EFFORTS ASSOCIEES A L'ETAT STABILISE J (6)
+C IN  : MI     : EFFORTS ASSOCIEES A L'ETAT STABILISE (6)
 C IN  : MSE    : EFFORTS DUS AU SEISME
 C VAR : PM     : CONTRAINTE EQUIVALENTE PRIMAIRE DE MEMBRANE
 C VAR : PB     : CONTRAINTE EQUIVALENTE PRIMAIRE DE FLEXION
@@ -54,7 +52,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C
       INTEGER    ICMPS, ICMP, JSIGU, NBINST
-      REAL*8     PIJ,MIJ(6),STH(6),SIJ(6),SIJS(6),SIGU,PMIJ,PBIJ,PMPBIJ
+      REAL*8     STH(6),SIJ(6),SIJS(6),SIGU,PMIJ,PBIJ,PMPBIJ
 C DEB ------------------------------------------------------------------
       CALL JEMARQ()
 C
@@ -62,35 +60,29 @@ C --- CONTRAINTES DUES AUX CHARGEMENTS UNITAIRES
 C
       CALL JEVEUO ( '&&RC3200.MECA_UNIT .'//LIEU, 'L', JSIGU )
 C
+C --- PAS DE THERMIQUE POUR LES CRITERES DE NIVEAU 0
+C
       NBINST = 0
-C
-C --- DIFFERENCE DE PRESSION ENTRE LES ETATS I ET J
-C
-      PIJ = PJ - PI
-C
-C --- VARIATION DE MOMENT RESULTANT
-C
       DO 2 ICMP = 1 , 6
-         MIJ(ICMP) = MJ(ICMP) - MI(ICMP)
          STH(ICMP) = 0.D0
  2    CONTINUE
+C-----------------------------------------------------------------------
 C
+C                            CALCUL DU PM
 C
-C --- CALCUL DU PM
-C
-C
+C-----------------------------------------------------------------------
 C --- CALCUL DES CONTRAINTES PAR COMBINAISON LINEAIRE
-C     POUR LE CHARGEMENT MIJ
+C     POUR LE CHARGEMENT MI
 C
       DO 100 ICMPS = 1 , 6
          SIJ(ICMPS) = 0.D0
          DO 102 ICMP = 1 , 6
             SIGU = ZR(JSIGU-1+84+6*(ICMP-1)+ICMPS)
-            SIJ(ICMPS) = SIJ(ICMPS) + MIJ(ICMP)*SIGU
+            SIJ(ICMPS) = SIJ(ICMPS) + MI(ICMP)*SIGU
  102     CONTINUE
 C ------ PRESSION
          SIGU = ZR(JSIGU-1+84+36+ICMPS)
-         SIJ(ICMPS) = SIJ(ICMPS) + PIJ*SIGU
+         SIJ(ICMPS) = SIJ(ICMPS) + PI*SIGU
  100  CONTINUE
 C
       IF ( SEISME ) THEN
@@ -106,29 +98,30 @@ C
       CALL RC32ST ( SIJ, NBINST, STH, SEISME, SIJS, PMIJ )
       PM = MAX( PMIJ, PM )
 C
+C-----------------------------------------------------------------------
 C
-C --- CALCUL DU PB
+C                            CALCUL DU PB
 C
-C
+C-----------------------------------------------------------------------
 C --- CALCUL DES CONTRAINTES PAR COMBINAISON LINEAIRE
-C     POUR LE CHARGEMENT MIJ
+C     POUR LE CHARGEMENT MI
 C
       DO 110 ICMPS = 1 , 6
          SIJ(ICMPS) = 0.D0
          DO 112 ICMP = 1 , 6
-            SIGU = ZR(JSIGU-1+84+42+6*(ICMP-1)+ICMPS)
-            SIJ(ICMPS) = SIJ(ICMPS) + MIJ(ICMP)*SIGU
+            SIGU = ZR(JSIGU-1+126+6*(ICMP-1)+ICMPS)
+            SIJ(ICMPS) = SIJ(ICMPS) + MI(ICMP)*SIGU
  112     CONTINUE
 C ------ PRESSION
-         SIGU = ZR(JSIGU-1+84+42+36+ICMPS)
-         SIJ(ICMPS) = SIJ(ICMPS) + PIJ*SIGU
+         SIGU = ZR(JSIGU-1+126+36+ICMPS)
+         SIJ(ICMPS) = SIJ(ICMPS) + PI*SIGU
  110  CONTINUE
 C
       IF ( SEISME ) THEN
          DO 210 ICMPS = 1 , 6
             SIJS(ICMPS) = 0.D0
             DO 212 ICMP = 1 , 6 
-               SIGU = ZR(JSIGU-1+84+42+6*(ICMP-1)+ICMPS)
+               SIGU = ZR(JSIGU-1+126+6*(ICMP-1)+ICMPS)
                SIJS(ICMPS) = SIJS(ICMPS) + MSE(ICMP)*SIGU
  212        CONTINUE
  210     CONTINUE
@@ -137,47 +130,30 @@ C
       CALL RC32ST ( SIJ, NBINST, STH, SEISME, SIJS, PBIJ )
       PB = MAX( PBIJ, PB )
 C
+C-----------------------------------------------------------------------
 C
-C --- CALCUL DU PMPB
+C                            CALCUL DU PMPB
 C
-C
+C-----------------------------------------------------------------------
 C --- CALCUL DES CONTRAINTES PAR COMBINAISON LINEAIRE
-C     POUR LE CHARGEMENT MIJ
+C     POUR LE CHARGEMENT MI
 C
       DO 120 ICMPS = 1 , 6
          SIJ(ICMPS) = 0.D0
          DO 122 ICMP = 1 , 6
-            IF ( LIEU .EQ. 'ORIG' ) THEN
-               SIGU = ZR(JSIGU-1+84   +6*(ICMP-1)+ICMPS) - 
-     +                ZR(JSIGU-1+84+42+6*(ICMP-1)+ICMPS)
-            ELSE
-               SIGU = ZR(JSIGU-1+84   +6*(ICMP-1)+ICMPS) + 
-     +                ZR(JSIGU-1+84+42+6*(ICMP-1)+ICMPS)
-            ENDIF
-            SIJ(ICMPS) = SIJ(ICMPS) + MIJ(ICMP)*SIGU
+            SIGU = ZR(JSIGU-1+42+6*(ICMP-1)+ICMPS)
+            SIJ(ICMPS) = SIJ(ICMPS) + MI(ICMP)*SIGU
  122     CONTINUE
 C ------ PRESSION
-         IF ( LIEU .EQ. 'ORIG' ) THEN
-            SIGU = ZR(JSIGU-1+84   +36+ICMPS) - 
-     +             ZR(JSIGU-1+84+42+36+ICMPS)
-         ELSE
-            SIGU = ZR(JSIGU-1+84   +36+ICMPS) + 
-     +             ZR(JSIGU-1+84+42+36+ICMPS)
-         ENDIF
-         SIJ(ICMPS) = SIJ(ICMPS) + PIJ*SIGU
+         SIGU = ZR(JSIGU-1+42+36+ICMPS)
+         SIJ(ICMPS) = SIJ(ICMPS) + PI*SIGU
  120  CONTINUE
 C
       IF ( SEISME ) THEN
          DO 220 ICMPS = 1 , 6
             SIJS(ICMPS) = 0.D0
             DO 222 ICMP = 1 , 6 
-               IF ( LIEU .EQ. 'ORIG' ) THEN
-                  SIGU = ZR(JSIGU-1+84   +6*(ICMP-1)+ICMPS) - 
-     +                   ZR(JSIGU-1+84+42+6*(ICMP-1)+ICMPS)
-               ELSE
-                  SIGU = ZR(JSIGU-1+84   +6*(ICMP-1)+ICMPS) + 
-     +                   ZR(JSIGU-1+84+42+6*(ICMP-1)+ICMPS)
-               ENDIF
+               SIGU = ZR(JSIGU-1+42+6*(ICMP-1)+ICMPS)
                SIJS(ICMPS) = SIJS(ICMPS) + MSE(ICMP)*SIGU
  222        CONTINUE
  220     CONTINUE

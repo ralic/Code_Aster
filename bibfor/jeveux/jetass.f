@@ -1,6 +1,6 @@
       SUBROUTINE JETASS ( CLAS )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 24/05/2004   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF JEVEUX  DATE 22/03/2005   AUTEUR D6BHHJP J.P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -183,7 +183,7 @@ C ----------- ON EXPLORE L'ENREGISTREMENT
 C
               ELSE IF ( IDCO .EQ. 0 .AND. IDOS .EQ. 0 ) THEN
                 IADDI(1) = K
-                CALL JXLIRO (IC, IADITP, IADDI, LONGBL(IC))
+                CALL JXLIRO (IC, IADITP, IADDI, LGBL)
                 ACTU = .FALSE.
                 IDEC = 0
  300            CONTINUE
@@ -226,7 +226,7 @@ C
                 IF ( ACTU ) THEN
                   CALL JXLIBD (IDCOL, IDOSL, IC, IADDI, LOIS)
                   IADDIB(1) = KLIB
-                  CALL JXECRO (IC,IADITP,IADDIB,LONGBL(IC),IDCO,IDOS)
+                  CALL JXECRO (IC,IADITP,IADDIB,LGBL,IDCO,IDOS)
                   KLIB = MIN(KLIB+1,K)
                 ENDIF
               ENDIF

@@ -2,7 +2,7 @@
       IMPLICIT   NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 24/05/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF POSTRELE  DATE 21/03/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -121,26 +121,22 @@ C
  14         CONTINUE
 C
             L = NCMP*(I-1) + J
-C
             ZR(JMUNO-1+L) = ZR(JCONT)
             ZR(JMUNE-1+L) = ZR(JCONT+NBABSC-1)
 C
             CALL RC32MY ( NBABSC, ZR(JABSC), ZR(JCONT), MOMEN0, MOMEN1)
 C
             L = 7*NCMP + NCMP*(I-1) + J
-C
             ZR(JMUNO-1+L) = MOMEN0 - 0.5D0*MOMEN1
             ZR(JMUNE-1+L) = MOMEN0 + 0.5D0*MOMEN1
 C
             L = 2*7*NCMP + NCMP*(I-1) + J
-C
             ZR(JMUNO-1+L) = MOMEN0
             ZR(JMUNE-1+L) = MOMEN0
 C
             L = 3*7*NCMP + NCMP*(I-1) + J
-C
-            ZR(JMUNO-1+L) = MOMEN1
-            ZR(JMUNE-1+L) = MOMEN1
+            ZR(JMUNO-1+L) = 0.5D0*MOMEN1
+            ZR(JMUNE-1+L) = 0.5D0*MOMEN1
 C
  12      CONTINUE
 C

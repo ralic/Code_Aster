@@ -186,12 +186,13 @@ RESUNL2=CREA_RESU(OPERATION='ECLA_PG',
                              RESU_INIT=RESUNL,
                              MAILLAGE=MA2,),);
 
-from Macro.recal import EXTRACT
 import Gnuplot
 import Numeric
 
-NUMDY = EXTRACT(DY_G , 'INST' , 'DY')
-NUMFY = EXTRACT(FHAUT , 'INST' , 'DY')
+DY_Ge = DY_G.EXTR_TABLE()
+NUMDY = DY_Ge.Array('INST','DY')
+FHAUTe= FHAUT.EXTR_TABLE()
+NUMFY = FHAUTe.Array('INST','DY')
 NUMFD = Numeric.transpose(Numeric.array([NUMDY[:,1],NUMFY[:,1]]))
 
 print NUMFD

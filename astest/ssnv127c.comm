@@ -1,4 +1,4 @@
-# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 21/03/2005   AUTEUR DURAND C.DURAND 
 # TITRE CYLINDRE DANS UN ALESAGE AVEC CONTACT ET FROTTEMENT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -29,7 +29,6 @@
 # LES ELEMENTS DE BORD SONT DES SEG2
 #
 
-from Macro.recal import EXTRACT
 import Numeric
 import Gnuplot
 
@@ -219,16 +218,18 @@ IMPR_TABLE(TABLE=TCONT)
 #                                                       
 #
 
-# coor = EXTRACT(TPRESS,'COOR_X','COOR_Y')
+# TPRESSe = TPRESS.EXTR_TABLE()
+# coor = TPRESSe.Array('COOR_X','COOR_Y')
 # cos = Numeric.arctan(coor[:,0]/coor[:,1])*-180./Numeric.pi
 # 
 # print cos
 # 
-# press = EXTRACT(TPRESS,'ABSC_CURV','SIXX')
+# press = TPRESSe.Array('ABSC_CURV','SIXX')
 # press[:,0]=cos
 # print press
 # 
-# cont  = EXTRACT(TCONT,'ABSC_CURV','CONTACT')
+# TCONTe = TCONT.EXTR_TABLE()
+# cont = TCONTe.Array('ABSC_CURV','CONTACT')
 # cont[:,0]=cos
 # cont[:,1]=-1.E6*cont[:,1]
 # 

@@ -3,7 +3,7 @@
       CHARACTER*24  CSIGM, CINST, CSNO, CSNE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 08/02/2005   AUTEUR CIBHHLV L.VIVAN 
+C MODIF POSTRELE  DATE 21/03/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -66,7 +66,7 @@ C
          DO 102 ICMP = 1, NCMP
             L1 =                 NCMP*(I1-1) + ICMP
             L2 =   NCMP*NBINST + NCMP*(I1-1) + ICMP
-            L3 = 2*NCMP*NBINST + NCMP*(I1-1) + ICMP
+            L3 = 3*NCMP*NBINST + NCMP*(I1-1) + ICMP
             SN1O(ICMP) = ZR(JSIGM-1+L1)-ZR(JSIGM-1+L2)+ZR(JSIGM-1+L3)
             SN1E(ICMP) = ZR(JSIGM-1+L1)+ZR(JSIGM-1+L2)-ZR(JSIGM-1+L3)
  102     CONTINUE
@@ -91,7 +91,7 @@ C
             DO 112 ICMP = 1, NCMP
                L1 =                 NCMP*(I2-1) + ICMP
                L2 =   NCMP*NBINST + NCMP*(I2-1) + ICMP
-               L3 = 2*NCMP*NBINST + NCMP*(I2-1) + ICMP
+               L3 = 3*NCMP*NBINST + NCMP*(I2-1) + ICMP
                SN2O(ICMP) = ZR(JSIGM-1+L1)-ZR(JSIGM-1+L2)+ZR(JSIGM-1+L3)
                SN2E(ICMP) = ZR(JSIGM-1+L1)+ZR(JSIGM-1+L2)-ZR(JSIGM-1+L3)
  112        CONTINUE

@@ -1,4 +1,4 @@
-# MODIF  DATE 07/03/2005   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 21/03/2005   AUTEUR LAVERNE J.LAVERNE 
 # TITRE FISSURATION PLANE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -30,7 +30,7 @@ MA=LIRE_MAILLAGE( )
 
 
 MO=AFFE_MODELE(
-              
+          
                 MAILLAGE=MA,
                 VERIF='MAILLE',
                   
@@ -47,6 +47,7 @@ MO=AFFE_MODELE(
                    )
                  )
               )
+              
 
 ACIER=DEFI_MATERIAU(
               
@@ -56,7 +57,7 @@ ACIER=DEFI_MATERIAU(
      RUPT_FRAG = _F(
                      GC = 1,
                      SIGM_C = 1,
-                     SAUT_C = 1.E-3
+                     PENA_ADHERENCE = 0.001
                     )
             )
 
@@ -68,8 +69,6 @@ CM=AFFE_MATERIAU(
                        TOUT = 'OUI',
                        MATER = ACIER),
               )
-
-
 
 LIAISON=AFFE_CHAR_MECA(
   MODELE=MO,
@@ -140,8 +139,8 @@ STAT_NON_LINE(reuse = U,
   MODELE     = MO,
   CHAM_MATER = CM,
   EXCIT      = (
-    _F(CHARGE = LIAISON , ),
-    _F(CHARGE = TRACTION, TYPE_CHARGE = 'FIXE_PILO'),
+    _F(CHARGE = LIAISON  , ),
+    _F(CHARGE = TRACTION , TYPE_CHARGE = 'FIXE_PILO'),
   ),
   PILOTAGE   = _F(
     SELECTION = 'RESIDU',
@@ -197,7 +196,7 @@ TEST_TABLE(TABLE=TB2,
            FILTRE=_F(NOM_PARA='N1',
                      VALE_I=1),
            NOM_PARA='N2',
-           VALE_I=15);
+           VALE_I=21);
 
 TEST_RESU (
   RESU = (
@@ -227,5 +226,6 @@ TEST_RESU (
       ),
     )
   )
+
   
 FIN()

@@ -4,7 +4,7 @@
       CHARACTER*8         MATER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 24/05/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF POSTRELE  DATE 21/03/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -233,7 +233,9 @@ C
                     CALL JEECRA (JEXNUM(K24B,IG),'LONMAX',6*NBSIGR,' ')
                  ENDIF
                  CALL JEVEUO ( JEXNUM(K24B,IG), 'E', JPMPB )
-                 CALL RC32PM ( LIEU(IM), SEISME, PPI, MPI, PPJ, MPJ,
+                 CALL RC32PM ( LIEU(IM), SEISME, PPI, MPI, 
+     +                                            MSE, PM, PB, PMPB )
+                 CALL RC32PM ( LIEU(IM), SEISME, PPJ, MPJ,
      +                                            MSE, PM, PB, PMPB )
                  ZR(JPMPB-1+6*(IS1-1)+1) = PM
                  ZR(JPMPB-1+6*(IS1-1)+2) = PB
@@ -247,8 +249,8 @@ C ----------- CALCUL DU SN
 C
               IF ( OSN ) THEN
                  SN = 0.D0
-                 CALL RC32SN ( LIEU(IM), SEISME, NSITUP, PPI, MPI, 
-     +                         NSITUQ, PPJ, MPJ, MSE, SN )
+                 CALL RC32SN ( 'SN_SITU', LIEU(IM), NSITUP, PPI, MPI, 
+     +                         NSITUQ, PPJ, MPJ, SEISME, MSE, SN )
                  SNMAX = MAX ( SNMAX , SN )
                  CALL JEEXIN (JEXNUM(K24B,IG), IRET )
                  IF ( IRET .EQ. 0 ) THEN
@@ -266,8 +268,8 @@ C ----------- CALCUL DU SN*
 C
               IF ( OSNET ) THEN
                  SNET = 0.D0
-                 CALL RC32SE ( LIEU(IM), SEISME, NSITUP, PPI, MPI, 
-     +                         NSITUQ, PPJ, MPJ, MSE, SNET )
+                 CALL RC32SN ( 'SN*_SITU', LIEU(IM), NSITUP, PPI, MPI, 
+     +                         NSITUQ, PPJ, MPJ, SEISME, MSE, SNET )
                  CALL JEEXIN (JEXNUM(K24B,IG), IRET )
                  IF ( IRET .EQ. 0 ) THEN
                     CALL JECROC (JEXNUM(K24B,IG))
@@ -286,15 +288,16 @@ C ----------- CALCUL DU SP
 C
               SP = 0.D0
               TYPEKE=MATPI(8)
-              CALL RC32SP ( LIEU(IM), SEISME, NSITUP, PPI, MPI, 
-     +                NSITUQ, PPJ, MPJ, MSE, SP, TYPEKE,SPMECA,SPTHER)
+              CALL RC32SP ( 'SP_SITU', LIEU(IM), NSITUP, PPI, MPI, 
+     +                      NSITUQ, PPJ, MPJ, SEISME, MSE, 
+     +                      SP, TYPEKE, SPMECA, SPTHER )
               SPMAX = MAX ( SPMAX , SP )
               IF (NIV.GE.2) WRITE (IFM,2040) NSITUP, SP
 C
 C ----------- CALCUL DU SALT
 C
-              CALL RC32SA ( MATER, MATPI, MATPJ, SN, SP,
-     &           TYPEKE, SPMECA, SPTHER,KEMECA,KETHER,SALTIJ, SMM )
+              CALL RC32SA ( MATER, MATPI, MATPJ, SN, SP, TYPEKE,  
+     &                    SPMECA, SPTHER, KEMECA, KETHER, SALTIJ, SMM )
               IF (NIV.GE.2) THEN
                  WRITE (IFM,2050) NSITUP, SALTIJ
               END IF

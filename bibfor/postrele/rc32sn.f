@@ -1,13 +1,14 @@
-      SUBROUTINE RC32SN ( LIEU, SEISME, NUMSIP, PI, MI, NUMSIQ, PJ, MJ,
-     +                    MSE, SNIJ )
+      SUBROUTINE RC32SN ( TYPZ, LIEU, NUMSIP, PI, MI,
+     +                    NUMSIQ, PJ, MJ, SEISME, MSE, SNIJ )
       IMPLICIT   NONE
       INTEGER             NUMSIP, NUMSIQ
       REAL*8              PI, MI(*), PJ, MJ(*), MSE(*), SNIJ
       LOGICAL             SEISME
       CHARACTER*4         LIEU
+      CHARACTER*(*)       TYPZ
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 24/05/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF POSTRELE  DATE 21/03/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -26,10 +27,13 @@ C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     ------------------------------------------------------------------
 C     OPERATEUR POST_RCCM, TRAITEMENT DE FATIGUE_B3200
-C     CALCUL DU SN
+C     CALCUL DU SN OU SN*
 C
+C IN  : TYPZ   : 'SN_SITU'  : CALCUL DU SN POUR LA SITUATION
+C              : 'SN*_SITU' : CALCUL DU SN* POUR LA SITUATION
+C              : 'SN_COMB'  : CALCUL DU SN POUR COMBINAISON SITUATION
+C              : 'SN*_COMB' : CALCUL DU SN* POUR COMBINAISON SITUATION
 C IN  : LIEU   : ='ORIG' : ORIGINE DU SEGEMNT, ='EXTR' : EXTREMITE
-C IN  : SEISME : =.FALSE. SI PAS DE SEISME, =.TRUE. SINON
 C IN  : NUMSIP : NUMERO SITUATION DE L'ETAT STABILISE P
 C IN  : PI     : PRESSION ASSOCIEE A L'ETAT STABILISE I
 C IN  : MI     : EFFORTS ASSOCIEES A L'ETAT STABILISE I (6)
@@ -37,6 +41,7 @@ C IN  : NUMSIQ : NUMERO SITUATION DE L'ETAT STABILISE Q
 C IN  : PJ     : PRESSION ASSOCIEE A L'ETAT STABILISE J
 C IN  : MJ     : EFFORTS ASSOCIEES A L'ETAT STABILISE J (6)
 C IN  : PJ     : PRESSION ASSOCIEE A L'ETAT STABILISE J
+C IN  : SEISME : =.FALSE. SI PAS DE SEISME, =.TRUE. SINON
 C IN  : MSE    : EFFORTS DUS AU SEISME
 C OUT : SNIJ   : AMPLITUDE DE VARIATION DES CONTRAINTES LINEARISEES
 C     ------------------------------------------------------------------
@@ -61,9 +66,9 @@ C
       INTEGER      ICMP, JSIGU, ICMPS, INDICE, LONG, NBINST,
      +             NBTHER, JTHER, ITH, NUMTH, JTHUN
       REAL*8       PIJ, MIJ(6), SN, SIJ(6), SIJS(6), SIGU
-      CHARACTER*8  K8B, KNUMES, KNUMET 
+      CHARACTER*8  K8B, TYPE, KNUMES, KNUMET 
 C DEB ------------------------------------------------------------------
-      CALL JEMARQ()
+      TYPE = TYPZ
 C
 C --- CONTRAINTES LINEAIRISEES DUES AUX CHARGEMENTS UNITAIRES
 C
@@ -71,7 +76,6 @@ C
 C
 C --- DIFFERENCE DE PRESSION ENTRE LES ETATS I ET J
 C
-CCC      PIJ = ABS( PI - PJ )
       PIJ = PJ - PI
 C
 C --- VARIATION DE MOMENT RESULTANT
@@ -120,7 +124,15 @@ C
          IF ( NBTHER .EQ. 0 ) THEN
             NBINST = 0
             INDICE = 1
-            CALL RC32ST ( SIJ, NBINST, ZR(INDICE), SEISME, SIJS, SN )
+            IF( TYPE .EQ. 'SN_COMB' ) THEN
+              CALL RC32ST ( SIJ, NBINST, ZR(INDICE), SEISME, SIJS, SN )
+            ELSEIF( TYPE .EQ. 'SN_SITU' ) THEN
+              CALL RC32S1 ( SIJ, NBINST, ZR(INDICE), SEISME, SIJS, SN )
+            ELSEIF( TYPE .EQ. 'SN*_COMB' ) THEN
+              CALL RC32ST ( SIJ, NBINST, ZR(INDICE), SEISME, SIJS, SN )
+            ELSEIF( TYPE .EQ. 'SN*_SITU' ) THEN
+              CALL RC32S1 ( SIJ, NBINST, ZR(INDICE), SEISME, SIJS, SN )
+            ENDIF
             SNIJ = MAX( SNIJ , SN )
          ELSE
             CALL JEVEUO ( JEXNOM('&&RC3200.SITU_THERMIQUE',KNUMES),
@@ -133,9 +145,20 @@ C
      &                                            'LONUTI', LONG, K8B )
              CALL JEVEUO ( JEXNOM('&&RC3200.THER_UNIT .'//LIEU,KNUMET),
      &                                                     'L', JTHUN )
-               NBINST = LONG / 18
-               INDICE = JTHUN + 6*NBINST
-               CALL RC32ST ( SIJ, NBINST, ZR(INDICE), SEISME, SIJS, SN)
+               NBINST = LONG / 24
+               IF( TYPE .EQ. 'SN_COMB' ) THEN
+                 INDICE = JTHUN + 6*NBINST
+                 CALL RC32ST ( SIJ,NBINST,ZR(INDICE),SEISME,SIJS,SN )
+               ELSEIF( TYPE .EQ. 'SN_SITU' ) THEN
+                 INDICE = JTHUN + 6*NBINST
+                 CALL RC32S1 ( SIJ,NBINST,ZR(INDICE),SEISME,SIJS,SN )
+               ELSEIF( TYPE .EQ. 'SN*_COMB' ) THEN
+                 INDICE = JTHUN + 12*NBINST
+                 CALL RC32ST ( SIJ,NBINST,ZR(INDICE),SEISME,SIJS,SN )
+               ELSEIF( TYPE .EQ. 'SN*_SITU' ) THEN
+                 INDICE = JTHUN + 12*NBINST
+                 CALL RC32S1 ( SIJ,NBINST,ZR(INDICE),SEISME,SIJS,SN )
+               ENDIF
                SNIJ = MAX( SNIJ , SN )
  100       CONTINUE
         END IF
@@ -152,6 +175,15 @@ C
          IF ( NBTHER .EQ. 0 ) THEN
             NBINST = 0
             INDICE = 1
+            IF( TYPE .EQ. 'SN_COMB' ) THEN
+              CALL RC32ST ( SIJ, NBINST, ZR(INDICE), SEISME, SIJS, SN )
+            ELSEIF( TYPE .EQ. 'SN_SITU' ) THEN
+              CALL RC32S1 ( SIJ, NBINST, ZR(INDICE), SEISME, SIJS, SN )
+            ELSEIF( TYPE .EQ. 'SN*_COMB' ) THEN
+              CALL RC32ST ( SIJ, NBINST, ZR(INDICE), SEISME, SIJS, SN )
+            ELSEIF( TYPE .EQ. 'SN*_SITU' ) THEN
+              CALL RC32S1 ( SIJ, NBINST, ZR(INDICE), SEISME, SIJS, SN )
+            ENDIF
             CALL RC32ST ( SIJ, NBINST, ZR(INDICE), SEISME, SIJS, SN )
             SNIJ = MAX( SNIJ , SN )
          ELSE
@@ -165,13 +197,23 @@ C
      &                                            'LONUTI', LONG, K8B )
              CALL JEVEUO ( JEXNOM('&&RC3200.THER_UNIT .'//LIEU,KNUMET),
      &                                                     'L', JTHUN )
-               NBINST = LONG / 18
-               INDICE = JTHUN + 6*NBINST
-               CALL RC32ST ( SIJ, NBINST, ZR(INDICE), SEISME, SIJS, SN)
+               NBINST = LONG / 24
+               IF( TYPE .EQ. 'SN_COMB' ) THEN
+                 INDICE = JTHUN + 6*NBINST
+                 CALL RC32ST ( SIJ,NBINST,ZR(INDICE),SEISME,SIJS,SN )
+               ELSEIF( TYPE .EQ. 'SN_SITU' ) THEN
+                 INDICE = JTHUN + 6*NBINST
+                 CALL RC32S1 ( SIJ,NBINST,ZR(INDICE),SEISME,SIJS,SN )
+               ELSEIF( TYPE .EQ. 'SN*_COMB' ) THEN
+                 INDICE = JTHUN + 12*NBINST
+                 CALL RC32ST ( SIJ,NBINST,ZR(INDICE),SEISME,SIJS,SN )
+               ELSEIF( TYPE .EQ. 'SN*_SITU' ) THEN
+                 INDICE = JTHUN + 12*NBINST
+                 CALL RC32S1 ( SIJ,NBINST,ZR(INDICE),SEISME,SIJS,SN )
+               ENDIF
                SNIJ = MAX( SNIJ , SN )
  110        CONTINUE
          END IF
       END IF
 C
-      CALL JEDEMA()
       END

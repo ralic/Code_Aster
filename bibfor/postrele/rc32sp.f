@@ -1,13 +1,14 @@
-      SUBROUTINE RC32SP(LIEU,SEISME,NUMSIP,PI,MI,NUMSIQ,PJ,MJ,MSE,SPIJ,
-     &                  TYPEKE,SPMECA,SPTHER)
+      SUBROUTINE RC32SP(TYPZ,LIEU,NUMSIP,PI,MI,NUMSIQ,PJ,MJ,SEISME,MSE,
+     +                  SPIJ,TYPEKE,SPMECA,SPTHER)
       IMPLICIT   NONE
-      INTEGER NUMSIP,NUMSIQ
-      REAL*8 PI,MI(*),PJ,MJ(*),MSE(*),SPIJ,TYPEKE,SPMECA,SPTHER
-      LOGICAL SEISME
-      CHARACTER*4 LIEU
+      INTEGER           NUMSIP,NUMSIQ
+      REAL*8         PI,MI(*),PJ,MJ(*),MSE(*),SPIJ,TYPEKE,SPMECA,SPTHER
+      LOGICAL           SEISME
+      CHARACTER*4       LIEU
+      CHARACTER*(*)     TYPZ
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 23/02/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF POSTRELE  DATE 21/03/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,6 +30,8 @@ C     OPERATEUR POST_RCCM, TRAITEMENT DE FATIGUE_B3200
 C     CALCUL DU SP
 
 C     ------------------------------------------------------------------
+C IN  : TYPZ   : 'SP_SITU'  : CALCUL DU SP POUR LA SITUATION
+C              : 'SP_COMB'  : CALCUL DU SP POUR COMBINAISON SITUATION
 C IN  : LIEU   : ='ORIG' : ORIGINE DU SEGEMNT, ='EXTR' : EXTREMITE
 C IN  : SEISME : =.FALSE. SI PAS DE SEISME, =.TRUE. SINON
 C IN  : NUMSIP : NUMERO SITUATION DE L'ETAT STABILISE P
@@ -61,9 +64,9 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 
       INTEGER ICMP,JSIGU,ICMPS,LONG,NBINST,NBTHER,JTHER,ITH,NUMTH,JTHUN
       REAL*8 PIJ,MIJ(6),SP,SIJ(6),SIJS(6),SIGU,SIJ0(6)
-      CHARACTER*8 K8B,KNUMES,KNUMET
+      CHARACTER*8 K8B,TYPE,KNUMES,KNUMET
 C DEB ------------------------------------------------------------------
-      CALL JEMARQ()
+      TYPE = TYPZ
 
 C --- CONTRAINTES LINEAIRISEES DUES AUX CHARGEMENTS UNITAIRES
 
@@ -71,7 +74,6 @@ C --- CONTRAINTES LINEAIRISEES DUES AUX CHARGEMENTS UNITAIRES
 
 C --- DIFFERENCE DE PRESSION ENTRE LES ETATS I ET J
 
-CC      PIJ = ABS( PI - PJ )
       PIJ = PJ - PI
 
 C --- VARIATION DE MOMENT RESULTANT
@@ -88,10 +90,10 @@ C     POUR LE CHARGEMENT PIJ, MIJ
         SIJ(ICMPS) = 0.D0
         SIJ0(ICMPS) = 0.D0
         DO 20 ICMP = 1,6
-          SIGU = ZR(JSIGU-1+6* (ICMP-1)+ICMPS)
+          SIGU = ZR(JSIGU-1+6*(ICMP-1)+ICMPS)
           SIJ(ICMPS) = SIJ(ICMPS) + MIJ(ICMP)*SIGU
    20   CONTINUE
-C ------ PRESSION
+C ----- PRESSION
         SIGU = ZR(JSIGU-1+36+ICMPS)
         SIJ(ICMPS) = SIJ(ICMPS) + PIJ*SIGU
    30 CONTINUE
@@ -104,7 +106,7 @@ C     POUR LE CHARGEMENT MSE (SEISME)
         DO 50 ICMPS = 1,6
           SIJS(ICMPS) = 0.D0
           DO 40 ICMP = 1,6
-            SIGU = ZR(JSIGU-1+6* (ICMP-1)+ICMPS)
+            SIGU = ZR(JSIGU-1+6*(ICMP-1)+ICMPS)
             SIJS(ICMPS) = SIJS(ICMPS) + MSE(ICMP)*SIGU
    40     CONTINUE
    50   CONTINUE
@@ -125,7 +127,11 @@ C --- ON BOUCLE SUR LES INSTANTS DU THERMIQUE DE P
           IF (NBTHER.EQ.0) THEN
             NBINST = 0
             JTHUN = 1
-            CALL RC32ST(SIJ,NBINST,ZR(JTHUN),SEISME,SIJS,SP)
+            IF( TYPE .EQ. 'SP_COMB' ) THEN
+              CALL RC32ST(SIJ,NBINST,ZR(JTHUN),SEISME,SIJS,SP)
+            ELSEIF( TYPE .EQ. 'SP_SITU' ) THEN
+              CALL RC32S1(SIJ,NBINST,ZR(JTHUN),SEISME,SIJS,SP)
+            ENDIF
             SPIJ = MAX(SPIJ,SP)
           ELSE
             CALL JEVEUO(JEXNOM('&&RC3200.SITU_THERMIQUE',KNUMES),'L',
@@ -138,8 +144,12 @@ C --- ON BOUCLE SUR LES INSTANTS DU THERMIQUE DE P
      &                    'LONUTI',LONG,K8B)
               CALL JEVEUO(JEXNOM('&&RC3200.THER_UNIT .'//LIEU,KNUMET),
      &                    'L',JTHUN)
-              NBINST = LONG/12
-              CALL RC32ST(SIJ,NBINST,ZR(JTHUN),SEISME,SIJS,SP)
+              NBINST = LONG / 24
+              IF( TYPE .EQ. 'SP_COMB' ) THEN
+                CALL RC32ST(SIJ,NBINST,ZR(JTHUN),SEISME,SIJS,SP)
+              ELSEIF( TYPE .EQ. 'SP_SITU' ) THEN
+                CALL RC32S1(SIJ,NBINST,ZR(JTHUN),SEISME,SIJS,SP)
+              ENDIF
               SPIJ = MAX(SPIJ,SP)
    60       CONTINUE
           END IF
@@ -156,7 +166,11 @@ C --- ON BOUCLE SUR LES INSTANTS DU THERMIQUE DE Q
           IF (NBTHER.EQ.0) THEN
             NBINST = 0
             JTHUN = 1
-            CALL RC32ST(SIJ,NBINST,ZR(JTHUN),SEISME,SIJS,SP)
+            IF( TYPE .EQ. 'SP_COMB' ) THEN
+              CALL RC32ST(SIJ,NBINST,ZR(JTHUN),SEISME,SIJS,SP)
+            ELSEIF( TYPE .EQ. 'SP_SITU' ) THEN
+              CALL RC32S1(SIJ,NBINST,ZR(JTHUN),SEISME,SIJS,SP)
+            ENDIF
             SPIJ = MAX(SPIJ,SP)
           ELSE
             CALL JEVEUO(JEXNOM('&&RC3200.SITU_THERMIQUE',KNUMES),'L',
@@ -169,8 +183,12 @@ C --- ON BOUCLE SUR LES INSTANTS DU THERMIQUE DE Q
      &                    'LONUTI',LONG,K8B)
               CALL JEVEUO(JEXNOM('&&RC3200.THER_UNIT .'//LIEU,KNUMET),
      &                    'L',JTHUN)
-              NBINST = LONG/12
-              CALL RC32ST(SIJ,NBINST,ZR(JTHUN),SEISME,SIJS,SP)
+              NBINST = LONG / 24
+              IF( TYPE .EQ. 'SP_COMB' ) THEN
+                CALL RC32ST(SIJ,NBINST,ZR(JTHUN),SEISME,SIJS,SP)
+              ELSEIF( TYPE .EQ. 'SP_SITU' ) THEN
+                CALL RC32S1(SIJ,NBINST,ZR(JTHUN),SEISME,SIJS,SP)
+              ENDIF
               SPIJ = MAX(SPIJ,SP)
    70       CONTINUE
           END IF
@@ -191,8 +209,11 @@ C --- ON BOUCLE SUR LES INSTANTS DU THERMIQUE DE P
      &                NBTHER,K8B)
           NBINST = 0
           JTHUN = 1
-          CALL RC32ST(SIJ,NBINST,ZR(JTHUN),SEISME,SIJS,SP)
-
+          IF( TYPE .EQ. 'SP_COMB' ) THEN
+            CALL RC32ST(SIJ,NBINST,ZR(JTHUN),SEISME,SIJS,SP)
+          ELSEIF( TYPE .EQ. 'SP_SITU' ) THEN
+            CALL RC32S1(SIJ,NBINST,ZR(JTHUN),SEISME,SIJS,SP)
+          ENDIF
           SPMECA = MAX(SPMECA,SP)
 
           IF (NBTHER.NE.0) THEN
@@ -206,8 +227,12 @@ C --- ON BOUCLE SUR LES INSTANTS DU THERMIQUE DE P
      &                    'LONUTI',LONG,K8B)
               CALL JEVEUO(JEXNOM('&&RC3200.THER_UNIT .'//LIEU,KNUMET),
      &                    'L',JTHUN)
-              NBINST = LONG/12
-              CALL RC32ST(SIJ0,NBINST,ZR(JTHUN),SEISME,SIJ0,SP)
+              NBINST = LONG / 24
+              IF( TYPE .EQ. 'SP_COMB' ) THEN
+                CALL RC32ST(SIJ0,NBINST,ZR(JTHUN),SEISME,SIJ0,SP)
+              ELSEIF( TYPE .EQ. 'SP_SITU' ) THEN
+                CALL RC32S1(SIJ0,NBINST,ZR(JTHUN),SEISME,SIJ0,SP)
+              ENDIF
               SPTHER = MAX(SPTHER,SP)
    80       CONTINUE
           END IF
@@ -232,8 +257,12 @@ C --- ON BOUCLE SUR LES INSTANTS DU THERMIQUE DE Q
      &                    'LONUTI',LONG,K8B)
               CALL JEVEUO(JEXNOM('&&RC3200.THER_UNIT .'//LIEU,KNUMET),
      &                    'L',JTHUN)
-              NBINST = LONG/12
-              CALL RC32ST(SIJ0,NBINST,ZR(JTHUN),SEISME,SIJ0,SP)
+              NBINST = LONG / 24
+              IF( TYPE .EQ. 'SP_COMB' ) THEN
+                CALL RC32ST(SIJ0,NBINST,ZR(JTHUN),SEISME,SIJ0,SP)
+              ELSEIF( TYPE .EQ. 'SP_SITU' ) THEN
+                CALL RC32S1(SIJ0,NBINST,ZR(JTHUN),SEISME,SIJ0,SP)
+              ENDIF
               SPTHER = MAX(SPTHER,SP)
    90       CONTINUE
           END IF
@@ -243,6 +272,4 @@ C      ELSE
 C        CALL UTMESS('F','RC32SP','PB AVEC TYPEKE')
       END IF
 
-
-      CALL JEDEMA()
       END

@@ -19,7 +19,7 @@ C ======================================================================
       IMPLICIT   NONE
       INTEGER            IER
 C     ------------------------------------------------------------------
-C MODIF POSTRELE  DATE 08/02/2005   AUTEUR CIBHHLV L.VIVAN 
+C MODIF POSTRELE  DATE 21/03/2005   AUTEUR CIBHHLV L.VIVAN 
 C     ------------------------------------------------------------------
 C
 C     OPERATEUR POST_RCCM
@@ -105,7 +105,7 @@ C
          CALL GETFAC ( 'RESU_THER', NBTHER )
          IF ( NBTHER .NE. 0 ) THEN
            DO 32 I = 1, NBTHER
-             CALL GETVID ('RESU_THER','TABL_SIGM_THER',I,1,0,K8B,NSN)
+             CALL GETVID ('RESU_THER','TABL_RESU_THER',I,1,0,K8B,NSN)
              IF ( NSN .NE. 0 ) SNET = .TRUE.
  32        CONTINUE
          ENDIF

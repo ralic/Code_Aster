@@ -1,7 +1,7 @@
-      SUBROUTINE LCJOBA (NDIM, TYPMOD, IMATE, CRIT, SU,
+      SUBROUTINE LCJOBA (NDIM, TYPMOD, IMATE, CRIT, SUM, DSU,
      &                    VIM,OPTION, SIG, VIP,  DSIDEP)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/11/2004   AUTEUR KBBHHDB G.DEBRUYNE 
+C MODIF ALGORITH  DATE 21/03/2005   AUTEUR LAVERNE J.LAVERNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -23,7 +23,7 @@ C ----------------------------------------------------------------------
       CHARACTER*8        TYPMOD(2)
       CHARACTER*16       OPTION
       INTEGER            NDIM, IMATE
-      REAL*8             SU(2),  VIM(6)
+      REAL*8             SUM(2), DSU(2), VIM(6)
       REAL*8             SIG(2), VIP(6), DSIDEP(2,2),CRIT(3)
 C ----------------------------------------------------------------------
 C     LOI DE COMPORTEMENT ENDOMMAGEABLE DE LA LIAISON ACIER-BETON :
@@ -34,7 +34,8 @@ C IN :
 C     NDIM    : DIMENSION DE L'ESPACE
 C     TYPMOD  : TYPE DE MODELISATION
 C     IMATE   : NATURE DU MATERIAU
-C     SU      : SAUT DE DEFORMATION
+C     SUM     : SAUT DE DEFORMATION EN T-
+C     DSU     : INCREMENT DE SAUT DE DEFORMATION
 C     VIM     : VARIABLES INTERNES EN T-
 C     OPTION  : OPTION DEMANDEE
 C                 RIGI_MECA_TANG ->     DSIDEP
@@ -71,7 +72,7 @@ C ----------------------------------------------------------------------
       CHARACTER*2 CODRET(14)
       CHARACTER*8 NOMRES(14)
       INTEGER     I,J,K,L,ITER,ITEMAX
-      REAL*8      EPS(2),E,GTT,HPEN
+      REAL*8      SU(2),EPS(2),E,GTT,HPEN
       REAL*8      BDN, ADN, EPSTR0
       REAL*8      BD1, AD1, GAMD0,BD2, AD2, GAMD2
       REAL*8      FC,FA,VIFROT,SIGNO,I1
@@ -154,6 +155,11 @@ C ======================================================================
 
 C    1 - CALCUL DES DEFORMATIONS MECANIQUES
 C--------------------------------------------------------
+
+C CALCUL DU SAUT EN T+
+
+      CALL DCOPY(2,SUM,1,SU,1)
+      IF (RESI) CALL DAXPY(2,1.D0,DSU,1,SU,1)
 
 C  - TRANSFORMATION DES SAUTS EN DEFORMATIONS
 

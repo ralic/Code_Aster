@@ -3,7 +3,7 @@
      &                   COMPOR,TYPMOD,INSTM,INSTP,TM,TP)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/03/2005   AUTEUR KBBHHDB G.DEBRUYNE 
+C MODIF ALGORITH  DATE 21/03/2005   AUTEUR LAVERNE J.LAVERNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -25,7 +25,7 @@ C ======================================================================
 
       IMPLICIT NONE
       INTEGER MATE,NPG,LGPG,N
-      REAL*8  GEOM(2,4),DEPLM(2,4),DDEPL(2,4),INSTM,INSTP,TM(4),TP(4)
+      REAL*8  GEOM(2,4),DEPLM(8),DDEPL(8),INSTM,INSTP,TM(4),TP(4)
       REAL*8  FINT(8),KTAN(8,8),SIGMA(2,NPG),VIM(LGPG,NPG),VIP(LGPG,NPG)
       CHARACTER*8  TYPMOD(*)
       CHARACTER*16 OPTION, COMPOR(*)
@@ -56,20 +56,17 @@ C-----------------------------------------------------------------------
       INTEGER I,J,Q,S, IBID,KPG
       INTEGER NDIM,NNO,NNOS,IPOIDS,IVF,IDFDE,JGANO
       REAL*8 DSIDEP(2,2),B(2,8),RBID,R8VIDE
-      REAL*8 SU(2),U(8),AIRE,POIDS(2),SIG(2),VIMOIN(LGPG),VIPLUS(LGPG)
-      REAL*8 VALRES,HPEN
+      REAL*8 SUM(2),DSU(2),POIDS
       REAL*8 CRIT
       REAL*8 TEMPM(2),TEMPP(2),TREF
-      REAL*8 EPS(4),DEPS(4)
       REAL*8 SIGN,EPSANM,EPSANP
       REAL*8 COD(NPG),ANGMAS(3)
-      CHARACTER*2 CODRET
-      CHARACTER*8 NOMRES
+
 
       CALL R8INIR(8 , 0.D0, FINT,1)
       CALL R8INIR(64, 0.D0, KTAN,1)
       CALL R8INIR(4,  0.D0, SIGMA ,1)
-
+      
 C --- ANGLE DU MOT_CLEF MASSIF (AFFE_CARA_ELEM)
 C --- INITIALISE A R8VIDE (ON NE S'EN SERT PAS)
       CALL R8INIR(3,  R8VIDE(), ANGMAS ,1)
@@ -80,29 +77,13 @@ C --- INITIALISE A R8VIDE (ON NE S'EN SERT PAS)
       IF (.NOT. RESI .AND. .NOT. RIGI)
      &  CALL UTMESS('F','NMFI2D','OPTION '//OPTION//' NON TRAITEE')
 
+      IF (RESI)  CALL R8INIR(8 , 0.D0, FINT,1)
+      IF (RIGI)  CALL R8INIR(64, 0.D0, KTAN,1)
 
-C DEFINITION DU DEPLACEMENT A L'INSTANT A T+
-
-C     U=U-
-      CALL DCOPY(8, DEPLM,1, U,1)
-C     SI RESI ALORS U=U+
-      IF (RESI) CALL DAXPY(8, 1.D0, DDEPL,1, U,1)
-
-C CALCUL DE L'AIRE DES PAROIS DE LA FISSURE :
-C  * EN 2D ON CONSIDERE QUE L'EPAISSEUR EST DE 1 DONC
-C    L'AIRE EST EGALE A : 1*(LONGUEUR DE L'ELEMENT)
-C  * EN AXIS ON MULTIPLIE CETTE LONGEUR PAR LA DISTANCE DU CENTRE DE
-C    L'ELEMENT A L'AXE DE SYMETRIE.
-
-      AIRE = SQRT( (GEOM(1,2)-GEOM(1,1))**2 + (GEOM(2,2)-GEOM(2,1))**2 )
-      IF (AXI) AIRE = AIRE * (GEOM(1,1)+GEOM(1,2))/2.D0
       CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,
      &                  JGANO)
+
       DO 11 KPG=1,NPG
-
-C POIDS DU POINT DE GAUSS COURANT :
-
-        POIDS(KPG) = AIRE/2
 C
 C - CALCUL DE LA TEMPERATURE AU POINT DE GAUSS
 C
@@ -113,89 +94,73 @@ C
           TEMPM(KPG) = TEMPM(KPG) + TM(N)*ZR(IVF+N+(KPG-1)*NNO-1)
           TEMPP(KPG) = TEMPP(KPG) + TP(N)*ZR(IVF+N+(KPG-1)*NNO-1)
  12     CONTINUE
+
 C CALCUL DE LA MATRICE B DONNANT LES SAUT PAR ELEMENTS A PARTIR DES
-C DEPLACEMENTS AUX NOEUDS :
+C DEPLACEMENTS AUX NOEUDS , AINSI QUE LE POIDS DES PG :
 C LE CHANGEMENT DE REPERE EST INTEGRE DANS LA MATRICE B (VOIR NMFISA)
 
-        CALL NMFISA(GEOM,B,KPG)
+        CALL NMFISA(AXI,GEOM,KPG,POIDS,B)
 
 C CALCUL DU SAUT DE DEPLACEMENT DANS L'ELEMENT (SU_N,SU_T) = B U :
-
-        CALL R8INIR(2, 0.D0, SU,1)
+ 
+        CALL R8INIR(2, 0.D0, SUM,1)
+        CALL R8INIR(2, 0.D0, DSU,1)
         DO 10 J=1,8
-          SU(1) = SU(1) + B(1,J)*U(J)
-          SU(2) = SU(2) + B(2,J)*U(J)
+          SUM(1) = SUM(1) + B(1,J)*DEPLM(J)
+          SUM(2) = SUM(2) + B(2,J)*DEPLM(J)         
  10     CONTINUE
-
-        IF (COMPOR(1)(7:8).EQ.'BA') THEN
-
-          DO 18 J=1,LGPG
-            VIMOIN(J)=VIM(J,KPG)
-18        CONTINUE
-
-          CALL R8INIR(2,  0.D0, SIG ,1)
+        IF (RESI) THEN
+          DO 13 J=1,8
+            DSU(1) = DSU(1) + B(1,J)*DDEPL(J)
+            DSU(2) = DSU(2) + B(2,J)*DDEPL(J)         
+ 13       CONTINUE
+        END IF 
 
 C -   APPEL A LA LOI DE COMPORTEMENT
-        CALL NMCOMP (2,TYPMOD,MATE,COMPOR,CRIT,
-     &               INSTM,INSTP,
-     &               RBID,RBID,RBID,
-     &               RBID,RBID,
-     &               RBID,RBID,RBID,
-     &               -1.D0,-1.D0,
-     &               SU,RBID,
-     &               SIGN,VIMOIN,
-     &               OPTION,
-     &               EPSANM,EPSANP,
-     &               1,RBID,RBID,
-     &               R8VIDE(),R8VIDE(),
-     &               ANGMAS,
-     &               RBID,
-     &               SIG,VIPLUS,DSIDEP,IBID)
+
+        IF (COMPOR(1)(7:8).EQ.'BA') THEN
+         
+C CALCUL DE LA CONTRAINTE DANS L'ELEMENT AINSI QUE LA DERIVEE
+C DE CELLE-CI PAR RAPPORT AU SAUT DE DEPLACEMENT (SIGMA ET DSIDEP) :
+
+          CALL NMCOMP (2,TYPMOD,MATE,COMPOR,CRIT,
+     &                 INSTM,INSTP,
+     &                 RBID,RBID,RBID,
+     &                 RBID,RBID,
+     &                 RBID,RBID,RBID,
+     &                 -1.D0,-1.D0,
+     &                 SUM,DSU,
+     &                 SIGN,VIM(1,KPG),
+     &                 OPTION,
+     &                 EPSANM,EPSANP,
+     &                 1,RBID,RBID,
+     &                 R8VIDE(),R8VIDE(),
+     &                 ANGMAS,
+     &                 RBID,
+     &                 SIGMA(1,KPG),VIP(1,KPG),DSIDEP,IBID)
 
 
-        IF (RESI) THEN
-          SIGMA(1,KPG)=SIG(1)
-          SIGMA(2,KPG)=SIG(2)
-          DO 28 J=1,LGPG
-            VIP(J,KPG)=VIPLUS(J)
-28        CONTINUE
-        ENDIF
-
-      ELSE
+        ELSE        
 
 C CALCUL DE LA CONTRAINTE DANS L'ELEMENT AINSI QUE LA DERIVEE
 C DE CELLE-CI PAR RAPPORT AU SAUT DE DEPLACEMENT (SIGMA ET DSIDEP) :
-          VIMOIN(1)=VIM(1,KPG)
-          VIMOIN(2)=VIM(2,KPG)
-          VIMOIN(3)=VIM(3,KPG)
-
-          CALL R8INIR(2,  0.D0, SIG ,1)
-
-
-C -   APPEL A LA LOI DE COMPORTEMENT
+ 
           CALL NMCOMP (2,TYPMOD,MATE,COMPOR,RBID,
-     &               RBID,RBID,
-     &               TEMPM(KPG),TEMPP(KPG),RBID,
-     &               RBID,RBID,
-     &               RBID,RBID,RBID,
-     &               R8VIDE(),R8VIDE(),
-     &               SU,RBID,
-     &               RBID,VIMOIN,
-     &               OPTION,
-     &               RBID,RBID,
-     &               1,RBID,RBID,
-     &               R8VIDE(),R8VIDE(),
-     &               ANGMAS,
-     &               RBID,
-     &               SIG,VIPLUS,DSIDEP,IBID)
+     &                 RBID,RBID,
+     &                 TEMPM(KPG),TEMPP(KPG),RBID,
+     &                 RBID,RBID,
+     &                 RBID,RBID,RBID,
+     &                 R8VIDE(),R8VIDE(),
+     &                 SUM,DSU,
+     &                 RBID,VIM(1,KPG),
+     &                 OPTION,
+     &                 RBID,RBID,
+     &                 1,RBID,RBID,
+     &                 R8VIDE(),R8VIDE(),
+     &                 ANGMAS,
+     &                 RBID,
+     &                 SIGMA(1,KPG),VIP(1,KPG),DSIDEP,IBID)
 
-          IF (RESI) THEN
-            SIGMA(1,KPG)=SIG(1)
-            SIGMA(2,KPG)=SIG(2)
-            VIP(1,KPG)=VIPLUS(1)
-            VIP(2,KPG)=VIPLUS(2)
-            VIP(3,KPG)=VIPLUS(3)
-          ENDIF
 
         ENDIF
 
@@ -205,7 +170,7 @@ C CALCUL DES FINT (B_T SIGMA )
 
           DO 20 I=1,8
             DO 40 Q=1,2
-              FINT(I) = FINT(I) +  POIDS(KPG)*B(Q,I)*SIGMA(Q,KPG)
+              FINT(I) = FINT(I) +  POIDS*B(Q,I)*SIGMA(Q,KPG)
  40         CONTINUE
  20       CONTINUE
 
@@ -221,7 +186,7 @@ C CALCUL DES KTAN = ( B_T  DSIGMA/DSU  B )
               DO 60 Q=1,2
                 DO 62 S=1,2
                   KTAN(I,J) = KTAN(I,J)+
-     &                        POIDS(KPG)*B(Q,I)*DSIDEP(Q,S)*B(S,J)
+     &                        POIDS*B(Q,I)*DSIDEP(Q,S)*B(S,J)
  62             CONTINUE
  60           CONTINUE
  52         CONTINUE

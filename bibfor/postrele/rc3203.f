@@ -7,7 +7,7 @@
       CHARACTER*8         MATER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 23/02/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF POSTRELE  DATE 21/03/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -166,17 +166,17 @@ C
           SPMECA = 0.D0
           SPTHER = 0.D0
 C
-          CALL RC32SN ( LIEU, SEISME, NSITUP,PPI,MPI, NSITUQ,PQI,MQI,
-     +                  MSE, SN )
+          CALL RC32SN ( 'SN_COMB', LIEU, NSITUP, PPI, MPI, NSITUQ, PQI,
+     +                  MQI, SEISME, MSE, SN )
 C
-          CALL RC32SN ( LIEU, SEISME, NSITUP,PPI,MPI, NSITUQ,PQJ,MQJ,
-     +                  MSE, SN )
+          CALL RC32SN ( 'SN_COMB', LIEU, NSITUP, PPI, MPI, NSITUQ, PQJ,
+     +                  MQJ, SEISME, MSE, SN )
 C
-          CALL RC32SN ( LIEU, SEISME, NSITUP,PPJ,MPJ, NSITUQ,PQJ,MQJ,
-     +                  MSE, SN )
+          CALL RC32SN ( 'SN_COMB', LIEU, NSITUP, PPJ, MPJ, NSITUQ, PQJ,
+     +                  MQJ, SEISME, MSE, SN )
 C
-          CALL RC32SN ( LIEU, SEISME, NSITUP,PPJ,MPJ, NSITUQ,PQI,MQI,
-     +                  MSE, SN )
+          CALL RC32SN ( 'SN_COMB', LIEU, NSITUP, PPJ, MPJ, NSITUQ, PQI,
+     +                  MQI, SEISME, MSE, SN )
 C
           SNMAX = MAX ( SNMAX , SN )
           IF ( NIV .GE. 2 ) WRITE(IFM,1020) IOC1, IOC2, SN
@@ -186,8 +186,8 @@ C ------- 1/ CALCUL DU SALT(I,I) A PARTIR DU SN(P,Q) ET SP(I,I)
 C
           SP = 0.D0
 C
-          CALL RC32SP ( LIEU, SEISME, NSITUP,PPI,MPI, NSITUQ,PQI,MQI,
-     +                  MSE, SP,TYPEKE, SPMECA, SPTHER )
+          CALL RC32SP ( 'SP_COMB',LIEU, NSITUP,PPI,MPI, NSITUQ,PQI,MQI,
+     +                  SEISME, MSE, SP,TYPEKE, SPMECA, SPTHER )
           CALL RC32SA ( MATER, MATPI, MATQI, SN, SP,
      +               TYPEKE, SPMECA, SPTHER,KEMECA,KETHER,SALTIJ,SMM )
           ZR(JMSA-1+INDI+1) = SALTIJ
@@ -210,8 +210,8 @@ C ------- 2/ CALCUL DU SALT(I,J) A PARTIR DU SN(P,Q) ET SP(I,J)
 C
           SP = 0.D0
 C
-          CALL RC32SP ( LIEU, SEISME, NSITUP,PPI,MPI, NSITUQ,PQJ,MQJ,
-     +                  MSE, SP ,TYPEKE, SPMECA, SPTHER)
+          CALL RC32SP ( 'SP_COMB',LIEU, NSITUP,PPI,MPI, NSITUQ,PQJ,MQJ,
+     +                  SEISME,MSE, SP ,TYPEKE, SPMECA, SPTHER)
           CALL RC32SA ( MATER, MATPI, MATQJ, SN, SP,
      +                  TYPEKE, SPMECA, SPTHER,KEMECA,KETHER,SALTIJ,SMM)
           ZR(JMSA-1+INDI+3) = SALTIJ
@@ -234,8 +234,8 @@ C ------- 3/ CALCUL DU SALT(J,I) A PARTIR DU SN(P,Q) ET SP(J,I)
 C
           SP = 0.D0
 C
-          CALL RC32SP ( LIEU, SEISME, NSITUP,PPJ,MPJ, NSITUQ,PQI,MQI,
-     +                  MSE, SP,TYPEKE, SPMECA, SPTHER )
+          CALL RC32SP ( 'SP_COMB',LIEU, NSITUP,PPJ,MPJ, NSITUQ,PQI,MQI,
+     +                  SEISME,MSE, SP,TYPEKE, SPMECA, SPTHER )
           CALL RC32SA ( MATER, MATPJ, MATQI, SN, SP,
      +                  TYPEKE, SPMECA, SPTHER,KEMECA,KETHER,SALTIJ,SMM)
           ZR(JMSA-1+INDI+2) = SALTIJ
@@ -258,8 +258,8 @@ C ------- 4/ CALCUL DU SALT(J,J) A PARTIR DU SN(P,Q) ET SP(J,J)
 C
           SP = 0.D0
 C
-          CALL RC32SP ( LIEU, SEISME, NSITUP,PPJ,MPJ, NSITUQ,PQJ,MQJ,
-     +                  MSE, SP,TYPEKE, SPMECA, SPTHER )
+          CALL RC32SP ( 'SP_COMB',LIEU, NSITUP,PPJ,MPJ, NSITUQ,PQJ,MQJ,
+     +                  SEISME,MSE, SP,TYPEKE, SPMECA, SPTHER )
           CALL RC32SA ( MATER, MATPJ, MATQJ, SN, SP,
      +                 TYPEKE, SPMECA, SPTHER,KEMECA,KETHER,SALTIJ,SMM )
           ZR(JMSA-1+INDI+4) = SALTIJ

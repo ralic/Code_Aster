@@ -1,4 +1,4 @@
-#@ MODIF impr_fonction_ops Macro  DATE 07/03/2005   AUTEUR DURAND C.DURAND 
+#@ MODIF impr_fonction_ops Macro  DATE 21/03/2005   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -177,6 +177,7 @@ def impr_fonction_ops(self, FORMAT, COURBE, INFO, **args):
                }
                Graph.AjoutParaCourbe(dicC, args=dCi)
                graph.AjoutCourbe(**dicC)
+               DETRUIRE(CONCEPT=_F(NOM=('li__','ftmp__'),),ALARME='NON',INFO=1)
          else:
             ftmp__=obj
             dpar=ftmp__.Parametres()

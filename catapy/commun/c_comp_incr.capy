@@ -1,4 +1,4 @@
-#& MODIF COMMUN  DATE 15/02/2005   AUTEUR CIBHHPD L.SALMONA 
+#& MODIF COMMUN  DATE 21/03/2005   AUTEUR LAVERNE J.LAVERNE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -137,7 +137,7 @@ def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',  #COMMUN#
           MAZARS          =SIMP(statut='c',typ='I',defaut=3,into=(3,)),
           JOINT_BA        =SIMP(statut='c',typ='I',defaut=6,into=(6,)),
           RUPT_FRAG       =SIMP(statut='c',typ='I',defaut=1,into=(1,)),
-          BARENBLATT      =SIMP(statut='c',typ='I',defaut=3,into=(3,)),
+          BARENBLATT      =SIMP(statut='c',typ='I',defaut=4,into=(4,)),
           META_P_IL         =SIMP(statut='c',typ='I',defaut=1,into=(1,)),
           META_P_IL_PT       =SIMP(statut='c',typ='I',defaut=1,into=(1,)),
           META_P_IL_RE       =SIMP(statut='c',typ='I',defaut=1,into=(1,)),

@@ -1,4 +1,4 @@
-#@ MODIF N_MCCOMPO Noyau  DATE 22/02/2005   AUTEUR DURAND C.DURAND 
+#@ MODIF N_MCCOMPO Noyau  DATE 21/03/2005   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -57,7 +57,9 @@ class MCCOMPO(N_OBJECT.OBJECT):
       # On construit les sous entites presentes ou obligatoires
       # 1- les entites présentes dans les arguments et dans la définition
       # 2- les entités non présentes dans les arguments, présentes dans la définition avec un défaut
+      # Phase 1.1 : on traite d'abord les SIMP pour enregistrer les mots cles globaux
       for k,v in self.definition.entites.items():
+        if v.label != 'SIMP':continue
         if args.has_key(k) or v.statut=='o' :
           #
           # Creation par appel de la methode __call__ de la definition de la sous entite k de self
@@ -72,6 +74,20 @@ class MCCOMPO(N_OBJECT.OBJECT):
               self.append_mc_global(objet)
             elif objet.definition.position == 'global_jdc' :
               self.append_mc_global_jdc(objet)
+        if args.has_key(k):
+           del args[k]
+
+      # Phase 1.2 : on traite les autres entites que SIMP 
+      for k,v in self.definition.entites.items():
+        if v.label == 'SIMP':continue
+        if args.has_key(k) or v.statut=='o' :
+          #
+          # Creation par appel de la methode __call__ de la definition de la sous entite k de self
+          # si une valeur existe dans args ou est obligatoire (generique si toutes les
+          # entites ont l attribut statut )
+          #
+          objet=self.definition.entites[k](val=args.get(k,None),nom=k,parent=self)
+          mc_liste.append(objet)
         if args.has_key(k):
            del args[k]
 

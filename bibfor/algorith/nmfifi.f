@@ -1,7 +1,7 @@
       SUBROUTINE NMFIFI(NPG,TYPMOD,GEOM,SIGMA,FINT)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/07/2003   AUTEUR LAVERNE J.LAVERNE 
+C MODIF ALGORITH  DATE 21/03/2005   AUTEUR LAVERNE J.LAVERNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,7 +26,7 @@ C ======================================================================
       REAL*8 GEOM(2,4),SIGMA(2,NPG),FINT(8)
       CHARACTER*8 TYPMOD(2)
      
-C***********************************************************************
+C-----------------------------------------------------------------------
 C
 C BUT: 
 C      CALCUL DES FINT = ( B_T SIGMA) POUR L'OPTION FORC_NODA
@@ -34,44 +34,30 @@ C      SUBROUTINE APPELEE DANS LE TE0202
 C
 C IN  : GEOM,SIGMA,NPG,TYPMOD
 C OUT : FINT
-C I/O :
-C
-C***********************************************************************
+C-----------------------------------------------------------------------
 
       LOGICAL AXI
       INTEGER I,J,KPG
-      REAL*8 AIRE, B(2,8) ,POIDS(2)    
+      REAL*8 B(2,8),POIDS   
+C-----------------------------------------------------------------------
 
-      CALL R8INIR(8 , 0.D0, FINT,1)
-                 
+
+C    INITIALISATION
       AXI = TYPMOD(1).EQ.'AXIS'
+      CALL R8INIR(8 , 0.D0, FINT,1)
       
-C CALCUL DE L'AIRE DES PAROIS DE LA FISSURE :
-C  * EN 2D ON CONSIDERE QUE L'EPAISSEUR EST DE 1 DONC 
-C    L'AIRE EST EGALE A : 1*(LONGUEUR DE L'ELEMENT) 
-C  * EN AXIS ON MULTIPLIE CETTE LONGEUR PAR LA DISTANCE DU CENTRE DE 
-C    L'ELEMENT A L'AXE DE SYMETRIE.
 
-      AIRE = SQRT( (GEOM(1,2)-GEOM(1,1))**2 + (GEOM(2,2)-GEOM(2,1))**2 )
-      IF (AXI) AIRE = AIRE * (GEOM(1,1)+GEOM(1,2))/2.D0
-
-C BOUCLE SUR LES POINTS DE GAUSS
+C    BOUCLE SUR LES POINTS DE GAUSS
 
       DO 11 KPG=1,NPG
 
-        POIDS(KPG) = AIRE/2 
-         
-C CALCUL DE LA MATRICE B DONNANT LES SAUT PAR ELEMENTS A PARTIR DES 
-C DEPLACEMENTS AUX NOEUDS :  
-C LE CHANGEMENT DE REPERE EST INTEGRE DANS LA MATRICE B (VOIR NMFISA) 
-
-        CALL NMFISA(GEOM,B,KPG)
+C      CALCUL DU POIDS ET DE LA MATRICE B 
+        CALL NMFISA(AXI,GEOM,KPG,POIDS,B)
       
-C CALCUL DES FINT = ( B_T SIGMA ) :
-          
+C      CALCUL DES FINT = ( B_T SIGMA ) :
         DO 20 I=1,8
           DO 40 J=1,2          
-            FINT(I) = FINT(I) +  POIDS(KPG)*B(J,I)*SIGMA(J,KPG)
+            FINT(I) = FINT(I) +  POIDS*B(J,I)*SIGMA(J,KPG)
  40       CONTINUE
  20     CONTINUE
  

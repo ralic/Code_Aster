@@ -7,7 +7,7 @@
       CHARACTER*24  CSIGM, CINST, CCONT, CNOC, CRESU
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 08/02/2005   AUTEUR CIBHHLV L.VIVAN 
+C MODIF POSTRELE  DATE 21/03/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -199,7 +199,7 @@ C
 C
 C --- CREATION DES OBJETS DE TRAVAIL
 C
-      NDIM = 3 * NBINST * NCMP
+      NDIM = 4 * NBINST * NCMP
       CALL WKVECT ( CSIGM, 'V V R' , NDIM  , JSIGM )
       CALL WKVECT ( CINST, 'V V R' , NBINST, JINST )
       CALL WKVECT ( CNOC , 'V V I' , NBINST, JNOCC )
@@ -322,12 +322,15 @@ C
             L = NCMP*NBINST + NCMP*(II-1) + J
             ZR(JSIGM-1+L) = 0.5D0*MOMEN1
 C
-            L = 2*NCMP*NBINST + NCMP*(II-1) + J
             IF ( FLEXIO ) THEN
               CALL RC32MY (NBABSC,ZR(JABSC),ZR(JCOFL), MOMEN0, MOMEN1)
             ELSE
+              MOMEN0 = 0.D0
               MOMEN1 = 0.D0
             ENDIF
+            L = 2*NCMP*NBINST + NCMP*(II-1) + J
+            ZR(JSIGM-1+L) = MOMEN0
+            L = 3*NCMP*NBINST + NCMP*(II-1) + J
             ZR(JSIGM-1+L) = 0.5D0*MOMEN1
 C
  104      CONTINUE

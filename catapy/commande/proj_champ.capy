@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 15/02/2005   AUTEUR NICOLAS O.NICOLAS 
+#& MODIF COMMANDE  DATE 21/03/2005   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -77,7 +77,7 @@ PROJ_CHAMP=OPER(nom="PROJ_CHAMP",op= 166,sd_prod=proj_champ_prod,reentrant='f',
            b_modele_gene     =BLOC(condition = "AsType(RESULTAT)     == mode_meca",
              RIGI_MECA          =SIMP(statut='f',typ=(matr_asse_depl_r,matr_asse_depl_c,matr_asse_gene_r,matr_asse_pres_r ) ),
              MASS_MECA          =SIMP(statut='f',typ=(matr_asse_depl_r,matr_asse_gene_r,matr_asse_pres_r ) ),
-             AMOR_MECA          =SIMP(statut='f',position='global',typ=(matr_asse_depl_r,matr_asse_gene_r) ),
+             AMOR_MECA          =SIMP(statut='f',typ=(matr_asse_depl_r,matr_asse_gene_r) ),
                                     ),
          ),
 

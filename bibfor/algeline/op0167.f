@@ -3,7 +3,7 @@
       INTEGER IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 05/10/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGELINE  DATE 21/03/2005   AUTEUR LAVERNE J.LAVERNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,7 +43,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32 JEXNUM,JEXNOM
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER     I,LGNO,LGNU,NBECLA,NBMC,IRET,IAD,NBMA,NBMST,IQTR,
-     &            NBVOLU,N1,NUMMA
+     &            NBVOLU,N1,NUMMA,NBJOIN
       PARAMETER   (NBMC=5)
       REAL*8      EPAIS
       CHARACTER*1 K1B
@@ -81,6 +81,26 @@ C ----------------------------------------------------------------------
       END IF
 
 C ----------------------------------------------------------------------
+C          TRAITEMENT DU MOT CLE "CREA_JOINT"
+C ----------------------------------------------------------------------
+
+      CALL GETFAC('CREA_JOINT',NBJOIN)
+      IF (NBJOIN.NE.0) THEN
+        CALL WKVECT('&&OP0167.NOMMC','V V K16',NBJOIN,JNOMMC)
+        CALL WKVECT('&&OP0167.OCCMC','V V I',NBJOIN,JOCCMC)
+        DO 2 I = 1,NBJOIN
+          ZK16(JNOMMC-1+I) = 'CREA_JOINT'
+          ZI  (JOCCMC-1+I) = I
+ 2      CONTINUE
+      
+        CALL GETRES(NOMAOU,TYPCON,NOMCMD)
+        CALL GETVID(' ','MAILLAGE',1,1,1,NOMAIN,N1)
+        CALL CMCREA(NOMAIN,NOMAOU,NBJOIN,ZK16(JNOMMC),ZI(JOCCMC))
+        GOTO 300
+      END IF
+
+
+C ----------------------------------------------------------------------
 C          TRAITEMENT DU MOT CLE "LINE_QUAD"
 C ----------------------------------------------------------------------
 
@@ -105,6 +125,30 @@ C ----------------------------------------------------------------------
      &  //  'L''OPTION LINE_QUAD NE TRAITE PAS LES ABSC_CURV')
 
         CALL CMLQLQ ( NOMAIN, NOMAOU, NBMA, ZI(JLIMA), PREFIX, NDINIT )
+
+        GOTO 300
+      END IF
+C ----------------------------------------------------------------------
+C          TRAITEMENT DU MOT CLE "QUAD_LINE"
+C ----------------------------------------------------------------------
+
+      CALL GETFAC('QUAD_LINE',NBMOMA)
+      IF (NBMOMA.GT.0) THEN
+        MOTCLE(1) = 'MAILLE'
+        MOTCLE(2) = 'GROUP_MA'
+        MOTCLE(3) = 'TOUT'
+        NOMJV          = '&&OP0167.LISTE_MA'
+        CALL RELIEM(' ',NOMAIN,'NU_MAILLE','QUAD_LINE',1,3,MOTCLE,
+     &              MOTCLE,NOMJV,NBMA)
+        CALL JEVEUO(NOMJV,'L',JLIMA)
+        CALL JEEXIN(NOMAIN//'.NOMACR',IRET)
+        IF (IRET.NE.0) CALL UTMESS('F','OP0167','CREA_MAILLAGE : '
+     &  // 'L''OPTION QUAD_LINE NE TRAITE PAS LES MACROS MAILLES')
+        CALL JEEXIN(NOMAIN//'.ABS_CURV',IRET)
+        IF (IRET.NE.0) CALL UTMESS('F','OP0167','CREA_MAILLAGE : '
+     &  //  'L''OPTION QUAD_LINE NE TRAITE PAS LES ABSC_CURV')
+
+        CALL CMQLQL ( NOMAIN, NOMAOU, NBMA, ZI(JLIMA))
 
         GOTO 300
       END IF

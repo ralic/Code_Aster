@@ -10,7 +10,7 @@
      +             CFAO, CFAE, CSPO, CSPE, CRESU
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 08/02/2005   AUTEUR CIBHHLV L.VIVAN 
+C MODIF POSTRELE  DATE 21/03/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -52,7 +52,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C
       INTEGER      NCMP, JSIGM, JINST, NBINST, NBORDR, JSNO, JSNE, N1,
-     +             IND, I1, I2, ICMP, L1, L2, NPARA, II, IK, IR, I,
+     +             IND, I1, I2, ICMP, L1,L2,L3,L4, NPARA, II,IK,IR, I,
      +             VAIO(5), VAIE(5), IOO1, IOO2, IOE1, IOE2, NPAR1,
      +             JSNEO, JSNEE, JSPO, JSPE, JFAO, JFAE, JNOC, JRESU
       PARAMETER  ( NCMP = 6 )
@@ -120,7 +120,7 @@ C
  14        CONTINUE
            NPARA = NPARA + NPARSN
         ENDIF
-        IF ( FLEXIO ) THEN
+        IF ( FLEXIO .AND. LSN ) THEN
            DO 16 I = 1 , NPARSE
               NOPARA(NPARA+I) = NOPASE(I)
               TYPARA(NPARA+I) = TYPASE(I)
@@ -163,6 +163,12 @@ C
 C --- POUR L'OPTION "PMPB"
 C
       IF ( LPMPB ) THEN
+C
+C --- LES CRITERES DE NIVEAU 0 VISENT A PREMUNIR LE MATERIEL CONTRE LES
+C     DOMMAGES DE DEFORMATION EXCESSIVE, D'INSTABILITE PLASTIQUE ET
+C     D'INSTABILITE ELASTIQUE ET ELASTOPLASTIQUE.
+C     ON NE PREND QUE LA PARTIE MECANIQUE
+C
          CALL JEVEUO ( CSIGM, 'L', JSIGM )
          PM = 0.D0
          PB = 0.D0
@@ -174,12 +180,16 @@ C
          RPMPBE = ZK8(JRESU)
          DO 100 I = 1, NBINST
             DO 102 ICMP = 1, NCMP
-               L1 =               NCMP*(I-1) + ICMP
-               L2 = NCMP*NBINST + NCMP*(I-1) + ICMP
-               TPM(ICMP) = ZR(JSIGM-1+L1)
-               TPB(ICMP) = ZR(JSIGM-1+L2)
+               L1 =                 NCMP*(I-1) + ICMP
+               L2 =   NCMP*NBINST + NCMP*(I-1) + ICMP
+               L3 = 2*NCMP*NBINST + NCMP*(I-1) + ICMP
+               L4 = 3*NCMP*NBINST + NCMP*(I-1) + ICMP
+               TPM(ICMP) = ZR(JSIGM-1+L1) - ZR(JSIGM-1+L3)
+               TPB(ICMP) = ZR(JSIGM-1+L2) - ZR(JSIGM-1+L4)
                TPMPBO(ICMP) = ZR(JSIGM-1+L1) - ZR(JSIGM-1+L2)
+     +                         - ( ZR(JSIGM-1+L3) - ZR(JSIGM-1+L4) )
                TPMPBE(ICMP) = ZR(JSIGM-1+L1) + ZR(JSIGM-1+L2)
+     +                         - ( ZR(JSIGM-1+L3) + ZR(JSIGM-1+L4) )
  102        CONTINUE
             CALL FGEQUI ( TPM, 'SIGM', 3, EQUI )
             IF ( EQUI(2) .GT. PM ) THEN
@@ -337,7 +347,7 @@ C
          CALL TBAJLI ( NOMRES,NPAR1,NOPARA, VAIE, VALE, C16B, VAKE,0)
       ENDIF
 C
-      IF ( FLEXIO ) THEN
+      IF ( FLEXIO .AND. LSN ) THEN
          CALL JEVEUO (CSNEO, 'L', JSNO )
          CALL JEVEUO (CSNEE, 'L', JSNE )
          SNO = 0.D0

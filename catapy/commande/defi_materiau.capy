@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 15/02/2005   AUTEUR CIBHHPD L.SALMONA 
+#& MODIF COMMANDE  DATE 21/03/2005   AUTEUR LAVERNE J.LAVERNE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -2672,12 +2672,14 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
            RUPT_FRAG       =FACT(statut='f',
              GC              =SIMP(statut='o',typ='R'),
              SIGM_C          =SIMP(statut='f',typ='R'),
-             SAUT_C          =SIMP(statut='f',typ='R'),
+             PENA_ADHERENCE  =SIMP(statut='f',typ='R'),
+             PENA_CONTACT    =SIMP(statut='f',typ='R',defaut=1.),                          
            ),
            RUPT_FRAG_FO   =FACT(statut='f',
              GC              =SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster,formule)),
              SIGM_C          =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
-             SAUT_C          =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
+             PENA_ADHERENCE  =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
+             PENA_CONTACT    =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule),defaut=1.),             
              VERI_P          =SIMP(statut='c',typ='TXM',max='**',defaut=("TEMP",) ),
            ),
            RCCM            =FACT(statut='f',
