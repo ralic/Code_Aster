@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2005   AUTEUR ASSIRE A.ASSIRE 
+# MODIF  DATE 07/03/2005   AUTEUR CIBHHLV L.VIVAN 
 # TITRE DEMONSTRATION DE LA JOURNE ASTER LIBRE DU 14 OCTOBRE 2003
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -292,5 +292,3 @@ TEST_FONCTION(VALEUR=( _F(FONCTION=ETA_PILO,
                          VALE_REFE=5.66,
                          REFERENCE='NON_REGRESSION',),),);
 FIN();
-
-

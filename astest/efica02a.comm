@@ -1,4 +1,4 @@
-# MODIF  DATE 30/06/2004   AUTEUR MCOURTOI M.COURTOIS 
+# MODIF  DATE 07/03/2005   AUTEUR CIBHHLV L.VIVAN 
 # RESPONSABLE DURAND C.DURAND
 # TITRE  SUPERVISEUR : POURSUITE, espace de noms, acces python-jeveux
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -28,7 +28,7 @@ DEBUT(CODE=_F( NOM = 'EFICA02A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),PAR_LO
 
 import aster
 
-MA=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='NON'), )
+MA=LIRE_MAILLAGE( )
 print aster.getvectjev("MA      .COORDO    .VALE        ")
 print aster.getcolljev("MA      .CONNEX         ")
 print aster.getvectjev("MA      .NOMMAI                 ")

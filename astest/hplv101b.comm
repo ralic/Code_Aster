@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 07/03/2005   AUTEUR CIBHHLV L.VIVAN 
 # TITRE HOMOGENEISATION D'UN MATERIAU HOMOGENE - 3D - HEXA20
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -66,7 +66,7 @@ MATOO=DEFI_MATERIAU(
 
 #
 
-MAI=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='NON'), )
+MAI=LIRE_MAILLAGE( )
 
 DEFI_GROUP( reuse=MAI,   MAILLAGE=MAI,
   CREA_GROUP_MA=_F(  NOM = 'TOUT', TOUT = 'OUI'))
@@ -389,17 +389,6 @@ TEST_TABLE(      TABLE=TTOO,       NOM_PARA='TOTALE',
                 REFERENCE='ANALYTIQUE',
                 VALE=8.205,
                  PRECISION=1.E-6 )
-
-#  TEST_TABLE ( TABLE    : PMOO      NOM_PARA: 'TOTALE'
-#               TYPE_TEST: 'SOMM_ABS'
-#               REFERENCE: 'ANALYTIQUE'
-#               VALE: 2.0287088
-#               PRECISION : 1.E-6 );
-#  TEST_TABLE ( TABLE    : PFOO      NOM_PARA: 'TOTALE'
-#               TYPE_TEST: 'SOMM_ABS'
-#               REFERENCE: 'ANALYTIQUE'
-#               VALE: 182.10238
-#               PRECISION : 1.E-6 );
 
 FIN( )
 #

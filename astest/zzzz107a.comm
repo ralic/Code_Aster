@@ -1,4 +1,4 @@
-# MODIF  DATE 07/06/2004   AUTEUR MCOURTOI M.COURTOIS 
+# MODIF  DATE 07/03/2005   AUTEUR CIBHHLV L.VIVAN 
 # TITRE TEST DE LA RECUPERATION DES EXCEPTIONS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -198,7 +198,7 @@ print sep
 #             LE CONCEPT POUR LE RECREER CORRECTEMENT
 #             --> exception generique aster.error
 
-MA=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='NON',),);
+MA=LIRE_MAILLAGE();
 
 try:
    MO=AFFE_MODELE(MAILLAGE=MA,

@@ -1,4 +1,4 @@
-# MODIF  DATE 30/11/2004   AUTEUR MCOURTOI M.COURTOIS 
+# MODIF  DATE 07/03/2005   AUTEUR DURAND C.DURAND 
 # TITRE TEST IMPR_FONCTION ET METHODES PYTHON DE TRACE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -64,6 +64,35 @@ CTRACB=DEFI_NAPPE(
    PROL_GAUCHE='LINEAIRE',
 )
 
+# ------------------------------------------------------------------------------
+IMPR_FONCTION(
+   FORMAT='TABLEAU',
+   UNITE=51,
+   COURBE=( _F( FONCTION=FCT1,   ),
+            _F( FONCTION=CTRACB, ),
+            _F( FONCTION=FCT2,   ), )
+   )
+
+TEST_FICHIER(
+   FICHIER='fort.51',
+   VALE_K='c97610e2e67e1ca70da526b3008dd6fa',
+   REFERENCE='NON_REGRESSION',
+   VERSION='8.0.10',
+)
+# ------------------------------------------------------------------------------
+IMPR_FONCTION(
+   FORMAT='TABLEAU',
+   UNITE=52,
+   COURBE= _F( FONC_X=FCT1,
+               FONC_Y=FCT2, ), 
+   )
+
+TEST_FICHIER(
+   FICHIER='fort.52',
+   VALE_K='213ab05a24f4736fd24a3cc0ebe0a8c8',
+   REFERENCE='NON_REGRESSION',
+   VERSION='8.0.10',
+)
 # ------------------------------------------------------------------------------
 IMPR_FONCTION(
    FORMAT='XMGRACE',

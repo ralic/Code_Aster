@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 07/03/2005   AUTEUR CIBHHLV L.VIVAN 
 # TITRE PLAQUE RECTANGULAIRE PORTE-A-FAUX EN FLEXION CISAILLEMENT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,7 +19,7 @@
 # ======================================================================
 DEBUT( CODE=_F(  NOM = 'SSLP300A',NIV_PUB_WEB='INTERNET') )
 
-MAIL=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='NON'),   )
+MAIL=LIRE_MAILLAGE()
 
 #
 # DEFINITION DES GROUPES DE NOEUDS

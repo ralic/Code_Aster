@@ -1,4 +1,4 @@
-# MODIF  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 07/03/2005   AUTEUR CIBHHLV L.VIVAN 
 # RESPONSABLE O.BOITEAU
 # TITRE Maillage adaptatif thermo-mecanique sur une culasse fissuree
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -107,7 +107,7 @@ ACIER_T=DEFI_MATERIAU(THER=_F(LAMBDA = 33.5,RHO_CP=526.E4))
 
 # LECTURE ET INFO MAILLAGE THERMIQUE                     
 num_calc=0   
-MAT[num_calc]=LIRE_MAILLAGE(INFO=2, VERI_MAIL=_F());
+MAT[num_calc]=LIRE_MAILLAGE(INFO=2, );
 MAT[num_calc]=DEFI_GROUP(reuse =MAT[num_calc],
                  MAILLAGE=MAT[num_calc],
                  CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI',),);

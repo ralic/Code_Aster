@@ -1,4 +1,4 @@
-# MODIF  DATE 01/03/2005   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 07/03/2005   AUTEUR CIBHHLV L.VIVAN 
 # TITRE BIBLIO_49 FISSURE RADIALE EXTERNE SOUMIS A UN CHOC THERMIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -8,12 +8,11 @@
 # ======================================================================
 #       DANS UN BARREAU CIRCULAIRE
 #
-
 DEBUT( CODE=_F( NOM = 'HPLA310A',NIV_PUB_WEB='INTERNET'))
 
 PRE_GIBI()
 
-MA=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='NON'),  )
+MA=LIRE_MAILLAGE()
 
 DEFI_GROUP( reuse=MA,        MAILLAGE=MA,
                            CREA_GROUP_NO=_F(  GROUP_MA = ( 'LP10P11',
@@ -25,8 +24,6 @@ DEFI_GROUP( reuse=MA,        MAILLAGE=MA,
                                                         'LP9P10',
                                                       ))
                        )
-
-
 #
 TEMPEXT=100.
 

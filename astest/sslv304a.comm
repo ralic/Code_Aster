@@ -1,4 +1,4 @@
-# MODIF  DATE 07/06/2002   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 07/03/2005   AUTEUR CIBHHLV L.VIVAN 
 # TITRE CYLINDRE SOUS PRESSION EXTERIEURE VARIABLE (AXIS_FOURIER)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,7 +19,7 @@
 # ======================================================================
 DEBUT( CODE=_F(  NOM = 'SSLV304A',NIV_PUB_WEB='INTERNET') )
 
-MAIL=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='NON'),   )
+MAIL=LIRE_MAILLAGE()
 
 #
 # DEFINITION DES GROUPES DE NOEUDS

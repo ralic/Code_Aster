@@ -1,4 +1,4 @@
-# MODIF  DATE 09/03/2004   AUTEUR CIBHHPD S.VANDENBERGHE 
+# MODIF  DATE 07/03/2005   AUTEUR CIBHHLV L.VIVAN 
 # TITRE CYLINDRE SOUS CHARGEMENT THERMIQUE (AXIS_FOURIER)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,7 +19,7 @@
 # ======================================================================
 DEBUT( CODE=_F(  NOM = 'HSLV304B',NIV_PUB_WEB='INTERNET') )
 
-MAIL=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='NON'),   )
+MAIL=LIRE_MAILLAGE( )
 
 #
 # DEFINITION DES GROUPES DE NOEUDS

@@ -1,4 +1,4 @@
-#@ MODIF calc_precont_ops Macro  DATE 22/11/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+#@ MODIF calc_precont_ops Macro  DATE 07/03/2005   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -319,7 +319,7 @@ def calc_precont_ops(self,reuse,MODELE,CHAM_MATER,CARA_ELEM,EXCIT,
   # 1.6 Blocage de tous les noeuds des cables actifs
   # --------------------------------------------------
   
-  __B_CA=AFFE_CHAR_MECA(MODELE=__M_CA,
+  _B_CA=AFFE_CHAR_MECA(MODELE=__M_CA,
                         DDL_IMPO= _F( GROUP_MA = __GROUP_MA_A,
                                       DX = 0.,
                                       DY = 0.,
@@ -328,11 +328,11 @@ def calc_precont_ops(self,reuse,MODELE,CHAM_MATER,CARA_ELEM,EXCIT,
 
   # 1.7 Chargements concernant les cables
   # -------------------------------------
-  __C_CN=AFFE_CHAR_MECA(MODELE=__M_CA,**motscles)
-  __C_CA=AFFE_CHAR_MECA(MODELE=MODELE,**motscle2)
-  __C_CT=AFFE_CHAR_MECA(MODELE=MODELE,**motscle3)
+  _C_CN=AFFE_CHAR_MECA(MODELE=__M_CA,**motscles)
+  _C_CA=AFFE_CHAR_MECA(MODELE=MODELE,**motscle2)
+  _C_CT=AFFE_CHAR_MECA(MODELE=MODELE,**motscle3)
   if CABLE_BP_INACTIF:
-    __C_CI=AFFE_CHAR_MECA(MODELE=MODELE,**motscle6)
+    _C_CI=AFFE_CHAR_MECA(MODELE=MODELE,**motscle6)
 
 
 
@@ -343,7 +343,7 @@ def calc_precont_ops(self,reuse,MODELE,CHAM_MATER,CARA_ELEM,EXCIT,
 
   #------------------------------------------------------------------- 
   # 2.1 Premiere etape : calcul sur le(s) cable(s) et 
-  #     recuperation des __F_CAs aux noeuds 
+  #     recuperation des _F_CAs aux noeuds 
   #     on travaile entre tmin et tmax
   #-------------------------------------------------------------------
 
@@ -351,8 +351,8 @@ def calc_precont_ops(self,reuse,MODELE,CHAM_MATER,CARA_ELEM,EXCIT,
                          MODELE     = __M_CA,
                          CHAM_MATER = CHAM_MATER,
                          CARA_ELEM  = CARA_ELEM,
-                         EXCIT      =(_F(CHARGE = __B_CA),
-                                      _F(CHARGE = __C_CN),),
+                         EXCIT      =(_F(CHARGE = _B_CA),
+                                      _F(CHARGE = _C_CN),),
                          COMP_INCR  =_F( RELATION = 'ELAS',
                                          DEFORMATION = 'PETIT',
                                          TOUT = 'OUI'),
@@ -382,7 +382,7 @@ def calc_precont_ops(self,reuse,MODELE,CHAM_MATER,CARA_ELEM,EXCIT,
                               CHAM_GD=__REA,
                               COEF_R = -1.), )
                   
-  __F_CA=AFFE_CHAR_MECA(MODELE=__M_CA,
+  _F_CA=AFFE_CHAR_MECA(MODELE=__M_CA,
                           VECT_ASSE = __REAC )      
   
   
@@ -400,12 +400,12 @@ def calc_precont_ops(self,reuse,MODELE,CHAM_MATER,CARA_ELEM,EXCIT,
           if dExcit[-1][i]==None : del dExcit[-1][i]
 
   if CABLE_BP_INACTIF:
-    dExcit.append(_F(CHARGE=__C_CI),)
+    dExcit.append(_F(CHARGE=_C_CI),)
 
   # Creation du mots-cle EXCIT pour le STAT_NON_LINE
   dExcit1=copy.copy(dExcit)
-  dExcit1.append(_F(CHARGE=__C_CA),)
-  dExcit1.append(_F(CHARGE = __F_CA,
+  dExcit1.append(_F(CHARGE=_C_CA),)
+  dExcit1.append(_F(CHARGE = _F_CA,
                     FONC_MULT=__FCT ),)
 
   RES=STAT_NON_LINE( 
@@ -439,7 +439,7 @@ def calc_precont_ops(self,reuse,MODELE,CHAM_MATER,CARA_ELEM,EXCIT,
 
   # Creation du mots-cles EXCIT pour le STAT_NON_LINE
   dExcit2=copy.copy(dExcit)
-  dExcit2.append(_F(CHARGE=__C_CT,) )
+  dExcit2.append(_F(CHARGE=_C_CT,) )
    
   # Calcul sur un seul pas (de __TINT a __TMAX)
   RES=STAT_NON_LINE( reuse      = RES,

@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 07/03/2005   AUTEUR CIBHHLV L.VIVAN 
 # TITRE CYLINDRE EN D.P. (TRIA6 QUAD8)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -32,7 +32,7 @@
 
 DEBUT(CODE=_F(  NOM = 'SSLV100F',NIV_PUB_WEB='INTERNET') )
 
-M=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='NON'),   )
+M=LIRE_MAILLAGE()
 
 MO=AFFE_MODELE(            MAILLAGE=M,
                        # VERIF       :   'MAILLE'

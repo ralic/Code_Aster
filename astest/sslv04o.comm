@@ -1,4 +1,4 @@
-# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 07/03/2005   AUTEUR CIBHHLV L.VIVAN 
 # TITRE CYLINDRE EN C.P. (TRIA6 QUAD8) TEST ORIE_PRES_2D
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -23,7 +23,7 @@ DEBUT( CODE=_F(  NOM = 'SSLV04O',NIV_PUB_WEB='INTERNET') )
 
 PRE_GIBI()
 
-M=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='NON'),   )
+M=LIRE_MAILLAGE()
 
 MO=AFFE_MODELE(            MAILLAGE=M,
                                    VERIF='MAILLE',

@@ -1,5 +1,4 @@
-
-# MODIF  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 07/03/2005   AUTEUR CIBHHLV L.VIVAN 
 # TITRE VALIDATION DE MACR_CARA_POUTRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -169,7 +168,7 @@ rext=TCARS['Y_MAX',2]
 
 #rext=2.5E-2
 
-MA=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='NON'),UNITE=21);
+MA=LIRE_MAILLAGE(UNITE=21);
 
 MO=AFFE_MODELE(MAILLAGE=MA,
                AFFE=_F(TOUT='OUI',
@@ -243,4 +242,3 @@ TEST_RESU(RESU=(
                    )
 
 FIN()
-#

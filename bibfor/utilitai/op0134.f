@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 05/10/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF UTILITAI  DATE 07/03/2005   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -92,6 +92,12 @@ C
 C
       ELSEIF (TYPCO(1:5).EQ.'NAPPE') THEN
          NBNOVA = 2
+         CALL JEVEUO ( NOMFIN//'.PROL', 'L', LPROL )
+         NOPARP = ZK16(LPROL+2)
+         NOPARF = ZK16(LPROL+5)
+C
+      ELSEIF (TYPCO(1:10).EQ.'PARA_SENSI') THEN
+         NBNOVA = 1
          CALL JEVEUO ( NOMFIN//'.PROL', 'L', LPROL )
          NOPARP = ZK16(LPROL+2)
          NOPARF = ZK16(LPROL+5)

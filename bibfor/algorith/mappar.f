@@ -1,7 +1,7 @@
       SUBROUTINE MAPPAR(PREMIE,NOMA,DEFICO,OLDGEO,NEWGEO,COMGEO,DEPGEO)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 31/08/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 08/03/2005   AUTEUR LAMARCHE S.LAMARCHE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -114,7 +114,7 @@ C   BOUCLE SUR LES POINTS DE CONTACT
         NBN = ZI(JMAESC+3* (IMA-1)+3)
         TYCO = NINT(ZR(JCMCF+6* (IZONE-1)+1))
         LISSS= ZI(JNORLI+IZONE-1+1)
-        LAMBDA = -ABS(ZI(JECPD+6*(IZONE-1)+5))
+        LAMBDA = -ABS(ZR(JCMCF+6*(IZONE-1)+6))
         DIR(1)= ZR(JDIR+3* (IZONE-1)) 
         DIR(2)= ZR(JDIR+3* (IZONE-1)+1)  
         DIR(3)= ZR(JDIR+3* (IZONE-1)+2) 
@@ -171,7 +171,13 @@ C   BOUCLE SUR LES POINTS DE CONTACT
           ZR(JTABF+16*NTPC+16* (INI-1)+10) = T2MIN(2)
           ZR(JTABF+16*NTPC+16* (INI-1)+11) = T2MIN(3)
           ZR(JTABF+16*NTPC+16* (INI-1)+12) = YPG
-          IF (PREMIE) ZR(JTABF+16*NTPC+16* (INI-1)+13) = 0.D0
+          IF (PREMIE) THEN
+          IF (ZI(JECPD+6*(IZONE-1)+5).EQ.1.D0) THEN 
+          ZR(JTABF+16*NTPC+16* (INI-1)+13) = 1.D0
+          ELSE 
+          ZR(JTABF+16*NTPC+16* (INI-1)+13) = 0.D0
+          END IF
+          END IF
           IF (PREMIE) ZR(JTABF+16*NTPC+16* (INI-1)+14) = LAMBDA
           ZR(JTABF+16*NTPC+16* (INI-1)+15) = IZONE
           ZR(JTABF+16*NTPC+16* (INI-1)+16) = HPG          

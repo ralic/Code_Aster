@@ -1,6 +1,6 @@
       SUBROUTINE SURFCO(CHAR,NOMA)  
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 07/02/2005   AUTEUR MABBAS M.ABBAS 
+C MODIF MODELISA  DATE 08/03/2005   AUTEUR LAMARCHE S.LAMARCHE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -274,12 +274,12 @@ C
         WRITE (IFM,*)    (ZR(JCMCF+6*(K-1)+6),K=1,NZOCO)
         WRITE (IFM,*)    'ECPDON : '
         WRITE (IFM,*)     ZI(JECPD)
-        WRITE (IFM,*)    (ZI(JECPD+5*(K-1)+1),K=1,NZOCO)
-        WRITE (IFM,*)    (ZI(JECPD+5*(K-1)+2),K=1,NZOCO)
-        WRITE (IFM,*)    (ZI(JECPD+5*(K-1)+3),K=1,NZOCO)
-        WRITE (IFM,*)    (ZI(JECPD+5*(K-1)+4),K=1,NZOCO)
-        WRITE (IFM,*)    (ZI(JECPD+5*(K-1)+5),K=1,NZOCO)
-
+        WRITE (IFM,*)    (ZI(JECPD+6*(K-1)+1),K=1,NZOCO)
+        WRITE (IFM,*)    (ZI(JECPD+6*(K-1)+2),K=1,NZOCO)
+        WRITE (IFM,*)    (ZI(JECPD+6*(K-1)+3),K=1,NZOCO)
+        WRITE (IFM,*)    (ZI(JECPD+6*(K-1)+4),K=1,NZOCO)
+        WRITE (IFM,*)    (ZI(JECPD+6*(K-1)+5),K=1,NZOCO)
+        WRITE (IFM,*)    (ZI(JECPD+6*(K-1)+6),K=1,NZOCO)
       ENDIF
 
 

@@ -1,4 +1,4 @@
-# MODIF  DATE 17/05/2004   AUTEUR CIBHHBC M.LOPES 
+# MODIF  DATE 07/03/2005   AUTEUR CIBHHLV L.VIVAN 
 # RESPONSABLE MABBAS M.ABBAS
 #
 # TITRE TEST DE NON REGRESSION DU MAILLAGE CABRI
@@ -242,7 +242,7 @@ for i in range(nbre_cas):
                                       ),
                        GEOM_BRID = _F(NORME = 'OUI',
                                       TYPE = MAIL_TYPE[i],),
-                       VERI_MAIL = _F(VERIF = 'NON',),
+                       VERI_MAIL = _F(VERIF = 'OUI',),
                                );
  
    ENGENDRE_TEST(CO = MAIL[i],
@@ -283,7 +283,7 @@ MAIL_A = MACR_CABRI_MAIL(EXEC_MAILLAGE=_F(LOGICIEL='GIBI2000',
                           GOUJ_E_ECROU   = 12.,
                           ETAN_E_JOINT   = 2,
                                       ),
-                       VERI_MAIL = _F(VERIF = 'NON',),
+                       VERI_MAIL = _F(VERIF = 'OUI',),
                         IMPRESSION=_F(FORMAT='IDEAS'),
                                );
 
@@ -307,7 +307,7 @@ MAIL_ID = MACR_CABRI_MAIL(EXEC_MAILLAGE=_F(LOGICIEL='GIBI2000',
                                       ),
                        GEOM_BRID = _F(NORME = 'OUI',
                                       TYPE = MAIL_TYPE[i],),
-                       VERI_MAIL = _F(VERIF = 'NON',),
+                       VERI_MAIL = _F(VERIF = 'OUI',),
                         IMPRESSION=_F(FORMAT='IDEAS'),
                                );
 
@@ -320,7 +320,7 @@ MAIL_CA = MACR_CABRI_MAIL(EXEC_MAILLAGE=_F(LOGICIEL='GIBI2000',
                                       ),
                        GEOM_BRID = _F(NORME = 'OUI',
                                       TYPE = MAIL_TYPE[i],),
-                       VERI_MAIL = _F(VERIF = 'NON',),
+                       VERI_MAIL = _F(VERIF = 'OUI',),
                         IMPRESSION=_F(FORMAT='CASTEM'),
                                );
 

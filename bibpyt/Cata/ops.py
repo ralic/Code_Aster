@@ -1,4 +1,4 @@
-#@ MODIF ops Cata  DATE 22/02/2005   AUTEUR DURAND C.DURAND 
+#@ MODIF ops Cata  DATE 07/03/2005   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -131,7 +131,8 @@ def POURSUITE(self,PAR_LOT,CODE,**args):
      if pickle_context==None :
         UTMESS('F','Poursuite',"Erreur a la relecture du fichier pick.1 : aucun objet sauvegardé ne sera récupéré")
         return
-     from Cata.cata import ASSD
+     from Cata.cata  import ASSD
+     from Noyau.N_CO import CO
      for elem in pickle_context.keys():
          if type(pickle_context[elem])==types.InstanceType :
             pickle_class=pickle_context[elem].__class__
@@ -140,7 +141,9 @@ def POURSUITE(self,PAR_LOT,CODE,**args):
                if poursu_class!=pickle_class :
                   UTMESS('F','Poursuite',"Types incompatibles entre glob.1 et pick.1 pour concept de nom "+elem)
                   return
-            elif isinstance(pickle_context[elem],ASSD): 
+            elif isinstance(pickle_context[elem],ASSD) and not isinstance(pickle_context[elem],CO) : 
+            # on n'a pas trouvé le concept dans la base et sa classe est ASSD : ce n'est pas normal
+            # sauf dans le cas de CO : il n'a alors pas été typé et c'est normal qu'il soit absent de la base
                UTMESS('F','Poursuite',"Concept de nom "+elem+" et de type "+str(pickle_class)+" introuvable dans la base globale")
                return
          if pickle_context[elem]==None : del pickle_context[elem]

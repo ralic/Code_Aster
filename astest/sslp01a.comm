@@ -1,4 +1,4 @@
-# MODIF  DATE 23/08/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 07/03/2005   AUTEUR CIBHHLV L.VIVAN 
 # TITRE PLAQUE EN FLEXION ET CISAILLEMENT DANS SON PLAN
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,7 +19,7 @@
 # ======================================================================
 DEBUT( CODE=_F(  NOM = 'SSLP01A',NIV_PUB_WEB='INTERNET') )
 
-MAIL=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='NON'),   )
+MAIL=LIRE_MAILLAGE()
 
 #
 # DEFINITION DES GROUPES DE NOEUDS
@@ -63,22 +63,21 @@ FONCT=DEFI_FONCTION(    NOM_PARA='Y',
 
 CHARGT=AFFE_CHAR_MECA_F(    MODELE=MODELE,
                               PRES_REP=_F(  GROUP_MA = 'BORD_CH',
-                                         CISA_2D = FONCT)
-#                           ( EPAISSEUR UNITE .... )
+                                            CISA_2D = FONCT)
                         )
 
 #
 # RESOLUTION
 DEF=MECA_STATIQUE(    MODELE=MODELE,
-                        CHAM_MATER=CHMAT,EXCIT=(
-                        _F(  CHARGE = CHARGT),
-                              _F(  CHARGE = CLIM))
+                        CHAM_MATER=CHMAT,
+                       EXCIT=( _F(  CHARGE = CHARGT),
+                               _F(  CHARGE = CLIM))
                     )
 
 #
 # RECUPERATION DU CHAMP DE DEPLACEMENTS
 U=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
-NOM_CHAM='DEPL', RESULTAT=DEF,
+                 NOM_CHAM='DEPL', RESULTAT=DEF,
                  NUME_ORDRE=1
                   )
 
@@ -86,9 +85,7 @@ NOM_CHAM='DEPL', RESULTAT=DEF,
 # CALCUL DES CONTRAINTES
 
 DEF=CALC_ELEM( reuse= DEF ,RESULTAT= DEF ,
-                              
-                              OPTION=('SIGM_ELNO_DEPL',),
-                ) 
+               OPTION='SIGM_ELNO_DEPL',    ) 
 
 #
 # TEST_RESU DU DEPLACEMENT
@@ -139,7 +136,7 @@ DEF_R=LIRE_RESU(     MAILLAGE=MAIL,
 #
 # RECUPERATION DU CHAMP DE DEPLACEMENTS
 U_R=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
-NOM_CHAM='DEPL', RESULTAT=DEF_R,
+                 NOM_CHAM='DEPL', RESULTAT=DEF_R,
                  NUME_ORDRE=1
                     )
 

@@ -1,0 +1,217 @@
+# MODIF  DATE 07/03/2005   AUTEUR CIBHHLV L.VIVAN 
+# TITRE VALIDATION DE LA COMMANDE CREA_RESU MOT CLE FACTEUR PROL_RTZ
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+#
+# RESPONSABLE  gcbhhhh J.P. LEFEBVRE
+DEBUT( CODE=_F(  NOM = 'ZZZZ129A',NIV_PUB_WEB='INTERNET') )
+
+PRE_GIBI()
+
+MA_1D=LIRE_MAILLAGE( )
+
+MA_1D=DEFI_GROUP ( reuse=MA_1D, MAILLAGE=MA_1D,
+                   CREA_GROUP_NO=(_F( TOUT_GROUP_MA = 'OUI'),
+                                  _F( GROUP_MA = 'MAILL',
+                                      NOM      = 'TOUT',   ),)
+              )
+
+CHAMP1 = CREA_CHAMP( TYPE_CHAM = 'NOEU_TEMP_R',
+                     OPERATION = 'AFFE',
+                     MAILLAGE = MA_1D,
+                     AFFE = (_F( GROUP_NO = 'AB',
+                                NOM_CMP = 'TEMP',
+                                VALE = 60.0,),
+                            _F( GROUP_NO = 'BC',
+                                NOM_CMP = 'TEMP',
+                                VALE =   40.0,),
+                            _F( GROUP_NO = 'CD',
+                                NOM_CMP = 'TEMP',
+                                VALE =   20.0,),
+                            _F( GROUP_NO = 'DE',
+                                NOM_CMP = 'TEMP',
+                                VALE =   10.0,),),
+                   ),
+
+CHAMP2 = CREA_CHAMP( TYPE_CHAM = 'NOEU_TEMP_R',
+                     OPERATION = 'AFFE',
+                     MAILLAGE = MA_1D,
+                     AFFE = (_F( GROUP_NO = 'AB',
+                                NOM_CMP = 'TEMP',
+                                VALE = 100.0,),
+                            _F( GROUP_NO = 'BC',
+                                NOM_CMP = 'TEMP',
+                                VALE =   75.0,),
+                            _F( GROUP_NO = 'CD',
+                                NOM_CMP = 'TEMP',
+                                VALE =   40.0,),
+                            _F( GROUP_NO = 'DE',
+                                NOM_CMP = 'TEMP',
+                                VALE =   0.0,),),
+                   ),
+
+RESU_1D = CREA_RESU( OPERATION = 'AFFE',  TYPE_RESU = 'EVOL_THER',
+                     NOM_CHAM  = 'TEMP',
+                     AFFE = (_F( INST = 1.0,
+                                 CHAM_GD = CHAMP1,),
+                             _F( INST = 2.0,
+                                CHAM_GD = CHAMP2,),
+                            ),
+                   )
+
+TABL_1D = POST_RELEVE_T ( ACTION= _F( INTITULE  = 'PROL_RTZ',
+                                      RESULTAT  = RESU_1D,
+                                      NOM_CHAM  = 'TEMP',
+                                      GROUP_NO  = 'TOUT',
+                                      NOM_CMP   = 'TEMP',
+                                      OPERATION = 'EXTRACTION', )
+                        )
+
+IMPR_TABLE ( TABLE = TABL_1D,
+             NOM_PARA = ( 'INST', 'NOEUD', 'COOR_X', 'TEMP',),
+           )
+
+MA_3D=LIRE_MAILLAGE(UNITE=21, )
+
+MA_3D=DEFI_GROUP ( reuse=MA_3D, MAILLAGE=MA_3D,
+                   CREA_GROUP_NO=(_F( TOUT_GROUP_MA = 'OUI'),
+                                  _F( GROUP_MA = 'CYLIN',
+                                      NOM      = 'TOUT',   ),)
+              )
+
+RESU_3D = CREA_RESU( OPERATION = 'PROL_RTZ', TYPE_RESU = 'EVOL_THER',
+                   PROL_RTZ = _F(
+                               TABLE          = TABL_1D,
+                               MAILLAGE_FINAL = MA_3D,
+                               PROL_DROITE    = 'CONSTANT',
+                               PROL_GAUCHE    = 'CONSTANT',
+                               REPERE  = 'CYLINDRIQUE',
+                               ORIGINE = (5.0, 0.0, 0.0,),
+# on a bascule le cylindre de 30 degres autour de X
+                              AXE_Z   = (0.0, -25., 43.30127,),
+                             ),
+                )
+
+TEST_RESU(RESU=(
+
+         _F(    CRITERE = 'RELATIF',   PRECISION = 1.E-3,
+         REFERENCE = 'NON_REGRESSION',
+         RESULTAT = RESU_3D, NOM_CHAM = 'TEMP',   NUME_ORDRE = 1,
+         NOEUD = 'N1',     NOM_CMP = 'TEMP',    VALE = 6.00000E+1),
+         _F(    CRITERE = 'RELATIF',   PRECISION = 1.E-3,
+         REFERENCE = 'NON_REGRESSION',
+         RESULTAT = RESU_3D, NOM_CHAM = 'TEMP',   NUME_ORDRE = 1,
+         NOEUD = 'N9',     NOM_CMP = 'TEMP',    VALE = 6.00000E+1),
+         _F(    CRITERE = 'RELATIF',   PRECISION = 1.E-3,
+         REFERENCE = 'NON_REGRESSION',
+         RESULTAT = RESU_3D, NOM_CHAM = 'TEMP',   NUME_ORDRE = 1,
+         NOEUD = 'N169',   NOM_CMP = 'TEMP',    VALE = 6.00000E+1),
+         _F(    CRITERE = 'RELATIF',   PRECISION = 1.E-3,
+         REFERENCE = 'NON_REGRESSION',
+         RESULTAT = RESU_3D, NOM_CHAM = 'TEMP',   NUME_ORDRE = 1,
+         NOEUD = 'N171',   NOM_CMP = 'TEMP',    VALE = 6.00000E+1),
+
+         _F(    CRITERE = 'RELATIF',   PRECISION = 1.E-3,
+         REFERENCE = 'NON_REGRESSION',
+         RESULTAT = RESU_3D, NOM_CHAM = 'TEMP',   NUME_ORDRE = 1,
+         NOEUD = 'N2',     NOM_CMP = 'TEMP',    VALE = 2.00000E+1),
+         _F(    CRITERE = 'RELATIF',   PRECISION = 1.E-3,
+         REFERENCE = 'NON_REGRESSION',
+         RESULTAT = RESU_3D, NOM_CHAM = 'TEMP',   NUME_ORDRE = 1,
+         NOEUD = 'N10',    NOM_CMP = 'TEMP',    VALE = 2.00000E+1),
+         _F(    CRITERE = 'RELATIF',   PRECISION = 1.E-3,
+         REFERENCE = 'NON_REGRESSION',
+         RESULTAT = RESU_3D, NOM_CHAM = 'TEMP',   NUME_ORDRE = 1,
+         NOEUD = 'N145',   NOM_CMP = 'TEMP',    VALE = 2.00000E+1),
+         _F(    CRITERE = 'RELATIF',   PRECISION = 1.E-3,
+         REFERENCE = 'NON_REGRESSION',
+         RESULTAT = RESU_3D, NOM_CHAM = 'TEMP',   NUME_ORDRE = 1,
+         NOEUD = 'N149',   NOM_CMP = 'TEMP',    VALE = 2.00000E+1),
+
+         _F(    CRITERE = 'RELATIF',   PRECISION = 1.E-3,
+         REFERENCE = 'NON_REGRESSION',
+         RESULTAT = RESU_3D, NOM_CHAM = 'TEMP',   NUME_ORDRE = 1,
+         NOEUD = 'N97',    NOM_CMP = 'TEMP',    VALE = 1.00000E+1),
+         _F(    CRITERE = 'RELATIF',   PRECISION = 1.E-3,
+         REFERENCE = 'NON_REGRESSION',
+         RESULTAT = RESU_3D, NOM_CHAM = 'TEMP',   NUME_ORDRE = 1,
+         NOEUD = 'N101',   NOM_CMP = 'TEMP',    VALE = 1.00000E+1),
+         _F(    CRITERE = 'RELATIF',   PRECISION = 1.E-3,
+         REFERENCE = 'NON_REGRESSION',
+         RESULTAT = RESU_3D, NOM_CHAM = 'TEMP',   NUME_ORDRE = 1,
+         NOEUD = 'N146',   NOM_CMP = 'TEMP',    VALE = 1.00000E+1),
+         _F(    CRITERE = 'RELATIF',   PRECISION = 1.E-3,
+         REFERENCE = 'NON_REGRESSION',
+         RESULTAT = RESU_3D, NOM_CHAM = 'TEMP',   NUME_ORDRE = 1,
+         NOEUD = 'N150',   NOM_CMP = 'TEMP',    VALE = 1.00000E+1),
+
+
+         _F(    CRITERE = 'RELATIF',   PRECISION = 1.E-3,
+         REFERENCE = 'NON_REGRESSION',
+         RESULTAT = RESU_3D, NOM_CHAM = 'TEMP',   NUME_ORDRE = 2,
+         NOEUD = 'N1',     NOM_CMP = 'TEMP',    VALE = 1.00000E+2),
+         _F(    CRITERE = 'RELATIF',   PRECISION = 1.E-3,
+         REFERENCE = 'NON_REGRESSION',
+         RESULTAT = RESU_3D, NOM_CHAM = 'TEMP',   NUME_ORDRE = 2,
+         NOEUD = 'N9',     NOM_CMP = 'TEMP',    VALE = 1.00000E+2),
+         _F(    CRITERE = 'RELATIF',   PRECISION = 1.E-3,
+         REFERENCE = 'NON_REGRESSION',
+         RESULTAT = RESU_3D, NOM_CHAM = 'TEMP',   NUME_ORDRE = 2,
+         NOEUD = 'N169',   NOM_CMP = 'TEMP',    VALE = 1.00000E+2),
+         _F(    CRITERE = 'RELATIF',   PRECISION = 1.E-3,
+         REFERENCE = 'NON_REGRESSION',
+         RESULTAT = RESU_3D, NOM_CHAM = 'TEMP',   NUME_ORDRE = 2,
+         NOEUD = 'N171',   NOM_CMP = 'TEMP',    VALE = 1.00000E+2),
+
+         _F(    CRITERE = 'RELATIF',   PRECISION = 1.E-3,
+         REFERENCE = 'NON_REGRESSION',
+         RESULTAT = RESU_3D, NOM_CHAM = 'TEMP',   NUME_ORDRE = 2,
+         NOEUD = 'N2',     NOM_CMP = 'TEMP',    VALE = 4.00000E+1),
+         _F(    CRITERE = 'RELATIF',   PRECISION = 1.E-3,
+         REFERENCE = 'NON_REGRESSION',
+         RESULTAT = RESU_3D, NOM_CHAM = 'TEMP',   NUME_ORDRE = 2,
+         NOEUD = 'N10',    NOM_CMP = 'TEMP',    VALE = 4.00000E+1),
+         _F(    CRITERE = 'RELATIF',   PRECISION = 1.E-3,
+         REFERENCE = 'NON_REGRESSION',
+         RESULTAT = RESU_3D, NOM_CHAM = 'TEMP',   NUME_ORDRE = 2,
+         NOEUD = 'N145',   NOM_CMP = 'TEMP',    VALE = 4.00000E+1),
+         _F(    CRITERE = 'RELATIF',   PRECISION = 1.E-3,
+         REFERENCE = 'NON_REGRESSION',
+         RESULTAT = RESU_3D, NOM_CHAM = 'TEMP',   NUME_ORDRE = 2,
+         NOEUD = 'N149',   NOM_CMP = 'TEMP',    VALE = 4.00000E+1),
+
+         _F(    CRITERE = 'ABSOLU',   PRECISION = 1.E-9,
+         REFERENCE = 'NON_REGRESSION',
+         RESULTAT = RESU_3D, NOM_CHAM = 'TEMP',   NUME_ORDRE = 2,
+         NOEUD = 'N97',    NOM_CMP = 'TEMP',    VALE = 0.00000E+0),
+         _F(    CRITERE = 'ABSOLU',   PRECISION = 1.E-9,
+         REFERENCE = 'NON_REGRESSION',
+         RESULTAT = RESU_3D, NOM_CHAM = 'TEMP',   NUME_ORDRE = 2,
+         NOEUD = 'N101',   NOM_CMP = 'TEMP',    VALE = 0.00000E+0),
+         _F(    CRITERE = 'ABSOLU',   PRECISION = 1.E-9,
+         REFERENCE = 'NON_REGRESSION',
+         RESULTAT = RESU_3D, NOM_CHAM = 'TEMP',   NUME_ORDRE = 2,
+         NOEUD = 'N146',   NOM_CMP = 'TEMP',    VALE = 0.00000E+0),
+         _F(    CRITERE = 'ABSOLU',   PRECISION = 1.E-9,
+         REFERENCE = 'NON_REGRESSION',
+         RESULTAT = RESU_3D, NOM_CHAM = 'TEMP',   NUME_ORDRE = 2,
+         NOEUD = 'N150',   NOM_CMP = 'TEMP',    VALE = 0.00000E+0),
+           ),
+           )
+#
+FIN()

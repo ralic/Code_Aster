@@ -1,4 +1,4 @@
-# MODIF  DATE 07/06/2002   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 07/03/2005   AUTEUR CIBHHLV L.VIVAN 
 # TITRE TUBE REMPLI DE FLUIDE SOUS EXCITATIONS FLUIDES ALEATOIRES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -27,7 +27,7 @@ DEBUT(CODE=_F( NOM = 'SDLL105A',NIV_PUB_WEB='INTERNET'))
 #**LECTURE DU MAILLAGE*************************************************
 #**********************************************************************
 
-MAYA=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='NON'), )
+MAYA=LIRE_MAILLAGE( )
 
 #**********************************************************************
 #**DEFINITION DU MATERIAU *********************************************

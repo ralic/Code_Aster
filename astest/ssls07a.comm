@@ -1,0 +1,307 @@
+# MODIF  DATE 07/03/2005   AUTEUR CIBHHLV L.VIVAN 
+# TITRE CYLINDRE MINCE SOUS CHARGE AXIALE UNIFORME (AXIS) -ancien SSLP07a
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+#
+# RESPONSABLE  g8bhhxd X.DESROCHES
+
+DEBUT( CODE=_F(  NOM = 'SSLS07A',NIV_PUB_WEB='INTERNET') )
+
+MAIL=LIRE_MAILLAGE()
+
+#
+# DEFINITION DES GROUPES DE NOEUDS
+MAIL=DEFI_GROUP( reuse=MAIL,   MAILLAGE=MAIL,CREA_GROUP_NO=(
+                       _F(  GROUP_MA = 'APPUI'),
+                       _F(  GROUP_MA = 'BORD_CH'),
+                       _F(  GROUP_MA = 'LEF'))
+                   )
+
+#
+# DEFINITION DU MODELE
+MODELE=AFFE_MODELE(    MAILLAGE=MAIL,
+                         AFFE=_F(  TOUT = 'OUI',
+                       PHENOMENE = 'MECANIQUE',
+                       MODELISATION = 'AXIS')  )
+
+#
+# DEFINITION DU MATERIAU
+ACIER=DEFI_MATERIAU(    ELAS=_F(  E = 2.1E11,  NU = 0.3,
+                                 ALPHA = 1.E-5,  RHO = 7800.)
+                      )
+
+#
+# ATTRIBUTION DU MATERIAU
+CHMAT=AFFE_MATERIAU(    MAILLAGE=MAIL,
+                          AFFE=_F(  TOUT = 'OUI',
+                                 MATER = ACIER)  )
+
+#
+# DEFINITION DES CONDITIONS AUX LIMITES ET CHARGEMENTS
+CHARGT=AFFE_CHAR_MECA(    MODELE=MODELE,
+                           DDL_IMPO=_F(  GROUP_NO = 'APPUI',  DY = 0.),
+                           FORCE_CONTOUR=_F(  GROUP_MA = 'BORD_CH',
+                                           FY = 500000.)
+#                                 ...  FY= Q/H  ...
+                        )
+
+#
+# RESOLUTION
+DEF=MECA_STATIQUE(    MODELE=MODELE,
+                        CHAM_MATER=CHMAT,
+                        EXCIT=_F(  CHARGE = CHARGT)  )
+
+#
+# RECUPERATION DU CHAMP DE DEPLACEMENTS
+U=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
+NOM_CHAM='DEPL', RESULTAT=DEF,
+                 NUME_ORDRE=1
+                  )
+
+#
+# CALCUL DES CONTRAINTES
+
+DEF=CALC_ELEM(reuse =DEF,
+              MODELE=MODELE,
+              CHAM_MATER=CHMAT,
+              RESULTAT=DEF,
+              OPTION='SIGM_ELNO_DEPL',
+              EXCIT=_F(CHARGE=CHARGT,),);
+              
+#
+# TEST_RESU DEPLACEMENTS
+#
+TEST_RESU(CHAM_NO=(   _F(  CHAM_GD = U,
+                        NOEUD = 'N452',
+                        NOM_CMP = 'DY',
+                        REFERENCE='ANALYTIQUE',
+                        VALE = 9.52E-6,
+                        PRECISION = 0.001),
+              _F(  CHAM_GD = U,
+                        NOEUD = 'N504',
+                        NOM_CMP = 'DY',
+                        REFERENCE='ANALYTIQUE',
+                        VALE = 9.52E-6,
+                        PRECISION = 0.001),
+              _F(  CHAM_GD = U,
+                        NOEUD = 'N503',
+                        NOM_CMP = 'DY',
+                        REFERENCE='ANALYTIQUE',
+                        VALE = 9.52E-6,
+                        PRECISION = 0.001))
+          )
+
+#
+TEST_RESU(CHAM_NO=(   _F(  CHAM_GD = U,
+                        NOEUD = 'N51',
+                        NOM_CMP = 'DX',
+                        REFERENCE='ANALYTIQUE',
+                        VALE = -7.14E-7,
+                        PRECISION = 0.001),
+              _F(  CHAM_GD = U,
+                        NOEUD = 'N202',
+                        NOM_CMP = 'DX',
+                        REFERENCE='ANALYTIQUE',
+                        VALE = -7.14E-7,
+                        PRECISION = 0.001),
+              _F(  CHAM_GD = U,
+                        NOEUD = 'N503',
+                        NOM_CMP = 'DX',
+                        REFERENCE='ANALYTIQUE',
+                        VALE = -7.14E-7,
+                        PRECISION = 0.001))
+          )
+
+#
+# TEST_RESU CONTRAINTES
+#
+TEST_RESU(RESU=(   _F(  RESULTAT = DEF,
+                          MAILLE = 'M4',
+                          NOEUD = 'N1',
+                          NUME_ORDRE=1,
+                          NOM_CHAM='SIGM_ELNO_DEPL',
+                          NOM_CMP = 'SIXX',
+                          REFERENCE='ANALYTIQUE',
+                          VALE = 0.,
+                          PRECISION = 0.0001,
+                          CRITERE = 'ABSOLU'),
+              _F(  RESULTAT = DEF,
+                          MAILLE = 'M4',
+                          NOEUD = 'N101',
+                          NUME_ORDRE=1,
+                          NOM_CHAM='SIGM_ELNO_DEPL',
+                          NOM_CMP = 'SIXX',
+                          REFERENCE='ANALYTIQUE',
+                          VALE = 0.,
+                          PRECISION = 0.0001,
+                          CRITERE = 'ABSOLU'),
+              _F(  RESULTAT = DEF,
+                          MAILLE = 'M153',
+                          NOEUD = 'N452',
+                          NUME_ORDRE=1,
+                          NOM_CHAM='SIGM_ELNO_DEPL',
+                          NOM_CMP = 'SIXX',
+                          REFERENCE='ANALYTIQUE',
+                          VALE = 0.,
+                          PRECISION = 0.0001,
+                          CRITERE = 'ABSOLU'),
+              _F(  RESULTAT = DEF,
+                          MAILLE = 'M153',
+                          NOEUD = 'N504',
+                          NUME_ORDRE=1,
+                          NOM_CHAM='SIGM_ELNO_DEPL',
+                          NOM_CMP = 'SIXX',
+                          REFERENCE='ANALYTIQUE',
+                          VALE = 0.,
+                          PRECISION = 0.0001,
+                          CRITERE = 'ABSOLU'),
+              _F(  RESULTAT = DEF,
+                          MAILLE = 'M53',
+                          NOEUD = 'N201',
+                          NUME_ORDRE=1,
+                          NOM_CHAM='SIGM_ELNO_DEPL',
+                          NOM_CMP = 'SIXX',
+                          REFERENCE='ANALYTIQUE',
+                          VALE = 0.,
+                          PRECISION = 0.0001,
+                          CRITERE = 'ABSOLU'),
+              _F(  RESULTAT = DEF,
+                          MAILLE = 'M53',
+                          NOEUD = 'N203',
+                          NUME_ORDRE=1,
+                          NOM_CHAM='SIGM_ELNO_DEPL',
+                          NOM_CMP = 'SIXX',
+                          REFERENCE='ANALYTIQUE',
+                          VALE = 0.,
+                          PRECISION = 0.0001,
+                          CRITERE = 'ABSOLU'),
+              _F(  RESULTAT = DEF,
+                          MAILLE = 'M4',
+                          NOEUD = 'N51',
+                          NUME_ORDRE=1,
+                          NOM_CHAM='SIGM_ELNO_DEPL',
+                          NOM_CMP = 'SIXX',
+                          REFERENCE='ANALYTIQUE',
+                          VALE = 0.,
+                          PRECISION = 0.0001,
+                          CRITERE = 'ABSOLU'),
+              _F(  RESULTAT = DEF,
+                          MAILLE = 'M53',
+                          NOEUD = 'N202',
+                          NUME_ORDRE=1,
+                          NOM_CHAM='SIGM_ELNO_DEPL',
+                          NOM_CMP = 'SIXX',
+                          REFERENCE='ANALYTIQUE',
+                          VALE = 0.,
+                          PRECISION = 0.0001,
+                          CRITERE = 'ABSOLU'),
+              _F(  RESULTAT = DEF,
+                          MAILLE = 'M153',
+                          NOEUD = 'N503',
+                          NUME_ORDRE=1,
+                          NOM_CHAM='SIGM_ELNO_DEPL',
+                          NOM_CMP = 'SIXX',
+                          REFERENCE='ANALYTIQUE',
+                          VALE = 0.,
+                          PRECISION = 0.0001,
+                          CRITERE = 'ABSOLU'),
+              _F(  RESULTAT = DEF,
+                          MAILLE = 'M4',
+                          NOEUD = 'N1',
+                          NUME_ORDRE=1,
+                          NOM_CHAM='SIGM_ELNO_DEPL',
+                          NOM_CMP = 'SIYY',
+                          REFERENCE='ANALYTIQUE',
+                          VALE = 5.00E5,
+                          PRECISION = 0.0001),
+              _F(  RESULTAT = DEF,
+                          MAILLE = 'M4',
+                          NOEUD = 'N101',
+                          NUME_ORDRE=1,
+                          NOM_CHAM='SIGM_ELNO_DEPL',
+                          NOM_CMP = 'SIYY',
+                          REFERENCE='ANALYTIQUE',
+                          VALE = 5.00E5,
+                          PRECISION = 0.0001),
+              _F(  RESULTAT = DEF,
+                          MAILLE = 'M153',
+                          NOEUD = 'N452',
+                          NUME_ORDRE=1,
+                          NOM_CHAM='SIGM_ELNO_DEPL',
+                          NOM_CMP = 'SIYY',
+                          REFERENCE='ANALYTIQUE',
+                          VALE = 5.00E5,
+                          PRECISION = 0.0001),
+              _F(  RESULTAT = DEF,
+                          MAILLE = 'M153',
+                          NOEUD = 'N504',
+                          NUME_ORDRE=1,
+                          NOM_CHAM='SIGM_ELNO_DEPL',
+                          NOM_CMP = 'SIYY',
+                          REFERENCE='ANALYTIQUE',
+                          VALE = 5.00E5,
+                          PRECISION = 0.0001),
+              _F(  RESULTAT = DEF,
+                          MAILLE = 'M53',
+                          NOEUD = 'N201',
+                          NUME_ORDRE=1,
+                          NOM_CHAM='SIGM_ELNO_DEPL',
+                          NOM_CMP = 'SIYY',
+                          REFERENCE='ANALYTIQUE',
+                          VALE = 5.00E5,
+                          PRECISION = 0.0001),
+              _F(  RESULTAT = DEF,
+                          MAILLE = 'M53',
+                          NOEUD = 'N203',
+                          NUME_ORDRE=1,
+                          NOM_CHAM='SIGM_ELNO_DEPL',
+                          NOM_CMP = 'SIYY',
+                          REFERENCE='ANALYTIQUE',
+                          VALE = 5.00E5,
+                          PRECISION = 0.0001),
+              _F(  RESULTAT = DEF,
+                          MAILLE = 'M4',
+                          NOEUD = 'N51',
+                          NUME_ORDRE=1,
+                          NOM_CHAM='SIGM_ELNO_DEPL',
+                          NOM_CMP = 'SIYY',
+                          REFERENCE='ANALYTIQUE',
+                          VALE = 5.00E5,
+                          PRECISION = 0.0001),
+              _F(  RESULTAT = DEF,
+                          MAILLE = 'M53',
+                          NOEUD = 'N202',
+                          NUME_ORDRE=1,
+                          NOM_CHAM='SIGM_ELNO_DEPL',
+                          NOM_CMP = 'SIYY',
+                          REFERENCE='ANALYTIQUE',
+                          VALE = 5.00E5,
+                          PRECISION = 0.0001),
+              _F(  RESULTAT = DEF,
+                          MAILLE = 'M153',
+                          NOEUD = 'N503',
+                          NUME_ORDRE=1,
+                          NOM_CHAM='SIGM_ELNO_DEPL',
+                          NOM_CMP = 'SIYY',
+                          REFERENCE='ANALYTIQUE',
+                          VALE = 5.00E5,
+                          PRECISION = 0.0001))
+          )
+
+FIN()
+#

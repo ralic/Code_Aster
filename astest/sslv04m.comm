@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 07/03/2005   AUTEUR CIBHHLV L.VIVAN 
 # TITRE CYLINDRE EN C.P. (PYRAM13)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -36,7 +36,7 @@ DEBUT( CODE=_F(  NOM = 'SSLV04M',NIV_PUB_WEB='INTERNET'),
             BASE=_F(  FICHIER = 'LOCALE', LONG_REPE = 2000,  )
                                  )
 
-M=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='NON'),   )
+M=LIRE_MAILLAGE()
 
 M=DEFI_GROUP(reuse=M,  MAILLAGE=M,
         CREA_GROUP_NO=_F( GROUP_MA = 'BORDAB', )

@@ -1,4 +1,4 @@
-# MODIF  DATE 24/02/2004   AUTEUR CIBHHPD S.VANDENBERGHE 
+# MODIF  DATE 07/03/2005   AUTEUR CIBHHLV L.VIVAN 
 # TITRE PROBLEME DE HOVGAARD : CALCUL DES EFFORTS POU_C_T + POU_D_T
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -35,7 +35,7 @@ DEBUT(CODE=_F( NOM = 'SSLL101B',NIV_PUB_WEB='INTERNET') )
 
 #
 
-MAILLAGE=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='NON'), )
+MAILLAGE=LIRE_MAILLAGE( )
 
 MODELE=AFFE_MODELE(  MAILLAGE=MAILLAGE,AFFE=(
                       _F(  GROUP_MA = 'POU_D_T',PHENOMENE = 'MECANIQUE',
@@ -73,9 +73,9 @@ CON_LIM=AFFE_CHAR_MECA( MODELE=MODELE,
 
 # ---------- AFFECTATION DES CARACTERISTIQUES ELEMENTAIRES ----------
 
-CARA_ELE=AFFE_CARA_ELEM( MODELE=MODELE,POUTRE=(
-
-          
+CARA_ELE=AFFE_CARA_ELEM( MODELE=MODELE,
+#
+       POUTRE=(
           _F(  GROUP_MA = 'SEC_1',   
              SECTION = 'GENERALE', 
               CARA = ('A', 'IZ', 'IY', 'AY', 'AZ', 'JX',
@@ -90,22 +90,14 @@ CARA_ELE=AFFE_CARA_ELEM( MODELE=MODELE,POUTRE=(
                VALE = ( 3.439000000E-03, 5.887000000E-06, 5.887000000E-06,
                       2.000000000E+00, 2.000000000E+00, 2.754000000E-05,
                       0.000000000E+00, 0.000000000E+00, 1.000000000E+00,
-                      1.000000000E+00, 1.000000000E+00, ))),DEFI_ARC=(
+                      1.000000000E+00, 1.000000000E+00, ))),
 #
-#          DEFI_ARC:(MAILLE:(E9, E10)
-#                     POIN_TANG :(0.,     0.,     0.))
-#          DEFI_ARC:(MAILLE:(E9, E10)
-#                    NOEUD_POIN_TANG : N2000)
+     DEFI_ARC=(
           _F( MAILLE = ('E9', 'E10',),
-                    GROUP_NO_POIN_TG = 'TANG'),
-
-#          DEFI_ARC:(MAILLE:(E3, E4 )
-#                     CENTRE :(0., -1.828, -0.922))
-          _F(  MAILLE = 'E3',
-                     NOEUD_CENTRE = 'N2001'),
-          _F(  MAILLE = 'E4',
-                     GROUP_NO_CENTRE = 'CENT'))
-                  )
+                     POIN_TANG = (0.,     0.,     0.), ),
+          _F(  MAILLE = ('E3','E4',),
+                     CENTRE = (0., -1.828, -0.922),), )
+         )
 
 # ----------------------------------------------------------------------
 # CALCUL STATIQUE

@@ -1,0 +1,498 @@
+# MODIF  DATE 07/03/2005   AUTEUR CIBHHLV L.VIVAN 
+# TITRE PLAQUE AVEC MODULE D'YOUNG FONCTION DE LA TEMPERATURE
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+DEBUT( CODE=_F(  NOM = 'HPLP300A',NIV_PUB_WEB='INTERNET') )
+
+MAIL=LIRE_MAILLAGE( )
+
+#
+# DEFINITION DES GROUPES DE NOEUDS
+MAIL=DEFI_GROUP( reuse=MAIL,   MAILLAGE=MAIL,
+                      CREA_GROUP_NO=_F( GROUP_MA = ('A', 'B', 'C', 'D', 'O', 'B1', 'C1',))
+                   )
+
+#
+# DEFINITION DU MODELE THERMIQUE
+MODEL_TH=AFFE_MODELE(    MAILLAGE=MAIL,
+                           AFFE=_F(  TOUT = 'OUI',
+                         PHENOMENE = 'THERMIQUE',
+                         MODELISATION = 'PLAN')  )
+
+# DEFINITION DU MODELE MECANIQUE
+MODEL_ME=AFFE_MODELE(    MAILLAGE=MAIL,
+                           AFFE=_F(  TOUT = 'OUI',
+                         PHENOMENE = 'MECANIQUE',
+                         MODELISATION = 'C_PLAN')  )
+
+#
+# DETERMINATION DU MODULE D'YOUNG : 250 POINTS
+F_E=DEFI_FONCTION(    NOM_PARA='TEMP',
+                        VALE=(
+                                -35.0000,    1.1976,
+                                -34.5600,    1.1982,
+                                -34.1200,    1.1989,
+                                -33.6800,    1.1995,
+                                -33.2400,    1.2001,
+                                -32.8000,    1.2008,
+                                -32.3600,    1.2014,
+                                -31.9200,    1.2020,
+                                -31.4800,    1.2027,
+                                -31.0400,    1.2033,
+                                -30.6000,    1.2039,
+                                -30.1600,    1.2046,
+                                -29.7200,    1.2052,
+                                -29.2800,    1.2059,
+                                -28.8400,    1.2065,
+                                -28.4000,    1.2071,
+                                -27.9600,    1.2078,
+                                -27.5200,    1.2084,
+                                -27.0800,    1.2091,
+                                -26.6400,    1.2097,
+                                -26.2000,    1.2104,
+                                -25.7600,    1.2110,
+                                -25.3200,    1.2117,
+                                -24.8800,    1.2123,
+                                -24.4400,    1.2129,
+                                -24.0000,    1.2136,
+                                -23.5600,    1.2142,
+                                -23.1200,    1.2149,
+                                -22.6800,    1.2155,
+                                -22.2400,    1.2162,
+                                -21.8000,    1.2168,
+                                -21.3600,    1.2175,
+                                -20.9200,    1.2181,
+                                -20.4800,    1.2188,
+                                -20.0400,    1.2195,
+                                -19.6000,    1.2201,
+                                -19.1600,    1.2208,
+                                -18.7200,    1.2214,
+                                -18.2800,    1.2221,
+                                -17.8400,    1.2227,
+                                -17.4000,    1.2234,
+                                -16.9600,    1.2241,
+                                -16.5200,    1.2247,
+                                -16.0800,    1.2254,
+                                -15.6400,    1.2260,
+                                -15.2000,    1.2267,
+                                -14.7600,    1.2274,
+                                -14.3200,    1.2280,
+                                -13.8800,    1.2287,
+                                -13.4400,    1.2293,
+                                -13.0000,    1.2300,
+                                -12.5600,    1.2307,
+                                -12.1200,    1.2313,
+                                -11.6800,    1.2320,
+                                -11.2400,    1.2327,
+                                -10.8000,    1.2333,
+                                -10.3600,    1.2340,
+                                 -9.9200,    1.2347,
+                                 -9.4800,    1.2354,
+                                 -9.0400,    1.2360,
+                                 -8.6000,    1.2367,
+                                 -8.1600,    1.2374,
+                                 -7.7200,    1.2381,
+                                 -7.2800,    1.2387,
+                                 -6.8400,    1.2394,
+                                 -6.4000,    1.2401,
+                                 -5.9600,    1.2408,
+                                 -5.5200,    1.2414,
+                                 -5.0800,    1.2421,
+                                 -4.6400,    1.2428,
+                                 -4.2000,    1.2435,
+                                 -3.7600,    1.2442,
+                                 -3.3200,    1.2448,
+                                 -2.8800,    1.2455,
+                                 -2.4400,    1.2462,
+                                 -2.0000,    1.2469,
+                                 -1.5600,    1.2476,
+                                 -1.1200,    1.2483,
+                                  -.6800,    1.2489,
+                                  -.2400,    1.2496,
+                                   .2000,    1.2503,
+                                   .6400,    1.2510,
+                                  1.0800,    1.2517,
+                                  1.5200,    1.2524,
+                                  1.9600,    1.2531,
+                                  2.4000,    1.2538,
+                                  2.8400,    1.2545,
+                                  3.2800,    1.2551,
+                                  3.7200,    1.2558,
+                                  4.1600,    1.2565,
+                                  4.6000,    1.2572,
+                                  5.0400,    1.2579,
+                                  5.4800,    1.2586,
+                                  5.9200,    1.2593,
+                                  6.3600,    1.2600,
+                                  6.8000,    1.2607,
+                                  7.2400,    1.2614,
+                                  7.6800,    1.2621,
+                                  8.1200,    1.2628,
+                                  8.5600,    1.2635,
+                                  9.0000,    1.2642,
+                                  9.4400,    1.2649,
+                                  9.8800,    1.2656,
+                                 10.3200,    1.2663,
+                                 10.7600,    1.2670,
+                                 11.2000,    1.2677,
+                                 11.6400,    1.2685,
+                                 12.0800,    1.2692,
+                                 12.5200,    1.2699,
+                                 12.9600,    1.2706,
+                                 13.4000,    1.2713,
+                                 13.8400,    1.2720,
+                                 14.2800,    1.2727,
+                                 14.7200,    1.2734,
+                                 15.1600,    1.2741,
+                                 15.6000,    1.2749,
+                                 16.0400,    1.2756,
+                                 16.4800,    1.2763,
+                                 16.9200,    1.2770,
+                                 17.3600,    1.2777,
+                                 17.8000,    1.2784,
+                                 18.2400,    1.2792,
+                                 18.6800,    1.2799,
+                                 19.1200,    1.2806,
+                                 19.5600,    1.2813,
+                                 20.0000,    1.2821,
+                                 20.4400,    1.2828,
+                                 20.8800,    1.2835,
+                                 21.3200,    1.2842,
+                                 21.7600,    1.2850,
+                                 22.2000,    1.2857,
+                                 22.6400,    1.2864,
+                                 23.0800,    1.2871,
+                                 23.5200,    1.2879,
+                                 23.9600,    1.2886,
+                                 24.4000,    1.2893,
+                                 24.8400,    1.2901,
+                                 25.2800,    1.2908,
+                                 25.7200,    1.2915,
+                                 26.1600,    1.2923,
+                                 26.6000,    1.2930,
+                                 27.0400,    1.2937,
+                                 27.4800,    1.2945,
+                                 27.9200,    1.2952,
+                                 28.3600,    1.2959,
+                                 28.8000,    1.2967,
+                                 29.2400,    1.2974,
+                                 29.6800,    1.2982,
+                                 30.1200,    1.2989,
+                                 30.5600,    1.2996,
+                                 31.0000,    1.3004,
+                                 31.4400,    1.3011,
+                                 31.8800,    1.3019,
+                                 32.3200,    1.3026,
+                                 32.7600,    1.3034,
+                                 33.2000,    1.3041,
+                                 33.6400,    1.3049,
+                                 34.0800,    1.3056,
+                                 34.5200,    1.3064,
+                                 34.9600,    1.3071,
+                                 35.4000,    1.3079,
+                                 35.8400,    1.3086,
+                                 36.2800,    1.3094,
+                                 36.7200,    1.3101,
+                                 37.1600,    1.3109,
+                                 37.6000,    1.3116,
+                                 38.0400,    1.3124,
+                                 38.4800,    1.3132,
+                                 38.9200,    1.3139,
+                                 39.3600,    1.3147,
+                                 39.8000,    1.3154,
+                                 40.2400,    1.3162,
+                                 40.6800,    1.3170,
+                                 41.1200,    1.3177,
+                                 41.5600,    1.3185,
+                                 42.0000,    1.3193,
+                                 42.4400,    1.3200,
+                                 42.8800,    1.3208,
+                                 43.3200,    1.3216,
+                                 43.7600,    1.3223,
+                                 44.2000,    1.3231,
+                                 44.6400,    1.3239,
+                                 45.0800,    1.3246,
+                                 45.5200,    1.3254,
+                                 45.9600,    1.3262,
+                                 46.4000,    1.3270,
+                                 46.8400,    1.3277,
+                                 47.2800,    1.3285,
+                                 47.7200,    1.3293,
+                                 48.1600,    1.3301,
+                                 48.6000,    1.3308,
+                                 49.0400,    1.3316,
+                                 49.4800,    1.3324,
+                                 49.9200,    1.3332,
+                                 50.3600,    1.3340,
+                                 50.8000,    1.3348,
+                                 51.2400,    1.3355,
+                                 51.6800,    1.3363,
+                                 52.1200,    1.3371,
+                                 52.5600,    1.3379,
+                                 53.0000,    1.3387,
+                                 53.4400,    1.3395,
+                                 53.8800,    1.3403,
+                                 54.3200,    1.3411,
+                                 54.7599,    1.3418,
+                                 55.1999,    1.3426,
+                                 55.6399,    1.3434,
+                                 56.0799,    1.3442,
+                                 56.5199,    1.3450,
+                                 56.9599,    1.3458,
+                                 57.3999,    1.3466,
+                                 57.8399,    1.3474,
+                                 58.2799,    1.3482,
+                                 58.7199,    1.3490,
+                                 59.1599,    1.3498,
+                                 59.5999,    1.3506,
+                                 60.0399,    1.3514,
+                                 60.4799,    1.3522,
+                                 60.9199,    1.3530,
+                                 61.3599,    1.3538,
+                                 61.7999,    1.3546,
+                                 62.2399,    1.3555,
+                                 62.6799,    1.3563,
+                                 63.1199,    1.3571,
+                                 63.5599,    1.3579,
+                                 63.9999,    1.3587,
+                                 64.4399,    1.3595,
+                                 64.8799,    1.3603,
+                                 65.3199,    1.3611,
+                                 65.7599,    1.3620,
+                                 66.1999,    1.3628,
+                                 66.6399,    1.3636,
+                                 67.0799,    1.3644,
+                                 67.5199,    1.3652,
+                                 67.9599,    1.3660,
+                                 68.3999,    1.3669,
+                                 68.8399,    1.3677,
+                                 69.2799,    1.3685,
+                                 69.7199,    1.3693,
+                                 70.1600,    1.3702,
+                                 70.6000,    1.3710,
+                                 71.0400,    1.3718,
+                                 71.4800,    1.3726,
+                                 71.9200,    1.3735,
+                                 72.3600,    1.3743,
+                                 72.8000,    1.3751,
+                                 73.2400,    1.3760,
+                                 73.6800,    1.3768,
+                                 74.1200,    1.3776,
+                                 74.5600,    1.3785,
+                                 75.0000,    1.3793,
+                             )
+                    )
+
+F_NU=DEFI_FONCTION(    NOM_PARA='TEMP',
+                         VALE=( -35.,  0.3,    75.,  0.3, ) )
+
+# DEFINITION DU MATERIAU
+ACIER=DEFI_MATERIAU(     ELAS_FO=_F(  E = F_E,
+                                     NU = F_NU),
+#                                    ALPHA : 1.E-5 )
+                              THER=_F(  LAMBDA = 1.,  RHO_CP = 0.)
+                      )
+
+#
+# ATTRIBUTION DU MATERIAU
+CHMAT=AFFE_MATERIAU(    MAILLAGE=MAIL,
+                             AFFE=_F(  TOUT = 'OUI',
+                                    MATER = ACIER)  )
+
+#
+# DEFINITION DU CHARGEMENT THERMIQUE
+CHAR_TH=AFFE_CHAR_THER(    MODELE=MODEL_TH,
+                             TEMP_IMPO=_F(  GROUP_NO = 'O',
+                                         TEMP = 40.),FLUX_REP=(
+                              _F(  GROUP_MA = 'LNO',
+                                         FLUN = -4.),
+                              _F(  GROUP_MA = 'LPM',
+                                         FLUN = 4.),
+                              _F(  GROUP_MA = 'LOP',
+                                         FLUN = -3.),
+                              _F(  GROUP_MA = 'LMN',
+                                         FLUN = 3.))
+                         )
+
+#
+# CALCUL DU CHAMP THERMIQUE
+TEMP=THER_LINEAIRE(    MODELE=MODEL_TH,
+                         CHAM_MATER=CHMAT,
+                         EXCIT=_F(  CHARGE = CHAR_TH),
+                         TEMP_INIT=_F(  STATIONNAIRE = 'OUI')
+                     )
+
+# DEFINITION DES CONDITIONS AUX LIMITES ET CHARGEMENTS MECANIQUES
+CHARGT=AFFE_CHAR_MECA(    MODELE=MODEL_ME,DDL_IMPO=(
+                            _F(  GROUP_NO = 'O',
+                                       DX = 0.,  DY = 0.),
+                            _F(  GROUP_NO = 'B',
+                                       DX = 0.)),
+                            PRES_REP=_F(  GROUP_MA = 'CONTOUR',
+                                       PRES = 1.),
+                           TEMP_CALCULEE=TEMP
+                        )
+
+# RESOLUTION
+DEF=MECA_STATIQUE(    MODELE=MODEL_ME,
+                        CHAM_MATER=CHMAT,
+                        EXCIT=_F(  CHARGE = CHARGT)  )
+
+#
+# RECUPERATION DU CHAMP DE DEPLACEMENTS
+U=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
+NOM_CHAM='DEPL',  RESULTAT=DEF,
+                 NUME_ORDRE=1
+                  )
+
+# RECUPERATION DU CHAMP DE TEMPERATURES
+T=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_TEMP_R',
+NOM_CHAM='TEMP',  RESULTAT=TEMP,
+                 NUME_ORDRE=0
+                  )
+
+#
+T1=POST_RELEVE_T(    ACTION=_F( 
+                        INTITULE = 'TEMP',
+                        GROUP_NO = ('O', 'B', 'C', 'B1', 'C1', 'A', 'D',),
+                        CHAM_GD = T,
+                        TOUT_CMP = 'OUI',
+                        OPERATION = 'EXTRACTION')
+            )
+
+T2=POST_RELEVE_T(    ACTION=_F( 
+                        GROUP_NO = ('O', 'B', 'C', 'B1', 'C1', 'A', 'D',),
+                        INTITULE = 'DEPL',
+                        CHAM_GD = U,
+                        NOM_CMP = ('DX',  'DY',),
+                        OPERATION = 'EXTRACTION')
+            )
+
+#
+TEST_TABLE(      TABLE=T1,
+                 FILTRE=_F(  NOM_PARA = 'NOEUD',
+                          VALE_K = 'N1'),
+               NOM_PARA='TEMP',
+                   VALE=75.        )
+
+TEST_TABLE(      TABLE=T1,
+                 FILTRE=_F(  NOM_PARA = 'NOEUD',
+                          VALE_K = 'N23'),
+               NOM_PARA='TEMP',
+                   VALE=25.        )
+
+TEST_TABLE(      TABLE=T1,
+                 FILTRE=_F(  NOM_PARA = 'NOEUD',
+                          VALE_K = 'N16'),
+               NOM_PARA='TEMP',
+                   VALE=20.        )
+
+TEST_TABLE(      TABLE=T1,
+                 FILTRE=_F(  NOM_PARA = 'NOEUD',
+                          VALE_K = 'N3'),
+               NOM_PARA='TEMP',
+                   VALE=5.         )
+
+TEST_TABLE(      TABLE=T1,
+                 FILTRE=_F(  NOM_PARA = 'NOEUD',
+                          VALE_K = 'N9'),
+               NOM_PARA='TEMP',
+                   VALE=55.        )
+
+TEST_TABLE(      TABLE=T1,
+                 FILTRE=_F(  NOM_PARA = 'NOEUD',
+                          VALE_K = 'N30'),
+               NOM_PARA='TEMP',
+                   VALE=60.        )
+
+TEST_TABLE(      TABLE=T1,
+                 FILTRE=_F(  NOM_PARA = 'NOEUD',
+                          VALE_K = 'N38'),
+               NOM_PARA='TEMP',
+                   VALE=40.        )
+
+#
+#
+TEST_TABLE(      TABLE=T2,
+                 FILTRE=_F(  NOM_PARA = 'NOEUD',
+                          VALE_K = 'N1'),
+               NOM_PARA='DX',
+              PRECISION=0.018,
+                   VALE=2.68975        )
+
+TEST_TABLE(      TABLE=T2,
+                 FILTRE=_F(  NOM_PARA = 'NOEUD',
+                          VALE_K = 'N1'),
+               NOM_PARA='DY',
+              PRECISION=0.002,
+                   VALE=2.55        )
+
+TEST_TABLE(      TABLE=T2,
+                 FILTRE=_F(  NOM_PARA = 'NOEUD',
+                          VALE_K = 'N23'),
+               NOM_PARA='DX',
+                CRITERE='ABSOLU',
+                   VALE=0.          )
+
+TEST_TABLE(      TABLE=T2,
+                 FILTRE=_F(  NOM_PARA = 'NOEUD',
+                          VALE_K = 'N23'),
+               NOM_PARA='DY',
+              PRECISION=0.014,
+                   VALE=-2.65125        )
+
+TEST_TABLE(      TABLE=T2,
+                 FILTRE=_F(  NOM_PARA = 'NOEUD',
+                          VALE_K = 'N16'),
+               NOM_PARA='DX',
+                   VALE=-2.695        )
+
+TEST_TABLE(      TABLE=T2,
+                 FILTRE=_F(  NOM_PARA = 'NOEUD',
+                          VALE_K = 'N3'),
+               NOM_PARA='DX',
+              PRECISION=0.018,
+                   VALE=-2.70028        )
+
+TEST_TABLE(      TABLE=T2,
+                 FILTRE=_F(  NOM_PARA = 'NOEUD',
+                          VALE_K = 'N3'),
+               NOM_PARA='DY',
+                   VALE=-2.695        )
+
+TEST_TABLE(      TABLE=T2,
+                 FILTRE=_F(  NOM_PARA = 'NOEUD',
+                          VALE_K = 'N9'),
+               NOM_PARA='DX',
+                   VALE=0.0700        )
+
+TEST_TABLE(      TABLE=T2,
+                 FILTRE=_F(  NOM_PARA = 'NOEUD',
+                          VALE_K = 'N9'),
+               NOM_PARA='DY',
+              PRECISION=0.014,
+                   VALE=2.59875        )
+
+TEST_TABLE(      TABLE=T2,
+                 FILTRE=_F(  NOM_PARA = 'NOEUD',
+                          VALE_K = 'N30'),
+               NOM_PARA='DX',
+                   VALE=2.625          )
+
+FIN()
+#

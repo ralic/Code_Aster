@@ -3,7 +3,7 @@
      &                   COMPOR,TYPMOD,INSTM,INSTP,TM,TP)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 07/03/2005   AUTEUR KBBHHDB G.DEBRUYNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -57,7 +57,7 @@ C-----------------------------------------------------------------------
       INTEGER NDIM,NNO,NNOS,IPOIDS,IVF,IDFDE,JGANO
       REAL*8 DSIDEP(2,2),B(2,8),RBID,R8VIDE
       REAL*8 SU(2),U(8),AIRE,POIDS(2),SIG(2),VIMOIN(LGPG),VIPLUS(LGPG)
-      REAL*8 VALRES,HPEN,LONG
+      REAL*8 VALRES,HPEN
       REAL*8 CRIT
       REAL*8 TEMPM(2),TEMPP(2),TREF
       REAL*8 EPS(4),DEPS(4)
@@ -95,7 +95,6 @@ C  * EN AXIS ON MULTIPLIE CETTE LONGEUR PAR LA DISTANCE DU CENTRE DE
 C    L'ELEMENT A L'AXE DE SYMETRIE.
 
       AIRE = SQRT( (GEOM(1,2)-GEOM(1,1))**2 + (GEOM(2,2)-GEOM(2,1))**2 )
-      LONG=AIRE
       IF (AXI) AIRE = AIRE * (GEOM(1,1)+GEOM(1,2))/2.D0
       CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,
      &                  JGANO)
@@ -129,18 +128,6 @@ C CALCUL DU SAUT DE DEPLACEMENT DANS L'ELEMENT (SU_N,SU_T) = B U :
  10     CONTINUE
 
         IF (COMPOR(1)(7:8).EQ.'BA') THEN
-          CALL RCVALA(MATE,' ','JOINT_BA',0,' ',0.D0,1,
-     &               'HPEN',VALRES,CODRET,'FM')
-          HPEN   = VALRES
-
-          DO 15 J = 1,4
-            EPS (J)=0.D0
-            DEPS(J)=0.D0
-15        CONTINUE
-
-          EPS(1) = SU(2)/LONG
-          EPS(2) = SU(1)/HPEN
-          EPS(4) = SU(2)/HPEN
 
           DO 18 J=1,LGPG
             VIMOIN(J)=VIM(J,KPG)
@@ -155,7 +142,7 @@ C -   APPEL A LA LOI DE COMPORTEMENT
      &               RBID,RBID,
      &               RBID,RBID,RBID,
      &               -1.D0,-1.D0,
-     &               EPS,DEPS,
+     &               SU,RBID,
      &               SIGN,VIMOIN,
      &               OPTION,
      &               EPSANM,EPSANP,

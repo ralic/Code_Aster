@@ -1,4 +1,4 @@
-# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 07/03/2005   AUTEUR CIBHHLV L.VIVAN 
 # TITRE PLAQUE CIRCULAIRE POSEE SOUS PRESSION  147 SHB8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -42,7 +42,7 @@ MATER=DEFI_MATERIAU(ELAS=_F(E=1.0,
                             NU=0.3,
                             RHO=1.0,),);
 
-MAIL1=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='NON',),);
+MAIL1=LIRE_MAILLAGE();
 
 MODKT=AFFE_MODELE(MAILLAGE=MAIL1,
                   AFFE=_F(GROUP_MA='QUAD',

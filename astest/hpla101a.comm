@@ -1,4 +1,4 @@
-# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 07/03/2005   AUTEUR CIBHHLV L.VIVAN 
 # RESPONSABLE GNICOLAS G.NICOLAS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -40,7 +40,7 @@ DEBUT(CODE=_F( NOM = 'HPLA101A',NIV_PUB_WEB='INTERNET'))
 #======================================================================
 
 
-MA=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='NON'),)
+MA=LIRE_MAILLAGE( )
 
 MO=AFFE_MODELE(  MAILLAGE=MA,
          AFFE=_F(  TOUT = 'OUI',PHENOMENE = 'MECANIQUE',

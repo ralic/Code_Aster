@@ -1,0 +1,180 @@
+# MODIF  DATE 07/03/2005   AUTEUR CIBHHLV L.VIVAN 
+# TITRE TRACTION D'UN BARREAU FRAGILE - PRED_ELAS - BETON_DOUBLE_DP
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+# MODELISATION 3D   (10 MAILLES HEXA20)
+#======================================================================
+
+DEBUT(        CODE=_F(  NOM = 'SSNV147F',NIV_PUB_WEB='INTERNET'))
+
+PRE_GIBI()
+
+MA=LIRE_MAILLAGE()
+
+MA=DEFI_GROUP( reuse=MA,
+               MAILLAGE=MA,
+               CREA_GROUP_NO=_F( 
+                TOUT_GROUP_MA = 'OUI')
+              )
+
+MO=AFFE_MODELE( 
+                MAILLAGE=MA,
+                AFFE=_F( 
+               GROUP_MA = ('BLOC', 'FIXE', 'TRAC',),
+               PHENOMENE = 'MECANIQUE',
+               MODELISATION = '3D')
+             )
+FC=DEFI_CONSTANTE(NOM_RESU='F_C',
+                  VALE=38.3,);
+FT1=DEFI_CONSTANTE(NOM_RESU='F_T',
+                   VALE=4.0,);
+FT2=DEFI_CONSTANTE(NOM_RESU='F_T',
+                   VALE=3.0,);
+BETA=DEFI_CONSTANTE(NOM_RESU='COEF_BIAX',
+                    VALE=1.16,);
+GC=DEFI_CONSTANTE(NOM_RESU='ENER_COMP_RUPT',
+                  VALE=2.83E-2,);
+GT=DEFI_CONSTANTE(NOM_RESU='ENER_TRAC_RUPT',
+                  VALE=2.83E-4,);
+CALCAIRE=DEFI_MATERIAU(BETON_DOUBLE_DP=_F(COEF_BIAX=BETA,
+                                        F_T=FT1,
+                                        ENER_TRAC_RUPT=GT,
+                                        ECRO_TRAC_P_PIC='LINEAIRE',
+                                        ENER_COMP_RUPT=GC,
+                                        COEF_ELAS_COMP=33.3333,
+                                        ECRO_COMP_P_PIC='LINEAIRE',
+                                        F_C=FC,),
+                     BPEL_BETON=_F(),
+                     ELAS=_F(NU=0.22,
+                             E=3.1000E4,),);
+CAL_FAIB=DEFI_MATERIAU(BETON_DOUBLE_DP=_F(COEF_BIAX=BETA,
+                                        F_T=FT2,
+                                        ENER_TRAC_RUPT=GT,
+                                        ECRO_TRAC_P_PIC='LINEAIRE',
+                                        ENER_COMP_RUPT=GC,
+                                        COEF_ELAS_COMP=33.3333,
+                                        ECRO_COMP_P_PIC='LINEAIRE',
+                                        F_C=FC,),
+                     BPEL_BETON=_F(),
+                     ELAS=_F(NU=0.22,
+                             E=3.1000E4,),);
+
+CHMAT=AFFE_MATERIAU( 
+                MAILLAGE=MA,AFFE=(
+                    _F( 
+                GROUP_MA = 'BLOC',
+                MATER = CALCAIRE), _F( 
+                MAILLE = 'M1',
+                MATER = CAL_FAIB))
+              )
+
+L_INST=DEFI_LIST_REEL( 
+               DEBUT=0.0,INTERVALLE=(
+               
+                _F(  JUSQU_A = 1.,       NOMBRE = 1),
+                _F(  JUSQU_A = 15.,     NOMBRE = 280))
+              )
+
+LIAISON=AFFE_CHAR_MECA( 
+               MODELE=MO,
+               
+                FACE_IMPO=_F( GROUP_MA = 'FIXE',  DX = 0., DY = 0., DZ = 0.)
+              )
+
+TRACTION=AFFE_CHAR_MECA( 
+                      MODELE=MO,
+               FORCE_FACE=_F( GROUP_MA = 'TRAC', FZ = 1.)
+              )
+
+RAMPE=DEFI_FONCTION( 
+              NOM_PARA='INST',
+                  VALE=(0., 0.,
+                        1., 1.,)
+             )
+
+REPONSE=STAT_NON_LINE( 
+                     MODELE=MO,
+                 CHAM_MATER=CHMAT,EXCIT=(
+                     
+                _F( CHARGE = LIAISON),
+                _F( CHARGE = TRACTION, FONC_MULT = RAMPE)),
+                  COMP_INCR=_F( 
+                RELATION = 'BETON_DOUBLE_DP'),
+                 
+                INCREMENT=_F( 
+                LIST_INST = L_INST,
+                INST_FIN = 1.),
+                     NEWTON=_F( 
+                MATRICE = 'TANGENTE',
+                REAC_ITER = 1),
+                CONVERGENCE=_F( 
+                RESI_GLOB_RELA = 1.E-6,
+                ITER_GLOB_MAXI = 50)
+             )
+
+REPONSE=STAT_NON_LINE( reuse=REPONSE,
+                  ETAT_INIT=_F( 
+                EVOL_NOLI = REPONSE),
+                     MODELE=MO,
+                 CHAM_MATER=CHMAT,EXCIT=(
+                     
+                _F( CHARGE = LIAISON),
+                _F( CHARGE = TRACTION, TYPE_CHARGE = 'FIXE_PILO')),
+                  COMP_INCR=_F( 
+                RELATION = 'BETON_DOUBLE_DP'),
+                 
+                INCREMENT=_F( 
+                LIST_INST = L_INST,
+                INST_FIN = 3.,
+                SUBD_PAS = 4,
+                SUBD_PAS_MINI = 1.E-6),
+               PILOTAGE=_F( 
+                TYPE = 'PRED_ELAS',
+                ETA_PILO_MIN = 0.50),
+                     NEWTON=_F( 
+                MATRICE = 'TANGENTE',
+                REAC_ITER = 1),
+                CONVERGENCE=_F( 
+                RESI_GLOB_RELA = 1.E-6,
+                ITER_GLOB_MAXI = 10)
+             )
+
+
+TEST_RESU(RESU=(  _F( 
+               RESULTAT = REPONSE,
+               NUME_ORDRE = 41,
+               GROUP_NO = 'E',
+               REFERENCE = 'NON_REGRESSION',
+               NOM_CHAM = 'DEPL',
+               NOM_CMP = 'DZ',
+               VALE = 1.08163518E-04), _F( 
+               RESULTAT = REPONSE,
+               NUME_ORDRE = 41,
+               MAILLE = 'M1',
+               POINT = 1,
+               REFERENCE = 'NON_REGRESSION',
+               NOM_CHAM = 'SIEF_ELGA',
+               NOM_CMP = 'SIZZ',
+               VALE = 2.94149327E0))
+             )
+
+FIN()
+#
+#
+#
+#

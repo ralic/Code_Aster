@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 07/03/2005   AUTEUR CIBHHLV L.VIVAN 
 # TITRE CYLINDRE EN 3D (TETRA4)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -35,7 +35,7 @@ DEBUT( CODE=_F( NOM = 'SSLV04C',NIV_PUB_WEB='INTERNET'))
 
 PRE_GIBI()
 
-M=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='NON'),   )
+M=LIRE_MAILLAGE()
 
 DEFI_GROUP(reuse=M,       MAILLAGE=M,
                   CREA_GROUP_NO=_F( NOM = 'DIRI', GROUP_MA = 'DIRI'))
@@ -263,4 +263,3 @@ TEST_RESU(RESU=(
            )
 
 FIN()
-#

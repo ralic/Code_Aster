@@ -1,4 +1,4 @@
-# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 08/03/2005   AUTEUR LAMARCHE S.LAMARCHE 
 # TITRE ECRASEMENT D'UN ANNEAU ENTRE DEUX PLAQUES AVEC FROTTEMENT.
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -98,6 +98,7 @@ CON=AFFE_CHAR_MECA(MODELE=MO,
                                 GROUP_MA_MAIT='LMAI',
                                 INTEGRATION='NOEUD',
                                 MODL_AXIS='NON',
+                                SEUIL_INIT = 0.1,
                                 ITER_GEOM_MAXI = 1,
                                 COEF_REGU_CONT = 100.,
                                 COEF_REGU_FROT = 100.,

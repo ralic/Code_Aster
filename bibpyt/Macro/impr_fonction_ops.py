@@ -1,4 +1,4 @@
-#@ MODIF impr_fonction_ops Macro  DATE 07/02/2005   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF impr_fonction_ops Macro  DATE 07/03/2005   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -20,7 +20,7 @@
 
 # RESPONSABLE MCOURTOI M.COURTOIS
 
-import os.path
+import os.path, string
 
 # ------------------------------------------------------------------------------
 def impr_fonction_ops(self, FORMAT, COURBE, INFO, **args):
@@ -74,7 +74,8 @@ def impr_fonction_ops(self, FORMAT, COURBE, INFO, **args):
    for Ci in COURBE:
       iocc+=1
       dC = Ci.cree_dict_valeurs(Ci.mc_liste)
-      if dC.has_key('LIST_PARA') and i0==0: i0=iocc
+      if dC.has_key('LIST_PARA') and dC['LIST_PARA']!=None and i0==0:
+         i0=iocc
       for mc in dC.keys():
          if dC[mc]==None: del dC[mc]
       Courbe.append(dC)
@@ -169,9 +170,10 @@ def impr_fonction_ops(self, FORMAT, COURBE, INFO, **args):
                   lx=lv2[0][0]
                   ly=lv2[0][1]
                # on stocke les données dans le Graph
+               nomresu=string.strip(dic['NOM_RESU'])+'_'+str(len(graph.Legendes))
                dicC={
                   'Val' : [lx,ly],
-                  'Lab' : [dic['NOM_PARA_FONC'],dic['NOM_RESU']]
+                  'Lab' : [dic['NOM_PARA_FONC'],nomresu]
                }
                Graph.AjoutParaCourbe(dicC, args=dCi)
                graph.AjoutCourbe(**dicC)
@@ -197,14 +199,16 @@ def impr_fonction_ops(self, FORMAT, COURBE, INFO, **args):
                if dCi['PARTIE']=='IMAG' : lr=lval[2]
             # on stocke les données dans le Graph
             if typ=='fonction_c' and not dCi.has_key('PARTIE'):
+               nomresu=string.strip(dpar['NOM_RESU'])+'_'+str(len(graph.Legendes))
                dicC={
                   'Val' : lval,
-                  'Lab' : [dpar['NOM_PARA'],dpar['NOM_RESU']+'_R',dpar['NOM_RESU']+'_I']
+                  'Lab' : [dpar['NOM_PARA'],nomresu+'_R',nomresu+'_I']
                }
             else:
+               nomresu=string.strip(dpar['NOM_RESU'])+'_'+str(len(graph.Legendes))
                dicC={
                   'Val' : [lx,lr],
-                  'Lab' : [dpar['NOM_PARA'],dpar['NOM_RESU']]
+                  'Lab' : [dpar['NOM_PARA'],nomresu]
                }
             Graph.AjoutParaCourbe(dicC, args=dCi)
             graph.AjoutCourbe(**dicC)
@@ -275,14 +279,18 @@ def impr_fonction_ops(self, FORMAT, COURBE, INFO, **args):
          # on stocke les données dans le Graph
          # on imprime la liste des paramètres seulement si LIST_PARA
          if intloc:
+            nomresur=string.strip(dpar['NOM_RESU'])+'_'+str(len(graph.Legendes))
+            nomresu2=string.strip(dpa2['NOM_RESU'])+'_'+str(len(graph.Legendes)+1)
             dicC={
                'Val' : [lt,lx,ly],
-               'Lab' : [dpar['NOM_PARA'],dpar['NOM_RESU'],dpa2['NOM_RESU']]
+               'Lab' : [dpar['NOM_PARA'],nomresur,nomresu2]
             }
          else:
+            nomresur=string.strip(dpar['NOM_RESU'])+'_'+str(len(graph.Legendes))
+            nomresu2=string.strip(dpa2['NOM_RESU'])+'_'+str(len(graph.Legendes)+1)
             dicC={
                'Val' : [lx,ly],
-               'Lab' : [dpar['NOM_RESU'],dpa2['NOM_RESU']]
+               'Lab' : [nomresur,nomresu2]
             }
          Graph.AjoutParaCourbe(dicC, args=dCi)
          graph.AjoutCourbe(**dicC)

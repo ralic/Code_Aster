@@ -1,4 +1,4 @@
-#& MODIF ENTETE  DATE 22/02/2005   AUTEUR DURAND C.DURAND 
+#& MODIF ENTETE  DATE 07/03/2005   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -414,6 +414,11 @@ class fonction_sdaster(fonction_class):
       """Retourne la liste des ordonnées"""
       return self.Valeurs()[1]
    def __call__(self,val):
+      ### Pour EFICAS : substitution de l'instance de classe
+      ### parametre par sa valeur
+      import types 
+      if type(val)==types.InstanceType : val=val.valeur
+      ###
       lx,ly=self.Valeurs()
       n=len(lx)
       if val in lx : return ly[lx.index(val)]
@@ -425,8 +430,7 @@ class fonction_sdaster(fonction_class):
       if indic==n :
          if self.etape['PROL_DROITE']=='CONSTANT':return ly[n-1]
       return (ly[indic-1]+(ly[indic]-ly[indic-1])*(val-lx[indic-1])/(lx[indic+1]-lx[indic-1]))
-class para_sensi(fonction_sdaster):
-   def Parametres(self):pass
+class para_sensi(fonction_sdaster): pass
 class fonction_c(fonction_class):
    def Valeurs(self) :
       """

@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 07/03/2005   AUTEUR CIBHHLV L.VIVAN 
 # RESPONSABLE MABBAS M.ABBAS
 #
 # TITRE TEST DE REFERENCE POUR LA MACRO DE CALCUL DE BRIDES CABRI
@@ -51,7 +51,7 @@ MA = MACR_CABRI_MAIL(EXEC_MAILLAGE=_F(LOGICIEL='GIBI2000',),
                           GOUJ_E_ECROU   = 30.,
                           ETAN_E_JOINT   = 8.,
                                       ),
-                       VERI_MAIL = _F(VERIF = 'NON',),
+                       VERI_MAIL = _F(VERIF = 'OUI',),
                         IMPRESSION=_F(FORMAT='IDEAS'),
                                );
 

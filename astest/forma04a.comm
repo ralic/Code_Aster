@@ -1,4 +1,4 @@
-# MODIF  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 07/03/2005   AUTEUR CIBHHLV L.VIVAN 
 # RESPONSABLE O.BOITEAU
 # TITRE Maillage adaptatif mecanique sur une poutre en flexion
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -115,7 +115,7 @@ F_INST=DEFI_FONCTION(NOM_PARA='INST',
 
 # LECTURE ET INFO MAILLAGE                     
 num_calc=0   
-MA[num_calc]=LIRE_MAILLAGE(INFO=2, VERI_MAIL=_F());
+MA[num_calc]=LIRE_MAILLAGE(INFO=2, );
 MA[num_calc]=DEFI_GROUP(reuse =MA[num_calc],
                  MAILLAGE=MA[num_calc],
                  CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI',),);
