@@ -1,4 +1,4 @@
-# MODIF  DATE 12/01/2004   AUTEUR GRANET S.GRANET 
+# MODIF  DATE 17/08/2004   AUTEUR ROMEO R.FERNANDES 
 # TITRE TEST HHM 2D (HHM_DPQ4),CALCUL DECOUPLE (S=0.5, DSDP=0)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -310,8 +310,8 @@ TEST_RESU(
              NOM_CMP = 'PRE1',
              NOEUD = 'N1',   
              VALE = -4.282E-1,   
-             CRITERE = 'ABSOLU',
-             PRECISION = 1.E-4)
+             CRITERE = 'RELATIF',
+             PRECISION = 1.E-2)
            )
 
 TEST_RESU( 
@@ -330,8 +330,8 @@ TEST_RESU(
              NOM_CMP = 'PRE1',
              NOEUD = 'N3',   
              VALE = 4.282E-1,   
-             CRITERE = 'ABSOLU',
-             PRECISION = 1.E-4)
+             CRITERE = 'RELATIF',
+             PRECISION = 1.E-2)
            )
 
 TEST_RESU( 
@@ -350,8 +350,8 @@ TEST_RESU(
              NOM_CMP = 'PRE1',
              NOEUD = 'N1',   
              VALE = -4.26E+1,
-             CRITERE = 'ABSOLU',
-             PRECISION = 1.E-1)
+             CRITERE = 'RELATIF',
+             PRECISION = 1.E-2)
            )
 
 TEST_RESU( 
@@ -370,8 +370,8 @@ TEST_RESU(
              NOM_CMP = 'PRE1',
              NOEUD = 'N3',   
              VALE = 4.26E+1,
-             CRITERE = 'ABSOLU',
-             PRECISION = 1.E-1)
+             CRITERE = 'RELATIF',
+             PRECISION = 1.E-2)
            )
 
 TEST_RESU( 
@@ -390,8 +390,8 @@ TEST_RESU(
              NOM_CMP = 'PRE1',
              NOEUD = 'N1',   
              VALE = -4.996E3,   
-             CRITERE = 'ABSOLU',
-             PRECISION = 1.E0)
+             CRITERE = 'RELATIF',
+             PRECISION = 1.E-2)
            )
 
 TEST_RESU( 
@@ -410,8 +410,8 @@ TEST_RESU(
              NOM_CMP = 'PRE1',
              NOEUD = 'N3',   
              VALE = 4.996E3,    
-             CRITERE = 'ABSOLU',
-             PRECISION = 1.E0)
+             CRITERE = 'RELATIF',
+             PRECISION = 1.E-2)
            )
 
 TEST_RESU( 

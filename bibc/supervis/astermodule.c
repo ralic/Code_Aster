@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF astermodule supervis  DATE 30/06/2004   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF astermodule supervis  DATE 17/08/2004   AUTEUR DURAND C.DURAND */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -350,7 +350,6 @@ void PRE_myabort( _IN const char *nomFichier , _IN const int numeroLigne , _IN c
 #define MYABORT(message) PRE_myabort( __FILE__ , __LINE__ , message )
 
 PyObject * MakeTupleString(long nbval,char *kval,int lkval,INTEGER *lval) ;
-PyObject * MakeTupleString_pour_putvid(long nbval,char *kval,int lkval) ;
 
 
 char * fstring2c( _IN char *s, _IN int l) ;
@@ -1993,109 +1992,6 @@ void DEFPPP(SMCDEL,smcdel,INTEGER *iold,INTEGER *inew,INTEGER *ierusr)
         _FIN("smcdel_")
 }
 
-
-void DEFPSSP(SMDCMD ,smdcmd,INTEGER *jcmd,char *result,int lresult,char *comman,int lcomman,INTEGER *ierusr)
-{
-        /*
-          Entrees:
-            jcmd numero d ordre de la commande en cours
-            result nom du resultat produit par la commande
-            comman nom de la commande a debuter
-
-          Sorties:
-            ierusr code retour d erreur incremente
-        */
-        PyObject * res;
-        _DEBUT("smdcmd_");
-        res = PyObject_CallMethod(commande,"smdcmd","ls#s#",*jcmd,result,lresult,comman,lcomman);
-        /*
-            Si le retour est NULL : une exception a ete levee dans le code Python appele
-            Cette exception est a transferer normalement a l appelant mais FORTRAN ???
-            On produit donc un abort en ecrivant des messages sur la stdout
-        */
-        if (res == NULL)
-           MYABORT("erreur a l appel de smdcmd dans la partie Python");
-        *ierusr=*ierusr+PyInt_AsLong(res);
-        Py_DECREF(res);
-        _FIN("smdcmd_") ;
-}
-
-
-void DEFP(SMFCMD,smfcmd,INTEGER *ierusr)
-{
-        /*
-          Entrees:
-
-          Sorties:
-            ierusr code retour d erreur incremente
-        */
-        PyObject * res;
-        _DEBUT("smfcmd_");
-        res = PyObject_CallMethod(commande,"smfcmd","");
-        /*
-            Si le retour est NULL : une exception a ete levee dans le code Python appele
-            Cette exception est a transferer normalement a l appelant mais FORTRAN ???
-            On produit donc un abort en ecrivant des messages sur la stdout
-        */
-        if (res == NULL)
-           MYABORT("erreur a l appel de smfcmd dans la partie Python");
-
-        *ierusr=*ierusr+PyInt_AsLong(res);
-        Py_DECREF(res);
-        _FIN("smfcmd_" ) ;
-}
-
-
-void DEFSP( SMDMCF ,smdmcf,char * motf,int lmotf,INTEGER *ierusr)
-{
-        /*
-          Entrees:
-            motf mot cle facteur a debuter
-
-          Sorties:
-            ierusr code retour d erreur incremente
-        */
-        PyObject * res;
-        _DEBUT("smdmcf_");
-        res = PyObject_CallMethod(commande,"smdmcf","s#",motf,lmotf);
-        /*
-            Si le retour est NULL : une exception a ete levee dans le code Python appele
-            Cette exception est a transferer normalement a l appelant mais FORTRAN ???
-            On produit donc un abort en ecrivant des messages sur la stdout
-        */
-        if (res == NULL)
-           MYABORT("erreur a l appel de smdmcf dans la partie Python");
-
-        *ierusr=*ierusr+PyInt_AsLong(res);
-        Py_DECREF(res);
-        _FIN("smdmcf_") ;
-}
-
-
-void DEFP(SMFMCF,smfmcf,INTEGER *ierusr)
-{
-        /*
-          Entrees:
-
-          Sorties:
-            ierusr code retour d erreur incremente
-        */
-        PyObject * res ;
-        _DEBUT("smfmcf_");
-        res = PyObject_CallMethod(commande,"smfmcf","");
-        /*
-            Si le retour est NULL : une exception a ete levee dans le code Python appele
-            Cette exception est a transferer normalement a l appelant mais FORTRAN ???
-            On produit donc un abort en ecrivant des messages sur la stdout
-        */
-        if (res == NULL)
-           MYABORT("erreur a l appel de smfmcf dans la partie Python");
-
-        *ierusr=*ierusr+PyInt_AsLong(res);
-        Py_DECREF(res);
-        _FIN("smfmcf_") ;
-}
-
 long FindLength( _IN char *chaineFortran , _IN INTEGER longueur )
 {
         /*
@@ -2136,32 +2032,6 @@ PyObject * MakeTupleString(long nbval,char *kval,int lkval,INTEGER *lval)
                 PyObject *t=PyTuple_New(nbval);
                 for(i=0;i<nbval;i++){
                         if(PyTuple_SetItem(t,i,PyString_FromStringAndSize(deb,FindLength(deb,lval[i]))))return NULL;
-                        deb=deb+lkval;
-                }
-                return t;
-        }
-}
-PyObject * MakeTupleString_pour_putvid(long nbval,char *kval,int lkval)
-{
-        /*
-                  Entrees:
-                    nbval nombre de chaines dans kval
-                    kval  tableau de nbval chaines FORTRAN
-                    lkval longueur des chaines FORTRAN (compilateur)
-                  Sorties:
-                    RETOUR fonction : tuple de string Python de longueur nbval
-                  Fonction:
-                    Convertir un tableau de chaines FORTRAN en un tuple de string Python de meme longueur
-        */
-        int i;
-        char *deb=kval;
-        if(nbval == 1){
-                return PyString_FromStringAndSize(deb,FindLength(deb,lkval));
-        }
-        else{
-                PyObject *t=PyTuple_New(nbval);
-                for(i=0;i<nbval;i++){
-                        if(PyTuple_SetItem(t,i,PyString_FromStringAndSize(deb,FindLength(deb,lkval))))return NULL;
                         deb=deb+lkval;
                 }
                 return t;
@@ -2216,157 +2086,6 @@ PyObject * MakeTupleFloat(long nbval,double * kval)
                 }
                 return t;
         }
-}
-
-
-void DEFSPSP(PUTVID,putvid,char *motcle,int lmotcle,INTEGER *nbval,char *kval,int lkval,INTEGER *ierusr)
-{
-        /*
-                  Entrees:
-                    motcle nom du mot cle
-                    nbval nombre de concepts
-                    kval liste des concepts
-                  Sorties:
-                    ierusr code retour d erreur incremente
-                  Fonction:
-                    Rentrer une liste d argument de type identificateur (concept)
-        */
-        PyObject *res = (PyObject*)0 ;
-        _DEBUT("putvid_") ;{
-        if(*nbval>0)
-        {
-                PyObject * t=MakeTupleString_pour_putvid(*nbval,kval,lkval);
-                if (t == NULL)
-                        MYABORT("erreur a l appel de putvid : impossible de creer un tuple");
-
-                                                                                     ASSERT(motcle!=NULL) ;
-                                                                                     ASSERT(lmotcle>0) ;
-                res = PyObject_CallMethod(commande,"putvid","s#lO",motcle,FindLength(motcle,lmotcle),*nbval,t);
-                Py_DECREF(t);
-                                                                                     REFSCRUTE(t) ;
-                /*
-                            Si le retour est NULL : une exception a ete levee dans le code Python appele
-                            Cette exception est a transferer normalement a l appelant mais FORTRAN ???
-                            On produit donc un abort en ecrivant des messages sur la stdout
-                */
-                if (res == NULL)
-                        MYABORT("erreur a l appel de putvid dans la partie Python");
-
-                                                                                     REFSCRUTE(t);
-                *ierusr=*ierusr+PyInt_AsLong(res);
-                Py_DECREF(res);
-        }
-        }_FIN("putvid_") ;
-}
-
-
-void DEFSPPP(PUTVIS,putvis,char *motcle,int lmotcle,INTEGER *nbval,INTEGER *ival,INTEGER *ierusr)
-{
-        /*
-                  Entrees:
-                    motcle nom du mot cle
-                    nbval nombre d entiers
-                    ival liste des entiers
-                  Sorties:
-                    ierusr code retour d erreur incremente
-                  Fonction:
-                    Rentrer une liste d argument de type  entier
-        */
-        PyObject *res = (PyObject*)0 ;
-        _DEBUT("putvis_") ;{
-        PyObject * t=MakeTupleInt(*nbval,ival);
-        if (t == NULL)
-                MYABORT("erreur a l appel de putvis : impossible de creer un tuple");
-
-        res = PyObject_CallMethod(commande,"putvis","s#lO",motcle,FindLength(motcle,lmotcle),*nbval,t);
-        Py_DECREF(t);
-        /*
-                    Si le retour est NULL : une exception a ete levee dans le code Python appele
-                    Cette exception est a transferer normalement a l appelant mais FORTRAN ???
-                    On produit donc un abort en ecrivant des messages sur la stdout
-        */
-        if (res == NULL)
-                MYABORT("erreur a l appel de putvis dans la partie Python");
-
-                                                                                    REFSCRUTE(t);
-
-        *ierusr=*ierusr+PyInt_AsLong(res);
-        Py_DECREF(res);
-        }_FIN("putvis_") ;
-}
-
-
-
-void DEFSPPP(PUTVR8,putvr8,char *motcle,int lmotcle,INTEGER *nbval,double *rval,INTEGER *ierusr)
-{
-        /*
-                  Entrees:
-                    motcle nom du mot cle
-                    nbval nombre de reels
-                    rval liste des reels
-                  Sorties:
-                    ierusr code retour d erreur incremente
-                  Fonction:
-                    Rentrer une liste d argument de type  reel
-        */
-        PyObject *res = (PyObject*)0 ;
-        _DEBUT("putvr8_") ;{
-        PyObject * t=MakeTupleFloat(*nbval,rval);
-        if (t == NULL)
-                MYABORT("erreur a l appel de putvr8 : impossible de creer un tuple");
-
-        res = PyObject_CallMethod(commande,"putvr8","s#lO",motcle,FindLength(motcle,lmotcle),*nbval,t);
-        Py_DECREF(t);
-        /*
-                    Si le retour est NULL : une exception a ete levee dans le code Python appele
-                    Cette exception est a transferer normalement a l appelant mais FORTRAN ???
-                    On produit donc un abort en ecrivant des messages sur la stdout
-        */
-        if (res == NULL)
-                MYABORT("erreur a l appel de putvr8 dans la partie Python");
-
-                                                                                    REFSCRUTE(t);
-
-        *ierusr=*ierusr+PyInt_AsLong(res);
-        Py_DECREF(res);
-        }_FIN("putvr8_") ;
-}
-
-
-void DEFSPSPP(PUTVTX,putvtx,char *motcle,int lmotcle,INTEGER *nbval,char *kval,int lkval,INTEGER *ival,INTEGER *ierusr)
-{
-        /*
-                  Entrees:
-                    motcle nom du mot cle
-                    nbval nombre de texte
-                    kval liste des nbval textes
-                    ival liste des nbval longueurs de texte
-                  Sorties:
-                    ierusr code retour d erreur incremente
-                  Fonction:
-                    Rentrer une liste d argument de type texte
-        */
-        PyObject * res = (PyObject*)0 ;
-        _DEBUT("putvtx_") ; FSSCRUTE(motcle,lmotcle);FSSCRUTE(kval,lkval);ISCRUTE(*ival) ; ISCRUTE(lkval);{
-
-        PyObject * t=MakeTupleString(*nbval,kval,lkval,ival);
-        if (t == NULL)
-                MYABORT("erreur a l appel de putvtx : impossible de creer un tuple");
-
-        res = PyObject_CallMethod(commande,"putvtx","s#lOl",motcle,FindLength(motcle,lmotcle),*nbval,t,*ival);
-        Py_DECREF(t);
-        /*
-                    Si le retour est NULL : une exception a ete levee dans le code Python appele
-                    Cette exception est a transferer normalement a l appelant mais FORTRAN ???
-                    On produit donc un abort en ecrivant des messages sur la stdout
-        */
-        if (res == NULL)
-                MYABORT("erreur a l appel de putvtx dans la partie Python");
-
-                                                                                                 REFSCRUTE(t);
-        *ierusr=*ierusr+PyInt_AsLong(res);
-        Py_DECREF(res);
-        }_FIN("putvtx_") ;
 }
 
 

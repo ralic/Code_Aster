@@ -8,7 +8,7 @@
      +                    ABSINF, DXINF, DYINF, DZINF
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 30/03/2004   AUTEUR PROIA E.PROIA 
+C MODIF PREPOST  DATE 17/08/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -163,16 +163,14 @@ C
             KG1(5) = MAX ( KG1(5) ,  G )
             KG1(6) = MIN ( KG1(6) ,  G )
          ENDIF
-         IF ( NIV .EQ. 2 ) THEN
             VK1 = ISIGX * SQRT(K1)
             VK2 = ISIGY * SQRT(K2)
             IF ( NDIM. EQ .2 ) THEN
-               WRITE(IFM,1010) R1 , R2 , VK1 , VK2 , G
+               IF(NIV.EQ.2) WRITE(IFM,1010) R1 , R2 , VK1 , VK2 , G
             ELSEIF( NDIM. EQ. 3) THEN
                VK3 = ISIGZ * SQRT(K3)
-               WRITE(IFM,1010) R1 , R2 , VK1 , VK2, VK3 , G
+               IF(NIV.EQ.2) WRITE(IFM,1010) R1, R2, VK1, VK2, VK3, G
             ENDIF
-         ENDIF
  102  CONTINUE
       KG1(1) = ISIGX * SQRT ( KG1(1) )
       KG1(2) = ISIGX * SQRT ( KG1(2) )
@@ -223,16 +221,15 @@ C
             KG2(5) = MAX ( KG2(5) ,  G )
             KG2(6) = MIN ( KG2(6) ,  G )
          ENDIF
-         IF ( NIV .EQ. 2 ) THEN
             VK1 = ISIGX * SQRT(K1)
             VK2 = ISIGY * SQRT(K2)
             IF ( NDIM. EQ .2 ) THEN
-            WRITE(IFM,1010) R1 , VK1 , VK2 , G
+            IF ( NIV .EQ. 2 ) WRITE(IFM,1010) R1 , VK1 , VK2 , G
             ELSEIF( NDIM. EQ. 3) THEN
                VK3 = ISIGZ * SQRT(K3)
-               WRITE(IFM,1010) R1 , VK1 , VK2 ,VK3, G
+               IF ( NIV .EQ. 2 ) WRITE(IFM,1010) R1, VK1, VK2,VK3, G
             ENDIF
-         ENDIF
+
  202  CONTINUE
       KG2(1) = ISIGX * SQRT ( KG2(1) )
       KG2(2) = ISIGX * SQRT ( KG2(2) )
@@ -280,12 +277,12 @@ C
             K3 = K3 +(ABS(SQRT(Y1)*SQRT(R2)*(R2-R1)))
           ENDIF   
   302    CONTINUE   
-            IF ( NIV .EQ. 2 ) THEN
+            
             VK1 = 2*ISIGX * (K1/(DE**(2)))
             VK2 = 2*ISIGY * (K2/(DE**(2)))
             G  = COEFG *(VK2**(2)+VK1**(2))
              IF ( NDIM. EQ .2 ) THEN
-               WRITE(IFM,1010) VK1, VK2, G
+               IF ( NIV .EQ. 2 )WRITE(IFM,1010) VK1, VK2, G
                KG3(1)=VK1
                KG3(2)=VK1
                KG3(3)=VK2
@@ -296,7 +293,7 @@ C
                VK3 = 2*ISIGZ * (K3/DE**(2))
               G =COEFG*(VK2**(2)+VK1**(2))
      +         +(COEFG3*(VK3)**(2))
-               WRITE(IFM,1010) VK1,VK2,VK3,G
+               IF ( NIV .EQ. 2 )WRITE(IFM,1010) VK1,VK2,VK3,G
                KG3(1)=VK1
                KG3(2)=VK1
                KG3(3)=VK2
@@ -305,8 +302,7 @@ C
                KG3(6)=VK3
                KG3(7)=G
                KG3(8)=G
-             ENDIF
-            ENDIF        
+             ENDIF       
       
       CALL JEDETR ( '&&PKCALC.SAUT_DX' )
       CALL JEDETR ( '&&PKCALC.SAUT_DY' )

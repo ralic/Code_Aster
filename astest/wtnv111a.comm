@@ -1,4 +1,4 @@
-# MODIF  DATE 17/02/2004   AUTEUR GRANET S.GRANET 
+# MODIF  DATE 17/08/2004   AUTEUR ROMEO R.FERNANDES 
 # TITRE TEST THM, 3D, MASSIF POREUX SATURE CHAUFFE PAR UN FLUX
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -176,8 +176,8 @@ TEST_RESU(
              NOM_CMP = 'TEMP',
              NOEUD = 'NO1',   
              VALE = 2.94118E-01,   
-             CRITERE = 'ABSOLU',
-             PRECISION = 1.E-4)
+             CRITERE = 'RELATIF',
+             PRECISION = 1.E-2)
            )
 
 TEST_RESU( 
@@ -186,8 +186,8 @@ TEST_RESU(
              NOM_CMP = 'TEMP',
              NOEUD = 'NO12',   
              VALE = 1.47059E-01,   
-             CRITERE = 'ABSOLU',
-             PRECISION = 1.E-4)
+             CRITERE = 'RELATIF',
+             PRECISION = 1.E-2)
            )
 
 TEST_RESU( 
@@ -195,7 +195,7 @@ TEST_RESU(
              NOM_CHAM = 'DEPL', 
              NOM_CMP = 'TEMP',
              NOEUD = 'NO20',   
-             VALE = -1.38778E-17,   
+             VALE = 0.,   
              CRITERE = 'ABSOLU',
              PRECISION = 1.E-6)
            )

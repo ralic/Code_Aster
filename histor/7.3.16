@@ -1,0 +1,674 @@
+
+
+-----------------------------------------------------------------------
+--- AUTEUR assire A.ASSIRE   DATE  le 17/08/2004 a 13:29:35
+
+------------------------------------------------------------------------------
+CORRECTION AL 2004-252
+   POUR_LE_COMPTE_DE : A. ASSIRE
+   INTERET_UTILISATEUR : NON
+   TITRE  Oubli du cas-test
+   FONCTIONNALITE  DEFI_PART_OPS
+   RESU_FAUX_VERSION_EXPLOITATION   :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT  :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+   feti001a.
+   DETAILS
+   Oubli du cas-test dans la restitution de la commande DEFI_PART_OPS.
+   NB_JOURS_TRAV  : 0.5
+
+------------------------------------------------------------------------------
+CORRECTION AL 2003-300
+   POUR_LE_COMPTE_DE : A. ASSIRE
+   INTERET_UTILISATEUR : NON
+   TITRE  Cas-test demo001a : xmgrace et homard
+   FONCTIONNALITE  Tracé de postscript en batch avec xmgrace
+   RESU_FAUX_VERSION_EXPLOITATION   :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT  :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+   demo001a.
+   DETAILS
+   L'emetteur de la fiche avait un probleme pour le tracé de courbe dans le
+   mode "non interactif" du fichier de commande : les fichiers postscript
+   n'étaient pas crées.
+   Apparement ca marche car je n'ai pas rencontré de probleme. Je restitue
+   donc le cas-test demo001a en enlevant les commentaires devant les lignes
+   qui le faisait planter.
+   NB_JOURS_TRAV  : 1.
+
+------------------------------------------------------------------------------
+REALISATION EL 2003-180
+   POUR_LE_COMPTE_DE : A. ASSIRE
+   INTERET_UTILISATEUR : NON
+   TITRE  Stanley et fichier de configuration.
+   FONCTIONNALITE  Stanley
+   RESU_FAUX_VERSION_EXPLOITATION   :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT  :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+   neant.
+   DETAILS
+   Avant la STA7.3, il fallait un fichier env.py pour utiliser Stanley, et
+   ce fichier etait necessaire meme pour si on n'utilisait que le tracé de
+   courbes avec xmgrace.py.
+   Cette fiche tombe d'elle meme depuis la STA7.3 car il n'y a plus de fichier
+   de configuration a importer.
+
+   Cependant, je profite de cette fiche pour restituer deux petites choses
+   concernant les fichiers de configuration :
+   - correction d'un petit bug (mode DISTANT / machine_visu n'etait pas pris
+     en compte sans sortir et revenir dans Stanley)
+   - dorenavant, en mode DISTANT, si on ne renseigne pas le parametre
+     "machine_gmsh_exe" alors Stanley ne fait que copier les fichiers (sur la
+     machine_gmsh dans le repertoire machine_gmsh_tmp), il ne lance pas GMSH.
+     Cette fonctionnalité permettra aux utilisateurs Windows n'ayant pas de
+     repertoire partagé d'utiliser Stanley : il suffira de mettre comme
+     machine_gmsh n'importe quel serveur Unix accessible depuis Windows via
+     Samba (par exemple le serveur departemental clayrd02 pour EDF/AMA) et
+     d'ouvrir avec Merge ou Open leur fichier .pos depuis GMSH Windows.
+
+   NB_JOURS_TRAV  : 1.
+
+------------------------------------------------------------------------------
+CORRECTION AL 2004-272
+   POUR_LE_COMPTE_DE : A. ASSIRE
+   INTERET_UTILISATEUR : OUI
+   TITRE  Stanley ne marchait plus en NEW7
+   FONCTIONNALITE  Stanley
+   RESU_FAUX_VERSION_EXPLOITATION   :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT  :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+   neant.
+   DETAILS
+   Suite à un changement de syntaxe , Stanley ne fonctionnait plus.
+   On repercute la bonne syntaxe pour DEFI_FICHIER et IMPR_RESU.
+
+   NB_JOURS_TRAV  : 1.
+
+
+
+-----------------------------------------------------------------------
+--- AUTEUR durand C.DURAND   DATE  le 17/08/2004 a 11:52:11
+
+-----------------------------------------------------------------------
+CLASSEMENT SANS SUITE EL 2002-096
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : NON
+   TITRE : superviseur et casse des chaines de caracteres
+   FONCTIONNALITE : superviseur
+   DETAILS :
+   on attend qu'une demande plus motivée, assortie d'un exemple
+   mette en défaut la situation actuelle.
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+   IMPACT_DOCUMENTAIRE : NON
+-----------------------------------------------------------------------
+CORRECTION AL 2004-159
+   NB_JOURS_TRAV  : 0
+   INTERET_UTILISATEUR : NON
+   TITRE : ssna110a et macr_recal
+   FONCTIONNALITE : macr_recal
+   DETAILS :
+   fiche corrigée hors arex par Jean Michel Proix en version 7.2.26
+   RESU_FAUX_VERSION_EXPLOITATION    : NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   : NON
+   RESTITUTION_VERSION_EXPLOITATION  : NON
+   RESTITUTION_VERSION_DEVELOPPEMENT : OUI
+   IMPACT_DOCUMENTAIRE:  NON
+   VALIDATION : ssna110a
+
+--------------------------------------------------------------------------
+CORRECTION AL 2004-200
+   NB_JOURS_TRAV  : 4
+   INTERET_UTILISATEUR : NON
+   TITRE : attributs min max pour cardinal mcfact
+   FONCTIONNALITE : superviseur
+   DETAILS :
+   Jusqu'à présent, le superviseur ne tenait aucun compte des attributs
+   min max associés aux mots clés facteurs [alors que pour les mcsimps,
+   ca marchait bien].
+
+   Modifications de 5 fichiers dans Noyau et Validation.
+   Ces modifications concernent la méthode __call__ de l'objet FACT, la
+   méthode makeobjet de l'objet MCFACT, les méthodes isvalid et report de
+   l'objet MCLIST plus ajout d'une méthode __getitem__ et enfin de la
+   suppression de print superflus dans la méthode is_reel de l'objet MCSIMP.
+   Normalement, maintenant, on a dans tous les cas un objet MCLIST qui
+   contient un ou plusieurs objets MCFACT. Les rapports d'erreur et les
+   accesseurs se comportent la plupart du temps comme avant.
+
+   Je suis amené à corriger les catalogues de DETRUIRE, CREA_RESU
+   et DEFI_TEXTURE. Pour les 2 premiers, on oubliait de préciser max='**'
+   pour des mcfact qui auraient du l'etre. Pour DEFI_TEXTURE, on a min=40
+   max=40 pour le mcfact PLAN. Or c'est incohérent avec le test ssnv171a
+   qui ne comporte qu'une seule occurence de PLAN. Je mets donc max='**'
+   temporairement en emettant une fiche AL.
+
+
+   RESU_FAUX_VERSION_EXPLOITATION    : NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   : NON
+   RESTITUTION_VERSION_EXPLOITATION  : NON
+   RESTITUTION_VERSION_DEVELOPPEMENT : OUI
+   IMPACT_DOCUMENTAIRE:  NON
+   VALIDATION : test utilisateur
+
+-------------------------------------------------------------------------------
+CORRECTION AL 2004-245
+   POUR LE COMPTE DE : J.M. PROIX
+   INTERET_UTILISATEUR : OUI
+   TITRE : POST_K1_K2_K3 et niveau d'impression
+   FONCTIONNALITE :
+   DETAIL :
+   - Cas-test ssnv166b: la modification du niveau d'impression dans la commande
+   POST_K1_K2_K3, INFO=1 au lieu de INFO=2 provoque une alarme lors de
+   l'éxecution de la commande, suivi d'une erreur fatale lors de l'impression
+   de la table correspondante.
+   - Le message d'alarme est ecrit par la routine pkfond (on utilise dans ce
+   cas-test POST_K1_K2_K3 avec le mot clé FOND_FISS) au moment ou l'on extrait
+   la composante du noeud <<?>> de la table DEPSUP1 définissant les déplacements
+   de la lèvre supérieure. L'analyse des routines pkcalc et pkfond montre que
+   certains calculs, opérations sont effectués selon le niveau d'impression.
+   - La programmation a été restructurée afin de résoudre l'anomalie et de
+   respecter les niveaux d'impression.
+   - Le cas-test ssnv166b a été modifié de façon à tester les deux niveaux
+   d'impression.
+   - Sources modifiees: pkcalc.f, pkfond.f
+   - Cas-test modifies: ssnv166b
+  RESU_FAUX_VERSION_EXPLOITATION : NON
+  RESU_FAUX_VERSION_DEVELOPPEMENT : NON
+  RESTITUTION_VERSION_EXPLOITATION : NON
+  RESTITUTION_VERSION_DEVELOPPEMENT : OUI
+  VALIDATION : passage du cas-test ssnv166b et de la liste restreinte
+               liste_ct.rest
+  IMPACT_DOCUMENTAIRE : NON
+  NB_JOURS_TRAV : 1.0
+
+--------------------------------------------------------------------------
+RESTITUTION HORS AREX
+   INTERET_UTILISATEUR : NON
+   NB_JOURS_TRAV  : 0.0
+   FONCTIONNALITE
+     message d'erreur jeveux
+   DETAILS
+     modif du message d'erreur apparaissant si le répertoire de travail
+     est insuffisamment dimensionné. routine JXECRB.f
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION : étude perso
+
+
+-----------------------------------------------------------------------
+CORRECTION AL 2004-040
+   INTERET_UTILISATEUR : NON
+   TITRE : ascou02a et ascou12a sous linux
+   FONCTIONNALITE : macr_ascouf_mail
+   DETAIL :
+   plantage lié à un défaut de programmation en fortran, corrigé par la
+   réécriture de la macro en python
+  RESU_FAUX_VERSION_EXPLOITATION    : NON
+  RESU_FAUX_VERSION_DEVELOPPEMENT   : NON
+  RESTITUTION_VERSION_EXPLOITATION  : NON
+  RESTITUTION_VERSION_DEVELOPPEMENT : OUI
+  VALIDATION : passage des cas-test sur machine linux
+  IMPACT_DOCUMENTAIRE : NON
+  NB_JOURS_TRAV : 0.5
+
+--------------------------------------------------------------------------
+CORRECTION AL 2004-041
+   INTERET_UTILISATEUR : NON
+   TITRE : ascou10a sous linux
+   FONCTIONNALITE : macr_ascouf_mail
+   DETAIL :
+   plantage lié à un défaut de programmation en fortran, corrigé par la
+   réécriture de la macro en python
+  RESU_FAUX_VERSION_EXPLOITATION    : NON
+  RESU_FAUX_VERSION_DEVELOPPEMENT   : NON
+  RESTITUTION_VERSION_EXPLOITATION  : NON
+  RESTITUTION_VERSION_DEVELOPPEMENT : OUI
+  VALIDATION : passage du cas-test sur machine linux
+  IMPACT_DOCUMENTAIRE : NON
+  NB_JOURS_TRAV : 0.5
+
+--------------------------------------------------------------------------
+REALISATION EL 2004-167
+   NB_JOURS_TRAV  : 30
+   INTERET_UTILISATEUR : NON
+   TITRE   réécriture macr_ascouf_mail sous forme de macro python
+   FONCTIONNALITE superviseur macr_ascouf_mail jeveux
+   DETAILS
+   On restitue la ré-écriture de la macro macr_ascouf_mail en python
+   [avec support Deltacad]. Elle était la dernière macro fortran hors
+   commandes à statut spécial [DETRUIRE, INCLUDE_MATERIAU, DEFI_VALEUR]
+
+   On vérifie que tous les tests ascouf passent bien sur l'alphaserveur.
+   Cela permet de plus de corriger au passage plusieurs bugs mis en évidence
+   par les executions linux [cf AL2004-040 et AL2004-041]
+
+   Cela nous permettra ainsi de purger la base volatile entre chaque execution
+   de commande [JEDETV dans EXECOP.f]. Ainsi, pas de risque de transmission
+   d'objets souterrains sur la volatile entre 2 commandes : EL2004-013 à
+   venir.
+
+   les macros fortran étant mortes, on supprime les routines C permettant de
+   les construire (dans astermodule.c) : SMDCMD, SMDCMF, SMFCMD, SMFCMF
+   PUTVID, PUTVIS, PUTVR8, PUTVTX + routine fortran ISMXCT
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+   astout + tests ascouf
+
+--------------------------------------------------------------------------
+RESTITUTION HORS AREX
+   INTERET_UTILISATEUR : NON
+   NB_JOURS_TRAV  : 0.5
+   FONCTIONNALITE
+     resorption de DEFI_VALEUR
+   DETAILS
+     régularisation de la mise à jour 7.3.10
+     J'annoncais la resorption de DEFI_VALEUR dans l'EL2004-117 ... sans
+     le faire effectivement.
+     Donc le catalogue est maintenant bien supprimé, ainsi que zzzz117a
+     Au passage, corrections dans rccm03a.38 et sdnv102a.35 où trainaient
+     encore des DEFI_VALEUR.
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION : étude perso
+
+
+-----------------------------------------------------------------------
+CORRECTION AL 2004-199
+   NB_JOURS_TRAV  : 0
+   POUR_LE_COMPTE_DE : E. BOYERE
+   INTERET_UTILISATEUR : NON
+   TITRE : sdnl112b, c et d sous linux
+   FONCTIONNALITE : post_usure
+   DETAILS :
+   fiche corrigée en mm temps que AL2004-261 en version 7.3.15
+   régularisation.
+   RESU_FAUX_VERSION_EXPLOITATION    : NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   : NON
+   RESTITUTION_VERSION_EXPLOITATION  : NON
+   RESTITUTION_VERSION_DEVELOPPEMENT : OUI
+   IMPACT_DOCUMENTAIRE:  NON
+   VALIDATION : execution liste des cas tests sur linux
+
+--------------------------------------------------------------------------
+CORRECTION AL 2004-279
+   NB_JOURS_TRAV  : 0
+   POUR_LE_COMPTE_DE : H. ANDRIAMBOLOLONA
+   INTERET_UTILISATEUR : NON
+   TITRE : sensd03a sous linux
+   FONCTIONNALITE : sensibilité et mode_iter_simult
+   DETAILS :
+   erreurs d'oubli d'initialisation de K24 à blanc
+   RESU_FAUX_VERSION_EXPLOITATION    : NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   : NON
+   RESTITUTION_VERSION_EXPLOITATION  : NON
+   RESTITUTION_VERSION_DEVELOPPEMENT : OUI
+   IMPACT_DOCUMENTAIRE:  NON
+   VALIDATION : execution sensd03a sur linux
+
+--------------------------------------------------------------------------
+
+
+-----------------------------------------------------------------------
+--- AUTEUR joumana J.EL-GHARIB   DATE  le 17/08/2004 a 13:03:48
+
+CORRECTION AL 2004-247
+   INTERET_UTILISATEUR : OUI
+   TITRE  AMELIORATIONS DE LA LOI DE CAM_CLAY
+   FONCTIONNALITE  STAT_NON_LINE-CAM_CLAY
+
+   On apporte à la routine nmccam.f les améliorations suivantes:
+
+   On distingue la dilatance de la contractance lors de la résolution de
+   l'équation à une inconnue avec NEWTON au niveau de la dichotomie.
+   On améliore aussi les conditions de réactualisation des bornes sup et inf.
+
+   On enlève la réactualisation des contraintes et des variables internes
+   qu'on a introduit pour le point critique. Le point critique ne nécessite
+   pas de traitement spécial à part au niveau de l'opérateur cohérent.
+
+   On ajoute un FULL_MECA spécial pour le point critique car le FULL_MECA
+   utilisé pour les cas standards induisait  des divisons par zéro.
+
+   On corrige les appels à RCVALA, les données matériaux ne devraient dépendre
+   que d'un paramètre et non pas de plusieurs comme dans la version actuelle.
+
+   RESU_FAUX_VERSION_EXPLOITATION   :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT  :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_R : R7.01.14-A
+
+   VALIDATION
+     V7.31.122A
+     V7.31.122B
+     V7.31.122C
+
+   DETAILS
+   On remplace le cas test ssnv165a (essai triaxial avec la loi de CAM_CLAY)
+   par le test :
+
+   wtnv122a : essai triaxial avec la loi de Cam_Clay en 3D à partir d'une pression
+   de consolidation atteinte avec un chargement hydrostatique
+
+   et on ajoute les modélisations :
+
+   wtnv122b : essai triaxial avec la loi de Cam_Clay en 3D à partir de la pression
+   critique atteinte avec un chargement hydrostatique
+
+   wtnv122c : essai triaxial avec la loi de Cam_Clay en 3D jusqu'à plastification
+   en dilatance à partir d'une pression inférieure à la pression critique atteinte
+   avec un chargement hydrostatique
+
+   NB_JOURS_TRAV  : 8
+
+
+CORRECTION AL 2004-246
+   INTERET_UTILISATEUR : OUI
+   TITRE  AMELIORATIONS DE LA LOI DE BARCELONE
+   FONCTIONNALITE  STAT_NON_LINE-RELATION_KIT-BARCELONE
+
+   On apporte à la routine nmbarc.f les améliorations suivantes:
+
+   On modifie le calcul de la borne sup, au lieu de faire un développement
+   limité, on la calcule par NEWTON.
+   On distingue la dilatance de la contractance lors de la résolution de
+   l'équation à une inconnue avec NEWTON au niveau de la dichotomie.
+   On améliore aussi les conditions de réactualisation des bornes sup et inf.
+
+   On ajoute un FULL_MECA spécial pour le point critique car le FULL_MECA
+   utilisé pour les cas standards induisait  des divisons par zéro.
+
+   On corrige les appels à RCVALA, les données matériaux ne devraient dépendre
+   que d'un paramètre et non pas de plusieurs comme dans la version actuelle.
+
+   On corrige la valeur de PCRP(2) indicateur de plasticité mécanique dans le
+   cas où le critère hydrique est atteint.
+
+   RESU_FAUX_VERSION_EXPLOITATION   :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT  :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_R : R7.01.17-A
+
+   VALIDATION
+     V7.31.123C
+     V7.31.124A
+
+   DETAILS
+   On corrige le chargement dans le cas test wtnv123c
+   On mène le calcul mécanqiue dans le cas test wtnv124a jusqu'à plastification
+
+   NB_JOURS_TRAV  : 8
+
+
+-----------------------------------------------------------------------
+--- AUTEUR romeo R.FERNANDES   DATE  le 17/08/2004 a 14:28:00
+
+REALISATION EL 2004-103
+   NB_JOURS_TRAV  : 1.5
+   INTERET_UTILISATEUR : NON
+   TITRE Mise a jour des cas test THM
+
+   FONCTIONNALITE
+   Mise en coherence des CRITERE des TEST_RESU
+
+   DETAILS
+   On remplace les criteres relatifs en absolus quand
+   la valeur est proche de zero et les criteres absolus en relatifs quand
+   la valeur est differente de zero
+
+   VALIDATION
+   Modification des cas tests suivant :
+   wtnl100b wtnl102a
+   wtnv110a wtnv110b wtnv110c wtnv111a wtnv111b wtnv111c wtnv112a
+   wtnv112b wtnv112c wtnv112d wtnv113a wtnv113b wtnv113c wtnv113d
+   wtnv113e wtnv113f wtnv113g wtnv113h wtnv113i wtnv113j wtnv113k
+   wtnv113l wtnv116a wtnv123a wtnv123b wtnv123c wtnv126a wtnv126b
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+
+-------------------------------------------------------------------
+REALISATION EL 2004-107
+   NB_JOURS_TRAV  : 0.1
+   INTERET_UTILISATEUR : NON
+   TITRE Renommage de cas test THM
+
+   FONCTIONNALITE
+   Mise en coherence des noms de certains cas-tests
+
+   DETAILS
+   On renomme les cas-tests :
+   * ssnv134 en wtnv100 (modélisations a, b et c) :
+     essai triaxial non drainé avec modèle CJS
+   * ssnv159 en wtnv101 (modélisation a)
+     essai triaxial non drainé avec modèle LAIGLE
+
+   VALIDATION
+   wtnv100a wtnv100b wtnv100c wtnv101a
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+
+--------------------------------------------------------------------
+CORRECTION AL 2004-225
+   Restitution pour le compte de : S. GRANET
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : NON
+   TITRE  Mauvais dimensionnement de catalogue
+   FONCTIONNALITE
+Dans les catalogues des modélisations AXIS_THH2MD, AXIS_HH2MD et AXIS_THV
+le nombre de points de gauss est surdimensionné (9 au lieu de 4). A priori
+ca n'a aucun impact sur les resulats.
+
+   catalogues modifiés  :
+  gener_meaa12.cata, gener_meaa22.cata, gener_meaa32.cata, gener_meag32.cata
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+
+   VALIDATION
+   Passage des cas tests THM
+
+   IMPACT_DOCUMENTAIRE : NON
+
+-------------------------------------------------------------------
+RESTITUTION HORS AREX
+   Restitution pour le compte de : S. GRANET
+   NB_JOURS_TRAV  : 0.2
+   INTERET_UTILISATEUR : NON
+   TITRE  Erreur dans la dépendance du coefficient de Henry en THM
+
+   FONCTIONNALITE
+Une erreur a été detectée dans le catalogue : le coefficient de Henry COEF_HENRY
+ne pouvaient  pas dépendre de la temperature.
+On corrige et on rajoute un test dans le  wtna102a pour que ces fonctionalités soient testées.
+
+   routines modifiées :
+   fortran : thmrcp.f
+   catalogue : defi_materiau.capy
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+
+   VALIDATION
+   Passage des cas tests THM
+
+   cas-tests modifiés :
+   wtna102a
+
+   IMPACT_DOCUMENTAIRE : NON
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+       C MODIF supervis/astermodule           durand C.DURAND          3965      1    282
+ CASTEST AJOUT wtnv100a                        romeo R.FERNANDES        503    503      0
+ CASTEST AJOUT wtnv100b                        romeo R.FERNANDES        650    650      0
+ CASTEST AJOUT wtnv100c                        romeo R.FERNANDES        436    436      0
+ CASTEST AJOUT wtnv101a                        romeo R.FERNANDES        478    478      0
+ CASTEST AJOUT wtnv122a                      joumana J.EL-GHARIB        441    441      0
+ CASTEST AJOUT wtnv122b                      joumana J.EL-GHARIB        448    448      0
+ CASTEST AJOUT wtnv122c                      joumana J.EL-GHARIB        450    450      0
+ CASTEST MODIF ascou10a                       durand C.DURAND           355      1      4
+ CASTEST MODIF ascou12a                       durand C.DURAND           310      1      4
+ CASTEST MODIF ascou13a                       durand C.DURAND           284      1      4
+ CASTEST MODIF aspic01a                       durand C.DURAND           194      3      3
+ CASTEST MODIF aspic01b                       durand C.DURAND           618      3      3
+ CASTEST MODIF aspic07a                       durand C.DURAND           202      3      3
+ CASTEST MODIF demo001a                       assire A.ASSIRE           272     11     10
+ CASTEST MODIF feti001a                       assire A.ASSIRE           247     14      2
+ CASTEST MODIF rccm03a                        durand C.DURAND          4279      1      1
+ CASTEST MODIF sdnv102a                       durand C.DURAND           656      1      1
+ CASTEST MODIF wtna102a                        romeo R.FERNANDES        301     10      2
+ CASTEST MODIF wtnl100b                        romeo R.FERNANDES        268      2      1
+ CASTEST MODIF wtnl102a                        romeo R.FERNANDES        246     42      9
+ CASTEST MODIF wtnv110a                        romeo R.FERNANDES        195      3      3
+ CASTEST MODIF wtnv110b                        romeo R.FERNANDES        184      3      3
+ CASTEST MODIF wtnv110c                        romeo R.FERNANDES        194      4      4
+ CASTEST MODIF wtnv111a                        romeo R.FERNANDES        210      6      6
+ CASTEST MODIF wtnv111b                        romeo R.FERNANDES        196      6      6
+ CASTEST MODIF wtnv111c                        romeo R.FERNANDES        213      2      2
+ CASTEST MODIF wtnv112a                        romeo R.FERNANDES        439     13     13
+ CASTEST MODIF wtnv112b                        romeo R.FERNANDES        448     13     13
+ CASTEST MODIF wtnv112c                        romeo R.FERNANDES        429     13     13
+ CASTEST MODIF wtnv112d                        romeo R.FERNANDES        430     13     13
+ CASTEST MODIF wtnv113a                        romeo R.FERNANDES        295     25     25
+ CASTEST MODIF wtnv113b                        romeo R.FERNANDES        314     25     25
+ CASTEST MODIF wtnv113c                        romeo R.FERNANDES        309     25     25
+ CASTEST MODIF wtnv113d                        romeo R.FERNANDES        312     25     25
+ CASTEST MODIF wtnv113e                        romeo R.FERNANDES        288     25     25
+ CASTEST MODIF wtnv113f                        romeo R.FERNANDES        307     25     25
+ CASTEST MODIF wtnv113g                        romeo R.FERNANDES        301     25     25
+ CASTEST MODIF wtnv113h                        romeo R.FERNANDES        304     25     25
+ CASTEST MODIF wtnv113i                        romeo R.FERNANDES        286     25     25
+ CASTEST MODIF wtnv113j                        romeo R.FERNANDES        305     25     25
+ CASTEST MODIF wtnv113k                        romeo R.FERNANDES        286     25     25
+ CASTEST MODIF wtnv113l                        romeo R.FERNANDES        305     25     25
+ CASTEST MODIF wtnv116a                        romeo R.FERNANDES        293      1      1
+ CASTEST MODIF wtnv123a                        romeo R.FERNANDES        445      4      1
+ CASTEST MODIF wtnv123b                        romeo R.FERNANDES        454      4      1
+ CASTEST MODIF wtnv123c                      joumana J.EL-GHARIB        779    162     20
+ CASTEST MODIF wtnv124a                      joumana J.EL-GHARIB        591    171      6
+ CASTEST MODIF wtnv126a                        romeo R.FERNANDES        791     10      6
+ CASTEST MODIF wtnv126b                        romeo R.FERNANDES        774     11      7
+ CASTEST SUPPR ssnv134a.comm                   romeo R.FERNANDES        508      0    508
+ CASTEST SUPPR ssnv134b.comm                   romeo R.FERNANDES        655      0    655
+ CASTEST SUPPR ssnv134c.comm                   romeo R.FERNANDES        435      0    435
+ CASTEST SUPPR ssnv159a.comm                   romeo R.FERNANDES        481      0    481
+ CASTEST SUPPR ssnv165a.comm                 joumana J.EL-GHARIB        504      0    504
+ CASTEST SUPPR zzzz117a.comm                  durand C.DURAND            44      0     44
+CATALOGU MODIF typelem/gener_meaa12            romeo R.FERNANDES         99      2      2
+CATALOGU MODIF typelem/gener_meaa22            romeo R.FERNANDES        131      2      2
+CATALOGU MODIF typelem/gener_meaa32            romeo R.FERNANDES        129      2      2
+CATALOGU MODIF typelem/gener_meag32            romeo R.FERNANDES         92      2      2
+CATALOGU SUPPR commande/defi_valeur           durand C.DURAND            37      0     37
+CATALOPY MODIF commande/crea_resu             durand C.DURAND           138      2      2
+CATALOPY MODIF commande/defi_materiau          romeo R.FERNANDES       2672      3      1
+CATALOPY MODIF commande/defi_texture          durand C.DURAND            32      3      2
+CATALOPY MODIF commande/detruire              durand C.DURAND            33      3      3
+CATALOPY MODIF commande/macr_ascouf_mail      durand C.DURAND           148      3      2
+ FORTRAN MODIF algorith/dy2mbr                durand C.DURAND           284      2      2
+ FORTRAN MODIF algorith/dylach                durand C.DURAND           296      2      1
+ FORTRAN MODIF algorith/nmbarc               joumana J.EL-GHARIB       1010    245     43
+ FORTRAN MODIF algorith/nmccam               joumana J.EL-GHARIB        696    162     56
+ FORTRAN MODIF algorith/thmrcp                 romeo R.FERNANDES       1493      5      3
+ FORTRAN MODIF jeveux/jxecrb                  durand C.DURAND           126      7      1
+ FORTRAN MODIF prepost/pkcalc                 durand C.DURAND           334      9     13
+ FORTRAN MODIF prepost/pkfond                 durand C.DURAND           738      5      3
+ FORTRAN MODIF supervis/opsexe                durand C.DURAND           443      1      3
+ FORTRAN SUPPR prepost/asccoh                 durand C.DURAND           254      0    254
+ FORTRAN SUPPR prepost/ascfis                 durand C.DURAND           341      0    341
+ FORTRAN SUPPR prepost/ascfon                 durand C.DURAND            72      0     72
+ FORTRAN SUPPR prepost/asclig                 durand C.DURAND           761      0    761
+ FORTRAN SUPPR prepost/ascnbe                 durand C.DURAND           173      0    173
+ FORTRAN SUPPR prepost/ascnew                 durand C.DURAND           102      0    102
+ FORTRAN SUPPR prepost/ascpre                 durand C.DURAND           753      0    753
+ FORTRAN SUPPR prepost/ascrdo                 durand C.DURAND           106      0    106
+ FORTRAN SUPPR prepost/ascsdo                 durand C.DURAND           209      0    209
+ FORTRAN SUPPR prepost/ascsep                 durand C.DURAND           294      0    294
+ FORTRAN SUPPR prepost/ascsp1                 durand C.DURAND            98      0     98
+ FORTRAN SUPPR prepost/ascsp2                 durand C.DURAND           233      0    233
+ FORTRAN SUPPR prepost/ascsq2                 durand C.DURAND           146      0    146
+ FORTRAN SUPPR prepost/ascsqo                 durand C.DURAND           197      0    197
+ FORTRAN SUPPR prepost/ascsym                 durand C.DURAND           255      0    255
+ FORTRAN SUPPR prepost/asctci                 durand C.DURAND           174      0    174
+ FORTRAN SUPPR prepost/ascthe                 durand C.DURAND           206      0    206
+ FORTRAN SUPPR prepost/asctlo                 durand C.DURAND           204      0    204
+ FORTRAN SUPPR soustruc/aspecr                durand C.DURAND            25      0     25
+ FORTRAN SUPPR supervis/ismxct                durand C.DURAND            46      0     46
+ FORTRAN SUPPR supervis/ops004                durand C.DURAND           107      0    107
+ FORTRAN SUPPR supervis/ops019                durand C.DURAND          1242      0   1242
+  PYTHON AJOUT Macro/macr_ascouf_mail_ops     durand C.DURAND          2927   2927      0
+  PYTHON MODIF Build/B_MACRO_ETAPE            durand C.DURAND           210      1    214
+  PYTHON MODIF Build/B_OBJECT                 durand C.DURAND           103      3      3
+  PYTHON MODIF Build/codex                    durand C.DURAND           155      1     34
+  PYTHON MODIF Macro/calc_precont_ops         durand C.DURAND           469      9     23
+  PYTHON MODIF Macro/defi_cable_bp_ops        durand C.DURAND           310      3     10
+  PYTHON MODIF Macro/impr_fonction_ops        durand C.DURAND           351      2      8
+  PYTHON MODIF Macro/macr_ascouf_calc_ops     durand C.DURAND           680      7     12
+  PYTHON MODIF Macro/macr_aspic_calc_ops      durand C.DURAND           826      6     12
+  PYTHON MODIF Macro/macr_aspic_mail_ops      durand C.DURAND           842      1      2
+  PYTHON MODIF Macro/macr_cabri_calc_ops      durand C.DURAND           539      5      5
+  PYTHON MODIF Macro/macro_matr_ajou_ops      durand C.DURAND           257      6     10
+  PYTHON MODIF Noyau/N_FACT                   durand C.DURAND           155      6      5
+  PYTHON MODIF Noyau/N_MCFACT                 durand C.DURAND            99      3      2
+  PYTHON MODIF Noyau/N_MCLIST                 durand C.DURAND           183     10      1
+  PYTHON MODIF Stanley/gmsh                   assire A.ASSIRE           263      9      3
+  PYTHON MODIF Stanley/stanley                assire A.ASSIRE          2013     13      6
+  PYTHON MODIF Validation/V_MCLIST            durand C.DURAND           110     30      7
+  PYTHON MODIF Validation/V_MCSIMP            durand C.DURAND           401      1      4
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :    8        6333      6333             +6333
+ MODIF :   79       39734      1409    1251      +158
+ SUPPR :   29        8662              8662     -8662
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :  116       54729      7742    9913     -2171 

@@ -1,4 +1,4 @@
-# MODIF  DATE 06/08/2004   AUTEUR JMBHH01 J.M.PROIX 
+# MODIF  DATE 17/08/2004   AUTEUR ROMEO R.FERNANDES 
 # TITRE MODELISATION DE LA DIFFUSION DE L AIR DISSOUS DANS L EAU
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -121,7 +121,15 @@ FAPA  = CALC_FONC_INTERP ( FONCTION    =  FA_PA     ,
                             INFO        = 2          ,);
 
 KINTBO=DEFI_CONSTANTE(VALE=9.9999999999999995E-20,);
-HENRY=DEFI_CONSTANTE(VALE=50000.,);
+
+HENRY=DEFI_FONCTION(NOM_PARA='TEMP',
+                   VALE=(10.0 ,5000.,
+                         323.0 ,50000.,
+                         500.0 ,50000.),
+                   PROL_DROITE='CONSTANT',
+                   PROL_GAUCHE='CONSTANT',);
+# Henry est sous la forme ci-dessus pour des raisons de test on peut aussi
+# se contenter de HENRY=DEFI_CONSTANTE(VALE=50000.,);
 
 
 MATERBO=DEFI_MATERIAU(ELAS=_F(E=5.15000000E8,

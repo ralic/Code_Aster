@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 06/08/2004   AUTEUR JMBHH01 J.M.PROIX 
+#& MODIF COMMANDE  DATE 17/08/2004   AUTEUR ROMEO R.FERNANDES 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -2156,6 +2156,7 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
 # ---------------------------------------------------------------------------------
                                            CP               = SIMP(statut='o',typ='R'),
                                            COEF_HENRY       = SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster,formule)),
+                                           VERI_P      = SIMP(statut='c',typ='TXM',defaut=("TEMP",),),
                                              ),
                                  ),
 # =================================================================================
@@ -2331,6 +2332,7 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
             THM_AIR_DISS = FACT(statut='f',
                             CP               = SIMP(statut='f',typ='R'),
                             COEF_HENRY       = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
+                            VERI_P      = SIMP(statut='c',typ='TXM',defaut=("TEMP",),),
                               ),
            THM_INIT        =FACT(statut='f',
              TEMP            =SIMP(statut='o',typ='R'),

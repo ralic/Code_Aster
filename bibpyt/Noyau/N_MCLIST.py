@@ -1,4 +1,4 @@
-#@ MODIF N_MCLIST Noyau  DATE 16/03/2004   AUTEUR GNICOLAS G.NICOLAS 
+#@ MODIF N_MCLIST Noyau  DATE 17/08/2004   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -26,6 +26,7 @@
 
 from copy import copy
 import UserList
+import types
 
 class MCList(UserList.UserList):
    """ Liste semblable a la liste Python
@@ -172,3 +173,11 @@ class MCList(UserList.UserList):
       if self.parent == None: return None
       return self.parent.get_etape()
 
+   def __getitem__(self,key):
+      """
+         Dans le cas d un mot cle facteur de longueur 1 on simule un scalaire
+      """
+      if type(key) != types.IntType and len(self) ==1:
+         return self.data[0].get_mocle(key)
+      else:
+         return self.data[key]

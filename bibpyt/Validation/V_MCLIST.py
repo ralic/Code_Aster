@@ -1,4 +1,4 @@
-#@ MODIF V_MCLIST Validation  DATE 29/05/2002   AUTEUR DURAND C.DURAND 
+#@ MODIF V_MCLIST Validation  DATE 17/08/2004   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -56,28 +56,51 @@ class MCList:
 
          On n'utilise pas d'attribut pour stocker l'état et on ne remonte pas 
          le changement d'état au parent (pourquoi ??)
+         MCLIST est une liste de MCFACT. Les MCFACT ont le meme parent
+         que le MCLIST qui les contient. Il n'est donc pas necessaire de
+         remonter le changement d'etat au parent. C'est deja fait
+         par les MCFACT.
       """
       if len(self.data) == 0 : return 0
+
+      valid= 1
+      definition=self.data[0].definition
+      # Verification du nombre des mots cles facteurs
+      if definition.min is not None and len(self.data) < definition.min :
+         valid=0
+         if cr == 'oui' :
+            self.cr.fatal("Nombre de mots cles facteurs insuffisant minimum : %s" % definition.min)
+
+      if definition.max is not None and len(self.data) > definition.max :
+         valid=0
+         if cr == 'oui' :
+            self.cr.fatal("Nombre de mots cles facteurs trop grand maximum : %s" % definition.max)
       num = 0
-      test = 1
       for i in self.data:
         num = num+1
         if not i.isvalid():
-          if cr=='oui':
+          valid = 0
+          if cr=='oui' and len(self) > 1:
             self.cr.fatal(string.join(["L'occurrence n",`num`," du mot-clé facteur :",self.nom," n'est pas valide"]))
-          test = 0
-      return test
+      return valid
 
    def report(self):
       """ 
           Génère le rapport de validation de self 
       """
-      self.cr=self.CR( debut = "Mot-clé facteur multiple : "+self.nom,
+      if len(self) > 1:
+         # Mot cle facteur multiple
+         self.cr=self.CR( debut = "Mot-clé facteur multiple : "+self.nom,
                   fin = "Fin Mot-clé facteur multiple : "+self.nom)
-      for i in self.data:
-        self.cr.add(i.report())
-      # XXX j'ai mis l'état en commentaire car il n'est utilisé ensuite
-      #self.state = 'modified'
+         for i in self.data:
+           self.cr.add(i.report())
+      elif len(self) == 1:
+         # Mot cle facteur non multiple
+         self.cr=self.data[0].report()
+      else:
+         self.cr=self.CR( debut = "Mot-cle facteur : "+self.nom,
+                  fin = "Fin Mot-cle facteur : "+self.nom)
+
       try :
         self.isvalid(cr='oui')
       except AsException,e:

@@ -1,5 +1,6 @@
-# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
-# TITRE DESATURATION SUIVIE D UN CHARGEMENT HYDROSTATIQUE
+# MODIF  DATE 17/08/2004   AUTEUR JOUMANA J.EL-GHARIB 
+# RESPONSABLE JOUMANA J.EL-GHARIB
+# TITRE DESATURATION -CONSOLIDATION AVEC LE MODELE DE BARCELONE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -186,12 +187,13 @@ EVOL_HYD=DEFI_FONCTION(      NOM_PARA='INST',
 
 
 TEMPS1=DEFI_LIST_REEL(   DEBUT=0.,INTERVALLE=(
-                            _F(  JUSQU_A = 1.,    NOMBRE = 10, ),
+                            _F(  JUSQU_A = 1.,    NOMBRE = 5, ),
                             _F(  JUSQU_A = 3.,    NOMBRE = 5, ),
                             _F(  JUSQU_A = 6.,    NOMBRE = 6, ),)
                          )
 TEMPS2=DEFI_LIST_REEL(   DEBUT=6.,INTERVALLE=(
-                            _F(  JUSQU_A = 10.,    NOMBRE = 50,  ),)
+                            _F(  JUSQU_A = 10.,    NOMBRE = 20,  ),
+                            _F(  JUSQU_A = 20.,    NOMBRE = 20,  ),)
                          )
 
 # AFFECTATION DE L ETAT INITIAL
@@ -270,7 +272,8 @@ U1=STAT_NON_LINE(ETAT_INIT = _F(SIGM=SIGINIT,DEPL=DEPINIT),
 EVOL_HY1=DEFI_FONCTION(      NOM_PARA='INST',
                            PROL_DROITE='CONSTANT',
                          VALE=( 6.0,  100.E5,
-                               10.0,  700.E6,
+                               10.0,  100.E7,
+                               20.0,  500.E7,
                                ))
                                
 U1=STAT_NON_LINE(reuse=U1, 
@@ -300,7 +303,7 @@ U1=STAT_NON_LINE(reuse=U1,
                          INCREMENT=_F( 
                 LIST_INST = TEMPS2,
                 INST_INIT = 6., 
-                INST_FIN = 10.,        
+                INST_FIN = 20.,        
                 ),
                             NEWTON=_F( 
                 MATRICE = 'TANGENTE', 
@@ -364,6 +367,26 @@ TEST_RESU(RESU=(
                        VALE = -7.565E-02,        
                      ),
 
+                _F(    RESULTAT = U1,  
+                       REFERENCE = 'ANALYTIQUE',  
+                       NOEUD = 'NO8',      
+                       NOM_CHAM = 'DEPL',    
+                       NOM_CMP = 'DZ',     
+                       INST=10.,  
+                       PRECISION = (1.5E-2,1.E-5),    
+                       VALE = -1.30970E-01,        
+                     ),
+
+                _F(    RESULTAT = U1,  
+                       REFERENCE = 'ANALYTIQUE',  
+                       NOEUD = 'NO8',      
+                       NOM_CHAM = 'DEPL',    
+                       NOM_CMP = 'DZ',     
+                       INST=20.,  
+                       PRECISION = (1.5E-2,1.E-5),    
+                       VALE = -2.11952E-01,        
+                     ),
+
 # PRESSION CRITIQUE
                 _F(    RESULTAT = U1,    
                        REFERENCE = 'ANALYTIQUE',  
@@ -374,6 +397,7 @@ TEST_RESU(RESU=(
                        PRECISION = (1.E-5,1.E-5),    
                        VALE = 3.E7 ,        
                      ),
+
                 _F(    RESULTAT = U1,    
                        REFERENCE = 'ANALYTIQUE',  
                        NOEUD = 'NO8',      
@@ -383,6 +407,7 @@ TEST_RESU(RESU=(
                        PRECISION = (2.E-3,1.E-5),    
                        VALE = 5.4943E+08 ,        
                      ),
+
                 _F(    RESULTAT = U1,    
                        REFERENCE = 'ANALYTIQUE',  
                        NOEUD = 'NO8',      
@@ -391,6 +416,75 @@ TEST_RESU(RESU=(
                        INST=6.,  
                        PRECISION = (2.E-2,1.E-5),    
                        VALE = 5.666E+08 ,        
+                     ),
+
+                _F(    RESULTAT = U1,    
+                       REFERENCE = 'ANALYTIQUE',  
+                       NOEUD = 'NO8',      
+                       NOM_CHAM = 'VARI_NOEU_ELGA',    
+                       NOM_CMP = 'V1',     
+                       INST=10.,  
+                       PRECISION = (2.E-2,1.E-5),    
+                       VALE = 5.74596E+08 ,        
+                     ),
+
+                _F(    RESULTAT = U1,    
+                       REFERENCE = 'ANALYTIQUE',  
+                       NOEUD = 'NO8',      
+                       NOM_CHAM = 'VARI_NOEU_ELGA',    
+                       NOM_CMP = 'V1',     
+                       INST=20.,  
+                       PRECISION = (2.E-2,1.E-5),    
+                       VALE = 2.50631E+09 ,        
+                     ),
+# INDICATEUR DE PLASTICITE MECANIQUE
+                _F(    RESULTAT = U1,    
+                       REFERENCE = 'ANALYTIQUE',  
+                       NOEUD = 'NO8',      
+                       NOM_CHAM = 'VARI_NOEU_ELGA',    
+                       NOM_CMP = 'V2',     
+                       INST=1.,  
+                       PRECISION = (1.E-5,1.E-5),    
+                       VALE = 0. ,        
+                     ),
+
+                _F(    RESULTAT = U1,    
+                       REFERENCE = 'ANALYTIQUE',  
+                       NOEUD = 'NO8',      
+                       NOM_CHAM = 'VARI_NOEU_ELGA',    
+                       NOM_CMP = 'V2',     
+                       INST=5.5,  
+                       PRECISION = (2.E-2,1.E-5),    
+                       VALE = 0. ,        
+                     ),
+                _F(    RESULTAT = U1,    
+                       REFERENCE = 'ANALYTIQUE',  
+                       NOEUD = 'NO8',      
+                       NOM_CHAM = 'VARI_NOEU_ELGA',    
+                       NOM_CMP = 'V2',     
+                       INST=6.,  
+                       PRECISION = (2.E-2,1.E-5),    
+                       VALE = 0. ,        
+                     ),
+
+                _F(    RESULTAT = U1,    
+                       REFERENCE = 'ANALYTIQUE',  
+                       NOEUD = 'NO8',      
+                       NOM_CHAM = 'VARI_NOEU_ELGA',    
+                       NOM_CMP = 'V2',     
+                       INST=10.,  
+                       PRECISION = (2.E-2,1.E-5),    
+                       VALE = 0. ,        
+                     ),
+
+                _F(    RESULTAT = U1,    
+                       REFERENCE = 'ANALYTIQUE',  
+                       NOEUD = 'NO8',      
+                       NOM_CHAM = 'VARI_NOEU_ELGA',    
+                       NOM_CMP = 'V2',     
+                       INST=20.,  
+                       PRECISION = (2.E-2,1.E-5),    
+                       VALE = 1. ,        
                      ),
 
 # SEUIL HYDRIQUE
@@ -403,6 +497,7 @@ TEST_RESU(RESU=(
                        PRECISION = (1.E-5,1.E-5),      
                        VALE =  6.00000E+07,       
                      ),
+
                 _F(    RESULTAT = U1,    
                        REFERENCE = 'ANALYTIQUE',  
                        NOEUD = 'NO8',      
@@ -412,6 +507,7 @@ TEST_RESU(RESU=(
                        PRECISION = (1.E-5,1.E-5),      
                        VALE =  6.00000E+07,        
                      ),
+
                 _F(    RESULTAT = U1,    
                        REFERENCE = 'ANALYTIQUE',  
                        NOEUD = 'NO8',      
@@ -421,6 +517,75 @@ TEST_RESU(RESU=(
                        PRECISION = (1.E-5,1.E-5),     
                        VALE =  7.00000E+07,        
                      ),                     
+
+                _F(    RESULTAT = U1,    
+                       REFERENCE = 'ANALYTIQUE',  
+                       NOEUD = 'NO8',      
+                       NOM_CHAM = 'VARI_NOEU_ELGA',    
+                       NOM_CMP = 'V3',     
+                       INST=10.,  
+                       PRECISION = (1.E-5,1.E-5),     
+                       VALE =  7.00000E+07,        
+                     ),                     
+
+                _F(    RESULTAT = U1,    
+                       REFERENCE = 'ANALYTIQUE',  
+                       NOEUD = 'NO8',      
+                       NOM_CHAM = 'VARI_NOEU_ELGA',    
+                       NOM_CMP = 'V3',     
+                       INST=20.,  
+                       PRECISION = (1.E-5,1.E-5),     
+                       VALE =  1.10811E+10,        
+                     ),
+#INDICATEUR D'IRREVERSIBILITE HYDRIQUE                                          
+                _F(    RESULTAT = U1,    
+                       REFERENCE = 'ANALYTIQUE',  
+                       NOEUD = 'NO8',      
+                       NOM_CHAM = 'VARI_NOEU_ELGA',    
+                       NOM_CMP = 'V4',     
+                       INST=1.,  
+                       PRECISION = (1.E-5,1.E-5),    
+                       VALE = 0. ,        
+                     ),
+
+                _F(    RESULTAT = U1,    
+                       REFERENCE = 'ANALYTIQUE',  
+                       NOEUD = 'NO8',      
+                       NOM_CHAM = 'VARI_NOEU_ELGA',    
+                       NOM_CMP = 'V4',     
+                       INST=5.5,  
+                       PRECISION = (2.E-2,1.E-5),    
+                       VALE = 5.23223E-01 ,        
+                     ),
+                _F(    RESULTAT = U1,    
+                       REFERENCE = 'ANALYTIQUE',  
+                       NOEUD = 'NO8',      
+                       NOM_CHAM = 'VARI_NOEU_ELGA',    
+                       NOM_CMP = 'V4',     
+                       INST=6.,  
+                       PRECISION = (2.E-2,1.E-5),    
+                       VALE = 1. ,        
+                     ),
+
+                _F(    RESULTAT = U1,    
+                       REFERENCE = 'ANALYTIQUE',  
+                       NOEUD = 'NO8',      
+                       NOM_CHAM = 'VARI_NOEU_ELGA',    
+                       NOM_CMP = 'V4',     
+                       INST=10.,  
+                       PRECISION = (2.E-2,1.E-5),    
+                       VALE = 0. ,        
+                     ),
+
+                _F(    RESULTAT = U1,    
+                       REFERENCE = 'ANALYTIQUE',  
+                       NOEUD = 'NO8',      
+                       NOM_CHAM = 'VARI_NOEU_ELGA',    
+                       NOM_CMP = 'V4',     
+                       INST=20.,  
+                       PRECISION = (2.E-2,1.E-5),    
+                       VALE = 0. ,        
+                     ),
                      ),)
                      
 FIN () ;

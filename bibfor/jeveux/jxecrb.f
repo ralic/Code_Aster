@@ -1,6 +1,6 @@
       SUBROUTINE JXECRB ( IC , IADDI , IADMO , LSO , IDCO , IDOS)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 28/06/2004   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF JEVEUX  DATE 17/08/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -90,6 +90,9 @@ C     ------------------------------------------------------------------
             CALL JVIMPK ( 'L' , 'SUR LA BASE :' , 1 , NOMBAS(IC) )
             CALL JVIMPI ( 'S' , ' ' , 1 , NUMEXT )
             CALL JVIMPI ( 'L' , 'CODE RETOUR WRITDR :', 1 , IERR )
+            CALL JVIMPK ( 'L' , 'ERREUR PROBABLEMENT PROVOQUEE PAR UNE '
+     +                 //'TAILLE TROP FAIBLE DU REPERTOIRE DE TRAVAIL' ,
+     +                    1 , ' ' )
             CALL JVFINM
           ENDIF
           IUSADI(JUSADI(IC)+2*(IADDI+I-1)-1) = IDCO
@@ -110,6 +113,9 @@ C     ------------------------------------------------------------------
             CALL JVIMPK ( 'L' , 'SUR LA BASE :' , 1 , NOMBAS(IC) )
             CALL JVIMPI ( 'S' , ' ' , 1 , NUMEXT )
             CALL JVIMPI ( 'L' , 'CODE RETOUR WRITDR :', 1 , IERR )
+            CALL JVIMPK ( 'L' , 'ERREUR PROBABLEMENT PROVOQUEE PAR UNE '
+     +                 //'TAILLE TROP FAIBLE DU REPERTOIRE DE TRAVAIL' ,
+     +                    1 , ' ' )
             CALL JVFINM
           ENDIF
           IUSADI(JUSADI(IC)+2*(IADDI+NBLENT)-1) = IDCO

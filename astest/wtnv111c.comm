@@ -1,4 +1,4 @@
-# MODIF  DATE 19/04/2004   AUTEUR ROMEO R.FERNANDES 
+# MODIF  DATE 17/08/2004   AUTEUR ROMEO R.FERNANDES 
 # TITRE TEST THM_D_PLAN_DPTR6, MASSIF POREUX SATURE CHAUFFE PAR UN FLUX
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -166,7 +166,7 @@ TEST_RESU(
              NOM_CHAM = 'DEPL', 
              NOM_CMP = 'TEMP',
              NOEUD = 'N1',   
-             VALE = -1.38778E-17,   
+             VALE = 0.,   
              CRITERE = 'ABSOLU',
              PRECISION = 1.E-6)
            )

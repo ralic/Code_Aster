@@ -1,4 +1,4 @@
-#@ MODIF codex Build  DATE 20/01/2003   AUTEUR DURAND C.DURAND 
+#@ MODIF codex Build  DATE 17/08/2004   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -111,42 +111,11 @@ def ops1(cmd):
    print cmd.getres()
    return 0
 
-def ops4(cmd):
-   """
-      Fonction OPS de la macro DEFI_VALEUR
-   """
-   print cmd.getres()
-   print "MCS: ",cmd.getvr8("","R8",1,1,1)
-   return 0
-
 def ops5(cmd):
    """
       Fonction OPS de la macro FORMULE
    """
    print cmd.getres()
-   return 0
-
-def ops12(cmd):
-   """
-      Fonction OPS de la macro MACRO_MODE_MECA
-   """
-   print cmd.getres()
-   na,la=cmd.getvid("","MATR_A",1,1,1)
-   nb,lb=cmd.getvid("","MATR_B",1,1,1)
-   print cmd.smcdel(0,0)
-   print cmd.smdcmd(0,gcncon("."),"MODE_ITER_SIMULT")
-   print cmd.putvid("MATR_A",0,la)
-   print cmd.putvid("MATR_B",0,lb)
-   print cmd.putvis("INFO",0,1)
-   print cmd.putvtx("METHODE",0,"SORENSEN",0)
-   print cmd.putvtx("OPTION",0,"SANS",0)
-   print cmd.putvtx("STOP_FREQ_VIDE",0,"NON",0)
-   print cmd.smdmcf("CALC_FREQ")
-   print cmd.putvtx("OPTION",0,"BANDE",0)
-   print cmd.putvr8("FREQ",0,(20.,25.))
-   print cmd.putvis("NMAX_ITER_SOREN",0,20)
-   print cmd.smfmcf()
-   print cmd.smfcmd()
    return 0
 
 def ops14(cmd):
@@ -159,9 +128,7 @@ def ops14(cmd):
 ops={
      1:ops1,
      2:ops1,
-     4:ops4,
      5:ops5,
-     12:ops12,
      14:ops14,
      }
 

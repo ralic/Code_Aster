@@ -1,4 +1,4 @@
-#@ MODIF B_OBJECT Build  DATE 16/12/2003   AUTEUR DURAND C.DURAND 
+#@ MODIF B_OBJECT Build  DATE 17/08/2004   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -83,8 +83,8 @@ class OBJECT:
       """
       liste=[]
       for child in self.mc_liste :
-        if isinstance(child,MCFACT) :
-          liste.append(child.nom)
+        if isinstance(child[0],MCFACT) :
+          liste.append(child[0].nom)
         elif isinstance(child,MCBLOC) :
           liste= liste+child.getlfact()
       return liste

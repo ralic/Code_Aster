@@ -1,5 +1,5 @@
 
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 17/08/2004   AUTEUR ROMEO R.FERNANDES 
 # TITRE  - CONSOLIDATION DE TERZAGHI  CAS 3D  
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -259,7 +259,8 @@ TEST_RESU(RESU=(
                    NOM_CHAM='DEPL',
                    NOM_CMP='PRE1',
                    NOEUD='NO50',
-                   VALE=0.0,
+                   VALE=0.0,  
+                   CRITERE='ABSOLU',
                    PRECISION=1.E-3,
                    REFERENCE='ANALYTIQUE',),
                    ),);

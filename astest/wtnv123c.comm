@@ -1,6 +1,6 @@
-# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
-
-# TITRE ESSAI HYDROSTATIQUE SUIVI D UN TRIAXIAL EN CONTRACTANCE 
+# MODIF  DATE 17/08/2004   AUTEUR JOUMANA J.EL-GHARIB 
+# RESPONSABLE JOUMANA J.EL-GHARIB
+# TITRE ESSAI TRIAXIAL A SUCCION FIXEE AVEC LE MODELE DE BARCELONE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,8 +18,6 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-# A SUCCION FIXE SUIVI D'UNE DECHARGE DEVIATORIQUE ET D'UNE AUTRE 
-# DECHARGE HYDROSTATIQUE ET ENFIN D'UN TRIAXIAL EN DILATANCE
 
 DEBUT(   CODE=_F( NOM = 'WTNV123C', NIV_PUB_WEB='INTERNET' )  )
 
@@ -173,15 +171,6 @@ P0=AFFE_CHAR_MECA(    MODELE=MODELE,
                            )
 
 
-EVOL_HYD=DEFI_FONCTION(      NOM_PARA='INST',
-                           PROL_DROITE='CONSTANT',
-                         VALE=( 0.0,  0.0,
-                               1.0,   100.E5,
-                               3.0,   300.E5,
-                               6.0,   400.E5,)
-                       )
-
-
 TEMPS1=DEFI_LIST_REEL(   DEBUT=0.,INTERVALLE=(
                             _F(  JUSQU_A = 1.,    NOMBRE = 10, ),
                             _F(  JUSQU_A = 3.,    NOMBRE = 5, ),
@@ -205,7 +194,7 @@ TEMPS4=DEFI_LIST_REEL(   DEBUT=34.,INTERVALLE=(
 TEMPS5=DEFI_LIST_REEL(   DEBUT=46.,INTERVALLE=(
                             _F(  JUSQU_A = 48.,    NOMBRE = 5,  ),
                             _F(  JUSQU_A = 55.,    NOMBRE = 5,  ),
-                            _F(  JUSQU_A = 60.,    NOMBRE = 40,  ),)
+                            _F(  JUSQU_A = 60.,    NOMBRE = 100,  ),)
                          )
 
 # AFFECTATION DE L ETAT INITIAL
@@ -240,6 +229,13 @@ SIGINIT=CREA_CHAMP(MAILLAGE=MAILLAGE,
                             0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0),),);
 #CALCUL HYDROSTATIQUE
 
+EVOL_HYD=DEFI_FONCTION(      NOM_PARA='INST',
+                           PROL_DROITE='CONSTANT',
+                         VALE=( 0.0,  0.0,
+                               1.0,   100.E5,
+                               3.0,   300.E5,
+                               6.0,   400.E5,)
+                       )
 U1=STAT_NON_LINE(ETAT_INIT = _F(SIGM=SIGINIT,DEPL=DEPINIT),
                         MODELE=MODELE,
                         CHAM_MATER=CHMAT,EXCIT=(
@@ -403,7 +399,7 @@ EVOH_DEC=DEFI_FONCTION(      NOM_PARA='INST',
                          VALE=( 34.0, 400.E5,
                                 36.0, 350.E5,
                                 41.0, 300.E5,
-                                46.0,  200.E5,)
+                                46.0, 175.E5,)
                        )
 
 U1=STAT_NON_LINE(reuse=U1, 
@@ -413,7 +409,7 @@ U1=STAT_NON_LINE(reuse=U1,
                 CHARGE = DEP_SYM,            
                 ), _F( 
                 CHARGE = PR_LATE,            
-                FONC_MULT = EVOL_HYD,         
+                FONC_MULT = EVOH_DEC,         
                 ), _F( 
                 CHARGE = PR_V,            
                 FONC_MULT = EVOH_DEC,         
@@ -458,10 +454,10 @@ DEP_V=AFFE_CHAR_MECA(    MODELE=MODELE,
 
 EVOL_DEP=DEFI_FONCTION(      NOM_PARA='INST',
                            PROL_DROITE='CONSTANT',
-                         VALE=(46.0,  -6.73485E-03,
+                         VALE=(46.0,  -7.48391E-02,
                                48.0,  -9.73485E-02,
                                55.0,  -1.73485E-01,
-                               60.0,  -5.73485E-01,)
+                               60.0,  -3.73485E-01,)
                        )
 
 U1=STAT_NON_LINE(reuse=U1, 
@@ -471,7 +467,7 @@ U1=STAT_NON_LINE(reuse=U1,
                 CHARGE = DEP_SYM,            
                 ), _F( 
                 CHARGE = PR_LATE,            
-                FONC_MULT = EVOL_HYD,         
+                FONC_MULT = EVOH_DEC,         
                 ), _F( 
                 CHARGE = DEP_V,            
                 FONC_MULT = EVOL_DEP,         
@@ -551,6 +547,33 @@ TEST_RESU(RESU=(
                        PRECISION = 1.E-4,   
                        VALE = -2.06016E-01 ,        
                      ),
+                _F(    RESULTAT = U1,    
+                       REFERENCE = 'NON_REGRESSION',  
+                       NOEUD = 'NO8',      
+                       NOM_CHAM = 'DEPL',    
+                       NOM_CMP = 'DZ',     
+                       INST=34.,  
+                       PRECISION = 1.E-4,   
+                       VALE = -8.67365E-02 ,        
+                     ),
+                _F(    RESULTAT = U1,    
+                       REFERENCE = 'NON_REGRESSION',  
+                       NOEUD = 'NO8',      
+                       NOM_CHAM = 'DEPL',    
+                       NOM_CMP = 'DZ',     
+                       INST=46.,  
+                       PRECISION = 1.E-4,   
+                       VALE = -7.48391E-02 ,        
+                     ),
+                _F(    RESULTAT = U1,    
+                       REFERENCE = 'NON_REGRESSION',  
+                       NOEUD = 'NO8',      
+                       NOM_CHAM = 'DEPL',    
+                       NOM_CMP = 'DZ',     
+                       INST=60.,  
+                       PRECISION = 1.E-4,   
+                       VALE = -3.73485E-01 ,        
+                     ),
 # PRESSION CRITIQUE
                 _F(    RESULTAT = U1,    
                        REFERENCE = 'NON_REGRESSION',  
@@ -570,6 +593,36 @@ TEST_RESU(RESU=(
                        INST=20.,  
                        PRECISION = 1.E-5,   
                        VALE = 3.43710E+07,        
+                     ),
+
+                _F(    RESULTAT = U1,    
+                       REFERENCE = 'NON_REGRESSION',  
+                       NOEUD = 'NO8',      
+                       NOM_CHAM = 'VARI_NOEU_ELGA',    
+                       NOM_CMP = 'V1',     
+                       INST=34.,  
+                       PRECISION = 1.E-5,   
+                       VALE = 3.43710E+07,        
+                     ),
+
+                _F(    RESULTAT = U1,    
+                       REFERENCE = 'NON_REGRESSION',  
+                       NOEUD = 'NO8',      
+                       NOM_CHAM = 'VARI_NOEU_ELGA',    
+                       NOM_CMP = 'V1',     
+                       INST=46.,  
+                       PRECISION = 1.E-5,   
+                       VALE = 3.43710E+07,        
+                     ),
+
+                _F(    RESULTAT = U1,    
+                       REFERENCE = 'NON_REGRESSION',  
+                       NOEUD = 'NO8',      
+                       NOM_CHAM = 'VARI_NOEU_ELGA',    
+                       NOM_CMP = 'V1',     
+                       INST=60.,  
+                       PRECISION = 1.E-5,   
+                       VALE = 3.34488E+07,        
                      ),
 # SEUIL HYDRIQUE
                 _F(    RESULTAT = U1,    
@@ -592,6 +645,35 @@ TEST_RESU(RESU=(
                        VALE = 7.79806E+07,        
                      ),
 
+                _F(    RESULTAT = U1,    
+                       REFERENCE = 'NON_REGRESSION',  
+                       NOEUD = 'NO8',      
+                       NOM_CHAM = 'VARI_NOEU_ELGA',    
+                       NOM_CMP = 'V3',     
+                       INST=34.,  
+                       PRECISION = 1.E-4,   
+                       VALE = 7.79806E+07,        
+                     ),
+
+                _F(    RESULTAT = U1,    
+                       REFERENCE = 'NON_REGRESSION',  
+                       NOEUD = 'NO8',      
+                       NOM_CHAM = 'VARI_NOEU_ELGA',    
+                       NOM_CMP = 'V3',     
+                       INST=46.,  
+                       PRECISION = 1.E-4,   
+                       VALE = 7.79806E+07,        
+                     ),
+
+                _F(    RESULTAT = U1,    
+                       REFERENCE = 'NON_REGRESSION',  
+                       NOEUD = 'NO8',      
+                       NOM_CHAM = 'VARI_NOEU_ELGA',    
+                       NOM_CMP = 'V3',     
+                       INST=60.,  
+                       PRECISION = 1.E-4,   
+                       VALE =  7.10116E+07,        
+                     ),
 # INDICATEUR DE PLASTICITE MECANIQUE
                 _F(    RESULTAT = U1,    
                        REFERENCE = 'NON_REGRESSION',  
@@ -609,6 +691,36 @@ TEST_RESU(RESU=(
                        NOM_CHAM = 'VARI_NOEU_ELGA',    
                        NOM_CMP = 'V2',     
                        INST=20.,  
+                       PRECISION = 1.E-5,   
+                       VALE = 1.,        
+                     ),
+
+                _F(    RESULTAT = U1,    
+                       REFERENCE = 'NON_REGRESSION',  
+                       NOEUD = 'NO8',      
+                       NOM_CHAM = 'VARI_NOEU_ELGA',    
+                       NOM_CMP = 'V2',     
+                       INST=34.,  
+                       PRECISION = 1.E-5,   
+                       VALE = 0.,        
+                     ),
+
+                _F(    RESULTAT = U1,    
+                       REFERENCE = 'NON_REGRESSION',  
+                       NOEUD = 'NO8',      
+                       NOM_CHAM = 'VARI_NOEU_ELGA',    
+                       NOM_CMP = 'V2',     
+                       INST=46.,  
+                       PRECISION = 1.E-5,   
+                       VALE = 0.,        
+                     ),
+
+                _F(    RESULTAT = U1,    
+                       REFERENCE = 'NON_REGRESSION',  
+                       NOEUD = 'NO8',      
+                       NOM_CHAM = 'VARI_NOEU_ELGA',    
+                       NOM_CMP = 'V2',     
+                       INST=60.,  
                        PRECISION = 1.E-5,   
                        VALE = 1.,        
                      ),
@@ -633,5 +745,35 @@ TEST_RESU(RESU=(
                        VALE = 0.,        
                      ),
                      
+                _F(    RESULTAT = U1,    
+                       REFERENCE = 'NON_REGRESSION',  
+                       NOEUD = 'NO8',      
+                       NOM_CHAM = 'VARI_NOEU_ELGA',    
+                       NOM_CMP = 'V4',     
+                       INST=34.,  
+                       PRECISION = 1.E-5,   
+                       VALE = 0.,        
+                     ),
+
+                _F(    RESULTAT = U1,    
+                       REFERENCE = 'NON_REGRESSION',  
+                       NOEUD = 'NO8',      
+                       NOM_CHAM = 'VARI_NOEU_ELGA',    
+                       NOM_CMP = 'V4',     
+                       INST=46.,  
+                       PRECISION = 1.E-5,   
+                       VALE = 0.,        
+                     ),
+
+                _F(    RESULTAT = U1,    
+                       REFERENCE = 'NON_REGRESSION',  
+                       NOEUD = 'NO8',      
+                       NOM_CHAM = 'VARI_NOEU_ELGA',    
+                       NOM_CMP = 'V4',     
+                       INST=60.,  
+                       PRECISION = 1.E-5,   
+                       VALE = 0.,        
+                     ),
+
                      ),)
 FIN () ;

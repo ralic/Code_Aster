@@ -3,7 +3,7 @@
       CHARACTER*8         FOND
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 30/03/2004   AUTEUR PROIA E.PROIA 
+C MODIF PREPOST  DATE 17/08/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -471,10 +471,11 @@ C ------ NOEUDS TROUVES ET ABSCISSES CURVILIGNES
             Y2 = ZR(IDCOOR-1+3*(ZI(KNULS+IN-1)-1)+2)
             Z2 = ZR(IDCOOR-1+3*(ZI(KNULS+IN-1)-1)+3)
           ZR(JABSCS+IN-1) = SQRT( (X2-X1)**2 + (Y2-Y1)**2 + (Z2-Z1)**2 )
+            CALL JENUNO(JEXNUM(NOMNOE,ZI(KNULS+IN-1)),ZK8(KNOLS+IN-1))
             IF ( NIV .EQ. 2 ) THEN
-              CALL JENUNO(JEXNUM(NOMNOE,ZI(KNULS+IN-1)),ZK8(KNOLS+IN-1))
-              WRITE(IFM,1010) ZK8(KNOLS+IN-1), ZR(JABSCS+IN-1)
+               WRITE(IFM,1010) ZK8(KNOLS+IN-1), ZR(JABSCS+IN-1)
             ENDIF
+
  114     CONTINUE
 
          IF ( NBTRLI .LT. 3 ) THEN
@@ -529,10 +530,11 @@ C ------ NOEUDS TROUVES ET ABSCISSES CURVILIGNES
             Y2 = ZR(IDCOOR-1+3*(ZI(KNULI+IN-1)-1)+2)
             Z2 = ZR(IDCOOR-1+3*(ZI(KNULI+IN-1)-1)+3)
           ZR(JABSCI+IN-1) = SQRT( (X2-X1)**2 + (Y2-Y1)**2 + (Z2-Z1)**2 )
+            CALL JENUNO(JEXNUM(NOMNOE,ZI(KNULI+IN-1)),ZK8(KNOLI+IN-1))
             IF ( NIV .EQ. 2 ) THEN
-              CALL JENUNO(JEXNUM(NOMNOE,ZI(KNULI+IN-1)),ZK8(KNOLI+IN-1))
               WRITE(IFM,1020) ZK8(KNOLI+IN-1), ZR(JABSCI+IN-1)
             ENDIF
+
  124     CONTINUE
 
          IF ( NBVAS .NE. NBVAI ) THEN

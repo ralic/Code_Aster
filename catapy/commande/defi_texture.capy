@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 17/08/2004   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -23,7 +23,8 @@ DEFI_TEXTURE=OPER(nom="DEFI_TEXTURE",op= 181,sd_prod=tabl_texture,
            N               =SIMP(statut='o',typ='R',min=12,max=12 ),  
            L               =SIMP(statut='o',typ='R',max='**' ),  
          ),
-         PLAN            =FACT(statut='o',min=40,max=40,
+##CD         PLAN            =FACT(statut='o',min=40,max=40,
+         PLAN            =FACT(statut='o',max='**',
            ANGL_NAUT       =SIMP(statut='o',typ='R',max='**' ),  
            PROPORTION      =SIMP(statut='o',typ='R' ),  
          ),

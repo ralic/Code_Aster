@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 17/08/2004   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,10 +21,10 @@ DETRUIRE=PROC(nom="DETRUIRE",op=-7,
               fr="Destruction d un concept utilisateur dans la base GLOBALE",
              op_init=ops.detruire,
              regles=(UN_PARMI('CONCEPT','OBJET',),), 
-            CONCEPT     =FACT(statut='f',
+            CONCEPT     =FACT(statut='f',max='**',
                 NOM         =SIMP(statut='o',typ=assd,validators=NoRepeat(),max='**'),
             ),
-            OBJET  =FACT(statut='f',
+            OBJET  =FACT(statut='f',max='**',
                CLASSE      =SIMP(statut='f',typ='TXM',into=('G','V','L'),defaut='G'),  
                CHAINE      =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**'),
                POSITION    =SIMP(statut='f',typ='I'  ,max='**'),

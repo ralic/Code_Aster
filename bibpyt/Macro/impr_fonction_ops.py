@@ -1,4 +1,4 @@
-#@ MODIF impr_fonction_ops Macro  DATE 30/06/2004   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF impr_fonction_ops Macro  DATE 17/08/2004   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -55,15 +55,9 @@ def impr_fonction_ops(self, FORMAT, COURBE, INFO, **args):
 
    # 0.2. Récupération des valeurs sous COURBE
    unparmi=('FONCTION','LIST_RESU','FONC_X')
-   l_C=[]
-   if COURBE.__class__.__name__=='MCFACT':
-      l_C.append(COURBE)
-   elif COURBE.__class__.__name__=='MCList':
-      for Ci in COURBE:
-         l_C.append(Ci)
 
    Courbe=[]
-   for Ci in l_C:
+   for Ci in COURBE:
       dC = Ci.cree_dict_valeurs(Ci.mc_liste)
       for mc in dC.keys():
          if dC[mc]==None: del dC[mc]

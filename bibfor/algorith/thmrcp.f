@@ -10,7 +10,7 @@
      +                   DVISVG,FICKAD,DFADT,CPAD,KH,PAD,EM,LAMBCT)
 C =====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/06/2004   AUTEUR NDOMING N.DOMINGUEZ 
+C MODIF ALGORITH  DATE 17/08/2004   AUTEUR ROMEO R.FERNANDES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -662,8 +662,10 @@ C =====================================================================
                CALL SATURA(HYDR,P1M,VAL35(5),RBID1  )
                CALL SATURA(HYDR,P1 ,VAL35(6),VAL35(7))
             ENDIF
-            CALL RCVALA(IMATE,' ', 'THM_AIR_DISSOUS',  2, 'TEMP', T,
-     +                           2, NCRA39(1), VAL39(1), CODRET, 'FM ')
+            CALL RCVALA(IMATE, ' ','THM_AIR_DISSOUS', 0, ' ', 0.0D0,
+     +                           1, NCRA39(1), VAL39(1), CODRET, 'FM ')
+            CALL RCVALA(IMATE,' ', 'THM_AIR_DISSOUS',  1, 'TEMP', T,
+     +                           1, NCRA39(2), VAL39(2), CODRET, 'FM ')
             CALL RCVALA(IMATE,' ', 'THM_DIFFU', 0, ' ', 0.0D0,
      +                          1, NCRA35(7), VAL35(8), CODRET, ' ')
             RGAZ    = VAL35(1)

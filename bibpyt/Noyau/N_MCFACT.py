@@ -1,4 +1,4 @@
-#@ MODIF N_MCFACT Noyau  DATE 03/09/2002   AUTEUR GNICOLAS G.NICOLAS 
+#@ MODIF N_MCFACT Noyau  DATE 17/08/2004   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -95,4 +95,5 @@ class MCFACT(N_MCCOMPO.MCCOMPO):
       visitor.visitMCFACT(self)
 
    def makeobjet(self):
-     return self.definition(val = None, nom = self.nom,parent = self.parent)
+     return self.definition.class_instance(val=None,nom=self.nom,
+                                 definition=self.definition,parent=self.parent)

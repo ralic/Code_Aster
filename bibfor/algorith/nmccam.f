@@ -2,7 +2,7 @@
      &                   INSTAM,INSTAP,TM,TP,TREF,DEPS,SIGM,PCRM,
      &                   OPTION,SIGP,PCRP,DSIDEP)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 17/08/2004   AUTEUR JOUMANA J.EL-GHARIB 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -86,15 +86,18 @@ C
       REAL*8      C(6,6),CT,XB,V0,V0EST,SEUIL,D(3,3),DD(3,3)
       REAL*8      SIGEL(6),XINF,XSUP,DET,TOL,TOL1,FFI(6,6),EE(6,6)
       REAL*8      V(6,6),S(6,6),T(6,6),VV(6,6),SS(6,6),TT(6,6)
-      REAL*8      NUL,DEUX,DIFF,DIFF1
-      INTEGER     NDIMSI
-      INTEGER     K,L,ITER, MATR
+      REAL*8      HH(6,6),SES(6,6),SIEQP,GG(6,6),SPS(6,6),HHM(6,6)
+      REAL*8      D1G(6,6),D1GHHM(6,6),ID2(6,6),DEVHYD(6,6),DEVHYM(6,6)
+      REAL*8      NUL,DEUX,DIFF,DIFF1,DIFF2,XAU
+      REAL*8      FXI1,FXI2,FXI3,FXI,FXS1,FXS2,FXS3,FXS,ZERO,EPS  
+      INTEGER     NDIMSI,SIGNF,SIGNFI,SIGNFS
+      INTEGER     I,K,L,ITER, MATR
       CHARACTER*2 BL2, FB2, CODRET(9)
       CHARACTER*8 NOMRES(9)
       CHARACTER*8 NOMPAR(9),TYPE
       REAL*8      VALPAM(3)
       DATA        KRON/1.D0,1.D0,1.D0,0.D0,0.D0,0.D0/
-      DATA        TOL/1.D-10/TOL1/1.D-8/NUL/0.D0/DEUX/2.D0/
+      DATA        TOL/1.D-10/NUL/0.D0/DEUX/2.D0/ZERO/0.D0/
 C DEB ------------------------------------------------------------------
 C
 C     -- 1 INITIALISATIONS :
@@ -105,15 +108,6 @@ C     ----------------------
 C
       BL2 = '  '
       FB2 = 'F '
-C
-      IF ((.NOT.( COMPOR(1)(1:9) .EQ. 'CAM_CLAY ')).AND.
-     &   (.NOT.( COMPOR(1)(1:6) .EQ. 'KIT_HM')).AND.
-     &   (.NOT.( COMPOR(1)(1:7) .EQ. 'KIT_HHM')).AND.
-     &   (.NOT.( COMPOR(1)(1:7) .EQ. 'KIT_THM')).AND.
-     &   (.NOT.( COMPOR(1)(1:8) .EQ. 'KIT_THHM'))) THEN
-            CALL UTMESS('F','NMCCAM_01',
-     &           ' COMPORTEMENT INATTENDU : '//COMPOR(1))
-      ENDIF
 C
 C     -- 2 RECUPERATION DES CARACTERISTIQUES
 C     ---------------------------------------
@@ -134,29 +128,29 @@ C
          CALL RCVALA(IMATE,' ','ELAS',1,NOMPAR,VALPAM,1,
      +                 NOMRES(1),VALRES(1),CODRET(1), FB2 )
          E  = VALRES(1)
-         CALL RCVALA(IMATE,' ','ELAS',2,NOMPAR,VALPAM,1,
+         CALL RCVALA(IMATE,' ','ELAS',1,NOMPAR,VALPAM,1,
      +                 NOMRES(2),VALRES(2),CODRET(2), FB2 )
          NU = VALRES(2)
-         CALL RCVALA(IMATE,' ','ELAS',3,NOMPAR,VALPAM,1,
+         CALL RCVALA(IMATE,' ','ELAS',1,NOMPAR,VALPAM,1,
      +                 NOMRES(3),VALRES(3),CODRET(3), BL2 )
          IF ( CODRET(3) .NE. 'OK' ) VALRES(3) = 0.D0
          ALPHA = VALRES(3)
-         CALL RCVALA(IMATE,' ','CAM_CLAY ',6,NOMPAR,VALPAM,1,
+         CALL RCVALA(IMATE,' ','CAM_CLAY ',1,NOMPAR,VALPAM,1,
      +                 NOMRES(4),VALRES(4),CODRET(4), FB2 )
          PORO = VALRES(4)
-         CALL RCVALA(IMATE,' ','CAM_CLAY ',6,NOMPAR,VALPAM,1,
+         CALL RCVALA(IMATE,' ','CAM_CLAY ',1,NOMPAR,VALPAM,1,
      +                 NOMRES(5),VALRES(5),CODRET(5), FB2 )
          LAMBDA = VALRES(5)
-         CALL RCVALA(IMATE,' ','CAM_CLAY ',6,NOMPAR,VALPAM,1,
+         CALL RCVALA(IMATE,' ','CAM_CLAY ',1,NOMPAR,VALPAM,1,
      +                 NOMRES(6),VALRES(6),CODRET(6), FB2 )
          KAPA = VALRES(6)
-         CALL RCVALA(IMATE,' ','CAM_CLAY ',6,NOMPAR,VALPAM,1,
+         CALL RCVALA(IMATE,' ','CAM_CLAY ',1,NOMPAR,VALPAM,1,
      +                 NOMRES(7),VALRES(7),CODRET(7), FB2 )
          M     = VALRES(7)
-         CALL RCVALA(IMATE,' ','CAM_CLAY ',6,NOMPAR,VALPAM,1,
+         CALL RCVALA(IMATE,' ','CAM_CLAY ',1,NOMPAR,VALPAM,1,
      +                 NOMRES(8),VALRES(8),CODRET(8), FB2 )
          PRESCR = VALRES(8)
-         CALL RCVALA(IMATE,' ','CAM_CLAY ',6,NOMPAR,VALPAM,1,
+         CALL RCVALA(IMATE,' ','CAM_CLAY ',1,NOMPAR,VALPAM,1,
      +                 NOMRES(9),VALRES(9),CODRET(9), FB2 )
          PA = VALRES(9)
       ENDIF
@@ -165,36 +159,36 @@ C
      &     (COMPOR(1)(1:7) .EQ. 'KIT_THM') .OR.
      &     (COMPOR(1)(1:8) .EQ. 'KIT_THHM')).AND.
      &     (COMPOR(11)(1:9) .EQ. 'CAM_CLAY ')) THEN
-         CALL RCVALA(IMATE,' ','ELAS',4,NOMPAR,VALPAM,1,
+         CALL RCVALA(IMATE,' ','ELAS',1,NOMPAR,VALPAM,1,
      +                 NOMRES(1),VALRES(1),CODRET(1), FB2 )
          E  = VALRES(1)
-         CALL RCVALA(IMATE,' ','ELAS',4,NOMPAR,VALPAM,1,
+         CALL RCVALA(IMATE,' ','ELAS',1,NOMPAR,VALPAM,1,
      +                 NOMRES(2),VALRES(2),CODRET(2), FB2 )
          NU = VALRES(2)
-         CALL RCVALA(IMATE,' ','ELAS',4,NOMPAR,VALPAM,1,
+         CALL RCVALA(IMATE,' ','ELAS',1,NOMPAR,VALPAM,1,
      +                 NOMRES(3),VALRES(3),CODRET(3), BL2 )
          IF ( CODRET(3) .NE. 'OK' ) VALRES(3) = 0.D0
          ALPHA = VALRES(3)
-         CALL RCVALA(IMATE,' ','CAM_CLAY ',6,NOMPAR,VALPAM,1,
+         CALL RCVALA(IMATE,' ','CAM_CLAY ',1,NOMPAR,VALPAM,1,
      +                 NOMRES(4),VALRES(4),CODRET(4), FB2 )
          PORO = VALRES(4)
          PORO1 = PORO
-         CALL RCVALA(IMATE,' ','CAM_CLAY ',6,NOMPAR,VALPAM,1,
+         CALL RCVALA(IMATE,' ','CAM_CLAY ',1,NOMPAR,VALPAM,1,
      +                 NOMRES(5),VALRES(5),CODRET(5), FB2 )
          LAMBDA = VALRES(5)
-         CALL RCVALA(IMATE,' ','CAM_CLAY ',6,NOMPAR,VALPAM,1,
+         CALL RCVALA(IMATE,' ','CAM_CLAY ',1,NOMPAR,VALPAM,1,
      +                 NOMRES(6),VALRES(6),CODRET(6), FB2 )
          KAPA = VALRES(6)
-         CALL RCVALA(IMATE,' ','CAM_CLAY ',6,NOMPAR,VALPAM,1,
+         CALL RCVALA(IMATE,' ','CAM_CLAY ',1,NOMPAR,VALPAM,1,
      +                 NOMRES(7),VALRES(7),CODRET(7), FB2 )
          M     = VALRES(7)
-         CALL RCVALA(IMATE,' ','CAM_CLAY ',6,NOMPAR,VALPAM,1,
+         CALL RCVALA(IMATE,' ','CAM_CLAY ',1,NOMPAR,VALPAM,1,
      +                 NOMRES(8),VALRES(8),CODRET(8), FB2 )
          PRESCR = VALRES(8)
-         CALL RCVALA(IMATE,' ','CAM_CLAY ',6,NOMPAR,VALPAM,1,
+         CALL RCVALA(IMATE,' ','CAM_CLAY ',1,NOMPAR,VALPAM,1,
      +                 NOMRES(9),VALRES(9),CODRET(9), FB2 )
          PA = VALRES(9)
-         CALL RCVALA(IMATE,' ','THM_INIT',5,NOMPAR,VALPAM,1,
+         CALL RCVALA(IMATE,' ','THM_INIT',1,NOMPAR,VALPAM,1,
      +                 NOMRES(4),VALRES(4),CODRET(4), FB2 )
          PORO = VALRES(4)
          PORO2 = PORO
@@ -264,6 +258,7 @@ C     ------------------------------------------------------------
       IF ( OPTION(1:9) .EQ. 'RAPH_MECA' .OR.
      &     OPTION(1:9) .EQ. 'FULL_MECA'     ) THEN
         IF (FONC.LE.0.D0) THEN
+C      -- TRAITEMENT DE L'ELASTICITE
            PCRP(1) = PCRM(1)
            PCRP(2) = 0.D0
             DO 118 K=1,NDIMSI
@@ -274,13 +269,10 @@ C     ------------------------------------------------------------
 C     -- PLASTIFICATION : CALCUL DE LA DEFORMATION 
 C     -- VOLUMIQUE PLASTIQUE : DEPPMO 
          PCRP(2) = 1.D0
-C     -- TRAITEMENT DU CAS GENERAL
-         DIFF1 = (SIGMMO-PCRM(1))/PCRM(1)
-         IF (DIFF1.GT.TOL1) THEN
-C     -- CALCUL DE LA BORNE
        XB = 1.D0/(XK+XK0)*LOG(SIMOEL/PCRM(1))
        XINF = 0.D0
        XSUP = XB
+       
 C     --RESOLUTION AVEC LA METHODE DE NEWTON ENTRE LES BORNES
        V0 = XINF
        SEUIL = M**2*PCRM(1)**2
@@ -302,24 +294,38 @@ C     --CRITERE DE CONVERGENCE
 
 C     --CONSTRUCTION DU NOUVEL ITERE    
        V0 = V0-F/FP
-
+       IF (XSUP.GT.0.D0) THEN
        IF (V0.LE.XINF .OR. V0.GE.XSUP)  V0 = (XINF+XSUP)/2
+       ELSE
+       IF (V0.LE.XSUP .OR. V0.GE.XINF)  V0 = (XINF+XSUP)/2
+       ENDIF       
        
-C     --CALCUL DE LA FONCTION ET DE SA DERIVEE
+C     --CALCUL DE LA FONCTION EN V0 ET DE SA DERIVEE
        F1 = SIMOEL*EXP(-XK0*V0)
        F2 = SIMOEL*EXP(-XK0*V0)-2.D0*PCRM(1)*EXP(XK*V0)
        F3 = SIMOEL*EXP(-XK0*V0)-PCRM(1)*EXP(XK*V0)
        F=SIELEQ**2+M**2*(1.D0+3.D0*DEUXMU*V0/2.D0/M/M/F3)**2*F1*F2
+       IF (F.GT.ZERO) SIGNF =  1
+       IF (F.LT.ZERO) SIGNF = -1
        F4 = (1.D0+3.D0*DEUXMU*V0/2.D0/M/M/F3)
        F5 = -2.D0*XK0*SIMOEL**2*EXP(-2.D0*XK0*V0)+
      &         2.D0*SIMOEL*PCRM(1)*EXP((XK-XK0)*V0)*(XK0-XK)
        F6 = SIMOEL*(1.D0+V0*XK0)*EXP(-XK0*V0)+
      &        PCRM(1)*(-1.D0+V0*XK)*EXP(XK*V0) 
-       FP = M**2*F4**2*F5+3.D0*DEUXMU*F4*F1*F2*(F6/F3/F3)   
-         
-         IF (F .GE. 0.D0) XINF = V0
-         IF (F .LE. 0.D0) XSUP = V0
- 
+       FP = M**2*F4**2*F5+3.D0*DEUXMU*F4*F1*F2*(F6/F3/F3)
+
+
+       FXI1 = SIMOEL*EXP(-XK0*XINF)
+       FXI2 = SIMOEL*EXP(-XK0*XINF)-2.D0*PCRM(1)*EXP(XK*XINF)
+       FXI3 = SIMOEL*EXP(-XK0*XINF)-PCRM(1)*EXP(XK*XINF)
+       FXI=SIELEQ**2+M**2*(1.D0+3.D0*DEUXMU*XINF/2.D0/M/M/FXI3)**2
+     &    *FXI1*FXI2
+       IF (FXI.GT.ZERO) SIGNFI =  1
+       IF (FXI.LT.ZERO) SIGNFI = -1
+              
+       IF ((SIGNF*SIGNFI).LT.ZERO) XSUP = V0
+       IF ((SIGNF*SIGNFI).GT.ZERO) XINF = V0
+
  200  CONTINUE
       CALL UTMESS('F','CAM_CLAY ','ITER_INTE_MAXI INSUFFISANT')
  100  CONTINUE       
@@ -327,7 +333,6 @@ C     --CALCUL DE LA FONCTION ET DE SA DERIVEE
 C
 C     -- REACTUALISATION DE LA VARIABLE INTERNE
         PCRP(1) = PCRM(1)*EXP(XK*DEPPMO)
-C
 C     -- REACTUALISATION DES CONTRAINTES
         SIGPMO = SIGMMO*EXP(XK0*(DEPSMO-DEPPMO))
        CALL R8INIR(6,0.D0,SIGPDV,1)        
@@ -337,17 +342,6 @@ C     -- REACTUALISATION DES CONTRAINTES
            SIGP(K) = SIGPDV(K)-SIGPMO*KRON(K)
  119  CONTINUE 
 C 
-           ELSE
-C     -- TRAITEMENT DU POINT CRITIQUE 
-           DEPPMO=0.D0
-           PCRP(1)=PCRM(1)
-           SIGPMO = SIGMMO*(1.D0+XK0*DEPSMO)
-         DO 122 K=1,NDIMSI
-           SIGPDV(K) = SIGEL(K)*SIEQM/SIELEQ*
-     &                SQRT(1.D0-XK0**2*DEPSMO**2) 
-           SIGP(K) = SIGPDV(K)-SIGPMO*KRON(K)
- 122  CONTINUE
-           ENDIF
       ENDIF        
       ENDIF
 C
@@ -442,15 +436,125 @@ C
 C     -- 7.3 CALCUL DE DSIDEP(6,6)-MATRICE COHERENTE : 
 C     ----------------------------------------------
         IF ( MATR .EQ. 2 ) THEN
-C        
-C      -- 7.3.1 CALCUL DES INCREMENTS DE P ET DE S
+      SIEQP = 0.0D0
+      DO 300 K=1,NDIMSI
+           SIEQP = SIEQP + SIGPDV(K)**2
+ 300  CONTINUE
+       SIEQP = SQRT(1.5D0*SIEQP)
+       DIFF2 = ABS((PCRP(1)-SIGPMO)/PCRP(1))
+      IF (DIFF2.LT.CRIT(3)) THEN
+C
+C     -- 7.3.1 OPERATEUR TANGENT COHERENT AU POINT CRITIQUE
+C     -- TRAITEMENT DE LA PARTIE DEVIATORIQUE
+C     -- CALCUL DE Q+
+C     -- CALCUL DU TENSEUR HH QUI MULTIMPLIE LA DEFORMATION
+       CALL R8INIR(6*6,0.D0,SES,1)
+       DO 1000 K=1,NDIMSI
+         DO 1001 L = 1,NDIMSI
+          SES(K,L) = 1.D0/2.D0*(SIGPDV(K)*SIGEL(L)+SIGEL(K)*SIGPDV(L))
+ 1001 CONTINUE 
+ 1000 CONTINUE 
+       CALL R8INIR(6*6,0.D0,HH,1) 
+       DO 301 K=1,NDIMSI
+       DO 302 L=1,NDIMSI
+            HH(K,L) = -DEUXMU*3.D0*SES(K,L)/2.D0/SIELEQ/SIEQP
+ 302  CONTINUE
+ 301  CONTINUE
+       DO 303 K=1,NDIMSI
+            HH(K,K) = DEUXMU+HH(K,K)
+ 303  CONTINUE 
+         IF (NDIM.EQ.2) THEN
+           HH(5,5) = 1.D0
+           HH(6,6) = 1.D0
+         ENDIF
+C     -- INVERSE DE HH
+        CALL R8INIR(6*6,0.D0,HHM,1)  
+           DO 304 K=1,6
+               HHM(K,K)=1.D0
+ 304  CONTINUE 
+        CALL MGAUSS(HH,HHM,6,6,6,NUL,LOGIC) 
+        
+C     -- CALCUL DU TENSEUR GG QUI MULTIMPLIE LA CONTRAINTE
+       CALL R8INIR(6*6,0.D0,GG,1) 
+       CALL R8INIR(6*6,0.D0,SPS,1)
+       DO 1002 K=1,NDIMSI
+         DO 1003 L = 1,NDIMSI
+          SPS(K,L) = SIGPDV(K)*SIGPDV(L)
+ 1003 CONTINUE 
+ 1002 CONTINUE 
+       DO 305 K=1,NDIMSI
+       DO 306 L=1,NDIMSI
+            GG(K,L) = -3.D0*SIELEQ*SPS(K,L)/2.D0/SIEQP**3
+ 306  CONTINUE
+ 305  CONTINUE
+       DO 307 K=1,NDIMSI
+            GG(K,K) = SIELEQ/SIEQP + GG(K,K)
+ 307  CONTINUE 
+C     --  MATRICE DE PROJECTION SUR L'ESPACE DES CONTRAINTES
+C     -- DEVIATORIQUES
+       CALL R8INIR(6*6,0.D0,V,1)    
+       DO 315 K = 1,3
+       DO 316 L = 1,3
+         V(K,L) = -1.D0/3.D0
+         V(L,K) = V(K,L)
+ 316  CONTINUE
+ 315  CONTINUE
+      DO 317 K= 1,NDIMSI
+         V(K,K) = V(K,K) + 1.D0
+ 317  CONTINUE
+C     --  PRODUIT DE LA MATRICE DE PROJECTION SUR L'ESPACE 
+C     --  DES CONTRAINTES DEVIATORIQUES PAR GG
+       CALL R8INIR(6*6,0.D0,D1G,1)
+       CALL PROMAT(V,6,NDIMSI,NDIMSI,GG,6,NDIMSI,NDIMSI,D1G)
+C     -- PRODUIT DU RESULTAT PAR L'INVERSE DE HH
+       CALL R8INIR(6*6,0.D0,D1GHHM,1)
+       CALL PROMAT(D1G,6,NDIMSI,NDIMSI,HHM,6,NDIMSI,NDIMSI,D1GHHM)
+C
+C     -- 7.3.2 TRAITEMENT DE LA PARTIE HYDROSTATIQUE
+C     --  PRODUIT DE LA MATRICE DE PROJECTION SUR L'ESPACE 
+C     --  DES CONTRAINTES DEVIATORIQUES PAR LA MATRICE IDENTITE
+C     --  D'ORDRE 2
+       CALL R8INIR(6*6,0.D0,ID2,1)
+       DO 308 K=1,3
+       DO 309 L=1,3
+            ID2(K,L) = -1.D0/3.D0/XK0/SIGPMO
+ 309  CONTINUE 
+ 308  CONTINUE 
+C     -- SOMME DES TERMES DEVIATORIQUE ET HYDROSTATIQUE
+       CALL R8INIR(6*6,0.D0,DEVHYD,1)
+       DO 310 K=1,NDIMSI
+       DO 311 L=1,NDIMSI
+            DEVHYD(K,L) = D1GHHM(K,L)/DEUXMU + ID2(K,L)
+ 311  CONTINUE 
+ 310  CONTINUE 
+         IF (NDIM.EQ.2) THEN
+           DEVHYD(5,5) = 1.D0
+           DEVHYD(6,6) = 1.D0
+         ENDIF
+C     -- INVERSE DE LA SOMME DES TERMES DEVIATORIQUE ET HYDROSTATIQUE
+        CALL R8INIR(6*6,0.D0,DEVHYM,1)  
+           DO 312 K=1,6
+               DEVHYM(K,K)=1.D0
+ 312  CONTINUE 
+        CALL MGAUSS(DEVHYD,DEVHYM,6,6,6,NUL,LOGIC) 
+C     -- TERMES DE L'OPERATEUR TANGENT        
+       CALL R8INIR(6*6,0.D0,DSIDEP,1)
+       DO 313 K=1,6
+       DO 314 L=1,6
+            DSIDEP(K,L) = DEVHYM(K,L)
+ 314  CONTINUE 
+ 313  CONTINUE             
+      ELSE
+C 
+C      ---7.4 OPERATEUR TANGENT COHERENT CAS GENERAL
+C      -- CALCUL DES INCREMENTS DE P ET DE S
         DELTAP = SIGPMO - SIGMMO
        CALL R8INIR(6,0.D0,DELTAS,1)
            DO 140 K=1,NDIMSI
               DELTAS(K)=SIGPDV(K)-SIGMDV(K)
  140  CONTINUE
 C           
-C     -- 7.3.2 CALCUL DE VECTEURS INTERMEDIAIRES 
+C     --  CALCUL DE VECTEURS INTERMEDIAIRES 
         SPARDS = 0.D0
            DO 141 K = 1,NDIMSI
                SPARDS = SPARDS+DELTAS(K)*SIGPDV(K)
@@ -460,7 +564,7 @@ C     -- 7.3.2 CALCUL DE VECTEURS INTERMEDIAIRES
                TPLUS(K) = SIGPDV(K) + DELTAS(K)
  142  CONTINUE              
 C
-C      -- TERMES NECESSAIRES A LA PARTIE DEVIATORIQUE              
+C      -- 7.4.1 TERMES NECESSAIRES A LA PARTIE DEVIATORIQUE
         HP = 4.D0*M**4*XK*SIGPMO*PCRP(1)*(SIGPMO-PCRP(1))
 C
         XC = 9.D0*SPARDS/HP
@@ -495,7 +599,7 @@ C
           DO 170 K=1,NDIMSI
           DO 171 L=1,NDIMSI
              C(K,L) = 9.D0/2.D0/(HP+XA)*(SIGPDV(K)*TPLUS(L)+
-     &                                         TPLUS(K)*SIGPDV(L))
+     &                                  TPLUS(K)*SIGPDV(L))
  171  CONTINUE
  170  CONTINUE
            DO 149 K=1,NDIMSI
@@ -583,8 +687,10 @@ C     --  7.3.3 CALCUL DES TERMES DSIDEP L'OPERATEUR TANGENT
         DO 107 L = 1,6
         DSIDEP(K,L) = VV(K,L)
  107  CONTINUE
- 106  CONTINUE  
+ 106  CONTINUE
+C
       ENDIF
-C FIN ---------------------------------------------------------
       ENDIF
+      ENDIF
+C    FIN ---------------------------------------------------------
       END

@@ -1,4 +1,4 @@
-#@ MODIF N_FACT Noyau  DATE 09/09/2003   AUTEUR DURAND C.DURAND 
+#@ MODIF N_FACT Noyau  DATE 17/08/2004   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -119,17 +119,18 @@ class FACT(N_ENTITE.ENTITE):
           print "On ne devrait jamais passer par la"
           return None
 
-      if type(val) == types.TupleType or type(val) == types.ListType :
-        # on est en présence d'un MCFACT multiple !
-        l=self.list_instance()
-        l.init(nom = nom,parent=parent)
-        for v in val:
-          objet=self.class_instance(nom=nom,definition=self,val=v,parent=parent)
-          l.append(objet)
-        return l
+      # On cree toujours une liste de mcfact
+      l=self.list_instance()
+      l.init(nom = nom,parent=parent)
+      if type(val) in (types.TupleType,types.ListType) :
+         for v in val:
+            objet=self.class_instance(nom=nom,definition=self,val=v,parent=parent)
+            l.append(objet)
       else:
-        return self.class_instance(nom=nom,definition=self,val=val,parent=parent)
+         objet=self.class_instance(nom=nom,definition=self,val=val,parent=parent)
+         l.append(objet)
 
+      return l
 
    def verif_cata(self):
       if type(self.min) != types.IntType :

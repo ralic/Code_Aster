@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 17/08/2004   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -105,7 +105,7 @@ CREA_RESU=OPER(nom="CREA_RESU",op=124,sd_prod=crea_resu_prod,reentrant='f',
            MAILLAGE_INIT   =SIMP(statut='o',typ=maillage_sdaster,),
            RESU_FINAL      =SIMP(statut='o',typ=evol_noli,),
            MAILLAGE_FINAL  =SIMP(statut='o',typ=maillage_sdaster,),
-           PERM_CHAM       =FACT(statut='o',
+           PERM_CHAM       =FACT(statut='o',max='**',
               GROUP_MA_FINAL =SIMP(statut='o',typ=grma),
               GROUP_MA_INIT  =SIMP(statut='o',typ=grma),
               TRAN           =SIMP(statut='o',typ='R',max='**'),

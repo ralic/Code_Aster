@@ -1,4 +1,4 @@
-# MODIF  DATE 24/05/2004   AUTEUR JOUMANA J.EL-GHARIB 
+# MODIF  DATE 17/08/2004   AUTEUR ROMEO R.FERNANDES 
 # TITRE REPONSE A DES CHEMINS MIXTES DE SATURATION - CONSOLIDATION en AXIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -62,7 +62,7 @@ DSATU=CALC_FONC_INTERP(FONCTION=DSL,
 
 # MAILLAGE + MODELE
 
-PRE_GIBI();
+#PRE_GIBI();
 
 MAILLAGE=LIRE_MAILLAGE( );
 
@@ -169,7 +169,7 @@ DEP_SYM=AFFE_CHAR_MECA(    MODELE=MODELE,DDL_IMPO=(
                               _F(  GROUP_NO = 'AB',    DY = 0.,   ))
                            )
 
-# LISTES D'INSTANT
+# LISTES D INSTANT
 
 TEMPS1=DEFI_LIST_REEL(   DEBUT=0.,INTERVALLE=(
                             _F(  JUSQU_A = 1.,    NOMBRE = 5, ),
@@ -556,7 +556,7 @@ U3=CALC_NO(reuse =U3,
                CHAM_MATER=CHMAT,
                OPTION=('SIEF_NOEU_ELGA','VARI_NOEU_ELGA'),);
 
-# PREMIER TEST AU PREMIER POINT D'ARRIVEE 
+# PREMIER TEST AU PREMIER POINT D ARRIVEE 
 
 
 TEST_RESU(RESU=(
@@ -590,11 +590,12 @@ TEST_RESU(RESU=(
                        NOM_CMP = 'V4',     
                        INST=12.,  
                        PRECISION = (1.E-5,1.E-6),   
-                       VALE =  0,        
+                       VALE =  0, 
+                       CRITERE='ABSOLU',       
                      ),
      ),),
 
-# DEUXIEME TEST AU PREMIER POINT D'ARRIVEE 
+# DEUXIEME TEST AU PREMIER POINT D ARRIVEE 
 
 TEST_RESU(RESU=(
 
@@ -627,7 +628,8 @@ TEST_RESU(RESU=(
                        NOM_CMP = 'V4',     
                        INST=12.,  
                        PRECISION = (1.E-5,1.E-6),   
-                       VALE =  0,        
+                       VALE =  0,
+                       CRITERE='ABSOLU',       
                      ),
                      ),),
                      
@@ -691,7 +693,7 @@ U4=CALC_NO(reuse =U4,
                CHAM_MATER=CHMAT,
                OPTION=('SIEF_NOEU_ELGA','VARI_NOEU_ELGA'),);
 
-# PREMIER TEST AU DEUXIEME POINT D'ARRIVEE 
+# PREMIER TEST AU DEUXIEME POINT D ARRIVEE 
 
 TEST_RESU(RESU=(
 
@@ -724,11 +726,12 @@ TEST_RESU(RESU=(
                        NOM_CMP = 'V4',     
                        INST=12.,  
                        PRECISION = (1.E-5, 1.E-6),  
-                       VALE =  0,        
+                       VALE =  0,
+                       CRITERE='ABSOLU',        
                      ),
                      ),),
 
-# DEUXIEME TEST AU DEUXIEME POINT D'ARRIVEE 
+# DEUXIEME TEST AU DEUXIEME POINT D ARRIVEE 
 
 TEST_RESU(RESU=(
 
@@ -761,7 +764,8 @@ TEST_RESU(RESU=(
                        NOM_CMP = 'V4',     
                        INST=24.,  
                        PRECISION = (1.E-5, 1.E-6),  
-                       VALE =  0,        
+                       VALE =  0,
+                       CRITERE='ABSOLU',        
                      ),
                      ),),
 

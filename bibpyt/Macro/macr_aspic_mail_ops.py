@@ -1,4 +1,4 @@
-#@ MODIF macr_aspic_mail_ops Macro  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
+#@ MODIF macr_aspic_mail_ops Macro  DATE 17/08/2004   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -827,7 +827,6 @@ def macr_aspic_mail_ops(self,EXEC_MAILLAGE,TYPE_ELEM,RAFF_MAIL,TUBULURE,
                          )
 #
   if IMPRESSION!=None:
-     if IMPRESSION.__class__.__name__  !='MCList' : IMPRESSION  =[IMPRESSION,]
      for impr in IMPRESSION :
 #
          motscles={}

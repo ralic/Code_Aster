@@ -1,4 +1,4 @@
-#@ MODIF macro_matr_ajou_ops Macro  DATE 19/01/2004   AUTEUR DURAND C.DURAND 
+#@ MODIF macro_matr_ajou_ops Macro  DATE 17/08/2004   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -40,7 +40,7 @@ def macro_matr_ajou_ops(self,MAILLAGE,GROUP_MA_FLUIDE,GROUP_MA_INTERF,MODELISATI
   # La macro compte pour 1 dans la numerotation des commandes
   self.set_icmd(1)
  
-  if FLUIDE.__class__.__name__!='MCList' :
+  if len(FLUIDE)==1 :
      print '<I> <MACRO_MATR_AJOU> tout le domaine fluide specifie dans GROUP_MA_INTERF et GROUP_MA_FLUIDE'
      print '                      sera affecte par la masse volumique RHO = ',FLUIDE['RHO']
      if FLUIDE['GROUP_MA']!=None :
@@ -53,10 +53,7 @@ def macro_matr_ajou_ops(self,MAILLAGE,GROUP_MA_FLUIDE,GROUP_MA_INTERF,MODELISATI
             ier=ier+1
             return ier
 
-  if FLUIDE.__class__.__name__  !='MCList' : FLUIDE  =[FLUIDE,]
   IOCFLU=len(FLUIDE)
-
-  if DDL_IMPO.__class__.__name__!='MCList' : DDL_IMPO=[DDL_IMPO,]
 
 #  ---------------------------------------------------------------
 #  definition du materiau fluide par caracteristique
@@ -123,7 +120,7 @@ def macro_matr_ajou_ops(self,MAILLAGE,GROUP_MA_FLUIDE,GROUP_MA_INTERF,MODELISATI
 
   if MATR_MASS_AJOU!=None :
      self.DeclareOut('MASSAJ',MATR_MASS_AJOU)
-     solveur=SOLVEUR.cree_dict_valeurs(SOLVEUR.mc_liste)
+     solveur=SOLVEUR[0].cree_dict_valeurs(SOLVEUR[0].mc_liste)
      mostcles={}
      if   NUME_DDL_GENE!=None : mostcles['NUME_DDL_GENE'] =NUME_DDL_GENE
      if   INFO         !=None : mostcles['INFO']          =INFO
@@ -183,7 +180,7 @@ def macro_matr_ajou_ops(self,MAILLAGE,GROUP_MA_FLUIDE,GROUP_MA_INTERF,MODELISATI
 #  calcul amortissement proprement dit
   if MATR_AMOR_AJOU!=None :
      self.DeclareOut('AMORAJ',MATR_AMOR_AJOU)
-     solveur=SOLVEUR.cree_dict_valeurs(SOLVEUR.mc_liste)
+     solveur=SOLVEUR[0].cree_dict_valeurs(SOLVEUR[0].mc_liste)
      mostcles={}
      if   NUME_DDL_GENE!=None : mostcles['NUME_DDL_GENE'] =NUME_DDL_GENE
      if   INFO         !=None : mostcles['INFO']          =INFO
@@ -207,7 +204,7 @@ def macro_matr_ajou_ops(self,MAILLAGE,GROUP_MA_FLUIDE,GROUP_MA_INTERF,MODELISATI
 #  calcul de la rigidite ajoutee
   if MATR_RIGI_AJOU!=None :
      self.DeclareOut('RIGIAJ',MATR_RIGI_AJOU)
-     solveur=SOLVEUR.cree_dict_valeurs(SOLVEUR.mc_liste)
+     solveur=SOLVEUR[0].cree_dict_valeurs(SOLVEUR[0].mc_liste)
      mostcles={}
      if   NUME_DDL_GENE!=None : mostcles['NUME_DDL_GENE'] =NUME_DDL_GENE
      if   INFO         !=None : mostcles['INFO']          =INFO
@@ -230,10 +227,9 @@ def macro_matr_ajou_ops(self,MAILLAGE,GROUP_MA_FLUIDE,GROUP_MA_INTERF,MODELISATI
 #  ---------------------------------------------------------------
 #  boucle sur le nombre de vecteurs a projeter, commande CALC_FORC_AJOU
   if FORC_AJOU!=None :
-     if FORC_AJOU.__class__.__name__!='MCList' : FORC_AJOU=[FORC_AJOU,]
      for FORCAJ in FORC_AJOU:
        self.DeclareOut('VECTAJ',FORCAJ['VECTEUR'])
-       solveur=SOLVEUR.cree_dict_valeurs(SOLVEUR.mc_liste)
+       solveur=SOLVEUR[0].cree_dict_valeurs(SOLVEUR[0].mc_liste)
        mostcles={}
        if   NUME_DDL_GENE!=None : mostcles['NUME_DDL_GENE'] =NUME_DDL_GENE
        if   MODE_MECA    !=None : mostcles['MODE_MECA']     =MODE_MECA

@@ -1,4 +1,4 @@
-#@ MODIF calc_precont_ops Macro  DATE 30/06/2004   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF calc_precont_ops Macro  DATE 17/08/2004   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -66,7 +66,7 @@ def calc_precont_ops(self,reuse,MODELE,CHAM_MATER,CARA_ELEM,EXCIT,
   #     Creation de la nouvelle liste d'instants
   # ----------------------------------------------------------   
 
-  dIncrement=INCREMENT.cree_dict_valeurs(INCREMENT.mc_liste)
+  dIncrement=INCREMENT[0].cree_dict_valeurs(INCREMENT[0].mc_liste)
   
   __prec = dIncrement['PRECISION']
   __L0   = dIncrement['LIST_INST']
@@ -74,7 +74,7 @@ def calc_precont_ops(self,reuse,MODELE,CHAM_MATER,CARA_ELEM,EXCIT,
      
   # Traitement de l'etat initial
   if ETAT_INIT:
-      dEtatInit=ETAT_INIT.cree_dict_valeurs(ETAT_INIT.mc_liste)
+      dEtatInit=ETAT_INIT[0].cree_dict_valeurs(ETAT_INIT[0].mc_liste)
       for i in dEtatInit.keys():
           if dEtatInit[i]==None : del dEtatInit[i]
 
@@ -140,34 +140,34 @@ def calc_precont_ops(self,reuse,MODELE,CHAM_MATER,CARA_ELEM,EXCIT,
   # 1.2 Recuperation des parametres pour STAT_NON_LINE
   # -------------------------------------------------------
 
-  dNewton=NEWTON.cree_dict_valeurs(NEWTON.mc_liste)
+  dNewton=NEWTON[0].cree_dict_valeurs(NEWTON[0].mc_liste)
   for i in dNewton.keys():
       if dNewton[i]==None : del dNewton[i]
 
-  dConvergence=CONVERGENCE.cree_dict_valeurs(CONVERGENCE.mc_liste)
+  dConvergence=CONVERGENCE[0].cree_dict_valeurs(CONVERGENCE[0].mc_liste)
   for i in dConvergence.keys():
       if dConvergence[i]==None : del dConvergence[i]
 
-  dSolveur=SOLVEUR.cree_dict_valeurs(SOLVEUR.mc_liste)
+  dSolveur=SOLVEUR[0].cree_dict_valeurs(SOLVEUR[0].mc_liste)
   for i in dSolveur.keys():
       if dSolveur[i]==None : del dSolveur[i]
 
   if RECH_LINEAIRE:
-    dRech_lin=RECH_LINEAIRE.cree_dict_valeurs(RECH_LINEAIRE.mc_liste)
+    dRech_lin=RECH_LINEAIRE[0].cree_dict_valeurs(RECH_LINEAIRE[0].mc_liste)
     for i in dRech_lin.keys():
         if dRech_lin[i]==None : del dRech_lin[i]
   else :
     dRech_lin=None
     
   if SOLV_NON_LOCAL:
-    dSolv_nonloc=SOLV_NON_LOCAL.cree_dict_valeurs(SOLV_NON_LOCAL.mc_liste)
+    dSolv_nonloc=SOLV_NON_LOCAL[0].cree_dict_valeurs(SOLV_NON_LOCAL[0].mc_liste)
     for i in dSolv_nonloc.keys():
         if dSolv_nonloc[i]==None : del dSolv_nonloc[i]
   else :
     dSolv_nonloc=None
         
   if LAGR_NON_LOCAL:
-    dLagr_nonloc=LAGR_NON_LOCAL.cree_dict_valeurs(LAGR_NON_LOCAL.mc_liste)
+    dLagr_nonloc=LAGR_NON_LOCAL[0].cree_dict_valeurs(LAGR_NON_LOCAL[0].mc_liste)
     for i in dLagr_nonloc.keys():
         if dLagr_nonloc[i]==None : del dLagr_nonloc[i]
   else :
@@ -283,18 +283,11 @@ def calc_precont_ops(self,reuse,MODELE,CHAM_MATER,CARA_ELEM,EXCIT,
   # pour étape 2 (dComp_incr0) et étape 3 (dComp_incr1)
   # ------------------------------------------------------
 
-  if COMP_INCR.__class__.__name__=='MCList' :
-     dComp_incr=[]
-     for j in COMP_INCR :
-         dComp_incr.append(j.cree_dict_valeurs(j.mc_liste))
-         for i in dComp_incr[-1].keys():
-             if dComp_incr[-1][i]==None : del dComp_incr[-1][i]
-
-  elif COMP_INCR.__class__.__name__=='MCFACT' :
-     dComp_incr=[]
-     dComp_incr.append(COMP_INCR.cree_dict_valeurs(COMP_INCR.mc_liste))
-     for i in dComp_incr[-1].keys():
-         if dComp_incr[-1][i]==None : del dComp_incr[-1][i]
+  dComp_incr=[]
+  for j in COMP_INCR :
+      dComp_incr.append(j.cree_dict_valeurs(j.mc_liste))
+      for i in dComp_incr[-1].keys():
+          if dComp_incr[-1][i]==None : del dComp_incr[-1][i]
 
   dComp_incr0=copy.copy(dComp_incr)
   dComp_incr1=copy.copy(dComp_incr)
@@ -401,18 +394,11 @@ def calc_precont_ops(self,reuse,MODELE,CHAM_MATER,CARA_ELEM,EXCIT,
   #-----------------------------------------------------------------------
 
   # Regeneration des mots-cles EXCIT passés en argument de la macro
-  if EXCIT.__class__.__name__=='MCList' :
-     dExcit=[]
-     for j in EXCIT :
-         dExcit.append(j.cree_dict_valeurs(j.mc_liste))
-         for i in dExcit[-1].keys():
-             if dExcit[-1][i]==None : del dExcit[-1][i]
-
-  elif EXCIT.__class__.__name__=='MCFACT' :
-     dExcit=[]
-     dExcit.append(EXCIT.cree_dict_valeurs(EXCIT.mc_liste))
-     for i in dExcit[-1].keys():
-       if dExcit[-1][i]==None : del dExcit[-1][i]
+  dExcit=[]
+  for j in EXCIT :
+      dExcit.append(j.cree_dict_valeurs(j.mc_liste))
+      for i in dExcit[-1].keys():
+          if dExcit[-1][i]==None : del dExcit[-1][i]
 
   if CABLE_BP_INACTIF:
     dExcit.append(_F(CHARGE=__C_CI),)

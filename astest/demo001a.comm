@@ -1,4 +1,4 @@
-# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 17/08/2004   AUTEUR ASSIRE A.ASSIRE 
 # TITRE DEMONSTRATION DE LA JOURNE ASTER LIBRE DU 14 OCTOBRE 2003
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -30,7 +30,7 @@ import os
 # Execution interactive : 1=OUI, 0=NON
 interactif  = 0
 fic_ps='fort.55'
-#fic_ps2='fort.56'
+fic_ps2='fort.56'
 
 
 MAIL=[None]*5
@@ -134,8 +134,8 @@ if interactif == 1:
 
 if interactif == 1:
    os.system(os.path.join(aster.repout(),'xmgrace') + ' -noask fort.53')
-#else:
-#   os.system(os.path.join(aster.repout(),'xmgrace') + ' ./fort.53 -hardcopy -printfile ' + fic_ps2)
+else:
+   os.system(os.path.join(aster.repout(),'xmgrace') + ' ./fort.53 -hardcopy -printfile ' + fic_ps2)
 
 A5=DEFI_FONCTION(   NOM_RESU='SIGM',
                     NOM_PARA='EPSI',
@@ -180,9 +180,10 @@ FPILO=AFFE_CHAR_MECA(MODELE=MO,
 # BOUCLE SUR LES INSTANTS POUR SUIVI INTERACTIF
 #-------------------------------------------------------------------------
 
-if interactif == 1:
+# if interactif == 1:
+#    INCLUDE(UNITE=54)
 
-   INCLUDE(UNITE=54)
+INCLUDE(UNITE=54)
 
 for k in range(1,NPAST+1):
 
@@ -232,26 +233,26 @@ for k in range(1,NPAST+1):
               GROUP_NO='GM12', RESULTAT = RESUPILO,
              NOM_CMP = 'DY',NOM_CHAM = 'DEPL',OPERATION = 'EXTRACTION'))
              
-   if interactif == 1:
-      sig = as_courbes.Courbe()
-      sig.Lire_x(GNUDY,'DY')
-      sig.Lire_y(GNUSY,'SIYY')
-      t.Courbe(sig)
-      t.Send('WITH G'+repr(t.gr_act))
-      t.Send('S' + str(k+1) + ' SYMBOL 1')
-      t.Send('S' + str(k+1) + ' SYMBOL SIZE 0.5')
-      t.Send('S' + str(k+1) + ' SYMBOL COLOR 4')
-      t.Send('S' + str(k+1) + ' LINE COLOR 4')
-      t.Send('REDRAW')
+#   if interactif == 1:
+   sig = as_courbes.Courbe()
+   sig.Lire_x(GNUDY,'DY')
+   sig.Lire_y(GNUSY,'SIYY')
+   t.Courbe(sig)
+   t.Send('WITH G'+repr(t.gr_act))
+   t.Send('S' + str(k+1) + ' SYMBOL 1')
+   t.Send('S' + str(k+1) + ' SYMBOL SIZE 0.5')
+   t.Send('S' + str(k+1) + ' SYMBOL COLOR 4')
+   t.Send('S' + str(k+1) + ' LINE COLOR 4')
+   t.Send('REDRAW')
       
    DETRUIRE(CONCEPT=_F(NOM=GNUSY))
    DETRUIRE(CONCEPT=_F(NOM=GNUDY))
    
 if interactif == 1:
    t.Attendre()
-#else:
-#   t.Sortie_EPS(fic_ps)
-#   t.Fermer()
+else:
+   t.Sortie_EPS(fic_ps)
+   t.Fermer()
                 
 if interactif == 1:
    STANLEY()

@@ -1,4 +1,4 @@
-#@ MODIF macr_ascouf_calc_ops Macro  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
+#@ MODIF macr_ascouf_calc_ops Macro  DATE 17/08/2004   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -57,9 +57,6 @@ def macr_ascouf_calc_ops(self,TYPE_MAILLAGE,CL_BOL_P2_GV,MAILLAGE,MODELE,CHAM_MA
 # DATA
   GRMAIL = ('COUDE','PEAUINT','PEAUEXT','EXTUBE','CLGV','FACE1','FACE2')
 #------------------------------------------------------------------
-#
-  if mc_AFFE_MATERIAU.__class__.__name__!='MCList' : mc_AFFE_MATERIAU=[mc_AFFE_MATERIAU,]
-  if          TORS_P1.__class__.__name__!='MCList' : TORS_P1  =[TORS_P1,]
 #  
   if CL_BOL_P2_GV!=None :
     if TYPE_MAILLAGE=='SOUS_EPAIS_COUDE' :
@@ -77,8 +74,7 @@ def macr_ascouf_calc_ops(self,TYPE_MAILLAGE,CL_BOL_P2_GV,MAILLAGE,MODELE,CHAM_MA
        self.cr.fatal("""<E> <MACR_ASCOUF_CALC> POSI_ANGUL POSI_CURV_LONGI est obligatoire""")
        return ier
     if (mc_IMPR_TABLE['NOM_PARA']!=None) :
-       if mc_IMPR_TABLE['NOM_PARA'].__class__.__name__!='MCList' : impr_table_nom_para=[mc_IMPR_TABLE['NOM_PARA'],]
-       else                                                      : impr_table_nom_para= mc_IMPR_TABLE['NOM_PARA']
+       impr_table_nom_para= mc_IMPR_TABLE['NOM_PARA']
        for impt in impr_table_nom_para : 
          if impt in ('SI_LONG','SI_CIRC','SI_RADI') :
            FLAG = 1
@@ -298,23 +294,23 @@ def macr_ascouf_calc_ops(self,TYPE_MAILLAGE,CL_BOL_P2_GV,MAILLAGE,MODELE,CHAM_MA
     if CL_BOL_P2_GV==None: mcfci.append(  _F(GROUP_MA='P2',RELATION='ELAS'))
   motscles['COMP_INCR'] =mcfci
 #
-  dSolveur=SOLVEUR.cree_dict_valeurs(SOLVEUR.mc_liste)
+  dSolveur=SOLVEUR[0].cree_dict_valeurs(SOLVEUR[0].mc_liste)
   for i in dSolveur.keys():
       if dSolveur[i]==None : del dSolveur[i]
 #
-  dConverg=CONVERGENCE.cree_dict_valeurs(CONVERGENCE.mc_liste)
+  dConverg=CONVERGENCE[0].cree_dict_valeurs(CONVERGENCE[0].mc_liste)
   for i in dConverg.keys():
       if dConverg[i]==None : del dConverg[i]
 #
-  dNewton=NEWTON.cree_dict_valeurs(NEWTON.mc_liste)
+  dNewton=NEWTON[0].cree_dict_valeurs(NEWTON[0].mc_liste)
   for i in dNewton.keys():
       if dNewton[i]==None : del dNewton[i]
 #
-  dRechlin=RECH_LINEAIRE.cree_dict_valeurs(RECH_LINEAIRE.mc_liste)
+  dRechlin=RECH_LINEAIRE[0].cree_dict_valeurs(RECH_LINEAIRE[0].mc_liste)
   for i in dRechlin.keys():
       if dRechlin[i]==None : del dRechlin[i]
 #
-  dIncrem=INCREMENT.cree_dict_valeurs(INCREMENT.mc_liste)
+  dIncrem=INCREMENT[0].cree_dict_valeurs(INCREMENT[0].mc_liste)
   for i in dIncrem.keys():
       if dIncrem[i]==None : del dIncrem[i]
 #
@@ -616,7 +612,6 @@ def macr_ascouf_calc_ops(self,TYPE_MAILLAGE,CL_BOL_P2_GV,MAILLAGE,MODELE,CHAM_MA
                           INFO=2,**motscles
                           );
     if THETA_3D!=None :
-      if THETA_3D.__class__.__name__!='MCList' : THETA_3D =[THETA_3D,]
       for thet in THETA_3D:
         _nothet=CALC_THETA(MODELE=modele,
                            FOND_FISS=fonfis,

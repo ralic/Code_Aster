@@ -1,4 +1,4 @@
-# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 17/08/2004   AUTEUR ROMEO R.FERNANDES 
 # ======================================================================
 # TITRE ESSAI HYDROSTATIQUE SUIVI D UN TRIAXIAL A SUCCION FIXE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -414,7 +414,8 @@ TEST_RESU(RESU=(
                        NOM_CMP = 'V2',     
                        INST=6.,  
                        PRECISION = 1.E-5,   
-                       VALE = 0.,        
+                       VALE = 0.,   
+                       CRITERE='ABSOLU',     
                      ),
 
                 _F(    RESULTAT = U1,    
@@ -434,7 +435,8 @@ TEST_RESU(RESU=(
                        NOM_CMP = 'V4',     
                        INST=6.,  
                        PRECISION = 1.E-5,   
-                       VALE = 0.,        
+                       VALE = 0.,  
+                       CRITERE='ABSOLU',      
                      ),
 
                 _F(    RESULTAT = U1,    
@@ -444,7 +446,8 @@ TEST_RESU(RESU=(
                        NOM_CMP = 'V4',     
                        INST=20.,  
                        PRECISION = 1.E-5,   
-                       VALE = 0.,        
+                       VALE = 0.,    
+                       CRITERE='ABSOLU',
                      ),
                      
                      ),)

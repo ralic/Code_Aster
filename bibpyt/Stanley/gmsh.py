@@ -1,4 +1,4 @@
-#@ MODIF gmsh Stanley  DATE 05/04/2004   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF gmsh Stanley  DATE 17/08/2004   AUTEUR ASSIRE A.ASSIRE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -81,7 +81,7 @@ class GMSH_DISTANT :
     if mode == 'POST' :
 
       mdis = param['machine_gmsh']
-      ex_gmsh = param['machine_gmsh_exe'] + ' -display ' + os.environ['DISPLAY']
+      ex_gmsh = param['machine_gmsh_exe'] + ' -display ' + param['machine_visu']
       fdis = param['machine_gmsh_tmp'] + '/' + fichier + '.pos'
       fmdis = param['machine_gmsh_login'] + '@' + mdis + ":" + fdis
       mdis = '-l ' + param['machine_gmsh_login'] + ' ' + mdis 
@@ -101,19 +101,25 @@ class GMSH_DISTANT :
         fw.close()
         if log==1:
           print   "rcp skin.pos " + param['machine_gmsh_login'] + '@' + param['machine_gmsh'] + ":" + param['machine_gmsh_tmp'] + '/skin.pos'
-          print   "rsh " + mdis + " '" + ex_gmsh + " " + param['machine_gmsh_tmp'] + '/skin.pos' + "'"
-          print   "rsh " + mdis + " 'rm " + fdis + "'"
-          print   "rsh " + mdis + " 'rm " + param['machine_gmsh_tmp'] + '/skin.pos' + "'"
         os.system("rcp skin.pos " + param['machine_gmsh_login'] + '@' + param['machine_gmsh'] + ":" + param['machine_gmsh_tmp'] + '/skin.pos')
-        os.system("rsh " + mdis + " '" + ex_gmsh + " " + param['machine_gmsh_tmp'] + '/skin.pos' + "'")
-        os.system("rsh " + mdis + " 'rm " + fdis + "'")
-        os.system("rsh " + mdis + " 'rm " + param['machine_gmsh_tmp'] + '/skin.pos' + "'")
+
+        if param['machine_gmsh_exe'] !='':
+          if log==1:
+            print   "rsh " + mdis + " '" + ex_gmsh + " " + param['machine_gmsh_tmp'] + '/skin.pos' + "'"
+            print   "rsh " + mdis + " 'rm " + fdis + "'"
+            print   "rsh " + mdis + " 'rm " + param['machine_gmsh_tmp'] + '/skin.pos' + "'"
+          os.system("rsh " + mdis + " '" + ex_gmsh + " " + param['machine_gmsh_tmp'] + '/skin.pos' + "'")
+          os.system("rsh " + mdis + " 'rm " + fdis + "'")
+          os.system("rsh " + mdis + " 'rm " + param['machine_gmsh_tmp'] + '/skin.pos' + "'")
+        else: print "Le parametre 'machine_gmsh_exe' n'est pas renseigné, ouvrir le fichier .pos manuellement."
       else:
-        if log==1:
-          print   "rsh " + mdis + " '" + ex_gmsh + " " + fdis + "'"
-          print   "rsh " + mdis + " 'rm " + fdis + "'"
-        os.system("rsh " + mdis + " '" + ex_gmsh + " " + fdis + "'")
-        os.system("rsh " + mdis + " 'rm " + fdis + "'")
+        if param['machine_gmsh_exe'] !='':
+          if log==1:
+            print   "rsh " + mdis + " '" + ex_gmsh + " " + fdis + "'"
+            print   "rsh " + mdis + " 'rm " + fdis + "'"
+          os.system("rsh " + mdis + " '" + ex_gmsh + " " + fdis + "'")
+          os.system("rsh " + mdis + " 'rm " + fdis + "'")
+        else: print "Le parametre 'machine_gmsh_exe' n'est pas renseigné, ouvrir le fichier .pos manuellement."
 
     if mode == 'MAIL' :
       raise  'NON DVP' 

@@ -1,4 +1,4 @@
-#@ MODIF macr_cabri_calc_ops Macro  DATE 18/11/2003   AUTEUR CIBHHLV L.VIVAN 
+#@ MODIF macr_cabri_calc_ops Macro  DATE 17/08/2004   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -423,7 +423,7 @@ def macr_cabri_calc_ops(self,MAILLAGE,MODELE_MECA,MODELE_THER,CHAR_THER,
    ########## CALCUL MECANIQUE
    #################################################################  
    # Options de convergence        
-   solveur=SOLVEUR.cree_dict_valeurs(SOLVEUR.mc_liste)
+   solveur=SOLVEUR[0].cree_dict_valeurs(SOLVEUR[0].mc_liste)
    
    # Elimination des valeurs "None"
    for i in solveur.keys():
@@ -451,7 +451,7 @@ def macr_cabri_calc_ops(self,MAILLAGE,MODELE_MECA,MODELE_THER,CHAR_THER,
       else:
          listinst = transi2   
    
-      increment=INCREMENT.cree_dict_valeurs(INCREMENT.mc_liste)
+      increment=INCREMENT[0].cree_dict_valeurs(INCREMENT[0].mc_liste)
    
       # Elimination des valeurs "None"
       for i in increment.keys():
@@ -466,13 +466,13 @@ def macr_cabri_calc_ops(self,MAILLAGE,MODELE_MECA,MODELE_THER,CHAR_THER,
                ),       
                               
    # Options de Newton     
-   newton=NEWTON.cree_dict_valeurs(NEWTON.mc_liste)
+   newton=NEWTON[0].cree_dict_valeurs(NEWTON[0].mc_liste)
    # Elimination des valeurs "None"
    for i in newton.keys():
       if newton[i]==None : del newton[i]   
 
    # Options de convergence        
-   convergence=CONVERGENCE.cree_dict_valeurs(CONVERGENCE.mc_liste) 
+   convergence=CONVERGENCE[0].cree_dict_valeurs(CONVERGENCE[0].mc_liste) 
    # Elimination des valeurs "None"
    for i in convergence.keys():
       if convergence[i]==None : del convergence[i]

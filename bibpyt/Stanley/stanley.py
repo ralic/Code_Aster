@@ -1,4 +1,4 @@
-#@ MODIF stanley Stanley  DATE 29/06/2004   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF stanley Stanley  DATE 17/08/2004   AUTEUR ASSIRE A.ASSIRE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -1692,7 +1692,7 @@ class DRIVER_GMSH(DRIVER) :
   
     DEFI_FICHIER(
         UNITE = 33, 
-        FICHIER   = 'GMSH_POS'
+#        FICHIER   = 'GMSH_POS'
       )
 
     contexte   = self.stan.contexte
@@ -1705,9 +1705,9 @@ class DRIVER_GMSH(DRIVER) :
       RESULTAT   = contexte.resultat,
       NOM_CHAM   = selection.nom_cham,
       NUME_ORDRE = selection.numeros, 
-      FICHIER    = 'GMSH_POS',
-      FORMAT     = 'GMSH',
-      VERSION    = eval(self.stan.parametres['version_fichier_gmsh']),
+#      FICHIER    = 'GMSH_POS',
+#       FORMAT     = 'GMSH',
+#       VERSION    = eval(self.stan.parametres['version_fichier_gmsh']),
       )
 
     if type_champ in ['NOEU','ELNO'] and selection.geom[0] in ['VOLUME','SURFACE'] :
@@ -1716,7 +1716,14 @@ class DRIVER_GMSH(DRIVER) :
     if 'TOUT_CMP' not in selection.nom_cmp :
       para['NOM_CMP'] = tuple(selection.nom_cmp)
 
-    IMPR_RESU(RESU = para)
+
+#    IMPR_RESU(RESU = para)
+
+    IMPR_RESU( UNITE   = 33, 
+               FORMAT  = 'GMSH',
+               VERSION = eval(self.stan.parametres['version_fichier_gmsh']),
+               RESU    = para,
+             )
 
     DEFI_FICHIER(ACTION='LIBERER',UNITE=33)
 
