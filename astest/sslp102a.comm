@@ -1,4 +1,4 @@
-# MODIF  DATE 07/06/2002   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 24/05/2004   AUTEUR GALENNE E.GALENNE 
 # TITRE TAUX DE RESTITUTION AVEC DEFORMATION INITIALE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -104,7 +104,7 @@ G=CALC_G_THETA_T(          MODELE=MO,
                               DEPL=DEPLA,
                         CHAM_MATER=CM,
                              THETA=THETA,
-                            CHARGE=CHF,
+                            EXCIT=_F(CHARGE=CHF,),
                        PROPAGATION=0.0,
                             OPTION='CALC_G_LAGR' )
 
@@ -150,7 +150,7 @@ G1=CALC_G_THETA_T(          MODELE=MO,
                               DEPL=DEPLA1,
                         CHAM_MATER=CM,
                              THETA=THETA1,
-                            CHARGE=CHF,
+                            EXCIT=_F(CHARGE=CHF,),
                        PROPAGATION=0.0,
                             OPTION='CALC_G_LAGR' )
 
@@ -196,7 +196,7 @@ G2=CALC_G_THETA_T(          MODELE=MO,
                                DEPL=DEPLA2,
                          CHAM_MATER=CM,
                               THETA=THETA2,
-                             CHARGE=CHF,
+                             EXCIT=_F(CHARGE=CHF,),
                         PROPAGATION=0.0,
                              OPTION='CALC_G_LAGR' )
 
@@ -243,7 +243,7 @@ G3=CALC_G_THETA_T(          MODELE=MO,
                               DEPL=DEPLA3,
                         CHAM_MATER=CM,
                              THETA=THETA3,
-                            CHARGE=CHF,
+                            EXCIT=_F(CHARGE=CHF,),
                        PROPAGATION=0.0,
                             OPTION='CALC_G_LAGR' )
 

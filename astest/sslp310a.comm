@@ -1,0 +1,1267 @@
+# MODIF  DATE 24/05/2004   AUTEUR GALENNE E.GALENNE 
+# TITRE BIBLIO_18 FISSURE PRESSURISEE DANS UN DOMAINE PLAN ILLIMITE
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+#       CALCUL EN CONTRAINTES PLANES
+#
+
+DEBUT( CODE=_F( NOM = 'SSLP310A',NIV_PUB_WEB='INTERNET'))
+
+PRE_GIBI()
+
+MA=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='OUI'),  )
+
+MO=AFFE_MODELE(  MAILLAGE=MA, 
+      AFFE=_F( TOUT = 'OUI',PHENOMENE = 'MECANIQUE',MODELISATION = 'C_PLAN'))
+
+MA=MODI_MAILLAGE( reuse=MA,   MAILLAGE=MA,
+                              MODELE=MO,
+                  ORIE_PEAU_2D=_F(  GROUP_MA = ( 'LPOP8',  'LPOP8S', ) )
+                     )
+
+MAT=DEFI_MATERIAU(ELAS=_F(  E = 1000., NU = 0.3))
+
+CHMAT=AFFE_MATERIAU(  MAILLAGE=MA,AFFE=_F(  TOUT = 'OUI',MATER = MAT))
+
+MA=DEFI_GROUP( reuse=MA,   MAILLAGE=MA, 
+                     CREA_GROUP_NO=_F( 
+                   GROUP_MA = ( 'L12',  'L56',   'LPOP11',  'LPOP11S', 
+                                'LPOP8',  'LPOP8S', ))
+                 )
+
+EXP1 = FORMULE(REEL="""(REEL :X) = ( EXP(X) ) """)
+EXP5 = FORMULE(REEL="""(REEL :X) = ( EXP(5. * X) ) """)
+
+SINH1 = FORMULE(REEL="""(REEL :X) = ( SINH(X) ) """)
+SINH5 = FORMULE(REEL="""(REEL :X) = ( SINH(5. * X) ) """)
+
+COSH1 = FORMULE(REEL="""(REEL :X) = ( COSH(X) ) """)
+COSH5 = FORMULE(REEL="""(REEL :X) = ( COSH(5. * X) ) """)
+
+COS1 = FORMULE(REEL="""(REEL :X) = ( COS(X) ) """)
+COS5 = FORMULE(REEL="""(REEL :X) = ( COS(2.4048255577 * X))""")
+
+CL=AFFE_CHAR_MECA(   MODELE=MO, 
+
+            DDL_IMPO=_F( GROUP_NO = ( 'L12',  'L56',  'LPOP11',  'LPOP11S', ), DY = 0.),
+
+            LIAISON_DDL=_F(  GROUP_NO = ('P0',  'P0BIS',),
+                          DDL = ('DX',  'DX',),
+                          COEF_MULT = (1., 1.,),
+                          COEF_IMPO = 0.) )
+
+CH_UNI=AFFE_CHAR_MECA(   MODELE=MO, 
+                 PRES_REP=_F(  GROUP_MA = ( 'LPOP8',  'LPOP8S', ),  PRES = 1.)
+                                  )
+
+CH_EXP1=AFFE_CHAR_MECA_F(   MODELE=MO, 
+                 PRES_REP=_F(  GROUP_MA = ( 'LPOP8',  'LPOP8S', ),  PRES = EXP1)
+                                  )
+
+CH_EXP5=AFFE_CHAR_MECA_F(   MODELE=MO, 
+                 PRES_REP=_F(  GROUP_MA = ( 'LPOP8',  'LPOP8S', ),  PRES = EXP5)
+                                  )
+
+CH_SINH1=AFFE_CHAR_MECA_F(   MODELE=MO, 
+                  PRES_REP=_F(  GROUP_MA = ( 'LPOP8',  'LPOP8S', ),  PRES = SINH1)
+                                  )
+
+CH_SINH5=AFFE_CHAR_MECA_F(   MODELE=MO, 
+                  PRES_REP=_F(  GROUP_MA = ( 'LPOP8',  'LPOP8S', ),  PRES = SINH5)
+                                  )
+
+CH_COSH1=AFFE_CHAR_MECA_F(   MODELE=MO, 
+                  PRES_REP=_F(  GROUP_MA = ( 'LPOP8',  'LPOP8S', ),  PRES = COSH1)
+                                  )
+
+CH_COSH5=AFFE_CHAR_MECA_F(   MODELE=MO, 
+                  PRES_REP=_F(  GROUP_MA = ( 'LPOP8',  'LPOP8S', ),  PRES = COSH5)
+                                  )
+
+CH_COS1=AFFE_CHAR_MECA_F(   MODELE=MO, 
+                 PRES_REP=_F(  GROUP_MA = ( 'LPOP8',  'LPOP8S', ),  PRES = COS1)
+                                  )
+
+CH_COS5=AFFE_CHAR_MECA_F(   MODELE=MO, 
+                 PRES_REP=_F(  GROUP_MA = ( 'LPOP8',  'LPOP8S', ),  PRES = COS5)
+                                  )
+
+RE_UNI=MECA_STATIQUE(   MODELE=MO,   CHAM_MATER=CHMAT,EXCIT=( 
+             _F( CHARGE = CH_UNI),
+             _F( CHARGE = CL))
+                         )
+
+DE_UNI=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
+NOM_CHAM='DEPL', RESULTAT=RE_UNI,
+                NUME_ORDRE=1 )
+
+RE_EXP1=MECA_STATIQUE(   MODELE=MO,   CHAM_MATER=CHMAT,EXCIT=( 
+              _F( CHARGE = CH_EXP1),
+              _F( CHARGE = CL))
+                         )
+
+DE_EXP1=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
+NOM_CHAM='DEPL', RESULTAT=RE_EXP1,
+                NUME_ORDRE=1 )
+
+RE_EXP5=MECA_STATIQUE(   MODELE=MO,   CHAM_MATER=CHMAT,EXCIT=( 
+              _F( CHARGE = CH_EXP5),
+              _F( CHARGE = CL))
+                         )
+
+DE_EXP5=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
+NOM_CHAM='DEPL', RESULTAT=RE_EXP5,
+                NUME_ORDRE=1 )
+
+RE_SINH1=MECA_STATIQUE(   MODELE=MO,   CHAM_MATER=CHMAT,EXCIT=( 
+               _F( CHARGE = CH_SINH1),
+               _F( CHARGE = CL))
+                         )
+
+DE_SINH1=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
+NOM_CHAM='DEPL', RESULTAT=RE_SINH1,
+                 NUME_ORDRE=1 )
+
+RE_SINH5=MECA_STATIQUE(   MODELE=MO,   CHAM_MATER=CHMAT,EXCIT=( 
+               _F( CHARGE = CH_SINH5),
+               _F( CHARGE = CL))
+                         )
+
+DE_SINH5=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
+NOM_CHAM='DEPL', RESULTAT=RE_SINH5,
+                 NUME_ORDRE=1 )
+
+RE_COSH1=MECA_STATIQUE(   MODELE=MO,   CHAM_MATER=CHMAT,EXCIT=( 
+               _F( CHARGE = CH_COSH1),
+               _F( CHARGE = CL))
+                         )
+
+DE_COSH1=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
+NOM_CHAM='DEPL', RESULTAT=RE_COSH1,
+                 NUME_ORDRE=1 )
+
+RE_COSH5=MECA_STATIQUE(   MODELE=MO,   CHAM_MATER=CHMAT,EXCIT=( 
+               _F( CHARGE = CH_COSH5),
+               _F( CHARGE = CL))
+                         )
+
+DE_COSH5=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
+NOM_CHAM='DEPL', RESULTAT=RE_COSH5,
+                 NUME_ORDRE=1 )
+
+RE_COS1=MECA_STATIQUE(   MODELE=MO,   CHAM_MATER=CHMAT,EXCIT=( 
+              _F( CHARGE = CH_COS1),
+              _F( CHARGE = CL))
+                         )
+
+DE_COS1=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
+NOM_CHAM='DEPL', RESULTAT=RE_COS1,
+                NUME_ORDRE=1 )
+
+RE_COS5=MECA_STATIQUE(   MODELE=MO,   CHAM_MATER=CHMAT,EXCIT=( 
+              _F( CHARGE = CH_COS5),
+              _F( CHARGE = CL))
+                         )
+
+DE_COS5=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
+NOM_CHAM='DEPL', RESULTAT=RE_COS5,
+                NUME_ORDRE=1 )
+
+# POST TRAITEMENT MECA. RUPTURE
+# -----------------------------
+
+FOND=DEFI_FOND_FISS(    MAILLAGE=MA,
+                           FOND_FISS=_F( GROUP_NO = ('P0',)),
+                           NORMALE=(0., 1., 0.,)
+                      )
+
+# DEFINITION DES CHAMPS THETA
+# ---------------------------
+
+# COURONNE 0 (TRIANGLES)
+# ----------------------
+THETA0=CALC_THETA(    MODELE=MO,
+                       DIRECTION=(1., 0., 0., ),
+                        THETA_2D=_F(  GROUP_NO = ('P0',),
+                                   MODULE = 1.,
+                                   R_INF = 0.000,
+                                   R_SUP = 0.020)
+                     )
+
+# COURONNE 1 (QUADRANGLES)
+# ------------------------
+THETA1=CALC_THETA(    MODELE=MO,
+                       DIRECTION=(1., 0., 0., ),
+                        THETA_2D=_F(  GROUP_NO = ('P0',),
+                                   MODULE = 1.,
+                                   R_INF = 0.020,
+                                   R_SUP = 0.040)
+                     )
+
+# COURONNE 2 (QUADRANGLES)
+# ------------------------
+THETA2=CALC_THETA(    MODELE=MO,
+                       DIRECTION=(1., 0., 0., ),
+                        THETA_2D=_F(  GROUP_NO = ('P0',),
+                                   MODULE = 1.,
+                                   R_INF = 0.040,
+                                   R_SUP = 0.060)
+                     )
+
+# COURONNE 3 (QUADRANGLES)
+# ------------------------
+THETA3=CALC_THETA(    MODELE=MO,
+                       DIRECTION=(1., 0., 0., ),
+                        THETA_2D=_F(  GROUP_NO = ('P0',),
+                                   MODULE = 1.,
+                                   R_INF = 0.060,
+                                   R_SUP = 0.080)
+                     )
+
+# CALCUL DES G_THETA POUR LE CHAMP THETA0
+# ---------------------------------------
+
+G_UNI0=CALC_G_THETA_T(    MODELE=MO,
+                              DEPL=DE_UNI,
+                             THETA=THETA0,
+                              FOND_FISS=FOND,
+                            EXCIT=_F(CHARGE=CH_UNI,),
+                            CHAM_MATER=CHMAT,
+                            SYME_CHAR='SYME',
+                            OPTION='CALC_K_G'
+                        )
+
+G_EXP10=CALC_G_THETA_T(    MODELE=MO,
+                               DEPL=DE_EXP1,
+                              THETA=THETA0,
+                               FOND_FISS=FOND,
+                             EXCIT=_F(CHARGE=CH_EXP1,),
+                             CHAM_MATER=CHMAT,
+                             SYME_CHAR='SYME',
+                             OPTION='CALC_K_G'
+                         )
+
+G_EXP50=CALC_G_THETA_T(    MODELE=MO,
+                               DEPL=DE_EXP5,
+                              THETA=THETA0,
+                               FOND_FISS=FOND,
+                             EXCIT=_F(CHARGE=CH_EXP5,),
+                             CHAM_MATER=CHMAT,
+                             SYME_CHAR='SYME',
+                             OPTION='CALC_K_G'
+                         )
+
+G_SINH10=CALC_G_THETA_T(    MODELE=MO,
+                                DEPL=DE_SINH1,
+                               THETA=THETA0,
+                                FOND_FISS=FOND,
+                              EXCIT=_F(CHARGE=CH_SINH1,),
+                              CHAM_MATER=CHMAT,
+                              SYME_CHAR='SYME',
+                              OPTION='CALC_K_G'
+                          )
+
+G_SINH50=CALC_G_THETA_T(    MODELE=MO,
+                                DEPL=DE_SINH5,
+                               THETA=THETA0,
+                                FOND_FISS=FOND,
+                              EXCIT=_F(CHARGE=CH_SINH5,),
+                              CHAM_MATER=CHMAT,
+                              SYME_CHAR='SYME',
+                              OPTION='CALC_K_G'
+                          )
+
+G_COSH10=CALC_G_THETA_T(    MODELE=MO,
+                                DEPL=DE_COSH1,
+                               THETA=THETA0,
+                                FOND_FISS=FOND,
+                              EXCIT=_F(CHARGE=CH_COSH1,),
+                              CHAM_MATER=CHMAT,
+                              SYME_CHAR='SYME',
+                              OPTION='CALC_K_G'
+                          )
+
+G_COSH50=CALC_G_THETA_T(    MODELE=MO,
+                                DEPL=DE_COSH5,
+                               THETA=THETA0,
+                                FOND_FISS=FOND,
+                              EXCIT=_F(CHARGE=CH_COSH5,),
+                              CHAM_MATER=CHMAT,
+                              SYME_CHAR='SYME',
+                              OPTION='CALC_K_G'
+                          )
+
+G_COS10=CALC_G_THETA_T(    MODELE=MO,
+                               DEPL=DE_COS1,
+                              THETA=THETA0,
+                               FOND_FISS=FOND,
+                             EXCIT=_F(CHARGE=CH_COS1,),
+                             CHAM_MATER=CHMAT,
+                             SYME_CHAR='SYME',
+                             OPTION='CALC_K_G'
+                         )
+
+G_COS50=CALC_G_THETA_T(    MODELE=MO,
+                               DEPL=DE_COS5,
+                              THETA=THETA0,
+                               FOND_FISS=FOND,
+                             EXCIT=_F(CHARGE=CH_COS5,),
+                             CHAM_MATER=CHMAT,
+                             SYME_CHAR='SYME',
+                             OPTION='CALC_K_G'
+                         )
+
+# CALCUL DES G_THETA POUR LE CHAMP THETA1
+# ---------------------------------------
+
+G_UNI1=CALC_G_THETA_T(    MODELE=MO,
+                              DEPL=DE_UNI,
+                             THETA=THETA1,
+                              FOND_FISS=FOND,
+                            EXCIT=_F(CHARGE=CH_UNI,),
+                            CHAM_MATER=CHMAT,
+                            SYME_CHAR='SYME',
+                            OPTION='CALC_K_G'
+                        )
+
+G_EXP11=CALC_G_THETA_T(    MODELE=MO,
+                               DEPL=DE_EXP1,
+                              THETA=THETA1,
+                               FOND_FISS=FOND,
+                             EXCIT=_F(CHARGE=CH_EXP1,),
+                             CHAM_MATER=CHMAT,
+                             SYME_CHAR='SYME',
+                             OPTION='CALC_K_G'
+                         )
+
+G_EXP51=CALC_G_THETA_T(    MODELE=MO,
+                               DEPL=DE_EXP5,
+                              THETA=THETA1,
+                               FOND_FISS=FOND,
+                             EXCIT=_F(CHARGE=CH_EXP5,),
+                             CHAM_MATER=CHMAT,
+                             SYME_CHAR='SYME',
+                             OPTION='CALC_K_G'
+                         )
+
+G_SINH11=CALC_G_THETA_T(    MODELE=MO,
+                                DEPL=DE_SINH1,
+                               THETA=THETA1,
+                                FOND_FISS=FOND,
+                              EXCIT=_F(CHARGE=CH_SINH1,),
+                              CHAM_MATER=CHMAT,
+                              SYME_CHAR='SYME',
+                              OPTION='CALC_K_G'
+                          )
+
+G_SINH51=CALC_G_THETA_T(    MODELE=MO,
+                                DEPL=DE_SINH5,
+                               THETA=THETA1,
+                                FOND_FISS=FOND,
+                              EXCIT=_F(CHARGE=CH_SINH5,),
+                              CHAM_MATER=CHMAT,
+                              SYME_CHAR='SYME',
+                              OPTION='CALC_K_G'
+                          )
+
+G_COSH11=CALC_G_THETA_T(    MODELE=MO,
+                                DEPL=DE_COSH1,
+                               THETA=THETA1,
+                                FOND_FISS=FOND,
+                              EXCIT=_F(CHARGE=CH_COSH1,),
+                              CHAM_MATER=CHMAT,
+                              SYME_CHAR='SYME',
+                              OPTION='CALC_K_G'
+                          )
+
+G_COSH51=CALC_G_THETA_T(    MODELE=MO,
+                                DEPL=DE_COSH5,
+                               THETA=THETA1,
+                                FOND_FISS=FOND,
+                              EXCIT=_F(CHARGE=CH_COSH5,),
+                              CHAM_MATER=CHMAT,
+                              SYME_CHAR='SYME',
+                              OPTION='CALC_K_G'
+                          )
+
+G_COS11=CALC_G_THETA_T(    MODELE=MO,
+                               DEPL=DE_COS1,
+                              THETA=THETA1,
+                               FOND_FISS=FOND,
+                             EXCIT=_F(CHARGE=CH_COS1,),
+                             CHAM_MATER=CHMAT,
+                             SYME_CHAR='SYME',
+                             OPTION='CALC_K_G'
+                         )
+
+G_COS51=CALC_G_THETA_T(    MODELE=MO,
+                               DEPL=DE_COS5,
+                              THETA=THETA1,
+                               FOND_FISS=FOND,
+                             EXCIT=_F(CHARGE=CH_COS5,),
+                             CHAM_MATER=CHMAT,
+                             SYME_CHAR='SYME',
+                             OPTION='CALC_K_G'
+                         )
+
+# CALCUL DES G_THETA POUR LE CHAMP THETA2
+# ---------------------------------------
+
+G_UNI2=CALC_G_THETA_T(    MODELE=MO,
+                              DEPL=DE_UNI,
+                             THETA=THETA2,
+                              FOND_FISS=FOND,
+                            EXCIT=_F(CHARGE=CH_UNI,),
+                            CHAM_MATER=CHMAT,
+                            SYME_CHAR='SYME',
+                            OPTION='CALC_K_G'
+                        )
+
+G_EXP12=CALC_G_THETA_T(    MODELE=MO,
+                               DEPL=DE_EXP1,
+                              THETA=THETA2,
+                               FOND_FISS=FOND,
+                             EXCIT=_F(CHARGE=CH_EXP1,),
+                             CHAM_MATER=CHMAT,
+                             SYME_CHAR='SYME',
+                             OPTION='CALC_K_G'
+                         )
+
+G_EXP52=CALC_G_THETA_T(    MODELE=MO,
+                               DEPL=DE_EXP5,
+                              THETA=THETA2,
+                               FOND_FISS=FOND,
+                             EXCIT=_F(CHARGE=CH_EXP5,),
+                             CHAM_MATER=CHMAT,
+                             SYME_CHAR='SYME',
+                             OPTION='CALC_K_G'
+                         )
+
+G_SINH12=CALC_G_THETA_T(    MODELE=MO,
+                                DEPL=DE_SINH1,
+                               THETA=THETA2,
+                                FOND_FISS=FOND,
+                              EXCIT=_F(CHARGE=CH_SINH1,),
+                              CHAM_MATER=CHMAT,
+                              SYME_CHAR='SYME',
+                              OPTION='CALC_K_G'
+                          )
+
+G_SINH52=CALC_G_THETA_T(    MODELE=MO,
+                                DEPL=DE_SINH5,
+                               THETA=THETA2,
+                                FOND_FISS=FOND,
+                              EXCIT=_F(CHARGE=CH_SINH5,),
+                              CHAM_MATER=CHMAT,
+                              SYME_CHAR='SYME',
+                              OPTION='CALC_K_G'
+                          )
+
+G_COSH12=CALC_G_THETA_T(    MODELE=MO,
+                                DEPL=DE_COSH1,
+                               THETA=THETA2,
+                                FOND_FISS=FOND,
+                              EXCIT=_F(CHARGE=CH_COSH1,),
+                              CHAM_MATER=CHMAT,
+                              SYME_CHAR='SYME',
+                              OPTION='CALC_K_G'
+                          )
+
+G_COSH52=CALC_G_THETA_T(    MODELE=MO,
+                                DEPL=DE_COSH5,
+                               THETA=THETA2,
+                                FOND_FISS=FOND,
+                              EXCIT=_F(CHARGE=CH_COSH5,),
+                              CHAM_MATER=CHMAT,
+                              SYME_CHAR='SYME',
+                              OPTION='CALC_K_G'
+                          )
+
+G_COS12=CALC_G_THETA_T(    MODELE=MO,
+                               DEPL=DE_COS1,
+                              THETA=THETA2,
+                               FOND_FISS=FOND,
+                             EXCIT=_F(CHARGE=CH_COS1,),
+                             CHAM_MATER=CHMAT,
+                             SYME_CHAR='SYME',
+                             OPTION='CALC_K_G'
+                         )
+
+G_COS52=CALC_G_THETA_T(    MODELE=MO,
+                               DEPL=DE_COS5,
+                              THETA=THETA2,
+                               FOND_FISS=FOND,
+                             EXCIT=_F(CHARGE=CH_COS5,),
+                             CHAM_MATER=CHMAT,
+                             SYME_CHAR='SYME',
+                             OPTION='CALC_K_G'
+                         )
+
+# CALCUL DES G_THETA POUR LE CHAMP THETA3
+# ---------------------------------------
+
+G_UNI3=CALC_G_THETA_T(    MODELE=MO,
+                              DEPL=DE_UNI,
+                             THETA=THETA3,
+                              FOND_FISS=FOND,
+                            EXCIT=_F(CHARGE=CH_UNI,),
+                            CHAM_MATER=CHMAT,
+                            SYME_CHAR='SYME',
+                            OPTION='CALC_K_G'
+                        )
+
+G_EXP13=CALC_G_THETA_T(    MODELE=MO,
+                               DEPL=DE_EXP1,
+                              THETA=THETA3,
+                               FOND_FISS=FOND,
+                             EXCIT=_F(CHARGE=CH_EXP1,),
+                             CHAM_MATER=CHMAT,
+                             SYME_CHAR='SYME',
+                             OPTION='CALC_K_G'
+                         )
+
+G_EXP53=CALC_G_THETA_T(    MODELE=MO,
+                               DEPL=DE_EXP5,
+                              THETA=THETA3,
+                               FOND_FISS=FOND,
+                             EXCIT=_F(CHARGE=CH_EXP5,),
+                             CHAM_MATER=CHMAT,
+                             SYME_CHAR='SYME',
+                             OPTION='CALC_K_G'
+                         )
+
+G_SINH13=CALC_G_THETA_T(    MODELE=MO,
+                                DEPL=DE_SINH1,
+                               THETA=THETA3,
+                                FOND_FISS=FOND,
+                              EXCIT=_F(CHARGE=CH_SINH1,),
+                              CHAM_MATER=CHMAT,
+                              SYME_CHAR='SYME',
+                              OPTION='CALC_K_G'
+                          )
+
+G_SINH53=CALC_G_THETA_T(    MODELE=MO,
+                                DEPL=DE_SINH5,
+                               THETA=THETA3,
+                                FOND_FISS=FOND,
+                              EXCIT=_F(CHARGE=CH_SINH5,),
+                              CHAM_MATER=CHMAT,
+                              SYME_CHAR='SYME',
+                              OPTION='CALC_K_G'
+                          )
+
+G_COSH13=CALC_G_THETA_T(    MODELE=MO,
+                                DEPL=DE_COSH1,
+                               THETA=THETA3,
+                                FOND_FISS=FOND,
+                              EXCIT=_F(CHARGE=CH_COSH1,),
+                              CHAM_MATER=CHMAT,
+                              SYME_CHAR='SYME',
+                              OPTION='CALC_K_G'
+                          )
+
+G_COSH53=CALC_G_THETA_T(    MODELE=MO,
+                                DEPL=DE_COSH5,
+                               THETA=THETA3,
+                                FOND_FISS=FOND,
+                              EXCIT=_F(CHARGE=CH_COSH5,),
+                              CHAM_MATER=CHMAT,
+                              SYME_CHAR='SYME',
+                              OPTION='CALC_K_G'
+                          )
+
+G_COS13=CALC_G_THETA_T(    MODELE=MO,
+                               DEPL=DE_COS1,
+                              THETA=THETA3,
+                               FOND_FISS=FOND,
+                             EXCIT=_F(CHARGE=CH_COS1,),
+                             CHAM_MATER=CHMAT,
+                             SYME_CHAR='SYME',
+                             OPTION='CALC_K_G'
+                         )
+
+G_COS53=CALC_G_THETA_T(    MODELE=MO,
+                               DEPL=DE_COS5,
+                              THETA=THETA3,
+                               FOND_FISS=FOND,
+                             EXCIT=_F(CHARGE=CH_COS5,),
+                             CHAM_MATER=CHMAT,
+                             SYME_CHAR='SYME',
+                             OPTION='CALC_K_G'
+                         )
+
+# IMPRESSION DES RESULTATS COURONNE 0 (TRIANGLES)
+# -----------------------------------------------
+
+
+TEST_TABLE(       TABLE=G_UNI0,
+                       NOM_PARA='G',
+                           VALE=3.14158E-3,
+                      PRECISION=0.033    )
+
+TEST_TABLE(       TABLE=G_UNI0,
+                       NOM_PARA='K1',
+                           VALE=1.77245,
+                      PRECISION=0.07    )
+
+TEST_TABLE(       TABLE=G_UNI0,
+                       NOM_PARA='K2',
+                           VALE=0.,
+                        CRITERE='ABSOLU',
+                      PRECISION=0.015    )
+
+#
+
+TEST_TABLE(       TABLE=G_EXP10,
+                       NOM_PARA='G',
+                           VALE=1.05349E-2,
+                      PRECISION=0.04    )
+
+TEST_TABLE(       TABLE=G_EXP10,
+                       NOM_PARA='K1',
+                           VALE=3.24576,
+                      PRECISION=0.07    )
+
+TEST_TABLE(       TABLE=G_EXP10,
+                       NOM_PARA='K2',
+                           VALE=0.,
+                        CRITERE='ABSOLU',
+                      PRECISION=0.01    )
+
+#
+
+TEST_TABLE(       TABLE=G_EXP50,
+                       NOM_PARA='G',
+                           VALE=8.356742,
+                      PRECISION=0.055    )
+
+TEST_TABLE(       TABLE=G_EXP50,
+                       NOM_PARA='K1',
+                           VALE=91.41522,
+                      PRECISION=0.07    )
+
+TEST_TABLE(       TABLE=G_EXP50,
+                       NOM_PARA='K2',
+                           VALE=0.,
+                        CRITERE='ABSOLU',
+                      PRECISION=0.01    )
+
+#
+
+TEST_TABLE(       TABLE=G_SINH10,
+                       NOM_PARA='G',
+                           VALE=1.00344E-3,
+                      PRECISION=0.045    )
+
+TEST_TABLE(       TABLE=G_SINH10,
+                       NOM_PARA='K1',
+                           VALE=1.00172,
+                      PRECISION=0.07    )
+
+TEST_TABLE(       TABLE=G_SINH10,
+                       NOM_PARA='K2',
+                           VALE=0.,
+                        CRITERE='ABSOLU',
+                      PRECISION=0.01    )
+
+#
+
+TEST_TABLE(       TABLE=G_SINH50,
+                       NOM_PARA='G',
+                           VALE=1.86052,
+                      PRECISION=0.055    )
+
+TEST_TABLE(       TABLE=G_SINH50,
+                       NOM_PARA='K1',
+                           VALE=43.13380,
+                      PRECISION=0.065    )
+
+TEST_TABLE(       TABLE=G_SINH50,
+                       NOM_PARA='K2',
+                           VALE=0.,
+                        CRITERE='ABSOLU',
+                      PRECISION=0.065    )
+
+#
+
+TEST_TABLE(       TABLE=G_COSH10,
+                       NOM_PARA='G',
+                           VALE=5.03571E-3,
+                      PRECISION=0.035    )
+
+TEST_TABLE(       TABLE=G_COSH10,
+                       NOM_PARA='K1',
+                           VALE=2.24404,
+                      PRECISION=0.07    )
+
+TEST_TABLE(       TABLE=G_COSH10,
+                       NOM_PARA='K2',
+                           VALE=0.,
+                        CRITERE='ABSOLU',
+                      PRECISION=0.01    )
+
+#
+
+TEST_TABLE(       TABLE=G_COSH50,
+                       NOM_PARA='G',
+                           VALE=2.331095,
+                      PRECISION=0.055    )
+
+TEST_TABLE(       TABLE=G_COSH50,
+                       NOM_PARA='K1',
+                           VALE=48.28142,
+                      PRECISION=0.07    )
+
+TEST_TABLE(       TABLE=G_COSH50,
+                       NOM_PARA='K2',
+                           VALE=0.,
+                        CRITERE='ABSOLU',
+                      PRECISION=0.07    )
+
+#
+
+TEST_TABLE(       TABLE=G_COS10,
+                       NOM_PARA='G',
+                           VALE=.00183948,
+                      PRECISION=0.03    )
+
+TEST_TABLE(       TABLE=G_COS10,
+                       NOM_PARA='K1',
+                           VALE=1.356277,
+                      PRECISION=0.07    )
+
+TEST_TABLE(       TABLE=G_COS10,
+                       NOM_PARA='K2',
+                           VALE=0.,
+                        CRITERE='ABSOLU',
+                      PRECISION=0.07    )
+
+#
+
+TEST_TABLE(       TABLE=G_COS50,
+                       NOM_PARA='G',
+                           VALE=0.,
+                        CRITERE='ABSOLU',
+                      PRECISION=0.00001 )
+
+TEST_TABLE(       TABLE=G_COS50,
+                       NOM_PARA='K1',
+                           VALE=0.,
+                        CRITERE='ABSOLU',
+                      PRECISION=0.003 )
+
+# IMPRESSION DES RESULTATS COURONNE 1 (QUADRANGLES)  ;
+# -------------------------------------------------
+
+
+TEST_TABLE(       TABLE=G_UNI1,
+                       NOM_PARA='G',
+                           VALE=3.14158E-3,
+                      PRECISION=0.01    )
+
+TEST_TABLE(       TABLE=G_UNI1,
+                       NOM_PARA='K1',
+                           VALE=1.77245,
+                      PRECISION=0.005    )
+
+TEST_TABLE(       TABLE=G_UNI1,
+                       NOM_PARA='K2',
+                           VALE=0.,
+                        CRITERE='ABSOLU',
+                      PRECISION=0.015    )
+
+#
+
+TEST_TABLE(       TABLE=G_EXP11,
+                       NOM_PARA='G',
+                           VALE=1.05349E-2,
+                      PRECISION=0.005    )
+
+TEST_TABLE(       TABLE=G_EXP11,
+                       NOM_PARA='K1',
+                           VALE=3.24576,
+                      PRECISION=0.005    )
+
+TEST_TABLE(       TABLE=G_EXP11,
+                       NOM_PARA='K2',
+                           VALE=0.,
+                        CRITERE='ABSOLU',
+                      PRECISION=0.01    )
+
+#
+
+TEST_TABLE(       TABLE=G_EXP51,
+                       NOM_PARA='G',
+                           VALE=8.356742,
+                      PRECISION=0.015   )
+
+TEST_TABLE(       TABLE=G_EXP51,
+                       NOM_PARA='K1',
+                           VALE=91.41522,
+                      PRECISION=0.005    )
+
+TEST_TABLE(       TABLE=G_EXP51,
+                       NOM_PARA='K2',
+                           VALE=0.,
+                        CRITERE='ABSOLU',
+                      PRECISION=0.005    )
+
+#
+
+TEST_TABLE(       TABLE=G_SINH11,
+                       NOM_PARA='G',
+                           VALE=1.00344E-3,
+                      PRECISION=0.005    )
+
+TEST_TABLE(       TABLE=G_SINH11,
+                       NOM_PARA='K1',
+                           VALE=1.00172,
+                      PRECISION=0.005    )
+
+TEST_TABLE(       TABLE=G_SINH11,
+                       NOM_PARA='K2',
+                           VALE=0.,
+                        CRITERE='ABSOLU',
+                      PRECISION=0.01    )
+
+#
+
+TEST_TABLE(       TABLE=G_SINH51,
+                       NOM_PARA='G',
+                           VALE=1.86052,
+                      PRECISION=0.015    )
+
+TEST_TABLE(       TABLE=G_SINH51,
+                       NOM_PARA='K1',
+                           VALE=43.13380,
+                      PRECISION=0.005    )
+
+TEST_TABLE(       TABLE=G_SINH51,
+                       NOM_PARA='K2',
+                           VALE=0.,
+                        CRITERE='ABSOLU',
+                      PRECISION=0.01    )
+
+#
+
+TEST_TABLE(       TABLE=G_COSH11,
+                       NOM_PARA='G',
+                           VALE=5.03571E-3,
+                      PRECISION=0.01    )
+
+TEST_TABLE(       TABLE=G_COSH11,
+                       NOM_PARA='K1',
+                           VALE=2.24404,
+                      PRECISION=0.005    )
+
+TEST_TABLE(       TABLE=G_COSH11,
+                       NOM_PARA='K2',
+                           VALE=0.,
+                        CRITERE='ABSOLU',
+                      PRECISION=0.01    )
+
+#
+
+TEST_TABLE(       TABLE=G_COSH51,
+                       NOM_PARA='G',
+                           VALE=2.331095,
+                      PRECISION=0.015    )
+
+TEST_TABLE(       TABLE=G_COSH51,
+                       NOM_PARA='K1',
+                           VALE=48.28142,
+                      PRECISION=0.005    )
+
+TEST_TABLE(       TABLE=G_COSH51,
+                       NOM_PARA='K2',
+                           VALE=0.,
+                        CRITERE='ABSOLU',
+                      PRECISION=0.01    )
+
+#
+
+TEST_TABLE(       TABLE=G_COS11,
+                       NOM_PARA='G',
+                           VALE=.00183948,
+                      PRECISION=0.015    )
+
+TEST_TABLE(       TABLE=G_COS11,
+                       NOM_PARA='K1',
+                           VALE=1.356277,
+                      PRECISION=0.01    )
+
+TEST_TABLE(       TABLE=G_COS11,
+                       NOM_PARA='K2',
+                           VALE=0.,
+                        CRITERE='ABSOLU',
+                      PRECISION=0.01    )
+
+#
+
+TEST_TABLE(       TABLE=G_COS51,
+                       NOM_PARA='G',
+                           VALE=0.,
+                        CRITERE='ABSOLU',
+                      PRECISION=0.00001 )
+
+TEST_TABLE(       TABLE=G_COS51,
+                       NOM_PARA='K1',
+                           VALE=0.,
+                        CRITERE='ABSOLU',
+                      PRECISION=0.005 )
+
+TEST_TABLE(       TABLE=G_COS51,
+                       NOM_PARA='K2',
+                           VALE=0.,
+                        CRITERE='ABSOLU',
+                      PRECISION=0.00001 )
+
+# IMPRESSION DES RESULTATS COURONNE 2 (QUADRANGLES)  ;
+# -------------------------------------------------
+
+
+TEST_TABLE(       TABLE=G_UNI2,
+                       NOM_PARA='G',
+                           VALE=3.14158E-3,
+                      PRECISION=0.01    )
+
+TEST_TABLE(       TABLE=G_UNI2,
+                       NOM_PARA='K1',
+                           VALE=1.77245,
+                      PRECISION=0.005    )
+
+TEST_TABLE(       TABLE=G_UNI2,
+                       NOM_PARA='K2',
+                           VALE=0.,
+                        CRITERE='ABSOLU',
+                      PRECISION=0.015    )
+
+#
+
+TEST_TABLE(       TABLE=G_EXP12,
+                       NOM_PARA='G',
+                           VALE=1.05349E-2,
+                      PRECISION=0.005    )
+
+TEST_TABLE(       TABLE=G_EXP12,
+                       NOM_PARA='K1',
+                           VALE=3.24576,
+                      PRECISION=0.005    )
+
+TEST_TABLE(       TABLE=G_EXP12,
+                       NOM_PARA='K2',
+                           VALE=0.,
+                        CRITERE='ABSOLU',
+                      PRECISION=0.01    )
+
+#
+
+TEST_TABLE(       TABLE=G_EXP52,
+                       NOM_PARA='G',
+                           VALE=8.356742,
+                      PRECISION=0.015    )
+
+TEST_TABLE(       TABLE=G_EXP52,
+                       NOM_PARA='K1',
+                           VALE=91.41522,
+                      PRECISION=0.005    )
+
+TEST_TABLE(       TABLE=G_EXP52,
+                       NOM_PARA='K2',
+                           VALE=0.,
+                        CRITERE='ABSOLU',
+                      PRECISION=0.01    )
+
+#
+
+TEST_TABLE(       TABLE=G_SINH12,
+                       NOM_PARA='G',
+                           VALE=1.00344E-3,
+                      PRECISION=0.005    )
+
+TEST_TABLE(       TABLE=G_SINH12,
+                       NOM_PARA='K1',
+                           VALE=1.00172,
+                      PRECISION=0.005    )
+
+TEST_TABLE(       TABLE=G_SINH12,
+                       NOM_PARA='K2',
+                           VALE=0.,
+                        CRITERE='ABSOLU',
+                      PRECISION=0.01    )
+
+#
+
+TEST_TABLE(       TABLE=G_SINH52,
+                       NOM_PARA='G',
+                           VALE=1.86052,
+                      PRECISION=0.015    )
+
+TEST_TABLE(       TABLE=G_SINH52,
+                       NOM_PARA='K1',
+                           VALE=43.13380,
+                      PRECISION=0.005    )
+
+TEST_TABLE(       TABLE=G_SINH52,
+                       NOM_PARA='K2',
+                           VALE=0.,
+                        CRITERE='ABSOLU',
+                      PRECISION=0.01    )
+
+#
+
+TEST_TABLE(       TABLE=G_COSH12,
+                       NOM_PARA='G',
+                           VALE=5.03571E-3,
+                      PRECISION=0.01    )
+
+TEST_TABLE(       TABLE=G_COSH12,
+                       NOM_PARA='K1',
+                           VALE=2.24404,
+                      PRECISION=0.005    )
+
+TEST_TABLE(       TABLE=G_COSH12,
+                       NOM_PARA='K2',
+                           VALE=0.,
+                        CRITERE='ABSOLU',
+                      PRECISION=0.01    )
+
+#
+
+TEST_TABLE(       TABLE=G_COSH52,
+                       NOM_PARA='G',
+                           VALE=2.331095,
+                      PRECISION=0.015    )
+
+TEST_TABLE(       TABLE=G_COSH52,
+                       NOM_PARA='K1',
+                           VALE=48.28142,
+                      PRECISION=0.005    )
+
+TEST_TABLE(       TABLE=G_COSH52,
+                       NOM_PARA='K2',
+                           VALE=0.,
+                        CRITERE='ABSOLU',
+                      PRECISION=0.01    )
+
+#
+
+TEST_TABLE(       TABLE=G_COS12,
+                       NOM_PARA='G',
+                           VALE=.00183948,
+                      PRECISION=0.015    )
+
+TEST_TABLE(       TABLE=G_COS12,
+                       NOM_PARA='K1',
+                           VALE=1.356277,
+                      PRECISION=0.01    )
+
+TEST_TABLE(       TABLE=G_COS12,
+                       NOM_PARA='K2',
+                           VALE=0.,
+                        CRITERE='ABSOLU',
+                      PRECISION=0.01    )
+
+#
+
+TEST_TABLE(       TABLE=G_COS52,
+                       NOM_PARA='G',
+                           VALE=0.,
+                        CRITERE='ABSOLU',
+                      PRECISION=0.00001 )
+
+TEST_TABLE(       TABLE=G_COS52,
+                       NOM_PARA='K1',
+                           VALE=0.,
+                        CRITERE='ABSOLU',
+                      PRECISION=0.005 )
+
+TEST_TABLE(       TABLE=G_COS52,
+                       NOM_PARA='K2',
+                           VALE=0.,
+                        CRITERE='ABSOLU',
+                      PRECISION=0.00001 )
+
+# IMPRESSION DES RESULTATS COURONNE 3 (QUADRANGLES)  ;
+# -------------------------------------------------
+
+
+TEST_TABLE(       TABLE=G_UNI3,
+                       NOM_PARA='G',
+                           VALE=3.14158E-3,
+                      PRECISION=0.01    )
+
+TEST_TABLE(       TABLE=G_UNI3,
+                       NOM_PARA='K1',
+                           VALE=1.77245,
+                      PRECISION=0.005    )
+
+TEST_TABLE(       TABLE=G_UNI3,
+                       NOM_PARA='K2',
+                           VALE=0.,
+                        CRITERE='ABSOLU',
+                      PRECISION=0.015    )
+
+#
+
+TEST_TABLE(       TABLE=G_EXP13,
+                       NOM_PARA='G',
+                           VALE=1.05349E-2,
+                      PRECISION=0.005    )
+
+TEST_TABLE(       TABLE=G_EXP13,
+                       NOM_PARA='K1',
+                           VALE=3.24576,
+                      PRECISION=0.005    )
+
+TEST_TABLE(       TABLE=G_EXP13,
+                       NOM_PARA='K2',
+                           VALE=0.,
+                        CRITERE='ABSOLU',
+                      PRECISION=0.01    )
+
+#
+
+TEST_TABLE(       TABLE=G_EXP53,
+                       NOM_PARA='G',
+                           VALE=8.356742,
+                      PRECISION=0.015    )
+
+TEST_TABLE(       TABLE=G_EXP53,
+                       NOM_PARA='K1',
+                           VALE=91.41522,
+                      PRECISION=0.005    )
+
+TEST_TABLE(       TABLE=G_EXP53,
+                       NOM_PARA='K2',
+                           VALE=0.,
+                        CRITERE='ABSOLU',
+                      PRECISION=0.01    )
+
+#
+
+TEST_TABLE(       TABLE=G_SINH13,
+                       NOM_PARA='G',
+                           VALE=1.00344E-3,
+                      PRECISION=0.005    )
+
+TEST_TABLE(       TABLE=G_SINH13,
+                       NOM_PARA='K1',
+                           VALE=1.00172,
+                      PRECISION=0.005    )
+
+TEST_TABLE(       TABLE=G_SINH13,
+                       NOM_PARA='K2',
+                           VALE=0.,
+                        CRITERE='ABSOLU',
+                      PRECISION=0.01    )
+
+#
+
+TEST_TABLE(       TABLE=G_SINH53,
+                       NOM_PARA='G',
+                           VALE=1.86052,
+                      PRECISION=0.015    )
+
+TEST_TABLE(       TABLE=G_SINH53,
+                       NOM_PARA='K1',
+                           VALE=43.13380,
+                      PRECISION=0.005    )
+
+TEST_TABLE(       TABLE=G_SINH53,
+                       NOM_PARA='K2',
+                           VALE=0.,
+                        CRITERE='ABSOLU',
+                      PRECISION=0.01    )
+
+#
+
+TEST_TABLE(       TABLE=G_COSH13,
+                       NOM_PARA='G',
+                           VALE=5.03571E-3,
+                      PRECISION=0.01    )
+
+TEST_TABLE(       TABLE=G_COSH13,
+                       NOM_PARA='K1',
+                           VALE=2.24404,
+                      PRECISION=0.005    )
+
+TEST_TABLE(       TABLE=G_COSH13,
+                       NOM_PARA='K2',
+                           VALE=0.,
+                        CRITERE='ABSOLU',
+                      PRECISION=0.01    )
+
+#
+
+TEST_TABLE(       TABLE=G_COSH53,
+                       NOM_PARA='G',
+                           VALE=2.331095,
+                      PRECISION=0.015    )
+
+TEST_TABLE(       TABLE=G_COSH53,
+                       NOM_PARA='K1',
+                           VALE=48.28142,
+                      PRECISION=0.005    )
+
+TEST_TABLE(       TABLE=G_COSH53,
+                       NOM_PARA='K2',
+                           VALE=0.,
+                        CRITERE='ABSOLU',
+                      PRECISION=0.01    )
+
+#
+
+TEST_TABLE(       TABLE=G_COS13,
+                       NOM_PARA='G',
+                           VALE=.00183948,
+                      PRECISION=0.015    )
+
+TEST_TABLE(       TABLE=G_COS13,
+                       NOM_PARA='K1',
+                           VALE=1.356277,
+                      PRECISION=0.01    )
+
+TEST_TABLE(       TABLE=G_COS13,
+                       NOM_PARA='K2',
+                           VALE=0.,
+                        CRITERE='ABSOLU',
+                      PRECISION=0.01    )
+
+#
+
+TEST_TABLE(       TABLE=G_COS53,
+                       NOM_PARA='G',
+                           VALE=0.,
+                        CRITERE='ABSOLU',
+                      PRECISION=0.00001 )
+
+TEST_TABLE(       TABLE=G_COS53,
+                       NOM_PARA='K1',
+                           VALE=0.,
+                        CRITERE='ABSOLU',
+                      PRECISION=0.005 )
+
+TEST_TABLE(       TABLE=G_COS53,
+                       NOM_PARA='K2',
+                           VALE=0.,
+                        CRITERE='ABSOLU',
+                      PRECISION=0.00001 )
+
+FIN( )
+#

@@ -1,4 +1,4 @@
-# MODIF  DATE 07/06/2002   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 24/05/2004   AUTEUR GALENNE E.GALENNE 
 # TITRE PLAQUE FISSUREE EN TRACTION (CALCUL DE G)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -127,7 +127,7 @@ DEP2=RESO_LDLT(           MATR_FACT=K2,
 #            ALPHA= 0.  OPTION CALC_G PAR DEFAUT
 #
 G1=CALC_G_THETA_T(  MODELE=MO,  DEPL=DEP1,   THETA=THETA1,
-                    CHARGE=CHFONC,
+                    EXCIT=_F(CHARGE=CHFONC,),
                        COMP_ELAS=_F( RELATION = 'ELAS',
                                   DEFORMATION = 'PETIT'),
                    SYME_CHAR='SYME',  CHAM_MATER=CHMAT )
@@ -135,20 +135,20 @@ G1=CALC_G_THETA_T(  MODELE=MO,  DEPL=DEP1,   THETA=THETA1,
 G2=CALC_G_THETA_T(  MODELE=MO,  DEPL=DEP1,   THETA=THETA2,
                        COMP_ELAS=_F( RELATION = 'ELAS',
                                   DEFORMATION = 'PETIT'),
-                    CHARGE=CH, SYME_CHAR='SYME',  CHAM_MATER=CHMAT )
+                    EXCIT=_F(CHARGE=CH,), SYME_CHAR='SYME',  CHAM_MATER=CHMAT )
 
 G3=CALC_G_THETA_T(  MODELE=MO,  DEPL=DEP1,   THETA=THETA3,
                        COMP_ELAS=_F( RELATION = 'ELAS',
                                   DEFORMATION = 'PETIT'),
-                    CHARGE=CH, SYME_CHAR='SYME',  CHAM_MATER=CHMAT )
+                    EXCIT=_F(CHARGE=CH,), SYME_CHAR='SYME',  CHAM_MATER=CHMAT )
 
 G4=CALC_G_THETA_T(  MODELE=MO,  DEPL=DEP1,   THETA=THETA4,
                        COMP_ELAS=_F( RELATION = 'ELAS',
                                   DEFORMATION = 'PETIT'),
-                    CHARGE=CH, SYME_CHAR='SYME',  CHAM_MATER=CHMAT )
+                    EXCIT=_F(CHARGE=CH,), SYME_CHAR='SYME',  CHAM_MATER=CHMAT )
 
 G5=CALC_G_THETA_T(  MODELE=MO,  DEPL=DEP1,   THETA=THETA5,
-                     CHARGE=CHFONC,
+                     EXCIT=_F(CHARGE=CHFONC,),
                         COMP_ELAS=_F( RELATION = 'ELAS',
                                    DEFORMATION = 'PETIT'),
                     SYME_CHAR='SYME',  CHAM_MATER=CHMAT )
@@ -156,17 +156,17 @@ G5=CALC_G_THETA_T(  MODELE=MO,  DEPL=DEP1,   THETA=THETA5,
 G6=CALC_G_THETA_T(  MODELE=MO,  DEPL=DEP1,   THETA=THETA6,
                        COMP_ELAS=_F( RELATION = 'ELAS',
                                    DEFORMATION = 'PETIT'),
-                    CHARGE=CH, SYME_CHAR='SYME',  CHAM_MATER=CHMAT )
+                    EXCIT=_F(CHARGE=CH,), SYME_CHAR='SYME',  CHAM_MATER=CHMAT )
 
 #
 #            ALPHA= 1.
 #
-GLAG=CALC_G_THETA_T(  MODELE=MO,  DEPL=DEP2,  THETA=THETA1,  CHARGE=CH,
+GLAG=CALC_G_THETA_T(  MODELE=MO,  DEPL=DEP2,  THETA=THETA1,  EXCIT=_F(CHARGE=CH,),
                      SYME_CHAR='SYME',PROPAGATION=1., CHAM_MATER=CHMAT,
                       OPTION='CALC_G_LAGR')
 
 GLAGF=CALC_G_THETA_T(  MODELE=MO,  DEPL=DEP2,  THETA=THETA1,
-                       CHARGE=CHFONC,
+                       EXCIT=_F(CHARGE=CHFONC,),
                      SYME_CHAR='SYME',PROPAGATION=1., CHAM_MATER=CHMAT,
                       OPTION='CALC_G_LAGR')
 

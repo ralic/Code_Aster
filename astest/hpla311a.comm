@@ -1,0 +1,289 @@
+# MODIF  DATE 24/05/2004   AUTEUR GALENNE E.GALENNE 
+# TITRE  MURAKAMI 11.39 FISSURE CIRCULAIRE AU CENTRE D'UNE SPHERE
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+#        SOUMISE A UNE TEMPERATURE UNIFORME SUR LES LEVRES
+#        A/B = 0.4
+#
+
+DEBUT( CODE=_F( NOM = 'HPLA311A',NIV_PUB_WEB='INTERNET'))
+
+PRE_GIBI()
+
+MA=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='NON'),  )
+
+MA=DEFI_GROUP( reuse=MA,   MAILLAGE=MA, 
+                           CREA_GROUP_NO=_F( 
+                         GROUP_MA = ( 'LPOP11',  'LP11PC1',  'C1',
+                                      'LP8P9',   'LP9PC2',   'LPOP8',
+                                         ))
+                       )
+
+#
+# -------------------------------------------------------------------
+#                    DEBUT DU THERMIQUE
+# -------------------------------------------------------------------
+MOTH=AFFE_MODELE(        MAILLAGE=MA, 
+                                    AFFE=_F( TOUT = 'OUI',
+                          PHENOMENE = 'THERMIQUE',
+                          MODELISATION = 'AXIS')
+                        )
+
+#
+MATH=DEFI_MATERIAU(    THER=_F( RHO_CP = 0.,
+                                    LAMBDA = 1.)
+                          )
+
+#
+CMTH=AFFE_MATERIAU(        MAILLAGE=MA,
+                                      AFFE=_F(  TOUT = 'OUI',
+                                             MATER = MATH)
+                          )
+
+#
+CHTH=AFFE_CHAR_THER(      MODELE=MOTH,TEMP_IMPO=(
+                              _F( GROUP_NO = 'C1',    TEMP = 0.),
+                              _F( GROUP_NO = 'LPOP8', TEMP = -100.))
+                           )
+
+#
+METH=CALC_MATR_ELEM(        MODELE=MOTH,
+                                   CHARGE=CHTH,
+                               CHAM_MATER=CMTH,
+                                   OPTION='RIGI_THER'
+                           )
+
+#
+VETH=CALC_VECT_ELEM(        CHARGE=CHTH,
+                                   OPTION='CHAR_THER'
+                           )
+
+#
+NUTH=NUME_DDL(          MATR_RIGI=METH )
+
+#
+KTH=ASSE_MATRICE(      MATR_ELEM=METH,
+                                NUME_DDL=NUTH
+                           )
+
+#
+FTH=ASSE_VECTEUR(      VECT_ELEM=VETH,
+                                NUME_DDL=NUTH
+                           )
+
+#
+KTH=FACT_LDLT(      reuse=KTH,   MATR_ASSE=KTH )
+
+#
+TEMP=RESO_LDLT(         MATR_FACT=KTH,
+                                 CHAM_NO=FTH
+                           )
+
+#
+# -------------------------------------------------------------------
+#                    FIN DU THERMIQUE
+# -------------------------------------------------------------------
+#
+#
+MO=AFFE_MODELE( MAILLAGE=MA, 
+                             AFFE=_F( TOUT = 'OUI',
+                                   PHENOMENE = 'MECANIQUE',
+                                   MODELISATION = 'AXIS')
+                       )
+
+#
+MAT=DEFI_MATERIAU( 
+                               ELAS=_F(  E = 2.E11,
+                                 NU = 0.3,
+                                 RHO = 7800.,
+                                 ALPHA = 1.2E-5)
+                         )
+
+#
+CHMAT=AFFE_MATERIAU(  MAILLAGE=MA,
+                                AFFE=_F( TOUT = 'OUI', 
+                                      MATER = MAT)
+                         )
+
+#
+CH=AFFE_CHAR_MECA(           MODELE=MO,
+                              TEMP_CALCULEE=TEMP,DDL_IMPO=(
+                                   _F(  GROUP_NO = 'LP8P9',
+                                              DX = 0.),
+                                            _F(  GROUP_NO = 'LP9PC2',
+                                              DX = 0.),
+                                            _F(  GROUP_NO = 'LPOP11',
+                                              DY = 0.),
+                                            _F(  GROUP_NO = 'LP11PC1',
+                                              DY = 0.))
+                           )
+
+#
+RIGI_ELE=CALC_MATR_ELEM(        MODELE=MO,
+                               CHAM_MATER=CHMAT,
+                                   CHARGE=CH,
+                                   OPTION='RIGI_MECA'
+                           )
+
+#
+VECT_ELE=CALC_VECT_ELEM(        CHARGE=CH,
+                               CHAM_MATER=CHMAT,
+                                   OPTION='CHAR_MECA'
+                           )
+
+#
+NUME_DDL=NUME_DDL(  MATR_RIGI=RIGI_ELE)
+
+#
+RIGIDITE=ASSE_MATRICE(  MATR_ELEM=RIGI_ELE,
+                            NUME_DDL=NUME_DDL
+                        )
+
+#
+FORCE=ASSE_VECTEUR(    VECT_ELEM=VECT_ELE,
+                              NUME_DDL=NUME_DDL
+                         )
+
+#
+RIGIDITE=FACT_LDLT(    reuse=RIGIDITE,  MATR_ASSE=RIGIDITE)
+
+#
+DEP=RESO_LDLT(   MATR_FACT=RIGIDITE, 
+                            CHAM_NO=FORCE
+                       )
+
+FOND=DEFI_FOND_FISS(    MAILLAGE=MA,
+                         FOND_FISS=_F( GROUP_NO = ('P0',)),
+                           NORMALE=(0., 1., 0.,)
+                      )
+
+#
+THETA0=CALC_THETA(    MODELE=MO,
+                        THETA_2D=_F(  GROUP_NO = ('P0',),
+                                   MODULE = 1.,
+                                   R_INF = 1.E-6,
+                                   R_SUP = 2.5E-5),
+                       DIRECTION=(1., 0., 0.,)
+                     )
+
+#
+G00=CALC_G_THETA_T(        MODELE=MO,
+                               DEPL=DEP,
+                              THETA=THETA0,
+                           EXCIT=_F(CHARGE=CH,),
+                         CHAM_MATER=CHMAT,
+                          SYME_CHAR='SYME'
+                     )
+
+#
+# LA VALEUR DE REFERENCE VAUT 102.31 ,LE RAYON LA FISSURE VAUT 1.E-3 :
+# ET DONC LA VALEUR A TESTER VAUT 102.31*1.E-3=1.0231E-1
+#
+
+TEST_TABLE(       TABLE=G00,
+                       NOM_PARA='G',
+                           VALE=1.0231E-1,
+                      PRECISION=0.06      )
+
+#
+THETA01=CALC_THETA(    MODELE=MO,
+                         THETA_2D=_F(  GROUP_NO = ('P0',),
+                                    MODULE = 1.,
+                                    R_INF = 2.5E-5,
+                                    R_SUP = 5.E-5),
+                        DIRECTION=(1., 0., 0.,)
+                     )
+
+#
+G01=CALC_G_THETA_T(    MODELE=MO,
+                           DEPL=DEP,
+                          THETA=THETA01,
+                         EXCIT=_F(CHARGE=CH,),
+                         CHAM_MATER=CHMAT,
+                         SYME_CHAR='SYME'
+                     )
+
+#
+# LA VALEUR DE REFERENCE VAUT 102.31 ,LE RAYON LA FISSURE VAUT 1.E-3 :
+# ET DONC LA VALEUR A TESTER VAUT 102.31*1.E-3=1.0231E-1
+#
+
+TEST_TABLE(       TABLE=G01,
+                       NOM_PARA='G',
+                           VALE=1.0231E-1,
+                      PRECISION=0.02      )
+
+#
+THETA02=CALC_THETA(    MODELE=MO,
+                         THETA_2D=_F(  GROUP_NO = ('P0',),
+                                    MODULE = 1.,
+                                    R_INF = 5.E-5,
+                                    R_SUP = 7.5E-5),
+                        DIRECTION=(1., 0., 0.,)
+                     )
+
+#
+G02=CALC_G_THETA_T(    MODELE=MO,
+                           DEPL=DEP,
+                          THETA=THETA02,
+                         EXCIT=_F(CHARGE=CH,),
+                         CHAM_MATER=CHMAT,
+                         SYME_CHAR='SYME'
+                     )
+
+#
+# LA VALEUR DE REFERENCE VAUT 102.31 ,LE RAYON LA FISSURE VAUT 1.E-3 :
+# ET DONC LA VALEUR A TESTER VAUT 102.31*1.E-3=1.0231E-1
+#
+
+TEST_TABLE(       TABLE=G02,
+                       NOM_PARA='G',
+                           VALE=1.0231E-1,
+                      PRECISION=0.02      )
+
+#
+THETA03=CALC_THETA(    MODELE=MO,
+                         THETA_2D=_F(  GROUP_NO = ('P0',),
+                                    MODULE = 1.,
+                                    R_INF = 7.5E-5,
+                                    R_SUP = 1.E-4),
+                        DIRECTION=(1., 0., 0.,)
+                     )
+
+#
+G03=CALC_G_THETA_T(    MODELE=MO,
+                           DEPL=DEP,
+                          THETA=THETA03,
+                         EXCIT=_F(CHARGE=CH,),
+                         CHAM_MATER=CHMAT,
+                         SYME_CHAR='SYME'
+                    )
+
+#
+# LA VALEUR DE REFERENCE VAUT 102.31 ,LE RAYON LA FISSURE VAUT 1.E-3 :
+# ET DONC LA VALEUR A TESTER VAUT 102.31*1.E-3=1.0231E-1
+#
+
+TEST_TABLE(       TABLE=G03,
+                       NOM_PARA='G',
+                           VALE=1.0231E-1,
+                      PRECISION=0.02      )
+
+#
+FIN()
+#

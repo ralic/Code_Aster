@@ -2,7 +2,7 @@
       IMPLICIT   NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 23/02/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF POSTRELE  DATE 24/05/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -115,6 +115,7 @@ C
                   CALL UTIMPK('S',' DANS LA TABLE ',1, TBSIG(I) )
                   CALL UTIMPK('L',' LA CONTRAINTE ', 1, NOCMP(J) )
                   CALL UTIMPR('S',' POUR L''ABSC_CURV ',1,ZR(JABSC+K-1))
+                  CALL UTIMPI('L',' CODE RETOUR ',1,IRET)
                   CALL UTFINM
                ENDIF
  14         CONTINUE

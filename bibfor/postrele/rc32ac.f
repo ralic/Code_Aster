@@ -1,10 +1,10 @@
-      SUBROUTINE RC32AC ( OPMPB, OSN, OFATIG, MATER )
+      SUBROUTINE RC32AC ( OPMPB, OSN, OSNET, OFATIG, MATER )
       IMPLICIT   NONE
-      LOGICAL             OPMPB, OSN, OFATIG
+      LOGICAL             OPMPB, OSN, OSNET, OFATIG
       CHARACTER*8         MATER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 23/02/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF POSTRELE  DATE 24/05/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -78,7 +78,7 @@ C
      +             NPASS, NUM1, NUM2, IFM, NIV, IOCS, JSEIGR, JRESU,
      +             JNSITU, NSITUP, NSITUQ, JPMPB, IRET, I1, JFACT
       REAL*8       PPI, PPJ, SNMAX, SPMAX, SAMAX, UTOT, SALTIJ,  
-     +             UG, NADM, MPI(6), MPJ(6), SM, SN, SP, SMM,
+     +             UG, NADM, MPI(6), MPJ(6), SM, SN, SNET, SP, SMM,
      +             MATPI(8), MATPJ(8), MSE(6),TYPEKE,SPMECA,SPTHER,
      +             SPTHEM,SPMECM,KEMECA,KETHER, PM, PB, PMPB
       LOGICAL      SEISME,ENDUR
@@ -147,7 +147,7 @@ C
             CALL JELIRA(JEXNUM('&&RC3200.LES_GROUPES',NUMGR),'LONMAX',
      +                                                    NBSIGR, K8B )
             CALL JECROC (JEXNUM(K24B,IG))
-            CALL JEECRA (JEXNUM(K24B,IG), 'LONMAX', 5*NBSIGR, ' ' )
+            CALL JEECRA (JEXNUM(K24B,IG), 'LONMAX', 6*NBSIGR, ' ' )
             CALL JEVEUO (JEXNUM(K24B,IG), 'E', JPMPB )
 C
             CALL JECROC (JEXNUM(K24T,IG))
@@ -161,8 +161,8 @@ C
                SEISME = .TRUE.
             ENDIF
 C
-            CALL RC3201 ( OPMPB, OSN, OFATIG, LIEU(IM), NUMGR, IOCS,
-     +                    SEISME, NPASS, MATER, SNMAX, SPMAX, SPMECM,
+            CALL RC3201 ( OPMPB, OSN, OSNET, OFATIG, LIEU(IM), NUMGR,
+     +              IOCS, SEISME, NPASS, MATER, SNMAX, SPMAX, SPMECM,
      +                    SPTHEM, SAMAX, UTOT, SM, ZR(JPMPB),ZR(JFACT))
 C
  100     CONTINUE
@@ -230,14 +230,14 @@ C
                  CALL JEEXIN (JEXNUM(K24B,IG), IRET )
                  IF ( IRET .EQ. 0 ) THEN
                     CALL JECROC (JEXNUM(K24B,IG))
-                    CALL JEECRA (JEXNUM(K24B,IG),'LONMAX',5*NBSIGR,' ')
+                    CALL JEECRA (JEXNUM(K24B,IG),'LONMAX',6*NBSIGR,' ')
                  ENDIF
                  CALL JEVEUO ( JEXNUM(K24B,IG), 'E', JPMPB )
                  CALL RC32PM ( LIEU(IM), SEISME, PPI, MPI, PPJ, MPJ,
      +                                            MSE, PM, PB, PMPB )
-                 ZR(JPMPB-1+5*(IS1-1)+1) = PM
-                 ZR(JPMPB-1+5*(IS1-1)+2) = PB
-                 ZR(JPMPB-1+5*(IS1-1)+3) = PMPB
+                 ZR(JPMPB-1+6*(IS1-1)+1) = PM
+                 ZR(JPMPB-1+6*(IS1-1)+2) = PB
+                 ZR(JPMPB-1+6*(IS1-1)+3) = PMPB
                  IF (NIV.GE.2) THEN
                     WRITE (IFM,2020) NSITUP, PM, PB, PMPB
                  END IF
@@ -253,12 +253,30 @@ C
                  CALL JEEXIN (JEXNUM(K24B,IG), IRET )
                  IF ( IRET .EQ. 0 ) THEN
                     CALL JECROC (JEXNUM(K24B,IG))
-                    CALL JEECRA (JEXNUM(K24B,IG),'LONMAX',5*NBSIGR,' ')
+                    CALL JEECRA (JEXNUM(K24B,IG),'LONMAX',6*NBSIGR,' ')
                  ENDIF
                  CALL JEVEUO ( JEXNUM(K24B,IG), 'E', JPMPB )
-                 ZR(JPMPB-1+5*(IS1-1)+4) = SN
+                 ZR(JPMPB-1+6*(IS1-1)+4) = SN
                  IF (NIV.GE.2) THEN
                     WRITE (IFM,2030) NSITUP, SN
+                 END IF
+              ENDIF
+C
+C ----------- CALCUL DU SN*
+C
+              IF ( OSNET ) THEN
+                 SNET = 0.D0
+                 CALL RC32SE ( LIEU(IM), SEISME, NSITUP, PPI, MPI, 
+     +                         NSITUQ, PPJ, MPJ, MSE, SNET )
+                 CALL JEEXIN (JEXNUM(K24B,IG), IRET )
+                 IF ( IRET .EQ. 0 ) THEN
+                    CALL JECROC (JEXNUM(K24B,IG))
+                    CALL JEECRA (JEXNUM(K24B,IG),'LONMAX',6*NBSIGR,' ')
+                 ENDIF
+                 CALL JEVEUO ( JEXNUM(K24B,IG), 'E', JPMPB )
+                 ZR(JPMPB-1+6*(IS1-1)+6) = SNET
+                 IF (NIV.GE.2) THEN
+                    WRITE (IFM,2032) NSITUP, SNET
                  END IF
               ENDIF
 C
@@ -304,7 +322,7 @@ C
 C
                  UG = DBLE( NOCC ) / NADM
               ENDIF
-              ZR(JPMPB-1+5*(IS1-1)+5) = UG
+              ZR(JPMPB-1+6*(IS1-1)+5) = UG
               IF (NIV.GE.2) THEN
                  WRITE (IFM,2060) NSITUP, UG
               END IF
@@ -377,6 +395,7 @@ C
  2020 FORMAT (1P,' SITUATION ',I4,' PM =',E12.5,
      +                            ' PB =',E12.5,' PMPB =',E12.5)
  2030 FORMAT (1P,' SITUATION ',I4,' SN =',E12.5 )
+ 2032 FORMAT (1P,' SITUATION ',I4,' SN* =',E12.5 )
  2040 FORMAT (1P,' SITUATION ',I4,' SP =',E12.5)
  2050 FORMAT (1P,' SITUATION ',I4,' SALT =',E12.5)
  2060 FORMAT (1P,' SITUATION ',I4,' SALT =',E12.5)

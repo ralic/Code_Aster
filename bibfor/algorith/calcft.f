@@ -10,11 +10,11 @@
      +                    DLAMBS, VISCL, DVISCL, MAMOLG, CPG, LAMBT,
      +                    DLAMBT,VISCG, 
      +                    DVISCG, MAMOLV, CPVG, VISCVG, DVISVG,
-     +                    RETCOM,LAMBCT)
+     +                    RETCOM,LAMBCT,RHO11,H11,H12)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 17/05/2004   AUTEUR ROMEO R.FERNANDES 
+C MODIF ALGORITH  DATE 25/05/2004   AUTEUR GRANET S.GRANET 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -50,7 +50,7 @@ C ======================================================================
       REAL*8        DFICKT, DFICKG, LAMBP,DLAMBP, RHOL,UNSURK,CPL
       REAL*8        ALPHA, LAMBS,DLAMBS, VISCL, DVISCL, CPG, LAMBT
       REAL*8        DLAMBT,VISCG, DVISCG, MAMOLG, CPVG, VISCVG, DVISVG
-      REAL*8        LAMBCT
+      REAL*8        LAMBCT,RHO11,H11,H12,RHO12
       CHARACTER*16  OPTION,MECA,THMC,HYDR
 C    PARAMETRE POUR LA RECUP DES COEF MECA
       INTEGER      NELAS
@@ -88,13 +88,36 @@ C =====================================================================
             SAT = 1.D0
             DSATP1 = 0.D0
          ENDIF
-         LAMBDT(1) = LAMBS*LAMBP*LAMBT + LAMBCT
-         LAMBDT(2) = (BIOT-PHI)*DLAMBP*LAMBS*LAMBT
-         LAMBDT(3) = LAMBP*DLAMBS*LAMBT*DSATP1
+C =====================================================================
+C           LAMBDT(1) : LAMBDA
+C           LAMBDT(2) : DLAMB / DEPSV
+C           LAMBDT(3) : DLAMB / DP1
+C           LAMBDT(4) : DLAMB / DP2
+C           LAMBDT(5) : DLAMB / DT
+C =====================================================================
+C
+         IF(THMC.EQ.'LIQU_VAPE')THEN
+           RHO12=MAMOLV*PVP/RGAZ/T
+           LAMBDT(1) = LAMBS*LAMBP*LAMBT + LAMBCT
+           LAMBDT(2) = (BIOT-PHI)*DLAMBP*LAMBS*LAMBT
+           LAMBDT(3) =(RHO12/RHO11-1.D0)* LAMBP*DLAMBS*LAMBT*DSATP1
+     +            +CS*(SAT+(1.D0-SAT)*RHO12/RHO11)*(BIOT-PHI)*
+     +             DLAMBP*LAMBS*LAMBT
+           LAMBDT(4) =0.D0
+           LAMBDT(5) = LAMBS*LAMBP*DLAMBT 
+     +            +(BIOT-PHI)*(-3.D0*ALPHA0+CS*(1.D0-SAT)*
+     +            RHO12*(H12-H11)/T)*DLAMBP*LAMBS*LAMBT
+     +            +LAMBP*DLAMBS*LAMBT*DSATP1*RHO12*(H12-H11)/T
+         ELSE
+           LAMBDT(1) = LAMBS*LAMBP*LAMBT + LAMBCT
+           LAMBDT(2) = (BIOT-PHI)*DLAMBP*LAMBS*LAMBT
+           LAMBDT(3) = LAMBP*DLAMBS*LAMBT*DSATP1
      +            -SAT*CS*(BIOT-PHI)*DLAMBP*LAMBS*LAMBT
-         LAMBDT(4) = CS*(BIOT-PHI)*DLAMBP*LAMBS*LAMBT
-         LAMBDT(5) = LAMBS*LAMBP*DLAMBT 
-     +            -(BIOT-PHI)*3*ALPHA0*DLAMBP*LAMBS*LAMBT
+           LAMBDT(4) = CS*(BIOT-PHI)*DLAMBP*LAMBS*LAMBT
+           LAMBDT(5) = LAMBS*LAMBP*DLAMBT 
+     +            -(BIOT-PHI)*3.D0*ALPHA0*DLAMBP*LAMBS*LAMBT
+         ENDIF
+         
 C =====================================================================
 C --- CALCUL DU FLUX THERMIQUE ----------------------------------------
 C =====================================================================

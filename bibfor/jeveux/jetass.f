@@ -1,6 +1,6 @@
       SUBROUTINE JETASS ( CLAS )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 21/11/2003   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF JEVEUX  DATE 24/05/2004   AUTEUR D6BHHJP J.P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -82,7 +82,7 @@ C     ------------------------------------------------------------------
 C     ------------------------------------------------------------------
       LOGICAL          LIBRE,ACTU
       CHARACTER*1      KCLAS
-      INTEGER          ITP(1),JITP,IADITP,IADDI(2),IADDIB(2)
+      INTEGER          ITP(1),JITP,IADITP,IADDI(2),IADDIB(2),LGBL
 C DEB ------------------------------------------------------------------
       IADDI(2)  = 0
       IADDIB(2) = 0
@@ -96,7 +96,8 @@ C DEB ------------------------------------------------------------------
         NCLA2 = NCLA1
       ENDIF
       DO 100 IC=NCLA1,NCLA2
-        CALL JJALLS(LONGBL(IC),'V','I',LOIS,'INIT',ITP,JITP,IADITP)
+        LGBL = 1024*LONGBL(IC)*LOIS
+        CALL JJALLS(LGBL,'V','I',LOIS,'INIT',ITP,JITP,IADITP)
         ISZON(JISZON+IADITP-1) = ISTAT(2)
         ISZON(JISZON+ISZON(JISZON+IADITP-4)-4) = ISTAT(4)
 C
@@ -113,10 +114,10 @@ C ----- AFIN D'ACTUALISER LES ADRESSES DISQUES DES COLLECTIONS
 C ----- STOCKEES DANS DES PETITS OBJETS
 C
         IF ( IITECR(IC) .GT. 0 ) THEN
-           CALL JXECRB (IC, IITECR(IC), KITECR(IC)+1, LONGBL(IC), 0, 0)
+           CALL JXECRB (IC, IITECR(IC), KITECR(IC)+1, LGBL, 0, 0)
         ENDIF
         IF ( LITLEC(IC) ) THEN
-           CALL JXECRB (IC, IITLEC(IC), KITLEC(IC)+1, LONGBL(IC), 0, 0)
+           CALL JXECRB (IC, IITLEC(IC), KITLEC(IC)+1, LGBL, 0, 0)
            LITLEC(IC) = .FALSE.
            IITLEC(IC) = 0
         ENDIF
@@ -142,11 +143,11 @@ C ----------- L'ENREGISTREMENT CONTIENT UN OU UNE PARTIE D'UN "GROS"
 C ----------- OBJET ON ACTUALISE L'ADRESSE DISQUE ET ON REECRIT
 C
                 IADDI(1) = K
-                CALL JXLIRO (IC, IADITP, IADDI, LONGBL(IC))
+                CALL JXLIRO (IC, IADITP, IADDI, LGBL)
                 IDOSL = IDOS
                 IDCOL = IDCO
                 IADDIB(1) = KLIB
-                CALL JXECRO (IC, IADITP, IADDIB, LONGBL(IC), IDCO, IDOS)
+                CALL JXECRO (IC, IADITP, IADDIB, LGBL, IDCO, IDOS)
                 IF ( IDOSL .NE. IDOSP .OR. IDCOL .NE. IDCOP ) THEN
 C
 C ------------- ON ACTUALISE L'ADRESSE DISQUE QUE SI L'UN DES 

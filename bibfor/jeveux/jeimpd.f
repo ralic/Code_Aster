@@ -1,6 +1,6 @@
       SUBROUTINE JEIMPD ( CUNIT , CLAS , CMESS )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 11/09/2003   AUTEUR VABHHTS J.PELLET 
+C MODIF JEVEUX  DATE 24/05/2004   AUTEUR D6BHHJP J.P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -65,6 +65,8 @@ C
       COMMON /IFICJE/  NBLMAX(N) , NBLUTI(N) , LONGBL(N) ,
      +                 KITLEC(N) , KITECR(N) , KINDEF(N) , KIADM(N) ,
      +                 IITLEC(N) , IITECR(N) , NITECR(N) , KMARQ(N)
+      INTEGER          LBIS , LOIS , LOLS , LOUA , LOR8 , LOC8
+      COMMON /IENVJE/  LBIS , LOIS , LOLS , LOUA , LOR8 , LOC8
 C ---------------------------------------------------------------------
       INTEGER          ICLAS ,ICLAOS , ICLACO , IDATOS , IDATCO , IDATOC
       COMMON /IATCJE/  ICLAS ,ICLAOS , ICLACO , IDATOS , IDATCO , IDATOC
@@ -83,7 +85,7 @@ C ---------------------------------------------------------------------
       CHARACTER*1      KCLAS , CGENR , CTYPE , CLASI , CGEN2
       CHARACTER*32     CRNOM
       LOGICAL          LCOL,LENTE
-      INTEGER          IPGCEX
+      INTEGER          IPGCEX,LGBL
 C DEB -----------------------------------------------------------------
       IPGCEX = IPGC
       IPGC = -2
@@ -109,8 +111,9 @@ C DEB -----------------------------------------------------------------
      +          '        ', CMESS(1:MIN(72,LEN(CMESS)))
           WRITE(JULIST,*)' NOM DE LA BASE               : ',NOMBAS(I)
           WRITE(JULIST,*)' NB D''ENREGISTREMENTS MAXIMUM : ',NBLMAX(I)
+          LGBL=1024*LONGBL(I)*LOIS
           WRITE(JULIST,*)
-     +               ' LONGUEUR D''ENREGISTREMENT (OCTETS): ',LONGBL(I)
+     +               ' LONGUEUR D''ENREGISTREMENT (OCTETS): ',LGBL
           WRITE(JULIST,*)'                                  '
           WRITE (JULIST,'(    1X,4A)' ) ('--------------------',K=1,4)
           KJ = 1

@@ -1,6 +1,6 @@
       SUBROUTINE JXLIBD ( IDCO , IDOS , IC , IADDI , LONOI )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 10/03/98   AUTEUR VABHHTS J.PELLET 
+C MODIF JEVEUX  DATE 24/05/2004   AUTEUR D6BHHJP J.P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,13 +50,14 @@ C     ------------------------------------------------------------------
       COMMON /JUSADI/  JUSADI(N)
       COMMON /KUSADI/  IUSADI(1)
 C     ------------------------------------------------------------------
-      INTEGER          KADD , LADD
+      INTEGER          KADD , LADD , LGBL
       LOGICAL          LPETIT , LRAB
 C DEB ------------------------------------------------------------------
       KADD   = IADDI(1)
       LADD   = IADDI(2)
       LPETIT = ( (IUSADI(JUSADI(IC)+2*KADD-1) .EQ. 0  .AND.
      &            IUSADI(JUSADI(IC)+2*KADD)   .EQ. 0       ) )
+      LGBL = 1024*LONGBL(IC)*LOIS
 C
       IF ( LPETIT ) THEN
 C
@@ -73,9 +74,9 @@ C
           ISZON(JIECR-2) = -IDOS
         ELSE
           IF ( LITLEC(IC) ) THEN
-            CALL JXECRB (IC, IITLEC(IC), KITLEC(IC)+1, LONGBL(IC),0,0)
+            CALL JXECRB (IC, IITLEC(IC), KITLEC(IC)+1, LGBL,0,0)
           ENDIF
-          CALL JXLIRB (IC, KADD, KITLEC(IC)+1, LONGBL(IC))
+          CALL JXLIRB (IC, KADD, KITLEC(IC)+1, LGBL)
           JIECR = (JK1ZON+KITLEC(IC)+LADD)/LOIS+1
           ISZON(JIECR-3) = -IDCO
           ISZON(JIECR-2) = -IDOS
@@ -86,8 +87,8 @@ C
 C
 C ----- GROS  OBJET
 C
-        NBLENT = LONOI / LONGBL(IC)
-        LRAB = ( MOD ( LONOI , LONGBL(IC) ) .NE. 0 )
+        NBLENT = LONOI / LGBL
+        LRAB = ( MOD (LONOI , LGBL) .NE. 0 )
         DO 10 I = 1 , NBLENT
           IUSADI(JUSADI(IC)+2*(KADD+I-1)-1) = -IDCO
           IUSADI(JUSADI(IC)+2*(KADD+I-1)  ) = -IDOS

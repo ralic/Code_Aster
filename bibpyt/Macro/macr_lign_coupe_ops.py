@@ -1,4 +1,4 @@
-#@ MODIF macr_lign_coupe_ops Macro  DATE 20/01/2003   AUTEUR DURAND C.DURAND 
+#@ MODIF macr_lign_coupe_ops Macro  DATE 25/05/2004   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -159,7 +159,7 @@ def macr_lign_coupe_ops(self,RESULTAT,UNITE_MAILLAGE,LIGN_COUPE,MODELE,
   iocc=1
   for m in LIGN_COUPE :
       self.DeclareOut('tt',m['TABLE'])
-      tt=POST_RELEVE_T(ACTION=_F(INTITULE  = 'lig. coupe'+str(iocc),
+      tt=POST_RELEVE_T(ACTION=_F(INTITULE  = 'lig.coupe'+str(iocc),
                                  RESULTAT  = __recou,
                                  GROUP_NO  = 'LICOU'+str(iocc),
                                  NOM_CHAM  = NOM_CHAM,

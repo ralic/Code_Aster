@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 07/05/2004   AUTEUR CIBHHGB G.BERTRAND 
+#& MODIF COMMANDE  DATE 24/05/2004   AUTEUR GALENNE E.GALENNE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -44,8 +44,11 @@ CALC_G_THETA_T=OPER(nom="CALC_G_THETA_T",op=53,sd_prod=tabl_calc_g_th,
              CRITERE         =SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU") ),
            ),
          ),
-
-         CHARGE          =SIMP(statut='f',typ=char_meca,validators=NoRepeat(),max='**'),
+         EXCIT           =FACT(statut='f',max='**',
+               CHARGE          =SIMP(statut='o',typ=(char_meca,char_cine_meca)),
+               FONC_MULT       =SIMP(statut='f',typ=(fonction,formule)),
+               TYPE_CHARGE     =SIMP(statut='f',typ='TXM',defaut="FIXE",into=("FIXE",) ),
+         ),
          SYME_CHAR       =SIMP(statut='f',typ='TXM',defaut="SANS",into=("SYME","ANTI","SANS") ),
  
          COMP_ELAS       =FACT(statut='f',

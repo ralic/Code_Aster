@@ -4,8 +4,8 @@
      +                    CONGEM,CONGEP,DSDE,P1,P2,
      +                    GRAP1,GRAP2,T,GRAT,PHI,PVP,PAD,RHO11,H11,H12,
      +                    H21,H22,R, RHOD, CPD, BIOT, SAT, DSATP1,
-     +                    PESA, PERMFH, PERMLI, DPERML, PERMGZ, DPERMS,
-     +                    DPERMP, FICK, DFICKT, DFICKG, FICKAD,DFADT,
+     +                    PESA, PERMFH, PERMLI, DPERML, KREL2, DKR2S,
+     +                    DKR2P, FICK, DFICKT, DFICKG, FICKAD,DFADT,
      +                    LAMBDD, DLAMBD,KH,
      +                    RHOL, CLIQ, ALPLIQ, CPL, LAMBDL, DLAMBL,
      +                    VISCL, DVISCL, MAMOLG, CPG, LAMBDG, DLAMBG,
@@ -14,7 +14,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 17/05/2004   AUTEUR ROMEO R.FERNANDES 
+C MODIF ALGORITH  DATE 25/05/2004   AUTEUR GRANET S.GRANET 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -43,9 +43,9 @@ C IN CORRESPONDANCE ANCIENNE PROGRAMMATION -----------------------------
 C COND(1) -> PERMFH : PERM_IN OU PERM_END SOUS THM_DIFFU ---------------
 C COND(2) -> PERMLI : PERM_LIQU           SOUS THM_DIFFU ---------------
 C COND(3) -> DPERML : D_PERM_LIQU         SOUS THM_DIFFU ---------------
-C COND(4) -> PERMGZ : PERM_GAZ            SOUS THM_DIFFU ---------------
-C COND(5) -> DPERMS : D_PERM_SATU_GAZ     SOUS THM_DIFFU ---------------
-C COND(6) -> DPERMP : D_PERM_PRES_GAZ     SOUS THM_DIFFU ---------------
+C COND(4) -> KREL2 : PERM_GAZ            SOUS THM_DIFFU ---------------
+C COND(5) -> DKR2S : D_PERM_SATU_GAZ     SOUS THM_DIFFU ---------------
+C COND(6) -> DKR2P : D_PERM_PRES_GAZ     SOUS THM_DIFFU ---------------
 C COND(7) -> FICK   : FICK                SOUS THM_DIFFU ---------------
 C COND(8) -> DFICKT : D_FICK_TEMP         SOUS THM_DIFFU ---------------
 C COND(9) -> DFICKG : D_FICK_GAZ_PRES     SOUS THM_DIFFU ---------------
@@ -60,7 +60,7 @@ C
       REAL*8        DSDE(1:DIMCON,1:DIMDEF),P1,GRAP1(3),P2,T
       REAL*8        GRAP2(3),GRAT(3),PHI,PVP,PAD,H11,H12,H21,H22,RHO11
       REAL*8        R, RHOD, CPD, BIOT, SAT, DSATP1, PESA(3), PERMFH
-      REAL*8        PERMLI, DPERML, PERMGZ, DPERMS, DPERMP, FICK
+      REAL*8        PERMLI, DPERML, KREL2, DKR2S, DKR2P, FICK
       REAL*8        DFICKT, DFICKG, LAMBDD, DLAMBD, RHOL, CLIQ, ALPLIQ
       REAL*8        FICKAD, DFADT
       REAL*8        CPL, LAMBDL, DLAMBL, VISCL, DVISCL, CPG, LAMBDG
@@ -72,7 +72,7 @@ C --- VARIABLES LOCALES ------------------------------------------------
 C ======================================================================
       INTEGER         I,J
       REAL*8          LAMBD1(5),LAMBD2(5),FV(5),FA(5),VISCO,DVISCO
-      REAL*8          KREL,DKREL,RHO12,RHO21,MASRT,ENDOM
+      REAL*8          KREL1,DKREL1,RHO12,RHO21,MASRT,ENDOM
       REAL*8          RHO22, KH
 C    
 C VARIABLES LOCALES PERMETTANT D'EXPRIMER LES DERIVEES DES
@@ -188,15 +188,15 @@ C **********************************************************************
 C   RECUPERATION DES COEFFICIENTS 
 C ======================================================================
       IF (THMC.EQ.'LIQU_SATU') THEN
-         KREL   = 1.D0
-         DKREL  = 0.D0
+         KREL1   = 1.D0
+         DKREL1  = 0.D0
          VISCO  = VISCL
          DVISCO = DVISCL
       ENDIF
 C
       IF (THMC.EQ.'GAZ') THEN
-         KREL   = 1.D0
-         DKREL  = 0.D0
+         KREL1   = 1.D0
+         DKREL1  = 0.D0
          VISCO  = VISCG
          DVISCO = DVISCG
       ENDIF
@@ -204,16 +204,16 @@ C
       IF (THMC.EQ.'LIQU_GAZ_ATM') THEN
          VISCO  = VISCL
          DVISCO = DVISCL
-         KREL   = PERMLI
-         DKREL  = DPERML*DSATP1
+         KREL1   = PERMLI
+         DKREL1  = DPERML*DSATP1
       ENDIF
 C
       IF ( (THMC.EQ.'LIQU_VAPE_GAZ')    .OR.
      +    (THMC.EQ.'LIQU_AD_GAZ_VAPE') .OR.
      +    (THMC.EQ.'LIQU_GAZ')         .OR.
      +    (THMC.EQ.'LIQU_VAPE')          ) THEN
-         KREL   = PERMLI
-         DKREL  = DPERML*DSATP1
+         KREL1   = PERMLI
+         DKREL1  = DPERML*DSATP1
          VISCO  = VISCL
          DVISCO = DVISCL
 C
@@ -248,28 +248,50 @@ C ======================================================================
 C --- CALCUL DE LAMBDA2 ------------------------------------------------
 C ======================================================================
 C --- LAMBD2(1) = CONDUC_HYDRO_GAZ -------------------------------------
-C --- LAMBD2(2) = D(CONDUC_HYDRO_GAZ)/DP1 ------------------------------
-C --- LAMBD2(3) = D(CONDUC_HYDRO_GAZ)/DP2 ------------------------------
-C --- LAMBD2(4) = D(CONDUC_HYDRO_GAZ)/DT -------------------------------
+C --- LAMBD2(2) = D(CONDUC_HYDRO_GAZ)/DEPSV ----------------------------
+C --- LAMBD2(3) = D(CONDUC_HYDRO_GAZ)/DP1 ------------------------------
+C --- LAMBD2(4) = D(CONDUC_HYDRO_GAZ)/DP2 ------------------------------
+C --- LAMBD2(5) = D(CONDUC_HYDRO_GAZ)/DT -------------------------------
 C ======================================================================
-         LAMBD2(1) =   PERMFH*PERMGZ/VISCG
-         LAMBD2(2) =   0.0D0
-         LAMBD2(3) =   PERMFH*DPERMS*DSATP1/VISCG
-         LAMBD2(4) =   PERMFH*DPERMP/VISCG
-         LAMBD2(5) = - PERMFH*PERMGZ/VISCG/VISCG*DVISCG
+        IF(THMC.EQ.'LIQU_VAPE')THEN
+           RHO12=MAMOLV*PVP/R/T
+           LAMBD2(1) =   PERMFH*KREL2/VISCG
+           LAMBD2(2) =   0.0D0
+           LAMBD2(3) =   PERMFH*DKR2S*DSATP1*(RHO12/RHO11-1.D0)/VISCG
+           LAMBD2(4) =   PERMFH*DKR2P/VISCG
+           LAMBD2(5) = - PERMFH*KREL2/VISCG/VISCG*DVISCG+PERMFH*
+     +               DKR2S*DSATP1*RHO12*(H12-H11)/T/VISCG
+        ELSE
+           LAMBD2(1) =   PERMFH*KREL2/VISCG
+           LAMBD2(2) =   0.0D0
+           LAMBD2(3) =   PERMFH*DKR2S*DSATP1/VISCG
+           LAMBD2(4) =   PERMFH*DKR2P/VISCG
+           LAMBD2(5) = - PERMFH*KREL2/VISCG/VISCG*DVISCG
+         ENDIF
       ENDIF
 C ======================================================================
 C --- CALCUL DE LAMBDA1 ------------------------------------------------
 C ======================================================================
-      LAMBD1(1) =   PERMFH*KREL/VISCO
-      LAMBD1(2) =   0.0D0
-      LAMBD1(3) =   PERMFH*DKREL/VISCO
-      LAMBD1(4) =   0.0D0
-      LAMBD1(5) = - PERMFH*KREL/VISCO/VISCO*DVISCO
-C
-C
-C
-C
+C --- LAMBD1(1) = CONDUC_HYDRO_LIQ -------------------------------------
+C --- LAMBD1(2) = D(CONDUC_HYDRO_LIQ)/DEPSV ----------------------------
+C --- LAMBD1(3) = D(CONDUC_HYDRO_LIQ)/DP1 ------------------------------
+C --- LAMBD1(4) = D(CONDUC_HYDRO_LIQ)/DP2 ------------------------------
+C --- LAMBD1(5) = D(CONDUC_HYDRO_LIQ)/DT -------------------------------
+C ======================================================================
+      IF(THMC.EQ.'LIQU_VAPE')THEN
+        LAMBD1(1) =   PERMFH*KREL1/VISCO
+        LAMBD1(2) =   0.0D0
+        LAMBD1(3) =   PERMFH*DKREL1*(RHO12/RHO11-1.D0)/VISCO
+        LAMBD1(4) =   0.0D0
+        LAMBD1(5) = - PERMFH*KREL1/VISCO/VISCO*DVISCO+PERMFH*
+     +               DKREL1*RHO12*(H12-H11)/T/VISCO
+      ELSE
+        LAMBD1(1) =   PERMFH*KREL1/VISCO
+        LAMBD1(2) =   0.0D0
+        LAMBD1(3) =   PERMFH*DKREL1/VISCO
+        LAMBD1(4) =   0.0D0
+        LAMBD1(5) = - PERMFH*KREL1/VISCO/VISCO*DVISCO
+      ENDIF
 C
 C **********************************************************************
 C  CALCUL DES MASSES VOLUMIQUES, PRESSION DE VAPEUR, GRADIENTS DE VAPEUR
@@ -289,7 +311,6 @@ C
  100     CONTINUE
       ENDIF
       IF (THMC.EQ.'LIQU_VAPE') THEN
-         RHO12=MAMOLV*PVP/R/T
          DO 110 I=1,NDIM
             GP(I)=RHO12/RHO11*GRAP1(I)
             IF (YATE.EQ.1) THEN
@@ -333,16 +354,16 @@ C
                GPA(I)=GPA(I)+DP22T*GRAT(I)
             ENDIF
             GC(I)=GP(I)/P2-PVP/P2/P2*GRAP2(I)
-            GCA(I)=GPA(I)/R/T
+            GCA(I)=MAMOLG*GPA(I)/R/T
             IF (YATE.EQ.1) THEN
-              GCA(I)=GCA(I)-PAD/R/T/T*GRAT(I)
+              GCA(I)=GCA(I)-MAMOLG*PAD/R/T/T*GRAT(I)
             ENDIF
  200     CONTINUE
       ENDIF
 
 C
 C *********************************************************************
-C CALCUL DES DERIVEES DES PRESSIONS DE VAPEUR ET DES CVP ET CAD
+C CALCUL DES DERIVEES DES PRESSIONS DE VAPEUR ET DES CVP
 C
       IF ((OPTION(1:16).EQ.'RIGI_MECA_TANG').OR.
      &   (OPTION(1:9).EQ.'FULL_MECA')) THEN
@@ -580,22 +601,22 @@ C
                DGCVP2(I)=DGPVP2(I)/P2
      &                     -GP(I)/P2/P2-GRAP2(I)/P2/P2*DP12P2
      &                     +2.D0*PVP*GRAP2(I)/P2/P2/P2
-               DGCAP1(I)=DGPAP1(I)/R/T
-               DGCAP2(I)=DGPAP2(I)/R/T
+               DGCAP1(I)=MAMOLG*DGPAP1(I)/R/T
+               DGCAP2(I)=MAMOLG*DGPAP2(I)/R/T
                IF (YATE.EQ.1) THEN
                   DGCVT(I)=DGPVT(I)/P2-GRAP2(I)/P2/P2*DP12T
-                  DGCAP1(I)=DGCAP1(I)-1/R/T/T*DP22P1*GRAT(I)
-                  DGCAP2(I)=DGCAP2(I)-1/R/T/T*DP22P2*GRAT(I)
-                  DGCAT(I)=MASRT*DGPAT(I)-1/R/T/T*DP22T*GRAT(I)
-     &                    +(2*1/R/T*PAD/T/T*GRAT(I)-1/R/T/T*GPA(I))
+                  DGCAP1(I)=DGCAP1(I)-MAMOLG*1/R/T/T*DP22P1*GRAT(I)
+                  DGCAP2(I)=DGCAP2(I)-MAMOLG*1/R/T/T*DP22P2*GRAT(I)
+                  DGCAT(I)=MASRT*DGPAT(I)-MAMOLG*1/R/T/T*DP22T*GRAT(I)
+     &                 +MAMOLG*(2*1/R/T*PAD/T/T*GRAT(I)-1/R/T/T*GPA(I))
                ENDIF
                DGCGP1(1)=DGPGP1(1)/P2
                DGCGP2(1)=DGPGP2(1)/P2-PVP/P2/P2
-               DGCGP1(2)=1/R/T*DGPGP1(2)
-               DGCGP2(2)=1/R/T*DGPGP2(2)
+               DGCGP1(2)=MAMOLG*1/R/T*DGPGP1(2)
+               DGCGP2(2)=MAMOLG*1/R/T*DGPGP2(2)
                IF (YATE.EQ.1) THEN
                   DGCGT(1)=DGPGT(1)/P2
-                  DGCGT(2)=1/R/T*DGPGT(2)-1/R/T*PAD/T
+                  DGCGT(2)=MAMOLG*(1/R/T*DGPGT(2)-1/R/T*PAD/T)
                ENDIF     
  201        CONTINUE
          ENDIF
@@ -641,7 +662,7 @@ C
      &                          +RHO21*CVP*FV(1)*GC(I)
                CONGEP(ADCP22+I)=RHO22*LAMBD1(1)
      &                          *(GRAP1(I)-GRAP2(I)+(RHO22+RHO11)
-     &                          *PESA(I))-RHO22*(1.D0)*FA(1)*GCA(I) 
+     &                          *PESA(I))-FA(1)*GCA(I) 
  203        CONTINUE
          ENDIF
          IF (THMC.EQ.'LIQU_VAPE') THEN
@@ -826,18 +847,19 @@ C
                IF (THMC.EQ.'LIQU_AD_GAZ_VAPE')THEN 
                 DSDE(ADCP22+I,ADDEP1)=DSDE(ADCP22+I,ADDEP1)
      &           +DR22P1*LAMBD1(1)*
-     &          (-GRAP2(I)+GRAP1(I)+(RHO22+RHO11)*PESA(I))    
+     &          (-GRAP2(I)+GRAP1(I)+(RHO22+RHO11)*PESA(I)) 
                 DSDE(ADCP22+I,ADDEP1)=DSDE(ADCP22+I,ADDEP1)
      &           +RHO22*LAMBD1(3)*(-GRAP2(I)+GRAP1(I)+
      &            (RHO22+RHO11)*PESA(I))
                 DSDE(ADCP22+I,ADDEP1)=DSDE(ADCP22+I,ADDEP1)
      &           +RHO22*LAMBD1(1)*((DR22P1+DR11P1)*PESA(I))
+C ici     
                 DSDE(ADCP22+I,ADDEP1)=DSDE(ADCP22+I,ADDEP1)
-     &           -DR22P1*(1.D0)*FA(1)*GCA(I)
+     &           -FA(3)*GCA(I)
+C ici     
                 DSDE(ADCP22+I,ADDEP1)=DSDE(ADCP22+I,ADDEP1)
-     &           -RHO22*(1.D0)*FA(3)*GCA(I)
-                DSDE(ADCP22+I,ADDEP1)=DSDE(ADCP22+I,ADDEP1)
-     &           -RHO22*(1.D0)*FA(1)*DGCAP1(I)
+     &           -FA(1)*DGCAP1(I)
+     
                 DSDE(ADCP22+I,ADDEP2)=DSDE(ADCP22+I,ADDEP2)
      &           +DR22P2*LAMBD1(1)*
      &          (-GRAP2(I)+GRAP1(I)+(RHO22+RHO11)*PESA(I))
@@ -847,15 +869,13 @@ C
                 DSDE(ADCP22+I,ADDEP2)=DSDE(ADCP22+I,ADDEP2)
      &           +RHO22*LAMBD1(1)*((DR22P2+DR11P2)*PESA(I))
                 DSDE(ADCP22+I,ADDEP2)=DSDE(ADCP22+I,ADDEP2)
-     &           -DR22P2*(1.D0)*FA(1)*GCA(I)
+     &           -FA(4)*GCA(I)
                 DSDE(ADCP22+I,ADDEP2)=DSDE(ADCP22+I,ADDEP2)
-     &           -RHO22*(1.D0)*FA(4)*GCA(I)
-                DSDE(ADCP22+I,ADDEP2)=DSDE(ADCP22+I,ADDEP2)
-     &           -RHO22*(1.D0)*FA(1)*DGCAP2(I)
+     &           -FA(1)*DGCAP2(I)
                 DSDE(ADCP22+I,ADDEP1+I)=DSDE(ADCP22+I,ADDEP1+I)
-     &           +RHO22*LAMBD1(1)-RHO22*(1.D0)*FA(1)*DGCGP1(2)
+     &           +RHO22*LAMBD1(1)-FA(1)*DGCGP1(2)
                 DSDE(ADCP22+I,ADDEP2+I)=DSDE(ADCP22+I,ADDEP2+I)
-     &           -RHO22*LAMBD1(1)-RHO22*(1.D0)*FA(1)*DGCGP2(2)
+     &           -RHO22*LAMBD1(1)-FA(1)*DGCGP2(2)
                ENDIF
 C
 C TERMES COMPLEMENTAIRES DE MECANIQUE ET THERMIQUE
@@ -885,7 +905,7 @@ C
      &                  +(RHO22+RHO11)*PESA(I))
                        DSDE(ADCP22+I,ADDEME+NDIM-1+J)=
      &                DSDE(ADCP22+I,ADDEME+NDIM-1+J)
-     &                   -RHO22*(1.D0)*FA(2)*GCA(I)
+     &                   -FA(2)*GCA(I)
                      ENDIF
  106              CONTINUE
 C           
@@ -945,13 +965,11 @@ C
                     DSDE(ADCP22+I,ADDETE)=DSDE(ADCP22+I,ADDETE)
      &                +RHO22*LAMBD1(1)*((DR22T+DR11T)*PESA(I))
                     DSDE(ADCP22+I,ADDETE)=DSDE(ADCP22+I,ADDETE)
-     &                -DR22T*(1.D0)*FA(1)*GCA(I)
+     &                -FA(5)*GCA(I)
                     DSDE(ADCP22+I,ADDETE)=DSDE(ADCP22+I,ADDETE)
-     &                -RHO22*(1.D0)*FA(5)*GCA(I)
-                    DSDE(ADCP22+I,ADDETE)=DSDE(ADCP22+I,ADDETE)
-     &                -RHO22*(1.D0)*FA(1)*DGCAT(I)
+     &                -FA(1)*DGCAT(I)
                     DSDE(ADCP22+I,ADDETE+I)=DSDE(ADCP22+I,ADDETE+I)
-     &                -RHO22*(1.D0)*FA(1)*DGCGT(2)
+     &                -FA(1)*DGCGT(2)
                   ENDIF
                ENDIF
 C            
@@ -1007,11 +1025,11 @@ C
      &              +RHO11*LAMBD1(5)*(-GRAP1(I)+RHO11*PESA(I))
      &              +RHO11*LAMBD1(1)*DR11T*PESA(I)
                   DSDE(ADCP12+I,ADDETE)=DSDE(ADCP12+I,ADDETE)
-     &              +DR12T*LAMBD1(1)*(-GP(I)+RHO12*PESA(I))
+     &              +DR12T*LAMBD2(1)*(-GP(I)+RHO12*PESA(I))
                   DSDE(ADCP12+I,ADDETE)=DSDE(ADCP12+I,ADDETE)
-     &              +RHO12*LAMBD1(5)*(-GP(I)+RHO12*PESA(I))
+     &              +RHO12*LAMBD2(5)*(-GP(I)+RHO12*PESA(I))
                   DSDE(ADCP12+I,ADDETE)=DSDE(ADCP12+I,ADDETE)
-     &              +RHO12*LAMBD1(1)*((DR12T)*PESA(I))
+     &              +RHO12*LAMBD2(1)*((DR12T)*PESA(I))
                 DSDE(ADCP12+I,ADDETE)=DSDE(ADCP12+I,ADDETE)
      &           -RHO12*LAMBD2(1)*DGPVT(I)
                 DSDE(ADCP12+I,ADDETE+I)=DSDE(ADCP12+I,ADDETE+I)

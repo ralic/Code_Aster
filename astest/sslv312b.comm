@@ -1,0 +1,240 @@
+# MODIF  DATE 24/05/2004   AUTEUR GALENNE E.GALENNE 
+# TITRE  MURAKAMI 9.70 FISSURE CIRCULAIRE PERPENDICULAIRE A L'INTERFACE
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+#        ENTRE DEUX SEMI-ESPACES ELASTIQUES ISOTROPES
+#        B/A = 2.
+#
+
+DEBUT( CODE=_F( NOM = 'SSLV312B',NIV_PUB_WEB='INTERNET'))
+
+PRE_GIBI()
+
+MA=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='OUI'),  )
+
+MO=AFFE_MODELE(  MAILLAGE=MA, 
+     AFFE=_F(  TOUT = 'OUI',PHENOMENE = 'MECANIQUE',MODELISATION = '3D') )
+
+MAT1=DEFI_MATERIAU( ELAS=_F(  E = 198000.,  NU = 0.1) )
+
+MAT2=DEFI_MATERIAU( ELAS=_F(  E = 594000.,  NU = 0.1) )
+
+CHMAT=AFFE_MATERIAU(  MAILLAGE=MA,AFFE=(
+                       _F(  GROUP_MA = 'VMAT1',  MATER = MAT1),
+                       _F(  GROUP_MA = 'VMAT2',  MATER = MAT2))
+                     )
+
+# ------------------------------------------------------------------
+
+MA=DEFI_GROUP( reuse=MA,   MAILLAGE=MA, 
+                     CREA_GROUP_NO=_F( 
+                        GROUP_MA = ( 'LFF', 'LEVREINF', 'LFFS',  'LEVREINS', 
+                                     'SAV_S', 'SSUP_S', ))
+                 )
+
+CH=AFFE_CHAR_MECA(   MODELE=MO,DDL_IMPO=( 
+       _F(  GROUP_NO = 'SAV_S', DY = 0.), 
+                _F(  GROUP_NO = 'PORIG', DX = 0.), 
+                _F(  GROUP_NO = 'SSUP_S', DZ = 0.), 
+                _F(  GROUP_NO = 'LEVREINF', DZ = 0.)), 
+       PRES_REP=_F(  GROUP_MA = 'LEVREINS',  PRES = 1.)
+                    )
+
+CHAMDEPL=MECA_STATIQUE(   MODELE=MO,   CHAM_MATER=CHMAT, 
+              EXCIT=_F( CHARGE = CH)
+                          )
+
+FISS1=DEFI_FOND_FISS(    MAILLAGE=MA,
+                         FOND_FISS=_F(  NOEUD = ( 'N71',  'N68',  'N93',  'N90',  'N89',  'N84',
+                                         'N115', 'N112', 'N111', 'N106', 'N357', 'N354',
+                                         'N368', 'N365', 'N379', 'N376', 'N389', )),
+                          LEVRE_SUP=_F(  GROUP_MA = 'LEVREINS'),
+                              DTAN_ORIG=( 1.,  0.,  0.,),
+                              DTAN_EXTR=( 0.,  1.,  0.,)
+                      )
+
+#
+#----------------------------------------------------------------------
+#                           COURONNE 1
+#----------------------------------------------------------------------
+#
+# DEFINITION DES RAYONS DES COURONNES DU CHAMPS THETA
+#
+#
+RAY_INF1=DEFI_CONSTANTE(   VALE=0.045)
+
+RAY_SUP1=DEFI_CONSTANTE(   VALE=0.09)
+
+MOD_T1=DEFI_CONSTANTE(   VALE=1.)
+
+# -------------------------------------
+
+THETA1=CALC_THETA(   OPTION='COURONNE',   MODELE=MO,  FOND_FISS=FISS1,
+                        THETA_3D=_F(  TOUT = 'OUI', MODULE_FO = MOD_T1,
+                                   R_INF_FO = RAY_INF1,
+                                   R_SUP_FO = RAY_SUP1)
+                    )
+
+G0_C1=CALC_G_THETA_T(  MODELE=MO,  RESULTAT=CHAMDEPL, TOUT_ORDRE='OUI',
+                       THETA=THETA1,  EXCIT=_F( CHARGE = CH),   CHAM_MATER=CHMAT
+                    )
+
+#
+# CALCUL DE G LOCAL AVEC THETA_LEGENDRE
+# -------------------------------------
+
+GLO1_LE5=CALC_G_LOCAL_T(  MODELE=MO,  RESULTAT=CHAMDEPL,
+                            CHAM_MATER=CHMAT,
+                             FOND_FISS=FISS1,  TOUT_ORDRE='OUI',
+                            R_INF_FO=RAY_INF1,  R_SUP_FO=RAY_SUP1,
+                            EXCIT=_F( CHARGE = CH),
+                             DEGRE=5,
+                        LISSAGE_THETA='LEGENDRE',
+                            LISSAGE_G='LEGENDRE'
+                         )
+
+#
+#----------------------------------------------------------------------
+#                           COURONNE 2
+#----------------------------------------------------------------------
+#
+# DEFINITION DES RAYONS DES COURONNES DU CHAMPS THETA
+#
+#
+RAY_INF2=DEFI_CONSTANTE(    VALE=0.08 )
+
+RAY_SUP2=DEFI_CONSTANTE(    VALE=0.15 )
+
+MOD_T2=DEFI_CONSTANTE(    VALE=1.   )
+
+# -------------------------------------
+
+THETA2=CALC_THETA(   OPTION='COURONNE',   MODELE=MO,  FOND_FISS=FISS1,
+                        THETA_3D=_F(  TOUT = 'OUI', MODULE_FO = MOD_T2,
+                                   R_INF_FO = RAY_INF2,
+                                   R_SUP_FO = RAY_SUP2)
+                    )
+
+G0_C2=CALC_G_THETA_T(  MODELE=MO,  RESULTAT=CHAMDEPL, TOUT_ORDRE='OUI',
+                       THETA=THETA2,  EXCIT=_F( CHARGE = CH),   CHAM_MATER=CHMAT
+                    )
+
+#
+# CALCUL DE G LOCAL AVEC THETA_LEGENDRE
+# -------------------------------------
+
+GLO2_LE5=CALC_G_LOCAL_T(  MODELE=MO,  RESULTAT=CHAMDEPL,
+                            CHAM_MATER=CHMAT,
+                             FOND_FISS=FISS1,  TOUT_ORDRE='OUI',
+                            R_INF_FO=RAY_INF2,  R_SUP_FO=RAY_SUP2,
+                            EXCIT=_F( CHARGE = CH),
+                             DEGRE=5,
+                        LISSAGE_THETA='LEGENDRE',
+                            LISSAGE_G='LEGENDRE'
+                         )
+
+#
+# IMPRESSION DES RESULTATS
+# ------------------------
+
+TEST_TABLE(       TABLE=G0_C1,
+                         FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
+                                  VALE_I = 1),
+                       NOM_PARA='G',
+                           VALE=6.62069E-6,
+                      PRECISION=0.01        )
+
+TEST_TABLE(       TABLE=G0_C2,
+                         FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
+                                  VALE_I = 1),
+                       NOM_PARA='G',
+                           VALE=6.62069E-6,
+                      PRECISION=0.01        )
+
+TEST_TABLE(       TABLE=GLO1_LE5,
+                   NOM_PARA='G_LOCAL',
+                     FILTRE=_F(  NOM_PARA = 'NOEUD',
+                              VALE_K = 'N71'),
+                       VALE=0.260275E-5,
+                  PRECISION=0.11       )
+
+TEST_TABLE(       TABLE=GLO1_LE5,
+                   NOM_PARA='G_LOCAL',
+                     FILTRE=_F(  NOM_PARA = 'NOEUD',
+                              VALE_K = 'N68'),
+                       VALE=0.26996E-5,
+                  PRECISION=0.13       )
+
+TEST_TABLE(       TABLE=GLO1_LE5,
+                   NOM_PARA='G_LOCAL',
+                     FILTRE=_F(  NOM_PARA = 'NOEUD',
+                              VALE_K = 'N112'),
+                       VALE=0.34881E-5,
+                  PRECISION=0.07       )
+
+TEST_TABLE(       TABLE=GLO1_LE5,
+                   NOM_PARA='G_LOCAL',
+                     FILTRE=_F(  NOM_PARA = 'NOEUD',
+                              VALE_K = 'N106'),
+                       VALE=0.32246E-5,
+                  PRECISION=0.07       )
+
+TEST_TABLE(       TABLE=GLO1_LE5,
+                   NOM_PARA='G_LOCAL',
+                     FILTRE=_F(  NOM_PARA = 'NOEUD',
+                              VALE_K = 'N357'),
+                       VALE=0.31052E-5,
+                  PRECISION=0.11       )
+
+TEST_TABLE(       TABLE=GLO2_LE5,
+                   NOM_PARA='G_LOCAL',
+                     FILTRE=_F(  NOM_PARA = 'NOEUD',
+                              VALE_K = 'N71'),
+                       VALE=0.260275E-5,
+                  PRECISION=0.114      )
+
+TEST_TABLE(       TABLE=GLO2_LE5,
+                   NOM_PARA='G_LOCAL',
+                     FILTRE=_F(  NOM_PARA = 'NOEUD',
+                              VALE_K = 'N68'),
+                       VALE=0.26996E-5,
+                  PRECISION=0.13       )
+
+TEST_TABLE(       TABLE=GLO2_LE5,
+                   NOM_PARA='G_LOCAL',
+                     FILTRE=_F(  NOM_PARA = 'NOEUD',
+                              VALE_K = 'N112'),
+                       VALE=0.34881E-5,
+                  PRECISION=0.07       )
+
+TEST_TABLE(       TABLE=GLO2_LE5,
+                   NOM_PARA='G_LOCAL',
+                     FILTRE=_F(  NOM_PARA = 'NOEUD',
+                              VALE_K = 'N106'),
+                       VALE=0.32246E-5,
+                  PRECISION=0.07       )
+
+TEST_TABLE(       TABLE=GLO2_LE5,
+                   NOM_PARA='G_LOCAL',
+                     FILTRE=_F(  NOM_PARA = 'NOEUD',
+                              VALE_K = 'N357'),
+                       VALE=0.31052E-5,
+                  PRECISION=0.111      )
+
+FIN()
+#

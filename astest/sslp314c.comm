@@ -1,4 +1,4 @@
-# MODIF  DATE 03/02/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 24/05/2004   AUTEUR GALENNE E.GALENNE 
 # TITRE MURAKAMI 8.20 FISSURE DEVIEE A L'INTERFACE ENTRE DEUX DEMI-PLANS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -120,7 +120,7 @@ THETA01=CALC_THETA(       MODELE=MO,
 G01=CALC_G_THETA_T(        MODELE=MO,
                                DEPL=DEP,
                               THETA=THETA01,
-                             CHARGE=CH,
+                             EXCIT=_F(CHARGE=CH,),
                          CHAM_MATER=CHMAT,
                           SYME_CHAR='SANS'
                      )
@@ -130,7 +130,7 @@ GK01=CALC_G_THETA_T(        MODELE=MO,
                                 DEPL=DEP,
                                THETA=THETA01,
                                 FOND_FISS=FOND1,
-                              CHARGE=CH,
+                              EXCIT=_F(CHARGE=CH,),
                           CHAM_MATER=CHMAT,
                            SYME_CHAR='SANS',
                               OPTION='CALC_K_G'
@@ -149,7 +149,7 @@ THETA02=CALC_THETA(       MODELE=MO,
 G02=CALC_G_THETA_T(        MODELE=MO,
                                DEPL=DEP,
                               THETA=THETA02,
-                             CHARGE=CH,
+                             EXCIT=_F(CHARGE=CH,),
                          CHAM_MATER=CHMAT,
                           SYME_CHAR='SANS'
                      )
@@ -159,7 +159,7 @@ GK02=CALC_G_THETA_T(        MODELE=MO,
                                 DEPL=DEP,
                                THETA=THETA02,
                                 FOND_FISS=FOND1,
-                              CHARGE=CH,
+                              EXCIT=_F(CHARGE=CH,),
                           CHAM_MATER=CHMAT,
                            SYME_CHAR='SANS',
                               OPTION='CALC_K_G'
@@ -178,7 +178,7 @@ THETA03=CALC_THETA(       MODELE=MO,
 G03=CALC_G_THETA_T(        MODELE=MO,
                                DEPL=DEP,
                               THETA=THETA03,
-                             CHARGE=CH,
+                             EXCIT=_F(CHARGE=CH,),
                          CHAM_MATER=CHMAT,
                           SYME_CHAR='SANS'
                      )
@@ -188,7 +188,7 @@ GK03=CALC_G_THETA_T(        MODELE=MO,
                                 DEPL=DEP,
                                THETA=THETA03,
                                 FOND_FISS=FOND1,
-                              CHARGE=CH,
+                              EXCIT=_F(CHARGE=CH,),
                           CHAM_MATER=CHMAT,
                            SYME_CHAR='SANS',
                               OPTION='CALC_K_G'
@@ -207,7 +207,7 @@ THETA04=CALC_THETA(       MODELE=MO,
 G04=CALC_G_THETA_T(        MODELE=MO,
                                DEPL=DEP,
                               THETA=THETA04,
-                             CHARGE=CH,
+                             EXCIT=_F(CHARGE=CH,),
                          CHAM_MATER=CHMAT,
                           SYME_CHAR='SANS'
                      )
@@ -217,7 +217,7 @@ GK04=CALC_G_THETA_T(        MODELE=MO,
                                 DEPL=DEP,
                                THETA=THETA04,
                                 FOND_FISS=FOND1,
-                              CHARGE=CH,
+                              EXCIT=_F(CHARGE=CH,),
                           CHAM_MATER=CHMAT,
                            SYME_CHAR='SANS',
                               OPTION='CALC_K_G'

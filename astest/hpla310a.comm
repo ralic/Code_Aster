@@ -1,0 +1,978 @@
+# MODIF  DATE 24/05/2004   AUTEUR GALENNE E.GALENNE 
+# TITRE BIBLIO_49 FISSURE RADIALE EXTERNE SOUMIS A UN CHOC THERMIQUE
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+#              SEE THE FILE "LICENSE.TERMS" FOR INFORMATION ON USAGE AND
+#              REDISTRIBUTION OF THIS FILE.
+# ======================================================================
+#       DANS UN BARREAU CIRCULAIRE
+#
+
+DEBUT( CODE=_F( NOM = 'HPLA310A',NIV_PUB_WEB='INTERNET'))
+
+PRE_GIBI()
+
+MA=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='NON'),  )
+
+DEFI_GROUP( reuse=MA,        MAILLAGE=MA,
+                           CREA_GROUP_NO=_F(  GROUP_MA = ( 'LP10P11',
+                                                        'LPOP11',
+                                                        'LP8P9',
+                                                        'LPOP8',
+                                                        'LPOP8S',
+                                                        'LP1P8S',
+                                                        'LP9P10',
+                                                      ))
+                       )
+
+#
+L_INST=DEFI_LIST_REEL(   DEBUT=0.0,
+                              INTERVALLE=_F( JUSQU_A = 1., NOMBRE = 1)
+                          )
+
+#
+TEMPEXT=100.
+
+#
+T0=CREA_CHAMP(  OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R',
+                           MAILLAGE=MA,
+                                AFFE=_F( TOUT = 'OUI',
+                                      NOM_CMP = 'TEMP',
+                                      VALE = 0.0)
+                                     )
+
+#
+# -------------------------------------------------------------------
+#                    DEBUT DU THERMIQUE
+# -------------------------------------------------------------------
+#
+MOTH=AFFE_MODELE(        MAILLAGE=MA,
+                                    AFFE=_F( TOUT = 'OUI',
+                                          PHENOMENE = 'THERMIQUE',
+                                          MODELISATION = 'AXIS')
+                        )
+
+#
+MATH=DEFI_MATERIAU(    THER=_F( RHO_CP = 3900.,
+                                    LAMBDA = 50.)
+                          )
+
+#
+CMTH=AFFE_MATERIAU(        MAILLAGE=MA,
+                                      AFFE=_F( TOUT = 'OUI',
+                                            MATER = MATH,
+                                            TEMP_REF = 0.)
+                          )
+
+#
+CHTH=AFFE_CHAR_THER(       MODELE=MOTH,
+                                 ECHANGE=_F( GROUP_MA = 'LP8P9',
+                                          COEF_H = 250.,
+                                          TEMP_EXT = TEMPEXT)
+                           )
+
+#
+LR8=DEFI_LIST_REEL(          DEBUT=0.,INTERVALLE=(
+                          _F( JUSQU_A = 5.E-2,   NOMBRE = 20),
+                          _F( JUSQU_A = 3.12E-1, NOMBRE = 40),
+                          _F( JUSQU_A = 3.,      NOMBRE = 10),
+                          _F( JUSQU_A = 10.,     NOMBRE = 10),
+                          _F( JUSQU_A = 12.48,   NOMBRE = 20),
+                          _F( JUSQU_A = 312.,    NOMBRE = 312))
+                             )
+
+#
+TEMP=THER_LINEAIRE(        MODELE=MOTH,
+                               CHAM_MATER=CMTH,
+                                    EXCIT=_F( CHARGE = CHTH),
+                                TEMP_INIT=_F( CHAM_NO = T0),
+                                INCREMENT=_F( LIST_INST = LR8)
+                           )
+
+#
+# RAYON = 2
+#
+TEST_RESU(  RESU=_F(  RESULTAT = TEMP,
+                   NOM_CHAM = 'TEMP',
+                   NUME_ORDRE = 60,
+                   GROUP_NO = 'P8',
+                   NOM_CMP = 'TEMP',
+                   REFERENCE='NON_REGRESSION', 
+                   VERSION  ='7.2.24',
+                   VALE = .28001E+02,
+                   PRECISION = 1.E-3)
+         )
+
+#
+TEST_RESU(  RESU=_F(  RESULTAT = TEMP,
+                   NOM_CHAM = 'TEMP',
+                   NUME_ORDRE = 100,
+                   GROUP_NO = 'P8',
+                   NOM_CMP = 'TEMP',
+                   REFERENCE='NON_REGRESSION', 
+                   VERSION  ='7.2.24',
+                   VALE = .77332E+02,
+                   PRECISION = 1.E-3)
+         )
+
+#
+TEST_RESU(  RESU=_F(  RESULTAT = TEMP,
+                   NOM_CHAM = 'TEMP',
+                   NUME_ORDRE = 412,
+                   GROUP_NO = 'P8',
+                   NOM_CMP = 'TEMP',
+                   REFERENCE='NON_REGRESSION', 
+                   VERSION  ='7.2.24',
+                   VALE = .99834E+02,
+                   PRECISION = 1.E-3)
+          )
+
+#
+# RAYON = 1
+#
+TEST_RESU(  RESU=_F(  RESULTAT = TEMP,
+                   NOM_CHAM = 'TEMP',    NUME_ORDRE = 100,
+                   GROUP_NO = 'P0',       NOM_CMP = 'TEMP',
+                   REFERENCE='NON_REGRESSION', 
+                   VERSION  ='7.2.24',
+                   VALE = .62555E+01,
+                   PRECISION = 1.E-3)
+         )
+
+#
+TEST_RESU(  RESU=_F(  RESULTAT = TEMP,
+                   NOM_CHAM = 'TEMP',    NUME_ORDRE = 412,
+                   GROUP_NO = 'P0',       NOM_CMP = 'TEMP',
+                   REFERENCE='NON_REGRESSION', 
+                   VERSION  ='7.2.24',
+                   VALE = .99013E+02,
+                   PRECISION = 1.E-3)
+         )
+
+#
+# RAYON = 0
+#
+TEST_RESU(  RESU=_F(  RESULTAT = TEMP,
+                   NOM_CHAM = 'TEMP',    NUME_ORDRE = 100,
+                   GROUP_NO = 'P11',       NOM_CMP = 'TEMP',
+                   REFERENCE='NON_REGRESSION', 
+                   VERSION  ='7.2.24',
+                   VALE = .17859E+00,
+                   PRECISION = 1.E-3)
+         )
+
+#
+TEST_RESU(  RESU=_F(  RESULTAT = TEMP,
+                   NOM_CHAM = 'TEMP',    NUME_ORDRE = 412,
+                   GROUP_NO = 'P11',       NOM_CMP = 'TEMP',
+                   REFERENCE='NON_REGRESSION', 
+                   VERSION  ='7.2.24',
+                   VALE = .98638E+02,
+                   PRECISION = 1.E-3)
+         )
+
+#
+# -------------------------------------------------------------------
+#                    FIN DU THERMIQUE
+# -------------------------------------------------------------------
+#
+#
+MO=AFFE_MODELE( MAILLAGE=MA,
+                             AFFE=_F( TOUT = 'OUI',
+                                   PHENOMENE = 'MECANIQUE',
+                                   MODELISATION = 'AXIS')
+                       )
+
+#
+MAT=DEFI_MATERIAU(
+                               ELAS=_F(  E = 2.E11,
+                                 NU = 0.3,
+                                 RHO = 7800.,
+                                 ALPHA = 1.E-5)
+                         )
+
+#
+MATFIC=DEFI_MATERIAU(
+                               ELAS=_F(  E = 2.E20,
+                                 NU = 0.3,
+                                 RHO = 7800.,
+                                 ALPHA = 0.E-0)
+                         )
+
+#
+CHMATA=AFFE_MATERIAU(  MAILLAGE=MA,
+                                 AFFE=_F( TOUT = 'OUI',
+                                       MATER = MAT)
+                          )
+
+#
+CHMATB=AFFE_MATERIAU(  MAILLAGE=MA,AFFE=(
+                                _F( TOUT = 'OUI',
+                                      MATER = MAT),
+                                _F( GROUP_MA = 'VBLOCON',
+                                      MATER = MATFIC))
+                         )
+
+#
+# -------------------------------------------------------------------
+#                    DEBUT DU THERMO-MECANIQUE A  T = 0.312 S
+# -------------------------------------------------------------------
+#
+# RECUPERATION DU CHAMP DE TEMPERATURE A T = 0.312 S
+#
+TEMP1=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_TEMP_R',
+                          RESULTAT=TEMP,
+                          NOM_CHAM='TEMP',
+                              INST=0.312
+                       )
+
+#
+# FISSURE BLOQUEE
+#
+CH1A=AFFE_CHAR_MECA(           MODELE=MO,
+                                TEMP_CALCULEE=TEMP1,DDL_IMPO=(
+                                     _F(  GROUP_NO = 'LP10P11',
+                                                DX = 0.),
+                                              _F(  GROUP_NO = 'LPOP11',
+                                                DY = 0.),
+                                              _F(  GROUP_NO = 'LPOP8',
+                                                DY = 0.),
+                        _F(  GROUP_NO = 'LP1P8S',  DY = 0.)),
+                                 LIAISON_UNIF=_F(  GROUP_NO = 'LP9P10',
+                                                DDL = ('DY',  'DY',))
+                            )
+
+#
+
+CHDEP1A=MECA_STATIQUE(        MODELE=MO,
+                              CHAM_MATER=CHMATA,
+                                   EXCIT=_F( CHARGE = CH1A),
+                          )
+
+CALC_ELEM( reuse= CHDEP1A ,RESULTAT= CHDEP1A ,         MODELE=MO,
+                              CHAM_MATER=CHMATA,
+                                   EXCIT=_F( CHARGE = CH1A),
+                                  OPTION=( 'EPSI_ELGA_DEPL',
+                                           'SIGM_ELNO_DEPL',
+                                           'EQUI_ELNO_SIGM',
+                                         )
+                          )
+
+#
+DEP1A=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
+                              RESULTAT=CHDEP1A,
+                              NOM_CHAM='DEPL',
+                            NUME_ORDRE=1
+                        )
+
+#
+SIGM1A=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='ELNO_SIEF_R',
+                              RESULTAT=CHDEP1A,
+                              NOM_CHAM='SIGM_ELNO_DEPL',
+                            NUME_ORDRE=1
+                        )
+
+# FISSURE NON BLOQUEE
+#
+CH1B=AFFE_CHAR_MECA(           MODELE=MO,
+                                TEMP_CALCULEE=TEMP1,DDL_IMPO=(
+                                     _F(  GROUP_NO = 'LP10P11',
+                                                DX = 0.),
+                                              _F(  GROUP_NO = 'LPOP11',
+                                                DY = 0.),
+                                              _F(  GROUP_NO = 'LP1P8S',
+                                                DX = 0.),
+                                              _F(  GROUP_NO = 'LP1P8S',
+                                                DY = 0.)),
+                                 CONTACT = _F(  REAC_GEOM = 'SANS',
+                                                NORMALE = 'MAIT_ESCL',
+                                                GROUP_MA_MAIT = 'LPOP8',
+                                                GROUP_MA_ESCL = 'LPOP8S'),
+                                 LIAISON_UNIF=_F(  GROUP_NO = 'LP9P10',
+                                                DDL = ('DY',  'DY',))
+                            )
+
+#
+
+CHDEP1B=STAT_NON_LINE(
+                            MODELE=MO,
+                        CHAM_MATER=CHMATB,
+                             EXCIT=_F(
+                CHARGE = CH1B),
+                         COMP_ELAS=_F(
+                RELATION = 'ELAS'),
+                            NEWTON=_F(
+                MATRICE = 'ELASTIQUE'),
+                         INCREMENT=_F(
+                LIST_INST = L_INST),
+                       CONVERGENCE=_F(
+                ITER_GLOB_MAXI = 7,
+                RESI_GLOB_RELA = 1.0E-4)
+              )
+
+CALC_ELEM( reuse=CHDEP1B,
+                            OPTION=(
+                  'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
+                          RESULTAT=CHDEP1B,
+                            MODELE=MO,
+                        CHAM_MATER=CHMATB
+              )
+
+#
+DEP1B=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
+                         RESULTAT=CHDEP1B,
+                              NOM_CHAM='DEPL',
+                            NUME_ORDRE=1
+                        )
+
+#
+#
+# -------------------------------------------------------------------
+#                    FIN DU THERMO-MECANIQUE A  T = 0.312 S
+# -------------------------------------------------------------------
+#
+TEST_RESU(    CHAM_ELEM=_F(  CHAM_GD = SIGM1A,
+                             MAILLE = 'M2787',
+                             NOEUD = 'N18',
+                             NOM_CMP = 'SIYY',
+                             REFERENCE='NON_REGRESSION', 
+                             VERSION  ='7.2.24',
+                             VALE = .45851E+07,
+                             PRECISION = 1.E-3)
+          )
+
+#
+# -------------------------------------------------------------------
+#                    DEBUT DU THERMO-MECANIQUE A  T = 12.48 S
+# -------------------------------------------------------------------
+#
+# RECUPERATION DU CHAMP DE TEMPERATURE A T = 12.48 S
+#
+TEMP2=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_TEMP_R',
+                          RESULTAT=TEMP,
+                          NOM_CHAM='TEMP',
+                              INST=12.48
+                       )
+
+#
+# FISSURE BLOQUEE
+#
+CH2A=AFFE_CHAR_MECA(           MODELE=MO,
+                                TEMP_CALCULEE=TEMP2,DDL_IMPO=(
+                                     _F(  GROUP_NO = 'LP10P11',
+                                                DX = 0.),
+                                              _F(  GROUP_NO = 'LPOP11',
+                                                DY = 0.),
+                                              _F(  GROUP_NO = 'LPOP8',
+                                                DY = 0.),
+                        _F(  GROUP_NO = 'LP1P8S',  DY = 0.)),
+                                 LIAISON_UNIF=_F(  GROUP_NO = 'LP9P10',
+                                                DDL = ('DY',  'DY',))
+                            )
+
+#
+
+CHDEP2A=MECA_STATIQUE(         MODELE=MO,
+                               CHAM_MATER=CHMATA,
+                                    EXCIT=_F( CHARGE = CH2A),
+                           )
+
+CALC_ELEM( reuse= CHDEP2A ,RESULTAT= CHDEP2A ,          MODELE=MO,
+                               CHAM_MATER=CHMATA,
+                                    EXCIT=_F( CHARGE = CH2A),
+                                   OPTION=( 'EPSI_ELGA_DEPL',
+                                            'SIGM_ELNO_DEPL',
+                                            'EQUI_ELNO_SIGM',
+                                          )
+                           )
+
+#
+DEP2A=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
+                              RESULTAT=CHDEP2A,
+                              NOM_CHAM='DEPL',
+                            NUME_ORDRE=1
+                        )
+
+#
+
+SIGM2A=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='ELNO_SIEF_R',
+                              RESULTAT=CHDEP2A,
+                              NOM_CHAM='SIGM_ELNO_DEPL',
+                            NUME_ORDRE=1
+                        )
+
+#
+# FISSURE NON BLOQUEE
+#
+CH2B=AFFE_CHAR_MECA(           MODELE=MO,
+                                TEMP_CALCULEE=TEMP2,DDL_IMPO=(
+                                     _F(  GROUP_NO = 'LP10P11',
+                                                DX = 0.),
+                                              _F(  GROUP_NO = 'LPOP11',
+                                                DY = 0.),
+                                              _F(  GROUP_NO = 'LP1P8S',
+                                                DX = 0.),
+                                              _F(  GROUP_NO = 'LP1P8S',
+                                                DY = 0.)),
+                                 CONTACT  =_F(  REAC_GEOM = 'SANS',
+                                                NORMALE = 'MAIT_ESCL',
+                                                GROUP_MA_MAIT = 'LPOP8',
+                                                GROUP_MA_ESCL = 'LPOP8S'),
+                                 LIAISON_UNIF=_F(  GROUP_NO = 'LP9P10',
+                                                DDL = ('DY',  'DY',))
+                            )
+
+#
+
+CHDEP2B=STAT_NON_LINE(
+                            MODELE=MO,
+                        CHAM_MATER=CHMATB,
+                             EXCIT=_F(
+                CHARGE = CH2B),
+                         COMP_ELAS=_F(
+                RELATION = 'ELAS'),
+                            NEWTON=_F(
+                MATRICE = 'ELASTIQUE'),
+                         INCREMENT=_F(
+                LIST_INST = L_INST),
+                       CONVERGENCE=_F(
+                ITER_GLOB_MAXI = 7,
+                RESI_GLOB_RELA = 1.0E-4)
+              )
+
+CALC_ELEM( reuse=CHDEP2B,
+                            OPTION=(
+                  'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
+                          RESULTAT=CHDEP2B,
+                            MODELE=MO,
+                        CHAM_MATER=CHMATB
+              )
+
+#
+DEP2B=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
+                              RESULTAT=CHDEP2B,
+                              NOM_CHAM='DEPL',
+                            NUME_ORDRE=1
+                        )
+
+#
+#
+# -------------------------------------------------------------------
+#                    FIN DU THERMO-MECANIQUE A  T = 12.48 S
+# -------------------------------------------------------------------
+#
+TEST_RESU(   CHAM_ELEM=_F(  CHAM_GD = SIGM2A,
+                          MAILLE = 'M2787',
+                          NOEUD = 'N18',
+                          NOM_CMP = 'SIYY',
+                          REFERENCE='NON_REGRESSION', 
+                          VERSION  ='7.2.24',
+                          VALE = .63875E+08,
+                          PRECISION = 1.E-3)
+         )
+
+#
+# -------------------------------------------------------------------
+#                    DEBUT DU THERMO-MECANIQUE A  T = 312. S
+# -------------------------------------------------------------------
+#
+# RECUPERATION DU CHAMP DE TEMPERATURE A T = 312. S
+#
+TEMP3=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_TEMP_R',
+                          RESULTAT=TEMP,
+                          NOM_CHAM='TEMP',
+                              INST=312.
+                       )
+
+#
+# FISSURE BLOQUEE
+#
+CH3A=AFFE_CHAR_MECA(           MODELE=MO,
+                                TEMP_CALCULEE=TEMP3,DDL_IMPO=(
+                                     _F(  GROUP_NO = 'LP10P11',
+                                                DX = 0.),
+                                              _F(  GROUP_NO = 'LPOP11',
+                                                DY = 0.),
+                                              _F(  GROUP_NO = 'LPOP8',
+                                                DY = 0.),
+                        _F(  GROUP_NO = 'LP1P8S',  DY = 0.)),
+                                 LIAISON_UNIF=_F(  GROUP_NO = 'LP9P10',
+                                                DDL = ('DY',  'DY',))
+                            )
+
+#
+
+CHDEP3A=MECA_STATIQUE(         MODELE=MO,
+                               CHAM_MATER=CHMATA,
+                                    EXCIT=_F( CHARGE = CH3A),
+                            )
+
+CALC_ELEM( reuse= CHDEP3A ,RESULTAT= CHDEP3A ,          MODELE=MO,
+                               CHAM_MATER=CHMATA,
+                                    EXCIT=_F( CHARGE = CH3A),
+                                   OPTION=( 'EPSI_ELGA_DEPL',
+                                            'SIGM_ELNO_DEPL',
+                                            'EQUI_ELNO_SIGM',
+                                          )
+                            )
+
+#
+DEP3A=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
+                              RESULTAT=CHDEP3A,
+                              NOM_CHAM='DEPL',
+                            NUME_ORDRE=1
+                        )
+
+#
+SIGM3A=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='ELNO_SIEF_R',
+                              RESULTAT=CHDEP3A,
+                              NOM_CHAM='SIGM_ELNO_DEPL',
+                            NUME_ORDRE=1
+                        )
+
+#
+# FISSURE NON BLOQUEE
+#
+CH3B=AFFE_CHAR_MECA(           MODELE=MO,
+                                TEMP_CALCULEE=TEMP3,DDL_IMPO=(
+                                     _F(  GROUP_NO = 'LP10P11',
+                                                DX = 0.),
+                                              _F(  GROUP_NO = 'LPOP11',
+                                                DY = 0.),
+                                              _F(  GROUP_NO = 'LP1P8S',
+                                                DX = 0.),
+                                              _F(  GROUP_NO = 'LP1P8S',
+                                                DY = 0.)),
+                                 CONTACT  =_F(  REAC_GEOM = 'SANS',
+                                                NORMALE = 'MAIT_ESCL',
+                                                GROUP_MA_MAIT = 'LPOP8',
+                                                GROUP_MA_ESCL = 'LPOP8S'),
+                                 LIAISON_UNIF=_F(  GROUP_NO = 'LP9P10',
+                                                DDL = ('DY',  'DY',))
+                            )
+
+#
+
+CHDEP3B=STAT_NON_LINE(
+                            MODELE=MO,
+                        CHAM_MATER=CHMATB,
+                             EXCIT=_F(
+                CHARGE = CH3B),
+                         COMP_ELAS=_F(
+                RELATION = 'ELAS'),
+                            NEWTON=_F(
+                MATRICE = 'ELASTIQUE'),
+                         INCREMENT=_F(
+                LIST_INST = L_INST),
+                       CONVERGENCE=_F(
+                ITER_GLOB_MAXI = 7,
+                RESI_GLOB_RELA = 1.0E-4)
+              )
+
+CALC_ELEM( reuse=CHDEP3B,
+                            OPTION=(
+                  'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
+                          RESULTAT=CHDEP3B,
+                            MODELE=MO,
+                        CHAM_MATER=CHMATB
+              )
+
+#
+DEP3B=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
+                              RESULTAT=CHDEP3B,
+                              NOM_CHAM='DEPL',
+                            NUME_ORDRE=1
+                        )
+
+#
+#
+# -------------------------------------------------------------------
+#                    FIN DU THERMO-MECANIQUE A  T = 312 S
+# -------------------------------------------------------------------
+#
+#
+#
+TEST_RESU(   CHAM_ELEM=_F(  CHAM_GD = SIGM3A,
+                          MAILLE = 'M2787',
+                          NOEUD = 'N18',
+                          NOM_CMP = 'SIYY',
+                          REFERENCE='NON_REGRESSION', 
+                          VERSION  ='7.2.24',
+                          VALE = .82397E+06,
+                          PRECISION = 1.E-3)
+         )
+
+FOND=DEFI_FOND_FISS(    MAILLAGE=MA,
+                         FOND_FISS=_F( GROUP_NO = ('P0',)),
+                           NORMALE=(0., -1., 0.,)
+                      )
+
+#
+THETA0=CALC_THETA(    MODELE=MO,
+                        THETA_2D=_F(  GROUP_NO = ('P0',),
+                                   MODULE = 1.,
+                                   R_INF = 0.0025,
+                                   R_SUP = 0.125),
+                       DIRECTION=(-1., 0., 0.,)
+                     )
+
+#
+THETA1=CALC_THETA(    MODELE=MO,
+                        THETA_2D=_F(  GROUP_NO = ('P0',),
+                                   MODULE = 1.,
+                                   R_INF = 0.0025,
+                                   R_SUP = 0.425),
+                       DIRECTION=(-1., 0., 0.,)
+                     )
+
+#
+THETA2=CALC_THETA(    MODELE=MO,
+                        THETA_2D=_F(  GROUP_NO = ('P0',),
+                                   MODULE = 1.,
+                                   R_INF = 0.0025,
+                                   R_SUP = 0.625),
+                       DIRECTION=(-1., 0., 0.,)
+                     )
+
+#
+THETA3=CALC_THETA(    MODELE=MO,
+                        THETA_2D=_F(  GROUP_NO = ('P0',),
+                                   MODULE = 1.,
+                                   R_INF = 0.0025,
+                                   R_SUP = 0.825),
+                       DIRECTION=(-1., 0., 0.,)
+                     )
+
+#
+# POUR FO = 0.001
+#
+G01B=CALC_G_THETA_T(        MODELE=MO,
+                                DEPL=DEP1B,
+                               THETA=THETA0,
+                              EXCIT=_F(CHARGE=CH1B,),
+                          CHAM_MATER=CHMATB,
+                           SYME_CHAR='SYME'
+                      )
+
+#
+G01B1=CALC_G_THETA_T(        MODELE=MO,
+                                 DEPL=DEP1B,
+                                THETA=THETA1,
+                               EXCIT=_F(CHARGE=CH1B,),
+                           CHAM_MATER=CHMATB,
+                            SYME_CHAR='SYME'
+                       )
+
+#
+G01B2=CALC_G_THETA_T(        MODELE=MO,
+                                 DEPL=DEP1B,
+                                THETA=THETA2,
+                               EXCIT=_F(CHARGE=CH1B,),
+                           CHAM_MATER=CHMATB,
+                            SYME_CHAR='SYME'
+                       )
+
+#
+G01B3=CALC_G_THETA_T(        MODELE=MO,
+                                 DEPL=DEP1B,
+                                THETA=THETA3,
+                               EXCIT=_F(CHARGE=CH1B,),
+                           CHAM_MATER=CHMATB,
+                            SYME_CHAR='SYME'
+                       )
+
+#
+
+TEST_TABLE(       TABLE=G01B,
+                        NOM_PARA='G',
+                            REFERENCE='ANALYTIQUE',
+                            VALE=2.274999E+2,
+                       PRECISION=0.3   )
+
+#
+
+TEST_TABLE(       TABLE=G01B1,
+                        NOM_PARA='G',
+                            REFERENCE='ANALYTIQUE',
+                            VALE=2.274999E+2,
+                       PRECISION=0.3   )
+
+#
+
+TEST_TABLE(       TABLE=G01B2,
+                        NOM_PARA='G',
+                            REFERENCE='ANALYTIQUE',
+                            VALE=2.274999E+2,
+                       PRECISION=0.3   )
+
+#
+
+TEST_TABLE(       TABLE=G01B3,
+                        NOM_PARA='G',
+                            REFERENCE='ANALYTIQUE',
+                            VALE=2.274999E+2,
+                       PRECISION=0.31   )
+
+#
+# POUR FO = 0.004
+#
+G02B=CALC_G_THETA_T(        MODELE=MO,
+                                DEPL=DEP2B,
+                               THETA=THETA0,
+                              EXCIT=_F(CHARGE=CH2B,),
+                          CHAM_MATER=CHMATB,
+                           SYME_CHAR='SYME'
+                      )
+
+#
+G02B1=CALC_G_THETA_T(        MODELE=MO,
+                                 DEPL=DEP2B,
+                                THETA=THETA1,
+                               EXCIT=_F(CHARGE=CH2B,),
+                           CHAM_MATER=CHMATB,
+                            SYME_CHAR='SYME'
+                       )
+
+#
+G02B2=CALC_G_THETA_T(        MODELE=MO,
+                                 DEPL=DEP2B,
+                                THETA=THETA2,
+                               EXCIT=_F(CHARGE=CH2B,),
+                           CHAM_MATER=CHMATB,
+                            SYME_CHAR='SYME'
+                       )
+
+#
+G02B3=CALC_G_THETA_T(        MODELE=MO,
+                                 DEPL=DEP2B,
+                                THETA=THETA3,
+                               EXCIT=_F(CHARGE=CH2B,),
+                           CHAM_MATER=CHMATB,
+                            SYME_CHAR='SYME'
+                       )
+
+#
+
+TEST_TABLE(       TABLE=G02B,
+                        NOM_PARA='G',
+                            REFERENCE='ANALYTIQUE',
+                            VALE=1.051959E+4,
+                       PRECISION=0.2   )
+
+#
+
+TEST_TABLE(       TABLE=G02B1,
+                        NOM_PARA='G',
+                            REFERENCE='ANALYTIQUE',
+                            VALE=1.051959E+4,
+                       PRECISION=0.2   )
+
+#
+
+TEST_TABLE(       TABLE=G02B2,
+                        NOM_PARA='G',
+                            REFERENCE='ANALYTIQUE',
+                            VALE=1.051959E+4,
+                       PRECISION=0.2   )
+
+#
+
+TEST_TABLE(       TABLE=G02B3,
+                        NOM_PARA='G',
+                            REFERENCE='ANALYTIQUE',
+                            VALE=1.051959E+4,
+                       PRECISION=0.2   )
+
+#
+# POUR FO = 1
+#
+G03B=CALC_G_THETA_T(        MODELE=MO,
+                                DEPL=DEP3B,
+                               THETA=THETA0,
+                              EXCIT=_F(CHARGE=CH3B,),
+                          CHAM_MATER=CHMATB,
+                           SYME_CHAR='SYME'
+                      )
+
+#
+G03B1=CALC_G_THETA_T(        MODELE=MO,
+                                 DEPL=DEP3B,
+                                THETA=THETA1,
+                               EXCIT=_F(CHARGE=CH3B,),
+                           CHAM_MATER=CHMATB,
+                            SYME_CHAR='SYME'
+                       )
+
+#
+G03B2=CALC_G_THETA_T(        MODELE=MO,
+                                 DEPL=DEP3B,
+                                THETA=THETA2,
+                               EXCIT=_F(CHARGE=CH3B,),
+                           CHAM_MATER=CHMATB,
+                            SYME_CHAR='SYME'
+                       )
+
+#
+G03B3=CALC_G_THETA_T(        MODELE=MO,
+                                 DEPL=DEP3B,
+                                THETA=THETA3,
+                               EXCIT=_F(CHARGE=CH3B,),
+                           CHAM_MATER=CHMATB,
+                            SYME_CHAR='SYME'
+                       )
+
+#
+
+TEST_TABLE(       TABLE=G03B,
+                        NOM_PARA='G',
+                            REFERENCE='ANALYTIQUE',
+                            VALE=1.051959,
+                       PRECISION=0.20   )
+
+#
+
+TEST_TABLE(       TABLE=G03B1,
+                        NOM_PARA='G',
+                            REFERENCE='ANALYTIQUE',
+                            VALE=1.051959,
+                       PRECISION=0.20   )
+
+#
+
+TEST_TABLE(       TABLE=G03B2,
+                        NOM_PARA='G',
+                            REFERENCE='ANALYTIQUE',
+                            VALE=1.051959,
+                       PRECISION=0.20   )
+
+#
+
+TEST_TABLE(       TABLE=G03B3,
+                        NOM_PARA='G',
+                            REFERENCE='ANALYTIQUE',
+                            VALE=1.051959,
+                       PRECISION=0.20  )
+
+#
+#------------------------------------------------------------
+#   TESTS DE NON REGRESSION DES VALEURS DE G
+#------------------------------------------------------------
+
+#
+# POUR FO = 0.001
+#
+
+TEST_TABLE(       TABLE=G01B,
+                        NOM_PARA='G',
+                   REFERENCE='NON_REGRESSION', 
+                   VERSION  ='7.2.24',
+                            VALE=2.94472E+2,
+                       PRECISION=1.E-3   )
+
+#
+
+TEST_TABLE(       TABLE=G01B1,
+                        NOM_PARA='G',
+                   REFERENCE='NON_REGRESSION', 
+                   VERSION  ='7.2.24',
+                            VALE=2.95548E+2,
+                       PRECISION=1.E-3   )
+
+#
+
+TEST_TABLE(       TABLE=G01B2,
+                        NOM_PARA='G',
+                   REFERENCE='NON_REGRESSION', 
+                   VERSION  ='7.2.24',
+                            VALE=2.956938E+2,
+                       PRECISION=1.E-3   )
+
+#
+
+TEST_TABLE(       TABLE=G01B3,
+                        NOM_PARA='G',
+                            VALE=2.959875E+2,
+                   REFERENCE='NON_REGRESSION', 
+                   VERSION  ='7.2.24',
+                       PRECISION=1.E-3   )
+
+#
+# POUR FO = 0.004
+#
+
+TEST_TABLE(       TABLE=G02B,
+                        NOM_PARA='G',
+                   REFERENCE='NON_REGRESSION', 
+                   VERSION  ='7.2.24',
+                            VALE=1.24996E+04,
+                       PRECISION=1.E-3   )
+
+#
+
+TEST_TABLE(       TABLE=G02B1,
+                        NOM_PARA='G',
+                   REFERENCE='NON_REGRESSION', 
+                   VERSION  ='7.2.24',
+                            VALE=1.254525E+04,
+                       PRECISION=1.E-3   )
+
+#
+
+TEST_TABLE(       TABLE=G02B2,
+                        NOM_PARA='G',
+                   REFERENCE='NON_REGRESSION', 
+                   VERSION  ='7.2.24',
+                            VALE=1.255175E+04,
+                       PRECISION=1.E-3   )
+
+#
+
+TEST_TABLE(       TABLE=G02B3,
+                        NOM_PARA='G',
+                   REFERENCE='NON_REGRESSION', 
+                   VERSION  ='7.2.24',
+                            VALE=1.25750E+04,
+                       PRECISION=1.E-3   )
+
+#
+# POUR FO = 1
+#
+
+TEST_TABLE(       TABLE=G03B,
+                        NOM_PARA='G',
+                   REFERENCE='NON_REGRESSION', 
+                   VERSION  ='7.2.24',
+                            VALE=1.231265,
+                       PRECISION=1.E-3   )
+
+#
+
+TEST_TABLE(       TABLE=G03B1,
+                        NOM_PARA='G',
+                   REFERENCE='NON_REGRESSION', 
+                   VERSION  ='7.2.24',
+                            VALE=1.235783,
+                       PRECISION=1.E-3   )
+
+#
+
+TEST_TABLE(       TABLE=G03B2,
+                        NOM_PARA='G',
+                   REFERENCE='NON_REGRESSION', 
+                   VERSION  ='7.2.24',
+                            VALE=1.23562,
+                       PRECISION=1.E-3   )
+
+#
+
+TEST_TABLE(       TABLE=G03B3,
+                        NOM_PARA='G',
+                   REFERENCE='NON_REGRESSION', 
+                   VERSION  ='7.2.24',
+                            VALE=1.23523,
+                       PRECISION=1.E-3   )
+
+#
+FIN( )
+#

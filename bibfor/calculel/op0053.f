@@ -1,7 +1,7 @@
       SUBROUTINE OP0053 ( IER )
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 07/05/2004   AUTEUR CIBHHGB G.BERTRAND 
+C MODIF CALCULEL  DATE 24/05/2004   AUTEUR GALENNE E.GALENNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -63,7 +63,7 @@ C
       PARAMETER ( NOMPRO = 'OP0053' )
 C
       INTEGER IFM, NIV
-      INTEGER IAUX, JAUX, INDIC, ICHAR 
+      INTEGER IAUX, JAUX, INDIC, ICHAR, NEXCI, L, IEXC
       INTEGER      I,J,ICHA,IBID,IORD,IRET,IVEC,IPROPA,IFOND,IRET1
       INTEGER      JINST,LONVEC,NBPRUP,IORD1,IORD2
       INTEGER      NBINST,NC,NCHA,NDEP,NP,NRES,NBVAL,IG,IBOR,NBORN
@@ -168,6 +168,8 @@ C=======================================================================
         ENDIF
       ENDIF
 
+      CHVITE = ' '
+      CHACCE = ' '
       CALL GETVID(' ','VITE',0,1,1,CHVITE,NVITES)
       IF(NVITES.NE.0) THEN
         CALL GETVID(' ','ACCE',0,1,1,CHACCE,NACCE)
@@ -189,32 +191,35 @@ C=======================================================================
 C=======================================================================
 C 2.5. ==> CHARGES
 C=======================================================================
-
-      CALL GETVID (' ','CHARGE',0,1,0,K8BID,NCHA)
-      NCHA  = -NCHA
-      VCHAR = '&&'//NOMPRO//'.CHARGES'
-      CALL JECREO(VCHAR,'V V K8')
-      N3=MAX(1,NCHA)
-      CALL JEECRA(VCHAR,'LONMAX',N3,' ')
-      CALL JEVEUO(VCHAR,'E',ICHA)
-      CALL GETVID(' ','CHARGE',0,1,NCHA,ZK8(ICHA),IBID)
-      IF (NCHA.NE.0) THEN
-        CALL DISMOI('F','NOM_MODELE',ZK8(ICHA),'CHARGE',IBID,K8BI1,IER)
-        IF (K8BI1.NE.MODELE) THEN
-          CALL UTMESS('F',NOMPRO,'LES CHARGES NE S''APPUIENT PAS'
+      CALL GETFAC('EXCIT',NEXCI)
+        NCHA = 0
+      IF (NEXCI .GT. 0) THEN
+        DO 21 IEXC = 1,NEXCI
+          CALL GETVID('EXCIT','CHARGE',IEXC,1,1,K24BID,L)
+          IF (L .EQ. 1) NCHA = NCHA + 1
+ 21     CONTINUE
+        VCHAR = '&&'//NOMPRO//'.CHARGES'
+        N3=MAX(1,NCHA)
+        CALL WKVECT(VCHAR,'V V K8',N3,ICHA)
+        IF (NCHA .NE. 0) THEN 
+         DO 22 , I = 1,NCHA
+           CALL GETVID('EXCIT','CHARGE',I,1,1,ZK8(ICHA+I-1),IBID)
+ 22      CONTINUE
+         CALL DISMOI('F','NOM_MODELE',ZK8(ICHA),'CHARGE',IBID,K8BI1,IER)
+         IF (K8BI1.NE.MODELE) THEN
+           CALL UTMESS('F',NOMPRO,'LES CHARGES NE S''APPUIENT PAS'
      &                       //' SUR LE MODELE DONNE EN ARGUMENT')
-        ENDIF
-        DO 25 , I = 1,NCHA
-          CALL DISMOI('F','NOM_MODELE',ZK8(ICHA-1+I),'CHARGE',IBID,
+         ENDIF
+         DO 23 , I = 1,NCHA
+           CALL DISMOI('F','NOM_MODELE',ZK8(ICHA-1+I),'CHARGE',IBID,
      &                 K8BID,IER)
-          IF (K8BID.NE.K8BI1) THEN
-            CALL UTMESS('F',NOMPRO,'LES CHARGES NE '
+           IF (K8BID.NE.K8BI1) THEN
+             CALL UTMESS('F',NOMPRO,'LES CHARGES NE '
      &                 // 'S''APPUIENT PAS TOUTES SUR LE MEME MODELE')
-          ENDIF
-   25   CONTINUE
-
+           ENDIF
+  23     CONTINUE
+        ENDIF
       ENDIF
-
 C=======================================================================
 C 2.6. ==> THETA, SYMETRIE DU CHARGEMENT, FOND DE FISSURE
 C=======================================================================
@@ -303,7 +308,7 @@ C 2.9.3.1. ==> LA CHARGE EST-ELLE CONCERNEE PAR UNE SENSIBILITE ?
 C
           INDIC = INDIC + 1
  2930     CONTINUE
-          CALL GETVID(' ','CHARGE',INDIC,1,1,NOMCHA,N1)
+          CALL GETVID('EXCIT','CHARGE',INDIC,1,1,NOMCHA,N1)
           IF (N1.EQ.0) THEN
             INDIC = INDIC + 1
             GO TO 2930

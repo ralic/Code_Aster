@@ -1,4 +1,4 @@
-# MODIF  DATE 17/05/2004   AUTEUR CIBHHBC M.LOPES 
+# MODIF  DATE 25/05/2004   AUTEUR DURAND C.DURAND 
 # TITRE POUTRE DROITE CANTILEVER MULTI-FIBRES : FORCE PONCTUELLE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -24,7 +24,7 @@
 # - Le premier pas reste elastique, le deuxieme plastifie la poutre
 #
 
-DEBUT( CODE=_F( NOM = 'SSNL122A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON') ,)
+DEBUT( CODE=_F( NOM = 'SSNL122A',NIV_PUB_WEB='INTERNET') ,)
 
 # Lecture du maillage
 MA = LIRE_MAILLAGE()

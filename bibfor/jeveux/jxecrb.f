@@ -1,6 +1,6 @@
       SUBROUTINE JXECRB ( IC , IADDI , IADMO , LSO , IDCO , IDOS)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 10/03/98   AUTEUR VABHHTS J.PELLET 
+C MODIF JEVEUX  DATE 24/05/2004   AUTEUR D6BHHJP J.P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -66,11 +66,13 @@ C
 C     ------------------------------------------------------------------
       CHARACTER*8      NOM
       LOGICAL          LRAB
+      INTEGER          LGBL
 C DEB ------------------------------------------------------------------
       IB = 0
       IERR = 0
-      NBLENT = LSO / LONGBL(IC)
-      LRAB   = ( MOD ( LSO , LONGBL(IC) ) .NE. 0 )
+      LGBL = 1024*LONGBL(IC)*LOIS
+      NBLENT = LSO / LGBL
+      LRAB   = ( MOD ( LSO , LGBL ) .NE. 0 )
 C     ------------------------------------------------------------------
       IF ( KSTINI(IC) .NE. 'DUMMY   ' ) THEN
         NOM = NOMFIC(IC)(1:4)//'.   '
@@ -78,9 +80,9 @@ C     ------------------------------------------------------------------
           NUMEXT = (IADDI+I-2)/NBENRG(IC)
           IADLOC = (IADDI+I-1)-(NUMEXT*NBENRG(IC))
           CALL CODENT(NUMEXT+1,'G',NOM(6:7))
-          JIECR = (JK1ZON+IADMO+LONGBL(IC)*(I-1))/LOIS+1
+          JIECR = (JK1ZON+IADMO+LGBL*(I-1))/LOIS+1
           CALL WRITDR ( NOM , ISZON(JIECR) ,
-     +                  LONGBL(IC)/LOUA , IADLOC , -1 , IB , IERR )
+     +                  LGBL/LOUA , IADLOC , -1 , IB , IERR )
           IF ( IERR .NE. 0 ) THEN
             CALL JVDEBM ( 'S' , 'JXECRB01',
      +                    'ERREUR ECRITURE DE L''ENREGISTREMENT' )
@@ -98,9 +100,9 @@ C     ------------------------------------------------------------------
           NUMEXT = (IADDI+NBLENT-1)/NBENRG(IC)
           IADLOC = (IADDI+NBLENT)-(NUMEXT*NBENRG(IC))
           CALL CODENT(NUMEXT+1,'G',NOM(6:7))
-          JIECR = (JK1ZON+IADMO+LSO-LONGBL(IC))/LOIS+1
+          JIECR = (JK1ZON+IADMO+LSO-LGBL)/LOIS+1
           CALL WRITDR ( NOM , ISZON(JIECR) ,
-     +                  LONGBL(IC)/LOUA , IADLOC ,-1, IB , IERR )
+     +                  LGBL/LOUA , IADLOC ,-1, IB , IERR )
           IF ( IERR .NE. 0 ) THEN
             CALL JVDEBM ( 'S' , 'JXECRB02' ,
      +              'ERREUR ECRITURE DE L''ENREGISTREMENT ENTRELACE' )

@@ -1,6 +1,6 @@
       SUBROUTINE UTDEBM ( CH1 , SPGLU , TEXTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILIFOR  DATE 26/09/2003   AUTEUR DURAND C.DURAND 
+C MODIF UTILIFOR  DATE 24/05/2004   AUTEUR D6BHHJP J.P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -67,6 +67,8 @@ C     ------------------------------------------------------------------
             GOTO 200
           ELSE IF(ICOMAL.GT.6) THEN
             IDF=7
+            LIGCOU = 1
+            COLCOU = 80
             GOTO 200
           ENDIF
         ELSE

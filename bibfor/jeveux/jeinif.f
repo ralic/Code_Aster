@@ -1,6 +1,6 @@
       SUBROUTINE JEINIF ( STI, STO, NOMF, CLAS, NREP, NBLOC, LBLOC )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 06/09/2003   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF JEVEUX  DATE 24/05/2004   AUTEUR D6BHHJP J.P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -32,6 +32,7 @@ C IN  NREP   : LONGUEUR DU REPERTOIRE
 C IN  NBLOC  : NOMBRE D'ENREGISTREMMENTS DU FICHIER D'ACCES DIRECT
 C              SI NBLOC = 0,  ON LE DETERMINE A PARTIR DE MFIC
 C IN  LBLOC  : LONGUEUR DES ENREGISTREMMENTS DU FICHIER D'ACCES DIRECT
+C              CETTE LONGUEUR EST DONNEE EN KILO (1024) MOT (ENTIER)
 C
 C ----------------------------------------------------------------------
       INTEGER          ICLAS ,ICLAOS , ICLACO , IDATOS , IDATCO , IDATOC
@@ -105,7 +106,7 @@ C ----------------------------------------------------------------------
       CHARACTER*8      KNOM,KNOMF,KSTIN,KSTOU,CVERSB,CVERSU
       CHARACTER*16     K16BID
       CHARACTER*75     CMESS
-      INTEGER          NCAR , ITLEC(1) , ITECR(1) , IADADD(2)
+      INTEGER          NCAR , ITLEC(1) , ITECR(1) , IADADD(2), LGBL
       PARAMETER      ( NCAR = 11 )
 C ----------------------------------------------------------------------
       INTEGER          LIDBAS      , LIDEFF
@@ -186,11 +187,11 @@ C
         NREUTI(IC) = 0
         NRHCOD(IC) = JJPREM ( NREMAX(IC) )
         NBLUTI(IC) = 0
-        LONGBL(IC) = LBLOC * LOIS
+        LONGBL(IC) = LBLOC
         IF ( NBLOC .EQ. 0 ) THEN
-          NBLMAX(IC) = MFIC/LONGBL(IC)
+          NBLMAX(IC) = MFIC/(LONGBL(IC)*LOIS)
         ELSE
-          NBLMAX(IC) = MIN ( NBLOC , MFIC/LONGBL(IC) )
+          NBLMAX(IC) = MIN ( NBLOC , MFIC/(LONGBL(IC)*LOIS) )
         ENDIF
 C
         LMARQ = 2 * NREP * LOIS
@@ -204,17 +205,15 @@ C
         JCARA(IC) = IADRS
         CALL JJECRS (KAT(1),IC,1,0,'E',IMARQ(JMARQ(IC)+1))
 C
+        NBENRG(IC) = MIN(LFIC/(LONGBL(IC)*LOIS),NBLMAX(IC))
+        NBEX   = NBLMAX(IC)/NBENRG(IC)+1
         IF ( LCRA ) THEN
-         NBENRG(IC) = MIN(LFIC/LONGBL(IC),NBLMAX(IC))
-         NBEX   = NBLMAX(IC)/NBENRG(IC)+1
          LONIND = NBEX*(NBENRG(IC)/512+1)*512 * LOIS
          CALL JJALLS (LONIND,'V','I',LOIS,Z, INDEF, IADRS, KINDEF(IC))
          KAT(17) = KINDEF(IC)
          JINDEF(IC) = IADRS
          CALL JJECRS (KAT(17),IC,17,0,'E',IMARQ(JMARQ(IC)+2*17-1))
-
         ELSE
-         NBENRG(IC) = NBLMAX(IC)
          LONIND = LOIS
          JINDEF(IC) = 1
         ENDIF
@@ -225,12 +224,13 @@ C
         JIACCE(IC) = IADRS - 1
         CALL JJECRS (KAT(15),IC,15,0,'E',IMARQ(JMARQ(IC)+2*15-1))
 C
-        CALL JJALLS ( LONGBL(IC),'V','I',LOIS,Z,ITLEC,IADRS ,KITLEC(IC))
+        LGBL = 1024*LONGBL(IC)*LOIS
+        CALL JJALLS ( LGBL,'V','I',LOIS,Z,ITLEC,IADRS ,KITLEC(IC))
         KAT(18) = KITLEC(IC)
         KITLEC(IC) = ( KITLEC(IC) - 1 ) * LOIS
         CALL JJECRS (KAT(18),IC,18,0,'E',IMARQ(JMARQ(IC)+2*18-1))
 C
-        CALL JJALLS ( LONGBL(IC),'V','I',LOIS,Z,ITECR,IADRS ,KITECR(IC))
+        CALL JJALLS ( LGBL,'V','I',LOIS,Z,ITECR,IADRS ,KITECR(IC))
         KAT(19) = KITECR(IC)
         KITECR(IC) = ( KITECR(IC) - 1 ) * LOIS
         CALL JJECRS (KAT(19),IC,19,0,'E',IMARQ(JMARQ(IC)+2*19-1))
@@ -421,7 +421,7 @@ C
         CALL JVIMPI ( 'L' , 'NOMBRE D''ENREGISTREMENTS MAXIMUM  : ',
      &                 1 , NBLMAX(IC) )
         CALL JVIMPI ( 'L' , 'LONGUEUR D''ENREGISTREMENT (OCTETS): ',
-     &                 1 , LONGBL(IC) )
+     &                 1 , 1024*LONGBL(IC)*LOIS )
         CALL JVIMPI ( 'L' , 'NOMBRE D''IDENTIFICATEURS UTILISES : ',
      &                 1 , NREUTI(IC) )
         CALL JVIMPI ( 'L' , 'TAILLE MAXIMUM DU REPERTOIRE      : ',
@@ -442,18 +442,17 @@ C
         CALL JXLIR1 ( IC , CARA(JCARA(IC)) )
         CALL JJECRS (KAT(1),IC,1,0,'E',IMARQ(JMARQ(IC)+2*1-1))
 C
+        NBENRG(IC) = MIN ( LFIC/(LONGBL(IC)*LOIS) , NBLMAX(IC) )
+        NBEX   = NBLMAX(IC)/NBENRG(IC)+1
         IF ( LCRA ) THEN
-         NBENRG(IC) = MIN ( LFIC/LONGBL(IC) , NBLMAX(IC) )
-         NBEX   = NBLMAX(IC)/NBENRG(IC)+1
          LONIND = NBEX*(NBENRG(IC)/512+1)*512 * LOIS
          CALL JJALLS (LONIND,'V','I',LOIS,Z,INDEF,IADRS,KINDEF(IC))
          KAT(17) = KINDEF(IC)
          JINDEF(IC) = IADRS
          CALL JJECRS (KAT(17),IC,17,0,'E',IMARQ(JMARQ(IC)+2*17-1))
         ELSE
-          NBENRG(IC) = NBLMAX(IC)
-          LONIND     = LOIS
-          JINDEF(IC) = 1
+         LONIND     = LOIS
+         JINDEF(IC) = 1
         ENDIF
 C
 C ----- NOUVEL OPEN DE LA BASE AVEC UN INDEX DE BONNE LONGUEUR
@@ -465,11 +464,12 @@ C
  100    CONTINUE
         IEXT(IC) = NBEXT
 C
-        CALL JJALLS (LONGBL(IC),'V','I',LOIS,Z,ITLEC,IADRS ,KITLEC(IC))
+        LGBL = 1024*LONGBL(IC)*LOIS
+        CALL JJALLS (LGBL,'V','I',LOIS,Z,ITLEC,IADRS ,KITLEC(IC))
         KAT(18) = KITLEC(IC)
         KITLEC(IC) = ( KITLEC(IC) - 1 ) * LOIS
         CALL JJECRS (KAT(18),IC,18,0,'E',IMARQ(JMARQ(IC)+2*18-1))
-        CALL JJALLS (LONGBL(IC),'V','I',LOIS,Z,ITECR,IADRS ,KITECR(IC))
+        CALL JJALLS (LGBL,'V','I',LOIS,Z,ITECR,IADRS ,KITECR(IC))
         KAT(19) = KITECR(IC)
         KITECR(IC) = ( KITECR(IC) - 1 ) * LOIS
         LON = NREMAX(IC) * LOIS

@@ -1,4 +1,4 @@
-# MODIF  DATE 03/02/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 24/05/2004   AUTEUR GALENNE E.GALENNE 
 # TITRE CALCUL 3D DE G FISSURE CIRCULAIRE EN MILIEU INFINI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -135,7 +135,7 @@ THETA=CALC_THETA(
 
 G=CALC_G_THETA_T(         MODELE=MO,
                           RESULTAT=RESU,
-                      CHARGE=CH2,
+                     EXCIT=_F(CHARGE=CH2,),
                              THETA=THETA,
                          COMP_ELAS=_F(  RELATION = 'ELAS'),
                         CHAM_MATER=CHMAT

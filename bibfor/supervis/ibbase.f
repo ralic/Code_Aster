@@ -4,7 +4,7 @@
       CHARACTER*(*)             FICHDF
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 06/09/2003   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF SUPERVIS  DATE 24/05/2004   AUTEUR D6BHHJP J.P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,9 +39,6 @@ C     ------------------------------------------------------------------
       LOGICAL       BASAUV
 C
       CHARACTER*16  MOTFAC, NOMRES, CONCEP, NOMCMD
-C
-C     DEFINITION DU KILO INFORMATIQUE
-      INTEGER KILO
 C
 C     --- VARIABLES LOCALES --------------------------------------------
       PARAMETER   ( MXBASE = 3 )
@@ -90,8 +87,6 @@ C     TAILLE(LOCALE)         PETIT   MOYEN      GROS
      +  (LGBLCA(3,I),I=1,3)/ 100   ,  100     ,  100         /,
      +  (LGRECA(3,I),I=1,3)/2000   , 4000     , 6000         /
 C
-C     ------------------------------------------------------------------
-      DATA    KILO/1024/
 C     ------------------------------------------------------------------
 C
 C     INITIALISATION DU CODE RETOUR
@@ -157,8 +152,7 @@ C        --- LONGUEUR D'UN BLOC D'ENREGISTREMENT -----------------------
          BALGBL(INDBAS) =  LGBLCA(INDBAS,INDCAS)
          CALL GETVIS(MOTFAC,'LONG_ENRE',IBASE,1,1,BALGBL(INDBAS),NB)
 C
-         LKM = 1024*LOISEM()
-         LTT = BANBBL(INDBAS)*BALGBL(INDBAS)*LKM         
+         LTT = BANBBL(INDBAS)*BALGBL(INDBAS)*LOISEM()         
          IF ( LTT .GT. MOFIEM() ) THEN
             IER = IER + 1
             CALL UTDEBM('E',NOMCMD,'LE NOMBRE D''ENREGISTREMENTS '
@@ -211,7 +205,7 @@ C        --- INITIALISATION DE CHAQUE BASE ---
          DO 300 IBASE = IDEB, MXBASE
             CALL JEINIF( STIN(IBASE), STOUT(IBASE),
      +                   NOMBA(IBASE)(1:8), NOMBA(IBASE)(1:1),
-     +                   BALGRE(IBASE),BANBBL(IBASE),BALGBL(IBASE)*KILO)
+     +                   BALGRE(IBASE),BANBBL(IBASE),BALGBL(IBASE))
   300    CONTINUE
       ELSE
 C

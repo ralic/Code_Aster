@@ -2,7 +2,7 @@
       IMPLICIT   NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 06/11/2003   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF POSTRELE  DATE 24/05/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -44,12 +44,12 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C
       INTEGER      IBID, N1, IOCC, NBTHER, NUME, NBINST, JINST,
      +             I, J, K, L, NDIM, NBABSC, JABSC, JORIG, JEXTR, NCMP,
-     +             JCONT, IRET
+     +             JCONT, IRET, JCOFL
       PARAMETER  ( NCMP = 6 )
-      REAL*8       PREC(2), MOMEN0, MOMEN1, VALE(2)
+      REAL*8       PREC(2), MOMEN0, MOMEN1, VALE(2), SIGMLO, SIGMLE
       COMPLEX*16   CBID
-      LOGICAL      EXIST
-      CHARACTER*8  K8B, CRIT(2), NOCMP(NCMP), TABLE, KNUME
+      LOGICAL      EXIST, FLEXIO
+      CHARACTER*8  K8B, CRIT(2), NOCMP(NCMP), TABLE, TABFLE, KNUME
       CHARACTER*16 MOTCLF, VALEK(2)
       CHARACTER*24 INSTAN, ABSCUR, JVORIG, JVEXTR
 C DEB ------------------------------------------------------------------
@@ -78,7 +78,7 @@ C
       JVEXTR = '&&RC3200.THER_UNIT .EXTR'
       CALL JECREC (JVORIG, 'V V R', 'NO','DISPERSE','VARIABLE',NBTHER)
       CALL JECREC (JVEXTR, 'V V R', 'NO','DISPERSE','VARIABLE',NBTHER)
-
+C
       DO 10, IOCC = 1, NBTHER, 1
 C
          CALL GETVIS ( MOTCLF, 'NUME_RESU_THER', IOCC,1,1, NUME, N1 )
@@ -86,6 +86,10 @@ C
          CALL CODENT ( NUME , 'D0' , KNUME(2:8)  )
 C
          CALL GETVID ( MOTCLF, 'TABL_RESU_THER', IOCC,1,1, TABLE, N1 )
+C
+         FLEXIO = .FALSE.
+         CALL GETVID ( MOTCLF, 'TABL_SIGM_THER', IOCC,1,1, TABFLE, N1 )
+         IF (N1.NE.0) FLEXIO = .TRUE.
 C
 C ------ ON RECUPERE LES INSTANTS DANS LA TABLE
 C
@@ -114,8 +118,9 @@ C
          CALL JEVEUO ( ABSCUR, 'L', JABSC )
 C
          CALL WKVECT ( '&&RC32TH.CONTRAINTES', 'V V R', NBABSC, JCONT )
+         CALL WKVECT ( '&&RC32TH.CONT_FLEXIO', 'V V R', NBABSC, JCOFL )
 C
-         NDIM = NBINST * 2 * NCMP
+         NDIM = 3 * NBINST * NCMP
          CALL JECROC (JEXNOM(JVORIG,KNUME))
          CALL JEECRA (JEXNOM(JVORIG,KNUME),'LONMAX',NDIM,' ')
          CALL JEECRA (JEXNOM(JVORIG,KNUME),'LONUTI',NDIM,' ')
@@ -145,6 +150,19 @@ C
                   CALL UTFINM
                ENDIF
 C
+               IF ( FLEXIO ) THEN
+                 CALL TBLIVA ( TABFLE, 2, VALEK, IBID, VALE,
+     +                         CBID, K8B, CRIT, PREC, NOCMP(J), K8B, 
+     +                         IBID, ZR(JCOFL+K-1), CBID, K8B, IRET)
+                 IF (IRET.NE.0) THEN
+                   CALL UTDEBM('F', 'RC32TH', 'PROBLEME POUR RECUPERER')
+                   CALL UTIMPK('S', ' DANS LA TABLE ',1, TABFLE )
+                   CALL UTIMPK('L', ' LA CONTRAINTE ', 1, NOCMP(J) )
+                  CALL UTIMPR('S',' POUR L''ABSC_CURV ',1,ZR(JABSC+K-1))
+                   CALL UTFINM
+                 ENDIF
+               ENDIF
+C
  16          CONTINUE
 C
              L = NCMP*(I-1) + J
@@ -156,8 +174,22 @@ C
 C
              L = NCMP*NBINST + NCMP*(I-1) + J
 C
-             ZR(JORIG-1+L) = MOMEN0 - 0.5D0*MOMEN1
-             ZR(JEXTR-1+L) = MOMEN0 + 0.5D0*MOMEN1
+             SIGMLO = MOMEN0 - 0.5D0*MOMEN1
+             SIGMLE = MOMEN0 + 0.5D0*MOMEN1
+C
+             ZR(JORIG-1+L) = SIGMLO
+             ZR(JEXTR-1+L) = SIGMLE
+C
+             IF ( FLEXIO ) THEN
+               CALL RC32MY (NBABSC,ZR(JABSC),ZR(JCOFL), MOMEN0, MOMEN1)
+               L = 2*NCMP*NBINST + NCMP*(I-1) + J
+               ZR(JORIG-1+L) = SIGMLO - 0.5D0*MOMEN1
+               ZR(JEXTR-1+L) = SIGMLE - 0.5D0*MOMEN1
+             ELSE
+               L = 2*NCMP*NBINST + NCMP*(I-1) + J
+               ZR(JORIG-1+L) = 0.D0
+               ZR(JEXTR-1+L) = 0.D0
+             ENDIF
 C
  14        CONTINUE
 C
@@ -166,6 +198,7 @@ C
          CALL JEDETR ( INSTAN )
          CALL JEDETR ( ABSCUR )
          CALL JEDETR ( '&&RC32TH.CONTRAINTES' )
+         CALL JEDETR ( '&&RC32TH.CONT_FLEXIO' )
 C
  10   CONTINUE
 C

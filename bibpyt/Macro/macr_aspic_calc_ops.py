@@ -1,4 +1,4 @@
-#@ MODIF macr_aspic_calc_ops Macro  DATE 22/03/2004   AUTEUR DURAND C.DURAND 
+#@ MODIF macr_aspic_calc_ops Macro  DATE 24/05/2004   AUTEUR GALENNE E.GALENNE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -691,13 +691,11 @@ def macr_aspic_calc_ops(self,TYPE_MAILLAGE,TUBULURE,MAILLAGE,MODELE,CHAM_MATER,C
 #
           montit = 'G_THETA AVEC R_INF = '+str(tht3d['R_INF'])+' ET R_SUP = '+str(tht3d['R_SUP'])
           motscles={}
-          charge  =[]
-          if (PRES_REP['PRES_LEVRE']=='OUI') and (TYPE_MAILLAGE[-4:]=='_DEB') : charge.append(__chpres)
-          if ECHANGE  !=None                                                  : charge.append(chmeth  )
           if COMP_ELAS!=None:  motscles['COMP_ELAS']=  _F(TOUT     = 'OUI',
                                                           RELATION = COMP_ELAS['RELATION'],)
           if COMP_INCR!=None:  motscles['COMP_INCR']=  _F(RELATION = COMP_INCR['RELATION'],)
-          if charge!=[]:       motscles['CHARGE'   ]= charge
+          if mcfex!=[]:       motscles['EXCIT'] =mcfex
+          print motscles
           __gtheta = CALC_G_THETA_T( MODELE     = modele,
                                      CHAM_MATER = affmat,
                                      THETA      = __theta,
@@ -732,12 +730,9 @@ def macr_aspic_calc_ops(self,TYPE_MAILLAGE,TUBULURE,MAILLAGE,MODELE,CHAM_MATER,C
 #
           montit = 'G_LOCAL AVEC R_INF = '+str(tht3d['R_INF'])+' ET R_SUP = '+str(tht3d['R_SUP'])
           motscles={}
-          charge  =[]
-          if (PRES_REP['PRES_LEVRE']=='OUI') and (TYPE_MAILLAGE[-4:]=='_DEB') : charge.append(__chpres)
-          if ECHANGE  !=None                                                  : charge.append(chmeth  )
           if COMP_ELAS!=None:  motscles['COMP_ELAS'    ]=  _F(TOUT     = 'OUI',
                                                               RELATION = COMP_ELAS['RELATION'],)
-          if charge!=[]:       motscles['CHARGE'       ]= charge
+          if mcfex!=[]:       motscles['EXCIT'] =mcfex
           if FERME:
                                motscles['LISSAGE_THETA']= 'LAGRANGE'
                                motscles['LISSAGE_G'    ]= 'LAGRANGE'

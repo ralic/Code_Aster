@@ -1,4 +1,4 @@
-# MODIF  DATE 03/02/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 24/05/2004   AUTEUR GALENNE E.GALENNE 
 # TITRE  FISSURE SEMI-ELLIPTIQUE AVEC MILIEU INFINI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -121,7 +121,7 @@ THETA1=CALC_THETA(   OPTION='COURONNE',
 G1=CALC_G_THETA_T(  MODELE=MO,
                       DEPL=DEP,
                      THETA=THETA1,
-                    CHARGE=CHFONC,
+                    EXCIT=_F(CHARGE=CHFONC,),
                       COMP_ELAS=_F( RELATION = 'ELAS',     
                                  DEFORMATION = 'PETIT',  ),
                     CHAM_MATER=CHMAT )
@@ -138,7 +138,7 @@ GLOC1=CALC_G_LOCAL_T(  MODELE=MO,
                             LISSAGE_G='LEGENDRE',
                          COMP_ELAS=_F( RELATION = 'ELAS',     
                                     DEFORMATION = 'PETIT',  ),
-                       CHARGE=CHFONC,
+                       EXCIT=_F(CHARGE=CHFONC,),
                         INFO=1
                       )
 
@@ -158,7 +158,7 @@ THETA2=CALC_THETA(   OPTION='COURONNE',
 G2=CALC_G_THETA_T(  MODELE=MO,
                       DEPL=DEP,
                      THETA=THETA2,
-                    CHARGE=CHFACER,
+                    EXCIT=_F(CHARGE=CHFACER,),
                       COMP_ELAS=_F( RELATION = 'ELAS',     
                                  DEFORMATION = 'PETIT',  ),
                     CHAM_MATER=CHMAT )
@@ -175,7 +175,7 @@ GLOC2=CALC_G_LOCAL_T(  MODELE=MO,
                          LISSAGE_G='LEGENDRE',
                          COMP_ELAS=_F( RELATION = 'ELAS',     
                                     DEFORMATION = 'PETIT',  ),
-                       CHARGE=CHFACER )
+                       EXCIT=_F(CHARGE=CHFACER), )
 
 #----------------------------------------------------------------------
 #                           COURONNE 3
@@ -193,7 +193,7 @@ THETA3=CALC_THETA(   OPTION='COURONNE',
 G3=CALC_G_THETA_T(  MODELE=MO,
                       DEPL=DEP,
                      THETA=THETA3,
-                    CHARGE=CHFACEF,
+                    EXCIT=_F(CHARGE=CHFACEF,),
                       COMP_ELAS=_F( RELATION = 'ELAS',     
                                  DEFORMATION = 'PETIT',  ),
                     CHAM_MATER=CHMAT )
@@ -208,7 +208,7 @@ GLOC3=CALC_G_LOCAL_T(  MODELE=MO,
                        R_INF_FO=RINF3,
                          COMP_ELAS=_F( RELATION = 'ELAS',     
                                     DEFORMATION = 'PETIT',  ),
-                       CHARGE=CHFACEF )
+                       EXCIT=_F(CHARGE=CHFACEF), )
 
 #
 #  CALCUL AVEC LA METHODE 'THETA_LAGRANGE'
@@ -226,7 +226,7 @@ GLOC4=CALC_G_LOCAL_T(  MODELE=MO,
                        R_INF_FO=RINF2,
                          COMP_ELAS=_F( RELATION = 'ELAS',     
                                     DEFORMATION = 'PETIT',  ),
-                       CHARGE=CH,
+                       EXCIT=_F(CHARGE=CH,),
                         INFO=1
                       )
 
@@ -245,7 +245,7 @@ GLOC5=CALC_G_LOCAL_T(  MODELE=MO,
                        R_INF_FO=RINF2,
                          COMP_ELAS=_F( RELATION = 'ELAS',     
                                     DEFORMATION = 'PETIT',  ),
-                       CHARGE=CH )
+                       EXCIT=_F(CHARGE=CH,), )
 
 #
 #  CALCUL AVEC LA METHODE 'NOEUD_NOEUD'
@@ -262,7 +262,7 @@ GLOC6=CALC_G_LOCAL_T(  MODELE=MO,
                        R_INF_FO=RINF2,
                          COMP_ELAS=_F( RELATION = 'ELAS',     
                                     DEFORMATION = 'PETIT',  ),
-                       CHARGE=CH )
+                       EXCIT=_F(CHARGE=CH,), )
 
 #----------------------------------------------------------------------
 #              TEST DE G

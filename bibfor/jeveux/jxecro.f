@@ -1,6 +1,6 @@
       SUBROUTINE JXECRO ( IC , IADMI , IADDI , LSO , IDCO , IDOS )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 10/10/2003   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF JEVEUX  DATE 24/05/2004   AUTEUR D6BHHJP J.P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -58,7 +58,7 @@ C     ------------------------------------------------------------------
       COMMON /JUSADI/  JUSADI(N)
 C     ------------------------------------------------------------------
       CHARACTER*75     CMESS
-      INTEGER          IADMO , KADD , LADD ,NDE
+      INTEGER          IADMO , KADD , LADD ,NDE ,LGBL
       LOGICAL          LPETIT
       PARAMETER      ( NDE = 6)
 C ----------------------------------------------------------------------
@@ -90,7 +90,8 @@ C DEB ------------------------------------------------------------------
       KADD   = IADDI(1)
       LADD   = IADDI(2)
       IADMO  = ( IADM - 1 ) * LOIS + LADM + 1
-      LPETIT = ( LSO .LT. LONGBL(IC)-NDE*LOIS )
+      LGBL   = 1024*LONGBL(IC)*LOIS
+      LPETIT = ( LSO .LT. LGBL-NDE*LOIS )
       IF ( IADDI(1) .EQ. 0 ) THEN
 C
 C ----- PREMIER DECHARGEMENT
@@ -99,7 +100,7 @@ C
 C
 C -------- PETIT OBJET
 C
-          IF ( NITECR(IC) + LSO +NDE*LOIS .GT. LONGBL(IC) ) THEN
+          IF ( NITECR(IC) + LSO +NDE*LOIS .GT. LGBL ) THEN
 C
 C --------- LE PETIT OBJET NE TIENT PAS DANS LE TAMPON D'ECRITURE
             IF ( IITECR(IC) .GT. 0 ) THEN
@@ -108,8 +109,8 @@ C
 C ----------- ON STOCKE LA LONGUEUR RESTANTE DE L'ENREGISTREMENT AU BOUT
               ISZON(JIECR  ) = 0
               ISZON(JIECR+1) = 0
-              ISZON(JIECR+2) = (LONGBL(IC)-NITECR(IC))/LOIS-3
-              CALL JXECRB (IC, IITECR(IC), KITECR(IC)+1, LONGBL(IC),0,0)
+              ISZON(JIECR+2) = (LGBL-NITECR(IC))/LOIS-3
+              CALL JXECRB (IC, IITECR(IC), KITECR(IC)+1, LGBL,0,0)
             ENDIF
             DO 101 KD=1,NBLMAX(IC)
               LSADI = JUSADI(IC)+2*KD-1
@@ -171,11 +172,11 @@ C ----------- ON STOCKE LA LONGUEUR RESTANTE DE L'ENREGISTREMENT AU BOUT
               CMESS ='DE LA BASE '//NOMBAS(IC)//' EST ATTEINT, '
      &              //'IL FAUT RELANCER LE CALCUL EN '
               CALL JVIMPK ( 'S' , ' ' , 1 , CMESS )
-              CMESS = 'MODIFIANT LE PARAMETRE NMAX_ENRE DANS DEBUT'
-              CALL JVIMPK ( 'S' , ' ' , 1 , CMESS )
               CMESS ='OU EN PASSANT UNE TAILLE MAXIMUM DE BASE SUR LA '
-     &            //'LIGNE DE COMMANDE : ARGUMENT -max_base'
+     &               //'LIGNE DE COMMANDE :'
               CALL JVIMPK ( 'L' , ' ' , 1 , CMESS )
+              CMESS =' ARGUMENT "-max_base" SUIVI DE LA VALEUR EN Mo'
+              CALL JVIMPK ( 'S' , ' ' , 1 , CMESS )
               CALL JVFINM ( )
  204          CONTINUE
               IITECR(IC) = KD
@@ -199,8 +200,8 @@ C ----------- ON STOCKE LA LONGUEUR RESTANTE DE L'ENREGISTREMENT AU BOUT
 C
 C ------- GROS OBJET
 C
-          NBL = LSO / LONGBL(IC)
-          IF ( MOD ( LSO , LONGBL(IC) ) .NE. 0 ) NBL = NBL + 1
+          NBL = LSO / LGBL
+          IF ( MOD ( LSO , LGBL ) .NE. 0 ) NBL = NBL + 1
           KD = 1
  301      CONTINUE
           IF ( KD .LE. NBLMAX(IC)-NBL ) THEN
@@ -235,8 +236,10 @@ C
           CMESS = 'MODIFIANT LE PARAMETRE NMAX_ENRE DANS DEBUT'
           CALL JVIMPK ( 'S' , ' ' , 1 , CMESS )
           CMESS ='OU EN PASSANT UNE TAILLE MAXIMUM DE BASE SUR LA '
-     &        //'LIGNE DE COMMANDE : ARGUMENT -max_base'
+     &           //'LIGNE DE COMMANDE :'
           CALL JVIMPK ( 'L' , ' ' , 1 , CMESS )
+          CMESS =' ARGUMENT "-max_base" SUIVI DE LA VALEUR EN Mo'
+          CALL JVIMPK ( 'S' , ' ' , 1 , CMESS )
           CALL JVFINM ( )
  304      CONTINUE
           CALL JXECRB (IC, KD, IADMO, LSO, IDCO, IDOS)
@@ -256,9 +259,9 @@ C
             CALL JXDEPS (IADMO, KITECR(IC)+LADD+1, LSO)
           ELSE
             IF ( LITLEC(IC) ) THEN
-              CALL JXECRB (IC, IITLEC(IC), KITLEC(IC)+1, LONGBL(IC),0,0)
+              CALL JXECRB (IC, IITLEC(IC), KITLEC(IC)+1, LGBL,0,0)
             ENDIF
-            CALL JXLIRB (IC, KADD, KITLEC(IC)+1, LONGBL(IC))
+            CALL JXLIRB (IC, KADD, KITLEC(IC)+1, LGBL)
             CALL JXDEPS (IADMO, KITLEC(IC)+LADD+1, LSO)
             IITLEC(IC) = KADD
             LITLEC(IC) = .TRUE.

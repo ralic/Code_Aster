@@ -5,7 +5,7 @@
       CHARACTER*8         NOMIN  , NOMOUT
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 29/01/2004   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF JEVEUX  DATE 24/05/2004   AUTEUR D6BHHJP J.P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -66,7 +66,7 @@ C     ------------------------------------------------------------------
       CHARACTER*1      KCLAS
       CHARACTER*8      NOMBA1,NOMBA2,NOM
       CHARACTER*75     CMESS
-      INTEGER          ITP(1),JITP,IADITP
+      INTEGER          ITP(1),JITP,IADITP,LGBL1,LGBL2
 C DEB ------------------------------------------------------------------
       NOMIN  = NOMINZ
       CLASIN = CLSINZ
@@ -79,7 +79,7 @@ C
       KCLAS = CLASOU
       NREP = NREMAX(ICI)
       NBLOC= NBENRG(ICI)
-      LBLOC= LONGBL(ICI)/LOIS
+      LBLOC= LONGBL(ICI)
       NOM = NOMOUT(1:4)//'.?  '
       CALL LXMINS (NOM)
       CALL RMFILE (NOM)
@@ -88,7 +88,9 @@ C
       NOMBA1 = NOMFIC(ICI)(1:4)//'.   '
       NOMBA2 = NOMFIC(ICO)(1:4)//'.   '
 C
-      CALL JJALLS(LONGBL(ICI),' ','I',LOIS,'INIT',ITP,JITP,IADITP)
+      LGBL1= 1024*LONGBL(ICI)*LOIS  
+      LGBL2= 1024*LONGBL(ICO)*LOIS  
+      CALL JJALLS(LGBL1,' ','I',LOIS,'INIT',ITP,JITP,IADITP)
       ISZON(JISZON+IADITP-1) = ISTAT(1)
       ISZON(JISZON+ISZON(JISZON+IADITP-4)-4) = ISTAT(4)
       DO 50  K=1,(NBLUTI(ICI)-1)/NBENRG(ICI)
@@ -100,15 +102,14 @@ C
         NUMEXT = (K-1)/NBENRG(ICI)
         IADLOC =  K - (NUMEXT*NBENRG(ICI))
         CALL CODENT(NUMEXT+1,'G',NOMBA1(6:7))
-        CALL READDR ( NOMBA1, ISZON(JISZON + IADITP),
-     &                LONGBL(ICI)/LOUA, IADLOC, IERR )
+        CALL READDR (NOMBA1,ISZON(JISZON+IADITP),LGBL1/LOUA,IADLOC,IERR)
         IF (IERR .NE. 0 ) THEN
           CMESS = ' ERREUR LORS DE LA RELECTURE D''UN ENREGISTREMENT'
           CALL JVMESS('S','JXCOPY01',CMESS)
         ENDIF
         CALL CODENT(NUMEXT+1,'G',NOMBA2(6:7))
         CALL WRITDR ( NOMBA2, ISZON(JISZON + IADITP),
-     &                LONGBL(ICO)/LOUA, IADLOC, -1, IB, IERR )
+     &                LGBL2/LOUA, IADLOC, -1, IB, IERR )
         IF (IERR .NE. 0 ) THEN
           CMESS = ' ERREUR LORS DE L''ECRITURE D''UN ENREGISTREMENT'
           CALL JVMESS('S','JXCOPY02',CMESS)

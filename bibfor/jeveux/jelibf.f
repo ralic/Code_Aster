@@ -1,7 +1,7 @@
       SUBROUTINE JELIBF ( COND , CLAS )
 C COMPIL PARAL
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 16/06/2000   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF JEVEUX  DATE 24/05/2004   AUTEUR D6BHHJP J.P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -83,7 +83,7 @@ C ----------------------------------------------------------------------
       CHARACTER*8      KCOND
       CHARACTER*32     NOMCAR
       CHARACTER*75     CMESS
-      INTEGER          IADCAR,IADDAC(2)
+      INTEGER          IADCAR,IADDAC(2),LGBL
 C DEB ------------------------------------------------------------------
       KCOND = COND
       KCLAS = CLAS
@@ -172,11 +172,12 @@ C       ----------- ACTUALISER CARA
            IADCAR = 0
         END IF
 C       ----------- DECHARGER TAMPON D'ECRITURE ( PETITS OBJETS )
+        LGBL = 1024*LONGBL(IC)*LOIS
         IF ( IITECR(IC) .GT. 0 ) THEN
-           CALL JXECRB (IC, IITECR(IC), KITECR(IC)+1, LONGBL(IC), 0, 0)
+           CALL JXECRB (IC, IITECR(IC), KITECR(IC)+1, LGBL, 0, 0)
         ENDIF
         IF ( LITLEC(IC) ) THEN
-           CALL JXECRB (IC, IITLEC(IC), KITLEC(IC)+1, LONGBL(IC), 0, 0)
+           CALL JXECRB (IC, IITLEC(IC), KITLEC(IC)+1, LGBL, 0, 0)
            LITLEC(IC) = .FALSE.
            IITLEC(IC) = 0
         ENDIF
@@ -186,7 +187,7 @@ C       ---- ON DECHARGE MAINTENANT LES STATISTIQUES SUR LES ACCES
         CALL JXECRO (IC,IADACC,IADDAC,LACC,0,LIDEFF)
         IITECR(IC) = 0
         IF ( LITLEC(IC) ) THEN
-          CALL JXECRB ( IC,IITLEC(IC),KITLEC(IC)+1,LONGBL(IC),0,0)
+          CALL JXECRB ( IC,IITLEC(IC),KITLEC(IC)+1,LGBL,0,0)
         ENDIF
         CALL JJLIBP ( IADACC )
         IADACC = 0
@@ -195,13 +196,13 @@ C     GLUTE STAT CODE
 C
         IF    ( CLAS(1:1) .EQ. 'G' ) THEN
           NBENRG = NBLUTI(IC)
-          LGENRG = LONGBL(IC)
+          LGENRG = 1024*LONGBL(IC)*LOIS
         ELSEIF( CLAS(1:1) .EQ. 'V' ) THEN
           NBENRV = NBLUTI(IC)
-          LGENRV = LONGBL(IC)
+          LGENRV = 1024*LONGBL(IC)*LOIS
         ELSEIF( CLAS(1:1) .EQ. 'L' ) THEN
           NBENRL = NBLUTI(IC)
-          LGENRL = LONGBL(IC)
+          LGENRL = 1024*LONGBL(IC)*LOIS
         ENDIF
       ENDIF
 C
@@ -217,8 +218,9 @@ C
      &               1 , NBLUTI(IC) )
       CALL JVIMPI ( 'L' , 'NOMBRE D''ENREGISTREMENTS MAXIMUM  : ',
      &               1 , NBLMAX(IC) )
+      LGBL = 1024*LONGBL(IC)*LOIS
       CALL JVIMPI ( 'L' , 'LONGUEUR D''ENREGISTREMENT (OCTETS): ',
-     &               1 , LONGBL(IC) )
+     &               1 , LGBL )
       CALL JVIMPI ( 'L' , 'NOMBRE TOTAL D''ENTREES/SORTIES    : ',
      &               1 , NBIO)
       CALL JVIMPI ( 'L' , 'NOMBRE D''IDENTIFICATEURS UTILISES : ',

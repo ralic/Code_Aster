@@ -1,6 +1,6 @@
       SUBROUTINE NUMECN(MODELE,CHAMP,NU)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/05/2004   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGORITH  DATE 24/05/2004   AUTEUR D6BHHJP J.P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -52,11 +52,11 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C DEB ------------------------------------------------------------------
 
       CALL JEMARQ()
+      K19BID = ' '
       MO=MODELE
 
       CALL DISMOI('F','PROF_CHNO',CHAMP,'CHAM_NO',IBID,PRFCHN,IBID)
       CALL JELIRA(PRFCHN//'.LILI','NOMMAX',NB1,KBID)
-
 
       LLIGR = '&&NUMECN.LISTE_LIGREL'
       IF (NB1.EQ.1) THEN

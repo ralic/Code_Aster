@@ -3,7 +3,7 @@
       CHARACTER*(*)     TYPE
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF SUPERVIS  DATE 24/05/2004   AUTEUR D6BHHJP J.P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -25,13 +25,13 @@ C     -----------------------------------------------------------------
       NOMF = 'ELEMBASE'
       CALL UTMESS('I',TYPE,' SUR  ELEMBASE')
       IF ( TYPE.EQ.'ECRIRE') THEN
-         CALL JEINIF('DEBUT','SAUVE',NOMF,'C',300,512,102400)
+         CALL JEINIF('DEBUT','SAUVE',NOMF,'C',300,512,100)
          CALL JEDUPC('G','&CATA',1,'C','&BATA',.FALSE.)
 C        CALL JEIMPR('MESSAGE','C','REPERTOIRE DE LA BASE BASEELEM')
          CALL JELIBF('SAUVE','C')
          CALL UTMESS('I',TYPE,' FAIT ')
       ELSE
-         CALL JEINIF('POURSUITE','SAUVE',NOMF,'C',300,512,102400)
+         CALL JEINIF('POURSUITE','SAUVE',NOMF,'C',300,512,100)
          CALL JEDUPC('C','&BATA',1,'G','&CATA',.FALSE.)
          CALL JELIBF('SAUVE','C')
          CALL UTMESS('I',TYPE,' FAIT ')

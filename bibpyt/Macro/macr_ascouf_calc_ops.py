@@ -1,4 +1,4 @@
-#@ MODIF macr_ascouf_calc_ops Macro  DATE 03/05/2004   AUTEUR REZETTE C.REZETTE 
+#@ MODIF macr_ascouf_calc_ops Macro  DATE 24/05/2004   AUTEUR GALENNE E.GALENNE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -626,10 +626,7 @@ def macr_ascouf_calc_ops(self,TYPE_MAILLAGE,CL_BOL_P2_GV,MAILLAGE,MODELE,CHAM_MA
                                        R_SUP  = thet['R_SUP'],),
                            );
         motscles = {}
-        charge=[]
-        if PRES_REP !=None : charge.append(__chpres)
-        if ECHANGE  !=None : charge.append(chmeth)
-        if charge != [] : motscles['CHARGE']=charge
+        if mcfex!=[]:       motscles['EXCIT'] =mcfex
         if COMP_INCR!=None : motscles['COMP_INCR']=_F(RELATION=COMP_INCR['RELATION'])
         if COMP_ELAS!=None : motscles['COMP_ELAS']=_F(RELATION=COMP_ELAS['RELATION'])
         _nogthe=CALC_G_THETA_T(MODELE     =modele,
@@ -643,10 +640,7 @@ def macr_ascouf_calc_ops(self,TYPE_MAILLAGE,CL_BOL_P2_GV,MAILLAGE,MODELE,CHAM_MA
 #
       for thet in THETA_3D:
         motscles = {}
-        charge=[]
-        if PRES_REP !=None : charge.append(__chpres)
-        if ECHANGE  !=None : charge.append(chmeth)
-        if charge != [] : motscles['CHARGE']=charge
+        if mcfex!=[]:       motscles['EXCIT'] =mcfex
         if COMP_INCR!=None : motscles['COMP_INCR']=_F(RELATION=COMP_INCR['RELATION'])
         if COMP_ELAS!=None : motscles['COMP_ELAS']=_F(RELATION=COMP_ELAS['RELATION'])
         if   TYPE_MAILLAGE =='FISS_COUDE' :

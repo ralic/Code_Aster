@@ -1,4 +1,4 @@
-# MODIF  DATE 09/02/2004   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 24/05/2004   AUTEUR GALENNE E.GALENNE 
 # TITRE CALCUL 3D DE G FISSURE CIRCULAIRE EN MILIEU INFINI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -193,7 +193,7 @@ GLOC1REF=11.58648
 
 GLOC1=CALC_G_LOCAL_T(    MODELE=MO,
                           DEPL=DEP1,
-                        CHARGE=PRESSION,
+                        EXCIT=_F(CHARGE=PRESSION,),
                         CHAM_MATER=CHMAT,
                          FOND_FISS=FISS,
                         R_SUP=RSUP,
@@ -227,7 +227,7 @@ TEST_TABLE(       TABLE=GLOC1,
 GGLOB1=CALC_G_THETA_T(        MODELE=MO,
                                  DEPL=DEP1,
                                 THETA=THETA1,
-                               CHARGE=PRESSION,
+                               EXCIT=_F(CHARGE=PRESSION,),
                            CHAM_MATER=CHMAT
                        )
 
@@ -557,7 +557,7 @@ GLOC3REF=7.356495
 
 GLOC3=CALC_G_LOCAL_T(    MODELE=MO,
                           DEPL=DEP3,
-                        CHARGE=TORSION,
+                        EXCIT=_F(CHARGE=TORSION,),
                         CHAM_MATER=CHMAT,
                          FOND_FISS=FISS,
                         R_SUP=RSUP,
@@ -591,7 +591,7 @@ TEST_TABLE(       TABLE=GLOC3,
 GGLOB3=CALC_G_THETA_T(        MODELE=MO,
                                  DEPL=DEP3,
                                 THETA=THETA1,
-                               CHARGE=TORSION,
+                           EXCIT=_F(CHARGE=TORSION,),
                            CHAM_MATER=CHMAT
                        )
 
@@ -892,7 +892,7 @@ GL13REF=DEFI_VALEUR(  R8=EVAL("""(1.-NU*NU)*K1*K1/E + (1.+NU)*K3*K3/E """))
 
 GLOC13=CALC_G_LOCAL_T(    MODELE=MO,
                           DEPL=DEP13,
-                        CHARGE=TORSION,
+                        EXCIT=_F(CHARGE=TORSION,),
                         CHAM_MATER=CHMAT,
                          FOND_FISS=FISS,
                         R_SUP=RSUP,
@@ -926,7 +926,7 @@ TEST_TABLE(       TABLE=GLOC13,
 GGLOB13=CALC_G_THETA_T(        MODELE=MO,
                                  DEPL=DEP13,
                                 THETA=THETA1,
-                               CHARGE=TORSION,
+                           EXCIT=_F(CHARGE=TORSION,),
                            CHAM_MATER=CHMAT
                        )
 

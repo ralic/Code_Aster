@@ -7,7 +7,7 @@
       CHARACTER*4         LIEU
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 23/02/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF POSTRELE  DATE 24/05/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -58,7 +58,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32    JEXNOM, JEXNUM, JEXATR
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C
-      INTEGER      ICMP, JSIGU, ICMPS, INDICE, LONG, NBINST, IRET,
+      INTEGER      ICMP, JSIGU, ICMPS, INDICE, LONG, NBINST,
      +             NBTHER, JTHER, ITH, NUMTH, JTHUN
       REAL*8       PIJ, MIJ(6), SN, SIJ(6), SIJS(6), SIGU
       CHARACTER*8  K8B, KNUMES, KNUMET 
@@ -133,7 +133,7 @@ C
      &                                            'LONUTI', LONG, K8B )
              CALL JEVEUO ( JEXNOM('&&RC3200.THER_UNIT .'//LIEU,KNUMET),
      &                                                     'L', JTHUN )
-               NBINST = LONG / 12
+               NBINST = LONG / 18
                INDICE = JTHUN + 6*NBINST
                CALL RC32ST ( SIJ, NBINST, ZR(INDICE), SEISME, SIJS, SN)
                SNIJ = MAX( SNIJ , SN )
@@ -165,7 +165,7 @@ C
      &                                            'LONUTI', LONG, K8B )
              CALL JEVEUO ( JEXNOM('&&RC3200.THER_UNIT .'//LIEU,KNUMET),
      &                                                     'L', JTHUN )
-               NBINST = LONG / 12
+               NBINST = LONG / 18
                INDICE = JTHUN + 6*NBINST
                CALL RC32ST ( SIJ, NBINST, ZR(INDICE), SEISME, SIJS, SN)
                SNIJ = MAX( SNIJ , SN )

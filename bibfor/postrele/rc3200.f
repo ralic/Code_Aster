@@ -1,10 +1,10 @@
-      SUBROUTINE RC3200 ( PMPB, SN, FATIGU, MATER )
+      SUBROUTINE RC3200 ( PMPB, SN, SNET, FATIGU, MATER )
       IMPLICIT   NONE
-      LOGICAL             PMPB, SN, FATIGU
+      LOGICAL             PMPB, SN, SNET, FATIGU
       CHARACTER*8         MATER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 23/02/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF POSTRELE  DATE 24/05/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -68,13 +68,13 @@ C --- CALCUL DES AMPLITUDES DE CONTRAINTES
 C     CALCUL DU FACTEUR D'USAGE 
 C     -------------------------
 C
-      CALL RC32AC ( PMPB, SN, FATIGU, MATER )
+      CALL RC32AC ( PMPB, SN, SNET, FATIGU, MATER )
 C
 C
 C --- STOCKAGE DES RESULTATS
 C     ----------------------
 C
-      CALL RC32RS ( PMPB, SN, FATIGU )
+      CALL RC32RS ( PMPB, SN, SNET, FATIGU )
 C
       CALL JEDETC ( 'V' , '&&RC3200' , 1 )
 C

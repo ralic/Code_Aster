@@ -19,7 +19,7 @@ C ======================================================================
       IMPLICIT   NONE
       INTEGER            IER
 C     ------------------------------------------------------------------
-C MODIF POSTRELE  DATE 23/02/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF POSTRELE  DATE 24/05/2004   AUTEUR CIBHHLV L.VIVAN 
 C     ------------------------------------------------------------------
 C
 C     OPERATEUR POST_RCCM
@@ -42,11 +42,11 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C
-      INTEGER       IBID, N1, NBOPT, IOPT
-      LOGICAL       PMPB, SN, FATIGU
+      INTEGER       IBID, N1, NBOPT, IOPT, NBTHER, NSN, I
+      LOGICAL       PMPB, SN, SNET, FATIGU
       CHARACTER*2   CODRET
       CHARACTER*8   K8B, NOMMAT
-      CHARACTER*16  TYPTAB, TYPMEC, KOPT(3), PHENOM
+      CHARACTER*16  TYPTAB, TYPMEC, KOPT(4), PHENOM
 C DEB ------------------------------------------------------------------
 C
       CALL INFMAJ
@@ -101,6 +101,15 @@ C     ------------------------------------------------------------------
 C     
       ELSE
 C
+         SNET   = .FALSE.
+         CALL GETFAC ( 'RESU_THER', NBTHER )
+         IF ( NBTHER .NE. 0 ) THEN
+           DO 32 I = 1, NBTHER
+             CALL GETVID ('RESU_THER','TABL_SIGM_THER',I,1,0,K8B,NSN)
+             IF ( NSN .NE. 0 ) SNET = .TRUE.
+ 32        CONTINUE
+         ENDIF
+C
          CALL GETVTX ( ' ', 'OPTION',1,1,0, K8B, N1 )
          NBOPT = -N1
          CALL GETVTX ( ' ', 'OPTION',1,1,NBOPT, KOPT, N1 )
@@ -121,7 +130,7 @@ C
 C
          CALL GETVID ( ' ', 'MATER', 1,1,1, NOMMAT, N1 )
 C
-         CALL RC3200 ( PMPB, SN, FATIGU, NOMMAT )
+         CALL RC3200 ( PMPB, SN, SNET, FATIGU, NOMMAT )
 C
       ENDIF
 C

@@ -5,7 +5,7 @@
      +     NRL,DEB,VOIS,SUIT,IER,NEC,PRNO,DEEQ,
      &     NOEUD,DDL,INVPND,PERMND,SPNDND,XADJD)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
+C MODIF ALGELINE  DATE 24/05/2004   AUTEUR D6BHHJP J.P.LEFEBVRE 
 C RESPONSABLE JFBHHUC C.ROSE
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -215,12 +215,12 @@ C----------------------------------METIS 4 : METHODE DE BISSECTION
            CALL UTMESS('F','PREML1',' ERREUR A L''APPEL DE METIS '//
      >                 'PLUS AUCUNE UNITE LOGIQUE LIBRE !')     
          ENDIF 
+         CALL ULOPEN ( IULM1,' ',' ','NEW','O')
          IULM2 = ULNUME ()
          IF ( IULM2 .EQ. -1 ) THEN
            CALL UTMESS('F','PREML1',' ERREUR A L''APPEL DE METIS '//
      >                 'PLUS AUCUNE UNITE LOGIQUE LIBRE !')
          ENDIF 
-         CALL ULOPEN ( IULM1,' ',' ','NEW','O')
          WRITE(IULM1,1001) NBND,INT(NADJ)/2,NIV,IFM
          WRITE(IULM1,1001) (XADJD(I),I=1,NBND+1)
          DO 510 I=1,NBND

@@ -1,4 +1,4 @@
-# MODIF  DATE 07/05/2004   AUTEUR CIBHHGB G.BERTRAND 
+# MODIF  DATE 24/05/2004   AUTEUR GALENNE E.GALENNE 
 
 DEBUT(CODE=_F(NOM='SDLV123B',
               NIV_PUB_WEB='INTERNET',),);
@@ -137,7 +137,7 @@ G1=CALC_G_THETA_T( MODELE=MODELE,
                     TOUT_ORDRE='OUI',
                     THETA=THETA1,
                     CHAM_MATER=CHAMPMAT,
-                    CHARGE=CH_P,
+                    EXCIT=_F(CHARGE=CH_P,),
                     SYME_CHAR='SYME'
                   )
 
@@ -148,7 +148,7 @@ GL1=CALC_G_LOCAL_T( MODELE=MODELE,
                     R_INF = 3.,
                     R_SUP = 10.,
                     CHAM_MATER=CHAMPMAT,
-                    CHARGE=CH_P,
+                    EXCIT=_F(CHARGE=CH_P,),
                     SYME_CHAR='SYME',
                     LISSAGE_THETA='LAGRANGE'
                   )
@@ -158,7 +158,7 @@ G2=CALC_G_THETA_T( MODELE=MODELE,
                     TOUT_ORDRE='OUI',
                     THETA=THETA2,
                     CHAM_MATER=CHAMPMAT,
-                    CHARGE=CH_P,
+                    EXCIT=_F(CHARGE=CH_P,),
                     SYME_CHAR='SYME'
                   )
 
@@ -167,7 +167,7 @@ G3=CALC_G_THETA_T( MODELE=MODELE,
                     TOUT_ORDRE='OUI',
                     THETA=THETA3,
                     CHAM_MATER=CHAMPMAT,
-                    CHARGE=CH_P,
+                    EXCIT=_F(CHARGE=CH_P,),
                     SYME_CHAR='SYME'
                   )
 

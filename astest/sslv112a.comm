@@ -1,4 +1,4 @@
-# MODIF  DATE 03/02/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 24/05/2004   AUTEUR GALENNE E.GALENNE 
 # TITRE CALCUL DE G LOCAL LAGRANGE FISSURE CIRCULAIRE DANS MILIEU INFINI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -160,12 +160,6 @@ CH=AFFE_CHAR_MECA(        MODELE=MO,DDL_IMPO=(
                           _F(  GROUP_NO = 'SUPFISSZ',    DZ = 0., )),
                           PRES_REP=_F(  GROUP_MA = 'MAILPRES',  PRES = -1.,) )
 
-PRESF = FORMULE(REEL="""(REEL:X,REEL:Y,REEL:Z) =
--1.""")
-
-CHFONC=AFFE_CHAR_MECA_F(  MODELE=MO, 
-                              PRES_REP=_F(  GROUP_MA = 'MAILPRES', 
-                                         PRES = PRESF,  )    )
 
 ME=CALC_MATR_ELEM(         MODELE=MO,
                                CHARGE=CH,
@@ -203,7 +197,6 @@ GLOC=CALC_G_LOCAL_T(        MODELE=MO,
                              R_SUP=33.,
                         LISSAGE_THETA='LAGRANGE',
                             LISSAGE_G='LEGENDRE',
-                            CHARGE=CHFONC,
                          COMP_ELAS=_F( RELATION = 'ELAS',     
                                     DEFORMATION = 'PETIT',  )
                     )

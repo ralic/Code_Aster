@@ -1,15 +1,15 @@
-      SUBROUTINE RC3201 ( OPMPB, OSN, OFATIG, LIEU, IG, IOCS, SEISME,
-     &                    NPASS, MATER, SNMAX, SPMAX, SPMECM,
+      SUBROUTINE RC3201 ( OPMPB, OSN, OSNET, OFATIG, LIEU, IG, IOCS,
+     &                    SEISME, NPASS, MATER, SNMAX, SPMAX, SPMECM,
      &                    SPTHEM, SAMAX, UTOT, SM, VPMPB, FACTUS )
       IMPLICIT   NONE
       INTEGER             IG, IOCS, NPASS
       REAL*8              SNMAX,SPMAX,SAMAX,UTOT,SM,VPMPB(*),FACTUS(*)
-      LOGICAL             OPMPB, OSN, OFATIG, SEISME
+      LOGICAL             OPMPB, OSN, OSNET, OFATIG, SEISME
       CHARACTER*4         LIEU
       CHARACTER*8         MATER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 23/02/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF POSTRELE  DATE 24/05/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -66,7 +66,7 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
      &        NSCY,NS,JMSN,JNSITU,NSITUP,NSITUQ,INDI,JIST
       REAL*8 PPI,PPJ,PQI,PQJ,SALTIJ,SALIJS,UG,SN,SP,SMM,SNS,SPS,MPI(6),
      &       MPJ(6),MQI(6),MQJ(6),MSE(6),MATPI(8),MATPJ(8),MATQI(8),
-     &       MATQJ(8),SALTSE, UGS
+     &       MATQJ(8),SALTSE, UGS,SNET,SNETS
       REAL*8 TYPEKE,SPMECA,SPTHER,SPMECS,SPTHES,SPTHEM,SPMECM
       REAL*8 KEMECA,KETHER,KEMECS,KETHES,PM,PB,PMPB,PMS,PBS,PMPBS
       CHARACTER*8 K8B
@@ -124,26 +124,32 @@ C
         PB = 0.D0
         PMPB = 0.D0
         SN = 0.D0
+        SNET = 0.D0
         SP = 0.D0
         SPMECA = 0.D0
         SPTHER = 0.D0
         TYPEKE = MATPI(8)
         IF ( OPMPB ) THEN
           CALL RC32PM(LIEU,SEISME,PPI,MSE,PPI,MSE,MSE,PM,PB,PMPB)
-          VPMPB(5*(IOCS-1)+1) = PM
-          VPMPB(5*(IOCS-1)+2) = PB
-          VPMPB(5*(IOCS-1)+3) = PMPB
+          VPMPB(6*(IOCS-1)+1) = PM
+          VPMPB(6*(IOCS-1)+2) = PB
+          VPMPB(6*(IOCS-1)+3) = PMPB
         ENDIF
         IF ( OSN ) THEN
           CALL RC32SN(LIEU,SEISME,NSITUP,PPI,MSE,NSITUQ,PPI,MSE,MSE,SN)
-          VPMPB(5*(IOCS-1)+4) = SN
+          VPMPB(6*(IOCS-1)+4) = SN
+        ENDIF
+        IF ( OSNET ) THEN
+          CALL RC32SE(LIEU,SEISME,NSITUP,PPI,MSE,NSITUQ,PPI,MSE,MSE,
+     &                SNET)
+          VPMPB(6*(IOCS-1)+6) = SNET
         ENDIF
         IF ( OFATIG ) THEN
           CALL RC32SP(LIEU,SEISME,NSITUP,PPI,MSE,NSITUQ,PPI,MSE,MSE,SP,
      &                TYPEKE,SPMECA,SPTHER)
           CALL RC32SA(MATER,MATPI,MATPI,SN,SP,TYPEKE,SPMECA,SPTHER,
      &                KEMECA,KETHER,SALTSE,SM)
-          VPMPB(5*(IOCS-1)+5) = SALTSE
+          VPMPB(6*(IOCS-1)+5) = SALTSE
         ENDIF
         IF (NIV.GE.2) THEN
           IF ( OPMPB ) THEN
@@ -152,6 +158,7 @@ C
             WRITE (IFM,*) '          PMPB = ',PMPB
           ENDIF
           IF ( OSN )    WRITE (IFM,*) '  SEISME,   SN = ',SN
+          IF ( OSNET )  WRITE (IFM,*) '  SEISME,  SN* = ',SNET
           IF ( OFATIG ) WRITE (IFM,*) '  SEISME,   SP = ',SP
           IF (TYPEKE.GT.0.D0 .AND. OFATIG ) THEN
             WRITE (IFM,*) '            SPMECA = ',SPMECA
@@ -198,10 +205,12 @@ C --- SITUATION P :
         PB  = 0.D0
         PMPBS = 0.D0
         PMPB  = 0.D0
-        SNS = 0.D0
-        SN  = 0.D0
-        SPS = 0.D0
-        SP  = 0.D0
+        SNS   = 0.D0
+        SNETS = 0.D0
+        SN    = 0.D0
+        SNET  = 0.D0
+        SPS   = 0.D0
+        SP    = 0.D0
         SPMECA = 0.D0
         SPTHER = 0.D0
         SPMECS = 0.D0
@@ -211,14 +220,21 @@ C --- SITUATION P :
         IF ( OPMPB ) THEN
           CALL RC32PM(LIEU,.FALSE.,PPI,MPI,PPJ,MPJ,MSE,PM,PB,PMPB)
           CALL RC32PM(LIEU,.FALSE.,PPJ,MPJ,PPI,MPI,MSE,PM,PB,PMPB)
-          VPMPB(5*(IS1-1)+1) = PM
-          VPMPB(5*(IS1-1)+2) = PB
-          VPMPB(5*(IS1-1)+3) = PMPB
+          VPMPB(6*(IS1-1)+1) = PM
+          VPMPB(6*(IS1-1)+2) = PB
+          VPMPB(6*(IS1-1)+3) = PMPB
         ENDIF
         IF ( OSN ) THEN
           CALL RC32SN(LIEU,.FALSE.,NSITUP,PPI,MPI,NSITUQ,PPJ,MPJ,MSE,SN)
           CALL RC32SN(LIEU,.FALSE.,NSITUP,PPJ,MPJ,NSITUQ,PPI,MPI,MSE,SN)
-          VPMPB(5*(IS1-1)+4) = SN
+          VPMPB(6*(IS1-1)+4) = SN
+        ENDIF
+        IF ( OSNET ) THEN
+          CALL RC32SE(LIEU,.FALSE.,NSITUP,PPI,MPI,NSITUQ,PPJ,MPJ,MSE,
+     &                SNET)
+          CALL RC32SE(LIEU,.FALSE.,NSITUP,PPJ,MPJ,NSITUQ,PPI,MPI,MSE,
+     &                SNET)
+          VPMPB(6*(IS1-1)+6) = SNET
         ENDIF
         IF (SEISME) THEN
           IF ( OPMPB ) THEN
@@ -228,6 +244,12 @@ C --- SITUATION P :
           IF ( OSN ) THEN
           CALL RC32SN(LIEU,SEISME,NSITUP,PPI,MPI,NSITUQ,PPJ,MPJ,MSE,SNS)
           CALL RC32SN(LIEU,SEISME,NSITUP,PPJ,MPJ,NSITUQ,PPI,MPI,MSE,SNS)
+          ENDIF
+          IF ( OSNET ) THEN
+            CALL RC32SE(LIEU,SEISME,NSITUP,PPI,MPI,NSITUQ,PPJ,MPJ,MSE,
+     &                  SNETS)
+            CALL RC32SE(LIEU,SEISME,NSITUP,PPJ,MPJ,NSITUQ,PPI,MPI,MSE,
+     &                  SNETS)
           ENDIF
         END IF
         SNMAX = MAX(SNMAX,SNS,SN)
@@ -239,9 +261,12 @@ C --- SITUATION P :
           ELSEIF ( OSN ) THEN
             WRITE (IFM,1014) NSITUP, SN
           END IF
+          IF ( OSNET ) THEN
+            WRITE (IFM,1016) NSITUP, SNET
+          END IF
         END IF
 C
-        IF ( (OPMPB .OR. OSN) .AND. .NOT.OFATIG ) GOTO 20
+        IF ( (OPMPB .OR. OSN .OR. OSNET) .AND. .NOT.OFATIG ) GOTO 20
 C
         NOCC = ZI(JNBOCC+2*IOC1-2)
         SP = 0.D0
@@ -269,7 +294,7 @@ C
           ENDIF
           UG = DBLE( NOCC ) / NADM
         ENDIF
-        VPMPB(5*(IS1-1)+5) = UG
+        VPMPB(6*(IS1-1)+5) = UG
         IF (NIV.GE.2)  WRITE (IFM,2060) NSITUP, UG
 
 C ----- 2/ CALCUL DU SALT(I,J) A PARTIR DU SN(P,Q) ET SP(I,J)
@@ -577,6 +602,7 @@ C
  1012 FORMAT (1P,' SITUATION ',I4,' PM =',E12.5,
      +                            ' PB =',E12.5,' PMPB =',E12.5)
  1014 FORMAT (1P,' SITUATION ',I4,' SN =',E12.5 )
+ 1016 FORMAT (1P,' SITUATION ',I4,' SN* =',E12.5 )
  1020 FORMAT (1P,' COMBINAISON DES SITUATIONS ',I4,3X,I4,'  SN =',E12.5)
  1031 FORMAT (1P,26X,'ETAT_A ETAT_A ',' SP =',E12.5)
  1032 FORMAT (1P,26X,'ETAT_B ETAT_A ',' SP =',E12.5)

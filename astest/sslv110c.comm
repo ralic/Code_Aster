@@ -1,0 +1,382 @@
+# MODIF  DATE 24/05/2004   AUTEUR GALENNE E.GALENNE 
+# TITRE  FISSURE SEMI-ELLIPTIQUE AVEC MILIEU INFINI
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+# CAS TEST SSLV110C
+# CALCUL DE G ET G LOCAL PAR LA METHODE 'THETA_LEGENDRE' (DEGRE 7)
+# DERIVEES DE G PAR RAPPORT A E ET AU CHARGEMENT FORCES VOLUMIQUES
+#
+# MODELISATION : ELEMENTS MECANIQUE 3D (PENTA15 ET HEXA20)
+# MAILLAGE     : ASTER
+#
+# CHARGEMENT VOLUMIQUE
+# ----------------------------------------------------------------------
+# GROUPES DE MAILLES:           PRES_REP : BOUT
+# ----------------------------------------------------------------------
+#
+
+DEBUT(   CODE=_F( NOM = 'SSLV110C',NIV_PUB_WEB='INTERNET'))
+
+#
+# --------------------------------------------------------------------
+
+MA=LIRE_MAILLAGE(  )
+
+MO=AFFE_MODELE(  MAILLAGE=MA, 
+     AFFE=_F(  TOUT = 'OUI',PHENOMENE = 'MECANIQUE',MODELISATION = '3D') )
+
+YOUNG = DEFI_PARA_SENSI(VALE=210000.)
+
+FZ =    DEFI_PARA_SENSI(VALE=.0008)
+
+ZERO =  DEFI_CONSTANTE(VALE=0.)
+
+NU =    DEFI_CONSTANTE(VALE=0.3)
+
+MAT=DEFI_MATERIAU( ELAS_FO=_F(  E = YOUNG,  NU = NU, RHO = 0.,
+                            ))
+
+CHMAT=AFFE_MATERIAU(  MAILLAGE=MA,  AFFE=_F(  TOUT = 'OUI',MATER = MAT))
+
+# ------------------------------------------------------------------
+#    --- STRUCTURE EN APPUI SIMPLE AVEC EFFORT VERTICAL
+
+CH=AFFE_CHAR_MECA_F(  MODELE=MO,DDL_IMPO=( 
+              _F(  GROUP_NO = 'MACSYM', DZ = ZERO), 
+              _F(  GROUP_NO = 'ELISYM', DX = ZERO), 
+              _F(  GROUP_NO = 'GRNINF', DY = ZERO)), 
+     FORCE_INTERNE=_F(  TOUT = 'OUI', FZ = FZ),)
+
+
+RESU=MECA_STATIQUE(   MODELE=MO,   CHAM_MATER=CHMAT,
+              SENSIBILITE = (YOUNG,FZ,), 
+              EXCIT=_F( CHARGE = CH))
+
+RESU=CALC_ELEM(reuse=RESU,RESULTAT=RESU,   MODELE=MO,
+              CHAM_MATER=CHMAT,
+              EXCIT=_F( CHARGE = CH),
+              OPTION=('EPSI_ELGA_DEPL',),)
+
+RESU=CALC_ELEM(reuse=RESU,RESULTAT=RESU,   MODELE=MO,
+              CHAM_MATER=CHMAT,
+              SENSIBILITE = (YOUNG,FZ,), 
+              EXCIT=_F( CHARGE = CH),
+              OPTION=('EPSI_ELGA_DEPL','SIEF_ELGA_DEPL',),)
+
+#    --- DEFINITION DU MODULE DE THETA ET DES RAYONS DEFINISSANT LA
+#        COURONNE PAR FONCTIONS
+
+MODUF=DEFI_FONCTION(  NOM_PARA='X',  VALE=( 0., 1.,     26.69, 1., ))
+
+RINF0=DEFI_FONCTION(  NOM_PARA='X',  VALE=( 0., 0.,     26.69, 0., ))
+
+RSUP0=DEFI_FONCTION(  NOM_PARA='X',  VALE=( 0., 0.1875, 26.69, 0.7812,))
+
+RINF1=DEFI_FONCTION(  NOM_PARA='X',  VALE=( 0., 0.1875, 26.69, 0.7812,))
+
+RSUP1=DEFI_FONCTION(  NOM_PARA='X',  VALE=( 0., 0.375,  26.69, 1.5625,))
+
+RINF2=DEFI_FONCTION(  NOM_PARA='X',  VALE=( 0., 0.375,  26.69, 1.5625,))
+
+RSUP2=DEFI_FONCTION(  NOM_PARA='X',  VALE=( 0., 1.6465, 26.69, 3.125, ))
+
+RINF3=DEFI_FONCTION(  NOM_PARA='X',  VALE=( 0., 1.6465, 26.69, 3.125, ))
+
+RSUP3=DEFI_FONCTION(  NOM_PARA='X',  VALE=( 0., 5.484,  26.69, 6.25,  ))
+
+FISS1=DEFI_FOND_FISS(    MAILLAGE=MA,
+                       FOND_FISS=_F(  GROUP_NO = 'FONFIS'),
+                  LEVRE_SUP=_F(  GROUP_MA = 'GRPRES'),
+                  DTAN_ORIG=( 0.,  1.,  0.,),
+                  DTAN_EXTR=( 1.,  0.,  0.,)
+                         )
+
+#----------------------------------------------------------------------
+#                           COURONNE 1
+#----------------------------------------------------------------------
+
+THETA0=CALC_THETA(   OPTION='COURONNE',   MODELE=MO,  FOND_FISS=FISS1,
+                        THETA_3D=_F(  TOUT = 'OUI',  MODULE_FO = MODUF,
+                                   R_INF_FO = RINF0,  R_SUP_FO = RSUP0)
+                                 )
+
+G0=CALC_G_THETA_T( MODELE=MO,   RESULTAT=RESU,  CHAM_MATER=CHMAT,
+                      COMP_ELAS=_F( RELATION = 'ELAS',
+                                 DEFORMATION = 'PETIT'),
+                     THETA=THETA0,  EXCIT=_F(CHARGE=CH),  )
+
+
+GLOC0=CALC_G_LOCAL_T( MODELE=MO,RESULTAT=RESU,  CHAM_MATER=CHMAT,
+                        FOND_FISS=FISS1,
+                        DEGRE=7,   R_SUP_FO=RSUP0,   R_INF_FO=RINF0,
+                         COMP_ELAS=_F( RELATION = 'ELAS',
+                                    DEFORMATION = 'PETIT'),
+                        EXCIT=_F(CHARGE=CH),   )
+
+DGE=CALC_G_THETA_T(MODELE=MO,     CHAM_MATER=CHMAT,
+                RESULTAT=RESU, 
+                      COMP_ELAS=_F( RELATION = 'ELAS',
+                                 DEFORMATION = 'PETIT'),
+              SENSIBILITE = (YOUNG,), 
+                     THETA=THETA0,   EXCIT=_F(CHARGE=CH ),)
+
+DGF=CALC_G_THETA_T(MODELE=MO,     CHAM_MATER=CHMAT,
+                RESULTAT=RESU, 
+                      COMP_ELAS=_F( RELATION = 'ELAS',
+                                 DEFORMATION = 'PETIT'),
+              SENSIBILITE = (FZ,), 
+                     THETA=THETA0,  EXCIT=_F(CHARGE=CH), )
+
+#----------------------------------------------------------------------
+#                           COURONNE 2
+#----------------------------------------------------------------------
+
+THETA1=CALC_THETA(   OPTION='COURONNE',   MODELE=MO,  FOND_FISS=FISS1,
+                        THETA_3D=_F(  TOUT = 'OUI',  MODULE_FO = MODUF,
+                                   R_INF_FO = RINF1,  R_SUP_FO = RSUP1)
+                                 )
+
+G1=CALC_G_THETA_T(MODELE=MO,RESULTAT=RESU,  CHAM_MATER=CHMAT,
+                     COMP_ELAS=_F( RELATION = 'ELAS',
+                                DEFORMATION = 'PETIT'),
+             THETA=THETA1,   EXCIT=_F(CHARGE=CH),  )
+
+
+GLOC1=CALC_G_LOCAL_T(MODELE=MO,RESULTAT=RESU,  CHAM_MATER=CHMAT,
+                       FOND_FISS=FISS1,
+                       DEGRE=7,   R_SUP_FO=RSUP1,   R_INF_FO=RINF1,
+                        COMP_ELAS=_F( RELATION = 'ELAS',
+                                   DEFORMATION = 'PETIT'),
+                       EXCIT=_F(CHARGE=CH),  )
+
+DGE1=CALC_G_THETA_T(MODELE=MO,     CHAM_MATER=CHMAT,
+                RESULTAT=RESU, 
+                      COMP_ELAS=_F( RELATION = 'ELAS',
+                                 DEFORMATION = 'PETIT'),
+              SENSIBILITE = (YOUNG,), 
+                     THETA=THETA1,   EXCIT=_F(CHARGE=CH), )
+
+DGF1=CALC_G_THETA_T(MODELE=MO,     CHAM_MATER=CHMAT,
+                RESULTAT=RESU, 
+                      COMP_ELAS=_F( RELATION = 'ELAS',
+                                 DEFORMATION = 'PETIT'),
+              SENSIBILITE = (FZ,), 
+                     THETA=THETA1,   EXCIT=_F(CHARGE=CH), )
+
+
+#----------------------------------------------------------------------
+#                           COURONNE 3
+#----------------------------------------------------------------------
+
+THETA2=CALC_THETA(   OPTION='COURONNE',   MODELE=MO,  FOND_FISS=FISS1,
+                        THETA_3D=_F(  TOUT = 'OUI',  MODULE_FO = MODUF,
+                                   R_INF_FO = RINF2,  R_SUP_FO = RSUP2)
+                                 )
+
+G2=CALC_G_THETA_T(MODELE=MO,RESULTAT=RESU,  CHAM_MATER=CHMAT,
+                     COMP_ELAS=_F( RELATION = 'ELAS',
+                                DEFORMATION = 'PETIT'),
+                    THETA=THETA2,   EXCIT=_F(CHARGE=CH), )
+
+GLOC2=CALC_G_LOCAL_T(MODELE=MO,RESULTAT=RESU,  CHAM_MATER=CHMAT,
+                       FOND_FISS=FISS1,
+                       DEGRE=7,   R_SUP_FO=RSUP2,   R_INF_FO=RINF2,
+                        COMP_ELAS=_F( RELATION = 'ELAS',
+                                   DEFORMATION = 'PETIT'),
+                       EXCIT=_F(CHARGE=CH), )
+
+DGE2=CALC_G_THETA_T(MODELE=MO,     CHAM_MATER=CHMAT,
+                RESULTAT=RESU, 
+                      COMP_ELAS=_F( RELATION = 'ELAS',
+                                 DEFORMATION = 'PETIT'),
+              SENSIBILITE = (YOUNG,), 
+                     THETA=THETA2,   EXCIT=_F(CHARGE=CH), )
+
+DGF2=CALC_G_THETA_T(MODELE=MO,     CHAM_MATER=CHMAT,
+                RESULTAT=RESU, 
+                      COMP_ELAS=_F( RELATION = 'ELAS',
+                                 DEFORMATION = 'PETIT'),
+              SENSIBILITE = (FZ,), 
+                     THETA=THETA2,   EXCIT=_F(CHARGE=CH), )
+
+#----------------------------------------------------------------------
+#              TEST DE G SUR LES 3 COURONNES
+#----------------------------------------------------------------------
+
+
+TEST_TABLE(       TABLE=G0,
+                       NOM_PARA='G',
+                      REFERENCE='ANALYTIQUE',
+                           VALE=7.1E-4,
+                      PRECISION=5.E-2   )
+
+TEST_TABLE(       TABLE=G1,
+                       NOM_PARA='G',
+                      REFERENCE='ANALYTIQUE',
+                           VALE=7.1E-4,
+                      PRECISION=5.E-2   )
+
+TEST_TABLE(       TABLE=G2,
+                       NOM_PARA='G',
+                      REFERENCE='ANALYTIQUE',
+                           VALE=7.1E-4,
+                      PRECISION=5.E-2   )
+
+#----------------------------------------------------------------------
+#              TEST DE DG/DE ET DG/DF SUR LA 1-ERE COURONNE
+#----------------------------------------------------------------------
+
+TEST_TABLE(       TABLE=DGE,
+              SENSIBILITE = (YOUNG,), 
+                      REFERENCE='ANALYTIQUE',
+                       NOM_PARA='G',
+                           VALE=-3.42E-09,
+                      PRECISION=5.E-2   )
+
+TEST_TABLE(       TABLE=DGF,
+              SENSIBILITE = (FZ,), 
+                      REFERENCE='ANALYTIQUE',
+                       NOM_PARA='G',
+                           VALE=1.796E+00,
+                      PRECISION=5.E-2   )
+
+#----------------------------------------------------------------------
+#              TEST DE DG/DE ET DG/DF SUR LA 2-EME COURONNE
+#----------------------------------------------------------------------
+
+TEST_TABLE(       TABLE=DGE1,
+              SENSIBILITE = (YOUNG,), 
+                      REFERENCE='ANALYTIQUE',
+                       NOM_PARA='G',
+                           VALE=-3.42E-09,
+                      PRECISION=5.E-2   )
+
+TEST_TABLE(       TABLE=DGF1,
+              SENSIBILITE = (FZ,), 
+                      REFERENCE='ANALYTIQUE',
+                       NOM_PARA='G',
+                           VALE=1.796E+00,
+                      PRECISION=5.E-2   )
+
+#----------------------------------------------------------------------
+#              TEST DE DG/DE ET DG/DF SUR LA 3-EME COURONNE
+#----------------------------------------------------------------------
+
+TEST_TABLE(       TABLE=DGE2,
+              SENSIBILITE = (YOUNG,), 
+                      REFERENCE='ANALYTIQUE',
+                       NOM_PARA='G',
+                           VALE=-3.42E-09,
+                      PRECISION=5.E-2   )
+
+TEST_TABLE(       TABLE=DGF2,
+              SENSIBILITE = (FZ,), 
+                      REFERENCE='ANALYTIQUE',
+                       NOM_PARA='G',
+                           VALE=1.796E+00,
+                      PRECISION=5.E-2   )
+
+#----------------------------------------------------------------------
+#              TEST DE G(A) SUR LES 3 COURONNES
+#----------------------------------------------------------------------
+
+
+TEST_TABLE(      TABLE=GLOC0,
+                   FILTRE=_F(  NOM_PARA = 'NOEUD',
+                            VALE_K = 'NO1099'),
+                 NOM_PARA='G_LOCAL',
+                      REFERENCE='ANALYTIQUE',
+                      VALE=3.582E-5,
+                 PRECISION=5.E-2      )
+
+TEST_TABLE(      TABLE=GLOC1,
+                   FILTRE=_F(  NOM_PARA = 'NOEUD',
+                            VALE_K = 'NO1099'),
+                 NOM_PARA='G_LOCAL',
+                      REFERENCE='ANALYTIQUE',
+                      VALE=3.582E-5,
+                 PRECISION=5.E-2      )
+
+TEST_TABLE(      TABLE=GLOC2,
+                   FILTRE=_F(  NOM_PARA = 'NOEUD',
+                            VALE_K = 'NO1099'),
+                 NOM_PARA='G_LOCAL',
+                      REFERENCE='ANALYTIQUE',
+                      VALE=3.582E-5,
+                 PRECISION=5.E-2      )
+
+#----------------------------------------------------------------------
+#              TEST DE G(B) SUR LES 3 COURONNES
+#----------------------------------------------------------------------
+
+
+TEST_TABLE(      TABLE=GLOC0,
+                   FILTRE=_F(  NOM_PARA = 'NOEUD',
+                            VALE_K = 'NO1259'),
+                 NOM_PARA='G_LOCAL',
+                      REFERENCE='ANALYTIQUE',
+                      VALE=8.597E-6,
+                 PRECISION=1.4E-1      )
+
+TEST_TABLE(      TABLE=GLOC1,
+                   FILTRE=_F(  NOM_PARA = 'NOEUD',
+                            VALE_K = 'NO1259'),
+                 NOM_PARA='G_LOCAL',
+                      REFERENCE='ANALYTIQUE',
+                      VALE=8.597E-6,
+                 PRECISION=8.7E-2      )
+
+TEST_TABLE(      TABLE=GLOC2,
+                   FILTRE=_F(  NOM_PARA = 'NOEUD',
+                            VALE_K = 'NO1259'),
+                 NOM_PARA='G_LOCAL',
+                      REFERENCE='ANALYTIQUE',
+                      VALE=8.597E-6,
+                 PRECISION=1.4E-1      )
+
+#----------------------------------------------------------------------
+#              TEST DE G(C) SUR LES 3 COURONNES
+#----------------------------------------------------------------------
+
+
+TEST_TABLE(      TABLE=GLOC0,
+                   FILTRE=_F(  NOM_PARA = 'NOEUD',
+                            VALE_K = 'NO1179'),
+                 NOM_PARA='G_LOCAL',
+                      REFERENCE='ANALYTIQUE',
+                      VALE=2.605E-5,
+                 PRECISION=5.E-2      )
+
+TEST_TABLE(      TABLE=GLOC1,
+                   FILTRE=_F(  NOM_PARA = 'NOEUD',
+                            VALE_K = 'NO1179'),
+                 NOM_PARA='G_LOCAL',
+                      REFERENCE='ANALYTIQUE',
+                      VALE=2.605E-5,
+                 PRECISION=5.E-2      )
+
+TEST_TABLE(      TABLE=GLOC2,
+                   FILTRE=_F(  NOM_PARA = 'NOEUD',
+                            VALE_K = 'NO1179'),
+                 NOM_PARA='G_LOCAL',
+                      VALE=2.605E-5,
+                      REFERENCE='ANALYTIQUE',
+                 PRECISION=5.E-2      )
+
+FIN()
+#

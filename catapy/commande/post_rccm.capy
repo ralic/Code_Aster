@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 23/02/2004   AUTEUR CIBHHLV L.VIVAN 
+#& MODIF COMMANDE  DATE 24/05/2004   AUTEUR CIBHHLV L.VIVAN 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -102,6 +102,8 @@ POST_RCCM=OPER(nom="POST_RCCM",op= 165,sd_prod=tabl_post_rccm,
            NUME_RESU_THER =SIMP(statut='o',typ='I',fr="numéro de la table de résultat thermique" ),
            TABL_RESU_THER =SIMP(statut='o',typ=table,
                               fr="table relevé des contraintes pour chargement thermique"),
+           TABL_SIGM_THER  =SIMP(statut='f',typ=table,
+                              fr="table relevé des contraintes sous chargement thermique seul" ),
                            ),
          SITUATION         =FACT(statut='o',max='**',fr="Situation",ang="situation_ang",
               NB_OCCUR         =SIMP(statut='o',typ='I',fr="nombre d'occurences de la situation" ),

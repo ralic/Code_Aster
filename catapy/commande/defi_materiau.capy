@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 17/05/2004   AUTEUR ROMEO R.FERNANDES 
+#& MODIF COMMANDE  DATE 24/05/2004   AUTEUR JOUMANA J.EL-GHARIB 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -909,6 +909,7 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater,
              PC0_INIT      =SIMP(statut='o',typ='R'),
              KAPAS         =SIMP(statut='o',typ='R'),
              LAMBDAS       =SIMP(statut='o',typ='R'),
+             ALPHAB        =SIMP(statut='f',typ='R'),
            ),
            CJS             =FACT(statut='f',
              BETA_CJS        =SIMP(statut='o',typ='R'),

@@ -5,7 +5,7 @@
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 24/05/2004   AUTEUR JOUMANA J.EL-GHARIB 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -85,7 +85,7 @@ C
       REAL*8      XLAM,XA,XU,XG,XH,XM,XE,XF,XV,XI,RAP
       REAL*8      CC(6,6),FV(6),FF(6)
       REAL*8      C(6,6),CT,XB,V0,V0EST,SEUIL,D(3,3),DD(3,3)
-      REAL*8      SIGEL(6),XINF,XSUP,DET,TOL,TOL1,FFI(6,6),EE(6,6)
+      REAL*8      SIGEL(6),XINF,XSUP,DET,TOL,FFI(6,6),EE(6,6)
       REAL*8      V(6,6),S(6,6),T(6,6),VV(6,6),SS(6,6),TT(6,6)
       REAL*8      NUL,DIFF,DIFF1
       REAL*8      SBARM(6),SBARP(6),PC0M(2),PC0P(2),PCRM(2),PCRP(2)
@@ -95,9 +95,9 @@ C
       REAL*8      KKH(6),SSHH(6),BB,KCP1,KCP1M,KPMAX,KPMAXM,ZERO
       INTEGER     NDIMSI
       INTEGER     K,L,ITER, MATR,IADZI,IAZK24
-      CHARACTER*2 BL2, FB2, CODRET(15)
-      CHARACTER*8 NOMRES(15)
-      CHARACTER*8 NOMPAR(15),TYPE
+      CHARACTER*2 BL2, FB2, CODRET(16)
+      CHARACTER*8 NOMRES(16)
+      CHARACTER*8 NOMPAR(16),TYPE
       CHARACTER*24 NOMMA
       REAL*8      VALPAM(3)
       DATA        KRON/1.D0,1.D0,1.D0,0.D0,0.D0,0.D0/
@@ -130,6 +130,7 @@ C     ---------------------------------------
       NOMRES(13)='PC0_INIT'
       NOMRES(14)='KAPAS'
       NOMRES(15)='LAMBDAS'
+      NOMRES(16)='ALPHAB'
 C
       NOMPAR(1) = 'TEMP'
       VALPAM(1) = TM
@@ -181,6 +182,15 @@ C
          CALL RCVALA(IMATE,' ','BARCELONE',3,NOMPAR,VALPAM,1,
      +                 NOMRES(15),VALRES(15),CODRET(15), FB2 )
          LAMBS = VALRES(15)
+         CALL RCVALA(IMATE,' ','BARCELONE',3,NOMPAR,VALPAM,1,
+     +                 NOMRES(16),VALRES(16),CODRET(16), BL2 )
+         IF ( CODRET(16) .NE. 'OK' ) THEN
+         VALRES(16) = M*(M-9.D0)*(M-3.D0)/9.D0/(6.D0-M)
+     &                *(1.D0/(1.D0-KAPA/LAMBDA))
+         ALPHAB = VALRES(16)
+         ELSE
+         ALPHAB = VALRES(16)
+         ENDIF
          CALL RCVALA(IMATE,' ','THM_INIT',5,NOMPAR,VALPAM,1,
      +                 NOMRES(4),VALRES(4),CODRET(4), FB2 )
          PORO = VALRES(4)
@@ -206,9 +216,6 @@ C--- CALCUL DES COEFFICIENTS KS ET K0S DE LA COURBE HYDROSTATIQUE
 C--- HYDRIQUE
          XK0S = (1.D0+E0)/KAPAS
          XKS= (1.D0+E0)/(LAMBS-KAPAS) 
-C--- LE PARAMETRE QUI DETRUIT LE CARACTERE DE NORMALITE ALPHA (ALONSO) 
-         ALPHAB = M*(M-9.D0)*(M-3.D0)/9.D0/(6.D0-M)
-     &            *(1.D0/(1.D0-KAPA/LAMBDA))
 C
 C     -- 3 CALCUL DE DEPSMO ET DEPSDV :
 C     --------------------------------
@@ -326,9 +333,9 @@ C     -- CRITERE HYDRIQUE EST ATTEINT
 C     -- CRITERE MECANIQUE EST ETTEINT
          IF (FONC1.GT.0) THEN
          PCRP(2) = 1.D0
-         PC0P(2) = 0.D0  
-C     -- CALCUL DE LA BORNE
-       XB = 1.D0/(XK+XK0)*LOG(SIMOEL/PCRMP1)
+         PC0P(2) = 0.D0 
+C     -- VALEURS DES BORNES INITIALES 
+       XB = (SIMOEL-PCRMP1+KC*P1/2.D0)/(SIMOEL*XK0+PCRMP1*XK)
        XINF = 0.D0
        XSUP = XB
 C     --RESOLUTION AVEC LA METHODE DE NEWTON ENTRE LES BORNES
@@ -345,11 +352,10 @@ C     --RESOLUTION AVEC LA METHODE DE NEWTON ENTRE LES BORNES
      &   -KPMAX*(XK0*SIMOEL*EXP(-XK0*V0)+2.D0*XK*PCRMP1*EXP(XK*V0))
        F6 = 2.D0*SIMOEL*(1.D0+V0*XK0)*EXP(-XK0*V0)+
      &        2.D0*PCRMP1*(-1.D0+V0*XK)*EXP(XK*V0)+
-     &        KPMAX*(1.D0-V0) 
-       FP = M**2*F4**2*F5+3.D0*DEUXMU*ALPHAB*F4*F1*F2*(F6/F3/F3)
+     &        KPMAX
+       FP = M**2*F4**2*F5+6.D0*DEUXMU*ALPHAB*F4*(F1+KPMAX)*F2*(F6/F3/F3)
 C          
        DO 200 ITER = 1, NINT(CRIT(1))
-       
 C     --CRITERE DE CONVERGENCE
        IF ((ABS(F)/SEUIL) . LE. CRIT(3))   GOTO 100         
 
@@ -370,8 +376,8 @@ C     --CALCUL DE LA FONCTION ET DE SA DERIVEE
      &   -KPMAX*(XK0*SIMOEL*EXP(-XK0*V0)+2.D0*XK*PCRMP1*EXP(XK*V0))
        F6 = 2.D0*SIMOEL*(1.D0+V0*XK0)*EXP(-XK0*V0)+
      &        2.D0*PCRMP1*(-1.D0+V0*XK)*EXP(XK*V0)+
-     &        KPMAX*(1.D0-V0) 
-       FP = M**2*F4**2*F5+3.D0*DEUXMU*ALPHAB*F4*F1*F2*(F6/F3/F3)
+     &        KPMAX 
+       FP = M**2*F4**2*F5+3.D0*DEUXMU*ALPHAB*F4*(F1+KPMAX)*F2*(F6/F3/F3)
          
          IF (F .GE. 0.D0) XINF = V0
          IF (F .LE. 0.D0) XSUP = V0
@@ -513,16 +519,16 @@ C     EN VITESSE :
 C     -----------
       TRA = -3.D0*XK0*M*M*SIGMMO*(2.D0*SIGMMO-2.D0*PCRMP1+KPMAX)
       PAR = (KC*(2.D0*PCRMP1-SIGMMO)-2.D0*PCRMP1*
-     &                  (SIGMMO+KC*P1)*LOG(2.D0*PRESCR/PA)*
+     &                  (SIGMMO+KPMAX)*LOG(2.D0*PRESCR/PA)*
      &                  ((LAMBDA-KAPA)/(LAMBB-KAPA)**2)*LAMP)
           DO 161 K=1,3
-            DSIDP1(K) = -A(K)*TRA*XK0*SIGMMO/3.D0/H/XK0S/(P1+PA)
+            DSIDP1(K) = -A(K)*TRA/3.D0/H/XK0S/(P1+PA)
      &                  +M*M*PAR/H*A(K)
      &                  +XK0*SIGMMO/XK0S/(P1+PA)
      &                  -BIOT*SAT
  161  CONTINUE            
           DO 166 K=4,NDIMSI
-            DSIDP1(K)=-DEUXMU*TRA*XK0*SIGMMO*SIGMDV(K)/H/XK0S/(P1+PA)
+            DSIDP1(K)=-DEUXMU*TRA*SIGMDV(K)/H/XK0S/(P1+PA)
      &                   +3.D0*DEUXMU*SIGMDV(K)*M*M*PAR/H
  166  CONTINUE            
         ENDIF

@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF ENVIMA UTILITAI  DATE 12/05/2004   AUTEUR ROSE C.ROSE */
+/* MODIF ENVIMA UTILITAI  DATE 24/05/2004   AUTEUR D6BHHJP J.P.LEFEBVRE */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -25,7 +25,8 @@
 #include <float.h>
 #include <limits.h>
 
-/* definition des constantes */
+/* definition des constantes 
+ISMFIC est exprimee en kilo (1024)*/
 
 #if defined  CRAY
 static long   ISUND  = 0605054000037000000000 ;
@@ -33,7 +34,7 @@ static long   ISMAX  = LONG_MAX ;
 static double R8MAX  = DBL_MAX ;
 static double R8MIN  = DBL_MIN ;
 static double R8PREC = DBL_EPSILON ;
-static long   ISMFIC = 4*1024*1024*1024 ;
+static long   ISMFIC = 4*1024*1024 ;
 
 
 
@@ -61,7 +62,6 @@ static double R8PREC   = DBL_EPSILON ;
 static long   R8UND[2] = { 0x7ff00000 , 0x00000001 };
 static long   ISMFIC   = LONG_MAX ;
 
-
 #elif defined IRIX_64  
 
 static long   ISUND    = 0x7FFFFFFFFFFFFFFF ;
@@ -70,7 +70,7 @@ static double R8MAX    = DBL_MAX ;
 static double R8MIN    = DBL_MIN ;
 static double R8PREC   = DBL_EPSILON ;
 static int R8UND[2]    = { 0x00000001 , 0x7ff00000 };
-static long   ISMFIC   = 12884901888;
+static long   ISMFIC   = 12582912;
 
 #elif defined TRU64 || SOLARIS64 
 
@@ -80,9 +80,9 @@ static double R8MAX    = DBL_MAX ;
 static double R8MIN    = DBL_MIN ;
 static double R8PREC   = DBL_EPSILON ;
 static int    R8UND[2] = { 0x00000000 , 0x7ff80000 };
-static long   ISMFIC   = 12884901888;
+static long   ISMFIC   = 12582912;
 
-#elif defined PPRO_NT || P_LINUX /* PENTIUM - ARCHITECTURE IEEE 754      */
+#elif defined  PPRO_NT || P_LINUX /* PENTIUM - ARCHITECTURE IEEE 754      */
 
 static long   ISUND    = LONG_MAX ;
 static long   ISMAX    = LONG_MAX ;
@@ -90,11 +90,9 @@ static double R8MAX    = DBL_MAX ;
 static double R8MIN    = DBL_MIN ;
 static double R8PREC   = DBL_EPSILON ;
 static long   R8UND[2] = { 0x00000000 , 0x7ff80000 };
-static long   ISMFIC   = LONG_MAX ;
-
+static long   ISMFIC   = 12582912;
 
 #endif
-
 
 #define  R8_PI   3.1415926535897932384626433832
 
@@ -312,18 +310,19 @@ int louaem_ () {return 1;}
 int __stdcall LOUAEM () {return 1;}
 #endif
 
-/* ------------------------------------------  TAILLE DE FICHIER */
+/* ------------------------------------------  TAILLE DE FICHIER 
+ exprimee en kilo (1024) */
 
 #if   defined CRAY
-int LOFIEM  () {return 523468800;}
-#elif defined SOLARIS || IRIX_32 || IRIX_64 || TRU64 || SOLARIS64 
-int lofiem_ () {return 523468800;}
+int LOFIEM  () {return 523468800/1024;}
+#elif defined SOLARIS || IRIX_32 
+int lofiem_ () {return 2000*1024;}
+#elif defined IRIX_64 || TRU64 || SOLARIS64 
+int lofiem_ () {return 12582912;}
 #elif defined HPUX
-int lofiem () {return 523468800;}
-#elif defined P_LINUX
-int lofiem_ () {return 523468800;}
-#elif defined PPRO_NT
-int __stdcall LOFIEM () {return 523468800;}
+int lofiem ()  {return 2000*1024;}
+#elif defined PPRO_NT|| P_LINUX
+int lofiem_ () {return 2000*1024;}
 #endif
 
 /* ----------------------------------  TAILLE MAXIMUM DE FICHIER */
@@ -673,7 +672,6 @@ double r8rddg_ () {return (double)((double)180./(double)R8_PI);}
 #elif defined PPRO_NT
 double __stdcall R8RDDG () {return (double)((double)180./(double)R8_PI);}
 #endif
-
 /* ------------------------------------ LONGUEUR de BLOC pour MULT_FRONT */
 #if   defined CRAY
 int LLBLOC  () {return 64;}

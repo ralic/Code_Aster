@@ -1,4 +1,4 @@
-# MODIF  DATE 07/06/2002   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 24/05/2004   AUTEUR GALENNE E.GALENNE 
 # TITRE TAUX DE RESTITUTION AVEC ETAT INITIAL
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -147,27 +147,27 @@ G1=CALC_G_THETA_T(        MODELE=MO,
                           RESULTAT=RESU,
                         NUME_ORDRE=1,
                         CHAM_MATER=CM,
-                            CHARGE=CH,
+                            EXCIT=_F(CHARGE=CH,),
                              THETA=THETA1 )
 
 G2=CALC_G_THETA_T(        MODELE=MO,
                           RESULTAT=RESU,
                         NUME_ORDRE=1,
                         CHAM_MATER=CM,
-                            CHARGE=CH,
+                            EXCIT=_F(CHARGE=CH,),
                              THETA=THETA2 )
 
 G3=CALC_G_THETA_T(        MODELE=MO,
                           RESULTAT=RESU,
                         CHAM_MATER=CM,
                         NUME_ORDRE=1,
-                            CHARGE=CH,
+                            EXCIT=_F(CHARGE=CH,),
                              THETA=THETA3 )
 
 G4=CALC_G_THETA_T(        MODELE=MO,
                           RESULTAT=RESU,
                         CHAM_MATER=CM,
-                            CHARGE=CH,
+                            EXCIT=_F(CHARGE=CH,),
                              THETA=THETA4 )
 
 #--------------------------------------------------------------------
@@ -179,7 +179,7 @@ G13=CALC_G_THETA_T(        MODELE=MO,
                            RESULTAT=RESU,
                          NUME_ORDRE=1,
                          CHAM_MATER=CM,
-                             CHARGE=CH,
+                             EXCIT=_F(CHARGE=CH,),
                           ETAT_INIT=_F( DEPL = DEPLA),
 #                                     SIGM : SIGMA)
                               THETA=THETA3 )
@@ -188,7 +188,7 @@ G14=CALC_G_THETA_T(        MODELE=MO,
                            RESULTAT=RESU,
                          NUME_ORDRE=1,
                          CHAM_MATER=CM,
-                             CHARGE=CH,
+                             EXCIT=_F(CHARGE=CH,),
                           ETAT_INIT=_F( DEPL = DEPLA),
 #                                     SIGM : SIGMA)
                               THETA=THETA4 )
@@ -210,14 +210,18 @@ G21=CALC_G_THETA_T(        MODELE=MO,
                            RESULTAT=RESU,
                          NUME_ORDRE=1,
                          CHAM_MATER=CM,
-                             CHARGE=(CH,CHPESA1,CHPESA2,),
+                            EXCIT=(_F(CHARGE=CH),
+                                   _F(CHARGE= CHPESA1),
+                                   _F(CHARGE= CHPESA2,),),
                               THETA=THETA1 )
 
 G31=CALC_G_THETA_T(        MODELE=MO,
                            RESULTAT=RESU,
                          NUME_ORDRE=1,
                          CHAM_MATER=CM,
-                             CHARGE=(CH,CHPESA1,CHPESA2,),
+                         EXCIT=(_F(CHARGE=CH),
+                                _F(CHARGE= CHPESA1),
+                                _F(CHARGE= CHPESA2,),),
                               THETA=THETA1 )
 
 #--------------------------------------------------------------------

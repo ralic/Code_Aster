@@ -1,6 +1,6 @@
       SUBROUTINE JXLIRO ( IC , IADMI , IADDI , LSO )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 10/03/98   AUTEUR VABHHTS J.PELLET 
+C MODIF JEVEUX  DATE 24/05/2004   AUTEUR D6BHHJP J.P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,7 +51,7 @@ C
       COMMON /JUSADI/  JUSADI(N)
 C ----------------------------------------------------------------------
       CHARACTER*75     CMESS
-      INTEGER          IADMO , KADD , LADD
+      INTEGER          IADMO , KADD , LADD ,LGBL
       LOGICAL          LPETIT
       PARAMETER      ( NDE = 6)
 C ----------------------------------------------------------------------
@@ -62,8 +62,9 @@ C DEB ------------------------------------------------------------------
       LADM   = ISZON(JISZON + IADM - 3 )
       KADD   = IADDI(1)
       LADD   = IADDI(2)
+      LGBL   = 1024*LONGBL(IC)*LOIS
       IADMO  = ( IADM - 1 ) * LOIS + LADM + 1
-      LPETIT = ( LSO .LT. LONGBL(IC)-NDE*LOIS )
+      LPETIT = ( LSO .LT. LGBL-NDE*LOIS )
 C
       IF ( IADDI(1) .EQ. 0 ) THEN
         CMESS = 'OBJET SANS IMAGE DISQUE'
@@ -82,11 +83,11 @@ C
             CALL JXDEPS ( KITECR(IC)+LADD+1 , IADMO , LSO )
           ELSE
             IF ( LITLEC(IC) ) THEN
-              CALL JXECRB ( IC , IITLEC(IC),KITLEC(IC)+1,LONGBL(IC),0,0)
+              CALL JXECRB ( IC , IITLEC(IC),KITLEC(IC)+1,LGBL,0,0)
               IUSADI ( JUSADI(IC) + 2*IITLEC(IC)-1 ) = 0
               IUSADI ( JUSADI(IC) + 2*IITLEC(IC)   ) = 0
             ENDIF
-            CALL JXLIRB ( IC , KADD , KITLEC(IC)+1 , LONGBL(IC) )
+            CALL JXLIRB ( IC , KADD , KITLEC(IC)+1 , LGBL )
             CALL JXDEPS ( KITLEC(IC)+1+LADD , IADMO , LSO )
             IITLEC(IC) = KADD
             LITLEC(IC) = .FALSE.

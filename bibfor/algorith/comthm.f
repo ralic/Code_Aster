@@ -7,7 +7,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 17/05/2004   AUTEUR ROMEO R.FERNANDES 
+C MODIF ALGORITH  DATE 25/05/2004   AUTEUR GRANET S.GRANET 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -139,7 +139,7 @@ C ======================================================================
      +             (MECA.EQ.'SURF_ETAT_SATU') .OR.
      +             (MECA.EQ.'SURF_ETAT_NSAT') .OR.
      +             (THMC.EQ.'LIQU_SATU_GAT')  .OR.
-     +             (THMC.EQ.'LIQU_NSAT_GAT')       )
+     +             (THMC.EQ.'LIQU_NSAT_GAT')       ) 
       IF (CERMES) THEN
          NVITH = NVIT + NVIH + NVIC
       ENDIF
@@ -165,6 +165,7 @@ C ======================================================================
      +                    PVP,PAD,H11,H12,H21,H22,KH,RHO11,PHI0,PVP0,
      +                    P10,P20,T0,SAT,RETCOM,CRIT,BIOT,
      +                    VIHRHO,VICPHI,VICPVP,VICSAT)
+
          IF (RETCOM.NE.0) THEN
             GOTO 9000
          ENDIF
@@ -172,7 +173,7 @@ C ======================================================================
 C ======================================================================
 C --- CALCUL DES GRANDEURS MECANIQUES PURES UNIQUEMENT SI YAMEC = 1 ----
 C ======================================================================
-      IF (YAMEC.EQ.1) THEN
+      IF (YAMEC.EQ.1) THEN 
          CALL CALCME(OPTION,COMPOR,MECA,IMATE,TYPMOD,CRIT,INSTAM,INSTAP,
      +               T0,NDIM,DIMDEF,DIMCON,NVIM,NVITH,YATE,ADDEME,
      +               ADCOME,ADDETE,DEFGEM,CONGEM,CONGEP,VINTM,VINTP,
@@ -247,7 +248,7 @@ C ======================================================================
      +                 DLAMBS, VISCL, DVISCL, MAMOLG, CPG, LAMBT,
      +                 DLAMBT,
      +                 VISCG, DVISCG, MAMOVG, CPVG, VISCVG, DVISVG,
-     +                 RETCOM,LAMBCT)
+     +                 RETCOM,LAMBCT,RHO11,H11,H12)
             IF ( RETCOM.NE.0) THEN
                GOTO 9000
             ENDIF

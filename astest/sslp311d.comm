@@ -1,0 +1,471 @@
+# MODIF  DATE 24/05/2004   AUTEUR GALENNE E.GALENNE 
+# TITRE BIBLIO_65 FISSURE CENTRALE DANS UN BIMATERIAU
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+#       PLAQUE RECTANGULAIRE FINIE SOUMISE A L'ACTION D'UNE TRACTION
+#       THETA = 60 DEGRES
+
+DEBUT( CODE=_F( NOM = 'SSLP311D',NIV_PUB_WEB='INTERNET'))
+
+#
+PRE_GIBI()
+
+#
+MA=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='OUI'),  )
+
+MO=AFFE_MODELE(  MAILLAGE=MA, 
+      AFFE=_F( TOUT = 'OUI',PHENOMENE = 'MECANIQUE',MODELISATION = 'C_PLAN'))
+
+#
+MAT1=DEFI_MATERIAU(ELAS=_F(  E = 2.E12, NU = 0.3, RHO = 0., ALPHA = 0.))
+
+MAT2=DEFI_MATERIAU(ELAS=_F(  E = 2.E11, NU = 0.3, RHO = 0., ALPHA = 0.))
+
+#
+CHMAT=AFFE_MATERIAU(  MAILLAGE=MA,AFFE=(
+                           _F(  GROUP_MA = 'VTOT1',  MATER = MAT1),
+                           _F(  GROUP_MA = 'LP3P4',  MATER = MAT1),
+                           _F(  GROUP_MA = 'LP2P3',  MATER = MAT1),
+                           _F(  GROUP_MA = 'VTOT2',  MATER = MAT2),
+                           _F(  GROUP_MA = 'LP7P8',  MATER = MAT2),
+                           _F(  GROUP_MA = 'LP6P7',  MATER = MAT2))
+                       )
+
+#
+#
+MA=DEFI_GROUP( reuse=MA,   MAILLAGE=MA, 
+                     CREA_GROUP_NO=_F( 
+                         GROUP_MA = ( 'LP3P4',  'LP2P3',  
+                                      'LP6P7',  'LP7P8',  ))
+                 )
+
+#
+#
+CH=AFFE_CHAR_MECA(  MODELE=MO,DDL_IMPO=( 
+            _F(  GROUP_NO = 'LP6P7',   DY = 0.),
+                     _F(  GROUP_NO = 'LP7P8',   DY = 0.),
+                     _F(  GROUP_NO = 'P6',      DX = 0.)),FORCE_CONTOUR=(
+            
+                     _F(  GROUP_MA = 'LP3P4',  FY = 100.E6), 
+                     _F(  GROUP_MA = 'LP2P3',  FY = 100.E6))
+
+                          )
+
+#
+CHAMDEPL=MECA_STATIQUE(   MODELE=MO,   CHAM_MATER=CHMAT, 
+                              EXCIT=_F( CHARGE = CH)
+                          )
+
+#
+DEP=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
+NOM_CHAM='DEPL', RESULTAT=CHAMDEPL,
+            NUME_ORDRE=1 )
+
+#
+# POINT DROIT
+#
+FOND1=DEFI_FOND_FISS(    MAILLAGE=MA,
+                            FOND_FISS=_F( GROUP_NO = ('P0',)),
+                            NORMALE=(-0.866025404, 0.5, 0.,)
+                      )
+
+#
+THETA01A=CALC_THETA(    MODELE=MO,
+                          THETA_2D=_F(  GROUP_NO = ('P0',),
+                                     MODULE = 1.,
+                                     R_INF = 0.,
+                                     R_SUP = 0.001875E-2),
+                          DIRECTION=(0.5, 0.866025404, 0.,)
+                      )
+
+#
+G01A=CALC_G_THETA_T(    MODELE=MO,
+                            DEPL=DEP,
+                           THETA=THETA01A,
+                          EXCIT=_F(CHARGE=CH,),
+                          CHAM_MATER=CHMAT,
+                          SYME_CHAR='SANS'
+#                        SYME_CHAR : 'SYME'
+                      )
+
+#
+
+TEST_TABLE(       TABLE=G01A,
+                       NOM_PARA='G',
+                           VALE=3.224364E1,
+                      PRECISION=0.05        )
+
+#
+THETA01B=CALC_THETA(    MODELE=MO,
+                          THETA_2D=_F(  GROUP_NO = ('P0',),
+                                     MODULE = 1.,
+                                     R_INF = 0.001875E-2,
+                                     R_SUP = 0.003750E-2),
+                          DIRECTION=(0.5, 0.866025404, 0.,)
+                      )
+
+#
+G01B=CALC_G_THETA_T(    MODELE=MO,
+                            DEPL=DEP,
+                           THETA=THETA01B,
+                          EXCIT=_F(CHARGE=CH,),
+                          CHAM_MATER=CHMAT,
+#                        SYME_CHAR : 'SYME'
+                          SYME_CHAR='SANS'
+                      )
+
+#
+
+TEST_TABLE(       TABLE=G01B,
+                       NOM_PARA='G',
+                           VALE=3.224364E1,
+                      PRECISION=0.01       )
+
+#
+
+THETA01C=CALC_THETA(    MODELE=MO,
+                          THETA_2D=_F(  GROUP_NO = ('P0',),
+                                     MODULE = 1.,
+                                     R_INF = 0.003750E-2,
+                                     R_SUP = 0.005625E-2),
+                          DIRECTION=(0.5, 0.866025404, 0.,)
+                      )
+
+#
+G01C=CALC_G_THETA_T(    MODELE=MO,
+                            DEPL=DEP,
+                           THETA=THETA01C,
+                          EXCIT=_F(CHARGE=CH,),
+                          CHAM_MATER=CHMAT,
+#                        SYME_CHAR : 'SYME'
+                          SYME_CHAR='SANS'
+                      )
+
+#
+
+TEST_TABLE(       TABLE=G01C,
+                       NOM_PARA='G',
+                           VALE=3.224364E1,
+                      PRECISION=0.01       )
+
+#
+THETA01D=CALC_THETA(    MODELE=MO,
+                          THETA_2D=_F(  GROUP_NO = ('P0',),
+                                     MODULE = 1.,
+                                     R_INF = 0.005625E-2,
+                                     R_SUP = 0.007500E-2),
+                          DIRECTION=(0.5, 0.866025404, 0.,)
+                      )
+
+#
+G01D=CALC_G_THETA_T(    MODELE=MO,
+                            DEPL=DEP,
+                           THETA=THETA01D,
+                          EXCIT=_F(CHARGE=CH,),
+                          CHAM_MATER=CHMAT,
+#                        SYME_CHAR : 'SYME'
+                          SYME_CHAR='SANS'
+                      )
+
+#
+
+TEST_TABLE(       TABLE=G01D,
+                       NOM_PARA='G',
+                           VALE=3.224364E1,
+                      PRECISION=0.01        )
+
+#
+# POINT GAUCHE
+#
+FOND2=DEFI_FOND_FISS(    MAILLAGE=MA,
+                            FOND_FISS=_F( GROUP_NO = ('P0G',)),
+                            NORMALE=(0.866025404, -0.5, 0.,)
+                       )
+
+#
+THETA02A=CALC_THETA(    MODELE=MO,
+                          THETA_2D=_F(  GROUP_NO = ('P0G',),
+                                     MODULE = 1.,
+                                     R_INF = 0.,
+                                     R_SUP = 0.001875E-2),
+                          DIRECTION=(-0.5, -0.866025404, 0.,)
+                      )
+
+#
+G02A=CALC_G_THETA_T(    MODELE=MO,
+                            DEPL=DEP,
+                           THETA=THETA02A,
+                          EXCIT=_F(CHARGE=CH,),
+                          CHAM_MATER=CHMAT,
+                          SYME_CHAR='SANS'
+                      )
+
+#
+
+TEST_TABLE(       TABLE=G02A,
+                       NOM_PARA='G',
+                           VALE=3.280158E1,
+                      PRECISION=0.06       )
+
+#
+THETA02B=CALC_THETA(    MODELE=MO,
+                          THETA_2D=_F(  GROUP_NO = ('P0G',),
+                                     MODULE = 1.,
+                                     R_INF = 0.001875E-2,
+                                     R_SUP = 0.003750E-2),
+                          DIRECTION=(-0.5, -0.866025404, 0.,)
+                      )
+
+#
+G02B=CALC_G_THETA_T(    MODELE=MO,
+                            DEPL=DEP,
+                           THETA=THETA02B,
+                          EXCIT=_F(CHARGE=CH,),
+                          CHAM_MATER=CHMAT,
+                          SYME_CHAR='SANS'
+                     )
+
+#
+
+TEST_TABLE(       TABLE=G02B,
+                       NOM_PARA='G',
+                           VALE=3.280158E1,
+                      PRECISION=0.015      )
+
+#
+#
+THETA02C=CALC_THETA(    MODELE=MO,
+                          THETA_2D=_F(  GROUP_NO = ('P0G',),
+                                     MODULE = 1.,
+                                     R_INF = 0.003750E-2,
+                                     R_SUP = 0.005625E-2),
+                          DIRECTION=(-0.5, -0.866025404, 0.,)
+                      )
+
+#
+G02C=CALC_G_THETA_T(    MODELE=MO,
+                            DEPL=DEP,
+                           THETA=THETA02C,
+                          EXCIT=_F(CHARGE=CH,),
+                          CHAM_MATER=CHMAT,
+                          SYME_CHAR='SANS'
+                      )
+
+#
+
+TEST_TABLE(       TABLE=G02C,
+                       NOM_PARA='G',
+                           VALE=3.280158E1,
+                      PRECISION=0.015      )
+
+#
+#
+THETA02D=CALC_THETA(    MODELE=MO,
+                          THETA_2D=_F(  GROUP_NO = ('P0G',),
+                                     MODULE = 1.,
+                                     R_INF = 0.005625E-2,
+                                     R_SUP = 0.007500E-2),
+                          DIRECTION=(-0.5, -0.866025404, 0.,)
+                      )
+
+#
+G02D=CALC_G_THETA_T(    MODELE=MO,
+                            DEPL=DEP,
+                           THETA=THETA02D,
+                          EXCIT=_F(CHARGE=CH,),
+                          CHAM_MATER=CHMAT,
+                          SYME_CHAR='SANS'
+                      )
+
+#
+
+TEST_TABLE(       TABLE=G02D,
+                       NOM_PARA='G',
+                           VALE=3.280158E1,
+                      PRECISION=0.015      )
+
+FIN()
+#
+#
+##
+## CALCUL DE K1 ET K2 NON DISPONIBLE POUR UN BIMATERIAU
+##
+#
+#GK01A = CALC_G_THETA_T ( MODELE : MO
+#                         DEPL   : DEP
+#                         THETA  : THETA01A
+#                         FOND   : FOND1
+#                         CHARGE : CH
+#                         CHAM_MATER : CHMAT
+#                         SYME_CHAR : 'SANS'
+#                         OPTION : 'CALC_K_G'
+#                      ) ;
+#
+#GK01B = CALC_G_THETA_T ( MODELE : MO
+#                         DEPL   : DEP
+#                         THETA  : THETA01B
+#                         FOND   : FOND1
+#                         CHARGE : CH
+#                         CHAM_MATER : CHMAT
+#                         SYME_CHAR : 'SANS'
+#                         OPTION : 'CALC_K_G'
+#                      ) ;
+#
+#GK01C = CALC_G_THETA_T ( MODELE : MO
+#                         DEPL   : DEP
+#                         THETA  : THETA01C
+#                         FOND   : FOND1
+#                         CHARGE : CH
+#                         CHAM_MATER : CHMAT
+#                         SYME_CHAR : 'SANS'
+#                         OPTION : 'CALC_K_G'
+#                      ) ;
+#
+#GK01D = CALC_G_THETA_T ( MODELE : MO
+#                         DEPL   : DEP
+#                         THETA  : THETA01D
+#                         FOND   : FOND1
+#                         CHARGE : CH
+#                         CHAM_MATER : CHMAT
+#                         SYME_CHAR : 'SANS'
+#                         OPTION : 'CALC_K_G'
+#                      ) ;
+#
+#
+#GK02A = CALC_G_THETA_T ( MODELE : MO
+#                         DEPL   : DEP
+#                         THETA  : THETA02A
+#                         FOND   : FOND1
+#                         CHARGE : CH
+#                         CHAM_MATER : CHMAT
+#                         SYME_CHAR : 'SANS'
+#                         OPTION : 'CALC_K_G'
+#                      ) ;
+#
+#GK02B = CALC_G_THETA_T ( MODELE : MO
+#                         DEPL   : DEP
+#                         THETA  : THETA02B
+#                         FOND   : FOND1
+#                         CHARGE : CH
+#                         CHAM_MATER : CHMAT
+#                         SYME_CHAR : 'SANS'
+#                         OPTION : 'CALC_K_G'
+#                      ) ;
+#
+#GK02C = CALC_G_THETA_T ( MODELE : MO
+#                         DEPL   : DEP
+#                         THETA  : THETA02C
+#                         FOND   : FOND1
+#                         CHARGE : CH
+#                         CHAM_MATER : CHMAT
+#                         SYME_CHAR : 'SANS'
+#                         OPTION : 'CALC_K_G'
+#                      ) ;
+#
+#GK02D = CALC_G_THETA_T ( MODELE : MO
+#                         DEPL   : DEP
+#                         THETA  : THETA02D
+#                         FOND   : FOND1
+#                         CHARGE : CH
+#                         CHAM_MATER : CHMAT
+#                         SYME_CHAR : 'SANS'
+#                         OPTION : 'CALC_K_G'
+#                      ) ;
+#
+##
+## RESULTATS POINT DROIT
+##
+#       TEST_TABLE ( TABLE     : GK01A
+#                    NOM_PARA  : 'K1'
+#                    VALE      : 2.75709E6
+#                    PRECISION : 0.5    ) ;
+##
+#       TEST_TABLE ( TABLE     : GK01B
+#                    NOM_PARA  : 'K1'
+#                    VALE      : 2.75709E6
+#                    PRECISION : 0.05    ) ;
+##
+#       TEST_TABLE ( TABLE     : GK01C
+#                    NOM_PARA  : 'K1'
+#                    VALE      : 2.75709E6
+#                    PRECISION : 0.05    ) ;
+##
+#       TEST_TABLE ( TABLE     : GK01D
+#                    NOM_PARA  : 'K1'
+#                    VALE      : 2.75709E6
+#                    PRECISION : 0.05    ) ;
+##
+#       TEST_TABLE ( TABLE     : GK01A
+#                    NOM_PARA  : 'K2'
+#                    VALE      : 2.27394E6
+#                    PRECISION : 0.5    ) ;
+#       TEST_TABLE ( TABLE     : GK01B
+#                    NOM_PARA  : 'K2'
+#                    VALE      : 2.27394E6
+#                    PRECISION : 0.05    ) ;
+#       TEST_TABLE ( TABLE     : GK01C
+#                    NOM_PARA  : 'K2'
+#                    VALE      : 2.27394E6
+#                    PRECISION : 0.05    ) ;
+#       TEST_TABLE ( TABLE     : GK01D
+#                    NOM_PARA  : 'K2'
+#                    VALE      : 2.27394E6
+#                    PRECISION : 0.05    ) ;
+##
+## RESULTATS POINTS GAUCHE
+##
+#       TEST_TABLE ( TABLE     : GK02A
+#                    NOM_PARA  : 'K1'
+#                    VALE      : 1.55258E6
+#                    PRECISION : 0.5    ) ;
+##
+#       TEST_TABLE ( TABLE     : GK02B
+#                    NOM_PARA  : 'K1'
+#                    VALE      : 1.55258E6
+#                    PRECISION : 0.05    ) ;
+##
+#       TEST_TABLE ( TABLE     : GK02C
+#                    NOM_PARA  : 'K1'
+#                    VALE      : 1.55258E6
+#                    PRECISION : 0.05    ) ;
+##
+#       TEST_TABLE ( TABLE     : GK02D
+#                    NOM_PARA  : 'K1'
+#                    VALE      : 1.55258E6
+#                    PRECISION : 0.05    ) ;
+##
+#       TEST_TABLE ( TABLE     : GK02A
+#                    NOM_PARA  : 'K2'
+#                    VALE      : -3.25313E6
+#                    PRECISION : 0.5    ) ;
+##
+#       TEST_TABLE ( TABLE     : GK02B
+#                    NOM_PARA  : 'K2'
+#                    VALE      : -3.25313E6
+#                    PRECISION : 0.05    ) ;
+##
+#       TEST_TABLE ( TABLE     : GK02C
+#                    NOM_PARA  : 'K2'
+#                    VALE      : -3.25313E6
+#                    PRECISION : 0.05    ) ;
+##
+#       TEST_TABLE ( TABLE     : GK02D
+#                    NOM_PARA  : 'K2'
+#                    VALE      : -3.25313E6
+#                    PRECISION : 0.05    ) ;
+##

@@ -1,4 +1,4 @@
-# MODIF  DATE 03/02/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 24/05/2004   AUTEUR GALENNE E.GALENNE 
 # TITRE CALCUL 3D DE G FISSURE CIRCULAIRE EN MILIEU INFINI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -90,7 +90,7 @@ GLOC=11.58648
 
 GLOC1=CALC_G_LOCAL_T(    MODELE=MO,
                           DEPL=DEP,
-                        CHARGE=PRESSION,
+                        EXCIT=_F(CHARGE=PRESSION,),
                         CHAM_MATER=CHMAT,
                          FOND_FISS=FISS,
                         R_SUP=RSUP,
@@ -139,7 +139,7 @@ THETA1=CALC_THETA(      OPTION='COURONNE',
 G0=CALC_G_THETA_T(        MODELE=MO,
                                  DEPL=DEP,
                                 THETA=THETA1,
-                               CHARGE=PRESSION,
+                               EXCIT=_F(CHARGE=PRESSION,),
                            CHAM_MATER=CHMAT
                        )
 
