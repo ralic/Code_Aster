@@ -1,6 +1,6 @@
       SUBROUTINE ASMATR(NBMAT,TLIMAT,LICOEF,NU,SOLVEU,INFCHA,MOTCLE,
      &                  BASE,TYPE,MATAS)
-C MODIF ASSEMBLA  DATE 13/08/2002   AUTEUR ADBHHPM P.MASSIN 
+C MODIF ASSEMBLA  DATE 05/05/2004   AUTEUR BOITEAU O.BOITEAU 
 C RESPONSABLE VABHHTS J.PELLET
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
@@ -53,8 +53,10 @@ C                          1 --> REELLES
 C                          2 --> COMPLEXES
 C OUT K19  MATAS : L'OBJET MATAS DE TYPE MATR_ASSE EST CREE ET REMPLI
 C IN  K19  MATAS : NOM DE L'OBJET DE TYPE MATR_ASSE A CREER
-
-C-----------------------------------------------------------------------
+C   -------------------------------------------------------------------
+C     ASTER INFORMATIONS:
+C       05/12/03 (OB): AJOUT POUR SOLVEUR FETI.
+C----------------------------------------------------------------------
 C     FONCTIONS JEVEUX
 C-----------------------------------------------------------------------
       CHARACTER*32 JEXNUM,JEXNOM,JEXATR
@@ -80,6 +82,7 @@ C-----------------------------------------------------------------------
       CHARACTER*7 SYMEL
       CHARACTER*8 MATEL,K8BID
       CHARACTER*24 METRES,LICOE2
+      
 CDEB-------------------------------------------------------------------
       CALL JEMARQ()
       CALL JEDBG2(IDBGAV,0)
@@ -113,6 +116,7 @@ C     -- TRAITEMENT DE LA LISTE DES COEF. MULTIPLICATEURS :
 
       CALL WKVECT('&&ASMATR.LMATEL','V V K8',NBMAT2,ILIMAT)
 
+C PREPARATION DE LA LISTE DE MATR_ELEM RESYMETRISES SI NECESSAIRES
       INDSYM = 0
       TYPSYM = TYPMAT(NBMAT2,TLIMA2)
 
@@ -136,8 +140,12 @@ C     -- TRAITEMENT DE LA LISTE DES COEF. MULTIPLICATEURS :
           ZK8(ILIMAT+I-1) = TLIMA2(I)
    40   CONTINUE
       END IF
+      
+
+C REMPLISSAGE DE LA MATR_ASSE MATAS
+
       METRES = ZK24(ISLVK)
-      IF (METRES.EQ.'LDLT') THEN
+      IF (METRES.EQ.'LDLT') THEN   
         CALL JEEXIN(MATAS(1:19)//'.REFA',IRET)
         IF (IRET.NE.0) THEN
           CALL JELIRA(MATAS(1:19)//'.VALE','DOCU',IBID,TYMASY)
@@ -159,7 +167,7 @@ C     -- TRAITEMENT DE LA LISTE DES COEF. MULTIPLICATEURS :
           CALL ASSMNS(BASE,MATAS,NBMAT2,ZK8(ILIMAT),ZR(ILICOE),NU,
      &              MOTCLE,  TYPE)
         END IF
-      ELSE IF (METRES.EQ.'MULT_FRO') THEN
+      ELSE IF ((METRES.EQ.'MULT_FRO').OR.(METRES.EQ.'FETI')) THEN
         CALL JEEXIN(MATAS(1:19)//'.REFA',IRET)
         IF (IRET.NE.0) THEN
           CALL JELIRA(MATAS(1:19)//'.VALE','DOCU',IBID,TYMASY)
@@ -171,6 +179,10 @@ C     -- TRAITEMENT DE LA LISTE DES COEF. MULTIPLICATEURS :
           CALL ASSMAM(BASE,MATAS,NBMAT2,ZK8(ILIMAT),ZR(ILICOE),NU,
      &              MOTCLE,  TYPE)
         ELSE IF (TYPSYM.EQ.'N' .OR. INDSYM.EQ.1) THEN
+          IF (METRES.EQ.'FETI')
+     &      CALL UTMESS('F','ASMATR',
+     &      'MATRICE NON SYMETRIQUE POUR L''INSTANT PROSCRITE'//
+     &      '  AVEC FETI')
           CALL JEEXIN(MATAS(1:19)//'.REFA',IRET)
           IF (IRET.NE.0) THEN
             CALL JELIRA(MATAS(1:19)//'.VALE','DOCU',IBID,TYMASY)

@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 02/09/96   AUTEUR CIBHHGB G.BERTRAND 
+C MODIF ASSEMBLA  DATE 05/05/2004   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -38,21 +38,29 @@ C                   'RCMK' --> 'REVERSE CUTHIL MAC-KEE'
 C                   SINON LA NUMEROTATION EST BASEE SUR CETTE GRANDEUR
 C IN  K*9  STOCKZ : STOCKAGE DE LA MATRICE   = 'LIGN_CIEL'
 C                                        OU  = 'MORSE'
+C   -------------------------------------------------------------------
+C     ASTER INFORMATIONS:
+C       24/11/03 (OB): PAR ADHERENCE A NUEFFE.
+C----------------------------------------------------------------------
+
 C-----------------------------------------------------------------------
 
       CHARACTER*1  BASEZ
       CHARACTER*14 NUPGM
+      INTEGER IBID
+      CHARACTER*19 K19BID
 C
 C------RECUPERATION DU NIVEAU D'IMPRESSION
       CALL INFNIV(IFM,NIV)
-C
+
       BASEZ =BASE
       NUPGM = NU
 C
 C---- CREATION D'UNE LISTE DE LIGRELS A PARTIR DE LA LISTE DE MATR_ELEM
 C
-       CALL NUMOCH(TLIMAT,NBMAT,'V',NUPGM//'.&LMODCHAR')
-       CALL NUEFFE(NUPGM//'.&LMODCHAR',BASEZ,NUPGM,METHOD,STOCKZ,' ')
-       CALL JEDETC(' ',NUPGM//'.&LMODCHAR',1)
+      CALL NUMOCH(TLIMAT,NBMAT,'V',NUPGM//'.&LMODCHAR')
+      CALL NUEFFE(NUPGM//'.&LMODCHAR',BASEZ,NUPGM,METHOD,STOCKZ,' ',
+     &  K19BID,IBID)
+      CALL JEDETC(' ',NUPGM//'.&LMODCHAR',1)
 C
       END

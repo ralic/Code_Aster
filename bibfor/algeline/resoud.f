@@ -1,13 +1,8 @@
       SUBROUTINE RESOUD ( MATASS, MATPRE, CHSECZ, SOLVEU, CHCINE, BASE,
      +                    CHASOL, CRITEZ )
-      IMPLICIT REAL*8 (A-H,O-Z)
-      CHARACTER*(*)       BASE, CHSECZ, CHCINE, MATASS, MATPRE, CHASOL
-      CHARACTER*(*)       CRITEZ
-      CHARACTER*19        SOLVEU, CHSECM
-      CHARACTER*24        CRITER
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 03/05/2000   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 05/05/2004   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,14 +39,21 @@ C OUT K*  CHASOL : NOM DE L'OBJET DE S.D. CHAM_NO SOLUTION
 C                  DU SYSTEME LINEAIRE A RESOUDRE
 C IN  K*  CHASOL : NOM DE L'OBJET DE S.D. CHAM_NO SOLUTION
 C                  (L'OBJET N'EST PAS ENCORE REMPLI)
-C
+C   -------------------------------------------------------------------
+C     ASTER INFORMATIONS:
+C       16/01/04 (OB): AJOUT POUR SOLVEUR FETI.
 C-----------------------------------------------------------------------
-C     FONCTIONS JEVEUX
-C-----------------------------------------------------------------------
+      IMPLICIT REAL*8 (A-H,O-Z)
+
+C DECLARATION PARAMETRES D'APPELS            
+      CHARACTER*(*)       BASE, CHSECZ, CHCINE, MATASS, MATPRE, CHASOL
+      CHARACTER*(*)       CRITEZ
+      CHARACTER*19        SOLVEU
+      CHARACTER*24        CRITER
+      
+C FONCTIONS JEVEUX
       CHARACTER*32 JEXNUM,JEXNOM,JEXATR
-C-----------------------------------------------------------------------
-C     COMMUNS   JEVEUX
-C-----------------------------------------------------------------------
+C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
       REAL*8 ZR
@@ -64,54 +66,110 @@ C-----------------------------------------------------------------------
       CHARACTER*32 ZK32
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-      CHARACTER*24 METRES, NU , TYPREC
-      CHARACTER*19 MATAS, MAPREC, CHSOL,PCHN1,PCHN2
+C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
+
+C VARIABLES LOCALES
+      INTEGER      NBSD,IDIME,IDD,IFETC,IFETM,IBID 
+      REAL*8       TESTCO     
+      CHARACTER*24 METRES,SDFETI,TYREOR,PRECO,SCALIN
+      CHARACTER*19 MATAS,MAPREC,CHSOL,PCHN1,PCHN2,ARG1,ARG2,CHSECM
       CHARACTER*4  ETAMAT
-      LOGICAL IDENSD
-C----------------------------------------------------------------------
-C                DEBUT DES INSTRUCTIONS
+      LOGICAL      IDENSD,LFETI
+      
+C CORPS DU PROGRAMME
       CALL JEMARQ()
       CALL JEDBG2(IDBGAV,0)
-C----------------------------------------------------------------------
-C
+
       MATAS = MATASS
       MAPREC = MATPRE
       CHSOL = CHASOL
       CHSECM = CHSECZ
       CRITER = CRITEZ
 
-C     -- ON VERIFIE QUE LE PROF_CHNO DE LA MATR_ASSE
-C        EST IDENTIQUE A CELUI DU  SECOND_MEMBRE :
-C     -----------------------------------------------
-
-
-       CALL DISMOI('F','PROF_CHNO',MATAS,'MATR_ASSE',IBID,PCHN1,IBID)
-       CALL DISMOI('F','PROF_CHNO',CHSECM,'CHAM_NO',IBID,PCHN2,IBID)
-       IF (.NOT.IDENSD('PROF_CHNO',PCHN1,PCHN2))
-     & CALL UTMESS('F','RESOUD','LA NUMEROTATION '
-     & //'DES INCONNUES EST INCOHERENTE ENTRE LA MATRICE ET LE SECOND'
-     & //' MEMBRE.')
-
-
-C
       CALL JEVEUO(SOLVEU//'.SLVK','L',ISLVK)
       CALL JEVEUO(SOLVEU//'.SLVR','L',ISLVR)
       CALL JEVEUO(SOLVEU//'.SLVI','L',ISLVI)
       METRES = ZK24(ISLVK)
+      
+C FETI OR NOT ?
+      IF (METRES(1:4).EQ.'FETI') THEN
+        SDFETI=ZK24(ISLVK+5)
+        CALL JEVEUO(SDFETI(1:19)//'.DIME','L',IDIME)
+C NOMBRE DE SOUS-DOMAINES       
+        NBSD=ZI(IDIME)
+        CALL JEVEUO(MATAS//'.FETM','L',IFETM)
+        CALL JEVEUO(CHSECM//'.FETC','L',IFETC)
+        LFETI=.TRUE.    
+      ELSE
+        NBSD=0
+        LFETI=.FALSE.                 
+      ENDIF      
+
+C --- BOUCLE SUR LES SOUS-DOMAINES POUR VERIFICATION
+      DO 10 IDD=0,NBSD            
+C     -- ON VERIFIE QUE LE PROF_CHNO DE LA MATR_ASSE
+C        EST IDENTIQUE A CELUI DU  SECOND_MEMBRE :
+C     -----------------------------------------------         
+         IF (IDD.EQ.0) THEN
+           ARG1=MATAS
+           ARG2=CHSECM
+         ELSE
+           ARG1=ZK24(IFETM+IDD-1)
+           ARG2=ZK24(IFETC+IDD-1)        
+         ENDIF  
+         CALL DISMOI('F','PROF_CHNO',ARG1,'MATR_ASSE',IBID,PCHN1,IBID)
+         CALL DISMOI('F','PROF_CHNO',ARG2,'CHAM_NO',IBID,PCHN2,IBID)
+         IF (.NOT.IDENSD('PROF_CHNO',PCHN1,PCHN2)) THEN
+           CALL UTDEBM('F','RESOUD','LA NUMEROTATION DES INCONNUES EST')
+           CALL UTIMPK('L',' INCOHERENTE ENTRE LA MATRICE ',1,ARG1)
+           CALL UTIMPK('L',' ET LE SECOND MEMBRE ',1,ARG2)
+           IF (LFETI) THEN
+             IF (IDD.EQ.0) THEN
+               CALL UTIMPI('L','DOMAINE GLOBAL',0,IBID)
+             ELSE
+               CALL UTIMPI('L','SOUS-DOMAINE NUMERO ',1,IDD)
+             ENDIF   
+           ENDIF
+           CALL UTFINM()     
+         ENDIF
+   10 CONTINUE
 
 
-
-      IF ( METRES.EQ.'LDLT' .OR.  METRES.EQ.'MULT_FRO' ) THEN
-C     ----------------------------------
-         CALL JELIRA(MATAS//'.REFA','DOCU',IBID,ETAMAT)
-         IF (ETAMAT.NE.'DECP'.AND.ETAMAT.NE.'DECT')
+      IF (METRES.EQ.'LDLT'.OR.METRES.EQ.'MULT_FRO'.OR.
+     &    METRES.EQ.'FETI') THEN
+     
+C --- BOUCLE SUR LES SOUS-DOMAINES POUR VERIFICATION
+        DO 20 IDD=0,NBSD
+C     -- ON VERIFIE QUE CHAQUE MATRUCE DE LA MATR_ASSE
+C        A BIEN ETE FACTORISEE :
+C     ----------------------------------------------- 
+         IF (IDD.EQ.0) THEN
+           ARG1=MATAS
+         ELSE
+           ARG1=ZK24(IFETM+IDD-1)
+         ENDIF                      
+          CALL JELIRA(ARG1//'.REFA','DOCU',IBID,ETAMAT)
+          IF (ETAMAT.NE.'DECP'.AND.ETAMAT.NE.'DECT')
      +      CALL UTMESS('F','RESOUD','  PAS DE RESOLUTION '//
      +       'CAR LA MATRICE '//MATAS//' N"EST PAS DECOMPOSEE.' )
+   20   CONTINUE 
+      
          CALL DETRSD('CHAMP_GD',CHSOL)
          CALL VTDEFS(CHSOL,CHSECM,'V',' ')
-         CALL COPISD('CHAMP_GD',BASE,CHSECM,CHSOL)
-         CALL RESLDL(MATAS, CHCINE, CHSOL)
-
+         IF (METRES.NE.'FETI') THEN
+           CALL COPISD('CHAMP_GD',BASE,CHSECM,CHSOL)
+           CALL RESLDL(MATAS,CHCINE,CHSOL)
+         ELSE
+           NITER=ZI(ISLVI+1)
+           EPSI=ZR(ISLVR+1)
+           TESTCO=ZR(ISLVR+3)
+           NBREOR=ZI(ISLVI+4)
+           PRECO=ZK24(ISLVK+1)                     
+           TYREOR=ZK24(ISLVK+6)
+           SCALIN=ZK24(ISLVK+7)
+           CALL RESFET(SDFETI(1:19),MATAS,CHCINE(1:19),CHSECM,CHSOL,
+     &       NITER,EPSI,CRITER,TESTCO,NBREOR,TYREOR,PRECO,SCALIN)   
+         ENDIF
 
       ELSE IF (METRES.EQ.'GCPC') THEN
 C     ----------------------------------
@@ -125,8 +183,8 @@ C     ----------------------------------
 C
       ELSE
           CALL UTMESS('F','RESOUD',' LA METHODE DE RESOLUTION: '//
-     +                     METRES//' EST INCONNUE. ON ATTEND: "LDLT"'//
-     +                             ', OU "GCPC", OU "MULT_FRO"')
+     +                     METRES//' EST INCONNUE. ON ATTEND LDLT'//
+     +                             ',GCPC, MULT_FRO OU FETI')
       ENDIF
 C
       CALL JEDBG2(IBID,IDBGAV)

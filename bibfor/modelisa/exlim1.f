@@ -3,7 +3,7 @@
       CHARACTER*(*)      LISMAZ, MODELZ, BASEZ, LIGREZ
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 05/12/2001   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 05/05/2004   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -28,6 +28,10 @@ C                DES GRELS
 C IN  : BASEZ  : BASE SUR-LAQUELLE ON CREE LE LIGREL
 C OUT : LIGREZ : LIGREL A CREER
 C     ------------------------------------------------------------------
+C     ASTER INFORMATIONS:
+C       02/11/03 (OB): MODIF. POUR FETI: RAJOUT 'DOCU' POUR 'NOMA'.
+C----------------------------------------------------------------------
+
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
@@ -45,51 +49,51 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
       CHARACTER*32       JEXNOM,        JEXNUM
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
-C
-      CHARACTER*1     BASE
-      CHARACTER*6     KNUM
-      CHARACTER*8     MODELE, RESU
-      CHARACTER*8     K8B, NOMA, MAILLE
-      CHARACTER*16    MOTFAC
-      CHARACTER*16    PHENOM
-      CHARACTER*19    LIGREL, LIGRMO
-      CHARACTER*24    NOMMAI, GRPMAI, CPTLIE
-      CHARACTER*24    LISMAI
-      CHARACTER*1 K1BID
+
+      CHARACTER*1     BASE,K1BID
+      CHARACTER*8     MODELE,NOMA
+      CHARACTER*16    PHENO
+      CHARACTER*19    LIGREL,LIGRMO
+      CHARACTER*24    NOMMAI,CPTLIE,LISMAI
+      INTEGER     IBID
 C     ------------------------------------------------------------------
-C
+
       CALL JEMARQ()
+      
       BASE   = BASEZ
       LISMAI = LISMAZ
       MODELE = MODELZ
       LIGREL = LIGREZ
-C
+
       NBGREL = LONLIS
-C
+
 C --- RECUPERATION DE LA LISTE DE MAILLES
 C     -----------------------------------
       CALL JEVEUO(LISMAI,'L',ILISMA)
-C
+
 C --- MAILLAGE ASSOCIE AU MODELE
 C     --------------------------
       CALL DISMOI('F','NOM_MAILLA',MODELE,'MODELE',IB,NOMA  ,IE)
       NOMMAI = NOMA//'.NOMMAI'
-C
+
 C --- LIGREL DU MODELE
 C     ----------------
       CALL DISMOI('F','NOM_LIGREL',MODELE,'MODELE',IB,LIGRMO,IE)
       CALL JEVEUO(LIGRMO//'.REPE','L',JREPE)
-C
+
 C     --- OBJET NBNO
 C         ----------
       CALL WKVECT(LIGREL//'.NBNO',BASE//' V I',1,JDNB)
       ZI(JDNB) = 0
-C
+
 C     --- OBJET NOMA
 C         ----------
       CALL WKVECT(LIGREL//'.NOMA',BASE//' V K8',1,JDNM)
       ZK8(JDNM) = NOMA
-C
+C                               9012345678901234    
+      CALL JELIRA(MODELE(1:8)//'.MODELE    .NOMA','DOCU',IBID,PHENO)
+      CALL JEECRA(LIGREL//'.NOMA','DOCU',IBID,PHENO)      
+
 C     --- OBJET LIEL
 C         ----------
       CPTLIE = LIGREL//'.LIEL'
@@ -97,7 +101,7 @@ C         ----------
       CALL JECREC(CPTLIE,BASE//' V I','NU','CONTIG','VARIABLE',NBGREL)
       CALL JEECRA(CPTLIE,'LONT',LONT,' ')
       CALL JEVEUO(CPTLIE,'E',JDLI)
-C
+
 C     --- STOCKAGE DES GROUPES ELEMENTS DANS LIEL
 C         ---------------------------------------
       NUMVEC = 0
@@ -117,15 +121,16 @@ C         ---------------------------------------
          CALL JELIRA(JEXNUM(LIGRMO//'.LIEL',IGREL),'LONMAX',NEL,K1BID)
          NUMVEC = NUMVEC + 1
          ZI(JDLI+NUMVEC-1) = ZI(IALIEL+NEL-1)
- 10   CONTINUE
-C
+ 10   CONTINUE            
+ 
+
 C     ---  ADAPTATION DE LA TAILLE DES GRELS
 C          ---------------------------------
       CALL ADALIG(LIGREL)
-C
+
 C     --- CREATION DE LA CORRESPONDANCE MAILLE --> (IGREL,IM)
 C         ---------------------------------------------------
       CALL CORMGI(BASE, LIGREL)
-C
+
       CALL JEDEMA()
       END

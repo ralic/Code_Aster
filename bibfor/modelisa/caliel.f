@@ -1,7 +1,7 @@
       SUBROUTINE CALIEL (FONREZ, CHARGZ)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 17/05/2000   AUTEUR DURAND C.DURAND 
+C MODIF MODELISA  DATE 05/05/2004   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,6 +40,11 @@ C  CHARGZ        - IN    - K8   - : NOM DE LA SD CHARGE
 C                - JXVAR -      -
 C -------------------------------------------------------
 C
+C -------------------------------------------------------------------
+C     ASTER INFORMATIONS:
+C       19/03/04 (OB): PAR ADHERENCE A NUEFFE
+C--------------------------------------------------------------------
+
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ------
       CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
       INTEGER            ZI
@@ -63,7 +68,7 @@ C
       CHARACTER*8   MOD, K8BID, OPTION, CHARGE, MO8BLA
       CHARACTER*14  NUMDDL
       CHARACTER*16  MOTFAC
-      CHARACTER*19  LIGRMO, LISREL
+      CHARACTER*19  LIGRMO, LISREL,K19B
       INTEGER       IOCC,NLIAI,ILMOCH,IOP,IBID,IER
 C
 C --------- FIN  DECLARATIONS  VARIABLES LOCALES --------
@@ -95,7 +100,7 @@ C     -----------------------------------------------------
       ZK24(ILMOCH) = LIGRMO
       NUMDDL = '&&CALIEL.NUMED'
       CALL NUEFFE('&&CALIEL.LIGRMO','V',NUMDDL,'SANS','LIGN_CIEL',
-     +             MO8BLA)
+     +             MO8BLA,K19B,IBID)
 C
       DO 10 IOCC = 1, NLIAI
          CALL GETVTX(MOTFAC,'OPTION'     ,IOCC,1,1,OPTION,IOP)

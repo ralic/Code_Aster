@@ -2,7 +2,7 @@
       IMPLICIT NONE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/07/2002   AUTEUR CAMBIER S.CAMBIER 
+C MODIF ALGORITH  DATE 05/05/2004   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -35,7 +35,10 @@ C IN  K*24 FOMULT : NOM DE L'OJB S V K24 CONTENANT LA LISTE DES FONC.
 C IN  K*14 NUMEDD  : NOM DE LA NUMEROTATION SUPPORTANT LE CHAM_NO
 C IN  R*8  INST   : VALE DU PARAMETRE INST.
 C VAR/JXOUT  K*19 VCI    :  CHAM_NO RESULTAT
-C-----------------------------------------------------------------------
+C   -------------------------------------------------------------------
+C     ASTER INFORMATIONS:
+C       04/12/03 (OB): BLINDAGE POUR EVITER FETI + AFFE_CHAR_CINE
+C----------------------------------------------------------------------
 C     FONCTIONS JEVEUX
 C-----------------------------------------------------------------------
       CHARACTER*32 JEXNUM,JEXNOM,JEXATR
@@ -58,16 +61,34 @@ C----------------------------------------------------------------------
 C     VARIABLES LOCALES
 C----------------------------------------------------------------------
       INTEGER IDCHAR,IDINFO,IDFOMU,NCHTOT,NCHCI,ICHAR,ICINE,ILCHNO
-      INTEGER NEQ,ICHCI,IBID
+      INTEGER NEQ,ICHCI,IBID,IFM,NIV
       CHARACTER*8 NEWNOM
       CHARACTER*19 CHARCI,CHAMNO
       CHARACTER*24 VACHCI
+      INTEGER     NBREFN,IREFN
+      CHARACTER*8 K8BID
+      LOGICAL     LFETI
       DATA CHAMNO/'&&ASCAVC.???????'/
       DATA VACHCI/'&&ASCAVC.LISTE_CI'/
 C----------------------------------------------------------------------
 
 
       CALL JEMARQ()
+C RECUPERATION ET MAJ DU NIVEAU D'IMPRESSION
+      CALL INFNIV(IFM,NIV)
+      
+C --- TEST POUR SAVOIR SI LE SOLVEUR EST DE TYPE FETI
+C --- NUME_DDL ET DONC MATR_ASSE ETENDU, OUI OU NON ?      
+      CALL JELIRA(NUMEDD(1:14)//'.NUME.REFN','LONMAX',NBREFN,K8BID)
+      LFETI = .FALSE.
+      IF ((NBREFN.NE.4).AND.(NIV.GE.3)) THEN
+        WRITE(IFM,*)'<FETI/ASCAVC> NUME_DDL NON ETENDU POUR FETI ',
+     &              NUMEDD(1:14)//'.NUME.REFN'            
+      ELSE
+        CALL JEVEUO(NUMEDD(1:14)//'.NUME.REFN','L',IREFN)
+        IF (ZK24(IREFN+2).EQ.'FETI') LFETI=.TRUE.               
+      ENDIF
+      
       NEWNOM='.0000000'
 
       CALL JEDETR(VACHCI)
@@ -98,6 +119,11 @@ C     -- S'IL N'Y A PAS DE CHARGES CINEMATIQUES, ON CREE UN CHAMP NUL:
 
 C     -- S'IL Y A DES CHARGES CINEMATIQUES :
       ELSE
+
+        IF (LFETI) CALL UTMESS('F','ASCAVC',
+     &     'LES CHARGES CINEMATIQUES SONT POUR L''INSTANT '//     
+     &     'PROSCRITES AVEC FETI')
+
         ICHCI = 0
         DO 20 ICHAR = 1,NCHTOT
           ICINE = ZI(IDINFO+ICHAR)

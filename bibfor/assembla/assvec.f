@@ -1,9 +1,8 @@
       SUBROUTINE ASSVEC(BASE,VEC,NBVEC,TLIVEC,LICOEF,NU,VECPRO,MOTCLE,
      &                  TYPE)
       IMPLICIT REAL*8 (A-H,O-Z)
-
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 09/02/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF ASSEMBLA  DATE 05/05/2004   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,8 +42,10 @@ C
 C  S'IL EXISTE UN OBJET '&&POIDS_MAILLE' VR, PONDERATIONS POUR CHAQUE
 C  MAILLE, ON S'EN SERT POUR LES OPTIONS RAPH_MECA ET FULL_MECA
 C
-C ----------------------------------------------------------------------
-C ----------------------------------------------------------------------
+C   -------------------------------------------------------------------
+C     ASTER INFORMATIONS:
+C       20/11/03 (OB): AJOUT POUR SOLVEUR FETI.
+C----------------------------------------------------------------------
 C     FONCTIONS JEVEUX
 C ----------------------------------------------------------------------
       CHARACTER*32 JEXNUM,JEXNOM,JEXATR
@@ -57,6 +58,8 @@ C ----------------------------------------------------------------------
       COMMON /RVARJE/ZR(1)
       COMPLEX*16 ZC
       COMMON /CVARJE/ZC(1)
+      LOGICAL ZL
+      COMMON /LVARJE/ZL(1)
       CHARACTER*8 ZK8,NOMACR,EXIELE
       CHARACTER*14 NUM2
       CHARACTER*16 ZK16
@@ -72,6 +75,14 @@ C ---------------------------------------------------------------------
 C     VARIABLES LOCALES
 C ---------------------------------------------------------------------
       PARAMETER (NBECMX=10)
+      
+      INTEGER      NBSD,IDIME,IDD,ILOGI,IFETN,IFETC,IREFN,NBREFN
+      CHARACTER*8  NOMSD,K8BID
+      CHARACTER*11 K11B
+      CHARACTER*14 K14B
+      CHARACTER*19 K19B      
+      CHARACTER*24 METHOD,SDFETI,K24B,SDFETS,KNUEQ
+      LOGICAL      LFETI      
       INTEGER ICODLA(NBECMX),ICODGE(NBECMX)
       CHARACTER*1 BAS
       CHARACTER*8 VECEL,MA,MO,MO2,NOGDSI,NOGDCO,NOMCAS
@@ -155,7 +166,7 @@ C-----RECUPERATION DU NIVEAU D'IMPRESSION
 
 C     IFM = IUNIFI('MESSAGE')
 C----------------------------------------------------------------------
-
+      
 C --- VERIF DE MOTCLE:
       IF (MOTCLE(1:4).EQ.'ZERO') THEN
 
@@ -179,18 +190,7 @@ C --- SI LE CONCEPT VECAS EXISTE DEJA,ON LE DETRUIT:
 C --- NOMS DES PRINCIPAUX OBJETS JEVEUX LIES A VECAS
       KMAILA = '&MAILLA                 '
       KVELIL = VECAS//'.LILI'
-      KVEREF = VECAS//'.REFE'
-      KVALE = VECAS//'.VALE'
-      KVEDSC = VECAS//'.DESC'
-
-C --- CREATION DE REFE ET DESC
-      CALL JECREO(KVEREF,BAS//' V K24')
-      CALL JEECRA(KVEREF,'LONMAX',2,' ')
-      CALL JEVEUO(KVEREF,'E',IDVERF)
-      CALL JECREO(KVEDSC,BAS//' V I')
-      CALL JEECRA(KVEDSC,'LONMAX',2,' ')
-      CALL JEECRA(KVEDSC,'DOCU',IBID,'CHNO')
-      CALL JEVEUO(KVEDSC,'E',IDVEDS)
+      
 
 C --- CALCUL D UN LILI POUR VECAS
 C --- CREATION D'UN VECAS(1:19).ADNE ET VECAS(1:19).ADLI SUR 'V'
@@ -218,10 +218,31 @@ C     DANS LE JEVEUO SUR KNEQUA
         NUDEV = ZK24(IDVREF-1+2) (1:14)
       END IF
 
-      KNEQUA = NUDEV//'.NUME.NEQU'
-      K24PRN = NUDEV//'.NUME.PRNO'
-      KNULIL = NUDEV//'.NUME.LILI'
-      CALL JEVEUO(NUDEV//'.NUME.NUEQ','L',IANUEQ)
+C --- TEST POUR SAVOIR SI LE SOLVEUR EST DE TYPE FETI
+C --- NUME_DDL ET DONC CHAM_NO ETENDU, OUI OU NON ?      
+      CALL JELIRA(NUDEV(1:14)//'.NUME.REFN','LONMAX',NBREFN,K8BID)
+      IF (NBREFN.NE.4) THEN
+        WRITE(IFM,*)'<FETI/ASSVEC> NUME_DDL/CHAM_NO NON ETENDU '
+     &              //'POUR FETI',NUDEV(1:14)//'.NUME.REFN'
+        METHOD='XXXX'
+        SDFETI='XXXX'
+      ELSE
+        CALL JEVEUO(NUDEV(1:14)//'.NUME.REFN','L',IREFN)
+        METHOD=ZK24(IREFN+2)
+        SDFETI=ZK24(IREFN+3)
+        SDFETS=SDFETI   
+      ENDIF
+        
+      LFETI=.FALSE.
+      NBSD=0
+      IF (METHOD(1:4).EQ.'FETI') THEN
+        LFETI=.TRUE.
+        CALL JEVEUO(SDFETI(1:19)//'.DIME','L',IDIME)
+C NOMBRE DE SOUS-DOMAINES       
+        NBSD=ZI(IDIME)
+C CONSTITUTION DE L'OBJET JEVEUX VECAS.FETC COMPLEMENTAIRE
+        CALL WKVECT(VECAS//'.FETC',BAS//' V K24',NBSD,IFETC)
+      ENDIF
 
       CALL DISMOI('F','NOM_MODELE',NUDEV,'NUME_DDL',IBID,MO,IERD)
       CALL DISMOI('F','NOM_MAILLA',NUDEV,'NUME_DDL',IBID,MA,IERD)
@@ -253,6 +274,10 @@ C     -----------------------------------------------
 
       CALL JEEXIN(MA//'.NOMACR',IRET)
       IF (IRET.GT.0) THEN
+        IF (LFETI)
+     &    CALL UTMESS('F','ASSVEC',
+     &      'LE MAILLAGE '//MA(1:8)//' CONTIENT DES SUPER-MAILLES'//
+     &      ' POUR L''INSTANT, ELLES SONT PROSCRITES AVEC FETI')
         CALL JEVEUO(MA//'.NOMACR','L',IANMCR)
         CALL JEVEUO(JEXNOM('&CATA.GD.NOMCMP',NOGDSI),'L',IANCMP)
         CALL JELIRA(JEXNOM('&CATA.GD.NOMCMP',NOGDSI),'LONMAX',LGNCMP,
@@ -269,335 +294,440 @@ C       -- ICODLA EST L'ENTIER CODE CORRESPONDANT A LA CMP "LAGR"
 C        ICODLA = 2**ICMP
       END IF
 
+C ADRESSE JEVEUX DE LA LISTE DES NUME_DDL ASSOCIES AUX SOUS-DOMAINES 
+      IF (LFETI) THEN
+        CALL JEVEUO(NUDEV//'.FETN','L',IFETN)
+C STOCKE &&//NOMPRO(1:6)//'.2.' POUR COHERENCE AVEC L'EXISTANT     
+        K11B=VECAS(1:10)//'.'   
+      ENDIF
 
-C ---  RECUPERATION DE PRNO
-      CALL JEVEUO(K24PRN,'L',IDPRN1)
-      CALL JEVEUO(JEXATR(K24PRN,'LONCUM'),'L',IDPRN2)
+C---- BOUCLE SUR LES SOUS-DOMAINES:
+C----------------------------------      
+C IDD=0 --> DOMAINE GLOBAL/ IDD=I --> IEME SOUS-DOMAINE
+      DO 195 IDD=0,NBSD        
+                
+C ---  RECUPERATION DE PRNO/LILI/NUEQ/NEQU
+        IF (IDD.EQ.0) THEN
+          K24PRN = NUDEV//'.NUME.PRNO'
+          KNULIL = NUDEV//'.NUME.LILI'
+          KNUEQ  = NUDEV//'.NUME.NUEQ'
+          KNEQUA = NUDEV//'.NUME.NEQU'                  
+        ELSE
+          K14B=ZK24(IFETN+IDD-1)(1:14)
+          K24PRN(1:14)=K14B
+          KNULIL(1:14)=K14B
+          KNUEQ(1:14)=K14B
+          KNEQUA(1:14)=K14B                                     
+        ENDIF  
+        CALL JEVEUO(K24PRN,'L',IDPRN1)
+        CALL JEVEUO(JEXATR(K24PRN,'LONCUM'),'L',IDPRN2)
+        CALL JEVEUO(KNUEQ,'L',IANUEQ)   
+        CALL JEVEUO(KNEQUA,'L',IDNEQU)  
+        NEQUA = ZI(IDNEQU)
 
-C ---  RECUPERATION DE NEQUA
-      CALL JEVEUO(KNEQUA,'L',IDNEQU)
-      NEQUA = ZI(IDNEQU)
+C ---  REMPLISSAGE DES .REFE ET .DESC
+        IF (IDD.EQ.0) THEN
+C SI NON FETI OU FETI DOMAINE GLOBAL       
+          KVEREF = VECAS//'.REFE'
+          KVALE  = VECAS//'.VALE'
+          KVEDSC = VECAS//'.DESC'
+        ELSE
+C SI SOUS-DOMAINE FETI       
+          CALL JENUNO(JEXNUM(SDFETS(1:19)//'.FETA',IDD),NOMSD)
+          K19B=K11B//NOMSD
+          ZK24(IFETC+IDD-1)=K19B
+          KVEREF(1:19)=K19B                       
+          KVEDSC(1:19)=K19B
+          KVALE(1:19)=K19B                                        
+C RECUPERATION DANS LE .NUME.REFN DU NOM DE LA METHODE
+          CALL JEVEUO(K14B//'.NUME.REFN','L',IREFN)
+          METHOD=ZK24(IREFN+2)
+          SDFETI=ZK24(IREFN+3)          
+        ENDIF
+        CALL JECREO(KVEREF,BAS//' V K24')
+        CALL JEECRA(KVEREF,'LONMAX',4,' ')
+        CALL JEVEUO(KVEREF,'E',IDVERF)
+        CALL JECREO(KVEDSC,BAS//' V I')
+        CALL JEECRA(KVEDSC,'LONMAX',2,' ')
+        CALL JEECRA(KVEDSC,'DOCU',IBID,'CHNO')
+        CALL JEVEUO(KVEDSC,'E',IDVEDS)    
+        ZK24(IDVERF) = MA
+        ZK24(IDVERF+1) = K24PRN(1:14)//'.NUME'
+        ZK24(IDVERF+2) = METHOD
+        ZK24(IDVERF+3) = SDFETI 
+        ZI(IDVEDS) = GD
+        ZI(IDVEDS+1) = 1
 
-C ---  REMPLISSAGE DE REFE ET DESC
-      ZK24(IDVERF) = MA
-      ZK24(IDVERF+1) = K24PRN(1:14)//'.NUME'
-      ZI(IDVEDS) = GD
-      ZI(IDVEDS+1) = 1
-
-
-C --- ALLOCATION VALE EN R OU C SUIVANT TYPE
-      IF (TYPE.EQ.1) THEN
-        CALL JECREO(KVALE,BAS//' V R8')
-
-      ELSE IF (TYPE.EQ.2) THEN
-        CALL JECREO(KVALE,BAS//' V C16')
-
-      ELSE
-        CALL UTMESS('F','ASSVEC','ON NE PEUT ASSEMBLER QUE DES'//
-     &              ' VECTEURS REELS OU COMPLEXES')
-      END IF
-
-      CALL JEECRA(KVALE,'LONMAX',NEQUA,' ')
-      CALL JEVEUO(KVALE,'E',IADVAL)
-
-
+C --- ALLOCATION .VALE EN R OU C SUIVANT TYPE     
+        IF (TYPE.EQ.1) THEN
+          CALL JECREO(KVALE,BAS//' V R8')
+        ELSE IF (TYPE.EQ.2) THEN
+          CALL JECREO(KVALE,BAS//' V C16')
+        ELSE
+          CALL UTMESS('F','ASSVEC','ON NE PEUT ASSEMBLER QUE DES'//
+     &                ' VECTEURS REELS OU COMPLEXES')
+        ENDIF
+        CALL JEECRA(KVALE,'LONMAX',NEQUA,' ')
+        CALL JEVEUO(KVALE,'E',IADVAL)     
+              
+        IF ((LFETI).AND.(IDD.GT.0)) THEN
+C OBJET JEVEUX VECTEUR DE LOGICAL POUR SIGNIFIER L'APPARTENANCE D'UNE
+C MAILLE A UN SOUS-DOMAINE
+          K24B='&&'//SDFETS(1:8)//'.'//NOMSD(1:8)//'.LOGI'
+          CALL JEVEUO(K24B,'L',ILOGI)                   
+        ENDIF
+         
 C --- REMPLISSAGE DE .VALE
 C ------------------------
-      DO 190 IMAT = 1,NBVEC
-        RCOEF = LICOEF(IMAT)
-        VECEL = ZK8(ILIVEC+IMAT-1)
-
-        CALL DISMOI('F','NOM_MODELE',VECEL,'VECT_ELEM',IBID,MO2,IERD)
-        IF (MO2.NE.MO) CALL UTMESS('F','ASSVEC','MODELES DISCORDANTS')
-
+C---- BOUCLE SUR LES VECT_ELEM:
+C------------------------------
+        DO 190 IMAT = 1,NBVEC
+          RCOEF = LICOEF(IMAT)
+          VECEL = ZK8(ILIVEC+IMAT-1)
+          CALL DISMOI('F','NOM_MODELE',VECEL,'VECT_ELEM',IBID,MO2,IERD)
+          IF (MO2.NE.MO) CALL UTMESS('F','ASSVEC','MODELES DISCORDANTS')
 
 C       -- TRAITEMENT DES SOUS-STRUCTURES (JUSQU A FIN BOUCLE 738)
 C       ----------------------------------------------------------
-        CALL DISMOI('F','EXI_ELEM',MO,'MODELE',IBID,EXIELE,IERD)
-        CALL DISMOI('F','NB_SS_ACTI',VECEL,'VECT_ELEM',NBSSA,KBID,IERD)
+          CALL DISMOI('F','EXI_ELEM',MO,'MODELE',IBID,EXIELE,IERD)
+          CALL DISMOI('F','NB_SS_ACTI',VECEL,'VECT_ELEM',NBSSA,KBID,
+     &                IERD)
+          IF (NBSSA.GT.0) THEN
+            NOMCAS = ' '
+            CALL DISMOI('F','NB_SM_MAILLA',MO,'MODELE',NBSMA,KBID,IERD)
+            CALL DISMOI('F','NOM_MAILLA',MO,'MODELE',IBID,MA,IERD)
+            CALL JEVEUO(MO//'.SSSA','L',IASSSA)
+            CALL SSVALV('DEBUT',NOMCAS,MO,MA,0,IDRESL,NCMPEL)
+            CALL JELIRA(VECEL//'.LISTE_CHAR','NUTIOC',NBCHAR,KBID)
 
-        IF (NBSSA.GT.0) THEN
-          NOMCAS = ' '
-          CALL DISMOI('F','NB_SM_MAILLA',MO,'MODELE',NBSMA,KBID,IERD)
-          CALL DISMOI('F','NOM_MAILLA',MO,'MODELE',IBID,MA,IERD)
-          CALL JEVEUO(MO//'.SSSA','L',IASSSA)
-          CALL SSVALV('DEBUT',NOMCAS,MO,MA,0,IDRESL,NCMPEL)
-          CALL JELIRA(VECEL//'.LISTE_CHAR','NUTIOC',NBCHAR,KBID)
+            DO 90 ICHAR = 1,NBCHAR
+              CALL JENUNO(JEXNUM(VECEL//'.LISTE_CHAR',ICHAR),NOMCAS)
+              CALL JEVEUO(JEXNUM(VECEL//'.LISTE_CHAR',ICHAR),'L',IALCHA)
 
-          DO 90 ICHAR = 1,NBCHAR
-            CALL JENUNO(JEXNUM(VECEL//'.LISTE_CHAR',ICHAR),NOMCAS)
-            CALL JEVEUO(JEXNUM(VECEL//'.LISTE_CHAR',ICHAR),'L',IALCHA)
-
-            DO 80 IMA = 1,NBSMA
+              DO 80 IMA = 1,NBSMA
 C             -- ON N'ASSEMBLE QUE LES SSS VRAIMENT ACTIVES :
-              IF (ZI(IASSSA-1+IMA).EQ.0) GO TO 80
-              IF (ZI(IALCHA-1+IMA).EQ.0) GO TO 80
-              CALL JEVEUO(JEXNUM(MA//'.SUPMAIL',IMA),'L',IAMAIL)
-              CALL JELIRA(JEXNUM(MA//'.SUPMAIL',IMA),'LONMAX',NNOE,KBID)
-              CALL SSVALV(' ',NOMCAS,MO,MA,IMA,IDRESL,NCMPEL)
+                IF (ZI(IASSSA-1+IMA).EQ.0) GO TO 80
+                IF (ZI(IALCHA-1+IMA).EQ.0) GO TO 80
+                CALL JEVEUO(JEXNUM(MA//'.SUPMAIL',IMA),'L',IAMAIL)
+                CALL JELIRA(JEXNUM(MA//'.SUPMAIL',IMA),'LONMAX',NNOE,
+     &                      KBID)
+                CALL SSVALV(' ',NOMCAS,MO,MA,IMA,IDRESL,NCMPEL)
+                NOMACR = ZK8(IANMCR-1+IMA)
+                CALL DISMOI('F','NOM_NUME_DDL',NOMACR,'MACR_ELEM_STAT',
+     &                     IBID,NUM2,IERD)
+                CALL JEVEUO(NOMACR//'.CONX','L',IACONX)
+                CALL JEVEUO(JEXNUM(NUM2//'.NUME.PRNO',1),'L',IAPROL)
+                IL = 0
+                DO 70 K1 = 1,NNOE
+                  N1 = ZI(IAMAIL-1+K1)
+                  IF (N1.GT.NM) THEN
+                    DO 30 IEC = 1,NBECMX
+                      ICODGE(IEC) = ICODLA(IEC)
+   30               CONTINUE
+                  ELSE
+                    INOLD = ZI(IACONX-1+3* (K1-1)+2)
+                    DO 40 IEC = 1,NEC
+                      ICODGE(IEC)=ZI(IAPROL-1+(NEC+2)*(INOLD-1)+2+IEC)
+   40              CONTINUE
+                  END IF
 
-              NOMACR = ZK8(IANMCR-1+IMA)
-              CALL DISMOI('F','NOM_NUME_DDL',NOMACR,'MACR_ELEM_STAT',
-     &                    IBID,NUM2,IERD)
-              CALL JEVEUO(NOMACR//'.CONX','L',IACONX)
-              CALL JEVEUO(JEXNUM(NUM2//'.NUME.PRNO',1),'L',IAPROL)
+                  IAD1=ZI(IDPRN1-1+ZI(IDPRN2+ILIMNU-1)+ (N1-1)* (NEC+2))
+                  CALL CORDD2(IDPRN1,IDPRN2,ILIMNU,ICODGE,NEC,NCMP,N1,
+     &                        NDDL1,ZI(IAPSDL))
 
-              IL = 0
-              DO 70 K1 = 1,NNOE
-                N1 = ZI(IAMAIL-1+K1)
-                IF (N1.GT.NM) THEN
-                  DO 30 IEC = 1,NBECMX
-                    ICODGE(IEC) = ICODLA(IEC)
-   30             CONTINUE
-                ELSE
-                  INOLD = ZI(IACONX-1+3* (K1-1)+2)
-                  DO 40 IEC = 1,NEC
-                    ICODGE(IEC) = ZI(IAPROL-1+ (NEC+2)* (INOLD-1)+2+IEC)
-   40             CONTINUE
-                END IF
-
-                IAD1 = ZI(IDPRN1-1+ZI(IDPRN2+ILIMNU-1)+ (N1-1)* (NEC+2))
-                CALL CORDD2(IDPRN1,IDPRN2,ILIMNU,ICODGE,NEC,NCMP,N1,
-     &                      NDDL1,ZI(IAPSDL))
-
-                IF (TYPE.EQ.1) THEN
-                  DO 50 I1 = 1,NDDL1
-                    IL = IL + 1
-                    ZR(IADVAL-1+ZI(IANUEQ-1+IAD1+ZI(IAPSDL-1+I1)-
+                  IF (TYPE.EQ.1) THEN
+                    DO 50 I1 = 1,NDDL1
+                      IL = IL + 1
+                      ZR(IADVAL-1+ZI(IANUEQ-1+IAD1+ZI(IAPSDL-1+I1)-
      &                1)) = ZR(IADVAL-1+ZI(IANUEQ-1+IAD1+ZI(IAPSDL-1+
      &                I1)-1)) + ZR(IDRESL+IL-1)*RCOEF
-   50             CONTINUE
-
-                ELSE IF (TYPE.EQ.2) THEN
-                  DO 60 I1 = 1,NDDL1
-                    IL = IL + 1
-                    ZC(IADVAL-1+ZI(IANUEQ-1+IAD1+ZI(IAPSDL-1+I1)-
+   50               CONTINUE
+                  ELSE IF (TYPE.EQ.2) THEN
+                    DO 60 I1 = 1,NDDL1
+                      IL = IL + 1
+                      ZC(IADVAL-1+ZI(IANUEQ-1+IAD1+ZI(IAPSDL-1+I1)-
      &                1)) = ZC(IADVAL-1+ZI(IANUEQ-1+IAD1+ZI(IAPSDL-1+
      &                I1)-1)) + ZC(IDRESL+IL-1)*RCOEF
-   60             CONTINUE
-                END IF
-
-   70         CONTINUE
-   80       CONTINUE
-   90     CONTINUE
-          CALL SSVALV('FIN',NOMCAS,MO,MA,0,IDRESL,NCMPEL)
-        END IF
+   60               CONTINUE
+                  END IF
+   70           CONTINUE
+   80         CONTINUE
+   90       CONTINUE
+            CALL SSVALV('FIN',NOMCAS,MO,MA,0,IDRESL,NCMPEL)
+          ENDIF
 
 
 C         -- TRAITEMENT DES ELEMENTS FINIS CLASSIQUES (FIN BOUCLE 510)
 C         -----------------------------------------------------------
-        CALL JEEXIN(VECEL//'.LISTE_RESU',IRET)
-        IF (IRET.GT.0) THEN
+          CALL JEEXIN(VECEL//'.LISTE_RESU',IRET)
+          IF (IRET.GT.0) THEN
 
 
-C---- BOUCLE SUR LES VECT_ELEM:
+C---- BOUCLE SUR LES RESU_ELEM:
 C------------------------------
-          CALL JEVEUO(VECEL//'.LISTE_RESU','L',IDLRES)
-          CALL JELIRA(VECEL//'.LISTE_RESU','LONUTI ',NBRESU,K1BID)
-          DO 180 IRESU = 1,NBRESU
-            RESU = ZK24(IDLRES+IRESU-1)
-            CALL JEVEUO(RESU(1:19)//'.NOLI','L',IAD)
-            NOMLI = ZK24(IAD)
-            NOMOPT = ZK24(IAD+1)
+            CALL JEVEUO(VECEL//'.LISTE_RESU','L',IDLRES)
+            CALL JELIRA(VECEL//'.LISTE_RESU','LONUTI ',NBRESU,K1BID)
+            DO 180 IRESU = 1,NBRESU
+              RESU = ZK24(IDLRES+IRESU-1)
+              CALL JEVEUO(RESU(1:19)//'.NOLI','L',IAD)
+              NOMLI = ZK24(IAD)
+              NOMOPT = ZK24(IAD+1)
 
 C---- TEST EXISTENCE &&POIDS_MAILLE
 C------------------------------
-            IF ( NOMOPT(1:9).EQ.'FULL_MECA'.OR.
-     &           NOMOPT(1:9).EQ.'RAPH_MECA'     ) THEN
-              CALL JEEXIN('&&POIDS_MAILLE',EPDMS)
-              IF (EPDMS.GT.0) CALL JEVEUO('&&POIDS_MAILLE','L',JPDMS)
-            ELSE
-              EPDMS = 0
-            ENDIF
+              IF ( NOMOPT(1:9).EQ.'FULL_MECA'.OR.
+     &             NOMOPT(1:9).EQ.'RAPH_MECA'     ) THEN
+                CALL JEEXIN('&&POIDS_MAILLE',EPDMS)
+                IF (EPDMS.GT.0) CALL JEVEUO('&&POIDS_MAILLE','L',JPDMS)
+              ELSE
+                EPDMS = 0
+              ENDIF
 
-            CALL JENONU(JEXNOM(KVELIL,NOMLI),ILIVE)
-            CALL JENONU(JEXNOM(KNULIL,NOMLI),ILINU)
-            DO 170 IGR = 1,ZI(IADLIE+3* (ILIVE-1))
-              CALL JEVEUO(RESU(1:19)//'.DESC','L',IDDESC)
-              MODE = ZI(IDDESC+IGR+1)
-              IF (MODE.GT.0) THEN
-                NNOE = NBNO(MODE)
-                NEL = ZI(ZI(IADLIE+3* (ILIVE-1)+2)+IGR) -
+              CALL JENONU(JEXNOM(KVELIL,NOMLI),ILIVE)
+              CALL JENONU(JEXNOM(KNULIL,NOMLI),ILINU)
+C---- BOUCLE SUR LES LIGRELS:
+C------------------------------
+              DO 170 IGR = 1,ZI(IADLIE+3* (ILIVE-1))
+                CALL JEVEUO(RESU(1:19)//'.DESC','L',IDDESC)
+                MODE = ZI(IDDESC+IGR+1)
+              
+                IF (MODE.GT.0) THEN
+                  NNOE = NBNO(MODE)
+C NEL: NOMBRE DE MAILLES DU GREL IGR DU LIGREL ILIVE            
+                  NEL = ZI(ZI(IADLIE+3* (ILIVE-1)+2)+IGR) -
      &                ZI(ZI(IADLIE+3* (ILIVE-1)+2)+IGR-1) - 1
-                CALL JEVEUO(JEXNUM(RESU(1:19)//'.RESL',IGR),'L',IDRESL)
-                NCMPEL = DIGDEL(MODE)
-                DO 160 IEL = 1,NEL
-                  NUMA = ZI(ZI(IADLIE+3* (ILIVE-1)+1)-1+
-     &                   ZI(ZI(IADLIE+3* (ILIVE-1)+2)+IGR-1)+IEL-1)
-                  R = RCOEF
-                  IF (NUMA.GT.0) THEN
-                    IF (EPDMS.GT.0) R=R*ZR(JPDMS-1+NUMA)
-                    IL = 0
-                    DO 120 K1 = 1,NNOE
-                      N1 = ZI(ICONX1-1+ZI(ICONX2+NUMA-1)+K1-1)
-                      IAD1 = ZI(IDPRN1-1+ZI(IDPRN2+ILIMNU-1)+
-     &                       (N1-1)* (NEC+2)+1-1)
-                      CALL CORDDL(IDPRN1,IDPRN2,ILIMNU,MODE,NEC,NCMP,N1,
-     &                            K1,NDDL1,ZI(IAPSDL))
-                      IF (NDDL1.EQ.0) GO TO 120
-                      IF (IAD1.EQ.0) THEN
-                        CALL UTDEBM('F','ASSVEC','1')
-                        CALL UTIMPI('L','--- LE NOEUD  :',1,N1)
-                        CALL UTIMPK('S',' DU RESUEL    :',1,RESU)
-                        CALL UTIMPK('L','   DU VECT_ELEM  :',1,VECEL)
-                        CALL UTIMPK('L','   N''A PAS D''ADRESSE DANS  :'
-     &                              ,1,NUDEV)
-                        CALL UTFINM
-                      END IF
+                  CALL JEVEUO(JEXNUM(RESU(1:19)//'.RESL',IGR),'L',
+     &                        IDRESL)
+                  NCMPEL = DIGDEL(MODE)
+                
+C BOUCLE SUR LES MAILLES DU LIGREL: MAIL IEL DU GREL IGR DU LIGREL ILIVE
+C--------------------------------------
+                  DO 160 IEL = 1,NEL
+                    NUMA = ZI(ZI(IADLIE+3* (ILIVE-1)+1)-1+
+     &                     ZI(ZI(IADLIE+3* (ILIVE-1)+2)+IGR-1)+IEL-1)
 
-                      IF (IAD1.GT.NEQUA) THEN
-                        CALL UTDEBM('F','ASSVEC','2')
-                        CALL UTIMPI('L','--- LE NOEUD  :',1,N1)
-                        CALL UTIMPK('S',' DU RESUEL    :',1,RESU)
-                        CALL UTIMPK('S',' DU VECT_ELEM   :',1,VECEL)
-                        CALL UTIMPI('L','  A 1 ADRESSE  :',1,IAD1)
-                        CALL UTIMPI('S',' > NEQUA :',1,NEQUA)
-                        CALL UTFINM
-                      END IF
+C MONITORING
+                    IF ((NIV.GE.5).AND.(LFETI)) THEN
+                      IF (IDD.GT.0) THEN
+                        WRITE(IFM,*)'<FETI/ASSVEC>',IDD,ILIVE,IGR,IEL,
+     &                              NUMA
+                      ELSE                  
+                        WRITE(IFM,*)'<FETI/ASSVEC>',IDD,ILIVE,IGR,IEL,
+     &                              NUMA,ZL(ILOGI+NUMA-1)
+                      ENDIF
+                    ENDIF
 
-                      IF (NDDL1.GT.100) THEN
-                        CALL UTDEBM('F','ASSVEC','3')
-                        CALL UTIMPI('L','--- NDDL : ',1,NDDL1)
-                        CALL UTIMPI('S',' > NDDL_MAX :',1,100)
-                        CALL UTFINM
-                      END IF
+C SI ON EST DANS UN CALCUL FETI SUR UN SOUS-DOMAINE, ON SE POSE LA
+C QUESTION DE L'APPARTENANCE DE LA MAILLE NUMA AU SOUS-DOMAINE IDD     
+                    IF (LFETI) THEN
+                      IF (IDD.GT.0) THEN
+                        IF(.NOT.ZL(ILOGI+NUMA-1)) GOTO 160
+                      ENDIF     
+                    ENDIF
+                    R = RCOEF
 
-                      IF (TYPE.EQ.1) THEN
-CCDIR$ IVDEP
-                        DO 100 I1 = 1,NDDL1
-                          IL = IL + 1
-                          ZR(IADVAL-1+ZI(IANUEQ-1+IAD1+ZI(IAPSDL-1+I1)-
-     &                      1)) = ZR(IADVAL-1+ZI(IANUEQ-1+IAD1+
-     &                            ZI(IAPSDL-1+I1)-1)) +
-     &                            ZR(IDRESL+ (IEL-1)*NCMPEL+IL-1)*R
-  100                   CONTINUE
-
-                      ELSE
-CCDIR$ IVDEP
-                        DO 110 I1 = 1,NDDL1
-                          IL = IL + 1
-                          ZC(IADVAL-1+ZI(IANUEQ-1+IAD1+ZI(IAPSDL-1+I1)-
-     &                      1)) = ZC(IADVAL-1+ZI(IANUEQ-1+IAD1+
-     &                            ZI(IAPSDL-1+I1)-1)) +
-     &                            ZC(IDRESL+ (IEL-1)*NCMPEL+IL-1)*R
-  110                   CONTINUE
-                      END IF
-
-  120               CONTINUE
-
-                  ELSE
-                    NUMA = -NUMA
-                    N1 = ZI(ZI(IADNEM+3* (ILIVE-1)+2)+NUMA) -
-     &                   ZI(ZI(IADNEM+3* (ILIVE-1)+2)+NUMA-1) - 1
-                    IF (NNOE.NE.N1) THEN
-                      CALL UTDEBM('F','ASSVEC','4')
-                      CALL UTIMPK('L','--- VECT_ELEM     :',1,VECEL)
-                      CALL UTIMPK('L','--- RESU        :',1,RESU)
-                      CALL UTIMPK('L','--- NOMLI       :',1,NOMLI)
-                      CALL UTIMPI('L','--- GREL NUMERO   :',1,IGR)
-                      CALL UTIMPI('L','--- MAILLE NUMERO :',1,NUMA)
-                      CALL UTIMPI('L','--- NNOE PAR NEMA :',1,N1)
-                      CALL UTIMPI('L','--- NNOE PAR NODE :',1,NNOE)
-                      CALL UTFINM
-                    END IF
-
-                    IL = 0
-                    DO 150 K1 = 1,NNOE
-                      N1 = ZI(ZI(IADNEM+3* (ILIVE-1)+1)-1+
-     &                     ZI(ZI(IADNEM+3* (ILIVE-1)+2)+NUMA-1)+K1-1)
-                      IF (N1.LT.0) THEN
-                        N1 = -N1
-                        IF (ILINU.EQ.0) THEN
-                          CALL UTDEBM('F','ASSVEC','5')
-                          CALL UTIMPK('L','--- LE LIGREL :',1,NOMLI)
-                          CALL UTIMPI('S',' REF. PAR LE NOEUD SUPL.  :',
-     &                                1,N1)
-                          CALL UTIMPI('L','--- DE LA MAILLE :',1,NUMA)
-                          CALL UTIMPK('S',' DU RESUELEM  :',1,RESU)
-                          CALL UTIMPK('S',' DU VECT_ELEM   :',1,VECEL)
-                          CALL UTIMPK('L','--- N"EST PAS PRESENT'//
-     &                                ' DANS LA NUMEROTATION :',1,NUDEV)
-                          CALL UTFINM
-                        END IF
-
-                        IAD1 = ZI(IDPRN1-1+ZI(IDPRN2+ILINU-1)+
-     &                         (N1-1)* (NEC+2)+1-1)
-                        CALL CORDDL(IDPRN1,IDPRN2,ILINU,MODE,NEC,NCMP,
-     &                              N1,K1,NDDL1,ZI(IAPSDL))
-                        IF (NDDL1.GT.100) THEN
-                          CALL UTDEBM('F','ASSVEC','6')
-                          CALL UTIMPI('L','--- NDDL : ',1,NDDL1)
-                          CALL UTIMPI('S',' > NDDL_MAX :',1,100)
-                          CALL UTFINM
-                        END IF
-
-                      ELSE
+C---- LIGREL STANDARD:
+C--------------------
+                    IF (NUMA.GT.0) THEN
+                      IF (EPDMS.GT.0) R=R*ZR(JPDMS-1+NUMA)
+                      IL = 0
+                      DO 120 K1 = 1,NNOE
+                        N1 = ZI(ICONX1-1+ZI(ICONX2+NUMA-1)+K1-1)
                         IAD1 = ZI(IDPRN1-1+ZI(IDPRN2+ILIMNU-1)+
-     &                         (N1-1)* (NEC+2)+1-1)
+     &                       (N1-1)* (NEC+2)+1-1)
                         CALL CORDDL(IDPRN1,IDPRN2,ILIMNU,MODE,NEC,NCMP,
      &                              N1,K1,NDDL1,ZI(IAPSDL))
+                        IF (NDDL1.EQ.0) GO TO 120
+                        IF (IAD1.EQ.0) THEN
+                          CALL UTDEBM('F','ASSVEC','1')
+                          CALL UTIMPI('L','--- LE NOEUD  :',1,N1)
+                          CALL UTIMPK('S',' DU RESUEL    :',1,RESU)
+                          CALL UTIMPK('L','   DU VECT_ELEM  :',1,VECEL)
+                          CALL UTIMPK('L',
+     &                         '   N''A PAS D''ADRESSE DANS  :',1,NUDEV)
+                          CALL UTFINM
+                        ENDIF
+
+                        IF (IAD1.GT.NEQUA) THEN
+                          CALL UTDEBM('F','ASSVEC','2')
+                          CALL UTIMPI('L','--- LE NOEUD  :',1,N1)
+                          CALL UTIMPK('S',' DU RESUEL    :',1,RESU)
+                          CALL UTIMPK('S',' DU VECT_ELEM   :',1,VECEL)
+                          CALL UTIMPI('L','  A 1 ADRESSE  :',1,IAD1)
+                          CALL UTIMPI('S',' > NEQUA :',1,NEQUA)
+                          CALL UTFINM
+                        ENDIF
+
                         IF (NDDL1.GT.100) THEN
-                          CALL UTDEBM('F','ASSVEC','7')
+                          CALL UTDEBM('F','ASSVEC','3')
                           CALL UTIMPI('L','--- NDDL : ',1,NDDL1)
                           CALL UTIMPI('S',' > NDDL_MAX :',1,100)
                           CALL UTFINM
-                        END IF
+                        ENDIF
 
-                      END IF
-
-                      IF (IAD1.EQ.0) THEN
-                        CALL UTDEBM('F','ASSVEC','8')
-                        CALL UTIMPI('L','--- LE NOEUD  :',1,N1)
-                        CALL UTIMPK('S',' DU RESUEL    :',1,RESU)
-                        CALL UTIMPK('S',' DU VECT_ELEM   :',1,VECEL)
-                        CALL UTIMPK('L','--- N''A PAS D''ADRESSE'//
-     &                              ' DANS LA NUMEROTATION :',1,NUDEV)
-                        CALL UTFINM
-                      END IF
-
-                      IF (IAD1.GT.NEQUA) THEN
-                        CALL UTDEBM('F','ASSVEC','9')
-                        CALL UTIMPI('L','--- LE NOEUD  :',1,N1)
-                        CALL UTIMPK('S',' DU RESUEL    :',1,RESU)
-                        CALL UTIMPK('S',' DU VECT_ELEM   :',1,VECEL)
-                        CALL UTIMPI('L','--- A UNE ADRESSE :',1,IAD1)
-                        CALL UTIMPI('S',' > NEQUA :',1,NEQUA)
-                        CALL UTFINM
-                      END IF
-
-                      IF (TYPE.EQ.1) THEN
-CCDIR$ IVDEP
-                        DO 130 I1 = 1,NDDL1
-                          IL = IL + 1
+                        IF (TYPE.EQ.1) THEN
+                          DO 100 I1 = 1,NDDL1
+                            IL = IL + 1
                           ZR(IADVAL-1+ZI(IANUEQ-1+IAD1+ZI(IAPSDL-1+I1)-
      &                      1)) = ZR(IADVAL-1+ZI(IANUEQ-1+IAD1+
      &                            ZI(IAPSDL-1+I1)-1)) +
      &                            ZR(IDRESL+ (IEL-1)*NCMPEL+IL-1)*R
-  130                   CONTINUE
+  100                     CONTINUE
 
-                      ELSE
-CCDIR$ IVDEP
-                        DO 140 I1 = 1,NDDL1
-                          IL = IL + 1
+                        ELSE
+                          DO 110 I1 = 1,NDDL1
+                            IL = IL + 1
                           ZC(IADVAL-1+ZI(IANUEQ-1+IAD1+ZI(IAPSDL-1+I1)-
      &                      1)) = ZC(IADVAL-1+ZI(IANUEQ-1+IAD1+
      &                            ZI(IAPSDL-1+I1)-1)) +
      &                            ZC(IDRESL+ (IEL-1)*NCMPEL+IL-1)*R
-  140                   CONTINUE
+  110                     CONTINUE
+                        END IF
+
+  120                 CONTINUE
+
+                    ELSE
+C---- LIGREL TARDIF:
+C-------------------
+                     IF (LFETI)
+     &                 CALL UTMESS('F','ASSVEC','LE RESUELEM '
+     &                  //RESU//' CONTIENT UN LIGREL TARDIF'//    
+     &                ' POUR L''INSTANT, ILS SONT PROSCRITS AVEC FETI')
+                      NUMA = -NUMA
+                      N1 = ZI(ZI(IADNEM+3* (ILIVE-1)+2)+NUMA) -
+     &                     ZI(ZI(IADNEM+3* (ILIVE-1)+2)+NUMA-1) - 1
+                      IF (NNOE.NE.N1) THEN
+                        CALL UTDEBM('F','ASSVEC','4')
+                        CALL UTIMPK('L','--- VECT_ELEM     :',1,VECEL)
+                        CALL UTIMPK('L','--- RESU        :',1,RESU)
+                        CALL UTIMPK('L','--- NOMLI       :',1,NOMLI)
+                        CALL UTIMPI('L','--- GREL NUMERO   :',1,IGR)
+                        CALL UTIMPI('L','--- MAILLE NUMERO :',1,NUMA)
+                        CALL UTIMPI('L','--- NNOE PAR NEMA :',1,N1)
+                        CALL UTIMPI('L','--- NNOE PAR NODE :',1,NNOE)
+                        CALL UTFINM
                       END IF
+                      IL = 0
+                      DO 150 K1 = 1,NNOE
+                        N1 = ZI(ZI(IADNEM+3* (ILIVE-1)+1)-1+
+     &                       ZI(ZI(IADNEM+3* (ILIVE-1)+2)+NUMA-1)+K1-1)
+                        IF (N1.LT.0) THEN
+                          N1 = -N1
+                          IF (ILINU.EQ.0) THEN
+                            CALL UTDEBM('F','ASSVEC','5')
+                            CALL UTIMPK('L','--- LE LIGREL :',1,NOMLI)
+                            CALL UTIMPI('S',
+     &                              ' REF. PAR LE NOEUD SUPL.  :',1,N1)
+                            CALL UTIMPI('L','--- DE LA MAILLE :',1,NUMA)
+                            CALL UTIMPK('S',' DU RESUELEM  :',1,RESU)
+                            CALL UTIMPK('S',' DU VECT_ELEM   :',1,VECEL)
+                            CALL UTIMPK('L','--- N"EST PAS PRESENT'//
+     &                                ' DANS LA NUMEROTATION :',1,NUDEV)
+                            CALL UTFINM
+                          END IF
 
-  150               CONTINUE
-                  END IF
+                          IAD1 = ZI(IDPRN1-1+ZI(IDPRN2+ILINU-1)+
+     &                           (N1-1)* (NEC+2)+1-1)
+                          CALL CORDDL(IDPRN1,IDPRN2,ILINU,MODE,NEC,NCMP,
+     &                                N1,K1,NDDL1,ZI(IAPSDL))
+                          IF (NDDL1.GT.100) THEN
+                            CALL UTDEBM('F','ASSVEC','6')
+                            CALL UTIMPI('L','--- NDDL : ',1,NDDL1)
+                            CALL UTIMPI('S',' > NDDL_MAX :',1,100)
+                            CALL UTFINM
+                          END IF
+                        ELSE
+                          IAD1 = ZI(IDPRN1-1+ZI(IDPRN2+ILIMNU-1)+
+     &                           (N1-1)* (NEC+2)+1-1)
+                          CALL CORDDL(IDPRN1,IDPRN2,ILIMNU,MODE,NEC,
+     &                                NCMP,N1,K1,NDDL1,ZI(IAPSDL))
+                          IF (NDDL1.GT.100) THEN
+                            CALL UTDEBM('F','ASSVEC','7')
+                            CALL UTIMPI('L','--- NDDL : ',1,NDDL1)
+                            CALL UTIMPI('S',' > NDDL_MAX :',1,100)
+                            CALL UTFINM
+                          END IF
+                        END IF
+                        IF (IAD1.EQ.0) THEN
+                          CALL UTDEBM('F','ASSVEC','8')
+                          CALL UTIMPI('L','--- LE NOEUD  :',1,N1)
+                          CALL UTIMPK('S',' DU RESUEL    :',1,RESU)
+                          CALL UTIMPK('S',' DU VECT_ELEM   :',1,VECEL)
+                          CALL UTIMPK('L','--- N''A PAS D''ADRESSE'//
+     &                              ' DANS LA NUMEROTATION :',1,NUDEV)
+                          CALL UTFINM
+                        END IF
+                        IF (IAD1.GT.NEQUA) THEN
+                          CALL UTDEBM('F','ASSVEC','9')
+                          CALL UTIMPI('L','--- LE NOEUD  :',1,N1)
+                          CALL UTIMPK('S',' DU RESUEL    :',1,RESU)
+                          CALL UTIMPK('S',' DU VECT_ELEM   :',1,VECEL)
+                          CALL UTIMPI('L','--- A UNE ADRESSE :',1,IAD1)
+                          CALL UTIMPI('S',' > NEQUA :',1,NEQUA)
+                          CALL UTFINM
+                        END IF
+                        IF (TYPE.EQ.1) THEN
+                          DO 130 I1 = 1,NDDL1
+                            IL = IL + 1
+                          ZR(IADVAL-1+ZI(IANUEQ-1+IAD1+ZI(IAPSDL-1+I1)-
+     &                      1)) = ZR(IADVAL-1+ZI(IANUEQ-1+IAD1+
+     &                            ZI(IAPSDL-1+I1)-1)) +
+     &                            ZR(IDRESL+ (IEL-1)*NCMPEL+IL-1)*R
+  130                     CONTINUE
+                        ELSE
+                          DO 140 I1 = 1,NDDL1
+                            IL = IL + 1
+                          ZC(IADVAL-1+ZI(IANUEQ-1+IAD1+ZI(IAPSDL-1+I1)-
+     &                      1)) = ZC(IADVAL-1+ZI(IANUEQ-1+IAD1+
+     &                            ZI(IAPSDL-1+I1)-1)) +
+     &                            ZC(IDRESL+ (IEL-1)*NCMPEL+IL-1)*R
+  140                     CONTINUE
+                        END IF
+  150                 CONTINUE
 
-  160           CONTINUE
-                CALL JELIBE(JEXNUM(RESU(1:19)//'.RESL',IGR))
-              END IF
-
-  170       CONTINUE
-  180     CONTINUE
-        END IF
-
-  190 CONTINUE
+C---- FIN IF LIGREL TARDIF:
+C-------------------------    
+                    END IF
+C---- BOUCLE SUR LES MAILLES:
+C---------------------------
+  160             CONTINUE 
+                  CALL JELIBE(JEXNUM(RESU(1:19)//'.RESL',IGR))
+                ENDIF
+C---- BOUCLE SUR LES LIGREL:
+C---------------------------            
+  170         CONTINUE
+C---- FIN BOUCLE SUR LES RESU_ELEM:
+C--------------------------------  
+  180       CONTINUE
+C----  FIN IF IRET
+C--------------------------------    
+          END IF
+C---- FIN BOUCLE SUR LES VECT_ELEM:
+C----------------------------------
+  190   CONTINUE
+  
+C MONITORING
+        IF (LFETI.AND.(NIV.GE.3)) THEN
+          WRITE(IFM,*)
+          WRITE(IFM,*)'DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD'
+          IF (IDD.EQ.0) THEN
+            WRITE(IFM,*)'<FETI/ASSVEC> DOMAINE GLOBAL'
+          ELSE            
+            WRITE(IFM,*)'<FETI/ASSVEC>NUMERO DE SOUS-DOMAINE: ',IDD
+          ENDIF  
+          WRITE(IFM,*)'<FETI/ASSVEC> REMPLISSAGE OBJETS JEVEUX ',
+     &        KVALE(1:19)
+          WRITE(IFM,*)
+          IF ((NIV.GE.4).AND.(IDD.NE.0)) 
+     &      CALL UTIMSD('MESSAGE',2,.FALSE.,.TRUE.,KVALE(1:19),1,' ')
+          IF ((NIV.GE.4).AND.(IDD.EQ.NBSD)) 
+     &      CALL UTIMSD('MESSAGE',2,.FALSE.,.TRUE.,VECAS(1:19),1,' ')
+        ENDIF 
+         
+C---- FIN BOUCLE SUR LES SOUS-DOMAINES:
+C--------------------------------------
+  195 CONTINUE  
+  
       CALL JEDETR(VECAS//'.LILI')
       CALL JEDETR(VECAS//'.LIVE')
       CALL JEDETR(VECAS//'.ADNE')
@@ -605,24 +735,20 @@ CCDIR$ IVDEP
 C      IF (NIV.EQ.2) THEN
 C        WRITE (IFM,*) ' --- '
 C        WRITE (IFM,*) ' --- VECTEUR ASSEMBLE '
-
 C        WRITE (IFM,*) ' --- '
 C        IF (TYPE.EQ.1) THEN
 C          DO 1000 IEQUA = 1,NEQUA
 C            WRITE (IFM,*) ' -   CHAM_NO( ',IEQUA,' ) = ',
 C     +        ZR(IADVAL+IEQUA-1)
 C 1000     CONTINUE
-
 C        ELSE
 C          DO 1001 IEQUA = 1,NEQUA
 C            WRITE (IFM,*) ' -   CHAM_NO( ',IEQUA,' ) = ',
 C     +        ZC(IADVAL+IEQUA-1)
 C 1001     CONTINUE
 C        END IF
-
 C        WRITE (IFM,*) ' --------------------------- '
 C      END IF
-
 C      IF (NIV.EQ.2) THEN
 C        WRITE (IFM,*) ' --- '
 C        WRITE (IFM,*) ' --- REFE DU VECTEUR    CREE '

@@ -4,7 +4,7 @@
       CHARACTER*(*) SUFFI2
 C ----------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 05/05/2004   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,13 +21,14 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
-
 C     SAISIE ET VERIFICATION DE LA COHERENCE DES DONNEES RELATIVES AU
 C     SOLVEUR
 
 C IN K19 SOLVEU  : NOM DU SOLVEUR DONNE EN ENTREE
 C OUT    SOLVEU  : LE SOLVEUR EST CREE ET INSTANCIE
 C ----------------------------------------------------------
+C RESPONSABLE BOITEAU O.BOITEAU
+
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------
 
       INTEGER ZI
@@ -47,29 +48,45 @@ C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------
 
 C --- FIN DECLARATIONS NORMALISEES JEVEUX --------------------
 
-      INTEGER NMAXIT,NPREC,ISTOP,NSOLVE,NBRPAS
-      INTEGER IBID,ISLVK,ISLVR,ISLVI,NIREMP
-      REAL*8 RESIRE,TBLOC,JEVTBL
-      CHARACTER*3 KSTOP,SYME
-      CHARACTER*8 METHOD,RENUM
-      CHARACTER*8 PRECO
+      INTEGER      NMAXIT,N,ISTOP,NSOLVE,NBRPAS,IBID,NIREMP,
+     &  IFETS,IFM,NIV,NBSD,I,NBMA,IDIME,NBREOR,NPREC
+      REAL*8       RESIRE,TBLOC,JEVTBL,EPS,TESTCO
+      CHARACTER*3  KSTOP,SYME
+      CHARACTER*8  METHOD,RENUM,PRECO,K8BID,NOMSD,METHO1,VERIF,
+     &             TYREOR,SCALIN
+      CHARACTER*11 SOLFET             
       CHARACTER*12 SUFFIX
       CHARACTER*16 NOMSOL
-      LOGICAL EXISYM,GETEXM
-C     ------------------------------------------------------------------
+      CHARACTER*19 SOLFEB      
+      CHARACTER*24 SDFETI
+      CHARACTER*32 JEXNUM
+      LOGICAL      EXISYM,GETEXM        
 
+C------------------------------------------------------------------
       CALL JEMARQ()
+      
+      
       SUFFIX = SUFFI2
-
       METHOD = 'MULT_FRO'
-      PRECO = 'XXXX'
+      PRECO = 'SANS'
       RENUM = 'MDA'
       SYME = 'NON'
       EXISYM = .FALSE.
       RESIRE = 1.D-6
+      EPS = 0.D0
       NPREC = 8
       NMAXIT = 0
       ISTOP = 0
+      NIREMP=0
+      TBLOC=JEVTBL() 
+      SDFETI='XXXX'
+      VERIF=' '
+      TESTCO=0.D0
+      NBREOR=0
+      TYREOR=' '
+      SCALIN='SANS'
+C RECUPERATION ET MAJ DU NIVEAU D'IMPRESSION
+      CALL INFNIV(IFM,NIV)           
 
       IF ((SUFFIX(1:5).EQ.'_MECA') .OR. (SUFFIX(1:5).EQ.'_THER') .OR.
      &    (SUFFIX(1:10).EQ.'_NON_LOCAL')) THEN
@@ -78,14 +95,9 @@ C     ------------------------------------------------------------------
         NOMSOL = 'SOLVEUR'
       END IF
 
-C --- CREATION DES DIFFERENTS ATTRIBUTS DE LA S.D. SOLVEUR
-
-      CALL WKVECT(SOLVEU(1:19)//'.SLVK','V V K24',5,ISLVK)
-      CALL WKVECT(SOLVEU(1:19)//'.SLVR','V V R',3,ISLVR)
-      CALL WKVECT(SOLVEU(1:19)//'.SLVI','V V I',4,ISLVI)
-
+C --------------------------------------------------------------
 C --- LECTURE DES PARAMETRES RELATIFS AU MOT FACTEUR SOLVEUR
-
+C --------------------------------------------------------------
       CALL GETFAC(NOMSOL,NSOLVE)
       IF (NSOLVE.EQ.0) GO TO 10
 
@@ -103,20 +115,18 @@ C --- LECTURE DES PARAMETRES RELATIFS AU MOT FACTEUR SOLVEUR
         CALL GETVIS('INCREMENT','SUBD_PAS',1,1,1,NBRPAS,IBID)
         IF (NBRPAS.LE.1) THEN
           CALL UTMESS('F','CRESOL','STOP_SINGULIER=DECOUPE NECESSITE'//
-     &          ' LA SUBDIVISION AUTOMATIQUE DU PAS DE TEMPS (SUBD_PAS)'
-     &                )
+     &      ' LA SUBDIVISION AUTOMATIQUE DU PAS DE TEMPS (SUBD_PAS)')
         ELSE
           ISTOP = 1
         END IF
       END IF
-
+      
 
       IF (METHOD.EQ.'LDLT') THEN
 C     -----------------------------
         CALL GETVTX(NOMSOL,'RENUM',1,1,1,RENUM,IBID)
         IF (IBID.EQ.0) RENUM = 'RCMK'
-        CALL GETVTX(NOMSOL,'PRE_COND',1,1,1,PRECO,IBID)
-        IF (IBID.EQ.0) PRECO='SANS'
+        
         IF (RENUM(1:4).NE.'RCMK' .AND. RENUM(1:4).NE.'SANS')
      &    CALL UTMESS('F','CRESOL','LA METHODE '//RENUM//' EST '//
      &                'INADEQUATE POUR UNE RESOLUTION DE TYPE "LDLT"')
@@ -129,15 +139,14 @@ C     -----------------------------
         IF (RENUM(1:4).NE.'RCMK' .AND. RENUM(1:4).NE.'SANS')
      &    CALL UTMESS('F','CRESOL','LA METHODE '//RENUM//' EST '//
      &                'INADEQUATE POUR UNE RESOLUTION DE TYPE "GCPC"')
-        CALL GETVTX(NOMSOL,'PRE_COND',1,1,1,PRECO,IBID)
-        IF (IBID.EQ.0) PRECO='LDLT_INC'
+        PRECO='LDLT_INC'
+
         CALL GETVIS(NOMSOL,'NMAX_ITER',1,1,1,NMAXIT,IBID)
         CALL GETVR8(NOMSOL,'RESI_RELA',1,1,1,RESIRE,IBID)
         CALL GETVIS(NOMSOL,'NIVE_REMPLISSAGE',1,1,1,NIREMP,IBID)
 
-
       ELSE IF (METHOD.EQ.'MULT_FRO') THEN
-C     -----------------------------
+C     --------------------------------------------------------------
         CALL GETVTX(NOMSOL,'RENUM',1,1,1,RENUM,IBID)
         IF (RENUM(1:2).NE.'MD'.AND.RENUM(1:2).NE.'ME') THEN
            CALL UTMESS('F','CRESOL',
@@ -145,27 +154,79 @@ C     -----------------------------
      &             'INADEQUATE POUR UNE RESOLUTION DE TYPE "MULT_FRONT"'
      &                )
         ENDIF
+
+
+C PARAMETRE FETI IDENTIQUE A CELUI DE MULT_FRONT ET HOMOGENE POUR
+C CHAQUE SOUS-DOMAINE   
+      ELSE IF (METHOD.EQ.'FETI') THEN
+C     --------------------------------------------------------------
+        CALL GETVTX(NOMSOL,'RENUM',1,1,1,RENUM,IBID)
+        IF (RENUM(1:2).NE.'MD'.AND.RENUM(1:2).NE.'ME')
+     &     CALL UTMESS('F','CRESOL',
+     &             'LA METHODE '//RENUM//' ETANT '//
+     &             'INADEQUATE POUR UNE RESOLUTION DE TYPE "FETI"')
+                
+C LECTURE NOUVEAU MOT-CLE
+        SDFETI=' '
+        CALL GETVID(NOMSOL,'PARTITION',1,1,1,SDFETI(1:8),IBID)
+        IF (IBID.EQ.0)
+     &    CALL UTMESS('F','CRESOL','LE SOLVEUR FETI REQUIERT UN '//
+     &                'CONCEPT PRODUIT DE TYPE SD_FETI EN ENTREE '//
+     &                'DU MOT-CLE PARTITION')
+        CALL GETVIS(NOMSOL,'NMAX_ITER',1,1,1,NMAXIT,IBID)
+        CALL GETVR8(NOMSOL,'RESI_RELA',1,1,1,RESIRE,IBID)
+        CALL GETVTX(NOMSOL,'VERIF_SDFETI',1,1,1,VERIF,IBID)
+        CALL GETVR8(NOMSOL,'TEST_CONTINU',1,1,1,TESTCO,IBID)
+        CALL GETVTX(NOMSOL,'TYPE_REORTHO_DD',1,1,1,TYREOR,IBID)
+        IF (TYREOR(1:4).NE.'SANS') THEN
+          CALL GETVIS(NOMSOL,'NB_REORTHO_DD',1,1,1,NBREOR,IBID)
+          IF (NBREOR.GT.NMAXIT) THEN
+            NBREOR=NMAXIT         
+            WRITE(IFM,100)NBREOR
+          ENDIF   
+        ENDIF
         CALL GETVTX(NOMSOL,'PRE_COND',1,1,1,PRECO,IBID)
-        IF (IBID.EQ.0) PRECO='SANS'
-      END IF
+        IF (PRECO(1:4).NE.'SANS')
+     &    CALL GETVTX(NOMSOL,'SCALING',1,1,1,SCALIN,IBID)
+        
+C STOCKE &&//NOMPRO(1:6)//'.S.' POUR COHERENCE AVEC L'EXISTANT     
+        SOLFET=SOLVEU(1:8)//'.S.'
+C LECTURE NOMBRE DE SOUS-DOMAINES:NBSD    
+        CALL JELIRA(SDFETI(1:19)//'.FETA','NUTIOC',NBSD,K8BID)
+C CONSTITUTION DE L'OBJET SOLVEUR.FETS
+        CALL WKVECT(SOLVEU(1:19)//'.FETS','V V K24',NBSD,IFETS)
+C LECTURE NOMBRE TOTAL DE MAILLE:NBMA     
+        CALL JEVEUO(SDFETI(1:19)//'.DIME','L',IDIME)
+        NBMA=ZI(IDIME+2)
+                
+C SON REMPLISSAGE PAR LES NOMS DES SD SOLVEUR DES SOUS-DOMAINES
+        DO 5 I=1,NBSD
+          CALL JENUNO(JEXNUM(SDFETI(1:19)//'.FETA',I),NOMSD)
+          SOLFEB=SOLFET(1:11)//NOMSD(1:8)
+          ZK24(IFETS+I-1)=SOLFEB
+
+C --------------------------------------------------------------
+C CREATION ET REMPLISSAGE DE LA SD SOLVEUR "ESCLAVE" ET DU
+C VECTEUR TEMPORAIRE LOGIQUE LIEE A CHAQUE SOUS-DOMAINE
+C --------------------------------------------------------------
+          METHO1='MULT_FRO'
+          CALL CRESO1(SOLFEB,METHO1,PRECO,RENUM,SYME,SDFETI,EPS,
+     &    RESIRE,TBLOC,NPREC,NMAXIT,ISTOP,NIREMP,IFM,NIV,I,NBMA,
+     &    VERIF,TESTCO,NBREOR,TYREOR,SCALIN)           
+    5   CONTINUE                
+
+      ENDIF
    10 CONTINUE
-
-      ZK24(ISLVK) = METHOD
-      ZK24(ISLVK+1) = PRECO
-      ZK24(ISLVK+2) = ' '
-      ZK24(ISLVK+3) = RENUM
-      ZK24(ISLVK+4) = SYME
-
-      ZR(ISLVR) = 0.D0
-      ZR(ISLVR+1) = RESIRE
-      TBLOC=JEVTBL()
-      ZR(ISLVR+2) = TBLOC
-
-      ZI(ISLVI-1+1) = NPREC
-      ZI(ISLVI-1+2) = NMAXIT
-      ZI(ISLVI-1+3) = ISTOP
-      ZI(ISLVI-1+4) = NIREMP
+      
+  
+C --------------------------------------------------------------
+C CREATION ET REMPLISSAGE DE LA SD SOLVEUR "MAITRE"
+C --------------------------------------------------------------
+      CALL CRESO1(SOLVEU,METHOD,PRECO,RENUM,SYME,SDFETI,EPS,
+     &  RESIRE,TBLOC,NPREC,NMAXIT,ISTOP,NIREMP,IFM,NIV,0,0,
+     &  VERIF,TESTCO,NBREOR,TYREOR,SCALIN)
 
 C FIN ------------------------------------------------------
       CALL JEDEMA()
+  100 FORMAT ('! FETI: NB_REORTHO_DD FIXE A NMAX_ITER= ',I6,' !')      
       END

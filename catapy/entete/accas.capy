@@ -1,4 +1,4 @@
-#& MODIF ENTETE  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
+#& MODIF ENTETE  DATE 05/05/2004   AUTEUR BOITEAU O.BOITEAU 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -81,6 +81,7 @@ class modele_gene     (ASSD):pass
 class nume_ddl        (ASSD):pass
 class nume_ddl_gene   (ASSD):pass
 class obstacle        (ASSD):pass
+class sd_feti         (ASSD):pass
 class spectre         (ASSD):pass
 class surface         (ASSD):pass
 class tran_gene       (ASSD):pass

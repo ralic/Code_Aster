@@ -1,11 +1,7 @@
       SUBROUTINE PRERES(SOLVEU,BASE,IRET,MATPRE,MATASS)
-      IMPLICIT REAL*8 (A-H,O-Z)
-      CHARACTER*(*) BASE
-      CHARACTER*19 SOLVEU
-      CHARACTER*(*) MATASS, MATPRE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 03/05/2000   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 05/05/2004   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,7 +18,6 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
-C-----------------------------------------------------------------------
 C BUT : FACTORISER UNE MATR_ASSE (LDLT/MULT_FRONT)
 C       OU FABRIQUER UNE MATRICE DE PRECONDITIONNEMENT (GCPC)
 C
@@ -37,13 +32,20 @@ C                   JUSQU'AU BOUT.
 C MATPRE(K19) IN/JXVAR : MATRICE DE PRECONDITIONNEMENT (GCPC)
 C MATASS(K19) IN/JXVAR : MATRICE A FACTORISER OU A PRECONDITIONNER
 C
+C   -------------------------------------------------------------------
+C     ASTER INFORMATIONS:
+C       17/12/03 (OB): AJOUT POUR SOLVEUR FETI.
 C-----------------------------------------------------------------------
-C     FONCTIONS JEVEUX
-C-----------------------------------------------------------------------
+      IMPLICIT NONE
+
+C DECLARATION PARAMETRES D'APPELS            
+      CHARACTER*(*) BASE
+      CHARACTER*19  SOLVEU
+      CHARACTER*(*) MATASS,MATPRE
+      
+C FONCTIONS JEVEUX
       CHARACTER*32 JEXNUM,JEXNOM,JEXATR
-C-----------------------------------------------------------------------
-C     COMMUNS   JEVEUX
-C-----------------------------------------------------------------------
+C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       INTEGER ZI ,NIREMP
       COMMON /IVARJE/ZI(1)
       REAL*8 ZR
@@ -56,58 +58,147 @@ C-----------------------------------------------------------------------
       CHARACTER*32 ZK32
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-C
-      CHARACTER*24 METRES, NU
-      CHARACTER*19 MATAS, MAPREC
+C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
+
+C VARIABLES LOCALES
+      INTEGER      NBSD,IDD,IDD0,IFETM,IFETS,IDBGAV,IFM,NIV,ISLVK,IBID,
+     &             ISLVI,LMAT,IDIME,NPREC,ISTOP,NDECI,ISINGU,NPVNEG,
+     &             IRET,NBMOCR,IFETF
+      CHARACTER*24 METRES,SDFETI,NOMSDF
+      CHARACTER*19 MATAS,MAPREC,SOLVSD,VEMOCR
+      CHARACTER*8  NOMSD
       CHARACTER*4  ETAMAT
-C----------------------------------------------------------------------
-C                DEBUT DES INSTRUCTIONS
+      LOGICAL      LFETI
+            
+C CORPS DU PROGRAMME
       CALL JEMARQ()
       CALL JEDBG2(IDBGAV,0)
-C----------------------------------------------------------------------
-C
-C-----RECUPERATION DU NIVEAU D'IMPRESSION
-C
+C RECUPERATION DU NIVEAU D'IMPRESSION
       CALL INFNIV(IFM,NIV)
+      
 C----------------------------------------------------------------------
       MATAS = MATASS
       MAPREC = MATPRE
       CALL JEVEUO(SOLVEU//'.SLVK','L',ISLVK)
-      CALL JEVEUO(SOLVEU//'.SLVR','L',ISLVR)
-      CALL JEVEUO(SOLVEU//'.SLVI','L',ISLVI)
       METRES = ZK24(ISLVK)
       CALL JELIRA(MATAS//'.REFA','DOCU',IBID,ETAMAT)
 
+C MATRICE JUSTE ASSEMBLEE OU DEJA PASSES PAR PRERES ?
       IF (ETAMAT.EQ.'DECP'.OR.ETAMAT.EQ.'DECT') THEN
-         IF (METRES.EQ.'LDLT'.OR.METRES.EQ.'MULT_FRO') THEN
-            IF (NIV.EQ.2)  WRITE(IFM,*) '  PAS DE DECOMPOSITION '//
-     +         'CAR LA MATRICE '//MATAS//' EST DEJA DECOMPOSEE.'
-         ELSE IF (METRES.EQ.'GCPC') THEN
-            IF (NIV.EQ.2)   WRITE(IFM,*) '  LA MATRICE DE '//
+        IF (METRES.EQ.'LDLT'.OR.METRES.EQ.'MULT_FRO'.OR.METRES.EQ
+     &     .'FETI') THEN
+          IF (NIV.EQ.2)  WRITE(IFM,*) '  PAS DE DECOMPOSITION '//
+     +       'CAR LA MATRICE '//MATAS//' EST DEJA DECOMPOSEE.'
+        ELSE IF (METRES.EQ.'GCPC') THEN
+          IF (NIV.EQ.2)   WRITE(IFM,*) '  LA MATRICE DE '//
      +         'PRECONDITIONNEMENT '//MAPREC//' EXISTE DEJA, '//
      +         'ON NE LA RECALCULE PAS.'
-         ENDIF
-C
-         GOTO 9999
+        ENDIF
+        GOTO 9999
       ENDIF
 
-      CALL MTDSCR(MATAS)
-      CALL JEVEUO(MATAS(1:19)//'.&INT','E',LMAT)
+C BOUCLE SUR LES SOUS-DOMAINES SI FETI
+      IF (METRES(1:4).EQ.'FETI') THEN
+        LFETI=.TRUE.
+        SDFETI=ZK24(ISLVK+5)
+        CALL JEVEUO(SDFETI(1:19)//'.DIME','L',IDIME)
+C NOMBRE DE SOUS-DOMAINES       
+        NBSD=ZI(IDIME)
+        IDD0=1
+C ADRESSE JEVEUX DE LA LISTE DES MATR_ASSE ET DE SOLVEURS ASSOCIES
+C AUX SOUS-DOMAINES 
+        CALL JEVEUO(MATAS//'.FETM','L',IFETM)
+        CALL JEVEUO(SOLVEU//'.FETS','L',IFETS)
+C CREATION OBJET JEVEUX MATAS.FETF
+        NOMSDF=MATAS//'.FETF'
+        CALL WKVECT(NOMSDF,'G V I',NBSD,IFETF)
+        IF (NIV.GE.3) THEN
+          WRITE(IFM,*)'DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD'  
+          WRITE (IFM,*)'<FETI/PRERES> CREATION OBJET JEVEUX ',NOMSDF
+        ENDIF
+C MAJ DE L'ETAMAT DU DOMAINE GLOBAL JUSTE UTILE POUR FRANCHIR RESOUD
+C ET LE RECOPIE DU SECOND MEMBRE EN VECTEUR SOLUTION     
+        ETAMAT = 'DECT'
+        CALL JEECRA(MATAS//'.REFA','DOCU',IBID,ETAMAT)
+      ELSE
+        LFETI=.FALSE.      
+        NBSD=0
+        IDD0=0
+      ENDIF
 
+C --- BOUCLE SUR LES SOUS-DOMAINES:
+C----------------------------------      
+C IDD=0 --> DOMAINE GLOBAL/ IDD=I --> IEME SOUS-DOMAINE
+      DO 100 IDD=IDD0,NBSD
 
-      IF (METRES.EQ.'LDLT'.OR.METRES.EQ.'MULT_FRO') THEN
+C MATR_ASSE ASSOCIEE A CHAQUE SOUS-DOMAINE        
+        IF (IDD.GT.0) THEN
+          MATAS=ZK24(IFETM+IDD-1)(1:19)
+          SOLVSD=ZK24(IFETS+IDD-1)(1:19)
+          CALL JEVEUO(SOLVSD//'.SLVK','L',ISLVK)
+          METRES = ZK24(ISLVK)
+          CALL JEVEUO(SOLVSD//'.SLVI','L',ISLVI)          
+        ELSE
+          CALL JEVEUO(SOLVEU//'.SLVI','L',ISLVI)                  
+        ENDIF
+        
+C ALLOCATION OBJET JEVEUX TEMPORAIRE .&INT/&IN2
+        CALL MTDSCR(MATAS)
+        CALL JEVEUO(MATAS//'.&INT','E',LMAT)
+        
+        IF (METRES.EQ.'LDLT'.OR.METRES.EQ.'MULT_FRO') THEN
+          IF (LFETI.AND.(METRES.EQ.'LDLT'))
+     &      CALL UTMESS('F','PRERES',
+     &      'SOLVEUR INTERNE LDLT POUR L''INSTANT PROSCRIT'//     
+     &      '  AVEC FETI')      
           NPREC = ZI(ISLVI-1+1)
           ISTOP = ZI(ISLVI-1+3)
-          CALL TLDLGG(ISTOP,LMAT,1,0,NPREC,NDECI,ISINGU,NPVNEG,IRET)
-
-
-      ELSE IF (METRES.EQ.'GCPC') THEN
+          IF (LFETI) THEN
+            VEMOCR = '&&PRERES.FETI.MOCR'
+            CALL TLDLG2(LMAT,NPREC,NBMOCR,VEMOCR)
+            IF (NBMOCR.EQ.0) THEN
+              ZI(IFETF+IDD-1)=-1
+            ELSE
+              CALL UTMESS('F','PRERES',
+     &          'SOUS-STRUCTURE FLOTTANTE POUR L''INSTANT '//     
+     &          'PROSCRITE  AVEC FETI !')                   
+            ENDIF                 
+C            CALL FETFAC(ISTOP,LMAT,1,0,NPREC,NDECI,ISINGU,
+C     &        NPVNEG,IRET)
+          ENDIF   
+          CALL TLDLGG(ISTOP,LMAT,1,0,NPREC,NDECI,ISINGU,
+     &      NPVNEG,IRET)
+        ELSE IF (METRES.EQ.'GCPC') THEN
+          IF (LFETI)
+     &      CALL UTMESS('F','PRERES',
+     &      'SOLVEUR INTERNE GCPC POUR L''INSTANT PROSCRIT'//     
+     &      '  AVEC FETI')
           IRET=0
           NIREMP = ZI(ISLVI-1+4)
           CALL PCLDLT(MAPREC,MATAS,NIREMP,BASE)
-      ENDIF
-C
-C
+        ENDIF
+
+C MONITORING
+        IF ((NIV.GE.3).AND.(NBSD.GT.0)) THEN
+          WRITE(IFM,*)
+          WRITE(IFM,*)'DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD'
+          WRITE(IFM,*)'<FETI/PRERES> NUMERO DE SOUS-DOMAINE: ',IDD
+          WRITE(IFM,*)'<FETI/PRERES> REMPLISSAGE OBJETS JEVEUX ',
+     &         MATAS(1:19)
+          WRITE(IFM,*)
+          WRITE(IFM,*)'<FETI/PRERES> NBRE MODES DE CORPS RIGIDES ',
+     &         NBMOCR
+          IF (NIV.GE.4)
+     &      CALL UTIMSD('MESSAGE',2,.FALSE.,.TRUE.,MATAS(1:19),
+     &      1,' ')
+          IF ((NIV.GE.4).AND.(IDD.EQ.NBSD))
+     &      CALL UTIMSD('MESSAGE',2,.FALSE.,.TRUE.,MATASS(1:19),
+     &      1,' ')     
+          WRITE(IFM,*)'DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD'        
+          WRITE(IFM,*)
+        ENDIF         
+  100 CONTINUE
+
  9999 CONTINUE
       CALL JEDBG2(IBID,IDBGAV)
       CALL JEDEMA()

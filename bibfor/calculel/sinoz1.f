@@ -1,6 +1,6 @@
       SUBROUTINE SINOZ1(MODELE,SIGMA,SIGNO)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 11/09/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 05/05/2004   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -31,6 +31,11 @@ C        MODELE : NOM DU MODELE
 C        SIGMA  : NOM DU CHAMP DE CONTRAINTES AUX POINTS DE GAUSS
 C        SIGNO  : NOM DU CHAMP DE CONTRAINTES AUX NOEUDS
 
+C   -------------------------------------------------------------------
+C     ASTER INFORMATIONS:
+C       24/11/03 (OB): PAR ADHERENCE A NUMER2.
+C----------------------------------------------------------------------
+
 C ----------------------- DECLARATIONS --------------------------------
 
       CHARACTER*1 TYPRES
@@ -43,7 +48,7 @@ C ----------------------- DECLARATIONS --------------------------------
       CHARACTER*24 KMOCH,SIGNO,SIGMA
       CHARACTER*24 NUME,TIME,VECASS,VECT(4),FOMULT,LCHAR(1)
       REAL*8 TPS(6),RCMP(4)
-
+      INTEGER IBID
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
 
       CHARACTER*32 JEXNUM,JEXNOM,JEXR8,JEXATR
@@ -83,8 +88,8 @@ C
       CALL JEVEUO(KMOCH,'L',JKMOCH)
       CALL JELIRA(KMOCH,'LONUTI',NBLIGR,KBID)
       CALL CRSOLV('LDLT','RCMK',SOLVEU,'V')
-
-      CALL NUMER2(' ',NBLIGR,ZK24(JKMOCH),'DDL_NOZ1',SOLVEU,'VV',NUPGM)
+      CALL NUMER2(' ',NBLIGR,ZK24(JKMOCH),'DDL_NOZ1',SOLVEU,'VV',NUPGM,
+     &     IBID)
       CALL JEDETR(KMOCH)
 
       CALL ASMATR(1,'&&MASSEL',' ',NUPGM,SOLVEU,INFCHA,'ZERO',

@@ -1,6 +1,6 @@
       SUBROUTINE NUMECN(MODELE,CHAMP,NU)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 17/11/2003   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 05/05/2004   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -18,12 +18,16 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
 C RESPONSABLE VABHHTS J.PELLET
+C   -------------------------------------------------------------------
+C     ASTER INFORMATIONS:
+C       24/11/03 (OB): PAR ADHERENCE A NUEFFE.
+C----------------------------------------------------------------------
       IMPLICIT NONE
       CHARACTER*(*) MODELE,CHAMP,NU
 C ----------------------------------------------------------------------
 C BUT CREER UN NUME_DDL SANS STOCKAGE (POUR CALC_NO)
 C ----------------------------------------------------------------------
-      CHARACTER*32 JEXNUM,JEXNOM,JEXR8,JEXATR
+      CHARACTER*32 JEXNUM
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
       REAL*8 ZR
@@ -43,8 +47,8 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
       CHARACTER*8 KBID,MO
       CHARACTER*24 LLIGR
       CHARACTER*19 PRFCHN,NOMLIG
-      INTEGER NBLIGR,IBID,NB1,JLLIGR,I1,I2,IRET,NB2
-
+      INTEGER IBID,NB1,JLLIGR,I1,I2,IRET,NB2
+      CHARACTER*19 K19BID
 C DEB ------------------------------------------------------------------
 
       CALL JEMARQ()
@@ -75,7 +79,7 @@ C       ON N'AJOUTE QUE LES LIGRELS QUI EXISTENT ENCORE :
           CALL JENUNO(JEXNUM(PRFCHN//'.LILI',I1),NOMLIG)
           CALL JEEXIN(NOMLIG//'.LIEL',IRET)
           IF (IRET.NE.0) THEN
-            IF (NOMLIG.NE.MO//'.MODELE' ) then
+            IF (NOMLIG.NE.MO//'.MODELE' ) THEN
               I2=I2+1
               ZK24(JLLIGR-1+I2) = NOMLIG
             END IF
@@ -83,9 +87,7 @@ C       ON N'AJOUTE QUE LES LIGRELS QUI EXISTENT ENCORE :
    11   CONTINUE
       END IF
 
-
-      CALL NUEFFE(LLIGR,'G',NU,'SANS','GCPC',' ')
-
+      CALL NUEFFE(LLIGR,'G',NU,'SANS','GCPC',' ',K19BID,IBID)
       CALL JEDETR(LLIGR)
       CALL JEDEMA()
       END

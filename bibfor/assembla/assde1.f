@@ -1,6 +1,6 @@
       SUBROUTINE ASSDE1(CHAMP)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 11/09/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ASSEMBLA  DATE 05/05/2004   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,7 +17,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C RESPONSABLE                            VABHHTS J.PELLET
+C RESPONSABLE VABHHTS J.PELLET
       IMPLICIT REAL*8 (A-H,O-Z)
       CHARACTER*(*) CHAMP
 C ----------------------------------------------------------------------
@@ -27,11 +27,38 @@ C                    CHAMP_GD(K19)
 
 C     RESULTAT:
 C     ON DETRUIT TOUS LES OBJETS JEVEUX CORRESPONDANT A CE CONCEPT.
-
+C     -----------------------------------------------------------------
+C     ASTER INFORMATIONS:
+C       02/12/03 (OB): MODIF POUR SOLVEUR FETI. 
 C ----------------------------------------------------------------------
+
+C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
+      CHARACTER*32 JEXNUM,JEXNOM,JEXR8,JEXATR
+      INTEGER ZI
+      COMMON /IVARJE/ZI(1)
+      REAL*8 ZR
+      COMMON /RVARJE/ZR(1)
+      COMPLEX*16 ZC
+      COMMON /CVARJE/ZC(1)
+      LOGICAL ZL
+      COMMON /LVARJE/ZL(1)
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32
+      CHARACTER*80 ZK80
+      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
+
+      INTEGER      IRET,IDD,NBSD,IFETC
+      CHARACTER*5  REFE,VALE,DESC
+      CHARACTER*8  K8BID
+      CHARACTER*19 K19B
+      CHARACTER*24 K24B
       CHARACTER*19 CHAMP2
 C -DEB------------------------------------------------------------------
       CHAMP2 = CHAMP
+
 
 
 C        POUR LES CARTE, CHAM_NO, CHAM_ELEM, ET RESU_ELEM :
@@ -50,6 +77,24 @@ C        POUR LES CARTE, CHAM_NO, CHAM_ELEM, ET RESU_ELEM :
       CALL JEDETR(CHAMP2//'.NCMP')
       CALL JEDETR(CHAMP2//'.PTMA')
       CALL JEDETR(CHAMP2//'.PTMS')
-
-   10 CONTINUE
+      
+C DESTRUCTION DE LA LISTE DE CHAM_NO LOCAUX SI FETI
+      K24B=CHAMP2//'.FETC'
+      CALL JEEXIN(K24B,IRET)
+C FETI OR NOT ?      
+      IF (IRET.GT.0) THEN             
+        DESC='.DESC'
+        REFE='.REFE'
+        VALE='.VALE'
+        CALL JELIRA(K24B,'LONMAX',NBSD,K8BID)
+        CALL JEVEUO(K24B,'L',IFETC)
+        DO 5 IDD=1,NBSD
+          K19B=ZK24(IFETC+IDD-1)(1:19)
+          CALL JEDETR(K19B//DESC)
+          CALL JEDETR(K19B//REFE)
+          CALL JEDETR(K19B//VALE)         
+   5    CONTINUE
+        CALL JEDETR(K24B)   
+      ENDIF                     
+   
       END

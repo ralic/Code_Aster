@@ -5,7 +5,7 @@
      >                    ASSMAT, SOLVEU, MATASS, MAPREC,
      >                    BASE, TPS1, TPS2, TPS3 )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 17/06/2003   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 05/05/2004   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,16 +48,17 @@ C IN  SOLVEU  : METHODE DE RESOLUTION 'LDLT' OU 'GCPC'
 C IN/OUT  MAPREC  : MATRICE PRECONDITIONNEE
 C IN  BASE    : BASE DE TRAVAIL
 C IN/OUT TPS1,2,3 : TEMPS DE CALCUL
-C ----------------------------------------------------------------------
+C   -------------------------------------------------------------------
+C     ASTER INFORMATIONS:
+C       30/01/04 (OB): MODIF CRITER POUR SOLVEUR FETI.
+C-----------------------------------------------------------------------
 C
       IMPLICIT NONE
-C
+
 C 0.1. ==> ARGUMENTS
-C
+
       INTEGER NRORES, NBPASE, ITPS
-C
       LOGICAL ASSMAT
-C
       CHARACTER*1 BASE
       CHARACTER*19 LISCHA, SOLVEU
       CHARACTER*19 VECASS
@@ -66,12 +67,12 @@ C
       CHARACTER*24 NUMEDD
       CHARACTER*(*) INPSCO
       CHARACTER*(*) MATE
-C
+
       REAL*8 PARTPS(*)
       REAL*8 TPS1(4), TPS2(4), TPS3(4)
-C
+
 C 0.2. ==> COMMUNS
-C
+
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
@@ -88,19 +89,17 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*80                                          ZK80
       COMMON  / KVARJE / ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
-C
+
 C 0.3. ==> VARIABLES LOCALES
-C
+
       CHARACTER*6 NOMPRO
       PARAMETER ( NOMPRO = 'MERESO' )
-C
       INTEGER JCRI, JCRR, JCRK
       INTEGER JPARA, IAINST, ISLVK
       INTEGER IRET
       INTEGER IAUX, JAUX
       INTEGER IFM, NIV
       INTEGER TYPESE
-C
       CHARACTER*8 K8BID
       CHARACTER*8 NOPASE
       CHARACTER*19 CHDEPL, CHSOL
@@ -110,32 +109,38 @@ C
       CHARACTER*24 VDEPL, VDEPLM, VDEPLP
       CHARACTER*24 VAPRIN, REPRIN
       CHARACTER*24 STYPSE
-C
+
 C DEB-------------------------------------------------------------------
 C====
 C 1. PREALABLES
 C====
-C
+
 C-----RECUPERATION DU NIVEAU D'IMPRESSION
-C
+
       CALL INFNIV(IFM,NIV)
-C
+
 C 1.2. ==> NOM DES STRUCTURES
-C
+
 C 1.2.1. ==> FIXES
-C
+
+      CALL JEVEUO(SOLVEU//'.SLVK','L',ISLVK)
+
 C               12   345678   9012345678901234
       CHSOL  = '&&'//NOMPRO//'_SOLUTION  '
-      CRITER = '&&'//NOMPRO//'_RESGRA_GCP     '
-C
+      IF (ZK24(ISLVK).EQ.'FETI') THEN
+        CRITER = '&&'//NOMPRO//'_RESFET_FETI     '
+      ELSE
+        CRITER = '&&'//NOMPRO//'_RESGRA_GCPC     '       
+      ENDIF     
+
 C 1.2.2. ==> ASSOCIEES AUX DERIVATIONS
 C               3. LE NOM DU RESULTAT
 C               4. LA VARIABLE PRINCIPALE A L'INSTANT N
 C               5. LA VARIABLE PRINCIPALE A L'INSTANT N-1
 C               6. LA VARIABLE PRINCIPALE A L'INSTANT N+1
-C
+
       IAUX = NRORES
-C
+
       JAUX = 1
       CALL PSNSLE ( INPSCO, IAUX, JAUX, NOPASE )
       JAUX = 3
@@ -146,79 +151,71 @@ C
       CALL PSNSLE ( INPSCO, IAUX, JAUX, VDEPLM )
       JAUX = 6
       CALL PSNSLE ( INPSCO, IAUX, JAUX, VDEPLP )
-C
+
       IF  ( NRORES.GT.0 ) THEN
-C
         IAUX = 0
         JAUX = 3
         CALL PSNSLE ( INPSCO, IAUX, JAUX, REPRIN )
         JAUX = 4
         CALL PSNSLE ( INPSCO, IAUX, JAUX, VAPRIN )
-C
       ENDIF
-C
+
 C====
 C 2. REPERAGE DU TYPE DE DERIVATION
 C====
-C
+
       IF ( NRORES.GT.0 ) THEN
-C
         CALL METYSE ( NBPASE, INPSCO, NOPASE, TYPESE, STYPSE )
-C
       ELSE
-C
         TYPESE = 0
         STYPSE = ' '
-C
       ENDIF
-C
+
 C====
 C 3. MATRICE ET SECOND MEMBRE
 C====
-C
+
       CALL MEACMV ( MODELE, MATE, CARELE, FOMULT, LISCHA,
      >              ITPS, PARTPS,
      >              NUMEDD, ASSMAT, SOLVEU,
      >              VECASS, MATASS, MAPREC, CNCHCI,
      >              TYPESE, STYPSE, NOPASE, VAPRIN, REPRIN,
      >              BASE, TPS1, TPS2, TPS3 )
-C
+
 C====
 C 4. RESOLUTION AVEC VECASS COMME SECOND MEMBRE
 C====
-C
+
       CALL RESOUD ( MATASS, MAPREC, VECASS, SOLVEU, CNCHCI,
      >              'V', CHSOL, CRITER )
-C
+
 C====
 C 5. SAUVEGARDE DE LA SOLUTION
 C====
-C
+
 C 5.1. ==> SAUVEGARDE DU CHAMP SOLUTION CHSOL DANS VDEPL
-C
       CALL COPISD ( 'CHAMP_GD','V',CHSOL(1:19),VDEPL(1:19) )
-C
+
 C 5.2. ==> DESTRUCTION DU CHAMP SOLUTION CHSOL
-C
+
       CALL DETRSD ('CHAMP_GD',CHSOL)
-C
+
 C 5.3. ==> STOCKAGE DE LA SOLUTION, VDEPL, DANS LA STRUCTURE DE RESULTAT
 C          EN TANT QUE CHAMP DE DEPLACEMENT A L'INSTANT COURANT
-C
+
       CALL RSEXCH(RESULT,'DEPL',ITPS,CHDEPL,IRET)
       IF ( IRET .LE. 100 ) THEN
         CALL COPISD('CHAMP_GD','G',VDEPL(1:19),CHDEPL(1:19))
         CALL RSNOCH(RESULT,'DEPL',ITPS,' ')
       ENDIF
-C
+
 C*** INST
-C
+
       CALL RSADPA (RESULT, 'E', 1, 'INST', ITPS,0,IAINST,K8BID)
       ZR(IAINST) = PARTPS(1)
-C
+
 C*** METHODE, RENUM, ...
-C
-      CALL JEVEUO(SOLVEU//'.SLVK','L',ISLVK)
+
       CALL RSADPA (RESULT, 'E', 1, 'METHODE', ITPS,0,JPARA,K8BID)
       IF ( ZK24(ISLVK)(1:8) .EQ. 'MULT_FRO' ) THEN
          ZK16(JPARA) = 'MULT_FRONT'
@@ -233,9 +230,9 @@ C
       ELSE
          ZK16(JPARA) = 'MORSE'
       ENDIF
-C
+
 C*** LES CRITERES
-C
+
       CALL JEEXIN ( CRITER(1:19)//'.CRTI', IRET )
       IF ( IRET .NE. 0 ) THEN
         CALL JEVEUO(CRITER(1:19)//'.CRTI','L',JCRI)
@@ -246,7 +243,6 @@ C
       CALL RSADPA (RESULT, 'E', 1, ZK16(JCRK+1), ITPS,0,JPARA,K8BID)
         ZR(JPARA) = ZR(JCRR)
       ENDIF
-C
       CALL UTTCPU(3, 'FIN', 4, TPS3)
-C
+
       END

@@ -1,0 +1,163 @@
+      SUBROUTINE FETPRC(NBSD,NBI,VD1,VD2,VDO,MATAS,VDDL,COLAUX,COLAUI,
+     &                  SDFETI,PRECO,COLAU2)
+C-----------------------------------------------------------------------
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 05/05/2004   AUTEUR BOITEAU O.BOITEAU 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C-----------------------------------------------------------------------
+C    - FONCTION REALISEE:  PRECONDITIONNEMENT AU SENS FETI
+C                          PRECO='SANS'  : VO = V1
+C                          PRECO='LUMPE' : VO = ML-1 * V1
+C
+C      IN   NBSD: IN   : NOMBRE DE SOUS-DOMAINES
+C      IN    NBI: IN   : NOMBRE DE NOEUDS D'INTERFACE
+C      IN    VD1: VR8  : VECTEUR V DE TAILLE NBI (INPUT)
+C      IN    VD2: VR8  : VECTEUR AUXILIAIRE DE TAILLE NBI 
+C      OUT   VDO: VR8  : VECTEUR OUTPUT DE TAILLE NBI
+C      IN  MATAS: CH19 : NOM DE LA MATR_ASSE GLOBALE
+C      IN   VDDL: VIN  : VECTEUR DES NBRES DE DDLS DES SOUS-DOMAINES
+C      IN COLAUX: COL  : NOM DE LA COLLECTION AUXILAIRE REELLE
+C      IN COLAU2: COL  : IDEM POUR LUMPE
+C      IN COLAUI: COL  : COLLECTION TEMPORAIRE D'ENTIER
+C      IN SDFETI: CH19 : SD DECRIVANT LE PARTIONNEMENT FETI 
+C      IN  PRECO: K24 : TYPE DE PRECONDITIONNEMENT
+C   -------------------------------------------------------------------
+C     ASTER INFORMATIONS:
+C       28/01/04 (OB): CREATION.
+C----------------------------------------------------------------------
+C RESPONSABLE BOITEAU O.BOITEAU
+C CORPS DU PROGRAMME
+      IMPLICIT NONE
+
+C DECLARATION PARAMETRES D'APPELS
+      INTEGER      NBSD,NBI,VDDL(NBSD)
+      REAL*8       VD1(NBI),VDO(NBI),VD2(NBI)
+      CHARACTER*19 MATAS,SDFETI
+      CHARACTER*24 COLAUX,COLAUI,PRECO,COLAU2
+
+C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
+      INTEGER            ZI
+      COMMON  / IVARJE / ZI(1)
+      REAL*8             ZR
+      COMMON  / RVARJE / ZR(1)
+      COMPLEX*16         ZC
+      COMMON  / CVARJE / ZC(1)
+      LOGICAL            ZL
+      COMMON  / LVARJE / ZL(1)
+      CHARACTER*8        ZK8
+      CHARACTER*16                ZK16
+      CHARACTER*24                          ZK24
+      CHARACTER*32                                    ZK32
+      CHARACTER*80                                              ZK80
+      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
+      
+C DECLARATION VARIABLES LOCALES
+      INTEGER      IDD,IFETM,NBDDL,IDD1,JXSOL,J,OPTION,IFM,NIV,LMAT,
+     &             JXSOL2
+      CHARACTER*19 MATDD
+      CHARACTER*32 JEXNUM
+      
+C CORPS DU PROGRAMME
+      CALL JEMARQ()
+
+C RECUPERATION DU NIVEAU D'IMPRESSION
+      CALL INFNIV(IFM,NIV)
+
+C INIT.
+      DO 2 J=1,NBI
+        VDO(J)=0.D0
+   2  CONTINUE
+       
+      IF (PRECO(1:4).EQ.'SANS') THEN
+C PAS DE PRECONDITIONNEMENT: ZR(IR1)=ZR(IRG) (VD0=VD1)      
+        DO 5 J=1,NBI
+          VDO(J)=VD1(J)
+   5    CONTINUE
+C MONITORING
+        IF (NIV.GE.3) THEN
+          WRITE(IFM,*)
+          WRITE(IFM,*)'DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD'
+          WRITE(IFM,*)'<FETI/FETPRC> SANS PRECONDITIONNEMENT'
+          WRITE(IFM,*)'DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD'
+          WRITE(IFM,*)    
+        ENDIF
+                   
+      ELSE IF (PRECO(1:5).EQ.'LUMPE') THEN      
+C PRECONDITIONNEMENT LUMPE: ZR(IR1)=ML-1*ZR(IRG) (VD0=ML-1*VD1)
+C INIT. VECTEUR SOLUTION ET AUX
+        DO 10 J=1,NBI
+          VD2(J)=0.D0
+          VDO(J)=0.D0
+   10   CONTINUE         
+C OBJET JEVEUX POINTANT SUR LA LISTE DES MATR_ASSE
+        CALL JEVEUO(MATAS//'.FETM','L',IFETM)      
+C --------------------------------------------------------------------
+C ----  BOUCLE SUR LES SOUS-DOMAINES
+C -------------------------------------------------------------------- 
+        DO 40 IDD=1,NBSD
+          IDD1=IDD-1
+        
+C MATR_ASSE ASSOCIEE AU SOUS-DOMAINE IDD      
+          MATDD=ZK24(IFETM+IDD1)(1:19)
+C DESCRIPTEUR DE LA MATRICE DU SOUS-DOMAINE     
+          CALL JEVEUO(MATDD//'.&INT','L',LMAT)     
+C NBRE DE DDL DU SOUS-DOMAINE IDD       
+          NBDDL=VDDL(IDD)
+C VECTEURS AUXILIAIRES DE TAILLE NDDL(SOUS_DOMAINE_IDD)     
+          CALL JEVEUO(JEXNUM(COLAUX,IDD),'E',JXSOL)
+          CALL JEVEUO(JEXNUM(COLAU2,IDD),'E',JXSOL2)
+                
+C EXTRACTION DU VECTEUR V AU SOUS-DOMAINE IDD: (RIDD)T * V
+          OPTION=2        
+          CALL FETREX(OPTION,IDD,NBI,VD1,NBDDL,ZR(JXSOL),SDFETI,COLAUI)
+
+C PRODUIT:  (KI) * (RIDD)T * V
+          CALL MRMULT('ZERO',LMAT,ZR(JXSOL),'R',ZR(JXSOL2),1)
+
+C MONITORING
+          IF (NIV.GE.3) THEN
+            WRITE(IFM,*)
+            WRITE(IFM,*)'DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD'
+            WRITE(IFM,*)'<FETI/FETPRC> PRECONDITIONNEMENT LUMPE'       
+            WRITE(IFM,*)'<FETI/FETPRC> CALCUL (KI)*(RI)T*V POUR I=',
+     &                   IDD
+          ENDIF         
+
+C RESTRICTION DU SOUS-DOMAINE IDD SUR L'INTERFACE: (RIDD) * ...
+          OPTION=1        
+          CALL FETREX(OPTION,IDD,NBDDL,ZR(JXSOL2),NBI,VD2,SDFETI,COLAUI)
+C CUMUL DANS LE VECTEUR VDO=SOMME(I=1,NBSD)(RI * ((KI)+ * RIT * V))
+          DO 30 J=1,NBI
+            VDO(J)=VDO(J)+VD2(J)
+   30     CONTINUE
+
+C MONITORING
+          IF (NIV.GE.3) THEN
+            WRITE(IFM,*)'<FETI/FETPRC> CUMUL  FIV = FIV + '//
+     &                  'RI*((KI)*(RIT*V)) '      
+            WRITE(IFM,*)'DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD'
+          ENDIF
+                
+   40   CONTINUE             
+      ELSE
+        CALL UTMESS('F','FETPRC','OPTION DE CALCUL NON PREVUE !')      
+      ENDIF
+          
+      CALL JEDEMA()
+      END
