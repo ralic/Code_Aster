@@ -1,0 +1,288 @@
+# MODIF  DATE 26/11/2002   AUTEUR MCOURTOI M.COURTOIS 
+# TITRE  SOLS SATURES , LOI ELASTIQUE NONLINEAIRE HYPERBOLIQUE
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+# MODELE (MO_2) SATURE
+# EQUIVALENT ELASTIQUE LINEAIRE AVEC LES PARAMETRES NULS
+#
+DEBUT(CODE=_F( NOM = 'WTNV116A',NIV_PUB_WEB='INTERNET'))
+
+#
+####################################
+#   OPERATIONS SUR LE MAILLAGE
+#
+####################################
+#PRE_IDEAS();
+MAIL=LIRE_MAILLAGE()
+
+MAIL=DEFI_GROUP( reuse=MAIL,  MAILLAGE=MAIL,CREA_GROUP_NO=(
+                      _F( GROUP_MA = 'BAS'),
+                      _F( GROUP_MA = 'HAUT'),
+#                   CREA_GROUP_NO : (GROUP_MA : LIGMI)
+                      _F( GROUP_MA = 'VOLUME'))
+                    )
+
+MODELE=AFFE_MODELE(   MAILLAGE=MAIL,
+                        AFFE=_F(  GROUP_MA = 'VOLUME',
+                      PHENOMENE = 'MECANIQUE',
+                      MODELISATION = '3D_THM')
+                     )
+
+####################################
+#  LISTE DES INSTANTS DE CALCUL
+####################################
+LI=DEFI_LIST_REEL(   DEBUT=0.,
+                       INTERVALLE=_F(  JUSQU_A = 3.E3, NOMBRE = 3)
+                     )
+
+ARCHI=DEFI_LIST_REEL(    DEBUT=0.,
+          INTERVALLE=_F( JUSQU_A = 3.E3, NOMBRE = 3)
+                 )
+
+############################################
+#
+# DEFINITION DES FONCTIONS DE COMPORTEMENT :
+# VISCOSITE LIQUIDE ET GAZ : UNITE : PA.S
+#
+VISCOLIQ=DEFI_CONSTANTE(    VALE=1.E-3)
+
+VISCOGAZ=DEFI_CONSTANTE(    VALE=1.8E-5)
+
+DVISCOL=DEFI_CONSTANTE(    VALE=0.)
+
+DVISCOG=DEFI_CONSTANTE(    VALE=0.)
+
+#
+# AUTRES FONCTIONS DE COMPORTEMENT
+# PERMEABILITE INTRINSEQUE, RELATIVE DU LIQUIDE, RELATIVE DU GAZ
+# UNITE INTRINSEQUE : METRES CARRES , UNITE RELATIVE : SANS
+#
+KINT=DEFI_CONSTANTE(    VALE=1.E-11)
+
+PERMLIQ=DEFI_CONSTANTE(    VALE=1.)
+
+DPERMLI=DEFI_CONSTANTE(    VALE=0.)
+
+PERMGAZ=DEFI_CONSTANTE(    VALE=1.)
+
+DPERGSA=DEFI_CONSTANTE(    VALE=0.)
+
+DPERGPG=DEFI_CONSTANTE(    VALE=0.)
+
+TENSUR=DEFI_CONSTANTE(    VALE=0.)
+
+DTENSUR=DEFI_CONSTANTE(    VALE=0.)
+
+CHFG=DEFI_CONSTANTE(    VALE=2.4E6)
+
+#
+# COEFFICIENT DE FICK
+# UNITE METRES CARRES PAR SECONDES
+#
+FICK=DEFI_CONSTANTE(    VALE=1.E-7)
+
+DFICKTE=DEFI_CONSTANTE(    VALE=0.)
+
+DFICKPG=DEFI_CONSTANTE(    VALE=0.)
+
+#
+# CONDUCTIVITES DU SOLIDE, DU LIQUIDE, DU GAZ
+# UNITES : WATTS PAR METRE CARRE
+#
+CONDSOLI=DEFI_CONSTANTE(    VALE=1.5)
+
+DCONDSO=DEFI_CONSTANTE(    VALE=0.)
+
+CONDLIQ=DEFI_CONSTANTE(    VALE=0.6)
+
+DCONDLI=DEFI_CONSTANTE(    VALE=0.)
+
+CONDGAZ=DEFI_CONSTANTE(    VALE=0.0258)
+
+DCONDGA=DEFI_CONSTANTE(    VALE=0.)
+
+MATERIAU=DEFI_MATERIAU(     THM_LIQU=_F( 
+   RHO = 1000.,
+   UN_SUR_K = 0.5E-9,
+   ALPHA = 1.E-4,
+   CP = 4180.,
+   VISC = VISCOLIQ,
+   D_VISC_TEMP = DVISCOL,
+   LAMBDA = CONDLIQ,
+   D_LAMBDA_TEMP = DCONDLI,
+   COEF_HENRY = 0.02),
+                              THM_GAZ=_F( 
+   MASS_MOL = 28.96E-3,
+   CP = 1000.,
+   VISC = VISCOGAZ,
+   D_VISC_TEMP = DVISCOG,
+   LAMBDA = CONDGAZ,
+   D_LAMBDA_TEMP = DCONDGA),
+                              THM_VAPE_GAZ=_F( 
+   MASS_MOL = 18.E-3,
+   CP = 1870.,
+   VISC = VISCOGAZ,
+   D_VISC_TEMP = DVISCOG),
+                              THM_DIFFU=_F( 
+   R_GAZ = 8.315,
+   RHO = 2400.,
+   CP = 800.,
+   BIOT_COEF = 0.0,
+   SATU_PRES = PERMLIQ,
+   D_SATU_PRES = DPERMLI,
+   PESA_X = 0.,
+   PESA_Y = 0.,
+   PESA_Z = -10.,
+   PERM_IN = KINT,
+   PERM_LIQU = PERMLIQ,
+   D_PERM_LIQU_SATU = DPERMLI,
+   PERM_GAZ = PERMGAZ,
+   D_PERM_SATU_GAZ = DPERGSA,
+   D_PERM_PRES_GAZ = DPERGPG,
+   FICK = FICK,
+   D_FICK_TEMP = DFICKTE,
+   D_FICK_GAZ_PRES = DFICKPG,
+   LAMBDA = CONDSOLI,
+   D_LAMBDA_TEMP = DCONDSO,
+   SIGMA_T = TENSUR,
+   D_SIGMA_T = DTENSUR,
+   PERM_G_INTR = KINT,
+   CHAL_VAPO = CHFG),
+                              THM_INIT=_F( 
+   TEMP = 273.,
+   PRE1 = 0.0,
+   PRE2 = 0.0,
+   PORO = 0.14,
+   PRES_VAPE = 2269.,
+   DEGR_SATU = 1.0,
+   PRES_ATMO = 1.E5),
+                           ELAS_THM=_F( 
+   RHO_S = 2600.,
+   UN_SUR_KS = 0.5E-9,
+   E = 35.E6,
+   KB = 14.E6,
+   D_KB_T = -5.E3,
+   ALPHA_S = 1.E-5,
+   ALPHA_D = 1.E-5),
+                               SURF_ETAT_SATU=_F( 
+   E_CHAR = 35.E1,
+   E_DECHAR = 35.E1,
+   XN = 0.0,
+   RF = 0.0,
+   EV_KB = 14.E1,
+   EV_XM = 0.0,
+   D_E_T = 0.0,
+   ALPHA0 = 1.E-5,
+   ALPHA1 = 0.0,
+   ALPHA2 = 0.0,
+   ALPHA3 = 0.0,
+   ALPHA_S = 1.E-5,
+   ANG_FRT = 15.,
+   COHE = 1.E5,
+   RESI_TRAC = 1.E4)
+   )
+
+CHMAT0=AFFE_MATERIAU(   MAILLAGE=MAIL,
+                          AFFE=_F( TOUT = 'OUI',
+                        MATER = MATERIAU))
+
+CHARHO=AFFE_CHAR_MECA(   MODELE=MODELE,DDL_IMPO=(
+                          _F(  GROUP_NO = 'HAUT',
+                                     DY = 0.,
+                 DZ = 0.,
+                                     TEMP = 293.,
+                                     PRE1 = 1.E5),
+                          _F(  GROUP_NO = 'BAS',
+                                     DX = 0.,
+                                     DY = 0.,
+                 DZ = 0.)),
+                          PESANTEUR=(10., 0., 0., -1.,)
+                                   )
+
+RESU0=STAT_NON_LINE(   MODELE=MODELE,
+            SOLVEUR=_F( METHODE = 'LDLT'),
+                          CHAM_MATER=CHMAT0,
+                          EXCIT=_F( CHARGE = CHARHO),
+                          COMP_INCR=_F( RELATION = 'KIT_THM',
+                      RELATION_KIT = ('SURF_ETAT_SATU',
+                        'LIQU_SATU_GAT',
+                        'THER_HOMO', 'HYDR_UTIL',)),
+                         INCREMENT=_F( 
+                        LIST_INST = LI),
+                          NEWTON=_F( MATRICE = 'TANGENTE',
+                                  REAC_ITER = 20),
+                         CONVERGENCE=_F( 
+                                     ITER_GLOB_MAXI = 10,
+                                     ITER_INTE_MAXI = 5),
+                          PARM_THETA=0.57,
+                          ARCHIVAGE=_F(  LIST_INST = ARCHI)
+                        )
+
+TEST_RESU( 
+           RESU=_F(  RESULTAT = RESU0,         NUME_ORDRE = 3,
+             NOM_CHAM = 'DEPL',
+             NOM_CMP = 'TEMP',
+             NOEUD = 'NO9',
+             VALE = 7.260611E+01,   # VALE: -4.26198E+01
+             REFERENCE = 'NON_REGRESSION',  VERSION = '5.4.14',
+             CRITERE = 'RELATIF', PRECISION = 1.E-5)
+           )
+
+TEST_RESU( 
+           RESU=_F(  RESULTAT = RESU0,         NUME_ORDRE = 3,
+             NOM_CHAM = 'DEPL',
+             NOM_CMP = 'DZ',
+             NOEUD = 'NO10',
+             VALE = -6.454534E-04,   # VALE: -3.08572E-04
+             REFERENCE = 'NON_REGRESSION',  VERSION = '5.4.14',
+             CRITERE = 'RELATIF', PRECISION = 1.E-5)
+           )
+
+TEST_RESU( 
+           RESU=_F(  RESULTAT = RESU0,         NUME_ORDRE = 3,
+             NOM_CHAM = 'DEPL',
+             NOM_CMP = 'PRE1',
+             NOEUD = 'NO11',
+             VALE = 1.048121E+05,   # VALE: 1.04742E+05
+             REFERENCE = 'NON_REGRESSION',  VERSION = '5.4.14',
+             CRITERE = 'RELATIF', PRECISION = 1.E-5)
+           )
+
+TEST_RESU( 
+           RESU=_F(  RESULTAT = RESU0,         NUME_ORDRE = 3,
+             NOM_CHAM = 'DEPL',
+             NOM_CMP = 'TEMP',
+             NOEUD = 'NO17',
+             VALE = -1.477877E+02,   # VALE: 8.64232E+01
+             REFERENCE = 'NON_REGRESSION',  VERSION = '5.4.14',
+             CRITERE = 'RELATIF',   PRECISION = 1.E-5)
+           )
+
+TEST_RESU( 
+           RESU=_F(  RESULTAT = RESU0,         NUME_ORDRE = 3,
+             NOM_CHAM = 'DEPL',
+             NOM_CMP = 'PRE1',
+             NOEUD = 'NO17',
+             VALE = 1.096242E+05,   # VALE: 1.09749E+05
+             REFERENCE = 'NON_REGRESSION',  VERSION = '5.4.14',
+             CRITERE = 'RELATIF',  PRECISION = 1.E-5)
+           )
+
+FIN()
+#
+#

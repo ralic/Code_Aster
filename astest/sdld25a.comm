@@ -1,0 +1,208 @@
+# MODIF  DATE 07/06/2002   AUTEUR DURAND C.DURAND 
+# TITRE SYSTEME MASSE-RESSORT: REPONSE SPECTRALE
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+# RESPONSABLE   PIBAT01 J. PIGAT
+# ---------------------------------------------------------------------
+# SYSTEME MASSE-RESOORT A 8 DEGRES DE LIBERTE AVEC AMORTISSEMENT
+# VISQUEUX PROPORTIONNEL (REPONSE TRANSITOIRE A UNE ACCELERATION)
+# SANS NOEUD EXTREMITES: 9 RESSORTS  8 MASSES
+#                        9 AMORTISSEURS VISQUEUX
+#
+# ---------------------------------------------------------------------
+
+DEBUT( CODE=_F(  NOM = 'SDLD25A',NIV_PUB_WEB='INTERNET') )
+
+MA=LIRE_MAILLAGE( )
+
+MAT=DEFI_MATERIAU(  ELAS=_F(  E = 2.E+11,  NU = 0.3,  RHO = 0.)  )
+
+MODELE=AFFE_MODELE(  MAILLAGE=MA,AFFE=( 
+                        _F(  TOUT = 'OUI', PHENOMENE = 'MECANIQUE',
+                               MODELISATION = 'DIS_T'),
+                             _F(  GROUP_NO = 'MASSE1', PHENOMENE = 'MECANIQUE',
+                               MODELISATION = 'DIS_T')) )
+
+CHMAT=AFFE_MATERIAU(  MAILLAGE=MA,
+                             MODELE=MODELE,AFFE=(
+                          _F(  MAILLE = ( 'E1', 'E2', 'E3', 'E4', 'E5', 'E6', 'E7', 'E8', 'E9', ),
+                                 MATER = MAT), 
+                               _F(  GROUP_NO = 'MASSE1',    MATER = MAT))  )
+
+CARA_ELE=AFFE_CARA_ELEM(  MODELE=MODELE,DISCRET=(
+                  _F(  GROUP_NO = 'MASSE1', REPERE = 'GLOBAL',
+                            CARA = 'M_T_D_N', VALE = 10.),
+                          _F(  GROUP_MA = 'RESSORT',
+                            CARA = 'K_T_D_L', VALE = ( 1.E+5, 0., 0.,)),
+                          _F(  GROUP_MA = 'AMORT',
+                            CARA = 'A_T_D_L', VALE = ( 50., 0., 0.,))) )
+
+COND_LIM=AFFE_CHAR_MECA(  MODELE=MODELE,DDL_IMPO=(
+                  _F(  GROUP_NO = 'A_ET_B', DX = 0., DY = 0., DZ = 0.),
+                           _F(  GROUP_NO = 'MASSE',         DY = 0., DZ = 0.)) )
+
+MELR=CALC_MATR_ELEM(  MODELE=MODELE,  OPTION='RIGI_MECA',
+                          CHARGE=COND_LIM,  CARA_ELEM=CARA_ELE )
+
+MELM=CALC_MATR_ELEM(  MODELE=MODELE,  OPTION='MASS_MECA',
+                          CHARGE=COND_LIM,  CARA_ELEM=CARA_ELE )
+
+MELC=CALC_MATR_ELEM(  MODELE=MODELE,  OPTION='AMOR_MECA',
+                          CHARGE=COND_LIM,  CARA_ELEM=CARA_ELE )
+
+#
+
+NUM=NUME_DDL(  MATR_RIGI=MELR )
+
+MATASSR=ASSE_MATRICE(  MATR_ELEM=MELR,   NUME_DDL=NUM  )
+
+MATASSM=ASSE_MATRICE(  MATR_ELEM=MELM,   NUME_DDL=NUM  )
+
+MATASSC=ASSE_MATRICE(  MATR_ELEM=MELC,   NUME_DDL=NUM  )
+
+TABL_MAS=POST_ELEM(  MODELE=MODELE,   
+                         CHAM_MATER=CHMAT,   CARA_ELEM=CARA_ELE,
+                        MASS_INER=_F(  TOUT = 'OUI')                   )
+
+MODE_MEC=MODE_ITER_SIMULT(  MATR_A=MATASSR,   MATR_B=MATASSM,
+                   CALC_FREQ=_F(  OPTION = 'PLUS_PETITE', NMAX_FREQ = 8)  )
+
+MODE_MEC=NORM_MODE(reuse=MODE_MEC,   MODE=MODE_MEC,   NORME='MASS_GENE',
+                         MASS_INER=TABL_MAS                          )
+
+#
+###--->> REFERENCE : CODE DE CALCUL POUX
+
+TEST_RESU(RESU=( _F(  RESULTAT = MODE_MEC,  PARA = 'FREQ',
+                     NUME_MODE = 1,       VALE = 5.53),
+                   _F(  RESULTAT = MODE_MEC,  PARA = 'FREQ',
+                     NUME_MODE = 2,       VALE = 10.89),
+                   _F(  RESULTAT = MODE_MEC,  PARA = 'FREQ',
+                     NUME_MODE = 3,       VALE = 15.92),
+                   _F(  RESULTAT = MODE_MEC,  PARA = 'FREQ',
+                     NUME_MODE = 4,       VALE = 20.46),
+                   _F(  RESULTAT = MODE_MEC,  PARA = 'FREQ',
+                     NUME_MODE = 5,       VALE = 24.38),
+                   _F(  RESULTAT = MODE_MEC,  PARA = 'FREQ',
+                     NUME_MODE = 6,       VALE = 27.57),
+                   _F(  RESULTAT = MODE_MEC,  PARA = 'FREQ',
+                     NUME_MODE = 7,       VALE = 29.91),
+                   _F(  RESULTAT = MODE_MEC,  PARA = 'FREQ',
+                     NUME_MODE = 8,       VALE = 31.35))      )
+
+#
+###--->> REFERENCE : FICHE DE VALIDATION (DYNAM S&M)
+
+TEST_RESU(RESU=( _F(  RESULTAT = MODE_MEC,  PARA = 'FREQ',
+                     NUME_MODE = 1,       VALE = 5.525),
+                   _F(  RESULTAT = MODE_MEC,  PARA = 'FREQ',
+                     NUME_MODE = 2,       VALE = 10.887),
+                   _F(  RESULTAT = MODE_MEC,  PARA = 'FREQ',
+                     NUME_MODE = 3,       VALE = 15.924),
+                   _F(  RESULTAT = MODE_MEC,  PARA = 'FREQ',
+                     NUME_MODE = 4,       VALE = 20.461),
+                   _F(  RESULTAT = MODE_MEC,  PARA = 'FREQ',
+                     NUME_MODE = 5,       VALE = 24.390),
+                   _F(  RESULTAT = MODE_MEC,  PARA = 'FREQ',
+                     NUME_MODE = 6,       VALE = 27.566),
+                   _F(  RESULTAT = MODE_MEC,  PARA = 'FREQ',
+                     NUME_MODE = 7,       VALE = 29.911),
+                   _F(  RESULTAT = MODE_MEC,  PARA = 'FREQ',
+                     NUME_MODE = 8,       VALE = 31.347))      )
+
+A_0_5=DEFI_FONCTION(  NOM_PARA='FREQ',   
+                            INTERPOL='LOG',
+                          VALE=( 1., 1.,  3., 25.,  13., 25.,  33., 1., ),
+                           TITRE='AMORTISSEMENT 0.5 # '             )
+
+A_5_0=DEFI_FONCTION(  NOM_PARA='FREQ',   
+                            INTERPOL='LOG',
+                          VALE=( 1., 1.,  3., 10.,  13., 10.,  33., 1., ),
+                           TITRE='AMORTISSEMENT 5.0 # '             )
+
+SPECT=DEFI_NAPPE(  NOM_PARA='AMOR',      
+                         INTERPOL=( 'LIN',  'LOG', ),
+                       PARA=(     0.005,  0.05,  ),
+                       FONCTION=( A_0_5,  A_5_0, ),
+                         TITRE='CAS TEST &CODE   COMMANDE &COMMANDE'
+                     )
+
+#
+
+SISM_SPE=COMB_SISM_MODAL(  MODE_MECA=MODE_MEC,
+                                AMOR_REDUIT=(
+                                 0.00868241,  0.01710101,  0.02500000, 
+                                 0.03213938,  0.03830222,  0.04331841, 
+                                 0.04698464,  0.04924040, ),
+                               MASS_INER=TABL_MAS,
+                               CORR_FREQ='NON',
+                              EXCIT=_F(  MONO_APPUI = 'OUI',
+                                      AXE = ( 1.,  0.,  0., ),
+                                      SPEC_OSCI = SPECT,
+                                      NATURE = 'ACCE'),
+                             COMB_MODE=_F(  TYPE = 'SRSS'),
+                               OPTION=( 'ACCE_ABSOLU',),
+                    TITRE=( 'CAS TEST &CODE','&RL DATE &DATE',)
+                     )
+
+###--->> REFERENCE : FICHE DE VALIDATION (DYNAM S&M)
+
+TEST_RESU(RESU=( _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'ACCE_ABSOLU',
+                     PRECISION = 0.010,   CRITERE = 'RELATIF',
+                     NOEUD_CMP = ( 'DIR',  'X', ),
+                     NOEUD = 'A',     NOM_CMP = 'DX',    VALE = 1.0),
+                   _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'ACCE_ABSOLU',
+                     PRECISION = 0.030,   CRITERE = 'RELATIF',
+                     NOEUD_CMP = ( 'DIR',  'X', ),
+                     NOEUD = 'P1',    NOM_CMP = 'DX',    VALE = 10.45),
+                   _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'ACCE_ABSOLU',
+                     PRECISION = 0.020,   CRITERE = 'RELATIF',
+                     NOEUD_CMP = ( 'DIR',  'X', ),
+                     NOEUD = 'P2',    NOM_CMP = 'DX',    VALE = 19.03),
+                   _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'ACCE_ABSOLU',
+                     PRECISION = 0.010,   CRITERE = 'RELATIF',
+                     NOEUD_CMP = ( 'DIR',  'X', ),
+                     NOEUD = 'P3',    NOM_CMP = 'DX',    VALE = 25.31),
+                   _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'ACCE_ABSOLU',
+                     PRECISION = 0.010,   CRITERE = 'RELATIF',
+                     NOEUD_CMP = ( 'DIR',  'X', ),
+                     NOEUD = 'P4',    NOM_CMP = 'DX',    VALE = 28.94))
+                    )
+
+#
+###--->> REFERENCE : CODE DE CALCUL POUX
+
+TEST_RESU(RESU=( _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'ACCE_ABSOLU',
+                     NOEUD_CMP = ( 'DIR',  'X', ),
+                     NOEUD = 'A',     NOM_CMP = 'DX',    VALE = 1.0),
+                   _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'ACCE_ABSOLU',
+                     NOEUD_CMP = ( 'DIR',  'X', ),
+                     NOEUD = 'P1',    NOM_CMP = 'DX',    VALE = 10.45),
+                   _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'ACCE_ABSOLU',
+                     NOEUD_CMP = ( 'DIR',  'X', ),
+                     NOEUD = 'P2',    NOM_CMP = 'DX',    VALE = 19.03),
+                   _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'ACCE_ABSOLU',
+                     NOEUD_CMP = ( 'DIR',  'X', ),
+                     NOEUD = 'P3',    NOM_CMP = 'DX',    VALE = 25.32),
+                   _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'ACCE_ABSOLU',
+                     NOEUD_CMP = ( 'DIR',  'X', ),
+                     NOEUD = 'P4',    NOM_CMP = 'DX',    VALE = 28.95))
+                   )
+
+FIN( )
+#

@@ -1,0 +1,570 @@
+# MODIF  DATE 11/09/2002   AUTEUR VABHHTS J.PELLET 
+# TITRE TEST DE NON-REGRESSION D'ASTER :  MODES PROPRES
+# RESPONSABLE VABHHTS J.PELLET
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+DEBUT(CODE=_F( NOM = 'SDLX201A',NIV_PUB_WEB='INTERNET'))
+
+# ================================================
+#
+#      TEST SDLX201A DE NON_REGRESSION ASTER
+#
+#      MECANIQUE 3D + COQUE + POUTRE + MODES PROPRES
+#
+#      ATTENTION :
+#      LES VALEURS DE REFERENCE ONT ETE OBTENUES
+#      PAR UN PASSAGE PRECEDENT DU CODE_ASTER.
+# ================================================
+
+MA=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='NON'),)
+
+MO=AFFE_MODELE(  MAILLAGE=MA,AFFE=(
+     _F(  MAILLE = 'HE1',    PHENOMENE = 'MECANIQUE',MODELISATION = '3D'),
+          _F(  GROUP_MA = 'GRMA1',PHENOMENE = 'MECANIQUE',MODELISATION = 'DKT'),
+          _F(  GROUP_MA = 'GRMA2',PHENOMENE = 'MECANIQUE',MODELISATION = 'POU_D_E'))
+     )
+
+MAT=DEFI_MATERIAU(  ELAS=_F( E = 2.E5, NU = 0.3, RHO = 8000., ALPHA = 0.))
+
+CHMA=AFFE_MATERIAU(  MAILLAGE=MA, AFFE=_F( TOUT = 'OUI', MATER = MAT))
+
+CARA=AFFE_CARA_ELEM(  MODELE=MO,
+       COQUE=_F(  GROUP_MA = 'GRMA1',EPAIS = 1.),
+       POUTRE=_F(  GROUP_MA = 'GRMA2',
+                SECTION = 'RECTANGLE',CARA = ('HZ','HY',),VALE = (3.,1.,))
+       )
+
+CHM1=AFFE_CHAR_MECA(  MODELE=MO,DDL_IMPO=(
+       _F( GROUP_NO = 'GRNO1', DX = 0., DY = 0., DZ = 0.),
+                _F( NOEUD = ('N10','N11','N26','N23',), DZ = 0.))
+       )
+
+CHM2=AFFE_CHAR_MECA(  MODELE=MO,LIAISON_GROUP=(
+
+        _F(   NOEUD_1 = ('N4','N16',),
+           NOEUD_2 = ('N21','N25',),
+           DDL_1 = 'DX',
+           DDL_2 = 'DX',
+           COEF_MULT_1 = 1.,
+           COEF_MULT_2 = -1.,
+           COEF_IMPO = 0.),
+        _F(   NOEUD_1 = ('N4','N16',),
+           NOEUD_2 = ('N21','N25',),
+           DDL_1 = 'DY',
+           DDL_2 = 'DY',
+           COEF_MULT_1 = 1.,
+           COEF_MULT_2 = -1.,
+           COEF_IMPO = 0.),
+        _F(   NOEUD_1 = ('N4','N16',),
+           NOEUD_2 = ('N21','N25',),
+           DDL_1 = 'DZ',
+           DDL_2 = 'DZ',
+           COEF_MULT_1 = 1.,
+           COEF_MULT_2 = -1.,
+           COEF_IMPO = 0.),
+        _F(   NOEUD_1 = ('N5','N11','N17',),
+           GROUP_NO_2 = 'GRNO3',
+           DDL_1 = 'DX',
+           DDL_2 = 'DRZ',
+           COEF_MULT_1 = 1.,
+           COEF_MULT_2 = 0.5,
+           COEF_IMPO = 0.),
+        _F(   NOEUD_1 = ('N3','N15','N10',),
+           GROUP_NO_2 = 'GRNO3',
+           DDL_1 = 'DX',
+           DDL_2 = 'DRZ',
+           COEF_MULT_1 = 1.,
+           COEF_MULT_2 = -0.5,
+           COEF_IMPO = 0.)),LIAISON_DDL=(
+
+        _F( NOEUD = ('N22','N23',), DDL = ('DRZ','DRZ',),
+         COEF_MULT = (1.,-1.,), COEF_IMPO = 0.),
+        _F( NOEUD = ('N23','N24',), DDL = ('DRZ','DRZ',),
+         COEF_MULT = (1.,-1.,), COEF_IMPO = 0.)),
+       FORCE_NODALE=_F( NOEUD = 'N29',FY = -1.)
+      )
+
+#
+#      MATRICES ELEMENTAIRES ET ASSEMBLAGE
+#      ----------------------------------------------------
+RIGEL=CALC_MATR_ELEM(  MODELE=MO,  CHAM_MATER=CHMA,
+               CHARGE=( CHM1,CHM2,), OPTION='RIGI_MECA',
+                        CARA_ELEM=CARA  )
+
+MASEL=CALC_MATR_ELEM(  MODELE=MO,   CHAM_MATER=CHMA,
+           OPTION='MASS_MECA',  CARA_ELEM=CARA  )
+
+#-----------------------------------------------------------------------
+
+#       1. SOLVEUR : 'LDLT' :
+#       ---------------------
+
+
+NU=NUME_DDL(  MATR_RIGI=RIGEL, METHODE='LDLT' )
+
+RIGAS=ASSE_MATRICE(MATR_ELEM=RIGEL,NUME_DDL=NU)
+
+MASAS=ASSE_MATRICE(MATR_ELEM=MASEL,NUME_DDL=NU)
+
+IMPR_STURM(  MATR_A=RIGAS,      MATR_B=MASAS,
+              FREQ_MAX=100. )
+
+#       1.1 MODE_ITER_SIMULT
+#       ---------------------
+
+MOD1=MODE_ITER_SIMULT(   MATR_A=RIGAS,
+                         MATR_B=MASAS,
+                         METHODE='TRI_DIAG',
+                         CALC_FREQ=_F(  OPTION = 'PLUS_PETITE',
+                                        NMAX_FREQ = 7),
+                         VERI_MODE=_F(  STOP_ERREUR = 'NON',
+                                        SEUIL = 1.5E-2, 
+                                        PREC_SHIFT = 0.008)
+                          )
+
+MOD2=MODE_ITER_SIMULT(   MATR_A=RIGAS,
+                         MATR_B=MASAS,
+                         METHODE='JACOBI',
+                         NMAX_ITER_BATHE = 30,
+                         OPTION='SANS',
+                         CALC_FREQ=_F(  OPTION = 'CENTRE',
+                                        FREQ = 2.E-2,
+                                        NMAX_FREQ = 10,))
+
+#       1.2 MODE_ITER_INV:
+#       ---------------------
+
+MOD4=MODE_ITER_INV(   MATR_A=RIGAS,   MATR_B=MASAS,
+                 CALC_FREQ=_F( OPTION = 'PROCHE',
+               FREQ = ( 6.2E-3,  6.14E-2,)) )
+
+MOD5=MODE_ITER_INV(MATR_A=RIGAS, MATR_B=MASAS,
+          CALC_FREQ=_F( OPTION = 'SEPARE', FREQ = (1.E-2,6.E-2,)))
+
+MOD6=MODE_ITER_INV(MATR_A=RIGAS,  MATR_B=MASAS,
+           CALC_FREQ=_F( OPTION = 'AJUSTE',  FREQ = (1.E-2,6.E-2,)))
+
+#-----------------------------------------------------------------------
+
+#       2. SOLVEUR : 'MULT_FRONT' :
+#       ---------------------
+
+
+NU2=NUME_DDL(  MATR_RIGI=RIGEL, METHODE='MULT_FRONT' )
+
+RIGAS2=ASSE_MATRICE(MATR_ELEM=RIGEL,NUME_DDL=NU2)
+
+MASAS2=ASSE_MATRICE(MATR_ELEM=MASEL,NUME_DDL=NU2)
+
+IMPR_STURM(  MATR_A=RIGAS2,      MATR_B=MASAS2,
+              FREQ_MAX=100. )
+
+#       2.1 MODE_ITER_SIMULT
+#       ---------------------
+
+MOF1=MODE_ITER_SIMULT(   MATR_A=RIGAS2,
+                         MATR_B=MASAS2,
+                         METHODE='TRI_DIAG',
+                         CALC_FREQ=_F(  OPTION = 'PLUS_PETITE',
+                                        NMAX_FREQ = 7),
+                         VERI_MODE=_F(  STOP_ERREUR = 'NON',
+                                        SEUIL = 1.5E-2,
+                                        PREC_SHIFT = 0.008)
+                           )
+
+MOF2=MODE_ITER_SIMULT(   MATR_A=RIGAS2,
+                         MATR_B=MASAS2,
+                         METHODE='JACOBI',
+                         NMAX_ITER_BATHE = 30,
+                         OPTION='SANS',
+                         CALC_FREQ=_F(  OPTION = 'CENTRE',
+                                        FREQ = 2.E-2,
+                                        NMAX_FREQ = 10,))
+
+#       2.2 MODE_ITER_INV:
+#       ---------------------
+
+MOF4=MODE_ITER_INV(   MATR_A=RIGAS2,   MATR_B=MASAS2,
+                 CALC_FREQ=_F( OPTION = 'PROCHE',
+               FREQ = ( 6.2E-3,  6.14E-2,)))
+
+MOF5=MODE_ITER_INV(MATR_A=RIGAS2, MATR_B=MASAS2,
+           CALC_FREQ=_F( OPTION = 'SEPARE', FREQ = (1.E-2,6.E-2,)))
+
+MOF6=MODE_ITER_INV(MATR_A=RIGAS2,  MATR_B=MASAS2,
+           CALC_FREQ=_F( OPTION = 'AJUSTE',  FREQ = (1.E-2,6.E-2,)))
+
+#-----------------------------------------------------------------------
+
+#       3. NORM_MODE :
+#       ---------------------
+
+MODN1=NORM_MODE(   MODE=MOD1,   NORME='MASS_GENE' )
+
+MODN2=NORM_MODE(   MODE=MOD1,   NORME='RIGI_GENE' )
+
+MODN3=NORM_MODE(   MODE=MOD1,   NORME='TRAN' )
+
+MODN4=NORM_MODE(   MODE=MOD1,   NORME='TRAN_ROTA' )
+
+MODN5=NORM_MODE(   MODE=MOD1,   NORME='EUCL' )
+
+MODN6=NORM_MODE(   MODE=MOD1,
+              NOEUD='N21', NOM_CMP='DRY' )
+
+MODN7=NORM_MODE(   MODE=MOD1,
+            MODE_SIGNE=_F(  NOEUD = 'N21', NOM_CMP = 'DY', SIGNE = 'POSITIF'),
+             SANS_CMP=('DY', 'DZ', 'DRX', 'DRY', 'DRZ', ))
+
+MODN8=NORM_MODE(   MODE=MOD1,
+             AVEC_CMP=('DX', 'DZ', 'DRZ', ))
+
+#-----------------------------------------------------------------------
+
+#       4. MODE_ITER_XXX /MATR_C
+#       -------------------------
+
+AMORT=COMB_MATR_ASSE(COMB_R=(
+         _F(  MATR_ASSE = RIGAS2, COEF_R = 0.015),
+         _F(  MATR_ASSE = MASAS2, COEF_R = 0.015)))
+
+MOC1=MODE_ITER_SIMULT(  MATR_A=RIGAS2,   MATR_B=MASAS2,
+                    MATR_C=AMORT,
+                 METHODE='TRI_DIAG',
+                  OPTION='SANS',
+                CALC_FREQ=_F(  APPROCHE = 'REEL', FREQ = (0.1,),
+                OPTION='CENTRE',
+                NMAX_FREQ = 2) )
+
+MOC2=MODE_ITER_INV(   MATR_A=RIGAS2,   MATR_B=MASAS2,
+                   MATR_C=AMORT,
+                 CALC_FREQ=_F( OPTION = 'PROCHE',
+               FREQ = ( 6.2E-3,  6.14E-2,)),
+               VERI_MODE=_F(  STOP_ERREUR = 'NON'))
+
+#-----------------------------------------------------------------------
+
+TEST_RESU(
+                             FICHIER='RESULTAT',RESU=(
+
+                              _F(
+                      RESULTAT = MOD1,
+                      NUME_ORDRE = 2,
+                      PARA = 'FREQ',
+                      VALE = 9.2529719799964E-04,
+                      REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14',
+                      CRITERE = 'RELATIF'),
+                              _F(
+                      RESULTAT = MOD1,
+                      NUME_ORDRE = 2,
+                      NOM_CHAM = 'DEPL',
+                      NOM_CMP = 'DX',
+                      NOEUD = 'N21',
+                      VALE = 6.5496238781752E-05,
+                      REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14'),
+                              _F(
+                      RESULTAT = MOD2,
+                      NUME_ORDRE = 2,
+                      PARA = 'FREQ',
+                      VALE = 9.2529719801107E-04,
+                      REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14',
+                      CRITERE = 'RELATIF'),
+                              _F(
+                      RESULTAT = MOD2,
+                      NUME_ORDRE = 2,
+                      NOM_CHAM = 'DEPL',
+                      NOM_CMP = 'DY',
+                      NOEUD = 'N21',
+                      VALE = -1.2297631843005E-01,
+                      REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14'),
+                              _F(
+                      RESULTAT = MOD4,
+                      NUME_ORDRE = 2,
+                      PARA = 'FREQ',
+                      VALE = 6.1527821252546E-02,
+                      REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14',
+                      CRITERE = 'RELATIF'),
+                              _F(
+                      RESULTAT = MOD4,
+                      NUME_ORDRE = 2,
+                      NOM_CHAM = 'DEPL',
+                      NOM_CMP = 'DX',
+                      NOEUD = 'N21',
+                      VALE = 1.1496542317135E-02,
+                      REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14'),
+                              _F(
+                      RESULTAT = MOD5,
+                      NUME_ORDRE = 2,
+                      PARA = 'FREQ',
+                      VALE = 2.4022787854795E-02,
+                      REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14',
+                      CRITERE = 'RELATIF'),
+                              _F(
+                      RESULTAT = MOD5,
+                      NUME_ORDRE = 2,
+                      NOM_CHAM = 'DEPL',
+                      NOM_CMP = 'DY',
+                      NOEUD = 'N21',
+                      VALE = -5.7450439131440E-04,
+                      REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14'),
+                              _F(
+                      RESULTAT = MOD6,
+                      NUME_ORDRE = 2,
+                      PARA = 'FREQ',
+                      VALE = 2.4022776705885E-02,
+                      REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14',
+                      CRITERE = 'RELATIF'),
+                              _F(
+                      RESULTAT = MOD6,
+                      NUME_ORDRE = 2,
+                      NOM_CHAM = 'DEPL',
+                      NOM_CMP = 'DZ',
+                      NOEUD = 'N21',
+                      VALE = -2.9242875932084E-07,
+                      REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14'),
+                              _F(
+                      RESULTAT = MOF1,
+                      NUME_ORDRE = 2,
+                      PARA = 'FREQ',
+                      VALE = 9.2529719800565E-04,
+                      REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14',
+                      CRITERE = 'RELATIF'),
+                              _F(
+                      RESULTAT = MOF1,
+                      NUME_ORDRE = 2,
+                      NOM_CHAM = 'DEPL',
+                      NOM_CMP = 'DX',
+                      NOEUD = 'N21',
+                      VALE = 6.5496238782335E-05,
+                      REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14'),
+                              _F(
+                      RESULTAT = MOF2,
+                      NUME_ORDRE = 2,
+                      PARA = 'FREQ',
+                      VALE = 9.2529719800186E-04,
+                      REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14',
+                      CRITERE = 'RELATIF'),
+                              _F(
+                      RESULTAT = MOF2,
+                      NUME_ORDRE = 2,
+                      NOM_CHAM = 'DEPL',
+                      NOM_CMP = 'DY',
+                      NOEUD = 'N21',
+                      VALE = -1.2297631846678E-01,
+                      REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14'),
+                              _F(
+                      RESULTAT = MOF4,
+                      NUME_ORDRE = 2,
+                      PARA = 'FREQ',
+                      VALE = 6.1527821252518E-02,
+                      REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14',
+                      CRITERE = 'RELATIF'),
+                              _F(
+                      RESULTAT = MOF4,
+                      NUME_ORDRE = 2,
+                      NOM_CHAM = 'DEPL',
+                      NOM_CMP = 'DX',
+                      NOEUD = 'N21',
+                      VALE = 1.1496542317937E-02,
+                      REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14'),
+                              _F(
+                      RESULTAT = MOF5,
+                      NUME_ORDRE = 2,
+                      PARA = 'FREQ',
+                      VALE = 2.4022786475233E-02,
+                      REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14',
+                      CRITERE = 'RELATIF'),
+                              _F(
+                      RESULTAT = MOF5,
+                      NUME_ORDRE = 2,
+                      NOM_CHAM = 'DEPL',
+                      NOM_CMP = 'DY',
+                      NOEUD = 'N21',
+                      VALE = -5.7321699385801E-04,
+                      REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14'),
+                              _F(
+                      RESULTAT = MOF6,
+                      NUME_ORDRE = 2,
+                      PARA = 'FREQ',
+                      VALE = 2.4022776705884E-02,
+                      REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14',
+                      CRITERE = 'RELATIF'),
+                              _F(
+                      RESULTAT = MOF6,
+                      NUME_ORDRE = 2,
+                      NOM_CHAM = 'DEPL',
+                      NOM_CMP = 'DZ',
+                      NOEUD = 'N21',
+                      VALE = -2.9242875932011E-07,
+                      REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14'),
+                              _F(
+                      RESULTAT = MODN1,
+                      NUME_ORDRE = 2,
+                      PARA = 'FREQ',
+                      VALE = 9.2529719799964E-04,
+                      REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14',
+                      CRITERE = 'RELATIF'),
+                              _F(
+                      RESULTAT = MODN1,
+                      NUME_ORDRE = 2,
+                      NOM_CHAM = 'DEPL',
+                      NOM_CMP = 'DX',
+                      NOEUD = 'N21',
+                      VALE = 1.8125780447830E-07,
+                      REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14'),
+                              _F(
+                      RESULTAT = MODN2,
+                      NUME_ORDRE = 2,
+                      PARA = 'FREQ',
+                      VALE = 9.2529719799964E-04,
+                      REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14',
+                      CRITERE = 'RELATIF'),
+                              _F(
+                      RESULTAT = MODN2,
+                      NUME_ORDRE = 2,
+                      NOM_CHAM = 'DEPL',
+                      NOM_CMP = 'DY',
+                      NOEUD = 'N21',
+                      VALE = -5.8538383646419E-02,
+                      REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14'),
+                              _F(
+                      RESULTAT = MODN3,
+                      NUME_ORDRE = 2,
+                      PARA = 'FREQ',
+                      VALE = 9.2529719799964E-04,
+                      REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14',
+                      CRITERE = 'RELATIF'),
+                              _F(
+                      RESULTAT = MODN3,
+                      NUME_ORDRE = 2,
+                      NOM_CHAM = 'DEPL',
+                      NOM_CMP = 'DZ',
+                      NOEUD = 'N21',
+                      VALE = -1.0978418784923E-06,
+                      REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14'),
+                              _F(
+                      RESULTAT = MODN4,
+                      NUME_ORDRE = 2,
+                      PARA = 'FREQ',
+                      VALE = 9.2529719799964E-04,
+                      REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14',
+                      CRITERE = 'RELATIF'),
+                              _F(
+                      RESULTAT = MODN4,
+                      NUME_ORDRE = 2,
+                      NOM_CHAM = 'DEPL',
+                      NOM_CMP = 'DY',
+                      NOEUD = 'N21',
+                      VALE = -1.2297631847061E-01,
+                      REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14'),
+                              _F(
+                      RESULTAT = MODN5,
+                      NUME_ORDRE = 2,
+                      PARA = 'FREQ',
+                      VALE = 9.2529719799964E-04,
+                      REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14',
+                      CRITERE = 'RELATIF'),
+                              _F(
+                      RESULTAT = MODN5,
+                      NUME_ORDRE = 2,
+                      NOM_CHAM = 'DEPL',
+                      NOM_CMP = 'DX',
+                      NOEUD = 'N21',
+                      VALE = 3.2937824246451E-05,
+                      REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14'),
+                              _F(
+                      RESULTAT = MODN6,
+                      NUME_ORDRE = 2,
+                      PARA = 'FREQ',
+                      VALE = 9.2529719799964E-04,
+                      REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14',
+                      CRITERE = 'RELATIF'),
+                              _F(
+                      RESULTAT = MODN6,
+                      NUME_ORDRE = 2,
+                      NOM_CHAM = 'DEPL',
+                      NOM_CMP = 'DZ',
+                      NOEUD = 'N21',
+                      VALE = -1.7337287158908E-06,
+                      REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14'),
+                              _F(
+                      RESULTAT = MODN7,
+                      NUME_ORDRE = 2,
+                      PARA = 'FREQ',
+                      VALE = 9.2529719799964E-04,
+                      REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14',
+                      CRITERE = 'RELATIF'),
+                              _F(
+                      RESULTAT = MODN7,
+                      NUME_ORDRE = 2,
+                      NOM_CHAM = 'DEPL',
+                      NOM_CMP = 'DY',
+                      NOEUD = 'N21',
+                      VALE = 9.8354732768982E+00,
+                      REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14'),
+                              _F(
+                      RESULTAT = MODN8,
+                      NUME_ORDRE = 2,
+                      PARA = 'FREQ',
+                      VALE = 9.2529719799964E-04,
+                      REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14',
+                      CRITERE = 'RELATIF'),
+                              _F(
+                      RESULTAT = MODN8,
+                      NUME_ORDRE = 2,
+                      NOM_CHAM = 'DEPL',
+                      NOM_CMP = 'DX',
+                      NOEUD = 'N21',
+                      VALE = -1.5800983901277E-03,
+                      REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14'),
+                              _F(
+                      RESULTAT = MOC1,
+                      NUME_ORDRE = 2,
+                      PARA = 'FREQ',
+                      VALE = 1.0700678025432E-01,
+                      REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14',
+                      CRITERE = 'RELATIF'),
+                              _F(
+                      RESULTAT = MOC1,
+                      NUME_ORDRE = 2,
+                      NOM_CHAM = 'DEPL',
+                      NOM_CMP = 'DY',
+                      NOEUD = 'N21',
+         VALE_C = ('RI', 6.5585378196625E-04, -2.6191922176450E-10 ,),
+                      REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14'),
+                              _F(
+                      RESULTAT = MOC2,
+                      NUME_ORDRE = 2,
+                      PARA = 'FREQ',
+                      VALE = 6.1512521048556E-02 ,
+                      REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14',
+                      CRITERE = 'RELATIF'),
+                              _F(
+                      RESULTAT = MOC2,
+                      NUME_ORDRE = 2,
+                      NOM_CHAM = 'DEPL',
+                      NOM_CMP = 'DZ',
+                      NOEUD = 'N21',
+         VALE_C = ('RI',-2.6754771724033E-02, 3.0802575767819E-10,),
+                      REFERENCE = 'NON_REGRESSION', VERSION = '5.02.14'))
+                       )
+
+# ENGENDRE_TEST(TOUT:'OUI');
+ENGENDRE_TEST(TOUT='OUI',FORMAT_R='1PE25.18')
+FIN()
+#

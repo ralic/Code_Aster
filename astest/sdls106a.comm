@@ -1,0 +1,387 @@
+# MODIF  DATE 07/06/2002   AUTEUR DURAND C.DURAND 
+# TITRE SOUS STRUCTURATION DYNAMIQUE : PLAQUE MINCE APPUYEE-APPUYEE
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+
+# CAS_TEST__: PLAQUERITZ
+#             VALIDATION SOUS-STRUCTURATION CLASSIQUE AVEC BASE MODALE
+#             DE RITZ
+#
+
+#   CAS 1 : SOUS-STRUCTURATION CLASSIQUE
+
+#           PLAQUE APPUYEE SUR SES BORDS DECOUPEE EN 2 PARTIES
+
+#           AVEC INTERFACES DE TYPE CRAIG-BAMPTON
+
+#
+
+##
+#
+#123678901234567890123456789012345678901234567890123456789012345678901
+#
+DEBUT(CODE=_F( NOM = 'SDLS106A',NIV_PUB_WEB='INTERNET'))
+
+#
+
+PRE_IDEAS()
+
+MAILLA=LIRE_MAILLAGE( )
+
+MODELE=AFFE_MODELE(  MAILLAGE=MAILLA,
+                            AFFE=_F( GROUP_MA = 'CALCUL',
+                                  PHENOMENE = 'MECANIQUE',
+                                  MODELISATION = 'DKT'))
+
+#
+MATER=DEFI_MATERIAU(  ELAS=_F( E = 2.1E11,  NU = 0.30,  RHO = 7800.0))
+
+#
+CHAMAT=AFFE_MATERIAU(  MAILLAGE=MAILLA,
+                              AFFE=_F( GROUP_MA = 'CALCUL',
+                                    MATER = MATER))
+
+#
+PARAM=AFFE_CARA_ELEM(  MODELE=MODELE,
+                            COQUE=_F( EPAIS = 0.01,
+                                   GROUP_MA = 'CALCUL'))
+
+#
+
+
+########################################################################
+#
+#        PLAQUE APPUYEE-APPUYEE DECOUPEE EN 2 PARTIES
+#   SOUS-STRUCTURATION CLASSIQUE - INTERFACES TYPE CRAIG-BAMPTON
+#
+########################################################################
+#
+#
+# SOUS-STRUCTURE 1 APPUYEE-ENCASTREE - INTERFACE TYPE CRAIG-BAMPTON
+#
+CHARGE_1=AFFE_CHAR_MECA(  MODELE=MODELE,DDL_IMPO=(
+               _F( GROUP_NO = 'BLOQUE', DX = 0.0, DY = 0.0, DZ = 0.0),
+               _F( GROUP_NO = 'GAUCHE', DX = 0.0, DY = 0.0, DZ = 0.0,
+                         DRX = 0.0, DRY = 0.0, DRZ = 0.0),
+               _F( GROUP_NO = 'BAS', DX = 0.0, DY = 0.0, DZ = 0.0),
+               _F( GROUP_NO = 'HAUT', DX = 0.0, DY = 0.0, DZ = 0.0)))
+
+#
+MERIME_1=CALC_MATR_ELEM(      MODELE=MODELE,
+                                CHARGE=CHARGE_1,
+                            CHAM_MATER=CHAMAT,
+                             CARA_ELEM=PARAM,
+                               OPTION='RIGI_MECA')
+
+#
+MEMAME_1=CALC_MATR_ELEM(      MODELE=MODELE,
+                                CHARGE=CHARGE_1,
+                            CHAM_MATER=CHAMAT,
+                             CARA_ELEM=PARAM,
+                               OPTION='MASS_MECA')
+
+#
+NUMDDL_1=NUME_DDL(  MATR_RIGI=MERIME_1)
+
+#
+RAID_1=ASSE_MATRICE(  MATR_ELEM=MERIME_1,
+                           NUME_DDL=NUMDDL_1)
+
+#
+MASS_1=ASSE_MATRICE(  MATR_ELEM=MEMAME_1,
+                           NUME_DDL=NUMDDL_1)
+
+#
+MODES_1=MODE_ITER_SIMULT(     MATR_A=RAID_1,
+                                 MATR_B=MASS_1,
+                             CALC_FREQ=_F( OPTION = 'PLUS_PETITE',
+                              NMAX_FREQ = 6))
+
+#
+
+
+# SOUS-STRUCTURE 2 ENCASTREE-APPUYEE - INTERFACE TYPE CRAIG-BAMPTON
+#
+
+CHARGE_2=AFFE_CHAR_MECA(  MODELE=MODELE,DDL_IMPO=(
+               _F( GROUP_NO = 'BLOQUE', DX = 0.0, DY = 0.0, DZ = 0.0,
+                         DRX = 0.0, DRY = 0.0, DRZ = 0.0),
+               _F( GROUP_NO = 'GAUCHE', DX = 0.0, DY = 0.0, DZ = 0.0),
+               _F( GROUP_NO = 'BAS', DX = 0.0, DY = 0.0, DZ = 0.0),
+               _F( GROUP_NO = 'HAUT', DX = 0.0, DY = 0.0, DZ = 0.0)))
+
+#
+MERIME_2=CALC_MATR_ELEM(      MODELE=MODELE,
+                                CHARGE=CHARGE_2,
+                            CHAM_MATER=CHAMAT,
+                             CARA_ELEM=PARAM,
+                               OPTION='RIGI_MECA')
+
+#
+MEMAME_2=CALC_MATR_ELEM(      MODELE=MODELE,
+                                CHARGE=CHARGE_2,
+                            CHAM_MATER=CHAMAT,
+                             CARA_ELEM=PARAM,
+                               OPTION='MASS_MECA')
+
+#
+NUMDDL_2=NUME_DDL(  MATR_RIGI=MERIME_2)
+
+#
+RAID_2=ASSE_MATRICE(  MATR_ELEM=MERIME_2,
+                           NUME_DDL=NUMDDL_2)
+
+#
+MASS_2=ASSE_MATRICE(  MATR_ELEM=MEMAME_2,
+                           NUME_DDL=NUMDDL_2)
+
+#
+MODES_2=MODE_ITER_SIMULT(     MATR_A=RAID_2,
+                                 MATR_B=MASS_2,
+                             CALC_FREQ=_F( OPTION = 'PLUS_PETITE',
+                              NMAX_FREQ = 6))
+
+#
+
+#  DEFINITION DES INTERFACES
+#
+LINT1_CL=DEFI_INTERF_DYNA(   NUME_DDL=NUMDDL_1,
+                         INTERFACE=_F( NOM = 'GAUCHE_1',
+                                        TYPE = 'CRAIGB',
+                             MASQUE = ('DX','DY','DRZ',),
+                                        GROUP_NO = 'GAUCHE'))
+
+#
+LINT2_CL=DEFI_INTERF_DYNA(   NUME_DDL=NUMDDL_2,
+                         INTERFACE=_F( NOM = 'BLOQUE_2',
+                                        TYPE = 'CRAIGB',
+                             MASQUE = ('DX','DY','DRZ',),
+                                        GROUP_NO = 'BLOQUE'))
+
+#   CALCUL DE LA SOLUTION STATIQUE
+#
+
+MODESTA1=MODE_STATIQUE(  MATR_RIGI=RAID_1,
+                     MODE_STAT=_F( GROUP_NO = 'GAUCHE',
+                      AVEC_CMP = ('DZ','DRX','DRY',)))
+
+MODESTA2=MODE_STATIQUE(  MATR_RIGI=RAID_2,
+                     MODE_STAT=_F( GROUP_NO = 'BLOQUE',
+                      AVEC_CMP = ('DZ','DRX','DRY',)))
+
+#  CALCUL DE LA BASE MODALE DES SOUS-STRUCTURES
+
+
+BAMO1_CL=DEFI_BASE_MODALE( RITZ=( _F( MODE_MECA = MODES_1),
+                          _F( MODE_STAT = MODESTA1,
+                                    NMAX_MODE = 999)),
+                           INTERF_DYNA=LINT1_CL,
+                        NUME_REF=NUMDDL_1)
+
+#
+BAMO2_CL=DEFI_BASE_MODALE( RITZ=( _F( MODE_MECA = MODES_2),
+                          _F( MODE_STAT = MODESTA2,
+                                    NMAX_MODE = 999)),
+                           INTERF_DYNA=LINT2_CL,
+                        NUME_REF=NUMDDL_2)
+
+#  CALCUL DU MACRO-ELEMENT
+#
+
+MACEL1=MACR_ELEM_DYNA(  BASE_MODALE=BAMO1_CL,
+                       MATR_MASS=MASS_1,
+                       MATR_RIGI=RAID_1,
+                       OPTION='RITZ')
+
+#
+MACEL2=MACR_ELEM_DYNA(  BASE_MODALE=BAMO2_CL,
+                       MATR_MASS=MASS_2,
+                       MATR_RIGI=RAID_2,
+                       OPTION='RITZ')
+
+#
+#   CALCUL SUR MODELE GENERALISE
+#
+MODEGE=DEFI_MODELE_GENE(SOUS_STRUC=( _F( NOM = 'CARRE1',
+                                         MACR_ELEM_DYNA = MACEL1),
+                             _F( NOM = 'CARRE2',
+                                         MACR_ELEM_DYNA = MACEL2)),
+                             LIAISON=_F( SOUS_STRUC_1 = 'CARRE1',
+                                      SOUS_STRUC_2 = 'CARRE2',
+                                      INTERFACE_1 = 'GAUCHE_1',
+                                      INTERFACE_2 = 'BLOQUE_2'),
+                               VERIF=_F( STOP_ERREUR = 'OUI',
+                                      PRECISION = 1.E-6,
+                                      CRITERE = 'RELATIF'))
+
+#
+#  NUMEROTATION DU PROBLEME GENERALISE
+#
+NUMEGE=NUME_DDL_GENE(  MODELE_GENE=MODEGE)
+
+#
+#  ASSEMBLAGE DES MATRICES RAIDEUR ET MASSE
+#
+MASGEN=ASSE_MATR_GENE(  NUME_DDL_GENE=NUMEGE,
+                                  OPTION='MASS_GENE')
+
+#
+RIGGEN=ASSE_MATR_GENE(  NUME_DDL_GENE=NUMEGE,
+                                  OPTION='RIGI_GENE')
+
+#
+#   CALCUL DES MODES PROPRES DE LA STRUCTURE GLOBALE
+#
+RESGEN=MODE_ITER_SIMULT(     MATR_A=RIGGEN,
+                                 MATR_B=MASGEN,
+                             CALC_FREQ=_F( OPTION = 'PLUS_PETITE',
+                                        NMAX_FREQ = 6))
+
+#
+
+#
+
+#   CREATION DU MAILLAGE SQUELETTE DE LA STRUCTURE GLOBALE
+#
+
+SQUEL=DEFI_SQUELETTE(  MODELE_GENE=MODEGE,SOUS_STRUC=(
+                            _F( NOM = 'CARRE1',
+                                        TOUT = 'OUI'),
+                            _F( NOM = 'CARRE2',
+                                        TOUT = 'OUI'))
+ )
+
+#
+#   RESTITUTION SUR MAILLAGE SQUELETTE
+#
+MODGLO=REST_BASE_PHYS(   RESU_GENE=RESGEN,
+                             SQUELETTE=SQUEL,
+                           TOUT_ORDRE='OUI',
+                      TOUT_CHAM='OUI')
+
+#
+MODGLO=NORM_MODE(       reuse=MODGLO,
+                                MODE=MODGLO,    
+                               NORME='TRAN_ROTA',  
+                         
+                              MODE_SIGNE=_F( 
+                      NOEUD = 'NO3',       
+                      NOM_CMP = 'DZ',  
+                      SIGNE = 'POSITIF')
+                       )
+
+MODGLO2=REST_BASE_PHYS(   RESU_GENE=RESGEN,
+                           SOUS_STRUC='CARRE1',
+                           TOUT_ORDRE='OUI',
+                            TOUT_CHAM='OUI')
+
+#
+#
+SQUELBIS=DEFI_SQUELETTE(  MODELE_GENE=MODEGE,
+                              SQUELETTE=SQUEL,
+                            RECO_GLOBAL=_F(  TOUT = 'OUI',
+                                           DIST_REFE = 0.1)
+                           )
+
+#
+#
+MODGLBIS=REST_BASE_PHYS(   SQUELETTE=SQUELBIS,
+                               RESULTAT=MODGLO,
+                            TOUT_ORDRE='OUI',
+                             TOUT_CHAM='OUI'
+                            )
+
+MODGLBIS=NORM_MODE( reuse=MODGLBIS, MODE=MODGLBIS,                 
+                        NORME='TRAN_ROTA',            
+                        
+                        MODE_SIGNE=_F( NOEUD = 'NO1074',  
+                         NOM_CMP = 'DZ',             
+                         SIGNE = 'POSITIF')  
+                          )
+
+MODGLO=NORM_MODE(       reuse=MODGLO,
+                                MODE=MODGLO,    
+                               NORME='TRAN_ROTA',  
+                         
+                              MODE_SIGNE=_F( 
+                      NOEUD = 'NO3',       
+                      NOM_CMP = 'DZ',  
+                      SIGNE = 'POSITIF')
+                       )
+
+#
+#
+# COMPARAISON DE RESULTATS AVEC DES NOEUDS QUI ONT FUSIONNE
+#
+TEST_RESU(RESU=(_F( RESULTAT = MODGLO, NOM_CHAM = 'DEPL',
+                CRITERE = 'RELATIF', PRECISION = 1.E-3,
+                NUME_ORDRE = 1, NOM_CMP = 'DZ',
+                NOEUD = 'NO1',     VALE = 4.1435E-01),
+          _F( RESULTAT = MODGLBIS, NOM_CHAM = 'DEPL',
+                CRITERE = 'RELATIF', PRECISION = 1.E-3,
+                NUME_ORDRE = 1, NOM_CMP = 'DZ',
+                NOEUD = 'NO1072',   VALE = 4.1435E-01)) )
+
+TEST_RESU(RESU=(_F( RESULTAT = MODGLO, NOM_CHAM = 'DEPL',
+                CRITERE = 'RELATIF', PRECISION = 1.E-3,
+                NUME_ORDRE = 3, NOM_CMP = 'DZ',
+                NOEUD = 'NO2',     VALE = 1.7741E-01),
+          _F( RESULTAT = MODGLBIS, NOM_CHAM = 'DEPL',
+                CRITERE = 'RELATIF', PRECISION = 1.E-3,
+                NUME_ORDRE = 3, NOM_CMP = 'DZ',
+                NOEUD = 'NO1073',   VALE = 1.7741E-01)) )
+
+TEST_RESU(RESU=(_F( RESULTAT = MODGLO, NOM_CHAM = 'DEPL',
+                CRITERE = 'RELATIF', PRECISION = 1.E-3,
+                NUME_ORDRE = 4, NOM_CMP = 'DZ',
+                NOEUD = 'NO3',     VALE = 1.9720E-01),
+          _F( RESULTAT = MODGLBIS, NOM_CHAM = 'DEPL',
+                CRITERE = 'RELATIF', PRECISION = 1.E-3,
+                NUME_ORDRE = 4, NOM_CMP = 'DZ',
+                NOEUD = 'NO1074',   VALE = 1.9720E-01), 
+          _F( RESULTAT = MODGLO, NOM_CHAM = 'DEPL',
+                CRITERE = 'RELATIF', PRECISION = 1.E-3,
+                NUME_ORDRE = 4, NOM_CMP = 'DZ',
+                NOEUD = 'NO1292',   VALE = 1.6230E-01), 
+          _F( RESULTAT = MODGLBIS, NOM_CHAM = 'DEPL',
+                CRITERE = 'RELATIF', PRECISION = 1.E-3,
+                NUME_ORDRE = 4, NOM_CMP = 'DZ',
+                NOEUD = 'NO1292',   VALE = 1.6230E-01)) 
+          )
+
+#
+
+TEST_RESU(RESU=(_F( RESULTAT = MODGLO, PARA = 'FREQ',
+                CRITERE = 'RELATIF', PRECISION = 1.25E-2,
+                NUME_ORDRE = 1,  VALE = 17.12),
+          _F( RESULTAT = MODGLO, PARA = 'FREQ',
+                CRITERE = 'RELATIF', PRECISION = 1.25E-2,
+                NUME_ORDRE = 2,  VALE = 35.61),
+          _F( RESULTAT = MODGLO, PARA = 'FREQ',
+                CRITERE = 'RELATIF', PRECISION = 1.25E-2,
+                NUME_ORDRE = 3,  VALE = 49.99),
+          _F( RESULTAT = MODGLO, PARA = 'FREQ',
+                CRITERE = 'RELATIF', PRECISION = 1.25E-2,
+                NUME_ORDRE = 4,  VALE = 66.42),
+          _F( RESULTAT = MODGLO, PARA = 'FREQ',
+                CRITERE = 'RELATIF', PRECISION = 1.25E-2,
+                NUME_ORDRE = 5,  VALE = 68.48)) )
+
+FIN()
+#
+#

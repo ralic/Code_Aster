@@ -1,0 +1,241 @@
+# MODIF  DATE 07/06/2002   AUTEUR DURAND C.DURAND 
+# TITRE REPONSE TRANSITOIRE D'UNE PLAQUE A UNE PRESSION ISSUE DE ENSIGHT
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+# CAS_TEST__:SDLX100A
+#
+#-----------------------------------------------------------------------
+# SYSTEME 1 ELT DE COQUE - 4 RESSORTS - 4 AMORTISSEURS VISQUEUX
+# PRESSION SINUSOIDALE DEFINIE PAR DES FICHIERS ENSIGHT
+# REPONSE TRANSITOIRE DIRECTE
+#-----------------------------------------------------------------------
+
+DEBUT( CODE=_F(  NOM = 'SDLX100A',NIV_PUB_WEB='INTERNET') )
+
+#
+
+MAILLAGE=LIRE_MAILLAGE( )
+
+#
+
+MODELE=AFFE_MODELE(   MAILLAGE=MAILLAGE,AFFE=(
+                        _F(  MAILLE = 'MA1', PHENOMENE = 'MECANIQUE',
+                               MODELISATION = 'DST'),
+                             _F(  GROUP_NO = 'NPRESS', PHENOMENE = 'MECANIQUE',
+                               MODELISATION = 'DIS_TR'))
+                      )
+
+MODEL2=AFFE_MODELE(   MAILLAGE=MAILLAGE,
+                        AFFE=_F(  MAILLE = 'MA1', PHENOMENE = 'MECANIQUE',
+                               MODELISATION = 'DST')
+                      )
+
+#
+
+PRES=LIRE_RESU(    FORMAT='ENSIGHT',
+                      NOM_FICHIER='carre_m.result',
+                      MODELE=MODEL2,
+                      TYPE_RESU='EVOL_CHAR',
+                      NOM_CHAM='PRES',
+                      TOUT_ORDRE='OUI'
+                  )
+
+#
+
+ACIER=DEFI_MATERIAU(  ELAS=_F( E = 2.1E+11, NU = 0.3, RHO = 7800.))
+
+#
+
+CHAMPMAT=AFFE_MATERIAU(  MAILLAGE=MAILLAGE,
+                           AFFE=_F( MAILLE = 'MA1', MATER = ACIER))
+
+#
+
+ELEMNT=AFFE_CARA_ELEM(  MODELE=MODELE,
+                            COQUE=_F(  MAILLE = 'MA1',
+                                    ANGL_REP = (90., 0.,),
+                                    EPAIS = 1.282E-04),DISCRET=(
+                            _F(  GROUP_NO = 'NPRESS',
+                                      CARA = 'K_TR_D_N',
+                                      VALE = ( 9.8696E4, 0., 0.,
+                                              0., 0., 0.,
+                                             )),
+                                    _F(  GROUP_NO = 'NPRESS',
+                                      CARA = 'A_TR_D_N',
+                                      VALE = ( 3.14159, 0., 0.,
+                                              0., 0., 0.,
+                                              )))
+                        )
+
+#
+
+CHARGT1=AFFE_CHAR_MECA(  MODELE=MODELE,
+                            DDL_IMPO=_F( GROUP_NO = 'NPRESS',
+                                      DY = 0., DZ = 0.,
+                                      DRX = 0., DRY = 0., DRZ = 0.)
+                         )
+
+#
+
+CHARGT2=AFFE_CHAR_MECA(  MODELE=MODELE,
+                            EVOL_CHAR=PRES
+                        )
+
+#
+
+MACRO_MATR_ASSE(  MODELE=MODELE,
+                    CHAM_MATER=CHAMPMAT,
+                    CARA_ELEM=ELEMNT,
+                     CHARGE=CHARGT1,
+                    NUME_DDL=CO("NUMEROTA"),MATR_ASSE=(
+                   
+                        _F( MATRICE = CO("MATRRIGI"),
+                         OPTION = 'RIGI_MECA'),
+                        _F( MATRICE = CO("MATRMASS"),
+                         OPTION = 'MASS_MECA'),
+                        _F( MATRICE = CO("MATRAMOR"),
+                         OPTION = 'AMOR_MECA'))
+                   )
+
+#
+L_INST=DEFI_LIST_REEL(    DEBUT=0.,
+                            INTERVALLE=_F(  JUSQU_A = 0.05,
+                                         PAS = 0.0001) )
+
+L_ARCH=DEFI_LIST_ENTI(    DEBUT=0,
+                            INTERVALLE=_F(  JUSQU_A = 500,
+                                         PAS = 1) )
+
+#
+#
+DYLINEWM=DYNA_LINE_TRAN(    MODELE=MODELE,
+                                CHAM_MATER=CHAMPMAT,
+                               CARA_ELEM=ELEMNT,
+                               MATR_MASS=MATRMASS,
+                               MATR_RIGI=MATRRIGI,
+                               MATR_AMOR=MATRAMOR,
+                               NEWMARK=_F(),
+                               INCREMENT=_F( LIST_INST = L_INST),
+                               ARCHIVAGE=_F( LIST_ARCH = L_ARCH),
+                              EXCIT=_F(  CHARGE = CHARGT2)
+                           )
+
+#
+N1_DEP_N=RECU_FONCTION(  NOEUD='NO1',   NOM_CMP='DX',  NOM_CHAM='DEPL',
+                           RESULTAT=DYLINEWM,  LIST_INST=L_INST  )
+
+#
+# SUITE AUX CORRECTIONS POUR LE SIGNE DE LA PRESSION EN 5.3.25
+#   LES SIGNES DES VALEURS DE REFERENCE SONT CHANGEES
+#   ET MARQUEES NON_REGRESSION
+#
+TEST_FONCTION(VALEUR=( 
+               _F(  FONCTION = N1_DEP_N,  PRECISION = 3.E-04,
+                 VALE_PARA = 5.E-03,    VALE_REFE = -3.906E-06,       
+                 REFERENCE = 'NON_REGRESSION'),
+               _F(  FONCTION = N1_DEP_N,  PRECISION = 3.E-04,
+                 VALE_PARA = 1.5E-02,   VALE_REFE = -1.13607E-05,       
+                 REFERENCE = 'NON_REGRESSION'),
+               _F(  FONCTION = N1_DEP_N,  PRECISION = 3.E-04,
+                 VALE_PARA = 2.5E-02,   VALE_REFE = -1.83613E-05,       
+                 REFERENCE = 'NON_REGRESSION'),
+               _F(  FONCTION = N1_DEP_N,  PRECISION = 3.E-04,
+                 VALE_PARA = 3.5E-02,   VALE_REFE = -2.4935E-05,       
+                 REFERENCE = 'NON_REGRESSION'),
+               _F(  FONCTION = N1_DEP_N,  PRECISION = 3.E-04,
+                 VALE_PARA = 4.5E-02,   VALE_REFE = -3.11102E-05,       
+                 REFERENCE = 'NON_REGRESSION'))  
+             )
+
+#
+#--------------------------------------------------------------------
+# TEST DE IMPR_RESU
+#--------------------------------------------------------------------
+#
+
+DEFUFI(IMPRESSION=_F( NOM = 'PRES',
+                      UNITE = 38))
+
+IMPR_RESU( RESU=_F(  RESULTAT = PRES,
+                    FICHIER = 'PRES',
+                    TOUT_ORDRE = 'OUI',
+                    FORMAT = 'IDEAS')  )
+
+#--------------------------------------------------------------------
+# TEST DE LIRE_RESU
+#--------------------------------------------------------------------
+#
+
+
+PRESSI=LIRE_RESU(        FORMAT='IDEAS',
+                              UNITE=38,
+                             MODELE=MODELE,
+                         TYPE_RESU='EVOL_CHAR',
+                          NOM_CHAM='PRES',
+                        TOUT_ORDRE='OUI'
+                  )
+
+#
+
+CHARGTX=AFFE_CHAR_MECA(  MODELE=MODELE,
+                            EVOL_CHAR=PRESSI
+                        )
+
+DYLIN_R=DYNA_LINE_TRAN(      MODELE=MODELE,
+                                CHAM_MATER=CHAMPMAT,
+                                CARA_ELEM=ELEMNT,
+                                MATR_MASS=MATRMASS,
+                                MATR_RIGI=MATRRIGI,
+                                MATR_AMOR=MATRAMOR,
+                                  NEWMARK=_F(),
+                                INCREMENT=_F( LIST_INST = L_INST),
+                                ARCHIVAGE=_F( LIST_ARCH = L_ARCH),
+                                    EXCIT=_F(  CHARGE = CHARGTX)
+                           )
+
+#
+N1_DEP_R=RECU_FONCTION(  NOEUD='NO1',   NOM_CMP='DX',  NOM_CHAM='DEPL',
+                           RESULTAT=DYLIN_R,  LIST_INST=L_INST  )
+
+#
+# SUITE AUX CORRECTIONS POUR LE SIGNE DE LA PRESSION EN 5.3.25
+#   LES SIGNES DES VALEURS DE REFERENCE SONT CHANGEES
+#   ELLES SONT MARQUEES AUTRE_ASTER CAR RELUES PAR LIRE_RESU
+#   MAIS ELLES FONT REFERENCE AUX VALEURS DE NON_REGRESSION ASTER
+#
+TEST_FONCTION(VALEUR=( 
+               _F(  FONCTION = N1_DEP_R,  PRECISION = 3.E-04,
+                 VALE_PARA = 5.E-03,    VALE_REFE = -3.906E-06,    
+                 REFERENCE = 'AUTRE_ASTER'),
+               _F(  FONCTION = N1_DEP_R,  PRECISION = 3.E-04,
+                 VALE_PARA = 1.5E-02,   VALE_REFE = -1.13607E-05,  
+                 REFERENCE = 'AUTRE_ASTER'),
+               _F(  FONCTION = N1_DEP_R,  PRECISION = 3.E-04,
+                 VALE_PARA = 2.5E-02,   VALE_REFE = -1.83613E-05,  
+                 REFERENCE = 'AUTRE_ASTER'),
+               _F(  FONCTION = N1_DEP_R,  PRECISION = 3.E-04,
+                 VALE_PARA = 3.5E-02,   VALE_REFE = -2.4935E-05,  
+                 REFERENCE = 'AUTRE_ASTER'),
+               _F(  FONCTION = N1_DEP_R,  PRECISION = 3.E-04,
+                 VALE_PARA = 4.5E-02,   VALE_REFE = -3.11102E-05,  
+                 REFERENCE = 'AUTRE_ASTER'))  )
+
+#
+FIN( )
+#
+#

@@ -1,0 +1,101 @@
+      SUBROUTINE EXTRS3 ( RESU, PARAM, IORDR, CEL, ITYPE, TYPE, IAD )
+      IMPLICIT   NONE
+      INTEGER             ITYPE, IAD, IORDR
+      CHARACTER*1         CEL
+      CHARACTER*(*)       RESU, PARAM, TYPE
+C     ------------------------------------------------------------------
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF UTILITAI  DATE 27/05/97   AUTEUR CIBHHLV L.VIVAN 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+C     
+C IN  : RESU   : NOM DE LA STRUCTURE "RESULTAT".
+C IN  : NOPARA : NOM SYMBOLIQUE DU PARAMETRE.
+C IN  : IORDR  : NUMERO DE RANGEMENT
+C IN  : CEL    : CONDITION D'ACCES AUX PARAMETRES :
+C                    'L' : LECTURE, 'E' : ECRITURE.
+C IN  : ITYPE  : CODE INDIQUANT QUE L'ON DESIRE LE TYPE
+C                     = 0  PAS DE TYPE
+C                    /= 0  ON FOURNIT LE TYPE
+C OUT : TYPE   : CODE DU TYPE
+C               R REAL,I INTEGER,C COMPLEXE,K8 K16 K24 K32 K80 CHARACTER
+C OUT : IAD    : ADRESSE JEVEUX DANS ZI,ZR,...
+C     ------------------------------------------------------------------
+C
+C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
+      INTEGER          ZI
+      COMMON  /IVARJE/ ZI(1)
+      REAL*8           ZR
+      COMMON  /RVARJE/ ZR(1)
+      COMPLEX*16       ZC
+      COMMON  /CVARJE/ ZC(1)
+      LOGICAL          ZL
+      COMMON  /LVARJE/ ZL(1)
+      CHARACTER*8      ZK8
+      CHARACTER*16            ZK16
+      CHARACTER*24                    ZK24
+      CHARACTER*32                            ZK32
+      CHARACTER*80                                    ZK80
+      COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+      CHARACTER*32     JEXNUM, JEXNOM
+C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
+      INTEGER       IPARA, IATAVA, IRE1, IRE2, IDEBU, IMAXI, ILEN, ILOTY
+      INTEGER       IBID, IAOBJ, LEN
+      CHARACTER*8   K8B, NOMOBJ, K8DEBU, K8MAXI
+      CHARACTER*16  NOPARA
+      CHARACTER*19  NOMSD
+C     ------------------------------------------------------------------
+C
+      NOMSD = RESU
+      NOPARA = PARAM
+C
+      CALL JENONU ( JEXNOM(NOMSD//'.NOVA',NOPARA), IPARA )
+      IF ( IPARA .EQ. 0 ) THEN
+         CALL UTDEBM('F','EXTRS3','VARIABLE INCONNUE: ')
+         CALL UTIMPK('L','VARIABLE : ',1,NOPARA)
+         CALL UTIMPK('S',' POUR LE RESULTAT : ',1,NOMSD)
+         CALL UTFINM()
+      ENDIF
+C
+      CALL JEVEUO ( JEXNUM(NOMSD//'.TAVA',IPARA), 'L', IATAVA )
+      NOMOBJ = ZK8(IATAVA-1+1)
+      K8DEBU = ZK8(IATAVA-1+2)
+      CALL LXLIIS ( K8DEBU, IDEBU, IRE1 )
+      K8MAXI = ZK8(IATAVA-1+3)
+      CALL LXLIIS ( K8MAXI, IMAXI, IRE2 )
+      IF ( ABS(IRE1)+ABS(IRE2) .GT. 0 ) THEN
+         CALL UTDEBM('F','EXTRS3','PROBLEME RENCONTRE LORS DE LA ')
+         CALL UTIMPK('S','RECHERCHE DE LA VARIABLE : ',1,NOPARA)
+         CALL UTIMPK('L','        DEBUT : ',1,K8DEBU)
+         CALL UTIMPK('L','          FIN : ',1,K8MAXI)
+         CALL UTFINM()
+      ENDIF
+C
+      CALL JEVEUO ( NOMSD//NOMOBJ, CEL, IAOBJ )
+      IAD = IAOBJ - 1 + (IORDR-1)*IMAXI + IDEBU
+C
+      IF ( ITYPE .NE. 0 ) THEN
+         CALL JELIRA ( NOMSD//NOMOBJ, 'TYPE', IBID, TYPE(1:1) )
+         ILEN = LEN( TYPE ) - 1
+         IF ( TYPE(1:1).EQ.'K' .AND. ILEN.GT.0 ) THEN
+            CALL JELIRA ( NOMSD//NOMOBJ, 'LTYP', ILOTY, K8B )
+            CALL CODENT ( ILOTY, 'G', K8B )
+            TYPE = TYPE(1:1)//K8B(1:ILEN)
+         ENDIF
+      ENDIF
+C
+      END

@@ -1,0 +1,152 @@
+# MODIF  DATE 07/06/2002   AUTEUR DURAND C.DURAND 
+# TITRE ESSAI DE TRACTION-CISAILLEMENT EN CONTRAINTES PLANES (CHABOCHE)
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+#----------------------------------------------------------------------
+#    CAS TEST VPCS PLAQUE CARREE EN TRACTION CISAILLEMENT PROPORTIONNEL
+#                   ESSAI AVEC CHARGE EN RAMPE A 100 N
+#----------------------------------------------------------------------
+#        UNITES : NEWTON , MILLIMETRE , SECONDE (N,MM,S,->MPA)
+#                    MODELE ELASTOPLASTIQUE DE CHABOCHE
+#----------------------------------------------------------------------
+#
+#               Y       A                          H = 1 MM (EPAISSEUR)
+#               I<----------->                     A = 1 MM (COTE)
+#                                                          2
+#                                                  S = 1 MM (AIRE)
+#                 NO4         +  NO3
+#               O-------------OB
+#           H  /+             I                F(T)
+#             / I             I                 A
+#               I NO6         I           100 N I____
+#               I-------------I  NO5            I   /I
+#               I             I                 I  / I
+#               I             I                 I /  I
+#               I  NO1        I  NO2            I/   I
+#             ++O-------------OB     - X        O---------> T
+#               +             B                       1S
+#
+#
+#----------------------------------------------------------------------
+#
+DEBUT(     CODE=_F(  NOM = 'SSNV101B',NIV_PUB_WEB='INTERNET'))
+
+CARRE=LIRE_MAILLAGE(     )
+
+CPLAN=AFFE_MODELE(             MAILLAGE=CARRE,
+                                    AFFE=_F(   PHENOMENE = 'MECANIQUE',
+                                            MODELISATION = 'C_PLAN',
+                                            TOUT = 'OUI'))
+
+ACIER=DEFI_MATERIAU(    
+                                    ELAS=_F(   E = 145200.,
+                                            NU = .3,
+                                            ALPHA = 0.),
+                                CHABOCHE=_F(   R_I = 151.,
+                                            R_0 = 87.,
+                                            B = 2.3,
+                                            K = .43,
+                                            W = 6.09,
+                                            A1 = 187.,
+                                            A2 = 29.,
+                                            C1 = 341.,
+                                            C2 = 17184.))
+
+MAT=AFFE_MATERIAU(            MAILLAGE=CARRE,
+                                    AFFE=_F(  MAILLE = ('MA1','MA2',),
+                                           MATER = ACIER,
+                                           TEMP_REF = 20.))
+
+LINST=DEFI_LIST_REEL(              DEBUT=.4,
+                              INTERVALLE=_F( JUSQU_A = 1.435, NOMBRE = 12))
+
+TR_CS=AFFE_CHAR_MECA(             MODELE=CPLAN,DDL_IMPO=(
+                 _F(  NOEUD = ('NO3','NO5',), DX = 0.),
+                 _F(  NOEUD = 'NO2',  DX = 0., DY = 0.)),FORCE_NODALE=(
+             _F(  NOEUD = 'NO1', FX = -1.5,   FY = -0.5),
+             _F(  NOEUD = 'NO3',            FY = 0.5),
+             _F(  NOEUD = 'NO4', FX = 0.5,   FY = -0.5),
+             _F(  NOEUD = 'NO5',            FY = 1.0),
+             _F(  NOEUD = 'NO6', FX = -1.0,   FY = -1.0))
+                          )
+
+COEF=DEFI_FONCTION(      NOM_PARA='INST',
+                            PROL_DROITE='LINEAIRE',
+                           PROL_GAUCHE='LINEAIRE',
+                          VALE=( 0.,  0.,
+                                 1.,  50.,     ))
+
+SOLNL=STAT_NON_LINE( 
+               TITRE='TEST TRACTION_CISAILLEMENT CHABOCHE C_PLAN',
+                            MODELE=CPLAN,
+                        CHAM_MATER=MAT,
+                             EXCIT=_F( 
+                CHARGE = TR_CS,
+                FONC_MULT = COEF,
+                TYPE_CHARGE = 'FIXE_CSTE'),
+                         COMP_INCR=_F( 
+                RELATION = 'CHABOCHE',
+                DEFORMATION = 'PETIT',
+                TOUT = 'OUI'),
+                         INCREMENT=_F( 
+                LIST_INST = LINST),
+                            NEWTON=_F( 
+                MATRICE = 'TANGENTE',
+                REAC_INCR = 1,
+                REAC_ITER = 1),
+                       CONVERGENCE=_F( 
+                ITER_GLOB_MAXI = 50,
+                RESI_GLOB_RELA = 1.0E-4,
+                ITER_INTE_MAXI = 20)
+              )
+
+SOLNL=CALC_ELEM( reuse=SOLNL,
+                      OPTION=( 'EPSI_ELNO_DEPL',
+                               'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
+                    RESULTAT=SOLNL,
+                          INST=1.435,
+                      MODELE=CPLAN,
+                  CHAM_MATER=MAT
+              )
+
+TEST_RESU(RESU=(
+  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'SIEF_ELNO_ELGA',  NUME_ORDRE = 12,
+                 MAILLE = 'MA1',  NOEUD = 'NO1',  NOM_CMP = 'SIXX',  VALE = 1.435E+2),
+
+  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'SIEF_ELNO_ELGA',  NUME_ORDRE = 12,
+                 MAILLE = 'MA2',  NOEUD = 'NO5',  NOM_CMP = 'SIXX',  VALE = 1.435E+2),
+
+  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'EPSI_ELNO_DEPL',  NUME_ORDRE = 12,
+                 MAILLE = 'MA1',  NOEUD = 'NO1',  NOM_CMP = 'EPXX',  VALE = 9.709E-2),
+
+  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'EPSI_ELNO_DEPL',  NUME_ORDRE = 12,
+                 MAILLE = 'MA2',  NOEUD = 'NO5',  NOM_CMP = 'EPXX',  VALE = 9.709E-2),
+
+  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'EPSI_ELNO_DEPL',  NUME_ORDRE = 12,
+                 MAILLE = 'MA1',  NOEUD = 'NO1',  NOM_CMP = 'EPXY',  VALE = 1.454E-1),
+
+  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'EPSI_ELNO_DEPL',  NUME_ORDRE = 12,
+                 MAILLE = 'MA2',  NOEUD = 'NO5',  NOM_CMP = 'EPXY',  VALE = 1.454E-1))
+
+# RESU:( RESULTAT:SOLNL  NOM_CHAM:'VARI_ELNO_ELGA'  NUME_ORDRE: 12
+#                MAILLE:MA1  NOEUD:NO1
+#                NOM_CMP:'V13'             VALE:1.922E-1 )
+                                                                     )
+
+FIN()
+#

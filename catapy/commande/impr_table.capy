@@ -1,0 +1,56 @@
+#& MODIF COMMANDE  DATE 09/10/2002   AUTEUR DURAND C.DURAND 
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+# RESPONSABLE VABHHTS J.PELLET
+IMPR_TABLE=PROC(nom="IMPR_TABLE",op=155,docu="U4.91.03-d2",
+            UIinfo={"groupes":("Impression",)},
+                fr="Impression d un concept de type table",
+         TABLE           =SIMP(statut='o',typ=table),
+         FICHIER         =SIMP(statut='f',typ='TXM',defaut="RESULTAT", ),
+         FORMAT          =SIMP(statut='f',typ='TXM',defaut="EXCEL",
+                               into=("EXCEL","AGRAF","MOT_CLE","TABLEAU","ASTER") ),
+         FILTRE          =FACT(statut='f',min=1,max='**',
+           NOM_PARA        =SIMP(statut='o',typ='TXM'),
+           CRIT_COMP       =SIMP(statut='f',typ='TXM',defaut="EQ",
+                                 into=("EQ","LT","GT","NE","LE","GE","VIDE",
+                                       "NON_VIDE","MAXI","ABS_MAXI","MINI","ABS_MINI") ),
+           b_vale          =BLOC(condition = "(CRIT_COMP in ('EQ','NE','GT','LT','GE','LE'))",
+              regles=(UN_PARMI('VALE','VALE_I','VALE_K','VALE_C',),),
+              VALE            =SIMP(statut='f',typ='R'),
+              VALE_I          =SIMP(statut='f',typ='I'),
+              VALE_C          =SIMP(statut='f',typ='C'),
+              VALE_K          =SIMP(statut='f',typ='TXM'),),
+
+           CRITERE         =SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU") ),
+           PRECISION       =SIMP(statut='f',typ='R',defaut= 1.0E-3 ),
+         ),
+         TRI             =FACT(statut='f',min=1,max=1,
+           NOM_PARA        =SIMP(statut='o',typ='TXM',max='**'),
+           ORDRE           =SIMP(statut='f',typ='TXM',max='**',defaut="CROISSANT",
+                                 into=("CROISSANT","DECROISSANT") ),
+           CRITERE         =SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU") ),
+           PRECISION       =SIMP(statut='f',typ='R',defaut= 1.0E-3 ),
+         ),
+         PAGINATION      =SIMP(statut='f',typ='TXM',max='**'),
+         FORMAT_R        =SIMP(statut='f',typ='TXM',defaut="1PE12.5"),
+         FORMAT_C        =SIMP(statut='f',typ='TXM',defaut="MODULE_PHASE",
+                                    into=("MODULE_PHASE","REEL_IMAG") ),
+         NOM_PARA        =SIMP(statut='f',typ='TXM',max='**'),
+         TOUT_PARA       =SIMP(statut='f',typ='TXM',into=("OUI",)),
+         IMPR_FONCTION   =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON") ),
+)  ;

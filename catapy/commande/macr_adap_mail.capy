@@ -1,0 +1,253 @@
+#& MODIF COMMANDE  DATE 08/10/2002   AUTEUR GNICOLAS G.NICOLAS 
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+# RESPONSABLE GNICOLAS G.NICOLAS
+def macr_adap_mail_prod(self,MAJ_CHAM,ADAPTATION,**args):
+  mail1=ADAPTATION['MAILLAGE_N']
+  self.type_sdprod(mail1,maillage)
+  mail2=ADAPTATION['MAILLAGE_NP1']
+  self.type_sdprod(mail2,maillage)
+  if MAJ_CHAM == None:return None
+  for ch in MAJ_CHAM:
+    t=ch['TYPE_CHAM']
+    if t == 'CHAM_NO_TEMP_R':self.type_sdprod(ch['CHAM_MAJ'],cham_no_temp_r)
+    if t == 'CHAM_NO_DEPL_R':self.type_sdprod(ch['CHAM_MAJ'],cham_no_depl_r)
+  return None
+
+MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",op=-24,sd_prod=macr_adap_mail_prod,
+                     fr="Adapter un maillage avec le logiciel HOMARD.",
+                     ang="Mesh adaptation with HOMARD software.",
+                     docu="U7.03.01-b2",
+#
+# 1. Le niveau d'information
+#
+         INFO           = SIMP(statut='f',typ='I',defaut=1,into=(1,2)),
+#
+# 2. Version de HOMARD
+#
+         VERSION_HOMARD = SIMP(statut='f',typ='TXM',defaut="V5_5",
+                               into=("V5_5", "V5_N", "V5_N_PERSO"),
+                           fr="Version de HOMARD",
+                           ang="HOMARD release"),
+#
+# 3. Langue des messages issus de HOMARD
+#
+         LANGUE = SIMP(statut='f',typ='TXM',defaut="FRANCAIS",    
+                               into=("FRANCAIS","FRENCH","ANGLAIS","ENGLISH",),
+                           fr="Langue des messages issus de HOMARD.",
+                           ang="Language for HOMARD messages." ),
+#
+# 4. LE TYPE DE TRAITEMENT :
+#
+         ADAPTATION      =FACT(statut='o',min=01,max=01,
+                           fr="Type d'adaptation",
+                           ang="Type of adaptation",
+#
+# 4.1. DEUX CHOIX D'ADAPTATION EXCLUSIFS :
+#
+# 4.1.
+#      A. SELON UN INDICATEUR D'ERREUR, AVEC TROIS VARIANTES :
+#         . RAFFINEMENT ET DERAFFINEMENT
+#         . RAFFINEMENT SEUL
+#         . DERAFFINEMENT SEUL
+#      B. UNIFORME, AVEC TROIS VARIANTES :
+#         . RAFFINEMENT SEUL
+#         . DERAFFINEMENT SEUL
+#         . RIEN : LE MAILLAGE EST LE MEME A LA SORTIE ET A L'ENTREE
+#
+           regles=(
+                   UN_PARMI('LIBRE','UNIFORME'),
+                  ),
+           LIBRE          = SIMP(statut='f',typ='TXM',
+                                 into=("RAFF_DERA","RAFFINEMENT","DERAFFINEMENT"),    
+                           fr="Adaptation selon un indicateur d'erreur.",
+                           ang="Adaptation among an error indicator" ),
+           UNIFORME       = SIMP(statut='f',typ='TXM',
+                                 into=("RAFFINEMENT","DERAFFINEMENT","RIEN"),    
+                           fr="Adaptation uniforme.",
+                           ang="Uniform adaptation" ),
+#
+# 4.2. QUEL QUE SOIT LE TYPE DE TRAITEMENT, IL FAUT DONNER  :
+#      A. LE CONCEPT DU MAILLAGE INITIAL
+#      B. LE CONCEPT DU MAILLAGE FINAL
+#
+           MAILLAGE_N     = SIMP(statut='o',typ=(CO,maillage),
+                           fr="Maillage avant adaptation",
+                           ang="Mesh before adaptation" ),
+           MAILLAGE_NP1   = SIMP(statut='o',typ=(CO,maillage),
+                           fr="Maillage apres adaptation",
+                           ang="Mesh after adaptation" ),
+#
+# 4.3. POUR DE L'ADAPTATION LIBRE, IL FAUT L'INDICATEUR D'ERREUR
+#
+#
+           b_indicateur_d_erreur   =BLOC( condition = " LIBRE != None " ,
+                           fr="Indicateur d'erreur",
+                           ang="Error indicator",
+#
+# 4.3.1. LE NOM DU CONCEPT RESULTAT
+#
+                           RESULTAT_N     = SIMP(statut='o',typ=(evol_elas,evol_noli,evol_ther) ,
+                           fr="Resultat contenant l'indicateur d'erreur",
+                           ang="Result with error indicator" ),
+#
+# 4.3.2. LE CHAMP D'INDICATEUR D'ERREUR
+#
+                           INDICATEUR     = SIMP(statut='o',typ='TXM',     
+                           fr="Champ de l'indicateur d'erreur",
+                           ang="Error indicator field" ),
+#
+# 4.3.3. LA COMPOSANTE RETENUE
+#
+                           NOM_CMP_INDICA = SIMP(statut='o',typ='TXM',
+                           fr="Composante retenue",
+                           ang="Selected component" ),
+#
+# 4.3.4. LE NUMERO D'ORDRE
+#
+                           NUME_ORDRE     = SIMP(statut='f',typ='I' ,
+                           fr="Numero d ordre",
+                           ang="Rank" ),  
+                           ) ,
+#
+# 4.4. LES CRITERES POUR DE L'ADAPTATION LIBRE :
+#        ABSOLU, RELATIF, EN PROPORTION D'ENTITE
+# 4.4.1. POUR LE RAFFINEMENT :
+#
+           b_critere_de_raffinement =BLOC( condition = " ( LIBRE == 'RAFF_DERA' ) or ( LIBRE == 'RAFFINEMENT' ) " ,
+                           fr="Critère de raffinement.",
+                           ang="Refinement threshold.",
+                           regles=(UN_PARMI ( 'CRIT_RAFF_ABS', 'CRIT_RAFF_REL', 'CRIT_RAFF_PE' ),),
+                           CRIT_RAFF_ABS  = SIMP(statut='f',typ='R',
+                                                   fr="Critère absolu",
+                                                   ang="Absolute threshold" ),  
+                           CRIT_RAFF_REL  = SIMP(statut='f',typ='R',
+                                                   fr="Critère relatif",
+                                                   ang="Relative threshold" ),  
+                           CRIT_RAFF_PE   = SIMP(statut='f',typ='R',
+                                                   fr="Pourcentage d'éléments",
+                                                   ang="Percentage of elements" ),  
+                           ) ,
+#
+# 4.4.2. POUR LE DERAFFINEMENT :
+#
+           b_critere_de_deraffinement =BLOC ( condition = " ( LIBRE == 'RAFF_DERA' ) or ( LIBRE == 'DERAFFINEMENT' ) " ,
+                           fr="Critère de déraffinement.",
+                           ang="Unrefinement threshold.",
+                           regles=(UN_PARMI ( 'CRIT_DERA_ABS', 'CRIT_DERA_REL', 'CRIT_DERA_PE' ),),
+                           CRIT_DERA_ABS  = SIMP(statut='f',typ='R' ,
+                                                 fr="Critère absolu",
+                                                 ang="Absolute threshold" ),  
+                           CRIT_DERA_REL  = SIMP(statut='f',typ='R',
+                                                 fr="Critère relatif",
+                                                 ang="Relative threshold" ),  
+                           CRIT_DERA_PE   = SIMP(statut='f',typ='R',
+                                                 fr="Pourcentage d'éléments",
+                                                 ang="Percentage of elements" ),  
+                           ) ,
+#
+# 4.5. LES NIVEAUX EXTREMES POUR LE MAILLAGE ADAPTE
+# 4.5.1. POUR LE RAFFINEMENT :
+#
+           b_niveau_maximum =BLOC ( condition = " ( LIBRE == 'RAFF_DERA' ) or ( LIBRE == 'RAFFINEMENT' ) or \
+                                                  ( UNIFORME == 'RAFFINEMENT' ) " ,
+                             fr="Niveau maximum de profondeur de raffinement",
+                             ang="Maximum level for refinement",
+                             NIVE_MAX       = SIMP(statut='f',typ='I' ),  
+                           ) ,
+#
+# 4.5.2. POUR LE DERAFFINEMENT :
+#
+           b_niveau_minimum =BLOC ( condition = " ( LIBRE == 'RAFF_DERA' ) or ( LIBRE == 'DERAFFINEMENT' ) or \
+                                                  ( UNIFORME == 'DERAFFINEMENT' ) " ,
+                             fr="Niveau minimum de profondeur de déraffinement",
+                             ang="Minimum level for unrefinement",
+                             NIVE_MIN       = SIMP(statut='f',typ='I' ),
+                           ) ,
+         ),
+#
+# 5. LA MISE A JOUR DE CHAMPS.
+#    PAR DEFAUT, RIEN NE SE FAIT
+#
+         MAJ_CHAM        =FACT(statut='f',min=01,max='**',
+                           fr="Mise à jour de champs sur le nouveau maillage.",
+                           ang="Updating of fields over the new mesh.",
+#
+# 5.1. LE NOM DU RESULTAT DU CHAMP A INTERPOLER
+#
+           RESULTAT       = SIMP(statut='o',
+                                 typ=(evol_elas,evol_noli,evol_ther),
+                           fr="Resultat contenant le champ à mettre à jour",
+                           ang="Result with field to be updated" ),
+#
+# 5.2. LE NOM DU CHAMP A INTERPOLER
+#
+           NOM_CHAM       = SIMP(statut='o',typ='TXM',
+                           fr="Nom du champ à mettre à jour",
+                           ang="Name of the field to be updated" ),  
+#
+# 5.3. LE NUMERO D'ORDRE POUR LE CHAMP A INTERPOLER
+#
+           NUME_ORDRE     = SIMP(statut='f',typ='I',
+                           fr="Numero d ordre du champ à mettre à jour",
+                           ang="Rank of the field to be updated" ),  
+#
+# 5.4. LE NOM DU CHAMP QUI CONTIENDRA LE RESULTAT DE LA MISE A JOUR
+#
+           CHAM_MAJ       = SIMP(statut='o',typ=(CO,cham_gd),
+                           fr="Nom du champ qui contiendra le champ mis à jour",
+                           ang="Name of the field for the updated field"),
+#
+# 5.5. LE TYPE DU CHAMP QUI CONTIENDRA LE RESULTAT DE LA MISE A JOUR
+#
+           TYPE_CHAM      = SIMP(statut='o',typ='TXM',     
+                                 into=("CHAM_NO_TEMP_R","CHAM_NO_DEPL_R"),
+                           fr="Type du champ qui contiendra le champ mis à jour",
+                           ang="Type of the field for the updated field" ),
+         ),
+#
+# 6. INFORMATION SUR LE MAILLAGE : par defaut, on ne fait que les nombres
+#    A. NOMBRE DE NOEUDS ET ELEMENTS DU MAILLAGE
+#    B. QUALITE DES ELEMENTS DU MAILLAGE
+#    C. CONTROLE DE LA NON INTERPENETRATION DES ELEMENTS DU MAILLAGE
+#    D. CONNEXITE DU MAILLAGE
+#    E. TAILLE DES DIFFERENTS SOUS-DOMAINES
+#
+         NOMBRE         = SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON"),
+                          fr="Nombre de noeuds et éléments du maillage",
+                          ang="Number of nodes and elements in the mesh" ),
+#
+         QUALITE        = SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON"),
+                          fr="Qualité du maillage",
+                          ang="Mesh quality" ),
+#
+         INTERPENETRATION=SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON"),
+                          fr="Controle de la non interpénétration des éléments.",
+                          ang="Overlapping checking." ),
+#
+         CONNEXITE      = SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON"),
+                          fr="Connexité du maillage.",
+                          ang="Mesh connexity." ),
+#
+         TAILLE         = SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON"),
+                          fr="Tailles des sous-domaines du maillage.",
+                          ang="Sizes of mesh sub-domains." ),
+#
+         MENAGE         = SIMP(statut='f',typ='TXM',into=("MAILLAGE","SOLUTION","TOUT") ),
+#
+)  ;

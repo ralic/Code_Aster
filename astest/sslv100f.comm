@@ -1,0 +1,233 @@
+# MODIF  DATE 16/05/2002   AUTEUR DURAND C.DURAND 
+# TITRE CYLINDRE EN D.P. (TRIA6 QUAD8)
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+#CAS_TEST__: SSLV100F
+# ----------------------------------------------------------------------
+# SSLV100 F                  COMMANDES                          8/08/91
+# CYLINDRE CREUX EN DEFORMATIONS PLANES
+#
+# MODELISATION : ELEMENTS MECANIQUE D_PLAN (TRIA6 QUAD8)
+# MAILLAGE     : ASTER (ISSU DE ALI-BABA)
+# ----------------------------------------------------------------------
+# GROUPES DE NOEUDS: A , B , C , D , E , F , BORDAB
+# GROUPES DE MAILLES:  FACEAE , FACEEF
+# ----------------------------------------------------------------------
+#
+
+DEBUT(CODE=_F(  NOM = 'SSLV100F',NIV_PUB_WEB='INTERNET') )
+
+M=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='NON'),   )
+
+MO=AFFE_MODELE(            MAILLAGE=M,
+                       # VERIF       :   'MAILLE'
+                                  AFFE=_F(  TOUT = 'OUI',
+                                         PHENOMENE = 'MECANIQUE',
+                                         MODELISATION = 'D_PLAN'))
+
+MA=DEFI_MATERIAU(            ELAS=_F(  E = 200000.,
+                                         NU = 0.3,
+                                         ALPHA = 0.)    )
+
+CM=AFFE_MATERIAU(        MAILLAGE=M,
+                                  AFFE=_F(  TOUT = 'OUI',
+                                         MATER = MA))
+
+CH=AFFE_CHAR_MECA(         MODELE=MO,
+                              DDL_IMPO=_F(  GROUP_NO = 'BORDAB',  DX = 0.),
+                             FACE_IMPO=_F(  GROUP_MA = 'FACEEF',  DNOR = 0.),
+                              PRES_REP=_F(  GROUP_MA = 'FACEAE',  PRES = 60.))
+
+ME=CALC_MATR_ELEM(         MODELE=MO,
+                                CHARGE=CH,
+                            CHAM_MATER=CM,
+                               OPTION='RIGI_MECA'   )
+
+VE=CALC_VECT_ELEM(         CHARGE=CH,
+                            CHAM_MATER=CM,
+                               OPTION='CHAR_MECA'   )
+
+NU=NUME_DDL(            MATR_RIGI=ME           )
+
+K=ASSE_MATRICE(        MATR_ELEM=ME,
+                              NUME_DDL=NU           )
+
+F=ASSE_VECTEUR(        VECT_ELEM=VE,
+                              NUME_DDL=NU           )
+
+K=FACT_LDLT(      reuse=K,     MATR_ASSE=K            )
+
+DEPLA=RESO_LDLT(           MATR_FACT=K,
+                               CHAM_NO=F            )
+
+SIGMA=CALC_CHAM_ELEM(         MODELE=MO,
+                           DEPL=DEPLA,
+                                OPTION='SIGM_ELNO_DEPL',
+                            CHAM_MATER=CM           )
+
+#--------------------------------------------------------------------
+
+TR1=POST_RELEVE_T( 
+        ACTION=_F(  INTITULE = 'EXT_SIGM',
+                 GROUP_NO = ( 'A', 'B', 'C', 'D', 'E', 'F', ),
+                 CHAM_GD = SIGMA,
+                 NOM_CMP = ('SIXX', 'SIYY', 'SIZZ', 'SIXY',),
+                 OPERATION = 'EXTRACTION') )
+
+#--------------------------------------------------------------------
+
+
+TEST_RESU(CHAM_NO=(
+   # DEPLACEMENTS
+              
+            _F(  CHAM_GD = DEPLA,    CRITERE = 'RELATIF',  PRECISION = 1.E-2,
+           GROUP_NO = 'A',        NOM_CMP = 'DY',           VALE = 5.72E-5),
+            _F(  CHAM_GD = DEPLA,    CRITERE = 'ABSOLU',   PRECISION = 1.E-10,
+           GROUP_NO = 'A',        NOM_CMP = 'DX',           VALE = 0.),
+            _F(  CHAM_GD = DEPLA,    CRITERE = 'RELATIF',  PRECISION = 1.E-2,
+           GROUP_NO = 'B',        NOM_CMP = 'DY',           VALE = 3.64E-5),
+            _F(  CHAM_GD = DEPLA,    CRITERE = 'ABSOLU',   PRECISION = 1.E-2,
+           GROUP_NO = 'B',        NOM_CMP = 'DX',           VALE = 0.),
+            _F(  CHAM_GD = DEPLA,    CRITERE = 'RELATIF',  PRECISION = 1.E-2,
+           GROUP_NO = 'C',        NOM_CMP = 'DY',           VALE = 5.28459E-5),
+            _F(  CHAM_GD = DEPLA,    CRITERE = 'RELATIF',  PRECISION = 1.E-2,
+           GROUP_NO = 'C',        NOM_CMP = 'DX',           VALE = -2.18895E-5),
+            _F(  CHAM_GD = DEPLA,    CRITERE = 'RELATIF',  PRECISION = 1.E-2,
+           GROUP_NO = 'D',        NOM_CMP = 'DY',           VALE = 3.36292E-5),
+            _F(  CHAM_GD = DEPLA,    CRITERE = 'RELATIF',  PRECISION = 1.E-2,
+           GROUP_NO = 'D',        NOM_CMP = 'DX',           VALE = -1.39297E-5),
+            _F(  CHAM_GD = DEPLA,    CRITERE = 'RELATIF',  PRECISION = 1.E-2,
+           GROUP_NO = 'E',        NOM_CMP = 'DY',           VALE = 4.04465E-5),
+            _F(  CHAM_GD = DEPLA,    CRITERE = 'RELATIF',  PRECISION = 1.E-2,
+           GROUP_NO = 'E',        NOM_CMP = 'DX',           VALE = -4.04465E-5),
+            _F(  CHAM_GD = DEPLA,    CRITERE = 'RELATIF',  PRECISION = 1.E-2,
+           GROUP_NO = 'F',        NOM_CMP = 'DY',           VALE = 2.57387E-5),
+            _F(  CHAM_GD = DEPLA,    CRITERE = 'RELATIF',  PRECISION = 1.E-2,
+           GROUP_NO = 'F',        NOM_CMP = 'DX',           VALE = -2.57387E-5)),CHAM_ELEM=(
+
+   # CONTRAINTES
+
+              
+            _F(  CHAM_GD = SIGMA,    CRITERE = 'RELATIF',  PRECISION = 1.E-2,
+MAILLE = 'M1',      GROUP_NO = 'A',        NOM_CMP = 'SIXX',           VALE = 100.),
+            _F(  CHAM_GD = SIGMA,    CRITERE = 'RELATIF',  PRECISION = 1.E-2,
+MAILLE = 'M2',      GROUP_NO = 'A',        NOM_CMP = 'SIXX',           VALE = 100.),
+            _F(  CHAM_GD = SIGMA,    CRITERE = 'RELATIF',  PRECISION = 1.E-2,
+MAILLE = 'M1',      GROUP_NO = 'A',        NOM_CMP = 'SIYY',           VALE = -60.),
+            _F(  CHAM_GD = SIGMA,    CRITERE = 'RELATIF',  PRECISION = 1.E-2,
+MAILLE = 'M2',      GROUP_NO = 'A',        NOM_CMP = 'SIYY',           VALE = -60.),
+            _F(  CHAM_GD = SIGMA,    CRITERE = 'RELATIF',  PRECISION = 2.E-2,
+MAILLE = 'M1',      GROUP_NO = 'A',        NOM_CMP = 'SIZZ',           VALE = 12.),
+            _F(  CHAM_GD = SIGMA,    CRITERE = 'RELATIF',  PRECISION = 2.E-2,
+MAILLE = 'M2',      GROUP_NO = 'A',        NOM_CMP = 'SIZZ',           VALE = 12.),
+            _F(  CHAM_GD = SIGMA,    CRITERE = 'ABSOLU',   PRECISION = 0.5,
+MAILLE = 'M1',      GROUP_NO = 'A',        NOM_CMP = 'SIXY',           VALE = 0.),
+            _F(  CHAM_GD = SIGMA,    CRITERE = 'ABSOLU',   PRECISION = 0.5,
+MAILLE = 'M2',      GROUP_NO = 'A',        NOM_CMP = 'SIXY',           VALE = 0.),
+#
+            _F(  CHAM_GD = SIGMA,    CRITERE = 'RELATIF',  PRECISION = 1.E-2,
+MAILLE = 'M23',     GROUP_NO = 'B',        NOM_CMP = 'SIXX',           VALE = 40.),
+            _F(  CHAM_GD = SIGMA,    CRITERE = 'RELATIF',  PRECISION = 1.E-2,
+MAILLE = 'M24',     GROUP_NO = 'B',        NOM_CMP = 'SIXX',           VALE = 40.),
+            _F(  CHAM_GD = SIGMA,    CRITERE = 'ABSOLU',   PRECISION = 5.E-2,
+MAILLE = 'M23',     GROUP_NO = 'B',        NOM_CMP = 'SIYY',           VALE = 0.),
+            _F(  CHAM_GD = SIGMA,    CRITERE = 'ABSOLU',   PRECISION = 5.E-2,
+MAILLE = 'M24',     GROUP_NO = 'B',        NOM_CMP = 'SIYY',           VALE = 0.),
+            _F(  CHAM_GD = SIGMA,    CRITERE = 'RELATIF',  PRECISION = 1.E-2,
+MAILLE = 'M23',     GROUP_NO = 'B',        NOM_CMP = 'SIZZ',           VALE = 12.),
+            _F(  CHAM_GD = SIGMA,    CRITERE = 'RELATIF',  PRECISION = 1.E-2,
+MAILLE = 'M24',     GROUP_NO = 'B',        NOM_CMP = 'SIZZ',           VALE = 12.),
+            _F(  CHAM_GD = SIGMA,    CRITERE = 'ABSOLU',   PRECISION = 5.E-2,
+MAILLE = 'M23',     GROUP_NO = 'B',        NOM_CMP = 'SIXY',           VALE = 0.),
+            _F(  CHAM_GD = SIGMA,    CRITERE = 'ABSOLU',   PRECISION = 5.E-2,
+MAILLE = 'M24',     GROUP_NO = 'B',        NOM_CMP = 'SIXY',           VALE = 0.),
+#
+            _F(  CHAM_GD = SIGMA,    CRITERE = 'RELATIF',  PRECISION = 1.E-2,
+MAILLE = 'M169',   GROUP_NO = 'C',        NOM_CMP = 'SIXX',        VALE = 76.56854),
+            _F(  CHAM_GD = SIGMA,    CRITERE = 'RELATIF',  PRECISION = 1.E-2,
+MAILLE = 'M170',   GROUP_NO = 'C',        NOM_CMP = 'SIXX',        VALE = 76.56854),
+            _F(  CHAM_GD = SIGMA,    CRITERE = 'RELATIF',  PRECISION = 1.E-2,
+MAILLE = 'M193',   GROUP_NO = 'C',        NOM_CMP = 'SIXX',        VALE = 76.56854),
+            _F(  CHAM_GD = SIGMA,    CRITERE = 'RELATIF',  PRECISION = 2.E-2,
+MAILLE = 'M169',   GROUP_NO = 'C',        NOM_CMP = 'SIYY',        VALE = -36.56854),
+            _F(  CHAM_GD = SIGMA,    CRITERE = 'RELATIF',  PRECISION = 2.E-2,
+MAILLE = 'M170',   GROUP_NO = 'C',        NOM_CMP = 'SIYY',        VALE = -36.56854),
+            _F(  CHAM_GD = SIGMA,    CRITERE = 'RELATIF',  PRECISION = 2.E-2,
+MAILLE = 'M193',   GROUP_NO = 'C',        NOM_CMP = 'SIYY',        VALE = -36.56854),
+            _F(  CHAM_GD = SIGMA,    CRITERE = 'RELATIF',  PRECISION = 5.E-2,
+MAILLE = 'M169',   GROUP_NO = 'C',        NOM_CMP = 'SIZZ',        VALE = 12.),
+            _F(  CHAM_GD = SIGMA,    CRITERE = 'RELATIF',  PRECISION = 5.E-2,
+MAILLE = 'M170',   GROUP_NO = 'C',        NOM_CMP = 'SIZZ',        VALE = 12.),
+            _F(  CHAM_GD = SIGMA,    CRITERE = 'RELATIF',  PRECISION = 5.E-2,
+MAILLE = 'M193',   GROUP_NO = 'C',        NOM_CMP = 'SIZZ',        VALE = 12.),
+            _F(  CHAM_GD = SIGMA,    CRITERE = 'RELATIF',  PRECISION = 1.E-2,
+MAILLE = 'M169',   GROUP_NO = 'C',        NOM_CMP = 'SIXY',        VALE = 56.56854),
+            _F(  CHAM_GD = SIGMA,    CRITERE = 'RELATIF',  PRECISION = 1.E-2,
+MAILLE = 'M170',   GROUP_NO = 'C',        NOM_CMP = 'SIXY',        VALE = 56.56854),
+            _F(  CHAM_GD = SIGMA,    CRITERE = 'RELATIF',  PRECISION = 1.E-2,
+MAILLE = 'M193',   GROUP_NO = 'C',        NOM_CMP = 'SIXY',        VALE = 56.56854),
+#
+            _F(  CHAM_GD = SIGMA,    CRITERE = 'RELATIF',  PRECISION = 1.E-2,
+MAILLE = 'M190',   GROUP_NO = 'D',        NOM_CMP = 'SIXX',        VALE = 34.14214),
+            _F(  CHAM_GD = SIGMA,    CRITERE = 'RELATIF',  PRECISION = 1.E-2,
+MAILLE = 'M192',   GROUP_NO = 'D',        NOM_CMP = 'SIXX',        VALE = 34.14214),
+            _F(  CHAM_GD = SIGMA,    CRITERE = 'RELATIF',  PRECISION = 1.E-2,
+MAILLE = 'M204',   GROUP_NO = 'D',        NOM_CMP = 'SIXX',        VALE = 34.14214),
+            _F(  CHAM_GD = SIGMA,    CRITERE = 'RELATIF',  PRECISION = 1.E-2,
+MAILLE = 'M190',   GROUP_NO = 'D',        NOM_CMP = 'SIYY',        VALE = 5.85786),
+            _F(  CHAM_GD = SIGMA,    CRITERE = 'RELATIF',  PRECISION = 5.E-2,
+MAILLE = 'M192',   GROUP_NO = 'D',        NOM_CMP = 'SIYY',        VALE = 5.85786),
+            _F(  CHAM_GD = SIGMA,    CRITERE = 'RELATIF',  PRECISION = 5.E-2,
+MAILLE = 'M204',   GROUP_NO = 'D',        NOM_CMP = 'SIYY',        VALE = 5.85786),
+
+            _F(  CHAM_GD = SIGMA,    CRITERE = 'RELATIF',  PRECISION = 1.E-2,
+MAILLE = 'M190',   GROUP_NO = 'D',        NOM_CMP = 'SIZZ',        VALE = 12.),
+            _F(  CHAM_GD = SIGMA,    CRITERE = 'RELATIF',  PRECISION = 1.E-2,
+MAILLE = 'M192',   GROUP_NO = 'D',        NOM_CMP = 'SIZZ',        VALE = 12.),
+            _F(  CHAM_GD = SIGMA,    CRITERE = 'RELATIF',  PRECISION = 1.E-2,
+MAILLE = 'M204',   GROUP_NO = 'D',        NOM_CMP = 'SIZZ',        VALE = 12.),
+            _F(  CHAM_GD = SIGMA,    CRITERE = 'RELATIF',  PRECISION = 1.E-2,
+MAILLE = 'M190',   GROUP_NO = 'D',        NOM_CMP = 'SIXY',        VALE = 14.14214),
+            _F(  CHAM_GD = SIGMA,    CRITERE = 'RELATIF',  PRECISION = 1.E-2,
+MAILLE = 'M192',   GROUP_NO = 'D',        NOM_CMP = 'SIXY',        VALE = 14.14214),
+            _F(  CHAM_GD = SIGMA,    CRITERE = 'RELATIF',  PRECISION = 1.E-2,
+MAILLE = 'M204',   GROUP_NO = 'D',        NOM_CMP = 'SIXY',        VALE = 14.14214),
+#
+            _F(  CHAM_GD = SIGMA,    CRITERE = 'RELATIF',  PRECISION = 5.E-2,
+MAILLE = 'M256',   GROUP_NO = 'E',        NOM_CMP = 'SIXX',           VALE = 20.),
+            _F(  CHAM_GD = SIGMA,    CRITERE = 'RELATIF',  PRECISION = 5.E-2,
+MAILLE = 'M256',   GROUP_NO = 'E',        NOM_CMP = 'SIYY',           VALE = 20.),
+            _F(  CHAM_GD = SIGMA,    CRITERE = 'RELATIF',  PRECISION = 5.E-2,
+MAILLE = 'M256',   GROUP_NO = 'E',        NOM_CMP = 'SIZZ',           VALE = 12.),
+            _F(  CHAM_GD = SIGMA,    CRITERE = 'RELATIF',  PRECISION = 1.E-2,
+MAILLE = 'M256',   GROUP_NO = 'E',        NOM_CMP = 'SIXY',           VALE = 80.),
+#
+            _F(  CHAM_GD = SIGMA,    CRITERE = 'RELATIF',  PRECISION = 1.E-2,
+MAILLE = 'M222',    GROUP_NO = 'F',        NOM_CMP = 'SIXX',           VALE = 20.),
+            _F(  CHAM_GD = SIGMA,    CRITERE = 'RELATIF',  PRECISION = 1.E-2,
+MAILLE = 'M222',    GROUP_NO = 'F',        NOM_CMP = 'SIYY',           VALE = 20.),
+            _F(  CHAM_GD = SIGMA,    CRITERE = 'RELATIF',  PRECISION = 1.E-2,
+MAILLE = 'M222',    GROUP_NO = 'F',        NOM_CMP = 'SIZZ',           VALE = 12.),
+            _F(  CHAM_GD = SIGMA,    CRITERE = 'RELATIF',  PRECISION = 1.E-2,
+MAILLE = 'M222',    GROUP_NO = 'F',        NOM_CMP = 'SIXY',           VALE = 20.))
+
+            )
+
+#--------------------------------------------------------------------
+FIN()
+#

@@ -1,0 +1,49 @@
+#& MODIF COMMANDE  DATE 09/10/2002   AUTEUR DURAND C.DURAND 
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+MACR_GOUJ2E_CALC=MACRO(nom="MACR_GOUJ2E_CALC",op=-23,sd_prod=evol_noli,
+                      fr=" ",docu="U4.GJ.20-a",reentrant='n',
+            UIinfo={"groupes":("Outils métier",)},
+         MAILLAGE        =SIMP(statut='o',typ=maillage),
+         DEFI_GOUJ       =FACT(statut='o',min=1,max=1,
+           TYPE            =SIMP(statut='o',typ='TXM',into=("M33","M64","M90","M115","M155","M180","M186")),
+           VARIANTE        =SIMP(statut='o',typ='TXM',into=("A","B","C","D","E","F","G","H","I","J","K","L","M",  
+                                                            "N","O","P","Q","R","S","T","U","V","W","X","Y","Z")),
+           FILET_TRONQUE   =SIMP(statut='f',typ='I',max='**'),  
+           FILET_TRONQA    =SIMP(statut='f',typ='I',max='**'),  
+           FILET_TRONQB    =SIMP(statut='f',typ='I',max='**'),  
+           FILET_JEU_HT    =SIMP(statut='f',typ='I',max='**'),  
+           FILET_JEU_HTA   =SIMP(statut='f',typ='I',max='**'),  
+           FILET_JEU_HTB   =SIMP(statut='f',typ='I',max='**'),  
+         ),
+         EXCIT           =FACT(statut='o',min=1,max=1,
+           TYPE_BLOCAGE    =SIMP(statut='o',typ='I',defaut=2,into=(1,2,3)),
+           FORCE_GOUJ      =SIMP(statut='o',typ='R'),  
+         ),
+         CALCUL          =FACT(statut='o',min=1,max=1,
+           TYPE_CALCUL     =SIMP(statut='o',typ='TXM',into=("ELASTIQUE","ELASTOPLASTIQUE")),
+           NB_INCR         =SIMP(statut='o',typ='I'),  
+         ),
+         IMPRESSION      =FACT(statut='f',min=1,max=1,
+           FORMAT          =SIMP(statut='f',typ='TXM',defaut="TABLE",    
+                                 into=("RESULTAT","IDEAS","ASTER","CASTEM","ENSIGHT","MED","TABLE")),
+           VERSION         =SIMP(statut='f',typ='I',defaut=5,into=(4,5)),
+         ),
+         TITRE           =SIMP(statut='f',typ='TXM'),  
+         INFO            =SIMP(statut='f',typ='I',defaut=1 ,into=(1,2)),
+)  ;

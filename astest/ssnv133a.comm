@@ -1,0 +1,141 @@
+# MODIF  DATE 20/03/2001   AUTEUR CIBHHLV L.VIVAN 
+# TITRE TRACTION-COMPRESSION UNIAXIALE ECROUISSAGE MIXTE
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+
+
+DEBUT(CODE=_F( NOM = 'SSNV133A',NIV_PUB_WEB='INTERNET'))
+
+MAIL=LIRE_MAILLAGE( )
+
+CTRAC=DEFI_FONCTION(   NOM_PARA='EPSI',  PROL_DROITE='LINEAIRE',
+                                          PROL_GAUCHE='LINEAIRE',
+                       VALE=(0.200E-2,      400.,
+                             0.450E-2,      500.,) )
+
+MAT=DEFI_MATERIAU( 
+          ELAS=_F( E = 200.E+3, NU = .3),
+            PRAGER=_F(  C = 20.E+3),
+            TRACTION=_F( SIGM = CTRAC)
+                             )
+
+CM=AFFE_MATERIAU(    MAILLAGE=MAIL,
+          AFFE=_F( TOUT = 'OUI',MATER = MAT) )
+
+MOMECA=AFFE_MODELE(  MAILLAGE=MAIL,
+          AFFE=_F( TOUT = 'OUI', MODELISATION = 'AXIS', PHENOMENE = 'MECANIQUE'))
+
+CHMECA=AFFE_CHAR_MECA( 
+            MODELE=MOMECA,FACE_IMPO=(
+           _F( MAILLE = 'BAS',    DY = 0.),
+           _F( MAILLE = 'HAUT',   DY = 1.),
+           _F( MAILLE = 'GAUCHE', DX = 0.))
+                        )
+
+FDEPL=DEFI_FONCTION(
+                 NOM_PARA='INST',
+               PROL_DROITE='EXCLU',
+              PROL_GAUCHE='EXCLU',
+                     
+                VALE=(
+                0.,     0.0,
+                1.,     2.E-3,
+                2.,     4.5E-3,
+                3.,     0.1E-3,
+                4.,     -2.0E-3,
+                )
+              )
+
+L_INST=DEFI_LIST_REEL(       DEBUT=0.,INTERVALLE=(
+           _F( JUSQU_A = 1.,    NOMBRE = 2),
+                      _F( JUSQU_A = 2.,    NOMBRE = 2),
+                      _F( JUSQU_A = 3.,    NOMBRE = 2),
+                      _F( JUSQU_A = 4.,    NOMBRE = 2))
+         )
+
+U=STAT_NON_LINE( 
+                            MODELE=MOMECA,
+                        CHAM_MATER=CM,
+                             EXCIT=_F( 
+                CHARGE = CHMECA,
+                FONC_MULT = FDEPL),
+                         COMP_INCR=_F( 
+                RELATION = 'VMIS_ECMI_TRAC'),
+                         INCREMENT=_F( 
+                LIST_INST = L_INST),
+                       CONVERGENCE=_F( 
+                RESI_GLOB_RELA = 1.E-6)
+              )
+
+U=CALC_ELEM( reuse=U,
+                            OPTION=(
+                  'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
+                          RESULTAT=U,
+                            MODELE=MOMECA,
+                        CHAM_MATER=CM
+              )
+
+TEST_RESU(RESU=(
+  _F( RESULTAT = U,NOM_CHAM = 'SIEF_ELNO_ELGA',NUME_ORDRE = 2,
+        MAILLE = 'M1',NOEUD = 'N1',NOM_CMP = 'SIYY',VALE = 400.),
+  _F( RESULTAT = U,NOM_CHAM = 'SIEF_ELNO_ELGA',NUME_ORDRE = 4,
+        MAILLE = 'M1',NOEUD = 'N1',NOM_CMP = 'SIYY',VALE = 500.),
+  _F( RESULTAT = U,NOM_CHAM = 'SIEF_ELNO_ELGA',NUME_ORDRE = 6,
+        MAILLE = 'M1',NOEUD = 'N1',NOM_CMP = 'SIYY',VALE = -380.),
+  _F( RESULTAT = U,NOM_CHAM = 'SIEF_ELNO_ELGA',NUME_ORDRE = 8,
+        MAILLE = 'M1',NOEUD = 'N1',NOM_CMP = 'SIYY',VALE = -464.))
+           )
+
+FIN()
+#
+#
+#
+## COURBE FORCE_DEPLACEMENT
+#           
+#&U = CALC_NO  (  CHAM_MATER : CM
+#                    OPTION     : ( 'FORC_NODA')
+#                    RESULTAT : U
+#                        );
+#
+#HAUT = INTE_MAIL_2D (MAILLAGE : MAIL
+#                     DEFI_CHEMIN :( MAILLE : HAUT ) );
+#
+#FHAUT = POST_RELEVE_T ( ACTION : (INTITULE : 'F_HAUT'
+#                        CHEMIN : HAUT RESULTAT : U
+#                        NOM_CHAM : 'FORC_NODA'
+# RESULTANTE : ('DX' 'DY' 'DZ')  OPERATION : 'EXTRACTION' ));
+#
+# DGY = RECU_FONCTION ( RESULTAT : U NOM_CHAM : 'DEPL'
+#                  NOM_CMP : 'DY' NOEUD : N3  TOUT_ORDRE : 'OUI') ;
+#
+# FHY = RECU_FONCTION ( TABLE : FHAUT
+#                        INTITULE : 'F_HAUT'
+#                        PARA_X : 'INST'
+#                        PARA_Y : 'DY'
+#                      ) ;
+#
+# #MPR_COURBE(FORMAT    : 'AGRAF'
+#             FICHIER   : 'AGRAF'
+#          TITRE_GRAPHIQUE : 'COURBE FORCE DEPLACEMENT'
+#          LEGENDE_X       : 'UY EN HAUT'
+#          LEGENDE_Y       : 'REACTION EN HAUT'
+#             COURBE    : (FONC_X : DGY
+#                          FONC_Y : FHY
+#                 LEGENDE   : 'COURBE F=F(U)')
+#            );
+#                      

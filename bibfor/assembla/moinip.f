@@ -1,0 +1,71 @@
+      SUBROUTINE MOINIP(NCH,NCOEF,IICH,IISUIV,ILIG,ILIG2)
+      IMPLICIT REAL*8 (A-H,O-Z)
+      INTEGER IICH(1),IISUIV(1),ILIG(1)
+      INTEGER ILIG2(1)
+C     ------------------------------------------------------------------
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ASSEMBLA  DATE 06/04/95   AUTEUR VABHHTS J.PELLET 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+C     DESIMBRICATION DES CHAINES DE LA STRUCTURE (IICH, IISUIV,ILIG) :
+C     ------------------------------------------------------------------
+C IN  NCH       DIMENSION DU TABLEAU IICH = NOMBRE DE CHAINES
+C OUT NCOEF     LONGUEUR DE ILIG
+C VAR IICH(K)   CF CI-DESSOUS
+C VAR IISUIV(K) CF CI-DESSOUS
+C       EN ENTREE IICH(J) EST L'ADRESSE DANS ILIG DU DEBUT DE
+C                  LA CHAINE J . ILIG(IISUIV(K)) EST L'ELEMENT SUIVANT
+C                  ILIG(K) DANS LA CHAINE A LAQUELLE ILS APPARTIENNENT.
+C                  SI IICH(J) <= 0 LA CHAINE J EST VIDE .
+C                  SI IISUIV(K) < 0 -IISUIV(K) EST LE NUMERO DE LA
+C                  CHAINE A LAQUELLE APPARTIENT ILIG(K).
+C       EN SORTIE IICH(J) EST L'ADRESSE DANS ILIG DE LA FIN DE
+C                  LA CHAINE J ET POUR QUE ILIG(K) APPARTIENNE A LA
+C                  CHAINE J IL FAUT ET IL SUFFIT QUE
+C                  IICH(J-1) < K < IICH(J) + 1 .
+C VAR ILIG(.)   TABLE DES ELEMENTS CHAINES
+C     ------------------------------------------------------------------
+      II2 = 1
+      DO 120 J = 1,NCH
+          II1 = IICH(J)
+          IF (II1.LE.0) THEN
+C            PREMIER MAILLON DE LA CHAINE VIDE
+             IICH(J) = II2 - 1
+          ELSE
+C            CHAINE NON VIDE    PREMIER MAILLON
+             ILIG2(II2) = ILIG(II1)
+             II2 = II2 + 1
+             II1 = IISUIV(II1)
+C
+C             MAILLONS SUIVANTS DE LA CHAINE
+C             TANT QUE II1 > 0 FAIRE :
+ 110          CONTINUE
+              IF (II1.LE.0) THEN
+C                 FIN DE LA CHAINE J
+                  IICH(J) = II2 - 1
+                  GO TO 120
+               ELSE
+                  ILIG2(II2) = ILIG(II1)
+                  II2 = II2 + 1
+                  II1 = IISUIV(II1)
+                  GO TO 110
+               END IF
+          END IF
+C
+  120 CONTINUE
+      NCOEF = IICH(NCH)
+      END

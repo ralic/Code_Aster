@@ -1,0 +1,349 @@
+      SUBROUTINE COEFMO(TYPFLU,ZRIGI,NBM,NMODE,INDIC,X,PULSC,VGAP,XSI0,
+     &                  MASG,VECI1,VECR1,VECR2,VECR3,VECR4,VECR5,XMF,
+     &                  XKF,XCF)
+      IMPLICIT REAL*8 (A-H,O-Z)
+C-----------------------------------------------------------------------
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGELINE  DATE 16/10/2002   AUTEUR CIBHHAB S.VANDENBERGHE 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+C-----------------------------------------------------------------------
+C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
+      INTEGER ZI
+      COMMON /IVARJE/ZI(1)
+      REAL*8 ZR
+      COMMON /RVARJE/ZR(1)
+      COMPLEX*16 ZC
+      COMMON /CVARJE/ZC(1)
+      LOGICAL ZL
+      COMMON /LVARJE/ZL(1)
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32
+      CHARACTER*80 ZK80
+      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
+C
+      CHARACTER*8   TYPFLU
+      REAL*8        XSI0,VGAP,X(2),MASG(*),PULSC,XMF,XCF,RKF
+      REAL*8        VECR1(*),VECR2(*),VECR3(*),VECR4(*),VECR5(*)
+      INTEGER       NBM,NMODE,INDIC,VECI1(*)
+      LOGICAL       ZRIGI
+      COMPLEX*16    XKF
+C
+C ----------------------------------------------------------------------
+      REAL*8        FN
+      REAL*8        DEPI,R8DEPI,VRMIN,VRMAX,VRED
+      REAL*8        MCF0,KAJ1,KAJ2
+      INTEGER       JVIRED, JCOMPT, JEXTR, JVRZO, JZONE, JALARM, IRET
+      INTEGER       IZONE, NZONE, N1, N2
+      COMPLEX*16    BII,BIIE,FONCT,POIDS,Z
+      CHARACTER*24  FSIC,FSVI,FSVR,NOM1,NOM2,NOM3,NOM4,NOM5
+C ----------------------------------------------------------------------
+C
+C
+      CALL JEMARQ()
+      DEPI = R8DEPI()
+C
+      FSIC = TYPFLU//'           .FSIC'
+      CALL JEVEUO(FSIC,'L',LFSIC)
+      ITYPFL = ZI(LFSIC)
+      NOM1 = '&&COEFAM.CDR2'
+      NOM2 = '&&COEFMO.COMPT'
+      NOM3 = '&&COEFMO.EXTR'    
+      NOM4 = '&&COEFMO.VRZO'
+      NOM5 = '&&COEFMO.ALARM'
+C          
+C
+C --- 1.CAS D'UN FAISCEAU_TRANS
+C
+      IF (ITYPFL.EQ.1) THEN
+C
+C ---   VECR1(I) EST LA VITESSE DU POINT I
+C ---   VECR5(I) EST L'ABSCISSE CURVILIGNE POINT I.
+C ---   VECR1(I) EST LA VITESSE REELLE DU POINT I.
+C ---   VECR1(I+NBP) EST LA VITESSE MOYENNE DE LA ZONE D'EXCITATION
+C ---   CONTENANT LE POINT I.
+C ---   VECR1(1+2*NBP) EST LA VITESSE MOYENNE DE LA REUNION DE
+C       TOUTES LES ZONES D'EXCITATION CONSTITUANT LE TUBE.
+C ---   VECR2(I) EST LA MASSE VOLUMIQUE EXTERIEURE DU FLUIDE AU POINT I
+C ---   VECR3(IMODE+I) EST LA DEFORMEE MODALE AU POINT I, POUR LA
+C       COMPOSANTE DEFINIE DANS DEFI_FLUI_STRU
+C ---   VECR4(1) EST LE DIAMETRE EXTERIEUR
+C ---   VECI1(I) EST LE TYPE DE RESEAU DE LA ZONE CONTENANT LE POINT I
+
+        NBP = INDIC
+        DE = VECR4(1)
+        VR = VGAP*DEPI/ (PULSC*DE*VECR1(2*NBP+1))
+C
+        IMODE = NBP* (NMODE-1)
+C
+C   --- CALCUL DU COEFFICIENT D'AMORTISSEMENT AJOUTE ---
+C
+        FSVI = TYPFLU//'           .FSVI'
+        CALL JEVEUO(FSVI,'L',LFSVI)
+        IPAS = ZI(LFSVI)
+C
+        CALL JEVEUO('&&MDCONF.TEMPO','L',JZONE)
+        NZONE = ZI(JZONE+0)
+C
+C ---   REINITIALISATION DES TABLEAUX :
+C       NOM2 : NB POINTS HORS PLAGE (MIN, TOT, MAX), PAR ZONE
+C       NOM3 : VREDMIN ET VREDMAX DES NOEUDS HORS PLAGE, PAR ZONE
+C       NOM4 : VRMIN ET VRMAX ASSOCIES A CHAQUE ZONE
+        CALL JEDETR(NOM2)
+        CALL JEDETR(NOM3)
+        CALL JEDETR(NOM4)
+        CALL WKVECT(NOM2,'V V I',3*NZONE,JCOMPT)
+        CALL WKVECT(NOM3,'V V R',2*NZONE,JEXTR)
+        CALL WKVECT(NOM4,'V V R',2*NZONE,JVRZO)
+        DO 5 I = 1,3*NZONE
+            ZI(JCOMPT+I-1)=0
+    5   CONTINUE
+C
+        AIRE = 0.D0
+        DO 10 I = 1,NBP
+          IRES = VECI1(I)
+C
+          IF ((IPAS.EQ.1).AND.(IRES.EQ.1003).AND.(VECR1(I).NE.0.D0))
+     &    THEN
+            VRED = VR*VECR1(NBP+I)
+          ELSE
+            VRED = VR*VECR1(I)
+          ENDIF
+C
+          CALL COEFAM(IPAS,IRES,VRED,XSI0,CD)
+C
+          IF (I.EQ.1) THEN
+            VAL1 = CD*VECR2(1)*VECR1(1)*VECR3(IMODE+1)*VECR3(IMODE+1)
+          ELSE
+            VAL2 = CD*VECR2(I)*VECR1(I)*VECR3(IMODE+I)*VECR3(IMODE+I)
+            AIRE = AIRE + (VECR5(I)-VECR5(I-1))* (VAL2+VAL1)/2.D0
+            VAL1 = VAL2
+          ENDIF
+C
+C ---     DETERMINATION S'IL Y EN A UNE DE LA ZONE CONTENANT LE POINT I
+          IZONE = 0
+          DO 11 J = 1,NZONE
+            N1 = ZI(JZONE+2*(J-1)+1)
+            N2 = ZI(JZONE+2*(J-1)+2)
+            IF ((I.GE.N1).AND.(I.LE.N2)) THEN
+              IZONE = J
+              GOTO 12
+            ENDIF
+   11     CONTINUE
+   12     CONTINUE
+C
+          IF (IZONE.NE.0) THEN
+C
+C ---       DETERMINATION DES VALEURS VRMIN ET VRMAX ASSOCIEES A LA ZONE
+            IF (I.EQ.N1) THEN
+              CALL JEVEUO(NOM1,'L',JVIRED)
+              VRMIN = ZR(JVIRED+0)
+              VRMAX = ZR(JVIRED+1)
+              ZR(JVRZO+2*(IZONE-1)+0) = VRMIN
+              ZR(JVRZO+2*(IZONE-1)+1) = VRMAX
+              ZR(JEXTR+2*(IZONE-1)+0) = VRMIN
+              ZR(JEXTR+2*(IZONE-1)+1) = VRMAX
+            ENDIF
+C
+C ---       DETERMINATION S'IL S'AGIT D'UN NOEUD HORS PLAGE
+            IF ((VRED.LT.VRMIN).OR.(VRED.GT.VRMAX)) THEN
+              CALL JEEXIN(NOM5,IRET)
+              IF (IRET.EQ.0) THEN
+                CALL WKVECT(NOM5,'V V I',1,JALARM)
+                CALL UTMESS('A','COEFMO','IL Y A AU MOINS UN POINT'//
+     &               ' D''UNE ZONE DONT LA VITESSE REDUITE LOCALE EST'//
+     &               ' EXTERIEURE A LA ZONE DE VITESSES REDUITES'//
+     &               ' EXPLOREE EXPERIMENTALEMENT')
+              ENDIF
+C
+C ---         INCREMENTATION DES NOMBRES DE NOEUDS HORS PLAGE :
+C             ...+0 : NOMBRE DE NOEUDS AVEC VRED INFERIEURE A VRMIN
+C             ...+1 : NOMBRE DE NOEUDS TOTAL HORS PLAGE
+C             ...+2 : NOMBRE DE NOEUDS AVEC VRED SUPERIEURE A VRMAX
+              IF (VRED.LT.VRMIN) THEN
+                ZI(JCOMPT+3*(IZONE-1)+0) = ZI(JCOMPT+3*(IZONE-1)+0)+1
+              ELSE
+                ZI(JCOMPT+3*(IZONE-1)+2) = ZI(JCOMPT+3*(IZONE-1)+2)+1
+              ENDIF
+              ZI(JCOMPT+3*(IZONE-1)+1) = ZI(JCOMPT+3*(IZONE-1)+1)+1
+C
+C ---         DETERMINATION DE LA PLUS PETITE ET DE LA PLUS GRANDE
+C             VITESSE REDUITE HORS PLAGE
+              ZR(JEXTR+2*(IZONE-1)+0)= MIN(VRED,ZR(JEXTR+2*(IZONE-1)+0))
+              ZR(JEXTR+2*(IZONE-1)+1)= MAX(VRED,ZR(JEXTR+2*(IZONE-1)+1))
+C
+            ENDIF
+          ENDIF
+   10   CONTINUE
+C
+        CALL JELIBE(NOM1)
+C
+        XCF = DE*VGAP*AIRE/(2.D0*VECR1(2*NBP+1))
+C
+C   --- CALCUL DU COEFFICIENT DE RAIDEUR AJOUTE ---
+C
+        IF(ZRIGI) THEN
+           IRES = VECI1(1)           
+           IF (IPAS.EQ.1 .AND. IRES.EQ.1003 .AND. 
+     +          VECR1(1).NE.0.D0) THEN
+             VRED = VR*VECR1(NBP+1)
+           ELSE
+             VRED = VR*VECR1(1)
+           ENDIF
+           CALL COEFRA(IPAS,IRES,VRED,XSI0,CK)         
+           VAL1 = CK*VECR2(1)*VECR1(1)*VECR1(1)*VECR3(IMODE+1)*
+     +            VECR3(IMODE+1)
+           AIRE = 0.D0
+C
+           DO 20 I = 2,NBP
+              IRES = VECI1(I)
+              IF (IPAS.EQ.1 .AND. IRES.EQ.1003 .AND. 
+     +            VECR1(I).NE.0.D0) THEN
+                VRED = VR*VECR1(NBP+I)
+              ELSE
+                VRED = VR*VECR1(I)
+              ENDIF
+              CALL COEFRA(IPAS,IRES,VRED,XSI0,CK)
+              VAL2 = CK*VECR2(I)*VECR1(I)*VECR1(I)*VECR3(IMODE+I)*
+     +               VECR3(IMODE+I)
+              AIRE = AIRE + (VECR5(I)-VECR5(I-1))* (VAL2+VAL1)/2.D0
+              VAL1 = VAL2
+   20      CONTINUE
+           RKF = VGAP*VGAP*AIRE/(2.D0*VECR1(2*NBP+1)*VECR1(2*NBP+1))
+           XKF = DCMPLX(RKF,0.D0)
+        ELSE
+           XKF = DCMPLX(0.D0,0.D0)
+        ENDIF
+C
+C   --- CALCUL DU COEFFICIENT DE MASSE AJOUTE ---
+C
+        XMF = 0.D0
+C
+C --- 2.CAS D'UNE GRAPPE
+C
+      ELSE IF (ITYPFL.EQ.2) THEN
+C
+        PHIE = VECR4(1)
+        VR = VGAP*DEPI/(PULSC*PHIE)
+        P1 = VECR3(2*(NMODE-1)+1)
+        P2 = VECR3(2*(NMODE-1)+2)
+C
+C   --- CALCUL DU COEFFICIENT D'AMORTISSEMENT AJOUTE ---
+C
+        CAJ1 = VECR2(1)*VGAP
+        CAJ2 = VECR2(2)*VGAP        
+        CALL CAJGR2(INDIC,VR,COCAJ1,COCAJ2)
+        XCF = CAJ1*COCAJ1*P1 + CAJ2*COCAJ2*P2
+C
+C   --- CALCUL DU COEFFICIENT DE RAIDEUR AJOUTE ---
+C
+        IF(ZRIGI) THEN
+           KAJ1 = VECR2(3)*VGAP*VGAP
+           KAJ2 = VECR2(4)*VGAP*VGAP
+           CALL KAJGR2(INDIC,VR,COKAJ1,COKAJ2)
+           RKF = KAJ1*COKAJ1*P1 + KAJ2*COKAJ2*P2
+           XKF = DCMPLX(RKF,0.D0)
+        ELSE
+           XKF = DCMPLX(0.D0,0.D0)
+        ENDIF
+C
+C   --- CALCUL DU COEFFICIENT DE MASSE AJOUTE ---
+C
+        XMF = 0.D0
+C
+C --- 3.CAS DE COQUE_COAX
+C
+      ELSE IF (ITYPFL.EQ.4) THEN
+C
+        IMASSE = INDIC
+C
+        HMOY = VECR4(1)
+C
+        FSVR = TYPFLU//'           .FSVR'
+        CALL JEVEUO(FSVR,'L',LFSVR)
+        VISC = ZR(LFSVR+1)
+        RUG  = ZR(LFSVR+2)
+C
+        IF (VGAP .LT. 1.D-5) THEN
+          CF0  = 0.D0
+          MCF0 = 1.D0
+          Z = DCMPLX(X(1),X(2))
+          POIDS = Z*Z
+        ELSE
+          CALL CFROTT(VISC,RUG,HMOY,VGAP,CF0,MCF0)
+          POIDS = DCMPLX(1.D0,0.D0)
+        ENDIF
+C
+        IF (IMASSE.EQ.0) THEN
+C
+          CALL BIJMOC(VGAP,VECR4,CF0,MCF0,ZR(LFSVR),NMODE,NMODE,NBM,
+     &                VECI1,VECR2,VECR3,X(1),X(2),BII)
+C
+          BIIE = BII * POIDS
+C
+        ELSE
+C
+          CALL WKVECT('&&COEFMO.TEMP.MATB','V V C',NBM*NBM,IMATB)
+          CALL WKVECT('&&COEFMO.TEMP.VECC','V V C',NBM    ,IVECC)
+C
+          CALL BMOCCA(VGAP,VECR4,CF0,MCF0,ZR(LFSVR),NBM,VECI1,VECR2,
+     &                VECR3,X(1),X(2),ZC(IMATB))
+C
+          DO 30 IMOD = 1,NBM
+            DO 31 JMOD = 1,NBM
+              ZC(IVECC+IMOD-1) = ZC(IVECC+IMOD-1)
+     &          + ZC(IMATB+NBM*(JMOD-1)+IMOD-1) * POIDS
+     &             * VECR5(NBM*(NMODE-1)+JMOD)
+  31        CONTINUE
+  30      CONTINUE
+C
+          BIIE = DCMPLX(0.D0,0.D0)
+          DO 40 IMOD = 1,NBM
+            BIIE = BIIE + VECR5(NBM*(NMODE-1)+IMOD)*ZC(IVECC+IMOD-1)
+  40      CONTINUE
+C
+        ENDIF
+C
+C   --- CALCUL DU COEFFICIENT D'AMORTISSEMENT AJOUTE ---
+C
+        XCF = 0.D0
+C
+C   --- CALCUL DU COEFFICIENT DE RAIDEUR AJOUTE ---
+C
+        IF(ZRIGI) THEN
+           XKF = - BIIE
+        ELSE
+           XKF = DCMPLX(0.D0,0.D0)
+        ENDIF
+C
+C   --- CALCUL DU COEFFICIENT DE MASSE AJOUTE ---
+C
+        IF(ZRIGI) THEN
+           XMF = - VECR1(NMODE)
+        ELSE
+           XMF = 0.D0
+        ENDIF
+C
+      ENDIF
+C      
+      CALL JEDETR('&&COEFMO.TEMP.MATB')
+      CALL JEDETR('&&COEFMO.TEMP.VECC')
+      CALL JEDEMA()
+      END

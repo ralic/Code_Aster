@@ -1,0 +1,150 @@
+      SUBROUTINE CARAFF ( NOMA, GRAN, BASE, CARTZ )
+      IMPLICIT NONE
+      CHARACTER*1                     BASE
+      CHARACTER*8         NOMA, GRAN
+      CHARACTER*(*)                         CARTZ
+C-----------------------------------------------------------------------
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF UTILITAI  DATE 16/07/2002   AUTEUR VABHHTS J.PELLET 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+C ======================================================================
+C BUT :
+C  - TRAITER L'OPTION 'AFFE' DE LA COMMANDE CREA_CHAMP
+C
+C-----------------------------------------------------------------------
+C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
+      INTEGER          ZI
+      COMMON  /IVARJE/ ZI(1)
+      REAL*8           ZR
+      COMMON  /RVARJE/ ZR(1)
+      COMPLEX*16       ZC
+      COMMON  /CVARJE/ ZC(1)
+      LOGICAL          ZL
+      COMMON  /LVARJE/ ZL(1)
+      CHARACTER*8      ZK8
+      CHARACTER*16             ZK16
+      CHARACTER*24                      ZK24
+      CHARACTER*32                               ZK32
+      CHARACTER*80                                        ZK80
+      COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
+      CHARACTER*32     JEXNOM, JEXNUM
+C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
+      INTEGER       GD,IBID,IED,NOCC,NBAPNO,NBE,NCMPMX,NBTOU
+      INTEGER       IAD,JNCMP,JVALV,JMAIL,NBCMP,K,IOCC,NBMAIL,NBVAR
+      REAL*8        RBID
+      COMPLEX*16    CBID
+      CHARACTER*8   K8B, TSCA, TYPMCL(2)
+      CHARACTER*16  MOTCLF, MOTCLS(2)
+      CHARACTER*19  CARTE
+      CHARACTER*24  MESMAI
+C     ------------------------------------------------------------------
+      CALL JEMARQ()
+C
+      IF (NOMA.EQ.' ') CALL UTMESS('F','CARAFF','MAILLAGE OBLIGATOIRE.')
+C
+      CALL DISMOI('F','TYPE_SCA',GRAN,'GRANDEUR',IBID,TSCA,IED)
+C
+      MOTCLF = 'AFFE'
+      CALL GETFAC ( MOTCLF, NOCC )
+C
+      MESMAI = '&&CARAFF.MES_MAILLES'
+      MOTCLS(1) = 'GROUP_MA'
+      MOTCLS(2) = 'MAILLE'
+      TYPMCL(1) = 'GROUP_MA'
+      TYPMCL(2) = 'MAILLE'
+C
+      NBAPNO = NOCC
+      CALL ALCAR0 ( NOMA, MOTCLF, 2, MOTCLS, TYPMCL, NBE )
+C
+C     1- ALLOCATION DE LA CARTE
+C     --------------------------------------------
+      CARTE = CARTZ
+      IF ( GRAN .EQ. 'VAR2_R' ) NBAPNO = NBAPNO + 1
+      CALL ALCART ( BASE, CARTE, NOMA, GRAN, NBAPNO, NBE )
+      CALL JEVEUO ( CARTE//'.NCMP', 'E', JNCMP )
+      CALL JEVEUO ( CARTE//'.VALV', 'E', JVALV )
+C
+      CALL JENONU(JEXNOM('&CATA.GD.NOMGD',GRAN),GD)
+      CALL JELIRA(JEXNUM('&CATA.GD.NOMCMP',GD),'LONMAX',NCMPMX,K8B)
+      CALL JEVEUO(JEXNUM('&CATA.GD.NOMCMP',GD),'L',IAD)
+C
+      IF (GRAN.EQ.'VAR2_R') THEN
+         NBCMP = NCMPMX
+         DO 10,K = 1,NCMPMX
+            ZK8(JNCMP-1+K) = ZK8(IAD-1+K)
+            ZR(JVALV-1+K) = 0.D0
+   10    CONTINUE
+         CALL NOCART( CARTE, 1, ' ', 'NOM', 0, ' ', 0, ' ', NBCMP )
+      END IF
+C
+C     2- BOUCLE SUR LES OCCURENCES DU MOT CLE AFFE
+C     --------------------------------------------
+      DO 30 IOCC = 1,NOCC
+C
+        CALL GETVTX ( MOTCLF, 'NOM_CMP', IOCC,1,0, K8B, NBCMP)
+C
+        IF (TSCA.EQ.'R') THEN
+          CALL GETVR8 ( MOTCLF, 'VALE'  ,IOCC,1,0, RBID, NBVAR)
+        ELSE IF (TSCA.EQ.'I') THEN
+          CALL GETVIS ( MOTCLF, 'VALE_I',IOCC,1,0, IBID, NBVAR)
+        ELSE IF (TSCA.EQ.'C') THEN
+          CALL GETVC8 ( MOTCLF, 'VALE_C',IOCC,1,0, CBID, NBVAR)
+        ELSE IF (TSCA.EQ.'K8') THEN
+          CALL GETVID ( MOTCLF, 'VALE_F',IOCC,1,0, K8B , NBVAR)
+        ELSE
+          CALL UTMESS('F','CARAFF','TYPE SCALAIRE NON TRAITE : '//TSCA)
+        END IF
+C
+C       TEST SUR LES DONNEES INTRODUITES
+        IF (NBVAR.NE.NBCMP) THEN
+           CALL UTMESS('F','CARAFF','INCOHERENCE ENTRE NOMBRE DE '//
+     &                              'COMPOSANTES ET NOMBRE DE VALEURS')
+        ELSE
+          NBCMP = -NBCMP
+          NBVAR = -NBVAR
+          CALL GETVTX(MOTCLF,'NOM_CMP'  ,IOCC,1,NBCMP,ZK8(JNCMP),NBCMP)
+          IF (TSCA.EQ.'R') THEN
+            CALL GETVR8 (MOTCLF,'VALE'  ,IOCC,1,NBVAR,ZR(JVALV) ,NBVAR)
+          ELSE IF (TSCA.EQ.'I') THEN
+            CALL GETVIS (MOTCLF,'VALE_I',IOCC,1,NBVAR,ZI(JVALV) ,NBVAR)
+          ELSE IF (TSCA.EQ.'C') THEN
+            CALL GETVC8 (MOTCLF,'VALE_C',IOCC,1,NBVAR,ZC(JVALV) ,NBVAR)
+          ELSE IF (TSCA.EQ.'K8') THEN
+            CALL GETVID (MOTCLF,'VALE_F',IOCC,1,NBVAR,ZK8(JVALV),NBVAR)
+          END IF
+        END IF
+C
+        CALL GETVTX ( MOTCLF, 'TOUT', IOCC, 1, 1, K8B, NBTOU )
+        IF ( NBTOU .NE. 0 ) THEN
+          CALL NOCART(CARTE,1,' ','NOM',0,' ',0,' ',NBCMP)
+C
+        ELSE
+           CALL RELIEM(' ', NOMA, 'NU_MAILLE', MOTCLF, IOCC, 2,
+     +                                 MOTCLS, TYPMCL, MESMAI, NBMAIL )
+           CALL JEVEUO ( MESMAI, 'L', JMAIL )
+           CALL NOCART(CARTE,3,' ','NUM',NBMAIL,K8B,ZI(JMAIL),' ',NBCMP)
+           CALL JEDETR ( MESMAI )
+        ENDIF
+   30 CONTINUE
+C
+      CALL TECART(CARTE)
+      CALL JEDETR(CARTE//'.NCMP')
+      CALL JEDETR(CARTE//'.VALV')
+C
+   40 CONTINUE
+      CALL JEDEMA()
+      END

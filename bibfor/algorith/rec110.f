@@ -1,0 +1,454 @@
+      SUBROUTINE REC110(NOMRES,NOMSQU,MODGEN)
+      IMPLICIT REAL*8 (A-H,O-Z)
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 05/10/1999   AUTEUR ACBHHCD G.DEVESA 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+C***********************************************************************
+C-----------------------------------------------------------------------
+C  BUT : < FUSIONNER LES NOEUDS D'INTERFACE D'UN SQUELETTE EXISTANT>
+C
+C
+C-----------------------------------------------------------------------
+C
+C NOMRES  /I/ : NOM K8 DU MAILLAGE SQUELETTE A MODIFIER
+C MODGEN  /I/ : NOM K8 DU MODELE GENERALISE
+C
+C-------- DEBUT COMMUNS NORMALISES  JEVEUX  ----------------------------
+C
+      INTEGER          ZI
+      COMMON  /IVARJE/ ZI(1)
+      REAL*8           ZR
+      COMMON  /RVARJE/ ZR(1)
+      COMPLEX*16       ZC
+      COMMON  /CVARJE/ ZC(1)
+      LOGICAL          ZL
+      COMMON  /LVARJE/ ZL(1)
+      CHARACTER*8      ZK8
+      CHARACTER*16              ZK16
+      CHARACTER*24                        ZK24
+      CHARACTER*32                                  ZK32
+      CHARACTER*80                                            ZK80
+      COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+C
+      CHARACTER*32 JEXNOM,JEXNUM
+C
+C----------  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
+C
+C   PARAMETER : REPRESENTE LE NOMBRE MAX DE COMPOSANTES DE LA GRANDEUR
+C   SOUS-JACENTE TRAITEE
+C
+      CHARACTER*6  PGC
+      CHARACTER*8  NOMRES,NOMSQU,MODGEN,TT,NOMSST,LINTF,LJNTF
+      CHARACTER*8  K8BID,NOMNOE,CRIT
+      LOGICAL      FUSION
+C
+C-----------------------------------------------------------------------
+      DATA PGC,TT      /'REC110','&&REC110'/
+C-----------------------------------------------------------------------
+C
+      CALL JEMARQ()
+C
+C --- RECOPIE DE DES OBJETS SQUELETTE DANS LE NOUVEAU SQUELETTE ---
+      CALL JEDUPC('G',NOMSQU,1,'G',NOMRES,.FALSE.)
+C
+      CALL JELIRA(NOMRES//'         .NOMSST','LONUTI',NBSTAC,K8BID)
+      CALL JEVEUO(NOMRES//'         .NOMSST','L',LSTAC)
+      CALL JEVEUO(NOMRES//'.COORDO    .VALE','E',LCOORD)
+      CALL JELIRA(NOMRES//'.COORDO    .VALE','LONUTI',NBCOOR,K8BID)
+      CALL JELIRA(NOMRES//'.INV.SKELETON   ','LONUTI',NBND2,K8BID)
+      CALL JEVEUO(NOMRES//'.INV.SKELETON   ','E',LSK)
+      NBND = NBND2/2 
+      LSK2 = LSK + NBND
+C
+C     --- CREATION D'UNE LISTE DE CORRESPONDANCE ANCIEN/NOUVEAU NOEUD
+      CALL WKVECT(TT//'.CORRES','V V I',NBND,LCORT)
+C     ET INVERSE
+      CALL WKVECT(TT//'.INVER','V V I',NBND,LINVER)
+      DO 5 I=1,NBND
+         ZI(LCORT-1+I) = I
+         ZI(LINVER-1+I) = I
+ 5    CONTINUE
+   
+C
+C     --- TABLEAU DE LISTES DE NOEUDS POUR COMPARAISON ---
+      CALL WKVECT(TT//'.TABI','V V I',NBND,LTABI)
+      CALL WKVECT(TT//'.TABJ','V V I',NBND,LTABJ)
+C
+C --- LECTURE DE RECO_GLOBAL ---
+C
+C
+      CALL GETVID('RECO_GLOBAL','GROUP_NO_1',1,1,0,K8BID,IGR)
+      IF (IGR .EQ. 0) THEN
+C
+C --- ON FUSIONNE LES NOEUDS DE TOUTES LES INTERFACES DYNAMIQUES ---
+C
+C     --- LECTURE DE LA PRECISION
+      CALL GETVR8('RECO_GLOBAL','PRECISION',1,1,1,PREC,IBID)
+      CALL GETVR8('RECO_GLOBAL','DIST_REFE',1,1,1,DIST,NDIST)
+      CALL GETVTX('RECO_GLOBAL','CRITERE',1,1,1,CRIT,NDIST)
+      IF (NDIST.EQ.0) THEN
+C     --- AU CAS OU LA DISTANCE DE REFERENCE N'EST PAS DONNEE,ON DEVRAIT
+C         LA LIRE DANS LA SD MAILLAGE (VOIR COMMANDE LIRE_MAILLAGE).
+C         ELLE EST POUR L'INSTANT OBLIGATOIRE A LA PREMIERE OCCURENCE 
+C         DE RECO_GLOBAL
+          CALL UTMESS('F',PGC,'DIST_REFE EST OBLIGATOIRE A LA '//
+     &                'PREMIERE OCCURENCE DE RECO_GLOBAL')
+      ENDIF
+      INCR = 0
+      NBFUSE = 0
+      NBMOIN = 0
+      DO 80 ISTAC = 1,NBSTAC
+         NOMSST = ZK8(LSTAC-1+ISTAC)
+         CALL MGUTDM(MODGEN,NOMSST,IBID,'NOM_LIST_INTERF',IBID,LINTF)
+         CALL JELIRA(LINTF//'      .INTD.DEFO','LONUTI',NNODES,K8BID)
+         CALL DISMOI('F','NB_EC',LINTF,'INTERF_DYNA',NBEC,K8BID,IRET)
+         NBNI = NNODES/(2+NBEC)
+         CALL JEVEUO(LINTF//'      .INTD.DEFO','L',LINTD)
+         DO 10 IN = 1,NBNI
+            NUMERO = ZI(LINTD-1+IN)
+            IF (ZI(LSK-1+NUMERO+INCR).NE.ISTAC) THEN
+               CALL UTDEBM('E',PGC,' INCOHERENCE DETECTEE ')
+               CALL JENUNO(JEXNUM(NOMSQU//'.NOMNOE',NUMERO),K8BID)
+               CALL UTIMPK('L',' LE NOEUD : ',1,K8BID)
+               CALL UTIMPK('L',' DE L INTERFACE DYNAMIQUE : ',1,LINTF)
+               CALL UTIMPK('L',' N APPARTIENT PAS LA SOUS-STRUCTURE: ',
+     &                     1,NOMSST)
+               CALL UTFINM
+            ENDIF
+            IF (ZI(LSK2-1+NUMERO+INCR).NE.NUMERO) THEN
+               CALL UTDEBM('E',PGC,' INCOHERENCE DETECTEE ')
+               CALL JENUNO(JEXNUM(NOMSQU//'.NOMNOE',NUMERO),K8BID)
+               CALL UTIMPK('L',' LE NOEUD : ',1,K8BID)
+               CALL UTIMPK('L',' DE L INTERFACE DYNAMIQUE : ',1,LINTF)
+               CALL UTIMPK('L',' N EST PAS CORRECTEMENT REFERENCE '//
+     &                     'DANS LE SQUELETTE : ',1,NOMSQU)
+               CALL UTFINM
+
+            ENDIF
+            ZI(LTABI-1+IN) = NUMERO + INCR
+ 10      CONTINUE
+         INCR = NUMERO + INCR
+C        --- ON SE POSITIONNE EN FIN DE SOUS-STRUCTURE ISTAC ---
+ 20      CONTINUE
+         IF (ZI(LSK+INCR) .EQ. ISTAC) THEN
+            INCR = INCR + 1
+            GOTO 20
+         ENDIF
+C        ---
+         JNCR = INCR 
+         DO 70 JSTAC = ISTAC+1,NBSTAC
+            NOMSST = ZK8(LSTAC-1+JSTAC)
+            CALL MGUTDM(MODGEN,NOMSST,IBID,'NOM_LIST_INTERF',IBID,LJNTF)
+            CALL JELIRA(LJNTF//'      .INTD.DEFO','LONUTI',NNODES,K8BID)
+            CALL DISMOI('F','NB_EC',LJNTF,'INTERF_DYNA',NBEC,K8BID,IRET)
+            NBNJ = NNODES/(2+NBEC)
+            CALL JEVEUO(LJNTF//'      .INTD.DEFO','L',LJNTD)
+            DO 30 JN = 1,NBNJ
+               NUMERO = ZI(LJNTD-1+JN)
+               IF (ZI(LSK-1+NUMERO+JNCR).NE.JSTAC) THEN
+                CALL UTDEBM('E',PGC,' INCOHERENCE DETECTEE ')
+                CALL JENUNO(JEXNUM(NOMSQU//'.NOMNOE',NUMERO),K8BID)
+                CALL UTIMPK('L',' LE NOEUD : ',1,K8BID)
+                CALL UTIMPK('L',' DE L INTERFACE DYNAMIQUE : ',1,LJNTF)
+                CALL UTIMPK('L',' N APPARTIENT PAS LA SOUS-STRUCTURE: '
+     &                      ,1,NOMSST)
+                CALL UTFINM
+               ENDIF
+               IF (ZI(LSK2-1+NUMERO+JNCR).NE.NUMERO) THEN
+                CALL UTDEBM('E',PGC,' INCOHERENCE DETECTEE ')
+                CALL JENUNO(JEXNUM(NOMSQU//'.NOMNOE',NUMERO),K8BID)
+                CALL UTIMPK('L',' LE NOEUD : ',1,K8BID)
+                CALL UTIMPK('L',' DE L INTERFACE DYNAMIQUE : ',1,LJNTF)
+                CALL UTIMPK('L',' N EST PAS CORRECTEMENT REFERENCE '//
+     &                      'DANS LE SQUELETTE : ',1,NOMSQU)
+                CALL UTFINM
+               ENDIF
+               ZI(LTABJ-1+JN) = NUMERO + JNCR
+ 30         CONTINUE
+            JNCR = NUMERO + JNCR
+C           --- ON SE POSITIONNE EN FIN DE SOUS-STRUCTURE JSTAC ---
+ 40         CONTINUE
+            IF (ZI(LSK+JNCR) .EQ. JSTAC) THEN
+               JNCR = JNCR + 1
+               GOTO 40
+            ENDIF
+C           ---- FUSION DES NOEUDS ---
+            DO 60 IN = 1,NBNI
+               IPOSI = (ZI(LTABI-1+IN)-1)*3
+               XII = ZR(LCOORD+IPOSI)
+               YII = ZR(LCOORD+IPOSI+1)
+               ZII = ZR(LCOORD+IPOSI+2)
+               DO 50 JN =1,NBNJ
+                  FUSION = .TRUE.
+                  JPOSI = (ZI(LTABJ-1+JN)-1)*3
+                  XJ = ZR(LCOORD+JPOSI)
+                  YJ = ZR(LCOORD+JPOSI+1)
+                  ZJ = ZR(LCOORD+JPOSI+2)
+                  DISTIJ = (XII-XJ)**2+(YII-YJ)**2+(ZII-ZJ)**2
+                  DISTIJ = SQRT(ABS(DISTIJ))
+                  IF (CRIT .EQ. 'RELATIF') THEN
+                     IF (DISTIJ .GT. PREC*DIST) FUSION=.FALSE.
+                  ELSE
+                     IF (DISTIJ .GT. DIST) FUSION=.FALSE.
+                  ENDIF
+                  IF (FUSION) THEN
+                      I1 = ZI(LCORT-1+ZI(LTABI-1+IN))
+                      I2 = ZI(LTABI-1+IN)
+                      IF (I1.EQ.I2) NBMOIN = NBMOIN +1
+                      ZI(LCORT-1+ZI(LTABI-1+IN)) = ZI(LTABJ-1+JN)
+                      ZI(LINVER-1+ZI(LTABJ-1+JN)) = ZI(LTABI-1+IN)
+                      NBFUSE = NBFUSE + 1
+                  ENDIF
+ 50            CONTINUE
+ 60         CONTINUE
+ 70      CONTINUE
+ 80   CONTINUE
+C
+      ELSE
+C
+C --- ON FUSIONNE LES INTERFACES DONNEES PAR L'UTILISATEUR ---
+C      
+      CALL GETFAC('RECO_GLOBAL',NBRECO)
+      NBFUSE = 0
+      NBMOIN = 0
+      DO 170 IRECO = 1,NBRECO
+         CALL GETVID('RECO_GLOBAL','GROUP_NO_1',IRECO,1,0,K8BID,NR)
+         IF (NR .EQ. 0) THEN
+            CALL UTDEBM('F',PGC,' CONFLIT MOT CLES TOUT ET GROUP_NO'//
+     &                          ' DANS RECO_GLOBAL ')
+         ENDIF
+C        --- LECTURE DE LA PRECISION
+         CALL GETVR8('RECO_GLOBAL','PRECISION',IRECO,1,1,PREC,IBID)
+         CALL GETVR8('RECO_GLOBAL','DIST_REFE',IRECO,1,1,DIST,NDIST)
+         CALL GETVTX('RECO_GLOBAL','CRITERE',IRECO,1,1,CRIT,NDIST)
+         IF (NDIST.EQ.0) THEN
+C        --- AU CAS OU LA DISTANCE DE REFERENCE N'EST PAS DONNEE,
+C            ON DEVRAIT LA LIRE DANS LA SD MAILLAGE.
+             CRIT='RELATIF'
+         ENDIF
+         CALL GETVTX('RECO_GLOBAL','SOUS_STRUC_1',IRECO,1,1,NOMSST,IBID)
+C        --- RECHERCHE DE LA SOUS-STRUCTURE ---
+         ISTAC = 0
+ 90      CONTINUE
+         ISTAC = ISTAC + 1
+         IF (ISTAC.LE.NBSTAC) THEN
+             IF (ZK8(LSTAC-1+ISTAC).NE.NOMSST) GOTO 90
+         ENDIF
+         IF (ISTAC.GT.NBSTAC) THEN
+            CALL UTDEBM('F',PGC,' ERREUR DE NOM ')
+            CALL UTIMPK('L',' LA SOUS-STRUCTURE : ',1,NOMSST)
+            CALL UTIMPK('L',' N A PAS ETE TROUVEE ',0,K8BID)
+            CALL UTFINM
+         ENDIF
+         CALL MGUTDM(MODGEN,NOMSST,IBID,'NOM_LIST_INTERF',IBID,LINTF)
+         CALL JENUNO(JEXNUM(LINTF//'      .INTD.NOMS',2),K8BID)
+         CALL GETVID('RECO_GLOBAL','GROUP_NO_1',IRECO,1,1,NOMNOE,IBID)
+         IF (NOMNOE .NE. K8BID) THEN
+            CALL UTDEBM('E',PGC,' INCOHERENCE DE NOM ')
+            CALL UTIMPK('L',' L INTERFACE DYNAMIQUE : ',1,LINTF)
+            CALL UTIMPK('L',' DE LA SOUS-STRUCTURE : ',1,NOMSST)
+            CALL UTIMPK('L',' A POUR GROUPE DE NOEUD : ',1,K8BID)
+            CALL UTIMPK('L',' OR GROUP_NO_1 = ',1,NOMNOE)
+            CALL UTFINM
+         ENDIF
+         CALL JELIRA(LINTF//'      .INTD.DEFO','LONUTI',NNODES,K8BID)
+         CALL DISMOI('F','NB_EC',LINTF,'INTERF_DYNA',NBEC,K8BID,IRET)
+         NBNI = NNODES/(2+NBEC)
+C         NBNI = NNODES/3
+         CALL JEVEUO(LINTF//'      .INTD.DEFO','L',LINTD)
+         INCR = 0
+C        --- ON SE POSITIONNE AVANT ISTAC ---
+ 100     CONTINUE
+         IF (ZI(LSK+INCR) .NE. ISTAC) THEN
+            INCR = INCR + 1
+            GOTO 100
+         ENDIF
+         DO 110 IN = 1,NBNI
+            ZI(LTABI-1+IN) = ZI(LINTD-1+IN) + INCR
+ 110     CONTINUE
+         CALL GETVTX('RECO_GLOBAL','SOUS_STRUC_2',IRECO,1,1,NOMSST,IBID)
+C        --- RECHERCHE DE LA SOUS-STRUCTURE ---
+         JSTAC = 0
+ 120     CONTINUE
+         JSTAC = JSTAC + 1
+         IF (JSTAC.LE.NBSTAC) THEN
+             IF (ZK8(LSTAC-1+JSTAC).NE.NOMSST) GOTO 120
+         ENDIF
+         IF (JSTAC.GT.NBSTAC) THEN
+            CALL UTDEBM('F',PGC,' ERREUR DE NOM ')
+            CALL UTIMPK('L',' LA SOUS-STRUCTURE : ',1,NOMSST)
+            CALL UTIMPK('L',' N A PAS ETE TROUVEE ',0,K8BID)
+            CALL UTFINM
+         ENDIF
+         CALL MGUTDM(MODGEN,NOMSST,IBID,'NOM_LIST_INTERF',IBID,LJNTF)
+         CALL JENUNO(JEXNUM(LJNTF//'      .INTD.NOMS',1),K8BID)
+         CALL GETVID('RECO_GLOBAL','GROUP_NO_2',IRECO,1,1,NOMNOE,IBID)
+         IF (NOMNOE .NE. K8BID) THEN
+            CALL UTDEBM('E',PGC,' INCOHERENCE DE NOM ')
+            CALL UTIMPK('L',' L INTERFACE DYNAMIQUE : ',1,LJNTF)
+            CALL UTIMPK('L',' DE LA SOUS-STRUCTURE : ',1,NOMSST)
+            CALL UTIMPK('L',' A POUR GROUPE DE NOEUD : ',1,K8BID)
+            CALL UTIMPK('L',' OR GROUP_NO_2 = ',1,NOMNOE)
+            CALL UTFINM
+         ENDIF
+         CALL JELIRA(LJNTF//'      .INTD.DEFO','LONUTI',NNODES,K8BID)
+         CALL DISMOI('F','NB_EC',LJNTF,'INTERF_DYNA',NBEC,K8BID,IRET)
+         NBNJ = NNODES/(2+NBEC)
+C         NBNJ = NNODES/3
+         CALL JEVEUO(LJNTF//'      .INTD.DEFO','L',LJNTD)
+         JNCR = 0
+C        --- ON SE POSITIONNE AVANT JSTAC ---
+ 130     CONTINUE
+         IF (ZI(LSK+JNCR) .NE. JSTAC) THEN
+            JNCR = JNCR + 1
+            GOTO 130
+         ENDIF
+         DO 140 JN = 1,NBNJ
+            ZI(LTABJ-1+JN) = ZI(LJNTD-1+JN) + JNCR
+ 140     CONTINUE
+C           ---- FUSION DES NOEUDS ---
+         DO 160 IN = 1,NBNI
+            IPOSI = (ZI(LTABI-1+IN)-1)*3
+            XII = ZR(LCOORD+IPOSI)
+            YII = ZR(LCOORD+IPOSI+1)
+            ZII = ZR(LCOORD+IPOSI+2)
+            DO 150 JN =1,NBNJ
+               FUSION = .TRUE.
+               JPOSI = (ZI(LTABJ-1+JN)-1)*3
+               XJ = ZR(LCOORD+JPOSI)
+               YJ = ZR(LCOORD+JPOSI+1)
+               ZJ = ZR(LCOORD+JPOSI+2)
+                  DISTIJ = (XII-XJ)**2+(YII-YJ)**2+(ZII-ZJ)**2
+                  DISTIJ = SQRT(ABS(DISTIJ))
+                  IF (CRIT .EQ. 'RELATIF') THEN
+                     IF (DISTIJ .GT. PREC*DIST) FUSION=.FALSE.
+                  ELSE
+                     IF (DISTIJ .GT. DIST) FUSION=.FALSE.
+                  ENDIF
+                  IF (FUSION) THEN
+                      I1 = ZI(LCORT-1+ZI(LTABI-1+IN))
+                      I2 = ZI(LTABI-1+IN)
+                      IF (I1.EQ.I2) NBMOIN = NBMOIN +1
+                      ZI(LCORT-1+ZI(LTABI-1+IN)) = ZI(LTABJ-1+JN)
+                      ZI(LINVER-1+ZI(LTABJ-1+JN)) = ZI(LTABI-1+IN)
+                      NBFUSE = NBFUSE + 1
+                  ENDIF
+ 150        CONTINUE
+ 160     CONTINUE
+ 170  CONTINUE
+C
+C --- FIN DE TRAITEMENT DES OCCURENCES DE RECO_GLOBAL ---
+      ENDIF
+C         
+C --- REAJUSTEMENT DE .CORRES ET NOUVEL OBJET DANS LE SQUELETTE ---
+C      NBNEW = NBND - NBFUSE
+      NBNEW = NBND - NBMOIN
+      CALL WKVECT(NOMRES//'.CORRES','G V I',NBNEW,LCORR)
+C     --- MISE EN PLACE DU TABLEAU DE CORRESPONDANCE ---
+      INEW = 1
+      IOLD = 1
+ 200  CONTINUE
+      IF (INEW.LE.NBNEW .AND. IOLD.LE.NBND) THEN
+         IF (ZI(LINVER-1+IOLD) .NE. IOLD) THEN
+C           --- NOEUD FUSIONNE : N'EXISTE PLUS DANS LE NOUVEAU MAILLAGE
+            IOLD = IOLD + 1
+            GOTO 200
+         ENDIF
+C        --- RECHERCHE DU NOEUD CORRESPONDANT LE PLUS ELOIGNE ---
+C            (C'EST CELUI-LA QU'ON RETIENT)
+         IADRES = ZI(LCORT-1+IOLD)
+ 202     CONTINUE
+         IF (IADRES .NE. ZI(LCORT-1+IADRES)) THEN
+            IADRES = ZI(LCORT-1+IADRES)
+            GOTO 202
+         ENDIF
+C        --- NOEUD CORRESPONDANT ---
+         ZI(LCORR-1+INEW) = IADRES
+C        --- ON RETIENT SON INVERSE ---
+         ZI(LINVER-1+IADRES) = INEW
+C
+         INEW = INEW + 1
+         IOLD = IOLD + 1
+         GOTO 200
+      ENDIF
+C     --- MISE EN PLACE DU TABLEAU INVERSE ---
+      DO 207 IOLD = 1,NBND
+         IF (ZI(LCORT-1+IOLD) .NE. IOLD) THEN
+C        --- NOEUD FUSIONNE : ON RECHERCHE SON INVERSE ---
+C        --- RECHERCHE DU NOEUD CORRESPONDANT LE PLUS ELOIGNE ---
+C            (IL DEVIENT LA REFERENCE)
+            IADRES = ZI(LCORT-1+IOLD)
+ 205        CONTINUE
+            IF (IADRES .NE. ZI(LCORT-1+IADRES)) THEN
+               IADRES = ZI(LCORT-1+IADRES)
+               GOTO 205
+            ENDIF
+            ZI(LINVER-1+IOLD) = ZI(LINVER-1+IADRES)
+         ENDIF
+ 207  CONTINUE
+C
+C --- MISE A JOUR DES OBJETS DU NOUVEAU SQUELETTE ---
+C --- COLLECTION .CONNEX
+      CALL JEVEUO(NOMRES//'.DIME','L',LDIME)
+C     NOMBRE DE MAILLES NBMA
+      NBMA = ZI(LDIME+2)
+      CALL JELIRA(NOMRES//'.CONNEX','NUTIOC',NBOCC,K8BID)
+      DO 220 IOCC = 1,NBMA
+         CALL JEVEUO(JEXNUM(NOMRES//'.CONNEX',IOCC),'E',LCONN)
+         CALL JELIRA(JEXNUM(NOMRES//'.CONNEX',IOCC),'LONMAX',NBN,K8BID)
+         DO 210 I = 1,NBN
+            ZI(LCONN-1+I) = ZI(LINVER-1+ ZI(LCONN-1+I))
+ 210     CONTINUE
+ 220  CONTINUE
+C
+C --- OBJET  .REFE
+      CALL JEVEUO(NOMRES//'.COORDO    .REFE','E',LREFE)
+      ZK24(LREFE) = NOMRES
+C
+C --- OBJET  .DIME
+      CALL JEVEUO(NOMRES//'.DIME','E',LDIME)
+      ZI(LDIME) = NBNEW
+C
+C --- OBJET  .VALE 
+      CALL JEDETR(NOMRES//'.COORDO    .VALE')
+      CALL WKVECT(NOMRES//'.COORDO    .VALE','G V R',NBNEW*3,LVNEW)
+      CALL JEVEUO(NOMSQU//'.COORDO    .VALE','L',LVOLD)
+      DO 230 I = 1,NBNEW
+         IOLD = ZI(LCORR-1+I)
+         ZR(LVNEW-1+(I-1)*3+1) = ZR(LVOLD-1+(IOLD-1)*3+1)
+         ZR(LVNEW-1+(I-1)*3+2) = ZR(LVOLD-1+(IOLD-1)*3+2)
+         ZR(LVNEW-1+(I-1)*3+3) = ZR(LVOLD-1+(IOLD-1)*3+3)
+ 230  CONTINUE
+C
+C --- OBJET .NOMNOE
+      CALL JEDETR(NOMRES//'.NOMNOE')
+      CALL JECREO(NOMRES//'.NOMNOE','G N K8')
+      CALL JEECRA(NOMRES//'.NOMNOE','NOMMAX',NBNEW,' ')
+      DO 240 I = 1,NBNEW
+         IOLD = ZI(LCORR-1+I)
+         CALL JENUNO(JEXNUM(NOMSQU//'.NOMNOE',IOLD),NOMNOE)
+         CALL JECROC(JEXNOM(NOMRES//'.NOMNOE',NOMNOE))
+ 240  CONTINUE
+C     CALL ABORT( )
+C
+      CALL JEDETR(TT//'.TABI')
+      CALL JEDETR(TT//'.TABJ')
+      CALL JEDETR(TT//'.CORRES')
+      CALL JEDETR(TT//'.INVER')
+      CALL JEDEMA()
+      END

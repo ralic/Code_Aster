@@ -1,0 +1,50 @@
+      SUBROUTINE IBOPFD(MOTFAC, NOM, PTR, IER)
+      IMPLICIT NONE
+      CHARACTER*(*)     MOTFAC,NOM(*)
+      INTEGER           PTR(*)
+      INTEGER           IER
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF SUPERVIS  DATE 01/10/96   AUTEUR GIBHHCM C.MASSERET 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+C     ------------------------------------------------------------------
+C     MOTFAC IN : NOM DU MOT CLE FACTEUR
+C     NOM(*) IN : MOTS CLE DU MOT CLE FACTEUR
+C     PTR(*) IN : POINTEURS (NB DE MOTS CLE DANS LE MCF)
+C     IER    IN/OUT : +1 SI UN DOUBLON EST DETECTE
+C     ------------------------------------------------------------------
+C     RECHERCHE DE DOUBLE DECLARATION DE MOTS CLE D'UN MOT CLE FACTEUR
+C     LORS DE LA COMPILATION DES COMMANDES.
+C     ------------------------------------------------------------------
+C
+      INTEGER II,JJ
+C            
+      DO 101 II=2,PTR(1)
+         DO 102 JJ=II+1,PTR(1)
+            IF (NOM(II) .EQ. NOM(JJ)) THEN
+               IER=IER+1
+               CALL UTDEBM('E','COMPILATION DES COMMANDES',
+     +           'DEFINITION DOUBLEE')
+               CALL UTIMPK('L','LE MOT CLE :',1,NOM(II))
+               CALL UTIMPK('L','EST REPETE DANS LE MOT CLE FACTEUR :',
+     +                     1,MOTFAC)
+               CALL UTFINM()
+            ENDIF
+ 102     CONTINUE
+ 101  CONTINUE      
+      
+      END

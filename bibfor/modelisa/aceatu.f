@@ -1,0 +1,302 @@
+      SUBROUTINE ACEATU ( NOMA, NOMO, LMAX, NBEPO, NTYELE, NOMELE, IVR,
+     &                    IFM, NBOCC )
+      IMPLICIT NONE
+      INTEGER             LMAX, NBEPO, NTYELE(*), NBOCC(*), IVR(3), IFM
+      CHARACTER*8         NOMA, NOMO
+      CHARACTER*16        NOMELE(*)
+C ----------------------------------------------------------------------
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF MODELISA  DATE 16/01/2002   AUTEUR DURAND C.DURAND 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+C ----------------------------------------------------------------------
+C     AFFE_CARA_ELEM
+C     AFFECTATION DES CARACTERISTIQUES GEOMETRIQUES POUR LES TUYAUX
+C     PAR CREATION D'UNE CARTE : NOMU//'.CAORTU' CONTENANT :
+C        PGL1, PGL2, PGL3 : MATRICES DE PASSAGE REPERE LOCAL / GLOBAL
+C        ICOUDE           : =0 SI ELEMENT DROIT =1 SI COUDE
+C        DN1N2            : DISTANCE ENTRE LES DEUX SOMMETS
+C        RCOURB           : RAYON DE COURBURE DU COUDE
+C        ANGCOU           : ANGLE DU COUDE
+C        ANGZZK           : ANGLE OMEGA ENTRE LA NORMALE AU PLAN DU
+C                           COUDE ET LE VECTEUR ZK (GENERATRICE)
+C ----------------------------------------------------------------------
+C IN  : NOMA   : NOM DU MAILLAGE
+C IN  : NOMO   : NOM DU MODELE
+C IN  : LMAX   : NOMBRE MAXI D'ENTITES DANS LES LISTES OU LES GROUPES
+C IN  : NBEPO  : NOMBRE DE TYPES D'ELEMENTS
+C IN  : NTYELE : NUMEROS DES TYPES ELEMENTS ASSOCIES A NOMELE
+C IN  : NOMELE : NOMS DES TYPES ELEMENTS
+C IN  : IVR    : (3) = INFO 2
+C IN  : IFM    : FICHIER MESSAGES
+C IN  : NBOCC  : NBOCC(4) NB OCCURENCES ORIENTATION
+C ----------------------------------------------------------------------
+C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
+      INTEGER          ZI
+      COMMON  /IVARJE/ ZI(1)
+      REAL*8           ZR
+      COMMON  /RVARJE/ ZR(1)
+      COMPLEX*16       ZC
+      COMMON  /CVARJE/ ZC(1)
+      LOGICAL          ZL
+      COMMON  /LVARJE/ ZL(1)
+      CHARACTER*8      ZK8
+      CHARACTER*16            ZK16
+      CHARACTER*24                    ZK24
+      CHARACTER*32                            ZK32
+      CHARACTER*80                                    ZK80
+      COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+      CHARACTER*32     JEXNUM, JEXNOM
+C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
+C
+      INTEGER      IEXT1,IEXT2,IMA,INN,IOC,JCOZK,JDCO,JDGN,JDNO,JDME
+      INTEGER      JELPAR,JELTUY,JMA,JNBMAP,JNOEX1,JNOEX2,JNOPAR,JNOZK
+      INTEGER      NBEXT2,NBPART,NBTUY,NCAR,NI1,NI2,NJ,NJ1,NJ2,NN,NNG
+      INTEGER      NUMNOE,NUTYEL, NVAL,JSENS,IXMA,J
+      INTEGER      JNOTUY,NNO,NBTUY4,NBEXT1,JZKPAR,JMMT,IBID
+      INTEGER      IER,NBMAIL
+      REAL*8       VAL(3),EPSI
+      CHARACTER*1  K1BID
+      CHARACTER*8  NOMU, CAR, NOMNOE, NOMLU, CRIT
+      CHARACTER*16 CONCEP, CMD, NUNOEL
+      CHARACTER*24 MLGNMA, MLGNNO, MLGGNO,MLGCOO,MLGCNX,MODMAI
+C     ------------------------------------------------------------------
+C
+      CALL JEMARQ()
+      IER  = 0
+      CALL GETRES(NOMU,CONCEP,CMD)
+C
+C --- RECONSTRUCTION DES NOMS JEVEUX DU CONCEPT MAILLAGE ASSOCIE
+C
+      MLGNMA = NOMA//'.NOMMAI'
+      MLGNNO = NOMA//'.NOMNOE'
+      MLGCNX = NOMA//'.CONNEX'
+      MLGGNO = NOMA//'.GROUPENO'
+      MLGCOO = NOMA//'.COORDO    .VALE'
+      CALL JELIRA(MLGNMA,'NOMMAX',NBMAIL,K1BID)
+      CALL JEVEUO(MLGCOO,'L',JDCO)
+C
+      MODMAI = NOMO//'.MAILLE'
+      CALL JEEXIN(MODMAI,IXMA)
+      IF (IXMA.NE.0) CALL JEVEUO(MODMAI,'L',JDME)
+C
+C --- COMPTAGE DES MET3SEG3
+C
+      NBTUY=0
+      DO 10 IMA = 1 , NBMAIL
+         NUTYEL = ZI(JDME+IMA-1)
+         DO 12 J = 1 , NBEPO
+            IF (NUTYEL.EQ.NTYELE(J)) THEN
+               CALL JENUNO(JEXNUM('&CATA.TE.NOMTE',NUTYEL),NUNOEL)
+               IF ( (NUNOEL.EQ.'MET3SEG3') .OR. (NUNOEL.EQ.'MET6SEG3')
+     &                                .OR.(NUNOEL.EQ.'MET3SEG4') ) THEN
+                  NBTUY=NBTUY+1
+               ENDIF
+            ENDIF
+ 12      CONTINUE
+ 10   CONTINUE
+C
+C --- STOCKAGE DES ELEMENTS MET3SEG3 ET DES NOEUDS
+C
+      CALL WKVECT('&&ACEATU.NOTUY','V V I',NBTUY*4,JNOTUY)
+      CALL WKVECT('&&ACEATU.ELTUY','V V I',NBTUY  ,JELTUY)
+C
+      NNO=0
+      NBTUY=0
+      DO 20 IMA = 1 , NBMAIL
+         NUTYEL = ZI(JDME+IMA-1)
+         DO 22 J = 1 , NBEPO
+            IF (NUTYEL.EQ.NTYELE(J)) THEN
+               CALL JENUNO(JEXNUM('&CATA.TE.NOMTE',NUTYEL),NUNOEL)
+               IF ( (NUNOEL.EQ.'MET3SEG3') .OR.
+     &              (NUNOEL.EQ.'MET6SEG3') ) THEN
+                  NNO=3
+                  NBTUY=NBTUY+1
+                  ZI(JELTUY-1+NBTUY)=IMA
+                  CALL JEVEUO(JEXNUM(MLGCNX,IMA),'L',JDNO)
+                  ZI(JNOTUY-1+3*NBTUY-2)=ZI(JDNO)
+                  ZI(JNOTUY-1+3*NBTUY-1)=ZI(JDNO+1)
+                  ZI(JNOTUY-1+3*NBTUY  )=ZI(JDNO+2)
+               ENDIF
+            ENDIF
+ 22      CONTINUE
+ 20   CONTINUE
+C
+      NBTUY4=0
+      DO 30 IMA = 1 , NBMAIL
+         NUTYEL = ZI(JDME+IMA-1)
+         DO 32 J = 1 , NBEPO
+            IF (NUTYEL.EQ.NTYELE(J)) THEN
+               CALL JENUNO(JEXNUM('&CATA.TE.NOMTE',NUTYEL),NUNOEL)
+               IF ( NUNOEL.EQ.'MET3SEG4') THEN
+                  NNO=4
+                  NBTUY4=NBTUY4+1
+                  ZI(JELTUY-1+NBTUY4)=IMA
+                  CALL JEVEUO(JEXNUM(MLGCNX,IMA),'L',JDNO)
+                  ZI(JNOTUY-1+4*NBTUY4-3)=ZI(JDNO)
+                  ZI(JNOTUY-1+4*NBTUY4-2)=ZI(JDNO+1)
+                  ZI(JNOTUY-1+4*NBTUY4-1)=ZI(JDNO+2)
+                  ZI(JNOTUY-1+4*NBTUY4  )=ZI(JDNO+3)
+               ENDIF
+            ENDIF
+ 32      CONTINUE
+ 30   CONTINUE
+C
+      IF (NBTUY4.NE.0) THEN
+         IF (NBTUY.NE.0) THEN
+            CALL UTMESS('F','ACEATU','ON NE PEUT PAS MELANGER '//
+     &               'DES TUYAUX A 3 ET 4 NOEUDS POUR LE MOMENT')
+         ELSE
+            NBTUY = NBTUY4
+         ENDIF
+      ENDIF
+C
+C --- COMPTAGE DES PARTIES CONNEXES
+C     HYPOTHESE : LES MAILLES SONT TOUTES ORIENTEES DANS LE MEME SENS
+C
+      NBEXT1=0
+      NBEXT2=0
+      DO 40 IMA = 1 , NBTUY
+         IEXT1=0
+         IEXT2=0
+         NI1 = ZI(JNOTUY-1+NNO*(IMA-1)+1)
+         NI2 = ZI(JNOTUY-1+NNO*(IMA-1)+2)
+         DO 42 JMA = 1 , NBTUY
+            IF (JMA.NE.IMA) THEN
+               NJ1 = ZI(JNOTUY-1+NNO*(JMA-1)+1)
+               NJ2 = ZI(JNOTUY-1+NNO*(JMA-1)+2)
+               IF (NI1.EQ.NJ2) THEN
+                  IEXT1=1
+               ENDIF
+               IF (NI2.EQ.NJ1) THEN
+                  IEXT2=1
+               ENDIF
+            ENDIF
+ 42      CONTINUE
+         IF (IEXT1.EQ.0) THEN
+            NBEXT1=NBEXT1+1
+         ENDIF
+         IF (IEXT2.EQ.0) THEN
+            NBEXT2=NBEXT2+1
+         ENDIF
+ 40   CONTINUE
+      IF (NBEXT1.NE.NBEXT2) THEN
+         CALL UTMESS('F','ACEATU','NBEXT1.NE.NBEXT2')
+      ELSE
+         NBPART=NBEXT1
+      ENDIF
+      IF (IVR(3).EQ.1) THEN
+         WRITE(IFM,*) 'NOMBRE DE PARTIES CONNEXES DE TUYAU : ',NBPART
+      ENDIF
+C
+C --- VERIFICATION ET STOCKAGE DES PARTIES CONNEXES
+C     HYPOTHESE : LES MAILLES SONT TOUTES ORIENTEES DANS LE MEME SENS
+C
+      CALL WKVECT('&&ACEATU.SENS','V V I',NBPART,JSENS)
+      CALL WKVECT('&&ACEATU.NBMAPART','V V I',NBPART,JNBMAP)
+      CALL WKVECT('&&ACEATU.NOEXT1','V V I',NBPART,JNOEX1)
+      CALL WKVECT('&&ACEATU.NOEXT2','V V I',NBPART,JNOEX2)
+      CALL WKVECT('&&ACEATU.LISMAPART','V V I',NBPART*NBTUY,JELPAR)
+      CALL WKVECT('&&ACEATU.LISNOPART','V V I',NBPART*NBTUY*NNO,JNOPAR)
+      CALL WKVECT('&&ACEATU.ZKPART','V V I',NBPART*NBTUY*NNO,JZKPAR)
+      CALL ACEAT2(NBTUY,ZI(JELTUY),ZI(JNOTUY),NBPART,ZI(JNOEX1),
+     &            ZI(JNOEX2),ZI(JNBMAP),ZI(JELPAR),ZI(JNOPAR),NNO)
+
+C   LECTURE DE MODI_METRIQUE
+
+      CALL WKVECT('&&ACEATU.MMT','V V I',NBMAIL,JMMT)
+      CALL ACEMMT(NOMA,ZI(JMMT))
+C
+C     LECTURE DU MOT-CLE GENE_TUYAU
+C
+      INN=0
+C
+C     VALEURS PAR DEFAUT COHERENTES AVEC LE CATALOGUE
+C
+      EPSI=1.D-4
+      CRIT='RELATIF'
+C
+      IF (NBOCC(4).NE.0) THEN
+        CALL WKVECT('&&ACEATU.LISNOZK','V V I',NBOCC(4),JNOZK)
+        CALL WKVECT('&&ACEATU.LISCOZK','V V R',3*NBOCC(4),JCOZK)
+        DO 50 IOC = 1 , NBOCC(4)
+C
+C         UN SEUL NOEUD PERMIS
+C
+          CALL GETVEM(NOMA,'GROUP_NO',
+     .                'ORIENTATION','GROUP_NO' ,IOC,1,1,NOMLU,NJ  )
+          CALL GETVEM(NOMA,'NOEUD',
+     .                'ORIENTATION','NOEUD'    ,IOC,1,1,NOMLU,NN  )
+          CALL GETVTX('ORIENTATION','CARA'     ,IOC,1,1,CAR  ,NCAR)
+          CALL GETVR8('ORIENTATION','VALE'     ,IOC,1,3,VAL  ,NVAL)
+          CALL GETVR8('ORIENTATION','PRECISION',IOC,1,1,EPSI ,IBID)
+          IF (IBID.EQ.0) THEN
+             EPSI=1.D-4
+             CRIT='RELATIF'
+          ENDIF
+          CALL GETVTX('ORIENTATION','CRITERE'  ,IOC,1,1,CRIT,IBID)
+          IF (CAR.EQ.'GENE_TUY') THEN
+            IF (NJ.GT.0) THEN
+              IF (NJ.EQ.1) THEN
+                CALL JEVEUO(JEXNOM(MLGGNO,NOMLU),'L',JDGN)
+                CALL JELIRA(JEXNOM(MLGGNO,NOMLU),'LONMAX',NNG,K1BID)
+                IF (NNG.EQ.1) THEN
+                  INN=INN+1
+                  ZI(JNOZK-1+INN) = ZI(JDGN)
+                  ZR(JCOZK-1+3*INN-2)=VAL(1)
+                  ZR(JCOZK-1+3*INN-1)=VAL(2)
+                  ZR(JCOZK-1+3*INN  )=VAL(3)
+                ELSE
+                  IER=1
+                  GOTO 9998
+                ENDIF
+              ELSE
+                IER=1
+                GOTO 9998
+              ENDIF
+            ENDIF
+            IF (NN.GT.0) THEN
+              IF (NN.EQ.1) THEN
+                NOMNOE = NOMLU
+                CALL JENONU(JEXNOM(MLGNNO,NOMNOE),NUMNOE)
+                INN=INN+1
+                ZI(JNOZK-1+INN) = NUMNOE
+                ZR(JCOZK-1+3*INN-2)=VAL(1)
+                ZR(JCOZK-1+3*INN-1)=VAL(2)
+                ZR(JCOZK-1+3*INN  )=VAL(3)
+              ELSE
+                IER=1
+                GOTO 9998
+              ENDIF
+            ENDIF
+          ENDIF
+ 50     CONTINUE
+      ENDIF
+      CALL ACEAT3(NOMA,NOMU,NBTUY,NBPART,ZI(JNBMAP),ZI(JELPAR),
+     &            ZI(JNOPAR),IVR,IFM,INN,ZI(JNOZK),ZR(JCOZK),ZI(JSENS),
+     &            ZR(JDCO),EPSI,CRIT,NNO,ZI(JMMT))
+C
+9998  CONTINUE
+      IF (IER.NE.0) THEN
+         CALL UTMESS('F','ACEATU','ORIENTATION : GENE_TUYAU '//
+     +               'UN SEUL NOEUD DOIT ETRE EFECTE')
+      ENDIF
+C
+      CALL JEDETC('V','&&ACEATU',1)
+9999  CONTINUE
+      CALL JEDEMA()
+      END

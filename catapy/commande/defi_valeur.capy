@@ -1,0 +1,37 @@
+#& MODIF COMMANDE  DATE 09/10/2002   AUTEUR DURAND C.DURAND 
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+def defi_valeur_prod(self,IS=None,R8=None,TX=None,C8=None,LS=None):
+  if IS != None  : return entier
+  if R8 != None  : return reel
+  if TX != None  : return chaine
+  if C8 != None  : return complexe
+  if LS != None  : return liste
+  raise AsException("type de concept resultat non prevu")
+
+DEFI_VALEUR=MACRO(nom="DEFI_VALEUR",op=-4,sd_prod=defi_valeur_prod,
+                 fr="Affectation d une valeur à une variable Superviseur",
+                 docu="U4.31.04-f1",reentrant='f',
+            UIinfo={"groupes":("Fonction",)},
+         regles=(UN_PARMI('IS','R8','TX','C8','LS'),),
+         IS              =SIMP(statut='f',typ='I',max='**'),
+         R8              =SIMP(statut='f',typ='R',max='**'),
+         TX              =SIMP(statut='f',typ='TXM',max='**'),
+         C8              =SIMP(statut='f',typ='C',max='**'),
+         LS              =SIMP(statut='f',typ='L',max='**'),
+)  ;

@@ -1,0 +1,296 @@
+# MODIF  DATE 18/07/2002   AUTEUR CIBHHAB S.VANDENBERGHE 
+# TITRE  REPONSE SISMIQUE D'UNE POUTRE EN BETON ARME RECTANGULAIRE
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+#        ELEMENT POU_D_EM COMPORTEMENT LINEAIRE
+#
+DEBUT(CODE=_F( NOM = 'SDLL130B',NIV_PUB_WEB='INTERNET'))
+# REPONSE SISMIQUE D'UNE POUTRE A COMPORTEMENT LINEAIRE (POU_D_EM)
+
+# LECTURE DU SEISME
+INCLUDE(UNITE=92,);
+
+# LECTURE MAILLAGE LINEIQUE
+PRE_GIBI();
+POUT=LIRE_MAILLAGE();
+
+# LECTURE MAILLAGE SECTION1
+PRE_GIBI(UNITE_GIBI=18, UNITE_MAILLAGE=21,);
+MASEC=LIRE_MAILLAGE(UNITE=21,);
+
+# ON ENRICHIT LE MAILLAGE LINEIQUE EN MULTIPLIANT LES LIGNES
+MAPOU=CREA_MAILLAGE(MAILLAGE=POUT,
+                    CREA_GROUP_MA=_F(NOM='POU_AC',
+                                     TOUT='OUI',
+                                     PREF_MAILLE='A',
+                                     PREF_NUME=100,),);
+
+MAPOU=DEFI_GROUP(reuse =MAPOU,
+                 MAILLAGE=MAPOU,
+                 CREA_GROUP_NO=_F(GROUP_MA='POUTRE',
+                                  NOM='TOUS_NO',),
+                 INFO=1,);
+
+MOPOU=AFFE_MODELE(MAILLAGE=MAPOU,
+                  AFFE=_F(TOUT='OUI',
+                          PHENOMENE='MECANIQUE',
+                          MODELISATION='POU_D_EM',),);
+# LES MATERIAUX
+#
+
+
+BETON=DEFI_MATERIAU(ELAS=_F(E=3.7272000000E10,
+                            NU=0.0,
+                            RHO=2400.0,
+                            AMOR_ALPHA=8.5000000000000006E-05,
+                            AMOR_BETA=18.984999999999999,),);
+
+ACIER=DEFI_MATERIAU(ELAS=_F(E=2.E11,
+                            NU=0.0,
+                            RHO=7800.0,
+                            AMOR_ALPHA=8.5000000000000006E-05,
+                            AMOR_BETA=18.984999999999999,),);
+#
+# LES CHAMPS DE MATERIAUX
+#
+
+
+CHMAT=AFFE_MATERIAU(MAILLAGE=MAPOU,
+                    AFFE=(_F(GROUP_MA='POUTRE',
+                             MATER=BETON,),
+                          _F(GROUP_MA='POU_AC',
+                             MATER=ACIER,),),);
+#
+# ORIENTATIONS ET RIGIDITE DE TORSION
+#
+
+
+POUCA=AFFE_CARA_ELEM(MODELE=MOPOU,
+                     POUTRE=_F(GROUP_MA=('POUTRE','POU_AC'),
+                               SECTION='RECTANGLE',
+                               CARA=('HY','HZ'),
+                               VALE=(0.20000000000000001,0.5),),
+                     ORIENTATION=_F(GROUP_MA=('POUTRE','POU_AC'),
+                                    CARA='ANGL_VRIL',
+                                    VALE=-90.0,),
+           AFFE_SECT = _F( GROUP_MA = 'POUTRE', NOM='BETON',
+                           MAILLAGE_SECT = MASEC, TOUT_SECT = 'OUI',
+                           COOR_AXE_POUTRE = (0., 0.,),),
+           AFFE_FIBRE = _F( GROUP_MA = 'POU_AC', CARA = 'DIAMETRE',
+                            NOM='ARMATURE' ,COOR_AXE_POUTRE = (0.,0.,),
+                            VALE =( 0.066, -0.218, 32.E-3,
+                                   -0.066, -0.218, 32.E-3,
+                                    0.066, 0.218, 8.E-3,
+                                   -0.066, 0.218, 8.E-3,),),
+
+                                    );
+
+
+
+
+BLOCAGE=AFFE_CHAR_MECA(MODELE=MOPOU,
+                       DDL_IMPO=(_F(GROUP_NO='A',
+                                    DX=0.0,
+                                    DY=0.0,),
+                                 _F(GROUP_NO='B',
+                                    DY=0.0,),
+                                 _F(GROUP_NO='TOUS_NO',
+                                    DZ=0.0,
+                                    DRX=0.0,
+                                    DRY=0.0,),),);
+
+
+
+
+RIGI_ELE=CALC_MATR_ELEM(OPTION='RIGI_MECA',
+                        MODELE=MOPOU,
+                        CHAM_MATER=CHMAT,
+                        CARA_ELEM=POUCA,
+                        CHARGE=BLOCAGE,);
+
+MASS_ELE=CALC_MATR_ELEM(OPTION='MASS_MECA',
+                        MODELE=MOPOU,
+                        CHAM_MATER=CHMAT,
+                        CARA_ELEM=POUCA,
+                        CHARGE=BLOCAGE,);
+
+AMOR_ELE=CALC_MATR_ELEM(OPTION='AMOR_MECA',
+                        MODELE=MOPOU,
+                        CARA_ELEM=POUCA,
+                        CHAM_MATER=CHMAT,
+                        RIGI_MECA=RIGI_ELE,
+                        MASS_MECA=MASS_ELE,
+                        CHARGE=BLOCAGE,);
+#
+#
+
+
+NUME_DDL=NUME_DDL(MATR_RIGI=RIGI_ELE,
+                  METHODE='LDLT',
+                  RENUM='SANS',);
+#
+#
+
+
+RIGIDITE=ASSE_MATRICE(MATR_ELEM=RIGI_ELE,
+                      NUME_DDL=NUME_DDL,);
+
+MASSE=ASSE_MATRICE(MATR_ELEM=MASS_ELE,
+                   NUME_DDL=NUME_DDL,);
+
+AMORT=ASSE_MATRICE(MATR_ELEM=AMOR_ELE,
+                   NUME_DDL=NUME_DDL,);
+
+MODE_MEC=MODE_ITER_SIMULT(MATR_A=RIGIDITE,
+                          MATR_B=MASSE,
+                          CALC_FREQ=_F(OPTION='PLUS_PETITE',
+                                       NMAX_FREQ=3,),);
+# ON DEFINIT L'ACCELEROGRAMME DU SEISME
+#
+
+
+ACCELERO=CALC_FONCTION(COMB=_F(FONCTION=ACS2C11,
+                               COEF=137.0,),);
+#
+#
+
+
+DIRSEISM=CALC_CHAR_SEISME(MATR_MASS=MASSE,
+                          DIRECTION=(0.0,-1.0,0.0),
+                          MONO_APPUI='OUI',);
+# CALCUL DYNAMIQUE LINEAIRE TRANSITOIRE
+#
+
+
+LINST=DEFI_LIST_REEL(DEBUT=0.0,
+                     INTERVALLE=_F(JUSQU_A=5.0,
+                                   NOMBRE=500,),);
+
+U1=DYNA_LINE_TRAN(MATR_MASS=MASSE,
+                  MATR_RIGI=RIGIDITE,
+                  MATR_AMOR=AMORT,
+                  NEWMARK=_F(),
+                  EXCIT=_F(VECT_ASSE=DIRSEISM,
+                           FONC_MULT=ACCELERO,),
+                  INCREMENT=_F(LIST_INST=LINST,),);
+
+U1=CALC_ELEM(reuse =U1,
+             MODELE=MOPOU,
+             CHAM_MATER=CHMAT,
+             CARA_ELEM=POUCA,
+             TOUT='OUI',
+             TOUT_ORDRE='OUI',
+             OPTION='SIEF_ELGA_DEPL',
+             RESULTAT=U1,);
+
+U1=CALC_NO(reuse =U1,
+           MODELE=MOPOU,
+           RESULTAT=U1,
+           TOUT_ORDRE='OUI',
+           OPTION='REAC_NODA',
+           CHAM_MATER=CHMAT,
+           CARA_ELEM=POUCA,
+           TOUT='OUI',);
+
+# QUELQUES TEST DE RESULTATS, REFERENCE SDLL130A
+TEST_RESU(RESU=(_F(RESULTAT=MODE_MEC,
+                   NUME_MODE=1,
+                   PARA='FREQ',
+                   VALE=37.602600000000002,
+                   PRECISION=6.0000000000000001E-3,
+                   REFERENCE='AUTRE_ASTER',),
+                _F(RESULTAT=MODE_MEC,
+                   NUME_MODE=2,
+                   PARA='FREQ',
+                   VALE=150.411,
+                   PRECISION=1.0000000000000001E-2,
+                   REFERENCE='AUTRE_ASTER',),
+                _F(RESULTAT=MODE_MEC,
+                   NUME_MODE=3,
+                   PARA='FREQ',
+                   VALE=197.09100000000001,
+                   PRECISION=0.017000000000000001,
+                   REFERENCE='AUTRE_ASTER',),
+                _F(RESULTAT=U1,
+                   NUME_ORDRE=100,
+                   NOM_CHAM='REAC_NODA',
+                   NOM_CMP='DY',
+                   GROUP_NO='A',
+                   VALE=1.8878E4,
+                   PRECISION=0.021999999999999999,
+                   REFERENCE='AUTRE_ASTER',),
+                _F(RESULTAT=U1,
+                   NUME_ORDRE=100,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   GROUP_NO='C',
+                   VALE=-6.0693599999999998E-4,
+                   PRECISION=0.014,
+                   REFERENCE='AUTRE_ASTER',),
+                _F(RESULTAT=U1,
+                   NUME_ORDRE=200,
+                   NOM_CHAM='REAC_NODA',
+                   NOM_CMP='DY',
+                   GROUP_NO='A',
+                   VALE=6.3393E4,
+                   PRECISION=0.02,
+                   REFERENCE='AUTRE_ASTER',),
+                _F(RESULTAT=U1,
+                   NUME_ORDRE=200,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   GROUP_NO='C',
+                   VALE=-2.3507300000000001E-3,
+                   PRECISION=1.E-2,
+                   REFERENCE='AUTRE_ASTER',),
+                _F(RESULTAT=U1,
+                   NUME_ORDRE=268,
+                   NOM_CHAM='REAC_NODA',
+                   NOM_CMP='DY',
+                   GROUP_NO='A',
+                   VALE=-2.32223E5,
+                   PRECISION=0.035000000000000003,
+                   REFERENCE='AUTRE_ASTER',),
+                _F(RESULTAT=U1,
+                   NUME_ORDRE=268,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   GROUP_NO='C',
+                   VALE=8.5790399999999996E-3,
+                   PRECISION=0.021999999999999999,
+                   REFERENCE='AUTRE_ASTER',),
+                _F(RESULTAT=U1,
+                   NUME_ORDRE=468,
+                   NOM_CHAM='REAC_NODA',
+                   NOM_CMP='DY',
+                   GROUP_NO='A',
+                   VALE=2.46923E5,
+                   PRECISION=0.029999999999999999,
+                   REFERENCE='AUTRE_ASTER',),
+                _F(RESULTAT=U1,
+                   NUME_ORDRE=468,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   GROUP_NO='C',
+                   VALE=-9.1083999999999991E-3,
+                   PRECISION=0.02,
+                   REFERENCE='AUTRE_ASTER',),),);
+
+FIN();
+#
+#

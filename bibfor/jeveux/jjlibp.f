@@ -1,0 +1,120 @@
+      SUBROUTINE JJLIBP ( IADMI )
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF JEVEUX  DATE 16/06/2000   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+C TOLE CFT_720 CFT_726 CRP_18 CRS_508
+      IMPLICIT REAL*8 (A-H,O-Z)
+      INTEGER             IADMI
+C ----------------------------------------------------------------------
+C LIBERE LE SEGMENT DE VALEUR SITUE A L'ADRESSE IADMI
+C
+C IN  IADMI  : ADRESSE DU PREMIER MOT DU SEGMENT DE VALEUR
+C
+C SV : SEGMENT DE VALEURS A LIBERER
+C      IDSV  : 1ER  DESCRIPTEUR DE SV (CHAINAGE AVANT)
+C      IFSV  : 8EME DESCRIPTEUR DE SV (CHAINAGE ARRIERE)
+C      IETSV : 4EME DESCRIPTEUR DE SV (ETAT)
+C      ISTSV : 5EME DESCRIPTEUR DE SV (STATUT)
+C SP : SEGMENT DE VALEUR PRECEDENT
+C      IFSP  : 8EME DESCRIPTEUR DE SP (CHAINAGE ARRIERE)
+C      ISTSP : 5EME DESCRIPTEUR DE SP (STATUT)
+C SP : SEGMENT DE VALEUR SUIVANT
+C      IDSS  : 1ER  DESCRIPTEUR DE SS (CHAINAGE AVANT)
+C SPP: SEGMENT DE VALEUR PRECEDANT LE PRECEDENT
+C      IFSPP : 8EME DESCRIPTEUR DE SPP (CHAINAGE ARRIERE)
+C
+C
+C ----------------------------------------------------------------------
+      CHARACTER*1      K1ZON
+      COMMON /KZONJE/  K1ZON(8)
+      INTEGER          LK1ZON , JK1ZON , LISZON , JISZON , ISZON(1)
+      COMMON /IZONJE/  LK1ZON , JK1ZON , LISZON , JISZON
+      EQUIVALENCE    ( ISZON(1) , K1ZON(1) )
+C ----------------------------------------------------------------------
+      INTEGER          LUNDEF,IDEBUG
+      COMMON /UNDFJE/  LUNDEF,IDEBUG
+      INTEGER          IDINIT   ,IDXAXD   ,ITRECH,ITIAD,ITCOL,LMOTS,IDFR
+      COMMON /IXADJE/  IDINIT(2),IDXAXD(2),ITRECH,ITIAD,ITCOL,LMOTS,IDFR
+      INTEGER          ISTAT
+      COMMON /ISTAJE/  ISTAT(4)
+C ----------------------------------------------------------------------
+      CHARACTER*75     CMESS
+C DEB ------------------------------------------------------------------
+      IFSP  = IADMI - 5
+      IDSV  = IADMI - 4
+      JIDSV = JISZON + IDSV
+      IETSV = IADMI - 1
+      ISTSV = ISZON ( JIDSV ) - 4
+      IFSV  = ISZON ( JIDSV ) - 1
+      IDSS  = ISZON ( JIDSV )
+      IFIN  = IDSS
+C
+      IET = ISZON(JISZON+IETSV)
+      IST = ISZON(JISZON+ISTSV)
+      IF ( IET .NE. ISTAT(1) .OR. IST .NE. ISTAT(1) ) THEN
+        IF ( ISZON(JISZON+IFSP) .NE. 0 ) THEN
+          ISTSP = ISZON(JISZON+IFSP-3)
+          IF ( ISTSP .EQ. ISTAT(1) ) THEN
+C
+C --------- SEGMENT PRECEDENT LIBRE
+C
+            IFSPP = ISZON(JISZON+IFSP)
+            IF ( IDXAXD(1) .EQ. IDSV )  THEN
+              IDXAXD(1) = IFSPP + 1
+            ELSEIF ( IDXAXD(2) .EQ. IDSV )  THEN
+              IDXAXD(2) = IFSPP + 1
+            ENDIF
+            IDSV = IFSPP + 1
+            IFSP = IFSPP
+          ENDIF
+        ENDIF
+C
+        IF ( ISZON(JISZON+IDSS) .NE. 0 ) THEN
+          IDSSS = ISZON(JISZON+IDSS)
+          ISTSS = ISZON(JISZON+IDSSS - 4)
+          IF ( ISTSS .EQ. ISTAT(1) ) THEN
+C
+C --------- SEGMENT  SUIVANT  LIBRE
+C
+            IF ( IDXAXD(1) .EQ. IDSS )  THEN
+              IDXAXD(1) = IDSV
+            ELSEIF ( IDXAXD(2) .EQ. IDSS )  THEN
+              IDXAXD(2) = IDSV
+             ENDIF
+            IDSS = IDSSS
+            IFSV = IDSS - 1
+          ENDIF
+        ENDIF
+C
+        JIDSV = JISZON + IDSV
+        ISZON(JIDSV  ) = IDSS
+        ISZON(JIDSV+3) = ISTAT(1)
+        JIFSV = JISZON + IFSV
+        ISZON(JIFSV  ) = IFSP
+        ISZON(JIFSV-3) = ISTAT(1)
+        IF ( IDEBUG .EQ. 1 ) THEN
+          DO 100 K=IADMI,IFIN-5
+            ISZON(JISZON+K) = LUNDEF
+ 100      CONTINUE
+        ENDIF
+      ELSE
+        CMESS = 'LA ZONE A LIBERER EST DEJA LIBRE '
+        CALL JVMESS ( 'S' , 'JJLIBP01' , CMESS )
+      ENDIF
+C FIN ------------------------------------------------------------------
+      END

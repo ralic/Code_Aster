@@ -1,0 +1,59 @@
+      SUBROUTINE SQULIS ( NUMMA1, NUMMA2, NUMNOE,
+     +                    INUM1, INUM2, NBMAIL, NBNOEU )
+      IMPLICIT NONE
+      INTEGER             NUMMA1(*), NUMMA2(*), NUMNOE(*), 
+     +                    INUM1, INUM2, NBMAIL, NBNOEU, I, I1, I2
+C-----------------------------------------------------------------------
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 04/03/97   AUTEUR ACBHHMV C.VARE 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+C-----------------------------------------------------------------------
+C
+      I1 = INUM1
+      I2 = INUM2
+      IF ( I1 .GT. I2 ) THEN
+         I = I2
+         I2 = I1
+         I1 = I
+      ENDIF
+C
+      DO 10 I = 1 , NBMAIL
+         IF ( NUMMA1(I) .EQ. I1 ) THEN
+            IF ( NUMMA2(I) .EQ. I2 ) GOTO 9999
+         ENDIF
+ 10   CONTINUE
+C
+      NBMAIL = NBMAIL + 1
+      NUMMA1(NBMAIL) = I1
+      NUMMA2(NBMAIL) = I2
+C
+      DO 30 I = 1 , NBNOEU
+         IF ( NUMNOE(I) .EQ. I1 ) GOTO 32
+ 30   CONTINUE
+      NBNOEU = NBNOEU + 1
+      NUMNOE(NBNOEU) = I1
+C
+ 32   CONTINUE
+      DO 40 I = 1 , NBNOEU
+         IF ( NUMNOE(I) .EQ. I2 ) GOTO 9999
+ 40   CONTINUE
+      NBNOEU = NBNOEU + 1
+      NUMNOE(NBNOEU) = I2
+C
+ 9999 CONTINUE
+      END

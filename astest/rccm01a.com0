@@ -1,0 +1,860 @@
+# AJOUT
+# TITRE VALIDATION DE L'OPERATEUR POST_RCCM (CHEMIN et VALE_MAX)
+
+POURSUITE( CODE=_F(  NOM = 'RCCM01A') )
+
+LIGNE=INTE_MAIL_2D(  MAILLAGE=MA,
+                     DEFI_SEGMENT=_F(  ORIGINE   = ( -1.0,  0.5, ),
+                                       EXTREMITE = (  1.0,  0.5, )),
+                     INFO=2    )
+
+
+#--------------------------------------------------------------------------------
+#   option = PM_PB
+#   chargement mécanique
+#--------------------------------------------------------------------------------
+
+PMPB1=POST_RCCM(         MATER=MAT,
+                     TYPE_RESU='VALE_MAX',
+                        OPTION='PM_PB',
+                         TITRE='INST PM_PB, RESULTAT: RESU1',
+                       SEGMENT=_F(  CHEMIN = LIGNE,
+                                    INTITULE = 'PM_PB: RESU1'),
+                   TRANSITOIRE=_F(  RESULTAT = RESU1,
+                                    NOM_CHAM = 'SIGM_ELNO_DEPL')
+                 )
+
+IMPR_TABLE(    TABLE=PMPB1 ) 
+
+# le PM
+TEST_TABLE(    TABLE=PMPB1,
+               FILTRE=( _F(  NOM_PARA = 'LIEU',
+                             VALE_K   = 'ORIG'),),
+                 REFERENCE='ANALYTIQUE',
+                  NOM_PARA='PM',
+                      VALE=200.                 )
+
+TEST_TABLE(    TABLE=PMPB1,
+               FILTRE=( _F(  NOM_PARA = 'LIEU',
+                             VALE_K   = 'EXTR'),),
+                 REFERENCE='ANALYTIQUE',
+                  NOM_PARA='PM',
+                      VALE=200.                 )
+
+# le PB
+TEST_TABLE(    TABLE=PMPB1,
+               FILTRE=( _F(  NOM_PARA = 'LIEU',
+                             VALE_K   = 'ORIG'),),
+                 REFERENCE='ANALYTIQUE',
+                  NOM_PARA='PB',
+                   CRITERE='ABSOLU',
+                      VALE=0.                   )
+
+TEST_TABLE(    TABLE=PMPB1,
+               FILTRE=( _F(  NOM_PARA = 'LIEU',
+                             VALE_K   = 'EXTR'),),
+                 REFERENCE='ANALYTIQUE',
+                  NOM_PARA='PB',
+                   CRITERE='ABSOLU',
+                      VALE=0.                   )
+
+# le PMB
+TEST_TABLE(    TABLE=PMPB1,
+               FILTRE=( _F(  NOM_PARA = 'LIEU',
+                             VALE_K   = 'ORIG'),),
+                 REFERENCE='ANALYTIQUE',
+                  NOM_PARA='PMB',
+                      VALE=200.                 )
+TEST_TABLE(    TABLE=PMPB1,
+               FILTRE=( _F(  NOM_PARA = 'LIEU',
+                             VALE_K   = 'EXTR'),),
+                 REFERENCE='ANALYTIQUE',
+                  NOM_PARA='PMB',
+                      VALE=200.                 )
+
+# le MAX_SIGM
+TEST_TABLE(    TABLE=PMPB1,
+               FILTRE=( _F(  NOM_PARA = 'LIEU',
+                             VALE_K   = 'ORIG'),),
+                 REFERENCE='ANALYTIQUE',
+                  NOM_PARA='MAX_SIYY',
+                      VALE=200.                 )
+TEST_TABLE(    TABLE=PMPB1,
+               FILTRE=( _F(  NOM_PARA = 'LIEU',
+                             VALE_K   = 'EXTR'),),
+                 REFERENCE='ANALYTIQUE',
+                  NOM_PARA='MAX_SIYY',
+                      VALE=200.                 )
+
+#--------------------------------------------------------------------------------
+#   option = PM_PB
+#   chargement mécanique + thermique
+#--------------------------------------------------------------------------------
+
+PMPB2=POST_RCCM(         MATER=MAT,
+                     TYPE_RESU='VALE_MAX',
+                        OPTION='PM_PB',
+                         TITRE='PM_PB, RESULTAT: RESU2',
+                       SEGMENT=_F(  CHEMIN = LIGNE,
+                                    INTITULE = 'PM_PB: RESU2'),
+                   TRANSITOIRE=_F(  RESULTAT = RESU2,
+                                    NOM_CHAM = 'SIGM_ELNO_DEPL')
+                 )
+
+IMPR_TABLE(    TABLE=PMPB2 ) 
+
+# le PM
+TEST_TABLE(    TABLE=PMPB2,
+               FILTRE=( _F(  NOM_PARA = 'LIEU',
+                             VALE_K   = 'ORIG'),),
+                 REFERENCE='ANALYTIQUE',
+                  NOM_PARA='PM',
+                      VALE=200.                 )
+
+TEST_TABLE(    TABLE=PMPB2,
+               FILTRE=( _F(  NOM_PARA = 'LIEU',
+                             VALE_K   = 'EXTR'),),
+                 REFERENCE='ANALYTIQUE',
+                  NOM_PARA='PM',
+                      VALE=200.                 )
+
+# le PB
+TEST_TABLE(    TABLE=PMPB2,
+               FILTRE=( _F(  NOM_PARA = 'LIEU',
+                             VALE_K   = 'ORIG'),),
+                 REFERENCE='ANALYTIQUE',
+                  NOM_PARA='PB',
+                      VALE=100.                 )
+
+TEST_TABLE(    TABLE=PMPB2,
+               FILTRE=( _F(  NOM_PARA = 'LIEU',
+                             VALE_K   = 'EXTR'),),
+                 REFERENCE='ANALYTIQUE',
+                  NOM_PARA='PB',
+                      VALE=100.                 )
+
+# le PMB
+TEST_TABLE(    TABLE=PMPB2,
+               FILTRE=( _F(  NOM_PARA = 'LIEU',
+                             VALE_K   = 'ORIG'),),
+                 REFERENCE='ANALYTIQUE',
+                  NOM_PARA='PMB',
+                      VALE=300.                 )
+TEST_TABLE(    TABLE=PMPB2,
+               FILTRE=( _F(  NOM_PARA = 'LIEU',
+                             VALE_K   = 'EXTR'),),
+                 REFERENCE='ANALYTIQUE',
+                  NOM_PARA='PMB',
+                      VALE=200.                 )
+
+# le MAX_SIGM
+TEST_TABLE(    TABLE=PMPB2,
+               FILTRE=( _F(  NOM_PARA = 'LIEU',
+                             VALE_K   = 'ORIG'),),
+                 REFERENCE='ANALYTIQUE',
+                  NOM_PARA='MAX_SIYY',
+                      VALE=300.                 )
+TEST_TABLE(    TABLE=PMPB2,
+               FILTRE=( _F(  NOM_PARA = 'LIEU',
+                             VALE_K   = 'EXTR'),),
+                 REFERENCE='ANALYTIQUE',
+                  NOM_PARA='MAX_SIYY',
+                      VALE=200.                 )
+
+#--------------------------------------------------------------------------------
+#   option = PM_PB
+#   chargement thermique
+#--------------------------------------------------------------------------------
+
+PMPB3=POST_RCCM(        MATER=MAT,
+                    TYPE_RESU='VALE_MAX',
+                       OPTION='PM_PB',
+                        TITRE='PM_PB, RESULTAT: RESUTH',
+                      SEGMENT=_F(  CHEMIN = LIGNE,
+                                    INTITULE = 'PM_PB: RESUTH'),
+                  TRANSITOIRE=(_F(  RESULTAT = RESUTH,
+                                    NUME_ORDRE = ( 1, 2, ),
+                                    NOM_CHAM = 'SIGM_ELNO_DEPL'),
+                               _F(  RESULTAT = RESUTH,
+                                    NUME_ORDRE = ( 3, 4, ),
+                                    NOM_CHAM = 'SIGM_ELNO_DEPL'))
+                 )
+
+IMPR_TABLE(    TABLE=PMPB3 ) 
+
+# le PM
+TEST_TABLE(    TABLE=PMPB3,
+               FILTRE=( _F(  NOM_PARA = 'LIEU',
+                             VALE_K   = 'ORIG'),
+                        _F(  NOM_PARA = 'INST_PM',
+                             VALE     = 2.    )),
+                 REFERENCE='ANALYTIQUE',
+                  NOM_PARA='PM',
+                   CRITERE='ABSOLU',
+                      VALE=0.                   )
+TEST_TABLE(    TABLE=PMPB3,
+               FILTRE=( _F(  NOM_PARA = 'LIEU',
+                             VALE_K   = 'EXTR'),
+                        _F(  NOM_PARA = 'INST_PM',
+                             VALE     = 2.    )),
+                 REFERENCE='ANALYTIQUE',
+                  NOM_PARA='PM',
+                   CRITERE='ABSOLU',
+                      VALE=0.                   )
+
+# le PB
+TEST_TABLE(    TABLE=PMPB3,
+               FILTRE=( _F(  NOM_PARA = 'LIEU',
+                             VALE_K   = 'ORIG'),
+                        _F(  NOM_PARA = 'INST_PB',
+                             VALE     = 2.    )),
+                 REFERENCE='ANALYTIQUE',
+                  NOM_PARA='PB',
+                      VALE=100.                 )
+TEST_TABLE(    TABLE=PMPB3,
+               FILTRE=( _F(  NOM_PARA = 'LIEU',
+                             VALE_K   = 'EXTR'),
+                        _F(  NOM_PARA = 'INST_PB',
+                             VALE     = 2.    )),
+                 REFERENCE='ANALYTIQUE',
+                  NOM_PARA='PB',
+                      VALE=100.                 )
+
+# le PMB
+TEST_TABLE(    TABLE=PMPB3,
+               FILTRE=( _F(  NOM_PARA = 'LIEU',
+                             VALE_K   = 'ORIG'),
+                        _F(  NOM_PARA = 'INST_PMB',
+                             VALE     = 2.    )),
+                 REFERENCE='ANALYTIQUE',
+                  NOM_PARA='PB',
+                      VALE=100.                 )
+TEST_TABLE(    TABLE=PMPB3,
+               FILTRE=( _F(  NOM_PARA = 'LIEU',
+                             VALE_K   = 'EXTR'),
+                        _F(  NOM_PARA = 'INST_PMB',
+                             VALE     = 2.    )),
+                 REFERENCE='ANALYTIQUE',
+                  NOM_PARA='PB',
+                      VALE=100.                 )
+
+# le MAX_SIGM
+TEST_TABLE(    TABLE=PMPB3,
+               FILTRE=( _F(  NOM_PARA = 'LIEU',
+                             VALE_K   = 'ORIG'),
+                        _F(  NOM_PARA = 'INST_PMB',
+                             VALE     = 2.    )),
+                 REFERENCE='ANALYTIQUE',
+                  NOM_PARA='MAX_SIYY',
+                      VALE=100.                 )
+TEST_TABLE(    TABLE=PMPB3,
+               FILTRE=( _F(  NOM_PARA = 'LIEU',
+                             VALE_K   = 'EXTR'),
+                        _F(  NOM_PARA = 'INST_PMB',
+                             VALE     = 2.    )),
+                 REFERENCE='ANALYTIQUE',
+                  NOM_PARA='MAX_SIYY',
+                   CRITERE='ABSOLU',
+                      VALE=0.                   )
+
+#--------------------------------------------------------------------------------
+#   option = SN   avec RESU_SIGM_THER pour le SN*
+#   chargement mécanique + thermique
+#--------------------------------------------------------------------------------
+
+SN1=POST_RCCM(         MATER=MAT,
+                   TYPE_RESU='VALE_MAX',
+                      OPTION='SN',
+                       TITRE='SN, RESULTAT: RESU2 AVEC RESUTH',
+                     SEGMENT=_F(  CHEMIN = LIGNE,
+                                    INTITULE = 'SN: RESU2+RESUTH'),
+                 TRANSITOIRE=_F(  RESULTAT = RESU2,
+                                  RESU_SIGM_THER = RESUTH,
+                                  NOM_CHAM = 'SIGM_ELNO_DEPL')
+                 )
+
+IMPR_TABLE(    TABLE=SN1 ) 
+
+# le SN
+TEST_TABLE(    TABLE=SN1,
+               FILTRE=( _F(  NOM_PARA = 'LIEU',
+                             VALE_K   = 'ORIG'),),
+                 REFERENCE='ANALYTIQUE',
+                  NOM_PARA='SN',
+                      VALE=300.                 )
+TEST_TABLE(    TABLE=SN1,
+               FILTRE=( _F(  NOM_PARA = 'LIEU',
+                             VALE_K   = 'EXTR'),),
+                 REFERENCE='ANALYTIQUE',
+                  NOM_PARA='SN',
+                      VALE=300.                 )
+
+# le SN*
+TEST_TABLE(    TABLE=SN1,
+               FILTRE=( _F(  NOM_PARA = 'LIEU',
+                             VALE_K   = 'ORIG'),),
+                 REFERENCE='ANALYTIQUE',
+                  NOM_PARA='SN*',
+                      VALE=200.                 )
+TEST_TABLE(    TABLE=SN1,
+               FILTRE=( _F(  NOM_PARA = 'LIEU',
+                             VALE_K   = 'EXTR'),),
+                 REFERENCE='ANALYTIQUE',
+                  NOM_PARA='SN*',
+                      VALE=200.                 )
+
+#--------------------------------------------------------------------------------
+#   option = SN   avec RESU_SIGM_THER pour le SN*
+#   chargement thermique
+#--------------------------------------------------------------------------------
+
+SN2=POST_RCCM(         MATER=MAT,
+                   TYPE_RESU='VALE_MAX',
+                      OPTION='SN',
+                       TITRE='SN, RESULTAT: RESUTH AVEC RESUTH',
+                     SEGMENT=_F(  CHEMIN = LIGNE,
+                                    INTITULE = 'SN: RESUTH+RESUTH'),
+                 TRANSITOIRE=_F(  RESULTAT = RESUTH,
+                                  RESU_SIGM_THER = RESUTH,
+                                  NOM_CHAM = 'SIGM_ELNO_DEPL')
+                 )
+
+IMPR_TABLE(    TABLE=SN2 ) 
+
+# le SN
+TEST_TABLE(    TABLE=SN2,
+               FILTRE=( _F(  NOM_PARA = 'LIEU',
+                             VALE_K   = 'ORIG'),),
+                 REFERENCE='ANALYTIQUE',
+                  NOM_PARA='SN',
+                      VALE=100.                 )
+TEST_TABLE(    TABLE=SN2,
+               FILTRE=( _F(  NOM_PARA = 'LIEU',
+                             VALE_K   = 'EXTR'),),
+                 REFERENCE='ANALYTIQUE',
+                  NOM_PARA='SN',
+                      VALE=100.                 )
+
+# le SN*
+TEST_TABLE(    TABLE=SN2,
+               FILTRE=( _F(  NOM_PARA = 'LIEU',
+                             VALE_K   = 'ORIG'),),
+                 REFERENCE='ANALYTIQUE',
+                  NOM_PARA='SN*',
+                   CRITERE='ABSOLU',
+                      VALE=0.                   )
+TEST_TABLE(    TABLE=SN2,
+               FILTRE=( _F(  NOM_PARA = 'LIEU',
+                             VALE_K   = 'EXTR'),),
+                 REFERENCE='ANALYTIQUE',
+                  NOM_PARA='SN*',
+                   CRITERE='ABSOLU',
+                      VALE=0.                   )
+
+#--------------------------------------------------------------------------------
+#   option = SN   avec combinaison RESU2(1,2), RESU2(3,4)
+#   chargement mécanique + thermique
+#--------------------------------------------------------------------------------
+
+SN3=POST_RCCM(        MATER=MAT,
+                  TYPE_RESU='VALE_MAX',
+                     OPTION='SN',
+                      TITRE='SN, RESULTAT: RESU2',
+                    SEGMENT=_F(  CHEMIN = LIGNE,
+                                 INTITULE = 'SN: RESU2+RESUTH'),
+                TRANSITOIRE=(_F(  RESULTAT = RESU2,
+                                  NUME_ORDRE = ( 1, 2, ),
+                                  NOM_CHAM = 'SIGM_ELNO_DEPL'),
+                             _F(  RESULTAT = RESU2,
+                                  NOM_CHAM = 'SIGM_ELNO_DEPL',
+                                  NUME_ORDRE = ( 3, 4, )))
+                 )
+
+IMPR_TABLE(    TABLE=SN3 ) 
+
+# le SN
+TEST_TABLE(    TABLE=SN3,
+               FILTRE=( _F(  NOM_PARA = 'LIEU',
+                             VALE_K   = 'ORIG'),
+                        _F(  NOM_PARA = 'INST_SN_1',
+                             CRITERE  = 'ABSOLU',
+                             VALE     = 0.    ),
+                        _F(  NOM_PARA = 'INST_SN_2',
+                             VALE     = 1.    )),
+                 REFERENCE='ANALYTIQUE',
+                  NOM_PARA='SN',
+                      VALE=200.                 )
+TEST_TABLE(    TABLE=SN3,
+               FILTRE=( _F(  NOM_PARA = 'LIEU',
+                             VALE_K   = 'EXTR'),
+                        _F(  NOM_PARA = 'INST_SN_1',
+                             CRITERE  = 'ABSOLU',
+                             VALE     = 0.    ),
+                        _F(  NOM_PARA = 'INST_SN_2',
+                             VALE     = 1.    )),
+                 REFERENCE='ANALYTIQUE',
+                  NOM_PARA='SN',
+                      VALE=200.                 )
+
+TEST_TABLE(    TABLE=SN3,
+               FILTRE=( _F(  NOM_PARA = 'LIEU',
+                             VALE_K   = 'ORIG'),
+                        _F(  NOM_PARA = 'INST_SN_1',
+                             VALE     = 2.    ),
+                        _F(  NOM_PARA = 'INST_SN_2',
+                             VALE     = 3.    )),
+                 REFERENCE='ANALYTIQUE',
+                  NOM_PARA='SN',
+                      VALE=200.                 )
+TEST_TABLE(    TABLE=SN3,
+               FILTRE=( _F(  NOM_PARA = 'LIEU',
+                             VALE_K   = 'EXTR'),
+                        _F(  NOM_PARA = 'INST_SN_1',
+                             VALE     = 2.    ),
+                        _F(  NOM_PARA = 'INST_SN_2',
+                             VALE     = 3.    )),
+                 REFERENCE='ANALYTIQUE',
+                  NOM_PARA='SN',
+                      VALE=200.                 )
+
+#--------------------------------------------------------------------------------
+#   option = FATIGUE_SPMAX
+#   chargement mécanique + thermique
+#--------------------------------------------------------------------------------
+
+FAT1=POST_RCCM(         MATER=MAT,
+                   TYPE_RESU = 'VALE_MAX',
+                       OPTION='FATIGUE_SPMAX',
+                        TITRE='FATIGUE_SPMAX, RESULTAT: RESU2',
+                      SEGMENT=_F(  CHEMIN = LIGNE,
+                                    INTITULE = 'FATIGUE_SP: RESU2'),
+                  TRANSITOIRE=_F(  RESULTAT = RESU2,
+                                   NOM_CHAM = 'SIGM_ELNO_DEPL')
+                 )
+
+IMPR_TABLE(    TABLE=FAT1 )
+
+# le SN
+TEST_TABLE(    TABLE=FAT1,
+               FILTRE=( _F(  NOM_PARA = 'LIEU',
+                             VALE_K   = 'ORIG'),),
+                 REFERENCE='ANALYTIQUE',
+                  NOM_PARA='SN',
+                      VALE=300.                 )
+TEST_TABLE(    TABLE=FAT1,
+               FILTRE=( _F(  NOM_PARA = 'LIEU',
+                             VALE_K   = 'EXTR'),),
+                 REFERENCE='ANALYTIQUE',
+                  NOM_PARA='SN',
+                      VALE=300.                 )
+
+# le SP
+TEST_TABLE(    TABLE=FAT1,
+               FILTRE=( _F(  NOM_PARA = 'LIEU',
+                             VALE_K   = 'ORIG'),),
+                 REFERENCE='ANALYTIQUE',
+                  NOM_PARA='SP',
+                      VALE=300.                 )
+TEST_TABLE(    TABLE=FAT1,
+               FILTRE=( _F(  NOM_PARA = 'LIEU',
+                             VALE_K   = 'EXTR'),),
+                 REFERENCE='ANALYTIQUE',
+                  NOM_PARA='SP',
+                      VALE=300.                 )
+
+# le SALT
+TEST_TABLE(    TABLE=FAT1,
+               FILTRE=( _F(  NOM_PARA = 'LIEU',
+                             VALE_K   = 'ORIG'),),
+                 REFERENCE='ANALYTIQUE',
+                  NOM_PARA='SALT',
+                      VALE=150.                 )
+TEST_TABLE(    TABLE=FAT1,
+               FILTRE=( _F(  NOM_PARA = 'LIEU',
+                             VALE_K   = 'EXTR'),),
+                 REFERENCE='ANALYTIQUE',
+                  NOM_PARA='SALT',
+                      VALE=150.                 )
+
+# le NADM
+TEST_TABLE(    TABLE=FAT1,
+               FILTRE=( _F(  NOM_PARA = 'LIEU',
+                             VALE_K   = 'ORIG'),),
+                 REFERENCE='ANALYTIQUE',
+                  NOM_PARA='NADM',
+                      VALE=5.49837E+05          )
+TEST_TABLE(    TABLE=FAT1,
+               FILTRE=( _F(  NOM_PARA = 'LIEU',
+                             VALE_K   = 'EXTR'),),
+                 REFERENCE='ANALYTIQUE',
+                  NOM_PARA='NADM',
+                      VALE=5.49837E+05          )
+
+# le DOMMAGE
+TEST_TABLE(    TABLE=FAT1,
+               FILTRE=( _F(  NOM_PARA = 'LIEU',
+                             VALE_K   = 'ORIG'),),
+                 REFERENCE='ANALYTIQUE',
+                  NOM_PARA='DOMMAGE',
+                      VALE=1.81872E-06          )
+TEST_TABLE(    TABLE=FAT1,
+               FILTRE=( _F(  NOM_PARA = 'LIEU',
+                             VALE_K   = 'EXTR'),),
+                 REFERENCE='ANALYTIQUE',
+                  NOM_PARA='DOMMAGE',
+                      VALE=1.81872E-06          )
+
+#--------------------------------------------------------------------------------
+#   option = FATIGUE_ZH210
+#   chargement mécanique + thermique
+#--------------------------------------------------------------------------------
+
+FAT2=POST_RCCM(        MATER = MAT,
+                   TYPE_RESU = 'VALE_MAX',
+                      OPTION = 'FATIGUE_ZH210',
+                       TITRE = 'FATIGUE_ZH210, RESULTAT: RESU2',
+                     SEGMENT =_F(  CHEMIN = LIGNE,
+                                    INTITULE = 'FATIGUE_ZH: RESU2'),
+                 TRANSITOIRE =_F(  RESULTAT = RESU2,
+                                   NOM_CHAM = 'SIGM_ELNO_DEPL',
+                                   INST = (0., 1., 2.,))
+                 )
+
+IMPR_TABLE(    TABLE=FAT2 ) 
+
+# le SN
+TEST_TABLE(    TABLE=FAT2,
+               FILTRE=( _F(  NOM_PARA = 'LIEU',
+                             VALE_K   = 'ORIG'),
+                        _F(  NOM_PARA = 'INST_1',
+                             CRITERE  = 'ABSOLU',
+                             VALE     = 0.    ),
+                        _F(  NOM_PARA = 'INST_2',
+                             VALE     = 1.    )),
+                 REFERENCE='ANALYTIQUE',
+                  NOM_PARA='SN',
+                      VALE=200.                 )
+TEST_TABLE(    TABLE=FAT2,
+               FILTRE=( _F(  NOM_PARA = 'LIEU',
+                             VALE_K   = 'ORIG'),
+                        _F(  NOM_PARA = 'INST_1',
+                             CRITERE  = 'ABSOLU',
+                             VALE     = 0.    ),
+                        _F(  NOM_PARA = 'INST_2',
+                             VALE     = 2.    )),
+                 REFERENCE='ANALYTIQUE',
+                  NOM_PARA='SN',
+                      VALE=300.                 )
+TEST_TABLE(    TABLE=FAT2,
+               FILTRE=( _F(  NOM_PARA = 'LIEU',
+                             VALE_K   = 'ORIG'),
+                        _F(  NOM_PARA = 'INST_1',
+                             VALE     = 1.    ),
+                        _F(  NOM_PARA = 'INST_2',
+                             VALE     = 2.    )),
+                 REFERENCE='ANALYTIQUE',
+                  NOM_PARA='SN',
+                      VALE=100.                 )
+
+TEST_TABLE(    TABLE=FAT2,
+               FILTRE=( _F(  NOM_PARA = 'LIEU',
+                             VALE_K   = 'EXTR'),
+                        _F(  NOM_PARA = 'INST_1',
+                             CRITERE  = 'ABSOLU',
+                             VALE     = 0.    ),
+                        _F(  NOM_PARA = 'INST_2',
+                             VALE     = 1.    )),
+                 REFERENCE='ANALYTIQUE',
+                  NOM_PARA='SN',
+                      VALE=200.                 )
+TEST_TABLE(    TABLE=FAT2,
+               FILTRE=( _F(  NOM_PARA = 'LIEU',
+                             VALE_K   = 'EXTR'),
+                        _F(  NOM_PARA = 'INST_1',
+                             CRITERE  = 'ABSOLU',
+                             VALE     = 0.    ),
+                        _F(  NOM_PARA = 'INST_2',
+                             VALE     = 2.    )),
+                 REFERENCE='ANALYTIQUE',
+                  NOM_PARA='SN',
+                      VALE=100.                 )
+TEST_TABLE(    TABLE=FAT2,
+               FILTRE=( _F(  NOM_PARA = 'LIEU',
+                             VALE_K   = 'EXTR'),
+                        _F(  NOM_PARA = 'INST_1',
+                             VALE     = 1.    ),
+                        _F(  NOM_PARA = 'INST_2',
+                             VALE     = 2.    )),
+                 REFERENCE='ANALYTIQUE',
+                  NOM_PARA='SN',
+                      VALE=100.                 )
+
+# le SP
+TEST_TABLE(    TABLE=FAT2,
+               FILTRE=( _F(  NOM_PARA = 'LIEU',
+                             VALE_K   = 'ORIG'),
+                        _F(  NOM_PARA = 'INST_1',
+                             CRITERE  = 'ABSOLU',
+                             VALE     = 0.    ),
+                        _F(  NOM_PARA = 'INST_2',
+                             VALE     = 1.    )),
+                 REFERENCE='ANALYTIQUE',
+                  NOM_PARA='SP',
+                      VALE=200.                 )
+TEST_TABLE(    TABLE=FAT2,
+               FILTRE=( _F(  NOM_PARA = 'LIEU',
+                             VALE_K   = 'ORIG'),
+                        _F(  NOM_PARA = 'INST_1',
+                             CRITERE  = 'ABSOLU',
+                             VALE     = 0.    ),
+                        _F(  NOM_PARA = 'INST_2',
+                             VALE     = 2.    )),
+                 REFERENCE='ANALYTIQUE',
+                  NOM_PARA='SP',
+                      VALE=300.                 )
+TEST_TABLE(    TABLE=FAT2,
+               FILTRE=( _F(  NOM_PARA = 'LIEU',
+                             VALE_K   = 'ORIG'),
+                        _F(  NOM_PARA = 'INST_1',
+                             VALE     = 1.    ),
+                        _F(  NOM_PARA = 'INST_2',
+                             VALE     = 2.    )),
+                 REFERENCE='ANALYTIQUE',
+                  NOM_PARA='SP',
+                      VALE=100.                 )
+
+TEST_TABLE(    TABLE=FAT2,
+               FILTRE=( _F(  NOM_PARA = 'LIEU',
+                             VALE_K   = 'EXTR'),
+                        _F(  NOM_PARA = 'INST_1',
+                             CRITERE  = 'ABSOLU',
+                             VALE     = 0.    ),
+                        _F(  NOM_PARA = 'INST_2',
+                             VALE     = 1.    )),
+                 REFERENCE='ANALYTIQUE',
+                  NOM_PARA='SP',
+                      VALE=200.                 )
+TEST_TABLE(    TABLE=FAT2,
+               FILTRE=( _F(  NOM_PARA = 'LIEU',
+                             VALE_K   = 'EXTR'),
+                        _F(  NOM_PARA = 'INST_1',
+                             CRITERE  = 'ABSOLU',
+                             VALE     = 0.    ),
+                        _F(  NOM_PARA = 'INST_2',
+                             VALE     = 2.    )),
+                 REFERENCE='ANALYTIQUE',
+                  NOM_PARA='SP',
+                      VALE=100.                 )
+TEST_TABLE(    TABLE=FAT2,
+               FILTRE=( _F(  NOM_PARA = 'LIEU',
+                             VALE_K   = 'EXTR'),
+                        _F(  NOM_PARA = 'INST_1',
+                             VALE     = 1.    ),
+                        _F(  NOM_PARA = 'INST_2',
+                             VALE     = 2.    )),
+                 REFERENCE='ANALYTIQUE',
+                  NOM_PARA='SP',
+                      VALE=100.                 )
+
+# le SALT
+TEST_TABLE(    TABLE=FAT2,
+               FILTRE=( _F(  NOM_PARA = 'LIEU',
+                             VALE_K   = 'ORIG'),
+                        _F(  NOM_PARA = 'INST_1',
+                             CRITERE  = 'ABSOLU',
+                             VALE     = 0.    ),
+                        _F(  NOM_PARA = 'INST_2',
+                             VALE     = 1.    )),
+                 REFERENCE='ANALYTIQUE',
+                  NOM_PARA='SALT',
+                      VALE=100.                 )
+TEST_TABLE(    TABLE=FAT2,
+               FILTRE=( _F(  NOM_PARA = 'LIEU',
+                             VALE_K   = 'ORIG'),
+                        _F(  NOM_PARA = 'INST_1',
+                             CRITERE  = 'ABSOLU',
+                             VALE     = 0.    ),
+                        _F(  NOM_PARA = 'INST_2',
+                             VALE     = 2.    )),
+                 REFERENCE='ANALYTIQUE',
+                  NOM_PARA='SALT',
+                      VALE=150.                 )
+TEST_TABLE(    TABLE=FAT2,
+               FILTRE=( _F(  NOM_PARA = 'LIEU',
+                             VALE_K   = 'ORIG'),
+                        _F(  NOM_PARA = 'INST_1',
+                             VALE     = 1.    ),
+                        _F(  NOM_PARA = 'INST_2',
+                             VALE     = 2.    )),
+                 REFERENCE='ANALYTIQUE',
+                  NOM_PARA='SALT',
+                      VALE=50.                  )
+
+TEST_TABLE(    TABLE=FAT2,
+               FILTRE=( _F(  NOM_PARA = 'LIEU',
+                             VALE_K   = 'EXTR'),
+                        _F(  NOM_PARA = 'INST_1',
+                             CRITERE  = 'ABSOLU',
+                             VALE     = 0.    ),
+                        _F(  NOM_PARA = 'INST_2',
+                             VALE     = 1.    )),
+                 REFERENCE='ANALYTIQUE',
+                  NOM_PARA='SALT',
+                      VALE=100.                 )
+TEST_TABLE(    TABLE=FAT2,
+               FILTRE=( _F(  NOM_PARA = 'LIEU',
+                             VALE_K   = 'EXTR'),
+                        _F(  NOM_PARA = 'INST_1',
+                             CRITERE  = 'ABSOLU',
+                             VALE     = 0.    ),
+                        _F(  NOM_PARA = 'INST_2',
+                             VALE     = 2.    )),
+                 REFERENCE='ANALYTIQUE',
+                  NOM_PARA='SALT',
+                      VALE=50.                  )
+TEST_TABLE(    TABLE=FAT2,
+               FILTRE=( _F(  NOM_PARA = 'LIEU',
+                             VALE_K   = 'EXTR'),
+                        _F(  NOM_PARA = 'INST_1',
+                             VALE     = 1.    ),
+                        _F(  NOM_PARA = 'INST_2',
+                             VALE     = 2.    )),
+                 REFERENCE='ANALYTIQUE',
+                  NOM_PARA='SALT',
+                      VALE=50.                  )
+
+# le DOMMAGE
+TEST_TABLE(    TABLE=FAT2,
+               FILTRE=( _F(  NOM_PARA = 'LIEU',
+                             VALE_K   = 'ORIG'),
+                        _F(  NOM_PARA = 'INST_1',
+                             CRITERE  = 'ABSOLU',
+                             VALE     = 0.    ),
+                        _F(  NOM_PARA = 'INST_2',
+                             VALE     = 1.    )),
+                 REFERENCE='ANALYTIQUE',
+                  NOM_PARA='DOMMAGE',
+                      VALE=4.24242E-07                 )
+TEST_TABLE(    TABLE=FAT2,
+               FILTRE=( _F(  NOM_PARA = 'LIEU',
+                             VALE_K   = 'ORIG'),
+                        _F(  NOM_PARA = 'INST_1',
+                             CRITERE  = 'ABSOLU',
+                             VALE     = 0.    ),
+                        _F(  NOM_PARA = 'INST_2',
+                             VALE     = 2.    )),
+                 REFERENCE='ANALYTIQUE',
+                  NOM_PARA='DOMMAGE',
+                      VALE=1.81872E-06                 )
+TEST_TABLE(    TABLE=FAT2,
+               FILTRE=( _F(  NOM_PARA = 'LIEU',
+                             VALE_K   = 'ORIG'),
+                        _F(  NOM_PARA = 'INST_1',
+                             VALE     = 1.    ),
+                        _F(  NOM_PARA = 'INST_2',
+                             VALE     = 2.    )),
+                 REFERENCE='ANALYTIQUE',
+                  NOM_PARA='DOMMAGE',
+                      VALE=2.41379E-07                 )
+
+TEST_TABLE(    TABLE=FAT2,
+               FILTRE=( _F(  NOM_PARA = 'LIEU',
+                             VALE_K   = 'EXTR'),
+                        _F(  NOM_PARA = 'INST_1',
+                             CRITERE  = 'ABSOLU',
+                             VALE     = 0.    ),
+                        _F(  NOM_PARA = 'INST_2',
+                             VALE     = 1.    )),
+                 REFERENCE='ANALYTIQUE',
+                  NOM_PARA='DOMMAGE',
+                      VALE=4.24242E-07                 )
+TEST_TABLE(    TABLE=FAT2,
+               FILTRE=( _F(  NOM_PARA = 'LIEU',
+                             VALE_K   = 'EXTR'),
+                        _F(  NOM_PARA = 'INST_1',
+                             CRITERE  = 'ABSOLU',
+                             VALE     = 0.    ),
+                        _F(  NOM_PARA = 'INST_2',
+                             VALE     = 2.    )),
+                 REFERENCE='ANALYTIQUE',
+                  NOM_PARA='DOMMAGE',
+                      VALE=2.41379E-07                 )
+TEST_TABLE(    TABLE=FAT2,
+               FILTRE=( _F(  NOM_PARA = 'LIEU',
+                             VALE_K   = 'EXTR'),
+                        _F(  NOM_PARA = 'INST_1',
+                             VALE     = 1.    ),
+                        _F(  NOM_PARA = 'INST_2',
+                             VALE     = 2.    )),
+                 REFERENCE='ANALYTIQUE',
+                  NOM_PARA='DOMMAGE',
+                      VALE=2.41379E-07                 )
+
+# le DOMMAGE_CUMU
+TEST_TABLE(    TABLE=FAT2,
+               FILTRE=( _F(  NOM_PARA = 'LIEU',
+                             VALE_K   = 'ORIG'),
+                        _F(  NOM_PARA = 'INST_1',
+                             CRITERE  = 'ABSOLU',
+                             VALE     = 0.    ),
+                        _F(  NOM_PARA = 'INST_2',
+                             VALE     = 1.    )),
+                 REFERENCE='ANALYTIQUE',
+                  NOM_PARA='DOMMAGE_CUMU',
+                      VALE=2.24296E-06                 )
+TEST_TABLE(    TABLE=FAT2,
+               FILTRE=( _F(  NOM_PARA = 'LIEU',
+                             VALE_K   = 'ORIG'),
+                        _F(  NOM_PARA = 'INST_1',
+                             CRITERE  = 'ABSOLU',
+                             VALE     = 0.    ),
+                        _F(  NOM_PARA = 'INST_2',
+                             VALE     = 2.    )),
+                 REFERENCE='ANALYTIQUE',
+                  NOM_PARA='DOMMAGE_CUMU',
+                      VALE=1.81872E-06                 )
+TEST_TABLE(    TABLE=FAT2,
+               FILTRE=( _F(  NOM_PARA = 'LIEU',
+                             VALE_K   = 'ORIG'),
+                        _F(  NOM_PARA = 'INST_1',
+                             VALE     = 1.    ),
+                        _F(  NOM_PARA = 'INST_2',
+                             VALE     = 2.    )),
+                 REFERENCE='ANALYTIQUE',
+                  NOM_PARA='DOMMAGE_CUMU',
+                      VALE=2.48434E-06                )
+
+TEST_TABLE(    TABLE=FAT2,
+               FILTRE=( _F(  NOM_PARA = 'LIEU',
+                             VALE_K   = 'EXTR'),
+                        _F(  NOM_PARA = 'INST_1',
+                             CRITERE  = 'ABSOLU',
+                             VALE     = 0.    ),
+                        _F(  NOM_PARA = 'INST_2',
+                             VALE     = 1.    )),
+                 REFERENCE='ANALYTIQUE',
+                  NOM_PARA='DOMMAGE_CUMU',
+                      VALE=4.24242E-07                 )
+TEST_TABLE(    TABLE=FAT2,
+               FILTRE=( _F(  NOM_PARA = 'LIEU',
+                             VALE_K   = 'EXTR'),
+                        _F(  NOM_PARA = 'INST_1',
+                             CRITERE  = 'ABSOLU',
+                             VALE     = 0.    ),
+                        _F(  NOM_PARA = 'INST_2',
+                             VALE     = 2.    )),
+                 REFERENCE='ANALYTIQUE',
+                  NOM_PARA='DOMMAGE_CUMU',
+                      VALE=6.65622E-07                 )
+TEST_TABLE(    TABLE=FAT2,
+               FILTRE=( _F(  NOM_PARA = 'LIEU',
+                             VALE_K   = 'EXTR'),
+                        _F(  NOM_PARA = 'INST_1',
+                             VALE     = 1.    ),
+                        _F(  NOM_PARA = 'INST_2',
+                             VALE     = 2.    )),
+                 REFERENCE='ANALYTIQUE',
+                  NOM_PARA='DOMMAGE_CUMU',
+                      VALE=9.07001E-07                 )
+
+FIN( )

@@ -1,0 +1,360 @@
+      SUBROUTINE OP0051 ( IER )
+C     ------------------------------------------------------------------
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF POSTRELE  DATE 14/05/2002   AUTEUR DURAND C.DURAND 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+C     ------------------------------------------------------------------
+C     OPERATEUR   POST_RELEVE_T
+C     ------------------------------------------------------------------
+C
+      IMPLICIT   NONE
+C
+C 0.1. ==> ARGUMENTS
+C
+      INTEGER          IER
+C
+C     ------------------------------------------------------------------
+C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
+      INTEGER          ZI
+      COMMON  /IVARJE/ ZI(1)
+      REAL*8           ZR
+      COMMON  /RVARJE/ ZR(1)
+      COMPLEX*16       ZC
+      COMMON  /CVARJE/ ZC(1)
+      LOGICAL          ZL
+      COMMON  /LVARJE/ ZL(1)
+      CHARACTER*8      ZK8
+      CHARACTER*16             ZK16
+      CHARACTER*24                      ZK24
+      CHARACTER*32                               ZK32
+      CHARACTER*80                                        ZK80
+      COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
+      CHARACTER*32     JEXNUM
+C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
+C
+C 0.3. ==> VARIABLES LOCALES
+C
+      CHARACTER*6 NOMPRO
+      PARAMETER ( NOMPRO = 'OP0051' )
+C
+      INTEGER IAUX, JAUX
+      INTEGER      ICHEF, IE, IOCC, IRET, IVCHF, JACC, JACCIS, JACCR8,
+     >             JCHEF, JTAC, JVAC, N1, NBACCE, NBCHEF, NBPOST, 
+     >             NBRESU, NBVCHF, IBID
+      INTEGER NRPASS, NBPASS, ADRECG
+C
+      REAL*8       EPSI
+C
+      CHARACTER*1  CA
+      CHARACTER*2  CODACC, DIM
+      CHARACTER*6  MCF
+      CHARACTER*8  K8B, NRESU, CRITER
+      CHARACTER*8  LERESU,NOPASE
+      CHARACTER*16 NOMCMD, CONCEP, NCHEFF, NCHSYM, OPTION
+      CHARACTER*19 NCH19, NOMRES
+      CHARACTER*24 XNUMCP, XNOMCP, VNOMCH, VCODOP, XNOVAR
+      CHARACTER*24 NACCIS, NACCR8, NCH24, NLSMAC, NLSNAC
+      CHARACTER*24 NORECG
+      LOGICAL      TROUVE
+C     ------------------------------------------------------------------
+C
+      CALL JEMARQ()
+      MCF = 'ACTION'
+C
+C     --- PHASE DE VERIFICATIONS SUPPLEMENTAIRES ---
+C
+      CALL RVVSUP()
+C
+C     --- PHASE D'EXECUTION ---
+C
+      CALL GETRES ( NOMRES, CONCEP, NOMCMD )
+      CALL GETFAC ( MCF, NBPOST )
+C
+      DIM = ' '
+      CALL RVPARA ( NOMRES )
+      CALL TITRE 
+      CALL INFMAJ
+C
+C     --- PHASE DE VERIFICATION D'EXISTENCE DES ARGUMENTS ---
+C
+C               12   345678   9012345678901234
+      NCHEFF = '&&'//NOMPRO//'.CHAMP19'
+      XNOMCP = '&&'//NOMPRO//'.NOM.COMPOSANTES'
+      XNOVAR = '&&'//NOMPRO//'.NOM.VARI       '
+      XNUMCP = '&&'//NOMPRO//'.NUM.COMPOSANTES'
+      VNOMCH = '&&'//NOMPRO//'.NOM.CHAMPEFFECT'
+      VCODOP = '&&'//NOMPRO//'.CODE.OPERATION '
+      NACCIS = '&&'//NOMPRO//'.ACCES.ENTIER   '
+      NACCR8 = '&&'//NOMPRO//'.ACCES.REEL     '
+      NLSMAC = '&&'//NOMPRO//'.MAILLES.ACTIVES'
+      NLSNAC = '&&'//NOMPRO//'.NOEUDS .ACTIFS '
+      NORECG = '&&'//NOMPRO//'_RESULTA_GD     '
+C
+      CALL RVGARG ( XNOMCP, XNUMCP, VNOMCH, VCODOP, XNOVAR )
+C
+C     --- PHASE DE POST TRAITEMENT ---
+C
+      DO 100, IOCC = 1, NBPOST, 1
+C
+        CALL RVCOHE ( XNUMCP, XNOMCP, VNOMCH, IOCC, IRET )
+C
+        IF ( IRET.NE.0 ) THEN
+C
+        CALL GETVTX ( MCF, 'MOYE_NOEUD', IOCC,1,1, K8B, N1 )
+        IF ( K8B(1:1) .EQ. 'O' ) THEN
+          CA = 'N'
+        ELSE
+          CA = 'E'
+        ENDIF
+C
+C        --- EST-CE UN RESULTAT ? ---
+C
+        NRESU = ' '
+        CALL GETVID ( MCF, 'RESULTAT', IOCC,1,1, NRESU, NBRESU )
+C
+C        --- NOMBRE DE PASSAGES POUR LA SENSIBILITE ---
+C
+        IAUX = IOCC
+        IF ( NBRESU .NE. 0 ) THEN
+          IBID = 1
+        ELSE
+          IBID = 2
+        ENDIF
+        JAUX = 1
+        CALL PSRESE ( MCF, IAUX, IBID, NRESU, JAUX,
+     >                NBPASS, NORECG, IRET )
+C
+        IF ( IRET.EQ.0 ) THEN
+C
+        CALL JEVEUO ( NORECG, 'L', ADRECG )
+C
+        DO 200 , NRPASS = 1 , NBPASS
+C
+C        POUR LE PASSAGE NUMERO NRPASS :
+C        . NOM DU CHAMP DE RESULTAT OU DE GRANDEUR
+C        . NOM DU PARAMETRE DE SENSIBILITE
+C
+         LERESU = ZK24(ADRECG+2*NRPASS-2)(1:8)
+         NOPASE = ZK24(ADRECG+2*NRPASS-1)(1:8)
+C
+C        --- SAISIE DES CHAMPS EFFECTIFS A POST-TAITER ---
+C
+         IF ( NBRESU .NE. 0 ) THEN
+C
+C           /* CAS D' UN RESULTAT */
+C
+            CALL GETVTX ( MCF, 'NOM_CHAM' , IOCC,1,1, NCHSYM, N1 )
+            CALL GETVTX ( MCF, 'CRITERE'  , IOCC,1,1, CRITER, N1 )
+            CALL GETVR8 ( MCF, 'PRECISION', IOCC,1,1, EPSI  , N1 )
+C
+            CALL RVGACC ( IOCC, CODACC, NACCIS, NACCR8, NBACCE )
+C
+            CALL JEVEUO ( NACCIS, 'L', JACCIS )
+            CALL JEVEUO ( NACCR8, 'L', JACCR8 )
+C
+            CALL RVGCHF ( EPSI, CRITER,
+     >                    LERESU, NRESU, NOPASE, NCHSYM, CODACC,
+     >                    ZI(JACCIS), ZR(JACCR8), NBACCE, NCHEFF, CA )
+C
+            CALL JEDETR ( NACCIS )
+            CALL JEDETR ( NACCR8 )
+C
+         ELSE
+C
+C           /* CAS D' UN CHAMP DE GRANDEUR */
+C
+            CALL JECREO ( NCHEFF//'.TYPACCE', 'V E K8' )
+            CALL JEVEUO ( NCHEFF//'.TYPACCE', 'E',JACC )
+C
+            ZK8(JACC) = 'DIRECT  '
+C
+            CALL WKVECT(NCHEFF//'.VALACCE','V V I',1,JACC)
+C
+            ZI(JACC) = 1
+C
+            CALL JECREC(NCHEFF//'.LSCHEFF','V V K24','NU',
+     >                                        'DISPERSE','VARIABLE',1)
+C
+            CALL JECROC(JEXNUM(NCHEFF//'.LSCHEFF',1))
+            CALL JEECRA(JEXNUM(NCHEFF//'.LSCHEFF',1),'LONMAX',1,' ')
+            CALL JEVEUO(JEXNUM(NCHEFF//'.LSCHEFF',1),'E',JACC)
+C
+            CALL GETVID ( MCF, 'CHAM_GD', IOCC,1,1, ZK24(JACC), N1 )
+C
+            CALL DISMOI('F','TYPE_CHAMP',ZK24(JACC),'CHAMP',IBID,K8B,IE)
+            IF ( K8B(1:4) .EQ. 'ELNO' ) THEN
+               CALL DISMOI('F','NOM_OPTION',ZK24(JACC),'CHAMP',
+     >                                                 IBID,OPTION,IE)
+               IF ( CA .EQ. 'N' ) THEN
+                  IF ( OPTION(6:14) .EQ. 'ELNO_DEPL' ) THEN
+                     CALL RVGCH1 ( ZK24(JACC), OPTION )
+                  ENDIF
+               ENDIF
+            ENDIF
+C
+         ENDIF
+C
+C        =====================================================
+C        I     ON DISPOSE MAINTENANT DE :                    I
+C        I                                                   I
+C        I     LA XD NCHEFF DES CHAMPS EFFECTIFS MIS EN JEU  I
+C        I     POUR L' OCCURENCE COURANTE (DE TYPE IDENTIQUE)I
+C        I     DOCUMENTATION : CF RVGCHF                     I
+C        I                                                   I
+C        I     LES XD DE NOMS XNOMCP ET XNUMCP DES NOMS ET   I
+C        I     NUMEROS DES CMPS MISES EN JEU                 I
+C        I     DOCUMENTATION : CF RVGARG                     I
+C        I                                                   I
+C        I     DU VECTEUR VCODOP CONTENANT LES CODES DES     I
+C        I     DES POST-TRAITEMENT PAR OCCURENCES            I
+C        I     DOCUMENTATION : CF RVGARG                     I
+C        I                                                   I
+C        I  ON EST SUR QUE :                                 I
+C        I                                                   I
+C        I     TOUTES LES CMP MISES EN JEU SONT LEGALES      I
+C        I                                                   I
+C        I     LES CHAM_ELEM SONT BIEN "AUX NOEUDS"          I
+C        I                                                   I
+C        I     LES MAILLAGES, COURBES ET NOEUDS SONT         I
+C        I     COHERANTS AVEC LES CHAMPS                     I
+C        I                                                   I
+C        I  ON DOIT SAISIR LE LIEU DU POST-TRAITEMENT :      I
+C        I                                                   I
+C        I     CE LIEU EST LE MEME POUR TOUS LES CHAMPS      I
+C        I     EFFECTIFS                                     I
+C        =====================================================
+C
+         CALL JELIRA ( NCHEFF//'.LSCHEFF', 'NMAXOC', NBVCHF, K8B )
+C
+         IVCHF  = 0
+         TROUVE = .FALSE.
+C
+ 300     CONTINUE
+         IF ( (.NOT. TROUVE) .AND. (IVCHF .LT. NBVCHF) ) THEN
+C
+            IVCHF = IVCHF + 1
+            ICHEF = 0
+C
+            CALL JELIRA ( JEXNUM(NCHEFF//'.LSCHEFF', IVCHF),
+     >                                    'LONMAX', NBCHEF, K8B )
+            CALL JEVEUO ( JEXNUM(NCHEFF//'.LSCHEFF',IVCHF), 'L', JCHEF )
+C
+ 310        CONTINUE
+            IF ( (.NOT. TROUVE) .AND. (ICHEF .LT. NBCHEF) ) THEN
+C
+               ICHEF = ICHEF + 1
+C
+               NCH24 = ZK24(JCHEF + ICHEF-1)
+C
+               IF ( NCH24(1:1) .NE. '&' ) TROUVE = .TRUE.
+C
+               GOTO 310
+C
+            ENDIF
+C
+            GOTO 300
+C
+         ENDIF
+C
+         IF ( .NOT. TROUVE ) THEN
+C
+            CALL UTDEBM('F',NOMCMD,'****************************')
+            CALL UTIMPI('L','* POST_TRAITEMENT NUMERO : ',1,IOCC)
+            CALL UTIMPK('L','* INEXISTENCE DES CHAMP-GD',0,' ')
+            CALL UTIMPK('L','* PAS DE POST-TRAITEMENT',0,' ')
+            CALL UTIMPK('L','****************************',0,' ')
+            CALL UTFINM()
+         ELSE
+C
+C           --- SAISIE DU LIEU DU POST-TRAITEMENT DE L' OCCURENCE ---
+C
+            CALL RVOUEX ( MCF, IOCC, NCH24, XNOMCP,NLSMAC,NLSNAC,IRET)
+C
+            IF ( IRET .EQ. 0 ) THEN
+C
+               CALL UTDEBM('F',NOMCMD,'****************************')
+               CALL UTIMPI('L','* POST_TRAITEMENT NUMERO : ',1,IOCC)
+               CALL UTIMPK('L','* PAS DE MAILLES ',1,DIM)
+               CALL UTIMPK('L','* PAS DE POST-TRAITEMENT',0,' ')
+               CALL UTIMPK('L','****************************',0,' ')
+               CALL UTFINM()
+C
+            ELSE
+C
+               CALL JEVEUO(NCHEFF//'.TYPACCE','L',JTAC)
+               CALL JEVEUO(NCHEFF//'.VALACCE','L',JVAC)
+C
+               DO 400, IVCHF = 1, NBVCHF, 1
+C
+                  CALL JELIRA(JEXNUM(NCHEFF//'.LSCHEFF',IVCHF),
+     >                                          'LONMAX',NBCHEF,K8B)
+                  CALL JEVEUO(JEXNUM(NCHEFF//'.LSCHEFF',IVCHF),
+     >                                                    'L',JCHEF)
+C
+                  DO 410, ICHEF = 1, NBCHEF
+C
+                     NCH19 = ZK24(JCHEF + ICHEF-1)(1:19)
+C
+                     CALL RVPOST ( MCF, IOCC, DIM, IVCHF, ICHEF, NCHEFF,
+     >                             XNOMCP, XNUMCP, LERESU, NCH19,
+     >                             VCODOP, NLSMAC, NLSNAC, NOMRES,
+     >                             XNOVAR )
+C
+ 410              CONTINUE
+C
+ 400           CONTINUE
+C
+            ENDIF
+C
+            CALL JEEXIN ( NLSMAC, N1 )
+            IF ( N1 .NE. 0 ) CALL JEDETR ( NLSMAC )
+C
+            CALL JEEXIN ( NLSNAC, N1 )
+            IF ( N1 .NE. 0 ) CALL JEDETR ( NLSNAC )
+C
+         ENDIF
+C
+         CALL JEDETR ( NCHEFF//'.NOMRESU' )
+         CALL JEDETR ( NCHEFF//'.TYPACCE' )
+         CALL JEDETR ( NCHEFF//'.VALACCE' )
+         CALL JEDETR ( NCHEFF//'.LSCHEFF' )
+         CALL JEDETR ( NORECG )
+C
+ 200    CONTINUE
+C
+        ENDIF
+C
+        ENDIF
+C
+ 100  CONTINUE
+C
+      CALL JEDETR ( VNOMCH )
+      CALL JEDETR ( XNOVAR )
+      CALL JEDETR ( XNOMCP )
+      CALL JEDETR ( XNUMCP )
+      CALL JEDETR ( VCODOP )
+      CALL JEDETR ( '&&RVPOST.TITRE' )
+      CALL JEEXIN ( '&&'//NOMPRO//'.CONNECINVERSE  ', N1 )
+      IF ( N1 .NE. 0 ) CALL JEDETR( '&&'//NOMPRO//'.CONNECINVERSE  ' )
+C
+      CALL JEEXIN('&&YAPAS '//'S1   '//'.DESC',N1)
+      IF ( N1 .NE. 0 ) CALL JEDETR('&&YAPAS '//'S1   '//'.DESC')
+C
+      CALL JEDEMA()
+C
+      END

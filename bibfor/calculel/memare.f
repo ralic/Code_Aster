@@ -1,0 +1,73 @@
+      SUBROUTINE MEMARE(BASE,MATEL,MODELE,MATE,CARA,SUROPT)
+      IMPLICIT REAL*8 (A-H,O-Z)
+      CHARACTER*(*)     BASE,MATEL,MODELE,MATE,CARA,SUROPT
+C ----------------------------------------------------------------------
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF CALCULEL  DATE 27/02/96   AUTEUR CIBHHLV L.VIVAN 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+C ----------------------------------------------------------------------
+C     BUT: CREER ET INITIER L'OBJET .REFE_RESU DES MATR_ELEM(VECT_ELEM)
+C
+C      BASE  (K1)  : NOM DE LA BASE DE CREATION : 'G', 'V', ...
+C      MATEL (K8)  : NOM DU MATR_ELEM (OU VECT_ELEM)
+C      MODELE(K8)  : NOM DU MODELE SUPPORTANT LE MATR_ELEM
+C      MATE  (K8)  : NOM DU CHAM_MATER ASSOCIE
+C      CARA  (K8)  : NOM DU CARA_ELEM ASSOCIE
+C      SUROPT(K16) : NOM DE LA SUR_OPTION ('RIGI_MECA', ..., 'CHAR_MECA'
+C
+C ----------------------------------------------------------------------
+C     ----- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
+      INTEGER            ZI
+      COMMON  / IVARJE / ZI(1)
+      REAL*8             ZR
+      COMMON  / RVARJE / ZR(1)
+      COMPLEX*16         ZC
+      COMMON  / CVARJE / ZC(1)
+      LOGICAL            ZL
+      COMMON  / LVARJE / ZL(1)
+      CHARACTER*8        ZK8
+      CHARACTER*16                ZK16
+      CHARACTER*24                          ZK24
+      CHARACTER*32                                    ZK32
+      CHARACTER*80                                              ZK80
+      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+      CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
+C     ----- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
+C
+      CHARACTER*1  BAS2
+      CHARACTER*8  MATE2, MODE2
+C
+      CALL JEMARQ()
+      BAS2  = BASE
+      MATE2 = MATEL
+      MODE2 = MODELE
+      IF ( MODE2 .EQ. '        ' ) THEN
+         CALL UTMESS('F','MEMARE','IL MANQUE LE MODELE')
+      ENDIF
+C
+      CALL JEEXIN(MATE2//'.REFE_RESU',IRET)
+      IF (IRET.GT.0) CALL JEDETR(MATE2//'.REFE_RESU')
+      CALL WKVECT(MATE2//'.REFE_RESU',BAS2//' V K24',5,IAREFE)
+      ZK24(IAREFE-1+1) = MODELE
+      ZK24(IAREFE-1+2) = SUROPT
+      ZK24(IAREFE-1+3) = 'NON_SOUS_STRUC'
+      ZK24(IAREFE-1+4) = MATE
+      ZK24(IAREFE-1+5) = CARA
+C
+      CALL JEDEMA()
+      END

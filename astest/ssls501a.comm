@@ -1,0 +1,139 @@
+# MODIF  DATE 12/12/2000   AUTEUR ADBHHPM P.MASSIN 
+# RESPONSABLE ADBHHPM P.MASSIN
+# DATE   : 26/04/2000
+# AUTEUR : F. LEBOUVIER (DELTACAD)
+# TITRE  : CYLINDRE INFINIMENT LONG SOUMIS A DEUX LIGNES DE CHARGE 
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+#---------------------------------------------------------------------
+#  - CALCUL QUASI-STATIQUE D'UN CYLINDRE SOUMIS A DEUX CHARGES
+#    DIAMETRALEMENT OPPOSEES
+#  - MODELISATION AVEC DES ELEMENTS 'COQUE_D_PLAN'
+#---------------------------------------------------------------------
+#
+DEBUT( CODE=_F( NOM = 'SSLS501A',NIV_PUB_WEB='INTERNET'))
+
+#
+PRE_IDEAS()
+
+#
+MA=LIRE_MAILLAGE( )
+
+MO=AFFE_MODELE(   MAILLAGE=MA,
+                        AFFE=_F( TOUT = 'OUI',
+                              PHENOMENE = 'MECANIQUE',
+                              MODELISATION = 'COQUE_D_PLAN')
+                  )
+
+#
+#---------------------------------------------------------------------
+#                         CARACTERISTIQUES ELEMENTAIRES
+#---------------------------------------------------------------------
+#
+CAR_ELE=AFFE_CARA_ELEM(   MODELE=MO,
+                             COQUE=_F( GROUP_MA = 'TOUT_ELT',
+                                    EPAIS = 0.1,
+                                    MODI_METRIQUE = 'OUI')
+                          )
+
+#
+#---------------------------------------------------------------------
+#                         CARACTERISTIQUES MATERIAUX
+#---------------------------------------------------------------------
+#
+MAT=DEFI_MATERIAU(   ELAS=_F( E = 1.E+05,
+                             NU = 0.)
+                     )
+
+#
+CHAM_MAT=AFFE_MATERIAU(   MAILLAGE=MA,
+                                AFFE=_F( TOUT = 'OUI',
+                                      MATER = MAT)
+                          )
+
+#
+#---------------------------------------------------------------------
+#                         CHARGEMENTS
+#---------------------------------------------------------------------
+#
+CHAR=AFFE_CHAR_MECA(         MODELE=MO,DDL_IMPO=(
+                             _F( GROUP_NO = 'A',
+                                       DX = 0., DRZ = 0.),
+                             _F( GROUP_NO = 'B',
+                                       DY = 0., DRZ = 0.)),
+                         FORCE_NODALE=_F( GROUP_NO = 'A',
+                                       FY = -0.75)
+                       )
+
+#
+#---------------------------------------------------------------------
+#                         RESOLUTION
+#---------------------------------------------------------------------
+#
+RESUL=MECA_STATIQUE(       MODELE=MO,
+                         CHAM_MATER=CHAM_MAT,
+                          CARA_ELEM=CAR_ELE,
+                              EXCIT=_F( CHARGE = CHAR)
+                       )
+
+#
+RESUL=CALC_ELEM( reuse=RESUL,     RESULTAT=RESUL,
+                           MODELE=MO,
+                       CHAM_MATER=CHAM_MAT,
+                        CARA_ELEM=CAR_ELE,
+                           OPTION='EFGE_ELNO_DEPL'
+                    )
+
+#
+IMPR_RESU(  MODELE=MO, 
+               RESU=_F( FORMAT = 'IDEAS',
+                     MAILLAGE = MA)
+           )
+
+#
+#---------------------------------------------------------------------
+#                         VERIFICATION DES RESULTATS
+#---------------------------------------------------------------------
+#
+TEST_RESU(RESU=(
+     _F( RESULTAT = RESUL,         NOM_CHAM = 'DEPL',
+           NUME_ORDRE = 1,             GROUP_NO = 'A',
+           NOM_CMP = 'DY',          VALE = -13.455E-03,
+           PRECISION = 0.02,          CRITERE = 'RELATIF'),
+
+     _F( RESULTAT = RESUL,         NOM_CHAM = 'DEPL',
+           NUME_ORDRE = 1,             GROUP_NO = 'B',
+           NOM_CMP = 'DX',          VALE = 12.255E-03,
+           PRECISION = 0.02,          CRITERE = 'RELATIF'),
+
+     _F( RESULTAT = RESUL,         NOM_CHAM = 'EFGE_ELNO_DEPL',
+           NUME_ORDRE = 1,             MAILLE = 'MA32',
+           GROUP_NO = 'A',
+           NOM_CMP = 'NXX',           VALE = 0.0,
+           PRECISION = 0.2,          CRITERE = 'ABSOLU'), 
+_F( RESULTAT = RESUL,         NOM_CHAM = 'EFGE_ELNO_DEPL',
+           NUME_ORDRE = 1,             MAILLE = 'MA32',
+           GROUP_NO = 'A',
+           NOM_CMP = 'MXX',          VALE = -0.477,  
+           PRECISION = 0.02,          CRITERE = 'RELATIF'))
+           )
+
+#
+FIN()
+#
+# 

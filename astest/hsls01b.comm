@@ -1,0 +1,179 @@
+# MODIF  DATE 29/05/2002   AUTEUR CIBHHAB S.VANDENBERGHE 
+# TITRE PLAQUE  MINCE ENCASTREE SOUMISE A UN GRADIENT THERMIQUE
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+#              SEE THE FILE "LICENSE.TERMS" FOR INFORMATION ON USAGE AND
+#              REDISTRIBUTION OF THIS FILE.
+# ======================================================================
+# PLAQUE RECTANGULAIRE MINCE ENCASTREE SOUMISE
+# A UN GRADIENT THERMIQUE DANS L'EPAISSEUR
+# ET MODELISEE EN DKT- DKQ - DST - DSQ - Q4G
+#====================================================================
+
+
+DEBUT(CODE=_F(  NOM = 'HSLS01B',NIV_PUB_WEB='INTERNET') )
+
+PRE_GIBI()
+
+MAINI=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='NON'), )
+MA=CREA_MAILLAGE(     MAILLAGE=MAINI,
+                       MODI_MAILLE=(
+                       _F( TOUT = 'OUI',OPTION = 'QUAD8_9'),
+                       _F( TOUT = 'OUI',OPTION = 'TRIA6_7'),
+                       ),
+                     )
+
+MA=DEFI_GROUP( reuse=MA,  MAILLAGE=MA,CREA_GROUP_NO=(
+                    _F(  GROUP_MA = 'AB'),
+                    _F(  GROUP_MA = 'BC'),
+                    _F(  GROUP_MA = 'CD'),
+                    _F(  GROUP_MA = 'DA'))
+                      )
+
+YOUNG=2.E11
+POISSON=0.3
+DILAT=1.E-5
+#====================================================================
+MAT=DEFI_MATERIAU( ELAS=_F(  E = YOUNG,  NU = POISSON,  ALPHA = DILAT) )
+
+CHMAT=AFFE_MATERIAU(  MAILLAGE=MA, 
+ AFFE=_F(  GROUP_MA = 'STOT', MATER = MAT, TEMP_REF = 0.))
+
+#====================================================================
+#
+MOD=AFFE_MODELE(  MAILLAGE=MA,AFFE=(
+                         _F(  GROUP_MA = 'STOT',  PHENOMENE = 'MECANIQUE',
+                          MODELISATION = 'COQUE_3D'),
+                                   ) 
+                )
+
+EP=0.01
+
+CARA=AFFE_CARA_ELEM(   MODELE=MOD,
+          COQUE=_F(  GROUP_MA = 'STOT', EPAIS = EP)
+                     )
+
+TEMP0=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
+                OPERATION='AFFE',
+                MAILLAGE=MA,
+                AFFE=_F(TOUT='OUI',
+                        NOM_CMP=('TEMP','TEMP_INF','TEMP_SUP'),
+                        VALE=(0.0,0.0,0.0),),);
+                        
+TINF = 0. 
+
+TSUP = 100.
+
+TMOY=50.
+                        
+TEMP1=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
+                OPERATION='AFFE',
+                MAILLAGE=MA,
+                AFFE=_F(TOUT='OUI',
+                        NOM_CMP=('TEMP','TEMP_INF','TEMP_SUP'),
+                        VALE=(TMOY,TINF,TSUP),),);
+
+LINST=DEFI_LIST_REEL( VALE=( 0.,1. )  )
+
+TEMP=CREA_RESU(  OPERATION='AFFE', TYPE_RESU='EVOL_THER',
+                 NOM_CHAM='TEMP',
+                  AFFE=(_F(  INST = 0.,  CHAM_GD = TEMP0),
+                        _F(  INST = 1.,  CHAM_GD = TEMP1),
+                        ),
+                  )
+
+CH1=AFFE_CHAR_MECA(  MODELE=MOD,
+                  TEMP_CALCULEE=TEMP,
+                 DDL_IMPO=_F(  GROUP_NO = ('AB', 'BC', 'CD', 'DA',),
+                DX = 0., DY = 0., DZ = 0., DRX = 0., DRY = 0., DRZ = 0.)
+                    )
+
+
+MESTAT=MECA_STATIQUE( 
+                               MODELE=MOD,
+                                EXCIT=_F( CHARGE = CH1),
+                           CHAM_MATER=CHMAT,
+                            CARA_ELEM=CARA,INST=1.,
+                          )
+
+             
+
+THETA=53.1301
+
+MOM=DEFI_VALEUR(  R8=EVAL("""DILAT*(TSUP-TINF)*YOUNG*EP*EP/12./(1.-POISSON)""") )
+
+MOM1 = DEFI_VALEUR(  R8=EVAL("""-1.*MOM""") )
+
+CARA2=AFFE_CARA_ELEM(   MODELE=MOD,
+          COQUE=_F(  GROUP_MA = 'STOT', EPAIS = 0.01,
+                     ANGL_REP=(THETA,0.),)
+                     )
+
+MESTAT=CALC_ELEM( reuse=MESTAT,         MODELE=MOD,
+                            RESULTAT=MESTAT,
+                          CHAM_MATER=CHMAT,
+                           CARA_ELEM=CARA2,
+                              EXCIT=_F(  CHARGE = CH1),
+                              OPTION=('SIGM_ELNO_DEPL','EFGE_ELNO_DEPL',
+                              'SIEF_ELNO_ELGA'),
+                   )
+
+
+
+TEST_RESU(RESU=( 
+            _F(  RESULTAT = MESTAT,  NOM_CHAM = 'EFGE_ELNO_DEPL',  NUME_ORDRE = 1,   TYPE_TEST='MAX',
+                  NOM_CMP = 'MXX',         VALE = MOM1, REFERENCE='ANALYTIQUE'),
+           _F(  RESULTAT = MESTAT,  NOM_CHAM = 'EFGE_ELNO_DEPL',  NUME_ORDRE = 1,   TYPE_TEST='MAX',
+                  NOM_CMP = 'MYY',         VALE = MOM1, REFERENCE='ANALYTIQUE'),
+          _F(  RESULTAT = MESTAT,  NOM_CHAM = 'EFGE_ELNO_DEPL',  NUME_ORDRE = 1,   TYPE_TEST='MIN',
+                  NOM_CMP = 'MXX',         VALE = MOM1, REFERENCE='ANALYTIQUE'),
+           _F(  RESULTAT = MESTAT,  NOM_CHAM = 'EFGE_ELNO_DEPL',  NUME_ORDRE = 1,   TYPE_TEST='MIN',
+                  NOM_CMP = 'MYY',         VALE = MOM1, REFERENCE='ANALYTIQUE'),
+             ),)
+
+
+
+MESTA2=STAT_NON_LINE(MODELE=MOD,
+                   CHAM_MATER=CHMAT,
+                   CARA_ELEM=CARA,
+                   EXCIT=_F(CHARGE=CH1,),
+                   COMP_INCR=_F(RELATION='ELAS',),
+                   INCREMENT=_F(LIST_INST=LINST,),
+                   );
+                   
+                     
+MESTA2=CALC_ELEM( reuse=MESTA2,         MODELE=MOD,
+                            RESULTAT=MESTA2,
+                          CHAM_MATER=CHMAT,
+                           CARA_ELEM=CARA2,
+                              EXCIT=_F(  CHARGE = CH1),
+                              OPTION=('SIEF_ELNO_ELGA','SIGM_ELNO_COQU')
+                   )
+
+
+
+TEST_RESU(RESU=( 
+            _F(  RESULTAT = MESTA2,  NOM_CHAM = 'SIEF_ELNO_ELGA',  NUME_ORDRE = 1,   TYPE_TEST='MAX',
+                  NOM_CMP = 'MXX',         VALE = MOM1, REFERENCE='ANALYTIQUE'),
+           _F(  RESULTAT = MESTA2,  NOM_CHAM = 'SIEF_ELNO_ELGA',  NUME_ORDRE = 1,   TYPE_TEST='MAX',
+                  NOM_CMP = 'MYY',         VALE = MOM1, REFERENCE='ANALYTIQUE'),
+          _F(  RESULTAT = MESTA2,  NOM_CHAM = 'SIEF_ELNO_ELGA',  NUME_ORDRE = 1,   TYPE_TEST='MIN',
+                  NOM_CMP = 'MXX',         VALE = MOM1, REFERENCE='ANALYTIQUE'),
+           _F(  RESULTAT = MESTA2,  NOM_CHAM = 'SIEF_ELNO_ELGA',  NUME_ORDRE = 1,   TYPE_TEST='MIN',
+                  NOM_CMP = 'MYY',         VALE = MOM1, REFERENCE='ANALYTIQUE'),
+             ),)
+
+             
+             
+IMPR_RESU(MODELE=MOD,
+          RESU=(_F( RESULTAT=MESTAT,VALE_MAX='OUI',VALE_MIN='OUI',NOM_CHAM=('DEPL','SIGM_ELNO_DEPL','EFGE_ELNO_DEPL',),),),)
+IMPR_RESU(MODELE=MOD,
+          RESU=(_F( RESULTAT=MESTA2,VALE_MAX='OUI',VALE_MIN='OUI',NOM_CHAM=('DEPL','SIGM_ELNO_COQU','SIEF_ELNO_ELGA'),),),)
+
+IMPR_RESU(MODELE=MOD,
+          RESU=(_F( RESULTAT=MESTA2,NOM_CHAM=('SIEF_ELNO_ELGA'),FORMAT='GMSH',FICHIER='IDEAS'),),)
+
+
+FIN()
+#

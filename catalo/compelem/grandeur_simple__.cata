@@ -1,0 +1,389 @@
+%& MODIF COMPELEM  DATE 02/10/2002   AUTEUR ASSIRE A.ASSIRE 
+%            CONFIGURATION MANAGEMENT OF EDF VERSION
+% ======================================================================
+% COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+% THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+% IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+% THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+% (AT YOUR OPTION) ANY LATER VERSION.
+%
+% THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+% WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+% MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+% GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+%
+% YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+% ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+%    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+% ======================================================================
+GRANDEUR_SIMPLE__
+<<  ABSC_R : ABSCISSE CURVILIGNE SUR UN MAILLAGE FILAIRE>>
+    ABSC_R   = R    ABSC     ABSC1    ABSC2
+
+<<  ADRSJEVE : I1 : ADRESSE JEVEUX (DANS ZI) D'UN MATERIAU CODE>>
+    ADRSJEVE = I    I1
+
+    ADRSJEVN = I    I1       I2       I3       I4       I5
+    CAARPO   = R    RCOURB   ORIE_ARC C_FLEX   I_SIGM   C_FLEX_Y I_SIGM_Y C_FLEX_Z I_SIGM_Z
+    CACABL   = R    SECT     TENS
+
+<<  CACOQU : CARACTERISTIQUES DES ELEMENTS DE COQUE :
+                EP : EPAISSEUR
+                EXCENT : EXCENTREMENT DU FEUILLET MOYEN >>
+    CACOQU   = R    EP       SECT_L   C        ALPHA    BETA     KAPPA    C_METR   X
+                    Y        Z        PAS_T    PAS_N    COEF_ECH K_DRL    K_DRT    K_DRN
+                    KT_DL    KT_DT    KT_DN    KT_DRL   KT_DRT   KT_DRN   KN_DL    KN_DT
+                    KN_DN    KN_DRL   KN_DRT   KN_DRN   ANGL_L   P_CENT_L P_CENT_T DIST_N
+                    CTOR     EXCENT   INERTIE
+    CADISA   = R    A1       A2       A3       A4       A5       A6       A7       A8
+                    A9       A10      A11      A12      A13      A14      A15      A16
+                    A17      A18      A19      A20      A21      A22      A23      A24
+                    A25      A26      A27      A28      A29      A30      A31      A32
+                    A33      A34      A35      A36      A37      A38      A39      A40
+                    A41      A42      A43      A44      A45      A46      A47      A48
+                    A49      A50      A51      A52      A53      A54      A55      A56
+                    A57      A58      A59      A60      A61      A62      A63      A64
+                    A65      A66      A67      A68      A69      A70      A71      A72
+                    A73      A74      A75      A76      A77      A78      REPA
+
+<<  CADISK : MATRICE DE RIGIDITE DES ELEMENTS DISCRET (MODELISATION='DIS_XXXX')
+        K1,K2,...K78 : COEFFICIENTS DE LA MATRICE DE RIGIDITE
+        REPK :  TYPE DU REPERE (=1 REPERE GLOBAL, =2 REPERE LOCAL)
+        ETA : COEFFICIENT DE L'AMORTISSEMENT HYSTERETIQUE>>
+    CADISK   = R    K1       K2       K3       K4       K5       K6       K7       K8
+                    K9       K10      K11      K12      K13      K14      K15      K16
+                    K17      K18      K19      K20      K21      K22      K23      K24
+                    K25      K26      K27      K28      K29      K30      K31      K32
+                    K33      K34      K35      K36      K37      K38      K39      K40
+                    K41      K42      K43      K44      K45      K46      K47      K48
+                    K49      K50      K51      K52      K53      K54      K55      K56
+                    K57      K58      K59      K60      K61      K62      K63      K64
+                    K65      K66      K67      K68      K69      K70      K71      K72
+                    K73      K74      K75      K76      K77      K78      REPK     ETA
+    CADISM   = R    M1       M2       M3       M4       M5       M6       M7       M8
+                    M9       M10      M11      M12      M13      M14      M15      M16
+                    M17      M18      M19      M20      M21      M22      M23      M24
+                    M25      M26      M27      M28      M29      M30      M31      M32
+                    M33      M34      M35      M36      M37      M38      M39      M40
+                    M41      M42      M43      M44      M45      M46      M47      M48
+                    M49      M50      M51      M52      M53      M54      M55      M56
+                    M57      M58      M59      M60      M61      M62      M63      M64
+                    M65      M66      M67      M68      M69      M70      M71      M72
+                    M73      M74      M75      M76      M77      M78      REPM
+    CAFI_R   = R    XG       YG       AIRE
+    CAGEBA   = R    HY1      HZ1      EPY1     EPZ1     HY2      HZ2      EPY2     EPZ2
+                    R1       EP1      R2       EP2      TSEC
+    CAGEPO   = R    HY1      HZ1      EPY1     EPZ1     HY2      HZ2      EPY2     EPZ2
+                    R1       EP1      R2       EP2      TSEC
+    CAGNBA   = R    A1
+
+<<  CAGNPO : CARACTERISTIQUES GEOMETRIQUES D'UNE SECTION DE POUTRE
+        A1  : AIRE DE LA SECTION (NOEUD 1)
+        IY1 : MOMENT D'INERTIE PRINCIPAL PAR RAPPORT A GZ (NOEUD 1)
+        IZ1 : MOMENT D'INERTIE PRINCIPAL PAR RAPPORT A GY (NOEUD 1)
+        AY1 : COEFFICIENT DE CISAILLEMENT DANS LA DIRECTION GY (NOEUD 1)
+        ...
+        TVAR : TYPE DE SECTION : CONSTANTE OU VARIABLE (LE LONG DE GX) >>
+    CAGNPO   = R    A1       IY1      IZ1      AY1      AZ1      EY1      EZ1      JX1
+                    RY1      RZ1      RT1      AI1      JG1      IYR21    IZR21    A2
+                    IY2      IZ2      AY2      AZ2      EY2      EZ2      JX2      RY2
+                    RZ2      RT2      AI2      JG2      IYR22    IZR22    TVAR
+    CAMASS   = R    C        ALPHA    BETA     KAPPA    X        Y        Z
+    CAORIE   = R    ALPHA    BETA     GAMMA    ALPHA2   BETA2    GAMMA2   ALPHA3   BETA3
+                    GAMMA3   ALPHA4   BETA4    GAMMA4   ICOUDE   DN1N2    RCOURB   ANGCOU
+                    ANGZZK
+    CAPOUF   = R    B_T      B_N      B_TN     A_FLUI   A_CELL   COEF_ECH
+    CARCRI   = R    ITECREL  MACOMP   RESCREL  THETA    ITEDEC   INTLOC
+    CASECT   = K8   NOM
+    CHLI_R   = R    CHLI1    CHLI2    CHLI3    CHAR0
+    CODE_I   = I    IRET
+    COEH_F   = K8   H        H_INF    H_SUP
+    COEH_R   = R    H        H_INF    H_SUP
+    COMPOR   = K16  RELCOM   NBVARI   DEFORM   INCELA   C_PLAN   XXXX1  XXXX2   KIT1
+                    KIT2     KIT3     KIT4     KIT5     KIT6     KIT7     KIT8     KIT9
+<<  CRRU_R: CRITERES DE RUPTURE DANS LES COUCHES (POST-TRAITEMENT)
+        CRIL  : CRITERE DE RUPTURE EN TRACTION SUIVANT L (1ERE DIR ORTHOTROPIE)
+        CRILP : CRITERE DE RUPTURE EN COMPRESSION SUIVANT L
+        CRIT :  CRITERE DE RUPTURE EN TRACTION SUIVANT T (2NDE DIR ORTHOTROPIE)
+        CRITP : CRITERE DE RUPTURE EN COMPRESSION SUIVANT T
+        CRILT : CRITERE DE RUPTURE EN CISAILLEMENT SUIVANT LT
+        CRITH : CRITERE DE TSAI-HILL >>
+    CRRU_R   = R    CRIL     CRILP    CRIT     CRITP    CRILT    CRITH
+    DBEL_R   = R    DB
+    DCEL_I   = I    NPG_DYN  NCMP_DYN
+    DDLI_C   = C    C
+    DDLI_F   = K8   C
+    DDLI_R   = R    C
+    DDLM_C   = C    A1       A2       A3       B1       B2       B3
+    DDLM_R   = R    A1       A2       A3       B1       B2       B3
+<<  DEPL_C : DEPLACEMENT COMPLEXE AUX NOEUDS
+       DX, DY, DZ : TRANSLATION SUIVANT X, Y ET Z (REPERE GLOBAL)
+       DRX, DRY, DRZ : ROTATION AUTOUR DE X, Y ET Z (REPERE GLOBAL)
+       D1 : PROJECTION DU CHAMP SUIVANT LE VECTEUR DIRECTEUR (D1X,D1Y,D1Z)
+       D2 : PROJECTION DU CHAMP SUIVANT LE VECTEUR DIRECTEUR (D2X,D2Y,D2Z)
+       D3 : PROJECTION DU CHAMP SUIVANT LE VECTEUR DIRECTEUR (D3X,D3Y,D3Z) >>
+    DEPL_C   = C    DX       DY       DZ       DRX      DRY      DRZ      GRX      PRES
+                    PRE1     PRE2     TEMP     PHI      DH       LAGR     LAGS_C   LAGS_F1
+                    LAGS_F2  UI2      VI2      WI2      UI3      VI3      WI3      UI4
+                    VI4      WI4      UI5      VI5      WI5      UI6      VI6      WI6
+                    UO2      VO2      WO2      UO3      VO3      WO3      UO4      VO4
+                    WO4      UO5      VO5      WO5      UO6      VO6      WO6      WO
+                    WI1      WO1      GONF     EPXX     EPYY     EPZZ     EPXY     EPXZ
+                    EPYZ     D1       D1X      D1Y      D1Z      D2       D2X      D2Y
+                    D2Z      D3       D3X      D3Y      D3Z
+    DEPL_F   = K8   DX       DY       DZ       DRX      DRY      DRZ      GRX      PRES
+                    PRE1     PRE2     TEMP     PHI      DH       LAGR     LAGS_C   LAGS_F1
+                    LAGS_F2  UI2      VI2      WI2      UI3      VI3      WI3      UI4
+                    VI4      WI4      UI5      VI5      WI5      UI6      VI6      WI6
+                    UO2      VO2      WO2      UO3      VO3      WO3      UO4      VO4
+                    WO4      UO5      VO5      WO5      UO6      VO6      WO6      WO
+                    WI1      WO1      GONF     EPXX     EPYY     EPZZ     EPXY     EPXZ
+                    EPYZ     D1       D1X      D1Y      D1Z      D2       D2X      D2Y
+                    D2Z      D3       D3X      D3Y      D3Z
+<<  DEPL_R : DEPLACEMENT REEL AUX NOEUDS
+       DX, DY, DZ : TRANSLATION SUIVANT X, Y ET Z (REPERE GLOBAL)
+       DRX, DRY, DRZ : ROTATION AUTOUR DE X, Y ET Z (REPERE GLOBAL)
+       D1 : PROJECTION DU CHAMP SUIVANT LE VECTEUR DIRECTEUR (D1X,D1Y,D1Z)
+       D2 : PROJECTION DU CHAMP SUIVANT LE VECTEUR DIRECTEUR (D2X,D2Y,D2Z)
+       D3 : PROJECTION DU CHAMP SUIVANT LE VECTEUR DIRECTEUR (D3X,D3Y,D3Z) >>
+    DEPL_R   = R    DX       DY       DZ       DRX      DRY      DRZ      GRX      PRES
+                    PRE1     PRE2     TEMP     PHI      DH       LAGR     LAGS_C   LAGS_F1
+                    LAGS_F2  UI2      VI2      WI2      UI3      VI3      WI3      UI4
+                    VI4      WI4      UI5      VI5      WI5      UI6      VI6      WI6
+                    UO2      VO2      WO2      UO3      VO3      WO3      UO4      VO4
+                    WO4      UO5      VO5      WO5      UO6      VO6      WO6      WO
+                    WI1      WO1      GONF     EPXX     EPYY     EPZZ     EPXY     EPXZ
+                    EPYZ     D1       D1X      D1Y      D1Z      D2       D2X      D2Y
+                    D2Z      D3       D3X      D3Y      D3Z
+    DOMMAG   = R    DOMA
+    DURT_R   = R    HV
+    ENER_R   = R    TOTALE   TRAC_COM TORSION  MEMBRANE FLEXION  FLEX_Y   FLEX_Z   PLAN_XY
+                    PLAN_XZ  DX       DY       DZ       DRX      DRY      DRZ
+    EPSI_F   = K8   EPXX     EPYY     EPZZ     EPXY     EPXZ     EPYZ
+    EPSI_R   = R    EPXX     EPYY     EPZZ     EPXY     EPXZ     EPYZ     EXX      EYY
+                    EXY      KXX      KYY      KXY      EPX      GAXY     GAXZ     GAT
+                    KY       KZ       GAX      GAY      INVA_2   PRIN_1   PRIN_2   PRIN_3
+                    INVA_2SG PRE1     P1DX     P1DY     P1DZ     PRE2     P2DX     P2DY
+                    P2DZ     TEMP     TEDX     TEDY     TEDZ     DX       DY       DZ
+    ERREUR   = R    ERREST   NUEST    SIGCAL
+    ERRETEMP = R    ERTABS   ERTREL   TERMNO   TERMVO   TERMV2   TERMV1   TERMSA   TERMS2
+                    TERMS1   TERMFL   TERMF2   TERMF1   TERMEC   TERME2   TERME1
+<<  FACY_R   : GRANDEUR LIEE A LA FATIGUE A GRAND NOMBRE DE CYCLES SOUS
+               CHARGEMENT MULTIAXIAL
+       DTAUM1  : PREMIERE VALEUR DE LA DEMI AMPLITUDE MAX DU CISAILLEMENT DANS
+                 LE PLAN CRITIQUE
+       VNM1X   : COMPOSANTE X DU VECTEUR NORMAL AU PLAN CRITIQUE CORRESPONDANT
+                 A DTAUM1
+       VNM1Y   : COMPOSANTE Y DU VECTEUR NORMAL AU PLAN CRITIQUE CORRESPONDANT
+                 A DTAUM1
+       VNM1Z   : COMPOSANTE Z DU VECTEUR NORMAL AU PLAN CRITIQUE CORRESPONDANT
+                 A DTAUM1
+       SINMAX1 : CONTRAINTE MAXIMALE NORMALE AU PLAN CRITIQUE CORRESPONDANT
+                 A DTAUM1
+       SINMOY1 : CONTRAINTE MOYENNE NORMALE AU PLAN CRITIQUE CORRESPONDANT
+                 A DTAUM1
+       EPNMAX1 : DEFORMATION MAXIMALE NORMALE AU PLAN CRITIQUE CORRESPONDANT
+                 A DTAUM1
+       EPNMOY1 : DEFORMATION MOYENNE NORMALE AU PLAN CRITIQUE CORRESPONDANT
+                 A DTAUM1
+       SIGEQ1  : CONTRAINTE EQUIVALENTE ASSOCIEE A DTAUM1,
+       NBRUP1  : NOMBRE DE CYCLES AVANT RUPTURE (FONCTION DE SIGEQ1 ET D'UNE
+                 COURBE DE WOHLER)
+       ENDO1   : ENDOMMAGEMENT ASSOCIE A NBRUP1 (ENDO1=1/NBRUP1)
+       DTAUM2  : SECONDE VALEUR DE LA DEMI AMPLITUDE MAX DU CISAILLEMENT DANS
+                  LE PLAN CRITIQUE
+       VNM2X   : COMPOSANTE X DU VECTEUR NORMAL AU PLAN CRITIQUE CORRESPONDANT
+                 A DTAUM2
+       VNM2Y   : COMPOSANTE Y DU VECTEUR NORMAL AU PLAN CRITIQUE CORRESPONDANT
+                 A DTAUM2
+       VNM2Z   : COMPOSANTE Z DU VECTEUR NORMAL AU PLAN CRITIQUE CORRESPONDANT
+                 A DTAUM2
+       SINMAX2 : CONTRAINTE MAXIMALE NORMALE AU PLAN CRITIQUE CORRESPONDANT
+                 A DTAUM2
+       SINMOY2 : CONTRAINTE MOYENNE NORMALE AU PLAN CRITIQUE CORRESPONDANT
+                 A DTAUM2
+       EPNMAX2 : DEFORMATION MAXIMALE NORMALE AU PLAN CRITIQUE CORRESPONDANT
+                 A DTAUM2
+       EPNMOY2 : DEFORMATION MOYENNE NORMALE AU PLAN CRITIQUE CORRESPONDANT
+                 A DTAUM2
+       SIGEQ2  : CONTRAINTE EQUIVALENTE ASSOCIEE A DTAUM2,
+       NBRUP2  : NOMBRE DE CYCLES AVANT RUPTURE (FONCTION DE SIGEQ2 ET D'UNE
+                 COURBE DE WOHLER)
+       ENDO2   : ENDOMMAGEMENT ASSOCIE A NBRUP2 (ENDO2=1/NBRUP2) >>
+    FACY_R   = R    DTAUM1   VNM1X    VNM1Y    VNM1Z    SINMAX1  SINMOY1  EPNMAX1  EPNMOY1
+                    SIGEQ1   NBRUP1   ENDO1    DTAUM2   VNM2X    VNM2Y    VNM2Z    SINMAX2
+                    SINMOY2  EPNMAX2  EPNMOY2  SIGEQ2   NBRUP2   ENDO2
+    FELECR   = R    X1       Y1       Z1       X2       Y2       Z2       CODE
+    FISS_R   = R    XA       YA       XNORM    YNORM
+    FLAPLA   = K24  NOMAIL   NOGEOM
+    FLUN_F   = K8   FLUN     FLUN_INF FLUN_SUP
+    FLUN_R   = R    FLUN     FLUN_INF FLUN_SUP
+    FLUX_F   = K8   FLUX     FLUY     FLUZ
+    FLUX_R   = R    FLUX     FLUY     FLUZ     FLUX_SUP FLUY_SUP FLUZ_SUP FLUX_INF FLUY_INF
+                    FLUZ_INF
+    FORC_C   = C    FX       FY       FZ       MX       MY       MZ       BX       REP
+                    ALPHA    BETA     GAMMA    PLAN
+    FORC_F   = K8   FX       FY       FZ       MX       MY       MZ       BX       REP
+                    ALPHA    BETA     GAMMA    PLAN
+    FORC_R   = R    FX       FY       FZ       MX       MY       MZ       BX       REP
+                    ALPHA    BETA     GAMMA    PLAN
+    FREQ_R   = R    FREQ
+    FTHM_F   = K8   PFLU     PFLU1    PFLU2    PTHER
+    FTHM_R   = R    PFLU     PFLU1    PFLU2    PTHER
+    G        = R    GTHETA   FIC1     FIC2     K1       K2
+    GEOM_R   = R    X        Y        Z
+    G_DEPL_R = R    D_DX_X   D_DX_Y   D_DX_Z   D_DY_X   D_DY_Y   D_DY_Z   D_DZ_X   D_DZ_Y
+                    D_DZ_Z
+    HARMON   = I    NH
+    HYDR_R   = R    HYDR
+    IMPE_C   = C    IMPE
+    IMPE_F   = K8   IMPE
+    IMPE_R   = R    IMPE
+<<  INFC_R : INFORMATIONS RELATIVES AU CONTACT
+        CONTACT : INDICATEUR DE CONTACT
+        JEU     : JEU ENTRE LE NOEUD ESCLAVE ET LA MAILLE MAITRE ASSOCIEE
+        RNN     : MULTIPLICATEUR DE LAGRANGE
+        DUGT1   : DEPLACEMENT TANGENTIEL SUIVANT X
+        DUGT2   : DEPLACEMENT TANGENTIEL SUIVANT Y
+        DUGT    : NORME DES DEPLACEMENTS TANGENTIELS
+        RN      : REACTION NORMALE
+        RT1     : REACTION TANGENTIELLE SUIVANT X
+        RT2     : REACTION TANGENTIELLE SUIVANT Y
+        RT      : NORME DES REACTIONS TANGENTIELLES
+        MU      : RAPPORT RT/RN >>
+    INFC_R   = R    CONTACT  JEU      RNN      DUGT1    DUGT2    DUGT     RN       RT1
+                    RT2      RT       MU
+    INST_R   = R    INST     DELTAT   THETA    KHI      R        RHO
+    INTE_R   = R    INTX     INTY     INTZ
+    IRRA_R   = R    IRRA
+    J        = R    JINT     JEXT     JTH      JAX      JPR
+    LISTMA   = K16  LISTMA   TRANS
+    MASS_R   = R    M        CDGX     CDGY     CDGZ     IXX      IYY      IZZ      IXY
+                    IXZ      IYZ      IXR2     IYR2
+    MATE_F   = K8   MATE
+    META_R   = R    ZF       ZP       ZB       ZM       MS       TPG      P
+    MINMAX_R = R    MIN      MAX      NCOUMIN  NCOUMAX  NSECMIN  NSECMAX  NPCOUMIN NPCOUMAX
+                    NPSECMIN NPSECMAX
+    NBSP_I   = I    NBFIBR   COQ_NCOU   GRI_NCOU   TUY_NCOU   TUY_NSEC
+    NEUT_F   = K8   X1       X2       X3       X4       X5       X6       X7       X8
+                    X9       X10      X11      X12      X13      X14      X15      X16
+                    X17      X18      X19      X20      X21      X22      X23      X24
+                    X25      X26      X27      X28      X29      X30
+    NEUT_K24 = K24  Z1       Z2       Z3       Z4       Z5       Z6       Z7       Z8
+                    Z9       Z10      Z11      Z12      Z13      Z14      Z15      Z16
+                    Z17      Z18      Z19      Z20      Z21      Z22      Z23      Z24
+    NEUT_R   = R    X1       X2       X3       X4       X5       X6       X7       X8
+                    X9       X10      X11      X12      X13      X14      X15      X16
+                    X17      X18      X19      X20      X21      X22      X23      X24
+                    X25      X26      X27      X28      X29      X30
+    NUMC_I   = I    NUMC     ORDO     ANGL
+    NUMMOD   = I    NUM
+    ONDE_F   = K8   PRES
+    ONDE_R   = R    PRES
+    PESA_R   = R    G        AG       BG       CG
+    PILO_K   = K16  TYPE
+    PILO_R   = R    A0       A1       A2       A3       ETA
+    POSI     = I    POS
+    PREC     = R    PREC
+
+<<  PRES_C/_F/_R : PRESSION
+    PRES : PRESSION (NORMALE A LA SURFACE).
+         SI C'EST UN CHARGEMENT: P>0 EST APPLIQUEE SELON L'OPPOSE DE LA NORMALE.
+    CISA : CISAILLEMENT SELON LA DIRECTION ORTHOGONALE A LA NORMALE
+           (N'A DE SENS QU'EN 2D) >>
+    PRES_C   = C    PRES     CISA     VX       VY       VZ       LAGR
+    PRES_F   = K8   PRES     CISA
+    PRES_R   = R    PRES     CISA     VX       VY       VZ       LAGR
+
+    RAYO_F   = K8   SIGMA    EPSIL    TPINF
+    RAYO_R   = R    SIGMA    EPSIL    TPINF
+
+<<  RCCM_R : GRANDEURS POUR LE RCCM B3600
+    C1 : VALEUR INDICE DE CONTRAINTES
+    C2 : VALEUR INDICE DE CONTRAINTES
+    C3 : VALEUR INDICE DE CONTRAINTES
+    K1 : VALEUR INDICE DE CONTRAINTES
+    K2 : VALEUR INDICE DE CONTRAINTES
+    K3 : VALEUR INDICE DE CONTRAINTES
+    TYPE : TYPE DE MAILLE
+    E : MODULE D'ELASTICITE A TEMPERATURE DE CALCUL
+    E_AMBI : MODULE D'ELASTICITE A TEMPERATURE AMBIANTE
+    NU : COEFFICIENT DE POISSON A TEMPERATURE AMBIANTE
+    ALPHA : COEFFICIENT DE DILATATION  A TEMPERATURE AMBIANTE
+    E_REFE : MODULE D'YOUNG DE REFERENCE
+    SM : CONTRAINTE EQUIVALENTE ADMISSIBLE DU MATERIAU
+    M_KE : CONSTANTE DU MATERIAU
+    N_KE : CONSTANTE DU MATERIAU
+    IY : MOMENT D'INERTIE PRINCIPAL PAR RAPPORT A Y
+    IZ : MOMENT D'INERTIE PRINCIPAL PAR RAPPORT A Z
+    D : DIAMETRE DE LA TUYAUTERIE
+    EP : EPAISSEUR DE LA TUYAUTERIE
+    SN : AMPLITUDE DE VARIARTION DES CONTRAINTES LINEARISEES
+    SALT : AMPLITUDE DE CONTRAINTE
+    U_TOTAL : FACTEUR D'USAGE   >>
+    RCCM_R   = R    C1     C2       C3       K1       K2       K3       TYPE
+                    E      E_AMBI   NU       ALPHA    E_REFE   SM       M_KE
+                    N_KE   IY       IZ       D        EP
+                    SN     SN_3SM   SALT     U_TOTAL
+<<  RCCM_K : GRANDEURS POUR LE RCCM B3600
+    TB_TEMP : TABLE DE RELEVE DE TEMPERATURE
+    TB_MOYE : TABLE DE RELEVE DE MOYENNE  >>
+    RCCM_K   = K8   TB_TEMP  TB_MOYE
+    RICE_TRA = R    TRIAX    RSR0     VOLU     NUMEMA   DEPSEQ
+    ROTA_R   = R    OME      AR       BR       CR       X        Y        Z
+    SECTION  = R    AIRE     XG       YG       ALPHA    IX       IY       XC       YC
+                    CF
+    SIEF_C   = C    SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     N        VY
+                    VZ       MT       MFY      MFZ      BX       NXX      NYY      NXY
+                    MXX      MYY      MXY      QX       QY       FX       FY       FZ
+                    MX       MY       MZ       SIGN     SITX     SITY     SITZ     VMIS
+                    TRESCA   PRIN_1   PRIN_2   PRIN_3   VMIS_SG  SN       SVY      SVZ
+                    SMT      SMFY     SMFZ
+    SIEF_R   = R    SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     N        VY
+                    VZ       MT       MFY      MFZ      BX       NXX      NYY      NXY
+                    MXX      MYY      MXY      QX       QY       FX       FY       FZ
+                    MX       MY       MZ       SIGN     SITX     SITY     SITZ     VMIS
+                    TRESCA   PRIN_1   PRIN_2   PRIN_3   VMIS_SG  SN       SVY      SVZ
+                    SMT      SMFY     SMFZ     TRIAX    SI_ENDO  MASF     ENTR     DISS
+                    FLHX     FLHY     FLHZ     FLUX     FLUY     FLUZ     PM       PMPB
+                    SIP      M11      FH11X    FH11Y    FH11Z    ENT11    M12      FH12X
+                    FH12Y    FH12Z    ENT12    M21      FH21X    FH21Y    FH21Z    ENT21
+                    M22      FH22X    FH22Y    FH22Z    ENT22    QPRIM    FHTX     FHTY
+                    FHTZ     SIMAX   SIMIN
+    SIZZ_R   = R    SIZZ
+    SOUR_F   = K8   SOUR     VNOR
+    SOUR_R   = R    SOUR     VNOR
+    STAOUDYN = R    STAOUDYN ALFNMK   DELNMK
+    TEMP_C   = C    TEMP     TEMP_INF TEMP_SUP LAGR
+    TEMP_F   = K8   TEMP     TEMP_INF TEMP_SUP
+    TEMP_R   = R    TEMP     TEMP_INF TEMP_SUP LAGR
+    VALO_R   = R    VALEUR   GRAD_X   GRAD_Y   GRAD_Z
+    VANL_R   = R    VANL
+    VAR2_R   = R    V1       V2       V3       V4       V5       V6       V7       V8
+                    V9       V10      V11      V12      V13      V14      V15      V16
+                    V17      V18      V19      V20      V21      V22      V23      V24
+                    V25      V26      V27      V28      V29      V30
+    VARI_R   = R    VARI
+    VENTCX_F = K8   FCXP
+    VNOR_C   = C    VNOR
+    VNOR_F   = K8   VNOR
+    VOISIN   = I    V0       V1       V2       V3       V4       V5       V6       T0
+                    T1       T2       T3       T4       T5       T6
+    WEIBULL  = R    DSIGWB
+
+GRANDEUR_ELEMENTAIRE__
+   MDEP_C 2 DEPL_C   DEPL_C   MS
+   MDEP_R 2 DEPL_R   DEPL_R   MS
+   MDNS_R 2 DEPL_R   DEPL_R   MR
+   MPRE_C 2 PRES_C   PRES_C   MS
+   MSIZ_R 2 SIZZ_R   SIZZ_R   MS
+   MTEM_R 2 TEMP_R   TEMP_R   MS
+   MTNS_R 2 TEMP_R   TEMP_R   MR
+   MVAR_R 2 VANL_R   VANL_R   MS
+   VDEP_C 1 DEPL_C
+   VDEP_R 1 DEPL_R
+   VPRE_C 1 PRES_C
+   VSIZ_R 1 SIZZ_R
+   VTEM_R 1 TEMP_R
+   VVAR_R 1 VANL_R
+

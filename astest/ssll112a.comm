@@ -1,0 +1,185 @@
+
+# MODIF  DATE 17/05/2002   AUTEUR JMBHH01 J.M.PROIX 
+# RESPONSABLE JMBHH01 J.M.PROIX
+# TITRE VOUTE CIRCULAIRE SOUS PRESSION UNIFORME ANCIEN SSLL401A
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+# MODELISATION POU_C_T
+#
+#
+
+
+DEBUT(CODE=_F(NOM='SSLL112A',NIV_PUB_WEB='INTERNET'),);
+#
+#
+
+
+MA=LIRE_MAILLAGE();
+
+MA=DEFI_GROUP(reuse =MA,
+              MAILLAGE=MA,
+              CREA_GROUP_MA=_F(NOM='TOUT',
+                               TOUT='OUI',),);
+#
+#
+
+
+MO=AFFE_MODELE(MAILLAGE=MA,
+               AFFE=_F(TOUT='OUI',
+                       PHENOMENE='MECANIQUE',
+                       MODELISATION='POU_C_T',),);
+#
+#
+
+
+MATR=DEFI_MATERIAU(ELAS=_F(E=2.E11,
+                           NU=0.29999999999999999,),);
+#
+#
+
+
+CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
+                    AFFE=_F(TOUT='OUI',
+                            MATER=MATR,),);
+#
+#
+
+
+CAREL=AFFE_CARA_ELEM(MODELE=MO,INFO=2,
+                     POUTRE=_F(GROUP_MA='TOUT',
+                               SECTION='CERCLE',
+                               CARA=('R','EP'),
+                               VALE=(0.01,0.01),),
+                     ORIENTATION=_F(GROUP_MA=('TOUT',),
+                                    CARA='ANGL_VRIL',
+                                    VALE=0.0,),
+                        DEFI_ARC=(
+                               _F(GROUP_MA='ARC1',
+                                  CENTRE=(0.0,0.0,0.0),),
+                               _F(GROUP_MA='ARC2',
+                                  CENTRE=(0.0,0.0,0.0),),
+                                  )
+                                  )
+#
+#
+
+
+F1=DEFI_FONCTION(NOM_PARA='X',
+                 VALE=(-1.0,-100.0,1.0,-100.0),
+                 INTERPOL='LIN',);
+#
+#
+
+
+CHARG1=AFFE_CHAR_MECA(MODELE=MO,
+                      DDL_IMPO=(_F(NOEUD='N01',
+                                   DX=0.0,
+                                   DY=0.0,
+                                   DZ=0.0,
+                                   DRX=0.0,),
+                                _F(NOEUD='N31',
+                                   DY=0.0,
+                                   DZ=0.0,),),);
+#
+#
+
+
+CHARG2=AFFE_CHAR_MECA_F(MODELE=MO,
+                        FORCE_POUTRE=_F(TOUT='OUI',
+                                        VY=F1,),);
+#
+#
+
+
+MEST1=MECA_STATIQUE(MODELE=MO,
+                    CHAM_MATER=CHMAT,
+                    CARA_ELEM=CAREL,
+                    EXCIT=(_F(CHARGE=CHARG1,),
+                           _F(CHARGE=CHARG2,),),);
+#
+#
+
+
+MEST1=CALC_ELEM(reuse =MEST1,
+                MODELE=MO,
+                CHAM_MATER=CHMAT,
+                CARA_ELEM=CAREL,
+                OPTION=('EFGE_ELNO_DEPL','SIGM_ELNO_DEPL'),
+                RESULTAT=MEST1,
+                EXCIT=(_F(CHARGE=CHARG1,),
+                       _F(CHARGE=CHARG2,),),);
+#
+#
+
+
+TEST_RESU(RESU=_F(RESULTAT=MEST1,
+                  NUME_ORDRE=1,
+                  NOM_CHAM='EFGE_ELNO_DEPL',
+                  NOM_CMP='VY',
+                  MAILLE='S01',
+                  NOEUD='N01',
+                  VALE=0.0,
+                  CRITERE='ABSOLU',REFERENCE='ANALYTIQUE',
+                  PRECISION=5.2999999999999998,),);
+#
+#
+
+
+TEST_RESU(RESU=_F(RESULTAT=MEST1,
+                  NUME_ORDRE=1,
+                  NOM_CHAM='EFGE_ELNO_DEPL',
+                  NOM_CMP='VY',
+                  MAILLE='S01',
+                  NOEUD='N02',
+                  VALE=0.0,
+                  CRITERE='ABSOLU',REFERENCE='ANALYTIQUE',
+                  PRECISION=5.2999999999999998,),);
+#
+#
+
+
+TEST_RESU(RESU=_F(RESULTAT=MEST1,
+                  NUME_ORDRE=1,
+                  NOM_CHAM='EFGE_ELNO_DEPL',
+                  NOM_CMP='N',
+                  MAILLE='S11',
+                  NOEUD='N11',
+                  VALE=-100.0,
+                  CRITERE='RELATIF',REFERENCE='ANALYTIQUE',
+                  PRECISION=2.E-3,),);
+#
+#
+
+
+TEST_RESU(RESU=_F(RESULTAT=MEST1,
+                  NUME_ORDRE=1,
+                  NOM_CHAM='EFGE_ELNO_DEPL',
+                  NOM_CMP='MFZ',
+                  MAILLE='S08',
+                  NOEUD='N08',
+                  VALE=0.0,
+                  CRITERE='ABSOLU',REFERENCE='ANALYTIQUE',
+                  PRECISION=1.E-2,),);
+#
+#
+
+
+FIN();
+#
+#
+#

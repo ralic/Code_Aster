@@ -1,0 +1,199 @@
+      SUBROUTINE SSVALV(STATUT,NOMCAS,MO,MA,ISMA,IDRESL,LONG)
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF SOUSTRUC  DATE 21/02/96   AUTEUR VABHHTS J.PELLET 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+
+C INSPI  SSVALM
+      IMPLICIT REAL*8 (A-H,O-Z)
+C
+C     ARGUMENTS:
+C     ----------
+      CHARACTER*8 MO,MA
+      CHARACTER*(*) STATUT
+      CHARACTER*8   NOMCAS
+      INTEGER ISMA,IDRESL
+C ----------------------------------------------------------------------
+C     BUT:
+C
+C         DONNER L'ADRESSE DE L'OBJET JEVEUX CONTENANT LE VECTEUR
+C         ELEMENTAIRE (CONDENSE) CORRESPONDANT A NOMCHAR
+C         (CET OBJET N'EST PAS FORCEMENT LE VECTEUR CONDENSE : XP_EE
+C          CAR IL PEUT Y AVOIR ROTATION/SYMETRIE DE LA SOUS-STRUCTURE)
+C
+C     IN:    STATUT : 'DEBUT','FIN', OU ' '(COURANT)
+C     ---
+C
+C            LES STATUTS : 'DEBUT' ET 'FIN' SERVENT A PREPARER LA BOUCLE
+C                       SUR LES VECTEURS ELEMENTAIRES. (OBLIGATOIRES !)
+C            EXEMPLE:
+
+C              DO 1  ISMA= 1, NB_MAILLES
+
+C           1  CONTINUE
+
+C
+C            NOMCAS    :   NOM DU CAS DE CHARGE
+C            MO(K8) : NOM DU MODELE
+C            MA(K8) : NOM DU MAILLAGE
+C            ISMA   : NUMERO DE LA (SUPER)MAILLE
+C
+C     OUT:   IDRESL : ADRESSE DU VECTEUR CONDENSE.
+C     ----   LONG   : NOMBRE DE VALEURS DE CE VECTEUR.
+C
+C
+C ----------------------------------------------------------------------
+C     VARIABLES LOCALES:
+C     ------------------
+      INTEGER IBID
+      CHARACTER*8 KBID,NOMACR,ROTA
+C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
+      CHARACTER*32 JEXNUM,JEXNOM,JEXATR,JEXR8
+      COMMON /IVARJE/ZI(1)
+      COMMON /RVARJE/ZR(1)
+      COMMON /CVARJE/ZC(1)
+      COMMON /LVARJE/ZL(1)
+      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+      INTEGER ZI
+      REAL*8 ZR,ALPHA,BETA,GAMMA,LAMBDA(6,6),ANGL(3), PGL(3,3)
+      COMPLEX*16 ZC
+      LOGICAL ZL,EXILAG
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32
+      CHARACTER*80 ZK80
+C ---------------- FIN COMMUNS NORMALISES  JEVEUX  --------------------
+C
+C
+C
+C     1- SI APPEL INITIAL : ON ALLOUE UN OBJET SUFFISANT :
+C     ----------------------------------------------------
+      IF (STATUT(1:5).EQ.'DEBUT')THEN
+        CALL DISMOI('F','NB_SM_MAILLA',MO,'MODELE',NBSMA,KBID,IERD)
+        CALL DISMOI('F','NB_SS_ACTI',MO,'MODELE',NBSSA,KBID,IERD)
+        IF (NBSSA.GT.0) THEN
+          CALL JEVEUO(MO//'.SSSA','L',IASSSA)
+          CALL JEVEUO(MA//'.NOMACR','L',IANMCR)
+          NMXVAL=0
+          DO 1, JSMA= 1, NBSMA
+            IF (ZI(IASSSA-1+JSMA).EQ.1) THEN
+              NOMACR= ZK8(IANMCR-1+JSMA)
+              CALL JEVEUO(NOMACR//'.DESM','L',IADESM)
+              NDDLE = ZI(IADESM-1+4)
+              NDDLI = ZI(IADESM-1+5)
+              NDDLT=NDDLI+NDDLE
+              NMXVAL= MAX(NMXVAL,NDDLT)
+            END IF
+ 1        CONTINUE
+          IF (NMXVAL.GT.0) THEN
+            CALL WKVECT('&&SSVALV.VALEURS','V V R',NMXVAL,IDRESL)
+C           --          '&&SSVALV.VALTEMP' EST UN VECTEUR DE TRAVAIL :
+            CALL WKVECT('&&SSVALV.VALTEMP','V V R',NMXVAL,IDRES2)
+          END IF
+        END IF
+      END IF
+C
+C
+C     2- SI APPEL FINAL : ON DETRUIT L OBJET DE TRAVAIL :
+C     ---------------------------------------------------
+      IF (STATUT(1:3).EQ.'FIN')THEN
+        CALL JEDETR('&&SSVALV.VALEURS')
+        CALL JEDETR('&&SSVALV.VALTEMP')
+        CALL JEEXIN('&&SSVARO.IINO',IRET)
+        IF (IRET.GT.0) CALL JEDETR('&&SSVARO.IINO')
+      END IF
+C
+C
+C     3- SI APPEL COURANT :
+C     ---------------------
+      IF (STATUT(1:1).EQ.' ')THEN
+        CALL JEVEUO(MA//'.NOMACR','L',IANMCR)
+        NOMACR= ZK8(IANMCR-1+ISMA)
+        CALL JEVEUO(NOMACR//'.DESM','L',IADESM)
+        NDDLE = ZI(IADESM-1+4)
+        NDDLI = ZI(IADESM-1+5)
+        NDDLT=NDDLI+NDDLE
+        LONG= NDDLE
+        CALL JEVEUO(JEXNOM(NOMACR//'.LICH',NOMCAS),'L',IALICH)
+C
+C
+C       3.1- ON DETERMINE SI ON DOIT FAIRE LA ROTATION:
+C       -----------------------------------------------
+        CALL SSRONE(MA,ISMA,ROTA)
+C
+C
+C       3.2- RECOPIE (OU ROTATION) DE .LICA DANS .VALEURS :
+C       ---------------------------------------------------
+        CALL JEVEUO('&&SSVALV.VALEURS','E',IDRESL)
+        CALL JEVEUO(JEXNOM(NOMACR//'.LICA',NOMCAS),'L',IALICA)
+C
+        IF (ROTA(1:3).EQ.'NON') THEN
+C         RECOPIE DU VECTEUR DEJA CONDENSE :
+          DO 2, I=NDDLI+1,NDDLT
+            ZR(IDRESL-1+I)= ZR(IALICA-1+NDDLT+I)
+ 2        CONTINUE
+C
+        ELSE  IF (ROTA(1:3).EQ.'OUI') THEN
+C         ROTATION:
+          CALL JEVEUO(MA//'.PARA_R','L',IAPARR)
+          ANGL(1) = ZR(IAPARR-1+14*(ISMA-1)+4)
+          ANGL(2) = ZR(IAPARR-1+14*(ISMA-1)+5)
+          ANGL(3) = ZR(IAPARR-1+14*(ISMA-1)+6)
+          CALL MATROT ( ANGL , PGL )
+          DO 710 I = 1,3
+            DO 712 J = 1,3
+              LAMBDA(I,J) = PGL(I,J)
+              LAMBDA(I,J+3) = 0.D0
+              LAMBDA(I+3,J) = 0.D0
+              LAMBDA(I+3,J+3) = PGL(I,J)
+ 712        CONTINUE
+ 710      CONTINUE
+C
+          IF (ZK8(IALICH-1+1)(1:3).EQ.'NON') THEN
+C
+C           -- LE CHARGEMENT N'EST PAS "SUIVEUR" :
+            CALL SSVARO(LAMBDA,'GL',.FALSE.,'TOUS',NOMACR,
+     +                 IALICA,IDRESL)
+            CALL JEVEUO('&&SSVALV.VALTEMP','E',IDRES2)
+            CALL SSVAU1(NOMACR,IDRESL,IDRES2)
+            CALL SSVARO(LAMBDA,'LG',.FALSE.,'EXTE',NOMACR,
+     +                 IDRES2,IDRESL)
+C
+          ELSE IF (ZK8(IALICH-1+1)(1:3).EQ.'OUI') THEN
+C
+C           -- LE CHARGEMENT EST "SUIVEUR" :
+            CALL SSVARO(LAMBDA,'LG',.FALSE.,'EXTE',NOMACR,
+     +                 IALICA+NDDLT,IDRESL)
+          ELSE
+            CALL UTMESS('F','SSVALV','ERREUR PROGRAMMEUR 1')
+          END IF
+C
+        ELSE
+          CALL UTMESS('F','SSVALV','ERREUR PROGRAMMEUR 2')
+        END IF
+C
+C
+        IDRESL=IDRESL+NDDLI
+C
+      END IF
+C
+C
+C
+ 9999 CONTINUE
+C
+      END

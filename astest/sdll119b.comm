@@ -1,0 +1,535 @@
+# MODIF  DATE 07/06/2002   AUTEUR DURAND C.DURAND 
+# TITRE FAISCEAU DE POUTRES SOUS EXCITATION FLUIDELASTIQUE AXIALE
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+#====================================================
+# SIMULATION DE L'ESSAI DE HOTTA ET AL.
+# PARAMETRIC STUDY ON PARALLEL FLOW-INDUCED DAMPING
+# OF PWR FUEL ASSEMBLY
+# ASME PVP CONFERENCE, NASHVILLE, TN (1990), VOL. 191
+# FAISCEAU DE 3*3 TUBES ALUMINIUM + PASTILLES PLOMB
+# D=9.5MM L=1.2M PAS CARRE ROTULES AUX 2 EXTREMITES
+# AVEC COMPRESSION AXIALE INITIALE DE 26.7N
+# MAINTENU A MI-HAUTEUR PAR DES CORDES A PIANO
+# VIBRANT DANS UNE ENCEINTE RECTANGULAIRE 78MMX42MM
+# SOUS ECOULEMENT AXIAL
+# OPTION DE MODELISATION DANS DEFI_FLUI_STRU :
+# FAISCEAU SIMPLIFIE
+#====================================================
+#
+
+DEBUT(   CODE=_F(  NOM = 'SDLL119B',NIV_PUB_WEB='INTERNET'))
+
+#
+
+POUTRE=LIRE_MAILLAGE( )
+
+#
+
+MODELE=AFFE_MODELE( 
+                MAILLAGE=POUTRE,AFFE=(
+                    _F( 
+                TOUT = 'OUI',
+                PHENOMENE = 'MECANIQUE',
+                MODELISATION = 'POU_D_T'),
+                    _F( 
+                GROUP_NO = ('NO_BASE',  'NO_EXTR',),
+                PHENOMENE = 'MECANIQUE',
+                MODELISATION = 'DIS_TR'))
+                        )
+
+#
+#-------------------------
+# CARACTERISTIQUES POUTRES
+#-------------------------
+#
+
+CARA=AFFE_CARA_ELEM( 
+                MODELE=MODELE,POUTRE=(
+                _F( 
+                GROUP_MA = (
+                  'MA_TU001','MA_TU002','MA_TU003',
+                  'MA_TU004','MA_TU005','MA_TU006',
+                  'MA_TU007','MA_TU008','MA_TU009',
+                           ),
+                SECTION = 'CERCLE',
+                CARA = ('R', 'EP',),
+                VALE = (4.75E-3, 5.0E-4,)),
+                _F( 
+                GROUP_MA = 'MA_BASE',
+                SECTION = 'CERCLE',
+                CARA = 'R',
+                VALE = 1.0E-03),
+                _F( 
+                GROUP_MA = 'MA_GRIL',
+                SECTION = 'CERCLE',
+                CARA = 'R',
+                VALE = 1.0E-03)),
+                DISCRET=_F( 
+                GROUP_NO = ('NO_BASE',  'NO_EXTR',),
+                CARA = 'K_TR_D_N',
+                VALE = (0.,  0.,  0.,  0.,  6.29,  6.29,))
+                           )
+
+#
+#-----------------------------------------------------
+# CARACTERISTIQUES MATERIAUX
+# ELEMENTS DE RACCORD A LA BASE DES TUBES TRES SOUPLES
+#-----------------------------------------------------
+#
+
+MAT=DEFI_MATERIAU( 
+                ELAS=_F( 
+                E = 6.89E+10,
+                NU = 0.3,
+                RHO = 20450.)
+                          )
+
+#
+
+MATGRIL=DEFI_MATERIAU( 
+                ELAS=_F( 
+                E = 2.1E+11,
+                NU = 0.3,
+                RHO = 7800.)
+                          )
+
+#
+
+MATBASE=DEFI_MATERIAU( 
+                ELAS=_F( 
+                E = 1.,
+                NU = 0.3,
+                RHO = 7800.)
+                          )
+
+#
+#----------------------
+# AFFECTATION MATERIAUX
+#----------------------
+#
+
+CHMAT=AFFE_MATERIAU( 
+                MAILLAGE=POUTRE,AFFE=(
+                    _F( 
+                GROUP_MA = (
+                  'MA_TU001','MA_TU002','MA_TU003',
+                  'MA_TU004','MA_TU005','MA_TU006',
+                  'MA_TU007','MA_TU008','MA_TU009',
+                           ),
+                MATER = MAT),
+                    _F( 
+                GROUP_MA = 'MA_GRIL',
+                MATER = MATGRIL),
+                    _F( 
+                GROUP_MA = 'MA_BASE',
+                MATER = MATBASE))
+                          )
+
+#
+#----------------------------
+# CONDITONS AUX LIMITES
+# POUTRES ROTULEES - ROTULEES
+#----------------------------
+#
+
+CHARG=AFFE_CHAR_MECA( 
+                  MODELE=MODELE,DDL_IMPO=(
+                _F( 
+                GROUP_NO = 'NO_BASE',
+                DX = 0.,  DY = 0.,  DZ = 0.),
+                _F( 
+                GROUP_NO = 'NO_EXTR',
+                DY = 0.,  DZ = 0.),
+                _F( 
+                TOUT = 'OUI',
+                DRX = 0.))
+                           )
+
+#
+#----------------------------------------
+# CONSTITUTION ET ASSEMBLAGE DES MATRICES
+# DE MASSE ET DE RAIDEUR
+#----------------------------------------
+#
+
+MELR=CALC_MATR_ELEM( 
+                    MODELE=MODELE,
+                    CHARGE=CHARG,
+                 CARA_ELEM=CARA,
+                CHAM_MATER=CHMAT,
+                    OPTION='RIGI_MECA'
+                           )
+
+#
+
+MELM=CALC_MATR_ELEM( 
+                    MODELE=MODELE,
+                    CHARGE=CHARG,
+                 CARA_ELEM=CARA,
+                CHAM_MATER=CHMAT,
+                    OPTION='MASS_MECA'
+                           )
+
+#
+
+NUM=NUME_DDL(   MATR_RIGI=MELR)
+
+#
+
+MATR=ASSE_MATRICE( 
+                MATR_ELEM=MELR,
+                 NUME_DDL=NUM
+                         )
+
+#
+
+MATM=ASSE_MATRICE( 
+                MATR_ELEM=MELM,
+                 NUME_DDL=NUM
+                         )
+
+#
+#----------------------------------------------
+# MISE EN COMRESSION DES POUTRES
+# CALCUL STATIQUE POUTRES ROTULEES - ROTULEES
+# FORCE IMPOSEE AUX EXTREMITES LIBRES SUIVANT Y
+#----------------------------------------------
+#
+#------------------
+# CHARGEMENT IMPOSE
+#------------------
+#
+
+TENSION=AFFE_CHAR_MECA( 
+                      MODELE=MODELE,
+                FORCE_NODALE=_F( 
+                GROUP_NO = 'NO_EXTR',
+                FX = -26.7,  FY = 0.,  FZ = 0.,
+                MX = 0.,     MY = 0.,  MZ = 0.)
+                           )
+
+#
+#--------------------------------------------
+# CONSTITUTION ET ASSEMBLAGE DU VECTEUR FORCE
+#--------------------------------------------
+#
+
+VELT=CALC_VECT_ELEM( 
+                    CHARGE=TENSION,
+                CHAM_MATER=CHMAT,
+                 CARA_ELEM=CARA,
+                    OPTION='CHAR_MECA'
+                           )
+
+#
+
+VECT=ASSE_VECTEUR( 
+                VECT_ELEM=VELT,
+                 NUME_DDL=NUM
+                         )
+
+#
+#--------------------------------
+# RESOLUTION DU PROBLEME STATIQUE
+#--------------------------------
+#
+
+RAID=FACT_LDLT(   MATR_ASSE=MATR)
+
+#
+
+DEPL=RESO_LDLT( 
+                MATR_FACT=RAID,
+                  CHAM_NO=VECT
+                      )
+
+#
+#---------------------------------
+# CALCUL DES CONTRAINTES ASSOCIEES
+#---------------------------------
+#
+
+CONTR=CALC_CHAM_ELEM( 
+                    MODELE=MODELE,
+                      DEPL=DEPL,
+                    OPTION='SIEF_ELGA_DEPL',
+                 CARA_ELEM=CARA,
+                CHAM_MATER=CHMAT
+                           )
+
+#
+#----------------------------------------------------
+# CONSTITUTION ET ASSEMBLAGE DE LA MATRICE DE RAIDEUR
+# POUTRES ROTULEES - ROTULEES SOUS PRE-CONTRAINTE
+#----------------------------------------------------
+#
+
+MELRG=CALC_MATR_ELEM( 
+                   MODELE=MODELE,
+                SIEF_ELGA=CONTR,
+                CARA_ELEM=CARA,
+                   OPTION='RIGI_GEOM'
+                           )
+
+#
+
+MATRG=ASSE_MATRICE( 
+                MATR_ELEM=MELRG,
+                 NUME_DDL=NUM
+                         )
+
+#
+
+MATRC=COMB_MATR_ASSE( COMB_R=(
+                _F( 
+                MATR_ASSE = MATR,
+                COEF_R = 1.),
+                _F( 
+                MATR_ASSE = MATRG,
+                COEF_R = 1.))
+                           )
+
+#
+#------------------------------------------------
+# RESOLUTION DU PROBLEME MODAL
+# POUTRES ROTULEES - ROTULEES SOUS PRE-CONTRAINTE
+#------------------------------------------------
+#
+
+MODES=MODE_ITER_SIMULT( 
+                   MATR_A=MATRC,
+                   MATR_B=MATM,
+                CALC_FREQ=_F( 
+                OPTION = 'PLUS_PETITE',
+                NMAX_FREQ = 2)
+                             )
+
+#
+#-------------------------------------------
+# PRISE EN COMPTE DU COUPLAGE FLUIDELASTIQUE
+#-------------------------------------------
+#
+#------------------------------------
+# PROFIL DE MASSE VOLUMIQUE DU FLUIDE
+#------------------------------------
+#
+
+RHOFLUI=DEFI_FONCTION( 
+                NOM_PARA='X',
+                    VALE=(0., 1.E+3, 1.2, 1.E+3,)
+                          )
+
+#
+#------------------------------------------
+# PROFIL DE VISCOSITE CINEMATIQUE DU FLUIDE
+#------------------------------------------
+#
+
+VISC=DEFI_FONCTION( 
+                NOM_PARA='X',
+                    VALE=(0., 1.1E-6, 1.2, 1.1E-6,)
+                          )
+
+#
+#--------------------------------------------------------------
+# DEFINITION DE LA CONFIGURATION DE COUPLAGE FLUIDE - STRUCTURE
+# OPTION FAISCEAU EQUIVALENT
+#--------------------------------------------------------------
+#
+
+TYPEFLU=DEFI_FLUI_STRU( 
+                FAISCEAU_AXIAL=_F( 
+                GROUP_MA = 'MA_TU001',
+                RAYON_TUBE = 4.75E-3,
+                COOR_TUBE = (
+                                   -0.0126,   0.0126,
+                                    0.0000,   0.0126,
+                                    0.0126,   0.0126,
+                                   -0.0126,   0.0000,
+                                    0.0000,   0.0000,
+                                    0.0126,   0.0000,
+                                   -0.0126,  -0.0126,
+                                    0.0000,  -0.0126,
+                                    0.0126,  -0.0126,
+                                 ),
+                VECT_X = (1., 0., 0.,),
+                PROF_RHO_FLUI = RHOFLUI,
+                PROF_VISC_CINE = VISC,
+                PESANTEUR = (10., -1., 0., 0.,),
+                RUGO_TUBE = 1.E-5,
+                CARA_PAROI = ('YC', 'ZC', 'HY', 'HZ',),
+                VALE_PAROI = (0.0, 0.0, 0.078, 0.042,),
+                ANGL_VRIL = 0.)
+                           )
+
+#
+#------------------------------------------
+# RESOLUTION DU COUPLAGE FLUIDE - STRUCTURE
+#------------------------------------------
+#
+
+MELAS=CALC_FLUI_STRU( 
+                VITE_FLUI=_F( 
+                VITE_MIN = 0.0,
+                VITE_MAX = 10.0,
+                NB_POIN = 11),
+                BASE_MODALE=_F( 
+                MODE_MECA = MODES,
+                NUME_ORDRE = (1,  2, ),
+                AMOR_UNIF = 0.123),
+                TYPE_FLUI_STRU=TYPEFLU,
+                    IMPRESSION=_F( 
+                PARA_COUPLAGE = 'OUI',
+                DEFORMEE = 'NON')
+                           )
+
+#
+#-------------------------------
+# MODIFICATION DE LA BASE MODALE
+#-------------------------------
+#
+
+MODES11=MODI_BASE_MODALE( 
+                          BASE=MODES,
+                BASE_ELAS_FLUI=MELAS,
+                NUME_VITE_FLUI=11
+                             )
+
+#
+#-----------------------------
+# TEST DES RESULTATS DU MODE 1
+#-----------------------------
+#
+
+FREQ_1=RECU_FONCTION( 
+                BASE_ELAS_FLUI=MELAS,
+                        PARA_X='VITE_FLU',
+                        PARA_Y='FREQ',
+                    TOUT_ORDRE='OUI',
+                     NUME_MODE=1
+                          )
+
+#
+
+TEST_FONCTION(
+                   VALEUR=_F( 
+                   FONCTION = FREQ_1,
+                   VALE_PARA = 4.000000E+00,
+                   VALE_REFE = 4.47E+00,
+                   PRECISION = 10.E-02,
+                   REFERENCE = 'SOURCE_EXTERNE')
+               )
+
+#
+
+TEST_FONCTION(
+                   VALEUR=_F( 
+                   FONCTION = FREQ_1,
+                   VALE_PARA = 4.000000E+00,
+                   VALE_REFE = 4.734999E+00,
+                   PRECISION = 1.E-07,
+                   REFERENCE = 'NON_REGRESSION',
+                   VERSION = '5.02.26')
+               )
+
+#
+
+AMOR_1=RECU_FONCTION( 
+                BASE_ELAS_FLUI=MELAS,
+                        PARA_X='VITE_FLU',
+                        PARA_Y='AMOR',
+                    TOUT_ORDRE='OUI',
+                     NUME_MODE=1
+                          )
+
+#
+
+TEST_FONCTION(
+                   VALEUR=_F( 
+                   FONCTION = AMOR_1,
+                   VALE_PARA = 4.000000E+00,
+                   VALE_REFE = 19.E-02,
+                   PRECISION = 20.E-02,
+                   REFERENCE = 'SOURCE_EXTERNE')
+               )
+
+#
+
+TEST_FONCTION(
+                   VALEUR=_F( 
+                   FONCTION = AMOR_1,
+                   VALE_PARA = 4.000000E+00,
+                   VALE_REFE = 2.264757E-01,
+                   PRECISION = 1.E-05,
+                   REFERENCE = 'NON_REGRESSION',
+                   VERSION = '5.02.26')
+               )
+
+#
+#-----------------------------
+# TEST DES RESULTATS DU MODE 2
+#-----------------------------
+#
+
+FREQ_2=RECU_FONCTION( 
+                BASE_ELAS_FLUI=MELAS,
+                        PARA_X='VITE_FLU',
+                        PARA_Y='FREQ',
+                    TOUT_ORDRE='OUI',
+                     NUME_MODE=2
+                          )
+
+#
+
+TEST_FONCTION(
+                   VALEUR=_F( 
+                   FONCTION = FREQ_2,
+                   VALE_PARA = 4.000000E+00,
+                   VALE_REFE = 5.003898E+00,
+                   PRECISION = 1.E-07,
+                   REFERENCE = 'NON_REGRESSION',
+                   VERSION = '5.02.26')
+               )
+
+#
+
+AMOR_2=RECU_FONCTION( 
+                BASE_ELAS_FLUI=MELAS,
+                        PARA_X='VITE_FLU',
+                        PARA_Y='AMOR',
+                    TOUT_ORDRE='OUI',
+                     NUME_MODE=2
+                          )
+
+#
+
+TEST_FONCTION(
+                   VALEUR=_F( 
+                   FONCTION = AMOR_2,
+                   VALE_PARA = 4.000000E+00,
+                   VALE_REFE = 2.141491E-01,
+                   PRECISION = 1.E-05,
+                   REFERENCE = 'NON_REGRESSION',
+                   VERSION = '5.02.26')
+               )
+
+#
+
+FIN()
+#

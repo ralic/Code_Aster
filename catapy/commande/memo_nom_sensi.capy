@@ -1,0 +1,60 @@
+#& MODIF COMMANDE  DATE 09/10/2002   AUTEUR DURAND C.DURAND 
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+# RESPONSABLE GNICOLAS G.NICOLAS
+MEMO_NOM_SENSI=PROC(nom="MEMO_NOM_SENSI",op=129,docu="U4.31.xx-a",
+            UIinfo={"groupes":("Fonction",)},
+                    fr="Mémorisation des noms des concepts dérivés.",
+                    ang="Memorisation of the names of the sensitive concepts.",
+
+         regles=(AU_MOINS_UN('NOM','NOM_ZERO','NOM_UN'),),
+
+         NOM=FACT(statut='f',max='**',
+             regles=(PRESENT_PRESENT('MOT_CLE','VALEUR' ),),
+
+             NOM_SD=SIMP(statut='o',typ='TXM',
+                         fr="Nom de la structure de base",
+                         ang="Name of the basic structure"),
+
+             PARA_SENSI=SIMP(statut='o',typ=(para_sensi,theta_geom),
+                         fr="Nom du paramètre sensible",
+                         ang="Name of the sensitive parameter"),
+
+             NOM_COMPOSE=SIMP(statut='f',typ='TXM',defaut=" ",
+                         fr="Nom de la structure composée",
+                         ang="Name of the built structure"),
+
+             MOT_CLE=SIMP(statut='f',typ='TXM',max='**',
+                         fr="Liste des mots clés concernés par la dérivation",
+                         ang="Keyword list involved in derivation"),
+
+             VALEUR=SIMP(statut='f',typ='TXM',max='**',
+                         fr="Liste des objets concernés par la dérivation",
+                         ang="Object list involved in derivation"),
+
+                 ),
+
+         NOM_ZERO=SIMP(statut='f',typ=fonction,
+                       fr="Nom de la fonction nulle",
+                       ang="Name of the zero fonction"),
+
+         NOM_UN=SIMP  (statut='f',typ=fonction,
+                       fr="Nom de la fonction unité",
+                       ang="Name of the one fonction"),
+
+)  ;

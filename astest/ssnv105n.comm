@@ -1,0 +1,279 @@
+# MODIF  DATE 03/07/2002   AUTEUR CIBHHBC R.FERNANDES 
+# TITRE CONTACT AVEC FROTTEMENT D'UNE PLAQUE SUR UN PLAN RIGIDE
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+#
+#
+# ======================================================================
+# CAS_TEST__:SSNV105N
+# TEST DU GRECO CALCUL 2D
+# MODELE
+# MAILLAGE : ELEMENT 2D QUADRANGLE A 4 NOEUDS
+# UNITES   : NEWTON , METRE , SECONDE (N,M,S)
+#
+
+DEBUT( CODE=_F(  NOM = 'SSNV105N',NIV_PUB_WEB='INTERNET') )
+
+#......................................................................
+#  CALCUL TEST ELEMENTS FINIS DE CONTACT 2D QUAD4
+#                                      MECO_QUAD4
+#......................................................................
+
+PRE_GIBI()
+
+#
+
+MA=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='NON'), )
+
+#
+
+MA=DEFI_GROUP( reuse=MA,
+                       MAILLAGE=MA,CREA_GROUP_NO=(
+                       _F(  GROUP_MA = 'D',  ),
+                       _F(  GROUP_MA = 'C1',  ),
+                       _F(  GROUP_MA = 'C2',  ),
+                       _F(  GROUP_MA = 'D1H1P', ),
+                       _F(  GROUP_MA = 'ID1H1', ))
+                    )
+
+#
+
+MO=AFFE_MODELE( 
+            MAILLAGE=MA,
+           AFFE=_F( TOUT = 'OUI',PHENOMENE = 'MECANIQUE',MODELISATION = 'D_PLAN',)
+           )
+
+MA=MODI_MAILLAGE( reuse=MA,   MAILLAGE=MA,
+                           MODELE=MO,
+                       ORIE_PEAU_2D=_F(  GROUP_MA = 'DH3',  )
+                     )
+
+#
+
+MAT2=DEFI_MATERIAU(
+                            ELAS=_F( 
+                                  E = 1.3E11, 
+                                  NU = 0.2, 
+                                 )
+                          )
+
+#
+
+MAT1=DEFI_MATERIAU(
+                            ELAS=_F( 
+                                  E = 1.E16, 
+                                  NU = 0.0, 
+                                 )
+                          )
+
+#
+
+CHMAT=AFFE_MATERIAU(
+                            MAILLAGE=MA,AFFE=(
+                           _F( 
+                                 GROUP_MA = 'SURF2', 
+                                 MATER = MAT2, 
+                                ),
+                           _F( 
+                                 GROUP_MA = 'SURF1', 
+                                 MATER = MAT1, 
+                                ))
+                           )
+
+#
+
+CHA1=AFFE_CHAR_MECA(
+                             MODELE=MO,DDL_IMPO=(
+                     _F(  GROUP_NO = 'CH1',  DX = 0.0,   DY = 0.0,),
+                     _F(  GROUP_NO = 'CH1P',  DX = 0.0,   DY = 0.0,),
+                     _F(  GROUP_NO = 'D',   DX = 0.0,   DY = 0.0,),
+                     _F(  GROUP_NO = 'C2',  DX = 0.0,   ),
+                     _F(  GROUP_NO = 'C1',  DX = 0.0,   )),PRES_REP=(
+                            _F( GROUP_MA = 'DH3',   PRES = 5.E07,  ),
+                            _F( GROUP_MA = 'IA2',   PRES = 15.E07, ))
+                           )
+
+#
+
+CHA2=AFFE_CHAR_MECA(
+                             MODELE=MO,
+                             CONTACT=_F( 
+                               METHODE='PENALISATION',
+                               APPARIEMENT = 'NODAL',   
+                               RECHERCHE = 'NOEUD_BOUCLE', 
+                               FROTTEMENT = 'COULOMB',    
+                               COULOMB = 1.0,
+                               REAC_GEOM = 'SANS',
+                               PROJECTION = 'LINEAIRE',
+                               GROUP_MA_1 = 'D1H1P',    
+                               GROUP_MA_2 = 'ID1H1',    
+#                            E_T = 1.E+20, COEF_MATR_FROT = 0.0,
+                               E_T = 1.E+12, COEF_MATR_FROT = 0.5,
+                               E_N = 1.E+22)
+                            )
+
+#
+
+CHA3=AFFE_CHAR_MECA(
+                             MODELE=MO,
+                             CONTACT=_F( 
+                               METHODE='LAGRANGIEN',
+                               APPARIEMENT = 'MAIT_ESCL',   
+                               RECHERCHE = 'NOEUD_VOISIN', 
+                               REAC_GEOM = 'CONTROLE',
+                               NB_REAC_GEOM = 2,
+                               FROTTEMENT = 'COULOMB',    
+                               COULOMB = 1.0,       
+                               PROJECTION = 'LINEAIRE',    
+                               GROUP_MA_1 = 'D1H1P',    
+                               GROUP_MA_2 = 'ID1H1',    
+                                           )
+                            )
+
+#
+RAMPE=DEFI_FONCTION(   NOM_PARA='INST',
+            PROL_GAUCHE='LINEAIRE',   PROL_DROITE='LINEAIRE',
+            VALE=(0.0,0.0,1.0,1.0,)
+           )
+
+L_INST=DEFI_LIST_REEL(   DEBUT=0.,
+             INTERVALLE=_F( JUSQU_A = 1.0,   NOMBRE = 5, )
+           )
+
+U=STAT_NON_LINE( 
+                            MODELE=MO,
+                        CHAM_MATER=CHMAT,EXCIT=(
+                             _F( 
+                CHARGE = CHA1,            
+                FONC_MULT = RAMPE,         
+                ), _F( 
+                CHARGE = CHA2,            
+                )),
+                         COMP_ELAS=_F( 
+                RELATION = 'ELAS',          
+                ),
+                           SOLVEUR=_F( 
+                STOP_SINGULIER = 'OUI',    
+                METHODE = 'LDLT',           
+                ),
+                            NEWTON=_F( 
+                MATRICE = 'TANGENTE',           
+                REAC_ITER = 1,         
+                ),
+                         INCREMENT=_F( 
+                LIST_INST = L_INST,         
+                ),
+                       CONVERGENCE=_F( 
+                ARRET = 'OUI',             
+                ITER_GLOB_MAXI = 600,    
+                RESI_GLOB_RELA = 1.0E-5,
+                ),
+              )
+
+U=CALC_ELEM( reuse=U,
+                            OPTION=(
+                  'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
+                          RESULTAT=U,
+                            MODELE=MO,
+                        CHAM_MATER=CHMAT
+              )
+DEPLA=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
+NOM_CHAM='DEPL',
+                        RESULTAT=U,
+                        NUME_ORDRE=5
+                        )
+
+#
+
+TRESU1=POST_RELEVE_T(
+               ACTION=_F(  INTITULE = 'DEPLACEMENT',
+                        GROUP_NO = 'D1H1P', 
+                        CHAM_GD = DEPLA, 
+                        NOM_CMP = ('DX', 'DY',), 
+                        OPERATION = 'EXTRACTION', 
+                       )
+              )
+
+#
+
+TRESU2=POST_RELEVE_T(
+               ACTION=_F(  INTITULE = 'DEPLACEMENT',
+                        GROUP_NO = 'ID1H1', 
+                        CHAM_GD = DEPLA, 
+                        NOM_CMP = ('DX', 'DY',), 
+                        OPERATION = 'EXTRACTION', 
+                       )
+              )
+
+TEST_RESU(RESU=(  _F( 
+                     RESULTAT = U, 
+                     NUME_ORDRE = 5, 
+                     NOM_CHAM = 'VALE_CONT',
+                     NOEUD = 'N366', 
+                     NOM_CMP = 'JEU', 
+                     VALE = -1.64302E-20, 
+                     CRITERE='ABSOLU', 
+                     PRECISION = 1.E-16, 
+                    ),
+                 _F( 
+                     RESULTAT = U, 
+                     NUME_ORDRE = 5, 
+                     NOM_CHAM = 'DEPL', 
+                     NOEUD = 'N363', 
+                     NOM_CMP = 'DX', 
+                     VALE = 2.86E-5, 
+                     PRECISION = 5.E-2, 
+                    ),
+               _F( 
+                     RESULTAT = U, 
+                     NUME_ORDRE = 5, 
+                     NOM_CHAM = 'DEPL', 
+                     NOEUD = 'N362', 
+                     NOM_CMP = 'DX', 
+                     VALE = 2.72E-5, 
+                     PRECISION = 5.E-2, 
+                    ),
+               _F( 
+                     RESULTAT = U, 
+                     NUME_ORDRE = 5, 
+                     NOM_CHAM = 'DEPL', 
+                     NOEUD = 'N347', 
+                     NOM_CMP = 'DX', 
+                     VALE = 2.28E-5, 
+                     PRECISION = 5.E-2, 
+                    ),
+               _F( 
+                     RESULTAT = U, 
+                     NUME_ORDRE = 5, 
+                     NOM_CHAM = 'DEPL', 
+                     NOEUD = 'N327', 
+                     NOM_CMP = 'DX', 
+                     VALE = 1.98E-5, 
+                     PRECISION = 5.E-2, 
+                    ),
+               _F( 
+                     RESULTAT = U, 
+                     NUME_ORDRE = 5, 
+                     NOM_CHAM = 'DEPL', 
+                     NOEUD = 'N282', 
+                     NOM_CMP = 'DX', 
+                     VALE = 1.5E-5, 
+                     PRECISION = 5.E-2, 
+                    ))
+       )
+FIN();
+

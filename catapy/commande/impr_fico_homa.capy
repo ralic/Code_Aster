@@ -1,0 +1,260 @@
+#& MODIF COMMANDE  DATE 09/10/2002   AUTEUR DURAND C.DURAND 
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+# RESPONSABLE GNICOLAS G.NICOLAS
+IMPR_FICO_HOMA=PROC(nom="IMPR_FICO_HOMA",op= 189, docu="U7.04.01-b2",
+            UIinfo={"groupes":("Fonction",)},
+                    fr="Imprime le fichier de configuration de HOMARD.",
+                    ang="Writes the configuration file for HOMARD.",
+#
+# 1. Le niveau d'information
+#
+         INFO           = SIMP(statut='f',typ='I',defaut=1,into=(1,2)),
+#
+# 2. LE REPERTOIRE OU AURA LIEU LE CALCUL HOMARD
+#
+         REP             =SIMP(statut='f',typ='TXM'),  
+#
+# 3. Langue des messages issus de HOMARD
+#
+         LANGUE = SIMP(statut='f',typ='TXM',defaut="FRANCAIS",    
+                               into=("FRANCAIS","FRENCH","ANGLAIS","ENGLISH",),
+                           fr="Langue des messages issus de HOMARD.",
+                           ang="Language for HOMARD messages." ),
+#
+# 4. L'UNITE LOGIQUE D'ECRITURE DU FICHIER DE CONFIGURATION HOMARD
+#
+         UNITE           =SIMP(statut='f',typ='I',defaut= 71 ),  
+#
+# 5. LE TYPE DE TRAITEMENT :
+#
+         TRAITEMENT      =FACT(statut='o',min=1,max=1,
+#
+# 5.1. QUATRE CHOIX EXCLUSIFS :
+#
+# 5.1.1.
+#      A. ADAPTATION PAR UN INDICATEUR D'ERREUR, AVEC TROIS VARIANTES :
+#         . RAFFINEMENT ET DERAFFINEMENT
+#         . RAFFINEMENT SEUL
+#         . DERAFFINEMENT SEUL
+#      B. ADAPTATION UNIFORME, AVEC DEUX VARIANTES :
+#         . RAFFINEMENT SEUL
+#         . DERAFFINEMENT SEUL
+#         . RIEN : LE MAILLAGE EST LE MEME A LA SORTIE ET A L'ENTREE
+#      C. INFORMATION SUR UN MAILLAGE
+#      D. MISE A JOUR DE SOLUTIONS
+#
+           regles=( UN_PARMI('ADAPTATION','UNIFORME','INFORMATION','MAJSOLUTION'),),
+           ADAPTATION      =SIMP(statut='f',typ='TXM',     
+                                 fr="Adaptation libre",
+                                 ang="Free adaptation",
+                                 into=("RAFFINEMENT","DERAFFINEMENT","RAFF_DERA") ),
+           UNIFORME        =SIMP(statut='f',typ='TXM',     
+                                 fr="Adaptation uniforme",
+                                 ang="Uniforme adaptation",
+                                 into=("RAFFINEMENT","DERAFFINEMENT","RIEN") ),
+           INFORMATION     =SIMP(statut='f',typ='TXM',
+                                 fr="Adaptation libre",
+                                 ang="Free adaptation",
+                                 into=("OUI",) ),
+           MAJSOLUTION     =SIMP(statut='f',typ='TXM',
+                                 fr="Mise à jour de solutions",
+                                 ang="Solution updating",
+                                 into=("OUI",) ),
+#
+# 5.1.2. LES CONTRAINTES :
+#
+# 5.1.2.1. POUR DE L'ADAPTATION LIBRE, IL FAUT :
+#      A. LE NUMERO D'ITERATION DU MAILLAGE DE DEPART
+#      B. LE NOM MED DU MAILLAGE D'ENTREE
+#      C. LE NOM MED DE L'INDICATEUR D'ERREUR
+#      D. LE NUMERO D'ITERATION DU MAILLAGE DE DEPART
+#      E. LA MISE A JOUR DE SOLUTION
+#      F. LE NOM MED DU MAILLAGE DE SORTIE
+#      REMARQUE : IL FAUT DES CRITERES, MAIS ON NE SAIT PAS LESQUELS
+#
+# 5.1.2.2. POUR DE L'ADAPTATION UNIFORME
+#          IL FAUT :
+#      A. LE NUMERO D'ITERATION DU MAILLAGE DE DEPART
+#      B. LE NOM MED DU MAILLAGE DE SORTIE
+#          IL NE FAUT PAS :
+#      A. LE NOM MED DE L'INDICATEUR D'ERREUR
+#      B. LE NOM DE LA COMPOSANTE DE L'INDICATEUR D'ERREUR
+#      C. LES CRITERES
+#      REMARQUE : A L'ITERATION 0, OU AUX ITERATIONS SUIVANTES SI MAJ DE SOLUTION,
+#                 IL FAUT LE NOM MED DU MAILLAGE D'ENTREE
+#
+# 5.1.2.3. POUR DE LA MISE A JOUR DE SOLUTION :
+#          IL FAUT :
+#      A. LE NUMERO D'ITERATION DU MAILLAGE DE DEPART
+#      B. LE NOM MED DU MAILLAGE D'ENTREE
+#          IL NE FAUT PAS :
+#      A. LE NOM MED DE L'INDICATEUR D'ERREUR
+#      B. LE NOM DE LA COMPOSANTE DE L'INDICATEUR D'ERREUR
+#      C. LES CRITERES
+#
+#
+# 5.1.2.4. POUR DE L'INFORMATION :
+#          IL FAUT :
+#      A. LE NOM MED DU MAILLAGE D'ENTREE
+#          IL NE FAUT PAS :
+#      A. LE NOM MED DE L'INDICATEUR D'ERREUR
+#      B. LE NOM DE LA COMPOSANTE DE L'INDICATEUR D'ERREUR
+#      C. LES CRITERES
+#      D. LE NUMERO D'ITERATION DU MAILLAGE DE DEPART
+#      E. LA MISE A JOUR DE SOLUTION
+#
+           b_maillage_initial =BLOC(condition = "( INFORMATION != None ) or ( ADAPTATION != None ) or \
+                                                 ( MAJSOLUTION != None ) ",
+                           fr="Nom MED du maillage en entrée",
+                           ang="MED name of the in-mesh",
+                           NOM_MED_MAILLAGE_N   =SIMP(statut='o',typ='TXM',),
+                           ) ,
+#
+           b_maillage_initial_uniforme =BLOC(condition = "( UNIFORME != None ) ",
+                           fr="Nom MED du maillage en entrée",
+                           ang="MED name of the in-mesh",
+                           NOM_MED_MAILLAGE_N   =SIMP(statut='f',typ='TXM',),
+                           ) ,
+#
+           b_iteration_maj_champ =BLOC(condition = "( UNIFORME != None ) or ( ADAPTATION != None ) or \
+                                                    ( MAJSOLUTION != None ) ",
+                           fr="Nom MED du maillage en sortie, numero d'iteration et mise à jour de champs",
+                           ang="MED name of the out-mesh, iteration rank and field updating",
+                           NITER                =SIMP(statut='o',typ='I',
+                           fr="Numéro d'itération.",
+                           ang="Iteration number." ),
+                           NOM_MED_MAILLAGE_NP1 =SIMP(statut='o',typ='TXM',
+                           fr="Nom MED du maillage en sortie",
+                           ang="MED name of the out-mesh" ),
+                           MAJ_CHAM             =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON"),
+                           fr="Mise à jour de champs",
+                           ang="Field updating" ),
+                           ) ,
+#
+           b_indicateur_d_erreur  =BLOC(condition = "ADAPTATION != None",
+                           fr="Indicateur d'erreur",
+                           ang="Error indicator",
+                           regles=(AU_MOINS_UN('NUMORD_INDICA','NOM_RESU_INDICA'),
+                                   EXCLUS('NUMORD_INDICA','NOM_RESU_INDICA'),
+                                   PRESENT_PRESENT('NUMORD_INDICA','NUMPT_INDICA'),
+                                   PRESENT_PRESENT('NOM_RESU_INDICA','NOM_CHAM_INDICA'),),
+                           NOM_MED_INDICA  =SIMP(statut='o',typ='TXM',
+                           fr="Nom MED de l'indicateur d'erreur.",
+                           ang="MED name of error indicator.",),
+                           NOM_CMP_INDICA  =SIMP(statut='o',typ='TXM',
+                           fr="Nom de la composante de l'indicateur d'erreur retenue.",
+                           ang="Name of the selected component of the error indicator.",),
+                           NUMORD_INDICA  =SIMP(statut='f',typ='I',
+                           fr="Numero d'ordre de l'indicateur.",
+                           ang="Rank number of the error indicator.",),
+                           NUMPT_INDICA  =SIMP(statut='f',typ='I',
+                           fr="Numero du pas de temps de l'indicateur.",
+                           ang="Time step number of the error indicator.",),
+                           NOM_RESU_INDICA  =SIMP(statut='f',typ='TXM',
+                           fr="Concept contenant l'indicateur.",
+                           ang="Conceipt wich contains the error indicator.",),
+                           NOM_CHAM_INDICA  =SIMP(statut='f',typ='TXM',
+                           fr="Nom du champ dans le résultat de l'indicateur.",
+                           ang="Name of the field of the error indicator.",),
+                           ) ,
+#
+           b_critere_de_raffinement =BLOC( condition = "( ADAPTATION == 'RAFF_DERA' ) or ( ADAPTATION == 'RAFFINEMENT' )" ,
+                           fr="Critère de raffinement.",
+                           ang="Refinement threshold.",
+                           regles=(UN_PARMI ( 'CRIT_RAFF_ABS', 'CRIT_RAFF_REL', 'CRIT_RAFF_PE' ),),
+                           CRIT_RAFF_ABS   =SIMP(statut='f',typ='R',
+                                                 fr="Critère absolu",
+                                                 ang="Absolute threshold"  ),
+                           CRIT_RAFF_REL   =SIMP(statut='f',typ='R',
+                                                 fr="Critère relatif",
+                                                 ang="Relative threshold" ),
+                           CRIT_RAFF_PE    =SIMP(statut='f',typ='R',
+                                                 fr="Pourcentage d'éléments",
+                                                 ang="Percentage of elements" ),
+                           ) ,
+#
+           b_critere_de_deraffinement =BLOC ( condition = "( ADAPTATION == 'RAFF_DERA' ) or ( ADAPTATION == 'DERAFFINEMENT' )" ,
+                           fr="Critère de déraffinement.",
+                           ang="Unrefinement threshold.",
+                           regles=(UN_PARMI ( 'CRIT_DERA_ABS', 'CRIT_DERA_REL', 'CRIT_DERA_PE' ),),
+                           CRIT_DERA_ABS   =SIMP(statut='f',typ='R' ,
+                                                 fr="Critère absolu",
+                                                 ang="Absolute threshold" ),
+                           CRIT_DERA_REL   =SIMP(statut='f',typ='R',
+                                                 fr="Critère relatif",
+                                                 ang="Relative threshold" ),
+                           CRIT_DERA_PE    =SIMP(statut='f',typ='R',
+                                                 fr="Pourcentage d'éléments",
+                                                 ang="Percentage of elements" ),
+                           ) ,
+#
+           b_niveau_maximum =BLOC ( condition = " ( ADAPTATION == 'RAFF_DERA' ) or ( ADAPTATION == 'RAFFINEMENT' ) or \
+                                                  ( UNIFORME == 'RAFFINEMENT' )" ,
+                             fr="Niveau maximum de profondeur de raffinement",
+                             ang="Maximum level for refinement",
+                             NIVE_MAX        =SIMP(statut='f',typ='I' ),
+                           ) ,
+#
+           b_niveau_minimum =BLOC ( condition = " ( ADAPTATION == 'RAFF_DERA' ) or ( ADAPTATION == 'DERAFFINEMENT' ) or \
+                                                  ( UNIFORME == 'DERAFFINEMENT' )" ,
+                             fr="Niveau minimum de déraffinement",
+                             ang="Minimum level for unrefinement",
+                             NIVE_MIN        =SIMP(statut='f',typ='I' ),
+                           ) ,
+#
+         ),
+#
+# 6. L'ANALYSE DU MAILLAGE
+#
+         ANALYSE         =FACT(statut='f',min=1,max=1,
+                               fr="Analyse du maillage.",
+                               ang="Mesh analysis.",
+#
+# 6.1. CHOIX NON EXCLUSIFS, AVEC DEUX VARIANTES (OUI/NON) :
+#    A. NOMBRE DES ELEMENTS
+#    B. QUALITE DES ELEMENTS
+#    C. INTERPENETRATION DES ELEMENTS
+#    D. CONNEXITE DU MAILLAGE
+#    E. TAILLE DES DIFFERENTS SOUS-DOMAINES
+#
+           regles=(AU_MOINS_UN('NOMBRE','QUALITE','INTERPENETRATION','CONNEXITE','TAILLE'),),
+#
+         NOMBRE          =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON"),
+                          fr="Nombre de noeuds et éléments du maillage",
+                          ang="Number of nodes and elements in the mesh" ),
+#
+         QUALITE         =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON"),
+                          fr="Qualité du maillage",
+                          ang="Mesh quality" ),
+#
+         INTERPENETRATION=SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON"),
+                          fr="Controle de la non interpénétration des éléments.",
+                          ang="Overlapping checking." ),
+#
+         CONNEXITE       =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON"),
+                          fr="Connexité du maillage.",
+                          ang="Mesh connexity." ),
+#
+         TAILLE          =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON"),
+                          fr="Tailles des sous-domaines du maillage.",
+                          ang="Sizes of mesh sub-domains." ),
+#
+         ),
+#
+)  ;

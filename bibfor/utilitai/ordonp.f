@@ -1,0 +1,126 @@
+      SUBROUTINE ORDONP(NOMFON)
+      IMPLICIT NONE
+      CHARACTER*19 NOMFON
+C ----------------------------------------------------------------------
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF UTILITAI  DATE 22/10/2002   AUTEUR MCOURTOI M.COURTOIS 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C ----------------------------------------------------------------------
+C RESPONSABLE MCOURTOI M.COURTOIS
+C ----------------------------------------------------------------------
+C     APPELE PAR ORDONN POUR REORDONNER LES FONCTIONS D UNE NAPPE
+C     PAR ORDRE CROISSANT DES PARAMETRES
+C     ----------- COMMUNS NORMALISES  JEVEUX  --------------------------
+      INTEGER       ZI
+      COMMON/IVARJE/ZI(1)
+      REAL*8        ZR
+      COMMON/RVARJE/ZR(1)
+      COMPLEX*16    ZC
+      COMMON/CVARJE/ZC(1)
+      LOGICAL       ZL
+      COMMON/LVARJE/ZL(1)
+      CHARACTER*8   ZK8
+      CHARACTER*16         ZK16
+      CHARACTER*24                ZK24
+      CHARACTER*32                         ZK32
+      CHARACTER*80                                 ZK80
+      COMMON/KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+C     ----------- FIN COMMUNS NORMALISES JEVEUX ------------------------
+      CHARACTER*32 JEXNUM
+      CHARACTER*19 FONC0
+      CHARACTER*24 CHVAL,CHPAR,SFVAL,SFPAR,CHBID
+      INTEGER      IRET
+      INTEGER      IPAR,LPAR,NBPARA,IOR,IVAL,LVAL
+      INTEGER      I,J,IT,NBP,NBPT
+      REAL*8       XT
+C     ------------------------------------------------------------------
+C
+      CALL JEMARQ()
+C
+C     OBJET INITIAL RECOPIE DANS FONC0
+      FONC0='&&ORDONP.FONC      '
+      CHVAL=NOMFON//'.VALE'
+      CHPAR=NOMFON//'.PARA'
+      SFVAL=FONC0//'.VALE'
+      SFPAR=FONC0//'.PARA'
+C
+      CALL JELIRA(CHPAR,'LONUTI',NBPARA,CHBID)
+C     RECUPERE LES PARAMETRES
+      CALL JEDUPO(CHPAR,'V',SFPAR,.FALSE.)
+      CALL JEVEUO(SFPAR,'E',IPAR)
+      CALL JELIRA(SFPAR,'LONUTI',NBPARA,CHBID)
+C
+C      CALL JEDUPC('G',CHVAL,1,'V',SFVAL,.FALSE.)
+      CALL JEDUPO(CHVAL,'V',SFVAL,.FALSE.)
+C
+      CALL JEDETR(CHPAR)
+      CALL JEDETR(CHVAL)
+C
+C     TABLEAU D'ORDRE
+      CALL WKVECT(FONC0//'.ORDR','V V I',NBPARA,IOR)
+      DO 11 I=1,NBPARA
+         ZI(IOR-1+I)=I
+  11  CONTINUE
+C
+C     TRI DES PARAMETRES
+      DO 10 I = 1,NBPARA-1
+         DO 10 J = I+1,NBPARA
+            IF(ZR(IPAR-1+I).GT.ZR(IPAR-1+J))THEN
+               XT           = ZR(IPAR-1+I)
+               IT           = ZI(IOR-1+I)
+               ZR(IPAR-1+I) = ZR(IPAR-1+J)
+               ZI(IOR-1+I)  = ZI(IOR-1+J)
+               ZR(IPAR-1+J) = XT
+               ZI(IOR-1+J)  = IT
+            ENDIF
+  10  CONTINUE
+C
+C     CALCULE LA TAILLE CUMULEE DE LA COLLECTION
+                NBPT=0
+      DO 113 I=1,NBPARA
+        CALL JELIRA(JEXNUM(SFVAL,I),'LONMAX',NBP,CHBID)
+        NBPT=NBPT+NBP
+ 113  CONTINUE
+C
+C     --- CREATION DE L'OBJET NOMFON.PARA ---
+      CALL WKVECT(CHPAR,'G V R',NBPARA,LPAR)
+C     --- CREATION DE LA COLLECTION NOMFON.VALE ---
+      CALL JECREC(CHVAL,'G V R','NU','CONTIG','VARIABLE',NBPARA)
+                CALL JEECRA(CHVAL,'LONT',NBPT,' ')
+      DO 100 I=1,NBPARA
+C        REMPLISSAGE DU .PARA
+         ZR(LPAR-1+I)=ZR(IPAR-1+I)
+C        REMPLISSAGE DES .VALE EN FONCTION DE L'ORDRE
+         CALL JELIRA(JEXNUM(SFVAL,ZI(IOR-1+I)),'LONMAX',NBP,CHBID)
+         CALL JEVEUO(JEXNUM(SFVAL,ZI(IOR-1+I)),'E',IVAL)
+         CALL JECROC(JEXNUM(CHVAL,I))
+         CALL JEECRA(JEXNUM(CHVAL,I),'LONMAX',NBP,' ')
+         CALL JEECRA(JEXNUM(CHVAL,I),'LONUTI',NBP,' ')
+         CALL JEVEUO(JEXNUM(CHVAL,I),'E',LVAL)
+         DO 101 J=1,NBP
+            ZR(LVAL+J-1)=ZR(IVAL+J-1)
+ 101     CONTINUE
+ 100  CONTINUE
+C
+C     DESTRUCTION DES OBJETS DE TRAVAIL
+      CALL JEDETR(SFPAR)
+      CALL JEDETR(SFVAL)
+      CALL JEDETR(FONC0//'.ORDR')
+C
+      CALL JEDEMA()
+      END

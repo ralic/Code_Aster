@@ -1,0 +1,112 @@
+      SUBROUTINE NMIRET ( CODRET , TABRET )
+
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 11/09/2002   AUTEUR VABHHTS J.PELLET 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+C ======================================================================
+C RESPONSABLE ADBHHVV V.CANO
+
+      IMPLICIT NONE
+      LOGICAL       TABRET(0:10)
+      CHARACTER*24  CODRET
+
+C ----------------------------------------------------------------------
+C
+C STAT_NON_LINE : RESUME LES CODES RETOURS DES TE
+C
+C IN   CODRET  : CHAM_ELEM ISSU DES TE
+C OUT  TABRET  : TABRET(0) = .TRUE. UN CODE RETOUR NON NUL EXISTE
+C                TABRET(I) = .TRUE. CODE RETOUR I RENCONTRE
+C                             SINON .FALSE.
+C                I VALANT DE 1 A 10
+C ----------------------------------------------------------------------
+C -------------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ----------------
+C
+      INTEGER            ZI
+      COMMON  / IVARJE / ZI(1)
+      REAL*8             ZR
+      COMMON  / RVARJE / ZR(1)
+      COMPLEX*16         ZC
+      COMMON  / CVARJE / ZC(1)
+      LOGICAL            ZL
+      COMMON  / LVARJE / ZL(1)
+      CHARACTER*8        ZK8
+      CHARACTER*16                ZK16
+      CHARACTER*24                          ZK24
+      CHARACTER*32                                    ZK32
+      CHARACTER*80                                              ZK80
+      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+C
+C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
+C
+      INTEGER       IRET, JCESK, JCESD, JCESV, JCESL, NBMAIL, ICMP,
+     +              IMA, IPT, ISP, IAD
+      CHARACTER*8   NOMGD
+      CHARACTER*19  CHAMNS
+C-----------------------------------------------------------------------
+      CALL JEMARQ()
+C
+      DO 10 IRET = 0 , 10
+         TABRET(IRET) = .FALSE.
+ 10   CONTINUE
+C
+C --- ON TRANSFORME LE "CHAM_ELEM" EN UN "CHAM_ELEM_S"
+C
+      CHAMNS = '&&NMIRET.CHAMNS'
+      CALL CELCES ( CODRET , 'V' , CHAMNS )
+C
+      CALL JEVEUO ( CHAMNS//'.CESK', 'L', JCESK )
+      CALL JEVEUO ( CHAMNS//'.CESD', 'L', JCESD )
+      CALL JEVEUO ( CHAMNS//'.CESV', 'L', JCESV )
+      CALL JEVEUO ( CHAMNS//'.CESL', 'L', JCESL )
+
+C     CHAM_ELEM/ELGA MAIS EN FAIT : 1 POINT ET 1 SOUS_POINT PAR ELEMENT
+      IF ((ZI(JCESD-1+3).NE.1).OR.(ZI(JCESD-1+4).NE.1))
+     &   CALL UTMESS('F','NMIRET','ERREUR CHAM_ELEM_S')
+
+      NOMGD = ZK8(JCESK-1+2)
+      IF ( NOMGD .NE. 'CODE_I' ) CALL UTMESS('F','NMIRET',' BUG 1 ')
+C
+      NBMAIL = ZI(JCESD-1+1)
+      ICMP   = ZI(JCESD-1+2)
+      IF ( ICMP .NE. 1 ) CALL UTMESS('F','NMIRET',' BUG 2 ')
+C
+      DO 20 IMA = 1 , NBMAIL
+
+         CALL CESEXI('C',JCESD,JCESL,IMA,1,1,ICMP,IAD)
+         IF ( IAD .LE. 0 ) GOTO 20
+C
+         IRET = ZI(JCESV-1+IAD)
+         IF ( IRET .EQ. 0 ) THEN
+         ELSEIF ( IRET .LT. 11  .AND.  IRET .GT. 0 ) THEN
+            TABRET(IRET) = .TRUE.
+         ELSE
+            CALL UTDEBM('A','NMIRET',' CODE RETOUR ')
+            CALL UTIMPI('S','NON TRAITE ',1,IRET)
+            CALL UTFINM()
+         ENDIF
+C
+ 20   CONTINUE
+C
+      DO 30 IRET = 1 , 10
+         IF ( TABRET(IRET) )  TABRET(0) = .TRUE.
+ 30   CONTINUE
+C
+      CALL DETRSD ( 'CHAM_ELEM_S' , CHAMNS )
+C
+      CALL JEDEMA()
+      END

@@ -1,0 +1,719 @@
+# MODIF  DATE 09/10/2002   AUTEUR DURAND C.DURAND 
+# TITRE SYSTEME MASSES-RESSORTS LINEAIRE MULTI-SUPPORTE (TRANSLATION)
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+# ----------------------------------------------------------------------
+# SYSTEME 3 MASSES, 4 RESSORTS ENCASTRES-ENCASTRES SOUMIS A DES
+# ACCE_IMPO DIFFERENTES (STRUCTURE MULTI-SUPPORTEE)
+#    ACCE_IMPO = ACCELER1 (A.T*T) EN Z=0 (NO1) ET
+#    ACCE_IMPO = ACCELER2 (0) EN Z=4 (NO5)
+# ----------------------------------------------------------------------
+# REF: PAS DE REF BIBLIO MAIS CALCUL ANALYTIQUE
+# ----------------------------------------------------------------------
+
+DEBUT(   CODE=_F(  NOM = 'SDLD103A',NIV_PUB_WEB='INTERNET'),
+          BASE=_F( FICHIER = 'GLOBALE',  LONG_REPE = 20000)
+        )
+
+MAILLAGE=LIRE_MAILLAGE( )
+
+MODELE=AFFE_MODELE(  MAILLAGE=MAILLAGE,AFFE=(
+         _F(  PHENOMENE = 'MECANIQUE', MODELISATION = 'DIS_T',
+                GROUP_MA = 'RESSORT'),
+              _F(  PHENOMENE = 'MECANIQUE', MODELISATION = 'DIS_T',
+                GROUP_NO = 'MASSES'))
+                    )
+
+#
+CARA_ELE=AFFE_CARA_ELEM(  MODELE=MODELE,DISCRET=(
+                _F(  CARA = 'K_T_D_L',  REPERE = 'GLOBAL',
+                          GROUP_MA = 'RESSORT',
+                          VALE = (10000., 0., 10000., )),
+                        _F(  CARA = 'M_T_D_N',  GROUP_NO = 'MASSES',  VALE = 10.))
+                         )
+
+#
+CON_LIM=AFFE_CHAR_MECA(  MODELE=MODELE,DDL_IMPO=(
+# ------------ LES DEPL_IMPO SONT DEFINIS DANS LE REPERE GLOBAL
+               _F(  GROUP_NO = 'ENCASTRE',  DX = 0.,  DY = 0.,  DZ = 0.),
+               _F(  GROUP_NO = 'MASSES',    DY = 0.,  DZ = 0.))
+                        )
+
+#
+MACRO_MATR_ASSE(  MODELE=MODELE,   CHARGE=CON_LIM,   CARA_ELEM=CARA_ELE,
+                   NUME_DDL=CO("NUMEDDL"),MATR_ASSE=(
+                 _F(  MATRICE = CO("RIGIDITE"),  OPTION = 'RIGI_MECA'),
+                           _F(  MATRICE = CO("MASSE"),     OPTION = 'MASS_MECA'))
+               )
+
+#
+# CALCUL DES MODES AVEC BLOCAGE DES ANCRAGES:
+#---------------------------------------------
+MODE_MEC=MODE_ITER_INV(  MATR_A=RIGIDITE,   MATR_B=MASSE,
+                 CALC_FREQ=_F(  OPTION = 'AJUSTE',  FREQ = (3.8,  7.,  9.3, ))
+                         )
+
+MODE_MEC=NORM_MODE(reuse=MODE_MEC,  MODE=MODE_MEC,   NORME='MASS_GENE' )
+
+#
+# CALCUL DES MODES STATIQUES AUX POINTS D'ANCRAGE:
+#-------------------------------------------------
+MODE_STA=MODE_STATIQUE(  MATR_RIGI=RIGIDITE,   MATR_MASS=MASSE,
+                         MODE_STAT=_F(  TOUT = 'OUI', AVEC_CMP = 'DX') )
+
+#
+# DESCRIPTION DES PAS DE CALCUL
+#------------------------------
+L_INST=DEFI_LIST_REEL(  DEBUT=0.,
+                        INTERVALLE=_F(  JUSQU_A = 1., PAS = 0.0001) )
+
+#
+# DESCRIPTION DES ACCELEROGRAMMES:
+#---------------------------------
+ACCE1 = FORMULE(REEL="""(REEL:INST) =
+2.E+05*INST**2 """)
+ACCELER1=CALC_FONC_INTERP( FONCTION=ACCE1, LIST_PARA=L_INST,
+                       PROL_DROITE='LINEAIRE',
+                      PROL_GAUCHE='LINEAIRE',
+                      NOM_RESU='ACCE'
+                     )
+
+ACCE2 = FORMULE(REEL="""(REEL:INST) =
+0.*INST """)
+ACCELER2=CALC_FONC_INTERP( FONCTION=ACCE2, LIST_PARA=L_INST,
+                       PROL_DROITE='LINEAIRE',
+                      PROL_GAUCHE='LINEAIRE',
+                      NOM_RESU='ACCE'
+                     )
+
+#
+# INTEGRATION DES ACCELEROGRAMMES:
+#---------------------------------
+VITE1 = FORMULE(REEL="""(REEL:INST) =
+(2.E+05*INST**3)/3. """)
+VITESSE1=CALC_FONC_INTERP( FONCTION=VITE1, LIST_PARA=L_INST,
+                       PROL_DROITE='LINEAIRE',
+                      PROL_GAUCHE='LINEAIRE',
+                      NOM_RESU='VITE'
+                     )
+
+DEPL1 = FORMULE(REEL="""(REEL:INST) =
+(2.E+05*INST**4)/12. """)
+DEPLACE1=CALC_FONC_INTERP( FONCTION=DEPL1, LIST_PARA=L_INST,
+                       PROL_DROITE='LINEAIRE',
+                      PROL_GAUCHE='LINEAIRE',
+                      NOM_RESU='DEPL'
+                     )
+
+VITE2 = FORMULE(REEL="""(REEL:INST) =
+0.*INST """)
+VITESSE2=CALC_FONC_INTERP( FONCTION=VITE2, LIST_PARA=L_INST,
+                       PROL_DROITE='LINEAIRE',
+                      PROL_GAUCHE='LINEAIRE',
+                      NOM_RESU='VITE'
+                     )
+
+DEPL2 = FORMULE(REEL="""(REEL:INST) =
+0.*INST """)
+DEPLACE2=CALC_FONC_INTERP( FONCTION=DEPL2, LIST_PARA=L_INST,
+                       PROL_DROITE='LINEAIRE',
+                      PROL_GAUCHE='LINEAIRE',
+                      NOM_RESU='DEPL'
+                     )
+
+#
+# ON ETUDIE LA STRUCTURE EN VRAI MULTI-APPUI:
+#    ACCE_IMPO = ACCELER1 (A.T*T) EN Z=0 (NO1) ET
+#    ACCE_IMPO = ACCELER2 (0) EN Z=4 (NO5)
+#----------------------------------------------------------
+#
+MULT_X1=CALC_CHAR_SEISME(  MATR_MASS=MASSE,   DIRECTION=( 1., 0., 0.,),
+                            MODE_STAT=MODE_STA,   NOEUD='NO1' )
+
+MULT_X2=CALC_CHAR_SEISME(  MATR_MASS=MASSE,   DIRECTION=( 1., 0., 0.,),
+                            MODE_STAT=MODE_STA,   NOEUD='NO5' )
+
+#
+# PROJECTION DES MATRICES M ET K SUR LA BASE MODALE
+#--------------------------------------------------- 
+MACRO_PROJ_BASE(BASE=MODE_MEC,MATR_ASSE_GENE=(
+           _F( MATRICE = CO("MASS_GEN"), MATR_ASSE = MASSE),
+           _F( MATRICE = CO("RIGI_GEN"), MATR_ASSE = RIGIDITE)),VECT_ASSE_GENE=(
+           _F( VECTEUR = CO("VECT_X1"), VECT_ASSE = MULT_X1),
+           _F( VECTEUR = CO("VECT_X2"), VECT_ASSE = MULT_X2))
+               )
+
+#
+# CALCUL TRANSITOIRE PAR SUPERPOSITION MODALE
+# -------------------------------------------
+TRAN_GEE=DYNA_TRAN_MODAL(  MASS_GENE=MASS_GEN,   RIGI_GENE=RIGI_GEN,
+                 METHODE='EULER',
+                MODE_STAT=MODE_STA,EXCIT=(
+                _F(  VECT_GENE = VECT_X1,  ACCE = ACCELER1,
+                        MULT_APPUI = 'OUI',
+                        DIRECTION = ( 1., 0., 0.,), NOEUD = 'NO1',
+                        VITE = VITESSE1, DEPL = DEPLACE1),
+                _F(  VECT_GENE = VECT_X2,  ACCE = ACCELER2,
+                        MULT_APPUI = 'OUI',
+                        DIRECTION = ( 1., 0., 0.,), NOEUD = 'NO5',
+                        VITE = VITESSE2, DEPL = DEPLACE2)),
+                 ARCHIVAGE=_F(  PAS_ARCH = 1),
+                 INCREMENT=_F(  INST_INIT = 0., INST_FIN = 1.0, PAS = 0.001)
+                )
+
+#
+TRAN_GED=DYNA_TRAN_MODAL(  MASS_GENE=MASS_GEN,   RIGI_GENE=RIGI_GEN,
+                 METHODE='DEVOGE',
+                MODE_STAT=MODE_STA,EXCIT=(
+                _F(  VECT_GENE = VECT_X1,  ACCE = ACCELER1,
+                        MULT_APPUI = 'OUI',
+                        DIRECTION = ( 1., 0., 0.,), NOEUD = 'NO1',
+                        VITE = VITESSE1, DEPL = DEPLACE1),
+                _F(  VECT_GENE = VECT_X2,  ACCE = ACCELER2,
+                        MULT_APPUI = 'OUI',
+                        DIRECTION = ( 1., 0., 0.,), NOEUD = 'NO5',
+                        VITE = VITESSE2, DEPL = DEPLACE2)),
+                 ARCHIVAGE=_F(  PAS_ARCH = 1),
+                 INCREMENT=_F(  INST_INIT = 0., INST_FIN = 1.0, PAS = 0.001)
+                )
+
+#
+TRAN_GEA=DYNA_TRAN_MODAL(  MASS_GENE=MASS_GEN,   RIGI_GENE=RIGI_GEN,
+                 METHODE='ADAPT',
+                MODE_STAT=MODE_STA,EXCIT=(
+                _F(  VECT_GENE = VECT_X1,  ACCE = ACCELER1,
+                        MULT_APPUI = 'OUI',
+                        DIRECTION = ( 1., 0., 0.,), NOEUD = 'NO1',
+                        VITE = VITESSE1, DEPL = DEPLACE1),
+                _F(  VECT_GENE = VECT_X2,  ACCE = ACCELER2,
+                        MULT_APPUI = 'OUI',
+                        DIRECTION = ( 1., 0., 0.,), NOEUD = 'NO5',
+                        VITE = VITESSE2, DEPL = DEPLACE2)),
+                 ARCHIVAGE=_F(  PAS_ARCH = 1),
+                 INCREMENT=_F(  INST_INIT = 0., INST_FIN = 1.0, PAS = 0.001,
+                             VITE_MIN = 'MAXI')
+                )
+
+#
+L_RECU=DEFI_LIST_REEL(  DEBUT=0.,
+                      INTERVALLE=_F(  JUSQU_A = 1.0,  NOMBRE = 20) )
+
+# RESTITUTION DU DEPLACEMENT ABSOLU
+# ---------------------------------
+RESUAD=REST_BASE_PHYS(  RESU_GENE=TRAN_GED,
+                         INTERPOL='LIN',
+                         LIST_INST=L_RECU,
+                        TOUT_CHAM='OUI',
+                        MULT_APPUI='OUI'
+                       )
+
+RESUAA=REST_BASE_PHYS(  RESU_GENE=TRAN_GEA,
+                         INTERPOL='LIN',
+                         PRECISION=4.E-3,
+                         LIST_INST=L_RECU,
+                        TOUT_CHAM='OUI',
+                        MULT_APPUI='OUI'
+                       )
+
+# RESTITUTION DU DEPLACEMENT RELATIF 
+# ----------------------------------
+RESURD=REST_BASE_PHYS(  RESU_GENE=TRAN_GED,
+                         INTERPOL='LIN',
+                         LIST_INST=L_RECU,
+                        TOUT_CHAM='OUI',
+                       )
+
+RESURA=REST_BASE_PHYS(  RESU_GENE=TRAN_GEA,
+                         INTERPOL='LIN',
+                         PRECISION=4.E-3,
+                         LIST_INST=L_RECU,
+                        TOUT_CHAM='OUI',
+                       )
+
+#
+# CALCUL ANALYTIQUE DES DEPLACEMENTS
+# ----------------------------------
+
+OMEGA1=DEFI_VALEUR( R8=EVAL("""SQRT(2000./(2.+SQRT(2.))) """))
+
+OMEGA2=DEFI_VALEUR( R8=EVAL("""SQRT(2000.) """))
+
+OMEGA3=DEFI_VALEUR( R8=EVAL("""SQRT(2000./(2.-SQRT(2.))) """))
+
+F1 = FORMULE(REEL="""(REEL:INST) =
+COS(OMEGA1*INST)-1. """)
+F2 = FORMULE(REEL="""(REEL:INST) =
+COS(OMEGA2*INST)-1. """)
+F3 = FORMULE(REEL="""(REEL:INST) =
+COS(OMEGA3*INST)-1. """)
+
+# CALCUL DU DEPLACEMENT RELATIF AU NOEUD 2 : XRNO2
+# ------------------------------------------------
+
+XRNO2 = FORMULE(REEL="""(REEL:INST) =
+-25.*(7*INST**2+((10.+7.*SQRT(2.))*F1(INST) +F2(INST)
+                        +(10.-7.*SQRT(2.))*F3(INST))*0.001)
+        """)
+
+XR2=DEFI_VALEUR(  TX='XRNO2'  )
+
+XRNO2=CALC_FONC_INTERP(reuse=XRNO2,  FONCTION=XRNO2, 
+                            NOM_RESU=XR2,    LIST_PARA=L_RECU )
+
+XR2010=DEFI_VALEUR( R8=EVAL("""XRNO2(0.10)"""))
+
+XR2030=DEFI_VALEUR( R8=EVAL("""XRNO2(0.30)"""))
+
+XR2050=DEFI_VALEUR( R8=EVAL("""XRNO2(0.50)"""))
+
+XR2070=DEFI_VALEUR( R8=EVAL("""XRNO2(0.70)"""))
+
+XR2100=DEFI_VALEUR( R8=EVAL("""XRNO2(1.)"""))
+
+# CALCUL DU DEPLACEMENT RELATIF AU NOEUD 3 : XRNO3
+# ------------------------------------------------
+
+XRNO3 = FORMULE(REEL="""(REEL:INST) =
+-25.*(8*INST**2+((10.*SQRT(2.)+14.)*F1(INST)
+                        +(-10.*SQRT(2.)+14.)*F3(INST))*0.001)
+         """)
+
+XR3=DEFI_VALEUR(  TX='XRNO3'  )
+
+XRNO3=CALC_FONC_INTERP(reuse=XRNO3,  FONCTION=XRNO3, 
+                            NOM_RESU=XR3,    LIST_PARA=L_RECU )
+
+XR301=DEFI_VALEUR( R8=EVAL("""XRNO3(0.01)"""))
+
+XR302=DEFI_VALEUR( R8=EVAL("""XRNO3(0.02)"""))
+
+XR303=DEFI_VALEUR( R8=EVAL("""XRNO3(0.03)"""))
+
+XR304=DEFI_VALEUR( R8=EVAL("""XRNO3(0.04)"""))
+
+XR305=DEFI_VALEUR( R8=EVAL("""XRNO3(0.05)"""))
+
+XR306=DEFI_VALEUR( R8=EVAL("""XRNO3(0.06)"""))
+
+XR307=DEFI_VALEUR( R8=EVAL("""XRNO3(0.07)"""))
+
+XR308=DEFI_VALEUR( R8=EVAL("""XRNO3(0.08)"""))
+
+XR309=DEFI_VALEUR( R8=EVAL("""XRNO3(0.09)"""))
+
+XR3010=DEFI_VALEUR( R8=EVAL("""XRNO3(0.10)"""))
+
+XR3030=DEFI_VALEUR( R8=EVAL("""XRNO3(0.30)"""))
+
+XR3050=DEFI_VALEUR( R8=EVAL("""XRNO3(0.50)"""))
+
+XR3070=DEFI_VALEUR( R8=EVAL("""XRNO3(0.70)"""))
+
+XR3100=DEFI_VALEUR( R8=EVAL("""XRNO3(1.)"""))
+
+# CALCUL DU DEPLACEMENT RELATIF AU NOEUD 4 : XRNO4
+# ------------------------------------------------
+
+XRNO4 = FORMULE(REEL="""(REEL:INST) =
+-25.*(5*INST**2+((10.+7.*SQRT(2.))*F1(INST) -F2(INST)
+                        +(10.-7.*SQRT(2.))*F3(INST))*0.001)
+        """)
+
+XR4=DEFI_VALEUR(  TX='XRNO4'  )
+
+XRNO4=CALC_FONC_INTERP(reuse=XRNO4,  FONCTION=XRNO4, 
+                            NOM_RESU=XR4,    LIST_PARA=L_RECU )
+
+XR4010=DEFI_VALEUR( R8=EVAL("""XRNO4(0.10)"""))
+
+XR4030=DEFI_VALEUR( R8=EVAL("""XRNO4(0.30)"""))
+
+XR4050=DEFI_VALEUR( R8=EVAL("""XRNO4(0.50)"""))
+
+XR4070=DEFI_VALEUR( R8=EVAL("""XRNO4(0.70)"""))
+
+XR4100=DEFI_VALEUR( R8=EVAL("""XRNO4(1.)"""))
+
+# CALCUL ANALYTIQUE DU DEPLACEMENT D ENTRAINEMENT AU NOEUD 2 : XRNOE2
+# -------------------------------------------------------------------
+
+XRNOE2 = FORMULE(REEL="""(REEL:INST) =
+(300000.*INST**4)/24.""")
+XRE2=DEFI_VALEUR(  TX='XRNOE2'  )
+
+XRNOE2=CALC_FONC_INTERP(reuse=XRNOE2,  FONCTION=XRNOE2, 
+                             NOM_RESU=XRE2,    LIST_PARA=L_RECU )
+
+XE2010=DEFI_VALEUR( R8=EVAL("""XRNOE2(0.10)"""))
+
+XE2030=DEFI_VALEUR( R8=EVAL("""XRNOE2(0.30)"""))
+
+XE2050=DEFI_VALEUR( R8=EVAL("""XRNOE2(0.50)"""))
+
+XE2070=DEFI_VALEUR( R8=EVAL("""XRNOE2(0.70)"""))
+
+XE2100=DEFI_VALEUR( R8=EVAL("""XRNOE2(1.)"""))
+
+# CALCUL ANALYTIQUE DU DEPLACEMENT D ENTRAINEMENT AU NOEUD 3 : XRNOE3
+# -------------------------------------------------------------------
+
+XRNOE3 = FORMULE(REEL="""(REEL:INST) =
+(100000.*INST**4)/12.""")
+XRE3=DEFI_VALEUR(  TX='XRNOE3'  )
+
+XRNOE3=CALC_FONC_INTERP(reuse=XRNOE3,  FONCTION=XRNOE3, 
+                             NOM_RESU=XRE3,    LIST_PARA=L_RECU )
+
+XE301=DEFI_VALEUR( R8=EVAL("""XRNOE3(0.01)"""))
+
+XE302=DEFI_VALEUR( R8=EVAL("""XRNOE3(0.02)"""))
+
+XE303=DEFI_VALEUR( R8=EVAL("""XRNOE3(0.03)"""))
+
+XE304=DEFI_VALEUR( R8=EVAL("""XRNOE3(0.04)"""))
+
+XE305=DEFI_VALEUR( R8=EVAL("""XRNOE3(0.05)"""))
+
+XE306=DEFI_VALEUR( R8=EVAL("""XRNOE3(0.06)"""))
+
+XE307=DEFI_VALEUR( R8=EVAL("""XRNOE3(0.07)"""))
+
+XE308=DEFI_VALEUR( R8=EVAL("""XRNOE3(0.08)"""))
+
+XE309=DEFI_VALEUR( R8=EVAL("""XRNOE3(0.09)"""))
+
+XE3010=DEFI_VALEUR( R8=EVAL("""XRNOE3(0.10)"""))
+
+XE3030=DEFI_VALEUR( R8=EVAL("""XRNOE3(0.30)"""))
+
+XE3050=DEFI_VALEUR( R8=EVAL("""XRNOE3(0.50)"""))
+
+XE3070=DEFI_VALEUR( R8=EVAL("""XRNOE3(0.70)"""))
+
+XE3100=DEFI_VALEUR( R8=EVAL("""XRNOE3(1.)"""))
+
+# CALCUL ANALYTIQUE DU DEPLACEMENT D ENTRAINEMENT AU NOEUD 4 : XRNOE4
+# -------------------------------------------------------------------
+
+XRNOE4 = FORMULE(REEL="""(REEL:INST) =
+(100000.*INST**4)/24.""")
+XRE4=DEFI_VALEUR(  TX='XRNOE4'  )
+
+XRNOE4=CALC_FONC_INTERP(reuse=XRNOE4,  FONCTION=XRNOE4, 
+                             NOM_RESU=XRE4,    LIST_PARA=L_RECU )
+
+XE4010=DEFI_VALEUR( R8=EVAL("""XRNOE4(0.10)"""))
+
+XE4030=DEFI_VALEUR( R8=EVAL("""XRNOE4(0.30)"""))
+
+XE4050=DEFI_VALEUR( R8=EVAL("""XRNOE4(0.50)"""))
+
+XE4070=DEFI_VALEUR( R8=EVAL("""XRNOE4(0.70)"""))
+
+XE4100=DEFI_VALEUR( R8=EVAL("""XRNOE4(1.)"""))
+
+# CALCUL ANALYTIQUE DU DEPLACEMENT ABSOLU AU NOEUD 2 : XRNOA2
+# -----------------------------------------------------------
+
+XA2010=DEFI_VALEUR( R8=EVAL("""XR2010 + XE2010 """))
+
+XA2030=DEFI_VALEUR( R8=EVAL("""XR2030 + XE2030 """))
+
+XA2050=DEFI_VALEUR( R8=EVAL("""XR2050 + XE2050 """))
+
+XA2070=DEFI_VALEUR( R8=EVAL("""XR2070 + XE2070 """))
+
+XA2100=DEFI_VALEUR( R8=EVAL("""XR2100 + XE2100 """))
+
+# CALCUL ANALYTIQUE DU DEPLACEMENT ABSOLU AU NOEUD 3 : XRNOA3
+# -----------------------------------------------------------
+
+XA301=DEFI_VALEUR( R8=EVAL("""XR301 + XE301 """))
+
+XA302=DEFI_VALEUR( R8=EVAL("""XR302 + XE302 """))
+
+XA303=DEFI_VALEUR( R8=EVAL("""XR303 + XE303 """))
+
+XA304=DEFI_VALEUR( R8=EVAL("""XR304 + XE304 """))
+
+XA305=DEFI_VALEUR( R8=EVAL("""XR305 + XE305 """))
+
+XA306=DEFI_VALEUR( R8=EVAL("""XR306 + XE306 """))
+
+XA307=DEFI_VALEUR( R8=EVAL("""XR307 + XE307 """))
+
+XA308=DEFI_VALEUR( R8=EVAL("""XR308 + XE308 """))
+
+XA309=DEFI_VALEUR( R8=EVAL("""XR309 + XE309 """))
+
+XA3010=DEFI_VALEUR( R8=EVAL("""XR3010 + XE3010 """))
+
+XA3030=DEFI_VALEUR( R8=EVAL("""XR3030 + XE3030 """))
+
+XA3050=DEFI_VALEUR( R8=EVAL("""XR3050 + XE3050 """))
+
+XA3070=DEFI_VALEUR( R8=EVAL("""XR3070 + XE3070 """))
+
+XA3100=DEFI_VALEUR( R8=EVAL("""XR3100 + XE3100 """))
+
+# CALCUL ANALYTIQUE DU DEPLACEMENT ABSOLU AU NOEUD 4 : XRNOA4
+# -----------------------------------------------------------
+
+XA4010=DEFI_VALEUR( R8=EVAL("""XR4010 + XE4010 """))
+
+XA4030=DEFI_VALEUR( R8=EVAL("""XR4030 + XE4030 """))
+
+XA4050=DEFI_VALEUR( R8=EVAL("""XR4050 + XE4050 """))
+
+XA4070=DEFI_VALEUR( R8=EVAL("""XR4070 + XE4070 """))
+
+XA4100=DEFI_VALEUR( R8=EVAL("""XR4100 + XE4100 """))
+
+# RECUPERATION DES DEPLACEMENTS RELATIFS CALCULES
+# -----------------------------------------------
+NO2DXR_E=RECU_FONCTION(  NOEUD='NO2',  NOM_CMP='DX',   NOM_CHAM='DEPL',
+                             RESU_GENE=TRAN_GEE,  
+                           INTERP_NUME='LIN',      INTERPOL='LIN',
+                             LIST_INST=L_RECU    )
+
+NO3DXR_E=RECU_FONCTION(  NOEUD='NO3',  NOM_CMP='DX',   NOM_CHAM='DEPL',
+                             RESU_GENE=TRAN_GEE,  
+                           INTERP_NUME='LIN',      INTERPOL='LIN',
+                             LIST_INST=L_RECU    )
+
+NO4DXR_E=RECU_FONCTION(  NOEUD='NO4',  NOM_CMP='DX',   NOM_CHAM='DEPL',
+                             RESU_GENE=TRAN_GEE,  
+                           INTERP_NUME='LIN',      INTERPOL='LIN',
+                             LIST_INST=L_RECU    )
+
+NO2DXR_D=RECU_FONCTION(  NOEUD='NO2',  NOM_CMP='DX',   NOM_CHAM='DEPL',
+                             RESU_GENE=TRAN_GED,  
+                           INTERP_NUME='LIN',      INTERPOL='LIN',
+                             LIST_INST=L_RECU    )
+
+NO3DXR_D=RECU_FONCTION(  NOEUD='NO3',  NOM_CMP='DX',   NOM_CHAM='DEPL',
+                             RESU_GENE=TRAN_GED,  
+                           INTERP_NUME='LIN',      INTERPOL='LIN',
+                             LIST_INST=L_RECU    )
+
+NO4DXR_D=RECU_FONCTION(  NOEUD='NO4',  NOM_CMP='DX',   NOM_CHAM='DEPL',
+                             RESU_GENE=TRAN_GED,  
+                           INTERP_NUME='LIN',      INTERPOL='LIN',
+                             LIST_INST=L_RECU    )
+
+NO2DXR_A=RECU_FONCTION(  NOEUD='NO2',  NOM_CMP='DX',   NOM_CHAM='DEPL',
+                             RESU_GENE=TRAN_GEA,  
+                           INTERP_NUME='LIN',      INTERPOL='LIN',
+                             LIST_INST=L_RECU    )
+
+NO3DXR_A=RECU_FONCTION(  NOEUD='NO3',  NOM_CMP='DX',   NOM_CHAM='DEPL',
+                             RESU_GENE=TRAN_GEA,  
+                           INTERP_NUME='LIN',      INTERPOL='LIN',
+                             LIST_INST=L_RECU    )
+
+NO4DXR_A=RECU_FONCTION(  NOEUD='NO4',  NOM_CMP='DX',   NOM_CHAM='DEPL',
+                             RESU_GENE=TRAN_GEA,  
+                           INTERP_NUME='LIN',      INTERPOL='LIN',
+                             LIST_INST=L_RECU    )
+
+#
+# RECUPERATION DES DEPLACEMENTS ABSOLUS CALCULES
+# ----------------------------------------------
+NO2DXA_E=RECU_FONCTION(  NOEUD='NO2',  NOM_CMP='DX',   NOM_CHAM='DEPL',
+                            RESU_GENE=TRAN_GEE,  
+                          MULT_APPUI='OUI',         INTERP_NUME='LIN',
+                             LIST_INST=L_RECU,     INTERPOL='LIN'
+                        )
+
+NO3DXA_E=RECU_FONCTION(  NOEUD='NO3',  NOM_CMP='DX',   NOM_CHAM='DEPL',
+                            RESU_GENE=TRAN_GEE,   
+                          MULT_APPUI='OUI',         INTERP_NUME='LIN',
+                             LIST_INST=L_RECU,     INTERPOL='LIN'
+                        )
+
+NO4DXA_E=RECU_FONCTION(  NOEUD='NO4',  NOM_CMP='DX',   NOM_CHAM='DEPL',
+                            RESU_GENE=TRAN_GEE,   
+                          MULT_APPUI='OUI',         INTERP_NUME='LIN',
+                             LIST_INST=L_RECU,     INTERPOL='LIN'
+                        )
+
+NO2DXA_D=RECU_FONCTION(  NOEUD='NO2',  NOM_CMP='DX',   NOM_CHAM='DEPL',
+                              RESULTAT=RESUAD,    
+                           INTERP_NUME='LIN',      INTERPOL='LIN',
+                             LIST_INST=L_RECU    )
+
+NO3DXA_D=RECU_FONCTION(  NOEUD='NO3',  NOM_CMP='DX',   NOM_CHAM='DEPL',
+                              RESULTAT=RESUAD,    
+                           INTERP_NUME='LIN',      INTERPOL='LIN',
+                             LIST_INST=L_RECU    )
+
+NO4DXA_D=RECU_FONCTION(  NOEUD='NO4',  NOM_CMP='DX',   NOM_CHAM='DEPL',
+                              RESULTAT=RESUAD,    
+                           INTERP_NUME='LIN',      INTERPOL='LIN',
+                             LIST_INST=L_RECU    )
+
+NO2DXA_A=RECU_FONCTION(  NOEUD='NO2',  NOM_CMP='DX',   NOM_CHAM='DEPL',
+                              RESULTAT=RESUAA,    
+                           INTERP_NUME='LIN',      INTERPOL='LIN',
+                             LIST_INST=L_RECU    )
+
+NO3DXA_A=RECU_FONCTION(  NOEUD='NO3',  NOM_CMP='DX',   NOM_CHAM='DEPL',
+                              RESULTAT=RESUAA,    
+                           INTERP_NUME='LIN',      INTERPOL='LIN',
+                             LIST_INST=L_RECU    )
+
+#
+NO4DXA_A=RECU_FONCTION(  NOEUD='NO4',  NOM_CMP='DX',   NOM_CHAM='DEPL',
+                              RESULTAT=RESUAA,    
+                           INTERP_NUME='LIN',      INTERPOL='LIN',
+                             LIST_INST=L_RECU    )
+
+# 
+# COMPARAISON DES RESULTATS NUMERIQUES/ RESULTATS ANALYTIQUES
+# -----------------------------------------------------------
+
+TEST_FONCTION(VALEUR=(
+    _F(  FONCTION = NO2DXR_E, VALE_PARA = 0.10, VALE_REFE = XR2010),
+    _F(  FONCTION = NO2DXR_E, VALE_PARA = 0.30, VALE_REFE = XR2030),
+    _F(  FONCTION = NO2DXR_E, VALE_PARA = 0.50, VALE_REFE = XR2050),
+    _F(  FONCTION = NO2DXR_E, VALE_PARA = 0.70, VALE_REFE = XR2070),
+    _F(  FONCTION = NO2DXR_E, VALE_PARA = 1.,   VALE_REFE = XR2100),
+    _F(  FONCTION = NO2DXR_D, VALE_PARA = 0.10, VALE_REFE = XR2010),
+    _F(  FONCTION = NO2DXR_D, VALE_PARA = 0.30, VALE_REFE = XR2030),
+    _F(  FONCTION = NO2DXR_D, VALE_PARA = 0.50, VALE_REFE = XR2050),
+    _F(  FONCTION = NO2DXR_D, VALE_PARA = 0.70, VALE_REFE = XR2070),
+    _F(  FONCTION = NO2DXR_D, VALE_PARA = 1.,   VALE_REFE = XR2100),
+    _F(  FONCTION = NO2DXR_A, VALE_PARA = 0.10, VALE_REFE = XR2010),
+    _F(  FONCTION = NO2DXR_A, VALE_PARA = 0.30, VALE_REFE = XR2030),
+    _F(  FONCTION = NO2DXR_A, VALE_PARA = 0.50, VALE_REFE = XR2050),
+    _F(  FONCTION = NO2DXR_A, VALE_PARA = 0.70, VALE_REFE = XR2070),
+    _F(  FONCTION = NO2DXR_A, VALE_PARA = 1.,   VALE_REFE = XR2100))
+             )
+
+TEST_FONCTION(VALEUR=(
+    _F(  FONCTION = NO3DXR_E, VALE_PARA = 0.10, VALE_REFE = XR3010),
+    _F(  FONCTION = NO3DXR_E, VALE_PARA = 0.30, VALE_REFE = XR3030),
+    _F(  FONCTION = NO3DXR_E, VALE_PARA = 0.50, VALE_REFE = XR3050),
+    _F(  FONCTION = NO3DXR_E, VALE_PARA = 0.70, VALE_REFE = XR3070),
+    _F(  FONCTION = NO3DXR_E, VALE_PARA = 1.,   VALE_REFE = XR3100),
+    _F(  FONCTION = NO3DXR_D, VALE_PARA = 0.10, VALE_REFE = XR3010),
+    _F(  FONCTION = NO3DXR_D, VALE_PARA = 0.30, VALE_REFE = XR3030),
+    _F(  FONCTION = NO3DXR_D, VALE_PARA = 0.50, VALE_REFE = XR3050),
+    _F(  FONCTION = NO3DXR_D, VALE_PARA = 0.70, VALE_REFE = XR3070),
+    _F(  FONCTION = NO3DXR_D, VALE_PARA = 1.,   VALE_REFE = XR3100),
+    _F(  FONCTION = NO3DXR_A, VALE_PARA = 0.10, VALE_REFE = XR3010),
+    _F(  FONCTION = NO3DXR_A, VALE_PARA = 0.30, VALE_REFE = XR3030),
+    _F(  FONCTION = NO3DXR_A, VALE_PARA = 0.50, VALE_REFE = XR3050),
+    _F(  FONCTION = NO3DXR_A, VALE_PARA = 0.70, VALE_REFE = XR3070),
+    _F(  FONCTION = NO3DXR_A, VALE_PARA = 1.,   VALE_REFE = XR3100))
+             )
+
+TEST_FONCTION(VALEUR=(
+    _F(  FONCTION = NO4DXR_E, VALE_PARA = 0.10, VALE_REFE = XR4010),
+    _F(  FONCTION = NO4DXR_E, VALE_PARA = 0.30, VALE_REFE = XR4030),
+    _F(  FONCTION = NO4DXR_E, VALE_PARA = 0.50, VALE_REFE = XR4050),
+    _F(  FONCTION = NO4DXR_E, VALE_PARA = 0.70, VALE_REFE = XR4070),
+    _F(  FONCTION = NO4DXR_E, VALE_PARA = 1.,   VALE_REFE = XR4100),
+    _F(  FONCTION = NO4DXR_D, VALE_PARA = 0.10, VALE_REFE = XR4010),
+    _F(  FONCTION = NO4DXR_D, VALE_PARA = 0.30, VALE_REFE = XR4030),
+    _F(  FONCTION = NO4DXR_D, VALE_PARA = 0.50, VALE_REFE = XR4050),
+    _F(  FONCTION = NO4DXR_D, VALE_PARA = 0.70, VALE_REFE = XR4070),
+    _F(  FONCTION = NO4DXR_D, VALE_PARA = 1.,   VALE_REFE = XR4100),
+    _F(  FONCTION = NO4DXR_A, VALE_PARA = 0.10, VALE_REFE = XR4010),
+    _F(  FONCTION = NO4DXR_A, VALE_PARA = 0.30, VALE_REFE = XR4030),
+    _F(  FONCTION = NO4DXR_A, VALE_PARA = 0.50, VALE_REFE = XR4050),
+    _F(  FONCTION = NO4DXR_A, VALE_PARA = 0.70, VALE_REFE = XR4070),
+    _F(  FONCTION = NO4DXR_A, VALE_PARA = 1.,   VALE_REFE = XR4100))
+             )
+
+TEST_FONCTION(VALEUR=(
+    _F(  FONCTION = NO2DXA_E, VALE_PARA = 0.10, VALE_REFE = XA2010),
+    _F(  FONCTION = NO2DXA_E, VALE_PARA = 0.30, VALE_REFE = XA2030),
+    _F(  FONCTION = NO2DXA_E, VALE_PARA = 0.50, VALE_REFE = XA2050),
+    _F(  FONCTION = NO2DXA_E, VALE_PARA = 0.70, VALE_REFE = XA2070),
+    _F(  FONCTION = NO2DXA_E, VALE_PARA = 1.,   VALE_REFE = XA2100),
+    _F(  FONCTION = NO2DXA_D, VALE_PARA = 0.10, VALE_REFE = XA2010),
+    _F(  FONCTION = NO2DXA_D, VALE_PARA = 0.30, VALE_REFE = XA2030),
+    _F(  FONCTION = NO2DXA_D, VALE_PARA = 0.50, VALE_REFE = XA2050),
+    _F(  FONCTION = NO2DXA_D, VALE_PARA = 0.70, VALE_REFE = XA2070),
+    _F(  FONCTION = NO2DXA_D, VALE_PARA = 1.,   VALE_REFE = XA2100),
+    _F(  FONCTION = NO2DXA_A, VALE_PARA = 0.10, VALE_REFE = XA2010),
+    _F(  FONCTION = NO2DXA_A, VALE_PARA = 0.30, VALE_REFE = XA2030),
+    _F(  FONCTION = NO2DXA_A, VALE_PARA = 0.50, VALE_REFE = XA2050),
+    _F(  FONCTION = NO2DXA_A, VALE_PARA = 0.70, VALE_REFE = XA2070),
+    _F(  FONCTION = NO2DXA_A, VALE_PARA = 1.,   VALE_REFE = XA2100))
+             )
+
+TEST_FONCTION(VALEUR=(
+    _F(  FONCTION = NO3DXA_E, VALE_PARA = 0.01, VALE_REFE = XA301,
+             CRITERE = 'ABSOLU'),
+    _F(  FONCTION = NO3DXA_E, VALE_PARA = 0.02, VALE_REFE = XA302,
+             CRITERE = 'ABSOLU'),
+    _F(  FONCTION = NO3DXA_E, VALE_PARA = 0.03, VALE_REFE = XA303,
+             CRITERE = 'ABSOLU'),
+    _F(  FONCTION = NO3DXA_E, VALE_PARA = 0.04, VALE_REFE = XA304,
+             CRITERE = 'ABSOLU'),
+    _F(  FONCTION = NO3DXA_E, VALE_PARA = 0.05, VALE_REFE = XA305,
+             CRITERE = 'ABSOLU'),
+    _F(  FONCTION = NO3DXA_E, VALE_PARA = 0.06, VALE_REFE = XA306,
+             CRITERE = 'ABSOLU', PRECISION = 2.E-02),
+    _F(  FONCTION = NO3DXA_E, VALE_PARA = 0.07, VALE_REFE = XA307,
+             CRITERE = 'ABSOLU', PRECISION = 3.E-02),
+    _F(  FONCTION = NO3DXA_E, VALE_PARA = 0.08, VALE_REFE = XA308,
+             CRITERE = 'ABSOLU', PRECISION = 3.E-02),
+    _F(  FONCTION = NO3DXA_E, VALE_PARA = 0.09, VALE_REFE = XA309,
+             CRITERE = 'ABSOLU', PRECISION = 3.E-02),
+    _F(  FONCTION = NO3DXA_E, VALE_PARA = 0.10, VALE_REFE = XA3010),
+    _F(  FONCTION = NO3DXA_E, VALE_PARA = 0.30, VALE_REFE = XA3030),
+    _F(  FONCTION = NO3DXA_E, VALE_PARA = 0.50, VALE_REFE = XA3050),
+    _F(  FONCTION = NO3DXA_E, VALE_PARA = 0.70, VALE_REFE = XA3070),
+    _F(  FONCTION = NO3DXA_E, VALE_PARA = 1.,   VALE_REFE = XA3100),
+    _F(  FONCTION = NO3DXA_D, VALE_PARA = 0.10, VALE_REFE = XA3010),
+    _F(  FONCTION = NO3DXA_D, VALE_PARA = 0.30, VALE_REFE = XA3030),
+    _F(  FONCTION = NO3DXA_D, VALE_PARA = 0.50, VALE_REFE = XA3050),
+    _F(  FONCTION = NO3DXA_D, VALE_PARA = 0.70, VALE_REFE = XA3070),
+    _F(  FONCTION = NO3DXA_D, VALE_PARA = 1.,   VALE_REFE = XA3100),
+    _F(  FONCTION = NO3DXA_A, VALE_PARA = 0.10, VALE_REFE = XA3010),
+    _F(  FONCTION = NO3DXA_A, VALE_PARA = 0.30, VALE_REFE = XA3030),
+    _F(  FONCTION = NO3DXA_A, VALE_PARA = 0.50, VALE_REFE = XA3050),
+    _F(  FONCTION = NO3DXA_A, VALE_PARA = 0.70, VALE_REFE = XA3070),
+    _F(  FONCTION = NO3DXA_A, VALE_PARA = 1.,   VALE_REFE = XA3100))
+             )
+
+TEST_FONCTION(VALEUR=(
+    _F(  FONCTION = NO4DXA_E, VALE_PARA = 0.10, VALE_REFE = XA4010,
+             CRITERE = 'ABSOLU'),
+    _F(  FONCTION = NO4DXA_E, VALE_PARA = 0.30, VALE_REFE = XA4030),
+    _F(  FONCTION = NO4DXA_E, VALE_PARA = 0.50, VALE_REFE = XA4050),
+    _F(  FONCTION = NO4DXA_E, VALE_PARA = 0.70, VALE_REFE = XA4070),
+    _F(  FONCTION = NO4DXA_E, VALE_PARA = 1.,   VALE_REFE = XA4100),
+    _F(  FONCTION = NO4DXA_D, VALE_PARA = 0.10, VALE_REFE = XA4010),
+    _F(  FONCTION = NO4DXA_D, VALE_PARA = 0.30, VALE_REFE = XA4030),
+    _F(  FONCTION = NO4DXA_D, VALE_PARA = 0.50, VALE_REFE = XA4050),
+    _F(  FONCTION = NO4DXA_D, VALE_PARA = 0.70, VALE_REFE = XA4070),
+    _F(  FONCTION = NO4DXA_D, VALE_PARA = 1.,   VALE_REFE = XA4100),
+    _F(  FONCTION = NO4DXA_A, VALE_PARA = 0.10, VALE_REFE = XA4010,
+             CRITERE = 'ABSOLU'),
+    _F(  FONCTION = NO4DXA_A, VALE_PARA = 0.30, VALE_REFE = XA4030),
+    _F(  FONCTION = NO4DXA_A, VALE_PARA = 0.50, VALE_REFE = XA4050),
+    _F(  FONCTION = NO4DXA_A, VALE_PARA = 0.70, VALE_REFE = XA4070),
+    _F(  FONCTION = NO4DXA_A, VALE_PARA = 1.,   VALE_REFE = XA4100))
+             )
+
+FIN()
+#

@@ -1,0 +1,94 @@
+#& MODIF COMMANDE  DATE 09/10/2002   AUTEUR DURAND C.DURAND 
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+#              SEE THE FILE "LICENSE.TERMS" FOR INFORMATION ON USAGE AND
+#              REDISTRIBUTION OF THIS FILE.
+# ======================================================================
+# RESPONSABLE JMBHH01 J.M.PROIX
+def calc_elem_prod(RESULTAT,**args):
+   if AsType(RESULTAT) != None : return AsType(RESULTAT)
+   raise AsException("type de concept resultat non prevu")
+
+CALC_ELEM=OPER(nom="CALC_ELEM",op=58,sd_prod=calc_elem_prod,docu="U4.81.01-g3",reentrant='f',
+            UIinfo={"groupes":("Post traitements",)},
+                    fr="Compléter un résultat en calculant des champs par éléments (contraintes, déformations,... )",
+         MODELE          =SIMP(statut='o',typ=modele),
+         CHAM_MATER      =SIMP(statut='o',typ=cham_mater),
+         CARA_ELEM       =SIMP(statut='f',typ=cara_elem),
+
+         TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),
+         GROUP_MA        =SIMP(statut='f',typ=grma,max='**'),
+         MAILLE          =SIMP(statut='f',typ=ma,max='**'),
+
+         regles=(EXCLUS('TOUT_ORDRE','NUME_ORDRE','INST','FREQ','NUME_MODE',
+                        'NOEUD_CMP','LIST_INST','LIST_FREQ','LIST_ORDRE','NOM_CAS'),),
+         TOUT_ORDRE      =SIMP(statut='f',typ='TXM',into=("OUI",) ),
+         NUME_ORDRE      =SIMP(statut='f',typ='I',max='**'),
+         NUME_MODE       =SIMP(statut='f',typ='I',max='**'),
+         NOEUD_CMP       =SIMP(statut='f',typ='TXM',max='**'),
+         NOM_CAS         =SIMP(statut='f',typ='TXM' ),
+
+         INST            =SIMP(statut='f',typ='R',max='**'),
+         FREQ            =SIMP(statut='f',typ='R',max='**'),
+         LIST_INST       =SIMP(statut='f',typ=listr8),
+         LIST_FREQ       =SIMP(statut='f',typ=listr8),
+         PRECISION       =SIMP(statut='f',typ='R',defaut=1.0E-3 ),
+         CRITERE         =SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU",) ),
+
+         LIST_ORDRE      =SIMP(statut='f',typ=listis),
+
+         OPTION          =SIMP(statut='o',typ='TXM',max='**',
+                               into=("EFGE_ELNO_DEPL","EPOT_ELEM_DEPL","SIGM_ELNO_DEPL","SIEF_ELGA_DEPL",
+                                     "SIGM_ELNO_TUYO","SIGM_ELNO_CART","DEGE_ELNO_DEPL","EFGE_ELNO_CART",
+                                     "EPSI_ELNO_DEPL","EPSI_ELGA_DEPL","EPSG_ELNO_DEPL","EPSG_ELGA_DEPL",
+                                     "EPME_ELNO_DEPL","EPME_ELGA_DEPL","EPMG_ELNO_DEPL","EPMG_ELGA_DEPL",
+                                     "EPSP_ELNO","EPSP_ELGA","ECIN_ELEM_DEPL","SIPO_ELNO_DEPL",
+                                     "EPGR_ELNO","EPGR_ELGA","DURT_ELGA_META","DURT_ELNO_META",
+                                     "SIGM_ELNO_COQU","SIGM_ELNO_SIEF","SIPO_ELNO_SIEF",
+                                     "SIGM_NOZ1_ELGA","ERRE_ELEM_NOZ1","SIGM_NOZ2_ELGA","ERRE_ELEM_NOZ2",
+                                     "VNOR_ELEM_DEPL","SIRE_ELNO_DEPL","ERRE_ELGA_NORE","ERRE_ELNO_ELGA",
+                                     "VARI_ELNO_ELGA","VARI_ELNO_TUYO","EQUI_ELNO_SIGM","EQUI_ELGA_SIGM",
+                                     "EQUI_ELNO_EPSI","EQUI_ELGA_EPSI","EQUI_ELNO_EPME","EQUI_ELGA_EPME",
+                                     "DCHA_ELNO_SIGM","DCHA_ELGA_SIGM","RADI_ELNO_SIGM","RADI_ELGA_SIGM",
+                                     "ENDO_ELNO_SIGA","ENDO_ELNO_SINO","ENEL_ELGA","ENEL_ELNO_ELGA","SIEF_ELNO_ELGA",
+                                     "DEUL_ELGA_TEMP","DETE_ELNO_DLTE","DEUL_ELGA_DEPL","DEDE_ELNO_DLDE",
+                                     "DESI_ELNO_DLSI","PMPB_ELNO_SIEF","PMPB_ELGA_SIEF",
+                                     "FLUX_ELGA_TEMP","FLUX_ELNO_TEMP","HYDR_ELNO_ELGA",
+                                     "SOUR_ELGA_ELEC","VARI_ELNO_COQU","CRIT_ELNO_RUPT",
+                                     "PRES_ELNO_DBEL","PRES_DBEL_DEPL","PRES_ELNO_REEL","PRES_ELNO_IMAG",
+                                     "INTE_ELNO_ACTI","INTE_ELNO_REAC","ERTH_ELEM_TEMP","ERTH_ELNO_ELEM",
+                                     "ETOT_ELGA","ETOT_ELNO_ELGA","ETOT_ELEM","VALE_NCOU_MAXI"
+                                     ) ),
+         RESULTAT        =SIMP(statut='o',typ=(evol_elas,dyna_trans,dyna_harmo,mode_meca,
+                                    mode_stat,mode_stat_depl,mode_stat_acce,mode_stat_forc,
+                                    evol_noli,mult_elas,fourier_elas,
+                                               evol_ther,base_modale,
+                                               acou_harmo,mode_acou,mode_flamb) ),
+         EXCIT           =FACT(statut='f',min=1,max='**',
+             regles=(EXCLUS('FONC_MULT','FONC_MULT_C','COEF_MULT','COEF_MULT_C'),),
+             CHARGE          =SIMP(statut='o',typ=(char_meca,char_ther,char_acou) ),
+             FONC_MULT       =SIMP(statut='f',typ=fonction),
+             FONC_MULT_C     =SIMP(statut='f',typ=fonction_c),
+             COEF_MULT       =SIMP(statut='f',typ='R'),
+             COEF_MULT_C     =SIMP(statut='f',typ='C'),
+             PHAS_DEG        =SIMP(statut='f',typ='R'),
+             PUIS_PULS       =SIMP(statut='f',typ='I'),
+             TYPE_CHARGE     =SIMP(statut='f',typ='TXM',defaut="FIXE",into=("FIXE",) ),
+         ),
+         NORME           =SIMP(statut='f',typ='TXM',defaut="VMIS",
+                               into=("VMIS","TOTAL","VMIS_CINE","TOTAL_CINE") ),
+         NUME_COUCHE     =SIMP(statut='f',typ='I',defaut= 1 ),
+         NIVE_COUCHE     =SIMP(statut='f',typ='TXM',defaut="MOY",into=("SUP","INF","MOY") ),
+
+         ANGLE           =SIMP(statut='f',typ='I',defaut= 0 ),
+         PLAN            =SIMP(statut='f',typ='TXM',defaut="MAIL",into=("SUP","INF","MOY","MAIL") ),
+         SENSIBILITE     =SIMP(statut='f',typ=(para_sensi,theta_geom),max='**',
+                               fr="Liste des paramètres de sensibilité.",
+                               ang="List of sensitivity parameters"),
+         b_maxi          =BLOC( condition = "OPTION=='VALE_NCOU_MAXI'",
+             NOM_CHAM            =SIMP(statut='o',typ='TXM',max=1 ),
+             NOM_CMP             =SIMP(statut='o',typ='TXM',max=1 ),),
+         INFO            =SIMP(statut='f',typ='I',defaut= 1,into=( 1 , 2) ),
+         TITRE           =SIMP(statut='f',typ='TXM',max='**'),
+)  ;

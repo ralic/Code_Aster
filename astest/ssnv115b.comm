@@ -1,0 +1,147 @@
+# MODIF  DATE 16/05/2002   AUTEUR DURAND C.DURAND 
+# TITRE TOLE ONDULEE EN TRACTION (MISES ECR. ISOT. DKT)
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+
+DEBUT(CODE=_F( NOM = 'SSNV115B',NIV_PUB_WEB='INTERNET') )
+
+PRE_GIBI()
+
+M=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='NON'), )
+
+M=DEFI_GROUP( reuse=M,   MAILLAGE=M,
+  CREA_GROUP_MA=_F(  NOM = 'TOUT', TOUT = 'OUI'))
+
+M=DEFI_GROUP(reuse=M,  MAILLAGE=M,CREA_GROUP_NO=(
+        _F( GROUP_MA = 'SURF'),
+        _F( GROUP_MA = 'BOUT1'),
+        _F( GROUP_MA = 'BOUT2')))
+
+MO=AFFE_MODELE(    MAILLAGE=M,
+  AFFE=_F( TOUT = 'OUI',PHENOMENE = 'MECANIQUE',MODELISATION = 'DKT'))
+
+CARAC=AFFE_CARA_ELEM(  MODELE=MO,
+           COQUE=_F( COQUE_NCOU=7,
+       GROUP_MA = 'TOUT',
+ EPAIS = 0.050) )
+
+ACIER=DEFI_MATERIAU(       ELAS=_F( E = 2000., NU = 0.3),
+           ECRO_LINE=_F( D_SIGM_EPSI = 200., SY = 100.) )
+
+CM=AFFE_MATERIAU(   MAILLAGE=M,  AFFE=_F( TOUT = 'OUI',MATER = ACIER))
+
+CH_LA=AFFE_CHAR_MECA(   MODELE=MO,DDL_IMPO=(
+        _F( GROUP_NO = 'SURF', DRY = 0., DRX = 0., DZ = 0.),
+        _F( GROUP_NO = 'BOUT1', DX = 0., DY = 0., DRZ = 0.),
+        _F( GROUP_NO = 'BOUT1', DRX = 0.,DRY = 0.,DZ = 0.))
+           )
+
+CH_FO=AFFE_CHAR_MECA(    MODELE=MO,
+      #  --  LARG=0.05 H=0.025
+      #  FORCE_NODALE:(GROUP_NO: BOUT2   FX:0.0625)
+      #  --  LARG=0.10 H=0.050
+         FORCE_NODALE=_F( GROUP_NO = 'BOUT2',   FX = 0.2500)
+           )
+
+RAMPE=DEFI_FONCTION(   NOM_PARA='INST',
+           PROL_GAUCHE='LINEAIRE',  PROL_DROITE='LINEAIRE',
+           VALE=(0.0,0.0,1.0,1.0,))
+
+L_INST=DEFI_LIST_REEL(  DEBUT=0.0,
+              INTERVALLE=_F( JUSQU_A = 1.0,      NOMBRE = 10)
+           )
+
+L_INST1=DEFI_LIST_REEL(  DEBUT=0.1,
+              INTERVALLE=_F( JUSQU_A = 1.0,      NOMBRE = 9)
+           )
+
+# STAT_NON_LINE 'VMIS_ISOT_LINE'
+
+#-------------------------------
+
+
+U2=STAT_NON_LINE(
+                            MODELE=MO,
+                        CHAM_MATER=CM,
+                         CARA_ELEM=CARAC,EXCIT=(
+                             _F(
+                CHARGE = CH_FO,
+                FONC_MULT = RAMPE), _F(
+                CHARGE = CH_LA)),
+                         COMP_INCR=_F(
+                RELATION = 'VMIS_ISOT_LINE',
+               ),
+                         INCREMENT=_F(
+                LIST_INST = L_INST,
+                NUME_INST_FIN = 2),
+                            NEWTON=_F(
+                MATRICE = 'ELASTIQUE'),
+                       CONVERGENCE=_F(
+                RESI_GLOB_RELA = 1.E-6,
+                ITER_GLOB_MAXI = 30,
+                ITER_INTE_MAXI = 30,
+                RESI_INTE_RELA = 1.E-8)
+              )
+
+U2=STAT_NON_LINE( reuse=U2,
+                            MODELE=MO,
+                        CHAM_MATER=CM,
+                         CARA_ELEM=CARAC,EXCIT=(
+                             _F(
+                CHARGE = CH_FO,
+                FONC_MULT = RAMPE), _F(
+                CHARGE = CH_LA)),
+                         COMP_INCR=_F(
+                RELATION = 'VMIS_ISOT_LINE',
+               ),
+                         ETAT_INIT=_F(
+                EVOL_NOLI = U2,
+                NUME_ORDRE = 2),
+                         INCREMENT=_F(
+                LIST_INST = L_INST,
+                NUME_INST_FIN = 10),
+                            NEWTON=_F(
+                MATRICE = 'TANGENTE',
+                REAC_ITER = 2),
+                       CONVERGENCE=_F(
+                RESI_GLOB_RELA = 1.E-6,
+                ITER_INTE_MAXI = 30,
+                RESI_INTE_RELA = 1.E-8)
+              )
+
+U2=CALC_NO( reuse=U2, CHAM_MATER=CM,  RESULTAT=U2,  MODELE=MO,
+                   OPTION='REAC_NODA',    CARA_ELEM=CARAC,EXCIT=(
+                 _F( CHARGE = CH_FO,  FONC_MULT = RAMPE),
+                       _F( CHARGE = CH_LA)),
+                  LIST_INST=L_INST1)
+
+TEST_RESU(RESU=(
+
+    # DEPLACEMENTS PLASTIQUES :
+    _F(  RESULTAT = U2,  NUME_ORDRE = 10,  NOM_CHAM = 'DEPL',
+    PRECISION = 3.0E-2, GROUP_NO = 'X',    NOM_CMP = 'DX',   VALE = 0.02743),
+    _F(  RESULTAT = U2,  NUME_ORDRE = 10,  NOM_CHAM = 'DEPL',
+    PRECISION = 3.5E-2, GROUP_NO = 'X',    NOM_CMP = 'DY',   VALE = -0.2804),
+
+    # REACTIONS NODALES PLASTIQUES :
+    _F(  RESULTAT = U2,  NUME_ORDRE = 10,  NOM_CHAM = 'REAC_NODA',
+    PRECISION = 1.0E-3, NOEUD = 'N1',    NOM_CMP = 'DX',   VALE = -0.25))
+    )
+
+FIN()
+#

@@ -1,0 +1,326 @@
+      SUBROUTINE FIOPE1(NCODOP,LPILE,PILE,ICLASS,MI,MR,ML,MC,IER)
+      IMPLICIT REAL*8 (A-H,O-Z)
+      INTEGER           NCODOP,LPILE,PILE(*),ICLASS(*),MI(*),IER
+      REAL*8                                              MR(*)
+      LOGICAL                                                ML(*)
+      COMPLEX*16                                                MC(*)
+C     ------------------------------------------------------------------
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF SUPERVIS  DATE 02/10/95   AUTEUR GIBHHAY A.Y.PORTABILITE 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+C     EFFECTUER UNE OPERATION UNAIRE   (FONCTIONS INTERPRETEES)
+C     ------------------------------------------------------------------
+C IN  NCODOP  : CODE OPERATION
+C VAR LPILE   : SOMMET DE PILE
+C VAR PILE    : PILE DES OPERANDES
+C VAR MI,MR,ML,MC : TABLE DES CONSTANTES ENTIERES, REELLES, ...
+C OUT IER     : CODE DE RETOUR
+C     ------------------------------------------------------------------
+      COMMON /FICL01/ ICSTE , IOPE1, IOPE2, LOPE1, LOPE2
+C     ------------------------------------------------------------------
+C     TYPE1 : TYPE DE L'OPERANDE
+C             1: ENTIER   2: REEL    5: COMPLEXE    6:LOGIQUE
+      INTEGER TYPE1 , TYPRES
+C     ------------------------------------------------------------------
+      IER = 0
+C
+C     --- TYPE DE L'OPERANDE ET DU RESULTAT (A PRIORI)---
+      TYPE1  = ICLASS(LPILE)
+      TYPRES = TYPE1
+      IARG1  = LPILE
+      IRES   = LPILE
+C
+C     BRANCHEMENT SELON LE CODE D'OPERATION (CF FIINIT)
+C
+C     ------ FONCTIONS MODIFIANT LE TYPE D'ENTREE -------------------
+C     CODE : NOM    ! CODE : NOM    ! CODE : NOM    ! CODE : NOM    !
+C     ---------------------------------------------------------------
+C       01 : + UNAIR!   02 : - UNAIR!   03 : INT    !   04 : REAL   !
+C       05 : AIMAG  !   06 : ABS    !               !
+C       07 : SQRT   !   08 : EXP    !   09 : LOG    !   10 : LOG10  !
+C       11 : SIN    !   12 : COS    !   13 : TAN    !   14 : ASIN   !
+C       15 : ACOS   !   16 : ATAN   !   17 : SINH   !   18 : COSH   !
+C       19 : TANH   !   20 : &LOAD  !   21 : HEAVYS.!   22 : &FONC  !
+C     ------------------------------------------------------------------
+C
+      GOTO ( 10,  20,  30,  40,  50,  60,  70,  80,  90, 100,
+     +      110, 120, 130, 140, 150, 160, 170, 180, 190, 001,
+     +      210, 001                                          ),NCODOP
+C
+ 001  CONTINUE
+      IER = IER + 1
+      CALL UTMESS('F','SUPERVISEUR.FONCTIONS.INTERPRETEES.(ERREUR.00)',
+     +                'CODE D''OPERATION UNAIRE INCONNU')
+      GOTO 999
+C
+C  1 : + UNAIRE
+   10 CONTINUE
+      GOTO 999
+C
+C  2 : - UNAIRE
+   20 CONTINUE
+      GOTO (21,22,900,900,25,26),TYPE1
+   21 CONTINUE
+      MI(IRES) = -MI(IARG1)
+      GOTO 999
+   22 CONTINUE
+      MR(IRES) = -MR(IARG1)
+      GOTO 999
+   25 CONTINUE
+      MC(IRES) = -MC(IARG1)
+      GOTO 999
+   26 CONTINUE
+      ML(IRES) = .NOT. ML(IARG1)
+      GOTO 999
+C
+C  3 : INT
+   30 CONTINUE
+      TYPRES = 1
+      GOTO (31,32,900,900,35,900), TYPE1
+   31 CONTINUE
+      MI(IRES) = INT(MI(IARG1))
+      GOTO 999
+   32 CONTINUE
+      MI(IRES) = INT(MR(IARG1))
+      GOTO 999
+   35 CONTINUE
+      MI(IRES) = INT(MC(IARG1))
+      GOTO 999
+C
+C  4 : REAL
+   40 CONTINUE
+      TYPRES = 2
+      GOTO (41,42,900,900,45,900),TYPE1
+   41 CONTINUE
+      MR(IRES) = DBLE(MI(IARG1))
+      GOTO 999
+   42 CONTINUE
+      MR(IRES) = DBLE(MR(IARG1))
+      GOTO 999
+   45 CONTINUE
+      MR(IRES) = DBLE(MC(IARG1))
+      GOTO 999
+C
+C  5 : AIMAG
+   50 CONTINUE
+      GOTO (900,900,900,900,55,900),TYPE1
+   55 CONTINUE
+      MR(IRES) = DIMAG(MC(IARG1))
+      TYPRES   = 2
+      GOTO 999
+C
+C  6 : ABS
+   60 CONTINUE
+      GOTO (61,62,900,900,65,900),TYPE1
+   61 CONTINUE
+      MI(IRES) = ABS(MI(IARG1))
+      GOTO 999
+   62 CONTINUE
+      MR(IRES) = ABS(MR(IARG1))
+      GOTO 999
+   65 CONTINUE
+      MR(IRES) = ABS(MC(IARG1))
+      TYPRES   = 2
+      GOTO 999
+C
+C  7 : SQRT
+   70 CONTINUE
+      TYPRES   = 2
+      GOTO (71,72,900,900,75,900),TYPE1
+   71 CONTINUE
+      MR(IRES) = SQRT(DBLE(MI(IARG1)))
+      GOTO 999
+   72 CONTINUE
+      MR(IRES) = SQRT(MR(IARG1))
+      GOTO 999
+   75 CONTINUE
+      MR(IRES) = SQRT(MC(IARG1))
+      GOTO 999
+C
+C  8 : EXP
+   80 CONTINUE
+      GOTO (81,82,900,900,85,900),TYPE1
+   81 CONTINUE
+      MR(IRES) = EXP (DBLE(MI(IARG1)))
+      TYPRES   = 2
+      GOTO 999
+   82 CONTINUE
+      MR(IRES) = EXP (MR(IARG1))
+      GOTO 999
+   85 CONTINUE
+      MC(IRES) = EXP (MC(IARG1))
+      GOTO 999
+C
+C  9 : LOG
+   90 CONTINUE
+      GOTO (91,92,900,900,95,900),TYPE1
+   91 CONTINUE
+      MR(IRES) = LOG (DBLE(MI(IARG1)))
+      TYPRES   = 2
+      GOTO 999
+   92 CONTINUE
+      MR(IRES) = LOG (MR(IARG1))
+      GOTO 999
+   95 CONTINUE
+      MC(IRES) = LOG (MC(IARG1))
+      GOTO 999
+C
+C 10-: LOG10
+  100 CONTINUE
+      GOTO (101,102,900,900,900,900),TYPE1
+  101 CONTINUE
+      MR(IRES) = LOG10(DBLE(MI(IARG1)))
+      TYPRES   = 2
+      GOTO 999
+  102 CONTINUE
+      MR(IRES) = LOG10(MR(IARG1))
+      GOTO 999
+C
+C 11-: SIN
+  110 CONTINUE
+      GOTO (111,112,900,900,115,900),TYPE1
+  111 CONTINUE
+      MR(IRES) = SIN (DBLE(MI(IARG1)))
+      TYPRES   = 2
+      GOTO 999
+  112 CONTINUE
+      MR(IRES) = SIN (MR(IARG1))
+      GOTO 999
+  115 CONTINUE
+      MC(IRES) = SIN (MC(IARG1))
+      GOTO 999
+C
+C 12-: COS
+  120 CONTINUE
+      GOTO (121,122,900,900,125,900),TYPE1
+  121 CONTINUE
+      MR(IRES) = COS (DBLE(MI(IARG1)))
+      TYPRES   = 2
+      GOTO 999
+  122 CONTINUE
+      MR(IRES) = COS (MR(IARG1))
+      GOTO 999
+  125 CONTINUE
+      MC(IRES) = COS (MC(IARG1))
+      GOTO 999
+C
+C
+C 13-: TAN
+  130 CONTINUE
+      GOTO (131,132,900,900,900,900),TYPE1
+  131 CONTINUE
+      MR(IRES) = TAN (DBLE(MI(IARG1)))
+      TYPRES   = 2
+      GOTO 999
+  132 CONTINUE
+      MR(IRES) = TAN (MR(IARG1))
+      GOTO 999
+C 135 MC(IRES) = SIN((MC(IARG1)))/COS(MC(IARG1)))
+C     GOTO 999
+C
+C 14-: ASIN
+  140 CONTINUE
+      GOTO (141,142,900,900,900,900),TYPE1
+  141 CONTINUE
+      MR(IRES) = ASIN (DBLE(MI(IARG1)))
+      TYPRES   = 2
+      GOTO 999
+  142 CONTINUE
+      MR(IRES) = ASIN (MR(IARG1))
+      GOTO 999
+C
+C 15-: ACOS
+  150 CONTINUE
+      GOTO (151,152,900,900,900,900),TYPE1
+  151 CONTINUE
+      MR(IRES) = ACOS (DBLE(MI(IARG1)))
+      TYPRES   = 2
+      GOTO 999
+  152 CONTINUE
+      MR(IRES) = ACOS (MR(IARG1))
+      GOTO 999
+C
+C 16-: ATAN
+  160 CONTINUE
+      GOTO (161,162,900,900,900,900),TYPE1
+  161 CONTINUE
+      MR(IRES) = ATAN (DBLE(MI(IARG1)))
+      TYPRES   = 2
+      GOTO 999
+  162 CONTINUE
+      MR(IRES) = ATAN (MR(IARG1))
+      GOTO 999
+C
+C 17-: SINH
+  170 CONTINUE
+      GOTO (171,172,900,900,900,900),TYPE1
+  171 CONTINUE
+      MR(IRES) = SINH (DBLE(MI(IARG1)))
+      TYPRES   = 2
+      GOTO 999
+  172 CONTINUE
+      MR(IRES) = SINH (MR(IARG1))
+      GOTO 999
+C
+C 18-: COSH
+  180 CONTINUE
+      GOTO (181,182,900,900,900,900),TYPE1
+  181 CONTINUE
+      MR(IRES) = COSH (DBLE(MI(IARG1)))
+      TYPRES   = 2
+      GOTO 999
+  182 CONTINUE
+      MR(IRES) = COSH (MR(IARG1))
+      GOTO 999
+C
+C 19-: TANH
+  190 CONTINUE
+      GOTO (191,192,900,900,900,900),TYPE1
+  191 CONTINUE
+      MR(IRES) = TANH (DBLE(MI(IARG1)))
+      TYPRES   = 2
+      GOTO 999
+  192 CONTINUE
+      MR(IRES) = TANH (MR(IARG1))
+      GOTO 999
+C
+C 21-: HEAVYSIDE
+  210 CONTINUE
+      GOTO (211,212,900,900,900,900),TYPE1
+ 211  CONTINUE
+      IF( MI(IARG1).GE.0) THEN
+         MI(IRES) = 1
+      ELSE
+         MI(IRES) = 0
+      ENDIF
+      GOTO 999
+ 212  CONTINUE
+      IF( MR(IARG1).GE.0.D0) THEN 
+         MR(IRES) = 1.D0
+      ELSE
+         MR(IRES) = 0.D0
+      ENDIF
+      GOTO 999
+C
+C RETOUR (AVEC OU SANS ERREUR)
+  900 CONTINUE
+      CALL UTMESS('F','FIOPE1','OPERATION IMPOSSIBLE: ERREUR DE TYPAGE')
+      IER = IER + 1
+  999 CONTINUE
+      ICLASS(IRES) = TYPRES
+      END

@@ -1,0 +1,106 @@
+      SUBROUTINE RRKK4(NEQ,NBPAS,RKLOI,LOI,VARIN1,DVRIN1,VAROUT,
+     &                 VECT,DVAR,RK1,RK2,RK3,RK4)
+      IMPLICIT REAL*8 (A-H,O-Z)
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 07/04/97   AUTEUR JMBHH01 J.M.PROIX 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+C
+C      METHODE D'INTEGRATION DE RUNGE-KUTTA D'ORDRE 4
+C      ----------------------------------------------
+C
+C IN  :  NEQ     : NOMBRE D'EQUATION
+C        NBPAS   : NB PAS D'INTEGRATION
+C        RKLOI   : NOM DE LA LOI A INTEGRER
+C        LOI     : NOM JEVEUX VECTEUR ENTIER
+C        VARIN1  : VARIABLES INITIALES (T-)
+C        DVARIN1 : INCREMENT DES VARIABLES DE PILOTAGES
+C
+C OUT :  VAROUT  : VARIABLES INTEGREES
+C AUTRE :
+C        VECT,DVAR,RK1,RK2,RK3,RK4 : NE PAS UTILISER
+C
+C        POUR RUNGE-KUTTA ORDRE 2, IL FAUT SIMPLEMENT REMPLACER
+C              VECT(I) =  VAROUT(I) +  RK1(I)*DPAS/2.D0
+C        PAR   VECT(I) =  VAROUT(I) +  RK1(I)*DPAS
+C        EN SUPPRIMANT LE CALCUL DE RK3 ET RK4
+C        ET
+C              VAROUT(I) = VAROUT(I) +
+C              ( RK1(I)+2.D0*RK2(I) + 2.D0*RK3(I) + RK4(I) )/6.D0
+C        PAR
+C              VAROUT(I) = VAROUT(I) +
+C              ( RK1(I) + RK2(I) )/2.D0
+C
+
+      INTEGER NEQ,NBPAS
+      REAL*8 LOI(*)
+C ---------------------------------
+C TOLE CRP_7
+      EXTERNAL RKLOI
+C ---------------------------------
+      REAL*8 VARIN1(NEQ),DVRIN1(NEQ),VAROUT(NEQ)
+      REAL*8 VECT(NEQ),DVAR(NEQ),RK1(NEQ),RK2(NEQ),RK3(NEQ),RK4(NEQ)
+C ---------------------------------
+
+      INTEGER I,J
+      REAL*8 DPAS
+
+C ---------------------------------
+      DPAS = 1.D0/ DBLE(NBPAS)
+
+      DO 300, I = 1, NEQ
+        VAROUT(I) = VARIN1(I)
+300   CONTINUE
+
+      DO 302, J= 1 , NBPAS
+
+         DO 304, I = 1, NEQ
+           VECT(I) = VAROUT(I)
+           DVAR(I) = DVRIN1(I)*DPAS
+304      CONTINUE
+         CALL RKLOI(LOI,NEQ,VECT,DVAR)
+
+         DO 306, I = 1, NEQ
+           RK1(I)  =  DVAR(I)
+           VECT(I) =  VAROUT(I) +  RK1(I)*DPAS/2.D0
+306      CONTINUE
+         CALL RKLOI(LOI,NEQ,VECT,DVAR)
+
+         DO 308, I = 1, NEQ
+           RK2(I)  =  DVAR(I)
+           VECT(I) =  VAROUT(I) +  RK2(I)*DPAS/2.D0
+308      CONTINUE
+         CALL RKLOI(LOI,NEQ,VECT,DVAR)
+
+         DO 310, I = 1, NEQ
+           RK3(I)  =  DVAR(I)
+           VECT(I) =  VAROUT(I) +  RK3(I)*DPAS
+310      CONTINUE
+
+         CALL RKLOI(LOI,NEQ,VECT,DVAR)
+         DO 312, I = 1, NEQ
+           RK4(I) =  DVAR(I)
+312      CONTINUE
+C
+         DO 314, I = 1 , NEQ
+           VAROUT(I) = VAROUT(I) +
+     &        ( RK1(I)+2.D0*RK2(I) + 2.D0*RK3(I) + RK4(I) )/6.D0
+314      CONTINUE
+
+302   CONTINUE
+
+      END

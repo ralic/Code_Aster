@@ -1,0 +1,230 @@
+      SUBROUTINE IRPACA(NOMCOM,IFI,NBORDR,IOCC,ORDR,NBACC,CHACC,
+     +                  NBCHCA,CHAMCA,NBK16,NIVE)
+      IMPLICIT REAL*8 (A-H,O-Z)
+      CHARACTER*(*)     NOMCOM,                     CHACC(*),CHAMCA(*)
+      INTEGER           NBORDR,       IFI,IOCC,ORDR(*),NBACC,NBCHCA
+      INTEGER           NBK16,              NIVE
+C     ------------------------------------------------------------------
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF PREPOST  DATE 06/12/1999   AUTEUR D6BHHAM A.M.DONORE 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+C     IMPRESSION DES VARIABLES D'ACCES SOUS FORME TABLE POUR CASTEM
+C     ------------------------------------------------------------------
+C IN  NOMCOM   : K8  : NOM DU CONCEPT
+C IN  IFI      : I   : NUMERO D'UNITE DU FICHIER D'ECRITURE
+C IN  NBORDR   : I   : NOMBRE DE NUMEROS D'ORDRE DU RESULTAT
+C IN  IOCC     : I   : NUMERO D'OCCURENCE D'IMPRESSION DU RESULTAT
+C IN  ORDR     : I   : LISTE DES NUMEROS D'ORDRE DU RESULTAT
+C IN  NBACC    : I   : NOMBRE DE VARIABLES D'ACCES DE LA TABLE CASTEM
+C IN  NBCHCA   : I   : NOMBRE DE CHAMPS DE LA TABLE CASTEM
+C IN  CHAMCA   : I   : NOMS DES CHAMPS DE LA TABLE CASTEM
+C IN  NBK16    : I   : NOMBRE DE VARIABLES D'ACCES DE TYPE K16
+C IN  NIVE     : I   : NIVEAU IMPRESSION CASTEM 3 OU 10
+C     ---------------------------------------------------------------
+      INTEGER          ZI
+      COMMON  /IVARJE/ ZI(1)
+      REAL*8           ZR
+      COMMON  /RVARJE/ ZR(1)
+      CHARACTER*8      ZK8
+      CHARACTER*16            ZK16
+      CHARACTER*24                    ZK24
+      CHARACTER*32                            ZK32
+      CHARACTER*80                                    ZK80
+      COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+      CHARACTER*32     JEXNUM,JEXNOM
+C     ------------------------------------------------------------------
+      CHARACTER*4  CTYPE,TYCH
+      CHARACTER*8  NOMCO
+      CHARACTER*16 TOTO
+      CHARACTER*19 NOCH19
+      CHARACTER*72 CHAINE
+      INTEGER      NBCARA
+C     ------------------------------------------------------------------
+C
+      CALL JEMARQ()
+      NBOBJ = NBCHCA+ NBACC + 1
+      NOMCO = NOMCOM
+      IDEU = 2
+      IZERO = 0
+      IUN = 1
+      CHAINE = ' '
+      NBK16  = 0
+      CHAINE(1:4) ='ORDR'
+C
+C ECRITURE DE ENREGISTREMENT 27
+C
+      ITYPE = 27
+      IFIN  =  4
+      CALL JEVEUO('&&OP0039.LAST','E',JLAST)
+      IF (IOCC.EQ.1) THEN
+        WRITE (IFI,'(A,I4)')   ' ENREGISTREMENT DE TYPE',IDEU
+        IF(NIVE.EQ.3) THEN
+        WRITE (IFI,'(A,I4,A,I4,A,I4)')  ' PILE NUMERO',ITYPE,
+     +   'NBRE OBJETS NOMMES ',IZERO,'NBRE OBJETS ',NBOBJ
+        ELSE IF (NIVE.EQ.10) THEN
+        WRITE (IFI,'(A,I4,A,I8,A,I8)')  ' PILE NUMERO',ITYPE,
+     +   'NBRE OBJETS NOMMES',IZERO,'NBRE OBJETS',NBOBJ
+        ENDIF
+      ENDIF
+      NBCARA = NBOBJ*4
+C     IF(ORDR(IOCC).EQ.1 )  WRITE (IFI,'(2I5)') NBCARA,NBOBJ
+      IF(IOCC.EQ.1) THEN
+       IF(NIVE.EQ.3) WRITE (IFI,'(2I5)') NBCARA,NBOBJ
+       IF(NIVE.EQ.10) WRITE (IFI,'(2I8)') NBCARA,NBOBJ
+      ENDIF
+      CALL WKVECT('&&IRPACA.TABL.CASTEM','V V I',NBOBJ*4,JTABL)
+      CALL WKVECT('&&IRPACA.POSI.CASTEM','V V I',NBOBJ  ,JPOSI)
+      DO 34 I = 1,NBACC
+        TOTO   = CHACC(I)
+        CHAINE = CHAINE(1:IFIN)//TOTO(1:4)
+        IFIN   = IFIN + 4
+  34  CONTINUE
+      J=0
+      DO 33 I=1,NBCHCA
+        CALL RSEXCH (NOMCO,CHAMCA(I),ORDR(IOCC),NOCH19,IRET)
+        IF (IRET.EQ.0) THEN
+          J=J+1
+          CALL DISMOI('A','TYPE_CHAMP',NOCH19,'CHAMP',IBID,TYCH,IERD)
+          IF(TYCH(1:4).EQ.'NOEU') THEN
+            ZI(JTABL-1+(NBACC+1)*4+(J-1)*4+1) = 27
+            ZI(JTABL-1+(NBACC+1)*4+(J-1)*4+2) = ZI(JLAST-1+8)+I+NBACC+1
+            ZI(JTABL-1+(NBACC+1)*4+(J-1)*4+3) = 2
+            ZI(JLAST-1+4) = ZI(JLAST-1+4) + 1
+            ZI(JTABL-1+(NBACC+1)*4+(J-1)*4+4) = ZI(JLAST-1+4)
+          ELSEIF(TYCH(1:4).EQ.'ELNO') THEN
+            ZI(JTABL-1+(NBACC+1)*4+(J-1)*4+1) = 27
+            ZI(JTABL-1+(NBACC+1)*4+(J-1)*4+2) = ZI(JLAST-1+8)+I+NBACC+1
+            ZI(JTABL-1+(NBACC+1)*4+(J-1)*4+3) = 39
+            ZI(JLAST-1+5) = ZI(JLAST-1+5) + 1
+            ZI(JTABL-1+(NBACC+1)*4+(J-1)*4+4) = ZI(JLAST-1+5)
+          ENDIF
+        ENDIF
+        TOTO   = CHAMCA(I)
+        IF ( TOTO .EQ. 'EQUI_ELNO_EPSI  ' ) THEN
+           TOTO = 'EQEP'
+        ELSEIF ( TOTO .EQ. 'EQUI_ELNO_SIGM  ' ) THEN
+           TOTO = 'EQSI'
+        ENDIF
+        CHAINE = CHAINE(1:IFIN)//TOTO(1:4)
+        IFIN   = IFIN + 4
+  33  CONTINUE
+      DO 35 I=1,NBOBJ
+        ZI(JPOSI-1+I) = 4*I
+  35  CONTINUE
+      IF (IOCC.EQ.1) THEN
+        WRITE(IFI,'(A72)') CHAINE(1:IFIN)
+        IF(NIVE.EQ.3) WRITE(IFI,'(12I5)') (ZI(JPOSI-1+I),I=1,NBOBJ)
+        IF(NIVE.EQ.10) WRITE(IFI,'(10I8)') (ZI(JPOSI-1+I),I=1,NBOBJ)
+      ENDIF
+C
+C ECRITURE DE ENREGISTREMENT ASSOCIE A TOUS LES NUMEROS D'ORDRE
+C
+      IF (IOCC.EQ.1) THEN
+        CALL WKVECT('&&IRPACA.ENTIER','V V I',IDEU*NBORDR,JENTI)
+        DO 45 IOR = 1,NBORDR
+          ZI(JENTI-1+(IOR-1)*2+1) = IOR
+          ZI(JENTI-1+(IOR-1)*2+2) = ORDR(IOR)
+ 45     CONTINUE
+        ITYPE = 26
+        WRITE (IFI,'(A,I4)')   ' ENREGISTREMENT DE TYPE',IDEU
+        IF(NIVE.EQ.3) THEN
+        WRITE (IFI,'(A,I4,A,I4,A,I4)')  ' PILE NUMERO',ITYPE,
+     +   'NBRE OBJETS NOMMES ',IZERO,'NBRE OBJETS ',2*NBORDR
+        WRITE(IFI,'(I5)')  2*NBORDR
+        ELSEIF (NIVE.EQ.10) THEN
+        WRITE (IFI,'(A,I4,A,I8,A,I8)')  ' PILE NUMERO',ITYPE,
+     +   'NBRE OBJETS NOMMES',IZERO,'NBRE OBJETS',2*NBORDR
+        WRITE(IFI,'(I8)')  2*NBORDR
+        ENDIF
+        WRITE(IFI,'(7I11)') (ZI(JENTI-1+IOR),IOR=1,2*NBORDR)
+        ZI(JLAST-1+1) = ZI(JLAST-1+1)+2*NBORDR
+      ENDIF
+      ZI(JTABL-1+1) = 27
+      ZI(JTABL-1+2) = ZI(JLAST-1+8)+IUN
+      ZI(JTABL-1+3) = 26
+      ZI(JTABL-1+4) = ZI(JLAST-1+7)+IOCC*2
+C
+C ECRITURE DES ENREGISTREMENTS ASSOCIES AUX VARIABLES ACCES
+C
+      DO 55 I=1,NBACC
+        CALL RSADPA(NOMCO,'L',1,CHACC(I),ORDR(IOCC),1,IAD,CTYPE)
+        IF(CTYPE(1:1).EQ.'R') THEN
+          ITYPE = 25
+          WRITE (IFI,'(A,I4)')   ' ENREGISTREMENT DE TYPE',IDEU
+          IF(NIVE.EQ.3) THEN
+          WRITE (IFI,'(A,I4,A,I4,A,I4)')  ' PILE NUMERO',ITYPE,
+     +       'NBRE OBJETS NOMMES ',IZERO,'NBRE OBJETS ',IUN
+          WRITE(IFI,'(I5)') IUN
+          ELSEIF(NIVE.EQ.10) THEN
+          WRITE (IFI,'(A,I4,A,I8,A,I8)')  ' PILE NUMERO',ITYPE,
+     +       'NBRE OBJETS NOMMES',IZERO,'NBRE OBJETS',IUN
+          WRITE(IFI,'(I8)') IUN
+          ENDIF
+          WRITE(IFI,'(1X,1PE21.14)')  ZR(IAD)
+          ZI(JTABL-1+(I-1)*4+5) = 27
+          ZI(JTABL-1+(I-1)*4+6) = ZI(JLAST-1+8)+I+1
+          ZI(JTABL-1+(I-1)*4+7) = 25
+          ZI(JLAST-1+2) = ZI(JLAST-1+2) + 1
+          ZI(JTABL-1+(I-1)*4+8) = ZI(JLAST-1+2)
+        ELSEIF (CTYPE(1:1).EQ.'I') THEN
+          ITYPE = 26
+          WRITE (IFI,'(A,I4)')   ' ENREGISTREMENT DE TYPE',IDEU
+          IF(NIVE.EQ.3) THEN
+          WRITE (IFI,'(A,I4,A,I4,A,I4)')  ' PILE NUMERO',ITYPE,
+     +       'NBRE OBJETS NOMMES ',IZERO,'NBRE OBJETS ',IUN
+          WRITE(IFI,'(I5)') IUN
+          ELSEIF(NIVE.EQ.10) THEN
+          WRITE (IFI,'(A,I4,A,I8,A,I8)')  ' PILE NUMERO',ITYPE,
+     +       'NBRE OBJETS NOMMES',IZERO,'NBRE OBJETS',IUN
+          WRITE(IFI,'(I8)') IUN
+          ENDIF
+          WRITE(IFI,'(2I11)') ZI(IAD)
+          ZI(JLAST-1+1) = ZI(JLAST-1+1)+1
+          ZI(JTABL-1+(I-1)*4+5) = 27
+          ZI(JTABL-1+(I-1)*4+6) = ZI(JLAST-1+8)+I+1
+          ZI(JTABL-1+(I-1)*4+7) = 26
+          ZI(JTABL-1+(I-1)*4+8) = ZI(JLAST-1+1)
+        ELSEIF (CTYPE(1:3).EQ.'K16') THEN
+          ITYPE = 27
+          ISEIZE = 16
+          WRITE (IFI,'(A,I4)')   ' ENREGISTREMENT DE TYPE',IDEU
+          IF(NIVE.EQ.3) THEN
+          WRITE (IFI,'(A,I4,A,I4,A,I4)')  ' PILE NUMERO',ITYPE,
+     +       'NBRE OBJETS NOMMES ',IZERO,'NBRE OBJETS ',IUN
+          WRITE(IFI,'(I5,I5)') ISEIZE,IUN
+          WRITE(IFI,'(A72)')   ZK16(IAD)
+          WRITE(IFI,'(I5)') ISEIZE
+          ELSEIF (NIVE.EQ.10) THEN
+          WRITE (IFI,'(A,I4,A,I8,A,I8)')  ' PILE NUMERO',ITYPE,
+     +       'NBRE OBJETS NOMMES',IZERO,'NBRE OBJETS',IUN
+          WRITE(IFI,'(I8,I8)') ISEIZE,IUN
+          WRITE(IFI,'(A72)')   ZK16(IAD)
+          WRITE(IFI,'(I8)') ISEIZE
+          ENDIF
+          ZI(JTABL-1+(I-1)*4+5) = 27
+          ZI(JTABL-1+(I-1)*4+6) = ZI(JLAST-1+8)+I+1
+          ZI(JTABL-1+(I-1)*4+7) = 27
+          ZI(JLAST-1+3) = ZI(JLAST-1+3)+1
+          ZI(JTABL-1+(I-1)*4+8) = ZI(JLAST-1+3)+NBOBJ
+          NBK16 = NBK16 + 1
+        ENDIF
+ 55   CONTINUE
+      CALL JEDETR('&&IRPACA.POSI.CASTEM')
+      CALL JEDETR('&&IRPACA.ENTIER')
+      CALL JEDEMA()
+      END

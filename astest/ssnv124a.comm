@@ -1,0 +1,231 @@
+# MODIF  DATE 07/06/2002   AUTEUR DURAND C.DURAND 
+# TITRE CALCUL DE CHARGE LIMITE EN 2D - METHODE DE NORTON-HOFF
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+
+
+DEBUT(CODE=_F(NOM='SSNV124A',NIV_PUB_WEB='INTERNET'),);
+
+PRE_GIBI()
+MA=LIRE_MAILLAGE();
+
+MA=DEFI_GROUP(reuse =MA,
+              MAILLAGE=MA,
+              CREA_GROUP_NO=_F(GROUP_MA=('LAB','LBC','LDA'),),);
+
+MA = DEFI_GROUP( reuse = MA,
+  MAILLAGE = MA,
+  CREA_GROUP_NO = _F(
+    NOM        = 'SOMMETS',
+    GROUP_MA   = 'S',
+    CRIT_NOEUD = 'SOMMET'
+    )
+  )
+
+MO=AFFE_MODELE(MAILLAGE=MA,
+               AFFE=_F(TOUT='OUI',
+                       PHENOMENE='MECANIQUE',
+                       MODELISATION='D_PLAN_INCO',),);
+
+CM = DEFI_MATERIAU (
+  ECRO_LINE=_F(SY=10, D_SIGM_EPSI = 0)
+  )
+
+CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
+                    AFFE=_F(TOUT='OUI',
+                            MATER=CM,),);
+
+
+# ----------- CONDITIONS AUX LIMITES -------------------------------
+
+
+CH_CL=AFFE_CHAR_MECA(MODELE=MO,
+                     DDL_IMPO=(_F(GROUP_NO='LBC',
+                                  DY=0.0,),
+                               _F(GROUP_NO='LAB',
+                                  DX=0.0,),
+                                  ),);
+
+  
+# ----------- CHARGEMENT PERMANENT ----------------------------------
+
+  
+CH0=AFFE_CHAR_MECA(MODELE=MO,
+                   FORCE_CONTOUR=_F(GROUP_MA='LDA',
+                                    FY=-0.20000000000000001,),);
+
+
+# ----------- CHARGEMENT A PILOTER (CAS 1)-----------------------------
+
+CH_PILO1=AFFE_CHAR_MECA(MODELE=MO,
+                   FORCE_CONTOUR=_F(GROUP_MA='LCD',
+                                    FX=-0.80000000000000004,),);
+
+
+
+# ----------- CHARGEMENT A PILOTER (CAS 2)-----------------------------
+
+
+CH_PILO2=AFFE_CHAR_MECA(MODELE=MO,
+                   FORCE_CONTOUR=_F(GROUP_MA='LCD',
+                                    FX=-1.0,),);
+
+
+
+
+
+# --- CONDITION D INCOMPRESSIBILITE ---
+
+INCOMP = AFFE_CHAR_MECA(
+  MODELE   = MO,
+  DDL_IMPO = _F(GROUP_NO='SOMMETS', GONF=0)
+  )
+  
+L_INST = DEFI_LIST_REEL(
+  DEBUT = 0,
+  INTERVALLE = (
+    _F(JUSQU_A=1, NOMBRE=1),
+    _F(JUSQU_A=1.69897, NOMBRE=1),
+    )
+  )
+
+
+# -------------- CALCUL AVEC LA LOI DE NORTON-HOFF (CAS 1)-------------
+
+
+
+RESU1 = STAT_NON_LINE(
+  MODELE = MO,
+  CHAM_MATER = CHMAT,
+  EXCIT = (
+    _F(CHARGE=CH_CL),
+    _F(CHARGE=INCOMP),
+    _F(CHARGE=CH0),
+    _F(CHARGE=CH_PILO1, TYPE_CHARGE = 'FIXE_PILO')
+    ),
+  COMP_INCR     = _F(RELATION='NORTON_HOFF'),
+  INCREMENT     = _F(LIST_INST=L_INST,),
+  NEWTON        = _F(MATRICE='TANGENTE', REAC_ITER=1),
+  PILOTAGE      = _F(TYPE='ANA_LIM')
+  )
+  
+  
+ECHL1 = POST_ELEM(
+  MODELE=MO,
+  CHAM_MATER=CHMAT,
+  RESULTAT = RESU1,
+  CHAR_LIMITE=_F(CHAR_CSTE='OUI')
+  )
+
+
+# -------------- CALCUL AVEC LA LOI DE NORTON-HOFF (CAS 2)-------------
+
+
+RESU2 = STAT_NON_LINE(
+  MODELE = MO,
+  CHAM_MATER = CHMAT,
+  EXCIT = (
+    _F(CHARGE=CH_CL),
+    _F(CHARGE=INCOMP),
+    _F(CHARGE=CH_PILO2, TYPE_CHARGE = 'FIXE_PILO')
+    ),
+  COMP_INCR     = _F(RELATION='NORTON_HOFF'),
+  INCREMENT     = _F(LIST_INST=L_INST,),
+  NEWTON        = _F(MATRICE='TANGENTE', REAC_ITER=1),
+  PILOTAGE      = _F(TYPE='ANA_LIM')
+  )
+  
+ECHL2 = POST_ELEM(
+  MODELE=MO,
+  CHAM_MATER=CHMAT,
+  RESULTAT = RESU2,
+  CHAR_LIMITE=_F()
+  )
+
+
+#--------------------------------------------------------------
+#      TEST DE LA CHARGE LIMITE
+#--------------------------------------------------------------
+#
+
+
+TEST_TABLE(TABLE=ECHL1,
+           NOM_PARA='CHAR_LIMI_SUP',
+           VALE=14.6837,
+           REFERENCE= 'ANALYTIQUE',
+           FILTRE = _F(NOM_PARA='INST',
+                       VALE = 1.69897));
+
+TEST_TABLE(TABLE=ECHL2,
+           NOM_PARA='CHAR_LIMI_SUP',
+           VALE=11.547000000000001,
+           REFERENCE= 'ANALYTIQUE',
+           FILTRE = _F(NOM_PARA='INST',
+                       VALE = 1.69897));
+
+TEST_TABLE(TABLE=ECHL2,
+           NOM_PARA='CHAR_LIMI_ESTIM',
+           VALE=9.6225000000000005,
+           REFERENCE= 'ANALYTIQUE',
+           FILTRE = _F(NOM_PARA='INST',
+                       VALE = 1.69897));
+
+TEST_TABLE(TABLE=ECHL1,
+           NOM_PARA='PUIS_CHAR_CSTE',
+           VALE=-0.25,
+           REFERENCE= 'ANALYTIQUE',
+           FILTRE = _F(NOM_PARA='INST',
+                       VALE = 1.69897));
+
+#--------------------------------------------------------------
+#      TEST DES DEFORMATIONS (CAS 1)
+#--------------------------------------------------------------
+
+
+
+RESU1=CALC_ELEM( reuse =RESU1,
+  MODELE=MO,
+  CHAM_MATER=CHMAT,
+  OPTION = ('EPSI_ELNO_DEPL','EQUI_ELNO_EPSI'),
+  RESULTAT=RESU1
+  )
+
+
+TEST_RESU(RESU=(_F(RESULTAT=RESU1,
+                   INST=1.69897,
+                   NOM_CHAM='EPSI_ELNO_DEPL',
+                   NOM_CMP='EPXX',
+                   MAILLE='M1',
+                   NOEUD='N3',
+                   VALE=-0.3125,
+                   CRITERE='RELATIF',
+                   PRECISION=1.E-4,
+                   REFERENCE= 'ANALYTIQUE'),
+                _F(RESULTAT=RESU1,
+                   INST=1.69897,
+                   NOM_CHAM='EQUI_ELNO_EPSI',
+                   NOM_CMP='INVA_2',
+                   MAILLE='M1',
+                   NOEUD='N3',
+                   VALE=0.3608439,
+                   CRITERE='RELATIF',
+                   PRECISION=1.E-4,
+                   REFERENCE= 'ANALYTIQUE'),),);
+
+FIN()
+

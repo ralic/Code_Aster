@@ -1,0 +1,497 @@
+# MODIF  DATE 02/10/2002   AUTEUR ASSIRE A.ASSIRE 
+# RESPONSABLE PABHHHH N. TARDIEU
+# TITRE SENSIBILITE AUX DONNEES MATERIAUX EN MECA_STATIQUE ORTHOTROPE 3D
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+#=======================================================================
+DEBUT( CODE=_F(  NOM = 'SENSM05A',NIV_PUB_WEB='INTERNET'),
+       PAR_LOT='NON' )
+#                 *-------------------------------*
+#               /                               / !
+#          J  /                            OPPOSE !
+#           *-------------------------------*     !
+#           !               !               !     !
+#           !               !               !     !
+#           !               !               !     !
+#           !               * CENTRE        !     !
+#           !               !               !     *
+#           !               !               !   /  
+#           !               !               ! /
+#           *-------------------------------*
+#       ORIGINE                              I
+#
+#              1   < X < 11
+#             -1.5 < Y <  1.5
+#              0.  < Z < 1.
+#
+# Chargement par une force nodale au noeud OPPOSE
+# La solution de reference de sensibilite parvient 
+# d'un calcul par differences finies.
+#
+#      
+# 1. Definition/memorisation des fonctions constantes
+#
+PS_UN=DEFI_CONSTANTE(VALE=1.0,);
+MEMO_NOM_SENSI ( NOM_UN = PS_UN ) ;
+#
+PS_ZERO=DEFI_CONSTANTE(VALE=0.0,);
+MEMO_NOM_SENSI ( NOM_ZERO = PS_ZERO ) ;
+
+#
+# 2. Definition du disctionnaire des parametres
+#
+
+mot_cle =["E_L", "E_T", "E_N", "NU_LT", "NU_LN", "NU_TN", "G_LT", "G_LN", "G_TN" ]
+sensible=[2.E5,  1.E5,  3.E5,     0.4,     0.3,     0.4,   2.E5,   1.E5,   3.E5  ]
+
+#
+# 2. Definition des parametres sensibles
+#
+n=len(sensible)
+PS=[None]*n
+
+for i in range(n):
+  PS[i]=DEFI_PARA_SENSI(VALE=sensible[i])
+  MEMO_NOM_SENSI ( NOM=_F(NOM_SD=PS[i].nom,
+                          PARA_SENSI=PS[i],
+                          NOM_COMPOSE=PS_UN.nom));
+
+#
+# 3. Prealable
+#
+PRE_GIBI()
+MAILLAGE=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='NON'),);
+#
+# 3.1. Modele
+#
+MODEMECA=AFFE_MODELE(MAILLAGE=MAILLAGE,
+                     AFFE=_F(TOUT='OUI',
+                             PHENOMENE='MECANIQUE',
+                             MODELISATION='3D',),);
+
+#
+# 3.2. Mise en place des materiaux
+#
+MAT=DEFI_MATERIAU( ELAS_ORTH_FO=_F(E_L   = PS[0],
+                                   E_T   = PS[1],
+                                   E_N   = PS[2],
+                                   NU_LT = PS[3],
+                                   NU_LN = PS[4],
+                                   NU_TN = PS[5],
+                                   G_LT  = PS[6],
+                                   G_LN  = PS[7],
+                                   G_TN  = PS[8]))
+
+MATS=[None]*n
+for i in range(n):
+  PSFONC=[PS_ZERO]*n
+  PSFONC[i]=PS_UN
+  MATS[i]=DEFI_MATERIAU( ELAS_ORTH_FO=_F(E_L   = PSFONC[0],
+                                         E_T   = PSFONC[1],
+                                         E_N   = PSFONC[2],
+                                         NU_LT = PSFONC[3],
+                                         NU_LN = PSFONC[4],
+                                         NU_TN = PSFONC[5],
+                                         G_LT  = PSFONC[6],
+                                         G_LN  = PSFONC[7],
+                                         G_TN  = PSFONC[8]))
+  MEMO_NOM_SENSI ( NOM=_F(NOM_SD='MAT',
+                          PARA_SENSI=PS[i],
+                          NOM_COMPOSE=MATS[i].nom,
+                          MOT_CLE=mot_cle[i],
+                          VALEUR=PS[i].nom ),);
+
+
+#
+# 3.3. Affectation des materiaux
+#
+MATEMAIL=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
+                       AFFE=_F(TOUT='OUI',MATER=MAT,),);
+
+CHMS=[None]*n
+for i in range(n):
+  CHMS[i]=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
+                        AFFE=_F(TOUT='OUI',MATER=MATS[i],),);
+  MEMO_NOM_SENSI ( NOM=_F(NOM_SD='MATEMAIL',
+                          PARA_SENSI=PS[i],
+                          NOM_COMPOSE=CHMS[i].nom,
+                          MOT_CLE='MATER',
+                          VALEUR='MAT' ),);
+
+#
+# 3.4. Chargements
+#
+CH_0=AFFE_CHAR_MECA(MODELE=MODEMECA,
+                    DDL_IMPO=(_F(GROUP_NO='I', DX=0.0,DY=0.0,DZ=0.0),
+                              _F(GROUP_MA='BORD_GAU',DX=0.0,DY=0.0,DZ=0.0)),);
+#
+CH_1=AFFE_CHAR_MECA(MODELE=MODEMECA,
+                    FORCE_NODALE=(_F(GROUP_NO='OPPOSE',
+                                     FX=100.,
+                                     FY=30.,
+                                     FZ=10.))
+                                       );
+
+#
+# 4. Calcul
+#
+for i in range(n):
+  MEMO_NOM_SENSI ( NOM=_F(NOM_SD='RES',
+                          PARA_SENSI=PS[i],
+                          NOM_COMPOSE=('RES_'+PS[i].nom) ),);
+
+
+RES=MECA_STATIQUE(MODELE=MODEMECA,
+                   CHAM_MATER=MATEMAIL,
+                   EXCIT=(_F(CHARGE=CH_0),_F(CHARGE=CH_1,),),
+                   SENSIBILITE=tuple(PS),
+                  );
+
+RES = CALC_ELEM(
+                 reuse = RES,
+                 MODELE = MODEMECA,
+                 RESULTAT = RES,
+                 EXCIT=(_F(CHARGE=CH_0,),_F(CHARGE=CH_1,),),
+                 CHAM_MATER = MATEMAIL,
+                 OPTION = 'EPSI_ELNO_DEPL'
+                 );
+RES = CALC_ELEM(
+                 reuse = RES,
+                 MODELE = MODEMECA,
+                 RESULTAT = RES,
+                 EXCIT=(_F(CHARGE=CH_0,),_F(CHARGE=CH_1,),),
+                 CHAM_MATER = MATEMAIL,
+                 OPTION = 'EPSI_ELNO_DEPL',
+                 SENSIBILITE=tuple(PS)
+                 );
+
+RES = CALC_ELEM(
+                 reuse = RES,
+                 MODELE = MODEMECA,
+                 RESULTAT = RES,
+                 EXCIT=(_F(CHARGE=CH_0,),_F(CHARGE=CH_1,),),
+                 CHAM_MATER = MATEMAIL,
+                 OPTION = 'SIGM_ELNO_DEPL'
+                 );
+RES = CALC_ELEM(
+                 reuse = RES,
+                 MODELE = MODEMECA,
+                 RESULTAT = RES,
+                 EXCIT=(_F(CHARGE=CH_0,),_F(CHARGE=CH_1,),),
+                 CHAM_MATER = MATEMAIL,
+                 OPTION = 'SIGM_ELNO_DEPL',
+                 SENSIBILITE=tuple(PS)
+                 );
+
+TAB_REF=POST_RELEVE_T(ACTION=_F(INTITULE='SENSIBILITE',
+                            GROUP_NO=('OPPOSE'),
+                            RESULTAT=RES,
+                            NOM_CHAM='DEPL',
+                            NUME_ORDRE=1,
+                            NOM_CMP='DY',
+                            OPERATION='EXTRACTION',),);
+
+TA_R_EP=POST_RELEVE_T(ACTION=_F(INTITULE='SENSIBILITE',
+                            NOEUD='N256',
+                            MAILLE='M82',
+                            RESULTAT=RES,
+                            NOM_CHAM='EPSI_ELNO_DEPL',
+                            NUME_ORDRE=1,
+                            NOM_CMP='EPXY',
+                            OPERATION='EXTRACTION',),);
+
+TA_R_SI=POST_RELEVE_T(ACTION=_F(INTITULE='SENSIBILITE',
+                            NOEUD='N256',
+                            MAILLE='M82',
+                            RESULTAT=RES,
+                            NOM_CHAM='SIGM_ELNO_DEPL',
+                            NUME_ORDRE=1,
+                            NOM_CMP='SIYY',
+                            OPERATION='EXTRACTION',),);
+
+#IMPR_RESU(RESU=_F(FORMAT='RESULTAT',
+#                RESULTAT=RES,),);
+
+#IMPR_RESU(RESU=_F(FORMAT='RESULTAT',
+#                  RESULTAT=RES,
+#                  SENSIBILITE=tuple(PS),
+#                  ),);
+
+
+#
+# 5.1 Verification par differences finies (deplacement)
+#
+epsilon=1.E-3
+for i in range(n):
+  eps=[1.]*n
+  eps[i]=1.0 + epsilon
+  MAT2=DEFI_MATERIAU( ELAS_ORTH=_F(E_L   = sensible[0]*eps[0],
+                                   E_T   = sensible[1]*eps[1],
+                                   E_N   = sensible[2]*eps[2],
+                                   NU_LT = sensible[3]*eps[3],
+                                   NU_LN = sensible[4]*eps[4],
+                                   NU_TN = sensible[5]*eps[5],
+                                   G_LT  = sensible[6]*eps[6],
+                                   G_LN  = sensible[7]*eps[7],
+                                   G_TN  = sensible[8]*eps[8]))
+  MATEMA2=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
+                         AFFE=_F(TOUT='OUI',MATER=MAT2,),);
+  RES2=MECA_STATIQUE(MODELE=MODEMECA,
+                   CHAM_MATER=MATEMA2,
+                   EXCIT=(_F(CHARGE=CH_0),_F(CHARGE=CH_1,),),
+                  );
+
+  TAB_DIF=POST_RELEVE_T(ACTION=_F(INTITULE='SENSIBILITE',
+                               GROUP_NO=('OPPOSE'),
+                               RESULTAT=RES2,
+                               NOM_CHAM='DEPL',
+                               NUME_ORDRE=1,
+                               NOM_CMP='DY',
+                               OPERATION='EXTRACTION',),);
+
+  diff=(TAB_DIF['DY',1]-TAB_REF['DY',1]) / (sensible[i]*epsilon)
+  
+  TEST_RESU(RESU=(
+     _F(  RESULTAT = RES,   NUME_ORDRE = 1,
+          NOM_CHAM = 'DEPL',   GROUP_NO = 'OPPOSE',
+          CRITERE = 'RELATIF', PRECISION = 1.E-2,
+          NOM_CMP = 'DY',   SENSIBILITE = PS[i].nom,
+          VALE = diff, REFERENCE = 'NON_REGRESSION' )))
+
+  DETRUIRE( CONCEPT =_F(NOM = RES2 ))
+  DETRUIRE( CONCEPT =_F(NOM = TAB_DIF ))
+  DETRUIRE( CONCEPT =_F(NOM = MAT2 ))
+  DETRUIRE( CONCEPT =_F(NOM = MATEMA2 ))
+
+#
+# 5.2 Verification par differences finies (deformation)
+#
+epsilon=1.E-3
+for i in range(n):
+  eps=[1.]*n
+  eps[i]=1.0 + epsilon
+  MAT2=DEFI_MATERIAU( ELAS_ORTH=_F(E_L   = sensible[0]*eps[0],
+                                   E_T   = sensible[1]*eps[1],
+                                   E_N   = sensible[2]*eps[2],
+                                   NU_LT = sensible[3]*eps[3],
+                                   NU_LN = sensible[4]*eps[4],
+                                   NU_TN = sensible[5]*eps[5],
+                                   G_LT  = sensible[6]*eps[6],
+                                   G_LN  = sensible[7]*eps[7],
+                                   G_TN  = sensible[8]*eps[8]))
+  MATEMA2=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
+                         AFFE=_F(TOUT='OUI',MATER=MAT2,),);
+  RES2=MECA_STATIQUE(MODELE=MODEMECA,
+                   CHAM_MATER=MATEMA2,
+                   EXCIT=(_F(CHARGE=CH_0),_F(CHARGE=CH_1,),),
+                  );
+  RES2 = CALC_ELEM(
+                 reuse = RES2,
+                 MODELE = MODEMECA,
+                 RESULTAT = RES2,
+                 EXCIT=(_F(CHARGE=CH_0,),_F(CHARGE=CH_1,),),
+                 CHAM_MATER = MATEMA2,
+                 OPTION = 'EPSI_ELNO_DEPL'
+                 );
+
+  TA_D_EP=POST_RELEVE_T(ACTION=_F(INTITULE='SENSIBILITE',
+                               NOEUD='N256',
+                               MAILLE='M82',
+                               RESULTAT=RES2,
+                               NOM_CHAM='EPSI_ELNO_DEPL',
+                               NUME_ORDRE=1,
+                               NOM_CMP='EPXY',
+                               OPERATION='EXTRACTION',),);
+
+  diff=(TA_D_EP['EPXY',1]-TA_R_EP['EPXY',1]) / (sensible[i]*epsilon)
+
+  TEST_RESU(RESU=(
+     _F(  RESULTAT = RES,   NUME_ORDRE = 1,
+          NOM_CHAM = 'EPSI_ELNO_DEPL',   NOEUD = 'N256',
+          MAILLE = 'M82',
+          CRITERE = 'RELATIF', PRECISION = 1.E-2,
+          NOM_CMP = 'EPXY',   SENSIBILITE = PS[i].nom,
+          VALE = diff, REFERENCE = 'NON_REGRESSION' )))
+
+  DETRUIRE( CONCEPT =_F(NOM = RES2 ))
+  DETRUIRE( CONCEPT =_F(NOM = TA_D_EP ))
+  DETRUIRE( CONCEPT =_F(NOM = MAT2 ))
+  DETRUIRE( CONCEPT =_F(NOM = MATEMA2 ))
+
+#
+# 5.3 Verification par differences finies (contrainte)
+#
+epsilon=1.E-3
+for i in range(n):
+  eps=[1.]*n
+  eps[i]=1.0 + epsilon
+  MAT2=DEFI_MATERIAU( ELAS_ORTH=_F(E_L   = sensible[0]*eps[0],
+                                   E_T   = sensible[1]*eps[1],
+                                   E_N   = sensible[2]*eps[2],
+                                   NU_LT = sensible[3]*eps[3],
+                                   NU_LN = sensible[4]*eps[4],
+                                   NU_TN = sensible[5]*eps[5],
+                                   G_LT  = sensible[6]*eps[6],
+                                   G_LN  = sensible[7]*eps[7],
+                                   G_TN  = sensible[8]*eps[8]))
+  MATEMA2=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
+                         AFFE=_F(TOUT='OUI',MATER=MAT2,),);
+  RES2=MECA_STATIQUE(MODELE=MODEMECA,
+                   CHAM_MATER=MATEMA2,
+                   EXCIT=(_F(CHARGE=CH_0),_F(CHARGE=CH_1,),),
+                  );
+  RES2 = CALC_ELEM(
+                 reuse = RES2,
+                 MODELE = MODEMECA,
+                 RESULTAT = RES2,
+                 EXCIT=(_F(CHARGE=CH_0,),_F(CHARGE=CH_1,),),
+                 CHAM_MATER = MATEMA2,
+                 OPTION = 'SIGM_ELNO_DEPL'
+                 );
+
+  TA_D_SI=POST_RELEVE_T(ACTION=_F(INTITULE='SENSIBILITE',
+                               NOEUD='N256',
+                               MAILLE='M82',
+                               RESULTAT=RES2,
+                               NOM_CHAM='SIGM_ELNO_DEPL',
+                               NUME_ORDRE=1,
+                               NOM_CMP='SIYY',
+                               OPERATION='EXTRACTION',),);
+
+  diff=(TA_D_SI['SIYY',1]-TA_R_SI['SIYY',1]) / (sensible[i]*epsilon)
+
+  TEST_RESU(RESU=(
+     _F(  RESULTAT = RES,   NUME_ORDRE = 1,
+          NOM_CHAM = 'SIGM_ELNO_DEPL',   NOEUD = 'N256',
+          MAILLE = 'M82',
+          CRITERE = 'RELATIF', PRECISION = 1.E-2,
+          NOM_CMP = 'SIYY',   SENSIBILITE = PS[i].nom,
+          VALE = diff, REFERENCE = 'NON_REGRESSION' )))
+
+  DETRUIRE( CONCEPT =_F(NOM = RES2 ))
+  DETRUIRE( CONCEPT =_F(NOM = TA_D_SI ))
+  DETRUIRE( CONCEPT =_F(NOM = MAT2 ))
+  DETRUIRE( CONCEPT =_F(NOM = MATEMA2 ))
+
+#
+# 6. Test_Resu en dur
+#
+TEST_RESU(RESU=(
+   _F(  RESULTAT = RES,   NUME_ORDRE = 1,
+        NOM_CHAM = 'DEPL',   GROUP_NO = 'OPPOSE',
+        CRITERE = 'RELATIF', PRECISION = 1.E-6,
+        NOM_CMP = 'DY',   SENSIBILITE = PS_0,
+        VALE = 2.4293905342868E-09, REFERENCE = 'NON_REGRESSION' )))
+
+TEST_RESU(RESU=(
+   _F(  RESULTAT = RES,   NUME_ORDRE = 1,
+        NOM_CHAM = 'DEPL',   GROUP_NO = 'OPPOSE',
+        CRITERE = 'RELATIF', PRECISION = 1.E-6,
+        NOM_CMP = 'DY',   SENSIBILITE = PS_1,
+        VALE = -7.5626529471683E-09, REFERENCE = 'NON_REGRESSION' )))
+
+TEST_RESU(RESU=(
+   _F(  RESULTAT = RES,   NUME_ORDRE = 1,
+        NOM_CHAM = 'DEPL',   GROUP_NO = 'OPPOSE',
+        CRITERE = 'RELATIF', PRECISION = 1.E-6,
+        NOM_CMP = 'DY',   SENSIBILITE = PS_2,
+        VALE = -2.9508876027760E-10, REFERENCE = 'NON_REGRESSION' )))
+
+TEST_RESU(RESU=(
+   _F(  RESULTAT = RES,   NUME_ORDRE = 1,
+        NOM_CHAM = 'DEPL',   GROUP_NO = 'OPPOSE',
+        CRITERE = 'RELATIF', PRECISION = 1.E-6,
+        NOM_CMP = 'DY',   SENSIBILITE = PS_3,
+        VALE = -8.4239107751554E-04, REFERENCE = 'NON_REGRESSION' )))
+
+TEST_RESU(RESU=(
+   _F(  RESULTAT = RES,   NUME_ORDRE = 1,
+        NOM_CHAM = 'DEPL',   GROUP_NO = 'OPPOSE',
+        CRITERE = 'RELATIF', PRECISION = 1.E-6,
+        NOM_CMP = 'DY',   SENSIBILITE = PS_4,
+        VALE = 1.0775321899662E-05, REFERENCE = 'NON_REGRESSION' )))
+
+TEST_RESU(RESU=(
+   _F(  RESULTAT = RES,   NUME_ORDRE = 1,
+        NOM_CHAM = 'DEPL',   GROUP_NO = 'OPPOSE',
+        CRITERE = 'RELATIF', PRECISION = 1.E-6,
+        NOM_CMP = 'DY',   SENSIBILITE = PS_5,
+        VALE = 2.0653103649623E-05, REFERENCE = 'NON_REGRESSION' )))
+
+TEST_RESU(RESU=(
+   _F(  RESULTAT = RES,   NUME_ORDRE = 1,
+        NOM_CHAM = 'DEPL',   GROUP_NO = 'OPPOSE',
+        CRITERE = 'RELATIF', PRECISION = 1.E-6,
+        NOM_CMP = 'DY',   SENSIBILITE = PS_6,
+        VALE = -2.5910680787136E-09, REFERENCE = 'NON_REGRESSION' )))
+
+TEST_RESU(RESU=(
+   _F(  RESULTAT = RES,   NUME_ORDRE = 1,
+        NOM_CHAM = 'DEPL',   GROUP_NO = 'OPPOSE',
+        CRITERE = 'RELATIF', PRECISION = 1.E-6,
+        NOM_CMP = 'DY',   SENSIBILITE = PS_7,
+        VALE = 5.6274647519574E-10, REFERENCE = 'NON_REGRESSION' )))
+
+TEST_RESU(RESU=(
+   _F(  RESULTAT = RES,   NUME_ORDRE = 1,
+        NOM_CHAM = 'DEPL',   GROUP_NO = 'OPPOSE',
+        CRITERE = 'RELATIF', PRECISION = 1.E-6,
+        NOM_CMP = 'DY',   SENSIBILITE = PS_8,
+        VALE = -1.1579216129805E-09, REFERENCE = 'NON_REGRESSION' )))
+
+TEST_RESU(RESU=(
+     _F(  RESULTAT = RES,   NUME_ORDRE = 1,
+          SENSIBILITE=PS_2,
+          NOM_CHAM = 'EPSI_ELNO_DEPL',  NOEUD = 'N256' ,
+          CRITERE = 'RELATIF', PRECISION = 1.E-4,MAILLE ='M82',
+          NOM_CMP = 'EPXY',    VALE = 7.3983446E-13,
+          REFERENCE = 'NON_REGRESSION' ),
+     _F(  RESULTAT = RES,   NUME_ORDRE = 1,
+          SENSIBILITE=PS_3,
+          NOM_CHAM = 'EPSI_ELNO_DEPL',   NOEUD = 'N256',
+          CRITERE = 'RELATIF', PRECISION = 1.E-4,MAILLE ='M82',
+          NOM_CMP = 'EPXY',    VALE = 1.67E-06,
+          REFERENCE = 'NON_REGRESSION' ),
+     _F(  RESULTAT = RES,   NUME_ORDRE = 1,
+          SENSIBILITE=PS_6,
+          NOM_CHAM = 'EPSI_ELNO_DEPL',   NOEUD = 'N256',
+          CRITERE = 'RELATIF', PRECISION = 1.E-4,MAILLE ='M82',
+          NOM_CMP = 'EPXY',    VALE = -1.31465E-10,
+          REFERENCE = 'NON_REGRESSION' ),
+     _F(  RESULTAT = RES,   NUME_ORDRE = 1,
+          SENSIBILITE=PS_2,
+          NOM_CHAM = 'SIGM_ELNO_DEPL',  NOEUD = 'N256' ,
+          CRITERE = 'RELATIF', PRECISION = 1.E-4,MAILLE ='M82',
+          NOM_CMP = 'SIYY',    VALE = 5.122777E-06,
+          REFERENCE = 'NON_REGRESSION' ),
+     _F(  RESULTAT = RES,   NUME_ORDRE = 1,
+          SENSIBILITE=PS_3,
+          NOM_CHAM = 'SIGM_ELNO_DEPL',   NOEUD = 'N256',
+          CRITERE = 'RELATIF', PRECISION = 1.E-4,MAILLE ='M82',
+          NOM_CMP = 'SIYY',    VALE = -1.0285E+01,
+          REFERENCE = 'NON_REGRESSION' ),
+     _F(  RESULTAT = RES,   NUME_ORDRE = 1,
+          SENSIBILITE=PS_6,
+          NOM_CHAM = 'SIGM_ELNO_DEPL',   NOEUD = 'N256',
+          CRITERE = 'RELATIF', PRECISION = 1.E-4,MAILLE ='M82',
+          NOM_CMP = 'SIYY',    VALE = 1.500725E-06,
+          REFERENCE = 'NON_REGRESSION' ),
+         ),)
+
+FIN()
+

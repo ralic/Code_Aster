@@ -1,0 +1,68 @@
+#& MODIF COMMANDE  DATE 09/10/2002   AUTEUR DURAND C.DURAND 
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+THER_NON_LINE_MO=OPER(nom="THER_NON_LINE_MO",op= 171,sd_prod=evol_ther,
+                     fr="Thermique non lineaire en repere mobile",
+                     docu="U4.54.03-b",reentrant='f',
+            UIinfo={"groupes":("Résolution",)},
+         MODELE          =SIMP(statut='o',typ=modele ),
+         CHAM_MATER      =SIMP(statut='o',typ=cham_mater ),
+         CARA_ELEM       =SIMP(statut='c',typ=cara_elem ),
+         EXCIT           =FACT(statut='o',min=1,max='**',
+           CHARGE          =SIMP(statut='o',typ=char_ther ),
+           FONC_MULT       =SIMP(statut='c',typ=fonction ),
+         ),
+         TEMP_INIT       =FACT(statut='f',min=1,max=1,
+           EVOL_THER       =SIMP(statut='f',typ=evol_ther ),
+           NUME_INIT       =SIMP(statut='f',typ='I',defaut= 0 ),
+         ),
+         CONVERGENCE     =FACT(statut='d',min=1,max=1,
+           CRIT_TEMP_RELA  =SIMP(statut='f',typ='R',defaut= 1.E-3 ),
+           CRIT_ENTH_RELA  =SIMP(statut='f',typ='R',defaut= 1.E-2 ),
+           ITER_GLOB_MAXI  =SIMP(statut='f',typ='I',defaut= 10 ),
+           ARRET           =SIMP(statut='c',typ='TXM',defaut="OUI",into=("OUI","NON") ),
+         ),
+         SOLVEUR         =FACT(statut='d',min=1,max=1,
+           METHODE         =SIMP(statut='f',typ='TXM',defaut="MULT_FRONT",into=("MULT_FRONT","LDLT","GCPC") ),
+           b_mult_front    =BLOC(condition = "METHODE == 'MULT_FRONT' ",fr="Paramètres de la méthode multi frontale",
+             RENUM           =SIMP(statut='f',typ='TXM',defaut="METIS",into=("MD","MDA","METIS") ),
+           ),
+           b_ldlt          =BLOC(condition = "METHODE == 'LDLT' ",fr="Paramètres de la méthode LDLT",
+             RENUM           =SIMP(statut='f',typ='TXM',defaut="RCMK",into=("RCMK","SANS") ),
+           ),
+           b_ldlt_mult     =BLOC(condition = "METHODE == 'LDLT' or METHODE == 'MULT_FRONT' ",
+                                   fr="Paramètres relatifs à la non inversibilité de la matrice à factorise",
+             NPREC           =SIMP(statut='f',typ='I',defaut= 8 ),
+             STOP_SINGULIER  =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
+           ),
+           b_gcpc          =BLOC(condition = "METHODE == 'GCPC' ", fr="Paramètres de la méthode du gradient conjugué",
+             PRE_COND        =SIMP(statut='f',typ='TXM',into=("LDLT_INC","SANS","DIAG") ),
+             NIVE_REMPLISSAGE=SIMP(statut='f',typ='I',defaut= 0 ),
+             RENUM           =SIMP(statut='f',typ='TXM',defaut="RCMK",into=("SANS","RCMK") ),
+             RESI_RELA       =SIMP(statut='f',typ='R',defaut= 1.E-6 ),
+             NMAX_ITER       =SIMP(statut='f',typ='I',defaut= 0 ),
+           ),
+           EPS             =SIMP(statut='f',typ='R',defaut= 0.E+0 ),
+           SYME            =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON") ),
+         ),
+         TITRE           =SIMP(statut='f',typ='TXM',max='**' ),
+         INFO            =SIMP(statut='f',typ='I',into=(1,2) ),
+)  ;
+
+
+

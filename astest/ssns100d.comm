@@ -1,0 +1,308 @@
+# MODIF  DATE 07/06/2002   AUTEUR DURAND C.DURAND 
+# TITRE PLAQUE ENCASTREE EN TRACTION CONSTITUEE D'UNE NAPPE D'ARMATURES
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+
+DEBUT(    CODE=_F(  NOM = 'SSNS100D',NIV_PUB_WEB='INTERNET') )
+
+#-----------------------------------------------------------------------
+# VALIDATION DU MODELE GRILLE_PINTO_MEN EN PLASTICITE
+# TEMPERATRE IMPOSEE PAR NAPPE
+#-----------------------------------------------------------------------
+
+MAILTOT=LIRE_MAILLAGE(   )
+
+#
+# -----------------------------------------------------
+# DEFINITION DES MATERIAUX
+# -----------------------------------------------------
+#
+
+ACIER=DEFI_MATERIAU(   ELAS=_F(  E = 2.E11,
+                                    NU = 0.3,
+                                    ALPHA = 1.E-5,         ),
+                  PINTO_MENEGOTTO=_F(  SY = 2.E8,
+                                    EPSI_ULTM = 3.E-2,
+                                    SIGM_ULTM = 2.58E8,
+                                    EPSP_HARD = 0.0023,
+                                    R_PM = 20.0,
+                                    EP_SUR_E = 0.01,
+                                    A1_PM = 18.5,
+                                    A2_PM = 0.15,
+                                    ELAN = 4.9,
+                                    A6_PM = 620.0,
+                                    C_PM = 0.5,
+                                    A_PM = 0.008,          )
+                           )
+
+#
+# -------------------------------------------------
+# AFFECTATION DES MATERIAUX
+# -------------------------------------------------
+#
+MATAF=AFFE_MATERIAU(    MAILLAGE=MAILTOT,
+                          AFFE=_F(  GROUP_MA = 'GEOB',
+                                 MATER = ACIER,
+                                 TEMP_REF = 50.,
+                               )
+                      )
+
+#
+# -------------------------------------------------
+# AFFECTATION DES MODELES
+# -------------------------------------------------
+#
+LEMOD=AFFE_MODELE(    MAILLAGE=MAILTOT,     VERIF='MAILLE',
+                        AFFE=_F(  GROUP_MA = 'GEOB',
+                               PHENOMENE = 'MECANIQUE',
+                               MODELISATION = 'GRILLE',
+                             )
+                      )
+
+# -------------------------------------------------
+# AFFECTATION DES CARACTERISTIQUES
+# -------------------------------------------------
+#
+LACAR=AFFE_CARA_ELEM(    MODELE=LEMOD,
+                       GRILLE=_F( GROUP_MA = 'GEOB',
+                                SECTION_L = .01,
+                                ANGL_REP = (0.0, 0.0,),
+                                ANGL_L = 0.,
+                                POUR_CENT_L = 1.,
+                                POUR_CENT_T = 0.1,
+                                EXCENTREMENT = 0.0,
+                              )
+                        )
+
+# -------------------------------------------------
+# CONSTRUCTION DU CHAMP DE TEMPERATURE POUR
+# TENTER DE REPRODUIRE LA PRECONTRAINTE
+# ------------------------------------------------
+#
+
+F1_T=DEFI_FONCTION(
+
+                   NOM_PARA='INST',
+                 PROL_DROITE='EXCLU',
+                PROL_GAUCHE='EXCLU',
+
+                VALE=(
+                0.0,         50.0,
+                1.0,       -300.0,
+                2.0,       -100.0,
+                3.0,         50.0,
+                4.0,       -150.0,
+                5.0,       -350.0,
+                6.0,       -200.0,
+                )
+              )
+
+LATEMP=CREA_CHAMP(OPERATION='AFFE', TYPE_CHAM='CART_TEMP_F',
+             MAILLAGE=MAILTOT,
+
+           AFFE=_F(  GROUP_MA = 'GEOB',   NOM_CMP = 'TEMP',   VALE_F = F1_T,  )
+                 )
+
+# ----------------------------------------------
+# CHARGEMENT
+# ----------------------------------------------
+#
+ZCHM=AFFE_CHAR_MECA(
+             MODELE=LEMOD,
+             TEMP_CALCULEE=LATEMP,
+            DDL_IMPO=_F(  TOUT = 'OUI',
+                       DX = 0.,   DY = 0.,   DZ = 0.,
+                       DRX = 0.,   DRY = 0.,   DRZ = 0.,  )
+                       )
+
+#
+# ----------------------------------------------
+# CALCUL
+# ----------------------------------------------
+#
+
+
+ZLIST=DEFI_LIST_REEL(   DEBUT=0.,
+             INTERVALLE=_F( JUSQU_A = 10.0,  NOMBRE = 10, )
+           )
+
+LEDEP=STAT_NON_LINE(
+                            MODELE=LEMOD,
+                        CHAM_MATER=MATAF,
+                         CARA_ELEM=LACAR,
+                             EXCIT=_F(
+                CHARGE = ZCHM,
+                ),
+                         COMP_INCR=_F(
+                RELATION = 'GRILLE_PINTO_MEN',
+                ),
+                         INCREMENT=_F(
+                LIST_INST = ZLIST,
+                NUME_INST_FIN = 6,
+                ),
+                            NEWTON=_F(
+                MATRICE = 'TANGENTE',
+                REAC_ITER = 10,
+                ),
+                       CONVERGENCE=_F(
+                RESI_GLOB_MAXI = 1.E-3,
+                ITER_INTE_MAXI = 30,
+                ITER_GLOB_MAXI = 30,
+                ),
+                     RECH_LINEAIRE=_F(
+                ITER_LINE_MAXI = 10,
+                )
+              )
+
+LEDEP=CALC_ELEM( reuse=LEDEP,
+                            OPTION=(
+                  'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
+                          RESULTAT=LEDEP,
+                            MODELE=LEMOD,
+                        CHAM_MATER=MATAF,
+                         CARA_ELEM=LACAR
+              )
+
+#
+# -------------------------------------------------
+# POST TRAITEMENT DES RESULTATS
+# -------------------------------------------------
+#
+
+
+
+LEDEP=CALC_ELEM(reuse=LEDEP,     RESULTAT=LEDEP,        MODELE=LEMOD,
+                         CHAM_MATER=MATAF,    CARA_ELEM=LACAR,
+                             OPTION='SIGM_ELNO_COQU' )
+
+#
+TEST_RESU(RESU=(
+
+            _F( RESULTAT = LEDEP,
+             INST = 1.,
+             NOM_CHAM = 'SIGM_ELNO_COQU',
+             NOM_CMP = 'SIXX',
+             MAILLE = 'MA1',
+             NOEUD = 'NO1',
+             VALE = 209.4160956E6,
+             PRECISION = 0.001,
+            ),
+            _F( RESULTAT = LEDEP,
+             INST = 1.,
+             NOM_CHAM = 'SIGM_ELNO_COQU',
+             NOM_CMP = 'SIYY',
+             MAILLE = 'MA1',
+             NOEUD = 'NO1',
+             VALE = 209.4160956E5,
+             PRECISION = 0.001,
+            ),
+            _F( RESULTAT = LEDEP,
+             INST = 2.,
+             NOM_CHAM = 'SIGM_ELNO_COQU',
+             NOM_CMP = 'SIXX',
+             MAILLE = 'MA1',
+             NOEUD = 'NO1',
+             VALE = -121.5548580E6,
+             PRECISION = 0.001,
+            ),
+            _F( RESULTAT = LEDEP,
+             INST = 2.,
+             NOM_CHAM = 'SIGM_ELNO_COQU',
+             NOM_CMP = 'SIYY',
+             MAILLE = 'MA1',
+             NOEUD = 'NO1',
+             VALE = -121.5548580E5,
+             PRECISION = 0.001,
+            ),
+            _F( RESULTAT = LEDEP,
+             INST = 3.,
+             NOM_CHAM = 'SIGM_ELNO_COQU',
+             NOM_CMP = 'SIXX',
+             MAILLE = 'MA1',
+             NOEUD = 'NO1',
+             VALE = -182.8618E6,
+             PRECISION = 0.001,
+            ),
+            _F( RESULTAT = LEDEP,
+             INST = 3.,
+             NOM_CHAM = 'SIGM_ELNO_COQU',
+             NOM_CMP = 'SIYY',
+             MAILLE = 'MA1',
+             NOEUD = 'NO1',
+             VALE = -182.8618E5,
+             PRECISION = 0.001,
+            ),
+            _F( RESULTAT = LEDEP,
+             INST = 4.,
+             NOM_CHAM = 'SIGM_ELNO_COQU',
+             NOM_CMP = 'SIXX',
+             MAILLE = 'MA1',
+             NOEUD = 'NO1',
+             VALE = 152.164E6,
+             PRECISION = 0.001,
+            ),
+            _F( RESULTAT = LEDEP,
+             INST = 4.,
+             NOM_CHAM = 'SIGM_ELNO_COQU',
+             NOM_CMP = 'SIYY',
+             MAILLE = 'MA1',
+             NOEUD = 'NO1',
+             VALE = 152.164E5,
+             PRECISION = 0.001,
+            ),
+            _F( RESULTAT = LEDEP,
+             INST = 5.,
+             NOM_CHAM = 'SIGM_ELNO_COQU',
+             NOM_CMP = 'SIXX',
+             MAILLE = 'MA1',
+             NOEUD = 'NO1',
+             VALE = 202.506E6,
+             PRECISION = 0.001,
+            ),
+            _F( RESULTAT = LEDEP,
+             INST = 5.,
+             NOM_CHAM = 'SIGM_ELNO_COQU',
+             NOM_CMP = 'SIYY',
+             MAILLE = 'MA1',
+             NOEUD = 'NO1',
+             VALE = 202.506E5,
+             PRECISION = 0.001,
+            ),
+            _F( RESULTAT = LEDEP,
+             INST = 6.,
+             NOM_CHAM = 'SIGM_ELNO_COQU',
+             NOM_CMP = 'SIXX',
+             MAILLE = 'MA1',
+             NOEUD = 'NO1',
+             VALE = -75.9306E6,
+             PRECISION = 0.001,
+            ),
+            _F( RESULTAT = LEDEP,
+             INST = 6.,
+             NOM_CHAM = 'SIGM_ELNO_COQU',
+             NOM_CMP = 'SIYY',
+             MAILLE = 'MA1',
+             NOEUD = 'NO1',
+             VALE = -75.9306E5,
+             PRECISION = 0.001,
+            ))
+        )
+
+FIN()
+#
+#

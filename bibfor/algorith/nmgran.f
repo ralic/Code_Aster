@@ -1,0 +1,489 @@
+       SUBROUTINE NMGRAN (NDIM,TYPMOD,IMATE,COMPOR,CRIT,
+     &                   INSTAM,INSTAP,TM,TP,TREF,HYDRM,HYDRP,
+     &                   SECHM,SECHP,TPMXM,TPMXP,DEPST,SIGM,VIM,
+     &                   OPTION,SIGP,VIP,DSIDEP)
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 01/10/2002   AUTEUR CIBHHLV L.VIVAN 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+C TOLE CRP_21
+C
+      IMPLICIT NONE
+      INTEGER            NDIM,IMATE
+      CHARACTER*8        TYPMOD(*)
+      CHARACTER*16       COMPOR(3),OPTION
+      REAL*8             CRIT(3),INSTAM,INSTAP,TM,TP,TREF
+      REAL*8             HYDRM , HYDRP , SECHM , SECHP, TPMXM, TPMXP
+      REAL*8             DEPST(6)
+      REAL*8             SIGM(6),VIM(55),SIGP(6),VIP(55),DSIDEP(6,6)
+C ----------------------------------------------------------------------
+C     REALISE LA LOI VISCOELASTIQUE DE GRANGER (FLUAGE PROPRE)
+C     ELEMENTS ISOPARAMETRIQUES EN PETITES DEFORMATIONS
+C
+C IN  NDIM    : DIMENSION DE L'ESPACE
+C IN  TYPMOD  : TYPE DE MODELISATION
+C IN  IMATE   : ADRESSE DU MATERIAU CODE
+C IN  COMPOR  : COMPORTEMENT : RELCOM ET DEFORM
+C IN  CRIT    : CRITERES DE CONVERGENCE LOCAUX
+C IN  INSTAM  : INSTANT DU CALCUL PRECEDENT
+C IN  INSTAP  : INSTANT DU CALCUL
+C IN  TM      : TEMPERATURE A L'INSTANT PRECEDENT
+C IN  TP      : TEMPERATURE A L'INSTANT DU CALCUL
+C IN  HYDRM   : HYDRATATION A L'INSTANT PRECEDENT
+C IN  HYDRP   : HYDRATATION A L'INSTANT DU CALCUL
+C IN  SECHM   : SECHAGE A L'INSTANT PRECEDENT
+C IN  SECHP   : SECHAGE A L'INSTANT DU CALCUL
+C IN  TPMXM   : TEMPERATURE MAX ATTEINTE AU COURS DE L'HISTORIQUE DE
+C               CHARGEMENT A T (POUR LE COUPLAGE FLUAGE/FISSURATION)
+C IN  TPMXP   : TEMPERATURE MAX ATTEINTE AU COURS DE L'HISTORIQUE DE
+C               CHARGEMENT A T+DT (POUR LE COUPLAGE FLUAGE/FISSURATION)
+C IN  TREF    : TEMPERATURE DE REFERENCE
+C IN  DEPST   : INCREMENT DE DEFORMATION
+C               SI C_PLAN DEPST(3) EST EN FAIT INCONNU (ICI:0)
+C                 =>  ATTENTION LA PLACE DE DEPST(3) EST ALORS UTILISEE.
+C IN  SIGM    : CONTRAINTES A L'INSTANT DU CALCUL PRECEDENT
+C IN  VIM     : VARIABLES INTERNES A L'INSTANT DU CALCUL PRECEDENT
+C IN  OPTION  : OPTION DEMANDEE : RIGI_MECA_TANG , FULL_MECA , RAPH_MECA
+C OUT SIGP    : CONTRAINTES A L'INSTANT ACTUEL
+C OUT VIP     : VARIABLES INTERNES A L'INSTANT ACTUEL
+C OUT DSIDEP  : MATRICE CARREE (INUTILISE POUR RAPH_MECA)
+C
+C               ATTENTION LES TENSEURS ET MATRICES SONT RANGES DANS
+C               L'ORDRE :  XX,YY,ZZ,SQRT(2)*XY,SQRT(2)*XZ,SQRT(2)*YZ
+C
+C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
+C
+      CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
+      INTEGER            ZI
+      COMMON  / IVARJE / ZI(1)
+      REAL*8             ZR
+      COMMON  / RVARJE / ZR(1)
+      COMPLEX*16         ZC
+      COMMON  / CVARJE / ZC(1)
+      LOGICAL            ZL
+      COMMON  / LVARJE / ZL(1)
+      CHARACTER*8        ZK8
+      CHARACTER*16                ZK16
+      CHARACTER*24                          ZK24
+      CHARACTER*32                                    ZK32
+      CHARACTER*80                                              ZK80
+      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+C
+C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
+C
+      REAL*8      VALRES(16)
+      REAL*8      E,NU,TROISK,DEUXMU,ALPHAP
+      REAL*8      DELTA, DTEQT,AGEM,AGEP,DAGE,TCEQ
+      REAL*8      TEMP, TABS, R8T0,TKM,TKP,TMPRIM,TPPRIM,TKREF
+      REAL*8      KRON(6),FTPRIM
+      REAL*8      EM,NUM,TROIKM,DEUMUM,ALPHAM
+      REAL*8      DEPSMO, DEPSDV(6),SIGMMO,SIGMDV(6),SIGPMO, SIGPDV(6)
+      REAL*8      SMDV(6),SPDV(6),SMMO,SPMO,DSDV(6),DSMO,DEPS(6),DEPS3
+      REAL*8      SIGLDV(6), SIGLMO ,SIGMP(6),SIGMPO, SIGMPD(6)
+      INTEGER     NDIMSI,IBID
+      INTEGER     I,K,L,N
+      CHARACTER*2 BL2, FB2, CODRET(16)
+      CHARACTER*8 NOMRES(16),MOD
+      CHARACTER*8 NOMPAR(3),TYPE
+      REAL*8      VALPAM(3),VALPAP(3),RESU
+      REAL*8      BENDOM,BENDOP,KDESSM,KDESSP
+      REAL*8      J(8),TAUX(8),HYGRM,HYGRP,QSRT,QSRV,VIEIL
+      REAL*8      AMDV(6,9),APDV(6,9),AMMO(9),APMO(9),AP(6,9),AM(6,9)
+      REAL*8      THER,COEFA(9),COEFC(9),COEFF(9),COEFB,COEFD,COEFT
+      REAL*8      COEFG,COEFH,COEFI,COEFJ,COEFV,COEFK(9)
+      LOGICAL     CPLAN
+      DATA        KRON/1.D0,1.D0,1.D0,0.D0,0.D0,0.D0/
+C DEB -----------------------------------------------------------------
+C
+C     -- 1 INITIALISATIONS :
+C     ----------------------
+C
+      BL2 = '  '
+      FB2 = 'F '
+C
+      CPLAN =  TYPMOD(1) .EQ. 'C_PLAN'
+C
+C      NDIMSI = 2*NDIM
+      MOD      = TYPMOD(1)
+      CALL GRANVI (MOD , NDIMSI , IBID , IBID )
+      DO 100 K=1,NDIMSI
+         DO 101 L=1,NDIMSI
+            DSIDEP(K,L) = 0.D0
+ 101     CONTINUE
+ 100  CONTINUE
+      IF (.NOT.( COMPOR(1)(1:10) .EQ. 'GRANGER_FP' )) THEN
+          CALL UTMESS('F','NMGRAN_01',
+     &    ' COMPORTEMENT INATTENDU : '//COMPOR(1))
+      ENDIF
+      DELTA = INSTAP-INSTAM
+      TEMP = (TP+TM)/2
+      TABS=R8T0()
+      TEMP=TEMP+TABS
+      TKM=TM+TABS
+      TKP=TP+TABS
+      TKREF=TREF+TABS
+      L=0
+      DO 40 I=1,9
+         DO 41 K=1,NDIMSI
+            L=L+1
+            AM(K,I)=VIM(L)
+  41     CONTINUE
+         AMMO(I)=0.D0
+         DO 42 N=1,3
+            AMMO(I)=AMMO(I)+AM(N,I)
+  42     CONTINUE
+         AMMO(I)=AMMO(I)/3.D0
+         DO 43 K=1,NDIMSI
+            AMDV(K,I)=AM(K,I)-AMMO(I)*KRON(K)
+  43     CONTINUE
+  40  CONTINUE
+      AGEM = VIM(L+1)
+C
+C     -- 2 RECUPERATION DES CARACTERISTIQUES
+C     ---------------------------------------
+      NOMRES(1)='E'
+      NOMRES(2)='NU'
+      NOMRES(3)='ALPHA'
+C
+      NOMPAR(1) = 'TEMP'
+      NOMPAR(2) = 'HYDR'
+      NOMPAR(3) = 'SECH'
+      VALPAM(1) = TPMXM
+      VALPAM(2) = HYDRM
+      VALPAM(3) = SECHM
+      VALPAP(1) = TPMXP
+      VALPAP(2) = HYDRP
+      VALPAP(3) = SECHP
+C
+      CALL RCVALA ( IMATE,'ELAS',3,NOMPAR,VALPAM,2,
+     +                 NOMRES(1),VALRES(1),CODRET(1), FB2 )
+      EM  = VALRES(1)
+      NUM = VALRES(2)
+      CALL RCVALA ( IMATE,'ELAS',3,NOMPAR,VALPAM,1,
+     +              NOMRES(3),VALRES(3),CODRET(3), BL2 )
+      IF ( CODRET(3) .NE. 'OK' ) VALRES(3) = 0.D0
+      ALPHAM = VALRES(3)
+      DEUMUM = EM/(1.D0+NUM)
+      TROIKM = EM/(1.D0-2.D0*NUM)
+      CALL RCVALA ( IMATE,'ELAS',3,NOMPAR,VALPAP,2,
+     +              NOMRES(1),VALRES(1),CODRET(1), FB2 )
+         CALL RCVALA ( IMATE,'ELAS',3,NOMPAR,VALPAP,1,
+     +                 NOMRES(3),VALRES(3),CODRET(3), BL2 )
+         IF ( CODRET(3) .NE. 'OK' ) VALRES(3) = 0.D0
+         ALPHAP = VALRES(3)
+         E      = VALRES(1)
+         NU     = VALRES(2)
+         DEUXMU = E/(1.D0+NU)
+         TROISK = E/(1.D0-2.D0*NU)
+C
+C ------- CARAC. RETRAIT ENDOGENE ET RETRAIT DE DESSICCATION
+C
+      NOMRES(1)='B_ENDOGE'
+      NOMRES(2)='K_DESSIC'
+      CALL RCVALA(IMATE,'ELAS',3,NOMPAR,VALPAM,1,
+     +            NOMRES(1),VALRES(1),CODRET(1), BL2 )
+      IF ( CODRET(1) .NE. 'OK' ) VALRES(1) = 0.D0
+      BENDOM = VALRES(1)
+C
+      CALL RCVALA(IMATE,'ELAS',3,NOMPAR,VALPAP,1,
+     +            NOMRES(1),VALRES(1),CODRET(1), BL2 )
+      IF ( CODRET(1) .NE. 'OK' ) VALRES(1) = 0.D0
+      BENDOP = VALRES(1)
+C
+      CALL RCVALA(IMATE,'ELAS',3,NOMPAR,VALPAM,1,
+     +            NOMRES(2),VALRES(2),CODRET(2), BL2 )
+      IF ( CODRET(2) .NE. 'OK' ) VALRES(2) = 0.D0
+      KDESSM = VALRES(2)
+C
+      CALL RCVALA(IMATE,'ELAS',3,NOMPAR,VALPAP,1,
+     +            NOMRES(2),VALRES(2),CODRET(2), BL2 )
+      IF ( CODRET(2) .NE. 'OK' ) VALRES(2) = 0.D0
+      KDESSP = VALRES(2)
+C
+C  ------- CARACTERISTIQUES FONCTION DE FLUAGE
+C
+      NOMRES(1) = 'J1'
+      NOMRES(2) = 'J2'
+      NOMRES(3) = 'J3'
+      NOMRES(4) = 'J4'
+      NOMRES(5) = 'J5'
+      NOMRES(6) = 'J6'
+      NOMRES(7) = 'J7'
+      NOMRES(8) = 'J8'
+      NOMRES(9) = 'TAUX_1'
+      NOMRES(10) = 'TAUX_2'
+      NOMRES(11) = 'TAUX_3'
+      NOMRES(12) = 'TAUX_4'
+      NOMRES(13) = 'TAUX_5'
+      NOMRES(14) = 'TAUX_6'
+      NOMRES(15) = 'TAUX_7'
+      NOMRES(16) = 'TAUX_8'
+      COEFJ=0.D0
+      DO 110 I=1,8
+         CALL RCVALA(IMATE,'GRANGER_FP',0,NOMPAR,VALPAP,1,
+     &               NOMRES(I),VALRES(I),CODRET(I), BL2)
+         CALL RCVALA(IMATE,'GRANGER_FP',0,NOMPAR,VALPAP,1,
+     &               NOMRES(I+8),VALRES(I+8),CODRET(I+8), BL2)
+         IF ( (CODRET(I) .NE. 'OK') .AND. (CODRET(I+8) .NE. 'OK')) THEN
+             VALRES(I) = 0.D0
+             VALRES(I+8)=1.D0
+         ELSEIF ( ((CODRET(I) .EQ. 'OK') .AND. (CODRET(I+8) .NE. 'OK'))
+     &   .OR. ((CODRET(I) .NE. 'OK') .AND. (CODRET(I+8) .EQ. 'OK')))
+     &   THEN
+             CALL UTMESS ('F','RCVALA_01','CARACTERISTIQUE FLUAGE
+     &                      INCOMPLET')
+         ENDIF
+         J(I)=VALRES(I)
+         TAUX(I)=VALRES(I+8)
+         COEFJ=COEFJ+J(I)
+ 110  CONTINUE
+C
+C  ------- CARACTERISTIQUES EFFET DE LA TEMPERATURE
+C
+      NOMRES(1)='QSR_K'
+      CALL RCVALA(IMATE,'GRANGER_FP',0,NOMPAR,VALPAP,1,
+     &               NOMRES(1),VALRES(1),CODRET(1), BL2)
+      IF (CODRET(I) .NE. 'OK') VALRES(1)=0.D0
+      QSRT=VALRES(1)
+      COEFT=(-QSRT)*(1/TEMP-1/(TKREF))
+      COEFT=EXP(COEFT)
+      DTEQT=COEFT*DELTA
+C
+      TMPRIM=FTPRIM(TKM, TKREF)
+      TPPRIM=FTPRIM(TKP,TKREF)
+C
+C  ------- CARACTERISTIQUES EFFET DU VIEILLISSEMENT
+C
+      IF (COMPOR(1) (1:14) .EQ. 'GRANGER_FP_V') THEN
+         NOMRES(1)='QSR_V'
+         CALL RCVALA(IMATE,'GRANGER_FP',0,NOMPAR,VALPAP,1,
+     &               NOMRES(1),VALRES(1),CODRET(1), BL2)
+         IF (CODRET(I) .NE. 'OK') VALRES(1)=0.D0
+         QSRV=VALRES(1)
+C
+C  -------- FONCTION MULTIPLICATIVE - VIEILLISSEMENT K
+C
+C  ------------ AGE EQUIVALENT DU BETON : AGE
+         COEFV=(-QSRV)*(1/TEMP-1/TKREF)
+         COEFV=EXP(COEFV)
+         DAGE = COEFV*DELTA
+         AGEP = AGEM+DAGE
+         TCEQ = (AGEM+AGEP)/2
+         NOMRES(1)='FONC_V'
+         CALL RCVALA(IMATE,'V_GRANGER_FP',1,'INST',TCEQ,1,
+     &                 NOMRES(1),VALRES(1),CODRET(1), FB2)
+         VIEIL = VALRES(1)
+      ELSE
+         VIEIL = 1.D0
+         DAGE = DELTA
+         AGEP=AGEM+DAGE
+      ENDIF
+C
+C  ------- CARACTERISTIQUES HYGROMETRIE H
+C
+      NOMRES(1)='FONC_DESORP'
+      CALL RCVALA(IMATE,'ELAS',1,'SECH',SECHM,1,
+     &               NOMRES(1),VALRES(1),CODRET(1), FB2)
+         IF  (CODRET(1) .NE. 'OK')  THEN
+             CALL UTMESS ('F','RCVALA_01','IL FAUT DECLARER FONC_DESORP
+     &          SOUS ELAS_FO POUR LE FLUAGE DE DESSICATION INTRINSEQUE  
+     &          AVEC SECH COMME PARAMETRE')
+         ENDIF
+      HYGRM=VALRES(1)
+      CALL RCVALA(IMATE,'ELAS',1,'SECH',SECHP,1,
+     &               NOMRES(1),VALRES(1),CODRET(1), FB2)
+         IF  (CODRET(1) .NE. 'OK')  THEN
+             CALL UTMESS ('F','RCVALA_01','IL FAUT DECLARER FONC_DESORP
+     &          SOUS ELAS_FO POUR LE FLUAGE DE DESSICATION INTRINSEQUE  
+     &          AVEC SECH COMME PARAMETRE')
+         ENDIF
+      HYGRP=VALRES(1)
+      
+C
+C--3  CALCUL DE SIGMP, SIGEL
+C   -------------------------
+      SIGMMO = 0.D0
+      DO 113 K =1,3
+         SIGMMO = SIGMMO + SIGM(K)
+ 113  CONTINUE
+      SIGMMO = SIGMMO /3.D0
+      DO 140 K=1,NDIMSI
+         SIGMDV(K) = SIGM(K)- SIGMMO * KRON(K)
+         SIGMP(K)=DEUXMU/DEUMUM*(SIGMDV(K)) +
+     &            TROISK/TROIKM*SIGMMO*KRON(K)
+140   CONTINUE
+      SIGMPO = 0.D0
+      DO 116 K =1,3
+         SIGMPO = SIGMPO + SIGMP(K)
+ 116  CONTINUE
+      SIGMPO = SIGMPO /3.D0
+      DO 127 K=1,NDIMSI
+         SIGMPD(K) = SIGMP(K)- SIGMPO * KRON(K)
+ 127  CONTINUE
+C
+C -------  QUELQUES COEFFICIENT-------------------------
+C
+      COEFB=0.D0
+      DO 150 I=1,8
+         COEFB=COEFB+J(I)*(1-(TAUX(I)/DELTA)*(1-EXP(-DTEQT/TAUX(I))))
+  150 CONTINUE
+      COEFD=(HYGRP*TPPRIM*VIEIL)*COEFB
+      DO 135 K=1,NDIMSI
+         COEFA(K)=0.D0
+         DO 130 I=1,8
+            COEFA(K)=COEFA(K)+AMDV(K,I)*(1-EXP(-DTEQT/TAUX(I)))
+  130    CONTINUE
+         COEFC(K)= (SIGMDV(K)*HYGRM*TMPRIM)*VIEIL*COEFB
+         COEFF(K)=COEFA(K)-COEFC(K)
+  135 CONTINUE
+      COEFA(9)=0.D0
+      DO 118 I=1,8
+         COEFA(9)=COEFA(9)+AMMO(I)*(1-EXP(-DTEQT/TAUX(I)))
+  118 CONTINUE
+      COEFC(9)= (SIGMMO*HYGRM*TMPRIM)*VIEIL*COEFB
+      COEFF(9)=COEFA(9)-COEFC(9)
+      DO 125 K=1,3
+         COEFK(K)= COEFF(K)+COEFF(9)
+  125 CONTINUE
+C
+C ------- CALCUL DE DEPSMO ET DEPSDV
+C
+      THER = ALPHAP*(TP-TREF) - ALPHAM*(TM-TREF)
+     &     - BENDOP*HYDRP     + BENDOM*HYDRM
+     &     - KDESSP*SECHP     + KDESSM*SECHM
+      IF (CPLAN) THEN
+         DEPS3=-NU/(1.D0-NU)*(DEPST(1)+DEPST(2))
+     &            +(1.D0+NU)/(1.D0-NU)*THER
+         DEPS3=DEPS3+(3.D0*E/(DEUXMU*2.D0+TROISK))*COEFK(3)
+         DEPS3=DEPS3-(3.D0/(DEUXMU*2.D0+TROISK))*SIGMP(3)
+      ENDIF
+      DEPSMO = 0.D0
+      DO 111 K=1,3
+         DEPS(K)   = DEPST(K)-THER
+         DEPS(K+3) = DEPST(K+3)
+         DEPSMO = DEPSMO + DEPS(K)
+ 111  CONTINUE
+      IF (CPLAN) THEN
+         DEPS(3)   = DEPS3-THER
+         DEPSMO = DEPS(1) + DEPS(2) + DEPS(3)
+      ENDIF
+      DEPSMO = DEPSMO/3.D0
+      DO 115 K=1,NDIMSI
+         DEPSDV(K)   = DEPS(K) - DEPSMO * KRON(K)
+ 115  CONTINUE
+C
+      DO 129 K=1,NDIMSI
+         SIGLDV(K)  = SIGMPD(K) + DEUXMU * DEPSDV(K)
+ 129  CONTINUE
+      SIGLMO = SIGMPO +TROISK*DEPSMO
+C
+C--4-CALCUL DE SIGP
+C------------------------
+C
+      IF ( (OPTION(1:9) .EQ. 'RAPH_MECA') .OR.
+     &     (OPTION(1:9) .EQ. 'FULL_MECA')     ) THEN
+         DO 117 K = 1,NDIMSI
+           SIGPDV(K)=SIGLDV(K)-E*COEFF(K)
+           SIGPDV(K)=SIGPDV(K)/(1+E*COEFD)
+ 117     CONTINUE
+         SIGPMO= SIGLMO-E*COEFF(9)
+         SIGPMO = SIGPMO/(1+E*COEFD)
+         DO 151 K=1,NDIMSI
+            SIGP(K)=SIGPDV(K)+SIGPMO*KRON(K)
+  151    CONTINUE
+C
+C-- 6 CALCUL DE VIP
+C   -------------------
+C--------CALCUL DE DS
+         DO 119 K=1,NDIMSI
+            SMDV(K)=SIGMDV(K)*HYGRM*TMPRIM
+            SPDV(K)=SIGPDV(K)*HYGRP*TPPRIM
+            DSDV(K)=SPDV(K)-SMDV(K)
+  119    CONTINUE
+         SMMO=SIGMMO*HYGRM*TMPRIM
+         SPMO=SIGPMO*HYGRP*TPPRIM
+         DSMO = SPMO-SMMO
+C--------CALCUL DE APDV, APMO
+         DO 160 I=1,8
+            DO 170 K=1,NDIMSI
+               APDV(K,I)=AMDV(K,I)*EXP(-DTEQT/TAUX(I))
+               APDV(K,I)=APDV(K,I)+ DSDV(K)*VIEIL
+     &                  *J(I)*(TAUX(I)/DELTA)*(1-EXP(-DTEQT/TAUX(I)))
+  170       CONTINUE
+            APMO(I)= AMMO(I)*EXP(-DTEQT/TAUX(I))
+            APMO(I)=APMO(I)+ DSMO*VIEIL
+     &                *J(I)*(TAUX(I)/DELTA)*(1-EXP(-DTEQT/TAUX(I)))
+  160    CONTINUE
+C
+          DO 180 K=1,NDIMSI
+             APDV(K,9)=AMDV(K,9)
+             DO 190 I=1,8
+                APDV(K,9)=APDV(K,9)+J(I)*VIEIL*DSDV(K)
+  190        CONTINUE
+  180     CONTINUE
+          APMO(9)= AMMO(9)
+          DO 200 I=1,8
+             APMO(9)=APMO(9)+J(I)*VIEIL*DSMO
+  200     CONTINUE
+C--------CALCUL DES AP ET DES VIP
+          L=0
+          DO 210 I=1,9
+             DO 220 K=1,NDIMSI
+                AP(K,I)=APDV(K,I)+APMO(I)*KRON(K)
+                L=L+1
+                VIP(L)=AP(K,I)
+  220        CONTINUE
+  210     CONTINUE
+          VIP(L+1)=AGEP
+      ENDIF
+C
+C-- 7 CALCUL DE DSIDEP POUR LA MATRICE TANGENTE
+C   -------------------------------------------
+      IF ( (OPTION(1:14) .EQ. 'RIGI_MECA_TANG').OR.
+     &     (OPTION(1:9)  .EQ. 'FULL_MECA' )        ) THEN
+         IF ( OPTION(1:9)  .EQ. 'FULL_MECA') THEN
+            COEFG=COEFD
+            COEFH=(1+E*COEFG)
+            COEFI=(1+E*COEFG)
+         ELSE
+C        (METRICE ELASTIQUE)
+             COEFH = 1.D0
+             COEFI = 1.D0
+         ENDIF
+         DO 260 K=1,3
+            DO 270 L=1,3
+               DSIDEP(K,L) = DSIDEP(K,L)+(TROISK/(3.D0*COEFI))
+               DSIDEP(K,L) = DSIDEP(K,L)-DEUXMU/(3.D0*COEFH)
+ 270        CONTINUE
+ 260     CONTINUE
+         DO 280 K=1,NDIMSI
+            DSIDEP(K,K) = DSIDEP(K,K) + DEUXMU/COEFH
+ 280     CONTINUE
+C
+C----------- CORRECTION POUR LES CONTRAINTES PLANES :
+         IF (CPLAN) THEN
+           DO 136 K=1,NDIMSI
+             IF (K.EQ.3) GO TO 136
+             DO 137 L=1,NDIMSI
+               IF (L.EQ.3) GO TO 137
+                  DSIDEP(K,L)=DSIDEP(K,L)
+     &           - 1.D0/DSIDEP(3,3)*DSIDEP(K,3)*DSIDEP(3,L)
+ 137        CONTINUE
+ 136      CONTINUE
+         ENDIF
+      ENDIF
+      END

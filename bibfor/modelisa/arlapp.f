@@ -1,0 +1,305 @@
+      SUBROUTINE ARLAPP(MAIL,NOM1Z,NOM2Z,NNORMZ,NMAX,NTM)
+
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF MODELISA  DATE 04/04/2002   AUTEUR VABHHTS J.PELLET 
+C======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+C ----------------------------------------------------------------------
+C         APPARIEMENT DES MAILLES EN VIS-A-VIS POUR ARLEQUIN
+C ----------------------------------------------------------------------
+C VARIABLES D'ENTREE
+C CHARACTER*8       MAIL       : NOM DU MAILLAGE
+C CHARACTER*(10)    NOM1Z      : NOM SD DOMAINE 1
+C CHARACTER*(10)    NOM2Z      : NOM SD DOMAINE 2
+C CHARACTER*(10)    NNORMZ     : NORMALES LISSEES COQUE (CF LISNOR)
+C INTEGER           NMAX(2)    : DEGRE MAXIMAL GRAPHE NOEUD->MAILLE
+C                                (DG.MX DOMAINE 1, DG.MX DOMAINE 2)
+C CHARACTER*8       NTM(*)     : VECTEUR NOMS TYPES DE MAILLE
+C
+C SD D'ENTREE
+C NOM1.GROUPEMA : LISTE DES MAILLES DOMAINE 1
+C NOM1.BOITE    : SD BOITES ENGLOBANTES (CF BOITE)
+C NOM2.GROUPEMA : LISTE DES MAILLES DOMAINE 2
+C NOM2.BOITE    : SD BOITES ENGLOBANTES (CF BOITE)
+C NOM2.ARBRE    : SD ARBRE DE LOCALISATION (CF BISSEC)
+C NOM2.GRMAMA   : SD GRAPHE MAILLE -> MAILLES VOISINES (CF GRMAMA)
+C
+C SD DE SORTIE
+C NOM1.NOM2  : GRAPHE D'APPARIEMENT (XC V I NUMERO VARIABLE)
+C              MAILLE DOMAINE 1 -> MAILLES DOMAINE 2 EN VIS-A-VIS
+C              [MA1] : (MA2.1, MA2.2, MA2.3, ...)
+C                      AVEC MA* INDEX NOM*.GROUPEMA
+C ----------------------------------------------------------------------
+
+      IMPLICIT NONE
+
+C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
+      CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
+      INTEGER            ZI
+      COMMON  / IVARJE / ZI(1)
+      REAL*8             ZR
+      COMMON  / RVARJE / ZR(1)
+      COMPLEX*16         ZC
+      COMMON  / CVARJE / ZC(1)
+      LOGICAL            ZL
+      COMMON  / LVARJE / ZL(1)
+      CHARACTER*8        ZK8
+      CHARACTER*16                ZK16
+      CHARACTER*24                          ZK24
+      CHARACTER*32                                    ZK32
+      CHARACTER*80                                              ZK80
+      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
+
+C --- PARAMETRES
+      REAL*8        PREC1, PREC2, PREC3
+      PARAMETER    (PREC1 = 0.1D0)
+      PARAMETER    (PREC2 = 0.01D0)
+      PARAMETER    (PREC3 = 0.01D0)
+
+C --- VARIABLES
+      CHARACTER*(*) NOM1Z,NOM2Z,NNORMZ
+      CHARACTER*24  NOMAPP,NNORMA
+      CHARACTER*10  NOM1,NOM2
+      CHARACTER*8   MAIL,NTM(*),TYPEMA
+      INTEGER       A0,A1,A2,A3,A4
+      INTEGER       B0,B1,B2,B3,B4,B5,B6
+      INTEGER       C0,C1,C2,C3,C4,C5,C6,C7,C8,C9
+      INTEGER       D0(2),D1,D2,D3,D4
+      INTEGER       DIME,NMAX(*),NAPP,NVIS,NM1,NM2,NM,NNO,M1,M2
+      INTEGER       NVOIS(2),IM1,IM2,I,J,K,L,P0
+      REAL*8        M(81),M0(3),H
+      LOGICAL       IR
+
+      NOM1 = NOM1Z
+      NOM2 = NOM2Z
+      NNORMA = NNORMZ
+
+C --- LECTURE DONNEES
+
+      CALL JEMARQ()
+
+      CALL JEVEUO(MAIL//'.COORDO    .VALE','L', A0)
+      CALL JEVEUO(MAIL//'.CONNEX','L',A1)
+      CALL JEVEUO(JEXATR(MAIL//'.CONNEX','LONCUM'),'L',A2)
+      CALL JEVEUO(MAIL//'.TYPMAIL','L',A3)
+      CALL JEEXIN(NNORMA,I)
+      IF (I.NE.0) CALL JEVEUO(NNORMA,'L',A4)
+
+      CALL JEVEUO(NOM1//'.GROUPEMA','L',B0)
+      CALL JEVEUO(NOM1//'.BOITE.DIME','L',B1)
+      CALL JEVEUO(NOM1//'.BOITE.H','L',B2)
+      CALL JEVEUO(NOM1//'.BOITE.MINMAX','L',B3)
+      CALL JEVEUO(NOM1//'.BOITE.PAN','L',B4)
+      CALL JEVEUO(NOM1//'.BOITE.SOMMET','L',B5)
+      CALL JEVEUO(NOM1//'.BOITE.MMGLOB','L',B6)
+      DIME = ZI(B1)
+      NM1 = ZI(B1+1)
+
+      CALL JEVEUO(NOM2//'.GROUPEMA','L',C0)
+      CALL JEVEUO(NOM2//'.BOITE.DIME','L',C1)
+      CALL JEVEUO(NOM2//'.BOITE.H','L',C2)
+      CALL JEVEUO(NOM2//'.BOITE.MINMAX','L',C3)
+      CALL JEVEUO(NOM2//'.BOITE.PAN','L',C4)
+      CALL JEVEUO(NOM2//'.BOITE.MMGLOB','L',C5)
+      CALL JEVEUO(NOM2//'.ARBRE.CELL','L',C6)
+      CALL JEVEUO(NOM2//'.ARBRE.LIMA','L',C7)
+
+      NM2 = ZI(C1+1)
+
+      IF (NM2.GT.1) THEN
+        CALL JEVEUO(NOM2//'.GRMAMA','L',C8)
+        CALL JEVEUO(JEXATR(NOM2//'.GRMAMA','LONCUM'),'L',C9)
+      ENDIF
+
+C --- INCLUSION ?
+
+      P0 = C5
+      DO 10 I = 1, DIME
+
+        IF ((ZR(B6).LT.ZR(P0)).OR.(ZR(B6+1).GT.ZR(P0+1)))
+     &    CALL UTMESS('F','ARLAPP','GMA_1/2 NE CONTIENT PAS GMA_COLLE')
+
+        B6 = B6 + 2
+        P0 = P0 + 2
+
+ 10   CONTINUE
+
+C --- ALLOCATION OBJETS TEMPORAIRES
+
+      NM = NM1*NMAX(2) + NM2*NMAX(1)
+      CALL WKVECT('&&ARLAPP.VOISIN1','V V I',NM2,D0(1))
+      CALL WKVECT('&&ARLAPP.VOISIN2','V V I',NM2,D0(2))
+      CALL WKVECT('&&ARLAPP.FILTRE','V V L',NM2,D1)
+      CALL WKVECT('&&ARLAPP.LISTE.ENTETE','V V I',NM1,D2)
+      CALL WKVECT('&&ARLAPP.LISTE.RESERVE','V V I',2*NM,D3)
+      CALL WKVECT('&&ARLAPP.NVISAVIS','V V I',NM1,D4)
+
+C --- APPARIEMENT
+
+      NAPP = 0
+
+      DO 20 M1 = 1, NM1
+
+C ----- APPARIEMENT POINT MILIEU
+
+        IM1 = ZI(B0-1+M1)
+        TYPEMA = NTM(ZI(A3-1+IM1))
+        CALL TMACOQ(TYPEMA,DIME,I)
+        CALL CONOEU(IM1,ZI(A1),ZI(A2),ZR(A0),ZR(A4),DIME,I,M,NNO)
+        P0 = DIME
+        DO 30 I = 2, NNO
+          DO 30 J = 1, DIME
+            P0 = P0 + 1
+            M(J) = M(J) + M(P0)
+ 30     CONTINUE
+        DO 40 I = 1, DIME
+          M(I) = M(I)/NNO
+ 40     CONTINUE
+        CALL CERNE(M,DIME,ZR(C5),ZI(C6),ZR(C4),NVIS,I)
+
+        I = I + C7 - 2
+
+        DO 50 J = 1, NVIS
+          M2 = ZI(I+J)
+          H = ZR(C2-1+M2)
+          IM2 = ZI(C0-1+M2)
+          TYPEMA = NTM(ZI(A3-1+IM2))
+          CALL LOCALI(M,DIME,ZI(C1),H,PREC1,M2,IM2,ZR(C3),ZR(C4),
+     &                ZR(A0),ZI(A1),ZI(A2),ZR(A4),TYPEMA,.FALSE.,M0,IR)
+          IF (IR) CALL DEDANS(M0,TYPEMA,PREC2,IR)
+          IF (IR) GOTO 60
+ 50     CONTINUE
+
+        CALL UTMESS('F','ARLAPP','GMA_1/2 NE CONTIENT PAS GMA_COLLE')
+
+ 60     CONTINUE
+
+        ZI(D3) = M2
+        ZI(D3+1) = 0
+        ZI(D2-1+M1) = D3
+        D3 = D3 + 2
+        NVIS = 1
+
+C ----- MEME MAILLE ?
+
+        IF (IM1.EQ.IM2) GOTO 100
+
+C ----- IM1 INCLUSE DANS IM2 ?
+
+        CALL MINCLU(DIME,M1,ZI(B1),ZR(B3),ZR(B5),
+     &                   M2,ZI(C1),ZR(C4),ZR(C2),2,PREC3,IR)
+        IF (IR) GOTO 100
+
+        IF (NM2.EQ.1) GOTO 100
+
+C ----- APPARIEMENT DES VOISINS DE IM2
+
+        K = 1
+        L = 2
+        DO 70 I = 1, NM2
+          ZL(D1-1+I) = .TRUE.
+ 70     CONTINUE
+        ZL(D1-1+M2) = .FALSE.
+        ZI(D0(1)) = M2
+        NVOIS(1) = 1
+
+ 80     CONTINUE
+
+        NVOIS(L) = 0
+
+        DO 90 I = 1, NVOIS(K)
+
+          J = ZI(D0(K)-1+I)
+          P0 = ZI(C9-1+J)
+          NM = ZI(C9+J) - P0
+          P0 = C8 + P0 - 2
+
+          DO 90 J = 1, NM
+
+            M2 = ZI(P0+J)
+
+            IF (ZL(D1-1+M2)) THEN
+
+              ZL(D1-1+M2) = .FALSE.
+
+              CALL MINTER(DIME,M1,M2,ZI(B1),ZI(C1),ZR(B2-1+M1),
+     &                    ZR(C2-1+M2),ZR(B3),ZR(C3),ZR(B4),ZR(C4),1,IR)
+
+              IF (IR) THEN
+
+                ZI(D0(L)+NVOIS(L)) = M2
+                NVOIS(L) = NVOIS(L) + 1
+                ZI(D3) = M2
+                ZI(D3+1) = ZI(D2-1+M1)
+                ZI(D2-1+M1) = D3
+                D3 = D3 + 2
+                NVIS = NVIS + 1
+
+              ENDIF
+
+            ENDIF
+
+ 90     CONTINUE
+
+        K = 3 - K
+        L = 3 - L
+
+        IF (NVOIS(K).NE.0) GOTO 80
+
+ 100  CONTINUE
+
+      ZI(D4-1+M1) = NVIS
+      NAPP = NAPP + NVIS
+
+ 20   CONTINUE
+
+C --- ALLOCATION
+
+      NOMAPP = NOM1//'.'//NOM2
+      CALL JECREC(NOMAPP,'V V I','NU','CONTIG','VARIABLE',NM1)
+      CALL JEECRA(NOMAPP,'LONT',NAPP,' ')
+
+C --- COPIE LISTE -> SD. APPARIEMENT
+
+      DO 110 M1 = 1, NM1
+
+        CALL JECROC(JEXNUM(NOMAPP,M1))
+        CALL JEECRA(JEXNUM(NOMAPP,M1),'LONMAX',ZI(D4-1+M1),' ')
+        CALL JEVEUO(JEXNUM(NOMAPP,M1),'E',P0)
+
+        L = ZI(D2-1+M1)
+ 120    CONTINUE
+        ZI(P0) = ZI(L)
+        P0 = P0 + 1
+        L = ZI(L+1)
+        IF (L.NE.0) GOTO 120
+
+ 110  CONTINUE
+
+C --- DESALLOCATION
+
+      CALL JEDETR('&&ARLAPP.VOISIN1')
+      CALL JEDETR('&&ARLAPP.VOISIN2')
+      CALL JEDETR('&&ARLAPP.FILTRE')
+      CALL JEDETR('&&ARLAPP.LISTE.ENTETE')
+      CALL JEDETR('&&ARLAPP.LISTE.RESERVE')
+      CALL JEDETR('&&ARLAPP.NVISAVIS')
+
+      CALL JEDEMA()
+
+      END

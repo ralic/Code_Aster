@@ -1,0 +1,322 @@
+#& MODIF COMMANDE  DATE 09/10/2002   AUTEUR DURAND C.DURAND 
+# RESPONSABLE VABHHTS J.PELLET
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+#              SEE THE FILE "LICENSE.TERMS" FOR INFORMATION ON USAGE AND
+#              REDISTRIBUTION OF THIS FILE.
+# ======================================================================
+def crea_champ_prod(TYPE_CHAM,**args):
+  if TYPE_CHAM == "CART_DBEL_R" : return carte_dbel_r
+  if TYPE_CHAM == "CART_DEPL_C" : return carte_depl_c
+  if TYPE_CHAM == "CART_DEPL_F" : return carte_depl_f
+  if TYPE_CHAM == "CART_DEPL_R" : return carte_depl_r
+  if TYPE_CHAM == "CART_DURT_R" : return carte_durt_r
+  if TYPE_CHAM == "CART_ENER_R" : return carte_ener_r
+  if TYPE_CHAM == "CART_EPSI_R" : return carte_epsi_r
+  if TYPE_CHAM == "CART_ERREUR" : return carte_erreur
+  if TYPE_CHAM == "CART_FLUX_R" : return carte_flux_r
+  if TYPE_CHAM == "CART_GEOM_R" : return carte_geom_r
+  if TYPE_CHAM == "CART_G_DEPL_R" : return carte_g_depl_r
+  if TYPE_CHAM == "CART_HYDR_R" : return carte_hydr_r
+  if TYPE_CHAM == "CART_INST_R" : return carte_inst_r
+  if TYPE_CHAM == "CART_INTE_R" : return carte_inte_r
+  if TYPE_CHAM == "CART_META_R" : return carte_meta_r
+  if TYPE_CHAM == "CART_NEUT_F" : return carte_neut_f
+  if TYPE_CHAM == "CART_NEUT_R" : return carte_neut_r
+  if TYPE_CHAM == "CART_PRES_R" : return carte_pres_r
+  if TYPE_CHAM == "CART_SIEF_R" : return carte_sief_r
+  if TYPE_CHAM == "CART_SOUR_R" : return carte_sour_r
+  if TYPE_CHAM == "CART_TEMP_F" : return carte_temp_f
+  if TYPE_CHAM == "CART_TEMP_R" : return carte_temp_r
+  if TYPE_CHAM == "CART_VAR2_R" : return carte_var2_r
+  if TYPE_CHAM == "CART_VNOR_C" : return carte_vnor_c
+  if TYPE_CHAM == "NOEU_DBEL_R" : return cham_no_dbel_r
+  if TYPE_CHAM == "NOEU_DEPL_C" : return cham_no_depl_c
+  if TYPE_CHAM == "NOEU_DEPL_F" : return cham_no_depl_f
+  if TYPE_CHAM == "NOEU_DEPL_R" : return cham_no_depl_r
+  if TYPE_CHAM == "NOEU_DURT_R" : return cham_no_durt_r
+  if TYPE_CHAM == "NOEU_ENER_R" : return cham_no_ener_r
+  if TYPE_CHAM == "NOEU_EPSI_R" : return cham_no_epsi_r
+  if TYPE_CHAM == "NOEU_ERREUR" : return cham_no_erreur
+  if TYPE_CHAM == "NOEU_FLUX_R" : return cham_no_flux_r
+  if TYPE_CHAM == "NOEU_GEOM_R" : return cham_no_geom_r
+  if TYPE_CHAM == "NOEU_G_DEPL_R" : return cham_no_g_depl_r
+  if TYPE_CHAM == "NOEU_HYDR_R" : return cham_no_hydr_r
+  if TYPE_CHAM == "NOEU_INST_R" : return cham_no_inst_r
+  if TYPE_CHAM == "NOEU_INTE_R" : return cham_no_inte_r
+  if TYPE_CHAM == "NOEU_META_R" : return cham_no_meta_r
+  if TYPE_CHAM == "NOEU_NEUT_F" : return cham_no_neut_f
+  if TYPE_CHAM == "NOEU_NEUT_R" : return cham_no_neut_r
+  if TYPE_CHAM == "NOEU_PRES_R" : return cham_no_pres_r
+  if TYPE_CHAM == "NOEU_SIEF_R" : return cham_no_sief_r
+  if TYPE_CHAM == "NOEU_SOUR_R" : return cham_no_sour_r
+  if TYPE_CHAM == "NOEU_TEMP_F" : return cham_no_temp_f
+  if TYPE_CHAM == "NOEU_TEMP_R" : return cham_no_temp_r
+  if TYPE_CHAM == "NOEU_VAR2_R" : return cham_no_var2_r
+  if TYPE_CHAM == "NOEU_VNOR_C" : return cham_no_vnor_c
+  if TYPE_CHAM == "ELEM_DBEL_R" : return cham_elem_dbel_r
+  if TYPE_CHAM == "ELEM_DEPL_C" : return cham_elem_depl_c
+  if TYPE_CHAM == "ELEM_DEPL_F" : return cham_elem_depl_f
+  if TYPE_CHAM == "ELEM_DEPL_R" : return cham_elem_depl_r
+  if TYPE_CHAM == "ELEM_DURT_R" : return cham_elem_durt_r
+  if TYPE_CHAM == "ELEM_ENER_R" : return cham_elem_ener_r
+  if TYPE_CHAM == "ELEM_EPSI_R" : return cham_elem_epsi_r
+  if TYPE_CHAM == "ELEM_ERREUR" : return cham_elem_erreur
+  if TYPE_CHAM == "ELEM_FLUX_R" : return cham_elem_flux_r
+  if TYPE_CHAM == "ELEM_GEOM_R" : return cham_elem_geom_r
+  if TYPE_CHAM == "ELEM_G_DEPL_R" : return cham_elem_g_depl
+  if TYPE_CHAM == "ELEM_HYDR_R" : return cham_elem_hydr_r
+  if TYPE_CHAM == "ELEM_INST_R" : return cham_elem_inst_r
+  if TYPE_CHAM == "ELEM_INTE_R" : return cham_elem_inte_r
+  if TYPE_CHAM == "ELEM_META_R" : return cham_elem_meta_r
+  if TYPE_CHAM == "ELEM_NEUT_F" : return cham_elem_neut_f
+  if TYPE_CHAM == "ELEM_NEUT_R" : return cham_elem_neut_r
+  if TYPE_CHAM == "ELEM_PRES_R" : return cham_elem_pres_r
+  if TYPE_CHAM == "ELEM_SIEF_R" : return cham_elem_sief_r
+  if TYPE_CHAM == "ELEM_SOUR_R" : return cham_elem_sour_r
+  if TYPE_CHAM == "ELEM_TEMP_F" : return cham_elem_temp_f
+  if TYPE_CHAM == "ELEM_TEMP_R" : return cham_elem_temp_r
+  if TYPE_CHAM == "ELEM_VARI_R" : return cham_elem_vari_r
+  if TYPE_CHAM == "ELEM_VNOR_C" : return cham_elem_vnor_c
+  if TYPE_CHAM == "ELNO_DBEL_R" : return cham_elem_dbel_r
+  if TYPE_CHAM == "ELNO_DEPL_C" : return cham_elem_depl_c
+  if TYPE_CHAM == "ELNO_DEPL_F" : return cham_elem_depl_f
+  if TYPE_CHAM == "ELNO_DEPL_R" : return cham_elem_depl_r
+  if TYPE_CHAM == "ELNO_DURT_R" : return cham_elem_durt_r
+  if TYPE_CHAM == "ELNO_ENER_R" : return cham_elem_ener_r
+  if TYPE_CHAM == "ELNO_EPSI_R" : return cham_elem_epsi_r
+  if TYPE_CHAM == "ELNO_ERREUR" : return cham_elem_erreur
+  if TYPE_CHAM == "ELNO_FLUX_R" : return cham_elem_flux_r
+  if TYPE_CHAM == "ELNO_GEOM_R" : return cham_elem_geom_r
+  if TYPE_CHAM == "ELNO_G_DEPL_R" : return cham_elem_g_depl
+  if TYPE_CHAM == "ELNO_HYDR_R" : return cham_elem_hydr_r
+  if TYPE_CHAM == "ELNO_INST_R" : return cham_elem_inst_r
+  if TYPE_CHAM == "ELNO_INTE_R" : return cham_elem_inte_r
+  if TYPE_CHAM == "ELNO_META_R" : return cham_elem_meta_r
+  if TYPE_CHAM == "ELNO_NEUT_F" : return cham_elem_neut_f
+  if TYPE_CHAM == "ELNO_NEUT_R" : return cham_elem_neut_r
+  if TYPE_CHAM == "ELNO_PRES_R" : return cham_elem_pres_r
+  if TYPE_CHAM == "ELNO_SIEF_R" : return cham_elem_sief_r
+  if TYPE_CHAM == "ELNO_SOUR_R" : return cham_elem_sour_r
+  if TYPE_CHAM == "ELNO_TEMP_F" : return cham_elem_temp_f
+  if TYPE_CHAM == "ELNO_TEMP_R" : return cham_elem_temp_r
+  if TYPE_CHAM == "ELNO_VARI_R" : return cham_elem_vari_r
+  if TYPE_CHAM == "ELNO_VNOR_C" : return cham_elem_vnor_c
+  if TYPE_CHAM == "ELGA_DBEL_R" : return cham_elem_dbel_r
+  if TYPE_CHAM == "ELGA_DEPL_C" : return cham_elem_depl_c
+  if TYPE_CHAM == "ELGA_DEPL_F" : return cham_elem_depl_f
+  if TYPE_CHAM == "ELGA_DEPL_R" : return cham_elem_depl_r
+  if TYPE_CHAM == "ELGA_DURT_R" : return cham_elem_durt_r
+  if TYPE_CHAM == "ELGA_ENER_R" : return cham_elem_ener_r
+  if TYPE_CHAM == "ELGA_EPSI_R" : return cham_elem_epsi_r
+  if TYPE_CHAM == "ELGA_ERREUR" : return cham_elem_erreur
+  if TYPE_CHAM == "ELGA_FLUX_R" : return cham_elem_flux_r
+  if TYPE_CHAM == "ELGA_GEOM_R" : return cham_elem_geom_r
+  if TYPE_CHAM == "ELGA_G_DEPL_R" : return cham_elem_g_depl
+  if TYPE_CHAM == "ELGA_HYDR_R" : return cham_elem_hydr_r
+  if TYPE_CHAM == "ELGA_INST_R" : return cham_elem_inst_r
+  if TYPE_CHAM == "ELGA_INTE_R" : return cham_elem_inte_r
+  if TYPE_CHAM == "ELGA_META_R" : return cham_elem_meta_r
+  if TYPE_CHAM == "ELGA_NEUT_F" : return cham_elem_neut_f
+  if TYPE_CHAM == "ELGA_NEUT_R" : return cham_elem_neut_r
+  if TYPE_CHAM == "ELGA_PRES_R" : return cham_elem_pres_r
+  if TYPE_CHAM == "ELGA_SIEF_R" : return cham_elem_sief_r
+  if TYPE_CHAM == "ELGA_SOUR_R" : return cham_elem_sour_r
+  if TYPE_CHAM == "ELGA_TEMP_F" : return cham_elem_temp_f
+  if TYPE_CHAM == "ELGA_TEMP_R" : return cham_elem_temp_r
+  if TYPE_CHAM == "ELGA_VARI_R" : return cham_elem_vari_r
+  if TYPE_CHAM == "ELGA_VNOR_C" : return cham_elem_vnor_c
+  if TYPE_CHAM == "CART_IRRA_R" : return carte_irra_r
+  if TYPE_CHAM == "NOEU_IRRA_R" : return cham_no_irra_r
+  if TYPE_CHAM == "ELEM_IRRA_R" : return cham_elem_irra_r
+  if TYPE_CHAM == "ELNO_IRRA_R" : return cham_elem_irra_r
+  if TYPE_CHAM == "ELGA_IRRA_R" : return cham_elem_irra_r
+  raise AsException("type de concept resultat non prevu")
+
+CREA_CHAMP=OPER(nom="CREA_CHAMP",op= 195,sd_prod=crea_champ_prod,
+                fr="  ",docu="U4.72.04-b1",reentrant='n',
+            UIinfo={"groupes":("Résultats et champs",)},
+         TYPE_CHAM       =SIMP(statut='o',typ='TXM',
+                        into=("CART_DBEL_R","NOEU_DBEL_R","ELEM_DBEL_R",
+                             "ELNO_DBEL_R","ELGA_DBEL_R","CART_DEPL_C",
+                             "NOEU_DEPL_C","ELEM_DEPL_C","ELNO_DEPL_C",
+                             "ELGA_DEPL_C","CART_DEPL_F","NOEU_DEPL_F",
+                             "ELEM_DEPL_F","ELNO_DEPL_F","ELGA_DEPL_F",
+                             "CART_DEPL_R","NOEU_DEPL_R","ELEM_DEPL_R",
+                             "ELNO_DEPL_R","ELGA_DEPL_R","CART_DURT_R",
+                             "NOEU_DURT_R","ELEM_DURT_R","ELNO_DURT_R",
+                             "ELGA_DURT_R","CART_ENER_R","NOEU_ENER_R",
+                             "ELEM_ENER_R","ELNO_ENER_R","ELGA_ENER_R",
+                             "CART_EPSI_R","NOEU_EPSI_R","ELEM_EPSI_R",
+                             "ELNO_EPSI_R","ELGA_EPSI_R","CART_ERREUR",
+                             "NOEU_ERREUR","ELEM_ERREUR","ELNO_ERREUR",
+                             "ELGA_ERREUR","CART_FLUX_R","NOEU_FLUX_R",
+                             "ELEM_FLUX_R","ELNO_FLUX_R","ELGA_FLUX_R",
+                             "CART_GEOM_R","NOEU_GEOM_R","ELEM_GEOM_R",
+                             "ELNO_GEOM_R","ELGA_GEOM_R","CART_G_DEPL_R",
+                             "NOEU_G_DEPL_R","ELEM_G_DEPL_R","ELNO_G_DEPL_R",
+                             "ELGA_G_DEPL_R","CART_HYDR_R","NOEU_HYDR_R",
+                             "ELEM_HYDR_R","ELNO_HYDR_R","ELGA_HYDR_R",
+                             "CART_INST_R","NOEU_INST_R","ELEM_INST_R",
+                             "ELNO_INST_R","ELGA_INST_R","CART_INTE_R",
+                             "NOEU_INTE_R","ELEM_INTE_R","ELNO_INTE_R",
+                             "ELGA_INTE_R","CART_META_R","NOEU_META_R",
+                             "ELEM_META_R","ELNO_META_R","ELGA_META_R",
+                             "CART_NEUT_F","NOEU_NEUT_F","ELEM_NEUT_F",
+                             "ELNO_NEUT_F","ELGA_NEUT_F","CART_NEUT_R",
+                             "NOEU_NEUT_R","ELEM_NEUT_R","ELNO_NEUT_R",
+                             "ELGA_NEUT_R","CART_PRES_R","NOEU_PRES_R",
+                             "ELEM_PRES_R","ELNO_PRES_R","ELGA_PRES_R",
+                             "CART_SIEF_R","NOEU_SIEF_R","ELEM_SIEF_R",
+                             "ELNO_SIEF_R","ELGA_SIEF_R","CART_SOUR_R",
+                             "NOEU_SOUR_R","ELEM_SOUR_R","ELNO_SOUR_R",
+                             "ELGA_SOUR_R","CART_TEMP_F","NOEU_TEMP_F",
+                             "ELEM_TEMP_F","ELNO_TEMP_F","ELGA_TEMP_F",
+                             "CART_TEMP_R","NOEU_TEMP_R","ELEM_TEMP_R",
+                             "ELNO_TEMP_R","ELGA_TEMP_R","CART_VAR2_R",
+                             "NOEU_VAR2_R","ELEM_VARI_R","ELNO_VARI_R",
+                             "ELGA_VARI_R","CART_VNOR_C","NOEU_VNOR_C",
+                             "ELEM_VNOR_C","ELNO_VNOR_C","ELGA_VNOR_C",
+                             "CART_IRRA_R","NOEU_IRRA_R","ELEM_IRRA_R",
+                             "ELNO_IRRA_R","ELGA_IRRA_R",) ),
+
+#        SI CREATION D'UN CHAM_NO, POUR IMPOSER LA NUMEROTATION DES DDLS :
+#        ------------------------------------------------------------------
+         regles=(EXCLUS('NUME_DDL','CHAM_NO',)),
+         NUME_DDL        =SIMP(statut='f',typ=(nume_ddl) ),
+         CHAM_NO         =SIMP(statut='f',typ=(cham_no) ),
+
+         OPERATION       =SIMP(statut='o',typ='TXM',into=("AFFE","ASSE","EVAL","EXTR","DISC",) ),
+
+         b_affe          =BLOC(condition = "OPERATION == 'AFFE'",
+             regles=(UN_PARMI('MAILLAGE','MODELE'),),
+             MAILLAGE        =SIMP(statut='f',typ=(maillage) ),
+             MODELE          =SIMP(statut='f',typ=(modele) ),
+             b_affe_modele   =BLOC(condition = "MODELE != None",
+                 PROL_ZERO       =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON",) ), ),
+             AFFE            =FACT(statut='o',min=1,max='**',
+                regles=(AU_MOINS_UN('TOUT','GROUP_MA','MAILLE','GROUP_NO','NOEUD',),
+                        UN_PARMI('VALE','VALE_I','VALE_C','VALE_F', ),),
+                TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),
+                GROUP_MA        =SIMP(statut='f',typ=grma,max='**'),
+                MAILLE          =SIMP(statut='f',typ=ma,max='**'),
+                GROUP_NO        =SIMP(statut='f',typ=grno,max='**'),
+                NOEUD           =SIMP(statut='f',typ=no,max='**'),
+                NOM_CMP         =SIMP(statut='o',typ='TXM',max='**' ),
+                VALE            =SIMP(statut='f',typ='R',max='**' ),
+                VALE_I          =SIMP(statut='f',typ='I',max='**' ),
+                VALE_C          =SIMP(statut='f',typ='C',max='**' ),
+                VALE_F          =SIMP(statut='f',typ=fonction,max='**'),
+                                   ),
+                             ),
+         b_asse          =BLOC(condition = "OPERATION == 'ASSE'",
+             regles=(UN_PARMI('MAILLAGE','MODELE'),),
+             MAILLAGE        =SIMP(statut='f',typ=(maillage) ),
+             MODELE          =SIMP(statut='f',typ=(modele) ),
+             b_asse_modele   =BLOC(condition = "MODELE != None",
+                 PROL_ZERO       =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON",) ), ),
+             ASSE            =FACT(statut='o',min=1,max='**',
+                regles=(AU_MOINS_UN('TOUT','GROUP_MA','GROUP_NO','MAILLE','NOEUD',),
+                PRESENT_PRESENT('NOM_CMP_RESU','NOM_CMP', ),),
+                TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),
+                GROUP_MA        =SIMP(statut='f',typ=grma,max='**'),
+                GROUP_NO        =SIMP(statut='f',typ=grno,max='**'),
+                MAILLE          =SIMP(statut='f',typ=ma,max='**'),
+                NOEUD           =SIMP(statut='f',typ=no,max='**'),
+                CHAM_GD         =SIMP(statut='o',typ=(cham_gd)),
+                NOM_CMP         =SIMP(statut='f',typ='TXM',max='**' ),
+                NOM_CMP_RESU    =SIMP(statut='f',typ='TXM',max='**' ),
+                CUMUL           =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON",) ),
+                COEF_R          =SIMP(statut='f',typ='R',defaut= 1. ),
+                                    ),
+                             ),
+         b_eval          =BLOC(condition = "OPERATION == 'EVAL'",
+             CHAM_F          =SIMP(statut='o',typ=(cham_gd)),
+             CHAM_PARA       =SIMP(statut='o',typ=(cham_gd),max='**'),
+                             ),
+         b_disc          =BLOC(condition = "OPERATION == 'DISC'",
+             MODELE          =SIMP(statut='f',typ=(modele) ),
+             PROL_ZERO       =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON",) ),
+             CHAM_GD         =SIMP(statut='o',typ=(cham_gd)),
+                             ),
+         b_extr          =BLOC(condition = "OPERATION == 'EXTR'",
+             regles=(UN_PARMI('MAILLAGE','RESULTAT'),),
+             MAILLAGE        =SIMP(statut='f',typ=(maillage) ),
+             RESULTAT        =SIMP(statut='f',typ=(resultat) ),
+             b_extr_maillage =BLOC(condition = "MAILLAGE != None",
+                 NOM_CHAM        =SIMP(statut='o',typ='TXM',into=("GEOMETRIE",)),
+                                  ),
+             b_extr_resultat =BLOC(condition = "RESULTAT != None",
+                 regles=(EXCLUS('TYPE_MAXI','NUME_ORDRE','INST','FREQ','NUME_MODE',
+                                'NOEUD_CMP','NOM_CAS','ANGL', ),),
+                 SENSIBILITE     =SIMP(statut='f',typ=(para_sensi,theta_geom),max='**',
+                                   fr="Liste des paramètres de sensibilité.",
+                                   ang="List of sensitivity parameters"),
+                 NOM_CHAM        =SIMP(statut='o',typ='TXM',
+                           into=("DEPL","VITE","ACCE",
+                             "DEPL_ABSOLU","VITE_ABSOLU",
+                             "TEMP","IRRA","ACCE_ABSOLU",
+                             "FORC_NODA","REAC_NODA","EFGE_NOEU_DEPL",
+                             "EFGE_NOEU_CART","EPSI_NOEU_DEPL",
+                             "SIGM_NOEU_DEPL","SIGM_NOEU_CART",
+                             "SIPO_NOEU_DEPL","EQUI_NOEU_SIGM",
+                             "EQUI_NOEU_EPSI","FLUX_NOEU_TEMP",
+                             "FLUX_ELGA_TEMP","FLUX_ELNO_TEMP",
+                             "META_ELGA_TEMP","META_ELNO_TEMP",
+                             "META_NOEU_TEMP","DURT_ELGA_META",
+                             "DURT_ELNO_META","DURT_NOEU_META","SIEF_ELGA",
+                             "SIEF_ELNO_ELGA","SIEF_ELGA_DEPL",
+                             "VARI_ELNO_ELGA","VARI_ELGA","EPOT_ELEM_DEPL",
+                             "ECIN_ELEM_DEPL","SOUR_ELGA_ELEC",
+                             "PRES_ELNO_REEL","PRES_ELNO_IMAG",
+                             "PRES_ELNO_DBEL","INTE_ELNO_ACTI",
+                             "INTE_ELNO_REAC","EFGE_ELNO_DEPL",
+                             "SIGM_ELNO_DEPL","EFGE_ELNO_CART",
+                             "SIGM_ELNO_CART","SIPO_ELNO_DEPL",
+                             "EPSI_ELNO_DEPL","EPSI_ELGA_DEPL",
+                             "EPSG_ELNO_DEPL","EPSG_ELGA_DEPL","EPSP_ELNO",
+                             "EPSP_ELGA","EQUI_ELNO_SIGM","EQUI_ELGA_SIGM",
+                             "EQUI_ELNO_EPSI","EQUI_ELGA_EPSI",
+                             "ERRE_ELNO_ELGA","ERRE_ELGA_NORE",
+                             "ERRE_ELEM_NOZ1","ERRE_ELEM_NOZ2",
+                             "SIGM_NOZ1_ELGA","SIGM_NOZ2_ELGA",
+                             "DEGE_ELNO_DEPL","SIRE_ELNO_DEPL",
+                             "VNOR_ELEM_DEPL","SIEF_ELNO","VARI_ELNO",
+                             "SIEF_NOEU_ELGA","VARI_NOEU_ELGA",
+                             "PRES_NOEU_DBEL","PRES_NOEU_REEL",
+                             "PRES_NOEU_IMAG","INTE_NOEU_ACTI",
+                             "INTE_NOEU_REAC","DCHA_ELGA_SIGM",
+                             "DCHA_ELNO_SIGM","RADI_ELGA_SIGM",
+                             "RADI_ELNO_SIGM","ENDO_ELNO_SIGA",
+                             "ENDO_ELNO_SINO","ENDO_ELNO_SIGM",
+                             "SIGM_ELNO_VARI","SIGM_NOEU_VARI",
+                             "EPME_ELNO_DEPL","EPME_ELGA_DEPL",
+                             "EPME_ELNO_DPGE","EPMG_ELNO_DEPL",
+                             "EPMG_ELGA_DEPL","GRAD_ELGA_THETA",
+                             "GTHE_ELNO_ELGA","GRAD_NOEU_THETA",
+                             "HYDR_ELGA","HYDR_ELNO_ELGA","HYDR_NOEU_ELGA",
+                             "THETA","SIGM_ELNO_SIEF","SIPO_ELNO_SIEF",
+                             "VALE_CONT",) ),
+                 TYPE_MAXI       =SIMP(statut='f',typ='TXM',into=("MAXI","MINI","MAXI_ABS","MINI_ABS","NORM_TRAN",) ),
+                 TYPE_RESU       =SIMP(statut='f',typ='TXM',defaut="VALE",into=("VALE","INST",) ),
+                 TOUT_ORDRE      =SIMP(statut='f',typ='TXM',into=("OUI",) ),
+                 LIST_INST       =SIMP(statut='f',typ=(listr8) ),
+                 NUME_ORDRE      =SIMP(statut='f',typ='I'),
+                 INST            =SIMP(statut='f',typ='R'),
+                 FREQ            =SIMP(statut='f',typ='R'),
+                 NUME_MODE       =SIMP(statut='f',typ='I'),
+                 NOEUD_CMP       =SIMP(statut='f',typ='TXM',max='**'),
+                 NOM_CAS         =SIMP(statut='f',typ='TXM'),
+                 ANGL            =SIMP(statut='f',typ='R'),
+                 PRECISION       =SIMP(statut='f',typ='R',defaut= 1.0E-3),
+                 CRITERE         =SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU",) ),
+                 INTERPOL        =SIMP(statut='f',typ='TXM',defaut="NON",into=("NON","LIN",) ),
+                              ),
+
+                ),
+# FIN DU CATALOGUE : INFO,TITRE ET TYPAGE DU RESULAT :
+#-----------------------------------------------------
+         INFO            =SIMP(statut='f',typ='I',defaut= 1,into=(1,2,) ),
+         TITRE           =SIMP(statut='f',typ='TXM',max='**' ),
+)  ;

@@ -1,0 +1,239 @@
+      SUBROUTINE CNSFUS(NBCHS,LICHS,LCUMUL,LCOEFR,BASE,CNS3Z)
+C RESPONSABLE VABHHTS J.PELLET
+C A_UTIL
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF CALCULEL  DATE 26/01/2000   AUTEUR VABHHTS J.PELLET 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+      IMPLICIT NONE
+      INTEGER NBCHS
+      CHARACTER*(*) LICHS(NBCHS),CNS3Z,BASE
+      LOGICAL LCUMUL(NBCHS)
+      REAL*8 LCOEFR(NBCHS)
+C ---------------------------------------------------------------------
+C BUT: FUSIONNER UNE LISTE DE CHAM_NO_S POUR EN FORMER 1 AUTRE
+C ---------------------------------------------------------------------
+C     ARGUMENTS:
+C NBCHS   IN       I      : NOMBRE DE CHAM_NO_S A FUSIONNER
+C LICHS   IN/JXIN  V(K19) : LISTE DES SD CHAM_NO_S A FUSIONNER
+C LCUMUL  IN       V(L)   : V(I) =.TRUE. => ON ADDITIONNE LE CHAMP I
+C                         : V(I) =.FALSE. => ON SURCHARGE LE CHAMP I
+C LCOEFR  IN       V(R)   : LISTE DES COEF. MULT. DES VALEURS DES CHAMPS
+C CNS3Z   IN/JXOUT K19 : SD CHAM_NO_S RESULTAT
+C BASE    IN       K1  : BASE DE CREATION POUR CNS3Z : G/V/L
+
+C REMARQUES :
+
+C  - LES CHAM_NO_S DE LICHS DOIVENT ETRE DE LA MEME GRANDEUR
+C    ET S'APPUYER SUR LE MEME MAILLAGE
+
+C  - L'ORDRE DES CHAM_NO_S DANS LICHS EST IMPORTANT :
+C      LES CHAM_NO_S SE SURCHARGENT LES UNS LES AUTRES
+
+C  - ON PEUT APPELER CETTE ROUTINE MEME SI CNS3Z APPARTIENT
+C    A LA LISTE LICHS (CHAM_NO_S IN/OUT)
+
+C-----------------------------------------------------------------------
+
+C---- COMMUNS NORMALISES  JEVEUX
+      INTEGER ZI
+      COMMON /IVARJE/ZI(1)
+      REAL*8 ZR
+      COMMON /RVARJE/ZR(1)
+      COMPLEX*16 ZC
+      COMMON /CVARJE/ZC(1)
+      LOGICAL ZL
+      COMMON /LVARJE/ZL(1)
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32,JEXNOM,JEXNUM
+      CHARACTER*80 ZK80
+      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+C     ------------------------------------------------------------------
+      INTEGER JCN1K,JCN1D,JCN1V,JCN1L,JCN1C,NBNO
+      INTEGER JCN3D,JCN3V,JCN3L,JCN3C
+      INTEGER IBID,JCMPGD,JLICMP,ICHS,ICMP,ICMP3,NCMP3
+      INTEGER NCMPMX,NCMP1,ICMP1,JNUCMP
+      INTEGER INO,INDIK8,COEFI,K1,K3
+      CHARACTER*1 KBID
+      CHARACTER*8 MA,NOMGD,NOCMP
+      CHARACTER*3 TSCA
+      CHARACTER*19 CNS1,CNS3
+      REAL*8 COEFR
+      LOGICAL CUMUL
+C     ------------------------------------------------------------------
+      CALL JEMARQ()
+
+C     -- POUR NE PAS RISQUER D'ECRASER UN CHAM_NO_S "IN",
+C        ON CREE CNS3 SOUS UN NOM TEMPORAIRE :
+      CNS3 = '&&CNSFUS.CNS3'
+      IF (NBCHS.LE.0) CALL UTMESS('F','CNSFUS','NBCHS >0 SVP')
+
+      CNS1 = LICHS(1)
+
+      CALL JEVEUO(CNS1//'.CNSK','L',JCN1K)
+      CALL JEVEUO(CNS1//'.CNSD','L',JCN1D)
+
+      MA = ZK8(JCN1K-1+1)
+      NOMGD = ZK8(JCN1K-1+2)
+      NBNO = ZI(JCN1D-1+1)
+      NCMP1 = ZI(JCN1D-1+2)
+
+
+      CALL DISMOI('F','TYPE_SCA',NOMGD,'GRANDEUR',IBID,TSCA,IBID)
+      CALL DISMOI('F','NB_CMP_MAX',NOMGD,'GRANDEUR',NCMPMX,KBID,IBID)
+      CALL JEVEUO(JEXNOM('&CATA.GD.NOMCMP',NOMGD),'L',JCMPGD)
+
+
+C     1- CALCUL DE LA LISTE DES CMPS DE CNS3 :
+C     ---------------------------------------
+
+C     -- ON "COCHE" LES CMPS PRESENTES DANS LES CNS DE LICHS:
+      CALL WKVECT('&&CNSFUS.LICMP','V V K8',NCMPMX,JLICMP)
+      CALL WKVECT('&&CNSFUS.NUCMP','V V I',NCMPMX,JNUCMP)
+      DO 20,ICHS = 1,NBCHS
+        CNS1 = LICHS(ICHS)
+        CALL JEVEUO(CNS1//'.CNSK','L',JCN1K)
+        CALL JEVEUO(CNS1//'.CNSD','L',JCN1D)
+        CALL JEVEUO(CNS1//'.CNSC','L',JCN1C)
+
+        IF (MA.NE.ZK8(JCN1K-1+1)) CALL UTMESS('F','CNSFUS',
+     &                                 'MAILLAGES DIFFERENTS.')
+        IF (NOMGD.NE.ZK8(JCN1K-1+2)) CALL UTMESS('F','CNSFUS',
+     &      'GRANDEURS DIFFERENTES.')
+
+        NCMP1 = ZI(JCN1D-1+2)
+        DO 10,ICMP1 = 1,NCMP1
+          NOCMP = ZK8(JCN1C-1+ICMP1)
+          ICMP = INDIK8(ZK8(JCMPGD),NOCMP,1,NCMPMX)
+          ZI(JNUCMP-1+ICMP) = 1
+   10   CONTINUE
+        CALL JELIBE(CNS1//'.CNSK')
+        CALL JELIBE(CNS1//'.CNSD')
+        CALL JELIBE(CNS1//'.CNSC')
+   20 CONTINUE
+
+      ICMP3 = 0
+      DO 30,ICMP = 1,NCMPMX
+        IF (ZI(JNUCMP-1+ICMP).EQ.1) THEN
+          ICMP3 = ICMP3 + 1
+          ZK8(JLICMP-1+ICMP3) = ZK8(JCMPGD-1+ICMP)
+        END IF
+   30 CONTINUE
+      NCMP3 = ICMP3
+
+
+C     2- ALLOCATION DE CNS3 :
+C     ---------------------------------------
+      CALL CNSCRE(MA,NOMGD,NCMP3,ZK8(JLICMP),BASE,CNS3)
+      CALL JEVEUO(CNS3//'.CNSD','L',JCN3D)
+      CALL JEVEUO(CNS3//'.CNSC','L',JCN3C)
+      CALL JEVEUO(CNS3//'.CNSV','E',JCN3V)
+      CALL JEVEUO(CNS3//'.CNSL','E',JCN3L)
+
+
+
+
+C     2- RECOPIE DE CNS1 DANS CNS3 :
+C     ------------------------------------------
+      DO 60,ICHS = 1,NBCHS
+        CNS1 = LICHS(ICHS)
+
+        CUMUL = LCUMUL(ICHS)
+        COEFR = LCOEFR(ICHS)
+        COEFI = NINT(COEFR)
+
+        CALL JEVEUO(CNS1//'.CNSD','L',JCN1D)
+        CALL JEVEUO(CNS1//'.CNSC','L',JCN1C)
+        CALL JEVEUO(CNS1//'.CNSV','L',JCN1V)
+        CALL JEVEUO(CNS1//'.CNSL','L',JCN1L)
+        NCMP1 = ZI(JCN1D-1+2)
+
+        DO 50,ICMP1 = 1,NCMP1
+          NOCMP = ZK8(JCN1C-1+ICMP1)
+          ICMP3 = INDIK8(ZK8(JCN3C),NOCMP,1,NCMP3)
+          IF (ICMP3.EQ.0) CALL UTMESS('F','CNSFUS','STOP 1')
+
+          DO 40,INO = 1,NBNO
+            K1 = (INO-1)*NCMP1 + ICMP1
+            K3 = (INO-1)*NCMP3 + ICMP3
+
+
+            IF (ZL(JCN1L-1+K1)) THEN
+
+C             -- SI AFFECTATION :
+              IF ((.NOT.CUMUL) .OR. (.NOT.ZL(JCN3L-1+K3))) THEN
+                ZL(JCN3L-1+K3) = .TRUE.
+
+                IF (TSCA.EQ.'R') THEN
+                  ZR(JCN3V-1+K3) = COEFR*ZR(JCN1V-1+K1)
+                ELSE IF (TSCA.EQ.'I') THEN
+                  ZI(JCN3V-1+K3) = COEFI*ZI(JCN1V-1+K1)
+                ELSE IF (TSCA.EQ.'L') THEN
+                  ZL(JCN3V-1+K3) = ZL(JCN1V-1+K1)
+                ELSE IF (TSCA.EQ.'C') THEN
+                  ZC(JCN3V-1+K3) = COEFR*ZC(JCN1V-1+K1)
+                ELSE IF (TSCA.EQ.'K8') THEN
+                  ZK8(JCN3V-1+K3) = ZK8(JCN1V-1+K1)
+                ELSE
+                  CALL UTMESS('F','CNSFUS','TYPE SCALAIRE INCONNU')
+                END IF
+
+C             -- SI CUMUL DANS UNE VALEUR DEJA AFFECTEE :
+              ELSE
+                IF (TSCA.EQ.'R') THEN
+                  ZR(JCN3V-1+K3) = ZR(JCN3V-1+K3) + COEFR*ZR(JCN1V-1+K1)
+                ELSE IF (TSCA.EQ.'C') THEN
+                  ZC(JCN3V-1+K3) = ZC(JCN3V-1+K3) + COEFR*ZC(JCN1V-1+K1)
+                ELSE IF (TSCA.EQ.'I') THEN
+                  ZI(JCN3V-1+K3) = ZI(JCN3V-1+K3) + COEFI*ZI(JCN1V-1+K1)
+                ELSE IF ((TSCA.EQ.'L') .OR. (TSCA.EQ.'K8')) THEN
+                  CALL UTMESS('F','CESFUS',
+     &                        'CUMUL INTERDIT SUR CE TYPE NON-NUMERIQUE'
+     &                        )
+                ELSE
+                  CALL UTMESS('F','CESFUS','TYPE SCALAIRE INCONNU')
+                END IF
+              END IF
+
+            END IF
+
+   40     CONTINUE
+   50   CONTINUE
+
+        CALL JELIBE(CNS1//'.CNSD')
+        CALL JELIBE(CNS1//'.CNSC')
+        CALL JELIBE(CNS1//'.CNSV')
+        CALL JELIBE(CNS1//'.CNSL')
+
+   60 CONTINUE
+
+
+C     3- RECOPIE DE LA SD TEMPORAIRE DANS LE RESULTAT :
+C     -------------------------------------------------
+      CALL COPISD('CHAM_NO_S',BASE,CNS3,CNS3Z)
+
+
+C     4- MENAGE :
+C     -----------
+      CALL DETRSD('CHAM_NO_S',CNS3)
+      CALL JEDETR('&&CNSFUS.LICMP')
+      CALL JEDETR('&&CNSFUS.NUCMP')
+
+      CALL JEDEMA()
+      END

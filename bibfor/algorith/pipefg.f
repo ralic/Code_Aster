@@ -1,0 +1,167 @@
+      SUBROUTINE PIPEFG(NDIM, TYPMOD, TAU, IMATE, SIGM, VIM,
+     &                  EPSP, EPSD, A0, A1, A2, A3, ETAS)
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 20/03/2002   AUTEUR GJBHHEL E.LORENTZ 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C                                                                       
+C                                                                       
+C ======================================================================
+
+      IMPLICIT NONE
+      CHARACTER*8        TYPMOD(2)
+      INTEGER            NDIM, IMATE
+      REAL*8             EPSP(6), EPSD(6), TAU, ETAS
+      REAL*8             VIM(2), SIGM(6), A0, A1, A2, A3
+C ----------------------------------------------------------------------
+C     PILOTAGE LOI DE COMPORTEMENT ELASTIQUE FRAGILE A GRADIENT
+C
+C IN  NDIM    : DIMENSION DE L'ESPACE
+C IN  TYPMOD  : TYPE DE MODELISATION
+C IN  TAU     : 2ND MEMBRE DE L'EQUATION F(ETA)=TAU
+C IN  IMATE   : NATURE DU MATERIAU
+C IN  SIGM    : CONTRAINTE EN T-
+C IN  VIM     : VARIABLES INTERNES EN T-
+C IN  EPSP    : CORRECTION DE DEFORMATIONS DUES AUX CHARGES FIXES
+C IN  EPSD    : CORRECTION DE DEFORMATIONS DUES AUX CHARGES PILOTEES
+C OUT A0      : LINEARISATION DU CRITERE : FEL = A0 + A1*ETA
+C OUT A1      : IDEM A0
+C OUT A2      : IDEM A0 POUR LA 2E SOLUTION EVENTUELLE. R8VIDE SINON
+C OUT A3      : IDEM A1 POUR LA 2E SOLUTION EVENTUELLE. R8VIDE SINON
+C OUT ETAS    : SI PAS DE SOLUTION : LE MINIMUM. R8VIDE SINON
+C ----------------------------------------------------------------------
+
+      LOGICAL     CPLAN
+      INTEGER     NDIMSI, K, NRAC
+      REAL*8      TREPSP, TREPSD, COPLAN, SIGELP(6), SIGELD(6)
+      REAL*8      EPS1(6), EPS2(6), D1, D2, NG,LAP
+      REAL*8      KRON(6)
+      REAL*8      D, P0, P1, P2, ETA, RAC(2)
+      REAL*8      E, NU, LAMBDA, DEUXMU, GAMMA, SY, WY, WREL
+      REAL*8      R8NRM2,R8VIDE
+
+      CHARACTER*2 COD(2)
+      CHARACTER*8 NOM(2)
+      REAL*8      VAL(2)
+
+      REAL*8      R8DOT
+
+      DATA  KRON/1.D0,1.D0,1.D0,0.D0,0.D0,0.D0/
+
+
+
+C -- OPTION ET MODELISATION
+
+      CPLAN = (TYPMOD(1).EQ.'C_PLAN  ')
+      NDIMSI = 2*NDIM
+
+
+C -- CAS DE L'ENDOMMAGEMENT SATURE
+
+      IF (NINT(VIM(2)) .EQ. 2) THEN
+        A0 = 0.D0
+        A1 = 0.D0
+        A2 = 0.D0
+        A3 = 0.D0
+        ETAS = R8VIDE()
+        GOTO 9999
+      END IF
+
+
+C -- LECTURE DES CARACTERISTIQUES THERMOELASTIQUES
+
+      NOM(1) = 'E'
+      NOM(2) = 'NU'
+      CALL RCVALA ( IMATE,'ELAS',0,' ',0.D0,2,NOM,VAL,COD, 'FM')
+      E      = VAL(1)
+      NU     = VAL(2)
+      LAMBDA = E * NU / (1.D0+NU) / (1.D0 - 2.D0*NU)
+      DEUXMU = E/(1.D0+NU)
+
+
+C -- LECTURE DES CARACTERISTIQUES D'ENDOMMAGEMENT
+
+      NOM(1) = 'SY'
+      NOM(2) = 'D_SIGM_EPSI'
+      CALL RCVALA(IMATE,'ECRO_LINE',0,' ',0.D0,2,NOM,VAL,COD,'FM')
+      SY = VAL(1)
+      GAMMA  = - VAL(2)/E
+      WY  = SY**2 / (2*E)
+
+      NOM(1) = 'LONG_CARA'
+      CALL RCVALA(IMATE,'NON_LOCAL',0,' ',0.D0,1,NOM,VAL,COD,'F ')
+      NG = 2*WY/(1+GAMMA) * 4.D0/13.D0 * VAL(1)**2
+
+
+C -- CALCUL DES DEFORMATIONS EN PRESENCE DE CONTRAINTES PLANES
+
+      IF (CPLAN) THEN
+        COPLAN  = - NU/(1.D0-NU)
+        EPSP(3)  = COPLAN * (EPSP(1)+EPSP(2))
+        EPSD(3)  = COPLAN * (EPSD(1)+EPSD(2))
+      END IF
+
+
+
+C ======================================================================
+C                CALCUL DES DEFORMATIONS POUR LINEARISATION
+C ======================================================================
+
+C    ETAT MECANIQUE EN T-
+      D   = VIM(1)
+      LAP = VIM(5)
+      WREL = WY * ((1+GAMMA)/(1+GAMMA-D))**2 - NG*LAP
+
+C    COEFFICIENTS DE LA FORME QUADRATIQUE DU CRITERE
+      TREPSP = EPSP(1)+EPSP(2)+EPSP(3)
+      TREPSD = EPSD(1)+EPSD(2)+EPSD(3)
+      DO 60 K=1,NDIMSI
+        SIGELP(K) = LAMBDA*TREPSP*KRON(K) + DEUXMU*EPSP(K)
+        SIGELD(K) = LAMBDA*TREPSD*KRON(K) + DEUXMU*EPSD(K)
+ 60   CONTINUE
+      P0 = 0.5D0 * R8DOT(NDIMSI,EPSP,1,SIGELP,1) / WREL
+      P1 = 0.5D0 * R8DOT(NDIMSI,EPSP,1,SIGELD,1) / WREL
+      P2 = 0.5D0 * R8DOT(NDIMSI,EPSD,1,SIGELD,1) / WREL
+
+  
+C    RECHERCHE DES INTERSECTIONS ELLIPSE / DROITE
+      CALL ZEROP2(2*P1/P2, (P0-1-TAU)/P2, RAC, NRAC)
+
+C    PAS DE SOLUTION : POINT LE PLUS PROCHE
+      IF (NRAC .EQ. 0) THEN
+        ETAS = - P1/P2
+        A0 = P0 - 1 + 2*P1*ETAS + P2*ETAS**2
+
+C    UNE OU DEUX SOLUTIONS : ON LINEARISE AUTOUR DES DEUX
+      ELSE IF (NRAC.EQ.1) THEN
+        ETAS=R8VIDE()
+        ETA=RAC(1)
+        A0 = P0 - 1 - P2*ETA**2
+        A1 = 2*(ETA*P2+P1)
+        A2 = R8VIDE()
+        A3 = R8VIDE()
+      ELSE
+        ETAS=R8VIDE()
+        ETA=RAC(1)
+        A0 = P0 - 1 - P2*ETA**2
+        A1 = 2*(ETA*P2+P1)
+        ETA=RAC(2)
+        A2 = P0 - 1 - P2*ETA**2
+        A3 = 2*(ETA*P2+P1)
+      ENDIF  
+
+ 9999 CONTINUE
+      END

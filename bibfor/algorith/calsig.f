@@ -1,0 +1,69 @@
+      SUBROUTINE CALSIG( EIN,   MOD,    E,    NU,   ALPHA,
+     &                   X,     DTIME,  EPSD, DETOT,TPERD,
+     &                   DTPER, TPEREF, SIGI )
+      IMPLICIT REAL*8 (A-H,O-Z)
+C     ================================================================ 
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 12/09/96   AUTEUR PABHHFA C.VOGEL 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+C     ---------------------------------------------------------------- 
+C     INTEGRATION DE LOIS DE COMPORTEMENT ELASTO-VISCOPLASTIQUE
+C     PAR UNE METHODE DE RUNGE KUTTA
+C
+C     CALCUL DES CONTRAINTES A PARTIR DES CHAMPS DE DEFORMATION
+C     ----------------------------------------------------------------
+C     IN  EIN     :  DEFORMATION INELASTIQUE
+C         MOD     :  TYPE DE MODELISATION
+C         E       :  COEFFICIENT MODULE D'YOUNG
+C         NU      :  COEFFICIENT DE POISSON
+C         ALPHA   :  COEFFICIENT DE DILATATION THERMIQUE
+C         X       :  INSTANT COURANT
+C         DTIME   :  INTERVALLE DE TEMPS
+C         EPSD    :  DEFORMATION TOTALE A T
+C         DETOT   :  INCREMENT DE DEFORMATION TOTALE
+C         TPERD   :  TEMPERATURE A T
+C         DTPER   :  INTERVALLE DE TEMPERATURE ENTRE T+DT ET T
+C         TPEREF  :  TEMPERATURE DE REFERENCE
+C     OUT SIGI    :  CONTRAINTES A L'INSTANT COURANT
+C     ---------------------------------------------------------------- 
+      CHARACTER*8 MOD
+      REAL*8 NU
+      REAL*8 EIN(6)
+      REAL*8 EEL(6),SIGI(6),EPSD(6),DETOT(6)
+C     ---------------------------------------------------------------- 
+      XSDT=X/DTIME
+      ETH=ALPHA*(TPERD+XSDT*DTPER-TPEREF)
+      DO 10 ICP=1,6
+        EEL(ICP)=EPSD(ICP)+DETOT(ICP)*XSDT-EIN(ICP)-ETH
+        IF (ICP.EQ.3) ETH=0.0D0
+   10 CONTINUE
+C
+C --  CAS DES CONTRAINTES PLANES
+C
+      IF(MOD(1:6).EQ.'C_PLAN') THEN
+        EEL(3)=-NU*(EEL(1)+EEL(2))/(1.0D0-NU)
+      ENDIF
+C
+      DEMU=E/(1.0D0+NU)
+      TREEL=(EEL(1)+EEL(2)+EEL(3))
+      TREEL=NU*DEMU*TREEL/(1.0D0-NU-NU)
+      DO 11 ICP=1,6
+        SIGI(ICP)=DEMU*EEL(ICP)+TREEL
+        IF (ICP.EQ.3) TREEL=0.0D0
+   11 CONTINUE
+      END

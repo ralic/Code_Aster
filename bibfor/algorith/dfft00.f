@@ -1,0 +1,138 @@
+      SUBROUTINE DFFT00( IN, N, X, Y )
+C
+C----------------------------------------------------------------------
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 21/05/96   AUTEUR KXBADNG T.FRIOU 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+C----------------------------------------------------------------------
+C
+C DESCRIPTION :  TRANSFORMEE DE FOURIER RAPIDE VERSION DOUBLE PRECISION
+C -----------
+C
+C CETTE ROUTINE REMPLACE LE VECTEUR Z=X+IY PAR SA TRANSFORMEE DE FOURIER
+C TRONQUEE DISCRETE SI IN=0 (COMPLEXE). LA TRANSFORMEE INVERSE EST
+C CALCULEE POUR IN=1.
+C CETTE ROUTINE EST VALIDE POUR N, PUISSANCE DE 2, INFERIEURE OU EGALE
+C A 2 PUISSANCE 15
+C
+C ******************   DECLARATION DES VARIABLES   *********************
+C
+      IMPLICIT NONE
+C
+C ARGUMENTS
+C ---------
+      INTEGER IN, N
+      REAL*8 X(*), Y(*)
+C
+C VARIABLES LOCALES
+C -----------------
+      INTEGER L(15)
+      REAL*8 PI2, P7
+      REAL*8 FN,R,FI
+C
+      INTEGER I,M,NT,N2POW,NTHPO,N8POW,IPASS,NXTLT,LENGT,J,IJ,JI
+      INTEGER J1,J2,J3,J4,J5,J6,J7,J8,J9,J10,J11,J12,J13,J14
+C
+C ******************   DEBUT DU CODE EXECUTABLE   **********************
+C
+      PI2 = 8.0D0 * ATAN(1.0D0)
+      P7  = 1.0D0 / SQRT(2.0D0)
+C
+      DO 10 I=1,15
+        M = I
+        NT = 2**I
+        IF (N.EQ.NT) GO TO 20
+  10  CONTINUE
+      STOP
+  20  N2POW = M
+      NTHPO = N
+      FN = DBLE(NTHPO)
+      IF (IN.EQ.1) GO TO 40
+      DO 30 I=1,NTHPO
+        Y(I) = -Y(I)
+  30  CONTINUE
+  40  N8POW = N2POW/3
+      IF (N8POW.EQ.0) GO TO 60
+C
+C PASSAGE BASE 8 (EVENTUEL)
+C
+      DO 50 IPASS=1,N8POW
+        NXTLT = 2**(N2POW-3*IPASS)
+        LENGT = 8*NXTLT
+        CALL DFFT01(NXTLT,NTHPO,LENGT,PI2,P7,
+     *              X(1),X(NXTLT+1),X(2*NXTLT+1),
+     *              X(3*NXTLT+1),X(4*NXTLT+1),X(5*NXTLT+1),
+     *              X(6*NXTLT+1),X(7*NXTLT+1),
+     *              Y(1),Y(NXTLT+1),Y(2*NXTLT+1),Y(3*NXTLT+1),
+     *              Y(4*NXTLT+1),Y(5*NXTLT+1),Y(6*NXTLT+1),Y(7*NXTLT+1))
+  50  CONTINUE
+C
+C RESTE-T-IL UN FACTEUR 4
+C
+  60  IF (N2POW-3*N8POW-1) 90, 70, 80
+C
+C PASSAGE DANS LES ITERATIONS BASE 2
+C
+  70  CALL DFFT02(NTHPO, X(1), X(2), Y(1), Y(2))
+      GO TO 90
+C
+C PASSAGE DANS LES ITERATIONS BASE 4
+C
+  80  CALL DFFT03(NTHPO,X(1),X(2),X(3),X(4),Y(1),Y(2),Y(3),Y(4))
+C
+  90  DO 110 J=1,15
+        L(J) = 1
+        IF (J-N2POW) 100, 100, 110
+ 100    L(J) = 2**(N2POW+1-J)
+ 110  CONTINUE
+      IJ = 1
+      DO 130 J1=1,L(15)
+      DO 130 J2=J1,L(14),L(15)
+      DO 130 J3=J2,L(13),L(14)
+      DO 130 J4=J3,L(12),L(13)
+      DO 130 J5=J4,L(11),L(12)
+      DO 130 J6=J5,L(10),L(11)
+      DO 130 J7=J6,L(9),L(10)
+      DO 130 J8=J7,L(8),L(9)
+      DO 130 J9=J8,L(7),L(8)     
+      DO 130 J10=J9,L(6),L(7)
+      DO 130 J11=J10,L(5),L(6)
+      DO 130 J12=J11,L(4),L(5)
+      DO 130 J13=J12,L(3),L(4)
+      DO 130 J14=J13,L(2),L(3)
+      DO 130 JI=J14,L(1),L(2)
+        IF (IJ-JI) 120, 130, 130
+ 120    R = X(IJ)
+        X(IJ) = X(JI)
+        X(JI) = R
+        FI = Y(IJ)
+        Y(IJ) = Y(JI)
+        Y(JI) = FI
+ 130    IJ = IJ + 1
+C
+      IF ( IN .EQ. 0 ) THEN
+      DO 140 I=1,NTHPO
+        Y(I) = -Y(I)
+ 140  CONTINUE
+      DO 150 I=1,NTHPO
+        X(I) = X(I)/FN
+        Y(I) = Y(I)/FN
+ 150  CONTINUE
+      ENDIF
+C
+      END

@@ -1,0 +1,392 @@
+# MODIF  DATE 06/11/2002   AUTEUR CIBHHLV L.VIVAN 
+# TITRE TEST DE LA COMMANDE INTE_MAIL_3D ET POST_RELEVE_T
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+DEBUT(  CODE=_F( NOM = 'ZZZZ136C',NIV_PUB_WEB='INTERNET'))
+
+PRE_IDEAS( ) ;
+
+MA=LIRE_MAILLAGE( )
+
+MO=AFFE_MODELE( MAILLAGE=MA,
+                    AFFE=_F(TOUT='OUI',
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='3D',),);
+
+RESU = LIRE_RESU( FORMAT='IDEAS', UNITE=38,
+                  MODELE=MO,
+                  TYPE_RESU='EVOL_NOLI',
+                  NOM_CHAM= ('DEPL','SIEF_ELNO',),
+                  TOUT_ORDRE='OUI',
+                  FORMAT_IDEAS= (_F( NOM_CHAM='DEPL', 
+                                     NUME_DATASET=55,
+                                     POSI_ORDRE=(7,3),
+                                     NOM_CMP=('DX','DY','DZ','DRX','DRY','DRZ'), 
+                                     POSI_INST=(8,1), 
+                                     RECORD_6=(1,4,3,8,2,6) ,),
+                                 _F( NOM_CHAM='SIEF_ELNO', 
+                                     NUME_DATASET=57,
+                                     POSI_ORDRE=(7,3),
+                                     NOM_CMP=('SIXX','SIXY','SIYY','SIXZ','SIYZ','SIZZ'), 
+                                     POSI_INST=(8,1), 
+                                     RECORD_6=(1,4,4,2,2,6) ,),
+                                 )
+                ) ;
+
+CHNO = CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
+                   RESULTAT=RESU, NOM_CHAM='DEPL',
+                   INST=0. )
+
+IMPR_RESU( RESU=_F(CHAM_GD = CHNO,), ) ;
+
+CHEL = CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='ELNO_SIEF_R',
+                   RESULTAT=RESU, NOM_CHAM='SIEF_ELNO',
+                   INST=0. )
+
+IMPR_RESU( RESU=_F(CHAM_GD = CHEL,), ) ;
+
+#
+# face 1 definit par les noeuds NO1 NO4 NO3 NO2
+# face 2 definit par les noeuds NO1 NO5 NO8 NO4
+# face 3 definit par les noeuds NO1 NO2 NO6 NO5
+# face 4 definit par les noeuds NO5 NO6 NO7 NO8
+# face 5 definit par les noeuds NO2 NO3 NO7 NO6
+# face 6 definit par les noeuds NO3 NO4 NO8 NO7
+#
+
+#----------------------------------------------------------------------
+C1=INTE_MAIL_3D(  MAILLAGE=MA,
+                     INFO=2,
+               DEFI_SEGMENT=_F( ORIGINE  =(  1., 0.5, 0.5, ),
+                                EXTREMITE=(  0., 0.5, 0.5, ), ),
+               ) ;
+
+# IMPR_CO(CO=C1) ;
+
+TS1=POST_RELEVE_T(  ACTION=_F(  INTITULE = 'TS1',
+                                CHEMIN = C1, 
+                                CHAM_GD = CHEL,
+                                NOM_CMP = 'SIXX',
+                                OPERATION = 'EXTRACTION'),
+                  ) ;
+
+IMPR_TABLE( TABLE=TS1,
+            NOM_PARA =('CHEMIN','CHAM_GD','ABSC_CURV','SIXX'),
+          ) ;
+
+TEST_TABLE( TABLE=TS1,
+            FILTRE=_F(NOM_PARA='ABSC_CURV',VALE=0.00000E+00),
+            REFERENCE='ANALYTIQUE',PRECISION=1.E-08,
+            NOM_PARA ='SIXX',VALE=4.75,
+          ) ;
+TEST_TABLE( TABLE=TS1,
+            FILTRE=_F(NOM_PARA='ABSC_CURV',VALE=1.00000E+00),
+            REFERENCE='ANALYTIQUE',PRECISION=1.E-08,
+            NOM_PARA ='SIXX',VALE=3.5,
+          ) ;
+
+TN1=POST_RELEVE_T(  ACTION=_F(  INTITULE = 'TN1',
+                                CHEMIN = C1, 
+                                CHAM_GD = CHNO,
+                                NOM_CMP = 'DX',
+                                OPERATION = 'EXTRACTION'),
+                  ) ;
+
+IMPR_TABLE( TABLE=TN1,
+            NOM_PARA =('CHEMIN','CHAM_GD','ABSC_CURV','DX'),
+          ) ;
+
+TEST_TABLE( TABLE=TN1,
+            FILTRE=_F(NOM_PARA='ABSC_CURV',VALE=0.00000E+00),
+            REFERENCE='ANALYTIQUE',PRECISION=1.E-08,
+            NOM_PARA ='DX',VALE=4.75,
+          ) ;
+TEST_TABLE( TABLE=TN1,
+            FILTRE=_F(NOM_PARA='ABSC_CURV',VALE=1.00000E+00),
+            REFERENCE='ANALYTIQUE',PRECISION=1.E-08,
+            NOM_PARA ='DX',VALE=3.5,
+          ) ;
+
+#----------------------------------------------------------------------
+C2=INTE_MAIL_3D(  MAILLAGE=MA,
+                     INFO=2,
+               DEFI_SEGMENT=_F( ORIGINE  =(  0.25, 0., 0.25, ),
+                                EXTREMITE=(  0.25, 1., 0.25, ), ),
+               ) ;
+
+# IMPR_CO(CO=C2) ;
+
+TS2=POST_RELEVE_T(  ACTION=_F(  INTITULE = 'TS2',
+                                CHEMIN = C2, 
+                                CHAM_GD = CHEL,
+                                NOM_CMP = 'SIXX',
+                                OPERATION = 'EXTRACTION'),
+                  ) ;
+
+IMPR_TABLE( TABLE=TS2,
+            NOM_PARA =('CHEMIN','CHAM_GD','ABSC_CURV','SIXX'),
+          ) ;
+
+TEST_TABLE( TABLE=TS2,
+            FILTRE=_F(NOM_PARA='ABSC_CURV',VALE=0.00000E+00),
+            REFERENCE='ANALYTIQUE',PRECISION=1.E-08,
+            NOM_PARA ='SIXX',VALE=1.3125,
+          ) ;
+TEST_TABLE( TABLE=TS2,
+            FILTRE=_F(NOM_PARA='ABSC_CURV',VALE=1.00000E+00),
+            REFERENCE='ANALYTIQUE',PRECISION=1.E-08,
+            NOM_PARA ='SIXX',VALE=6.125,
+          ) ;
+
+TN2=POST_RELEVE_T(  ACTION=_F(  INTITULE = 'TN2',
+                                CHEMIN = C2, 
+                                CHAM_GD = CHNO,
+                                NOM_CMP = 'DX',
+                                OPERATION = 'EXTRACTION'),
+                  ) ;
+
+IMPR_TABLE( TABLE=TN2,
+            NOM_PARA =('CHEMIN','CHAM_GD','ABSC_CURV','DX'),
+          ) ;
+
+TEST_TABLE( TABLE=TN2,
+            FILTRE=_F(NOM_PARA='ABSC_CURV',VALE=0.00000E+00),
+            REFERENCE='ANALYTIQUE',PRECISION=1.E-08,
+            NOM_PARA ='DX',VALE=1.3125,
+          ) ;
+TEST_TABLE( TABLE=TN2,
+            FILTRE=_F(NOM_PARA='ABSC_CURV',VALE=1.00000E+00),
+            REFERENCE='ANALYTIQUE',PRECISION=1.E-08,
+            NOM_PARA ='DX',VALE=6.125,
+          ) ;
+
+#----------------------------------------------------------------------
+C3=INTE_MAIL_3D(  MAILLAGE=MA,
+                     INFO=2,
+               DEFI_SEGMENT=_F( NOEUD_ORIG = 'NO2',
+                                NOEUD_EXTR = 'NO8', ),
+               ) ;
+
+# IMPR_CO(CO=C3) ;
+
+TS3=POST_RELEVE_T(  ACTION=_F(  INTITULE = 'TS3',
+                                CHEMIN = C3, 
+                                CHAM_GD = CHEL,
+                                NOM_CMP = 'SIXX',
+                                OPERATION = 'EXTRACTION'),
+                  ) ;
+
+IMPR_TABLE( TABLE=TS3,
+            NOM_PARA =('CHEMIN','CHAM_GD','ABSC_CURV','SIXX'),
+          ) ;
+
+TEST_TABLE( TABLE=TS3,
+            FILTRE=_F(NOM_PARA='ABSC_CURV',VALE=0.00000E+00),
+            REFERENCE='ANALYTIQUE',PRECISION=1.E-08,
+            NOM_PARA ='SIXX',VALE=3.,
+          ) ;
+TEST_TABLE( TABLE=TS3,
+            FILTRE=_F(NOM_PARA='ABSC_CURV',VALE=1.73205E+00),
+            REFERENCE='ANALYTIQUE',PRECISION=1.E-08,
+            NOM_PARA ='SIXX',VALE=6.,
+          ) ;
+
+TN3=POST_RELEVE_T(  ACTION=_F(  INTITULE = 'TN3',
+                                CHEMIN = C3, 
+                                CHAM_GD = CHNO,
+                                NOM_CMP = 'DX',
+                                OPERATION = 'EXTRACTION'),
+                  ) ;
+
+IMPR_TABLE( TABLE=TN3,
+            NOM_PARA =('CHEMIN','CHAM_GD','ABSC_CURV','DX'),
+          ) ;
+
+TEST_TABLE( TABLE=TN3,
+            FILTRE=_F(NOM_PARA='ABSC_CURV',VALE=0.00000E+00),
+            REFERENCE='ANALYTIQUE',PRECISION=1.E-08,
+            NOM_PARA ='DX',VALE=3.,
+          ) ;
+TEST_TABLE( TABLE=TN3,
+            FILTRE=_F(NOM_PARA='ABSC_CURV',VALE=1.73205E+00),
+            REFERENCE='ANALYTIQUE',PRECISION=1.E-08,
+            NOM_PARA ='DX',VALE=6.,
+          ) ;
+
+#----------------------------------------------------------------------
+C4=INTE_MAIL_3D(  MAILLAGE=MA,
+                     INFO=2,
+               DEFI_SEGMENT=_F( ORIGINE  =(  0.5, 0., 1., ),
+                                EXTREMITE=(  0.5, 1., 1., ), ),
+               ) ;
+
+# IMPR_CO(CO=C4) ;
+
+TS4=POST_RELEVE_T(  ACTION=_F(  INTITULE = 'TS4',
+                                CHEMIN = C4, 
+                                CHAM_GD = CHEL,
+                                NOM_CMP = 'SIXX',
+                                OPERATION = 'EXTRACTION'),
+                  ) ;
+
+IMPR_TABLE( TABLE=TS4,
+            NOM_PARA =('CHEMIN','CHAM_GD','ABSC_CURV','SIXX'),
+          ) ;
+
+TEST_TABLE( TABLE=TS4,
+            FILTRE=_F(NOM_PARA='ABSC_CURV',VALE=0.00000E+00),
+            REFERENCE='ANALYTIQUE',PRECISION=1.E-08,
+            NOM_PARA ='SIXX',VALE=5.,
+          ) ;
+TEST_TABLE( TABLE=TS4,
+            FILTRE=_F(NOM_PARA='ABSC_CURV',VALE=1.00000E+00),
+            REFERENCE='ANALYTIQUE',PRECISION=1.E-08,
+            NOM_PARA ='SIXX',VALE=4.,
+          ) ;
+
+TN4=POST_RELEVE_T(  ACTION=_F(  INTITULE = 'TN4',
+                                CHEMIN = C4, 
+                                CHAM_GD = CHNO,
+                                NOM_CMP = 'DX',
+                                OPERATION = 'EXTRACTION'),
+                  ) ;
+
+IMPR_TABLE( TABLE=TN4,
+            NOM_PARA =('CHEMIN','CHAM_GD','ABSC_CURV','DX'),
+          ) ;
+
+TEST_TABLE( TABLE=TN4,
+            FILTRE=_F(NOM_PARA='ABSC_CURV',VALE=0.00000E+00),
+            REFERENCE='ANALYTIQUE',PRECISION=1.E-08,
+            NOM_PARA ='DX',VALE=5.,
+          ) ;
+TEST_TABLE( TABLE=TN4,
+            FILTRE=_F(NOM_PARA='ABSC_CURV',VALE=1.00000E+00),
+            REFERENCE='ANALYTIQUE',PRECISION=1.E-08,
+            NOM_PARA ='DX',VALE=4.,
+          ) ;
+
+#----------------------------------------------------------------------
+C5=INTE_MAIL_3D(  MAILLAGE=MA,
+                     INFO=2,
+               DEFI_SEGMENT=_F( ORIGINE  =(  1.  , 0.25, 0., ),
+                                EXTREMITE=(  0.75, 1.  , 0., ), ),
+               ) ;
+
+# IMPR_CO(CO=C5) ;
+
+TS5=POST_RELEVE_T(  ACTION=_F(  INTITULE = 'TS5',
+                                CHEMIN = C5, 
+                                CHAM_GD = CHEL,
+                                NOM_CMP = 'SIXX',
+                                OPERATION = 'EXTRACTION'),
+                  ) ;
+
+IMPR_TABLE( TABLE=TS5,
+            NOM_PARA =('CHEMIN','CHAM_GD','ABSC_CURV','SIXX'),
+          ) ;
+
+TEST_TABLE( TABLE=TS5,
+            FILTRE=_F(NOM_PARA='ABSC_CURV',VALE=0.00000E+00),
+            REFERENCE='ANALYTIQUE',PRECISION=1.E-08,
+            NOM_PARA ='SIXX',VALE=3.5,
+          ) ;
+TEST_TABLE( TABLE=TS5,
+            FILTRE=_F(NOM_PARA='ABSC_CURV',VALE=7.90569E-01),
+            REFERENCE='ANALYTIQUE',PRECISION=1.E-08,
+            NOM_PARA ='SIXX',VALE=5.5,
+          ) ;
+
+TN5=POST_RELEVE_T(  ACTION=_F(  INTITULE = 'TN5',
+                                CHEMIN = C5, 
+                                CHAM_GD = CHNO,
+                                NOM_CMP = 'DX',
+                                OPERATION = 'EXTRACTION'),
+                  ) ;
+
+IMPR_TABLE( TABLE=TN5,
+            NOM_PARA =('CHEMIN','CHAM_GD','ABSC_CURV','DX'),
+          ) ;
+
+TEST_TABLE( TABLE=TN5,
+            FILTRE=_F(NOM_PARA='ABSC_CURV',VALE=0.00000E+00),
+            REFERENCE='ANALYTIQUE',PRECISION=1.E-08,
+            NOM_PARA ='DX',VALE=3.5,
+          ) ;
+TEST_TABLE( TABLE=TN5,
+            FILTRE=_F(NOM_PARA='ABSC_CURV',VALE=7.90569E-01),
+            REFERENCE='ANALYTIQUE',PRECISION=1.E-08,
+            NOM_PARA ='DX',VALE=5.5,
+          ) ;
+
+#----------------------------------------------------------------------
+C6=INTE_MAIL_3D(  MAILLAGE=MA,
+                     INFO=2,
+               DEFI_SEGMENT=_F( NOEUD_ORIG = 'NO7',
+                                NOEUD_EXTR = 'NO6', ),
+               ) ;
+
+# IMPR_CO(CO=C6) ;
+
+TS6=POST_RELEVE_T(  ACTION=_F(  INTITULE = 'TS6',
+                                CHEMIN = C6, 
+                                CHAM_GD = CHEL,
+                                NOM_CMP = 'SIXX',
+                                OPERATION = 'EXTRACTION'),
+                  ) ;
+
+IMPR_TABLE( TABLE=TS6,
+            NOM_PARA =('CHEMIN','CHAM_GD','ABSC_CURV','SIXX'),
+          ) ;
+
+TEST_TABLE( TABLE=TS6,
+            FILTRE=_F(NOM_PARA='ABSC_CURV',VALE=0.00000E+00),
+            REFERENCE='ANALYTIQUE',PRECISION=1.E-08,
+            NOM_PARA ='SIXX',VALE=2.,
+          ) ;
+TEST_TABLE( TABLE=TS6,
+            FILTRE=_F(NOM_PARA='ABSC_CURV',VALE=1.00000E+00),
+            REFERENCE='ANALYTIQUE',PRECISION=1.E-08,
+            NOM_PARA ='SIXX',VALE=9.,
+          ) ;
+
+TN6=POST_RELEVE_T(  ACTION=_F(  INTITULE = 'TN6',
+                                CHEMIN = C6, 
+                                CHAM_GD = CHNO,
+                                NOM_CMP = 'DX',
+                                OPERATION = 'EXTRACTION'),
+                  ) ;
+
+IMPR_TABLE( TABLE=TN6,
+            NOM_PARA =('CHEMIN','CHAM_GD','ABSC_CURV','DX'),
+          ) ;
+
+TEST_TABLE( TABLE=TN6,
+            FILTRE=_F(NOM_PARA='ABSC_CURV',VALE=0.00000E+00),
+            REFERENCE='ANALYTIQUE',PRECISION=1.E-08,
+            NOM_PARA ='DX',VALE=2.,
+          ) ;
+TEST_TABLE( TABLE=TN6,
+            FILTRE=_F(NOM_PARA='ABSC_CURV',VALE=1.00000E+00),
+            REFERENCE='ANALYTIQUE',PRECISION=1.E-08,
+            NOM_PARA ='DX',VALE=9.,
+          ) ;
+
+FIN( )
+#

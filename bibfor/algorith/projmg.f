@@ -1,0 +1,53 @@
+      SUBROUTINE PROJMG(NP1,NP2,IC,NBM,PHII,DEPG,XGLO)
+      IMPLICIT NONE
+C-----------------------------------------------------------------------
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 16/05/2000   AUTEUR KXBADNG T.KESTENS 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+C-----------------------------------------------------------------------
+C DESCRIPTION : PASSAGE BASE MODALE -> BASE PHYSIQUE GLOBALE
+C -----------
+C               APPELANTS : CALND1, CALND2, CHVERI, COMPTR, INIALG,
+C                           MDCHOE, MDCHOF, NEWTON, PROJMP, TESTCH,
+C                           TSTCNT
+C
+C-------------------   DECLARATION DES VARIABLES   ---------------------
+C
+C ARGUMENTS
+C ---------
+      INTEGER  NP1, NP2, IC, NBM
+      REAL*8   PHII(NP2,NP1,*), DEPG(*), XGLO(*)
+C
+C VARIABLES LOCALES
+C -----------------
+      INTEGER  I
+C
+C-------------------   DEBUT DU CODE EXECUTABLE    ---------------------
+C
+      XGLO(1) = 0.0D0
+      XGLO(2) = 0.0D0
+      XGLO(3) = 0.0D0
+C
+      DO 10 I = 1, NBM
+         XGLO(1) = XGLO(1) + PHII(IC,I,1) * DEPG(I)
+         XGLO(2) = XGLO(2) + PHII(IC,I,2) * DEPG(I)
+         XGLO(3) = XGLO(3) + PHII(IC,I,3) * DEPG(I)
+  10  CONTINUE
+C
+C --- FIN DE PROJMG.
+      END

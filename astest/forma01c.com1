@@ -1,0 +1,50 @@
+# TITRE TRAVAUX PRATIQUES FORMATION DE BASE 
+#        TUYAUTERIE COMPORTANT UN COUDE
+#     MODELISATION PAR DES ELEMENTS MASSIFS
+#         AVEC STRATIFICATION THERMIQUE
+#     -------------------------------------
+
+#
+POURSUITE(CODE=_F(  NOM = 'FORMA01C'))
+
+#
+
+COURBE=INTE_MAIL_3D(MAILLAGE=MAIL,
+                    DEFI_SEGMENT=_F(ORIGINE=(0.0,3.0,0.1),
+                                    EXTREMITE=(0.0,3.0,0.2),),
+                    INFO=2,);
+
+TABDEPT=POST_RELEVE_T(ACTION=_F(INTITULE='DEPBT',
+                                CHEMIN=COURBE,
+                                RESULTAT=TEMPE,
+                                NOM_CHAM='TEMP',
+                                TOUT_CMP='OUI',
+                                OPERATION='EXTRACTION',),);
+
+TABDEP0=POST_RELEVE_T(ACTION=_F(INTITULE='DEPB0',
+                                CHEMIN=COURBE,
+                                RESULTAT=RESUT,
+                                NOM_CHAM='DEPL',
+                                TOUT_CMP='OUI',
+                                OPERATION='EXTRACTION',),);
+
+IMPR_TABLE(TABLE=TABDEPT,);
+
+IMPR_TABLE(TABLE=TABDEP0,);
+
+TITRE=DEFI_VALEUR(TX='TEMPERATURE AU TRAVERS DE LA PAROI',);
+
+IMPR_COURBE(FICHIER='AGRAF',
+            FORMAT='AGRAF',
+            TITRE_GRAPHIQUE=TITRE,LEGENDE_X='ABSCISSE',
+                                  LEGENDE_Y='TEMP',
+                                  COURBE=(_F(TABLE=TABDEPT,
+                                             PARA_X='ABSC_CURV',
+                                             PARA_Y='TEMP',
+                                             LEGENDE='TEMPERATURE ',
+                                             COULEUR='BLEU',
+                                             MARQUEUR='CARRE',),),);
+
+
+FIN()
+#

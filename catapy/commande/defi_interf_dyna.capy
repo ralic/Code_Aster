@@ -1,0 +1,36 @@
+#& MODIF COMMANDE  DATE 09/10/2002   AUTEUR DURAND C.DURAND 
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+DEFI_INTERF_DYNA=OPER(nom="DEFI_INTERF_DYNA",op=  98,sd_prod=interf_dyna_clas,
+                      docu="U4.64.01-e",reentrant='n',
+            UIinfo={"groupes":("Matrices/vecteurs",)},
+         NUME_DDL        =SIMP(statut='o',typ=nume_ddl ),
+         INTERFACE       =FACT(statut='o',min=1,max='**',
+           regles=(ENSEMBLE('NOM','TYPE'),
+#  erreur doc U sur la condition qui suit
+                   UN_PARMI('NOEUD','GROUP_NO'),),
+           NOM             =SIMP(statut='f',typ='TXM' ),
+           TYPE            =SIMP(statut='f',typ='TXM',into=("MNEAL","CRAIGB","CB_HARMO","AUCUN") ),
+           NOEUD           =SIMP(statut='f',typ=no,max='**'),
+           GROUP_NO        =SIMP(statut='f',typ=grno,max='**'),
+           DDL_ACTIF       =SIMP(statut='f',typ='TXM',max='**'),
+           MASQUE          =SIMP(statut='f',typ='TXM',max='**'),
+         ),
+         FREQ            =SIMP(statut='f',typ='R',defaut= 1.),
+         INFO            =SIMP(statut='f',typ='I',defaut= 1,into=( 1 , 2) ),
+)  ;

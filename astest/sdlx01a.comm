@@ -1,0 +1,158 @@
+# MODIF  DATE 07/06/2002   AUTEUR DURAND C.DURAND 
+# TITRE FLEXION D UN PORTIQUE SYMETRIQUE
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+#CAS_TEST__: SDLX01A
+# SDLX01/A                 COMMANDES                             5/03/91
+# FLEXION D'UN PORTIQUE SYMETRIQUE
+# SECT RECT: 4.8*29MM -- HAUTEUR: 0.81M  LARGEUR: 0.60M
+# 2D -- BASES ENCASTREES                            REF: SFM.VPCS SDLX01
+# MODELISATION POU_D_T: 6+9+10+9+6 +10=50 SEG2
+# POINTS  A=N100  B=N600  C=N200  D=N500  E=N300  F=N400
+#=======================================================================
+
+
+DEBUT(CODE=_F(  NOM = 'SDLX01A',NIV_PUB_WEB='INTERNET') )
+
+MA=LIRE_MAILLAGE( )
+
+MA=DEFI_GROUP( reuse=MA,   MAILLAGE=MA,
+  CREA_GROUP_MA=_F(  NOM = 'TOUT', TOUT = 'OUI'))
+
+MO=AFFE_MODELE(  MAILLAGE=MA, 
+                  AFFE=_F(  TOUT = 'OUI',     PHENOMENE = 'MECANIQUE',
+                         MODELISATION = 'POU_D_T') )
+
+CARELEM=AFFE_CARA_ELEM(   MODELE=MO,
+                  POUTRE=_F(  
+       GROUP_MA = 'TOUT',
+       SECTION = 'RECTANGLE',
+                           CARA = (  'HY',    'HZ', ),
+                           VALE = ( 0.0048,  0.029, )) )
+
+MAT=DEFI_MATERIAU( ELAS=_F(  E = 2.1E+11,  NU = 0.3,  RHO = 7800.) )
+
+CHMAT=AFFE_MATERIAU(  MAILLAGE=MA, 
+                       AFFE=_F(  TOUT = 'OUI',  MATER = MAT) )
+
+#----------------------------------------------------------------------
+#    PB PLAN --- POINTS A ET B ENCASTRES
+
+CH=AFFE_CHAR_MECA(  MODELE=MO,DDL_IMPO=(
+          _F(  TOUT = 'OUI',     DZ = 0., DRX = 0., DRY = 0.),
+                   _F(  GROUP_NO = 'AB',   DX = 0., DY = 0.,  DRZ = 0.)) )
+
+#--------------------------------------------------------------------
+
+MELR=CALC_MATR_ELEM(  MODELE=MO,
+                        CHARGE=CH,
+                        CARA_ELEM=CARELEM,
+                        CHAM_MATER=CHMAT,
+                       OPTION='RIGI_MECA'  )
+
+MELM=CALC_MATR_ELEM(  MODELE=MO,
+                        CHARGE=CH,
+                        CARA_ELEM=CARELEM,
+                        CHAM_MATER=CHMAT,
+                       OPTION='MASS_MECA'  )
+
+#--------------------------------------------------------------------
+
+NUM=NUME_DDL(  MATR_RIGI=MELR )
+
+MATASSR=ASSE_MATRICE(MATR_ELEM=MELR,NUME_DDL=NUM)
+
+MATASSM=ASSE_MATRICE(MATR_ELEM=MELM,NUME_DDL=NUM)
+
+#====================================================================
+#
+#-------------- CALCUL MODAL
+
+MODES=MODE_ITER_INV(   MATR_A=MATASSR,     MATR_B=MATASSM,
+                          CALC_FREQ=_F(  OPTION = 'AJUSTE',
+                                      FREQ = (5.,    350.,),
+                                      NMAX_FREQ = 13)  )
+
+# --------------------------------------------------------------------
+
+
+TEST_RESU(RESU=(
+   _F(   RESULTAT = MODES,       PARA = 'FREQ',
+           CRITERE = 'RELATIF',     PRECISION = 2.5E-3,
+           NUME_ORDRE = 1,       VALE = 8.8),
+   _F(   RESULTAT = MODES,       PARA = 'FREQ',
+           CRITERE = 'RELATIF',     PRECISION = 1.5E-3,
+           NUME_ORDRE = 2,       VALE = 29.4),
+   _F(   RESULTAT = MODES,       PARA = 'FREQ',
+           CRITERE = 'RELATIF',     PRECISION = 1.E-3,
+           NUME_ORDRE = 3,       VALE = 43.8),
+   _F(   RESULTAT = MODES,       PARA = 'FREQ',
+           CRITERE = 'RELATIF',     PRECISION = 1.E-3,
+           NUME_ORDRE = 4,       VALE = 56.3),
+   _F(   RESULTAT = MODES,       PARA = 'FREQ',
+           CRITERE = 'RELATIF',     PRECISION = 1.E-3,
+           NUME_ORDRE = 5,       VALE = 96.2),
+   _F(   RESULTAT = MODES,       PARA = 'FREQ',
+           CRITERE = 'RELATIF',     PRECISION = 1.E-3,
+           NUME_ORDRE = 6,       VALE = 102.6),
+   _F(   RESULTAT = MODES,       PARA = 'FREQ',
+           CRITERE = 'RELATIF',     PRECISION = 1.E-3,
+           NUME_ORDRE = 7,       VALE = 147.1),
+   _F(   RESULTAT = MODES,       PARA = 'FREQ',
+           CRITERE = 'RELATIF',     PRECISION = 1.E-3,
+           NUME_ORDRE = 8,       VALE = 174.8),
+   _F(   RESULTAT = MODES,       PARA = 'FREQ',
+           CRITERE = 'RELATIF',     PRECISION = 1.E-3,
+           NUME_ORDRE = 9,       VALE = 178.8),
+   _F(   RESULTAT = MODES,       PARA = 'FREQ',
+           CRITERE = 'RELATIF',     PRECISION = 1.E-3,
+           NUME_ORDRE = 10,      VALE = 206.0),
+   _F(   RESULTAT = MODES,       PARA = 'FREQ',
+           CRITERE = 'RELATIF',     PRECISION = 1.E-3,
+           NUME_ORDRE = 11,      VALE = 266.4),
+   _F(   RESULTAT = MODES,       PARA = 'FREQ',
+           CRITERE = 'RELATIF',     PRECISION = 1.E-3,
+           NUME_ORDRE = 12,      VALE = 320.0),
+   _F(   RESULTAT = MODES,       PARA = 'FREQ',
+           CRITERE = 'RELATIF',     PRECISION = 1.E-3,
+           NUME_ORDRE = 13,      VALE = 335.0)) )
+
+#--DEBUT TEST CREA_MAILLAGE/DETR_GROUP_MA-----------------------------
+
+MA=DEFI_GROUP(reuse=MA,MAILLAGE=MA,CREA_GROUP_MA=(
+     
+        _F( NOM = 'F1', MAILLE = ('E101','E102','E103','E104',)),
+        _F( NOM = 'F2', MAILLE = ('E101','E102','E103',)),
+        _F( NOM = 'F3', MAILLE = ('E101','E102',)),
+
+        _F( NOM = 'G1', MAILLE = ('E101','E102','E103','E104',)),
+        _F( NOM = 'G2', MAILLE = ('E101','E102','E103',)),
+        _F( NOM = 'G3', MAILLE = ('E101','E102',)))
+     )
+
+MA2=CREA_MAILLAGE( MAILLAGE=MA,
+                   DETR_GROUP_MA=_F( NB_MAILLE = 2, GROUP_MA = ('F1','G3',)) )
+
+IMPR_RESU( RESU=_F(  MAILLAGE = MA) )
+
+IMPR_RESU( RESU=_F(  MAILLAGE = MA2) )
+
+#--FIN TEST CREA_MAILLAGE/DETR_GROUP_MA-------------------------------
+
+FIN()
+#

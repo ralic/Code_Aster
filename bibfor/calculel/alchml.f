@@ -1,0 +1,345 @@
+      SUBROUTINE ALCHML(LIGREZ,OPTIOZ,NOMPAZ,BASZ,CELZ,IRET,DCELZ)
+      IMPLICIT NONE
+
+C MODIF CALCULEL  DATE 11/09/2002   AUTEUR VABHHTS J.PELLET 
+C ======================================================================
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+C ======================================================================
+C RESPONSABLE                            VABHHTS J.PELLET
+      CHARACTER*(*) LIGREZ,DCELZ,CELZ,BASZ,OPTIOZ,NOMPAZ
+      CHARACTER*19 LIGREL,CEL,DCEL
+      CHARACTER*16 OPTION
+      CHARACTER*8 NOMPAR
+      CHARACTER*1 BASE
+      INTEGER IRET
+C ----------------------------------------------------------------------
+C  BUT : CREER UN CHAM_ELEM "VIERGE"
+
+C  ARGUMENTS :
+C  LIGREZ IN/JXIN  K19 : SD LIGREL SUR LEQUEL ON ALLOUE LE CHAM_ELEM
+C  OPTIOZ IN       K16 : NOM DE L'OPTION SERVANT A DECRIRE LE CHAM_ELEM
+C  NOMPAZ IN       K8  : NOM DU PARAMETRE (IN OU OUT) DE L'OPTION
+C                        SERVANT A DECRIRE LE CHAM_ELEM
+C  BASZ   IN       K1  : 'G','V','L'
+C  CELZ   IN/JXOUT K19 : SD CHAM_ELEM A CREER
+C  IRET   OUT      I   : CODE RETOUR :
+C                        0 -> LE CHAMP A ETE CREE
+C                        1 -> LE CHAMP N'A PAS ETE CREE CAR
+C                             AUCUN TYPE_ELEM DU LIGREL NE CONNAIT
+C                             LE PARAMETRE DE L'OPTION
+
+C  ARGUMENTS SUPPLEMENTAIRES POUR ALLOUER UN CHAM_ELEM "ETENDU" :
+C  ------------------------------------------------------------------
+C  DCELZ   IN/JXIN  K19 :
+C    SD CHAM_ELEM_S PERMETTANT DE CREER UN CHAM_ELEM "ETENDU".
+C    LA GRANDEUR ASSOCIEE A DCELZ DOIT ETRE "DCEL_I"
+C    ET LES CMPS DOIVENT ETRE "NPG_DYN" ET "NCMP_DYN" (DANS CET ORDRE)
+
+C  SI DCELZ = ' '
+C     LE CHAM_ELEM N'EST PAS ETENDU.
+
+C  SI DCELZ /= ' '   :  LE CHAM_ELEM EST ETENDU :
+C     LES MAILLES TARDIVES SONT ALORS INTERDITES DANS LIGREZ
+C     TEMPORAIREMENT, ON VA PRENDRE NB_VARI = 107 POUR LES
+C     MAILLES TARDIVES. CETTE GLUTE SERA RETIREE EN 5.4
+
+
+C ----------------------------------------------------------------------
+C     ----- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
+      CHARACTER*32 JEXNUM,JEXNOM,JEXATR
+      INTEGER ZI
+      COMMON /IVARJE/ZI(1)
+      REAL*8 ZR
+      COMMON /RVARJE/ZR(1)
+      COMPLEX*16 ZC
+      COMMON /CVARJE/ZC(1)
+      LOGICAL ZL,LMULT
+      COMMON /LVARJE/ZL(1)
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24,NOMOLO
+      CHARACTER*32 ZK32
+      CHARACTER*80 ZK80
+      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
+      CHARACTER*8 SCAL,SCALAI,NOMGD
+      CHARACTER*16 NOMTE1,NOMTE,MA,MA2,KBID
+      INTEGER NGREL,IGREL,TE,TE1,MODE,LONG,JCELD,NCMPV,DEBGRL
+      INTEGER GD,JCELK,IOPT,IPREM,NEL,IEL,LGCATA,NBSPT
+      INTEGER TYPELE,NBELEM,MODAT2,DIGDEL,NBGREL,NCDYN,LGCHEL
+      INTEGER IBID,MODMX,IAMOLO,ITYCH,ITYCH1,NELTOT
+      INTEGER IALIEL,ILLIEL,JDCESD,JDCESC,JDCESK,JDCESV,JDCESL
+      INTEGER IMA,NCMPV2,KK,ITYPLO,NBPOIN
+      LOGICAL PERMIS
+C     ------------------------------------------------------------------
+
+      CALL JEMARQ()
+      CEL = CELZ
+      DCEL = DCELZ
+      LIGREL = LIGREZ
+      NOMPAR = NOMPAZ
+      OPTION = OPTIOZ
+      BASE = BASZ
+
+
+      NGREL = NBGREL(LIGREL)
+      CALL JENONU(JEXNOM('&CATA.OP.NOMOPT',OPTION),IOPT)
+      CALL JEVEUO(LIGREL//'.LIEL','L',IALIEL)
+      CALL JEVEUO(JEXATR(LIGREL//'.LIEL','LONCUM'),'L',ILLIEL)
+      CALL DISMOI('F','NOM_MAILLA',LIGREL,'LIGREL',IBID,MA,IBID)
+
+
+C     1- LE CHAM_ELEM DOIT-IL ETRE CREE ?
+C     ----------------------------------
+      MODMX = 0
+      DO 10 IGREL = 1,NGREL
+        TE = TYPELE(LIGREL,IGREL)
+        MODE = MODAT2(IOPT,TE,NOMPAR)
+        MODMX = MAX(MODMX,MODE)
+   10 CONTINUE
+      IF (MODMX.EQ.0) THEN
+        IRET = 1
+        GO TO 60
+      ELSE
+        IRET = 0
+      END IF
+
+
+C     2- QUELLE EST LA GRANDEUR ASSOCIEE AU CHAM_ELEM ?
+C     -----------------------------------------------------------
+      CALL JEVEUO(JEXNUM('&CATA.TE.MODELOC',MODMX),'L',IAMOLO)
+      GD = ZI(IAMOLO-1+2)
+      CALL JENUNO(JEXNUM('&CATA.GD.NOMGD',GD),NOMGD)
+      SCAL = SCALAI(GD)
+
+
+C     3- DOIT-ON CREER UN CHAMP ETENDU ? (LMULT.EQ..TRUE.)
+C        ------------------------------------------------------
+      IF (DCELZ.EQ.' ') THEN
+C       -- CHAMP NON-ETENDU :
+        LMULT = .FALSE.
+      ELSE
+C       -- CHAMP ETENDU : DCEL EST FOURNI PAR L'APPELANT
+        LMULT = .TRUE.
+        DCEL = DCELZ
+      END IF
+
+
+C     3.1 SI CHAMP ETENDU : ON RECUPERE QUELQUES ADRESSES :
+C     --------------------------------------------------------
+      IF (LMULT) THEN
+        CALL JEVEUO(DCEL//'.CESK','L',JDCESK)
+        CALL JEVEUO(DCEL//'.CESC','L',JDCESC)
+        CALL JEVEUO(DCEL//'.CESD','L',JDCESD)
+        CALL JEVEUO(DCEL//'.CESL','L',JDCESL)
+        CALL JEVEUO(DCEL//'.CESV','L',JDCESV)
+
+
+C       -- QUELQUES VERIFICATIONS :
+        MA2 = ZK8(JDCESK-1+1)
+        IF (MA2.NE.MA) CALL UTMESS('F','ALCHML',
+     &                             'INCOHERENCE '//'DES MAILLAGES :'//
+     &                             MA2//' ET '//MA)
+
+        IF (ZI(JDCESD-1+2).NE.2) CALL UTMESS('F','ALCHML','STOP 1A')
+        IF (ZI(JDCESD-1+3).NE.1) CALL UTMESS('F','ALCHML','STOP 1B')
+        IF (ZI(JDCESD-1+4).NE.1) CALL UTMESS('F','ALCHML','STOP 1C')
+
+        KBID = ZK8(JDCESK-1+2)
+        IF (KBID.NE.'DCEL_I') CALL UTMESS('F','ALCHML','STOP 2')
+
+        KBID = ZK8(JDCESC-1+1)
+        IF (KBID.NE.'NPG_DYN') CALL UTMESS('F','ALCHML','STOP 4')
+        KBID = ZK8(JDCESC-1+2)
+        IF (KBID.NE.'NCMP_DYN') CALL UTMESS('F','ALCHML','STOP 5')
+      END IF
+
+
+
+C     4- OBJET .CELD :
+C     -------------------
+      NELTOT = 0
+      DO 20,IGREL = 1,NGREL
+        NELTOT = NELTOT + NBELEM(LIGREL,IGREL)
+   20 CONTINUE
+
+      LONG = 4 + NGREL + 4*NGREL + 4*NELTOT
+      CALL WKVECT(CEL//'.CELD',BASE//' V I',LONG,JCELD)
+      CALL JEECRA(CEL//'.CELD','DOCU',IBID,'CHML')
+
+      ZI(JCELD-1+1) = GD
+      ZI(JCELD-1+2) = NGREL
+      ZI(JCELD-1+3) = 1
+      ZI(JCELD-1+4) = 0
+
+C     NCMPV: LONGUEUR DE .CELV  (+1)
+      NCMPV = 1
+
+C     DEBGRL: DEBUT DE DESCRIPTION DU GREL DANS .CELD
+      DEBGRL = 4 + NGREL
+
+      IPREM = 0
+      DO 40 IGREL = 1,NGREL
+        NEL = NBELEM(LIGREL,IGREL)
+        TE = TYPELE(LIGREL,IGREL)
+        MODE = MODAT2(IOPT,TE,NOMPAR)
+        ZI(JCELD-1+4+IGREL) = DEBGRL
+        ZI(JCELD-1+DEBGRL+1) = NEL
+        ZI(JCELD-1+DEBGRL+2) = MODE
+        NCMPV2 = NCMPV
+
+        IF (MODE.GT.0) THEN
+          IPREM = IPREM + 1
+          CALL JEVEUO(JEXNUM('&CATA.TE.MODELOC',MODE),'L',IAMOLO)
+          ITYPLO = ZI(IAMOLO-1+1)
+          IF (ITYPLO.GT.3) THEN
+            CALL JENUNO(JEXNUM('&CATA.TE.NOMMOLOC',MODE),NOMOLO)
+            CALL UTMESS('F','ALCHML','LE MODE_LOCAL: '//NOMOLO//
+     &                  ' NE DOIT PAS ETRE VECTEUR OU MATRICE.')
+          ELSE
+            NBPOIN = ZI(IAMOLO-1+4)
+            IF ((ITYPLO.EQ.2).AND.(NBPOIN.GT.10000)) THEN
+              CALL JENUNO(JEXNUM('&CATA.TE.NOMMOLOC',MODE),NOMOLO)
+              CALL UTMESS('F','ALCHML','LE MODE_LOCAL: '//NOMOLO//
+     &                  ' NE DOIT PAS ETRE "DIFF__".')
+            END IF
+          END IF
+
+          ITYCH = ZI(IAMOLO-1+1)
+
+          IF (IPREM.EQ.1) THEN
+            ITYCH1 = ITYCH
+            TE1 = TE
+          ELSE
+            IF (ITYCH*ITYCH1.LT.0) GO TO 50
+          END IF
+
+          LGCATA = DIGDEL(MODE)
+          ZI(JCELD-1+DEBGRL+3) = LGCATA
+
+          DO 30,IEL = 1,NEL
+
+C           4.1 CALCUL DE NBSPT ET NCDYN POUR CHAQUE ELEMENT :
+C           --------------------------------------------------
+
+C           -- CAS D'UN CHAM_ELEM ETENDU :
+            IF (LMULT) THEN
+              IMA = ZI(IALIEL-1+ZI(ILLIEL+IGREL-1)+IEL-1)
+
+C             -- SI LA MAILLE APPARTIENT AU MAILLAGE, ON SE SERT
+C                DE DCEL, SINON ON ARRETE LE CODE:
+              IF (IMA.GT.0) THEN
+
+                CALL CESEXI('C',JDCESD,JDCESL,IMA,1,1,1,KK)
+                IF (KK.GT.0) THEN
+                  NBSPT = MAX(ZI(JDCESV-1+KK),1)
+                ELSE
+                  NBSPT = 1
+                END IF
+
+                NCDYN = 0
+                IF (NOMGD.EQ.'VARI_R') THEN
+                  CALL CESEXI('C',JDCESD,JDCESL,IMA,1,1,2,KK)
+                  IF (KK.GT.0) NCDYN = ZI(JDCESV-1+KK)
+                END IF
+
+C             -- CAS DES MAILLES TARDIVES :
+              ELSE
+                NBSPT = 1
+                NCDYN = 0
+                IF (NOMGD.EQ.'VARI_R')  NCDYN = 1
+              END IF
+
+C           -- CAS D'UN CHAM_ELEM NON-ETENDU :
+            ELSE
+              NBSPT = 1
+              NCDYN = 0
+              IF (NOMGD.EQ.'VARI_R') NCDYN = 1
+            END IF
+
+
+C           4.2 AFFECTATION DES VALEURS DANS CELD :
+C           ---------------------------------------
+            ZI(JCELD-1+DEBGRL+4+ (IEL-1)*4+1) = NBSPT
+            ZI(JCELD-1+DEBGRL+4+ (IEL-1)*4+2) = NCDYN
+            ZI(JCELD-1+3) = MAX(ZI(JCELD-1+3),NBSPT)
+            ZI(JCELD-1+4) = MAX(ZI(JCELD-1+4),NCDYN)
+
+            LGCHEL = LGCATA*NBSPT*MAX(1,NCDYN)
+            ZI(JCELD-1+DEBGRL+4+ (IEL-1)*4+3) = LGCHEL
+            ZI(JCELD-1+DEBGRL+4+ (IEL-1)*4+4) = NCMPV
+            NCMPV = NCMPV + LGCHEL
+   30     CONTINUE
+
+        END IF
+
+        ZI(JCELD-1+DEBGRL+4) = NCMPV - NCMPV2
+        DEBGRL = DEBGRL + 4 + 4*NEL
+   40 CONTINUE
+
+
+C     5- OBJET .CELV:
+C     ------------------------
+      CALL WKVECT(CEL//'.CELV',BASE//' V '//SCAL(1:4),NCMPV-1,IBID)
+
+
+C     6- OBJET .CELK:
+C     ------------------------
+C         ETENDU A 5 K24  LIGREL / OPTION / ELNO-ELGA /
+C                         NUME_COUCHE (0 TOUS I IEME COUCHE)
+C                         NIVE_COUCHE (INF MOY SUP)
+      CALL WKVECT(CEL//'.CELK',BASE//' V K24',6,JCELK)
+      ZK24(JCELK-1+1) = LIGREL
+      ZK24(JCELK-1+2) = OPTION
+      ZK24(JCELK-1+6) = NOMPAR
+      IF (ITYCH1.EQ.1) THEN
+        ZK24(JCELK-1+3) = 'ELEM'
+      ELSE IF (ITYCH1.EQ.2) THEN
+        ZK24(JCELK-1+3) = 'ELNO'
+      ELSE IF (ITYCH1.EQ.3) THEN
+        ZK24(JCELK-1+3) = 'ELGA'
+      ELSE
+        CALL UTMESS('F','ALCHML','STOP')
+      END IF
+      ZK24(JCELK-1+4) = ' '
+      ZK24(JCELK-1+5) = ' '
+
+      GO TO 60
+
+
+C     7- SECTION ERREUR:
+C     ------------------------
+   50 CONTINUE
+C     CE CAS DE FIGURE NE DEVRAIT PLUS EXISTER APRES VERIF DANS
+C     CAVER1  (COHERENCE DES TYPE_ELEM AVEC L'OPTION):
+      CALL JENUNO(JEXNUM('&CATA.TE.NOMTE',TE),NOMTE)
+      CALL JENUNO(JEXNUM('&CATA.TE.NOMTE',TE1),NOMTE1)
+      CALL UTMESS('F','ALCHML',
+     &            ' INCOMPATIBILITE DES TYPE_CHAMP ("ELGA"/"ELNO") '//
+     &            ' POUR L OPTION : '//OPTION//
+     &            ' ENTRE LES 2 TYPE_ELEM : '//NOMTE1//' ET '//NOMTE)
+
+
+C     8- FIN NORMALE:
+C     ----------------
+   60 CONTINUE
+
+
+      CALL JEDEMA()
+
+
+      END

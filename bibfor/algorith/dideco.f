@@ -1,0 +1,179 @@
+      SUBROUTINE DIDECO(PARTPS, NUMINS, RETOUR)
+
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 23/01/2001   AUTEUR ADBHHVV V.CANO 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+C RESPONSABLE ADBHHVV V.CANO
+
+      IMPLICIT NONE
+      INTEGER      NUMINS, RETOUR
+      CHARACTER*19 PARTPS
+
+C ----------------------------------------------------------------------
+C        SD DISCRETISATION :   DECOUPAGE DU PAS DE TEMPS
+C ----------------------------------------------------------------------
+C
+C VAR PARTPS K19 : SD DISCRETISATION
+C  IN NUMINS  I  : NUMERO D'INSTANTS
+C OUT RETOUR  I  : CODE RETOUR
+C                  0 = OK
+C                  1 = DECOUPAGE NON DEMANDE
+C                  2 = FINESSE MAXIMALE ATTEINTE : REDECOUPAGE INTERDIT
+C
+C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
+C
+      CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
+      INTEGER            ZI
+      COMMON  / IVARJE / ZI(1)
+      REAL*8             ZR
+      COMMON  / RVARJE / ZR(1)
+      COMPLEX*16         ZC
+      COMMON  / CVARJE / ZC(1)
+      LOGICAL            ZL
+      COMMON  / LVARJE / ZL(1)
+      CHARACTER*8        ZK8
+      CHARACTER*16                ZK16
+      CHARACTER*24                          ZK24
+      CHARACTER*32                                    ZK32
+      CHARACTER*80                                              ZK80
+      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+C
+C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
+
+
+      INTEGER      JINFO, JTEMPS, JARCH, I
+      INTEGER      FREARC, NBRPAS, INSPAS, NBTEMP, NBINI, LGTEMP, LGINI
+      REAL*8       PASMIN, RATIO, INSTAM, INSTAP, INST, INCINS
+      CHARACTER*8  K8BID
+C ----------------------------------------------------------------------
+
+
+      CALL JEMARQ()
+
+
+C -- LECTURE DES ARGUMENTS DE LA SUBDIVISION
+
+      CALL JEVEUO(PARTPS // '.DIIR','L',JINFO)
+      FREARC = NINT(ZR(JINFO-1+2))
+      NBRPAS = NINT(ZR(JINFO-1+3))
+      PASMIN = ZR(JINFO-1+4)
+      RATIO  = ZR(JINFO-1+5)
+      INSPAS = NBRPAS - 1
+
+      CALL JEVEUO(PARTPS // '.DITR','E',JTEMPS)
+      INSTAM = ZR(JTEMPS+NUMINS-1)
+      INSTAP = ZR(JTEMPS+NUMINS)
+
+C    PAS DE SUBDIVISION DEMANDEE
+      IF (NBRPAS.EQ.1) THEN
+        RETOUR = 1
+        GOTO 9999
+      END IF
+
+C    TAILLE DE PAS MINIMALE ATTEINTE
+      IF (INSTAP-INSTAM .LT. PASMIN*NBRPAS) THEN
+        RETOUR = 2
+        GOTO 9999
+      END IF
+
+      CALL NMIMPR('IMPR','SUBDIVISE',' ',0.D0,NBRPAS)
+
+
+C ======================================================================
+C                    TRAITEMENT DE LA LISTE D'INSTANTS
+C ======================================================================
+
+
+C -- ALLONGEMENT DE LA LISTE D'INSTANTS
+
+      CALL JELIRA(PARTPS // '.DITR','LONMAX',LGINI,K8BID)
+      LGTEMP = LGINI + INSPAS
+      CALL JUVECA(PARTPS // '.DITR',LGTEMP)
+      CALL JEVEUO(PARTPS // '.DITR','E',JTEMPS)
+      NBINI  = LGINI  - 1
+      NBTEMP = LGTEMP - 1
+
+
+C -- RECOPIE DE LA PARTIE HAUTE DE LA LISTE
+
+      DO 10 I = NBINI, NUMINS, -1
+        ZR(JTEMPS+I+INSPAS) = ZR(JTEMPS+I)
+ 10   CONTINUE
+
+
+C -- INSERTION DES INSTANTS SUPPLEMENTAIRES
+
+      INCINS = (INSTAP - INSTAM) / (RATIO + NBRPAS - 1)
+      INST   = INSTAM
+      DO 20 I = NUMINS, NUMINS+INSPAS-1
+
+C      PRISE EN COMPTE DU FAIT QUE LE PREMIER PAS EST AFFECTE D'UN RATIO
+        IF (I .EQ. NUMINS) THEN
+          INST = INST + INCINS*RATIO
+        ELSE
+          INST = INST + INCINS
+        END IF
+
+        ZR(JTEMPS+I) = INST
+ 20   CONTINUE
+
+
+C ======================================================================
+C                           LISTE D'ARCHIVAGE
+C ======================================================================
+
+
+C -- ALLONGEMENT DE LA LISTE D'ARCHIVAGE
+
+      CALL JUVECA(PARTPS // '.DIAL',LGTEMP)
+      CALL JEVEUO(PARTPS // '.DIAL','E',JARCH)
+
+
+C -- AUCUN ARCHIVAGE SUPPLEMENTAIRE SI PAS_ARCH == 0
+
+      IF (FREARC .EQ. 0) THEN
+
+C      RECOPIE DE LA PARTIE HAUTE
+        DO 30 I = NBINI, NUMINS, -1
+          ZL(JARCH+I+INSPAS) = ZL(JARCH+I)
+ 30     CONTINUE
+
+C      MISE A .FALSE. DES NOUVEAUX INSTANTS
+        DO 40 I = NUMINS, NUMINS+INSPAS-1
+          ZL(JARCH+I) = .FALSE.
+ 40     CONTINUE
+
+
+C -- ON RECONSTRUIT LA LISTE D'ARCHIVAGE SI PAS_ARCH <> 0
+
+      ELSE
+
+        DO 50 I = 0, NBTEMP
+          ZL(JARCH+I) = .FALSE.
+ 50     CONTINUE
+
+        DO 60 I = FREARC, NBTEMP, FREARC
+          ZL(JARCH+I) = .TRUE.
+ 60     CONTINUE
+
+      END IF
+
+
+ 9999 CONTINUE
+      CALL JEDEMA()
+      END

@@ -1,0 +1,69 @@
+#& MODIF COMMANDE  DATE 09/10/2002   AUTEUR DURAND C.DURAND 
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+def mode_stat_prod(MODE_STAT,FORCE_NODALE,PSEUDO_MODE,**args):
+ if (MODE_STAT != None)          : return mode_stat_depl
+ if (PSEUDO_MODE !=None)         : return mode_stat_acce
+ if (FORCE_NODALE != None)       : return mode_stat_forc
+ raise AsException("type de concept resultat non prevu")
+MODE_STATIQUE=OPER(nom="MODE_STATIQUE",op= 93,sd_prod=mode_stat_prod,
+                   fr="Calcul de modes statiques",
+                   docu="U4.52.14-f2",reentrant='n',
+            UIinfo={"groupes":("Résolution",)},
+         MATR_RIGI       =SIMP(statut='o',typ=matr_asse_depl_r ),
+         MATR_MASS       =SIMP(statut='f',typ=matr_asse_depl_r ),
+               regles=(UN_PARMI('MODE_STAT','FORCE_NODALE','PSEUDO_MODE'),),
+         MODE_STAT       =FACT(statut='f',min=1,max='**',
+           regles=(UN_PARMI('TOUT','NOEUD','GROUP_NO'),
+                   UN_PARMI('TOUT_CMP','AVEC_CMP','SANS_CMP'),),
+           TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ,),
+           NOEUD           =SIMP(statut='f',typ=no,max='**'),
+           GROUP_NO        =SIMP(statut='f',typ=grno,max='**'),
+           TOUT_CMP        =SIMP(statut='f',typ='TXM',into=("OUI",) ,),
+           AVEC_CMP        =SIMP(statut='f',typ='TXM',max='**'),
+           SANS_CMP        =SIMP(statut='f',typ='TXM',max='**'),
+         ),
+         FORCE_NODALE    =FACT(statut='f',min=1,max='**',
+           regles=(UN_PARMI('TOUT','NOEUD','GROUP_NO'),
+                   UN_PARMI('TOUT_CMP','AVEC_CMP','SANS_CMP'),),
+           TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",), ),
+           NOEUD           =SIMP(statut='f',typ=no,max='**'),
+           GROUP_NO        =SIMP(statut='f',typ=grno,max='**'),
+           TOUT_CMP        =SIMP(statut='f',typ='TXM',into=("OUI",), ),
+           AVEC_CMP        =SIMP(statut='f',typ='TXM',max='**'),
+           SANS_CMP        =SIMP(statut='f',typ='TXM',max='**'),
+         ),
+         PSEUDO_MODE       =FACT(statut='f',min=1,max='**',
+           regles=(UN_PARMI('AXE','DIRECTION','TOUT','NOEUD','GROUP_NO' ),),
+           AXE             =SIMP(statut='f',typ='TXM',into=("X","Y","Z"),max=3),
+           DIRECTION       =SIMP(statut='f',typ='R',min=3,max=3),
+           TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",)),
+           NOEUD           =SIMP(statut='f',typ=no,max='**'),
+           GROUP_NO        =SIMP(statut='f',typ=grno,max='**'),
+           b_dir           =BLOC(condition = "DIRECTION != None",
+             NOM_DIR         =SIMP(statut='f',typ='TXM' ),),
+           b_cmp          =BLOC(condition="TOUT!= None or NOEUD!=None or GROUP_NO!=None",
+             regles=(UN_PARMI('TOUT_CMP','AVEC_CMP','SANS_CMP'),),
+             TOUT_CMP        =SIMP(statut='f',typ='TXM',into=("OUI",) ),
+             AVEC_CMP        =SIMP(statut='f',typ='TXM',max='**'),
+             SANS_CMP        =SIMP(statut='f',typ='TXM',max='**'), 
+        ),
+         ),
+         TITRE           =SIMP(statut='f',typ='TXM',max='**'),
+         INFO            =SIMP(statut='f',typ='I',defaut= 1,into=( 1 , 2 ,) ),
+)  ;

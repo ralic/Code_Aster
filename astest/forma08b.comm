@@ -1,0 +1,407 @@
+# MODIF  DATE 15/10/2002   AUTEUR SELLALI N.SELLALI 
+# RESPONSABLE sellali N.SELLALI
+# TITRE CORRIGE DU TP3D DE LA FORMATION POST TRAITEMENT
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+DEBUT(CODE=_F(NOM='FORMA08B',NIV_PUB_WEB='INTERNET'),);
+
+PRE_GIBI();
+
+MAIL=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='NON'),);
+
+MAIL=DEFI_GROUP(reuse =MAIL,
+                MAILLAGE=MAIL,
+                CREA_GROUP_NO=(_F(GROUP_MA='ENCAST',),
+                               _F(GROUP_MA='SYMETRIE',),
+                               _F(GROUP_MA='EFOND',),
+                               _F(GROUP_MA='SURFINT',),
+                               _F(GROUP_MA='SURFEXT',),),);
+
+MODMECA=AFFE_MODELE(MAILLAGE=MAIL,
+                    AFFE=_F(TOUT='OUI',
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='3D',),);
+
+
+ACIER=DEFI_MATERIAU(ELAS=_F(E=2.04E11,
+                            NU=0.3,
+                            ALPHA=1.092E-05,),);
+
+CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
+                    AFFE=_F(TOUT='OUI',
+                            MATER=ACIER,),);
+
+MAIL=MODI_MAILLAGE(reuse =MAIL,
+                   MAILLAGE=MAIL,
+                   ORIE_PEAU_3D=(_F(GROUP_MA='SURFINT',),
+                                 _F(GROUP_MA='EFOND',),),
+                   MODELE=MODMECA,);
+
+REXT=DEFI_VALEUR(R8=0.2,);
+EPTUB=DEFI_VALEUR(R8=0.02,);
+FYTOT=DEFI_VALEUR(R8=100000.0,);
+
+RINT=DEFI_VALEUR(R8=EVAL("""REXT-EPTUB"""),);
+
+SINT=DEFI_VALEUR(R8=EVAL("""PI*(RINT*RINT)"""),);
+
+SEXT=DEFI_VALEUR(R8=EVAL("""PI*(REXT*REXT)"""),);
+
+SFON=DEFI_VALEUR(R8=EVAL("""SEXT-SINT"""),);
+
+FYREP=DEFI_VALEUR(R8=EVAL("""FYTOT/SFON"""),);
+
+
+CHARGF=AFFE_CHAR_MECA(MODELE=MODMECA,
+                      DDL_IMPO=(_F(GROUP_NO='ENCAST',
+                                   DX=0.0,
+                                   DY=0.0,
+                                   DZ=0.0,),
+                                _F(GROUP_NO='SYMETRIE',
+                                   DZ=0.0,),),
+                      FORCE_FACE=_F(GROUP_MA='EFOND',
+                                    FY=FYREP,),);
+
+RESU=MECA_STATIQUE(MODELE=MODMECA,
+                   CHAM_MATER=CHMAT,
+                    EXCIT=_F(CHARGE=CHARGF,),);
+
+
+TABDEP1=POST_RELEVE_T(ACTION=_F(INTITULE='DEPB1',
+                                GROUP_NO='EFOND',
+                                RESULTAT=RESU,
+                                NOM_CHAM='DEPL',
+                                TOUT_CMP='OUI',
+                                OPERATION='MOYENNE',),);
+
+
+TEST_TABLE(TABLE=TABDEP1,
+           FILTRE=_F(NOM_PARA='QUANTITE',
+                     VALE_K='MOMENT_0',),
+           NOM_PARA='DX',
+           VALE=-0.0290667935107,
+           PRECISION=1.E-4,
+           REFERENCE='NON_REGRESSION',);
+
+TEST_TABLE(TABLE=TABDEP1,
+           FILTRE=_F(NOM_PARA='QUANTITE',
+                     VALE_K='MOMENT_0',),
+           NOM_PARA='DY',
+           VALE=0.106543262917,
+           PRECISION=1.E-4,
+           REFERENCE='NON_REGRESSION',);
+           
+
+
+# =========================================
+#          POST TRAITEMENT
+# =========================================
+
+# 0. CALCULS PRELIMINAIRES SERVANT POUR PLUSIEURS POST TRAITEMENTS
+#
+# 0.1. CALCUL DES CHAMPS PAR ELEMENT AUX NOEUDS
+#
+
+RESU=CALC_ELEM(reuse =RESU,
+               MODELE=MODMECA,
+               CHAM_MATER=CHMAT,
+               RESULTAT=RESU,
+               OPTION=('SIGM_ELNO_DEPL',
+                       'EQUI_ELNO_SIGM',
+                       'ERRE_ELGA_NORE',
+                       'ERRE_ELNO_ELGA',),);
+
+#
+# 0.1. CALCUL DES CHAMPS AUX NOEUDS
+#
+
+RESU=CALC_NO(reuse =RESU,
+             RESULTAT=RESU,
+             MODELE=MODMECA,
+             OPTION=('FORC_NODA','REAC_NODA',),
+             CHAM_MATER=CHMAT,
+             EXCIT=_F(CHARGE=CHARGF,),);
+
+#
+# 1. IMPRESSIONS AU FORMAT RESULTAT
+#
+# 1.1. COORDONNEES ET DEPLACEMENTS AUX POINTS AI1,AE1,AI2,AE2,E_INF,E_SUP
+#
+IMPR_RESU(RESU=_F(RESULTAT=RESU,
+                  NOM_CHAM='DEPL',
+                  FORM_TABL='OUI',
+                  GROUP_NO=('AI1','AI2','AE1','AE2',),
+                  IMPR_COOR='OUI',),);
+
+IMPR_RESU(RESU=_F(RESULTAT=RESU,
+                  NOM_CHAM='DEPL',
+                  FORM_TABL='OUI',
+                  GROUP_NO=('E_INF','E_SUP',),
+                  IMPR_COOR='OUI',),);
+
+#
+# 1.2. COORDONNEES ET DEPLACEMENTS SUR LES GROUPES DE MAILLES
+#      D3,D4,D5,D6
+#
+IMPR_RESU(RESU=_F(RESULTAT=RESU,
+                  NOM_CHAM='DEPL',
+                  FORM_TABL='OUI',
+                  GROUP_MA='D3',
+                  IMPR_COOR='OUI',),);
+
+IMPR_RESU(RESU=_F(RESULTAT=RESU,
+                  NOM_CHAM='DEPL',
+                  FORM_TABL='OUI',
+                  GROUP_MA='D4',
+                  IMPR_COOR='OUI',),);
+
+IMPR_RESU(RESU=_F(RESULTAT=RESU,
+                  NOM_CHAM='DEPL',
+                  FORM_TABL='OUI',
+                  GROUP_MA='D5',
+                  IMPR_COOR='OUI',),);
+
+IMPR_RESU(RESU=_F(RESULTAT=RESU,
+                  NOM_CHAM='DEPL',
+                  FORM_TABL='OUI',
+                  GROUP_MA='D6',
+                  IMPR_COOR='OUI',),);
+
+#
+# 2. IMPRESSIONS AU FORMAT CASTEM
+#
+
+IMPR_RESU(MODELE=MODMECA,
+          RESU=_F(FORMAT='CASTEM',
+                   MAILLAGE=MAIL,
+                   RESULTAT=RESU,
+                   NOM_CHAM=('DEPL',
+                            'SIGM_ELNO_DEPL',
+                            'EQUI_ELNO_SIGM',
+                            'ERRE_ELNO_ELGA',
+                            'FORC_NODA',
+                            'REAC_NODA',),),);
+
+#
+# 3. TRACE DE COURBES
+#
+# 3.0. DEFINITION DES GROUPES DE NOEUDS
+#
+MAIL=DEFI_GROUP(reuse =MAIL,
+                 MAILLAGE=MAIL,
+                 CREA_GROUP_MA=_F(NOM='TOUT',
+                                  TOUT='OUI',),
+                 CREA_GROUP_NO=(_F(GROUP_MA='TOUT',),
+                                _F(GROUP_MA=('D4','D6',),),),);
+
+#
+# 3.1. EVOLUTION EN FONCTION DE L'ABSCISSE SUR LE GROUP_MA
+#      DE DY ET SIXX
+#
+# 3.1.1. CREATION D'UN GROUPE DE NOEUDS ORDONNES
+#
+MAIL=DEFI_GROUP(reuse =MAIL,
+                MAILLAGE=MAIL,
+                CREA_GROUP_NO=_F(GROUP_MA='GEN_SUP',
+                                 OPTION='NOEUD_ORDO',
+                                 NOM='GENSUP',
+                                 GROUP_NO_ORIG='AE2',
+                                 GROUP_NO_EXTR='E_SUP',),);
+
+#
+# 3.1.2. CREATION DES TABLES
+#
+# DEPLACEMENT DY
+#
+DEPSUP=POST_RELEVE_T(ACTION=_F(INTITULE='GEN_SUP',
+                                GROUP_NO='GENSUP',
+                                RESULTAT=RESU,
+                                NOM_CHAM='DEPL',
+                                NOM_CMP='DY',
+                                OPERATION='EXTRACTION',),);
+#
+# CONTRAINTE SIXX
+#
+SIGSUP=POST_RELEVE_T(ACTION=_F(INTITULE='GENE_SUP',
+                                GROUP_NO='GENSUP',
+                                RESULTAT=RESU,
+                                NOM_CHAM='SIGM_ELNO_DEPL',
+                                NOM_CMP='SIXX',
+                                OPERATION='EXTRACTION',),);
+#
+# 3.1.3. IMPRESSION DE COURBES
+#
+TITRE=DEFI_VALEUR(TX='LE LONG DE GEN_SUP',);
+
+IMPR_COURBE(FICHIER='AGRAF',
+            FORMAT='AGRAF',
+            TITRE_GRAPHIQUE=TITRE,
+            LEGENDE_X='ABSCISSE [M]',
+            COURBE=_F(TABLE=DEPSUP,
+                      PARA_X='ABSC_CURV',
+                      PARA_Y='DY',
+                      LEGENDE='DY SUR GENERATRICE SUP',
+                      COULEUR='BLEU',
+                      MARQUEUR='CARRE',),);
+
+IMPR_COURBE(FICHIER='AGRAF',
+            FORMAT='AGRAF',
+            TITRE_GRAPHIQUE=TITRE,
+            LEGENDE_X='ABSCISSE [M]',
+            COURBE=_F(TABLE=SIGSUP,
+                      PARA_X='ABSC_CURV',
+                      PARA_Y='SIXX',
+                      LEGENDE='SIXX SUR GENERATRICE SUP',
+                      COULEUR='ROUGE',
+                      MARQUEUR='PLUS',),);
+
+IMPR_COURBE(FICHIER='POSTSCRIPT',
+            FORMAT='POSTSCRIPT',
+            TITRE=TITRE,
+            COURBE=_F(TABLE=SIGSUP,
+                      PARA_X='ABSC_CURV',
+                      PARA_Y='SIXX',
+                      LEGENDE='SIXX SUR GENERATRICE SUP',),);
+
+#
+# 3.2. IMPRESSION DES CONTRAINTES SUR DES SEGMENTS 
+#      D'ORIGINE ET D'EXTREMITE DONNEES
+
+# 3.2.1. DEFINITION DES SEGMENTS 
+
+LINT=INTE_MAIL_3D(MAILLAGE=MAIL,
+                  DEFI_SEGMENT=_F(ORIGINE=(0.18,0.0,0.0,),
+                                  EXTREMITE=(0.18,3.0,0.0,),),
+                  INFO=2,);
+
+LEXT=INTE_MAIL_3D(MAILLAGE=MAIL,
+                  DEFI_SEGMENT=_F(ORIGINE=(0.199,0.0,0.0,),
+                                  EXTREMITE=(0.199,3.0,0.0,),),
+                  INFO=2,);
+#
+# 3.2.2. CREATION DES TABLES
+#
+SIGLINT=POST_RELEVE_T(ACTION=_F(INTITULE='SIG_LINT ',
+                                CHEMIN=LINT,
+                                RESULTAT=RESU,
+                                NOM_CHAM='SIGM_ELNO_DEPL',
+                                TOUT_CMP='OUI',
+                                OPERATION='EXTRACTION',),);
+
+SIGLEXT=POST_RELEVE_T(ACTION=_F(INTITULE='SIG_LEXT ',
+                                CHEMIN=LEXT,
+                                RESULTAT=RESU,
+                                NOM_CHAM='SIGM_ELNO_DEPL',
+                                TOUT_CMP='OUI',
+                                OPERATION='EXTRACTION',),);
+
+#
+# 3.2.3. IMPRESSION DES TABLES
+#
+IMPR_TABLE(TABLE=SIGLINT,);
+
+IMPR_TABLE(TABLE=SIGLEXT,);
+
+#
+# 3.3. CALCUL ET IMPRESSION DE LA MOYENNE DE LA CONTRAINTE SYY
+#      SUR D4 ET D6
+#
+
+#
+# 3.3.1. CREATION DES TABLES
+#
+SIGMOY4=POST_RELEVE_T(ACTION=_F(INTITULE='SMOY_D4',
+                                GROUP_NO='D4',
+                                RESULTAT=RESU,
+                                NOM_CHAM='SIGM_ELNO_DEPL',
+                                TOUT_CMP='OUI',
+                                OPERATION='MOYENNE',),);
+#
+SIGMOY6=POST_RELEVE_T(ACTION=_F(INTITULE='SMOY_D6',
+                                GROUP_NO='D6',
+                                RESULTAT=RESU,
+                                NOM_CHAM='SIGM_ELNO_DEPL',
+                                TOUT_CMP='OUI',
+                                OPERATION='MOYENNE',),);
+
+#
+# 3.3.2. IMPRESSION DES TABLES
+#
+IMPR_TABLE(TABLE=SIGMOY4,
+           FICHIER='RESULTAT',
+           PAGINATION='INST',
+           NOM_PARA=('INTITULE','INST','SIYY','QUANTITE'),);
+
+IMPR_TABLE(TABLE=SIGMOY6,
+           FICHIER='RESULTAT',
+           PAGINATION='INST',
+           NOM_PARA=('INTITULE','INST','SIYY','QUANTITE'),);
+
+#
+# 3.4. CALCUL ET IMPRESSION SUR LES GROUPES DE NOEUDS EFOND ET ENCAST
+#      DES RESULTANTES DES EFFORTS ET DES REACTIONS
+#      ET DES MOMENTS RESULTANT DE CES EFFORTS ET REACTIONS 
+#
+
+#
+# 3.4.1. CREATION DES TABLES DE RESULTANTES 
+#
+FHAUT=POST_RELEVE_T(ACTION=_F(INTITULE='F_HAUT',
+                               GROUP_NO='EFOND',
+                               RESULTAT=RESU,
+                               NOM_CHAM='FORC_NODA',
+                               RESULTANTE=('DX','DY','DZ',),
+                               OPERATION='EXTRACTION',),);
+
+FBAS=POST_RELEVE_T(ACTION=_F(INTITULE='F_BAS',
+                              GROUP_NO='ENCAST',
+                              RESULTAT=RESU,
+                              NOM_CHAM='FORC_NODA',
+                              RESULTANTE=('DX','DY','DZ',),
+                              MOMENT=('DRX','DRY','DRZ',),
+                              POINT=(0.0,0.0,0.0,),
+                              OPERATION='EXTRACTION',),);
+
+
+FTOUT=POST_RELEVE_T(ACTION=_F(INTITULE='F_TOUT',
+                               GROUP_NO='TOUT',
+                               RESULTAT=RESU,
+                               NOM_CHAM='FORC_NODA',
+                               RESULTANTE=('DX','DY','DZ',),
+                               OPERATION='EXTRACTION',),);
+
+RTOUT=POST_RELEVE_T(ACTION=_F(INTITULE='R_TOUT',
+                               GROUP_NO='TOUT',
+                               RESULTAT=RESU,
+                               NOM_CHAM='REAC_NODA',
+                               RESULTANTE=('DX','DY','DZ',),
+                               OPERATION='EXTRACTION',),);
+
+#
+# 3.4.2. IMPRESSION DES TABLES
+#
+IMPR_TABLE(TABLE=FHAUT,);
+
+IMPR_TABLE(TABLE=FBAS,);
+
+IMPR_TABLE(TABLE=FTOUT,);
+
+IMPR_TABLE(TABLE=RTOUT,);
+
+FIN();

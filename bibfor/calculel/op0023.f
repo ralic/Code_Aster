@@ -1,0 +1,447 @@
+      SUBROUTINE OP0023(IER)
+C ----------------------------------------------------------------------
+C MODIF CALCULEL  DATE 14/05/2002   AUTEUR DURAND C.DURAND 
+C ======================================================================
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+C ----------------------------------------------------------------------
+C     COMMANDE:  TEST_RESU
+C ----------------------------------------------------------------------
+C     REMARQUES:  RESU:( RESULTAT:
+C                        PRECISION: ( PREC1 , PREC2 )          L_R8
+C                        CRITERE  : ( CRIT1 , CRIT2 )          L_TXM
+C     PREC1 ET CRIT1 SONT LA PRECISION ET LE CRITERE DU TEST
+C     PREC2 ET CRIT2 SONT LA PRECISION ET LE CRITERE DE L'EXTRACTION
+C ----------------------------------------------------------------------
+C
+      IMPLICIT   NONE
+C
+C 0.1. ==> ARGUMENTS
+C
+      INTEGER IER
+C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
+      INTEGER ZI
+      COMMON /IVARJE/ZI(1)
+      REAL*8 ZR
+      COMMON /RVARJE/ZR(1)
+      COMPLEX*16 ZC
+      COMMON /CVARJE/ZC(1)
+      LOGICAL ZL
+      COMMON /LVARJE/ZL(1)
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32
+      CHARACTER*80 ZK80
+      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
+
+C 0.3. ==> VARIABLES LOCALES
+
+      CHARACTER*6 NOMPRO
+      PARAMETER (NOMPRO='OP0023')
+
+      INTEGER REFI,VALI,IBID,IE,IFIC,IOCC,IRET,IUNIFI,IVARI,JLUE,JORDR,
+     &        N1,N2,N3,N4,NBORDR,NC,NOCC,NP,NUMORD,NUPO,NBCMP,JCMP
+      INTEGER NRPASS,NBPASS,ADRECG,NUSP
+      INTEGER IAUX
+
+      REAL*8 EPSI,VALR,REFR,PREC,EPSIR(2)
+      CHARACTER*1 TYPRES
+      CHARACTER*4 TYPCH,TESTOK
+      CHARACTER*8 CRIT,CRIT2,NOMFI,NOMAIL,NODDL,NOGRNO,NOMMA
+      CHARACTER*8 NORESU,NOCMP,CRITR(2),TYPTES,NOMGD
+      CHARACTER*8 LERESU,NOPASE
+      CHARACTER*11 MOTCLE
+      CHARACTER*16 NOPARA,K16B
+      CHARACTER*19 CHAM19,KNUM
+      CHARACTER*17 NONOEU,LABEL
+      CHARACTER*24 NOMOBJ
+      CHARACTER*24 NORECG
+      CHARACTER*37 TITRES
+      COMPLEX*16 VALC,REFC
+C     NONOEU= NOM_NOEUD (K8) SUIVI EVENTUELLEMENT DU NOM DU GROUP_NO
+C             A PARTIR DUQUEL ON TROUVE LE NOM DU NOEUD.
+C     ------------------------------------------------------------------
+
+      CALL JEMARQ()
+
+      CALL GETFAC('RESU',NOCC)
+      DO 10 IOCC = 1,NOCC
+        CALL GETVTX('RESU','NOEUD_CMP',IOCC,1,0,NOPARA,N1)
+        IF (N1.NE.0 .AND. N1.NE.-2) THEN
+          CALL UTMESS('F','TEST_RESU','AVEC "NOEUD_CMP", IL FAUT '//
+     &                'DONNER LE NOM DU NOEUD ET SA COMPOSANTE.')
+        END IF
+   10 CONTINUE
+
+
+
+      CALL GETVTX(' ','FICHIER',0,1,1,NOMFI,N2)
+      IF (N2.NE.0) THEN
+        IFIC = IUNIFI(NOMFI)
+        IF (IFIC.EQ.0) THEN
+          CALL UTMESS('A','TEST_RESU',
+     &                'LE NOM DU FICHIER D''IMPRESSION EST '//
+     &                'INCONNU : '//NOMFI//' ON PRENDRA LE FICHIER'//
+     &                ' "RESULTAT". ')
+          IFIC = IUNIFI('RESULTAT')
+        END IF
+      ELSE
+        IFIC = IUNIFI('RESULTAT')
+      END IF
+      WRITE (IFIC,1000)
+
+C     --- TRAITEMENT D'UN OBJET JEVEUX  ---
+C     --------------------------------------
+      CALL GETFAC('OBJET',NOCC)
+
+      DO 20 IOCC = 1,NOCC
+        CALL GETVTX('OBJET','NOM',IOCC,1,1,NOMOBJ,N1)
+        CALL GETVR8('OBJET','PRECISION',IOCC,1,1,EPSI,N1)
+        CALL GETVTX('OBJET','CRITERE',IOCC,1,1,CRIT,N1)
+        WRITE (IFIC,*) '---- OBJET: '//NOMOBJ
+        CALL UTEST3(IFIC,'OBJET',IOCC)
+
+        CALL GETVIS('OBJET','RESUME',IOCC,1,1,REFI,N2)
+        IF (N2.EQ.1) THEN
+C           -- RESUME:
+          CALL UTESTO(NOMOBJ,'RESUME',REFI,REFR,EPSI,CRIT,IFIC)
+        END IF
+
+        CALL GETVIS('OBJET','S_I',IOCC,1,1,REFI,N2)
+        IF (N2.EQ.1) THEN
+C           -- S_I :
+          CALL UTESTO(NOMOBJ,'S_I',REFI,REFR,EPSI,CRIT,IFIC)
+        END IF
+
+        CALL GETVR8('OBJET','S_R',IOCC,1,1,REFR,N2)
+        IF (N2.EQ.1) THEN
+C           -- S_R :
+          CALL UTESTO(NOMOBJ,'S_R',REFI,REFR,EPSI,CRIT,IFIC)
+        END IF
+
+   20 CONTINUE
+
+C     --- TRAITEMENT D'UN CHAM_NO ---
+C     -------------------------------
+      CALL GETFAC('CHAM_NO',NOCC)
+      MOTCLE = 'CHAM_NO:'
+
+      DO 30 IOCC = 1,NOCC
+        TESTOK = 'NOOK'
+        NONOEU = ' '
+        NODDL = ' '
+        CALL GETVID('CHAM_NO','CHAM_GD',IOCC,1,1,CHAM19,N1)
+        WRITE (IFIC,*) '---- ',MOTCLE,CHAM19(1:8)
+        CALL UTEST3(IFIC,'CHAM_NO',IOCC)
+
+        CALL GETVTX('CHAM_NO','NOM_CMP',IOCC,1,1,NODDL,N1)
+        CALL GETVR8('CHAM_NO','PRECISION',IOCC,1,1,EPSI,N1)
+        CALL GETVTX('CHAM_NO','CRITERE',IOCC,1,1,CRIT,N1)
+        CALL GETVR8('CHAM_NO','VALE',IOCC,1,1,REFR,N1)
+        CALL GETVIS('CHAM_NO','VALE_I',IOCC,1,1,REFI,N2)
+        CALL GETVC8('CHAM_NO','VALE_C',IOCC,1,1,REFC,N3)
+        TYPRES = 'R'
+        IF (N2.NE.0) TYPRES = 'I'
+        IF (N3.NE.0) TYPRES = 'C'
+
+        CALL GETVTX('CHAM_NO','TYPE_TEST',IOCC,1,1,TYPTES,N1)
+        IF (N1.NE.0) THEN
+          CALL GETVTX('CHAM_NO','NOM_CMP',IOCC,1,0,NODDL,N4)
+          IF (N4.EQ.0) THEN
+            CALL UTEST1(CHAM19,TYPTES,TYPRES,REFI,REFR,REFC,EPSI,CRIT,
+     &                  IFIC)
+          ELSE
+            NBCMP = -N4
+            CALL WKVECT('&&OP0023.NOM_CMP','V V K8',NBCMP,JCMP)
+            CALL GETVTX('CHAM_NO','NOM_CMP',IOCC,1,NBCMP,ZK8(JCMP),N4)
+            CALL UTEST4(CHAM19,TYPTES,TYPRES,REFI,REFR,REFC,EPSI,CRIT,
+     &                  IFIC,NBCMP,ZK8(JCMP))
+            CALL JEDETR('&&OP0023.NOM_CMP')
+          END IF
+
+        ELSE
+
+          CALL GETVTX('CHAM_NO','NOM_CMP',IOCC,1,1,NODDL,N1)
+          CALL DISMOI('F','NOM_MAILLA',CHAM19,'CHAMP',IBID,NOMMA,IE)
+          CALL GETVEM(NOMMA,'NOEUD','CHAM_NO','NOEUD',IOCC,1,1,
+     &                NONOEU(1:8),N1)
+          CALL GETVEM(NOMMA,'GROUP_NO','CHAM_NO','GROUP_NO',IOCC,1,1,
+     &                NOGRNO,N2)
+          IF (N1.EQ.1) THEN
+C            RIEN A FAIRE.
+          ELSE
+            CALL UTNONO('E',NOMMA,'NOEUD',NOGRNO,NONOEU(1:8),IRET)
+            IF (IRET.NE.0) THEN
+              WRITE (IFIC,*) TESTOK
+              GO TO 30
+            END IF
+            NONOEU(10:17) = NOGRNO
+          END IF
+          CALL UTESTR(CHAM19,NONOEU,NODDL,REFI,REFR,REFC,TYPRES,EPSI,
+     &                CRIT,IFIC)
+        END IF
+   30 CONTINUE
+
+C     --- TRAITEMENT D'UN CHAM_ELEM ---
+
+      CALL GETFAC('CHAM_ELEM',NOCC)
+      MOTCLE = 'CHAM_ELEM:'
+
+      DO 40 IOCC = 1,NOCC
+        TESTOK = 'NOOK'
+        NONOEU = ' '
+        NODDL = ' '
+        CALL GETVID('CHAM_ELEM','CHAM_GD',IOCC,1,1,CHAM19,N1)
+        WRITE (IFIC,*) '---- ',MOTCLE,CHAM19(1:8)
+        CALL UTEST3(IFIC,'CHAM_ELEM',IOCC)
+
+        CALL GETVTX('CHAM_ELEM','NOM_CMP',IOCC,1,1,NODDL,N1)
+        CALL GETVR8('CHAM_ELEM','PRECISION',IOCC,1,1,EPSI,N1)
+        CALL GETVTX('CHAM_ELEM','CRITERE',IOCC,1,1,CRIT,N1)
+        CALL GETVR8('CHAM_ELEM','VALE',IOCC,1,1,REFR,N1)
+        CALL GETVIS('CHAM_ELEM','VALE_I',IOCC,1,1,REFI,N2)
+        CALL GETVC8('CHAM_ELEM','VALE_C',IOCC,1,1,REFC,N3)
+        TYPRES = 'R'
+        IF (N2.NE.0) TYPRES = 'I'
+        IF (N3.NE.0) TYPRES = 'C'
+
+        CALL GETVTX('CHAM_ELEM','TYPE_TEST',IOCC,1,1,TYPTES,N1)
+        IF (N1.NE.0) THEN
+          CALL GETVTX('CHAM_ELEM','NOM_CMP',IOCC,1,0,NODDL,N4)
+          IF (N4.EQ.0) THEN
+            CALL UTEST1(CHAM19,TYPTES,TYPRES,REFI,REFR,REFC,EPSI,CRIT,
+     &                  IFIC)
+          ELSE
+            NBCMP = -N4
+            CALL WKVECT('&&OP0023.NOM_CMP','V V K8',NBCMP,JCMP)
+            CALL GETVTX('CHAM_ELEM','NOM_CMP',IOCC,1,NBCMP,ZK8(JCMP),N4)
+            CALL UTEST4(CHAM19,TYPTES,TYPRES,REFI,REFR,REFC,EPSI,CRIT,
+     &                  IFIC,NBCMP,ZK8(JCMP))
+            CALL JEDETR('&&OP0023.NOM_CMP')
+          END IF
+
+        ELSE
+
+          CALL GETVTX('CHAM_ELEM','NOM_CMP',IOCC,1,1,NODDL,N1)
+          CALL DISMOI('F','NOM_MAILLA',CHAM19,'CHAMP',IBID,NOMMA,IE)
+          CALL GETVEM(NOMMA,'MAILLE','CHAM_ELEM','MAILLE',IOCC,1,1,
+     &                NOMAIL,N1)
+          CALL GETVEM(NOMMA,'NOEUD','CHAM_ELEM','NOEUD',IOCC,1,1,
+     &                NONOEU(1:8),N3)
+          CALL GETVEM(NOMMA,'GROUP_NO','CHAM_ELEM','GROUP_NO',IOCC,1,1,
+     &                NOGRNO,N4)
+
+          IF (N3.EQ.1) THEN
+C             RIEN A FAIRE.
+          ELSE IF (N4.EQ.1) THEN
+            CALL UTNONO('E',NOMMA,'NOEUD',NOGRNO,NONOEU(1:8),IRET)
+            IF (IRET.NE.0) THEN
+              WRITE (IFIC,*) TESTOK
+              GO TO 40
+            END IF
+            NONOEU(10:17) = NOGRNO
+          END IF
+
+          CALL DISMOI('F','NOM_GD',CHAM19,'CHAMP',IBID,NOMGD,IE)
+          CALL UTCMP1(NOMGD,'CHAM_ELEM',IOCC,NODDL,IVARI)
+          CALL GETVIS('CHAM_ELEM','SOUS_POINT',IOCC,1,1,NUSP,N2)
+          IF (N2.EQ.0) NUSP = 0
+          CALL GETVIS('CHAM_ELEM','POINT',IOCC,1,1,NUPO,N2)
+
+          CALL UTEST2(CHAM19,NOMAIL,NONOEU,NUPO,NUSP,IVARI,NODDL,
+     &                REFI,REFR,REFC,TYPRES,EPSI,CRIT,IFIC)
+        END IF
+   40 CONTINUE
+
+C     --- TRAITEMENT D'UN CONCEPT RESULTAT ---
+
+      CALL GETFAC('RESU',NOCC)
+      MOTCLE = 'RESULTAT: '
+      NORECG = '&&'//NOMPRO//'_RESULTA_GD     '
+
+      DO 70 IOCC = 1,NOCC
+        NODDL = ' '
+        TESTOK = 'NOOK'
+        CALL GETVTX('RESU','NOM_CMP',IOCC,1,1,NODDL,N1)
+        CALL GETVID('RESU','RESULTAT',IOCC,1,1,NORESU,N1)
+        IAUX = IOCC
+        CALL PSRESE('RESU',IAUX,1,NORESU,1,NBPASS,NORECG,IRET)
+        CALL JEVEUO(NORECG,'L',ADRECG)
+        CALL GETVR8('RESU','PRECISION',IOCC,1,0,EPSI,NP)
+        NP = -NP
+        IF (NP.EQ.0) THEN
+          EPSI = 0.001D0
+          PREC = 0.001D0
+        ELSE IF (NP.EQ.1) THEN
+          CALL GETVR8('RESU','PRECISION',IOCC,1,1,EPSI,NP)
+          PREC = EPSI
+        ELSE
+          CALL GETVR8('RESU','PRECISION',IOCC,1,2,EPSIR,NP)
+          EPSI = EPSIR(1)
+          PREC = EPSIR(2)
+        END IF
+        CALL GETVTX('RESU','CRITERE',IOCC,1,0,CRIT,NC)
+        NC = -NC
+        IF (NC.EQ.0) THEN
+          CRIT = 'RELATIF'
+          CRIT2 = 'RELATIF'
+        ELSE IF (NC.EQ.1) THEN
+          CALL GETVTX('RESU','CRITERE',IOCC,1,1,CRIT,NC)
+          CRIT2 = CRIT
+        ELSE
+          CALL GETVTX('RESU','CRITERE',IOCC,1,2,CRITR,NC)
+          CRIT = CRITR(1)
+          CRIT2 = CRITR(2)
+        END IF
+
+        CALL GETVR8('RESU','VALE',IOCC,1,1,REFR,N1)
+        CALL GETVIS('RESU','VALE_I',IOCC,1,1,REFI,N2)
+        CALL GETVC8('RESU','VALE_C',IOCC,1,1,REFC,N3)
+        TYPRES = 'R'
+        IF (N2.NE.0) TYPRES = 'I'
+        IF (N3.NE.0) TYPRES = 'C'
+
+        DO 60,NRPASS = 1,NBPASS
+
+C        POUR LE PASSAGE NUMERO NRPASS :
+C        . NOM DU CHAMP DE RESULTAT OU DE GRANDEUR
+C        . NOM DU PARAMETRE DE SENSIBILITE
+
+          LERESU = ZK24(ADRECG+2*NRPASS-2) (1:8)
+          NOPASE = ZK24(ADRECG+2*NRPASS-1) (1:8)
+          IF (NOPASE.EQ.' ') THEN
+C                    1234567890123456789012345678901234567
+            TITRES = '                                     '
+          ELSE
+            TITRES = '... SENSIBILITE AU PARAMETRE '//NOPASE
+          END IF
+
+          KNUM = '&&'//NOMPRO//'.NUME_ORDRE'
+          CALL RSUTNU(LERESU,'RESU',IOCC,KNUM,NBORDR,PREC,CRIT2,IRET)
+          IF (IRET.NE.0) THEN
+            WRITE (IFIC,*) TESTOK,' PAS D''ACCES AU RESULTAT '
+            GO TO 50
+          END IF
+          CALL JEVEUO(KNUM,'L',JORDR)
+          NUMORD = ZI(JORDR)
+
+          CALL GETVTX('RESU','PARA',IOCC,1,1,NOPARA,N1)
+          IF (N1.NE.0) THEN
+            WRITE (IFIC,'(1X,4A,I4,A)') '---- ',MOTCLE,NORESU,
+     &        ' NUME_ORDRE:',NUMORD,TITRES
+            CALL UTEST3(IFIC,'RESU',IOCC)
+            CALL RSADPA(LERESU,'L',1,NOPARA,NUMORD,1,JLUE,K16B)
+            IF (K16B(1:1).NE.TYPRES) THEN
+              WRITE (IFIC,*) TESTOK,' TYPE DE LA VALEUR DE REFER'//
+     &          'ENCE INCOMPATIBLE AVEC LE TYPE DES VALEURS DU CHAMP'
+              GO TO 50
+            ELSE IF (TYPRES.EQ.'R') THEN
+              VALR = ZR(JLUE)
+            ELSE IF (TYPRES.EQ.'I') THEN
+              VALI = ZI(JLUE)
+            ELSE IF (TYPRES.EQ.'C') THEN
+              VALC = ZC(JLUE)
+            END IF
+            NOCMP = ' '
+            LABEL = NOPARA(1:16)
+            CALL UTITES(NOCMP,LABEL,TYPRES,REFI,REFR,REFC,VALI,VALR,
+     &                  VALC,EPSI,CRIT,IFIC)
+          END IF
+
+          CALL GETVTX('RESU','NOM_CHAM',IOCC,1,1,NOPARA,N1)
+          IF (N1.NE.0) THEN
+            CALL RSEXCH(LERESU,NOPARA,NUMORD,CHAM19,IRET)
+            IF (IRET.NE.0) THEN
+              WRITE (IFIC,*) TESTOK,' PAS DE CHAMP POUR ',NORESU,
+     &          'A L''ORDRE ',NUMORD,' ET AU NOM_CHAM ',NOPARA,TITRES
+              GO TO 50
+            END IF
+
+            WRITE (IFIC,'(1X,4A,I4,3A)') '---- ',MOTCLE,NORESU,
+     &        ' NUME_ORDRE:',NUMORD,' NOM_CHAM: ',NOPARA,TITRES
+            CALL UTEST3(IFIC,'RESU',IOCC)
+
+            CALL GETVTX('RESU','TYPE_TEST',IOCC,1,1,TYPTES,N1)
+            IF (N1.NE.0) THEN
+              CALL GETVTX('RESU','NOM_CMP',IOCC,1,0,NODDL,N4)
+              IF (N4.EQ.0) THEN
+                CALL UTEST1(CHAM19,TYPTES,TYPRES,REFI,REFR,REFC,EPSI,
+     &                      CRIT,IFIC)
+              ELSE
+                NBCMP = -N4
+                CALL WKVECT('&&OP0023.NOM_CMP','V V K8',NBCMP,JCMP)
+                CALL GETVTX('RESU','NOM_CMP',IOCC,1,NBCMP,ZK8(JCMP),N4)
+                CALL UTEST4(CHAM19,TYPTES,TYPRES,REFI,REFR,REFC,EPSI,
+     &                      CRIT,IFIC,NBCMP,ZK8(JCMP))
+                CALL JEDETR('&&OP0023.NOM_CMP')
+              END IF
+            ELSE
+              CALL GETVTX('RESU','NOM_CMP',IOCC,1,1,NODDL,N1)
+              NONOEU = ' '
+              CALL DISMOI('F','NOM_MAILLA',CHAM19,'CHAMP',IBID,NOMMA,IE)
+              CALL GETVEM(NOMMA,'NOEUD','RESU','NOEUD',IOCC,1,1,
+     &                    NONOEU(1:8),N1)
+              CALL GETVEM(NOMMA,'GROUP_NO','RESU','GROUP_NO',IOCC,1,1,
+     &                    NOGRNO,N2)
+              IF (N1.NE.0) THEN
+C              RIEN A FAIRE.
+              ELSE IF (N2.NE.0) THEN
+                CALL UTNONO('E',NOMMA,'NOEUD',NOGRNO,NONOEU(1:8),IRET)
+                IF (IRET.NE.0) THEN
+                  WRITE (IFIC,*) TESTOK
+                  GO TO 50
+                END IF
+                NONOEU(10:17) = NOGRNO
+              END IF
+              CALL DISMOI('F','TYPE_CHAMP',CHAM19,'CHAMP',IBID,TYPCH,IE)
+              CALL DISMOI('F','NOM_MAILLA',CHAM19,'CHAMP',IBID,NOMMA,IE)
+              CALL DISMOI('F','NOM_GD',CHAM19,'CHAMP',IBID,NOMGD,IE)
+              CALL UTCMP1(NOMGD,'RESU',IOCC,NODDL,IVARI)
+              CALL GETVIS('RESU','SOUS_POINT',IOCC,1,1,NUSP,N2)
+              IF (N2.EQ.0) NUSP = 0
+              CALL GETVIS('RESU','POINT',IOCC,1,1,NUPO,N2)
+              IF (TYPCH.EQ.'NOEU') THEN
+                IF (N2.NE.0) THEN
+                  WRITE (IFIC,*) TESTOK,' "POINT"  INTERDIT POUR ',
+     &              ' LE CHAMP AU NOEUD ISSU DE ',NORESU,'A L''ORDRE ',
+     &              NUMORD,' ET AU NOM_CHAM ',NOPARA,TITRES
+                  GO TO 50
+                END IF
+                CALL UTESTR(CHAM19,NONOEU,NODDL,REFI,REFR,REFC,TYPRES,
+     &                      EPSI,CRIT,IFIC)
+              ELSE IF (TYPCH(1:2).EQ.'EL') THEN
+                CALL GETVEM(NOMMA,'MAILLE','RESU','MAILLE',IOCC,1,1,
+     &                      NOMAIL,N1)
+                IF (N1.EQ.0) THEN
+                  CALL UTMESS('F','TEST_RESU','IL FAUT DONNER "MAILLE"')
+                END IF
+                CALL UTEST2(CHAM19,NOMAIL,NONOEU,NUPO,NUSP,IVARI,NODDL,
+     &                      REFI,REFR,REFC,TYPRES,EPSI,CRIT,IFIC)
+              END IF
+            END IF
+          END IF
+   50     CONTINUE
+          CALL JEDETR(NORECG)
+          CALL JEDETR(KNUM)
+   60   CONTINUE
+   70 CONTINUE
+
+      CALL JEDEMA()
+ 1000 FORMAT (/,80 ('-'))
+      END

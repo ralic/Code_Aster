@@ -1,0 +1,317 @@
+# MODIF  DATE 22/11/2001   AUTEUR VABHHTS J.PELLET 
+# TITRE VERSION POUTRE DE LA PLAQUE EN GRANDES
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+# ROTATIONS SSNV138A
+#
+#
+# MODELISATION : POU_D_T_GD
+#
+# MAILLAGE     : SEG2
+#
+#
+
+DEBUT( CODE=_F( NOM = 'SSNV138B',NIV_PUB_WEB='INTERNET'))
+
+#
+
+MA1=LIRE_MAILLAGE(  )
+
+MA1=DEFI_GROUP( reuse=MA1,   MAILLAGE=MA1,
+  CREA_GROUP_MA=_F(  NOM = 'TOUT', TOUT = 'OUI'))
+
+#
+
+MO1=AFFE_MODELE(  MAILLAGE=MA1,
+          AFFE=_F( TOUT = 'OUI', MODELISATION = 'POU_D_T_GD',
+          PHENOMENE = 'MECANIQUE') )
+
+#
+
+MAT=DEFI_MATERIAU(   ELAS=_F(  E = 12.E6,  NU = 0.,  ALPHA = 0.)
+                        )
+
+#
+
+CHMAT1=AFFE_MATERIAU(   MAILLAGE=MA1,
+                          AFFE=_F(  TOUT = 'OUI',  MATER = MAT)
+                        )
+
+#
+#
+
+CHA1=AFFE_CHAR_MECA(   MODELE=MO1,
+
+#
+# COND. LIM. :  ENCASTREMENT
+#
+                          DDL_IMPO=_F(
+                            NOEUD = 'NO01',  DX = 0., DY = 0., DZ = 0.,
+                                          DRX = 0., DRY = 0., DRZ = 0.)
+                        )
+
+#
+#
+# CHARGEMENT       AU DERNIER PAS
+#                  MOMENT LINEIQUE
+#
+
+CHA2=AFFE_CHAR_MECA(         MODELE=MO1,
+#
+                            FORCE_NODALE=_F(
+                                          NOEUD = 'NO11',
+                                          MY = -100.)
+                        )
+
+#
+
+CARA1=AFFE_CARA_ELEM(
+                                  MODELE=MO1,
+                                 POUTRE=_F(
+
+       GROUP_MA = 'TOUT',
+
+                                          SECTION = 'GENERALE',
+CARA = ( 'A',   'IY',                       'IZ',
+                        'AY',    'AZ',    'JX', ),
+VALE = (  0.1,   .08333333333333333333E-03, .08333333333333333333E-01,
+                         0.1,    0.1,      0.2, ))
+                             )
+
+#
+
+L_INST=DEFI_LIST_REEL(   DEBUT=0.0,
+#
+               INTERVALLE=_F(  JUSQU_A = 100.,     NOMBRE = 1000)
+#
+#
+                         )
+
+#
+
+D_FONC=DEFI_FONCTION(
+                            NOM_PARA='INST',
+                                VALE=(
+                                       0., 0.,
+                                       100., 100.,
+                                     )
+                         )
+
+#
+#
+
+NONLI=STAT_NON_LINE(
+                            MODELE=MO1,
+                        CHAM_MATER=CHMAT1,
+                         CARA_ELEM=CARA1,EXCIT=(
+                             _F(
+                CHARGE = CHA1), _F(
+                CHARGE = CHA2,
+                FONC_MULT = D_FONC)),
+                         COMP_ELAS=_F(
+                RELATION = 'ELAS_POUTRE_GR',
+                DEFORMATION = 'GREEN_GR'),
+                         INCREMENT=_F(
+                LIST_INST = L_INST,
+                NUME_INST_FIN = 31),
+                            NEWTON=_F(
+                REAC_ITER = 1,
+                MATRICE = 'TANGENTE'),
+                       CONVERGENCE=_F(
+                ITER_GLOB_MAXI = 20,
+                RESI_INTE_RELA = 1.E-6,
+                RESI_GLOB_RELA = 1.E-6)
+              )
+
+NONLI=CALC_ELEM( reuse=NONLI,
+                            OPTION=(
+                  'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
+                          RESULTAT=NONLI,
+                            MODELE=MO1,
+                        CHAM_MATER=CHMAT1,
+                         CARA_ELEM=CARA1
+              )
+
+IMPR_RESU( MODELE=MO1,
+        RESU=_F( MAILLAGE = MA1, FORMAT = 'CASTEM',
+              RESULTAT = NONLI)
+      )
+
+
+#
+#
+#
+#
+#
+#
+#   NOEUD NO11
+##############################
+#
+
+TEST_RESU(
+
+                    RESU=_F(
+                      RESULTAT = NONLI,
+                      INST = 0.3,
+                               NOEUD = 'NO11',
+                      NOM_CHAM = 'DEPL',
+                      CRITERE = 'RELATIF',
+                      PRECISION = 1.E-5,
+                      NOM_CMP = 'DRY',
+                      VALE = -0.3)
+            )
+
+#
+
+TEST_RESU(
+
+                    RESU=_F(
+                      RESULTAT = NONLI,
+                      INST = 0.6,
+                               NOEUD = 'NO11',
+                      NOM_CHAM = 'DEPL',
+                      CRITERE = 'RELATIF',
+                      PRECISION = 1.E-5,
+                      NOM_CMP = 'DRY',
+                      VALE = -0.6)
+            )
+
+#
+#
+#
+#   NOEUD NO11
+############################################
+#
+
+TEST_RESU(
+
+                    RESU=_F(
+                      RESULTAT = NONLI,
+                      INST = 0.3,
+                               NOEUD = 'NO11',
+                      NOM_CHAM = 'DEPL',
+                      CRITERE = 'RELATIF',
+                      PRECISION = 0.003,
+                      NOM_CMP = 'DX',
+                      VALE = -0.149326445)
+            )
+
+#
+
+TEST_RESU(
+
+                    RESU=_F(
+                      RESULTAT = NONLI,
+                      INST = 0.6,
+                               NOEUD = 'NO11',
+                      NOM_CHAM = 'DEPL',
+                      CRITERE = 'RELATIF',
+                      PRECISION = 0.241E-02,
+                      NOM_CMP = 'DX',
+                      VALE = -0.589292110)
+            )
+
+#
+#
+#
+#   NOEUD NO11
+############################################
+#
+
+TEST_RESU(
+                    RESU=_F(
+                      RESULTAT = NONLI,
+                      INST = 0.3,
+                               NOEUD = 'NO11',
+                      NOM_CHAM = 'DEPL',
+                      CRITERE = 'RELATIF',
+                      PRECISION = 0.005,
+                      NOM_CMP = 'DZ',
+                      VALE = 1.48878)
+            )
+
+#
+
+TEST_RESU(
+                    RESU=_F(
+                      RESULTAT = NONLI,
+                      INST = 0.6,
+                               NOEUD = 'NO11',
+                      NOM_CHAM = 'DEPL',
+                      CRITERE = 'RELATIF',
+                      PRECISION = 0.016,
+                      NOM_CMP = 'DZ',
+                      VALE = 2.91107)
+            )
+TEST_RESU(RESU=_F(NOM_CHAM='DEPL',
+                  RESULTAT=NONLI,
+                  PRECISION=1.E-2,
+                  CRITERE='RELATIF',
+                  INST=1.8,
+                  VALE=-4.5897353,
+                  NOEUD = 'NO11',
+                  NOM_CMP='DX',),);
+
+TEST_RESU(RESU=_F(NOM_CHAM='DEPL',
+                  RESULTAT=NONLI,
+                  PRECISION=1.E-2,
+                  CRITERE='RELATIF',
+                  INST=1.8,
+                  VALE=6.8177894,
+                  NOEUD = 'NO11',
+                  NOM_CMP='DZ',),);
+
+TEST_RESU(RESU=_F(NOM_CHAM='DEPL',
+                  RESULTAT=NONLI,
+                  PRECISION=1.E-2,
+                  CRITERE='RELATIF',
+                  INST=2.4,
+                  VALE=-7.185570081,
+                  NOEUD = 'NO11',
+                  NOM_CMP='DX',),);
+
+TEST_RESU(RESU=_F(NOM_CHAM='DEPL',
+                  RESULTAT=NONLI,
+                  PRECISION=1.E-2,
+                  CRITERE='RELATIF',
+                  INST=2.4,
+                  VALE=7.23914048142,
+                  NOEUD = 'NO11',
+                  NOM_CMP='DZ',),);
+#
+#
+#
+#
+#
+##########################################################
+#
+#
+TEST_RESU(
+
+                    RESU=_F(
+                      RESULTAT = NONLI,
+                      INST = 3.1,
+                               NOEUD = 'NO11',
+                      NOM_CHAM = 'DEPL',
+                      CRITERE = 'RELATIF',
+                      PRECISION = 1.E-5,
+                      NOM_CMP = 'DRY',
+                      VALE = -3.1)
+            )
+#
+FIN( )

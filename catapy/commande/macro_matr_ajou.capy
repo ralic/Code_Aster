@@ -1,0 +1,103 @@
+#& MODIF COMMANDE  DATE 09/10/2002   AUTEUR DURAND C.DURAND 
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+def macro_matr_ajou_prod(self,MATR_AMOR_AJOU,MATR_MASS_AJOU,MATR_RIGI_AJOU,FORC_AJOU,**args):
+  self.type_sdprod(MATR_AMOR_AJOU,matr_asse_depl_r)
+  self.type_sdprod(MATR_MASS_AJOU,matr_asse_depl_r)
+  self.type_sdprod(MATR_RIGI_AJOU,matr_asse_depl_r)
+  if FORC_AJOU != None:
+    for m in FORC_AJOU:
+      self.type_sdprod(m['VECTEUR'],vect_asse_gene)
+
+  return None
+
+MACRO_MATR_AJOU=MACRO(nom="MACRO_MATR_AJOU",op=-13,docu="U4.66.11-c1",sd_prod=macro_matr_ajou_prod,
+            UIinfo={"groupes":("Matrices/vecteurs",)},
+      regles=(AU_MOINS_UN('MODE_MECA','DEPL_IMPO','MODELE_GENE'),
+              AU_MOINS_UN('MATR_MASS_AJOU','MATR_AMOR_AJOU','MATR_RIGI_AJOU'),
+              EXCLUS('MODE_MECA','DEPL_IMPO','MODELE_GENE'),
+              EXCLUS('MONO_APPUI','MODE_STAT',),
+             ),
+         MAILLAGE        =SIMP(statut='o',typ=maillage),
+         GROUP_MA_FLUIDE =SIMP(statut='o',typ=grma),
+         GROUP_MA_INTERF =SIMP(statut='o',typ=grma),
+         MODELISATION    =SIMP(statut='o',typ='TXM',into=("PLAN","AXIS","3D")),
+         FLUIDE          =FACT(statut='o',min=1,max='**',
+           RHO             =SIMP(statut='o',typ='R'),
+           TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",)),
+           GROUP_MA        =SIMP(statut='f',typ=grma),
+           MAILLE          =SIMP(statut='f',typ=ma),
+         ),
+         DDL_IMPO        =FACT(statut='o',min=1,max='**',
+           regles=(UN_PARMI('NOEUD','GROUP_NO'),
+                   UN_PARMI('PRES_FLUIDE','PRES_SORTIE'),),
+           NOEUD           =SIMP(statut='f',typ=no),
+           GROUP_NO        =SIMP(statut='f',typ=grno),
+           PRES_FLUIDE     =SIMP(statut='f',typ='R'),
+           PRES_SORTIE     =SIMP(statut='f',typ='R'),
+         ),
+         ECOULEMENT      =FACT(statut='f',min=1,max='**',
+           GROUP_MA_1      =SIMP(statut='o',typ=grma),
+           GROUP_MA_2      =SIMP(statut='o',typ=grma),
+           VNOR_1          =SIMP(statut='o',typ='R'),
+           VNOR_2          =SIMP(statut='f',typ='R'),
+           POTENTIEL       =SIMP(statut='f',typ=evol_ther),
+         ),
+         MODE_MECA       =SIMP(statut='f',typ=mode_meca),
+         DEPL_IMPO       =SIMP(statut='f',typ=cham_no_depl_r),
+         MODELE_GENE     =SIMP(statut='f',typ=modele_gene),
+         NUME_DDL_GENE   =SIMP(statut='f',typ=nume_ddl_gene),
+         DIST_REFE       =SIMP(statut='f',typ='R',defaut= 1.0E-2),
+         MATR_MASS_AJOU  =SIMP(statut='f',typ=(CO,matr_asse)),
+         MATR_RIGI_AJOU  =SIMP(statut='f',typ=(CO,matr_asse)),
+         MATR_AMOR_AJOU  =SIMP(statut='f',typ=(CO,matr_asse)),
+         MONO_APPUI      =SIMP(statut='f',typ='TXM',into=("OUI",),),
+         MODE_STAT       =SIMP(statut='f',typ=(mode_stat_depl,mode_stat_acce,mode_stat_forc,),),
+         FORC_AJOU       =FACT(statut='f',min=1,max='**',
+           DIRECTION     =SIMP(statut='o',typ='R',max=3),
+           NOEUD         =SIMP(statut='f',typ=no,max='**'),
+           GROUP_NO      =SIMP(statut='f',typ=grno,max='**'),
+           VECTEUR       =SIMP(statut='o',typ=(CO,vect_asse_gene)),
+         ),
+         SOLVEUR         =FACT(statut='d',min=1,max=1,
+           METHODE         =SIMP(statut='f',typ='TXM',defaut="MULT_FRONT",into=("MULT_FRONT","LDLT","GCPC") ),
+           b_mult_front    =BLOC(condition = "METHODE == 'MULT_FRONT' ",fr="Paramètres de la méthode multi frontale",
+             RENUM           =SIMP(statut='f',typ='TXM',defaut="METIS",into=("MD","MDA","METIS") ),
+           ),
+           b_ldlt         =BLOC(condition = "METHODE == 'LDLT' ",fr="Paramètres de la méthode LDLT",
+             RENUM           =SIMP(statut='f',typ='TXM',defaut="RCMK",into=("RCMK","SANS") ),
+           ),
+           b_ldlt_mult    =BLOC(condition = "METHODE == 'LDLT' or METHODE == 'MULT_FRONT' ",
+                                   fr="Paramètres relatifs à la non iversibilité de la matrice à factorise",
+             NPREC           =SIMP(statut='f',typ='I',defaut= 8 ),
+             STOP_SINGULIER  =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
+           ),
+           b_gcpc          =BLOC(condition = "METHODE == 'GCPC' ", fr="Paramètres de la méthode du gradient conjugué",
+             PRE_COND        =SIMP(statut='f',typ='TXM',into=("LDLT_INC","SANS","DIAG") ),
+             NIVE_REMPLISSAGE=SIMP(statut='f',typ='I',defaut= 0 ),
+             RENUM           =SIMP(statut='f',typ='TXM',defaut="RCMK",into=("SANS","RCMK") ),
+             RESI_RELA       =SIMP(statut='f',typ='R',defaut= 1.E-6 ),
+             NMAX_ITER       =SIMP(statut='f',typ='I',defaut= 0 ),
+           ),
+#  A quoi sert eps
+           EPS             =SIMP(statut='f',typ='R',defaut= 0.E+0 ),
+         ),
+         INFO            =SIMP(statut='f',typ='I',defaut=1,into=(1,2)),
+         NOEUD_DOUBLE    =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON")),
+         AVEC_MODE_STAT  =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON")),
+) ;

@@ -1,0 +1,141 @@
+      SUBROUTINE TE0217(OPTION,NOMTE)
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ELEMENTS  DATE 04/04/2002   AUTEUR VABHHTS J.PELLET 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+      IMPLICIT REAL*8 (A-H,O-Z)
+      CHARACTER*16      OPTION,NOMTE
+C.......................................................................
+C
+C     BUT: CALCUL DU SECOND MEMBRE ELEMENTAIRE EN THERMIQUE CORRESPON-
+C          DANT A UN GRADIENT IMPOSE DE TEMPERATURE
+C          ELEMENTS ISOPARAMETRIQUES 3D
+C
+C          OPTION : 'CHAR_THER_GRAI_R '
+C
+C     ENTREES  ---> OPTION : OPTION DE CALCUL
+C              ---> NOMTE  : NOM DU TYPE ELEMENT
+C.......................................................................
+C
+      CHARACTER*2        CODRET
+      CHARACTER*8        NOMPAR(4),GRXF,GRYF,GRZF
+      CHARACTER*8        ELREFE
+      CHARACTER*24       CHVAL,CHCTE
+      REAL*8             VALRES ,VALPAR(4),X,Y,Z
+      REAL*8             DFDX(27),DFDY(27),DFDZ(27),POIDS,GRX,GRY,GRZ
+      INTEGER            IPOIDS,IVF,JVAL,JIN,IDFDE,IDFDN,IDFDK,IGEOM
+      INTEGER            NNO,NDIM,KP,NPG1,NBFPG,I,K,IVECTT,IGRAI,IMATE
+      INTEGER            NBPG(10)
+C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
+C
+      CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
+      INTEGER            ZI
+      COMMON  / IVARJE / ZI(1)
+      REAL*8             ZR
+      COMMON  / RVARJE / ZR(1)
+      COMPLEX*16         ZC
+      COMMON  / CVARJE / ZC(1)
+      LOGICAL            ZL,FONC
+      COMMON  / LVARJE / ZL(1)
+      CHARACTER*8        ZK8
+      CHARACTER*16                ZK16
+      CHARACTER*24                          ZK24
+      CHARACTER*32                                    ZK32
+      CHARACTER*80                                              ZK80
+      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+C
+C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
+C
+      CALL ELREF1(ELREFE)
+      CHCTE = '&INEL.'//ELREFE//'.CARACTE'
+      CALL JEVETE(CHCTE,'L',JIN)
+      NDIM = ZI(JIN+1-1)
+      NNO  = ZI(JIN+2-1)
+      NBFPG= ZI(JIN+3-1)
+      DO 111 I = 1,NBFPG
+         NBPG(I) = ZI(JIN+3-1+I)
+  111 CONTINUE
+      NPG1 = NBPG(1)
+C
+      CHVAL = '&INEL.'//ELREFE//'.FFORMES'
+      CALL JEVETE(CHVAL,'L',JVAL)
+C
+      IPOIDS = JVAL + (NDIM+1)*NNO*NNO
+      IVF    = IPOIDS + NPG1
+      IDFDE  = IVF    + NPG1*NNO
+      IDFDN  = IDFDE  + 1
+      IDFDK  = IDFDN  + 1
+C
+      CALL JEVECH('PGEOMER','L',IGEOM)
+      CALL JEVECH('PMATERC','L',IMATE)
+      CALL JEVECH('PVECTTR','E',IVECTT)
+      CALL RCVALA(ZI(IMATE),'THER',1,'INST',0.D0,1,'LAMBDA',VALRES,
+     &            CODRET,'FM')
+C
+      IF (OPTION.EQ.'CHAR_THER_GRAI_R') THEN
+        FONC=.FALSE.
+        CALL JEVECH('PGRAINR','L',IGRAI)
+        GRX=ZR(IGRAI)
+        GRY=ZR(IGRAI+1)
+        GRZ=ZR(IGRAI+2)
+      ELSE IF (OPTION.EQ.'CHAR_THER_GRAI_F') THEN
+        FONC=.TRUE.
+        CALL JEVECH('PTEMPSR','L',ITEMPS)
+        CALL JEVECH('PGRAINF','L',IGRAI)
+        GRXF=ZK8(IGRAI)
+        GRYF=ZK8(IGRAI+1)
+        GRZF=ZK8(IGRAI+2)
+        NOMPAR(1)='X'
+        NOMPAR(2)='Y'
+        NOMPAR(3)='Z'
+        NOMPAR(4)='INST'
+        VALPAR(4) = ZR(ITEMPS)
+      END IF
+C
+      DO 101 KP=1,NPG1
+        K=(KP-1)*NNO*3
+        CALL DFDM3D ( NNO,ZR(IPOIDS+KP-1),ZR(IDFDE+K),ZR(IDFDN+K),
+     &                ZR(IDFDK+K),ZR(IGEOM),DFDX,DFDY,DFDZ,POIDS )
+C
+        X = 0.D0
+        Y = 0.D0
+        Z = 0.D0
+        DO 102 I=1,NNO
+          X = X + ZR(IGEOM-1+3*(I-1)+1) * ZR(IVF+K+I-1)
+          Y = Y + ZR(IGEOM-1+3*(I-1)+2) * ZR(IVF+K+I-1)
+          Z = Z + ZR(IGEOM-1+3*(I-1)+3) * ZR(IVF+K+I-1)
+102     CONTINUE
+C
+        POIDS = POIDS*VALRES
+C
+        IF (FONC) THEN
+          VALPAR(1) = X
+          VALPAR(2) = Y
+          VALPAR(3) = Z
+          CALL FOINTE('FM',GRXF,4,NOMPAR,VALPAR,GRX,IER)
+          CALL FOINTE('FM',GRYF,4,NOMPAR,VALPAR,GRY,IER)
+          CALL FOINTE('FM',GRZF,4,NOMPAR,VALPAR,GRZ,IER)
+        END IF
+C
+        DO 106 I=1,NNO
+             ZR(IVECTT+I-1) = ZR(IVECTT+I-1)+POIDS*(
+     &                      + GRX*DFDX(I)+GRY*DFDY(I)+GRZ*DFDZ(I))
+106     CONTINUE
+C
+101   CONTINUE
+C
+      END

@@ -1,0 +1,224 @@
+      SUBROUTINE CAUNDF(CODE,OPT,TE)
+      IMPLICIT NONE
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF CALCULEL  DATE 27/03/2002   AUTEUR VABHHTS J.PELLET 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+C RESPONSABLE                            VABHHTS J.PELLET
+C     ARGUMENTS:
+C     ----------
+      INTEGER OPT,TE
+      CHARACTER*5 CODE
+C ----------------------------------------------------------------------
+C     ENTREES:
+C      CODE :  / 'ECRIT' : ON ECRIT UNE VALEUR UNDEF AU BOUT DES CHLOC
+C              / 'VERIF' : ON VERIFIE LA VALEUR UNDEF AU BOUT DES CHLOC
+C      OPT : OPTION
+C      TE  : TYPE_ELEMENT
+C ----------------------------------------------------------------------
+      COMMON /CAII02/IAOPTT,LGCO,IAOPMO,ILOPMO,IAOPNO,ILOPNO,IAOPDS,
+     +       IAOPPA,NPARIO,NPARIN,IAMLOC,ILMLOC,IADSGD
+      COMMON /CAII06/IAWLOC,IAWTYP,NBELGR,IGR
+      COMMON /CAII04/IACHII,IACHIK,IACHIX
+      COMMON /CAII07/IACHOI,IACHOK
+      COMMON /CAII08/IEL
+      INTEGER NBPARA,ISNNEM,INDIK8
+      CHARACTER*8 NOPARA
+      INTEGER NP,IPAR,LGCATA
+      INTEGER IAOPTT,LGCO,IAOPMO,ILOPMO,IAOPNO,ILOPNO,IAOPDS,IAOPPA
+      INTEGER NPARIO,NPARIN,IAMLOC,ILMLOC,IADSGD
+      INTEGER IAWLOC,IAWTYP,NBELGR,IGR,IACHII,IACHIK,IACHIX,IACHOI
+      INTEGER IACHOK,IEL,IPARG,JCELD,LGGREL,IACHLO
+      CHARACTER*3 TYPSCA
+      CHARACTER*8 NOMPAR
+C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
+      CHARACTER*32 JEXNUM,JEXNOM,JEXATR,JEXR8
+      COMMON /IVARJE/ZI(1)
+      COMMON /RVARJE/ZR(1)
+      COMMON /CVARJE/ZC(1)
+      COMMON /LVARJE/ZL(1)
+      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+      INTEGER ZI
+      REAL*8 ZR
+      COMPLEX*16 ZC
+      LOGICAL ZL,ECRAS,ARRET,ETENDU
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16,NOMTE,NOMOPT
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32
+      CHARACTER*80 ZK80
+C ---------------- FIN COMMUNS NORMALISES  JEVEUX  --------------------
+      INTEGER IUNDF,IVIDE
+      REAL*8 RUNDF,RVIDE,R8NNEM,R8VIDE
+      COMPLEX*16 CUNDF,CVIDE
+      CHARACTER*8 KUNDF,KVIDE
+
+C DEB-------------------------------------------------------------------
+      IUNDF = ISNNEM()
+      RUNDF = R8NNEM()
+      CUNDF = DCMPLX(RUNDF,RUNDF)
+      KUNDF = '????????'
+
+      IVIDE = ISNNEM()
+      RVIDE = R8VIDE()
+      CVIDE = DCMPLX(RVIDE,RVIDE)
+C     KVIDE='????????'
+
+
+
+      IF (CODE.EQ.'ECRIT') THEN
+C     ------------------------------------------------
+
+C        -- CHAMPS "OUT" :
+        NP = NBPARA(OPT,TE,'OUT')
+        DO 10 IPAR = 1,NP
+          NOMPAR = NOPARA(OPT,TE,'OUT',IPAR)
+
+          IPARG = INDIK8(ZK8(IAOPPA),NOMPAR,1,NPARIO)
+          LGCATA = ZI(IAWLOC-1+7* (IPARG-1)+4)
+          IF (LGCATA.LE.0) GO TO 10
+
+
+C         -- LE CHAMP LOCAL EST-IL ETENDU ?
+          CALL CHLOET(IPARG,ETENDU,JCELD)
+          IF (ETENDU) THEN
+            LGGREL = ZI(JCELD-1+ZI(JCELD-1+4+IGR)+4)
+          ELSE
+            LGGREL = NBELGR*LGCATA
+          END IF
+
+          IACHLO = ZI(IAWLOC-1+7* (IPARG-1)+1)
+          IF ((IACHLO.EQ.-1) .OR. (IACHLO.EQ.-2)) GO TO 10
+          TYPSCA = ZK8(IAWTYP-1+IPARG)
+
+          IF (TYPSCA.EQ.'R') THEN
+            ZR(IACHLO-1+LGGREL+1) = RVIDE
+          ELSE IF (TYPSCA.EQ.'C') THEN
+            ZC(IACHLO-1+LGGREL+1) = CVIDE
+          ELSE IF (TYPSCA.EQ.'I') THEN
+            ZI(IACHLO-1+LGGREL+1) = IVIDE
+          ELSE
+            CALL UTMESS('F','CAUNDF',
+     +                  'ERREUR PGMEUR DANS CAUNDF : TYPE_SCALAIRE:'//
+     +                  TYPSCA//' NON AUTORISE(I/R OU C),')
+          END IF
+   10   CONTINUE
+
+C        -- CHAMPS "IN" :
+        NP = NBPARA(OPT,TE,'IN ')
+        DO 20 IPAR = 1,NP
+          NOMPAR = NOPARA(OPT,TE,'IN ',IPAR)
+
+          IPARG = INDIK8(ZK8(IAOPPA),NOMPAR,1,NPARIO)
+          LGCATA = ZI(IAWLOC-1+7* (IPARG-1)+4)
+          IF (LGCATA.LE.0) GO TO 20
+
+C         -- LE CHAMP LOCAL EST-IL ETENDU ?
+          CALL CHLOET(IPARG,ETENDU,JCELD)
+          IF (ETENDU) THEN
+            LGGREL = ZI(JCELD-1+ZI(JCELD-1+4+IGR)+4)
+          ELSE
+            LGGREL = NBELGR*LGCATA
+          END IF
+
+          IACHLO = ZI(IAWLOC-1+7* (IPARG-1)+1)
+          IF ((IACHLO.EQ.-1) .OR. (IACHLO.EQ.-2)) GO TO 20
+          TYPSCA = ZK8(IAWTYP-1+IPARG)
+
+          IF (TYPSCA.EQ.'R') THEN
+            ZR(IACHLO-1+LGGREL+1) = RUNDF
+          ELSE IF (TYPSCA.EQ.'C') THEN
+            ZC(IACHLO-1+LGGREL+1) = CUNDF
+          ELSE IF (TYPSCA.EQ.'I') THEN
+            ZI(IACHLO-1+LGGREL+1) = IUNDF
+          ELSE IF (TYPSCA.EQ.'K8') THEN
+            ZK8(IACHLO-1+LGGREL+1) = KUNDF
+          ELSE IF (TYPSCA.EQ.'K16') THEN
+            ZK16(IACHLO-1+LGGREL+1) = KUNDF
+          ELSE IF (TYPSCA.EQ.'K24') THEN
+            ZK24(IACHLO-1+LGGREL+1) = KUNDF
+          ELSE
+            CALL UTMESS('F','CAUNDF',
+     +                  'ERREUR PGMEUR DANS CAUNDF : TYPE_SCALAIRE:'//
+     +                  TYPSCA//' NON AUTORISE(I/R/C/K8/K16/K24),')
+          END IF
+   20   CONTINUE
+
+
+      ELSE IF (CODE.EQ.'VERIF') THEN
+C     ------------------------------------------------
+
+C        -- CHAMPS "OUT" :
+        ARRET = .FALSE.
+        NP = NBPARA(OPT,TE,'OUT')
+        DO 30 IPAR = 1,NP
+          ECRAS = .FALSE.
+          NOMPAR = NOPARA(OPT,TE,'OUT',IPAR)
+
+          IPARG = INDIK8(ZK8(IAOPPA),NOMPAR,1,NPARIO)
+          LGCATA = ZI(IAWLOC-1+7* (IPARG-1)+4)
+          IF (LGCATA.LE.0) GO TO 30
+
+
+C         -- LE CHAMP LOCAL EST-IL ETENDU ?
+          CALL CHLOET(IPARG,ETENDU,JCELD)
+          IF (ETENDU) THEN
+            LGGREL = ZI(JCELD-1+ZI(JCELD-1+4+IGR)+4)
+          ELSE
+            LGGREL = NBELGR*LGCATA
+          END IF
+
+          IACHLO = ZI(IAWLOC-1+7* (IPARG-1)+1)
+          IF ((IACHLO.EQ.-1) .OR. (IACHLO.EQ.-2)) GO TO 30
+          TYPSCA = ZK8(IAWTYP-1+IPARG)
+
+          IF (TYPSCA.EQ.'R') THEN
+            IF (ZR(IACHLO-1+LGGREL+1).NE.RVIDE) ECRAS = .TRUE.
+          ELSE IF (TYPSCA.EQ.'C') THEN
+            IF (ZC(IACHLO-1+LGGREL+1).NE.CVIDE) ECRAS = .TRUE.
+          ELSE IF (TYPSCA.EQ.'I') THEN
+            IF (ZI(IACHLO-1+LGGREL+1).NE.IVIDE) ECRAS = .TRUE.
+          ELSE
+            CALL UTMESS('F','CAUNDF',
+     +                  'ERREUR PGMEUR DANS CAUNDF : TYPE_SCALAIRE:'//
+     +                  TYPSCA//' NON AUTORISE(I/R OU C),')
+          END IF
+
+          IF (ECRAS) THEN
+            ARRET = .TRUE.
+            CALL JENUNO(JEXNUM('&CATA.TE.NOMTE',TE),NOMTE)
+            CALL JENUNO(JEXNUM('&CATA.OP.NOMOPT',OPT),NOMOPT)
+            CALL UTMESS('E','CAUNDF','INCOHERENCE FORTRAN/CATALOGUE'//
+     +                  ' TYPE_ELEMENT: '//NOMTE//' OPTION: '//NOMOPT//
+     +                  ' PARAMETRE: '//NOMPAR)
+
+          END IF
+
+
+
+   30   CONTINUE
+
+        IF (ARRET) CALL UTMESS('F','CAUNDF',
+     +                         'ARRET DU AUX ERREURS PRECEDENTES.')
+
+      ELSE
+        CALL UTMESS('F','CAUNDF','CODE INTERDIT: '//CODE)
+      END IF
+
+
+   40 CONTINUE
+      END

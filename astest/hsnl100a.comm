@@ -1,0 +1,299 @@
+# MODIF  DATE 13/06/2002   AUTEUR PBBHHPB P.BADEL 
+#
+# TITRE ECHAUFFEMENT D'UN CABLE PAR EFFET JOULE
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+#
+
+DEBUT( CODE=_F(  NOM = 'HSNL100A',NIV_PUB_WEB='INTERNET'))
+
+#
+
+MA=LIRE_MAILLAGE( )
+
+MO=AFFE_MODELE(   MAILLAGE=MA, 
+                        AFFE=_F(  TOUT = 'OUI',     PHENOMENE = 'MECANIQUE', 
+                               MODELISATION = 'CABLE') )
+
+MAT=DEFI_MATERIAU(   CABLE=_F( E = 5.4E10, RHO = 2761.4, ALPHA = 23.E-6)
+                       )
+
+CHMAT=AFFE_MATERIAU(   MAILLAGE=MA, 
+                          AFFE=_F(  TOUT = 'OUI',  MATER = MAT) )
+
+CHA1=AFFE_CHAR_MECA(   MODELE=MO, 
+                          PESANTEUR=(9.81,0.,0.,-1.,),DDL_IMPO=(
+                          _F( NOEUD = 'N1',  DX = 0., DY = 0., DZ = 0.),
+                                   _F( NOEUD = 'N21', DX = 0., DY = 0., DZ = 0.))
+                        )
+
+CARA=AFFE_CARA_ELEM(   MODELE=MO, 
+                          CABLE=_F(  GROUP_MA = 'CABLE', SECTION = 1.71E-3) )
+
+L_INST0=DEFI_LIST_REEL(   DEBUT=-0.1,INTERVALLE=(
+                            _F( JUSQU_A = 0., NOMBRE = 1),
+                            _F( JUSQU_A = 40., NOMBRE = 8))
+                         )
+
+L_INST=DEFI_LIST_REEL(   DEBUT=-0.1,INTERVALLE=(
+                            _F( JUSQU_A = 0., NOMBRE = 1),
+                            _F( JUSQU_A = 25., NOMBRE = 100))
+                         )
+
+L_INST1=DEFI_LIST_REEL(   DEBUT=-0.1,
+                            INTERVALLE=_F( JUSQU_A = 0., NOMBRE = 1)
+                         )
+
+L_INST2=DEFI_LIST_REEL(   DEBUT=0.,
+                            INTERVALLE=_F( JUSQU_A = 25., NOMBRE = 100)
+                         )
+
+L_ARCH2=DEFI_LIST_ENTI(   DEBUT=1,
+                            INTERVALLE=_F( JUSQU_A = 101, PAS = 1)
+                         )
+
+F01=DEFI_THER_JOULE( 
+                    LIST_INST=L_INST0,
+                 INST_CC_INIT=0.E0,
+                  INST_CC_FIN=10.E0,
+                 INST_RENC_INIT=20.E0,
+                 INST_RENC_FIN=30.E0,
+                 TEMP_EXT_POSE=12.E0,
+                     TEMP_EXT=1.E0,
+                 TEMP_RESI_REF=2.E0,PARA_COND_1D=(
+#
+                _F( 
+                         INTE_CC = 3.1415927E0,
+                         INTE_RENC = 3.1415927E0,
+                         A = 3.1415927E0,
+                         RESI_R0 = 4.E0,
+                         RESI_R1 = 0.5E0,
+                         RHO_CP = 1.E0,
+                         COEF_H = 0.5E0,
+                         TEMP_INIT = 1.E0),
+                _F( 
+                         INTE_CC = 3.1415927E0,
+                         INTE_RENC = 3.1415927E0,
+                         A = 3.1415927E0,
+                         RESI_R0 = 4.E0,
+                         RESI_R1 = 0.5E0,
+                         RHO_CP = 1.E0,
+                         COEF_H = 0.5E0,
+                         TEMP_INIT = 1.E0))
+                              )
+
+#
+
+F02=DEFI_THER_JOULE( 
+                  LIST_INST=L_INST0,
+                   TEMP_EXT=33.E0,PARA_COND_1D=(
+               _F(  TEMP_INIT = 10.E0),
+               _F(  TEMP_INIT = 20.E0))
+                      )
+
+#
+
+TEST_FONCTION(VALEUR=(
+            _F(  FONCTION = F01, NOM_PARA = 'INST',
+                     VALE_PARA = -0.1,         VALE_REFE = 12.0,
+                     PRECISION = 1.E-6),
+            _F(  FONCTION = F01, NOM_PARA = 'INST',
+                     VALE_PARA = 0.,          VALE_REFE = 1.0,
+                     PRECISION = 1.E-6),
+            _F(  FONCTION = F01, NOM_PARA = 'INST',
+                     VALE_PARA = 10.,          VALE_REFE = 44051.93,
+                     PRECISION = 1.E-6),
+            _F(  FONCTION = F01, NOM_PARA = 'INST',
+                     VALE_PARA = 20.,         VALE_REFE = 2.999909,
+                     PRECISION = 1.E-6),
+            _F(  FONCTION = F01, NOM_PARA = 'INST',
+                     VALE_PARA = 30.,         VALE_REFE = 88102.86,
+                     PRECISION = 1.E-6),
+            _F(  FONCTION = F01, NOM_PARA = 'INST',
+                     VALE_PARA = 40.,         VALE_REFE = 4.999818,
+                     PRECISION = 1.E-6))
+                   )
+
+TEST_FONCTION(VALEUR=(
+            _F(  FONCTION = F02, NOM_PARA = 'INST',
+                     VALE_PARA = -0.1,        VALE_REFE = 15.0,
+                     PRECISION = 1.E-6),
+            _F(  FONCTION = F02, NOM_PARA = 'INST',
+                     VALE_PARA = 0.,         VALE_REFE = 15.0,
+                     PRECISION = 1.E-6),
+            _F(  FONCTION = F02, NOM_PARA = 'INST',
+                     VALE_PARA = 40.,         VALE_REFE = 15.0,
+                     PRECISION = 1.E-6))
+                   )
+
+#
+
+F1=DEFI_THER_JOULE( 
+                     LIST_INST=L_INST,
+                  INST_CC_INIT=0.E0,
+                   INST_CC_FIN=25.E0,
+                  TEMP_EXT_POSE=0.E0,
+               PARA_COND_1D=_F( 
+                    INTE_CC = 70000.,
+                    INTE_RENC = 70000.,
+                    A = 1.71E-3,
+                    RESI_R0 = 3.25E-8,
+                    RESI_R1 = 3.6E-3,
+                    RHO_CP = 2457646.,
+                    COEF_H = 0.5E0,
+                    TEMP_INIT = 0.E0)
+                      )
+
+#
+CHNO=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_F', MAILLAGE=MA,
+                        AFFE=_F(  GROUP_NO = 'JOULE',
+                               NOM_CMP = 'TEMP',
+                               VALE_F = F1)
+                    )
+
+#
+TEMP=CREA_RESU(  OPERATION='AFFE', TYPE_RESU='EVOL_THER',  NOM_CHAM='TEMP',
+                   AFFE=_F(   LIST_INST = L_INST,
+                              CHAM_GD = CHNO)
+                 )
+
+TEST_RESU(RESU=( 
+          _F(  RESULTAT = TEMP,  NOM_CHAM = 'TEMP',  INST = 10.0,
+            NOEUD = 'N12', NOM_CMP = 'TEMP', VALE = 314.605, PRECISION = 1.E-2),
+          _F(  RESULTAT = TEMP,  NOM_CHAM = 'TEMP',  INST = 20.0,
+            NOEUD = 'N12', NOM_CMP = 'TEMP', VALE = 1013.08, PRECISION = 1.E-2))
+          )
+
+CHA2=AFFE_CHAR_MECA(   MODELE=MO, 
+                          TEMP_CALCULEE=TEMP )
+
+#
+
+RESU=STAT_NON_LINE( 
+                            MODELE=MO,
+                        CHAM_MATER=CHMAT,
+                         CARA_ELEM=CARA,EXCIT=(
+                             _F( 
+                CHARGE = CHA1), _F( 
+                CHARGE = CHA2)),
+                         INCREMENT=_F( 
+                LIST_INST = L_INST1,
+                NUME_INST_FIN = 1),
+                         COMP_ELAS=_F( 
+                RELATION = 'CABLE',
+                DEFORMATION = 'GREEN'),
+                       CONVERGENCE=_F( 
+                RESI_GLOB_RELA = 1.0E-06,
+                ITER_GLOB_MAXI = 20),
+                            NEWTON=_F( 
+                REAC_ITER = 1)
+              )
+
+RESU=CALC_ELEM( reuse=RESU,
+                            OPTION=(
+                  'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
+                          RESULTAT=RESU,
+                            MODELE=MO,
+                        CHAM_MATER=CHMAT,
+                         CARA_ELEM=CARA
+              )
+
+#
+
+TEST_RESU(RESU=( 
+           _F(  RESULTAT = RESU,           NUME_ORDRE = 1,
+             CRITERE = 'ABSOLU',
+             PARA = 'INST',             VALE = 0.),
+           _F(  RESULTAT = RESU,           NUME_ORDRE = 1,
+             PARA = 'ITER_GLOB',        VALE_I = 0,
+             CRITERE = 'ABSOLU',         PRECISION = 14.E+00),
+           _F(  RESULTAT = RESU,           NUME_ORDRE = 1,
+             CRITERE = 'ABSOLU',        PRECISION = 1.E-03,
+             PARA = 'RESI_GLOB_RELA',   VALE = 0.),
+           _F(  RESULTAT = RESU,           NUME_ORDRE = 1,
+             CRITERE = 'ABSOLU',        PRECISION = 7.,
+             PARA = 'RESI_GLOB',        VALE = 0.),
+           _F(  RESULTAT = RESU,           NUME_ORDRE = 1,
+             PARA = 'ITER_LINE',        VALE_I = 0,
+             CRITERE = 'ABSOLU',         PRECISION = 2.E+00))
+           )
+
+RESU=DYNA_NON_LINE( reuse=RESU,
+                    MODELE=MO,
+                    CHAM_MATER=CHMAT,
+                    CARA_ELEM=CARA,
+                    EXCIT=(_F(  CHARGE = CHA1),
+                           _F(  CHARGE = CHA2)  ),
+                    INCREMENT=_F( LIST_INST = L_INST2),
+###CDURAND          ARCHIVAGE=_F( LIST_ARCH = L_ARCH2),
+                    HHT=_F(),
+                    ETAT_INIT=_F( INST = 0.,
+                                  EVOL_NOLI = RESU),
+                    COMP_ELAS=_F( RELATION = 'CABLE',
+                                  DEFORMATION = 'GREEN'),
+                    CONVERGENCE=_F(  RESI_GLOB_RELA = 1.E-6,
+                                     ITER_GLOB_MAXI = 200),
+                    NEWTON=_F( REAC_ITER = 1)
+                      )
+
+#
+
+TEST_RESU(RESU=( 
+           _F(  RESULTAT = RESU,           NUME_ORDRE = 26,
+             PARA = 'INST',             VALE = 6.25),
+           _F(  RESULTAT = RESU,           NUME_ORDRE = 26,
+             PARA = 'ITER_GLOB',        VALE_I = 0,
+             CRITERE = 'ABSOLU',         PRECISION = 26.E+00),
+           _F(  RESULTAT = RESU,           NUME_ORDRE = 26,
+             CRITERE = 'ABSOLU',        PRECISION = 1.E-04,
+             PARA = 'RESI_GLOB_RELA',   VALE = 0.),
+           _F(  RESULTAT = RESU,           NUME_ORDRE = 26,
+             CRITERE = 'ABSOLU',        PRECISION = 0.1,
+             PARA = 'RESI_GLOB',        VALE = 0.),
+           _F(  RESULTAT = RESU,           NUME_ORDRE = 26,
+             PARA = 'ITER_LINE',        VALE_I = 0,
+             CRITERE = 'ABSOLU',         PRECISION = 2.E+00),
+           _F(  RESULTAT = RESU,           NUME_ORDRE = 101,
+             PARA = 'INST',             VALE = 2.50000E+01),
+           _F(  RESULTAT = RESU,           NUME_ORDRE = 101,
+             PARA = 'ITER_GLOB',        VALE_I = 0,
+             CRITERE = 'ABSOLU',         PRECISION = 34.E+00),
+           _F(  RESULTAT = RESU,           NUME_ORDRE = 101,
+             CRITERE = 'ABSOLU',
+             PARA = 'RESI_GLOB_RELA',   VALE = 0.),
+           _F(  RESULTAT = RESU,           NUME_ORDRE = 101,
+             CRITERE = 'ABSOLU',        PRECISION = 0.5,
+             PARA = 'RESI_GLOB',        VALE = 0.),
+           _F(  RESULTAT = RESU,           NUME_ORDRE = 101,
+             PARA = 'ITER_LINE',        VALE_I = 0,
+             CRITERE = 'ABSOLU',         PRECISION = 2.E+00))
+           )
+
+TEST_RESU(RESU=( 
+          _F(  RESULTAT = RESU,   NOM_CHAM = 'DEPL',   NUME_ORDRE = 26,
+            NOEUD = 'N11', NOM_CMP = 'DZ',  VALE = -1.614397,  PRECISION = 2.0E-2),
+          _F(  RESULTAT = RESU,   NOM_CHAM = 'DEPL',   NUME_ORDRE = 51,
+            NOEUD = 'N11', NOM_CMP = 'DZ',  VALE = -3.682028,  PRECISION = 1.2E-2),
+          _F(  RESULTAT = RESU,   NOM_CHAM = 'DEPL',   NUME_ORDRE = 76,
+            NOEUD = 'N11', NOM_CMP = 'DZ',  VALE = -6.157222,  PRECISION = 1.1E-2),
+          _F(  RESULTAT = RESU,   NOM_CHAM = 'DEPL',   NUME_ORDRE = 101,
+            NOEUD = 'N11', NOM_CMP = 'DZ',  VALE = -9.244288,  PRECISION = 1.4E-2))
+          )
+
+FIN()
+#

@@ -1,0 +1,141 @@
+      SUBROUTINE DIVSEL(DIM,NO1,TMA1,MA1,DIM1,H1,MM1,PAN1,
+     &                  NO2,TMA2,NO,MA,DIME,NMA)
+
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF CALCULEL  DATE 04/04/2002   AUTEUR VABHHTS J.PELLET 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C                                                                       
+C                                                                       
+C ======================================================================
+C ----------------------------------------------------------------------
+C             SELECTION DES SOUS-MAILLES PAVANT L'INTERSECTION 
+C                       DE MESURE NON-NEGLIGEABLE
+C ----------------------------------------------------------------------
+C VARIABLES D'ENTREE
+C INTEGER      DIM        : DIMENSION DE L'ESPACE
+C REAL*8       NO1(DIM,*) : COORDONNEES NOEUDS DE MA1
+C CHARACTER*8  TMA1       : TYPE DE MAILLE DE MA1
+C INTEGER      MA1        : MAILLE ECHANTILLONEE
+C INTEGER      DIM1(*)    : SD BOITE.DIME ASSOCIEE A MA1 (CF BOITE)
+C REAL*8       H1(*)      : SD BOITE.H ASSOCIEE A MA1 (CF BOITE)
+C REAL*8       MM1(*)     : SD BOITE.MINMAX ASSOCIEE A MA1 (CF BOITE)
+C REAL*8       PAN1(*)    : SD BOITE.PAN ASSOCIEE A MA1 (CF BOITE)
+C REAL*8       NO2(DIM,*) : COORDONNEES NOEUDS DE LA MAILLE SUPPORT
+C CHARACTER*8  TMA2       : TYPE DE LA MAILLE SUPPORT
+C REAL*8       NO(DIM,*)  : COORDONNEES DES SOUS-MAILLES
+C INTEGER      MA(8,*)    : CONNECTIVITE DES SOUS-MAILLES
+C INTEGER      NMA        : NOMBRE DE SOUS-MAILLES
+C
+C VARIABLES D'ENTREE / SORTIE
+C INTEGER      DIME(*)    : NOMBRE DE NOEUDS DES SOUS-MAILLES
+C                           SOUS-MAILLE * ELIMINEE : DIME(*) = 0
+C ---------------------------------------------------------------------
+
+      IMPLICIT NONE
+
+C --- PARAMETRES
+      REAL*8 PREC
+      PARAMETER (PREC = 0.0000001D0)
+
+C --- VARIABLES
+      CHARACTER*8  TMA1,TMA2
+      INTEGER  DIM,MA1,DIM1(*),DIME(*),MA(8,*),NMA
+      REAL*8   NO1(*),H1(*),MM1(*),PAN1(*),NO2(*),NO(DIM,*)
+      INTEGER  NN0,NN2,I,J,K,L,II
+      REAL*8   H,M0(3),M(3),JAC(9),R,Z,MES,W(27),MESMIN
+      LOGICAL  FAUX,IR
+
+C --- TABLES
+      INTEGER INDEX(5)
+      REAL*8 COEF(68), SX1, SX2
+
+      PARAMETER (SX1 = -1.D0/6.D0)
+      PARAMETER (SX2 = 1.D0/6.D0)
+
+      DATA INDEX / 1,7,15,27,45 /
+
+      DATA COEF / 
+     & -0.5D0,-0.5D0,0.5D0,0.D0,0.D0,0.5D0,
+     & -1.D0,-1.D0,1.D0,-1.D0,1.D0,1.D0,-1.D0,1.D0,
+     & 0.D0,SX2,0.D0,0.D0,0.D0,SX2,SX1,SX1,SX1,SX2,0.D0,0.D0,
+     & SX1,0.5D0,0.D0,SX1,0.D0,0.5D0,SX1,-0.5D0,-0.5D0,
+     & SX2,0.5D0,0.D0,SX2,0.D0,0.5D0,SX2,-0.5D0,-0.5D0,
+     & -1.D0,-1.D0,-1.D0, 1.D0,-1.D0,-1.D0,1.D0, 1.D0,-1.D0,
+     & -1.D0, 1.D0,-1.D0,-1.D0,-1.D0, 1.D0,1.D0,-1.D0, 1.D0,
+     &  1.D0, 1.D0, 1.D0,-1.D0, 1.D0, 1.D0 /
+
+      IF (NMA.EQ.0) GOTO 40
+      
+      H = H1(MA1)
+      Z = 0.D0
+      FAUX = .FALSE.
+      MESMIN = PREC / NMA
+
+      IF (TMA2(1:4).EQ.'TRIA') THEN
+        II = INDEX(1)
+      ELSEIF (TMA2(1:4).EQ.'QUAD') THEN
+        II = INDEX(2)
+      ELSEIF (TMA2(1:5).EQ.'TETRA') THEN
+        II = INDEX(3)
+      ELSEIF (TMA2(1:5).EQ.'PENTA') THEN
+        II = INDEX(4)
+      ELSEIF (TMA2(1:4).EQ.'HEXA') THEN
+        II = INDEX(5)
+      ENDIF
+
+C --- SELECTION DES SOUS-MAILLES
+
+      NN0 = DIME(1)
+      R = 1.D0 / NN0
+      
+      DO 10 I = 1, NMA
+
+C ----- TAILLE DES SOUS-MAILLES
+         
+        MES = 1.D0
+        CALL MTPROD(NO,DIM,0,DIM,MA(1,I),NN0,COEF(II),DIM,0,DIM,0,JAC)
+        CALL MGAUST(JAC,MES,DIM,DIM,0,MES,FAUX)
+        IF (ABS(MES).LT.MESMIN) THEN
+          DIME(I) = 0
+          GOTO 10
+        ENDIF
+
+C ----- POSITION DES SOUS-MAILLES
+
+        DO 20 J = 1, DIM
+          M0(J) = 0.D0
+ 20     CONTINUE
+
+        DO 30 J = 1, NN0
+          L = MA(J,I)
+          DO 30 K = 1, DIM
+            M0(K) = M0(K) + NO(K,L)
+ 30     CONTINUE
+
+        CALL R8SCAL(DIM,R,M0,1)
+        CALL FORME0(M0,TMA2,W,NN2)
+        CALL MMPROD(NO2,DIM,0,DIM,0,NN2,W,NN2,0,0,1,M)
+        CALL LOCALI(M,DIM,DIM1,H,Z,MA1,0,MM1,PAN1,
+     &              NO1,I,I,R,TMA1,.FALSE.,JAC,IR)
+        IF (IR) CALL DEDANS(JAC,TMA1,Z,IR)
+        IF (.NOT.IR) DIME(I) = 0
+
+ 10   CONTINUE
+
+ 40   CONTINUE
+
+      END

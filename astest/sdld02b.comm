@@ -1,0 +1,619 @@
+# MODIF  DATE 07/06/2002   AUTEUR DURAND C.DURAND 
+# TITRE SYSTEME MASSE RESSORT A 8 DEGRES DE LIBERTE T_N
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+# ----------------------------------------------------------------------
+# SDLD02/B                 COMMANDES                          10/06/91
+# ----------------------------------------------------------------------
+# SYSTEME MASSE-RESSORT A 8 DEGRES DE LIBERTE
+# SANS NOEUD EXTREMITES: 7+2 RESSORTS  8 MASSES  ( KX=1.E+5   M =10 )
+# SYSTEME // AXE(3,4)    ORIENTATION( ALPHA:53.130102 )
+#                                                  REF: SFM.VPCS SDLD02
+# MODELISATION DIS_T:(8 NOEUDS - 7 MAILLES SEG2) + RAIDEUR EXTREMITES
+# NOEUDS P1 , .. , P8
+#=======================================================================
+#    'K_T_L' REPERE LOCAL  +  'M_T_N' ABSOLU +  'K_T_N' LOCAL
+#=======================================================================
+
+DEBUT( CODE=_F(  NOM = 'SDLD02B',NIV_PUB_WEB='INTERNET') )
+
+MA=LIRE_MAILLAGE( )
+
+MO=AFFE_MODELE(  MAILLAGE=MA,AFFE=(
+       _F(  TOUT = 'OUI',    PHENOMENE = 'MECANIQUE',  MODELISATION = 'DIS_T'),
+        _F(  GROUP_NO = 'P', PHENOMENE = 'MECANIQUE',  MODELISATION = 'DIS_T')) )
+
+CH=AFFE_CHAR_MECA(  MODELE=MO,
+      DDL_IMPO=_F(  TOUT = 'OUI',        DZ = 0.),LIAISON_DDL=(
+      
+       _F( NOEUD = ('P1', 'P1',), DDL = ('DX','DY',), COEF_MULT = (-4.,3.,), COEF_IMPO = 0.),
+       _F( NOEUD = ('P2', 'P2',), DDL = ('DX','DY',), COEF_MULT = (-4.,3.,), COEF_IMPO = 0.),
+       _F( NOEUD = ('P3', 'P3',), DDL = ('DX','DY',), COEF_MULT = (-4.,3.,), COEF_IMPO = 0.),
+       _F( NOEUD = ('P4', 'P4',), DDL = ('DX','DY',), COEF_MULT = (-4.,3.,), COEF_IMPO = 0.),
+       _F( NOEUD = ('P5', 'P5',), DDL = ('DX','DY',), COEF_MULT = (-4.,3.,), COEF_IMPO = 0.),
+       _F( NOEUD = ('P6', 'P6',), DDL = ('DX','DY',), COEF_MULT = (-4.,3.,), COEF_IMPO = 0.),
+       _F( NOEUD = ('P7', 'P7',), DDL = ('DX','DY',), COEF_MULT = (-4.,3.,), COEF_IMPO = 0.),
+       _F( NOEUD = ('P8', 'P8',), DDL = ('DX','DY',), COEF_MULT = (-4.,3.,), COEF_IMPO = 0.))
+                   )
+
+CARELEM=AFFE_CARA_ELEM(   MODELE=MO,
+       ORIENTATION=_F(  GROUP_NO = 'P',     CARA = 'ANGL_NAUT',
+                                     VALE = ( 53.130102,  0.,   0.,  )),DISCRET=(
+       
+          _F(  CARA = 'K_T_L',   REPERE = 'LOCAL',      GROUP_MA = 'GRMA',
+                           VALE = ( 1.E5, 0.,  0.,   0.,   0.,   0.,  
+                                -1.E5, 0.,   0.,   1.E5, 0.,  
+                                 0.,   0.,   0.,   0.,   0.,  
+                                 0.,   0.,   0.,   0.,   0.,     )),
+          _F(  CARA = 'K_T_N',   REPERE = 'LOCAL',      NOEUD = ( 'P1',  'P8', ),
+                           VALE = ( 1.E+5, 0.,  0.,  0.,   0.,   0.,  )),
+          _F(  CARA = 'M_T_N',   REPERE = 'GLOBAL',     GROUP_NO = 'P',
+                           VALE = ( 10.,  0.,  10.,  0.,  0.,  10., ))) )
+
+# --------------------------------------------------------------------
+MELR=CALC_MATR_ELEM(  MODELE=MO,
+                        CHARGE=CH,
+                       OPTION='RIGI_MECA',
+                        CARA_ELEM=CARELEM  )
+
+MELM=CALC_MATR_ELEM(  MODELE=MO,
+                        CHARGE=CH,
+                       OPTION='MASS_MECA',
+                        CARA_ELEM=CARELEM  )
+
+NUM=NUME_DDL(      MATR_RIGI=MELR )
+
+MATASSR=ASSE_MATRICE(MATR_ELEM=MELR,NUME_DDL=NUM)
+
+MATASSM=ASSE_MATRICE(MATR_ELEM=MELM,NUME_DDL=NUM)
+
+# --------------------------------------------------------------------
+
+
+FREQ=MODE_ITER_SIMULT(   MATR_A=MATASSR,      MATR_B=MATASSM,
+          CALC_FREQ=_F(  OPTION = 'PLUS_PETITE',  NMAX_FREQ = 8)
+                                                          )
+
+FREQ=NORM_MODE( reuse=FREQ,    MODE=FREQ,
+                      NORME='TRAN_ROTA',
+                    MODE_SIGNE=_F(  NOEUD = 'P2',
+                                 NOM_CMP = 'DY',
+                                 SIGNE = 'POSITIF')   )
+
+#
+
+IMPR_STURM(    MATR_A=MATASSR,      MATR_B=MATASSM,
+               FREQ_MIN=5.,         FREQ_MAX=32.        )
+
+#
+
+LFREQ=DEFI_LIST_REEL(   DEBUT=5.5274,
+                           INTERVALLE=_F(  JUSQU_A = 31.3474,
+                                        NOMBRE = 1)       )
+
+# --------------------------------------------------------------------
+
+MODE1=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
+                  RESULTAT=FREQ,
+                    # FREQ: 5.527   # NUMERO_MODE: 1
+                       FREQ=5.5274,    CRITERE='ABSOLU',
+                      NOM_CHAM='DEPL'   )
+
+#
+
+MODE8=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
+                  RESULTAT=FREQ,
+                    # FREQ: 31.3474 # NUMERO_MODE: 8
+                       NUME_MODE=8,    NOM_CHAM='DEPL'   )
+
+# --------------------------------------------------------------------
+
+CMP=DEFI_VALEUR(   TX='DY' )
+
+MA=DEFI_GROUP(  reuse=MA,  MAILLAGE=MA,
+                    CREA_GROUP_NO=_F(  NOEUD = 'P8',  NOM = 'GRP8') )
+
+# ----------------------------------------------------------------------
+
+
+TEST_RESU(RESU=(
+    _F(   RESULTAT = FREQ,        PARA = 'FREQ',
+            CRITERE = 'RELATIF',     PRECISION = 1.E-4,
+            NUME_ORDRE = 1,         VALE = 5.5274),
+    _F(   RESULTAT = FREQ,        PARA = 'FREQ',
+            CRITERE = 'RELATIF',     PRECISION = 1.E-4,
+            NUME_ORDRE = 2,         VALE = 10.8868),
+    _F(   RESULTAT = FREQ,        PARA = 'FREQ',
+            CRITERE = 'RELATIF',     PRECISION = 1.E-4,
+            NUME_ORDRE = 3,         VALE = 15.9155),
+    _F(   RESULTAT = FREQ,        PARA = 'FREQ',
+            CRITERE = 'RELATIF',     PRECISION = 1.E-4,
+            NUME_ORDRE = 4,         VALE = 20.4606),
+    _F(   RESULTAT = FREQ,        PARA = 'FREQ',
+            CRITERE = 'RELATIF',     PRECISION = 1.E-4,
+            NUME_ORDRE = 5,         VALE = 24.3840),
+    _F(   RESULTAT = FREQ,        PARA = 'FREQ',
+            CRITERE = 'RELATIF',     PRECISION = 1.E-4,
+            NUME_ORDRE = 6,         VALE = 27.5664),
+    _F(   RESULTAT = FREQ,        PARA = 'FREQ',
+            CRITERE = 'RELATIF',     PRECISION = 1.E-4,
+            NUME_ORDRE = 7,         VALE = 29.9113),
+    _F(   RESULTAT = FREQ,        PARA = 'FREQ',
+            CRITERE = 'RELATIF',     PRECISION = 1.E-4,
+            NUME_MODE = 8,          VALE = 31.3474),
+#
+    _F(   RESULTAT = FREQ,        FREQ = 31.3474,
+            NOM_CHAM = 'DEPL',      NOM_CMP = 'DX',
+            GROUP_NO = 'GRP8',        VALE = 0.260472,
+            CRITERE = 'RELATIF',    PRECISION = 1.E-4)),
+    )
+#CHAM_GD=(
+#
+# _F(   AFFE = MODE1,        NOM_CMP = CMP,
+#            CRITERE = 'RELATIF',     PRECISION = 1.E-4,
+#            NOEUD = 'P1',             VALE = 0.3473),
+# _F(   AFFE = MODE1,        NOM_CMP = CMP,
+#            CRITERE = 'RELATIF',     PRECISION = 1.E-4,
+#            NOEUD = 'P2',             VALE = 0.6527),
+# _F(   AFFE = MODE1,        NOM_CMP = CMP,
+#            CRITERE = 'RELATIF',     PRECISION = 1.E-4,
+#            NOEUD = 'P3',             VALE = 0.8794),
+# _F(   AFFE = MODE1,        NOM_CMP = CMP,
+#            CRITERE = 'RELATIF',     PRECISION = 1.E-4,
+#            NOEUD = 'P4',             VALE = 1.),
+# _F(   AFFE = MODE1,        NOM_CMP = CMP,
+#            CRITERE = 'RELATIF',     PRECISION = 1.E-4,
+#            NOEUD = 'P5',             VALE = 1.),
+# _F(   AFFE = MODE1,        NOM_CMP = CMP,
+#            CRITERE = 'RELATIF',     PRECISION = 1.E-4,
+#            NOEUD = 'P6',             VALE = 0.8794),
+# _F(   AFFE = MODE1,        NOM_CMP = CMP,
+#            CRITERE = 'RELATIF',     PRECISION = 1.E-4,
+#            NOEUD = 'P7',             VALE = 0.6527),
+# _F(   AFFE = MODE1,        NOM_CMP = CMP,
+#            CRITERE = 'RELATIF',     PRECISION = 1.E-4,
+#            NOEUD = 'P8',             VALE = 0.3473),
+#
+# _F(   AFFE = MODE8,        NOM_CMP = CMP,
+#            CRITERE = 'RELATIF',     PRECISION = 1.E-4,
+#            NOEUD = 'P1',             VALE = -0.3473),
+# _F(   AFFE = MODE8,        NOM_CMP = CMP,
+#            CRITERE = 'RELATIF',     PRECISION = 1.E-4,
+#            NOEUD = 'P2',             VALE = 0.6527),
+# _F(   AFFE = MODE8,        NOM_CMP = CMP,
+#            CRITERE = 'RELATIF',     PRECISION = 1.E-4,
+#            NOEUD = 'P3',             VALE = -0.8794),
+# _F(   AFFE = MODE8,        NOM_CMP = CMP,
+#            CRITERE = 'RELATIF',     PRECISION = 1.E-4,
+#            NOEUD = 'P4',             VALE = 1.),
+# _F(   AFFE = MODE8,        NOM_CMP = CMP,
+#            CRITERE = 'RELATIF',     PRECISION = 1.E-4,
+#            NOEUD = 'P5',             VALE = -1.),
+# _F(   AFFE = MODE8,        NOM_CMP = CMP,
+#            CRITERE = 'RELATIF',     PRECISION = 1.E-4,
+#            NOEUD = 'P6',             VALE = 0.8794),
+# _F(   AFFE = MODE8,        NOM_CMP = CMP,
+#            CRITERE = 'RELATIF',     PRECISION = 1.E-4,
+#            NOEUD = 'P7',             VALE = -0.6527),
+# _F(   AFFE = MODE8,        NOM_CMP = CMP,
+#            CRITERE = 'RELATIF',     PRECISION = 1.E-4,
+#            NOEUD = 'P8',             VALE = 0.3473))
+
+#
+
+TEST_RESU(RESU=(
+    _F(   RESULTAT = FREQ,        PARA = 'MASS_GENE',
+            CRITERE = 'RELATIF',     PRECISION = 1.E-4,
+            NUME_ORDRE = 1,         VALE = 7.24986E+01),
+    _F(   RESULTAT = FREQ,        PARA = 'MASS_GENE',
+            CRITERE = 'RELATIF',     PRECISION = 1.E-4,
+            NUME_ORDRE = 2,         VALE = 7.24986E+01),
+    _F(   RESULTAT = FREQ,        PARA = 'MASS_GENE',
+            CRITERE = 'RELATIF',     PRECISION = 1.E-4,
+            NUME_ORDRE = 3,         VALE = 9.37500E+01),
+    _F(   RESULTAT = FREQ,        PARA = 'MASS_GENE',
+            CRITERE = 'RELATIF',     PRECISION = 1.E-4,
+            NUME_ORDRE = 4,         VALE = 7.24986E+01),
+    _F(   RESULTAT = FREQ,        PARA = 'MASS_GENE',
+            CRITERE = 'RELATIF',     PRECISION = 1.E-4,
+            NUME_ORDRE = 5,         VALE = 7.24986E+01),
+    _F(   RESULTAT = FREQ,        PARA = 'MASS_GENE',
+            CRITERE = 'RELATIF',     PRECISION = 1.E-4,
+            NUME_ORDRE = 6,         VALE = 9.37500E+01),
+    _F(   RESULTAT = FREQ,        PARA = 'MASS_GENE',
+            CRITERE = 'RELATIF',     PRECISION = 1.E-4,
+            NUME_ORDRE = 7,         VALE = 7.24986E+01),
+    _F(   RESULTAT = FREQ,        PARA = 'MASS_GENE',
+            CRITERE = 'RELATIF',     PRECISION = 1.E-4,
+            NUME_ORDRE = 8,         VALE = 7.24986E+01))
+         )
+
+#
+
+QPI2=DEFI_VALEUR(   R8=EVAL("""4.* PI * PI """) )
+
+# ----------------------------------------------------------------------
+
+FREQ=NORM_MODE(reuse=FREQ,   MODE=FREQ,   NORME='MASS_GENE',
+                     TITRE='NORME MASS_GENE'        )
+
+TEST_RESU(RESU=(
+    _F(   RESULTAT = FREQ,        PARA = 'RIGI_GENE',
+            CRITERE = 'RELATIF',     PRECISION = 1.E-4,
+            NUME_ORDRE = 1,         VALE = EVAL("""QPI2 *  5.5274 ** 2 """)),
+    _F(   RESULTAT = FREQ,        PARA = 'RIGI_GENE',
+            CRITERE = 'RELATIF',     PRECISION = 1.E-4,
+            NUME_ORDRE = 2,         VALE = EVAL("""QPI2 * 10.8868 ** 2 """)),
+    _F(   RESULTAT = FREQ,        PARA = 'RIGI_GENE',
+            CRITERE = 'RELATIF',     PRECISION = 1.E-4,
+            NUME_ORDRE = 3,         VALE = EVAL("""QPI2 * 15.9155 ** 2 """)),
+    _F(   RESULTAT = FREQ,        PARA = 'RIGI_GENE',
+            CRITERE = 'RELATIF',     PRECISION = 1.E-4,
+            NUME_ORDRE = 4,         VALE = EVAL("""QPI2 * 20.4606 ** 2 """)),
+    _F(   RESULTAT = FREQ,        PARA = 'RIGI_GENE',
+            CRITERE = 'RELATIF',     PRECISION = 1.E-4,
+            NUME_ORDRE = 5,         VALE = EVAL("""QPI2 * 24.3840 ** 2 """)),
+    _F(   RESULTAT = FREQ,        PARA = 'RIGI_GENE',
+            CRITERE = 'RELATIF',     PRECISION = 1.E-4,
+            NUME_ORDRE = 6,         VALE = EVAL("""QPI2 * 27.5664 ** 2 """)),
+    _F(   RESULTAT = FREQ,        PARA = 'RIGI_GENE',
+            CRITERE = 'RELATIF',     PRECISION = 1.E-4,
+            NUME_ORDRE = 7,         VALE = EVAL("""QPI2 * 29.9113 ** 2 """)),
+    _F(   RESULTAT = FREQ,        PARA = 'RIGI_GENE',
+            CRITERE = 'RELATIF',     PRECISION = 1.E-4,
+            NUME_ORDRE = 8,         VALE = EVAL("""QPI2 * 31.3474 ** 2 """)),
+#
+     _F( RESULTAT = FREQ,NUME_ORDRE = 1,NOM_CHAM = 'DEPL',
+                                 NOEUD = 'P1',NOM_CMP = CMP,VALE = 4.0781E-2),
+          _F( RESULTAT = FREQ,NUME_ORDRE = 1,NOM_CHAM = 'DEPL',
+                                 NOEUD = 'P2',NOM_CMP = CMP,VALE = 7.6654E-2),
+          _F( RESULTAT = FREQ,NUME_ORDRE = 1,NOM_CHAM = 'DEPL',
+                                 NOEUD = 'P3',NOM_CMP = CMP,VALE = 0.10327),
+          _F( RESULTAT = FREQ,NUME_ORDRE = 1,NOM_CHAM = 'DEPL',
+                                 NOEUD = 'P4',NOM_CMP = CMP,VALE = 0.11743),
+          _F( RESULTAT = FREQ,NUME_ORDRE = 1,NOM_CHAM = 'DEPL',
+                                 NOEUD = 'P5',NOM_CMP = CMP,VALE = 0.11743),
+          _F( RESULTAT = FREQ,NUME_ORDRE = 1,NOM_CHAM = 'DEPL',
+                                 NOEUD = 'P6',NOM_CMP = CMP,VALE = 0.10327),
+          _F( RESULTAT = FREQ,NUME_ORDRE = 1,NOM_CHAM = 'DEPL',
+                                 NOEUD = 'P7',NOM_CMP = CMP,VALE = 7.6654E-2),
+          _F( RESULTAT = FREQ,NUME_ORDRE = 1,NOM_CHAM = 'DEPL',
+                                 NOEUD = 'P8',NOM_CMP = CMP,VALE = 4.0781E-2),
+
+     _F( RESULTAT = FREQ,NUME_ORDRE = 8,NOM_CHAM = 'DEPL',
+                                 NOEUD = 'P1',NOM_CMP = CMP,VALE = -4.0781E-2),
+          _F( RESULTAT = FREQ,NUME_ORDRE = 8,NOM_CHAM = 'DEPL',
+                                 NOEUD = 'P2',NOM_CMP = CMP,VALE = 7.6654E-2),
+          _F( RESULTAT = FREQ,NUME_ORDRE = 8,NOM_CHAM = 'DEPL',
+                                 NOEUD = 'P3',NOM_CMP = CMP,VALE = -0.10327),
+          _F( RESULTAT = FREQ,NUME_ORDRE = 8,NOM_CHAM = 'DEPL',
+                                 NOEUD = 'P4',NOM_CMP = CMP,VALE = 0.11743),
+          _F( RESULTAT = FREQ,NUME_ORDRE = 8,NOM_CHAM = 'DEPL',
+                                 NOEUD = 'P5',NOM_CMP = CMP,VALE = -0.11743),
+          _F( RESULTAT = FREQ,NUME_ORDRE = 8,NOM_CHAM = 'DEPL',
+                                 NOEUD = 'P6',NOM_CMP = CMP,VALE = 0.10327),
+          _F( RESULTAT = FREQ,NUME_ORDRE = 8,NOM_CHAM = 'DEPL',
+                                 NOEUD = 'P7',NOM_CMP = CMP,VALE = -7.6654E-2),
+          _F( RESULTAT = FREQ,NUME_ORDRE = 8,NOM_CHAM = 'DEPL',
+                                 NOEUD = 'P8',NOM_CMP = CMP,VALE = 4.0781E-2))
+                       )
+
+# ---------------------------------------------------------------------
+
+FREQ=NORM_MODE(reuse=FREQ,   MODE=FREQ,   NORME='RIGI_GENE',
+                     TITRE='NORME RIGI_GENE'        )
+
+TEST_RESU(RESU=(
+    _F(   RESULTAT = FREQ,        PARA = 'MASS_GENE',
+            CRITERE = 'RELATIF',     PRECISION = 1.E-4,
+            NUME_ORDRE = 1,         VALE = EVAL("""1./ (QPI2* 5.5274 ** 2)""")),
+    _F(   RESULTAT = FREQ,        PARA = 'MASS_GENE',
+            CRITERE = 'RELATIF',     PRECISION = 1.E-4,
+            NUME_ORDRE = 2,         VALE = EVAL("""1./ (QPI2*10.8868 ** 2)""")),
+    _F(   RESULTAT = FREQ,        PARA = 'MASS_GENE',
+            CRITERE = 'RELATIF',     PRECISION = 1.E-4,
+            NUME_ORDRE = 3,         VALE = EVAL("""1./ (QPI2*15.9155 ** 2)""")),
+    _F(   RESULTAT = FREQ,        PARA = 'MASS_GENE',
+            CRITERE = 'RELATIF',     PRECISION = 1.E-4,
+            NUME_ORDRE = 4,         VALE = EVAL("""1./ (QPI2*20.4606 ** 2)""")),
+    _F(   RESULTAT = FREQ,        PARA = 'MASS_GENE',
+            CRITERE = 'RELATIF',     PRECISION = 1.E-4,
+            NUME_ORDRE = 5,         VALE = EVAL("""1./ (QPI2*24.3840 ** 2)""")),
+    _F(   RESULTAT = FREQ,        PARA = 'MASS_GENE',
+            CRITERE = 'RELATIF',     PRECISION = 1.E-4,
+            NUME_ORDRE = 6,         VALE = EVAL("""1./ (QPI2*27.5664 ** 2)""")),
+    _F(   RESULTAT = FREQ,        PARA = 'MASS_GENE',
+            CRITERE = 'RELATIF',     PRECISION = 1.E-4,
+            NUME_ORDRE = 7,         VALE = EVAL("""1./ (QPI2*29.9113 ** 2)""")),
+    _F(   RESULTAT = FREQ,        PARA = 'MASS_GENE',
+            CRITERE = 'RELATIF',     PRECISION = 1.E-4,
+            NUME_ORDRE = 8,         VALE = EVAL("""1./ (QPI2*31.3474 ** 2)""")),
+
+#
+     _F( RESULTAT = FREQ,NUME_ORDRE = 1,NOM_CHAM = 'DEPL',
+                                 NOEUD = 'P1',NOM_CMP = CMP,VALE = 1.1742E-3),
+          _F( RESULTAT = FREQ,NUME_ORDRE = 1,NOM_CHAM = 'DEPL',
+                                 NOEUD = 'P2',NOM_CMP = CMP,VALE = 2.2072E-3),
+          _F( RESULTAT = FREQ,NUME_ORDRE = 1,NOM_CHAM = 'DEPL',
+                                 NOEUD = 'P3',NOM_CMP = CMP,VALE = 2.9735E-3),
+          _F( RESULTAT = FREQ,NUME_ORDRE = 1,NOM_CHAM = 'DEPL',
+                                 NOEUD = 'P4',NOM_CMP = CMP,VALE = 3.3813E-3),
+          _F( RESULTAT = FREQ,NUME_ORDRE = 1,NOM_CHAM = 'DEPL',
+                                 NOEUD = 'P5',NOM_CMP = CMP,VALE = 3.3813E-3),
+          _F( RESULTAT = FREQ,NUME_ORDRE = 1,NOM_CHAM = 'DEPL',
+                                 NOEUD = 'P6',NOM_CMP = CMP,VALE = 2.9735E-3),
+          _F( RESULTAT = FREQ,NUME_ORDRE = 1,NOM_CHAM = 'DEPL',
+                                 NOEUD = 'P7',NOM_CMP = CMP,VALE = 2.2072E-3),
+          _F( RESULTAT = FREQ,NUME_ORDRE = 1,NOM_CHAM = 'DEPL',
+                                 NOEUD = 'P8',NOM_CMP = CMP,VALE = 1.1742E-3),
+
+     _F( RESULTAT = FREQ,NUME_ORDRE = 8,NOM_CHAM = 'DEPL',
+                                 NOEUD = 'P1',NOM_CMP = CMP,VALE = -2.0705E-4),
+          _F( RESULTAT = FREQ,NUME_ORDRE = 8,NOM_CHAM = 'DEPL',
+                                 NOEUD = 'P2',NOM_CMP = CMP,VALE = 3.8918E-4),
+          _F( RESULTAT = FREQ,NUME_ORDRE = 8,NOM_CHAM = 'DEPL',
+                                 NOEUD = 'P3',NOM_CMP = CMP,VALE = -5.2432E-4),
+          _F( RESULTAT = FREQ,NUME_ORDRE = 8,NOM_CHAM = 'DEPL',
+                                 NOEUD = 'P4',NOM_CMP = CMP,VALE = 5.9621E-4),
+          _F( RESULTAT = FREQ,NUME_ORDRE = 8,NOM_CHAM = 'DEPL',
+                                 NOEUD = 'P5',NOM_CMP = CMP,VALE = -5.9621E-4),
+          _F( RESULTAT = FREQ,NUME_ORDRE = 8,NOM_CHAM = 'DEPL',
+                                 NOEUD = 'P6',NOM_CMP = CMP,VALE = 5.2432E-4),
+          _F( RESULTAT = FREQ,NUME_ORDRE = 8,NOM_CHAM = 'DEPL',
+                                 NOEUD = 'P7',NOM_CMP = CMP,VALE = -3.8918E-4),
+          _F( RESULTAT = FREQ,NUME_ORDRE = 8,NOM_CHAM = 'DEPL',
+                                 NOEUD = 'P8',NOM_CMP = CMP,VALE = 2.0705E-4))
+                       )
+
+# ---------------------------------------------------------------------
+
+FREQ=NORM_MODE(reuse=FREQ,   MODE=FREQ,   NORME='TRAN',
+                     TITRE='NORME TRAN'        )
+
+#
+
+TEST_RESU(RESU=(
+    _F(   RESULTAT = FREQ,        PARA = 'MASS_GENE',
+            CRITERE = 'RELATIF',     PRECISION = 1.E-4,
+            NUME_ORDRE = 1,         VALE = 7.24986E+01),
+    _F(   RESULTAT = FREQ,        PARA = 'MASS_GENE',
+            CRITERE = 'RELATIF',     PRECISION = 1.E-4,
+            NUME_ORDRE = 2,         VALE = 7.24986E+01),
+    _F(   RESULTAT = FREQ,        PARA = 'MASS_GENE',
+            CRITERE = 'RELATIF',     PRECISION = 1.E-4,
+            NUME_ORDRE = 3,         VALE = 9.37500E+01),
+    _F(   RESULTAT = FREQ,        PARA = 'MASS_GENE',
+            CRITERE = 'RELATIF',     PRECISION = 1.E-4,
+            NUME_ORDRE = 4,         VALE = 7.24986E+01),
+    _F(   RESULTAT = FREQ,        PARA = 'MASS_GENE',
+            CRITERE = 'RELATIF',     PRECISION = 1.E-4,
+            NUME_ORDRE = 5,         VALE = 7.24986E+01),
+    _F(   RESULTAT = FREQ,        PARA = 'MASS_GENE',
+            CRITERE = 'RELATIF',     PRECISION = 1.E-4,
+            NUME_ORDRE = 6,         VALE = 9.37500E+01),
+    _F(   RESULTAT = FREQ,        PARA = 'MASS_GENE',
+            CRITERE = 'RELATIF',     PRECISION = 1.E-4,
+            NUME_ORDRE = 7,         VALE = 7.24986E+01),
+    _F(   RESULTAT = FREQ,        PARA = 'MASS_GENE',
+            CRITERE = 'RELATIF',     PRECISION = 1.E-4,
+            NUME_ORDRE = 8,         VALE = 7.24986E+01))
+         )
+
+# ---------------------------------------------------------------------
+
+FREQ=NORM_MODE(reuse=FREQ,   MODE=FREQ,   NORME='EUCL',
+                     TITRE='NORME EUCL'       )
+
+#
+
+TEST_RESU(RESU=(
+    _F(   RESULTAT = FREQ,        PARA = 'RIGI_GENE',
+            CRITERE = 'RELATIF',     PRECISION = 1.E-4,
+            NUME_ORDRE = 1,         VALE = 1.20615E+04),
+    _F(   RESULTAT = FREQ,        PARA = 'RIGI_GENE',
+            CRITERE = 'RELATIF',     PRECISION = 1.E-4,
+            NUME_ORDRE = 2,         VALE = 4.67911E+04),
+    _F(   RESULTAT = FREQ,        PARA = 'RIGI_GENE',
+            CRITERE = 'RELATIF',     PRECISION = 1.E-4,
+            NUME_ORDRE = 3,         VALE = 1.00000E+05),
+    _F(   RESULTAT = FREQ,        PARA = 'RIGI_GENE',
+            CRITERE = 'RELATIF',     PRECISION = 1.E-4,
+            NUME_ORDRE = 4,         VALE = 1.65270E+05),
+    _F(   RESULTAT = FREQ,        PARA = 'RIGI_GENE',
+            CRITERE = 'RELATIF',     PRECISION = 1.E-4,
+            NUME_ORDRE = 5,         VALE = 2.34730E+05),
+    _F(   RESULTAT = FREQ,        PARA = 'RIGI_GENE',
+            CRITERE = 'RELATIF',     PRECISION = 1.E-4,
+            NUME_ORDRE = 6,         VALE = 3.00000E+05),
+    _F(   RESULTAT = FREQ,        PARA = 'RIGI_GENE',
+            CRITERE = 'RELATIF',     PRECISION = 1.E-4,
+            NUME_ORDRE = 7,         VALE = 3.53209E+05),
+    _F(   RESULTAT = FREQ,        PARA = 'RIGI_GENE',
+            CRITERE = 'RELATIF',     PRECISION = 1.E-4,
+            NUME_ORDRE = 8,         VALE = 3.87939E+05))
+         )
+
+# ---------------------------------------------------------------------
+
+FREQ=NORM_MODE(reuse=FREQ,   MODE=FREQ,
+                   SANS_CMP=('DY', 'DZ', 'DRX', 'DRY', 'DRZ', ),
+                   TITRE='NORME SANS NOM_CMP DY DZ DRX DRY DRZ' )
+
+#
+
+TEST_RESU(RESU=(
+    _F(   RESULTAT = FREQ,        PARA = 'MASS_GENE',
+            CRITERE = 'RELATIF',     PRECISION = 1.E-4,
+            NUME_ORDRE = 1,         VALE = 1.28886E+02),
+    _F(   RESULTAT = FREQ,        PARA = 'RIGI_GENE',
+            CRITERE = 'RELATIF',     PRECISION = 1.E-4,
+            NUME_ORDRE = 1,         VALE = 1.55456E+05))
+         )
+
+# ---------------------------------------------------------------------
+
+FREQ=NORM_MODE(reuse=FREQ,   MODE=FREQ,
+                     AVEC_CMP=('DX', ),
+                     TITRE='NORME AVEC NOM_CMP DX' )
+
+#
+
+TEST_RESU(RESU=(
+    _F(   RESULTAT = FREQ,        PARA = 'MASS_GENE',
+            CRITERE = 'RELATIF',     PRECISION = 1.E-4,
+            NUME_ORDRE = 1,         VALE = 1.28886E+02),
+    _F(   RESULTAT = FREQ,        PARA = 'RIGI_GENE',
+            CRITERE = 'RELATIF',     PRECISION = 1.E-4,
+            NUME_ORDRE = 1,         VALE = 1.55456E+05))
+         )
+
+# ---------------------------------------------------------------------
+
+FREQ=NORM_MODE(reuse=FREQ,   MODE=FREQ,  NOEUD='P1',  NOM_CMP='DX',
+                     TITRE='NORME NOEUD P1 NOM_CMP DX'  )
+
+#
+
+TEST_RESU(RESU=(
+    _F(   RESULTAT = FREQ,        PARA = 'MASS_GENE',
+            CRITERE = 'RELATIF',     PRECISION = 1.E-4,
+            NUME_ORDRE = 1,         VALE = 1.06858E+03),
+    _F(   RESULTAT = FREQ,        PARA = 'RIGI_GENE',
+            CRITERE = 'RELATIF',     PRECISION = 1.E-4,
+            NUME_ORDRE = 1,         VALE = 1.28886E+06))
+         )
+
+# ---------------------------------------------------------------------
+
+FREQ=NORM_MODE(reuse=FREQ,   MODE=FREQ,     NORME='EUCL_TRAN',
+                     TITRE='NORME EUCL_TRAN'          )
+
+#
+
+TEST_RESU(RESU=(
+    _F(   RESULTAT = FREQ,        PARA = 'RIGI_GENE',
+            CRITERE = 'RELATIF',     PRECISION = 1.E-4,
+            NUME_ORDRE = 1,         VALE = 1.20615E+04),
+    _F(   RESULTAT = FREQ,        PARA = 'RIGI_GENE',
+            CRITERE = 'RELATIF',     PRECISION = 1.E-4,
+            NUME_ORDRE = 2,         VALE = 4.67911E+04),
+    _F(   RESULTAT = FREQ,        PARA = 'RIGI_GENE',
+            CRITERE = 'RELATIF',     PRECISION = 1.E-4,
+            NUME_ORDRE = 3,         VALE = 1.00000E+05),
+    _F(   RESULTAT = FREQ,        PARA = 'RIGI_GENE',
+            CRITERE = 'RELATIF',     PRECISION = 1.E-4,
+            NUME_ORDRE = 4,         VALE = 1.65270E+05),
+    _F(   RESULTAT = FREQ,        PARA = 'RIGI_GENE',
+            CRITERE = 'RELATIF',     PRECISION = 1.E-4,
+            NUME_ORDRE = 5,         VALE = 2.34730E+05),
+    _F(   RESULTAT = FREQ,        PARA = 'RIGI_GENE',
+            CRITERE = 'RELATIF',     PRECISION = 1.E-4,
+            NUME_ORDRE = 6,         VALE = 3.00000E+05),
+    _F(   RESULTAT = FREQ,        PARA = 'RIGI_GENE',
+            CRITERE = 'RELATIF',     PRECISION = 1.E-4,
+            NUME_ORDRE = 7,         VALE = 3.53209E+05),
+    _F(   RESULTAT = FREQ,        PARA = 'RIGI_GENE',
+            CRITERE = 'RELATIF',     PRECISION = 1.E-4,
+            NUME_ORDRE = 8,         VALE = 3.87939E+05))
+         )
+
+# ---------------------------------------------------------------------
+# VALIDATION DE LA COMMANDE PROD_MATR_CHAM QUAND LE CHAM_GD N'A PAS LA
+# MEME NUMEROTATION QUE LE NUME_DDL DE LA MATRICE
+
+
+
+TY = FORMULE(REEL="""(REEL:Y) =
+3. + ( 4. * Y  ) """)
+
+TX = FORMULE(REEL="""(REEL:X) =
+1. + ( 2. * X  ) """)
+
+CHT=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_DEPL_F', MAILLAGE=MA,AFFE=(
+                      _F(  NOEUD = ('P1',  'P3', 'P4','P6',),
+                             NOM_CMP = 'DY',  VALE_F = TY),
+                      _F(  NOEUD = ('P1','P5', 'P6',  'P8',),
+                             NOM_CMP = 'DX',  VALE_F = TX))
+                    )
+
+RES=CREA_RESU(  OPERATION='AFFE', TYPE_RESU='EVOL_ELAS',    NOM_CHAM='DEPL',
+                      AFFE=_F(  INST = 0.,  CHAM_GD = CHT)     )
+
+DEP=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
+                RESULTAT=RES, NOM_CHAM='DEPL', INST=0. )
+
+# LA MATRICE DE MASSE EST DIAGONALE DONC : MDEP = 10. * DEP
+
+
+MDEP=PROD_MATR_CHAM(    MATR_ASSE=MATASSM,
+                          CHAM_NO=DEP        )
+
+TEST_RESU(CHAM_NO=(
+       _F( CHAM_GD = MDEP, NOEUD = 'P1',   CRITERE = 'ABSOLU',
+                NOM_CMP = 'DX', VALE = 16., PRECISION = 1.E-10),
+       _F( CHAM_GD = MDEP, NOEUD = 'P1',   CRITERE = 'ABSOLU',
+                NOM_CMP = 'DY', VALE = 46., PRECISION = 1.E-10),
+       _F( CHAM_GD = MDEP, NOEUD = 'P1',   CRITERE = 'ABSOLU',
+                NOM_CMP = 'DZ', VALE = 0.0, PRECISION = 1.E-10),
+       _F( CHAM_GD = MDEP, NOEUD = 'P2',   CRITERE = 'ABSOLU',
+                NOM_CMP = 'DX', VALE = 0.0, PRECISION = 1.E-10),
+       _F( CHAM_GD = MDEP, NOEUD = 'P2',   CRITERE = 'ABSOLU',
+                NOM_CMP = 'DY', VALE = 0.0, PRECISION = 1.E-10),
+       _F( CHAM_GD = MDEP, NOEUD = 'P2',   CRITERE = 'ABSOLU',
+                NOM_CMP = 'DZ', VALE = 0.0, PRECISION = 1.E-10),
+       _F( CHAM_GD = MDEP, NOEUD = 'P3',   CRITERE = 'ABSOLU',
+                NOM_CMP = 'DX', VALE = 0.0, PRECISION = 1.E-10),
+       _F( CHAM_GD = MDEP, NOEUD = 'P3',   CRITERE = 'ABSOLU',
+                NOM_CMP = 'DY', VALE = 78., PRECISION = 1.E-10),
+       _F( CHAM_GD = MDEP, NOEUD = 'P3',   CRITERE = 'ABSOLU',
+                NOM_CMP = 'DZ', VALE = 0.0, PRECISION = 1.E-10),
+       _F( CHAM_GD = MDEP, NOEUD = 'P4',   CRITERE = 'ABSOLU',
+                NOM_CMP = 'DX', VALE = 0.0, PRECISION = 1.E-10),
+       _F( CHAM_GD = MDEP, NOEUD = 'P4',   CRITERE = 'ABSOLU',
+                NOM_CMP = 'DY', VALE = 94., PRECISION = 1.E-10),
+       _F( CHAM_GD = MDEP, NOEUD = 'P4',   CRITERE = 'ABSOLU',
+                NOM_CMP = 'DZ', VALE = 0.0, PRECISION = 1.E-10),
+       _F( CHAM_GD = MDEP, NOEUD = 'P5',   CRITERE = 'ABSOLU',
+                NOM_CMP = 'DX', VALE = 40., PRECISION = 1.E-10),
+       _F( CHAM_GD = MDEP, NOEUD = 'P5',   CRITERE = 'ABSOLU',
+                NOM_CMP = 'DY', VALE = 0.0, PRECISION = 1.E-10),
+       _F( CHAM_GD = MDEP, NOEUD = 'P5',   CRITERE = 'ABSOLU',
+                NOM_CMP = 'DZ', VALE = 0.0, PRECISION = 1.E-10),
+       _F( CHAM_GD = MDEP, NOEUD = 'P6',   CRITERE = 'ABSOLU',
+                NOM_CMP = 'DX', VALE = 46., PRECISION = 1.E-10),
+       _F( CHAM_GD = MDEP, NOEUD = 'P6',   CRITERE = 'ABSOLU',
+                NOM_CMP = 'DY', VALE = 126.,PRECISION = 1.E-10),
+       _F( CHAM_GD = MDEP, NOEUD = 'P6',   CRITERE = 'ABSOLU',
+                NOM_CMP = 'DZ', VALE = 0.0, PRECISION = 1.E-10),
+       _F( CHAM_GD = MDEP, NOEUD = 'P7',   CRITERE = 'ABSOLU',
+                NOM_CMP = 'DX', VALE = 0.0, PRECISION = 1.E-10),
+       _F( CHAM_GD = MDEP, NOEUD = 'P7',   CRITERE = 'ABSOLU',
+                NOM_CMP = 'DY', VALE = 0.0, PRECISION = 1.E-10),
+       _F( CHAM_GD = MDEP, NOEUD = 'P7',   CRITERE = 'ABSOLU',
+                NOM_CMP = 'DZ', VALE = 0.0, PRECISION = 1.E-10),
+       _F( CHAM_GD = MDEP, NOEUD = 'P8',   CRITERE = 'ABSOLU',
+                NOM_CMP = 'DX', VALE = 58., PRECISION = 1.E-10),
+       _F( CHAM_GD = MDEP, NOEUD = 'P8',   CRITERE = 'ABSOLU',
+                NOM_CMP = 'DY', VALE = 0.0, PRECISION = 1.E-10),
+       _F( CHAM_GD = MDEP, NOEUD = 'P8',   CRITERE = 'ABSOLU',
+                NOM_CMP = 'DZ', VALE = 0.0, PRECISION = 1.E-10)) )
+
+# ---------------------------------------------------------------------
+
+FIN( )
+#

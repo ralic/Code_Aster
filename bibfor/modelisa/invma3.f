@@ -1,0 +1,56 @@
+      SUBROUTINE INVMA3 (MAT, MATINV)
+      IMPLICIT REAL*8 (A-H,O-Z)
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF MODELISA  DATE 10/05/95   AUTEUR CIBHHLV L.VIVAN 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+      REAL*8    MAT(3,3), MATINV(3,3)
+C
+C ---------------------------------------------------------------------
+C     INVERSION DE LA MATRICE 3 X 3 MAT
+C     LE RESULTAT EST DANS MATINV
+C----------------------------------------------------------------------
+C
+      REAL*8    DET, DET1
+C
+      DET =   MAT(1,1)*MAT(2,2)*MAT(3,3)
+     +      + MAT(2,1)*MAT(3,2)*MAT(1,3)
+     +      + MAT(3,1)*MAT(1,2)*MAT(2,3)
+     +      - MAT(3,1)*MAT(2,2)*MAT(1,3)
+     +      - MAT(2,1)*MAT(1,2)*MAT(3,3)
+     +      - MAT(1,1)*MAT(3,2)*MAT(2,3)
+C
+      IF (DET .EQ. 0.D0) THEN
+            CALL UTMESS('F','INVMA3',' LE DETERMINANT DE LA MATRICE '//
+     +                   'A INVERSER EST NUL')
+      ENDIF
+C
+      DET1 = 1.D0/DET
+C
+      MATINV(1,1) = DET1*(MAT(2,2)*MAT(3,3) - MAT(2,3)*MAT(3,2))
+      MATINV(1,2) = DET1*(MAT(1,3)*MAT(3,2) - MAT(1,2)*MAT(3,3))
+      MATINV(1,3) = DET1*(MAT(1,2)*MAT(2,3) - MAT(1,3)*MAT(2,2))
+C
+      MATINV(2,1) = DET1*(MAT(2,3)*MAT(3,1) - MAT(2,1)*MAT(3,3))
+      MATINV(2,2) = DET1*(MAT(1,1)*MAT(3,3) - MAT(3,1)*MAT(1,3))
+      MATINV(2,3) = DET1*(MAT(1,3)*MAT(2,1) - MAT(1,1)*MAT(2,3))
+C
+      MATINV(3,1) = DET1*(MAT(2,1)*MAT(3,2) - MAT(2,2)*MAT(3,1))
+      MATINV(3,2) = DET1*(MAT(1,2)*MAT(3,1) - MAT(1,1)*MAT(3,2))
+      MATINV(3,3) = DET1*(MAT(1,1)*MAT(2,2) - MAT(2,1)*MAT(1,2))
+C     
+      END

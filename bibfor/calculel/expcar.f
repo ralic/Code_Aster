@@ -1,0 +1,189 @@
+      SUBROUTINE EXPCAR(CARTE)
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF CALCULEL  DATE 21/02/96   AUTEUR VABHHTS J.PELLET 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+C-----------------------------------------------------------------------
+      IMPLICIT REAL*8 (A-H,O-Z)
+C
+C EXTENSION COMPLETE DE LA CARTE( EN VUE D'1 COMPRESSION ULTERIEURE )
+C ( LORSQUE LES CMPS D'1 GRANDEUR N'ONT PAS ETE DONNEES SIMULTANEMENT)
+C
+C-----------------------------------------------------------------------
+C
+C     ARGUMENTS:
+C     ----------
+      CHARACTER*24 CARTE
+C ----------------------------------------------------------------------
+C     ENTREES:
+C       CARTE : NOM D'1 CARTE A ETENDRE PROVISOIREMENT
+C               ( AVANT COMPRESSION)
+C     SORTIES:
+C      ON A CREE QUELQUES OBJETS SUR LA VOLATILE ...
+C ----------------------------------------------------------------------
+C
+C     FONCTIONS EXTERNES:
+C     -------------------
+      CHARACTER*8 SCALAI
+      CHARACTER*32 JEXNUM,JEXNOM,JEXATR
+C
+C     VARIABLES LOCALES:
+C     ------------------
+C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
+      COMMON /IVARJE/ZI(1)
+      COMMON /RVARJE/ZR(1)
+      COMMON /CVARJE/ZC(1)
+      COMMON /LVARJE/ZL(1)
+      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+      INTEGER ZI
+      REAL*8 ZR
+      COMPLEX*16 ZC
+      LOGICAL ZL,DEJAVU
+      CHARACTER*8 ZK8,SCAL,NOMA,KBID
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24,NOLI
+      CHARACTER*32 ZK32
+      CHARACTER*80 ZK80
+      CHARACTER*1 K1BID
+C
+C
+C     -- RECUPERATION DES OBJETS JEVEUX DE LA CARTE:
+C
+      CALL JEMARQ()
+      CALL JEVEUO(CARTE(1:19)//'.DESC','L',IADESC)
+      CALL JEVEUO(CARTE(1:19)//'.LIMA','L',IALIMA)
+      CALL JEVEUO(CARTE(1:19)//'.VALE','L',IAVALE)
+      CALL JEVEUO(CARTE(1:19)//'.NOMA','L',IANOMA)
+C
+      NOMA = ZK8(IANOMA-1+1)
+C
+      IGD = ZI(IADESC-1+1)
+      NEC = NBEC(IGD)
+C     -- SCAL = I,R,C,K8,...
+      SCAL = SCALAI(IGD)
+C
+C     -- NCMPMX : NOMBRE MAXIMAL DE CMP POUR LA GRANDEUR.
+C     ----------------------------------------------------
+      CALL JELIRA(JEXNUM('&CATA.GD.NOMCMP',IGD),'LONMAX',NCMPMX,K1BID)
+C
+C     -- NBEDIT : NOMBRE DE VALEURS EDITEES DANS LA CARTE:
+C     ----------------------------------------------------
+      NBEDIT = ZI(IADESC-1+3)
+C
+C     -- CREATION DE L'OBJET .NUMT:
+C     -----------------------------
+C     NUMT(IEDIT) := V(I)  (DIM=3)
+C     V(1) : NUMERO GLOBAL DANS .VALP ET .DGP
+C            DE LA 1ERE MAILLE AFFECTEE PAR LA GRANDEUR IEDIT.
+C     V(2) : NUMERO DE LA DER MAILLE AFFECTEE.
+C     V(3) : 1 --> CETTE GRANDEUR EST ASSOCIEE A 1 PAQUET DE MAILLES
+C                 NON TRAITE POUR LES IEDIT PRECEDENTS.
+C            0 --> SINON
+C     SI CODE(IEDIT)= 1:  TTES LES MAILLES DU MAILLAGE'
+C     SI CODE(IEDIT)=-1:  TTES LES MAILLES SUPPL. DU LIGREL NOLI(IEDIT)
+C     SI CODE(IEDIT)= 2:  LES MAILLES D'1 GROUPE NOMME.
+C     SI CODE(IEDIT)= 3:  LES MAILLES DU MAILLAGE D'1 LISTE TARDIVE.
+C     SI CODE(IEDIT)=-3:  LES MAILLES SUPPL. D'1 LISTE TARDIVE.
+C
+      CALL JEEXIN(CARTE(1:19)//'.NOLI',IRET)
+      IF (IRET.EQ.0) THEN
+         CALL UTMESS('F',' EXPCAR ',
+     +               ' INUTILE DE COMPRIMER 1 TELLE CARTE ')
+      END IF
+      CALL JEVEUO(CARTE(1:19)//'.NOLI','L',IANOLI)
+      CALL JECREO(CARTE(1:19)//'.NUMT','V V I')
+      CALL JEECRA(CARTE(1:19)//'.NUMT','LONMAX',3*NBEDIT,' ')
+      CALL JEVEUO(CARTE(1:19)//'.NUMT','E',IANUMT)
+      NBMATO = 0
+      DO 1,IEDIT = 1,NBEDIT
+         ICODE = ZI(IADESC-1+3+2* (IEDIT-1)+1)
+         NOLI = ZK24(IANOLI-1+IEDIT)
+         DEJAVU = .FALSE.
+         DO 2,J = IEDIT - 1,1,-1
+            IF (NOLI.EQ.ZK24(IANOLI-1+J)) THEN
+               DEJAVU = .TRUE.
+               GO TO 3
+            END IF
+    2    CONTINUE
+    3    CONTINUE
+         IF (DEJAVU) THEN
+            ZI(IANUMT-1+3* (IEDIT-1)+1) = ZI(IANUMT-1+3* (J-1)+1)
+            ZI(IANUMT-1+3* (IEDIT-1)+2) = ZI(IANUMT-1+3* (J-1)+2)
+            ZI(IANUMT-1+3* (IEDIT-1)+3) = 0
+         ELSE
+            ZI(IANUMT-1+3* (IEDIT-1)+1) = NBMATO + 1
+            IF (NOLI(1:8).EQ.'        ') THEN
+C              MAILLES DU MAILLAGE:
+               CALL JELIRA(NOMA//'.NOMMAI','NOMMAX',NBMA,K1BID)
+               NBMATO = NBMATO + NBMA
+            ELSE
+C              MAILLES SUPPLEMENTAIRES D'1 LIGREL:
+               IF (ICODE.NE.-3) CALL UTMESS('F',' EXPCAR ',
+     +            'ON DEVRAIT AVOIR ICODE=3 POUR DES MAILLES TARDIVES.')
+               CALL DISMOI('F','NB_MA_SUP',NOLI,'LIGREL',NBMA,KBID,IED)
+               NBMATO = NBMATO + NBMA
+            END IF
+            ZI(IANUMT-1+3* (IEDIT-1)+2) = NBMATO
+            ZI(IANUMT-1+3* (IEDIT-1)+3) = 1
+         END IF
+    1 CONTINUE
+C
+C     -- ALOCATION DES OBJETS DE TRAVAIL : .VALP ET .DGP
+C
+      CALL JECREO(CARTE(1:19)//'.VALP','V V '//SCAL(1:4))
+      CALL JECREO(CARTE(1:19)//'.DGP ','V V I')
+      CALL JEECRA(CARTE(1:19)//'.VALP','LONMAX',NCMPMX*NBMATO,' ')
+      CALL JEECRA(CARTE(1:19)//'.DGP ','LONMAX',NEC*NBMATO,' ')
+      CALL JEVEUO(CARTE(1:19)//'.VALP','E',IAVALP)
+      CALL JEVEUO(CARTE(1:19)//'.DGP ','E',IADGP)
+C
+C     --REMPLISSAGE DE .VALP ET .DGP:
+C     -------------------------------
+C
+      NBGDMX = ZI(IADESC-1+2)
+      DO 11,IEDIT = 1,NBEDIT
+         I1 = IAVALE + (IEDIT-1)*NCMPMX
+         I3 = IADESC - 1 + 3 + 2*NBGDMX + (IEDIT-1)*NEC + 1
+         NUM1 = ZI(IANUMT-1+ (IEDIT-1)*3+1)
+         NUM2 = ZI(IANUMT-1+ (IEDIT-1)*3+2)
+         ICODE = ZI(IADESC-1+3+2* (IEDIT-1)+1)
+         IENT = ZI(IADESC-1+3+2* (IEDIT-1)+2)
+         NOLI = ZK24(IANOLI-1+IEDIT)
+         IF (ABS(ICODE).EQ.1) THEN
+C            -- GROUPE 'TOUT':
+            NBMA = NUM2 - NUM1 + 1
+         ELSE
+            CALL MELIMA(CARTE(1:19),NOMA,ICODE,IENT,I5,NBMA)
+C           --I5 : ADRESSE DANS ZI DE LA LISTE DES MAILLES A TRAITER.
+C           --NBMA: NOMBRE DE MAILLES A TRAITER.
+         END IF
+         DO 12,IMA = 1,NBMA
+            IF (ABS(ICODE).EQ.1) THEN
+               NUMAT = IMA
+            ELSE
+               NUMAT = NUM1 - 1 + ABS(ZI(I5-1+IMA))
+            END IF
+            I2 = IAVALP + (NUMAT-1)*NCMPMX
+            I4 = IADGP - 1 + (NUMAT-1)*NEC + 1
+            CALL MECUMU(SCAL,NCMPMX,I1,I2,NEC,ZI(I3),ZI(I4))
+   12    CONTINUE
+   11 CONTINUE
+C
+C
+ 9999 CONTINUE
+      CALL JEDEMA()
+      END

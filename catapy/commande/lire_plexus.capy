@@ -1,0 +1,40 @@
+#& MODIF COMMANDE  DATE 09/10/2002   AUTEUR DURAND C.DURAND 
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+LIRE_PLEXUS=OPER(nom="LIRE_PLEXUS",op= 184,sd_prod=evol_char,
+                 fr=" ",
+                 docu="U7.02.11-a",reentrant='n',
+            UIinfo={"groupes":("Maillage",)},
+         regles=(UN_PARMI('TOUT_ORDRE','NUME_ORDRE','INST','LIST_INST','LIST_ORDRE'),),
+         UNITE           =SIMP(statut='f',typ='I',defaut= 19 ),
+         FORMAT          =SIMP(statut='f',typ='TXM',defaut="IDEAS",into=("IDEAS",)),
+         MAIL_PLEXUS     =SIMP(statut='o',typ=maillage ),
+         MAILLAGE        =SIMP(statut='o',typ=maillage ),
+         MODELE          =SIMP(statut='o',typ=modele ),
+         TOUT_ORDRE      =SIMP(statut='f',typ='TXM',into=("OUI",) ),
+         NUME_ORDRE      =SIMP(statut='f',typ='I',max='**'),
+         LIST_ORDRE      =SIMP(statut='f',typ=listis ),
+         INST            =SIMP(statut='f',typ='R',max='**'),
+         LIST_INST       =SIMP(statut='f',typ=listr8 ),
+         b_prec_crit     =BLOC(condition = "LIST_INST != None or INST != None",
+             PRECISION       =SIMP(statut='f',typ='R',defaut= 1.E-3 ),
+             CRITERE         =SIMP(statut='f',typ='TXM',defaut="RELATIF",
+                                   into=("RELATIF","ABSOLU") ),
+         ),
+         TITRE           =SIMP(statut='f',typ='TXM',max='**'),
+)  ;

@@ -1,0 +1,545 @@
+# MODIF  DATE 16/05/2002   AUTEUR DURAND C.DURAND 
+# TITRE VALIDATION DE LA COMMANDE CREA_RESU MOT CLE FACTEUR PERM_CHAM
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+
+DEBUT( CODE=_F(  NOM = 'ZZZZ131A',NIV_PUB_WEB='INTERNET') )
+
+#   CALCUL SUR PREMIER MAILLAGE
+
+MA1=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='NON'),  )
+
+MA1=DEFI_GROUP( reuse=MA1,   MAILLAGE=MA1,
+                      CREA_GROUP_NO=_F( GROUP_MA = ( 'PBAS1',
+                                                  'PHAUT1',
+                                                  'PBAS2',
+                                                  'PHAUT2', ))
+                  )
+
+#
+MO1=AFFE_MODELE(   MAILLAGE=MA1,AFFE=(
+                      _F(  GROUP_MA = ('POU1',),
+                             PHENOMENE = 'MECANIQUE',
+                             MODELISATION = 'POU_D_E'),
+                      _F(  GROUP_MA = ('POU2',),
+                             PHENOMENE = 'MECANIQUE',
+                             MODELISATION = 'POU_D_TG'))
+                   )
+
+CARA1=AFFE_CARA_ELEM(     MODELE=MO1,POUTRE=(
+                           _F(  GROUP_MA = 'POU1',
+                                    SECTION = 'CERCLE',
+                                    CARA = ( 'R', ),
+                                    VALE = (  0.1,)),
+                          _F(  GROUP_MA = 'POU2',
+                                   SECTION = 'RECTANGLE',
+                                   CARA = (   'HY', 'HZ',  ),
+                                   VALE = (  0.2,  0.1, )))
+                        )
+
+#
+MAT1_1=DEFI_MATERIAU(
+             ELAS=_F( E = 2.E11, NU = 0.3),
+             ECRO_LINE=_F( D_SIGM_EPSI = 2.E9, SY = 150.E6),
+             VMIS_POUTRE=_F(
+                NP = 4.7124E6,
+                MEY = 1.1781E5, MPY = 2.E5, CAY = 0.84, CBY = 0.002,
+                MEZ = 1.1781E5, MPZ = 2.E5, CAZ = 0.84, CBZ = 0.0002,
+                MPX = 1.E10)
+                          )
+
+MAT1_2=DEFI_MATERIAU(
+           ELAS=_F( E = 2.E11, NU = 0.3),
+           ECRO_FLEJOU=_F( EP = 2.E10, SY = 150.E6, SU = 160.E6, PUISS = 1.0),
+           VMIS_POUTRE=_F(
+                NP = 3.0E6,
+                MEY = 1.1781E5, MPY = 2.E5, CAY = 0.84, CBY = 0.002,
+                MEZ = 1.1781E5, MPZ = 2.E5, CAZ = 0.84, CBZ = 0.0002,
+                MPX = 1.E10)
+                        )
+
+CHMAT1=AFFE_MATERIAU(   MAILLAGE=MA1,AFFE=(
+                       _F( GROUP_MA = 'POU1', MATER = MAT1_1),
+                       _F( GROUP_MA = 'POU2', MATER = MAT1_2)))
+
+CHART1=AFFE_CHAR_MECA(  MODELE=MO1,DDL_IMPO=(
+     _F( GROUP_NO = ('PBAS1', 'PBAS2',),
+               DX = 0., DY = 0., DZ = 0., DRX = 0., DRY = 0., DRZ = 0.),
+     _F( GROUP_NO = ('PHAUT1', 'PHAUT2',),
+               DX = 0.75E-3),
+     _F( GROUP_NO = ('PH11', 'PH21',),
+               DX = 1.E-3))
+    )
+
+FONCT1=DEFI_FONCTION(   NOM_PARA='INST',
+                           VALE=( 0., 0., 10., 10., ) )
+
+#
+LINST1=DEFI_LIST_REEL(DEBUT=0.,INTERVALLE=(
+               _F( JUSQU_A = 1., NOMBRE = 1),
+               _F( JUSQU_A = 2., NOMBRE = 10),
+               _F( JUSQU_A = 3., NOMBRE = 10))  )
+
+RESU1=STAT_NON_LINE(
+                            MODELE=MO1,
+                        CHAM_MATER=CHMAT1,
+                         CARA_ELEM=CARA1,
+                             EXCIT=_F( CHARGE = CHART1,
+                                    FONC_MULT = FONCT1),COMP_INCR=(
+                         _F( RELATION = 'VMIS_POU_LINE',
+                                    GROUP_MA = 'POU1'),
+                         _F( RELATION = 'VMIS_POU_FLEJOU',
+                                    GROUP_MA = 'POU2')),
+                         INCREMENT=_F( LIST_INST = LINST1),
+                            NEWTON=_F( MATRICE = 'TANGENTE',
+                                    REAC_ITER = 1),
+                       CONVERGENCE=_F(
+                RESO_INTE = 'RUNGE_KUTTA_4',
+                ITER_INTE_MAXI = 500)
+              )
+
+RESU1=CALC_ELEM( reuse=RESU1,
+                            OPTION=(
+                  'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
+                          RESULTAT=RESU1,
+                            MODELE=MO1,
+                        CHAM_MATER=CHMAT1,
+                         CARA_ELEM=CARA1
+              )
+
+TEST_RESU(RESU=(
+          # POUTRE DE LA FAMILLE 1
+          # POUTRE POU10
+          _F( RESULTAT = RESU1,
+                 NUME_ORDRE = 21,
+                 NOM_CHAM = 'DEPL',
+                 NOEUD = 'N3',
+                 NOM_CMP = 'DX',
+                 VALE = 1.125E-3, REFERENCE = 'NON_REGRESSION',
+                 PRECISION = 1.E-3),
+          _F( RESULTAT = RESU1,
+                 NUME_ORDRE = 21,
+                 NOM_CHAM = 'SIEF_ELNO_ELGA',
+                 NOEUD = 'N3',
+                 MAILLE = 'M14',
+                 NOM_CMP = 'N',
+                 VALE = 4.73597E+06, REFERENCE = 'NON_REGRESSION',
+                 PRECISION = 1.E-3),
+           _F( RESULTAT = RESU1,
+                 NUME_ORDRE = 21,
+                 NOM_CHAM = 'VARI_ELNO_ELGA',
+                 NOEUD = 'N3',
+                 MAILLE = 'M14',
+                 NOM_CMP = 'V1',
+                 VALE = 3.71247E-04, REFERENCE = 'NON_REGRESSION',
+                 PRECISION = 1.E-3),
+          # POUTRE POU11
+          _F( RESULTAT = RESU1,
+                 NUME_ORDRE = 21,
+                 NOM_CHAM = 'DEPL',
+                 NOEUD = 'N6',
+                 NOM_CMP = 'DX',
+                 VALE = 1.5E-3, REFERENCE = 'NON_REGRESSION',
+                 PRECISION = 1.E-3),
+          _F( RESULTAT = RESU1,
+                 NUME_ORDRE = 21,
+                 NOM_CHAM = 'SIEF_ELNO_ELGA',
+                 NOEUD = 'N6',
+                 MAILLE = 'M17',
+                 NOM_CMP = 'N',
+                 VALE = 4.75951E+06, REFERENCE = 'NON_REGRESSION',
+                 PRECISION = 2.E-2),
+           _F( RESULTAT = RESU1,
+                 NUME_ORDRE = 21,
+                 NOM_CHAM = 'VARI_ELNO_ELGA',
+                 NOEUD = 'N6',
+                 MAILLE = 'M17',
+                 NOM_CMP = 'V1',
+                 VALE = 7.42500E-04, REFERENCE = 'NON_REGRESSION',
+                 PRECISION = 2.E-2),
+
+           # POUTRE DE LA FAMILLE 2
+           # POUTRE POU20
+           _F( RESULTAT = RESU1,
+                 NUME_ORDRE = 21,
+                 NOM_CHAM = 'DEPL',
+                 NOEUD = 'N20',
+                 NOM_CMP = 'DX',
+                 VALE = 1.12500E-03, REFERENCE = 'NON_REGRESSION',
+                 PRECISION = 1.E-3),
+           _F( RESULTAT = RESU1,
+                 NUME_ORDRE = 21,
+                 NOM_CHAM = 'SIEF_ELNO_ELGA',
+                 NOEUD = 'N20',
+                 MAILLE = 'M10',
+                 NOM_CMP = 'N',
+                 VALE = 3.00000E+06, REFERENCE = 'NON_REGRESSION',
+                 PRECISION = 1.E-3),
+            _F( RESULTAT = RESU1,
+                 NUME_ORDRE = 21,
+                 NOM_CHAM = 'VARI_ELNO_ELGA',
+                 NOEUD = 'N20',
+                 MAILLE = 'M10',
+                 NOM_CMP = 'V7',
+                 VALE = 1.0000E+00, REFERENCE = 'NON_REGRESSION',
+                 PRECISION = 1.E-3),
+            # POUTRE 21
+            _F( RESULTAT = RESU1,
+                 NUME_ORDRE = 21,
+                 NOM_CHAM = 'DEPL',
+                 NOEUD = 'N25',
+                 NOM_CMP = 'DX',
+                 VALE = 1.500E-03, REFERENCE = 'NON_REGRESSION',
+                 PRECISION = 1.E-3),
+
+           _F( RESULTAT = RESU1,
+                 NUME_ORDRE = 21,
+                 NOM_CHAM = 'SIEF_ELNO_ELGA',
+                 NOEUD = 'N25',
+                 MAILLE = 'M46',
+                 NOM_CMP = 'N',
+                 VALE = 3.06852E+06, REFERENCE = 'NON_REGRESSION',
+                 PRECISION = 1.E-3),
+            _F( RESULTAT = RESU1,
+                 NUME_ORDRE = 21,
+                 NOM_CHAM = 'VARI_ELNO_ELGA',
+                 NOEUD = 'N25',
+                 MAILLE = 'M46',
+                 NOM_CMP = 'V1',
+                 VALE = 2.32869E-04, REFERENCE = 'NON_REGRESSION',
+                 PRECISION = 1.E-3),
+            _F( RESULTAT = RESU1,
+                 NUME_ORDRE = 21,
+                 NOM_CHAM = 'VARI_ELNO_ELGA',
+                 NOEUD = 'N25',
+                 MAILLE = 'M46',
+                 NOM_CMP = 'V7',
+                 VALE = 1.02278E+00, REFERENCE = 'NON_REGRESSION',
+                 PRECISION = 1.E-3))
+          )
+
+#   INITIATION CALCUL SUR SECOND MAILLAGE
+
+DEFUFI(   IMPRESSION=_F(  UNITE = 50,
+                        NOM = 'MAILLAGE') )
+
+MA2=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='NON'),    UNITE=50 )
+
+MA2=DEFI_GROUP( reuse=MA2,   MAILLAGE=MA2,
+                      CREA_GROUP_NO=_F( GROUP_MA = ( 'PBAS3',
+                                                  'PHAUT3',
+                                                  'PBAS4',
+                                                  'PHAUT4', ))
+                  )
+
+#
+MO2=AFFE_MODELE(   MAILLAGE=MA2,AFFE=(
+                      _F(  GROUP_MA = ('POU4',),
+                             PHENOMENE = 'MECANIQUE',
+                             MODELISATION = 'POU_D_E'),
+                      _F(  GROUP_MA = ('POU3',),
+                             PHENOMENE = 'MECANIQUE',
+                             MODELISATION = 'POU_D_TG'))
+                   )
+
+CARA2=AFFE_CARA_ELEM(     MODELE=MO2,POUTRE=(
+                           _F(  GROUP_MA = 'POU4',
+                                    SECTION = 'CERCLE',
+                                    CARA = ( 'R', ),
+                                    VALE = (  0.1,)),
+                          _F(  GROUP_MA = 'POU3',
+                                   SECTION = 'RECTANGLE',
+                                   CARA = (   'HY', 'HZ',  ),
+                                   VALE = (  0.2,  0.1, )))
+                        )
+
+#
+MAT2_1=DEFI_MATERIAU(
+             ELAS=_F( E = 2.E11, NU = 0.3),
+             ECRO_LINE=_F( D_SIGM_EPSI = 2.E9, SY = 150.E6),
+             VMIS_POUTRE=_F(
+                NP = 4.7124E6,
+                MEY = 1.1781E5, MPY = 2.E5, CAY = 0.84, CBY = 0.002,
+                MEZ = 1.1781E5, MPZ = 2.E5, CAZ = 0.84, CBZ = 0.0002,
+                MPX = 1.E10)
+                          )
+
+MAT2_2=DEFI_MATERIAU(
+           ELAS=_F( E = 2.E11, NU = 0.3),
+           ECRO_FLEJOU=_F( EP = 2.E10, SY = 150.E6, SU = 160.E6, PUISS = 1.0),
+           VMIS_POUTRE=_F(
+                NP = 3.0E6,
+                MEY = 1.1781E5, MPY = 2.E5, CAY = 0.84, CBY = 0.002,
+                MEZ = 1.1781E5, MPZ = 2.E5, CAZ = 0.84, CBZ = 0.0002,
+                MPX = 1.E10)
+                        )
+
+CHMAT2=AFFE_MATERIAU(   MAILLAGE=MA2,AFFE=(
+                       _F( GROUP_MA = 'POU4', MATER = MAT2_1),
+                       _F( GROUP_MA = 'POU3', MATER = MAT2_2)))
+
+CHART2=AFFE_CHAR_MECA(  MODELE=MO2,
+     DDL_IMPO=_F( GROUP_NO = ('PBAS3','PBAS4',),
+               DX = 0., DY = 0., DZ = 0., DRX = 0., DRY = 0., DRZ = 0.)
+    )
+
+FONCT2=DEFI_FONCTION(   NOM_PARA='INST',
+                           VALE=( 0., 0., 10., 10., ) )
+
+#
+LINST2=DEFI_LIST_REEL(DEBUT=0.,
+               INTERVALLE=_F( JUSQU_A = 1., NOMBRE = 1)
+               )
+
+RESU2=STAT_NON_LINE(
+                            MODELE=MO2,
+                        CHAM_MATER=CHMAT2,
+                         CARA_ELEM=CARA2,
+                             EXCIT=_F( CHARGE = CHART2,
+                                    FONC_MULT = FONCT2),COMP_INCR=(
+                         _F( RELATION = 'VMIS_POU_LINE',
+                                    GROUP_MA = 'POU4'),
+                         _F( RELATION = 'VMIS_POU_FLEJOU',
+                                    GROUP_MA = 'POU3')),
+                         INCREMENT=_F( LIST_INST = LINST2),
+                            NEWTON=_F( MATRICE = 'ELASTIQUE'),
+                       CONVERGENCE=_F(
+                RESO_INTE = 'RUNGE_KUTTA_4',
+                ITER_INTE_MAXI = 500,
+                ARRET = 'NON')
+
+              )
+
+RESU2=CREA_RESU( reuse=RESU2,   OPERATION='PERM_CHAM', TYPE_RESU='EVOL_NOLI',
+                            RESU_INIT=RESU1,
+                        MAILLAGE_INIT=MA1,
+                        NOM_CHAM=('DEPL', 'SIEF_ELGA', 'VARI_ELGA',),
+                            RESU_FINAL=RESU2,
+                        MAILLAGE_FINAL=MA2,
+           PERM_CHAM=(
+                      _F(  GROUP_MA_INIT = 'POU10',
+                                   GROUP_MA_FINAL = 'POU42',
+                                   TRAN = ( 0., 4., 3.,),
+                                   PRECISION = 1.E-5),
+                      _F(  GROUP_MA_INIT = 'POU11',
+                                   GROUP_MA_FINAL = 'POU40',
+                                   TRAN = ( 0., 1., 0.,),
+                                   PRECISION = 1.E-5),
+                      _F(  GROUP_MA_INIT = 'POU13',
+                                   GROUP_MA_FINAL = 'POU41',
+                                   TRAN = ( 0., 4., -3.,),
+                                   PRECISION = 1.E-5),
+                      _F(  GROUP_MA_INIT = 'POU20',
+                                   GROUP_MA_FINAL = 'POU33',
+                                   TRAN = ( 0., -3., 2.,),
+                                   PRECISION = 1.E-5),
+                      _F(  GROUP_MA_INIT = 'POU21',
+                                   GROUP_MA_FINAL = 'POU32',
+                                   TRAN = ( 0., -7., 2.,),
+                                   PRECISION = 1.E-5),
+                      _F(  GROUP_MA_INIT = 'POU23',
+                                   GROUP_MA_FINAL = 'POU30',
+                                   TRAN = ( 0., -7., -2.,),
+                                   PRECISION = 1.E-5))
+
+                   )
+
+RESU2=CALC_ELEM( reuse=RESU2,
+                            OPTION=(
+                  'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
+                          RESULTAT=RESU2,
+                            MODELE=MO2,
+                        CHAM_MATER=CHMAT2,
+                         CARA_ELEM=CARA2
+              )
+
+NUM2=1
+
+TEST_RESU(RESU=(
+          # POUTRE DE LA FAMILLE 4
+          # MAILLE DE LA POUTRE POU42
+          _F( RESULTAT = RESU2,
+                 NUME_ORDRE = NUM2,
+                 NOM_CHAM = 'DEPL',
+                 NOEUD = 'N33',
+                 NOM_CMP = 'DX',
+                 VALE = 1.125E-3, REFERENCE = 'NON_REGRESSION',
+                 PRECISION = 1.E-3),
+          _F( RESULTAT = RESU2,
+                 NUME_ORDRE = NUM2,
+                 NOM_CHAM = 'SIEF_ELNO_ELGA',
+                 NOEUD = 'N33',
+                 MAILLE = 'M57',
+                 NOM_CMP = 'N',
+                 VALE = 4.73597E+06, REFERENCE = 'NON_REGRESSION',
+                 PRECISION = 1.E-3),
+
+           _F( RESULTAT = RESU2,
+                 NUME_ORDRE = NUM2,
+                 NOM_CHAM = 'VARI_ELNO_ELGA',
+                 NOEUD = 'N33',
+                 MAILLE = 'M57',
+                 NOM_CMP = 'V1',
+                 VALE = 3.71247E-04, REFERENCE = 'NON_REGRESSION',
+                 PRECISION = 1.E-3),
+
+         # MAILLE DE LA POUTRE POU40
+          _F( RESULTAT = RESU2,
+                 NUME_ORDRE = NUM2,
+                 NOM_CHAM = 'DEPL',
+                 NOEUD = 'N26',
+                 NOM_CMP = 'DX',
+                 VALE = 1.50000E-03, REFERENCE = 'NON_REGRESSION',
+                 PRECISION = 1.E-3),
+          _F( RESULTAT = RESU2,
+                 NUME_ORDRE = NUM2,
+                 NOM_CHAM = 'SIEF_ELNO_ELGA',
+                 NOEUD = 'N26',
+                 MAILLE = 'M9',
+                 NOM_CMP = 'N',
+                 VALE = 4.75951E+06, REFERENCE = 'NON_REGRESSION',
+                 PRECISION = 2.E-2),
+          _F( RESULTAT = RESU2,
+                 NUME_ORDRE = NUM2,
+                 NOM_CHAM = 'VARI_ELNO_ELGA',
+                 NOEUD = 'N26',
+                 MAILLE = 'M9',
+                 NOM_CMP = 'V1',
+                 VALE = 7.42500E-04, REFERENCE = 'NON_REGRESSION',
+                 PRECISION = 2.E-2),
+
+           # MAILLE DE LA POUTRE POU43
+           _F( RESULTAT = RESU2,
+                 NUME_ORDRE = NUM2,
+                 NOM_CHAM = 'DEPL',
+                 NOEUD = 'N37',
+                 NOM_CMP = 'DX',
+                 VALE = 0.0, REFERENCE = 'NON_REGRESSION',
+                 CRITERE = 'ABSOLU',
+                 PRECISION = 1.E-3),
+          _F( RESULTAT = RESU2,
+                 NUME_ORDRE = NUM2,
+                 NOM_CHAM = 'SIEF_ELNO_ELGA',
+                 NOEUD = 'N37',
+                 MAILLE = 'M31',
+                 NOM_CMP = 'N',
+                 VALE = 0.E0, REFERENCE = 'NON_REGRESSION',
+                 CRITERE = 'ABSOLU',
+                 PRECISION = 1.E-3),
+          _F( RESULTAT = RESU2,
+                 NUME_ORDRE = NUM2,
+                 NOM_CHAM = 'VARI_ELNO_ELGA',
+                 NOEUD = 'N37',
+                 MAILLE = 'M31',
+                 NOM_CMP = 'V1',
+                 VALE = 0.E0, REFERENCE = 'NON_REGRESSION',
+                 CRITERE = 'ABSOLU',
+                 PRECISION = 1.E-3),
+
+           # POUTRE DE LA FAMILLE 3
+           # MAILLE DE LA POUTRE POU33
+           _F( RESULTAT = RESU2,
+                 NUME_ORDRE = NUM2,
+                 NOM_CHAM = 'DEPL',
+                 NOEUD = 'N21',
+                 NOM_CMP = 'DX',
+                 VALE = 1.125E-3, REFERENCE = 'NON_REGRESSION',
+                 PRECISION = 1.E-3),
+           _F( RESULTAT = RESU2,
+                 NUME_ORDRE = NUM2,
+                 NOM_CHAM = 'SIEF_ELNO_ELGA',
+                 NOEUD = 'N21',
+                 MAILLE = 'M24',
+                 NOM_CMP = 'N',
+                 VALE = 3.00000E+06, REFERENCE = 'NON_REGRESSION',
+                 PRECISION = 1.E-3),
+            _F( RESULTAT = RESU2,
+                 NUME_ORDRE = NUM2,
+                 NOM_CHAM = 'VARI_ELNO_ELGA',
+                 NOEUD = 'N21',
+                 MAILLE = 'M24',
+                 NOM_CMP = 'V7',
+                 VALE = 1.0000E+00, REFERENCE = 'NON_REGRESSION',
+                 PRECISION = 1.E-3),
+           # MAILLE DE LA POUTRE POU31
+           _F( RESULTAT = RESU2,
+                 NUME_ORDRE = NUM2,
+                 NOM_CHAM = 'DEPL',
+                 NOEUD = 'N9',
+                 NOM_CMP = 'DX',
+                 VALE = 0.0, REFERENCE = 'NON_REGRESSION',
+                 CRITERE = 'ABSOLU',
+                 PRECISION = 1.E-3),
+          _F( RESULTAT = RESU2,
+                 NUME_ORDRE = NUM2,
+                 NOM_CHAM = 'SIEF_ELNO_ELGA',
+                 NOEUD = 'N9',
+                 MAILLE = 'M16',
+                 NOM_CMP = 'N',
+                 VALE = 0.E0, REFERENCE = 'NON_REGRESSION',
+                 CRITERE = 'ABSOLU',
+                 PRECISION = 1.E-3),
+          _F( RESULTAT = RESU2,
+                 NUME_ORDRE = NUM2,
+                 NOM_CHAM = 'VARI_ELNO_ELGA',
+                 NOEUD = 'N9',
+                 MAILLE = 'M16',
+                 NOM_CMP = 'V1',
+                 VALE = 0.E0, REFERENCE = 'NON_REGRESSION',
+                 CRITERE = 'ABSOLU',
+                 PRECISION = 1.E-3),
+          # POUTRE 32
+            _F( RESULTAT = RESU2,
+                 NUME_ORDRE = NUM2,
+                 NOM_CHAM = 'DEPL',
+                 NOEUD = 'N15',
+                 NOM_CMP = 'DX',
+                 VALE = 1.500E-03, REFERENCE = 'NON_REGRESSION',
+                 PRECISION = 1.E-3),
+
+           _F( RESULTAT = RESU2,
+                 NUME_ORDRE = NUM2,
+                 NOM_CHAM = 'SIEF_ELNO_ELGA',
+                 NOEUD = 'N15',
+                 MAILLE = 'M20',
+                 NOM_CMP = 'N',
+                 VALE = 3.06852E+06, REFERENCE = 'NON_REGRESSION',
+                 PRECISION = 1.E-3),
+            _F( RESULTAT = RESU2,
+                 NUME_ORDRE = NUM2,
+                 NOM_CHAM = 'VARI_ELNO_ELGA',
+                 NOEUD = 'N15',
+                 MAILLE = 'M20',
+                 NOM_CMP = 'V1',
+                 VALE = 2.32869E-04, REFERENCE = 'NON_REGRESSION',
+                 PRECISION = 1.E-3),
+            _F( RESULTAT = RESU2,
+                 NUME_ORDRE = NUM2,
+                 NOM_CHAM = 'VARI_ELNO_ELGA',
+                 NOEUD = 'N15',
+                 MAILLE = 'M20',
+                 NOM_CMP = 'V7',
+                 VALE = 1.02278E+00, REFERENCE = 'NON_REGRESSION',
+                 PRECISION = 1.E-3))
+
+
+          )
+ENGENDRE_TEST(TOUT='OUI',FORMAT_R='1PE25.18')
+
+FIN( )
+#

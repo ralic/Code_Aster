@@ -1,0 +1,33 @@
+#& MODIF COMMANDE  DATE 09/10/2002   AUTEUR DURAND C.DURAND 
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+DEFI_COQU_MULT=OPER(nom="DEFI_COQU_MULT",op=56,sd_prod=mater,docu="U4.42.03-e",reentrant='n',
+            UIinfo={"groupes":("Modélisation",)},
+                    fr="Définition d une coque composite couche par couche",
+         COUCHE          =FACT(statut='o',min=1,max='**',
+           EPAIS           =SIMP(statut='o',typ='R',val_min=0.E+0 ),
+           MATER           =SIMP(statut='o',typ=(mater) ),
+           ORIENTATION     =SIMP(statut='f',typ='R',defaut= 0.E+0,
+                                 val_min=-90.E+0,val_max=90.E+0   ),
+         ),
+         INFO            =SIMP(statut='f',typ='I',defaut=1,into=(1,2) ),
+         IMPRESSION      =FACT(statut='f',min=1,max=1,
+           FICHIER         =SIMP(statut='f',typ='TXM',defaut="RESULTAT",
+                                 into=("RESULTAT",) ),
+         ),
+)  ;

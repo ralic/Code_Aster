@@ -1,0 +1,116 @@
+      SUBROUTINE NUMOCH(TLIMAT,NBMAT,BASE,LMOCH)
+      IMPLICIT REAL*8 (A-H,O-Z)
+      CHARACTER*8       TLIMAT(*)
+      INTEGER                  NBMAT
+      CHARACTER*1                    BASE
+      CHARACTER*(*)                       LMOCH
+C
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ASSEMBLA  DATE 17/01/97   AUTEUR VABHHTS J.PELLET 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+C
+C ----------------------------------------------------------------------
+C --- DESCRIPTION DES PARAMETRES
+C IN  K8   TLIMAT : LISTE DES MATELE DEFINISSANT LA NUMEROTATION
+C IN  I    NBMAT  : NOMBRE DE MATELE PASSES DANS TLIMAT
+C IN  K1   BASE   : BASE SUR LAQUELLE ON CREE LMOCH
+C OUT K*24 LMOCH  : L'OBJET DE NOM LMOCH EST CREE ET REMPLI, IL CONTIENT
+C                  CREATION : BASE//' V K24'
+C                  CONTENU  : LA LISTE DES NOMS DES LIGRELS DE MODELE OU
+C                  CHARGE SUPPORTANT LA LISTE DE MATR_ELEM TLIMAT, SON
+C                  ARGUMENT 'LONUTI' EST DIMENSIONNE EXACTEMENT A SON
+C                  NOMBRE D'ELEMENTS
+C-----------------------------------------------------------------------
+C     COMMUNS   JEVEUX
+C-----------------------------------------------------------------------
+      CHARACTER*6 PGC
+      COMMON /NOMAJE/PGC
+      INTEGER ZI
+      COMMON /IVARJE/ZI(1)
+      REAL*8 ZR
+      COMMON /RVARJE/ZR(1)
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32
+      CHARACTER*80 ZK80
+      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+C----------------------------------------------------------------------
+C     VARIABLES LOCALES
+C----------------------------------------------------------------------
+      CHARACTER*8 MATEL
+      CHARACTER*19 NOMLI
+      CHARACTER*24 RESU
+      CHARACTER*8 K8BID
+C----------------------------------------------------------------------
+C                DEBUT DES INSTRUCTIONS
+C----------------------------------------------------------------------
+      CALL JEMARQ()
+C
+C---- CALCUL DU NBRE MAX DE MODELES ET DE CHARGES
+C
+      IDIML = 2
+      DO 100 IMAT = 1,NBMAT
+         MATEL = TLIMAT(IMAT)
+         CALL JEVEUO(MATEL//'.LISTE_RESU','L',IDLRES)
+         CALL JELIRA(MATEL//'.LISTE_RESU','LONUTI',NBRESU,K8BID)
+         IDIML = IDIML + NBRESU
+  100 CONTINUE
+C
+C---- CREATION DU VECTEUR LMOCH
+C
+      CALL WKVECT(LMOCH,BASE//' V K24',IDIML,ILMOCH)
+      NLMOCH = 0
+      DO 110 IMAT = 1,NBMAT
+         MATEL = TLIMAT(IMAT)
+         CALL DISMOI('F','NB_SS_ACTI',MATEL,'MATR_ELEM',N1,K8BID,IERD)
+C
+         IF (N1.GT.0) THEN
+           CALL DISMOI('F','NOM_MODELE',MATEL,'MATR_ELEM',N1,NOMLI,IED)
+           NOMLI=NOMLI(1:8)//'.MODELE'
+           IDEJA  =0
+           DO 1001 ILI = 1,NLMOCH
+             IF ( NOMLI .EQ. ZK24(ILMOCH-1+ILI)(1:19) ) IDEJA = 1
+ 1001      CONTINUE
+           IF (IDEJA.EQ.0) THEN
+             NLMOCH = NLMOCH + 1
+             ZK24(ILMOCH-1+NLMOCH) = NOMLI
+           ENDIF
+         END IF
+C
+         CALL JEVEUO(MATEL//'.LISTE_RESU','L',IDLRES)
+         CALL JELIRA(MATEL//'.LISTE_RESU','LONUTI ',NBRESU,K8BID)
+         DO 120 IRESU = 1,NBRESU
+            RESU = ZK24(IDLRES+IRESU-1)
+            CALL JEEXIN(RESU(1:19)//'.NOLI',IRET)
+            IF (IRET.EQ.0) GO TO 120
+            CALL JEVEUO(RESU(1:19)//'.NOLI','L',IAD)
+            NOMLI = ZK24(IAD)(1:19)
+            IDEJA  =0
+            DO 1000 ILI = 1,NLMOCH
+               IF ( NOMLI .EQ. ZK24(ILMOCH-1+ILI)(1:19) ) IDEJA = 1
+ 1000       CONTINUE
+            IF (IDEJA.EQ.0) THEN
+               NLMOCH = NLMOCH + 1
+               ZK24(ILMOCH-1+NLMOCH) = NOMLI
+            ENDIF
+ 120     CONTINUE
+ 110  CONTINUE
+      CALL JEECRA(LMOCH,'LONUTI',NLMOCH,K8BID)
+      CALL JEDEMA()
+      END

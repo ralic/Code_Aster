@@ -1,0 +1,110 @@
+# MODIF  DATE 13/10/97   AUTEUR A2BHHWS A.C.LEGER 
+# TITRE MODES DE BALLOTTEMENT D UNE CUVE REMPLIE D EAU
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+# MODELE AVEC 513 ELEMENTS HEXA20 ET 57 ELEMENTS MEFP_FACE8
+# VALIDATION INDEPENDANTE PAR SAMTECH (H.DRION)
+#
+###################################################################
+
+DEBUT(CODE=_F( NOM = 'ADLV101B',NIV_PUB_WEB='INTERNET'))
+
+#
+
+MAYA=LIRE_MAILLAGE( )
+
+#
+
+CUVE=AFFE_MODELE(    MAILLAGE=MAYA,AFFE=(
+               _F(  GROUP_MA = 'MASURF',
+             PHENOMENE = 'MECANIQUE', MODELISATION = '2D_FLUI_PESA'),
+               _F(  GROUP_MA = 'MAFLUIDE',
+             PHENOMENE = 'MECANIQUE', MODELISATION = '3D_FLUIDE'))
+                          )
+
+#
+
+MATER=DEFI_MATERIAU(    FLUIDE=_F(  RHO = 1000., CELE_R = 1400.))
+
+#
+
+CHAMPMAT=AFFE_MATERIAU(    MAILLAGE=MAYA,
+                             AFFE=_F(  GROUP_MA = ('MAFLUIDE', 'MASURF',),
+                                    MATER = MATER)
+                          )
+
+#
+
+CHARGE=AFFE_CHAR_MECA(   MODELE=CUVE,
+                               PESANTEUR=(9.81,0.,0.,-1.,))
+
+#
+
+RIGIELEM=CALC_MATR_ELEM(   MODELE=CUVE,
+                           OPTION='RIGI_MECA',
+                           CHARGE=CHARGE,   CHAM_MATER=CHAMPMAT
+                             )
+
+#
+
+MASSELEM=CALC_MATR_ELEM(   MODELE=CUVE,
+                           OPTION='MASS_MECA',
+                           CHARGE=CHARGE,   CHAM_MATER=CHAMPMAT
+                             )
+
+#
+
+NU=NUME_DDL(  MATR_RIGI=RIGIELEM)
+
+#
+MATRAS=ASSE_MATRICE(MATR_ELEM=RIGIELEM,NUME_DDL=NU)
+
+MATMAS=ASSE_MATRICE(MATR_ELEM=MASSELEM,NUME_DDL=NU)
+
+#
+
+MODE=MODE_ITER_INV(   MATR_A=MATRAS,   MATR_B=MATMAS,
+                 CALC_FREQ=_F( OPTION = 'PROCHE',
+               FREQ = ( 0.89,  1.39,  1.72,  2.,))
+                        )
+
+#
+
+IMPR_RESU(  MODELE=CUVE,
+              RESU=_F( FORMAT = 'RESULTAT', RESULTAT = MODE))
+
+#
+
+TEST_RESU(RESU=(_F( RESULTAT = MODE,  PARA = 'FREQ',
+                    CRITERE = 'RELATIF',  PRECISION = 2.E-3,
+                    NUME_ORDRE = 1,  VALE = 0.89825),
+                   _F( RESULTAT = MODE,  PARA = 'FREQ',
+                    CRITERE = 'RELATIF',  PRECISION = 5.E-3,
+                    NUME_ORDRE = 2,  VALE = 1.38452),
+                   _F( RESULTAT = MODE,  PARA = 'FREQ',
+                    CRITERE = 'RELATIF',  PRECISION = 9.E-3,
+                    NUME_ORDRE = 3,  VALE = 1.70952),
+                   _F( RESULTAT = MODE,  PARA = 'FREQ',
+                    CRITERE = 'RELATIF',  PRECISION = 1.6E-2,
+                    NUME_ORDRE = 4,  VALE = 1.97551))
+             )
+
+#
+
+FIN()
+#

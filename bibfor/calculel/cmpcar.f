@@ -1,0 +1,307 @@
+      SUBROUTINE CMPCAR(CARTE)
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF CALCULEL  DATE 07/01/98   AUTEUR CIBHHLB L.BOURHRARA 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+C-----------------------------------------------------------------------
+      IMPLICIT REAL*8 (A-H,O-Z)
+C
+C     COMPRESSION D'1 CARTE :
+C ( LORSQUE LES CMPS D'1 GRANDEUR N'ONT PAS ETE DONNEES SIMULTANEMENT)
+C
+C-----------------------------------------------------------------------
+C
+C     ARGUMENTS:
+C     ----------
+      CHARACTER*24 CARTE
+C ----------------------------------------------------------------------
+C     ENTREES:
+C       CARTE : NOM D'1 CARTE A COMPRIMER
+C     SORTIES:
+C      ON A RESTAURE LES OBJETS INITIAUX DE LA CARTE : .VALE,.NOLI,.LIMA
+C ----------------------------------------------------------------------
+C
+C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
+      INTEGER            ZI
+      COMMON  / IVARJE / ZI(1)
+      REAL*8             ZR
+      COMMON  / RVARJE / ZR(1)
+      COMPLEX*16         ZC
+      COMMON  / CVARJE / ZC(1)
+      LOGICAL            ZL
+      COMMON  / LVARJE / ZL(1)
+      CHARACTER*8        ZK8
+      CHARACTER*16                ZK16
+      CHARACTER*24                          ZK24
+      CHARACTER*32                                    ZK32
+      CHARACTER*80                                              ZK80
+      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+      CHARACTER*32       JEXNOM,JEXNUM,JEXATR
+C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
+C     FONCTIONS EXTERNES:
+C     -------------------
+      CHARACTER*8 SCALAI
+      LOGICAL MEIDEN,EXISDG
+C
+C     VARIABLES LOCALES:
+C     ------------------
+      CHARACTER*8 SCAL,CTYPE
+      CHARACTER*1 K1BID
+C
+C
+C     -- RECUPERATION DES OBJETS JEVEUX DE LA CARTE:
+C
+      CALL JEMARQ()
+      CALL JEVEUO(CARTE(1:19)//'.DESC','L',IADESC)
+      CALL JEVEUO(CARTE(1:19)//'.VALE','L',IAVALE)
+      CALL JEVEUO(CARTE(1:19)//'.VALP','L',IAD1)
+      CALL JELIRA(CARTE(1:19)//'.VALP','TYPELONG',IBID,CTYPE)
+      CALL JEVEUO(CARTE(1:19)//'.NOMA','L',IANOMA)
+C
+C
+      IGD = ZI(IADESC-1+1)
+      NEC = NBEC(IGD)
+C     -- SCAL = I,R,C,K8,...
+      SCAL = SCALAI(IGD)
+C
+C     -- NCMP : NOMBRE MAXIMAL DE CMP POUR LA GRANDEUR.
+C     ----------------------------------------------------
+      CALL JELIRA(JEXNUM('&CATA.GD.NOMCMP',IGD),'LONMAX',NCMP,K1BID)
+C
+C     -- RECUPERATION DES OBJETS  .NOLI .NUMT .VALP ET .DGP:
+C     ------------------------------------------------------
+      CALL JEVEUO(CARTE(1:19)//'.NOLI','L',IANOLI)
+      CALL JEVEUO(CARTE(1:19)//'.NUMT','L',IANUMT)
+      CALL JEVEUO(CARTE(1:19)//'.VALP','L',IAVALP)
+      CALL JEVEUO(CARTE(1:19)//'.DGP ','L',IADGP)
+      CALL JELIRA(CARTE(1:19)//'.DGP ','LONMAX',N1,K1BID)
+C     NOMBRE TOTAL DE MAILLES:
+C     CELLES DU MAILLAGE TOUTES LES SUPPL. DES LIGREL ATACHES A LA CARTE
+      NBMATO = N1/NEC
+C
+C     -- ALLOCATION DES OBJETS: .LIPR .VRET .VTRA ET .LIM2 :
+C     ------------------------------------------------------
+      CALL JECREO(CARTE(1:19)//'.LIPR','V V I')
+      CALL JEECRA(CARTE(1:19)//'.LIPR','LONMAX',NBMATO,' ')
+      CALL JEVEUO(CARTE(1:19)//'.LIPR','E',IALIPR)
+C     --LIPR CONTIENT A CHAQUE ITERARION, LA LISTE  DES
+C     --MAILLES AFFECTEES A LA MEME GRANDEUR.
+C
+      CALL JECREO(CARTE(1:19)//'.VRET','V V I')
+      CALL JEECRA(CARTE(1:19)//'.VRET','LONMAX',NBMATO,' ')
+      CALL JEVEUO(CARTE(1:19)//'.VRET','E',IAVRET)
+C     --VRET NOTE POUR CHAQUE MAILLE SI ELLE A ETE RETENUE COMME MODELE
+C
+      CALL JECREO(CARTE(1:19)//'.VTRA','V V L')
+      CALL JEECRA(CARTE(1:19)//'.VTRA','LONMAX',NBMATO,' ')
+      CALL JEVEUO(CARTE(1:19)//'.VTRA','E',IAVTRA)
+      DO 1,I = 1,NBMATO
+         ZL(IAVTRA-1+I) = .FALSE.
+    1 CONTINUE
+C     --VTRA NOTE POUR CHAQUE MAILLE SI ELLE A ETE TRAITEE.
+C
+      CALL JECREC(CARTE(1:19)//'.LIM2','V V I','NU','CONTIG','VARIABLE',
+     +            NBMATO)
+C     -- ON ESPERE QU'IL Y AURA MOINS DE GROUPES QUE DE MAILLES !!!
+      CALL JEECRA(CARTE(1:19)//'.LIM2','LONT',NBMATO,' ')
+      CALL JEVEUO(CARTE(1:19)//'.LIM2','E',IALIM2)
+C     --LIM2 EST LA COLLECTION QUI REMPLACERA .LIMA.
+C
+C
+C     -- TRAITEMENT:
+C     --------------
+C
+      NBEDIT = ZI(IADESC-1+3)
+      II = 0
+      DO 11,IEDIT = 1,NBEDIT
+         IF (ZI(IANUMT-1+3* (IEDIT-1)+3).EQ.0) GO TO 11
+         NUM1 = ZI(IANUMT-1+ (IEDIT-1)*3+1)
+         NUM2 = ZI(IANUMT-1+ (IEDIT-1)*3+2)
+         IRTNU = 0
+         DO 12,I = NUM1,NUM2
+C           -- SI LA MAILLE A DEJA ETE TRAITEE: ON SORT DE LA BOUCLE.
+            IF (ZL(IAVTRA-1+I)) GO TO 12
+            ICOMPT = 1
+            ZI(IAVRET-1+I) = IEDIT
+            IRTNU = IRTNU + 1
+            ZI(IALIPR-1+ICOMPT) = I
+            I1 = IAVALP - 1 + (I-1)*NCMP
+            I2 = IADGP - 1 + (I-1)*NEC
+            DO 13,J = I + 1,NUM2
+               IF (ZL(IAVTRA-1+I)) GO TO 13
+               I3 = IAVALP - 1 + (J-1)*NCMP
+               I4 = IADGP - 1 + (J-1)*NEC
+C              -- TESTE SI LES 2 GRANDEURS SONT PARFAITEMENT IDENTIQUES:
+               IF (MEIDEN(SCAL(1:4),NCMP,I1,I3,NEC,I2,I4)) THEN
+                  ICOMPT = ICOMPT + 1
+                  ZI(IALIPR-1+ICOMPT) = J
+                  ZL(IAVTRA-1+J) = .TRUE.
+               END IF
+   13       CONTINUE
+C           -- RECOPIE DE LA LISTE DE MAILLES .LIPR DANS .LIM2 :
+C           -- ATTENTION .LIM2 CONTIENT LES NUMEROS TOTAUX DES MAILLES!
+            CALL JECROC(JEXNUM(CARTE(1:19)//'.LIM2',IRTNU))
+            CALL JEECRA(JEXNUM(CARTE(1:19)//'.LIM2',IRTNU),'LONMAX',
+     +                  ICOMPT,' ')
+            DO 14,K = 1,ICOMPT
+               ZI(IALIM2-1+II+K) = ZI(IALIPR-1+K)
+   14       CONTINUE
+            II = II + ICOMPT
+            ZL(IAVTRA-1+I) = .TRUE.
+   12    CONTINUE
+   11 CONTINUE
+C
+C     -- ON RECOPIE CE QU'IL FAUT DANS LES OBJETS FINAUX:
+C     ---------------------------------------------------
+C
+      CALL JELIRA(CARTE(1:19)//'.LIM2','NUTIOC',NBEDI3,K1BID)
+      CALL JECREO(CARTE(1:19)//'.DES3','V V I')
+      CALL JEECRA(CARTE(1:19)//'.DES3','LONMAX',3+NBEDI3* (2+NEC),' ')
+      CALL JEVEUO(CARTE(1:19)//'.DES3','E',I3DESC)
+      ZI(I3DESC-1+1) = ZI(IADESC-1+1)
+      ZI(I3DESC-1+2) = NBEDI3
+      ZI(I3DESC-1+3) = NBEDI3
+C
+      CALL JECREO(CARTE(1:19)//'.NOL3','V V K24')
+      CALL JEECRA(CARTE(1:19)//'.NOL3','LONMAX',NBEDI3,' ')
+      CALL JEVEUO(CARTE(1:19)//'.NOL3','E',I3NOLI)
+C
+      CALL JECREO(CARTE(1:19)//'.VAL3','V V '//SCAL(1:4))
+      CALL JEECRA(CARTE(1:19)//'.VAL3','LONMAX',NBEDI3*NCMP,' ')
+      CALL JEVEUO(CARTE(1:19)//'.VAL3','E',I3VALE)
+C
+      CALL JECREC(CARTE(1:19)//'.LIM3','V V I','NU','CONTIG','VARIABLE',
+     +            NBEDI3)
+      CALL JEECRA(CARTE(1:19)//'.LIM3','LONT',NBMATO,' ')
+C
+      ICOMPT = 0
+      DO 21,I = 1,NBMATO
+         IF (ZI(IAVRET-1+I).LE.0) GO TO 21
+         IEDIT = ZI(IAVRET-1+I)
+         ICOMPT = ICOMPT + 1
+C
+C        --DES3 ET NOL3:
+         ZK24(I3NOLI-1+ICOMPT) = ZK24(I3NOLI-1+IEDIT)
+         IF (ZK24(IANOLI-1+IEDIT) (1:8).EQ.'        ') THEN
+            ZI(I3DESC-1+3+2* (ICOMPT-1)+1) = 3
+         ELSE
+            ZI(I3DESC-1+3+2* (ICOMPT-1)+1) = -3
+         END IF
+         ZI(I3DESC-1+3+2* (ICOMPT-1)+2) = ICOMPT
+         IAD = I3DESC - 1 + 3 + 2*NBEDI3 + NEC* (ICOMPT-1)
+         DO 22,K = 1,NEC
+            ZI(IAD+K) = ZI(IADGP-1+ (I-1)*NEC+K)
+   22    CONTINUE
+C
+C        --VAL3:
+         ICO = 0
+         DO 23,K = 1,NCMP
+            IF (EXISDG(ZI(IADGP-1+ (I-1)*NEC+1),K)) THEN
+               ICO = ICO + 1
+               CALL JACOPO(1,CTYPE,IAD1+NCMP*(I-1)+K-1,
+     &                             I3VALE+NCMP*(ICOMPT-1)+ICO-1)
+            END IF
+   23    CONTINUE
+C
+C        --LIMA:
+         IF (ZK24(IANOLI-1+IEDIT) (1:8).EQ.'        ') THEN
+            ISIGNE = 1
+         ELSE
+            ISIGNE = -1
+         END IF
+         CALL JELIRA(JEXNUM(CARTE(1:19)//'.LIM2',ICOMPT),'LONMAX',NB,
+     +               K1BID)
+         CALL JEECRA(JEXNUM(CARTE(1:19)//'.LIM3',ICOMPT),'LONMAX',NB,
+     +               ' ')
+         CALL JEVEUO(JEXNUM(CARTE(1:19)//'.LIM2',ICOMPT),'L',I2LIMA)
+         CALL JEVEUO(JEXNUM(CARTE(1:19)//'.LIM3',ICOMPT),'E',I3LIMA)
+         NUM1 = ZI(IANUMT-1+ (IEDIT-1)*3+1)
+         DO 24,K = 1,NB
+            ZI(I3LIMA-1+K) = ISIGNE* (ZI(I2LIMA-1+K)-NUM1+1)
+   24    CONTINUE
+   21 CONTINUE
+C
+C     ON DETRUIT LA CARTE INITIALE EST ON RECOPIE DEFINITIVEMENT:
+C     -----------------------------------------------------------
+C
+      CALL JEDETR(CARTE(1:19)//'.DESC')
+      CALL JEDETR(CARTE(1:19)//'.VALE')
+      CALL JEDETR(CARTE(1:19)//'.NOLI')
+      CALL JEDETR(CARTE(1:19)//'.LIMA')
+C
+C     DESC :
+C     ------
+      CALL JEVEUO(CARTE(1:19)//'.DES3','L',IAD1)
+      CALL JELIRA(CARTE(1:19)//'.DES3','LONMAX',N,K1BID)
+      CALL JELIRA(CARTE(1:19)//'.DES3','TYPELONG',IBID,CTYPE)
+      CALL JECREO(CARTE(1:19)//'.DESC','G V I')
+      CALL JEECRA(CARTE(1:19)//'.DESC','LONMAX',N,' ')
+      CALL JEECRA(CARTE(1:19)//'.DESC','DOCU',IBID,'CART')
+      CALL JEVEUO(CARTE(1:19)//'.DESC','E',IAD2)
+      CALL JACOPO(N,CTYPE,IAD1,IAD2)
+C     NOLI :
+C     ------
+      CALL JELIRA(CARTE(1:19)//'.NOL3','LONMAX',N,K1BID)
+      CALL JELIRA(CARTE(1:19)//'.NOL3','TYPELONG',IBID,CTYPE)
+      CALL JEVEUO(CARTE(1:19)//'.NOL3','L',IAD1)
+      CALL JECREO(CARTE(1:19)//'.NOLI','G V K24')
+      CALL JEECRA(CARTE(1:19)//'.NOLI','LONMAX',N,' ')
+      CALL JEVEUO(CARTE(1:19)//'.NOLI','E',IAD2)
+      CALL JACOPO(N,CTYPE,IAD1,IAD2)
+C     VALE :
+C     ------
+      CALL JELIRA(CARTE(1:19)//'.VAL3','LONMAX',N,K1BID)
+      CALL JELIRA(CARTE(1:19)//'.VAL3','TYPELONG',IBID,CTYPE)
+      CALL JEVEUO(CARTE(1:19)//'.VAL3','E',IAD1)
+      CALL JECREO(CARTE(1:19)//'.VALE','G V '//SCAL(1:4))
+      CALL JEECRA(CARTE(1:19)//'.VALE','LONMAX',N,' ')
+      CALL JEVEUO(CARTE(1:19)//'.VALE','E',IAD2)
+      CALL JACOPO(N,CTYPE,IAD1,IAD2)
+C     LIMA :
+C     ------
+      CALL JELIRA(CARTE(1:19)//'.LIM3','NMAXOC',NBOC,K1BID)
+      CALL JELIRA(CARTE(1:19)//'.LIM3','LONT',N,K1BID)
+      CALL JELIRA(CARTE(1:19)//'.LIM3','TYPELONG',IBID,CTYPE)
+      CALL JEVEUO(CARTE(1:19)//'.LIM3','L',IAD1)
+      CALL JECREC(CARTE(1:19)//'.LIMA','G V I','NU','CONTIG','VARIABLE',
+     +            NBOC)
+      CALL JEECRA(CARTE(1:19)//'.LIMA','LONT',N,' ')
+      CALL JEVEUO(CARTE(1:19)//'.LIMA','E',IAD2)
+C
+      DO 31 I = 1,NBOC
+         CALL JELIRA(JEXNUM(CARTE(1:19)//'.LIM3',I),'LONMAX',NB,K1BID)
+         CALL JECROC(JEXNUM(CARTE(1:19)//'.LIMA',I))
+         CALL JEECRA(JEXNUM(CARTE(1:19)//'.LIMA',I),'LONMAX',NB,' ')
+   31 CONTINUE
+      CALL JACOPO(N,CTYPE,IAD1,IAD2)
+C
+C        DESCRIPTION DE TOUS LES OBJETS DE TRAVAIL:
+C
+      CALL JEDETR(CARTE(1:19)//'.DES3')
+      CALL JEDETR(CARTE(1:19)//'.DGP ')
+      CALL JEDETR(CARTE(1:19)//'.LIM2')
+      CALL JEDETR(CARTE(1:19)//'.LIM3')
+      CALL JEDETR(CARTE(1:19)//'.LIPR')
+      CALL JEDETR(CARTE(1:19)//'.NOL3')
+      CALL JEDETR(CARTE(1:19)//'.NUMT')
+      CALL JEDETR(CARTE(1:19)//'.VALP')
+      CALL JEDETR(CARTE(1:19)//'.VAL3')
+      CALL JEDETR(CARTE(1:19)//'.VRET')
+      CALL JEDETR(CARTE(1:19)//'.VTRA')
+ 9999 CONTINUE
+      CALL JEDEMA()
+      END

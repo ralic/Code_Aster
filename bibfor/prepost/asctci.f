@@ -1,0 +1,174 @@
+      SUBROUTINE ASCTCI(RM, NSEP, ISCP, ICIRP, IABSC1, IABSC2, TAMPON,
+     +                  COORXG, COORXD)
+C        
+      IMPLICIT NONE 
+      REAL*8   RM,TAMPON(*),COORXG(*),COORXD(*)
+      INTEGER  NSEP, ISCP, ICIRP, IABSC1(*), IABSC2(*)
+C
+C ----------------------------------------------------------------------
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF PREPOST  DATE 08/03/99   AUTEUR AUBHHMB M.BONNAMY 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+C     MACR_ASCOUF_MAIL
+C
+C  - CALCUL TABLEAU TRIE DES ABSCISSES DES CENTRES DE SOUS-EPAISSEURS
+C
+C-----------------DONNEES FOURNIES PAR L'UTILISATEUR--------------------
+C
+C     RM    = RAYON MOYEN DU COUDE
+C     NSEP  = NOMBRE DE SOUS-EPAISSEURS
+C     ISCP = ABSC. CIRCONF. CENTRE SOUS-EPAISSEUR SUR LA PLAQUE
+C     ICIRP = TAILLE CIRCONF. SUR LA PLAQUE DE LA SOUS-EPAISSEUR
+C     
+C----------------------DONNEES FOURNIES PAR ASTER-----------------------
+C
+C     COORXG = ABSCISSE DU BORD GAUCHE DE LA SOUS-EPAISSEUR I
+C     COORXD = ABSCISSE DU BORD DROIT DE LA SOUS-EPAISSEUR I
+C     IABSC1 = CORRESPONDANCE ABSCISSE CURVILIGNE CIRCONF. SOUS-EP. I
+C     IABSC2 = CORRESPONDANCE ABSC. GAUCHE ET DROITE CIRCONF. SOUS-EP. I
+C
+C ----------------------------------------------------------------------
+C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
+      INTEGER           ZI
+      COMMON / IVARJE / ZI(1)
+      REAL*8            ZR
+      COMMON / RVARJE / ZR(1)
+      COMPLEX*16        ZC
+      COMMON / CVARJE / ZC(1)
+      LOGICAL           ZL
+      COMMON / LVARJE / ZL(1)
+      CHARACTER*8       ZK8
+      CHARACTER*16              ZK16
+      CHARACTER*24                       ZK24
+      CHARACTER*32                                ZK32
+      CHARACTER*80                                         ZK80
+      COMMON / KVARJE / ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
+C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
+C 
+      REAL*8   R8PI,PI,VMIN,RBID
+      INTEGER  IBID,I,J,IFM,IMIN,IUNIFI
+C
+      IFM   = IUNIFI('MESSAGE')     
+      PI = R8PI()       
+C
+C ---- TRI DU TABLEAU DES ABSCISSES CURVILIGNES CIRCONF. PLAQUE
+C
+      DO 10 I=1,NSEP
+         TAMPON(I) = ZR(ISCP+I-1)
+         IABSC1(I)   = I
+ 10   CONTINUE
+C
+      DO 20 J=1,NSEP
+C
+        VMIN = 2.D0*PI*RM+1
+C
+        DO 30 I=J,NSEP
+C
+          IF (TAMPON(I).GT.(2.D0*PI*RM).OR.TAMPON(I).LT.0.D0) THEN
+            CALL UTDEBM('F','ASCTCI','VALEUR HORS DOMAINE')
+            CALL UTIMPI('L','SOUS-EPAISSEUR NUMERO : ',1,I)
+            CALL UTIMPR('L','ABSC. CURV. CIRCONF.  : ',1,TAMPON(I))
+            CALL UTIMPR('L','BORD PLAQUE : ',1,2*PI*RM )
+            CALL UTFINM()   
+            GOTO 9999
+          ELSE IF (TAMPON(I).LT.VMIN) THEN
+            VMIN = TAMPON(I) 
+            IMIN = I
+          END IF
+C
+ 30     CONTINUE
+C
+        RBID = TAMPON(IMIN)
+        TAMPON(IMIN) = TAMPON(J)
+        TAMPON(J) = RBID
+        IBID = IABSC1(IMIN)
+        IABSC1(IMIN) = IABSC1(J)
+        IABSC1(J) = IBID
+C
+ 20   CONTINUE
+C
+      WRITE(IFM,*)
+      WRITE(IFM,*) 'TRI DES CENTRES ABSC. CURV. CIRCONF. :'
+      WRITE(IFM,*) '------------------------------------'
+      DO 35 J=1,NSEP
+        WRITE(IFM,100) J,') SOUS-EP NO ',IABSC1(J),'<> XC = ',TAMPON(J)
+ 35   CONTINUE
+C
+C --- CALCUL DES ABCISSES DROITES ET GAUCHES DES SOUS-EPAISSEURS
+C
+      DO 40 I=1,NSEP
+C
+         COORXG(I) = TAMPON(I) - ZR(ICIRP+IABSC1(I)-1)/2.D0
+         IF (COORXG(I).LT.0.D0) THEN
+              COORXG(I) = COORXG(I) + 2.D0*PI*RM
+         END IF
+         COORXD(I) = TAMPON(I) + ZR(ICIRP+IABSC1(I)-1)/2.D0
+         IF (COORXD(I).GT.(2.D0*PI*RM)) THEN
+              COORXD(I) =  COORXD(I)- 2.D0*PI*RM 
+         END IF
+C
+ 40   CONTINUE
+C
+C ---- TRI DES BORNES D'INTERVALLES EN ABSCISSE
+C
+      DO 50 I=1,NSEP
+         TAMPON(2*I-1) = COORXG(I)
+         TAMPON(2*I) = COORXD(I)
+         IABSC2(2*I) = 2*I
+         IABSC2(2*I-1) = 2*I-1
+ 50   CONTINUE
+C
+      DO 60 J=1,2*NSEP
+C
+        VMIN = 2.D0*PI*RM+1
+C
+        DO 70 I=J,2*NSEP
+C
+          IF (TAMPON(I).LT.VMIN) THEN
+            VMIN = TAMPON(I) 
+            IMIN = I
+          END IF
+C
+ 70     CONTINUE
+C
+        RBID = TAMPON(IMIN)
+        TAMPON(IMIN) = TAMPON(J)
+        TAMPON(J) = RBID
+        IBID = IABSC2(IMIN)
+        IABSC2(IMIN) = IABSC2(J)
+        IABSC2(J) = IBID
+C
+ 60   CONTINUE
+C
+      WRITE(IFM,*)
+      WRITE(IFM,*) 'TRI DES INTERVALLES G ET D ABSC. CURV. CIRCONF. :'
+      WRITE(IFM,*) '-----------------------------------------------'
+      DO 80 J=1,2*NSEP
+        IF (MOD(IABSC2(J),2).NE.0) THEN
+          WRITE(IFM,100) 
+     &    J,') SOUS-EP NO ',IABSC1(IABSC2(J)/2+1),'<> XG = ',TAMPON(J)
+        ELSE
+          WRITE(IFM,100) 
+     &      J,') SOUS-EP NO ',IABSC1(IABSC2(J)/2),'<> XD = ',TAMPON(J)
+        END IF
+ 80   CONTINUE
+C
+9999  CONTINUE
+100   FORMAT(I3,A,I3,A,F8.2)
+C
+      END

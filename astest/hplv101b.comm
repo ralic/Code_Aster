@@ -1,0 +1,375 @@
+# MODIF  DATE 07/06/2002   AUTEUR DURAND C.DURAND 
+# TITRE HOMOGENEISATION D'UN MATERIAU HOMOGENE - 3D - HEXA20
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+#----------------------------------------------------------------------
+# MODELISATION 3D :   20 NOEUDS -- 1 MAILLE HEXA20
+#           Y
+#          !
+#        C !---------!B                 HOMOGENEISATION THERMIQUE ET
+#          !         !                  MECANIQUE
+#          !         !
+#          !         !
+#          !---------!  -------->
+#         /O          A        X
+#        /
+#     Z /      1.0 M
+#          !---------!
+#======================================================================
+DEBUT( CODE=_F(  NOM = 'HPLV101B',NIV_PUB_WEB='INTERNET') )
+
+#
+# MATERIAU ISOTROPE
+#
+
+MAT=DEFI_MATERIAU( ELAS=_F(  E = 1.0,  NU = 0.3,  ALPHA = 0.),
+                          THER=_F(  LAMBDA = 1.0,  RHO_CP = 0.0) )
+
+#
+# MATERIAU ORTHOTROPE EN FAIT ISOTROPE
+#
+
+MATO=DEFI_MATERIAU( 
+          ELAS_ORTH=_F(  E_L = 1.0, E_T = 1.0, E_N = 1.0,
+                      NU_LT = 0.3,   NU_LN = 0.3,   NU_TN = 0.3,
+                      G_LT = 0.384615385,
+                      G_LN = 0.384615385,
+                      G_TN = 0.384615385,
+                      ALPHA_L = 0.0, ALPHA_T = 0.0, ALPHA_N = 0.0),
+          THER=_F(  LAMBDA = 1.0,  RHO_CP = 0.0) )
+
+#
+# MATERIAU  VRAIMENT ORTHOTROPE
+##  ROTATION (90,90,90)
+
+MATOO=DEFI_MATERIAU( 
+           ELAS_ORTH=_F(  E_N = 1.0, E_T = 0.9, E_L = 0.8, 
+     NU_TN = 0.333333333333333333333333,   NU_LT = 0.1, NU_LN = 0.25,
+                       G_TN = 0.3, G_LN = 0.4, G_LT = 0.5,
+                       ALPHA_L = 0.0, ALPHA_N = 0.0, ALPHA_T = 0.0),
+          THER=_F(  LAMBDA = 1.0,  RHO_CP = 0.0) )
+
+#
+
+MAI=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='NON'), )
+
+MAI=DEFI_GROUP( reuse=MAI,   MAILLAGE=MAI,
+  CREA_GROUP_MA=_F(  NOM = 'TOUT', TOUT = 'OUI'))
+
+#
+MAI=DEFI_GROUP(reuse=MAI, MAILLAGE=MAI,
+                CREA_GROUP_NO=_F( GROUP_MA = ('ZEGAL0', 'YEGAL0',
+                                          'XEGAL1', 'YEGAL1', 'XEGAL0',)))
+
+CHMAT=AFFE_MATERIAU(  MAILLAGE=MAI,
+                          AFFE=_F(  TOUT = 'OUI',   MATER = MAT) )
+
+CHMATO=AFFE_MATERIAU(  MAILLAGE=MAI,
+                          AFFE=_F(  TOUT = 'OUI',   MATER = MATO) )
+
+CHMATOO=AFFE_MATERIAU(  MAILLAGE=MAI,
+                          AFFE=_F(  TOUT = 'OUI',   MATER = MATOO) )
+
+MODTH=AFFE_MODELE(  MAILLAGE=MAI,
+                        AFFE=_F( TOUT = 'OUI',   MODELISATION = '3D',
+                              PHENOMENE = 'THERMIQUE') )
+
+MODME=AFFE_MODELE(  MAILLAGE=MAI,
+                        AFFE=_F( TOUT = 'OUI',   MODELISATION = '3D',
+                              PHENOMENE = 'MECANIQUE') )
+
+ESSAI=AFFE_CARA_ELEM(MODELE=MODME,
+                MASSIF=_F( 
+
+       GROUP_MA = 'TOUT',
+
+                ANGL_REP = (0.,  0.,  0., )))
+
+ESSAI0=AFFE_CARA_ELEM(MODELE=MODME,
+                MASSIF=_F( 
+                GROUP_MA = 'TOUT',
+                ANGL_REP = (23.,  65.,  78., )))
+
+ESSAI00=AFFE_CARA_ELEM(MODELE=MODME,
+                MASSIF=_F( 
+                GROUP_MA = 'TOUT',
+                ANGL_REP = (90.,  90.,  90., )))
+
+#-----------------------------------------------------------------------
+
+CHARTH=AFFE_CHAR_THER(  MODELE=MODTH,
+             TEMP_IMPO=_F( GROUP_NO = 'XEGAL0', TEMP = 0.0),
+             GRAD_TEMP_INIT=_F( TOUT = 'OUI',FLUX_X = -1.0))
+
+CHARMM=AFFE_CHAR_MECA(  MODELE=MODME,DDL_IMPO=(
+              _F( GROUP_NO = 'ZEGAL0',   DZ = 0.),
+                       _F( GROUP_NO = 'YEGAL0',   DY = 0.),
+                       _F( GROUP_NO = 'XEGAL1',   DX = 0.),
+                       _F( GROUP_NO = 'YEGAL1',   DY = 0.),
+                       _F( GROUP_NO = 'XEGAL0',   DX = 0.)),
+              EPSI_INIT=_F( TOUT = 'OUI',EPXX = -1.0)      )
+
+FCT1=DEFI_FONCTION(   NOM_PARA='Z',  PROL_DROITE='LINEAIRE',
+                                     PROL_GAUCHE='LINEAIRE',
+                      VALE=(0.00,      0.00,  1.00,      1.00,))
+
+ZERO=DEFI_CONSTANTE( VALE=0.00)
+
+CHARMF=AFFE_CHAR_MECA_F(  MODELE=MODME,
+              EPSI_INIT=_F(   TOUT = 'OUI',EPXX = FCT1),DDL_IMPO=(
+              _F( GROUP_NO = 'ZEGAL0',  DX = ZERO,  DY = ZERO),
+                       _F( GROUP_NO = 'YEGAL0',  DY = ZERO),
+                       _F( GROUP_NO = 'XEGAL1',  DX = ZERO),
+                       _F( GROUP_NO = 'YEGAL1',  DY = ZERO),
+                       _F( GROUP_NO = 'XEGAL0',  DX = ZERO),
+                       _F( NOEUD = 'O',        DZ = ZERO))   )
+
+TEMPGR=THER_LINEAIRE(
+                MODELE=MODTH,   CHAM_MATER=CHMAT,
+                EXCIT=_F( CHARGE = CHARTH) )
+
+DEPLDM=MECA_STATIQUE(
+                MODELE=MODME,
+            CHAM_MATER=CHMAT,
+             CARA_ELEM=ESSAI,
+                 EXCIT=_F( CHARGE = CHARMM),
+                OPTION=('SIGM_ELNO_DEPL',)  )
+
+DEPLDF=MECA_STATIQUE(
+                MODELE=MODME,   CHAM_MATER=CHMAT,
+             CARA_ELEM=ESSAI,
+                 EXCIT=_F( CHARGE = CHARMF),
+                OPTION=('SIGM_ELNO_DEPL',)  )
+
+#
+
+TEMPGRO=THER_LINEAIRE(
+                MODELE=MODTH,   CHAM_MATER=CHMATO,
+                EXCIT=_F( CHARGE = CHARTH) )
+
+DEPLDMO=MECA_STATIQUE(
+                MODELE=MODME,   CHAM_MATER=CHMATO,
+             CARA_ELEM=ESSAI0,
+                 EXCIT=_F( CHARGE = CHARMM),
+                OPTION=('SIGM_ELNO_DEPL',)  )
+
+DEPLDFO=MECA_STATIQUE(
+                MODELE=MODME,   CHAM_MATER=CHMATO,
+             CARA_ELEM=ESSAI0,
+                 EXCIT=_F( CHARGE = CHARMF),
+                OPTION=('SIGM_ELNO_DEPL',)  )
+
+#
+#
+
+TEMPGROO=THER_LINEAIRE(
+                MODELE=MODTH,   CHAM_MATER=CHMATOO,
+                EXCIT=_F( CHARGE = CHARTH) )
+
+DEPLDMOO=MECA_STATIQUE(
+                MODELE=MODME,   CHAM_MATER=CHMATOO,
+             CARA_ELEM=ESSAI00,
+                 EXCIT=_F( CHARGE = CHARMM),
+                OPTION=('SIGM_ELNO_DEPL',)  )
+
+DEPLDFOO=MECA_STATIQUE(
+                MODELE=MODME,   CHAM_MATER=CHMATOO,
+             CARA_ELEM=ESSAI00,
+                 EXCIT=_F( CHARGE = CHARMF),
+                OPTION=('SIGM_ELNO_DEPL',)  )
+
+#
+# ------------------------------------------------------------------
+T_DZET=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_TEMP_R',
+        NOM_CHAM='TEMP',  RESULTAT=TEMPGR,  NUME_ORDRE=0  )
+
+TT=POST_ELEM(   MODELE=MODTH,   CHAM_MATER=CHMAT,
+               CHAM_GD=T_DZET,    INST=0.,   ENER_POT=_F(  TOUT = 'OUI') )
+
+#
+DEM_KI=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
+        NOM_CHAM='DEPL',  RESULTAT=DEPLDM,  NUME_ORDRE=1  )
+
+DEF_KS=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
+        NOM_CHAM='DEPL',  RESULTAT=DEPLDF,  NUME_ORDRE=1  )
+
+PM=POST_ELEM(   MODELE=MODME,   CHAM_MATER=CHMAT,
+                 CHAM_GD=DEM_KI, ENER_POT=_F(  TOUT = 'OUI') )
+
+PF=POST_ELEM(   MODELE=MODME,   CHAM_MATER=CHMAT,
+                 CHAM_GD=DEF_KS, ENER_POT=_F(  TOUT = 'OUI') )
+
+#
+
+TEST_RESU(CHAM_NO=(  
+     # TEMPERATURES
+            _F(  CHAM_GD = T_DZET,  CRITERE = 'RELATIF',   PRECISION = 1.E-7,
+              NOEUD = 'N8',       NOM_CMP = 'TEMP',  VALE = -1.000000000),
+            _F(  CHAM_GD = T_DZET,  CRITERE = 'RELATIF',   PRECISION = 1.E-7,
+              NOEUD = 'N3',       NOM_CMP = 'TEMP',  VALE = -0.500000000),
+     # DEPLACEMENTS
+            _F(  CHAM_GD = DEM_KI, CRITERE = 'RELATIF',   PRECISION = 1.E-7,
+              NOEUD = 'N4',       NOM_CMP = 'DZ',    VALE = -7.032857143),
+            _F(  CHAM_GD = DEM_KI, CRITERE = 'RELATIF',   PRECISION = 1.E-7,
+              NOEUD = 'N8',       NOM_CMP = 'DZ',    VALE = -7.032857143),
+            _F(  CHAM_GD = DEF_KS, CRITERE = 'RELATIF',   PRECISION = 1.E-7,
+              NOEUD = 'N4',       NOM_CMP = 'DZ',    VALE = 57.70459285),
+            _F(  CHAM_GD = DEF_KS, CRITERE = 'RELATIF',   PRECISION = 1.E-7,
+              NOEUD = 'N8',       NOM_CMP = 'DZ',    VALE = 57.70459285))
+            )
+
+TEST_TABLE(      TABLE=TT,       NOM_PARA='TOTALE',
+                TYPE_TEST='SOMM_ABS',
+                REFERENCE='ANALYTIQUE',
+                VALE=8.205,
+                 PRECISION=1.E-6 )
+
+TEST_TABLE(      TABLE=PM,       NOM_PARA='TOTALE',
+                TYPE_TEST='SOMM_ABS',
+                REFERENCE='ANALYTIQUE',
+                VALE=2.0287088,
+                 PRECISION=1.E-6 )
+
+TEST_TABLE(      TABLE=PF,       NOM_PARA='TOTALE',
+                TYPE_TEST='SOMM_ABS',
+                REFERENCE='ANALYTIQUE',
+                VALE=182.10238,
+                 PRECISION=1.E-6 )
+
+#
+# ------------------------------------------------------------------
+T_DZETO=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_TEMP_R',
+          NOM_CHAM='TEMP', RESULTAT=TEMPGRO,  NUME_ORDRE=0 )
+
+TTO=POST_ELEM(  MODELE=MODTH,   CHAM_MATER=CHMATO,
+                  CHAM_GD=T_DZETO,   INST=0.,  ENER_POT=_F(  TOUT = 'OUI'))
+
+#
+DEM_KIO=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
+          NOM_CHAM='DEPL', RESULTAT=DEPLDMO,  NUME_ORDRE=1 )
+
+DEF_KSO=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
+          NOM_CHAM='DEPL', RESULTAT=DEPLDFO,  NUME_ORDRE=1 )
+
+PMO=POST_ELEM(   MODELE=MODME,   CHAM_MATER=CHMATO,
+                     CHAM_GD=DEM_KIO,
+                      CARA_ELEM=ESSAI0, ENER_POT=_F(  TOUT = 'OUI') )
+
+PFO=POST_ELEM(   MODELE=MODME,   CHAM_MATER=CHMATO,
+                     CHAM_GD=DEF_KSO,
+                      CARA_ELEM=ESSAI0, ENER_POT=_F(  TOUT = 'OUI') )
+
+#
+
+TEST_RESU(CHAM_NO=(  
+     # TEMPERATURES
+            _F(  CHAM_GD = T_DZETO,  CRITERE = 'RELATIF',   PRECISION = 1.E-7,
+              NOEUD = 'N8',       NOM_CMP = 'TEMP',  VALE = -1.000000000),
+            _F(  CHAM_GD = T_DZETO,  CRITERE = 'RELATIF',   PRECISION = 1.E-7,
+              NOEUD = 'N3',       NOM_CMP = 'TEMP',  VALE = -0.500000000),
+     # DEPLACEMENTS
+            _F(  CHAM_GD = DEM_KIO, CRITERE = 'RELATIF',   PRECISION = 1.E-7,
+              NOEUD = 'N4',       NOM_CMP = 'DZ',    VALE = -7.032857143),
+            _F(  CHAM_GD = DEM_KIO, CRITERE = 'RELATIF',   PRECISION = 1.E-7,
+              NOEUD = 'N8',       NOM_CMP = 'DZ',    VALE = -7.032857143),
+            _F(  CHAM_GD = DEF_KSO, CRITERE = 'RELATIF',   PRECISION = 1.E-7,
+              NOEUD = 'N4',       NOM_CMP = 'DZ',    VALE = 57.70459285),
+            _F(  CHAM_GD = DEF_KSO, CRITERE = 'RELATIF',   PRECISION = 1.E-7,
+              NOEUD = 'N8',       NOM_CMP = 'DZ',    VALE = 57.70459285))
+            )
+
+TEST_TABLE(      TABLE=TTO,       NOM_PARA='TOTALE',
+                TYPE_TEST='SOMM_ABS',
+                REFERENCE='ANALYTIQUE',
+                VALE=8.205,
+                 PRECISION=1.E-6 )
+
+TEST_TABLE(      TABLE=PMO,       NOM_PARA='TOTALE',
+                TYPE_TEST='SOMM_ABS',
+                REFERENCE='ANALYTIQUE',
+                VALE=2.0287088,
+                 PRECISION=1.E-6 )
+
+TEST_TABLE(      TABLE=PFO,       NOM_PARA='TOTALE',
+                TYPE_TEST='SOMM_ABS',
+                REFERENCE='ANALYTIQUE',
+                VALE=182.10238,
+                 PRECISION=1.E-6 )
+
+#
+# ------------------------------------------------------------------
+T_DZETOO=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_TEMP_R',
+          NOM_CHAM='TEMP', RESULTAT=TEMPGROO,  NUME_ORDRE=0 )
+
+TTOO=POST_ELEM(  MODELE=MODTH,   CHAM_MATER=CHMATOO,
+                 CHAM_GD=T_DZETOO,   INST=0.,
+                     CARA_ELEM=ESSAI00, ENER_POT=_F(  TOUT = 'OUI') )
+
+#
+DEM_KIOO=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
+          NOM_CHAM='DEPL', RESULTAT=DEPLDMOO,  NUME_ORDRE=1 )
+
+DEF_KSOO=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
+          NOM_CHAM='DEPL', RESULTAT=DEPLDFOO,  NUME_ORDRE=1 )
+
+PMOO=POST_ELEM(   MODELE=MODME,   CHAM_MATER=CHMATOO,
+                     CHAM_GD=DEM_KIOO,
+                      CARA_ELEM=ESSAI00, ENER_POT=_F(  TOUT = 'OUI') )
+
+PFOO=POST_ELEM(   MODELE=MODME,   CHAM_MATER=CHMATOO,
+                     CHAM_GD=DEF_KSOO,
+                      CARA_ELEM=ESSAI00, ENER_POT=_F(  TOUT = 'OUI') )
+
+#
+
+TEST_RESU(CHAM_NO=(  
+#      TEMPERATURES
+             _F(  CHAM_GD = T_DZETOO,  CRITERE = 'RELATIF',   PRECISION = 1.E-7,
+               NOEUD = 'N8',       NOM_CMP = 'TEMP',  VALE = -1.000000000),
+             _F(  CHAM_GD = T_DZETOO,  CRITERE = 'RELATIF',   PRECISION = 1.E-7,
+               NOEUD = 'N3',       NOM_CMP = 'TEMP',  VALE = -0.500000000),
+     # DEPLACEMENTS
+            _F(  CHAM_GD = DEM_KIOO, CRITERE = 'RELATIF',   PRECISION = 1.E-7,
+              NOEUD = 'N4',       NOM_CMP = 'DZ',    VALE = -5.242083333),
+            _F(  CHAM_GD = DEM_KIOO, CRITERE = 'RELATIF',   PRECISION = 1.E-7,
+              NOEUD = 'N8',       NOM_CMP = 'DZ',    VALE = -5.242083333),
+             _F(  CHAM_GD = DEF_KSOO, CRITERE = 'RELATIF',   PRECISION = 1.E-7,
+              NOEUD = 'N4',       NOM_CMP = 'DZ',    VALE = 43.01129375),
+            _F(  CHAM_GD = DEF_KSOO, CRITERE = 'RELATIF',   PRECISION = 1.E-7,
+              NOEUD = 'N8',       NOM_CMP = 'DZ',    VALE = 43.01129375))
+            )
+
+TEST_TABLE(      TABLE=TTOO,       NOM_PARA='TOTALE',
+                TYPE_TEST='SOMM_ABS',
+                REFERENCE='ANALYTIQUE',
+                VALE=8.205,
+                 PRECISION=1.E-6 )
+
+#  TEST_TABLE ( TABLE    : PMOO      NOM_PARA: 'TOTALE'
+#               TYPE_TEST: 'SOMM_ABS'
+#               REFERENCE: 'ANALYTIQUE'
+#               VALE: 2.0287088
+#               PRECISION : 1.E-6 );
+#  TEST_TABLE ( TABLE    : PFOO      NOM_PARA: 'TOTALE'
+#               TYPE_TEST: 'SOMM_ABS'
+#               REFERENCE: 'ANALYTIQUE'
+#               VALE: 182.10238
+#               PRECISION : 1.E-6 );
+
+FIN( )
+#

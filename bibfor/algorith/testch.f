@@ -1,0 +1,298 @@
+      SUBROUTINE TESTCH(NP1,NP2,NP3,NBMCD,NBNL,
+     &                  TOLN,TOLC,TOLV,TYPCH,NBSEG,PHII,
+     &                  ALPHA,BETA,GAMMA,ORIG,RC,THETA,
+     &                  TCONF1,DEPG,
+     &                  NBCH,NBCHEX,ICONF,FTEST,ICONFB,TCONF2)
+      IMPLICIT NONE
+C-----------------------------------------------------------------------
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 16/05/2000   AUTEUR KXBADNG T.KESTENS 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+C TOLE  CRP_21
+C-----------------------------------------------------------------------
+C DESCRIPTION : TESTE LE CHANGEMENT DE CONFIGURATION ENTRE N ET N+1
+C -----------
+C               APPELANTS : ALITMI, NEWTON
+C
+C INDICATEURS GLOBAUX RENVOYES EN SORTIE :
+C --------------------------------------
+C
+C NBCH   = NOMBRE DE CHANGEMENTS D'ETAT ENTRE LES INSTANTS N ET N+1
+C
+C NBCHEX = NOMBRE DE CHANGEMENTS D'ETAT AVEC CONTACT EXACT
+C          A L'INSTANT N+1
+C
+C ICONF = INDICATEUR DE CHANGEMENT DE CONFIGURATION
+C ICONF =  1  AUCUN CHANGEMENT D'ETAT ENTRE LES INSTANTS N ET N+1
+C ICONF =  0  AU MOINS UN CHANGEMENT D'ETAT ENTRE LES INSTANTS N ET N+1
+C             SANS VARIATION IMPORTANTE DE DEPLACEMENT PHYSIQUE
+C ICONF = -1  VARIATION IMPORTANTE DU DEPLACEMENT PHYSIQUE D'UN NOEUD
+C             DE CHOC AU MOINS ENTRE LES INSTANTS N ET N+1
+C
+C FTEST = DISTANCE NORMALE MINIMALE (EN VALEUR ABSOLUE) D'UN NOEUD DE
+C         CHOC A LA BUTEE A L'INSTANT N+1
+C
+C INDICATEURS RENVOYES POUR CHAQUE BUTEE :
+C --------------------------------------
+C
+C ICONFB(IC) =  1  PAS DE CHANGEMENT D'ETAT ENTRE LES INSTANTS N ET N+1
+C                  SUR LA BUTEE IC
+C ICONFB(IC) =  0  CHANGEMENT D'ETAT ENTRE LES INSTANTS N ET N+1
+C                  SUR LA BUTEE IC
+C ICONFB(IC) = -1  VARIATION IMPORTANTE DU DEPLACEMENT PHYSIQUE
+C                  DU NOEUD DE CHOC ENTRE LES INSTANTS N ET N+1
+C
+C TCONF2(1,IC) = XLOC(1)  COORDONNEES DU NOEUD DE CHOC DANS LE REPERE
+C TCONF2(2,IC) = XLOC(2)  LOCAL A L'INSTANT N+1
+C TCONF2(3,IC) = XLOC(3)
+C
+C TCONF2(4,IC) = DNORM    DISTANCE NORMALE DU NOEUD DE CHOC A LA BUTEE
+C                         A L'INSTANT N+1
+C
+C-------------------   DECLARATION DES VARIABLES   ---------------------
+C
+C ARGUMENTS
+C ---------
+      INTEGER    NP1, NP2, NP3, NBMCD, NBNL
+      REAL*8     TOLN, TOLC, TOLV
+      INTEGER    TYPCH(*), NBSEG(*)
+      REAL*8     PHII(NP2,NP1,3),
+     &           ALPHA(2,*), BETA(2,*), GAMMA(2,*), ORIG(6,*),
+     &           RC(NP3,*), THETA(NP3,*),
+     &           TCONF1(4,*), DEPG(*)
+      INTEGER    NBCH, NBCHEX, ICONF
+      REAL*8     FTEST
+      INTEGER    ICONFB(*)
+      REAL*8     TCONF2(4,*)
+C
+C VARIABLES LOCALES
+C -----------------
+      INTEGER    IC, IVAR
+      INTEGER    TYPOBS, NBS
+      REAL*8     DVAR, TOLCH, ZERO
+      REAL*8     XLOC0(3), XGLO(3), XLOC(3)
+      REAL*8     DNORM0, DNORM, XJEU, SINT, COST
+      REAL*8     XORIG(3), SINA, COSA, SINB, COSB, SING, COSG
+C
+C FONCTIONS INTRINSEQUES
+C ----------------------
+C     INTRINSIC  ABS
+C
+C ROUTINES EXTERNES
+C -----------------
+C     EXTERNAL   DISBUT, GLOLOC, PROJMG, VARDEC
+C
+C-------------------   DEBUT DU CODE EXECUTABLE    ---------------------
+C
+C  0. INITIALISATIONS
+C     ---------------
+C
+      NBCH   = 0
+      NBCHEX = 0
+      IVAR   = 0
+      FTEST  = 1.0D+10
+      DVAR   = 1.0D0
+      TOLCH  = 10.0D0 * TOLN
+      ZERO   = 0.0D0
+C
+C  1. BOUCLE SUR LES NON-LINEARITES
+C     -----------------------------
+C
+      DO 10 IC = 1, NBNL
+C
+C  1.1   RECUPERATION DU DEPLACEMENT PHYSIQUE DU NOEUD DE CHOC
+C        A L'INSTANT N DANS LE REPERE LOCAL
+C
+         XLOC0(1) = TCONF1(1,IC)
+         XLOC0(2) = TCONF1(2,IC)
+         XLOC0(3) = TCONF1(3,IC)
+C
+C  1.2   RECUPERATION DE LA DISTANCE NORMALE DU NOEUD DE CHOC 
+C        A LA BUTEE A L'INSTANT N
+C
+         DNORM0 = TCONF1(4,IC)
+         IF ( ABS(DNORM0).LT.TOLCH ) DNORM0 = ZERO
+C
+C  1.3   CALCUL DU DEPLACEMENT PHYSIQUE DU NOEUD DE CHOC
+C        A L'INSTANT N+1 DANS LE REPERE LOCAL
+C
+C  1.3.1 CONVERSION DDLS GENERALISES -> DDLS PHYSIQUES
+C
+         CALL PROJMG(NP1,NP2,IC,NBMCD,PHII,DEPG,XGLO)
+C
+C  1.3.2 PASSAGE REPERE GLOBAL -> REPERE LOCAL
+C
+         XORIG(1) = ORIG(1,IC)
+         XORIG(2) = ORIG(2,IC)
+         XORIG(3) = ORIG(3,IC)
+         XGLO(1) = XGLO(1) + ORIG(4,IC)
+         XGLO(2) = XGLO(2) + ORIG(5,IC)
+         XGLO(3) = XGLO(3) + ORIG(6,IC)
+         SINA = ALPHA(1,IC)
+         COSA = ALPHA(2,IC)
+         SINB = BETA(1,IC)
+         COSB = BETA(2,IC)
+         SING = GAMMA(1,IC)
+         COSG = GAMMA(2,IC)
+C
+         CALL GLOLOC(XGLO,XORIG,SINA,COSA,SINB,COSB,SING,COSG,XLOC)
+         TCONF2(1,IC) = XLOC(1)
+         TCONF2(2,IC) = XLOC(2)
+         TCONF2(3,IC) = XLOC(3)
+C
+C  1.4   CALCUL DE LA DISTANCE NORMALE DU NOEUD DE CHOC 
+C        A LA BUTEE A L'INSTANT N+1
+C
+         TYPOBS = TYPCH(IC)
+         NBS    = NBSEG(IC)
+         IF ( (TYPOBS.EQ.0).OR.(TYPOBS.EQ.1).OR.(TYPOBS.EQ.2) )
+     &      XJEU = RC(1,IC)
+C
+         CALL DISBUT(NP3,IC,XLOC,TYPOBS,XJEU,RC,THETA,NBS,COST,SINT,
+     &               DNORM)
+C
+         TCONF2(4,IC) = DNORM
+C
+         IF ( ABS(DNORM).LT.FTEST ) FTEST = ABS(DNORM)
+         IF ( ABS(DNORM).LT.TOLCH ) DNORM = ZERO
+C
+C  1.5   EVOLUTION DU NOEUD DE CHOC PAR RAPPORT A LA BUTEE ENTRE LES
+C        INSTANTS N ET N+1
+C
+C  1.5.1 CHOC A L'INSTANT N+1
+C
+         IF ( DNORM.LT.ZERO ) THEN
+C
+C  1.5.1.1  CHOC OU CONTACT EXACT A L'INSTANT N
+C
+            IF ( DNORM0.LE.ZERO ) THEN
+C
+               CALL VARDEC(XLOC,XLOC0,IVAR,DVAR,TOLC)
+               IF ( IVAR.EQ.1 ) THEN
+                  ICONFB(IC) = -1
+               ELSE
+                  ICONFB(IC) = 1
+               ENDIF
+C
+C  1.5.1.2  VOL A L'INSTANT N
+C
+            ELSE
+C
+               NBCH = NBCH + 1
+               CALL VARDEC(XLOC,XLOC0,IVAR,DVAR,TOLV)
+               IF ( IVAR.EQ.1 ) THEN
+                  ICONFB(IC) = -1
+               ELSE
+                  ICONFB(IC) = 0
+               ENDIF
+C
+            ENDIF
+C
+C  1.5.2 CONTACT EXACT A L'INSTANT N+1
+C
+         ELSE IF ( DNORM.EQ.ZERO ) THEN
+C
+C  1.5.2.1  CHOC A L'INSTANT N
+C
+            IF ( DNORM0.LT.ZERO ) THEN
+C
+               NBCH = NBCH + 1
+               NBCHEX = NBCHEX + 1
+               CALL VARDEC(XLOC,XLOC0,IVAR,DVAR,TOLC)
+               IF ( IVAR.EQ.1 ) THEN
+                  ICONFB(IC) = -1
+               ELSE
+                  ICONFB(IC) = 0
+               ENDIF
+C
+C  1.5.2.2  CONTACT EXACT A L'INSTANT N
+C
+            ELSE IF ( DNORM0.EQ.ZERO ) THEN
+C
+               CALL VARDEC(XLOC,XLOC0,IVAR,DVAR,TOLC)
+               IF ( IVAR.EQ.1 ) THEN
+                  ICONFB(IC) = -1
+               ELSE
+                  ICONFB(IC) = 1
+               ENDIF
+C
+C  1.5.2.3  VOL A L'INSTANT N
+C
+            ELSE
+C
+               NBCH = NBCH + 1
+               NBCHEX = NBCHEX + 1
+               CALL VARDEC(XLOC,XLOC0,IVAR,DVAR,TOLV)
+               IF ( IVAR.EQ.1 ) THEN
+                  ICONFB(IC) = -1
+               ELSE
+                  ICONFB(IC) = 0
+               ENDIF
+C
+            ENDIF
+C
+C  1.5.3 VOL A L'INSTANT N+1
+C
+         ELSE
+C
+C  1.5.3.1  CHOC A L'INSTANT N
+C
+            IF ( DNORM0.LT.ZERO ) THEN
+C
+               NBCH = NBCH + 1
+               CALL VARDEC(XLOC,XLOC0,IVAR,DVAR,TOLC)
+               IF ( IVAR.EQ.1 ) THEN
+                  ICONFB(IC) = -1
+               ELSE
+                  ICONFB(IC) = 0
+               ENDIF
+C
+C  1.5.3.2  CONTACT EXACT OU VOL A L'INSTANT N
+C
+            ELSE
+C
+               CALL VARDEC(XLOC,XLOC0,IVAR,DVAR,TOLV)
+               IF ( IVAR.EQ.1 ) THEN
+                  ICONFB(IC) = -1
+               ELSE
+                  ICONFB(IC) = 1
+               ENDIF
+C
+            ENDIF
+C
+         ENDIF
+C
+ 10   CONTINUE
+C
+C  2. AFFECTATION DE L'INDICATEUR DE CHANGEMENT DE CONFIGURATION
+C     ----------------------------------------------------------
+C
+      ICONF = 1
+      DO 20 IC = 1, NBNL
+         IF ( ICONFB(IC).EQ.0 ) THEN
+            ICONF = 0
+         ELSE IF ( ICONFB(IC).EQ.-1 ) THEN
+            ICONF = -1
+            GO TO 999
+         ENDIF
+ 20   CONTINUE
+C
+ 999  CONTINUE
+C
+C --- FIN DE TESTCH.
+      END

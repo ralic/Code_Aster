@@ -1,0 +1,139 @@
+      SUBROUTINE RUFRAG (NDIM  , TYPMOD, IMATE , CARCRI, EPSM  ,
+     &                   DEPS  , VIM   , RLAG  , CHAMP , LAGR  ,
+     &                   PONDER, DVIDA , ENER  , VIP   )
+
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 28/08/2000   AUTEUR GJBHHEL E.LORENTZ 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+
+      IMPLICIT NONE
+      CHARACTER*8  TYPMOD
+      INTEGER      NDIM, IMATE
+      REAL*8       CARCRI(*), EPSM(6), DVIDA(0:3,0:3)
+      REAL*8       DEPS(6), VIM(*)
+      REAL*8       RLAG, CHAMP(0:NDIM), LAGR(0: NDIM), PONDER(0:3)
+      REAL*8       ENER, VIP(*)
+
+C ----------------------------------------------------------------------
+C     INTEGRATION LOCALE DU COMPORTEMENT RUPTURE FRAGILE
+C ----------------------------------------------------------------------
+C IN  NDIM    DIMENSION DE L'ESPACE
+C IN  TYPMOD  TYPE DE MODELISATION
+C IN  IMATE   NATURE DU MATERIAU
+C IN  CARCRI  CRITERE DE CONVERGENCE (1: MAX ITERATIONS,  3: PRECISION)
+C IN  EPSM    CHAMP DE DEFORMATION EN T-
+C IN  DEPS    INCREMENT DU CHAMP DE DEFORMATION
+C IN  VIM     VARIABLES INTERNES : ENDOMMAGEMENT(1)
+C                                ET GRADIENT(1:NDIM) EN T-
+C IN  RLAG    COEFFICIENT DE PENALISATION DU LAGRANGIEN AUGMENTE
+C IN  CHAMP   CHAMP D'ENDOMMAGEMENT LISSE
+C IN  LAGR    MULTIPLICATEURS DE LAGRANGE (/LC SUR GRAD)
+C OUT PONDER  COEFFICIENTS DE PONDERATION
+C OUT DVIDA   MATRICE TANGENTE
+C OUT ENER    ENERGIE
+C OUT VIP     DENSITE DE FISSURATION ET GRADIENT
+C ----------------------------------------------------------------------
+C OUT RUFRC0 COMMON CARACTERISTIQUES DU MATERIAU (AFFECTE DANS RUFRMA)
+
+      REAL*8 E, NU, ALPHA, LAMBDA, DEUXMU
+      REAL*8 GC
+      REAL*8 C, RIGMIN
+
+      COMMON /RUFRC0/
+     &         E  , NU , ALPHA , LAMBDA , DEUXMU ,
+     &         GC ,
+     &         C  , RIGMIN
+C ----------------------------------------------------------------------
+      LOGICAL PROJ
+      INTEGER NDIMSI, K
+      REAL*8  EPS(6), W, TREPS, EPSEPS
+      REAL*8  N0, NG, AL0, ALG(3), ALG2
+      REAL*8  R8DOT
+C ----------------------------------------------------------------------
+
+
+C -- INITIALISATION
+
+      NDIMSI = 2*NDIM
+
+      CALL RUFRMA(IMATE,0.D0)
+
+      DO 10 K = 1, NDIMSI
+        EPS(K) = EPSM(K) + DEPS(K)
+ 10   CONTINUE
+      IF (TYPMOD .EQ. 'C_PLAN') EPS(3) = -NU/(1-NU)*(EPS(1)+EPS(2))
+      TREPS  = EPS(1)+EPS(2)+EPS(3)
+      EPSEPS = R8DOT(NDIMSI,EPS,1,EPS,1)
+      W      = 0.5D0 * (LAMBDA*TREPS**2 + DEUXMU*EPSEPS)
+
+      N0 = 2*W + GC/(2*C)
+      NG = GC*2*C
+
+
+C -- VALEUR DE LA DENSITE DE FISSURES
+
+      AL0 = (2*W + LAGR(0) + RLAG*N0*CHAMP(0))
+     &    / (2*W + GC/(2*C) + RLAG*N0)
+
+      IF (AL0 .LT. VIM(1)) THEN
+         AL0  = VIM(1)
+         PROJ = .TRUE.
+      ELSE IF (AL0 .GT. 1.D0) THEN
+         AL0  = 1.D0
+         PROJ = .TRUE.
+      ELSE
+         PROJ = .FALSE.
+      END IF
+
+
+C -- GRADIENT DE LA DENSITE DE FISSURES
+
+      DO 20 K = 1, NDIM
+         ALG(K) = (LAGR(K) + RLAG*NG*CHAMP(K)) / (2*C*GC + RLAG*NG)
+ 20   CONTINUE
+
+
+C -- ENERGIE
+
+      ALG2 = R8DOT(NDIM, ALG,1, ALG,1)
+      ENER = ( (1-AL0)**2 + RIGMIN ) * W
+     &     + GC/(4*C) * (AL0**2 + (2*C)**2 * ALG2)
+
+
+C -- MATRICE TANGENTE
+
+      CALL R8INIR(16, 0.D0, DVIDA,1)
+
+      IF (.NOT. PROJ) THEN
+         DVIDA(0,0) = RLAG*N0 / (2*W + GC/(2*C) + RLAG*N0)
+      END IF
+
+      DO 30 K = 1, NDIM
+         DVIDA(K,K) = RLAG*NG / (2*C*GC + RLAG*NG)
+ 30   CONTINUE
+
+
+C -- STOCKAGE DES RESULTATS
+
+      PONDER(0) = N0
+      CALL R8INIR(NDIM, NG, PONDER(1),1)
+
+      VIP(1) = AL0
+      CALL R8COPY(NDIM, ALG,1, VIP(2),1)
+
+      END

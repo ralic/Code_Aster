@@ -1,0 +1,313 @@
+# MODIF  DATE 07/06/2002   AUTEUR DURAND C.DURAND 
+# TITRE ESSAI DE TRACTION-CISAILLEMENT 3D (POLY_CFC_FO)
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+#----------------------------------------------------------------------
+#    CAS TEST       CUBE EN TRACTION-CISAILLEMENT,
+#                   CALCUL 3D A CONTRAINTE IMPOSEE (POLY_CFC)
+#----------------------------------------------------------------------
+#    UNITES :       NEWTON, MILLIMETRE, SECONDE (N, MM, S, ->MPA)
+#                   MODELE ELASTOVISCOPLASTIQUE POLYCRISTALLIN
+#                   POUR MATERIAUX CUBIQUES A FACES CENTREES
+#----------------------------------------------------------------------
+DEBUT(CODE=_F( NOM = 'SSNV125B',NIV_PUB_WEB='INTERNET'))
+
+CUBE=LIRE_MAILLAGE(   )
+
+MO=AFFE_MODELE(            MAILLAGE=CUBE,
+                                  AFFE=_F(   TOUT = 'OUI',
+                                          PHENOMENE = 'MECANIQUE',
+                                          MODELISATION = '3D') )
+
+F_DL=DEFI_FONCTION(   NOM_PARA='TEMP',   PROL_DROITE='CONSTANT',
+              PROL_GAUCHE='CONSTANT', VALE=(0., 321.5, 20., 321.5, ))
+
+F_DA=DEFI_FONCTION(   NOM_PARA='TEMP',   PROL_DROITE='CONSTANT',
+              PROL_GAUCHE='CONSTANT', VALE=(0., 0.216, 20., 0.216, ))
+
+F_N=DEFI_FONCTION(   NOM_PARA='TEMP',   PROL_DROITE='CONSTANT',
+              PROL_GAUCHE='CONSTANT', VALE=(0.,  10.,  20.,  10.,  ))
+
+F_K=DEFI_FONCTION(   NOM_PARA='TEMP',   PROL_DROITE='CONSTANT',
+              PROL_GAUCHE='CONSTANT', VALE=(0.,  40.,  20.,  40., ))
+
+F_TAU_0=DEFI_FONCTION(   NOM_PARA='TEMP',   PROL_DROITE='CONSTANT',
+              PROL_GAUCHE='CONSTANT', VALE=(0.,  75.5,  20.,  75.5,  ))
+
+F_Q1=DEFI_FONCTION(   NOM_PARA='TEMP',   PROL_DROITE='CONSTANT',
+              PROL_GAUCHE='CONSTANT', VALE=(0.,  9.77,  20.,  9.77,  ))
+
+F_B1=DEFI_FONCTION(   NOM_PARA='TEMP',   PROL_DROITE='CONSTANT',
+              PROL_GAUCHE='CONSTANT', VALE=(0.,  19.34,  20.,  19.34,  ))
+
+F_HL=DEFI_FONCTION(   NOM_PARA='TEMP',   PROL_DROITE='CONSTANT',
+              PROL_GAUCHE='CONSTANT', VALE=(0.,  2.54,  20.,  2.54,  ))
+
+F_Q2=DEFI_FONCTION(   NOM_PARA='TEMP',   PROL_DROITE='CONSTANT',
+              PROL_GAUCHE='CONSTANT', VALE=(0., -33.27,  20., -33.27, ))
+
+F_B2=DEFI_FONCTION(   NOM_PARA='TEMP',   PROL_DROITE='CONSTANT',
+              PROL_GAUCHE='CONSTANT', VALE=(0., 5.345, 20., 5.345, ))
+
+F_C1=DEFI_FONCTION(   NOM_PARA='TEMP',   PROL_DROITE='CONSTANT',
+              PROL_GAUCHE='CONSTANT', VALE=(0., 6333., 20., 6333.,))
+
+F_D1=DEFI_FONCTION(   NOM_PARA='TEMP',   PROL_DROITE='CONSTANT',
+              PROL_GAUCHE='CONSTANT', VALE=(0., 36.68,  20., 36.68, ))
+
+F_C2=DEFI_FONCTION(   NOM_PARA='TEMP',   PROL_DROITE='CONSTANT',
+              PROL_GAUCHE='CONSTANT', VALE=(0., 72.21,  20., 72.21, ))
+
+TEXTURE=DEFI_TEXTURE( SYST_GLISSEMENT=( 
+#                            ZN1  ZL1
+           _F(  N = ( 1.E0, 1.E0, 1.E0, 1.E0, 1.E0, 1.E0,
+                                  -1.E0,-1.E0,-1.E0,-1.E0,-1.E0,-1.E0, ),
+                             L = (-1.E0, 0.E0,-1.E0,-1.E0, 0.E0, 1.E0,
+                                   0.E0, 1.E0, 1.E0,-1.E0, 1.E0, 0.E0, )),
+#                            ZN2  ZL2
+                           _F(  N = ( 1.E0, 1.E0, 1.E0,-1.E0,-1.E0,-1.E0,
+                                   1.E0, 1.E0, 1.E0,-1.E0,-1.E0,-1.E0, ),
+                             L = ( 0.E0,-1.E0, 1.E0, 0.E0, 1.E0, 1.E0,
+                                  -1.E0, 1.E0, 0.E0, 1.E0, 0.E0, 1.E0, )),
+#                            ZN3  ZL3
+                           _F(  N = ( 1.E0, 1.E0, 1.E0, 1.E0, 1.E0, 1.E0,
+                                   1.E0, 1.E0, 1.E0, 1.E0, 1.E0, 1.E0, ),
+                             L = ( 1.E0, 1.E0, 0.E0, 1.E0, 1.E0, 0.E0,
+                                   1.E0, 0.E0, 1.E0, 0.E0, 1.E0, 1.E0, ))),PLAN=(
+              _F(  ANGL_NAUT = ( -149.676E0, 15.61819E0, 154.676E0, ),
+                     PROPORTION = 0.025E0),
+                   _F(  ANGL_NAUT = ( -150.646E0, 33.86400E0, 55.646E0, ),
+                     PROPORTION = 0.025E0),
+                   _F(  ANGL_NAUT = ( -137.138E0, 41.59170E0, 142.138E0, ),
+                     PROPORTION = 0.025E0),
+                   _F(  ANGL_NAUT = ( -166.271E0, 35.46958E0, 171.271E0, ),
+                     PROPORTION = 0.025E0),
+                   _F(  ANGL_NAUT = ( -77.676E0, 15.61819E0, 154.676E0, ),
+                     PROPORTION = 0.025E0),
+                   _F(  ANGL_NAUT = ( -78.6463E0, 33.86400E0, 155.646E0, ),
+                     PROPORTION = 0.025E0),
+                   _F(  ANGL_NAUT = ( -65.1378E0, 41.59170E0, 142.138E0, ),
+                     PROPORTION = 0.025E0),
+                   _F(  ANGL_NAUT = ( -94.2711E0, 35.46958E0, 71.271E0, ),
+                     PROPORTION = 0.025E0),
+                   _F(  ANGL_NAUT = ( -5.67599E0, 15.61819E0, 154.676E0, ),
+                     PROPORTION = 0.025E0),
+                   _F(  ANGL_NAUT = ( -6.64634E0, 33.86400E0, 155.646E0, ),
+                     PROPORTION = 0.025E0),
+                   _F(  ANGL_NAUT = ( 6.86224E0, 41.59170E0, 142.138E0, ),
+                     PROPORTION = 0.025E0),
+                   _F(  ANGL_NAUT = ( -22.2711E0, 35.46958E0, 171.271E0, ),
+                     PROPORTION = 0.025E0),
+                   _F(  ANGL_NAUT = ( 66.324E0, 15.61819E0, 154.676E0, ),
+                     PROPORTION = 0.025E0),
+                   _F(  ANGL_NAUT = ( 65.3537E0, 33.86400E0, 155.646E0, ),
+                     PROPORTION = 0.025E0),
+                   _F(  ANGL_NAUT = ( 78.8622E0, 41.59170E0, 142.138E0, ),
+                     PROPORTION = 0.025E0),
+                   _F(  ANGL_NAUT = ( 49.7289E0, 35.46958E0, 171.271E0, ),
+                     PROPORTION = 0.025E0),
+                   _F(  ANGL_NAUT = ( 138.324E0, 15.61819E0, 154.676E0, ),
+                     PROPORTION = 0.025E0),
+                   _F(  ANGL_NAUT = (  137.354E0, 33.86400E0, 155.646E0, ),
+                     PROPORTION = 0.025E0),
+                   _F(  ANGL_NAUT = ( 150.862E0, 41.59170E0, 142.138E0, ),
+                     PROPORTION = 0.025E0),
+                   _F(  ANGL_NAUT = ( 121.729E0, 35.46958E0, 171.271E0, ),
+                     PROPORTION = 0.025E0),
+                   _F(  ANGL_NAUT = ( -210.324E0, 15.61819E0, 205.324E0, ),
+                     PROPORTION = 0.025E0),
+                   _F(  ANGL_NAUT = ( -209.354E0, 33.86400E0, 204.354E0, ),
+                     PROPORTION = 0.025E0),
+                   _F(  ANGL_NAUT = ( -222.862E0, 41.59170E0, 217.862E0, ),
+                     PROPORTION = 0.025E0),
+                   _F(  ANGL_NAUT = ( -193.729E0, 35.46958E0, 188.729E0, ),
+                     PROPORTION = 0.025E0),
+                   _F(  ANGL_NAUT = ( -282.324E0, 15.61819E0, 205.324E0, ),
+                     PROPORTION = 0.025E0),
+                   _F(  ANGL_NAUT = ( -281.354E0, 33.86400E0, 204.354E0, ),
+                     PROPORTION = 0.025E0),
+                   _F(  ANGL_NAUT = ( -294.862E0, 41.59170E0, 217.862E0, ),
+                     PROPORTION = 0.025E0),
+                   _F(  ANGL_NAUT = ( -265.729E0, 35.46958E0, 188.729E0, ),
+                     PROPORTION = 0.025E0),
+                   _F(  ANGL_NAUT = ( -354.324E0, 15.61819E0, 205.324E0, ),
+                     PROPORTION = 0.025E0),
+                   _F(  ANGL_NAUT = ( -353.354E0, 33.86400E0, 204.354E0, ),
+                     PROPORTION = 0.025E0),
+                   _F(  ANGL_NAUT = ( -366.862E0, 41.59170E0, 217.862E0, ),
+                     PROPORTION = 0.025E0),
+                   _F(  ANGL_NAUT = ( -337.729E0, 35.46958E0, 188.729E0, ),
+                     PROPORTION = 0.025E0),
+                   _F(  ANGL_NAUT = ( -426.324E0, 15.61819E0, 205.324E0, ),
+                     PROPORTION = 0.025E0),
+                   _F(  ANGL_NAUT = ( -425.354E0, 33.86400E0, 204.354E0, ),
+                     PROPORTION = 0.025E0),
+                   _F(  ANGL_NAUT = ( -438.862E0, 41.59170E0, 217.862E0, ),
+                     PROPORTION = 0.025E0),
+                   _F(  ANGL_NAUT = ( -409.729E0, 35.46958E0, 188.729E0, ),
+                     PROPORTION = 0.025E0),
+                   _F(  ANGL_NAUT = ( -498.324E0, 15.61819E0, 205.324E0, ),
+                     PROPORTION = 0.025E0),
+                   _F(  ANGL_NAUT = ( -497.354E0, 33.86400E0, 204.354E0, ),
+                     PROPORTION = 0.025E0),
+                   _F(  ANGL_NAUT = ( -510.862E0, 41.59170E0, 217.862E0, ),
+                     PROPORTION = 0.025E0),
+                   _F(  ANGL_NAUT = ( -481.729E0, 35.46958E0, 188.729E0, ),
+                     PROPORTION = 0.025E0)),
+#
+               TITRE=' DEFINITION DE LA TEXTURE '
+                   )
+
+ACIER=DEFI_MATERIAU(             ELAS=_F(  E = 192500.,
+                                         NU = 0.3,
+                                         ALPHA = 0.),
+                             POLY_CFC_FO=_F(  TEXTURE = TEXTURE,
+                                         DL = F_DL,
+                                         DA = F_DA,
+                                         N = F_N,
+                                         K = F_K,
+                                         TAU_0 = F_TAU_0,
+                                         Q1 = F_Q1,
+                                         B1 = F_B1,
+                                         HL = F_HL,
+                                         Q2 = F_Q2,
+                                         B2 = F_B2,
+                                         C1 = F_C1,
+                                         D1 = F_D1,
+                                         C2 = F_C2))
+
+MAT=AFFE_MATERIAU(          MAILLAGE=CUBE,
+                                   AFFE=_F(  TOUT = 'OUI',
+                                          MATER = ACIER,
+                                          TEMP_REF = 20.))
+
+TRAC=AFFE_CHAR_MECA(     MODELE=MO,
+              FORCE_FACE=_F(  MAILLE = 'HAUT',
+                           FZ = 200.))
+
+FAT=AFFE_CHAR_MECA(       MODELE=MO,FORCE_FACE=(
+              _F(  MAILLE = 'HAUT',      FY = 100.),
+                         _F(  MAILLE = 'BAS',       FY = -100.),
+                         _F(  MAILLE = 'DROITE',    FZ = 100.),
+                         _F(  MAILLE = 'GAUCHE',    FZ = -100.)))
+
+LIAISON=AFFE_CHAR_MECA(    MODELE=MO,DDL_IMPO=(
+                 _F(  NOEUD = 'NO1', DZ = 0.),
+                 _F(  NOEUD = 'NO2', DZ = 0.),
+                 _F(  NOEUD = 'NO3', DZ = 0., DY = 0., DX = 0.),
+                 _F(  NOEUD = 'NO4', DZ = 0., DY = 0.)))
+
+COEFTRAC=DEFI_FONCTION(     NOM_PARA='INST',
+                            PROL_DROITE='LINEAIRE',
+                           PROL_GAUCHE='LINEAIRE',
+                                   VALE=( 0.,    0.,
+                                          10.,   1.,))
+
+COEFFAT=DEFI_FONCTION(      NOM_PARA='INST',
+                             PROL_DROITE='LINEAIRE',
+                            PROL_GAUCHE='LINEAIRE',
+                                   VALE=( 0.,   0.,
+                                          10.,   1.,))
+
+LINST=DEFI_LIST_REEL(       DEBUT=0.0,INTERVALLE=(
+              _F(  JUSQU_A = 6.0, NOMBRE = 1),
+              _F(  JUSQU_A = 10.0, NOMBRE = 10)))
+
+SOLNL=STAT_NON_LINE( 
+               TITRE='TEST TRACTION-CISAILLEMENT POLY_CFC_FO',
+                            MODELE=MO,
+                        CHAM_MATER=MAT,EXCIT=(
+                             _F( 
+                CHARGE = LIAISON), _F( 
+                CHARGE = TRAC,
+                FONC_MULT = COEFTRAC), _F( 
+                CHARGE = FAT,
+                FONC_MULT = COEFFAT)),
+                         COMP_INCR=_F( 
+                RELATION = 'POLY_CFC',
+                DEFORMATION = 'PETIT',
+                TOUT = 'OUI'),
+                         INCREMENT=_F( 
+                LIST_INST = LINST),
+                            NEWTON=_F( 
+                MATRICE = 'ELASTIQUE',
+                REAC_ITER = 0),
+                       CONVERGENCE=_F( 
+                ITER_GLOB_MAXI = 60,
+                RESI_GLOB_RELA = 1.0E-4,
+#
+# CETTE VALEUR DE RESI_INTE_RELA EST TROP LACHE. EN LA FORCANT A 10-6,
+# LE TEST MARCHE TOUJOURS MAIS AVEC UN CPU MULTIPLIE PAR 10 :
+# ON LA LAISSE AINSI
+#
+                RESI_INTE_RELA = 1.0E-3,
+                ITER_INTE_MAXI = 50,
+                RESO_INTE = 'RUNGE_KUTTA_2')
+              )
+
+SOLNL=CALC_ELEM( reuse=SOLNL,
+                        OPTION=('SIEF_ELNO_ELGA', 'EPSI_ELNO_DEPL',),
+                      RESULTAT=SOLNL,
+                        MODELE=MO,
+                    CHAM_MATER=MAT
+              )
+
+TEST_RESU(RESU=( 
+          _F(  RESULTAT = SOLNL, NOM_CHAM = 'SIEF_ELNO_ELGA', NUME_ORDRE = 11,
+            MAILLE = 'CUBE',  NOEUD = 'NO1',             NOM_CMP = 'SIZZ',
+            VALE = 200.,
+            PRECISION = 0.001, CRITERE = 'RELATIF'),
+          _F(  RESULTAT = SOLNL, NOM_CHAM = 'SIEF_ELNO_ELGA', NUME_ORDRE = 11,
+            MAILLE = 'CUBE',  NOEUD = 'NO1',             NOM_CMP = 'SIYZ',
+            VALE = 100.,
+            PRECISION = 0.002, CRITERE = 'RELATIF'),
+          _F(  RESULTAT = SOLNL, NOM_CHAM = 'EPSI_ELNO_DEPL', NUME_ORDRE = 1,
+            MAILLE = 'CUBE',  NOEUD = 'NO1',             NOM_CMP = 'EPZZ',
+            VALE = 6.23377E-4,
+            PRECISION = 0.001, CRITERE = 'RELATIF'),
+          _F(  RESULTAT = SOLNL, NOM_CHAM = 'EPSI_ELNO_DEPL', NUME_ORDRE = 1,
+            MAILLE = 'CUBE',  NOEUD = 'NO1',             NOM_CMP = 'EPYZ',
+            VALE = 4.05195E-4,
+            PRECISION = 0.001, CRITERE = 'RELATIF'),
+          _F(  RESULTAT = SOLNL, NOM_CHAM = 'EPSI_ELNO_DEPL', NUME_ORDRE = 6,
+            MAILLE = 'CUBE',  NOEUD = 'NO1',             NOM_CMP = 'EPZZ',
+            VALE = 9.22315E-04,
+            PRECISION = 0.01, CRITERE = 'RELATIF'),
+          _F(  RESULTAT = SOLNL, NOM_CHAM = 'EPSI_ELNO_DEPL', NUME_ORDRE = 6,
+            MAILLE = 'CUBE',  NOEUD = 'NO1',             NOM_CMP = 'EPYZ',
+            VALE = 6.22479E-4,
+            PRECISION = 0.01, CRITERE = 'RELATIF'),
+          _F(  RESULTAT = SOLNL, NOM_CHAM = 'EPSI_ELNO_DEPL', NUME_ORDRE = 9,
+            MAILLE = 'CUBE',  NOEUD = 'NO1',             NOM_CMP = 'EPZZ',
+            VALE = 1.40215E-3,
+            PRECISION = 0.02, CRITERE = 'RELATIF'),
+          _F(  RESULTAT = SOLNL, NOM_CHAM = 'EPSI_ELNO_DEPL', NUME_ORDRE = 9,
+            MAILLE = 'CUBE',  NOEUD = 'NO1',             NOM_CMP = 'EPYZ',
+            VALE = 1.00001E-3,
+            PRECISION = 0.04, CRITERE = 'RELATIF'),
+          _F(  RESULTAT = SOLNL, NOM_CHAM = 'EPSI_ELNO_DEPL', NUME_ORDRE = 11,
+            MAILLE = 'CUBE',  NOEUD = 'NO1',             NOM_CMP = 'EPZZ',
+            VALE = 1.84150E-3,
+            PRECISION = 0.01, CRITERE = 'RELATIF'),
+          _F(  RESULTAT = SOLNL, NOM_CHAM = 'EPSI_ELNO_DEPL', NUME_ORDRE = 11,
+            MAILLE = 'CUBE',  NOEUD = 'NO1',             NOM_CMP = 'EPYZ',
+            VALE = 1.34782E-3,
+            PRECISION = 0.02, CRITERE = 'RELATIF')))
+
+FIN()
+#

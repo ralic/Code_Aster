@@ -1,0 +1,301 @@
+# MODIF  DATE 09/07/2002   AUTEUR CAMBIER S.CAMBIER 
+# TITRE  POUTRE ANALYSE HARMONIQUE
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+# TEST DE AFFE_CHAR_MECA_C
+
+
+DEBUT( CODE=_F(  NOM = 'SHLL101B',NIV_PUB_WEB='INTERNET') )
+
+MAILLAGE=LIRE_MAILLAGE( )
+
+MAILLAGE=DEFI_GROUP( reuse=MAILLAGE,   MAILLAGE=MAILLAGE,
+  CREA_GROUP_MA=_F(  NOM = 'TOUT', TOUT = 'OUI'))
+
+#
+
+MODELE=AFFE_MODELE(   MAILLAGE=MAILLAGE,
+                           AFFE=_F(  TOUT = 'OUI',
+                                  PHENOMENE = 'MECANIQUE',
+                                  MODELISATION = 'POU_D_E')
+                         )
+
+#
+
+MAT=DEFI_MATERIAU( ELAS=_F(  E = 1.658E+11,
+                                   RHO = 1.3404106E+04,
+                                   AMOR_ALPHA = 1.E-3,
+                                   AMOR_BETA = 0.,
+                                   NU = 0.3)
+                          )
+
+#
+
+CHAMPMAT=AFFE_MATERIAU(  MAILLAGE=MAILLAGE,
+                            AFFE=_F(  TOUT = 'OUI', MATER = MAT)  )
+
+#
+
+CARA_ELE=AFFE_CARA_ELEM(  MODELE=MODELE,
+                    POUTRE=_F(  
+       GROUP_MA = 'TOUT',
+
+                             SECTION = 'GENERALE',
+                             CARA = ( 'A',  'IZ', 'IY',  'JX', ),
+                             VALE = ( 3.4390E-03,  1.3770E-05,  1.3770E-05,
+                                    2.7540E-05, ))
+                           )
+
+#
+#--------------------------------------------#
+# TRACTION : SANS AMORTISSEMENT              #
+# EFFORT REPARTI : PARTIE IMAGINAIRE NULLE   #
+#--------------------------------------------#
+#
+
+COND_LI1=AFFE_CHAR_MECA_C(   MODELE=MODELE,
+                                DDL_IMPO=_F(  NOEUD = 'N1',
+                                           DX = ('RI',0.,0.,),  DY = ('RI',0.,0.,),
+                                           DZ = ('RI',0.,0.,),
+                                           DRX = ('RI',0.,0.,),  DRY = ('RI',0.,0.,),
+                                           DRZ = ('RI',0.,0.,)),
+                                 FORCE_POUTRE=_F( MAILLE = 'E1', FX = ('RI',6.E2,0.,))
+                              )
+
+RIGI_EL1=CALC_MATR_ELEM(  MODELE=MODELE,   OPTION='RIGI_MECA',
+                              CHAM_MATER=CHAMPMAT,   CARA_ELEM=CARA_ELE,
+                              CHARGE=COND_LI1 )
+
+MASS_EL1=CALC_MATR_ELEM(  MODELE=MODELE,   OPTION='MASS_MECA',
+                              CHAM_MATER=CHAMPMAT,   CARA_ELEM=CARA_ELE,
+                              CHARGE=COND_LI1 )
+
+AMOR_EL1=CALC_MATR_ELEM(  MODELE=MODELE,   OPTION='AMOR_MECA',
+                              RIGI_MECA=RIGI_EL1,   MASS_MECA=MASS_EL1,
+                              CHAM_MATER=CHAMPMAT,   CARA_ELEM=CARA_ELE,
+                              CHARGE=COND_LI1 )
+
+#
+
+NUME_DD1=NUME_DDL(  MATR_RIGI=RIGI_EL1)
+
+#
+
+RIGIDIT1=ASSE_MATRICE(  MATR_ELEM=RIGI_EL1,   NUME_DDL=NUME_DD1 )
+
+MASS1=ASSE_MATRICE(  MATR_ELEM=MASS_EL1,   NUME_DDL=NUME_DD1 )
+
+AMORTI1=ASSE_MATRICE(  MATR_ELEM=AMOR_EL1,   NUME_DDL=NUME_DD1 )
+
+#
+LIFREQ=DEFI_LIST_REEL(DEBUT=10., INTERVALLE=_F( JUSQU_A = 40., NOMBRE = 2))
+
+
+DYNA_F1=DYNA_LINE_HARM(  MATR_MASS=MASS1,
+                            MATR_RIGI=RIGIDIT1,
+                            LIST_FREQ=LIFREQ,
+                             MODELE=MODELE,
+                             CARA_ELEM=CARA_ELE,
+                             CHAM_MATER=CHAMPMAT,
+                            EXCIT=_F( CHARGE = COND_LI1, COEF_MULT_C = ('RI',1.,0.,))
+                         )
+
+#
+
+
+DYNA_F1=CALC_ELEM(reuse=DYNA_F1,  MODELE=MODELE,
+                         RESULTAT=DYNA_F1,  OPTION='EFGE_ELNO_DEPL',
+                         CHAM_MATER=CHAMPMAT,   CARA_ELEM=CARA_ELE   )
+
+#
+
+TEST_RESU(RESU=(   _F(  RESULTAT = DYNA_F1,             NUME_ORDRE = 1,
+                       MAILLE = 'E1',                   NOEUD = 'N2',
+                       NOM_CHAM = 'EFGE_ELNO_DEPL',   NOM_CMP = 'N',
+                       VALE_C = ('RI',3000.E0,0.E0,),   PRECISION = 5.E-4),
+                     _F(  RESULTAT = DYNA_F1,  NUME_ORDRE = 1,  NOEUD = 'N2',
+                       NOM_CHAM = 'DEPL',  NOM_CMP = 'DX',
+                       VALE_C = ('RI',5.318E-5,0.E0,),  PRECISION = 5.E-4),
+                     _F(  RESULTAT = DYNA_F1,  NUME_ORDRE = 1,  NOEUD = 'N2',
+                       NOM_CHAM = 'VITE',  NOM_CMP = 'DX',
+                       VALE_C = ('RI',0.E0,3.341E-03,), PRECISION = 5.E-4),
+                     _F(  RESULTAT = DYNA_F1,  NUME_ORDRE = 1,  NOEUD = 'N2',
+                       NOM_CHAM = 'ACCE',  NOM_CMP = 'DX',
+                       VALE_C = ('RI',-2.099E-1,0.E0,),  PRECISION = 5.E-4))
+            )
+
+#
+#--------------------------------------------#
+# TRACTION : SANS AMORTISSEMENT              #
+# EFFORT REPARTI : PARTIE REELLE NULLE       #
+#--------------------------------------------#
+#
+
+COND_LI2=AFFE_CHAR_MECA_C(   MODELE=MODELE,
+                                DDL_IMPO=_F(  NOEUD = 'N1',
+                                           DX = ('RI',0.,0.,),  DY = ('RI',0.,0.,),
+                                           DZ = ('RI',0.,0.,),
+                                           DRX = ('RI',0.,0.,),  DRY = ('RI',0.,0.,),
+                                           DRZ = ('RI',0.,0.,)),
+                                 FORCE_POUTRE=_F( MAILLE = 'E1', FX = ('RI',0.,6.E2,))
+                              )
+
+RIGI_EL2=CALC_MATR_ELEM(  MODELE=MODELE,   OPTION='RIGI_MECA',
+                              CHAM_MATER=CHAMPMAT,   CARA_ELEM=CARA_ELE,
+                              CHARGE=COND_LI2 )
+
+MASS_EL2=CALC_MATR_ELEM(  MODELE=MODELE,   OPTION='MASS_MECA',
+                              CHAM_MATER=CHAMPMAT,   CARA_ELEM=CARA_ELE,
+                              CHARGE=COND_LI2 )
+
+AMOR_EL2=CALC_MATR_ELEM(  MODELE=MODELE,   OPTION='AMOR_MECA',
+                              RIGI_MECA=RIGI_EL2,   MASS_MECA=MASS_EL2,
+                              CHAM_MATER=CHAMPMAT,   CARA_ELEM=CARA_ELE,
+                              CHARGE=COND_LI2 )
+
+NUME_DD2=NUME_DDL(  MATR_RIGI=RIGI_EL2)
+
+RIGIDIT2=ASSE_MATRICE(  MATR_ELEM=RIGI_EL2,   NUME_DDL=NUME_DD2 )
+
+MASS2=ASSE_MATRICE(  MATR_ELEM=MASS_EL2,   NUME_DDL=NUME_DD2 )
+
+AMORTI2=ASSE_MATRICE(  MATR_ELEM=AMOR_EL2,   NUME_DDL=NUME_DD2 )
+
+FC=DEFI_FONCTION(    NOM_PARA='FREQ',
+                         PROL_DROITE='CONSTANT',
+                         PROL_GAUCHE='CONSTANT',
+                         VALE_C=(0., 1., 0., 1000., 1., 0.,) )
+
+DYNA_F2=DYNA_LINE_HARM(  MATR_MASS=MASS2,
+                            MATR_RIGI=RIGIDIT2,
+                            FREQ=10.,
+                             MODELE=MODELE,
+                             CARA_ELEM=CARA_ELE,
+                             CHAM_MATER=CHAMPMAT,
+                            EXCIT=_F( CHARGE = COND_LI2, FONC_MULT_C = FC)
+                         )
+
+DYNA_F2=CALC_ELEM(reuse=DYNA_F2,  MODELE=MODELE,
+                        RESULTAT=DYNA_F2,  OPTION='EFGE_ELNO_DEPL',
+                        CHAM_MATER=CHAMPMAT,   CARA_ELEM=CARA_ELE   )
+
+TEST_RESU(RESU=(   _F(  RESULTAT = DYNA_F2,            NUME_ORDRE = 1,
+                       MAILLE = 'E1',                   NOEUD = 'N2',
+                       NOM_CHAM = 'EFGE_ELNO_DEPL',   NOM_CMP = 'N',
+                       VALE_C = ('RI',0.E0,3000.E0,),    PRECISION = 5.E-4),
+                     _F(  RESULTAT = DYNA_F2, NUME_ORDRE = 1,  NOEUD = 'N2',
+                       NOM_CHAM = 'DEPL',  NOM_CMP = 'DX',
+                       VALE_C = ('RI',0.E0,5.318E-5,),   PRECISION = 5.E-4),
+                     _F(  RESULTAT = DYNA_F2, NUME_ORDRE = 1,  NOEUD = 'N2',
+                       NOM_CHAM = 'VITE',  NOM_CMP = 'DX',
+                       VALE_C = ('RI',-3.341E-03,0.E0,), PRECISION = 5.E-4),
+                     _F(  RESULTAT = DYNA_F2, NUME_ORDRE = 1,  NOEUD = 'N2',
+                       NOM_CHAM = 'ACCE',  NOM_CMP = 'DX',
+                       VALE_C = ('RI',0.E0,-2.099E-1,),  PRECISION = 5.E-4))
+            )
+
+#
+#--------------------------------------------#
+# TRACTION : AVEC AMORTISSEMENT              #
+# EFFORT REPARTI : PARTIE IMAGINAIRE NULLE   #
+#--------------------------------------------#
+#
+
+DYNA_AF1=DYNA_LINE_HARM( MATR_MASS=MASS1,
+                             MATR_RIGI=RIGIDIT1,
+                             MATR_AMOR=AMORTI1,
+                             FREQ=10.,
+                              MODELE=MODELE,
+                              CARA_ELEM=CARA_ELE,
+                              CHAM_MATER=CHAMPMAT,
+                            EXCIT=_F( CHARGE = COND_LI1, COEF_MULT_C = ('RI',1.,0.,))
+                          )
+
+#
+
+DYNA_AF1=CALC_ELEM(reuse=DYNA_AF1,  MODELE=MODELE,
+                          RESULTAT=DYNA_AF1,  OPTION='EFGE_ELNO_DEPL',
+                          CHAM_MATER=CHAMPMAT,   CARA_ELEM=CARA_ELE )
+
+#
+
+TEST_RESU(RESU=(   _F(  RESULTAT = DYNA_AF1,           NUME_ORDRE = 1,
+                       MAILLE = 'E1',                  NOEUD = 'N2',
+                       NOM_CHAM = 'EFGE_ELNO_DEPL',  NOM_CMP = 'N',
+                       VALE_C = ('RI',2.9879E3,-1.897E2,),
+                       PRECISION = 5.E-4),
+                     _F(  RESULTAT = DYNA_AF1,  NUME_ORDRE = 1,  NOEUD = 'N2',
+                       NOM_CHAM = 'DEPL',  NOM_CMP = 'DX',
+                       VALE_C = ('RI',5.296E-5,-3.363E-06,),
+                       PRECISION = 5.E-4),
+                     _F(  RESULTAT = DYNA_AF1,  NUME_ORDRE = 1,  NOEUD = 'N2',
+                       NOM_CHAM = 'VITE',  NOM_CMP = 'DX',
+                       VALE_C = ('RI',2.113E-04,3.327E-03,),
+                       PRECISION = 5.E-4),
+                     _F(  RESULTAT = DYNA_AF1,  NUME_ORDRE = 1,  NOEUD = 'N2',
+                       NOM_CHAM = 'ACCE',  NOM_CMP = 'DX',
+                       VALE_C = ('RI',-2.091E-01,1.327E-02,),
+                       PRECISION = 5.E-4))
+            )
+
+#
+#--------------------------------------------#
+# TRACTION : AVEC AMORTISSEMENT              #
+# EFFORT REPARTI : PARTIE REELLE NULLE       #
+#--------------------------------------------#
+#
+
+DYNA_AF2=DYNA_LINE_HARM( MATR_MASS=MASS2,
+                            MATR_RIGI=RIGIDIT2,
+                            MATR_AMOR=AMORTI2,
+                            FREQ=10.,
+                             MODELE=MODELE,
+                             CARA_ELEM=CARA_ELE,
+                             CHAM_MATER=CHAMPMAT,
+                           EXCIT=_F( CHARGE = COND_LI2, COEF_MULT_C = ('RI',1.,0.,))
+                          )
+
+#
+
+DYNA_AF2=CALC_ELEM(reuse=DYNA_AF2,  MODELE=MODELE,
+                         RESULTAT=DYNA_AF2,  OPTION='EFGE_ELNO_DEPL',
+                         CHAM_MATER=CHAMPMAT,   CARA_ELEM=CARA_ELE   )
+
+#
+
+TEST_RESU(RESU=(   _F(  RESULTAT = DYNA_AF2,           NUME_ORDRE = 1,
+                       MAILLE = 'E1',                  NOEUD = 'N2',
+                       NOM_CHAM = 'EFGE_ELNO_DEPL',  NOM_CMP = 'N',
+                       VALE_C = ('RI',1.897E2,2.9879E3,),
+                       PRECISION = 5.E-4),
+                     _F(  RESULTAT = DYNA_AF2,  NUME_ORDRE = 1,  NOEUD = 'N2',
+                       NOM_CHAM = 'DEPL',  NOM_CMP = 'DX',
+                       VALE_C = ('RI',3.363E-06,5.296E-5,),
+                       PRECISION = 5.E-4),
+                     _F(  RESULTAT = DYNA_AF2,  NUME_ORDRE = 1,  NOEUD = 'N2',
+                       NOM_CHAM = 'VITE',  NOM_CMP = 'DX',
+                       VALE_C = ('RI',-3.327E-03,2.113E-04,),
+                       PRECISION = 5.E-4),
+                     _F(  RESULTAT = DYNA_AF2,  NUME_ORDRE = 1,  NOEUD = 'N2',
+                       NOM_CHAM = 'ACCE',  NOM_CMP = 'DX',
+                       VALE_C = ('RI',-1.327E-02,-2.091E-01,),
+                       PRECISION = 5.E-4))
+            )
+
+FIN()
+#

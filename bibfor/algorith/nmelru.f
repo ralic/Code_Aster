@@ -1,0 +1,217 @@
+      SUBROUTINE NMELRU(IMATE,COMPOR,TEMP,TREF,EPSEQ,DIVU,NONLIN,
+     &                  ENER,DERIVL,DDIVU,DEPSEQ,DENER,DLAGTG)
+C-----------------------------------------------------------------------
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 19/01/2001   AUTEUR BOITEAU O.BOITEAU 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+C-----------------------------------------------------------------------
+C
+C FONCTION REALISEE:
+C
+C     REALISE LE CALCUL DE L'ENERGIE LIBRE, DE LA DERIVEE DE L'ENERGIE
+C             LIBRE PAR RAPPORT A LA TEMPERATURE (POUR LE CALCUL DE G)
+C     ET DE SA DERIVEE PAR RAPPORT A UNE VARIATION DE DOMAINE (EN DP
+C     ELASTIQUE ISOTROPE LINEAIRE).
+C
+C IN  IMATE   : NATURE DU MATERIAU
+C IN  COMPOR  : COMPORTEMENT
+C IN  TEMP    : TEMPERATURE
+C IN  TREF    : TEMPERATURE DE REFERENCE
+C IN  EPSEQ   : DEFORMATION EQUIVALENTE
+C IN  DIVU    : TRACE DES DEFORMATIONS
+C IN  NONLIN  : NON LINEARITE DU MATERIAU
+C IN  DERIVL  : FLAG POUR LE CALCUL DE LA DERIVEE LAGRANGIENNE (SI DG).
+C IN  DDIVU   : DERIVEE LAGRANGIENNE DE DIVU (SI DG).
+C IN  DEPSEQ  : DERIVEE LAGRANGIENNE DE EPSEQ (SI DG).
+C IN  DLAGTG  : DERIVEE LAGRANGIENNE DE LA TEMPERATURE (SI DG).
+C OUT ENER(1) : ENERGIE LIBRE (POUR LE CALCUL DE G)
+C OUT ENER(2) : DERIVEE DE L'ENERGIE LIBRE / TEMPERATURE
+C OUT DENER(1): DERIVEE LAGRANGIENNE DE L'ENERGIE LIBRE (SI DG).
+C OUT DENER(2): DERIVEE LAGRANGIENNE DE LA DERIVEE EN TEMP (SI DG).
+C
+C   -------------------------------------------------------------------
+C     SUBROUTINES APPELLEES:
+C       MSG: UTMESS.
+C       MATERIAUX: RCVADA, RCTRAC, RCFONC.
+C
+C     FONCTIONS INTRINSEQUES:
+C       AUCUNE.
+C   -------------------------------------------------------------------
+C     ASTER INFORMATIONS:
+C       11/12/00 (OB): TOILETTAGE FORTRAN,
+C                      MISE EN PLACE DE LA DERIVEE DE L'ENERGIE PAR
+C                      RAPPORT A UNE VARIATION DE DOMAINE.
+C-----------------------------------------------------------------------
+C CORPS DU PROGRAMME
+      IMPLICIT NONE
+
+C DECLARATION PARAMETRES D'APPELS
+      INTEGER       IMATE
+      CHARACTER*16  COMPOR(*)
+      REAL*8        TEMP,TREF,EPSEQ,DIVU,ENER(2),DENER(2),DDIVU,
+     &              DEPSEQ,DLAGTG
+      LOGICAL       NONLIN,DERIVL
+      CHARACTER*2   CODRET(3)
+      CHARACTER*8   NOMRES(3)
+
+C DECLARATION VARIABLES LOCALES      
+      REAL*8       E,NU,DEMU,K,K3,ALPHA,DUM
+      REAL*8       DE,DNU,DEMUDT,DK,DALPHA
+      REAL*8       DSDE,SIGY,RPRIM,P,RP,AIREP
+      REAL*8       DSDEDT,DSIGY,DRPRIM,DP,DRP,DAIREP
+      REAL*8       NRJ,DNRJ,VALRES(3),DEVRES(3),SIELEQ,DLNRJ,DDNRJ
+      INTEGER      JPROL,JVALE,NBVALE
+      LOGICAL      VMIS,LINE
+
+C----------DEBUT- COMMUNS NORMALISES  JEVEUX  --------------------------
+      COMMON /IVARJE/ZI(1)
+      COMMON /RVARJE/ZR(1)
+      COMMON /CVARJE/ZC(1)
+      COMMON /LVARJE/ZL(1)
+      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+      INTEGER        ZI
+      REAL*8         ZR
+      COMPLEX*16     ZC
+      LOGICAL        ZL
+      CHARACTER*8    ZK8
+      CHARACTER*16   ZK16
+      CHARACTER*24   ZK24
+      CHARACTER*32   ZK32
+      CHARACTER*80   ZK80
+C------------FIN- COMMUNS NORMALISES  JEVEUX  --------------------------
+
+
+      VMIS  = (COMPOR(1)(1:9) .EQ. 'ELAS_VMIS')
+      LINE  = (COMPOR(1)(1:14).EQ. 'ELAS_VMIS_LINE')
+
+C====================================================================
+C -  LECTURE DE E, NU, ALPHA ET DERIVEES / TEMPERATRURE
+C====================================================================
+
+      NOMRES(1) = 'E'
+      NOMRES(2) = 'NU'
+      NOMRES(3) = 'ALPHA'
+      CALL RCVADA (IMATE,'ELAS',TEMP,3,NOMRES,VALRES,DEVRES,CODRET)
+
+      IF (CODRET(3).NE.'OK') THEN
+        VALRES(3)= 0.D0
+        DEVRES(3)= 0.D0
+      ENDIF
+
+      E     = VALRES(1)
+      NU    = VALRES(2)
+      ALPHA = VALRES(3)
+
+      DE    = DEVRES(1)
+      DNU   = DEVRES(2)
+      DALPHA= DEVRES(3)
+
+      DEMU  = E/(1.D0+NU)
+      DEMUDT= ((1.D0+NU)*DE-E*DNU)/(1.D0+NU)**2
+
+      K    = E/(1.D0-2.D0*NU)/3.D0
+      DK   = (DE+2.D0*K*DNU)/(1.D0-2.D0*NU)/3.D0
+
+      K3   =  3.D0*K
+      
+C====================================================================
+C - LECTURE DES CARACTERISTIQUES DE NON LINEARITE DU MATERIAU
+C====================================================================
+
+C=================================================
+C CAS NON LINEAIRE
+C=================================================
+     
+      IF (NONLIN) THEN
+        IF (LINE) THEN
+
+          NOMRES(1)='D_SIGM_EPSI'
+          NOMRES(2)='SY'
+
+          CALL RCVADA(IMATE,'ECRO_LINE',TEMP,2,NOMRES,VALRES,DEVRES,
+     &                CODRET)
+          IF ( CODRET(1) .NE. 'OK' )
+     &      CALL UTMESS('F','NMRUPT',' VALEUR DE D_SIGM_EPSI'//
+     &                                             ' NON TROUVEE')
+          IF ( CODRET(2) .NE. 'OK' )
+     &      CALL UTMESS('F','NMRUPT',' VALEUR DE SY NON TROUVEE')
+
+          DSDE  = VALRES(1)
+          SIGY  = VALRES(2)
+          DSDEDT= DEVRES(1)
+          DSIGY = DEVRES(2)
+
+          RPRIM  = E*DSDE/(E-DSDE)
+          DRPRIM = (DE*DSDE+E*DSDEDT+RPRIM*(DSDEDT-DE))/(E-DSDE)
+
+          P  = (DEMU*EPSEQ - SIGY) / (RPRIM+1.5D0*DEMU)
+          DP = (DEMUDT*EPSEQ-DSIGY-P*(DRPRIM+1.5D0*DEMUDT))
+     &                                    /(RPRIM+1.5D0*DEMU)
+
+          RP  = SIGY +RPRIM*P
+          DRP = DSIGY+DRPRIM*P+RPRIM*DP
+
+          AIREP  = 0.5D0*(SIGY+RP)*P
+          DAIREP = 0.5D0*((DSIGY+DRP)*P+(SIGY+RP)*DP)
+
+        ELSE IF (VMIS.AND.NONLIN) THEN
+          SIELEQ = DEMU * EPSEQ
+          CALL RCTRAC(IMATE,'TRACTION','SIGM',TEMP,
+     &                JPROL,JVALE,NBVALE,E)
+          CALL RCFONC('S','TRACTION',JPROL,JVALE,NBVALE,SIGY,DUM,DUM,
+     &                 DUM,DUM,DUM,DUM,DUM,DUM)
+          CALL RCFONC('E','TRACTION',JPROL,JVALE,NBVALE,DUM,E,NU,
+     &                 0.D0,RP,RPRIM,AIREP,SIELEQ,P)
+          DP     = 0.D0
+          DRP    = 0.D0
+          DAIREP = 0.D0
+        ENDIF
+      ENDIF
+
+C=====================================================================
+C  CALCUL DE L'ENERGIE LIBRE ET DE LA DERIVEE /TEMPERATURE
+C=====================================================================
+
+      NRJ  = 0.5D0*K*DIVU*DIVU
+      DNRJ = 0.5D0*DK*DIVU*DIVU-K3*DIVU*(ALPHA+DALPHA*(TEMP-TREF))
+
+C TRAITEMENTS AUXILIAIRES LIE A LA DERIVATION LAGRANGIENNE 
+C (CAR DL(K),DL(DK), DL(K3),DL(ALPHA),DL(DALPHA),DL(TREF)=0 PAR
+C ELEMENT).
+      IF (DERIVL) THEN
+        DLNRJ = K*DIVU*DDIVU
+        DDNRJ = DK*DIVU*DDIVU-K3*DDIVU*(ALPHA+DALPHA*(TEMP-TREF))-
+     &          K3*DIVU*DALPHA*DLAGTG 
+      ENDIF
+
+      IF (NONLIN) THEN
+        ENER(1) = NRJ +RP*RP/DEMU/3.D0 + AIREP
+        ENER(2) = DNRJ+RP*(DRP-DEMUDT*RP/DEMU/2.D0)/DEMU/1.5D0+DAIREP
+      ELSE
+        ENER(1) = NRJ +DEMU*EPSEQ*EPSEQ/3.D0
+        ENER(2) = DNRJ+DEMUDT*EPSEQ*EPSEQ/3.D0
+        
+C CALCUL DE LA DERIVEE DE L'ENERGIE (CAR DL(DEMU),DL(DDEMUDT)=0
+C PAR ELEMENT).
+        IF (DERIVL) THEN
+          DENER(1) = DLNRJ + 2.D0*DEMU*EPSEQ*DEPSEQ/3.D0
+          DENER(2) = DDNRJ + 2.D0*DEMUDT*EPSEQ*DEPSEQ/3.D0
+        ENDIF
+      ENDIF
+
+      END

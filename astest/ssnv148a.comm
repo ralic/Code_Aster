@@ -1,0 +1,204 @@
+# MODIF  DATE 17/09/2002   AUTEUR T2BAXJM R.MASSON 
+# TITRE WEIBULL ET RICE-TRACEY EN 3D
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+
+DEBUT(   CODE=_F(  NOM = 'SSNV148A',NIV_PUB_WEB='INTERNET'))
+
+#.....................................................................
+
+PRE_GIBI();
+
+M=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='NON'),);
+
+M=DEFI_GROUP(reuse =M,
+             MAILLAGE=M,
+             CREA_GROUP_NO=(_F(GROUP_MA='SSUP',),
+                            _F(GROUP_MA='SINF',),),);
+
+MO=AFFE_MODELE(AFFE=_F(TOUT='OUI',
+                       PHENOMENE='MECANIQUE',
+                       MODELISATION='3D',),
+               MAILLAGE=M,);
+
+SIGY=DEFI_FONCTION(PROL_GAUCHE='LINEAIRE',
+                   NOM_PARA='TEMP',
+                   VALE=(-150.0,750.0,-100.0,700.0,-50.0,650.0),
+                   PROL_DROITE='LINEAIRE',);
+
+SIGREF=DEFI_FONCTION(PROL_GAUCHE='LINEAIRE',
+                     NOM_PARA='TEMP',
+                     VALE=(-150.0,2600.0,-50.0,2800.0),
+                     PROL_DROITE='LINEAIRE',);
+
+YOUNG=DEFI_CONSTANTE(VALE=2.E5,);
+
+NUT=DEFI_CONSTANTE(VALE=0.29999999999999999,);
+
+ALPHAT=DEFI_CONSTANTE(VALE=0.0,);
+
+ET=DEFI_CONSTANTE(VALE=2000.0,);
+
+ACIER=DEFI_MATERIAU(ECRO_LINE_FO=_F(D_SIGM_EPSI=ET,
+                                    SY=SIGY,),
+                    ELAS_FO=_F(NU=NUT,
+                               ALPHA=ALPHAT,
+                               E=YOUNG,TEMP_DEF_ALPHA=0.),
+                    WEIBULL_FO=_F(M=24.,
+                               VOLU_REFE=1.25E-4, 
+                               SIGM_CNV=2600.0,
+                               SIGM_REFE=SIGREF,),);
+
+CM=AFFE_MATERIAU(AFFE=_F(MATER=ACIER,
+                         TOUT='OUI',),
+                 MAILLAGE=M,);
+
+ZERO=DEFI_CONSTANTE(VALE=0.0,);
+
+TRAC50=DEFI_FONCTION(PROL_GAUCHE='EXCLU',
+                     PROL_DROITE='EXCLU',
+                     NOM_PARA='INST',
+                     VALE=(0.0,0.0,10.0,20.35,
+                     20.0,20.30,30.0,20.30,
+                     40.0,30.525),);
+
+T_T=DEFI_FONCTION(PROL_GAUCHE='CONSTANT',
+                  NOM_PARA='INST',
+                  VALE=(0.0,-50.0,20.0,-50.0,30.0,-150.0,40.0,-150.0),
+                  PROL_DROITE='CONSTANT',);
+
+TEMP_T=CREA_CHAMP(AFFE=_F(NOM_CMP='TEMP',
+                          TOUT='OUI',
+                          VALE_F=T_T,),
+                  TYPE_CHAM='NOEU_TEMP_F',
+                  MAILLAGE=M,
+                  OPERATION='AFFE',);
+
+L_INST=DEFI_LIST_REEL(INTERVALLE=_F(JUSQU_A=40.0,
+                                    NOMBRE=4,),
+                      DEBUT=0.0,);
+
+RESU_T=CREA_RESU(OPERATION='AFFE', TYPE_RESU='EVOL_THER', 
+                 NOM_CHAM='TEMP',
+                 AFFE=_F(CHAM_GD=TEMP_T,
+                            LIST_INST=L_INST,
+                            NUME_FIN=4,),);
+
+CH_T=AFFE_CHAR_MECA(MODELE=MO,
+                    TEMP_CALCULEE=RESU_T,);
+
+CHARG=AFFE_CHAR_MECA_F(MODELE=MO,
+                       DDL_IMPO=(_F(DY=TRAC50,
+                                    GROUP_NO='SSUP',),
+                                 _F(DY=ZERO,
+                                    GROUP_NO='SINF',),
+                                 _F(DX=ZERO,
+                                    DZ=ZERO,
+                                    GROUP_NO='P5',),
+                                 _F(DZ=ZERO,
+                                    GROUP_NO='P6',),),);
+
+U=STAT_NON_LINE(CHAM_MATER=CM,
+                MODELE=MO,
+                CONVERGENCE=_F(ITER_GLOB_MAXI=100,
+                               ITER_INTE_MAXI=100,
+                               RESI_GLOB_RELA=9.9999999999999995E-07,
+                               RESI_INTE_RELA=9.9999999999999995E-07,),
+                COMP_INCR=_F(RELATION='VMIS_ISOT_LINE',),
+                EXCIT=(_F(CHARGE=CHARG,),
+                       _F(CHARGE=CH_T,),),
+                INCREMENT=_F(NUME_INST_FIN=4,
+                             LIST_INST=L_INST,),
+                NEWTON=_F(MATRICE ='TANGENTE',
+                          REAC_ITER=3,),);
+
+WEIB=POST_ELEM(CHARGE=(CHARG,CH_T),
+               MODELE=MO,
+               CHAM_MATER=CM,
+               WEIBULL=_F(CORR_PLAST='NON',
+                          TOUT='OUI',
+                          COEF_MULT=2.0,
+                          OPTION='SIGM_ELGA',),
+               RESULTAT=U,
+               TOUT_ORDRE='OUI',);
+
+RET=POST_ELEM(MODELE=MO,
+              CHAM_MATER=CM,
+              RICE_TRACEY=_F(LOCAL='OUI',
+                             TOUT='OUI',
+                             OPTION='SIGM_ELMOY',),
+              RESULTAT=U,);
+
+TEST_TABLE(TABLE=WEIB,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=1,),
+           NOM_PARA='PROBA_WEIBULL',
+           REFERENCE='ANALYTIQUE',
+           VALE=0.014809636445635,);
+
+TEST_TABLE(TABLE=WEIB,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=2,),
+           NOM_PARA='PROBA_WEIBULL',
+           REFERENCE='ANALYTIQUE',
+           VALE=0.014809636445635,);
+
+TEST_TABLE(TABLE=WEIB,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=3,),
+           NOM_PARA='PROBA_WEIBULL',
+           REFERENCE='ANALYTIQUE',
+           VALE=0.014809636445635,);
+
+TEST_TABLE(TABLE=WEIB,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=4,),
+           NOM_PARA='PROBA_WEIBULL',
+           REFERENCE='ANALYTIQUE',
+           VALE=0.99999938317435999,);
+
+TEST_TABLE(TABLE=RET,
+           FILTRE=(_F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=1,),),
+           NOM_PARA='TX_CROIS_CAVITES',
+           REFERENCE='ANALYTIQUE',
+           VALE=1.0458000000000001,);
+
+TEST_TABLE(TABLE=RET,
+           FILTRE=(_F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=2,),),
+           NOM_PARA='TX_CROIS_CAVITES',
+           REFERENCE='ANALYTIQUE',
+           VALE=1.0458000000000001,);
+
+TEST_TABLE(TABLE=RET,
+           FILTRE=(_F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=3,),),
+           NOM_PARA='TX_CROIS_CAVITES',
+           REFERENCE='ANALYTIQUE',
+           VALE=1.0458000000000001,);
+
+TEST_TABLE(TABLE=RET,
+           FILTRE=(_F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=4,),),
+           NOM_PARA='TX_CROIS_CAVITES',
+           REFERENCE='ANALYTIQUE',
+           VALE=1.0701000000000001,);
+
+FIN()
+#

@@ -1,0 +1,114 @@
+      SUBROUTINE PRERES(SOLVEU,BASE,IRET,MATPRE,MATASS)
+      IMPLICIT REAL*8 (A-H,O-Z)
+      CHARACTER*(*) BASE
+      CHARACTER*19 SOLVEU
+      CHARACTER*(*) MATASS, MATPRE
+C-----------------------------------------------------------------------
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGELINE  DATE 03/05/2000   AUTEUR VABHHTS J.PELLET 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+C-----------------------------------------------------------------------
+C BUT : FACTORISER UNE MATR_ASSE (LDLT/MULT_FRONT)
+C       OU FABRIQUER UNE MATRICE DE PRECONDITIONNEMENT (GCPC)
+C
+C SOLVEU(K19) IN : OBJET SOLVEUR
+C BASE(K1) IN    : BASE SUR LAQUELLE ON CREE LES OBJETS DE LA FACTORISEE
+C IRET(I) OUT CODE RETOUR :
+C             /0 -> OK
+C             /1 -> LA FACTORISATION EST ALLEE AU BOUT
+C                   MAIS ON A PERDU BEAUCOUP DE DECIMALES
+C             /2 -> LA FACTORISATION N'A PAS PU SE FAIRE
+C                   JUSQU'AU BOUT.
+C MATPRE(K19) IN/JXVAR : MATRICE DE PRECONDITIONNEMENT (GCPC)
+C MATASS(K19) IN/JXVAR : MATRICE A FACTORISER OU A PRECONDITIONNER
+C
+C-----------------------------------------------------------------------
+C     FONCTIONS JEVEUX
+C-----------------------------------------------------------------------
+      CHARACTER*32 JEXNUM,JEXNOM,JEXATR
+C-----------------------------------------------------------------------
+C     COMMUNS   JEVEUX
+C-----------------------------------------------------------------------
+      INTEGER ZI ,NIREMP
+      COMMON /IVARJE/ZI(1)
+      REAL*8 ZR
+      COMMON /RVARJE/ZR(1)
+      COMPLEX*16 ZC
+      COMMON /CVARJE/ZC(1)
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32
+      CHARACTER*80 ZK80
+      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+C
+      CHARACTER*24 METRES, NU
+      CHARACTER*19 MATAS, MAPREC
+      CHARACTER*4  ETAMAT
+C----------------------------------------------------------------------
+C                DEBUT DES INSTRUCTIONS
+      CALL JEMARQ()
+      CALL JEDBG2(IDBGAV,0)
+C----------------------------------------------------------------------
+C
+C-----RECUPERATION DU NIVEAU D'IMPRESSION
+C
+      CALL INFNIV(IFM,NIV)
+C----------------------------------------------------------------------
+      MATAS = MATASS
+      MAPREC = MATPRE
+      CALL JEVEUO(SOLVEU//'.SLVK','L',ISLVK)
+      CALL JEVEUO(SOLVEU//'.SLVR','L',ISLVR)
+      CALL JEVEUO(SOLVEU//'.SLVI','L',ISLVI)
+      METRES = ZK24(ISLVK)
+      CALL JELIRA(MATAS//'.REFA','DOCU',IBID,ETAMAT)
+
+      IF (ETAMAT.EQ.'DECP'.OR.ETAMAT.EQ.'DECT') THEN
+         IF (METRES.EQ.'LDLT'.OR.METRES.EQ.'MULT_FRO') THEN
+            IF (NIV.EQ.2)  WRITE(IFM,*) '  PAS DE DECOMPOSITION '//
+     +         'CAR LA MATRICE '//MATAS//' EST DEJA DECOMPOSEE.'
+         ELSE IF (METRES.EQ.'GCPC') THEN
+            IF (NIV.EQ.2)   WRITE(IFM,*) '  LA MATRICE DE '//
+     +         'PRECONDITIONNEMENT '//MAPREC//' EXISTE DEJA, '//
+     +         'ON NE LA RECALCULE PAS.'
+         ENDIF
+C
+         GOTO 9999
+      ENDIF
+
+      CALL MTDSCR(MATAS)
+      CALL JEVEUO(MATAS(1:19)//'.&INT','E',LMAT)
+
+
+      IF (METRES.EQ.'LDLT'.OR.METRES.EQ.'MULT_FRO') THEN
+          NPREC = ZI(ISLVI-1+1)
+          ISTOP = ZI(ISLVI-1+3)
+          CALL TLDLGG(ISTOP,LMAT,1,0,NPREC,NDECI,ISINGU,NPVNEG,IRET)
+
+
+      ELSE IF (METRES.EQ.'GCPC') THEN
+          IRET=0
+          NIREMP = ZI(ISLVI-1+4)
+          CALL PCLDLT(MAPREC,MATAS,NIREMP,BASE)
+      ENDIF
+C
+C
+ 9999 CONTINUE
+      CALL JEDBG2(IBID,IDBGAV)
+      CALL JEDEMA()
+      END

@@ -1,0 +1,357 @@
+# MODIF  DATE 26/06/2002   AUTEUR SMICHEL S.MICHEL-PONNELLE 
+# TITRE CYLINDRE EN INCOMPRESSIBLE (TRIA6 QUAD8) AXISYM
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+# CAS_TEST__: SSLV130D
+#
+# ----------------------------------------------------------------------
+#
+# CYLINDRE CREUX EN INCOMPRESSIBLE (NU=0.4999)
+# SOUS PRESSION INTERNE (60 MPA)
+#
+# MODELISATION : ELEMENTS MECANIQUE AXIS_INCO (TRIA6 QUAD8)
+# MAILLAGE     : ALIBABA > ASTER
+# ----------------------------------------------------------------------
+# GROUPES DE NOEUDS ET MAILLES: A B C D E F  NOEUMIA NOEUMIB  FACESUP   FACEINF 
+#             BORDAB=GRNM11     FACEEF=GRMA12     FACEAE=GRMA13
+# ----------------------------------------------------------------------
+#
+
+DEBUT(CODE=_F(  NOM = 'SSLV130D',NIV_PUB_WEB='INTERNET') )
+
+M=LIRE_MAILLAGE(   )
+
+PRES = FORMULE(REEL="""(REEL:X,REEL:Y) =  60.""")
+
+MO=AFFE_MODELE( MAILLAGE=M,
+                VERIF='MAILLE',
+                AFFE=_F( TOUT = 'OUI',
+                         PHENOMENE = 'MECANIQUE',
+                         MODELISATION = 'AXIS_INCO'))
+
+MA=DEFI_MATERIAU(ELAS=_F(  E = 200000.,
+                           NU = 0.4999,
+                           ALPHA = 0.) )
+
+CM=AFFE_MATERIAU( MAILLAGE=M,
+                  AFFE=_F( TOUT = 'OUI',
+                           MATER = MA))
+
+CLIM=AFFE_CHAR_MECA(MODELE=MO,DDL_IMPO=(                
+                            _F(  GROUP_NO = 'FACINF',  DY = 0.),
+                            _F(  GROUP_NO = 'FACSUP',  DY = 0.)) )
+
+CH=AFFE_CHAR_MECA_F(  MODELE=MO,
+                       PRES_REP=_F(  GROUP_MA = 'GRMA13',  PRES = PRES) )
+                       
+L_INST1 = DEFI_LIST_REEL (
+             DEBUT= 0.,
+             INTERVALLE= _F(JUSQU_A= 1.,
+                            NOMBRE=1), ) ;
+
+RAMPE    = DEFI_FONCTION (
+             NOM_PARA= 'INST',
+             PROL_DROITE='CONSTANT',
+             VALE    = (
+               0., 0.,
+               1., 1.,),) ;
+EVOL   = STAT_NON_LINE (
+             MODELE= MO,
+             CHAM_MATER= CM,
+             EXCIT= (_F(CHARGE= CLIM),
+                     _F(CHARGE= CH,
+                        FONC_MULT= RAMPE),),
+             INCREMENT= _F(LIST_INST= L_INST1),
+             COMP_INCR= _F(RELATION= 'ELAS' ),
+             SOLVEUR=_F(RENUM='MD'),
+             NEWTON= _F(
+               REAC_ITER= 1 ),) ;
+            
+EVOL = CALC_ELEM (reuse=EVOL,
+                 MODELE= MO,
+                 CHAM_MATER= CM,
+                 RESULTAT= EVOL,
+                 OPTION= (
+               'EPSI_ELNO_DEPL',
+               'SIEF_ELNO_ELGA',
+               'EQUI_ELNO_SIGM',
+               'EQUI_ELNO_EPSI'
+           ),   ) ;
+
+EVOL = CALC_NO (reuse=EVOL,
+                RESULTAT= EVOL,
+                OPTION  = (
+               'EPSI_NOEU_DEPL',
+               'SIEF_NOEU_ELGA',
+               'EQUI_NOEU_EPSI',
+               'EQUI_NOEU_SIGM',
+                ),  ) ;           
+                      
+#---------------------------------------------------------------
+# POSTTRAITEMENT ETUDE 1
+#---------------------------------------------------------------
+
+TEST_RESU(RESU=(
+#     DEPLACEMENTS        
+         _F(  RESULTAT = EVOL, INST = 1., NOM_CHAM = 'DEPL',  CRITERE = 'RELATIF',   PRECISION = 1.E-3,
+         GROUP_NO = 'A',     NOM_CMP = 'DX',            VALE = 6.E-5, REFERENCE='ANALYTIQUE'),
+         _F(  RESULTAT = EVOL, INST = 1., NOM_CHAM = 'DEPL',  CRITERE = 'ABSOLU',   PRECISION = 1.E-5,
+         GROUP_NO = 'A',     NOM_CMP = 'DY',            VALE = 0., REFERENCE='ANALYTIQUE'),
+
+        _F(  RESULTAT = EVOL, INST = 1., NOM_CHAM = 'DEPL',  CRITERE = 'RELATIF',   PRECISION = 1.E-3,
+         GROUP_NO = 'F',     NOM_CMP = 'DX',            VALE = 3.E-5, REFERENCE='ANALYTIQUE'),
+        _F(  RESULTAT = EVOL, INST = 1., NOM_CHAM = 'DEPL',  CRITERE = 'ABSOLU',   PRECISION = 1.E-5,
+         GROUP_NO = 'F',     NOM_CMP = 'DY',            VALE = 0., REFERENCE='ANALYTIQUE'),
+),)
+
+#-----------------------------------------------------------------
+TEST_RESU(RESU=(
+    # DEFORMATIONS             
+           _F( RESULTAT = EVOL, INST = 1., NOM_CHAM = 'EPSI_NOEU_DEPL',   CRITERE = 'RELATIF',    PRECISION = 5.E-3,
+ GROUP_NO = 'A',    NOM_CMP = 'EPXX',      VALE = -6.0E-4, REFERENCE='ANALYTIQUE'),
+           _F( RESULTAT = EVOL, INST = 1., NOM_CHAM = 'EPSI_NOEU_DEPL',    CRITERE = 'ABSOLU',    PRECISION = 1.E-5,
+ GROUP_NO = 'A',    NOM_CMP = 'EPYY',      VALE = 0., REFERENCE='ANALYTIQUE'),
+           _F(  RESULTAT = EVOL, INST = 1., NOM_CHAM = 'EPSI_NOEU_DEPL',    CRITERE = 'ABSOLU',     PRECISION = 1.E-5,
+ GROUP_NO = 'A',    NOM_CMP = 'EPXY',      VALE = 0., REFERENCE='ANALYTIQUE'),
+
+           _F( RESULTAT = EVOL, INST = 1., NOM_CHAM = 'EPSI_NOEU_DEPL',   CRITERE = 'RELATIF',    PRECISION = 5.E-3,
+ GROUP_NO = 'F',    NOM_CMP = 'EPXX',      VALE = -1.5E-4, REFERENCE='ANALYTIQUE'),
+           _F( RESULTAT = EVOL, INST = 1., NOM_CHAM = 'EPSI_NOEU_DEPL',   CRITERE = 'ABSOLU',    PRECISION = 1.E-5,
+ GROUP_NO = 'F',    NOM_CMP = 'EPYY',      VALE = 0., REFERENCE='ANALYTIQUE'),
+           _F(  RESULTAT = EVOL, INST = 1., NOM_CHAM = 'EPSI_NOEU_DEPL',   CRITERE = 'ABSOLU',    PRECISION = 1.E-5,
+ GROUP_NO = 'F',    NOM_CMP = 'EPXY',      VALE = 0., REFERENCE='ANALYTIQUE'),
+           ),)
+#-----------------------------------------------------------------
+ 
+
+TEST_RESU(RESU=(
+    # CONTRAINTES             
+           _F( RESULTAT = EVOL, INST = 1., NOM_CHAM = 'SIEF_NOEU_ELGA',   CRITERE = 'RELATIF',    PRECISION = 5.E-3,
+ GROUP_NO = 'A',    NOM_CMP = 'SIXX',      VALE = -60., REFERENCE='ANALYTIQUE'),
+           _F( RESULTAT = EVOL, INST = 1., NOM_CHAM = 'SIEF_NOEU_ELGA',    CRITERE = 'RELATIF',    PRECISION = 5.E-3,
+ GROUP_NO = 'A',    NOM_CMP = 'SIYY',      VALE = 20., REFERENCE='ANALYTIQUE'),
+           _F( RESULTAT = EVOL, INST = 1., NOM_CHAM = 'SIEF_NOEU_ELGA',   CRITERE = 'RELATIF',    PRECISION = 5.E-3,
+ GROUP_NO = 'A',    NOM_CMP = 'SIZZ',      VALE = 100., REFERENCE='ANALYTIQUE'),
+           _F(  RESULTAT = EVOL, INST = 1., NOM_CHAM = 'SIEF_NOEU_ELGA',    CRITERE = 'ABSOLU',     PRECISION = 1.E-5,
+ GROUP_NO = 'A',    NOM_CMP = 'SIXY',      VALE = 0., REFERENCE='ANALYTIQUE'),
+
+           _F( RESULTAT = EVOL, INST = 1., NOM_CHAM = 'SIEF_NOEU_ELGA',    CRITERE = 'ABSOLU',    PRECISION = 3.E-2,
+ GROUP_NO = 'F',    NOM_CMP = 'SIXX',      VALE = 0., REFERENCE='ANALYTIQUE'),
+           _F( RESULTAT = EVOL, INST = 1., NOM_CHAM = 'SIEF_NOEU_ELGA',   CRITERE = 'RELATIF',    PRECISION = 5.E-3,
+ GROUP_NO = 'F',    NOM_CMP = 'SIYY',      VALE = 20., REFERENCE='ANALYTIQUE'),
+           _F(  RESULTAT = EVOL, INST = 1., NOM_CHAM = 'SIEF_NOEU_ELGA',   CRITERE = 'RELATIF',    PRECISION = 5.E-3,
+ GROUP_NO = 'F',    NOM_CMP = 'SIZZ',      VALE = 40., REFERENCE='ANALYTIQUE'),
+           _F( RESULTAT = EVOL, INST = 1., NOM_CHAM = 'SIEF_NOEU_ELGA',   CRITERE = 'ABSOLU',    PRECISION = 5.E-3,
+ GROUP_NO = 'F',    NOM_CMP = 'SIXY',      VALE = 0., REFERENCE='ANALYTIQUE'))
+           )
+
+TEST_RESU(RESU=(
+    # DEFORMATIONS EQUIVALENTES
+           _F(  RESULTAT = EVOL, INST = 1., NOM_CHAM = 'EQUI_NOEU_EPSI',   NOM_CMP = 'INVA_2', CRITERE = 'RELATIF',
+               REFERENCE='NON_REGRESSION',VERSION='6.2.13', GROUP_NO = 'A',    VALE = 6.92012E-04),
+           _F( RESULTAT = EVOL, INST = 1., NOM_CHAM = 'EQUI_NOEU_EPSI',   NOM_CMP = 'PRIN_1', CRITERE = 'RELATIF', 
+                REFERENCE='NON_REGRESSION',VERSION='6.2.13',GROUP_NO = 'A',    VALE = -5.99232E-04),
+           _F( RESULTAT = EVOL, INST = 1., NOM_CHAM = 'EQUI_NOEU_EPSI',    NOM_CMP = 'PRIN_2', CRITERE = 'ABSOLU',   
+              PRECISION = 1.E-5,GROUP_NO = 'A',    VALE = 0.00000E+00),
+           _F( RESULTAT = EVOL, INST = 1., NOM_CHAM = 'EQUI_NOEU_EPSI',   NOM_CMP = 'PRIN_3', CRITERE = 'RELATIF',
+                REFERENCE='NON_REGRESSION',VERSION='6.2.13', GROUP_NO = 'A',    VALE = 5.99368E-04),
+           _F( RESULTAT = EVOL, INST = 1., NOM_CHAM = 'EQUI_NOEU_EPSI',    NOM_CMP = 'INVA_2SG', CRITERE = 'RELATIF', 
+               REFERENCE='NON_REGRESSION',VERSION='6.2.13', GROUP_NO = 'A',    VALE = 6.92012E-04),)
+           )
+
+
+TEST_RESU(RESU=(
+    # CONTRAINTES EQUIVALENTES
+           _F(  RESULTAT = EVOL, INST = 1., NOM_CHAM = 'EQUI_NOEU_SIGM',   NOM_CMP = 'VMIS', CRITERE = 'RELATIF', 
+                REFERENCE='NON_REGRESSION',VERSION='6.2.13',GROUP_NO = 'A',    VALE = 1.38412E+02),
+           _F( RESULTAT = EVOL, INST = 1., NOM_CHAM = 'EQUI_NOEU_SIGM',   NOM_CMP = 'TRESCA', CRITERE = 'RELATIF',
+                 REFERENCE='NON_REGRESSION',VERSION='6.2.13',GROUP_NO = 'A',   VALE = 1.59824E+02),
+           _F( RESULTAT = EVOL, INST = 1., NOM_CHAM = 'EQUI_NOEU_SIGM',    NOM_CMP = 'PRIN_1', CRITERE = 'RELATIF',  
+               REFERENCE='NON_REGRESSION',VERSION='6.2.13',GROUP_NO = 'A',     VALE = -5.99101E+01),
+           _F( RESULTAT = EVOL, INST = 1., NOM_CHAM = 'EQUI_NOEU_SIGM',   NOM_CMP = 'PRIN_2', CRITERE = 'RELATIF', 
+                REFERENCE='NON_REGRESSION',VERSION='6.2.13', GROUP_NO = 'A',    VALE = 1.99928E+01),
+           _F( RESULTAT = EVOL, INST = 1., NOM_CHAM = 'EQUI_NOEU_SIGM',    NOM_CMP = 'PRIN_3', CRITERE = 'RELATIF', 
+                REFERENCE='NON_REGRESSION',VERSION='6.2.13',GROUP_NO = 'A',    VALE = 9.99138E+01),
+           _F( RESULTAT = EVOL, INST = 1., NOM_CHAM = 'EQUI_NOEU_SIGM',    NOM_CMP = 'VMIS_SG', CRITERE = 'RELATIF', 
+                REFERENCE='NON_REGRESSION',VERSION='6.2.13',GROUP_NO = 'A',    VALE = 1.38412E+02))
+           )
+#-----------------------------------------------------------------
+#  TEST IDENTIQUE EN IMPOSANT LA CONDITION TR(EPS)=0
+#------------------------------------------------------------------
+M = DEFI_GROUP(reuse = M,
+               MAILLAGE=M,
+               CREA_GROUP_NO =_F(NOM = 'MSOMMET',
+                                 CRIT_NOEUD='SOMMET',
+                                 GROUP_MA = 'VOLUME'))
+CLIM2=AFFE_CHAR_MECA(MODELE=MO,DDL_IMPO=(                
+                            _F(  GROUP_NO = 'FACINF',  DY = 0.),
+                            _F(  GROUP_NO = 'FACSUP',  DY = 0.),
+                            _F(  GROUP_NO = 'MSOMMET', GONF=0.) ) )
+
+
+EVOL2   = STAT_NON_LINE (
+             MODELE= MO,
+             CHAM_MATER= CM,
+             EXCIT= (_F(CHARGE= CLIM2),
+                     _F(CHARGE= CH,
+                        FONC_MULT= RAMPE),),
+             INCREMENT= _F(LIST_INST= L_INST1),
+             COMP_INCR= _F(RELATION= 'ELAS' ),
+             SOLVEUR=_F(RENUM='MD'),
+             NEWTON= _F(
+               REAC_ITER= 1 ),) ;
+
+EVOL2 = CALC_ELEM (reuse=EVOL2,
+              MODELE= MO,
+              CHAM_MATER= CM,
+              RESULTAT= EVOL2,
+              OPTION= (
+               'EPSI_ELNO_DEPL',
+               'SIEF_ELNO_ELGA',
+               'EQUI_ELNO_SIGM',
+               'EQUI_ELNO_EPSI'
+           ),   ) ;
+
+EVOL2 = CALC_NO (reuse=EVOL2,
+                RESULTAT= EVOL2,
+                 OPTION  = (
+               'EPSI_NOEU_DEPL',
+               'SIEF_NOEU_ELGA',
+               'EQUI_NOEU_EPSI',
+               'EQUI_NOEU_SIGM',
+                ),) ;
+#---------------------------------------------------------------
+# POSTTRAITEMENT ETUDE 1
+#---------------------------------------------------------------
+
+TEST_RESU(RESU=(
+#     DEPLACEMENTS        
+         _F(  RESULTAT = EVOL2, INST = 1., NOM_CHAM = 'DEPL',  CRITERE = 'RELATIF',   PRECISION = 1.E-3,
+         GROUP_NO = 'A',     NOM_CMP = 'DX',            VALE = 6.E-5, REFERENCE='ANALYTIQUE'),
+         _F(  RESULTAT = EVOL2, INST = 1., NOM_CHAM = 'DEPL',  CRITERE = 'ABSOLU',   PRECISION = 1.E-5,
+         GROUP_NO = 'A',     NOM_CMP = 'DY',            VALE = 0., REFERENCE='ANALYTIQUE'),
+
+        _F(  RESULTAT = EVOL2, INST = 1., NOM_CHAM = 'DEPL',  CRITERE = 'RELATIF',   PRECISION = 1.E-3,
+         GROUP_NO = 'F',     NOM_CMP = 'DX',            VALE = 3.E-5, REFERENCE='ANALYTIQUE'),
+        _F(  RESULTAT = EVOL2, INST = 1., NOM_CHAM = 'DEPL',  CRITERE = 'ABSOLU',   PRECISION = 1.E-5,
+         GROUP_NO = 'F',     NOM_CMP = 'DY',            VALE = 0., REFERENCE='ANALYTIQUE'),
+),)
+
+#-----------------------------------------------------------------
+TEST_RESU(RESU=(
+    # DEFORMATIONS             
+           _F( RESULTAT = EVOL2, INST = 1., NOM_CHAM = 'EPSI_NOEU_DEPL',   CRITERE = 'RELATIF',    PRECISION = 5.E-3,
+ GROUP_NO = 'A',    NOM_CMP = 'EPXX',      VALE = -6.0E-4, REFERENCE='ANALYTIQUE'),
+           _F( RESULTAT = EVOL2, INST = 1., NOM_CHAM = 'EPSI_NOEU_DEPL',    CRITERE = 'ABSOLU',    PRECISION = 1.E-5,
+ GROUP_NO = 'A',    NOM_CMP = 'EPYY',      VALE = 0., REFERENCE='ANALYTIQUE'),
+           _F(  RESULTAT = EVOL2, INST = 1., NOM_CHAM = 'EPSI_NOEU_DEPL',    CRITERE = 'ABSOLU',     PRECISION = 1.E-5,
+ GROUP_NO = 'A',    NOM_CMP = 'EPXY',      VALE = 0., REFERENCE='ANALYTIQUE'),
+
+           _F( RESULTAT = EVOL2, INST = 1., NOM_CHAM = 'EPSI_NOEU_DEPL',   CRITERE = 'RELATIF',    PRECISION = 5.E-3,
+ GROUP_NO = 'F',    NOM_CMP = 'EPXX',      VALE = -1.5E-4, REFERENCE='ANALYTIQUE'),
+           _F( RESULTAT = EVOL2, INST = 1., NOM_CHAM = 'EPSI_NOEU_DEPL',   CRITERE = 'ABSOLU',    PRECISION = 1.E-5,
+ GROUP_NO = 'F',    NOM_CMP = 'EPYY',      VALE = 0., REFERENCE='ANALYTIQUE'),
+           _F(  RESULTAT = EVOL2, INST = 1., NOM_CHAM = 'EPSI_NOEU_DEPL',   CRITERE = 'ABSOLU',    PRECISION = 1.E-5,
+ GROUP_NO = 'F',    NOM_CMP = 'EPXY',      VALE = 0., REFERENCE='ANALYTIQUE'),
+           ),)
+#-----------------------------------------------------------------
+ 
+
+TEST_RESU(RESU=(
+    # CONTRAINTES             
+           _F( RESULTAT = EVOL2, INST = 1., NOM_CHAM = 'SIEF_NOEU_ELGA',   CRITERE = 'RELATIF',    PRECISION = 5.E-3,
+ GROUP_NO = 'A',    NOM_CMP = 'SIXX',      VALE = -60., REFERENCE='ANALYTIQUE'),
+           _F( RESULTAT = EVOL2, INST = 1., NOM_CHAM = 'SIEF_NOEU_ELGA',    CRITERE = 'RELATIF',    PRECISION = 5.E-3,
+ GROUP_NO = 'A',    NOM_CMP = 'SIYY',      VALE = 20., REFERENCE='ANALYTIQUE'),
+           _F( RESULTAT = EVOL2, INST = 1., NOM_CHAM = 'SIEF_NOEU_ELGA',   CRITERE = 'RELATIF',    PRECISION = 5.E-3,
+ GROUP_NO = 'A',    NOM_CMP = 'SIZZ',      VALE = 100., REFERENCE='ANALYTIQUE'),
+           _F(  RESULTAT = EVOL2, INST = 1., NOM_CHAM = 'SIEF_NOEU_ELGA',    CRITERE = 'ABSOLU',     PRECISION = 1.E-2,
+ GROUP_NO = 'A',    NOM_CMP = 'SIXY',      VALE = 0., REFERENCE='ANALYTIQUE'),
+
+          _F( RESULTAT = EVOL2, INST = 1., NOM_CHAM = 'SIEF_NOEU_ELGA',    CRITERE = 'ABSOLU',    PRECISION = 3.E-2,
+ GROUP_NO = 'F',    NOM_CMP = 'SIXX',      VALE = 0., REFERENCE='ANALYTIQUE'),
+           _F( RESULTAT = EVOL2, INST = 1., NOM_CHAM = 'SIEF_NOEU_ELGA',   CRITERE = 'RELATIF',    PRECISION = 5.E-3,
+ GROUP_NO = 'F',    NOM_CMP = 'SIYY',      VALE = 20., REFERENCE='ANALYTIQUE'),
+           _F(  RESULTAT = EVOL2, INST = 1., NOM_CHAM = 'SIEF_NOEU_ELGA',   CRITERE = 'RELATIF',    PRECISION = 5.E-3,
+ GROUP_NO = 'F',    NOM_CMP = 'SIZZ',      VALE = 40., REFERENCE='ANALYTIQUE'),
+           _F( RESULTAT = EVOL2, INST = 1., NOM_CHAM = 'SIEF_NOEU_ELGA',   CRITERE = 'ABSOLU',    PRECISION = 5.E-3,
+ GROUP_NO = 'F',    NOM_CMP = 'SIXY',      VALE = 0., REFERENCE='ANALYTIQUE'))
+           )
+TEST_RESU(RESU=(
+    # DEFORMATIONS EQUIVALENTES
+           _F(  RESULTAT = EVOL, INST = 1., NOM_CHAM = 'EQUI_NOEU_EPSI',   NOM_CMP = 'INVA_2', CRITERE = 'RELATIF',
+               REFERENCE='NON_REGRESSION',VERSION='6.2.13', GROUP_NO = 'A',    VALE = 6.92012E-04),
+           _F( RESULTAT = EVOL, INST = 1., NOM_CHAM = 'EQUI_NOEU_EPSI',   NOM_CMP = 'PRIN_1', CRITERE = 'RELATIF', 
+                REFERENCE='NON_REGRESSION',VERSION='6.2.13',GROUP_NO = 'A',    VALE = -5.99232E-04),
+           _F( RESULTAT = EVOL, INST = 1., NOM_CHAM = 'EQUI_NOEU_EPSI',    NOM_CMP = 'PRIN_2', CRITERE = 'ABSOLU',   
+              PRECISION = 1.E-5,GROUP_NO = 'A',    VALE = 0.00000E+00),
+           _F( RESULTAT = EVOL, INST = 1., NOM_CHAM = 'EQUI_NOEU_EPSI',   NOM_CMP = 'PRIN_3', CRITERE = 'RELATIF',
+                REFERENCE='NON_REGRESSION',VERSION='6.2.13', GROUP_NO = 'A',    VALE = 5.99368E-04),
+           _F( RESULTAT = EVOL, INST = 1., NOM_CHAM = 'EQUI_NOEU_EPSI',    NOM_CMP = 'INVA_2SG', CRITERE = 'RELATIF', 
+               REFERENCE='NON_REGRESSION',VERSION='6.2.13', GROUP_NO = 'A',    VALE = 6.92012E-04),)
+           )
+
+
+TEST_RESU(RESU=(
+    # CONTRAINTES EQUIVALENTES
+           _F( RESULTAT = EVOL, INST = 1., NOM_CHAM = 'EQUI_NOEU_SIGM',   NOM_CMP = 'VMIS', CRITERE = 'RELATIF', 
+               REFERENCE='NON_REGRESSION',VERSION='6.2.13',GROUP_NO = 'A',    VALE = 1.38412E+02),
+           _F( RESULTAT = EVOL, INST = 1., NOM_CHAM = 'EQUI_NOEU_SIGM',   NOM_CMP = 'TRESCA', CRITERE = 'RELATIF',
+               REFERENCE='NON_REGRESSION',VERSION='6.2.13',GROUP_NO = 'A',    VALE = 1.59824E+02),
+           _F( RESULTAT = EVOL, INST = 1., NOM_CHAM = 'EQUI_NOEU_SIGM',    NOM_CMP = 'PRIN_1', CRITERE = 'RELATIF',  
+               REFERENCE='NON_REGRESSION',VERSION='6.2.13',GROUP_NO =  'A',     VALE = -5.99101E+01),
+           _F( RESULTAT = EVOL, INST = 1., NOM_CHAM = 'EQUI_NOEU_SIGM',   NOM_CMP = 'PRIN_2', CRITERE = 'RELATIF', 
+               REFERENCE='NON_REGRESSION',VERSION='6.2.13', GROUP_NO = 'A',    VALE = 1.99928E+01),
+           _F( RESULTAT = EVOL, INST = 1., NOM_CHAM = 'EQUI_NOEU_SIGM',    NOM_CMP = 'PRIN_3', CRITERE = 'RELATIF', 
+               REFERENCE='NON_REGRESSION',VERSION='6.2.13',GROUP_NO = 'A',     VALE = 9.99138E+01),
+           _F( RESULTAT = EVOL, INST = 1., NOM_CHAM = 'EQUI_NOEU_SIGM',    NOM_CMP = 'VMIS_SG', CRITERE = 'RELATIF', 
+               REFERENCE='NON_REGRESSION',VERSION='6.2.13',GROUP_NO = 'A',     VALE = 1.38412E+02))
+           )
+# ----------------------------------------------------------------------------------------------
+#  TEST DU CALCUL AUX NOEUDS MILIEUX 
+#  TEST SUR UN NOEUD SITUE EN MILIEU DE MAILLE POUR TESTER LE PASSAGE AUX NOEUDS MILIEUX
+#  (quadrangle + triangle) 
+#  NOEUMIA = A + (0  1/2 pas )    NOEUMIB = B + (0  1/2 pas )
+#   
+TEST_RESU(RESU=(
+    # DEFORMATIONS             
+           _F( RESULTAT = EVOL, INST = 1., NOM_CHAM = 'EPSI_NOEU_DEPL',   CRITERE = 'RELATIF',    PRECISION = 5.E-3,
+ GROUP_NO = 'NOEUMIA',    NOM_CMP = 'EPXX',      VALE = -6.0E-4, REFERENCE='ANALYTIQUE'),
+           _F( RESULTAT = EVOL, INST = 1., NOM_CHAM = 'EPSI_NOEU_DEPL',   CRITERE = 'RELATIF',    PRECISION = 5.E-3,
+GROUP_NO = 'NOEUMIA',     NOM_CMP = 'EPZZ',      VALE = 6.0E-4, REFERENCE='ANALYTIQUE'),
+
+           _F(  RESULTAT = EVOL, INST = 1., NOM_CHAM = 'EPSI_NOEU_DEPL',    CRITERE = 'RELATIF',    PRECISION = 5.E-3,
+ GROUP_NO = 'NOEUMIB',    NOM_CMP = 'EPXX',      VALE = -1.5E-4, REFERENCE='ANALYTIQUE'),
+          _F(  RESULTAT = EVOL, INST = 1., NOM_CHAM = 'EPSI_NOEU_DEPL',    CRITERE = 'RELATIF',    PRECISION = 5.E-3,
+ GROUP_NO = 'NOEUMIB',    NOM_CMP = 'EPZZ',      VALE = 1.5E-4, REFERENCE='ANALYTIQUE'),
+   
+           _F( RESULTAT = EVOL, INST = 1., NOM_CHAM = 'SIEF_NOEU_ELGA',   CRITERE = 'RELATIF',    PRECISION = 5.E-3,
+ GROUP_NO = 'NOEUMIA',    NOM_CMP = 'SIXX',      VALE = -60., REFERENCE='ANALYTIQUE'),
+           _F( RESULTAT = EVOL, INST = 1., NOM_CHAM = 'SIEF_NOEU_ELGA',    CRITERE = 'RELATIF',    PRECISION = 5.E-3,
+ GROUP_NO = 'NOEUMIA',    NOM_CMP = 'SIYY',      VALE = 20., REFERENCE='ANALYTIQUE'),
+           _F( RESULTAT = EVOL, INST = 1., NOM_CHAM = 'SIEF_NOEU_ELGA',   CRITERE = 'RELATIF',    PRECISION = 5.E-3,
+ GROUP_NO = 'NOEUMIA',    NOM_CMP = 'SIZZ',      VALE = 100., REFERENCE='ANALYTIQUE'),
+
+           _F(  RESULTAT = EVOL, INST = 1., NOM_CHAM = 'SIEF_NOEU_ELGA',    CRITERE = 'ABSOLU',    PRECISION = 5.E-2,
+ GROUP_NO = 'NOEUMIB',    NOM_CMP = 'SIXX',      VALE = 0., REFERENCE='ANALYTIQUE'),
+           _F(  RESULTAT = EVOL, INST = 1., NOM_CHAM = 'SIEF_NOEU_ELGA',    CRITERE = 'RELATIF',    PRECISION = 5.E-3,
+ GROUP_NO = 'NOEUMIB',    NOM_CMP = 'SIYY',      VALE = 20., REFERENCE='ANALYTIQUE'),
+           _F(  RESULTAT = EVOL, INST = 1., NOM_CHAM = 'SIEF_NOEU_ELGA',    CRITERE = 'RELATIF',    PRECISION = 5.E-3,
+ GROUP_NO = 'NOEUMIB',    NOM_CMP = 'SIZZ',      VALE = 40., REFERENCE='ANALYTIQUE'),
+),)           
+FIN()

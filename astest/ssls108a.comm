@@ -1,0 +1,105 @@
+# MODIF  DATE 23/02/2000   AUTEUR CIBHHPD P.DAVID 
+# TITRE COQUE HELICOIDALE (POUTRE VRILLEE) SOUS CHARGES CONCENTREES
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+
+DEBUT(CODE=_F( NOM = 'SSLS108A',NIV_PUB_WEB='INTERNET'))
+
+#
+# COQUE HELICOIDALE (POUTRE VRILLEE) SOUS CHARGES CONCENTREES
+#
+# MODELISATION MEC3QU9H: 101 NOEUDS --  24 MAILLES QUAD9
+#=======================================================================
+
+
+MATERI_1=DEFI_MATERIAU( ELAS=_F(  E = 29.0E+6,      NU = 0.2200) )
+
+MAILLA_1=LIRE_MAILLAGE(   )
+
+MAILLA_1=DEFI_GROUP( reuse=MAILLA_1,   MAILLAGE=MAILLA_1,
+  CREA_GROUP_MA=_F(  NOM = 'TOUT', TOUT = 'OUI'))
+
+CH_MAT_1=AFFE_MATERIAU(  MAILLAGE=MAILLA_1,
+                            AFFE=_F(  TOUT = 'OUI',   MATER = MATERI_1) )
+
+MODELE_1=AFFE_MODELE(  MAILLAGE=MAILLA_1, VERIF='MAILLE',
+                     AFFE=_F( TOUT = 'OUI', MODELISATION = 'COQUE_3D',
+                                PHENOMENE = 'MECANIQUE') )
+
+CINE=AFFE_CHAR_MECA(MODELE=MODELE_1,
+                  DDL_IMPO=_F( GROUP_NO = 'OBC',      DX = 0.,  DY = 0.,  DZ = 0.,
+                                              DRX = 0., DRY = 0., DRZ = 0.))
+
+CHFZ=AFFE_CHAR_MECA(MODELE=MODELE_1,
+                  FORCE_NODALE=_F( GROUP_NO = 'A',  FZ = 1.000000000000000) )
+
+CHFY=AFFE_CHAR_MECA(MODELE=MODELE_1,
+                  FORCE_NODALE=_F( GROUP_NO = 'A',  FY = 1.000000000000000) )
+
+CARAC__1=AFFE_CARA_ELEM(   MODELE=MODELE_1,
+                               COQUE=_F(  
+       GROUP_MA = 'TOUT',
+  EPAIS = 0.320,
+                                  A_CIS = 0.83333333333333) )
+
+MATELE_1=CALC_MATR_ELEM(   MODELE=MODELE_1,     CHARGE=CINE,
+                               CARA_ELEM=CARAC__1,
+                               CHAM_MATER=CH_MAT_1,
+                               OPTION='RIGI_MECA' )
+
+VEFZ=CALC_VECT_ELEM(   CHARGE=(CINE, CHFZ,),   CARA_ELEM=CARAC__1,
+                          CHAM_MATER=CH_MAT_1,  OPTION='CHAR_MECA'  )
+
+VEFY=CALC_VECT_ELEM(   CHARGE=(CINE, CHFY,),   CARA_ELEM=CARAC__1,
+                          CHAM_MATER=CH_MAT_1,  OPTION='CHAR_MECA'  )
+
+NU=NUME_DDL(   MATR_RIGI=MATELE_1 )
+
+MATASS=ASSE_MATRICE(   MATR_ELEM=MATELE_1,   NUME_DDL=NU )
+
+VEFZAS=ASSE_VECTEUR(   VECT_ELEM=VEFZ,       NUME_DDL=NU )
+
+VEFYAS=ASSE_VECTEUR(   VECT_ELEM=VEFY,       NUME_DDL=NU )
+
+MATASS=FACT_LDLT( reuse=MATASS,  MATR_ASSE=MATASS )
+
+DEFZ=RESO_LDLT( MATR_FACT=MATASS,     CHAM_NO=VEFZAS)
+
+DEFY=RESO_LDLT( MATR_FACT=MATASS,     CHAM_NO=VEFYAS)
+
+TEST_RESU(CHAM_NO=(
+     # DEPLACEMENT FZ
+       
+            _F(  CHAM_GD = DEFZ,    CRITERE = 'RELATIF',  PRECISION = 1.E-2,
+              GROUP_NO = 'A',      NOM_CMP = 'DY',           VALE = -1.72E-3),
+
+            _F(  CHAM_GD = DEFZ,    CRITERE = 'RELATIF',  PRECISION = 1.E-2,
+              GROUP_NO = 'A',      NOM_CMP = 'DZ',           VALE = 5.42E-3),
+
+     # DEPLACEMENT FY
+       
+            _F(  CHAM_GD = DEFY,    CRITERE = 'RELATIF',  PRECISION = 1.E-2,
+              GROUP_NO = 'A',      NOM_CMP = 'DY',           VALE = 1.75E-3),
+
+            _F(  CHAM_GD = DEFY,    CRITERE = 'RELATIF',  PRECISION = 1.E-2,
+              GROUP_NO = 'A',      NOM_CMP = 'DZ',           VALE = -1.72E-3))
+             )
+
+#---------------------------------------------------------------------
+FIN()
+#

@@ -1,0 +1,206 @@
+      SUBROUTINE PROJLI(COORDA,COORDB,COORDP,NORM,COORDM,LAMBDA,OLDJEU,
+     &                  JEU,TANG,JEUFX,PRONOR,TANGDF,NDIM)
+C ======================================================================
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 21/05/2002   AUTEUR PABHHHH N.TARDIEU 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+C ======================================================================
+
+      IMPLICIT NONE
+
+      INTEGER PRONOR,TANGDF,NDIM
+      REAL*8 COORDA(3),COORDB(3),COORDP(3),NORM(3),VECSEG(3)
+      REAL*8 COORDM(3),LAMBDA,OLDJEU,JEU
+      REAL*8 TANG(6),JEUFX
+
+C ----------------------------------------------------------------------
+C ROUTINE APPELEE PAR : PROJSE
+C ----------------------------------------------------------------------
+C
+C "PROJECTION" D'UN NOEUD ESCLAVE P SUR UNE LIGNE DROITE AB.
+C ON UTILISE LA NORMALE ENTRANTE A LA MAILLE MAITRE AB.
+C
+C IN  COORDA : COORDONNEES DU SOMMET A DU TRIANGLE
+C IN  COORDB : COORDONNEES DU SOMMET B DU TRIANGLE
+C IN  COORDP : COORDONNEES DU NOEUD ESCLAVE P
+C IN  NDIM   : DIMENSION DU PB
+C OUT NORM   : NORMALE ENTRANTE A LA MAILLE MAITRE
+C OUT COORDM : COORDONNEES DE LA "PROJECTION" M
+C OUT LAMBDA : COORDONNEE PARAMETRIQUE DE LA "PROJECTION" M
+C OUT OLDJEU : JEU AVANT CORRECTION DES PROJECTIONS TOMBANT HORS DE
+C              LA MAILLE MAITRE
+C OUT JEU    : JEU DANS LA DIRECTION (NORM) DE LA NORMALE ENTRANTE
+C              A LA MAILLE MAITRE (PM.NORM)
+C
+C ----------------------------------------------------------------------
+
+      INTEGER K
+      REAL*8 NUMER,DENOM,R8DOT,COEFA,COEFC,COEFD
+      REAL*8 AB(3),AM(3),ABSAM,COEFB,COEFF,XNORM(3)
+
+C ----------------------------------------------------------------------
+
+C --- CALCUL DE LA COORDONNEE PARAMETRIQUE LAMBDA DE M DANS AB
+
+      IF (PRONOR.EQ.0 .OR. PRONOR.EQ.2) THEN
+
+C --- S'IL N'Y A PAS DE LISSAGE DES NORMALES
+
+        NUMER = (COORDP(1)-COORDA(1))* (COORDB(1)-COORDA(1)) +
+     &          (COORDP(2)-COORDA(2))* (COORDB(2)-COORDA(2))
+        DENOM = (COORDB(1)-COORDA(1))**2 + (COORDB(2)-COORDA(2))**2
+        IF (NDIM.EQ.3) THEN
+          NUMER = NUMER + (COORDP(3)-COORDA(3))* (COORDB(3)-COORDA(3))
+          DENOM = DENOM + (COORDB(3)-COORDA(3))**2
+        END IF
+        IF (DENOM.EQ.0.D0) THEN
+          CALL UTMESS('F','PROJLI_01','UNE MAILLE MAITRE EST DE '//
+     &                'LONGUEUR NULLE')
+        END IF
+
+        LAMBDA = NUMER/DENOM
+        IF (LAMBDA.LT.0.D0) LAMBDA = 0.D0
+        IF (LAMBDA.GT.1.D0) LAMBDA = 1.D0
+
+C --- CALCUL DES COORDONNEES CARTESIENNES DE M ("PROJECTION" DE P)
+
+        DO 10 K = 1,2
+          COORDM(K) = COORDA(K) + LAMBDA* (COORDB(K)-COORDA(K))
+   10   CONTINUE
+        IF (NDIM.EQ.3) THEN
+          COORDM(3) = COORDA(3) + LAMBDA* (COORDB(3)-COORDA(3))
+        ELSE
+          COORDM(3) = 0.D0
+        END IF
+
+C --- CALCUL DU JEU ET DE LA DIRECTION DE PROJECTION (UNITAIRE)
+
+        DO 20 K = 1,3
+          NORM(K) = COORDM(K) - COORDP(K)
+   20   CONTINUE
+        OLDJEU = SQRT(R8DOT(3,NORM,1,NORM,1))
+        IF (NDIM.EQ.3) THEN
+          VECSEG(1) = (COORDB(1)-COORDA(1))/SQRT(DENOM)
+          VECSEG(2) = (COORDB(2)-COORDA(2))/SQRT(DENOM)
+          VECSEG(3) = (COORDB(3)-COORDA(3))/SQRT(DENOM)
+          NORM(1) = VECSEG(2)*TANG(3) - VECSEG(3)*TANG(2)
+          NORM(2) = VECSEG(3)*TANG(1) - VECSEG(1)*TANG(3)
+          NORM(3) = VECSEG(1)*TANG(2) - VECSEG(2)*TANG(1)
+        ELSE
+          NORM(1) = - (COORDB(2)-COORDA(2))/SQRT(DENOM)
+          NORM(2) = (COORDB(1)-COORDA(1))/SQRT(DENOM)
+          NORM(3) = 0.D0
+        END IF
+      ELSE
+        DENOM = (COORDB(1)-COORDA(1))**2 + (COORDB(2)-COORDA(2))**2
+        IF (NDIM.EQ.3) THEN
+          DENOM = DENOM + (COORDB(3)-COORDA(3))**2
+        END IF
+        DO 30 K = 1,3
+          AB(K) = COORDB(K) - COORDA(K)
+   30   CONTINUE
+
+
+        IF (NDIM.EQ.2) THEN
+          COEFA = -AB(2)
+          COEFB = AB(1)
+          COEFC = - (COEFA*COORDA(1)+COEFB*COORDA(2))
+        ELSE
+          COEFA = VECSEG(2)*TANG(3) - VECSEG(3)*TANG(2)
+          COEFB = VECSEG(3)*TANG(1) - VECSEG(1)*TANG(3)
+          COEFC = VECSEG(1)*TANG(2) - VECSEG(2)*TANG(1)
+          COEFD = - (COEFA*COORDA(1)+COEFB*COORDA(2)+COEFC*COORDA(3))
+        END IF
+
+
+        COEFF = COEFA*NORM(1) + COEFB*NORM(2)
+        IF (NDIM.EQ.3) COEFF = COEFF + COEFC*NORM(3)
+
+        IF (COEFF.NE.0.D0) THEN
+          IF (NDIM.EQ.3) THEN
+            COEFF = - (COEFD+COEFC*COORDP(3)+COEFB*COORDP(2)+
+     &              COEFA*COORDP(1))/COEFF
+          ELSE
+            COEFF = - (COEFC+COEFB*COORDP(2)+COEFA*COORDP(1))/COEFF
+          END IF
+        ELSE
+          IF (NDIM.EQ.3) THEN
+            COEFF = COEFA*COORDP(1) + COEFB*COORDP(2) + COEFD
+            COEFF = COEFF + COEFC*COORDP(3)
+          ELSE
+            COEFF = COEFA*COORDP(1) + COEFB*COORDP(2) + COEFC
+          END IF
+          IF (COEFF.NE.0.D0) THEN
+            CALL UTMESS('F','PROJLI_02','LE VECTEUR NORMAL EST '//
+     &                  'COLINEAIRE AU PLAN DE PROJECTION')
+          END IF
+        END IF
+        COORDM(1) = COORDP(1) + COEFF*NORM(1)
+        COORDM(2) = COORDP(2) + COEFF*NORM(2)
+        IF (NDIM.EQ.3) THEN
+          COORDM(3) = COORDP(3) + COEFF*NORM(3)
+        ELSE
+          COORDM(3) = 0.D0
+        END IF
+
+        DO 40 K = 1,3
+          AM(K) = COORDM(K) - COORDA(K)
+   40   CONTINUE
+        ABSAM = AB(1)*AM(1) + AB(2)*AM(2)
+        NUMER = (COORDM(1)-COORDA(1))**2 + (COORDM(2)-COORDA(2))**2
+        IF (NDIM.EQ.3) THEN
+          ABSAM = ABSAM + AB(3)*AM(3)
+          NUMER = NUMER + (COORDM(3)-COORDA(3))**2
+        END IF
+        IF (ABSAM.GE.0.D0) THEN
+          LAMBDA = SQRT(NUMER)/SQRT(DENOM)
+        ELSE
+          LAMBDA = -SQRT(NUMER)/SQRT(DENOM)
+        END IF
+        IF (LAMBDA.LT.0.D0) THEN
+          LAMBDA = 0.D0
+          COORDM(1) = COORDA(1)
+          COORDM(2) = COORDA(2)
+          COORDM(3) = COORDA(3)
+        ELSE
+          IF (LAMBDA.GT.1.D0) THEN
+            LAMBDA = 1.D0
+            COORDM(1) = COORDB(1)
+            COORDM(2) = COORDB(2)
+            COORDM(3) = COORDB(3)
+          END IF
+        END IF
+
+        DO 50 K = 1,3
+          XNORM(K) = COORDM(K) - COORDP(K)
+   50   CONTINUE
+        OLDJEU = SQRT(R8DOT(3,XNORM,1,XNORM,1))
+      END IF
+C ----------------------------------------------------------------------
+      JEU = (COORDM(1)-COORDP(1))*NORM(1) +
+     &      (COORDM(2)-COORDP(2))*NORM(2)
+      IF (NDIM.EQ.3) JEU = JEU + (COORDM(3)-COORDP(3))*NORM(3)
+      CALL CATANG(3,NORM,TANG,TANGDF)
+      JEUFX = (COORDM(1)-COORDP(1))*TANG(1) +
+     &        (COORDM(2)-COORDP(2))*TANG(2)
+      IF (NDIM.EQ.3) THEN
+        JEUFX = JEUFX + (COORDM(3)-COORDP(3))*TANG(3)
+      END IF
+
+C ----------------------------------------------------------------------
+
+      END

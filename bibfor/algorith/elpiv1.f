@@ -1,0 +1,129 @@
+      SUBROUTINE ELPIV1(XJVMAX, MATR, NOMA, DEFICO, RESOCO, IDEBUT,
+     +                  NBLIAC, KKMIN, PIVOT, INDIC)
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 18/09/2002   AUTEUR CIBHHLV L.VIVAN 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+C
+      IMPLICIT NONE
+      CHARACTER*8  NOMA
+      CHARACTER*19 MATR
+      CHARACTER*24 RESOCO,DEFICO
+      REAL*8       XJVMAX
+      INTEGER      IDEBUT, NBLIAC, KKMIN, INDIC, PIVOT
+C ---------------------------------------------------------------------
+C     BUT         : ELIMINATION DES PIVOTS NULS
+C     APPELEE PAR : ALGOCO, ALGOCP
+C --------------------------------------------------------------------- 
+C      
+C --------------- DEBUT DECLARATIONS NORMALISEES JEVEUX ---------------
+C
+      CHARACTER*32 JEXNUM,JEXNOM
+      INTEGER ZI
+      COMMON /IVARJE/ZI(1)
+      REAL*8 ZR
+      COMMON /RVARJE/ZR(1)
+      COMPLEX*16 ZC
+      COMMON /CVARJE/ZC(1)
+      LOGICAL ZL
+      COMMON /LVARJE/ZL(1)
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32
+      CHARACTER*80 ZK80
+      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+C
+C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
+C
+      CHARACTER*8  NOM1
+      CHARACTER*19 LIAC, LIOT
+      CHARACTER*24 APPARI,CONTNO
+      INTEGER      JVALE,KK1,KK2,KK1F,KK2F,JVA
+      INTEGER      NIV,ILIAC,JLIAC,IFM,JLIOT, NBOTE 
+      INTEGER      JAPPAR,ICONTA,NBLIAI
+      INTEGER      JNOCO,POS1,NUM1,LLIAC      
+C
+      CALL INFNIV(IFM,NIV)
+      CALL JEMARQ()
+C    
+      CONTNO = DEFICO(1:16)//'.NOEUCO'
+      CALL JEVEUO(CONTNO,'L',JNOCO)
+      APPARI = RESOCO(1:14)//'.APPARI'
+      CALL JEEXIN(APPARI,ICONTA)
+      IF (ICONTA.NE.0) THEN
+        CALL JEVEUO(APPARI,'L',JAPPAR)
+        NBLIAI = ZI(JAPPAR)
+      ENDIF
+C
+      LIAC = RESOCO(1:14)//'.LIAC'
+      LIOT = RESOCO(1:14)//'.LIOT'
+C      
+      CALL JEVEUO(LIAC,'E',JLIAC)
+      CALL JEVEUO(LIOT,'E',JLIOT)
+      CALL JEVEUO(JEXNUM(MATR//'.VALE',1),'L',JVALE)
+C
+        PIVOT = 0
+        XJVMAX = XJVMAX*1.D-10
+C        
+        DO 10 KK1=IDEBUT,NBLIAC
+          DO 20 KK2=1,NBLIAC
+            IF(KK2.GT.KK1) THEN
+              KK1F = KK2
+              KK2F = KK1
+            ELSE
+              KK1F = KK1
+              KK2F = KK2
+            ENDIF
+            JVA = JVALE-1+((KK1F-1)*KK1F)/2 +KK2F
+            IF(ABS(ZR(JVA)).LT.XJVMAX) THEN            
+              PIVOT = 1
+            ELSE
+              PIVOT = 0
+              GOTO 10
+            ENDIF
+ 20       CONTINUE
+          IF(PIVOT.EQ.1) THEN
+C
+            LLIAC = ZI(JLIAC-1+KK1)
+            POS1 = ZI(JAPPAR+3* (LLIAC-1)+1)
+            NUM1 = ZI(JNOCO+ABS(POS1)-1)
+            CALL JENUNO(JEXNUM(NOMA//'.NOMNOE',NUM1),NOM1)
+            WRITE(IFM,1000) 'CONTACT : NOEUD ',NOM1
+            IF (NIV.EQ.2) THEN 
+               WRITE(IFM,1000) 'CONTACT:LIAISON ',LLIAC
+            ENDIF
+C
+            ZI(JLIOT+4*NBLIAI) = ZI(JLIOT+4*NBLIAI) + 1
+            NBOTE = ZI(JLIOT+4*NBLIAI)            
+            ZI(JLIOT-1+NBOTE) = ZI(JLIAC-1+KK1)
+            KKMIN = KK1
+            NBLIAC = NBLIAC - 1
+            DO 30 ILIAC = KKMIN,NBLIAC
+              ZI(JLIAC-1+ILIAC) = ZI(JLIAC+ILIAC)
+ 30         CONTINUE
+            INDIC = -1
+            GOTO 40
+          ENDIF
+ 10     CONTINUE
+C  
+40      CONTINUE
+        CALL JEDEMA()
+C
+ 1000 FORMAT('PIVOT NUL OTE',A17,A8)
+C
+      END 

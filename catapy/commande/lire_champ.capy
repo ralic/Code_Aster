@@ -1,0 +1,97 @@
+#& MODIF COMMANDE  DATE 09/10/2002   AUTEUR DURAND C.DURAND 
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+def lire_champ_prod(TYPE_CHAM=None,**args):
+  if TYPE_CHAM == "CHAM_NO_TEMP_R" : return cham_no_temp_r
+  if TYPE_CHAM == "CHAM_NO_DEPL_R" : return cham_no_depl_r
+  raise AsException("type de concept resultat non prevu")
+
+LIRE_CHAMP=OPER(nom="LIRE_CHAMP",op= 192,sd_prod=lire_champ_prod,
+                fr="Lire un champ dans un fichier et le stocker dans un concept.",
+                ang="To read a field in a file and to save it in a concept.",
+                docu="U7.02.02-b2",reentrant='n',
+            UIinfo={"groupes":("Post traitements",)},
+#
+# 1. Le maillage support du champ
+#
+         MAILLAGE        =SIMP(statut='o',typ=maillage,
+                          fr="Nom du maillage support du champ",
+                          ang="Name of the mesh on which the field is defined" ),
+#
+# 2. Format de lecture
+#    Remarque : seul MED est operationnel dans cette version.
+#
+         FORMAT          =SIMP(statut='f',typ='TXM',defaut="MED",into=("MED",),
+                          fr="Format du fichier : MED seulement",
+                          ang="Format of the file : MED only" ),
+#
+# 3. L'unite logique du fichier.
+#
+         UNITE           =SIMP(statut='f',typ='I',defaut= 81,
+                          fr="Le fichier est : fort.n.",
+                          ang="File is : fort.n" ),  
+#
+# 4. Pour le format MED, il faut preciser le nom sous lequel le champ est connu dans le fichier
+#    et les composantes a lire
+#
+         b_format =BLOC(condition = "FORMAT == 'MED'",
+                        fr="Nom du champ dans le fichier MED",
+         regles=(UN_PARMI('NOM_CMP_IDEM','NOM_CMP'),
+          PRESENT_PRESENT('NOM_CMP','NOM_CMP_MED' ),),
+#
+            NOM_MED      =SIMP(statut='o',typ='TXM',
+                          fr="Nom du champ dans le fichier MED.",
+                          ang="Name of the field in the MED file." ),
+#
+            NOM_CMP_IDEM =SIMP(statut='f',typ='TXM',into=("OUI",),
+                          fr="Les composantes ont le meme nom dans MED et ASTER.",
+                          ang="The names of the components are the same in ASTER and MED." ),
+            NOM_CMP      =SIMP(statut='f',typ='TXM',max='**',
+                          fr="Nom des composantes dans ASTER.",
+                          ang="Names of the components in ASTER" ),
+            NOM_CMP_MED  =SIMP(statut='f',typ='TXM',max='**',
+                          fr="Nom des composantes dans MED.",
+                          ang="Names of the components in MED" ),
+#
+            NUME_ORDRE   =SIMP(statut='f',typ='I',max='**',
+                          fr="Numéro d'ordre du champ à lire.",
+                          ang="Rank number of the field to read."),
+#
+            NUME_PT      =SIMP(statut='f',typ='I',max='**',
+                          fr="Numéro du pas de temps du champ à lire.",
+                          ang="Time step number of the field to read."),
+#
+# Pour une lecture dans un fichier MED, on peut préciser le nom sous lequel
+# le maillage associé au champ y a été enregistré. Par défaut, on prendra le premier maillage.
+#
+            NOM_MAIL_MED = SIMP(statut='f',typ='TXM',
+                           fr="Nom du maillage dans le fichier MED.",
+                           ang="Name of the mesh into the MED file.",),
+#
+                  ),
+#
+# 5. Le type du concept lu
+#
+         TYPE_CHAM       =SIMP(statut='o',typ='TXM',into=("CHAM_NO_TEMP_R","CHAM_NO_DEPL_R"),
+                          fr="Type de champ à créer.",
+                          ang="Type of the field to create." ),
+#
+# 6. Le niveau d'information
+#
+         INFO            =SIMP(statut='f',typ='I',defaut= 1,into=(1,2) ),
+)  ;

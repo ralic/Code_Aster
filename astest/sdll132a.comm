@@ -1,0 +1,649 @@
+# MODIF  DATE 09/09/2002   AUTEUR MJBHHPE J.L.FLEJOU 
+# TITRE CALCUL DES MODES PROPRES D'UNE CHARPENTE : POUTRES MULTI-FIBRES
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+#
+
+DEBUT( CODE=_F( NOM = 'SDLL132A', NIV_PUB_WEB='INTERNET') )
+
+# Lecture du maillage
+MA = LIRE_MAILLAGE()
+
+# AFFECTATION DES MODELES DE COMPORTEMENT
+MO = AFFE_MODELE(
+   MAILLAGE= MA,
+   VERIF=('MAILLE','NOEUD'),
+   AFFE=(
+      _F(GROUP_MA=('S008','S007','S006','S005','S004','S003','S002','S001',),
+         PHENOMENE= 'MECANIQUE',
+         MODELISATION= 'POU_D_TGM'),
+))
+
+
+# DEFINITION DES MATERIAUX
+MAT0001 = DEFI_MATERIAU(
+   ELAS =_F( E= 2.100000e+11, NU= 3.000000e-01, RHO= 7.850000e+03,
+             ALPHA= 6.700000e-06) )
+
+CHMAT = AFFE_MATERIAU( MAILLAGE= MA, MODELE= MO, 
+   AFFE=(
+_F( GROUP_MA= ('S008','S007','S006','S005','S004','S003','S002','S001',
+),MATER= MAT0001 ),
+))
+
+
+# AFFECTATION DES CARACTERISTIQUES DES ELEMENTS
+CAREL = AFFE_CARA_ELEM( MODELE= MO,
+  # Sections /HEA200
+  POUTRE=(
+     _F(SECTION= 'GENERALE', GROUP_MA=('S008','S007',),
+     CARA= ( 'A','IY','IZ','AY',
+             'AZ','EY','EZ','JX',
+             'JG','IYR2','IZR2'),
+     VALE= ( 5.385258e-03,3.693475e-05,1.335536e-05,1.474994e+00,
+             4.466038e+00,0.000000e+00,0.000000e+00,1.969457e-07,
+             1.055952e-07,0.000000e+00,0.000000e+00 ) ),
+  # Sections /IPE220
+     _F(SECTION= 'GENERALE', GROUP_MA=('S006',),
+     CARA= ( 'A','IY','IZ','AY',
+             'AZ','EY','EZ','JX',
+             'JG','IYR2','IZR2'),
+     VALE= ( 3.338909e-03,2.773569e-05,2.048986e-06,1.789865e+00,
+             2.633754e+00,0.000000e+00,0.000000e+00,8.664922e-08,
+             2.232286e-08,0.000000e+00,0.000000e+00 ) ),
+  # Sections /IPE160
+     _F(SECTION= 'GENERALE', GROUP_MA=('S005','S003',),
+     CARA= ( 'A','IY','IZ','AY',
+             'AZ','EY','EZ','JX',
+             'JG','IYR2','IZR2'),
+     VALE= ( 2.010421e-03,8.699138e-06,6.831984e-07,1.792884e+00,
+             2.586199e+00,0.000000e+00,0.000000e+00,3.365044e-08,
+             3.891633e-09,0.000000e+00,0.000000e+00 ) ),
+  
+  # Sections /HEA140
+     _F(SECTION= 'GENERALE', GROUP_MA=('S004',),
+     CARA= ( 'A','IY','IZ','AY',
+             'AZ','EY','EZ','JX',
+             'JG','IYR2','IZR2'),
+     VALE= ( 3.143147e-03,1.033573e-05,3.893311e-06,1.464032e+00,
+             4.464173e+00,0.000000e+00,0.000000e+00,7.758124e-08,
+             1.473133e-08,0.000000e+00,0.000000e+00 ) ),
+  
+  # Sections /IPE120
+     _F(SECTION= 'GENERALE', GROUP_MA=('S002','S001',),
+     CARA= ( 'A','IY','IZ','AY',
+             'AZ','EY','EZ','JX',
+             'JG','IYR2','IZR2'),
+     VALE= ( 1.322009e-03,3.180121e-06,2.767087e-07,1.774392e+00,
+             2.590182e+00,0.000000e+00,0.000000e+00,1.627955e-08,
+             8.727362e-10,0.000000e+00,0.000000e+00 ) ),
+  ),
+  
+  AFFE_FIBRE = (
+  #  Sections: /HEA200, Epa: 1, lar: 5
+    _F( CARA = 'SURFACE', COOR_AXE_POUTRE = (0.0 , 0.0),
+        GROUP_MA = ('S008','S007',),
+        VALE = ( 
+  # Nombre de fibre : 30
+          -9.00000e-02,  -9.00000e-02,   2.00000e-04,
+          -7.00000e-02,  -9.00000e-02,   2.00000e-04,
+          -5.00000e-02,  -9.00000e-02,   2.00000e-04,
+          -3.00000e-02,  -9.00000e-02,   2.00000e-04,
+          -1.00000e-02,  -9.00000e-02,   2.00000e-04,
+           1.00000e-02,  -9.00000e-02,   2.00000e-04,
+           3.00000e-02,  -9.00000e-02,   2.00000e-04,
+           5.00000e-02,  -9.00000e-02,   2.00000e-04,
+           7.00000e-02,  -9.00000e-02,   2.00000e-04,
+           9.00000e-02,  -9.00000e-02,   2.00000e-04,
+          -9.00000e-02,   9.00000e-02,   2.00000e-04,
+          -7.00000e-02,   9.00000e-02,   2.00000e-04,
+          -5.00000e-02,   9.00000e-02,   2.00000e-04,
+          -3.00000e-02,   9.00000e-02,   2.00000e-04,
+          -1.00000e-02,   9.00000e-02,   2.00000e-04,
+           1.00000e-02,   9.00000e-02,   2.00000e-04,
+           3.00000e-02,   9.00000e-02,   2.00000e-04,
+           5.00000e-02,   9.00000e-02,   2.00000e-04,
+           7.00000e-02,   9.00000e-02,   2.00000e-04,
+           9.00000e-02,   9.00000e-02,   2.00000e-04,
+           0.00000e+00,  -7.65000e-02,   1.10500e-04,
+           0.00000e+00,  -5.95000e-02,   1.10500e-04,
+           0.00000e+00,  -4.25000e-02,   1.10500e-04,
+           0.00000e+00,  -2.55000e-02,   1.10500e-04,
+           0.00000e+00,  -8.50000e-03,   1.10500e-04,
+           0.00000e+00,   8.50000e-03,   1.10500e-04,
+           0.00000e+00,   2.55000e-02,   1.10500e-04,
+           0.00000e+00,   4.25000e-02,   1.10500e-04,
+           0.00000e+00,   5.95000e-02,   1.10500e-04,
+           0.00000e+00,   7.65000e-02,   1.10500e-04,
+  # Points particuliers : 4
+          -1.00000e-01,  -9.50000e-02,   0.00000e+00,
+          -1.00000e-01,   9.50000e-02,   0.00000e+00,
+           1.00000e-01,   9.50000e-02,   0.00000e+00,
+           1.00000e-01,  -9.50000e-02,   0.00000e+00,
+             ), ),
+  
+  #  Sections: /IPE220, Epa: 1, lar: 5
+    _F( CARA = 'SURFACE', COOR_AXE_POUTRE = (0.0 , 0.0),
+        GROUP_MA = ('S006',),
+        VALE = ( 
+  # Nombre de fibre : 30
+          -4.95000e-02,  -1.05400e-01,   1.01200e-04,
+          -3.85000e-02,  -1.05400e-01,   1.01200e-04,
+          -2.75000e-02,  -1.05400e-01,   1.01200e-04,
+          -1.65000e-02,  -1.05400e-01,   1.01200e-04,
+          -5.50000e-03,  -1.05400e-01,   1.01200e-04,
+           5.50000e-03,  -1.05400e-01,   1.01200e-04,
+           1.65000e-02,  -1.05400e-01,   1.01200e-04,
+           2.75000e-02,  -1.05400e-01,   1.01200e-04,
+           3.85000e-02,  -1.05400e-01,   1.01200e-04,
+           4.95000e-02,  -1.05400e-01,   1.01200e-04,
+          -4.95000e-02,   1.05400e-01,   1.01200e-04,
+          -3.85000e-02,   1.05400e-01,   1.01200e-04,
+          -2.75000e-02,   1.05400e-01,   1.01200e-04,
+          -1.65000e-02,   1.05400e-01,   1.01200e-04,
+          -5.50000e-03,   1.05400e-01,   1.01200e-04,
+           5.50000e-03,   1.05400e-01,   1.01200e-04,
+           1.65000e-02,   1.05400e-01,   1.01200e-04,
+           2.75000e-02,   1.05400e-01,   1.01200e-04,
+           3.85000e-02,   1.05400e-01,   1.01200e-04,
+           4.95000e-02,   1.05400e-01,   1.01200e-04,
+           0.00000e+00,  -9.07200e-02,   1.18944e-04,
+           0.00000e+00,  -7.05600e-02,   1.18944e-04,
+           0.00000e+00,  -5.04000e-02,   1.18944e-04,
+           0.00000e+00,  -3.02400e-02,   1.18944e-04,
+           0.00000e+00,  -1.00800e-02,   1.18944e-04,
+           0.00000e+00,   1.00800e-02,   1.18944e-04,
+           0.00000e+00,   3.02400e-02,   1.18944e-04,
+           0.00000e+00,   5.04000e-02,   1.18944e-04,
+           0.00000e+00,   7.05600e-02,   1.18944e-04,
+           0.00000e+00,   9.07200e-02,   1.18944e-04,
+  # Points particuliers : 4
+          -5.50000e-02,  -1.10000e-01,   0.00000e+00,
+          -5.50000e-02,   1.10000e-01,   0.00000e+00,
+           5.50000e-02,   1.10000e-01,   0.00000e+00,
+           5.50000e-02,  -1.10000e-01,   0.00000e+00,
+             ), ),
+  
+  #  Sections: /IPE160, Epa: 1, lar: 5
+    _F( CARA = 'SURFACE', COOR_AXE_POUTRE = (0.0 , 0.0),
+        GROUP_MA = ('S005','S003',),
+        VALE = ( 
+  # Nombre de fibre : 30
+          -3.69000e-02,  -7.63000e-02,   6.06800e-05,
+          -2.87000e-02,  -7.63000e-02,   6.06800e-05,
+          -2.05000e-02,  -7.63000e-02,   6.06800e-05,
+          -1.23000e-02,  -7.63000e-02,   6.06800e-05,
+          -4.10000e-03,  -7.63000e-02,   6.06800e-05,
+           4.10000e-03,  -7.63000e-02,   6.06800e-05,
+           1.23000e-02,  -7.63000e-02,   6.06800e-05,
+           2.05000e-02,  -7.63000e-02,   6.06800e-05,
+           2.87000e-02,  -7.63000e-02,   6.06800e-05,
+           3.69000e-02,  -7.63000e-02,   6.06800e-05,
+          -3.69000e-02,   7.63000e-02,   6.06800e-05,
+          -2.87000e-02,   7.63000e-02,   6.06800e-05,
+          -2.05000e-02,   7.63000e-02,   6.06800e-05,
+          -1.23000e-02,   7.63000e-02,   6.06800e-05,
+          -4.10000e-03,   7.63000e-02,   6.06800e-05,
+           4.10000e-03,   7.63000e-02,   6.06800e-05,
+           1.23000e-02,   7.63000e-02,   6.06800e-05,
+           2.05000e-02,   7.63000e-02,   6.06800e-05,
+           2.87000e-02,   7.63000e-02,   6.06800e-05,
+           3.69000e-02,   7.63000e-02,   6.06800e-05,
+           0.00000e+00,  -6.53400e-02,   7.26000e-05,
+           0.00000e+00,  -5.08200e-02,   7.26000e-05,
+           0.00000e+00,  -3.63000e-02,   7.26000e-05,
+           0.00000e+00,  -2.17800e-02,   7.26000e-05,
+           0.00000e+00,  -7.26000e-03,   7.26000e-05,
+           0.00000e+00,   7.26000e-03,   7.26000e-05,
+           0.00000e+00,   2.17800e-02,   7.26000e-05,
+           0.00000e+00,   3.63000e-02,   7.26000e-05,
+           0.00000e+00,   5.08200e-02,   7.26000e-05,
+           0.00000e+00,   6.53400e-02,   7.26000e-05,
+  # Points particuliers : 4
+          -4.10000e-02,  -8.00000e-02,   0.00000e+00,
+          -4.10000e-02,   8.00000e-02,   0.00000e+00,
+           4.10000e-02,   8.00000e-02,   0.00000e+00,
+           4.10000e-02,  -8.00000e-02,   0.00000e+00,
+             ), ),
+  
+  #  Sections: /HEA140, Epa: 1, lar: 5
+    _F( CARA = 'SURFACE', COOR_AXE_POUTRE = (0.0 , 0.0),
+        GROUP_MA = ('S004',),
+        VALE = ( 
+  # Nombre de fibre : 30
+          -6.30000e-02,  -6.22500e-02,   1.19000e-04,
+          -4.90000e-02,  -6.22500e-02,   1.19000e-04,
+          -3.50000e-02,  -6.22500e-02,   1.19000e-04,
+          -2.10000e-02,  -6.22500e-02,   1.19000e-04,
+          -7.00000e-03,  -6.22500e-02,   1.19000e-04,
+           7.00000e-03,  -6.22500e-02,   1.19000e-04,
+           2.10000e-02,  -6.22500e-02,   1.19000e-04,
+           3.50000e-02,  -6.22500e-02,   1.19000e-04,
+           4.90000e-02,  -6.22500e-02,   1.19000e-04,
+           6.30000e-02,  -6.22500e-02,   1.19000e-04,
+          -6.30000e-02,   6.22500e-02,   1.19000e-04,
+          -4.90000e-02,   6.22500e-02,   1.19000e-04,
+          -3.50000e-02,   6.22500e-02,   1.19000e-04,
+          -2.10000e-02,   6.22500e-02,   1.19000e-04,
+          -7.00000e-03,   6.22500e-02,   1.19000e-04,
+           7.00000e-03,   6.22500e-02,   1.19000e-04,
+           2.10000e-02,   6.22500e-02,   1.19000e-04,
+           3.50000e-02,   6.22500e-02,   1.19000e-04,
+           4.90000e-02,   6.22500e-02,   1.19000e-04,
+           6.30000e-02,   6.22500e-02,   1.19000e-04,
+           0.00000e+00,  -5.22000e-02,   6.38000e-05,
+           0.00000e+00,  -4.06000e-02,   6.38000e-05,
+           0.00000e+00,  -2.90000e-02,   6.38000e-05,
+           0.00000e+00,  -1.74000e-02,   6.38000e-05,
+           0.00000e+00,  -5.80000e-03,   6.38000e-05,
+           0.00000e+00,   5.80000e-03,   6.38000e-05,
+           0.00000e+00,   1.74000e-02,   6.38000e-05,
+           0.00000e+00,   2.90000e-02,   6.38000e-05,
+           0.00000e+00,   4.06000e-02,   6.38000e-05,
+           0.00000e+00,   5.22000e-02,   6.38000e-05,
+  # Points particuliers : 4
+          -7.00000e-02,  -6.65000e-02,   0.00000e+00,
+          -7.00000e-02,   6.65000e-02,   0.00000e+00,
+           7.00000e-02,   6.65000e-02,   0.00000e+00,
+           7.00000e-02,  -6.65000e-02,   0.00000e+00,
+             ), ),
+  
+  #  Sections: /IPE120, Epa: 1, lar: 5
+    _F( CARA = 'SURFACE', COOR_AXE_POUTRE = (0.0 , 0.0),
+        GROUP_MA = ('S002','S001',),
+        VALE = ( 
+  # Nombre de fibre : 30
+          -2.88000e-02,  -5.68500e-02,   4.03200e-05,
+          -2.24000e-02,  -5.68500e-02,   4.03200e-05,
+          -1.60000e-02,  -5.68500e-02,   4.03200e-05,
+          -9.60000e-03,  -5.68500e-02,   4.03200e-05,
+          -3.20000e-03,  -5.68500e-02,   4.03200e-05,
+           3.20000e-03,  -5.68500e-02,   4.03200e-05,
+           9.60000e-03,  -5.68500e-02,   4.03200e-05,
+           1.60000e-02,  -5.68500e-02,   4.03200e-05,
+           2.24000e-02,  -5.68500e-02,   4.03200e-05,
+           2.88000e-02,  -5.68500e-02,   4.03200e-05,
+          -2.88000e-02,   5.68500e-02,   4.03200e-05,
+          -2.24000e-02,   5.68500e-02,   4.03200e-05,
+          -1.60000e-02,   5.68500e-02,   4.03200e-05,
+          -9.60000e-03,   5.68500e-02,   4.03200e-05,
+          -3.20000e-03,   5.68500e-02,   4.03200e-05,
+           3.20000e-03,   5.68500e-02,   4.03200e-05,
+           9.60000e-03,   5.68500e-02,   4.03200e-05,
+           1.60000e-02,   5.68500e-02,   4.03200e-05,
+           2.24000e-02,   5.68500e-02,   4.03200e-05,
+           2.88000e-02,   5.68500e-02,   4.03200e-05,
+           0.00000e+00,  -4.83300e-02,   4.72560e-05,
+           0.00000e+00,  -3.75900e-02,   4.72560e-05,
+           0.00000e+00,  -2.68500e-02,   4.72560e-05,
+           0.00000e+00,  -1.61100e-02,   4.72560e-05,
+           0.00000e+00,  -5.37000e-03,   4.72560e-05,
+           0.00000e+00,   5.37000e-03,   4.72560e-05,
+           0.00000e+00,   1.61100e-02,   4.72560e-05,
+           0.00000e+00,   2.68500e-02,   4.72560e-05,
+           0.00000e+00,   3.75900e-02,   4.72560e-05,
+           0.00000e+00,   4.83300e-02,   4.72560e-05,
+  # Points particuliers : 4
+          -3.20000e-02,  -6.00000e-02,   0.00000e+00,
+          -3.20000e-02,   6.00000e-02,   0.00000e+00,
+           3.20000e-02,   6.00000e-02,   0.00000e+00,
+           3.20000e-02,  -6.00000e-02,   0.00000e+00,
+             ), ),
+  ),
+  
+  ORIENTATION=(
+  # Pour les poutres
+     _F(GROUP_MA= 'S008', CARA= 'ANGL_VRIL',
+        VALE= -9.000000e+01 ),
+     _F(GROUP_MA= 'S007', CARA= 'ANGL_VRIL',
+        VALE= -9.000000e+01 ),
+     _F(GROUP_MA= 'S006', CARA= 'ANGL_VRIL',
+        VALE= 0.000000e+00 ),
+     _F(GROUP_MA= 'S005', CARA= 'ANGL_VRIL',
+        VALE= 0.000000e+00 ),
+     _F(GROUP_MA= 'S004', CARA= 'ANGL_VRIL',
+        VALE= -9.000000e+01 ),
+     _F(GROUP_MA= 'S003', CARA= 'ANGL_VRIL',
+        VALE= -9.000000e+01 ),
+     _F(GROUP_MA= 'S002', CARA= 'ANGL_VRIL',
+        VALE= 0.000000e+00 ),
+     _F(GROUP_MA= 'S001', CARA= 'ANGL_VRIL',
+        VALE= 0.000000e+00 ),
+    ),
+)
+
+
+# ----------------------------------------------------------------------
+# ----------------------- DEPLACEMENTS ---------------------------------
+
+DEPL = AFFE_CHAR_MECA(
+   MODELE= MO,
+   DDL_IMPO= ( 
+      _F( NOEUD= 'G00802',
+        DX =  0.000000e+00,
+        DY =  0.000000e+00,
+        DZ =  0.000000e+00,
+        DRX=  0.000000e+00,
+        DRY=  0.000000e+00,
+        DRZ=  0.000000e+00,
+         ),
+      _F( NOEUD= 'G00702',
+        DX =  0.000000e+00,
+        DY =  0.000000e+00,
+        DZ =  0.000000e+00,
+        DRX=  0.000000e+00,
+        DRY=  0.000000e+00,
+        DRZ=  0.000000e+00,
+         ),
+      _F( NOEUD= 'G00401',
+        DX =  0.000000e+00,
+        DY =  0.000000e+00,
+        DZ =  0.000000e+00,
+        DRX=  0.000000e+00,
+        DRY=  0.000000e+00,
+        DRZ=  0.000000e+00,
+         ),
+      _F( NOEUD= 'G00302',
+        DX =  0.000000e+00,
+        DY =  0.000000e+00,
+        DZ =  0.000000e+00,
+        DRX=  0.000000e+00,
+        DRY=  0.000000e+00,
+        DRZ=  0.000000e+00,
+         ),
+))
+
+# *****************************************************************
+#                 A N A L Y S E   M O D A L E
+# *****************************************************************
+
+# Poids et inerties de la structure
+MASSINER = POST_ELEM(
+  MODELE    = MO,
+  CHAM_MATER= CHMAT,
+  CARA_ELEM = CAREL,
+  MASS_INER = _F ( TOUT = 'OUI' ))
+
+# Verification des resultats de POST_ELEM
+TEST_TABLE(
+  TABLE = MASSINER ,
+  NOM_PARA='MASSE',     VALE= 5.85759E+02, PRECISION =  2.0E-05 , CRITERE = 'RELATIF',
+  FILTRE = _F(  NOM_PARA = 'ENTITE', VALE_K = 'TOUT'),
+  REFERENCE = 'AUTRE_ASTER',
+)
+TEST_TABLE(
+  TABLE = MASSINER ,
+  NOM_PARA='CDG_X',     VALE= 2.00000E+00, PRECISION =  2.0E-05 , CRITERE = 'RELATIF',
+  FILTRE = _F(  NOM_PARA = 'ENTITE', VALE_K = 'TOUT'),
+  REFERENCE = 'AUTRE_ASTER',
+)
+TEST_TABLE(
+  TABLE = MASSINER ,
+  NOM_PARA='CDG_Z',     VALE= 2.03968E+00, PRECISION =  2.0E-05 , CRITERE = 'RELATIF',
+  FILTRE = _F(  NOM_PARA = 'ENTITE', VALE_K = 'TOUT'),
+  REFERENCE = 'AUTRE_ASTER',
+)
+TEST_TABLE(
+  TABLE = MASSINER ,
+  NOM_PARA='IX_PRIN_G', VALE= 1.56562E+03, PRECISION =  2.0E-05 , CRITERE = 'RELATIF',
+  FILTRE = _F(  NOM_PARA = 'ENTITE', VALE_K = 'TOUT'),
+  REFERENCE = 'AUTRE_ASTER',
+)
+TEST_TABLE(
+  TABLE = MASSINER ,
+  NOM_PARA='IY_PRIN_G', VALE= 1.81822E+03, PRECISION =  2.0E-05 , CRITERE = 'RELATIF',
+  FILTRE = _F(  NOM_PARA = 'ENTITE', VALE_K = 'TOUT'),
+  REFERENCE = 'AUTRE_ASTER',
+)
+TEST_TABLE(
+  TABLE = MASSINER ,
+  NOM_PARA='IZ_PRIN_G', VALE= 2.23486E+03, PRECISION =  2.0E-05 , CRITERE = 'RELATIF',
+  FILTRE = _F(  NOM_PARA = 'ENTITE', VALE_K = 'TOUT'),
+  REFERENCE = 'AUTRE_ASTER',
+)
+
+
+# Matrice elementaire de rigidite
+MELRI = CALC_MATR_ELEM(
+   MODELE    = MO,
+   CHAM_MATER= CHMAT,
+   CARA_ELEM = CAREL,
+# Conditions aux limites de bloquages
+   CHARGE= ( DEPL ),
+   OPTION= 'RIGI_MECA' )
+
+# Matrice elementaire de masse
+MELMA = CALC_MATR_ELEM(
+   MODELE=     MO,
+   CHAM_MATER= CHMAT,
+   CARA_ELEM=  CAREL,
+   OPTION=    'MASS_MECA')
+
+# Numerotation des equations du systeme
+NUMDDL  = NUME_DDL( MATR_RIGI= MELRI )
+# Matrice assemblee de rigidite
+MASRI = ASSE_MATRICE( MATR_ELEM= MELRI, NUME_DDL= NUMDDL )
+# Matrice assemblee de masse
+MASMA = ASSE_MATRICE( MATR_ELEM= MELMA, NUME_DDL= NUMDDL )
+
+MODAL01 = MODE_ITER_SIMULT( 
+  MATR_A= MASRI, MATR_B= MASMA,
+  TYPE_RESU= 'DYNAMIQUE',
+  CALC_FREQ=_F( OPTION = 'BANDE', FREQ = ( 0.0 , 20.0 ) ),
+  VERI_MODE=_F( STOP_ERREUR= 'NON' ) )
+
+MODAL02 = MODE_ITER_SIMULT( 
+  MATR_A= MASRI, MATR_B= MASMA,
+  TYPE_RESU= 'DYNAMIQUE',
+  CALC_FREQ=_F( OPTION = 'BANDE', FREQ = (20.0 , 40.0 ) ),
+  VERI_MODE=_F( STOP_ERREUR= 'NON' ) )
+
+
+NORMM01 = NORM_MODE(  MODE  = MODAL01, NORME = 'MASS_GENE', MASS_INER = MASSINER)
+NORMM02 = NORM_MODE(  MODE  = MODAL02, NORME = 'MASS_GENE', MASS_INER = MASSINER)
+
+EXTRMODE = EXTR_MODE(
+  FILTRE_MODE = ( _F( MODE = NORMM01, CRIT_EXTR='MASS_EFFE_UN', SEUIL=5.0E-4,),
+                  _F( MODE = NORMM02, CRIT_EXTR='MASS_EFFE_UN', SEUIL=5.0E-4,),
+                ),
+  IMPRESSION  = _F( CUMUL='OUI',CRIT_EXTR='MASS_EFFE_UN')
+)
+
+TEST_RESU( RESU = (
+  # VERIFICATION DES FREQUENCES PROPRES
+  _F( RESULTAT = EXTRMODE,
+      PARA = 'FREQ', NUME_ORDRE = 1,  VALE = 1.00386E+01,
+      PRECISION =  2.0E-02 , CRITERE = 'RELATIF',
+      REFERENCE = 'AUTRE_ASTER', VERSION = '6.03.16'),
+  _F( RESULTAT = EXTRMODE,
+      PARA = 'FREQ', NUME_ORDRE = 2,  VALE = 1.23631E+01,
+      PRECISION =  2.0E-02 , CRITERE = 'RELATIF',
+      REFERENCE = 'AUTRE_ASTER', VERSION = '6.03.16'),
+  _F( RESULTAT = EXTRMODE,
+      PARA = 'FREQ', NUME_ORDRE = 3,  VALE = 1.30613E+01,
+      PRECISION =  2.0E-02 , CRITERE = 'RELATIF',
+      REFERENCE = 'AUTRE_ASTER', VERSION = '6.03.16'),
+  _F( RESULTAT = EXTRMODE,
+      PARA = 'FREQ', NUME_ORDRE = 4,  VALE = 1.75316E+01,
+      PRECISION =  2.0E-02 , CRITERE = 'RELATIF',
+      REFERENCE = 'AUTRE_ASTER', VERSION = '6.03.16'),
+  _F( RESULTAT = EXTRMODE,
+      PARA = 'FREQ', NUME_ORDRE = 5,  VALE = 1.91421E+01,
+      PRECISION =  2.0E-02 , CRITERE = 'RELATIF',
+      REFERENCE = 'AUTRE_ASTER', VERSION = '6.03.16'),
+  _F( RESULTAT = EXTRMODE,
+      PARA = 'FREQ', NUME_ORDRE = 6,  VALE = 2.2359E+01,
+      PRECISION =  2.0E-02 , CRITERE = 'RELATIF',
+      REFERENCE = 'AUTRE_ASTER', VERSION = '6.03.16'),
+  _F( RESULTAT = EXTRMODE,
+      PARA = 'FREQ', NUME_ORDRE = 7,  VALE = 2.6921E+01,
+      PRECISION =  2.0E-02 , CRITERE = 'RELATIF',
+      REFERENCE = 'AUTRE_ASTER', VERSION = '6.03.16'),
+  _F( RESULTAT = EXTRMODE,
+      PARA = 'FREQ', NUME_ORDRE = 8,  VALE = 3.52798E+01,
+      PRECISION =  2.0E-02 , CRITERE = 'RELATIF',
+      REFERENCE = 'AUTRE_ASTER', VERSION = '6.03.16'),
+  _F( RESULTAT = EXTRMODE,
+      PARA = 'FREQ', NUME_ORDRE = 9,  VALE = 3.76334E+01,
+      PRECISION =  2.0E-02 , CRITERE = 'RELATIF',
+      REFERENCE = 'AUTRE_ASTER', VERSION = '6.03.16'),
+  # VERIFICATION DES MASS_EFFE_UN_DX , DY , DZ
+  _F( RESULTAT = EXTRMODE,
+      PARA = 'MASS_EFFE_UN_DX', NUME_ORDRE = 1,  VALE = 2.4062E-01,
+      PRECISION =  1.0E-02 , CRITERE = 'ABSOLU',
+      REFERENCE = 'AUTRE_ASTER', VERSION = '6.03.16'),
+  _F( RESULTAT = EXTRMODE,
+      PARA = 'MASS_EFFE_UN_DX', NUME_ORDRE = 2,  VALE = 4.3310E-01,
+      PRECISION =  1.0E-02 , CRITERE = 'ABSOLU',
+      REFERENCE = 'AUTRE_ASTER', VERSION = '6.03.16'),
+  _F( RESULTAT = EXTRMODE,
+      PARA = 'MASS_EFFE_UN_DY', NUME_ORDRE = 3,  VALE = 5.2880E-01,
+      PRECISION =  1.0E-02 , CRITERE = 'ABSOLU',
+      REFERENCE = 'AUTRE_ASTER', VERSION = '6.03.16'),
+  _F( RESULTAT = EXTRMODE,
+      PARA = 'MASS_EFFE_UN_DZ', NUME_ORDRE = 3,  VALE = 4.1267E-04,
+      PRECISION =  1.0E-02 , CRITERE = 'ABSOLU',
+      REFERENCE = 'AUTRE_ASTER', VERSION = '6.03.16'),
+  _F( RESULTAT = EXTRMODE,
+      PARA = 'MASS_EFFE_UN_DX', NUME_ORDRE = 4,  VALE = 7.7262E-04,
+      PRECISION =  1.0E-02 , CRITERE = 'ABSOLU',
+      REFERENCE = 'AUTRE_ASTER', VERSION = '6.03.16'),
+  _F( RESULTAT = EXTRMODE,
+      PARA = 'MASS_EFFE_UN_DX', NUME_ORDRE = 5,  VALE = 7.9213E-02,
+      PRECISION =  1.0E-02 , CRITERE = 'ABSOLU',
+      REFERENCE = 'AUTRE_ASTER', VERSION = '6.03.16'),
+  _F( RESULTAT = EXTRMODE,
+      PARA = 'MASS_EFFE_UN_DY', NUME_ORDRE = 6,  VALE = 1.3777E-01,
+      PRECISION =  1.0E-02 , CRITERE = 'ABSOLU',
+      REFERENCE = 'AUTRE_ASTER', VERSION = '6.03.16'),
+  _F( RESULTAT = EXTRMODE,
+      PARA = 'MASS_EFFE_UN_DZ', NUME_ORDRE = 6,  VALE = 2.2223E-04,
+      PRECISION =  1.0E-02 , CRITERE = 'ABSOLU',
+      REFERENCE = 'AUTRE_ASTER', VERSION = '6.03.16'),
+  _F( RESULTAT = EXTRMODE,
+      PARA = 'MASS_EFFE_UN_DY', NUME_ORDRE = 7,  VALE = 6.0029E-02,
+      PRECISION =  1.0E-02 , CRITERE = 'ABSOLU',
+      REFERENCE = 'AUTRE_ASTER', VERSION = '6.03.16'),
+  _F( RESULTAT = EXTRMODE,
+      PARA = 'MASS_EFFE_UN_DX', NUME_ORDRE = 8,  VALE = 1.6712E-03,
+      PRECISION =  1.0E-02 , CRITERE = 'ABSOLU',
+      REFERENCE = 'AUTRE_ASTER', VERSION = '6.03.16'),
+  _F( RESULTAT = EXTRMODE,
+      PARA = 'MASS_EFFE_UN_DX', NUME_ORDRE = 9,  VALE = 1.2125E-02,
+      PRECISION =  1.0E-02 , CRITERE = 'ABSOLU',
+      REFERENCE = 'AUTRE_ASTER', VERSION = '6.03.16'),
+  ) )
+
+
+# TESTE LA MACRO_COMMANDE : MACRO_MODE_MECA
+MODMECA = MACRO_MODE_MECA(
+  MATR_A      = MASRI, MATR_B= MASMA,
+  CALC_FREQ   =_F( FREQ = ( 0.0, 20.0, 40.0 )),
+  NORM_MODE   =_F( MASS_INER = MASSINER, NORME = 'MASS_GENE'),
+  FILTRE_MODE =_F( CRIT_EXTR='MASS_EFFE_UN', SEUIL=5.0E-4 ),
+  IMPRESSION  =_F( CUMUL='OUI', CRIT_EXTR='MASS_EFFE_UN')
+)
+
+TEST_RESU( RESU = (
+  # VERIFICATION DES FREQUENCES PROPRES
+  _F( RESULTAT = MODMECA,
+      PARA = 'FREQ', NUME_ORDRE = 1,  VALE = 1.00386E+01,
+      PRECISION =  2.0E-02 , CRITERE = 'RELATIF',
+      REFERENCE = 'AUTRE_ASTER', VERSION = '6.03.16'),
+  _F( RESULTAT = MODMECA,
+      PARA = 'FREQ', NUME_ORDRE = 2,  VALE = 1.23631E+01,
+      PRECISION =  2.0E-02 , CRITERE = 'RELATIF',
+      REFERENCE = 'AUTRE_ASTER', VERSION = '6.03.16'),
+  _F( RESULTAT = MODMECA,
+      PARA = 'FREQ', NUME_ORDRE = 3,  VALE = 1.30613E+01,
+      PRECISION =  2.0E-02 , CRITERE = 'RELATIF',
+      REFERENCE = 'AUTRE_ASTER', VERSION = '6.03.16'),
+  _F( RESULTAT = MODMECA,
+      PARA = 'FREQ', NUME_ORDRE = 4,  VALE = 1.75316E+01,
+      PRECISION =  2.0E-02 , CRITERE = 'RELATIF',
+      REFERENCE = 'AUTRE_ASTER', VERSION = '6.03.16'),
+  _F( RESULTAT = MODMECA,
+      PARA = 'FREQ', NUME_ORDRE = 5,  VALE = 1.91421E+01,
+      PRECISION =  2.0E-02 , CRITERE = 'RELATIF',
+      REFERENCE = 'AUTRE_ASTER', VERSION = '6.03.16'),
+  _F( RESULTAT = MODMECA,
+      PARA = 'FREQ', NUME_ORDRE = 6,  VALE = 2.2359E+01,
+      PRECISION =  2.0E-02 , CRITERE = 'RELATIF',
+      REFERENCE = 'AUTRE_ASTER', VERSION = '6.03.16'),
+  _F( RESULTAT = MODMECA,
+      PARA = 'FREQ', NUME_ORDRE = 7,  VALE = 2.6921E+01,
+      PRECISION =  2.0E-02 , CRITERE = 'RELATIF',
+      REFERENCE = 'AUTRE_ASTER', VERSION = '6.03.16'),
+  _F( RESULTAT = MODMECA,
+      PARA = 'FREQ', NUME_ORDRE = 8,  VALE = 3.52798E+01,
+      PRECISION =  2.0E-02 , CRITERE = 'RELATIF',
+      REFERENCE = 'AUTRE_ASTER', VERSION = '6.03.16'),
+  _F( RESULTAT = MODMECA,
+      PARA = 'FREQ', NUME_ORDRE = 9,  VALE = 3.76334E+01,
+      PRECISION =  2.0E-02 , CRITERE = 'RELATIF',
+      REFERENCE = 'AUTRE_ASTER', VERSION = '6.03.16'),
+  # VERIFICATION DES MASS_EFFE_UN_DX , DY , DZ
+  _F( RESULTAT = MODMECA,
+      PARA = 'MASS_EFFE_UN_DX', NUME_ORDRE = 1,  VALE = 2.4062E-01,
+      PRECISION =  1.0E-02 , CRITERE = 'ABSOLU',
+      REFERENCE = 'AUTRE_ASTER', VERSION = '6.03.16'),
+  _F( RESULTAT = MODMECA,
+      PARA = 'MASS_EFFE_UN_DX', NUME_ORDRE = 2,  VALE = 4.3310E-01,
+      PRECISION =  1.0E-02 , CRITERE = 'ABSOLU',
+      REFERENCE = 'AUTRE_ASTER', VERSION = '6.03.16'),
+  _F( RESULTAT = MODMECA,
+      PARA = 'MASS_EFFE_UN_DY', NUME_ORDRE = 3,  VALE = 5.2880E-01,
+      PRECISION =  1.0E-02 , CRITERE = 'ABSOLU',
+      REFERENCE = 'AUTRE_ASTER', VERSION = '6.03.16'),
+  _F( RESULTAT = MODMECA,
+      PARA = 'MASS_EFFE_UN_DZ', NUME_ORDRE = 3,  VALE = 4.1267E-04,
+      PRECISION =  1.0E-02 , CRITERE = 'ABSOLU',
+      REFERENCE = 'AUTRE_ASTER', VERSION = '6.03.16'),
+  _F( RESULTAT = MODMECA,
+      PARA = 'MASS_EFFE_UN_DX', NUME_ORDRE = 4,  VALE = 7.7262E-04,
+      PRECISION =  1.0E-02 , CRITERE = 'ABSOLU',
+      REFERENCE = 'AUTRE_ASTER', VERSION = '6.03.16'),
+  _F( RESULTAT = MODMECA,
+      PARA = 'MASS_EFFE_UN_DX', NUME_ORDRE = 5,  VALE = 7.9213E-02,
+      PRECISION =  1.0E-02 , CRITERE = 'ABSOLU',
+      REFERENCE = 'AUTRE_ASTER', VERSION = '6.03.16'),
+  _F( RESULTAT = MODMECA,
+      PARA = 'MASS_EFFE_UN_DY', NUME_ORDRE = 6,  VALE = 1.3777E-01,
+      PRECISION =  1.0E-02 , CRITERE = 'ABSOLU',
+      REFERENCE = 'AUTRE_ASTER', VERSION = '6.03.16'),
+  _F( RESULTAT = MODMECA,
+      PARA = 'MASS_EFFE_UN_DZ', NUME_ORDRE = 6,  VALE = 2.2223E-04,
+      PRECISION =  1.0E-02 , CRITERE = 'ABSOLU',
+      REFERENCE = 'AUTRE_ASTER', VERSION = '6.03.16'),
+  _F( RESULTAT = MODMECA,
+      PARA = 'MASS_EFFE_UN_DY', NUME_ORDRE = 7,  VALE = 6.0029E-02,
+      PRECISION =  1.0E-02 , CRITERE = 'ABSOLU',
+      REFERENCE = 'AUTRE_ASTER', VERSION = '6.03.16'),
+  _F( RESULTAT = MODMECA,
+      PARA = 'MASS_EFFE_UN_DX', NUME_ORDRE = 8,  VALE = 1.6712E-03,
+      PRECISION =  1.0E-02 , CRITERE = 'ABSOLU',
+      REFERENCE = 'AUTRE_ASTER', VERSION = '6.03.16'),
+  _F( RESULTAT = MODMECA,
+      PARA = 'MASS_EFFE_UN_DX', NUME_ORDRE = 9,  VALE = 1.2125E-02,
+      PRECISION =  1.0E-02 , CRITERE = 'ABSOLU',
+      REFERENCE = 'AUTRE_ASTER', VERSION = '6.03.16'),
+  ) )
+
+
+FIN()
+

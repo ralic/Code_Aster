@@ -1,0 +1,62 @@
+      SUBROUTINE INTFTR(NP4,NFOUR,NBM,ZA4,ZA5,AA,BB,ZITR)
+      IMPLICIT NONE
+C-----------------------------------------------------------------------
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 16/05/2000   AUTEUR KXBADNG T.KESTENS 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+C-----------------------------------------------------------------------
+C DESCRIPTION : CALCUL DE L'INTEGRALE I(N+1), TERME DE FORCAGE EXPLICITE
+C -----------   DECOMPOSITION EN SERIE DE FOURIER
+C
+C               APPELANT : CALTRA
+C
+C-------------------   DECLARATION DES VARIABLES   ---------------------
+C
+C ARGUMENTS
+C ---------
+      INTEGER     NP4, NFOUR, NBM
+      COMPLEX*16  ZA4(NP4,*), ZA5(NP4,*)
+      REAL*8      AA(NP4,*), BB(NP4,*)
+      COMPLEX*16  ZITR(*)
+C
+C VARIABLES LOCALES
+C -----------------
+      INTEGER     I, J, N2M1
+      REAL*8      ZERO, UN
+C
+C FONCTIONS INTRINSEQUES
+C ----------------------
+C     INTRINSIC   DCMPLX
+C
+C-------------------   DEBUT DU CODE EXECUTABLE    ---------------------
+C
+      N2M1 = (NFOUR/2) - 1
+      ZERO = 0.0D0
+      UN   = 1.0D0
+C
+      DO 10 I = 1, NBM
+        ZITR(I) = DCMPLX(ZERO,ZERO)
+        DO 11 J = 1, N2M1
+          ZITR(I) = ZITR(I)
+     &            + (0.5D0*AA(J,I)*(ZA4(J,I)+ZA5(J,I)))
+     &            - (0.5D0*DCMPLX(ZERO,UN)*BB(J,I)*(ZA4(J,I)-ZA5(J,I)))
+  11    CONTINUE
+  10  CONTINUE
+C
+C --- FIN DE INTFTR.
+      END

@@ -1,0 +1,471 @@
+# MODIF  DATE 11/06/2002   AUTEUR CIBHHAB S.VANDENBERGHE 
+# RESPONSABLE JMBHH01 J.M.PROIX
+# TITRE  : PLAQUE STRATIFIEE SOUMISE A 4 CHARGEMETNS ELEMENTAIRES
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+#---------------------------------------------------------------------
+#    - CALCUL QUASI-STATIQUE D'UNE PLAQUE SOUMISE A 4 CHARGES
+#    - MOMENT MX  UNITAIRE ET UNIFORME
+#    - MOMENT MY UNITAIRE ET UNIFORME
+#    - EFFORTS TRANCHANTS TY UNITAIRE ET UNIFORME
+#    - EFFORTS TRANCHANTS TZ UNITAIRE ET UNIFORME
+#    - MODELISATION AVEC DES ELEMENTS 'DST'(QUAD4)
+#   TEST ISSU DE DHATT-BATOZ VOL 2 PAGE 249
+#---------------------------------------------------------------------
+#
+DEBUT( CODE=_F( NOM = 'SSLS121A',NIV_PUB_WEB='INTERNET'))
+
+#
+PRE_GIBI();
+#
+MA = LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='NON'), )
+MA = DEFI_GROUP( reuse=MA,
+                 MAILLAGE=MA,
+                 CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI'),
+               )
+
+#
+MO = AFFE_MODELE( MAILLAGE=MA,
+                  AFFE=_F( TOUT = 'OUI',
+                           PHENOMENE = 'MECANIQUE',
+                           MODELISATION = 'DST')
+                 )
+#
+MA = MODI_MAILLAGE( reuse =MA,
+                    MAILLAGE=MA,
+                    ORIE_NORM_COQUE=_F( GROUP_MA='TOUT_ELT',
+                                        VECT_NORM=(0.0,1.0,0.0),
+                                        NOEUD='N1',),
+                    MODELE=MO,
+                   )
+#
+#---------------------------------------------------------------------
+#                         CARACTERISTIQUES ELEMENTAIRES
+#---------------------------------------------------------------------
+#
+CAR_ELE = AFFE_CARA_ELEM( MODELE=MO,
+                          COQUE=_F( 
+                          GROUP_MA =( 'TOUT_ELT','COTE_AB','COTE_CD','COTE_DA','COTE_BC',),
+                          EPAIS = 1.,
+                          ANGL_REP = (0.,-48.5,))
+                        )
+
+#
+#---------------------------------------------------------------------
+#                         CARACTERISTIQUES MATERIAUX
+#---------------------------------------------------------------------
+#
+
+# cf batoz page 246
+MAT = DEFI_MATERIAU( ELAS_ORTH=_F( E_L = 25.,
+                                   E_T = 1.,
+                                   G_LT = 0.5,
+                                   G_LN = 0.5,
+                                   G_TN = 0.2,
+                                   NU_LT = 0.25,
+                                   XT =10 ,
+                                   XC =-10 ,
+                                   YT =10E-02 ,
+                                   YC =-10E-02 ,
+                                   S_LT =6E-10 )
+                     )
+#
+MULTI = DEFI_COQU_MULT( COUCHE=( _F( EPAIS = 0.25,
+                                     MATER = MAT,
+                                     ORIENTATION = 0.),
+                                 _F( EPAIS = 0.5,
+                                     MATER = MAT,
+                                     ORIENTATION = -90.),
+                                 _F( EPAIS = 0.25,
+                                     MATER = MAT,
+                                     ORIENTATION = 0.),),
+                        INFO=2,
+                        IMPRESSION=_F(FICHIER='RESULTAT')
+                        )
+#
+CHAM_MAT = AFFE_MATERIAU( MAILLAGE=MA,
+                          AFFE=_F( TOUT = 'OUI',
+                                   MATER = MULTI)
+                         )
+
+AD=48.5
+
+ALPHA=DEFI_VALEUR(  R8=EVAL("""AD*PI/180.""") )
+MX1=DEFI_VALEUR(  R8=EVAL("""SIN(ALPHA)""") )
+MZ1=DEFI_VALEUR(  R8=EVAL("""-COS(ALPHA)""") )
+
+                      
+CHA1=AFFE_CHAR_MECA( MODELE=MO,
+                     DDL_IMPO=( 
+                               _F( GROUP_MA = 'TOUT_ELT',DRY=0.),
+                              ),
+                     LIAISON_OBLIQUE=(
+                               _F( GROUP_NO = 'COTE_DA',
+                                   DX = 0.,
+                                   ANGL_NAUT = (0., -48.5, 90.,),),
+                               _F( GROUP_NO = 'COTE_DA',
+                                   DRY=0.,
+                                   ANGL_NAUT = (0., -48.5, 90.,),),
+                               _F( GROUP_NO = 'COTE_DA',
+                                   DZ=0.,
+                                   ANGL_NAUT = (0., -48.5, 90.,),),
+                               _F( GROUP_NO = ('COTE_AB','COTE_CD'),
+                                   DY = 0.,
+                                   ANGL_NAUT = (0., -48.5, 90.,),),
+                               _F( GROUP_NO = ('COTE_AB','COTE_CD'),
+                                   DRX = 0.,
+                                   ANGL_NAUT = (0., -48.5, 90.,),),
+                                      ),
+                     FORCE_ARETE = _F( GROUP_MA = 'COTE_BC',
+                                       MX=MX1,MZ=MZ1),
+                      )
+
+#
+#---------------------------------------------------------------------
+#                         RESOLUTION
+#---------------------------------------------------------------------
+#
+RESU1=MECA_STATIQUE( MODELE=MO,
+                     CHAM_MATER=CHAM_MAT,
+                     CARA_ELEM=CAR_ELE,
+                     EXCIT=_F(CHARGE = CHA1),
+                     OPTION=(
+                             'EFGE_ELNO_DEPL',
+                             'DEGE_ELNO_DEPL'),
+                    )
+                    
+
+#                    
+# ON TESTE QUE LES EFFORTS SONT UNIFORMES
+
+TEST_RESU( RESU=_F(NUME_ORDRE=1,NOM_CHAM='EFGE_ELNO_DEPL',NOM_CMP='MXX',RESULTAT=RESU1,
+           TYPE_TEST='MAX',REFERENCE='ANALYTIQUE',VALE=1.,PRECISION=0.001,),);
+                  
+TEST_RESU( RESU=_F(NUME_ORDRE=1,NOM_CHAM='EFGE_ELNO_DEPL',NOM_CMP='MXX',RESULTAT=RESU1,
+           TYPE_TEST='MIN',REFERENCE='ANALYTIQUE',VALE=1.,PRECISION=0.001,),);
+                  
+TEST_RESU( RESU=_F(NUME_ORDRE=1,NOM_CHAM='DEGE_ELNO_DEPL',NOM_CMP='KXX',RESULTAT=RESU1,
+           NOEUD='N1',MAILLE='M1',REFERENCE='NON_REGRESSION',VALE=0.544,PRECISION=0.001,),);
+                  
+#---------------------------------------------------------------------
+#                       CALCUL DES GRANDEURS DE RUPTURE
+#---------------------------------------------------------------------
+# CALCUL DES CONTRANTES DE RUPTURE A PARTIR DES LIMITES DE RUPTURE
+# DEFINIES DANS DEFI_MATERIAU
+#
+RESU1 = CALC_ELEM(   reuse = RESU1,
+                     MODELE=MO,
+                     CHAM_MATER=CHAM_MAT,
+                     CARA_ELEM=CAR_ELE,
+                     OPTION=(
+                           'SIGM_ELNO_DEPL',
+                           'CRIT_ELNO_RUPT'),
+                     NUME_COUCHE=1,
+                     NIVE_COUCHE='INF',
+                     RESULTAT=RESU1,
+                   )
+
+
+#
+IMPR_RESU ( MODELE=MO,
+            RESU =_F( RESULTAT = RESU1,
+                      NOEUD = ('N10'),
+                      NOM_CHAM = 'CRIT_ELNO_RUPT',
+                      NOM_CMP = ('CRIL','CRILP',
+                                 'CRIT','CRITP',
+                                 'CRILT','CRITH')
+                      ),
+           )   
+#                  
+IMPR_RESU ( MODELE=MO,
+            RESU =_F( RESULTAT = RESU1,
+                      NOEUD = ('N10'),
+                      NOM_CHAM = 'SIGM_ELNO_DEPL',
+                      NOM_CMP = ('SIXX','SIYY','SIXY')
+                      ),           
+           ),
+                             
+
+R1S1INF = CALC_ELEM( MODELE=MO,
+                     CHAM_MATER=CHAM_MAT,
+                     CARA_ELEM=CAR_ELE,
+                     OPTION=  'EPSI_ELNO_DEPL' ,
+                     NUME_COUCHE=1,
+                     NIVE_COUCHE='INF',
+                     RESULTAT=RESU1,
+                   )
+TEST_RESU( RESU=_F(NUME_ORDRE=1,NOM_CHAM='SIGM_ELNO_DEPL',NOM_CMP='SIXX',RESULTAT=RESU1,
+           NOEUD='N1',MAILLE='M1',REFERENCE='ANALYTIQUE',VALE=-6.82,PRECISION=0.001,),);
+                  
+R1S2INF=CALC_ELEM( MODELE=MO,
+                   CHAM_MATER=CHAM_MAT,
+                   CARA_ELEM=CAR_ELE,
+                   OPTION='SIGM_ELNO_DEPL',
+                   NUME_COUCHE=2,
+                   NIVE_COUCHE='INF',
+                   RESULTAT=RESU1,);
+
+TEST_RESU( RESU=_F(NUME_ORDRE=1,NOM_CHAM='SIGM_ELNO_DEPL',NOM_CMP='SIXX',RESULTAT=R1S2INF,
+           NOEUD='N1',MAILLE='M1',REFERENCE='ANALYTIQUE',VALE=-0.135,PRECISION=0.011,),);
+                  
+TEST_RESU( RESU=_F(NUME_ORDRE=1,NOM_CHAM='EPSI_ELNO_DEPL',NOM_CMP='EPXX',RESULTAT=R1S1INF,
+           NOEUD='N1',MAILLE='M1',REFERENCE='NON_REGRESSION',VALE=-0.272,PRECISION=0.001,),);
+                  
+
+          
+#
+#---------------------------------------------------------------------
+#                         CHARGEMENT 2
+#---------------------------------------------------------------------
+#
+MX2=DEFI_VALEUR(  R8=EVAL("""COS(ALPHA)""") )
+MZ2=DEFI_VALEUR(  R8=EVAL("""SIN(ALPHA)""") )
+
+CHA2=AFFE_CHAR_MECA(  MODELE=MO,
+                      DDL_IMPO=(
+                             _F( GROUP_MA = 'TOUT_ELT',DRY=0.),
+                                          ),
+                      LIAISON_OBLIQUE=(
+                                _F( GROUP_NO = ('COTE_DA','COTE_BC',),
+                                          DX = 0.,
+                                    ANGL_NAUT = (0., -48.5, 90.,),
+                                    ),
+                                _F( GROUP_NO = ('COTE_DA','COTE_BC',),
+                                          DRY=0.,
+                                    ANGL_NAUT = (0., -48.5, 90.,),
+                                    ),
+                    _F( GROUP_NO = ('COTE_AB'),
+                                          DY = 0.,
+                                    ANGL_NAUT = (0., -48.5, 90.,),
+                                    ),
+                    _F( GROUP_NO = ('COTE_AB'),
+                                         DZ=0.,
+                                    ANGL_NAUT = (0., -48.5, 90.,),
+                                    ),
+                    _F( GROUP_NO = ('COTE_AB'),
+                                          DRX = 0.,
+                                    ANGL_NAUT = (0., -48.5, 90.,),
+                                    ),
+                                    ),
+                   FORCE_ARETE=_F( GROUP_MA = 'COTE_CD',
+                                   MX=MX2,MZ=MZ2),
+                      )
+
+#
+#---------------------------------------------------------------------
+#                         RESOLUTION
+#---------------------------------------------------------------------
+#
+RESU2=MECA_STATIQUE( MODELE=MO,
+                     CHAM_MATER=CHAM_MAT,
+                     CARA_ELEM=CAR_ELE,
+                     EXCIT=_F( CHARGE = CHA2),
+                     OPTION=('SANS',
+                             'EFGE_ELNO_DEPL'),
+                      )
+# ON TESTE QUE LES EFFORTS SONT UNIFORMES
+
+TEST_RESU( RESU=_F(NUME_ORDRE=1,NOM_CHAM='EFGE_ELNO_DEPL',NOM_CMP='MYY',RESULTAT=RESU2,
+           TYPE_TEST='MAX',REFERENCE='ANALYTIQUE',VALE=1.,PRECISION=0.001,),);
+                  
+TEST_RESU( RESU=_F(NUME_ORDRE=1,NOM_CHAM='EFGE_ELNO_DEPL',NOM_CMP='MYY',RESULTAT=RESU2,
+           TYPE_TEST='MIN',REFERENCE='ANALYTIQUE',VALE=1.,PRECISION=0.001,),);
+
+R2S1INF=CALC_ELEM( MODELE=MO,
+                CHAM_MATER=CHAM_MAT,
+                CARA_ELEM=CAR_ELE,
+                OPTION='SIGM_ELNO_DEPL',
+                NUME_COUCHE=1,
+                NIVE_COUCHE='INF',
+                RESULTAT=RESU2,);
+
+R2S2INF=CALC_ELEM( MODELE=MO,
+                   CHAM_MATER=CHAM_MAT,
+                   CARA_ELEM=CAR_ELE,
+                   OPTION='SIGM_ELNO_DEPL',
+                   NUME_COUCHE=2,
+                   NIVE_COUCHE='INF',
+                   RESULTAT=RESU2,);
+
+
+TEST_RESU( RESU=_F(NUME_ORDRE=1,NOM_CHAM='SIGM_ELNO_DEPL',NOM_CMP='SIYY',RESULTAT=R2S1INF,
+           NOEUD='N1',MAILLE='M1',REFERENCE='ANALYTIQUE',VALE=-1.5,PRECISION=0.001,),);
+                  
+
+TEST_RESU( RESU=_F(NUME_ORDRE=1,NOM_CHAM='SIGM_ELNO_DEPL',NOM_CMP='SIYY',RESULTAT=R2S2INF,
+           NOEUD='N1',MAILLE='M1',REFERENCE='ANALYTIQUE',VALE=-18.76,PRECISION=0.001,),);
+                  
+
+#
+#---------------------------------------------------------------------
+#                         CHARGEMENT 3
+#---------------------------------------------------------------------
+#
+CHA3=AFFE_CHAR_MECA(        MODELE=MO,
+                    DDL_IMPO=(
+                                _F( GROUP_MA = 'TOUT_ELT',DRY=0.),
+                                          ),
+            LIAISON_OBLIQUE=(
+                    _F( GROUP_NO = ('COTE_DA','COTE_BC'),
+                                          DX = 0.,
+                                    ANGL_NAUT = (0., -48.5, 90.,),
+                                    ),
+                    _F( GROUP_NO = ('COTE_DA','COTE_BC'),
+                                      DRY=0.,
+                                    ANGL_NAUT = (0., -48.5, 90.,),
+                                    ),
+                    _F( GROUP_NO = ('COTE_AB'),
+                                          DY = 0.,
+                                     ANGL_NAUT = (0., -48.5, 90.,),
+                                    ),
+                    _F( GROUP_NO = ('COTE_AB'),
+                                          DZ = 0.,
+                                    ANGL_NAUT = (0., -48.5, 90.,),
+                                    ),
+                    _F( GROUP_NO = ('COTE_AB'),
+                                          DRX = 0.,
+                                    ANGL_NAUT = (0., -48.5, 90.,),
+                                    ),
+                                    ),
+                   FORCE_ARETE=_F( GROUP_MA = 'COTE_CD',
+                                   FY=-1.)
+                      )
+
+
+#
+#---------------------------------------------------------------------
+#                         RESOLUTION
+#---------------------------------------------------------------------
+#
+RESU3=MECA_STATIQUE(       MODELE=MO,
+                        CHAM_MATER=CHAM_MAT,
+                         CARA_ELEM=CAR_ELE,
+                             EXCIT=_F( CHARGE = CHA3),
+                        OPTION=('SANS',
+                                'EFGE_ELNO_DEPL',)
+                      )
+# ON TESTE QUE LES EFFORTS SONT UNIFORMES
+
+TEST_RESU( RESU=_F(NUME_ORDRE=1,NOM_CHAM='EFGE_ELNO_DEPL',NOM_CMP='QY',RESULTAT=RESU3,
+           TYPE_TEST='MAX',REFERENCE='ANALYTIQUE',VALE=1.,PRECISION=0.001,),);
+                  
+TEST_RESU( RESU=_F(NUME_ORDRE=1,NOM_CHAM='EFGE_ELNO_DEPL',NOM_CMP='QY',RESULTAT=RESU3,
+           TYPE_TEST='MIN',REFERENCE='ANALYTIQUE',VALE=1.,PRECISION=0.001,),);
+           
+R3S2INF=CALC_ELEM( MODELE=MO,
+                CHAM_MATER=CHAM_MAT,
+                CARA_ELEM=CAR_ELE,
+                OPTION='SIGM_ELNO_DEPL',NUME_COUCHE=2,NIVE_COUCHE='INF',
+                RESULTAT=RESU3,);
+
+R3S2MOY=CALC_ELEM( MODELE=MO,
+                CHAM_MATER=CHAM_MAT,
+                CARA_ELEM=CAR_ELE,
+                OPTION='SIGM_ELNO_DEPL',NUME_COUCHE=2,NIVE_COUCHE='MOY',
+                RESULTAT=RESU3,);
+
+TEST_RESU( RESU=_F(NUME_ORDRE=1,NOM_CHAM='SIGM_ELNO_DEPL',NOM_CMP='SIYZ',RESULTAT=R3S2INF,
+           NOEUD='N1',MAILLE='M1',REFERENCE='ANALYTIQUE',VALE=0.281,PRECISION=0.001,),);
+                  
+
+TEST_RESU( RESU=_F(NUME_ORDRE=1,NOM_CHAM='SIGM_ELNO_DEPL',NOM_CMP='SIYZ',RESULTAT=R3S2MOY,
+           NOEUD='N1',MAILLE='M1',REFERENCE='ANALYTIQUE',VALE=2.626,PRECISION=0.001,),);
+
+#---------------------------------------------------------------------
+#                         CHARGEMENT 4
+#---------------------------------------------------------------------
+#
+
+CHA4=AFFE_CHAR_MECA(        MODELE=MO,
+                    DDL_IMPO=(
+                                _F( GROUP_MA = 'TOUT_ELT',DRY=0.),
+                                          ),
+            LIAISON_OBLIQUE=(
+                    _F( GROUP_NO = 'COTE_DA',
+                                          DX = 0.,
+                                    ANGL_NAUT = (0., -48.5, 90.,),
+                                    ),
+                    _F( GROUP_NO = 'COTE_DA',
+                                          DRY=0.,
+                                    ANGL_NAUT = (0., -48.5, 90.,),
+                                    ),
+                    _F( GROUP_NO = 'COTE_DA',
+                                          DZ=0.,
+                                    ANGL_NAUT = (0., -48.5, 90.,),
+                                    ),
+                    _F( GROUP_NO = ('COTE_AB','COTE_CD'),
+                                          DY = 0.,
+                                    ANGL_NAUT = (0., -48.5, 90.,),
+                                    ),
+                    _F( GROUP_NO = ('COTE_AB','COTE_CD'),
+                                          DRX = 0.,
+                                    ANGL_NAUT = (0., -48.5, 90.,),
+                                    ),
+                                    ),
+                   FORCE_ARETE=_F( GROUP_MA = 'COTE_BC',
+                                   FY=1.)
+                      )
+
+
+#
+#---------------------------------------------------------------------
+#                         RESOLUTION
+#---------------------------------------------------------------------
+#
+RESU4=MECA_STATIQUE(       MODELE=MO,
+                        CHAM_MATER=CHAM_MAT,
+                         CARA_ELEM=CAR_ELE,
+                             EXCIT=_F( CHARGE = CHA4),
+                        OPTION=('SANS',
+                                'EFGE_ELNO_DEPL',)
+                      )
+# ON TESTE QUE LES EFFORTS SONT UNIFORMES
+
+TEST_RESU( RESU=_F(NUME_ORDRE=1,NOM_CHAM='EFGE_ELNO_DEPL',NOM_CMP='QX',RESULTAT=RESU4,
+           TYPE_TEST='MAX',REFERENCE='ANALYTIQUE',VALE=1.,PRECISION=0.001,),);
+                  
+TEST_RESU( RESU=_F(NUME_ORDRE=1,NOM_CHAM='EFGE_ELNO_DEPL',NOM_CMP='QX',RESULTAT=RESU4,
+           TYPE_TEST='MIN',REFERENCE='ANALYTIQUE',VALE=1.,PRECISION=0.001,),);
+           
+R4S2INF=CALC_ELEM( MODELE=MO,
+                CHAM_MATER=CHAM_MAT,
+                CARA_ELEM=CAR_ELE,
+                OPTION='SIGM_ELNO_DEPL',NUME_COUCHE=2,NIVE_COUCHE='INF',
+                RESULTAT=RESU4,);
+
+R4S2MOY=CALC_ELEM( MODELE=MO,
+                CHAM_MATER=CHAM_MAT,
+                CARA_ELEM=CAR_ELE,
+                OPTION='SIGM_ELNO_DEPL',NUME_COUCHE=2,NIVE_COUCHE='MOY',
+                RESULTAT=RESU4,);
+
+                  
+TEST_RESU( RESU=_F(NUME_ORDRE=1,NOM_CHAM='SIGM_ELNO_DEPL',NOM_CMP='SIXZ',RESULTAT=R4S2INF,
+           NOEUD='N1',MAILLE='M1',REFERENCE='ANALYTIQUE',VALE=1.279,PRECISION=0.001,),);
+                  
+
+TEST_RESU( RESU=_F(NUME_ORDRE=1,NOM_CHAM='SIGM_ELNO_DEPL',NOM_CMP='SIXZ',RESULTAT=R4S2MOY,
+           NOEUD='N1',MAILLE='M1',REFERENCE='ANALYTIQUE',VALE=1.2966,PRECISION=0.001,),);
+                  
+
+#
+
+
+FIN()
+#
+# 

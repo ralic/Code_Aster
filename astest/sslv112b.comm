@@ -1,0 +1,312 @@
+# MODIF  DATE 03/07/2002   AUTEUR CIBHHPD D.NUNEZ 
+# TITRE CALCUL DE G LOCAL LAGRANGE FISSURE CIRCULAIRE DANS MILIEU INFINI
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+# RAYON INITIAL 34.5 RAYON FINAL 42.5  EXTENSION 1.22 METHODE LEGENDRE
+
+
+DEBUT(   CODE=_F(  NOM = 'SSLV112B',NIV_PUB_WEB='INTERNET') )
+
+M=LIRE_MAILLAGE(   )
+
+MO=AFFE_MODELE(            MAILLAGE=M,
+                                  VERIF='MAILLE',
+                                 AFFE=_F(  TOUT = 'OUI',         
+                                        PHENOMENE = 'MECANIQUE',    
+                                        MODELISATION = '3D', ))
+
+M=MODI_MAILLAGE( reuse=M,   MAILLAGE=M,
+                            MODELE=MO,
+                        ORIE_PEAU_3D=_F(  GROUP_MA = 'MAILPRES',  )
+                      )
+
+FF=DEFI_FOND_FISS( 
+                         MAILLAGE=M,
+                              FOND=_F(  GROUP_NO = 'FONDFISS',    ),
+                           NORMALE=( 0.,  0.,  -1.,),
+                         DTAN_ORIG=( 0.,  1.,  0.,),
+                         DTAN_EXTR=( 1.,  0.,  0.,)
+                    )
+
+THET=CALC_THETA(
+           MODELE=MO,
+           FOND_FISS=FF,THETA_3D=(
+          _F(  NOEUD = 'NO1099', 
+                     MODULE = 8.05,  R_INF = 0.5, R_SUP = 33.5,),
+
+                   _F(  NOEUD = 'NO1100', 
+                     MODULE = 8.089, R_INF = 0.5, R_SUP = 33.5,),
+
+                   _F(  NOEUD = 'NO1109', 
+                     MODULE = 8.04,  R_INF = 0.5, R_SUP = 33.5,),
+
+                   _F(  NOEUD = 'NO1110', 
+                     MODULE = 8.068,  R_INF = 0.5, R_SUP = 33.5,),
+
+                   _F(  NOEUD = 'NO1119', 
+                     MODULE = 8.009,  R_INF = 0.5, R_SUP = 33.5,),
+
+                   _F(  NOEUD = 'NO1120', 
+                     MODULE = 8.028,  R_INF = 0.5, R_SUP = 33.5,),
+
+                   _F(  NOEUD = 'NO1129', 
+                     MODULE = 7.96,  R_INF = 0.5, R_SUP = 33.5,),
+
+                   _F(  NOEUD = 'NO1130', 
+                     MODULE = 7.797,  R_INF = 0.5, R_SUP = 33.5,),
+
+                   _F(  NOEUD = 'NO1139', 
+                     MODULE = 7.894,  R_INF = 0.5, R_SUP = 33.5,),
+
+                   _F(  NOEUD = 'NO1140', 
+                     MODULE = 7.897,  R_INF = 0.5, R_SUP = 33.5,),
+
+                   _F(  NOEUD = 'NO1149', 
+                     MODULE = 7.814,  R_INF = 0.5, R_SUP = 33.5,),
+
+                   _F(  NOEUD = 'NO1150', 
+                     MODULE = 7.811,  R_INF = 0.5, R_SUP = 33.5,),
+
+                   _F(  NOEUD = 'NO1159', 
+                     MODULE = 7.723,  R_INF = 0.5, R_SUP = 33.5,),
+
+                   _F(  NOEUD = 'NO1160', 
+                     MODULE = 7.715,  R_INF = 0.5, R_SUP = 33.5,),
+
+                   _F(  NOEUD = 'NO1169', 
+                     MODULE = 7.623,  R_INF = 0.5, R_SUP = 33.5,),
+
+                   _F(  NOEUD = 'NO1170', 
+                     MODULE = 7.614,  R_INF = 0.5, R_SUP = 33.5,),
+
+                   _F(  NOEUD = 'NO1179', 
+                     MODULE = 7.521,  R_INF = 0.5, R_SUP = 33.5,),
+
+                   _F(  NOEUD = 'NO1180', 
+                     MODULE = 7.511,  R_INF = 0.5, R_SUP = 33.5,),
+
+                   _F(  NOEUD = 'NO1189', 
+                     MODULE = 7.419,  R_INF = 0.5, R_SUP = 33.5,),
+
+                   _F(  NOEUD = 'NO1190', 
+                     MODULE = 7.411,  R_INF = 0.5, R_SUP = 33.5,),
+
+                   _F(  NOEUD = 'NO1199', 
+                     MODULE = 7.321,  R_INF = 0.5, R_SUP = 33.5,),
+
+                   _F(  NOEUD = 'NO1200', 
+                     MODULE = 7.316,  R_INF = 0.5, R_SUP = 33.5,),
+
+                   _F(  NOEUD = 'NO1209', 
+                     MODULE = 7.231,  R_INF = 0.5, R_SUP = 33.5,),
+
+                   _F(  NOEUD = 'NO1210', 
+                     MODULE = 7.232,  R_INF = 0.5, R_SUP = 33.5,),
+
+                   _F(  NOEUD = 'NO1219', 
+                     MODULE = 7.152,  R_INF = 0.5, R_SUP = 33.5,),
+
+                   _F(  NOEUD = 'NO1220', 
+                     MODULE = 7.159,  R_INF = 0.5, R_SUP = 33.5,),
+
+                   _F(  NOEUD = 'NO1229', 
+                     MODULE = 7.087,  R_INF = 0.5, R_SUP = 33.5,),
+
+                   _F(  NOEUD = 'NO1230', 
+                     MODULE = 7.103,  R_INF = 0.5, R_SUP = 33.5,),
+
+                   _F(  NOEUD = 'NO1239', 
+                     MODULE = 7.04,  R_INF = 0.5, R_SUP = 33.5,),
+
+                   _F(  NOEUD = 'NO1240', 
+                     MODULE = 7.065, R_INF = 0.5, R_SUP = 33.5,),
+
+                   _F(  NOEUD = 'NO1249', 
+                     MODULE = 7.01,  R_INF = 0.5, R_SUP = 33.5,),
+
+                   _F(  NOEUD = 'NO1250', 
+                     MODULE = 7.045,  R_INF = 0.5, R_SUP = 33.5,),
+
+                   _F(  NOEUD = 'NO1259', 
+                     MODULE = 7.,  R_INF = 0.5, R_SUP = 33.5,))
+                  )
+
+MA=DEFI_MATERIAU(            ELAS=_F(  E = 200000.,       
+                                        NU = 0.3,      
+                                        ALPHA = 0.000001,   ) )
+
+CM=AFFE_MATERIAU(        MAILLAGE=M,
+                                 AFFE=_F(  TOUT = 'OUI',         
+                                        MATER = MA,        
+                                        TEMP_REF = 0.,         ))
+
+CH=AFFE_CHAR_MECA(         MODELE=MO,DDL_IMPO=(
+                          _F(  GROUP_NO = 'SUPX',         DX = 0., ),
+                          _F(  GROUP_NO = 'SUPY',         DY = 0., ),
+                          _F(  GROUP_NO = 'SUPFISSZ',     DZ = 0., )),
+                          PRES_REP=_F(  GROUP_MA = 'MAILPRES',   PRES = -1.,) )
+
+ME=CALC_MATR_ELEM(         MODELE=MO,
+                               CHARGE=CH,
+                           CHAM_MATER=CM,
+                          PROPAGATION=1.0,
+                                THETA=THET,
+                              OPTION='RIGI_MECA_LAGR' )
+
+VE=CALC_VECT_ELEM(         CHARGE=CH,
+                           CHAM_MATER=CM,
+                              OPTION='CHAR_MECA' )
+
+NU=NUME_DDL(            MATR_RIGI=ME )
+
+K=ASSE_MATRICE(        MATR_ELEM=ME,
+                             NUME_DDL=NU )
+
+F=ASSE_VECTEUR(        VECT_ELEM=VE,
+                             NUME_DDL=NU )
+
+K=FACT_LDLT(      reuse=K,     MATR_ASSE=K  )
+
+MONDEPL=RESO_LDLT(           MATR_FACT=K,
+                                 CHAM_NO=F )
+
+GLOC=CALC_G_LOCAL_T(        MODELE=MO,
+                              DEPL=MONDEPL,
+                        CHAM_MATER=CM,
+                              FOND_FISS=FF,
+                             THETA=THET,
+                       PROPAGATION=1.,
+                           OPTION='CALC_G_LGLO',
+                             DEGRE=4,
+                             R_INF=3.,
+                             R_SUP=33.,
+                        LISSAGE_THETA='LEGENDRE',
+                            LISSAGE_G='LEGENDRE',
+                         COMP_ELAS=_F( RELATION = 'ELAS',     
+                                    DEFORMATION = 'PETIT',  )
+                    )
+
+#--------------------------------------------------------------------
+#            TEST DES RESULTATS DE G(S) LOCAL
+#--------------------------------------------------------------------
+
+
+TEST_TABLE(       TABLE=GLOC,
+                     FILTRE=_F(  NOM_PARA = 'NOEUD',  
+                              VALE_K = 'NO1099',      ),
+                   NOM_PARA='G_LOCAL',
+                       VALE=0.1231E-03,REFERENCE='ANALYTIQUE',
+                  PRECISION=7.E-2       )
+
+TEST_TABLE(       TABLE=GLOC,
+                   NOM_PARA='G_LOCAL',
+                     FILTRE=_F(  NOM_PARA = 'NOEUD',  
+                              VALE_K = 'NO1119',      ),
+                       VALE=0.1231E-03,REFERENCE='ANALYTIQUE',
+                  PRECISION=9.E-2       )
+
+TEST_TABLE(       TABLE=GLOC,
+                   NOM_PARA='G_LOCAL',
+                     FILTRE=_F(  NOM_PARA = 'NOEUD',  
+                              VALE_K = 'NO1140',      ),
+                       VALE=0.1231E-03,REFERENCE='ANALYTIQUE',
+                  PRECISION=7.E-2       )
+
+TEST_TABLE(       TABLE=GLOC,
+                   NOM_PARA='G_LOCAL',
+                     FILTRE=_F(  NOM_PARA = 'NOEUD',  
+                              VALE_K = 'NO1169',      ),
+                       VALE=0.1231E-03,REFERENCE='ANALYTIQUE',
+                  PRECISION=5.E-2       )
+
+TEST_TABLE(       TABLE=GLOC,
+                   NOM_PARA='G_LOCAL',
+                     FILTRE=_F(  NOM_PARA = 'NOEUD',  
+                              VALE_K = 'NO1190',      ),
+                       VALE=0.1231E-03,REFERENCE='ANALYTIQUE',
+                  PRECISION=5.E-2       )
+
+TEST_TABLE(       TABLE=GLOC,
+                   NOM_PARA='G_LOCAL',
+                     FILTRE=_F(  NOM_PARA = 'NOEUD',  
+                              VALE_K = 'NO1219',      ),
+                       VALE=0.1231E-03,REFERENCE='ANALYTIQUE',
+                  PRECISION=5.E-2       )
+
+TEST_TABLE(       TABLE=GLOC,
+                   NOM_PARA='G_LOCAL',
+                     FILTRE=_F(  NOM_PARA = 'NOEUD',  
+                              VALE_K = 'NO1259',      ),
+                       VALE=0.1231E-03,REFERENCE='ANALYTIQUE',
+                  PRECISION=9.E-2       )
+
+#--------------------------------------------------------------------
+#            TEST DES RESULTATS DE G(S) LOCAL NON REGRESSION
+#--------------------------------------------------------------------
+
+
+TEST_TABLE(       TABLE=GLOC,
+                     FILTRE=_F(  NOM_PARA = 'NOEUD',  
+                              VALE_K = 'NO1099',      ),
+                   NOM_PARA='G_LOCAL',
+                       VALE=1.1455894320807E-04,REFERENCE='NON_REGRESSION',VERSION='6.0.39',
+                  PRECISION=1.0E-9       )
+
+TEST_TABLE(       TABLE=GLOC,
+                   NOM_PARA='G_LOCAL',
+                     FILTRE=_F(  NOM_PARA = 'NOEUD',  
+                              VALE_K = 'NO1119',      ),
+                       VALE=1.1258902640760E-04,REFERENCE='NON_REGRESSION',VERSION='6.0.39',
+                  PRECISION=1.0E-9        )
+
+TEST_TABLE(       TABLE=GLOC,
+                   NOM_PARA='G_LOCAL',
+                     FILTRE=_F(  NOM_PARA = 'NOEUD',  
+                              VALE_K = 'NO1140',      ),
+                       VALE=1.1476698169591E-04,REFERENCE='NON_REGRESSION',VERSION='6.0.39',
+                  PRECISION=1.0E-9        )
+
+TEST_TABLE(       TABLE=GLOC,
+                   NOM_PARA='G_LOCAL',
+                     FILTRE=_F(  NOM_PARA = 'NOEUD',  
+                              VALE_K = 'NO1169',      ),
+                       VALE=1.1797084505440E-04,REFERENCE='NON_REGRESSION',VERSION='6.0.39',
+                  PRECISION=1.0E-9        )
+
+TEST_TABLE(       TABLE=GLOC,
+                   NOM_PARA='G_LOCAL',
+                     FILTRE=_F(  NOM_PARA = 'NOEUD',  
+                              VALE_K = 'NO1190',      ),
+                       VALE=1.1974458410688E-04,REFERENCE='NON_REGRESSION',VERSION='6.0.39',
+                  PRECISION=1.0E-9        )
+
+TEST_TABLE(       TABLE=GLOC,
+                   NOM_PARA='G_LOCAL',
+                     FILTRE=_F(  NOM_PARA = 'NOEUD',  
+                              VALE_K = 'NO1219',      ),
+                       VALE=1.1960253616932E-04,REFERENCE='NON_REGRESSION',VERSION='6.0.39',
+                  PRECISION=1.0E-9        )
+
+TEST_TABLE(       TABLE=GLOC,
+                   NOM_PARA='G_LOCAL',
+                     FILTRE=_F(  NOM_PARA = 'NOEUD',  
+                              VALE_K = 'NO1259',      ),
+                       VALE=1.1929934795363E-04,REFERENCE='NON_REGRESSION',VERSION='6.0.39',
+                  PRECISION=1.0E-9        )
+FIN( )
+#

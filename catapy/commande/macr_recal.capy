@@ -1,0 +1,40 @@
+#& MODIF COMMANDE  DATE 09/10/2002   AUTEUR DURAND C.DURAND 
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                  
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+   
+from Macro.macr_recal_ops import macr_recal_ops
+
+def macr_recal_prod(self,**args ):
+  return listr8
+
+MACR_RECAL = MACRO(nom="MACR_RECAL",op=macr_recal_ops,docu="U4.73.02",
+            UIinfo={"groupes":("Résultats et champs",)},
+                      sd_prod=macr_recal_prod,
+                      fr="Réalise le recalage de modèles Aster",
+         UNITE_ESCL      =SIMP(statut='o',typ='I'),
+         RESU_EXP        =SIMP(statut='o',typ=assd,min = 1, max='**'),
+         RESU_CALC       =SIMP(statut='o',typ=assd,min = 1, max='**'),
+         LIST_PARA       =SIMP(statut='o',typ=assd,min = 1, max='**'),
+         ITER_MAXI       =SIMP(statut='f',typ='I',defaut=10),
+         RESI_GLOB_RELA  =SIMP(statut='f',typ='R',defaut=1.E-3),
+         UNITE_RESU      =SIMP(statut='f',typ='I',defaut=91),
+         PARA_DIFF_FINI  =SIMP(statut='f',typ='R',defaut=0.001),
+         GRAPHIQUE       =FACT(statut='d',min=1,max=1,
+           UNITE           =SIMP(statut='f',typ='I',defaut=90),
+           INTERACTIF      =SIMP(statut='f',typ='TXM',defaut='NON',into=("OUI","NON")),)
+)  ;

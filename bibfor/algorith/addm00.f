@@ -1,0 +1,595 @@
+      SUBROUTINE ADDM00 ( IER, NOMCMD,
+     >                    NBOPT, TABENT, TABREE, TABCAR, LGCAR )
+C
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 05/03/2002   AUTEUR GNICOLAS G.NICOLAS 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+C RESPONSABLE GNICOLAS G.NICOLAS
+C TOLE CRP_20
+C     ------------------------------------------------------------------
+C      ADAPTATION - DECODAGE DE LA MACRO-COMMANDE - PHASE 00
+C      --           -              -                      --
+C     ------------------------------------------------------------------
+C
+      IMPLICIT NONE
+C
+C 0.1. ==> ARGUMENTS
+C
+      INTEGER IER
+      INTEGER NBOPT
+      INTEGER TABENT(NBOPT), LGCAR(NBOPT)
+C
+      REAL*8 TABREE(NBOPT)
+C
+      CHARACTER*16 NOMCMD
+      CHARACTER*(*) TABCAR(NBOPT)
+C
+C 0.2. ==> COMMUNS
+C
+C --------------- COMMUNS NORMALISES  JEVEUX  --------------------------
+      INTEGER      ZI
+      CHARACTER*8  ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32
+      CHARACTER*80 ZK80
+      COMMON /IVARJE/ZI(1)
+      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+C     -----  FIN  COMMUNS NORMALISES  JEVEUX --------------------------
+C
+C 0.3. ==> VARIABLES LOCALES
+C
+      CHARACTER*6 NOMPRO
+      PARAMETER ( NOMPRO = 'ADDM00' )
+C
+      INTEGER NBMCF
+      PARAMETER ( NBMCF = 2 )
+C
+      INTEGER EDNONO
+      PARAMETER (EDNONO=-1)
+      INTEGER EDNOPT
+      PARAMETER (EDNOPT=-1)
+C
+      INTEGER LXLGUT
+C
+      INTEGER CODRET
+      INTEGER IAUX, JAUX, KAUX, LAUX
+      INTEGER IFM, NIVINF
+      INTEGER MNGMAI, MNGSOL
+      INTEGER MODHOM, TYPRAF, TYPDER
+      INTEGER BILNBR, BILQUA, BILINT, BILCXT, BILTAI
+      INTEGER LCMN, LCMN1, LCRN
+      INTEGER LCHINM
+      INTEGER LVHOMA
+      INTEGER NUMORD, NUMPT
+      INTEGER NBMAJS
+      INTEGER TYPEXE
+      INTEGER ADTRA1, ADTRA2
+      INTEGER ADAUX1, ADAUX2
+C
+      CHARACTER*8 CMN, CMNP1, CRN
+      CHARACTER*16 CHINME
+      CHARACTER*16 VHOMAR
+      CHARACTER*16 MCLF(NBMCF)
+      CHARACTER*24 NTRAV1, NTRAV2
+      CHARACTER*72 REP
+C
+C====
+C 1. PREALABLE
+C====
+C
+      CODRET = 0
+C
+C 1.1. ==>  MOTS-CLES FACTEURS DE LA MACRO-COMMANDE
+C
+C                1234567890123456
+      MCLF(1) = 'ADAPTATION      '
+      MCLF(2) = 'MAJ_CHAM        '
+C
+C 1.2. ==> L'INFO
+C
+      CALL INFNIV ( IFM, NIVINF )
+C
+C====
+C 2. VERSION DE HOMARD
+C    REMARQUE : IL FAUT REMPLACER LE _ DE LA DONNEE PAR UN ., QUI
+C    EST INTERDIT DANS LA SYNTAXE DU LANGAGE DE COMMANDES ASTER
+C    REMARQUE : IL FAUT REMPLACER LE N MAJUSCULE DE LA DONNEE PAR
+C    UN n MINUSCULE, QUI EST INTERDIT DANS LA SYNTAXE DU LANGAGE
+C    DE COMMANDES ASTER
+C====
+C
+      CALL GETVTX ( ' ', 'VERSION_HOMARD', 1,1,1, REP, IAUX )
+      LVHOMA = LXLGUT(REP)
+      DO 21 , IAUX = 1 , LVHOMA
+        IF ( REP(IAUX:IAUX).EQ.'_' ) THEN
+          VHOMAR(IAUX:IAUX) = '.'
+        ELSEIF ( REP(IAUX:IAUX).EQ.'N' ) THEN
+          VHOMAR(IAUX:IAUX) = 'n'
+        ELSE
+          VHOMAR(IAUX:IAUX) = REP(IAUX:IAUX)
+        ENDIF
+   21 CONTINUE
+C
+      IF ( REP(LVHOMA-5:LVHOMA).EQ.'_PERSO' ) THEN
+        TYPEXE = 1
+        LVHOMA = LVHOMA - 6
+      ELSE
+        TYPEXE = 0
+      ENDIF
+C
+C====
+C 3. LE TYPE DE TRAITEMENT
+C====
+C
+      IF ( NOMCMD.EQ.'MACR_ADAP_MAIL  ' ) THEN
+C
+        MODHOM = 1
+C
+C 3.1. ==> QUEL TYPE D'ADAPTATION ?
+C
+        CALL GETVTX ( MCLF(1), 'LIBRE', 1,1,1, REP, IAUX )
+C
+        IF ( IAUX.EQ.0 ) THEN
+C
+          CALL GETVTX ( MCLF(1), 'UNIFORME', 1,1,1, REP, IAUX )
+C
+          IF ( IAUX.NE.0 ) THEN
+            IF ( REP.EQ.'RAFFINEMENT' ) THEN
+              TYPRAF = 2
+              TYPDER = 0
+            ELSEIF ( REP.EQ.'DERAFFINEMENT' ) THEN
+              TYPRAF = 0
+              TYPDER = 2
+            ELSEIF ( REP.EQ.'RIEN' ) THEN
+              TYPRAF = 0
+              TYPDER = 0
+            ENDIF
+          ENDIF
+C
+        ELSE
+C
+          IF ( REP.EQ.'RAFF_DERA' ) THEN
+            TYPRAF = 1
+            TYPDER = 1
+          ELSEIF ( REP.EQ.'RAFFINEMENT' ) THEN
+            TYPRAF = 1
+            TYPDER = 0
+          ELSEIF ( REP.EQ.'DERAFFINEMENT' ) THEN
+            TYPRAF = 0
+            TYPDER = 1
+          ENDIF
+C
+        ENDIF
+C
+C 3.2. ==> INFORMATION SUR UN MAILLAGE
+C            ON IMPOSE UN CERTAIN NOMBRE DE VARIABLES POUR FACILITER
+C            LA SUITE
+C
+      ELSE
+C
+        MODHOM = 2
+        TYPDER = 0
+        TYPRAF = 0
+C
+      ENDIF
+C
+C====
+C 4. SI ADAPTATION, CONVERSION DE SOLUTION
+C====
+C
+      IF ( MODHOM.EQ.1 ) THEN
+C
+      CALL GETFAC ( MCLF(2), NBMAJS )
+C
+      IF ( NBMAJS.NE.0 ) THEN
+C
+C 4.1. ==> ALLOCATION DES TABLEAUX DE STOCKAGE
+C          ON TROUVE POUR CHAQUE CHAMP A INTERPOLER :
+C       K8 : NOM DU RESULTAT (LG MAX = 8)
+C            NOM SYMBOLIQUE DU CHAMP (LG MAX = 16)
+C            TYPE DU CHAMP (LG MAX = 16)
+C            NOM DE L'OBJET (LG MAX = 8)
+C       I  : LONGUEUR DU NOM DU RESULTAT
+C            LONGUEUR DU NOM SYMBOLIQUE DU CHAMP
+C            LONGUEUR DU TYPE DU CHAMP
+C            LONGUEUR DU NOM DE L'OBJET
+C            NUMERO D'ORDRE
+C            NUMERO DU PAS DE TEMPS
+C
+C                 12   345678   9012345678901234
+        NTRAV1 = '&&'//NOMPRO//'.MAJ_SOL_NOM    '
+        NTRAV2 = '&&'//NOMPRO//'.MAJ_SOL_LONG   '
+        CALL WKVECT ( NTRAV1, 'V V K8', 6*NBMAJS , ADTRA1 )
+        CALL WKVECT ( NTRAV2, 'V V I' , 6*NBMAJS , ADTRA2 )
+C
+C 4.2. ==> STOCKAGE DES INFORMATIONS
+C
+        ADAUX1 = ADTRA1 - 1
+        ADAUX2 = ADTRA2 - 1
+C
+        DO 40 , IAUX = 1 , NBMAJS
+C
+C 4.2.1. ==> LE CONCEPT RESULTAT
+C
+        CALL GETVID ( MCLF(2), 'RESULTAT', IAUX, 1, 1, REP, JAUX )
+        JAUX = LXLGUT(REP)
+        ADAUX1 = ADAUX1 + 1
+        ZK8(ADAUX1)(1:JAUX) = REP(1:JAUX)
+        ADAUX2 = ADAUX2 + 1
+        ZI(ADAUX2) = JAUX
+C
+C 4.2.2. ==> LE NOM DU CHAMP A INTERPOLER
+C
+        CALL GETVTX ( MCLF(2), 'NOM_CHAM', IAUX, 1, 1, REP, JAUX )
+        JAUX = LXLGUT(REP)
+        IF ( JAUX.GT.16 ) THEN
+          CALL UTMESS ( 'E',NOMPRO,
+     >    'CE NOM DE CHAMP EST TROP LONG : '//REP)
+          CODRET = CODRET + 1
+        ELSEIF ( JAUX.LE.8 ) THEN
+          ADAUX1 = ADAUX1 + 1
+          ZK8(ADAUX1)(1:JAUX) = REP(1:JAUX)
+          ADAUX1 = ADAUX1 + 1
+        ELSE
+          ADAUX1 = ADAUX1 + 1
+          ZK8(ADAUX1) = REP(1:8)
+          ADAUX1 = ADAUX1 + 1
+          ZK8(ADAUX1)(1:JAUX-8) = REP(9:JAUX)
+        ENDIF
+        ADAUX2 = ADAUX2 + 1
+        ZI(ADAUX2) = JAUX
+C
+C 4.2.2. ==> LE TYPE DU CHAMP A INTERPOLER
+C
+        CALL GETVTX ( MCLF(2), 'TYPE_CHAM', IAUX, 1, 1, REP, JAUX )
+        JAUX = LXLGUT(REP)
+        IF ( JAUX.GT.16 ) THEN
+          CALL UTMESS ( 'E',NOMPRO,
+     >    'CE NOM DE CHAMP EST TROP LONG : '//REP)
+          CODRET = CODRET + 1
+        ELSEIF ( JAUX.LE.8 ) THEN
+          ADAUX1 = ADAUX1 + 1
+          ZK8(ADAUX1)(1:JAUX) = REP(1:JAUX)
+          ADAUX1 = ADAUX1 + 1
+        ELSE
+          ADAUX1 = ADAUX1 + 1
+          ZK8(ADAUX1) = REP(1:8)
+          ADAUX1 = ADAUX1 + 1
+          ZK8(ADAUX1)(1:JAUX-8) = REP(9:JAUX)
+        ENDIF
+        ADAUX2 = ADAUX2 + 1
+        ZI(ADAUX2) = JAUX
+C
+C 4.2.4. ==> LE NOM DU CHAMP QUI CONTIENDRA LA MISE A JOUR
+C
+        CALL GETVID ( MCLF(2), 'CHAM_MAJ', IAUX, 1, 1, REP, JAUX )
+        JAUX = LXLGUT(REP)
+        IF ( JAUX.GT.8 ) THEN
+          CALL UTMESS ( 'E', NOMPRO,
+     >    'CE NOM DE CHAMP EST TROP LONG : '//REP)
+          CODRET = CODRET + 1
+        ELSE
+          ADAUX1 = ADAUX1 + 1
+          ZK8(ADAUX1)(1:JAUX) = REP(1:JAUX)
+        ENDIF
+        ADAUX2 = ADAUX2 + 1
+        ZI(ADAUX2) = JAUX
+C
+C 4.2.5. ==> LE NUMERO D'ORDRE
+C           EN CAS D'ABSENCE, ON DIT QU'IL N'Y EN N'A PAS. MALIN.
+C
+        CALL GETVIS ( MCLF(2), 'NUME_ORDRE', 1,1,1, KAUX, JAUX )
+C
+        IF ( JAUX.LE.0 ) THEN
+          KAUX = EDNONO
+          LAUX = EDNOPT
+        ELSE
+C
+C           REMARQUE : COMME ON NE SAIT PAS FAIRE MIEUX, ON IDENTIFIE
+C                      LE NUMERO DE PAS DE TEMPS ET LE NUMERO D'ORDRE.
+C                      VOIR IRCHME
+C
+          LAUX = KAUX
+        ENDIF
+C
+        ADAUX2 = ADAUX2 + 1
+        ZI(ADAUX2) = KAUX
+C
+        ADAUX2 = ADAUX2 + 1
+        ZI(ADAUX2) = LAUX
+C
+   40   CONTINUE
+C
+      ENDIF
+C
+      ELSE
+C
+        NBMAJS = 0
+C
+      ENDIF
+C
+C===
+C 5. DIVERS BILANS
+C===
+C
+C 5.1. ==> NOMBRE D'ENTITES
+C
+      CALL GETVTX ( ' ', 'NOMBRE', 1,1,1, REP, IAUX )
+      IF ( IAUX.NE.0 ) THEN
+        IF ( REP(1:3).EQ.'OUI' ) THEN
+          BILNBR = 1
+        ELSEIF ( REP(1:3).EQ.'NON' ) THEN
+          BILNBR = 0
+        ENDIF
+      ELSE
+        BILNBR = 0
+      ENDIF
+C
+C 5.2. ==> QUALITE DES MAILLAGES
+C
+      CALL GETVTX ( ' ', 'QUALITE', 1,1,1, REP, IAUX )
+      IF ( IAUX.NE.0 ) THEN
+        IF ( REP(1:3).EQ.'OUI' ) THEN
+          BILQUA = 1
+        ELSEIF ( REP(1:3).EQ.'NON' ) THEN
+          BILQUA = 0
+        ENDIF
+      ELSE
+        BILQUA = 0
+      ENDIF
+C
+C 5.3. ==> CONNEXITE DU MAILLAGE
+C
+      CALL GETVTX ( ' ', 'CONNEXITE', 1,1,1, REP, IAUX )
+      IF ( IAUX.NE.0 ) THEN
+        IF ( REP(1:3).EQ.'OUI' ) THEN
+          BILCXT = 1
+        ELSEIF ( REP(1:3).EQ.'NON' ) THEN
+          BILCXT = 0
+        ENDIF
+      ELSE
+        BILCXT = 0
+      ENDIF
+C
+C 5.4. ==> TAILLE DES SOUS-DOMAINES
+C
+      CALL GETVTX ( ' ', 'TAILLE', 1,1,1, REP, IAUX )
+      IF ( IAUX.NE.0 ) THEN
+        IF ( REP(1:3).EQ.'OUI' ) THEN
+          BILTAI = 1
+        ELSEIF ( REP(1:3).EQ.'NON' ) THEN
+          BILTAI = 0
+        ENDIF
+      ELSE
+        BILTAI = 0
+      ENDIF
+C
+C 5.5. ==> INTERPENETRATION DES ELEMENTS
+C
+      CALL GETVTX ( ' ', 'INTERPENETRATION', 1,1,1, REP, IAUX )
+      IF ( IAUX.NE.0 ) THEN
+        IF ( REP(1:3).EQ.'OUI' ) THEN
+          BILINT = 1
+        ELSEIF ( REP(1:3).EQ.'NON' ) THEN
+          BILINT = 0
+        ENDIF
+      ELSE
+        BILINT = 0
+      ENDIF
+C
+C====
+C 6. DESTRUCTION DES CONCEPTS DE L'ETAPE INITIALE
+C====
+C
+      IF ( MODHOM.EQ.1 ) THEN
+C
+        CALL GETVTX ( ' ', 'MENAGE', 1,1,1, REP, IAUX )
+        IF ( IAUX.NE.0 ) THEN
+          IF ( REP(1:8).EQ.'MAILLAGE' ) THEN
+            MNGMAI = 1
+            MNGSOL = 0
+          ELSEIF ( REP(1:8).EQ.'SOLUTION' ) THEN
+            MNGMAI = 0
+            MNGSOL = 1
+          ELSEIF ( REP(1:8).EQ.'TOUT' ) THEN
+            MNGMAI = 1
+            MNGSOL = 1
+          ENDIF
+        ELSE
+          MNGMAI = 0
+          MNGSOL = 0
+        ENDIF
+C
+      ENDIF
+C
+C====
+C 7. PREMIER STOCKAGE DES ARGUMENTS
+C====
+C
+      IF ( NIVINF.GE.2 ) THEN
+        WRITE(IFM,*) 'DANS ',NOMPRO,' :'
+        WRITE(IFM,*) 'MODHOM = ', MODHOM
+        WRITE(IFM,*) 'NBMAJS  = ', NBMAJS
+      ENDIF
+C
+C 7.1. ==> ENTIERS
+C
+      TABENT(2) = MODHOM
+      TABENT(6) = TYPRAF
+      TABENT(7) = TYPDER
+      TABENT(8) = NBMAJS
+      TABENT(17) = 0
+      TABENT(18) = MNGMAI
+      TABENT(19) = MNGSOL
+      TABENT(28) = TYPEXE
+      TABENT(29) = IFM
+      TABENT(30) = NIVINF
+      TABENT(31) = BILNBR
+      TABENT(32) = BILQUA
+      TABENT(33) = BILCXT
+      TABENT(34) = BILTAI
+      TABENT(35) = BILINT
+C
+C 7.2. ==> CARACTERES
+C
+      IF ( NBMAJS.EQ.0 ) THEN
+        LGCAR(26) = 0
+        LGCAR(27) = 0
+      ELSE
+        IAUX = LXLGUT(NTRAV1)
+        LGCAR(26) = IAUX
+        TABCAR(26)(1:IAUX) = NTRAV1
+        IAUX = LXLGUT(NTRAV2)
+        LGCAR(27) = IAUX
+        TABCAR(27)(1:IAUX) = NTRAV2
+      ENDIF
+C
+      LGCAR(28) = LVHOMA
+      IF ( LVHOMA.GT.0 ) THEN
+        TABCAR(28)(1:LVHOMA) = VHOMAR(1:LVHOMA)
+      ENDIF
+C
+C 7.3. ==> REELS
+C
+C====
+C 8. DONNEES COMPLEMENTAIRES
+C====
+C
+      IAUX = 1
+      CALL ADDC00 ( NOMCMD, IAUX, MCLF,
+     >              NBOPT, TABENT, TABREE, TABCAR, LGCAR,
+     >              CODRET )
+C
+C====
+C 9. LES CONCEPTS. PAR DEFAUT, ON SUPPOSE QU'IL N'Y A RIEN
+C    ATTENTION : CETTE PHASE DE DECODAGE DOIT VENIR SEULEMENT
+C                MAINTENANT, APRES LE DECODAGE DES DIVERSES OPTIONS,
+C                POUR POUVOIR EFFECTUER LES CONTROLES
+C====
+C
+      LCMN = 0
+      LCMN1 = 0
+C
+C 9.1. ==> LE MAILLAGE INITIAL
+C
+      IF ( MODHOM.EQ.1 ) THEN
+        CALL GETVID ( MCLF(1), 'MAILLAGE_N', 1,1,1, CMN, IAUX )
+      ELSE
+        CALL GETVID ( ' ', 'MAILLAGE', 1,1,1, CMN, IAUX )
+      ENDIF
+C
+      LCMN = LXLGUT(CMN)
+C
+C 9.2. ==> LE MAILLAGE FINAL
+C
+      IF ( MODHOM.EQ.1 ) THEN
+C
+        CALL GETVID ( MCLF(1), 'MAILLAGE_NP1', 1,1,1, CMNP1, IAUX )
+        LCMN1 = LXLGUT(CMNP1)
+C
+      ENDIF
+C
+C====
+C 10. LE CHAMP D'INDICATEUR EN MECANIQUE
+C====
+C
+      LCRN = 0
+      LCHINM = 0
+C
+      IF ( TYPRAF.EQ.1 .OR. TYPDER.EQ.1 ) THEN
+C
+C 10.1. ==> LE RESULTAT
+C
+        CALL GETVID ( MCLF(1), 'RESULTAT_N', 1,1,1, CRN, IAUX )
+        LCRN = LXLGUT(CRN)
+C
+        IF ( IAUX.LE.0 ) THEN
+          CALL UTMESS ( 'E', NOMPRO, 'QUEL RESULTAT ?' )
+          CODRET = CODRET + 1
+        ENDIF
+C
+C 10.2. ==> LE NOM DU CHAMP
+C
+        CALL GETVTX ( MCLF(1), 'INDICATEUR', 1,1,1, CHINME, IAUX )
+        LCHINM = LXLGUT(CHINME)
+C
+        IF ( IAUX.LE.0 ) THEN
+          CALL UTMESS ( 'E', NOMPRO, 'QUEL TYPE D''INDICATEUR ?' )
+          CODRET = CODRET + 1
+        ENDIF
+C
+C 10.3. ==> LE NUMERO D'ORDRE
+C           EN CAS D'ABSENCE, ON DIT QU'IL N'Y EN N'A PAS. MALIN.
+C
+        CALL GETVIS ( MCLF(1), 'NUME_ORDRE', 1,1,1, NUMORD, IAUX )
+C
+        IF ( IAUX.LE.0 ) THEN
+          NUMORD = EDNONO
+          NUMPT = EDNOPT
+        ELSE
+C
+C           REMARQUE : COMME ON NE SAIT PAS FAIRE MIEUX, ON IDENTIFIE
+C                      LE NUMERO DE PAS DE TEMPS ET LE NUMERO D'ORDRE
+C                      VOIR IRCHME
+C
+          NUMPT = NUMORD
+        ENDIF
+C
+      ENDIF
+C
+C====
+C 11. SECOND STOCKAGE DES ARGUMENTS
+C====
+C
+C 11.1. ==> ENTIERS
+C
+      TABENT(15) = NUMPT
+      TABENT(16) = NUMORD
+C
+C 11.2. ==> CARACTERES
+C
+      LGCAR(2) = LCMN
+      TABCAR(2)(1:LCMN) = CMN(1:LCMN)
+C
+      LGCAR(3) = LCMN1
+      IF ( LCMN1.GT.0 ) THEN
+        TABCAR(3)(1:LCMN1) = CMNP1(1:LCMN1)
+      ENDIF
+C
+      LGCAR(4) = LCRN
+      IF ( LCRN.GT.0 ) THEN
+        TABCAR(4)(1:LCRN) = CRN(1:LCRN)
+      ENDIF
+C
+      LGCAR(5) = LCHINM
+      IF ( LCHINM.GT.0 ) THEN
+        TABCAR(5)(1:LCHINM) = CHINME(1:LCHINM)
+      ENDIF
+C
+C====
+C 12. BILAN
+C====
+C
+      IF ( CODRET .GT. 0 ) THEN
+        CALL UTMESS
+     > ( 'E', NOMPRO, 'ERREURS CONSTATEES POUR MACR_ADAP' )
+         IER = IER + CODRET
+      ENDIF
+C
+      END

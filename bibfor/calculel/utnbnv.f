@@ -1,0 +1,111 @@
+      SUBROUTINE UTNBNV(TYPMAV,NBSV,NBNV)
+C-----------------------------------------------------------------------
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF CALCULEL  DATE 11/02/2002   AUTEUR BOITEAU O.BOITEAU 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+C RESPONSABLE  O.BOITEAU
+C-----------------------------------------------------------------------
+C    - FONCTION REALISEE:  UTILITAIRE CALCULANT LE TYPE DE FACE VOISINE 
+C                          ET SON NBRE DE SOMMETS. POUR AERER TE0003
+C
+C IN TYPMAV  : NOM DE LA MAILLE VOISINE.
+C OUT NBSV   : TYPE DE MAILLE VOISINE (POUR 2D, TRAITEMENT MAILLE SYM.).
+C OUT NBNV   : NOMBRE DE NOEUDS.
+C   -------------------------------------------------------------------
+C     SUBROUTINES APPELLEES:
+C       MSG:UTMESS.
+C
+C     FONCTIONS INTRINSEQUES:
+C       AUCUNE.
+C   -------------------------------------------------------------------
+C     ASTER INFORMATIONS:
+C       25/09/01 (OB): CREATION POUR SIMPLIFIER TE0003.F.
+C----------------------------------------------------------------------
+C CORPS DU PROGRAMME
+      IMPLICIT NONE
+
+C DECLARATION PARAMETRES D'APPELS
+      INTEGER NBNV,NBSV
+      CHARACTER*8 TYPMAV
+      
+C DECLARATION VARIABLES LOCALES
+      CHARACTER*1 NOEUV
+      CHARACTER*2 FORMV
+
+C INIT.
+      FORMV = TYPMAV(1:2)
+      NOEUV = TYPMAV(5:5)
+
+C DETERMINATION DE NBNV ET NBSV (EN 2D)
+
+C TRIANGLE
+      IF ((FORMV.EQ.'TR').OR.(FORMV.EQ.'TL')) THEN
+        NBSV = 3
+        IF ( NOEUV.EQ.'3') THEN
+          NBNV = 3
+        ELSE IF ( NOEUV.EQ.'6') THEN
+          NBNV = 6
+        ELSE
+          CALL UTMESS('F','UTNBNV','! NBNV: TYPELEM INCONNU !')
+        ENDIF
+C QUADRANGLE
+      ELSE IF ((FORMV.EQ.'QU').OR.(FORMV.EQ.'QL')) THEN
+        NBSV = 4
+        IF ( NOEUV.EQ.'4') THEN
+          NBNV = 4
+        ELSE IF ( NOEUV.EQ.'8') THEN
+          NBNV = 8
+        ELSE IF (NOEUV.EQ.'9') THEN
+          NBNV = 9
+        ELSE
+          CALL UTMESS('F','UTNBNV','! NBNV: TYPELEM INCONNU !')
+        ENDIF
+C HEXAEDRE
+      ELSE IF ( FORMV.EQ.'HE') THEN
+        IF (TYPMAV(5:5).EQ.'8') THEN
+          NBNV = 8
+        ELSE IF (TYPMAV(5:6).EQ.'20') THEN
+          NBNV = 20
+        ELSE IF (TYPMAV(5:6).EQ.'27') THEN
+          NBNV = 27
+        ELSE
+          CALL UTMESS('F','UTNBNV','! NBNV: TYPELEM INCONNU !')
+        ENDIF
+C PENTAEDRE
+      ELSE IF ( FORMV.EQ.'PE') THEN
+        IF (TYPMAV(6:6).EQ.'6') THEN
+          NBNV = 6
+        ELSE IF (TYPMAV(6:7).EQ.'15') THEN
+          NBNV = 15
+        ELSE
+          CALL UTMESS('F','UTNBNV','! NBNV: TYPELEM INCONNU !')
+        ENDIF
+C TETRAEDRE
+      ELSE IF ( FORMV.EQ.'TE') THEN
+        IF (TYPMAV(6:6).EQ.'4') THEN
+          NBNV = 4
+        ELSE IF (TYPMAV(6:7).EQ.'10') THEN
+          NBNV = 10
+        ELSE
+          CALL UTMESS('F','UTNBNV','! NBNV: TYPELEM INCONNU !')
+        ENDIF
+      ELSE
+        CALL UTMESS('F','UTNBNV','! NBNV: TYPELEM INCONNU !')
+      ENDIF
+ 
+      END

@@ -1,0 +1,437 @@
+# MODIF  DATE 18/09/2002   AUTEUR CIBHHLV L.VIVAN 
+# TITRE CALCUL DES INDICES DE NOCIVITE D'UN SEISME
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+#              SEE THE FILE "LICENSE.TERMS" FOR INFORMATION ON USAGE AND
+#              REDISTRIBUTION OF THIS FILE.
+# ======================================================================
+
+
+DEBUT( CODE=_F(  NOM = 'ZZZZ100D',NIV_PUB_WEB='INTERNET'))
+
+#--------------------------------------------------------
+#
+INCLUDE(   UNITE=20 )
+
+#
+#--------------------------------------------------------
+#
+INLBNS=CALC_FONCTION(  NOCI_SEISME=_F( 
+                             FONCTION = LBNS,
+                             AMOR_REDUIT = 0.05E0)
+                       )
+
+#
+INLBNS11=CALC_FONCTION(    NOCI_SEISME=_F( 
+                             FONCTION = LBNS,
+                             OPTION = 'INTE_ARIAS')
+                       )
+
+#
+INLBNS12=CALC_FONCTION(    NOCI_SEISME=_F( 
+                             FONCTION = LBNS,
+                             OPTION = 'MAXI')
+                       )
+
+#
+INLBNS13=CALC_FONCTION(    NOCI_SEISME=_F( 
+                             FONCTION = LBNS,
+                             OPTION = 'ACCE_SUR_VITE')
+                       )
+
+INLBNS14=CALC_FONCTION(    NOCI_SEISME=_F( 
+                             FONCTION = LBNS,
+                             OPTION = 'VITE_ABSO_CUMU')
+                       )
+
+#
+INLBNS15=CALC_FONCTION(    NOCI_SEISME=_F( 
+                             FONCTION = LBNS,
+                             OPTION = 'POUV_DEST')
+                       )
+
+#
+INLBNS16=CALC_FONCTION(    NOCI_SEISME=_F( 
+                             FONCTION = LBNS,
+                             OPTION = 'DUREE_PHAS_FORT')
+                       )
+
+#
+INLBNS17=CALC_FONCTION(    NOCI_SEISME=_F( 
+                             FONCTION = LBNS, 
+                             OPTION = 'INTE_SPEC',
+                             AMOR_REDUIT = 0.05E0)
+                       )
+
+INLBNS18=CALC_FONCTION(    NOCI_SEISME=_F( 
+                                FONCTION = LBNS,
+                                INST_INIT = 10.,
+                                INST_FIN = 12.,
+                                CRITERE = 'ABSOLU',
+                                PRECISION = 2.E-5,
+                                COEF = 0.42,
+                                PESANTEUR = 9.8,
+                                FREQ_INIT = 0.23,
+                                FREQ_FIN = 13.21,
+                                AMOR_REDUIT = 0.03,
+                                NORME = 1.0,
+                                BORNE_INF = 0.45,
+                                BORNE_SUP = 0.55)
+                       )
+
+#
+SPEC_H=LIRE_FONCTION(   
+                                             UNITE=18,
+                                          INTERPOL='LOG',
+                                     INTERPOL_FONC='LOG',
+                                        PROL_DROITE='CONSTANT',
+                                       PROL_GAUCHE='CONSTANT',
+                                   PROL_DROITE_FONC='CONSTANT',
+                                  PROL_GAUCHE_FONC='CONSTANT',
+                                             TITRE='SRO_H ACCE'
+                             )
+
+#
+INH=CALC_FONCTION( 
+                       NOCI_SEISME=_F( 
+                                SPEC_OSCI = SPEC_H,
+                                NATURE = 'ACCE',
+                                AMOR_REDUIT = 0.05E0)
+                     )
+
+INH1=CALC_FONCTION( 
+                        NOCI_SEISME=_F( 
+                                SPEC_OSCI = SPEC_H,
+                                NATURE = 'ACCE',
+                                AMOR_REDUIT = 0.05E0, 
+                                INST_INIT = 10.,
+                                INST_FIN = 12.,
+                                CRITERE = 'ABSOLU',
+                                PRECISION = 2.E-5,
+                                COEF = 0.42,
+                                FREQ_INIT = 0.23,
+                                FREQ_FIN = 13.21,
+                                NORME = 1.0,
+                                BORNE_INF = 0.45,
+                                BORNE_SUP = 0.55)
+                       )
+
+#
+
+#--------------------------------------------------------
+#
+TEST_TABLE(
+                   TABLE=INLBNS,
+                 FICHIER='RESULTAT',
+                NOM_PARA='ACCE_MAX',
+                    VALE=1.000
+            )
+
+#            
+TEST_TABLE(
+                   TABLE=INLBNS,
+                 FICHIER='RESULTAT',
+                NOM_PARA='VITE_MAX',
+                    VALE=0.229056
+            )
+
+#            
+TEST_TABLE(
+                   TABLE=INLBNS,
+                 FICHIER='RESULTAT',
+                NOM_PARA='DEPL_MAX',
+                    VALE=1.342452
+            )
+
+#
+TEST_TABLE(
+                   TABLE=INLBNS,
+                 FICHIER='RESULTAT',
+                NOM_PARA='INTE_ARIAS',
+                    VALE=2.582E-01
+            )
+
+#
+TEST_TABLE(
+                   TABLE=INLBNS,
+                 FICHIER='RESULTAT',
+                NOM_PARA='POUV_DEST',
+                    VALE=2.09825E-01
+            )
+
+#            
+TEST_TABLE(
+                   TABLE=INLBNS,
+                 FICHIER='RESULTAT',
+                NOM_PARA='ACCE_SUR_VITE',
+                    VALE=4.36573
+            )
+
+#                    
+TEST_TABLE(
+                   TABLE=INLBNS,
+                 FICHIER='RESULTAT',
+                NOM_PARA='VITE_ABSO_CUMU',
+                    VALE=4.4337
+            )
+
+#         
+TEST_TABLE(
+                   TABLE=INLBNS,
+                 FICHIER='RESULTAT',
+                NOM_PARA='DUREE_PHAS_FORT',
+                    VALE=14.83
+            )
+
+#
+TEST_TABLE(
+                   TABLE=INLBNS,
+                 FICHIER='RESULTAT',
+                NOM_PARA='INTE_SPECT',
+                    VALE=5.86E-01
+            )
+
+#            
+TEST_TABLE(
+                   TABLE=INLBNS11,
+                 FICHIER='RESULTAT',
+                NOM_PARA='INTE_ARIAS',
+                    VALE=2.582E-01
+            )
+
+#
+TEST_TABLE(
+                   TABLE=INLBNS12,
+                 FICHIER='RESULTAT',
+                NOM_PARA='ACCE_MAX',
+                    VALE=1.000
+            )
+
+#            
+TEST_TABLE(
+                   TABLE=INLBNS12,
+                 FICHIER='RESULTAT',
+                NOM_PARA='VITE_MAX',
+                    VALE=0.229056
+            )
+
+#            
+TEST_TABLE(
+                   TABLE=INLBNS12,
+                 FICHIER='RESULTAT',
+                NOM_PARA='DEPL_MAX',
+                    VALE=1.342452
+            )
+
+#
+TEST_TABLE(
+                   TABLE=INLBNS13,
+                 FICHIER='RESULTAT',
+                NOM_PARA='ACCE_SUR_VITE',
+                    VALE=4.36573
+            )
+
+# 
+TEST_TABLE(
+                   TABLE=INLBNS14,
+                 FICHIER='RESULTAT',
+                NOM_PARA='VITE_ABSO_CUMU',
+                    VALE=4.4337
+            )
+
+#           
+TEST_TABLE(
+                   TABLE=INLBNS15,
+                 FICHIER='RESULTAT',
+                NOM_PARA='POUV_DEST',
+                    VALE=2.09825E-01
+            )
+
+#            
+TEST_TABLE(
+                   TABLE=INLBNS16,
+                 FICHIER='RESULTAT',
+                NOM_PARA='DUREE_PHAS_FORT',
+                    VALE=14.83
+            )
+
+#          
+TEST_TABLE(
+                   TABLE=INLBNS17,
+                 FICHIER='RESULTAT',
+                NOM_PARA='INTE_SPECT',
+                    VALE=5.86E-01
+            )
+
+TEST_TABLE(
+                   TABLE=INLBNS18,
+                 FICHIER='RESULTAT',
+                NOM_PARA='ACCE_MAX',
+                    VALE=4.4113E-1
+            )
+
+#            
+TEST_TABLE(
+                   TABLE=INLBNS18,
+                 FICHIER='RESULTAT',
+                NOM_PARA='VITE_MAX',
+                    VALE=0.393261
+            )
+
+#            
+TEST_TABLE(
+                   TABLE=INLBNS18,
+                 FICHIER='RESULTAT',
+                NOM_PARA='DEPL_MAX',
+                    VALE=4.95142
+            )
+
+#
+TEST_TABLE(
+                   TABLE=INLBNS18,
+                 FICHIER='RESULTAT',
+                NOM_PARA='INTE_ARIAS',
+                     VALE=1.06266E-02
+            )
+
+#
+TEST_TABLE(
+                   TABLE=INLBNS18,
+                 FICHIER='RESULTAT',
+                NOM_PARA='POUV_DEST',
+                    VALE=3.2867E-01
+            )
+
+#            
+TEST_TABLE(
+                   TABLE=INLBNS18,
+                 FICHIER='RESULTAT',
+                NOM_PARA='ACCE_SUR_VITE',
+                    VALE=1.12172
+            )
+
+#                    
+TEST_TABLE(
+                   TABLE=INLBNS18,
+                 FICHIER='RESULTAT',
+                NOM_PARA='VITE_ABSO_CUMU',
+                    VALE=2.85872E-01
+            )
+
+#         
+TEST_TABLE(
+                   TABLE=INLBNS18,
+                 FICHIER='RESULTAT',
+                NOM_PARA='DUREE_PHAS_FORT',
+                    VALE=4.E-02
+            )
+
+#
+TEST_TABLE(
+                   TABLE=INLBNS18,
+                 FICHIER='RESULTAT',
+                NOM_PARA='INTE_SPECT',
+                    VALE=1.31677
+            )
+
+TEST_TABLE(
+                   TABLE=INH,
+                 FICHIER='RESULTAT',
+                NOM_PARA='INTE_SPECT',
+                    VALE=1.49014
+            )
+
+TEST_TABLE(
+                   TABLE=INH1,
+                 FICHIER='RESULTAT',
+                NOM_PARA='INTE_SPECT',
+                    VALE=4.5305
+            )
+
+#
+#--------------------------------------------------------
+#
+#
+# VALIDATION CORR_ACCE 
+#
+
+# CAS ANALYTIQUE 
+
+TINIT=DEFI_VALEUR(  R8=EVAL("""0. """) )
+TFIN=DEFI_VALEUR(  R8=EVAL("""20. """) )
+PAS=DEFI_VALEUR(  R8=EVAL("""0.1 """) )
+A1=DEFI_VALEUR(  R8=EVAL("""1. """) )
+A0=DEFI_VALEUR(  R8=EVAL("""2. """) )
+
+LIST=DEFI_LIST_REEL(  DEBUT=TINIT,
+                         INTERVALLE=_F(  JUSQU_A = TFIN, PAS = PAS) )
+
+DROITE = FORMULE(REEL="""(REEL:INST) =
+A1*INST + A0 """)
+
+ACCE=CALC_FONC_INTERP(FONCTION=DROITE,    LIST_PARA=LIST,
+                            NOM_RESU='ACCE',
+                            PROL_GAUCHE='EXCLU',  PROL_DROITE='EXCLU',
+                            INTERPOL='INT', 
+                            TITRE=' CORR_ACCE '    )
+
+# ------------------ TEST CORR_DEPL = 'NON' (DEFAUT)-------------------
+
+ACCE1=CALC_FONCTION(CORR_ACCE=_F(  FONCTION = ACCE),
+                       )
+
+RMS1=CALC_FONCTION( RMS=_F(  FONCTION = ACCE1)
+                         )
+
+TEST_TABLE(      TABLE=RMS1,
+                 NOM_PARA='RMS',
+                 REFERENCE='ANALYTIQUE',
+                 VALE=0.E+00  , CRITERE='ABSOLU' , PRECISION=1.E-10 )
+
+ACCE2=CALC_FONCTION(CORR_ACCE=_F(  FONCTION = LBNS, CORR_DEPL = 'NON'),
+                       )
+
+RMS2=CALC_FONCTION( RMS=_F(  FONCTION = ACCE2)
+                         )
+
+TEST_TABLE(      TABLE=RMS2,
+                 NOM_PARA='RMS',
+                 REFERENCE='NON_REGRESSION',
+                 VALE=2.278E-01  , CRITERE='ABSOLU' , PRECISION=1.E-4 )
+
+
+# ------------------ TEST CORR_DEPL = 'OUI' ----------------------------
+
+ACCE3=CALC_FONCTION(CORR_ACCE=_F(  FONCTION = ACCE, CORR_DEPL = 'OUI'),
+                       )
+
+RMS3=CALC_FONCTION( RMS=_F(  FONCTION = ACCE3)
+                         )
+
+TEST_TABLE(      TABLE=RMS3,
+                 NOM_PARA='RMS',
+                 REFERENCE='ANALYTIQUE',
+                 VALE=0.E+00  , CRITERE='ABSOLU' , PRECISION=1.E-10 )
+
+ACCE4=CALC_FONCTION(CORR_ACCE=_F(  FONCTION = LBNS, CORR_DEPL = 'OUI'),
+                       )
+
+RMS4=CALC_FONCTION( RMS=_F(  FONCTION = ACCE4)
+                         )
+
+TEST_TABLE(      TABLE=RMS4,
+                 NOM_PARA='RMS',
+                 REFERENCE='NON_REGRESSION',
+                 VALE=2.243E-01  , CRITERE='ABSOLU' , PRECISION=1.E-4 )
+
+#
+# FIN VALIDATION CORR_ACCE 
+##--------------------------------------------------------
+
+#
+FIN()
+#
+##
+##--------------------------------------------------------
+##

@@ -1,0 +1,195 @@
+# MODIF  DATE 07/06/2002   AUTEUR DURAND C.DURAND 
+# TITRE  VIBRATION D'UNE POUTRE AVEC IMPACT MULTI-POINTS
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+# CAS_TEST__:SDNL301A
+DEBUT(CODE=_F(  NOM = 'SDNL301A',NIV_PUB_WEB='INTERNET'))
+
+#----- GRANDEURS PHYSIQUE: UNITE MKS ---
+KN=1.75E+6
+
+CN=.28
+
+RAYON=.00795
+
+EPAIS=.00115
+
+AMPL=41.38
+
+FORCEP=8.276
+
+FORCEM=-8.276
+
+OMEGA=251.2
+
+TDEB=.17
+
+TFIN=.25
+
+DELT=.5E-5
+
+#DELT = .5E-4 ;
+ACIER=DEFI_MATERIAU(   ELAS=_F( E = 2.07E11, NU = 0.3, RHO = 7870.,
+                        AMOR_ALPHA = 1.79E-5, AMOR_BETA = .1526) )
+
+#-----   MODELE ----------------
+POUTRE=LIRE_MAILLAGE()
+
+POUTRE=DEFI_GROUP( reuse=POUTRE,   MAILLAGE=POUTRE,
+  CREA_GROUP_MA=_F(  NOM = 'TOUT', TOUT = 'OUI'))
+
+MO=AFFE_MODELE(  MAILLAGE=POUTRE,
+             AFFE=_F(  TOUT = 'OUI', 
+                    PHENOMENE = 'MECANIQUE', 
+                    MODELISATION = 'POU_D_T') )
+
+#
+SINO = FORMULE(REEL="""(REEL:INST) =
+SIN (OMEGA *INST)""")
+LINST=DEFI_LIST_REEL(   DEBUT=0.,
+                          INTERVALLE=_F(  JUSQU_A = TFIN, PAS = .0001) )
+
+SINOT=CALC_FONC_INTERP(   FONCTION=SINO,   LIST_PARA=LINST  )
+
+CARELEM=AFFE_CARA_ELEM(   MODELE=MO, 
+                            POUTRE=_F(  
+       GROUP_MA = 'TOUT',
+
+                           SECTION = 'CERCLE', 
+                           CARA = ( 'R','EP', ),
+                           VALE = ( RAYON,  EPAIS,)) )
+
+CHMAT=AFFE_MATERIAU(   MAILLAGE=POUTRE,
+                         AFFE=_F(  TOUT = 'OUI',
+                               MATER = ACIER) )
+
+CLIMIT=AFFE_CHAR_MECA(   MODELE=MO,DDL_IMPO=(
+                           _F(  TOUT = 'OUI', DZ = .0, DRX = .0, DRY = .0),
+                           _F(  NOEUD = 'N1', DX = .0, DY = .0, DRZ = .0)))
+
+FORCE=AFFE_CHAR_MECA(   MODELE=MO,FORCE_NODALE=(
+                           _F( FY = FORCEP,
+                          NOEUD = ('N2','N3','N4','N5','N6','N14','N15','N16','N17','N18',)),
+                           _F( FY = FORCEM,
+                       NOEUD = ('N8','N9','N10','N11','N12','N20','N21','N22','N23','N24',))))
+
+BUTE=DEFI_OBSTACLE(   TYPE='PLAN_Y' )
+
+# ASSEMBLAGE MATRICE
+
+MELER=CALC_MATR_ELEM(  MODELE=MO,
+                       OPTION='RIGI_MECA',
+                       CARA_ELEM=CARELEM,
+                       CHAM_MATER=CHMAT,
+                       CHARGE=CLIMIT)
+
+MELEM=CALC_MATR_ELEM(  MODELE=MO,
+                       OPTION='MASS_MECA',
+                       CARA_ELEM=CARELEM,
+                       CHAM_MATER=CHMAT,
+                       CHARGE=CLIMIT)
+
+MELEA=CALC_MATR_ELEM(  MODELE=MO,
+                       OPTION='AMOR_MECA',
+                       CARA_ELEM=CARELEM,
+                       MASS_MECA=MELEM,
+                       RIGI_MECA=MELER,
+                       CHAM_MATER=CHMAT)
+
+#                      CHARGE: CLIMIT);
+VELEM=CALC_VECT_ELEM(CHARGE=FORCE, OPTION='CHAR_MECA')
+
+NDDL=NUME_DDL(   MATR_RIGI=MELER)
+
+MATR=ASSE_MATRICE(  MATR_ELEM=MELER,  NUME_DDL=NDDL )
+
+MATM=ASSE_MATRICE(  MATR_ELEM=MELEM,  NUME_DDL=NDDL )
+
+MATA=ASSE_MATRICE(  MATR_ELEM=MELEA,  NUME_DDL=NDDL )
+
+VECT=ASSE_VECTEUR(  VECT_ELEM=VELEM,  NUME_DDL=NDDL )
+
+# CALCUL MODAL :30 MODES
+
+MODE=MODE_ITER_SIMULT(   MATR_A=MATR,   MATR_B=MATM, 
+                          CALC_FREQ=_F(  OPTION = 'PLUS_PETITE',
+                          NMAX_FREQ = 30) )
+
+NDDLGEN=NUME_DDL_GENE(   BASE=MODE )
+
+# PROJECTION DANS LA BASSE MODALE
+
+RIGIPROJ=PROJ_MATR_BASE(  BASE=MODE,  NUME_DDL_GENE=NDDLGEN,
+                            MATR_ASSE=MATR )
+
+MASSPROJ=PROJ_MATR_BASE(  BASE=MODE,  NUME_DDL_GENE=NDDLGEN,
+                            MATR_ASSE=MATM )
+
+AMORPROJ=PROJ_MATR_BASE(  BASE=MODE,  NUME_DDL_GENE=NDDLGEN,
+                            MATR_ASSE=MATA)
+
+VECTPROJ=PROJ_VECT_BASE(  BASE=MODE,  VECT_ASSE=VECT,
+                            NUME_DDL_GENE=NDDLGEN,  TYPE_VECT='FORC' )
+
+TRANGENE=DYNA_TRAN_MODAL(   METHODE='EULER',
+                              MASS_GENE=MASSPROJ,  RIGI_GENE=RIGIPROJ,
+                              AMOR_GENE=AMORPROJ,
+                             INCREMENT=_F(  INST_INIT = 0.,  INST_FIN = TFIN,
+                                         PAS = DELT),
+                              EXCIT=_F(  VECT_GENE = VECTPROJ, 
+                                      FONC_MULT = SINOT),CHOC=(
+                              _F(  NOEUD_1 = 'N6', JEU = .406E-3,  
+                                    OBSTACLE = BUTE,
+                                    ORIG_OBST = (.609, 0.0, 0.0, ),
+                                    NORM_OBST = ( 1.,  0., 0., ),
+                                    RIGI_NOR = KN, AMOR_NOR = CN),
+                              _F(  NOEUD_1 = 'N13', JEU = .406E-3,  
+                                    OBSTACLE = BUTE,
+                                    ORIG_OBST = (1.218, 0.0, 0.0, ),
+                                    NORM_OBST = ( 1.,  0., 0., ),
+                                    RIGI_NOR = KN, AMOR_NOR = CN),
+                              _F(  NOEUD_1 = 'N19', JEU = .406E-3,  
+                                    OBSTACLE = BUTE,
+                                    ORIG_OBST = (1.827, 0.0, 0.0, ),
+                                    NORM_OBST = ( 1.,  0., 0., ),
+                                    RIGI_NOR = KN, AMOR_NOR = CN),
+                              _F(  NOEUD_1 = 'N25', JEU = .406E-3,  
+                                    OBSTACLE = BUTE,
+                                    ORIG_OBST = (2.436, 0.0, 0.0, ),
+                                    NORM_OBST = ( 1.,  0., 0., ),
+                                    RIGI_NOR = KN, AMOR_NOR = CN)),
+                               INFO=2,
+                              IMPRESSION=_F(  NIVEAU = 'DEPL_LOC',
+                                           INST_FIN = 0.01)
+                             )
+
+POST=POST_DYNA_MODA_T(  RESU_GENE=TRANGENE,  
+                 CHOC=_F( INST_INIT = TDEB,  INST_FIN = TFIN) )
+
+TEST_TABLE(      TABLE=POST,FILTRE=( 
+                   _F(  NOM_PARA = 'CALCUL',
+                            VALE_K = 'FORCE_NORMALE'),
+                   _F(  NOM_PARA = 'NOEUD',
+                            VALE_K = 'N25')),
+                 NOM_PARA='RMS_T_TOTAL',
+                     VALE=23.4,  
+                PRECISION=0.1 
+             )
+
+FIN( )
+#

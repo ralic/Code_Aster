@@ -1,0 +1,183 @@
+# MODIF  DATE 07/06/2002   AUTEUR DURAND C.DURAND 
+# TITRE POUTRE DROITE APPUYEE EN SES DEUX EXTREMITES SOUMISE A UN
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+# CHARGEMENT REPARTI LINEAIRE. (INTRODUIT EN 4.2.14)
+# CALCUL DE LA FLECHE, DE L'EFFORT TRANCHANT, DU MOMENT DE FLEXION ET
+# DE LA CONTRAINTE MAXIMALE ASSOCIEE.
+# MODELISATION POU_D_TG
+#======================================================================
+#
+DEBUT( CODE=_F(  NOM = 'SSLL102G',NIV_PUB_WEB='INTERNET') )
+
+#
+MA=LIRE_MAILLAGE(  )
+
+MA=DEFI_GROUP( reuse=MA,   MAILLAGE=MA,
+  CREA_GROUP_MA=_F(  NOM = 'TOUT', TOUT = 'OUI'))
+
+#
+MO=AFFE_MODELE(    MAILLAGE=MA,
+                        AFFE=_F( TOUT = 'OUI',
+                              PHENOMENE = 'MECANIQUE',
+                              MODELISATION = 'POU_D_TG')
+                 )
+
+#
+MATR=DEFI_MATERIAU(    ELAS=_F( E = 2.E11,
+                               NU = 0.3)
+                     )
+
+#
+CHMAT=AFFE_MATERIAU(    MAILLAGE=MA,
+                              AFFE=_F( TOUT = 'OUI',
+                                    MATER = MATR)
+                        )
+
+#
+CAREL=AFFE_CARA_ELEM(    MODELE=MO,
+                           POUTRE=_F(  
+       GROUP_MA = 'TOUT',
+
+                                    SECTION = 'GENERALE',
+                                    CARA = ('A',  'IY',
+                                               'IZ', 'JX',
+                                               'RY', 'RZ',  'RT',
+                                               'JG', 'AY', 'AZ',
+                                              ),
+                                    VALE = ( 3.14159E-2, 7.85398E-5,
+                                                7.85398E-5, 1.57080E-4,
+                                                0.100,   0.100,   0.100,
+                                                10., 0., 0.,
+                                              ))
+                       )
+
+#
+F1=DEFI_FONCTION(    NOM_PARA='X',
+                           VALE=(0.,  0.,
+                                 6.,  6000.,
+                                ),
+                       INTERPOL='LIN'
+                   )
+
+#
+CHARG1=AFFE_CHAR_MECA(      MODELE=MO,DDL_IMPO=(
+                            _F( NOEUD = 'N1',
+                                      DX = 0.,
+                                      DY = 0.,
+                                      DZ = 0.,
+                                      DRX = 0.,
+                                      DRY = 0.),
+                            _F( NOEUD = 'N11',
+                                      DY = 0.))
+                        )
+
+#
+CHARG2=AFFE_CHAR_MECA_F(          MODELE=MO,
+                              FORCE_POUTRE=_F( 
+       GROUP_MA = 'TOUT',
+
+                                            FY = F1)
+                          )
+
+#
+MEST1=MECA_STATIQUE(        MODELE=MO,
+                         SOLVEUR=_F( STOP_SINGULIER = 'OUI'),
+                          CHAM_MATER=CHMAT,
+                           CARA_ELEM=CAREL,EXCIT=(
+                               _F( CHARGE = CHARG1),
+                                     _F( CHARGE = CHARG2))
+                      )
+
+#
+MEST1=CALC_ELEM( reuse=MEST1,       MODELE=MO,
+                       CHAM_MATER=CHMAT,
+                        CARA_ELEM=CAREL,
+                         RESULTAT=MEST1,EXCIT=(
+                            _F( CHARGE = CHARG1),
+                                  _F( CHARGE = CHARG2)),
+                           OPTION=('EFGE_ELNO_DEPL',
+                                  # 'SIGM_ELNO_DEPL'
+                                   )
+                   )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = MEST1,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 1,
+                    NOEUD = 'N7',
+                    NOM_CMP = 'DY',
+                    VALE = 0.003228713,
+                    PRECISION = 1.E-6,
+                    CRITERE = 'RELATIF')
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = MEST1,
+                    NOM_CHAM = 'EFGE_ELNO_DEPL',
+                    NUME_ORDRE = 1,
+                    NOM_CMP = 'VY',
+                    MAILLE = 'S11',
+                    NOEUD = 'N1',
+                    VALE = 6000.,
+                    PRECISION = 1.E-6,
+                    CRITERE = 'RELATIF')
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = MEST1,
+                    NOM_CHAM = 'EFGE_ELNO_DEPL',
+                    NUME_ORDRE = 1,
+                    NOM_CMP = 'VY',
+                    MAILLE = 'S110',
+                    NOEUD = 'N11',
+                    VALE = -12000.,
+                    PRECISION = 1.E-6,
+                    CRITERE = 'RELATIF')
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = MEST1,
+                    NOM_CHAM = 'EFGE_ELNO_DEPL',
+                    NUME_ORDRE = 1,
+                    NOM_CMP = 'MFZ',
+                    MAILLE = 'S17',
+                    NOEUD = 'N8',
+                    VALE = -13856.41,
+                    PRECISION = 1.E-6,
+                    CRITERE = 'RELATIF')
+          )
+
+#
+FIN()
+#
+#
+#TEST_RESU ( RESU : (RESULTAT   : MEST1
+#                    NOM_CHAM   : 'SIGM_ELNO_DEPL'
+#                    NUME_ORDRE : 1
+#                    NOM_CMP    : 'SIXX'
+#                    MAILLE     : S18
+#                    NOEUD      : N8
+#                    VALE       : 1.764252D7
+#                    PRECISION  : 1.D-6
+#                    CRITERE    : 'RELATIF'
+#                   )
+#          );
+##
+#FIN( ) ;
+#

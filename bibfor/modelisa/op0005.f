@@ -1,0 +1,144 @@
+      SUBROUTINE OP0005 ( IER )
+      IMPLICIT   NONE
+      INTEGER             IER
+C ----------------------------------------------------------------------
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF MODELISA  DATE 14/05/2002   AUTEUR DURAND C.DURAND 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+C RESPONSABLE                            D6BHHJP J.P.LEFEBVRE
+C
+C     LECTURE DE LA COMMANDE DEFI_MATERIAU
+C     STOCKAGE DANS UN OBJET DE TYPE MATERIAU NOUVELLE FORMULE
+C
+C
+C ----------------------------------------------------------------------
+C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
+C
+      INTEGER            ZI
+      COMMON  / IVARJE / ZI(1)
+      REAL*8             ZR
+      COMMON  / RVARJE / ZR(1)
+      COMPLEX*16         ZC
+      COMMON  / CVARJE / ZC(1)
+      LOGICAL            ZL
+      COMMON  / LVARJE / ZL(1)
+      CHARACTER*8        ZK8
+      CHARACTER*16                ZK16
+      CHARACTER*24                          ZK24
+      CHARACTER*32                                    ZK32
+      CHARACTER*80                                              ZK80
+      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+C
+C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
+C
+      INTEGER            NBRC,NBMCLE,NBOBM,JRELCO,JNBOBJ,NIV,IBID,IOCC
+      INTEGER            JTYPFO,IRC,JNOMRC,JVALRM,JVALCM,JVALKM
+      INTEGER            IND,IFM,I,K,NBRCME,NBMOCL
+      INTEGER            LXLGUT,NBR,NBC,NBK
+      CHARACTER*8        NOMMAT,K8BID
+      CHARACTER*16       NOMRC,TYPMAT,MATERI
+      CHARACTER*19       NOOBRC
+C ----------------------------------------------------------------------
+C
+      CALL JEMARQ()
+
+      NBRCME = 0
+      CALL GETRES (NOMMAT, TYPMAT, MATERI)
+      CALL GETMNB ( NBRC,  NBOBM)
+      CALL WKVECT('&&OP0005.RELCOM','V V K16',NBRC,JRELCO)
+      CALL WKVECT('&&OP0005.NBOBJE','V V I'  ,NBRC,JNBOBJ)
+      CALL WKVECT('&&OP0005.TYPFON','V V L'  ,NBRC,JTYPFO)
+      DO 100 IRC = 1, NBRC
+        CALL GETMFA ('DEFI_MATERIAU',IRC,NOMRC,NBMOCL)
+        CALL GETFAC (NOMRC, IOCC)
+        IF (IOCC .EQ. 1) THEN
+           NBRCME = NBRCME + 1
+           IND = INDEX(NOMRC,'_FO')
+           IF (IND .GT. 0 ) THEN
+             NOMRC(IND:IND+2) = '   '
+             ZL(JTYPFO+NBRCME-1) = .TRUE.
+           ELSE
+             ZL(JTYPFO+NBRCME-1) = .FALSE.
+           ENDIF
+           ZK16(JRELCO+NBRCME-1) = NOMRC
+           ZI(JNBOBJ+NBRCME-1) = NBMOCL
+        ENDIF
+  100 CONTINUE
+
+C
+      CALL WKVECT(NOMMAT//'.MATERIAU.NOMRC','G V K16',NBRCME,JNOMRC)
+      DO 10 K=1,NBRCME
+        ZK16(JNOMRC+K-1) = ZK16(JRELCO+K-1)
+ 10   CONTINUE
+C
+      DO 20 K=1,NBRCME
+        NOOBRC=NOMMAT//'.'//ZK16(JRELCO+K-1)(1:10)
+C
+        NOMRC = ZK16(JRELCO+K-1)
+        IF (ZL(JTYPFO+K-1)) THEN
+          IND=LXLGUT(NOMRC)+1
+          NOMRC(IND:IND+2) = '_FO'
+        ENDIF
+        CALL GETMFM(NOMRC,0,K8BID,K8BID,NBOBM)
+        NBOBM = - NBOBM
+        CALL WKVECT(NOOBRC//'.VALR','G V R' ,  NBOBM,JVALRM)
+        CALL WKVECT(NOOBRC//'.VALC','G V C' ,  NBOBM,JVALCM)
+        CALL WKVECT(NOOBRC//'.VALK','G V K8',2*NBOBM,JVALKM)
+        CALL RCSTOC(NOMMAT,NOMRC,ZI(JNBOBJ+K-1),ZR(JVALRM),ZC(JVALCM),
+     &              ZK8(JVALKM),NBR,NBC,NBK)
+        CALL JEECRA(NOOBRC//'.VALR','LONUTI', NBR, ' ')
+        CALL JEECRA(NOOBRC//'.VALC','LONUTI', NBC, ' ')
+        CALL JEECRA(NOOBRC//'.VALK','LONUTI', NBR+NBC+2*NBK, ' ')
+ 20   CONTINUE
+C
+      CALL INFMAJ
+      CALL INFNIV ( IFM , NIV )
+C
+      WRITE (IFM,'(1X)')
+      WRITE (IFM,'(1X,2A)') 'MATERIAU : ', NOMMAT
+      CALL JEVEUO(NOMMAT//'.MATERIAU.NOMRC', 'L', JNOMRC)
+      WRITE (IFM,'(1X,A,A16)') 'RELATION DE COMPORTEMENT: ',ZK16(JNOMRC)
+      WRITE (IFM,'(27X,A16)') (ZK16(JNOMRC+K-1),K=2,NBRCME)
+      WRITE (IFM,'(1X)')
+C
+      IF ( NIV .EQ. 2 ) THEN
+        DO 30 K=1,NBRCME
+          WRITE(IFM,'(1X,2A)')
+     &                  'PARAMETRES DE LA RELATION : ',ZK16(JRELCO+K-1)
+          WRITE(IFM,'(5(3X,A8,5X))') (ZK8(JVALKM-1+I),I=1,NBR)
+          WRITE(IFM,'(5(3X,G13.6))') (ZR (JVALRM-1+I),I=1,NBR)
+          WRITE(IFM,'(5(3X,A8,5X))') (ZK8(JVALKM-1+I),I=NBR+1,NBR+NBC)
+          WRITE(IFM,'(5(3X,2G13.6))')(ZC (JVALCM-1+I),I=1,NBC)
+          WRITE(IFM,'(5(3X,A8,5X))') (ZK8(JVALKM-1+I),
+     &                I = NBR+NBC+1, NBR+NBC+NBK)
+          WRITE(IFM,'(5(3X,A8,5X))') (ZK8(JVALKM-1+I),
+     &                I = NBR+NBC+NBK+1, NBR+NBC+2*NBK)
+          WRITE(IFM,'(1X)')
+ 30     CONTINUE
+      ENDIF
+C
+      CALL ANIVER(NOMMAT)
+C
+C
+      CALL JEDETC('V','&&',1)
+      CALL JEDETR('&&OP0005.RELCOM')
+      CALL JEDETR('&&OP0005.NBOBJE')
+      CALL JEDETR('&&OP0005.TYPFON')
+
+      CALL JEDEMA()
+      END

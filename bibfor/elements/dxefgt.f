@@ -1,0 +1,196 @@
+      SUBROUTINE DXEFGT(NOMTE,XYZL,PGL,TSUP,TINF,TMOY,SIGT)
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ELEMENTS  DATE 17/02/99   AUTEUR VABHHTS J.PELLET 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+      IMPLICIT REAL*8 (A-H,O-Z)
+      CHARACTER*16 NOMTE
+      REAL*8 XYZL(3,1),PGL(3,1)
+      REAL*8 TSUP(1),TINF(1),TMOY(1)
+      REAL*8 SIGT(1)
+C     ------------------------------------------------------------------
+C --- EFFORTS GENERALISES N, M, V D'ORIGINE THERMIQUE AUX POINTS
+C --- D'INTEGRATION POUR LES ELEMENTS COQUES A FACETTES PLANES :
+C --- DST, DKT, DSQ, DKQ, Q4G DUS :
+C ---  .A UN CHAMP DE TEMPERATURES SUR LE PLAN MOYEN DONNANT
+C ---        DES EFFORTS DE MEMBRANE
+C ---  .A UN GRADIENT DE TEMPERATURES DANS L'EPAISSEUR DE LA COQUE
+C     ------------------------------------------------------------------
+C     IN  NOMTE        : NOM DU TYPE D'ELEMENT
+C     IN  XYZL(3,NNO)  : COORDONNEES DES CONNECTIVITES DE L'ELEMENT
+C                        DANS LE REPERE LOCAL DE L'ELEMENT
+C     IN  PGL(3,3)     : MATRICE DE PASSAGE DU REPERE GLOBAL AU REPERE
+C                        LOCAL
+C     IN  TSUP(4)      : TEMPERATURES AUX NOEUDS DU PLAN SUPERIEUR
+C                        DE LA COQUE
+C     IN  TINF(4)      : TEMPERATURES AUX NOEUDS DU PLAN INFERIEUR
+C                        DE LA COQUE
+C     IN  TMOY(4)      : TEMPERATURES AUX NOEUDS DU PLAN MOYEN
+C                        DE LA COQUE
+C     OUT SIGT(1)      : EFFORTS  GENERALISES D'ORIGINE THERMIQUE
+C                        AUX POINTS D'INTEGRATION
+C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
+      CHARACTER*32 JEXNUM,JEXNOM,JEXR8,JEXATR
+      INTEGER ZI
+      COMMON /IVARJE/ZI(1)
+      REAL*8 ZR
+      COMMON /RVARJE/ZR(1)
+      COMPLEX*16 ZC
+      COMMON /CVARJE/ZC(1)
+      LOGICAL ZL
+      COMMON /LVARJE/ZL(1)
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32
+      CHARACTER*80 ZK80
+      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
+      LOGICAL GRILLE
+      CHARACTER*2 CODRET(56)
+      CHARACTER*10 PHENOM
+      CHARACTER*24 DESR
+      REAL*8 DF(3,3),DM(3,3),DMF(3,3)
+      REAL*8 TMOYPG(4),TSUPPG(4),TINFPG(4)
+      REAL*8 N(4)
+      INTEGER MULTIC
+C     ------------------------------------------------------------------
+
+C --- INITIALISATIONS :
+C     -----------------
+      CALL JEMARQ()
+
+      CALL R8INIR(32,0.D0,SIGT,1)
+
+C --- POUR L'INSTANT PAS DE PRISE EN COMPTE DES CONTRAINTES
+C --- THERMIQUES POUR LES MATERIAUX MULTICOUCHES
+C     ------------------------------------------
+      CALL JEVECH('PMATERC','L',JMATE)
+      CALL RCCOMA(ZI(JMATE),'ELAS',PHENOM,CODRET)
+
+C --- RECUPERATION DE LA TEMPERATURE DE REFERENCE ET
+C --- DE L'EPAISSEUR DE LA COQUE
+C     --------------------------
+
+      IF (NOMTE(1:8).EQ.'MEGRDKT ') THEN
+        GRILLE = .TRUE.
+      ELSE
+        GRILLE = .FALSE.
+      END IF
+
+      CALL JEVECH('PCACOQU','L',JCARA)
+      CALL JEVECH('PTEREF','L',JTREF)
+      EPAIS = ZR(JCARA)
+      TREF = ZR(JTREF)
+
+      DESR = '&INEL.'//NOMTE(1:8)//'.DESR'
+      CALL JEVETE(DESR,' ',LZR)
+
+      IF (NOMTE(1:8).EQ.'MEDKTR3 ' .OR. NOMTE(1:8).EQ.'MEDSTR3 ' .OR.
+     +    NOMTE(1:8).EQ.'MEGRDKT') THEN
+
+        NPG = 3
+        NNO = 3
+        NC = 3
+        LJACO = 2
+        LTOR = LJACO + 4
+        LQSI = LTOR + 1
+        LETA = LQSI + NPG + NNO
+
+C ---- CALCUL DES GRANDEURS GEOMETRIQUES SUR LE TRIANGLE
+C      -------------------------------------------------
+        CALL GTRIA3(XYZL,ZR(LZR))
+
+      ELSE IF (NOMTE(1:8).EQ.'MEDKQU4 ' .OR.
+     +         NOMTE(1:8).EQ.'MEDSQU4 ' .OR.
+     +         NOMTE(1:8).EQ.'MEQ4QU4 ') THEN
+        NPG = 4
+        NNO = 4
+        NC = 4
+        LJACO = 2
+        LTOR = LJACO + 4
+        LQSI = LTOR + 1
+        LETA = LQSI + NPG + NNO + 2*NC
+
+C ---- CALCUL DES GRANDEURS GEOMETRIQUES SUR LE QUADRANGLE
+C      ---------------------------------------------------
+        CALL GQUAD4(XYZL,ZR(LZR))
+
+      ELSE
+        CALL UTMESS('F','DXEFGT','LE TYPE D''ELEMENT : '//NOMTE(1:8)//
+     +              'N''EST PAS PREVU.')
+      END IF
+
+C --- CALCUL DES COEFFICIENTS THERMOELASTIQUES DE FLEXION,
+C --- MEMBRANE, MEMBRANE-FLEXION
+C     ----------------------------------------------------
+
+      CALL DXMATH(EPAIS,DF,DM,DMF,NNO,PGL,ZR(LZR),MULTIC,INDITH,GRILLE)
+      IF (INDITH.EQ.-1) GO TO 30
+
+C --- BOUCLE SUR LES POINTS D'INTEGRATION
+C     -----------------------------------
+      DO 20 IGAU = 1,NPG
+
+        TMOYPG(IGAU) = 0.D0
+        TSUPPG(IGAU) = 0.D0
+        TINFPG(IGAU) = 0.D0
+
+        QSI = ZR(LZR-1+LQSI+IGAU-1)
+        ETA = ZR(LZR-1+LETA+IGAU-1)
+
+C  --      CALCUL DES FONCTIONS DE FORME DE MEMBRANE N AU POINT
+C  --      D'INTEGRATION COURANT
+C          ---------------------
+        CALL DXFNMB(NOMTE,QSI,ETA,N)
+
+C  --      TEMPERATURES SUR LES FEUILLETS MOYEN, SUPERIEUR ET INFERIEUR
+C  --      AU POINT D'INTEGRATION COURANT
+C          ------------------------------
+        DO 10 INO = 1,NNO
+          TMOYPG(IGAU) = TMOYPG(IGAU) + N(INO)*TMOY(INO)
+          TSUPPG(IGAU) = TSUPPG(IGAU) + N(INO)*TSUP(INO)
+          TINFPG(IGAU) = TINFPG(IGAU) + N(INO)*TINF(INO)
+   10   CONTINUE
+
+C  --      LES COEFFICIENTS SUIVANTS RESULTENT DE L'HYPOTHESE SELON
+C  --      LAQUELLE LA TEMPERATURE EST PARABOLIQUE DANS L'EPAISSEUR.
+C  --      ON NE PREJUGE EN RIEN DE LA NATURE DU MATERIAU.
+C  --      CETTE INFORMATION EST CONTENUE DANS LES MATRICES QUI
+C  --      SONT LES RESULTATS DE LA ROUTINE DXMATH.
+C          ----------------------------------------
+        COE1 = (TSUPPG(IGAU)+TINFPG(IGAU)+4.D0*TMOYPG(IGAU))/6.D0 - TREF
+        COE2 = (TSUPPG(IGAU)-TINFPG(IGAU))/EPAIS
+
+        SIGT(1+8* (IGAU-1)) = COE1* (DM(1,1)+DM(1,2)) +
+     +                        COE2* (DMF(1,1)+DMF(1,2))
+        SIGT(2+8* (IGAU-1)) = COE1* (DM(2,1)+DM(2,2)) +
+     +                        COE2* (DMF(2,1)+DMF(2,2))
+        SIGT(3+8* (IGAU-1)) = COE1* (DM(3,1)+DM(3,2)) +
+     +                        COE2* (DMF(3,1)+DMF(3,2))
+        SIGT(4+8* (IGAU-1)) = COE2* (DF(1,1)+DF(1,2)) +
+     +                        COE1* (DMF(1,1)+DMF(1,2))
+        SIGT(5+8* (IGAU-1)) = COE2* (DF(2,1)+DF(2,2)) +
+     +                        COE1* (DMF(2,1)+DMF(2,2))
+        SIGT(6+8* (IGAU-1)) = COE2* (DF(3,1)+DF(3,2)) +
+     +                        COE1* (DMF(3,1)+DMF(3,2))
+   20 CONTINUE
+
+   30 CONTINUE
+
+      CALL JEDEMA()
+      END

@@ -1,0 +1,591 @@
+# MODIF  DATE 20/03/2001   AUTEUR CIBHHLV L.VIVAN 
+# TITRE PLAQUE CIRCULAIRE SOUMISE A PRESSION
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+#
+# ELEMENTS HEXA20, PENTA15 , ET TRIA6, QUAD8 POUR APPLICATION
+#                    DE LA CHARGE
+#.....................................................................
+
+DEBUT(   CODE=_F(  NOM = 'SSNA302A',NIV_PUB_WEB='INTERNET'))
+
+MAYA=LIRE_MAILLAGE( )
+
+MODEL=AFFE_MODELE(    MAILLAGE=MAYA,
+                                VERIF='MAILLE',
+                                 AFFE=_F(  TOUT = 'OUI',
+                                        PHENOMENE = 'MECANIQUE',
+                                        MODELISATION = '3D')
+                         )
+
+ACIER=DEFI_MATERIAU(         ELAS=_F(  E = 200.E9,
+                                      NU = 0.3)
+                      )
+
+MATER=AFFE_MATERIAU(   MAILLAGE=MAYA,
+                                AFFE=_F(  TOUT = 'OUI',
+                                       MATER = ACIER)
+                         )
+
+PRES_FO=DEFI_FONCTION(       NOM_PARA='INST',
+                             PROL_DROITE='EXCLU',
+                            PROL_GAUCHE='EXCLU',
+                                   VALE=( 0.,      0.,
+                                          1.,    222.72E6,   )
+                        )
+
+PRES=AFFE_CHAR_MECA_F(      MODELE=MODEL,
+                             PRES_REP=_F(  GROUP_MA = 'FACE',
+                                        PRES = PRES_FO)
+                         )
+
+CAT=DEFI_LIST_REEL(    DEBUT=0.0,INTERVALLE=(
+                          _F(  JUSQU_A = 0.1,    NOMBRE = 1),
+                                     _F(  JUSQU_A = 1.,     NOMBRE = 5))
+                      )
+
+CONDLIM=AFFE_CHAR_MECA(     MODELE=MODEL,DDL_IMPO=(
+                              _F(  GROUP_NO = 'FIX_C1',
+                                               DX = 0.),
+                                       _F(  GROUP_NO = 'FIX_C2',
+                                               DY = 0.),
+                                       _F(  GROUP_NO = 'FIX_C123',
+                                               DX = 0.,
+                                               DY = 0.,
+                                               DZ = 0.)),LIAISON_DDL=(
+         
+                      _F(  NOEUD = ('NO001767', 'NO000002',), DDL = ('DX','DX',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001653', 'NO000333',), DDL = ('DX','DX',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001327', 'NO000447',), DDL = ('DX','DX',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001213', 'NO000773',), DDL = ('DX','DX',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+#
+                      _F(  NOEUD = ('NO001807', 'NO000042',), DDL = ('DX','DX',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001807', 'NO000042',), DDL = ('DY','DY',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001367', 'NO000487',), DDL = ('DX','DX',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001367', 'NO000487',), DDL = ('DY','DY',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+#
+                      _F(  NOEUD = ('NO001808', 'NO000043',), DDL = ('DX','DX',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001808', 'NO000043',), DDL = ('DY','DY',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001673', 'NO000353',), DDL = ('DX','DX',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001673', 'NO000353',), DDL = ('DY','DY',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001368', 'NO000488',), DDL = ('DX','DX',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001368', 'NO000488',), DDL = ('DY','DY',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001233', 'NO000793',), DDL = ('DX','DX',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001233', 'NO000793',), DDL = ('DY','DY',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+#
+                      _F(  NOEUD = ('NO001809', 'NO000044',), DDL = ('DX','DX',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001809', 'NO000044',), DDL = ('DY','DY',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001369', 'NO000489',), DDL = ('DX','DX',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001369', 'NO000489',), DDL = ('DY','DY',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+#
+                      _F(  NOEUD = ('NO001810', 'NO000045',), DDL = ('DX','DX',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001810', 'NO000045',), DDL = ('DY','DY',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001674', 'NO000354',), DDL = ('DX','DX',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001674', 'NO000354',), DDL = ('DY','DY',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001370', 'NO000490',), DDL = ('DX','DX',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001370', 'NO000490',), DDL = ('DY','DY',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001234', 'NO000794',), DDL = ('DX','DX',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001234', 'NO000794',), DDL = ('DY','DY',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+#
+#
+                      _F(  NOEUD = ('NO001811', 'NO000046',), DDL = ('DX','DX',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001811', 'NO000046',), DDL = ('DY','DY',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001371', 'NO000491',), DDL = ('DX','DX',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001371', 'NO000491',), DDL = ('DY','DY',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+#
+                      _F(  NOEUD = ('NO001812', 'NO000047',), DDL = ('DX','DX',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001812', 'NO000047',), DDL = ('DY','DY',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001675', 'NO000355',), DDL = ('DX','DX',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001675', 'NO000355',), DDL = ('DY','DY',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001372', 'NO000492',), DDL = ('DX','DX',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001372', 'NO000492',), DDL = ('DY','DY',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001235', 'NO000795',), DDL = ('DX','DX',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001235', 'NO000795',), DDL = ('DY','DY',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+#
+#
+                      _F(  NOEUD = ('NO001813', 'NO000048',), DDL = ('DX','DX',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001813', 'NO000048',), DDL = ('DY','DY',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001373', 'NO000493',), DDL = ('DX','DX',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001373', 'NO000493',), DDL = ('DY','DY',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+#
+#
+                      _F(  NOEUD = ('NO001814', 'NO000049',), DDL = ('DX','DX',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001814', 'NO000049',), DDL = ('DY','DY',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001676', 'NO000356',), DDL = ('DX','DX',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001676', 'NO000356',), DDL = ('DY','DY',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001374', 'NO000494',), DDL = ('DX','DX',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001374', 'NO000494',), DDL = ('DY','DY',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001236', 'NO000796',), DDL = ('DX','DX',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001236', 'NO000796',), DDL = ('DY','DY',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+#
+#
+                      _F(  NOEUD = ('NO001815', 'NO000050',), DDL = ('DX','DX',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001815', 'NO000050',), DDL = ('DY','DY',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001375', 'NO000495',), DDL = ('DX','DX',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001375', 'NO000495',), DDL = ('DY','DY',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+#
+#
+                      _F(  NOEUD = ('NO001816', 'NO000051',), DDL = ('DX','DX',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001816', 'NO000051',), DDL = ('DY','DY',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001677', 'NO000357',), DDL = ('DX','DX',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001677', 'NO000357',), DDL = ('DY','DY',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001376', 'NO000496',), DDL = ('DX','DX',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001376', 'NO000496',), DDL = ('DY','DY',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001237', 'NO000797',), DDL = ('DX','DX',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001237', 'NO000797',), DDL = ('DY','DY',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+#
+                      _F(  NOEUD = ('NO001817', 'NO000052',), DDL = ('DX','DX',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001817', 'NO000052',), DDL = ('DY','DY',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001377', 'NO000497',), DDL = ('DX','DX',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001377', 'NO000497',), DDL = ('DY','DY',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+#
+                      _F(  NOEUD = ('NO001818', 'NO000053',), DDL = ('DX','DX',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001818', 'NO000053',), DDL = ('DY','DY',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001678', 'NO000358',), DDL = ('DX','DX',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001678', 'NO000358',), DDL = ('DY','DY',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001378', 'NO000498',), DDL = ('DX','DX',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001378', 'NO000498',), DDL = ('DY','DY',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001238', 'NO000798',), DDL = ('DX','DX',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001238', 'NO000798',), DDL = ('DY','DY',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+#
+                      _F(  NOEUD = ('NO001819', 'NO000054',), DDL = ('DX','DX',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001819', 'NO000054',), DDL = ('DY','DY',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001379', 'NO000499',), DDL = ('DX','DX',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001379', 'NO000499',), DDL = ('DY','DY',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+#
+                      _F(  NOEUD = ('NO001820', 'NO000055',), DDL = ('DX','DX',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001820', 'NO000055',), DDL = ('DY','DY',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001679', 'NO000359',), DDL = ('DX','DX',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001679', 'NO000359',), DDL = ('DY','DY',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001380', 'NO000500',), DDL = ('DX','DX',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001380', 'NO000500',), DDL = ('DY','DY',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001239', 'NO000799',), DDL = ('DX','DX',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001239', 'NO000799',), DDL = ('DY','DY',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+#
+                      _F(  NOEUD = ('NO001821', 'NO000056',), DDL = ('DX','DX',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001821', 'NO000056',), DDL = ('DY','DY',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001381', 'NO000501',), DDL = ('DX','DX',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001381', 'NO000501',), DDL = ('DY','DY',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+#
+                      _F(  NOEUD = ('NO001822', 'NO000057',), DDL = ('DX','DX',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001822', 'NO000057',), DDL = ('DY','DY',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001680', 'NO000360',), DDL = ('DX','DX',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001680', 'NO000360',), DDL = ('DY','DY',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001382', 'NO000502',), DDL = ('DX','DX',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001382', 'NO000502',), DDL = ('DY','DY',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001240', 'NO000800',), DDL = ('DX','DX',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001240', 'NO000800',), DDL = ('DY','DY',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+#
+                      _F(  NOEUD = ('NO001823', 'NO000058',), DDL = ('DX','DX',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001823', 'NO000058',), DDL = ('DY','DY',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001383', 'NO000503',), DDL = ('DX','DX',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001383', 'NO000503',), DDL = ('DY','DY',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+#
+                      _F(  NOEUD = ('NO001824', 'NO000059',), DDL = ('DX','DX',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001824', 'NO000059',), DDL = ('DY','DY',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001681', 'NO000361',), DDL = ('DX','DX',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001681', 'NO000361',), DDL = ('DY','DY',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001384', 'NO000504',), DDL = ('DX','DX',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001384', 'NO000504',), DDL = ('DY','DY',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001241', 'NO000801',), DDL = ('DX','DX',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001241', 'NO000801',), DDL = ('DY','DY',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+#
+                      _F(  NOEUD = ('NO001825', 'NO000060',), DDL = ('DX','DX',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001825', 'NO000060',), DDL = ('DY','DY',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001385', 'NO000505',), DDL = ('DX','DX',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001385', 'NO000505',), DDL = ('DY','DY',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+#
+                      _F(  NOEUD = ('NO001826', 'NO000061',), DDL = ('DX','DX',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001826', 'NO000061',), DDL = ('DY','DY',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001682', 'NO000362',), DDL = ('DX','DX',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001682', 'NO000362',), DDL = ('DY','DY',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001386', 'NO000506',), DDL = ('DX','DX',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001386', 'NO000506',), DDL = ('DY','DY',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001242', 'NO000802',), DDL = ('DX','DX',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001242', 'NO000802',), DDL = ('DY','DY',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+#
+                      _F(  NOEUD = ('NO001827', 'NO000062',), DDL = ('DX','DX',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001827', 'NO000062',), DDL = ('DY','DY',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001387', 'NO000507',), DDL = ('DX','DX',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001387', 'NO000507',), DDL = ('DY','DY',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+#
+                      _F(  NOEUD = ('NO001828', 'NO000063',), DDL = ('DX','DX',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001828', 'NO000063',), DDL = ('DY','DY',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001683', 'NO000363',), DDL = ('DX','DX',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001683', 'NO000363',), DDL = ('DY','DY',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001388', 'NO000508',), DDL = ('DX','DX',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001388', 'NO000508',), DDL = ('DY','DY',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001243', 'NO000803',), DDL = ('DX','DX',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001243', 'NO000803',), DDL = ('DY','DY',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+#
+                      _F(  NOEUD = ('NO001829', 'NO000064',), DDL = ('DX','DX',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001829', 'NO000064',), DDL = ('DY','DY',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001389', 'NO000509',), DDL = ('DX','DX',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001389', 'NO000509',), DDL = ('DY','DY',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+#
+                      _F(  NOEUD = ('NO001830', 'NO000065',), DDL = ('DX','DX',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001830', 'NO000065',), DDL = ('DY','DY',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001684', 'NO000364',), DDL = ('DX','DX',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001684', 'NO000364',), DDL = ('DY','DY',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001390', 'NO000510',), DDL = ('DX','DX',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001390', 'NO000510',), DDL = ('DY','DY',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001244', 'NO000804',), DDL = ('DX','DX',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001244', 'NO000804',), DDL = ('DY','DY',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+#
+                      _F(  NOEUD = ('NO001831', 'NO000066',), DDL = ('DX','DX',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001831', 'NO000066',), DDL = ('DY','DY',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001391', 'NO000511',), DDL = ('DX','DX',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001391', 'NO000511',), DDL = ('DY','DY',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+#
+                      _F(  NOEUD = ('NO001832', 'NO000067',), DDL = ('DX','DX',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001832', 'NO000067',), DDL = ('DY','DY',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001685', 'NO000365',), DDL = ('DX','DX',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001685', 'NO000365',), DDL = ('DY','DY',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001392', 'NO000512',), DDL = ('DX','DX',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001392', 'NO000512',), DDL = ('DY','DY',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001245', 'NO000805',), DDL = ('DX','DX',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001245', 'NO000805',), DDL = ('DY','DY',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+#
+                      _F(  NOEUD = ('NO001833', 'NO000068',), DDL = ('DX','DX',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001833', 'NO000068',), DDL = ('DY','DY',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001393', 'NO000513',), DDL = ('DX','DX',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001393', 'NO000513',), DDL = ('DY','DY',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+#
+                      _F(  NOEUD = ('NO001834', 'NO000069',), DDL = ('DX','DX',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001834', 'NO000069',), DDL = ('DY','DY',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001686', 'NO000366',), DDL = ('DX','DX',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001686', 'NO000366',), DDL = ('DY','DY',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001394', 'NO000514',), DDL = ('DX','DX',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001394', 'NO000514',), DDL = ('DY','DY',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001246', 'NO000806',), DDL = ('DX','DX',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001246', 'NO000806',), DDL = ('DY','DY',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+#
+                      _F(  NOEUD = ('NO001835', 'NO000070',), DDL = ('DX','DX',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001835', 'NO000070',), DDL = ('DY','DY',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001395', 'NO000515',), DDL = ('DX','DX',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001395', 'NO000515',), DDL = ('DY','DY',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+#
+                      _F(  NOEUD = ('NO001768', 'NO000003',), DDL = ('DY','DY',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001654', 'NO000334',), DDL = ('DY','DY',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001328', 'NO000448',), DDL = ('DY','DY',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.),
+                      _F(  NOEUD = ('NO001214', 'NO000774',), DDL = ('DY','DY',),
+                        COEF_MULT = (1.,1.,),  COEF_IMPO = 0.))
+#
+                          )
+
+CALCNL=STAT_NON_LINE( 
+                            MODELE=MODEL,
+                        CHAM_MATER=MATER,
+                         COMP_ELAS=_F( 
+                RELATION = 'ELAS',
+                DEFORMATION = 'GREEN'),
+                         INCREMENT=_F( 
+                LIST_INST = CAT),
+                            NEWTON=_F( 
+                MATRICE = 'TANGENTE',
+                REAC_ITER = 1),
+                       CONVERGENCE=_F( 
+                RESI_GLOB_RELA = 1.E-6,
+                ITER_GLOB_MAXI = 50),EXCIT=(
+                             _F( 
+                CHARGE = PRES,
+                TYPE_CHARGE = 'SUIV'), _F( 
+                CHARGE = CONDLIM)),
+                     RECH_LINEAIRE=_F( 
+                ITER_LINE_MAXI = 3)
+              )
+
+CALCNL=CALC_ELEM( reuse=CALCNL,
+                            OPTION=(
+                  'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
+                          RESULTAT=CALCNL,
+                            MODELE=MODEL,
+                        CHAM_MATER=MATER
+              )
+
+TEST_RESU(RESU=( 
+          _F(  RESULTAT = CALCNL,
+            NOM_CHAM = 'DEPL',
+            NOEUD = 'NO000886',
+            PRECISION = 5.E-2,
+            NUME_ORDRE = 6,
+            NOM_CMP = 'DZ',
+            VALE = -1.441838E-3),
+
+          _F(  RESULTAT = CALCNL,
+            NOM_CHAM = 'SIEF_ELNO_ELGA',
+            NUME_ORDRE = 6,
+            MAILLE = 'MA000131',
+            NOEUD = 'NO000886',
+            NOM_CMP = 'SIXX',
+            CRITERE = 'RELATIF',
+            PRECISION = 5.E-2,
+            VALE = 3.85088E9),
+
+          _F(  RESULTAT = CALCNL,
+            NOM_CHAM = 'SIEF_ELNO_ELGA',
+            NUME_ORDRE = 6,
+            MAILLE = 'MA000131',
+            NOEUD = 'NO000886',
+            NOM_CMP = 'SIYY',
+            CRITERE = 'RELATIF',
+            PRECISION = 5.E-2,
+            VALE = 3.85088E9),
+
+          _F(  RESULTAT = CALCNL,
+            NOM_CHAM = 'SIEF_ELNO_ELGA',
+            NUME_ORDRE = 6,
+            MAILLE = 'MA000032',
+            NOEUD = 'NO000001',
+            NOM_CMP = 'SIXX',
+            CRITERE = 'RELATIF',
+            PRECISION = 5.E-2,
+            VALE = 8.13360E9),
+
+          _F(  RESULTAT = CALCNL,
+            NOM_CHAM = 'SIEF_ELNO_ELGA',
+            NUME_ORDRE = 6,
+            MAILLE = 'MA000032',
+            NOEUD = 'NO000001',
+            NOM_CMP = 'SIXX',
+            CRITERE = 'RELATIF',
+            PRECISION = 5.E-2,
+            VALE = 8.13365E9),
+
+          _F(  RESULTAT = CALCNL,
+            NOM_CHAM = 'SIEF_ELNO_ELGA',
+            NUME_ORDRE = 6,
+            MAILLE = 'MA000104',
+            NOEUD = 'NO000898',
+            NOM_CMP = 'SIXX',
+            CRITERE = 'RELATIF',
+            PRECISION = 5.E-2,
+            VALE = 3.51279E9),
+
+          _F(  RESULTAT = CALCNL,
+            NOM_CHAM = 'SIEF_ELNO_ELGA',
+            NUME_ORDRE = 6,
+            MAILLE = 'MA000104',
+            NOEUD = 'NO000898',
+            NOM_CMP = 'SIYY',
+            CRITERE = 'RELATIF',
+            PRECISION = 5.E-2,
+            VALE = 2.94755E9),
+
+          _F(  RESULTAT = CALCNL,
+            NOM_CHAM = 'SIEF_ELNO_ELGA',
+            NUME_ORDRE = 6,
+            MAILLE = 'MA000005',
+            NOEUD = 'NO000013',
+            NOM_CMP = 'SIXX',
+            CRITERE = 'RELATIF',
+            PRECISION = 5.E-2,
+            VALE = 7.81573E9),
+
+          _F(  RESULTAT = CALCNL,
+            NOM_CHAM = 'SIEF_ELNO_ELGA',
+            NUME_ORDRE = 6,
+            MAILLE = 'MA000005',
+            NOEUD = 'NO000013',
+            NOM_CMP = 'SIYY',
+            CRITERE = 'RELATIF',
+            PRECISION = 5.E-2,
+            VALE = 7.30704E9))
+          )
+
+FIN()
+#

@@ -1,0 +1,910 @@
+# MODIF  DATE 17/09/2002   AUTEUR CIBHHGB G.BERTRAND 
+# TITRE ESSAI DE TRACTION-CISAILLEMENT (MISES ECROUISSAGE ISOTROPE)
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+
+DEBUT(CODE=_F( NOM = 'SSNP15A',NIV_PUB_WEB='INTERNET'),);
+
+#......................................................................
+# PLAQUE CARREE EN TRACTION CISAILLEMENT CALCUL 3D
+# ELASTOPLASTICITE  ISOTROPE VON MISES
+#......................................................................
+
+MA=LIRE_MAILLAGE( )
+
+MO=AFFE_MODELE(
+              
+               MAILLAGE=MA,
+                 VERIF='MAILLE',
+                  
+                AFFE=_F( 
+                TOUT = 'OUI',
+                PHENOMENE = 'MECANIQUE',
+                MODELISATION = '3D')
+              )
+
+ACIER=DEFI_MATERIAU(
+              
+                   
+                ELAS=_F( 
+                E = 195000.,
+                NU = 0.3),
+              
+                ECRO_LINE=_F( 
+                D_SIGM_EPSI = 1930.,
+                SY = 181.),
+           
+                PRAGER=_F(C=0.)
+              )
+
+CM=AFFE_MATERIAU(
+              
+               MAILLAGE=MA,
+                  
+                AFFE=_F( 
+                TOUT = 'OUI',
+                MATER = ACIER)
+              )
+
+SIGMA_F=DEFI_FONCTION(
+              
+                 NOM_PARA='INST',
+               PROL_DROITE='EXCLU',
+              PROL_GAUCHE='EXCLU',
+                     
+                VALE=(
+                0.0,    0.0,
+                1.0,  151.2,
+                2.0,  257.2,
+                3.0,    0.0,
+                )
+              )
+
+TAU_F=DEFI_FONCTION(
+              
+                 NOM_PARA='INST',
+               PROL_DROITE='EXCLU',
+              PROL_GAUCHE='EXCLU',
+                     
+                VALE=(
+                0.0,    0.0,
+                1.0,   93.1,
+                2.0,   33.1,
+                3.0,    0.0,
+                )
+              )
+
+TRACTION=AFFE_CHAR_MECA(
+              
+                      MODELE=MO,
+                 
+                FORCE_FACE=_F( 
+                MAILLE = 'GAUCHE',
+                FX = -1.)
+              )
+
+CISAIL=AFFE_CHAR_MECA(
+              
+                      MODELE=MO,FORCE_FACE=(
+                 
+                _F( MAILLE = 'GAUCHE',          FY = -1.),
+                _F( MAILLE = 'DROITE',          FY = 1.),
+                _F( MAILLE = 'HAUT',    FX = 1.),
+                _F( MAILLE = 'BAS',     FX = -1.))
+              )
+
+LIAISON=AFFE_CHAR_MECA(
+              
+               MODELE=MO,DDL_IMPO=(
+              
+                _F( NOEUD = 'NO4',     DX = 0.,  DY = 0.),
+                _F( NOEUD = 'NO8',     DX = 0.,  DY = 0.,  DZ = 0.),
+                _F( NOEUD = 'NO2',     DX = 0.),
+                _F( NOEUD = 'NO6',     DX = 0.))
+              )
+
+L_INST=DEFI_LIST_REEL(
+              
+               DEBUT=0.0,INTERVALLE=(
+                _F( JUSQU_A = 0.1,     NOMBRE = 1),
+                _F( JUSQU_A = 0.9,     NOMBRE = 10),
+                _F( JUSQU_A = 1.0,     NOMBRE = 1),
+                _F( JUSQU_A = 2.0,     NOMBRE = 40),
+                _F( JUSQU_A = 3.0,     NOMBRE = 1))
+              )
+
+U=STAT_NON_LINE( 
+                            MODELE=MO,
+                        CHAM_MATER=CM,EXCIT=(
+                             _F( 
+                CHARGE = LIAISON), _F( 
+                CHARGE = TRACTION,
+                FONC_MULT = SIGMA_F), _F( 
+                CHARGE = CISAIL,
+                FONC_MULT = TAU_F)),
+                         COMP_INCR=_F( 
+                RELATION = 'VMIS_ISOT_LINE'),
+                         INCREMENT=_F( 
+                LIST_INST = L_INST),
+                            NEWTON=_F( 
+                MATRICE = 'ELASTIQUE',
+                REAC_ITER = 3),
+                       CONVERGENCE=_F( 
+                RESI_GLOB_MAXI = 1.E-3,
+                ITER_GLOB_MAXI = 10),
+                     RECH_LINEAIRE=_F( 
+                ITER_LINE_MAXI = 5)
+              )
+U2=STAT_NON_LINE( 
+                            MODELE=MO,
+                        CHAM_MATER=CM,EXCIT=(
+                             _F( 
+                CHARGE = LIAISON), _F( 
+                CHARGE = TRACTION,
+                FONC_MULT = SIGMA_F), _F( 
+                CHARGE = CISAIL,
+                FONC_MULT = TAU_F)),
+                         COMP_INCR=_F( 
+                RELATION = 'VMIS_ECMI_LINE'),
+                         INCREMENT=_F( 
+                LIST_INST = L_INST),
+                            NEWTON=_F( 
+                MATRICE = 'ELASTIQUE',
+                REAC_ITER = 3),
+                       CONVERGENCE=_F( 
+                RESI_GLOB_MAXI = 1.E-3,
+                ITER_GLOB_MAXI = 10),
+                     RECH_LINEAIRE=_F( 
+                ITER_LINE_MAXI = 5)
+              )
+
+U=CALC_ELEM( reuse=U,
+                            OPTION=('EPSI_ELGA_DEPL',
+                  'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
+                          RESULTAT=U,
+                            MODELE=MO,
+                        CHAM_MATER=CM
+              )
+U2=CALC_ELEM( reuse=U2,
+                            OPTION=('EPSI_ELGA_DEPL',
+                  'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
+                          RESULTAT=U2,
+                            MODELE=MO,
+                        CHAM_MATER=CM
+              )
+
+U=CALC_ELEM(
+              reuse=U,
+                    MODELE=MO,
+                  RESULTAT=U,
+                CHAM_MATER=CM,
+                   OPTION='EPSP_ELGA'
+              )
+
+U=CALC_ELEM(
+              reuse=U,
+                    MODELE=MO,
+                  RESULTAT=U,
+                CHAM_MATER=CM,
+                   OPTION='EPSI_ELNO_DEPL'
+              )
+
+VARI=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='ELNO_VARI_R',
+NOM_CHAM='VARI_ELNO_ELGA',
+              RESULTAT=U,
+              INST=1.
+              )
+
+TEST_RESU(RESU=(
+              
+                _F( 
+                RESULTAT = U,
+                NOM_CHAM = 'SIEF_ELNO_ELGA',
+                MAILLE = 'CUBE',
+                NOEUD = 'NO2',
+                INST = 1.,
+                NOM_CMP = 'SIXX',
+                VALE = 151.2),
+                _F( 
+                RESULTAT = U,
+                NOM_CHAM = 'SIEF_ELNO_ELGA',
+                MAILLE = 'CUBE',
+                NOEUD = 'NO2',
+                INST = 1.,
+                NOM_CMP = 'SIXY',
+                VALE = 93.1),
+                _F( 
+                RESULTAT = U,
+                NOM_CHAM = 'EPSI_ELNO_DEPL',
+                MAILLE = 'CUBE',
+                NOEUD = 'NO2',
+                INST = 1.,
+                NOM_CMP = 'EPXX',
+                VALE = 1.48297E-2),
+                _F( 
+                RESULTAT = U,
+                NOM_CHAM = 'EPSI_ELNO_DEPL',
+                MAILLE = 'CUBE',
+                NOEUD = 'NO2',
+                INST = 1.,
+                NOM_CMP = 'EPXY',
+                VALE = 1.36014E-2),
+                _F( 
+                RESULTAT = U,
+                NOM_CHAM = 'EPSP_ELGA',
+                MAILLE = 'CUBE',
+                POINT = 1,
+                INST = 1.,
+                NOM_CMP = 'EPXX',
+                VALE = 1.4054E-2),
+                _F( 
+                RESULTAT = U,
+                NOM_CHAM = 'EPSP_ELGA',
+                MAILLE = 'CUBE',
+                POINT = 1,
+                INST = 1.,
+                NOM_CMP = 'EPXY',
+                VALE = 1.2981E-2),
+                _F( 
+                RESULTAT = U,
+                NOM_CHAM = 'VARI_ELNO_ELGA',
+                MAILLE = 'CUBE',
+                NOEUD = 'NO2',
+                INST = 1.,
+                NOM_CMP = 'V1',
+                VALE = 2.05473E-2),
+                _F( 
+                RESULTAT = U,
+                NOM_CHAM = 'VARI_ELNO_ELGA',
+                MAILLE = 'CUBE',
+                NOEUD = 'NO2',
+                INST = 1.,
+                NOM_CMP = 'V2',
+                VALE = 1.),
+#
+                _F( 
+                RESULTAT = U,
+                NOM_CHAM = 'EPSI_ELNO_DEPL',
+                MAILLE = 'CUBE',
+                NOEUD = 'NO2',
+                INST = 2.,
+                NOM_CMP = 'EPXX',
+                VALE = 3.5265E-2,
+                PRECISION = 1.E-2),
+                _F( 
+                RESULTAT = U,
+                NOM_CHAM = 'EPSI_ELNO_DEPL',
+                MAILLE = 'CUBE',
+                NOEUD = 'NO2',
+                INST = 2.,
+                NOM_CMP = 'EPXY',
+                VALE = 2.0471E-2,
+                PRECISION = 1.E-2),
+                _F( 
+                RESULTAT = U,
+                NOM_CHAM = 'EPSP_ELGA',
+                MAILLE = 'CUBE',
+                POINT = 1,
+                INST = 2.,
+                NOM_CMP = 'EPXX',
+                VALE = 3.3946E-2,
+                PRECISION = 1.E-2),
+                _F( 
+                RESULTAT = U,
+                NOM_CHAM = 'EPSP_ELGA',
+                MAILLE = 'CUBE',
+                POINT = 1,
+                INST = 2.,
+                NOM_CMP = 'EPXY',
+                VALE = 2.0250E-2,
+                PRECISION = 1.E-2),
+                _F( 
+                RESULTAT = U,
+                NOM_CHAM = 'VARI_ELNO_ELGA',
+                MAILLE = 'CUBE',
+                NOEUD = 'NO2',
+                INST = 2.,
+                NOM_CMP = 'V1',
+                VALE = 4.2329E-2,
+                PRECISION = 1.E-2)),
+#
+              
+                CHAM_ELEM=_F( 
+                CHAM_GD = VARI,
+                MAILLE = 'CUBE',
+                NOEUD = 'NO2',
+                NOM_CMP = 'V1',
+                VALE = 2.05473E-2)
+              )
+
+# TEST DES INDICATEURS DE CHARGE - DECHARGE
+
+
+U=CALC_ELEM( reuse=U,      MODELE=MO,
+                         RESULTAT=U,
+                       CHAM_MATER=CM,
+                           OPTION='RADI_ELNO_SIGM',
+                            NORME='VMIS'
+                     )
+
+U=CALC_ELEM( reuse=U,      MODELE=MO,
+                         RESULTAT=U,
+                       CHAM_MATER=CM,
+                           OPTION='RADI_ELGA_SIGM',
+                            NORME='VMIS'
+                     )
+
+U=CALC_ELEM( reuse=U,      MODELE=MO,
+                         RESULTAT=U,
+                       CHAM_MATER=CM,
+                           OPTION='DCHA_ELGA_SIGM'
+                     )
+
+U=CALC_ELEM( reuse=U,      MODELE=MO,
+                         RESULTAT=U,
+                       CHAM_MATER=CM,
+                           OPTION='DCHA_ELNO_SIGM'
+                     )
+
+U=CALC_ELEM( reuse=U,      MODELE=MO,
+                         RESULTAT=U,
+                       CHAM_MATER=CM,
+                           OPTION='ETOT_ELGA'
+                     )
+
+U=CALC_ELEM( reuse=U,      MODELE=MO,
+                         RESULTAT=U,
+                       CHAM_MATER=CM,
+                           OPTION='ETOT_ELNO_ELGA'
+                     )
+
+U2=CALC_ELEM( reuse=U2,      MODELE=MO,
+                         RESULTAT=U2,
+                       CHAM_MATER=CM,
+                           OPTION='ETOT_ELGA'
+                     )
+
+U2=CALC_ELEM( reuse=U2,      MODELE=MO,
+                         RESULTAT=U2,
+                       CHAM_MATER=CM,
+                           OPTION='ETOT_ELNO_ELGA'
+                     )
+U2=CALC_ELEM( reuse=U2,      MODELE=MO,
+                         RESULTAT=U2,
+                       CHAM_MATER=CM,
+                           OPTION='ETOT_ELEM'
+                     )
+ENER_TOT=POST_ELEM(     RESULTAT=U,
+                             MODELE=MO,
+                         CHAM_MATER=CM,
+                         TOUT_ORDRE='OUI',
+                        ENER_TOTALE=_F( TOUT = 'OUI')
+                      )
+
+ENER_TO2=POST_ELEM(     RESULTAT=U2,
+                             MODELE=MO,
+                         CHAM_MATER=CM,
+                         TOUT_ORDRE='OUI',
+                        ENER_TOTALE=_F(  TOUT = 'OUI')
+                      )
+
+
+TEST_TABLE(TABLE=ENER_TO2,
+          FILTRE=(
+                 _F(  NOM_PARA = 'INST',
+                          VALE = 0.1),),
+          NOM_PARA='TOTALE',
+          REFERENCE = 'AUTRE_ASTER',
+          CRITERE='RELATIF',
+          VALE=1.16403E-03  )
+
+
+TEST_TABLE(TABLE=ENER_TO2,
+          FILTRE=(
+                 _F(  NOM_PARA = 'INST',
+                          VALE = 0.9),),
+          NOM_PARA='TOTALE',
+          REFERENCE = 'AUTRE_ASTER',
+          CRITERE='RELATIF',
+          VALE= 1.84340  )
+
+
+TEST_TABLE(TABLE=ENER_TO2,
+          FILTRE=(
+                 _F(  NOM_PARA = 'INST',
+                          VALE = 2.0),),
+          NOM_PARA='TOTALE',
+          REFERENCE = 'AUTRE_ASTER',
+          CRITERE='RELATIF',
+          VALE= 9.58487  )
+
+TEST_TABLE(TABLE=ENER_TO2,
+          FILTRE=(
+                 _F(  NOM_PARA = 'INST',
+                          VALE =3.0 ),),
+          NOM_PARA='TOTALE',
+          REFERENCE = 'AUTRE_ASTER',
+          CRITERE='RELATIF',
+          VALE=  9.40794 )
+
+IND_ENER=POST_ELEM(     RESULTAT=U,
+                             MODELE=MO,
+                         CHAM_MATER=CM,
+                         NUME_ORDRE=(12,52,53,),
+                        INDIC_ENER=_F(  TOUT = 'OUI')
+                      )
+
+IND_SEUI=POST_ELEM(    RESULTAT=U,
+                             MODELE=MO,
+                         CHAM_MATER=CM,
+                         NUME_ORDRE=(12,52,53,),
+                        INDIC_SEUIL=_F(  TOUT = 'OUI')
+                      )
+TEST_RESU(RESU=(
+              
+                _F( 
+                RESULTAT = U2,
+                NOM_CHAM = 'ETOT_ELGA',
+                MAILLE = 'CUBE',
+                POINT = 1,
+                INST = 0.1,
+                REFERENCE = 'AUTRE_ASTER',
+                CRITERE = 'RELATIF',
+                NOM_CMP = 'TOTALE',
+                VALE = 1.16403E-03),
+                _F( 
+                RESULTAT = U2,
+                NOM_CHAM = 'ETOT_ELGA',
+                MAILLE = 'CUBE',
+                POINT = 1,
+                INST = 0.9,
+                REFERENCE = 'AUTRE_ASTER',
+                CRITERE = 'RELATIF',
+                NOM_CMP = 'TOTALE',
+                VALE = 1.84340 ),
+                _F( 
+                RESULTAT = U2,
+                NOM_CHAM = 'ETOT_ELGA',
+                MAILLE = 'CUBE',
+                POINT = 1,
+                INST = 2.0,
+                REFERENCE = 'AUTRE_ASTER',
+                CRITERE = 'RELATIF',
+                NOM_CMP = 'TOTALE',
+                VALE = 9.58487 ),
+                _F( 
+                RESULTAT = U2,
+                NOM_CHAM = 'ETOT_ELGA',
+                MAILLE = 'CUBE',
+                POINT = 1,
+                INST = 3.0,
+                REFERENCE = 'AUTRE_ASTER',
+                CRITERE = 'RELATIF',
+                NOM_CMP = 'TOTALE',
+                VALE =  9.40794),
+                _F( 
+                RESULTAT = U2,
+                NOM_CHAM = 'ETOT_ELNO_ELGA',
+                MAILLE = 'CUBE',
+                NOEUD = 'NO2',
+                INST = 0.1,
+                REFERENCE = 'AUTRE_ASTER',
+                CRITERE = 'RELATIF',
+                NOM_CMP = 'TOTALE',
+                VALE = 1.16403E-03),
+                _F( 
+                RESULTAT = U2,
+                NOM_CHAM = 'ETOT_ELNO_ELGA',
+                MAILLE = 'CUBE',
+                NOEUD = 'NO2',
+                INST = 0.9,
+                REFERENCE = 'AUTRE_ASTER',
+                CRITERE = 'RELATIF',
+                NOM_CMP = 'TOTALE',
+                VALE = 1.84340 ),
+                _F( 
+                RESULTAT = U2,
+                NOM_CHAM = 'ETOT_ELNO_ELGA',
+                MAILLE = 'CUBE',
+                NOEUD = 'NO2',
+                INST = 2.0,
+                REFERENCE = 'AUTRE_ASTER',
+                CRITERE = 'RELATIF',
+                NOM_CMP = 'TOTALE',
+                VALE = 9.58487 ),
+                _F( 
+                RESULTAT = U2,
+                NOM_CHAM = 'ETOT_ELNO_ELGA',
+                MAILLE = 'CUBE',
+                NOEUD = 'NO2',
+                INST = 3.0,
+                REFERENCE = 'AUTRE_ASTER',
+                CRITERE = 'RELATIF',
+                NOM_CMP = 'TOTALE',
+                VALE =  9.40794),
+                _F( 
+                RESULTAT = U2,
+                NOM_CHAM = 'ETOT_ELEM',
+                MAILLE = 'CUBE',
+                INST = 0.1,
+                REFERENCE = 'AUTRE_ASTER',
+                CRITERE = 'RELATIF',
+                NOM_CMP = 'TOTALE',
+                VALE = 1.16403E-03),
+                _F( 
+                RESULTAT = U2,
+                NOM_CHAM = 'ETOT_ELEM',
+                MAILLE = 'CUBE',
+                INST = 0.9,
+                REFERENCE = 'AUTRE_ASTER',
+                CRITERE = 'RELATIF',
+                NOM_CMP = 'TOTALE',
+                VALE = 1.84340 ),
+                _F( 
+                RESULTAT = U2,
+                NOM_CHAM = 'ETOT_ELEM',
+                MAILLE = 'CUBE',
+                INST = 2.0,
+                REFERENCE = 'AUTRE_ASTER',
+                CRITERE = 'RELATIF',
+                NOM_CMP = 'TOTALE',
+                VALE = 9.58487 ),
+                _F( 
+                RESULTAT = U2,
+                NOM_CHAM = 'ETOT_ELEM',
+                MAILLE = 'CUBE',
+                INST = 3.0,
+                REFERENCE = 'AUTRE_ASTER',
+                CRITERE = 'RELATIF',
+                NOM_CMP = 'TOTALE',
+                VALE =  9.40794),
+                _F( 
+                RESULTAT = U,
+                NOM_CHAM = 'RADI_ELNO_SIGM',
+                MAILLE = 'CUBE',
+                NOEUD = 'NO4',
+                NUME_ORDRE = 2,
+                REFERENCE = 'ANALYTIQUE',
+                CRITERE = 'ABSOLU',
+                NOM_CMP = 'V1',
+                VALE = 0.))
+              )
+
+TEST_TABLE(     TABLE=IND_ENER,FILTRE=(
+                 _F(  NOM_PARA = 'NUME_ORDRE',
+                          VALE_I = 12),
+                        _F(  NOM_PARA = 'LIEU',
+                          VALE_K = 'MA')),
+               NOM_PARA='INDIC_ENER',
+                REFERENCE = 'ANALYTIQUE',
+                CRITERE='ABSOLU',
+                   VALE=0.                   )
+
+TEST_TABLE(     TABLE=IND_ENER,FILTRE=(
+                 _F(  NOM_PARA = 'NUME_ORDRE',
+                          VALE_I = 52),
+                        _F(  NOM_PARA = 'LIEU',
+                          VALE_K = 'MA')),
+               NOM_PARA='INDIC_ENER',
+               REFERENCE = 'ANALYTIQUE',
+               PRECISION=0.03,
+                   VALE=3.26E-2               )
+
+TEST_TABLE(     TABLE=IND_ENER,FILTRE=(
+                 _F(  NOM_PARA = 'NUME_ORDRE',
+                          VALE_I = 53),
+                        _F(  NOM_PARA = 'LIEU',
+                          VALE_K = 'MA')),
+               NOM_PARA='INDIC_ENER',
+               REFERENCE = 'ANALYTIQUE',
+               PRECISION=0.03,
+                   VALE=4.69E-2               )
+
+TEST_TABLE(     TABLE=IND_SEUI,FILTRE=(
+                 _F(  NOM_PARA = 'NUME_ORDRE',
+                          VALE_I = 12),
+                        _F(  NOM_PARA = 'LIEU',
+                          VALE_K = 'MA')),
+               NOM_PARA='INDIC_SEUIL',
+                REFERENCE = 'ANALYTIQUE',
+                CRITERE='ABSOLU',
+                   VALE=0.                    )
+
+TEST_TABLE(     TABLE=IND_SEUI,FILTRE=(
+                 _F(  NOM_PARA = 'NUME_ORDRE',
+                          VALE_I = 52),
+                        _F(  NOM_PARA = 'LIEU',
+                          VALE_K = 'MA')),
+               REFERENCE = 'ANALYTIQUE',
+               PRECISION=0.01,
+               NOM_PARA='INDIC_SEUIL',
+                   VALE=9.71E-2               )
+
+TEST_TABLE(     TABLE=IND_SEUI,FILTRE=(
+                 _F(  NOM_PARA = 'NUME_ORDRE',
+                          VALE_I = 53),
+                        _F(  NOM_PARA = 'LIEU',
+                          VALE_K = 'MA')),
+               NOM_PARA='INDIC_SEUIL',
+               REFERENCE = 'ANALYTIQUE',
+               PRECISION=0.01,
+                   VALE=1.                    )
+
+FIN()
+#
+#
+#
+#C PROGRAMME FORTRAN DE CALCUL DE LA SOLUTION DE REFERENCE
+#
+#      IMPLICIT NONE
+#
+#      REAL RAC3
+#      REAL AX,AY,BX,BY, OX, OY
+#
+#
+#      REAL DAB,U0X,U0Y
+#      REAL LBD,B0X,B0Y
+#
+#      REAL YOUNG,NU,ET,DEUXMU,RPRIM,SIGY, TROISK
+#      REAL SIEQA,PA,EPXXA,EPXYA,EXXA,EXYA
+#
+#      COMPLEX SIGB0,SIGB,T1,T2,TT
+#      REAL TMP,PB,EPXXB,EPXYB,EXXB,EXYB
+#
+#      REAL  PO, EPXXO, EPXYO, EXXO, EXYO
+#
+#      REAL  SIGEPA, RAPA, INDSEA
+#      REAL  SIGEPB, RBPB, INDSEB
+#      REAL  SIGEPO, ROPO, INDSEO
+#
+#      REAL  EYYA, EZZA, EPSMOA, EPSEQA, PEA, PSIA, WA, INDENA
+#      REAL  EEXXA, EEYYA, EEZZA, EEXYA
+#
+#      REAL  EYYB, EZZB, EPSMOB, EPSEQB, PEB, PSIB, WB, INDENB
+#      REAL  EEXXB, EEYYB, EEZZB, EEXYB
+#
+#      REAL  EYYO, EZZO, EPSMOO, EPSEQO, PEO, PSIO, WO, INDENO
+#      REAL  EEXXO, EEYYO, EEZZO, EEXYO
+#
+#      RAC3 = SQRT(3.)
+#
+#
+#C CARACTERISTIQUES DU MATERIAU
+#      YOUNG = 195000
+#      NU    = 0.3
+#      ET    = 1930
+#      SIGY  = 181
+#      DEUXMU = YOUNG/(1+NU)
+#      RPRIM  = 1/(1/ET - 1/YOUNG)
+#
+#      WRITE (6,*) 'DEUXMU = ',DEUXMU
+#      WRITE (6,*) 'RPRIM  = ',RPRIM
+#
+#      TROISK = YOUNG / (1. - 2.*NU)
+#      DEUXMU = YOUNG / (1. + NU)
+#
+#
+#C TRAJET DE CHARGEMENT
+#      AX = 151.2
+#      AY = 93.1 * RAC3
+#
+#      BX = 257.2
+#      BY = 33.1 * RAC3
+#
+#      OX = 0.
+#      OY = 0.
+#
+#
+#C AU POINT A
+#
+#      SIEQA = SQRT(AX**2+AY**2)
+#      PA    = ( SIEQA - SIGY)/RPRIM
+#      EPXXA = PA * AX/SIEQA
+#      EPXYA = 1.5 * PA * AY/SIEQA
+#
+#      EXXA  = AX/YOUNG + EPXXA
+#      EXYA  = AY/DEUXMU+ EPXYA
+#
+#      WRITE (6,*) 'AU POINT A : '
+#      WRITE (6,*) '  P(A)    = ',PA
+#      WRITE (6,*) '  EPXX(A) = ',EPXXA
+#      WRITE (6,*) '  EPXY(A) = ',EPXYA/RAC3
+#      WRITE (6,*) '  EXX(A)  = ',EXXA
+#      WRITE (6,*) '  EXY(A)  = ',EXYA/RAC3
+#
+#
+#C POINT DE RECHARGEMENT SUR LE TRAJET AB
+#
+#      DAB = SQRT((BX-AX)**2 + (BY-AY)**2)
+#      U0X = (BX-AX)/DAB
+#      U0Y = (BY-AY)/DAB
+#
+#      LBD = - 2 * (AX*U0X + AY*U0Y)
+#      B0X = AX + LBD*U0X
+#      B0Y = AY + LBD*U0Y
+#
+#      WRITE (6,*) 'POINT DE RECHARGE'
+#      WRITE (6,*) 'SIGMA B0 : ',B0X
+#      WRITE (6,*) 'TAU   B0 : ',B0Y/RAC3
+#
+#
+#C   AU POINT B
+#
+#      SIGB  = BX + (0,1)*BY
+#      SIGB0 = B0X+ (0,1)*B0Y
+#
+#      T1 = LOG(ABS(SIGB))*SIGB - LOG(ABS(SIGB0))*SIGB0
+#      TMP= REAL( (SIGB*LOG(SIGB)-SIGB - SIGB0*LOG(SIGB0)+SIGB0)
+#     &          /(SIGB-SIGB0))
+#      T2 = TMP * (SIGB - SIGB0)
+#      TT = T1 - T2
+#
+#      EPXXB = EPXXA + REAL(TT)/RPRIM
+#      EPXYB = EPXYA + IMAG(TT)*1.5/RPRIM
+#
+#      EXXB  = BX/YOUNG + EPXXB
+#      EXYB  = BY/DEUXMU+ EPXYB
+#
+#      PB    = ( ABS(SIGB) - SIGY)/RPRIM
+#
+#      WRITE (6,*) 'AU POINT B : '
+#      WRITE (6,*) '  P(B)    = ',PB
+#      WRITE (6,*) '  EPXX(B) = ',EPXXB
+#      WRITE (6,*) '  EPXY(B) = ',EPXYB/RAC3
+#      WRITE (6,*) '  EXX(B)  = ',EXXB
+#      WRITE (6,*) '  EXY(B)  = ',EXYB/RAC3
+#
+#      T1 = (2,3)
+#      WRITE (6,*) REAL(LOG(T1))
+#      WRITE (6,*) LOG(ABS(T1))
+#
+#
+#C AU POINT O (DECHARGE)
+#
+#      PO    = PB
+#      EPXXO = EPXXB
+#      EPXYO = EPXYB
+#      EXXO  = EPXXO
+#      EXYO  = EPXYO
+#      WRITE (6,*) 'AU POINT O : '
+#      WRITE (6,*) '  P(O)    = ',PO
+#      WRITE (6,*) '  EPXX(O) = ',EPXXO
+#      WRITE (6,*) '  EPXY(O) = ',EPXYO/RAC3
+#      WRITE (6,*) '  EXX(O)  = ',EXXO
+#      WRITE (6,*) '  EXY(O)  = ',EXYO/RAC3
+#
+#
+#C CALCUL DES INDICATEURS DE CHARGE - DECHARGE
+#
+#C    INDICATEUR DE SEUIL : SIG*EP / ((SIGY+R)*P) - 1
+#      WRITE (6,*) 'INDICATEUR DE SEUIL : '
+#
+#      SIGEPA = AX*EPXXA + 2./3. * AY*EPXYA
+#      RAPA   = (SIGY + RPRIM*PA)*PA
+#      INDSEA = 1. - SIGEPA / RAPA
+#      WRITE (6,*)  '  A -> ',INDSEA
+#
+#      SIGEPB = BX*EPXXB + 2./3. * BY*EPXYB
+#      RBPB   = (SIGY + RPRIM*PB)*PB
+#      INDSEB = 1. - SIGEPB / RBPB
+#      WRITE (6,*)  '  B -> ',INDSEB
+#
+#      SIGEPO = OX*EPXXO + 2./3. * OY*EPXYO
+#      ROPO   = (SIGY + RPRIM*PO)*PO
+#      INDSEO = 1. - SIGEPO / ROPO
+#      WRITE (6,*)  '  O -> ',INDSEO
+#
+#
+#C INDICATEUR ENERGETIQUE
+#      WRITE (6,*) 'INDICATEUR ENERGIE : '
+#
+#C    POINT A
+#      EYYA   = - EPXXA/2. - NU/YOUNG * AX
+#      EZZA   =   EYYA
+#
+#      EPSMOA = (EXXA + EYYA + EZZA) / 3.D0
+#      EPSEQA = SQRT(1.5 * ((EXXA-EPSMOA)**2 + (EYYA-EPSMOA)**2
+#     &         + (EZZA-EPSMOA)**2 + 2./3.*EXYA**2) )
+#
+#      IF (DEUXMU*EPSEQA.LE.SIGY) THEN
+#        PSIA = 3./2.*TROISK*EPSMOA**2 + DEUXMU/3. * EPSEQA**2
+#      ELSE
+#        PEA  = (DEUXMU*EPSEQA-SIGY) / (RPRIM+1.5*DEUXMU)
+#        PSIA = 3./2.*TROISK*EPSMOA**2 + (SIGY+RPRIM*PEA)**2/3./DEUXMU
+#     &        + 0.5*PEA*(2.*SIGY + RPRIM*PEA)
+#      END IF
+#
+#      EEXXA = EXXA - EPXXA
+#      EEYYA = - NU/YOUNG * AX
+#      EEZZA = EEYYA
+#      EEXYA = EXYA - EPXYA
+#      EPSMOA = (EEXXA + EEYYA + EEZZA) / 3.
+#      EPSEQA = SQRT(1.5 * ((EEXXA-EPSMOA)**2 + (EEYYA-EPSMOA)**2
+#     &         + (EEZZA-EPSMOA)**2 + 2./3.*EEXYA**2) )
+#
+#      WA = 3./2.*TROISK*EPSMOA**2 + DEUXMU/3. * EPSEQA**2
+#     &   + SIGY*PA + 0.5*RPRIM*PA**2
+#
+#      INDENA = (WA - PSIA) / WA
+#
+#
+#      WRITE (6,*) '  A -> ',INDENA
+#
+#
+#C    POINT B
+#      EYYB   = - EPXXB/2. - NU/YOUNG * BX
+#      EZZB   =   EYYB
+#
+#      EPSMOB = (EXXB + EYYB + EZZB) / 3.D0
+#      EPSEQB = SQRT(1.5 * ((EXXB-EPSMOB)**2 + (EYYB-EPSMOB)**2
+#     &         + (EZZB-EPSMOB)**2 + 2./3.*EXYB**2) )
+#
+#      IF (DEUXMU*EPSEQB.LE.SIGY) THEN
+#        PSIB = 3./2.*TROISK*EPSMOB**2 + DEUXMU/3. * EPSEQB**2
+#      ELSE
+#        PEB  = (DEUXMU*EPSEQB-SIGY) / (RPRIM+1.5*DEUXMU)
+#        PSIB = 3./2.*TROISK*EPSMOB**2 + (SIGY+RPRIM*PEB)**2/3./DEUXMU
+#     &        + 0.5*PEB*(2.*SIGY + RPRIM*PEB)
+#      END IF
+#
+#      EEXXB = EXXB - EPXXB
+#      EEYYB = - NU/YOUNG * BX
+#      EEZZB = EEYYB
+#      EEXYB = EXYB - EPXYB
+#      EPSMOB = (EEXXB + EEYYB + EEZZB) / 3.
+#      EPSEQB = SQRT(1.5 * ((EEXXB-EPSMOB)**2 + (EEYYB-EPSMOB)**2
+#     &         + (EEZZB-EPSMOB)**2 + 2./3.*EEXYB**2) )
+#
+#      WB = 3./2.*TROISK*EPSMOB**2 + DEUXMU/3. * EPSEQB**2
+#     &   + SIGY*PB + 0.5*RPRIM*PB**2
+#
+#      INDENB = (WB - PSIB) / WB
+#      WRITE (6,*) '  B -> ',INDENB
+#
+#
+#C POINT O
+#      EYYO   = - EPXXO/2. - NU/YOUNG * OX
+#      EZZO   =   EYYO
+#
+#      EPSMOO = (EXXO + EYYO + EZZO) / 3.D0
+#      EPSEQO = SQRT(1.5 * ((EXXO-EPSMOO)**2 + (EYYO-EPSMOO)**2
+#     &         + (EZZO-EPSMOO)**2 + 2./3.*EXYO**2) )
+#
+#      IF (DEUXMU*EPSEQO.LE.SIGY) THEN
+#        PSIO = 3./2.*TROISK*EPSMOO**2 + DEUXMU/3. * EPSEQO**2
+#      ELSE
+#        PEO  = (DEUXMU*EPSEQO-SIGY) / (RPRIM+1.5*DEUXMU)
+#        PSIO = 3./2.*TROISK*EPSMOO**2 + (SIGY+RPRIM*PEO)**2/3./DEUXMU
+#     &        + 0.5*PEO*(2.*SIGY + RPRIM*PEO)
+#      END IF
+#
+#      EEXXO = EXXO - EPXXO
+#      EEYYO = - NU/YOUNG * OX
+#      EEZZO = EEYYO
+#      EEXYO = EXYO - EPXYO
+#      EPSMOO = (EEXXO + EEYYO + EEZZO) / 3.
+#      EPSEQO = SQRT(1.5 * ((EEXXO-EPSMOO)**2 + (EEYYO-EPSMOO)**2
+#     &         + (EEZZO-EPSMOO)**2 + 2./3.*EEXYO**2) )
+#
+#      WO = 3./2.*TROISK*EPSMOO**2 + DEUXMU/3. * EPSEQO**2
+#     &   + SIGY*PO + 0.5*RPRIM*PO**2
+#
+#      INDENO = (WO - PSIO) / WO
+#      WRITE (6,*) '  O -> ',INDENO
+#
+#      END

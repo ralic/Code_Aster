@@ -1,0 +1,89 @@
+      SUBROUTINE MECARA(CARA,EXICAR,CHCARA)
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF CALCULEL  DATE 28/03/2001   AUTEUR CIBHHLV L.VIVAN 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+      IMPLICIT REAL*8 (A-H,O-Z)
+C
+C     ARGUMENTS:
+C     ----------
+      CHARACTER*(*) CARA
+      CHARACTER*(*) CHCARA(15)
+      LOGICAL EXICAR
+C ----------------------------------------------------------------------
+C
+C     ON CHERCHE LES NOMS DES CHAMPS DE CARAC_ELEM DANS 1 CARTE CARA
+C
+C
+C     ENTREES:
+C        CARA : NOM DE LA CARTE
+C
+C     SORTIES:
+C        EXICAR : VRAI SI ON TROUVE 1 CHAMP DE CARAC_ELEM
+C        CHCARA : NOMS DES CHAMPS DE CARAC_ELEM TROUVES.
+C
+C ----------------------------------------------------------------------
+C
+C     FONCTIONS EXTERNES:
+C     -------------------
+      CHARACTER*32 JEXNUM,JEXNOM,JEXATR
+C
+C     VARIABLES LOCALES:
+C     ------------------
+      CHARACTER*4 MDET
+C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
+      COMMON /IVARJE/ZI(1)
+      COMMON /RVARJE/ZR(1)
+      COMMON /CVARJE/ZC(1)
+      COMMON /LVARJE/ZL(1)
+      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+      INTEGER ZI
+      REAL*8 ZR
+      COMPLEX*16 ZC
+      LOGICAL ZL
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32
+      CHARACTER*80 ZK80
+C
+C DEB-------------------------------------------------------------------
+C
+      EXICAR = .FALSE.
+      IF (CARA(1:8).NE.'        ') THEN
+         CHCARA(1) = CARA(1:8)//'.CARORIEN'
+         CHCARA(2) = CARA(1:8)//'.CARDISCK'
+         CHCARA(3) = CARA(1:8)//'.CARDISCM'
+         CHCARA(4) = CARA(1:8)//'.CARDISCA'
+         CHCARA(5) = CARA(1:8)//'.CARGEOPO'
+         CHCARA(6) = CARA(1:8)//'.CARGENPO'
+         CHCARA(7) = CARA(1:8)//'.CARCOQUE'
+         CHCARA(8) = CARA(1:8)//'.CARSECTI'
+         CHCARA(9) = CARA(1:8)//'.CARARCPO'
+         CHCARA(10)= CARA(1:8)//'.CARCABLE'
+         CHCARA(11)= CARA(1:8)//'.CARGENBA'
+         CHCARA(12)= CARA(1:8)//'.CARMASSI'
+         CHCARA(13)= CARA(1:8)//'.CARPOUFL'
+         CHCARA(14)= CARA(1:8)//'.CVENTCXF'
+         EXICAR = .TRUE.
+      ELSE
+         DO 1 I = 1,15
+         CHCARA(I) = ' '
+    1    CONTINUE
+      ENDIF
+ 9999 CONTINUE
+      END

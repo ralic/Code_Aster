@@ -1,0 +1,95 @@
+      SUBROUTINE TE0581 ( OPTION , NOMTE )
+      IMPLICIT NONE
+C-----------------------------------------------------------------------
+C MODIF ELEMENTS  DATE 22/11/2001   AUTEUR VABHHTS J.PELLET 
+C ======================================================================
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+C-----------------------------------------------------------------------
+C  DESCRIPTION : REALISE L'OPTION ADD_SIGM :
+C  -----------   ADDITION DE CONTRAINTES AUX ELEMENTS
+C
+C  IN     : OPTION : CHARACTER*16 , SCALAIRE
+C                    OPTION DE CALCUL
+C  IN     : NOMTE  : CHARACTER*16 , SCALAIRE
+C                    NOM DU TYPE ELEMENT
+C
+C-------------------   DECLARATION DES VARIABLES   ---------------------
+C
+C     ----- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
+      INTEGER            ZI
+      COMMON  / IVARJE / ZI(1)
+      REAL*8             ZR
+      COMMON  / RVARJE / ZR(1)
+      COMPLEX*16         ZC
+      COMMON  / CVARJE / ZC(1)
+      LOGICAL            ZL
+      COMMON  / LVARJE / ZL(1)
+      CHARACTER*8        ZK8
+      CHARACTER*16                ZK16
+      CHARACTER*24                          ZK24
+      CHARACTER*32                                    ZK32
+      CHARACTER*80                                              ZK80
+      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+C     ----- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
+C
+C ARGUMENTS
+C ---------
+      CHARACTER*16  OPTION, NOMTE
+C
+C VARIABLES LOCALES
+C -----------------
+      INTEGER       J, JEPCON, JTAB1(7), JTAB2(7),NBSP,K
+      LOGICAL NUL
+C
+C-------------------   DEBUT DU CODE EXECUTABLE    ---------------------
+
+      CALL TECACH(.TRUE.,.FALSE.,'PEPCON1',7,JTAB1(1))
+      CALL TECACH(.TRUE.,.FALSE.,'PEPCON2',7,JTAB2(1))
+
+      IF ( JTAB1(1).EQ.0 .OR. JTAB2(1).EQ.0 )
+     &   CALL UTMESS('F','TE0581','OPTION '//OPTION//' NON ACTIVE '//
+     &   'POUR UN ELEMENT DE TYPE '//NOMTE)
+
+      IF (( JTAB1(2).NE.JTAB2(2) ).OR.( JTAB1(3).NE.JTAB2(3) ))
+     &   CALL UTMESS('F','TE0581','OPTION '//OPTION//' : '//
+     &   'INCOMPATIBILITE DES DEUX CHAMPS D ENTREE')
+
+
+C     -- SI LES 2 CHAMPS IN SONT NULS, IL N'Y A RIEN A FAIRE :
+      NUL=.TRUE.
+      DO 71,K=1,JTAB1(2)*MAX(1,JTAB1(7))
+         IF (ZR(JTAB1(1)-1+K).NE.0.D0) NUL=.FALSE.
+ 71   CONTINUE
+      DO 72,K=1,JTAB2(2)*MAX(1,JTAB2(7))
+         IF (ZR(JTAB2(1)-1+K).NE.0.D0) NUL=.FALSE.
+ 72   CONTINUE
+      IF (NUL) GO TO 9999
+
+
+      IF ( JTAB1(7).NE.JTAB2(7) )
+     &   CALL UTMESS('F','TE0581','OPTION '//OPTION//' : '//
+     &   'INCOMPATIBILITE DES DEUX CHAMPS D ENTREE (NB_SPT)')
+      NBSP=MAX(1,JTAB1(7))
+
+      CALL JEVECH ( 'PEPCON3' , 'E' , JEPCON )
+      DO 10 J = 1, JTAB1(2)*NBSP
+         ZR(JEPCON+J-1) = ZR(JTAB1(1)+J-1) + ZR(JTAB2(1)+J-1)
+  10  CONTINUE
+
+9999  CONTINUE
+      END

@@ -1,0 +1,555 @@
+# MODIF  DATE 07/06/2002   AUTEUR DURAND C.DURAND 
+# TITRE POUTRE ENCASTREE A UNE EXTREMITE ET CHARGEE PAR DES FORCES
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+#       UNITAIRES SUR SON AUTRE EXTREMITE.
+# MODELISATION POU_D_TG   GAUCHISSEMENT GENE   IW/=0
+#======================================================================
+
+
+DEBUT( CODE=_F(  NOM = 'SSLL102D',NIV_PUB_WEB='INTERNET') )
+
+MA=LIRE_MAILLAGE(                                                )
+
+MO=AFFE_MODELE(        MAILLAGE=MA,
+         AFFE=_F( TOUT = 'OUI',PHENOMENE = 'MECANIQUE',MODELISATION = 'POU_D_TG')
+                        )
+
+MATR=DEFI_MATERIAU(   ELAS=_F( E = 2.E11,  NU = 0.3) )
+
+CHMAT=AFFE_MATERIAU(   MAILLAGE=MA,
+                           AFFE=_F( TOUT = 'OUI', MATER = MATR)            )
+
+CAREL=AFFE_CARA_ELEM(   MODELE=MO,POUTRE=(
+          # SECTION RECTANGLE :
+           _F(  GROUP_MA = 'G1',   SECTION = 'GENERALE',
+          CARA = (   'A',            'IY',              'IZ',
+                   'AY',           'AZ',              'JX',
+                   'JG',                                   ),
+          VALE = (  0.02,        0.166666666666E-4, 0.666666666666E-4,
+                    1.2,         1.2,                 0.45776E-4,
+                    5.555555555555E-8,
+                  )),
+          # SECTION CORNIERE 120X120X8 :
+           _F(  GROUP_MA = 'G2',   SECTION = 'GENERALE',
+          CARA = (   'A',            'IY',              'IZ',
+                   'AY',           'AZ',              'JX',
+                   'EY',           'EZ',              'JG',        ),
+          VALE = (  1.856E-3,       4.167339E-4,       1.045547E-4,
+                    2.793296089385, 2.793296089385,    3.9595E-8,
+                    41.012E-3,      0.0,      4.43988195555E-11,         )))
+)
+
+# ------ TRACTION SIMPLE GX : ------------------------------------------
+
+
+CHARG1=AFFE_CHAR_MECA(  MODELE=MO,
+    DDL_IMPO=_F( GROUP_NO = 'A', DX = 0., DY = 0., DZ = 0., DRX = 0., DRY = 0., DRZ = 0., GRX = 0.),
+     FORCE_NODALE=_F( GROUP_NO = 'B',  FX = 1.0E0)   )
+
+MEST1=MECA_STATIQUE(        MODELE=MO,    CHAM_MATER=CHMAT,
+            CARA_ELEM=CAREL, EXCIT=_F( CHARGE = CHARG1)   )
+
+TEST_RESU(RESU=(
+   _F( RESULTAT = MEST1, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
+                   NOEUD = 'N3', NOM_CMP = 'DX', VALE = 5.E-10,         
+                   PRECISION = 1.E-6, CRITERE = 'RELATIF'),
+   _F( RESULTAT = MEST1, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
+                   NOEUD = 'N3', NOM_CMP = 'DY', VALE = 0.0,           
+                   PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
+   _F( RESULTAT = MEST1, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
+                   NOEUD = 'N3', NOM_CMP = 'DZ', VALE = 0.0,           
+                   PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
+   _F( RESULTAT = MEST1, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
+                   NOEUD = 'N3', NOM_CMP = 'DRX', VALE = 0.0,          
+                   PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
+   _F( RESULTAT = MEST1, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
+                   NOEUD = 'N3', NOM_CMP = 'DRY', VALE = 0.0,          
+                   PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
+   _F( RESULTAT = MEST1, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
+                   NOEUD = 'N3', NOM_CMP = 'DRZ', VALE = 0.0,          
+                   PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
+   _F( RESULTAT = MEST1, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
+                   NOEUD = 'M3', NOM_CMP = 'DX', VALE = 5.387931E-9,   
+                   PRECISION = 1.E-6, CRITERE = 'RELATIF'),
+   _F( RESULTAT = MEST1, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
+                   NOEUD = 'M3', NOM_CMP = 'DY', VALE = 0.0,            
+                   PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
+   _F( RESULTAT = MEST1, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
+                   NOEUD = 'M3', NOM_CMP = 'DZ', VALE = 0.0,            
+                   PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
+   _F( RESULTAT = MEST1, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
+                   NOEUD = 'M3', NOM_CMP = 'DRX', VALE = 0.0,          
+                   PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
+   _F( RESULTAT = MEST1, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
+                   NOEUD = 'M3', NOM_CMP = 'DRY', VALE = 0.0,          
+                   PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
+   _F( RESULTAT = MEST1, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
+                   NOEUD = 'M3', NOM_CMP = 'DRZ', VALE = 0.0,           
+                   PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
+#
+   _F( RESULTAT = MEST1, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
+                   NOEUD = 'N1', NOM_CMP = 'GRX', VALE = 0.0,          
+                   PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
+   _F( RESULTAT = MEST1, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
+                   NOEUD = 'M1', NOM_CMP = 'GRX', VALE = 0.0,          
+                   PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
+   _F( RESULTAT = MEST1, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
+                   NOEUD = 'N3', NOM_CMP = 'GRX', VALE = 0.0,          
+                   PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
+   _F( RESULTAT = MEST1, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
+                   NOEUD = 'M3', NOM_CMP = 'GRX', VALE = 0.0,          
+                   PRECISION = 1.E-13, CRITERE = 'ABSOLU'))
+            )
+
+#
+# ------ EFFORT TRANCHANT GY : -----------------------------------------
+
+
+CHARG2=AFFE_CHAR_MECA(  MODELE=MO,
+    DDL_IMPO=_F( GROUP_NO = 'A', DX = 0., DY = 0., DZ = 0., DRX = 0., DRY = 0., DRZ = 0., GRX = 0.),
+     FORCE_NODALE=_F( GROUP_NO = 'B',  FY = 1.0E0)   )
+
+MEST2=MECA_STATIQUE(        MODELE=MO,    CHAM_MATER=CHMAT,
+            CARA_ELEM=CAREL, EXCIT=_F( CHARGE = CHARG2)   )
+
+TEST_RESU(RESU=(
+   _F( RESULTAT = MEST2, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
+                   NOEUD = 'N3', NOM_CMP = 'DX', VALE = 0.0,
+                   PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
+   _F( RESULTAT = MEST2, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
+                   NOEUD = 'N3', NOM_CMP = 'DY', VALE = 2.01560000E-7,
+                   PRECISION = 1.E-6, CRITERE = 'RELATIF'),
+   _F( RESULTAT = MEST2, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
+                   NOEUD = 'N3', NOM_CMP = 'DZ', VALE = 0.0,          
+                   PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
+   _F( RESULTAT = MEST2, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
+                   NOEUD = 'N3', NOM_CMP = 'DRX', VALE = 0.0,          
+                   PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
+   _F( RESULTAT = MEST2, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
+                   NOEUD = 'N3', NOM_CMP = 'DRY', VALE = 0.0,        
+                   PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
+   _F( RESULTAT = MEST2, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
+                   NOEUD = 'N3', NOM_CMP = 'DRZ', VALE = 1.5E-7,      
+                   PRECISION = 1.E-6, CRITERE = 'RELATIF'),
+   _F( RESULTAT = MEST2, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
+                   NOEUD = 'M3', NOM_CMP = 'DX', VALE = 0.0,           
+                   PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
+   _F( RESULTAT = MEST2, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
+                   NOEUD = 'M3', NOM_CMP = 'DY', VALE = 1.66655179E-7,
+                   PRECISION = 1.E-6, CRITERE = 'RELATIF'),
+   _F( RESULTAT = MEST2, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
+                   NOEUD = 'M3', NOM_CMP = 'DZ', VALE = 0.0,          
+                   PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
+   _F( RESULTAT = MEST2, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
+                   NOEUD = 'M3', NOM_CMP = 'DRX', VALE = 0.0,        
+                   PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
+   _F( RESULTAT = MEST2, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
+                   NOEUD = 'M3', NOM_CMP = 'DRY', VALE = 0.0,      
+                   PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
+   _F( RESULTAT = MEST2, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
+                   NOEUD = 'M3', NOM_CMP = 'DRZ', VALE = 9.5643715E-8, 
+                   PRECISION = 1.E-6, CRITERE = 'RELATIF'),
+#
+   _F( RESULTAT = MEST2, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
+                   NOEUD = 'N1', NOM_CMP = 'GRX', VALE = 0.0,        
+                   PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
+   _F( RESULTAT = MEST2, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
+                   NOEUD = 'M1', NOM_CMP = 'GRX', VALE = 0.0,        
+                   PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
+   _F( RESULTAT = MEST2, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
+                   NOEUD = 'N3', NOM_CMP = 'GRX', VALE = 0.0,       
+                   PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
+   _F( RESULTAT = MEST2, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
+                   NOEUD = 'M3', NOM_CMP = 'GRX', VALE = 0.0,       
+                   PRECISION = 1.E-13, CRITERE = 'ABSOLU'))
+            )
+
+#
+# ------ EFFORT TRANCHANT GZ : -----------------------------------------
+
+
+CHARG3=AFFE_CHAR_MECA(  MODELE=MO,
+    DDL_IMPO=_F( GROUP_NO = 'A', DX = 0., DY = 0., DZ = 0., DRX = 0., DRY = 0., DRZ = 0., GRX = 0.),
+     FORCE_NODALE=_F( GROUP_NO = 'B',  FZ = 1.0E0)   )
+
+MEST3=MECA_STATIQUE(        MODELE=MO,    CHAM_MATER=CHMAT,
+            CARA_ELEM=CAREL, EXCIT=_F( CHARGE = CHARG3)   )
+
+TEST_RESU(RESU=(
+   _F( RESULTAT = MEST3, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
+                   NOEUD = 'N3', NOM_CMP = 'DX', VALE = 0.0,        
+                   PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
+   _F( RESULTAT = MEST3, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
+                   NOEUD = 'N3', NOM_CMP = 'DY', VALE = 0.0,         
+                   PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
+   _F( RESULTAT = MEST3, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
+                   NOEUD = 'N3', NOM_CMP = 'DZ', VALE = 8.0156000E-7, 
+                   PRECISION = 1.E-6, CRITERE = 'RELATIF'),
+   _F( RESULTAT = MEST3, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
+                   NOEUD = 'N3', NOM_CMP = 'DRX', VALE = 0.0,        
+                   PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
+   _F( RESULTAT = MEST3, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
+                   NOEUD = 'N3', NOM_CMP = 'DRY', VALE = -6.E-7,      
+                   PRECISION = 1.E-6, CRITERE = 'RELATIF'),
+   _F( RESULTAT = MEST3, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
+                   NOEUD = 'N3', NOM_CMP = 'DRZ', VALE = 0.0,       
+                   PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
+   _F( RESULTAT = MEST3, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
+                   NOEUD = 'M3', NOM_CMP = 'DX', VALE = 0.0,        
+                   PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
+   _F( RESULTAT = MEST3, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
+                   NOEUD = 'M3', NOM_CMP = 'DY', VALE = 0.0,        
+                   PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
+   _F( RESULTAT = MEST3, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
+                   NOEUD = 'M3', NOM_CMP = 'DZ', VALE = 1.14577963E-6,
+                   PRECISION = 6.E-5, CRITERE = 'RELATIF'),
+   _F( RESULTAT = MEST3, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
+                   NOEUD = 'M3', NOM_CMP = 'DRX', VALE = 2.62034178E-5,
+                   PRECISION = 6.E-5, CRITERE = 'RELATIF'),
+   _F( RESULTAT = MEST3, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
+                   NOEUD = 'M3', NOM_CMP = 'DRY', VALE = -2.3996127E-8,
+                   PRECISION = 1.E-6, CRITERE = 'RELATIF'),
+   _F( RESULTAT = MEST3, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
+                   NOEUD = 'M3', NOM_CMP = 'DRZ', VALE = 0.0,      
+                   PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
+#
+   _F( RESULTAT = MEST3, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
+                   NOEUD = 'N1', NOM_CMP = 'GRX', VALE = 0.0,   
+                   PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
+   _F( RESULTAT = MEST3, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
+                   NOEUD = 'M1', NOM_CMP = 'GRX', VALE = 0.0,    
+                   PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
+   _F( RESULTAT = MEST3, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
+                   NOEUD = 'N3', NOM_CMP = 'GRX', VALE = 0.0,   
+                   PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
+   _F( RESULTAT = MEST3, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
+                   NOEUD = 'M3', NOM_CMP = 'GRX', VALE = 1.3465235E-5,
+                   PRECISION = 1.E-6, CRITERE = 'RELATIF'))
+            )
+
+#
+# ------ TORSION GX : --------------------------------------------------
+
+
+CHARG4=AFFE_CHAR_MECA(  MODELE=MO,
+    DDL_IMPO=_F( GROUP_NO = 'A', DX = 0., DY = 0., DZ = 0., DRX = 0., DRY = 0., DRZ = 0., GRX = 0.),
+     FORCE_NODALE=_F( GROUP_NO = 'B',  MX = 1.0E0)   )
+
+MEST4=MECA_STATIQUE(        MODELE=MO,    CHAM_MATER=CHMAT,
+            CARA_ELEM=CAREL, EXCIT=_F( CHARGE = CHARG4)   )
+
+TEST_RESU(RESU=(
+   _F( RESULTAT = MEST4, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
+                   NOEUD = 'N3', NOM_CMP = 'DX', VALE = 0.0,     
+                   PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
+   _F( RESULTAT = MEST4, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
+                   NOEUD = 'N3', NOM_CMP = 'DY', VALE = 0.0,     
+                   PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
+   _F( RESULTAT = MEST4, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
+                   NOEUD = 'N3', NOM_CMP = 'DZ', VALE = 0.0,      
+                   PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
+   _F( RESULTAT = MEST4, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
+                   NOEUD = 'N3', NOM_CMP = 'DRX', VALE = 5.520304E-7,
+                   PRECISION = 6.E-5, CRITERE = 'RELATIF'),
+   _F( RESULTAT = MEST4, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
+                   NOEUD = 'N3', NOM_CMP = 'DRY', VALE = 0.0,        
+                   PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
+   _F( RESULTAT = MEST4, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
+                   NOEUD = 'N3', NOM_CMP = 'DRZ', VALE = 0.0,        
+                   PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
+   _F( RESULTAT = MEST4, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
+                   NOEUD = 'M3', NOM_CMP = 'DX', VALE = 0.0,         
+                   PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
+   _F( RESULTAT = MEST4, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
+                   NOEUD = 'M3', NOM_CMP = 'DY', VALE = 0.0,         
+                   PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
+   _F( RESULTAT = MEST4, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
+                   NOEUD = 'M3', NOM_CMP = 'DZ', VALE = 2.62034178E-5,
+                   PRECISION = 6.E-5, CRITERE = 'RELATIF'),
+   _F( RESULTAT = MEST4, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
+                   NOEUD = 'M3', NOM_CMP = 'DRX', VALE = 6.3892075E-4,
+                   PRECISION = 6.E-5, CRITERE = 'RELATIF'),
+   _F( RESULTAT = MEST4, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
+                   NOEUD = 'M3', NOM_CMP = 'DRY', VALE = 0.0,         
+                   PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
+   _F( RESULTAT = MEST4, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
+                   NOEUD = 'M3', NOM_CMP = 'DRZ', VALE = 0.0,     
+                   PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
+#
+   _F( RESULTAT = MEST4, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
+                   NOEUD = 'N1', NOM_CMP = 'GRX', VALE = 0.0,    
+                   PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
+   _F( RESULTAT = MEST4, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
+                   NOEUD = 'M1', NOM_CMP = 'GRX', VALE = 0.0,     
+                   PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
+   _F( RESULTAT = MEST4, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
+                   NOEUD = 'N3', NOM_CMP = 'GRX', VALE = 2.8399161E-7,
+                   PRECISION = 1.E-6, CRITERE = 'RELATIF'),
+   _F( RESULTAT = MEST4, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
+                   NOEUD = 'M3', NOM_CMP = 'GRX', VALE = 3.2832428E-4, 
+                   PRECISION = 1.E-6, CRITERE = 'RELATIF'))
+            )
+
+#
+# ------ FLEXION GY : --------------------------------------------------
+
+
+CHARG5=AFFE_CHAR_MECA(  MODELE=MO,
+    DDL_IMPO=_F( GROUP_NO = 'A', DX = 0., DY = 0., DZ = 0., DRX = 0., DRY = 0., DRZ = 0., GRX = 0.),
+     FORCE_NODALE=_F( GROUP_NO = 'B',  MY = 1.0E0)   )
+
+MEST5=MECA_STATIQUE(        MODELE=MO,    CHAM_MATER=CHMAT,
+            CARA_ELEM=CAREL, EXCIT=_F( CHARGE = CHARG5)   )
+
+TEST_RESU(RESU=(
+   _F( RESULTAT = MEST5, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
+                   NOEUD = 'N3', NOM_CMP = 'DX', VALE = 0.0,         
+                   PRECISION = 1.E-13, CRITERE = 'ABSOLU'), 
+   _F( RESULTAT = MEST5, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
+                   NOEUD = 'N3', NOM_CMP = 'DY', VALE = 0.0,     
+                   PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
+   _F( RESULTAT = MEST5, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
+                   NOEUD = 'N3', NOM_CMP = 'DZ', VALE = -6.E-7,   
+                   PRECISION = 1.E-6, CRITERE = 'RELATIF'),
+   _F( RESULTAT = MEST5, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
+                   NOEUD = 'N3', NOM_CMP = 'DRX', VALE = 0.0,       
+                   PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
+   _F( RESULTAT = MEST5, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
+                   NOEUD = 'N3', NOM_CMP = 'DRY', VALE = 6.E-7,      
+                   PRECISION = 1.E-6, CRITERE = 'RELATIF'),
+   _F( RESULTAT = MEST5, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
+                   NOEUD = 'N3', NOM_CMP = 'DRZ', VALE = 0.0,        
+                   PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
+   _F( RESULTAT = MEST5, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
+                   NOEUD = 'M3', NOM_CMP = 'DX', VALE = 0.0,         
+                   PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
+   _F( RESULTAT = MEST5, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
+                   NOEUD = 'M3', NOM_CMP = 'DY', VALE = 0.0,         
+                   PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
+   _F( RESULTAT = MEST5, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
+                   NOEUD = 'M3', NOM_CMP = 'DZ', VALE = -2.3996127E-8, 
+                   PRECISION = 1.E-6, CRITERE = 'RELATIF'),
+   _F( RESULTAT = MEST5, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
+                   NOEUD = 'M3', NOM_CMP = 'DRX', VALE = 0.0,         
+                   PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
+   _F( RESULTAT = MEST5, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
+                   NOEUD = 'M3', NOM_CMP = 'DRY', VALE = 2.3996127E-8, 
+                   PRECISION = 1.E-6, CRITERE = 'RELATIF'),
+   _F( RESULTAT = MEST5, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
+                   NOEUD = 'M3', NOM_CMP = 'DRZ', VALE = 0.0,          
+                   PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
+#
+   _F( RESULTAT = MEST5, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
+                   NOEUD = 'N1', NOM_CMP = 'GRX', VALE = 0.0,       
+                   PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
+   _F( RESULTAT = MEST5, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
+                   NOEUD = 'M1', NOM_CMP = 'GRX', VALE = 0.0,       
+                   PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
+   _F( RESULTAT = MEST5, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
+                   NOEUD = 'N3', NOM_CMP = 'GRX', VALE = 0.0,        
+                   PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
+   _F( RESULTAT = MEST5, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
+                   NOEUD = 'M3', NOM_CMP = 'GRX', VALE = 0.0,        
+                   PRECISION = 1.E-13, CRITERE = 'ABSOLU'))
+            )
+
+#
+# ------ FLEXION GZ : --------------------------------------------------
+
+
+CHARG6=AFFE_CHAR_MECA(  MODELE=MO,
+    DDL_IMPO=_F( GROUP_NO = 'A', DX = 0., DY = 0., DZ = 0., DRX = 0., DRY = 0., DRZ = 0., GRX = 0.),
+     FORCE_NODALE=_F( GROUP_NO = 'B',  MZ = 1.0E0)   )
+
+MEST6=MECA_STATIQUE(        MODELE=MO,    CHAM_MATER=CHMAT,
+            CARA_ELEM=CAREL, EXCIT=_F( CHARGE = CHARG6)   )
+
+TEST_RESU(RESU=(
+   _F( RESULTAT = MEST6, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
+                   NOEUD = 'N3', NOM_CMP = 'DX', VALE = 0.0,           
+                   PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
+   _F( RESULTAT = MEST6, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
+                   NOEUD = 'N3', NOM_CMP = 'DY', VALE = 1.5E-7,        
+                   PRECISION = 1.E-6, CRITERE = 'RELATIF'),
+   _F( RESULTAT = MEST6, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
+                   NOEUD = 'N3', NOM_CMP = 'DZ', VALE = 0.0,           
+                   PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
+   _F( RESULTAT = MEST6, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
+                   NOEUD = 'N3', NOM_CMP = 'DRX', VALE = 0.0,          
+                   PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
+   _F( RESULTAT = MEST6, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
+                   NOEUD = 'N3', NOM_CMP = 'DRY', VALE = 0.0,          
+                   PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
+   _F( RESULTAT = MEST6, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
+                   NOEUD = 'N3', NOM_CMP = 'DRZ', VALE = 1.5E-7,       
+                   PRECISION = 1.E-6, CRITERE = 'RELATIF'),
+   _F( RESULTAT = MEST6, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
+                   NOEUD = 'M3', NOM_CMP = 'DX', VALE = 0.0,           
+                   PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
+   _F( RESULTAT = MEST6, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
+                   NOEUD = 'M3', NOM_CMP = 'DY', VALE = 9.5643715E-8,  
+                   PRECISION = 1.E-6, CRITERE = 'RELATIF'),
+   _F( RESULTAT = MEST6, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
+                   NOEUD = 'M3', NOM_CMP = 'DZ', VALE = 0.0,           
+                   PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
+   _F( RESULTAT = MEST6, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
+                   NOEUD = 'M3', NOM_CMP = 'DRX', VALE = 0.0,          
+                   PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
+   _F( RESULTAT = MEST6, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
+                   NOEUD = 'M3', NOM_CMP = 'DRY', VALE = 0.0,          
+                   PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
+   _F( RESULTAT = MEST6, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
+                   NOEUD = 'M3', NOM_CMP = 'DRZ', VALE = 9.5643715E-8,  
+                   PRECISION = 1.E-6, CRITERE = 'RELATIF'),
+#
+   _F( RESULTAT = MEST6, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
+                   NOEUD = 'N1', NOM_CMP = 'GRX', VALE = 0.0,        
+                   PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
+   _F( RESULTAT = MEST6, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
+                   NOEUD = 'M1', NOM_CMP = 'GRX', VALE = 0.0,        
+                   PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
+   _F( RESULTAT = MEST6, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
+                   NOEUD = 'N3', NOM_CMP = 'GRX', VALE = 0.0,        
+                   PRECISION = 1.E-13, CRITERE = 'ABSOLU'),
+   _F( RESULTAT = MEST6, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
+                   NOEUD = 'M3', NOM_CMP = 'GRX', VALE = 0.0,        
+                   PRECISION = 1.E-13, CRITERE = 'ABSOLU'))
+            )
+
+#
+# -- CALCUL DES EFFORTS :
+#
+MEST1=CALC_ELEM( reuse=MEST1, OPTION='EFGE_ELNO_DEPL', RESULTAT=MEST1, MODELE=MO,
+            CARA_ELEM=CAREL,   CHAM_MATER=CHMAT, TOUT_ORDRE='OUI')
+
+MEST2=CALC_ELEM( reuse=MEST2, OPTION='EFGE_ELNO_DEPL', RESULTAT=MEST2, MODELE=MO,
+            CARA_ELEM=CAREL,   CHAM_MATER=CHMAT, TOUT_ORDRE='OUI')
+
+MEST3=CALC_ELEM( reuse=MEST3, OPTION='EFGE_ELNO_DEPL', RESULTAT=MEST3, MODELE=MO,
+            CARA_ELEM=CAREL,   CHAM_MATER=CHMAT, TOUT_ORDRE='OUI')
+
+MEST4=CALC_ELEM( reuse=MEST4, OPTION='EFGE_ELNO_DEPL', RESULTAT=MEST4, MODELE=MO,
+            CARA_ELEM=CAREL,   CHAM_MATER=CHMAT, TOUT_ORDRE='OUI')
+
+MEST5=CALC_ELEM( reuse=MEST5, OPTION='EFGE_ELNO_DEPL', RESULTAT=MEST5, MODELE=MO,
+            CARA_ELEM=CAREL,   CHAM_MATER=CHMAT, TOUT_ORDRE='OUI')
+
+MEST6=CALC_ELEM( reuse=MEST6, OPTION='EFGE_ELNO_DEPL', RESULTAT=MEST6, MODELE=MO,
+            CARA_ELEM=CAREL,   CHAM_MATER=CHMAT, TOUT_ORDRE='OUI')
+
+#
+IMPR_RESU(MODELE=MO,RESU=(
+_F( TOUT_ORDRE = 'OUI', TOUT_CHAM = 'OUI', RESULTAT = MEST1),
+_F( TOUT_ORDRE = 'OUI', TOUT_CHAM = 'OUI', RESULTAT = MEST2),
+_F( TOUT_ORDRE = 'OUI', TOUT_CHAM = 'OUI', RESULTAT = MEST3),
+_F( TOUT_ORDRE = 'OUI', TOUT_CHAM = 'OUI', RESULTAT = MEST4),
+_F( TOUT_ORDRE = 'OUI', TOUT_CHAM = 'OUI', RESULTAT = MEST5),
+_F( TOUT_ORDRE = 'OUI', TOUT_CHAM = 'OUI', RESULTAT = MEST6))
+)
+
+#
+# ======================================================================
+# -- POUR TESTER QUELQUES MOTS CLEFS SUPPLEMENTAIRES :
+
+
+CHARG71=AFFE_CHAR_MECA(  MODELE=MO,
+     FORCE_NODALE=_F( GROUP_NO = 'B',  MZ = 1.0E0)   )
+
+CHARG72=AFFE_CHAR_CINE(  MODELE=MO,MECA_IMPO=(
+   _F( GROUP_NO = 'A', DX = 0., DY = 0., DZ = 0., DRX = 0., DRY = 0., DRZ = 0.),
+   _F( TOUT = 'OUI',      GRX = 0.))
+    )
+
+MEST7=MECA_STATIQUE(        MODELE=MO,    CHAM_MATER=CHMAT,
+            CARA_ELEM=CAREL,EXCIT=( _F( CHARGE = CHARG71),
+                            _F( CHARGE = CHARG72))   )
+
+TEST_RESU(RESU=(
+   _F( RESULTAT = MEST7, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
+                   NOEUD = 'M3', NOM_CMP = 'DY', VALE = 9.5643715E-8, 
+                   PRECISION = 1.E-6, CRITERE = 'RELATIF'),
+   _F( RESULTAT = MEST7, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
+                   NOEUD = 'N1', NOM_CMP = 'GRX', VALE = 0.0,         
+                   PRECISION = 1.E-13, CRITERE = 'ABSOLU'))
+            )
+
+CHARG81=AFFE_CHAR_MECA(  MODELE=MO,
+     FORCE_NODALE=_F( GROUP_NO = 'B',  MZ = 1.0E0)   )
+
+C0=DEFI_CONSTANTE(VALE=0.)
+
+CHARG82=AFFE_CHAR_CINE_F(  MODELE=MO,MECA_IMPO=(
+   _F( GROUP_NO = 'A', DX = C0, DY = C0, DZ = C0, DRX = C0, DRY = C0, DRZ = C0),
+   _F( TOUT = 'OUI', GRX = C0))
+    )
+
+MEST8=MECA_STATIQUE(        MODELE=MO,    CHAM_MATER=CHMAT,
+            CARA_ELEM=CAREL,EXCIT=( _F( CHARGE = CHARG81),
+                            _F( CHARGE = CHARG82))   )
+
+TEST_RESU(RESU=(
+   _F( RESULTAT = MEST8, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
+                   NOEUD = 'M3', NOM_CMP = 'DY', VALE = 9.5643715E-8,  
+                   PRECISION = 1.E-6, CRITERE = 'RELATIF'),
+   _F( RESULTAT = MEST8, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
+                   NOEUD = 'N1', NOM_CMP = 'GRX', VALE = 0.0,          
+                   PRECISION = 1.E-13, CRITERE = 'ABSOLU'))
+            )
+
+#
+# ------------------------------------------------------
+# -- AFFE_CHAR_MECA(_F) FORCE_NODALE ANGLE_NAUT
+# -- AFFE_CHAR_MECA_F   DDL_IMPO 'GRX'
+#
+
+C05=DEFI_CONSTANTE(VALE=0.5)
+
+C1=DEFI_CONSTANTE(VALE=1. )
+
+C90=DEFI_CONSTANTE(VALE=-90.)
+
+CHARG91=AFFE_CHAR_MECA(  MODELE=MO,
+   DDL_IMPO=_F( GROUP_NO = 'A', DX = 0., DY = 0., DZ = 0., DRX = 0., DRY = 0., DRZ = 0.),
+#  FORCE_NODALE: (GROUP_NO :B  MZ:1.0D0                  )
+    FORCE_NODALE=_F( GROUP_NO = 'B',  MX = 1.0E0, ANGL_NAUT = (37.,-90.,54.,))
+   )
+
+CHARG92=AFFE_CHAR_MECA_F(  MODELE=MO,
+   DDL_IMPO=_F( TOUT = 'OUI',      GRX = C0),
+#  FORCE_NODALE: (GROUP_NO :B  MZ:1.0D0                  )
+    FORCE_NODALE=_F( GROUP_NO = 'B',  MX = C1,    ANGL_NAUT = (C0,C90,C0,))
+    )
+
+MEST9=MECA_STATIQUE(        MODELE=MO,    CHAM_MATER=CHMAT,
+            CARA_ELEM=CAREL,EXCIT=( _F( CHARGE = CHARG91, FONC_MULT = C05),
+                            _F( CHARGE = CHARG92, FONC_MULT = C05))  )
+
+TEST_RESU(RESU=(
+   _F( RESULTAT = MEST9, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
+                   NOEUD = 'M3', NOM_CMP = 'DY', VALE = 9.5643715E-8,  
+                   PRECISION = 1.E-6, CRITERE = 'RELATIF'),
+   _F( RESULTAT = MEST9, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
+                   NOEUD = 'N1', NOM_CMP = 'GRX', VALE = 0.0,          
+                   PRECISION = 1.E-13, CRITERE = 'ABSOLU'))
+            )
+
+#
+
+FIN()
+#

@@ -1,0 +1,51 @@
+      SUBROUTINE UTTR24(VK24,NDIM)
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF UTILITAI  DATE 06/01/95   AUTEUR G8BHHAC A.Y.PORTABILITE 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+      IMPLICIT REAL*8 (A-H,O-Z)
+C
+C     ARGUMENTS:
+C     ----------
+      INTEGER NDIM
+      CHARACTER*24 VK24(NDIM)
+C ----------------------------------------------------------------------
+C     BUT : TRIER DANS L'ORDRE ALPHABETIQUE UN VECTEUR DE K24
+C
+C     IN:
+C         NDIM : DIMENSION DU TABLEAU A TRIER
+C     VAR:
+C         VK24 : TABLEAU A TRIER
+C
+C ----------------------------------------------------------------------
+      CHARACTER*24 CT
+C
+C DEB-------------------------------------------------------------------
+C
+      DO 1, I=1,NDIM
+         DO 2, J=I+1,NDIM
+            IF (VK24(J).LT.VK24(I)) THEN
+C              -- ON PERMUTE I ET J
+               CT     =VK24(I)
+               VK24(I)=VK24(J)
+               VK24(J)=CT
+            END IF
+ 2       CONTINUE
+ 1    CONTINUE
+C
+ 9999 CONTINUE
+      END

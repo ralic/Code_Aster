@@ -1,0 +1,251 @@
+# MODIF  DATE 07/06/2000   AUTEUR VABHHTS J.PELLET 
+# TITRE POUTRE ELANCEE, ENCASTREE-LIBRE, REPLIEE SUR ELLE-MEME
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+# CAS_TEST__: SDLL02B
+# SDLL02/B                COMMANDES                             17/1/95
+# POUTRE ELANCEE ENCASTREE-LIBRE REPLIEE SUR ELLE-MEME
+# SECTION RECT: 5*50MM --- L=2*0.5M --- 2D
+#                                                  REF: SFM.VPCS SDLL02
+# MODELISATION POU_D_E: 21 NOEUDS  --   20 MAILLES SEG2
+# POINTS  A    B    C
+# MODELISATION :
+#    CONDITIONS AUX LIMITES IMPOSEES PAR AFFE_CHAR_CINE
+#    RECHERCHE DES ELEMENTS PROPRES : METHODE JACOBI
+#=======================================================================
+
+DEBUT(CODE=_F(  NOM = 'SDLL02B',NIV_PUB_WEB='INTERNET') )
+
+MA=LIRE_MAILLAGE(  )
+
+MA=DEFI_GROUP( reuse=MA,   MAILLAGE=MA,
+  CREA_GROUP_MA=_F(  NOM = 'TOUT', TOUT = 'OUI'))
+
+MO=AFFE_MODELE(  MAILLAGE=MA, 
+                  AFFE=_F(  TOUT = 'OUI',    PHENOMENE = 'MECANIQUE',
+                         MODELISATION = 'POU_D_E')  )
+
+CARELEM=AFFE_CARA_ELEM(  MODELE=MO, 
+             POUTRE=_F( 
+       GROUP_MA = 'TOUT',
+     SECTION = 'RECTANGLE',
+                      CARA = (  'HY',   'HZ', ),
+                      VALE = ( 0.005,  0.050, ))  )
+
+MAT=DEFI_MATERIAU( ELAS=_F(  E = 2.1E+11,    NU = 0.3,    RHO = 7800.) )
+
+CHMAT=AFFE_MATERIAU(  MAILLAGE=MA, 
+          AFFE=_F(  TOUT = 'OUI',     MATER = MAT) )
+
+#   PB PLAN --- POINT A ENCASTRE
+CH2=AFFE_CHAR_CINE(  MODELE=MO,MECA_IMPO=( 
+       _F(  TOUT = 'OUI', DZ = 0., DRX = 0., DRY = 0.), 
+                _F(  NOEUD = 'A',   DX = 0., DY = 0.,  DRZ = 0.)) )
+
+#--------------------------------------------------------------------
+# DEUXIEME MODELISATION
+
+MELR2=CALC_MATR_ELEM(  MODELE=MO,         
+                         CARA_ELEM=CARELEM, 
+                         CHAM_MATER=CHMAT,   OPTION='RIGI_MECA' )
+
+MELM2=CALC_MATR_ELEM(  MODELE=MO,         
+                         CARA_ELEM=CARELEM, 
+                         CHAM_MATER=CHMAT,   OPTION='MASS_MECA' )
+
+NUM2=NUME_DDL(  MATR_RIGI=MELR2 )
+
+MATASSR2=ASSE_MATRICE(  MATR_ELEM=MELR2,   NUME_DDL=NUM2, 
+                           CHAR_CINE=CH2 )
+
+MATASSM2=ASSE_MATRICE(  MATR_ELEM=MELM2,   NUME_DDL=NUM2, 
+                           CHAR_CINE=CH2)
+
+#--------------------------------------------------------------------
+#--------------------------------------------------------------------
+
+
+FREQ2=MODE_ITER_SIMULT(
+              METHODE='JACOBI',
+                OPTION='SANS',
+               MATR_A=MATASSR2,        MATR_B=MATASSM2,
+               CALC_FREQ=_F(  OPTION = 'PLUS_PETITE',
+                           NMAX_FREQ = 8),
+                TITRE='METHODE DE BATHE ET WILSON' )
+
+FREQ2=NORM_MODE(reuse=FREQ2,   MODE=FREQ2,   NORME='TRAN' )
+
+# ---------------------------------------------------------------------
+MODE12=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
+NOM_CHAM='DEPL', RESULTAT=FREQ2,
+                    # FREQ: 11.7642
+                    # NUMERO_MODE: 1
+                      NUME_ORDRE=1
+                           )
+
+MODE22=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
+NOM_CHAM='DEPL', RESULTAT=FREQ2,
+                    # FREQ: 11.7642
+                    # NUMERO_MODE: 2
+                      NUME_ORDRE=2
+                           )
+
+MODE32=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
+NOM_CHAM='DEPL', RESULTAT=FREQ2,
+                    # FREQ: 105.8811
+                    # NUMERO_MODE: 3
+                      NUME_ORDRE=3
+                           )
+
+MODE42=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
+NOM_CHAM='DEPL', RESULTAT=FREQ2,
+                    # FREQ: 105.8811
+                    # NUMERO_MODE: 4
+                      NUME_ORDRE=4
+                           )
+
+#                  # FREQ: 294.1780
+
+#                    NUMERO_MODE: 5
+
+#                    NOM_CHAM:'DEPL'     ) ;
+
+#                  # FREQ: 294.1806
+
+#                    NUMERO_MODE: 6
+
+#                    NOM_CHAM:'DEPL'     ) ;
+MODE72=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
+NOM_CHAM='DEPL', RESULTAT=FREQ2,
+                    # FREQ: 576.9802
+                    # NUMERO_MODE: 7
+                      NUME_ORDRE=7
+                           )
+
+MODE82=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
+NOM_CHAM='DEPL', RESULTAT=FREQ2,
+                    # FREQ: 577.0079
+                    # NUMERO_MODE: 8
+                      NUME_ORDRE=8
+                           )
+
+# ---------------------------------------------------------------------
+
+
+TEST_RESU(RESU=(
+
+   _F(   RESULTAT = FREQ2,        PARA = 'FREQ',
+           CRITERE = 'RELATIF',     PRECISION = 1.E-2,
+           NUME_ORDRE = 1,       VALE = 11.76),
+   _F(   RESULTAT = FREQ2,        PARA = 'FREQ',
+           CRITERE = 'RELATIF',     PRECISION = 1.E-2,
+           NUME_ORDRE = 2,       VALE = 11.76),
+   _F(   RESULTAT = FREQ2,        PARA = 'FREQ',
+           CRITERE = 'RELATIF',     PRECISION = 1.E-2,
+           NUME_ORDRE = 3,       VALE = 105.88),
+   _F(   RESULTAT = FREQ2,       PARA = 'FREQ',
+           CRITERE = 'RELATIF',     PRECISION = 1.E-2,
+           NUME_ORDRE = 4,       VALE = 105.88),
+   _F(   RESULTAT = FREQ2,        PARA = 'FREQ',
+           CRITERE = 'RELATIF',     PRECISION = 1.E-2,
+           NUME_ORDRE = 5,       VALE = 294.10),
+   _F(   RESULTAT = FREQ2,       PARA = 'FREQ',
+           CRITERE = 'RELATIF',     PRECISION = 1.E-2,
+           NUME_ORDRE = 6,       VALE = 294.10),
+   _F(   RESULTAT = FREQ2,        PARA = 'FREQ',
+           CRITERE = 'RELATIF',     PRECISION = 1.E-2,
+           NUME_ORDRE = 7,       VALE = 576.44),
+   _F(   RESULTAT = FREQ2,        PARA = 'FREQ',
+           CRITERE = 'RELATIF',     PRECISION = 1.E-2,
+           NUME_ORDRE = 8,       VALE = 576.44)),CHAM_NO=(
+
+ # MODE1 MAX_ASTER EN C     ( REF:  DYB= -0.707   DYC= 1. )
+   _F(  CHAM_GD = MODE12,        NOM_CMP = 'DY',
+             CRITERE = 'RELATIF',   PRECISION = 2.E-2,
+             NOEUD = 'B',            VALE = -0.70),
+   _F(  CHAM_GD = MODE12,        NOM_CMP = 'DY',
+             CRITERE = 'RELATIF',   PRECISION = 2.E-2,
+             NOEUD = 'C',            VALE = 1.),
+
+ # MODE2 MAX_ASTER EN C     ( REF:  DYB= +0.707   DYC= 1. )
+   _F(  CHAM_GD = MODE22,        NOM_CMP = 'DY',
+             CRITERE = 'RELATIF',   PRECISION = 4.E-2,
+             NOEUD = 'B',            VALE = 0.707),
+   _F(  CHAM_GD = MODE22,        NOM_CMP = 'DY',
+             CRITERE = 'RELATIF',   PRECISION = 2.E-2,
+             NOEUD = 'C',            VALE = 1.),
+
+ # MODE3 MAX_ASTER EN C     ( REF:  DYB= 0.707   DYC= 1. )
+   _F(  CHAM_GD = MODE32,        NOM_CMP = 'DY',
+             CRITERE = 'RELATIF',   PRECISION = 2.E-2,
+             NOEUD = 'B',            VALE = 0.707),
+   _F(  CHAM_GD = MODE32,        NOM_CMP = 'DY',
+             CRITERE = 'RELATIF',   PRECISION = 2.E-2,
+             NOEUD = 'C',            VALE = 1.),
+
+ # MODE4 MAX_ASTER EN N6    ( REF:  DYB=  -0.370   DYC= 0.523 )
+   _F(  CHAM_GD = MODE42,        NOM_CMP = 'DY',
+             CRITERE = 'RELATIF',   PRECISION = 2.E-2,
+             NOEUD = 'B',            VALE = -0.370),
+   _F(  CHAM_GD = MODE42,        NOM_CMP = 'DY',
+             CRITERE = 'RELATIF',   PRECISION = 2.E-2,
+             NOEUD = 'C',            VALE = 0.523),
+
+ # MODE7 MAX_ASTER EN C     ( REF:  DYB= 0.707   DYC= 1.  )
+   _F(  CHAM_GD = MODE72,        NOM_CMP = 'DY',
+             CRITERE = 'RELATIF',   PRECISION = 2.E-2,
+             NOEUD = 'B',            VALE = 0.707),
+   _F(  CHAM_GD = MODE72,        NOM_CMP = 'DY',
+             CRITERE = 'RELATIF',   PRECISION = 2.E-2,
+             NOEUD = 'C',            VALE = 1.),
+
+ # MODE8 MAX_ASTER EN N3    ( REF:  DYB= -0.388   DYC= 0.549  )
+   _F(  CHAM_GD = MODE82,         NOM_CMP = 'DY',
+             CRITERE = 'RELATIF',   PRECISION = 2.E-2,
+             NOEUD = 'B',            VALE = -0.388),
+   _F(  CHAM_GD = MODE82,        NOM_CMP = 'DY',
+             CRITERE = 'RELATIF',   PRECISION = 2.E-2,
+             NOEUD = 'C',            VALE = 0.549)) )
+
+# ---------------------------------------------------------------------
+
+FREQ2=NORM_MODE(reuse=FREQ2,   MODE=FREQ2,   NORME='EUCL_TRAN' )
+
+TEST_RESU(RESU=( 
+      _F(   RESULTAT = FREQ2,     PARA = 'MASS_GENE',
+         NUME_ORDRE = 1,       VALE = 8.43643E-02,
+                             PRECISION = 2.4E-3),
+      _F(   RESULTAT = FREQ2,     PARA = 'MASS_GENE',
+         NUME_ORDRE = 2,       VALE = 9.16775E-02,
+                             PRECISION = 2.5E-3),
+      _F(   RESULTAT = FREQ2,     PARA = 'RIGI_GENE',
+         NUME_ORDRE = 3,       VALE = 3.52041E+04),
+      _F(   RESULTAT = FREQ2,     PARA = 'RIGI_GENE',
+         NUME_ORDRE = 4,       VALE = 4.15972E+04),
+      _F(   RESULTAT = FREQ2,     NOM_CHAM = 'DEPL',  NOEUD = 'C',
+                             NOM_CMP = 'DY',
+         NUME_ORDRE = 5,       VALE = 5.20431E-01),
+      _F(   RESULTAT = FREQ2,     NOM_CHAM = 'DEPL',  NOEUD = 'N6',
+                             NOM_CMP = 'DRZ',
+         NUME_ORDRE = 6,       VALE = -6.47442E+00))
+          )
+
+# ---------------------------------------------------------------------
+
+FIN()
+#

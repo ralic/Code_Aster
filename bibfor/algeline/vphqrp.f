@@ -1,0 +1,186 @@
+      SUBROUTINE VPHQRP (MAT,NEQ,MXEQ,ICODE,W,Z,IZ,WK,MXITER,IER,NITQR)
+      IMPLICIT REAL*8 (A-H,O-Z)
+      INTEGER            NEQ,MXEQ,ICODE,IZ,IER,NITQR
+      REAL*8             MAT(MXEQ,1),WK(NEQ,1),W(1),Z(1)
+C     ------------------------------------------------------------------
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGELINE  DATE 17/09/96   AUTEUR D6BHHBQ B.QUINNEZ 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+C     CALCUL DE TOUTES LES VALEURS PROPRES D'UNE MATRICE COMPLETE REELLE
+C     MISE SOUS FORME DE HESSENBERG PUIS RESOLUTION PAR LA METHODE QR
+C     ------------------------------------------------------------------
+C VAR MAT   : R8 : MATRICE REEL D'ORDRE NEQ DONT ON CALCULE LES VALEURS
+C                  TE LES VECTEURS PROPRES
+C              *** EN SORTIE MAT EST DETRUITE ***
+C IN  NEQ   : IS : ORDRE DE LA MATRICE
+C IN  MXEQ  : IS : DIMENSION EXACT DE LA MATRICE ( IE  MAT(MXEQ,1) )
+C IN  ICODE : IS : CODE DE CALCUL
+C          = 0, CALCUL DES VALEURS PROPRES SEULEMENT
+C          = 1, CALCUL DES VALEURS ET VECTEURS PROPRES
+C OUT W     : C8 : VECTEUR (COMPLEXE) DES VALEURS PROPRES DE LA MATRICE
+C OUT Z     : C8 : MATRICE (COMPLEXE) DES VECTEURS PROPRES DE LA MATRICE
+C                  LA J-IEME COLONNE CONTIENT LE VECTEUR ASSOCIE A LA
+C                  LA J-IEME VALEUR PROPRE DE W
+C                  IF ICODE = 0, Z N'EST PAS UTILISE
+C IN  IZ    : IS : 1-ERE DIMENSION (EXACTE) DE LA MATRICE Z
+C LOC WK    : R8 : ZONE DE TRAVAIL DE LONGUEUR 2*NEQ
+C IN  MXITER: IS : NOMBRE MAX D'ITERARION POUR LE QR
+C                    (30 EST UN BON NOMBRE)
+C OUT IER   : IS : PARAMETRE  D'ERREUR
+C             IER = 0 OK
+C             IER = J >0 , NON CONVERGENCE POUR LA J-IEME VALEUR PROPRE
+C                LES J PREMIERES VALEURS PROPRES NE SONT PAS CALCULEES
+C OUT NITQR : NOMBRE D'ITERATIONS QR POUR ATTEINDRE LA CONVERGENCE
+C     ------------------------------------------------------------------
+C     REFERENCE: F.L. BAUER - J.H. WILKINSON - C. REINSCH
+C        HANDBOOK FOR AUTOMATIC COMPUTATION - LINEAR ALGEBRA - VOL.2
+C        PAGE XXX
+C     ------------------------------------------------------------------
+      INTEGER            JER,IZ2,K,L,I,N2,IIZ,NPI,JW,J,IS,IG,IGZ
+      REAL*8             Z11
+
+C     ------------------------------------------------------------------
+      IER = 0
+      JER = 0
+      IZ2 = IZ+IZ
+      IF (ICODE .LT. 0 .OR. ICODE .GT. 1) THEN
+         ICODE = 0
+      ENDIF
+      IF (ICODE .NE. 0 .AND. IZ .LT. NEQ) THEN
+          ICODE = 0
+      ENDIF
+C
+      K = NEQ
+      L = NEQ
+      N2 = 2
+      IF (ICODE .EQ. 0) N2 = 1
+C
+C     --- EQUILIBRAGE DE LA MATRICE INITIALE ---
+C
+      CALL VPZBAL (MAT,NEQ,MXEQ,WK,K,L)
+C
+C     --- MISE SOUS FORME DE HESSENBERG ---
+C
+      IF (ICODE .EQ. 0 ) THEN
+         IIZ = 1
+      ELSE
+         IIZ = NEQ
+      ENDIF
+      IF ( L .NE. 0) THEN
+C        IF L <> 0, MAT EST DEJA SOUS FORME DE HESSENBERG
+         CALL VPZHES (MAT,K,L,NEQ,NEQ,WK(1,N2))
+      ENDIF
+C
+C     --- TRANSFORMATION INVERSE HESSENBERG - EQUILIBRAGE
+C     --- POUR LE CALCUL DES VECTEURS PROPRES
+C
+      IF (ICODE.EQ.1) THEN
+C        --- FORMATION DE LA MATRICE IDENTITE DANS Z
+         DO 25 I=1,NEQ*NEQ
+            Z(I) = 0.D0
+   25    CONTINUE
+         DO 30 I=1,NEQ*NEQ,NEQ+1
+            Z(I) = 1.D0
+   30    CONTINUE
+         CALL VPZRBK (Z,MAT,WK(1,N2),NEQ,NEQ,NEQ,K,L)
+      ENDIF
+C
+C     --- CALCUL DES VALEURS PROPRES (ET DES VECTEURS PROPRES)
+C
+      IF (ICODE .EQ. 0 .AND. NEQ .EQ. 1) THEN
+         Z11 = Z(1)
+      ENDIF
+      NITQR = 0
+      CALL VPZQRH (MAT,NEQ,NEQ,K,L,W(1),W(NEQ+1),Z,IIZ,MXITER,JER,
+     &             NITQR)
+      IF (ICODE.EQ.0 .AND. NEQ.EQ.1)  THEN
+         Z(1) = Z11
+      ENDIF
+C
+C     --- TRANSFORMATION INVERSE EQUILIBRAGE - MATRICE INITIALE
+C     --- POUR LE CALCUL DES VECTEURS PROPRES
+C
+      IF (JER.EQ.0 .AND. ICODE.EQ.1) THEN
+         CALL VPZECH (WK,Z,K,L,NEQ,NEQ,NEQ)
+      ENDIF
+C
+C     --- CONVERSION DES VALEURS PROPRES (W) EN FORMAT COMPLEXE
+C
+      DO 45 I=1,NEQ
+         NPI = NEQ+I
+         WK(I,1) = W(NPI)
+   45 CONTINUE
+      JW = NEQ+NEQ
+      J = NEQ
+      DO 50 I=1,NEQ
+         W(JW-1) = W(J)
+         W(JW) = WK(J,1)
+         JW = JW-2
+         J = J-1
+   50 CONTINUE
+C
+C        TRAITEMENT DES VECTEURS PROPRES
+C        IE. : LES CONVERTIR  EN FORMAT COMPLEXE DANS Z(IZ,NEQ)
+C
+      IF (ICODE .EQ. 1) THEN
+C
+         J = NEQ
+   60    CONTINUE
+         IF (J .LT. 1) GO TO 9999
+         IF (W(J+J) .NE. 0.D0) THEN
+C           TRANSLATER LA PAIRE DE VECTEURS COMPLEXES CONJUGUES
+            IS = IZ2*(J-1)+1
+            IG = NEQ*(J-2)+1
+            IGZ = IG+NEQ
+C           TRANSLATER LE VECTEUR COMPLEXE CONJUGE
+            DO 65 I=1,NEQ
+               Z(IS) = Z(IG)
+               Z(IS+1) = -Z(IGZ)
+               IS = IS+2
+               IG = IG+1
+               IGZ = IGZ+1
+   65       CONTINUE
+C           TRANSLATER LE VECTEUR COMPLEXE
+            IS = IZ2*(J-2)+1
+            IG = IS+IZ2
+            DO 70 I=1,NEQ
+              Z(IS) = Z(IG)
+              Z(IS+1) = -Z(IG+1)
+              IS = IS+2
+              IG = IG+2
+   70      CONTINUE
+           J = J-2
+           GO TO 60
+         ENDIF
+C        TRANSLATER LE VECTEUR REEL
+   75    CONTINUE
+         IS = IZ2*(J-1)+NEQ+NEQ
+         IG = NEQ*J
+         DO 80 I=1,NEQ
+           Z(IS-1) = Z(IG)
+           Z(IS) = 0.D0
+           IS = IS-2
+           IG = IG-1
+   80   CONTINUE
+         J = J-1
+         GO TO 60
+      ENDIF
+C
+ 9999 CONTINUE
+      IER = JER
+      END

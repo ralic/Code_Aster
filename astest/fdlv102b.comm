@@ -1,0 +1,293 @@
+# MODIF  DATE 07/06/2002   AUTEUR DURAND C.DURAND 
+# TITRE CALCUL D MASSE AJOUTEE SUR MODELE GENERALISE
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+#
+# FICHIER DE COMMANDE ASTER
+#
+#
+DEBUT(CODE=_F( NOM = 'FDLV102B',NIV_PUB_WEB='INTERNET'))
+
+#
+# AFFECTATION DU MODELE FLUIDE SUR UN PREMIER MAILLAGE
+#
+PRE_GIBI(UNITE_MAILLAGE=21)
+
+#
+MAFLUI=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='NON'), UNITE=21)
+
+#
+FLUIDE=AFFE_MODELE(  MAILLAGE=MAFLUI,AFFE=(
+                           _F( GROUP_MA = 'LIQUIDE',
+                                  PHENOMENE = 'THERMIQUE',
+                                  MODELISATION = 'PLAN'),
+                            _F( GROUP_MA = 'INTERFAC',
+                                  PHENOMENE = 'THERMIQUE',
+                                  MODELISATION = 'PLAN')))
+
+INTERFAC=AFFE_MODELE(  MAILLAGE=MAFLUI,
+                            AFFE=_F( GROUP_MA = 'INTERFAC',
+                                  PHENOMENE = 'THERMIQUE',
+                                  MODELISATION = 'PLAN'))
+
+#
+#
+EAU=DEFI_MATERIAU(  THER=_F( LAMBDA = 1.,  RHO_CP = 1000.0))
+
+#
+CHAMMAT2=AFFE_MATERIAU(  MAILLAGE=MAFLUI,AFFE=(
+                              _F( GROUP_MA = 'LIQUIDE',
+                                    MATER = EAU),
+                             _F( GROUP_MA = 'INTERFAC',
+                                    MATER = EAU)))
+
+#
+#AFFECTATION SUR UN SECOND MAILLAGE DE LA STRUCTURE
+#
+
+
+MASTRUC=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='NON'), UNITE=20)
+
+ACIER=DEFI_MATERIAU(  ELAS=_F( E = 2.1E11,  NU = 0.30,  RHO = 7800.0))
+
+CHAMMAT1=AFFE_MATERIAU(  MAILLAGE=MASTRUC,
+                              AFFE=_F( GROUP_MA = 'CYLINDRE',
+                                    MATER = ACIER)
+                          )
+
+MASTRUC=DEFI_GROUP(reuse=MASTRUC,MAILLAGE=MASTRUC,
+            CREA_GROUP_NO=_F( GROUP_MA = 'CYLINDRE'))
+
+STRUCT=AFFE_MODELE(  MAILLAGE=MASTRUC,AFFE=(
+                            _F( GROUP_MA = 'CYLINDRE',
+                                  PHENOMENE = 'MECANIQUE',
+                                  MODELISATION = 'D_PLAN'),
+                            _F( GROUP_MA = 'LIG9',
+                                  PHENOMENE = 'MECANIQUE',
+                                  MODELISATION = '2D_DIS_T'),
+                            _F( GROUP_MA = 'LIG10',
+                                  PHENOMENE = 'MECANIQUE',
+                                  MODELISATION = '2D_DIS_T'),
+                             _F( GROUP_MA = 'LIG11',
+                                  PHENOMENE = 'MECANIQUE',
+                                  MODELISATION = '2D_DIS_T'),
+                            _F( GROUP_MA = 'LIG12',
+                                  PHENOMENE = 'MECANIQUE',
+                                  MODELISATION = '2D_DIS_T'))
+
+                     )
+
+PARAM=AFFE_CARA_ELEM( MODELE=STRUCT,DISCRET=(
+                          _F( GROUP_MA = 'LIG9', CARA = 'K_T_D_L',
+                                        VALE = (1.E7, 1., )),
+                          _F( GROUP_MA = 'LIG10', CARA = 'K_T_D_L',
+                                        VALE = (1.E7, 1., )),
+                          _F( GROUP_MA = 'LIG11', CARA = 'K_T_D_L',
+                                        VALE = (1., 1.E8, )),
+                          _F( GROUP_MA = 'LIG12', CARA = 'K_T_D_L',
+                                        VALE = (1., 1.E8, )))
+                          )
+
+CHARGE_F=AFFE_CHAR_THER( MODELE=FLUIDE,
+                TEMP_IMPO=_F( GROUP_NO = 'P_TEMP', TEMP = 10000.)
+                          )
+
+#
+# SOUS-STRUCTURE ENCASTREE - INTERFACE TYPE CRAIG-BAMPTON
+#
+CHARGE_E=AFFE_CHAR_MECA(  MODELE=STRUCT,DDL_IMPO=(
+
+               _F( GROUP_NO = 'PBLOC1', DX = 0.0, DY = 0.0),
+               _F( GROUP_NO = 'PBLOC2', DX = 0.0, DY = 0.0),
+               _F( GROUP_NO = 'PBLOC3', DX = 0.0, DY = 0.0),
+               _F( GROUP_NO = 'PBLOC4', DX = 0.0, DY = 0.0))
+          )
+
+#
+MERIME_E=CALC_MATR_ELEM(      MODELE=STRUCT,
+                                CHARGE=CHARGE_E,
+                            CHAM_MATER=CHAMMAT1,
+                             CARA_ELEM=PARAM,
+                               OPTION='RIGI_MECA')
+
+#
+MEMAME_E=CALC_MATR_ELEM(      MODELE=STRUCT,
+                                CHARGE=CHARGE_E,
+                            CHAM_MATER=CHAMMAT1,
+                             CARA_ELEM=PARAM,
+                               OPTION='MASS_MECA')
+
+#
+NUMDDL_E=NUME_DDL(  MATR_RIGI=MERIME_E)
+
+#
+RAID_E=ASSE_MATRICE(  MATR_ELEM=MERIME_E,
+                           NUME_DDL=NUMDDL_E)
+
+#
+MASS_E=ASSE_MATRICE(  MATR_ELEM=MEMAME_E,
+                           NUME_DDL=NUMDDL_E)
+
+#
+MODES_E=MODE_ITER_SIMULT(     MATR_A=RAID_E,
+                                 MATR_B=MASS_E,
+                             CALC_FREQ=_F( OPTION = 'BANDE',
+                                        FREQ = (1.,80.,))
+                            )
+
+#
+#  DEFINITION DES INTERFACES
+#
+#
+LINT1=DEFI_INTERF_DYNA(   NUME_DDL=NUMDDL_E,
+                             INTERFACE=_F( NOM = 'EST',
+                                        TYPE = 'CRAIGB',
+                                        GROUP_NO = ('PBLOC2',),
+                                         MASQUE = ('DY', )) )
+
+#
+LINT2=DEFI_INTERF_DYNA(   NUME_DDL=NUMDDL_E,
+                             INTERFACE=_F( NOM = 'SUD',
+                                        TYPE = 'CRAIGB',
+                                        GROUP_NO = 'PBLOC4',
+                                         MASQUE = ( 'DX', )) )
+
+#
+#  CALCUL DE LA BASE MODALE DES SOUS-STRUCTURES
+#
+#
+BAMO1=DEFI_BASE_MODALE( CLASSIQUE=_F( INTERF_DYNA = LINT1,
+                                        MODE_MECA = MODES_E,
+                                        NMAX_MODE = 2))
+
+#
+BAMO2=DEFI_BASE_MODALE( CLASSIQUE=_F( INTERF_DYNA = LINT2,
+                                        MODE_MECA = MODES_E,
+                                        NMAX_MODE = 2))
+
+#
+#  CALCUL DU MACRO-ELEMENT
+#
+#
+MACEL1=MACR_ELEM_DYNA(  BASE_MODALE=BAMO1)
+
+#
+MACEL2=MACR_ELEM_DYNA(  BASE_MODALE=BAMO2)
+
+#
+#
+#   CALCUL SUR MODELE GENERALISE
+#
+MODEGE=DEFI_MODELE_GENE(SOUS_STRUC=( _F( NOM = 'CYLINDRE',
+                                         MACR_ELEM_DYNA = MACEL1,
+                                         ANGL_NAUT = (0., 0., 0.,)),
+                             _F( NOM = 'CYLINDR1',
+                                         MACR_ELEM_DYNA = MACEL2,
+                                         ANGL_NAUT = (-90., 0., 0.,))),
+
+                             LIAISON=_F( SOUS_STRUC_1 = 'CYLINDRE',
+                                      SOUS_STRUC_2 = 'CYLINDR1',
+                                      INTERFACE_1 = 'EST',
+                                      INTERFACE_2 = 'SUD')
+
+                            )
+
+#
+#  NUMEROTATION DU PROBLEME GENERALISE
+#
+NUMEGE=NUME_DDL_GENE(  MODELE_GENE=MODEGE,
+                           STOCKAGE='PLEIN')
+
+#
+#  ASSEMBLAGE DES MATRICES RAIDEUR ET MASSE
+#
+MASGEN=ASSE_MATR_GENE(  NUME_DDL_GENE=NUMEGE,
+                                  OPTION='MASS_GENE')
+
+#
+RIGGEN=ASSE_MATR_GENE(  NUME_DDL_GENE=NUMEGE,
+                                  OPTION='RIGI_GENE')
+
+#
+# CALCUL DE MASSE AJOUTEE
+#
+
+MATRAJ=CALC_MATR_AJOU(  MODELE_FLUIDE=FLUIDE,
+                 MODELE_INTERFACE=INTERFAC,
+                 OPTION='MASS_AJOU',
+                  CHARGE=CHARGE_F,
+                  CHAM_MATER=CHAMMAT2,
+                  MODELE_GENE=MODEGE,
+                  NUME_DDL_GENE=NUMEGE)
+
+# SOMME DE LA MATRICE DE MASSE AJOUTEE A LA MATRICE DE MASSE
+
+MASTOT=COMB_MATR_ASSE( COMB_R=(  _F( MATR_ASSE = MASGEN,
+                                     COEF_R = 1.),
+                                     _F( MATR_ASSE = MATRAJ,
+                                     COEF_R = 1.)))
+
+#
+#   CALCUL DES MODES PROPRES DE LA STRUCTURE GLOBALE EN EAU
+#
+RESGEN=MODE_ITER_SIMULT(     MATR_A=RIGGEN,
+                                 MATR_B=MASTOT,
+                             CALC_FREQ=_F( OPTION = 'BANDE',
+                                        FREQ = (2.,70.,))
+                            )
+
+#
+#   CREATION DU MAILLAGE SQUELETTE DE LA STRUCTURE GLOBALE
+#
+SQUEL=DEFI_SQUELETTE(  MODELE_GENE=MODEGE,SOUS_STRUC=(
+                            _F( NOM = 'CYLINDRE',
+                                        GROUP_MA = ('CYLINDRE',
+                                        'LIG9','LIG10','LIG11','LIG12', )),
+                            _F( NOM = 'CYLINDR1',
+                                        GROUP_MA = ('CYLINDRE',
+                                        'LIG9','LIG10','LIG11','LIG12', )))
+                           )
+
+#
+#   RESTITUTION SUR MAILLAGE SQUELETTE
+#
+MODGLO=REST_BASE_PHYS(   RESU_GENE=RESGEN,
+                             SQUELETTE=SQUEL,
+                           TOUT_ORDRE='OUI')
+
+MODGLO2=REST_BASE_PHYS(   RESU_GENE=RESGEN,
+                           SOUS_STRUC='CYLINDR1',
+                           TOUT_ORDRE='OUI',
+                            TOUT_CHAM='OUI')
+
+#
+TEST_RESU(RESU=(_F( RESULTAT = MODGLO, PARA = 'FREQ',
+                CRITERE = 'RELATIF', PRECISION = 1.E-2,
+                NUME_ORDRE = 1,  VALE = 15.8782),
+          _F( RESULTAT = MODGLO, PARA = 'FREQ',
+                CRITERE = 'RELATIF', PRECISION = 1.E-2,
+                NUME_ORDRE = 2,  VALE = 16.7811),
+          _F( RESULTAT = MODGLO, PARA = 'FREQ',
+                CRITERE = 'RELATIF', PRECISION = 1.E-2,
+                NUME_ORDRE = 3,  VALE = 39.0389),
+          _F( RESULTAT = MODGLO, PARA = 'FREQ',
+                CRITERE = 'RELATIF', PRECISION = 1.E-2,
+                NUME_ORDRE = 4,  VALE = 53.0488)))
+
+FIN()
+#

@@ -1,0 +1,135 @@
+      SUBROUTINE SEPAVP(CK,CM,CMAT,NDIM,ALPHA,BETA,NBMOD,
+     &                    LAMBD1,LAMBD2,INTERV,IFIC)
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 09/11/1999   AUTEUR SABJLMA P.LATRUBESSE 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+C***********************************************************************
+C    B. GUIGON   P. RICHARD                    DATE 06/04/92
+C-----------------------------------------------------------------------
+C  BUT:  < SEPARATION DES VALEURS PROPRES >
+      IMPLICIT REAL*8 (A-H,O-Z)
+C
+C   CETTE ROUTINE ENCADRE CHACUNE DES VALEURS PROPRES D'UN PROBLEME A
+C   MATRICES RAIDEUR ET MASSE COMPLEXES HERMITIENNES SYMETRIQUES
+C   STOCKEES CARREES PLEINES PAR DES REELS RANGES DANS LES TABLEAUX
+C   ALPHA ET BETA
+C
+C-----------------------------------------------------------------------
+C
+C CK       /I/: MATRICE RAIDEUR DU PROBLEME
+C CM       /I/: MATRICE MASSE DU PROBLEME
+C CMAT     /M/: MATRICE COMPLEXE DE TRAVAIL
+C NDIM     /I/: DIMENSION DES MATRICES
+C BETA     /O/: BORNE SUP DE L'INTERVALE CONTENANT LA VP
+C ALPHA    /O/: BORNE INF DE L'INTERVALE CONTENANT LA VP
+C NBMOD    /M/: NOMBRE DE MODES PROPRES DESIRE/EXISTANT
+C LAMBD1   /I/: BORNE INFERIEURE DE L'INTERVE DE RECHERCHE
+C LAMBD2   /I/: BORNE SUPERIEURE DE L'INTERVE DE RECHERCHE
+C INTERV   /I/: LONGUEUR MAXIMAL D'UN INTERVE CONTENANT UNE VP
+C IFIC     /I/: NUMERO D'UNITE LOGIQUE
+C
+C-----------------------------------------------------------------------
+C
+      INTEGER    NDIM,NBMOD,IFIC
+      COMPLEX*16 CK(*),CM(*),CMAT(*)
+      REAL*8     ALPHA(NDIM+1),BETA(NDIM+1)
+      REAL*8     LAMBD1,LAMBD2
+      REAL*8     INTERV
+      INTEGER    I,N1,N2,NB,CT
+      REAL*8     A,B,C
+      LOGICAL    SORTIE
+C
+C-----------------------------------------------------------------------
+C
+      DO 10 I=1, NBMOD
+        ALPHA(I)=-1
+        BETA(I) =-1
+ 10   CONTINUE
+      ALPHA(1)=LAMBD1
+      CALL NBVAL(CK,CM,CMAT,NDIM,LAMBD1,N1)
+      CALL NBVAL(CK,CM,CMAT,NDIM,LAMBD2,N2)
+      NBMOD=MIN(N2-N1,NBMOD)
+      BETA(NBMOD)=LAMBD2
+      WRITE(IFIC,100) NBMOD,LAMBD1,LAMBD2
+      DO 20 I=1, NBMOD
+        IF (ALPHA(I).GE.0.D0) THEN
+          A=ALPHA(I)
+        ELSE
+          SORTIE=.FALSE.
+          CT=I
+ 70       CONTINUE
+          CT=CT-1
+          IF (CT.LE.1) THEN
+            SORTIE=.TRUE.
+            A=LAMBD1
+          ENDIF
+          IF (BETA(CT).GE.0.D0) THEN
+            SORTIE=.TRUE.
+            A=BETA(CT)
+          ENDIF
+          IF (SORTIE) GOTO 80
+          GOTO 70
+ 80       CONTINUE
+        ENDIF
+        IF (BETA(I).GE.0.D0) THEN
+          B=BETA(I)
+        ELSE
+          SORTIE=.FALSE.
+          CT=I
+ 50       CONTINUE
+          CT=CT+1
+          IF (CT.GE.NBMOD) THEN
+            SORTIE=.TRUE.
+            B=LAMBD2
+          ENDIF
+          IF (ALPHA(CT).GE.0.D0) THEN
+            SORTIE=.TRUE.
+            B=ALPHA(CT)
+          ENDIF
+          IF (SORTIE) GOTO 60
+          GOTO 50
+ 60       CONTINUE
+        ENDIF
+ 30     CONTINUE
+        IF (BETA(I).GE.0.D0) THEN
+          IF (ALPHA(I).GE.0.D0) THEN
+            IF ((BETA(I)-ALPHA(I)).LE.INTERV) GOTO 40
+          ENDIF
+        ENDIF
+        C=(A+B)/2
+        CALL NBVAL(CK,CM,CMAT,NDIM,C,NB)
+        NB=NB-N1
+        IF (BETA(NB).LT.0.D0) THEN
+          BETA(NB)=C
+        ELSE
+          BETA(NB)=MIN(C,BETA(NB))
+        ENDIF
+        IF (ALPHA(NB+1).LT.0.D0) THEN
+          ALPHA(NB+1)=C
+        ELSE
+          ALPHA(NB+1)=MAX(C,BETA(NB))
+        ENDIF
+        IF (NB.LT.I) A=C
+        IF (NB.GE.I) B=C
+        GOTO 30
+  40    CONTINUE
+  20  CONTINUE
+ 100  FORMAT('IL Y A ',I4,'  VALEURS PROPRES DANS LA BANDE',D14.6,
+     &       ',',D14.6)
+ 9999 CONTINUE
+      END

@@ -1,0 +1,191 @@
+      SUBROUTINE NTTYSE ( NBPASE, INPSCO, NOPASE, TYPESE, STYPSE )
+C
+C     THERMIQUE LINEAIRE - TYPE DE SENSIBILITE
+C     *                    **      **
+C     COMMANDE:  THER_LINEAIRE & THER_NON_LINE
+C
+C ----------------------------------------------------------------------
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 17/06/2002   AUTEUR GNICOLAS G.NICOLAS 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+C RESPONSABLE GNICOLAS G.NICOLAS
+C ----------------------------------------------------------------------
+C IN  NBPASE  : NOMBRE DE PARAMETRES SENSIBLES
+C IN  INPSCO  : STRUCTURE CONTENANT LA LISTE DES NOMS
+C               VOIR LA DEFINITION DANS SEGICO
+C IN  NOPASE  : NOM DU PARAMETRE SENSIBLE
+C OUT TYPESE  : TYPE DE SENSIBILITE
+C               -1 : DERIVATION EULERIENNE (VIA UN CHAMP THETA)
+C                1 : CALCUL INSENSIBLE
+C                2 : TEMPERATURE IMPOSEE
+C                3 : PARAMETRE MATERIAU
+C                4 : CARACTERISTIQUE ELEMENTAIRE (COQUES, ...)
+C                5 : SOURCE
+C                6 : FLUX LINEAIRE
+C                7 : TEMPERATURE EXTERIEURE
+C                8 : COEFFICIENT D'ECHANGE
+C                9 : FLUX NON-LINEAIRE
+C               10 : RAYONNEMENT
+C OUT STYPSE  : SOUS-TYPE DE SENSIBILITE DANS LES CAS SUIVANTS :
+C               . PARAMETRE MATERIAU
+C               . RAYONNEMENT
+C   -------------------------------------------------------------------
+C     ASTER INFORMATIONS:
+C       23/01/02 (OB): RAJOUT DE HECHP POUR TRAITER ECHANGE_PAROI.
+C       12/03/02 (OB): RAJOUT DE FLUNL ET RAYO POUR TRAITER SENSIBILITE
+C                      EN NON-LINEAIRE
+C ----------------------------------------------------------------------
+      IMPLICIT   NONE
+
+C 0.1. ==> ARGUMENTS
+
+      INTEGER NBPASE, TYPESE
+
+      CHARACTER*(*) NOPASE, INPSCO
+      CHARACTER*24 STYPSE
+
+C 0.2. ==> COMMUNS
+C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
+      INTEGER ZI
+      COMMON /IVARJE/ZI(1)
+      REAL*8 ZR
+      COMMON /RVARJE/ZR(1)
+      COMPLEX*16 ZC
+      COMMON /CVARJE/ZC(1)
+      LOGICAL ZL
+      COMMON /LVARJE/ZL(1)
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32
+      CHARACTER*80 ZK80
+      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
+
+C 0.3. ==> VARIABLES LOCALES
+C
+      CHARACTER*6 NOMPRO
+      PARAMETER ( NOMPRO = 'NTTYSE' )
+C
+      INTEGER NBMCRF, NBMCMX
+      PARAMETER ( NBMCRF = 3, NBMCMX = 4 )
+C
+      INTEGER NBMOCL
+      INTEGER NBMC(NBMCRF), NBMCVR
+      CHARACTER*24 LIMOCL, LIVALE
+      CHARACTER*24 BLAN24
+      CHARACTER*24 TYPEPS
+      CHARACTER*24 COREFE(NBMCRF), MCREFE(NBMCMX)
+C
+C                    123456789012345678901234
+      DATA BLAN24 / '                        ' /
+C
+C====
+C 1. RECHERCHE GLOBALE DU TYPE
+C               -1 : DERIVATION EULERIENNE (VIA UN CHAMP THETA)
+C                1 : CALCUL INSENSIBLE
+C                2 : CONDITION AUX LIMITES DE DIRICHLET
+C                3 : PARAMETRE MATERIAU
+C                4 : CARACTERISTIQUE ELEMENTAIRE (COQUES, ...)
+C                0 : AUTRE TYPE, DEPENDANT DE LA COMMANDE
+C====
+C                12   345678   9012345678901234
+      LIMOCL  = '&&'//NOMPRO//'_LIMOCL         '
+      LIVALE  = '&&'//NOMPRO//'_LIVALE         '
+C
+      CALL PSTYSE ( NBPASE, INPSCO, NOPASE,
+     >              TYPESE, TYPEPS, NBMOCL, LIMOCL, LIVALE )
+
+C====
+C 2. TYPE DE SENSIBILITE
+C====
+C
+      STYPSE = BLAN24
+C
+      IF ( TYPESE.EQ.3 ) THEN
+C
+        COREFE(1) = 'LAMBDA'
+        NBMC(1) = 1
+        MCREFE(1) = 'LAMBDA'
+C
+        COREFE(2) = 'RHO_CP'
+        NBMC(2) = 1
+        MCREFE(2) = 'RHO_CP'
+C
+        COREFE(3) = 'BETA'
+        NBMC(3) = 1
+        MCREFE(3) = 'BETA'
+C
+        NBMCVR = 3
+C
+        CALL PSTYSS ( NBMCVR, NBMC, COREFE, MCREFE,
+     >                NBMOCL, LIVALE, NOPASE,
+     >                STYPSE )
+C
+      ELSEIF ( TYPESE.EQ.0 ) THEN
+
+        IF ( TYPEPS.EQ.'SOURCE' ) THEN
+          TYPESE = 5
+        ELSEIF ( TYPEPS.EQ.'FLUX' ) THEN
+          TYPESE = 6
+        ELSEIF ( TYPEPS.EQ.'T_EXT' ) THEN
+          TYPESE = 7
+        ELSEIF ((TYPEPS.EQ.'COEFH').OR.(TYPEPS.EQ.'HECHP')) THEN
+          TYPESE = 8
+        ELSEIF (TYPEPS.EQ.'FLUNL') THEN
+          TYPESE = 9
+        ELSEIF (TYPEPS.EQ.'RAYO') THEN
+          TYPESE = 10
+C
+          COREFE(1) = 'SIGMA'
+          NBMC(1) = 1
+          MCREFE(1) = 'SIGMA'
+C
+          COREFE(2) = 'EPSILON'
+          NBMC(2) = 1
+          MCREFE(2) = 'EPSILON'
+C
+          COREFE(3) = 'TEMP_EXT'
+          NBMC(3) = 1
+          MCREFE(3) = 'TEMP_EXT'
+C
+          NBMCVR = 3
+          CALL PSTYST ( NBMCVR, NBMC, COREFE, MCREFE,
+     >                  NBMOCL, LIMOCL, LIVALE,
+     >                  STYPSE )
+        ELSE
+
+          CALL UTDEBM ( 'A', NOMPRO, 'SENSIBILITE DEMANDEE' )
+          CALL UTIMPK ( 'S', ' PAR RAPPORT AU CONCEPT :', 1, NOPASE )
+          CALL UTMESS ( 'A', NOMPRO, 'SON TYPE EST INCONNU : '//TYPEPS )
+          CALL UTFINM
+          CALL UTMESS ( 'F', NOMPRO, 'ERREUR DE PROGRAMMATION.' )
+
+        ENDIF
+
+      ENDIF
+C
+C====
+C 3. MENAGE
+C====
+C
+CC      print * ,'POUR ',NOPASE,' : ',stypse
+      CALL JEDETR ( LIMOCL )
+      CALL JEDETR ( LIVALE )
+
+      END

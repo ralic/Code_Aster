@@ -1,0 +1,145 @@
+      SUBROUTINE UTNO3D(IFM,NIV,NSOMM,INO,ITYP,IGEOM,XN,YN,ZN,JAC,
+     &                  IDFDX,IDFDY,HF,POIDS3,NPGF,NOE)
+C-----------------------------------------------------------------------
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF CALCULEL  DATE 11/02/2002   AUTEUR BOITEAU O.BOITEAU 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+C RESPONSABLE  O.BOITEAU
+C-----------------------------------------------------------------------
+C    - FONCTION REALISEE:  UTILITAIRE DE CALCUL DE LA NORMALE A UNE 
+C                          FACE EN SES NOEUDS. POUR AERER TE0003
+C
+C IN IFM/NIV  : PARAMETRES D'IMPRESSION
+C IN NSOMM    : NOMBRE DE SOMMETS DE LA FACE
+C IN INO      : NUMERO DE FACE
+C IN ITYP     : TYPE DE FACE
+C IN IGEOM    : ADRESSE JEVEUX DE LA GEOMETRIE
+C IN IDFDX/DY : ADRESSES JEVEUX DES DERIVEES DES FFORMES DE LA FACE INO
+C IN POIDS3   : POIDS DE NEWTON-COTES DE LA FACE.
+C IN NPGF     : NBRE POINTS GAUSS DE LA FACE (=NSOMM EN NEWTON-COTES)
+C IN NOE      : TABLEAU NUMEROS NOEUDS FACE ET PAR TYPE D'ELEMENT 3D
+C OUT XN/YN/ZN/JAC : COMPOSANTES DE LA NORMALE ET JACOBIEN (* POIDS3)
+C OUT HF      : SURFACE DE LA FACE
+C   -------------------------------------------------------------------
+C     SUBROUTINES APPELLEES:
+C       CALCUL HF: UTHK.
+C       ENVIMA:R8MIEM.
+C
+C     FONCTIONS INTRINSEQUES:
+C       SQRT.
+C   -------------------------------------------------------------------
+C     ASTER INFORMATIONS:
+C       20/09/01 (OB): CREATION POUR SIMPLIFIER TE0003.F.
+C----------------------------------------------------------------------
+C CORPS DU PROGRAMME
+      IMPLICIT NONE
+
+C DECLARATION PARAMETRES D'APPELS
+      INTEGER IFM,NIV,NSOMM,INO,ITYP,IGEOM,IDFDX,IDFDY,NPGF,NOE(9,6,3)
+      REAL*8 JAC(9),XN(9),YN(9),ZN(9),HF,POIDS3(9)
+      
+C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
+      INTEGER            ZI
+      COMMON  / IVARJE / ZI(1)
+      REAL*8             ZR
+      COMMON  / RVARJE / ZR(1)
+      COMPLEX*16         ZC
+      COMMON  / CVARJE / ZC(1)
+      LOGICAL            ZL
+      COMMON  / LVARJE / ZL(1)
+      CHARACTER*8        ZK8
+      CHARACTER*16                ZK16
+      CHARACTER*24                          ZK24
+      CHARACTER*32                                    ZK32
+      CHARACTER*80                                              ZK80
+      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
+      
+C DECLARATION VARIABLES LOCALES
+      INTEGER IN,JN,IINO,JJNO,I,J,IPG,KDEC,IDEC,JDEC,IXK,IYK
+      REAL*8 SX(9,9),SY(9,9),SZ(9,9),AUX,OVFL,R8MIEM
+      CHARACTER*16 NOMTEB
+
+C INIT.
+      OVFL = R8MIEM()
+      NOMTEB = ' '
+
+C  CALCUL DES PRODUITS VECTORIELS OMI VECTORIEL OMJ
+      DO 20 IN = 1,NSOMM
+        IINO = NOE(IN,INO,ITYP)
+        I = IGEOM + 3*(IINO-1)
+        DO 10 JN = 1,NSOMM
+          JJNO = NOE(JN,INO,ITYP)
+          J = IGEOM + 3*(JJNO-1)
+          SX(IN,JN) = ZR(I+1) * ZR(J+2) - ZR(I+2) * ZR(J+1)
+          SY(IN,JN) = ZR(I+2) * ZR(J) - ZR(I) * ZR(J+2)
+          SZ(IN,JN) = ZR(I) * ZR(J+1) - ZR(I+1) * ZR(J)
+   10   CONTINUE
+   20 CONTINUE
+
+C CALCUL DES NORMALES AUX SOMMETS IPG DE LA FACE INO ET DE SON
+C DIAMETRE
+
+      HF = 0.D0
+      DO 100 IPG = 1,NPGF
+        KDEC = 2*(IPG-1)*NSOMM
+        IXK = IDFDX+KDEC
+        IYK = IDFDY+KDEC
+        XN(IPG) = 0.0D0
+        YN(IPG) = 0.0D0
+        ZN(IPG) = 0.0D0
+        DO 90 I=1,NSOMM
+           IDEC = 2*(I-1)
+           DO 80 J=1,NSOMM
+             JDEC = 2*(J-1)
+             XN(IPG)=XN(IPG)+ZR(IXK+IDEC)*ZR(IYK+JDEC)*SX(I,J)
+             YN(IPG)=YN(IPG)+ZR(IXK+IDEC)*ZR(IYK+JDEC)*SY(I,J)
+             ZN(IPG)=ZN(IPG)+ZR(IXK+IDEC)*ZR(IYK+JDEC)*SZ(I,J)
+   80     CONTINUE
+   90   CONTINUE
+C   JACOBIEN
+        AUX = SQRT(XN(IPG)*XN(IPG)+YN(IPG)*YN(IPG)+
+     &             ZN(IPG)*ZN(IPG))
+        JAC(IPG) = AUX*POIDS3(IPG)
+           
+C NORMALISATION A L'UNITE DES COMPOSANTES DE LA NORMALE
+        IF (ABS(AUX).GT.OVFL) THEN
+          AUX = -1.D0/AUX
+          XN(IPG) = XN(IPG)*AUX
+          YN(IPG) = YN(IPG)*AUX
+          ZN(IPG) = ZN(IPG)*AUX
+        ELSE
+          CALL UTMESS('F','UTNO3D','! JAC(IPG): DIV PAR ZERO !')
+        ENDIF
+  100 CONTINUE
+
+C DIAMETRE DE LA FACE
+      IF (NIV.EQ.2) WRITE(IFM,*)
+      CALL UTHK(NOMTEB,IGEOM,HF,0,NOE,NSOMM,ITYP,INO,NIV,IFM)
+        
+C AFFICHAGES  
+      IF (NIV.EQ.2) THEN
+        WRITE(IFM,*)'NUMERO DE FACE ',INO
+        WRITE(IFM,*)'NOMBRE DE SOMMETS/PGAUSS ',NSOMM,NPGF
+        WRITE(IFM,*)'CONNECTIQUE ',(NOE(I,INO,ITYP),I=1,NSOMM)         
+        WRITE(IFM,*)'XN  ',(XN(I),I=1,NPGF)
+        WRITE(IFM,*)'YN  ',(YN(I),I=1,NPGF)
+        WRITE(IFM,*)'ZN  ',(ZN(I),I=1,NPGF)
+        WRITE(IFM,*)'JAC ',(JAC(I),I=1,NPGF)
+      ENDIF 
+      END

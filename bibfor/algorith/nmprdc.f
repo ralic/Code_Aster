@@ -1,0 +1,216 @@
+      SUBROUTINE NMPRDC(MODELE, NUMEDD, MATE  , CARELE, COMREF,
+     &                  COMPOR, LISCHA, MEDIRI, METHOD, SOLVEU,
+     &                  PARMET, CARCRI, PILOTE, PARTPS, NUMINS,
+     &                  VALMOI, POUGD , VALPLU, SECMBR, DEPDEL, 
+     &                  ETA   , LICCVG)
+
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 23/07/2001   AUTEUR PABHHHH N.TARDIEU 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+C RESPONSABLE ADBHHVV V.CANO
+C TOLE CRP_21
+
+      IMPLICIT      NONE
+      INTEGER       NUMINS, LICCVG(*)
+      REAL*8        PARMET(*), ETA
+      CHARACTER*14 PILOTE
+      CHARACTER*16 METHOD(*)
+      CHARACTER*19 LISCHA, PARTPS, SOLVEU
+      CHARACTER*24 MODELE, NUMEDD, MATE,   CARELE, COMREF, COMPOR
+      CHARACTER*24 MEDIRI, VALMOI, DEPOLD, DEPDEL, CARCRI, SECMBR
+      CHARACTER*24 POUGD , VALPLU
+
+C ======================================================================
+C   STAT_NON_LINE :  PREDICTION PAR DEPLACEMENT CALCULE
+C ======================================================================
+C IN       MODELE K24  MODELE
+C IN       NUMEDD K24  NUME_DDL
+C IN       MATE   K24  CHAMP MATERIAU
+C IN       CARELE K24  CARACTERISTIQUES DES ELEMENTS DE STRUCTURE
+C IN       COMREF K24  VARI_COM DE REFERENCE
+C IN       COMPOR K24  COMPORTEMENT
+C IN       LISCHA K19  L_CHARGES
+C IN       MEDIRI K24  MATRICES ELEMENTAIRES DE DIRICHLET (B)
+C IN       METHOD K16  INFORMATIONS SUR LES METHODES DE RESOLUTION
+C IN       SOLVEU K19  SOLVEUR
+C IN       PARMET  R8  PARAMETRES DES METHODES DE RESOLUTION
+C IN       CARCRI K24  PARAMETRES DES METHODES D'INTEGRATION LOCALES
+C IN       PILOTE K14  SD PILOTAGE
+C IN       PARTPS K19  SD DISC_INST
+C IN       NUMINS  I   NUMERO D'INSTANT
+C IN       DEPOLD K24  ANCIEN INCREMENT DE TEMPS (PAS PRECEDENT)
+C IN       VALMOI K24  ETAT EN T-
+C IN       POUGD  K24  DONNES POUR POUTRES GRANDES DEFORMATIONS
+C IN       VALPLU K24  ETAT EN T+
+C IN       SECMBR K24  VECTEURS ASSEMBLES DES CHARGEMENTS
+C IN/JXOUT DEPDEL K24  PREDICTION INCREMENT DE DEPLACEMENT
+C OUT      ETA     R8  COEFFICIENT DE PILOTAGE
+C OUT      LICCVG  I   CODES RETOURS 
+C                      (1) - PILOTAGE
+C                      (5) - MATASS SINGULIERE
+C
+C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
+C
+      CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
+      INTEGER            ZI
+      COMMON  / IVARJE / ZI(1)
+      REAL*8             ZR
+      COMMON  / RVARJE / ZR(1)
+      COMPLEX*16         ZC
+      COMMON  / CVARJE / ZC(1)
+      LOGICAL            ZL
+      COMMON  / LVARJE / ZL(1)
+      CHARACTER*8        ZK8
+      CHARACTER*16                ZK16
+      CHARACTER*24                          ZK24
+      CHARACTER*32                                    ZK32
+      CHARACTER*80                                              ZK80
+      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+C
+C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
+
+
+      INTEGER      JEST, JDEPM, JDEPDE, JDDEPL, NEQ, JNUM, I, NBDIRI
+      INTEGER      IRET
+      LOGICAL      LBID
+      REAL*8       INSTAP, INSTAM, DINST, X(2), R8BID
+      REAL*8       CODONN(2), COPILO(1), DIINST
+      CHARACTER*8  VEDIRI(2), K8BID
+      CHARACTER*16 K16BID
+      CHARACTER*19 MATRIX(2), CNDONN(2), CNPILO(1)
+      CHARACTER*24 DEPMOI, DEPEST, DDEPLA, BUEST, DEPLU
+      CHARACTER*24 CNDIDO, CNDIPI, CNCINE, K24BID
+
+      DATA VEDIRI /'&&VEBUDI', '&&VEDIRI'/
+      DATA BUEST  /'&&NMPREX.BUEST'/
+C ----------------------------------------------------------------------
+
+
+      CALL JEMARQ()
+
+      CALL DESAGG (VALMOI, DEPMOI, K24BID, K24BID, K24BID,
+     &                     K24BID, K24BID, K24BID, K24BID)
+      CALL DESAGG (SECMBR, K24BID, K24BID, CNDIDO, CNDIPI,
+     &                     K24BID, K24BID, K24BID, CNCINE)
+      DEPLU  = '&&NMPPRDC.DEPEST'
+      DEPEST = '&&CNPART.CHP1'
+      DDEPLA = '&&CNPART.CHP2'
+
+
+C ======================================================================
+C                      EXTRACTION DU DEPLACEMENT CALCULE
+C ======================================================================
+
+
+C -- LECTURE DANS LE CONCEPT EVOL_NOLI
+
+      INSTAP = DIINST(PARTPS,NUMINS  )
+      CALL RSINCH(METHOD(6)(1:8),'DEPL','INST',INSTAP,DEPLU,
+     &            'CONSTANT', 'CONSTANT',0,'V',IRET)
+      IF (IRET.GE.10) CALL UTMESS('F','NMPRDC','LECTURE DU CHAMP '
+     &                  //    'DEPL_CALCULE IMPOSSIBLE')
+
+
+C -- COPIE DU DEPLACEMENT ESTIME
+
+      CALL VTCOPY(DEPLU,DEPEST,IRET)
+      CALL JEVEUO(DEPEST(1:19) // '.VALE','E',JEST)
+      CALL JEVEUO(DEPMOI(1:19) // '.VALE','E',JDEPM)
+      CALL JEVEUO(DEPDEL(1:19) // '.VALE','E',JDEPDE)
+      CALL JELIRA(DEPMOI(1:19) // '.VALE','LONMAX',NEQ,K8BID)
+      CALL R8COPY(NEQ,ZR(JEST),1,ZR(JDEPDE),1)
+      CALL R8AXPY(NEQ,-1.D0,ZR(JDEPM),1,ZR(JDEPDE),1)
+
+
+
+C ======================================================================
+C   PROJECTION DU DEPLACEMENT SUR L'ESPACE DES DEPLACEMENTS ADMISSIBLES
+C ======================================================================
+
+
+C -- EN L'ABSENCE DE CHARGE DIRIRCHLET : FIN
+
+      CALL JEEXIN(LISCHA // '.LCHA', IRET)
+      IF ( IRET .EQ. 0 ) THEN
+        ETA       = 0.D0
+        LICCVG(1) = 0
+        GOTO 9999
+      END IF
+      
+      CALL JELIRA(MEDIRI,'LONUTI',NBDIRI,K8BID)
+      IF (NBDIRI.EQ.0) THEN
+        ETA       = 0.D0
+        LICCVG(1) = 0
+        GOTO 9999
+      END IF
+
+
+C -- REASSEMBLAGE EVENTUEL DE LA MATRICE DE PROJECTION
+
+      CALL NMMATR('PREDICTION', MODELE, NUMEDD, MATE  , CARELE,
+     &                  COMREF, COMPOR, LISCHA, MEDIRI, ' '   ,
+     &                  METHOD, SOLVEU, PARMET, CARCRI, PARTPS,
+     &                  NUMINS, 0     , VALMOI, POUGD , ' '   ,
+     &                  VALPLU, MATRIX, K16BID, K24BID, K24BID,
+     &                  LBID,   K16BID, K24BID, K24BID, LBID,
+     &                  K24BID, K24BID, K24BID, R8BID,  R8BID,
+     &                  LICCVG(5))
+
+      IF (LICCVG(5).NE.0) GOTO 9999
+
+C -- CALCUL DE B.UEST
+
+      CALL VEBUME (MODELE, DEPEST, LISCHA, VEDIRI(1))
+      CALL VEBTLA (MODELE, DEPEST, LISCHA, VEDIRI(2))
+      X(1) =  1
+      X(2) = -1
+      CALL ASSVEC ('V',BUEST,2,VEDIRI,X,NUMEDD,' ','ZERO',1)
+
+
+C -- RESOLUTION EN TENANT COMPTE DU PILOTAGE
+
+      CNDONN(1) = CNDIDO
+      CNDONN(2) = BUEST
+      CODONN(1) =  1
+      CODONN(2) = -1
+      CNPILO(1) = CNDIPI
+      COPILO(1) =  1
+      INSTAM = DIINST(PARTPS,NUMINS-1)
+      DINST  = INSTAP - INSTAM
+      CALL NMRESO (PILOTE, 2     , CODONN, CNDONN, 1     ,
+     &             COPILO, CNPILO, CNCINE, SOLVEU, MATRIX,
+     &             DEPDEL, DINST , DEPOLD, MODELE, MATE  ,
+     &             COMPOR, VALMOI, DDEPLA, ETA   , LICCVG(1))
+
+
+C ======================================================================
+C                  MISE A JOUR (EXCEPTE LES LAGRANGES)
+C ======================================================================
+
+C    DISTINCTION DDL PHYSIQUE / LAGRANGE
+      CALL JEVEUO(NUMEDD(1:14) // '.NUME.DELG','L',JNUM)
+
+      CALL JEVEUO(DDEPLA(1:19) // '.VALE','L',JDDEPL)
+      CALL JEVEUO(DEPDEL(1:19) // '.VALE','E',JDEPDE)
+      DO 10 I = 0, NEQ-1
+        IF (ZI(JNUM+I).EQ.0) ZR(JDEPDE+I) = ZR(JDEPDE+I) + ZR(JDDEPL+I)
+ 10   CONTINUE
+
+ 9999 CONTINUE
+      CALL JEDEMA()
+      END

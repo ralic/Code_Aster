@@ -1,0 +1,226 @@
+      SUBROUTINE OP0121 (IER)
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF UTILITAI  DATE 22/10/2002   AUTEUR MCOURTOI M.COURTOIS 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+      IMPLICIT REAL*8 (A-H,O-Z)
+      INTEGER            IER
+C ----------------------------------------------------------------------
+C     FONCTION:  DEFI_THER_JOULE
+C
+C  OUT: IER = 0 => TOUT S'EST BIEN PASSE
+C           > 0 => NOMBRE D'ERREURS RENCONTREES
+C
+C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
+      CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
+      INTEGER            ZI
+      COMMON  / IVARJE / ZI(1)
+      REAL*8             ZR
+      COMMON  / RVARJE / ZR(1)
+      COMPLEX*16         ZC
+      COMMON  / CVARJE / ZC(1)
+      LOGICAL            ZL
+      COMMON  / LVARJE / ZL(1)
+      CHARACTER*8        ZK8
+      CHARACTER*16                ZK16
+      CHARACTER*24                          ZK24
+      CHARACTER*32                                    ZK32
+      CHARACTER*80                                              ZK80
+      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
+C
+      INTEGER      IRET
+      CHARACTER*8  K8BID
+      CHARACTER*16 FONCTI,TYPFON
+      CHARACTER*19 NOMFON
+      CHARACTER*24 LISINS,CHPRO,CHVAL
+      REAL*8       TINI,TFIN,TRIN,TRFI,AMBIAN
+      REAL*8       IEF1,IE1R,IEF,R8PI,PI
+C
+      CALL JEMARQ()
+C
+      ZERO = 0.D0
+      UN   = 1.D0
+      DEUX = 2.D0
+      PI   = R8PI()
+      EPSIL= 1.D-5
+      GRAND = 1.D10
+C
+C*** SAISIE DE LA LISTE DES INSTANTS DE CALCUL ET DE LEUR NOMBRE
+      CALL GETVID (' ','LIST_INST',IOCC,1,1,LISINS,N)
+      CALL JEVEUO (LISINS(1:19)//'.VALE','L',JINST)
+      CALL JELIRA (LISINS(1:19)//'.VALE','LONUTI',NOINST,K8BID)
+C
+C*** DEFINITION DES VECTEURS:
+C***       INSTANTS ET VALEURS DE LA FONCTION
+C***       PARAMETRES DE PROLONGEMENT DE LA FONCTION
+      CALL GETRES(NOMFON,TYPFON,FONCTI)
+      CHVAL=NOMFON//'.VALE'
+      CHPRO=NOMFON//'.PROL'
+      CALL JEEXIN(CHVAL,IRET)
+      IF (IRET.NE.0) CALL JEDETR(CHVAL)
+      CALL JEEXIN(CHPRO,IRET)
+      IF (IRET.NE.0) CALL JEDETR(CHPRO)
+      CALL WKVECT (CHVAL,'G V  R',2*NOINST,JVAL)
+      CALL WKVECT (CHPRO,'G V K8',5       ,JPRO)
+C
+C*** ENTREE DES PARAMETRES DE PROLONGEMENT DE LA FONCTION
+      ZK8(JPRO)  ='FONCTION'
+      ZK8(JPRO+1)='LIN LIN'
+      ZK8(JPRO+2)='INST'
+      ZK8(JPRO+3)='TEMP'
+      ZK8(JPRO+4)='CC'
+C
+C*** SAISIE DES PARAMETRES COMMUNS DE LA STRUCTURE DE CABLES
+      CALL GETVR8 (' ','INST_CC_INIT'      ,IOCC,1,1,TINI,N)
+      CALL GETVR8 (' ','INST_CC_FIN'       ,IOCC,1,1,TFIN,N)
+      CALL GETVR8 (' ','INST_RENC_INIT'    ,IOCC,1,1,TRIN,N)
+      CALL GETVR8 (' ','INST_RENC_FIN'     ,IOCC,1,1,TRFI,N)
+      CALL GETVR8 (' ','TEMP_EXT_POSE'     ,IOCC,1,1,TEMPOZ,N)
+      CALL GETVR8 (' ','TEMP_EXT'          ,IOCC,1,1,AMBIAN,N)
+      CALL GETVR8 (' ','TEMP_RESI_REF'     ,IOCC,1,1,TREF  ,N)
+C
+C*** NOMBRE DE JEUX DE PARAMETRES PARTICULIERS: CHACUN DE CES JEUX COR-
+C*** RESPOND A UN CABLE CONTRIBUANT A LA DEFINITION DE LA FONCTION TEM-
+C*** PERATURE
+      CALL GETFAC ('PARA_COND_1D',NJEU)
+C
+C*** DEFINITION DE LA TEMPERATURE, INSTANT APRES INSTANT
+C
+      IF (NJEU.EQ.0) THEN
+C*** IL N'Y A NI COURANT DE CC, NI TEMPERATURE INITIALE PARTICULIERE
+C***    LA TEMPERATURE VAUT:
+C***    . TEMPOZ POUR T <  TINI
+C***    . AMBIAN POUR T >= TINI
+        DO 1 INST=1,NOINST
+          T = ZR(JINST-1+INST)
+          IF (T.LT.(TINI-EPSIL)) THEN
+            TEMP = TEMPOZ
+          ELSE
+            TEMP = AMBIAN
+          ENDIF
+          ZR(JVAL-1        + INST) = T
+          ZR(JVAL-1+NOINST + INST) = TEMP
+1       CONTINUE
+        GOTO 9999
+C
+      ELSE
+C*** IL Y A UN OU PLUSIEURS JEUX DE PARAMETRES PARTICULIERS: ON FAIT LA
+C*** MOYENNE DES TEMPERATURES RELATIVES A CES JEUX
+C*** LA TEMPERATURE VAUT TEMPOZ POUR T <  TINI
+        DO 2 INST=1,NOINST
+          ZR(JVAL-1+NOINST + INST) = ZERO
+2       CONTINUE
+C
+        DO 20 IOCC=1,NJEU
+          CALL GETVR8 ('PARA_COND_1D','INTE_CC'    ,IOCC,1,1,IEF1  ,N)
+          CALL GETVR8 ('PARA_COND_1D','INTE_RENC'  ,IOCC,1,1,IE1R  ,N)
+          CALL GETVR8 ('PARA_COND_1D','TEMP_INIT' ,IOCC,1,1,TEMINI,N)
+          ISIMPL = 1
+          IF ( (IEF1.NE.ZERO) .OR. (IE1R.NE.ZERO) ) THEN
+            ISIMPL = 0
+            CALL GETVR8 ('PARA_COND_1D','A'          ,IOCC,1,1,SECT  ,N)
+            CALL GETVR8 ('PARA_COND_1D','RESI_R0'    ,IOCC,1,1,RESITI,N)
+            CALL GETVR8 ('PARA_COND_1D','RESI_R1'    ,IOCC,1,1,CORESI,N)
+            CALL GETVR8 ('PARA_COND_1D','RHO_CP'     ,IOCC,1,1,CHALVO,N)
+            CALL GETVR8 ('PARA_COND_1D','COEF_H'     ,IOCC,1,1,CONVEC,N)
+            DENO1 = SECT * CHALVO
+            DENO2 = SECT * DENO1
+            P = DEUX * SQRT (PI*SECT)
+            C = CONVEC * P / DENO1
+            D = C * AMBIAN
+          ENDIF
+          DO 10 INST=1,NOINST
+            T = ZR(JINST-1+INST)
+
+            IF (T.LT.(TINI-EPSIL)) THEN
+              TEMP = TEMPOZ
+              GO TO 5
+            ELSE IF (ISIMPL.EQ.1) THEN
+C
+C*** IL N'Y A PAS DE COURANT DE CC: LA TEMPERATURE RESTE EGALE A LA TEM-
+C*** PERATURE INITIALE
+              TEMP = TEMINI
+              GO TO 5
+            ELSE
+C
+              IF (T.GE.(TINI-EPSIL).AND.T.LE.(TFIN+EPSIL)) THEN
+                IEF = IEF1
+                T0 = TINI
+                TM = TFIN + EPSIL
+              ELSE IF (T.GT.TFIN.AND.T.LT.(TRIN+EPSIL)) THEN
+                IEF = ZERO
+                T0 = TFIN
+                TM = TRIN + EPSIL
+              ELSE IF (T.GE.TRIN.AND.T.LE.(TRFI+EPSIL)) THEN
+                IEF = IE1R
+                T0 = TRIN
+                TM = TRFI + EPSIL
+              ELSE
+                IEF = ZERO
+                T0 = TRFI
+                TM = GRAND
+              ENDIF
+              IF (IEF.NE.ZERO) THEN
+                A = RESITI * (UN-CORESI*TREF) * DEUX * IEF * IEF / DENO2
+                B = RESITI * CORESI * DEUX * IEF * IEF / DENO2
+                COEF1 = B/DEUX - C
+                COEF2 = (A + DEUX*D) / (B - DEUX*C)
+C
+C***          VERIFICATION
+
+C            &COEF1,COEF2,T,T0,EXPON,TEMP
+C***          FIN DE VERIFICATION
+C
+                EXPON = EXP (COEF1 * (T-T0))
+                TEMP = TEMINI * EXPON + COEF2 * (EXPON-UN)
+                IF (INST.LT.NOINST) THEN
+                  IF (ZR(JINST+INST).GT.TM) THEN
+                    TEMINI = TEMP
+                  ENDIF
+                ENDIF
+              ELSE
+                EXPON = EXP (-C * (T-T0))
+                TEMP = TEMINI * EXPON + AMBIAN * (UN-EXPON)
+                IF (INST.LT.NOINST) THEN
+                  IF (ZR(JINST+INST).GE.TM) THEN
+                    TEMINI = TEMP
+                  ENDIF
+                ENDIF
+              ENDIF
+            ENDIF
+5           CONTINUE
+            IF (IOCC.EQ.1) THEN
+              ZR(JVAL-1+INST ) = T
+            ENDIF
+            ZR(JVAL-1+NOINST + INST) = ZR(JVAL-1+NOINST + INST) + TEMP
+10        CONTINUE
+20      CONTINUE
+        DENOM = DBLE(NJEU)
+        DO 30 INST=1,NOINST
+          ZR(JVAL-1+NOINST + INST) = ZR(JVAL-1+NOINST + INST) / DENOM
+30      CONTINUE
+        GOTO 9999
+      ENDIF
+ 9999 CONTINUE
+C
+C     --- VERIFICATION QU'ON A BIEN CREER UNE FONCTION ---
+C         ET REMISE DES ABSCISSES EN ORDRE CROISSANT
+      CALL ORDONN(NOMFON,FONCTI,0)
+C
+      CALL JEDEMA()
+      END

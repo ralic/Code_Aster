@@ -1,0 +1,65 @@
+# TITRE validation des commandes DEFI_PARA_SENSI et MEMO_NOM_SENSI en thermique
+#       Controle de POURSUITE en sensibilite
+#       Ce cas est purement informatique
+POURSUITE( CODE=_F(  NOM = 'SENST01A',) )
+#
+#          J                               OPPOSE
+#           *-------------------------------*
+#           !               !               !
+#           !               !               !
+#           !               !               !
+#           !               * CENTRE        !
+#           !               !               !
+#           !               !               !
+#           !               !               !
+#           *-------------------------------*
+#       ORIGINE                              I
+#
+#              1   < X < 11
+#             -1.5 < Y <  1.5
+#
+#  Pas de chargement ==> solution analytique
+#  T(CENTRE) = Moyenne de T(ORIGINE) ET T(OPPOSE)
+#  T(CENTRE) = 0.5 * ( T(ORIGINE) + T(OPPOSE) )
+#  Donc : Derivee de T(CENTRE) / T(OPPOSE) = 0.5
+#
+#  Dans ce cas T(ORIGINE) = 100 et T(OPPOSE)  = 0.
+#              ==> T(CENTRE)  = 50.
+#
+#  Remarque : c'est un cas traite en transitoire, mais toutes les donnees
+#  sont constantes. Cela sert a tester les reprises en sensibilite.
+#
+# 1. Poursuite du calcul
+#
+#IMPR_CO (CO=(RETH))
+#
+RETH=THER_LINEAIRE(reuse =RETH,
+                   MODELE=MODEPLAN,
+                   CHAM_MATER=MATEPLAN,
+                   EXCIT=(_F(CHARGE=CH_0,),_F(CHARGE=CH_1,),),
+                   SENSIBILITE=(PS1),
+                   TEMP_INIT=_F( EVOL_THER = RETH,
+                                 NUME_INIT = 2, ),
+                   INCREMENT=_F( LIST_INST = LINST,
+                                 NUME_INIT = 2,
+                                 NUME_FIN  = 5, ),
+                  );
+#IMPR_CO (CO=(RETH))
+#
+# 2. Tests
+#
+TEST_RESU(RESU=(
+     _F(  RESULTAT = RETH,   NUME_ORDRE = 5,
+          NOM_CHAM = 'TEMP',   GROUP_NO = 'CENTRE',
+          CRITERE = 'RELATIF', PRECISION = 1.E-8,
+          NOM_CMP = 'TEMP',    VALE = 50.00000E+00, REFERENCE = 'ANALYTIQUE' ),
+     _F(  RESULTAT = RETH,   NUME_ORDRE = 5,
+          SENSIBILITE=(PS1),
+          NOM_CHAM = 'TEMP',   GROUP_NO = 'CENTRE',
+          CRITERE = 'RELATIF', PRECISION = 1.E-8,
+          NOM_CMP = 'TEMP',    VALE = 0.500000E+00, REFERENCE = 'ANALYTIQUE' ),
+               ),
+          );
+#
+FIN();
+

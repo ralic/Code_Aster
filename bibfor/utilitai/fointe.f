@@ -1,0 +1,104 @@
+      SUBROUTINE FOINTE ( CODMES, NOMF, NBPU, NOMPU, VALPU, RESU, IER )
+      IMPLICIT   NONE
+      INTEGER             NBPU, IER
+      CHARACTER*(*)       CODMES, NOMF, NOMPU(*)
+      REAL*8              VALPU(*), RESU
+C     ------------------------------------------------------------------
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF UTILITAI  DATE 27/03/2002   AUTEUR VABHHTS J.PELLET 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+C     INTERPOLATION POUR CALCULER RESU = F(X,Y,Z,...)
+C     ------------------------------------------------------------------
+C IN  CODMES : 'F','E','A','I',... PARAMETRE TRANSMIT A UTMESS.
+C IN  NOMF   : NOM DE LA FONCTION OU DE LA NAPPE
+C IN  NBPU   : NOMBRE DE PARAMETRES DANS NOMPU ET VALPU
+C IN  NOMPU  : NOMS DES PARAMETRES "UTILISATEUR"
+C IN  VALPU  : VALEURS DES PARAMETRES "UTILISATEUR"
+C OUT RESU   : RESULTAT DE L'INTERPOLATION
+C OUT IER    : CODE RETOUR
+C
+C CODE RETOUR DE FOLOCX :
+C IER = 10  : MOINS DE 1 POINT
+C IER = 20  : EXTRAPOLATION INCONNUE
+C IER = 30  : ON DEBORDE A GAUCHE
+C IER = 40  : ON DEBORDE A DROITE
+C
+C CODE RETOUR DE FOCOLI :
+C IER = 200 : INTERPOLATION DE LA FONCTION NON PERMISE
+C IER = 210 : PARAMETRE EN DOUBLE
+C IER = 220 : PARAMETRE ATTENDUS,PARAMETRES RECUS
+C IER = 230 : TYPE D'INTERPOLATION DE LA FONCTION INCONNU
+C IER = 240 : RECHERCHE DE LA VALEUR INCONNUE (COLI)
+C
+C CODE RETOUR DE FOINT2 :
+C IER = 100 : TYPE DE FONCTION NON VALIDE
+C IER = 110 : PAS ASSEZ DE PARAMETRES
+C IER = 120 : PARAMETRE EN DOUBLE
+C IER = 130 : PARAMETRE ATTENDUS,PARAMETRES RECUS
+C IER = 140 : TYPE D'INTERPOLATION SUR LES PARA DE LA NAPPE INCONNU
+C IER = 150 : TYPE DE FONCTION NON TRAITE
+C IER = 160 : PAS ASSEZ DE PARAMETRES
+C IER = 170 : INTERPOLATION SUR LES PARAMETRES DE LA NAPPE NON PERMISE
+C     ------------------------------------------------------------------
+C --------------- COMMUNS NORMALISES  JEVEUX  --------------------------
+      INTEGER           ZI
+      COMMON / IVARJE / ZI(1)
+      REAL*8            ZR
+      COMMON / RVARJE / ZR(1)
+      COMPLEX*16        ZC
+      COMMON / CVARJE / ZC(1)
+      LOGICAL           ZL
+      COMMON / LVARJE / ZL(1)
+      CHARACTER*8       ZK8
+      CHARACTER*16              ZK16
+      CHARACTER*24                       ZK24
+      CHARACTER*32                                ZK32
+      CHARACTER*80                                         ZK80
+      COMMON / KVARJE / ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
+      CHARACTER*32      JEXNOM, JEXNUM
+C     ----------- COMMUNS NORMALISES  JEVEUX  --------------------------
+C
+      INTEGER       IADZI, IAZK24
+      REAL*8        EPSI, R8PREM
+      CHARACTER*2   CODME2
+      CHARACTER*8   NOMAIL
+      CHARACTER*19  NOMF2
+C     ------------------------------------------------------------------
+C     ------------------------------------------------------------------
+C
+      CODME2 = CODMES
+      IER    = 0
+      EPSI   = SQRT ( R8PREM() )
+      CALL FOINT2 ( NOMF, NBPU, NOMPU, VALPU, EPSI, RESU, IER )
+      IF ( IER .NE. 0 ) THEN
+        IF ( CODME2(1:1) .NE. ' ' ) THEN
+           NOMF2 = NOMF
+           CALL UTDEBM ( CODME2(1:1), 'FOINTE', 'ERREUR RENCONTREE ' )
+           CALL UTIMPK ( 'S', 'POUR LA FONCTION ', 1, NOMF2 )
+           IF ( CODME2(2:2) .EQ. 'M' ) THEN
+              CALL TECAEL ( IADZI, IAZK24 )
+              NOMAIL = ZK24(IAZK24-1+3)(1:8)
+              CALL UTIMPK ( 'L', '  POUR LA MAILLE ', 1, NOMAIL )
+           ENDIF
+           CALL UTFINM
+        ENDIF
+      ENDIF
+C
+C     ------------------------------------------------------------------
+C     ------------------------------------------------------------------
+      END

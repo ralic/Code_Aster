@@ -1,0 +1,412 @@
+# MODIF  DATE 17/06/2002   AUTEUR GNICOLAS G.NICOLAS 
+# RESPONSABLE O.BOITEAU
+# TITRE Validation de la sensibilite par rapport au coefficient d'echan
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
+#              SEE THE FILE "LICENSE.TERMS" FOR INFORMATION ON USAGE AND
+#              REDISTRIBUTION OF THIS FILE.
+# ======================================================================
+#    ge convectif et a la conductivite en thermique lineaire transitoire
+DEBUT(  CODE=_F(  NOM = 'SENST04A',NIV_PUB_WEB='INTERNET'),PAR_LOT='NON'  )
+#
+# Cas-test inspire du cas test TTLP100A traitant la reponse thermique
+# transitoire lineaire de deux plaques separees par un jeu dans lequel
+# s'effectue un transfert de chaleur. Le probleme est 2D, mais les CLs
+# font que le champ de temperature atteint rapidement l'etat stationnai
+# re et ne depend alors analytiquement que du coefficient d'echange, de
+# la conductivite, des temperatures imposees et de l'abscisse.
+# Les expressions analytiques des sensibilites thermiques par rapport a
+# ces memes parametres s'en deduisent facilement.
+# 
+#                   LAMMDA:40 RHO_CP:7.3E-4
+#           *---------------*   *---------------*
+#           !               !   !               !
+#           !               !   !               !
+#           !               !   !               !
+#   BORDG   !       INTERG  !   !  INTERD       ! BORDD
+# TEMPG=100 !       ECHANGE_PAROI/COEF_H=80     ! TEMPD=300
+#           !               !   !               !
+#           !               !   !               !
+#           *-------*-------*   *-------*-------*
+#                   A       B   C       D 
+#
+#    TRANSITOIRE T DE 0 A 0.05 PAR PAS DE 1.E-3    
+#              0 < X < 1
+#              0 < Y <  1
+#        36 NOEUDS, 4 SEG3 ET 4 QUAD8
+#
+# On calcule les sensibilites par rapport au coefficient d'echange paroi
+# (PS1) et par rapport a la conductivite thermique (PS2) de deux manieres
+# differentes: par differences finies (via des variables et operateurs 
+# PYTHON) et de maniere numerique (via l'option idoine de THER_LINEAIRE).
+# La deuxieme strategie est evidemment celle qui est preconisee (plus 
+# rapide, plus commode a utiliser, plus robuste...)
+# On teste l'ecart, pour ces deux derivees, entre la valeur obtenue en
+# resolvant le probleme derive (resp. la valeur par differences finies)
+# et la valeur theorique. Et ce, en quatre points du dernier instant du
+# transitoire (correspondant a l'etat stationnaire): N3 (A), N5 (B), 
+# N101 (C) et N103 (D).
+# On opere ces calculs de sensibilite par rapport au champ de temperatu
+# re et par rapport a son flux aux noeuds (FLUX_ELNO_TEMP).
+#
+# DETAILS:
+#   * La difference finie est une difference non centree a droite avec
+#     eps=1.0e-5.
+
+# 1. Definition/memorisation des fonctions constantes
+#
+PS_UN=DEFI_CONSTANTE(VALE=1.0,);
+MEMO_NOM_SENSI ( NOM_UN = PS_UN ) ;
+#
+PS_ZERO=DEFI_CONSTANTE(VALE=0.0,);
+MEMO_NOM_SENSI ( NOM_ZERO = PS_ZERO ) ;
+#
+# 2. Definition des parametres sensibles et des autres parametres
+#
+PS1=DEFI_PARA_SENSI(VALE=80.0,);
+MEMO_NOM_SENSI(NOM=_F(NOM_COMPOSE='PS_UN',PARA_SENSI=PS1,NOM_SD='PS1',),);
+PS2=DEFI_PARA_SENSI(VALE=40.0,);
+MEMO_NOM_SENSI(NOM=_F(NOM_COMPOSE='PS_UN',PARA_SENSI=PS2,NOM_SD='PS2',),);
+#
+PS1P=FORMULE(REEL="""(REEL:INST) =80.00001""");
+PS2P=DEFI_CONSTANTE(VALE=40.00001);
+LONTOT=DEFI_VALEUR(R8=0.990)
+LONMAX=DEFI_VALEUR(R8=1.000)
+A1=DEFI_VALEUR(R8=100.0);
+A2=DEFI_VALEUR(R8=300.0);
+A3=DEFI_VALEUR(R8=80.0);
+A4=DEFI_VALEUR(R8=40.0);
+A5=DEFI_CONSTANTE(VALE=7.3E-4);
+TEMPG=FORMULE(REEL="""(REEL:INST) = A1""");
+TEMPD=FORMULE(REEL="""(REEL:INST) = A2""");
+eps1 = 1.0e-5
+eps2 = 1.0e-5
+#
+# 3. Prealable
+#
+MAIL=LIRE_MAILLAGE( )
+MODTHER=AFFE_MODELE( MAILLAGE=MAIL,AFFE=_F(  TOUT = 'OUI',
+                     PHENOMENE = 'THERMIQUE',MODELISATION = 'PLAN'))
+#
+# 3.1. Mise en place des materiaux (std et sensible)
+#
+MAT=DEFI_MATERIAU(THER_FO=_F(LAMBDA=PS2,RHO_CP=A5))
+MEMO_NOM_SENSI(NOM=_F(NOM_SD='MAT',
+                      PARA_SENSI=PS2,
+                      NOM_COMPOSE='MAT_PS2',
+                      VALEUR='PS2',
+                      MOT_CLE='LAMBDA',));
+MAT_PS2=DEFI_MATERIAU(THER_FO=_F(LAMBDA = PS_UN,
+                                 RHO_CP = PS_ZERO))
+CMAT=AFFE_MATERIAU(MAILLAGE=MAIL,AFFE=_F(TOUT='OUI',MATER=MAT))
+MEMO_NOM_SENSI(NOM=_F(NOM_SD='CMAT',
+                      PARA_SENSI=PS2,
+                      NOM_COMPOSE='CMAT_PS2',
+                      VALEUR='MAT',
+                      MOT_CLE='MATER',));
+CMAT_PS2=AFFE_MATERIAU(MAILLAGE=MAIL,AFFE=_F(TOUT='OUI',MATER=MAT_PS2))
+#
+# 3.1.1. materiaux translates pour differences finies
+#
+MATP=DEFI_MATERIAU(THER_FO=_F(LAMBDA=PS2P,RHO_CP=A5))
+CMATP=AFFE_MATERIAU(MAILLAGE=MAIL,AFFE=_F(TOUT='OUI',MATER=MATP))
+#
+# 3.2.1 Chargements non sensibles (temp_impo)
+#
+CH_0=AFFE_CHAR_THER_F(MODELE=MODTHER,TEMP_IMPO=(
+                      _F(GROUP_MA='BORDG',TEMP=TEMPG),
+                      _F(GROUP_MA='BORDD',TEMP=TEMPD)));
+#
+# 3.2.2 Chargements sensibles (echange_paroi)
+#
+CH_1=AFFE_CHAR_THER_F(MODELE=MODTHER,
+                      ECHANGE_PAROI=_F(GROUP_MA_1='INTERG',
+                      GROUP_MA_2='INTERD',COEF_H=PS1));
+MEMO_NOM_SENSI(NOM=_F(NOM_SD='CH_1',
+                      PARA_SENSI=PS1,
+                      NOM_COMPOSE='CH_1_PS1',
+                      VALEUR='PS1',
+                      MOT_CLE='COEF_H',));
+CH_1_PS1=AFFE_CHAR_THER_F(MODELE=MODTHER,
+                          ECHANGE_PAROI=_F(GROUP_MA_1='INTERG',
+                          GROUP_MA_2='INTERD',COEF_H=PS_UN));
+#
+# 3.2.3 Chargement translate pour differences finies
+#
+CH_1P=AFFE_CHAR_THER_F(MODELE=MODTHER,
+                       ECHANGE_PAROI=_F(GROUP_MA_1='INTERG',
+                       GROUP_MA_2='INTERD',COEF_H = PS1P));                       
+#
+# 4.1 Calcul standard + 2 calculs de sensibilite
+#
+LINST=DEFI_LIST_REEL(DEBUT=0.0,
+                     INTERVALLE=_F(JUSQU_A=5.E-2,NOMBRE=50))
+TEMPINIT=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R',
+                     MAILLAGE=MAIL,AFFE=(
+                    _F(GROUP_MA='PLAQG',NOM_CMP='TEMP',VALE=A1),
+                    _F(GROUP_MA='PLAQD',NOM_CMP='TEMP',VALE=A2)))
+MEMO_NOM_SENSI(NOM=(_F(NOM_SD='RESU',
+                       PARA_SENSI=PS1,
+                       NOM_COMPOSE='RESU_PS1'),
+                    _F(NOM_SD='RESU',
+                       PARA_SENSI=PS2,
+                       NOM_COMPOSE='RESU_PS2')));
+RESU=THER_LINEAIRE(MODELE=MODTHER,CHAM_MATER=CMAT,
+                    EXCIT=(_F(CHARGE=CH_0),_F(CHARGE=CH_1)),
+                    TEMP_INIT=_F(CHAM_NO=TEMPINIT),
+#                    INFO=2,
+                    SENSIBILITE=(PS1,PS2),
+                    INCREMENT=_F(LIST_INST=LINST))
+#                    
+# 4.1.1 Calcul du flux aux noeuds
+#
+RESU=CALC_ELEM(reuse=RESU,MODELE=MODTHER,RESULTAT=RESU,CHAM_MATER=CMAT,
+#             INFO=2,
+             OPTION='FLUX_ELNO_TEMP',
+             EXCIT=(_F(CHARGE= CH_0),_F(CHARGE= CH_1)),
+             SENSIBILITE=(PS1,PS2,));
+RESU=CALC_NO(reuse=RESU,RESULTAT=RESU,OPTION='FLUX_NOEU_TEMP',
+           SENSIBILITE=(PS1,PS2,));
+#
+# 4.2 Calculs pour evaluer les differences finies
+#
+RESU1P=THER_LINEAIRE(MODELE=MODTHER,CHAM_MATER=CMAT,
+                    EXCIT=(_F(CHARGE=CH_0),_F(CHARGE=CH_1P)),
+                    TEMP_INIT=_F(CHAM_NO=TEMPINIT),
+                    INCREMENT=_F(LIST_INST=LINST))
+
+RESU2P=THER_LINEAIRE(MODELE=MODTHER,CHAM_MATER=CMATP,
+                    EXCIT=(_F(CHARGE=CH_0),_F(CHARGE=CH_1)),
+                    TEMP_INIT=_F(CHAM_NO=TEMPINIT),
+                    INCREMENT=_F(LIST_INST=LINST))
+
+#
+# 5.1 Verifications analytiques des sensibilites par rapport
+#     au coefficient d'echange
+#
+GRADS1=FORMULE(REEL="""(REEL:BIDON)=A4*(A2-A1)/((A4+A3*LONTOT)**2)""")
+GRADTS1=DEFI_VALEUR(R8=EVAL("""GRADS1(0.)""") )
+TINTGS1=FORMULE(REEL="""(REEL:X)=GRADTS1*X""")
+TINTDS1=FORMULE(REEL="""(REEL:X)=-GRADTS1*(LONMAX-X)""")
+#
+# 5.1.1 TEST_RESU sur les sensibilites numeriques
+#
+TEST_RESU(RESU=(
+     _F(RESULTAT=RESU,NUME_ORDRE=50,NOM_CHAM='TEMP',GROUP_NO='A',
+        CRITERE='RELATIF',PRECISION=1.E-6,
+        SENSIBILITE=(PS1),REFERENCE='ANALYTIQUE',
+        NOM_CMP='TEMP',VALE=EVAL("""TINTGS1(0.25)""")),
+     _F(RESULTAT=RESU,NUME_ORDRE=50,NOM_CHAM='TEMP',GROUP_NO='B',
+        CRITERE='RELATIF',PRECISION=1.E-6,
+        SENSIBILITE=(PS1),REFERENCE='ANALYTIQUE',
+        NOM_CMP='TEMP',VALE=EVAL("""TINTGS1(0.495)""")),
+     _F(RESULTAT=RESU,NUME_ORDRE=50,NOM_CHAM='TEMP',GROUP_NO='C',
+        CRITERE='RELATIF',PRECISION=1.E-6,
+        SENSIBILITE=(PS1),REFERENCE='ANALYTIQUE',
+        NOM_CMP='TEMP',VALE=EVAL("""TINTDS1(0.505)""")),
+     _F(RESULTAT=RESU,NUME_ORDRE=50,NOM_CHAM='TEMP',GROUP_NO='D',
+        CRITERE='RELATIF',PRECISION=1.E-6,
+        SENSIBILITE=(PS1),REFERENCE='ANALYTIQUE',
+        NOM_CMP='TEMP',VALE=EVAL("""TINTDS1(0.75)"""))));
+#
+# 5.1.2 TEST_FONCTION sur les sensibilites par differences finies
+#
+RLTH=POST_RELEVE_T(ACTION=_F(RESULTAT=RESU,
+                   INTITULE='TEMPERATURE',NUME_ORDRE=50,
+                   NOM_CHAM='TEMP',OPERATION='EXTRACTION',
+                   GROUP_NO=('A','B','C','D'),
+                   NOM_CMP=('TEMP')));
+RLTH1P=POST_RELEVE_T(ACTION=_F(RESULTAT=RESU1P,
+                   INTITULE='TEMPERATURE',NUME_ORDRE=50,
+                   NOM_CHAM='TEMP',OPERATION='EXTRACTION',
+                   GROUP_NO=('A','B','C','D'),
+                   NOM_CMP=('TEMP')));
+temp=RLTH['TEMP',1]
+tempp=RLTH1P['TEMP',1]
+temdf3 = (tempp-temp)/eps1
+DFN3=FORMULE(REEL="""(REEL:BIDON)=temdf3*1.""")
+temp=RLTH['TEMP',2]
+tempp=RLTH1P['TEMP',2]
+temdf5 = (tempp-temp)/eps1
+DFN5=FORMULE(REEL="""(REEL:BIDON)=temdf5*1.""")  
+temp=RLTH['TEMP',3]
+tempp=RLTH1P['TEMP',3]
+temdf101 = (tempp-temp)/eps1
+DFN101=FORMULE(REEL="""(REEL:BIDON)=temdf101*1.""")  
+temp=RLTH['TEMP',4]
+tempp=RLTH1P['TEMP',4]
+temdf103 = (tempp-temp)/eps1
+DFN103=FORMULE(REEL="""(REEL:BIDON)=temdf103*1.""")    
+TEST_FONCTION(VALEUR=(
+    _F(FONCTION=DFN3,NOM_PARA='BIDON',VALE_PARA=0.,PRECISION=1.E-6,
+       VALE_REFE=EVAL("""TINTGS1(0.25)"""),REFERENCE='ANALYTIQUE'),
+    _F(FONCTION=DFN5,NOM_PARA='BIDON',VALE_PARA=0.,PRECISION=1.E-6,
+       VALE_REFE=EVAL("""TINTGS1(0.495)"""),REFERENCE='ANALYTIQUE'),
+    _F(FONCTION=DFN101,NOM_PARA='BIDON',VALE_PARA=0.,PRECISION=1.E-6,
+       VALE_REFE=EVAL("""TINTDS1(0.505)"""),REFERENCE='ANALYTIQUE'),
+    _F(FONCTION=DFN103,NOM_PARA='BIDON',VALE_PARA=0.,PRECISION=1.E-6,
+       VALE_REFE=EVAL("""TINTDS1(0.75)"""),REFERENCE='ANALYTIQUE')));    
+#
+# 5.2 Verifications analytiques des sensibilites par rapport
+#     a la conductivite thermique
+#
+GRADS2=FORMULE(REEL="""(REEL:BIDON)=A3*(A1-A2)/((A4+A3*LONTOT)**2)""")
+GRADTS2=DEFI_VALEUR(R8=EVAL("""GRADS2(0.)""") )
+TINTGS2=FORMULE(REEL="""(REEL:X)=GRADTS2*X""")
+TINTDS2=FORMULE(REEL="""(REEL:X)=-GRADTS2*(LONMAX-X)""")
+#
+# 5.2.1 TEST_RESU sur les sensibilites numeriques
+#
+TEST_RESU(RESU=(
+     _F(RESULTAT=RESU,NUME_ORDRE=50,NOM_CHAM='TEMP',GROUP_NO='A',
+        CRITERE='RELATIF',PRECISION=1.E-6,
+        SENSIBILITE=(PS2),REFERENCE='ANALYTIQUE',
+        NOM_CMP='TEMP',VALE=EVAL("""TINTGS2(0.25)""")),
+     _F(RESULTAT=RESU,NUME_ORDRE=50,NOM_CHAM='TEMP',GROUP_NO='B',
+        CRITERE='RELATIF',PRECISION=1.E-6,
+        SENSIBILITE=(PS2),REFERENCE='ANALYTIQUE',
+        NOM_CMP='TEMP',VALE=EVAL("""TINTGS2(0.495)""")),
+     _F(RESULTAT=RESU,NUME_ORDRE=50,NOM_CHAM='TEMP',GROUP_NO='C',
+        CRITERE='RELATIF',PRECISION=1.E-6,
+        SENSIBILITE=(PS2),REFERENCE='ANALYTIQUE',
+        NOM_CMP='TEMP',VALE=EVAL("""TINTDS2(0.505)""")),
+     _F(RESULTAT=RESU,NUME_ORDRE=50,NOM_CHAM='TEMP',GROUP_NO='D',
+        CRITERE='RELATIF',PRECISION=1.E-6,
+        SENSIBILITE=(PS2),REFERENCE='ANALYTIQUE',
+        NOM_CMP='TEMP',VALE=EVAL("""TINTDS2(0.75)"""))));
+#
+# 5.2.2 TEST_FONCTION sur les sensibilites par differences finies
+#
+RLTH2P=POST_RELEVE_T(ACTION=_F(RESULTAT=RESU2P,
+                   INTITULE='TEMPERATURE',NUME_ORDRE=50,
+                   NOM_CHAM='TEMP',OPERATION='EXTRACTION',
+                   GROUP_NO=('A','B','C','D'),
+                   NOM_CMP=('TEMP')));
+temp=RLTH['TEMP',1]
+tempp=RLTH2P['TEMP',1]
+temdf3b = (tempp-temp)/eps2
+DFN3B=FORMULE(REEL="""(REEL:BIDON)=temdf3b*1.""")
+temp=RLTH['TEMP',2]
+tempp=RLTH2P['TEMP',2]
+temdf5b = (tempp-temp)/eps2
+DFN5B=FORMULE(REEL="""(REEL:BIDON)=temdf5b*1.""")  
+temp=RLTH['TEMP',3]
+tempp=RLTH2P['TEMP',3]
+temdf11b = (tempp-temp)/eps2
+DFN11B=FORMULE(REEL="""(REEL:BIDON)=temdf11b*1.""")  
+temp=RLTH['TEMP',4]
+tempp=RLTH2P['TEMP',4]
+temdf13b = (tempp-temp)/eps2
+DFN13B=FORMULE(REEL="""(REEL:BIDON)=temdf13b*1.""")    
+TEST_FONCTION(VALEUR=(
+    _F(FONCTION=DFN3B,NOM_PARA='BIDON',VALE_PARA=0.,PRECISION=1.E-6,
+       VALE_REFE=EVAL("""TINTGS2(0.25)"""),REFERENCE='ANALYTIQUE'),
+    _F(FONCTION=DFN5B,NOM_PARA='BIDON',VALE_PARA=0.,PRECISION=1.E-6,
+       VALE_REFE=EVAL("""TINTGS2(0.495)"""),REFERENCE='ANALYTIQUE'),
+    _F(FONCTION=DFN11B,NOM_PARA='BIDON',VALE_PARA=0.,PRECISION=1.E-6,
+       VALE_REFE=EVAL("""TINTDS2(0.505)"""),REFERENCE='ANALYTIQUE'),
+    _F(FONCTION=DFN13B,NOM_PARA='BIDON',VALE_PARA=0.,PRECISION=1.E-6,
+       VALE_REFE=EVAL("""TINTDS2(0.75)"""),REFERENCE='ANALYTIQUE')));
+#
+# 5.3 Verifications analytiques des sensibilites par rapport au
+#     au coefficient d'echange des composantes X et Y du flux
+
+GRADX=FORMULE(REEL="""(REEL:X)=A4*A4*(A1-A2)/((A4+A3*LONTOT)**2)""")
+GRADY=FORMULE(REEL="""(REEL:X)=0.""")
+#
+# 5.3.1 TEST_RESU sur les sensibilites numeriques
+#
+TEST_RESU(RESU=(
+     _F(RESULTAT=RESU,NUME_ORDRE=50,NOM_CHAM='FLUX_NOEU_TEMP',
+        GROUP_NO='A',
+        CRITERE='RELATIF',PRECISION=1.E-5,
+        SENSIBILITE=(PS1),REFERENCE='ANALYTIQUE',
+        NOM_CMP='FLUX',VALE=EVAL("""GRADX(0.25)""")),
+     _F(RESULTAT=RESU,NUME_ORDRE=50,NOM_CHAM='FLUX_NOEU_TEMP',
+        GROUP_NO='B',
+        CRITERE='RELATIF',PRECISION=1.E-5,
+        SENSIBILITE=(PS1),REFERENCE='ANALYTIQUE',
+        NOM_CMP='FLUX',VALE=EVAL("""GRADX(0.495)""")),
+     _F(RESULTAT=RESU,NUME_ORDRE=50,NOM_CHAM='FLUX_NOEU_TEMP',
+        GROUP_NO='C',
+        CRITERE='RELATIF',PRECISION=1.E-5,
+        SENSIBILITE=(PS1),REFERENCE='ANALYTIQUE',
+        NOM_CMP='FLUX',VALE=EVAL("""GRADX(0.505)""")),
+     _F(RESULTAT=RESU,NUME_ORDRE=50,NOM_CHAM='FLUX_NOEU_TEMP',
+        GROUP_NO='D',
+        CRITERE='RELATIF',PRECISION=1.E-5,
+        SENSIBILITE=(PS1),REFERENCE='ANALYTIQUE',
+        NOM_CMP='FLUX',VALE=EVAL("""GRADX(0.75)""")),
+     _F(RESULTAT=RESU,NUME_ORDRE=50,NOM_CHAM='FLUX_NOEU_TEMP',
+        GROUP_NO='A',
+        CRITERE='ABSOLU',PRECISION=1.E-11,
+        SENSIBILITE=(PS1),REFERENCE='ANALYTIQUE',
+        NOM_CMP='FLUY',VALE=EVAL("""GRADY(0.25)""")),
+     _F(RESULTAT=RESU,NUME_ORDRE=50,NOM_CHAM='FLUX_NOEU_TEMP',
+        GROUP_NO='B',
+        CRITERE='ABSOLU',PRECISION=1.E-11,
+        SENSIBILITE=(PS1),REFERENCE='ANALYTIQUE',
+        NOM_CMP='FLUY',VALE=EVAL("""GRADY(0.495)""")),
+     _F(RESULTAT=RESU,NUME_ORDRE=50,NOM_CHAM='FLUX_NOEU_TEMP',
+        GROUP_NO='C',
+        CRITERE='ABSOLU',PRECISION=1.E-11,
+        SENSIBILITE=(PS1),REFERENCE='ANALYTIQUE',
+        NOM_CMP='FLUY',VALE=EVAL("""GRADY(0.505)""")),
+     _F(RESULTAT=RESU,NUME_ORDRE=50,NOM_CHAM='FLUX_NOEU_TEMP',
+        GROUP_NO='D',
+        CRITERE='ABSOLU',PRECISION=1.E-11,
+        SENSIBILITE=(PS1),REFERENCE='ANALYTIQUE',
+        NOM_CMP='FLUY',VALE=EVAL("""GRADY(0.75)"""))));
+#
+# 5.4 Verifications analytiques des sensibilites par rapport a
+#     la conductivite thermique des composantes X et Y du flux
+
+GRADX2=FORMULE(REEL="""(REEL:X)=A3*A3*(A1-A2)*LONTOT/((A4+A3*LONTOT)**2)""")
+GRADY2=FORMULE(REEL="""(REEL:X)=0.""")
+#
+# 5.4.1 TEST_RESU sur les sensibilites numeriques
+#
+TEST_RESU(RESU=(
+     _F(RESULTAT=RESU,NUME_ORDRE=50,NOM_CHAM='FLUX_NOEU_TEMP',
+        GROUP_NO='A',
+        CRITERE='RELATIF',PRECISION=1.E-5,
+        SENSIBILITE=(PS2),REFERENCE='ANALYTIQUE',
+        NOM_CMP='FLUX',VALE=EVAL("""GRADX2(0.25)""")),
+     _F(RESULTAT=RESU,NUME_ORDRE=50,NOM_CHAM='FLUX_NOEU_TEMP',
+        GROUP_NO='B',
+        CRITERE='RELATIF',PRECISION=1.E-5,
+        SENSIBILITE=(PS2),REFERENCE='ANALYTIQUE',
+        NOM_CMP='FLUX',VALE=EVAL("""GRADX2(0.495)""")),
+     _F(RESULTAT=RESU,NUME_ORDRE=50,NOM_CHAM='FLUX_NOEU_TEMP',
+        GROUP_NO='C',
+        CRITERE='RELATIF',PRECISION=1.E-5,
+        SENSIBILITE=(PS2),REFERENCE='ANALYTIQUE',
+        NOM_CMP='FLUX',VALE=EVAL("""GRADX2(0.505)""")),
+     _F(RESULTAT=RESU,NUME_ORDRE=50,NOM_CHAM='FLUX_NOEU_TEMP',
+        GROUP_NO='D',
+        CRITERE='RELATIF',PRECISION=1.E-5,
+        SENSIBILITE=(PS2),REFERENCE='ANALYTIQUE',
+        NOM_CMP='FLUX',VALE=EVAL("""GRADX2(0.75)""")),
+     _F(RESULTAT=RESU,NUME_ORDRE=50,NOM_CHAM='FLUX_NOEU_TEMP',
+        GROUP_NO='A',
+        CRITERE='ABSOLU',PRECISION=1.E-11,
+        SENSIBILITE=(PS2),REFERENCE='ANALYTIQUE',
+        NOM_CMP='FLUY',VALE=EVAL("""GRADY2(0.25)""")),
+     _F(RESULTAT=RESU,NUME_ORDRE=50,NOM_CHAM='FLUX_NOEU_TEMP',
+        GROUP_NO='B',
+        CRITERE='ABSOLU',PRECISION=1.E-11,
+        SENSIBILITE=(PS2),REFERENCE='ANALYTIQUE',
+        NOM_CMP='FLUY',VALE=EVAL("""GRADY2(0.495)""")),
+     _F(RESULTAT=RESU,NUME_ORDRE=50,NOM_CHAM='FLUX_NOEU_TEMP',
+        GROUP_NO='C',
+        CRITERE='ABSOLU',PRECISION=1.E-11,
+        SENSIBILITE=(PS2),REFERENCE='ANALYTIQUE',
+        NOM_CMP='FLUY',VALE=EVAL("""GRADY2(0.505)""")),
+     _F(RESULTAT=RESU,NUME_ORDRE=50,NOM_CHAM='FLUX_NOEU_TEMP',
+        GROUP_NO='D',
+        CRITERE='ABSOLU',PRECISION=1.E-11,
+        SENSIBILITE=(PS2),REFERENCE='ANALYTIQUE',
+        NOM_CMP='FLUY',VALE=EVAL("""GRADY2(0.75)"""))));
+FIN()
+#

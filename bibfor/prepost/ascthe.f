@@ -1,0 +1,206 @@
+      SUBROUTINE ASCTHE ( MAILLA, NTHET, RTHET, THERM, CHMETH, CHPRES,
+     &                    AFFMAT, MODELE, NOMRES, NOFISS, FAXI, NPRE,
+     &                    NCOIN, NCOEL, RELCO, LRELCO, ICMD, IERUSR )
+      IMPLICIT   NONE        
+      INTEGER         IERUSR, ICMD, NCOIN, NCOEL, LRELCO, NTHET, NPRE
+      CHARACTER*3     FAXI
+      CHARACTER*8     MAILLA, CHMETH, CHPRES, AFFMAT, MODELE, NOFISS
+      CHARACTER*16    NOMRES, RELCO
+      LOGICAL         THERM        
+      REAL*8          RTHET(*)
+C     ------------------------------------------------------------------
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF PREPOST  DATE 02/10/2002   AUTEUR F1BHHAJ J.ANGLES 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+C                   MACR_ASCOUF_CALC
+C      
+C       --- POST TRAITEMENT FISSURE :   CALC_THETA  ---
+C                                       CALC_G      ---
+C
+C-----------------DONNEES FOURNIES PAR L'UTILISATEUR--------------------
+C
+C     MAILLA = MAILLAGE
+C     RINF = RAYON INFERIEUR DE LA ZONE DE DECROISSANCE DU CHAMP THETA
+C     RSUP = RAYON SUPERIEUR DE LA ZONE DE DECROISSANCE DU CHAMP THETA
+C     THERM = INDICATEUR DE CALCUL THERMIQUE
+C     CHPRES = CHARGE EN PRESSION
+C     CHMETH = CHARGE THERMIQUE
+C     NPRE = INDICATEUR DU CHARGEMENT EN PRESSION (0 = NON)
+C     CHPRES = CHARGE EN PRESSION
+C     AFFMAT = CHAMP MATERIAU
+C     MODELE = MODELE MECANIQUE
+C     NOMRES = NOM DE LA SD RESULTAT
+C     NOFISS = NOM DU FOND DE FISSURE DEFINI PAR DEFI_FOND_FISS
+C     FAXI   = INDIQUE SI LA FISSURE EST AXIS OU NON
+C     NCOIN = INDICATEUR DE COMPORTEMENT INCREMENTAL
+C     NCOEL = INDICATEUR DE COMPORTEMENT ELASTIQUE
+C     RELCO = RELATION DE COMPORTEMENT
+C     LRELCO = LONGUEUR DE LA CHAINE RELATION DE COMPORTEMENT
+C
+C     ------------------------------------------------------------------
+C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
+      INTEGER          ZI
+      COMMON  /IVARJE/ ZI(1)
+      REAL*8           ZR
+      COMMON  /RVARJE/ ZR(1)
+      COMPLEX*16       ZC
+      COMMON  /CVARJE/ ZC(1)
+      LOGICAL          ZL
+      COMMON  /LVARJE/ ZL(1)
+      CHARACTER*8      ZK8
+      CHARACTER*16            ZK16
+      CHARACTER*24                    ZK24
+      CHARACTER*32                            ZK32
+      CHARACTER*80                                    ZK80
+      COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
+      CHARACTER*8  NOMGRN(3), NOTHET, NOGTHE, NOGLOC, K8B, 
+     +             NOMGRP(2)
+      REAL*8       MODULE 
+      INTEGER      I8, NDEG, INFO, I
+C     ------------------------------------------------------------------
+      DATA NOMGRN / 'FONDFISS' , 'FACE1', 'FACE2' /      
+C     ------------------------------------------------------------------
+C
+      CALL JEMARQ()
+C  
+      I8  = 8        
+C            
+      ICMD = ICMD + 1
+      CALL SMDCMD ( ICMD, NOFISS, 'DEFI_FOND_FISS', IERUSR )
+        CALL PUTVID ( 'MAILLAGE', 1, MAILLA, IERUSR )  
+        CALL SMDMCF ( 'LEVRE_SUP', IERUSR )
+          CALL PUTVID ( 'GROUP_MA', 1, NOMGRN(2), IERUSR )
+        CALL SMFMCF (   IERUSR )          
+        CALL SMDMCF ( 'LEVRE_INF', IERUSR )
+          CALL PUTVID ( 'GROUP_MA', 1, NOMGRN(3), IERUSR )
+        CALL SMFMCF (   IERUSR ) 
+        IF ( FAXI .EQ. 'NON' ) THEN
+          CALL SMDMCF ( 'FOND', IERUSR )
+            CALL PUTVID ( 'GROUP_NO', 1, NOMGRN(1), IERUSR )
+          CALL SMFMCF (   IERUSR )
+          NOMGRP(1)='PFOR'
+          NOMGRP(2)='THOR'
+          CALL PUTVID('VECT_GRNO_ORIG',2,NOMGRP,IERUSR)
+          NOMGRP(1)='PFEX'
+          NOMGRP(2)='THEX'
+          CALL PUTVID('VECT_GRNO_EXTR',2,NOMGRP,IERUSR)
+        ELSE
+          CALL SMDMCF ( 'FOND_FERME', IERUSR )
+            CALL PUTVID ( 'GROUP_MA' , 1, 'FONDFISS', IERUSR)
+            CALL PUTVID ('GROUP_NO_ORIG',1,'PFOR',IERUSR)
+            CALL PUTVID ( 'GROUP_MA_ORIG' , 1, 'MAIL_ORI', IERUSR)
+          CALL SMFMCF ( IERUSR )
+        ENDIF
+        INFO = 2
+        CALL PUTVIS ( 'INFO' , 1, INFO , IERUSR )
+      CALL SMFCMD ( IERUSR )
+C 
+      DO 10 I=1,NTHET
+C      
+       ICMD = ICMD + 1
+       CALL GCNCON ( '.' , NOTHET )
+       CALL SMDCMD ( ICMD, NOTHET, 'CALC_THETA', IERUSR )
+       CALL PUTVID ( 'MODELE', 1, MODELE, IERUSR )
+       CALL PUTVID ( 'FOND_FISS', 1, NOFISS, IERUSR )
+         CALL SMDMCF ( 'THETA_3D', IERUSR )
+           K8B = 'OUI'
+           CALL PUTVTX ( 'TOUT', 1, K8B, I8,IERUSR )
+           MODULE = 1.D0
+           CALL PUTVR8 ( 'MODULE'  , 1, MODULE, IERUSR )
+           CALL PUTVR8 ( 'R_INF', 1, RTHET(2*(I-1)+1), IERUSR )
+           CALL PUTVR8 ( 'R_SUP', 1, RTHET(2*(I-1)+2), IERUSR )
+         CALL SMFMCF (   IERUSR )
+       CALL SMFCMD ( IERUSR ) 
+C
+       ICMD = ICMD + 1
+       CALL GCNCON ( '.' , NOGTHE )
+       CALL SMDCMD ( ICMD, NOGTHE, 'CALC_G_THETA_T', IERUSR )
+         CALL PUTVID ( 'MODELE', 1, MODELE, IERUSR )
+         CALL PUTVID ( 'RESULTAT', 1, NOMRES, IERUSR )
+         K8B = 'OUI'
+         CALL PUTVTX ( 'TOUT_ORDRE', 1, K8B, I8,IERUSR )
+         CALL PUTVID ( 'CHAM_MATER', 1, AFFMAT, IERUSR )
+         CALL PUTVID ( 'THETA', 1, NOTHET, IERUSR )
+         IF (NPRE .NE. 0) CALL PUTVID ( 'CHARGE', 1, CHPRES, IERUSR )
+         IF (THERM) CALL PUTVID ( 'CHARGE', 1, CHMETH, IERUSR )
+         IF ( NCOIN .NE. 0 ) THEN
+           CALL SMDMCF ( 'COMP_INCR', IERUSR )
+           CALL PUTVTX ( 'RELATION', 1, RELCO, LRELCO, IERUSR )
+           CALL SMFMCF (   IERUSR )
+         ENDIF
+         IF ( NCOEL .NE. 0 ) THEN
+           CALL SMDMCF ( 'COMP_ELAS', IERUSR )
+           CALL PUTVTX ( 'RELATION', 1, RELCO, LRELCO, IERUSR )
+           CALL SMFMCF (   IERUSR )
+         ENDIF
+       CALL SMFCMD ( IERUSR )
+C    
+       ICMD = ICMD + 1
+       CALL SMDCMD ( ICMD, ' ', 'IMPR_TABLE', IERUSR )
+         CALL PUTVID ( 'TABLE', 1, NOGTHE, IERUSR )
+       CALL SMFCMD ( IERUSR )
+C                         
+ 10   CONTINUE      
+C 
+      DO 20 I=1,NTHET
+C      
+        ICMD = ICMD + 1
+        CALL GCNCON ( '.' , NOGLOC )
+        CALL SMDCMD ( ICMD, NOGLOC, 'CALC_G_LOCAL_T', IERUSR )
+          CALL PUTVID ( 'MODELE', 1, MODELE, IERUSR )
+          CALL PUTVID ( 'RESULTAT', 1, NOMRES, IERUSR )
+          K8B = 'OUI'
+          CALL PUTVTX ( 'TOUT_ORDRE', 1, K8B, I8,IERUSR )
+          CALL PUTVID ( 'CHAM_MATER', 1, AFFMAT, IERUSR )
+          CALL PUTVID ( 'FOND_FISS', 1, NOFISS, IERUSR )
+          IF (NPRE .NE. 0) CALL PUTVID ( 'CHARGE', 1, CHPRES, IERUSR )
+          IF (THERM) CALL PUTVID ( 'CHARGE', 1, CHMETH, IERUSR )
+          NDEG = 4
+          CALL PUTVIS ( 'DEGRE', 1, NDEG, IERUSR )
+          CALL PUTVR8 ( 'R_INF', 1, RTHET(2*(I-1)+1), IERUSR )
+          CALL PUTVR8 ( 'R_SUP', 1, RTHET(2*(I-1)+2), IERUSR )
+          IF ( NCOIN .NE. 0 ) THEN
+            CALL SMDMCF ( 'COMP_INCR', IERUSR )
+            CALL PUTVTX ( 'RELATION' ,1, RELCO, LRELCO, IERUSR )
+            CALL SMFMCF (   IERUSR )
+          ENDIF
+          IF ( NCOEL .NE. 0 ) THEN
+            CALL SMDMCF ( 'COMP_ELAS', IERUSR )
+            CALL PUTVTX ( 'RELATION' ,1, RELCO, LRELCO, IERUSR )
+            CALL SMFMCF (   IERUSR )
+          ENDIF
+          IF ( FAXI .EQ. 'OUI' ) THEN
+             CALL PUTVTX ( 'LISSAGE_THETA',1,'LAGRANGE',I8,IERUSR)
+             CALL PUTVTX ( 'LISSAGE_G',1,'LAGRANGE',I8,IERUSR)
+          ELSE
+             CALL PUTVTX ( 'LISSAGE_THETA',1,'LEGENDRE',I8,IERUSR)
+             CALL PUTVTX ( 'LISSAGE_G',1,'LEGENDRE',I8,IERUSR)
+          ENDIF
+        CALL SMFCMD ( IERUSR )
+C
+        ICMD = ICMD + 1
+        CALL SMDCMD ( ICMD, ' ', 'IMPR_TABLE', IERUSR )
+          CALL PUTVID ( 'TABLE', 1, NOGLOC, IERUSR )
+        CALL SMFCMD ( IERUSR )
+C
+ 20   CONTINUE      
+C     
+ 9999 CONTINUE
+      CALL JEDEMA()
+      END

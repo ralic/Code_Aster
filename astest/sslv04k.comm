@@ -1,0 +1,179 @@
+# MODIF  DATE 29/05/2002   AUTEUR CIBHHAB S.VANDENBERGHE 
+# TITRE CYLINDRE EN C.P. (TEST DES FORCES NODALES)
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+#CAS_TEST__: SSLV04K
+# ----------------------------------------------------------------------
+# SSLV04 K               COMMANDES                            09/06/92
+# CYLINDRE CREUX EN CONTRAINTES PLANES
+# DEPLACEMENT NORMAL IMPOSE
+#
+# MODELISATION : ELEMENTS MECANIQUE 3D (PENTA6+HEXA8)
+# MAILLAGE     : ALIBABA > ASTER > SUPERTAB
+# ----------------------------------------------------------------------
+# GROUPES DE NOEUDS ET MAILLES :
+# GRNO: A B C D E F  A2 B2 C2 D2 E2 F2   A3 B3 C3 D3 E3 F3  BORDAB
+# GRMA: FACEEF       FACEAE
+# ----------------------------------------------------------------------
+#
+
+DEBUT(CODE=_F( NOM = 'SSLV04K',NIV_PUB_WEB='INTERNET'))
+
+M=LIRE_MAILLAGE(   )
+
+MO=AFFE_MODELE(            MAILLAGE=M,
+                                   VERIF='MAILLE',
+                                  AFFE=_F(  TOUT = 'OUI',         
+                                         PHENOMENE = 'MECANIQUE',    
+                                         MODELISATION = '3D',        )
+                                       )
+
+M=MODI_MAILLAGE( reuse=M,   MAILLAGE=M,
+                            MODELE=MO,
+                        ORIE_PEAU_3D=_F(  GROUP_MA = 'FACEEF',  )
+                      )
+
+MA=DEFI_MATERIAU(            ELAS=_F(  E = 200000.,       
+                                         NU = 0.3,      
+                                         ALPHA = 0.,    ))
+
+CM=AFFE_MATERIAU(        MAILLAGE=M,
+                                  AFFE=_F(  TOUT = 'OUI',         
+                                         MATER = MA,            ))
+
+CH=AFFE_CHAR_MECA(       MODELE=MO,
+                           FACE_IMPO=_F( GROUP_MA = 'FACEEF',   DNOR = 0.,   ),DDL_IMPO=(
+           _F( GROUP_NO = 'F',        DZ = 0.,     ),
+                    _F( GROUP_NO = 'BORDAB',   DY = 0.,     ),
+                    _F( NOEUD = 'NO1',         DX = 5.9E-5,   ),
+                    _F( NOEUD = 'NO172',       DX = 5.9E-5,   ),
+                    _F( NOEUD = 'NO173',       DX = 5.9E-5,   ),
+                    _F( NOEUD = 'NO4',         DX = 5.88181207E-5,   ),
+                    _F( NOEUD = 'NO4',         DY = 4.629086605E-6,   ),
+                    _F( NOEUD = 'NO178',       DX = 5.88181207E-5,   ),
+                    _F( NOEUD = 'NO178',       DY = 4.629086605E-6,   ),
+                    _F( NOEUD = 'NO179',       DX = 5.88181207E-5,   ),
+                    _F( NOEUD = 'NO179',       DY = 4.629086605E-6,   ),
+                    _F( NOEUD = 'NO9',         DX = 5.827361206E-5,   ),
+                    _F( NOEUD = 'NO9',         DY = 9.229633435E-6,   ),
+                    _F( NOEUD = 'NO188',       DX = 5.827361206E-5,   ),
+                    _F( NOEUD = 'NO188',       DY = 9.229633435E-6,   ),
+                    _F( NOEUD = 'NO189',       DX = 5.827361206E-5,   ),
+                    _F( NOEUD = 'NO189',       DY = 9.229633435E-6,   ),
+                    _F( NOEUD = 'NO16',        DX = 5.736982528E-5,   ),
+                    _F( NOEUD = 'NO16',        DY = 1.377327642E-5,   ),
+                    _F( NOEUD = 'NO202',       DX = 5.736982528E-5,   ),
+                    _F( NOEUD = 'NO202',       DY = 1.377327642E-5,   ),
+                    _F( NOEUD = 'NO203',       DX = 5.736982528E-5,   ),
+                    _F( NOEUD = 'NO203',       DY = 1.377327642E-5,   ),
+                    _F( NOEUD = 'NO25',        DX = 5.61123335E-5,   ),
+                    _F( NOEUD = 'NO25',        DY = 1.823200265E-5,   ),
+                    _F( NOEUD = 'NO220',       DX = 5.61123335E-5,   ),
+                    _F( NOEUD = 'NO220',       DY = 1.823200265E-5,   ),
+                    _F( NOEUD = 'NO221',       DX = 5.61123335E-5,   ),
+                    _F( NOEUD = 'NO221',       DY = 1.823200265E-5,   ),
+                    _F( NOEUD = 'NO36',        DX = 5.45088905E-5,   ),
+                    _F( NOEUD = 'NO36',        DY = 2.257832249E-5,   ),
+                    _F( NOEUD = 'NO242',       DX = 5.45088905E-5,   ),
+                    _F( NOEUD = 'NO242',       DY = 2.257832249E-5,   ),
+                    _F( NOEUD = 'NO243',       DX = 5.45088905E-5,   ),
+                    _F( NOEUD = 'NO243',       DY = 2.257832249E-5,   ),
+                    _F( NOEUD = 'NO37',        DX = 5.256938492E-5,   ),
+                    _F( NOEUD = 'NO37',        DY = 2.678543944E-5,   ),
+                    _F( NOEUD = 'NO244',       DX = 5.256938492E-5,   ),
+                    _F( NOEUD = 'NO244',       DY = 2.678543944E-5,   ),
+                    _F( NOEUD = 'NO245',       DX = 5.256938492E-5,   ),
+                    _F( NOEUD = 'NO245',       DY = 2.678543944E-5,   ),
+                    _F( NOEUD = 'NO38',        DX = 5.030576968E-5,   ),
+                    _F( NOEUD = 'NO38',        DY = 3.0827441528E-5,   ),
+                    _F( NOEUD = 'NO246',       DX = 5.030576968E-5,   ),
+                    _F( NOEUD = 'NO246',       DY = 3.0827441528E-5,   ),
+                    _F( NOEUD = 'NO247',       DX = 5.030576968E-5,   ),
+                    _F( NOEUD = 'NO247',       DY = 3.0827441528E-5,   ),
+                    _F( NOEUD = 'NO39',        DX = 4.773200265E-5,   ),
+                    _F( NOEUD = 'NO39',        DY = 3.467932987E-5,   ),
+                    _F( NOEUD = 'NO248',       DX = 4.773200265E-5,   ),
+                    _F( NOEUD = 'NO248',       DY = 3.467932987E-5,   ),
+                    _F( NOEUD = 'NO249',       DX = 4.773200265E-5,   ),
+                    _F( NOEUD = 'NO249',       DY = 3.467932987E-5,   ),
+                    _F( NOEUD = 'NO40',        DX = 4.486395194E-5,   ),
+                    _F( NOEUD = 'NO40',        DY = 3.831743483E-5,   ),
+                    _F( NOEUD = 'NO250',       DX = 4.486395194E-5,   ),
+                    _F( NOEUD = 'NO250',       DY = 3.831743483E-5,   ),
+                    _F( NOEUD = 'NO251',       DX = 4.486395194E-5,   ),
+                    _F( NOEUD = 'NO251',       DY = 3.831743483E-5,   ),
+                    _F( NOEUD = 'NO41',        DX = 4.171930E-5,   ),
+                    _F( NOEUD = 'NO252',       DX = 4.171930E-5,   ),
+                    _F( NOEUD = 'NO253',       DX = 4.171930E-5,   )))
+
+DEPLA=MECA_STATIQUE(   MODELE=MO,  
+                           CHAM_MATER=CM, EXCIT=_F(  CHARGE = CH, ) )
+
+F1=DEFI_CONSTANTE(  VALE=1.)
+
+DEPLA=CALC_NO( reuse=DEPLA, CHAM_MATER=CM,  RESULTAT=DEPLA,
+               OPTION='REAC_NODA',  MODELE=MO,
+                     EXCIT=_F(  CHARGE = CH,  FONC_MULT = F1,  ))
+
+#-----------------------------------------------------------------------
+TEST_RESU(RESU=( 
+    _F( RESULTAT = DEPLA,  CRITERE = 'RELATIF',  PRECISION = 0.7E-2, 
+     NUME_ORDRE = 1, 
+      NOEUD = 'NO36',   NOM_CMP = 'DX',  NOM_CHAM = 'REAC_NODA', VALE = 1.0884E-3,  ),
+     _F( RESULTAT = DEPLA,  CRITERE = 'RELATIF',  PRECISION = 1.7E-2, 
+      NUME_ORDRE = 1, 
+      NOEUD = 'NO36',   NOM_CMP = 'DY',  NOM_CHAM = 'REAC_NODA', VALE = 4.5084E-4,  ),
+     _F( RESULTAT = DEPLA,  CRITERE = 'RELATIF',  PRECISION = 1.0E-2, 
+      NUME_ORDRE = 1, 
+      NOEUD = 'NO242',  NOM_CMP = 'DX',  NOM_CHAM = 'REAC_NODA', VALE = 2.1768E-3,  ),
+     _F( RESULTAT = DEPLA,  CRITERE = 'RELATIF',  PRECISION = 1.3E-2, 
+      NUME_ORDRE = 1, 
+      NOEUD = 'NO242',  NOM_CMP = 'DY',  NOM_CHAM = 'REAC_NODA', VALE = 9.017E-4,  ),
+     _F( RESULTAT = DEPLA,  CRITERE = 'RELATIF',  PRECISION = 0.7E-2, 
+      NUME_ORDRE = 1, 
+      NOEUD = 'NO243',  NOM_CMP = 'DX',  NOM_CHAM = 'REAC_NODA', VALE = 1.0884E-3,  ),
+     _F( RESULTAT = DEPLA,  CRITERE = 'RELATIF',  PRECISION = 1.7E-2, 
+      NUME_ORDRE = 1, 
+      NOEUD = 'NO243',  NOM_CMP = 'DY',  NOM_CHAM = 'REAC_NODA', VALE = 4.5084E-4,  ),
+     _F( RESULTAT = DEPLA,  CRITERE = 'RELATIF',  PRECISION = 0.7E-2, 
+      NUME_ORDRE = 1, 
+      NOEUD = 'NO9',    NOM_CMP = 'DX',  NOM_CHAM = 'REAC_NODA', VALE = 1.1636E-3,  ),
+     _F( RESULTAT = DEPLA,  CRITERE = 'RELATIF',  PRECISION = 0.6E-2, 
+      NUME_ORDRE = 1, 
+      NOEUD = 'NO9',    NOM_CMP = 'DY',  NOM_CHAM = 'REAC_NODA', VALE = 1.8429E-4,  ),
+     _F( RESULTAT = DEPLA,  CRITERE = 'RELATIF',  PRECISION = 1.0E-2, 
+      NUME_ORDRE = 1, 
+      NOEUD = 'NO38',   NOM_CMP = 'DX',  NOM_CHAM = 'REAC_NODA', VALE = 1.0045E-3,  ),
+     _F( RESULTAT = DEPLA,  CRITERE = 'RELATIF',  PRECISION = 1.0E-2, 
+      NUME_ORDRE = 1, 
+      NOEUD = 'NO38',   NOM_CMP = 'DY',  NOM_CHAM = 'REAC_NODA', VALE = 6.155E-4,  ),
+     _F( RESULTAT = DEPLA,  CRITERE = 'RELATIF',  PRECISION = 0.5E-2, 
+      NUME_ORDRE = 1, 
+      NOEUD = 'NO188',  NOM_CMP = 'DX',  NOM_CHAM = 'REAC_NODA', VALE = 2.3272E-3,  ),
+     _F( RESULTAT = DEPLA,  CRITERE = 'RELATIF',  PRECISION = 0.6E-2, 
+      NUME_ORDRE = 1, 
+      NOEUD = 'NO188',  NOM_CMP = 'DY',  NOM_CHAM = 'REAC_NODA', VALE = 3.6858E-4,  ),
+     _F( RESULTAT = DEPLA,  CRITERE = 'RELATIF',  PRECISION = 0.7E-2, 
+      NUME_ORDRE = 1, 
+      NOEUD = 'NO246',  NOM_CMP = 'DX',  NOM_CHAM = 'REAC_NODA', VALE = 2.009E-3,  ),
+     _F( RESULTAT = DEPLA,  CRITERE = 'RELATIF',  PRECISION = 0.8E-2, 
+      NUME_ORDRE = 1, 
+      NOEUD = 'NO246',  NOM_CMP = 'DY',  NOM_CHAM = 'REAC_NODA', VALE = 1.231E-3,  )))
+
+FIN( )
+#

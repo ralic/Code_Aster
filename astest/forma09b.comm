@@ -1,0 +1,376 @@
+
+# MODIF  DATE 12/11/2002   AUTEUR JMBHH01 J.M.PROIX 
+# RESPONSABLE JMBHH01 J.M.PROIX
+# TITRE TP THERMOPLASTICITE : TUBE SOUMIS A UN CHOC FROID
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+#
+#
+
+
+DEBUT(CODE=_F(NOM='FORMA09B',NIV_PUB_WEB='INTERNET'),);
+#......................................................................
+#
+# MODELISATION 2D_AXIS:   
+#......................................................................
+#
+#        INTERNE       HAUT            EXTERNE
+#               D -----+----- C
+# !               !    J    !
+#                 !         !
+# !               !         !  
+#                 !         !        10 MM
+# !               !         !
+#                 !         !
+# !               !    F    !
+#     19.5 MM   P1 -----+-----  P2                          
+# !-------------->   1.0 MM
+#                 <--------->
+#======================================================================
+#
+#
+#
+#
+#
+#
+
+
+PRE_GIBI();
+
+MA=LIRE_MAILLAGE();
+
+MA=DEFI_GROUP(reuse =MA,
+              MAILLAGE=MA,
+              CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI',),);
+
+MO=AFFE_MODELE(MAILLAGE=MA,
+               AFFE=_F(TOUT='OUI',
+                       PHENOMENE='MECANIQUE',
+                       MODELISATION='AXIS',),);
+
+MATHER=DEFI_MATERIAU(THER=_F(LAMBDA=1.0,
+                             RHO_CP=1000.0,),);
+
+CHMATHE=AFFE_MATERIAU(MAILLAGE=MA,
+                      AFFE=_F(TOUT='OUI',
+                              MATER=MATHER,),);
+#  ECHANGE EN PAROI INTERNE CHOC THERMIQUE FROID
+#
+#
+#
+
+
+HPAROI=DEFI_CONSTANTE(VALE=100.0,);
+
+T_EXT=DEFI_FONCTION(NOM_PARA='INST',
+                    VALE=(0.0,100.0,0.01,0.0,10.0,0.0,100.0,0.0,),
+                    PROL_DROITE='CONSTANT',
+                    PROL_GAUCHE='CONSTANT',);
+
+LISTTH=DEFI_LIST_REEL(DEBUT=0.0,
+                      INTERVALLE=(_F(JUSQU_A=1.E-2,
+                                     NOMBRE=10,),
+                                  _F(JUSQU_A=0.10000000000000001,
+                                     NOMBRE=9,),
+                                  _F(JUSQU_A=1.0,
+                                     NOMBRE=9,),
+                                  _F(JUSQU_A=2.0,
+                                     NOMBRE=5,),
+                                  _F(JUSQU_A=10.0,
+                                     NOMBRE=8,),
+                                  _F(JUSQU_A=100.0,
+                                     NOMBRE=5,),),);
+# ------------------------------------------------------------------
+# PREMIER CALCUL SANS DIAG
+# ON NE VERIFE PAS LE PRINCIPE DU MAXIMUM
+#
+#
+#
+
+
+MOTHER=AFFE_MODELE(MAILLAGE=MA,
+                   AFFE=_F(TOUT='OUI',
+                           PHENOMENE='THERMIQUE',
+                           MODELISATION='AXIS',),);
+
+CHAR_TH=AFFE_CHAR_THER_F(MODELE=MOTHER,
+                         ECHANGE=_F(GROUP_MA='ECHANGE',
+                                    COEF_H=HPAROI,
+                                    TEMP_EXT=T_EXT,),);
+
+TEMPE=THER_LINEAIRE(MODELE=MOTHER,
+                    CHAM_MATER=CHMATHE,
+                    EXCIT=_F(CHARGE=CHAR_TH,),
+                    INCREMENT=_F(LIST_INST=LISTTH,),
+                    TEMP_INIT=_F(VALE=100.0,),);
+
+IMPR_RESU(RESU=_F(RESULTAT=TEMPE,
+                  INST=(0.0,0.10000000000000001,4.0,10.0,100.0,),
+                  VALE_MAX='OUI',
+                  VALE_MIN='OUI',),);
+# 
+# DEUXIEME CALCUL AVEC AXIS_DIAG
+# ON VERIFE LE PRINCIPE DU MAXIMUM
+#
+#
+#
+
+
+MOTHER2=AFFE_MODELE(MAILLAGE=MA,
+                    AFFE=_F(TOUT='OUI',
+                            PHENOMENE='THERMIQUE',
+                            MODELISATION='AXIS_DIAG',),);
+
+CHAR_TH2=AFFE_CHAR_THER_F(MODELE=MOTHER2,
+                          ECHANGE=_F(GROUP_MA='ECHANGE',
+                                     COEF_H=HPAROI,
+                                     TEMP_EXT=T_EXT,),);
+
+TEMPE2=THER_LINEAIRE(MODELE=MOTHER2,
+                     CHAM_MATER=CHMATHE,
+                     EXCIT=_F(CHARGE=CHAR_TH2,),
+                     INCREMENT=_F(LIST_INST=LISTTH,),
+                     TEMP_INIT=_F(VALE=100.0,),);
+
+IMPR_RESU(RESU=_F(RESULTAT=TEMPE2,
+                  INST=(0.0,0.10000000000000001,4.0,10.0,100.0,),
+                  VALE_MAX='OUI',
+                  VALE_MIN='OUI',),);
+# ------------------------------------------------------------------
+# TROISIEME CALCUL AVEC DIAG MAIS THETA = 0
+# DIVERGENCE DU CALCUL
+#
+#
+
+
+TEMPE3=THER_LINEAIRE(MODELE=MOTHER2,
+                     CHAM_MATER=CHMATHE,
+                     EXCIT=_F(CHARGE=CHAR_TH2,),
+                     INCREMENT=_F(LIST_INST=LISTTH,),
+                     TEMP_INIT=_F(VALE=100.0,),
+                     PARM_THETA=0.0,);
+
+IMPR_RESU(RESU=_F(RESULTAT=TEMPE3,
+                  INST=(0.0,0.10000000000000001,4.0,10.0,100.0,),
+                  VALE_MAX='OUI',
+                  VALE_MIN='OUI',),);
+
+TP1R3=RECU_FONCTION(RESULTAT=TEMPE3,
+                    NOM_CHAM='TEMP',
+                    NOM_CMP='TEMP',
+                    GROUP_NO='P1',
+                    TITRE='T=f(t) POINT P1 BAS GAUCHE THETA=0',);
+
+TN8R1=RECU_FONCTION(RESULTAT=TEMPE,
+                    NOM_CHAM='TEMP',
+                    NOM_CMP='TEMP',
+                    NOEUD='N8',
+                    TITRE='T=f(t) NOEUD N8 MILIEU BAS AXIS NON DIAG',);
+
+TN8R2=RECU_FONCTION(RESULTAT=TEMPE2,
+                    NOM_CHAM='TEMP',
+                    NOM_CMP='TEMP',
+                    NOEUD='N8',
+                    TITRE='T=f(t) NOEUD N8 MILIEU BAS AXIS_DIAG',);
+
+IMPR_COURBE(FICHIER='AGRAF',
+            FORMAT='AGRAF',
+            COURBE=(_F(FONCTION=TN8R1,),
+                    _F(FONCTION=TN8R2,),
+                    _F(FONCTION=TP1R3,),),);
+
+IMPR_COURBE(FICHIER='POSTSCRIPT',
+            FORMAT='POSTSCRIPT',
+            COURBE=(_F(FONCTION=TN8R1,),
+                    _F(FONCTION=TN8R2,),
+                    _F(FONCTION=TP1R3,),),);
+
+IMPR_RESU(MODELE=MOTHER,
+          RESU=_F(FORMAT='CASTEM',
+                  MAILLAGE=MA,
+                  RESULTAT=TEMPE,
+                  INST=(0.10000000000000001,4.0,10.0,),),);
+
+LBAS=INTE_MAIL_2D(MAILLAGE=MA,
+                  DEFI_CHEMIN=_F(GROUP_MA='BAS',),);
+
+T1LBAS=POST_RELEVE_T(ACTION=_F(INTITULE='TEMP',
+                               CHEMIN=LBAS,
+                               RESULTAT=TEMPE,
+                               NOM_CHAM='TEMP',
+                               INST=4.0,
+                               TOUT_CMP='OUI',
+                               OPERATION='EXTRACTION',),
+                     TITRE='TEMPERATURES EN BAS A 4 S NON DIAG',);
+
+T2LBAS=POST_RELEVE_T(ACTION=_F(INTITULE='TEMP',
+                               CHEMIN=LBAS,
+                               RESULTAT=TEMPE2,
+                               NOM_CHAM='TEMP',
+                               INST=4.0,
+                               TOUT_CMP='OUI',
+                               OPERATION='EXTRACTION',),
+                     TITRE='TEMPERATURES EN BAS A 4 S DIAG',);
+
+IMPR_COURBE(FICHIER='AGRAF',
+            FORMAT='AGRAF',
+            COURBE=(_F(TABLE=T1LBAS,
+                       PARA_X='ABSC_CURV',
+                       PARA_Y='TEMP',),
+                    _F(TABLE=T2LBAS,
+                       PARA_X='ABSC_CURV',
+                       PARA_Y='TEMP',),),);
+#
+IMPR_COURBE(FICHIER='POSTSCRIPT',
+            FORMAT='POSTSCRIPT',
+            COURBE=(_F(TABLE=T1LBAS,
+                       PARA_X='ABSC_CURV',
+                       PARA_Y='TEMP',),
+                    _F(TABLE=T2LBAS,
+                       PARA_X='ABSC_CURV',
+                       PARA_Y='TEMP',),),);
+#
+# PREMIER CALCUL MECANIQUE : LE HAUT EST LIBRE
+# MAIS LES CONTRAINTES NE SONT PAS NULLES
+# CAR LE CHAMP DE DILATATION EST NON COMPATIBLE
+#
+#
+
+
+MAT=DEFI_MATERIAU(ELAS=_F(E=2.E5,
+                          NU=0.29999999999999999,
+                          RHO=7.9999999999999996E-06,
+                          ALPHA=1.0000000000000001E-05,),);
+
+CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
+                    AFFE=_F(TOUT='OUI',
+                            MATER=MAT,
+                            TEMP_REF=0.0,),);
+
+CHDIL=AFFE_CHAR_MECA(MODELE=MO,
+                     TEMP_CALCULEE=TEMPE2,
+                     DDL_IMPO=_F(GROUP_MA='BAS',
+                                 DY=0.0,),);
+
+INSTMECA=DEFI_LIST_REEL(VALE=(0.0,11.0,),);
+
+DEPLDIL=MECA_STATIQUE(MODELE=MO,
+                      CHAM_MATER=CHMAT,
+                      EXCIT=_F(CHARGE=CHDIL,),
+                      LIST_INST=INSTMECA,
+                      OPTION='EPSI_ELGA_DEPL',);
+
+IMPR_RESU(RESU=_F(RESULTAT=DEPLDIL,
+                  VALE_MAX='OUI',
+                  VALE_MIN='OUI',),);
+#
+# DEUXIEME CALCUL MECANIQUE : LE HAUT EST BLOQUE AXIALEMENT
+# EN PLUS DES CONTRAINTES DE NON COMPATIBILITE S'AJOUTENT
+# LES CONTRAINTES DE BRIDAGE, QUI VALENT SIYY = -200 MPA A T=0
+#
+#
+
+
+BRIDAGE=AFFE_CHAR_MECA(MODELE=MO,
+                       TEMP_CALCULEE=TEMPE2,
+                       DDL_IMPO=(_F(GROUP_MA='BAS',
+                                    DY=0.0,),
+                                 _F(GROUP_MA='HAUT',
+                                    DY=0.0,),),);
+
+DEPLBRID=MECA_STATIQUE(MODELE=MO,
+                       CHAM_MATER=CHMAT,
+                       EXCIT=_F(CHARGE=BRIDAGE,),
+                       LIST_INST=INSTMECA,);
+
+IMPR_RESU(RESU=_F(RESULTAT=DEPLBRID,
+                  VALE_MAX='OUI',
+                  VALE_MIN='OUI',),);
+# TROISIEME CALCUL MECANIQUE : LE HAUT EST BLOQUE AXIALEMENT
+# MAIS AVEC STAT_NON_LINE EN INCREMENTAL
+# LES CONTRAINTES DE BRIDAGE, ON NE RETROUVE COMME MECA_STATIQUE
+# CAR L'INSTANT T=0 (INSTANT INITAL NON CALCULE) ON SUPPOSE
+# QU'IL N'Y A PAS DE CONTRAINTE. 
+# AU PREMIER INSTANT CALCULE, T=11, ON NE CALCULE QUE LES CONTRAINTES
+# DUES A L'INCREMENT DE DILATATION ENTRE T=0 ET T=11
+#
+#
+
+
+SNLBRID=STAT_NON_LINE(MODELE=MO,
+                      CHAM_MATER=CHMAT,
+                      EXCIT=_F(CHARGE=BRIDAGE,),
+                      COMP_INCR=_F(RELATION='ELAS',),
+                      INCREMENT=_F(LIST_INST=INSTMECA,),);
+
+IMPR_RESU(RESU=_F(RESULTAT=SNLBRID,
+                  VALE_MAX='OUI',
+                  VALE_MIN='OUI',),);
+# QUATRIEME CALCUL MECANIQUE : LE HAUT EST BLOQUE AXIALEMENT
+# TOUJOURS AVEC STAT_NON_LINE EN INCREMENTAL
+# POUR PRENDRE EN COMPTE LA DILATATION A T=0, ON DEFINIT TOUTE
+# L'HISTOIRE, C'EST A DIRE UN CHAMP T=TREF=0, POUR UN INSTANT INITIAL T=-1
+# ALORS L'INSTANT T=0 EST CALCULE, ET ON PREND EN COMPTE L'INCREMENT 
+# DE DILATATION ENTRE T=-1 ET T=0
+# ON RETROUVE ALORS COMME MECA_STATIQUE, A T=0 ET A T=11
+#
+#
+
+
+CHTEMP0=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
+                   OPERATION='AFFE',
+                   MODELE=MOTHER2,
+                   AFFE=_F(TOUT='OUI',
+                           NOM_CMP='TEMP',
+                           VALE=0.0,),);
+
+TEMPE2=CREA_RESU(reuse =TEMPE2,
+                 OPERATION='AFFE',
+                 TYPE_RESU='EVOL_THER',
+                 NOM_CHAM='TEMP',
+                 AFFE=_F(CHAM_GD=CHTEMP0,
+                         INST=-1.0,),);
+
+BRIDAG2=AFFE_CHAR_MECA(MODELE=MO,
+                       TEMP_CALCULEE=TEMPE2,
+                       DDL_IMPO=(_F(GROUP_MA='BAS',
+                                    DY=0.0,),
+                                 _F(GROUP_MA='HAUT',
+                                    DY=0.0,),),);
+
+INSTMEC2=DEFI_LIST_REEL(VALE=(-1.0,0.0,11.0,),);
+
+SNLBRID2=STAT_NON_LINE(MODELE=MO,
+                       CHAM_MATER=CHMAT,
+                       EXCIT=_F(CHARGE=BRIDAG2,),
+                       COMP_INCR=_F(RELATION='ELAS',),
+                       INCREMENT=_F(LIST_INST=INSTMEC2,),);
+
+IMPR_RESU(RESU=_F(RESULTAT=SNLBRID2,
+                  VALE_MAX='OUI',
+                  VALE_MIN='OUI',),);
+
+TEST_RESU(RESU=_F(RESULTAT=TEMPE2,
+                  INST=4.0,
+                  NOM_CHAM='TEMP',
+                  NOM_CMP='TEMP',
+                  TYPE_TEST='MAX',REFERENCE='NON_REGRESSION',VERSION='6.3.24',
+                  VALE=100,),);
+
+
+FIN();

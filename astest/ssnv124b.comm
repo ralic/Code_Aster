@@ -1,0 +1,148 @@
+# MODIF  DATE 07/06/2002   AUTEUR DURAND C.DURAND 
+# TITRE CALCUL DE CHARGE LIMITE EN 3D - METHODE DE NORTON-HOFF
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+#
+
+DEBUT(   CODE=_F(  NOM = 'SSNV124B',NIV_PUB_WEB='INTERNET') )
+
+MA=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='NON'),   )
+
+MA = DEFI_GROUP( reuse = MA,
+  MAILLAGE = MA,
+  CREA_GROUP_NO = _F(
+    NOM        = 'SOMMETS',
+    GROUP_MA   = 'S',
+    CRIT_NOEUD = 'SOMMET'
+    )
+  )
+
+MO=AFFE_MODELE(   MAILLAGE=MA,
+                         AFFE=_F(  TOUT = 'OUI',
+                                PHENOMENE = 'MECANIQUE',
+                                MODELISATION = '3D_INCO')
+                  )
+
+CM=DEFI_MATERIAU(
+  ECRO_LINE=_F(SY=10, D_SIGM_EPSI = 0)
+  )
+
+CHMAT=AFFE_MATERIAU(     MAILLAGE=MA,
+                                AFFE=_F(  TOUT = 'OUI',
+                                       MATER = CM)
+                         )
+
+L_INST=DEFI_LIST_REEL(         DEBUT=0.0,
+                            INTERVALLE=_F( JUSQU_A = 1.69897,   NOMBRE = 1)
+                         )
+
+#------------ CONDITIONS LIMITES -------------------------------------
+
+CH_CL=AFFE_CHAR_MECA(      MODELE=MO,DDL_IMPO=(
+                          
+                               _F(  GROUP_NO = 'FACEXINF', DX = 0.),
+                               _F(  GROUP_NO = 'FACEYINF',     DY = 0.),
+                               _F(  GROUP_NO = 'FACEZINF',         DZ = 0.))
+                        )
+
+INCOMP = AFFE_CHAR_MECA(
+  MODELE   = MO,
+  DDL_IMPO = _F(GROUP_NO='SOMMETS', GONF=0)
+  )
+  
+
+
+# ----------- CHARGEMENT A PILOTER ------------------------------------
+
+CH1=AFFE_CHAR_MECA(    MODELE=MO,FORCE_FACE=(
+#
+                           _F(  GROUP_MA = 'FXSUP',
+                                        FX = -0.2),
+#
+                           _F(  GROUP_MA = 'FYSUP',
+                                        FY = -0.8E0))
+                        )
+
+
+
+RESU=STAT_NON_LINE( 
+  MODELE=MO,
+  CHAM_MATER=CHMAT,
+  EXCIT=(
+    _F(CHARGE = CH_CL),
+    _F(CHARGE = INCOMP),
+    _F(CHARGE = CH1,TYPE_CHARGE='FIXE_PILO')
+    ),
+  COMP_INCR=_F(RELATION = 'NORTON_HOFF'),
+  INCREMENT=_F(LIST_INST = L_INST),
+  NEWTON=_F( 
+    MATRICE = 'TANGENTE',
+    REAC_ITER = 1
+    ),
+  PILOTAGE=_F(TYPE='ANA_LIM'),
+  CONVERGENCE=_F( 
+    RESI_GLOB_MAXI = 1.E-5,
+    ITER_GLOB_MAXI = 15
+    ),
+  SOLVEUR=_F( 
+    METHODE = 'MULT_FRONT',
+    RENUM = 'MDA'
+    )
+  )
+
+ECHL = POST_ELEM(
+  MODELE=MO,
+  CHAM_MATER=CHMAT,
+  RESULTAT = RESU,
+  CHAR_LIMITE=_F()
+  )
+
+
+RESU=CALC_ELEM(reuse=RESU,       MODELE=MO,
+                      CHAM_MATER=CHMAT,
+                         RESULTAT=RESU,
+                        OPTION='EPSI_ELNO_DEPL'
+                   )
+
+
+#--------------------------------------------------------------
+#      TEST DE LA CHARGE LIMITE
+#--------------------------------------------------------------
+
+TEST_TABLE(      TABLE=ECHL,
+               NOM_PARA='CHAR_LIMI_SUP',
+              PRECISION=1.E-06,
+                   VALE=13.867505   )
+
+TEST_TABLE(      TABLE=ECHL,
+               NOM_PARA='CHAR_LIMI_ESTIM',
+              PRECISION=1.E-06,
+                   VALE=11.556254  )
+
+#--------------------------------------------------------------
+#      TEST DES DEFORMATIONS
+#--------------------------------------------------------------
+
+TEST_RESU(RESU=(
+
+ _F(   CRITERE = 'RELATIF',    PRECISION = 1.E-4,
+         RESULTAT = RESU, NOM_CHAM = 'EPSI_ELNO_DEPL',  NUME_ORDRE = 1,
+         NOEUD = 'N1', MAILLE = 'MA1', NOM_CMP = 'EPXX', VALE = 0.04807692)
+  ))
+
+FIN()

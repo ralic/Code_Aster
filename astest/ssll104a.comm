@@ -1,0 +1,303 @@
+# MODIF  DATE 07/06/2002   AUTEUR DURAND C.DURAND 
+# TITRE POUTRE DE SECTION RECTANGULAIRE  (ENCASTREE-LIBRE)
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+# RESPONSABLE JMBHH01 J.M.PROIX
+#CAS_TEST__: SSLL104A
+# POUTRE ELANCEE DE SECTION RECTANGULAIRE  (ENCASTREE-LIBRE)
+# SOUMISE A UN CHAMP DE DEFORMATIONS INITIALES
+# MODELISATION POU_D_E : 10 MAILLES SEG2
+# MODELISATION POU_D_T : 10 MAILLES SEG2
+# MODELISATION POU_D_TG: 10 MAILLES SEG2
+# POINTS   A=N1     B=N11
+# TOUTES LES CARACTERISTIQUES DE LA POUTRE SONT PRISES EGALES A 1
+# LA LONGUEUR DE LA POUTRE EST EGALE A 100
+#----------------------------------------------------------------------
+
+
+DEBUT(CODE=_F(  NOM = 'SSLL104A',NIV_PUB_WEB='INTERNET') )
+
+MA=LIRE_MAILLAGE( )
+
+MA=DEFI_GROUP( reuse=MA,   MAILLAGE=MA,
+  CREA_GROUP_MA=_F(  NOM = 'TOUT', TOUT = 'OUI'))
+
+MO1=AFFE_MODELE(  MAILLAGE=MA,
+                  AFFE=_F(  TOUT = 'OUI',    PHENOMENE = 'MECANIQUE',
+                         MODELISATION = 'POU_D_E') )
+
+MO2=AFFE_MODELE(  MAILLAGE=MA,
+                  AFFE=_F(  TOUT = 'OUI',    PHENOMENE = 'MECANIQUE',
+                         MODELISATION = 'POU_D_T') )
+
+MO3=AFFE_MODELE(  MAILLAGE=MA,
+                  AFFE=_F(  TOUT = 'OUI',    PHENOMENE = 'MECANIQUE',
+                         MODELISATION = 'POU_D_TG') )
+
+MAT=DEFI_MATERIAU( ELAS=_F(  E = 1., NU = 0.))
+
+CHMAT=AFFE_MATERIAU(  MAILLAGE=MA,
+                       AFFE=_F(  TOUT = 'OUI',  MATER = MAT) )
+
+# --------- PB PLAN + NOEUDS 'A ET B' ENCASTRES
+#
+CH1=AFFE_CHAR_MECA(  MODELE=MO1,
+          DDL_IMPO=_F( 
+                    NOEUD = ( 'N1',),  DX = 0.,  DY = 0.,  DZ = 0., 
+                                DRX = 0., DRY = 0., DRZ = 0.),
+           EPSI_INIT=_F( TOUT = 'OUI',  EPX = 1.E-3,  
+                                   KY = 2.E-3, KZ = 3.E-3)
+                    )
+
+CH2=AFFE_CHAR_MECA(  MODELE=MO2,
+          DDL_IMPO=_F( 
+                   NOEUD = ( 'N1',),  DX = 0.,  DY = 0.,  DZ = 0., 
+                               DRX = 0., DRY = 0., DRZ = 0.),
+           EPSI_INIT=_F( TOUT = 'OUI',  EPX = 1.E-3,  
+                                    KY = 2.E-3, KZ = 3.E-3)
+                    )
+
+CH3=AFFE_CHAR_MECA(  MODELE=MO3,
+          DDL_IMPO=_F( 
+                   NOEUD = ( 'N1',),  DX = 0.,  DY = 0.,  DZ = 0., 
+                               DRX = 0., DRY = 0., DRZ = 0.),
+           EPSI_INIT=_F( TOUT = 'OUI',  EPX = 1.E-3,  
+                                    KY = 2.E-3, KZ = 3.E-3)
+                    )
+
+#  -----------------------------------------------------------------
+#  DEFINITION DES SECTIONS
+#  -----------------------------------------------------------------
+
+
+CELEM1=AFFE_CARA_ELEM(   MODELE=MO1,
+                         VERIF=( 'MAILLE',  'NOEUD',  ),POUTRE=(
+#
+#
+               _F(  SECTION = 'GENERALE',
+
+                # CISAILLEMENT COMMUN
+        CARA = ( 'AY1',  'AZ1',  'AY2',  'AZ2', ),   
+       GROUP_MA = 'TOUT',
+ 
+        VALE = (  1.,    1.,    1.,    1.,  )),
+
+                # ENTREES OBLIGATOIRES MAIS FICTIVES POUR CE CALCUL
+   _F(     CARA = ( 'IY1',  'JX1',  'IY2',  'JX2', ),   GROUP_MA = 'TOUT',
+        SECTION = 'GENERALE',
+        VALE = (  1.,     1.,     1.,     1.,   )),
+
+                #    AIRE       ET     INERTIE/Z
+   _F(     CARA = (    'A1',             'IZ1',       
+                     'A2',             'IZ2',     ),  GROUP_MA = 'TOUT',
+        SECTION = 'GENERALE',
+        VALE = (  1.,     1.,     1.,     1.,   )))
+                                                        )
+
+CELEM2=AFFE_CARA_ELEM(   MODELE=MO2,
+                         VERIF=( 'MAILLE',  'NOEUD',   ),POUTRE=(
+#
+#
+               _F(  SECTION = 'GENERALE',
+
+                # CISAILLEMENT COMMUN
+        CARA = ( 'AY1',  'AZ1',  'AY2',  'AZ2', ),   GROUP_MA = 'TOUT',
+        VALE = (  1.,    1.,    1.,    1.,  )),
+                # ENTREES OBLIGATOIRES MAIS FICTIVES POUR CE CALCUL
+   _F(     CARA = ( 'IY1',  'JX1',  'IY2',  'JX2', ),   GROUP_MA = 'TOUT',
+        SECTION = 'GENERALE',
+        VALE = (  1.,     1.,     1.,     1.,   )),
+
+                #    AIRE       ET     INERTIE/Z
+   _F(     CARA = (    'A1',             'IZ1',       
+                     'A2',             'IZ2',     ),  GROUP_MA = 'TOUT',
+        SECTION = 'GENERALE',
+        VALE = (  1.,     1.,     1.,     1.,   )))
+                                                        )
+
+CELEM3=AFFE_CARA_ELEM(   MODELE=MO3,
+                         VERIF=( 'MAILLE',  'NOEUD',  ),POUTRE=(
+#
+#
+               _F(  SECTION = 'GENERALE',
+
+                # CISAILLEMENT COMMUN
+        CARA = ( 'AY1',  'AZ1',  'AY2',  'AZ2', ),   GROUP_MA = 'TOUT',
+        VALE = (  1.,    1.,    1.,    1.,  )),
+                # ENTREES OBLIGATOIRES MAIS FICTIVES POUR CE CALCUL
+   _F(     CARA = ( 'IY1',  'JX1',  'IY2',  'JX2', ),   GROUP_MA = 'TOUT',
+        SECTION = 'GENERALE',
+        VALE = (  1.,     1.,     1.,     1.,   )),
+
+                #    AIRE       ET     INERTIE/Z
+   _F(     CARA = (    'A1',             'IZ1',       
+                     'A2',             'IZ2',     ),  GROUP_MA = 'TOUT',
+        SECTION = 'GENERALE',
+        VALE = (  1.,     1.,     1.,     1.,   )))
+                                                        )
+
+# ------------------------------------------------------------------
+
+MELR1=CALC_MATR_ELEM(  MODELE=MO1,            CHARGE=CH1,
+                       CARA_ELEM=CELEM1,   
+                       CHAM_MATER=CHMAT,    OPTION='RIGI_MECA' )
+
+MELR2=CALC_MATR_ELEM(  MODELE=MO2,            CHARGE=CH2,
+                       CARA_ELEM=CELEM2,   
+                       CHAM_MATER=CHMAT,    OPTION='RIGI_MECA' )
+
+MELR3=CALC_MATR_ELEM(  MODELE=MO3,            CHARGE=CH3,
+                       CARA_ELEM=CELEM3,   
+                       CHAM_MATER=CHMAT,    OPTION='RIGI_MECA' )
+
+NUM1=NUME_DDL(  MATR_RIGI=MELR1  )
+
+NUM2=NUME_DDL(  MATR_RIGI=MELR2  )
+
+NUM3=NUME_DDL(  MATR_RIGI=MELR3  )
+
+MATASS1=ASSE_MATRICE(MATR_ELEM=MELR1,NUME_DDL=NUM1)
+
+MATASS2=ASSE_MATRICE(MATR_ELEM=MELR2,NUME_DDL=NUM2)
+
+MATASS3=ASSE_MATRICE(MATR_ELEM=MELR3,NUME_DDL=NUM3)
+
+VEL1=CALC_VECT_ELEM(    CHARGE=CH1,
+                              OPTION='CHAR_MECA',
+                             CHAM_MATER=CHMAT,
+                             CARA_ELEM=CELEM1 )
+
+VEL2=CALC_VECT_ELEM(    CHARGE=CH2,
+                              OPTION='CHAR_MECA',
+                             CHAM_MATER=CHMAT,
+                             CARA_ELEM=CELEM2 )
+
+VEL3=CALC_VECT_ELEM(    CHARGE=CH3,
+                              OPTION='CHAR_MECA',
+                             CHAM_MATER=CHMAT,
+                             CARA_ELEM=CELEM3 )
+
+VECASS1=ASSE_VECTEUR(    VECT_ELEM=VEL1,
+                              NUME_DDL=NUM1   )
+
+VECASS2=ASSE_VECTEUR(    VECT_ELEM=VEL2,
+                              NUME_DDL=NUM2   )
+
+VECASS3=ASSE_VECTEUR(    VECT_ELEM=VEL3,
+                              NUME_DDL=NUM3   )
+
+MATASS1=FACT_LDLT( reuse=MATASS1,   MATR_ASSE=MATASS1 )
+
+MATASS2=FACT_LDLT( reuse=MATASS2,   MATR_ASSE=MATASS2 )
+
+MATASS3=FACT_LDLT( reuse=MATASS3,   MATR_ASSE=MATASS3 )
+
+VECASS1=RESO_LDLT( reuse=VECASS1,   MATR_FACT=MATASS1,
+                            CHAM_NO=VECASS1  )
+
+VECASS2=RESO_LDLT( reuse=VECASS2,   MATR_FACT=MATASS2,
+                            CHAM_NO=VECASS2  )
+
+VECASS3=RESO_LDLT( reuse=VECASS3,   MATR_FACT=MATASS3,
+                            CHAM_NO=VECASS3  )
+
+TEST_RESU(CHAM_NO=(  
+     # DEPLACEMENTS
+         _F(  CHAM_GD = VECASS1, CRITERE = 'RELATIF',   PRECISION = 1.E-9,
+           NOEUD = 'N11',       NOM_CMP = 'DX',    VALE = -6.4663837862E+00),
+         _F(  CHAM_GD = VECASS1, CRITERE = 'RELATIF',   PRECISION = 1.E-9,
+           NOEUD = 'N11',       NOM_CMP = 'DY',    VALE = 1.4746819649E+01),
+         _F(  CHAM_GD = VECASS1, CRITERE = 'RELATIF',   PRECISION = 1.E-9,
+           NOEUD = 'N11',       NOM_CMP = 'DZ',    VALE = -8.1072307824E+00),
+         _F(  CHAM_GD = VECASS1, CRITERE = 'RELATIF',   PRECISION = 1.E-9,
+           NOEUD = 'N11',       NOM_CMP = 'DRX',   VALE = -2.6389584338E-01),
+         _F(  CHAM_GD = VECASS1, CRITERE = 'RELATIF',   PRECISION = 5.E-9,
+           NOEUD = 'N11',       NOM_CMP = 'DRY',   VALE = 1.8946869098E-02),
+         _F(  CHAM_GD = VECASS1, CRITERE = 'RELATIF',   PRECISION = 1.E-9,
+           NOEUD = 'N11',       NOM_CMP = 'DRZ',   VALE = 2.4494897428E-01),
+
+         _F(  CHAM_GD = VECASS1, CRITERE = 'RELATIF',   PRECISION = 1.E-9,
+           NOEUD = 'N6',       NOM_CMP = 'DX',     VALE = -1.6021621898E+00),
+         _F(  CHAM_GD = VECASS1, CRITERE = 'RELATIF',   PRECISION = 1.E-9,
+           NOEUD = 'N6',       NOM_CMP = 'DY',     VALE = 3.7011386691E+00),
+         _F(  CHAM_GD = VECASS1, CRITERE = 'RELATIF',   PRECISION = 1.E-9,
+           NOEUD = 'N6',       NOM_CMP = 'DZ',     VALE = -2.0123739389E+00),
+         _F(  CHAM_GD = VECASS1, CRITERE = 'RELATIF',    PRECISION = 1.E-9,
+           NOEUD = 'N6',       NOM_CMP = 'DRX',    VALE = -1.3194792169E-01),
+         _F(  CHAM_GD = VECASS1, CRITERE = 'RELATIF',   PRECISION = 5.E-9,
+           NOEUD = 'N6',       NOM_CMP = 'DRY',    VALE = 9.4734345491E-03),
+         _F(  CHAM_GD = VECASS1, CRITERE = 'RELATIF',   PRECISION = 1.E-9,
+           NOEUD = 'N6',       NOM_CMP = 'DRZ',    VALE = 1.2247448714E-01),
+
+         _F(  CHAM_GD = VECASS2, CRITERE = 'RELATIF',   PRECISION = 1.E-9,
+           NOEUD = 'N11',       NOM_CMP = 'DX',    VALE = -6.4663837862E+00),
+         _F(  CHAM_GD = VECASS2, CRITERE = 'RELATIF',   PRECISION = 1.E-9,
+           NOEUD = 'N11',       NOM_CMP = 'DY',    VALE = 1.4746819649E+01),
+         _F(  CHAM_GD = VECASS2, CRITERE = 'RELATIF',   PRECISION = 1.E-9,
+           NOEUD = 'N11',       NOM_CMP = 'DZ',    VALE = -8.1072307824E+00),
+         _F(  CHAM_GD = VECASS2, CRITERE = 'RELATIF',    PRECISION = 1.E-9,
+           NOEUD = 'N11',       NOM_CMP = 'DRX',   VALE = -2.6389584338E-01),
+         _F(  CHAM_GD = VECASS2, CRITERE = 'RELATIF',   PRECISION = 5.E-9,
+           NOEUD = 'N11',       NOM_CMP = 'DRY',   VALE = 1.8946869098E-02),
+         _F(  CHAM_GD = VECASS2, CRITERE = 'RELATIF',   PRECISION = 1.E-9,
+           NOEUD = 'N11',       NOM_CMP = 'DRZ',   VALE = 2.4494897428E-01),
+
+         _F(  CHAM_GD = VECASS2, CRITERE = 'RELATIF',   PRECISION = 1.E-9,
+           NOEUD = 'N6',       NOM_CMP = 'DX',     VALE = -1.6021621898E+00),
+         _F(  CHAM_GD = VECASS2, CRITERE = 'RELATIF',   PRECISION = 1.E-9,
+           NOEUD = 'N6',       NOM_CMP = 'DY',     VALE = 3.7011386691E+00),
+         _F(  CHAM_GD = VECASS2, CRITERE = 'RELATIF',   PRECISION = 1.E-9,
+           NOEUD = 'N6',       NOM_CMP = 'DZ',     VALE = -2.0123739389E+00),
+         _F(  CHAM_GD = VECASS2, CRITERE = 'RELATIF',   PRECISION = 1.E-9,
+           NOEUD = 'N6',       NOM_CMP = 'DRX',    VALE = -1.3194792169E-01),
+         _F(  CHAM_GD = VECASS2, CRITERE = 'RELATIF',   PRECISION = 5.E-9,
+           NOEUD = 'N6',       NOM_CMP = 'DRY',    VALE = 9.4734345491E-03),
+         _F(  CHAM_GD = VECASS2, CRITERE = 'RELATIF',   PRECISION = 1.E-9,
+           NOEUD = 'N6',       NOM_CMP = 'DRZ',    VALE = 1.2247448714E-01),
+
+         _F(  CHAM_GD = VECASS3, CRITERE = 'RELATIF',   PRECISION = 1.E-9,
+           NOEUD = 'N11',       NOM_CMP = 'DX',    VALE = -6.4663837862E+00),
+         _F(  CHAM_GD = VECASS3, CRITERE = 'RELATIF',   PRECISION = 1.E-9,
+           NOEUD = 'N11',       NOM_CMP = 'DY',    VALE = 1.4746819649E+01),
+         _F(  CHAM_GD = VECASS3, CRITERE = 'RELATIF',   PRECISION = 1.E-9,
+           NOEUD = 'N11',       NOM_CMP = 'DZ',    VALE = -8.1072307824E+00),
+         _F(  CHAM_GD = VECASS3, CRITERE = 'RELATIF',   PRECISION = 1.E-9,
+           NOEUD = 'N11',       NOM_CMP = 'DRX',   VALE = -2.6389584338E-01),
+         _F(  CHAM_GD = VECASS3, CRITERE = 'RELATIF',   PRECISION = 5.E-9,
+           NOEUD = 'N11',       NOM_CMP = 'DRY',   VALE = 1.8946869098E-02),
+         _F(  CHAM_GD = VECASS3, CRITERE = 'RELATIF',   PRECISION = 1.E-9,
+           NOEUD = 'N11',       NOM_CMP = 'DRZ',   VALE = 2.4494897428E-01),
+
+         _F(  CHAM_GD = VECASS3, CRITERE = 'RELATIF',   PRECISION = 1.E-9,
+           NOEUD = 'N6',       NOM_CMP = 'DX',     VALE = -1.6021621898E+00),
+         _F(  CHAM_GD = VECASS3, CRITERE = 'RELATIF',   PRECISION = 1.E-9,
+           NOEUD = 'N6',       NOM_CMP = 'DY',     VALE = 3.7011386691E+00),
+         _F(  CHAM_GD = VECASS3, CRITERE = 'RELATIF',   PRECISION = 1.E-9,
+           NOEUD = 'N6',       NOM_CMP = 'DZ',     VALE = -2.0123739389E+00),
+         _F(  CHAM_GD = VECASS3, CRITERE = 'RELATIF',   PRECISION = 1.E-9,
+           NOEUD = 'N6',       NOM_CMP = 'DRX',    VALE = -1.3194792169E-01),
+         _F(  CHAM_GD = VECASS3, CRITERE = 'RELATIF',   PRECISION = 5.E-9,
+           NOEUD = 'N6',       NOM_CMP = 'DRY',    VALE = 9.4734345491E-03),
+         _F(  CHAM_GD = VECASS3, CRITERE = 'RELATIF',   PRECISION = 1.E-9,
+           NOEUD = 'N6',       NOM_CMP = 'DRZ',    VALE = 1.2247448714E-01))
+            )
+
+# -------------------------------------------------------------------
+
+FIN()
+#

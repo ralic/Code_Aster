@@ -1,0 +1,170 @@
+#& MODIF COMMANDE  DATE 09/10/2002   AUTEUR DURAND C.DURAND 
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+# RESPONSABLE VABHHTS J.PELLET
+def calc_matr_elem_prod(OPTION,**args):
+  if OPTION == "RIGI_MECA"        : return matr_elem_depl_r
+  if OPTION == "RIGI_FLUI_STRU"   : return matr_elem_depl_r
+  if OPTION == "RIGI_MECA_LAGR"   : return matr_elem_depl_r
+  if OPTION == "MASS_ID_MDEP_R"   : return matr_elem_depl_r
+  if OPTION == "MASS_ID_MDNS_R"   : return matr_elem_depl_r
+  if OPTION == "MASS_ID_MTEM_R"   : return matr_elem_temp_r
+  if OPTION == "MASS_ID_MTNS_R"   : return matr_elem_temp_r
+  if OPTION == "MASS_MECA"        : return matr_elem_depl_r
+  if OPTION == "MASS_FLUI_STRU"   : return matr_elem_depl_r
+  if OPTION == "RIGI_GEOM"        : return matr_elem_depl_r
+  if OPTION == "RIGI_ROTA"        : return matr_elem_depl_r
+  if OPTION == "AMOR_MECA"        : return matr_elem_depl_r
+  if OPTION == "IMPE_MECA"        : return matr_elem_depl_r
+  if OPTION == "ONDE_FLUI"        : return matr_elem_depl_r
+  if OPTION == "RIGI_MECA_HYST"   : return matr_elem_depl_c
+  if OPTION == "RIGI_THER"        : return matr_elem_temp_r
+  if OPTION == "MASS_THER"        : return matr_elem_temp_r
+  if OPTION == "MASS_MECA_DIAG"   : return matr_elem_depl_r
+  if OPTION == "RIGI_ACOU"        : return matr_elem_pres_c
+  if OPTION == "MASS_ACOU"        : return matr_elem_pres_c
+  if OPTION == "AMOR_ACOU"        : return matr_elem_pres_c
+  raise AsException("type de concept resultat non prevu")
+
+CALC_MATR_ELEM=OPER(nom="CALC_MATR_ELEM",op=   9,sd_prod=calc_matr_elem_prod
+                    ,fr="Calcul des matrices élémentaires",docu="U4.61.01-g1",reentrant='n',
+            UIinfo={"groupes":("Matrices/vecteurs",)},
+         OPTION          =SIMP(statut='o',typ='TXM',
+                               into=("RIGI_MECA","MASS_MECA","RIGI_GEOM",
+                                     "AMOR_MECA","RIGI_THER","MASS_THER","IMPE_MECA",
+                                     "ONDE_FLUI","MASS_FLUI_STRU","RIGI_FLUI_STRU",
+                                     "RIGI_ROTA","MASS_MECA_DIAG","RIGI_ACOU",
+                                     "MASS_ID_MDEP_R","MASS_ID_MDNS_R","MASS_ID_MTEM_R","MASS_ID_MTNS_R",
+                                     "MASS_ACOU","AMOR_ACOU","RIGI_MECA_HYST",
+                                     "RIGI_MECA_LAGR") ),
+
+         b_rigi_meca = BLOC( condition = "OPTION=='RIGI_MECA'",
+           regles=(AU_MOINS_UN('MODELE','CHARGE' ),),
+           MODELE          =SIMP(statut='f',typ=modele ),
+           b_modele        =BLOC(condition = "MODELE != None",
+             CHAM_MATER      =SIMP(statut='f',typ=cham_mater ),
+             CARA_ELEM       =SIMP(statut='f',typ=cara_elem ),
+             MODE_FOURIER    =SIMP(statut='f',typ='I',defaut= 0 ),
+           ),
+           CHARGE          =SIMP(statut='f',typ=char_meca,max='**' ),
+           b_charge        =BLOC (condition = "CHARGE != None",
+             INST            =SIMP(statut='f',typ='R',defaut= 0.E+0 ),
+           ),
+         ),
+
+         b_rigi_meca_lagr  =BLOC(condition = "OPTION=='RIGI_MECA_LAGR'",
+           MODELE            =SIMP(statut='o',typ=modele ),
+           CHAM_MATER        =SIMP(statut='o',typ=cham_mater ),
+           CHARGE            =SIMP(statut='f',typ=char_meca,max='**'  ),
+           b_charge        =BLOC(condition = "CHARGE != None",
+             INST            =SIMP(statut='f',typ='R',defaut= 0.E+0 ),
+           ),
+           THETA           =SIMP(statut='o',typ=theta_geom ),
+           PROPAGATION     =SIMP(statut='f',typ='R',defaut= 0.E+0 ),
+         ),
+
+         b_mass_meca       =BLOC(condition = "(OPTION=='MASS_MECA') or (OPTION=='MASS_MECA_DIAG')",
+           regles=(AU_MOINS_UN('MODELE','CHARGE'),),
+           MODELE          =SIMP(statut='f',typ=modele ),
+           b_modele          =BLOC(condition = "MODELE != None",
+             CHAM_MATER        =SIMP(statut='f',typ=cham_mater ),
+             CARA_ELEM         =SIMP(statut='f',typ=cara_elem ),
+           ),
+           CHARGE          =SIMP(statut='f',typ=char_meca,max='**' ),
+           b_charge        =BLOC(condition = "CHARGE != None",
+             INST            =SIMP(statut='f',typ='R',defaut= 0.E+0 ),
+           ),
+         ),
+
+         b_mass_identite   =BLOC(condition = "(OPTION in ('MASS_ID_MDEP_R','MASS_ID_MTEM_R','MASS_ID_MDNS_R','MASS_ID_MTNS_R')) ",
+           MODELE            =SIMP(statut='o',typ=modele ),
+           # j'ajoute ces 2 mot clés inutiles à cause de l'alarme pas assez subtile de MEDOME
+           CHAM_MATER        =SIMP(statut='f',typ=cham_mater ),
+           CARA_ELEM         =SIMP(statut='f',typ=cara_elem ),
+         ),
+
+         b_rigi_geom       =BLOC(condition = "OPTION=='RIGI_GEOM'",
+           MODELE            =SIMP(statut='o',typ=modele ),
+           CARA_ELEM         =SIMP(statut='f',typ=cara_elem ),
+           SIEF_ELGA         =SIMP(statut='o',typ=cham_elem_sief_r ),
+           MODE_FOURIER      =SIMP(statut='f',typ='I',defaut= 0 ),
+         ),
+
+         b_rigi_rota       =BLOC(condition = "OPTION=='RIGI_ROTA'",
+           MODELE            =SIMP(statut='o',typ=modele ),
+           CHAM_MATER        =SIMP(statut='o',typ=cham_mater ),
+           CHARGE            =SIMP(statut='o',typ=char_meca,max='**' ),
+           INST              =SIMP(statut='f',typ='R',defaut= 0.E+0 ),
+         ),
+
+         b_amor_meca       =BLOC(condition = "OPTION=='AMOR_MECA'",
+           regles=(AU_MOINS_UN('CARA_ELEM','RIGI_MECA'),
+                   ENSEMBLE('RIGI_MECA','MASS_MECA','CHAM_MATER'), ),
+           MODELE            =SIMP(statut='o',typ=modele ),
+           CARA_ELEM         =SIMP(statut='f',typ=cara_elem ),
+           CHAM_MATER        =SIMP(statut='f',typ=cham_mater ),
+           RIGI_MECA         =SIMP(statut='f',typ=matr_elem_depl_r ),
+           MASS_MECA         =SIMP(statut='f',typ=matr_elem_depl_r ),
+           CHARGE            =SIMP(statut='f',typ=char_meca,max='**' ),
+         ),
+
+         b_rigi_meca_hyst  =BLOC( condition = "OPTION=='RIGI_MECA_HYST'",
+           MODELE            =SIMP(statut='o',typ=modele ),
+           CHARGE            =SIMP(statut='o',typ=char_meca ,max='**' ),
+           CHAM_MATER        =SIMP(statut='f',typ=cham_mater ),
+           CARA_ELEM         =SIMP(statut='f',typ=cara_elem ),
+           RIGI_MECA         =SIMP(statut='o',typ=matr_elem_depl_r ),
+         ),
+
+         b_rigi_ther       =BLOC(condition = "OPTION=='RIGI_THER'",
+           regles=(AU_MOINS_UN('MODELE','CHARGE' ),),
+           MODELE            =SIMP(statut='f',typ=modele ),
+           b_modele          =BLOC(condition = "MODELE != None",
+             CHAM_MATER        =SIMP(statut='o',typ=cham_mater ),
+             CARA_ELEM         =SIMP(statut='f',typ=cara_elem ),
+             MODE_FOURIER      =SIMP(statut='f',typ='I',defaut= 0 ),
+           ),
+           CHARGE            =SIMP(statut='f',typ=char_ther,max='**' ),
+         ),
+
+         b_mass_ther       =BLOC(condition = "OPTION=='MASS_THER'",
+           MODELE            =SIMP(statut='o',typ=modele ),
+           CHAM_MATER        =SIMP(statut='o',typ=cham_mater ),
+           CARA_ELEM         =SIMP(statut='f',typ=cara_elem ),
+         ),
+
+         b_rigi_acou       =BLOC(condition = "(OPTION=='RIGI_ACOU') or (OPTION=='MASS_ACOU') or (OPTION=='AMOR_ACOU')",
+           MODELE            =SIMP(statut='o',typ=modele ),
+           CHAM_MATER        =SIMP(statut='o',typ=cham_mater ),
+           CHARGE            =SIMP(statut='f',typ=char_acou ,max='**' ),
+         ),
+
+         b_rigi_flui       =BLOC(condition = "(OPTION=='RIGI_FLUI_STRU') or (OPTION=='MASS_FLUI_STRU')",
+           MODELE            =SIMP(statut='o',typ=modele ),
+           CARA_ELEM         =SIMP(statut='o',typ=cara_elem ),
+           CHAM_MATER        =SIMP(statut='o',typ=cham_mater ),
+           CHARGE            =SIMP(statut='o',typ=char_meca ,max='**' ),
+           INST              =SIMP(statut='f',typ='R',defaut= 0.E+0 ),
+         ),
+
+         b_impe_meca       =BLOC(condition = "(OPTION=='IMPE_MECA') or (OPTION=='ONDE_FLUI')",
+           MODELE            =SIMP(statut='o',typ=modele ),
+           CHARGE            =SIMP(statut='o',typ=char_meca,max='**' ),
+           CHAM_MATER        =SIMP(statut='o',typ=cham_mater ),
+         ),
+)  ;

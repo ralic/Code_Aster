@@ -1,0 +1,301 @@
+# MODIF  DATE 03/07/2002   AUTEUR CIBHHBC R.FERNANDES 
+# TITRE CONTACT DE DEUX SPHERES
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+#
+# MODELISATION 2D AXI ELEMENTS LINEAIRES
+#   TRIA3 EN BAS, QUAD4 EN HAUT
+#
+
+DEBUT( CODE=_F( NOM = 'SSNV104H',NIV_PUB_WEB='INTERNET'))
+
+#
+
+MA=LIRE_MAILLAGE()
+
+#
+
+MO=AFFE_MODELE(
+                           MAILLAGE=MA,
+                          AFFE=_F( 
+                                TOUT = 'OUI',
+                                PHENOMENE = 'MECANIQUE',
+                                MODELISATION = 'AXIS')
+                        )
+
+#
+
+MAT=DEFI_MATERIAU(
+                            ELAS=_F( 
+                                  E = 20000.0,
+                                  NU = 0.3,
+                                  ALPHA = 0.01)
+                          )
+
+#
+
+CHMAT=AFFE_MATERIAU(
+                            MAILLAGE=MA,
+                           AFFE=_F( 
+                                 TOUT = 'OUI',
+                                 MATER = MAT)
+                           )
+
+#
+
+CHA1=AFFE_CHAR_MECA(
+                             MODELE=MO,DDL_IMPO=(
+                             _F(  GROUP_NO = 'SPHSUP',  DY = -5.0),
+                                      _F(  GROUP_NO = 'SPHINF',  DY = 5.0),
+                                      _F(  GROUP_NO = 'AXE',     DX = 0.0),
+                                      _F(  NOEUD = ('N55', 'N291',), DX = 0.0,
+                                                          DY = 0.0),
+                                                          ),
+                     INFO=2                                                          
+                           )
+
+CHA2=AFFE_CHAR_MECA(
+                     MODELE=MO,
+                     CONTACT=_F(  APPARIEMENT = 'MAIT_ESCL',
+                               RECHERCHE = 'NOEUD_BOUCLE',
+                               METHODE = 'PENALISATION',
+                               REAC_GEOM = 'CONTROLE',
+                               NB_REAC_GEOM = 2,
+                               E_N=1.E+10,
+                               PROJECTION = 'LINEAIRE',
+#                               NORMALE = 'MAIT_ESCL',
+                               GROUP_MA_1 = 'CONTBAS',
+                               GROUP_MA_2 = 'CONTHAUT'),
+                     INFO=2
+                           )
+
+#
+
+L_INST=DEFI_LIST_REEL(
+                             DEBUT=0.0,
+                              INTERVALLE=_F( JUSQU_A = 1.,  NOMBRE = 5)
+                           )
+
+#
+
+FONC=DEFI_FONCTION( 
+                           NOM_PARA='INST',
+                           VALE=( 0.,   0.0,
+                                  1.,   1.0, )
+                        )
+
+#
+
+RESU=STAT_NON_LINE( 
+                            MODELE=MO,
+                        CHAM_MATER=CHMAT,EXCIT=(
+                             _F( 
+                CHARGE = CHA1,
+                FONC_MULT = FONC), 
+                _F( 
+                CHARGE = CHA2)
+                           ),
+                         COMP_ELAS=_F( 
+                RELATION = 'ELAS'),
+                            NEWTON=_F( 
+                MATRICE = 'TANGENTE',           
+                REAC_ITER = 1,         
+                ),
+                         INCREMENT=_F( 
+                LIST_INST = L_INST,
+                NUME_INST_FIN = 5),
+                       CONVERGENCE=_F( 
+                ARRET = 'OUI',
+                ITER_GLOB_MAXI = 30,
+                RESI_GLOB_RELA = 1.E-5,
+                RESI_GLOB_MAXI = 1.E-2),
+                           SOLVEUR=_F( 
+                METHODE = 'MULT_FRONT'),
+                              INFO=2
+              )
+
+RESU=CALC_ELEM( reuse=RESU,
+                            OPTION=(
+                  'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
+                          RESULTAT=RESU,
+                            MODELE=MO,
+                        CHAM_MATER=CHMAT
+              )
+
+#
+SIELNO1=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='ELNO_SIEF_R',
+NOM_CHAM='SIEF_ELNO_ELGA',
+                        RESULTAT=RESU,
+                        NUME_ORDRE=1
+                       )
+
+SIELNO2=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='ELNO_SIEF_R',
+NOM_CHAM='SIEF_ELNO_ELGA',
+                        RESULTAT=RESU,
+                        NUME_ORDRE=2
+                       )
+
+SIELNO3=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='ELNO_SIEF_R',
+NOM_CHAM='SIEF_ELNO_ELGA',
+                        RESULTAT=RESU,
+                        NUME_ORDRE=3
+                       )
+
+SIELNO4=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='ELNO_SIEF_R',
+NOM_CHAM='SIEF_ELNO_ELGA',
+                        RESULTAT=RESU,
+                        NUME_ORDRE=4
+                       )
+
+SIELNO5=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='ELNO_SIEF_R',
+NOM_CHAM='SIEF_ELNO_ELGA',
+                        RESULTAT=RESU,
+                        NUME_ORDRE=5
+                       )
+
+#
+# TEST DE LA CONFORMITE AVEC LA SOLUTION DE REFERENCE ANALYTIQUE
+#
+
+TEST_RESU(CHAM_ELEM=(
+            _F( 
+                       CHAM_GD = SIELNO1,
+                       MAILLE = 'M31',
+                       NOEUD = 'N291',
+                       NOM_CMP = 'SIYY',
+                       VALE = -1.9787E+03,
+                       PRECISION = 12.E-02,
+                       CRITERE = 'RELATIF'),
+            _F( 
+                       CHAM_GD = SIELNO1,
+                       MAILLE = 'M286',
+                       NOEUD = 'N55',
+                       NOM_CMP = 'SIYY',
+                       VALE = -1.9787E+03,
+                       PRECISION = 2.E-02,
+                       CRITERE = 'RELATIF'),
+            _F( 
+                       CHAM_GD = SIELNO1,
+                       MAILLE = 'M293',
+                       NOEUD = 'N55',
+                       NOM_CMP = 'SIYY',
+                       VALE = -1.9787E+03,
+                       PRECISION = 20.E-02,
+                       CRITERE = 'RELATIF'),
+            _F( 
+                       CHAM_GD = SIELNO2,
+                       MAILLE = 'M31',
+                       NOEUD = 'N291',
+                       NOM_CMP = 'SIYY',
+                       VALE = -2.7983E+03,
+                       PRECISION = 10.E-02,
+                       CRITERE = 'RELATIF'),
+            _F( 
+                       CHAM_GD = SIELNO2,
+                       MAILLE = 'M286',
+                       NOEUD = 'N55',
+                       NOM_CMP = 'SIYY',
+                       VALE = -2.7983E+03,
+                       PRECISION = 5.E-02,
+                       CRITERE = 'RELATIF'),
+            _F( 
+                       CHAM_GD = SIELNO2,
+                       MAILLE = 'M293',
+                       NOEUD = 'N55',
+                       NOM_CMP = 'SIYY',
+                       VALE = -2.7983E+03,
+                       PRECISION = 15.E-02,
+                       CRITERE = 'RELATIF'),
+            _F( 
+                       CHAM_GD = SIELNO3,
+                       MAILLE = 'M31',
+                       NOEUD = 'N291',
+                       NOM_CMP = 'SIYY',
+                       VALE = -3.4272E+03,
+                       PRECISION = 7.E-02,
+                       CRITERE = 'RELATIF'),
+            _F( 
+                       CHAM_GD = SIELNO3,
+                       MAILLE = 'M286',
+                       NOEUD = 'N55',
+                       NOM_CMP = 'SIYY',
+                       VALE = -3.4272E+03,
+                       PRECISION = 5.E-02,
+                       CRITERE = 'RELATIF'),
+            _F( 
+                       CHAM_GD = SIELNO3,
+                       MAILLE = 'M293',
+                       NOEUD = 'N55',
+                       NOM_CMP = 'SIYY',
+                       VALE = -3.4272E+03,
+                       PRECISION = 14.E-02,
+                       CRITERE = 'RELATIF'),
+            _F( 
+                       CHAM_GD = SIELNO4,
+                       MAILLE = 'M31',
+                       NOEUD = 'N291',
+                       NOM_CMP = 'SIYY',
+                       VALE = -3.9574E+03,
+                       PRECISION = 8.E-02,
+                       CRITERE = 'RELATIF'),
+            _F( 
+                       CHAM_GD = SIELNO4,
+                       MAILLE = 'M286',
+                       NOEUD = 'N55',
+                       NOM_CMP = 'SIYY',
+                       VALE = -3.9574E+03,
+                       PRECISION = 6.E-02,
+                       CRITERE = 'RELATIF'),
+            _F( 
+                       CHAM_GD = SIELNO4,
+                       MAILLE = 'M293',
+                       NOEUD = 'N55',
+                       NOM_CMP = 'SIYY',
+                       VALE = -3.9574E+03,
+                       PRECISION = 14.5E-02,
+                       CRITERE = 'RELATIF'),
+            _F( 
+                       CHAM_GD = SIELNO5,
+                       MAILLE = 'M31',
+                       NOEUD = 'N291',
+                       NOM_CMP = 'SIYY',
+                       VALE = -4.4245E+03,
+                       PRECISION = 11.E-02,
+                       CRITERE = 'RELATIF'),
+            _F( 
+                       CHAM_GD = SIELNO5,
+                       MAILLE = 'M286',
+                       NOEUD = 'N55',
+                       NOM_CMP = 'SIYY',
+                       VALE = -4.4245E+03,
+                       PRECISION = 7.E-02,
+                       CRITERE = 'RELATIF'),
+            _F( 
+                       CHAM_GD = SIELNO5,
+                       MAILLE = 'M293',
+                       NOEUD = 'N55',
+                       NOM_CMP = 'SIYY',
+                       VALE = -4.4245E+03,
+                       PRECISION = 15.5E-02,
+                       CRITERE = 'RELATIF'))
+           )
+#
+
+FIN()
+#
+#

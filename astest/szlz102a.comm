@@ -1,0 +1,335 @@
+# MODIF  DATE 16/01/2002   AUTEUR DURAND C.DURAND 
+# TITRE FATIGUE AVEC DIFFERENTES METHODES COMPTAGE
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+#CAS TEST DE METHODES DE COMPTAGE POSTDAM
+
+DEBUT(CODE=_F( NOM = 'SZLZ102A',NIV_PUB_WEB='INTERNET'))
+
+TAUN1=DEFI_FONCTION(    NOM_PARA='INST',
+                           VALE=(  0.,           0.,
+                                   1.,         500.,
+                                   2.,         200.,
+                                   3.,         400.,
+                                   4.,         300.,
+                                   5.,         500.,
+                                   6.,        -300.,
+                                   7.,         200.,
+                                   8.,        -500.,  )  )
+
+TAUN2=DEFI_FONCTION(  NOM_PARA='INST',
+                           VALE=(  0.,           0.,
+                                   1.,         250.,
+                                   2.,         100.,
+                                   3.,         200.,
+                                   4.,         150.,
+                                   5.,         250.,
+                                   6.,        -150.,
+                                   7.,         100.,
+                                   8.,        -250.,  )  )
+
+#
+#-----------------------------------------------------------------------
+
+TAB_1=POST_FATIGUE(    CHARGEMENT='UNIAXIAL',
+                         HISTOIRE=_F(  SIGM = TAUN1),
+                         COMPTAGE='RAINFLOW',
+                             INFO=2                 )
+
+TEST_TABLE(        TABLE=TAB_1,
+                   FILTRE=_F(  NOM_PARA = 'CYCLE',
+                            VALE_I = 1),
+                 NOM_PARA='VALE_MAX',
+                     VALE=400.,
+                PRECISION=1.E-5                )
+
+TEST_TABLE(        TABLE=TAB_1,
+                   FILTRE=_F(  NOM_PARA = 'CYCLE',
+                            VALE_I = 1),
+                 NOM_PARA='VALE_MIN',
+                     VALE=300.,
+                PRECISION=1.E-5                )
+
+TEST_TABLE(        TABLE=TAB_1,
+                   FILTRE=_F(  NOM_PARA = 'CYCLE',
+                            VALE_I = 2),
+                 NOM_PARA='VALE_MAX',
+                     VALE=500.,
+                PRECISION=1.E-5                )
+
+TEST_TABLE(        TABLE=TAB_1,
+                   FILTRE=_F(  NOM_PARA = 'CYCLE',
+                            VALE_I = 2),
+                 NOM_PARA='VALE_MIN',
+                     VALE=200.,
+                PRECISION=1.E-5                )
+
+TEST_TABLE(        TABLE=TAB_1,
+                   FILTRE=_F(  NOM_PARA = 'CYCLE',
+                            VALE_I = 3),
+                 NOM_PARA='VALE_MAX',
+                     VALE=200.,
+                PRECISION=1.E-5                )
+
+TEST_TABLE(        TABLE=TAB_1,
+                   FILTRE=_F(  NOM_PARA = 'CYCLE',
+                            VALE_I = 3),
+                 NOM_PARA='VALE_MIN',
+                     VALE=-300.,
+                PRECISION=1.E-5                )
+
+TEST_TABLE(        TABLE=TAB_1,
+                   FILTRE=_F(  NOM_PARA = 'CYCLE',
+                            VALE_I = 4),
+                 NOM_PARA='VALE_MAX',
+                     VALE=500.,
+                PRECISION=1.E-5                )
+
+TEST_TABLE(        TABLE=TAB_1,
+                   FILTRE=_F(  NOM_PARA = 'CYCLE',
+                            VALE_I = 4),
+                 NOM_PARA='VALE_MIN',
+                     VALE=-500.,
+                PRECISION=1.E-5                )
+
+#
+#-----------------------------------------------------------------------
+
+TAB_2=POST_FATIGUE(    CHARGEMENT='UNIAXIAL',
+                         HISTOIRE=_F(  SIGM = TAUN1),
+                         COMPTAGE='RCCM',
+                             INFO=2                 )
+
+TEST_TABLE(        TABLE=TAB_2,
+                   FILTRE=_F(  NOM_PARA = 'CYCLE',
+                            VALE_I = 1),
+                 NOM_PARA='VALE_MAX',
+                     VALE=500.,
+                PRECISION=1.E-5                )
+
+TEST_TABLE(        TABLE=TAB_2,
+                   FILTRE=_F(  NOM_PARA = 'CYCLE',
+                            VALE_I = 1),
+                 NOM_PARA='VALE_MIN',
+                     VALE=-500.,
+                PRECISION=1.E-5                )
+
+TEST_TABLE(        TABLE=TAB_2,
+                   FILTRE=_F(  NOM_PARA = 'CYCLE',
+                            VALE_I = 2),
+                 NOM_PARA='VALE_MAX',
+                     VALE=500.,
+                PRECISION=1.E-5                )
+
+TEST_TABLE(        TABLE=TAB_2,
+                   FILTRE=_F(  NOM_PARA = 'CYCLE',
+                            VALE_I = 2),
+                 NOM_PARA='VALE_MIN',
+                     VALE=-300.,
+                PRECISION=1.E-5                )
+
+TEST_TABLE(        TABLE=TAB_2,
+                   FILTRE=_F(  NOM_PARA = 'CYCLE',
+                            VALE_I = 3),
+                 NOM_PARA='VALE_MAX',
+                     VALE=400.,
+                PRECISION=1.E-5                )
+
+TEST_TABLE(        TABLE=TAB_2,
+                   FILTRE=_F(  NOM_PARA = 'CYCLE',
+                            VALE_I = 3),
+                 NOM_PARA='VALE_MIN',
+                     VALE=0.,
+                  CRITERE='ABSOLU',
+                PRECISION=1.E-5                )
+
+TEST_TABLE(        TABLE=TAB_2,
+                   FILTRE=_F(  NOM_PARA = 'CYCLE',
+                            VALE_I = 4),
+                 NOM_PARA='VALE_MAX',
+                     VALE=300.,
+                PRECISION=1.E-5                )
+
+TEST_TABLE(        TABLE=TAB_2,
+                   FILTRE=_F(  NOM_PARA = 'CYCLE',
+                            VALE_I = 4),
+                 NOM_PARA='VALE_MIN',
+                     VALE=200.,
+                PRECISION=1.E-5                )
+
+TEST_TABLE(        TABLE=TAB_2,
+                   FILTRE=_F(  NOM_PARA = 'CYCLE',
+                            VALE_I = 5),
+                 NOM_PARA='VALE_MAX',
+                     VALE=200.,
+                PRECISION=1.E-5                )
+
+TEST_TABLE(        TABLE=TAB_2,
+                   FILTRE=_F(  NOM_PARA = 'CYCLE',
+                            VALE_I = 5),
+                 NOM_PARA='VALE_MIN',
+                     VALE=88.8889,
+                PRECISION=1.E-5                )
+
+#
+#-----------------------------------------------------------------------
+
+TAB_3=POST_FATIGUE(     CHARGEMENT='UNIAXIAL',
+                          HISTOIRE=_F(  SIGM = TAUN2),
+                         COEF_MULT=_F(  KT = 2.),
+                          COMPTAGE='RAINFLOW',
+                              INFO=2                 )
+
+TEST_TABLE(        TABLE=TAB_3,
+                   FILTRE=_F(  NOM_PARA = 'CYCLE',
+                            VALE_I = 1),
+                 NOM_PARA='VALE_MAX',
+                     VALE=400.,
+                PRECISION=1.E-5                )
+
+TEST_TABLE(        TABLE=TAB_3,
+                   FILTRE=_F(  NOM_PARA = 'CYCLE',
+                            VALE_I = 1),
+                 NOM_PARA='VALE_MIN',
+                     VALE=300.,
+                PRECISION=1.E-5                )
+
+TEST_TABLE(        TABLE=TAB_3,
+                   FILTRE=_F(  NOM_PARA = 'CYCLE',
+                            VALE_I = 2),
+                 NOM_PARA='VALE_MAX',
+                     VALE=500.,
+                PRECISION=1.E-5                )
+
+TEST_TABLE(        TABLE=TAB_3,
+                   FILTRE=_F(  NOM_PARA = 'CYCLE',
+                            VALE_I = 2),
+                 NOM_PARA='VALE_MIN',
+                     VALE=200.,
+                PRECISION=1.E-5                )
+
+TEST_TABLE(        TABLE=TAB_3,
+                   FILTRE=_F(  NOM_PARA = 'CYCLE',
+                            VALE_I = 3),
+                 NOM_PARA='VALE_MAX',
+                     VALE=200.,
+                PRECISION=1.E-5                )
+
+TEST_TABLE(        TABLE=TAB_3,
+                   FILTRE=_F(  NOM_PARA = 'CYCLE',
+                            VALE_I = 3),
+                 NOM_PARA='VALE_MIN',
+                     VALE=-300.,
+                PRECISION=1.E-5                )
+
+TEST_TABLE(        TABLE=TAB_3,
+                   FILTRE=_F(  NOM_PARA = 'CYCLE',
+                            VALE_I = 4),
+                 NOM_PARA='VALE_MAX',
+                     VALE=500.,
+                PRECISION=1.E-5                )
+
+TEST_TABLE(        TABLE=TAB_3,
+                   FILTRE=_F(  NOM_PARA = 'CYCLE',
+                            VALE_I = 4),
+                 NOM_PARA='VALE_MIN',
+                     VALE=-500.,
+                PRECISION=1.E-5                )
+
+#
+#-----------------------------------------------------------------------
+
+TAB_4=POST_FATIGUE(     CHARGEMENT='UNIAXIAL',
+                          HISTOIRE=_F(  SIGM = TAUN2),
+                         COEF_MULT=_F(  KT = 2.),
+                          COMPTAGE='RCCM',
+                              INFO=2                 )
+
+TEST_TABLE(        TABLE=TAB_4,
+                   FILTRE=_F(  NOM_PARA = 'CYCLE',
+                            VALE_I = 1),
+                 NOM_PARA='VALE_MAX',
+                     VALE=500.,
+                PRECISION=1.E-5                )
+
+TEST_TABLE(        TABLE=TAB_4,
+                   FILTRE=_F(  NOM_PARA = 'CYCLE',
+                            VALE_I = 1),
+                 NOM_PARA='VALE_MIN',
+                     VALE=-500.,
+                PRECISION=1.E-5                )
+
+TEST_TABLE(        TABLE=TAB_4,
+                   FILTRE=_F(  NOM_PARA = 'CYCLE',
+                            VALE_I = 2),
+                 NOM_PARA='VALE_MAX',
+                     VALE=500.,
+                PRECISION=1.E-5                )
+
+TEST_TABLE(        TABLE=TAB_4,
+                   FILTRE=_F(  NOM_PARA = 'CYCLE',
+                            VALE_I = 2),
+                 NOM_PARA='VALE_MIN',
+                     VALE=-300.,
+                PRECISION=1.E-5                )
+
+TEST_TABLE(        TABLE=TAB_4,
+                   FILTRE=_F(  NOM_PARA = 'CYCLE',
+                            VALE_I = 3),
+                 NOM_PARA='VALE_MAX',
+                     VALE=400.,
+                PRECISION=1.E-5                )
+
+TEST_TABLE(        TABLE=TAB_4,
+                   FILTRE=_F(  NOM_PARA = 'CYCLE',
+                            VALE_I = 3),
+                 NOM_PARA='VALE_MIN',
+                     VALE=0.,
+                  CRITERE='ABSOLU',
+                PRECISION=1.E-5                )
+
+TEST_TABLE(        TABLE=TAB_4,
+                   FILTRE=_F(  NOM_PARA = 'CYCLE',
+                            VALE_I = 4),
+                 NOM_PARA='VALE_MAX',
+                     VALE=300.,
+                PRECISION=1.E-5                )
+
+TEST_TABLE(        TABLE=TAB_4,
+                   FILTRE=_F(  NOM_PARA = 'CYCLE',
+                            VALE_I = 4),
+                 NOM_PARA='VALE_MIN',
+                     VALE=200.,
+                PRECISION=1.E-5                )
+
+TEST_TABLE(        TABLE=TAB_4,
+                   FILTRE=_F(  NOM_PARA = 'CYCLE',
+                            VALE_I = 5),
+                 NOM_PARA='VALE_MAX',
+                     VALE=200.,
+                PRECISION=1.E-5                )
+
+TEST_TABLE(        TABLE=TAB_4,
+                   FILTRE=_F(  NOM_PARA = 'CYCLE',
+                            VALE_I = 5),
+                 NOM_PARA='VALE_MIN',
+                     VALE=88.8889,
+                PRECISION=1.E-5                )
+
+FIN( )
+#

@@ -1,0 +1,375 @@
+# MODIF  DATE 10/04/2002   AUTEUR VABHHTS J.PELLET 
+# TITRE ETUDE  : ESSAI TRIAXIAL DRAINE
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+DEBUT(  CODE=_F( NOM = 'SSNV154B',NIV_PUB_WEB='INTERNET')  )
+
+#------------------------------------
+# NIVEAU / CJS3 /
+# SIG_33 = -400 KPA
+#------------------------------------
+#
+#
+#***********************************************************************
+#    MAILLAGE + MODELE
+#***********************************************************************
+
+MAILLAGE=LIRE_MAILLAGE( )
+
+MODELE=AFFE_MODELE(     MAILLAGE=MAILLAGE,
+                             AFFE=_F(  TOUT = 'OUI',
+                                    PHENOMENE = 'MECANIQUE',
+                                    MODELISATION = '3D')
+                           )
+
+#***********************************************************************
+#    INCREMENTS DE TEMPS
+#***********************************************************************
+
+TEMPS1=DEFI_LIST_REEL(   DEBUT=0.,
+                           INTERVALLE=_F(  JUSQU_A = 1.,   NOMBRE = 20)
+                         )
+
+TEMPS11=DEFI_LIST_REEL(    DEBUT=1.0,
+                             INTERVALLE=_F(  JUSQU_A = 4.0, NOMBRE = 20) )
+
+#***********************************************************************
+#    MATERIAU : SOL
+#***********************************************************************
+
+SOL=DEFI_MATERIAU(    ELAS=_F(  E = 35.6616541E3,
+                                     NU = 0.15037594),
+                               CJS=_F(  BETA_CJS = -0.55,
+                                     GAMMA_CJS = 0.82,
+                                     RM = 0.05,
+                                     N_CJS = 0.6,
+                                     KP = 25.5E3,
+                                     RC = 0.265,
+                                     B_CJS = 7.0,
+                                     C_CJS = 30.0,
+                                     MU_CJS = 0.021,
+                                     PCO = -600.0,
+                                     PA = -100.0)
+                           )
+
+CHMAT=AFFE_MATERIAU(    MAILLAGE=MAILLAGE,
+                             AFFE=_F(  TOUT = 'OUI',  MATER = SOL)
+                          )
+
+#***********************************************************************
+#    CHARGEMENT MECANIQUE : FORCE DE COMPRESSION + DDL IMPOSES
+#***********************************************************************
+
+CHAR_U1=AFFE_CHAR_MECA(    MODELE=MODELE,
+                              PRES_REP=_F(   MAILLE = ( 'M5', 'M6', ),
+                                          PRES = 1.)
+                       )
+
+CHAR_U2=AFFE_CHAR_MECA(    MODELE=MODELE,
+                             PRES_REP=_F(   MAILLE = ( 'M3', ),
+                                         PRES = 1.)
+                        )
+
+DEPL_1=AFFE_CHAR_MECA(    MODELE=MODELE,FACE_IMPO=(
+                              _F(  MAILLE = ( 'M2', ),
+                                          DNOR = 0.),
+                              _F(  MAILLE = ( 'M7', ),
+                                          DNOR = 0.),
+                              _F(  MAILLE = ( 'M4', ),
+                                          DNOR = 0.))
+                           )
+
+COEF1=DEFI_FONCTION(      NOM_PARA='INST',
+                           PROL_DROITE='CONSTANT',
+                         VALE=( 0.0,  0.0,
+                                4.0,  400.,)
+                       )
+
+#***********************************************************************
+#    CALCUL DE LA SOLUTION
+#***********************************************************************
+
+
+U1=STAT_NON_LINE( 
+                            MODELE=MODELE,
+                        CHAM_MATER=CHMAT,EXCIT=(
+                             _F( 
+                CHARGE = CHAR_U1,
+                FONC_MULT = COEF1), _F( 
+                CHARGE = CHAR_U2,
+                FONC_MULT = COEF1), _F( 
+                CHARGE = DEPL_1)),
+                         COMP_INCR=_F( 
+                RELATION = 'CJS'),
+                            NEWTON=_F( 
+                MATRICE = 'ELASTIQUE'),
+                       CONVERGENCE=_F( 
+                RESI_GLOB_RELA = 1.E-4,
+                ITER_GLOB_MAXI = 50,
+                ITER_INTE_MAXI = 50),
+                         INCREMENT=_F( 
+                LIST_INST = TEMPS1)
+              )
+
+SIG_INI1=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='ELGA_SIEF_R',
+NOM_CHAM='SIEF_ELGA', RESULTAT=U1,
+                        INST=1.0 )
+
+VAR_INI1=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='ELGA_VARI_R',
+NOM_CHAM='VARI_ELGA', RESULTAT=U1,
+                        INST=1.0 )
+
+U1=STAT_NON_LINE( reuse=U1,
+                            MODELE=MODELE,
+                        CHAM_MATER=CHMAT,EXCIT=(
+                             _F( 
+                CHARGE = CHAR_U1,
+                FONC_MULT = COEF1), _F( 
+                CHARGE = CHAR_U2,
+                FONC_MULT = COEF1), _F( 
+                CHARGE = DEPL_1)),
+                         COMP_INCR=_F( 
+                RELATION = 'CJS'),
+                            NEWTON=_F( 
+                MATRICE = 'TANGENTE'),
+                       CONVERGENCE=_F( 
+                RESI_GLOB_RELA = 1.E-4),
+                         ETAT_INIT=_F( 
+                SIGM = SIG_INI1,
+                VARI = VAR_INI1),
+                         INCREMENT=_F( 
+                LIST_INST = TEMPS11)
+              )
+
+U1=CALC_ELEM( reuse=U1,
+                            OPTION=(
+                  'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
+                          RESULTAT=U1,
+                            MODELE=MODELE,
+                        CHAM_MATER=CHMAT
+              )
+
+#***********************************************************************
+#    INCREMENTS DE TEMPS
+#***********************************************************************
+
+TEMPS2=DEFI_LIST_REEL(   DEBUT=4.,
+                            INTERVALLE=_F(  JUSQU_A = 5.0,   NOMBRE = 100)
+                          )
+
+#***********************************************************************
+#    NOUVEAU CHARGEMENT MECANIQUE : DEPLACEMENT UNIAXIALE UNITAIRE
+#***********************************************************************
+
+
+
+SIGINI=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='ELGA_SIEF_R',
+NOM_CHAM='SIEF_ELGA', RESULTAT=U1,
+                        INST=4.
+                      )
+
+VARINI=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='ELGA_VARI_R',
+NOM_CHAM='VARI_ELGA', RESULTAT=U1,
+                        INST=4.
+                      )
+
+DEPL_2=AFFE_CHAR_MECA(    MODELE=MODELE,
+                              FACE_IMPO=_F(  MAILLE = ( 'M3', ),
+                                          DNOR = 1.)
+                           )
+
+COEF2=DEFI_FONCTION(      NOM_PARA='INST',
+                           PROL_DROITE='LINEAIRE',
+                          PROL_GAUCHE='CONSTANT',
+                         VALE=( 4.0,  0.0,
+                                5.0,  -0.2, )
+                       )
+
+#***********************************************************************
+#    CALCUL DE LA SOLUTION
+#***********************************************************************
+
+
+U2=STAT_NON_LINE( 
+                            MODELE=MODELE,
+                        CHAM_MATER=CHMAT,EXCIT=(
+                             _F( 
+                CHARGE = CHAR_U1,
+                FONC_MULT = COEF1), _F( 
+                CHARGE = DEPL_1), _F( 
+                CHARGE = DEPL_2,
+                FONC_MULT = COEF2)),
+                         COMP_INCR=_F( 
+                RELATION = 'CJS'),
+                         ETAT_INIT=_F( 
+                SIGM = SIGINI,
+                VARI = VARINI),
+                         INCREMENT=_F( 
+                LIST_INST = TEMPS2),
+                            NEWTON=_F( 
+                MATRICE = 'TANGENTE'),
+                       CONVERGENCE=_F( 
+                RESI_GLOB_RELA = 1.E-6,
+                ITER_INTE_MAXI = 50,
+                ITER_GLOB_MAXI = 20)
+              )
+
+U2=CALC_ELEM( reuse=U2,
+                            OPTION=(
+                  'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
+                          RESULTAT=U2,
+                            MODELE=MODELE,
+                        CHAM_MATER=CHMAT
+              )
+
+#***********************************************************************
+#    POST-TRAITEMENT :
+#***********************************************************************
+
+U2=CALC_ELEM( reuse=U2,     RESULTAT=U2,
+                        MODELE=MODELE,
+                    CHAM_MATER=CHMAT,
+                    NUME_ORDRE=(10, 50, 100,),
+                        OPTION=('EPSI_ELNO_DEPL', )
+                )
+
+U2=CALC_NO(  reuse=U2,     RESULTAT=U2,
+                    NUME_ORDRE=(10, 50, 100,),
+                       OPTION=('EPSI_NOEU_DEPL', 'SIEF_NOEU_ELGA', )
+               )
+
+#-------------------------
+#    TEST_RESU AU POINT A
+#-------------------------
+#
+# LA REFERENCE EST LE RESULTAT DE CALCUL AVEC LE CODE FLAC 2D
+#
+
+TEST_RESU(RESU=(
+
+# CONTRAINTE SIXX
+                _F(  RESULTAT = U2,
+                       GROUP_NO = 'A',
+                       NOM_CHAM = 'SIEF_NOEU_ELGA',
+                       NOM_CMP = 'SIXX',
+                       NUME_ORDRE = 10,
+                       REFERENCE='SOURCE_EXTERNE',
+                       PRECISION = 5.E-3,
+                       VALE = -400.),
+                 _F(  RESULTAT = U2,
+                       GROUP_NO = 'A',
+                       NOM_CHAM = 'SIEF_NOEU_ELGA',
+                       NOM_CMP = 'SIXX',
+                       NUME_ORDRE = 50,
+                       REFERENCE='SOURCE_EXTERNE',
+                       PRECISION = 5.E-3,
+                       VALE = -400.),
+
+                 _F(  RESULTAT = U2,
+                       GROUP_NO = 'A',
+                       NOM_CHAM = 'SIEF_NOEU_ELGA',
+                       NOM_CMP = 'SIXX',
+                       NUME_ORDRE = 100,
+                       REFERENCE='SOURCE_EXTERNE',
+                       PRECISION = 5.E-3,
+                       VALE = -400.),
+
+# CONTRAINTE SIYY
+                 _F(  RESULTAT = U2,
+                       GROUP_NO = 'A',
+                       NOM_CHAM = 'SIEF_NOEU_ELGA',
+                       NOM_CMP = 'SIZZ',
+                       NUME_ORDRE = 10,
+                       REFERENCE='SOURCE_EXTERNE',
+                       PRECISION = 5.E-3,
+                       VALE = -796.629),
+                 _F(  RESULTAT = U2,
+                       GROUP_NO = 'A',
+                       NOM_CHAM = 'SIEF_NOEU_ELGA',
+                       NOM_CMP = 'SIZZ',
+                       NUME_ORDRE = 50,
+                       REFERENCE='SOURCE_EXTERNE',
+                       PRECISION = 5.E-3,
+                       VALE = -1113.00),
+
+                 _F(  RESULTAT = U2,
+                       GROUP_NO = 'A',
+                       NOM_CHAM = 'SIEF_NOEU_ELGA',
+                       NOM_CMP = 'SIZZ',
+                       NUME_ORDRE = 100,
+                       REFERENCE='SOURCE_EXTERNE',
+                       PRECISION = 5.E-3,
+                       VALE = -1111.49),
+
+# CONTRAINTE SIZZ
+                 _F(  RESULTAT = U2,
+                       GROUP_NO = 'A',
+                       NOM_CHAM = 'SIEF_NOEU_ELGA',
+                       NOM_CMP = 'SIYY',
+                       NUME_ORDRE = 10,
+                       REFERENCE='SOURCE_EXTERNE',
+                       PRECISION = 5.E-3,
+                       VALE = -532.210),
+                 _F(  RESULTAT = U2,
+                       GROUP_NO = 'A',
+                       NOM_CHAM = 'SIEF_NOEU_ELGA',
+                       NOM_CMP = 'SIYY',
+                       NUME_ORDRE = 50,
+                       REFERENCE='SOURCE_EXTERNE',
+                       PRECISION = 5.E-3,
+                       VALE = -637.665),
+                 _F(  RESULTAT = U2,
+                       GROUP_NO = 'A',
+                       NOM_CHAM = 'SIEF_NOEU_ELGA',
+                       NOM_CMP = 'SIYY',
+                       NUME_ORDRE = 100,
+                       REFERENCE='SOURCE_EXTERNE',
+                       PRECISION = 5.E-3,
+                       VALE = -637.165),
+
+
+# CONTRAINTE SIYZ
+                 _F(  RESULTAT = U2,
+                       GROUP_NO = 'A',
+                       NOM_CHAM = 'SIEF_NOEU_ELGA',
+                       NOM_CMP = 'SIYZ',
+                       NUME_ORDRE = 10,
+                       REFERENCE='SOURCE_EXTERNE',
+                       PRECISION = 5.E-3,
+                       VALE = -228.994),
+                 _F(  RESULTAT = U2,
+                       GROUP_NO = 'A',
+                       NOM_CHAM = 'SIEF_NOEU_ELGA',
+                       NOM_CMP = 'SIYZ',
+                       NUME_ORDRE = 50,
+                       REFERENCE='SOURCE_EXTERNE',
+                       PRECISION = 5.E-3,
+                       VALE = -411.648),
+                 _F(  RESULTAT = U2,
+                       GROUP_NO = 'A',
+                       NOM_CHAM = 'SIEF_NOEU_ELGA',
+                       NOM_CMP = 'SIYZ',
+                       NUME_ORDRE = 100,
+                       REFERENCE='SOURCE_EXTERNE',
+                       PRECISION = 5.E-3,
+                       VALE = -410.781))
+
+           )
+
+FIN()
+#

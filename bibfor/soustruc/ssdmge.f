@@ -1,0 +1,73 @@
+      SUBROUTINE SSDMGE(GEO1,GEO2,PARA,DIMGEO)
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF SOUSTRUC  DATE 01/08/95   AUTEUR CIBHHLV L.VIVAN 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+      IMPLICIT REAL*8 (A-H,O-Z)
+C     ARGUMENTS:
+C     ----------
+      INTEGER  DIMGEO
+      REAL*8 GEO1(*),GEO2(*),PARA(*)
+C ----------------------------------------------------------------------
+C     BUT:
+C        - TRANSFORMER LA GEOMETRIE D'UN NOEUD PAR ROTATION/TRANSLATION
+C
+C     IN:
+C        GEO1  : X1,Y1,Z1
+C        PARA  : TX,TY,TZ,ALPHA,BETA,GAMMA,PX,PY,PZ
+C                TX,TY,TZ: TRANSLATIONS SUIVANT X,Y,Z
+C                ALPHA,BETA,GAMMA: ANGLES NAUTIQUES (EN RADIANS)
+C                                  DE LA ROTATION
+C                EN 2D:
+C                      ALPHA= ANGLE DE ROTATION DANS LE PLAN XOY
+C                      BETA=GAMMA=0
+C                PX,PY,PZ: COORDONNEES DU POINT AUTOUR DUQUEL ON TOURNE
+C        DIMGEO:  2   OU  3
+C     OUT:
+C        GEO2 : X2,Y2,Z2
+C
+C ======================================================================
+C     CONVENTION IMPORTANTE : ON FAIT LA ROTATION AVANT LA TRANSLATION
+C ======================================================================
+      REAL*8 GEOP(3),LAMBDA(3,3)
+C
+C     -- ROTATION:
+C     ------------
+C
+C     -- ON RETRANCHE LE VECTEUR OP (CENTRE DE LA ROTATION):
+      DO 1, I=1,DIMGEO
+        GEO2(I)=GEO1(I)-PARA(6+I)
+ 1    CONTINUE
+C
+C     -- ON TOURNE LE VECTEUR PM AUTOUR DE P :
+      CALL MATROT ( PARA(4) , LAMBDA )
+      DO 2, I=1,DIMGEO
+        GEOP(I)=0.0D0
+        DO 3, J=1,DIMGEO
+          GEOP(I)=GEOP(I)+LAMBDA(J,I)*GEO2(J)
+ 3      CONTINUE
+ 2    CONTINUE
+C
+C
+C     -- TRANSLATION PAR LE VECTEUR T (ET LE VECTEUR OP QUE L'ON A OTE):
+C     -----------------------------------------------------------------
+      DO 5, I=1,DIMGEO
+        GEO2(I)=GEOP(I)+PARA(I)+PARA(6+I)
+ 5    CONTINUE
+C
+ 9999 CONTINUE
+      END

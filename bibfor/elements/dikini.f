@@ -1,0 +1,102 @@
+      SUBROUTINE DIKINI (NBT,NU1,MU1,DXU1,DRYU1,NU2,MU2,DXU2,
+     &                   DRYU2,KY,KZ,KRX,KRZ,K01,K02)
+C ----------------------------------------------------------------------
+      IMPLICIT REAL*8 (A-H,O-Z)
+      INTEGER NBT
+      REAL*8  NU1,MU1,DXU1,DRYU1
+      REAL*8  NU2,MU2,DXU2,DRYU2
+      REAL*8  KY,KZ,KRX,KRZ
+      REAL*8  K01(NBT),K02(NBT)
+C ----------------------------------------------------------------------
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ELEMENTS  DATE 10/01/95   AUTEUR D6BHHIV I.VAUTIER 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+C
+C     CALCUL DES MATRICES K01 ET K02 (MATRICES TANGENTES INITIALES
+C     POUR LES MECANISMES 1 ET 2) DANS LE CAS D'UN COMPORTEMENT
+C     DE TYPE "ASSE_CORN".
+C
+C ----------------------------------------------------------------------
+C
+C IN  : NBT   : NOMBRE DE VALEURS POUR LES DEMI-MATRICES
+C       DXU$  : DEPLACEMENT ULTIME POUR LE MECANISME $ (1 OU 2)
+C       DRYU$ : ROTATION ULTIME POUR LE MECANISME $
+C       NU$   : EFFORT ULTIME POUR LE MECANISME $
+C       MU$   : MOMENT ULTIME POUR LE MECANISME $
+C       KY,KZ,KRX,KRZ : RAIDEURS POUR LES DIRECTIONS DE
+C                       COMPORTEMENT LINEAIRE
+C
+C OUT : K01   : MATRICE TANGENTE INITIALE POUR LE MECANISME 1
+C       K02   : MATRICE TANGENTE INITIALE POUR LE MECANISME 2
+C
+C ----------------------------------------------------------------------
+C --- VALEUR SIMULANT UNE GRANDE PENTE INITIALE (R(P)/P)
+C
+      RBID = 1.D4
+C
+C --- MISE A ZERO DE K01 ET K02
+C
+      ZERO = 0.D0
+      CALL R8INIR (NBT,ZERO,K01,1)
+      CALL R8INIR (NBT,ZERO,K02,1)
+C
+C --- AFFECTATION DES TERMES NON NULS DE K01
+C
+      K01(1) = RBID*NU1/DXU1
+      K01(3) = KY
+      K01(6) = KZ
+      K01(10) = KRX
+      K01(15) = RBID*MU1/DRYU1
+      K01(21) = KRZ
+      K01(22) = -RBID*NU1/DXU1
+      K01(30) = -KY
+      K01(39) = -KZ
+      K01(49) = -KRX
+      K01(60) = -RBID*MU1/DRYU1
+      K01(72) = -KRZ
+      K01(28) = RBID*NU1/DXU1
+      K01(36) = KY
+      K01(45) = KZ
+      K01(55) = KRX
+      K01(66) = RBID*MU1/DRYU1
+      K01(78) = KRZ
+C
+C --- AFFECTATION DES TERMES NON NULS DE K02
+C
+      K02(1) = RBID*NU2/DXU2
+      K02(3) = KY
+      K02(6) = KZ
+      K02(10) = KRX
+      K02(15) = RBID*MU2/DRYU2
+      K02(21) = KRZ
+      K02(22) = -RBID*NU2/DXU2
+      K02(30) = -KY
+      K02(39) = -KZ
+      K02(49) = -KRX
+      K02(60) = -RBID*MU2/DRYU2
+      K02(72) = -KRZ
+      K02(28) = RBID*NU2/DXU2
+      K02(36) = KY
+      K02(45) = KZ
+      K02(55) = KRX
+      K02(66) = RBID*MU2/DRYU2
+      K02(78) = KRZ
+C ----------------------------------------------------------------------
+C
+ 9999 CONTINUE
+      END

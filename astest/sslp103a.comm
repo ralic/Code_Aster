@@ -1,0 +1,255 @@
+# MODIF  DATE 03/07/2002   AUTEUR CIBHHPD D.NUNEZ 
+# TITRE CALCUL DE K1, K2 EN DP ET CP SUR UNE PLAQUE CIRCULAIRE
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+# FISSUREE (FISSURE INCLINEE A 30 DEGRES)
+# ETUDE A PARTIR DE LA SOLUTION ANALYTIQUE SINGULIERE EN MODE MIXTE
+#
+
+DEBUT(   CODE=_F(  NOM = 'SSLP103A',NIV_PUB_WEB='INTERNET') )
+
+# EMPLOI DE FORMULE POUR DEFINIR LA SOLUTION ANALYTIQUE SINGULIERE
+# EN DEPLACEMENT SUR LE POURTOUR (RAYON R=100MM)
+#   NU = 0.3
+#
+K1=2.
+
+K2=1.
+
+KDP=1.8
+
+KCP=DEFI_VALEUR(R8=EVAL("""2.7/1.3"""))
+
+A0=8.6602540379999E-01
+
+A1=0.5
+
+UXTEST = FORMULE(REEL="""(REEL:X,REEL:Y) =
+ATAN2(-X*A1+Y*A0,X*A0+Y*A1)
+                 """)
+
+UXDP = FORMULE(REEL="""(REEL:X,REEL:Y) =
+2.593124823D-5 *
+        ( K1*COS(ATAN2(-X*A1+Y*A0,X*A0+Y*A1)*0.5)
+            *(KDP-COS(ATAN2(-X*A1+Y*A0,X*A0+Y*A1)))
+         +K2* SIN(ATAN2(-X*A1+Y*A0,X*A0+Y*A1)*0.5)
+            *(KDP+2.0+COS(ATAN2(-X*A1+Y*A0,X*A0+Y*A1))))
+                 """)
+
+UYDP = FORMULE(REEL="""(REEL:X,REEL:Y) =
+2.593124823D-5 *
+      (   K1* SIN(ATAN2(-X*A1+Y*A0,X*A0+Y*A1)*0.5)
+            *(KDP-COS(ATAN2(-X*A1+Y*A0,X*A0+Y*A1)))
+         -K2* COS(ATAN2(-X*A1+Y*A0,X*A0+Y*A1)*0.5)
+            *(KDP-2.0+COS(ATAN2(-X*A1+Y*A0,X*A0+Y*A1))))
+                 """)
+
+UXCP = FORMULE(REEL="""(REEL:X,REEL:Y) =
+2.593124823D-5 *
+      (   K1* COS(ATAN2(-X*A1+Y*A0,X*A0+Y*A1)*0.5)
+            *(KCP-COS(ATAN2(-X*A1+Y*A0,X*A0+Y*A1)))
+         +K2* SIN(ATAN2(-X*A1+Y*A0,X*A0+Y*A1)*0.5)
+            *(KCP+2.0+COS(ATAN2(-X*A1+Y*A0,X*A0+Y*A1))))
+                 """)
+
+UYCP = FORMULE(REEL="""(REEL:X,REEL:Y) =
+2.593124823D-5 *
+      (   K1* SIN(ATAN2(-X*A1+Y*A0,X*A0+Y*A1)*0.5)
+            *(KCP-COS(ATAN2(-X*A1+Y*A0,X*A0+Y*A1)))
+         -K2* COS(ATAN2(-X*A1+Y*A0,X*A0+Y*A1)*0.5)
+            *(KCP-2.0+COS(ATAN2(-X*A1+Y*A0,X*A0+Y*A1))))
+                 """)
+
+U1CP = FORMULE(REEL="""(REEL:X,REEL:Y) =
+A0*UXCP(X,Y)- A1*UYCP(X,Y)
+                 """)
+
+U2CP = FORMULE(REEL="""(REEL:X,REEL:Y) =
++A1*UXCP(X,Y)+ A0*UYCP(X,Y)
+                 """)
+
+U1DP = FORMULE(REEL="""(REEL:X,REEL:Y) =
+A0*UXDP(X,Y)- A1*UYDP(X,Y)
+                 """)
+
+U2DP = FORMULE(REEL="""(REEL:X,REEL:Y) =
++A1*UXDP(X,Y)+ A0*UYDP(X,Y)
+                 """)
+
+# ---------------------------------------------------------------------
+M=LIRE_MAILLAGE()
+
+M=DEFI_GROUP( reuse=M,  MAILLAGE=M,
+                 CREA_GROUP_NO=_F( GROUP_MA = 'CC') )
+
+MA=DEFI_MATERIAU(ELAS=_F( E = 200000.,  NU = 0.3, RHO = 0., ALPHA = 0.00005))
+
+CM=AFFE_MATERIAU(MAILLAGE=M,
+                 AFFE=_F(  TOUT = 'OUI',
+                        MATER = MA) )
+
+FOND=DEFI_FOND_FISS( MAILLAGE=M,
+                          FOND=_F( NOEUD = 'N1'),
+                       NORMALE=(-0.5, 8.6602540379E-01,  0.,))
+
+#---------------------------------------------------------------------
+#          MODELISATION ET CALCUL EN CONTRAINTES PLANES
+#---------------------------------------------------------------------
+
+MOCP=AFFE_MODELE( MAILLAGE=M,
+                  AFFE=_F(  TOUT = 'OUI',
+                         MODELISATION = 'C_PLAN',
+                         PHENOMENE = 'MECANIQUE') )
+
+CHCP=AFFE_CHAR_MECA_F(MODELE=MOCP,
+                      DDL_IMPO=_F( GROUP_NO = 'CC',
+                                DX = U1CP,
+                                DY = U2CP) )
+
+ELASCP=MECA_STATIQUE( MODELE=MOCP,
+                      CHAM_MATER=CM,
+                       EXCIT=_F( CHARGE = CHCP))
+
+UCP=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
+NOM_CHAM='DEPL', RESULTAT=ELASCP,
+               NUME_ORDRE=1
+               )
+
+THETACP=CALC_THETA(    MODELE=MOCP,
+                      THETA_2D=_F(  NOEUD = 'N1',
+                                 MODULE = 1.,
+                                 R_INF = 10.,
+                                 R_SUP = 20.),
+                       DIRECTION=( 8.6602540379E-01, 0.5, 0.,)  )
+
+GCP=CALC_G_THETA_T(       MODELE=MOCP,
+                               DEPL=UCP,
+                              THETA=THETACP,
+                         CHAM_MATER=CM )
+
+K1K2CP=CALC_G_THETA_T(        MODELE=MOCP,
+                                  DEPL=UCP,
+                                 THETA=THETACP,
+                                  FOND_FISS=FOND,
+                            CHAM_MATER=CM,
+                                OPTION='CALC_K_G')
+
+#---------------------------------------------------------------------
+#          MODELISATION ET CALCUL EN DEFORMATIONS PLANES
+#---------------------------------------------------------------------
+
+MODP=AFFE_MODELE( MAILLAGE=M,
+                  AFFE=_F(  TOUT = 'OUI',
+                         MODELISATION = 'D_PLAN',
+                         PHENOMENE = 'MECANIQUE') )
+
+CHDP=AFFE_CHAR_MECA_F(MODELE=MODP,
+                      DDL_IMPO=_F( GROUP_NO = 'CC',
+                                DX = U1DP,
+                                DY = U2DP) )
+
+ELASDP=MECA_STATIQUE( MODELE=MODP,
+                      CHAM_MATER=CM,
+                       EXCIT=_F( CHARGE = CHDP))
+
+UDP=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
+NOM_CHAM='DEPL', RESULTAT=ELASDP,
+               NUME_ORDRE=1
+               )
+
+THETADP=CALC_THETA(    MODELE=MODP,
+                      THETA_2D=_F(  NOEUD = 'N1',
+                                 MODULE = 1.,
+                                 R_INF = 10.,
+                                 R_SUP = 20.),
+                       DIRECTION=( 8.6602540379E-01, 0.5, 0.,)  )
+
+GDP=CALC_G_THETA_T(       MODELE=MODP,
+                               DEPL=UDP,
+                              THETA=THETADP,
+                         CHAM_MATER=CM )
+
+K1K2DP=CALC_G_THETA_T(        MODELE=MODP,
+                                  DEPL=UDP,
+                                 THETA=THETADP,
+                                  FOND_FISS=FOND,
+                            CHAM_MATER=CM,
+                                OPTION='CALC_K_G')
+
+#--------------------------------------------------------------------
+#            TEST DES RESULTATS DE G, K1 ET K2   EN CP
+#--------------------------------------------------------------------
+
+
+TEST_TABLE(       TABLE=GCP,
+                       NOM_PARA='G',
+                           VALE=2.5E-5,
+                      PRECISION=1.E-2   )
+
+TEST_TABLE(       TABLE=K1K2CP,
+                       NOM_PARA='K1',
+                           VALE=2.E0,
+                      PRECISION=1.E-2   )
+
+TEST_TABLE(       TABLE=K1K2CP,
+                       NOM_PARA='K2',
+                           VALE=1.E0,
+                      PRECISION=1.23E-2   )
+
+TEST_TABLE(       TABLE=K1K2CP,
+                       NOM_PARA='G',
+                           VALE=2.5E-5,
+                      PRECISION=1.E-2   )
+
+TEST_TABLE(       TABLE=K1K2CP,
+                       NOM_PARA='G_IRWIN',
+                           VALE=2.5E-5,
+                      PRECISION=1.E-3   )
+
+#--------------------------------------------------------------------
+#            TEST DES RESULTATS DE G, K1 ET K2   EN DP
+#--------------------------------------------------------------------
+
+
+TEST_TABLE(       TABLE=GDP,
+                       NOM_PARA='G',
+                           VALE=2.275E-5,
+                      PRECISION=1.E-2   )
+
+TEST_TABLE(       TABLE=K1K2DP,
+                       NOM_PARA='K1',
+                           VALE=2.E0,
+                      PRECISION=1.E-2   )
+
+TEST_TABLE(       TABLE=K1K2DP,
+                       NOM_PARA='K2',
+                           VALE=1.E0,
+                      PRECISION=1.E-2   )
+
+TEST_TABLE(       TABLE=K1K2DP,
+                       NOM_PARA='G',
+                           VALE=2.275E-5,
+                      PRECISION=1.E-2   )
+
+TEST_TABLE(       TABLE=K1K2DP,
+                       NOM_PARA='G_IRWIN',
+                           VALE=2.275E-5,
+                      PRECISION=1.E-3   )
+
+FIN()
+#

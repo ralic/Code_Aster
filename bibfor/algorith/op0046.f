@@ -1,0 +1,356 @@
+      SUBROUTINE OP0046 ( IER )
+C ----------------------------------------------------------------------
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 17/06/2002   AUTEUR GNICOLAS G.NICOLAS 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+C     COMMANDE:  MECA_STATIQUE
+C
+      IMPLICIT NONE
+C
+      INTEGER IER
+C
+C --------- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
+      INTEGER ZI
+      COMMON /IVARJE/ZI(1)
+      REAL*8 ZR
+      COMMON /RVARJE/ZR(1)
+      COMPLEX*16 ZC
+      COMMON /CVARJE/ZC(1)
+      LOGICAL ZL
+      COMMON /LVARJE/ZL(1)
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32
+      CHARACTER*80 ZK80
+      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+C
+C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
+C
+C 0.3. ==> VARIABLES LOCALES
+C
+      CHARACTER*6 NOMPRO
+      PARAMETER ( NOMPRO = 'OP0046' )
+C
+      INTEGER IBID, NBID, NH , NBCHRE
+      INTEGER N1, N4, N5, N7
+      INTEGER IOPT, JOPT, NOPT, IERD, IORDR, NBMAX
+      INTEGER NCHAR, JCHAR, NUMCHA, NCHA, NPLAN, NPLA
+      INTEGER IOCC, NFON, JINF, IAINST
+      INTEGER IRET
+      INTEGER NBPASE
+      INTEGER DEB
+C
+      REAL*8       TEMPS, TIME , ALPHA, RPLAN, ZERO
+      REAL*8 PARMET(30), PARCRI(11)
+C
+      CHARACTER*1  BASE, TYPCOE
+      CHARACTER*8  K8B, RESULT, LISTPS, TEMP, NOMODE, NOMA
+      CHARACTER*8  NOMFON, CHAREP, PLAN, MODEDE
+      CHARACTER*13 INPSCO
+      CHARACTER*16 NOSY
+      CHARACTER*16 METHOD(6)
+      CHARACTER*19 SOLVEU, LISCHA, LIGREL
+      CHARACTER*19 SOLVDE
+      CHARACTER*24 MODELE, CARELE, CHARGE, FOMULT
+      CHARACTER*24 CHTIME, CHNUMC, CHAMGD, CHFREQ, CHMASS
+      CHARACTER*24 CHAMEL, CHSIG,  CHEPS
+      CHARACTER*24 CHGEOM, CHCARA(15), CHTEMP, CHTREF, CHHARM
+      CHARACTER*24 INFOCH, MATE
+      CHARACTER*24 K24B
+      CHARACTER*24 COMPOR, CARCRI
+C
+      LOGICAL EXITIM, EXIPOU, LSIEF
+C
+      COMPLEX*16    CALPHA, C16B
+C DEB ------------------------------------------------------------------
+C
+      CALL JEMARQ()
+C-----RECUPERATION DU NIVEAU D'IMPRESSION
+C
+      CALL INFMAJ
+C
+C----------------------------------------------------------------------
+      BASE ='G'
+C
+C 1.2. ==> NOM DES STRUCTURES
+C
+C               12   345678   90123
+      INPSCO = '&&'//NOMPRO//'_PSCO'
+C
+C               12   345678   90123456789
+      SOLVEU = '&&'//NOMPRO//'.SOLVEUR   '
+      LISCHA = '&&'//NOMPRO//'.LISCHA    '
+C
+      CHMASS = ' '
+      CHFREQ = ' '
+      CHTIME = ' '
+      CHARGE = ' '
+      NH     = 0
+      TYPCOE = ' '
+      CHAREP = ' '
+      K24B = ' '
+      ZERO   = 0.0D0
+      ALPHA  = 0.D0
+      CALPHA = (0.D0 , 0.D0)
+      RPLAN  = ZERO
+      NFON   = 0
+C
+C -- LECTURE DES OPERANDES DE LA COMMANDE
+C
+C            12   345678
+      K8B = '&&'//NOMPRO
+C
+      CALL NMLECT (RESULT, MODELE, MATE  , CARELE, COMPOR,
+     &             LISCHA, METHOD, SOLVEU, PARMET, PARCRI,
+     &             CARCRI, MODEDE, SOLVDE,
+     &             NBPASE, K8B, INPSCO )
+C
+      FOMULT = LISCHA//'.FCHA'
+C
+      CALL GETVID(' ','LIST_INST',0,1,1,LISTPS,N4)
+      IF (N4.EQ.0) THEN
+         CALL GETVR8(' ','INST',0,1,1,TEMPS,N5)
+         IF (N5.EQ.0) THEN
+           TEMPS = 0.D0
+         ENDIF
+         LISTPS = RESULT
+         CALL ALLIR8('V',LISTPS,1,TEMPS)
+      ENDIF
+C
+C ---- CALCUL MECANIQUE
+C
+      CALL MESTAT ( MODELE, FOMULT, LISCHA,
+     >              MATE,   CARELE,
+     >              LISTPS, SOLVEU,
+     >              NBPASE, INPSCO )
+C
+C ---- CALCUL DES OPTIONS
+C
+      CHARGE = LISCHA//'.LCHA'
+      INFOCH = LISCHA//'.INFC'
+      NOMODE = MODELE(1:8)
+      LIGREL = NOMODE//'.MODELE'
+C
+      CALL DISMOI('F','NOM_MAILLA',NOMODE,'MODELE',IBID,NOMA,IERD)
+      CALL DISMOI('F','NB_CHAMP_MAX',RESULT,'RESULTAT',NBMAX,K8B,IERD)
+      CALL GETVTX(' ','OPTION',0,1,0,K8B,N7)
+      NOPT = -N7
+C
+C-> ON RAJOUTE L'OPTION 'SIEF_ELGA_DEPL' EN PLUS
+      NOPT = NOPT + 1
+      CALL JEEXIN('&&OP0046.OPTION',IER)
+      IF(IER.NE.0) CALL JEDETR ('&&OP0046.OPTION')
+      CALL WKVECT('&&OP0046.OPTION','V V K16',NOPT,JOPT)
+      ZK16(JOPT)= 'SIEF_ELGA_DEPL'
+      CALL GETVTX(' ','OPTION',0,1,NOPT-1,ZK16(JOPT+1),IBID) 
+C
+     
+      LSIEF = .TRUE.
+      DEB = 1
+      DO 10 IOPT = 1,NOPT-1
+         IF(ZK16(JOPT+IOPT).EQ.'SANS')  LSIEF = .FALSE.
+ 10   CONTINUE
+ 
+C-> ON TRAITE LE CAS OU IL Y A SEULEMENT L'OPTION = 'SANS'      
+         IF(.NOT.LSIEF .AND. NOPT.EQ.2) THEN
+           DO 11 IORDR = 1, NBMAX
+             CALL RSEXCH(RESULT,'DEPL',IORDR,CHAMGD,IRET)
+             IF (IRET.GT.0) GOTO 11
+             IF (IRET.EQ.0) GOTO 9999
+  11       CONTINUE 
+C-> ON TRAITE LE CAS OU IL Y A  L'OPTION = 'SANS' ET D'AUTRES OPTIONS
+C   DANS CE CAS ON NE FAIT PAS SIEF_ELGA_DEPL QUI EST EN PREMIERE PLACE
+C   ON COMMENCE A ZK16(JOPT +2)
+         ELSEIF (.NOT.LSIEF.AND. NOPT.GT.2) THEN 
+           DEB = 2
+         ENDIF  
+C                  
+C
+      
+      EXIPOU = .FALSE.
+      
+      CALL DISMOI('F','EXI_POUX' ,MODELE,'MODELE',IBID,K8B,IERD)
+      IF (K8B(1:3).EQ.'OUI') EXIPOU = .TRUE.
+      CALL JELIRA(CHARGE,'LONMAX',NCHAR,K8B)
+C
+      IF ( EXIPOU ) THEN
+C
+        CALL JEVEUO(CHARGE,'L',JCHAR)
+        CALL COCHRE (ZK24(JCHAR),NCHAR,NBCHRE,IOCC)
+        IF ( NBCHRE .GT. 1 ) THEN
+           CALL UTMESS('F',NOMPRO,'VOTRE CHARGEMENT CONTIENT PLUS '
+     >                 //'D''UNE CHARGE REPARTIE. LE CALCUL N''EST PAS'
+     >                 //'POSSIBLE POUR LES MODELES DE POUTRE')
+        ENDIF
+C
+        TYPCOE = 'R'
+        ALPHA = 1.D0
+        IF (IOCC.GT.0) THEN
+          CALL GETVID('EXCIT','CHARGE'   ,IOCC,1,1,CHAREP,N1)
+          CALL GETVID('EXCIT','FONC_MULT',IOCC,1,1,NOMFON,NFON)
+        ENDIF
+      ENDIF
+C
+C     RECHERCHE DE LA CHARGE CONTENANT LA TEMPERATURE
+C     -----------------------------------------------
+      CALL JEVEUO(CHARGE,'L',JCHAR)
+      CALL JEVEUO(INFOCH,'L',JINF)
+      NBID = ZI(JINF)
+      NUMCHA = ZI(JINF-1+2+2*NBID)
+      IF (NUMCHA.NE.0) THEN
+         TEMP = ZK24(JCHAR-1+NUMCHA)(1:8)
+         NCHA = 1
+      ELSE
+         TEMP = ' '
+         NCHA = 0
+      ENDIF
+      CALL MECHNC (NOMA,' ',0,CHNUMC)
+C
+C     BOUCLE SUR LES OPTIONS DE MECANIQUE :
+C     -----------------------------------
+      CALL JEVEUO(LISTPS//'           .VALE','L',IAINST)
+      EXITIM = .TRUE.
+      DO 55 IOPT = DEB,NOPT
+         NOSY = ZK16(JOPT-1+IOPT)
+         IF (NOSY.EQ.'SANS') GO TO 55
+         DO 13 IORDR = 1,NBMAX
+C
+            IF      ( ZK16(JOPT-1+IOPT) .EQ. 'EFGE_ELNO_DEPL' ) THEN
+              CALL GETVTX(' ','PLAN'        ,0,1,1,PLAN,  NPLAN)
+              IF (NPLAN.NE.0) THEN
+                CALL GETVTX(' ','PLAN',1,1,1,PLAN,NPLA)
+              IF (PLAN.EQ.'MAIL') THEN
+                RPLAN = DBLE(0)
+              ELSEIF (PLAN.EQ.'SUP') THEN
+                RPLAN = DBLE(1)
+              ELSEIF (PLAN.EQ.'INF') THEN
+                RPLAN = DBLE(-1)
+              ELSEIF (PLAN.EQ.'MOY') THEN
+                RPLAN = DBLE(2)
+              ENDIF
+              CHFREQ = '&&OP0046.FREQ'
+              CALL MECACT('V',CHFREQ,'MAILLA',NOMA,'FREQ_R',1,
+     >                    'FREQ',IBID,RPLAN,C16B,K8B)
+              ENDIF
+            ENDIF
+C
+            IF      ( ZK16(JOPT-1+IOPT) .EQ. 'EQUI_ELGA_EPSI' ) THEN
+            CALL RSEXCH(RESULT,'EPSI_ELGA_DEPL',IORDR,CHEPS,IRET)
+              IF (IRET.GT.0) THEN
+                 CALL UTMESS('A',NOMPRO,
+     >           ' LE CHAMP DE NOM SYMBOLIQUE EPSI_ELGA_DEPL EST'
+     >           // ' OBLIGATOIRE POUR OPTION '//ZK16(JOPT-1+IOPT))
+                   GOTO 13
+              ENDIF
+C
+            ELSE IF ( ZK16(JOPT-1+IOPT) .EQ. 'EQUI_ELNO_EPSI' ) THEN
+            CALL RSEXCH(RESULT,'EPSI_ELNO_DEPL',IORDR,CHEPS,IRET)
+              IF (IRET.GT.0) THEN
+                 CALL UTMESS('A',NOMPRO,
+     >           ' LE CHAMP DE NOM SYMBOLIQUE EPSI_ELNO_DEPL EST'
+     >           // ' OBLIGATOIRE POUR OPTION '//ZK16(JOPT-1+IOPT))
+                   GOTO 13
+              ENDIF
+C
+            ELSE IF ( ZK16(JOPT-1+IOPT) .EQ. 'EQUI_ELGA_EPME' ) THEN
+            CALL RSEXCH(RESULT,'EPME_ELGA_DEPL',IORDR,CHEPS,IRET)
+              IF (IRET.GT.0) THEN
+                 CALL UTMESS('A',NOMPRO,
+     >           ' LE CHAMP DE NOM SYMBOLIQUE EPME_ELGA_DEPL EST'
+     >           // ' OBLIGATOIRE POUR OPTION '//ZK16(JOPT-1+IOPT))
+                   GOTO 13
+              ENDIF
+C
+            ELSE IF ( ZK16(JOPT-1+IOPT) .EQ. 'EQUI_ELNO_EPME' ) THEN
+            CALL RSEXCH(RESULT,'EPME_ELNO_DEPL',IORDR,CHEPS,IRET)
+              IF (IRET.GT.0) THEN
+                 CALL UTMESS('A',NOMPRO,
+     >           ' LE CHAMP DE NOM SYMBOLIQUE EPME_ELNO_DEPL EST'
+     >           // ' OBLIGATOIRE POUR OPTION '//ZK16(JOPT-1+IOPT))
+                   GOTO 13
+              ENDIF
+C
+            ELSE IF ( ZK16(JOPT-1+IOPT) .EQ. 'EQUI_ELGA_SIGM' ) THEN
+              CALL RSEXCH(RESULT,'SIEF_ELGA_DEPL',IORDR,CHSIG,IRET)
+                IF (IRET.GT.0) THEN
+                   CALL UTMESS('A',NOMPRO,
+     >              ' LE CHAMP DE NOM SYMBOLIQUE SIEF_ELGA_DEPL EST'
+     >             // ' OBLIGATOIRE POUR OPTION '//ZK16(JOPT-1+IOPT))
+                   GOTO 13
+                ENDIF
+C
+            ELSE IF ( ZK16(JOPT-1+IOPT) .EQ. 'EQUI_ELNO_SIGM' ) THEN
+              CALL RSEXCH(RESULT,'SIGM_ELNO_DEPL',IORDR,CHSIG,IRET)
+                IF (IRET.GT.0) THEN
+                   CALL UTMESS('A',NOMPRO,
+     >              ' LE CHAMP DE NOM SYMBOLIQUE SIGM_ELNO_DEPL EST'
+     >             // ' OBLIGATOIRE POUR OPTION '//ZK16(JOPT-1+IOPT))
+                   GOTO 13
+                ENDIF
+C
+            ELSE IF ( ZK16(JOPT-1+IOPT) .EQ. 'SIEF_ELNO_ELGA' ) THEN
+               CALL RSEXCH(RESULT,'SIEF_ELGA_DEPL',IORDR,CHAMGD,IRET)
+               IF (IRET.GT.0) THEN
+                   CALL UTMESS('A',NOMPRO,
+     >             ' LE CHAMP DE NOM SYMBOLIQUE SIEF_ELGA_DEPL EST'
+     >             // ' OBLIGATOIRE POUR OPTION '//ZK16(JOPT-1+IOPT))
+                   GOTO 13
+               ENDIF
+C
+            ELSE
+               CALL RSEXCH(RESULT,'DEPL',IORDR,CHAMGD,IRET)
+               IF (IRET.GT.0) GOTO 13
+            ENDIF
+C
+            CALL RSEXCH(RESULT,NOSY,IORDR,CHAMEL,IRET)
+            CALL MECHAM(NOSY,NOMODE,NCHA,TEMP,CARELE(1:8),NH,
+     >                              CHGEOM,CHCARA,CHHARM,IRET )
+            IF (IRET.NE.0) GOTO 13
+            TIME = ZR(IAINST-1+IORDR)
+            CALL MECHTI(CHGEOM(1:8),TIME,CHTIME)
+            CALL MECHTE(NOMODE,NCHA,TEMP,MATE,EXITIM,TIME,
+     >                                                 CHTREF,CHTEMP )
+C
+            IF ( EXIPOU .AND. NFON.NE.0 ) THEN
+              CALL FOINTE('F ',NOMFON,1,'INST',TIME,ALPHA,IER)
+            ENDIF
+C
+            IBID = 0
+            CALL MECALC(NOSY,NOMODE,CHAMGD,CHGEOM,MATE,CHCARA,CHTEMP,
+     >                  CHTREF,CHTIME,CHNUMC,CHHARM,CHSIG,CHEPS,
+     >                  CHFREQ,CHMASS,K24B,CHAREP,TYPCOE,ALPHA,CALPHA,
+     >                  K24B,K24B,CHAMEL,LIGREL,BASE,
+     >                  K24B,K24B,K24B,K24B,
+     >                  K24B, K24B, K8B, IBID, IRET )
+C
+            CALL RSNOCH(RESULT,NOSY,IORDR,' ')
+ 13      CONTINUE
+ 55   CONTINUE
+C
+ 9999 CONTINUE
+C
+      CALL TITRE
+      CALL JEDETC('V','&&',1)
+      CALL JEDETC('V','_',1)
+      CALL JEDETC('V',RESULT,1)
+      CALL JEDETC('V','.CODI',20)
+      CALL JEDETC('V','.MATE_CODE',9)
+99999 CONTINUE
+      CALL JEDEMA()
+      END

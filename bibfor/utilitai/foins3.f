@@ -1,0 +1,179 @@
+      SUBROUTINE FOINS3 ( METHOD,NOMFON,NATURE,AMOR,CRIT,EPSI,
+     &                                  FINI,FFIN,ISPEC )
+      IMPLICIT  NONE
+      CHARACTER*(*)       METHOD, NOMFON, NATURE, CRIT
+      REAL*8              FINI, FFIN, ISPEC, AMOR, EPSI
+C     ------------------------------------------------------------------
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF UTILITAI  DATE 07/03/2001   AUTEUR CIBHHLV L.VIVAN 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+C     ------------------------------------------------------------------
+C
+C     CALCUL DE L INTENSITE SPECTRALE (IH) A PARTIR D UNE NAPPE DE  
+C     SPECTRE(S) DE REPONSE D'OSCILLATEUR (SRO)
+C
+C IN      METHOD : K : METHODE D'INTEGRATION (TRAPEZE OU SIMPSON)
+C IN      NOMFON : K : NOM DE LA FONCTION REPRESENTANT LA NAPPE DE SRO
+C IN      NATURE : K : NATURE DES SPECTRES DE LA NAPPE
+C IN      AMOR   : R : COEFFICIENT D'AMORTISSEMENT VOULU POUR LE SRO 
+C                      INTERPOLE
+C IN      CRIT   : K : CRITERE D'ERREUR (ABSOLUE OU RELATIVE)
+C IN      EPSI   : R : TOLERENCE SUR LA PRECISION DES REELS 
+C IN_OUT  FINI   : R : BORNE INFERIEURE DE L'INTEGRATION (DEF=0.4HZ)
+C IN_OUT  FFIN   : R : BORNE SUPERIEURE DE L'INTEGRATION (DEF=10 HZ)
+C OUT     ISPEC  : R : INTENSITE SPECTRALE (IH) CHERCHEE
+C
+C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
+      INTEGER          ZI
+      COMMON  /IVARJE/ ZI(1)
+      REAL*8           ZR
+      COMMON  /RVARJE/ ZR(1)
+      COMPLEX*16       ZC
+      COMMON  /CVARJE/ ZC(1)
+      LOGICAL          ZL
+      COMMON  /LVARJE/ ZL(1)
+      CHARACTER*8      ZK8
+      CHARACTER*16            ZK16
+      CHARACTER*24                    ZK24
+      CHARACTER*32                            ZK32
+      CHARACTER*80                                    ZK80
+      COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+      CHARACTER*32 JEXNUM,JEXNOM
+C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
+C
+      INTEGER        INTRP0, INTRP1, IDEB, IFIN, IABSS
+      INTEGER        NBVALU, LABSS, LORDO, LSPEC, LPRORF, LFINI, LFFIN
+      INTEGER        NBVAL, LVAR, NBPTS, IER
+      REAL*8         FRQ, SPCT, F0, F1, VALPU(2)
+      REAL*8         SIGN, AUX, CSTE, DEUXPI, R8DEPI
+      CHARACTER*8    NOMPU(2),K8B
+      CHARACTER*24   PROL , VALE
+C     ------------------------------------------------------------------
+      DATA  NOMPU / 'AMOR' , 'FREQ'    /
+C     ------------------------------------------------------------------
+C
+      CALL JEMARQ()
+      VALPU(1) = AMOR
+      DEUXPI=R8DEPI()
+C
+      PROL(1:19)  = NOMFON
+      PROL(20:24) = '.PROL'
+      CALL JEVEUO ( PROL, 'L', LPRORF )
+C
+C
+      IF ( ZK8(LPRORF) .EQ. 'NAPPE' ) THEN
+C
+         VALE(20:24) = '.VALE'
+         VALE(1:19)  = NOMFON
+C
+         CALL JELIRA ( JEXNUM(VALE,1), 'LONUTI', NBVAL, K8B )
+         NBPTS = NBVAL / 2
+C
+         CALL JEVEUO ( JEXNUM(VALE,1), 'L', LVAR )
+C
+C        -------------------------------------------------------------
+         LFINI = 1
+         F0 = FINI
+         LFFIN = 1
+         F1 = FFIN     
+C
+         SIGN = 1.D0
+         IF ( F0 .GT. F1 ) THEN
+            AUX = F1
+            F1  = F0
+            F0  = AUX
+            SIGN = - SIGN 
+         ENDIF
+C
+         CALL FONOC0 ( ZR(LVAR), FINI, LFINI, FFIN, LFFIN, CRIT, EPSI,
+     &                     NBPTS, F0, IDEB, INTRP0, F1, IFIN, INTRP1 )
+C
+C        --- ALLOCATION DES TABLEAUX AUXILIAIRES ---
+C
+         NBVALU = IFIN - IDEB + 1
+         IF( INTRP0 .EQ. 1)  NBVALU = NBVALU + 1
+         IF( INTRP1 .EQ. 1)  NBVALU = NBVALU + 1
+         IF(IDEB .EQ. 0 .AND. IFIN .EQ. 0)  NBVALU = 2
+C
+         CALL WKVECT('&&FOINS3.ABSS', 'V V R',NBVALU,LABSS)
+         CALL WKVECT('&&FOINS3.ORDO', 'V V R',NBVALU,LORDO)
+         CALL WKVECT('&&FOINS3.ISPEC',  'V V R',NBVALU,LSPEC)
+C
+C        --- STOKAGE DES FREQUENCES COMPRISES ENTRE F0 ET F1 ---
+C
+         ZR(LABSS) = F0
+         DO 55 IABSS = 2, NBVALU-1
+            ZR(LABSS+IABSS-1) = ZR(LVAR+IDEB+IABSS-2) 
+  55     CONTINUE        
+         ZR(LABSS+NBVALU-1) = F1
+C
+C        --- INTERPOLATION DE LA NAPPE DE SPECTRE(S) EN UN SEUL SPECTRE
+C
+         CALL UTMESS('I','INTERPOLATIONS','ATTENTION : POUR QUE LES'
+     &   //' INTERPOLATIONS SUR LES FREQUENCES'
+     &   //' SOIENT POSSIBLES, FREQ_INIT ET FREQ_FIN DOIVENT ETRE'
+     &   //' COMPRIS ENTRE LES DEUX EXTREMA DE LA PLAGE DE FREQUENCES'
+     &   //' DE LA NAPPE DONNEE')
+C
+         IF ( NATURE .EQ. 'DEPL') THEN
+               CALL UTMESS('I','INTENSITE SPECTRALE','POUR CALCULER L'
+     &         //' INTENSITE SPECTRALE, LE(S) SPECTRE(S) EN DEPLACEMENT'
+     &         //' SONT TRANSFORMES EN SPECTRE(S) EN VITESSE')
+         ELSEIF ( NATURE .EQ. 'ACCE') THEN
+               CALL UTMESS('I','INTENSITE SPECTRALE','POUR CALCULER L'
+     &         //' INTENSITE SPECTRALE, LE(S) SPECTRE(S) EN'
+     &         //' ACCELERATION EST(SONT) TRANSFORMES EN SPECTRE(S)'
+     &         //' EN VITESSE')
+         ENDIF
+C
+C        --- BOUCLE SUR LES  FREQUENCES : ON INTERPOLE LA NAPPE SUR LES 
+C            PARAMETRES FREQUENCES ET AMORTISSEMENT ---
+C
+         DO 77 IABSS = 1, NBVALU
+            FRQ = ZR(LABSS+IABSS-1)
+            VALPU(2) = FRQ
+            CALL FOINTE('F ',NOMFON, 2, NOMPU, VALPU, SPCT, IER )
+C
+            IF ( NATURE .EQ. 'DEPL') THEN
+               ZR(LORDO+IABSS-1) = SPCT / FRQ**2*DEUXPI*FRQ
+C
+            ELSEIF ( NATURE .EQ. 'VITE') THEN
+               ZR(LORDO+IABSS-1) = SPCT / FRQ**2
+C
+            ELSEIF ( NATURE .EQ. 'ACCE') THEN
+               ZR(LORDO+IABSS-1) = SPCT/FRQ**2/(DEUXPI*FRQ)
+            ENDIF
+C
+  77     CONTINUE
+C
+C        -- CALCUL DE L INTENSITE SPECTRALE --
+         CSTE = 0.D0
+         CALL FOC2IN(METHOD,NBVALU,ZR(LABSS),ZR(LORDO),CSTE,ZR(LSPEC)) 
+         ISPEC = ZR(LSPEC+NBVALU-1)
+C
+         CALL JEDETR('&&FOINS3.ABSS')
+         CALL JEDETR('&&FOINS3.ORDO')
+         CALL JEDETR('&&FOINS3.ISPEC')
+C
+      ELSE
+         CALL UTMESS('F','FOINS3', ZK8(LPRORF)//'LE (LES) SPECTRE(S)'
+     +             //' DOIT (DOIVENT) ETRE SOUS FORME D UNE NAPPE.')
+      ENDIF
+C
+      CALL JEDEMA()
+      END

@@ -1,0 +1,258 @@
+# MODIF  DATE 07/06/2002   AUTEUR DURAND C.DURAND 
+# TITRE FATIGUE COMPTAGE PAR  METHODE RAINFLOW NORME AFNOR
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+# CAS TEST DOM3 DU MANUEL DE VALIDATION DE POSTDAM VERSION 1.0
+
+DEBUT(  CODE=_F(  NOM = 'SZLZ103A',NIV_PUB_WEB='INTERNET') )
+
+TAUN=DEFI_FONCTION(    NOM_PARA='INST',
+                          VALE=(   0.,           4.,
+                                   1.,           7.,
+                                   2.,           2.,
+                                   3.,          10.,
+                                   4.,           9.6,
+                                   5.,           9.8,
+                                   6.,           5.,
+                                   7.,           9.,
+                                   8.,           3.,
+                                   9.,           4.,
+                                  10.,           2.,
+                                  11.,           2.4,
+                                  12.,           2.2,
+                                  13.,          12.,
+                                  14.,           5.,
+                                  15.,          11.,
+                                  16.,           1.,
+                                  17.,           4.,
+                                  18.,           3.,
+                                  19.,          10.,
+                                  20.,           6.,
+                                  21.,           8.,
+                                  22.,          12.,
+                                  23.,           4.,
+                                  24.,           8.,
+                                  25.,           1.,
+                                  26.,           9.,
+                                  27.,           4.,
+                                  28.,           6.,   )  )
+
+#
+#-----------------------------------------------------------------------
+
+TAB_1=POST_FATIGUE(    CHARGEMENT='UNIAXIAL',
+                         HISTOIRE=_F(  SIGM = TAUN),
+                       DELTA_OSCI=0.9,
+                        COEF_MULT=_F(  KT = 1.),
+                         COMPTAGE='RAINFLOW',
+                             INFO=2                )
+
+TEST_TABLE(        TABLE=TAB_1,
+                   FILTRE=_F(  NOM_PARA = 'CYCLE',
+                            VALE_I = 1),
+                 NOM_PARA='VALE_MAX',
+                     VALE=11.,
+                PRECISION=1.E-5                )
+
+TEST_TABLE(        TABLE=TAB_1,
+                   FILTRE=_F(  NOM_PARA = 'CYCLE',
+                            VALE_I = 1),
+                 NOM_PARA='VALE_MIN',
+                     VALE=5.,
+                PRECISION=1.E-5                )
+
+TEST_TABLE(        TABLE=TAB_1,
+                   FILTRE=_F(  NOM_PARA = 'CYCLE',
+                            VALE_I = 2),
+                 NOM_PARA='VALE_MAX',
+                     VALE=4.,
+                PRECISION=1.E-5                )
+
+TEST_TABLE(        TABLE=TAB_1,
+                   FILTRE=_F(  NOM_PARA = 'CYCLE',
+                            VALE_I = 2),
+                 NOM_PARA='VALE_MIN',
+                     VALE=3.,
+                PRECISION=1.E-5                )
+
+TEST_TABLE(        TABLE=TAB_1,
+                   FILTRE=_F(  NOM_PARA = 'CYCLE',
+                            VALE_I = 3),
+                 NOM_PARA='VALE_MAX',
+                     VALE=10.,
+                PRECISION=1.E-5                )
+
+TEST_TABLE(        TABLE=TAB_1,
+                   FILTRE=_F(  NOM_PARA = 'CYCLE',
+                            VALE_I = 3),
+                 NOM_PARA='VALE_MIN',
+                     VALE=6.,
+                PRECISION=1.E-5                )
+
+TEST_TABLE(        TABLE=TAB_1,
+                   FILTRE=_F(  NOM_PARA = 'CYCLE',
+                            VALE_I = 4),
+                 NOM_PARA='VALE_MAX',
+                     VALE=8.,
+                PRECISION=1.E-5                )
+
+TEST_TABLE(        TABLE=TAB_1,
+                   FILTRE=_F(  NOM_PARA = 'CYCLE',
+                            VALE_I = 4),
+                 NOM_PARA='VALE_MIN',
+                     VALE=4.,
+                PRECISION=1.E-5                )
+
+TEST_TABLE(        TABLE=TAB_1,
+                   FILTRE=_F(  NOM_PARA = 'CYCLE',
+                            VALE_I = 5),
+                 NOM_PARA='VALE_MAX',
+                     VALE=12.,
+                PRECISION=1.E-5                )
+
+TEST_TABLE(        TABLE=TAB_1,
+                   FILTRE=_F(  NOM_PARA = 'CYCLE',
+                            VALE_I = 5),
+                 NOM_PARA='VALE_MIN',
+                     VALE=1.,
+                PRECISION=1.E-5                )
+
+TEST_TABLE(        TABLE=TAB_1,
+                   FILTRE=_F(  NOM_PARA = 'CYCLE',
+                            VALE_I = 6),
+                 NOM_PARA='VALE_MAX',
+                     VALE=6.,
+                PRECISION=1.E-5                )
+
+TEST_TABLE(        TABLE=TAB_1,
+                   FILTRE=_F(  NOM_PARA = 'CYCLE',
+                            VALE_I = 6),
+                 NOM_PARA='VALE_MIN',
+                     VALE=4.,
+                PRECISION=1.E-5                )
+
+TEST_TABLE(        TABLE=TAB_1,
+                   FILTRE=_F(  NOM_PARA = 'CYCLE',
+                            VALE_I = 7),
+                 NOM_PARA='VALE_MAX',
+                     VALE=7.,
+                PRECISION=1.E-5                )
+
+TEST_TABLE(        TABLE=TAB_1,
+                   FILTRE=_F(  NOM_PARA = 'CYCLE',
+                            VALE_I = 7),
+                 NOM_PARA='VALE_MIN',
+                     VALE=4.,
+                PRECISION=1.E-5                )
+
+TEST_TABLE(        TABLE=TAB_1,
+                   FILTRE=_F(  NOM_PARA = 'CYCLE',
+                            VALE_I = 8),
+                 NOM_PARA='VALE_MAX',
+                     VALE=9.,
+                PRECISION=1.E-5                )
+
+TEST_TABLE(        TABLE=TAB_1,
+                   FILTRE=_F(  NOM_PARA = 'CYCLE',
+                            VALE_I = 8),
+                 NOM_PARA='VALE_MIN',
+                     VALE=2.,
+                PRECISION=1.E-5                )
+
+TEST_TABLE(        TABLE=TAB_1,
+                   FILTRE=_F(  NOM_PARA = 'CYCLE',
+                            VALE_I = 9),
+                 NOM_PARA='VALE_MAX',
+                     VALE=9.,
+                PRECISION=1.E-5                )
+
+TEST_TABLE(        TABLE=TAB_1,
+                   FILTRE=_F(  NOM_PARA = 'CYCLE',
+                            VALE_I = 9),
+                 NOM_PARA='VALE_MIN',
+                     VALE=5.,
+                PRECISION=1.E-5                )
+
+TEST_TABLE(        TABLE=TAB_1,
+                   FILTRE=_F(  NOM_PARA = 'CYCLE',
+                            VALE_I = 10),
+                 NOM_PARA='VALE_MAX',
+                     VALE=4.,
+                PRECISION=1.E-5                )
+
+TEST_TABLE(        TABLE=TAB_1,
+                   FILTRE=_F(  NOM_PARA = 'CYCLE',
+                            VALE_I = 10),
+                 NOM_PARA='VALE_MIN',
+                     VALE=3.,
+                PRECISION=1.E-5                )
+
+TEST_TABLE(        TABLE=TAB_1,
+                   FILTRE=_F(  NOM_PARA = 'CYCLE',
+                            VALE_I = 11),
+                 NOM_PARA='VALE_MAX',
+                     VALE=10.,
+                PRECISION=1.E-5                )
+
+TEST_TABLE(        TABLE=TAB_1,
+                   FILTRE=_F(  NOM_PARA = 'CYCLE',
+                            VALE_I = 11),
+                 NOM_PARA='VALE_MIN',
+                     VALE=2.,
+                PRECISION=1.E-5                )
+
+TEST_TABLE(        TABLE=TAB_1,
+                   FILTRE=_F(  NOM_PARA = 'CYCLE',
+                            VALE_I = 12),
+                 NOM_PARA='VALE_MAX',
+                     VALE=12.,
+                PRECISION=1.E-5                )
+
+TEST_TABLE(        TABLE=TAB_1,
+                   FILTRE=_F(  NOM_PARA = 'CYCLE',
+                            VALE_I = 12),
+                 NOM_PARA='VALE_MIN',
+                     VALE=1.,
+                PRECISION=1.E-5                )
+
+#-----------------------------------------------------------------------
+#
+# INTRODUCTION DE LA COMMANDE DEFI_LIST_ENTI POUR TESTER
+# LE MOT CLE TITRE AVEC SES DEMONS
+#
+
+ABPI=DEFI_LIST_ENTI(    DEBUT=1,
+                           INTERVALLE=_F(  JUSQU_A = 7,
+                                        PAS = 2),
+                           TITRE=(' TESTS DES DEMONS DANS LES TITRES',
+                '&RL CODE &CODE COMMANDE &COMMANDE VERSION &VERSION ',
+                '&RL CAS TEST &CODE',     '&RL COMMANDE &COMMANDE ',  
+                '&RL VERSION &VERSION ',  '&RL DATE &DATE &RL',       )
+                        )
+
+ABPR=DEFI_LIST_REEL(    DEBUT=1.,
+                           INTERVALLE=_F(  JUSQU_A = 7.,
+                                        PAS = 2.),
+                       TITRE=( 'SUITE DES TESTS DES DEMONS DANS TITRE ',
+                '&RL HEURE &HEURE  ',    '&RL DATE_HEURE &DATE_HEURE  ',
+                '&RL RL RETOUR LIGNE &RL LIGNE SUIVANTE',   )
+                        )
+
+#-----------------------------------------------------------------------
+FIN( )
+#

@@ -1,0 +1,111 @@
+      SUBROUTINE PRAFFE ( SDLIEU, SDEVAL, SPORIG, SPEXTR )
+C ======================================================================
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+      IMPLICIT  NONE
+      REAL*8          SPORIG(*), SPEXTR(*)
+      CHARACTER*19    SDEVAL
+      CHARACTER*24    SDLIEU
+C ---------------------------------------------------------------------
+C MODIF POSTRELE  DATE 20/11/2001   AUTEUR CIBHHLV L.VIVAN 
+C ---------------------------------------------------------------------
+
+C  DECLARATION DES COMMUNS NORMALISES JEVEUX
+C  -----------------------------------------
+
+      INTEGER        ZI
+      COMMON /IVARJE/ZI(1)
+      REAL*8         ZR
+      COMMON /RVARJE/ZR(1)
+      COMPLEX*16     ZC
+      COMMON /CVARJE/ZC(1)
+      LOGICAL        ZL
+      COMMON /LVARJE/ZL(1)
+      CHARACTER*8    ZK8
+      CHARACTER*16           ZK16
+      CHARACTER*24                    ZK24
+      CHARACTER*32                             ZK32
+      CHARACTER*80                                      ZK80
+      COMMON /KVARJE/ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
+      CHARACTER*32   JEXNOM, JEXNUM
+
+C  FIN DES COMMUNS NORMALISES JEVEUX
+C  ---------------------------------
+
+      INTEGER       AVALE, APADR, ADR1, IRET, L2, IOC, ISGT, K
+      INTEGER       NBCP, NBCO, NBSP, NBOC, NBSGT
+      CHARACTER*1   K1BID
+      CHARACTER*24  NVALE, NPADR, NABSC, NNOCP
+
+C==================== CORPS DE LA ROUTINE =============================
+
+      CALL JEMARQ()
+
+      NVALE = SDEVAL//'.VALE'
+      NNOCP = SDEVAL//'.NOCP'
+      NPADR = SDEVAL//'.PADR'
+      NABSC = SDLIEU(1:19)//'.ABSC'
+
+      CALL JELIRA ( NABSC,'NMAXOC', NBOC, K1BID )
+
+      CALL JEEXIN ( NNOCP, IRET )
+      IF (IRET.EQ.0) THEN
+         CALL UTMESS('F','PRAFFE','MANQUE LE VECTEUR "NOCP".')
+      END IF
+      CALL JELIRA ( NNOCP, 'LONMAX', NBCP, K1BID )
+
+      CALL JEVEUO ( SDEVAL//'.PNCO', 'L', AVALE )
+
+      NBCO = ZI(AVALE)
+      IF (NBCO.GT.1) THEN
+         CALL UTMESS('F','PRAFFE','ON NE TRAITE PAS LES MULTICOUCHES')
+      END IF
+
+      CALL JEVEUO ( SDEVAL//'.PNSP', 'L', AVALE )
+
+      NBSP = ZI(AVALE)
+
+      CALL JEVEUO ( NVALE, 'L', AVALE )
+      CALL JEVEUO ( NPADR, 'L', APADR )
+
+      L2 = NBSP*NBCP
+
+      DO 70,IOC = 1,NBOC,1
+
+         CALL JELIRA ( JEXNUM(NABSC,IOC), 'LONMAX', NBSGT, K1BID )
+
+         NBSGT = NBSGT - 1
+         IF (NBSGT.EQ.0) THEN
+           CALL UTMESS('F','PRAFFE','CHEMIN NUL OU DEFINI EN UN NOEUD')
+         END IF
+
+         ISGT = 1
+         ADR1 = ZI(APADR+ISGT-1)
+         DO 20,K = 1,L2,1
+            SPORIG(K) = ZR(AVALE+ADR1+K-2)
+   20    CONTINUE
+
+         ISGT = NBSGT
+         ADR1 = ZI(APADR+ISGT-1)
+         DO 40,K = 1,L2,1
+            SPEXTR(K) = ZR(AVALE+ADR1+L2+K-2)
+   40    CONTINUE
+
+   70 CONTINUE
+
+      CALL JEDEMA()
+      END

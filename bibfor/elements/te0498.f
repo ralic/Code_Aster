@@ -1,0 +1,371 @@
+      SUBROUTINE TE0498 ( OPTION , NOMTE )
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ELEMENTS  DATE 11/04/2002   AUTEUR CIBHHLV L.VIVAN 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+      IMPLICIT   NONE
+      CHARACTER*16        OPTION , NOMTE
+C ......................................................................
+C
+C     BUT: CALCUL DES VECTEURS ELEMENTAIRES EN MECANIQUE
+C          CORRESPONDANT A UN CHARGEMENT PAR ONDE PLANE
+C          SUR DES FACES D'ELEMENTS ISOPARAMETRIQUES 3D
+C
+C          OPTION : 'IMPE_ABSO'
+C 
+C    - ARGUMENTS:
+C        DONNEES:      OPTION       -->  OPTION DE CALCUL
+C                      NOMTE        -->  NOM DU TYPE ELEMENT
+C ......................................................................
+C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
+      INTEGER            ZI
+      COMMON  / IVARJE / ZI(1)
+      REAL*8             ZR
+      COMMON  / RVARJE / ZR(1)
+      COMPLEX*16         ZC
+      COMMON  / CVARJE / ZC(1)
+      LOGICAL            ZL
+      COMMON  / LVARJE / ZL(1)
+      CHARACTER*8        ZK8
+      CHARACTER*16                ZK16
+      CHARACTER*24                          ZK24
+      CHARACTER*32                                    ZK32
+      CHARACTER*80                                              ZK80
+      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
+C
+      INTEGER            IPOIDS,IVF,IDFDX,IDFDY,IGEOM,JIN,NBFPG,I,J,K
+      INTEGER            NDIM,NNO,IPG,NPG1,INO,JNO,JVAL,IIPG
+      INTEGER            IDEC,JDEC,KDEC,LDEC,IRES,IMATE,IVITE
+      INTEGER            NBPG(10),II,MATER,JINST,INDIC1,INDIC2
+      INTEGER            IDEPL,IACCE,IONDE,IER
+      REAL*8             JAC,NX,NY,NZ,SX(9,9),SY(9,9),SZ(9,9),FX,FY,FZ
+      REAL*8             VALRES(3),E,NU,LAMBDA,MU,CP,CS,RHO,TYPER
+      REAL*8             TAUX,TAUY,TAUZ,DIRX,DIRY,DIRZ
+      REAL*8             NORM,TANX,TANY,NORX,NORY,NORZ
+      REAL*8             TAONDX,TAONDY,TAONDZ,XPG(9),YPG(9)
+      REAL*8             XGG(9),YGG(9),ZGG(9),XG,YG,ZPG(9),HPG(9)
+      REAL*8             NUX,NUY,NUZ,SCAL,DTDX,DTDY,DTDZ
+      REAL*8             R8B,R8BID
+      REAL*8             NORTAN,CELE,TRACE,PARAM,DIST
+      REAL*8             SIGMA(3,3),EPSI(3,3),GRAD(3,3),VALFON
+      REAL*8             DT(3),VT(3),AT(3),DN(3),VN(3),AN(3)
+      REAL*8             VONDN(3),VONDT(3)
+      CHARACTER*2        CODRET(8),TYPE,CODRE
+      CHARACTER*8        ELREFE,NOMRES(9),K8B
+      CHARACTER*24       CHVAL,CHCTE
+C     ------------------------------------------------------------------
+C
+      CALL ELREF1(ELREFE)
+C
+      CHCTE = '&INEL.'//ELREFE//'.CARACTE'
+      CALL JEVETE ( CHCTE, 'L', JIN )
+      NDIM  = ZI(JIN+1-1)
+      NNO   = ZI(JIN+2-1)
+      NBFPG = ZI(JIN+3-1)
+      DO 10 I = 1,NBFPG
+         NBPG(I) = ZI(JIN+3-1+I)
+ 10   CONTINUE
+      NPG1 = NBPG(1)
+C
+      CHVAL = '&INEL.'//ELREFE//'.FFORMES'
+      CALL JEVETE ( CHVAL, 'L', JVAL )
+C
+      IPOIDS = JVAL + (NDIM+1)*NNO*NNO
+      IVF    = IPOIDS + NPG1
+      IDFDX  = IVF    + NPG1 * NNO
+      IDFDY  = IDFDX  + 1
+C
+      CALL JEVECH ( 'PGEOMER', 'L', IGEOM )
+      CALL JEVECH ( 'PMATERC', 'L', IMATE )
+      CALL JEVECH ( 'PONDPLA', 'L', IONDE )
+      CALL JEVECH ( 'PTEMPSR', 'L', JINST )
+      CALL JEVECH ( 'PVECTUR', 'E', IRES  )
+
+      DO 20 I = 1 , 3*NNO
+         ZR(IRES+I-1) = 0.0D0
+ 20   CONTINUE
+C
+C     --- INITIALISATION DE SIGMA
+C
+      DO 21 I = 1,3
+         DO 22 J = 1,3
+            SIGMA(I,J) = 0.D0
+22       CONTINUE
+21    CONTINUE
+C
+      MATER=ZI(IMATE)
+      NOMRES(1)='E'
+      NOMRES(2)='NU'
+      NOMRES(3)='RHO'
+      CALL RCVALA(MATER,'ELAS',0,' ',R8B,3,
+     &            NOMRES,VALRES,CODRET,'FM')
+      E = VALRES(1)
+      NU = VALRES(2)
+      RHO = VALRES(3)
+
+      LAMBDA = E*NU/(1.D0+NU)/(1.D0-2.D0*NU)
+      MU = E/2.D0/(1.D0+NU)
+
+      CP = SQRT((LAMBDA+2.D0*MU)/RHO)
+      CS = SQRT(MU/RHO)     
+C
+C     --- CARACTERISTIQUES DE L'ONDE PLANE
+C
+      CALL FOINTE('FM',ZK24(IONDE),1,'X',1.D0,DIRX,IER)
+      CALL FOINTE('FM',ZK24(IONDE+1),1,'X',1.D0,DIRY,IER)
+      CALL FOINTE('FM',ZK24(IONDE+2),1,'X',1.D0,DIRZ,IER)
+      CALL FOINTE('FM',ZK24(IONDE+3),1,'X',1.D0,TYPER,IER)
+      IF (TYPER.EQ.0.D0) TYPE = 'P'
+      IF (TYPER.EQ.1.D0) TYPE = 'SV'
+      IF (TYPER.EQ.2.D0) TYPE = 'SH'
+      CALL FOINTE('FM',ZK24(IONDE+5),1,'X',1.D0,DIST,IER)
+C
+C     --- CALCUL DU VECTEUR DIRECTEUR UNITAIRE DE L'ONDE PLANE
+C
+      NORM = SQRT(DIRX**2+DIRY**2+DIRZ**2)
+      DIRX = DIRX/NORM
+      DIRY = DIRY/NORM
+      DIRZ = DIRZ/NORM  
+
+C     COORDONNEES DES POINTS DE GAUSS SUR L'ELEMENT REEL
+
+      DO 295 I = 1,NPG1
+         XGG(I) = 0.D0
+         YGG(I) = 0.D0
+         ZGG(I) = 0.D0
+295   CONTINUE
+
+      DO 300 IPG = 1,NPG1
+         LDEC = (IPG-1)*NNO
+         DO 305 I = 1,NNO
+            II = 3*I-2
+            XGG(IPG) = XGG(IPG) + ZR(IGEOM+II-1)*ZR(IVF+LDEC+I-1)
+            YGG(IPG) = YGG(IPG) + ZR(IGEOM+II  )*ZR(IVF+LDEC+I-1)
+            ZGG(IPG) = ZGG(IPG) + ZR(IGEOM+II+1)*ZR(IVF+LDEC+I-1)
+305      CONTINUE
+300   CONTINUE
+
+C     CALCUL DU REPERE ASSOCIE A L'ONDE
+      TANX = DIRY
+      TANY = - DIRX
+
+      NORTAN = SQRT(TANX**2+TANY**2)
+
+      IF (NORTAN.NE.0.D0) THEN
+         TANX = TANX/NORTAN
+         TANY = TANY/NORTAN
+            
+         NORX = TANY*DIRZ
+         NORY = -TANX*DIRZ
+         NORZ = TANX*DIRY - TANY*DIRX
+      ELSE
+         NORX = DIRZ
+         NORY = 0.D0
+         NORZ = 0.D0
+
+         TANX = 0.D0
+         TANY = DIRZ
+      ENDIF
+      IF (TYPE.EQ.'P') THEN
+         CELE = CP
+      ELSE
+         CELE = CS
+      ENDIF
+C
+C     --- CALCUL DES PRODUITS VECTORIELS OMI X OMJ ---
+C
+      DO 30 INO = 1 , NNO
+         I = IGEOM + 3*(INO-1) -1
+         DO 32 JNO = 1,NNO
+            J = IGEOM + 3*(JNO-1) -1
+            SX(INO,JNO) = ZR(I+2) * ZR(J+3) - ZR(I+3) * ZR(J+2)
+            SY(INO,JNO) = ZR(I+3) * ZR(J+1) - ZR(I+1) * ZR(J+3)
+            SZ(INO,JNO) = ZR(I+1) * ZR(J+2) - ZR(I+2) * ZR(J+1)
+ 32      CONTINUE
+ 30   CONTINUE
+
+C
+C     --- BOUCLE SUR LES POINTS DE GAUSS ---
+C
+      DO 100 IPG = 1 , NPG1
+
+         KDEC = (IPG-1)*NNO*NDIM
+         LDEC = (IPG-1)*NNO
+C
+C        --- CALCUL DU CHARGEMENT PAR ONDE PLANE
+C
+         PARAM = DIRX*XGG(IPG)+ DIRY*YGG(IPG) 
+     &               + DIRZ*ZGG(IPG)
+         PARAM = PARAM - CELE*ZR(JINST)+DIST
+         IF (PARAM.LT.0.D0) THEN
+            VALFON = 0.D0
+         ELSE
+            CALL FOINTE('FM',ZK24(IONDE+4),1,'X',PARAM,VALFON,IER) 
+         ENDIF
+       
+C        CALCUL DES CONTRAINTES ASSOCIEES A L'ONDE PLANE
+
+C        CALCUL DU GRADIENT DU DEPLACEMENT
+         IF (TYPE.EQ.'P') THEN
+            GRAD(1,1) = DIRX*VALFON*DIRX
+            GRAD(1,2) = DIRY*VALFON*DIRX
+            GRAD(1,3) = DIRZ*VALFON*DIRX
+                  
+            GRAD(2,1) = DIRX*VALFON*DIRY
+            GRAD(2,2) = DIRY*VALFON*DIRY
+            GRAD(2,3) = DIRZ*VALFON*DIRY
+
+            GRAD(3,1) = DIRX*VALFON*DIRZ
+            GRAD(3,2) = DIRY*VALFON*DIRZ
+            GRAD(3,3) = DIRZ*VALFON*DIRZ
+         ENDIF
+         IF (TYPE.EQ.'SV') THEN
+            GRAD(1,1) = DIRX*VALFON*NORX
+            GRAD(1,2) = DIRY*VALFON*NORX
+            GRAD(1,3) = DIRZ*VALFON*NORX
+                  
+            GRAD(2,1) = DIRX*VALFON*NORY
+            GRAD(2,2) = DIRY*VALFON*NORY
+            GRAD(2,3) = DIRZ*VALFON*NORY
+
+            GRAD(3,1) = DIRX*VALFON*NORZ
+            GRAD(3,2) = DIRY*VALFON*NORZ
+            GRAD(3,3) = DIRZ*VALFON*NORZ
+         ENDIF
+         IF (TYPE.EQ.'SH') THEN
+            GRAD(1,1) = DIRX*VALFON*TANX
+            GRAD(1,2) = DIRY*VALFON*TANX
+            GRAD(1,3) = DIRZ*VALFON*TANX
+                  
+            GRAD(2,1) = DIRX*VALFON*TANY
+            GRAD(2,2) = DIRY*VALFON*TANY
+            GRAD(2,3) = DIRZ*VALFON*TANY
+
+            GRAD(3,1) = 0.D0
+            GRAD(3,2) = 0.D0
+            GRAD(3,3) = 0.D0
+         ENDIF
+
+C        CALCUL DES DEFORMATIONS
+         DO 201 INDIC1 = 1,3
+            DO 202 INDIC2 = 1,3 
+               EPSI(INDIC1,INDIC2) = 5.D-1*(GRAD(INDIC1,INDIC2)
+     &                                   + GRAD(INDIC2,INDIC1))
+202         CONTINUE
+201      CONTINUE
+
+C        CALCUL DES CONTRAINTES
+         TRACE = 0.D0
+         DO 203 INDIC1 = 1,3
+            TRACE = TRACE + EPSI(INDIC1,INDIC1)
+203      CONTINUE
+         DO 204 INDIC1 = 1,3
+            DO 205 INDIC2 = 1,3
+               IF (INDIC1.EQ.INDIC2) THEN
+                  SIGMA(INDIC1,INDIC2) = LAMBDA*TRACE
+     &                 +2*MU*EPSI(INDIC1,INDIC2)
+               ELSE
+                  SIGMA(INDIC1,INDIC2) = 2*MU
+     &                 *EPSI(INDIC1,INDIC2)
+               ENDIF
+205         CONTINUE
+204      CONTINUE        
+C
+         NX = 0.0D0
+         NY = 0.0D0
+         NZ = 0.0D0       
+C
+C        --- CALCUL DE LA NORMALE AU POINT DE GAUSS IPG ---
+C
+         DO 102 I = 1 , NNO
+            IDEC = (I-1)*NDIM
+            DO 102 J = 1 , NNO
+               JDEC = (J-1)*NDIM
+           NX = NX + ZR(IDFDX+KDEC+IDEC) * ZR(IDFDY+KDEC+JDEC) * SX(I,J)
+           NY = NY + ZR(IDFDX+KDEC+IDEC) * ZR(IDFDY+KDEC+JDEC) * SY(I,J)
+           NZ = NZ + ZR(IDFDX+KDEC+IDEC) * ZR(IDFDY+KDEC+JDEC) * SZ(I,J)
+ 102     CONTINUE
+C
+C        --- LE JACOBIEN EST EGAL A LA NORME DE LA NORMALE ---
+C
+         JAC = SQRT (NX*NX + NY*NY + NZ*NZ) 
+C       
+C        --- CALCUL DE LA NORMALE UNITAIRE ---
+C
+          NUX = NX / JAC
+          NUY = NY / JAC
+          NUZ = NZ / JAC
+C
+C        --- CALCUL DE V.N ---
+C
+          VONDT(1) = 0.D0
+          VONDT(2) = 0.D0
+          VONDT(3) = 0.D0
+ 
+          IF (TYPE.EQ.'P') THEN
+             VONDT(1) = -CELE*VALFON*DIRX
+             VONDT(2) = -CELE*VALFON*DIRY
+             VONDT(3) = -CELE*VALFON*DIRZ
+          ENDIF
+          IF (TYPE.EQ.'SV') THEN
+             VONDT(1) = -CELE*VALFON*NORX
+             VONDT(2) = -CELE*VALFON*NORY
+             VONDT(3) = -CELE*VALFON*NORZ
+          ENDIF
+          IF (TYPE.EQ.'SH') THEN
+             VONDT(1) = -CELE*VALFON*TANX
+             VONDT(2) = -CELE*VALFON*TANY
+             VONDT(3) = 0.D0
+          ENDIF
+          CALL PRONOR(NUX,NUY,NUZ,VONDT,VONDN)
+C
+C        --- CALCUL DU VECTEUR CONTRAINTE
+C
+          TAUX = - RHO*(CP*VONDN(1) + CS*VONDT(1))
+          TAUY = - RHO*(CP*VONDN(2) + CS*VONDT(2))
+          TAUZ = - RHO*(CP*VONDN(3) + CS*VONDT(3))
+C
+C        --- CALCUL DU VECTEUR CONTRAINTE DU A UNE ONDE PLANE
+C
+          TAONDX = SIGMA(1,1)*NUX
+          TAONDX = TAONDX + SIGMA(1,2)*NUY
+          TAONDX = TAONDX + SIGMA(1,3)*NUZ
+
+          TAONDY = SIGMA(2,1)*NUX
+          TAONDY = TAONDY + SIGMA(2,2)*NUY
+          TAONDY = TAONDY + SIGMA(2,3)*NUZ
+
+          TAONDZ = SIGMA(3,1)*NUX
+          TAONDZ = TAONDZ + SIGMA(3,2)*NUY
+          TAONDZ = TAONDZ + SIGMA(3,3)*NUZ
+C
+C        --- CALCUL DU VECTEUR ELEMENTAIRE
+C
+          DO 130 I = 1,NNO
+             II = 3*I-2
+             ZR(IRES+II-1) = ZR(IRES+II-1) + 
+     &     (TAUX+TAONDX)*ZR(IVF+LDEC+I-1)*JAC*ZR(IPOIDS+IPG-1)
+             ZR(IRES+II+1-1) = ZR(IRES+II+1-1) + 
+     &     (TAUY+TAONDY)*ZR(IVF+LDEC+I-1)*JAC*ZR(IPOIDS+IPG-1) 
+             ZR(IRES+II+2-1) = ZR(IRES+II+2-1) + 
+     &     (TAUZ+TAONDZ)*ZR(IVF+LDEC+I-1)*JAC*ZR(IPOIDS+IPG-1)
+130       CONTINUE
+
+100    CONTINUE  
+
+       END

@@ -1,0 +1,71 @@
+#& MODIF COMMANDE  DATE 09/10/2002   AUTEUR DURAND C.DURAND 
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+POST_DYNA_ALEA=OPER(nom="POST_DYNA_ALEA",op= 132,sd_prod=tabl_post_alea,
+                    fr="Traitements statistiques de résultats de type interspectre et impression sur fichiers",
+                    docu="U4.84.04-d",reentrant='n',
+            UIinfo={"groupes":("Post traitements",)},
+         regles=(UN_PARMI('NOEUD_I','NUME_ORDRE_I','OPTION'),),
+         INTE_SPEC       =SIMP(statut='o',typ=tabl_intsp ),
+         NUME_VITE_FLUI  =SIMP(statut='f',typ='I' ),  
+         TOUT_ORDRE      =SIMP(statut='f',typ='TXM',into=("OUI",) ),
+         NUME_ORDRE_I    =SIMP(statut='f',typ='I',max='**' ),
+         NOEUD_I         =SIMP(statut='f',typ=no,max='**'),         
+         OPTION          =SIMP(statut='f',typ='TXM',into=("DIAG",) ),
+         b_nume_ordre_i =BLOC(condition = "NUME_ORDRE_I != None",
+           NUME_ORDRE_J    =SIMP(statut='o',typ='I',max='**' ),   
+         ),  
+         b_noeud_i      =BLOC(condition = "NOEUD_I != None",
+           NOEUD_J         =SIMP(statut='o',typ=no,max='**'),
+           NOM_CMP_I       =SIMP(statut='o',typ='TXM',max='**' ),  
+           NOM_CMP_J       =SIMP(statut='o',typ='TXM',max='**' ),     
+         ),  
+         DEPASSEMENT     =FACT(statut='f',min=1,max='**',
+           fr="Loi de dépassement d un seuil pendant une durée donnée",
+           regles=(ENSEMBLE('VALE_MIN','VALE_MAX'),),
+           VALE_MIN        =SIMP(statut='f',typ='R' ),  
+           VALE_MAX        =SIMP(statut='f',typ='R' ),  
+           PAS             =SIMP(statut='f',typ='R' ),  
+           DUREE           =SIMP(statut='f',typ='R',defaut= 1. ),  
+         ),
+         RAYLEIGH        =FACT(statut='f',min=1,max='**',
+           fr="Densité de probabilité de pic positif, loi adaptée à des signaux à bande étroite",
+           regles=(ENSEMBLE('VALE_MIN','VALE_MAX'),),
+           VALE_MIN        =SIMP(statut='f',typ='R' ),  
+           VALE_MAX        =SIMP(statut='f',typ='R' ),  
+           PAS             =SIMP(statut='f',typ='R' ),  
+         ),
+         GAUSS           =FACT(statut='f',min=1,max='**',
+           fr="Densité de probabilité de pic positif, loi normale adaptée à des signaux large bande",
+           regles=(ENSEMBLE('VALE_MIN','VALE_MAX'),),
+           VALE_MIN        =SIMP(statut='f',typ='R' ),  
+           VALE_MAX        =SIMP(statut='f',typ='R' ),  
+           PAS             =SIMP(statut='f',typ='R' ),  
+         ),
+         VANMARCKE       =FACT(statut='f',min=1,max='**',
+           fr="Probabilité de non dépassement de seuil pendant une durée donnée (analyse sismique)",
+           regles=(ENSEMBLE('VALE_MIN','VALE_MAX'),),
+           VALE_MIN        =SIMP(statut='f',typ='R' ),  
+           VALE_MAX        =SIMP(statut='f',typ='R' ),  
+           PAS             =SIMP(statut='f',typ='R' ),  
+           DUREE           =SIMP(statut='f',typ='R',defaut= 10. ),  
+         ),
+         MOMENT          =SIMP(statut='f',typ='I',max='**',fr="Moments spectraux en complément des cinq premiers" ),  
+         TITRE           =SIMP(statut='f',typ='TXM',max='**' ),  
+         INFO            =SIMP(statut='f',typ='I',defaut= 1,into=(1,2) ),
+)  ;

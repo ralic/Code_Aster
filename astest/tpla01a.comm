@@ -1,0 +1,249 @@
+# MODIF  DATE 28/08/2002   AUTEUR DURAND C.DURAND 
+# TITRE CYLINDRE CREUX EN THERMIQUE STATIONNAIRE (TRIA3/QUAD4 AXIS)
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+
+
+DEBUT(CODE=_F( NOM = 'TPLA01A',NIV_PUB_WEB='INTERNET'))
+
+MAIL=LIRE_MAILLAGE( )
+
+ACIER=DEFI_MATERIAU( THER=_F(  LAMBDA = 1.0, RHO_CP = 2.0))
+
+CHMAT=AFFE_MATERIAU(  MAILLAGE=MAIL,
+                AFFE=_F(  TOUT = 'OUI', MATER = ACIER) )
+
+MOTH=AFFE_MODELE(  MAILLAGE=MAIL,
+                      AFFE=_F( TOUT = 'OUI', MODELISATION = 'AXIS',
+                                      PHENOMENE = 'THERMIQUE'))
+
+LR8=DEFI_LIST_REEL(        DEBUT=0.,
+       INTERVALLE=_F(    JUSQU_A = 10.0,   NOMBRE = 2)
+                       )
+
+CHTH=AFFE_CHAR_THER(  MODELE=MOTH,FLUX_REP=(
+          _F( GROUP_MA = 'GRMA13', FLUN = 0.0),
+          _F( GROUP_MA = 'GRMA14', FLUN = 1729.9091)),
+           ECHANGE=_F( GROUP_MA = 'GRMA12', COEF_H = 500., TEMP_EXT = 17.034444),
+          TEMP_IMPO=_F( GROUP_NO = 'GRNM15', TEMP = 100.0)
+         )
+
+TEMPE=THER_LINEAIRE(       MODELE=MOTH,
+                           CHAM_MATER=CHMAT,
+                            TEMP_INIT=_F(  STATIONNAIRE = 'OUI'),
+                            INCREMENT=_F(  LIST_INST = LR8),
+                                EXCIT=_F(  CHARGE = CHTH)
+                        )
+
+T2=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_TEMP_R',
+NOM_CHAM='TEMP', RESULTAT=TEMPE,
+                   NUME_ORDRE=2)
+
+FLUXN=CALC_CHAM_ELEM(    MODELE=MOTH,  TEMP=T2,
+            CHAM_MATER=CHMAT,   OPTION='FLUX_ELNO_TEMP')
+
+TEST_RESU(CHAM_NO=(
+   
+   _F( CHAM_GD = T2, NOEUD = 'N1',   NOM_CMP = 'TEMP', VALE = 100.0, REFERENCE = 'ANALYTIQUE'),
+   _F( CHAM_GD = T2, NOEUD = 'N41',  NOM_CMP = 'TEMP', VALE = 20.0,  REFERENCE = 'ANALYTIQUE'),
+   _F( CHAM_GD = T2, NOEUD = 'N17',  NOM_CMP = 'TEMP', VALE = 66.506,REFERENCE = 'ANALYTIQUE'),
+   _F( CHAM_GD = T2, NOEUD = 'N43',  NOM_CMP = 'TEMP', VALE = 100.0, REFERENCE = 'ANALYTIQUE')),
+
+         CHAM_ELEM=(
+   _F( CHAM_GD   = FLUXN,
+       MAILLE    = 'M1',
+       NOEUD     = 'N1',
+       NOM_CMP   = 'FLUX',
+       VALE      = 1729.91,
+       PRECISION = 1.E-2,
+       REFERENCE = 'ANALYTIQUE'),
+   _F( CHAM_GD   = FLUXN,
+       MAILLE    = 'M1',
+       NOEUD     = 'N1',
+       NOM_CMP   = 'FLUY',
+       VALE      = 0.0, 
+       CRITERE   = 'ABSOLU',
+       PRECISION = 17.E0,
+       REFERENCE = 'ANALYTIQUE'),
+   _F( CHAM_GD   = FLUXN,
+       MAILLE    = 'M20', 
+       NOEUD     = 'N41', 
+       NOM_CMP   = 'FLUX',
+       VALE      = 1482.78, 
+       PRECISION = 1.E-2,
+       REFERENCE = 'ANALYTIQUE'),
+   _F( CHAM_GD   = FLUXN,
+       MAILLE    = 'M20', 
+       NOEUD     = 'N41', 
+       NOM_CMP   = 'FLUY',
+       VALE      = 0.0, 
+       CRITERE   = 'ABSOLU', 
+       PRECISION = 14.E0,
+       REFERENCE = 'ANALYTIQUE'),
+   _F( CHAM_GD   = FLUXN,
+       MAILLE    = 'M21', 
+       NOEUD     = 'N43',   
+       NOM_CMP   = 'FLUX',
+       VALE      = 1729.91,
+       PRECISION = 1.E-2,
+       REFERENCE = 'ANALYTIQUE'),
+   _F( CHAM_GD   = FLUXN,
+       MAILLE    = 'M21',
+       NOEUD     = 'N43',
+       NOM_CMP   = 'FLUY',
+       VALE      = 0.0, 
+       CRITERE   = 'ABSOLU', 
+       PRECISION = 16.E0,
+       REFERENCE = 'ANALYTIQUE'),
+   _F( CHAM_GD   = FLUXN,
+       MAILLE    = 'M8',
+       NOEUD     = 'N17',
+       NOM_CMP   = 'FLUX',
+       VALE      = 1621.79,
+       PRECISION = 1.E-2,
+       REFERENCE = 'ANALYTIQUE'),
+   _F( CHAM_GD   = FLUXN,
+       MAILLE    = 'M8',
+       NOEUD     = 'N17',
+       NOM_CMP   = 'FLUY',
+       VALE      = 0.0,
+       CRITERE   = 'ABSOLU',
+       PRECISION = 16.E0,
+       REFERENCE = 'ANALYTIQUE'),
+   _F( CHAM_GD   = FLUXN,
+       MAILLE    = 'M9',
+       NOEUD     = 'N17',
+       NOM_CMP   = 'FLUX',
+       VALE      = 1621.79,
+       PRECISION = 1.E-2,
+       REFERENCE = 'ANALYTIQUE'),
+   _F( CHAM_GD   = FLUXN,
+       MAILLE    = 'M9',
+       NOEUD     = 'N17',
+       NOM_CMP   = 'FLUY',
+       VALE      = 0.0,
+       CRITERE   = 'ABSOLU',
+       PRECISION = 16.E0,
+       REFERENCE = 'ANALYTIQUE'),)
+      )
+
+MACR_LIGN_COUPE(   RESULTAT    = TEMPE,
+                   MODELE      = MOTH,
+                   LIGN_COUPE  = ( _F( NB_POINTS  = 10,
+                                       COOR_ORIG  = (3.000E-01,0.00E+00),
+                                       COOR_EXTR  = (3.500E-01,1.00E-01),
+                                       TABLE      = CO("TABTE1")  ),
+                                   _F( NB_POINTS  = 12,
+                                       COOR_ORIG  = (3.500E-01,0.00E+00),
+                                       COOR_EXTR  = (3.000E-01,1.00E-01),
+                                       TABLE      = CO("TABTE2")  ),
+                                 )
+                     )
+
+TEST_TABLE(    TABLE=TABTE1, 
+               FILTRE=(_F(  NOM_PARA = 'NOEUD',
+                            VALE_K = 'N5'),
+                       _F(  NOM_PARA = 'NUME_ORDRE',
+                           VALE = 1),     ),
+               NOM_PARA='TEMP',
+               VALE=62.9116 ,
+               REFERENCE = 'NON_REGRESSION',
+               VERSION='6.3.14'
+          )
+
+TEST_TABLE(    TABLE=TABTE2, 
+               FILTRE=(_F(  NOM_PARA = 'NOEUD',
+                            VALE_K = 'N14'),
+                       _F(  NOM_PARA = 'NUME_ORDRE',
+                           VALE = 2),     ),
+               NOM_PARA='TEMP',
+               VALE=40.6253 ,
+               REFERENCE = 'NON_REGRESSION',
+               VERSION='6.3.14'
+          )
+
+#
+# =====================================================================
+#  POUR TESTER DE NOUVEAUX MOTS CLEFS :
+#
+
+CHT1=AFFE_CHAR_THER(  MODELE=MOTH,FLUX_REP=(
+          _F( GROUP_MA = 'GRMA13', FLUN = 0.0),
+          _F( GROUP_MA = 'GRMA14', FLUN = 1729.9091)),
+           ECHANGE=_F( GROUP_MA = 'GRMA12', COEF_H = 500., TEMP_EXT = 17.034444)
+         )
+
+#  POUR TESTER AFFE_CHAR_CINE :
+
+CHT2=AFFE_CHAR_CINE(  MODELE=MOTH,THER_IMPO=(
+          _F( GROUP_NO = 'GRNM15', TEMP = 50.0),
+          _F( NOEUD = 'N41',      TEMP = 10.0))
+         )
+
+C2=DEFI_FONCTION(NOM_PARA='INST', VALE=(-10.,2.,1000.,2.,))
+
+TEMP2=THER_LINEAIRE(        MODELE=MOTH,
+           TEMP_INIT=_F( STATIONNAIRE = 'OUI'),
+          INCREMENT=_F( LIST_INST = LR8),
+             CHAM_MATER=CHMAT,EXCIT=( _F( CHARGE = CHT1),
+                              _F( CHARGE = CHT2, FONC_MULT = C2))
+             )
+
+#
+
+TEMP2=CALC_ELEM(  reuse=TEMP2, MODELE=MOTH, CHAM_MATER=CHMAT, NUME_ORDRE=2,
+                       OPTION='FLUX_ELNO_TEMP', RESULTAT=TEMP2)
+
+F2=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='ELNO_FLUX_R',
+NOM_CHAM='FLUX_ELNO_TEMP', RESULTAT=TEMP2,
+                   NUME_ORDRE=2)
+
+TEST_RESU(
+   RESU=_F( RESULTAT = TEMP2, NOM_CHAM = 'TEMP', NUME_ORDRE = 2,
+                NOEUD = 'N17',  NOM_CMP = 'TEMP', VALE = 66.506),
+   
+   CHAM_ELEM=_F( CHAM_GD = F2,    MAILLE = 'M1',   NOEUD = 'N1',    NOM_CMP = 'FLUX',
+                          VALE = 1729.91, PRECISION = 1.E-2)
+   )
+
+# =====================================================================
+#  POUR TESTER DE NOUVEAUX MOTS CLEFS :
+#
+#  POUR TESTER AFFE_CHAR_CINE_F :
+
+C20=DEFI_FONCTION(NOM_PARA='INST', VALE=(-10.,20., 1000.,20.,))
+
+C100=DEFI_CONSTANTE(VALE=100.)
+
+CHT3=AFFE_CHAR_CINE_F(  MODELE=MOTH,THER_IMPO=(
+          _F( GROUP_NO = 'GRNM15', TEMP = C100),
+          _F( NOEUD = 'N41',      TEMP = C20))    )
+
+TEMP3=THER_LINEAIRE(        MODELE=MOTH,
+           TEMP_INIT=_F( STATIONNAIRE = 'OUI'), INCREMENT=_F( LIST_INST = LR8),
+             CHAM_MATER=CHMAT,EXCIT=( _F( CHARGE = CHT1),
+                              _F( CHARGE = CHT3))
+             )
+
+TEST_RESU(
+   RESU=_F( RESULTAT = TEMP3, NOM_CHAM = 'TEMP', NUME_ORDRE = 2,
+                NOEUD = 'N17',  NOM_CMP = 'TEMP', VALE = 66.506)
+   )
+
+FIN()
+#

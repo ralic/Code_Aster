@@ -1,0 +1,51 @@
+#& MODIF COMMANDE  DATE 09/10/2002   AUTEUR DURAND C.DURAND 
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+#              SEE THE FILE "LICENSE.TERMS" FOR INFORMATION ON USAGE AND
+#              REDISTRIBUTION OF THIS FILE.
+# ======================================================================
+def calc_fatigue_prod(TYPE_CALCUL,**args):
+  if TYPE_CALCUL == "CUMUL_DOMMAGE" : return cham_elem_dommag
+  if TYPE_CALCUL == "FATIGUE_MULTI" : return cham_elem_facy_r
+  raise AsException("type de calcul non prevu")
+
+CALC_FATIGUE=OPER(nom="CALC_FATIGUE",op= 151,sd_prod=calc_fatigue_prod,reentrant='n',
+                  fr="Calcul d un cham de dommage ou d un cisaillement maximal dans le plan critique.",
+                  docu="U4.83.02-c",
+            UIinfo={"groupes":("Post traitements",)},
+
+         TYPE_CALCUL = SIMP(statut='o',typ='TXM',
+                               into=("CUMUL_DOMMAGE","FATIGUE_MULTI",) ),
+
+         b_cumul_domma   =BLOC(condition = "TYPE_CALCUL == 'CUMUL_DOMMAGE'",
+                               fr="Calcul d un champ de dommage subi par une structure.",
+           regles=(PRESENT_PRESENT('DOMMAGE','MATER', ),),
+           OPTION          =SIMP(statut='o',typ='TXM',
+                                 into=("DOMA_ELNO_SIGM","DOMA_ELGA_SIGM",
+                                       "DOMA_ELNO_EPSI","DOMA_ELGA_EPSI",
+                                       "DOMA_ELNO_EPME","DOMA_ELGA_EPME") ),
+           HISTOIRE        =FACT(statut='o',min=1,max=1,
+             RESULTAT        =SIMP(statut='o',typ=(evol_elas,dyna_trans,
+                                                   evol_noli) ),
+             EQUI_GD         =SIMP(statut='f',typ='TXM',defaut="VMIS_SG",
+                                 into=("VMIS_SG","INVA_2_SG") ),
+           ),
+           DOMMAGE         =SIMP(statut='o',typ='TXM',
+                               into=("WOHLER","MANSON_COFFIN","TAHERI_MANSON",
+                                     "TAHERI_MIXTE",) ),
+           MATER           =SIMP(statut='o',typ=(mater) ),
+           TAHERI_NAPPE    =SIMP(statut='f',typ=(fonction) ),
+           TAHERI_FONC     =SIMP(statut='f',typ=(fonction) ),
+         ),
+
+         b_fatigue_multi   =BLOC(condition = "TYPE_CALCUL == 'FATIGUE_MULTI'",
+                                 fr="Plan critique dans le cas de la fatigue multiaxiale a grand nombre de cycles.",
+           RESULTAT      =SIMP(statut='o',typ=(evol_elas, evol_noli) ),
+           CHAM_MATER    =SIMP(statut='o',typ=(cham_mater) ),
+           CRITERE       =SIMP(statut='o',typ='TXM',into=("MATAKE",) ),
+           METHODE       =SIMP(statut='o',typ='TXM',into=("CERCLE_EXACT",) ),
+         ),
+
+         INFO            =SIMP(statut='f',typ='I',defaut= 1,into=(1,2) ),
+)  ;

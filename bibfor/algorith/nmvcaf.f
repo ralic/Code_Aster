@@ -1,0 +1,96 @@
+      SUBROUTINE NMVCAF(INDEX,CHAINZ,EXICHA,COMZ)
+
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 31/08/1999   AUTEUR VABHHTS J.PELLET 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+
+      IMPLICIT NONE
+
+      LOGICAL       EXICHA
+      CHARACTER*4   INDEX
+      CHARACTER*(*) COMZ, CHAINZ
+      CHARACTER*19  CHAIN
+      CHARACTER*14  COM
+
+
+C ----------------------------------------------------------------------
+C  AFFECTATION D'UNE VARIABLE DE COMMANDE (UNIQUEMENT POUR PORTAGE)
+C ----------------------------------------------------------------------
+C IN         INDEX   K4  INDEX DE LA VARIABLE DE COMMANDE
+C IN         CHAIN   K19 SD CHAMP_GD  DE LA VARI DE COMMANDE AFFECTEE
+C IN         EXICHA   L  TRUE SI CHAMP EXISTE VRAIMENT (PAS UN DEFAUT)
+C IN/JXVAR   COM     K14 SD VARI_COM
+C ----------------------------------------------------------------------
+
+C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
+C
+      INTEGER            ZI
+      COMMON  / IVARJE / ZI(1)
+      REAL*8             ZR
+      COMMON  / RVARJE / ZR(1)
+      COMPLEX*16         ZC
+      COMMON  / CVARJE / ZC(1)
+      LOGICAL            ZL
+      COMMON  / LVARJE / ZL(1)
+      CHARACTER*8        ZK8
+      CHARACTER*16                ZK16
+      CHARACTER*24                          ZK24
+      CHARACTER*32                                    ZK32
+      CHARACTER*80                                              ZK80
+      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+C
+C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
+
+      INTEGER      IRET, IEX
+      CHARACTER*19 CHAOUT
+
+      CALL JEMARQ()
+      COM    = COMZ
+      CHAIN  = CHAINZ
+
+C    AFFECTATION DU CHAMP
+      CALL EXISD('CHAMP_GD',CHAIN,IRET)
+      IF (IRET.EQ.0) CALL UTMESS ('F','NMVCAF','CHAMP IN INEXISTANT')
+      CHAOUT = COM // '.' // INDEX
+      CALL COPISD('CHAMP_GD','V',CHAIN,CHAOUT)
+
+C    CHAMPS REELS (TRUE) OU PAR DEFAUT (FALSE)
+      CALL JEEXIN(COM//'.EXISTENCE',IRET)
+      IF (IRET.EQ.0) THEN
+        CALL WKVECT(COM//'.EXISTENCE','V V L ',3,IEX)
+      ELSE
+        CALL JEVEUO(COM//'.EXISTENCE','E',IEX)
+      END IF
+
+      IF (INDEX.EQ.'TEMP') THEN
+        ZL(IEX+0) = EXICHA
+
+      ELSE IF (INDEX.EQ.'HYDR') THEN
+        ZL(IEX+1) = EXICHA
+
+      ELSE IF (INDEX.EQ.'SECH') THEN
+        ZL(IEX+2) = EXICHA
+
+      END IF
+
+      CALL JEDEMA()
+
+
+
+
+      END

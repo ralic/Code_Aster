@@ -1,0 +1,718 @@
+      SUBROUTINE DLNEWI(LCREA,LAMORT,IINTEG,NEQ,IMAT,MASSE,RIGID,AMORT,
+     &                  DEP0,VIT0,ACC0,NCHAR,NVECA,LIAD,LIFO,MODELE,
+     &                  MATE,CARELE,CHARGE,INFOCH,FOMULT,NUMEDD,NUME,
+     &                  SOLVEU,F0,FORCE1,CHONDP,NONDP)
+      IMPLICIT REAL*8 (A-H,O-Z)
+      CHARACTER*8 MASSE,RIGID,AMORT,CHONDP(NONDP)
+      CHARACTER*19 SOLVEU,FORCE1
+      CHARACTER*24 MODELE,CARELE,CHARGE,FOMULT,MATE,NUMEDD
+      CHARACTER*24 INFOCH,LIFO(*)
+      REAL*8 DEP0(NEQ),VIT0(NEQ),ACC0(NEQ),F0(NEQ)
+      INTEGER IINTEG,NEQ,IMAT(3),LIAD(*),NCHAR,NVECA,NUME
+      LOGICAL LAMORT,LIMPED,LCREA,LMODST
+C     ------------------------------------------------------------------
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 09/10/2002   AUTEUR DURAND C.DURAND 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+C TOLE CRP_21
+C TOLE CRP_20
+C     ------------------------------------------------------------------
+C     CALCUL MECANIQUE TRANSITOIRE PAR INTEGRATION DIRECTE
+C     AVEC METHODES IMPLICITES :                  - THETA-WILSON
+C                                                 - NEWMARK
+
+C     ------------------------------------------------------------------
+
+C  HYPOTHESES :                                                "
+C  ----------   SYSTEME CONSERVATIF DE LA FORME  K.U    +    M.U = F
+C           OU                                           '     "
+C               SYSTEME DISSIPATIF  DE LA FORME  K.U + C.U + M.U = F
+
+C     ------------------------------------------------------------------
+C  IN  : LCREA     : LOGIQUE INDIQUANT SI IL Y A REPRISE
+C  IN  : LAMORT    : LOGIQUE INDIQUANT SI IL Y A AMORTISSEMENT
+C  IN  : IINTEG    : ENTIER INDIQUANT LA METHODE D'INTEGRATION
+C  IN  : NEQ       : NOMBRE D'EQUATIONS
+C  IN  : IMAT      : TABLEAU D'ADRESSES POUR LES MATRICES
+C  IN  : MASSE     : MATRICE DE MASSE
+C  IN  : RIGID     : MATRICE DE RIGIDITE
+C  IN  : AMORT     : MATRICE D'AMORTISSEMENT
+C  IN  : NCHAR     : NOMBRE D'OCCURENCES DU MOT CLE CHARGE
+C  IN  : NVECA     : NOMBRE D'OCCURENCES DU MOT CLE VECT_ASSE
+C  IN  : LIAD      : LISTE DES ADRESSES DES VECTEURS CHARGEMENT (NVECT)
+C  IN  : LIFO      : LISTE DES NOMS DES FONCTIONS EVOLUTION (NVECT)
+C  IN  : MODELE    : NOM DU MODELE
+C  IN  : MATE      : NOM DU CHAMP DE MATERIAU
+C  IN  : CARELE    : CARACTERISTIQUES DES POUTRES ET COQUES
+C  IN  : CHARGE    : LISTE DES CHARGES
+C  IN  : INFOCH    : INFO SUR LES CHARGES
+C  IN  : FOMULT    : LISTE DES FONC_MULT ASSOCIES A DES CHARGES
+C  IN  : NUMEDD    : NUME_DDL DE LA MATR_ASSE RIGID
+C  IN  : NUME      : NUMERO D'ORDRE DE REPRISE
+C  IN  : SOLVEU    : NOM DU SOLVEUR
+C  IN  : CHONDP    : NOMS DES ONDES PLANES
+C  IN  : NONDP     : NOMBRE D'ONDES PLANES
+C  VAR : DEP0      : TABLEAU DES DEPLACEMENTS A L'INSTANT N
+C  VAR : VIT0      : TABLEAU DES VITESSES A L'INSTANT N
+C  VAR : ACC0      : TABLEAU DES ACCELERATIONS A L'INSTANT N
+C  VAR : F0        : VECTEUR CHARGEMENT AU TEMPS T
+C  VAR : FORCE1    : NOM DE L'OBJET DE S.D. CHAM_NO SECOND MEMBRE
+C                    DU SYSTEME A RESOUDRE
+
+C    ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
+      INTEGER ZI
+      COMMON /IVARJE/ZI(1)
+      REAL*8 ZR
+      COMMON /RVARJE/ZR(1)
+      COMPLEX*16 ZC
+      COMMON /CVARJE/ZC(1)
+      LOGICAL ZL
+      COMMON /LVARJE/ZL(1)
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32
+      CHARACTER*80 ZK80
+      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+      CHARACTER*32 JEXNUM,JEXNOM
+C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
+
+      CHARACTER*1 KBID,K1BID
+      CHARACTER*3 REPK
+      CHARACTER*4 TYP1(3),TYPMAT
+      CHARACTER*5 K5BID
+      CHARACTER*8 K8B,NOMRES,MATRES,MODSTA,TYPC
+      CHARACTER*8 LTYPE(3),NOMDDL,MATREI,MAPREI
+      CHARACTER*8 LPAIN(3),LPAOUT(1),MAILLA,PARAM(3)
+      CHARACTER*19 NOLIG
+      CHARACTER*16 TYPE(3),TYPA(3),NOMTE
+      CHARACTER*14 NUMDDL
+      CHARACTER*16 TYPRES,NOMCMD
+      CHARACTER*19 CHANNO,KREFE,MAPREC,CHSOL
+      CHARACTER*19 LIAR,LISARC
+      CHARACTER*24 LISPAS,LIBINT,LINBPA
+      CHARACTER*24 CHAMNO,LISINS
+      CHARACTER*24 CINE
+      CHARACTER*24 CRITER,LIGREL,CHGEOM,VECCOR
+      CHARACTER*24 LCHIN(3),LCHOUT(1),VITINI
+      CHARACTER*24 VITENT,VECOND
+      CHARACTER*24 VEANEC,VAANEC,DEEQ,VAONDE,VEONDE
+      CHARACTER*24 VALMOD,BASMOD,FAMOMO,FOSOL
+      CHARACTER*24 NMTRES,NMAT(3)
+      REAL*8 LCOEF(3),NORME1,NORME2
+      REAL*8 TPS1(4),TPS2(4),PAS,VALEUR(3)
+      REAL*8 T0,COEFD,COEFV,COEFA
+      INTEGER IWK1,IWK2,IFORC2,NI
+      LOGICAL LONDE
+
+      DATA CHSOL/'&&DLNEWI.SOLUTION'/
+      DATA MAPREC/'&&DLNEWI.MAPREC'/
+      DATA CINE/'                      '/
+      DATA NOMDDL/'        '/
+      DATA VITINI/'&&VITINI'/
+      DATA VITENT/'&&VITENT'/
+      DATA VECCOR/'&&VECCOR'/
+      DATA VECOND/'&&VECOND'/
+      DATA VALMOD,BASMOD,FAMOMO/'&&VALMOD','&&BASMOD','&&FAMOMO'/
+C     -----------------------------------------------------------------
+      CALL JEMARQ()
+
+C-----RECUPERATION DU NIVEAU D'IMPRESSION
+
+
+C-----RECUPERATION DES DONNEES D'IMPEDANCE
+
+      CALL INFNIV(IFM,NIV)
+
+C     --- RECUPERATION NOM DE LA COMMANDE ---
+
+      CALL GETRES(NOMRES,TYPRES,NOMCMD)
+
+      LMODST = .FALSE.
+      LONDE = .FALSE.
+
+C N: SAISIE DES DONNEES AMOR_MODAL
+C    (  MOT CLE FACTEUR: AMOR_MODAL  )
+      CALL GETFAC('AMOR_MODAL',NMODAM)
+      IF (NMODAM.NE.0) THEN
+        CALL NMMOAM(VALMOD,BASMOD,NREAVI)
+      END IF
+
+C     --- VERIFICATION DE LA PRESENCE D'ELEMENTS AVEC L'OPTION
+C         'IMPE_ABSO'
+
+      LIGREL = MODELE(1:8)//'.MODELE'
+      NOLIG = LIGREL(1:19)
+
+      LIMPED = .TRUE.
+
+      CALL JELIRA(NOLIG//'.LIEL','NUTIOC',NBGREL,K1BID)
+      REPK = 'NON'
+      DO 10 IGREL = 1,NBGREL
+        CALL JEVEUO(JEXNUM(NOLIG//'.LIEL',IGREL),'L',IALIEL)
+        CALL JELIRA(JEXNUM(NOLIG//'.LIEL',IGREL),'LONMAX',NEL,K1BID)
+        ITYPEL = ZI(IALIEL-1+NEL)
+        CALL JENUNO(JEXNUM('&CATA.TE.NOMTE',ITYPEL),NOMTE)
+        IF ((NOMTE(1:9).EQ.'MEAB_FACE') .OR.
+     &      (NOMTE(1:9).EQ.'MEFA_FACE') .OR.
+     &      (NOMTE(1:6).EQ.'MEPASE') .OR. (NOMTE(1:6).EQ.'MEFASE')) THEN
+          REPK = 'OUI'
+          GO TO 20
+        END IF
+   10 CONTINUE
+
+      IF (REPK.EQ.'NON') THEN
+        LIMPED = .FALSE.
+      END IF
+
+   20 CONTINUE
+
+      K8B = ' '
+      CALL DISMOI('F','CHAM_MATER',RIGID,'MATR_ASSE',IBID,K8B,IE)
+      IF (K8B.EQ.' ') LIMPED = .FALSE.
+
+      IF (LIMPED) CALL UTMESS('I','DLNEWI',
+     &                        'VOUS CALCULEZ UNE IMPEDANCE ABSORBANTE')
+
+C     --- CHARGEMENT PAR ONDES PLANES
+
+      IF (NONDP.NE.0) THEN
+        LONDE = .TRUE.
+      END IF
+
+C     --- CREATION D'UN CHAMP_NO POUR LA VITESSE INITIALE
+
+      CALL VTCREB(VITINI,NUMEDD,'V','R',NEQ)
+      CALL JEVEUO(VITINI(1:19)//'.VALE','E',JVITE)
+      CALL VTCREB(VITENT,NUMEDD,'V','R',NEQ)
+      CALL JEVEUO(VITENT(1:19)//'.VALE','E',JVIEN)
+
+C     --- CREATION D'UN CHAMP_NO POUR L'AMORTISSEMENT MODAL
+      CALL VTCREB(FAMOMO,NUMEDD,'V','R',NEQ)
+      CALL JEVEUO(FAMOMO(1:19)//'.VALE','E',JFAMMO)
+
+C     --- VECTEURS DE TRAVAIL SUR BASE VOLATILE ---
+
+      CALL JEVEUO(FORCE1(1:19)//'.VALE','E',IFORC1)
+      CALL WKVECT('&&DLNEWI.F1','V V R',NEQ,IWK1)
+      CALL WKVECT('&&DLNEWI.F2','V V R',NEQ,IWK2)
+      CALL WKVECT('&&DLNEWI.FORCE2','V V R',NEQ,IFORC2)
+      CALL WKVECT('&&DLNEWI.DEPL1','V V R',NEQ,IDEPL1)
+      CALL WKVECT('&&DLNEWI.VITE1','V V R',NEQ,IVITE1)
+      CALL WKVECT('&&DLNEWI.ACCE1','V V R',NEQ,IACCE1)
+      VEANEC = '&&VEANEC'
+      VAANEC = '?????'
+      VEONDE = '&&VEONDE'
+      VAONDE = '?????'
+      CALL WKVECT('&&DLNEWI.FOIMPE','V V R',NEQ,IFIMPE)
+      CALL WKVECT('&&DLNEWI.FOONDE','V V R',NEQ,IFONDE)
+      CALL WKVECT('&&DLNEWI.DEPLA','V V R',NEQ,IDEPLA)
+      CALL WKVECT('&&DLNEWI.VITEA','V V R',NEQ,IVITEA)
+      CALL WKVECT('&&DLNEWI.VITA1','V V R',NEQ,IVITA1)
+      CALL WKVECT('&&DLNEWI.ACCEA','V V R',NEQ,IACCEA)
+      CALL GETVID(' ','MODE_STAT',1,1,1,MODSTA,NBV)
+      IF (NBV.NE.0) THEN
+        LMODST = .TRUE.
+        CALL DISMOI('F','NOM_MAILLA',MASSE,'MATR_ASSE',IBI,MAILLA,IER)
+        CALL DISMOI('F','NOM_NUME_DDL',MASSE,'MATR_ASSE',IBI,NUMDDL,
+     &              IRET)
+        DEEQ = NUMDDL//'.NUME.DEEQ'
+        CALL JEVEUO(DEEQ,'L',IDDEEQ)
+        CALL GETFAC('EXCIT',NBEXCI)
+        CALL WKVECT('&&DLNEWI.FDEP','V V K8',NBEXCI,JNODEP)
+        CALL WKVECT('&&DLNEWI.FVIT','V V K8',NBEXCI,JNOVIT)
+        CALL WKVECT('&&DLNEWI.FACC','V V K8',NBEXCI,JNOACC)
+        CALL WKVECT('&&DLNEWI.MLTP','V V I',NBEXCI,JMLTAP)
+        CALL WKVECT('&&DLNEWI.IPSD','V V R',NBEXCI*NEQ,JPSDEL)
+        DO 30 I = 1,NBEXCI
+C     --- CAS D'UN ACCELEROGRAMME
+          CALL GETVTX('EXCIT','MULT_APPUI',I,1,1,K8B,ND)
+          IF (ND.NE.0) THEN
+            ZI(JMLTAP+I-1) = 1
+C              CALL GETVID('EXCIT','ACCE',I,1,1,KBID,NA)
+C              CALL GETVID('EXCIT','FONC_MULT',I,1,1,KBID,NF)
+C              IF (NA.NE.0) CALL GETVID('EXCIT','ACCE',I,1,1,
+C     &             ZK8(JNOACC+I-1),NA)
+C              IF (NF.NE.0)  CALL GETVID('EXCIT','FONC_MULT',I,1,1,
+C     &             ZK8(JNOACC+I-1),NF)
+            CALL GETVID('EXCIT','ACCE',I,1,1,ZK8(JNOACC+I-1),NA)
+            CALL GETVID('EXCIT','VITE',I,1,1,ZK8(JNOVIT+I-1),NV)
+            CALL GETVID('EXCIT','DEPL',I,1,1,ZK8(JNODEP+I-1),ND)
+            CALL TRMULT(MODSTA,I,MAILLA,NEQ,IDDEEQ,
+     &                  ZR(JPSDEL+ (I-1)*NEQ))
+
+C     --- MISE A ZERO DES DDL DE LAGRANGE
+            CALL ZERLAG(ZR(JPSDEL+ (I-1)*NEQ),NEQ,ZI(IDDEEQ))
+          END IF
+   30   CONTINUE
+      END IF
+
+      CRITER = '&&RESGRA_GCPC'
+      LCOEF(1) = 1.D0
+      LTYPE(1) = 'R'
+      LTYPE(2) = 'R'
+      LTYPE(3) = 'R'
+      TYPMAT = 'R'
+      IF (LAMORT) THEN
+        NBMAT = 3
+      ELSE
+        NBMAT = 2
+      END IF
+      IARCHI = NUME
+      LISINS = ' '
+
+C     --- PARAMETRES D'INTEGRATION ---
+
+      IF (IINTEG.EQ.1) THEN
+        CALL GETVR8('NEWMARK','ALPHA',1,1,1,ALPHA,N1)
+        CALL GETVR8('NEWMARK','DELTA',1,1,1,DELTA,N1)
+        RES = 0.25D0* (0.5D0+DELTA)* (0.5D0*DELTA)
+        TOL = 1.D-8
+        IF (DELTA.LT. (0.5D0-TOL) .OR. ALPHA.LT. (RES-TOL)) THEN
+          WRITE (IFM,*) ' >>> NEWMARK <<<'//
+     &      'CAS CONDITIONNELLEMENT STABLE.'
+        END IF
+      ELSE
+        CALL GETVR8('WILSON','THETA',1,1,1,THETA,N1)
+      END IF
+
+C     --- LISTE DES INSTANTS DE CALCUL ET LES SORTIES ---
+
+      CALL DLTINS(NBGRPA,LISPAS,LIBINT,LINBPA,NPATOT)
+      CALL JEVEUO(LISPAS,'L',JLPAS)
+      CALL JEVEUO(LIBINT,'L',JBINT)
+      CALL JEVEUO(LINBPA,'L',JNBPA)
+
+
+C     --- ARCHIVAGE ---
+
+      NBSORT = 3
+      TYPE(1) = 'DEPL'
+      TYPE(2) = 'VITE'
+      TYPE(3) = 'ACCE'
+      LISARC = '&&DLNEWI.ARCHIVAGE'
+      CALL DYARCH(NPATOT,LISINS,LISARC,NBORDR,1,NBEXCL,TYP1)
+      CALL JEVEUO(LISARC,'E',JSTOC)
+      IF (NBEXCL.EQ.NBSORT) CALL UTMESS('F',NOMCMD,
+     &                           'ON ARCHIVE AU MOINS UN CHAMP.')
+      DO 40 I = 1,NBEXCL
+        IF (TYP1(I).EQ.'DEPL') THEN
+          TYPE(1) = '    '
+        ELSE IF (TYP1(I).EQ.'VITE') THEN
+          TYPE(2) = '    '
+        ELSE IF (TYP1(I).EQ.'ACCE') THEN
+          TYPE(3) = '    '
+        END IF
+   40 CONTINUE
+
+C     --- AFFICHAGE DE MESSAGES SUR LE CALCUL ---
+
+      WRITE (IFM,*) '-------------------------------------------------'
+      WRITE (IFM,*) '--- CALCUL PAR INTEGRATION TEMPORELLE DIRECTE ---'
+      WRITE (IFM,*) '! LA MATRICE DE MASSE EST         : ',MASSE
+      WRITE (IFM,*) '! LA MATRICE DE RIGIDITE EST      : ',RIGID
+      IF (LAMORT) WRITE (IFM,*) '! LA MATRICE D''AMORTISSEMENT EST : ',
+     &    AMORT
+      WRITE (IFM,*) '! LE NB D''EQUATIONS EST          : ',NEQ
+      IF (NUME.NE.0) WRITE (IFM,*)
+     &    '! REPRISE A PARTIR DU NUME_ORDRE  : ',NUME
+      DO 50 I = 1,NBGRPA
+        DT = ZR(JLPAS-1+I)
+        NBPTPA = ZI(JNBPA-1+I)
+        T0 = ZR(JBINT-1+I)
+        TF = T0 + NBPTPA*DT
+        WRITE (IFM,*) '! POUR LE GROUPE DE PAS NUMERO   : ',I
+        WRITE (IFM,*) '! L''INSTANT INITIAL EST         : ',T0
+        WRITE (IFM,*) '! L''INSTANT FINAL EST           : ',TF
+        WRITE (IFM,*) '! LE PAS DE TEMPS DU CALCUL EST  : ',DT
+        WRITE (IFM,*) '! LE NB DE PAS DE CALCUL EST : ',NBPTPA
+   50 CONTINUE
+      WRITE (IFM,*) '----------------------------------------------',' '
+
+C     --- CREATION DE LA STRUCTURE DE DONNEE RESULTAT ---
+
+      IF (LCREA) THEN
+        IARCHI = 0
+        CALL RSCRSD(NOMRES,TYPRES,NBORDR)
+        KREFE(1:19) = NOMRES
+        CALL WKVECT(KREFE//'.REFE','G V K24',3,LREFE)
+        ZK24(LREFE) = MASSE
+        ZK24(LREFE+1) = AMORT
+        ZK24(LREFE+2) = RIGID
+        CALL JELIBE(KREFE//'.REFE')
+
+        T0 = ZR(JBINT)
+        DO 90 ITYPE = 1,NBSORT
+          IF (TYPE(ITYPE).EQ.'    ') GO TO 90
+          CALL RSEXCH(NOMRES,TYPE(ITYPE),IARCHI,CHAMNO,IER)
+          IF (IER.EQ.0) THEN
+            CALL UTMESS('A',NOMCMD,'CHAMP "'//CHAMNO//'" DEJA EXISTANT')
+          ELSE IF (IER.EQ.100) THEN
+            CALL VTCREM(CHAMNO,MASSE,'G','R')
+          ELSE
+            CALL UTMESS('F',NOMCMD,'APPEL ERRONE')
+          END IF
+          CHAMNO(20:24) = '.VALE'
+          CALL JEVEUO(CHAMNO,'E',LVALE)
+          IF (ITYPE.EQ.1) THEN
+            DO 60 IEQ = 1,NEQ
+              ZR(LVALE+IEQ-1) = DEP0(IEQ)
+   60       CONTINUE
+          ELSE IF (ITYPE.EQ.2) THEN
+            DO 70 IEQ = 1,NEQ
+              ZR(LVALE+IEQ-1) = VIT0(IEQ)
+   70       CONTINUE
+          ELSE
+            DO 80 IEQ = 1,NEQ
+              ZR(LVALE+IEQ-1) = ACC0(IEQ)
+   80       CONTINUE
+          END IF
+          CALL JELIBE(CHAMNO)
+          CALL RSNOCH(NOMRES,TYPE(ITYPE),IARCHI,' ')
+   90   CONTINUE
+        CALL RSADPA(NOMRES,'E',1,'INST',IARCHI,0,LINST,K8B)
+        ZR(LINST) = T0
+        WRITE (IFM,1000) (TYPE(ITY),ITY=1,3),IARCHI,T0
+      ELSE
+        NBORDR = NBORDR + NUME
+        CALL RSAGSD(NOMRES,NBORDR)
+      END IF
+      CALL TITRE
+
+
+C ------- CREATION DE LA MATRICE KTILD
+      MATRES = '&&KTILD'
+      CALL MTDEFS(MATRES,RIGID,'V',TYPMAT)
+      CALL MTDSCR(MATRES)
+      CALL JEVEUO(MATRES//'           .&INT','E',IMTRES)
+
+C ------- BOUCLE SUR LES GROUPES DE PAS DE TEMPS
+      ISTOC = 0
+      ISTOP = 0
+      IPAS = 0
+      CALL UTTCPU(1,'INIT',4,TPS1)
+      CALL UTTCPU(2,'INIT',4,TPS2)
+      DO 220 I = 1,NBGRPA
+        CALL UTTCPU(1,'DEBUT',4,TPS1)
+        DT = ZR(JLPAS-1+I)
+        NBPTPA = ZI(JNBPA-1+I)
+        T0 = ZR(JBINT-1+I)
+        IF (IINTEG.EQ.2) THEN
+          A0 = 6.D0/ (THETA*DT)/ (THETA*DT)
+          A1 = 3.D0/THETA/DT
+          A2 = 2.D0*A1
+          A3 = THETA*DT/2.D0
+          A4 = A0/THETA
+          A5 = -A2/THETA
+          A6 = 1.D0 - 3.D0/THETA
+          A7 = DT/2.D0
+          A8 = DT*DT/6.D0
+          C0 = A0
+          C1 = A2
+          C2 = 2.0D0
+          C3 = A1
+          C4 = 2.0D0
+          C5 = A3
+        ELSE IF (IINTEG.EQ.1) THEN
+          A0 = 1.D0/ALPHA/DT/DT
+          A1 = DELTA/ALPHA/DT
+          A2 = 1.D0/ALPHA/DT
+          A3 = .5D0/ALPHA - 1.D0
+          A4 = DELTA/ALPHA - 1.D0
+          A5 = DT/2.D0* (DELTA/ALPHA-2.D0)
+          A6 = DT* (1.D0-DELTA)
+          A7 = DELTA*DT
+          C0 = A0
+          C1 = A2
+          C2 = A3
+          C3 = A1
+          C4 = A4
+          C5 = A5
+        END IF
+
+C ---------- CALCUL DE LA MATRICE DE PSEUDO-RAIDEUR
+C                  K*  = K + A0*M + A1*C
+        LCOEF(2) = A0
+        LCOEF(3) = A1
+
+        DO 100 IBMAT = 1,NBMAT
+          NMAT(IBMAT) = ZK24(ZI(IMAT(IBMAT)+1))
+  100   CONTINUE
+        NMTRES = ZK24(ZI(IMTRES+1))
+        CALL MTCOMB(NBMAT,LTYPE,LCOEF,LTYPE,NMAT,TYPMAT,NMTRES,NOMDDL,
+     &              'V')
+
+C        --- DECOMPOSITION OU CALCUL DE LA MATRICE DE PRECONDITIONEMENT
+        CALL PRERES(SOLVEU,'V',IERR,MAPREC,MATRES)
+
+C ---------- BOUCLE SUR LES NBPTPA "PETITS" PAS DE TEMPS
+        DO 210 J = 1,NBPTPA
+          IPAS = IPAS + 1
+          IF (IPAS.GT.NPATOT) GO TO 230
+          CALL UTTCPU(2,'DEBUT',4,TPS2)
+          ISTOC = 0
+          TEMPS = T0 + DT*J
+          TEMPM = T0 + DT* (J-1)
+
+          DO 110 INDIC2 = 1,NEQ
+            ZR(IDEPLA+INDIC2-1) = 0.D0
+            ZR(IVITEA+INDIC2-1) = 0.D0
+            ZR(IACCEA+INDIC2-1) = 0.D0
+  110     CONTINUE
+          IF (LMODST) THEN
+            DO 130 INDIC1 = 1,NBEXCI
+              IF (ZI(JMLTAP+INDIC1-1).EQ.1) THEN
+                CALL FOINTE('F ',ZK8(JNODEP+INDIC1-1),1,'INST',TEMPS,
+     &                      COEFD,IER)
+                CALL FOINTE('F ',ZK8(JNOVIT+INDIC1-1),1,'INST',TEMPS,
+     &                      COEFV,IER)
+                CALL FOINTE('F ',ZK8(JNOACC+INDIC1-1),1,'INST',TEMPS,
+     &                      COEFA,IER)
+                DO 120 INDIC2 = 1,NEQ
+                  ZR(IDEPLA+INDIC2-1) = ZR(IDEPLA+INDIC2-1) +
+     &                                  ZR(JPSDEL+ (INDIC1-1)*NEQ+
+     &                                  INDIC2-1)*COEFD
+                  ZR(IVITEA+INDIC2-1) = ZR(IVITEA+INDIC2-1) +
+     &                                  ZR(JPSDEL+ (INDIC1-1)*NEQ+
+     &                                  INDIC2-1)*COEFV
+                  ZR(IACCEA+INDIC2-1) = ZR(IACCEA+INDIC2-1) +
+     &                                  ZR(JPSDEL+ (INDIC1-1)*NEQ+
+     &                                  INDIC2-1)*COEFA
+  120           CONTINUE
+              END IF
+  130       CONTINUE
+          END IF
+          DO 140 INDIC = 1,NEQ
+            ZR(JVITE+INDIC-1) = VIT0(INDIC)
+  140     CONTINUE
+          IF (LMODST) THEN
+            DO 150 INDIC = 1,NEQ
+              ZR(JVIEN+INDIC-1) = ZR(IVITEA+INDIC-1)
+  150       CONTINUE
+          END IF
+          IF (LIMPED) THEN
+            CALL FIMPED(MODELE,MATE,NUMEDD,NEQ,VITINI,VITENT,VECCOR,
+     &                  VEANEC,VAANEC,TEMPM,ZR(IFIMPE))
+          END IF
+          IF (LONDE) THEN
+            CALL FONDPL(MODELE,MATE,NUMEDD,NEQ,CHONDP,NONDP,VECOND,
+     &                  VEONDE,VAONDE,TEMPM,ZR(IFONDE))
+          END IF
+
+C ------------- CALCUL DU SECOND MEMBRE F*
+          CALL DLFEXT(NVECA,NCHAR,TEMPS,NEQ,LIAD,LIFO,CHARGE,INFOCH,
+     &                FOMULT,MODELE,MATE,CARELE,NUMEDD,ZR(IFORC1))
+
+          IF (NMODAM.NE.0) THEN
+            IF (LMODST) THEN
+              DO 160 INDIC = 1,NEQ
+                ZR(IVITA1+INDIC-1) = VIT0(INDIC) + ZR(IVITEA+INDIC-1)
+  160         CONTINUE
+              CALL FMODAM(NEQ,ZR(IVITA1),VALMOD,BASMOD,ZR(JFAMMO))
+            ELSE
+              CALL FMODAM(NEQ,VIT0,VALMOD,BASMOD,ZR(JFAMMO))
+            END IF
+          END IF
+
+          IF (LIMPED) THEN
+            DO 170 INDIC = 1,NEQ
+              ZR(IFORC1+INDIC-1) = ZR(IFORC1+INDIC-1) -
+     &                             ZR(IFIMPE+INDIC-1)
+  170       CONTINUE
+          END IF
+
+          IF (NMODAM.NE.0) THEN
+            DO 180 INDIC = 1,NEQ
+              ZR(IFORC1+INDIC-1) = ZR(IFORC1+INDIC-1) -
+     &                             ZR(JFAMMO+INDIC-1)
+  180       CONTINUE
+          END IF
+
+          IF (LONDE) THEN
+            DO 190 INDIC = 1,NEQ
+              ZR(IFORC1+INDIC-1) = ZR(IFORC1+INDIC-1) -
+     &                             ZR(IFONDE+INDIC-1)
+  190       CONTINUE
+          END IF
+
+          IF (IINTEG.EQ.2) THEN
+            CALL R8COPY(NEQ,ZR(IFORC1),1,ZR(IFORC2),1)
+            CALL FTETA(THETA,NEQ,F0,ZR(IFORC1))
+          END IF
+
+C ------------- FORCE DYNAMIQUE F*
+          CALL FORCDY(IMAT(2),IMAT(3),LAMORT,NEQ,C0,C1,C2,C3,C4,C5,DEP0,
+     &                VIT0,ACC0,ZR(IWK1),ZR(IWK2),ZR(IFORC1))
+
+C ------------- RESOLUTION DU PROBLEME K*  . U*  =  P*
+C           --- RESOLUTION AVEC FORCE1 COMME SECOND MEMBRE ---
+          CALL RESOUD(MATRES,MAPREC,FORCE1,SOLVEU,CINE,'V',CHSOL,CRITER)
+          CALL COPISD('CHAMP_GD','V',CHSOL(1:19),FORCE1(1:19))
+          CALL JEVEUO(FORCE1(1:19)//'.VALE','E',IFORC1)
+          CALL DETRSD('CHAMP_GD',CHSOL)
+          CALL R8COPY(NEQ,ZR(IFORC1),1,ZR(IDEPL1),1)
+
+C ------------- CALCUL DES DEPLACEMENTS,VITESSES ET ACCELERATIONS
+          IF (IINTEG.EQ.2) THEN
+            CALL NEWACC(NEQ,A4,A5,A6,DEP0,VIT0,ACC0,ZR(IDEPL1),
+     &                  ZR(IACCE1))
+            CALL NEWVIT(NEQ,A7,A7,VIT0,ACC0,ZR(IVITE1),ZR(IACCE1))
+            CALL NEWDEP(NEQ,A8,DT,DEP0,VIT0,ACC0,ZR(IDEPL1),ZR(IACCE1))
+          ELSE IF (IINTEG.EQ.1) THEN
+            CALL NEWACC(NEQ,A0,-A2,-A3,DEP0,VIT0,ACC0,ZR(IDEPL1),
+     &                  ZR(IACCE1))
+            CALL NEWVIT(NEQ,A6,A7,VIT0,ACC0,ZR(IVITE1),ZR(IACCE1))
+          END IF
+
+C ------------- TRANSFERT DES NOUVELLES VALEURS DANS LES ANCIENNES
+          CALL R8COPY(NEQ,ZR(IDEPL1),1,DEP0,1)
+          CALL R8COPY(NEQ,ZR(IVITE1),1,VIT0,1)
+          CALL R8COPY(NEQ,ZR(IACCE1),1,ACC0,1)
+          IF (IINTEG.EQ.2) THEN
+            CALL R8COPY(NEQ,ZR(IFORC2),1,F0,1)
+          ELSE
+            CALL R8COPY(NEQ,ZR(IFORC1),1,F0,1)
+          END IF
+
+C           --- ARCHIVAGE EVENTUEL DANS L'OBJET SOLUTION ---
+          IF (ZI(JSTOC+IPAS-1).EQ.1) THEN
+            ISTOC = 1
+            IARCHI = IARCHI + 1
+            IF (LMODST) THEN
+              TYPA(1) = 'DEPL_ABSOLU'
+              TYPA(2) = 'VITE_ABSOLU'
+              TYPA(3) = 'ACCE_ABSOLU'
+              DO 200 IE = 1,NEQ
+                ZR(IDEPLA+IE-1) = ZR(IDEPLA+IE-1) + DEP0(IE)
+                ZR(IVITEA+IE-1) = ZR(IVITEA+IE-1) + VIT0(IE)
+                ZR(IACCEA+IE-1) = ZR(IACCEA+IE-1) + ACC0(IE)
+  200         CONTINUE
+              CALL DLARCH(IARCHI,TYPA,NOMRES,NOMCMD,MASSE,NEQ,
+     &                    ZR(IDEPLA),ZR(IVITEA),ZR(IACCEA),TEMPS)
+            END IF
+            CALL DLARCH(IARCHI,TYPE,NOMRES,NOMCMD,MASSE,NEQ,DEP0,VIT0,
+     &                  ACC0,TEMPS)
+          END IF
+
+C ------------- VERIFICATION DU TEMPS DE CALCUL RESTANT
+          CALL UTTCPU(2,'FIN',4,TPS2)
+          IF (TPS2(1).LT.5.D0 .OR. TPS2(4).GT.TPS2(1)) THEN
+            ISTOP = 1
+            WRITE (IFM,*) 'ARRET PAR MANQUE DE TEMPS CPU'//
+     &        ' AU GROUPE DE PAS DE TEMPS : ',I,
+     &        ' AU "PETIT" PAS DE TEMPS : ',J,
+     &        ' TEMPS MOYEN PAR "PETIT" PAS : ',TPS2(4),
+     &        ' TEMPS CPU RESTANT: ',TPS2(1)
+            GO TO 230
+          END IF
+
+
+  210   CONTINUE
+
+        CALL UTTCPU(1,'FIN',4,TPS1)
+        IF (TPS1(1).LT.5.D0 .AND. I.NE.NBGRPA) THEN
+          ISTOP = 1
+          WRITE (IFM,*) 'ARRET PAR MANQUE DE TEMPS CPU'//
+     &      ' AU GROUPE DE PAS DE TEMPS : ',I,
+     &      ' AU "PETIT" PAS DE TEMPS : ',J,
+     &      ' TEMPS MOYEN PAR GROUPE : ',TPS1(4),
+     &      ' TEMPS CPU RESTANT : ',TPS1(1)
+          GO TO 230
+        END IF
+  220 CONTINUE
+  230 CONTINUE
+
+C ------------- ARCHIVAGE DU DERNIER INSTANT DE CALCUL
+      IF (NBEXCL.NE.0) THEN
+        IF (ISTOC.EQ.0) THEN
+          IARCHI = IARCHI + 1
+          CALL RSADPA(NOMRES,'E',1,'INST',IARCHI,0,LINST,K8B)
+          ZR(LINST) = TEMPS
+        ELSE
+          CALL RSADPA(NOMRES,'L',1,'INST',IARCHI,0,LINST,K8B)
+          TEMPS = ZR(LINST)
+        END IF
+        CALL RSEXCH(NOMRES,'DEPL',IARCHI,CHAMNO,IER)
+        IF (IER.EQ.100) THEN
+          CALL VTCREM(CHAMNO,MASSE,'G','R')
+        ELSE IF (IER.EQ.0) THEN
+          GO TO 250
+        ELSE
+          CALL UTMESS('F',NOMCMD,'APPEL ERRONE')
+        END IF
+        WRITE (IFM,1000) 'DEPL',' ',' ',IARCHI,TEMPS
+        CHAMNO(20:24) = '.VALE'
+        CALL JEVEUO(CHAMNO,'E',LVALE)
+        DO 240 IEQ = 1,NEQ
+          ZR(LVALE+IEQ-1) = DEP0(IEQ)
+  240   CONTINUE
+        CALL JELIBE(CHAMNO)
+        CALL RSNOCH(NOMRES,'DEPL',IARCHI,' ')
+  250   CONTINUE
+        CALL RSEXCH(NOMRES,'VITE',IARCHI,CHAMNO,IER)
+        IF (IER.EQ.100) THEN
+          CALL VTCREM(CHAMNO,MASSE,'G','R')
+        ELSE IF (IER.EQ.0) THEN
+          GO TO 270
+        ELSE
+          CALL UTMESS('F',NOMCMD,'APPEL ERRONE')
+        END IF
+        WRITE (IFM,1000) ' ','VITE',' ',IARCHI,TEMPS
+        CHAMNO(20:24) = '.VALE'
+        CALL JEVEUO(CHAMNO,'E',LVALE)
+        DO 260 IEQ = 1,NEQ
+          ZR(LVALE+IEQ-1) = VIT0(IEQ)
+  260   CONTINUE
+        CALL JELIBE(CHAMNO)
+        CALL RSNOCH(NOMRES,'VITE',IARCHI,' ')
+  270   CONTINUE
+        CALL RSEXCH(NOMRES,'ACCE',IARCHI,CHAMNO,IER)
+        IF (IER.EQ.100) THEN
+          CALL VTCREM(CHAMNO,MASSE,'G','R')
+        ELSE IF (IER.EQ.0) THEN
+          GO TO 290
+        ELSE
+          CALL UTMESS('F',NOMCMD,'APPEL ERRONE')
+        END IF
+        WRITE (IFM,1000) ' ',' ','ACCE',IARCHI,TEMPS
+        CHAMNO(20:24) = '.VALE'
+        CALL JEVEUO(CHAMNO,'E',LVALE)
+        DO 280 IEQ = 1,NEQ
+          ZR(LVALE+IEQ-1) = ACC0(IEQ)
+  280   CONTINUE
+        CALL JELIBE(CHAMNO)
+        CALL RSNOCH(NOMRES,'ACCE',IARCHI,' ')
+  290   CONTINUE
+      END IF
+      IF (ISTOP.EQ.1) CALL UTMESS('S','OP0048',
+     &                            'ARRET PAR MANQUE DE TEMPS CPU')
+
+C     --- DESTRUCTION DES OBJETS DE TRAVAIL ---
+
+      CALL JEEXIN(CRITER(1:19)//'.CRTI',IRET)
+      IF (IRET.NE.0) THEN
+        CALL JEDETR(CRITER(1:19)//'.CRTI')
+        CALL JEDETR(CRITER(1:19)//'.CRTR')
+        CALL JEDETR(CRITER(1:19)//'.CRDE')
+      END IF
+      CALL DETRSD('MATR_ASSE',MATRES)
+ 1000 FORMAT (1P,3X,'CHAMP(S) STOCKE(S):',3 (1X,A4),' NUME_ORDRE:',I8,
+     &       ' INSTANT:',D12.5)
+
+      CALL JEDEMA()
+      END

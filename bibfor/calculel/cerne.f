@@ -1,0 +1,79 @@
+      SUBROUTINE CERNE(M,DIM,MMGLOB,CELL,PAN,NMA,ILIMA)
+
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF CALCULEL  DATE 02/04/2002   AUTEUR RATEAU G.RATEAU 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C                                                                       
+C                                                                       
+C ======================================================================
+C A_UTIL
+C ----------------------------------------------------------------------
+C                       APPARIEMENT POINT / MAILLE
+C    DESCENTE DE L'ARBRE PRODUIT PAR LA PARTITION BINAIRE DE L'ESPACE
+C           POUR ISOLER UN PETIT ENSEMBLE DE MAILLES CANDIDATES
+C ----------------------------------------------------------------------
+C VARIABLES D'ENTREE 
+C REAL*8   M(DIM)        : COORDONNEES DU POINT A APPARIER  
+C INTEGER  DIM           : DIMENSION DE L'ESPACE
+C REAL*8   MMGLOB(2,DIM) : BOITE ENGLOBANT TOUTES LES MAILLES (CF BOITE)
+C INTEGER  CELL(3,*)     : CELLULES DE L'ARBRE (CF BISSEC) 
+C REAL*8   PAN(*)        : EQUATIONS DES PANS (2D=DROITES, 3D=PLANS)
+C                          (CF BOITE)
+C
+C VARIABLES DE SORTIE
+C INTEGER  NMA           : NOMBRE DE MAILLES CANDIDATES TROUVEES
+C INTEGER  ILIMA         : POINTEUR DANS ARBRE.LIMA VERS CES MAILLES
+C                          (CF BISSEC)
+C ---------------------------------------------------------------------
+
+      IMPLICIT NONE
+
+C --- FONCTIONS
+      REAL*8  R8DOT
+
+C --- VARIABLES
+      INTEGER DIM,CELL(3,*),NMA,ILIMA,ICELL,IPAN,I
+      REAL*8  M(*),MMGLOB(2,*),PAN(*),R
+
+C --- 1. TEST MMGLOB
+
+      DO 10 I = 1, DIM
+        R = M(I)
+        IF ((R.LT.MMGLOB(1,I)).OR.(R.GT.MMGLOB(2,I))) GOTO 30
+ 10   CONTINUE
+
+C --- 2. DESCENTE DE L'ARBRE
+
+      ICELL = 1
+ 20   CONTINUE
+      IPAN = CELL(1,ICELL)
+      IF (IPAN.GT.0) THEN
+        R = R8DOT(DIM,M,1,PAN(IPAN),1) + PAN(IPAN+DIM)
+        IF (R.LE.0.D0) THEN 
+          ICELL = CELL(2,ICELL)
+        ELSE
+          ICELL = CELL(3,ICELL)
+        ENDIF
+        GOTO 20
+      ENDIF
+
+      NMA = -CELL(1,ICELL)
+      ILIMA = CELL(2,ICELL) 
+
+ 30   CONTINUE
+
+      END

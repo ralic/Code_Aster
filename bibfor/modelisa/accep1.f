@@ -1,0 +1,291 @@
+      SUBROUTINE ACCEP1(NOMRES,MODMEC,LIGRMO,NBM,DIR,YANG)
+      IMPLICIT NONE
+C-----------------------------------------------------------------------
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF MODELISA  DATE 11/09/2002   AUTEUR VABHHTS J.PELLET 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+C ======================================================================
+C-----------------------------------------------------------------------
+C     OPERATEUR PROJ_SPEC_BASE
+C     PROJECTION D UN OU PLUSIEURS SPECTRES DE TURBULENCE SUR UNE BASE
+C     MODALE PERTURBEE PAR PRISE EN COMPTE DU COUPLAGE FLUIDE STRUCTURE
+C-----------------------------------------------------------------------
+C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
+      INTEGER ZI
+      COMMON /IVARJE/ZI(1)
+      REAL*8 ZR
+      COMMON /RVARJE/ZR(1)
+      COMPLEX*16 ZC
+      COMMON /CVARJE/ZC(1)
+      LOGICAL ZL
+      COMMON /LVARJE/ZL(1)
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32
+      CHARACTER*80 ZK80
+      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+      CHARACTER*32 JEXNOM
+      CHARACTER*32 JEXNUM
+
+C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
+
+      LOGICAL CASINT,EXIGEO
+      INTEGER DIM,IFREQ,NFINIT,NFIN,INUMO,NBM,NBPOIN,I
+      INTEGER IRET,IREFE,ILIME,JLVA,INOLI,INOMA,NMA
+      INTEGER NBELEM,NBGREL,NGREL,IPG,JPG,NI,NOCCU
+      INTEGER JM,IM,JEL,IVE1,IVE2,N1,N2,NPG1,NPG2,IVRAI
+      INTEGER IELMA,IGRMA,ILIEL,JGMA,JLIEL,NBELMA,JNBNO
+      INTEGER NBGMA,NBLIEL,JELMA,INWMOD,JDLI,TEMOIN,JNOMA
+      INTEGER JPRNM,IPRNM,NBMAIL,NBPRNM,J,IMAIL,JMAIL
+      INTEGER NCHAM,ICHAM,NN,NBELTO,NBELGR,NTAIL,IALIEL
+      INTEGER IGR,IMA,IALEL,II,IEL,IVE,ITAB,IMO
+      REAL*8 F,OMEGA,UC,KL,KT
+      REAL*8 D1,D2,D3,MES1,MES2,COEH,RBID
+      REAL*8 DIR(3,3),V1,V2,V3,W1,W2,W3,REF1,REF2,REF3,REFER
+      REAL*8 RAYON,RAYON2,HAUT,RAP1,RAP2
+      COMPLEX*16 CBID
+      CHARACTER*1 K1BID
+      CHARACTER*7 INCR,IELEM,IMODE
+      CHARACTER*8 VETEL,NOMRES,LPAIN(3),LPAOUT(1),MODELE,MODMEC
+      CHARACTER*8 MOINT,GRMA,MAILLA
+      CHARACTER*16 OPTION
+      CHARACTER*19 BASE,NOMCHA,NUME,CHGEOM,MATAS,CHHARM
+      CHARACTER*19 CHAMNO
+      CHARACTER*24 FREQ,NUMO,REFE,LIGRMO,LCHIN(3),LCHOUT(1),NOM
+      LOGICAL YANG
+
+C-----------------------------------------------------------------------
+      CALL JEMARQ()
+
+      OPTION = 'ACCEPTANCE'
+      INCR = 'BID'
+      CALL GETVID(' ','MODELE_INTERFACE',0,1,1,MOINT,NI)
+      IF (NI.LE.0) THEN
+        CALL JEVEUO(MODMEC//'           .REFE','L',IREFE)
+        CALL RSEXCH(MODMEC,'DEPL',1,NOMCHA,IRET)
+        MATAS = ZK24(IREFE) (1:19)
+        CALL JEVEUO(MATAS//'.LIME','L',ILIME)
+        CALL JEVEUO(ZK8(ILIME)//'.ME001     .NOLI','L',INOLI)
+        MODELE = ZK24(INOLI) (1:8)
+        CALL JEVEUO(ZK24(INOLI) (1:19)//'.NOMA','L',INOMA)
+        MAILLA = ZK8(INOMA)
+
+        CALL GETVEM(MAILLA,'GROUP_MA',' ','GROUP_MA',0,1,1,GRMA,NMA)
+        IF (NMA.LE.0) THEN
+          LIGRMO = ZK24(INOLI)
+        ELSE
+          CALL JELIRA(MAILLA//'.GROUPEMA','NMAXOC',NBGMA,K1BID)
+          DO 10 JGMA = 1,NBGMA
+            CALL JENUNO(JEXNUM(MAILLA//'.GROUPEMA',JGMA),NOM)
+            IF (NOM(1:8).NE.GRMA) GO TO 10
+            NOCCU = JGMA
+            WRITE (6,*) 'NOCCU=',NOCCU
+   10     CONTINUE
+
+          CALL JELIRA(ZK24(INOLI) (1:19)//'.LIEL','NMAXOC',NBLIEL,K1BID)
+          CALL JEVEUO(JEXNUM(MAILLA//'.GROUPEMA',NOCCU),'L',IGRMA)
+          CALL JELIRA(JEXNUM(MAILLA//'.GROUPEMA',NOCCU),'LONMAX',NBELMA,
+     &                K1BID)
+
+C CREATION D UN .LIEL BASE SUR LE GROUP-MA UTILISATEUR
+
+          CALL JECREC(GRMA//'.MODELE    .LIEL',
+     &                'G V                                          I',
+     &                'NU','CONTIG','VARIABLE',NBLIEL)
+          CALL JEECRA(GRMA//'.MODELE    .LIEL','LONT',NBLIEL,' ')
+          CALL JEVEUO(GRMA//'.MODELE    .LIEL','E',JDLI)
+          CALL JECROC(JEXNUM(GRMA//'.MODELE    .LIEL',1))
+          CALL JEECRA(JEXNUM(GRMA//'.MODELE    .LIEL',1),'LONMAX',
+     &                NBELMA+1,' ')
+          CALL JEVEUO(JEXNUM(GRMA//'.MODELE    .LIEL',1),'E',INWMOD)
+C     WRITE(6,*)'NBELMA=',NBELMA
+
+          DO 40 JLIEL = 1,NBLIEL
+            CALL JEVEUO(JEXNUM(ZK24(INOLI) (1:19)//'.LIEL',JLIEL),'L',
+     &                  ILIEL)
+            TEMOIN = 0
+            DO 30 IELMA = 1,NBELMA
+              DO 20 JELMA = 1,NBELMA
+                IF (ZI(IGRMA+IELMA-1).EQ.ZI(ILIEL+JELMA-1)) THEN
+                  WRITE (6,*) ZI(IGRMA+IELMA-1)
+                  ZI(INWMOD+IELMA-1) = ZI(ILIEL+JELMA-1)
+                  TEMOIN = TEMOIN + 1
+                END IF
+   20         CONTINUE
+   30       CONTINUE
+   40     CONTINUE
+          ZI(INWMOD+NBELMA+1-1) = ZI(ILIEL+NBELMA+1-1)
+          IF (TEMOIN.EQ.0) CALL UTMESS('F','PROJ_SPEC_BASE',
+     &                                 ' LE GROUPE DE MAILLE QUE   '//
+     &                                 ' VOUS DONNEZ NE CORRESPOND   '//
+     &                  ' PAS AU MODELE DE STRUCTURE QUE VOUS ETUDIEZ  '
+     &                                 )
+          CALL WKVECT(GRMA//'.MODELE    .NOMA','V V K8',1,JNOMA)
+          ZK8(JNOMA) = MAILLA
+          CALL JEVEUO(ZK24(INOLI) (1:8)//'.MODELE    .NBNO','L',IVRAI)
+          CALL WKVECT(GRMA//'.MODELE    .NBNO','V V I',1,JNBNO)
+          ZI(JNBNO) = ZI(IVRAI)
+          WRITE (6,*) 'ZI(JNBNO)=',ZI(JNBNO)
+          CALL JEVEUO(ZK24(INOLI) (1:8)//'.MAILLE','L',IMAIL)
+          CALL JELIRA(ZK24(INOLI) (1:8)//'.MAILLE','LONMAX',NBMAIL,
+     &                K1BID)
+          CALL WKVECT(GRMA//'.MAILLE','V V I',NBMAIL,JMAIL)
+          DO 50 J = 1,NBMAIL
+            ZI(JMAIL+J-1) = ZI(IMAIL+J-1)
+   50     CONTINUE
+          CALL JEVEUO(ZK24(INOLI) (1:8)//'.MODELE    .PRNM','L',IPRNM)
+          CALL JELIRA(ZK24(INOLI) (1:8)//'.MODELE    .PRNM','LONMAX',
+     &                NBPRNM,K1BID)
+          CALL WKVECT(GRMA//'.MODELE    .PRNM','V V I',NBPRNM,JPRNM)
+          DO 60 J = 1,NBPRNM
+            ZI(JPRNM+J-1) = ZI(IPRNM+J-1)
+   60     CONTINUE
+          LIGRMO = GRMA//'.MODELE'
+          MODELE = GRMA
+        END IF
+      ELSE
+        LIGRMO = MOINT//'.MODELE'
+        MODELE = MOINT
+      END IF
+C CALCULS ELEMENTAIRES
+      CALL MEGEOM(MODELE,NOMCHA,EXIGEO,CHGEOM)
+      LPAIN(1) = 'PGEOMER'
+      LCHIN(1) = CHGEOM
+      LPAIN(2) = 'PACCELR'
+      LPAIN(3) = 'PNUMMOD'
+      LPAOUT(1) = 'PVECTUR'
+C RECHERCHE SI UN CHAMNO A ETE DONNE
+      CALL GETVID(' ','CHAM_NO',0,1,0,CHAMNO,NCHAM)
+      IF (NCHAM.NE.0) THEN
+        NCHAM = -NCHAM
+        CALL WKVECT('&&ACCEP1.VEC','V V K8',NCHAM,ICHAM)
+        CALL GETVID(' ','CHAM_NO',0,1,NCHAM,ZK8(ICHAM),NN)
+      END IF
+C BOUCLE SUR LES MODES FORMATIONS DES VECTEURS ELEMENTAIRES
+      DO 70 I = 1,NBM
+        CALL CODENT(I,'D0',INCR)
+        VETEL = '&&V.M'//INCR
+        LCHOUT(1) = VETEL//'.VE000'
+        IF (NCHAM.EQ.0) THEN
+          CALL RSEXCH(MODMEC,'DEPL',I,NOMCHA,IRET)
+        ELSE
+          IF (I.LE.NCHAM) NOMCHA = ZK8(ICHAM+I-1)
+        END IF
+        LCHIN(2) = NOMCHA//'.VALE'
+        CALL CODENT(1,'D0',LCHOUT(1) (12:14))
+        CHHARM = '&&ACCEP1.NUME_HARM'
+        CALL MECACT('V',CHHARM,'MODELE',MODELE,'NUMMOD',1,'NUM',I,RBID,
+     &              CBID,' ')
+        LCHIN(3) = CHHARM
+        CALL CALCUL('S',OPTION,LIGRMO,3,LCHIN,LPAIN,1,LCHOUT,LPAOUT,'V')
+        CALL JEDETC('V',CHHARM,1)
+   70 CONTINUE
+      IF (NCHAM.GT.0) CALL JEDETC('V','&&ACCEP1.VEC',1)
+
+
+C  --- CREATION D' UN TABLEAU CONTENANT LES INFORMATIONS SUIVANTES :
+C      POUR CHAQUE POINT DE GAUSS DE CHAQUE ELEMENT : 6 VALEURS
+C      1: LA PRESSION     2,3,4: LES COORDONNEES DES POINTS DE GAUSS
+C      POUR AU-YANG : 5: LA HAUTEUR DU POINT   6: L'ANGLE DU POINT
+C      POUR LES AUTRES METHODES 5: 0. ET 6: 0. (NON UTILISEES)
+
+      NGREL = NBGREL(LIGRMO)
+
+      NBELTO = 0
+      DO 80 IGR = 1,NGREL
+        NBELGR = NBELEM(LIGRMO,IGR)
+        NBELTO = NBELTO + NBELGR
+   80 CONTINUE
+
+C TAILLE DU TABLEAU
+C          NTAIL=16*NBELTO*NBM
+      NTAIL = 24*NBELTO*NBM + 1
+      CALL WKVECT('&&GROTAB.TAB','V V R',NTAIL,ITAB)
+C NOMBRE D'ELEMENTS PAR MODE
+
+C CONSTITUTION D'UN TABLEAU CONTENANT COORDONNEES DES PTS DE GAUSS
+C AINSI QUE LA VALEUR DU MODE
+      II = 1
+      DO 120 IMO = 1,NBM
+        IMODE = 'CHBIDON'
+        CALL CODENT(IMO,'D0',IMODE)
+        DO 110 IGR = 1,NGREL
+          NBELGR = NBELEM(LIGRMO,IGR)
+          CALL JEVEUO(JEXNUM(LIGRMO(1:19)//'.LIEL',IGR),'L',IALIEL)
+          DO 100 IEL = 1,NBELGR
+            IMA = ZI(IALIEL-1+IEL)
+            IELEM = 'BID'
+            CALL CODENT(IMA,'D0',IELEM)
+            CALL JEVEUO('&&329.M'//IMODE//'.EL'//IELEM,'L',IVE)
+            CALL JELIRA('&&329.M'//IMODE//'.EL'//IELEM,'LONMAX',N1,
+     &                  K1BID)
+            DO 90 IPG = 1,N1
+              ZR(ITAB+II-1) = ZR(IVE+IPG-1)
+              II = II + 1
+              IF (MOD(II,6).EQ.5) THEN
+                IF (.NOT.YANG) THEN
+                  ZR(ITAB+II-1) = 0.D0
+                  ZR(ITAB+II) = 0.D0
+                  II = II + 2
+                ELSE
+                  V1 = ZR(ITAB+II-4) - DIR(1,2)
+                  V2 = ZR(ITAB+II-3) - DIR(2,2)
+                  V3 = ZR(ITAB+II-2) - DIR(3,2)
+                  HAUT = V1*DIR(1,1) + V2*DIR(2,1) + V3*DIR(3,1)
+                  W1 = V1 - HAUT*DIR(1,1)
+                  W2 = V2 - HAUT*DIR(2,1)
+                  W3 = V3 - HAUT*DIR(3,1)
+                  ZR(ITAB+II-1) = HAUT
+                  II = II + 1
+                  RAYON2 = W1*W1 + W2*W2 + W3*W3
+                  IF (RAYON2.LE.0.D0) THEN
+                    CALL UTMESS('F','ACCEP1',
+     &                          'METHODE AU-YANG : LA GEOMETRIE DOIT '//
+     &                          'ETRE CYLINDRIQUE')
+                  END IF
+                  IF (II.EQ.6) THEN
+                    REFER = RAYON2
+                    RAYON = SQRT(RAYON2)
+                    REF1 = W1
+                    REF2 = W2
+                    REF3 = W3
+                    ZR(ITAB+NTAIL-1) = RAYON
+                    ZR(ITAB+5) = 0.D0
+                    II = 7
+                  ELSE
+                    IF (ABS(RAYON2-REFER).GT.1.D-3) THEN
+                      CALL UTMESS('F','ACCEP1',
+     &                            'METHODE AU-YANG : LA GEOMETRIE '//
+     &                            'DOIT ETRE CYLINDRIQUE')
+                    END IF
+                    RAP1 = (REF2*W3-REF3*W2)*DIR(1,1) +
+     &                     (REF3*W1-REF1*W3)*DIR(2,1) +
+     &                     (REF1*W2-REF2*W1)*DIR(3,1)
+                    RAP2 = REF1*W1 + REF2*W2 + REF3*W3
+                    ZR(ITAB+II-1) = ATAN2(RAP1,RAP2)
+                    II = II + 1
+                  END IF
+                END IF
+              END IF
+   90       CONTINUE
+  100     CONTINUE
+  110   CONTINUE
+  120 CONTINUE
+
+      CALL JEDEMA()
+      END

@@ -1,0 +1,112 @@
+      SUBROUTINE FPRES(NOMTE,XI,NB1,VECL,VECTPT)
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ELEMENTS  DATE 22/03/2000   AUTEUR B8BHHHH J.R.LEVESQUE 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+      IMPLICIT REAL*8 (A-H,O-Z)
+      INTEGER      NB1
+      CHARACTER*16  NOMTE
+      REAL*8       VECL(51),VECTPT(9,3,3)
+C
+C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX --------------------
+      CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
+      INTEGER            ZI
+      COMMON  / IVARJE / ZI(1)
+      REAL*8             ZR
+      COMMON  / RVARJE / ZR(1)
+      COMPLEX*16         ZC
+      COMMON  / CVARJE / ZC(1)
+      LOGICAL            ZL
+      COMMON  / LVARJE / ZL(1)
+      CHARACTER*8        ZK8
+      CHARACTER*16                ZK16
+      CHARACTER*24                          ZK24
+      CHARACTER*32                                    ZK32
+      CHARACTER*80                                              ZK80
+      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX --------------------
+C
+      REAL*8      RNORMC,F1,CHG(6),KIJKM1(40,2),PGL(3,3)
+      REAL*8      XI(3,*),VECL1(42),CHGSRG(6,8),CHGSRL(6)
+      INTEGER     LZI,NB2,NPGSN,LZR,JPRES,J,I,JP,IP,INTSN,I1,K
+C
+      CALL JEVETE('&INEL.'//NOMTE(1:8)//'.DESI',' ', LZI )
+      NB1  =ZI(LZI-1+1)
+      NB2  =ZI(LZI-1+2)
+      NPGSN=ZI(LZI-1+4)
+C
+      CALL JEVETE('&INEL.'//NOMTE(1:8)//'.DESR',' ', LZR )
+C
+      CALL R8INIR(42,0.D0,VECL1,1)
+C
+C --- CAS DES CHARGEMENTS DE PRESSION : Z LOCAL
+C
+         CALL JEVECH ('PPRESSR','L',JPRES)
+            DO 70 J=1,NB1
+               DO 30 I=1,6
+                  CHGSRL(I)=0.D0
+30              CONTINUE
+C-----------------------------------------------------
+C  LE SIGNE MOINS CORRESPOND A LA CONVENTION : 
+C      UNE PRESSION POSITIVE PROVOQUE UN GONFLEMENT
+               CHGSRL(3)= - ZR(JPRES-1+J)
+C-----------------------------------------------------
+               DO 50 JP=1,3
+                  DO 40 IP=1,3
+                     PGL(JP,IP)=VECTPT(J,JP,IP)
+ 40               CONTINUE
+ 50            CONTINUE
+               CALL UTPVLG(1,6,PGL,CHGSRL,CHG)
+               DO 60 I=1,6
+                  CHGSRG(I,J)=CHG(I)
+ 60            CONTINUE
+ 70         CONTINUE
+C
+      DO 200 INTSN=1,NPGSN
+         CALL VECTCI(INTSN,NB1,XI,ZR(LZR),RNORMC)
+C
+         CALL FORSRG(INTSN,NB1,NB2,ZR(LZR),CHGSRG,RNORMC,VECTPT,VECL1)
+ 200  CONTINUE
+C
+C     RESTITUTION DE KIJKM1 POUR CONDENSER LES FORCES
+C     ATTENTION LA ROUTINE N'EST PAS UTILISEE DANS LE CAS DES
+C     EFFORTS SUIVANTS (MOMENTS SURFACIQUES)
+C
+      I1=5*NB1
+      DO 220 J=1,2
+         DO 210 I=1,I1
+            K=(J-1)*I1+I
+            KIJKM1(I,J)=ZR(LZR-1+1000+K)
+ 210     CONTINUE
+ 220  CONTINUE
+C
+      DO 240 I=1,I1
+         F1=0.D0
+         DO 230 K=1,2
+            F1=F1+KIJKM1(I,K)*VECL1(I1+K)
+ 230     CONTINUE
+         VECL1(I)=VECL1(I)-F1
+ 240  CONTINUE
+C
+C     EXPANSION DU VECTEUR VECL1 : DUE A L'AJOUT DE LA ROTATION FICTIVE
+C
+      CALL VEXPAN(NB1,VECL1,VECL)
+      DO 90 I=1,3
+         VECL(6*NB1+I)=0.D0
+ 90   CONTINUE
+C
+      END

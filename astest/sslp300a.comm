@@ -1,0 +1,121 @@
+# MODIF  DATE 07/06/2002   AUTEUR DURAND C.DURAND 
+# TITRE PLAQUE RECTANGULAIRE PORTE-A-FAUX EN FLEXION CISAILLEMENT
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+DEBUT( CODE=_F(  NOM = 'SSLP300A',NIV_PUB_WEB='INTERNET') )
+
+MAIL=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='NON'),   )
+
+#
+# DEFINITION DES GROUPES DE NOEUDS
+MAIL=DEFI_GROUP( reuse=MAIL,   MAILLAGE=MAIL,CREA_GROUP_NO=(
+                       _F(  GROUP_MA = 'ENCAST'),
+                       _F(  GROUP_MA = 'BORD_CH'),
+                       _F(  GROUP_MA = 'LEF'))
+                   )
+
+#
+# DEFINITION DU MODELE
+MODELE=AFFE_MODELE(    MAILLAGE=MAIL,
+                         AFFE=_F(  TOUT = 'OUI',
+                       PHENOMENE = 'MECANIQUE',
+                       MODELISATION = 'C_PLAN')  )
+
+#
+# DEFINITION DU MATERIAU
+ACIER=DEFI_MATERIAU(    ELAS=_F(  E = 2.1E11,  NU = 0.3,
+                                 ALPHA = 1.E-5,  RHO = 7800.)
+                      )
+
+#
+# ATTRIBUTION DU MATERIAU
+CHMAT=AFFE_MATERIAU(    MAILLAGE=MAIL,
+                          AFFE=_F(  TOUT = 'OUI',
+                                 MATER = ACIER)  )
+
+#
+# DEFINITION DES CONDITIONS AUX LIMITES ET CHARGEMENTS
+CHARGT=AFFE_CHAR_MECA(    MODELE=MODELE,
+                           DDL_IMPO=_F(  GROUP_NO = 'ENCAST',
+                                      DX = 0.,   DY = 0.),
+                           PRES_REP=_F(  GROUP_MA = 'BORD_CH',
+                                      CISA_2D = 630000.)
+#                           ( EPAISSEUR UNITE .... )
+                        )
+
+#
+# RESOLUTION
+DEF=MECA_STATIQUE(    MODELE=MODELE,
+                        CHAM_MATER=CHMAT,
+                        EXCIT=_F(  CHARGE = CHARGT)  )
+
+#
+# RECUPERATION DU CHAMP DE DEPLACEMENTS
+U=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
+NOM_CHAM='DEPL', RESULTAT=DEF,
+                 NUME_ORDRE=1
+                  )
+
+#
+# CALCUL DES CONTRAINTES
+SIG=CALC_CHAM_ELEM(    MODELE=MODELE,
+                         CHAM_MATER=CHMAT,
+                         OPTION='SIGM_ELNO_DEPL',
+                         DEPL=U )
+
+#
+# TEST_RESU DEPLACEMENTS
+#
+TEST_RESU(CHAM_NO=(   _F(  CHAM_GD = U,
+                        NOEUD = 'N95',
+                        NOM_CMP = 'DY',
+                        VALE = 1.21E-3,
+                        PRECISION = 0.004),
+              _F(  CHAM_GD = U,
+                        NOEUD = 'N156',
+                        NOM_CMP = 'DY',
+                        VALE = 1.21E-3,
+                        PRECISION = 0.004))
+          )
+
+#
+# TEST_RESU CONTRAINTES
+#
+TEST_RESU(CHAM_ELEM=(   _F(  CHAM_GD = SIG,
+                          MAILLE = 'M1',
+                          NOEUD = 'N1',
+                          NOM_CMP = 'SIXX',
+                          VALE = 3.78E7,
+                          PRECISION = 0.013),
+              _F(  CHAM_GD = SIG,
+                          MAILLE = 'M40',
+                          NOEUD = 'N95',
+                          NOM_CMP = 'SIXX',
+                          CRITERE = 'ABSOLU',
+                          VALE = 0.,
+                          PRECISION = 500000.0),
+              _F(  CHAM_GD = SIG,
+                          MAILLE = 'M10',
+                          NOEUD = 'N41',
+                          NOM_CMP = 'SIXX',
+                          VALE = 1.89E7,
+                          PRECISION = 0.003))
+          )
+
+FIN()
+#

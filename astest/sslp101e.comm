@@ -1,0 +1,647 @@
+# MODIF  DATE 03/07/2002   AUTEUR CIBHHPD D.NUNEZ 
+# TITRE PLAQUE FISSUREE AVEC PRESSION VARIABLE SUR LES LEVRES
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+# DE LA FISSURE (CALCUL G,K1,K2 )
+#
+DEBUT(CODE=_F( NOM = 'SSLP101E',NIV_PUB_WEB='INTERNET'))
+
+MA=LIRE_MAILLAGE(  )
+
+MO=AFFE_MODELE(  MAILLAGE=MA, 
+                             AFFE=_F( TOUT = 'OUI',
+                                   PHENOMENE = 'MECANIQUE',
+                                   MODELISATION = 'C_PLAN'))
+
+MAT=DEFI_MATERIAU(ELAS=_F(  E = 200000., NU = 0.3, RHO = 0., ALPHA = 0.))
+
+CHMAT=AFFE_MATERIAU(  MAILLAGE=MA,AFFE=_F(  TOUT = 'OUI',MATER = MAT))
+
+# --- CHARGEMENTS FONCTIONS ------------------------------------------
+
+ZERO = FORMULE(REEL="""(REEL:X,REEL:Y) =
+0.""")
+FCONT = FORMULE(REEL="""(REEL:X,REEL:Y) =
+(X-100.0)/37.5""")
+
+CHPRES=AFFE_CHAR_MECA_F(  MODELE=MO,DDL_IMPO=( 
+                              _F(  GROUP_NO = 'GRNM5', DY = ZERO),
+                                       _F(  NOEUD = 'N451', DX = ZERO)),
+                              PRES_REP=_F(  GROUP_MA = 'GRMA4',
+                                         PRES = FCONT)
+                           )
+
+CHFCONT=AFFE_CHAR_MECA_F(  MODELE=MO,DDL_IMPO=( 
+                                 _F(  GROUP_NO = 'GRNM5', DY = ZERO),
+                                          _F(  NOEUD = 'N451', DX = ZERO)),
+                            FORCE_CONTOUR=_F(  GROUP_MA = 'GRMA4',
+                                            FY = FCONT)
+                           )
+
+# ---------------------------------------------------------------------
+
+RESU1=MECA_STATIQUE(   MODELE=MO,   CHAM_MATER=CHMAT, 
+                          EXCIT=_F( CHARGE = CHPRES))
+
+RESU2=MECA_STATIQUE(   MODELE=MO,   CHAM_MATER=CHMAT, 
+                          EXCIT=_F( CHARGE = CHFCONT))
+
+DEP1=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
+NOM_CHAM='DEPL', RESULTAT=RESU1,
+                         NUME_ORDRE=1 )
+
+DEP2=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
+NOM_CHAM='DEPL', RESULTAT=RESU2,
+                         NUME_ORDRE=1 )
+
+# ---------------------------------------------------------------------
+
+THETA1=CALC_THETA(      MODELE=MO,
+                        THETA_2D=_F(  NOEUD = 'N668', MODULE = 1.,
+                                 R_INF = 22.04078,
+                                 R_SUP = 30.),
+                       DIRECTION=( 1., 0., 0.,) )
+
+THETA2=CALC_THETA(     MODELE=MO,
+                       THETA_2D=_F(  NOEUD = 'N668', MODULE = 1.,
+                                  R_SUP = 22.04078,
+                                  R_INF = 15.3061094),
+                       DIRECTION=( 1., 0., 0.,) )
+
+THETA3=CALC_THETA(     MODELE=MO,
+                       THETA_2D=_F(  NOEUD = 'N668', MODULE = 1.,
+                                  R_INF = 9.79591846,
+                                  R_SUP = 15.3061094),
+                       DIRECTION=( 1., 0., 0.,) )
+
+THETA4=CALC_THETA(     MODELE=MO,
+                       THETA_2D=_F(  NOEUD = 'N668', MODULE = 1.,
+                                  R_SUP = 9.79591846,
+                                  R_INF = 5.510197639),
+                       DIRECTION=( 1., 0., 0.,) )
+
+THETA5=CALC_THETA(     MODELE=MO,
+                       THETA_2D=_F(  NOEUD = 'N668', MODULE = 1.,
+                                  R_INF = 2.448979377,
+                                  R_SUP = 5.510197639),
+                       DIRECTION=( 1., 0., 0.,) )
+
+THETA6=CALC_THETA(     MODELE=MO,
+                       THETA_2D=_F(  NOEUD = 'N668', MODULE = 1.,
+                                  R_SUP = 2.448979377,
+                                  R_INF = 0.61225116),
+                       DIRECTION=( 1., 0., 0.,) )
+
+FOND=DEFI_FOND_FISS( MAILLAGE=MA,
+                          FOND=_F( NOEUD = 'N668'),
+                       NORMALE=(0., 1., 0.,))
+
+# ---- G, K1 ET K2 AVEC CHARGEMENT PRES_REP  ----------------------
+
+GPRES1=CALC_G_THETA_T(      MODELE=MO,
+                              DEPL=DEP1,
+                             THETA=THETA1,
+                            CHARGE=CHPRES,
+                         SYME_CHAR='SYME',
+                         COMP_ELAS=_F( RELATION = 'ELAS',
+                                    DEFORMATION = 'PETIT'),
+                        CHAM_MATER=CHMAT )
+
+GKPRES1=CALC_G_THETA_T(     MODELE=MO,
+                              DEPL=DEP1,
+                             THETA=THETA1,
+                              FOND_FISS=FOND,
+                         SYME_CHAR='SYME',
+                            CHARGE=CHPRES,
+                        CHAM_MATER=CHMAT,
+                            OPTION='CALC_K_G')
+
+GPRES2=CALC_G_THETA_T(      MODELE=MO,
+                              DEPL=DEP1,
+                             THETA=THETA2,
+                            CHARGE=CHPRES,
+                         SYME_CHAR='SYME',
+                         COMP_ELAS=_F( RELATION = 'ELAS',
+                                    DEFORMATION = 'PETIT'),
+                        CHAM_MATER=CHMAT )
+
+GKPRES2=CALC_G_THETA_T(     MODELE=MO,
+                              DEPL=DEP1,
+                             THETA=THETA2,
+                              FOND_FISS=FOND,
+                         SYME_CHAR='SYME',
+                            CHARGE=CHPRES,
+                        CHAM_MATER=CHMAT,
+                            OPTION='CALC_K_G')
+
+GPRES3=CALC_G_THETA_T(      MODELE=MO,
+                              DEPL=DEP1,
+                             THETA=THETA3,
+                            CHARGE=CHPRES,
+                         SYME_CHAR='SYME',
+                         COMP_ELAS=_F( RELATION = 'ELAS',
+                                    DEFORMATION = 'PETIT'),
+                        CHAM_MATER=CHMAT )
+
+GKPRES3=CALC_G_THETA_T(     MODELE=MO,
+                              DEPL=DEP1,
+                             THETA=THETA3,
+                              FOND_FISS=FOND,
+                         SYME_CHAR='SYME',
+                            CHARGE=CHPRES,
+                        CHAM_MATER=CHMAT,
+                            OPTION='CALC_K_G')
+
+GPRES4=CALC_G_THETA_T(      MODELE=MO,
+                              DEPL=DEP1,
+                             THETA=THETA4,
+                            CHARGE=CHPRES,
+                         SYME_CHAR='SYME',
+                         COMP_ELAS=_F( RELATION = 'ELAS',
+                                    DEFORMATION = 'PETIT'),
+                        CHAM_MATER=CHMAT )
+
+GKPRES4=CALC_G_THETA_T(     MODELE=MO,
+                              DEPL=DEP1,
+                             THETA=THETA4,
+                              FOND_FISS=FOND,
+                         SYME_CHAR='SYME',
+                            CHARGE=CHPRES,
+                        CHAM_MATER=CHMAT,
+                            OPTION='CALC_K_G')
+
+GPRES5=CALC_G_THETA_T(      MODELE=MO,
+                              DEPL=DEP1,
+                             THETA=THETA5,
+                            CHARGE=CHPRES,
+                         SYME_CHAR='SYME',
+                         COMP_ELAS=_F( RELATION = 'ELAS',
+                                    DEFORMATION = 'PETIT'),
+                        CHAM_MATER=CHMAT )
+
+GKPRES5=CALC_G_THETA_T(     MODELE=MO,
+                              DEPL=DEP1,
+                             THETA=THETA5,
+                              FOND_FISS=FOND,
+                         SYME_CHAR='SYME',
+                            CHARGE=CHPRES,
+                        CHAM_MATER=CHMAT,
+                            OPTION='CALC_K_G')
+
+GPRES6=CALC_G_THETA_T(      MODELE=MO,
+                              DEPL=DEP1,
+                             THETA=THETA6,
+                            CHARGE=CHPRES,
+                         SYME_CHAR='SYME',
+                         COMP_ELAS=_F( RELATION = 'ELAS',
+                                    DEFORMATION = 'PETIT'),
+                        CHAM_MATER=CHMAT )
+
+GKPRES6=CALC_G_THETA_T(     MODELE=MO,
+                              DEPL=DEP1,
+                             THETA=THETA6,
+                              FOND_FISS=FOND,
+                         SYME_CHAR='SYME',
+                            CHARGE=CHPRES,
+                        CHAM_MATER=CHMAT,
+                            OPTION='CALC_K_G')
+
+# ---- G, K1 ET K2 AVEC CHARGEMENT FORCE_CONTOUR --------------------
+
+GFCON1=CALC_G_THETA_T(      MODELE=MO,
+                              DEPL=DEP2,
+                             THETA=THETA1,
+                            CHARGE=CHPRES,
+                         SYME_CHAR='SYME',
+                         COMP_ELAS=_F( RELATION = 'ELAS',
+                                    DEFORMATION = 'PETIT'),
+                        CHAM_MATER=CHMAT )
+
+GKFCON1=CALC_G_THETA_T(     MODELE=MO,
+                              DEPL=DEP2,
+                             THETA=THETA1,
+                              FOND_FISS=FOND,
+                         SYME_CHAR='SYME',
+                            CHARGE=CHPRES,
+                        CHAM_MATER=CHMAT,
+                            OPTION='CALC_K_G')
+
+GFCON2=CALC_G_THETA_T(      MODELE=MO,
+                              DEPL=DEP2,
+                             THETA=THETA1,
+                            CHARGE=CHPRES,
+                         SYME_CHAR='SYME',
+                         COMP_ELAS=_F( RELATION = 'ELAS',
+                                    DEFORMATION = 'PETIT'),
+                        CHAM_MATER=CHMAT )
+
+GKFCON2=CALC_G_THETA_T(     MODELE=MO,
+                              DEPL=DEP2,
+                             THETA=THETA2,
+                              FOND_FISS=FOND,
+                         SYME_CHAR='SYME',
+                            CHARGE=CHPRES,
+                        CHAM_MATER=CHMAT,
+                            OPTION='CALC_K_G')
+
+GFCON3=CALC_G_THETA_T(      MODELE=MO,
+                              DEPL=DEP2,
+                             THETA=THETA3,
+                            CHARGE=CHPRES,
+                         SYME_CHAR='SYME',
+                         COMP_ELAS=_F( RELATION = 'ELAS',
+                                    DEFORMATION = 'PETIT'),
+                        CHAM_MATER=CHMAT )
+
+GKFCON3=CALC_G_THETA_T(     MODELE=MO,
+                              DEPL=DEP2,
+                             THETA=THETA3,
+                              FOND_FISS=FOND,
+                         SYME_CHAR='SYME',
+                            CHARGE=CHPRES,
+                        CHAM_MATER=CHMAT,
+                            OPTION='CALC_K_G')
+
+GFCON4=CALC_G_THETA_T(      MODELE=MO,
+                              DEPL=DEP2,
+                             THETA=THETA4,
+                            CHARGE=CHPRES,
+                         SYME_CHAR='SYME',
+                         COMP_ELAS=_F( RELATION = 'ELAS',
+                                    DEFORMATION = 'PETIT'),
+                        CHAM_MATER=CHMAT )
+
+GKFCON4=CALC_G_THETA_T(     MODELE=MO,
+                              DEPL=DEP2,
+                             THETA=THETA4,
+                              FOND_FISS=FOND,
+                         SYME_CHAR='SYME',
+                            CHARGE=CHPRES,
+                        CHAM_MATER=CHMAT,
+                            OPTION='CALC_K_G')
+
+GFCON5=CALC_G_THETA_T(      MODELE=MO,
+                              DEPL=DEP2,
+                             THETA=THETA5,
+                            CHARGE=CHPRES,
+                         SYME_CHAR='SYME',
+                         COMP_ELAS=_F( RELATION = 'ELAS',
+                                    DEFORMATION = 'PETIT'),
+                        CHAM_MATER=CHMAT )
+
+GKFCON5=CALC_G_THETA_T(     MODELE=MO,
+                              DEPL=DEP2,
+                             THETA=THETA5,
+                              FOND_FISS=FOND,
+                         SYME_CHAR='SYME',
+                            CHARGE=CHPRES,
+                        CHAM_MATER=CHMAT,
+                            OPTION='CALC_K_G')
+
+GFCON6=CALC_G_THETA_T(      MODELE=MO,
+                              DEPL=DEP2,
+                             THETA=THETA6,
+                            CHARGE=CHPRES,
+                         SYME_CHAR='SYME',
+                         COMP_ELAS=_F( RELATION = 'ELAS',
+                                    DEFORMATION = 'PETIT'),
+                        CHAM_MATER=CHMAT )
+
+GKFCON6=CALC_G_THETA_T(     MODELE=MO,
+                              DEPL=DEP2,
+                             THETA=THETA6,
+                              FOND_FISS=FOND,
+                         SYME_CHAR='SYME',
+                            CHARGE=CHPRES,
+                        CHAM_MATER=CHMAT,
+                            OPTION='CALC_K_G')
+
+TEST_TABLE(       TABLE=GPRES1,
+                       NOM_PARA='G',
+                           VALE=6.E-4,
+                      PRECISION=5.E-3   )
+
+TEST_TABLE(       TABLE=GKPRES1,
+                       NOM_PARA='G',
+                           VALE=6.E-4,
+                      PRECISION=5.E-3   )
+
+TEST_TABLE(       TABLE=GKPRES1,
+                       NOM_PARA='G_IRWIN',
+                           VALE=6.E-4,
+                      PRECISION=5.5E-3   )
+
+TEST_TABLE(       TABLE=GKPRES1,
+                       NOM_PARA='K1',
+                           VALE=10.95,
+                      PRECISION=5.E-3   )
+
+TEST_TABLE(       TABLE=GKPRES1,
+                       NOM_PARA='K2',
+                           VALE=0.0,
+                        CRITERE='ABSOLU',
+                      PRECISION=1.E-4   )
+
+TEST_TABLE(       TABLE=GPRES2,
+                       NOM_PARA='G',
+                           VALE=6.E-4,
+                      PRECISION=5.E-3   )
+
+TEST_TABLE(       TABLE=GKPRES2,
+                       NOM_PARA='G',
+                           VALE=6.E-4,
+                      PRECISION=5.E-3   )
+
+TEST_TABLE(       TABLE=GKPRES2,
+                       NOM_PARA='G_IRWIN',
+                           VALE=6.E-4,
+                      PRECISION=5.5E-3   )
+
+TEST_TABLE(       TABLE=GKPRES2,
+                       NOM_PARA='K1',
+                           VALE=10.95,
+                      PRECISION=5.E-3   )
+
+TEST_TABLE(       TABLE=GKPRES2,
+                       NOM_PARA='K2',
+                           VALE=0.0,
+                        CRITERE='ABSOLU',
+                      PRECISION=1.E-4   )
+
+TEST_TABLE(       TABLE=GPRES3,
+                       NOM_PARA='G',
+                           VALE=6.E-4,
+                      PRECISION=5.E-3   )
+
+TEST_TABLE(       TABLE=GKPRES3,
+                       NOM_PARA='G',
+                           VALE=6.E-4,
+                      PRECISION=5.E-3   )
+
+TEST_TABLE(       TABLE=GKPRES3,
+                       NOM_PARA='G_IRWIN',
+                           VALE=6.E-4,
+                      PRECISION=5.5E-3   )
+
+TEST_TABLE(       TABLE=GKPRES3,
+                       NOM_PARA='K1',
+                           VALE=10.95,
+                      PRECISION=5.E-2   )
+
+TEST_TABLE(       TABLE=GKPRES3,
+                       NOM_PARA='K2',
+                           VALE=0.0,
+                        CRITERE='ABSOLU',
+                      PRECISION=1.E-4   )
+
+TEST_TABLE(       TABLE=GPRES4,
+                       NOM_PARA='G',
+                           VALE=6.E-4,
+                      PRECISION=5.E-3   )
+
+TEST_TABLE(       TABLE=GKPRES4,
+                       NOM_PARA='G',
+                           VALE=6.E-4,
+                      PRECISION=5.E-3   )
+
+TEST_TABLE(       TABLE=GKPRES4,
+                       NOM_PARA='G_IRWIN',
+                           VALE=6.E-4,
+                      PRECISION=5.5E-3   )
+
+TEST_TABLE(       TABLE=GKPRES4,
+                       NOM_PARA='K1',
+                           VALE=10.95,
+                      PRECISION=5.E-2   )
+
+TEST_TABLE(       TABLE=GKPRES4,
+                       NOM_PARA='K2',
+                           VALE=0.0,
+                        CRITERE='ABSOLU',
+                      PRECISION=1.E-4   )
+
+TEST_TABLE(       TABLE=GPRES5,
+                       NOM_PARA='G',
+                           VALE=6.E-4,
+                      PRECISION=5.E-3   )
+
+TEST_TABLE(       TABLE=GKPRES5,
+                       NOM_PARA='G',
+                           VALE=6.E-4,
+                      PRECISION=5.E-3   )
+
+TEST_TABLE(       TABLE=GKPRES5,
+                       NOM_PARA='G_IRWIN',
+                           VALE=6.E-4,
+                      PRECISION=5.5E-3   )
+
+TEST_TABLE(       TABLE=GKPRES5,
+                       NOM_PARA='K1',
+                           VALE=10.95,
+                      PRECISION=5.E-2   )
+
+TEST_TABLE(       TABLE=GKPRES5,
+                       NOM_PARA='K2',
+                           VALE=0.0,
+                        CRITERE='ABSOLU',
+                      PRECISION=1.E-4   )
+
+TEST_TABLE(       TABLE=GPRES6,
+                       NOM_PARA='G',
+                           VALE=6.E-4,
+                      PRECISION=1.E-2   )
+
+TEST_TABLE(       TABLE=GKPRES6,
+                       NOM_PARA='G',
+                           VALE=6.E-4,
+                      PRECISION=1.E-2   )
+
+TEST_TABLE(       TABLE=GKPRES6,
+                       NOM_PARA='G_IRWIN',
+                           VALE=6.E-4,
+                      PRECISION=5.5E-3   )
+
+TEST_TABLE(       TABLE=GKPRES6,
+                       NOM_PARA='K1',
+                           VALE=10.95,
+                      PRECISION=5.1E-2   )
+
+TEST_TABLE(       TABLE=GKPRES6,
+                       NOM_PARA='K2',
+                           VALE=0.0,
+                        CRITERE='ABSOLU',
+                      PRECISION=1.E-4   )
+
+TEST_TABLE(       TABLE=GFCON1,
+                       NOM_PARA='G',
+                           VALE=6.E-4,
+                      PRECISION=5.E-3   )
+
+TEST_TABLE(       TABLE=GKFCON1,
+                       NOM_PARA='G',
+                           VALE=6.E-4,
+                      PRECISION=5.E-3   )
+
+TEST_TABLE(       TABLE=GKFCON1,
+                       NOM_PARA='G_IRWIN',
+                           VALE=6.E-4,
+                      PRECISION=5.5E-3   )
+
+TEST_TABLE(       TABLE=GKFCON1,
+                       NOM_PARA='K1',
+                           VALE=10.95,
+                      PRECISION=5.E-3   )
+
+TEST_TABLE(       TABLE=GKFCON1,
+                       NOM_PARA='K2',
+                           VALE=0.0,
+                        CRITERE='ABSOLU',
+                      PRECISION=1.E-4   )
+
+TEST_TABLE(       TABLE=GFCON2,
+                       NOM_PARA='G',
+                           VALE=6.E-4,
+                      PRECISION=5.E-3   )
+
+TEST_TABLE(       TABLE=GKFCON2,
+                       NOM_PARA='G',
+                           VALE=6.E-4,
+                      PRECISION=5.E-3   )
+
+TEST_TABLE(       TABLE=GKFCON2,
+                       NOM_PARA='G_IRWIN',
+                           VALE=6.E-4,
+                      PRECISION=5.5E-3   )
+
+TEST_TABLE(       TABLE=GKFCON2,
+                       NOM_PARA='K1',
+                           VALE=10.95,
+                      PRECISION=5.E-3   )
+
+TEST_TABLE(       TABLE=GKFCON2,
+                       NOM_PARA='K2',
+                           VALE=0.0,
+                        CRITERE='ABSOLU',
+                      PRECISION=1.E-4   )
+
+TEST_TABLE(       TABLE=GFCON3,
+                       NOM_PARA='G',
+                           VALE=6.E-4,
+                      PRECISION=5.E-3   )
+
+TEST_TABLE(       TABLE=GKFCON3,
+                       NOM_PARA='G',
+                           VALE=6.E-4,
+                      PRECISION=5.E-3   )
+
+TEST_TABLE(       TABLE=GKFCON3,
+                       NOM_PARA='G_IRWIN',
+                           VALE=6.E-4,
+                      PRECISION=5.5E-3   )
+
+TEST_TABLE(       TABLE=GKFCON3,
+                       NOM_PARA='K1',
+                           VALE=10.95,
+                      PRECISION=5.E-2   )
+
+TEST_TABLE(       TABLE=GKFCON3,
+                       NOM_PARA='K2',
+                           VALE=0.0,
+                        CRITERE='ABSOLU',
+                      PRECISION=1.E-4   )
+
+TEST_TABLE(       TABLE=GFCON4,
+                       NOM_PARA='G',
+                           VALE=6.E-4,
+                      PRECISION=5.E-3   )
+
+TEST_TABLE(       TABLE=GKFCON4,
+                       NOM_PARA='G',
+                           VALE=6.E-4,
+                      PRECISION=5.E-3   )
+
+TEST_TABLE(       TABLE=GKFCON4,
+                       NOM_PARA='G_IRWIN',
+                           VALE=6.E-4,
+                      PRECISION=5.5E-3   )
+
+TEST_TABLE(       TABLE=GKFCON4,
+                       NOM_PARA='K1',
+                           VALE=10.95,
+                      PRECISION=5.E-2   )
+
+TEST_TABLE(       TABLE=GKFCON4,
+                       NOM_PARA='K2',
+                           VALE=0.0,
+                        CRITERE='ABSOLU',
+                      PRECISION=1.E-4   )
+
+TEST_TABLE(       TABLE=GFCON5,
+                       NOM_PARA='G',
+                           VALE=6.E-4,
+                      PRECISION=5.E-3   )
+
+TEST_TABLE(       TABLE=GKFCON5,
+                       NOM_PARA='G',
+                           VALE=6.E-4,
+                      PRECISION=5.E-3   )
+
+TEST_TABLE(       TABLE=GKFCON5,
+                       NOM_PARA='G_IRWIN',
+                           VALE=6.E-4,
+                      PRECISION=5.E-3   )
+
+TEST_TABLE(       TABLE=GKFCON5,
+                       NOM_PARA='K1',
+                           VALE=10.95,
+                      PRECISION=5.E-2   )
+
+TEST_TABLE(       TABLE=GKFCON5,
+                       NOM_PARA='K2',
+                           VALE=0.0,
+                        CRITERE='ABSOLU',
+                      PRECISION=1.E-4   )
+
+TEST_TABLE(       TABLE=GFCON6,
+                       NOM_PARA='G',
+                           VALE=6.E-4,
+                      PRECISION=1.E-2   )
+
+TEST_TABLE(       TABLE=GKFCON6,
+                       NOM_PARA='G',
+                           VALE=6.E-4,
+                      PRECISION=1.E-2   )
+
+TEST_TABLE(       TABLE=GKFCON6,
+                       NOM_PARA='G_IRWIN',
+                           VALE=6.E-4,
+                      PRECISION=5.E-3   )
+
+TEST_TABLE(       TABLE=GKFCON6,
+                       NOM_PARA='K1',
+                           VALE=10.95,
+                      PRECISION=5.1E-2   )
+
+TEST_TABLE(       TABLE=GKFCON6,
+                       NOM_PARA='K2',
+                           VALE=0.0,
+                        CRITERE='ABSOLU',
+                      PRECISION=1.E-4   )
+
+FIN( )
+#

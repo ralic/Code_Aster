@@ -1,0 +1,213 @@
+      SUBROUTINE FLACON( N, V, X, ISGN, EST, KASE )
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF UTILIFOR  DATE 20/09/2002   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C ======================================================================
+C COPYRIGHT (C) LAPACK
+C ======================================================================
+C
+C     SUBROUTINE LAPACK CALCULANT LA NORME L1 D'UNE MATRICE CARREE.
+C-----------------------------------------------------------------------
+C  -- LAPACK AUXILIARY ROUTINE (VERSION 2.0) --
+C     UNIV. OF TENNESSEE, UNIV. OF CALIFORNIA BERKELEY, NAG LTD.,
+C     COURANT INSTITUTE, ARGONNE NATIONAL LAB, AND RICE UNIVERSITY
+C     FEBRUARY 29, 1992
+C
+C  PURPOSE
+C  =======
+C
+C  FLACON ESTIMATES THE 1-NORM OF A SQUARE, REAL MATRIX A.
+C  REVERSE COMMUNICATION IS USED FOR EVALUATING MATRIX-VECTOR PRODUCTS.
+C
+C  ARGUMENTS
+C  =========
+C
+C  N      (INPUT) INTEGER
+C         THE ORDER OF THE MATRIX.  N >= 1.
+C
+C  V      (WORKSPACE) REAL*8 ARRAY, DIMENSION (N)
+C         ON THE FINAL RETURN, V = A*W,  WHERE  EST = NORM(V)/NORM(W)
+C         (W IS NOT RETURNED).
+C
+C  X      (INPUT/OUTPUT) REAL*8 ARRAY, DIMENSION (N)
+C         ON AN INTERMEDIATE RETURN, X SHOULD BE OVERWRITTEN BY
+C               A * X,   IF KASE=1,
+C               A' * X,  IF KASE=2,
+C         AND FLACON MUST BE RE-CALLED WITH ALL THE OTHER PARAMETERS
+C         UNCHANGED.
+C
+C  ISGN   (WORKSPACE) INTEGER ARRAY, DIMENSION (N)
+C
+C  EST    (OUTPUT) REAL*8
+C         AN ESTIMATE (A LOWER BOUND) FOR NORM(A).
+C
+C  KASE   (INPUT/OUTPUT) INTEGER
+C         ON THE INITIAL CALL TO FLACON, KASE SHOULD BE 0.
+C         ON AN INTERMEDIATE RETURN, KASE WILL BE 1 OR 2, INDICATING
+C         WHETHER X SHOULD BE OVERWRITTEN BY A * X  OR A' * X.
+C         ON THE FINAL RETURN FROM FLACON, KASE WILL AGAIN BE 0.
+C
+C  FURTHER DETAILS
+C  ======= =======
+C
+C  CONTRIBUTED BY NICK HIGHAM, UNIVERSITY OF MANCHESTER.
+C  ORIGINALLY NAMED SONEST, DATED MARCH 16, 1988.
+C
+C  REFERENCE: N.J. HIGHAM, "FORTRAN CODES FOR ESTIMATING THE ONE-NORM OF
+C  A REAL OR COMPLEX MATRIX, WITH APPLICATIONS TO CONDITION ESTIMATION",
+C  ACM TRANS. MATH. SOFT., VOL. 14, NO. 4, PP. 381-396, DECEMBER 1988.
+C
+C ASTER INFORMATION
+C 07/01/2000 TOILETTAGE DU FORTRAN SUIVANT LES REGLES ASTER,
+C            REMPLACEMENT DE 5 RETURN PAR UN GOTO 1000,
+C            MODIFICATION DES APPELS BLAS (ROUTINE ASTER BL...),
+C            IMPLICIT NONE.
+C INTRINSIC FUNCTION
+C   ABS, DBLE, NINT, SIGN
+C ENDLIB
+C-----------------------------------------------------------------------
+C CORPS DU PROGRAMME
+      IMPLICIT NONE
+
+C     .. SCALAR ARGUMENTS ..
+      INTEGER            KASE, N
+      REAL*8   EST
+C     ..
+C     .. ARRAY ARGUMENTS ..
+      INTEGER            ISGN( * )
+      REAL*8   V( * ), X( * )
+C     ..
+C     .. PARAMETERS ..
+      INTEGER            ITMAX
+      PARAMETER          ( ITMAX = 5 )
+      REAL*8   ZERO, ONE, TWO
+      PARAMETER          ( ZERO = 0.0D+0, ONE = 1.0D+0, TWO = 2.0D+0 )
+C     ..
+C     .. LOCAL SCALARS ..
+      INTEGER            I, ITER, J, JLAST, JUMP
+      REAL*8   ALTSGN, ESTOLD, TEMP
+C     ..
+C     .. EXTERNAL FUNCTIONS ..
+      INTEGER  IDAMAX
+      REAL*8   LDASUM
+C     ..
+C     .. SAVE STATEMENT ..
+      SAVE
+C     ..
+C     .. EXECUTABLE STATEMENTS ..
+C
+      IF( KASE.EQ.0 ) THEN
+         DO 10 I = 1, N
+            X( I ) = ONE / DBLE( N )
+   10    CONTINUE
+         KASE = 1
+         JUMP = 1
+         GOTO 1000
+      END IF
+C
+      GO TO ( 20, 40, 70, 110, 140 )JUMP
+C
+C     ................ ENTRY   (JUMP = 1)
+C     FIRST ITERATION.  X HAS BEEN OVERWRITTEN BY A*X.
+C
+   20 CONTINUE
+      IF( N.EQ.1 ) THEN
+         V( 1 ) = X( 1 )
+         EST = ABS( V( 1 ) )
+C        ... QUIT
+         GO TO 150
+      END IF
+      EST = LDASUM( N, X, 1 )
+C
+      DO 30 I = 1, N
+         X( I ) = SIGN( ONE, X( I ) )
+         ISGN( I ) = NINT( X( I ) )
+   30 CONTINUE
+      KASE = 2
+      JUMP = 2
+      GOTO 1000
+C
+C     ................ ENTRY   (JUMP = 2)
+C     FIRST ITERATION.  X HAS BEEN OVERWRITTEN BY TRANDPOSE(A)*X.
+C
+   40 CONTINUE
+      J = IDAMAX( N, X, 1 )
+      ITER = 2
+C
+C     MAIN LOOP - ITERATIONS 2,3,...,ITMAX.
+C
+   50 CONTINUE
+      DO 60 I = 1, N
+         X( I ) = ZERO
+   60 CONTINUE
+      X( J ) = ONE
+      KASE = 1
+      JUMP = 3
+      GOTO 1000
+C
+C     ................ ENTRY   (JUMP = 3)
+C     X HAS BEEN OVERWRITTEN BY A*X.
+C
+   70 CONTINUE
+      CALL BLCOPY( N, X, 1, V, 1 )
+      ESTOLD = EST
+      EST = LDASUM( N, V, 1 )
+      DO 80 I = 1, N
+         IF( NINT( SIGN( ONE, X( I ) ) ).NE.ISGN( I ) )
+     &      GO TO 90
+   80 CONTINUE
+C     REPEATED SIGN VECTOR DETECTED, HENCE ALGORITHM HAS CONVERGED.
+      GO TO 120
+C
+   90 CONTINUE
+C     TEST FOR CYCLING.
+      IF( EST.LE.ESTOLD )
+     &   GO TO 120
+C
+      DO 100 I = 1, N
+         X( I ) = SIGN( ONE, X( I ) )
+         ISGN( I ) = NINT( X( I ) )
+  100 CONTINUE
+      KASE = 2
+      JUMP = 4
+      GOTO 1000
+C
+C     ................ ENTRY   (JUMP = 4)
+C     X HAS BEEN OVERWRITTEN BY TRANDPOSE(A)*X.
+C
+  110 CONTINUE
+      JLAST = J
+      J = IDAMAX( N, X, 1 )
+      IF( ( X( JLAST ).NE.ABS( X( J ) ) ) .AND. ( ITER.LT.ITMAX ) ) THEN
+         ITER = ITER + 1
+         GO TO 50
+      END IF
+C
+C     ITERATION COMPLETE.  FINAL STAGE.
+C
+  120 CONTINUE
+      ALTSGN = ONE
+      DO 130 I = 1, N
+         X( I ) = ALTSGN*( ONE+DBLE( I-1 ) / DBLE( N-1 ) )
+         ALTSGN = -ALTSGN
+  130 CONTINUE
+      KASE = 1
+      JUMP = 5
+      GOTO 1000
+C
+C     ................ ENTRY   (JUMP = 5)
+C     X HAS BEEN OVERWRITTEN BY A*X.
+C
+  140 CONTINUE
+      TEMP = TWO*( LDASUM( N, X, 1 ) / DBLE( 3*N ) )
+      IF( TEMP.GT.EST ) THEN
+         CALL BLCOPY( N, X, 1, V, 1 )
+         EST = TEMP
+      END IF
+C
+  150 CONTINUE
+      KASE = 0
+ 1000 CONTINUE
+C
+C     END OF FLACON
+C
+      END

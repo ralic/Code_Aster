@@ -1,0 +1,441 @@
+      SUBROUTINE ADHC00 ( NBOPT, TABENT, TABREE, TABCAR, LGCAR )
+C
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 05/03/2002   AUTEUR GNICOLAS G.NICOLAS 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+C RESPONSABLE GNICOLAS G.NICOLAS
+C     ------------------------------------------------------------------
+C      ADAPTATION PAR HOMARD - DECODAGE DE LA COMMANDE - PHASE 00
+C      --             -                       -                --
+C      DECODAGE DES OPTIONS
+C     ------------------------------------------------------------------
+C
+      IMPLICIT NONE
+C
+C 0.1. ==> ARGUMENTS
+C
+      INTEGER NBOPT
+      INTEGER TABENT(NBOPT), LGCAR(NBOPT)
+C
+      REAL*8 TABREE(NBOPT)
+C
+      CHARACTER*(*) TABCAR(NBOPT)
+C
+C 0.2. ==> COMMUNS
+C
+C --------------- COMMUNS NORMALISES  JEVEUX  --------------------------
+      INTEGER      ZI
+      COMMON /IVARJE/ZI(1)
+C     -----  FIN  COMMUNS NORMALISES  JEVEUX --------------------------
+C
+C 0.3. ==> VARIABLES LOCALES
+C
+      CHARACTER*6 NOMPRO
+      PARAMETER ( NOMPRO = 'ADHC00' )
+C
+      INTEGER NBMCF
+      PARAMETER ( NBMCF = 2 )
+C
+      INTEGER LXLGUT
+C
+      INTEGER CODRET
+      INTEGER IAUX, JAUX, IOCC
+      INTEGER IFM, NIVINF
+      INTEGER ADTRAV
+      INTEGER NUFIHO
+      INTEGER MODHOM, TYPRAF, TYPDER
+      INTEGER BILNBR, BILQUA, BILINT, BILCXT, BILTAI
+      INTEGER CVSOLU
+      INTEGER NITER
+      INTEGER NUMPT, NUMORD
+      INTEGER LNMMN, LNMMN1
+      INTEGER LNMDIN
+      INTEGER LREPHC
+C
+      CHARACTER*8 CRN
+      CHARACTER*16 CHINME
+      CHARACTER*16 MESSAG
+      CHARACTER*16 MCLF(NBMCF)
+      CHARACTER*24 NTRAVA
+      CHARACTER*32 NMDMN, NMDMN1
+      CHARACTER*32 NMDIN
+      CHARACTER*72 REP
+      CHARACTER*72 REPHC
+C
+C====
+C 1. PREALABLES
+C====
+C
+      CODRET = 0
+C
+C 1.1. ==>  MOTS-CLES FACTEURS DE LA COMMANDE
+C
+C                1234567890123456
+      MCLF(1) = 'TRAITEMENT      '
+      MCLF(2) = 'ANALYSE         '
+C
+C 1.2. ==> L'INFO
+C
+      CALL INFNIV ( IFM, NIVINF )
+C
+C 1.3. ==> VALEURS PAR DEFAUT
+C
+      NITER = 0
+      CVSOLU = 0
+      LNMMN = 0
+      LNMMN1 = 0
+      LNMDIN = 0
+C
+C====
+C 2. DECODAGE DE LA COMMANDE
+C====
+C
+C 2.1. ==> LE MODE OPERATOIRE
+C
+      CALL GETFAC ( MCLF(1), IOCC )
+C
+      IF ( IOCC.NE.0 ) THEN
+C
+      CALL GETVTX ( MCLF(1), 'ADAPTATION' , 1,1,1, REP, IAUX )
+      IF ( IAUX.EQ.0 ) THEN
+        CALL GETVTX ( MCLF(1), 'UNIFORME', 1,1,1, REP, IAUX )
+        IF ( IAUX.EQ.0 ) THEN
+          CALL GETVTX ( MCLF(1), 'MAJSOLUTION', 1,1,1, REP, IAUX )
+          IF ( IAUX.EQ.0 ) THEN
+            CALL GETVTX ( MCLF(1), 'INFORMATION', 1,1,1, REP, IAUX )
+            MODHOM = 2
+          ELSE
+            MODHOM = 3
+            CVSOLU = 1
+          ENDIF
+        ELSE
+          MODHOM = 1
+          IF ( REP.EQ.'RAFFINEMENT' ) THEN
+            TYPRAF = 2
+            TYPDER = 0
+          ELSEIF ( REP.EQ.'DERAFFINEMENT' ) THEN
+            TYPRAF = 0
+            TYPDER = 2
+          ELSEIF ( REP.EQ.'RIEN' ) THEN
+            TYPRAF = 0
+            TYPDER = 0
+          ENDIF
+        ENDIF
+      ELSE
+        MODHOM = 1
+        IF ( REP.EQ.'RAFF_DERA' ) THEN
+          TYPRAF = 1
+          TYPDER = 1
+        ELSEIF ( REP.EQ.'RAFFINEMENT' ) THEN
+          TYPRAF = 1
+          TYPDER = 0
+        ELSEIF ( REP.EQ.'DERAFFINEMENT' ) THEN
+          TYPRAF = 0
+          TYPDER = 1
+        ENDIF
+      ENDIF
+C
+      ELSE
+C
+        CODRET = CODRET + 1
+C
+      ENDIF
+C
+C 2.2. ==> POUR UNE ADAPTATION LIBRE, LES CARACTERISTIQUES
+C          DE L'INDICATEUR
+C
+      IF ( MODHOM.EQ.1 ) THEN
+C
+      IF ( TYPRAF.EQ.1 .OR. TYPDER.EQ.1 ) THEN
+C
+C 2.2.1. ==> NOM DE LA COMPOSANTE
+C
+        CALL GETVTX ( MCLF(1), 'NOM_MED_INDICA' , 1,1,1, NMDIN, IAUX )
+C
+        LNMDIN = LXLGUT(NMDIN)
+C
+C 2.2.2. ==> NUMERO D'ORDRE
+C
+        CALL GETVIS ( MCLF(1), 'NUMORD_INDICA', 1,1,1, NUMORD, IAUX )
+C
+C 2.2.2.1. ==> AVEC UN NUMERO D'ORDRE, ON A UN PAS DE TEMPS
+C
+        IF ( IAUX.NE.0 ) THEN
+C
+          CALL GETVIS ( MCLF(1), 'NUMPT_INDICA', 1,1,1, NUMPT, IAUX )
+C
+C 2.2.2.2. ==> LE NUMERO N'EST PAS PRECISE. ON EXPLORERA LE CONCEPT
+C
+        ELSE
+C
+          CALL GETVTX ( MCLF(1), 'NOM_RESU_INDICA' , 1,1,1, CRN, IAUX )
+C
+          CALL GETVTX ( MCLF(1), 'NOM_CHAM_INDICA' , 1,1,1, CHINME,IAUX)
+C
+C                   12   345678   9012345678901234
+          NTRAVA = '&&'//NOMPRO//'.LISTE_NUMO     '
+          CALL RSCHOR ( CRN, CHINME, JAUX, NTRAVA, IAUX )
+          IF ( IAUX.EQ.0 ) THEN
+            IF ( JAUX.EQ.1 ) THEN
+              CALL JEVEUO ( NTRAVA, 'L', ADTRAV )
+              NUMORD = ZI(ADTRAV)
+            ELSE
+              CALL UTMESS ( 'E', NOMPRO,
+     >  'QUEL NUMERO D''ORDRE CHOISIR POUR L''INDICATEUR D''ERREUR ? ('
+     > //CRN//','//CHINME//')' )
+              CODRET = CODRET + 1
+            ENDIF
+          ELSE
+            CALL UTMESS ( 'E', NOMPRO, 'PROBLEME DE DECODAGE.' )
+            CODRET = CODRET + 1
+          ENDIF
+          CALL JEDETR(NTRAVA)
+          NUMPT = NUMORD
+C
+        ENDIF
+C
+      ENDIF
+C
+      ENDIF
+C
+C 2.3. ==> POUR UNE ADAPTATION, CONVERSION DE SOLUTION
+C
+      IF ( MODHOM.EQ.1 ) THEN
+C
+        CALL GETVTX ( MCLF(1), 'MAJ_CHAM' , 1,1,1, REP, IAUX )
+C
+        IF ( IAUX.NE.0 ) THEN
+          IF ( REP(1:3).EQ.'OUI' ) THEN
+            CVSOLU = 1
+          ELSEIF ( REP(1:3).EQ.'NON' ) THEN
+            CVSOLU = 0
+          ENDIF
+        ELSE
+          CVSOLU = 0
+        ENDIF
+C
+      ENDIF
+C
+C 2.4. ==> SI PAS DE L'INFORMATION : NUMERO DE L'ITERATION
+C
+      IF ( MODHOM.NE.2 ) THEN
+C
+        CALL GETVIS ( MCLF(1), 'NITER' , 1,1,1, NITER, IAUX )
+C
+        IF ( IAUX.EQ.0 ) THEN
+          CODRET = CODRET + 1
+        ENDIF
+C
+      ENDIF
+C
+C 2.5. ==> L'ANALYSE
+C
+      CALL GETFAC ( MCLF(2), IOCC )
+C
+      IF ( IOCC.NE.0 ) THEN
+C
+C 2.5.1. CONTROLE DES NOMBRES D'ENTITES
+C
+        CALL GETVTX ( MCLF(2), 'NOMBRE' , 1,1,1, REP, IAUX )
+        IF ( IAUX.NE.0 ) THEN
+          IF ( REP(1:3).EQ.'OUI' ) THEN
+            BILNBR = 1
+          ELSEIF ( REP(1:3).EQ.'NON' ) THEN
+            BILNBR = 0
+          ENDIF
+        ELSE
+          BILNBR = 0
+        ENDIF
+C
+C 2.5.2. ==> QUALITE DU MAILLAGE
+C
+        CALL GETVTX ( MCLF(2), 'QUALITE' , 1,1,1, REP, IAUX )
+        IF ( IAUX.NE.0 ) THEN
+          IF ( REP(1:3).EQ.'OUI' ) THEN
+            BILQUA = 1
+          ELSEIF ( REP(1:3).EQ.'NON' ) THEN
+            BILQUA = 0
+          ENDIF
+        ELSE
+          BILQUA = 0
+        ENDIF
+C
+C 2.5.3. CONTROLE DE LA CONNEXITE DU MAILLAGE
+C
+        CALL GETVTX ( MCLF(2), 'CONNEXITE' , 1,1,1, REP, IAUX )
+        IF ( IAUX.NE.0 ) THEN
+          IF ( REP(1:3).EQ.'OUI' ) THEN
+            BILCXT = 1
+          ELSEIF ( REP(1:3).EQ.'NON' ) THEN
+            BILCXT = 0
+          ENDIF
+        ELSE
+          BILCXT = 0
+        ENDIF
+C
+C 2.5.4. TAILLE DES SOUS-DOMAINES
+C
+        CALL GETVTX ( MCLF(2), 'TAILLE' , 1,1,1, REP, IAUX )
+        IF ( IAUX.NE.0 ) THEN
+          IF ( REP(1:3).EQ.'OUI' ) THEN
+            BILTAI = 1
+          ELSEIF ( REP(1:3).EQ.'NON' ) THEN
+            BILTAI = 0
+          ENDIF
+        ELSE
+          BILTAI = 0
+        ENDIF
+C
+C 2.5.1. CONTROLE DE LA NON-INTERPENETRATION DES ELEMENTS
+C
+        CALL GETVTX ( MCLF(2), 'INTERPENETRATION' , 1,1,1, REP, IAUX )
+        IF ( IAUX.NE.0 ) THEN
+          IF ( REP(1:3).EQ.'OUI' ) THEN
+            BILINT = 1
+          ELSEIF ( REP(1:3).EQ.'NON' ) THEN
+            BILINT = 0
+          ENDIF
+        ELSE
+          BILINT = 0
+        ENDIF
+C
+      ELSE
+C
+        BILNBR = 1
+        BILQUA = 0
+        BILINT = 0
+        BILCXT = 0
+        BILTAI = 0
+C
+      ENDIF
+C
+C 2.6. ==> LE NUMERO D'UNITE LOGIQUE
+C
+      CALL GETVIS ( ' ', 'UNITE' , 1,1,1, NUFIHO  , IAUX )
+C
+C 2.7. ==> LE REPERTOIRE OU AURA LIEU LE CALCUL HOMARD
+C
+      CALL GETVTX ( ' ', 'REP' , 1,1,1, REPHC, IAUX )
+      IF ( IAUX.EQ.0 ) THEN  
+        LREPHC = 1
+        REPHC(1:1) = '.'
+      ELSE
+        LREPHC = LXLGUT(REPHC)
+      ENDIF
+C
+C 2.8. ==> LES NOMS MED DES MAILLAGES
+C          REMARQUE : ON NE LE FAIT QU'ICI CAR ON NE CONNAIT TOUTES LES
+C                     DIFFERENTES OPTIONS QUE MAINTENANT
+C
+C 2.8.1. ==> MAILLAGE D'ENTREE :
+C            . SI INFORMATION
+C            . SI ADAPTATION LIBRE
+C            . SI ADAPTATION ET ITERATION = 0
+C            . SI ADAPTATION ET MAJ DE SOLUTION
+C
+      IF ( MODHOM.EQ.2 .OR.
+     >     ( MODHOM.EQ.1 .AND. ( TYPRAF.EQ.1 .OR. TYPDER.EQ.1 ) ) .OR.
+     >     ( MODHOM.EQ.1 .AND. NITER.EQ.0 ) .OR.
+     >     ( MODHOM.EQ.1 .AND. CVSOLU.NE.0 ) ) THEN
+C
+        CALL GETVTX ( MCLF(1), 'NOM_MED_MAILLAGE_N' , 1,1,1,
+     >                NMDMN, IAUX )
+C
+        LNMMN = LXLGUT(NMDMN)
+C
+      ENDIF
+C
+C 2.8.2. ==> MAILLAGE DE SORTIE : SI ADAPTATION
+C
+      IF ( MODHOM.EQ.1 ) THEN
+C
+        CALL GETVTX ( MCLF(1), 'NOM_MED_MAILLAGE_NP1' , 1,1,1,
+     >                NMDMN1, IAUX )
+C
+        LNMMN1 = LXLGUT(NMDMN1)
+C
+      ENDIF
+C
+C 2.9. ==> ARRET SI PROBLEME
+C
+      IF ( CODRET .GT. 0 ) THEN
+        CALL UTMESS
+     > ('F',NOMPRO,'ERREURS CONSTATEES POUR IMPR_FICO_HOMA')
+      ENDIF
+C
+C====
+C 3. STOCKAGE DES ARGUMENTS
+C====
+C
+C 3.1. ==> ENTIERS
+C
+      TABENT(1) = NUFIHO
+      TABENT(2) = MODHOM
+      TABENT(3) = NITER
+      TABENT(6) = TYPRAF
+      TABENT(7) = TYPDER
+      TABENT(8) = CVSOLU
+      TABENT(15) = NUMPT
+      TABENT(16) = NUMORD
+      TABENT(29) = IFM
+      TABENT(30) = NIVINF
+      TABENT(31) = BILNBR
+      TABENT(32) = BILQUA
+      TABENT(33) = BILCXT
+      TABENT(34) = BILTAI
+      TABENT(35) = BILINT
+C
+C 3.2. ==> CARACTERES
+C
+      LGCAR(29) = LREPHC
+      IF ( LREPHC.GT.0 ) THEN
+        TABCAR(29)(1:LREPHC) = REPHC(1:LREPHC)
+      ENDIF
+C
+      LGCAR(31) = LNMMN
+      IF ( LNMMN.GT.0 ) THEN
+        TABCAR(31)(1:LNMMN) = NMDMN(1:LNMMN)
+      ENDIF
+C
+      LGCAR(32) = LNMMN1
+      IF ( LNMMN1.GT.0 ) THEN
+        TABCAR(32)(1:LNMMN1) = NMDMN1(1:LNMMN1)
+      ENDIF
+C
+      LGCAR(35) = LNMDIN
+      IF ( LNMDIN.GT.0 ) THEN
+        TABCAR(35)(1:LNMDIN) = NMDIN(1:LNMDIN)
+      ENDIF
+C
+C 3.3. ==> REELS
+C
+C====
+C 4. DONNEES COMPLEMENTAIRES
+C    ELLES SONT COMMUNES A LA COMMANDE ET A LA MACRO-COMMANDE
+C====
+C
+C               1234567890123456
+      MESSAG = '                '
+      MESSAG(1:6) = NOMPRO
+C
+      IAUX = 1
+      CALL ADDC00 ( MESSAG, IAUX, MCLF,
+     >              NBOPT, TABENT, TABREE, TABCAR, LGCAR,
+     >              CODRET )
+C
+      END

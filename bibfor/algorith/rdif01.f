@@ -1,0 +1,101 @@
+        SUBROUTINE RDIF01( LOI,   MOD,   IMAT,   MATCST, 
+     &                     NVI,    NMAT,   VINI,
+     &                     COTHE, COEFF, DCOTHE, DCOEFF, E,
+     &                     NU,    ALPHA, X,      DTIME,  SIGI,
+     &                     EPSD,  DETOT, TPERD,  DTPER,  TPEREF,
+     &                     DVIN,  BZ )
+        IMPLICIT REAL*8 (A-H,O-Z)
+C       ================================================================
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 03/10/2001   AUTEUR DURAND C.DURAND 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+C TOLE CRP_21
+C       ----------------------------------------------------------------
+C       ROUTINE D AIGUILLAGE
+C       ----------------------------------------------------------------
+C       INTEGRATION DE LOIS DE COMPORTEMENT ELASTO-VISCOPLASTIQUE
+C       PAR UNE METHODE DE RUNGE KUTTA
+C       ----------------------------------------------------------------
+C       IN  LOI     :  NOM DU MODELE DE COMPORTEMENT 
+C           MOD     :  TYPE DE MODELISATION
+C           IMAT    :  ADRESSE DU MATERIAU CODE
+C           MATCST  :  NATURE DES PARAMETRES INELASTIQUES 
+C           NVI     :  NOMBRE DE VARIABLES INTERNES
+C           NMAT    :  NOMBRE DE PARAMETRES MATERIAU INELASTIQUE
+C           VINI    :  VARIABLES INTERNES A T
+C           COTHE   :  COEFFICIENTS MATERIAU ELASTIQUE A T
+C           COEFF   :  COEFFICIENTS MATERIAU INELASTIQUE A T
+C           DCOTHE  :  DELTA COEFFICIENTS MATERIAU ELASTIQUE A T+DT
+C           DCOEFF  :  DELTA COEFFICIENTS MATERIAU INELASTIQUE A T+DT
+C           E       :  COEFFICIENT MODULE D'YOUNG
+C           NU      :  COEFFICIENT DE POISSON
+C           ALPHA   :  COEFFICIENT DE DILATION THERMIQUE
+C           X       :  INTERVALE DE TEMPS ADAPTATIF
+C           DTIME   :  INTERVALE DE TEMPS 
+C           SIGI    :  CONTRAINTES A L'INSTANT COURANT
+C           EPSD    :  DEFORMATION TOTALE A T
+C           DETOT   :  INCREMENT DE DEFORMATION TOTALE
+C           TPERD   :  TEMPERATURE A T
+C           DTPER   :  INTERVALE DE TEMPERATURE ENTRE T+DT ET T
+C           TPEREF  :  TEMPERATURE DE REFERENCE
+C           DVIN    :  DERIVEES DES VARIABLES INTERNES A T
+C           BZ      :  VARIABLE LOGIQUE
+C       ----------------------------------------------------------------
+        CHARACTER*16 LOI
+        CHARACTER*8 MOD
+        INTEGER IMAT
+        CHARACTER*3 MATCST
+        REAL*8 E, NU, ALPHA
+        LOGICAL BZ
+        REAL*8 X, DTIME
+        REAL*8 TPERD, DTPER, TPEREF
+        REAL*8 COTHE(3),DCOTHE(3)
+        REAL*8 COEFF(NMAT),DCOEFF(NMAT)
+        REAL*8 SIGI(6),EPSD(6),DETOT(6)
+        REAL*8 COEFT(50)
+        REAL*8 VINI(NVI)
+        REAL*8 DVIN(NVI)
+C
+        IF (LOI(1:9).EQ.'VISCOCHAB') THEN
+          NCOE=25
+            CALL COEFFT(NCOE,COTHE,COEFF,DCOTHE,DCOEFF,X,DTIME,COEFT,
+     &                E,NU,ALPHA)
+          CALL RKDCHA(MOD,NVI,VINI,COEFT,E,NU,ALPHA,X,DTIME,
+     &                SIGI,EPSD,DETOT,TPERD,DTPER,TPEREF,DVIN)
+        ELSE IF (LOI(1:9).EQ.'POLY_CFC') THEN
+          NCOE=13
+          IF (BZ) THEN
+            CALL COEFFT(NCOE,COTHE,COEFF,DCOTHE,DCOEFF,X,DTIME,COEFT,
+     &                E,NU,ALPHA)
+            CALL RKDCFC(MOD,NVI,VINI,COEFT,E,NU,ALPHA,X,DTIME,
+     &                  SIGI,EPSD,DETOT,TPERD,DTPER,TPEREF,DVIN,IMAT)
+          ELSE
+            CALL COEFFT(NCOE,COTHE,COEFF,DCOTHE,DCOEFF,X,DTIME,COEFT,
+     &                E,NU,ALPHA)
+            CALL RKDCBZ(MOD,NVI,VINI,COEFT,E,NU,ALPHA,X,DTIME,
+     &                  SIGI,EPSD,DETOT,TPERD,DTPER,TPEREF,DVIN,IMAT)
+          END IF
+        ELSE  IF (LOI(1:9).EQ.'VENDOCHAB') THEN
+          NCOE=9
+            CALL COEFFT(NCOE,COTHE,COEFF,DCOTHE,DCOEFF,X,DTIME,COEFT,
+     &                E,NU,ALPHA)
+          CALL RKDVEC(MOD,IMAT,MATCST,NVI,VINI,COEFT,E,NU,
+     &                ALPHA,X,DTIME,SIGI,EPSD,DETOT,TPERD,
+     &                DTPER,TPEREF,DVIN)
+        END IF
+        END

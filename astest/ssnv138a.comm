@@ -1,0 +1,235 @@
+# MODIF  DATE 22/10/2002   AUTEUR MCOURTOI M.COURTOIS 
+# TITRE CANTILEVER EN GRANDE ROTATION SOUMISE A UN MOMENT LINEIQUE
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+#
+DEBUT(CODE=_F(NOM='SSNV138A',NIV_PUB_WEB='INTERNET'),);
+
+PRE_GIBI();
+
+MAIL=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='NON'),);
+
+MA=CREA_MAILLAGE(MAILLAGE=MAIL,
+                  MODI_MAILLE=_F(TOUT='OUI',
+                 OPTION='QUAD8_9',
+                              ),);
+
+MA=DEFI_GROUP(reuse =MA,
+              MAILLAGE=MA,
+              CREA_GROUP_NO=_F(GROUP_MA='ENCASTR',),);
+
+MO1=AFFE_MODELE(AFFE=_F(TOUT='OUI',
+                        PHENOMENE='MECANIQUE',
+                        MODELISATION='COQUE_3D',),
+                MAILLAGE=MA,);
+
+MAT=DEFI_MATERIAU(ELAS=_F(NU=0.0,
+                          ALPHA=0.0,
+                          E=1.2000000E7,),);
+
+CHMAT1=AFFE_MATERIAU(AFFE=_F(MATER=MAT,
+                             TOUT='OUI',),
+                     MAILLAGE=MA,);
+
+CHA1=AFFE_CHAR_MECA(DDL_IMPO=_F(DZ=0.0,
+                                DX=0.0,
+                                DY=0.0,
+                                DRZ=0.0,
+                                DRX=0.0,
+                                DRY=0.0,
+                                GROUP_NO='ENCASTR'),
+                    MODELE=MO1,);
+
+CHA2=AFFE_CHAR_MECA(MODELE=MO1,
+                    FORCE_ARETE=_F(MY=-100.0,
+                                   GROUP_MA='LIBRE',),);
+
+CARA1=AFFE_CARA_ELEM(MODELE=MO1,
+                     COQUE=_F(GROUP_MA=('TOUT','ENCASTR','LIBRE','L1','L2'),
+                              COEF_RIGI_DRZ=1.E-3,
+                              EPAIS=0.1,),);
+
+L_INST=DEFI_LIST_REEL(INTERVALLE=(_F(JUSQU_A=1.8,
+                                     NOMBRE=6,),
+                                  _F(JUSQU_A=2.2,
+                                     NOMBRE=4,),
+                                  _F(JUSQU_A=2.3,
+                                     NOMBRE=2,), ),
+                                      DEBUT=0.0,);
+
+D_FONC=DEFI_FONCTION(NOM_PARA='INST',
+                     VALE=(0.0,0.0,10.0,10.0),);
+
+
+# pour tester  SYME=/OUI /NON, on fait le STAT_NON_LINE en 2 coups.
+
+NONLI=STAT_NON_LINE(CHAM_MATER=CHMAT1,
+                    MODELE=MO1,
+                    COMP_ELAS=_F(DEFORMATION='GREEN_GR',
+                                 RELATION='ELAS',),
+                    CONVERGENCE=_F(ITER_GLOB_MAXI=100,
+                                   RESI_GLOB_RELA=1.E-06,),
+                    INCREMENT=_F(LIST_INST=L_INST, INST_FIN=0.6,
+                                     SUBD_PAS=4,
+                                     SUBD_PAS_MINI=0.000001,),
+                    CARA_ELEM=CARA1,
+                    NEWTON=_F(REAC_ITER=1,
+                              MATRICE='TANGENTE',PREDICTION='ELASTIQUE'),
+                    SOLVEUR=_F(NPREC=12, SYME='OUI', ),
+                    INFO=1,
+                    EXCIT=(_F(CHARGE=CHA1,),
+                           _F(CHARGE=CHA2,
+                              FONC_MULT=D_FONC,),),);
+
+
+NONLI=STAT_NON_LINE(reuse=NONLI,CHAM_MATER=CHMAT1,
+                    MODELE=MO1,
+                    ETAT_INIT=_F(EVOL_NOLI=NONLI),
+                    COMP_ELAS=_F(DEFORMATION='GREEN_GR',
+                                 RELATION='ELAS',),
+                    CONVERGENCE=_F(ITER_GLOB_MAXI=100,
+                                   RESI_GLOB_RELA=1.E-06,),
+                    INCREMENT=_F(LIST_INST=L_INST,
+                                     SUBD_PAS=4,
+                                     SUBD_PAS_MINI=0.000001,),
+                    CARA_ELEM=CARA1,
+                    NEWTON=_F(REAC_ITER=1,
+                              MATRICE='TANGENTE',PREDICTION='ELASTIQUE',),
+                    SOLVEUR=_F(NPREC=12, SYME='OUI', ),
+                    INFO=1,
+                    EXCIT=(_F(CHARGE=CHA1,),
+                           _F(CHARGE=CHA2,
+                              FONC_MULT=D_FONC,),),);
+
+
+TEST_RESU(RESU=_F(NOM_CHAM='DEPL',
+                  RESULTAT=NONLI,
+                  PRECISION=1.E-2,
+                  CRITERE='RELATIF',
+                  INST=0.6,
+                  REFERENCE='ANALYTIQUE',VALE=-0.6,
+                  GROUP_NO='P2',
+                  NOM_CMP='DRY',),);
+
+TEST_RESU(RESU=_F(NOM_CHAM='DEPL',
+                  RESULTAT=NONLI,
+                  PRECISION=1.E-3,
+                  CRITERE='RELATIF',
+                  INST=1.2,
+                  REFERENCE='ANALYTIQUE',VALE=-1.2,
+                  GROUP_NO='P2',
+                  NOM_CMP='DRY',),);
+
+TEST_RESU(RESU=_F(NOM_CHAM='DEPL',
+                  RESULTAT=NONLI,
+                  PRECISION=1.E-2,
+                  CRITERE='RELATIF',
+                  INST=1.8,
+                  REFERENCE='ANALYTIQUE',VALE=-1.8,
+                  GROUP_NO='P2',
+                  NOM_CMP='DRY',),);
+
+TEST_RESU(RESU=_F(NOM_CHAM='DEPL',
+                  RESULTAT=NONLI,
+                  PRECISION=1.E-3,
+                  CRITERE='RELATIF',
+                  INST=2.3,
+                  REFERENCE='ANALYTIQUE',VALE=-2.3,
+                  GROUP_NO='P2',
+                  NOM_CMP='DRY',),);
+
+
+TEST_RESU(RESU=_F(NOM_CHAM='DEPL',
+                  RESULTAT=NONLI,
+                  PRECISION=1.E-3,
+                  CRITERE='RELATIF',
+                  INST=0.6,
+                  REFERENCE='ANALYTIQUE',VALE=-0.58929211,
+                  GROUP_NO='P2',
+                  NOM_CMP='DX',),);
+
+TEST_RESU(RESU=_F(NOM_CHAM='DEPL',
+                  RESULTAT=NONLI,
+                  PRECISION=1.E-3,
+                  CRITERE='RELATIF',
+                  INST=0.6,
+                  REFERENCE='ANALYTIQUE',VALE=2.91107,
+                  GROUP_NO='P2',
+                  NOM_CMP='DZ',),);
+
+TEST_RESU(RESU=_F(NOM_CHAM='DEPL',
+                  RESULTAT=NONLI,
+                  PRECISION=1.E-3,
+                  CRITERE='RELATIF',
+                  INST=1.2,
+                  REFERENCE='ANALYTIQUE',VALE=-2.2330076,
+                  GROUP_NO='P2',
+                  NOM_CMP='DX',),);
+
+TEST_RESU(RESU=_F(NOM_CHAM='DEPL',
+                  RESULTAT=NONLI,
+                  PRECISION=1.E-3,
+                  CRITERE='RELATIF',
+                  INST=1.2,
+                  REFERENCE='ANALYTIQUE',VALE=5.313685,
+                  GROUP_NO='P2',
+                  NOM_CMP='DZ',),);
+
+TEST_RESU(RESU=_F(NOM_CHAM='DEPL',
+                  RESULTAT=NONLI,
+                  PRECISION=1.E-3,
+                  CRITERE='RELATIF',
+                  INST=1.8,
+                  REFERENCE='ANALYTIQUE',VALE=-4.5897353,
+                  GROUP_NO='P2',
+                  NOM_CMP='DX',),);
+
+TEST_RESU(RESU=_F(NOM_CHAM='DEPL',
+                  RESULTAT=NONLI,
+                  PRECISION=1.E-3,
+                  CRITERE='RELATIF',
+                  INST=1.8,
+                  REFERENCE='ANALYTIQUE',VALE=6.8177894,
+                  GROUP_NO='P2',
+                  NOM_CMP='DZ',),);
+
+TEST_RESU(RESU=_F(NOM_CHAM='DEPL',
+                  RESULTAT=NONLI,
+                  PRECISION=1.E-3,
+                  CRITERE='RELATIF',
+                  INST=2.3,
+                  REFERENCE='ANALYTIQUE',VALE=-6.75780342,
+                  GROUP_NO='P2',
+                  NOM_CMP='DX',),);
+
+TEST_RESU(RESU=_F(NOM_CHAM='DEPL',
+                  RESULTAT=NONLI,
+                  PRECISION=1.E-3,
+                  CRITERE='RELATIF',
+                  INST=2.3,
+                  REFERENCE='ANALYTIQUE',VALE=7.244678353,
+                  GROUP_NO='P2',
+                  NOM_CMP='DZ',),);
+
+FIN();
+
+IMPR_RESU(RESU=_F(MAILLAGE=MA,
+                  FORMAT='CASTEM',
+                  RESULTAT=NONLI,),
+          MODELE=MO1,);
+

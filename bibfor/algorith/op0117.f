@@ -1,0 +1,307 @@
+      SUBROUTINE OP0117 ( IER )
+      IMPLICIT REAL*8 (A-H,O-Z)
+      INTEGER IER
+C     ----------------------------------------------------------------
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 14/05/2002   AUTEUR DURAND C.DURAND 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+C     FACTORISATION D'UN INTERSPECTRE (CONCEPT : INTERSPETRE)
+C     ----------------------------------------------------------------
+C OUT : IER = 0 => TOUT S'EST BIEN PASSE
+C     : IER > 0 => NOMBRE D'ERREURS RENCONTREES
+C     ------------------------------------------------------------------
+C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
+      INTEGER          ZI
+      COMMON  /IVARJE/ ZI(1)
+      REAL*8           ZR
+      COMMON  /RVARJE/ ZR(1)
+      COMPLEX*16       ZC
+      COMMON  /CVARJE/ ZC(1)
+      LOGICAL          ZL
+      COMMON  /LVARJE/ ZL(1)
+      CHARACTER*8      ZK8
+      CHARACTER*16            ZK16
+      CHARACTER*24                    ZK24
+      CHARACTER*32                            ZK32
+      CHARACTER*80                                    ZK80
+      COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
+C
+      INTEGER      DIM, LONG, DIM2, DIM3, DIM4, IVAL(3)
+      REAL*8       R8B, FREQ1, FREQ2, PREC, RESURE, RESUIM
+      COMPLEX*16   C16B
+      CHARACTER*3  TYPPAR
+      CHARACTER*8  K8B
+      CHARACTER*16 CONCEP, NOMCMD, NOPAR(3)
+      CHARACTER*19 NOMINF, NOMINT, NOMFON
+      CHARACTER*24 VALE, CHVALE, CHDESC, NOMOB2,CHNUOR,NOMOBJ
+      LOGICAL      LTAB, EXISP
+C
+      DATA NOPAR / 'NUME_VITE_FLUI' , 'NUME_ORDRE_I' , 'NUME_ORDRE_J' /
+C     ----------------------------------------------------------------
+C     --- INITIALISATION DES DIVERS ---
+      CALL JEMARQ()
+C
+      IER=0
+      CALL GETRES ( NOMINF, CONCEP, NOMCMD )
+C
+      CALL GETVID (' ', 'INTE_SPEC'     , 0,1,1, NOMINT, L )
+      CALL GETVIS (' ', 'NUME_VITE_FLUI', 0,1,1, KT    , N1)
+      CALL GETVR8 (' ', 'SUR_ECHAN'     , 0,1,1, COEF  , L )
+C
+      LTAB = .FALSE.
+      CALL TBEXIP ( NOMINT, 'NUME_VITE_FLUI', EXISP ,TYPPAR)
+      IF ( EXISP ) LTAB = .TRUE.
+C
+      IF ( LTAB ) THEN
+         IF (N1.EQ.0) THEN
+            CALL UTMESS('F',NOMCMD,'LE TYPE DE CONCEPT: '//
+     +         'TABL_INTSP DOIT ETRE ASSOCIE AU MOT CLE NUME_VITE_FLUI')
+         END IF
+         IF (COEF.EQ.0.D0) THEN
+            CALL UTMESS('F',NOMCMD,'LE COEFFICIENT DE '//
+     +                  'SURECHANTILLONNAGE DOIT ETRE NON NUL.')
+         ELSE
+            PUI2  = DBLE(LOG(COEF)/LOG(2.D0))
+            PUI   = AINT(PUI2)
+            PUI2D = DBLE(ABS(PUI2 - PUI))
+            PUI3D = DBLE(ABS(1.D0 - PUI2D))
+            IF (PUI2D .GE. 1.D-6 .AND. PUI3D .GE. 1.D-6) THEN
+              CALL UTMESS('F',NOMCMD,'LE COEFFICIENT DE '//
+     +             'SURECHANTILLONNAGE DOIT ETRE UNE PUISSANCE DE 2.')
+            END IF
+         END IF
+      END IF
+C
+C     --- FIN DES VERIFICATIONS ---
+C
+      CALL GETVIS ( ' ', 'NB_POIN', 0,1,1, NBPTS, L)
+C
+C     DESORMAIS ON RECUPERE LES NUMEROS D'ORDRE SYSTEMATIQUEMENT
+         NOMOBJ = '&&OP0117.TEMP.NUOR'
+         CALL TBEXVE ( NOMINT, 'NUME_ORDRE_I', NOMOBJ, 'V', NBMR, K8B )
+         CALL JEVEUO ( NOMOBJ, 'L', JNUOR )
+         CALL ORDIS  ( ZI(JNUOR) , NBMR )
+         CALL WKVECT ( '&&OP0117.MODE', 'V V I', NBMR, INUOR )
+         NNN = 1
+         ZI(INUOR) = ZI(JNUOR)
+         DO 10 I = 2 , NBMR
+            IF ( ZI(JNUOR+I-1) .EQ. ZI(INUOR+NNN-1) ) GOTO 10
+            NNN = NNN + 1
+            ZI(INUOR+NNN-1) = ZI(JNUOR+I-1)
+ 10      CONTINUE
+      IF ( LTAB ) THEN
+         DIM = NNN
+         NBFC = DIM * ( DIM + 1 ) / 2
+         CALL WKVECT('&&OP0117.TEMP.FONC','V V K24',NBFC,LFON)
+         IVAL(1) = KT
+         DO 5 II = 1,DIM
+            IVAL(2) = ZI(INUOR+II-1)
+            DO 6 JJ = II,DIM
+               IVAL(3) = ZI(INUOR+JJ-1)
+               CALL TBLIVA ( NOMINT, 3, NOPAR, IVAL, R8B, C16B, K8B,K8B,
+     +            R8B, 'FONCTION', K8B, IBID, R8B, C16B, NOMFON, IRET )
+               IF (IRET.NE.0) CALL UTMESS('F','OP0117','Y A UN BUG 2')
+               KF = ((JJ-1)*JJ)/2 + II
+               ZK24(LFON+KF-1) = NOMFON//'     '
+    6       CONTINUE
+    5    CONTINUE
+         LTABL = LFON
+C
+      ELSE
+         CALL TBLIVA ( NOMINT, 0, K8B, IBID, R8B, C16B, K8B, K8B, R8B,
+     +              'DIMENSION', K8B, DIM, R8B, C16B, K8B, IRET )
+         IF ( IRET .NE. 0 ) CALL UTMESS('F','OP0117','Y A UN BUG 3' )
+         NBFC = DIM * ( DIM + 1 ) / 2
+         NOMOB2 = '&&OP0117.FONCTION'
+         CALL TBEXVE ( NOMINT, 'FONCTION', NOMOB2, 'V', NBF1, K8B )
+         IF ( NBFC .NE. NBF1 ) CALL UTMESS('F','OP0117','Y A UN BUG 4' )
+         CALL JEVEUO ( NOMOB2, 'L', LTABL )
+      ENDIF
+C
+C  --- VERIFICATION SUPPLEMENTAIRE SUR LES DONNEES (A L'EXECUTION) ---
+C  - VERIFICATION DE LA COHERENCE DE LA DISCRETISATION DES FONCTIONS -
+      IF ( NBPTS .EQ. 0 ) THEN
+        NOMFON = ZK24(LTABL)
+        VALE = NOMFON//'.VALE'
+        CALL JELIRA(VALE,'LONUTI',NBVAL3,K8B)
+        CALL JEVEUO(VALE,'L',LVAL1)
+        NBVAL = NBVAL3/3
+        PAS = (ZR(LVAL1)-ZR(LVAL1+NBVAL-1))/ (NBVAL-1)
+        PREC = 1.D-06
+        DO 100 II = 1,NBVAL
+          PAS1 = ZR(LVAL1+II) - ZR(LVAL1+II-1)
+          DIFPAS = ABS(PAS1-PAS)
+          IF (DIFPAS.GT.PREC) THEN
+            CALL UTMESS('E',NOMCMD//'(ERREUR 04)','LE PAS '//
+     +              ' DE DISCRETISATION DE L INTERSPECTRE NON CONSTANT.'
+     +                  )
+            IER = IER + 1
+          END IF
+  100   CONTINUE
+        DO 20 I = 2,NBFC
+          NOMFON = ZK24(LTABL+I-1)
+          VALE = NOMFON//'.VALE'
+          CALL JELIRA(VALE,'LONUTI',NBVALU,K8B)
+          IF (NBVALU.NE.NBVAL3) THEN
+            CALL UTMESS('E',NOMCMD//'(ERREUR 05)','MAUVAISE'//
+     +                  'DEFINITION DE LA FONCTION.')
+            IER = IER + 1
+          END IF
+          CALL JEVEUO(VALE,'L',LVAL2)
+          DO 30 J = 1,NBVAL
+            FREQ1 = ZR(LVAL1+J-1)
+            FREQ2 = ZR(LVAL2+J-1)
+            DIFF = FREQ2 - FREQ1
+            IF (DIFF.GT.PREC) THEN
+              CALL UTMESS('E',NOMCMD//'(ERREUR 05)',
+     +                    'MAUVAISE DEFINITION DE LA FONCTION.')
+              IER = IER + 1
+            END IF
+   30     CONTINUE
+   20   CONTINUE
+        IF (IER.GE.1) GO TO 999
+      END IF
+C        --- FIN DES VERIFICATIONS SUPPLEMENTAIRES ---
+C
+C     --- LECTURE DES VALEURS DES FONCTIONS ---
+C
+      IF (NBPTS.EQ.0) THEN
+        NOMFON = ZK24(LTABL)
+        VALE = NOMFON//'.VALE'
+        CALL JELIRA(VALE,'LONUTI',NBVAL3,K8B)
+        CALL JEVEUO(VALE,'L',LVALC)
+        NBVAL1 = NBVAL3/3
+        NBVAL2 = NBVAL1*2
+C     --- CREATION D'UN VECTEUR TEMP.VALE POUR STOCKER ---
+C         --- LES VALEURS DE TOUTES LES FONCTIONS---
+        LONG = NBFC*NBVAL2 + NBVAL1
+        LONGH = DIM*DIM*NBVAL2 + NBVAL1
+        CALL WKVECT('&&OP0117.TEMP.VALE','V V R',LONG,LVAL)
+C     -- ON STOCKE LA FONCTION N1 DANS SON INTEGRALITE ---
+        DO 40 I = 1,NBVAL1
+          ZR(LVAL+I-1) = ZR(LVALC+I-1)
+          ZR(LVAL+NBVAL1+I-1) = ZR(LVALC+NBVAL1+2* (I-1))
+          ZR(LVAL+NBVAL2+I-1) = ZR(LVALC+NBVAL1+2* (I-1)+1)
+   40   CONTINUE
+        LVAL1 = LVAL + NBVAL3
+        DO 50 KF = 2,NBFC
+          NOMFON = ZK24(LTABL+KF-1)
+          VALE = NOMFON//'.VALE'
+          CALL JEVEUO(VALE,'L',LVALC)
+          DO 60 KVAL = 1,NBVAL1
+            ZR(LVAL1+KVAL-1) = ZR(LVALC+NBVAL1+2* (KVAL-1))
+            ZR(LVAL1+NBVAL1+KVAL-1) = ZR(LVALC+NBVAL1+2* (KVAL-1)+1)
+   60     CONTINUE
+          LVAL1 = LVAL1 + NBVAL2
+   50   CONTINUE
+C
+      ELSE
+        CALL GETVR8(' ','FREQ_INIT',0,1,1,FREQI,L)
+        CALL GETVR8(' ','FREQ_FIN',0,1,1,FREQF,L)
+        NBPT1 = NBPTS*NINT(COEF)
+        NBPT2 = NBPTS*NINT(COEF)*2
+        LONG  = NBFC*NBPT2 + NBPT1
+        LONGH = DIM*DIM*NBPT2 + NBPT1
+C
+C     --- CREATION D'UN VECTEUR TEMP.VALE POUR STOCKER LES VALEURS ---
+C      --- DES FONCTIONS SUIVANT L'INTERPOLATION ET PROLONGEMENT ---
+C
+        CALL WKVECT('&&OP0117.TEMP.VALE','V V R',LONG,LVAL)
+        DFREQ = (FREQF-FREQI)/DBLE(NBPT1-1)
+C
+C     --- ON STOCKE LES FREQUENCES ---
+        DO 70 K = 1,NBPT1
+          ZR(LVAL+K-1) = FREQI + (K-1)*DFREQ
+   70   CONTINUE
+        LVAL1 = LVAL + NBPT1
+C
+C     --- POUR CHAQUE FONCTION CALCUL DE X,Y POUR CHAQUE FREQ. ---
+C               --- PUIS ON STOCKE ---
+        DO 80 KF = 1,NBFC
+          NOMFON = ZK24(LTABL+KF-1)
+          FREQ = FREQI
+          DO 120 IPAS = 1,NBPT1
+            CALL FOINRI(NOMFON,1,K8B,FREQ,RESURE,RESUIM,IER)
+            IF (IER.NE.0) GO TO 999
+            IX = LVAL1 + (KF-1)*NBPT2 + IPAS - 1
+            IY = LVAL1 + (KF-1)*NBPT2 + IPAS - 1 + NBPT1
+            ZR(IX) = RESURE
+            ZR(IY) = RESUIM
+            FREQ = FREQ + DFREQ
+  120     CONTINUE
+   80   CONTINUE
+        NBVAL1 = NBPT1
+      END IF
+CC
+C     --- FACTORISATION DES MATRICES INTERSPECTRALES  ---
+C
+C     --- CREATION DE L'OBJET NOMINF//'.VALE'
+      CHVALE = NOMINF//'.VALE'
+      CALL WKVECT(CHVALE,'G V R',LONGH,LVALC)
+C
+C     --- CREATION DE L'OBJET NOMINF//'.DESC'
+      CHDESC = NOMINF//'.DESC'
+      CALL WKVECT(CHDESC,'G V I',3,LCHDES)
+      ZI(LCHDES) = NBVAL1
+      ZI(LCHDES+1) = DIM
+      ZI(LCHDES+2) = DIM*DIM
+C
+C     --- CREATION DE L'OBJET NOMINF//'.NUOR'
+      CHNUOR = NOMINF//'.NUOR'
+      CALL WKVECT(CHNUOR,'G V I',DIM,LNUOR)
+      CALL JEVEUO('&&OP0117.MODE','L',INUOR)
+      DO 125 I=1,DIM
+        ZI(LNUOR-1+I) = ZI(INUOR-1+I)
+  125 CONTINUE
+C
+      DIM2 = DIM*DIM
+      DIM3 = DIM2 + DIM
+      DIM4 = 2*DIM
+      CALL WKVECT('&&OP0117.TEMP.VALS','V V C',DIM2,LS)
+      CALL WKVECT('&&OP0117.TEMP.VALR','V V C',DIM2,LR)
+      CALL WKVECT('&&OP0117.TEMP.VALD','V V R',DIM,LD)
+      CALL WKVECT('&&OP0117.TEMP.VALU','V V C',DIM2,LU)
+      CALL WKVECT('&&OP0117.TEMP.VALV','V V R',DIM3,LV)
+      CALL WKVECT('&&OP0117.TEMP.VALW','V V C',DIM4,LW)
+C
+      CALL FACINT(NBVAL1,DIM,LONGH,ZR(LVAL),ZR(LVALC),LONG,ZC(LS),
+     +            ZC(LR),ZR(LD),ZC(LU),ZR(LV),ZC(LW))
+C
+      NBPT1 = NBVAL1
+      DO 130 JJ = 1,NBPT1
+        ZR(LVALC+JJ-1) = ZR(LVAL+JJ-1)
+  130 CONTINUE
+  999 CONTINUE
+C
+      CALL TITRE
+C
+      CALL JEDETR( '&&OP0117.MODE' )
+      CALL JEDETR( NOMOBJ )
+      CALL JEEXIN('&&OP0117.FONCTION',IRET)
+      IF (IRET.NE.0) CALL JEDETR('&&OP0117.FONCTION')
+      CALL JEDETR('&&OP0117.TEMP.VALE')
+      CALL JEDETR('&&OP0117.TEMP.VALD')
+      CALL JEDETR('&&OP0117.TEMP.VALR')
+      CALL JEDETR('&&OP0117.TEMP.VALS')
+      CALL JEDETR('&&OP0117.TEMP.VALU')
+      CALL JEDETR('&&OP0117.TEMP.VALV')
+      CALL JEDETR('&&OP0117.TEMP.VALW')
+      CALL JEDETR('&&OP0117.TEMP.FONC')
+      CALL JEDEMA()
+      END

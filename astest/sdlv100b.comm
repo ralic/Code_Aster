@@ -1,0 +1,172 @@
+# MODIF  DATE 11/02/98   AUTEUR CIBHHLV L.VIVAN 
+# TITRE POUTRE DE SECTION RECTANGULAIRE VARIABLE (ENCASTREE-LIBRE)
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+#CAS_TEST__: SDLV100B
+# SDLV100/B                 COMMANDES                           7/11/97
+# POUTRE ELANCEE DE SECTION RECTANGULAIRE VARIABLE
+# SECT RECT:  0.04*0.04==>0.01*0.01
+# L= 1M -- ENCASTREE-LIBRE --                     REF: SFM.VPCS SDLL100
+# MODELISATION MECA_HEXA20:  368 NOEUDS -- 30 MAILLES 
+#=======================================================================
+
+
+DEBUT(CODE=_F(  NOM = 'SDLV100B',NIV_PUB_WEB='INTERNET') )
+
+MA=LIRE_MAILLAGE( )
+
+MO=AFFE_MODELE(  MAILLAGE=MA, 
+                  AFFE=_F(  TOUT = 'OUI',    PHENOMENE = 'MECANIQUE',
+                         MODELISATION = '3D')  )
+
+MAT=DEFI_MATERIAU( ELAS=_F(  E = 2.0E+11,  NU = 0.3,  RHO = 7800.) )
+
+CHMAT=AFFE_MATERIAU(  MAILLAGE=MA,
+                       AFFE=_F(  TOUT = 'OUI',    MATER = MAT) )
+
+# PB PLAN + NOEUD 'A' ENCASTRE
+CH=AFFE_CHAR_MECA(  MODELE=MO,DDL_IMPO=(
+          _F(  TOUT = 'OUI',    DZ = 0.),
+                   _F(  GROUP_NO = 'G_1',   DX = 0., DY = 0.)) )
+
+MASSX1=POST_ELEM(    MODELE=MO,
+                       CHAM_MATER=CHMAT,
+                       MASS_INER=_F( TOUT = 'OUI')
+                   )
+
+#
+
+
+TEST_TABLE(      TABLE=MASSX1,
+                 NOM_PARA='MASSE',
+                     VALE=5.46                )
+
+TEST_TABLE(      TABLE=MASSX1,
+                 NOM_PARA='CDG_X',
+                     VALE=0.321428            )
+
+TEST_TABLE(      TABLE=MASSX1,
+                 NOM_PARA='CDG_Y',
+                  CRITERE='ABSOLU',
+                     VALE=0.                  )
+
+TEST_TABLE(      TABLE=MASSX1,
+                 NOM_PARA='CDG_Z',
+                  CRITERE='ABSOLU',
+                     VALE=0.                  )
+
+TEST_TABLE(      TABLE=MASSX1,
+                 NOM_PARA='IX_G',
+                     VALE=8.8659E-04          )
+
+TEST_TABLE(      TABLE=MASSX1,
+                 NOM_PARA='IY_G',
+                     VALE=3.20336E-01         )
+
+TEST_TABLE(      TABLE=MASSX1,
+                 NOM_PARA='IZ_G',
+                     VALE=3.20336E-01         )
+
+TEST_TABLE(      TABLE=MASSX1,
+                 NOM_PARA='IX_PRIN_G',
+                     VALE=8.8659E-04          )
+
+TEST_TABLE(      TABLE=MASSX1,
+                 NOM_PARA='IY_PRIN_G',
+                     VALE=3.20336E-01         )
+
+TEST_TABLE(      TABLE=MASSX1,
+                 NOM_PARA='IZ_PRIN_G',
+                     VALE=3.20336E-01         )
+
+# --------------------------------------------------------------------
+
+MELR1=CALC_MATR_ELEM(  MODELE=MO,             CHARGE=CH,
+                         CHAM_MATER=CHMAT,     OPTION='RIGI_MECA'
+                        )
+
+MELM1=CALC_MATR_ELEM(  MODELE=MO,             CHARGE=CH,
+                         CHAM_MATER=CHMAT,     OPTION='MASS_MECA'
+                        )
+
+MELM2=CALC_MATR_ELEM(  MODELE=MO,             CHARGE=CH,
+                         CHAM_MATER=CHMAT,     OPTION='MASS_MECA_DIAG'
+                        )
+
+NUM1=NUME_DDL(  MATR_RIGI=MELR1 )
+
+MATASSR1=ASSE_MATRICE(MATR_ELEM=MELR1,NUME_DDL=NUM1)
+
+MATASSM1=ASSE_MATRICE(MATR_ELEM=MELM1,NUME_DDL=NUM1)
+
+MATASSM2=ASSE_MATRICE(MATR_ELEM=MELM2,NUME_DDL=NUM1)
+
+# ------------------------------------------------------------------
+#         *********   2 CALCULS  **********
+# ------------------------------------------------------------------
+
+# ---  CAS1 -------
+
+MODE1=MODE_ITER_INV(  MATR_A=MATASSR1,
+                        MATR_B=MATASSM1,
+                       CALC_FREQ=_F(  FREQ = ( 53.,    1500., )) )
+
+# ---  CAS2 -------
+
+MODE2=MODE_ITER_INV(  MATR_A=MATASSR1,
+                        MATR_B=MATASSM2,
+                       CALC_FREQ=_F(  FREQ = ( 53.,    1500., )) )
+
+# --------------------------------------------------------------------
+
+
+TEST_RESU(RESU=(
+   _F(   RESULTAT = MODE1,       PARA = 'FREQ',
+           CRITERE = 'RELATIF',     PRECISION = 1.E-2,
+           NUME_ORDRE = 1,       VALE = 56.84),
+   _F(   RESULTAT = MODE1,       PARA = 'FREQ',
+           CRITERE = 'RELATIF',     PRECISION = 1.E-2,
+           NUME_ORDRE = 2,       VALE = 180.0),
+   _F(   RESULTAT = MODE1,       PARA = 'FREQ',
+           CRITERE = 'RELATIF',     PRECISION = 1.E-2,
+           NUME_ORDRE = 3,       VALE = 401.0),
+   _F(   RESULTAT = MODE1,       PARA = 'FREQ',
+           CRITERE = 'RELATIF',     PRECISION = 1.E-2,
+           NUME_ORDRE = 4,       VALE = 723.2),
+   _F(   RESULTAT = MODE1,       PARA = 'FREQ',
+           CRITERE = 'RELATIF',     PRECISION = 1.E-2,
+           NUME_ORDRE = 5,       VALE = 1145.41),
+           #------------------------------------------
+   _F(   RESULTAT = MODE2,       PARA = 'FREQ',
+           CRITERE = 'RELATIF',     PRECISION = 1.E-2,
+           NUME_ORDRE = 1,       VALE = 56.84),
+   _F(   RESULTAT = MODE2,       PARA = 'FREQ',
+           CRITERE = 'RELATIF',     PRECISION = 1.E-2,
+           NUME_ORDRE = 2,       VALE = 180.0),
+   _F(   RESULTAT = MODE2,       PARA = 'FREQ',
+           CRITERE = 'RELATIF',     PRECISION = 1.E-2,
+           NUME_ORDRE = 3,       VALE = 401.0),
+   _F(   RESULTAT = MODE2,       PARA = 'FREQ',
+           CRITERE = 'RELATIF',     PRECISION = 1.E-2,
+           NUME_ORDRE = 4,       VALE = 723.2),
+   _F(   RESULTAT = MODE2,       PARA = 'FREQ',
+           CRITERE = 'RELATIF',     PRECISION = 1.E-2,
+           NUME_ORDRE = 5,       VALE = 1145.41)) )
+
+FIN()
+#

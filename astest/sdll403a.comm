@@ -1,0 +1,279 @@
+# MODIF  DATE 25/09/2002   AUTEUR VABHHTS J.PELLET 
+# TITRE VIBRATIONS D'UN PENDULE EN ROTATION
+# RESPONSABLE VABHHTS J.PELLET
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+# ELEMENTS  : HEXA20
+
+DEBUT(CODE=_F( NOM = 'SDLL403A',NIV_PUB_WEB='INTERNET'))
+
+ACIER=DEFI_MATERIAU(
+                         ELAS=_F(  NU = 0.3,
+                           E = 7.E10,
+                           RHO = 2700.))
+
+MAYA=LIRE_MAILLAGE( )
+
+MATER=AFFE_MATERIAU(    MAILLAGE=MAYA,
+                                 AFFE=_F(  TOUT = 'OUI',
+                                        MATER = ACIER))
+
+STRUCTUR=AFFE_MODELE(    MAILLAGE=MAYA,AFFE=(
+                               _F(  GROUP_MA = 'VOLUME',
+                                      MODELISATION = '3D',
+                                      PHENOMENE = 'MECANIQUE'),
+                                    _F(  GROUP_MA = 'FACES',
+                                      MODELISATION = '3D',
+                                      PHENOMENE = 'MECANIQUE'))
+                       )
+
+# CONDITIONS AUX LIMITES
+
+CHARGE_1=AFFE_CHAR_MECA(      MODELE=STRUCTUR,DDL_IMPO=(
+                              _F(  GROUP_NO = 'POINT_A',
+                                               DX = 0.,
+                                               DY = 0.,
+                                               DZ = 0.),
+                                       _F(  NOEUD = 'NO000697',
+                                               DY = 0.,
+                                               DZ = 0.),
+                                       _F(  NOEUD = 'NO000001',
+                                               DY = 0.)),
+
+                              LIAISON_SOLIDE=_F(  GROUP_MA = 'FACES'),
+
+                              ROTATION=( 10.,  0., 0.,  1., ),
+                             PESANTEUR=(-9.81, 0., 0.,  1., )
+                          )
+
+# CALCUL DES MATRICES ELEMENTAIRES DE RAIDEUR
+# ET DU VECTEUR DE CHARGE
+
+K1_ELEM=CALC_MATR_ELEM(        MODELE=STRUCTUR,
+                                CHAM_MATER=MATER,
+                                    CHARGE=CHARGE_1,
+                                   OPTION='RIGI_MECA' )
+
+KW_ELEM=CALC_MATR_ELEM(        MODELE=STRUCTUR,
+                                CHAM_MATER=MATER,
+                                    CHARGE=CHARGE_1,
+                                   OPTION='RIGI_ROTA' )
+
+CH_ELEM=CALC_VECT_ELEM(        OPTION='CHAR_MECA',
+                                CHAM_MATER=MATER,
+                                    CHARGE=CHARGE_1 )
+
+# NUMEROTATION
+
+NUMERO_1=NUME_DDL(    MATR_RIGI=( K1_ELEM,  KW_ELEM, ))
+
+#
+# ASSEMBLAGE DE LA MATRICE DE RAIDEUR STATIQUE KTOT = K + KW
+#
+
+K1_ASSE=ASSE_MATRICE(    MATR_ELEM=K1_ELEM,
+                              NUME_DDL=NUMERO_1 )
+
+KW_ASSE=ASSE_MATRICE(    MATR_ELEM=KW_ELEM,
+                             NUME_DDL=NUMERO_1 )
+
+K_STAT=COMB_MATR_ASSE( COMB_R=(   _F(  MATR_ASSE = K1_ASSE,
+                                       COEF_R = 1.),
+                                     _F(  MATR_ASSE = KW_ASSE,
+                                       COEF_R = 1.))
+                          )
+
+#
+# ASSEMBLAGE DU VECTEUR DE CHARGE
+#
+
+CH_ASSE=ASSE_VECTEUR(    VECT_ELEM=CH_ELEM,
+                             NUME_DDL=NUMERO_1 )
+
+#
+# CALCUL STATIQUE
+#
+
+K_FACT=FACT_LDLT(    MATR_ASSE=K_STAT )
+
+DEPLA=RESO_LDLT(    MATR_FACT=K_FACT,
+                           CHAM_NO=CH_ASSE )
+
+#
+# CALCUL DU CHAMP DE CONTRAINTES
+#
+
+SIGMA=CALC_CHAM_ELEM(        MODELE=STRUCTUR,
+                                  OPTION='SIEF_ELGA_DEPL',
+                                    DEPL=DEPLA,
+                              CHAM_MATER=MATER )
+
+CHARGE_2=AFFE_CHAR_MECA(      MODELE=STRUCTUR,DDL_IMPO=(
+                              _F(  GROUP_NO = 'POINT_A',
+                                               DX = 0.,
+                                               DY = 0.,
+                                               DZ = 0.),
+                                       _F(  NOEUD = 'NO000697',
+                                               DY = 0.),
+                                     #         DZ : 0. )
+                                       _F(  NOEUD = 'NO000001',
+                                               DY = 0.)),
+
+
+                              LIAISON_SOLIDE=_F(  GROUP_MA = 'FACES'),
+
+                              ROTATION=( 10.,  0., 0.,  1., ),
+                             PESANTEUR=(-9.81, 0., 0.,  1., )
+                          )
+
+#
+# CALCUL DES MATRICES ELEMENTAIRES POUR LE CALCUL MODAL
+#
+
+KS_ELEM=CALC_MATR_ELEM(        MODELE=STRUCTUR,
+                                 OPTION='RIGI_GEOM',
+                               SIEF_ELGA=SIGMA )
+
+K2_ELEM=CALC_MATR_ELEM(        MODELE=STRUCTUR,
+                              CHAM_MATER=MATER,
+                                  CHARGE=CHARGE_2,
+                                 OPTION='RIGI_MECA' )
+
+M_ELEM=CALC_MATR_ELEM(        MODELE=STRUCTUR,
+                                CHAM_MATER=MATER,
+                                    CHARGE=CHARGE_2,
+                                   OPTION='MASS_MECA' )
+
+#
+# NUMEROTATION POUR LE CALCUL MODAL
+#
+
+NUMERO_2=NUME_DDL(    MATR_RIGI=( K2_ELEM,  KS_ELEM, ),
+                      METHODE='MULT_FRONT',  # RENUM='MDA',
+)
+
+#
+# ASSEMBLAGE DE LA MATRICE DE RAIDEUR STATIQUE KTOT = K + KW
+#
+
+K2_ASSE=ASSE_MATRICE(    MATR_ELEM=K2_ELEM,
+                             NUME_DDL=NUMERO_2 )
+
+KS_ASSE=ASSE_MATRICE(    MATR_ELEM=KS_ELEM,
+                             NUME_DDL=NUMERO_2 )
+
+K_MODAL=COMB_MATR_ASSE( COMB_R=(   _F(  MATR_ASSE = K2_ASSE,
+                                       COEF_R = 1.),
+                                     _F(  MATR_ASSE = KS_ASSE,
+                                       COEF_R = 1.))
+                          )
+
+M_ASSE=ASSE_MATRICE(    MATR_ELEM=M_ELEM,
+                             NUME_DDL=NUMERO_2  )
+
+MODE_1=MODE_ITER_SIMULT(       MATR_A=K_MODAL,
+                                   MATR_B=M_ASSE,
+
+                            CALC_FREQ=_F(  OPTION = 'PLUS_PETITE',
+                                        NPREC_SOLVEUR=9,
+                                        NMAX_FREQ = 20),
+                             VERI_MODE=_F(  SEUIL = 1.E-4)
+                            )
+
+
+#------------------------------------------------------------------------------------------------
+# pour tester la possibilite d'imprimer un MODE_MECA au format 'IDEAS'
+# et de poursuivre la calcul apres l'avoir relu :
+#----------------------------------------------------------------------
+DEFUFI(IMPRESSION=_F(UNITE=75,NOM='MODEMECA'),)
+IMPR_RESU(RESU=_F(RESULTAT=MODE_1,FORMAT='IDEAS',FICHIER='MODEMECA',),)
+
+MODE_2=LIRE_RESU(TYPE_RESU='MODE_MECA',FORMAT='IDEAS',UNITE=75,
+           MAILLAGE='MAYA', NOM_CHAM='DEPL', TOUT_ORDRE='OUI',
+
+           FORMAT_IDEAS=  _F(     NOM_CHAM = 'DEPL',
+                             NUME_DATASET = 55,  RECORD_6 = ( 1, 2, 3, 8, 2, 6, ),
+                             POSI_ORDRE =     ( 7, 3,),
+                             POSI_NUME_MODE = ( 7, 4,),
+                             POSI_FREQ =      ( 8, 1,),
+                             POSI_MASS_GENE = ( 8, 2,),
+                             NOM_CMP = ('DX', 'DY', 'DZ',)),
+           )
+
+#------------------------------------------------------------------------------------------------
+DEFUFI(IMPRESSION=_F(UNITE=76,NOM='MODEMEC1'),)
+IMPR_RESU(RESU=_F(RESULTAT=MODE_1,FORMAT='RESULTAT',FICHIER='MODEMEC1',TOUT_PARA='OUI',),)
+DEFUFI(IMPRESSION=_F(UNITE=77,NOM='MODEMEC2'),)
+IMPR_RESU(RESU=_F(RESULTAT=MODE_2,FORMAT='RESULTAT',FICHIER='MODEMEC2',TOUT_PARA='OUI',),)
+#------------------------------------------------------------------------------------------------
+
+TEST_RESU(RESU=(
+   _F(   RESULTAT = MODE_2,
+           PARA = 'FREQ',
+           CRITERE = 'RELATIF',
+           PRECISION = 2.3E-2,
+           NUME_MODE = 1,
+           VALE = 1.75,
+           REFERENCE = 'SOURCE_EXTERNE'),
+
+   _F(   RESULTAT = MODE_2,
+           PARA = 'FREQ',
+           CRITERE = 'RELATIF',
+           PRECISION = 0.1E-2,
+           NUME_MODE = 4,
+           VALE = 100.2,
+           REFERENCE = 'SOURCE_EXTERNE'),
+
+   _F(   RESULTAT = MODE_2,
+           PARA = 'FREQ',
+           CRITERE = 'RELATIF',
+           PRECISION = 0.3E-2,
+           NUME_MODE = 6,
+           VALE = 324.0,
+           REFERENCE = 'SOURCE_EXTERNE'),
+
+   _F(   RESULTAT = MODE_2,
+           PARA = 'FREQ',
+           CRITERE = 'RELATIF',
+           PRECISION = 0.5E-2,
+           NUME_MODE = 9,
+           VALE = 674.4,
+           REFERENCE = 'SOURCE_EXTERNE'),
+
+   _F(   RESULTAT = MODE_2,
+           PARA = 'FREQ',
+           CRITERE = 'RELATIF',
+           PRECISION = 0.7E-2,
+           NUME_MODE = 12,
+           VALE = 1150.,
+           REFERENCE = 'SOURCE_EXTERNE'),
+
+   _F(   RESULTAT = MODE_2,
+           PARA = 'FREQ',
+           CRITERE = 'RELATIF',
+           PRECISION = 1.1E-2,
+           NUME_MODE = 15,
+           VALE = 1748.,
+           REFERENCE = 'SOURCE_EXTERNE'))
+
+        )
+
+FIN()
+#
+#
+#

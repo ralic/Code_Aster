@@ -1,0 +1,42 @@
+        SUBROUTINE LCICMA (A, LA, CA, LC, CC, XA, YA, B, LB, CB,XB,YB)
+        IMPLICIT REAL*8 (A-H,O-Z)
+C       ----------------------------------------------------------------
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF UTILIFOR  DATE 02/10/95   AUTEUR GIBHHAY A.Y.PORTABILITE 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+C       ----------------------------------------------------------------
+C       INCLUSION D UNE SOUS MATRICE C(LC,CC) SE TROUVANT
+C       AU POINT (XA,YA) DE LA MATRICE  A(LA,CA)
+C       DANS UNE MATRICE B(LB,CB) AU POINT (XB,YB)
+C
+C       IN  LA  CA  :  NB LIGNES ET COLONNES  DE A
+C       IN  LC  CC  :  NB LIGNES ET COLONNES  DE C
+C       IN  XA  YA  :  LIGNE , COLONNE DU POINT INCLUSION DE SA DANS A
+C       IN  LB  CB  :  NB LIGNES ET COLONNES  DE B
+C       IN  XB  YB  :  LIGNE , COLONNE DU POINT D INCLUSION DE SA DANS B
+C       IN  A       :  MATRICE EMETTEUR
+C       OUT B       :  MATRICE RECEPTEUR
+C       ----------------------------------------------------------------
+        INTEGER         LA, CA, LC, CC, XA, YA, LB, CB, XB , YB
+        REAL*8          A(LA,CA) , B(LB,CB)
+C
+        DO 1 I = 1 , LC
+        DO 1 J = 1 , CC
+        B ( XB+I-1 , YB+J-1 ) = A ( XA+I-1 , YA+J-1 )
+ 1      CONTINUE
+        END

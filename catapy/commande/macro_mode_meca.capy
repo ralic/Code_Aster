@@ -1,0 +1,96 @@
+#& MODIF COMMANDE  DATE 09/10/2002   AUTEUR DURAND C.DURAND 
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+
+from Macro.macro_mode_meca_ops import macro_mode_meca_ops
+
+def macro_mode_meca_prod(self,MATR_A,MATR_B,**args ):
+  self.type_sdprod(MATR_A,matr_asse_depl_r)
+  self.type_sdprod(MATR_B,matr_asse_depl_r)
+  return mode_meca
+
+MACRO_MODE_MECA=MACRO(nom="MACRO_MODE_MECA",op=macro_mode_meca_ops,sd_prod=macro_mode_meca_prod,
+                     docu="U4.52.02-d1",reentrant='n',
+            UIinfo={"groupes":("Résolution",)},
+         MATR_A          =SIMP(statut='o',typ=(CO,matr_asse_depl_r) ),
+         MATR_B          =SIMP(statut='o',typ=(CO,matr_asse_depl_r) ),
+         INFO            =SIMP(statut='f',typ='I',defaut= 1,into=(1,2) ),
+#  ce mot cle ne devrait il pas etre dans calc_freq  
+         METHODE         =SIMP(statut='f',typ='TXM',defaut="SORENSEN",    
+                               into=("TRI_DIAG","JACOBI","SORENSEN",) ),
+         b_tri_diag =BLOC(condition = "METHODE == 'TRI_DIAG'",
+           PREC_ORTHO      =SIMP(statut='f',typ='R',defaut= 1.E-12,val_min=0.E+0 ),
+           NMAX_ITER_ORTHO =SIMP(statut='f',typ='I',defaut= 5,val_min=0 ),
+           PREC_LANCZOS    =SIMP(statut='f',typ='R',defaut= 1.E-8,val_min=0.E+0 ),
+           NMAX_ITER_QR    =SIMP(statut='f',typ='I',defaut= 30,val_min=0 ), 
+         ),
+         b_jacobi =BLOC(condition = "METHODE == 'JACOBI'",
+           PREC_BATHE      =SIMP(statut='f',typ='R',defaut= 1.E-10,val_min=0.E+0 ),
+           NMAX_ITER_BATHE =SIMP(statut='f',typ='I',defaut= 40,val_min=0 ),
+           PREC_JACOBI     =SIMP(statut='f',typ='R',defaut= 1.E-2,val_min=0.E+0 ),
+           NMAX_ITER_JACOBI=SIMP(statut='f',typ='I',defaut= 12,val_min=0 ),
+         ),
+         b_sorensen =BLOC(condition = "METHODE == 'SORENSEN'",
+           PREC_SOREN      =SIMP(statut='f',typ='R',defaut= 0.E+0,val_min=0.E+0 ),  
+           NMAX_ITER_SOREN =SIMP(statut='f',typ='I',defaut= 20,val_min=0 ),  
+           PARA_ORTHO_SOREN=SIMP(statut='f',typ='R',defaut= 0.717,val_min=0.E+0 ),
+         ),
+         OPTION          =SIMP(statut='f',typ='TXM',defaut="SANS",    
+                               into=("MODE_RIGIDE","SANS") ),
+         CALC_FREQ       =FACT(statut='d',min=0,max=1,
+           regles=(UN_PARMI('FREQ','FREQ_MAX'),
+                   PRESENT_PRESENT('FREQ_MIN','FREQ_MAX'),
+                   PRESENT_PRESENT('FREQ_MAX','NB_BLOC_FREQ'),
+                   EXCLUS('DIM_SOUS_ESPACE','COEF_DIM_ESPACE'),),
+           FREQ            =SIMP(statut='f',typ='R',min=2,max='**',val_min=0.E+0 ),  
+           FREQ_MIN        =SIMP(statut='f',typ='R' ),  
+           FREQ_MAX        =SIMP(statut='f',typ='R' ),  
+           NB_BLOC_FREQ    =SIMP(statut='f',typ='I' ),  
+           DIM_SOUS_ESPACE =SIMP(statut='f',typ='I' ),  
+           COEF_DIM_ESPACE =SIMP(statut='f',typ='I' ),
+           NPREC_SOLVEUR   =SIMP(statut='f',typ='I',defaut= 8 ),  
+           NMAX_ITER_SHIFT =SIMP(statut='f',typ='I',defaut= 5 ),  
+           PREC_SHIFT      =SIMP(statut='f',typ='R',defaut= 5.E-2 ),  
+           SEUIL_FREQ      =SIMP(statut='f',typ='R' ,defaut= 1.E-2 ),  
+           STOP_FREQ_VIDE  =SIMP(statut='f',typ='TXM',defaut="NON" ,into=("OUI","NON") ),
+         ),
+         VERI_MODE       =FACT(statut='d',min=0,max=1,
+           STOP_ERREUR     =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
+           SEUIL           =SIMP(statut='f',typ='R',defaut= 1.E-6 ),  
+           PREC_SHIFT      =SIMP(statut='f',typ='R',defaut= 5.E-3 ),  
+           STURM           =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
+         ),
+         NORM_MODE       =FACT(statut='o',min=1,max='**',
+           MASS_INER       =SIMP(statut='o',typ=tabl_mass_iner ),
+           NORME           =SIMP(statut='f',typ='TXM',defaut="TRAN_ROTA",    
+                                 into=("MASS_GENE","RIGI_GENE","EUCL",           
+                                       "EUCL_TRAN","TRAN","TRAN_ROTA") ),
+           INFO            =SIMP(statut='f',typ='I',defaut= 1 ,into=(1,2) ),
+         ),
+         FILTRE_MODE     =FACT(statut='f',min=1,max=1,
+           CRIT_EXTR       =SIMP(statut='f',typ='TXM',defaut="MASS_EFFE_UN",    
+                                 into=("MASS_EFFE_UN","MASS_GENE") ),
+           SEUIL           =SIMP(statut='f',typ='R',defaut= 1.E-3 ),  
+         ),
+         IMPRESSION      =FACT(statut='d',min=1,max=1,
+           TOUT_PARA       =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
+           CUMUL           =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
+           CRIT_EXTR       =SIMP(statut='f',typ='TXM',defaut="MASS_EFFE_UN",    
+                                 into=("MASS_EFFE_UN","MASS_GENE",) ),
+         ),
+)  ;

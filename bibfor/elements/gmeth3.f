@@ -1,0 +1,209 @@
+      SUBROUTINE GMETH3(MODELE,OPTION,NNOFF,NORMFF,FOND,
+     &                 GTHI,MILIEU,GS,OBJCUR,GI,NUM)
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ELEMENTS  DATE 27/03/2001   AUTEUR F1BHHAJ J.ANGLES 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+      IMPLICIT NONE
+C
+      INTEGER         NNOFF,NUM
+      REAL*8          GTHI(1),GS(1),GI(1)
+      CHARACTER*8     MODELE
+      CHARACTER*16    OPTION
+      CHARACTER*24    NORMFF,FOND,OBJCUR
+      LOGICAL         MILIEU
+C
+C ......................................................................
+C      METHODE THETA-LAGRANGE ET G-LAGRANGE POUR LE CALCUL DE G(S)
+C
+C ENTREE
+C
+C     MODELE   --> NOM DU MODELE
+C     NNOFF    --> NOMBRE DE NOEUDS DU FOND DE FISSURE
+C     NORMFF   --> VALEURS DE LA NORMALE SUR LE FOND DE FISSURE
+C     FOND     --> NOMS DES NOEUDS DU FOND DE FISSURE
+C     GTHI     --> VALEURS DE G POUR LES CHAMPS THETAI
+C     MILIEU   --> .TRUE.  : ELEMENT QUADRATIQUE
+C                  .FALSE. : ELEMENT LINEAIRE
+C
+C  SORTIE
+C
+C      GS      --> VALEUR DE G(S)
+C      OBJCUR  --> ABSCISSES CURVILIGNES S
+C      GI      --> VALEUR DE GI
+C      NUM     --> 3 (LAGRANGE-LAGRANGE)
+C              --> 4 (NOEUD-NOEUD)
+C
+C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX --------------------
+C
+      INTEGER            ZI
+      COMMON  / IVARJE / ZI(1)
+      REAL*8             ZR
+      COMMON  / RVARJE / ZR(1)
+      COMPLEX*16         ZC
+      COMMON  / CVARJE / ZC(1)
+      LOGICAL            ZL
+      COMMON  / LVARJE / ZL(1)
+      CHARACTER*8        ZK8
+      CHARACTER*16                ZK16
+      CHARACTER*24                          ZK24
+      CHARACTER*32                                    ZK32
+      CHARACTER*80                                              ZK80
+      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+C
+C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
+C
+      INTEGER      IADABS,I,KK,IADNOR,IADRNO,IADRMA,IADRCO
+      INTEGER      IMATR,IVECT,IBID,IER,J
+C
+      REAL*8       DELTA,S1,S2,S3,XL
+C
+      CHARACTER*8  NOMA1
+      CHARACTER*24 OBJ1,NOMNO,COORN,VECT,MATR,LISSG
+      CHARACTER*24 INTERP,TYPE
+C
+      LOGICAL      CONNEX
+C
+C OBJET DECRIVANT LE MAILLAGE
+C
+C SI LE FOND DE FISSURE EST FERME (DERNIER NOEUD = PREMIER NOEUD)
+C CONNEX = TRUE
+C
+      CALL JEVEUO (NORMFF,'L',IADNOR)
+      CALL JEVEUO (FOND,'L',IADRNO)
+      IF (ZK8(IADRNO+1-1).EQ.ZK8(IADRNO+NNOFF-1)) THEN
+        CONNEX = .TRUE.
+      ELSE
+        CONNEX = .FALSE.
+      ENDIF
+      OBJ1 = MODELE//'.MODELE    .NOMA'
+      CALL JEVEUO(OBJ1,'L',IADRMA)
+      NOMA1 = ZK8(IADRMA)
+      NOMNO = NOMA1//'.NOMNOE'
+      COORN = NOMA1//'.COORDO    .VALE'
+      CALL JEVEUO(COORN,'L',IADRCO)
+      CALL GABSCU(NNOFF,COORN,NOMNO,FOND,XL,OBJCUR)
+      CALL JEVEUO (OBJCUR,'L',IADABS)
+C
+      CALL GETVTX(' ', 'LISSAGE_G',0,1,1,LISSG,IBID)
+C
+      IF (LISSG.EQ.'LAGRANGE_NO_NO') THEN
+        VECT = '&&METHO3.VECT'
+        CALL WKVECT(VECT,'V V R8',NNOFF,IVECT)
+        NUM = 4
+C
+        IF (MILIEU) THEN
+          DO 10 I=1,NNOFF-2,2
+            S1 = ZR(IADABS+I-1)
+            S3 = ZR(IADABS+I+1)
+            DELTA = (S3-S1)/6.D0
+            ZR(IVECT+I  -1)= ZR(IVECT+I-1) + DELTA
+            ZR(IVECT+I+1-1)= 4.D0*DELTA
+            ZR(IVECT+I+2-1)= DELTA
+10        CONTINUE
+          IF (CONNEX) THEN
+            ZR(IVECT+NNOFF-1)= ZR(IVECT+NNOFF-1) + ZR(IVECT+1-1)
+            ZR(IVECT+1    -1)= ZR(IVECT+NNOFF-1)
+          ENDIF
+        ELSE
+          DO 20 I=1,NNOFF-1
+            S1 = ZR(IADABS+I  -1)
+            S2 = ZR(IADABS+I+1-1)
+            DELTA = (S2-S1)/3.D0
+            ZR(IVECT+I  -1)= ZR(IVECT+I-1) + DELTA
+            ZR(IVECT+I+1-1)= 2.D0*DELTA
+20        CONTINUE
+          IF (CONNEX) THEN
+            ZR(IVECT+NNOFF-1)= ZR(IVECT+NNOFF-1) + ZR(IVECT+1-1)
+            ZR(IVECT+1    -1)= ZR(IVECT+NNOFF-1)
+          ENDIF
+        ENDIF
+        DO 30 I=1,NNOFF
+          GI(I) = GTHI(I)/ZR(IVECT+I-1 )
+30      CONTINUE
+C
+      ELSEIF (LISSG.EQ.'LAGRANGE') THEN
+        MATR = '&&METHO3.MATRI'
+        CALL WKVECT(MATR,'V V R8',NNOFF*NNOFF,IMATR)
+        NUM = 3
+C
+        IF (MILIEU) THEN
+          DO 100 I=1,NNOFF-2,2
+            S1 = ZR(IADABS+I-1)
+            S2 = ZR(IADABS+I  )
+            S3 = ZR(IADABS+I+1)
+            DELTA = (S3-S1)/30.D0
+C
+            KK = IMATR+(I-1  )*NNOFF+I-1
+            ZR(KK )= ZR(KK) +               4.D0*DELTA
+            ZR(IMATR+(I-1+1)*NNOFF+I-1  )=  2.D0*DELTA
+            ZR(IMATR+(I-1+2)*NNOFF+I-1  )= -1.D0*DELTA
+C
+            ZR(IMATR+(I-1  )*NNOFF+I-1+1)=  2.D0*DELTA
+            ZR(IMATR+(I-1+1)*NNOFF+I-1+1)= 16.D0*DELTA
+            ZR(IMATR+(I-1+2)*NNOFF+I-1+1)=  2.D0*DELTA
+C
+            ZR(IMATR+(I-1  )*NNOFF+I-1+2)= -1.D0*DELTA
+            ZR(IMATR+(I-1+1)*NNOFF+I-1+2)=  2.D0*DELTA
+            ZR(IMATR+(I-1+2)*NNOFF+I-1+2)=  4.D0*DELTA
+100       CONTINUE
+          IF (CONNEX) THEN
+            KK = IMATR+(1-1  )*NNOFF+1-1
+            ZR(KK )= ZR(KK) + 5.D0*DELTA
+            S1 = ZR(IADABS+1-1)
+            S3 = ZR(IADABS+1+1)
+            DELTA = (S3-S1)/30.D0
+            KK = IMATR+(NNOFF-1)*NNOFF+NNOFF-1
+            ZR(KK )= ZR(KK) + 5.D0*DELTA
+          ENDIF
+        ELSE
+          DO 120 I=1,NNOFF-1
+            S1 = ZR(IADABS+I-1)
+            S2 = ZR(IADABS+I  )
+            DELTA = (S2-S1)/6.D0
+C
+            KK = IMATR+(I-1  )*NNOFF+I-1
+            ZR(KK )= ZR(KK) +               2.D0*DELTA
+            ZR(IMATR+(I-1+1)*NNOFF+I-1  )=  1.D0*DELTA
+C
+            ZR(IMATR+(I-1  )*NNOFF+I-1+1)=  1.D0*DELTA
+            ZR(IMATR+(I-1+1)*NNOFF+I-1+1)=  2.D0*DELTA
+120       CONTINUE
+          IF (CONNEX) THEN
+            KK = IMATR+(1-1  )*NNOFF+1-1
+            ZR(KK )= ZR(KK) + 3.D0*DELTA
+            S1 = ZR(IADABS+1-1)
+            S3 = ZR(IADABS+1+1)
+            DELTA = (S3-S1)/6.D0
+            KK = IMATR+(NNOFF-1)*NNOFF+NNOFF-1
+            ZR(KK )= ZR(KK) + 3.D0*DELTA
+          ENDIF
+        ENDIF
+C
+C  SYSTEME LINEAIRE:  MATR*GI = GTHI
+C
+        CALL GSYSTE(MATR,NNOFF,NNOFF,GTHI,GI)
+      ENDIF
+C
+      DO 200 I=1,NNOFF
+        GS(I) = GI(I)
+200   CONTINUE
+C
+      CALL JEDETR('&&METHO3.MATRI')
+      CALL JEDETR('&&METHO3.VECT')
+C
+      END

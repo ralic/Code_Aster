@@ -1,0 +1,101 @@
+      SUBROUTINE COENDO(OPTION,MODELE,LIGREL,CHMATE,CHTEMP,CHSIG,CHELEM)
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ELEMENTS  DATE 11/09/2002   AUTEUR VABHHTS J.PELLET 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+C ======================================================================
+C.======================================================================
+      IMPLICIT REAL*8 (A-H,O-Z)
+
+C      INDTRI  -- CALCUL
+C               - DU TAUX DE TRIAXIALITE DES CONTRAINTES (TRIAX)
+C               - DE LA CONTRAINTES EQUIVALENTE D'ENDOMAGEMENT (SIGMA*)
+
+C        TAUX DE TRIAXIALITE : TRIAX
+C        ---------------------------
+C           TRIAX    = SIGMA_H / SIGMA_EQ
+
+C    OU     S        = SIGMA - 1/3 TRACE(SIGMA) I
+C           SIGMA_EQ = ( 3/2 S : S ) ** 1/2
+C           SIGMA_H  = 1/3 TRACE(SIGMA)
+C           SIGMA    = TENSEUR DES CONTRAINTES
+C           S        = DEVIATEUR DE SIGMA
+C           I        = TENSEUR IDENTITE
+
+C        CONTRAINTES EQUIVALENTE D'ENDOMAGEMENT : SIGMA*
+C        -----------------------------------------------
+C           SI_ENDO  = SIGMA_EQ (2/3(1+NU) + 3(1-2 NU) TRIAX**2 )**1/2
+
+C     OU    NU       = COEFFICIENT DE POISSON
+
+
+
+C   ARGUMENT        E/S  TYPE         ROLE
+C    OPTION         IN     K*      OPTION DE CALCUL : 'ENDO_ELNO_SIGM'
+C    MODELE         IN     K*      NOM DU MODELE SUR-LEQUEL ON FAIT
+C                                  LE CALCUL
+C    LIGREL         IN     K*      LIGREL DU MODELE
+C    CHMATE         IN     K*      NOM DU CHAMP CHAMP MATERIAU
+C    CHTEMP         IN     K*      NOM DU CHAMP DE TEMPERATURE
+C    CHSIG          IN     K*      NOM DU CHAMP DES CONTRAINTES AUX
+C                                  POINTS D'INTEGRATION
+C    CHELEM         OUT    K*      NOM DU CHAMP DES INDICATEURS LOCAUX
+
+C.========================= DEBUT DES DECLARATIONS ====================
+C -----  ARGUMENTS
+      CHARACTER*(*) OPTION,MODELE,LIGREL,CHSIG
+      CHARACTER*(*) CHMATE,CHTEMP,CHELEM
+C -----  VARIABLES LOCALES
+      CHARACTER*8 LPAIN(3),LPAOUT(1)
+      CHARACTER*16 OPT2
+      CHARACTER*24 LCHIN(3),LCHOUT(1)
+C.========================= DEBUT DU CODE EXECUTABLE ==================
+
+C ---- CALCUL DES INDICATEURS LOCAUX DE DECHARGE ET DE PERTE DE
+C ---- RADIALITE :
+C      ---------
+
+C ---- CHAMP DE CONTRAINTES D'ENTREE DEFINI AUX POINTS DE GAUSS
+C      --------------------------------------------------------
+      IF (OPTION.EQ.'ENDO_ELNO_SIGA') THEN
+
+        LPAIN(1) = 'PCONTPG'
+        LCHIN(1) = CHSIG
+
+C ---- CHAMP DE CONTRAINTES D'ENTREE DEFINI AUXNOEUDS
+C      ----------------------------------------------
+      ELSE
+
+        LPAIN(1) = 'PCONTNO'
+        LCHIN(1) = CHSIG
+
+      END IF
+
+      LPAIN(2) = 'PMATERC'
+      LCHIN(2) = CHMATE
+      LPAIN(3) = 'PTEMPER'
+      LCHIN(3) = CHTEMP
+      NBIN = 3
+      LPAOUT(1) = 'PTRIAXS'
+      LCHOUT(1) = CHELEM
+
+
+      OPT2 = 'ENDO_ELNO_SIGM'
+
+      CALL CALCUL('S',OPT2,LIGREL,NBIN,LCHIN,LPAIN,1,LCHOUT,LPAOUT,'G')
+
+C.============================ FIN DE LA ROUTINE ======================
+      END

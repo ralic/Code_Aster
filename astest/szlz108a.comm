@@ -1,0 +1,298 @@
+# MODIF  DATE 07/06/2002   AUTEUR DURAND C.DURAND 
+# TITRE  LOIS DE TAHERI
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+#
+DEBUT( CODE=_F(  NOM = 'SZLZ108A',NIV_PUB_WEB='INTERNET')  )
+
+TAUN1=DEFI_FONCTION(   NOM_PARA='INST',
+                         VALE=(   0.,           0.,
+                                  1.,           3.5,
+                                  2.,           3.,
+                                  3.,           3.5,
+                                  4.,           3.,
+                                  5.,           3.5,
+                                  6.,           1.,
+                                  7.,           2.5,
+                                  8.,           0.,
+                                  9.,           0.5,    ) )
+
+TAUN2=DEFI_FONCTION(   NOM_PARA='INST',
+                         VALE=(   0.,           3.,
+                                  1.,           3.5,
+                                  2.,           3.,
+                                  3.,           3.5,
+                                  4.,           3.,
+                                  5.,           4.5,
+                                  6.,           3.,
+                                  7.,           3.5,
+                                  8.,           3.,
+                                  9.,           6.5,    )  )
+
+F_EPS=DEFI_FONCTION(       NOM_PARA='SIGM',
+                           PROL_DROITE='LINEAIRE',
+                          PROL_GAUCHE='LINEAIRE',
+                                 VALE=(    0.,    0.,
+                                        1000.,   10.,   ),
+                                TITRE='FONCTION DE TAHERI'  )
+
+F_EPSMAX=DEFI_NAPPE(          NOM_PARA='X',
+                               PROL_DROITE='LINEAIRE',
+                              PROL_GAUCHE='LINEAIRE',
+                                     PARA=(  0.5,   1., ),
+                            NOM_PARA_FONC='EPSI',DEFI_FONCTION=(
+                            _F(  PROL_DROITE = 'LINEAIRE',
+                                            PROL_GAUCHE = 'LINEAIRE',
+                                            VALE = (  0.,   25.,
+                                                            10.,  525., )),
+                                          _F(  PROL_DROITE = 'LINEAIRE',
+                                            PROL_GAUCHE = 'LINEAIRE',
+                                            VALE = ( 0.,    50.,
+                                                           10.,   550., ))),
+                                   TITRE='NAPPE DE TAHERI' )
+
+F_MANSON=DEFI_FONCTION(      NOM_PARA='EPSI',
+                              PROL_DROITE='LINEAIRE',
+                             PROL_GAUCHE='LINEAIRE',
+                                    VALE=(       0.,   200000.,
+                                                 2.,        0.,    ),
+                                   TITRE='FONCTION DE MANSON_COFFIN')
+
+F_WOHLER=DEFI_FONCTION(      NOM_PARA='SIGM',
+                              PROL_DROITE='LINEAIRE',
+                             PROL_GAUCHE='LINEAIRE',
+                                    VALE=(
+                                                  0.,   200000.,
+                                                200.,        0.,
+                                         ),
+                                   TITRE='FONCTION DE WOHLER')
+
+MAT0=DEFI_MATERIAU( 
+          FATIGUE=_F(   WOHLER = F_WOHLER,
+                     MANSON_COFFIN = F_MANSON) )
+
+#
+#-----------------------------------------------------------------------
+TAB_1=POST_FATIGUE(        CHARGEMENT='UNIAXIAL',
+                             HISTOIRE=_F(  EPSI = TAUN1),
+                             COMPTAGE='RAINFLOW',
+                              DOMMAGE='TAHERI_MANSON',
+                          TAHERI_FONC=F_EPS,
+                         TAHERI_NAPPE=F_EPSMAX,
+                                MATER=MAT0,
+                                CUMUL='LINEAIRE',
+                                 INFO=2                   )
+
+TEST_TABLE(        TABLE=TAB_1,
+                   FILTRE=_F(  NOM_PARA = 'CYCLE',
+                            VALE_I = 1),
+                 NOM_PARA='DOMMAGE',
+                     VALE=5.7142857E-6,
+                PRECISION=1.E-5                )
+
+TEST_TABLE(        TABLE=TAB_1,
+                   FILTRE=_F(  NOM_PARA = 'CYCLE',
+                            VALE_I = 2),
+                 NOM_PARA='DOMMAGE',
+                     VALE=5.7142857E-6,
+                PRECISION=1.E-5                )
+
+TEST_TABLE(        TABLE=TAB_1,
+                   FILTRE=_F(  NOM_PARA = 'CYCLE',
+                            VALE_I = 3),
+                 NOM_PARA='DOMMAGE',
+                     VALE=8.E-6,
+                PRECISION=1.E-5                )
+
+TEST_TABLE(        TABLE=TAB_1,
+                   FILTRE=_F(  NOM_PARA = 'CYCLE',
+                            VALE_I = 4),
+                 NOM_PARA='DOMMAGE',
+                     VALE=6.6666667E-6,
+                PRECISION=1.E-5                )
+
+TEST_TABLE(        TABLE=TAB_1,
+                   FILTRE=_F(  NOM_PARA = 'CYCLE',
+                            VALE_I = 5),
+                 NOM_PARA='DOMMAGE',
+                     VALE=4.E-5,
+                PRECISION=1.E-5                )
+
+TEST_TABLE(        TABLE=TAB_1,
+                 NOM_PARA='DOMM_CUMU',
+                     VALE=6.6095E-5,
+                PRECISION=1.E-5                )
+
+#
+#-----------------------------------------------------------------------
+TAB_2=POST_FATIGUE(        CHARGEMENT='UNIAXIAL',
+                             HISTOIRE=_F(  EPSI = TAUN1),
+                             COMPTAGE='RAINFLOW',
+                              DOMMAGE='TAHERI_MIXTE',
+                         TAHERI_NAPPE=F_EPSMAX,
+                                MATER=MAT0,
+                                CUMUL='LINEAIRE',
+                                 INFO=2                )
+
+TEST_TABLE(        TABLE=TAB_2,
+                   FILTRE=_F(  NOM_PARA = 'CYCLE',
+                            VALE_I = 1),
+                 NOM_PARA='DOMMAGE',
+                     VALE=5.7142857E-6,
+                PRECISION=1.E-5                )
+
+TEST_TABLE(        TABLE=TAB_2,
+                   FILTRE=_F(  NOM_PARA = 'CYCLE',
+                            VALE_I = 2),
+                 NOM_PARA='DOMMAGE',
+                     VALE=5.7142857E-6,
+                PRECISION=1.E-5                )
+
+TEST_TABLE(        TABLE=TAB_2,
+                   FILTRE=_F(  NOM_PARA = 'CYCLE',
+                            VALE_I = 3),
+                 NOM_PARA='DOMMAGE',
+                     VALE=8.E-6,
+                PRECISION=1.E-5                )
+
+TEST_TABLE(        TABLE=TAB_2,
+                   FILTRE=_F(  NOM_PARA = 'CYCLE',
+                            VALE_I = 4),
+                 NOM_PARA='DOMMAGE',
+                     VALE=6.6666667E-6,
+                PRECISION=1.E-5                )
+
+TEST_TABLE(        TABLE=TAB_2,
+                   FILTRE=_F(  NOM_PARA = 'CYCLE',
+                            VALE_I = 5),
+                 NOM_PARA='DOMMAGE',
+                     VALE=4.E-5,
+                PRECISION=1.E-5                )
+
+TEST_TABLE(        TABLE=TAB_2,
+                 NOM_PARA='DOMM_CUMU',
+                     VALE=6.6095E-5,
+                PRECISION=1.E-5                )
+
+#
+#-----------------------------------------------------------------------
+TAB_3=POST_FATIGUE(        CHARGEMENT='UNIAXIAL',
+                             HISTOIRE=_F(  EPSI = TAUN2),
+                             COMPTAGE='NATUREL',
+                              DOMMAGE='TAHERI_MANSON',
+                          TAHERI_FONC=F_EPS,
+                         TAHERI_NAPPE=F_EPSMAX,
+                                MATER=MAT0,
+                                CUMUL='LINEAIRE',
+                                 INFO=2                )
+
+TEST_TABLE(        TABLE=TAB_3,
+                   FILTRE=_F(  NOM_PARA = 'CYCLE',
+                            VALE_I = 1),
+                 NOM_PARA='DOMMAGE',
+                     VALE=5.7142857E-6,
+                PRECISION=1.E-5                )
+
+TEST_TABLE(        TABLE=TAB_3,
+                   FILTRE=_F(  NOM_PARA = 'CYCLE',
+                            VALE_I = 2),
+                 NOM_PARA='DOMMAGE',
+                     VALE=5.7142857E-6,
+                PRECISION=1.E-5                )
+
+TEST_TABLE(        TABLE=TAB_3,
+                   FILTRE=_F(  NOM_PARA = 'CYCLE',
+                            VALE_I = 3),
+                 NOM_PARA='DOMMAGE',
+                     VALE=8.E-6,
+                PRECISION=1.E-5                )
+
+TEST_TABLE(        TABLE=TAB_3,
+                   FILTRE=_F(  NOM_PARA = 'CYCLE',
+                            VALE_I = 4),
+                 NOM_PARA='DOMMAGE',
+                     VALE=6.6666667E-6,
+                PRECISION=1.E-5                )
+
+TEST_TABLE(        TABLE=TAB_3,
+                   FILTRE=_F(  NOM_PARA = 'CYCLE',
+                            VALE_I = 5),
+                 NOM_PARA='DOMMAGE',
+                     VALE=4.E-5,
+                PRECISION=1.E-5                )
+
+TEST_TABLE(        TABLE=TAB_3,
+                 NOM_PARA='DOMM_CUMU',
+                     VALE=6.6095E-5,
+                PRECISION=1.E-5                )
+
+#
+#-----------------------------------------------------------------------
+TAB_4=POST_FATIGUE(        CHARGEMENT='UNIAXIAL',
+                             HISTOIRE=_F(  EPSI = TAUN2),
+                             COMPTAGE='NATUREL',
+                              DOMMAGE='TAHERI_MIXTE',
+                         TAHERI_NAPPE=F_EPSMAX,
+                                MATER=MAT0,
+                                CUMUL='LINEAIRE',
+                                 INFO=2                  )
+
+TEST_TABLE(        TABLE=TAB_4,
+                   FILTRE=_F(  NOM_PARA = 'CYCLE',
+                            VALE_I = 1),
+                 NOM_PARA='DOMMAGE',
+                     VALE=5.7142857E-6,
+                PRECISION=1.E-5                )
+
+TEST_TABLE(        TABLE=TAB_4,
+                   FILTRE=_F(  NOM_PARA = 'CYCLE',
+                            VALE_I = 2),
+                 NOM_PARA='DOMMAGE',
+                     VALE=5.7142857E-6,
+                PRECISION=1.E-5                )
+
+TEST_TABLE(        TABLE=TAB_4,
+                   FILTRE=_F(  NOM_PARA = 'CYCLE',
+                            VALE_I = 3),
+                 NOM_PARA='DOMMAGE',
+                     VALE=8.E-6,
+                PRECISION=1.E-5                )
+
+TEST_TABLE(        TABLE=TAB_4,
+                   FILTRE=_F(  NOM_PARA = 'CYCLE',
+                            VALE_I = 4),
+                 NOM_PARA='DOMMAGE',
+                     VALE=6.6666667E-6,
+                PRECISION=1.E-5                )
+
+TEST_TABLE(        TABLE=TAB_4,
+                   FILTRE=_F(  NOM_PARA = 'CYCLE',
+                            VALE_I = 5),
+                 NOM_PARA='DOMMAGE',
+                     VALE=4.E-5,
+                PRECISION=1.E-5                )
+
+TEST_TABLE(        TABLE=TAB_4,
+                 NOM_PARA='DOMM_CUMU',
+                     VALE=6.6095E-5,
+                PRECISION=1.E-5                )
+
+#
+#-----------------------------------------------------------------------
+FIN( )
+#

@@ -1,0 +1,164 @@
+# TITRE  VALIDATION DE LISS_ENVELOP SUR UNE FONCTION ET UNE NAPPE
+
+DEBUT( ) ;
+#POURSUITE( CODE=_F(  NOM = 'ZZZZ100D') ) ;
+
+INCLUDE ( UNITE=22 )
+
+LR8 = DEFI_LIST_REEL( VALE=(1.02300E-01, 3.71540E+00, 4.89780E+00,
+                            5.62340E+00, 1.12202E+01, 3.16228E+01, )
+                    ) ;
+            
+
+#
+#   LISS_ENVELOP SUR UNE FONCTION
+#
+
+FR1 = CALC_FONCTION(LISS_ENVELOP=_F(FONCTION = F02,
+                                    FREQ_MIN = .1023,
+                                    FREQ_MAX = 31.6228,
+                                    ELARG='GLOBAL',
+                                    ),
+                    INFO = 2,
+                    );
+
+FR2 = CALC_FONCTION(LISS_ENVELOP=_F(FONCTION = F02,
+                                    FREQ_MIN = .1023,
+                                    FREQ_MAX = 31.6228,
+                                    ELARG='GLOBAL',
+                                    ECH_FREQ_REF='OUI',
+                                    LIST_FREQ =  LR8,
+                                    ),
+                    INFO = 2,
+                    );
+
+
+#
+#   LISS_ENVELOP SUR UNE NAPPE
+#
+
+FR1B = CALC_FONCTION(LISS_ENVELOP=_F(FONCTION = SPECTB,
+                                    AMOR=0.02,
+                                    FREQ_MIN = .1023,
+                                    FREQ_MAX = 31.6228,
+                                    ELARG='GLOBAL',
+                                    ),
+                    INFO = 2,
+                    );
+
+FR2B = CALC_FONCTION(LISS_ENVELOP=_F(FONCTION = SPECTB,
+                                    AMOR=0.02,
+                                    FREQ_MIN = .1023,
+                                    FREQ_MAX = 31.6228,
+                                    ELARG='GLOBAL',
+                                    ECH_FREQ_REF='OUI',
+                                    LIST_FREQ =  LR8,
+                                    ),
+                    INFO = 2,
+                    );
+
+
+FR3 = CALC_FONCTION(LISS_ENVELOP=_F(FONCTION = SPECTB,
+                                    FREQ_MIN = .1023,
+                                    FREQ_MAX = 31.6228,
+                                    ELARG='GLOBAL',
+                                    ),
+                    INFO = 2,
+                    );
+
+
+FR3B = CALC_FONCTION(LISS_ENVELOP=_F(FONCTION = SPECTB,
+                                    FREQ_MIN = .1023,
+                                    FREQ_MAX = 31.6228,
+                                    ELARG='GLOBAL',
+                                    ECH_FREQ_REF='OUI',
+                                    LIST_FREQ =  LR8,
+                                    ),
+                    INFO = 2,
+                    );
+
+FR3C = CALC_FONCTION(LISS_ENVELOP=_F(FONCTION = SPECTB,
+                                    FREQ_MIN = .1023,
+                                    FREQ_MAX = 31.6228,
+                                    ELARG='GLOBAL',
+                                    ECH_FREQ_REF='OUI',
+                                    AMOR_ECH = 0.02,
+                                    ),
+                    INFO = 2,
+                    );
+
+
+IMPR_COURBE(FICHIER ='AGRAF',
+            COURBE=(
+                    _F( FONCTION =FR3C,
+                        COULEUR= 'ROUGE',),
+#                   _F( FONCTION =SPECTB,
+#                       COULEUR= 'NOIR',),
+            ))
+
+TEST_FONCTION(VALEUR=( 
+
+      _F(  FONCTION = FR1, NOM_PARA = 'FREQ',
+           REFERENCE='NON_REGRESSION',
+           VALE_PARA = 3.80200E-01, VALE_REFE = 1.10684E-01 ),
+      _F(  FONCTION = FR1, NOM_PARA = 'FREQ',
+           REFERENCE='NON_REGRESSION',
+           VALE_PARA = 3.98110E+00, VALE_REFE = 1.12738E+00 ),
+      _F(  FONCTION = FR1, NOM_PARA = 'FREQ',
+           REFERENCE='NON_REGRESSION',
+           VALE_PARA = 9.12010E+00, VALE_REFE = 8.89039E-01 ),
+
+      _F(  FONCTION = FR1, NOM_PARA = ('AMOR','FREQ'),
+           REFERENCE='NON_REGRESSION',
+           VALE_PARA = (0.02,3.80200E-01), VALE_REFE = 1.10684E-01 ),
+      _F(  FONCTION = FR1, NOM_PARA = ('AMOR','FREQ'),
+           REFERENCE='NON_REGRESSION',
+           VALE_PARA = (0.02,3.98110E+00), VALE_REFE = 1.12738E+00 ),
+      _F(  FONCTION = FR1, NOM_PARA = ('AMOR','FREQ'),
+           REFERENCE='NON_REGRESSION',
+           VALE_PARA = (0.02,9.12010E+00), VALE_REFE = 8.89039E-01 ),
+
+      _F(  FONCTION = FR3, NOM_PARA = ('AMOR','FREQ'),
+           REFERENCE='NON_REGRESSION',
+           VALE_PARA = (0.02,3.80200E-01), VALE_REFE = 1.10684E-01 ),
+      _F(  FONCTION = FR3, NOM_PARA = ('AMOR','FREQ'),
+           REFERENCE='NON_REGRESSION',
+           VALE_PARA = (0.02,3.98110E+00), VALE_REFE = 1.12738E+00 ),
+      _F(  FONCTION = FR3, NOM_PARA = ('AMOR','FREQ'),
+           REFERENCE='NON_REGRESSION',
+           VALE_PARA = (0.02,9.12010E+00), VALE_REFE = 8.89039E-01 ),
+
+      _F(  FONCTION = FR3C, NOM_PARA = ('AMOR','FREQ'),
+           REFERENCE='NON_REGRESSION',
+           VALE_PARA = (0.02,3.80200E-01), VALE_REFE = 1.10684E-01 ),
+      _F(  FONCTION = FR3C, NOM_PARA = ('AMOR','FREQ'),
+           REFERENCE='NON_REGRESSION',
+           VALE_PARA = (0.02,3.98110E+00), VALE_REFE = 1.12738E+00 ),
+      _F(  FONCTION = FR3C, NOM_PARA = ('AMOR','FREQ'),
+           REFERENCE='NON_REGRESSION',
+           VALE_PARA = (0.02,9.12010E+00), VALE_REFE = 8.89039E-01 ),
+
+      _F(  FONCTION = FR2, NOM_PARA = 'FREQ',
+           REFERENCE='NON_REGRESSION',
+           VALE_PARA = 4.89780E+00, VALE_REFE = 1.18277E+00 ),
+      _F(  FONCTION = FR2, NOM_PARA = 'FREQ',
+           REFERENCE='NON_REGRESSION',
+           VALE_PARA = 1.12202E+01, VALE_REFE = 9.80651E-01 ),
+
+      _F(  FONCTION = FR2B, NOM_PARA = ('AMOR','FREQ'),
+           REFERENCE='NON_REGRESSION',
+           VALE_PARA = (0.02,4.89780E+00), VALE_REFE = 1.18277E+00 ),
+      _F(  FONCTION = FR2B, NOM_PARA = ('AMOR','FREQ'),
+           REFERENCE='NON_REGRESSION',
+           VALE_PARA = (0.02,1.12202E+01), VALE_REFE = 9.80651E-01 ),
+
+      _F(  FONCTION = FR3B, NOM_PARA = ('AMOR','FREQ'),
+           REFERENCE='NON_REGRESSION',
+           VALE_PARA = (0.02,4.89780E+00), VALE_REFE = 1.18277E+00 ),
+      _F(  FONCTION = FR3B, NOM_PARA = ('AMOR','FREQ'),
+           REFERENCE='NON_REGRESSION',
+           VALE_PARA = (0.02,1.12202E+01), VALE_REFE = 9.80651E-01 ),
+
+                      ))
+FIN()
+

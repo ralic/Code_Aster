@@ -1,0 +1,268 @@
+# MODIF  DATE 07/06/2002   AUTEUR DURAND C.DURAND 
+# TITRE RACCORD POUTRE-3D : PROBLEME DE SAINT-VENANT -
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+#                           POUTRE EN TRACTION-FLEXION
+#   SUR LA MOITIE DE SA LONGUEUR LA POUTRE EST MODELISEE AVEC
+#   DES CUBES A 20 NOEUDS
+#   SUR L'AUTRE MOITIE ELLE EST MODELISEE AVEC UNE POUTRE EULER
+#   L'ENCASTREMENT EST LUI-MEME MODELISE AVEC UN RACCORD POUTRE-3D
+#   ENTRE LA PARTIE MASSIVE ET LE NOEUD D'UNE POUTRE FICTIVE QUE
+#   L'ON A ENCASTRE
+###################################################################
+
+DEBUT(   CODE=_F( NOM = 'SSLX200A',NIV_PUB_WEB='INTERNET') )
+
+MATER1=DEFI_MATERIAU(  ELAS=_F(  E = 200000.,   NU = 0.3,
+                                  RHO = 10000.) )
+
+MA=LIRE_MAILLAGE( )
+
+CHMAT=AFFE_MATERIAU(  MAILLAGE=MA,
+             AFFE=_F(  GROUP_MA = ('POU3D','AB',),    MATER = MATER1)  )
+
+MOD=AFFE_MODELE(  MAILLAGE=MA,AFFE=(
+             _F(  GROUP_MA = 'POU3D',
+                   MODELISATION = '3D',
+                   PHENOMENE = 'MECANIQUE'),
+             _F(  GROUP_MA = ('AB',),
+                   MODELISATION = 'POU_D_E',
+                   PHENOMENE = 'MECANIQUE'),
+             _F(  GROUP_NO = 'C',
+                   MODELISATION = 'DIS_TR',
+                   PHENOMENE = 'MECANIQUE'))
+                   )
+
+CELEM=AFFE_CARA_ELEM(   MODELE=MOD,
+               VERIF=( 'MAILLE',  'NOEUD',  ),
+               POUTRE=_F(  GROUP_MA = ('AB',), SECTION = 'RECTANGLE',
+                        CARA = ( 'HY',  'HZ', ),  
+                        VALE = (  3.,    2.,   )),
+                DISCRET=_F(  GROUP_NO = 'C',
+                          CARA = 'K_TR_D_N',
+                          VALE = (0., 0., 0.,
+                                  0., 0., 0., ))
+                                                        )
+
+CH=AFFE_CHAR_MECA( 
+            MODELE=MOD,LIAISON_ELEM=(
+                 _F( OPTION = '3D_POU',
+                               GROUP_MA_1 = 'SU',
+                               GROUP_NO_2 = 'C',
+                               NUME_LAGR = 'APRES'),
+#
+                 _F( OPTION = '3D_POU',
+                               GROUP_MA_1 = 'SF',
+                               GROUP_NO_2 = 'A')),
+#
+     DDL_IMPO=_F( GROUP_NO = 'C',  DX = 0., DY = 0., DZ = 0., DRX = 0.,
+                             DRY = 0., DRZ = 0.),
+#
+           FORCE_NODALE=_F( GROUP_NO = 'B',  FX = 10., MY = 2., MZ = 3.)
+                                       )
+
+#
+# CALCUL ELEMENTS FINIS RESOLUTION
+#
+
+MATRR=CALC_MATR_ELEM(    MODELE=MOD,
+                              CHARGE=CH,
+                              CHAM_MATER=CHMAT,
+                              CARA_ELEM=CELEM,
+                                  OPTION='RIGI_MECA' )
+
+#
+# IMPRESSION DES MATRICES ELEMENTAIRES DES MAILLES M2, M26 ET M47
+# POUR LA COMPOSANTE DX
+#
+
+IMPR_MATRICE(   MATR_ELEM=_F(  MATRICE = MATRR,
+                              FORMAT = 'RESULTAT',
+                              FICHIER = 'RESULTAT',
+                              NB_CHIFFRE = 3,
+                              GRAIN = 'MAILLE',
+                              NOM_CMP = 'DX',
+                              MAILLE = ('M2','M26','M47',)))
+
+MATRM=CALC_MATR_ELEM(    MODELE=MOD,
+                              CHARGE=CH,
+                              CHAM_MATER=CHMAT,
+                              CARA_ELEM=CELEM,
+                                  OPTION='MASS_MECA' )
+
+VEL=CALC_VECT_ELEM(    CHARGE=CH,
+                              OPTION='CHAR_MECA' )
+
+#
+# IMPRESSION DES VECTEURS ELEMENTAIRES DU VECT_ELEM VEL
+#
+
+IMPR_MATRICE(   MATR_ELEM=_F(  MATRICE = VEL,
+                              FORMAT = 'RESULTAT',
+                              FICHIER = 'RESULTAT',
+                              NB_CHIFFRE = 3,
+                              GRAIN = 'MAILLE'))
+
+NU=NUME_DDL(  MATR_RIGI=MATRR,  METHODE='LDLT',  RENUM='RCMK')
+
+MATASS=ASSE_MATRICE(    MATR_ELEM=MATRR,
+                              NUME_DDL=NU   )
+
+IMPR_MATRICE(MATR_ASSE=(
+#
+# IMPRESSION DU TERME DRXXDRX DU NOEUD N1 DE LA MATRICE
+# DE RIGIDITE
+#
+                      _F(  MATRICE = MATASS,
+                               FORMAT = 'RESULTAT',
+                               FICHIER = 'RESULTAT',
+                               GRAIN = 'VALEUR',
+                               NOEUD = 'N1',
+                               NOM_CMP = 'DRX'),
+#
+# IMPRESSION DE LA LIGNE DRX DU NOEUD N1 DE LA MATRICE
+# DE RIGIDITE
+#
+                      _F(  MATRICE = MATASS,
+                               FORMAT = 'RESULTAT',
+                               FICHIER = 'RESULTAT',
+                               OPTION = 'LIGNE', 
+                               GRAIN = 'VALEUR',
+                               NOEUD = 'N1',
+                               NOM_CMP = 'DRX'),
+
+#
+# IMPRESSION DU TERME DRXXDRX DU NOEUD N1 DE LA MATRICE
+# DE RIGIDITE SELON LE GRAIN NOEUD
+# 
+                     _F(  MATRICE = MATASS,
+                               FORMAT = 'RESULTAT',
+                               FICHIER = 'RESULTAT',
+                               GRAIN = 'NOEUD',
+                               NOEUD = 'N1',
+                               NOM_CMP = 'DRX'),
+#
+# IMPRESSION DE LA COLONNE DRX DU NOEUD N1 DE LA MATRICE
+# DE RIGIDITE SELON LE GRAIN NOEUD
+#
+                      _F(  MATRICE = MATASS,
+                               FORMAT = 'RESULTAT',
+                               FICHIER = 'RESULTAT',
+                               OPTION = 'COLONNE', 
+                               GRAIN = 'NOEUD',
+                               NOEUD = 'N1',
+                               NOM_CMP = 'DRX'))
+
+                              )
+
+MATASM=ASSE_MATRICE(    MATR_ELEM=MATRM,
+                              NUME_DDL=NU   )
+
+MODES=MODE_ITER_SIMULT(   MATR_A=MATASS, 
+                          MATR_B=MATASM,
+###CDURAND###     CALC_FREQ=_F( FREQ = (0., 2.,))
+                       )
+
+VECASS=ASSE_VECTEUR(    VECT_ELEM=VEL,
+                              NUME_DDL=NU   )
+
+MATASS=FACT_LDLT( reuse=MATASS,   MATR_ASSE=MATASS )
+
+VECASS=RESO_LDLT( reuse=VECASS,   MATR_FACT=MATASS,
+                            CHAM_NO=VECASS  )
+
+SIGMA=CALC_CHAM_ELEM(    MODELE=MOD,
+                              GROUP_MA='POU3D',
+                                DEPL=VECASS,
+                              OPTION='SIGM_ELNO_DEPL',
+                              CHAM_MATER=CHMAT )
+
+TEST_RESU(CHAM_NO=(  
+     # DEPLACEMENTS
+#
+# NOEUD B EXTREMITE DE LA POUTRE OU L'ON APPLIQUE LES CHARGEMENTS
+#
+            _F(  CHAM_GD = VECASS, CRITERE = 'RELATIF',   PRECISION = 1.E-7,
+              NOEUD = 'N1',       NOM_CMP = 'DX',    VALE = 8.33333333E-5),
+            _F(  CHAM_GD = VECASS, CRITERE = 'RELATIF',   PRECISION = 1.E-7,
+              NOEUD = 'N1',       NOM_CMP = 'DY',    VALE = 1.666666667E-4),
+            _F(  CHAM_GD = VECASS, CRITERE = 'RELATIF',   PRECISION = 1.E-7,
+              NOEUD = 'N1',       NOM_CMP = 'DZ',    VALE = -2.5E-4),
+#
+# NOEUD DU MASSIF SITUE EN X =5, Y=1.5, Z = -1
+#
+          _F(  CHAM_GD = VECASS, CRITERE = 'RELATIF',   PRECISION = 1.E-7,
+            NOEUD = 'N6',   NOM_CMP = 'DX',    VALE = -8.3333333333333E-06),
+            _F(  CHAM_GD = VECASS, CRITERE = 'RELATIF',   PRECISION = 1.E-7,
+              NOEUD = 'N6',   NOM_CMP = 'DY',    VALE = 4.0583333333333E-05),
+            _F(  CHAM_GD = VECASS, CRITERE = 'RELATIF',   PRECISION = 1.E-7,
+              NOEUD = 'N6',   NOM_CMP = 'DZ',    VALE = -6.0875000000000E-05)),CHAM_ELEM=(
+   # CONTRAINTES
+           
+#
+# NOEUD DU MASSIF SITUE EN X =5, Y=1.5, Z = -1
+#
+            _F(  CHAM_GD = SIGMA, CRITERE = 'RELATIF',   PRECISION = 1.E-7,
+MAILLE = 'M27',  NOEUD = 'N6',  NOM_CMP = 'SIXX',  VALE = -0.333333333),
+            _F(  CHAM_GD = SIGMA, CRITERE = 'ABSOLU',   PRECISION = 1.E-11,
+MAILLE = 'M27',  NOEUD = 'N6',  NOM_CMP = 'SIYY',  VALE = 0.),
+            _F(  CHAM_GD = SIGMA, CRITERE = 'ABSOLU',   PRECISION = 1.E-11,
+MAILLE = 'M27',  NOEUD = 'N6',  NOM_CMP = 'SIZZ',  VALE = 0.),
+            _F(  CHAM_GD = SIGMA, CRITERE = 'ABSOLU',   PRECISION = 1.E-11,
+MAILLE = 'M27',  NOEUD = 'N6',  NOM_CMP = 'SIXY',  VALE = 0.),
+            _F(  CHAM_GD = SIGMA, CRITERE = 'ABSOLU',   PRECISION = 1.E-11,
+MAILLE = 'M27',  NOEUD = 'N6',  NOM_CMP = 'SIXZ',  VALE = 0.),
+            _F(  CHAM_GD = SIGMA, CRITERE = 'ABSOLU',   PRECISION = 1.E-11,
+MAILLE = 'M27',  NOEUD = 'N6',  NOM_CMP = 'SIYZ',  VALE = 0.),
+#
+# NOEUD DU MASSIF SITUE EN X =5, Y=1.5, Z = 1
+#
+            _F(  CHAM_GD = SIGMA, CRITERE = 'RELATIF',   PRECISION = 1.E-7,
+MAILLE = 'M25',  NOEUD = 'N25',  NOM_CMP = 'SIXX',  VALE = 1.666666666667),
+            _F(  CHAM_GD = SIGMA, CRITERE = 'ABSOLU',   PRECISION = 1.E-11,
+MAILLE = 'M25',  NOEUD = 'N25',  NOM_CMP = 'SIYY',  VALE = 0.),
+            _F(  CHAM_GD = SIGMA, CRITERE = 'ABSOLU',   PRECISION = 1.E-11,
+MAILLE = 'M25',  NOEUD = 'N25',  NOM_CMP = 'SIZZ',  VALE = 0.),
+            _F(  CHAM_GD = SIGMA, CRITERE = 'ABSOLU',   PRECISION = 1.E-11,
+MAILLE = 'M25',  NOEUD = 'N25',  NOM_CMP = 'SIXY',  VALE = 0.),
+            _F(  CHAM_GD = SIGMA, CRITERE = 'ABSOLU',   PRECISION = 1.E-11,
+MAILLE = 'M25',  NOEUD = 'N25',  NOM_CMP = 'SIXZ',  VALE = 0.),
+            _F(  CHAM_GD = SIGMA, CRITERE = 'ABSOLU',   PRECISION = 1.E-11,
+MAILLE = 'M25',  NOEUD = 'N25',  NOM_CMP = 'SIYZ',  VALE = 0.))
+#
+                                               )
+
+TEST_RESU(RESU=(  
+     # TEST DES FREQUENCES POUR VALIDER LE REARRANGEMENT DES LAGRANGE
+#
+            _F(  RESULTAT = MODES,   PARA = 'FREQ',
+              CRITERE = 'RELATIF',  PRECISION = 1.E-3,
+              NUME_ORDRE = 1,    VALE = 0.0142),
+            _F(  RESULTAT = MODES,   PARA = 'FREQ',
+              CRITERE = 'RELATIF',  PRECISION = 1.E-3,
+              NUME_ORDRE = 5,    VALE = 0.1066),
+            _F(  RESULTAT = MODES,   PARA = 'FREQ',
+              CRITERE = 'RELATIF',  PRECISION = 1.E-3,
+              NUME_ORDRE = 9,    VALE = 0.2484))
+#
+                                               )
+
+#---------------------------------------------------------------------
+
+FIN()
+#

@@ -1,0 +1,106 @@
+      SUBROUTINE IRGMG1 (NUMOLD,IMA,NBORD2,TABD,TABL,TABV,NBNO,
+     &                   ICMP,IFI,IWRI,IADMAX)
+      IMPLICIT NONE
+      INTEGER           NUMOLD(*),TABD(*),TABL(*),TABV(*)
+      INTEGER           ICMP,IFI,IMA,NBORD2,IADMAX,NBNO
+      LOGICAL           IWRI
+C     ------------------------------------------------------------------
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF PREPOST  DATE 11/09/2002   AUTEUR VABHHTS J.PELLET 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+C ======================================================================
+C
+C     BUT: ECRITURE D'UNE CMP D'UN CHAMP "ELGA" OU "ELEM"
+C     POUR UN TYPE D'ELEMENT AU FORMAT GMSH
+C
+C     ENTREE:
+C     NUMOLD : I   : TABLEAU DE CORRESPONDANCE NOUV MAILLE ANC. MAILLE
+C     IMA    : I   : NUMERO NOUVELLE MAILLE
+C     NBORD2 : I   : NOMBRE DE NUM D'ORDRE
+C     TABD   : I   : DECRIPTEURS DU CHMAP SIMPLE A IMMRIMER
+C     TABL   : I   : DECRIPTEURS DU CHMAP SIMPLE A IMMRIMER
+C     TABV   : I   : DECRIPTEURS DU CHMAP SIMPLE A IMMRIMER
+C     ICMP   : I   : NUMERO COMPOSANTE CHAMP
+C     IFI    : I   : NUMERO D'UNITE LOGIQUE DU FICHIER GMSH
+C     IWRI    : L   : INDIQUE SI ON DOIT ECRIRE
+C     SORTIE
+C     IADMAX  : I   : MAX DES IAD SI >0 LE CHAMP EXISTE POUR LA MAILLE
+C
+C     ------------------------------------------------------------------
+C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
+      INTEGER           ZI
+      COMMON / IVARJE / ZI(1)
+      REAL*8            ZR
+      COMMON / RVARJE / ZR(1)
+      COMPLEX*16        ZC
+      COMMON / CVARJE / ZC(1)
+      LOGICAL           ZL
+      COMMON / LVARJE / ZL(1)
+      CHARACTER*8       ZK8
+      CHARACTER*16              ZK16
+      CHARACTER*24                       ZK24
+      CHARACTER*32                                ZK32
+      CHARACTER*80                                         ZK80
+      COMMON / KVARJE / ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
+      CHARACTER*32      JEXNUM, JEXNOM, JEXATR
+C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
+      INTEGER       IMAOLD, IOR, JCESD, JCESL, JCESV,
+     +              NBPT, NBSP, IPT, ISP, IAD, INO
+      REAL*8        VALE
+C
+C     ------------------------------------------------------------------
+C
+      CALL JEMARQ()
+C
+      IMAOLD = NUMOLD(IMA)
+C
+C     ON NE TRAITE QUE LES CHAMPS A 1 SOUS-POINT,
+C     ET UNE SEULE VALEUR SCALAIRE
+C
+      ISP = 1
+      IADMAX = 0
+C
+      DO 11 IOR = 1 , NBORD2
+         JCESD = TABD(IOR)
+         JCESL = TABL(IOR)
+         JCESV = TABV(IOR)
+         NBPT = ZI(JCESD-1+5+4*(IMAOLD-1)+1)
+         NBSP = ZI(JCESD-1+5+4*(IMAOLD-1)+2)
+         IF ( NBSP .NE. 1 ) THEN
+            CALL UTMESS('F','IRGMG1','NBSP DIFFERENT DE 1')
+         ENDIF
+         VALE = 0.D0
+         DO 13 IPT = 1,NBPT
+            CALL CESEXI('C',JCESD,JCESL,IMAOLD,IPT,ISP,ICMP,IAD)
+            IF (IAD.GT.0) THEN
+               IADMAX = IAD
+               VALE = VALE + ZR(JCESV-1+IAD)
+            ENDIF
+ 13      CONTINUE
+         IF ( NBPT .NE. 0 )  VALE = VALE / NBPT
+         IF (IWRI) THEN
+            DO 15 INO = 1,NBNO
+               WRITE(IFI,1000) VALE
+ 15         CONTINUE
+         ENDIF
+ 11   CONTINUE
+C
+      CALL JEDEMA()
+C
+ 1000 FORMAT(1P,E15.8)
+C
+      END

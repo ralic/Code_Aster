@@ -1,0 +1,61 @@
+      SUBROUTINE ADIMEQ(NBM,NBMC,CMOD,KMOD,FMOD,
+     &                  MASGI,AMORI,PULSI,CMODC,KMODC,FMODA)
+      IMPLICIT NONE
+C-----------------------------------------------------------------------
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 16/05/2000   AUTEUR KXBADNG T.KESTENS 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+C-----------------------------------------------------------------------
+C DESCRIPTION : ADIMENSIONNALISATION DE L'EQUATION DE LA MECANIQUE
+C -----------
+C               APPELANT : CALFNL
+C
+C-------------------   DECLARATION DES VARIABLES   ---------------------
+C
+C ARGUMENTS
+C ---------
+      INTEGER  NBM, NBMC
+      REAL*8   CMOD(NBM,*), KMOD(NBM,*), FMOD(*),
+     &         MASGI(*), AMORI(*), PULSI(*),
+     &         CMODC(NBM,*), KMODC(NBM,*), FMODA(*)
+C
+C VARIABLES LOCALES
+C -----------------
+      INTEGER  I, J
+C
+C-------------------   DEBUT DU CODE EXECUTABLE    ---------------------
+C
+      DO 10 I = 1, NBMC
+         FMODA(I) = FMOD(I)/MASGI(I) 
+  10  CONTINUE
+C
+C
+      DO 20 J = 1, NBMC
+         DO 21 I = 1, NBMC
+            CMODC(I,J) = - CMOD(I,J)/MASGI(I)
+            KMODC(I,J) = - KMOD(I,J)/MASGI(I)
+  21     CONTINUE
+  20  CONTINUE 
+C
+      DO 30 I = 1, NBMC
+         CMODC(I,I) = CMODC(I,I) + (AMORI(I)/MASGI(I))
+         KMODC(I,I) = KMODC(I,I) + PULSI(I)*PULSI(I)   
+  30  CONTINUE 
+C
+C --- FIN DE ADIMEQ.
+      END

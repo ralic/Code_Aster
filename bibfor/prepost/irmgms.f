@@ -1,0 +1,195 @@
+      SUBROUTINE IRMGMS(IFC,NDIM,NNO,COORDO,NOMA,NBGRM,NONOE)
+      IMPLICIT REAL*8 (A-H,O-Z)
+C
+      CHARACTER*8  NOMA,NONOE(*)
+      REAL*8       COORDO(*)
+      INTEGER      IFC
+C
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF PREPOST  DATE 28/08/2002   AUTEUR DURAND C.DURAND 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C
+C     BUT :   ECRITURE DU MAILLAGE AU FORMAT GMSH
+C     ENTREE:
+C       IFC    : NUMERO D'UNITE LOGIQUE DU FICHIER GMSH
+C       NDIM   : DIMENSION DU PROBLEME (2  OU 3)
+C       NNO    : NOMBRE DE NOEUDS DU MAILLAGE
+C       COORDO : VECTEUR DES COORDONNEES DES NOEUDS
+C       NOMA   : NOM DU MAILLAGE
+C       NBGRM  : NOMBRE DE GROUPES DE MAILLES
+C       NONOE  : NOM DES NOEUDS
+C
+C     ----------- COMMUNS NORMALISES  JEVEUX  --------------------------
+      COMMON /IVARJE/ZI(1)
+      COMMON /RVARJE/ZR(1)
+      COMMON /CVARJE/ZC(1)
+      COMMON /LVARJE/ZL(1)
+      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+      INTEGER ZI
+      REAL*8 ZR
+      COMPLEX*16 ZC
+      LOGICAL ZL
+      CHARACTER*8  ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32,JEXNUM,JEXNOM,JEXATR
+      CHARACTER*80 ZK80
+C     ------------------------------------------------------------------
+C ---------------------------------------------------------------------
+C
+      INTEGER      NUTYGM, NUMNO
+      REAL*8       ZERO
+      CHARACTER*8  NOMAOU, K8BID, NOMTYP, NOMGRM
+      CHARACTER*8  K8NNO, K8NBMA
+      CHARACTER*24 NJVPOI, NJVSEG, NJVTRI, NJVTET
+      CHARACTER*24 TYPMAI, NOMMAI, NOMAIL
+C
+      CALL JEMARQ()
+C
+C --- TRANSFORMATION DES MAILLES D'ORDRE 2 DU MAILLAGE EN MAILLES
+C --- D'ORDRE 1 :
+C     =========
+      ZERO   = 0.0D0
+      NOMAOU = '&&MAILLA'
+      TYPMAI = NOMAOU//'.TYPMAIL'
+      NOMMAI = NOMAOU//'.NOMMAI'
+      NJVPOI = NOMAOU//'.BID1'
+      NJVSEG = NOMAOU//'.BID2'
+      NJVTRI = NOMAOU//'.BID3'
+      NJVTET = NOMAOU//'.BID4'
+      IBID   =  1
+C
+      CALL IRGMM2( NOMA, NOMAOU, 0, IBID, 'V', NJVPOI, NJVSEG,
+     +             NJVTRI, NJVTET, NBPOI, NBSEG, NBTRI, NBTET)
+C      
+      CALL JEVEUO(NOMAOU//'.COORDO    .VALE','L',JCOOR)
+      CALL JEVEUO(NOMAOU//'.CONNEX'         ,'L',JCONX)
+      CALL JEVEUO(JEXATR(NOMAOU//'.CONNEX','LONCUM'),'L',JPOIN)
+      CALL JEVEUO(TYPMAI,'L',IATYMA)
+      CALL JEVEUO(NOMAOU//'.NBNUNE','L',JDNBNU)
+C
+C --- ECRITURE DES NOEUDS DU MAILLAGE SUR LE FICHIER GMSH :
+C     ===================================================
+      WRITE(IFC,'(A4)') '$NOD'
+      CALL CODENT(NNO,'G',K8NNO)
+      WRITE(IFC,'(A8)') K8NNO
+C
+      DO 10 INO = 1,NNO
+        CALL LXLIIS(NONOE(INO)(2:8),NUMGRM,IER)
+        IF (IER.EQ.0) THEN
+          IF (NDIM.EQ.3) THEN
+            WRITE(IFC,1001) NONOE(INO)(2:8),
+     +                    (ZR(JCOOR+3*(INO-1)+J-1),J=1,NDIM)
+          ELSEIF (NDIM.EQ.2) THEN
+            WRITE(IFC,1001) NONOE(INO)(2:8),
+     +                    (ZR(JCOOR+3*(INO-1)+J-1),J=1,NDIM),ZERO
+          ENDIF
+        ELSE
+          CALL LXLIIS(NONOE(INO)(3:8),NUMGRM,IER)
+          IF (IER.EQ.0) THEN
+            IF (NDIM.EQ.3) THEN
+              WRITE(IFC,1001) NONOE(INO)(3:8),
+     +                      (ZR(JCOOR+3*(INO-1)+J-1),J=1,NDIM)
+            ELSEIF (NDIM.EQ.2) THEN
+              WRITE(IFC,1001) NONOE(INO)(3:8),
+     +                      (ZR(JCOOR+3*(INO-1)+J-1),J=1,NDIM),ZERO
+            ENDIF
+
+          ENDIF
+        ENDIF
+  10  CONTINUE
+C
+      WRITE(IFC,'(A7)') '$ENDNOD'
+C
+      NBMA2 = NBPOI + NBSEG + NBTRI + NBTET
+C
+C --- NUMERO DES GROUP_MA (POUR L'ECRITURE DES MAILLES) :
+C     =================================================
+C --- CREATION DU VECTEUR DES NUMEROS DE GROUP_MA :
+C     -------------------------------------------
+      CALL WKVECT('&&IRMGMS.NUMGRMA','V V I',NBMA2,IDNUGM)
+C
+      NUMGRX = 10000
+      DO 20 IGM = 1, NBGRM
+        CALL JENUNO(JEXNUM(NOMA//'.GROUPEMA',IGM),NOMGRM)
+        CALL LXLIIS(NOMGRM(3:8),NUMGRM,IER)
+        IF (IER.EQ.0) THEN
+          NUMGRX = MAX(NUMGRX,NUMGRM)
+        ENDIF
+  20  CONTINUE
+C
+      DO 30 IGM = 1, NBGRM
+        CALL JENUNO(JEXNUM(NOMA//'.GROUPEMA',IGM),NOMGRM)
+        CALL JEVEUO(JEXNOM(NOMA//'.GROUPEMA',NOMGRM),'L',IDGRMA)
+        CALL LXLIIS(NOMGRM(3:8),NUMGRM,IER)
+        IF (IER.EQ.1) THEN
+          NUMGRM = IGM + NUMGRX
+        ENDIF
+        CALL JELIRA(JEXNUM(NOMA//'.GROUPEMA',IGM),'LONMAX',NBM,K8BID)
+        DO 40 I = 1, NBM
+          NBMLI = ZI(JDNBNU+ZI(IDGRMA+I-1)-1)
+          CALL JEVEUO ( JEXNUM( '&&IRGMMA.LISMA', ZI(IDGRMA+I-1) ),
+     +                 'L', IDLIMA)
+          DO 50 J = 1, NBMLI
+            ZI(IDNUGM+ZI(IDLIMA+J-1)-1) = NUMGRM
+  50      CONTINUE
+  40    CONTINUE
+  30  CONTINUE
+C
+C --- ECRITURE DES MAILLES DU MAILLAGE SUR LE FICHIER GMSH :
+C     ====================================================
+      WRITE(IFC,'(A4)') '$ELM'
+      CALL CODENT(NBMA2,'G',K8NBMA)
+      WRITE(IFC,'(A8)') K8NBMA
+C
+      CALL LXLIIS(NONOE(1)(2:8),NUMNO,IER)
+      DO 60 IMA = 1,NBMA2
+        IPOIN = ZI(JPOIN+IMA-1)
+        NNOE  = ZI(JPOIN+IMA) - IPOIN
+C
+C ---   NOM DU TYPE DE L'ELEMENT :
+C       ------------------------
+        ITYPE = ZI(IATYMA+IMA-1)
+        CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',ITYPE),NOMTYP)
+        ITYPGM = NUTYGM(NOMTYP)
+        IF (ZI(IDNUGM+IMA-1).EQ.0) THEN
+          ZI(IDNUGM+IMA-1) = 10000
+        ENDIF
+        CALL JENUNO(JEXNUM(NOMMAI,IMA),NOMAIL)
+        IF (IER.EQ.0) THEN
+          WRITE(IFC,'(A7,X,I2,X,I8,X,I2,X,I8,27(X,A7))')
+     +        NOMAIL(3:8),ITYPGM,ZI(IDNUGM+IMA-1),IBID,NNOE,
+     +       (NONOE(ZI(JCONX+IPOIN-1+I-1))(2:8),I=1,NNOE)
+        ELSE
+          WRITE(IFC,'(A7,X,I2,X,I8,X,I2,X,I8,27(X,A7))')
+     +        NOMAIL(3:8),ITYPGM,ZI(IDNUGM+IMA-1),IBID,NNOE,
+     +       (NONOE(ZI(JCONX+IPOIN-1+I-1))(3:8),I=1,NNOE)
+        ENDIF
+  60  CONTINUE
+C  
+      WRITE(IFC,'(A7)') '$ENDELM'
+C
+      CALL JEDETR('&&IRMGMS.NUMGRMA')
+      CALL JEDETC('V',NOMAOU,1)
+      CALL JEDETC('V','&&IRGMMA.LISMA',1)
+C
+ 1001 FORMAT (1X,A7,1X,1PD23.16,1X,1PD23.16,1X,1PD23.16,1X,1PD23.16)
+C
+      CALL JEDEMA()
+      END

@@ -1,0 +1,240 @@
+# MODIF  DATE 07/06/2002   AUTEUR DURAND C.DURAND 
+# TITRE TUBE FIN CIRCULAIRE SOUS PRESSION
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+# MODELISATION COQUE - POU_D_E - RELATIONS LINEAIRES POUTRES-COQUES
+# TEST DE LIRE_PLEXUS
+#  SUR UNE MOITIE DE LA LONGUEUR LE TUBE EST MAILLE EN COQUES DKQ
+#  SUR L'AUTRE MOITIE DE LA LONGUEUR POUTRE MAILLEE EN POUTRES
+# CHARGEMENT : PRESSION VARIANT LINEAIREMENT SELON X
+#
+#DEBUT();
+#CREATION DU FICHIER IDEAS SIMILAIRE A PLEXUS ;
+#PRE_GIBI( UNITE_GIBI : 17 );
+#MA = LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='NON'), );
+#MO = AFFE_MODELE ( MAILLAGE: MA
+#                   AFFE:( TOUT : 'OUI' PHENOMENE:'MECANIQUE'
+#                           MODELISATION:'BARRE' ) );
+#MATR = DEFI_MATERIAU ( ELAS: (E:2.E11  NU:0.3 ) );
+#CHMAT = AFFE_MATERIAU ( MAILLAGE: MA
+#                        AFFE: (TOUT:'OUI', MATER: MATR)  );
+#CAREL = AFFE_CARA_ELEM ( MODELE: MO 
+#                         BARRE:( 
+#       GROUP_MA : TOUT
+#  SECTION: 'RECTANGLE' 
+#                                 CARA:'H'    VALE:1.  ) ) ;
+#CHAR = AFFE_CHAR_MECA ( MODELE: MO
+#                        DDL_IMPO: (GROUP_NO:A    DX:0. )
+#                        DDL_IMPO: (TOUT : 'OUI'  DY:0. DZ:0. ) 
+#                        FORCE_POUTRE : ( TOUT : 'OUI' FX : 10. ) ) ;
+#FONCT = DEFI_FONCTION ( NOM_PARA: 'INST'
+#                          VALE : ( 0. 0. 1. 1. ) );
+#LINST = DEFI_LIST_REEL ( DEBUT:0.
+#                         INTERVALLE:(JUSQU_A: 1. NOMBRE: 1 ));
+#RESU =  MECA_STATIQUE ( MODELE   : MO     CHAM_MATER: CHMAT
+#                        CARA_ELEM: CAREL  LIST_INST :LINST
+#                        EXCIT:( CHARGE: CHAR FONC_MULT: FONCT )
+#                        OPTION: 'SIEF_ELGA_DEPL' ) ;
+#IMPR_RESU(RESU:( MAILLAGE : MA RESULTAT : RESU NUME_ORDRE:2
+#                  NOM_CHAM : 'SIEF_ELGA_DEPL' FORMAT :'IDEAS'));
+#FIN();
+# PUIS MODIFICATION DU FICHIER IDEAS SOUS EDITEUR POUR AVOIR SEULEMENT
+# 20 COMPOSANTES PAR MAILLE
+
+
+DEBUT( CODE=_F(  NOM = 'ZZZZ112A',NIV_PUB_WEB='INTERNET') )
+
+# MAILLAGE PLEXUS ;
+
+PRE_IDEAS(   UNITE_IDEAS=18,  UNITE_MAILLAGE=22 )
+
+MAILPLEX=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='NON'),    UNITE=22  )
+
+MAILPLEX=DEFI_GROUP( reuse=MAILPLEX,   MAILLAGE=MAILPLEX,
+  CREA_GROUP_MA=_F(  NOM = 'TOUTPL', TOUT = 'OUI'))
+
+# MAILLAGE ASTER ;
+
+PRE_GIBI(   UNITE_GIBI=19,  UNITE_MAILLAGE=20 )
+
+MAILAST=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='NON'),    UNITE=20  )
+
+MAILAST=DEFI_GROUP( reuse=MAILAST,   MAILLAGE=MAILAST,
+  CREA_GROUP_MA=_F(  NOM = 'TOUTAST', TOUT = 'OUI'))
+
+MODAST=AFFE_MODELE(   MAILLAGE=MAILAST,AFFE=(
+                        _F(  TOUT = 'OUI', PHENOMENE = 'MECANIQUE',
+                                          MODELISATION = 'DKT'),
+                        _F(  GROUP_MA = ('DA', 'BC',), PHENOMENE = 'MECANIQUE',
+                                                MODELISATION = 'POU_D_E'))
+                      )
+
+MATR=DEFI_MATERIAU(   ELAS=_F( E = 2.E11,  NU = 0.3) )
+
+CHMAT=AFFE_MATERIAU(   MAILLAGE=MAILAST,
+                           AFFE=_F( TOUT = 'OUI', MATER = MATR) )
+
+CAREL=AFFE_CARA_ELEM(   MODELE=MODAST,
+           COQUE=_F( 
+       GROUP_MA = 'TOUTAST',
+
+                     EPAIS = 0.01),
+           POUTRE=_F(  GROUP_MA = ('DA', 'BC',), SECTION = 'CERCLE',
+                    CARA = (   'R',            'EP',      ),
+                    VALE = (  0.1,           0.01,      ))
+                       )
+
+PRESPLEX=LIRE_PLEXUS(          UNITE=18,
+                                 FORMAT='IDEAS',
+                            MAIL_PLEXUS=MAILPLEX,
+                               MAILLAGE=MAILAST,
+                                 MODELE=MODAST,
+                             TOUT_ORDRE='OUI',
+                                  TITRE='PREMIER ESSAI LIRE_PLEXUS'
+                        )
+
+CHAR2=AFFE_CHAR_MECA(  MODELE=MODAST,
+                        DDL_IMPO=_F( GROUP_NO = 'D',
+                            DX = 0., DY = 0., DZ = 0., DRX = 0., DRY = 0., DRZ = 0.),LIAISON_ELEM=(
+                         _F( OPTION = 'COQ_POU',
+                                       CARA_ELEM = CAREL,
+                                       AXE_POUTRE = (1., 0., 0.,),
+                                       GROUP_MA_1 = 'CERCLE2',
+                                       GROUP_NO_2 = 'B'),
+                         _F(  OPTION = 'COQ_POU',
+                                       CARA_ELEM = CAREL,
+                                       AXE_POUTRE = (1., 0., 0.,),
+                                       GROUP_MA_1 = 'CERCLE1',
+                                       GROUP_NO_2 = 'A')),
+                         EVOL_CHAR=PRESPLEX
+                      )
+
+L_INST=DEFI_LIST_REEL(       DEBUT=0.,
+                            INTERVALLE=_F( JUSQU_A = 1.,   NOMBRE = 1)  )
+
+RESU2=MECA_STATIQUE(    MODELE=MODAST,   CHAM_MATER=CHMAT,
+                           CARA_ELEM=CAREL,
+                          EXCIT=_F(  CHARGE = CHAR2),
+                           LIST_INST=L_INST
+                         )
+
+RESU2=CALC_ELEM( reuse=RESU2,      MODELE=MODAST,     RESULTAT=RESU2,
+                      CHAM_MATER=CHMAT,     CARA_ELEM=CAREL,
+                          OPTION='SIGM_ELNO_DEPL',
+                       LIST_INST=L_INST
+                   )
+
+# TEST_RESU PAR RAPPORT A LA SOLUTION ANALYTIQUE
+# L'ECART VIENT DU MAILLAGE COQUES DKT UTILISE POUR CREER
+# LE FICHIER DE DONNEES DE LIRE_PLEXUS
+
+#
+# SUITE AUX CORRECTIONS POUR LE SIGNE DE LA PRESSION
+#   EN 5.3.25 ET 5.3.26 
+#   LES SIGNES DES VALEURS DE REFERENCE SONT CONSERVEES
+#   ET MARQUEES AUTRE_ASTER CAR RELUES PAR LIRE_RESU
+#   C'EST L'OP0150 (LIRE_PLEXUS) QUI NE FAIT PLUS DE CHANGEMENT
+#   DE SIGNE MAIS LE TE
+#
+TEST_RESU(RESU=( 
+    _F(  RESULTAT = RESU2,  NOM_CHAM = 'SIGM_ELNO_DEPL',  INST = 1.,
+      MAILLE = 'M1',  NOEUD = 'N1',  NOM_CMP = 'SIYY',  VALE = 100., 
+      PRECISION = 0.03,   
+      REFERENCE = 'AUTRE_ASTER'),
+    _F(  RESULTAT = RESU2,   NOM_CHAM = 'DEPL',   INST = 1.,
+      NOEUD = 'N1',  NOM_CMP = 'DY',                VALE = -5.E-11,
+      PRECISION = 0.04, 
+      REFERENCE = 'AUTRE_ASTER'))
+      )
+
+#TEST MATERIAU MULT DATASET 56
+# MAILLAGE PLEXUS ;
+
+PRE_IDEAS(   UNITE_IDEAS=23,  UNITE_MAILLAGE=24 )
+
+MAIPLEX2=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='NON'),    UNITE=24  )
+
+MAIPLEX2=DEFI_GROUP( reuse=MAIPLEX2,   MAILLAGE=MAIPLEX2,
+  CREA_GROUP_MA=_F(  NOM = 'TOUT', TOUT = 'OUI'))
+
+PREPLEX2=LIRE_PLEXUS(          UNITE=23,
+                                 FORMAT='IDEAS',
+                            MAIL_PLEXUS=MAIPLEX2,
+                               MAILLAGE=MAILAST,
+                                 MODELE=MODAST,
+                             TOUT_ORDRE='OUI',
+                                  TITRE='2EME ESSAI LIRE_PLEXUS'
+                        )
+
+CHAR3=AFFE_CHAR_MECA(  MODELE=MODAST,
+                        DDL_IMPO=_F( GROUP_NO = 'D',
+                            DX = 0., DY = 0., DZ = 0., DRX = 0., DRY = 0., DRZ = 0.),LIAISON_ELEM=(
+                         _F( OPTION = 'COQ_POU',
+                                       CARA_ELEM = CAREL,
+                                       AXE_POUTRE = (1., 0., 0.,),
+                                       GROUP_MA_1 = 'CERCLE2',
+                                       GROUP_NO_2 = 'B'),
+                         _F(  OPTION = 'COQ_POU',
+                                       CARA_ELEM = CAREL,
+                                       AXE_POUTRE = (1., 0., 0.,),
+                                       GROUP_MA_1 = 'CERCLE1',
+                                       GROUP_NO_2 = 'A')),
+                         EVOL_CHAR=PREPLEX2
+                      )
+
+L_INST2=DEFI_LIST_REEL(       DEBUT=0.,
+                            INTERVALLE=_F( JUSQU_A = 1.,   NOMBRE = 1)  )
+
+RESU3=MECA_STATIQUE(    MODELE=MODAST,   CHAM_MATER=CHMAT,
+                           CARA_ELEM=CAREL,
+                          EXCIT=_F(  CHARGE = CHAR3),
+                           LIST_INST=L_INST2
+                         )
+
+RESU3=CALC_ELEM( reuse=RESU3,      MODELE=MODAST,     RESULTAT=RESU3,
+                      CHAM_MATER=CHMAT,     CARA_ELEM=CAREL,
+                          OPTION='SIGM_ELNO_DEPL',
+                       LIST_INST=L_INST2
+                   )
+
+# TEST_RESU PAR RAPPORT A LA SOLUTION ANALYTIQUE
+# L'ECART VIENT DU MAILLAGE COQUES DKT UTILISE POUR CREER
+# LE FICHIER DE DONNEES DE LIRE_PLEXUS
+
+#
+# SUITE AUX CORRECTIONS POUR LE SIGNE DE LA PRESSION
+#   EN 5.3.25 ET 5.3.26 
+#   LES SIGNES DES VALEURS DE REFERENCE SONT CONSERVEES
+#   ET MARQUEES AUTRE_ASTER CAR RELUES PAR LIRE_RESU 
+#   C'EST L'OP0150 (LIRE_PLEXUS) QUI NE FAIT PLUS DE CHANGEMENT
+#   DE SIGNE MAIS LE TE
+#
+
+TEST_RESU(RESU=( 
+    _F(  RESULTAT = RESU3,  NOM_CHAM = 'SIGM_ELNO_DEPL',  INST = 1.,
+      MAILLE = 'M1',  NOEUD = 'N1',  NOM_CMP = 'SIYY',  VALE = 100., 
+      PRECISION = 0.03,   
+      REFERENCE = 'AUTRE_ASTER'),
+    _F(  RESULTAT = RESU3,   NOM_CHAM = 'DEPL',   INST = 1.,
+      NOEUD = 'N1',  NOM_CMP = 'DY',                VALE = -5.E-11,
+      PRECISION = 0.04,    
+      REFERENCE = 'AUTRE_ASTER'))
+         )
+
+FIN( )
+#

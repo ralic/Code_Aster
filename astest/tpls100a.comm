@@ -1,0 +1,272 @@
+# MODIF  DATE 07/06/2002   AUTEUR DURAND C.DURAND 
+# TITRE PLAQUE INFINIE SOUMISE A DES FLUX ANTISYMETRIQUES
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+#
+# PLAQUE INFINIE SOUMISE A DES COUPLES DE FLUXS
+# ANTISYMETRIQUES (MODELISATION COQUE THERMIQUE TRIA6)
+#
+
+DEBUT(  CODE=_F( NOM = 'TPLS100A',NIV_PUB_WEB='INTERNET'))
+
+M=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='NON'),  )
+
+M=DEFI_GROUP( reuse=M,   MAILLAGE=M,
+  CREA_GROUP_MA=_F(  NOM = 'TOUT', TOUT = 'OUI'))
+
+MO=AFFE_MODELE( 
+                       MAILLAGE=M, 
+                      AFFE=_F( TOUT = 'OUI',PHENOMENE = 'THERMIQUE',
+                                      MODELISATION = 'COQUE'))
+
+EPANT=AFFE_CARA_ELEM( MODELE=MO,
+                           COQUE=_F( 
+       GROUP_MA = 'TOUT',
+EPAIS = 4.) )
+
+MAANT=DEFI_MATERIAU( THER=_F( RHO_CP = 1.0,LAMBDA = 4.5))
+
+EPANT2=AFFE_CARA_ELEM( MODELE=MO,
+                           COQUE=_F( 
+       GROUP_MA = 'TOUT',
+
+                                  EPAIS = 4.,  
+                                  ANGL_REP = (30.,0.,)) )
+
+#
+# DEFINITION DU MATERIAU HOMOGENEISE MAANT2 ANALOGUE AU 
+# MATERIAU ISOTROPE MAANT.
+# LES COEFFICIENTS DE CE MATERIAU ONT ETE CALCULES AVEC DES
+# POLYNOMES DE LAGRANGE.
+#
+
+MAANT2=DEFI_MATERIAU(  
+                                       THER_COQUE=_F( 
+   COND_LMM = 9.6,  COND_TMM = 9.6,  COND_LMP = 1.2,   COND_TMP = 1.2,
+   COND_LPP = 2.4,  COND_TPP = 2.4,  COND_LSI = -0.6,  COND_TSI = -0.6,
+   COND_NMM = 6.0,   COND_NMP = -3.0,  COND_NPP = 2.625,   COND_NSI = 0.375,
+   CMAS_MM = 2.133333333,         CMAS_MP = 0.2666666667,    
+   CMAS_PP = 0.533333333,         CMAS_SI = -0.1333333333)
+                          )
+
+CMANT=AFFE_MATERIAU(  MAILLAGE=M, AFFE=_F( TOUT = 'OUI',MATER = MAANT))
+
+CMANT2=AFFE_MATERIAU(  MAILLAGE=M, AFFE=_F( TOUT = 'OUI',MATER = MAANT2))
+
+VAL0=DEFI_CONSTANTE(   VALE=0.)
+
+VAL30=DEFI_CONSTANTE(   VALE=30.)
+
+VALM30=DEFI_CONSTANTE(   VALE=-30.)
+
+CHANTF=AFFE_CHAR_THER_F( 
+           MODELE=MO,
+          TEMP_IMPO=_F( TOUT = 'OUI',TEMP = VAL0),
+          FLUX_REP=_F( GROUP_MA = 'GRSD2',FLUN_SUP = VAL30,FLUN_INF = VALM30))
+
+MEANT=CALC_MATR_ELEM( 
+                    MODELE=MO,CHARGE=CHANTF,CHAM_MATER=CMANT,
+                      CARA_ELEM=EPANT, OPTION='RIGI_THER'    )
+
+VEANT=CALC_VECT_ELEM(  CHARGE=CHANTF,
+                            OPTION='CHAR_THER' )
+
+NUANT=NUME_DDL(   MATR_RIGI=MEANT )
+
+KA=ASSE_MATRICE(   MATR_ELEM=MEANT,  NUME_DDL=NUANT )
+
+FA=ASSE_VECTEUR(   VECT_ELEM=VEANT, NUME_DDL=NUANT  )
+
+KA=FACT_LDLT( reuse=KA,   MATR_ASSE=KA)
+
+TEMPA=RESO_LDLT(   MATR_FACT=KA,    CHAM_NO=FA )
+
+CHAMA=CALC_CHAM_ELEM( 
+               MODELE=MO, 
+               EXCIT=_F( CHARGE = CHANTF), 
+                TEMP=TEMPA, 
+               CARA_ELEM=EPANT,
+              NIVE_COUCHE='SUP',
+               CHAM_MATER=CMANT, 
+              OPTION='FLUX_ELNO_TEMP' )
+
+MEANT2=CALC_MATR_ELEM( 
+                    MODELE=MO,CHARGE=CHANTF,CHAM_MATER=CMANT2,
+                      CARA_ELEM=EPANT2, OPTION='RIGI_THER'    )
+
+VEANT2=CALC_VECT_ELEM(  CHARGE=CHANTF,
+                            OPTION='CHAR_THER' )
+
+NUANT2=NUME_DDL(   MATR_RIGI=MEANT2 )
+
+KA2=ASSE_MATRICE(   MATR_ELEM=MEANT2,  NUME_DDL=NUANT2 )
+
+FA2=ASSE_VECTEUR(   VECT_ELEM=VEANT2, NUME_DDL=NUANT2  )
+
+KA2=FACT_LDLT( reuse=KA2,   MATR_ASSE=KA2)
+
+TEMPA3=RESO_LDLT(   MATR_FACT=KA2,    CHAM_NO=FA2 )
+
+TEST_RESU(CHAM_NO=(
+      _F( CHAM_GD = TEMPA, NOEUD = 'N201',NOM_CMP = 'TEMP_SUP',
+                         VALE = 13.3321,  PRECISION = 9.E-5),
+              _F( CHAM_GD = TEMPA, NOEUD = 'N176',NOM_CMP = 'TEMP_SUP',
+                         VALE = 13.2565,  PRECISION = 8.E-6),
+              _F( CHAM_GD = TEMPA, NOEUD = 'N161',NOM_CMP = 'TEMP_SUP',
+                         VALE = 12.7462,  PRECISION = 3.E-4),
+              _F( CHAM_GD = TEMPA, NOEUD = 'N1', NOM_CMP = 'TEMP_SUP',
+                         VALE = 6.6666,  PRECISION = 1.0E-4),
+              _F( CHAM_GD = TEMPA, NOEUD = 'N32', NOM_CMP = 'TEMP_SUP',
+                         VALE = 0.5870,  PRECISION = 3.E-4),
+              _F( CHAM_GD = TEMPA, NOEUD = 'N46', NOM_CMP = 'TEMP_SUP',
+                         VALE = 0.07679, PRECISION = 1.8E-3),
+      _F( CHAM_GD = TEMPA3, NOEUD = 'N201',NOM_CMP = 'TEMP_SUP',
+                         VALE = 13.3321,  PRECISION = 9.E-5),
+              _F( CHAM_GD = TEMPA3, NOEUD = 'N176',NOM_CMP = 'TEMP_SUP',
+                         VALE = 13.2565,  PRECISION = 8.E-6),
+              _F( CHAM_GD = TEMPA3, NOEUD = 'N161',NOM_CMP = 'TEMP_SUP',
+                         VALE = 12.7462,  PRECISION = 3.E-4),
+              _F( CHAM_GD = TEMPA3, NOEUD = 'N1', NOM_CMP = 'TEMP_SUP',
+                         VALE = 6.6666,  PRECISION = 1.0E-4),
+              _F( CHAM_GD = TEMPA3, NOEUD = 'N32', NOM_CMP = 'TEMP_SUP',
+                         VALE = 0.5870,  PRECISION = 3.E-4),
+              _F( CHAM_GD = TEMPA3, NOEUD = 'N46', NOM_CMP = 'TEMP_SUP',
+                         VALE = 0.07679, PRECISION = 1.8E-3)),CHAM_ELEM=(
+      _F( CHAM_GD = CHAMA, MAILLE = 'M297',NOEUD = 'N176',NOM_CMP = 'FLUX',
+                         VALE = 0.2992,  PRECISION = 3.0E-2),
+                _F( CHAM_GD = CHAMA, MAILLE = 'M289',NOEUD = 'N176',NOM_CMP = 'FLUX',
+                         VALE = 0.2992,  PRECISION = 8.0E-2),
+                _F( CHAM_GD = CHAMA, MAILLE = 'M290',NOEUD = 'N176',NOM_CMP = 'FLUX',
+                         VALE = 0.2992,  PRECISION = 7.0E-2),
+                _F( CHAM_GD = CHAMA, MAILLE = 'M265',NOEUD = 'N161',NOM_CMP = 'FLUX',
+                         VALE = 2.287,   PRECISION = 5.E-2),
+                _F( CHAM_GD = CHAMA, MAILLE = 'M266',NOEUD = 'N161',NOM_CMP = 'FLUX',
+                         VALE = 2.287,   PRECISION = 4.0E-2),
+                _F( CHAM_GD = CHAMA, MAILLE = 'M273',NOEUD = 'N161',NOM_CMP = 'FLUX',
+                         VALE = 2.287,   PRECISION = 3.4E-2),
+                _F( CHAM_GD = CHAMA, MAILLE = 'M1',  NOEUD = 'N1',  NOM_CMP = 'FLUX',
+                         VALE = 25.98,   PRECISION = 3.4E-2),
+                _F( CHAM_GD = CHAMA, MAILLE = 'M225',NOEUD = 'N1',  NOM_CMP = 'FLUX',
+                         VALE = 25.98,   PRECISION = 3.4E-2),
+                _F( CHAM_GD = CHAMA, MAILLE = 'M337',NOEUD = 'N1',  NOM_CMP = 'FLUX',
+                         VALE = 25.98,   PRECISION = 3.4E-2))
+                                         )
+
+# MEME CAS TEST AVEC THER_LINEAIRE
+
+
+CHANT=AFFE_CHAR_THER( 
+           MODELE=MO,
+          TEMP_IMPO=_F( TOUT = 'OUI',TEMP = 0.),
+          FLUX_REP=_F( GROUP_MA = 'GRSD2',FLUN_SUP = 30., FLUN_INF = -30.))
+
+TEMPA2=THER_LINEAIRE( 
+               MODELE=MO,
+               CHAM_MATER=CMANT2,    CARA_ELEM=EPANT2,
+              EXCIT=_F(  CHARGE = CHANT) )
+
+TEMPA2=CALC_ELEM( reuse=TEMPA2,
+               MODELE=MO, 
+              EXCIT=_F( CHARGE = CHANT), 
+               RESULTAT=TEMPA2,
+               CARA_ELEM=EPANT,
+              NIVE_COUCHE='SUP',
+               CHAM_MATER=CMANT, 
+              OPTION='FLUX_ELNO_TEMP' )
+
+LR8=DEFI_LIST_REEL(        DEBUT=0.,
+       INTERVALLE=_F(    JUSQU_A = 1., NOMBRE = 20)
+                       )
+
+TEMPA4=THER_LINEAIRE( 
+               MODELE=MO,
+          INCREMENT=_F( LIST_INST = LR8),
+               CHAM_MATER=CMANT2,    CARA_ELEM=EPANT2,
+              EXCIT=_F(  CHARGE = CHANT) )
+
+TEST_RESU(RESU=(
+        _F( RESULTAT = TEMPA2, NOEUD = 'N201',NOM_CMP = 'TEMP_SUP',
+            NUME_ORDRE = 0,
+            NOM_CHAM = 'TEMP',   VALE = 13.3321,  PRECISION = 9.E-5),
+              _F( RESULTAT = TEMPA2, NOEUD = 'N176',NOM_CMP = 'TEMP_SUP',
+            NUME_ORDRE = 0,
+            NOM_CHAM = 'TEMP',   VALE = 13.2565,  PRECISION = 8.E-6),
+              _F( RESULTAT = TEMPA2, NOEUD = 'N161',NOM_CMP = 'TEMP_SUP',
+            NUME_ORDRE = 0,
+            NOM_CHAM = 'TEMP',   VALE = 12.7462,  PRECISION = 3.E-4),
+              _F( RESULTAT = TEMPA2, NOEUD = 'N1', NOM_CMP = 'TEMP_SUP',
+            NUME_ORDRE = 0,
+            NOM_CHAM = 'TEMP',   VALE = 6.6666,  PRECISION = 1.0E-4),
+              _F( RESULTAT = TEMPA2, NOEUD = 'N32', NOM_CMP = 'TEMP_SUP',
+            NUME_ORDRE = 0,
+            NOM_CHAM = 'TEMP',   VALE = 0.5870,  PRECISION = 3.E-4),
+              _F( RESULTAT = TEMPA2, NOEUD = 'N46', NOM_CMP = 'TEMP_SUP',
+            NUME_ORDRE = 0,
+            NOM_CHAM = 'TEMP',   VALE = 0.07679, PRECISION = 1.8E-3),
+       _F( RESULTAT = TEMPA2, MAILLE = 'M297',NOEUD = 'N176',NOM_CMP = 'FLUX',
+            NUME_ORDRE = 0,
+            NOM_CHAM = 'FLUX_ELNO_TEMP', VALE = 0.2992,  PRECISION = 3.0E-2),
+                _F( RESULTAT = TEMPA2, MAILLE = 'M289',NOEUD = 'N176',NOM_CMP = 'FLUX',
+            NUME_ORDRE = 0,
+            NOM_CHAM = 'FLUX_ELNO_TEMP', VALE = 0.2992,  PRECISION = 8.0E-2),
+                _F( RESULTAT = TEMPA2, MAILLE = 'M290',NOEUD = 'N176',NOM_CMP = 'FLUX',
+            NUME_ORDRE = 0,
+            NOM_CHAM = 'FLUX_ELNO_TEMP', VALE = 0.2992,  PRECISION = 7.0E-2),
+                _F( RESULTAT = TEMPA2, MAILLE = 'M265',NOEUD = 'N161',NOM_CMP = 'FLUX',
+            NUME_ORDRE = 0,
+            NOM_CHAM = 'FLUX_ELNO_TEMP',  VALE = 2.287,   PRECISION = 5.E-2),
+                _F( RESULTAT = TEMPA2, MAILLE = 'M266',NOEUD = 'N161',NOM_CMP = 'FLUX',
+            NUME_ORDRE = 0,
+            NOM_CHAM = 'FLUX_ELNO_TEMP', VALE = 2.287,   PRECISION = 4.0E-2),
+                _F( RESULTAT = TEMPA2, MAILLE = 'M273',NOEUD = 'N161',NOM_CMP = 'FLUX',
+            NUME_ORDRE = 0,
+            NOM_CHAM = 'FLUX_ELNO_TEMP', VALE = 2.287,   PRECISION = 3.4E-2),
+                _F( RESULTAT = TEMPA2, MAILLE = 'M1',  NOEUD = 'N1',  NOM_CMP = 'FLUX',
+            NUME_ORDRE = 0,
+            NOM_CHAM = 'FLUX_ELNO_TEMP', VALE = 25.98,   PRECISION = 3.4E-2),
+                _F( RESULTAT = TEMPA2, MAILLE = 'M225',NOEUD = 'N1',  NOM_CMP = 'FLUX',
+            NUME_ORDRE = 0,
+            NOM_CHAM = 'FLUX_ELNO_TEMP', VALE = 25.98,   PRECISION = 3.4E-2),
+                _F( RESULTAT = TEMPA2, MAILLE = 'M337',NOEUD = 'N1',  NOM_CMP = 'FLUX',
+            NUME_ORDRE = 0,
+            NOM_CHAM = 'FLUX_ELNO_TEMP', VALE = 25.98,   PRECISION = 3.4E-2),
+        _F( RESULTAT = TEMPA4, NOEUD = 'N201',NOM_CMP = 'TEMP_SUP',
+            NUME_ORDRE = 20,
+            NOM_CHAM = 'TEMP',   VALE = 13.3321,  PRECISION = 9.E-5),
+              _F( RESULTAT = TEMPA4, NOEUD = 'N176',NOM_CMP = 'TEMP_SUP',
+            NUME_ORDRE = 20,
+            NOM_CHAM = 'TEMP',   VALE = 13.2565,  PRECISION = 8.E-6),
+              _F( RESULTAT = TEMPA4, NOEUD = 'N161',NOM_CMP = 'TEMP_SUP',
+            NUME_ORDRE = 20,
+            NOM_CHAM = 'TEMP',   VALE = 12.7462,  PRECISION = 3.E-4),
+              _F( RESULTAT = TEMPA4, NOEUD = 'N1', NOM_CMP = 'TEMP_SUP',
+            NUME_ORDRE = 20,
+            NOM_CHAM = 'TEMP',   VALE = 6.6666,  PRECISION = 1.0E-4),
+              _F( RESULTAT = TEMPA4, NOEUD = 'N32', NOM_CMP = 'TEMP_SUP',
+            NUME_ORDRE = 20,
+            NOM_CHAM = 'TEMP',   VALE = 0.5870,  PRECISION = 3.E-4),
+              _F( RESULTAT = TEMPA4, NOEUD = 'N46', NOM_CMP = 'TEMP_SUP',
+            NUME_ORDRE = 20,
+            NOM_CHAM = 'TEMP',   VALE = 0.07679, PRECISION = 1.8E-3))
+                                         )
+
+# MEME TEST AVEC LA CHARGE DEFINIE PAR AFFE_CHAR_THER_F
+
+
+FIN()
+#

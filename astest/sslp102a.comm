@@ -1,0 +1,276 @@
+# MODIF  DATE 07/06/2002   AUTEUR DURAND C.DURAND 
+# TITRE TAUX DE RESTITUTION AVEC DEFORMATION INITIALE
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+# DEFORMATIONS PLANES
+# COMPARAISON SUR 4 COURONNES
+
+
+DEBUT(   CODE=_F( NOM = 'SSLP102A',NIV_PUB_WEB='INTERNET') )
+
+M=LIRE_MAILLAGE(   )
+
+MO=AFFE_MODELE(            MAILLAGE=M,
+                                 VERIF='MAILLE',
+                                AFFE=_F(  TOUT = 'OUI',
+                                       PHENOMENE = 'MECANIQUE',
+                                       MODELISATION = 'D_PLAN'))
+
+MA=DEFI_MATERIAU(     ELAS=_F(  E = 20000.,
+                                NU = 0.3,
+                                ALPHA = 0.000005) )
+
+F1=DEFI_FONCTION(    NOM_PARA='X',
+                       VALE=(-50., -0.0005,
+                              50.,  0.0005,),
+                          INTERPOL='LIN',
+                        PROL_DROITE='LINEAIRE',
+                       PROL_GAUCHE='LINEAIRE'
+                       )
+
+ZERO=DEFI_FONCTION(   NOM_PARA='X',
+                            VALE=(0., 0.,
+                                  1., 0.,),
+                        PROL_DROITE='LINEAIRE',
+                       PROL_GAUCHE='LINEAIRE' )
+
+CM=AFFE_MATERIAU(    MAILLAGE=M,
+                           AFFE=_F(  TOUT = 'OUI',
+                                  MATER = MA,
+                                  TEMP_REF = 0.) )
+
+CHF=AFFE_CHAR_MECA_F(         MODELE=MO,DDL_IMPO=(
+                                _F(  GROUP_NO = 'GRNM4', DY = ZERO),
+                                _F(  GROUP_NO = 'GRNM2', DY = ZERO),
+                                _F(  NOEUD = 'N695',     DX = ZERO)),
+                               EPSI_INIT=_F(  TOUT = 'OUI',EPXX = F1,
+                                                      EPYY = F1,
+                                                      EPZZ = F1)   )
+
+#--------------------------------------------------------------------
+#               CALCUL AVEC THETA                                   #
+#--------------------------------------------------------------------
+THETA=CALC_THETA(       MODELE=MO,
+                        THETA_2D=_F(  NOEUD = 'N3',
+                                   MODULE = 1.0,
+                                   R_INF = 1.,
+                                   R_SUP = 49.),
+                       DIRECTION=(1.,0.,0.,)
+                    )
+
+#--------------------------------------------------------------------
+
+MACRO_MATR_ASSE(         MODELE=MO,
+                            CHARGE=CHF,
+                        CHAM_MATER=CM,
+                          NUME_DDL=CO("NU"),
+         MATR_ASSE=_F(  MATRICE = CO("K"),      OPTION = 'RIGI_MECA_LAGR',
+                     PROPAGATION = 0.0,
+                           THETA = THETA)
+                  )
+
+#--------------------------------------------------------------------
+
+VE=CALC_VECT_ELEM(         CHARGE=CHF,
+                           CHAM_MATER=CM,
+                          PROPAGATION=0.0,
+                                THETA=THETA,
+                              OPTION='CHAR_MECA_LAGR')
+
+F=ASSE_VECTEUR(        VECT_ELEM=VE,
+                             NUME_DDL=NU )
+
+K=FACT_LDLT(      reuse=K,     MATR_ASSE=K  )
+
+DEPLA=RESO_LDLT(           MATR_FACT=K,
+                              CHAM_NO=F  )
+
+G=CALC_G_THETA_T(          MODELE=MO,
+                              DEPL=DEPLA,
+                        CHAM_MATER=CM,
+                             THETA=THETA,
+                            CHARGE=CHF,
+                       PROPAGATION=0.0,
+                            OPTION='CALC_G_LAGR' )
+
+#--------------------------------------------------------------------
+#                CALCUL AVEC THETA1                                 #
+#--------------------------------------------------------------------
+THETA1=CALC_THETA(       MODELE=MO,
+                        THETA_2D=_F(  NOEUD = 'N3',
+                                   MODULE = 1.0,
+                                   R_INF = 3.,
+                                   R_SUP = 46.),
+                      DIRECTION=(1.,0.,0.,)
+                   )
+
+#--------------------------------------------------------------------
+
+MACRO_MATR_ASSE(         MODELE=MO,
+                            CHARGE=CHF,
+                        CHAM_MATER=CM,
+                          NUME_DDL=NU,
+         MATR_ASSE=_F(  MATRICE = CO("K1"),     OPTION = 'RIGI_MECA_LAGR',
+                     PROPAGATION = 0.0,
+                           THETA = THETA1)
+                  )
+
+#--------------------------------------------------------------------
+
+VE1=CALC_VECT_ELEM(         CHARGE=CHF,
+                           CHAM_MATER=CM,
+                          PROPAGATION=0.0,
+                                THETA=THETA1,
+                              OPTION='CHAR_MECA_LAGR')
+
+F10=ASSE_VECTEUR(        VECT_ELEM=VE1,
+                             NUME_DDL=NU )
+
+K1=FACT_LDLT(      reuse=K1,     MATR_ASSE=K1  )
+
+DEPLA1=RESO_LDLT(          MATR_FACT=K1,
+                              CHAM_NO=F10  )
+
+G1=CALC_G_THETA_T(          MODELE=MO,
+                              DEPL=DEPLA1,
+                        CHAM_MATER=CM,
+                             THETA=THETA1,
+                            CHARGE=CHF,
+                       PROPAGATION=0.0,
+                            OPTION='CALC_G_LAGR' )
+
+#--------------------------------------------------------------------
+#                CALCUL AVEC THETA2                                 #
+#--------------------------------------------------------------------
+THETA2=CALC_THETA(       MODELE=MO,
+                        THETA_2D=_F(  NOEUD = 'N3',
+                                   MODULE = 1.0,
+                                   R_INF = 0.5,
+                                   R_SUP = 48.9),
+                       DIRECTION=(1.,0.,0.,) )
+
+#--------------------------------------------------------------------
+
+MACRO_MATR_ASSE(         MODELE=MO,
+                            CHARGE=CHF,
+                        CHAM_MATER=CM,
+                          NUME_DDL=NU,
+         MATR_ASSE=_F(  MATRICE = CO("K2"),     OPTION = 'RIGI_MECA_LAGR',
+                     PROPAGATION = 0.0,
+                           THETA = THETA2)
+                  )
+
+#--------------------------------------------------------------------
+
+
+VE2=CALC_VECT_ELEM(         CHARGE=CHF,
+                           CHAM_MATER=CM,
+                          PROPAGATION=0.0,
+                                THETA=THETA2,
+                              OPTION='CHAR_MECA_LAGR')
+
+F20=ASSE_VECTEUR(        VECT_ELEM=VE2,
+                             NUME_DDL=NU )
+
+K2=FACT_LDLT(      reuse=K2,     MATR_ASSE=K2  )
+
+DEPLA2=RESO_LDLT(          MATR_FACT=K2,
+                              CHAM_NO=F20 )
+
+G2=CALC_G_THETA_T(          MODELE=MO,
+                               DEPL=DEPLA2,
+                         CHAM_MATER=CM,
+                              THETA=THETA2,
+                             CHARGE=CHF,
+                        PROPAGATION=0.0,
+                             OPTION='CALC_G_LAGR' )
+
+#--------------------------------------------------------------------
+#                CALCUL AVEC THETA3                                 #
+#--------------------------------------------------------------------
+
+THETA3=CALC_THETA(       MODELE=MO,
+                        THETA_2D=_F(  NOEUD = 'N3',
+                                   MODULE = 1.0,
+                                   R_INF = 8.,
+                                   R_SUP = 40.),
+                      DIRECTION=(1.,0.,0.,) )
+
+#--------------------------------------------------------------------
+
+MACRO_MATR_ASSE(         MODELE=MO,
+                            CHARGE=CHF,
+                        CHAM_MATER=CM,
+                          NUME_DDL=NU,
+         MATR_ASSE=_F(  MATRICE = CO("K3"),     OPTION = 'RIGI_MECA_LAGR',
+                     PROPAGATION = 0.0,
+                           THETA = THETA3)
+                  )
+
+#--------------------------------------------------------------------
+
+
+VE3=CALC_VECT_ELEM(         CHARGE=CHF,
+                           CHAM_MATER=CM,
+                          PROPAGATION=0.0,
+                                THETA=THETA3,
+                              OPTION='CHAR_MECA_LAGR')
+
+F30=ASSE_VECTEUR(        VECT_ELEM=VE3,
+                             NUME_DDL=NU )
+
+K3=FACT_LDLT(      reuse=K3,     MATR_ASSE=K3  )
+
+DEPLA3=RESO_LDLT(        MATR_FACT=K3,
+                              CHAM_NO=F30 )
+
+G3=CALC_G_THETA_T(          MODELE=MO,
+                              DEPL=DEPLA3,
+                        CHAM_MATER=CM,
+                             THETA=THETA3,
+                            CHARGE=CHF,
+                       PROPAGATION=0.0,
+                            OPTION='CALC_G_LAGR' )
+
+#--------------------------------------------------------------------
+#                TESTS DES RESULTATS                                #
+#--------------------------------------------------------------------
+
+
+TEST_TABLE(       TABLE=G,
+                       NOM_PARA='G',
+                           VALE=1.8E-1,
+                      PRECISION=7.E-4   )
+
+TEST_TABLE(       TABLE=G1,
+                       NOM_PARA='G',
+                           VALE=1.8E-1,
+                      PRECISION=7.E-4   )
+
+TEST_TABLE(       TABLE=G2,
+                       NOM_PARA='G',
+                           VALE=1.8E-1,
+                      PRECISION=7.E-4   )
+
+TEST_TABLE(       TABLE=G3,
+                       NOM_PARA='G',
+                           VALE=1.8E-1,
+                      PRECISION=7.E-4   )
+
+FIN( )
+#

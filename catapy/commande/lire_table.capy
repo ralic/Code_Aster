@@ -1,0 +1,40 @@
+#& MODIF COMMANDE  DATE 09/10/2002   AUTEUR DURAND C.DURAND 
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                  
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+def lire_table_prod(TYPE_TABLE,**args):
+  if TYPE_TABLE == "TABLE"          : return table
+  if TYPE_TABLE == "TABL_CARA_GEOM" : return tabl_cara_geom
+  if TYPE_TABLE == "TABL_POST_RELE" : return tabl_post_rele
+  if TYPE_TABLE == "TABL_POST_USUR" : return tabl_post_usur
+  if TYPE_TABLE == "TABL_POST_ALEA" : return tabl_post_alea
+  raise AsException("type de concept resultat non prevu")
+LIRE_TABLE=OPER(nom="LIRE_TABLE",op=29,sd_prod=lire_table_prod,
+                docu="U7.02.03",fr="Lecture d un concept de type table",
+            UIinfo={"groupes":("Maillage",)},
+         UNITE           =SIMP(statut='o',typ='I' ),
+         FORMAT          =SIMP(statut='f',typ='TXM',into=("ASTER",),defaut="ASTER"),
+         NUME_TABLE      =SIMP(statut='f',typ='I',defaut=1),
+         TYPE_TABLE      =SIMP(statut='f',typ='TXM',defaut="TABLE",
+                              into=("TABLE",
+                                    "TABL_CARA_GEOM",
+                                    "TABL_POST_RELE",
+                                    "TABL_POST_USUR",
+                                    "TABL_POST_ALEA" ) ),
+         SEPARATEUR      =SIMP(statut='o',typ='TXM'),
+         TITRE           =SIMP(statut='f',typ='TXM',max='**'),
+         )  ;

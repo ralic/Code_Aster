@@ -1,0 +1,70 @@
+      SUBROUTINE HISTOG ( NBPT,V,VMIN,VMAX,X,Y,NDEC )
+C ----------------------------------------------------------------------
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 18/12/96   AUTEUR D6BHHBQ B.QUINNEZ 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+C ----------------------------------------------------------------------
+C        CACUL DE L'HISTOGRAMME AMV
+C
+C IN  : NBPT   : NB DE POINTS DU SIGNAL
+C IN  : V      : TABLEAU DU SIGNAL
+C IN  : NDEC   : NOMBRE DE CLASSES DE L'HISTOGRAMME
+C OUT : VMIN   : VALEUR MINIMALE DU SIGNAL
+C OUT : VMAX   : VALEUR MAXIMALE DU SIGNAL
+C OUT : X      : TABLEAU DE VALEUR DES ABSCISSES DE L'HISTOGRAMME
+C OUT : Y      : TABLEAU DES DENSITES DE PROBABILITE DES CLASSES
+C ----------------------------------------------------------------------
+C
+      IMPLICIT REAL *8 (A-H,O-Z)
+      REAL*8   V(*), X(*), Y(*)
+      REAL*8  VMIN, VMAX
+      INTEGER NBPT, NDEC
+C
+      REAL*8 DX
+C
+      DO 5 I=1,NDEC
+        X(I)=0.D0
+        Y(I)=0.D0
+ 5    CONTINUE
+      DO 10 I=1,NBPT
+        IF (V(I).GE.VMAX) VMAX = V(I)
+        IF (V(I).LE.VMIN) VMIN = V(I)
+ 10   CONTINUE
+      IF (NBPT.NE.0) THEN
+        DX = (VMAX-VMIN)/NDEC
+        COEF = 1.D0/NBPT
+      ELSE
+        DX =0.D0
+        COEF = 1.D0
+        VMIN = 0.D0
+        VMAX = 0.D0
+      ENDIF
+      DO 20 I=1,NBPT
+        IF (DX.NE.0.D0) THEN
+           ICEL = INT((V(I)-VMIN)/DX)+1
+        ELSE
+           ICEL = 1
+        ENDIF
+        IF (ICEL.GT.NDEC) ICEL = NDEC
+        Y(ICEL)=Y(ICEL)+1
+ 20   CONTINUE
+      DO 30 I=1, NDEC
+        X(I)=VMIN+I*DX
+        Y(I)=Y(I)*COEF
+ 30   CONTINUE
+      END

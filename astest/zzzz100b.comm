@@ -1,0 +1,158 @@
+# MODIF  DATE 09/09/2002   AUTEUR MCOURTOI M.COURTOIS 
+# RESPONSABLE MCOURTOI M.COURTOIS
+# TITRE VALIDATION DE L'OPTION ASSE DE CALC_FONCTION
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+# ET VALIDATION DE L'OPTION FFT DE CALC_FONCTION
+#
+#===================================================
+#
+
+DEBUT(CODE=_F( NOM = 'ZZZZ100B',NIV_PUB_WEB='INTERNET'))
+
+#   
+
+DFC1=DEFI_FONCTION(    NOM_PARA='X',   NOM_RESU='Y',
+                            VALE=(0., 10., 4., 14., 6., 16.,),
+                            PROL_DROITE='LINEAIRE',
+                            PROL_GAUCHE='LINEAIRE'
+                         )
+
+#
+
+DFC2=DEFI_FONCTION(    NOM_PARA='X',   NOM_RESU='Y',
+                            VALE=(5., 25., 7., 27., 8., 28.,),
+                            PROL_DROITE='LINEAIRE',
+                            PROL_GAUCHE='LINEAIRE' 
+                         )
+
+#         
+
+DFC3=CALC_FONCTION(    ASSE=_F( 
+                          FONCTION = ( DFC2,  DFC1, ),
+                          SURCHARGE = 'DROITE')
+                         )
+
+DFC4=CALC_FONCTION(    ASSE=_F( 
+                          FONCTION = ( DFC1,  DFC2, ),
+                          SURCHARGE = 'GAUCHE')
+                         )
+
+#
+
+TEST_FONCTION(VALEUR=(  
+                  _F(  FONCTION = DFC3,  VALE_PARA = 4.,
+                    REFERENCE = 'ANALYTIQUE',
+                    VALE_REFE = 14.), 
+                  _F(  FONCTION = DFC3,  VALE_PARA = 5.,
+                    REFERENCE = 'ANALYTIQUE',                  
+                    VALE_REFE = 25.),
+                  _F(  FONCTION = DFC4,  VALE_PARA = 4.,
+                    REFERENCE = 'ANALYTIQUE',                  
+                    VALE_REFE = 14.), 
+                  _F(  FONCTION = DFC4,  VALE_PARA = 6.,
+                    REFERENCE = 'ANALYTIQUE',                  
+                    VALE_REFE = 16.))
+                 )
+
+# VALIDATION DE LA TRANSFORMEE DE FOURIER
+
+INCLUDE(UNITE=11,   INFO=1)
+
+INST1=0.015
+
+INST2=0.130
+
+INST3=0.402
+
+X1=-1.95106E+00
+
+X2=-1.17714E+00
+
+X3=1.58581E+00
+
+Y1=-1.72319E+00
+
+Y2=1.02367E+00
+
+Y3=4.33236E+00
+
+FREQ1=50.8
+
+FREQ2=121.1
+
+FFX_F1=('RI',0.124,0.0383,),
+
+FFX_F2=('RI',0.177,-0.0347,),
+
+FFY_F1=('RI',0.145,0.0373,),
+
+FFY_F2=('RI',0.176,-0.0623,),
+
+XFF=CALC_FONCTION(    FFT=_F( 
+            FONCTION = X) )
+
+YFF=CALC_FONCTION(    FFT=_F( 
+            FONCTION = Y) )
+
+FFXFF=CALC_FONCTION(    FFT=_F( 
+            FONCTION = XFF) )
+
+FFYFF=CALC_FONCTION(    FFT=_F( 
+            FONCTION = YFF) )
+
+TEST_FONCTION(VALEUR=( _F(  FONCTION = XFF,   VALE_PARA = FREQ1,
+                    REFERENCE = 'NON_REGRESSION',
+                          VALE_REFE_C = FFX_F1,  
+                    PRECISION = .01),  
+    _F(  FONCTION = XFF,   VALE_PARA = FREQ2,
+                    REFERENCE = 'NON_REGRESSION',
+                          VALE_REFE_C = FFX_F2,  
+                    PRECISION = .01),       
+    _F(  FONCTION = YFF,   VALE_PARA = FREQ1,
+                    REFERENCE = 'NON_REGRESSION',
+                          VALE_REFE_C = FFY_F1,  
+                    PRECISION = .01), 
+    _F(  FONCTION = YFF,   VALE_PARA = FREQ2,
+                    REFERENCE = 'NON_REGRESSION',
+                          VALE_REFE_C = FFY_F2,  
+                    PRECISION = .01))          
+               )
+
+TEST_FONCTION(VALEUR=( _F(  FONCTION = FFXFF,    VALE_PARA = INST1,
+                    REFERENCE = 'ANALYTIQUE',
+                          VALE_REFE = X1,  
+                    PRECISION = .01),  
+    _F(  FONCTION = FFXFF,   VALE_PARA = INST3,
+                    REFERENCE = 'ANALYTIQUE',
+                          VALE_REFE = X3,
+                    PRECISION = .01),      
+    _F(  FONCTION = FFYFF,   VALE_PARA = INST1,
+                    REFERENCE = 'ANALYTIQUE',
+                          VALE_REFE = Y1,  
+                    PRECISION = .06),  
+    _F(  FONCTION = FFYFF,   VALE_PARA = INST3,
+                    REFERENCE = 'ANALYTIQUE',
+                          VALE_REFE = Y3,
+                    PRECISION = .03))      
+               )
+
+#
+
+FIN()
+#

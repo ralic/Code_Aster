@@ -1,0 +1,130 @@
+      SUBROUTINE LCZAC (NDIM  , TYPMOD, IMATE , TZAC  , OPTION,
+     &                  EPS   , SIG   , DSIDEP)
+
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 23/02/2000   AUTEUR GJBHHEL E.LORENTZ 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+
+      IMPLICIT NONE
+      INTEGER            NDIM, IMATE
+      CHARACTER*8        TYPMOD(*)
+      CHARACTER*16       OPTION
+      REAL*8             TZAC
+      REAL*8             EPS(6), SIG(6), DSIDEP(6,6)
+C ----------------------------------------------------------------------
+C           LOI DE COMPORTEMENT ELASTIQUE POUR METHODE ZAC
+C
+C IN  NDIM    : DIMENSION DE L'ESPACE
+C IN  TYPMOD  : TYPE DE MODELISATION
+C IN  IMATE   : NATURE DU MATERIAU
+C IN  TZAC    : TEMPERATURE POUR LES CARACTERISTIQUES MATERIAU
+C IN  EPS     : DEFORMATION (SI C_PLAN EPS(3) EST EN FAIT CALCULE)
+C IN  OPTION  : OPTION DEMANDEE : RIGI_MECA_TANG -> SIG    DSIDEP
+C                                 FULL_MECA      -> SIG VI DSIDEP
+C                                 RAPH_MECA      -> SIG VI
+C OUT SIG     : CONTRAINTES 
+C OUT DSIDEP  : MATRICE TANGENTE (CARREE)
+C ----------------------------------------------------------------------
+
+      LOGICAL     CPLAN, RIGI
+      CHARACTER*2 CODRET(3)
+      CHARACTER*8 NOMRES(3)
+      INTEGER     NDIMSI, K, L
+C
+      REAL*8      VALRES(3), E, NU, LAMBDA, DEUXMU, ALPHA, SIGY, DSDE
+      REAL*8      CZAC, EZAC, NUZAC
+      REAL*8      TREPS
+      REAL*8      KRON(6)
+      
+      DATA  KRON/1.D0,1.D0,1.D0,0.D0,0.D0,0.D0/
+C ----------------------------------------------------------------------
+
+
+C -- INITIALISATION
+
+      CPLAN  = TYPMOD(1) .EQ. 'C_PLAN'
+      RIGI   = OPTION .EQ. 'RIGI_MECA_TANG' .OR. OPTION .EQ. 'FULL_MECA'
+      NDIMSI = 2*NDIM
+
+
+C -- LECTURE DES CARACTERISTIQUES MATERIAUX
+
+      NOMRES(1) = 'E'
+      NOMRES(2) = 'NU'
+      NOMRES(3) = 'D_SIGM_EPSI'
+
+      CALL RCVALA (IMATE, 'ELAS'      ,1,'TEMP',TZAC,
+     &             2,NOMRES(1), VALRES(1),CODRET(1), 'F ' )
+      CALL RCVALA (IMATE, 'ECRO_LINE' ,1,'TEMP',TZAC,
+     &             1,NOMRES(3), VALRES(3),CODRET(3), 'F ' )
+     
+      E     = VALRES(1)
+      NU    = VALRES(2)
+      DSDE  = VALRES(3)
+
+
+C -- CONSTANTES ELASTIQUES ZAC
+
+       CZAC  = 2.D0/3.D0*(E*DSDE)/(E-DSDE)
+       EZAC  = 3.D0*CZAC*E/(2.D0*E+3.D0*CZAC)
+       NUZAC = (3.D0*CZAC*NU+E)/(2.D0*E+3.D0*CZAC)
+       E      = EZAC
+       NU     = NUZAC
+       
+       DEUXMU = E/(1.D0+NU)
+       LAMBDA = E*NU / (1-2*NU) / (1+NU)
+
+
+C -- CALCUL DES CONTRAINTES
+
+      IF (CPLAN) EPS(3) = -NU/(1.D0-NU)*(EPS(1)+EPS(2))
+      
+      TREPS = EPS(1) + EPS(2) + EPS(3)
+      DO 10 K=1,NDIMSI
+        SIG(K) = LAMBDA*TREPS*KRON(K) + DEUXMU*EPS(K) 
+ 10   CONTINUE
+
+
+C -- CALCUL DE LA MATRICE DE RIGIDITE TANGENTE
+
+      IF (.NOT. RIGI) GOTO 9999      
+      CALL R8INIR(36, 0.D0, DSIDEP,1)
+      DO 80 K=1,3
+        DO 90 L=1,3
+          DSIDEP(K,L) = LAMBDA
+ 90     CONTINUE
+ 80   CONTINUE
+      DO 100 K=1,NDIMSI
+        DSIDEP(K,K) = DSIDEP(K,K) + DEUXMU
+ 100  CONTINUE
+
+
+C    CORRECTION POUR LES CONTRAINTES PLANES
+      IF (.NOT. CPLAN) GOTO 9999
+      DO 130 K=1,NDIMSI
+        IF (K.EQ.3) GOTO 130
+        DO 140 L=1,NDIMSI
+          IF (L.EQ.3) GOTO 140
+          DSIDEP(K,L) = DSIDEP(K,L) 
+     &                - DSIDEP(K,3)*DSIDEP(3,L)/DSIDEP(3,3)
+ 140    CONTINUE
+ 130  CONTINUE
+      
+      
+ 9999 CONTINUE
+      END

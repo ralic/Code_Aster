@@ -1,0 +1,92 @@
+      SUBROUTINE IRCHAM ( CHAM19 )
+      IMPLICIT   NONE
+      CHARACTER*(*)       CHAM19
+C     -----------------------------------------------------------------
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF PREPOST  DATE 25/09/2001   AUTEUR GNICOLAS G.NICOLAS 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+C     IMPRESSION DE QUALITE "IMPR_RESU" AU FORMAT RESULTAT D'UN CHAM_19
+C     CHAM_NO OU CHAM_ELEM
+C     -----------------------------------------------------------------
+C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
+      INTEGER          ZI
+      COMMON  /IVARJE/ ZI(1)
+      REAL*8           ZR
+      COMMON  /RVARJE/ ZR(1)
+      COMPLEX*16       ZC
+      COMMON  /CVARJE/ ZC(1)
+      LOGICAL          ZL
+      COMMON  /LVARJE/ ZL(1)
+      CHARACTER*8      ZK8
+      CHARACTER*16             ZK16
+      CHARACTER*24                      ZK24
+      CHARACTER*32                               ZK32
+      CHARACTER*80                                        ZK80
+      COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
+C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
+      CHARACTER*8  MODELE, FORM, FICH, TITRE, NOMCMP, FORMAR, K8BID
+      CHARACTER*8 NOSIMP, NOPASE
+      CHARACTER*19 CHAMP,NOMSD,NOMSYM
+      REAL*8       ZERO
+      INTEGER      IZERO,UN,IRET,IBID,LTITR,ITITR,IFR,IUNIFI,LONMAX
+      INTEGER      NIVE
+      LOGICAL      FAUX
+C
+      CALL JEMARQ()
+      IFR = IUNIFI('RESULTAT')
+      FORM   = 'RESULTAT'
+      FICH   = 'RESULTAT'
+      CHAMP  = CHAM19
+      NOMSD  = CHAM19
+      TITRE  = ' '
+      NOMCMP = ' '
+      NOSIMP = ' '
+      NOPASE = ' '
+      NOMSYM = ' '
+      FORMAR = '1PE12.5'
+      NIVE   = 3
+C
+      IZERO = 0
+      UN    = 1
+      ZERO  = 0.D0
+      FAUX  = .FALSE.
+C
+      CALL JEEXIN ( CHAMP//'.TITR', IRET )
+      IF ( IRET .NE. 0 ) THEN
+         CALL JEVEUO ( CHAMP//'.TITR', 'L', LTITR )
+         CALL JELIRA ( CHAMP//'.TITR', 'LONMAX', LONMAX, K8BID )
+         DO 10 ITITR = 1 , LONMAX
+            WRITE(IFR,1000) ZK80(LTITR+ITITR-1)
+ 10      CONTINUE
+         WRITE(IFR,1100)
+      ENDIF
+C
+      CALL DISMOI('F','NOM_MODELE',CHAM19,'CHAMP',IBID,MODELE,IBID)
+C
+      CALL IRCH19 ( CHAMP,FORM,FICH,TITRE,MODELE,
+     >              NOMSD,NOSIMP,NOPASE,NOMSYM,
+     >              UN,UN,UN,UN,UN,UN,
+     >              FAUX,FAUX,IZERO,IZERO,IZERO,IZERO,IZERO,
+     >              NOMCMP,FAUX,ZERO,FAUX,ZERO,FAUX,FAUX,
+     >              FAUX,FORMAR,NIVE )
+C
+ 1000 FORMAT(1X,A)
+ 1100 FORMAT(1X)
+C
+      CALL JEDEMA()
+      END

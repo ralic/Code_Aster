@@ -1,0 +1,113 @@
+      SUBROUTINE AJCHCA(PARA,CHAM,LPARA,LCHAM,NBENT,MAXENT,SURCH)
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF CALCULEL  DATE 10/11/1999   AUTEUR VABHHTS J.PELLET 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+      IMPLICIT NONE
+
+      INTEGER MAXENT,NBENT,INDICE,I
+      CHARACTER*(*) PARA,CHAM,LPARA(MAXENT),LCHAM(MAXENT),SURCH
+      CHARACTER*8   PARA2
+      CHARACTER*19  CHAM2
+
+C     CETTE ROUTINE PERMET D'AJOUTER UN COUPLE (PARAMETRE,NOM_CHAMP)
+C     A UNE LISTE LPAIN/LCHIN (OU LPAOUT/LCHOUT)
+
+C ----------------------------------------------------------------------
+C     IN  : PARA    : NOM DE PARAMETRE CORRESPONDANT A LPARA
+C     IN  : CHAM    : NOM DE CHAMP     CORRESPONDANT A LCHAM
+C     I/O : LPARA  : TABLEAU DES PARAMETRES
+C     I/O : LCHAM  : TABLEAU DES NOMS DES CHAMPS
+C     I/O : NBENT  : NOMBRE D'ENTREES
+C     IN  : MAXENT : NOMBRE D'ENTREES MAXIMUM
+C     IN  : SURCH :  'O' OU 'N'
+C
+C     SURCH SERT A DETERMINER CE QUE L'ON FAIT SI LE PARAMETRE PARA
+C     APPARTIENT DEJA A LPARA.
+C
+C     ANCIEN       AJOUT    SURCH      NOUVEAU
+C     ' '          CH2      O/N        CH2
+C     CH1          ' '      O/N        CH1
+C     CH1          CH1      O/N        CH1
+C     CH1          CH2      N          CH1
+C     CH1          CH2      O          CH2
+C ----------------------------------------------------------------------
+
+
+C     1. RECHERCHE SI LE PARAMETRE EXISTE DEJA
+      INDICE=0
+      DO 10 I=1,NBENT
+        IF (LPARA(I).EQ.PARA) THEN
+          INDICE=I
+          GOTO 20
+        ENDIF
+   10 CONTINUE
+   20 CONTINUE
+
+
+C     2. IL S'AGIT D'UN NOUVEAU PARAMETRE ON L'AJOUTE :
+C     -------------------------------------------------
+      IF (INDICE.EQ.0) THEN
+        IF (NBENT.GE.MAXENT) CALL UTMESS('F','AJCHCA',
+     &      'TROP DE PARAMETRES.')
+        NBENT=NBENT+1
+        LPARA(NBENT)=PARA
+        LCHAM(NBENT)=CHAM
+        GO TO 9999
+      ENDIF
+
+
+C     3. LE NOM DU PARAMETRE EST DEJA DANS LPARA :
+C     -------------------------------------------------
+C     ANCIEN       AJOUT    SURCH      NOUVEAU
+C     ' '          CH2      O/N        CH2
+C     CH1          ' '      O/N        CH1
+C     CH1          CH1      O/N        CH1
+C     CH1          CH2      N          CH1
+C     CH1          CH2      O          CH2
+
+C     3.1 L'ANCIEN CHAMP ETAIT "BLANC" : ON STOCKE LE NOUVEAU:
+      IF (LCHAM(INDICE).EQ.' ') THEN
+          LCHAM(INDICE)=CHAM
+          GO TO 9999
+      END IF
+
+
+C     3.2 LE NOUVEAU CHAMP EST "BLANC" : ON NE LE STOCKE PAS
+      IF (CHAM.EQ.' ') THEN
+          GO TO 9999
+      END IF
+
+
+C     3.3 LE NOUVEAU NOM EST LE MEME QUE L'ANCIEN :
+      IF (LCHAM(INDICE).EQ.CHAM) THEN
+          GO TO 9999
+      END IF
+
+
+C     3.4 L'ANCIEN NOM DU CHAMP N'ETAIT PAS "BLANC"
+C         LE NOUVEAU NOM DU CHAMP NON PLUS ET IL EST DIFFERENT :
+      IF (SURCH.EQ.'O') THEN
+        LCHAM(INDICE)=CHAM
+      ELSE IF (SURCH.EQ.'N') THEN
+      ELSE
+        CALL UTMESS('F','AJCHCA','STOP 1')
+      ENDIF
+
+
+9999  CONTINUE
+      END

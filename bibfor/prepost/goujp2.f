@@ -1,0 +1,72 @@
+      SUBROUTINE GOUJP2 ( UN, UNP, NFM, NUMFM, FIMA )
+      IMPLICIT    NONE
+      INTEGER     UN, UNP, NFM, NUMFM(NFM)
+C     ------------------------------------------------------------------
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF PREPOST  DATE 15/09/1999   AUTEUR F1BHHAJ J.ANGLES 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+C     MACR_GOUJ2E_MAIL
+C
+C     ECRIT DANS UN FICHIER  LES DONNEES GIBI DE LA PROCEDURE
+C                                                "GOUJON-FILET-BRIDE"
+C     DEUXIEME PARTIE ( APRES LES DONNEES UTILISATEUR )
+C
+C     ------------------------------------------------------------------
+C     UN    = UNITE LOGIQUE CORRESPONDANT AU FICHIER DE DONNEES GIBI
+C             (.datg)
+C     UNP   = UNITE LOGIQUE CORRESPONDANT AU FICHIER PROVISOIRE DE
+C             DONNEES GIBI
+C     NFM   = NOMBRE DE FILET MANQUANT
+C     NUMFM = VECTEUR CONTENANT LA LISTE DES FILETS MANQUANTS
+C     FIMA  = VARIABLE LOGIQUE INDIQUANT SI IL Y A DES FILETS MANQUANTS
+C             .TRUE.  -> IL Y A DES FILETS MANQUANTS
+C             .FALSE. -> IL NE MANQUE PAS DE FILET
+C     ------------------------------------------------------------------
+C
+      INTEGER       I, LRM1, LRM2
+      LOGICAL       FIMA
+      CHARACTER*1   QUOTE
+      CHARACTER*2   POIVIR
+      CHARACTER*3   CH3
+      CHARACTER*6   NOMFIL
+      CHARACTER*128 FDATG, REP
+C     ------------------------------------------------------------------
+C     ------------------------------------------------------------------
+C
+C
+      IF ( FIMA ) THEN
+        DO 10 I=1, NFM
+          CALL CODENT ( NUMFM(I), 'D0', CH3 )
+          NOMFIL = 'FIL'//CH3
+          WRITE(UNP,20) 'FILETS = DIFF FILETS '//NOMFIL//' ;'
+ 10     CONTINUE
+      ENDIF
+C
+      CALL REPDEX ( 1, LRM1, REP )
+C
+      QUOTE = ''''
+      LRM2 = LRM1 + 12
+      FDATG = QUOTE//REP(1:LRM1)//'gouj2.datg'//QUOTE
+      WRITE(UNP,20) 'OPTI DONN '//FDATG(1:LRM2)//' ;'
+C
+      FDATG = QUOTE//REP(1:LRM1)//'gouj1.datg'//QUOTE
+      WRITE(UN,20) 'OPTI DONN '//FDATG(1:LRM2)//' ;'
+C
+ 20   FORMAT(T1,A)
+C
+      END

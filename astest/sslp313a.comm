@@ -1,0 +1,528 @@
+# MODIF  DATE 03/07/2002   AUTEUR CIBHHPD D.NUNEZ 
+# TITRE MURAKAMI 4.2 FISSURE INCLINEE DANS UNE PLAQUE ILLIMITEE
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+# SOUMISE A UNE TRACTION UNIFORME A L'INFINI (MATERIAU HOMOGENE)
+#
+
+DEBUT( CODE=_F( NOM = 'SSLP313A',NIV_PUB_WEB='INTERNET'))
+
+PRE_GIBI()
+
+MA=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='NON'),)
+
+MA=DEFI_GROUP( reuse=MA,   MAILLAGE=MA,
+               CREA_GROUP_NO=_F( GROUP_MA = ( 'LL2',  'LL4', ))
+                 )
+
+MO=AFFE_MODELE(  MAILLAGE=MA,
+                 AFFE=_F(  TOUT = 'OUI',
+                           PHENOMENE = 'MECANIQUE',
+                           MODELISATION = 'C_PLAN')  )
+
+MAT=DEFI_MATERIAU( ELAS=_F(  E = 2.E11,
+                            NU = 0.3,
+                            ALPHA = 0.)  )
+
+CHMAT=AFFE_MATERIAU(  MAILLAGE=MA,
+                      AFFE=_F(  TOUT = 'OUI',  MATER = MAT)
+                      )
+
+CH=AFFE_CHAR_MECA(  MODELE=MO,
+                    DDL_IMPO=( _F(  GROUP_NO = 'PS6',  DX = 0.),
+                               _F(  GROUP_NO = 'LL4',  DY = 0.)),
+                    FORCE_CONTOUR=_F( GROUP_MA = 'LL2',  FY = 100.E6)
+                    )
+ 
+CHAMDEPL=MECA_STATIQUE(  MODELE=MO,
+                         CHAM_MATER=CHMAT,
+                         EXCIT=_F( CHARGE = CH)
+                          )
+
+DEP=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
+                 NOM_CHAM='DEPL',  RESULTAT=CHAMDEPL,  NUME_ORDRE=1  )
+
+FOND1=DEFI_FOND_FISS(  MAILLAGE=MA,
+                       FOND=_F( GROUP_NO = ('P0',)),
+                       NORMALE=(-0.6018, 0.7986, 0.,)
+                     )
+
+THETA01=CALC_THETA(  MODELE=MO,
+                     THETA_2D=_F(  GROUP_NO = ('P0',),
+                                   MODULE = 1.,
+                                   R_INF = 0.00001875,
+                                   R_SUP = 0.000075),
+                     DIRECTION=(0.7986, 0.6018, 0.,)
+                     )
+
+G01=CALC_G_THETA_T(  MODELE=MO,
+                     DEPL=DEP,
+                     THETA=THETA01,
+                     CHARGE=CH,
+                     CHAM_MATER=CHMAT,
+                     SYME_CHAR='SANS'
+                   )
+
+GK01=CALC_G_THETA_T(    MODELE=MO,
+                            DEPL=DEP,
+                           THETA=THETA01,
+                            FOND_FISS=FOND1,
+                          CHARGE=CH,
+                          CHAM_MATER=CHMAT,
+                          SYME_CHAR='SANS',
+                          OPTION='CALC_K_G'
+                      )
+
+TEST_TABLE(       TABLE=GK01,
+                       NOM_PARA='K1',
+                           VALE=3.574968087E6,
+                      PRECISION=0.01           )
+
+TEST_TABLE(       TABLE=GK01,
+                       NOM_PARA='K2',
+                           VALE=2.693931681E6,
+                      PRECISION=0.01           )
+
+TEST_TABLE(       TABLE=GK01,
+                       NOM_PARA='G',
+                           VALE=1.001883E2,
+                      PRECISION=0.02           )
+
+# ------------------------------------------------------------------
+
+LEVH=INTE_MAIL_2D(  MAILLAGE=MA,
+                    DEFI_CHEMIN=_F(  GROUP_MA = 'LPOP8'),
+                    GROUP_NO_ORIG='P0'
+                       )
+
+LEVB=INTE_MAIL_2D(  MAILLAGE=MA,
+                    DEFI_CHEMIN=_F(  GROUP_MA = 'LPOP8B'),
+                    GROUP_NO_ORIG='P0'
+                       )
+
+DEPH=POST_RELEVE_T(  ACTION=_F(  INTITULE = 'DEPL_DH',
+                                  CHEMIN = LEVH,
+                                  RESULTAT = CHAMDEPL,
+                                  NOM_CHAM = 'DEPL',
+                                  NOM_CMP = ( 'DX',  'DY', ),
+                                  OPERATION = 'EXTRACTION')
+                       )
+
+DEPB=POST_RELEVE_T(  ACTION=_F(  INTITULE = 'DEPL_DB',
+                                  CHEMIN = LEVB,
+                                  RESULTAT = CHAMDEPL,
+                                  NOM_CHAM = 'DEPL',
+                                  NOM_CMP = ( 'DX',  'DY', ),
+                                  OPERATION = 'EXTRACTION')
+                       )
+
+# ---------------
+TABL_K=POST_K1_K2_K3(  MODELISATION='C_PLAN',
+                       INST = 0.,
+                       INFO=2,
+                       MATER=MAT,
+                       TABL_DEPL_SUP  = DEPH,
+                       TABL_DEPL_INF  = DEPB,
+                       ABSC_CURV_MAXI = 7.51000E-05,
+                       VECT_K1        = ( 0., 1., 0., )
+                       )
+
+
+# ---------------
+
+TEST_TABLE(       TABLE=TABL_K,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 1),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='K1_MAX',
+                           VALE=3.574968087E6,
+                      PRECISION=0.011           )
+
+TEST_TABLE(       TABLE=TABL_K,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 1),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='K1_MIN',
+                           VALE=3.574968087E6,
+                      PRECISION=0.110           )
+
+TEST_TABLE(       TABLE=TABL_K,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 1),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='K2_MAX',
+                           VALE=2.693931681E6,
+                      PRECISION=0.03            )
+
+TEST_TABLE(       TABLE=TABL_K,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 1),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='K2_MIN',
+                           VALE=2.693931681E6,
+                      PRECISION=0.300           )
+
+TEST_TABLE(       TABLE=TABL_K,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 1),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='G_MAX',
+                           VALE=1.001883E2,
+                      PRECISION=0.035           )
+
+TEST_TABLE(       TABLE=TABL_K,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 1),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='G_MIN',
+                           VALE=1.001883E2,
+                      PRECISION=0.310           )
+
+TEST_TABLE(       TABLE=TABL_K,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 2),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='K1_MAX',
+                           VALE=3.574968087E6,
+                      PRECISION=0.020           )
+
+TEST_TABLE(       TABLE=TABL_K,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 2),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='K1_MIN',
+                           VALE=3.574968087E6,
+                      PRECISION=0.070           )
+
+TEST_TABLE(       TABLE=TABL_K,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 2),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='K2_MAX',
+                           VALE=2.693931681E6,
+                      PRECISION=0.033           )
+
+TEST_TABLE(       TABLE=TABL_K,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 2),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='K2_MIN',
+                           VALE=2.693931681E6,
+                      PRECISION=0.170           )
+
+TEST_TABLE(       TABLE=TABL_K,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 2),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='G_MAX',
+                           VALE=1.001883E2,
+                      PRECISION=0.046           )
+
+TEST_TABLE(       TABLE=TABL_K,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 2),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='G_MIN',
+                           VALE=1.001883E2,
+                      PRECISION=0.210           )
+
+# ---------------
+
+TEST_TABLE(       TABLE=TABL_K,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 1),
+                      REFERENCE='NON_REGRESSION',
+                       NOM_PARA='K1_MAX',
+                           VALE=3.5379307159790E+06   )
+
+TEST_TABLE(       TABLE=TABL_K,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 1),
+                      REFERENCE='NON_REGRESSION',
+                       NOM_PARA='K1_MIN',
+                           VALE=3.1918821513060E+06   )
+
+TEST_TABLE(       TABLE=TABL_K,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 1),
+                      REFERENCE='NON_REGRESSION',
+                       NOM_PARA='K2_MAX',
+                           VALE=2.6179089643594E+06   )
+
+TEST_TABLE(       TABLE=TABL_K,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 1),
+                      REFERENCE='NON_REGRESSION',
+                       NOM_PARA='K2_MIN',
+                           VALE=1.9228163854420E+06   )
+
+TEST_TABLE(       TABLE=TABL_K,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 1),
+                      REFERENCE='NON_REGRESSION',
+                       NOM_PARA='G_MAX',
+                           VALE=9.6852005483707E+01   )
+
+TEST_TABLE(       TABLE=TABL_K,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 1),
+                      REFERENCE='NON_REGRESSION',
+                       NOM_PARA='G_MIN',
+                           VALE=6.9426672599751E+01   )
+
+TEST_TABLE(       TABLE=TABL_K,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 2),
+                      REFERENCE='NON_REGRESSION',
+                       NOM_PARA='K1_MAX',
+                           VALE=3.5122087835921E+06   )
+
+TEST_TABLE(       TABLE=TABL_K,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 2),
+                      REFERENCE='NON_REGRESSION',
+                       NOM_PARA='K1_MIN',
+                           VALE=3.3323672387239E+06   )
+
+TEST_TABLE(       TABLE=TABL_K,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 2),
+                      REFERENCE='NON_REGRESSION',
+                       NOM_PARA='K2_MAX',
+                           VALE=2.6098095631651E+06   )
+
+TEST_TABLE(       TABLE=TABL_K,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 2),
+                      REFERENCE='NON_REGRESSION',
+                       NOM_PARA='K2_MIN',
+                           VALE=2.2496636765657E+06   )
+
+TEST_TABLE(       TABLE=TABL_K,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 2),
+                      REFERENCE='NON_REGRESSION',
+                       NOM_PARA='G_MAX',
+                           VALE=9.5676055348462E+01   )
+
+TEST_TABLE(       TABLE=TABL_K,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 2),
+                      REFERENCE='NON_REGRESSION',
+                       NOM_PARA='G_MIN',
+                           VALE=8.0828290356898E+01   )
+
+# ---------------
+# ON A INVERSE LES DONNEES DES DEPLACEMENTS DES LEVRES
+# LE  K1 DOIT ETRE POSITIF, LE K2 CHANGE DE SIGNE
+# ---------------
+TABL_K1=POST_K1_K2_K3(  MODELISATION='C_PLAN',
+                        INST = 0.,
+                        INFO=2,
+                        MATER=MAT,
+                        TABL_DEPL_SUP  = DEPB,
+                        TABL_DEPL_INF  = DEPH,
+                        ABSC_CURV_MAXI = 7.51000E-05,
+                        VECT_K1        = ( 0., -1., 0., )
+                       )
+
+TEST_TABLE(       TABLE=TABL_K1,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 1),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='K1_MAX',
+                           VALE=3.574968087E6,
+                      PRECISION=0.011           )
+
+TEST_TABLE(       TABLE=TABL_K1,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 1),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='K1_MIN',
+                           VALE=3.574968087E6,
+                      PRECISION=0.110           )
+
+TEST_TABLE(       TABLE=TABL_K1,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 1),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='K2_MAX',
+                           VALE=-2.693931681E6,
+                      PRECISION=0.03            )
+
+TEST_TABLE(       TABLE=TABL_K1,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 1),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='K2_MIN',
+                           VALE=-2.693931681E6,
+                      PRECISION=0.300           )
+
+TEST_TABLE(       TABLE=TABL_K1,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 1),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='G_MAX',
+                           VALE=1.001883E2,
+                      PRECISION=0.035           )
+
+TEST_TABLE(       TABLE=TABL_K1,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 1),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='G_MIN',
+                           VALE=1.001883E2,
+                      PRECISION=0.310           )
+
+TEST_TABLE(       TABLE=TABL_K1,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 2),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='K1_MAX',
+                           VALE=3.574968087E6,
+                      PRECISION=0.020           )
+
+TEST_TABLE(       TABLE=TABL_K1,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 2),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='K1_MIN',
+                           VALE=3.574968087E6,
+                      PRECISION=0.070           )
+
+TEST_TABLE(       TABLE=TABL_K1,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 2),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='K2_MAX',
+                           VALE=-2.693931681E6,
+                      PRECISION=0.033           )
+
+TEST_TABLE(       TABLE=TABL_K1,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 2),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='K2_MIN',
+                           VALE=-2.693931681E6,
+                      PRECISION=0.170           )
+
+TEST_TABLE(       TABLE=TABL_K1,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 2),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='G_MAX',
+                           VALE=1.001883E2,
+                      PRECISION=0.046           )
+
+TEST_TABLE(       TABLE=TABL_K1,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 2),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='G_MIN',
+                           VALE=1.001883E2,
+                      PRECISION=0.210           )
+
+# ---------------
+
+TEST_TABLE(       TABLE=TABL_K1,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 1),
+                      REFERENCE='NON_REGRESSION',
+                       NOM_PARA='K1_MAX',
+                           VALE=3.5379307159790E+06   )
+
+TEST_TABLE(       TABLE=TABL_K1,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 1),
+                      REFERENCE='NON_REGRESSION',
+                       NOM_PARA='K1_MIN',
+                           VALE=3.1918821513060E+06   )
+
+TEST_TABLE(       TABLE=TABL_K1,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 1),
+                      REFERENCE='NON_REGRESSION',
+                       NOM_PARA='K2_MAX',
+                           VALE=-2.6179089643594E+06   )
+
+TEST_TABLE(       TABLE=TABL_K1,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 1),
+                      REFERENCE='NON_REGRESSION',
+                       NOM_PARA='K2_MIN',
+                           VALE=-1.9228163854420E+06   )
+
+TEST_TABLE(       TABLE=TABL_K1,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 1),
+                      REFERENCE='NON_REGRESSION',
+                       NOM_PARA='G_MAX',
+                           VALE=9.6852005483707E+01   )
+
+TEST_TABLE(       TABLE=TABL_K1,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 1),
+                      REFERENCE='NON_REGRESSION',
+                       NOM_PARA='G_MIN',
+                           VALE=6.9426672599751E+01   )
+
+TEST_TABLE(       TABLE=TABL_K1,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 2),
+                      REFERENCE='NON_REGRESSION',
+                       NOM_PARA='K1_MAX',
+                           VALE=3.5122087835921E+06   )
+
+TEST_TABLE(       TABLE=TABL_K1,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 2),
+                      REFERENCE='NON_REGRESSION',
+                       NOM_PARA='K1_MIN',
+                           VALE=3.3323672387239E+06   )
+
+TEST_TABLE(       TABLE=TABL_K1,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 2),
+                      REFERENCE='NON_REGRESSION',
+                       NOM_PARA='K2_MAX',
+                           VALE=-2.6098095631651E+06   )
+
+TEST_TABLE(       TABLE=TABL_K1,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 2),
+                      REFERENCE='NON_REGRESSION',
+                       NOM_PARA='K2_MIN',
+                           VALE=-2.2496636765657E+06   )
+
+TEST_TABLE(       TABLE=TABL_K1,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 2),
+                      REFERENCE='NON_REGRESSION',
+                       NOM_PARA='G_MAX',
+                           VALE=9.5676055348462E+01   )
+
+TEST_TABLE(       TABLE=TABL_K1,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 2),
+                      REFERENCE='NON_REGRESSION',
+                       NOM_PARA='G_MIN',
+                           VALE=8.0828290356898E+01   )
+
+
+FIN()
+#

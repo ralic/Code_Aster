@@ -1,0 +1,152 @@
+# MODIF  DATE 13/06/2002   AUTEUR PBBHHPB P.BADEL 
+#
+# TITRE CADRE DE BARRES HAUBANE.
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+#
+DEBUT( CODE=_F(  NOM = 'SSNL105A',NIV_PUB_WEB='INTERNET') )
+
+#
+
+MA=LIRE_MAILLAGE(  )
+
+MO=AFFE_MODELE(  MAILLAGE=MA,AFFE=(
+#           GROUPE DE  MAILLE : MODELE CABLE
+                    _F(  GROUP_MA = 'CABLE', 
+                           PHENOMENE = 'MECANIQUE',
+                           MODELISATION = 'CABLE'),
+#           GROUPE DE  MAILLE : MODELE POUTRE
+                         _F(  GROUP_MA = 'CADRE',
+                           PHENOMENE = 'MECANIQUE',
+                           MODELISATION = 'BARRE'))   )
+
+CARELEM=AFFE_CARA_ELEM(   MODELE=MO,
+#     GROUPE DE MAILLE : MODELE CABLE
+                      CABLE=_F(  GROUP_MA = 'CABLE', 
+                              SECTION = 1.00E-04),
+#     GROUPE DE MAILLE : MODELE BARRE
+                      BARRE=_F(  GROUP_MA = 'CADRE',
+                              SECTION = 'GENERALE',
+                              CARA = 'A',
+                              VALE = 1.00E-04)   )
+
+MAT1=DEFI_MATERIAU(   ELAS=_F(  E = 2.10E+11,  NU = 0.3)   )
+
+MAT2=DEFI_MATERIAU(   CABLE=_F(  E = 2.10E+11,  EC_SUR_E = 0.E0)   )
+
+CHMAT=AFFE_MATERIAU(   MAILLAGE=MA,AFFE=( 
+                          _F(  GROUP_MA = 'CADRE', MATER = MAT1),
+                          _F(  GROUP_MA = 'CABLE', MATER = MAT2))  )
+
+FORCE=AFFE_CHAR_MECA(  MODELE=MO,DDL_IMPO=(
+                   _F(  NOEUD = ('N01', 'N02', 'N03', 'N04',), DZ = 0.0),
+                            _F(  NOEUD = ('N01', 'N04',),         DY = 0.0),
+                            _F(  NOEUD = ('N01',),             DX = 0.0)),
+                   FORCE_NODALE=_F(  NOEUD = 'N03', FX = 1000.)
+                        )
+
+LISNT=DEFI_LIST_REEL(     DEBUT=0.,
+                          INTERVALLE=_F(  JUSQU_A = 5., PAS = 1.)  )
+
+FCTMUL=DEFI_FONCTION(   NOM_PARA='INST',
+                           VALE=( 0.0,   0.0,
+                                  1.0,   0.5,
+                                  2.0,   1.0,  )   )
+
+RESU1=STAT_NON_LINE( 
+                            MODELE=MO,
+                        CHAM_MATER=CHMAT,
+                         CARA_ELEM=CARELEM,
+                             EXCIT=_F( 
+                CHARGE = FORCE,
+                FONC_MULT = FCTMUL),
+                         INCREMENT=_F( 
+                LIST_INST = LISNT,
+                NUME_INST_FIN = 2),
+                         COMP_ELAS=_F( 
+                GROUP_MA = (
+                  'CABLE',  ),
+                RELATION = 'CABLE',
+                DEFORMATION = 'GREEN'),
+                         COMP_INCR=_F( 
+                GROUP_MA = (
+                  'CADRE',  ),
+                RELATION = 'ELAS'),
+                            NEWTON=_F( 
+                REAC_ITER = 1),
+                       CONVERGENCE=_F( 
+                ITER_GLOB_MAXI = 10,
+                RESI_INTE_RELA = 1.0E-06,
+                ITER_INTE_MAXI = 10,
+                ITER_INTE_PAS = 2,
+                TYPE_MATR_COMP = 'TANG_VIT',
+                RESI_GLOB_RELA = 1.E-6),
+                             TITRE=(
+                  ' STRUCTURE A HAUBAN ',  ),
+                     RECH_LINEAIRE=_F( 
+                ITER_LINE_MAXI = 2)
+              )
+
+RESU1=CALC_ELEM( reuse=RESU1,
+                            OPTION=(
+                  'SIEF_ELNO_ELGA', ),
+                          RESULTAT=RESU1,
+                            MODELE=MO,
+                        CHAM_MATER=CHMAT,
+                         CARA_ELEM=CARELEM
+              )
+
+RESU1=CALC_NO(reuse=RESU1,  OPTION='FORC_NODA',  MODELE=MO,
+                        CHAM_MATER=CHMAT,  CARA_ELEM=CARELEM,
+                        RESULTAT=RESU1)
+
+TEST_RESU(RESU=(  
+           _F(  RESULTAT = RESU1,          NUME_ORDRE = 2, 
+             PARA = 'INST',             VALE = 2.00000E+00),
+           _F(  RESULTAT = RESU1,          NUME_ORDRE = 2, 
+             PARA = 'ITER_GLOB',        VALE_I = 1),
+           _F(  RESULTAT = RESU1,          NUME_ORDRE = 2, 
+             CRITERE = 'ABSOLU',        PRECISION = 1.E-07,
+             PARA = 'RESI_GLOB_RELA',   VALE = 0.),
+           _F(  RESULTAT = RESU1,          NUME_ORDRE = 2, 
+             CRITERE = 'ABSOLU',        PRECISION = 1.E-07,
+             PARA = 'RESI_GLOB',        VALE = 0.),
+           ))
+
+TEST_RESU(RESU=( 
+    _F( RESULTAT = RESU1, NUME_ORDRE = 2, NOM_CHAM = 'SIEF_ELGA', NOM_CMP = 'N',
+     MAILLE = 'N01N03', POINT = 1, VALE = 1414.2, PRECISION = 3.E-4),
+    _F( RESULTAT = RESU1, NUME_ORDRE = 2, NOM_CHAM = 'SIEF_ELGA', NOM_CMP = 'N',
+     MAILLE = 'N03N04', POINT = 1, VALE = -1000., PRECISION = 3.E-4),
+    _F( RESULTAT = RESU1, NUME_ORDRE = 2, NOM_CHAM = 'SIEF_ELGA', NOM_CMP = 'N',
+MAILLE = 'N01N02', POINT = 1, VALE = 0., PRECISION = 1.E-3, CRITERE = 'ABSOLU'),
+    _F( RESULTAT = RESU1, NUME_ORDRE = 2, NOM_CHAM = 'SIEF_ELGA', NOM_CMP = 'N',
+MAILLE = 'N02N03', POINT = 1, VALE = 0., PRECISION = 1.E-3, CRITERE = 'ABSOLU'),
+    _F( RESULTAT = RESU1, NUME_ORDRE = 2, NOM_CHAM = 'SIEF_ELGA', NOM_CMP = 'N',
+MAILLE = 'N04N01', POINT = 1, VALE = 0., PRECISION = 1.E-3, CRITERE = 'ABSOLU'),
+    _F( RESULTAT = RESU1, NUME_ORDRE = 2, NOM_CHAM = 'SIEF_ELGA', NOM_CMP = 'N',
+MAILLE = 'N04N02', POINT = 1, VALE = 0., PRECISION = 1.E-3, CRITERE = 'ABSOLU'))
+          )
+
+TEST_RESU( 
+    RESU=_F( RESULTAT = RESU1, NUME_ORDRE = 2, NOM_CHAM = 'FORC_NODA', NOM_CMP = 'DX',
+     NOEUD = 'N03', VALE = 1000., PRECISION = 3.E-4)
+         )
+
+FIN( )
+#

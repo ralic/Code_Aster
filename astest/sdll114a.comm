@@ -1,0 +1,401 @@
+# MODIF  DATE 07/06/2002   AUTEUR DURAND C.DURAND 
+# TITRE POUTRE DE SECTION RECTANGULAIRE VARIABLE (POSEE-POSEE)
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+#CAS_TEST__: SDLL114A
+# SDLL114/A
+#    MODES DE DEFORMATION EN FLEXION
+#    POUTRE ELANCEE L=2M, H0=0.06M, H1=0.03M
+#    LARGEUR CONSTANTE B=0.05M
+#    ORIENTEE SELON L'AXE Z, AFFINITE D'AXE PARALLELE A X OU Y
+#    MODELISATION POU_D_E, 11 NOEUDS, 10 SEG2
+#    REF: R.D.BLEVINS(8.21, 8.22) ET VALIDATION POUX EANV1/A
+
+DEBUT(  CODE=_F(  NOM = 'SDLL114A',NIV_PUB_WEB='INTERNET')  )
+
+#
+#12.01
+
+MAPOU=LIRE_MAILLAGE()
+
+MAPOU=DEFI_GROUP( reuse=MAPOU,   MAILLAGE=MAPOU,
+  CREA_GROUP_MA=_F(  NOM = 'TOUT', TOUT = 'OUI'))
+
+#
+#22.01
+
+MOPOU=AFFE_MODELE(  MAILLAGE=MAPOU,
+                      AFFE=_F(  TOUT = 'OUI', PHENOMENE = 'MECANIQUE',
+                             MODELISATION = 'POU_D_E')
+                    )
+
+#
+#23.01 MATER
+
+MTPOU=DEFI_MATERIAU( ELAS=_F(  E = 2.E11,  NU = 0.3,  RHO = 7800.) )
+
+#
+#23.02 CHAM_MATER
+
+AMPOU=AFFE_MATERIAU(  MAILLAGE=MAPOU,
+                        AFFE=_F(  TOUT = 'OUI', MATER = MTPOU)
+                      )
+
+#25.01 CHAR_MECA
+
+CHPOU=AFFE_CHAR_MECA(
+               MODELE=MOPOU,DDL_IMPO=(
+
+                   _F(  GROUP_NO = 'PA',   DX = 0.,  DY = 0., DZ = 0., DRZ = 0.),
+                   _F(  GROUP_NO = 'PB',   DY = 0.,  DX = 0.))
+                       )
+
+#
+#24.01 CARA_ELEM
+#
+# AFFINITE PARALLELE A Y
+CARELX=AFFE_CARA_ELEM(    MODELE=MOPOU,POUTRE=(
+
+
+     _F(  SECTION = 'RECTANGLE', VARI_SECT = 'AFFINE',
+       MAILLE = 'M1',   CARA = ( 'HY1',  'HZ1',   'HY2',  'HZ2',  ),
+                    VALE = (  0.05,   0.0600,  0.05,   0.0570, )),
+     _F(  SECTION = 'RECTANGLE', CARA = ( 'HY1',  'HZ1',   'HY2',  'HZ2',  ),
+     MAILLE = 'M2',   VALE = (  0.05,  0.0570,  0.05,   0.0540, )),
+     _F(  SECTION = 'RECTANGLE', CARA = ( 'HY1',  'HZ1',   'HY2',  'HZ2',  ),
+     MAILLE = 'M3',   VALE = (  0.05,  0.0540,  0.05,  0.0510, )),
+     _F(  SECTION = 'RECTANGLE', CARA = ( 'HY1',  'HZ1',   'HY2',  'HZ2',  ),
+     MAILLE = 'M4',   VALE = (  0.05,  0.0510,  0.05,  0.0480, )),
+     _F(  SECTION = 'RECTANGLE', CARA = ( 'HY1',  'HZ1',   'HY2',  'HZ2',  ),
+     MAILLE = 'M5',   VALE = (  0.05,  0.0480,  0.05,  0.0450, )),
+     _F(  SECTION = 'RECTANGLE', CARA = ( 'HY1',  'HZ1',   'HY2',  'HZ2',  ),
+     MAILLE = 'M6',   VALE = (  0.05,  0.0450,  0.05,  0.0420, )),
+     _F(  SECTION = 'RECTANGLE', CARA = ( 'HY1',  'HZ1',   'HY2',  'HZ2',  ),
+     MAILLE = 'M7',   VALE = (  0.05,  0.0420,  0.05,  0.0390, )),
+     _F(  SECTION = 'RECTANGLE', CARA = ( 'HY1',  'HZ1',   'HY2',  'HZ2',  ),
+     MAILLE = 'M8',   VALE = (  0.05,  0.0390,  0.05,  0.0360, )),
+     _F(  SECTION = 'RECTANGLE', CARA = ( 'HY1',  'HZ1',   'HY2',  'HZ2',  ),
+     MAILLE = 'M9',   VALE = (  0.05,  0.0360,  0.05,  0.0330, )),
+     _F(  SECTION = 'RECTANGLE', CARA = ( 'HY1',  'HZ1',   'HY2',  'HZ2',  ),
+     MAILLE = 'M10',  VALE = (  0.05,  0.0330,  0.05,  0.0300, )))
+
+                        )
+
+#
+# AFFINITE PARALLELE A Z PAR ROTATION ET CALCUL PAR HOMOTHETIQUE
+CARELY=AFFE_CARA_ELEM(    MODELE=MOPOU,
+
+   ORIENTATION=_F(  CARA = 'ANGL_VRIL', VALE = 90.,
+       GROUP_MA = 'TOUT'),POUTRE=(
+
+    _F(  SECTION = 'RECTANGLE', VARI_SECT = 'AFFINE',
+       MAILLE = 'M1',   CARA = ( 'HY1',  'HZ1',   'HY2',  'HZ2',  ),
+                    VALE = (  0.05,   0.0600,  0.05,   0.0570, )),
+     _F(  SECTION = 'RECTANGLE', CARA = ( 'HY1',  'HZ1',   'HY2',  'HZ2',  ),
+     MAILLE = 'M2',   VALE = (  0.05,  0.0570,  0.05,   0.0540, )),
+     _F(  SECTION = 'RECTANGLE', CARA = ( 'HY1',  'HZ1',   'HY2',  'HZ2',  ),
+     MAILLE = 'M3',   VALE = (  0.05,  0.0540,  0.05,  0.0510, )),
+     _F(  SECTION = 'RECTANGLE', CARA = ( 'HY1',  'HZ1',   'HY2',  'HZ2',  ),
+     MAILLE = 'M4',   VALE = (  0.05,  0.0510,  0.05,  0.0480, )),
+     _F(  SECTION = 'RECTANGLE', CARA = ( 'HY1',  'HZ1',   'HY2',  'HZ2',  ),
+     MAILLE = 'M5',   VALE = (  0.05,  0.0480,  0.05,  0.0450, )),
+     _F(  SECTION = 'RECTANGLE', CARA = ( 'HY1',  'HZ1',   'HY2',  'HZ2',  ),
+     MAILLE = 'M6',   VALE = (  0.05,  0.0450,  0.05,  0.0420, )),
+     _F(  SECTION = 'RECTANGLE', CARA = ( 'HY1',  'HZ1',   'HY2',  'HZ2',  ),
+     MAILLE = 'M7',   VALE = (  0.05,  0.0420,  0.05,  0.0390, )),
+     _F(  SECTION = 'RECTANGLE', CARA = ( 'HY1',  'HZ1',   'HY2',  'HZ2',  ),
+     MAILLE = 'M8',   VALE = (  0.05,  0.0390,  0.05,  0.0360, )),
+     _F(  SECTION = 'RECTANGLE', CARA = ( 'HY1',  'HZ1',   'HY2',  'HZ2',  ),
+     MAILLE = 'M9',   VALE = (  0.05,  0.0360,  0.05,  0.0330, )),
+     _F(  SECTION = 'RECTANGLE', CARA = ( 'HY1',  'HZ1',   'HY2',  'HZ2',  ),
+     MAILLE = 'M10',  VALE = (  0.05,  0.0330,  0.05,  0.0300, )))
+                        )
+
+#
+#61.04 TABL_MASS_INER
+MASSX=POST_ELEM(    MODELE=MOPOU,
+                      CHAM_MATER=AMPOU,
+                      CARA_ELEM=CARELX,
+                      MASS_INER=_F(  GROUP_MA = 'POU',  MAILLE = 'M1'),
+                      TITRE=( 'POUTRE AFFINE  ',)
+                  )
+
+MASSY=POST_ELEM(    MODELE=MOPOU,
+                      CHAM_MATER=AMPOU,
+                      CARA_ELEM=CARELY,
+                      MASS_INER=_F(  GROUP_MA = 'POU',   MAILLE = 'M1'),
+                      TITRE=( 'POUTRE AFFINE ROTATION 90',)
+                  )
+
+TEST_TABLE(      TABLE=MASSX,
+                   FILTRE=_F(  NOM_PARA = 'LIEU',
+                            VALE_K = 'POU'),
+                 NOM_PARA='MASSE',
+                     VALE=35.1                )
+
+TEST_TABLE(      TABLE=MASSX,
+                   FILTRE=_F(  NOM_PARA = 'LIEU',
+                            VALE_K = 'POU'),
+                 NOM_PARA='CDG_X',
+                  CRITERE='ABSOLU',
+                     VALE=0.                  )
+
+TEST_TABLE(      TABLE=MASSX,
+                   FILTRE=_F(  NOM_PARA = 'LIEU',
+                            VALE_K = 'POU'),
+                 NOM_PARA='CDG_Y',
+                  CRITERE='ABSOLU',
+                     VALE=0.                  )
+
+TEST_TABLE(      TABLE=MASSX,
+                   FILTRE=_F(  NOM_PARA = 'LIEU',
+                            VALE_K = 'POU'),
+                 NOM_PARA='CDG_Z',
+                     VALE=0.88888             )
+
+TEST_TABLE(      TABLE=MASSX,
+                   FILTRE=_F(  NOM_PARA = 'LIEU',
+                            VALE_K = 'POU'),
+                 NOM_PARA='IX_G',
+                     VALE=11.2715             )
+
+TEST_TABLE(      TABLE=MASSX,
+                   FILTRE=_F(  NOM_PARA = 'LIEU',
+                            VALE_K = 'POU'),
+                 NOM_PARA='IY_G',
+                     VALE=11.2712             )
+
+TEST_TABLE(      TABLE=MASSX,
+                   FILTRE=_F(  NOM_PARA = 'LIEU',
+                            VALE_K = 'POU'),
+                 NOM_PARA='IZ_G',
+                     VALE=1.38475E-02         )
+
+TEST_TABLE(      TABLE=MASSX,
+                   FILTRE=_F(  NOM_PARA = 'LIEU',
+                            VALE_K = 'POU'),
+                 NOM_PARA='IX_PRIN_G',
+                     VALE=1.38475E-02         )
+
+TEST_TABLE(      TABLE=MASSX,
+                   FILTRE=_F(  NOM_PARA = 'LIEU',
+                            VALE_K = 'POU'),
+                 NOM_PARA='IY_PRIN_G',
+                     VALE=11.2712             )
+
+TEST_TABLE(      TABLE=MASSX,
+                   FILTRE=_F(  NOM_PARA = 'LIEU',
+                            VALE_K = 'POU'),
+                 NOM_PARA='IZ_PRIN_G',
+                     VALE=11.2715             )
+
+TEST_TABLE(      TABLE=MASSY,
+                   FILTRE=_F(  NOM_PARA = 'LIEU',
+                            VALE_K = 'POU'),
+                 NOM_PARA='MASSE',
+                VALE=35.1                     )
+
+TEST_TABLE(      TABLE=MASSY,
+                   FILTRE=_F(  NOM_PARA = 'LIEU',
+                            VALE_K = 'POU'),
+                 NOM_PARA='CDG_X',
+                  CRITERE='ABSOLU',
+                     VALE=0.                  )
+
+TEST_TABLE(      TABLE=MASSY,
+                   FILTRE=_F(  NOM_PARA = 'LIEU',
+                            VALE_K = 'POU'),
+                 NOM_PARA='CDG_Y',
+                  CRITERE='ABSOLU',
+                     VALE=0.                  )
+
+TEST_TABLE(      TABLE=MASSY,
+                   FILTRE=_F(  NOM_PARA = 'LIEU',
+                            VALE_K = 'POU'),
+                 NOM_PARA='CDG_Z',
+                     VALE=0.88888             )
+
+TEST_TABLE(      TABLE=MASSY,
+                   FILTRE=_F(  NOM_PARA = 'LIEU',
+                            VALE_K = 'POU'),
+                 NOM_PARA='IX_G',
+                     VALE=11.2712             )
+
+TEST_TABLE(      TABLE=MASSY,
+                   FILTRE=_F(  NOM_PARA = 'LIEU',
+                            VALE_K = 'POU'),
+                 NOM_PARA='IY_G',
+                     VALE=11.2715             )
+
+TEST_TABLE(      TABLE=MASSY,
+                   FILTRE=_F(  NOM_PARA = 'LIEU',
+                            VALE_K = 'POU'),
+                 NOM_PARA='IZ_G',
+                     VALE=1.38475E-02         )
+
+TEST_TABLE(      TABLE=MASSY,
+                   FILTRE=_F(  NOM_PARA = 'LIEU',
+                            VALE_K = 'POU'),
+                 NOM_PARA='IX_PRIN_G',
+                     VALE=1.38475E-02         )
+
+TEST_TABLE(      TABLE=MASSY,
+                   FILTRE=_F(  NOM_PARA = 'LIEU',
+                            VALE_K = 'POU'),
+                 NOM_PARA='IY_PRIN_G',
+                     VALE=11.2712             )
+
+TEST_TABLE(      TABLE=MASSY,
+                   FILTRE=_F(  NOM_PARA = 'LIEU',
+                            VALE_K = 'POU'),
+                 NOM_PARA='IZ_PRIN_G',
+                     VALE=11.2715             )
+
+# --------------------------------------------------------------------
+# ====================================
+#
+#41.01 MATR_ELEM_DEPL_R
+RIGIDX=CALC_MATR_ELEM(
+                          OPTION='RIGI_MECA',
+                          MODELE=MOPOU,
+                          CHARGE=CHPOU,
+                          CARA_ELEM=CARELX,
+                          CHAM_MATER=AMPOU
+                        )
+
+#
+RIGIDY=CALC_MATR_ELEM(
+                          OPTION='RIGI_MECA',
+                          MODELE=MOPOU,
+                          CHARGE=CHPOU,
+                          CARA_ELEM=CARELY,
+                          CHAM_MATER=AMPOU
+                        )
+
+#
+#41.01 MATR_ELEM_DEPL_R
+MASSEX=CALC_MATR_ELEM(
+                           OPTION='MASS_MECA',
+                           MODELE=MOPOU,
+                           CHARGE=CHPOU,
+                           CARA_ELEM=CARELX,
+                           CHAM_MATER=AMPOU
+                         )
+
+#
+MASSEY=CALC_MATR_ELEM(
+                           OPTION='MASS_MECA',
+                           MODELE=MOPOU,
+                           CHARGE=CHPOU,
+                           CARA_ELEM=CARELY,
+                           CHAM_MATER=AMPOU
+                         )
+
+#
+#42.01 NUME_DDL
+NURX=NUME_DDL(    MATR_RIGI=RIGIDX )
+
+NURY=NUME_DDL(    MATR_RIGI=RIGIDY )
+
+#
+#42.02 MATR_ASSE_DEPL_R
+RIGIDXX=ASSE_MATRICE(
+                         MATR_ELEM=RIGIDX,
+                          NUME_DDL=NURX
+                      )
+
+RIGIDXY=ASSE_MATRICE(
+                         MATR_ELEM=RIGIDY,
+                          NUME_DDL=NURY
+                      )
+
+#42.02 MATR_ASSE_DEPL_R
+MASSEXX=ASSE_MATRICE(
+                         MATR_ELEM=MASSEX,
+                          NUME_DDL=NURX
+                      )
+
+MASSEXY=ASSE_MATRICE(
+                         MATR_ELEM=MASSEY,
+                          NUME_DDL=NURY
+                      )
+
+#52.01 MODE_MECA
+MODPOUX=MODE_ITER_INV(
+                          MATR_A=RIGIDXX,
+                          MATR_B=MASSEXX,
+                          CALC_FREQ=_F( FREQ = (0., 300.,))
+#                ' (AFFINITE // X) &RL'
+#               ' 0.06X0.05 A 0.03X0.05 POSEE POSEE  SDLL114 ')
+                        )
+
+MODPOUY=MODE_ITER_INV(
+                          MATR_A=RIGIDXY,
+                          MATR_B=MASSEXY,
+                          CALC_FREQ=_F( FREQ = (0., 300.,))
+#                'TOURNEE DE 90 DEGRES AUTOUR DE Z (AFFINITE //Y) &RL'
+#               ' 0.06X0.05 A 0.03X0.05 POSEE POSEE  SDLL114 ')
+                        )
+
+#72.01
+
+TEST_RESU(RESU=(
+#A2X
+             _F(  RESULTAT = MODPOUX,  PARA = 'FREQ',
+                     CRITERE = 'RELATIF',  PRECISION = 0.043,
+                     NUME_MODE = 1,       VALE = 23.85),
+# EN ATTENTE DES VALEURS A TESTER  DANS LE SENS X
+#                  ( RESULTAT: MODPOUX , PARA: 'FREQ'
+#                     CRITERE: 'RELATIF' , PRECISION: 0.02
+#                     NUME_MODE : 2      , VALE:   28.57   )
+                  _F(  RESULTAT = MODPOUX,  PARA = 'FREQ',
+                     CRITERE = 'RELATIF',  PRECISION = 0.011,
+                     NUME_MODE = 3,       VALE = 100.00),
+#                  ( RESULTAT: MODPOUX , PARA: 'FREQ'
+#                     CRITERE: 'RELATIF' , PRECISION: 0.02
+#                     NUME_MODE : 4      , VALE:  114.92   )
+                  _F(  RESULTAT = MODPOUX,  PARA = 'FREQ',
+                     CRITERE = 'RELATIF',  PRECISION = 0.016,
+                     NUME_MODE = 5,       VALE = 223.34),
+#                  ( RESULTAT: MODPOUX , PARA: 'FREQ'
+#                     CRITERE: 'RELATIF' , PRECISION: 0.02
+#                     NUME_MODE : 6      , VALE:  258.63   )
+#A2Y
+                  _F(  RESULTAT = MODPOUY,  PARA = 'FREQ',
+                     CRITERE = 'RELATIF',  PRECISION = 0.043,
+                     NUME_MODE = 1,       VALE = 23.85),
+#                 ( RESULTAT: MODPOUY , PARA: 'FREQ'
+#                     CRITERE: 'RELATIF' , PRECISION: 0.02
+#                     NUME_MODE : 2      , VALE:   28.57   )
+                  _F(  RESULTAT = MODPOUY,  PARA = 'FREQ',
+                     CRITERE = 'RELATIF',  PRECISION = 0.011,
+                     NUME_MODE = 3,       VALE = 100.00),
+#                 ( RESULTAT: MODPOUY , PARA: 'FREQ'
+#                     CRITERE: 'RELATIF' , PRECISION: 0.02
+#                     NUME_MODE : 4      , VALE:  114.92   )
+                  _F(  RESULTAT = MODPOUY,  PARA = 'FREQ',
+                     CRITERE = 'RELATIF',  PRECISION = 0.016,
+                     NUME_MODE = 5,       VALE = 223.34))
+#                 ( RESULTAT: MODPOUY , PARA: 'FREQ'
+#                     CRITERE: 'RELATIF' , PRECISION: 0.02
+#                     NUME_MODE : 6      , VALE:  258.63   )
+         )
+
+#
+FIN( )
+#

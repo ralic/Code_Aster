@@ -1,0 +1,149 @@
+      SUBROUTINE TE0016(OPTION,NOMTE)
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ELEMENTS  DATE 04/04/2002   AUTEUR VABHHTS J.PELLET 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+C.......................................................................
+C
+C     BUT: CALCUL DES VECTEURS ELEMENTAIRES EN MECANIQUE
+C          ELEMENTS ISOPARAMETRIQUES 3D
+C
+C          OPTION : 'CHAR_MECA_FORC_R '
+C
+C     ENTREES  ---> OPTION : OPTION DE CALCUL
+C          ---> NOMTE  : NOM DU TYPE ELEMENT
+C.......................................................................
+C
+      IMPLICIT REAL*8 (A-H,O-Z)
+      CHARACTER*8        ELREFE,MATER
+      CHARACTER*16       NOMTE,OPTION
+      CHARACTER*24       CHVAL,CHCTE
+      REAL*8             DFDX(27),DFDY(27),DFDZ(27),POIDS
+      INTEGER            IFF,IPOIDS,IVF,IDFDE,IDFDN,IDFDK,IGEOM,IMATE
+      INTEGER            NNO,KP,NPG1,II,JJ,I,J,IVECTU,ITEMPE
+      INTEGER            NBPG(10)
+C
+C
+C
+C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
+      COMMON /IVARJE/ZI(1)
+      COMMON /RVARJE/ZR(1)
+      COMMON /CVARJE/ZC(1)
+      COMMON /LVARJE/ZL(1)
+      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+      INTEGER ZI
+      REAL*8 ZR
+      COMPLEX*16 ZC
+      LOGICAL ZL
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32
+      CHARACTER*80 ZK80
+C------------FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
+      REAL*8 FX,FY,FZ
+      INTEGER IADZI,IAZK24
+
+      CALL ELREF1(ELREFE)
+      CHCTE = '&INEL.'//ELREFE//'.CARACTE'
+      CALL JEVETE(CHCTE,'L',JIN)
+      NDIM = ZI(JIN+1-1)
+      NNO = ZI(JIN+2-1)
+      NBFPG = ZI(JIN+3-1)
+      DO 1 I = 1,NBFPG
+         NBPG(I) = ZI(JIN+3-1+I)
+  1   CONTINUE
+      NPG1 = NBPG(1)
+C
+      CHVAL = '&INEL.'//ELREFE//'.FFORMES'
+      CALL JEVETE(CHVAL,'L',JVAL)
+C
+      IPOIDS = JVAL + (NDIM+1)*NNO*NNO
+      IVF    = IPOIDS + NPG1
+      IDFDE  = IVF    + NPG1*NNO
+      IDFDN  = IDFDE  + 1
+      IDFDK  = IDFDN  + 1
+C
+      CALL JEVECH('PGEOMER','L',IGEOM)
+      CALL JEVECH('PVECTUR','E',IVECTU)
+
+      NDL = 3 * NNO
+      DO 182 I = 1,NDL
+         ZR(IVECTU+I-1)   = 0.0D0
+182   CONTINUE
+
+C     POUR LE CAS DES FORCES VOLUMIQUES
+      CALL TECACH(.TRUE.,.FALSE.,'PNFORCER',1,IFORC)
+      IF ( IFORC .NE. 0 ) THEN
+        CALL JEVECH('PNFORCER','L',IFORC)
+
+C       BOUCLE SUR LES POINTS DE GAUSS
+        DO 201 KP=1,NPG1
+          L=(KP-1)*NNO
+          K=(KP-1)*NNO*3
+          CALL DFDM3D ( NNO,ZR(IPOIDS+KP-1),ZR(IDFDE+K),ZR(IDFDN+K),
+     &                  ZR(IDFDK+K),ZR(IGEOM),DFDX,DFDY,DFDZ,POIDS )
+
+C         CALCUL DE LA FORCE AUX PG (A PARTIR DES NOEUDS) ---
+          FX = 0.0D0
+          FY = 0.0D0
+          FZ = 0.0D0
+          DO 203 I=1,NNO
+            II = 3 * (I-1)
+            FX = FX + ZR(IVF-1+L+I) * ZR(IFORC+II  )
+            FY = FY + ZR(IVF-1+L+I) * ZR(IFORC+II+1)
+            FZ = FZ + ZR(IVF-1+L+I) * ZR(IFORC+II+2)
+203       CONTINUE
+
+          DO 206 I=1,NNO
+            II = 3 * (I-1)
+            ZR(IVECTU+II  )=ZR(IVECTU+II  )+POIDS*ZR(IVF+L+I-1)*FX
+            ZR(IVECTU+II+1)=ZR(IVECTU+II+1)+POIDS*ZR(IVF+L+I-1)*FY
+            ZR(IVECTU+II+2)=ZR(IVECTU+II+2)+POIDS*ZR(IVF+L+I-1)*FZ
+206       CONTINUE
+201     CONTINUE
+
+
+      ELSE
+
+         CALL JEVECH('PFR3D3D','L',IFORC)
+C
+C    BOUCLE SUR LES POINTS DE GAUSS
+C
+         DO 101 KP=1,NPG1
+C
+           L=(KP-1)*NNO
+           K=(KP-1)*NNO*3
+           CALL DFDM3D ( NNO,ZR(IPOIDS+KP-1),ZR(IDFDE+K),ZR(IDFDN+K),
+     &                   ZR(IDFDK+K),ZR(IGEOM),DFDX,DFDY,DFDZ,POIDS )
+C
+           DO 106 I=1,NNO
+             II = 3*(I-1)
+C
+             DO 107 J=1,3
+               ZR(IVECTU+II+J-1) =
+     &         ZR(IVECTU+II+J-1) + POIDS* ZR(IVF+L+I-1) * ZR(IFORC+J-1)
+107          CONTINUE
+C
+106        CONTINUE
+C
+101     CONTINUE
+C
+C
+      ENDIF
+C
+      END

@@ -1,0 +1,156 @@
+      SUBROUTINE TE0022(OPTION,NOMTE)
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ELEMENTS  DATE 02/10/2002   AUTEUR ASSIRE A.ASSIRE 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+C.......................................................................
+C
+C     BUT: CALCUL DES CONTRAINTES AUX POINTS DE GAUSS
+C          ELEMENTS ISOPARAMETRIQUES 3D
+C
+C          OPTION : 'SIEF_ELGA_DEPL'
+C
+C     ENTREES  ---> OPTION : OPTION DE CALCUL
+C              ---> NOMTE  : NOM DU TYPE ELEMENT
+C.......................................................................
+C
+      IMPLICIT REAL*8 (A-H,O-Z)
+      CHARACTER*8        ELREFE, MODELI
+      CHARACTER*16       NOMTE,OPTION
+      CHARACTER*24       CHVAL,CHCTE
+      REAL*8             SIGMA(162), REPERE(7), INSTAN, NHARM
+      REAL*8             SIGM2(162)
+      INTEGER            NBSIGM
+      LOGICAL            LSENS
+C
+C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
+      COMMON /IVARJE/ZI(1)
+      COMMON /RVARJE/ZR(1)
+      COMMON /CVARJE/ZC(1)
+      COMMON /LVARJE/ZL(1)
+      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+      INTEGER ZI
+      REAL*8 ZR
+      COMPLEX*16 ZC
+      LOGICAL ZL
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32
+      CHARACTER*80 ZK80
+C------------FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
+C
+      CALL ELREF1(ELREFE)
+      MODELI(1:2) = NOMTE(3:4)
+C
+C ---- CARACTERISTIQUES DU TYPE D'ELEMENT :
+C ---- GEOMETRIE ET INTEGRATION
+C      ------------------------
+      CHCTE = '&INEL.'//ELREFE//'.CARACTE'
+      CALL JEVETE(CHCTE,'L',JIN)
+      NDIM  = ZI(JIN+1-1)
+      NNO   = ZI(JIN+2-1)
+      NPG1  = ZI(JIN+4-1)
+C
+      CHVAL = '&INEL.'//ELREFE//'.FFORMES'
+      CALL JEVETE(CHVAL,'L',JVAL)
+      IPOIDS = JVAL + (NDIM+1)*NNO*NNO
+      IVF    = IPOIDS + NPG1
+      IDFDE  = IVF    + NPG1*NNO
+      IDFDN  = IDFDE  + 1
+      IDFDK  = IDFDN  + 1
+C
+C ---- NOMBRE DE CONTRAINTES ASSOCIE A L'ELEMENT
+C      -----------------------------------------
+      NBSIG  = NBSIGM(MODELI)
+C
+C --- INITIALISATIONS :
+C     -----------------
+      ZERO   = 0.0D0
+      INSTAN = ZERO
+      NHARM  = ZERO
+      IF (OPTION(11:14).EQ.'SENS') THEN
+        LSENS = .TRUE.
+      ELSE
+        LSENS = .FALSE.
+      ENDIF
+C
+      DO 10 I = 1, NBSIG*NPG1
+         SIGMA(I) = ZERO
+ 10   CONTINUE
+C
+C ---- RECUPERATION DES COORDONNEES DES CONNECTIVITES
+C      ----------------------------------------------
+      CALL JEVECH('PGEOMER','L',IGEOM)
+C
+C ---- RECUPERATION DU MATERIAU
+C      ------------------------
+      CALL JEVECH('PMATERC','L',IMATE)
+C
+C ---- RECUPERATION  DES DONNEEES RELATIVES AU REPERE D'ORTHOTROPIE
+C      ------------------------------------------------------------
+      CALL ORTREP(ZI(IMATE),NDIM,REPERE)
+C
+C ---- RECUPERATION DU CHAMP DE DEPLACEMENT SUR L'ELEMENT
+C      --------------------------------------------------
+      CALL JEVECH('PDEPLAR','L',IDEPL)
+C
+C ---- RECUPERATION DU CHAMP DE DEPLACEMENT DERIVE SUR L'ELEMENT
+C      ---------------------------------------------------------
+      IF (LSENS) CALL JEVECH('PDEPSEN','L',IDEPS)
+C
+C ---- RECUPERATION DU CHAMP DE TEMPERATURE SUR L'ELEMENT
+C      --------------------------------------------------
+      CALL JEVECH('PTEMPER','L',ITEMPE)
+C
+C ---- RECUPERATION DE LA TEMPERATURE DE REFERENCE
+C      -------------------------------------------
+      CALL JEVECH('PTEREF','L',ITREF)
+C
+C ---- CALCUL DES CONTRAINTES 'VRAIES' SUR L'ELEMENT
+C ---- (I.E. SIGMA_MECA - SIGMA_THERMIQUES)
+C      ------------------------------------
+      CALL SIGVMC(MODELI,NNO,NDIM,NBSIG,NPG1,ZR(IVF),ZR(IDFDE),
+     +            ZR(IDFDN),ZR(IDFDK),ZR(IPOIDS),ZR(IGEOM),ZR(IDEPL),
+     +            ZR(ITEMPE),ZR(ITREF),INSTAN,REPERE,ZI(IMATE),
+     +            NHARM,SIGMA,.FALSE.)
+C
+C ---- CALC DU TERME COMPLEMENTAIRE DE CONTR 'VRAIES' SUR L'ELEMENT
+C ---- DANS LE CAS DE LA SENSIBILITE (TERME DA/DP*B*U)
+C ---- (I.E. SIGMA_MECA - SIGMA_THERMIQUES)
+C ATTENTION!! POUR L'INSTANT(30/9/02) ON DOIT AVOIR SIGMA_THERMIQUE=0
+C      ------------------------------------
+      IF (LSENS) THEN
+        CALL SIGVMC(MODELI,NNO,NDIM,NBSIG,NPG1,ZR(IVF),ZR(IDFDE),
+     +            ZR(IDFDN),ZR(IDFDK),ZR(IPOIDS),ZR(IGEOM),ZR(IDEPS),
+     +            ZR(ITEMPE),ZR(ITREF),INSTAN,REPERE,ZI(IMATE),
+     +            NHARM,SIGM2,.TRUE.)
+        DO 15 I=1, NBSIG*NPG1
+          SIGMA(I) = SIGMA(I) + SIGM2(I)
+15      CONTINUE
+      ENDIF
+C
+C ---- RECUPERATION ET AFFECTATION DU VECTEUR EN SORTIE
+C ---- AVEC LE VECTEUR DES CONTRAINTES AUX POINTS D'INTEGRATION
+C      --------------------------------------------------------
+      CALL JEVECH('PCONTRR','E',ICONT)
+C
+      DO 20 I=1, NBSIG*NPG1
+         ZR(ICONT + I -1) = SIGMA(I)
+20    CONTINUE
+C
+      END

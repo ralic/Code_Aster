@@ -1,0 +1,43 @@
+#& MODIF COMMANDE  DATE 09/10/2002   AUTEUR DURAND C.DURAND 
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+DEFI_CABLE_BP=OPER(nom="DEFI_CABLE_BP",op= 180,sd_prod=cabl_precont,
+                   fr=" ",
+                   docu="U4.42.04-a",reentrant='n',
+            UIinfo={"groupes":("Modélisation",)},
+         MODELE          =SIMP(statut='o',typ=modele ),
+         CHAM_MATER      =SIMP(statut='o',typ=cham_mater ),
+         CARA_ELEM       =SIMP(statut='o',typ=cara_elem ),
+         GROUP_MA_BETON  =SIMP(statut='o',typ=grma),
+         DEFI_CABLE      =FACT(statut='o',min=1,max='**',
+           regles=(UN_PARMI('MAILLE','GROUP_MA'),
+                   UN_PARMI('NOEUD_ANCRAGE','GROUP_NO_ANCRAGE'),),
+           MAILLE          =SIMP(statut='f',typ=ma,min=2,max='**'),
+           GROUP_MA        =SIMP(statut='f',typ=grma),
+           NOEUD_ANCRAGE   =SIMP(statut='f',typ=no,max=2),
+           GROUP_NO_ANCRAGE=SIMP(statut='f',typ=grno,max=2),
+           TYPE_ANCRAGE    =SIMP(statut='o',typ='TXM',min=2,max=2,     
+                                 into=("ACTIF","PASSIF") ),
+         ),
+         TENSION_INIT    =SIMP(statut='o',typ='R',val_min=0.E+0 ),  
+         RECUL_ANCRAGE   =SIMP(statut='o',typ='R',val_min=0.E+0 ),  
+         RELAXATION      =FACT(statut='f',min=0,max=1,
+           R_J             =SIMP(statut='o',typ='R',val_min=0.E+0 ),  
+         ),
+         TITRE           =SIMP(statut='f',typ='TXM',max='**' ),  
+)  ;

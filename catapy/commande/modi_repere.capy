@@ -1,0 +1,78 @@
+#& MODIF COMMANDE  DATE 09/10/2002   AUTEUR DURAND C.DURAND 
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+# RESPONSABLE JMBHH01 J.M.PROIX
+def modi_repere_prod(RESULTAT,**args):
+  if AsType(RESULTAT) == evol_elas :    return evol_elas
+  if AsType(RESULTAT) == evol_noli :    return evol_noli
+  if AsType(RESULTAT) == evol_ther :    return evol_ther
+  if AsType(RESULTAT) == dyna_trans :   return dyna_trans
+  if AsType(RESULTAT) == dyna_harmo :   return dyna_harmo
+  if AsType(RESULTAT) == mode_meca :    return mode_meca
+  if AsType(RESULTAT) == mode_flamb :   return mode_flamb
+  if AsType(RESULTAT) == mult_elas :    return mult_elas
+  if AsType(RESULTAT) == base_modale  : return base_modale
+  raise AsException("type de concept resultat non prevu")
+
+MODI_REPERE=OPER(nom="MODI_REPERE",op=191,sd_prod=modi_repere_prod,docu="U4.74.01-a3",reentrant='n',
+            UIinfo={"groupes":("Résultats et champs",)},
+                    fr="Impression des resultats dans un repere cylindrique",
+         RESULTAT        =SIMP(statut='o',typ=(evol_elas,dyna_trans,dyna_harmo,mode_meca,
+                                               evol_noli,mult_elas,
+                                               evol_ther,base_modale,mode_flamb) ),
+         regles=(EXCLUS('TOUT_ORDRE','NUME_ORDRE','INST','FREQ','NUME_MODE',
+                        'NOEUD_CMP','LIST_INST','LIST_FREQ','NOM_CAS'),),
+         TOUT_ORDRE      =SIMP(statut='f',typ='TXM',into=("OUI",) ),
+         NUME_ORDRE      =SIMP(statut='f',typ='I',max='**'),
+         NUME_MODE       =SIMP(statut='f',typ='I',max='**'),
+         NOEUD_CMP       =SIMP(statut='f',typ='TXM',max='**'),
+         NOM_CAS         =SIMP(statut='f',typ='TXM' ),
+ 
+         INST            =SIMP(statut='f',typ='R',max='**'),
+         FREQ            =SIMP(statut='f',typ='R',max='**'),
+         LIST_INST       =SIMP(statut='f',typ=listr8),
+         LIST_FREQ       =SIMP(statut='f',typ=listr8),
+
+         PRECISION       =SIMP(statut='f',typ='R',defaut=1.0E-3 ),
+         CRITERE         =SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU",),),
+
+         MODI_CHAM       =FACT(statut='o',min=1,max='**',
+           TYPE_CHAM       =SIMP(statut='o',typ='TXM', max=1,    
+                                 into=("VECT_2D","VECT_3D","TORS_3D","TENS_2D","TENS_3D"),),
+           NOM_CHAM        =SIMP(statut='o',typ='TXM',max=1 ),  
+           b_vect_2d       =BLOC(condition = "TYPE_CHAM=='VECT_2D'",
+              NOM_CMP         =SIMP(statut='o',typ='TXM',min=2,max=2 ),),
+           b_vect_3d       =BLOC(condition = "TYPE_CHAM=='VECT_3D'",
+              NOM_CMP         =SIMP(statut='o',typ='TXM',min=3,max=3 ),),
+           b_tors_3d       =BLOC(condition = "TYPE_CHAM=='TORS_3D'",
+              NOM_CMP         =SIMP(statut='o',typ='TXM',min=6,max=6 ),),
+           b_tens_2d       =BLOC(condition = "TYPE_CHAM=='TENS_2D'",
+              NOM_CMP         =SIMP(statut='o',typ='TXM',min=4,max=4 ),),
+           b_tens_3d       =BLOC(condition = "TYPE_CHAM=='TENS_3D'",
+              NOM_CMP         =SIMP(statut='o',typ='TXM',min=6,max=6 ),),
+         ),
+         DEFI_REPERE     =FACT(statut='o',min=1,max=1,
+         regles=(UN_PARMI('ANGL_NAUT','ORIGINE'),),
+           REPERE          =SIMP(statut='f',typ='TXM',defaut="UTILISATEUR",
+                                 into=("UTILISATEUR","CYLINDRIQUE"),),
+           ANGL_NAUT       =SIMP(statut='f',typ='R',min=1,max=3),
+           ORIGINE         =SIMP(statut='f',typ='R',min=2,max=3),  
+           AXE_Z           =SIMP(statut='f',typ='R',min=3,max=3),  
+         ),
+         INFO            =SIMP(statut='f',typ='I',defaut=1,into=(1,2)),
+)  ;

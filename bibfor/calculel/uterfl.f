@@ -1,0 +1,168 @@
+      SUBROUTINE UTERFL(NDIM,IFLUP,IFLUM,INO,MNO,JNO,NSOMM,JAC,TERM22,
+     &                  AUX,LTHETA,VALTHE,VALUNT,NIV,IFM,XN,YN,ZN,
+     &                  VALFP,VALFM,ITYP,NOE)
+C-----------------------------------------------------------------------
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF CALCULEL  DATE 11/02/2002   AUTEUR BOITEAU O.BOITEAU 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+C RESPONSABLE  O.BOITEAU
+C TOLE CRP_21
+C-----------------------------------------------------------------------
+C    - FONCTION REALISEE: UTILITAIRE DE CALCUL DE L'ERREUR DUE A LA
+C                         CONDITION DE FLUX. POUR AERER TE0003.
+C
+C IN NDIM : DIMENSION DU CALCUL
+C IN IFLUP/M : ADRESSE JEVEUX DU FLUX +/-
+C IN INO/JNO/MNO : NUMERO DES NOEUDS DE L'ARETE (INO NUMERO FACE EN 3D)
+C IN NSOMM  : NBRE DE SOMMETS DE L'ARETE OU DE LA FACE.
+C IN JAC  : JACOBIEN
+C IN LTHETA/VALTHE/UNT : PARAMETRES THETA METHODE
+C IN NIV/IFM : PARAMETRES D'IMPRESSION
+C IN ITYP : TYPE DE FACE (EN 3D)
+C IN XN/YN/ZN : COMPOSANTES DE LA NORMALE AUX POINTS D'INTEGRATION
+C IN VALFP/M  : VALEURS DU FLUX AUX INSTANTS + ET -
+C IN NOE : TABLEAU NUMEROS DE NOEUDS PAR FACE ET PAR TYPE D'ELEMENT 3D
+C OUT TERM22 : CONTRIBUTION DE L'ERREUR
+C OUT AUX : TERME DE NORMALISATION
+C   -------------------------------------------------------------------
+C     SUBROUTINES APPELLEES:
+C       AUCUNE.
+C
+C     FONCTIONS INTRINSEQUES:
+C       AUCUNE.
+C   -------------------------------------------------------------------
+C     ASTER INFORMATIONS:
+C       24/09/01 (OB): CREATION POUR SIMPLIFIER TE0003.F.
+C----------------------------------------------------------------------
+C CORPS DU PROGRAMME
+      IMPLICIT NONE
+
+C DECLARATION PARAMETRES D'APPELS
+      INTEGER IFLUP,IFLUM,NDIM,INO,MNO,JNO,NSOMM,ITYP,NOE(9,6,3),IFM,
+     &        NIV
+      REAL*8 JAC(9),TERM22,AUX,VALTHE,VALUNT,XN(9),YN(9),ZN(9),
+     &       VALFP(9),VALFM(9)
+      LOGICAL LTHETA
+
+C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
+      INTEGER            ZI
+      COMMON  / IVARJE / ZI(1)
+      REAL*8             ZR
+      COMMON  / RVARJE / ZR(1)
+      COMPLEX*16         ZC
+      COMMON  / CVARJE / ZC(1)
+      LOGICAL            ZL
+      COMMON  / LVARJE / ZL(1)
+      CHARACTER*8        ZK8
+      CHARACTER*16                ZK16
+      CHARACTER*24                          ZK24
+      CHARACTER*32                                    ZK32
+      CHARACTER*80                                              ZK80
+      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
+      
+C DECLARATION VARIABLES LOCALES
+      INTEGER IJ,IN,IINO
+      REAL*8 AUX1,AUX2,AUX3,AUX4,TERM23
+
+C INIT.
+      TERM22 = 0.D0
+      AUX = 0.D0
+            
+      IF (NDIM.EQ.2) THEN
+
+C CAS 2D
+C POINT DE DEPART: INO
+        IJ = IFLUP+(INO-1)*NDIM
+        AUX1 = VALTHE*VALFP(1)
+        AUX2 = VALTHE*(ZR(IJ)*XN(1)+ZR(IJ+1)*YN(1))
+        TERM23 = AUX1 + AUX2
+        IF (NIV.EQ.2) WRITE(IFM,*)' ZR INO P',AUX1,AUX2              
+        IF (LTHETA) THEN
+          IJ = IJ+IFLUM-IFLUP
+          AUX3 = VALUNT*VALFM(1)
+          AUX4 = VALUNT*(ZR(IJ)*XN(1)+ZR(IJ+1)*YN(1))
+          AUX1 = AUX1 + AUX3
+          TERM23 = TERM23 + AUX3 + AUX4
+          IF (NIV.EQ.2) WRITE(IFM,*)' ZR INO M',AUX3,AUX4
+        ENDIF
+        TERM22 = JAC(1)*TERM23*TERM23
+        AUX = JAC(1)*AUX1*AUX1
+
+C POINT EXTREME: JNO
+        IJ = IFLUP+(JNO-1)*NDIM
+        AUX1 = VALTHE*VALFP(2)
+        AUX2 = VALTHE*(ZR(IJ)*XN(2)+ZR(IJ+1)*YN(2))
+        TERM23 = AUX1 + AUX2
+        IF (NIV.EQ.2) WRITE(IFM,*)' ZR JNO P',AUX1,AUX2
+        IF (LTHETA) THEN
+          IJ = IJ+IFLUM-IFLUP
+          AUX3 = VALUNT*VALFM(2)
+          AUX4 = VALUNT*(ZR(IJ)*XN(2)+ZR(IJ+1)*YN(2))
+          AUX1 = AUX1 + AUX3
+          TERM23 = TERM23 + AUX3 + AUX4
+          IF (NIV.EQ.2) WRITE(IFM,*)' ZR JNO M',AUX3,AUX4
+        ENDIF
+        TERM22 = TERM22 + JAC(2)*TERM23*TERM23
+        AUX = AUX + JAC(2)*AUX1*AUX1
+              
+C POINT MILIEU SI NECESSAIRE: MNO
+        IF (NSOMM.EQ.3) THEN
+          IJ = IFLUP+(MNO-1)*NDIM
+          AUX1 = VALTHE*VALFP(3)
+          AUX2 = VALTHE*(ZR(IJ)*XN(3)+ZR(IJ+1)*YN(3))
+          TERM23 = AUX1 + AUX2
+          IF (NIV.EQ.2) WRITE(IFM,*)' ZR MNO P',AUX1,AUX2
+          IF (LTHETA) THEN
+            IJ = IJ+IFLUM-IFLUP
+            AUX3 = VALUNT*VALFM(3)
+            AUX4 = VALUNT*(ZR(IJ)*XN(3)+ZR(IJ+1)*YN(3))
+            AUX1 = AUX1 + AUX3
+            TERM23 = TERM23 + AUX3 + AUX4
+            IF (NIV.EQ.2) WRITE(IFM,*)' ZR MNO M',AUX3,AUX4
+          ENDIF
+          TERM22 = TERM22 + JAC(3)*TERM23*TERM23
+          AUX = AUX + JAC(3)*AUX1*AUX1
+        ENDIF
+      ELSE
+      
+C CAS 3D
+        DO 100 IN=1,NSOMM
+          IINO = NOE(IN,INO,ITYP)
+          IJ = IFLUP+(IINO-1)*NDIM
+          AUX1 = VALTHE*VALFP(IN)
+          AUX2 = VALTHE*(ZR(IJ)*XN(IN)+ZR(IJ+1)*YN(IN)+
+     &           ZR(IJ+2)*ZN(IN))
+          TERM23 = AUX1 + AUX2
+          IF (NIV.EQ.2) WRITE(IFM,*)' ZR IINO P/IN ',AUX1,AUX2,IN
+          IF (LTHETA) THEN
+            IJ = IJ+IFLUM-IFLUP
+            AUX3 = VALUNT*VALFM(IN)
+            AUX4 = VALUNT*(ZR(IJ)*XN(IN)+ZR(IJ+1)*YN(IN)+
+     &             ZR(IJ+2)*ZN(IN))
+            AUX1 = AUX1 + AUX3
+            TERM23 = TERM23 + AUX3 + AUX4
+            IF (NIV.EQ.2) WRITE(IFM,*)' ZR JNO M    ',AUX3,AUX4
+          ENDIF
+          TERM22 = TERM22 + TERM23*TERM23*JAC(IN)
+          AUX = AUX + AUX1*AUX1*JAC(IN)
+  100   CONTINUE
+  
+      ENDIF
+      
+      END

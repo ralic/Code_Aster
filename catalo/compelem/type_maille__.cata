@@ -1,0 +1,38 @@
+%& MODIF COMPELEM  DATE 13/08/2002   AUTEUR ADBHHPM P.MASSIN 
+%            CONFIGURATION MANAGEMENT OF EDF VERSION
+% ======================================================================
+% COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+%              SEE THE FILE "LICENSE.TERMS" FOR INFORMATION ON USAGE AND
+%              REDISTRIBUTION OF THIS FILE.
+% ======================================================================
+TYPE_MAILLE__
+
+   POI1       1    DIM__  0  CODE__ 'POI'
+   SEG2       2    DIM__  1  CODE__ 'SE2'
+   SEG22      4    DIM__  1  CODE__ 'S22'
+   SEG3       3    DIM__  1  CODE__ 'SE3'
+   SEG33      6    DIM__  1  CODE__ 'S33'
+   SEG4       4    DIM__  1  CODE__ 'SE4'
+   TRIA3      3    DIM__  2  CODE__ 'TR3'
+   TRIA33     6    DIM__  2  CODE__ 'T33'
+   TRIA6      6    DIM__  2  CODE__ 'TR6'
+   TRIA66     12   DIM__  2  CODE__ 'T66'
+   TRIA7      7    DIM__  2  CODE__ 'TR7'
+   QUAD4      4    DIM__  2  CODE__ 'QU4'
+   QUAD44     8    DIM__  2  CODE__ 'Q44'
+   QUAD8      8    DIM__  2  CODE__ 'QU8'
+   QUAD88     16   DIM__  2  CODE__ 'Q88'
+   QUAD9      9    DIM__  2  CODE__ 'QU9'
+   QUAD99     18   DIM__  2  CODE__ 'Q99'
+   TETRA4     4    DIM__  3  CODE__ 'TE4'
+   TETRA10    10   DIM__  3  CODE__ 'T10'
+   PENTA6     6    DIM__  3  CODE__ 'PE6'
+   PENTA15    15   DIM__  3  CODE__ 'P15'
+   PYRAM5     5    DIM__  3  CODE__ 'PY5'
+   PYRAM13    13   DIM__  3  CODE__ 'P13'
+   HEXA8      8    DIM__  3  CODE__ 'HE8'
+   HEXA20     20   DIM__  3  CODE__ 'H20'
+   HEXA27     27   DIM__  3  CODE__ 'H27'
+   TR3QU4     7    DIM__  2  CODE__ 'TQ7'
+   QU4TR3     7    DIM__  2  CODE__ 'QT7'
+

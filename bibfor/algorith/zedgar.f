@@ -1,0 +1,227 @@
+      SUBROUTINE ZEDGAR (MATOS,TM,TP,DELTAT,ZM,ZP)
+      IMPLICIT NONE
+
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 31/05/2000   AUTEUR D6BHHAR A.RAZAKANAIVO 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+      INTEGER     MATOS
+      REAL*8       TM,TP,DELTAT,ZM(3),ZP(3)
+
+
+C.......................................................................
+
+C
+C
+C CALCUL PHASE METALLURGIQUE POUR EDGAR
+C
+C.......................................................................
+
+
+      INTEGER     I, NBPAS
+
+      REAL*8      TDEQ,N,K
+      REAL*8      A,M,QSR,AR,BR
+      REAL*8      TDC0,TDR0
+
+      REAL*8      INSTM,INSTP, ZBETA,VALRES(11),Z1,ZERO,Z0,DZ
+      REAL*8      TPOINT,ZPOINT,ZALPHA,DTEMP1,ZBETEQ,DZ1,DZ2,DZ3,DZ4
+      REAL*8      T,TI1, TI2 ,TDC,TDR,TEQ ,EPS
+      CHARACTER*24 NOMRES(12)
+      CHARACTER*2  CODRET(12)
+      LOGICAL     LREFR
+
+C
+C----CARACTERISTIQUE MATERIAU-------------------------------------------
+
+      EPS = 1.D-9
+      ZERO = 0.D0
+      NOMRES(1)='TDEQ'
+      NOMRES(2)='K'
+      NOMRES(3)='N'
+      NOMRES(4)='AC'
+      NOMRES(5)='M'
+      NOMRES(6)='AR'
+      NOMRES(7)='BR'
+      NOMRES(8)='TDC'
+      NOMRES(9)='TDR'
+
+      CALL RCVALA (MATOS, 'META_ZIRC', 1, 'TEMP', TP, 9, NOMRES,
+     &                 VALRES, CODRET, 'FM' )
+      TDEQ = VALRES(1)
+      K=VALRES(2)
+      N= VALRES(3)
+      A=VALRES(4)
+      M=VALRES(5)
+      AR=VALRES(6)
+      BR=VALRES(7)
+      TDC0=VALRES(8)
+      TDR0=VALRES(9)
+
+
+
+      NOMRES(10)='QSR_K'
+
+      CALL RCVALA(MATOS, 'META_ZIRC', 1, 'TEMP', TP, 3, NOMRES(9),
+     &                VALRES(9), CODRET(9), ' ' )
+      IF (CODRET(6) .NE. 'OK') VALRES(10)=0.D0
+      IF (CODRET(7) .NE. 'OK') VALRES(11)=0.D0
+      IF (CODRET(8) .NE. 'OK') VALRES(12)=0.D0
+      QSR=VALRES(10)
+
+      ZALPHA = ZM(1)+ZM(2)
+      ZBETA = 1-ZALPHA
+
+C-------CALCUL DE ZBETA EQUILIBRE
+      IF (TP .LT. TDEQ) THEN
+         ZBETEQ=0.D0
+      ELSE
+         ZBETEQ=K*(TP-TDEQ)
+         ZBETEQ=EXP(-ZBETEQ**N)
+         ZBETEQ=1-ZBETEQ
+      ENDIF
+
+      Z1=ZBETA
+
+C-----DETERMINATION DU SENS DE L'EVOLUTION METALLURGIQUE
+
+      TPOINT=(TP-TM)/(DELTAT)
+      IF ( TPOINT .GT. ZERO ) THEN
+         LREFR = .FALSE.
+      ELSEIF ( TP .GT. TDR0 ) THEN
+         LREFR = .FALSE.
+      ELSEIF ( TP .LT. TDC0 ) THEN
+         LREFR = .TRUE.
+      ELSEIF ( TPOINT .LT. ZERO ) THEN
+         LREFR = .TRUE.
+      ELSEIF ( Z1 .LE. ZBETEQ ) THEN
+         LREFR = .FALSE.
+      ELSE
+         LREFR = .TRUE.
+      ENDIF
+
+
+C-------TEMPERATURE DE DEBUT DE TRANSFORMATION
+      TDC=TDC0
+      TDR=TDR0
+C-----CALCUL EVOLUTION METALLO : INTEGRATION EXPLICITE : RUNGE-KUTTA
+
+      IF ( ABS(TP-TM) .GT. 5.001D0 ) THEN
+
+          NBPAS = INT(ABS(TP-TM)/5.D0-0.001D0)+1
+          DELTAT  = DELTAT/DBLE(NBPAS)
+          DO 51 I = 1 , NBPAS
+             TI1 = TM+(TP-TM)*DBLE(I-1)/DBLE(NBPAS)
+             TI2 = TM+(TP-TM)*DBLE(I)/DBLE(NBPAS)
+             TPOINT = (TI2-TI1)/DELTAT
+
+
+             Z0=ZBETA
+             T=TI1
+
+             CALL TEMPEQ(ZBETA,TDEQ,K,N,TEQ)
+             CALL ZEVOLU(LREFR,ZBETA,T,TDC,TDR,A,QSR,M,TEQ,AR,BR,ZPOINT)
+             DZ1=ZPOINT*DELTAT
+
+             ZBETA=Z0+DZ1/2.D0
+             DTEMP1=(TI2-TI1)/2.D0
+             T=TI1+DTEMP1
+             CALL TEMPEQ(ZBETA,TDEQ,K,N,TEQ)
+             CALL ZEVOLU(LREFR,ZBETA,T,TDC,TDR,A,QSR,M,TEQ,AR,BR,ZPOINT)
+             DZ2=ZPOINT*DELTAT
+
+             ZBETA=Z0+DZ2/2.D0
+             CALL TEMPEQ(ZBETA,TDEQ,K,N,TEQ)
+             CALL ZEVOLU(LREFR,ZBETA,T,TDC,TDR,A,QSR,M,TEQ,AR,BR,ZPOINT)
+             DZ3=ZPOINT*DELTAT
+
+             ZBETA=Z0+DZ3/2.D0
+             T=TI2
+             CALL TEMPEQ(ZBETA,TDEQ,K,N,TEQ)
+             CALL ZEVOLU(LREFR,ZBETA,T,TDC,TDR,A,QSR,M,TEQ,AR,BR,ZPOINT)
+             DZ4=ZPOINT*DELTAT
+
+             DZ= (DZ1+2*DZ2+2*DZ3+DZ4)/6
+
+             ZBETA=Z0+DZ
+51       CONTINUE
+
+      ELSE
+         Z0=ZBETA
+         T=TM
+
+         CALL TEMPEQ(ZBETA,TDEQ,K,N,TEQ)
+         CALL ZEVOLU(LREFR,ZBETA,T,TDC,TDR, A,QSR,M,TEQ,AR,BR,ZPOINT)
+         DZ1=ZPOINT*DELTAT
+
+         ZBETA=Z0+DZ1/2.D0
+         DTEMP1=(TP-TM)/2.D0
+         T=TM+DTEMP1
+         CALL TEMPEQ(ZBETA,TDEQ,K,N,TEQ)
+         CALL ZEVOLU(LREFR,ZBETA,T,TDC,TDR,A,QSR,M,TEQ,AR,BR,ZPOINT)
+         DZ2=ZPOINT*DELTAT
+
+         ZBETA=Z0+DZ2/2.D0
+         CALL TEMPEQ(ZBETA,TDEQ,K,N,TEQ)
+         CALL ZEVOLU(LREFR,ZBETA,T,TDC,TDR,A,QSR,M,TEQ,AR,BR,ZPOINT)
+         DZ3=ZPOINT*DELTAT
+
+         ZBETA=Z0+DZ3/2.D0
+         T=TP
+         CALL TEMPEQ(ZBETA,TDEQ,K,N,TEQ)
+         CALL ZEVOLU(LREFR,ZBETA,T,TDC,TDR,A,QSR,M,TEQ,AR,BR,ZPOINT)
+         DZ4=ZPOINT*DELTAT
+
+         DZ= (DZ1+2*DZ2+2*DZ3+DZ4)/6
+
+         ZBETA=Z0+DZ
+
+      ENDIF
+
+
+C ----  TEST DE COHERENCE
+
+
+
+
+      IF (ZBETA .LT. EPS) ZBETA =0.D0
+
+      IF ((.NOT. LREFR ).AND.(ZBETA .GT. ZBETEQ)) ZBETA =ZBETEQ
+      IF ((LREFR ).AND.(ZBETA .LT. ZBETEQ)) ZBETA =ZBETEQ
+      IF (ZBETA .GT. (1-EPS))  ZBETA = 1.D0
+
+
+
+
+
+C-----CREATION DE TROIS PHASES
+       ZALPHA=1-ZBETA
+
+
+
+       IF (ZBETA .GT. 0.1D0) THEN
+          ZP(1) =0.D0
+       ELSE
+          ZP(1)=10.D0*(ZALPHA-0.9D0)*ZALPHA
+       ENDIF
+       IF (ZP(1) .LT. EPS) ZP(1) =0.D0
+       ZP(2)=ZALPHA-ZP(1)
+       IF (ZP(2) .LT. EPS) ZP(2) =0.D0
+       ZP(3)=TP
+
+
+       END

@@ -1,0 +1,195 @@
+# MODIF  DATE 11/12/2001   AUTEUR DURAND C.DURAND 
+#
+# TITRE DYNAMIQUE D'UN PORTIQUE FORME DE 16 ELEMENTS POU_D_T_GD.
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+#
+DEBUT( CODE=_F(  NOM = 'SDNL103A',NIV_PUB_WEB='INTERNET'))
+
+MA=LIRE_MAILLAGE( )
+
+MA=DEFI_GROUP( reuse=MA,   MAILLAGE=MA,
+  CREA_GROUP_MA=_F(  NOM = 'TOUT', TOUT = 'OUI'))
+
+MO1=AFFE_MODELE(   MAILLAGE=MA,
+                        AFFE=_F( TOUT = 'OUI', PHENOMENE = 'MECANIQUE',
+                              MODELISATION = 'POU_D_T_GD')
+                        )
+
+MO2=AFFE_MODELE(   MAILLAGE=MA,
+                        AFFE=_F( TOUT = 'OUI', PHENOMENE = 'MECANIQUE',
+                              MODELISATION = 'POU_D_T')
+                        )
+
+FX=DEFI_FONCTION(  NOM_PARA='INST',
+                          VALE=( 0.,  0.,
+                                 0.1, 500.,
+                                 0.2,  0., ),
+                          PROL_DROITE='CONSTANT',
+                         PROL_GAUCHE='CONSTANT'
+                       )
+
+MAT1=DEFI_MATERIAU(   ELAS=_F(  E = 7.E10,  NU = 0.3,  RHO = 2700.)
+                        )
+
+MAT2=DEFI_MATERIAU(   ELAS=_F(  E = 5.E10,  NU = 0.3,  RHO = 2500.)
+                        )
+
+CHMAT=AFFE_MATERIAU(   MAILLAGE=MA,AFFE=(
+                          _F(  GROUP_MA = ('TRAVEE',),  MATER = MAT1),
+                          _F(  GROUP_MA = ('POTEAU',),  MATER = MAT2))
+                        )
+
+CHA1=AFFE_CHAR_MECA(   MODELE=MO1,
+                         DDL_IMPO=_F( NOEUD = ('N1', 'N17',), DX = 0., DY = 0., DZ = 0.,
+                                               DRX = 0., DRY = 0., DRZ = 0.)
+                        )
+
+CHA2=AFFE_CHAR_MECA_F(   MODELE=MO1,
+                          FORCE_NODALE=_F( NOEUD = 'N9', FX = FX)
+                        )
+
+CHA3=AFFE_CHAR_MECA(   MODELE=MO2,
+                         DDL_IMPO=_F( NOEUD = ('N1', 'N17',), DX = 0., DY = 0., DZ = 0.,
+                                               DRX = 0., DRY = 0., DRZ = 0.)
+                        )
+
+CHA4=AFFE_CHAR_MECA_F(   MODELE=MO2,
+                          FORCE_NODALE=_F( NOEUD = 'N9', FX = FX)
+                        )
+
+CARA1=AFFE_CARA_ELEM(   MODELE=MO1,POUTRE=(
+              _F(  GROUP_MA = 'TRAVEE', SECTION = 'GENERALE',
+             CARA = ( 'A',   'IY',  'IZ',  'JX',  'AY',  'AZ',  ),
+             VALE = ( 2.238E-3, 3.704E-6, 3.704E-6, 7.408E-6, 1.2, 1.2, )),
+              _F(  GROUP_MA = 'POTEAU', SECTION = 'GENERALE',
+             CARA = ( 'A',   'IY',  'IZ',  'JX',  'AY',  'AZ',  ),
+             VALE = ( 3.143E-2, 4.507E-5, 4.507E-5, 9.014E-5, 1.2, 1.2, ))),
+                           ORIENTATION=_F(  GROUP_MA = 'TOUT',
+                                         CARA = 'VECT_Y',
+                                         VALE = (1., 0., 0.,))
+                        )
+
+CARA2=AFFE_CARA_ELEM(   MODELE=MO2,POUTRE=(
+              _F(  GROUP_MA = 'TRAVEE', SECTION = 'GENERALE',
+             CARA = ( 'A',   'IY',  'IZ',  'JX',  'AY',  'AZ',  ),
+             VALE = ( 2.238E-3, 3.704E-6, 3.704E-6, 7.408E-6, 1.2, 1.2, )),
+              _F(  GROUP_MA = 'POTEAU', SECTION = 'GENERALE',
+             CARA = ( 'A',   'IY',  'IZ',  'JX',  'AY',  'AZ',  ),
+             VALE = ( 3.143E-2, 4.507E-5, 4.507E-5, 9.014E-5, 1.2, 1.2, ))),
+                           ORIENTATION=_F(  GROUP_MA = 'TOUT',
+                                         CARA = 'VECT_Y',
+                                         VALE = (1., 0., 0.,))
+                        )
+
+L_INST=DEFI_LIST_REEL(   DEBUT=0.0,
+                            INTERVALLE=_F( JUSQU_A = 0.5,  NOMBRE = 100)
+                         )
+
+L_ARCHI=DEFI_LIST_ENTI(   DEBUT=1,
+                             INTERVALLE=_F( JUSQU_A = 101, PAS = 2)
+                         )
+
+RESU1=DYNA_NON_LINE(  MODELE=MO1,
+                      CHAM_MATER=CHMAT,
+                      CARA_ELEM=CARA1,
+                      EXCIT=(
+                           _F(  CHARGE = CHA1),
+                           _F(  CHARGE = CHA2)),
+                      INCREMENT=_F( INST_INIT = 0., LIST_INST = L_INST),
+###CDURAND###                      ARCHIVAGE=_F( LIST_ARCH = L_ARCHI),
+                      NEWMARK=_F(),
+                      COMP_ELAS=_F( RELATION = 'ELAS_POUTRE_GR',
+                                    DEFORMATION = 'GREEN_GR'),
+                      CONVERGENCE=_F( RESI_GLOB_RELA = 1.E-4,
+                                      ITER_GLOB_MAXI = 20),
+                      NEWTON=_F( REAC_ITER = 1)
+                      )
+
+RESU2=DYNA_NON_LINE(  MODELE=MO2,
+                      CHAM_MATER=CHMAT,
+                      CARA_ELEM=CARA2,
+                      EXCIT=(
+                           _F(  CHARGE = CHA3),
+                           _F(  CHARGE = CHA4)),
+                      INCREMENT=_F( INST_INIT = 0., LIST_INST = L_INST),
+###CDURAND##                      ARCHIVAGE=_F( LIST_ARCH = L_ARCHI),
+                      NEWMARK=_F(),
+                      COMP_INCR=_F(  RELATION = 'ELAS'),
+                      CONVERGENCE=_F( RESI_GLOB_RELA = 1.E-4, ITER_GLOB_MAXI = 20),
+                      NEWTON=_F( REAC_ITER = 1)
+                      )
+
+DX1=RECU_FONCTION(   RESULTAT=RESU1,  NOEUD='N9',
+                          NOM_CHAM='DEPL',  NOM_CMP='DX',
+                          TOUT_INST='OUI',
+                          NOM_PARA='INST',  NOM_RESU='DX' )
+
+DX2=RECU_FONCTION(   RESULTAT=RESU2,  NOEUD='N9',
+                          NOM_CHAM='DEPL',  NOM_CMP='DX',
+                          TOUT_INST='OUI',
+                          NOM_PARA='INST',  NOM_RESU='DX' )
+
+#
+DEPL1=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
+NOM_CHAM='DEPL', RESULTAT=RESU1, INST=0.14)
+
+DEPL2=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
+NOM_CHAM='DEPL', RESULTAT=RESU1, INST=0.26)
+
+DEPL3=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
+NOM_CHAM='DEPL', RESULTAT=RESU1, INST=0.36)
+
+DEPL4=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
+NOM_CHAM='DEPL', RESULTAT=RESU1, INST=0.47)
+
+#
+DEPL6=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
+NOM_CHAM='DEPL', RESULTAT=RESU2, INST=0.14)
+
+DEPL7=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
+NOM_CHAM='DEPL', RESULTAT=RESU2, INST=0.26)
+
+DEPL8=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
+NOM_CHAM='DEPL', RESULTAT=RESU2, INST=0.36)
+
+DEPL9=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
+NOM_CHAM='DEPL', RESULTAT=RESU2, INST=0.47)
+
+#
+
+TEST_RESU(CHAM_NO=( 
+_F( CHAM_GD = DEPL1, NOEUD = 'N9', NOM_CMP = 'DX', VALE = 2.9069E-02, PRECISION = 1.E-4),
+_F( CHAM_GD = DEPL2, NOEUD = 'N9', NOM_CMP = 'DX', VALE = -2.5376E-02, PRECISION = 2.E-4),
+_F( CHAM_GD = DEPL3, NOEUD = 'N9', NOM_CMP = 'DX', VALE = 2.5147E-02, PRECISION = 2.E-4),
+_F( CHAM_GD = DEPL4, NOEUD = 'N9', NOM_CMP = 'DX', VALE = -2.5390E-02, PRECISION = 4.E-4))
+           )
+
+#
+
+TEST_RESU(CHAM_NO=( 
+_F( CHAM_GD = DEPL6, NOEUD = 'N9', NOM_CMP = 'DX', VALE = 2.9706E-02, PRECISION = 1.E-4),
+_F( CHAM_GD = DEPL7, NOEUD = 'N9', NOM_CMP = 'DX', VALE = -2.6290E-02, PRECISION = 1.E-4),
+_F( CHAM_GD = DEPL8, NOEUD = 'N9', NOM_CMP = 'DX', VALE = 2.5126E-02, PRECISION = 1.E-4),
+_F( CHAM_GD = DEPL9, NOEUD = 'N9', NOM_CMP = 'DX', VALE = -2.5488E-02, PRECISION = 1.E-4))
+           )
+
+#
+
+FIN()
+#

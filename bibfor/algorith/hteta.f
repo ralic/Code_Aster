@@ -1,0 +1,47 @@
+        SUBROUTINE HTETA ( GAMMA, A, HT )
+        IMPLICIT REAL*8 (A-H,O-Z)
+C       ----------------------------------------------------------------
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 27/03/2002   AUTEUR VABHHTS J.PELLET 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+C       ----------------------------------------------------------------
+C       FONCTION HTETA DEFINISSANT LA FORME DE LA SURFACE DE CHARGE
+C       DANS LE PLAN DEVIATOIRE
+C       IN  GAMMA  :  CARACTERISTIQUE DU MATERIAU
+C       IN  A      :  TENSEUR A (DEVIATEUR S OU Q)
+C       OUT HT     :  HTETA(A)=(1+GAMMA*SQRT(54)*DET(A)/AII**3)**(1/6)
+C       ----------------------------------------------------------------
+        REAL*8        GAMMA, A(6), DET, AII, TRUC, HT, RCOS3T
+
+        CALL LCPRSC(A,A,TRUC)
+        AII = SQRT(TRUC)
+
+        IF(AII .EQ. 0.D0) THEN
+           RCOS3T = 1.0D0
+        ELSE
+           CALL LCDETE(A, DET)
+           RCOS3T = SQRT(54.D0)*DET/AII**3.D0
+        ENDIF
+
+        IF( RCOS3T .GT.  1.D0 ) RCOS3T =  1.D0
+        IF( RCOS3T .LT. -1.D0 ) RCOS3T = -1.D0
+
+
+        HT = (1.D0+GAMMA*RCOS3T)**(1.D0/6.D0)
+
+        END

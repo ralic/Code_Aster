@@ -1,0 +1,126 @@
+      SUBROUTINE TE0258(OPTION,NOMTE)
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ELEMENTS  DATE 04/04/2002   AUTEUR VABHHTS J.PELLET 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+C.......................................................................
+      IMPLICIT REAL*8 (A-H,O-Z)
+C
+C     BUT: CALCUL DES MATRICES ELEMENTAIRES EN MECANIQUE
+C          CORRESPONDANT A UNE IMPEDANCE IMPOSEE
+C          SUR DES FACES D'ELEMENTS ISOPARAMETRIQUES 1D
+C
+C          OPTION : 'IMPE_MECA'
+C
+C     ENTREES  ---> OPTION : OPTION DE CALCUL
+C          ---> NOMTE  : NOM DU TYPE ELEMENT
+C.......................................................................
+C
+      CHARACTER*2        CODRET
+      CHARACTER*8        ELREFE
+      CHARACTER*16       NOMTE,OPTION
+      CHARACTER*24       CHVAL,CARAC
+      REAL*8             NX,NY,POIDS, RHO,RHO2
+      INTEGER            IPOIDS,IVF,IDFDE,IGEOM,IMATE
+      INTEGER            NDI,NNO,KP,NPG1,IMATUU,IIMPE
+      INTEGER            LDEC,ICARAC,IFF
+C
+C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
+      COMMON /IVARJE/ZI(1)
+      COMMON /RVARJE/ZR(1)
+      COMMON /CVARJE/ZC(1)
+      COMMON /LVARJE/ZL(1)
+      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+      INTEGER ZI
+      REAL*8 ZR
+      COMPLEX*16 ZC
+      LOGICAL ZL
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32
+      CHARACTER*80 ZK80
+C------------FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
+C
+      CALL ELREF1(ELREFE)
+      CARAC = '&INEL.'//ELREFE//'.CARAC'
+      CALL JEVETE(CARAC,'L',ICARAC)
+      NNO = ZI(ICARAC)
+      NPG1 = ZI(ICARAC+2)
+      NDI = NNO*(2*NNO+1)
+C
+      CHVAL = '&INEL.'//ELREFE//'.FF'
+      CALL JEVETE(CHVAL,'L',IFF)
+      IPOIDS = IFF
+      IVF    = IPOIDS + NPG1
+      IDFDE  = IVF    + NPG1 * NNO
+C
+      CALL JEVECH('PGEOMER','L',IGEOM)
+      CALL JEVECH('PMATERC','L',IMATE)
+      CALL JEVECH('PIMPEDR','L',IIMPE)
+      CALL JEVECH('PMATUUR','E',IMATUU)
+C
+      CALL RCVALA(ZI(IMATE),'FLUIDE',0,' ',R8B,1,'RHO',RHO,CODRET,'FM')
+C
+C --- INITIALISATION DE LA MATRICE D'IMPEDANCE
+      DO 10 I = 1,NDI
+         ZR(IMATUU+I-1) = 0.D0
+10    CONTINUE
+C
+      IF (ZR(IIMPE).EQ.0.D0) THEN
+         GOTO 999
+      ELSE
+C
+C        BOUCLE SUR LES POINTS DE GAUSS
+         RHO2 = -RHO*RHO
+C
+         DO 101 KP=1,NPG1
+
+            LDEC = (KP-1)*NNO
+C
+            NX = 0.0D0
+            NY = 0.0D0
+C
+        CALL VFF2DN(NNO,ZR(IPOIDS+KP-1),ZR(IDFDE+LDEC),ZR(IGEOM),NX,
+     &              NY,POIDS)
+C%
+        IF ( NOMTE(3:4) .EQ. 'AX' ) THEN
+           R = 0.D0
+           DO 102 I=1,NNO
+             R = R + ZR(IGEOM+2*(I-1))*ZR(IVF+LDEC+I-1)
+102        CONTINUE
+           POIDS = POIDS*R
+        ENDIF
+C%
+            DO 103 I=1,NNO
+C
+               DO 104 J=1,I
+               II=2*I
+               JJ=2*J
+               IJ = (II-1)*II/2 + JJ
+C
+               ZR(IMATUU+IJ-1) = ZR(IMATUU+IJ-1) + POIDS*
+     &          RHO2 / ZR(IIMPE+KP-1) *
+     &          ZR(IVF+LDEC+I-1) * ZR(IVF+LDEC+J-1)
+C
+104            CONTINUE
+103         CONTINUE
+
+101      CONTINUE
+      END IF
+999   CONTINUE
+      END

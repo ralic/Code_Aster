@@ -1,0 +1,350 @@
+      SUBROUTINE SSRIU1(NOMU)
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF SOUSTRUC  DATE 14/01/98   AUTEUR VABHHTS J.PELLET 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+      IMPLICIT REAL*8 (A-H,O-Z)
+C
+C     ARGUMENTS:
+C     ----------
+      CHARACTER*8 NOMU
+C ----------------------------------------------------------------------
+C     BUT:
+C       1) METTRE A JOUR .DESM(3,4,5,8,9,10)
+C       2) METTRE LES DDLS INTERNES AVANT LES DLLS EXTERNES.
+C          ON CHANGE LE VECTEUR D'INDIRECTION .NUEQ DU PROF_CHNO
+C       3) ECRIRE LE "LONMAX" DE LA COLLECTION .LICA
+C       4) CALCULER L'OBJET .CONX :
+C          I VARIE DE 1 A NBNOET=NBNOE+NLAGE+NLAGL
+C          (L'ORDRE EST CELUI DE LA NUMEROTAION DE LA MATRICE DE RIGI)
+C          CONX(I,1) CONTIENT LE NUMERO DU LIGREL OU EST DEFINI LE
+C                      I_EME NOEUD "EXTERNE"
+C          CONX(I,2) CONTIENT LE NUMERO (DANS LE LIGREL)
+C                      DU I_EME NOEUD "EXTERNE"
+C          CONX(I,3) = -0 SI LE NOEUD EST PHYSIQUE
+C                    = -1 SI LE NOEUD EST DE LAGRANGE (TYPE "AVANT).
+C                    = -2 SI LE NOEUD EST DE LAGRANGE (TYPE "APRES").
+C
+C        ON SUPPOSE QU'AVANT L'APPEL A CETTE ROUTINE, L'OBJET .NUEQ
+C        EST L'INDIRECTION "IDENTITE" (ZI(IANUEQ-1 +I) = I).
+C
+C        ON "DEPLACE" VERS L'AVANT (MODIFICATION DES ADRESSES VIA .NUEQ)
+C        LES GROUPES DE DDLS PORTES PAR LES NOEUDS INTERNES.
+C        ON SE SERT POUR CELA DE .DEEQ.
+C
+C          REGLE ADOPTEE POUR LES DDDLS/NOEUDS DE LAGRANGE:
+C          - ON NE GARDE COMME DDLS INTERNES QUE :
+C             - LES DDLS PHYSIQUES DES NOEUDS INTERNES.
+C             - LES DDLS LAGRANGES ASSOCIES A
+C               DES BLOCAGES DE NOEUDS INTERNES
+C          - LES DDLS LAGRANGES ASSOCIES A DES LIAISONS SONT DONC
+C            EXTERNES.
+C
+C       EXEMPLE:   NOEUDS INTERNES : 1,3
+C                  NOEUDS EXTERNES : 2
+C
+C       DEEQ       NUEQ        CEUX QUI      NUEQ       "CONX"
+C                  (AVANT)     REMONTENT (APRES)
+C        1, 1         1           X           1           - - -
+C        1, 2         2           X           2           - - -
+C        0, 0         3                       7           2 1 -1
+C        2,-1         4                       8           1 2 0
+C        2,-2         5                       9           - - -
+C        2, 1         6                      10           - - -
+C        2, 2         7                      11           - - -
+C        2,-1         8                      12           - - -
+C        2,-2         9                      13           - - -
+C        3,-1        10           X           3           - - -
+C        3, 1        11           X           4           - - -
+C        3, 2        12           X           5           - - -
+C        3,-1        13           X           6           - - -
+C        0, 0        14                      14           2 2 -2
+C
+C     IN: NOMU   : NOM DU MACR_ELEM_STAT
+C
+C     OUT: L OBJET .DESM EST MODIFIE.
+C          L OBJET .NUEQ EST MODIFIE.
+C
+C ----------------------------------------------------------------------
+C
+C
+      INTEGER I
+      CHARACTER*8 KBID,NOMO,NOGDSI
+      INTEGER IDBG
+C --------------- COMMUNS NORMALISES  JEVEUX  --------------------------
+      CHARACTER*32 JEXNUM,JEXNOM,JEXATR,JEXR8
+      COMMON /IVARJE/ZI(1)
+      COMMON /RVARJE/ZR(1)
+      COMMON /CVARJE/ZC(1)
+      COMMON /LVARJE/ZL(1)
+      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+      INTEGER ZI
+      REAL*8 ZR
+      COMPLEX*16 ZC
+      LOGICAL ZL
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*19 NU
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32
+      CHARACTER*80 ZK80
+C ---------------- FIN COMMUNS NORMALISES  JEVEUX  --------------------
+C
+C
+      CALL JEMARQ()
+      NU = NOMU
+      NU = NU(1:14)//'.NUME'
+C
+      CALL DISMOI('F','NOM_GD',NU(1:14),'NUME_DDL',IBID,NOGDSI,IERD)
+      IF (NOGDSI.NE.'DEPL_R') CALL UTMESS('F','SSRIU1',
+     +      'LA SOUS-STRUCTURATION N''EST POSSIBLE QU''EN MECANIQUE')
+      CALL DISMOI('F','NU_CMP_LAGR','DEPL_R','GRANDEUR',NULAG,KBID,IED)
+      CALL DISMOI('F','NB_EC',NOGDSI,'GRANDEUR',NEC,KBID,IERD)
+      CALL JEVEUO(NU//'.DEEQ' ,'E',IADEEQ)
+      CALL JEVEUO(NU//'.DELG' ,'E',IADELG)
+      CALL JEVEUO(NU//'.NUEQ' ,'E',IANUEQ)
+      CALL JELIRA(NU//'.NUEQ' ,'LONMAX',NDDLT,KBID)
+      CALL JELIRA(NU//'.PRNO' ,'NMAXOC',NLILI,KBID)
+C
+      CALL JEVEUO(NOMU//'.DESM' ,'E',IADESM)
+      CALL JEVEUO(NOMU//'.LINO' ,'E',IALINO)
+      NBNOE = ZI(IADESM-1+2)
+C
+C
+C     -- ALLOCATION D'UN VECTEUR DE TRAVAIL QUI CONTIENDRA
+C        DES "1" SUR LES DDL INTERNES.
+      CALL WKVECT('&&SSRIU1.INTERNE','V V I',NDDLT,IAINTR)
+C
+C
+C     -- BOUCLE SUR LES  DDLS, REMPLISSAGE DE .INTERNE:
+C     -------------------------------------------------
+      NUNOLD=0
+      ICOI=0
+      ICOE=0
+      NDDLI=0
+      NLAGL=0
+      NLAGI=0
+      NLAGE=0
+C
+      DO 1, I= 1, NDDLT
+         IF (ZI(IANUEQ-1+I).NE.I) CALL UTMESS('F','SSRIU1','STOP 1')
+C
+         NUNO= ZI(IADEEQ-1+2*(I-1)+1)
+         NUDDL= ZI(IADEEQ-1+2*(I-1)+2)
+C
+C        -- LES LAGRANGES DU MAILLAGE SONT TOUS DECLARES EXTERNES:
+C           (ON LES CONSERVERA DONC A TOUS LES NIVEAUX)
+         IF (NUDDL.EQ.NULAG) THEN
+            NLAGE = NLAGE+1
+            GO TO 1
+         END IF
+C
+         IF (NUNO.NE.0) THEN
+            NUNO2= INDIIS(ZI(IALINO),NUNO,1,NBNOE)
+            IF (NUNO2.EQ.0) THEN
+               ZI(IAINTR-1+I)= 1
+               NDDLI= NDDLI+1
+            END IF
+C
+C           -- ON COMPTE LES LAGRANGES INTERNES ET EXTERNES:
+            IF (NUDDL.LT.0) THEN
+               IF (NUNO2.EQ.0) THEN
+                  NLAGI=NLAGI+1
+               ELSE
+                  NLAGE=NLAGE+1
+               END IF
+            END IF
+C
+C           -- ON COMPTE LES NOEUDS INTERNES ET EXTERNES:
+            IF ((NUDDL.GT.0).AND.(NUNOLD.NE.NUNO)) THEN
+               NUNOLD=NUNO
+               IF (NUNO2.EQ.0) THEN
+                  ICOI= ICOI+1
+               ELSE
+                  ICOE= ICOE+1
+                  IF (ICOE.GT.NBNOE)
+     +                     CALL UTMESS('F','SSRIU1','MESSAGE VIDE    ')
+               END IF
+            END IF
+         ELSE
+            NLAGL=NLAGL+1
+         END IF
+ 1    CONTINUE
+C
+      IF (NBNOE.NE.ICOE) CALL UTMESS('F','SSRIU1','STOP 2')
+      IF (ICOI.EQ.0) CALL UTMESS('F','SSRIU1','NOMBRE DE NOEUDS '
+     +     //'INTERNES : 0')
+      ZI(IADESM-1+3) = ICOI
+      NDDLE = NDDLT-NDDLI
+      ZI(IADESM-1+4) = NDDLE
+      ZI(IADESM-1+5) = NDDLI
+      ZI(IADESM-1+8) = NLAGE
+      ZI(IADESM-1+9) = NLAGL
+      ZI(IADESM-1+10) = NLAGI
+C
+C     -- DIMENSIONNEMENT DES OBJETS DE LA COLLECTION .LICA:
+C     -----------------------------------------------------
+      CALL JEECRA(NOMU//'.LICA','LONMAX',2*NDDLT,KBID)
+C
+C
+C     -- MODIFICATION DE .NUEQ:
+C     -------------------------
+      CALL WKVECT('&&SSRIU1.WORK2','V V I',NDDLT,IAWRK2)
+C    .WORK2 CONTIENT LA RECIPROQUE DU NOUVEAU .NUEQ:
+      ICO = 0
+C     -- ON CLASSE LES DDLS INTERNES:
+      DO 2, I= 1, NDDLT
+         IF (ZI(IAINTR-1+I).EQ.1) THEN
+            ICO= ICO+1
+            ZI(IANUEQ-1+I)= ICO
+            ZI(IAWRK2-1+ICO)= I
+         END IF
+ 2    CONTINUE
+C
+C     -- ON CLASSE LES DDLS EXTERNES:
+      DO 3, I= 1, NDDLT
+         IF (ZI(IAINTR-1+I).EQ.0) THEN
+            ICO= ICO+1
+            ZI(IANUEQ-1+I)= ICO
+            ZI(IAWRK2-1+ICO)= I
+         END IF
+ 3    CONTINUE
+C
+C
+C     -- CREATION DE .CONX:
+C     ---------------------
+      NBNOET=NLAGE+NLAGL+NBNOE
+      CALL WKVECT(NOMU//'.CONX','G V I',3*NBNOET,IACONX)
+      CALL WKVECT('&&SSRIU1.WORK1','V V I',2*NDDLT,IAWRK1)
+      ICO=0
+      NUNOLD=0
+C
+C     -- MISE A JOUR DE .CONX : NOEUDS DU MAILLAGE + TYPE_LAGRANGE :
+C     ------------------------------------------------------------
+C     --ON TRAVAILLE AVEC L'ANCIEN .DEEQ:
+      DO 5, I= 1, NDDLT
+         NUNO= ZI(IADEEQ-1+2*(I-1)+1)
+         NUDDL= ZI(IADEEQ-1+2*(I-1)+2)
+C        -- ITYLAG EST LE TYPE DU NOEUD DE LAGRANGE (-1 OU -2)
+         ITYLAG= ZI(IADELG-1+I)
+         IF (NUNO.NE.0) THEN
+            NUNO2= INDIIS(ZI(IALINO),NUNO,1,NBNOE)
+C
+C           -- TYPE LAGRANGE DES NOEUDS SUPPLEMENTAIRES:
+            IF (NUDDL.LT.0) THEN
+               IF (NUNO2.NE.0) THEN
+                  ICO= ICO+1
+                  ZI(IACONX-1+3*(ICO-1)+3)=ITYLAG
+                  IEQN=ZI(IANUEQ-1+I)
+                  IF (IEQN.LE.NDDLI)
+     +                CALL UTMESS('F','SSRIU1','MESSAGE VIDE    ')
+                  ZI(IAWRK1-1+IEQN)=ICO
+               END IF
+            END IF
+C
+C           -- NOEUDS LAGRANGES DU MAILLAGE :
+            IF (NUDDL.EQ.NULAG) THEN
+               ICO= ICO+1
+               ZI(IACONX-1+3*(ICO-1)+1)=1
+               ZI(IACONX-1+3*(ICO-1)+2)=NUNO
+               ZI(IACONX-1+3*(ICO-1)+3)=ITYLAG
+               IEQN=ZI(IANUEQ-1+I)
+               IF (IEQN.LE.NDDLI)
+     +            CALL UTMESS('F','SSRIU1','MESSAGE VIDE    ')
+               ZI(IAWRK1-1+IEQN)=ICO
+            END IF
+C
+C           -- NOEUDS PHYSIQUES DU MAILLAGE :
+            IF ((NUDDL.GT.0).AND.(NUNOLD.NE.NUNO)) THEN
+               NUNOLD=NUNO
+               IF (NUNO2.NE.0) THEN
+                  ICO= ICO+1
+                  ZI(IACONX-1+3*(ICO-1)+1)=1
+                  ZI(IACONX-1+3*(ICO-1)+2)=NUNO
+               END IF
+            END IF
+         ELSE
+C
+C           -- NOEUDS LAGRANGE DES LIAISONS DDL :
+            ICO= ICO+1
+            ZI(IACONX-1+3*(ICO-1)+3)=ITYLAG
+            IEQN=ZI(IANUEQ-1+I)
+            IF (IEQN.LE.NDDLI)
+     +         CALL UTMESS('F','SSRIU1','MESSAGE VIDE    ')
+            ZI(IAWRK1-1+IEQN)=ICO
+         END IF
+ 5    CONTINUE
+C
+C     -- MISE A JOUR DE .CONX : NOEUDS DE LAGRANGE :
+C     ----------------------------------------------
+      DO 6, ILI= 2, NLILI
+        CALL JEEXIN(JEXNUM(NU//'.PRNO',ILI),IRET)
+        IF (IRET.EQ.0) GOTO 6
+        CALL JELIRA(JEXNUM(NU//'.PRNO',ILI),'LONMAX',N1,KBID)
+        IF (N1.EQ.0) GOTO 6
+        CALL JEVEUO(JEXNUM(NU//'.PRNO',ILI),'L',IAPRNO)
+        NBNO= N1/(NEC+2)
+        DO 7, INO=1,NBNO
+          NUEQ = ZI(IAPRNO-1+ (INO-1)* (NEC+2)+1)
+          IF (NUEQ.EQ.0) GOTO 7
+          IEQN = ZI(IANUEQ-1+ NUEQ)
+          IF (IEQN.GT.NDDLI) THEN
+            INL=ZI(IAWRK1-1+IEQN)
+            ZI(IACONX-1+3*(INL-1)+1)= ILI
+            ZI(IACONX-1+3*(INL-1)+2)= INO
+          ENDIF
+ 7      CONTINUE
+ 6    CONTINUE
+C
+C
+C     -- REMISE EN ORDRE DE .DEEQ ET .DELG POUR TENIR COMPTE
+C        DE LA MODIFICATION DE .NUEQ :
+C        ---------------------------------------------------
+       DO 8, I=1,NDDLT
+         ZI(IAWRK1-1+I)=ZI(IADELG-1+ZI(IAWRK2-1+I))
+ 8     CONTINUE
+       DO 9, I=1,NDDLT
+         ZI(IADELG-1+I)=ZI(IAWRK1-1+I)
+ 9     CONTINUE
+C
+       DO 10, I=1,NDDLT
+         ZI(IAWRK1-1+2*(I-1)+1)=ZI(IADEEQ-1+2*(ZI(IAWRK2-1+I)-1)+1)
+         ZI(IAWRK1-1+2*(I-1)+2)=ZI(IADEEQ-1+2*(ZI(IAWRK2-1+I)-1)+2)
+ 10    CONTINUE
+       DO 11, I=1,2*NDDLT
+         ZI(IADEEQ-1+I)=ZI(IAWRK1-1+I)
+ 11    CONTINUE
+C
+C
+C     -- ON REMET .LINO DANS UN ORDRE COHERENT AVEC .CONX:
+C        ---------------------------------------------------
+       ICO=0
+       DO 13, I=1,NBNOET
+C
+C     -- SI C'EST UN NOEUD PHYSIQUE DU MAILLAGE :
+         IF (   (ZI(IACONX-1+3*(I-1)+1).EQ.1)
+     +     .AND.(ZI(IACONX-1+3*(I-1)+3).EQ.0) ) THEN
+           ICO=ICO+1
+           ZI(IALINO-1+ICO)= ZI(IACONX-1+3*(I-1)+2)
+         END IF
+ 13    CONTINUE
+C
+ 9999 CONTINUE
+      CALL JEDETC('V','&&SSRIU1',1)
+C
+      CALL JEDEMA()
+      END

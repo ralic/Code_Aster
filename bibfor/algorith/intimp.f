@@ -1,0 +1,59 @@
+      SUBROUTINE INTIMP ( IUNI, VECT1, VECT2, NMATR, NFCOD )
+      IMPLICIT   NONE
+      INTEGER             IUNI, NMATR, NFCOD
+      REAL*8              VECT1(*)
+      CHARACTER*24        VECT2(*)
+C     ------------------------------------------------------------------
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 04/02/98   AUTEUR CIBHHLV L.VIVAN 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+C     IMPRESSION DES RESULTATS OBTENUS PAR L'OPERATEUR CALC_INTE_SPEC
+C
+C     ------------------------------------------------------------------
+C     IN  : IMP   : NIVEAU D'IMPRESSION
+C     IN  : VECT1 : VALEURS DES INTERSPECTRES ET DES AUTOSPECTRES
+C     IN  : VECT2 : VECTEURS DES NOMS DE FONCTIONS
+C     IN  : NMATR : NOMBRE DE TIRAGES REALISES
+C     ------------------------------------------------------------------
+      INTEGER      IT1, IT2, IF, IB, L1
+C     ------------------------------------------------------------------
+C
+      WRITE (IUNI,101)
+      IT1 = 1
+      IT2 = 0
+      DO 10 IF = 1 , NFCOD
+         IF ( IF .EQ. IT1 ) THEN
+            WRITE (IUNI,102) VECT2(IF)
+            IT2 = IT2 + 1
+            IT1 = IT1 + IT2 + 1
+         ELSE
+            WRITE (IUNI,100) VECT2(IF)
+         ENDIF
+         DO 20 IB = 1 , NMATR
+            L1 = (IF-1)*NMATR + IB
+            WRITE (IUNI,200) VECT1(L1)
+   20    CONTINUE
+   10 CONTINUE
+C
+ 101  FORMAT ( 'CONVERGENCE DE LA MATRICE INTERSPECTRALE ',
+     +         'EN FONCTION DU NOMBRE DE TIRAGES ALEATOIRES')
+ 100  FORMAT ( 'NOM DE L INTERSPECTRE :',A19 )
+ 102  FORMAT ( 'NOM DE L AUTOSPECTRE :',A19 )
+ 200  FORMAT ( 4 (E11.4,2X) )
+C
+      END

@@ -1,0 +1,165 @@
+# MODIF  DATE 07/06/2002   AUTEUR DURAND C.DURAND 
+# TITRE MELANGE 3D-PLAQUE-POUTRE SANS NOEUD COMMUN ENTRE ELEMENTS.
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+
+DEBUT(  CODE=_F( NOM = 'SSLX100B',NIV_PUB_WEB='INTERNET') )
+
+MA=LIRE_MAILLAGE()
+
+MO=AFFE_MODELE(  MAILLAGE=MA,AFFE=(
+     _F(  MAILLE = ('HE1','F1',), PHENOMENE = 'MECANIQUE',MODELISATION = '3D'),
+     _F( MAILLE = 'MORIG',PHENOMENE = 'MECANIQUE',MODELISATION = 'DIS_TR'),
+     _F(  GROUP_MA = ('GRMA1','GRMA3',),PHENOMENE = 'MECANIQUE',MODELISATION = 'DKT'),
+          _F(  GROUP_MA = 'GRMA2',PHENOMENE = 'MECANIQUE',MODELISATION = 'POU_D_E'))
+     )
+
+MAT=DEFI_MATERIAU(  ELAS=_F( E = 2.E5, NU = 0.3, ALPHA = 0.))
+
+CHMA=AFFE_MATERIAU(  MAILLAGE=MA, AFFE=_F( TOUT = 'OUI', MATER = MAT))
+
+CARA=AFFE_CARA_ELEM(  MODELE=MO,
+       COQUE=_F(  GROUP_MA = ('GRMA1','GRMA3',), EPAIS = 1., ANGL_REP = (0., 0., )),
+       POUTRE=_F(  GROUP_MA = 'GRMA2',
+                SECTION = 'RECTANGLE',CARA = ('HZ','HY',),VALE = (3.,1.,)),
+            DISCRET=_F(  MAILLE = 'MORIG',
+                      CARA = 'M_TR_D_N',
+                      VALE = ( 0., 0., 0., 0., 0.,
+                               0., 0., 0., 0., 0., ))
+       )
+
+F0=0.
+
+FM1=-1.
+
+CHME=AFFE_CHAR_MECA(  MODELE=MO,DDL_IMPO=(
+# ENCASTERMENT A AMELIORER POUR ETRE VRAIMENT DU TYPE POUTRE
+       
+     #  (GROUP_NO:GRNO1 DX:F0 DY:F0 DZ:F0)
+       _F( GROUP_NO = 'ORIG', DX = F0, DY = F0, DZ = F0, DRX = F0, DRY = F0, DRZ = F0),
+                _F( NOEUD = ('N10','N11','N26','N23','N27',), DZ = F0)),LIAISON_GROUP=(
+        
+        _F(   NOEUD_1 = ('N4','N16',),
+           NOEUD_2 = ('N21','N25',),
+           DDL_1 = 'DX',
+           DDL_2 = 'DX',
+           COEF_MULT_1 = 1.,
+           COEF_MULT_2 = -1.,
+           COEF_IMPO = F0),
+        _F(   NOEUD_1 = ('N4','N16',),
+           NOEUD_2 = ('N21','N25',),
+           DDL_1 = 'DY',
+           DDL_2 = 'DY',
+           COEF_MULT_1 = 1.,
+           COEF_MULT_2 = -1.,
+           COEF_IMPO = F0),
+        _F(   NOEUD_1 = ('N4','N16',),
+           NOEUD_2 = ('N21','N25',),
+           DDL_1 = 'DZ',
+           DDL_2 = 'DZ',
+           COEF_MULT_1 = 1.,
+           COEF_MULT_2 = -1.,
+           COEF_IMPO = F0),
+        _F(   NOEUD_1 = ('N5','N11','N17',),
+           GROUP_NO_2 = 'GRNO3',
+           DDL_1 = 'DX',
+           DDL_2 = 'DRZ',
+           COEF_MULT_1 = 1.,
+           COEF_MULT_2 = 0.5,
+           COEF_IMPO = F0),
+        _F(   NOEUD_1 = ('N3','N15','N10',),
+           GROUP_NO_2 = 'GRNO3',
+           DDL_1 = 'DX',
+           DDL_2 = 'DRZ',
+           COEF_MULT_1 = 1.,
+           COEF_MULT_2 = -0.5,
+           COEF_IMPO = F0)),LIAISON_ELEM=(
+    _F( OPTION = 'COQ_POU',
+                  CARA_ELEM = CARA,
+                  AXE_POUTRE = (1., 0., 0.,),
+                  GROUP_MA_1 = 'GRMA3',
+                  GROUP_NO_2 = 'C'),
+    _F( OPTION = '3D_POU',
+                  GROUP_MA_1 = 'FACE1',
+                  GROUP_NO_2 = 'ORIG')),
+      FORCE_NODALE=_F( NOEUD = 'N29',FY = FM1)
+  #     FORCE_NODALE:(NOEUD:N29,MZ : 1.0 )
+      )
+
+DEP=MECA_STATIQUE(MODELE=MO, CHAM_MATER=CHMA,CARA_ELEM=CARA,
+                         NIVE_COUCHE='SUP',
+                  EXCIT=_F( CHARGE = CHME),  OPTION=('SIGM_ELNO_DEPL',
+                                               'EFGE_ELNO_DEPL',))
+
+DEP1=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
+NOM_CHAM='DEPL', RESULTAT=DEP, NUME_ORDRE=1 )
+
+TEST_RESU(CHAM_NO=( 
+    _F( CHAM_GD = DEP1, NOEUD = 'N26', NOM_CMP = 'DY', VALE = -0.0267, PRECISION = 0.03),
+    _F( CHAM_GD = DEP1, NOEUD = 'N4',  NOM_CMP = 'DY', VALE = -0.0267, PRECISION = 0.03),
+    _F( CHAM_GD = DEP1, NOEUD = 'N22', NOM_CMP = 'DY', VALE = -0.0933, PRECISION = 0.01),
+    _F( CHAM_GD = DEP1, NOEUD = 'N23', NOM_CMP = 'DY', VALE = -0.0933, PRECISION = 0.01),
+    _F( CHAM_GD = DEP1, NOEUD = 'N29', NOM_CMP = 'DY', VALE = -0.18,   PRECISION = 0.01)),RESU=(
+_F( RESULTAT = DEP, NOEUD = 'N27', NOM_CHAM = 'EFGE_ELNO_DEPL', NOM_CMP = 'MFZ',
+    NUME_ORDRE = 1, VALE = -10.0,  MAILLE = 'S1', PRECISION = 0.01),
+_F( RESULTAT = DEP, NOEUD = 'N29', NOM_CHAM = 'EFGE_ELNO_DEPL', NOM_CMP = 'MFZ',
+NUME_ORDRE = 1, VALE = 0.0, MAILLE = 'S2', CRITERE = 'ABSOLU',  PRECISION = 0.01))
+          )
+
+DEP=CALC_NO(reuse=DEP,  RESULTAT=DEP,  MODELE=MO,
+                        OPTION='FORC_NODA',
+                        TOUT='OUI',
+                        CARA_ELEM=CARA,
+                        CHAM_MATER=CHMA
+               )
+
+TABLEAU1=POST_RELEVE_T( 
+                        ACTION=_F( RESULTAT = DEP,
+                         NOM_CHAM = 'FORC_NODA',
+                         INTITULE = 'MOMENT',
+                         REPERE = 'GLOBAL',
+                         OPERATION = 'MOYENNE',
+                         GROUP_NO = 'GRNO1',
+                         RESULTANTE = ('DX', 'DY', 'DZ',),
+                         MOMENT = ('DRX', 'DRY', 'DRZ',),
+                         POINT = (0., 0., 0.,)))
+
+TABLEAU2=POST_RELEVE_T( 
+                        ACTION=_F( RESULTAT = DEP,
+                         NOM_CHAM = 'FORC_NODA',
+                         INTITULE = 'MOMENT',
+                         REPERE = 'GLOBAL',
+                         OPERATION = 'MOYENNE',
+                         GROUP_NO = 'GRNO2',
+                         RESULTANTE = ('DX', 'DY', 'DZ',),
+                         MOMENT = ('DRX', 'DRY', 'DRZ',),
+                         POINT = (10., 0., 0.,)))
+
+TABLEAU3=POST_RELEVE_T( 
+                        ACTION=_F( RESULTAT = DEP,
+                         NOM_CHAM = 'FORC_NODA',
+                         INTITULE = 'MOMENT',
+                         REPERE = 'GLOBAL',
+                         OPERATION = 'MOYENNE',
+                         GROUP_NO = 'GRNO3',
+                         RESULTANTE = ('DX', 'DY', 'DZ',),
+                         MOMENT = ('DRX', 'DRY', 'DRZ',),
+                         POINT = (20., 0., 0.,)))
+
+FIN()
+#

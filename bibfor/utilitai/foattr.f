@@ -1,0 +1,123 @@
+      SUBROUTINE FOATTR( MOTCLE, IOCC, NOMFON )
+      IMPLICIT REAL*8 (A-H,O-Z)
+      INTEGER                    IOCC
+      CHARACTER*(*)      MOTCLE,       NOMFON
+C     ----------------------------------------------------------------
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF UTILITAI  DATE 03/10/2001   AUTEUR DURAND C.DURAND 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+C     SURCHARGE LES ATTRIBUTS D'UN CONCEPT DE TYPE "FONCTION"
+C     ----------------------------------------------------------------
+C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
+      INTEGER          ZI
+      COMMON  /IVARJE/ ZI(1)
+      REAL*8           ZR
+      COMMON  /RVARJE/ ZR(1)
+      COMPLEX*16       ZC
+      COMMON  /CVARJE/ ZC(1)
+      LOGICAL          ZL
+      COMMON  /LVARJE/ ZL(1)
+      CHARACTER*8      ZK8
+      CHARACTER*16              ZK16
+      CHARACTER*24                        ZK24
+      CHARACTER*32                                  ZK32
+      CHARACTER*80                                            ZK80
+      COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
+      CHARACTER*4   INTERP(2)
+      CHARACTER*8   K8B, NPARA, NRESU, PROLG, PROLD
+      CHARACTER*16  NOMCMD
+      CHARACTER*19  TEMP
+      CHARACTER*24  PROL
+      CHARACTER*1 K1BID
+C     ----------------------------------------------------------------
+C
+      CALL JEMARQ()
+      TEMP = NOMFON
+      PROL = TEMP//'.PROL'
+      CALL JEVEUO(PROL,'E',LPRO)
+      CALL JELIRA(PROL,'LONUTI',NBPROL,K1BID)
+C
+      IF (ZK8(LPRO).EQ.'NAPPE   ') THEN
+         NBFONC = ( NBPROL - 6 ) / 2
+C
+         CALL GETVTX(MOTCLE,'INTERPOL',IOCC,1,2,INTERP,L1)
+         IF ( L1 .EQ. 1 ) ZK8(LPRO+1) = INTERP(1)//INTERP(1)
+         IF ( L1 .EQ. 2 ) ZK8(LPRO+1) = INTERP(1)//INTERP(2)
+C
+         CALL GETVTX(MOTCLE,'NOM_PARA',IOCC,1,1,NPARA,L2)
+         IF (L2.NE.0) ZK8(LPRO+2) = NPARA
+C
+         CALL GETVTX(MOTCLE,'NOM_RESU',IOCC,1,1,NRESU,L3)
+         IF (L3.NE.0) ZK8(LPRO+3) = NRESU
+C
+         CALL GETVTX(MOTCLE,'PROL_GAUCHE',IOCC,1,1,PROLG,L4)
+         IF (L4.NE.0) ZK8(LPRO+4)(1:1) = PROLG(1:1)
+C
+         CALL GETVTX(MOTCLE,'PROL_DROITE',IOCC,1,1,PROLD,L5)
+         IF (L5.NE.0) ZK8(LPRO+4)(2:2) = PROLD(1:1)
+C
+         CALL GETVTX(MOTCLE,'NOM_PARA_FONC',IOCC,1,1,NPARA,L6)
+         IF (L6.NE.0) ZK8(LPRO+5) = NPARA
+C
+         CALL GETVTX(MOTCLE,'INTERPOL_FONC',IOCC,1,2,INTERP,L7)
+         IF (L7.NE.0) THEN
+            DO 10 IF = 1,NBFONC
+            IF ( L7 .EQ. 1 ) ZK8(LPRO+6+2*(IF-1)) = INTERP(1)//INTERP(1)
+            IF ( L7 .EQ. 2 ) ZK8(LPRO+6+2*(IF-1)) = INTERP(1)//INTERP(2)
+ 10         CONTINUE
+         ENDIF
+C
+         CALL GETVTX(MOTCLE,'PROL_GAUCHE_FONC',IOCC,1,1,PROLG,L8)
+         IF (L8.NE.0) THEN
+            DO 12 IF = 1,NBFONC
+               ZK8(LPRO+7+2*(IF-1))(1:1) = PROLG(1:1)
+ 12         CONTINUE
+         ENDIF
+C
+         CALL GETVTX(MOTCLE,'PROL_DROITE_FONC',IOCC,1,1,PROLD,L9)
+         IF (L9.NE.0) THEN
+            DO 14 IF = 1,NBFONC
+              ZK8(LPRO+7+2*(IF-1))(2:2) = PROLD(1:1)
+ 14         CONTINUE
+         ENDIF
+C
+      ELSE
+C
+         CALL GETVTX(MOTCLE,'INTERPOL',IOCC,1,2,INTERP,L1)
+         IF (L1.NE.0) THEN
+            IF ( L1 .EQ. 1 ) ZK8(LPRO+1) = INTERP(1)//INTERP(1)
+            IF ( L1 .EQ. 2 ) ZK8(LPRO+1) = INTERP(1)//INTERP(2)
+         ENDIF
+C
+         CALL GETVTX(MOTCLE,'NOM_PARA',IOCC,1,1,NPARA,L2)
+         IF (L2.NE.0)  ZK8(LPRO+2) = NPARA
+C
+         CALL GETVTX(MOTCLE,'NOM_RESU',IOCC,1,1,NRESU,L3)
+         IF (L3.NE.0)  ZK8(LPRO+3) = NRESU
+C
+         CALL GETVTX(MOTCLE,'PROL_GAUCHE',IOCC,1,1,PROLG,L4)
+         IF (L4.NE.0)  ZK8(LPRO+4)(1:1) = PROLG(1:1)
+C
+         CALL GETVTX(MOTCLE,'PROL_DROITE',IOCC,1,1,PROLD,L5)
+         IF (L5.NE.0)  ZK8(LPRO+4)(2:2) = PROLD(1:1)
+C
+      ENDIF
+C
+      CALL JEDEMA()
+      END

@@ -1,0 +1,98 @@
+      SUBROUTINE FLASSQ( N, X, INCX, SCALE, SUMSQ )
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF UTILIFOR  DATE 20/09/2002   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C ======================================================================
+C COPYRIGHT (C) LAPACK
+C ======================================================================
+C
+C     SUBROUTINE LAPACK CALCULANT LES PARAMETRES D'UNE SOMME DE CARRES.
+C-----------------------------------------------------------------------
+C  -- LAPACK AUXILIARY ROUTINE (VERSION 2.0) --
+C     UNIV. OF TENNESSEE, UNIV. OF CALIFORNIA BERKELEY, NAG LTD.,
+C     COURANT INSTITUTE, ARGONNE NATIONAL LAB, AND RICE UNIVERSITY
+C     OCTOBER 31, 1992
+C
+C  PURPOSE
+C  =======
+C
+C  FLASSQ  RETURNS THE VALUES  SCL  AND  SMSQ  SUCH THAT
+C
+C     ( SCL**2 )*SMSQ = X( 1 )**2 +...+ X( N )**2 + ( SCALE**2 )*SUMSQ,
+C
+C  WHERE  X( I ) = X( 1 + ( I - 1 )*INCX ). THE VALUE OF  SUMSQ  IS
+C  ASSUMED TO BE NON-NEGATIVE AND  SCL  RETURNS THE VALUE
+C
+C     SCL = MAX( SCALE, ABS( X( I ) ) ).
+C
+C  SCALE AND SUMSQ MUST BE SUPPLIED IN SCALE AND SUMSQ AND
+C  SCL AND SMSQ ARE OVERWRITTEN ON SCALE AND SUMSQ RESPECTIVELY.
+C
+C  THE ROUTINE MAKES ONLY ONE PASS THROUGH THE VECTOR X.
+C
+C  ARGUMENTS
+C  =========
+C
+C  N       (INPUT) INTEGER
+C          THE NUMBER OF ELEMENTS TO BE USED FROM THE VECTOR X.
+C
+C  X       (INPUT) REAL*8
+C          THE VECTOR FOR WHICH A SCALED SUM OF SQUARES IS COMPUTED.
+C             X( I )  = X( 1 + ( I - 1 )*INCX ), 1 <= I <= N.
+C
+C  INCX    (INPUT) INTEGER
+C          THE INCREMENT BETWEEN SUCCESSIVE VALUES OF THE VECTOR X.
+C          INCX > 0.
+C
+C  SCALE   (INPUT/OUTPUT) REAL*8
+C          ON ENTRY, THE VALUE  SCALE  IN THE EQUATION ABOVE.
+C          ON EXIT, SCALE IS OVERWRITTEN WITH  SCL , THE SCALING FACTOR
+C          FOR THE SUM OF SQUARES.
+C
+C  SUMSQ   (INPUT/OUTPUT) REAL*8
+C          ON ENTRY, THE VALUE  SUMSQ  IN THE EQUATION ABOVE.
+C          ON EXIT, SUMSQ IS OVERWRITTEN WITH  SMSQ , THE BASIC SUM OF
+C          SQUARES FROM WHICH  SCL  HAS BEEN FACTORED OUT.
+C
+C ASTER INFORMATION
+C 14/01/2000 TOILETTAGE DU FORTRAN SUIVANT LES REGLES ASTER,
+C            IMPLICIT NONE.
+C INTRINSIC FUNCTIONS
+C            ABS.
+C-----------------------------------------------------------------------
+C CORPS DU PROGRAMME
+      IMPLICIT NONE
+C
+C     .. SCALAR ARGUMENTS ..
+      INTEGER            INCX, N
+      REAL*8   SCALE, SUMSQ
+C     ..
+C     .. ARRAY ARGUMENTS ..
+      REAL*8   X( * )
+C     ..
+C     .. PARAMETERS ..
+      REAL*8   ZERO
+      PARAMETER          ( ZERO = 0.0D+0 )
+C     ..
+C     .. LOCAL SCALARS ..
+      INTEGER            IX
+      REAL*8   ABSXI
+C     ..
+C     .. EXECUTABLE STATEMENTS ..
+C
+      IF( N.GT.0 ) THEN
+         DO 10 IX = 1, 1 + ( N-1 )*INCX, INCX
+            IF( X( IX ).NE.ZERO ) THEN
+               ABSXI = ABS( X( IX ) )
+               IF( SCALE.LT.ABSXI ) THEN
+                  SUMSQ = 1 + SUMSQ*( SCALE / ABSXI )**2
+                  SCALE = ABSXI
+               ELSE
+                  SUMSQ = SUMSQ + ( ABSXI / SCALE )**2
+               END IF
+            END IF
+   10    CONTINUE
+      END IF
+C
+C     END OF FLASSQ
+C
+      END

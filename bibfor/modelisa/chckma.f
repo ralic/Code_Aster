@@ -1,0 +1,269 @@
+      SUBROUTINE CHCKMA (NOMU,CMD,DTOL)
+C-----------------------------------------------------------------------
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF MODELISA  DATE 29/05/2002   AUTEUR DURAND C.DURAND 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+C-----------------------------------------------------------------------
+      IMPLICIT NONE
+C-----------------------------------------------------------------------
+C
+C       ROUTINE DE VERIFICATION DU MAILLAGE :
+C       1- RECHERCHE (ET ELIMINATION SI DEMANDEE) DES NOEUDS ORPHELINS
+C       2- RECHERCHE (ET ELIMINATION SI DEMANDEE) DES MAILLES DOUBLES
+C       3- RECHERCHE DES MAILLES APLATIES
+C
+C       IN,OUT : NOMU   NOM DU CONCEPT MAILLAGE PRODUIT PAR LA COMMANDE
+C       IN     : CMD    NOM DE LA COMMANDE
+C       IN     : DTOL   TOLERANCE POUR TESTER L APPLATISST DES MAILLES
+C
+C-----------------------------------------------------------------------
+C
+      CHARACTER*8     NOMU
+      CHARACTER*16    CMD
+      REAL*8          DTOL
+C
+C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
+      INTEGER            ZI
+      COMMON  / IVARJE / ZI(1)
+      REAL*8             ZR
+      COMMON  / RVARJE / ZR(1)
+      COMPLEX*16         ZC
+      COMMON  / CVARJE / ZC(1)
+      LOGICAL            ZL
+      COMMON  / LVARJE / ZL(1)
+      CHARACTER*8        ZK8
+      CHARACTER*16                ZK16
+      CHARACTER*24                          ZK24
+      CHARACTER*32                                    ZK32
+      CHARACTER*80                                              ZK80
+      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+      CHARACTER*32       JEXNOM, JEXNUM,JEXATR
+C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
+C
+C ----- DECLARATIONS
+C
+      INTEGER         IACONX,ILCONX,IMA,NBNM,NBNM2,IT,JCOOR,IFM,NIV
+      INTEGER         JDRVLC,JCNCIN,NUMAIL,JCXMA,NBCNX,IMAIL
+      INTEGER         IADR,IADR0,NBM,NBM0
+      INTEGER         JA,JB,LL,TABMA(200),I,J,K1,K2,KNSO,KMDB,L,IRET
+      CHARACTER*1     K1B
+      CHARACTER*8     NOXA,NOXB,K8B
+      CHARACTER*24    NCNCIN
+      REAL*8          DM,DP,APLAT,DRAP,R8MAEM,R8MIEM
+      REAL*8          XA,XB,YA,YB,ZA,ZB
+      CHARACTER*24    COOVAL,CONNEX,NOMMAI,NOMNOE,NSOLO,MDOUBL
+      INTEGER         NBMAIL , NBNOEU
+      INTEGER         INSOLO , IMDOUB
+      LOGICAL         INDIC  , ALARME
+C
+      CALL INFMAJ
+      CALL INFNIV(IFM,NIV)
+      CALL JEMARQ ( )         
+C
+      NOMMAI  = NOMU// '.NOMMAI         '
+      NOMNOE  = NOMU// '.NOMNOE         '
+      COOVAL  = NOMU// '.COORDO    .VALE'
+      CONNEX  = NOMU// '.CONNEX         '
+      CALL DISMOI('F','NB_MA_MAILLA',NOMU,'MAILLAGE',NBMAIL,K8B,IRET)
+      CALL DISMOI('F','NB_NO_MAILLA',NOMU,'MAILLAGE',NBNOEU,K8B,IRET)
+C
+C     -----------------------------------------------------------
+C     RECHERCHE DES NOEUDS ORPHELINS (ATTACHES A AUCUNE MAILLE)
+C     A PARTIR DE LA CONNECTIVITE INVERSE RENVOYEE PAR CNCINV
+C     -----------------------------------------------------------
+      NSOLO='&&CHCKMA.NSOLO          '
+      CALL WKVECT(NSOLO,'V V I',NBNOEU,INSOLO)
+C
+      CALL JEVEUO(CONNEX,'L',IACONX)
+      CALL JEVEUO(JEXATR(CONNEX,'LONCUM'),'L',ILCONX)
+      CALL JEVEUO(COOVAL,'L',JCOOR)
+C
+      NCNCIN = '&&CHCKMA.CONNECINVERSE  '
+      CALL CNCINV(NOMU,0,0, 'V', NCNCIN )
+      CALL JEVEUO(JEXATR(NCNCIN,'LONCUM'),'L',JDRVLC)
+      CALL JEVEUO(JEXNUM(NCNCIN,1)       ,'L',JCNCIN)
+C
+      IT=0
+      KNSO=0
+      ALARME = .FALSE.
+      WRITE(IFM,*) ' ====== VERIFICATION DU MAILLAGE ======'
+      DO 10 JA=1,NBNOEU
+         IADR = ZI(JDRVLC + JA-1)
+         NBM  = ZI(JDRVLC + JA+1-1) -
+     &          ZI(JDRVLC + JA-1)
+         DO 11 IMAIL = 1, NBM
+            NUMAIL = ZI(JCNCIN+IADR-1+IMAIL-1)
+            IF (NUMAIL.EQ.0) THEN
+              KNSO=KNSO+1
+              ZI(INSOLO-1+KNSO)= JA
+              CALL JENUNO(JEXNUM(NOMNOE,JA),NOXA)
+              WRITE(IFM,*) ' LE NOEUD  '//NOXA//' EST ORPHELIN'
+              ALARME=.TRUE.
+            ENDIF
+  11     CONTINUE
+ 10   CONTINUE
+      IF (ALARME) THEN
+         CALL UTMESS('A',CMD,'- CHCKMA PHASE DE VERIFICATION DU'
+     &   //' MAILLAGE - PRESENCE DE NOEUDS ORPHELINS')
+      ENDIF
+C
+C     -----------------------------------------------------------
+C     RECHERCHE DES MAILLES DOUBLES : C EST A DIRE LES MAILLES
+C     DE NUMEROS DIFFERENTS QUI ONT LES MEMES NOEUDS EN SUPPORT :
+C     POUR CHAQUE PREMIER NOEUD DE CHAQUE MAILLE, ON
+C     REGARDE LES AUTRES MAILLES POSSEDANT CE NOEUD DANS LA 
+C     CONNECTIVITE INVERSE : LES CANDIDATS AU DOUBLON Y SONT
+C     FORCEMMENT. CA EVITE UN ALGO EN N2.
+C     -----------------------------------------------------------
+C
+      MDOUBL='&&CHCKMA.MDOUBLE        '
+      CALL WKVECT(MDOUBL,'V V I',NBMAIL,IMDOUB)
+C
+C     BOUCLE SUR TOUTES LES MAILLES DU MAILLAGE
+C
+      IT=0
+      KMDB=0
+      ALARME = .FALSE.
+      WRITE(IFM,*)
+      WRITE(IFM,*) ' ====== VERIFICATION DU MAILLAGE ======'
+      DO 100 IMA=1,NBMAIL
+        NBNM   = ZI(ILCONX-1+IMA+1)-ZI(ILCONX+IMA-1)
+        IADR0 = ZI(JDRVLC + ZI(IACONX+1+IT-1)-1)
+        NBM0  = ZI(JDRVLC + ZI(IACONX+1+IT-1)+1-1) -
+     &          ZI(JDRVLC + ZI(IACONX+1+IT-1)-1)
+        I=1
+        DO 101 JA=1,NBM0
+          IF (ZI(JCNCIN+IADR0-1+JA-1).NE.IMA) THEN
+            TABMA(I)=ZI(JCNCIN+IADR0-1+JA-1)
+            I=I+1
+          ENDIF
+          IF (I.GT.199) THEN
+            CALL UTMESS('A',CMD,'- CHCKMA PHASE DE VERIFICATION DU'
+     &      //' MAILLAGE - UN NOEUD EST CONNECTE A PLUS DE 200 MAILLES'
+     &      //'  - ON ARRETE LA VERIFICATION')
+            GOTO 9999
+          ENDIF
+ 101    CONTINUE
+C
+C     TABMA CONTIENT LA LISTE DES MAILLES (HORS IMA) QUI 
+C     CONTIENNENT LE PREMIER NOEUD DE IMA
+C
+        IF (NBNM.GT.1) THEN
+          DO 102 I=1,NBM0-1
+            NBNM2  = ZI(ILCONX-1+TABMA(I)+1)-ZI(ILCONX+TABMA(I)-1)
+C
+C     COMPARAISON DES NOEUDS DE IMA AVEC CEUX DES MAILLES DE TABMA
+C     SI LES CARDINAUX SONT DEJA DIFFERENTS (NBNM) : ON SAUTE
+C
+            IF ((NBNM2.EQ.NBNM).AND.(TABMA(I).LT.IMA)) THEN
+              DO 103 J=1,NBNM2
+                 K1=ZI(IACONX-1+ZI(ILCONX+TABMA(I)-1)+J-1)
+                 INDIC=.FALSE.
+                 DO 104 L=1,NBNM
+                    K2=ZI(IACONX-1+ZI(ILCONX+IMA-1)+L-1)
+                    IF (K1.EQ.K2) INDIC=.TRUE.
+ 104             CONTINUE
+                 IF (.NOT.INDIC) GOTO 102
+ 103          CONTINUE
+              KMDB=KMDB+1
+              ZI(IMDOUB-1+KMDB)= TABMA(I)
+              CALL JENUNO(JEXNUM(NOMMAI,IMA),NOXA)
+              CALL JENUNO(JEXNUM(NOMMAI,TABMA(I)),NOXB)
+              WRITE(IFM,*) ' LES MAILLES '//NOXA//' ET '//NOXB//' '
+     &      //' SONT DOUBLES (MEME NOEUDS EN SUPPORT)'
+              ALARME=.TRUE.
+            ENDIF
+C
+ 102      CONTINUE
+C
+        ELSE IF (NBM0.GT.1) THEN
+          CALL JENUNO(JEXNUM(NOMMAI,IMA),NOXA)
+          WRITE(IFM,*) ' MAILLE POI1 '//NOXA//'INCLUSE DANS UNE AUTRE'
+        ENDIF
+C
+        IT=IT+NBNM
+ 100  CONTINUE
+      IF (ALARME) THEN
+         CALL UTMESS('A',CMD,'- CHCKMA PHASE DE VERIFICATION DU'
+     &   //' MAILLAGE - PRESENCE DE MAILLES DOUBLES')
+      ENDIF
+C
+C     -----------------------------------------------------------
+C     CALCUL POUR CHAQUE MAILLE DU RAPPORT MINIMUM ENTRE LA PLUS
+C     PETITE ARRETE ET LA PLUS GRANDE POUR REPERER LES ELEMENTS
+C     TRES APLATIS VOIRE DEGENERES. LE RAPPORT MIN TOLERE EST :
+C     DTOL = 1 POURCENT
+C     -----------------------------------------------------------
+C
+      IT=0
+      ALARME = .FALSE.
+      DO 200 IMA=1,NBMAIL
+        NBNM   = ZI(ILCONX-1+IMA+1)-ZI(ILCONX+IMA-1)
+        DM=R8MAEM()
+        DP=R8MIEM()
+        IF(NBNM.GT.1) THEN
+C
+          DO 210 JA=1,NBNM-1
+            DO 220 JB=JA+1,NBNM
+              XA=ZR(JCOOR-1+3*(ZI(IACONX+JA+IT-1)-1)+1)
+              YA=ZR(JCOOR-1+3*(ZI(IACONX+JA+IT-1)-1)+2)
+              ZA=ZR(JCOOR-1+3*(ZI(IACONX+JA+IT-1)-1)+3)
+              XB=ZR(JCOOR-1+3*(ZI(IACONX+JB+IT-1)-1)+1)
+              YB=ZR(JCOOR-1+3*(ZI(IACONX+JB+IT-1)-1)+2)
+              ZB=ZR(JCOOR-1+3*(ZI(IACONX+JB+IT-1)-1)+3)
+              APLAT = (XA-XB)**2 + (YA-YB)**2 + (ZA-ZB)**2
+              IF (APLAT.LT.DM) DM=APLAT
+              IF (APLAT.GT.DP) DP=APLAT
+ 220        CONTINUE
+ 210      CONTINUE
+          IF(DP.GT.0.D0) THEN
+            DRAP=SQRT(DM/DP)
+            IF(DRAP.LT.DTOL) THEN
+              ALARME=.TRUE.
+              CALL JENUNO(JEXNUM(NOMMAI,IMA),NOXA)
+              WRITE(IFM,*)
+              WRITE(IFM,*) ' ====== VERIFICATION DU MAILLAGE ======'
+              WRITE(IFM,*) ' LA MAILLE POSSEDE DES NOEUDS CONFONDUS'
+              WRITE(IFM,*) ' GEOMETRIQUEMENT OU TOPOLOGIQUEMENT '
+              WRITE(IFM,*) ' MAILLE ',NOXA,' DM/DP =',DRAP
+              ENDIF
+            ENDIF
+C
+        ENDIF
+        IT=IT+NBNM
+ 200  CONTINUE
+      IF (ALARME) THEN
+         CALL UTMESS('A',CMD,'- CHCKMA PHASE DE VERIFICATION DU'
+     &   //' MAILLAGE - PRESENCE DE MAILLES APLATIES')
+      ENDIF
+C
+C     -----------------------------------------------------------
+C     MENAGE DANS LE MAILLAGE : ON DETRUIT NOEUDS ORPHELINS ET
+C                               MAILLES DOUBLES
+C     -----------------------------------------------------------
+C
+C     CA RESTE A FAIRE ...
+C     LES NOEUDS ORPHELINS SONT RANGES DANS &&CHCKMA.NSOLO(1:KNSO)
+C     LES MAILLES DOUBLES SONT RANGEES DANS &&CHCKMA.MDOUBLE(1:KMDB)
+C
+9999  CONTINUE
+      CALL JEDETR('&&CHCKMA.NSOLO          ')
+      CALL JEDETR('&&CHCKMA.MDOUBLE        ')
+      CALL JEDETR('&&CHCKMA.CONNECINVERSE  ')
+      CALL JEDEMA ( )
+      END

@@ -1,0 +1,83 @@
+      SUBROUTINE NTSTOC ( IARCH, NUMORD, TEMPER, COMPOR, NOMCH, VTEMP,
+     &                    VTEMPP, VHYDR, LONCH, TPSNP1, CRITHE, PARA )
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 08/08/2002   AUTEUR CIBHHLV L.VIVAN 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+C
+      IMPLICIT NONE
+      INTEGER      NUMORD, LONCH, IARCH
+      REAL*8       TPSNP1, PARA(*)
+      CHARACTER*24 TEMPER, NOMCH, VTEMP, VTEMPP, CRITHE, COMPOR, VHYDR
+C
+C ----------------------------------------------------------------------
+C
+C COMMANDE THER_NON_LINE  : ACTUALISATIONS
+C ET STOCKAGE (POUR LE CALCUL) ET ARCHIVAGE DES TEMPERATURES.
+C
+C -------------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ----------------
+C
+      INTEGER            ZI
+      COMMON  / IVARJE / ZI(1)
+      REAL*8             ZR
+      COMMON  / RVARJE / ZR(1)
+      COMPLEX*16         ZC
+      COMMON  / CVARJE / ZC(1)
+      LOGICAL            ZL
+      COMMON  / LVARJE / ZL(1)
+      CHARACTER*8        ZK8
+      CHARACTER*16                ZK16
+      CHARACTER*24                          ZK24
+      CHARACTER*32                                    ZK32
+      CHARACTER*80                                              ZK80
+      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+C
+C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
+C
+      INTEGER      JTEMP, JTEMPP, K, IFM, IUNIFI
+C
+C ----------------------------------------------------------------------
+C
+      CALL JEMARQ()
+      IFM = IUNIFI ('MESSAGE')
+C
+C --- RECUPERATION D'ADRESSES JEVEUX
+C
+      CALL JEVEUO (VTEMP(1:19 )//'.VALE','E',JTEMP)
+      CALL JEVEUO (VTEMPP(1:19)//'.VALE','L',JTEMPP)
+C
+C --- ACTUALISATION DU VECTEUR DE TRAVAIL VTEMP
+C
+      DO 145 K = 1,LONCH
+        ZR(JTEMP+K-1) = ZR(JTEMPP+K-1)
+ 145  CONTINUE
+C
+C --- ARCHIVAGE
+C
+      IF ( IARCH .EQ. 1 ) THEN
+         CALL NTARCH (NUMORD,TEMPER,NOMCH,COMPOR,VTEMP,VHYDR,
+     &                TPSNP1,CRITHE,PARA)
+         WRITE(IFM,1010) 'TEMP',NUMORD,TPSNP1
+         WRITE(IFM,'(/)')
+      ENDIF
+C
+ 1010 FORMAT (1P,3X,'CHAMP    STOCKE   :',1X,A4,10X,
+     &        ' NUME_ORDRE:',I8,' INSTANT:',D12.5)
+C
+C-----------------------------------------------------------------------
+      CALL JEDEMA()
+      END

@@ -1,0 +1,132 @@
+      SUBROUTINE MTDEFS ( MATOUT, MATIN, BASE, TYPC)
+      IMPLICIT REAL*8 (A-H,O-Z)
+      CHARACTER*(*)       MATOUT, MATIN, BASE, TYPC
+C     ------------------------------------------------------------------
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGELINE  DATE 15/09/98   AUTEUR VABHHTS J.PELLET 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+C     ------------------------------------------------------------------
+C     DEFINITION DE LA STRUCTURE D'UNE MATRICE "MATOUT"
+C       QUI S'APPUIE SUR LA MEME NUMEROTATION QUE "MATIN",
+C       QUI A LA MEME STRUCTURE (PROFIL PAR BLOC/MORSE) QUE "MATIN"
+C     LA MATRICE "MATOUT" EST CREEE SUR LA BASE "BASE".
+C     LA MATRICE "MATOUT" EST A COEFFICIENTS "TYPE".
+C     ------------------------------------------------------------------
+C IN  MATOUT : CH19: NOM DE LA MATRICE A CREER
+C IN  MATIN  : CH19: NOM DE LA MATRICE MODELE
+C IN  BASE   : CH1 : NOM DE LA BASE SUR LAQUELLE LA MATRICE DOIT ETRE
+C                    CREER
+C IN  TYPC   : CH1 : TYPE DES VALEURS DE LA MATRICE A CREER
+C              'R'  ==> COEFFICIENTS REELS
+C              'C'  ==> COEFFICIENTS COMPLEXES
+C              ' '  ==> COEFFICIENTS DU TYPE DE LA MATRICE MATIN
+C     ------------------------------------------------------------------
+C     PRECAUTIONS D'EMPLOI :
+C       1) LA MATRICE "MATOUT" NE DOIT PAS EXISTER
+C       2) LES COEFFICIENTS DE LA MATRICE "MATOUT" NE SONT PAS AFFECTES
+C     ------------------------------------------------------------------
+C
+C
+C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
+      INTEGER          ZI
+      COMMON  /IVARJE/ ZI(1)
+      REAL*8           ZR
+      COMMON  /RVARJE/ ZR(1)
+      COMPLEX*16       ZC
+      COMMON  /CVARJE/ ZC(1)
+      LOGICAL          ZL
+      COMMON  /LVARJE/ ZL(1)
+      CHARACTER*8      ZK8
+      CHARACTER*16              ZK16
+      CHARACTER*24                        ZK24
+      CHARACTER*32                                  ZK32
+      CHARACTER*80                                            ZK80
+      COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+      CHARACTER*6      PGC, PGCANC
+      COMMON  /NOMAJE/ PGC
+C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
+C     ------------------------------------------------------------------
+      INTEGER       NBVAL,IVAL, LMATOU, LMATIN
+      CHARACTER*1   CLASSE, TYPE
+      CHARACTER*2   TYMA
+      CHARACTER*8   CBID
+      CHARACTER*19  NOMOUT, NOMIN
+      CHARACTER*24  VALE, REFE , LIME
+      CHARACTER*32  JEXNUM
+C     ------------------------------------------------------------------
+      CALL JEMARQ()
+      PGCANC = PGC
+      PGC    = 'MTDEFS'
+      CLASSE = BASE(1:1)
+C
+C     --- RECUPERATION DES INFORMATIONS DE REFERENCE DE MATIN ---
+      NOMIN = MATIN
+      REFE = NOMIN//'.REFA'
+      CALL JELIRA(REFE,'LONMAX',NBVAL,CBID)
+      CALL JELIRA(NOMIN//'.VALE','DOCU',IBID,TYMA)
+      CALL JEVEUO(REFE,'L',LMATIN)
+C
+C     --- AFFECTATION DES INFORMATIONS DE REFERENCE A MATOUT ---
+      NOMOUT = MATOUT
+      REFE = NOMOUT//'.REFA'
+      CALL JECREO(REFE,CLASSE//' V K24')
+      CALL JEECRA(REFE,'LONMAX',NBVAL,'  ')
+      CALL JEVEUO(REFE,'E',LMATOU)
+      DO 10 IVAL=0,NBVAL-1
+         ZK24(LMATOU+IVAL) = ZK24(LMATIN+IVAL)
+  10  CONTINUE
+C
+C     --- LIBERATION (AVEC I/O EN DIFFERE) ---
+      REFE = NOMIN//'.REFA'
+C
+C
+C     --- RECOPIE DES .LIME:
+      LIME = NOMIN//'.LIME'
+      CALL JELIRA(LIME,'LONMAX',NBVAL,CBID)
+      CALL JEVEUO(LIME,'L',LMATIN)
+C
+      LIME = NOMOUT//'.LIME'
+      CALL JECREO(LIME,CLASSE//' V K8')
+      CALL JEECRA(LIME,'LONMAX',NBVAL,'  ')
+      CALL JEVEUO(LIME,'E',LMATOU)
+      DO 15 IVAL=0,NBVAL-1
+         ZK8(LMATOU+IVAL) = ZK8(LMATIN+IVAL)
+  15  CONTINUE
+      LIME = NOMIN//'.LIME'
+C
+C     ------------- CREATION DE LA COLLECTION DES VALEURS --------------
+C
+C     --- TYPE DES VALEURS, NOMBRE DE BLOCS, LONGUEUR D'UN BLOC ---
+      VALE = NOMIN//'.VALE'
+      TYPE = TYPC(1:1)
+      IF (TYPE.EQ.' ' ) CALL JELIRA(VALE,'TYPE',IVAL,TYPE)
+      CALL JELIRA(VALE,'NMAXOC',NBBLOC,CBID)
+      CALL JELIRA(JEXNUM(VALE,1),'LONMAX',LGBLOC,CBID)
+C
+C     --- CREATION DE LA COLLECTION DES VALEURS DE MATOUT ---
+      VALE = NOMOUT//'.VALE'
+      CALL JECREC(VALE,CLASSE//' V '//TYPE,
+     +                           'NU','DISPERSE','CONSTANT',NBBLOC)
+      CALL JEECRA(VALE,'LONMAX',LGBLOC,CBID)
+      CALL JEECRA(NOMOUT//'.VALE','DOCU',IBID,TYMA)
+      DO 20 IBLOC = 1, NBBLOC
+         CALL JECROC( JEXNUM(VALE,IBLOC) )
+  20  CONTINUE
+      PGC = PGCANC
+      CALL JEDEMA()
+      END

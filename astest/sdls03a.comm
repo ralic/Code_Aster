@@ -1,0 +1,260 @@
+# MODIF  DATE 29/02/2000   AUTEUR JMBHH01 J.M.PROIX 
+# TITRE PLAQUE RECTANGULAIRE MINCE SIMPLEMENT APPUYEE DKT - DST
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+#======================================================================
+
+
+DEBUT(CODE=_F(  NOM = 'SDLS03A',NIV_PUB_WEB='INTERNET') )
+
+MA=LIRE_MAILLAGE( )
+
+MA=DEFI_GROUP( reuse=MA,   MAILLAGE=MA,
+  CREA_GROUP_MA=_F(  NOM = 'TOUT', TOUT = 'OUI'))
+
+#====================================================================
+MAT=DEFI_MATERIAU( ELAS=_F(  E = 2.1E+11,  NU = 0.3,  RHO = 7800.) )
+
+CHMAT=AFFE_MATERIAU(  MAILLAGE=MA, 
+                       AFFE=_F(  TOUT = 'OUI',      MATER = MAT) )
+
+#====================================================================
+# ---- PLAQUE DKT APPUYEE SUR LES BORDS
+
+MO=AFFE_MODELE(      MAILLAGE=MA, 
+                      AFFE=_F(  TOUT = 'OUI',  PHENOMENE = 'MECANIQUE',
+                             MODELISATION = 'DKT')   )
+
+CH=AFFE_CHAR_MECA(   MODELE=MO, 
+                       DDL_IMPO=_F(  GROUP_NO = 'BORD',  DZ = 0.)   )
+
+CA=AFFE_CARA_ELEM(   MODELE=MO,
+                       COQUE=_F(  
+       GROUP_MA = 'TOUT',
+  EPAIS = 0.01)  )
+
+MACRO_MATR_ASSE(   MODELE=MO,            CARA_ELEM=CA,
+                       CHARGE=CH,           CHAM_MATER=CHMAT,
+                      NUME_DDL=CO("NUM"),MATR_ASSE=(
+               _F(  MATRICE = CO("MATR"),  OPTION = 'RIGI_MECA'),
+                         _F(  MATRICE = CO("MATM"),  OPTION = 'MASS_MECA'))
+                   )
+
+MODE=MODE_ITER_SIMULT(  MATR_A=MATR,   MATR_B=MATM,
+             CALC_FREQ=_F(  FREQ = (5., 200., ),
+                         OPTION = 'BANDE'),
+                           VERI_MODE=_F(  SEUIL = 1.E-5)  )
+
+# --------------------------------------------------------------------
+
+TEST_RESU(RESU=(
+   _F(   RESULTAT = MODE,        PARA = 'FREQ',
+           CRITERE = 'RELATIF',     PRECISION = 0.5E-2,
+           NUME_MODE = 4,       VALE = 35.63),
+   _F(   RESULTAT = MODE,        PARA = 'FREQ',
+           CRITERE = 'RELATIF',     PRECISION = 1.1E-2,
+           NUME_MODE = 5,       VALE = 68.51),
+   _F(   RESULTAT = MODE,        PARA = 'FREQ',
+           CRITERE = 'RELATIF',     PRECISION = 0.9E-2,
+           NUME_MODE = 6,       VALE = 109.62),
+   _F(   RESULTAT = MODE,        PARA = 'FREQ',
+           CRITERE = 'RELATIF',     PRECISION = 1.2E-2,
+           NUME_MODE = 7,       VALE = 123.32),
+   _F(   RESULTAT = MODE,        PARA = 'FREQ',
+           CRITERE = 'RELATIF',     PRECISION = 1.8E-2,
+           NUME_MODE = 8,      VALE = 142.51),
+   _F(   RESULTAT = MODE,        PARA = 'FREQ',
+           CRITERE = 'RELATIF',     PRECISION = 2.9E-2,
+           NUME_MODE = 9,       VALE = 197.32)) )
+
+TEST_RESU(
+   RESU=_F(   RESULTAT = MODE,        PARA = 'ITER_QR',
+           CRITERE = 'ABSOLU',     PRECISION = 9.E+00,
+           NUME_MODE = 4,       VALE_I = 0) )
+
+# -------------------------------------------------------------------
+# ---- MODE DE MEBRANE SUR APPUIS ELASTIQUES
+#
+MO2=AFFE_MODELE(  MAILLAGE=MA,AFFE=(
+                   _F(  TOUT = 'OUI', PHENOMENE = 'MECANIQUE',
+                          MODELISATION = 'DKT'),
+                        _F(  NOEUD = ('N1', 'N11', 'N111', 'N121',),
+                          PHENOMENE = 'MECANIQUE',
+                          MODELISATION = 'DIS_T'))
+                 )
+
+RIG=DEFI_VALEUR(  R8=EVAL("""50. / 2. """) )
+
+CA2=AFFE_CARA_ELEM(   MODELE=MO2,
+                          COQUE=_F( 
+       GROUP_MA = 'TOUT',
+ EPAIS = 0.01),
+                        DISCRET=_F(  GROUP_NO = 'BORD2',    CARA = 'K_T_D_N',
+                                  VALE = ( RIG,   0.,     0., ))
+                     )
+
+CH2=AFFE_CHAR_MECA(  MODELE=MO2,DDL_IMPO=(
+                       _F(  TOUT = 'OUI',  DZ = 0.),
+                       _F(  TOUT = 'OUI',  DRX = 0., DRY = 0.),
+                       _F(  TOUT = 'OUI',  DRZ = 0.),
+                       _F(  GROUP_NO = 'BORD2',  DY = 0.))
+                    )
+
+MACRO_MATR_ASSE(   MODELE=MO2,            CARA_ELEM=CA2,
+                       CHARGE=CH2,           CHAM_MATER=CHMAT,
+                      NUME_DDL=CO("NUM2"),MATR_ASSE=(
+               _F(  MATRICE = CO("MATR2"),  OPTION = 'RIGI_MECA'),
+                         _F(  MATRICE = CO("MATM2"),  OPTION = 'MASS_MECA'))
+                   )
+
+MODE2=MODE_ITER_SIMULT(  MATR_A=MATR2,        MATR_B=MATM2,
+              CALC_FREQ=_F(  NMAX_FREQ = 4),
+               VERI_MODE=_F(  SEUIL = 1.E-5)  )
+
+# --------------------------------------------------------------------
+
+FREQ1=DEFI_VALEUR(  R8=EVAL("""SQRT(100./117.) / (2. * PI)""") )
+
+# --------------------------------------------------------------------
+
+TEST_RESU(
+   RESU=_F(   RESULTAT = MODE2,        PARA = 'FREQ',
+           CRITERE = 'RELATIF',     PRECISION = 0.1E-2,
+           NUME_ORDRE = 1,       VALE = FREQ1)
+          )
+
+# --------------------------------------------------------------------
+
+TEST_RESU(
+   RESU=_F(   RESULTAT = MODE2,        PARA = 'ITER_QR',
+           CRITERE = 'ABSOLU',     PRECISION = 5.E+00,
+           NUME_MODE = 1,       VALE_I = 0) )
+
+#====================================================================
+# ---- PLAQUE DST APPUYEE SUR LES BORDS
+
+MO3=AFFE_MODELE(      MAILLAGE=MA,
+                       AFFE=_F(  TOUT = 'OUI',  PHENOMENE = 'MECANIQUE',
+                              MODELISATION = 'DST')   )
+
+CH3=AFFE_CHAR_MECA(   MODELE=MO3,
+                        DDL_IMPO=_F(  GROUP_NO = 'BORD',  DZ = 0.)   )
+
+CA3=AFFE_CARA_ELEM(   MODELE=MO3,
+                       COQUE=_F( 
+       GROUP_MA = 'TOUT',
+ EPAIS = 0.01)  )
+
+MACRO_MATR_ASSE(   MODELE=MO3,           CARA_ELEM=CA3,
+                       CHARGE=CH3,          CHAM_MATER=CHMAT,
+                      NUME_DDL=CO("NUM3"),MATR_ASSE=(
+               _F(  MATRICE = CO("MATR3"), OPTION = 'RIGI_MECA'),
+                         _F(  MATRICE = CO("MATM3"), OPTION = 'MASS_MECA'))
+                   )
+
+MODE3=MODE_ITER_SIMULT(  MATR_A=MATR3,   MATR_B=MATM3,
+             CALC_FREQ=_F(  FREQ = ( 80., ),
+                         OPTION = 'CENTRE'),
+                           VERI_MODE=_F(  SEUIL = 1.E-5)  )
+
+# --------------------------------------------------------------------
+
+TEST_RESU(RESU=(
+   _F(   RESULTAT = MODE3,       PARA = 'FREQ',
+           CRITERE = 'RELATIF',     PRECISION = 0.5E-2,
+           NUME_ORDRE = 4,       VALE = 35.63),
+   _F(   RESULTAT = MODE3,       PARA = 'FREQ',
+           CRITERE = 'RELATIF',     PRECISION = 1.1E-2,
+           NUME_ORDRE = 5,       VALE = 68.51),
+   _F(   RESULTAT = MODE3,       PARA = 'FREQ',
+           CRITERE = 'RELATIF',     PRECISION = 1.0E-2,
+           NUME_ORDRE = 6,       VALE = 109.62),
+   _F(   RESULTAT = MODE3,       PARA = 'FREQ',
+           CRITERE = 'RELATIF',     PRECISION = 1.3E-2,
+           NUME_ORDRE = 7,       VALE = 123.32),
+   _F(   RESULTAT = MODE3,       PARA = 'FREQ',
+           CRITERE = 'RELATIF',     PRECISION = 1.9E-2,
+           NUME_ORDRE = 8,       VALE = 142.51),
+   _F(   RESULTAT = MODE3,       PARA = 'FREQ',
+           CRITERE = 'RELATIF',     PRECISION = 3.0E-2,
+           NUME_ORDRE = 9,       VALE = 197.32)) )
+
+# --------------------------------------------------------------------
+
+
+TEST_RESU(
+   RESU=_F(   RESULTAT = MODE3,        PARA = 'ITER_QR',
+           CRITERE = 'ABSOLU',     PRECISION = 6.E+00,
+           NUME_ORDRE = 1,       VALE_I = 0)
+          )
+
+# -------------------------------------------------------------------
+# ---- MODE DE MEBRANE SUR APPUIS ELASTIQUES
+#
+MO4=AFFE_MODELE(  MAILLAGE=MA,AFFE=(
+                   _F(  TOUT = 'OUI', PHENOMENE = 'MECANIQUE',
+                          MODELISATION = 'DST'),
+                        _F(  NOEUD = ('N1', 'N11', 'N111', 'N121',),
+                          PHENOMENE = 'MECANIQUE',
+                          MODELISATION = 'DIS_T'))
+                 )
+
+CA4=AFFE_CARA_ELEM(   MODELE=MO4,
+                          COQUE=_F( 
+       GROUP_MA = 'TOUT',
+ EPAIS = 0.01),
+                        DISCRET=_F(  GROUP_NO = 'BORD2',    CARA = 'K_T_D_N',
+                                  VALE = ( RIG,   0.,     0., ))
+                     )
+
+CH4=AFFE_CHAR_MECA(  MODELE=MO4,DDL_IMPO=(
+                       _F(  TOUT = 'OUI',  DZ = 0.),
+                       _F(  TOUT = 'OUI',  DRX = 0., DRY = 0.),
+                       _F(  TOUT = 'OUI',  DRZ = 0.),
+                       _F(  GROUP_NO = 'BORD2',  DY = 0.))
+                    )
+
+MACRO_MATR_ASSE(   MODELE=MO4,            CARA_ELEM=CA4,
+                       CHARGE=CH4,           CHAM_MATER=CHMAT,
+                      NUME_DDL=CO("NUM4"),MATR_ASSE=(
+               _F(  MATRICE = CO("MATR4"),  OPTION = 'RIGI_MECA'),
+                         _F(  MATRICE = CO("MATM4"),  OPTION = 'MASS_MECA'))
+                   )
+
+MODE4=MODE_ITER_SIMULT(  MATR_A=MATR4,  MATR_B=MATM4,
+              CALC_FREQ=_F(  NMAX_FREQ = 4), 
+               VERI_MODE=_F(  SEUIL = 1.E-5) )
+
+# --------------------------------------------------------------------
+
+TEST_RESU(
+   RESU=_F(   RESULTAT = MODE4,        PARA = 'FREQ',
+           CRITERE = 'RELATIF',     PRECISION = 0.6E-2,
+           NUME_ORDRE = 1,       VALE = FREQ1)
+          )
+
+# --------------------------------------------------------------------
+
+TEST_RESU(
+   RESU=_F(   RESULTAT = MODE4,        PARA = 'ITER_QR',
+           CRITERE = 'ABSOLU',     PRECISION = 6.E+00,
+           NUME_ORDRE = 1,       VALE_I = 0)
+          )
+
+FIN()
+#

@@ -1,0 +1,129 @@
+#& MODIF COMMANDE  DATE 09/10/2002   AUTEUR DURAND C.DURAND 
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+def mode_iter_simult_prod(MATR_A,MATR_C,TYPE_RESU,**args ):
+  if TYPE_RESU == "MODE_FLAMB" : return mode_flamb
+  if AsType(MATR_C) == matr_asse_depl_r : return mode_meca_c
+  if AsType(MATR_A) == matr_asse_depl_r : return mode_meca
+  if AsType(MATR_A) == matr_asse_pres_r : return mode_acou
+  if AsType(MATR_A) == matr_asse_gene_r : return mode_gene
+  raise AsException("type de concept resultat non prevu")
+
+MODE_ITER_SIMULT=OPER(nom="MODE_ITER_SIMULT",op=  45,sd_prod=mode_iter_simult_prod,
+                      fr="Modes propres par itérations simultanées ; valeurs propres et modes propres réels ou complexes",
+                      docu="U4.52.03-f2",reentrant='n',
+            UIinfo={"groupes":("Résolution",)},
+         MATR_A          =SIMP(statut='o',typ=(matr_asse_depl_r,matr_asse_gene_r,matr_asse_pres_r ) ),
+         MATR_B          =SIMP(statut='o',typ=(matr_asse_depl_r,matr_asse_gene_r,matr_asse_pres_r ) ),
+         MATR_C          =SIMP(statut='f',position='global',typ=matr_asse_depl_r ),
+         METHODE         =SIMP(statut='f',position='global',typ='TXM',defaut="SORENSEN",
+                               into=("TRI_DIAG","JACOBI","SORENSEN") ),
+         b_tri_diag =BLOC(condition = "METHODE == 'TRI_DIAG'",
+           PREC_ORTHO      =SIMP(statut='f',typ='R',defaut= 1.E-12,val_min=0.E+0 ),
+           NMAX_ITER_ORTHO =SIMP(statut='f',typ='I',defaut= 5,val_min=0 ),
+           PREC_LANCZOS    =SIMP(statut='f',typ='R',defaut= 1.E-8,val_min=0.E+0 ),
+           NMAX_ITER_QR    =SIMP(statut='f',typ='I',defaut= 30,val_min=0 ), 
+         ),
+         b_jacobi =BLOC(condition = "METHODE == 'JACOBI'",
+           PREC_BATHE      =SIMP(statut='f',typ='R',defaut= 1.E-10,val_min=0.E+0 ),
+           NMAX_ITER_BATHE =SIMP(statut='f',typ='I',defaut= 40,val_min=0 ),
+           PREC_JACOBI     =SIMP(statut='f',typ='R',defaut= 1.E-2,val_min=0.E+0 ),
+           NMAX_ITER_JACOBI=SIMP(statut='f',typ='I',defaut= 12,val_min=0 ),
+         ),
+         b_sorensen =BLOC(condition = "METHODE == 'SORENSEN'",
+           PREC_SOREN      =SIMP(statut='f',typ='R',defaut= 0.E+0,val_min=0.E+0 ),  
+           NMAX_ITER_SOREN =SIMP(statut='f',typ='I',defaut= 20,val_min=0 ),  
+           PARA_ORTHO_SOREN=SIMP(statut='f',typ='R',defaut= 0.717,val_min=0.E+0 ),
+         ),
+         TYPE_RESU       =SIMP(statut='f',position='global',typ='TXM',defaut="DYNAMIQUE",
+                               into=("MODE_FLAMB","DYNAMIQUE"),
+                               fr="Type d analyse" ),
+         OPTION          =SIMP(statut='f',typ='TXM',defaut="SANS",into=("MODE_RIGIDE","SANS"),
+                               fr="Calcul des modes de corps rigide, uniquement pour la méthode TRI_DIAG" ),
+
+         b_flamb         =BLOC(condition = "TYPE_RESU == 'MODE_FLAMB'",
+           CALC_FREQ       =FACT(statut='d',min=0,max=1,
+             OPTION          =SIMP(statut='f',typ='TXM',defaut="PLUS_PETITE",into=("PLUS_PETITE","BANDE","CENTRE"),
+                                   fr="Choix de l option et par conséquent du shift du problème modal" ),
+             b_plus_petite =BLOC(condition = "OPTION == 'PLUS_PETITE'",fr="Recherche des plus petites valeurs propres",
+               NMAX_FREQ       =SIMP(statut='f',typ='I',defaut= 10,val_min=0 ),
+             ),
+             b_centre      =BLOC(condition = "OPTION == 'CENTRE'",
+                                 fr="Recherche des valeurs propres les plus proches d une valeur donnée",
+               CHAR_CRIT       =SIMP(statut='o',typ='R',min=1,max=1,
+                                     fr="Charge critique autour de laquelle on cherche les charges critiques propres"),
+             ),
+             b_bande       =BLOC(condition = "(OPTION == 'BANDE')",
+                                 fr="Recherche des valeurs propres dans une bande donnée",
+               CHAR_CRIT       =SIMP(statut='o',typ='R',min=2,max=2,
+                                     fr="Valeur des deux charges critiques délimitant la bande de recherche"),
+             ),           
+             APPROCHE        =SIMP(statut='f',typ='TXM',defaut="REEL",into=("REEL","IMAG"),
+                                   fr="Choix du pseudo-produit scalaire pour la résolution du problème quadratique" ),           
+             regles=(EXCLUS('DIM_SOUS_ESPACE','COEF_DIM_ESPACE'),),
+             DIM_SOUS_ESPACE =SIMP(statut='f',typ='I' ),
+             COEF_DIM_ESPACE =SIMP(statut='f',typ='I' ),
+             NPREC_SOLVEUR   =SIMP(statut='f',typ='I',defaut= 8,val_min=0 ),
+             NMAX_ITER_SHIFT =SIMP(statut='f',typ='I',defaut= 5,val_min=0 ),
+             PREC_SHIFT      =SIMP(statut='f',typ='R',defaut= 5.E-2,val_min=0.E+0 ),
+             SEUIL_FREQ      =SIMP(statut='f',typ='R',defaut= 1.E-2,val_min=0.E+0 ),
+           ),
+         ),
+
+         b_dynam        =BLOC(condition = "TYPE_RESU == 'DYNAMIQUE'",
+           CALC_FREQ       =FACT(statut='d',min=0,max=1,
+             OPTION          =SIMP(statut='f',typ='TXM',defaut="PLUS_PETITE",into=("PLUS_PETITE","BANDE","CENTRE"),
+                                   fr="Choix de l option et par conséquent du shift du problème modal" ),
+             b_plus_petite =BLOC(condition = "OPTION == 'PLUS_PETITE'",fr="Recherche des plus petites valeurs propres",
+               NMAX_FREQ       =SIMP(statut='f',typ='I',defaut= 10,val_min=0 ),
+             ),
+             b_centre       =BLOC(condition = "OPTION == 'CENTRE'",
+                                  fr="Recherche des valeurs propres les plus proches d une valeur donnée",
+               FREQ            =SIMP(statut='o',typ='R',min=1,max=1,
+                                     fr="Fréquence autour de laquelle on cherche les fréquences propres"),
+               AMOR_REDUIT     =SIMP(statut='f',typ='R',max=1,),
+               NMAX_FREQ       =SIMP(statut='f',typ='I',defaut= 10,val_min=0 ),
+             ),
+             b_bande         =BLOC(condition = "(OPTION == 'BANDE')",
+                                   fr="Recherche des valeurs propres dans une bande donnée",
+               FREQ            =SIMP(statut='o',typ='R',min=2,max=2,
+                                     fr="Valeur des deux fréquences délimitant la bande de recherche"),
+             ),           
+             APPROCHE        =SIMP(statut='f',typ='TXM',defaut="REEL",into=("REEL","IMAG"),
+                                   fr="Choix du pseudo-produit scalaire pour la résolution du problème quadratique" ),           
+             regles=(EXCLUS('DIM_SOUS_ESPACE','COEF_DIM_ESPACE'),),
+             DIM_SOUS_ESPACE =SIMP(statut='f',typ='I' ),
+             COEF_DIM_ESPACE =SIMP(statut='f',typ='I' ),
+             NPREC_SOLVEUR   =SIMP(statut='f',typ='I',defaut= 8,val_min=0 ),
+             NMAX_ITER_SHIFT =SIMP(statut='f',typ='I',defaut= 5,val_min=0 ),
+             PREC_SHIFT      =SIMP(statut='f',typ='R',defaut= 5.E-2,val_min=0.E+0 ),
+             SEUIL_FREQ      =SIMP(statut='f',typ='R',defaut= 1.E-2,val_min=0.E+0 ),
+           ),
+         ),
+
+         VERI_MODE       =FACT(statut='d',min=0,max=1,
+           STOP_ERREUR     =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
+           PREC_SHIFT      =SIMP(statut='f',typ='R',defaut= 5.E-3,val_min=0.E+0 ),
+           SEUIL           =SIMP(statut='f',typ='R',defaut= 1.E-6,val_min=0.E+0,
+                                 fr="Valeur limite admise pour l ereur a posteriori des modes" ),
+           STURM           =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
+         ),
+         STOP_FREQ_VIDE  =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
+         INFO            =SIMP(statut='f',typ='I',defaut= 1,into=( 1 , 2) ),
+         TITRE           =SIMP(statut='f',typ='TXM',max='**'),        
+)  ;

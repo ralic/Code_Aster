@@ -1,0 +1,344 @@
+      SUBROUTINE LCROTG (OPTION,IMATE,TM,TP,TREF,J,JM,DF,VIP,VIM,
+     &                    DETRDF,DSIGDF)
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 10/10/2001   AUTEUR ADBHHVV V.CANO 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+C RESPONSABLE ADBHHVV V.CANO
+      IMPLICIT NONE  
+      CHARACTER*16  OPTION
+      INTEGER        IMATE   
+      REAL*8         TM,TP,TREF       
+      REAL*8         DF(3,3),J,JM        
+      REAL*8         VIM(9),VIP(9)        
+      REAL*8         DETRDF(6,3,3),DSIGDF(6,3,3)         
+
+C ***************************************************************
+C *       INTEGRATION DE LA LOI DE ROUSSELIER LOCAL             *
+C * CALCUL DE LA DERIVEE DE SIGMA PAR RAPPORT A DF = DSIGDF     *
+C * SIGMA = SIGMA(TAU - DF)                                     *
+C * TAU = TAU(E)                                                *
+C * E = E(ETR)                                                  *
+C * ETR =  ETR(DF)                                              *
+C * DSIGDF = DSIG/DTAU * DTAU/DE * DE/DETR * DETR/DF + DSIG/DDF *
+C ***************************************************************
+
+C IN  OPTION : OPTION DE CALCUL
+C IN  TM     : TEMPERATURE A L'INSTANT PRECEDENT
+C IN  TP     : TEMPERATURE A L'INSTANT DU CALCUL
+C IN  TREF   : TEMPERATURE DE REFERENCE
+C IN  J      : VALEUR DU JACOBIEN A L INSTANT ACTUEL
+C IN  JM     : VALEUR DU JACOBIEN A L INSTANT PRECEDENT
+C IN  DF     : INCREMENT DU GRADIENT DE LA TRANSFORMATION
+C IN  VIP    : VARIABLES INTERNES A L'INSTANT ACTUEL
+C IN  VIM    : VARIABLES INTERNES A L'INSTANT PRECEDENT
+C IN  DETRDF : DERIVEE DE ETR PAR RAPPORT A DF
+C OUT DSIGDF : DERIVEE DE SIGMA PAR RAPPORT A DF
+
+      INTEGER ITEMAX, JPROLP, JVALEP, NBVALP
+      REAL*8  YOUNG,NU,MU,K,SIGY,ALPHA
+      REAL*8  SIG1,D,F0,FCR,ACCE
+      REAL*8  FONC,EQETR,PM,RPM,PREC
+      COMMON /LCROU/ YOUNG,NU,MU,K,SIGY,ALPHA,
+     &               SIG1,D,F0,FCR,ACCE,
+     &               FONC,EQETR,PM,RPM,PREC,
+     &               ITEMAX, JPROLP, JVALEP, NBVALP
+     
+      INTEGER   I,J1,K1,L,M,INDICE
+      REAL*8    DTEMPE,TROISK,LAMBDA,RP,AIRE
+      REAL*8    SIGMA(6),E(6),DVE(6),TRE,EQE,DP,PENTE
+      REAL*8    SE(6),TAU(6)     
+      REAL*8    DJDF(3,3),DSIGTA(6,6),DTAUE(6,6),DDVETR(6,6)       
+      REAL*8    DTRETR(6), DEETR(6,6)
+      REAL*8    A1(6,6),A2(6),A3(6),A4(6,3,3),A5(6,3,3),A6(6,3,3)       
+      REAL*8    COEF,COEFB,COEF1,COEF2,COEF3,COEF4      
+      REAL*8    KR(6),PDTSCA(6),R8BID
+      INTEGER   IND(3,3)
+      DATA       KR/1.D0,1.D0,1.D0,0.D0,0.D0,0.D0/
+      DATA       PDTSCA/1.D0,1.D0,1.D0,2.D0,2.D0,2.D0/
+      DATA       IND/1,4,5,
+     &               4,2,6,
+     &               5,6,3/
+
+           
+      IF (OPTION(1:14).EQ.'RIGI_MECA_TANG') THEN  
+       DP = 0.D0       
+       CALL LCROMA(IMATE, TM) 
+       CALL RCFONC('V','TRACTION',JPROLP,JVALEP,NBVALP,R8BID,
+     &            R8BID,R8BID,VIM(1),RP,PENTE,AIRE,R8BID,R8BID)
+       INDICE = NINT(VIM(9))
+       DTEMPE=TM-TREF
+       DO 5 I=1,6
+        E(I)=VIM(I+2)
+ 5     CONTINUE
+      ELSE
+       DTEMPE=TP-TREF
+       DP = VIP(1)-VIM(1)
+       CALL RCFONC('V','TRACTION',JPROLP,JVALEP,NBVALP,R8BID,
+     &            R8BID,R8BID,VIP(1),RP,PENTE,AIRE,R8BID,R8BID)
+       INDICE = NINT(VIP(9))
+       DO 10 I=1,6
+        E(I)=VIP(I+2)
+ 10    CONTINUE        
+      ENDIF
+      
+      TROISK=3.D0*K
+      LAMBDA = YOUNG*NU / ((1.D0+NU)*(1.D0-2.D0*NU))
+      
+      EQE=0.D0
+      DO 15 I=1,6
+       DVE(I)=E(I)-KR(I)*(E(1)+E(2)+E(3))/3.D0
+       EQE=EQE+PDTSCA(I)*(DVE(I)**2.D0)
+ 15   CONTINUE
+      EQE=SQRT(1.5D0*EQE)
+      TRE=E(1)+E(2)+E(3)  
+      DO 20 I=1,6
+       SE(I)=-2.D0*MU*E(I)-LAMBDA*TRE*KR(I)
+     &     - TROISK*ALPHA*DTEMPE*KR(I)
+ 20   CONTINUE
+      DO 25 I=1,3
+       DO 30 J1=1,3
+        TAU(IND(I,J1))=SE(IND(I,J1))
+        DO 35 K1=1,3
+         TAU(IND(I,J1))=TAU(IND(I,J1))
+     &     -2.D0*SE(IND(I,K1))*E(IND(K1,J1))
+ 35     CONTINUE
+ 30    CONTINUE
+ 25   CONTINUE
+      DO 50 I=1,6
+       SIGMA(I)=TAU(I)/J
+ 50   CONTINUE    
+
+C 1 - CALCUL DE LA DERIVEE DE SIGMA PAR RAPPORT A DF 
+C ON APPELLE CE TENSEUR DSIGDF
+C 1.1 - DERIVEE DE J PAR RAPPORT A DF = DJDF
+
+      DJDF(1,1)=(DF(2,2)*DF(3,3)-DF(2,3)*DF(3,2))*JM
+      DJDF(2,2)=(DF(1,1)*DF(3,3)-DF(1,3)*DF(3,1))*JM
+      DJDF(3,3)=(DF(1,1)*DF(2,2)-DF(1,2)*DF(2,1))*JM
+      DJDF(1,2)=(DF(3,1)*DF(2,3)-DF(2,1)*DF(3,3))*JM
+      DJDF(2,1)=(DF(1,3)*DF(3,2)-DF(1,2)*DF(3,3))*JM
+      DJDF(1,3)=(DF(2,1)*DF(3,2)-DF(3,1)*DF(2,2))*JM
+      DJDF(3,1)=(DF(1,2)*DF(2,3)-DF(1,3)*DF(2,2))*JM
+      DJDF(2,3)=(DF(3,1)*DF(1,2)-DF(1,1)*DF(3,2))*JM
+      DJDF(3,2)=(DF(2,1)*DF(1,3)-DF(1,1)*DF(2,3))*JM
+
+C 1.2 - CALCUL DE DSIGDF      
+
+      DO 60 I=1,6
+       DO 65 J1=1,3
+        DO 70 K1=1,3
+         DSIGDF(I,J1,K1)=-SIGMA(I)*DJDF(J1,K1)/J
+ 70     CONTINUE
+ 65    CONTINUE
+ 60   CONTINUE
+      
+C 2 - CALCUL DE LA DERIVEE DE SIGMA PAR RAPPORT A TAU 
+C ON APPELLE CE TENSEUR DSIGTA
+
+      DO 80 I=1,3
+       DO 85 J1=1,3
+        DO 90 K1=1,3
+         DO 95 L=1,3
+          DSIGTA(IND(I,J1),IND(K1,L))=
+     &    (KR(IND(I,K1))*KR(IND(J1,L))
+     &    +KR(IND(J1,K1))*KR(IND(I,L)))/(2.D0*J)
+ 95      CONTINUE
+ 90     CONTINUE
+ 85    CONTINUE
+ 80   CONTINUE
+      
+C 3 - CALCUL DE LA DERIVEE DE TAU PAR RAPPORT A E 
+C ON APPELLE CE TENSEUR DTAUE
+
+      
+      DO 100 I=1,3
+       DO 105 J1=1,3
+        DO 110 K1=1,3
+         DO 115 L=1,3
+          DTAUE(IND(I,J1),IND(K1,L))=
+     &   (LAMBDA*TRE-MU+TROISK*ALPHA*DTEMPE)*
+     &   (KR(IND(I,K1))*KR(IND(J1,L))+KR(IND(J1,K1))*KR(IND(I,L)))
+     &  +LAMBDA*(2.D0*E(IND(I,J1))-KR(IND(I,J1)))*KR(IND(K1,L))
+     &  +2.D0*MU*(KR(IND(I,K1))*E(IND(L,J1))
+     &           +KR(IND(I,L))*E(IND(K1,J1))
+     &           +KR(IND(K1,J1))*E(IND(I,L))
+     &           +KR(IND(J1,L))*E(IND(I,K1)))
+ 115     CONTINUE
+ 110    CONTINUE
+ 105   CONTINUE
+ 100  CONTINUE
+       
+C 4 - CALCUL DE LA DERIVEE DE E PAR RAPPORT A ETR 
+C ON APPELLE CE TENSEUR DEETR
+
+C 4.1 - CAS ELASTIQUE
+
+      IF (INDICE.EQ.0) THEN     
+       DO 120 I=1,3
+        DO 125 J1=1,3
+         DO 130 K1=1,3
+          DO 135 L=1,3
+           DEETR(IND(I,J1),IND(K1,L))=
+     &   (KR(IND(I,K1))*KR(IND(J1,L))
+     &   +KR(IND(J1,K1))*KR(IND(I,L)))/2.D0
+ 135     CONTINUE
+ 130    CONTINUE
+ 125   CONTINUE
+ 120  CONTINUE
+      ENDIF
+      
+C 4.2 CAS PLASTIQUE
+
+      IF (INDICE.EQ.1) THEN
+C 4.2.1 - DERIVEE DE DVE PAR RAPPORT A DVETR ET DP
+C DVE = DVE(DVETR - DP)
+C DDVE/DDVETR = A1 ET DDVE/DDP = A2
+
+       COEF = 1.D0/(1.D0+3.D0*DP/(2.D0*EQE))
+       DO 140 I=1,3
+        DO 145 J1=1,3
+         DO 150 K1=1,3
+          DO 155 L=1,3
+           A1(IND(I,J1),IND(K1,L))=
+     &     COEF*(KR(IND(I,K1))*KR(IND(J1,L))
+     &           +KR(IND(J1,K1))*KR(IND(I,L)))/2.D0
+     &    +9.D0*DP*COEF*DVE(IND(I,J1))*DVE(IND(K1,L))/(4.D0*(EQE**3))
+ 155       CONTINUE
+ 150      CONTINUE
+         A2(IND(I,J1))=-3.D0*DVE(IND(I,J1))/(2.D0*EQE)
+ 145     CONTINUE
+ 140    CONTINUE              
+
+C 4.2.2 - DERIVEE DE TRE PAR RAPPORT A TRETR ET DP
+C TRE = TRE(TRETR - DP)
+C DTRE/DTRETR = COEF1 ET DVE/DP = COEF2
+
+       COEFB = EXP(-K*TRE/SIG1)*EXP(-TROISK*ALPHA*DTEMPE/SIG1)
+       COEF1 = 1.D0/(1.D0+D*VIM(2)*K*DP*COEFB/SIG1)
+       COEF2 = D*VIM(2)*COEFB*COEF1                      
+               
+C 4.2.3 - DERIVEE DE DP PAR RAPPORT A DVETR ET TRETR
+C DP = DP(DVETR - TRETR)
+C DDP/DDVETR = A3 ET DDP/DTRETR = COEF4
+
+       COEF3 = 1.D0/(3.D0*MU+PENTE+D*VIM(2)*K*COEF2*COEFB)
+       COEF4 = -K*COEF2*COEF3                  
+       DO 160 I=1,6
+        A3(I)= 3.D0*MU*COEF3*DVE(I)/EQE    
+ 160   CONTINUE
+
+C 4.2.4 - DERIVEE DE E PAR RAPPORT A DVETR ET TRETR
+C ASSEMBLAGE DE 4.1.1 ET 4.1.2 ET 4.1.3 
+C E = E(DVETR - TRETR)
+C DE/DDVETR = DDVETR ET DE/DTRETR = DTRETR
+
+       DO 165 I=1,6
+        DO 170 J1=1,6
+         DDVETR(I,J1)= A1(I,J1)+(A2(I)+COEF2*KR(I)/3.D0)*A3(J1)    
+ 170    CONTINUE
+        DTRETR(I)=COEF1*KR(I)/3.D0+COEF4*(A2(I)+COEF2*KR(I)/3.D0)
+ 165   CONTINUE
+
+C 4.2.5 - DERIVEE DE E PAR RAPPORT A ETR = DEETR
+
+       DO 175 I=1,6
+        DO 180 J1=1,6
+         DEETR(I,J1)= DDVETR(I,J1)+(DTRETR(I)-COEF*KR(I)/3.D0)*KR(J1)  
+ 180    CONTINUE
+ 175   CONTINUE
+                   
+      ENDIF
+
+C 4.3 CAS PARTICULIER
+
+      IF (INDICE.EQ.2) THEN 
+C 4.3.1 - DERIVEE DE DVE PAR RAPPORT A DVETR ET DP
+C DVE = DVE(DVETR - DP)=0.D0
+              
+C 4.3.2 - DERIVEE DE TRE PAR RAPPORT A TRETR ET DP
+C TRE = TRE(TRETR - DP)
+C DTRE/DTRETR = COEF1 ET DVE/DP = COEF2
+
+       COEFB = EXP(-K*TRE/SIG1)*EXP(-TROISK*ALPHA*DTEMPE/SIG1)
+       COEF1 = 1.D0/(1.D0+D*VIM(2)*K*DP*COEFB/SIG1)
+       COEF2 = D*VIM(2)*COEFB*COEF1                      
+               
+C 4.3.3 - DERIVEE DE DP PAR RAPPORT A DVETR ET TRETR
+C DP = DP(DVETR - TRETR)
+C DDP/DDVETR = 0.D0 ET DDP/DTRETR = COEF4
+
+       COEF3 = 1.D0/(PENTE+D*VIM(2)*K*COEF2*COEFB)
+       COEF4 = -K*COEF2*COEF3                  
+
+C 4.3.4 - DERIVEE DE E PAR RAPPORT A ETR = DEETR
+
+       DO 190 I=1,6
+        DO 195 J1=1,6
+         DEETR(I,J1)= (COEF1+COEF2*COEF4)*KR(I)*KR(J1)/3.D0 
+ 195    CONTINUE
+ 190   CONTINUE
+                   
+      ENDIF
+      
+C 5 - CALCUL DE LA DERIVEE DE ETR PAR RAPPORT A DF 
+C ON APPELLE CE TENSEUR DETRDF => DEJA FAIT
+
+C 6 - ASSEMBLAGE DE TOUTE CES MATRICES
+C DSIGDF = DSIGDF + DSIGTA * DTAUE * DEETR * DETRDF
+
+       DO 200 I=1,6
+        DO 205 J1=1,3
+         DO 210 K1=1,3
+          A4(I,J1,K1)=0.D0
+          DO 215 L=1,6          
+           A4(I,J1,K1)= A4(I,J1,K1)+PDTSCA(L)*DEETR(I,L)*DETRDF(L,J1,K1)
+ 215      CONTINUE
+ 210     CONTINUE
+ 205    CONTINUE
+ 200   CONTINUE
+
+       DO 300 I=1,6
+        DO 305 J1=1,3
+         DO 310 K1=1,3
+          A5(I,J1,K1)=0.D0
+          DO 315 L=1,6          
+           A5(I,J1,K1)=A5(I,J1,K1)+ PDTSCA(L)*DTAUE(I,L)*A4(L,J1,K1)  
+ 315      CONTINUE
+ 310     CONTINUE
+ 305    CONTINUE
+ 300   CONTINUE
+
+       DO 400 I=1,6
+        DO 405 J1=1,3
+         DO 410 K1=1,3
+          A6(I,J1,K1)=0.D0
+          DO 415 L=1,6          
+           A6(I,J1,K1)= A6(I,J1,K1)+PDTSCA(L)*DSIGTA(I,L)*A5(L,J1,K1)  
+ 415      CONTINUE
+ 410     CONTINUE
+ 405    CONTINUE
+ 400   CONTINUE
+
+       DO 500 I=1,6
+        DO 515 J1=1,3
+         DO 520 K1=1,3
+          DSIGDF(I,J1,K1)=DSIGDF(I,J1,K1)+A6(I,J1,K1)
+ 520     CONTINUE
+ 515    CONTINUE
+ 500   CONTINUE       
+      END

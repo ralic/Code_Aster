@@ -1,0 +1,121 @@
+# MODIF  DATE 11/12/2001   AUTEUR DURAND C.DURAND 
+# TITRE ENVELOPPE SPHERIQUE MINCE EN ANALYSE MODALE
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+# SDLS07E
+# ENVELOPPE SPHERIQUE MINCE EN ANALYSE MODALE
+# MAILLAGE 1/8 DE CYLINDRE
+#                     
+#=======================================================================
+#
+
+DEBUT( CODE=_F( NOM = 'SDLS07E',NIV_PUB_WEB='INTERNET') )
+
+MATERI_1=DEFI_MATERIAU( ELAS=_F(  E = 2.0E+11,  NU = 0.30, RHO = 7800.) )
+
+MAILLA_1=LIRE_MAILLAGE(   )
+
+MAILLA_1=DEFI_GROUP( reuse=MAILLA_1,   MAILLAGE=MAILLA_1,
+  CREA_GROUP_MA=_F(  NOM = 'TOUT', TOUT = 'OUI'))
+
+CH_MAT_1=AFFE_MATERIAU(  MAILLAGE=MAILLA_1,
+                            AFFE=_F(  TOUT = 'OUI',   MATER = MATERI_1) )
+
+MODELE_1=AFFE_MODELE(  MAILLAGE=MAILLA_1, VERIF='MAILLE',
+                     AFFE=_F( TOUT = 'OUI', MODELISATION = 'COQUE_3D',
+                                PHENOMENE = 'MECANIQUE') )
+
+CINE=AFFE_CHAR_MECA(MODELE=MODELE_1,DDL_IMPO=(
+             _F( GROUP_NO = 'X_NUL', DX = 0., DRY = 0., DRZ = 0.),
+             _F( GROUP_NO = 'Y_NUL', DY = 0., DRX = 0., DRZ = 0.),
+             _F( GROUP_NO = 'Z_NUL', DZ = 0., DRX = 0., DRY = 0.),
+             _F( GROUP_NO = 'B',   DX = 0., DY = 0., DRX = 0., DRY = 0., DRZ = 0.),
+             _F( GROUP_NO = 'A',   DZ = 0., DY = 0., DRX = 0., DRY = 0., DRZ = 0.),
+             _F( GROUP_NO = 'C',   DX = 0., DZ = 0., DRX = 0., DRY = 0., DRZ = 0.)))
+
+CARAC__1=AFFE_CARA_ELEM(   MODELE=MODELE_1,
+                               COQUE=_F(  
+       GROUP_MA = 'TOUT',
+  EPAIS = 0.100,
+                                      A_CIS = 0.83333333333333) )
+
+MATELE_1=CALC_MATR_ELEM(   MODELE=MODELE_1,     CHARGE=CINE,    
+                               CARA_ELEM=CARAC__1,
+                               CHAM_MATER=CH_MAT_1,
+                               OPTION='RIGI_MECA' )
+
+MACRO_MATR_ASSE(   MODELE=MODELE_1,     CARA_ELEM=CARAC__1,
+                       CHARGE=CINE,         CHAM_MATER=CH_MAT_1,
+                      NUME_DDL=CO("NUM"),MATR_ASSE=(
+                _F(  MATRICE = CO("MATASSR1"),  OPTION = 'RIGI_MECA'),
+                          _F(  MATRICE = CO("MATASSM1"),  OPTION = 'MASS_MECA'))
+                   )
+
+#====================================================================
+#                CALCUL MODAL
+
+MODE1=MODE_ITER_SIMULT(  MATR_A=MATASSR1,
+                         MATR_B=MATASSM1,
+                         CALC_FREQ=_F(  OPTION = 'BANDE', FREQ = (230., 535.,))
+                      )
+
+TEST_RESU(RESU=(
+         _F( RESULTAT = MODE1,  PARA = 'FREQ', PRECISION = 1.E-2,
+             NUME_ORDRE = 1, VALE = 237.25),
+         _F( RESULTAT = MODE1,  PARA = 'FREQ', PRECISION = 1.E-2,
+             NUME_ORDRE = 2, VALE = 237.25),
+         _F( RESULTAT = MODE1,  PARA = 'FREQ', PRECISION = 1.E-2,
+             NUME_ORDRE = 3, VALE = 305.24),
+         _F( RESULTAT = MODE1,  PARA = 'FREQ', PRECISION = 1.E-2,
+             NUME_ORDRE = 4, VALE = 305.24),
+         _F( RESULTAT = MODE1,  PARA = 'FREQ', PRECISION = 1.E-2,
+             NUME_ORDRE = 5, VALE = 305.24),
+         _F( RESULTAT = MODE1,  PARA = 'FREQ', PRECISION = 1.E-2,
+             NUME_ORDRE = 6, VALE = 346.76),
+         _F( RESULTAT = MODE1,  PARA = 'FREQ', PRECISION = 1.E-2,
+             NUME_ORDRE = 7, VALE = 346.76),
+         _F( RESULTAT = MODE1,  PARA = 'FREQ', PRECISION = 1.E-2,
+             NUME_ORDRE = 8, VALE = 346.76),
+         _F( RESULTAT = MODE1,  PARA = 'FREQ', PRECISION = 1.E-2,
+             NUME_ORDRE = 9, VALE = 346.76),
+         _F( RESULTAT = MODE1,  PARA = 'FREQ', PRECISION = 1.E-2,
+             NUME_ORDRE = 10, VALE = 416.0),
+         _F( RESULTAT = MODE1,  PARA = 'FREQ', PRECISION = 1.E-2,
+             NUME_ORDRE = 11, VALE = 416.0),
+         _F( RESULTAT = MODE1,  PARA = 'FREQ', PRECISION = 1.E-2,
+             NUME_ORDRE = 12, VALE = 416.0),
+         _F( RESULTAT = MODE1,  PARA = 'FREQ', PRECISION = 1.E-2,
+             NUME_ORDRE = 13, VALE = 416.0),
+         _F( RESULTAT = MODE1,  PARA = 'FREQ', PRECISION = 1.E-2,
+             NUME_ORDRE = 14, VALE = 416.0),
+         _F( RESULTAT = MODE1,  PARA = 'FREQ',       PRECISION = 1.9E-2,
+             NUME_ORDRE = 15, VALE = 526.20),
+         _F( RESULTAT = MODE1,  PARA = 'FREQ',       PRECISION = 1.7E-2,
+             NUME_ORDRE = 16, VALE = 526.20),
+         _F( RESULTAT = MODE1,  PARA = 'FREQ',       PRECISION = 1.6E-2,
+             NUME_ORDRE = 17, VALE = 526.20),
+         _F( RESULTAT = MODE1,  PARA = 'FREQ', PRECISION = 1.5E-2,
+             NUME_ORDRE = 18, VALE = 526.20),
+         _F( RESULTAT = MODE1,  PARA = 'FREQ', PRECISION = 1.5E-2,
+             NUME_ORDRE = 19, VALE = 526.20),
+         _F( RESULTAT = MODE1,  PARA = 'FREQ', PRECISION = 1.5E-2,
+             NUME_ORDRE = 20, VALE = 526.20))
+             )
+
+FIN()
+#

@@ -1,0 +1,117 @@
+      SUBROUTINE  VERSST (NOMRES)
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 21/02/96   AUTEUR VABHHTS J.PELLET 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+C***********************************************************************
+C    P. RICHARD     DATE 13/10/92
+C-----------------------------------------------------------------------
+C  BUT:      < VERIFICATION DES SOUS-STRUCTURES >
+      IMPLICIT REAL*8 (A-H,O-Z)
+C
+C  VERIFIER LA COHERENCE DES MACRO_ELEMENTS MIS EN JEU ET
+C  NOTAMMENT LA GRANDEUR SOUS-JACENTE ET
+C  CREATION DU .DESC STOCKANT CES INFORMATIONS
+C
+C-----------------------------------------------------------------------
+C
+C NOMRES   /I/: NOM UTILISATEUR DU RESULTAT
+C
+C-------- DEBUT COMMUNS NORMALISES  JEVEUX  ----------------------------
+C
+      INTEGER          ZI
+      COMMON  /IVARJE/ ZI(1)
+      REAL*8           ZR
+      COMMON  /RVARJE/ ZR(1)
+      COMPLEX*16       ZC
+      COMMON  /CVARJE/ ZC(1)
+      LOGICAL          ZL
+      COMMON  /LVARJE/ ZL(1)
+      CHARACTER*8      ZK8
+      CHARACTER*16              ZK16
+      CHARACTER*24                        ZK24
+      CHARACTER*32                                  ZK32
+      CHARACTER*80                                            ZK80
+      COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+C
+      CHARACTER*32  JEXNUM
+C
+C----------  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
+C
+      CHARACTER*6      PGC
+      CHARACTER*8 NOMRES,NMSSTR,NMSST,NMMCLR,NMMCL,BLANC
+      LOGICAL PBLOG
+      CHARACTER*1 K1BID
+C
+C-----------------------------------------------------------------------
+      DATA PGC /'VERSST'/
+      DATA BLANC /'        '/
+C-----------------------------------------------------------------------
+C
+      CALL JEMARQ()
+      PBLOG=.FALSE.
+C
+C------------RECUPERATION DU NOMBRE DE MACR_ELEM MIS EN JEU-------------
+C
+      CALL JELIRA(NOMRES//'      .MODG.SSME','LONMAX',NBSST,K1BID)
+C
+C------RECUPERATION VALEURS DE REFERENCE GRANDEUR SOUS-JACENTE----------
+C      (ON PREND CELLES DU PREMIER MACR_ELEM)
+C
+      NMSSTR=BLANC
+      CALL MGUTDM(NOMRES,NMSSTR,1,'NOM_MACR_ELEM',IBID,NMMCLR)
+      CALL JEVEUO(NMMCLR//'.MAEL      .DESC','L',LLDESC)
+      NBECR=ZI(LLDESC)
+      NBCMPR=ZI(LLDESC+1)
+      NUMGDR=ZI(LLDESC+2)
+C
+C----------------BOUCLE SUR TOUS LES MACR_ELEM MIS EN JEU---------------
+C
+      DO 10 I=1,NBSST
+        NMSST=BLANC
+        CALL MGUTDM(NOMRES,NMSST,I,'NOM_MACR_ELEM',IBID,NMMCL)
+        CALL JEVEUO(NMMCL//'.MAEL      .DESC','L',LLDESC)
+        NUMGD=ZI(LLDESC+2)
+        IF(NUMGDR.NE.NUMGD) THEN
+          PBLOG=.TRUE.
+          CALL JENUNO(JEXNUM(NOMRES//'      .MODG.SSNO',I),NMSST)
+          CALL UTDEBM('E',PGC,
+     &'SOUS-STRUCTURE INCOMPATIBLES ')
+            CALL UTIMPK('L','SOUS-STRUCTURE 1::',1,NMSSTR)
+            CALL UTIMPK('L','MACR_ELEM ASSOCIE:',1,NMMCLR)
+            CALL UTIMPI('L','NUMERO GRANDEUR SOUS-JACENTE:',1,NUMGDR)
+            CALL UTIMPK('L','SOUS-STRUCTURE 2::',1,NMSST)
+            CALL UTIMPK('L','MACR_ELEM ASSOCIE:',1,NMMCL)
+            CALL UTIMPI('L','NUMERO GRANDEUR SOUS-JACENTE:',1,NUMGD)
+            CALL UTFINM
+        ENDIF
+10    CONTINUE
+C
+      IF(PBLOG) THEN
+        CALL UTDEBM('F',PGC,
+     &'ARRET SUR INCOMPATIBILITE DE SOUS-STRUCTURE ')
+        CALL UTFINM
+      ENDIF
+C
+      CALL WKVECT(NOMRES//'      .MODG.DESC','G V I',3,LDDESC)
+      ZI(LDDESC)=NBECR
+      ZI(LDDESC+1)=NBCMPR
+      ZI(LDDESC+2)=NUMGDR
+C
+ 9999 CONTINUE
+      CALL JEDEMA()
+      END

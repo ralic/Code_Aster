@@ -1,0 +1,292 @@
+      SUBROUTINE NMPIPE(MODELE, LIGRPI, CARTYP, CARETA, MATE  , COMPOR,
+     &                  VALMOI, DEPDEL, DDEPL0, DDEPL1, PROFCH, TAU   ,
+     &                  NBATTE, NBEFFE, ETA   , LICCVG, BORNE, TYPILO)
+
+
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 11/09/2002   AUTEUR VABHHTS J.PELLET 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+C ======================================================================
+C PROPRIETAIRE E.LORENTZ
+
+      IMPLICIT NONE
+
+      INTEGER      NBATTE, LICCVG(NBATTE), NBEFFE
+      REAL*8       TAU, ETA(NBATTE),BORNE(2),TPS(6)
+      CHARACTER*16 TYPILO
+      CHARACTER*19 DDEPL0, DDEPL1, PROFCH, LIGRPI, CARTYP, CARETA
+      CHARACTER*24 MODELE, MATE, COMPOR, VALMOI, DEPDEL
+
+C ----------------------------------------------------------------------
+C                  PILOTAGE PAR PREDICTION ELASTIQUE
+C ----------------------------------------------------------------------
+C IN  MODELE K24 MODELE
+C IN  LIGRPI K19 LIGREL DES MAILLES CONTROLEES PAR LE PILOTAGE
+C IN  CARTYP K19 CARTE CONTENANT LE TYPE DE PILOTAGE
+C IN  MATE   K24 MATERIAU
+C IN  COMPOR K24 COMPORTEMENT
+C IN  VALMOI K24 ETAT EN T-
+C IN  DEPDEL K24 INCREMENT DE DEPLACEMENT
+C IN  DDEPL0 K19 VARIATION DE DEPLACEMENT K-1.F0
+C IN  DDEPL1 K19 VARIATION DE DEPLACEMENT K-1.F1
+C IN  PROFCH K19 PROF_CHNO (POUR DETERMINER LES DDL PHYSIQUES)
+C IN  TAU    R8  SECOND MEMBRE DE L'EQUATION DE PILOTAGE
+C IN  NBATTE  I  NOMBRE DE SOLUTIONS ATTENDUES
+C IN  BORNE   R8 BORNE(1) = ETAMAX ; BORNE(2) = ETAMIN ; R8VIDE SI NC
+C IN  TYPILO K16 TYPE PILOTAGE : PRED_ELAS OU DEFORMATION
+C OUT NBEFFE  I  NOMBRE DE SOLUTIONS EFFECTIVES
+C OUT ETA    R8  ETA_PILOTAGE
+C OUT LICCVG  I  VAUT 1 S'IL N'Y A PAS DE SOLUTION EXACTE, 0 SINON
+C ----------------------------------------------------------------------
+
+C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
+C
+      CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
+      INTEGER            ZI
+      COMMON  / IVARJE / ZI(1)
+      REAL*8             ZR
+      COMMON  / RVARJE / ZR(1)
+      COMPLEX*16         ZC
+      COMMON  / CVARJE / ZC(1)
+      LOGICAL            ZL
+      COMMON  / LVARJE / ZL(1)
+      CHARACTER*8        ZK8
+      CHARACTER*16                ZK16
+      CHARACTER*24                          ZK24
+      CHARACTER*32                                    ZK32
+      CHARACTER*80                                              ZK80
+      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+C
+C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
+
+
+      LOGICAL      EXIGEO,ESOLU,IND(5)
+      INTEGER      NBMA, NBPT, ICMP, MA, PT, NPG, NSOL, NDDL, I, NBGMAX
+      INTEGER      JCESD, JCESL, JCESV, JA0A1, JA0, JA1, JA2, JA3,JTRAV
+      INTEGER      JDEPDE,JDEP0, JDEP1, IRET, IDEEQ,IBID, JA4
+      REAL*8       PROETA(2), NRM1, NRM2, FMAX, R8VIDE
+      COMPLEX*16   CBID
+      CHARACTER*8  LPAIN(12), LPAOUT(1), K8BID,CPAR
+      CHARACTER*19 COPILO, COPILS,CTAU
+      CHARACTER*24 LCHIN(12), LCHOUT(1), A0A1, TRAV
+      CHARACTER*24 CHGEOM, LIGREL, K24BID
+      CHARACTER*24 DEPMOI, SIGMOI, VARMOI, COMMOI
+
+
+      DATA COPILO, COPILS  /'&&NMPIPE.COPILO','&&NMPIPE.COPILS'/
+      DATA CTAU            /'&&NMPIPE.CTAU'/
+      DATA A0A1, TRAV      /'&&NMPIPE.A0A1', '&&NMPIPE.TRAV'/
+
+
+      CALL JEMARQ()
+
+
+C    INITIALISATION
+      CALL DESAGG(VALMOI, DEPMOI, SIGMOI, VARMOI, COMMOI,
+     &                    K24BID, K24BID, K24BID, K24BID)
+
+      CALL MEGEOM(MODELE, ' ', EXIGEO, CHGEOM)
+
+      CALL EXISD('CARTE',CTAU,IRET)
+      IF (IRET.EQ.1) CALL DETRSD('CARTE',CTAU)
+      CPAR='A0'
+      CALL MECACT('V',CTAU,'LIGREL',LIGRPI,'PILO_R', 1, CPAR,
+     &            IBID, TAU, CBID, K8BID)
+
+
+C    CALCUL DES FORMES LINEAIRES LOCALES
+
+      LPAIN(1) = 'PGEOMER'
+      LCHIN(1) =  CHGEOM
+      LPAIN(2) = 'PMATERC'
+      LCHIN(2) =  MATE
+      LPAIN(3) = 'PCOMPOR'
+      LCHIN(3) =  COMPOR
+      LPAIN(4) = 'PDEPLMR'
+      LCHIN(4) =  DEPMOI
+      LPAIN(5) = 'PCONTMR'
+      LCHIN(5) =  SIGMOI
+      LPAIN(6) = 'PVARIMR'
+      LCHIN(6) =  VARMOI
+      LPAIN(7) = 'PDDEPLR'
+      LCHIN(7) =  DEPDEL
+      LPAIN(8) = 'PDEPL0R'
+      LCHIN(8) =  DDEPL0
+      LPAIN(9) = 'PDEPL1R'
+      LCHIN(9) =  DDEPL1
+      LPAIN(10)= 'PTYPEPI'
+      LCHIN(10)=  CARTYP
+      LPAIN(11)= 'PBORNPI'
+      LCHIN(11)=  CARETA
+      LPAIN(12)= 'PCDTAU'
+      LCHIN(12)=  CTAU
+
+      LPAOUT(1) = 'PCOPILO'
+      LCHOUT(1) =  COPILO
+C      CALL UTTCPU(88,'DEBUT',6,TPS)
+      IF (TYPILO.EQ.'PRED_ELAS') THEN
+        CALL CALCUL('S','PILO_PRED_ELAS', LIGRPI, 12, LCHIN, LPAIN,
+     &                                      1 , LCHOUT, LPAOUT, 'V')
+      ELSE
+        CALL CALCUL('S','PILO_PRED_DEFO', LIGRPI, 12, LCHIN, LPAIN,
+     &                                      1 , LCHOUT, LPAOUT, 'V')
+      ENDIF
+
+
+C ======================================================================
+C         EXTRACTION DES COEFFICIENTS A0 ET A1 DU CHAM_ELEM
+C ======================================================================
+
+
+C -- TRANSFORMATION EN CHAM_ELEM_S
+
+      CALL CELCES(COPILO,'V',COPILS)
+      CALL JEVEUO(COPILS // '.CESD','L',JCESD)
+      CALL JEVEUO(COPILS // '.CESL','L',JCESL)
+      CALL JEVEUO(COPILS // '.CESV','L',JCESV)
+      NBMA = ZI(JCESD-1 + 1)
+      NBPT = ZI(JCESD-1 + 3)
+      NBGMAX = NBMA*NBPT
+
+
+C -- ESPACE MEMOIRE POUR LE TABLEAU A0,A1
+
+      CALL JEEXIN(A0A1,IRET)
+      IF (IRET .EQ. 0) THEN
+        CALL WKVECT(A0A1,'V V R',4*NBGMAX    ,JA0A1)
+        CALL WKVECT(TRAV,'V V I',4*(NBGMAX+1),JTRAV)
+      ELSE
+        CALL JEVEUO(A0A1,'E',JA0A1)
+        CALL JEVEUO(TRAV,'E',JTRAV)
+      END IF
+
+
+C -- LECTURE DES COMPOSANTES DU CHAM_ELEM_S
+      ESOLU=.TRUE.
+      FMAX=TAU
+      DO 10 MA = 1,NBMA
+        DO 20 PT = 1,NBPT
+C  -- A T ON REMPLI ETA ? OUI -> ON MAXIMISE
+          CALL CESEXI('C',JCESD,JCESL,MA,PT,1,1,JA0)
+          CALL CESEXI('C',JCESD,JCESL,MA,PT,1,5,JA1)
+          IF (JA1.NE.0) THEN
+            IF (ZR(JCESV-1 + JA1).NE.R8VIDE()) THEN
+              ESOLU=.FALSE.
+              IF (ZR(JCESV-1 + JA0).GT.FMAX) THEN
+                ETA(1)=ZR(JCESV-1 + JA1)
+                FMAX=ZR(JCESV-1 + JA0)
+              ENDIF
+            ENDIF
+          ENDIF
+ 20     CONTINUE
+ 10   CONTINUE
+
+      IF (ESOLU) THEN
+        ICMP = 0
+        DO 100 MA = 1,NBMA
+          DO 200 PT = 1,NBPT
+            CALL CESEXI('C',JCESD,JCESL,MA,PT,1,1,JA0)
+            CALL CESEXI('C',JCESD,JCESL,MA,PT,1,2,JA1)
+            CALL CESEXI('C',JCESD,JCESL,MA,PT,1,3,JA2)
+            CALL CESEXI('C',JCESD,JCESL,MA,PT,1,4,JA3)
+            IF (JA0.NE.0) THEN
+              ZR(JA0A1 + ICMP    ) = ZR(JCESV-1 + JA0)
+              ZR(JA0A1 + ICMP + 1) = ZR(JCESV-1 + JA1)
+              ICMP = ICMP+2
+              IF (ZR(JCESV-1 + JA2).NE.R8VIDE()) THEN
+                ZR(JA0A1 + ICMP ) = ZR(JCESV-1 + JA2)
+                ZR(JA0A1 + ICMP + 1) = ZR(JCESV-1 + JA3)
+                ICMP = ICMP+2
+              ENDIF
+            END IF
+ 200      CONTINUE
+ 100    CONTINUE
+        NPG = ICMP / 2
+
+
+C ======================================================================
+C                 RESOLUTION DU PROBLEME DE PILOTAGE
+C ======================================================================
+
+
+C -- RESOLUTION DE L'EQUATION P(U(ETA)) = TAU
+
+        CALL PIPERE(NPG, ZR(JA0A1), TAU, NSOL, PROETA)
+
+        IF (NSOL .EQ. 0) THEN
+          NBEFFE    = 1
+          LICCVG(1) = 1
+          ETA(1)    = PROETA(1)
+          CALL PIPEMI(NPG, ZI(JTRAV), ZR(JA0A1), ETA(1))
+
+C    UNE SOLUTION
+        ELSE IF (NSOL .EQ. 1) THEN
+          NBEFFE    = 1
+          LICCVG(1) = 0
+          ETA(1)    = PROETA(1)
+
+
+C    DEUX SOLUTIONS
+        ELSE IF (NSOL .EQ. 2) THEN
+
+
+C      SI ON EN ATTEND 2 : OK
+          IF (NBATTE.EQ.2) THEN
+            NBEFFE    = 2
+            ETA(1)    = PROETA(1)
+            ETA(2)    = PROETA(2)
+            LICCVG(1) = 0
+            LICCVG(2) = 0
+
+
+C      SI ON EN ATTEND 1, CHOIX DU MINIMUM D(UN,U(ETA))
+          ELSE
+            NBEFFE    = 1
+            LICCVG(1) = 0
+
+            NRM1 = 0.D0
+            NRM2 = 0.D0
+
+            CALL JEVEUO(PROFCH // '.DEEQ','L',IDEEQ)
+            CALL JEVEUO(DEPDEL(1:19) // '.VALE','L',JDEPDE)
+            CALL JEVEUO(DDEPL0       // '.VALE','L',JDEP0)
+            CALL JEVEUO(DDEPL1       // '.VALE','L',JDEP1)
+            CALL JELIRA(DDEPL1       // '.VALE','LONMAX',NDDL, K8BID)
+            DO 30 I = 0, NDDL-1
+              IF (ZI(IDEEQ-1 + 2*I + 2).GT.0) THEN
+                NRM1=NRM1+(ZR(JDEPDE+I)+ZR(JDEP0+I)+PROETA(1)*
+     &                  ZR(JDEP1+I))**2
+                NRM2=NRM2+(ZR(JDEPDE+I)+ZR(JDEP0+I)+PROETA(2)*
+     &                  ZR(JDEP1+I))**2
+              END IF
+ 30         CONTINUE
+
+            IF (NRM1 .LE. NRM2) THEN
+              ETA(1) = PROETA(1)
+            ELSE
+              ETA(1) = PROETA(2)
+            END IF
+
+          END IF
+        END IF
+      ELSE
+        NBEFFE    = 1
+        LICCVG(1) = 1
+      ENDIF
+
+      CALL JEDEMA()
+      END

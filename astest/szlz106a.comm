@@ -1,0 +1,230 @@
+# MODIF  DATE 07/06/2002   AUTEUR DURAND C.DURAND 
+# TITRE FATIGUE EN FREQUENTIEL
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+#*********************************************************************#
+DEBUT(  CODE=_F(  NOM = 'SZLZ106A',NIV_PUB_WEB='INTERNET') )
+
+LOIDOM1=DEFI_FONCTION(
+         INTERPOL=('LOG', 'LOG',),
+         NOM_PARA='SIGM',
+         VALE=(
+          1.,             3.125E+11,
+          2.,        976562.5E+4,
+          5.,             1.E+8,
+         25.,         32000.,
+         30.,         12860.09,
+         35.,          5949.899,
+         40.,          3051.76,
+         45.,          1693.51,
+         50.,          1000.0,
+         55.,           620.921,
+         60.,           401.8779,
+         65.,           269.329,
+         70.,           185.934,
+         75.,           131.6869,
+         80.,            95.3674,
+         85.,            70.4296,
+         90.,            52.9221,
+         95.,            40.3861,
+        100.,            31.25,
+        105.,            24.4852,
+        110.,            19.40379,
+        115.,            15.5368,
+        120.,            12.55869,
+        125.,            10.23999,
+        130.,             8.41653,
+        135.,             6.96917,
+        140.,             5.81045,
+        145.,             4.8754,
+        150.,             4.11523,
+        155.,             3.49294,
+        160.,             2.98023,
+        165.,             2.55523,
+        170.,             2.20093,
+        175.,             1.90397,
+        180.,             1.65382,
+        185.,             1.44209,
+        190.,             1.26207,
+        195.,             1.10835,
+        200.,             0.976562,
+               ),
+         PROL_GAUCHE='LINEAIRE',
+         PROL_DROITE='LINEAIRE'
+         )
+
+#----------------------------------------------------------------------
+MAT0=DEFI_MATERIAU(   FATIGUE=_F(  A_BASQUIN = 1.001730939E-14,
+                                  BETA_BASQUIN = 4.065)  )
+
+TAB1=POST_FATI_ALEA(    MOMENT_SPEC_0=182.5984664,
+                          MOMENT_SPEC_2=96098024.76,
+                               COMPTAGE='NIVEAU',
+                                  DUREE=1.,
+                                DOMMAGE='WOHLER',
+                                  MATER=MAT0          )
+
+TEST_TABLE(       TABLE=TAB1,
+                NOM_PARA='DOMMAGE',
+                    VALE=3.851827E-7,
+               PRECISION=1.5E-5        )
+
+#----------------------------------------------------------------------
+TAB2=POST_FATI_ALEA(    MOMENT_SPEC_0=182.5984664,
+                          MOMENT_SPEC_2=96098024.76,
+                          MOMENT_SPEC_4=6.346193569E+13,
+                               COMPTAGE='PIC',
+                                  DUREE=1.,
+                                DOMMAGE='WOHLER',
+                                  MATER=MAT0            )
+
+TEST_TABLE(       TABLE=TAB2,
+                NOM_PARA='DOMMAGE',
+                    VALE=3.853037E-7,
+               PRECISION=1.5E-5        )
+
+#----------------------------------------------------------------------
+MAT1=DEFI_MATERIAU(    FATIGUE=_F(  A_BASQUIN = 32.E-13,
+                                   BETA_BASQUIN = 5.)  )
+
+TAB3=POST_FATI_ALEA(    MOMENT_SPEC_0=182.5984664,
+                          MOMENT_SPEC_2=96098024.76,
+                               COMPTAGE='NIVEAU',
+                                  DUREE=1.,
+                                DOMMAGE='WOHLER',
+                                  MATER=MAT1            )
+
+TEST_TABLE(       TABLE=TAB3,
+                NOM_PARA='DOMMAGE',
+                    VALE=3.129531E-3,
+               PRECISION=1.E-4        )
+
+#----------------------------------------------------------------------
+TAB4=POST_FATI_ALEA(    MOMENT_SPEC_0=182.5984664,
+                          MOMENT_SPEC_2=96098024.76,
+                          MOMENT_SPEC_4=6.346193569E+13,
+                               COMPTAGE='PIC',
+                                  DUREE=1.,
+                                DOMMAGE='WOHLER',
+                                  MATER=MAT1            )
+
+TEST_TABLE(       TABLE=TAB4,
+                NOM_PARA='DOMMAGE',
+                    VALE=3.129903E-3,
+               PRECISION=1.5E-5       )
+
+#----------------------------------------------------------------------
+MAT2=DEFI_MATERIAU(       ELAS=_F(  E = 200000.,
+                                   NU = 0.3),
+                         FATIGUE=_F(  A0 = 11.495,
+                                   A1 = -5.,
+                                   A2 = 0.25,
+                                   A3 = -0.07,
+                                   E_REFE = 220000.,
+                                   SL = 5.),
+                            RCCM=_F(  N_KE = 0.6,
+                                   M_KE = 1.4,
+                                   SM = 60.)  )
+
+TAB5=POST_FATI_ALEA(    MOMENT_SPEC_0=182.5984664,
+                          MOMENT_SPEC_2=96098024.76,
+                               COMPTAGE='NIVEAU',
+                                  DUREE=1.,
+                                DOMMAGE='WOHLER',
+                                  MATER=MAT2            )
+
+TEST_TABLE(       TABLE=TAB5,
+                NOM_PARA='DOMMAGE',
+                    VALE=2.298920E-3,
+               PRECISION=2.5E-5       )
+
+#----------------------------------------------------------------------
+TAB6=POST_FATI_ALEA(    MOMENT_SPEC_0=182.5984664,
+                          MOMENT_SPEC_2=96098024.76,
+                          MOMENT_SPEC_4=6.346193569E+13,
+                               COMPTAGE='PIC',
+                                  DUREE=1.,
+                                DOMMAGE='WOHLER',
+                                  MATER=MAT2           )
+
+TEST_TABLE(       TABLE=TAB6,
+                NOM_PARA='DOMMAGE',
+                    VALE=2.299282E-3,
+               PRECISION=2.5E-5       )
+
+#----------------------------------------------------------------------
+TAB7=POST_FATI_ALEA(    MOMENT_SPEC_0=182.5984664,
+                          MOMENT_SPEC_2=96098024.76,
+                               COMPTAGE='NIVEAU',
+                                  DUREE=1.,
+                                DOMMAGE='WOHLER',
+                                CORR_KE='RCCM',
+                                  MATER=MAT2           )
+
+TEST_TABLE(       TABLE=TAB7,
+                NOM_PARA='DOMMAGE',
+                    VALE=2.298920E-3,
+               PRECISION=2.5E-5       )
+
+#----------------------------------------------------------------------
+TAB8=POST_FATI_ALEA(    MOMENT_SPEC_0=182.5984664,
+                          MOMENT_SPEC_2=96098024.76,
+                          MOMENT_SPEC_4=6.346193569E+13,
+                               COMPTAGE='PIC',
+                                  DUREE=1.,
+                                DOMMAGE='WOHLER',
+                                CORR_KE='RCCM',
+                                  MATER=MAT2             )
+
+TEST_TABLE(       TABLE=TAB8,
+                NOM_PARA='DOMMAGE',
+                    VALE=2.299282E-3,
+               PRECISION=2.5E-5       )
+
+#----------------------------------------------------------------------
+MAT3=DEFI_MATERIAU(    FATIGUE=_F(  WOHLER = LOIDOM1)  )
+
+TAB9=POST_FATI_ALEA(    MOMENT_SPEC_0=182.5984664,
+                          MOMENT_SPEC_2=96098024.76,
+                               COMPTAGE='NIVEAU',
+                                  DUREE=1.,
+                                DOMMAGE='WOHLER',
+                                  MATER=MAT3             )
+
+TEST_TABLE(       TABLE=TAB9,
+                NOM_PARA='DOMMAGE',
+                    VALE=3.129531E-3,
+               PRECISION=2.5E-5       )
+
+#----------------------------------------------------------------------
+TAB10=POST_FATI_ALEA(    MOMENT_SPEC_0=182.5984664,
+                           MOMENT_SPEC_2=96098024.76,
+                           MOMENT_SPEC_4=6.346193569E+13,
+                                COMPTAGE='PIC',
+                                   DUREE=1.,
+                                 DOMMAGE='WOHLER',
+                                   MATER=MAT3             )
+
+TEST_TABLE(       TABLE=TAB10,
+                NOM_PARA='DOMMAGE',
+                    VALE=3.129903E-3,
+               PRECISION=2.5E-5        )
+
+#----------------------------------------------------------------------
+FIN( )
+#

@@ -1,0 +1,163 @@
+# MODIF  DATE 07/06/2002   AUTEUR DURAND C.DURAND 
+# TITRE PLAQUE RECTANGULAIRE : CONVECTION, TEMPERATURE IMPOSEE
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+#
+# COQUE : MAILLES QUAD8 ET SEG3
+# DEUX CALCULS : AFFE_CHAR_THER 
+#                AFFE_CHAR_THER_F
+#
+
+DEBUT(  CODE=_F( NOM = 'TPLS302A',NIV_PUB_WEB='INTERNET'))
+
+M=LIRE_MAILLAGE(  )
+
+M=DEFI_GROUP( reuse=M,   MAILLAGE=M,
+  CREA_GROUP_MA=_F(  NOM = 'TOUT', TOUT = 'OUI'))
+
+MO=AFFE_MODELE( 
+                       MAILLAGE=M, 
+                      AFFE=_F( TOUT = 'OUI',PHENOMENE = 'THERMIQUE',
+                                      MODELISATION = 'COQUE'))
+
+EPSYM=AFFE_CARA_ELEM( MODELE=MO,
+                           COQUE=_F( 
+       GROUP_MA = 'TOUT',
+EPAIS = 25.4E-3) )
+
+MASYM=DEFI_MATERIAU( THER=_F( RHO_CP = 1.0,LAMBDA = 25.961))
+
+CMSYM=AFFE_MATERIAU(  MAILLAGE=M, AFFE=_F( TOUT = 'OUI',MATER = MASYM))
+
+# =============================================================
+# TEST DANS LE CAS D'UNE CHARGE DEFINIE PAR AFFE_CHAR_THER
+# =============================================================
+
+CHSYM=AFFE_CHAR_THER( 
+       MODELE=MO,
+     TEMP_IMPO=_F( GROUP_NO = 'AD', TEMP_SUP = 593.333, TEMP = 593.333, 
+                                              TEMP_INF = 593.333),ECHANGE=(
+      _F( GROUP_MA = 'DOMAIN', COEF_H_INF = 85.169, TEMP_EXT_INF = 37.778,
+                               COEF_H_SUP = 85.169, TEMP_EXT_SUP = 37.778),
+              _F( GROUP_MA = 'BC',      COEF_H = 2.1632926,   TEMP_EXT = 37.778)) )
+
+MESYM=CALC_MATR_ELEM( 
+                    MODELE=MO,CHARGE=CHSYM,CHAM_MATER=CMSYM,
+                      CARA_ELEM=EPSYM, OPTION='RIGI_THER'    )
+
+VESYM=CALC_VECT_ELEM(  CHARGE=CHSYM,
+                            OPTION='CHAR_THER' )
+
+NUSYM=NUME_DDL(   MATR_RIGI=MESYM )
+
+KS=ASSE_MATRICE(   MATR_ELEM=MESYM,   NUME_DDL=NUSYM )
+
+FS=ASSE_VECTEUR(   VECT_ELEM=VESYM, NUME_DDL=NUSYM  )
+
+KS=FACT_LDLT( reuse=KS,   MATR_ASSE=KS)
+
+TEMPS=RESO_LDLT(    MATR_FACT=KS,    CHAM_NO=FS )
+
+TEST_RESU(CHAM_NO=(
+      _F( CHAM_GD = TEMPS, NOEUD = 'NO000001',    NOM_CMP = 'TEMP',
+                         VALE = 593.333,  PRECISION = 5.E-2),
+              _F( CHAM_GD = TEMPS, NOEUD = 'NO000005',    NOM_CMP = 'TEMP',
+                         VALE = 512.778,  PRECISION = 5.E-2),
+              _F( CHAM_GD = TEMPS, NOEUD = 'NO000006',    NOM_CMP = 'TEMP',
+                         VALE = 446.111,  PRECISION = 5.E-2),
+              _F( CHAM_GD = TEMPS, NOEUD = 'NO000007',    NOM_CMP = 'TEMP',
+                         VALE = 393.333,  PRECISION = 5.E-2),
+              _F( CHAM_GD = TEMPS, NOEUD = 'NO000008',    NOM_CMP = 'TEMP',
+                         VALE = 348.889,  PRECISION = 5.E-2),
+              _F( CHAM_GD = TEMPS, NOEUD = 'NO000009',    NOM_CMP = 'TEMP',
+                         VALE = 312.778,  PRECISION = 5.E-2),
+              _F( CHAM_GD = TEMPS, NOEUD = 'NO000010',    NOM_CMP = 'TEMP',
+                         VALE = 279.444,  PRECISION = 5.E-2),
+              _F( CHAM_GD = TEMPS, NOEUD = 'NO000011',    NOM_CMP = 'TEMP',
+                         VALE = 254.444,  PRECISION = 5.E-2),
+              _F( CHAM_GD = TEMPS, NOEUD = 'NO000012',    NOM_CMP = 'TEMP',
+                         VALE = 237.778,  PRECISION = 5.E-2),
+              _F( CHAM_GD = TEMPS, NOEUD = 'NO000013',    NOM_CMP = 'TEMP',
+                         VALE = 221.111,  PRECISION = 5.E-2),
+              _F( CHAM_GD = TEMPS, NOEUD = 'NO000002',    NOM_CMP = 'TEMP',
+                         VALE = 213.333,  PRECISION = 5.E-2))
+      )
+
+# =============================================================
+# TEST DANS LE CAS D'UNE CHARGE DEFINIE PAR AFFE_CHAR_THER_F
+# =============================================================
+
+VAL593=DEFI_CONSTANTE( VALE=593.333)
+
+VAL851=DEFI_CONSTANTE( VALE=85.169)
+
+VAL377=DEFI_CONSTANTE( VALE=37.778)
+
+VAL216=DEFI_CONSTANTE( VALE=2.1632926)
+
+CHSYMF=AFFE_CHAR_THER_F( 
+    MODELE=MO,
+   TEMP_IMPO=_F( GROUP_NO = 'AD', TEMP_SUP = VAL593, TEMP = VAL593, TEMP_INF = VAL593),ECHANGE=(
+    _F( GROUP_MA = 'DOMAIN',   COEF_H_INF = VAL851, TEMP_EXT_INF = VAL377,
+                               COEF_H_SUP = VAL851, TEMP_EXT_SUP = VAL377),
+              _F( GROUP_MA = 'BC',      COEF_H = VAL216,      TEMP_EXT = VAL377)) )
+
+MESYMF=CALC_MATR_ELEM( 
+                    MODELE=MO,CHARGE=CHSYMF,CHAM_MATER=CMSYM,
+                      CARA_ELEM=EPSYM, OPTION='RIGI_THER'    )
+
+VESYMF=CALC_VECT_ELEM(  CHARGE=CHSYMF,
+                            OPTION='CHAR_THER' )
+
+NUSYMF=NUME_DDL(   MATR_RIGI=MESYMF )
+
+KSF=ASSE_MATRICE(   MATR_ELEM=MESYMF,   NUME_DDL=NUSYMF )
+
+FSF=ASSE_VECTEUR(   VECT_ELEM=VESYMF,   NUME_DDL=NUSYMF )
+
+KSF=FACT_LDLT( reuse=KSF,   MATR_ASSE=KSF)
+
+TEMPSF=RESO_LDLT(    MATR_FACT=KSF,    CHAM_NO=FSF )
+
+TEST_RESU(CHAM_NO=(
+      _F( CHAM_GD = TEMPSF, NOEUD = 'NO000001',    NOM_CMP = 'TEMP',
+                         VALE = 593.333,  PRECISION = 5.E-2),
+              _F( CHAM_GD = TEMPSF, NOEUD = 'NO000005',    NOM_CMP = 'TEMP',
+                         VALE = 512.778,  PRECISION = 5.E-2),
+              _F( CHAM_GD = TEMPSF, NOEUD = 'NO000006',    NOM_CMP = 'TEMP',
+                         VALE = 446.111,  PRECISION = 5.E-2),
+              _F( CHAM_GD = TEMPSF, NOEUD = 'NO000007',    NOM_CMP = 'TEMP',
+                         VALE = 393.333,  PRECISION = 5.E-2),
+              _F( CHAM_GD = TEMPSF, NOEUD = 'NO000008',    NOM_CMP = 'TEMP',
+                         VALE = 348.889,  PRECISION = 5.E-2),
+              _F( CHAM_GD = TEMPSF, NOEUD = 'NO000009',    NOM_CMP = 'TEMP',
+                         VALE = 312.778,  PRECISION = 5.E-2),
+              _F( CHAM_GD = TEMPSF, NOEUD = 'NO000010',    NOM_CMP = 'TEMP',
+                         VALE = 279.444,  PRECISION = 5.E-2),
+              _F( CHAM_GD = TEMPSF, NOEUD = 'NO000011',    NOM_CMP = 'TEMP',
+                         VALE = 254.444,  PRECISION = 5.E-2),
+              _F( CHAM_GD = TEMPSF, NOEUD = 'NO000012',    NOM_CMP = 'TEMP',
+                         VALE = 237.778,  PRECISION = 5.E-2),
+              _F( CHAM_GD = TEMPSF, NOEUD = 'NO000013',    NOM_CMP = 'TEMP',
+                         VALE = 221.111,  PRECISION = 5.E-2),
+              _F( CHAM_GD = TEMPSF, NOEUD = 'NO000002',    NOM_CMP = 'TEMP',
+                         VALE = 213.333,  PRECISION = 5.E-2))
+      )
+
+FIN()
+#

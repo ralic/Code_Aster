@@ -1,0 +1,208 @@
+        SUBROUTINE RKDCHA( MOD,  NVI,   VINI,  COEFT, E,
+     &                     NU,   ALPHA, X,     DTIME, SIGI,
+     &                     EPSD, DETOT, TPERD, DTPER, TPEREF,
+     &                     DVIN )
+        IMPLICIT REAL*8(A-H,O-Z)
+C       ================================================================
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 07/01/98   AUTEUR CIBHHLB L.BOURHRARA 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+C       ----------------------------------------------------------------
+C     MODELE  ELASTO-VISCOPLASTIQUE DE CHABOCHE A 26 PARAMETRES
+C     A ECROUISSAGE ISOTROPE ET CINEMATIQUE
+C     INTEGRATION DE  LA LOI (VISCOCHAB) PAR UNE METHODE DE RUNGE KUTTA
+C
+C     CETTE ROUTINE FOURNIT LA DERIVEE DE L ENSEMBLE DES VARIABLES
+C     INTERNES DU MODELE
+C     ----------------------------------------------------------------
+      CHARACTER*8 MOD
+      PARAMETER(NMAT=50)
+      REAL*8 NU
+      REAL*8 COEFT(NMAT)
+      REAL*8 VINI(*)
+      REAL*8 DVIN(*)
+      REAL*8 SMX(6),PETIN(6),PETIN2(6),SIGI(6),EPSD(6),DETOT(6)
+      REAL*8 EVI(6),A1V(6),A2V(6),CSI(6)
+      REAL*8 DEVI(6),DA1V(6),DA2V(6),DCSI(6)
+      REAL*8 K0,K,N,MR,MU,M1,M2
+      DATA ZE/0.0D0/
+C
+C --    COEFFICIENTS MATERIAU INELASTIQUE
+C
+      K0   = COEFT(1)
+      AK   = COEFT(2)
+      K    = COEFT(4)
+      N    = COEFT(5)
+      ALP  = COEFT(6)
+      B    = COEFT(7)
+      MR   = COEFT(8)
+      GR   = COEFT(9)
+      MU   = COEFT(10)
+      QM   = COEFT(11)
+      Q0   = COEFT(12)
+      QR0  = COEFT(13)
+      ETA  = COEFT(14)
+      C1   = COEFT(15)
+      M1   = COEFT(16)
+      D1   = COEFT(17)
+      GX1  = COEFT(18)
+      G10  = COEFT(19)
+      C2   = COEFT(20)
+      M2   = COEFT(21)
+      D2   = COEFT(22)
+      GX2  = COEFT(23)
+      G20  = COEFT(24)
+      AI   = COEFT(25)
+C
+C --  VARIABLES INTERNES
+C
+      DO 5 ITENS=1,6
+        EVI(ITENS) = VINI(ITENS)
+        A1V(ITENS) = VINI(ITENS + 6)
+        A2V(ITENS) = VINI(ITENS + 12)
+        CSI(ITENS) = VINI(ITENS + 18)
+    5 CONTINUE
+        RAYVI = VINI(25)
+        QCUM  = VINI(26)
+        EVCUM = VINI(27)
+C
+C       ----------------------------------------------------------------
+        CALL CALSIG(EVI,MOD,E,NU,ALPHA,X,DTIME,EPSD,DETOT,
+     &              TPERD,DTPER,TPEREF,SIGI)
+      TRSIG=(SIGI(1)+SIGI(2)+SIGI(3))/3.0D0
+      GRJ2V=0.0D0
+      DO 10 ITENS=1,6
+        SMX(ITENS)=SIGI(ITENS)-(C1*A1V(ITENS)+C2*A2V(ITENS))/1.5D0
+        IF (ITENS.LE.3) SMX(ITENS)=SMX(ITENS)-TRSIG
+        GRJ2V=GRJ2V+SMX(ITENS)**2
+   10 CONTINUE
+      GRJ2V=SQRT(1.5D0*GRJ2V)
+      CRITV=GRJ2V-RAYVI-K
+      IF (CRITV.LE.0.0D0) THEN
+        DRAYVI=0.0D0
+        DQCUM=0.0D0
+        DEVCUM=0.0D0
+        DO 11 ITENS=1,6
+          DEVI(ITENS)=0.0D0
+          DA1V(ITENS)=0.0D0
+          DA2V(ITENS)=0.0D0
+          DCSI(ITENS)=0.0D0
+   11   CONTINUE
+      ELSE
+        TEMPO=CRITV/(K0+AK*RAYVI)
+        DEVCUM=TEMPO**N
+        IF (ALP.GT.1.0D-30)
+     &    DEVCUM=DEVCUM*EXP(ALP*TEMPO**(N+1.0D0))
+        GAMMA1=AI+(1.0D0-AI)*EXP(-B*EVCUM)
+        GAMMA2=G20*GAMMA1
+        GAMMA1=G10*GAMMA1
+        XNA1V=0.0D0
+        XNA2V=0.0D0
+        DO 12 ITENS=1,6
+          PETIN(ITENS)=SMX(ITENS)/GRJ2V
+          DEVI(ITENS)=1.5D0*PETIN(ITENS)*DEVCUM
+          PETIN(ITENS)=SQRT(1.5D0)*PETIN(ITENS)
+          XNA1V=XNA1V+A1V(ITENS)*PETIN(ITENS)
+          XNA2V=XNA2V+A2V(ITENS)*PETIN(ITENS)
+   12   CONTINUE
+C
+C --    ECROUISSAGE CINEMATIQUE
+C
+        DO 13 ITENS=1,6
+          DA1V(ITENS)=D1*A1V(ITENS)+(1.0D0-D1)*XNA1V*PETIN(ITENS)
+          DA1V(ITENS)=DEVI(ITENS)-GAMMA1*DA1V(ITENS)*DEVCUM
+          DA2V(ITENS)=D2*A2V(ITENS)+(1.0D0-D1)*XNA2V*PETIN(ITENS)
+          DA2V(ITENS)=DEVI(ITENS)-GAMMA2*DA2V(ITENS)*DEVCUM
+   13   CONTINUE
+        GRJX1=0.0D0
+        GRJX2=0.0D0
+        DO 14 ITENS=1,6
+          GRJX1=GRJX1+A1V(ITENS)**2
+          GRJX2=GRJX2+A2V(ITENS)**2
+   14   CONTINUE
+        GRJX1=C1*SQRT(GRJX1/1.5D0)
+        IF (GRJX1.GT.1.0D-30) THEN
+          TREST=(GRJX1**M1)/GRJX1
+          DO 15 ITENS=1,6
+            DA1V(ITENS)=DA1V(ITENS)-GX1*TREST*A1V(ITENS)
+   15     CONTINUE
+        END IF
+        GRJX2=C2*SQRT(GRJX2/1.5D0)
+        IF (GRJX2.GT.1.0D-30) THEN
+          TREST=(GRJX2**M2)/GRJX2
+          DO 16 ITENS=1,6
+            DA2V(ITENS)=DA2V(ITENS)-GX2*TREST*A2V(ITENS)
+   16     CONTINUE
+        END IF
+C
+C --    ECROUISSAGE ISOTROPE
+C
+        GRANQ=Q0+(QM-Q0)*(1.0D0-EXP(-2.0D0*MU*QCUM))
+        GRANQR=(QM-GRANQ)/QM
+        GRANQR=GRANQ-QR0*(1.0D0-GRANQR*GRANQR)
+        XX=SIGN(1.0D0,GRANQR-RAYVI)
+        DRAYVI=B*(GRANQ-RAYVI)*DEVCUM
+        DRAYVI=DRAYVI+GR*XX*(ABS(GRANQR-RAYVI))**MR
+        GRJEPS=0.0D0
+        DO 17 ITENS=1,6
+          GRJEPS=GRJEPS+(EVI(ITENS)-CSI(ITENS))**2
+   17   CONTINUE
+        GRJEPS=SQRT(GRJEPS*1.5D0)
+        CRITME=GRJEPS/1.5D0-QCUM
+        IF (CRITME.LE.0.0D0) THEN
+          DQCUM=0.0D0
+          DO 18 ITENS=1,6
+            DCSI(ITENS)=0.0D0
+   18     CONTINUE
+        ELSE
+          XXN=0.0D0
+          TEMPO=SQRT(1.5D0)/GRJEPS
+          DO 19 ITENS=1,6
+            PETIN2(ITENS)=TEMPO*(EVI(ITENS)-CSI(ITENS))
+            XXN=XXN+PETIN(ITENS)*PETIN2(ITENS)
+   19     CONTINUE
+          IF (XXN.LE.0.0D0) THEN
+            DQCUM=0.0D0
+            DO 20 ITENS=1,6
+              DCSI(ITENS)=0.0D0
+   20       CONTINUE
+          ELSE
+            DQCUM=ETA*XXN*DEVCUM
+            TEMPO=SQRT(1.5D0)*(1.0D0-ETA)*XXN*DEVCUM
+            DO 21 ITENS=1,6
+              DCSI(ITENS)=TEMPO*PETIN2(ITENS)
+   21       CONTINUE
+          END IF
+        END IF
+      END IF
+      DETAT=ZE
+C
+C --    DERIVEES DES VARIABLES INTERNES
+C
+      DO 30 ITENS=1,6
+        DVIN(ITENS)      = DEVI(ITENS)
+        DVIN(ITENS + 6)  = DA1V(ITENS)
+        DVIN(ITENS + 12) = DA2V(ITENS)
+        DVIN(ITENS + 18) = DCSI(ITENS)
+   30 CONTINUE
+        DVIN(25) = DRAYVI
+        DVIN(26) = DQCUM
+        DVIN(27) = DEVCUM
+        DVIN(NVI)= DETAT
+C
+      END

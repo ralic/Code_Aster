@@ -1,0 +1,143 @@
+# MODIF  DATE 16/10/2002   AUTEUR GNICOLAS G.NICOLAS 
+# RESPONSABLE GNICOLAS G.NICOLAS
+# TITRE ESSAI MED POUR DIFFERENTS TYPES D'ELEMENTS
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+#
+DEBUT(CODE=_F( NOM = 'ZZZZ161A',NIV_PUB_WEB='INTERNET'))
+#
+# 1. Definition des materiaux
+#
+MATER1=DEFI_MATERIAU( 
+           ELAS=_F(  E = 180000., NU = 0.30, ALPHA = 15.E-6, RHO = 7700.) )
+#
+MATER2=DEFI_MATERIAU( 
+           ELAS=_F(  E = 220000., NU = 0.33, ALPHA = 16.E-6, RHO = 8300.) )
+#
+# 2. Lecture du maillage
+#
+PRE_IDEAS()
+MAILTRQU=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='NON'), );
+#
+# 3. Calcul
+# 3.1. Modele mecanique
+#
+MODETRQU=AFFE_MODELE(    MAILLAGE=MAILTRQU,
+                           AFFE=_F(  TOUT = 'OUI', PHENOMENE = 'MECANIQUE',
+                                  MODELISATION = 'D_PLAN') );
+
+#
+# 3.2. Orientation des mailles de bord
+#
+MAILTRQU=MODI_MAILLAGE( reuse=MAILTRQU,   MAILLAGE=MAILTRQU,
+                     MODELE=MODETRQU,
+                     ORIE_PEAU_2D=_F(  GROUP_MA = ('BORD_GAU','BORD_INF','BORD_DRO','BORD_SUP',),),);
+#
+# 3.3. Mise en place des materiaux
+#
+MATETEST=AFFE_MATERIAU(    MAILLAGE=MAILTRQU,AFFE=(
+       _F(  GROUP_MA = 'TRIA',  MATER = MATER1, TEMP_REF = 20.),
+       _F(  GROUP_MA = 'QUAD',  MATER = MATER2, TEMP_REF = 20.))
+                         );
+
+#
+# 3.4. Chargements
+#
+CHARTRQU=AFFE_CHAR_MECA(    MODELE=MODETRQU,
+                  DDL_IMPO=_F(  GROUP_NO = 'ORIGINE',     DY = 0.,),
+                  PRES_REP=_F(  GROUP_MA = 'BORD_SUP',    PRES = 1000.,),
+                  FACE_IMPO=_F(  GROUP_MA = 'BORD_GAU',    DNOR = 0.,)
+                          );
+#
+# 3.4. Resolution
+#
+RESUTRQU=MECA_STATIQUE( MODELE=MODETRQU,
+                        CHAM_MATER=MATETEST,
+                        EXCIT=_F(  CHARGE = CHARTRQU),
+                        SOLVEUR=_F( METHODE='LDLT', ),
+                       )
+#
+# 3.6. Calculs d'autres champs
+#
+RESUTRQU=CALC_ELEM( reuse=RESUTRQU,   RESULTAT=RESUTRQU,
+                    MODELE=MODETRQU,
+                    CHAM_MATER=MATETEST,
+                    EXCIT=_F(  CHARGE = CHARTRQU),
+              OPTION=( 'SIEF_ELGA_DEPL', 
+                       'SIGM_ELNO_DEPL', 
+                       'ERRE_ELGA_NORE', )
+                     )
+
+#
+# 3.7. On cree un champ aux noeuds avec le deplacement
+#
+REQT_GD=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
+                   OPERATION='EXTR',
+                   RESULTAT=RESUTRQU,
+                   NOM_CHAM = 'DEPL',);
+#
+# 4. Impressions
+#
+IMPR_RESU ( RESU=_F( MAILLAGE=MAILTRQU, IMPR_COOR = 'OUI', ) ) ;
+IMPR_RESU ( RESU=_F( CHAM_GD=REQT_GD, ) ) ;
+IMPR_RESU ( RESU=_F( RESULTAT=RESUTRQU, ) ) ;
+IMPR_RESU ( RESU=_F( RESULTAT=RESUTRQU,
+                     NOM_CHAM = ('ERRE_ELGA_NORE',),
+                     GROUP_MA = 'MILIEU' ),
+            INFO=2 ) ;
+#
+IMPR_RESU ( RESU=_F( CHAM_GD=REQT_GD, FORMAT='MED', ),
+            INFO=2 ) ;
+IMPR_RESU ( RESU=_F( RESULTAT=RESUTRQU, FORMAT='MED',
+                     NOM_CHAM = ('DEPL', 'SIEF_ELGA_DEPL',) ),
+            INFO=2 ) ;
+IMPR_RESU ( RESU=_F( RESULTAT=RESUTRQU, FORMAT='MED',
+                     NOM_CHAM = ('SIGM_ELNO_DEPL',),NOM_CMP=('SIYY', 'SIXY',) ),
+            INFO=2 ) ;
+IMPR_RESU ( RESU=_F( RESULTAT=RESUTRQU, FORMAT='MED',
+                     NOM_CHAM = ('ERRE_ELGA_NORE',),
+                     GROUP_MA = 'MILIEU' ),
+            INFO=2 ) ;
+#
+# 5. Relecture
+#
+DEPLRELU=LIRE_CHAMP(MAILLAGE=MAILTRQU,
+                FORMAT='MED',
+                UNITE=80,
+                NOM_MED='RESUTRQUDEPL____________________',
+                NOM_CMP_IDEM='OUI',
+                NUME_ORDRE=1,NUME_PT=1,
+                TYPE_CHAM='CHAM_NO_DEPL_R',
+                INFO=2
+               ) ;
+IMPR_RESU ( RESU=_F( CHAM_GD=DEPLRELU, ) ) ;
+#
+# 5. Test de non-regression
+#
+TEST_RESU(CHAM_NO=(
+      _F( CHAM_GD=DEPLRELU, CRITERE = 'RELATIF',  PRECISION = 1.E-6,
+          GROUP_NO='OPPOSE',
+          NOM_CMP = 'DX',       VALE =  3.565654E-01, REFERENCE = 'NON_REGRESSION' ),
+      _F( CHAM_GD=DEPLRELU, CRITERE = 'RELATIF',  PRECISION = 1.E-6,
+          GROUP_NO='OPPOSE',
+          NOM_CMP = 'DY',       VALE = -1.335815E+00, REFERENCE = 'NON_REGRESSION' ),
+                   ),
+          )
+
+#
+FIN( )

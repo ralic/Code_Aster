@@ -1,0 +1,130 @@
+      SUBROUTINE TE0316(OPTION,NOMTE)
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ELEMENTS  DATE 04/04/2002   AUTEUR VABHHTS J.PELLET 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+C.......................................................................
+      IMPLICIT REAL*8 (A-H,O-Z)
+C
+C     BUT: CALCUL DES VECTEURS ELEMENTAIRES DE FLUX FLUIDE EN MECANIQUE
+C          ELEMENTS ISOPARAMETRIQUES 1D
+C
+C          OPTION : 'FLUX_FLUI_X '
+C
+C     ENTREES  ---> OPTION : OPTION DE CALCUL
+C          ---> NOMTE  : NOM DU TYPE ELEMENT
+C.......................................................................
+C
+      CHARACTER*2        CODRET(1)
+      CHARACTER*8        NOMRES(1),ELREFE
+      CHARACTER*16       NOMTE,OPTION
+      CHARACTER*24       CHVAL,CARAC
+      REAL*8             POIDS,NX,NY,NORM(2)
+      REAL*8             VALRES(1),COEF,AX(3,3)
+      INTEGER            IPOIDS,IVF,IDFDE,IGEOM,ICARAC,IFLUX
+      INTEGER            NDI,NNO,KP,NPG2,NPG1,IVECTU,IMATE
+      INTEGER            LDEC,MATER
+C
+C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
+      COMMON /IVARJE/ZI(1)
+      COMMON /RVARJE/ZR(1)
+      COMMON /CVARJE/ZC(1)
+      COMMON /LVARJE/ZL(1)
+      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+      COMMON /NOMAJE/PGC
+      CHARACTER*6 PGC
+      INTEGER ZI
+      REAL*8 ZR
+      COMPLEX*16 ZC
+      LOGICAL ZL
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32
+      CHARACTER*80 ZK80
+C------------FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
+C
+      CALL ELREF1(ELREFE)
+C
+      CARAC = '&INEL.'//ELREFE//'.CARAC'
+      CALL JEVETE(CARAC,'L',ICARAC)
+      NNO = ZI(ICARAC)
+      NDI = NNO*(NNO+1)/2
+      NPG1 = ZI(ICARAC+2)
+
+C
+      CHVAL = '&INEL.'//ELREFE//'.FF'
+      CALL JEVETE(CHVAL,'L',IFF)
+C
+      IPOIDS = IFF
+      IVF    = IPOIDS + NPG1
+      IDFDE  = IVF    + NPG1 * NNO
+C
+      CALL JEVECH('PGEOMER','L',IGEOM)
+C
+
+      CALL JEVECH('PMATTTR','E',IMATTT)
+C
+      DO 11 I = 1,NDI
+         ZR(IMATTT + I -1) = 0.0D0
+11    CONTINUE
+C
+C     BOUCLE SUR LES POINTS DE GAUSS
+C
+      DO 101 KP=1,NPG1
+         LDEC=(KP-1)*NNO
+
+C
+         NX = 0.0D0
+         NY = 0.0D0
+
+C ON CALCULE L ACCEL AU POINT DE GAUSS
+
+
+         CALL VFF2DN(NNO,ZR(IPOIDS+KP-1),ZR(IDFDE+LDEC),ZR(IGEOM),NX,
+     &            NY,POIDS)
+
+          NORM(1) = NX
+          NORM(2) = NY
+
+C CAS AXISYMETRIQUE
+
+        IF ( NOMTE(3:4) .EQ. 'AX' ) THEN
+           R = 0.D0
+           DO 102 I=1,NNO
+             R = R + ZR(IGEOM+2*(I-1))*ZR(IVF+LDEC+I-1)
+102        CONTINUE
+           POIDS = POIDS*R
+        ENDIF
+
+
+CCDIR$ IVDEP
+
+        DO 103 I=1,NNO
+          DO 104 J=1,I
+            IJ = (I-1)*I/2 +J
+           ZR(IMATTT + IJ -1) = ZR(IMATTT + IJ -1) + POIDS*NORM(1)*
+     &                       ZR(IVF+LDEC+I-1)*ZR(IVF+LDEC+J-1)
+104       CONTINUE
+103     CONTINUE
+
+
+
+101   CONTINUE
+C
+ 9999 CONTINUE
+      END

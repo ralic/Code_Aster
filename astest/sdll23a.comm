@@ -1,0 +1,587 @@
+# MODIF  DATE 07/06/2002   AUTEUR DURAND C.DURAND 
+# TITRE POUTRE ENCASTREE-LIBRE: REPONSE SPECTRALE
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+# ----------------------------------------------------------------------
+# POUTRE ENCASTREE-LIBRE SOUMIS A UN SEISME
+# CORRECTION STATIQUE DE L'EFFET DES MODES PROPRES D'ORDRE ELEVE
+#                                                  REF: SFM.VPCS SDLL23
+# ----------------------------------------------------------------------
+
+
+DEBUT( CODE=_F(  NOM = 'SDLL23A',NIV_PUB_WEB='INTERNET') )
+
+MAILLAGE=LIRE_MAILLAGE( )
+
+MAILLAGE=DEFI_GROUP( reuse=MAILLAGE,   MAILLAGE=MAILLAGE,
+                           CREA_GROUP_MA=_F(  NOM = 'MAILLAGE',
+                                           MAILLE = ( 'E01', 'E02', ))
+                        )
+
+MAT=DEFI_MATERIAU( ELAS=_F(  E = 2.E+11,  NU = 0.3,  RHO = 0.) )
+
+CH_MATE=AFFE_MATERIAU(  MAILLAGE=MAILLAGE,
+                            AFFE=_F(  GROUP_MA = 'M_POUT',  MATER = MAT) )
+
+MODELE=AFFE_MODELE(  MAILLAGE=MAILLAGE,AFFE=( 
+                        _F(  GROUP_MA = 'M_POUT', PHENOMENE = 'MECANIQUE',
+                               MODELISATION = 'POU_D_E'),
+                             _F(  GROUP_NO = 'MASSE',  PHENOMENE = 'MECANIQUE',
+                               MODELISATION = 'DIS_T')) )
+
+CARA_ELE=AFFE_CARA_ELEM(  MODELE=MODELE,
+                POUTRE=_F(  GROUP_MA = 'M_POUT',  SECTION = 'GENERALE',
+                         CARA = (   'A',     'IY',      'IZ',      'JX',   ),
+                         VALE = ( 78.1E-4, 5696.E-8, 2003.E-8, 7699.E-8,)),DISCRET=(
+                _F(  NOEUD = 'B',  CARA = 'M_T_D_N', VALE = 50000.),
+                        _F(  NOEUD = 'C',  CARA = 'M_T_D_N', VALE = 5000.)) )
+
+COND_LIM=AFFE_CHAR_MECA(  MODELE=MODELE,
+                  DDL_IMPO=_F(  NOEUD = 'A',   DX = 0.,  DY = 0.,  DZ = 0.,
+                                         DRX = 0., DRY = 0., DRZ = 0.) )
+
+RIGI_ELE=CALC_MATR_ELEM(  MODELE=MODELE,   OPTION='RIGI_MECA',
+                              CHAM_MATER=CH_MATE,   CARA_ELEM=CARA_ELE,
+                              CHARGE=COND_LIM                        )
+
+MASS_ELE=CALC_MATR_ELEM(  MODELE=MODELE,   OPTION='MASS_MECA',
+                              CHAM_MATER=CH_MATE,   CARA_ELEM=CARA_ELE,
+                              CHARGE=COND_LIM                        )
+
+NUME1=NUME_DDL(  MATR_RIGI=RIGI_ELE)
+
+RIGIDITE=ASSE_MATRICE(  MATR_ELEM=RIGI_ELE,  NUME_DDL=NUME1      )
+
+MASSE=ASSE_MATRICE(  MATR_ELEM=MASS_ELE,  NUME_DDL=NUME1      )
+
+TABL_MAS=POST_ELEM(  MODELE=MODELE,
+                         CHAM_MATER=CH_MATE,   CARA_ELEM=CARA_ELE,
+                        MASS_INER=_F(  TOUT = 'OUI',  
+                                    GROUP_MA = 'MAILLAGE')
+                      )
+
+IMPR_TABLE(   TABLE=TABL_MAS )
+
+MODE_MEC=MODE_ITER_SIMULT(  MATR_A=RIGIDITE,   MATR_B=MASSE,
+                  CALC_FREQ=_F(  OPTION = 'PLUS_PETITE',  NMAX_FREQ = 6,
+                              DIM_SOUS_ESPACE = 6) )
+
+MODE_MEC=NORM_MODE(reuse=MODE_MEC,   MODE=MODE_MEC,   NORME='MASS_GENE',
+                         MASS_INER=TABL_MAS                          )
+
+MODE_MEC=CALC_ELEM(reuse=MODE_MEC,  RESULTAT=MODE_MEC,
+                         MODELE=MODELE,      OPTION=('SIEF_ELGA_DEPL',
+                         'EFGE_ELNO_DEPL', 'SIPO_ELNO_DEPL'),
+                         CHAM_MATER=CH_MATE,   CARA_ELEM=CARA_ELE    )
+
+MODE_MEC=CALC_NO(reuse=MODE_MEC,  RESULTAT=MODE_MEC,
+                    MODELE=MODELE,   OPTION='REAC_NODA',
+                       CHAM_MATER=CH_MATE,   CARA_ELEM=CARA_ELE,
+                      TOUT_ORDRE='OUI' )
+
+MODEMEC2=MODE_ITER_SIMULT(  MATR_A=RIGIDITE,   MATR_B=MASSE,
+                  CALC_FREQ=_F(  OPTION = 'PLUS_PETITE',  NMAX_FREQ = 6,
+                              DIM_SOUS_ESPACE = 6) )
+
+MODEMEC2=CALC_ELEM(reuse=MODEMEC2,  RESULTAT=MODEMEC2,
+                         MODELE=MODELE,      OPTION='SIEF_ELGA_DEPL',
+                         CHAM_MATER=CH_MATE,   CARA_ELEM=CARA_ELE    )
+
+MODEMEC2=CALC_NO(reuse=MODEMEC2,  RESULTAT=MODEMEC2,
+                    MODELE=MODELE,  OPTION='REAC_NODA',
+                       CHAM_MATER=CH_MATE,   CARA_ELEM=CARA_ELE,
+                      NUME_MODE=(1, 2,) )
+
+MODEMEC2=CALC_NO(reuse=MODEMEC2,  RESULTAT=MODEMEC2,
+                    MODELE=MODELE,  OPTION='REAC_NODA',
+                       CHAM_MATER=CH_MATE,   CARA_ELEM=CARA_ELE,
+                       NUME_ORDRE=3 )
+
+MODEMEC2=CALC_NO(reuse=MODEMEC2,  RESULTAT=MODEMEC2, 
+                    MODELE=MODELE, OPTION='REAC_NODA',
+                       CHAM_MATER=CH_MATE,   CARA_ELEM=CARA_ELE,
+                       FREQ=12.4675,  CRITERE='ABSOLU' )
+
+LIS=DEFI_LIST_REEL( DEBUT=27.5075, INTERVALLE=_F( JUSQU_A = 41.7401,
+                       NOMBRE = 1))
+
+MODEMEC2=CALC_NO(reuse=MODEMEC2,  RESULTAT=MODEMEC2,
+                   MODELE=MODELE,  OPTION='REAC_NODA',
+                       CHAM_MATER=CH_MATE,   CARA_ELEM=CARA_ELE,
+                      LIST_FREQ=LIS )
+
+TEST_RESU(RESU=( _F(  RESULTAT = MODE_MEC,  PARA = 'FREQ',
+                     CRITERE = 'RELATIF',  PRECISION = 0.01,
+                     NUME_MODE = 1,       VALE = 0.24691),
+                   _F(  RESULTAT = MODE_MEC,  PARA = 'FREQ',
+                     CRITERE = 'RELATIF',  PRECISION = 0.01,
+                     NUME_MODE = 2,       VALE = 0.41666),
+                   _F(  RESULTAT = MODE_MEC,  PARA = 'FREQ',
+                     CRITERE = 'RELATIF',  PRECISION = 0.01,
+                     NUME_MODE = 3,       VALE = 7.4074),
+                   _F(  RESULTAT = MODE_MEC,  PARA = 'FREQ',
+                     CRITERE = 'RELATIF',  PRECISION = 0.01,
+                     NUME_MODE = 4,       VALE = 12.5),
+                   _F(  RESULTAT = MODE_MEC,  PARA = 'FREQ',
+                     CRITERE = 'RELATIF',  PRECISION = 0.01,
+                     NUME_MODE = 5,       VALE = 27.7777),
+                   _F(  RESULTAT = MODE_MEC,  PARA = 'FREQ',
+                     CRITERE = 'RELATIF',  PRECISION = 0.01,
+                     NUME_MODE = 6,       VALE = 41.6666))   )
+
+#
+
+TEST_RESU(RESU=( _F(  RESULTAT = MODE_MEC,  PARA = 'FACT_PARTICI_DY',
+                     CRITERE = 'RELATIF',  PRECISION = 0.01,
+                     NUME_MODE = 1,       VALE = 73.3),
+                   _F(  RESULTAT = MODE_MEC,  PARA = 'FACT_PARTICI_DZ',
+                     CRITERE = 'RELATIF',  PRECISION = 0.01,
+                     NUME_MODE = 2,       VALE = 73.3),
+                   _F(  RESULTAT = MODE_MEC,  PARA = 'FACT_PARTICI_DY',
+                     CRITERE = 'RELATIF',  PRECISION = 0.01,
+                     NUME_MODE = 3,       VALE = 223.0),
+                   _F(  RESULTAT = MODE_MEC,  PARA = 'FACT_PARTICI_DZ',
+                     CRITERE = 'RELATIF',  PRECISION = 0.01,
+                     NUME_MODE = 4,       VALE = -223.0),
+                   _F(  RESULTAT = MODE_MEC,  PARA = 'FACT_PARTICI_DX',
+                     CRITERE = 'RELATIF',  PRECISION = 0.01,
+                     NUME_MODE = 5,       VALE = 130.0),
+                   _F(  RESULTAT = MODE_MEC,  PARA = 'FACT_PARTICI_DX',
+                     CRITERE = 'RELATIF',  PRECISION = 0.01,
+                     NUME_MODE = 6,       VALE = 195.0))      )
+
+MODE_STA=MODE_STATIQUE(  MATR_RIGI=RIGIDITE,   MATR_MASS=MASSE,
+                          PSEUDO_MODE=(
+                                       _F(  AXE = ( 'X',  'Y', )),
+                                       _F(  DIRECTION = ( 0., 0., 1., ),
+                                         NOM_DIR = 'Z')) )
+
+MODE_STA=CALC_ELEM(reuse=MODE_STA,  RESULTAT=MODE_STA,
+                         MODELE=MODELE,      OPTION='SIEF_ELGA_DEPL',
+                         CHAM_MATER=CH_MATE,   CARA_ELEM=CARA_ELE    )
+
+MODE_STA=CALC_NO(reuse=MODE_STA,  RESULTAT=MODE_STA,
+                   MODELE=MODELE,   OPTION='REAC_NODA',
+                       CHAM_MATER=CH_MATE,   CARA_ELEM=CARA_ELE,
+                      NOEUD_CMP=('ACCE', 'X',))
+
+MODE_STA=CALC_NO(reuse=MODE_STA,  RESULTAT=MODE_STA,
+                   MODELE=MODELE,   OPTION='REAC_NODA',
+                       CHAM_MATER=CH_MATE,   CARA_ELEM=CARA_ELE,
+                      NOEUD_CMP=('ACCE', 'Y',))
+
+MODE_STA=CALC_NO(reuse=MODE_STA,  RESULTAT=MODE_STA,
+                    MODELE=MODELE,   OPTION='REAC_NODA',
+                       CHAM_MATER=CH_MATE,   CARA_ELEM=CARA_ELE,
+                      NOEUD_CMP=('ACCE', 'Z',))
+
+ACCE_X=DEFI_FONCTION(  NOM_PARA='FREQ',        INTERPOL='LOG',
+                          VALE=( 0.2,            2.4,
+                                 2.0,           25.,
+                                 7.70,          25.,
+                                 20.0,          10.,
+                                 100.0,         10.,  ) )
+
+SPECT=DEFI_NAPPE(  NOM_PARA='AMOR', 
+                         INTERPOL=( 'LIN', 'LOG', ),
+                       PARA=(     0.005,   0.01,    0.015,  ),
+                       FONCTION=( ACCE_X,  ACCE_X,  ACCE_X, )        )
+
+# ----------------------------------------------------------------------
+#                  COMBINAISON SRSS
+# ----------------------------------------------------------------------
+
+SISM_SP3=COMB_SISM_MODAL(  MODE_MECA=MODE_MEC,
+                               NUME_MODE=( 1,  2,  3, ),
+                                 AMOR_REDUIT=0.01,
+                               MASS_INER=TABL_MAS,
+                               CORR_FREQ='NON',
+                              EXCIT=_F(  MONO_APPUI = 'OUI',
+                                      TRI_AXE = ( 1.,  1.,  1., ),
+                                      SPEC_OSCI = SPECT),
+                              COMB_MODE=_F(  TYPE = 'DPC'),
+                              COMB_DIRECTION=_F(  TYPE = 'QUAD'),
+                                OPTION=( 'DEPL',  'REAC_NODA', 
+                                         'EFGE_ELNO_DEPL',
+                                         'SIPO_ELNO_DEPL',  )
+                            )
+
+SISMSP32=COMB_SISM_MODAL(  MODE_MECA=MODEMEC2,
+                               NUME_MODE=( 1,  2,  3, ),
+                                 AMOR_REDUIT=0.01,
+                               CORR_FREQ='NON',
+                               MASS_INER=TABL_MAS,
+                              EXCIT=_F(  MONO_APPUI = 'OUI',
+                                      TRI_AXE = ( 1.,  1.,  1., ),
+                                      SPEC_OSCI = SPECT),
+                              COMB_MODE=_F(  TYPE = 'DPC'),
+                              COMB_DIRECTION=_F(  TYPE = 'QUAD'),
+                                OPTION=( 'DEPL',  'REAC_NODA', )
+                            )
+
+TEST_RESU(RESU=( _F(  RESULTAT = SISM_SP3,  NOM_CHAM = 'DEPL',
+                     CRITERE = 'RELATIF',  PRECISION = 0.02,
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ),
+                     NOEUD = 'B',     NOM_CMP = 'DY',    VALE = 12.54E-03),
+                   _F(  RESULTAT = SISM_SP3,  NOM_CHAM = 'DEPL',
+                     CRITERE = 'RELATIF',  PRECISION = 0.02,
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ),
+                     NOEUD = 'C',     NOM_CMP = 'DY',    VALE = 1269.E-03),
+                   _F(  RESULTAT = SISM_SP3,  NOM_CHAM = 'DEPL',
+                     CRITERE = 'RELATIF',  PRECISION = 0.02,
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ),
+                     NOEUD = 'B',     NOM_CMP = 'DZ',    VALE = 2.8E-03),
+                   _F(  RESULTAT = SISM_SP3,  NOM_CHAM = 'DEPL',
+                     CRITERE = 'RELATIF',  PRECISION = 0.02,
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ),
+                     NOEUD = 'C',     NOM_CMP = 'DZ',    VALE = 757.5E-03))
+              )
+
+#
+
+TEST_RESU(RESU=( _F(  RESULTAT = SISM_SP3,  NOM_CHAM = 'REAC_NODA',
+                     CRITERE = 'ABSOLU',   PRECISION = 0.0001,
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ),
+                     NOEUD = 'A',     NOM_CMP = 'DX',    VALE = 0.),
+                   _F(  RESULTAT = SISM_SP3,  NOM_CHAM = 'REAC_NODA',
+                     CRITERE = 'RELATIF',  PRECISION = 0.02,
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ),
+                     NOEUD = 'A',     NOM_CMP = 'DY',    VALE = 12.31E+05),
+                   _F(  RESULTAT = SISM_SP3,  NOM_CHAM = 'REAC_NODA',
+                     CRITERE = 'RELATIF',  PRECISION = 0.02,
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ),
+                     NOEUD = 'A',     NOM_CMP = 'DZ',    VALE = 0.27E+05),
+                   _F(  RESULTAT = SISM_SP3,  NOM_CHAM = 'REAC_NODA',
+                     CRITERE = 'RELATIF',  PRECISION = 0.03,
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ),
+                     NOEUD = 'A',     NOM_CMP = 'DRY',    VALE = 2.56E+05),
+                   _F(  RESULTAT = SISM_SP3,  NOM_CHAM = 'REAC_NODA',
+                     CRITERE = 'RELATIF',  PRECISION = 0.02,
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ),
+                     NOEUD = 'A',     NOM_CMP = 'DRZ',    VALE = 5.91E+05))
+                   )
+#
+TEST_RESU(RESU=(_F( RESULTAT= SISM_SP3 , NOM_CHAM= 'SIPO_ELNO_DEPL',
+                   CRITERE= 'RELATIF'  , PRECISION= 0.02,  
+                   NOEUD_CMP= ( 'COMBI' , 'QUAD', ),
+                   MAILLE = 'E01',
+                   NOEUD= 'A'    , NOM_CMP= 'SMFY'   , VALE=  4.611E+09),
+                _F( RESULTAT= SISM_SP3 , NOM_CHAM= 'SIPO_ELNO_DEPL',
+                   CRITERE= 'RELATIF' , PRECISION= 0.02,
+                   NOEUD_CMP= ( 'COMBI' , 'QUAD', ),
+                   MAILLE = 'E01',
+                   NOEUD= 'A'    , NOM_CMP= 'SMFZ'   , VALE=  2.98E+10),
+                 _F( RESULTAT= SISM_SP3 , NOM_CHAM= 'SIPO_ELNO_DEPL',
+                   CRITERE= 'RELATIF' , PRECISION= 0.02,
+                   NOEUD_CMP= ( 'COMBI' , 'QUAD', ),
+                   MAILLE = 'E01',
+                   NOEUD= 'A'    , NOM_CMP= 'SVY'   , VALE=  1.588E+08),
+                 _F( RESULTAT= SISM_SP3 , NOM_CHAM= 'SIPO_ELNO_DEPL',
+                   CRITERE= 'RELATIF' , PRECISION= 0.03,
+                   NOEUD_CMP= ( 'COMBI' , 'QUAD', ),
+                   MAILLE = 'E01',
+                   NOEUD= 'A'    , NOM_CMP= 'SVZ'   , VALE=  3.481E+06)),
+                 ) 
+#
+TEST_RESU(RESU=( _F(  RESULTAT = SISMSP32, NOM_CHAM = 'REAC_NODA',
+                     CRITERE = 'ABSOLU',   PRECISION = 0.0001,
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ),
+                     NOEUD = 'A',     NOM_CMP = 'DX',    VALE = 0.),
+                   _F(  RESULTAT = SISMSP32, NOM_CHAM = 'REAC_NODA',
+                     CRITERE = 'RELATIF',  PRECISION = 0.02,
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ),
+                     NOEUD = 'A',     NOM_CMP = 'DY',    VALE = 12.31E+05),
+                   _F(  RESULTAT = SISMSP32, NOM_CHAM = 'REAC_NODA',
+                     CRITERE = 'RELATIF',  PRECISION = 0.02,
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ),
+                     NOEUD = 'A',     NOM_CMP = 'DZ',    VALE = 0.27E+05),
+                   _F(  RESULTAT = SISMSP32, NOM_CHAM = 'REAC_NODA',
+                     CRITERE = 'RELATIF',  PRECISION = 0.03,
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ),
+                     NOEUD = 'A',     NOM_CMP = 'DRY',    VALE = 2.56E+05),
+                   _F(  RESULTAT = SISMSP32, NOM_CHAM = 'REAC_NODA',
+                     CRITERE = 'RELATIF',  PRECISION = 0.02,
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ),
+                     NOEUD = 'A',     NOM_CMP = 'DRZ',    VALE = 5.91E+05))
+                   )
+
+#
+
+SISM_SP6=COMB_SISM_MODAL(  MODE_MECA=MODE_MEC,
+                                 AMOR_REDUIT=0.01,
+                               MASS_INER=TABL_MAS,
+                               CORR_FREQ='NON',
+                              EXCIT=_F(  MONO_APPUI = 'OUI',
+                                      TRI_AXE = ( 1.,  1.,  1., ),
+                                      SPEC_OSCI = SPECT),
+                              COMB_MODE=_F(  TYPE = 'DPC'),
+                              COMB_DIRECTION=_F(  TYPE = 'QUAD'),
+                                OPTION=( 'DEPL',  'REAC_NODA', 
+                                         'VITE',  'ACCE_ABSOLU', )
+                            )
+
+TEST_RESU(RESU=( _F(  RESULTAT = SISM_SP6,  NOM_CHAM = 'DEPL',
+                     CRITERE = 'RELATIF',  PRECISION = 0.02,
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ),
+                     NOEUD = 'B',     NOM_CMP = 'DX',    VALE = 0.132E-03),
+                   _F(  RESULTAT = SISM_SP6,  NOM_CHAM = 'DEPL',
+                     CRITERE = 'RELATIF',  PRECISION = 0.02,
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ),
+                     NOEUD = 'C',     NOM_CMP = 'DX',    VALE = 0.60E-03),
+                   _F(  RESULTAT = SISM_SP6,  NOM_CHAM = 'DEPL',
+                     CRITERE = 'RELATIF',  PRECISION = 0.02,
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ),
+                     NOEUD = 'B',     NOM_CMP = 'DY',    VALE = 12.55E-03),
+                   _F(  RESULTAT = SISM_SP6,  NOM_CHAM = 'DEPL',
+                     CRITERE = 'RELATIF',  PRECISION = 0.02,
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ),
+                     NOEUD = 'C',     NOM_CMP = 'DY',    VALE = 1269.E-03),
+                   _F(  RESULTAT = SISM_SP6,  NOM_CHAM = 'DEPL',
+                     CRITERE = 'RELATIF',  PRECISION = 0.02,
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ),
+                     NOEUD = 'B',     NOM_CMP = 'DZ',    VALE = 3.83E-03),
+
+                   _F(  RESULTAT = SISM_SP6,  NOM_CHAM = 'DEPL',
+                     CRITERE = 'RELATIF',  PRECISION = 0.02,
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ),
+                     NOEUD = 'C',     NOM_CMP = 'DZ',    VALE = 758.E-03))
+                     )
+
+#
+
+TEST_RESU(RESU=( _F(  RESULTAT = SISM_SP6,  NOM_CHAM = 'REAC_NODA',
+                     CRITERE = 'RELATIF',  PRECISION = 0.02,
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ),
+                     NOEUD = 'A',     NOM_CMP = 'DX',    VALE = 4.12E+05),
+                   _F(  RESULTAT = SISM_SP6,  NOM_CHAM = 'REAC_NODA',
+                     CRITERE = 'RELATIF',  PRECISION = 0.02,
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ),
+                     NOEUD = 'A',     NOM_CMP = 'DY',    VALE = 12.27E+05),
+                   _F(  RESULTAT = SISM_SP6,  NOM_CHAM = 'REAC_NODA',
+                     CRITERE = 'RELATIF',  PRECISION = 0.02,
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ),
+                     NOEUD = 'A',     NOM_CMP = 'DZ',    VALE = 7.96E+05),
+                   _F(  RESULTAT = SISM_SP6,  NOM_CHAM = 'REAC_NODA',
+                     CRITERE = 'RELATIF',  PRECISION = 0.02,
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ),
+                     NOEUD = 'A',     NOM_CMP = 'DRY',   VALE = 4.49E+05),
+                   _F(  RESULTAT = SISM_SP6,  NOM_CHAM = 'REAC_NODA',
+                     CRITERE = 'RELATIF',  PRECISION = 0.02,
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ),
+                     NOEUD = 'A',     NOM_CMP = 'DRZ',   VALE = 5.90E+05))
+                   )
+
+SISM_3ST=COMB_SISM_MODAL(  MODE_MECA=MODE_MEC,
+                               NUME_MODE=( 1,  2,  3, ),
+                               MODE_CORR=MODE_STA,
+                                 AMOR_REDUIT=0.01,
+                               MASS_INER=TABL_MAS,
+                               CORR_FREQ='NON',
+                              EXCIT=_F(  MONO_APPUI = 'OUI',
+                                      TRI_AXE = ( 1.,  1.,  1., ),
+                                      SPEC_OSCI = SPECT),
+                              COMB_MODE=_F(  TYPE = 'SRSS'),
+                              COMB_DIRECTION=_F(  TYPE = 'QUAD'),
+                                OPTION=( 'DEPL',  'REAC_NODA', )
+                            )
+
+TEST_RESU(RESU=( _F(  RESULTAT = SISM_3ST,  NOM_CHAM = 'DEPL',
+                     CRITERE = 'RELATIF',  PRECISION = 0.02,
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ),
+                     NOEUD = 'B',     NOM_CMP = 'DX',    VALE = 0.176E-03),
+                   _F(  RESULTAT = SISM_3ST,  NOM_CHAM = 'DEPL',
+                     CRITERE = 'RELATIF',  PRECISION = 0.02,
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ),
+                     NOEUD = 'C',     NOM_CMP = 'DX',    VALE = 0.48E-03),
+                   _F(  RESULTAT = SISM_3ST,  NOM_CHAM = 'DEPL',
+                     CRITERE = 'RELATIF',  PRECISION = 0.02,
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ),
+                     NOEUD = 'B',     NOM_CMP = 'DY',    VALE = 12.67E-03),
+                   _F(  RESULTAT = SISM_3ST,  NOM_CHAM = 'DEPL',
+                     CRITERE = 'RELATIF',  PRECISION = 0.02,
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ),
+                     NOEUD = 'C',     NOM_CMP = 'DY',    VALE = 1277.E-03),
+                   _F(  RESULTAT = SISM_3ST,  NOM_CHAM = 'DEPL',
+                     CRITERE = 'RELATIF',  PRECISION = 0.02,
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ),
+                     NOEUD = 'B',     NOM_CMP = 'DZ',    VALE = 3.30E-03),
+                   _F(  RESULTAT = SISM_3ST,  NOM_CHAM = 'DEPL',
+                     CRITERE = 'RELATIF',  PRECISION = 0.02,
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ),
+                     NOEUD = 'C',     NOM_CMP = 'DZ',    VALE = 762.E-03))
+                   )
+
+#
+
+TEST_RESU(RESU=( _F(  RESULTAT = SISM_3ST,  NOM_CHAM = 'REAC_NODA',
+                     CRITERE = 'RELATIF',  PRECISION = 0.02,
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ),
+                     NOEUD = 'A',     NOM_CMP = 'DX',    VALE = 5.46E+05),
+                   _F(  RESULTAT = SISM_3ST,  NOM_CHAM = 'REAC_NODA',
+                     CRITERE = 'RELATIF',  PRECISION = 0.02,
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ),
+                     NOEUD = 'A',     NOM_CMP = 'DY',    VALE = 12.3E+05),
+                   _F(  RESULTAT = SISM_3ST,  NOM_CHAM = 'REAC_NODA',
+                     CRITERE = 'RELATIF',  PRECISION = 0.02,
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ),
+                     NOEUD = 'A',     NOM_CMP = 'DZ',    VALE = 4.9E+05),
+                   _F(  RESULTAT = SISM_3ST,  NOM_CHAM = 'REAC_NODA',
+                     CRITERE = 'RELATIF',  PRECISION = 0.02,
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ),
+                     NOEUD = 'A',     NOM_CMP = 'DRY',   VALE = 3.43E+05),
+                   _F(  RESULTAT = SISM_3ST,  NOM_CHAM = 'REAC_NODA',
+                     CRITERE = 'RELATIF',  PRECISION = 0.02,
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ),
+                     NOEUD = 'A',     NOM_CMP = 'DRZ',   VALE = 5.91E+05))
+                   )
+
+# ----------------------------------------------------------------------
+#                  COMBINAISON CQC
+# ----------------------------------------------------------------------
+
+SISM_CQC=COMB_SISM_MODAL(  MODE_MECA=MODE_MEC,
+                                 AMOR_REDUIT=0.01,
+                               MASS_INER=TABL_MAS,
+                               CORR_FREQ='NON',
+                              EXCIT=_F(  MONO_APPUI = 'OUI',
+                                      TRI_AXE = ( 1.,  1.,  1., ),
+                                      SPEC_OSCI = SPECT),
+                              COMB_MODE=_F(  TYPE = 'CQC'),
+                              COMB_DIRECTION=_F(  TYPE = 'QUAD'),
+                                OPTION=( 'DEPL',  'REAC_NODA', )
+                            )
+
+TEST_RESU(RESU=( _F(  RESULTAT = SISM_CQC,  NOM_CHAM = 'DEPL',
+                     CRITERE = 'RELATIF',  PRECISION = 0.02,
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ),
+                     NOEUD = 'B',     NOM_CMP = 'DX',    VALE = 1.33796E-04),
+                   _F(  RESULTAT = SISM_CQC,  NOM_CHAM = 'DEPL',
+                     CRITERE = 'RELATIF',  PRECISION = 0.02,
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ),
+                     NOEUD = 'C',     NOM_CMP = 'DX',    VALE = 6.01243E-04),
+                   _F(  RESULTAT = SISM_CQC,  NOM_CHAM = 'DEPL',
+                     CRITERE = 'RELATIF',  PRECISION = 0.02,
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ),
+                     NOEUD = 'B',     NOM_CMP = 'DY',    VALE = 1.24739E-02),
+                   _F(  RESULTAT = SISM_CQC,  NOM_CHAM = 'DEPL',
+                     CRITERE = 'RELATIF',  PRECISION = 0.02,
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ),
+                     NOEUD = 'C',     NOM_CMP = 'DY',    VALE = 1.28204E+00),
+                   _F(  RESULTAT = SISM_CQC,  NOM_CHAM = 'DEPL',
+                     CRITERE = 'RELATIF',  PRECISION = 0.02,
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ),
+                     NOEUD = 'B',     NOM_CMP = 'DZ',    VALE = 3.81499E-03),
+                   _F(  RESULTAT = SISM_CQC,  NOM_CHAM = 'DEPL',
+                     CRITERE = 'RELATIF',  PRECISION = 0.02,
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ),
+                     NOEUD = 'C',     NOM_CMP = 'DZ',    VALE = 7.67326E-01))
+                     )
+
+#
+
+TEST_RESU(RESU=( _F(  RESULTAT = SISM_CQC,  NOM_CHAM = 'REAC_NODA',
+                     CRITERE = 'RELATIF',  PRECISION = 0.02,
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ),
+                     NOEUD = 'A',     NOM_CMP = 'DX',   VALE = 4.17978E+05),
+                   _F(  RESULTAT = SISM_CQC,  NOM_CHAM = 'REAC_NODA',
+                     CRITERE = 'RELATIF',  PRECISION = 0.02,
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ),
+                     NOEUD = 'A',     NOM_CMP = 'DY',   VALE = 1.24072E+06),
+                   _F(  RESULTAT = SISM_CQC,  NOM_CHAM = 'REAC_NODA',
+                     CRITERE = 'RELATIF',  PRECISION = 0.02,
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ),
+                     NOEUD = 'A',     NOM_CMP = 'DZ',   VALE = 7.81618E+05),
+                   _F(  RESULTAT = SISM_CQC,  NOM_CHAM = 'REAC_NODA',
+                     CRITERE = 'RELATIF',  PRECISION = 0.02,
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ),
+                     NOEUD = 'A',     NOM_CMP = 'DRY',  VALE = 4.48145E+05),
+                   _F(  RESULTAT = SISM_CQC,  NOM_CHAM = 'REAC_NODA',
+                     CRITERE = 'RELATIF',  PRECISION = 0.02,
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ),
+                     NOEUD = 'A',     NOM_CMP = 'DRZ',  VALE = 5.96940E+05))
+                   )
+
+# ----------------------------------------------------------------------
+#                  COMBINAISON DSC
+# ----------------------------------------------------------------------
+
+SISM_DPC=COMB_SISM_MODAL(  MODE_MECA=MODE_MEC,
+                                 AMOR_REDUIT=0.01,
+                               MASS_INER=TABL_MAS,
+                               CORR_FREQ='NON',
+                              EXCIT=_F(  MONO_APPUI = 'OUI',
+                                      TRI_AXE = ( 1.,  1.,  1., ),
+                                      SPEC_OSCI = SPECT),
+                              COMB_MODE=_F(  TYPE = 'DSC',
+                                          DUREE = 5.),
+                              COMB_DIRECTION=_F(  TYPE = 'QUAD'),
+                                OPTION=( 'DEPL',  'REAC_NODA', )
+                            )
+
+TEST_RESU(RESU=( _F(  RESULTAT = SISM_DPC,  NOM_CHAM = 'DEPL',
+                     CRITERE = 'RELATIF',  PRECISION = 0.02,
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ),
+                     NOEUD = 'B',     NOM_CMP = 'DX',    VALE = 1.33913E-04),
+                   _F(  RESULTAT = SISM_DPC,  NOM_CHAM = 'DEPL',
+                     CRITERE = 'RELATIF',  PRECISION = 0.02,
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ),
+                     NOEUD = 'C',     NOM_CMP = 'DX',    VALE = 6.00982E-04),
+                   _F(  RESULTAT = SISM_DPC,  NOM_CHAM = 'DEPL',
+                     CRITERE = 'RELATIF',  PRECISION = 0.02,
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ),
+                     NOEUD = 'B',     NOM_CMP = 'DY',    VALE = 1.24805E-02),
+                   _F(  RESULTAT = SISM_DPC,  NOM_CHAM = 'DEPL',
+                     CRITERE = 'RELATIF',  PRECISION = 0.02,
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ),
+                     NOEUD = 'C',     NOM_CMP = 'DY',    VALE = 1.28204E+00),
+                   _F(  RESULTAT = SISM_DPC,  NOM_CHAM = 'DEPL',
+                     CRITERE = 'RELATIF',  PRECISION = 0.02,
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ),
+                     NOEUD = 'B',     NOM_CMP = 'DZ',    VALE = 3.81689E-03),
+                   _F(  RESULTAT = SISM_DPC,  NOM_CHAM = 'DEPL',
+                     CRITERE = 'RELATIF',  PRECISION = 0.02,
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ),
+                     NOEUD = 'C',     NOM_CMP = 'DZ',    VALE = 7.67326E-01))
+                    )
+
+#
+
+TEST_RESU(RESU=( _F(  RESULTAT = SISM_DPC,  NOM_CHAM = 'REAC_NODA',
+                     CRITERE = 'RELATIF',  PRECISION = 0.02,
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ),
+                     NOEUD = 'A',     NOM_CMP = 'DX',   VALE = 4.18344E+05),
+                   _F(  RESULTAT = SISM_DPC,  NOM_CHAM = 'REAC_NODA',
+                     CRITERE = 'RELATIF',  PRECISION = 0.02,
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ),
+                     NOEUD = 'A',     NOM_CMP = 'DY',   VALE = 1.24075E+06),
+                   _F(  RESULTAT = SISM_DPC,  NOM_CHAM = 'REAC_NODA',
+                     CRITERE = 'RELATIF',  PRECISION = 0.02,
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ),
+                     NOEUD = 'A',     NOM_CMP = 'DZ',   VALE = 7.81645E+05),
+                   _F(  RESULTAT = SISM_DPC,  NOM_CHAM = 'REAC_NODA',
+                     CRITERE = 'RELATIF',  PRECISION = 0.02,
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ),
+                     NOEUD = 'A',     NOM_CMP = 'DRY',  VALE = 4.48357E+05),
+                   _F(  RESULTAT = SISM_DPC,  NOM_CHAM = 'REAC_NODA',
+                     CRITERE = 'RELATIF',  PRECISION = 0.02,
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ),
+                     NOEUD = 'A',     NOM_CMP = 'DRZ',  VALE = 5.97165E+05))
+                   )
+
+FIN( )
+#

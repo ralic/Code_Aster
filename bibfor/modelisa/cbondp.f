@@ -1,0 +1,127 @@
+      SUBROUTINE CBONDP(CHAR,LIGRMO,NOMA)
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF MODELISA  DATE 06/07/99   AUTEUR ACBHHCD G.DEVESA 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+      IMPLICIT REAL*8 (A-H,O-Z)
+C     BUT: TRAITE LE MOT_CLE : ONDE_PLANE
+C
+C ARGUMENTS D'ENTREE:
+C      CHAR   : NOM UTILISATEUR DE LA CHARGE
+C      LIGRMO : NOM DU LIGREL DU MODELE
+C      NOMA   : NOM DU MAILLAGE
+C
+C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
+      INTEGER            ZI
+      COMMON  / IVARJE / ZI(1)
+      REAL*8             ZR
+      COMMON  / RVARJE / ZR(1)
+      COMPLEX*16         ZC
+      COMMON  / CVARJE / ZC(1)
+      LOGICAL            ZL
+      COMMON  / LVARJE / ZL(1)
+      CHARACTER*8        ZK8
+      CHARACTER*16                ZK16
+      CHARACTER*24                          ZK24
+      CHARACTER*32                                    ZK32
+      CHARACTER*80                                              ZK80
+      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
+C
+      REAL*8 DIR(3),DIST
+      CHARACTER*24 ONDP(6),SIGNAL
+      CHARACTER*8 CHAR,NOMA
+      CHARACTER*2 TYPE
+      CHARACTER*(*) LIGRMO
+
+      CALL GETVR8 ('ONDE_PLANE','DIRECTION',1,1,0,DIR,NDIR)
+      NDIR = - NDIR
+      CALL GETVR8 ('ONDE_PLANE','DIRECTION',1,1,NDIR,DIR,NBID)
+      IF (NDIR.EQ.2) DIR(3) = 0.D0      
+      CALL GETVTX ('ONDE_PLANE','TYPE_ONDE',1,1,1,TYPE,NTY)
+      CALL GETVID ('ONDE_PLANE','FONC_SIGNAL',1,1,1,SIGNAL,NSI)
+      CALL GETVR8 ('ONDE_PLANE','DIST_ORIG',1,1,1,DIST,NDI)
+
+      ONDP(1) = CHAR//'.DIRX'
+      ONDP(2) = CHAR//'.DIRY'
+      ONDP(3) = CHAR//'.DIRZ'
+      ONDP(4) = CHAR//'.TYPE'
+      ONDP(5) = SIGNAL
+      ONDP(6) = CHAR//'.DIST'
+
+C --- CREATION DES FONCTIONS NECESSAIRES
+ 
+      DO 10 I = 1,6
+         IF (I.NE.5) THEN
+            CALL WKVECT(ONDP(I)(1:19)//'.PROL','G V K8',5,JPRO)
+            ZK8(JPRO)   = 'CONSTANT'
+            ZK8(JPRO+1) = 'LIN LIN '
+            ZK8(JPRO+2) = 'TOUTPARA'
+            ZK8(JPRO+3) = 'TOUTRESU'
+            ZK8(JPRO+4) = 'CC      '
+         ENDIF
+10    CONTINUE
+
+C --- REMPLISSAGE DES .VALE CORRESPONDANTS
+
+      CALL WKVECT(ONDP(1)(1:19)//'.VALE','G V R',2,LVAL)
+      ZR(LVAL) = 1.D0
+      ZR(LVAL+1) = DIR(1)
+      
+      CALL WKVECT(ONDP(2)(1:19)//'.VALE','G V R',2,LVAL)
+      ZR(LVAL) = 1.D0
+      ZR(LVAL+1) = DIR(2)
+
+      CALL WKVECT(ONDP(3)(1:19)//'.VALE','G V R',2,LVAL)
+      ZR(LVAL) = 1.D0
+      ZR(LVAL+1) = DIR(3)
+
+      IF (NDIR.EQ.3) THEN
+         IF (TYPE.EQ.'P ') THEN
+            TYPR = 0.D0
+         ELSEIF (TYPE.EQ.'SV') THEN
+            TYPR = 1.D0
+         ELSEIF (TYPE.EQ.'SH') THEN
+            TYPR = 2.D0
+         ELSEIF (TYPE.EQ.'S ') THEN
+            CALL UTMESS('F','CBONDP',
+     &  'LE TYPE S EST INTERDIT EN 3D')
+         ENDIF
+      ELSE
+         IF (TYPE.EQ.'P ') THEN
+            TYPR = 0.D0
+         ELSEIF (TYPE.EQ.'S ') THEN
+            TYPR = 1.D0
+         ELSEIF (TYPE.EQ.'SV'.OR.TYPE.EQ.'SH') THEN
+            CALL UTMESS('F','CBONDP',
+     &  'LES TYPES SV OU SH SONT INTERDITS EN 2D')
+         ENDIF
+      ENDIF
+
+      CALL WKVECT(ONDP(4)(1:19)//'.VALE','G V R',2,LVAL)
+      ZR(LVAL) = 1.D0
+      ZR(LVAL+1) = TYPR
+
+      CALL WKVECT(ONDP(6)(1:19)//'.VALE','G V R',2,LVAL)
+      ZR(LVAL) = 1.D0
+      ZR(LVAL+1) = DIST
+
+      IF (NDIR.NE.0) THEN
+         CALL CAONDP(CHAR,NOMA,ONDP)
+      ENDIF
+ 
+      END

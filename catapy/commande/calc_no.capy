@@ -1,0 +1,98 @@
+#& MODIF COMMANDE  DATE 09/10/2002   AUTEUR DURAND C.DURAND 
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+# RESPONSABLE G8BHHXD X.DESROCHES
+def calc_no_prod(RESULTAT,**args):
+   if AsType(RESULTAT) != None : return AsType(RESULTAT)
+   raise AsException("type de concept resultat non prevu")
+
+CALC_NO=OPER(nom="CALC_NO",op= 106,sd_prod=calc_no_prod,docu="U4.81.02-f3",reentrant='o',
+            UIinfo={"groupes":("Post traitements",)},
+         RESULTAT        =SIMP(statut='o',typ=(evol_elas,dyna_trans,dyna_harmo,acou_harmo,mode_meca,
+                                               mode_acou,mode_stat,mode_stat_depl,mode_stat_acce,
+                                              mode_stat_forc,evol_ther,evol_noli,base_modale,
+                                               mult_elas,fourier_elas,mode_flamb ) ),
+         SENSIBILITE     =SIMP(statut='f',typ=(para_sensi,theta_geom),max='**',
+                               fr="Liste des paramètres de sensibilité.",
+                               ang="List of sensitivity parameters"),
+
+         regles=(EXCLUS('TOUT_ORDRE','NUME_ORDRE','INST','FREQ','NUME_MODE',
+                        'NOEUD_CMP','LIST_INST','LIST_FREQ','LIST_ORDRE','NOM_CAS'),),
+         TOUT_ORDRE      =SIMP(statut='f',typ='TXM',into=("OUI",) ),
+         NUME_ORDRE      =SIMP(statut='f',typ='I',max='**'),
+         NUME_MODE       =SIMP(statut='f',typ='I',max='**'),
+         NOEUD_CMP       =SIMP(statut='f',typ='TXM',max='**'),
+         NOM_CAS         =SIMP(statut='f',typ='TXM' ),
+         INST            =SIMP(statut='f',typ='R',max='**'),
+         FREQ            =SIMP(statut='f',typ='R',max='**'),
+         LIST_INST       =SIMP(statut='f',typ=listr8),
+         LIST_FREQ       =SIMP(statut='f',typ=listr8),
+         PRECISION       =SIMP(statut='f',typ='R',defaut=1.0E-3 ),
+         CRITERE         =SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU") ),
+         LIST_ORDRE      =SIMP(statut='f',typ=listis),
+
+         OPTION          =SIMP(statut='o',typ='TXM',max='**',
+                               into=("FORC_NODA","REAC_NODA",
+                                     "DCHA_NOEU_SIGM",
+                                     "DEGE_NOEU_DEPL",
+                                     "DETE_NOEU_DLTE",
+                                     "DEDE_NOEU_DLDE",
+                                     "DESI_NOEU_DLSI",
+                                     "DURT_NOEU_META",
+                                     "EFGE_NOEU_CART","EFGE_NOEU_DEPL",
+                                     "ENDO_NOEU_SINO",
+                                     "ENEL_NOEU_ELGA",
+                                     "EPMG_NOEU_DEPL",
+                                     "EPSA_NOEU",
+                                     "EPSG_NOEU"     ,"EPSG_NOEU_DEPL",
+                                     "EPSI_NOEU_DEPL","EPSI_NOEU_DPGE",
+                                     "EPSP_NOEU"     ,"EPSP_NOEU_ZAC",
+                                     "EQUI_NOEU_EPME","EQUI_NOEU_EPSI","EQUI_NOEU_SIGM",
+                                     "ERRE_NOEU_ELGA",
+                                     "FLUX_NOEU_TEMP",
+                                     "GRAD_NOEU_THETA",
+                                     "HYDR_NOEU_ELGA",
+                                     "INTE_NOEU_ACTI","INTE_NOEU_REAC",
+                                     "META_NOEU_TEMP",
+                                     "PMPB_NOEU_SIEF",
+                                     "PRES_NOEU_DBEL","PRES_NOEU_IMAG","PRES_NOEU_REEL",
+                                     "RADI_NOEU_SIGM",
+                                     "SIEF_NOEU"     ,"SIEF_NOEU_ELGA",
+                                     "SIGM_NOEU_CART","SIGM_NOEU_COQU","SIGM_NOEU_DEPL","SIGM_NOEU_DPGE",
+                                     "SIGM_NOEU_SIEF","SIGM_NOEU_VARI","SIGM_NOEU_ZAC",
+                                     "SIPO_NOEU_DEPL","SIPO_NOEU_SIEF",
+                                     "SIRE_NOEU_DEPL",
+                                     "VARI_NOEU"     ,"VARI_NOEU_ELGA",) ),
+
+         b_forc_reac     =BLOC(condition = """(OPTION == 'FORC_NODA') or (type(OPTION) == type(()) and 'FORC_NODA' in OPTION) or\
+ (OPTION == 'REAC_NODA') or (type(OPTION) == type(()) and 'REAC_NODA' in OPTION)""",
+             MODELE          =SIMP(statut='o',typ=modele),
+         ),
+
+         CHAM_MATER      =SIMP(statut='f',typ=cham_mater),
+         CARA_ELEM       =SIMP(statut='f',typ=cara_elem),
+         EXCIT           =FACT(statut='f',min=1,max='**',
+           CHARGE          =SIMP(statut='f',typ=(char_meca,char_ther,char_acou) ),
+           FONC_MULT       =SIMP(statut='f',typ=fonction),
+           TYPE_CHARGE     =SIMP(statut='f',typ='TXM',defaut="FIXE_CSTE",
+                                 into=("FIXE_CSTE","FIXE_PILO","SUIV") ),
+         ),
+         TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),
+         GROUP_MA        =SIMP(statut='f',typ=grma,max='**'),
+         MAILLE          =SIMP(statut='f',typ=ma,max='**'),
+)  ;

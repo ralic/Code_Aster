@@ -1,0 +1,222 @@
+# MODIF  DATE 07/06/2002   AUTEUR DURAND C.DURAND 
+# TITRE ASSEMBLAGE DE PLAQUES RECTANGULAIRES MINCES ENTRETOISEES
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+#CAS_TEST__: SDLX03B
+# SDLX03/B                 COMMANDES                             5/03/91
+# ASSEMBLAGE DE PLAQUES RECTANGULAIRES MINCES ENTRETOISEES
+# 2 PLAQUES HORIZONTALES: 0.375*0.20*0.005 M
+# 2 PLAQUES VERTICALES:   0.375*0.05*0.005 M       REF: SFM.VPCS SDLX03
+# MODELISATION DKT
+# LA JONCTION DES PLAQUES PERPENDICULAIRES EST MODELISEE
+# D'UNE PART AVEC LE MOT CLE LIAISON_COQUE DE AFFE_CHAR_MECA
+# D'AUTRE PART AVEC LE MOT CLE LIAISON_SOLIDE DE AFFE_CHAR_MECA
+# ON VERIFIE LA COHERENCE DE CES 2 CALCULS
+# LE BUT D'UN TEL RACCORD EST D'AVOIR LA MASSE EXACTE DE LA STRUCTURE
+# (DE FACON CLASSIQUE ON COMPTE 2 FOIS LA MASSE DE LA JONCTION)
+#======================================================================
+
+
+DEBUT( CODE=_F(  NOM = 'SDLX03B',NIV_PUB_WEB='INTERNET') )
+
+MA=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='NON'), )
+
+MA=DEFI_GROUP( reuse=MA,   MAILLAGE=MA,
+  CREA_GROUP_MA=_F(  NOM = 'TOUT', TOUT = 'OUI'))
+
+MO=AFFE_MODELE(  MAILLAGE=MA, 
+           AFFE=_F(  TOUT = 'OUI', PHENOMENE = 'MECANIQUE',
+                  MODELISATION = 'DKT') )
+
+CARELEM=AFFE_CARA_ELEM(   MODELE=MO, 
+               COQUE=_F(  
+       GROUP_MA = 'TOUT',
+ EPAIS = 0.005,  ANGL_REP = (1.,0.,),
+                       COEF_RIGI_DRZ = 0.000000001)  )
+
+MAT=DEFI_MATERIAU( ELAS=_F(  E = 2.1E+11,  NU = 0.3,  RHO = 7800.) )
+
+CHMAT=AFFE_MATERIAU(  MAILLAGE=MA, 
+                       AFFE=_F(  TOUT = 'OUI',  MATER = MAT) )
+
+CH1=AFFE_CHAR_MECA(           MODELE=MO,LIAISON_COQUE=(
+                         
+                              _F(  GROUP_MA_1 = 'P2P7',
+                                GROUP_MA_2 = 'P17P22'),
+                         
+                              _F(  GROUP_MA_1 = 'P3P6',
+                                GROUP_MA_2 = 'P18P21'),
+                         
+                              _F(  GROUP_MA_1 = 'P24P19',
+                                GROUP_MA_2 = 'P14P11'),
+                         
+                              _F(  GROUP_MA_1 = 'P23P20',
+                                GROUP_MA_2 = 'P15P10'))
+                       )
+
+CH2=AFFE_CHAR_MECA(           MODELE=MO,LIAISON_SOLIDE=(
+                          _F(  NOEUD = ('N241', 'N44',)),
+                          _F(  NOEUD = ('N240', 'N43',)),
+                          _F(  NOEUD = ('N235', 'N40',)),
+                          _F(  NOEUD = ('N231', 'N38',)),
+                          _F(  NOEUD = ('N223', 'N36',)),
+                          _F(  NOEUD = ('N216', 'N34',)),
+                          _F(  NOEUD = ('N205', 'N32',)),
+                          _F(  NOEUD = ('N195', 'N30',)),
+                          _F(  NOEUD = ('N182', 'N28',)),
+                          _F(  NOEUD = ('N173', 'N26',)),
+                          _F(  NOEUD = ('N163', 'N24',)),
+
+                          _F(  NOEUD = ('N199', 'N22',)),
+                          _F(  NOEUD = ('N198', 'N21',)),
+                          _F(  NOEUD = ('N197', 'N18',)),
+                          _F(  NOEUD = ('N196', 'N16',)),
+                          _F(  NOEUD = ('N188', 'N14',)),
+                          _F(  NOEUD = ('N176', 'N12',)),
+                          _F(  NOEUD = ('N166', 'N10',)),
+                          _F(  NOEUD = ('N157', 'N8',)),
+                          _F(  NOEUD = ('N151', 'N6',)),
+                          _F(  NOEUD = ('N147', 'N4',)),
+                          _F(  NOEUD = ('N145', 'N2',)),
+
+                          _F(  NOEUD = ('N1', 'N46',)),
+                          _F(  NOEUD = ('N3', 'N48',)),
+                          _F(  NOEUD = ('N5', 'N52',)),
+                          _F(  NOEUD = ('N7', 'N58',)),
+                          _F(  NOEUD = ('N9', 'N67',)),
+                          _F(  NOEUD = ('N11', 'N77',)),
+                          _F(  NOEUD = ('N13', 'N89',)),
+                          _F(  NOEUD = ('N15', 'N97',)),
+                          _F(  NOEUD = ('N17', 'N98',)),
+                          _F(  NOEUD = ('N20', 'N99',)),
+                          _F(  NOEUD = ('N19', 'N100',)),
+
+                          _F(  NOEUD = ('N23', 'N64',)),
+                          _F(  NOEUD = ('N25', 'N74',)),
+                          _F(  NOEUD = ('N27', 'N83',)),
+                          _F(  NOEUD = ('N29', 'N96',)),
+                          _F(  NOEUD = ('N31', 'N106',)),
+                          _F(  NOEUD = ('N33', 'N117',)),
+                          _F(  NOEUD = ('N35', 'N124',)),
+                          _F(  NOEUD = ('N37', 'N132',)),
+                          _F(  NOEUD = ('N39', 'N136',)),
+                          _F(  NOEUD = ('N42', 'N141',)),
+                          _F(  NOEUD = ('N41', 'N142',)))
+
+
+                       )
+
+# --- STRUCTURE LIBRE-LIBRE ==> PAS DE CHARGE_MECA
+#
+#--------------------------------------------------------------------
+#
+MELR1=CALC_MATR_ELEM(  MODELE=MO,           CARA_ELEM=CARELEM, 
+                        CHAM_MATER=CHMAT,   OPTION='RIGI_MECA',
+                          CHARGE=CH1 )
+
+MELR2=CALC_MATR_ELEM(  MODELE=MO,           CARA_ELEM=CARELEM, 
+                        CHAM_MATER=CHMAT,   OPTION='RIGI_MECA',
+                          CHARGE=CH2 )
+
+#MELM = CALC_MATR_ELEM( MODELE: MO         , CARA_ELEM: CARELEM ,
+#                       CHAM_MATER: CHMAT  , OPTION:'MASS_MECA'
+#                        CHARGE : CH1    )  ;
+MELM=CALC_MATR_ELEM(  MODELE=MO,           CARA_ELEM=CARELEM, 
+                        CHAM_MATER=CHMAT,   OPTION='MASS_MECA' )
+
+#
+#--------------------------------------------------------------------
+#
+NUM1=NUME_DDL(  MATR_RIGI=MELR1 )
+
+NUM2=NUME_DDL(  MATR_RIGI=MELR2 )
+
+MATASSR1=ASSE_MATRICE(MATR_ELEM=MELR1,NUME_DDL=NUM1)
+
+MATASSR2=ASSE_MATRICE(MATR_ELEM=MELR2,NUME_DDL=NUM2)
+
+MATASSM1=ASSE_MATRICE(MATR_ELEM=MELM,NUME_DDL=NUM1)
+
+MATASSM2=ASSE_MATRICE(MATR_ELEM=MELM,NUME_DDL=NUM2)
+
+#====================================================================
+#
+#               CALCUL MODAL
+
+MODES_1=MODE_ITER_SIMULT(  MATR_A=MATASSR1,    MATR_B=MATASSM1,
+                           CALC_FREQ=_F(  OPTION = 'BANDE',
+                                       FREQ = ( 1.,   1400., ),
+                                       )  )
+
+MODES_2=MODE_ITER_SIMULT(  MATR_A=MATASSR2,    MATR_B=MATASSM2,
+                           CALC_FREQ=_F(  OPTION = 'BANDE',
+                                       FREQ = ( 1.,   1400., ),
+                                       )  )
+
+# --------------------------------------------------------------------
+TABMAS=POST_ELEM(       MODELE=MO,
+                      CHAM_MATER=CHMAT,
+                       CARA_ELEM=CARELEM,
+                       MASS_INER=_F(  TOUT = 'OUI')
+                  )
+
+# --------------------------------------------------------------------
+
+
+TEST_RESU(RESU=(
+   _F(   RESULTAT = MODES_1,       PARA = 'FREQ',
+           CRITERE = 'RELATIF',     PRECISION = 4.8E-2,
+           NUME_ORDRE = 1,       VALE = 584.),
+   _F(   RESULTAT = MODES_1,       PARA = 'FREQ',
+           CRITERE = 'RELATIF',     PRECISION = 4.1E-2,
+           NUME_ORDRE = 2,       VALE = 826.),
+   _F(   RESULTAT = MODES_1,       PARA = 'FREQ',
+           CRITERE = 'RELATIF',     PRECISION = 2.6E-2,
+           NUME_ORDRE = 3,       VALE = 855.),
+   _F(   RESULTAT = MODES_1,       PARA = 'FREQ',
+           CRITERE = 'RELATIF',     PRECISION = 2.6E-2,
+           NUME_ORDRE = 4,       VALE = 911.),
+   _F(   RESULTAT = MODES_1,       PARA = 'FREQ',
+           CRITERE = 'RELATIF',     PRECISION = 1.E-2,
+           NUME_ORDRE = 5,       VALE = 1113.),
+   _F(   RESULTAT = MODES_1,      PARA = 'FREQ',
+           CRITERE = 'RELATIF',     PRECISION = 4.7E-2,
+           NUME_ORDRE = 6,       VALE = 1136.)) )
+
+TEST_RESU(RESU=(
+   _F(   RESULTAT = MODES_2,       PARA = 'FREQ',
+           CRITERE = 'RELATIF',     PRECISION = 4.8E-2,
+           NUME_ORDRE = 1,       VALE = 584.),
+   _F(   RESULTAT = MODES_2,       PARA = 'FREQ',
+           CRITERE = 'RELATIF',     PRECISION = 4.1E-2,
+           NUME_ORDRE = 2,       VALE = 826.),
+   _F(   RESULTAT = MODES_2,       PARA = 'FREQ',
+           CRITERE = 'RELATIF',     PRECISION = 2.6E-2,
+           NUME_ORDRE = 3,       VALE = 855.),
+   _F(   RESULTAT = MODES_2,       PARA = 'FREQ',
+           CRITERE = 'RELATIF',     PRECISION = 2.6E-2,
+           NUME_ORDRE = 4,       VALE = 911.),
+   _F(   RESULTAT = MODES_2,       PARA = 'FREQ',
+           CRITERE = 'RELATIF',     PRECISION = 1.E-2,
+           NUME_ORDRE = 5,       VALE = 1113.),
+   _F(   RESULTAT = MODES_2,      PARA = 'FREQ',
+           CRITERE = 'RELATIF',     PRECISION = 4.7E-2,
+           NUME_ORDRE = 6,       VALE = 1136.)) )
+
+FIN()
+#

@@ -1,0 +1,197 @@
+      SUBROUTINE SSRIU2(NOMU)
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF SOUSTRUC  DATE 01/02/2000   AUTEUR VABHHTS J.PELLET 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+      IMPLICIT REAL*8 (A-H,O-Z)
+
+C     ARGUMENTS:
+C     ----------
+      CHARACTER*8 NOMU
+C ----------------------------------------------------------------------
+C     BUT:
+C        1)FACTORISER PARTIELLEMENT LA MATR_ASSE DE RIGIDITE
+C             "K_II**(-1)"
+C        2)CALCULER PHI_IE=  (K_II**(-1))*K_IE
+C     ===>  ATTENTION LE PHI_IE CALCULE EST L'OPPOSE DE CELUI D'IMBERT
+C        3)CALCULER KP_EE = K_EE - K_EI*PHI_IE
+
+
+C     IN: NOMU   : NOM DU MACR_ELEM_STAT
+
+C     OUT:  PHI_IE, KP_EE,
+C           "K_II**(-1)" (DANS LE DEBUT DE .RIGIMECA.VALE)
+
+
+C ----------------------------------------------------------------------
+
+
+      INTEGER I,ADIA,HCOL,IBLO
+      CHARACTER*8 KBID
+      CHARACTER*8 NOMO
+      INTEGER IDBG
+C --------------- COMMUNS NORMALISES  JEVEUX  --------------------------
+      CHARACTER*32 JEXNUM,JEXNOM,JEXATR,JEXR8
+      COMMON /IVARJE/ZI(1)
+      COMMON /RVARJE/ZR(1)
+      COMMON /CVARJE/ZC(1)
+      COMMON /LVARJE/ZL(1)
+      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+      INTEGER ZI
+      REAL*8 ZR,EPSI
+      COMPLEX*16 ZC
+      LOGICAL ZL
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*19 NU,MATAS,STOCK
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32
+      CHARACTER*80 ZK80
+C ---------------- FIN COMMUNS NORMALISES  JEVEUX  --------------------
+
+
+      CALL JEMARQ()
+      NU = NOMU
+      NU = NU(1:14)//'.NUME'
+      STOCK = NU(1:14)//'.SLCS'
+      MATAS = NOMU//'.RIGIMECA'
+
+
+      CALL JEVEUO(NOMU//'.DESM','E',IADESM)
+      NDDLE = ZI(IADESM-1+4)
+C     NDDLE = 50
+      NDDLI = ZI(IADESM-1+5)
+
+C     -- FACTORISATION PARTIELLE DE LA MATRICE DE RIGIDITE:
+C     -----------------------------------------------------
+      CALL MTDSCR(MATAS)
+      CALL JEVEUO(MATAS(1:19)//'.&INT','E',LMAT)
+      CALL TLDLGG(1,LMAT,1,NDDLI,0,NDECI,ISINGU,NPVNEG,IER)
+      IF (IER.GT.0) CALL UTMESS('F','SSRIU2','MATRICE SINGULIERE')
+
+
+C     -- ALLOCATION DE PHI_IE ET INITIALISATION PAR K_IE
+C     -- ALLOCATION DE KP_EE  ET INITIALISATION PAR K_EE:
+C     -------------------------------------------------------
+
+      CALL MTDSC2(ZK24(ZI(LMAT+1)),'ADIA','L',IAADIA)
+      CALL JEVEUO(ZK24(ZI(LMAT+1)) (1:19)//'.REFA','L',IDREFE)
+      CALL JEVEUO(ZK24(IDREFE+2) (1:19)//'.HCOL','L',IAHCOL)
+      CALL MTDSC2(ZK24(ZI(LMAT+1)),'ABLO','L',IAABLO)
+      NBBLOC = ZI(LMAT+13)
+      CALL JEVEUO(STOCK//'.IABL','L',IAIABL)
+
+      LGBLPH = MIN(4*1024*1024,NDDLE*NDDLI)
+      NBLPH = (NDDLE*NDDLI-1)/LGBLPH + 1
+      NLBLPH = LGBLPH/NDDLI
+      CALL JECREC(NOMU//'.PHI_IE','G V R','NU','DISPERSE','CONSTANT',
+     &            NBLPH)
+      CALL JEECRA(NOMU//'.PHI_IE','LONMAX',LGBLPH,KBID)
+
+      CALL WKVECT(NOMU//'.KP_EE','G V R', (NDDLE* (NDDLE+1)/2),IAKPEE)
+
+
+      IBLOLD = 0
+      J = 0
+      DO 50,IBLPH = 1,NBLPH
+        CALL JECROC(JEXNUM(NOMU//'.PHI_IE',IBLPH))
+        CALL JEVEUO(JEXNUM(NOMU//'.PHI_IE',IBLPH),'E',IAPHI0)
+        DO 30,IIBLPH = 1,NLBLPH
+          J = J + 1
+          IF (J.GT.NDDLE) GO TO 40
+          IAPHIE = IAPHI0 + (IIBLPH-1)*NDDLI
+          IBLO = ZI(IAIABL-1+NDDLI+J)
+          ADIA = ZI(IAADIA-1+NDDLI+J)
+          HCOL = ZI(IAHCOL-1+NDDLI+J)
+          IF (IBLO.NE.IBLOLD) THEN
+            IF (IBLOLD.GT.0) CALL JELIBE(JEXNUM(MATAS//'.VALE',IBLOLD))
+            CALL JEVEUO(JEXNUM(MATAS//'.VALE',IBLO),'L',IAVALE)
+          END IF
+          IBLOLD = IBLO
+          K = 0
+CCDIR$ IVDEP
+          DO 10,I = NDDLI + J + 1 - HCOL,NDDLI
+            K = K + 1
+            ZR(IAPHIE-1+I) = ZR(IAVALE-1+ADIA-HCOL+K)
+   10     CONTINUE
+
+CCDIR$ IVDEP
+          DO 20,I = MAX(1,J+1-HCOL),J
+            II = ((J-1)*J)/2 + I
+            ZR(IAKPEE-1+II) = ZR(IAVALE-1+ADIA+I-J)
+   20     CONTINUE
+
+   30   CONTINUE
+   40   CONTINUE
+        CALL JELIBE(JEXNUM(NOMU//'.PHI_IE',IBLPH))
+   50 CONTINUE
+      IF (IBLOLD.GT.0) CALL JELIBE(JEXNUM(MATAS//'.VALE',IBLOLD))
+
+
+C     -- CALCUL DE PHI_IE = (K_II**(-1))*K_IE:
+C     ----------------------------------------
+      DO 60,IBLPH = 1,NBLPH
+        CALL JEVEUO(JEXNUM(NOMU//'.PHI_IE',IBLPH),'E',IAPHI0)
+        CALL RLDLR8(ZK24(ZI(LMAT+1)),ZI(IAHCOL),ZI(IAADIA),ZI(IAABLO),
+     &              NDDLI,NBBLOC,ZR(IAPHI0),NLBLPH)
+        CALL JELIBE(JEXNUM(NOMU//'.PHI_IE',IBLPH))
+   60 CONTINUE
+
+
+C     -- CALCUL DE KP_EE:
+C     -------------------
+      IBLOLD = 0
+      DO 110,J = 1,NDDLE
+        IBLO = ZI(IAIABL-1+NDDLI+J)
+        ADIA = ZI(IAADIA-1+NDDLI+J)
+        HCOL = ZI(IAHCOL-1+NDDLI+J)
+        IF (IBLO.NE.IBLOLD) THEN
+          IF (IBLOLD.GT.0) CALL JELIBE(JEXNUM(MATAS//'.VALE',IBLOLD))
+          CALL JEVEUO(JEXNUM(MATAS//'.VALE',IBLO),'L',IAVALE)
+        END IF
+        IBLOLD = IBLO
+
+        I = 0
+        DO 100,IBLPH = 1,NBLPH
+          CALL JEVEUO(JEXNUM(NOMU//'.PHI_IE',IBLPH),'L',IAPHI0)
+          DO 80,IIBLPH = 1,NLBLPH
+            I = I + 1
+            IF (I.GT.J) GO TO 90
+            IAPHIE = IAPHI0 + (IIBLPH-1)*NDDLI
+            II = (J* (J-1)/2) + I
+            KK = 0
+CCDIR$ IVDEP
+            DO 70,K = NDDLI + J + 1 - HCOL,NDDLI
+              KK = KK + 1
+              ZR(IAKPEE-1+II) = ZR(IAKPEE-1+II) -
+     &                          ZR(IAPHIE-1+K)*ZR(IAVALE-1+ADIA-HCOL+KK)
+   70       CONTINUE
+   80     CONTINUE
+   90     CONTINUE
+          CALL JELIBE(JEXNUM(NOMU//'.PHI_IE',IBLPH))
+  100   CONTINUE
+
+  110 CONTINUE
+      IF (IBLOLD.GT.0) CALL JELIBE(JEXNUM(MATAS//'.VALE',IBLOLD))
+
+
+
+  120 CONTINUE
+      CALL JELIBE(ZK24(IDREFE+2) (1:19)//'.HCOL')
+
+      CALL JEDEMA()
+      END

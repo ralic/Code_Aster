@@ -1,0 +1,91 @@
+      SUBROUTINE VPSTUR(LMATK,VALSHI,LMATM,LMATSH,NPREC,MANTIS,EXPO,
+     &                  PIVOT,IER)
+      IMPLICIT REAL*8 (A-H,O-Z)
+      REAL*8                  VALSHI,             MANTIS
+      INTEGER           LMATK,       LMATM,LMATSH,       EXPO,PIVOT,IER
+C     ------------------------------------------------------------------
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGELINE  DATE 23/03/98   AUTEUR D6BHHBQ B.QUINNEZ 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+C     ------------------------------------------------------------------
+C     EFFECTUE L'OPERATION DE STURM
+C        1) COMBINAISON LINEAIRE MSH =  K - W * M    (W ETANT LE SHIFT)
+C        2) DECOMPOSITION DE  MSH
+C        3) NOMBRE DE PIVOT NEGATIF
+C        4) CALCUL DU DETERMINANT
+C     ------------------------------------------------------------------
+C IN  VALSHI : R8 : VALEUR DU DECALAGE
+C IN  LMATK  : IS : ADRESSE ATTRIBUT MATRICE K
+C IN  LMATM  : IS : ADRESSE ATTRIBUT MATRICE M
+C IN  LMATSH : IS : ADRESSE ATTRIBUT MATRICE SHIFTEE
+C IN  NPREC  : IS : NOMBRE DE DECIMALES PERDUES AUTORISEES PENDANT LA
+C                   FACTORISATION
+C OUT MANTIS : R8 : MANTISSE DU DETERMINANT
+C OUT EXPO   : IS : EXPOSANT DU DETERMINANT
+C OUT PIVOT  : IS : NOMBRE DE TERMES DIAGONAUX NEGATIFS
+C OUT IER    : IS : CODE RETOUR  /= 0 ==> LE SHIFT EST UNE VALEUR PROPRE
+C     ------------------------------------------------------------------
+C
+C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
+      INTEGER          ZI
+      COMMON  /IVARJE/ ZI(1)
+      REAL*8           ZR
+      COMMON  /RVARJE/ ZR(1)
+      COMPLEX*16       ZC
+      COMMON  /CVARJE/ ZC(1)
+      LOGICAL          ZL
+      COMMON  /LVARJE/ ZL(1)
+      CHARACTER*8      ZK8
+      CHARACTER*16              ZK16
+      CHARACTER*24                        ZK24
+      CHARACTER*32                                  ZK32
+      CHARACTER*80                                            ZK80
+      COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
+C
+      INTEGER          NPREC
+      REAL*8           EPS,  FREQOM
+      CHARACTER*16     RBID, NOMCMD
+
+C     ------------------------------------------------------------------
+C
+      CALL JEMARQ()
+C     --- DECALAGE SPECTRAL  K - W * M    (W ETANT LE SHIFT) ---
+      CALL VPSHIF(LMATK,VALSHI,LMATM,LMATSH)
+C
+C     --- FACTORISATION LDLT DE LA MATRICE SHIFTEE---
+      IER   = 0
+C
+      CALL TLDLGG(2,LMATSH,1,0,NPREC,NDECI,ISINGU,NPVNEG,IRET)
+C
+      IF (IRET.GE.1) THEN
+          IER = 1
+      ENDIF
+      IF (IRET.GT.1) THEN
+          CALL GETRES(RBID,RBID,NOMCMD)
+          CALL UTDEBM('A',NOMCMD//'.SHIFT','LA VALEUR DU ')
+          CALL UTIMPR('S','SHIFT',1,FREQOM(VALSHI))
+          CALL UTIMPI('S',' EST UNE FREQUENCE PROPRE',0,1)
+          CALL UTFINM()
+      ENDIF
+      PIVOT = - NPVNEG
+C
+C     --- CALCUL DU DETERMINANT ---
+      CALL MTDETE(LMATSH, MANTIS, EXPO )
+      CALL JEDEMA()
+      END

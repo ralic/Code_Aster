@@ -1,0 +1,78 @@
+#& MODIF COMMANDE  DATE 14/10/2002   AUTEUR BOYERE E.BOYERE 
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+DYNA_ALEA_MODAL=OPER(nom="DYNA_ALEA_MODAL",op= 131,sd_prod=tabl_intsp
+                    ,fr="Calcule la réponse spectrale d une structure linéaire sous une excitation connue par sa DSP",
+                     docu="U4.53.22-d",reentrant='n',
+            UIinfo={"groupes":("Résolution",)},
+         BASE_MODALE     =FACT(statut='o',min=1,max=1,
+           regles=(UN_PARMI('NUME_ORDRE','BANDE'),),
+           MODE_MECA       =SIMP(statut='o',typ=mode_meca ),
+           BANDE           =SIMP(statut='f',typ='R',max=2),
+           NUME_ORDRE      =SIMP(statut='f',typ='I',max='**'),
+           b_bande =BLOC(condition = "BANDE != None",
+             AMOR_UNIF       =SIMP(statut='o',typ='R' ),
+           ),
+           b_nume_ordre =BLOC(condition = "NUME_ORDRE != None",
+             AMOR_REDUIT     =SIMP(statut='f',typ='R',max='**'),
+           ),
+         ),
+         MODE_STAT       =SIMP(statut='f',typ=(mode_stat_depl,mode_stat_acce,mode_stat_forc,)),
+         EXCIT           =FACT(statut='o',min=1,max=1,
+           regles=(UN_PARMI('NOEUD_I','NUME_ORDRE_I'), 
+                   EXCLUS('CHAM_NO','NOEUD'),),
+           DERIVATION      =SIMP(statut='f',typ='I',defaut= 0,into=( 0 , 1 , 2 ) ),
+           MODAL           =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON") ),
+#  dans la doc U il y a plus de choix pour GRANDEUR
+           GRANDEUR        =SIMP(statut='f',typ='TXM',defaut="DEPL_R",
+                                 into=("DEPL_R","EFFO","SOUR_DEBI_VOLU","SOUR_DEBI_MASS","SOUR_PRESS","SOUR_FORCE")),
+           INTE_SPEC       =SIMP(statut='o',typ=tabl_intsp ),
+           NUME_VITE_FLUI  =SIMP(statut='f',typ='I' ),
+           OPTION          =SIMP(statut='f',typ='TXM',defaut="TOUT",into=("TOUT","DIAG",) ),
+#  Toutes les regles ne semblent pas avoir été ecrites dans la doc U
+           NUME_ORDRE_I    =SIMP(statut='f',typ='I',max='**'),
+           NOEUD_I         =SIMP(statut='f',typ=no,max='**'),
+           b_nume_ordre_i  =BLOC(condition = "NUME_ORDRE_I != None",
+             NUME_ORDRE_J    =SIMP(statut='o',typ='I',max='**'),
+           ),
+           b_noeud_i       =BLOC(condition = "NOEUD_I != None",
+             NOEUD_J         =SIMP(statut='o',typ=no,max='**'),
+             NOM_CMP_I       =SIMP(statut='o',typ='TXM',max='**'),
+             NOM_CMP_J       =SIMP(statut='o',typ='TXM',max='**'),
+           ),
+           CHAM_NO         =SIMP(statut='f',typ=cham_no),
+           NOEUD           =SIMP(statut='f',typ=no,max='**'),
+           b_noeud         =BLOC(condition = "NOEUD != None",
+             NOM_CMP         =SIMP(statut='o',typ='TXM',max='**'),
+           ),           
+         ),
+         REPONSE         =FACT(statut='f',min=1,max=1,
+           regles=( ENSEMBLE('FREQ_MIN','FREQ_MAX'),),
+           DERIVATION      =SIMP(statut='f',typ='I',defaut= 0,into=( 0 , 1 , 2 ,) ),
+           OPTION          =SIMP(statut='f',typ='TXM',defaut="TOUT",into=("TOUT","DIAG") ),
+           FREQ_MIN        =SIMP(statut='f',typ='R' ),
+           FREQ_MAX        =SIMP(statut='f',typ='R' ),
+           PAS             =SIMP(statut='f',typ='R' ),
+           b_defaut_freq   =BLOC(condition = "FREQ_MIN == NONE",
+              FREQ_EXCIT      =SIMP(statut='f',typ='TXM',defaut="AVEC",into=("AVEC","SANS") ),
+              NB_POIN_MODE    =SIMP(statut='f',typ='I',defaut= 50 ),
+           ),
+         ),
+         TITRE           =SIMP(statut='f',typ='TXM',max='**'),
+         INFO            =SIMP(statut='f',typ='I',defaut= 1,into=( 1 , 2) ),
+)  ;

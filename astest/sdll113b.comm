@@ -1,0 +1,477 @@
+# MODIF  DATE 23/02/2000   AUTEUR CIBHHPD P.DAVID 
+# TITRE SOUS-STRUCTURATION TRANSITOIRE : POUTRE AMORTIE EN TRACTION
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+# CAS_TEST__: SDLL113B
+#
+#12345678901234567890123456789012345678901234567890123456789012345678901
+#
+# CE FICHIER DE COMMANDE CONTIENT LES INSTRUCTIONS POUR CALCULER LA
+# REPONSE TRANSITOIRE EN TRACTION-COMPRESSION D'UNE POUTRE AMORTIE
+# SOUMISE A UNE FORCE CONSTANTE :
+#      - PAR CALCUL DIRECT (CALCUL DE REFERENCE)
+#      - PAR SOUS-STRUCTURATION DYNAMIQUE TRANSITOIRE
+#
+DEBUT(CODE=_F( NOM = 'SDLL113B',NIV_PUB_WEB='INTERNET'))
+
+#
+MATERIO=DEFI_MATERIAU(  ELAS=_F( RHO = 1.E04,  NU = 0.3,  E = 1.E10,
+                                 AMOR_ALPHA = 6.5E-6,  AMOR_BETA = 16.))
+
+#
+LIST_R=DEFI_LIST_REEL(       DEBUT=0.,
+                           INTERVALLE=_F( JUSQU_A = 1.95E-2, 
+                                       NOMBRE = 11))
+
+#
+########################################################################
+#                           CALCUL DIRECT                              #
+########################################################################
+#
+MAYA=LIRE_MAILLAGE( UNITE=20)
+
+MAYA=DEFI_GROUP( reuse=MAYA,   MAILLAGE=MAYA,
+  CREA_GROUP_MA=_F(  NOM = 'TOUT', TOUT = 'OUI'))
+
+#
+CHMAT=AFFE_MATERIAU(  MAILLAGE=MAYA, 
+                              AFFE=_F( TOUT = 'OUI', 
+                                    MATER = MATERIO))
+
+#
+POUTRE=AFFE_MODELE(  MAILLAGE=MAYA,
+                            AFFE=_F( TOUT = 'OUI', 
+                                  MODELISATION = 'POU_D_T', 
+                                  PHENOMENE = 'MECANIQUE'))
+
+#
+CARA=AFFE_CARA_ELEM(  MODELE=POUTRE, 
+                           POUTRE=_F( 
+       GROUP_MA = 'TOUT',
+ 
+                                   SECTION = 'CERCLE', 
+                                   CARA = ('R', 'EP',), 
+                                   VALE = (0.1, 0.01,)))
+
+#
+GUIDAGE=AFFE_CHAR_MECA(    MODELE=POUTRE,DDL_IMPO=(
+                           _F( TOUT = 'OUI', 
+                                     DY = 0., DZ = 0., DRX = 0., DRY = 0., DRZ = 0.),
+                           _F( NOEUD = 'A',    DX = 0.)))
+
+#
+CHARTRAN=AFFE_CHAR_MECA(        MODELE=POUTRE,
+                           FORCE_NODALE=_F( NOEUD = 'N10',  FX = -100.))
+
+#
+K_ELEM=CALC_MATR_ELEM(      MODELE=POUTRE, 
+                             CARA_ELEM=CARA, 
+                            CHAM_MATER=CHMAT, 
+                               OPTION='RIGI_MECA', 
+                                CHARGE=GUIDAGE )
+
+#
+M_ELEM=CALC_MATR_ELEM(      MODELE=POUTRE, 
+                             CARA_ELEM=CARA, 
+                            CHAM_MATER=CHMAT,
+                               OPTION='MASS_MECA', 
+                                CHARGE=GUIDAGE )
+
+#
+A_ELEM=CALC_MATR_ELEM(      MODELE=POUTRE, 
+                             RIGI_MECA=K_ELEM, 
+                             MASS_MECA=M_ELEM,
+                             CARA_ELEM=CARA, 
+                            CHAM_MATER=CHMAT, 
+                               OPTION='AMOR_MECA', 
+                                CHARGE=GUIDAGE )
+
+#
+V_ELEM=CALC_VECT_ELEM( OPTION='CHAR_MECA', 
+                            CHARGE=CHARTRAN)
+
+#
+NUMERO=NUME_DDL(  MATR_RIGI=K_ELEM)
+
+#
+K_ASSE=ASSE_MATRICE(  MATR_ELEM=K_ELEM, 
+                           NUME_DDL=NUMERO)
+
+#
+M_ASSE=ASSE_MATRICE(  MATR_ELEM=M_ELEM, 
+                           NUME_DDL=NUMERO)
+
+#
+A_ASSE=ASSE_MATRICE(  MATR_ELEM=A_ELEM, 
+                           NUME_DDL=NUMERO)
+
+#
+V_ASSE=ASSE_VECTEUR(  VECT_ELEM=V_ELEM, 
+                           NUME_DDL=NUMERO)
+
+#
+MODES=MODE_ITER_SIMULT(     MATR_A=K_ASSE, 
+                                 MATR_B=M_ASSE, 
+                             CALC_FREQ=_F( NMAX_FREQ = 10))
+
+##
+MACRO_PROJ_BASE(  BASE=MODES,MATR_ASSE_GENE=(
+                   _F( 
+                                   MATRICE = CO("M_PROJ"),
+                                   MATR_ASSE = M_ASSE), 
+                   _F( 
+                                   MATRICE = CO("K_PROJ"),
+                                   MATR_ASSE = K_ASSE),
+                   _F( 
+                                   MATRICE = CO("A_PROJ"),
+                                   MATR_ASSE = A_ASSE)),
+                   VECT_ASSE_GENE=_F( 
+                                   VECTEUR = CO("F_PROJ"),
+                                   VECT_ASSE = V_ASSE) 
+)
+
+#
+TRAN_GEN=DYNA_TRAN_MODAL(       MASS_GENE=M_PROJ, 
+                                  RIGI_GENE=K_PROJ, 
+                                  AMOR_GENE=A_PROJ,  
+                                     EXCIT=_F( VECT_GENE = F_PROJ,
+                                            COEF_MULT = 1.),
+                                 INCREMENT=_F(  INST_INIT = 0.,
+                                             INST_FIN = 0.0195,
+                                             PAS = 1.E-6),
+                                 ARCHIVAGE=_F( PAS_ARCH = 5)
+                            )
+
+#
+RESULT1=REST_BASE_PHYS(   RESU_GENE=TRAN_GEN,
+                            TOUT_CHAM='OUI',
+                             LIST_INST=LIST_R,
+                             INTERPOL='LIN')
+
+#
+IMPR_RESU( RESU=_F( FORMAT = 'RESULTAT', 
+                  RESULTAT = RESULT1))
+
+#
+########################################################################
+#          CALCUL PAR SOUS-STRUCTURATION DYNAMIQUE TRANSITOIRE         #
+########################################################################
+#
+PRE_IDEAS(UNITE_IDEAS=19,
+           UNITE_MAILLAGE=21)
+
+#
+MAYA1=LIRE_MAILLAGE( UNITE=21)
+
+MAYA1=DEFI_GROUP( reuse=MAYA1,   MAILLAGE=MAYA1,
+  CREA_GROUP_MA=_F(  NOM = 'TOUT1', TOUT = 'OUI'))
+
+#
+CHMAT1=AFFE_MATERIAU(  MAILLAGE=MAYA1,
+                              AFFE=_F( TOUT = 'OUI', 
+                                    MATER = MATERIO))
+
+#
+POUTRE1=AFFE_MODELE(  MAILLAGE=MAYA1,
+                            AFFE=_F( TOUT = 'OUI', 
+                                  MODELISATION = 'POU_D_T', 
+                                  PHENOMENE = 'MECANIQUE'))
+
+#
+CARA1=AFFE_CARA_ELEM(  MODELE=POUTRE1, 
+                           POUTRE=_F( 
+       GROUP_MA = 'TOUT1',
+ 
+                                   SECTION = 'CERCLE', 
+                                   CARA = ('R', 'EP',), 
+                                   VALE = (0.1, 0.01,)))
+
+#
+###
+###### PARTIE GAUCHE :
+###
+#
+GUIDAGE1=AFFE_CHAR_MECA(    MODELE=POUTRE1,DDL_IMPO=(
+                           _F( TOUT = 'OUI',  
+                                     DY = 0., DZ = 0., DRX = 0., DRY = 0., DRZ = 0.),
+                           _F( GROUP_NO = 'BLOC0',  DX = 0.)))
+
+#
+CHARGE1=AFFE_CHAR_MECA(    MODELE=POUTRE1,
+                           DDL_IMPO=_F( GROUP_NO = 'BLOC1',  DX = 0.))
+
+#
+K_ELEM1=CALC_MATR_ELEM(      MODELE=POUTRE1, 
+                             CARA_ELEM=CARA1, 
+                            CHAM_MATER=CHMAT1, 
+                               OPTION='RIGI_MECA', 
+                               CHARGE=(GUIDAGE1,  CHARGE1,))
+
+#
+M_ELEM1=CALC_MATR_ELEM(      MODELE=POUTRE1, 
+                             CARA_ELEM=CARA1, 
+                            CHAM_MATER=CHMAT1,
+                               OPTION='MASS_MECA', 
+                               CHARGE=(GUIDAGE1,  CHARGE1,))
+
+#
+A_ELEM1=CALC_MATR_ELEM(      MODELE=POUTRE1, 
+                             RIGI_MECA=K_ELEM1, 
+                             MASS_MECA=M_ELEM1, 
+                             CARA_ELEM=CARA1, 
+                            CHAM_MATER=CHMAT1, 
+                               OPTION='AMOR_MECA', 
+                               CHARGE=(GUIDAGE1,  CHARGE1,))
+
+#
+NUM1=NUME_DDL(  MATR_RIGI=K_ELEM1)
+
+#
+K_ASSE1=ASSE_MATRICE(  MATR_ELEM=K_ELEM1, 
+                           NUME_DDL=NUM1)
+
+#
+M_ASSE1=ASSE_MATRICE(  MATR_ELEM=M_ELEM1, 
+                           NUME_DDL=NUM1)
+
+#
+A_ASSE1=ASSE_MATRICE(  MATR_ELEM=A_ELEM1, 
+                           NUME_DDL=NUM1)
+
+#
+MODES1=MODE_ITER_SIMULT(     MATR_A=K_ASSE1, 
+                                 MATR_B=M_ASSE1, 
+                             CALC_FREQ=_F( NMAX_FREQ = 04))
+
+#
+INTERF1=DEFI_INTERF_DYNA(   NUME_DDL=NUM1, 
+                             INTERFACE=_F( NOM = 'DROITE', 
+                                        TYPE = 'CRAIGB', 
+                             MASQUE = ('DY', 'DZ', 'DRX', 'DRY', 'DRZ',), 
+                                        GROUP_NO = 'BLOC1'))
+
+#
+BAMO1=DEFI_BASE_MODALE( CLASSIQUE=_F( INTERF_DYNA = INTERF1, 
+                                        MODE_MECA = MODES1, 
+                                        NMAX_MODE = 04))
+
+#
+MACRO1=MACR_ELEM_DYNA(  BASE_MODALE=BAMO1, 
+                                OPTION='CLASSIQUE',
+                              MATR_AMOR=A_ASSE1)
+
+#
+###
+###### PARTIE DROITE :
+###
+#
+GUIDAGE2=AFFE_CHAR_MECA(    MODELE=POUTRE1,
+                           DDL_IMPO=_F( TOUT = 'OUI',
+                                     DY = 0., DZ = 0., DRX = 0., DRY = 0., DRZ = 0.))
+
+#
+CHARGE2=AFFE_CHAR_MECA(    MODELE=POUTRE1,
+                           DDL_IMPO=_F( GROUP_NO = 'BLOC0',  DX = 0.))
+
+#
+CHARTRA2=AFFE_CHAR_MECA(        MODELE=POUTRE1,
+                           FORCE_NODALE=_F( GROUP_NO = 'BLOC1',  FX = -100.))
+
+#
+K_ELEM2=CALC_MATR_ELEM(      MODELE=POUTRE1, 
+                             CARA_ELEM=CARA1, 
+                            CHAM_MATER=CHMAT1, 
+                               OPTION='RIGI_MECA', 
+                               CHARGE=(GUIDAGE2,  CHARGE2,))
+
+#
+M_ELEM2=CALC_MATR_ELEM(      MODELE=POUTRE1, 
+                             CARA_ELEM=CARA1,
+                            CHAM_MATER=CHMAT1,
+                               OPTION='MASS_MECA', 
+                               CHARGE=(GUIDAGE2,  CHARGE2,))
+
+#
+A_ELEM2=CALC_MATR_ELEM(      MODELE=POUTRE1, 
+                             RIGI_MECA=K_ELEM2, 
+                             MASS_MECA=M_ELEM2, 
+                             CARA_ELEM=CARA1, 
+                            CHAM_MATER=CHMAT1, 
+                               OPTION='AMOR_MECA', 
+                               CHARGE=(GUIDAGE2,  CHARGE2,))
+
+#
+V_ELEM2=CALC_VECT_ELEM( OPTION='CHAR_MECA', 
+                            CHARGE=CHARTRA2)
+
+#
+NUM2=NUME_DDL(  MATR_RIGI=K_ELEM2)
+
+#
+K_ASSE2=ASSE_MATRICE(  MATR_ELEM=K_ELEM2, 
+                           NUME_DDL=NUM2)
+
+#
+M_ASSE2=ASSE_MATRICE(  MATR_ELEM=M_ELEM2, 
+                           NUME_DDL=NUM2)
+
+#
+A_ASSE2=ASSE_MATRICE(  MATR_ELEM=A_ELEM2, 
+                           NUME_DDL=NUM2)
+
+#
+V_ASSE2=ASSE_VECTEUR(  VECT_ELEM=V_ELEM2, 
+                           NUME_DDL=NUM2)
+
+#
+MODES2=MODE_ITER_SIMULT(     MATR_A=K_ASSE2, 
+                                 MATR_B=M_ASSE2, 
+                             CALC_FREQ=_F( NMAX_FREQ = 05))
+
+#
+INTERF2=DEFI_INTERF_DYNA(   NUME_DDL=NUM2, 
+                             INTERFACE=_F( NOM = 'GAUCHE', 
+                                        TYPE = 'CRAIGB', 
+                             MASQUE = ('DY', 'DZ', 'DRX', 'DRY', 'DRZ',), 
+                                        GROUP_NO = 'BLOC0'))
+
+#
+BAMO2=DEFI_BASE_MODALE( CLASSIQUE=_F( INTERF_DYNA = INTERF2, 
+                                        MODE_MECA = MODES2, 
+                                        NMAX_MODE = 05))
+
+#
+MACRO2=MACR_ELEM_DYNA(  BASE_MODALE=BAMO2, 
+                                OPTION='CLASSIQUE',
+                              MATR_AMOR=A_ASSE2)
+
+#
+###
+###### MODELE GENERALISE :
+###
+#
+MODEGE=DEFI_MODELE_GENE( SOUS_STRUC=(_F( NOM = 'COTE1', 
+                                         MACR_ELEM_DYNA = MACRO1), 
+                             _F( NOM = 'COTE2', 
+                                         MACR_ELEM_DYNA = MACRO2)), 
+                                LIAISON=_F( SOUS_STRUC_1 = 'COTE1', 
+                                         SOUS_STRUC_2 = 'COTE2', 
+                                         INTERFACE_1 = 'DROITE', 
+                                         INTERFACE_2 = 'GAUCHE'))
+
+#
+NUMEGE=NUME_DDL_GENE(  MODELE_GENE=MODEGE)
+
+#
+K_GENE=ASSE_MATR_GENE(  NUME_DDL_GENE=NUMEGE, 
+                                  OPTION='RIGI_GENE')
+
+#
+M_GENE=ASSE_MATR_GENE(  NUME_DDL_GENE=NUMEGE, 
+                                  OPTION='MASS_GENE')
+
+#
+A_GENE=ASSE_MATR_GENE(  NUME_DDL_GENE=NUMEGE, 
+                                  OPTION='AMOR_GENE')
+
+#
+F_GENE=ASSE_VECT_GENE(    NUME_DDL_GENE=NUMEGE, 
+                           CHAR_SOUS_STRUC=_F( SOUS_STRUC = 'COTE2', 
+                                            VECT_ASSE = V_ASSE2))
+
+#
+###
+###### CALCULS TRANSITOIRES :
+###
+#
+TRANGENE=DYNA_TRAN_MODAL(       MASS_GENE=M_GENE, 
+                                  RIGI_GENE=K_GENE,
+                                  AMOR_GENE=A_GENE,  
+                                     EXCIT=_F( VECT_GENE = F_GENE,
+                                            COEF_MULT = 1.),
+                                 INCREMENT=_F(  INST_INIT = 0.,
+                                             INST_FIN = 0.0195,
+                                             PAS = 1.E-6),
+                                 ARCHIVAGE=_F( PAS_ARCH = 5)
+                            )
+
+#
+SQUEL=DEFI_SQUELETTE(  MODELE_GENE=MODEGE,SOUS_STRUC=( 
+                            _F( NOM = 'COTE1', 
+                                        TOUT = 'OUI'), 
+                            _F( NOM = 'COTE2', 
+                                        TOUT = 'OUI')))
+
+#
+TRAN_GLO=REST_BASE_PHYS(  RESU_GENE=TRANGENE,
+                            TOUT_CHAM='OUI',
+                            LIST_INST=LIST_R,
+                            INTERPOL='LIN',
+                            SQUELETTE=SQUEL)
+
+#
+IMPR_RESU(RESU=( _F( FORMAT = 'RESULTAT', 
+                  RESULTAT = TRAN_GLO),
+            _F( FORMAT = 'IDEAS', 
+                  MAILLAGE = SQUEL, 
+                  RESULTAT = TRAN_GLO)))
+
+#
+TRAN_SS2=REST_BASE_PHYS(   RESU_GENE=TRANGENE,
+                            TOUT_CHAM='OUI',
+                             LIST_INST=LIST_R,
+                             INTERPOL='LIN',
+                           SOUS_STRUC='COTE2')
+
+#
+IMPR_RESU( RESU=_F( FORMAT = 'RESULTAT', 
+                  RESULTAT = TRAN_SS2))
+
+#
+TEST_RESU( RESU=_F( RESULTAT = TRAN_GLO,
+                  NOM_CHAM = 'DEPL',
+                  NUME_ORDRE = 12,
+                  CRITERE = 'RELATIF',
+                  PRECISION = 1.E-4,
+                  NOEUD = 'NO12',
+                  NOM_CMP = 'DX',
+                  VALE = -9.54882E-07))
+
+#
+TEST_RESU( RESU=_F( RESULTAT = TRAN_GLO,
+                  NOM_CHAM = 'VITE',
+                  NUME_ORDRE = 12,
+                  CRITERE = 'RELATIF',
+                  PRECISION = 1.E-4,
+                  NOEUD = 'NO12',
+                  NOM_CMP = 'DX',
+                  VALE = 1.22190E-03))
+
+#
+TEST_RESU( RESU=_F( RESULTAT = TRAN_GLO,
+                  NOM_CHAM = 'ACCE',
+                  NUME_ORDRE = 12,
+                  CRITERE = 'RELATIF',
+                  PRECISION = 1.E-4,
+                  NOEUD = 'NO12',
+                  NOM_CMP = 'DX',
+                  VALE = -1.91712E+00))
+
+#
+FIN()
+#

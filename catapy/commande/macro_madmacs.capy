@@ -1,0 +1,49 @@
+#& MODIF COMMANDE  DATE 09/10/2002   AUTEUR DURAND C.DURAND 
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+MACRO_MADMACS=MACRO(nom="MACRO_MADMACS",op=-9,docu="U7.03.21-c",
+            UIinfo={"groupes":("Résolution",)},
+                    fr="Impression au format IDEAS des données pour chainage entre Code_Aster et MADMACS",
+         regles=(UN_PARMI('MATR_ELEM_RIGI','MATR_RIGI'),
+                 UN_PARMI('MATR_ELEM_MASS','MATR_MASS'),
+                 PRESENT_ABSENT('MATR_ELEM_AMOR','MATR_AMOR'),),
+         FICHIER         =SIMP(statut='f',typ='TXM' ),  
+         FORMAT          =SIMP(statut='f',typ='TXM',defaut="IDEAS",into=("IDEAS",)),
+         VERSION         =SIMP(statut='f',typ='I',defaut=5,into=(5,)),
+         MAILLAGE        =SIMP(statut='o',typ=maillage),
+         NUME_DDL        =SIMP(statut='o',typ=nume_ddl),
+         CHARGE          =SIMP(statut='o',typ=char_meca,max='**'),
+         MATR_ELEM_RIGI  =SIMP(statut='f',typ=matr_elem_depl_r),
+         MATR_RIGI       =SIMP(statut='f',typ=matr_asse_depl_r),
+         MATR_ELEM_MASS  =SIMP(statut='f',typ=matr_elem_depl_r),
+         MATR_MASS       =SIMP(statut='f',typ=matr_asse_depl_r),
+         MATR_ELEM_AMOR  =SIMP(statut='f',typ=matr_elem_depl_r),
+         MATR_AMOR       =SIMP(statut='f',typ=matr_asse_depl_r),
+         MODE_MECA       =SIMP(statut='o',typ=mode_meca),
+         NMAX_MODE       =SIMP(statut='f',typ='I',defaut=10),  
+         INTERFACE       =FACT(statut='f',min=1,max='**',
+           regles=(UN_PARMI('NOEUD','GROUP_NO'),
+                   UN_PARMI('DDL_ACTIF','MASQUE'),),
+           NOM             =SIMP(statut='o',typ='TXM'),  
+           NOEUD           =SIMP(statut='f',typ=no,max='**'),
+           GROUP_NO        =SIMP(statut='f',typ=grno,max='**'),
+           DDL_ACTIF       =SIMP(statut='f',typ='TXM',max='**'),  
+           MASQUE          =SIMP(statut='f',typ='TXM',max='**'),  
+         ),
+         INFO            =SIMP(statut='f',typ='I',defaut=1,into=(1,2)),
+)  ;

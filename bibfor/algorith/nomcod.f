@@ -1,0 +1,67 @@
+      SUBROUTINE NOMCOD(NOM,NUM,IC,NC)
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 29/09/95   AUTEUR GIBHHAY A.Y.PORTABILITE 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+C***********************************************************************
+C    G. JAQUART     DATE 26/05/93
+C-----------------------------------------------------------------------
+C  BUT:  CONCATENATION D'UN CARACTERE ET D'UN ENTIER
+C-----------------------------------------------------------------------
+      IMPLICIT REAL*8 (A-H,O-Z)
+C
+C  NOM : CARACTERE A CONCATENER AVEC UN ENTIER
+C  NUM : ENTIER A CONCATENER
+C  IC  : INDICE DU PREMIER CARACTERE COMPRENANT L'ENTIER
+C  NC  : INDICE DU DERNIER CARACTERE
+C
+C  EXEMPLE D'UTILISATION
+C
+C  NOMNOE='NO'
+C  CALL NOMCOD(NOMNOE,IND,3,8)
+C
+      CHARACTER*6      PGC
+C
+      CHARACTER *(*) NOM
+      CHARACTER *4 FORMAT
+      INTEGER NUM,IC,NC
+C-----------------------------------------------------------------------
+      DATA PGC /'NOMCOD'/
+C-----------------------------------------------------------------------
+C
+      FORMAT='(IX)'
+      DO 10 I=IC,NC
+         NOM(I:I)=' '
+ 10   CONTINUE
+C
+      DO 20 I=1,NC-IC+1
+         IF (NUM.GE.10**(I-1).AND.NUM.LT.10**I) THEN
+            WRITE (FORMAT(3:3),'(I1)') I
+            GOTO 21
+         ENDIF
+ 20   CONTINUE
+C
+      CALL UTDEBM('F',PGC,'IMPOSSIBLE DE CODER ')
+      CALL UTIMPI('S','LE NOMBRE : ',1,NUM)
+      CALL UTIMPK('S',' SUR : ',1,NOM)
+      CALL UTFINM
+C
+ 21   CONTINUE
+      WRITE (NOM(IC:IC+I-1),FORMAT) NUM
+C
+ 9999 CONTINUE
+      END

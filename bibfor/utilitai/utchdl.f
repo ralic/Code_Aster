@@ -1,0 +1,288 @@
+      SUBROUTINE UTCHDL(CHAM19,NOMMA,NOMAIL,NONOEU,NUPO,NUSP,IVARI,
+     &                  NOCMP1,IDDL)
+      IMPLICIT NONE
+      INTEGER NUPO,IVARI,IDDL,NUSP
+      CHARACTER*(*) CHAM19,NOMMA,NOMAIL,NONOEU,NOCMP1
+C ----------------------------------------------------------------------
+C MODIF UTILITAI  DATE 11/09/2002   AUTEUR VABHHTS J.PELLET 
+C ======================================================================
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+C ======================================================================
+C RESPONSABLE VABHHTS J.PELLET
+C A_UTILI
+
+C BUT: RECUPERER UN NUMERO DE DDL DANS UN CHAM_ELEM
+C ----------------------------------------------------------------------
+C IN  : CHAM19 : NOM DU CHAM_ELEM
+C IN  : NOMMA  : NOM DU MAILLAGE
+C IN  : NOMAIL : NOM DE LA MAILLE A EXTRAIRE
+C IN  : NONOEU : NOM D'UN NOEUD (POUR LES CHAM_ELEM "AUX NOEUDS").
+C IN  : NUPO   : NUMERO D'UN POINT (POUR LES CHAM_ELEM "GAUSS").
+C IN  : NUSP   : NUMERO DU SOUS_POINT A TESTER SUR LA MAILLE NOMAIL
+C                (SI NUSP=0 : IL N'Y A PAS DE SOUS-POINT)
+C IN  : NOCMP1 : NOM DU DDL A EXTRAIRE SUR LE POINT CHERCHE
+C IN  : IVARI  : NUMERO DE LA CMP (POUR VARI_R)
+C OUT : IDDL   : NUMERO DU DDL DANS LE .CELV
+C ----------------------------------------------------------------------
+C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
+      INTEGER ZI
+      COMMON /IVARJE/ZI(1)
+      REAL*8 ZR
+      COMMON /RVARJE/ZR(1)
+      COMPLEX*16 ZC
+      COMMON /CVARJE/ZC(1)
+      LOGICAL ZL
+      COMMON /LVARJE/ZL(1)
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32
+      CHARACTER*80 ZK80
+      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+      CHARACTER*32 JEXNUM,JEXNOM
+C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
+C     ------------------------------------------------------------------
+      INTEGER IBID,GD,NBEC,INCMP
+      INTEGER IACELK,JCELD,NEC,ICMP,NCMPMX,IANCMP,INDIK8,IMA
+      INTEGER INO,IACONX,NBNO,IPO,INDIIS,NUPO2,IGR,IEL
+      INTEGER IMOLO,JMOLO,ISPT,JLPT,JLCUPT,NBPT,IPT,ICO
+      INTEGER K,IADG,KCMP,CUMU,NBSPT,ADIEL,LGCATA,NCDYN
+      CHARACTER*1 AOF
+      CHARACTER*8 K8B,NOCMP,NOMAIZ,NONOEZ,NOMMAZ,NOMGD
+      CHARACTER*16 NOMCMD
+      CHARACTER*19 NOLIGR,CHM19Z,NCMP
+      LOGICAL EXISDG,DIFF,TROUVE,NOGRAN
+C     ------------------------------------------------------------------
+
+      CALL JEMARQ()
+      IDDL = 0
+
+      CALL GETRES(K8B,K8B,NOMCMD)
+      IF (NOMCMD.EQ.'TEST_RESU') THEN
+        AOF='A'
+      ELSE
+        AOF='F'
+      END IF
+
+      CHM19Z = CHAM19
+      NOMAIZ = NOMAIL(1:8)
+      NONOEZ = NONOEU(1:8)
+      NOMMAZ = NOMMA(1:8)
+      NCMP = '&&UTCHDL.N_CMP'
+      CALL JEVEUO(CHM19Z//'.CELK','L',IACELK)
+      NOLIGR = ZK24(IACELK) (1:19)
+      TROUVE = .FALSE.
+      NOGRAN = .FALSE.
+
+
+
+C     1. ON VERIFIE QUE LE CHAM_ELEM N'EST PAS TROP DYNAMIQUE :
+C     ---------------------------------------------------------
+C     CALL CELVER(CHM19Z,'NBSPT_1','STOP',IBID)
+
+
+      CALL JEVEUO(CHM19Z//'.CELD','L',JCELD)
+      GD = ZI(JCELD)
+      CALL JENUNO(JEXNUM('&CATA.GD.NOMGD',GD),NOMGD)
+      NEC = NBEC(GD)
+
+
+C     2. ON RECHERCHE LE NUMERO DE LA CMP CHERCHEE : ICMP
+C     -------------------------------------------------------
+      NOCMP = NOCMP1
+      IF (NOMGD.EQ.'VARI_R') THEN
+        NOCMP = 'VARI'
+        ICMP = IVARI
+        IF (ICMP.LE.0) ICMP = 0
+      ELSE
+        CALL JELIRA(JEXNUM('&CATA.GD.NOMCMP',GD),'LONMAX',NCMPMX,K8B)
+        CALL JEVEUO(JEXNUM('&CATA.GD.NOMCMP',GD),'L',IANCMP)
+        ICMP = INDIK8(ZK8(IANCMP),NOCMP,1,NCMPMX)
+        CALL WKVECT(NCMP,'V V K8',NCMPMX,INCMP)
+
+      END IF
+      IF (ICMP.EQ.0) THEN
+        CALL UTMESS(AOF,'UTCHDL','COMPOSANTE '//NOCMP//'INEXISTANTE '//
+     &              'POUR LA GRANDEUR '//NOMGD)
+        IDDL=0
+        GOTO 9999
+      END IF
+
+
+C     3. ON VERIFIE LA MAILLE : IMA
+C     -----------------------------
+      CALL JENONU(JEXNOM(NOMMAZ//'.NOMMAI',NOMAIZ),IMA)
+      IF (IMA.LE.0) THEN
+        CALL UTMESS(AOF,'UTCHDL','LA MAILLE:'//NOMAIZ//
+     &                          'N''APPARTIENT PAS AU MAILLAGE:'//
+     &                          NOMMAZ)
+        IDDL=0
+        GOTO 9999
+      END IF
+
+
+C     4. ON VERIFIE LE NOEUD : CALCUL DE NUPO2
+C     ------------------------------------------
+      IF (NONOEU(1:1).NE.' ') THEN
+        CALL DISMOI(AOF,'TYPE_CHAMP',CHM19Z,'CHAMP',IBID,K8B,IBID)
+        IF (K8B(1:4).NE.'ELNO') THEN
+          CALL UTMESS(AOF,'UTCHDL','LE CHAMP:'//CHM19Z//
+     &                'N''EST PAS UN CHAMP PAR ELEMENTS AUX NOEUDS.')
+        END IF
+        CALL JENONU(JEXNOM(NOMMAZ//'.NOMNOE',NONOEZ),INO)
+        IF (INO.LE.0) THEN
+          CALL UTMESS(AOF,'UTCHDL','LE NOEUD:'//NONOEZ//
+     &                'N''APPARTIENT PAS AU MAILLAGE:'//NOMMAZ)
+        END IF
+C        -- ON CHERCHE LE "IPO" CORRESPONDANT A INO:
+        CALL JEVEUO(JEXNUM(NOMMAZ//'.CONNEX',IMA),'L',IACONX)
+        CALL JELIRA(JEXNUM(NOMMAZ//'.CONNEX',IMA),'LONMAX',NBNO,K8B)
+        IPO = INDIIS(ZI(IACONX),INO,1,NBNO)
+        IF (IPO.LE.0) THEN
+          CALL UTMESS(AOF,'UTCHDL','LE NOEUD:'//NONOEZ//
+     &                'N''APPARTIENT PAS A LA MAILLE:'//NOMAIZ)
+        END IF
+        NUPO2 = IPO
+      ELSE
+        NUPO2 = NUPO
+      END IF
+
+
+C     5. CALCUL DE IGR ET IEL :
+C     ------------------------------------------
+      CALL NUMEL2(CHM19Z,IMA,IGR,IEL)
+      IF (IGR.EQ.0) CALL UTMESS(AOF,'UTCHDL','LA MAILLE:'//NOMAIZ//
+     &                          'N''EST PAS AFFECTEE DANS LE LIGREL:'//
+     &                          NOLIGR)
+
+
+C     6. CALCUL DE IDDL :
+C     ------------------------------------------
+      IMOLO = ZI(JCELD-1+ZI(JCELD-1+4+IGR)+2)
+      IF (IMOLO.LE.0) THEN
+        CALL UTMESS(AOF,'UTCHDL','LA MAILLE: '//NOMAIZ//
+     &        ' POSSEDE UN TYPE D''ELEMENT IGNORANT LE CHAM_ELEM TESTE.'
+     &              )
+      END IF
+      CALL JEVEUO(JEXNUM('&CATA.TE.MODELOC',IMOLO),'L',JMOLO)
+
+
+C     -- NUMERO DE SOUS_POINT :
+      IF (NUSP.EQ.0) THEN
+        ISPT = 1
+      ELSE
+        ISPT = NUSP
+      END IF
+
+
+C     6.1 CAS : NOMGD /= VARI_R :
+C     ----------------------------
+      IF (NOMGD.NE.'VARI_R') THEN
+        DIFF = (ZI(JMOLO-1+4).GT.10000)
+        NBPT = MOD(ZI(JMOLO-1+4),10000)
+        CALL WKVECT('&&UTCHDL.LONG_PT','V V I',NBPT,JLPT)
+        CALL WKVECT('&&UTCHDL.LONG_PT_CUMU','V V I',NBPT,JLCUPT)
+
+C         -- CALCUL DU NOMBRE DE CMPS POUR CHAQUE POINT
+C            ET DU CUMUL SUR LES POINTS PRECEDENTS :
+        DO 20,IPT = 1,NBPT
+          ICO = 0
+          K = 1
+          IF (DIFF) K = IPT
+          IADG = JMOLO - 1 + 4 + (K-1)*NEC + 1
+          DO 10,KCMP = 1,NCMPMX
+            IF (EXISDG(ZI(IADG),KCMP)) THEN
+              ICO = ICO + 1
+              ZK8(INCMP+ICO-1) = ZK8(IANCMP+KCMP-1)
+              IF (NOCMP.EQ.ZK8(INCMP+ICO-1)) TROUVE = .TRUE.
+            END IF
+   10     CONTINUE
+          ZI(JLPT-1+IPT) = ICO
+   20   CONTINUE
+        IF ((.NOT.TROUVE) .AND. (.NOT.NOGRAN)) THEN
+          CALL UTMESS(AOF,'UTCHDL','L''ELEMENT N''ADMET PAS '//
+     &                'LA COMPOSANTE '//NOCMP)
+        END IF
+
+
+
+        CUMU = 0
+        DO 30,IPT = 1,NBPT
+          ZI(JLCUPT-1+IPT) = CUMU
+          CUMU = CUMU + ZI(JLPT-1+IPT)
+   30   CONTINUE
+
+
+        DO 50,IPT = 1,NBPT
+          K = 1
+          IF (DIFF) K = IPT
+          IADG = JMOLO - 1 + 4 + (K-1)*NEC + 1
+          ICO = 0
+          DO 40,KCMP = 1,NCMPMX
+            IF (EXISDG(ZI(IADG),KCMP)) THEN
+              ICO = ICO + 1
+
+              NBSPT = ZI(JCELD-1+ZI(JCELD-1+4+IGR)+4+4* (IEL-1)+1)
+              ADIEL = ZI(JCELD-1+ZI(JCELD-1+4+IGR)+4+4* (IEL-1)+4)
+
+              IDDL = ADIEL - 1 + NBSPT*ZI(JLCUPT-1+IPT) +
+     &               (ISPT-1)*ZI(JLPT-1+IPT) + ICO
+              IF ((IPT.EQ.NUPO2) .AND. (KCMP.EQ.ICMP)) GO TO 60
+
+            END IF
+   40     CONTINUE
+   50   CONTINUE
+   60   CONTINUE
+
+
+C     6.2 CAS : NOMGD = VARI_R :
+C     ----------------------------
+      ELSE
+        LGCATA = ZI(JCELD-1+ZI(JCELD-1+4+IGR)+3)
+        DIFF = (ZI(JMOLO-1+4).GT.10000)
+        IF (DIFF) CALL UTMESS(AOF,'UTCHDL','A FAIRE ...')
+        NBPT = MOD(ZI(JMOLO-1+4),10000)
+        IF (NBPT.NE.LGCATA) CALL UTMESS(AOF,'UTCHDL','STOP 1')
+
+
+        NBSPT = ZI(JCELD-1+ZI(JCELD-1+4+IGR)+4+4* (IEL-1)+1)
+        NCDYN = ZI(JCELD-1+ZI(JCELD-1+4+IGR)+4+4* (IEL-1)+2)
+        ADIEL = ZI(JCELD-1+ZI(JCELD-1+4+IGR)+4+4* (IEL-1)+4)
+        IPT = NUPO2
+
+        IF (ICMP.GT.NCDYN) THEN
+          CALL UTDEBM(AOF,'UTCHDL','LE NUMERO '//
+     &                'DE LA COMPOSANTE (POUR VARI_R) EST TROP GRAND.')
+          CALL UTIMPK('S','MAILLE:',1,NOMAIZ)
+          CALL UTIMPI('S','NUM. CMP MAXI:',1,NCDYN)
+          CALL UTIMPI('S','NUM. CMP DEMANDEE:',1,ICMP)
+          CALL UTFINM()
+          IDDL=0
+          GOTO 9999
+        END IF
+
+        IDDL = ADIEL - 1 + ((IPT-1)*NBSPT+ISPT-1)*NCDYN + ICMP
+      END IF
+
+
+      CALL JEDETR('&&UTCHDL.LONG_PT')
+      CALL JEDETR('&&UTCHDL.LONG_PT_CUMU')
+      CALL JEDETR('&&UTCHDL.N_CMP')
+
+9999  CONTINUE
+      CALL JEDEMA()
+      END

@@ -1,0 +1,453 @@
+# MODIF  DATE 07/06/2002   AUTEUR DURAND C.DURAND 
+# TITRE SYSTEME DE DEUX POUTRES SOUMIS A UNE EXCITATION ALEATOIRE
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+#*********************************************************************#
+#***CAS TEST: CALCUL MULTI SPECTRAL AVEC DEUX METHODES****************#
+#*********************************************************************#
+DEBUT(CODE=_F( NOM = 'SDLL104A',NIV_PUB_WEB='INTERNET'))
+
+#*********************************************************************#
+# *****LECTURE DU MAILLAGE********************************************#
+#*********************************************************************#
+MA1=LIRE_MAILLAGE( )
+
+MO1=AFFE_MODELE(  MAILLAGE=MA1,
+       AFFE=_F(                TOUT = 'OUI',
+                            PHENOMENE = 'MECANIQUE',
+                            MODELISATION = 'POU_D_T'))
+
+#*********************************************************************#
+# *****AFFECTATION D ELEMENTS SUR LES MAILLES*************************#
+#*********************************************************************#
+CARELEM1=AFFE_CARA_ELEM(   MODELE=MO1,POUTRE=(
+     _F(  GROUP_MA = 'GRMAPRIM',
+              SECTION = 'RECTANGLE',
+                CARA = ('HZ','HY',), VALE = (0.1, 0.1,)),
+     _F(  GROUP_MA = 'GRMASEC',
+              SECTION = 'RECTANGLE',
+                CARA = ('HZ','HY',), VALE = (0.001, 0.001,)))
+                         )
+
+#*********************************************************************#
+# *****CONDITIONS AUX LIMITES:ON LIE STRUCTURE PRIMAIRE ET SECONDAIRE*#
+#*********************************************************************#
+CHARGE1=AFFE_CHAR_MECA(
+             MODELE=MO1,DDL_IMPO=(
+            _F( TOUT = 'OUI',
+                     DZ = 0.0,
+                     DRX = 0.0),
+            _F( NOEUD = ('PA1',),
+                     DX = 0.0,
+                     DY = 0.0,
+                     DRZ = 0.0)),LIAISON_DDL=(
+            _F( 
+                     NOEUD = ('PA11', 'PB11',),
+                     DDL = ('DY', 'DY',),
+                     COEF_MULT = (1., -1.,),
+                     COEF_IMPO = 0.),
+            _F( 
+                     NOEUD = ('PA11', 'PB11',),
+                     DDL = ('DX', 'DX',),
+                     COEF_MULT = (1., -1.,),
+                     COEF_IMPO = 0.),
+            _F( 
+                     NOEUD = ('PA21', 'PB21',),
+                     DDL = ('DY', 'DY',),
+                     COEF_MULT = (1., -1.,),
+                     COEF_IMPO = 0.),
+            _F( 
+                     NOEUD = ('PA21', 'PB21',),
+                     DDL = ('DX', 'DX',),
+                     COEF_MULT = (1., -1.,),
+                     COEF_IMPO = 0.),
+            _F( 
+                     NOEUD = ('PA31', 'PB31',),
+                     DDL = ('DY', 'DY',),
+                     COEF_MULT = (1., -1.,),
+                     COEF_IMPO = 0.),
+            _F( 
+                     NOEUD = ('PA31', 'PB31',),
+                     DDL = ('DX', 'DX',),
+                     COEF_MULT = (1., -1.,),
+                     COEF_IMPO = 0.))
+                                 )
+
+#*********************************************************************#
+# *****MATERIAU ******************************************************#
+#*********************************************************************#
+MAT_LAMA=DEFI_MATERIAU(   ELAS=_F(  E = 2.1E11,
+                                 NU = 0.3,
+                                RHO = 2000.)
+                         )
+
+MAT_LAMB=DEFI_MATERIAU(   ELAS=_F(  E = 2.1E11,
+                                 NU = 0.3,
+                                RHO = 1000.)
+                         )
+
+CHMATR1=AFFE_MATERIAU(
+           MAILLAGE=MA1,AFFE=(
+              _F( 
+                     GROUP_MA = 'GRMAPRIM',
+                     MATER = MAT_LAMA),
+              _F( 
+                     GROUP_MA = 'GRMASEC',
+                     MATER = MAT_LAMB))
+         )
+
+#
+#*********************************************************************#
+# *****MATRICES ELEMENTAIRES ET ASSEMBLAGE****************************#
+#*********************************************************************#
+MELR1=CALC_MATR_ELEM(  MODELE=MO1,
+                    CHAM_MATER=CHMATR1,
+                        CHARGE=CHARGE1,
+                       OPTION='RIGI_MECA',
+                        CARA_ELEM=CARELEM1  )
+
+MELM1=CALC_MATR_ELEM(  MODELE=MO1,
+                    CHAM_MATER=CHMATR1,
+                        CHARGE=CHARGE1,
+                       OPTION='MASS_MECA',
+                        CARA_ELEM=CARELEM1  )
+
+#
+NUM1=NUME_DDL(  MATR_RIGI=MELR1 )
+
+MATASSR1=ASSE_MATRICE(MATR_ELEM=MELR1,NUME_DDL=NUM1)
+
+MATASSM1=ASSE_MATRICE(MATR_ELEM=MELM1,NUME_DDL=NUM1)
+
+#*********************************************************************#
+# *****CALCUL DE MODES PROPRES ET IMPRESSION FORMAT IDEAS*************#
+#*********************************************************************#
+
+FREQ1=MODE_ITER_INV(   MATR_A=MATASSR1,      MATR_B=MATASSM1,
+           CALC_FREQ=_F(  OPTION = 'AJUSTE',
+                       FREQ = (0.1, 3000.0,),
+                       NMAX_FREQ = 10),
+            CALC_MODE=_F( NMAX_ITER = 30)
+                       )
+
+#*********************************************************************#
+# *****CALCUL DE MODES STATIQUES; IMPRESSION FORMAT IDEAS*************#
+#*********************************************************************#
+MODESTA1=MODE_STATIQUE(  MATR_RIGI=MATASSR1,
+                         MATR_MASS=MATASSM1,
+                         MODE_STAT=_F(  NOEUD = 'PA1',
+                                   AVEC_CMP = 'DY')
+                  )
+
+#*********************************************************************#
+# *****DEFINITION   INTERSPECTRE EXCITATION***************************#
+#*********************************************************************#
+INTKTJ1=DEFI_INTE_SPEC(    DIMENSION=1,
+                         KANAI_TAJIMI=_F(  NUME_ORDRE_I = 1,
+                                        NUME_ORDRE_J = 1,
+                                        FREQ_MIN = 0.,
+                                        FREQ_MAX = 50.,
+                                        PAS = 1.,
+                                        AMOR_REDUIT = 0.6,
+                                        FREQ_MOY = 5.,
+                                        VALE_R = 1.,
+                                        INTERPOL = 'LIN',
+                                        PROL_GAUCHE = 'CONSTANT',
+                                        PROL_DROITE = 'CONSTANT')
+                       )
+
+#*********************************************************************#
+# *****CALCUL D INTERSPECTRE REPONSE: ACCE --> ACCE *****************#
+# *****                               MVT ABSOLU    *****************#
+# *****  INTERRE1= CALCUL COMPLET ***********************************#
+#*********************************************************************#
+
+DYNALEA1=DYNA_ALEA_MODAL(  
+          BASE_MODALE=_F( 
+             MODE_MECA = FREQ1,
+             BANDE = (0., 35.,),
+             AMOR_UNIF = 0.05),
+        MODE_STAT=MODESTA1,
+           EXCIT=_F( 
+             DERIVATION = 2,
+             INTE_SPEC = INTKTJ1,
+             NUME_ORDRE_I = 1,
+             NUME_ORDRE_J = 1,
+             NOEUD = 'PA1',
+             NOM_CMP = 'DY'),
+               REPONSE=_F( 
+             DERIVATION = 2,
+             FREQ_MIN = 0.,
+             FREQ_MAX = 30.,
+             PAS = 5.)
+                             )
+
+INTERRE1=REST_SPEC_PHYS(         MODE_MECA=FREQ1,
+                                         BANDE=( 0., 35., ),
+                              INTE_SPEC_GENE=DYNALEA1,
+                                   MODE_STAT=MODESTA1,
+                               EXCIT=_F(   NOEUD = 'PA1',
+                                        NOM_CMP = 'DY'),
+                                   MOUVEMENT='ABSOLU',
+                                    NOM_CHAM='ACCE',
+                                       NOEUD=( 'PB15', 'PB25', 'PB31', ),
+                                     NOM_CMP=('DY', 'DY', 'DY',  ),
+                                      OPTION='TOUT_TOUT'   )
+
+#*********************************************************************#
+#********DEUXIEME METHODE: ON DECOMPOSE EN DEUX STRUCTURES************#
+#*********************************************************************#
+#
+#*********************************************************************#
+# *****CALCUL D INTERSPECTRE REPONSE: ACCE --> ACCE *****************#
+# *****                               MVT ABSOLU    *****************#
+# *****  INTERRE2= INTERSPECTRE INTERMEDIAIRE  **********************#
+#*********************************************************************#
+#
+#*********************************************************************#
+# *****CONDITIONS AUX LIMITES: ON BLOQUE LA STRUCTURE SECONDAIRE******#
+#*********************************************************************#
+CHARGE2=AFFE_CHAR_MECA(
+             MODELE=MO1,DDL_IMPO=(
+            _F( TOUT = 'OUI',
+                     DZ = 0.0,
+                     DRX = 0.0),
+            _F( NOEUD = ('PA1',),
+                     DX = 0.0,
+                     DY = 0.0,
+                     DRZ = 0.0),
+            _F( GROUP_NO = 'GRNOSEC',
+                     DX = 0.0,
+                     DY = 0.0))
+                                 )
+
+#
+MELR2=CALC_MATR_ELEM(  MODELE=MO1,
+                    CHAM_MATER=CHMATR1,
+                        CHARGE=CHARGE2,
+                       OPTION='RIGI_MECA',
+                        CARA_ELEM=CARELEM1  )
+
+MELM2=CALC_MATR_ELEM(  MODELE=MO1,
+                    CHAM_MATER=CHMATR1,
+                        CHARGE=CHARGE2,
+                       OPTION='MASS_MECA',
+                        CARA_ELEM=CARELEM1  )
+
+#
+NUM2=NUME_DDL(  MATR_RIGI=MELR2 )
+
+MATASSR2=ASSE_MATRICE(MATR_ELEM=MELR2,NUME_DDL=NUM2)
+
+MATASSM2=ASSE_MATRICE(MATR_ELEM=MELM2,NUME_DDL=NUM2)
+
+#
+
+FREQ2=MODE_ITER_INV(   MATR_A=MATASSR2,      MATR_B=MATASSM2,
+           CALC_FREQ=_F(  OPTION = 'AJUSTE',
+                       FREQ = (0.1, 3000.0,),
+                       NMAX_FREQ = 10),
+            CALC_MODE=_F( NMAX_ITER = 30)
+                       )
+
+MODESTA2=MODE_STATIQUE( MATR_RIGI=MATASSR2,
+                        MATR_MASS=MATASSM2,
+                        MODE_STAT=_F(  NOEUD = 'PA1',
+                                  AVEC_CMP = 'DY')
+                      )
+
+DYNALEA2=DYNA_ALEA_MODAL(  
+          BASE_MODALE=_F( 
+             MODE_MECA = FREQ2,
+             BANDE = (0., 35.,),
+             AMOR_UNIF = 0.05),
+       MODE_STAT=MODESTA2,
+           EXCIT=_F( 
+             DERIVATION = 2,
+             INTE_SPEC = INTKTJ1,
+             NUME_ORDRE_I = 1,
+             NUME_ORDRE_J = 1,
+             NOEUD = 'PA1',
+             NOM_CMP = 'DY'),
+              REPONSE=_F( 
+             DERIVATION = 2,
+             FREQ_MIN = 0.,
+             FREQ_MAX = 30.,
+             PAS = 5.)
+                      )
+
+INTERRE2=REST_SPEC_PHYS(         MODE_MECA=FREQ2,
+                                         BANDE=( 0., 35., ),
+                              INTE_SPEC_GENE=DYNALEA2,
+                                   MODE_STAT=MODESTA2,
+                               EXCIT=_F(   NOEUD = 'PA1',
+                                        NOM_CMP = 'DY'),
+                                   MOUVEMENT='ABSOLU',
+                                    NOM_CHAM='ACCE',
+                              NOEUD=('PA11', 'PA21', 'PA31', 'PA11', 'PA21', 'PA31',),
+                            NOM_CMP=('DY', 'DY', 'DY', 'DX', 'DX', 'DX',),
+                                      OPTION='TOUT_TOUT'   )
+
+#
+#*********************************************************************#
+# *****CALCUL D INTERSPECTRE REPONSE: ACCE --> ACCE *****************#
+# *****                               MVT ABSOLU    *****************#
+# *****  INTERRE3= INTERSPECTRE RESULTAT DU CALCUL CHAINE ***********#
+#*********************************************************************#
+#
+#
+#*********************************************************************#
+# *****CONDITIONS AUX LIMITES: ON BLOQUE LA STRUCTURE PRIMAIRE********#
+#*********************************************************************#
+#
+CHARGE3=AFFE_CHAR_MECA(
+             MODELE=MO1,DDL_IMPO=(
+            _F( TOUT = 'OUI',
+                     DZ = 0.0,
+                     DRX = 0.0),
+            _F( GROUP_NO = 'GRNOPRIM',
+                     DX = 0.0,
+                     DY = 0.0),
+            _F( NOEUD = ('PB11', 'PB21', 'PB31',),
+                     DX = 0.0,
+                     DY = 0.0))
+                                 )
+
+#
+MELR3=CALC_MATR_ELEM(  MODELE=MO1,
+                    CHAM_MATER=CHMATR1,
+                        CHARGE=CHARGE3,
+                       OPTION='RIGI_MECA',
+                        CARA_ELEM=CARELEM1  )
+
+MELM3=CALC_MATR_ELEM(  MODELE=MO1,
+                    CHAM_MATER=CHMATR1,
+                        CHARGE=CHARGE3,
+                       OPTION='MASS_MECA',
+                        CARA_ELEM=CARELEM1  )
+
+#
+NUM3=NUME_DDL(  MATR_RIGI=MELR3 )
+
+MATASSR3=ASSE_MATRICE(MATR_ELEM=MELR3,NUME_DDL=NUM3)
+
+MATASSM3=ASSE_MATRICE(MATR_ELEM=MELM3,NUME_DDL=NUM3)
+
+#
+
+FREQ3=MODE_ITER_INV(   MATR_A=MATASSR3,      MATR_B=MATASSM3,
+           CALC_FREQ=_F(  OPTION = 'AJUSTE',
+                       FREQ = (0.1, 3000.0,),
+                       NMAX_FREQ = 15),
+            CALC_MODE=_F( NMAX_ITER = 30)
+                       )
+
+MODESTA3=MODE_STATIQUE( MATR_RIGI=MATASSR3,
+                        MATR_MASS=MATASSM3,
+                        MODE_STAT=_F( 
+                  NOEUD = ('PB11', 'PB21', 'PB31', 'PB11', 'PB21', 'PB31',),
+                  AVEC_CMP = ('DY', 'DY', 'DY', 'DX', 'DX', 'DX', ))
+                  )
+
+DYNALEA3=DYNA_ALEA_MODAL(  
+          BASE_MODALE=_F( 
+             MODE_MECA = FREQ3,
+             BANDE = (0., 35.,),
+             AMOR_UNIF = 0.05),
+       MODE_STAT=MODESTA3,
+           EXCIT=_F( 
+             DERIVATION = 2,
+             INTE_SPEC = INTERRE2,
+             NOEUD_I = ( 'PA11', 'PA21', 'PA31', 'PA11', 'PA21', 'PA31', ),
+             NOM_CMP_I = ('DY', 'DY', 'DY', 'DX', 'DX', 'DX',  ),
+             NOEUD_J = ( 'PA11', 'PA21', 'PA31', 'PA11', 'PA21', 'PA31', ),
+             NOM_CMP_J = ('DY', 'DY', 'DY', 'DX', 'DX', 'DX',  ),
+             NOEUD = ( 'PB11', 'PB21', 'PB31', 'PB11', 'PB21', 'PB31', ),
+             NOM_CMP = ('DY', 'DY', 'DY', 'DX', 'DX', 'DX',  )),
+              REPONSE=_F( 
+             DERIVATION = 2,
+             FREQ_MIN = 0.,
+             FREQ_MAX = 30.,
+             PAS = 5.)
+                )
+
+INTERRE3=REST_SPEC_PHYS(         MODE_MECA=FREQ3,
+                                         BANDE=( 0., 35., ),
+                              INTE_SPEC_GENE=DYNALEA3,
+                                   MODE_STAT=MODESTA3,
+                               EXCIT=_F(   
+                  NOEUD = ('PB11', 'PB21', 'PB31', 'PB11', 'PB21', 'PB31',),
+                  NOM_CMP = ('DY', 'DY', 'DY', 'DX', 'DX', 'DX', )),
+                                   MOUVEMENT='ABSOLU',
+                                    NOM_CHAM='ACCE',
+                                   NOEUD=( 'PB15', 'PB25', 'PB31', ),
+                                 NOM_CMP=('DY', 'DY', 'DY',  ),
+                                      OPTION='TOUT_TOUT'   )
+
+TEST_FONCTION( TABL_INTSP=_F(  INTE_SPEC = INTERRE1,
+                            NOEUD_I = 'PB25',    NOEUD_J = 'PB25',
+                            NOM_CMP_I = 'DY',  NOM_CMP_J = 'DY',
+   VALE_PARA = 5., VALE_REFE_C = ('RI',3.6913,0.0,),  PRECISION = 1.E-2))
+
+TEST_FONCTION( TABL_INTSP=_F(  INTE_SPEC = INTERRE1,
+                            NOEUD_I = 'PB25',    NOEUD_J = 'PB25',
+                            NOM_CMP_I = 'DY',  NOM_CMP_J = 'DY',
+   VALE_PARA = 10., VALE_REFE_C = ('RI',75.439,0.0,),  PRECISION = 1.E-2))
+
+TEST_FONCTION( TABL_INTSP=_F(  INTE_SPEC = INTERRE1,
+                            NOEUD_I = 'PB25',    NOEUD_J = 'PB25',
+                            NOM_CMP_I = 'DY',  NOM_CMP_J = 'DY',
+   VALE_PARA = 15., VALE_REFE_C = ('RI',1.6776,0.0,),  PRECISION = 1.E-2))
+
+TEST_FONCTION( TABL_INTSP=_F(  INTE_SPEC = INTERRE1,
+                            NOEUD_I = 'PB25',    NOEUD_J = 'PB25',
+                            NOM_CMP_I = 'DY',  NOM_CMP_J = 'DY',
+   VALE_PARA = 20., VALE_REFE_C = ('RI',1.1367,0.0,),  PRECISION = 1.E-2))
+
+TEST_FONCTION( TABL_INTSP=_F(  INTE_SPEC = INTERRE1,
+                            NOEUD_I = 'PB25',    NOEUD_J = 'PB25',
+                            NOM_CMP_I = 'DY',  NOM_CMP_J = 'DY',
+   VALE_PARA = 25., VALE_REFE_C = ('RI',0.2926,0.0,),  PRECISION = 1.E-2))
+
+TEST_FONCTION( TABL_INTSP=_F(  INTE_SPEC = INTERRE3,
+                            NOEUD_I = 'PB25',    NOEUD_J = 'PB25',
+                            NOM_CMP_I = 'DY',  NOM_CMP_J = 'DY',
+   VALE_PARA = 5., VALE_REFE_C = ('MP',3.6913,0.0,),  PRECISION = 1.E-2))
+
+TEST_FONCTION( TABL_INTSP=_F(  INTE_SPEC = INTERRE3,
+                            NOEUD_I = 'PB25',    NOEUD_J = 'PB25',
+                            NOM_CMP_I = 'DY',  NOM_CMP_J = 'DY',
+   VALE_PARA = 10., VALE_REFE_C = ('MP',75.439,0.0,),  PRECISION = 1.E-2))
+
+TEST_FONCTION( TABL_INTSP=_F(  INTE_SPEC = INTERRE3,
+                            NOEUD_I = 'PB25',    NOEUD_J = 'PB25',
+                            NOM_CMP_I = 'DY',  NOM_CMP_J = 'DY',
+   VALE_PARA = 15., VALE_REFE_C = ('MP',1.6776,0.0,),  PRECISION = 1.E-2))
+
+TEST_FONCTION( TABL_INTSP=_F(  INTE_SPEC = INTERRE3,
+                            NOEUD_I = 'PB25',    NOEUD_J = 'PB25',
+                            NOM_CMP_I = 'DY',  NOM_CMP_J = 'DY',
+   VALE_PARA = 20., VALE_REFE_C = ('MP',1.1367,0.0,),  PRECISION = 4.E-2))
+
+TEST_FONCTION( TABL_INTSP=_F(  INTE_SPEC = INTERRE3,
+                            NOEUD_I = 'PB25',    NOEUD_J = 'PB25',
+                            NOM_CMP_I = 'DY',  NOM_CMP_J = 'DY',
+   VALE_PARA = 25., VALE_REFE_C = ('MP',0.2926,0.0,),  PRECISION = 11.E-2))
+
+FIN( )
+#

@@ -1,0 +1,158 @@
+      SUBROUTINE CONJAC(I0,I1,I2,I3,MACOC,NBCOC,MAILLA)
+      IMPLICIT NONE
+C-----------------------------------------------------------------------
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF MODELISA  DATE 08/03/2000   AUTEUR CIBHHPD P.DAVID 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+C-----------------------------------------------------------------------
+C
+C DESCRIPTION : VERIFICATION D'UNE MAILLE DE CONTACT
+C
+C               HYPOTHESE (CF MODI_MAILLAGE) :
+C               LA MAILLE DE CONTACT PEUT ETRE DU TYPE
+C               - QUAD4 OU QUAD8 EN 2D
+C               - PENTA6 OU PENTA15 OU HEXA8 OU HEXA20 EN 3D
+C
+C IN     : MAILLA : CHARACTER*8 , SCALAIRE
+C                   NOM DU CONCEPT MAILLAGE
+C IN     : NBCOC  : INTEGER , SCALAIRE
+C                   NOMBRE DE NOEUDS DE LA MAILLE DE CONTACT
+C IN/OUT : MACOC  : CHARACTER*8 , VECTEUR DE DIMENSION NBCOC+2
+C                   MACOC(1) : NOM DE LA MAILLE DE CONTACT
+C                   MACOC(2) : NOM DU TYPE DE LA MAILLE DE CONTACT
+C                   MACOC(2+1) A MACOC(2+NBCOC) : NOMS DES NOEUDS DE
+C                   LA MAILLE DE CONTACT, DANS L'ORDRE DEFINI PAR LA
+C                   CONNECTIVITE. EN SORTIE L'ORDRE PEUT ETRE CHANGE
+C                   SI LA MAILLE A ETE REORIENTEE.
+C
+C-------------------   DECLARATION DES VARIABLES   ---------------------
+C
+C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
+      INTEGER            ZI
+      COMMON  / IVARJE / ZI(1)
+      REAL*8             ZR
+      COMMON  / RVARJE / ZR(1)
+      COMPLEX*16         ZC
+      COMMON  / CVARJE / ZC(1)
+      LOGICAL            ZL
+      COMMON  / LVARJE / ZL(1)
+      CHARACTER*8        ZK8
+      CHARACTER*16                ZK16
+      CHARACTER*24                          ZK24
+      CHARACTER*32                                    ZK32
+      CHARACTER*80                                              ZK80
+      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+C     ----- FIN   COMMUNS NORMALISES  JEVEUX  --------------------------
+C
+C ARGUMENTS
+C ---------
+      INTEGER       I0,I1,I2,I3
+      CHARACTER*8   MAILLA
+      INTEGER       NBCOC
+      CHARACTER*8   MACOC(2+NBCOC)
+C
+C VARIABLES LOCALES
+C -----------------
+      INTEGER       JCOOR, NO,NO0, NO1, NO2, NO3, INOR,NIV,IFM
+      CHARACTER*24  COORNO, NONOMA
+      REAL*8 X0,Y0,Z0,X1,Y1,Z1,X2,Y2,Z2,X3,Y3,Z3,SCAL
+      REAL*8 VNX,VNY,VNZ
+      REAL*8 VX1,VY1,VZ1,VX2,VY2,VZ2,VX3,VY3,VZ3
+C
+C FONCTIONS EXTERNES
+C ------------------
+      CHARACTER*32  JEXNOM, JEXNUM
+C     EXTERNAL      JEXNOM, JEXNUM, R8DOT, R8NRM2
+C
+C ROUTINES EXTERNES
+C -----------------
+C     EXTERNAL      JEDEMA, JEMARQ, JENONU, JEVEUO,
+C                   DISMOI, UTMESS
+C
+C-------------------   DEBUT DU CODE EXECUTABLE    ---------------------
+C
+      CALL JEMARQ()
+      CALL INFNIV(IFM,NIV)
+C
+C-----------------------------------------------------------------------
+C     INITIALISATIONS - ACCES AUX OBJETS DU CONCEPT MAILLAGE
+C-----------------------------------------------------------------------
+C
+      COORNO = MAILLA//'.COORDO    .VALE'
+      CALL JEVEUO(COORNO,'L',JCOOR)
+      NONOMA = MAILLA//'.NOMNOE         '
+C
+C     DETERMINATION D'UN VECTEUR NORMAL A LA MAILLE DE CONTACT
+C
+      CALL JENONU(JEXNOM(NONOMA,MACOC(2+I0)),NO0)
+      X0=ZR(JCOOR+3*(NO0-1)+0)
+      Y0=ZR(JCOOR+3*(NO0-1)+1)
+      Z0=ZR(JCOOR+3*(NO0-1)+2)
+C
+      CALL JENONU(JEXNOM(NONOMA,MACOC(2+I1)),NO1)
+      X1=ZR(JCOOR+3*(NO1-1)+0)
+      Y1=ZR(JCOOR+3*(NO1-1)+1)
+      Z1=ZR(JCOOR+3*(NO1-1)+2)
+      VX1=X1-X0
+      VY1=Y1-Y0
+      VZ1=Z1-Z0
+C
+      CALL JENONU(JEXNOM(NONOMA,MACOC(2+I2)),NO2)
+      X2=ZR(JCOOR+3*(NO2-1)+0)
+      Y2=ZR(JCOOR+3*(NO2-1)+1)
+      Z2=ZR(JCOOR+3*(NO2-1)+2)
+      VX2=X2-X0
+      VY2=Y2-Y0
+      VZ2=Z2-Z0
+C
+      VNX=VY1*VZ2-VY2*VZ1
+      VNY=VZ1*VX2-VZ2*VX1
+      VNZ=VX1*VY2-VX2*VY1
+C     SI I3 EST NUL NOUS SOMMES EN PRESENCE D'UN QUADRILATERE
+      IF (I3.EQ.0) THEN
+        VX3= 0
+        VY3= 0
+        VZ3=-1
+      ELSE
+        CALL JENONU(JEXNOM(NONOMA,MACOC(2+I3)),NO3)
+        X3=ZR(JCOOR+3*(NO3-1)+0)
+        Y3=ZR(JCOOR+3*(NO3-1)+1)
+        Z3=ZR(JCOOR+3*(NO3-1)+2)
+        VX3=X3-X0
+        VY3=Y3-Y0
+        VZ3=Z3-Z0
+      ENDIF
+C
+C     VERIFICATION DU SIGNE DU JACOBIEN
+C
+      SCAL=VNX*VX3+VNY*VY3+VNZ*VZ3
+      IF (NIV.EQ.2) THEN
+        WRITE(IFM,*) 'SOMMET ',MACOC(2+I0),' DE LA MAILLE ',MACOC(1),
+     .               ' VERS LES SOMMETS :'
+        IF (I3.EQ.0) THEN
+          WRITE(IFM,*) MACOC(2+I1),MACOC(2+I2)
+        ELSE
+          WRITE(IFM,*) MACOC(2+I1),MACOC(2+I2),MACOC(2+I3)
+        ENDIF
+        WRITE(IFM,*) 'JACOBIEN ',SCAL
+      ENDIF
+      IF (SCAL.LT.0) CALL UTMESS('E','ORIE_CONTACT','JACOBIEN NEGATIF')
+C
+      CALL JEDEMA()
+C
+      END

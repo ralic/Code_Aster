@@ -1,0 +1,166 @@
+# MODIF  DATE 16/01/2001   AUTEUR CIBHHPD D.NUNEZ 
+# RESPONSABLE ADBHHPM P.MASSIN
+# DATE   : 06/04/2000
+# AUTEUR : F. LEBOUVIER (DELTACAD)
+# TITRE  : TUYAUTERIE: PROBLEME DE HOVGAARD.
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+#---------------------------------------------------------------------
+#  - ANALYSE DYNAMIQUE D'UNE TUYAUTERIE TRIDIMENSIONNELLE COMPORTANT
+#    DES COUDES
+#  - MODELISATION AVEC DES ELEMENTS 'TUYAU' 
+#    (SEG3 ; 3 MODES DE FOURIER)
+#---------------------------------------------------------------------
+#
+DEBUT( CODE=_F( NOM = 'SDLX02D',NIV_PUB_WEB='INTERNET'))
+
+#
+#PRE_IDEAS ();
+#
+MAIL=LIRE_MAILLAGE( )
+
+#
+MO=AFFE_MODELE(   MAILLAGE=MAIL,
+                        AFFE=_F( TOUT = 'OUI',
+                              PHENOMENE = 'MECANIQUE',
+                              MODELISATION = 'TUYAU_3M')
+                  )
+
+#
+#---------------------------------------------------------------------
+#                     CARACTERISTIQUES ELEMENTAIRES
+#---------------------------------------------------------------------
+#
+CAR_ELE=AFFE_CARA_ELEM(        MODELE=MO,
+                                 POUTRE=_F( GROUP_MA = 'TOUT_ELT',
+                                         SECTION = 'CERCLE',
+                                         CARA = ('R', 'EP',),
+                                         VALE = (0.0925, 0.00612,)),
+                            ORIENTATION=_F( GROUP_NO = 'C',
+                                         CARA = 'GENE_TUYAU',
+                                         VALE = (1., 0., 0.,))
+                          )
+
+#
+#---------------------------------------------------------------------
+#                     CARACTERISTIQUES MATERIAUX
+#---------------------------------------------------------------------
+#
+MAT=DEFI_MATERIAU(   ELAS=_F( E = 1.658E+11,   
+                             NU = 0.3,
+                             RHO = 13404.106)
+                     )
+
+#
+AFFMAT=AFFE_MATERIAU(   MAILLAGE=MAIL,
+                              AFFE=_F( TOUT = 'OUI', MATER = MAT)
+                        )
+
+#
+#---------------------------------------------------------------------
+#                     CHARGEMENTS
+#---------------------------------------------------------------------
+#
+CHAR=AFFE_CHAR_MECA(     MODELE=MO,
+                         DDL_IMPO=_F( GROUP_NO = ('H','C',),
+                                   DX = 0.,  DY = 0., DZ = 0.,
+                                   DRX = 0.,  DRY = 0., DRZ = 0.,
+                                   UI2 = 0., VI2 = 0., WI2 = 0.,
+                                   UO2 = 0., VO2 = 0., WO2 = 0., 
+                                   UI3 = 0., VI3 = 0., WI3 = 0.,
+                                   UO3 = 0., VO3 = 0., WO3 = 0.,
+                                   WI1 = 0., WO1 = 0., WO = 0.)
+                       )
+
+#
+#---------------------------------------------------------------------
+#                        RESOLUTION
+#---------------------------------------------------------------------
+#
+MACRO_MATR_ASSE(      MODELE=MO,
+                    CARA_ELEM=CAR_ELE, 
+                   CHAM_MATER=AFFMAT,
+                       CHARGE=CHAR,
+                     NUME_DDL=CO("NU"),
+                      SOLVEUR=_F(  METHODE = 'LDLT'),MATR_ASSE=(
+                    _F(  MATRICE = CO("K"),  OPTION = 'RIGI_MECA'),
+                    _F(  MATRICE = CO("M"),  OPTION = 'MASS_MECA')),
+                        TITRE='MAT_ASSE'
+                 )
+
+#                                                            
+MODES=MODE_ITER_SIMULT(      MATR_A=K,
+                               MATR_B=M,
+                              METHODE='TRI_DIAG',
+                            CALC_FREQ=_F( OPTION = 'PLUS_PETITE',
+                                       NMAX_FREQ = 9)
+                          )
+
+#
+IMPR_RESU(RESU=_F( 
+              FORMAT = 'IDEAS',
+              MAILLAGE = MAIL,
+              RESULTAT = MODES))
+
+#
+#---------------------------------------------------------------------
+#                        VERIFICATION DES RESULTATS
+#---------------------------------------------------------------------
+#
+TEST_RESU(RESU=(
+     _F( RESULTAT = MODES,             PARA = 'FREQ',
+           CRITERE = 'RELATIF',    PRECISION = 0.025,
+           NUME_ORDRE = 1,                 VALE = 10.39),
+
+     _F( RESULTAT = MODES,             PARA = 'FREQ',
+           CRITERE = 'RELATIF',    PRECISION = 0.025,
+           NUME_ORDRE = 2,                 VALE = 20.02),
+
+     _F( RESULTAT = MODES,             PARA = 'FREQ',
+           CRITERE = 'RELATIF',    PRECISION = 0.025,
+           NUME_ORDRE = 3,                 VALE = 25.45),
+
+     _F( RESULTAT = MODES,             PARA = 'FREQ',
+           CRITERE = 'RELATIF',    PRECISION = 0.025,
+           NUME_ORDRE = 4,                 VALE = 48.32),
+
+     _F( RESULTAT = MODES,             PARA = 'FREQ',
+           CRITERE = 'RELATIF',    PRECISION = 0.025,
+           NUME_ORDRE = 5,                 VALE = 52.60),
+
+     _F( RESULTAT = MODES,             PARA = 'FREQ',
+           CRITERE = 'RELATIF',    PRECISION = 0.025,
+           NUME_ORDRE = 6,                 VALE = 84.81),
+
+     _F( RESULTAT = MODES,             PARA = 'FREQ',
+           CRITERE = 'RELATIF',    PRECISION = 0.025,
+           NUME_ORDRE = 7,                 VALE = 87.16),
+
+     _F( RESULTAT = MODES,             PARA = 'FREQ',
+           CRITERE = 'RELATIF',    PRECISION = 0.025,
+           NUME_ORDRE = 8,                 VALE = 129.31),
+           
+     _F( RESULTAT = MODES,             PARA = 'FREQ',
+           CRITERE = 'RELATIF',    PRECISION = 0.025,
+           NUME_ORDRE = 9,                 VALE = 131.69))
+           )
+
+#
+FIN()
+#
+# 

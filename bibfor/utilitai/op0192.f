@@ -1,0 +1,217 @@
+      SUBROUTINE OP0192 ( IER )
+C_____________________________________________________________________
+C
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF UTILITAI  DATE 14/05/2002   AUTEUR DURAND C.DURAND 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+C                   LIRE_CHAMP
+C_____________________________________________________________________
+C
+      IMPLICIT NONE
+C
+C 0.1. ==> ARGUMENTS
+C
+      INTEGER IER
+C
+C 0.2. ==> COMMUNS
+C     ----- DEBUT COMMUNS NORMALISES  JEVEUX --------------------------
+      INTEGER ZI
+      COMMON /IVARJE/ZI(1)
+      REAL*8 ZR
+      COMMON /RVARJE/ZR(1)
+      COMPLEX*16 ZC
+      COMMON /CVARJE/ZC(1)
+      LOGICAL ZL
+      COMMON /LVARJE/ZL(1)
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32
+      CHARACTER*80 ZK80
+      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+C     -----  FIN  COMMUNS NORMALISES  JEVEUX --------------------------
+C
+C 0.3. ==> VARIABLES LOCALES
+C
+      CHARACTER*6 NOMPRO
+      PARAMETER ( NOMPRO = 'OP0192' )
+C
+      INTEGER EDNONO
+      PARAMETER (EDNONO=-1)
+      INTEGER EDNOPT
+      PARAMETER (EDNOPT=-1)
+C
+      CHARACTER*7 LCMPVA
+      PARAMETER ( LCMPVA = 'NOM_CMP' )
+      CHARACTER*11 LCMPVM
+      PARAMETER ( LCMPVM = 'NOM_CMP_MED' )
+C
+      INTEGER IAUX
+      INTEGER UNITE
+      INTEGER CODRET
+      INTEGER NUMPT, NUMORD
+      INTEGER NBCMPV, JCMPVA, JCMPVM
+C
+      CHARACTER*8 CHANOM, NOMAAS, NOMO
+      CHARACTER*8 TYCH, NOMGD
+      CHARACTER*16 TYPECH, NOMCMD, FORMAT
+      CHARACTER*32 NOCHMD, NOMAMD
+      CHARACTER*72 REP
+C
+      CHARACTER*24 NCMPVA, NCMPVM
+C
+C DEB ------------------------------------------------------------------
+C====
+C 1. PREALABLES
+C====
+C
+      IER = 0
+      CALL JEMARQ()
+C
+C 1.1. ==> RECUPERATION DU NIVEAU D'IMPRESSION
+C
+      CALL INFMAJ
+C
+C====
+C 2. DETERMINATION DES OPTIONS DE LA COMMANDE :
+C====
+C
+C 2.1. ==> FORMAT DU FICHIER
+C
+      CALL GETVTX ( ' ', 'FORMAT', 0, 1, 1, FORMAT, IAUX )
+C
+      IF ( FORMAT.EQ.'MED' ) THEN
+        CALL GETVTX ( ' ', 'NOM_MED', 0, 1, 1, NOCHMD, IAUX )
+        IF ( IAUX.EQ.0 ) THEN
+          CALL UTMESS ( 'F', NOMPRO, 'NOM_MED ? (SVP)' )
+        ENDIF
+      ELSE
+        CALL UTMESS ( 'F', NOMPRO, 'FORMAT '//FORMAT//' INCONNU.' )
+      ENDIF
+C
+C 2.2. ==> TYPE DE CHAMP A LIRE
+C
+      CALL GETRES ( CHANOM, TYPECH, NOMCMD )
+      IF ( TYPECH(1:8).EQ.'CHAM_NO_' ) THEN
+        NOMGD = TYPECH(9:16)
+        TYCH = 'NOEU    '
+      ELSE
+        CALL UTMESS ( 'F', NOMPRO, 'TYPE '//TYPECH//' NON DISPONIBLE' )
+      ENDIF
+C
+C 2.3. ==> NOM DES COMPOSANTES VOULUES
+C
+      NCMPVA = '&&'//NOMPRO//'.'//LCMPVA
+      NCMPVM = '&&'//NOMPRO//'.'//LCMPVM
+C
+      CALL GETVTX(' ','NOM_CMP_IDEM',0,1,1, REP, IAUX )
+C
+C 2.3.1. ==> C'EST PAR IDENTITE DE NOMS
+C
+      IF ( IAUX.NE.0 ) THEN
+C
+        IF ( REP.EQ.'OUI' ) THEN
+          NBCMPV = 0
+        ELSE
+          CALL UTMESS ('F',NOMPRO,'NOM_CMP_IDEM EST CURIEUX : '//REP )
+        ENDIF
+C
+      ELSE
+C
+C 2.3.2. ==> C'EST PAR ASSOCIATION DE LISTE
+C
+        CALL GETVTX(' ',LCMPVA,0,1,0,REP,IAUX)
+        IF ( IAUX.LT.0 ) THEN
+          NBCMPV = -IAUX
+        ENDIF
+C
+        CALL GETVTX(' ',LCMPVM,0,1,0,REP,IAUX)
+        IF ( -IAUX.NE.NBCMPV ) THEN
+          CALL UTMESS ('F',NOMPRO,LCMPVA//' ET '//LCMPVM//' : NOMBRE '//
+     >                 'DE COMPOSANTES INCOMPATIBLE.')
+        ENDIF
+C
+        IF ( NBCMPV.GT.0 ) THEN
+          CALL WKVECT(NCMPVA ,'V V K8',NBCMPV,JCMPVA )
+          CALL GETVTX(' ',LCMPVA,0,1,NBCMPV,ZK8(JCMPVA),IAUX)
+          CALL WKVECT(NCMPVM,'V V K8',NBCMPV,JCMPVM)
+          CALL GETVTX(' ',LCMPVM,0,1,NBCMPV,ZK8(JCMPVM),IAUX)
+        ENDIF
+C
+      ENDIF
+C
+C 2.4. ==> UNITE LOGIQUE LIE AU FICHIER
+C
+      CALL GETVIS ( ' ', 'UNITE', 0, 1, 1, UNITE, IAUX )
+C
+C 2.5. ==> NOM DU MAILLAGE ASTER ASSOCIE
+C
+      CALL GETVID ( ' ', 'MAILLAGE', 0, 1, 1, NOMAAS, IAUX )
+C
+      IF ( IAUX.EQ.0 ) THEN
+        CALL GETVID ( ' ', 'MODELE', 0, 1, 1, NOMO, IAUX )
+        CALL DISMOI ( 'F', 'NOM_MAILLA', NOMO, 'MODELE',
+     >                IAUX, NOMAAS, CODRET )
+        IF ( CODRET.NE.0 ) THEN
+          CALL UTMESS ( 'F', NOMPRO, 'PROBLEME MAILLAGE <-> MODELE' )
+        ENDIF
+      ENDIF
+C
+C 2.6. ==> NOM DU MAILLAGE MED ASSOCIE
+C
+      CALL GETVID ( ' ', 'NOM_MAIL_MED', 0, 1, 1, NOMAMD, IAUX )
+C
+      IF ( IAUX.EQ.0 ) THEN
+        NOMAMD = ' '
+      ENDIF
+C
+C 2.7. ==> NUMERO D'ORDRE EVENTUEL
+C
+      CALL GETVIS ( ' ', 'NUME_ORDRE', 0, 1, 1, NUMORD, IAUX )
+      IF ( IAUX.EQ.0 ) THEN
+        NUMORD = EDNONO
+      ENDIF
+C
+C 2.8. ==> NUMERO DE PAS DE TEMPS EVENTUEL
+C
+      CALL GETVIS ( ' ', 'NUME_PT', 0, 1, 1, NUMPT, IAUX )
+      IF ( IAUX.EQ.0 ) THEN
+        NUMPT = EDNOPT
+      ENDIF
+C
+C====
+C 3. APPEL DE LA LECTURE AU FORMAT MED
+C====
+      IF ( FORMAT.EQ.'MED' ) THEN
+C
+        CALL LRCHME ( CHANOM, NOCHMD, NOMAMD,
+     >                NOMAAS, TYCH, NOMGD,
+     >                NUMPT, NUMORD, NBCMPV, NCMPVA, NCMPVM,
+     >                UNITE, CODRET )
+C
+      ENDIF
+C
+C====
+C 4. LA FIN
+C====
+C
+      CALL JEDETC('V','&&'//NOMPRO,1)
+C
+      CALL JEDEMA()
+C FIN ------------------------------------------------------------------
+      END

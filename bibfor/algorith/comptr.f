@@ -1,0 +1,117 @@
+      SUBROUTINE COMPTR(NP1,NP2,NP3,NBM,NBNL,TTRANS,ICHTR,DEPG,VITG,
+     &              PHII,TYPCH,NBSEG,ALPHA,BETA,GAMMA,ORIG,RC,THETA,OLD)
+      IMPLICIT NONE
+C-----------------------------------------------------------------------
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 16/05/2000   AUTEUR KXBADNG T.KESTENS 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+C TOLE  CRP_21
+C-----------------------------------------------------------------------
+C DESCRIPTION : TEST D'ATTEINTE D'UNE BUTEE A L'ISSUE DU TRANSITOIRE
+C -----------
+C               APPELANT : TRANSI
+C
+C-------------------   DECLARATION DES VARIABLES   ---------------------
+C
+C ARGUMENTS
+C ---------
+      INTEGER    NP1, NP2, NP3, NBM, NBNL
+      REAL*8     TTRANS
+      INTEGER    ICHTR
+      REAL*8     DEPG(*), VITG(*), PHII(NP2,NP1,*)
+      INTEGER    TYPCH(*), NBSEG(*)
+      REAL*8     ALPHA(2,*), BETA(2,*), GAMMA(2,*), ORIG(6,*),
+     &           RC(NP3,*), THETA(NP3,*), OLD(9,*)
+C
+C VARIABLES LOCALES
+C -----------------
+      INTEGER    IC, TYPOBS, NBS
+      REAL*8     XJEU, DNORM, COST, SINT,
+     &           XORIG(3), VORIG(3), SINA, COSA, SINB, COSB, SING, COSG,
+     &           XGLO(3), XXGLO(3), XLOC(3), VGLO(3), VLOC(3)
+C
+C ROUTINES EXTERNES
+C -----------------
+C     EXTERNAL   DISBUT, GLOLOC, PROJMG
+C
+C-------------------   DEBUT DU CODE EXECUTABLE    ---------------------
+C
+      ICHTR = 0
+C
+      DO 100 IC = 1, NBNL
+C
+C ------ CALCUL DU DEPLACEMENT AU TEMPS TTRANS
+C
+         CALL PROJMG(NP1,NP2,IC,NBM,PHII,DEPG,XGLO)
+         XORIG(1) = ORIG(1,IC)
+         XORIG(2) = ORIG(2,IC)
+         XORIG(3) = ORIG(3,IC)
+         XXGLO(1) = XGLO(1) + ORIG(4,IC)
+         XXGLO(2) = XGLO(2) + ORIG(5,IC)
+         XXGLO(3) = XGLO(3) + ORIG(6,IC)
+         SINA = ALPHA(1,IC)
+         COSA = ALPHA(2,IC)
+         SINB = BETA(1,IC)
+         COSB = BETA(2,IC)
+         SING = GAMMA(1,IC)
+         COSG = GAMMA(2,IC)
+         CALL GLOLOC(XXGLO,XORIG,SINA,COSA,SINB,COSB,SING,COSG,XLOC)
+C
+C ------ CALCUL DE LA DISTANCE NORMALE A LA BUTEE CONSIDEREE
+C
+         TYPOBS = TYPCH(IC)
+         NBS    = NBSEG(IC)
+         IF ( (TYPOBS.EQ.0).OR.(TYPOBS.EQ.1).OR.(TYPOBS.EQ.2) )
+     &      XJEU = RC(1,IC)
+C
+         CALL DISBUT(NP3,IC,XLOC,TYPOBS,XJEU,RC,THETA,NBS,COST,SINT,
+     &               DNORM)
+C
+C ------ EN CAS DE CHOC SUR LA BUTEE CONSIDEREE, RETOUR A L'APPELANT
+C ------ TRANSI APRES AFFECTATION DE L'INDICATEUR CONDITIONNANT UNE
+C ------ NOUVELLE ESTIMATION DE LA DUREE DU REGIME TRANSITOIRE
+C
+         IF ( DNORM.LE.0.0D0 ) THEN
+            ICHTR = 1
+            GO TO 999
+C
+C ------ DANS LE CAS CONTRAIRE, INITIALISATION DU TABLEAU OLD
+C
+         ELSE
+            VORIG(1) = 0.0D0
+            VORIG(2) = 0.0D0
+            VORIG(3) = 0.0D0
+            CALL PROJMG(NP1,NP2,IC,NBM,PHII,VITG,VGLO)
+            CALL GLOLOC(VGLO,VORIG,SINA,COSA,SINB,COSB,SING,COSG,VLOC)
+            OLD(1,IC) = -SINT*VLOC(2) + COST*VLOC(3)
+            OLD(2,IC) = VLOC(1)
+            OLD(3,IC) = 0.0D0
+            OLD(4,IC) = 0.0D0
+            OLD(5,IC) = XLOC(1)
+            OLD(6,IC) = XLOC(2)
+            OLD(7,IC) = XLOC(3)
+            OLD(8,IC) = 0.0D0
+            OLD(9,IC) = COST*VLOC(2) + SINT*VLOC(3)
+         ENDIF
+C
+ 100  CONTINUE
+C
+ 999  CONTINUE
+C
+C --- FIN DE COMPTR.
+      END

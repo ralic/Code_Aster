@@ -1,0 +1,185 @@
+# MODIF  DATE 09/09/2002   AUTEUR MCOURTOI M.COURTOIS 
+# RESPONSABLE MCOURTOI M.COURTOIS
+# TITRE VALIDATION IMPR_COURBE AU FORMAT SEISME
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+#===================================================
+#
+
+DEBUT(   CODE=_F(  NOM = 'ZZZZ100C',NIV_PUB_WEB='INTERNET') )
+
+DEUX=DEFI_VALEUR(  IS=2 )
+
+L01=DEFI_LIST_REEL(  DEBUT=0.,
+                         INTERVALLE=_F(  JUSQU_A = 2.,  NOMBRE = DEUX) )
+
+L02=DEFI_LIST_REEL(  DEBUT=0.,
+                         INTERVALLE=_F(  JUSQU_A = 4.,  NOMBRE = DEUX) )
+
+DFC1=DEFI_FONCTION(     NOM_PARA='INST',    NOM_RESU='FREQ',
+                          VALE=(0., 1., 2., 2.,  4., 4., ),
+                           PROL_DROITE='LINEAIRE',
+                          PROL_GAUCHE='LINEAIRE'
+                     )
+
+DFC2=DEFI_FONCTION(     NOM_PARA='INST',    NOM_RESU='AMOR',
+                          VALE=(0., 2., 2., 3., 3., 4.,   4., 5., ),
+                           PROL_DROITE='LINEAIRE',
+                          PROL_GAUCHE='LINEAIRE'
+                     )
+
+L03=DEFI_LIST_REEL(  DEBUT=0.,
+                         INTERVALLE=_F(  JUSQU_A = 4.,  NOMBRE = 8) )
+
+IMPR_COURBE(COURBE=(_F(  FONCTION = DFC1),
+                    _F(  FONCTION = DFC2)),
+              )
+
+IMPR_COURBE(COURBE=(_F(  FONCTION = DFC1),
+                    _F(  FONCTION = DFC2)),
+            FORMAT='EXCEL'
+              )
+
+#-----------------------------------------------------------------------
+
+DEFUFI(    IMPRESSION=_F(  NOM = 'TEMPO1',
+                            UNITE = 50) )
+
+IMPR_COURBE(   COURBE=_F(  FONC_X = DFC1,
+                           FONC_Y = DFC2) )
+
+IMPR_COURBE(   FICHIER='TEMPO1',
+                  FORMAT='SEISME',
+                  COURBE=_F(  FONC_X = DFC1,
+                           FONC_Y = DFC2) )
+
+FF1=LIRE_FONCTION(        UNITE=50,
+                           NOM_PARA='FREQ'
+                       )
+
+TEST_FONCTION(VALEUR=(  
+  _F(   FONCTION = FF1, VALE_PARA = 1.,  VALE_REFE = 2.), 
+  _F(   FONCTION = FF1, VALE_PARA = 2.,  VALE_REFE = 3.), 
+  _F(   FONCTION = FF1, VALE_PARA = 4.,  VALE_REFE = 5.)),ATTRIBUT=(
+                 
+  _F(   FONCTION = FF1,   ATTR = 'NOM_PARA',   ATTR_REFE = 'FREQ'),
+  _F(   FONCTION = FF1,   ATTR = 'NOM_RESU',   ATTR_REFE = 'AMOR'))
+              )
+
+#-----------------------------------------------------------------------
+
+
+DEFUFI(    IMPRESSION=_F(  NOM = 'TEMPO2',
+                            UNITE = 51) )
+
+IMPR_COURBE(   COURBE=_F(  FONC_X = DFC1,
+                           FONC_Y = DFC2, 
+                           PARA = 'FONC_Y') )
+
+IMPR_COURBE(   FICHIER='TEMPO2',
+                  FORMAT='SEISME',
+                  COURBE=_F(  FONC_X = DFC1,
+                           FONC_Y = DFC2, 
+                           PARA = 'FONC_Y') )
+
+FF2=LIRE_FONCTION(     UNITE=51,
+                           NOM_PARA='FREQ'
+                       )
+
+TEST_FONCTION(VALEUR=(  
+  _F(   FONCTION = FF2, VALE_PARA = 1.,  VALE_REFE = 2.), 
+  _F(   FONCTION = FF2, VALE_PARA = 2.,  VALE_REFE = 3.), 
+  _F(   FONCTION = FF2, VALE_PARA = 3.,  VALE_REFE = 4.),
+  _F(   FONCTION = FF2, VALE_PARA = 4.,  VALE_REFE = 5.)),ATTRIBUT=(
+                 
+  _F(   FONCTION = FF2,   ATTR = 'NOM_PARA',   ATTR_REFE = 'FREQ'),
+  _F(   FONCTION = FF2,   ATTR = 'NOM_RESU',   ATTR_REFE = 'AMOR'))
+              )
+
+#-----------------------------------------------------------------------
+
+
+DEFUFI(    IMPRESSION=_F(  NOM = 'TEMPO3',
+                            UNITE = 52) )
+
+IMPR_COURBE(   COURBE=_F(  FONC_X = DFC1,
+                           FONC_Y = DFC2,
+                           LIST_PARA = L03)
+                  )
+
+IMPR_COURBE(   FICHIER='TEMPO3',
+                  FORMAT='SEISME',
+                  COURBE=_F(  FONC_X = DFC1,
+                           FONC_Y = DFC2,
+                           LIST_PARA = L03)
+                  )
+
+FF3=LIRE_FONCTION(        UNITE=52,
+                           NOM_PARA='FREQ'
+                       )
+
+TEST_FONCTION(VALEUR=(  
+  _F(   FONCTION = FF3, VALE_PARA = 1.,    VALE_REFE = 2.), 
+  _F(   FONCTION = FF3, VALE_PARA = 1.25,  VALE_REFE = 2.25), 
+  _F(   FONCTION = FF3, VALE_PARA = 1.5,   VALE_REFE = 2.5), 
+  _F(   FONCTION = FF3, VALE_PARA = 1.75,  VALE_REFE = 2.75), 
+  _F(   FONCTION = FF3, VALE_PARA = 2.,    VALE_REFE = 3.),
+  _F(   FONCTION = FF3, VALE_PARA = 2.5,   VALE_REFE = 3.5),  
+  _F(   FONCTION = FF3, VALE_PARA = 3.,    VALE_REFE = 4.),
+  _F(   FONCTION = FF3, VALE_PARA = 3.5,   VALE_REFE = 4.5),  
+  _F(   FONCTION = FF3, VALE_PARA = 4.,    VALE_REFE = 5.)),ATTRIBUT=(
+                 
+  _F(   FONCTION = FF3,   ATTR = 'NOM_PARA',   ATTR_REFE = 'FREQ'),
+  _F(   FONCTION = FF3,   ATTR = 'NOM_RESU',   ATTR_REFE = 'AMOR'))
+              )
+
+#-----------------------------------------------------------------------
+
+
+DEFUFI(    IMPRESSION=_F(  NOM = 'TEMPO4',
+                            UNITE = 53) )
+
+IMPR_COURBE(   COURBE=_F(  FONC_X = DFC2,
+                           FONC_Y = DFC1) )
+
+IMPR_COURBE(   FICHIER='TEMPO4',
+                  FORMAT='SEISME',
+                  COURBE=_F(  FONC_X = DFC2,
+                           FONC_Y = DFC1) )
+
+FF4=LIRE_FONCTION(        UNITE=53,
+                           NOM_PARA='AMOR'
+                       )
+
+TEST_FONCTION(VALEUR=(  
+  _F(   FONCTION = FF4, VALE_PARA = 2.,  VALE_REFE = 1.), 
+  _F(   FONCTION = FF4, VALE_PARA = 3.,  VALE_REFE = 2.), 
+  _F(   FONCTION = FF4, VALE_PARA = 4.,  VALE_REFE = 3.),
+  _F(   FONCTION = FF4, VALE_PARA = 5.,  VALE_REFE = 4.)),ATTRIBUT=(
+                 
+  _F(   FONCTION = FF4,   ATTR = 'NOM_PARA',   ATTR_REFE = 'AMOR'),
+  _F(   FONCTION = FF4,   ATTR = 'NOM_RESU',   ATTR_REFE = 'FREQ'))
+              )
+
+#-----------------------------------------------------------------------
+
+FIN( )
+#
+#
+#               
+#

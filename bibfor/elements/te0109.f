@@ -1,0 +1,266 @@
+      SUBROUTINE TE0109(OPTION,NOMTE)
+      IMPLICIT REAL*8 (A-H,O-Z)
+      CHARACTER*16 OPTION,NOMTE
+C ......................................................................
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ELEMENTS  DATE 04/04/2002   AUTEUR VABHHTS J.PELLET 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+C    - FONCTION REALISEE: CALCUL DU FLUX DE CHALEUR
+C                                                   AUX POINTS DE GAUSS
+C                                                OU AUX NOEUDS
+C     REMARQUE: FLUX33 NAIF!
+C
+C
+C                          OPTION : 'FLUX_ELGA_TEMP  '
+C                                OU 'FLUX_ELNO_TEMP  '
+C    - ARGUMENTS:
+C        DONNEES:      OPTION       -->  OPTION DE CALCUL
+C                      NOMTE        -->  NOM DU TYPE ELEMENT
+C ......................................................................
+C --------- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------
+      INTEGER ZI
+      COMMON /IVARJE/ZI(1)
+      REAL*8 ZR
+      COMMON /RVARJE/ZR(1)
+      COMPLEX*16 ZC
+      COMMON /CVARJE/ZC(1)
+      LOGICAL ZL
+      COMMON /LVARJE/ZL(1)
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32
+      CHARACTER*80 ZK80
+      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+C --------- FIN  DECLARATIONS NORMALISEES JEVEUX -----------------------
+C
+      PARAMETER    (NBRES=3)
+      LOGICAL       MUL
+      CHARACTER*2   CODRET(NBRES),VAL
+      CHARACTER*3   NUM
+      CHARACTER*8   NOMRES(NBRES),ELREFE
+      CHARACTER*16  PHENOM
+      CHARACTER*24  CARAC,FF
+      REAL*8 VALRES(NBRES),CONDUC,H,AXE(3,3),ANG(2),R8PI
+      REAL*8 CNDREF(3),CNDELE(3),FI,ORD,C,S,C2,S2
+      REAL*8 COOR2D(14),DFDX(7),DFDY(7),POIDS,DTDX,DTDY,DTDZ
+      REAL*8 TS,TM,TI,DTSDX,DTMDX,DTIDX,DTSDY,DTMDY,DTIDY,PX3
+      REAL*8 VA1A2(3),NA1A2,X1,Y1,Z1,X2,Y2,Z2,X3,Y3,Z3
+      REAL*8 PVEC1(3),PVEC2(3),NPVEC1,FX,FY,FZ, FLUPG(9)
+      INTEGER I,KP,ITEMPE,ICACOQ,IMATE,IFLUXN,INUMCO
+      INTEGER ICARAC,IFF,IVF,IGEOM,IDFDE,IDFDK,IPOIDS
+      INTEGER NNO,NNOS,NPG1,NPG2,NPG3,NPG4,NPG,CODE
+C
+      CALL ELREF1(ELREFE)
+
+C
+      CARAC = '&INEL.'//ELREFE//'.CARAC'
+      CALL JEVETE(CARAC,'L',ICARAC)
+      NNO = ZI(ICARAC)
+      NPG1 = ZI(ICARAC+2)
+      NPG2 = ZI(ICARAC+3)
+      NPG3 = ZI(ICARAC+4)
+      NPG4 = ZI(ICARAC+5)
+      VALRES(1)=0.D0
+      VALRES(2)=0.D0
+      VALRES(3)=0.D0
+C
+      FF = '&INEL.'//ELREFE//'.FF'
+      CALL JEVETE(FF,'L',IFF)
+C
+      CALL JEVECH('PMATERC','L',IMATE)
+      CALL JEVECH('PGEOMER','L',IGEOM)
+      CALL JEVECH('PCACOQU','L',ICACOQ)
+      CALL JEVECH('PTEMPER','L',ITEMPE)
+      CALL JEVECH('PTEMPSR','L',ITEMPS)
+      CALL JEVECH('PNUMCOR','L',INUMCO)
+      CALL JEVECH('PFLUX_R','E',IFLUXN)
+C
+C --- RECUPERATION DE LA NATURE DU MATERIAU DANS PHENOM
+C     -------------------------------------------------
+      MATER = ZI(IMATE)
+      CALL RCCOMA ( MATER, 'THER', PHENOM, CODRET )
+C
+C --- CAS DES COQUES MULTICOUCHES :
+C     -----------------------------
+      IF ( PHENOM .EQ. 'THER_COQMU' ) THEN
+C
+        MUL = .TRUE.
+        NOMRES(1) = 'HOM_28'
+        CALL RCVALA(MATER,'THER',0,' ',R8B,1,NOMRES,VALRES,CODRET,'FM')
+        H = VALRES(1)/2.D0
+        IC = ZI(INUMCO)
+        CALL CODENT(IC,'G',NUM)
+        DO 1 I = 1,3
+          CALL CODENT(I,'G',VAL)
+          NOMRES(I) = 'C'//NUM//'_V'//VAL
+    1   CONTINUE
+        CALL RCVALA(MATER,'THER',0,' ',R8B,3,NOMRES,VALRES,CODRET,'FM')
+        CODE = ZI(INUMCO+1)
+        EP  = VALRES(1)
+        FI  = VALRES(2)
+        ORD = VALRES(3)
+        NOMRES(1) = 'LAMBDAIL'
+        NOMRES(2) = 'LAMBDAT'
+        NOMRES(3) = 'LAMBDAN'
+        CALL RCVALA(MATER,'THER',0,' ',R8B,3,NOMRES,VALRES,CODRET,'FM')
+        C = COS(FI*R8PI()/180.D0)
+        S = SIN(FI*R8PI()/180.D0)
+        C2 = C*C
+        S2 = S*S
+        CNDREF(1) = C2*VALRES(1) + S2*VALRES(2)
+        CNDREF(2) = S2*VALRES(1) + C2*VALRES(2)
+        CNDREF(3) = C*S* (VALRES(1)-VALRES(2))
+        CALL MUDIRX(3,ZR(IGEOM),3,ZR(ICACOQ+1),ZR(ICACOQ+2),AXE,ANG)
+        CALL REFLTH(ANG,CNDREF,CNDELE)
+C
+C --- CAS DES COQUES ISOTROPES :
+C     ------------------------
+      ELSEIF ( PHENOM .EQ. 'THER' ) THEN
+C
+        MUL = .FALSE.
+        NOMRES(1) = 'LAMBDA'
+        CALL RCVALA(MATER,'THER',1,'INST',ZR(ITEMPS),1,NOMRES,VALRES,
+     +              CODRET, 'FM' )
+        CONDUC = VALRES(1)
+        H = ZR(ICACOQ)/2.D0
+        ORD = 0.D0
+        EP = 2.D0*H
+      ELSE
+        CALL UTMESS('F','TE0109','LE MATERIAU '//PHENOM//' N''EST '
+     +            //'PAS CONNU. SEULS SONT ADMIS LES MATERIAUX '
+     +            //' ''THER'' ET ''THER_COQMU'' POUR LE CALCUL DES '
+     +            //'FLUX POUR LES COQUES THERMIQUES .')
+      END IF
+
+      CODE = ZI(INUMCO+1)
+      IF (CODE.LT.0) THEN
+        PX3 = ORD - EP/2.D0
+
+      ELSE IF (CODE.GT.0) THEN
+        PX3 = ORD + EP/2.D0
+
+      ELSE
+        PX3 = ORD
+      END IF
+C
+      IF (OPTION(8:9).EQ.'NO') THEN
+        IPOIDS = IFF + (NPG1+NPG2+NPG3)* (1+3*NNO)
+        IVF = IPOIDS + NPG4
+        IDFDE = IVF + NPG4*NNO
+        IDFDK = IDFDE + NPG4*NNO
+        NPG = NPG4
+
+      ELSE
+        IPOIDS = IFF
+        IVF = IPOIDS + NPG1
+        IDFDE = IVF + NPG1*NNO
+        IDFDK = IDFDE + NPG1*NNO
+        NPG = NPG1
+      END IF
+C
+      DO 10 I = 1,3
+        VA1A2(I) = ZR(IGEOM+I+2) - ZR(IGEOM+I-1)
+   10 CONTINUE
+      NA1A2 = SQRT(VA1A2(1)**2+VA1A2(2)**2+VA1A2(3)**2)
+      DO 15 I = 1,3
+        VA1A2(I) = VA1A2(I)/NA1A2
+   15 CONTINUE
+C
+      X1 = ZR(IGEOM)
+      Y1 = ZR(IGEOM+1)
+      Z1 = ZR(IGEOM+2)
+      X2 = ZR(IGEOM+3)
+      Y2 = ZR(IGEOM+4)
+      Z2 = ZR(IGEOM+5)
+      X3 = ZR(IGEOM+6)
+      Y3 = ZR(IGEOM+7)
+      Z3 = ZR(IGEOM+8)
+      PVEC1(1) = (Y2-Y1)* (Z3-Z1) - (Z2-Z1)* (Y3-Y1)
+      PVEC1(2) = (Z2-Z1)* (X3-X1) - (Z3-Z1)* (X2-X1)
+      PVEC1(3) = (X2-X1)* (Y3-Y1) - (X3-X1)* (Y2-Y1)
+      NPVEC1 = SQRT(PVEC1(1)**2+PVEC1(2)**2+PVEC1(3)**2)
+      DO 20 I = 1,3
+        PVEC1(I) = PVEC1(I)/NPVEC1
+   20 CONTINUE
+C
+      PVEC2(1) = (PVEC1(2)*VA1A2(3)-PVEC1(3)*VA1A2(2))
+      PVEC2(2) = (PVEC1(3)*VA1A2(1)-PVEC1(1)*VA1A2(3))
+      PVEC2(3) = (PVEC1(1)*VA1A2(2)-PVEC1(2)*VA1A2(1))
+C
+      CALL CQ3D2D(NNO,ZR(IGEOM),1.D0,0.D0,COOR2D)
+C
+      DO 30 KP = 1,NPG
+        K = (KP-1)*NNO
+        CALL DFDM2D(NNO,ZR(IPOIDS+KP-1),ZR(IDFDE+K),ZR(IDFDK+K),COOR2D,
+     +              DFDX,DFDY,POIDS)
+        DTMDX = 0.D0
+        DTIDX = 0.D0
+        DTSDX = 0.D0
+        DTMDY = 0.D0
+        DTIDY = 0.D0
+        DTSDY = 0.D0
+        TM = 0.D0
+        TI = 0.D0
+        TS = 0.D0
+        DO 35 I = 1,NNO
+          DTMDX = DTMDX + ZR(ITEMPE+3*I-3)*DFDX(I)
+          DTMDY = DTMDY + ZR(ITEMPE+3*I-3)*DFDY(I)
+          DTIDX = DTIDX + ZR(ITEMPE+3*I-2)*DFDX(I)
+          DTIDY = DTIDY + ZR(ITEMPE+3*I-2)*DFDY(I)
+          DTSDX = DTSDX + ZR(ITEMPE+3*I-1)*DFDX(I)
+          DTSDY = DTSDY + ZR(ITEMPE+3*I-1)*DFDY(I)
+          TM = TM + ZR(ITEMPE+3*I-3)*ZR(IVF+K+I-1)
+          TI = TI + ZR(ITEMPE+3*I-2)*ZR(IVF+K+I-1)
+          TS = TS + ZR(ITEMPE+3*I-1)*ZR(IVF+K+I-1)
+   35   CONTINUE
+        FAC1 = (1.D0- (PX3/H)**2)
+        FAC2 = -PX3* (1.D0-PX3/H)/ (2.D0*H)
+        FAC3 = PX3* (1.D0+PX3/H)/ (2.D0*H)
+        DTDX = DTMDX*FAC1 + DTIDX*FAC2 + DTSDX*FAC3
+        DTDY = DTMDY*FAC1 + DTIDY*FAC2 + DTSDY*FAC3
+        DTDZ = TS* (.5D0+PX3/H)/H-2.D0*TM*PX3/H**2-TI*(.5D0-PX3/H)/H
+C
+        IF (.NOT.MUL) THEN
+          FX = -CONDUC*DTDX
+          FY = -CONDUC*DTDY
+          FZ = -CONDUC*DTDZ
+        ELSE
+          FX = -CNDELE(1)*DTDX - CNDELE(3)*DTDY
+          FY = -CNDELE(3)*DTDX - CNDELE(2)*DTDY
+          FZ = -VALRES(3)*DTDZ
+        END IF
+C
+        IF (OPTION(8:9).EQ.'GA') THEN
+          ZR(IFLUXN+3*KP-3) = FX*VA1A2(1) + FY*PVEC2(1) + FZ*PVEC1(1)
+          ZR(IFLUXN+3*KP-2) = FX*VA1A2(2) + FY*PVEC2(2) + FZ*PVEC1(2)
+          ZR(IFLUXN+3*KP-1) = FX*VA1A2(3) + FY*PVEC2(3) + FZ*PVEC1(3)
+        ELSE
+          FLUPG(3* (KP-1)+1) = FX*VA1A2(1) + FY*PVEC2(1) + FZ*PVEC1(1)
+          FLUPG(3* (KP-1)+2) = FX*VA1A2(2) + FY*PVEC2(2) + FZ*PVEC1(2)
+          FLUPG(3* (KP-1)+3) = FX*VA1A2(3) + FY*PVEC2(3) + FZ*PVEC1(3)
+        END IF
+   30 CONTINUE
+C
+      IF (OPTION(8:9).EQ.'NO') THEN
+        NCMP = 3
+        NNOS = 3
+        CALL PPGANO(NNOS,NPG,NCMP,FLUPG,ZR(IFLUXN))
+      END IF
+C
+      END

@@ -1,0 +1,204 @@
+# MODIF  DATE 02/04/2002   AUTEUR RATEAU G.RATEAU 
+# TITRE POUTRE CANTILEVER . VALIDATION DE LA METHODE ARLEQUIN
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+# PAR RACCORD DE DEUX MAILLAGES INCOMPATIBLES DE DENSITES DIFFERENTES
+# COMPARAISON A LA SOLUTION OBTENUE AVEC DES MAILLAGES HOMOGENES
+# FIN ET GROSSIER
+#
+
+DEBUT(  CODE=_F(  NOM = 'SSLP104A',NIV_PUB_WEB='INTERNET') );
+
+MAIL=LIRE_MAILLAGE();
+
+MAIL=DEFI_GROUP(reuse =MAIL,
+                MAILLAGE=MAIL,
+                CREA_GROUP_NO=(_F(GROUP_MA='GM7',),
+                               _F(GROUP_MA='GM8',), ),);
+
+ELAS=DEFI_MATERIAU(ELAS=_F(E=300.0,
+                           NU=0.29999999999999999,),);
+
+CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
+                    AFFE=_F(TOUT='OUI',
+                            MATER=ELAS,),);
+
+MOD=AFFE_MODELE(MAILLAGE=MAIL,
+                AFFE=_F(GROUP_MA=('GM1','GM2','GM3','GM4'),
+                        PHENOMENE='MECANIQUE',
+                        MODELISATION='D_PLAN',),);
+
+BLQ=AFFE_CHAR_MECA(MODELE=MOD,
+                   DDL_IMPO=_F(GROUP_NO='GM7',
+                               DX=0.0,
+                               DY=0.0,),);
+
+DPL=AFFE_CHAR_MECA(MODELE=MOD,
+                   DDL_IMPO=_F(GROUP_NO='GM8',
+                               DY=-1.0,),);
+
+# CREATION DES RELATIONS DE COUPLAGE ARLEQUIN ENTRE LES GROUPES
+# DE MAILLES GM2 ET GM3 SUR LA ZONE DE RECOUVREMENT GM2
+
+ARL=AFFE_CHAR_MECA(MODELE=MOD,
+                   ARLEQUIN=_F(GROUP_MA_1='GM2',
+                               GROUP_MA_2='GM3',
+                               GROUP_MA_COLL='GM2',
+                               POIDS_1=0.99,),);
+
+LINST=DEFI_LIST_REEL(DEBUT=0.0,
+                     INTERVALLE=_F(JUSQU_A=1.0,
+                                   NOMBRE=1,),);
+
+RES=STAT_NON_LINE(MODELE=MOD,
+                  CHAM_MATER=CHMAT,
+                  EXCIT=(_F(CHARGE=BLQ,),
+                         _F(CHARGE=DPL,),
+                         _F(CHARGE=ARL,),),
+                  COMP_ELAS=_F(RELATION='ELAS',),
+                  INCREMENT=_F(LIST_INST=LINST,
+                               NUME_INST_FIN=1,),);
+
+RES=CALC_ELEM(reuse =RES,
+              MODELE=MOD,
+              CHAM_MATER=CHMAT,
+              OPTION='SIEF_ELNO_ELGA',
+              RESULTAT=RES,);
+
+SGM=CREA_CHAMP(TYPE_CHAM='ELNO_SIEF_R',
+               OPERATION='EXTR',
+               RESULTAT=RES,
+               NOM_CHAM='SIEF_ELNO_ELGA',
+               NUME_ORDRE=1,);
+
+CHF=INTE_MAIL_2D(MAILLAGE=MAIL,
+                 DEFI_CHEMIN=_F(GROUP_MA='GM9',),);
+
+CHG=INTE_MAIL_2D(MAILLAGE=MAIL,
+                 DEFI_CHEMIN=_F(GROUP_MA='GM10',),);
+
+S229 = POST_RELEVE_T( ACTION=_F( CHAM_GD = SGM, 
+                                 CHEMIN = CHF,
+                                 TOUT_CMP = 'OUI',  
+                                 INTITULE = '229',
+                                 OPERATION = 'EXTRACTION', ) )
+
+S164 = POST_RELEVE_T( ACTION=_F( CHAM_GD = SGM,
+                                 CHEMIN = CHF,
+                                 TOUT_CMP = 'OUI',  
+                                 INTITULE = '164',
+                                 OPERATION = 'EXTRACTION', ) )
+
+S429 = POST_RELEVE_T( ACTION=_F( CHAM_GD = SGM,
+                                 CHEMIN = CHG,
+                                 TOUT_CMP = 'OUI',  
+                                 INTITULE = '429',
+                                 OPERATION = 'EXTRACTION', ) )
+
+# COMPARAISON DES CONTRAINTES LISSEES EN UN POINT PROCHE DE L ENCASTREMENT
+# N229 ET UN AUTRE AU MILIEU DE LA ZONE DE RECOUVREMENT N164 (FIN) ET N429
+# (GROSSIER).
+
+# LES VALEURS SUR LE MODELE FIN SONT COMPAREES AVEC UN CALCUL OBTENU
+# SUR UN MAILLAGE HOMOGENE FIN
+
+# LES VALEURS SUR LE MODELE GROSSIER SONT COMPAREES AVEC UN CALCUL OBTENU
+# SUR UN MAILLAGE HOMOGENE GROSSIER
+
+TEST_TABLE( TABLE = S229, 
+            NOM_PARA = 'SIXX',
+            FILTRE = _F( NOM_PARA = 'NOEUD',
+                         VALE_K = 'N229'),
+            VALE = 4.60690E-01,
+            REFERENCE = 'AUTRE_ASTER',
+            PRECISION = 4.0E-3,
+            CRITERE = 'ABSOLU', )
+
+TEST_TABLE( TABLE = S229, 
+            NOM_PARA = 'SIYY',
+            FILTRE = _F( NOM_PARA = 'NOEUD',
+                         VALE_K = 'N229'),
+            VALE = 5.31469E-03,
+            REFERENCE = 'AUTRE_ASTER',
+            PRECISION = 3.0E-3,
+            CRITERE = 'ABSOLU', )
+
+TEST_TABLE( TABLE = S229, 
+            NOM_PARA = 'SIXY',
+            FILTRE = _F( NOM_PARA = 'NOEUD',
+                         VALE_K = 'N229'),
+            VALE = -2.39723E-03,
+            REFERENCE = 'AUTRE_ASTER',
+            PRECISION = 3.0E-3,
+            CRITERE = 'ABSOLU', )
+
+TEST_TABLE( TABLE = S164, 
+            NOM_PARA = 'SIXX',
+            FILTRE = _F( NOM_PARA = 'NOEUD',
+                         VALE_K = 'N164'),
+            VALE = 3.77117E-01,
+            REFERENCE = 'AUTRE_ASTER',
+            PRECISION = 3.0E-3,
+            CRITERE = 'ABSOLU', )
+
+TEST_TABLE( TABLE = S164, 
+            NOM_PARA = 'SIYY',
+            FILTRE = _F( NOM_PARA = 'NOEUD',
+                         VALE_K = 'N164'),
+            VALE = 1.76333E-03,
+            REFERENCE = 'AUTRE_ASTER',
+            PRECISION = 3.0E-3,
+            CRITERE = 'ABSOLU', )
+
+TEST_TABLE( TABLE = S164, 
+            NOM_PARA = 'SIXY',
+            FILTRE = _F( NOM_PARA = 'NOEUD',
+                         VALE_K = 'N164'),
+            VALE = -1.08189E-04,
+            REFERENCE = 'AUTRE_ASTER',
+            PRECISION = 3.0E-3,
+            CRITERE = 'ABSOLU', )
+
+TEST_TABLE( TABLE = S429, 
+            NOM_PARA = 'SIXX',
+            FILTRE = _F( NOM_PARA = 'NOEUD',
+                         VALE_K = 'N429'),
+            VALE = 3.70859E-01,
+            REFERENCE = 'AUTRE_ASTER',
+            PRECISION = 3.0E-3,
+            CRITERE = 'ABSOLU', )
+
+TEST_TABLE( TABLE = S429, 
+            NOM_PARA = 'SIYY',
+            FILTRE = _F( NOM_PARA = 'NOEUD',
+                         VALE_K = 'N429'),
+            VALE = 9.58460E-04,
+            REFERENCE = 'AUTRE_ASTER',
+            PRECISION = 3.0E-3,
+            CRITERE = 'ABSOLU', )
+
+TEST_TABLE( TABLE = S429, 
+            NOM_PARA = 'SIXY',
+            FILTRE = _F( NOM_PARA = 'NOEUD',
+                         VALE_K = 'N429'),
+            VALE = 3.39382E-04,
+            REFERENCE = 'AUTRE_ASTER',
+            PRECISION = 3.0E-3,
+            CRITERE = 'ABSOLU', )
+
+FIN();

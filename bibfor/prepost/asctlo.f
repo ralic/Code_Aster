@@ -1,0 +1,204 @@
+      SUBROUTINE ASCTLO(RC, ALPHA, LT, LGV, NSEP, ILONC, ISLP, ILONP,
+     +                  IORDO1, IORDO2, TAMPON, COORYI, COORYS)
+C        
+      IMPLICIT NONE 
+      REAL*8   RC, ALPHA, LT, LGV, TAMPON(*), COORYI(*), COORYS(*)
+      INTEGER  NSEP, ILONC, ISLP, ILONP, IORDO1(*), IORDO2(*) 
+C
+C ----------------------------------------------------------------------
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF PREPOST  DATE 08/03/99   AUTEUR AUBHHMB M.BONNAMY 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+C     MACR_ASCOUF_MAIL
+C
+C  - CALCUL TABLEAU TRIE DES ORDONNEES DES CENTRES DE SOUS-EPAISSEURS
+C
+C-----------------DONNEES FOURNIES PAR L'UTILISATEUR--------------------
+C
+C     RC    = RAYON DE CINTRAGE DU COUDE
+C     ALPHA = ANGLE DU COUDE
+C     LT    = LONGUEUR DE L'EMBOUT DU COTE CHARGEMENT
+C     LGV   = LONGUEUR DE L'EMBOUT DU COTE CONDITIONS AUX LIMITES
+C     NSEP  = NOMBRE DE SOUS-EPAISSEURS
+C     ISLP  = ABSC. LONGIT. CENTRE SOUS-EPAISSEUR SUR LA PLAQUE
+C     ILONP = TAILLE LONGIT. SUR LA PLAQUE DE LA SOUS-EPAISSEUR
+C     ILONC = TAILLE LONGI SUR LE COUDE DE LA SOUS-EPAISSEUR
+C     
+C----------------------DONNEES FOURNIES PAR ASTER-----------------------
+C
+C     COORYI = ORDONNEE DU BORD INFERIEUR DE LA SOUS-EPAISSEUR I
+C     COORYS = ORDONNEE DU BORD SUPERIEUR DE LA SOUS-EPAISSEUR I
+C     IORDO1 = CORRESPONDANCE ABSCISSE CURVILIGNE LONGIT. SOUS-EP. I
+C     IORDO2 = CORRESPONDANCE ORDO. INF ET SUP. LONGIT. SOUS-EP. I
+C
+C ----------------------------------------------------------------------
+C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
+      INTEGER           ZI
+      COMMON / IVARJE / ZI(1)
+      REAL*8            ZR
+      COMMON / RVARJE / ZR(1)
+      COMPLEX*16        ZC
+      COMMON / CVARJE / ZC(1)
+      LOGICAL           ZL
+      COMMON / LVARJE / ZL(1)
+      CHARACTER*8       ZK8
+      CHARACTER*16              ZK16
+      CHARACTER*24                       ZK24
+      CHARACTER*32                                ZK32
+      CHARACTER*80                                         ZK80
+      COMMON / KVARJE / ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
+C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
+C
+      REAL*8  R8PI,PI,VMIN,RBID,ALPHAR
+      INTEGER IBID,I,J,IFM,IMIN,IUNIFI
+C
+      IFM = IUNIFI('MESSAGE')     
+      PI = R8PI()
+      ALPHAR = 2.D0*ALPHA*PI/360.D0
+C
+C ---- TRI DU TABLEAU DES ABSCISSES CURVILIGNES AXIALES PLAQUE
+C
+      DO 10 I=1,NSEP
+         TAMPON(I) = ZR(ISLP+I-1) 
+         IORDO1(I)   = I
+ 10   CONTINUE
+C
+      DO 20 J=1,NSEP
+C
+        VMIN = ALPHAR*RC+1.D0
+C
+        DO 30 I=J,NSEP
+C
+          IF (TAMPON(I).GT.(ALPHAR*RC)
+     &         .OR.TAMPON(I).LT.0.D0) THEN
+                  CALL UTDEBM('F','ASCTLO','VALEUR HORS DOMAINE')
+            CALL UTIMPI('L','SOUS-EPAISSEUR NUMERO : ',1,I)
+            CALL UTIMPR('L','ABSC. CURV. LONGIT.  : ',1,TAMPON(I))
+            CALL UTIMPR('L','BORDS PLAQUE : 0. -  ',1,ALPHAR*RC)
+            CALL UTFINM()   
+            GOTO 9999            
+          ELSE IF (TAMPON(I).LT.VMIN) THEN
+            VMIN = TAMPON(I) 
+            IMIN = I
+          END IF
+C
+ 30     CONTINUE
+C
+        RBID = TAMPON(IMIN)
+        TAMPON(IMIN) = TAMPON(J)
+        TAMPON(J) = RBID
+        IBID = IORDO1(IMIN)
+        IORDO1(IMIN) = IORDO1(J)
+        IORDO1(J) = IBID
+C
+ 20   CONTINUE
+C
+      WRITE(IFM,*)
+      WRITE(IFM,*) 'TRI DES CENTRES ABSC. CURV. LONGIT. :'
+      WRITE(IFM,*) '-----------------------------------'
+      DO 40 J=1,NSEP
+        WRITE(IFM,100) J,') SOUS-EP NO ',IORDO1(J),'<> YC = ',TAMPON(J)
+ 40   CONTINUE
+C   
+C
+C --- CALCUL DES ABCISSES SUPERIEURES ET INFERIEURES 
+C --- DES SOUS-EPAISSEURS
+C
+      DO 50 I=1,NSEP
+C
+         COORYI(I) = TAMPON(I) - ZR(ILONP+IORDO1(I)-1)/2.D0 
+         COORYS(I) = TAMPON(I) + ZR(ILONP+IORDO1(I)-1)/2.D0
+C   
+         IF (TAMPON(I).EQ.0.D0) THEN
+            COORYI(I) =  - ZR(ILONC+IORDO1(I)-1)/2.D0
+            COORYS(I) = ZR(ILONP+IORDO1(I)-1) 
+     &                    - ZR(ILONC+IORDO1(I)-1)/2.D0
+         END IF
+         IF (TAMPON(I).EQ.ALPHAR*RC) THEN
+            COORYI(I) = ALPHAR*RC - ( ZR(ILONP+IORDO1(I)-1) - 
+     &                               ZR(ILONC+IORDO1(I)-1)/2.D0)
+            COORYS(I) = ALPHAR*RC + ZR(ILONC+IORDO1(I)-1)/2.D0
+         END IF
+C             
+         IF (COORYI(I).LT.(-LT)) THEN
+            CALL UTDEBM('F','ASCTLO','VALEUR HORS DOMAINE')
+            CALL UTIMPI('L','SOUS-EPAISSEUR NUMERO : ',1,I)
+            CALL UTIMPR('L','BORD INFERIEUR  : ',1,COORYI(I))
+            CALL UTIMPR('L','BORD PLAQUE : ',1,-LT )
+            CALL UTFINM()   
+            GOTO 9999   
+         END IF           
+         IF (COORYS(I).GT.(ALPHAR*RC+LGV)) THEN
+            CALL UTDEBM('F','ASCTLO','VALEUR HORS DOMAINE')
+            CALL UTIMPI('L','SOUS-EPAISSEUR NUMERO : ',1,I)
+            CALL UTIMPR('L','BORD INFERIEUR  : ',1,COORYI(I))
+            CALL UTIMPR('L','BORD PLAQUE : ',1,ALPHAR*RC+LGV )
+            CALL UTFINM()   
+            GOTO 9999
+         END IF
+C
+ 50   CONTINUE 
+C
+C ---- TRI DES BORNES D'INTERVALLES EN ABSCISSE
+C
+      DO 60 I=1,NSEP
+         TAMPON(2*I-1) = COORYI(I)
+         TAMPON(2*I) = COORYS(I)
+         IORDO2(2*I) = 2*I
+         IORDO2(2*I-1) = 2*I-1
+ 60   CONTINUE
+C
+      DO 70 J=1,2*NSEP
+C
+        VMIN = 2*(ALPHAR*RC)
+C
+        DO 80 I=J,2*NSEP
+C
+          IF (TAMPON(I).LT.VMIN) THEN
+            VMIN = TAMPON(I) 
+            IMIN = I
+          END IF
+C
+ 80     CONTINUE
+C
+        RBID = TAMPON(IMIN)
+        TAMPON(IMIN) = TAMPON(J)
+        TAMPON(J) = RBID
+        IBID = IORDO2(IMIN)
+        IORDO2(IMIN) = IORDO2(J)
+        IORDO2(J) = IBID
+C
+ 70   CONTINUE
+C
+      WRITE(IFM,*)
+      WRITE(IFM,*) 'TRI DES INTERVALLES I ET S ABSC. CURV. LONGIT. :'
+      WRITE(IFM,*) '-----------------------------------------------'
+      DO 90 J=1,2*NSEP
+        IF (MOD(IORDO2(J),2).NE.0) THEN
+          WRITE(IFM,100) 
+     &    J,') SOUS-EP NO ',IORDO1(IORDO2(J)/2+1),'<> YI = ',TAMPON(J)
+        ELSE
+          WRITE(IFM,100) 
+     &      J,') SOUS-EP NO ',IORDO1(IORDO2(J)/2),'<> YS = ',TAMPON(J)
+        END IF
+ 90   CONTINUE
+C
+100   FORMAT(I3,A,I3,A,F8.2)
+C
+9999  CONTINUE
+      END

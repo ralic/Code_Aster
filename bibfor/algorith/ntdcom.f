@@ -1,0 +1,89 @@
+      SUBROUTINE NTDCOM(EVOLSC)
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 06/12/2000   AUTEUR VABHHTS J.PELLET 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+C
+      IMPLICIT NONE
+      CHARACTER*8  EVOLSC
+C
+C ----------------------------------------------------------------------
+C
+C COMMANDE THER_NON_LINE : VERIFICATION SYNTAXIQUE SPECIFIQUES AU
+C                          SECHAGE
+C                          RECUPERATION DE L'EVOL_THER
+C
+C ----------------------------------------------------------------------
+C
+      INTEGER      IOCC, K, N1, IERD, NBCHAM
+      CHARACTER*8  K8B
+      CHARACTER*16 COMP, MOTCLE, K16BID, NOMCMD, TYSD
+      LOGICAL      LRELA,LSECH
+C
+      DATA         MOTCLE / 'COMP_THER_NL' /
+C ----------------------------------------------------------------------
+C
+C
+      CALL GETRES( K8B, K16BID, NOMCMD )
+C
+      IF (NOMCMD.EQ.'THER_NON_LINE') THEN
+      CALL GETFAC(MOTCLE,IOCC)
+      LRELA = .FALSE.
+      LSECH = .FALSE.
+      DO 100 K = 1,IOCC
+         CALL GETVTX(MOTCLE,'RELATION',K,1,1,COMP,N1)
+         IF(COMP(1:10).EQ.'SECH_NAPPE') LSECH = .TRUE.
+         IF(COMP(1:12).EQ.'SECH_GRANGER') LSECH = .TRUE.
+         IF(COMP(1:5).NE.'SECH_') LRELA = .TRUE.
+ 100  CONTINUE
+C
+      IF(LSECH.AND.LRELA) THEN
+         CALL UTMESS('F','NTDCOM_01',
+     &   'LE SECHAGE NE PEUT PAS ETRE MELANGE A UN AUTRE COMPORTEMENT')
+      ENDIF
+C
+      EVOLSC = ' '
+      IF(LSECH) THEN
+         CALL GETVID(' ','EVOL_THER_SECH',1,1,0,K8B,N1)
+         IF(N1.EQ.0) THEN
+            CALL UTMESS('F','NTDCOM_02',
+     &      'EVOL_THER_SECH EST UN MOT-CLE OBLIGATOIRE POUR LE SECHAGE'
+     &      // ' DE TYPE SECH_GRANGER ET SECH_NAPPE' )
+         ELSE
+            CALL GETVID(' ','EVOL_THER_SECH',1,1,1,EVOLSC,N1)
+C
+C ----------VERIFICATION DU CHAMP DE TEMPERATURE
+C
+            CALL GETTCO(EVOLSC,TYSD)
+            IF (TYSD(1:9).NE.'EVOL_THER') THEN
+               CALL UTMESS('F','NTDCOM_03',' LE CONCEPT : '//
+     &              EVOLSC//' N''EST PAS UN CHAMP DE TEMPERATURE')
+            ELSE
+               CALL DISMOI('F','NB_CHAMP_UTI',EVOLSC,'RESULTAT',
+     &                      NBCHAM,K8B,IERD)
+               IF (NBCHAM.LE.0) THEN
+                  CALL UTMESS('F','NTDCOM_04',' LE CONCEPT EVOL_THER : '
+     &            //EVOLSC//' NE CONTIENT AUCUN CHAMP DE TEMPERATURE')
+               ENDIF
+            ENDIF
+         ENDIF
+      ENDIF
+C
+      ENDIF
+C
+C-----------------------------------------------------------------------
+      END

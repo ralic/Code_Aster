@@ -1,0 +1,281 @@
+# MODIF  DATE 13/11/2001   AUTEUR DURAND C.DURAND 
+# TITRE MUR PLAN EN THERMIQUE STATIONNAIRE (QUAD4/TRIA3) CALC_MATR_ELEM
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+# CAS TEST TPLL01A
+DEBUT(  CODE=_F( NOM = 'TPLL01A',NIV_PUB_WEB='INTERNET') )
+
+ACIER=DEFI_MATERIAU(  THER=_F(  LAMBDA = 0.75, RHO_CP = 2.0))
+
+MAIL=LIRE_MAILLAGE( )
+
+CHMAT=AFFE_MATERIAU(  MAILLAGE=MAIL,
+                        AFFE=_F(  TOUT = 'OUI', MATER = ACIER) )
+
+MOTH=AFFE_MODELE(  MAILLAGE=MAIL,
+                     AFFE=_F( TOUT = 'OUI', MODELISATION = 'PLAN_DIAG',
+                                      PHENOMENE = 'THERMIQUE'))
+
+CHTH=AFFE_CHAR_THER(   MODELE=MOTH,FLUX_REP=(
+                          _F( GROUP_MA = 'GRMA13', FLUN = 0.0),
+                          _F( GROUP_MA = 'GRMA12', FLUN = -1200.0)),
+                           ECHANGE=_F( GROUP_MA = 'GRMA14', COEF_H = 30.0,
+                                    TEMP_EXT = 140.0),
+                          TEMP_IMPO=_F( GROUP_NO = 'GRNM15', TEMP = 100.0),
+                         LIAISON_DDL=_F( NOEUD = ('N3', 'N1',),
+#  LA LIGNE CI-DESSOUS EST FACULTATIVE , PAR DEFAUT LA LISTE DE
+#  DDL EST 'TEMP'
+#                                     DDL: ('TEMP' 'TEMP')
+                                      COEF_MULT = (1., -1.,),
+                                      COEF_IMPO = 40.)
+                       )
+
+MACRO_MATR_ASSE(  MODELE=MOTH,  CHARGE=CHTH,
+                      CHAM_MATER=CHMAT, 
+                      NUME_DDL=CO("NU"),
+                      SOLVEUR=_F(  METHODE = 'MULT_FRONT'),
+                      MATR_ASSE=_F(  MATRICE = CO("MATASS"),
+                                  OPTION = 'RIGI_THER')
+                   )
+
+VEL=CALC_VECT_ELEM(   CHARGE=CHTH,  OPTION='CHAR_THER' )
+
+VECASS=ASSE_VECTEUR(   VECT_ELEM=VEL,   NUME_DDL=NU )
+
+MATASS=FACT_LDLT( reuse=MATASS,  MATR_ASSE=MATASS )
+
+T=RESO_LDLT(   MATR_FACT=MATASS,   CHAM_NO=VECASS )
+
+FLUXN=CALC_CHAM_ELEM(   MODELE=MOTH,  TEMP=T, 
+                             CHAM_MATER=CHMAT,  OPTION='FLUX_ELNO_TEMP')
+
+FLUXG=CALC_CHAM_ELEM(   MODELE=MOTH,  TEMP=T, 
+                             CHAM_MATER=CHMAT,  OPTION='FLUX_ELGA_TEMP')
+
+TEST_RESU(CHAM_NO=( 
+   _F( CHAM_GD = T, NOEUD = 'N5',    NOM_CMP = 'TEMP', VALE = 100.0),
+   _F( CHAM_GD = T, NOEUD = 'N1',    NOM_CMP = 'TEMP', VALE = 20.0),
+   _F( CHAM_GD = T, NOEUD = 'N3',    NOM_CMP = 'TEMP', VALE = 60.0)),CHAM_ELEM=(
+               
+   _F( CHAM_GD = FLUXN, MAILLE = 'M1', POINT = 3, NOM_CMP = 'FLUX', VALE = 960.0),
+   _F( CHAM_GD = FLUXN, MAILLE = 'M2', POINT = 2, NOM_CMP = 'FLUY', VALE = 720.0),
+   _F( CHAM_GD = FLUXG, MAILLE = 'M1', POINT = 3, NOM_CMP = 'FLUX', VALE = 960.0),
+   _F( CHAM_GD = FLUXG, MAILLE = 'M2', POINT = 2, NOM_CMP = 'FLUY', VALE = 720.0))
+          )
+
+#----------------------------------------------------------------------
+# VALIDATION DE TRAC_NOR DE LA COMMANDE POST_RELEVE_T:
+#
+# CHEMIN ORIENTE DE E VERS D, LA NORMALE VERS L'EXTERIEUR DU DOMAINE
+# --------------------------
+
+CHEM_1=INTE_MAIL_2D(   MAILLAGE=MAIL,
+                         DEFI_SEGMENT=_F( ORIGINE = ( 0.04,  0.07, ),
+                                       EXTREMITE = ( 0.07,  0.03, )),
+                           INFO=2
+                       )
+
+FLUX_G=POST_RELEVE_T(    ACTION=_F(  INTITULE = 'FLUX_GLO',
+                           CHEMIN = CHEM_1,
+                           CHAM_GD = FLUXN,
+                           NOM_CMP = ( 'FLUX', 'FLUY', ),
+                           REPERE = 'GLOBAL',
+                           OPERATION = 'EXTRACTION')  )
+
+IMPR_TABLE(   TABLE=FLUX_G, 
+              NOM_PARA=( 'ABSC_CURV', 'FLUX', 'FLUY', )  )
+
+TEST_TABLE(    TABLE=FLUX_G, 
+                FILTRE=_F(  NOM_PARA = 'ABSC_CURV',
+                         VALE = 2.50000E-02),
+                NOM_PARA='FLUX',
+                    VALE=960.0 
+            )
+
+TEST_TABLE(    TABLE=FLUX_G, 
+                FILTRE=_F(  NOM_PARA = 'ABSC_CURV',
+                         VALE = 2.50000E-02),
+                NOM_PARA='FLUY',
+                    VALE=720.0 
+            )
+
+#
+# LES RESULTATS DOIVENT ETRE IDENTIQUE A TRAC_NOR
+# CALCUL DANS LE REPERE LOCAL :
+# ---------------------------
+
+FLUX_L=POST_RELEVE_T(    ACTION=_F(  INTITULE = 'FLUX_LOC',
+                           CHEMIN = CHEM_1,
+                           CHAM_GD = FLUXN,
+                           NOM_CMP = ( 'FLUX', 'FLUY', ),
+                           REPERE = 'LOCAL',
+                           OPERATION = 'EXTRACTION')  )
+
+IMPR_TABLE(   TABLE=FLUX_L, 
+              NOM_PARA=( 'ABSC_CURV', 'FLUX', 'FLUY', )  )
+
+TEST_TABLE(    TABLE=FLUX_L,
+                FILTRE=_F(  NOM_PARA = 'ABSC_CURV',
+                         VALE = 2.50000E-02),
+                NOM_PARA='FLUX',
+                 CRITERE='ABSOLU',
+                    VALE=0.0 
+            )
+
+TEST_TABLE(    TABLE=FLUX_L,
+                FILTRE=_F(  NOM_PARA = 'ABSC_CURV',
+                         VALE = 2.50000E-02),
+                NOM_PARA='FLUY',
+                    VALE=1200.0 
+            )
+
+#
+# LES RESULTATS DOIVENT ETRE IDENTIQUE AU REPERE LOCAL
+# CALCUL PAR LA TRAC_NORMALE :
+# --------------------------
+
+FLUX_N=POST_RELEVE_T(    ACTION=_F(  INTITULE = 'FLUX_NOR',
+                           CHEMIN = CHEM_1,
+                           CHAM_GD = FLUXN,
+                           TRAC_NOR = 'OUI',
+                           NOM_CMP = ( 'FLUX', 'FLUY', ),
+                           OPERATION = 'EXTRACTION')  )
+
+TEST_TABLE(    TABLE=FLUX_N, 
+                FILTRE=_F(  NOM_PARA = 'ABSC_CURV',
+                         VALE = 0.00000E+00),
+                NOM_PARA='TRAC_NOR',
+                    VALE=1200.0 
+            )
+
+TEST_TABLE(    TABLE=FLUX_N, 
+                FILTRE=_F(  NOM_PARA = 'ABSC_CURV',
+                         VALE = 2.50000E-02),
+                NOM_PARA='TRAC_NOR',
+                    VALE=1200.0 
+            )
+
+TEST_TABLE(    TABLE=FLUX_N, 
+                FILTRE=_F(  NOM_PARA = 'ABSC_CURV',
+                         VALE = 5.00000E-02),
+                NOM_PARA='TRAC_NOR',
+                    VALE=1200.0 
+            )
+
+#
+# NOEUDS ORIENTES DE E VERS D, LA NORMALE VERS L'EXTERIEUR DU DOMAINE
+# ---------------------------
+
+TR1_N1=POST_RELEVE_T(    ACTION=_F(  INTITULE = 'FLU_NORM',
+                           NOEUD = ( 'N9', 'N1', 'N2', ),
+                           CHAM_GD = FLUXN,
+                           TRAC_NOR = 'OUI',
+                           NOM_CMP = ( 'FLUX', 'FLUY', ),
+                           OPERATION = 'EXTRACTION')  )
+
+TEST_TABLE(    TABLE=TR1_N1,
+                FILTRE=_F(  NOM_PARA = 'ABSC_CURV',
+                         VALE = 0.00000E+00),
+                NOM_PARA='TRAC_NOR',
+                    VALE=1200.0
+            )
+
+TEST_TABLE(    TABLE=TR1_N1,
+                FILTRE=_F(  NOM_PARA = 'ABSC_CURV',
+                         VALE = 2.50000E-02),
+                NOM_PARA='TRAC_NOR',
+                    VALE=1200.0
+            )
+
+TEST_TABLE(    TABLE=TR1_N1,
+                FILTRE=_F(  NOM_PARA = 'ABSC_CURV',
+                         VALE = 5.00000E-02),
+                NOM_PARA='TRAC_NOR',
+                    VALE=1200.0
+            )
+
+# CHEMIN ORIENTE DE D VERS E, LA NORMALE VERS L'INTERIEUR DU DOMAINE
+# --------------------------
+
+CHEM_2=INTE_MAIL_2D(   MAILLAGE=MAIL,
+                         DEFI_SEGMENT=_F( ORIGINE = ( 0.07,  0.03, ),
+                                       EXTREMITE = ( 0.04,  0.07, )),
+                          INFO=2
+                      )
+
+TR1_C2=POST_RELEVE_T(    ACTION=_F(  INTITULE = 'FLU_NORM',
+                           CHEMIN = CHEM_2,
+                           CHAM_GD = FLUXN,
+                           TRAC_NOR = 'OUI',
+                           NOM_CMP = ( 'FLUX', 'FLUY', ),
+                           OPERATION = 'EXTRACTION')  )
+
+TEST_TABLE(    TABLE=TR1_C2,
+                FILTRE=_F(  NOM_PARA = 'ABSC_CURV',
+                         VALE = 0.00000E+00),
+                NOM_PARA='TRAC_NOR',
+                    VALE=-1200.0 
+            )
+
+TEST_TABLE(    TABLE=TR1_C2,
+                FILTRE=_F(  NOM_PARA = 'ABSC_CURV',
+                         VALE = 2.50000E-02),
+                NOM_PARA='TRAC_NOR',
+                    VALE=-1200.0 
+            )
+
+TEST_TABLE(    TABLE=TR1_C2,
+                FILTRE=_F(  NOM_PARA = 'ABSC_CURV',
+                         VALE = 5.00000E-02),
+                NOM_PARA='TRAC_NOR',
+                    VALE=-1200.0 
+            )
+
+# NOEUDS ORIENTES DE D VERS E, LA NORMALE VERS L'INTERIEUR DU DOMAINE
+# ---------------------------
+
+TR1_N2=POST_RELEVE_T(    ACTION=_F(  INTITULE = 'FLU_NORM',
+                           NOEUD = ( 'N2', 'N1', 'N9', ),
+                           CHAM_GD = FLUXN,
+                           TRAC_NOR = 'OUI',
+                           NOM_CMP = ( 'FLUX', 'FLUY', ),
+                           OPERATION = 'EXTRACTION')  )
+
+TEST_TABLE(    TABLE=TR1_N2,
+                FILTRE=_F(  NOM_PARA = 'ABSC_CURV',
+                         VALE = 0.00000E+00),
+                NOM_PARA='TRAC_NOR',
+                    VALE=-1200.0
+            )
+
+TEST_TABLE(    TABLE=TR1_N2,
+                FILTRE=_F(  NOM_PARA = 'ABSC_CURV',
+                         VALE = 2.50000E-02),
+                NOM_PARA='TRAC_NOR',
+                    VALE=-1200.0 
+            )
+
+TEST_TABLE(    TABLE=TR1_N2,
+                FILTRE=_F(  NOM_PARA = 'ABSC_CURV',
+                         VALE = 5.00000E-02),
+                NOM_PARA='TRAC_NOR',
+                    VALE=-1200.0
+            )
+
+FIN( )
+#

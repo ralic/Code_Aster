@@ -1,0 +1,280 @@
+# MODIF  DATE 22/11/2001   AUTEUR VABHHTS J.PELLET 
+# TITRE VERSION POUTRE DE LA PLAQUE EN GRANDES
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+# ROTATIONS SSNV138A
+#
+#
+# MODELISATION : POU_D_T_GD SECTION RECTANGLE
+#
+# MAILLAGE     : SEG2
+#
+#
+#
+
+
+DEBUT(CODE=_F(NOM='SSNV138D',NIV_PUB_WEB='INTERNET'),);
+#
+#
+
+
+MA1=LIRE_MAILLAGE();
+
+MA1=DEFI_GROUP(reuse =MA1,
+               MAILLAGE=MA1,
+               CREA_GROUP_MA=_F(NOM='TOUT',
+                                 TOUT='OUI',),);
+#
+#
+
+
+MO1=AFFE_MODELE(MAILLAGE=MA1,
+                AFFE=_F(TOUT='OUI',
+                        PHENOMENE='MECANIQUE',
+                        MODELISATION='POU_D_T_GD',),);
+#
+#
+
+
+MAT=DEFI_MATERIAU(ELAS=_F(E=1.2000000E7,
+                          NU=0.0,
+                          ALPHA=0.0,),);
+#
+#
+
+
+CHMAT1=AFFE_MATERIAU(MAILLAGE=MA1,
+                     AFFE=_F(TOUT='OUI',
+                             MATER=MAT,),);
+#
+#
+#
+
+
+CHA1=AFFE_CHAR_MECA(MODELE=MO1,
+                    DDL_IMPO=_F(NOEUD='NO01',
+                                DX=0.0,
+                                DY=0.0,
+                                DZ=0.0,
+                                DRX=0.0,
+                                DRY=0.0,
+                                DRZ=0.0,),);
+#
+#
+# CHARGEMENT       AU DERNIER PAS
+#                  MOMENT LINEIQUE
+#
+#
+
+
+CHA2=AFFE_CHAR_MECA(MODELE=MO1,
+                    FORCE_NODALE=_F(NOEUD='NO11',
+                                    MY=-100.0,),);
+#
+#
+
+
+CARA1=AFFE_CARA_ELEM(MODELE=MO1,
+                     INFO=2,
+                     POUTRE=_F(GROUP_MA='TOUT',
+                                SECTION='RECTANGLE',
+                                CARA=('HY','HZ'),
+                                VALE=(1.0,0.1),),);
+#
+#
+
+
+L_INST=DEFI_LIST_REEL(DEBUT=0.0,
+                      INTERVALLE=_F(JUSQU_A=100.0,
+                                    NOMBRE=1000,),);
+#
+#
+
+
+D_FONC=DEFI_FONCTION(NOM_PARA='INST',
+                     VALE=(0.0,0.0,100.0,100.0),);
+#
+#
+#
+
+
+NONLI=STAT_NON_LINE(MODELE=MO1,
+                    CHAM_MATER=CHMAT1,
+                    CARA_ELEM=CARA1,
+                    EXCIT=(_F(CHARGE=CHA1,),
+                           _F(CHARGE=CHA2,
+                              FONC_MULT=D_FONC,),),
+                    COMP_ELAS=_F(RELATION='ELAS_POUTRE_GR',
+                                 DEFORMATION='GREEN_GR',),
+                    INCREMENT=_F(LIST_INST=L_INST,
+                                 NUME_INST_FIN=31,),
+                    NEWTON=_F(MATRICE='TANGENTE',
+                              REAC_ITER=1,),
+                    CONVERGENCE=_F(RESI_GLOB_RELA=1.E-06,
+                                   ITER_GLOB_MAXI=20,
+                                   RESI_INTE_RELA=1.E-06,),);
+
+NONLI=CALC_ELEM(reuse =NONLI,
+                MODELE=MO1,
+                CHAM_MATER=CHMAT1,
+                CARA_ELEM=CARA1,
+                OPTION=('SIEF_ELNO_ELGA','VARI_ELNO_ELGA'),
+                RESULTAT=NONLI,);
+
+#IMPR_RESU(MODELE=MO1,
+#          RESU=_F(FORMAT='CASTEM',
+#                  MAILLAGE=MA1,
+#                  RESULTAT=NONLI,),);
+#
+#
+#   NOEUD NO11
+#
+
+#
+#
+
+
+TEST_RESU(RESU=_F(RESULTAT=NONLI,
+                  INST=0.3,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DRY',
+                  NOEUD='NO11',
+                  REFERENCE='AUTRE_ASTER',VALE=-0.3,
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-04,),);
+#
+#
+
+
+TEST_RESU(RESU=_F(RESULTAT=NONLI,
+                  INST=0.6,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DRY',
+                  NOEUD='NO11',
+                  REFERENCE='AUTRE_ASTER',VALE=-0.6,
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-05,),);
+#
+#
+#
+#   NOEUD NO11
+#
+
+#
+#
+
+
+TEST_RESU(RESU=_F(RESULTAT=NONLI,
+                  INST=0.3,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DX',
+                  NOEUD='NO11',
+                  REFERENCE='AUTRE_ASTER',VALE=-0.149326445,
+                  CRITERE='RELATIF',
+                  PRECISION=3.E-3,),);
+#
+#
+
+
+TEST_RESU(RESU=_F(RESULTAT=NONLI,
+                  INST=0.6,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DX',
+                  NOEUD='NO11',
+                  REFERENCE='AUTRE_ASTER',VALE=-0.58929211,
+                  CRITERE='RELATIF',
+                  PRECISION=2.41E-3,),);
+#
+#
+#
+#   NOEUD NO11
+#
+
+#
+#
+
+
+TEST_RESU(RESU=_F(RESULTAT=NONLI,
+                  INST=0.3,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DZ',
+                  NOEUD='NO11',
+                  REFERENCE='AUTRE_ASTER',VALE=1.48878,
+                  CRITERE='RELATIF',
+                  PRECISION=5.E-3,),);
+#
+#
+
+
+TEST_RESU(RESU=_F(RESULTAT=NONLI,
+                  INST=0.6,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DZ',
+                  NOEUD='NO11',
+                  REFERENCE='AUTRE_ASTER',VALE=2.91107,
+                  CRITERE='RELATIF',
+                  PRECISION=0.016,),);
+
+TEST_RESU(RESU=_F(RESULTAT=NONLI,
+                  INST=1.8,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DX',
+                  NOEUD='NO11',
+                  REFERENCE='AUTRE_ASTER',VALE=-4.5897353,
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-2,),);
+
+TEST_RESU(RESU=_F(RESULTAT=NONLI,
+                  INST=1.8,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DZ',
+                  NOEUD='NO11',
+                  REFERENCE='AUTRE_ASTER',VALE=6.8177894,
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-2,),);
+
+TEST_RESU(RESU=_F(RESULTAT=NONLI,
+                  INST=2.4,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DX',
+                  NOEUD='NO11',
+                  REFERENCE='AUTRE_ASTER',VALE=-7.185570081,
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-2,),);
+
+TEST_RESU(RESU=_F(RESULTAT=NONLI,
+                  INST=2.4,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DZ',
+                  NOEUD='NO11',
+                  REFERENCE='AUTRE_ASTER',VALE=7.23914048142,
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-2,),);
+
+
+TEST_RESU(RESU=_F(RESULTAT=NONLI,
+                  INST=3.1,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DRY',
+                  NOEUD='NO11',
+                  REFERENCE='AUTRE_ASTER',VALE=-3.1,
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-04,),);
+
+
+FIN();

@@ -1,0 +1,168 @@
+# MODIF  DATE 07/06/2002   AUTEUR DURAND C.DURAND 
+# TITRE PROBLEME A DEUX PORTEES AVEC CABLE POULIE
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+#
+#    ESSAI DE POULIES SUR DEUX PORTEES DE CABLE.
+#
+
+DEBUT(CODE=_F(  NOM = 'SSNL100A',NIV_PUB_WEB='INTERNET') )
+
+#
+
+MA1=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='NON'), )
+
+MA1=DEFI_GROUP( reuse=MA1,   MAILLAGE=MA1,
+  CREA_GROUP_MA=_F(  NOM = 'TOUT', TOUT = 'OUI'))
+
+MO1=AFFE_MODELE(   MAILLAGE=MA1,AFFE=(
+                        _F( GROUP_MA = 'MCABLE', PHENOMENE = 'MECANIQUE',
+                              MODELISATION = 'CABLE'),
+                             _F( GROUP_MA = 'MCABPOUL', PHENOMENE = 'MECANIQUE',
+                              MODELISATION = 'CABLE_POULIE'))
+                        )
+
+MAT1=DEFI_MATERIAU(   CABLE=_F(  E = 5.E7,  EC_SUR_E = 1.E0,  RHO = 30.)
+                        )
+
+MAT2=DEFI_MATERIAU(    ELAS=_F(  E = 5.E7,  NU = 0.3,  RHO = 30.)
+                        )
+
+CHMAT1=AFFE_MATERIAU(   MAILLAGE=MA1,AFFE=(
+                          _F(  GROUP_MA = ('MCABLE',),   MATER = MAT1),
+                          _F(  GROUP_MA = ('MCABPOUL',), MATER = MAT2))
+                        )
+
+CHA1=AFFE_CHAR_MECA(   MODELE=MO1,DDL_IMPO=(
+                          _F( GROUP_NO = 'PORTEE',   DY = 0.),
+                                   _F( NOEUD = 'N1',   DX = 0.,         DZ = 0.),
+                                   _F( NOEUD = 'N14',  DX = 0.,         DZ = 0.),
+                                   _F( NOEUD = 'N24',  DX = 0.,         DZ = 0.),
+                                   _F( NOEUD = 'N25',                 DZ = 0.))
+                        )
+
+CHA2=AFFE_CHAR_MECA(   MODELE=MO1,DDL_IMPO=(
+                          _F( GROUP_NO = 'PORTEE',   DY = 0.),
+                                   _F( NOEUD = 'N1',   DX = 0.,         DZ = 0.),
+                                   _F( NOEUD = 'N14',  DX = 0.,         DZ = 0.),
+                                   _F( NOEUD = 'N24',  DX = 0.,         DZ = 0.),
+                                   _F( NOEUD = 'N25',  DX = -10., DY = 0., DZ = 0.))
+                        )
+
+CHA3=AFFE_CHAR_MECA(   MODELE=MO1,FORCE_NODALE=(
+                          _F( NOEUD = 'N12', FZ = -1.E3),
+                                       _F( NOEUD = 'N26', FZ = -1.E3),
+                                       _F( NOEUD = 'N25', FX = 1.E3))
+                        )
+
+CHA4=AFFE_CHAR_MECA(   MODELE=MO1,
+                          PESANTEUR=(1.,0.,0.,-1.,)
+                        )
+
+CARA1=AFFE_CARA_ELEM(   MODELE=MO1,
+                            CABLE=_F(  
+       GROUP_MA = 'TOUT',
+  SECTION = 1.)
+                        )
+
+L_INST=DEFI_LIST_REEL(   DEBUT=0.0,
+                            INTERVALLE=_F( JUSQU_A = 2., NOMBRE = 2)
+                         )
+
+RESU=STAT_NON_LINE( 
+                            MODELE=MO1,
+                        CHAM_MATER=CHMAT1,
+                         CARA_ELEM=CARA1,EXCIT=(
+                             _F( 
+                CHARGE = CHA1), _F( 
+                CHARGE = CHA3)),COMP_ELAS=(
+                         _F( 
+                GROUP_MA = (
+                  'MCABLE',  ),
+                RELATION = 'CABLE',
+                DEFORMATION = 'GREEN'),
+                         _F( 
+                GROUP_MA = (
+                  'MCABPOUL',  ),
+                RELATION = 'ELAS',
+                DEFORMATION = 'GREEN')),
+                         INCREMENT=_F( 
+                LIST_INST = L_INST,
+                NUME_INST_FIN = 1),
+                       CONVERGENCE=_F( 
+                RESI_GLOB_RELA = 1.E-8,
+                ITER_GLOB_MAXI = 100),
+                            NEWTON=_F( 
+                REAC_ITER = 1)
+              )
+
+RESU=STAT_NON_LINE( reuse=RESU,
+                            MODELE=MO1,
+                        CHAM_MATER=CHMAT1,
+                         CARA_ELEM=CARA1,EXCIT=(
+                             _F( 
+                CHARGE = CHA2,
+                TYPE_CHARGE = 'FIXE_CSTE'), _F( 
+                CHARGE = CHA4,
+                TYPE_CHARGE = 'SUIV')),
+                         ETAT_INIT=_F( 
+                EVOL_NOLI = RESU,
+                NUME_ORDRE = 1),COMP_ELAS=(
+                         _F( 
+                GROUP_MA = (
+                  'MCABLE',  ),
+                RELATION = 'CABLE',
+                DEFORMATION = 'GREEN'),
+                         _F( 
+                GROUP_MA = (
+                  'MCABPOUL',  ),
+                RELATION = 'ELAS',
+                DEFORMATION = 'GREEN')),
+                         INCREMENT=_F( 
+                LIST_INST = L_INST,
+                NUME_INST_INIT = 1,
+                NUME_INST_FIN = 2),
+                       CONVERGENCE=_F( 
+                RESI_GLOB_RELA = 1.E-8,
+                ITER_GLOB_MAXI = 200),
+                            NEWTON=_F( 
+                REAC_ITER = 1)
+              )
+
+RESU=CALC_ELEM( reuse=RESU,
+                            OPTION=(
+                  'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
+                          RESULTAT=RESU,
+                            MODELE=MO1,
+                        CHAM_MATER=CHMAT1,
+                         CARA_ELEM=CARA1
+              )
+
+TEST_RESU(RESU=(
+          # DEPLACEMENTS
+        
+            _F(  RESULTAT = RESU,       NUME_ORDRE = 2,       NOM_CHAM = 'DEPL',
+              CRITERE = 'RELATIF',  PRECISION = 0.5E-2,
+              NOEUD = 'N6',         NOM_CMP = 'DZ',        VALE = -13.93),
+            _F(  RESULTAT = RESU,       NUME_ORDRE = 2,       NOM_CHAM = 'DEPL',
+              CRITERE = 'RELATIF',  PRECISION = 0.5E-2,
+              NOEUD = 'N19',        NOM_CMP = 'DZ',        VALE = -13.93))
+            )
+
+FIN()
+#

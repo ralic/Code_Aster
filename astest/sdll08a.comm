@@ -1,0 +1,143 @@
+# MODIF  DATE 04/10/2000   AUTEUR DURAND C.DURAND 
+# TITRE GRILLAGE PLAN DE POUTRES ( PROFILES METALLIQUES )
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+#CAS_TEST__: SDLL08A
+# SDLL08/A                 COMMANDES                            05/03/91
+# GRILLAGE PLAN DE POUTRES ( PROFILES METALLIQUES )
+# SECTION EN I --- L1=L2=5M --- 3D
+# CALCUL MODAL + REPONSE HARMONIQUE                REF: SFM.VPCS SDLL08
+# MODELISATION POU_D_E: 33 NOEUDS -- 30 MAILLES SEG2
+# POINTS  A=N1  B=N6  C=N11  D=N21  E=N26  F=N31  G=N46  H=N41  I=N51
+#=======================================================================
+
+
+
+DEBUT(CODE=_F(  NOM = 'SDLL08A',NIV_PUB_WEB='INTERNET') )
+
+MA=LIRE_MAILLAGE( )
+
+MA=DEFI_GROUP( reuse=MA,   MAILLAGE=MA,
+  CREA_GROUP_MA=_F(  NOM = 'TOUT', TOUT = 'OUI'))
+
+MO=AFFE_MODELE(  MAILLAGE=MA, 
+                  AFFE=_F(  TOUT = 'OUI', PHENOMENE = 'MECANIQUE',
+                         MODELISATION = 'POU_D_E')  )
+
+CARELEM=AFFE_CARA_ELEM(  MODELE=MO,
+          POUTRE=_F(  
+       GROUP_MA = 'TOUT',
+     SECTION = 'GENERALE',
+          CARA = (   'A',        'IY',     'IZ',     'JX',    ), 
+          VALE = ( 2.872E-3,  0.1943E-4,  0.1943E-4,  0.5165E-7, )) )
+
+MAT=DEFI_MATERIAU( ELAS=_F(  E = 2.0E+11,  NU = 0.3,   RHO = 7800.) )
+
+CHMAT=AFFE_MATERIAU(  MAILLAGE=MA,
+                AFFE=_F(  TOUT = 'OUI',     MATER = MAT) )
+
+CH=AFFE_CHAR_MECA(  MODELE=MO,DDL_IMPO=(
+                 # NOEUDS A B C F
+              _F(  GROUP_NO = 'NACDF',  DZ = 0.), 
+                          # POUTRE ABC
+              _F(  GROUP_NO = 'PABC', DX = 0., DY = 0., DRY = 0.), 
+                          # POUTRE DEF
+              _F(  GROUP_NO = 'PDEF', DX = 0., DY = 0., DRY = 0.), 
+                          # POUTRE HGI
+              _F(  GROUP_NO = 'PHGI', DX = 0., DY = 0., DRX = 0.)),LIAISON_DDL=( 
+
+                          # LIAISON ROTULEE
+              # NOEUDS B<==>H
+   _F( NOEUD = ('N6', 'N41',),DDL = ('DZ','DZ',),COEF_MULT = (1.,-1.,),COEF_IMPO = 0.),
+                          # NOEUDS E<==>I
+   _F( NOEUD = ('N26','N51',),DDL = ('DZ','DZ',),COEF_MULT = (1.,-1.,),COEF_IMPO = 0.)),
+
+                          # FORCE EN G
+      FORCE_NODALE=_F(  NOEUD = 'N46',    FZ = -1.E5)   )
+
+# ------------------------------------------------------------------
+
+MELR=CALC_MATR_ELEM(  MODELE=MO,          CHARGE=CH,
+                        CARA_ELEM=CARELEM,
+                        CHAM_MATER=CHMAT,  OPTION='RIGI_MECA' )
+
+MELM=CALC_MATR_ELEM(  MODELE=MO,          CHARGE=CH,
+                        CARA_ELEM=CARELEM,
+                        CHAM_MATER=CHMAT,  OPTION='MASS_MECA' )
+
+VECT=CALC_VECT_ELEM(  CHARGE=CH,         OPTION='CHAR_MECA' )
+
+NUM=NUME_DDL(  MATR_RIGI=MELR )
+
+MATASSR=ASSE_MATRICE(  MATR_ELEM=MELR,   NUME_DDL=NUM   )
+
+MATASSM=ASSE_MATRICE(  MATR_ELEM=MELM,   NUME_DDL=NUM   )
+
+VECTASS=ASSE_VECTEUR(  VECT_ELEM=VECT,   NUME_DDL=NUM   )
+
+# ------------------------------------------------------------------
+
+# --------- CALCUL MODAL
+
+MD=MODE_ITER_SIMULT(
+             MATR_A=MATASSR,
+             MATR_B=MATASSM,
+            METHODE='TRI_DIAG',
+            CALC_FREQ=_F(  OPTION = 'PLUS_PETITE',
+                        NMAX_FREQ = 3)
+                                            )
+
+# ====================================================================
+# ====================================================================
+
+# --------- REPONSE HARMONIQUE
+
+# CALCUL DIRECT      ( K - OMEGA**2 M )X = F   AVEC   OMEGA=80
+# ------------------------------------------------------------------
+
+
+CMAT=COMB_MATR_ASSE(COMB_R=(  _F(  MATR_ASSE = MATASSR,  COEF_R = 1.),
+                                _F(  MATR_ASSE = MATASSM,  COEF_R = -6400.)) )
+
+CMAT=FACT_LDLT(reuse=CMAT,  MATR_ASSE=CMAT )
+
+REPHARM=RESO_LDLT(  MATR_FACT=CMAT,     CHAM_NO=VECTASS )
+
+# --------------------------------------------------------------------
+
+
+TEST_RESU(RESU=(
+   _F(   RESULTAT = MD,          PARA = 'FREQ',
+           CRITERE = 'RELATIF',     PRECISION = 5.E-3,
+           NUME_ORDRE = 1,       VALE = 16.456),
+   _F(   RESULTAT = MD,          PARA = 'FREQ',
+           CRITERE = 'RELATIF',     PRECISION = 5.E-3,
+           NUME_ORDRE = 3,       VALE = 38.165)),CHAM_NO=(
+           #------------------------------------------
+   _F(  CHAM_GD = REPHARM,      NOM_CMP = 'DZ',
+             CRITERE = 'RELATIF',   PRECISION = 3.E-2,
+             NOEUD = 'N6',           VALE = -0.098),
+   _F(  CHAM_GD = REPHARM,      NOM_CMP = 'DZ',
+             CRITERE = 'RELATIF',   PRECISION = 3.E-2,
+             NOEUD = 'N26',          VALE = -0.098),
+   _F(  CHAM_GD = REPHARM,      NOM_CMP = 'DZ',
+             CRITERE = 'RELATIF',   PRECISION = 3.E-2,
+             NOEUD = 'N46',          VALE = -0.227)) )
+
+FIN()
+#

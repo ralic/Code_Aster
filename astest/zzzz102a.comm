@@ -1,0 +1,1485 @@
+# MODIF  DATE 02/04/2001   AUTEUR VABHHTS J.PELLET 
+# TITRE LIRE_FONCTION ET SPECTRE D'OSCILLATEUR
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+
+
+DEBUT( CODE=_F(  NOM = 'ZZZZ102A',NIV_PUB_WEB='INTERNET')  )
+
+#=======================================================================
+#
+#          VALIDATION DE SPEC_OSCI DE L'OPERATEUR CALC_FONCTION
+#
+#=======================================================================
+
+LBEWA=LIRE_FONCTION(     UNITE=19,
+              NOM_PARA='INST',    NOM_RESU='DX',
+             TITRE='ACCELEROGRAMME SEPTEN NON CENTRE',
+             INTERPOL='LIN',
+               PROL_DROITE='CONSTANT',    PROL_GAUCHE='EXCLU' )
+
+TEST_FONCTION(
+         VALEUR=_F(  FONCTION = LBEWA,         NOM_PARA = 'INST',
+                  VALE_PARA = 7.93500E+00,   VALE_REFE = -6.38000E-01),ATTRIBUT=(
+       _F(  FONCTION = LBEWA,         ATTR = 'NOM_PARA',
+                                           ATTR_REFE = 'INST'),
+       _F(  FONCTION = LBEWA,         ATTR = 'NOM_RESU',
+                                           ATTR_REFE = 'DX'),
+       _F(  FONCTION = LBEWA,         ATTR = 'PROL_DROITE',
+                                           ATTR_REFE = 'CONSTANT'),
+       _F(  FONCTION = LBEWA,         ATTR = 'PROL_GAUCHE',
+                                           ATTR_REFE = 'EXCLU'),
+       _F(  FONCTION = LBEWA,         ATTR = 'INTERPOL',
+                                           ATTR_REFE = 'LIN LIN '))
+                 )
+
+MAXLBEWA=CALC_FONCTION(    MAX=_F(  FONCTION = LBEWA)  )
+
+TEST_TABLE(      TABLE=MAXLBEWA,FILTRE=(
+                    _F(  NOM_PARA = 'FONCTION',
+                             VALE_K = 'LBEWA'),
+                           _F(  NOM_PARA = 'INST',
+                             VALE = 7.93500E+00)),
+                  NOM_PARA='MAXI',
+                      VALE=-6.38000E-01              )
+
+G=DEFI_VALEUR(  R8=9.81 )
+
+SLBEWA=CALC_FONCTION(
+                 SPEC_OSCI=_F(  FONCTION = LBEWA,
+                            NATURE = 'ACCE', AMOR_REDUIT = ( 0.01, ),
+                            NORME = EVAL("""(1. / G)"""))  )
+
+MSLBEWA=CALC_FONCTION(    MAX=_F(  FONCTION = SLBEWA)  )
+
+TEST_TABLE(      TABLE=MSLBEWA,FILTRE=(
+                    _F(  NOM_PARA = 'FONCTION',
+                             VALE_K = 'SLBEWA'),
+                           _F(  NOM_PARA = 'AMOR',
+                             VALE = 1.00000E-02),
+                           _F(  NOM_PARA = 'FREQ',
+                             VALE = 3.70000E+00)),
+                  NOM_PARA='MAXI',
+                      VALE=3.56676E+01               )
+
+TEST_FONCTION(
+         VALEUR=_F(  FONCTION = SLBEWA,        NOM_PARA = ('AMOR', 'FREQ',),
+                  VALE_PARA = ( 0.01, 35.5, ),
+                  VALE_REFE = EVAL("""(6.38000E-01 * G)"""), PRECISION = 5.E-2),ATTRIBUT=(
+       _F(  FONCTION = SLBEWA,         ATTR = 'NOM_PARA',
+                  PARA = 0.01,                ATTR_REFE = 'AMOR'),
+       _F(  FONCTION = SLBEWA,         ATTR = 'NOM_RESU',
+                  PARA = 0.01,                ATTR_REFE = 'ACCE'),
+       _F(  FONCTION = SLBEWA,         ATTR = 'PROL_DROITE',
+                  PARA = 0.01,                ATTR_REFE = 'EXCLU'),
+       _F(  FONCTION = SLBEWA,         ATTR = 'PROL_DROITE_FONC',
+                  PARA = 0.01,                ATTR_REFE = 'CONSTANT'),
+       _F(  FONCTION = SLBEWA,         ATTR = 'PROL_GAUCHE',
+                  PARA = 0.01,                ATTR_REFE = 'EXCLU'),
+       _F(  FONCTION = SLBEWA,         ATTR = 'PROL_GAUCHE_FONC',
+                  PARA = 0.01,                ATTR_REFE = 'EXCLU'),
+       _F(  FONCTION = SLBEWA,         ATTR = 'INTERPOL',
+                                            ATTR_REFE = 'LIN LOG '))
+                 )
+
+SLBEWD=CALC_FONCTION(
+               SPEC_OSCI=_F(  FONCTION = LBEWA,
+                            NATURE = 'DEPL', AMOR_REDUIT = ( 0.01, ),
+                            NORME = 1.)  )
+
+OMEGA2=DEFI_VALEUR(  R8=EVAL("""4. * PI * PI * 35.5 * 35.5 """) )
+
+TEST_FONCTION(
+         VALEUR=_F(  FONCTION = SLBEWD,        NOM_PARA = ('AMOR', 'FREQ',),
+                  VALE_PARA = ( 0.01, 35.5, ),
+                  VALE_REFE = EVAL("""6.38000E-01 / OMEGA2 """),
+                  PRECISION = 5.E-2),
+       ATTRIBUT=_F(  FONCTION = SLBEWD,         ATTR = 'NOM_RESU',
+                  PARA = 0.01,                ATTR_REFE = 'DEPL')
+                )
+
+# --------------------------------------------------------------
+
+
+LBEWS=LIRE_FONCTION(     UNITE=18,
+              NOM_PARA='INST',    NOM_RESU='ACCE_SOL',
+             TITRE='ACCELEROGRAMME DOSEISME CENTRE',
+             INTERPOL='NON',
+               PROL_DROITE='EXCLU',    PROL_GAUCHE='EXCLU'  )
+
+TEST_FONCTION(
+         VALEUR=_F(  FONCTION = LBEWS,         NOM_PARA = 'INST',
+                  VALE_PARA = 3.10000E+00,   VALE_REFE = 1.00000E+00),ATTRIBUT=(
+       _F(  FONCTION = LBEWS,         ATTR = 'NOM_PARA',
+                                           ATTR_REFE = 'INST'),
+       _F(  FONCTION = LBEWS,         ATTR = 'NOM_RESU',
+                                           ATTR_REFE = 'ACCE_SOL'),
+       _F(  FONCTION = LBEWS,         ATTR = 'PROL_DROITE',
+                                           ATTR_REFE = 'EXCLU'),
+       _F(  FONCTION = LBEWS,         ATTR = 'PROL_GAUCHE',
+                                           ATTR_REFE = 'EXCLU'),
+       _F(  FONCTION = LBEWS,         ATTR = 'INTERPOL',
+                                           ATTR_REFE = 'NON NON '))
+                 )
+
+MAXLBEWS=CALC_FONCTION(   MAX=_F(  FONCTION = LBEWS)  )
+
+TEST_TABLE(      TABLE=MAXLBEWS,FILTRE=(
+                    _F(  NOM_PARA = 'FONCTION',
+                             VALE_K = 'LBEWS'),
+                           _F(  NOM_PARA = 'INST',
+                             VALE = 3.10000E+00)),
+                  NOM_PARA='MAXI',
+                      VALE=1.00000E+00               )
+
+SLBEWS=CALC_FONCTION(
+              SPEC_OSCI=_F(  FONCTION = LBEWS,
+                            NATURE = 'ACCE', AMOR_REDUIT = ( 0.01, ),
+                            NORME = 1.)  )
+
+TEST_FONCTION(
+         VALEUR=_F(  FONCTION = SLBEWS,        NOM_PARA = ('AMOR', 'FREQ',),
+                  VALE_PARA = ( 0.01, 35.5, ),
+                  VALE_REFE = 1.00000E+00,  PRECISION = 10.E-2),ATTRIBUT=(
+       _F(  FONCTION = SLBEWS,         ATTR = 'NOM_PARA',
+                  PARA = 0.01,                ATTR_REFE = 'AMOR'),
+       _F(  FONCTION = SLBEWS,         ATTR = 'NOM_RESU',
+                  PARA = 0.01,                ATTR_REFE = 'ACCE'),
+       _F(  FONCTION = SLBEWS,         ATTR = 'PROL_DROITE',
+                  PARA = 0.01,                ATTR_REFE = 'EXCLU'),
+       _F(  FONCTION = SLBEWS,         ATTR = 'PROL_DROITE_FONC',
+                  PARA = 0.01,                ATTR_REFE = 'CONSTANT'),
+       _F(  FONCTION = SLBEWS,         ATTR = 'PROL_GAUCHE',
+                  PARA = 0.01,                ATTR_REFE = 'EXCLU'),
+       _F(  FONCTION = SLBEWS,         ATTR = 'PROL_GAUCHE_FONC',
+                  PARA = 0.01,                ATTR_REFE = 'EXCLU'),
+       _F(  FONCTION = SLBEWS,         ATTR = 'INTERPOL',
+                                            ATTR_REFE = 'LIN LOG '))
+                 )
+
+#
+# ---------------------------------------------------------------
+#
+#
+LBEWA2=LIRE_FONCTION(          UNITE=19,
+                             NOM_PARA='INST',
+                             NOM_RESU='DX',
+                                TITRE='ACCELEROGRAMME',
+                             INTERPOL='LIN',
+                           PROL_DROITE='EXCLU',
+                          PROL_GAUCHE='CONSTANT'
+#                        PROL_DROITE  : 'CONSTANT'
+#                        PROL_GAUCHE : 'EXCLU'
+                     )
+
+SPECT1=CALC_FONCTION(    SPEC_OSCI=_F(  FONCTION = LBEWA,
+                                        NATURE = 'DEPL',
+                                 AMOR_REDUIT = (0.01, 0.03, 0.05,),
+                                        NORME = 1.)
+                        )
+
+#
+SPECT2=CALC_FONCTION(    SPEC_OSCI=_F(  FONCTION = LBEWA,
+                                        NATURE = 'DEPL',
+                                 AMOR_REDUIT = (0.01, 0.05,),
+                                        NORME = 1.)
+                        )
+
+#
+SPECT3=CALC_FONCTION(    SPEC_OSCI=_F(  FONCTION = LBEWA2,
+                                        NATURE = 'DEPL',
+                                 AMOR_REDUIT = (0.01, 0.05,),
+                                        NORME = 1.)
+                        )
+
+#
+A_0_1=DEFI_FONCTION(      NOM_PARA='FREQ',
+                             INTERPOL='LOG',
+                          PROL_GAUCHE='CONSTANT',
+                                 VALE=(
+  2.00000E-01,  9.23433E-02,
+  2.50000E-01,  7.55943E-02,
+  3.00000E-01,  6.63399E-02,
+  3.50000E-01,  6.99019E-02,
+  4.00000E-01,  7.66195E-02,
+  4.50000E-01,  6.11708E-02,
+  5.00000E-01,  6.23592E-02,
+  5.50000E-01,  7.30025E-02,
+  6.00000E-01,  6.99292E-02,
+  6.50000E-01,  5.01833E-02,
+  7.00000E-01,  5.00224E-02,
+  7.50000E-01,  4.62290E-02,
+  8.00000E-01,  6.64918E-02,
+  8.50000E-01,  6.23064E-02,
+  9.00000E-01,  4.78364E-02,
+  9.50000E-01,  4.76343E-02,
+  1.00000E+00,  6.38801E-02,
+  1.05000E+00,  4.35820E-02,
+  1.10000E+00,  4.37474E-02,
+  1.15000E+00,  3.92227E-02,
+  1.20000E+00,  3.45066E-02,
+  1.25000E+00,  2.98904E-02,
+  1.30000E+00,  3.29245E-02,
+  1.35000E+00,  4.17984E-02,
+  1.40000E+00,  4.06491E-02,
+  1.45000E+00,  3.10171E-02,
+  1.50000E+00,  1.94094E-02,
+  1.55000E+00,  1.84275E-02,
+  1.60000E+00,  2.54317E-02,
+  1.65000E+00,  2.35972E-02,
+  1.70000E+00,  2.33296E-02,
+  1.75000E+00,  2.59845E-02,
+  1.80000E+00,  2.76192E-02,
+  1.85000E+00,  2.08705E-02,
+  1.90000E+00,  2.23500E-02,
+  1.95000E+00,  1.99931E-02,
+  2.00000E+00,  1.75515E-02,
+  2.05000E+00,  1.74122E-02,
+  2.10000E+00,  1.49905E-02,
+  2.15000E+00,  1.82932E-02,
+  2.20000E+00,  1.17968E-02,
+  2.25000E+00,  1.22626E-02,
+  2.30000E+00,  9.54223E-03,
+  2.35000E+00,  9.02026E-03,
+  2.40000E+00,  1.27543E-02,
+  2.45000E+00,  1.39145E-02,
+  2.50000E+00,  1.17732E-02,
+  2.55000E+00,  9.14158E-03,
+  2.60000E+00,  8.90731E-03,
+  2.65000E+00,  9.85464E-03,
+  2.70000E+00,  1.06809E-02,
+  2.75000E+00,  1.01126E-02,
+  2.80000E+00,  9.09511E-03,
+  2.85000E+00,  9.34184E-03,
+  2.90000E+00,  8.43477E-03,
+  2.95000E+00,  7.23321E-03,
+  3.00000E+00,  8.16318E-03,
+  3.07500E+00,  7.84335E-03,
+  3.15000E+00,  6.44943E-03,
+  3.22500E+00,  5.94042E-03,
+  3.30000E+00,  5.80762E-03,
+  3.37500E+00,  6.18425E-03,
+  3.45000E+00,  5.45520E-03,
+  3.52500E+00,  5.23409E-03,
+  3.60000E+00,  5.07186E-03,
+  3.70000E+00,  6.72732E-03,
+  3.80000E+00,  4.32518E-03,
+  3.90000E+00,  3.73787E-03,
+  4.00000E+00,  3.76369E-03,
+  4.10000E+00,  3.66789E-03,
+  4.20000E+00,  3.07141E-03,
+  4.30000E+00,  4.29503E-03,
+  4.40000E+00,  3.80018E-03,
+  4.50000E+00,  3.14180E-03,
+  4.60000E+00,  2.44350E-03,
+  4.70000E+00,  2.19576E-03,
+  4.80000E+00,  2.64609E-03,
+  4.90000E+00,  2.77134E-03,
+  5.00000E+00,  2.50283E-03,
+  5.12500E+00,  1.79955E-03,
+  5.25000E+00,  1.91254E-03,
+  5.37500E+00,  1.65752E-03,
+  5.50000E+00,  2.13127E-03,
+  5.62500E+00,  2.20176E-03,
+  5.75000E+00,  1.54805E-03,
+  5.87500E+00,  1.58131E-03,
+  6.00000E+00,  1.49267E-03,
+  6.12500E+00,  1.38537E-03,
+  6.25000E+00,  1.17227E-03,
+  6.37500E+00,  1.12598E-03,
+  6.50000E+00,  1.35533E-03,
+  6.62500E+00,  1.12155E-03,
+  6.75000E+00,  8.69240E-04,
+  6.87500E+00,  7.84924E-04,
+  7.00000E+00,  7.40632E-04,
+  7.12500E+00,  8.21628E-04,
+  7.25000E+00,  7.52261E-04,
+  7.37500E+00,  7.50659E-04,
+  7.50000E+00,  5.86866E-04,
+  7.62500E+00,  5.35951E-04,
+  7.75000E+00,  5.76063E-04,
+  7.87500E+00,  6.33654E-04,
+  8.00000E+00,  5.67452E-04,
+  8.25000E+00,  5.42642E-04,
+  8.50000E+00,  5.21258E-04,
+  8.75000E+00,  4.46353E-04,
+  9.00000E+00,  4.26774E-04,
+  9.25000E+00,  4.71418E-04,
+  9.50000E+00,  3.12610E-04,
+  9.75000E+00,  3.16333E-04,
+  1.00000E+01,  3.02046E-04,
+  1.02500E+01,  2.85540E-04,
+  1.05000E+01,  2.08274E-04,
+  1.07500E+01,  2.13238E-04,
+  1.10000E+01,  2.91857E-04,
+  1.12500E+01,  2.66100E-04,
+  1.15000E+01,  2.40034E-04,
+  1.17500E+01,  1.89019E-04,
+  1.20000E+01,  2.06088E-04,
+  1.22500E+01,  1.75843E-04,
+  1.25000E+01,  1.45948E-04,
+  1.27500E+01,  1.42720E-04,
+  1.30000E+01,  1.41149E-04,
+  1.32500E+01,  1.41443E-04,
+  1.35000E+01,  1.30719E-04,
+  1.37500E+01,  1.05543E-04,
+  1.40000E+01,  9.81351E-05,
+  1.42500E+01,  1.02319E-04,
+  1.45000E+01,  9.95048E-05,
+  1.47500E+01,  9.31816E-05,
+  1.50000E+01,  8.61696E-05,
+  1.55000E+01,  8.11807E-05,
+  1.60000E+01,  7.31644E-05,
+  1.65000E+01,  6.76466E-05,
+  1.70000E+01,  6.34639E-05,
+  1.75000E+01,  5.78512E-05,
+  1.80000E+01,  5.45315E-05,
+  1.90000E+01,  5.02323E-05,
+  2.00000E+01,  4.32268E-05,
+  2.10000E+01,  3.95220E-05,
+  2.20000E+01,  3.47581E-05,
+  2.35000E+01,  3.07135E-05,
+  2.50000E+01,  2.69251E-05,
+  2.65000E+01,  2.35650E-05,
+  2.80000E+01,  2.12204E-05,
+  2.95000E+01,  1.93911E-05,
+  3.10000E+01,  1.76502E-05,
+  3.25000E+01,  1.56921E-05,
+  3.40000E+01,  1.49309E-05,
+  3.55000E+01,  1.34123E-05,
+                                   ),
+                             TITRE='AMORTISSEMENT 0.01 # '
+                      )
+
+#
+A_0_5=DEFI_FONCTION(      NOM_PARA='FREQ',   
+                          PROL_GAUCHE='CONSTANT',
+                             INTERPOL='LOG',
+                                 VALE=(
+  2.00000E-01,  7.69222E-02,
+  2.50000E-01,  6.45419E-02,
+  3.00000E-01,  5.85037E-02,
+  3.50000E-01,  5.92914E-02,
+  4.00000E-01,  5.57138E-02,
+  4.50000E-01,  4.82136E-02,
+  5.00000E-01,  4.88605E-02,
+  5.50000E-01,  4.84210E-02,
+  6.00000E-01,  4.54876E-02,
+  6.50000E-01,  4.21859E-02,
+  7.00000E-01,  4.02043E-02,
+  7.50000E-01,  3.34273E-02,
+  8.00000E-01,  3.98645E-02,
+  8.50000E-01,  3.87777E-02,
+  9.00000E-01,  3.14455E-02,
+  9.50000E-01,  3.12294E-02,
+  1.00000E+00,  3.13424E-02,
+  1.05000E+00,  2.84000E-02,
+  1.10000E+00,  2.90299E-02,
+  1.15000E+00,  2.75136E-02,
+  1.20000E+00,  2.41294E-02,
+  1.25000E+00,  2.10718E-02,
+  1.30000E+00,  1.98567E-02,
+  1.35000E+00,  1.97558E-02,
+  1.40000E+00,  1.86239E-02,
+  1.45000E+00,  1.64988E-02,
+  1.50000E+00,  1.39564E-02,
+  1.55000E+00,  1.42494E-02,
+  1.60000E+00,  1.43963E-02,
+  1.65000E+00,  1.38140E-02,
+  1.70000E+00,  1.22007E-02,
+  1.75000E+00,  1.14764E-02,
+  1.80000E+00,  1.14463E-02,
+  1.85000E+00,  1.15522E-02,
+  1.90000E+00,  1.07658E-02,
+  1.95000E+00,  9.66191E-03,
+  2.00000E+00,  9.15698E-03,
+  2.05000E+00,  9.41311E-03,
+  2.10000E+00,  9.37045E-03,
+  2.15000E+00,  9.04998E-03,
+  2.20000E+00,  8.29607E-03,
+  2.25000E+00,  7.41199E-03,
+  2.30000E+00,  6.92000E-03,
+  2.35000E+00,  6.44547E-03,
+  2.40000E+00,  6.09930E-03,
+  2.45000E+00,  6.49162E-03,
+  2.50000E+00,  6.33142E-03,
+  2.55000E+00,  5.91598E-03,
+  2.60000E+00,  5.64438E-03,
+  2.65000E+00,  5.63159E-03,
+  2.70000E+00,  5.66383E-03,
+  2.75000E+00,  5.55132E-03,
+  2.80000E+00,  5.27019E-03,
+  2.85000E+00,  4.82199E-03,
+  2.90000E+00,  4.29512E-03,
+  2.95000E+00,  4.10180E-03,
+  3.00000E+00,  4.22860E-03,
+  3.07500E+00,  4.33931E-03,
+  3.15000E+00,  4.25340E-03,
+  3.22500E+00,  4.08820E-03,
+  3.30000E+00,  3.82818E-03,
+  3.37500E+00,  3.49852E-03,
+  3.45000E+00,  3.27004E-03,
+  3.52500E+00,  3.24688E-03,
+  3.60000E+00,  3.15084E-03,
+  3.70000E+00,  2.86794E-03,
+  3.80000E+00,  2.47813E-03,
+  3.90000E+00,  2.26014E-03,
+  4.00000E+00,  2.20375E-03,
+  4.10000E+00,  2.06642E-03,
+  4.20000E+00,  1.98252E-03,
+  4.30000E+00,  1.89151E-03,
+  4.40000E+00,  1.89679E-03,
+  4.50000E+00,  1.88783E-03,
+  4.60000E+00,  1.78611E-03,
+  4.70000E+00,  1.70855E-03,
+  4.80000E+00,  1.63721E-03,
+  4.90000E+00,  1.49830E-03,
+  5.00000E+00,  1.33937E-03,
+  5.12500E+00,  1.26382E-03,
+  5.25000E+00,  1.25782E-03,
+  5.37500E+00,  1.21405E-03,
+  5.50000E+00,  1.12386E-03,
+  5.62500E+00,  1.01091E-03,
+  5.75000E+00,  9.31419E-04,
+  5.87500E+00,  8.98539E-04,
+  6.00000E+00,  8.79907E-04,
+  6.12500E+00,  8.33485E-04,
+  6.25000E+00,  7.84391E-04,
+  6.37500E+00,  7.53222E-04,
+  6.50000E+00,  7.42991E-04,
+  6.62500E+00,  7.06515E-04,
+  6.75000E+00,  6.52463E-04,
+  6.87500E+00,  6.09140E-04,
+  7.00000E+00,  5.89127E-04,
+  7.12500E+00,  5.82823E-04,
+  7.25000E+00,  5.69456E-04,
+  7.37500E+00,  5.46973E-04,
+  7.50000E+00,  5.17314E-04,
+  7.62500E+00,  4.91764E-04,
+  7.75000E+00,  4.69567E-04,
+  7.87500E+00,  4.45821E-04,
+  8.00000E+00,  4.20904E-04,
+  8.25000E+00,  3.92627E-04,
+  8.50000E+00,  3.63868E-04,
+  8.75000E+00,  3.36300E-04,
+  9.00000E+00,  3.23160E-04,
+  9.25000E+00,  3.05240E-04,
+  9.50000E+00,  2.78860E-04,
+  9.75000E+00,  2.64640E-04,
+  1.00000E+01,  2.49030E-04,
+  1.02500E+01,  2.24625E-04,
+  1.05000E+01,  2.00110E-04,
+  1.07500E+01,  1.84430E-04,
+  1.10000E+01,  1.72346E-04,
+  1.12500E+01,  1.53548E-04,
+  1.15000E+01,  1.40700E-04,
+  1.17500E+01,  1.41107E-04,
+  1.20000E+01,  1.43171E-04,
+  1.22500E+01,  1.41142E-04,
+  1.25000E+01,  1.36250E-04,
+  1.27500E+01,  1.30151E-04,
+  1.30000E+01,  1.24151E-04,
+  1.32500E+01,  1.18356E-04,
+  1.35000E+01,  1.11311E-04,
+  1.37500E+01,  1.04777E-04,
+  1.40000E+01,  1.00203E-04,
+  1.42500E+01,  9.67659E-05,
+  1.45000E+01,  9.33851E-05,
+  1.47500E+01,  8.97079E-05,
+  1.50000E+01,  8.59753E-05,
+  1.55000E+01,  7.90754E-05,
+  1.60000E+01,  7.27398E-05,
+  1.65000E+01,  6.73727E-05,
+  1.70000E+01,  6.26471E-05,
+  1.75000E+01,  5.83763E-05,
+  1.80000E+01,  5.46979E-05,
+  1.90000E+01,  4.85790E-05,
+  2.00000E+01,  4.29786E-05,
+  2.10000E+01,  3.85265E-05,
+  2.20000E+01,  3.47184E-05,
+  2.35000E+01,  3.04118E-05,
+  2.50000E+01,  2.68096E-05,
+  2.65000E+01,  2.36590E-05,
+  2.80000E+01,  2.12376E-05,
+  2.95000E+01,  1.92959E-05,
+  3.10000E+01,  1.73885E-05,
+  3.25000E+01,  1.57730E-05,
+  3.40000E+01,  1.45180E-05,
+  3.55000E+01,  1.32879E-05,
+                                   ),
+                             TITRE='AMORTISSEMENT 0.05 # '
+                      )
+
+SPECT_X=DEFI_NAPPE(   NOM_PARA='AMOR',
+                        INTERPOL=( 'LIN',  'LOG', ),
+                            PARA=(0.01,
+                                  0.05,
+                                 ),
+                        FONCTION=(A_0_1,
+                                  A_0_5,
+                                 )
+                   )
+
+#
+#
+TEST_FONCTION(VALEUR=(  _F( FONCTION = SPECT2,
+                         NOM_PARA = ( 'FREQ',        'AMOR', ),
+                         VALE_PARA = ( 2.00000E-01,   0.03,   ),
+                         VALE_REFE = 8.4280E-2,
+                         PRECISION = 1.E-4),
+                        _F( FONCTION = SPECT2,
+                         NOM_PARA = ( 'FREQ',        'AMOR', ),
+                         VALE_PARA = ( 1.00000E+00,   0.03,   ),
+                         VALE_REFE = 4.4745E-02,
+                         PRECISION = 1.E-4),
+                        _F( FONCTION = SPECT2,
+                         NOM_PARA = ( 'FREQ',        'AMOR', ),
+                         VALE_PARA = ( 5.00000E+00,   0.03,   ),
+                         VALE_REFE = 1.8309E-03,
+                         PRECISION = 1.E-4),
+                        _F( FONCTION = SPECT2,
+                         NOM_PARA = ( 'FREQ',        'AMOR', ),
+                         VALE_PARA = ( 1.00000E+01,   0.03,   ),
+                         VALE_REFE = 2.7425E-04,
+                         PRECISION = 1.E-4),
+                        _F( FONCTION = SPECT2,
+                         NOM_PARA = ( 'FREQ',        'AMOR', ),
+                         VALE_PARA = ( 1.50000E+01,   0.03,   ),
+                         VALE_REFE = 8.6072E-05,
+                         PRECISION = 1.E-4),
+                        _F( FONCTION = SPECT2,
+                         NOM_PARA = ( 'FREQ',        'AMOR', ),
+                         VALE_PARA = ( 2.00000E+01,   0.03,   ),
+                         VALE_REFE = 4.3102E-05,
+                         PRECISION = 1.E-4),
+                        _F( FONCTION = SPECT2,
+                         NOM_PARA = ( 'FREQ',        'AMOR', ),
+                         VALE_PARA = ( 2.50000E+01,   0.03,   ),
+                         VALE_REFE = 2.6867E-05,
+                         PRECISION = 1.E-4),
+                        _F( FONCTION = SPECT2,
+                         NOM_PARA = ( 'FREQ',        'AMOR', ),
+                         VALE_PARA = ( 2.95000E+01,   0.03,   ),
+                         VALE_REFE = 1.9343E-05,
+                         PRECISION = 1.E-4),
+                        _F( FONCTION = SPECT2,
+                         NOM_PARA = ( 'FREQ',        'AMOR', ),
+                         VALE_PARA = ( 3.55000E+01,   0.03,   ),
+                         VALE_REFE = 1.3350E-05,
+                         PRECISION = 1.E-4))
+              )
+
+#
+MA=LIRE_MAILLAGE(  )
+
+#
+MO=AFFE_MODELE(   MAILLAGE=MA,AFFE=(
+                        _F( TOUT = 'OUI',
+                              PHENOMENE = 'MECANIQUE',
+                              MODELISATION = 'DIS_T'),
+                        _F( NOEUD = ('P2',),
+                              PHENOMENE = 'MECANIQUE',
+                              MODELISATION = 'DIS_T'))
+               )
+
+#
+#
+# DEFINITION DU MATERIAU
+#
+MAT=DEFI_MATERIAU(    ELAS=_F( E = 2.068E11,
+                                    NU = 0.3,
+                                    RHO = 7780.)
+                          )
+
+#
+# AFFECTATION DU MATERIAU
+#
+#
+CHMAT=AFFE_MATERIAU(    MAILLAGE=MA,
+                                  AFFE=_F( TOUT = 'OUI',
+                                        MATER = MAT)
+                          )
+
+#
+CHARGE=AFFE_CHAR_MECA(   MODELE=MO,DDL_IMPO=(
+                            _F( TOUT = 'OUI',
+                                      DZ = 0.0,
+                                      DY = 0.0),
+                            _F( NOEUD = ('P1',),
+                                      DX = 0.0))
+                        )
+
+#
+# 0.2HZ
+#
+CARELE02=AFFE_CARA_ELEM(     MODELE=MO,DISCRET=(
+                              _F( NOEUD = ('P2',),
+                                       CARA = 'M_T_D_N',
+                                       VALE = (6.332573E14,)),
+                              _F( MAILLE = ('M1',),
+                                       CARA = 'K_T_D_L',
+                                       VALE = (1.E15, 0., 0.,)))
+                          )
+
+#
+# 1HZ
+#
+CARELE1=AFFE_CARA_ELEM(     MODELE=MO,DISCRET=(
+                             _F( NOEUD = ('P2',),
+                                      CARA = 'M_T_D_N',
+                                      VALE = (2.533029E13,)),
+                             _F( MAILLE = ('M1',),
+                                      CARA = 'K_T_D_L',
+                                      VALE = (1.E15, 0., 0.,)))
+                         )
+
+#
+# 5HZ
+#
+CARELE5=AFFE_CARA_ELEM(     MODELE=MO,DISCRET=(
+                             _F( NOEUD = ('P2',),
+                                      CARA = 'M_T_D_N',
+                                      VALE = (1.013211E12,)),
+                             _F( MAILLE = ('M1',),
+                                      CARA = 'K_T_D_L',
+                                      VALE = (1.E15, 0., 0.,)))
+                         )
+
+#
+# 10HZ
+#
+CARELE10=AFFE_CARA_ELEM(     MODELE=MO,DISCRET=(
+                              _F( NOEUD = ('P2',),
+                                       CARA = 'M_T_D_N',
+                                       VALE = (2.533029E11,)),
+                              _F( MAILLE = ('M1',),
+                                       CARA = 'K_T_D_L',
+                                       VALE = (1.E15, 0., 0.,)))
+                          )
+
+#
+# 15HZ
+#
+CARELE15=AFFE_CARA_ELEM(     MODELE=MO,DISCRET=(
+                              _F( NOEUD = ('P2',),
+                                       CARA = 'M_T_D_N',
+                                       VALE = (1.125790E11,)),
+                              _F( MAILLE = ('M1',),
+                                       CARA = 'K_T_D_L',
+                                       VALE = (1.E15, 0., 0.,)))
+                          )
+
+#
+# 20HZ
+#
+CARELE20=AFFE_CARA_ELEM(     MODELE=MO,DISCRET=(
+                              _F( NOEUD = ('P2',),
+                                       CARA = 'M_T_D_N',
+                                       VALE = (6.332573E10,)),
+                              _F( MAILLE = ('M1',),
+                                       CARA = 'K_T_D_L',
+                                       VALE = (1.E15, 0., 0.,)))
+                          )
+
+#
+# 25HZ
+#
+CARELE25=AFFE_CARA_ELEM(     MODELE=MO,DISCRET=(
+                              _F( NOEUD = ('P2',),
+                                       CARA = 'M_T_D_N',
+                                       VALE = (4.052847E10,)),
+                              _F( MAILLE = ('M1',),
+                                       CARA = 'K_T_D_L',
+                                       VALE = (1.E15, 0., 0.,)))
+                          )
+
+#
+# 29.5HZ
+#
+CARELE29=AFFE_CARA_ELEM(     MODELE=MO,DISCRET=(
+                              _F( NOEUD = ('P2',),
+                                       CARA = 'M_T_D_N',
+                                       VALE = (2.910691E10,)),
+                              _F( MAILLE = ('M1',),
+                                       CARA = 'K_T_D_L',
+                                       VALE = (1.E15, 0., 0.,)))
+                          )
+
+#
+# 35.5HZ
+#
+CARELE35=AFFE_CARA_ELEM(     MODELE=MO,DISCRET=(
+                              _F( NOEUD = ('P2',),
+                                       CARA = 'M_T_D_N',
+                                       VALE = (2.009942E10,)),
+                              _F( MAILLE = ('M1',),
+                                       CARA = 'K_T_D_L',
+                                       VALE = (1.E15, 0., 0.,)))
+                          )
+
+#
+# 0.2HZ
+#
+MELR02=CALC_MATR_ELEM(       MODELE=MO,
+                                CHARGE=CHARGE,
+                                OPTION='RIGI_MECA',
+                             CARA_ELEM=CARELE02
+                         )
+
+#
+MELM02=CALC_MATR_ELEM(       MODELE=MO,
+                               CHARGE=CHARGE,
+                               OPTION='MASS_MECA',
+                            CARA_ELEM=CARELE02
+                        )
+
+#
+# 1HZ
+#
+MELR1=CALC_MATR_ELEM(       MODELE=MO,
+                               CHARGE=CHARGE,
+                               OPTION='RIGI_MECA',
+                            CARA_ELEM=CARELE1
+                        )
+
+#
+MELM1=CALC_MATR_ELEM(       MODELE=MO,
+                              CHARGE=CHARGE,
+                              OPTION='MASS_MECA',
+                           CARA_ELEM=CARELE1
+                       )
+
+#
+# 5HZ
+#
+MELR5=CALC_MATR_ELEM(       MODELE=MO,
+                               CHARGE=CHARGE,
+                               OPTION='RIGI_MECA',
+                            CARA_ELEM=CARELE5
+                        )
+
+#
+MELM5=CALC_MATR_ELEM(       MODELE=MO,
+                              CHARGE=CHARGE,
+                              OPTION='MASS_MECA',
+                           CARA_ELEM=CARELE5
+                       )
+
+#
+# 10HZ
+#
+MELR10=CALC_MATR_ELEM(       MODELE=MO,
+                               CHARGE=CHARGE,
+                               OPTION='RIGI_MECA',
+                            CARA_ELEM=CARELE10
+                        )
+
+#
+MELM10=CALC_MATR_ELEM(       MODELE=MO,
+                               CHARGE=CHARGE,
+                               OPTION='MASS_MECA',
+                            CARA_ELEM=CARELE10
+                        )
+
+#
+# 15HZ
+#
+MELR15=CALC_MATR_ELEM(       MODELE=MO,
+                               CHARGE=CHARGE,
+                               OPTION='RIGI_MECA',
+                            CARA_ELEM=CARELE15
+                        )
+
+#
+MELM15=CALC_MATR_ELEM(       MODELE=MO,
+                               CHARGE=CHARGE,
+                               OPTION='MASS_MECA',
+                            CARA_ELEM=CARELE15
+                        )
+
+#
+# 20HZ
+#
+MELR20=CALC_MATR_ELEM(       MODELE=MO,
+                               CHARGE=CHARGE,
+                               OPTION='RIGI_MECA',
+                            CARA_ELEM=CARELE20
+                        )
+
+#
+MELM20=CALC_MATR_ELEM(       MODELE=MO,
+                               CHARGE=CHARGE,
+                               OPTION='MASS_MECA',
+                            CARA_ELEM=CARELE20
+                        )
+
+#
+# 25HZ
+#
+MELR25=CALC_MATR_ELEM(       MODELE=MO,
+                               CHARGE=CHARGE,
+                               OPTION='RIGI_MECA',
+                            CARA_ELEM=CARELE25
+                        )
+
+#
+MELM25=CALC_MATR_ELEM(       MODELE=MO,
+                               CHARGE=CHARGE,
+                               OPTION='MASS_MECA',
+                            CARA_ELEM=CARELE25
+                        )
+
+#
+# 29HZ
+#
+MELR29=CALC_MATR_ELEM(       MODELE=MO,
+                               CHARGE=CHARGE,
+                               OPTION='RIGI_MECA',
+                            CARA_ELEM=CARELE29
+                        )
+
+#
+MELM29=CALC_MATR_ELEM(       MODELE=MO,
+                               CHARGE=CHARGE,
+                               OPTION='MASS_MECA',
+                            CARA_ELEM=CARELE29
+                        )
+
+#
+# 35HZ
+#
+MELR35=CALC_MATR_ELEM(       MODELE=MO,
+                               CHARGE=CHARGE,
+                               OPTION='RIGI_MECA',
+                            CARA_ELEM=CARELE35
+                        )
+
+#
+MELM35=CALC_MATR_ELEM(       MODELE=MO,
+                               CHARGE=CHARGE,
+                               OPTION='MASS_MECA',
+                            CARA_ELEM=CARELE35
+                        )
+
+#
+# 0.2HZ
+#
+NUM02=NUME_DDL(  MATR_RIGI=MELR02 )
+
+#
+# 1HZ
+#
+NUM1=NUME_DDL(  MATR_RIGI=MELR1  )
+
+#
+# 5HZ
+#
+NUM5=NUME_DDL(  MATR_RIGI=MELR5  )
+
+#
+# 10HZ
+#
+NUM10=NUME_DDL(  MATR_RIGI=MELR10 )
+
+#
+# 15HZ
+#
+NUM15=NUME_DDL(  MATR_RIGI=MELR15 )
+
+#
+# 20HZ
+#
+NUM20=NUME_DDL(  MATR_RIGI=MELR20 )
+
+#
+# 25HZ
+#
+NUM25=NUME_DDL(  MATR_RIGI=MELR25 )
+
+#
+# 29.5HZ
+#
+NUM29=NUME_DDL(  MATR_RIGI=MELR29 )
+
+#
+# 35.5HZ
+#
+NUM35=NUME_DDL(  MATR_RIGI=MELR35 )
+
+#
+# 0.2HZ
+#
+MATASR02=ASSE_MATRICE(    MATR_ELEM=MELR02,
+                             NUME_DDL=NUM02
+                        )
+
+#
+MATASM02=ASSE_MATRICE(    MATR_ELEM=MELM02,
+                             NUME_DDL=NUM02
+                        )
+
+#
+# 1HZ
+#
+MATASSR1=ASSE_MATRICE(    MATR_ELEM=MELR1,
+                             NUME_DDL=NUM1
+                        )
+
+#
+MATASSM1=ASSE_MATRICE(    MATR_ELEM=MELM1,
+                             NUME_DDL=NUM1
+                        )
+
+#
+# 5HZ
+#
+MATASSR5=ASSE_MATRICE(    MATR_ELEM=MELR5,
+                             NUME_DDL=NUM5
+                        )
+
+#
+MATASSM5=ASSE_MATRICE(    MATR_ELEM=MELM5,
+                             NUME_DDL=NUM5
+                        )
+
+#
+# 10HZ
+#
+MATASR10=ASSE_MATRICE(    MATR_ELEM=MELR10,
+                             NUME_DDL=NUM10
+                        )
+
+#
+MATASM10=ASSE_MATRICE(    MATR_ELEM=MELM10,
+                             NUME_DDL=NUM10
+                        )
+
+#
+# 15HZ
+#
+MATASR15=ASSE_MATRICE(    MATR_ELEM=MELR15,
+                             NUME_DDL=NUM15
+                        )
+
+#
+MATASM15=ASSE_MATRICE(    MATR_ELEM=MELM15,
+                             NUME_DDL=NUM15
+                        )
+
+#
+# 20HZ
+#
+MATASR20=ASSE_MATRICE(    MATR_ELEM=MELR20,
+                             NUME_DDL=NUM20
+                        )
+
+#
+MATASM20=ASSE_MATRICE(    MATR_ELEM=MELM20,
+                             NUME_DDL=NUM20
+                        )
+
+#
+# 25HZ
+#
+MATASR25=ASSE_MATRICE(    MATR_ELEM=MELR25,
+                             NUME_DDL=NUM25
+                        )
+
+#
+MATASM25=ASSE_MATRICE(    MATR_ELEM=MELM25,
+                             NUME_DDL=NUM25
+                        )
+
+#
+# 29.5HZ
+#
+MATASR29=ASSE_MATRICE(    MATR_ELEM=MELR29,
+                             NUME_DDL=NUM29
+                        )
+
+#
+MATASM29=ASSE_MATRICE(    MATR_ELEM=MELM29,
+                             NUME_DDL=NUM29
+                        )
+
+#
+# 35.5HZ
+#
+MATASR35=ASSE_MATRICE(    MATR_ELEM=MELR35,
+                             NUME_DDL=NUM35
+                        )
+
+#
+MATASM35=ASSE_MATRICE(    MATR_ELEM=MELM35,
+                             NUME_DDL=NUM35
+                        )
+
+#
+# 0.2HZ
+#
+MODE02=MODE_ITER_SIMULT(       MATR_A=MATASR02,
+                                   MATR_B=MATASM02,
+                                CALC_FREQ=_F( NMAX_FREQ = 1,
+                                           OPTION = 'PLUS_PETITE')
+                            )
+
+#
+# 1HZ
+#
+MODE1=MODE_ITER_SIMULT(       MATR_A=MATASSR1,
+                                   MATR_B=MATASSM1,
+                                CALC_FREQ=_F( NMAX_FREQ = 1,
+                                           OPTION = 'PLUS_PETITE')
+                            )
+
+#
+# 5HZ
+#
+MODE5=MODE_ITER_SIMULT(       MATR_A=MATASSR5,
+                                   MATR_B=MATASSM5,
+                                CALC_FREQ=_F( NMAX_FREQ = 1,
+                                           OPTION = 'PLUS_PETITE')
+                            )
+
+#
+# 10HZ
+#
+MODE10=MODE_ITER_SIMULT(       MATR_A=MATASR10,
+                                   MATR_B=MATASM10,
+                                CALC_FREQ=_F( NMAX_FREQ = 1,
+                                           OPTION = 'PLUS_PETITE')
+                            )
+
+#
+# 15HZ
+#
+MODE15=MODE_ITER_SIMULT(       MATR_A=MATASR15,
+                                   MATR_B=MATASM15,
+                                CALC_FREQ=_F( NMAX_FREQ = 1,
+                                           OPTION = 'PLUS_PETITE')
+                            )
+
+#
+# 20HZ
+#
+MODE20=MODE_ITER_SIMULT(       MATR_A=MATASR20,
+                                   MATR_B=MATASM20,
+                                CALC_FREQ=_F( NMAX_FREQ = 1,
+                                           OPTION = 'PLUS_PETITE')
+                            )
+
+#
+# 25HZ
+#
+MODE25=MODE_ITER_SIMULT(       MATR_A=MATASR25,
+                                   MATR_B=MATASM25,
+                                CALC_FREQ=_F( NMAX_FREQ = 1,
+                                           OPTION = 'PLUS_PETITE')
+                            )
+
+#
+# 29.5HZ
+#
+MODE29=MODE_ITER_SIMULT(       MATR_A=MATASR29,
+                                   MATR_B=MATASM29,
+                                CALC_FREQ=_F( NMAX_FREQ = 1,
+                                           OPTION = 'PLUS_PETITE')
+                            )
+
+#
+# 35.5HZ
+#
+MODE35=MODE_ITER_SIMULT(       MATR_A=MATASR35,
+                                   MATR_B=MATASM35,
+                                CALC_FREQ=_F( NMAX_FREQ = 1,
+                                           OPTION = 'PLUS_PETITE')
+                            )
+
+#
+# 0.2HZ
+#
+TABMAS02=POST_ELEM(        MODELE=MO,
+                         CHAM_MATER=CHMAT,
+                          CARA_ELEM=CARELE02,
+                          MASS_INER=_F(  TOUT = 'OUI')
+                     )
+
+#
+# 1HZ
+#
+TABMAS1=POST_ELEM(        MODELE=MO,
+                         CHAM_MATER=CHMAT,
+                          CARA_ELEM=CARELE1,
+                          MASS_INER=_F(  TOUT = 'OUI')
+                     )
+
+#
+# 5HZ
+#
+TABMAS5=POST_ELEM(        MODELE=MO,
+                         CHAM_MATER=CHMAT,
+                          CARA_ELEM=CARELE5,
+                          MASS_INER=_F(  TOUT = 'OUI')
+                     )
+
+#
+# 10HZ
+#
+TABMAS10=POST_ELEM(        MODELE=MO,
+                          CHAM_MATER=CHMAT,
+                           CARA_ELEM=CARELE10,
+                           MASS_INER=_F(  TOUT = 'OUI')
+                     )
+
+#
+# 15HZ
+#
+TABMAS15=POST_ELEM(        MODELE=MO,
+                          CHAM_MATER=CHMAT,
+                           CARA_ELEM=CARELE15,
+                           MASS_INER=_F(  TOUT = 'OUI')
+                     )
+
+#
+# 20HZ
+#
+TABMAS20=POST_ELEM(        MODELE=MO,
+                          CHAM_MATER=CHMAT,
+                           CARA_ELEM=CARELE20,
+                           MASS_INER=_F(  TOUT = 'OUI')
+                     )
+
+#
+# 25HZ
+#
+TABMAS25=POST_ELEM(        MODELE=MO,
+                          CHAM_MATER=CHMAT,
+                           CARA_ELEM=CARELE25,
+                           MASS_INER=_F(  TOUT = 'OUI')
+                     )
+
+#
+# 29.5HZ
+#
+TABMAS29=POST_ELEM(        MODELE=MO,
+                          CHAM_MATER=CHMAT,
+                           CARA_ELEM=CARELE29,
+                           MASS_INER=_F(  TOUT = 'OUI')
+                     )
+
+#
+# 35.5HZ
+#
+TABMAS35=POST_ELEM(        MODELE=MO,
+                          CHAM_MATER=CHMAT,
+                           CARA_ELEM=CARELE35,
+                           MASS_INER=_F(  TOUT = 'OUI')
+                     )
+
+#
+# 0.2HZ
+#
+SISM02=COMB_SISM_MODAL(   MODE_MECA=MODE02,
+                            NUME_MODE=(1,),
+                             AMOR_REDUIT=(0.03,),
+                            MASS_INER=TABMAS02,
+                                EXCIT=_F( MONO_APPUI = 'OUI',
+                                       AXE = ( 1.,  0.,  0., ),
+                                       SPEC_OSCI = SPECT_X,
+                                       NATURE = 'DEPL'),
+                            COMB_MODE=_F( TYPE = 'ABS'),
+                               OPTION=('DEPL',
+                                      )
+                       )
+
+#
+DEPLX02=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
+NOM_CHAM='DEPL', RESULTAT=SISM02,
+                       NOEUD_CMP=( 'DIR', 'X', ),
+                       TITRE='DEPLACEMENT 0.2HZ'
+                     )
+
+#
+TEST_RESU(   CHAM_NO=_F(  CHAM_GD = DEPLX02,
+                       NOEUD = 'P2',
+                       NOM_CMP = 'DX',
+                       VALE = 8.4280E-2,
+                       PRECISION = 0.01)
+         )
+
+#
+# 1HZ
+#
+SISM1=COMB_SISM_MODAL(   MODE_MECA=MODE1,
+                            NUME_MODE=(1,),
+                            AMOR_REDUIT=(0.03,),
+                            MASS_INER=TABMAS1,
+                                EXCIT=_F( MONO_APPUI = 'OUI',
+                                       AXE = ( 1.,  0.,  0., ),
+#                                       SPEC_OSCI  : SPECT_X
+                                       SPEC_OSCI = SPECT3,
+                                       NATURE = 'DEPL'),
+                            COMB_MODE=_F( TYPE = 'ABS'),
+                               OPTION=('DEPL',
+                                      )
+                       )
+
+#
+DEPLX1=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
+NOM_CHAM='DEPL', RESULTAT=SISM1,
+                       NOEUD_CMP=( 'DIR', 'X', ),
+                      TITRE='DEPLACEMENT 1HZ'
+                     )
+
+#
+TEST_RESU(   CHAM_NO=_F(  CHAM_GD = DEPLX1,
+                       NOEUD = 'P2',
+                       NOM_CMP = 'DX',
+                       VALE = 4.4745E-2,
+                       PRECISION = 0.01)
+         )
+
+#
+# 5HZ
+#
+SISM5=COMB_SISM_MODAL(   MODE_MECA=MODE5,
+                            NUME_MODE=(1,),
+                            AMOR_REDUIT=(0.03,),
+                            MASS_INER=TABMAS5,
+                                EXCIT=_F( MONO_APPUI = 'OUI',
+                                       AXE = ( 1.,  0.,  0., ),
+                                       SPEC_OSCI = SPECT3,
+#                                       SPEC_OSCI  : SPECT_X
+                                       NATURE = 'DEPL'),
+                            COMB_MODE=_F( TYPE = 'ABS'),
+                               OPTION=('DEPL',
+                                      )
+                       )
+
+#
+DEPLX5=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
+NOM_CHAM='DEPL', RESULTAT=SISM5,
+                       NOEUD_CMP=( 'DIR', 'X', ),
+                      TITRE='DEPLACEMENT 5HZ'
+                     )
+
+#
+TEST_RESU(   CHAM_NO=_F(  CHAM_GD = DEPLX5,
+                       NOEUD = 'P2',
+                       NOM_CMP = 'DX',
+                       VALE = 1.8309E-3,
+                       PRECISION = 0.01)
+         )
+
+#
+# 10HZ
+#
+SISM10=COMB_SISM_MODAL(   MODE_MECA=MODE10,
+                            NUME_MODE=(1,),
+                                 AMOR_REDUIT=(0.03,),
+                            MASS_INER=TABMAS10,
+                                EXCIT=_F( MONO_APPUI = 'OUI',
+                                       AXE = ( 1.,  0.,  0., ),
+                                       SPEC_OSCI = SPECT3,
+#                                       SPEC_OSCI  : SPECT_X
+                                       NATURE = 'DEPL'),
+                            COMB_MODE=_F( TYPE = 'ABS'),
+                               OPTION=('DEPL',
+                                      )
+                       )
+
+#
+DEPLX10=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
+NOM_CHAM='DEPL', RESULTAT=SISM10,
+                       NOEUD_CMP=( 'DIR', 'X', ),
+                       TITRE='DEPLACEMENT 10HZ'
+                      )
+
+#
+TEST_RESU(   CHAM_NO=_F(  CHAM_GD = DEPLX10,
+                       NOEUD = 'P2',
+                       NOM_CMP = 'DX',
+                       VALE = 2.7425E-4,
+                       PRECISION = 0.01)
+         )
+
+#
+# 15HZ
+#
+SISM15=COMB_SISM_MODAL(   MODE_MECA=MODE15,
+                            NUME_MODE=(1,),
+                            AMOR_REDUIT=(0.03,),
+                            MASS_INER=TABMAS15,
+                                EXCIT=_F( MONO_APPUI = 'OUI',
+                                       AXE = ( 1.,  0.,  0., ),
+                                       SPEC_OSCI = SPECT3,
+#                                       SPEC_OSCI  : SPECT_X
+                                       NATURE = 'DEPL'),
+                            COMB_MODE=_F( TYPE = 'ABS'),
+                               OPTION=('DEPL',
+                                      )
+                       )
+
+#
+DEPLX15=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
+NOM_CHAM='DEPL', RESULTAT=SISM15,
+                       NOEUD_CMP=( 'DIR', 'X', ),
+                       TITRE='DEPLACEMENT 15HZ'
+                      )
+
+#
+TEST_RESU(   CHAM_NO=_F(  CHAM_GD = DEPLX15,
+                       NOEUD = 'P2',
+                       NOM_CMP = 'DX',
+                       VALE = 8.6072E-5,
+                       PRECISION = 0.01)
+         )
+
+#
+# 20HZ
+#
+SISM20=COMB_SISM_MODAL(   MODE_MECA=MODE20,
+                            NUME_MODE=(1,),
+                            AMOR_REDUIT=(0.03,),
+                            MASS_INER=TABMAS20,
+                                EXCIT=_F( MONO_APPUI = 'OUI',
+                                       AXE = ( 1.,  0.,  0., ),
+                                       SPEC_OSCI = SPECT3,
+#                                       SPEC_OSCI  : SPECT_X
+                                       NATURE = 'DEPL'),
+                            COMB_MODE=_F( TYPE = 'ABS'),
+                               OPTION=('DEPL',
+                                      )
+                       )
+
+#
+DEPLX20=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
+NOM_CHAM='DEPL', RESULTAT=SISM20,
+                       NOEUD_CMP=( 'DIR', 'X', ),
+                       TITRE='DEPLACEMENT 20HZ'
+                      )
+
+#
+TEST_RESU(   CHAM_NO=_F(  CHAM_GD = DEPLX20,
+                       NOEUD = 'P2',
+                       NOM_CMP = 'DX',
+                       VALE = 4.3102E-5,
+                       PRECISION = 0.01)
+         )
+
+#
+# 25HZ
+#
+SISM25=COMB_SISM_MODAL(   MODE_MECA=MODE25,
+                            NUME_MODE=(1,),
+                            AMOR_REDUIT=(0.03,),
+                            MASS_INER=TABMAS25,
+                                EXCIT=_F( MONO_APPUI = 'OUI',
+                                       AXE = ( 1.,  0.,  0., ),
+                                       SPEC_OSCI = SPECT3,
+#                                       SPEC_OSCI  : SPECT_X
+                                       NATURE = 'DEPL'),
+                            COMB_MODE=_F( TYPE = 'ABS'),
+                               OPTION=('DEPL',
+                                      )
+                       )
+
+#
+DEPLX25=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
+NOM_CHAM='DEPL', RESULTAT=SISM25,
+                       NOEUD_CMP=( 'DIR', 'X', ),
+                       TITRE='DEPLACEMENT 25HZ'
+                      )
+
+#
+TEST_RESU(   CHAM_NO=_F(  CHAM_GD = DEPLX25,
+                       NOEUD = 'P2',
+                       NOM_CMP = 'DX',
+                       VALE = 2.6867E-5,
+                       PRECISION = 0.01)
+         )
+
+#
+# 29.5HZ
+#
+SISM29=COMB_SISM_MODAL(   MODE_MECA=MODE29,
+                            NUME_MODE=(1,),
+                            AMOR_REDUIT=(0.03,),
+                            MASS_INER=TABMAS29,
+                                EXCIT=_F( MONO_APPUI = 'OUI',
+                                       AXE = ( 1.,  0.,  0., ),
+                                       SPEC_OSCI = SPECT3,
+#                                       SPEC_OSCI  : SPECT_X
+                                       NATURE = 'DEPL'),
+                            COMB_MODE=_F( TYPE = 'ABS'),
+                               OPTION=('DEPL',
+                                      )
+                       )
+
+#
+DEPLX29=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
+NOM_CHAM='DEPL', RESULTAT=SISM29,
+                       NOEUD_CMP=( 'DIR', 'X', ),
+                       TITRE='DEPLACEMENT 29.5HZ'
+                      )
+
+#
+TEST_RESU(   CHAM_NO=_F(  CHAM_GD = DEPLX29,
+                       NOEUD = 'P2',
+                       NOM_CMP = 'DX',
+                       VALE = 1.9343E-5,
+                       PRECISION = 0.01)
+         )
+
+#
+# 35.5HZ
+#
+SISM35=COMB_SISM_MODAL(   MODE_MECA=MODE35,
+                            NUME_MODE=(1,),
+                            AMOR_REDUIT=(0.03,),
+                            MASS_INER=TABMAS35,
+                                EXCIT=_F( MONO_APPUI = 'OUI',
+                                       AXE = ( 1.,  0.,  0., ),
+                                       SPEC_OSCI = SPECT3,
+#                                       SPEC_OSCI  : SPECT_X
+                                       NATURE = 'DEPL'),
+                            COMB_MODE=_F( TYPE = 'ABS'),
+                               OPTION=('DEPL',
+                                      )
+                       )
+
+#
+DEPLX35=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
+NOM_CHAM='DEPL', RESULTAT=SISM35,
+                       NOEUD_CMP=( 'DIR', 'X', ),
+                       TITRE='DEPLACEMENT 35.5HZ'
+                      )
+
+#
+TEST_RESU(   CHAM_NO=_F(  CHAM_GD = DEPLX35,
+                       NOEUD = 'P2',
+                       NOM_CMP = 'DX',
+                       VALE = 1.3350E-5,
+                       PRECISION = 0.01)
+         )
+
+#
+#
+#----------------------------------------------------------------------
+FIN()
+#

@@ -1,0 +1,41 @@
+#& MODIF COMMANDE  DATE 09/10/2002   AUTEUR DURAND C.DURAND 
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+IMPR_STURM=PROC(nom="IMPR_STURM",op=32,fr="Calculer et imprimer le nombre de valeurs propres dans un intervalle donné",
+                docu="U4.52.01-f",
+            UIinfo={"groupes":("Résolution",)},
+         MATR_A          =SIMP(statut='o',typ=(matr_asse_depl_r,matr_asse_temp_r,matr_asse_pres_r ) ),
+         MATR_B          =SIMP(statut='o',typ=(matr_asse_depl_r,matr_asse_temp_r,matr_asse_pres_r ) ),
+         TYPE_RESU       =SIMP(statut='f',typ='TXM',defaut="DYNAMIQUE",into=("MODE_FLAMB","DYNAMIQUE"),
+                               fr="Type d analyse" ),
+         b_dynamique  =BLOC(condition = "TYPE_RESU == 'DYNAMIQUE'",
+                            fr="Recheche du nombre de fréquences propres",
+             FREQ_MIN        =SIMP(statut='f',typ='R',defaut= 0.E+0 ,fr="Borne inférieure de l intervalle" ),
+             FREQ_MAX        =SIMP(statut='o',typ='R',fr="Borne supérieure de l intervalle" ),
+         ),
+         b_mode_flamb =BLOC(condition = "TYPE_RESU == 'MODE_FLAMB'",
+                            fr="Recherche du nombre de charges critiques",
+             CHAR_CRIT_MIN   =SIMP(statut='o',typ='R',fr="Borne inférieure de l intervalle" ),
+             CHAR_CRIT_MAX   =SIMP(statut='o',typ='R',fr="Borne supérieure de l intervalle" ),
+         ),
+         NPREC_SOLVEUR   =SIMP(statut='f',typ='I',defaut= 8 ),
+         NMAX_ITER_SHIFT =SIMP(statut='f',typ='I',defaut= 5 ),
+         FICHIER         =SIMP(statut='f',typ='TXM',defaut="RESULTAT"),
+         PREC_SHIFT      =SIMP(statut='f',typ='R',defaut= 1.E-2 ),
+         SEUIL_FREQ      =SIMP(statut='f',typ='R',defaut= 1.E-2 ),
+)  ;

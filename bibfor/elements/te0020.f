@@ -1,0 +1,160 @@
+      SUBROUTINE TE0020(OPTION,NOMTE)
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ELEMENTS  DATE 18/09/2002   AUTEUR CIBHHLV L.VIVAN 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+      IMPLICIT NONE
+      CHARACTER*16 OPTION,NOMTE
+C ----------------------------------------------------------------------
+C     FONCTION REALISEE:  CALCUL DES CHAMELEM AUX NOEUDS A PARTIR DES
+C     VALEURS AUX POINTS DE GAUSS (SIEF_ELNO_ELGA VARI_ELNO_ELGA)
+C                         CALCUL DES CHAMELEM AUX POINTS DE GAUSS A
+C     PARTIR DES VALEURS AUX NOEUDS ( SIEF_ELGA_ELNO VARI_ELGA_ELNO )
+C     ELEMENTS 3D
+
+C IN  OPTION : OPTION DE CALCUL
+C IN  NOMTE  : NOM DU TYPE ELEMENT
+
+C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
+
+      INTEGER ZI
+      COMMON /IVARJE/ZI(1)
+      REAL*8 ZR
+      COMMON /RVARJE/ZR(1)
+      COMPLEX*16 ZC
+      COMMON /CVARJE/ZC(1)
+      LOGICAL ZL
+      COMMON /LVARJE/ZL(1)
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32
+      CHARACTER*80 ZK80
+      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+
+C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
+
+      CHARACTER*8  ELREFE
+      CHARACTER*24 CARAC,CHVAL
+      REAL*8 S
+      INTEGER NBFPG,NBPG(10),ICARAC,NPG,NNOS,NNO,NDIM
+      INTEGER I,IC,ICHG,ICHN,JMAT,NCMP,NCMP2,JVAL
+      INTEGER IPOIDS,IVF,LGPG1,LGPG2,ICOMPO,KP,K,JTAB(7)
+C DEB ------------------------------------------------------------------
+
+      CALL ELREF1(ELREFE)
+      NCMP2 = 0
+      IF (NOMTE(1:4).EQ.'THM_') THEN
+        NCMP2 = 9
+      ELSEIF (NOMTE(1:4).EQ.'MINC') THEN
+        NCMP2 = 1
+      END IF
+
+      CARAC = '&INEL.'//ELREFE//'.CARACTE'
+      CHVAL = '&INEL.'//ELREFE//'.FFORMES'
+
+      CALL JEVETE(CARAC,'L',ICARAC)
+      NBFPG = ZI(ICARAC+3-1)
+      NNO = ZI(ICARAC+2-1)
+      NDIM = ZI(ICARAC+1-1)
+      DO 10 I = 1,NBFPG
+        NBPG(I) = ZI(ICARAC+3-1+I)
+   10 CONTINUE
+      NNOS = ZI(ICARAC+3-1+NBFPG+1)
+      NPG = NBPG(1)
+      IF (ELREFE.EQ.'PENTA15') THEN
+        NPG = NBPG(2)
+      END IF
+
+      CALL JEVETE(CHVAL,'L',JVAL)
+      IPOIDS = JVAL + (NDIM+1)*NNO*NNO
+      IVF = IPOIDS + NBPG(1)
+
+
+      IF (OPTION.EQ.'SIEF_ELNO_ELGA  ') THEN
+C     ---------------------------------------------
+C       NCMP2 LE NOMBRE DE COMPOSANTES SUPPLEMENTAIRES DES CONTRAINTES
+C       EN PARTICULIER EN THM
+        NCMP = 6 + NCMP2
+        CALL JEVECH('PCONTRR','L',ICHG)
+        CALL JEVECH('PSIEFNOR','E',ICHN)
+
+
+      ELSE IF (OPTION.EQ.'SIEF_ELGA_ELNO  ') THEN
+C     ---------------------------------------------
+        NCMP = 6 + NCMP2
+        CALL JEVECH('PCONTRR','L',ICHN)
+        CALL JEVECH('PSIEFGR','E',ICHG)
+        LGPG1= NCMP
+        LGPG2= NCMP
+
+
+      ELSE IF (OPTION.EQ.'VARI_ELNO_ELGA  ') THEN
+C     ---------------------------------------------
+
+        CALL JEVECH('PVARIGR','L',ICHG)
+        CALL JEVECH('PVARINR','E',ICHN)
+
+        CALL TECACH(.TRUE.,.TRUE.,'PVARIGR',7,JTAB)
+        LGPG1= MAX(JTAB(6),1)*JTAB(7)
+        CALL TECACH(.TRUE.,.TRUE.,'PVARINR',7,JTAB)
+        LGPG2= MAX(JTAB(6),1)*JTAB(7)
+
+        NCMP = LGPG1
+      ELSE IF (OPTION.EQ.'VARI_ELGA_ELNO  ') THEN
+C     ---------------------------------------------
+
+        CALL JEVECH('PVARINR','L',ICHN)
+        CALL JEVECH('PVARIGR','E',ICHG)
+
+        CALL TECACH(.TRUE.,.TRUE.,'PVARINR',7,JTAB)
+        LGPG1= MAX(JTAB(6),1)*JTAB(7)
+        CALL TECACH(.TRUE.,.TRUE.,'PVARIGR',7,JTAB)
+        LGPG2= MAX(JTAB(6),1)*JTAB(7)
+
+C       -- POUR VARI_ELNO_ELGA : LGPG1 PEUT ETRE TROP
+C          GRAND DU FAIT DE LIRE_RESU.
+C          LGPG2 EST EN REVANCHE FORCEMENT COHERENT
+C          AVEC LA LOI DE COMPORTEMENT.
+        NCMP = LGPG2
+      END IF
+
+
+      IF (OPTION(6:9).EQ.'ELNO') THEN
+C     ---------------------------------------------
+C
+        CALL PPGANO(NNOS,NPG,NCMP,ZR(ICHG),ZR(ICHN))
+C
+      ELSE
+C     PASSAGE AUX POINTS DE GAUSS :
+C     ---------------------------------------------
+
+        DO 40 IC = 1,NCMP
+          DO 30 KP = 1,NPG
+            K = (KP-1)*NNO
+            S = 0.D0
+            DO 20 I = 1,NNO
+              S = S + ZR(ICHN+LGPG1* (I-1)+IC-1)*ZR(IVF+K+I-1)
+   20       CONTINUE
+            ZR(ICHG+LGPG2* (KP-1)+IC-1) = S
+   30     CONTINUE
+   40   CONTINUE
+
+      END IF
+
+C FIN ------------------------------------------------------------------
+      END

@@ -1,0 +1,22 @@
+%& MODIF OPTIONS  DATE 11/06/2002   AUTEUR CIBHHAB S.VANDENBERGHE 
+%            CONFIGURATION MANAGEMENT OF EDF VERSION
+% ======================================================================
+% COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+%              SEE THE FILE "LICENSE.TERMS" FOR INFORMATION ON USAGE AND
+%              REDISTRIBUTION OF THIS FILE.
+% ======================================================================
+CRIT_ELNO_RUPT
+       <<  CRIT_ELNO_RUPT : CALCUL DES CRITERES DE RUPTURE  >>
+OPTION__
+   IN__
+        PGEOMER  GEOM_R
+       <<  PGEOMER : COORDONNEES DES NOEUDS >>
+        PMATERC  ADRSJEVE
+       <<  PMATERC : CHAMP DE MATERIAU >>
+        PNUMCOR  NUMC_I
+       <<  PNUMCOR : NIVEAU ET COUCHE D'UN MATERIAU MULTICOUCHE >>
+        PCONTRR  SIEF_R
+       <<  PCONTRR : CONTRAINTES OU EFFORTS GENERALISES >>
+   OUT__
+        PCRITER  CRRU_R  ELNO__
+

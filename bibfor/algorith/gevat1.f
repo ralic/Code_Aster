@@ -1,0 +1,75 @@
+      REAL*8 FUNCTION GEVAT1 ( A, B, WMOY )
+      IMPLICIT NONE
+      REAL*8   A, B, WMOY
+C ----------------------------------------------------------------------
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 16/07/2002   AUTEUR VABHHTS J.PELLET 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C
+C  GENERATEUR DE VARIABLE ALEATOIRE DU MODELE PROBABILISTE 
+C  PARAMETRIQUE A SUPPORT COMPACT (TYPE 1).
+C
+C  LA PROCEDURE EST DUE AU PROFESSEUR CHRISTIAN SOIZE (2001).
+C
+C  A    : BORNE INFERIEURE DU SUPPORT DE LA LOI DE PROBABILITE DE 
+C         LA VARIABLE ALEATOIRE W.
+C  B    : BORNE SUPPERIEURE DU SUPPORT DE LA LOI DE PROBABILITE DE 
+C         LA VARIABLE ALEATOIRE W.
+C  WMOY : VALEUR MOYENNE DE LA VARIABLE ALEATOIRE W.
+C ----------------------------------------------------------------------
+      REAL*8     ALPHA, FTYP1, K, TEST, EPS, U 
+      PARAMETER  (EPS=1.D-7)
+      SAVE  K
+      DATA K /1D0/
+C
+      FTYP1(A,B,WMOY,K) = 1D0/(WMOY-(A*EXP(-A*K) 
+     +                     - B*EXP(-B*K))/(EXP(-A*K) - EXP(-B*K)))
+C
+      IF (A.GE.B) THEN
+         CALL UTDEBM('F','GEVAT1',' A > B ')
+         CALL UTIMPR('L','   A = ', 1, A )
+         CALL UTIMPR('L','   B = ', 1, B )
+         CALL UTFINM
+      ELSE IF (WMOY.LE.A.OR.WMOY.GE.B) THEN
+         CALL UTDEBM('F','GEVAT1','WMOY TROP GRAND OU TROP PETIT')
+         CALL UTIMPR('L','   A = ', 1, A )
+         CALL UTIMPR('S',' < WMOY = ', 1, WMOY )
+         CALL UTIMPR('S',' < B = ', 1, B )
+         CALL UTFINM
+      ENDIF
+C
+C --- CALCUL DE LA VARIABLE K
+C
+1     CONTINUE
+      TEST = FTYP1(A,B,WMOY,K)
+      IF (ABS(TEST-K).GT.EPS) THEN
+         K = TEST
+         GOTO 1
+      ENDIF
+C
+      IF (K.LE.0D0) THEN
+         CALL UTMESS('F','GEVAT1',' K < 0 ')
+      ENDIF 
+C
+C --- GENERATION DE LA VARIABLE ALEATOIRE SUIVANT LA LOI DE TYPE 1
+C
+      ALPHA = EXP(-A*K) - EXP(-B*K)
+      CALL GETRAN ( U )
+      GEVAT1 = -(LOG(EXP(-A*K)-ALPHA*U))/K
+C      
+      END

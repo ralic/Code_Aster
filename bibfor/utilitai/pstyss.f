@@ -1,0 +1,94 @@
+      SUBROUTINE PSTYSS ( NBMCVR, NBMC, COREFE, MCREFE,
+     >                    NBMOCL, LIVALE, NOPASE,
+     >                    STYPSE )
+C
+C     PARAMETRE SENSIBLE - TYPE DE SENSIBILITE - SOUS-TYPE
+C     *         *          **                    *  *
+C ----------------------------------------------------------------------
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF UTILITAI  DATE 17/06/2002   AUTEUR GNICOLAS G.NICOLAS 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C RESPONSABLE GNICOLAS G.NICOLAS
+C ----------------------------------------------------------------------
+C IN  NBMCVR  : NOMBRE DE MOTS-CLES DE REFERENCE A TRAITER
+C IN  NBMC    : NOMBRE DE MOTS-CLES EQUIVALENTS
+C IN  COREFE  : LISTE DES CODE DE REFERENCE
+C IN  MCREFE  : LISTE DES MOTS-CLES DE REFERENCE, A LA SUITE LES UNS
+C               DES AUTRES
+C IN  NBMOCL  : NOMBRE DE MOTS-CLES A TRAITER
+C IN  LIVALE  : LA STRUCTURE K80 CONTENANT LES VALEURS CONCERNEES
+C IN  NOPASE  : NOM DU PARAMETRE SENSIBLE
+C IN/OUT STYPSE  : SOUS-TYPE DE SENSIBILITE
+C ----------------------------------------------------------------------
+      IMPLICIT   NONE
+
+C 0.1. ==> ARGUMENTS
+C
+      INTEGER NBMCVR, NBMC(NBMCVR), NBMOCL
+C
+      CHARACTER*(*) LIVALE, NOPASE
+      CHARACTER*24 COREFE(NBMCVR), MCREFE(*)
+      CHARACTER*24 STYPSE
+
+C 0.1. ==> COMMUNS
+C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32
+      CHARACTER*80 ZK80
+      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
+
+C 0.3. ==> VARIABLES LOCALES
+C
+      CHARACTER*6 NOMPRO
+      PARAMETER ( NOMPRO = 'PSTYSS' )
+C
+      INTEGER IAUX, JAUX
+      INTEGER ADVALE
+      INTEGER NBMOCA
+      CHARACTER*24 LIMOCA, LIVALA
+C
+C====
+C 1. APPEL DU PROGRAMME DE BASE
+C====
+C                12   345678   9012345678901234
+      LIMOCA  = '&&'//NOMPRO//'_LIMOCA         '
+      LIVALA  = '&&'//NOMPRO//'_LIVALA         '
+C
+      CALL JEVEUO ( LIVALE, 'L', ADVALE )
+C
+      DO 11 , IAUX = 1 , NBMOCL
+C
+        CALL PSREMC ( ZK80(ADVALE+IAUX-1), NOPASE,
+     >                NBMOCA, LIMOCA, LIVALA, JAUX )
+C
+        IF ( NBMOCA.GT.0 ) THEN
+          DO 111 , JAUX = 1 , NBMOCA
+            CALL PSTYST ( NBMCVR, NBMC, COREFE, MCREFE,
+     >                    NBMOCA, LIMOCA, LIVALA,
+     >                    STYPSE )
+  111     CONTINUE
+          CALL JEDETR ( LIMOCA )
+          CALL JEDETR ( LIVALA )
+        ENDIF
+C
+   11 CONTINUE
+C
+      END

@@ -1,0 +1,70 @@
+      SUBROUTINE PROJMP(NP1,NP2,NBM,NBNL,
+     &                  PHII,ACCG,VITG,DEPG,ACC,VIT,DEP)
+C
+C ********************************************************************
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 04/03/97   AUTEUR KXBADNG N.GAY 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+C ********************************************************************
+C DESCRIPTION : RECOMBINAISON EN BASE PHYSIQUE AUX NOEUDS DE CHOC
+C ------------
+C
+C ****************** DECLARATION DES VARIABLES ***********************
+C
+      IMPLICIT NONE
+C
+C ARGUMENTS
+C ---------
+      INTEGER NP1, NP2
+      INTEGER NBM, NBNL
+      REAL*8 ACCG(*), VITG(*), DEPG(*)
+      REAL*8 ACC(3,*), VIT(3,*), DEP(3,*)
+      REAL*8 PHII(NP2,NP1,3)
+C
+C
+C VARIABLES LOCALES
+C -----------------
+      INTEGER IC
+      REAL*8 AGLO(3), XGLO(3), VGLO(3)
+C
+C ****************** DEBUT DU CODE EXECUTABLE ************************
+C
+C 1. BOUCLE SUR LES NON-LINEARITES.
+C    ------------------------------
+C
+      DO 10 IC=1,NBNL
+C
+C       (ACCELERATIONS)
+        CALL PROJMG(NP1,NP2,IC,NBM,PHII,ACCG,AGLO)
+        ACC(1,IC) = AGLO(1)
+        ACC(2,IC) = AGLO(2)
+        ACC(3,IC) = AGLO(3)
+C       (VITESSES)
+        CALL PROJMG(NP1,NP2,IC,NBM,PHII,VITG,VGLO)
+        VIT(1,IC) = VGLO(1)
+        VIT(2,IC) = VGLO(2)
+        VIT(3,IC) = VGLO(3)
+C       (DEPLACEMENTS)
+        CALL PROJMG(NP1,NP2,IC,NBM,PHII,DEPG,XGLO)
+        DEP(1,IC) = XGLO(1)
+        DEP(2,IC) = XGLO(2)
+        DEP(3,IC) = XGLO(3)
+C
+ 10   CONTINUE
+C
+      END

@@ -1,0 +1,312 @@
+      SUBROUTINE CREPRN(LIGREZ,MOLOCZ,BASEZ,PRNMZ,PRNSZ)
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF CALCULEL  DATE 25/03/2002   AUTEUR CIBHHGB G.BERTRAND 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+C RESPONSABLE VABHHTS J.PELLET
+      IMPLICIT NONE
+C-----------------------------------------------------------------
+C  BUT : CREATION :
+C      .DU VECTEUR PRNM DES ENTIERS CODES DECRIVANT
+C       LA NATURE DES DDLS DES NOEUDS PHYSIQUES DU LIGREL.
+
+C      .DU VECTEUR PRNS DES ENTIERS CODES DECRIVANT
+C       LES NOEUDS LAGRANGE DU LIGREL
+C       (S'IL Y EN A)
+C-----------------------------------------------------------------
+C   ARGUMENT        E/S  TYPE         ROLE
+C    LIGREZ          IN    K*     NOM DU LIGREL
+C    MOLOCZ          IN    K*   / NOM DU MODE_LOCAL PERMETTANT
+C                                 DE CHOISIR LES DDLS.
+C                               / ' '
+C    BASEZ           IN    K*     NOM DE LA BASE
+C    PRNMZ      IN/JXOUT    K24   NOM DU VECTEUR DES ENTIERS CODES
+C                                 DECRIVANT LA NATURE DES DDLS DES
+C                                 NOEUDS PHYSIQUES
+C   (CE VECTEUR EST TOUJOURS CREE)
+C    PRNSZ      IN/JXOUT    K24   NOM DU VECTEUR DES ENTIERS CODES
+C                                 DECRIVANT LES NOEUDS LAGRANGE
+C   (CE VECTEUR N'EST CREE QUI SI LIGREL CONTIENT DES NOEUDS TARDIFS)
+C-----------------------------------------------------------------
+      INTEGER ZI
+      COMMON /IVARJE/ZI(1)
+      REAL*8 ZR
+      COMMON /RVARJE/ZR(1)
+      COMPLEX*16 ZC
+      COMMON /CVARJE/ZC(1)
+      LOGICAL ZL
+      COMMON /LVARJE/ZL(1)
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32
+      CHARACTER*80 ZK80
+      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+      CHARACTER*32 JEXNUM,JEXNOM,JEXATR
+
+C -----  VARIABLES LOCALES
+      CHARACTER*(*) LIGREZ,MOLOCZ,BASEZ,PRNMZ,PRNSZ
+      INTEGER GD,I,IACONX,IALIEL,IAMACO,IAMAIL,IAMSCO,JMOLOC,IANCMP
+      INTEGER IANMCR,IAPRNM,IAPRNO,IAPRNS,IASSSA,IBID,ICMP
+      INTEGER ICODLA,IEC,IEL,IER,IGR,ILLIEL,ILMACO,ILMSCO
+      INTEGER IMA,IMODE,INO,INOLD,IRET,ITE,J,K,L,LGNCMP,NBNM
+      INTEGER NBNOMS,NBSMA,NBSSA,NEC,NEL,NL,NM,NNOE,NUMA,NUNOEL
+      INTEGER NBGREL,INDIK8,NBNO,NUMAIL,NUMGLM,NUMGLS,NBELEM
+      CHARACTER*1 BASE
+      CHARACTER*8 K8BID,NOMA,NOMGD,EXIEL,NOMACR,MOLOC
+      CHARACTER*16 NOMTE
+      CHARACTER*14 NUM2
+      CHARACTER*16 PHENOM
+      CHARACTER*19 LIGREL
+      CHARACTER*24 PRNM,PRNS
+      INTEGER TYPELE,ENTCOD
+
+C -----  FONCTIONS FORMULES
+C     NUMAIL(IGR,IEL)=NUMERO DE LA MAILLE ASSOCIEE A L'ELEMENT IEL
+      NUMAIL(IGR,IEL) = ZI(IALIEL-1+ZI(ILLIEL+IGR-1)+IEL-1)
+C     NUMGLM(IMA,INO)=NUMERO GLOBAL DU NOEUD INO DE LA MAILLE IMA
+C                     IMA ETANT UNE MAILLE DU MAILLAGE.
+      NUMGLM(IMA,INO) = ZI(IAMACO-1+ZI(ILMACO+IMA-1)+INO-1)
+C     NUMGLS(IMA,INO)=NUMERO GLOBAL DU NOEUD INO DE LA MAILLE IMA
+C                     IMA ETANT UNE MAILLE SUPPLEMENTAIRE DU LIGREL
+      NUMGLS(IMA,INO) = ZI(IAMSCO-1+ZI(ILMSCO+IMA-1)+INO-1)
+
+C.========================= DEBUT DU CODE EXECUTABLE ==================
+
+      CALL JEMARQ()
+
+C --- INITIALISATIONS :
+C     ---------------
+      BASE = BASEZ
+      MOLOC = MOLOCZ
+      LIGREL = LIGREZ
+      PRNM = PRNMZ
+      PRNS = PRNSZ
+      NM = 0
+      NL = 0
+      NBNOMS = 0
+      NBSMA = 0
+      NBSSA = 0
+
+      IF (LIGREL.EQ.'&MAILLA') CALL UTMESS('F','CREPRN','STOP')
+
+      CALL DISMOI('F','EXI_ELEM',LIGREL,'LIGREL',IBID,EXIEL,IER)
+      CALL DISMOI('F','NB_SS_ACTI',LIGREL,'LIGREL',NBSSA,K8BID,IER)
+      CALL DISMOI('F','NOM_MAILLA',LIGREL,'LIGREL',IBID,NOMA,IER)
+
+      CALL DISMOI('F','NB_NO_MAILLA',NOMA,'MAILLAGE',NM,K8BID,IER)
+      CALL DISMOI('F','NB_NL_MAILLA',NOMA,'MAILLAGE',NL,K8BID,IER)
+      CALL DISMOI('F','NB_SM_MAILLA',NOMA,'MAILLAGE',NBSMA,K8BID,IER)
+
+
+      IF (MOLOC.EQ.' ') THEN
+        CALL DISMOI('F','PHENOMENE',LIGREL,'LIGREL',IBID,PHENOM,IER)
+        CALL DISMOI('F','NOM_MOLOC',PHENOM,'PHENOMENE',IBID,MOLOC,IER)
+      END IF
+
+C     -- DETERMINATION DE LA GRANDEUR NOMGD A PARTIR DE MOLOC :
+C     ---------------------------------------------------------
+      IF (EXIEL(1:3).EQ.'OUI') THEN
+C
+        DO 10 IGR = 1,NBGREL(LIGREL)
+          ITE = TYPELE(LIGREL,IGR)
+          CALL JENUNO(JEXNUM('&CATA.TE.NOMTE',ITE),NOMTE)
+          CALL JENONU(JEXNOM('&CATA.TE.NOMMOLOC',NOMTE//MOLOC),IMODE)
+          IF (IMODE.GT.0) THEN
+            CALL JEVEUO(JEXNUM('&CATA.TE.MODELOC',IMODE),'L',JMOLOC)
+            CALL JENUNO(JEXNUM('&CATA.GD.NOMGD',ZI(JMOLOC-1+2)),NOMGD)
+            GO TO 20
+          END IF
+   10   CONTINUE
+        CALL UTMESS('F','CREPRN','STOP')
+   20   CONTINUE
+
+      ELSE
+C       -- SI IL N'Y A PAS D'ELEMENTS FINIS
+C          ON EST EN SOUS-STRUCTURATION STATIQUE => MECANIQUE.
+        CALL DISMOI('F','NOM_GD','MECANIQUE','PHENOMENE',IBID,NOMGD,IER)
+      END IF
+
+
+      CALL DISMOI('F','NUM_GD_SI',NOMGD,'GRANDEUR',GD,K8BID,IER)
+      CALL DISMOI('F','NB_EC',NOMGD,'GRANDEUR',NEC,K8BID,IER)
+
+
+      CALL JEEXIN(NOMA//'.CONNEX',IRET)
+      IF (IRET.GT.0) THEN
+        CALL JEVEUO(NOMA//'.CONNEX','L',IAMACO)
+        CALL JEVEUO(JEXATR(NOMA//'.CONNEX','LONCUM'),'L',ILMACO)
+      END IF
+
+      CALL JEEXIN(LIGREL(1:19)//'.NEMA',IRET)
+      IF (IRET.GT.0) THEN
+        CALL JEVEUO(LIGREL(1:19)//'.NEMA','L',IAMSCO)
+        CALL JEVEUO(JEXATR(LIGREL(1:19)//'.NEMA','LONCUM'),'L',ILMSCO)
+      END IF
+
+
+C --- ALLOCATION DE PRNM :
+C     ------------------
+      CALL JEEXIN(PRNM,IRET)
+      IF (IRET.EQ.0) THEN
+        CALL WKVECT(PRNM,BASE//' V I', (NM+NL)*NEC,IAPRNM)
+      ELSE
+        CALL JEVEUO(PRNM,'L',IAPRNM)
+      ENDIF
+
+
+C --- ALLOCATION DE PRNS (POUR UN LIGREL CONTENANT DES NOEUDS TARDIFS):
+C     ----------------------------------------------------------------
+      IF (LIGREL.NE.'&MAILLA') THEN
+        CALL DISMOI('F','NB_NO_SUP',LIGREL,'LIGREL',NBNOMS,K8BID,IER)
+      END IF
+      CALL JEEXIN(PRNS,IRET)
+      IF (IRET.EQ.0) THEN
+        IF (NBNOMS.GT.0) CALL WKVECT(PRNS,BASE//' V I',NBNOMS*NEC,
+     +                               IAPRNS)
+      ELSE
+        CALL JEVEUO(PRNS,'L',IAPRNS)
+      ENDIF
+
+
+C --- TRAITEMENT DES ELEMENTS FINIS CLASSIQUES :
+C     ----------------------------------------
+      IF (EXIEL(1:3).EQ.'NON') GO TO 90
+      CALL JEVEUO(LIGREL(1:19)//'.LIEL','L',IALIEL)
+      CALL JEVEUO(JEXATR(LIGREL(1:19)//'.LIEL','LONCUM'),'L',ILLIEL)
+
+      DO 80 IGR = 1,NBGREL(LIGREL)
+
+C ---   CALCUL DE IMODE (MODE_LOCAL) :
+C       ------------------------------
+        ITE = TYPELE(LIGREL,IGR)
+        CALL JENUNO(JEXNUM('&CATA.TE.NOMTE',ITE),NOMTE)
+        CALL JENONU(JEXNOM('&CATA.TE.NOMMOLOC',NOMTE//MOLOC),IMODE)
+
+
+        IF (IMODE.GT.0) THEN
+          NNOE = NBNO(IMODE)
+          NEL = NBELEM(LIGREL,IGR)
+          DO 70 J = 1,NEL
+            NUMA = NUMAIL(IGR,J)
+            IF (NUMA.GT.0) THEN
+
+C ---          IL S'AGIT D'UNE MAILLE PHYSIQUE DU MAILLAGE :
+C              -------------------------------------------
+              DO 40 K = 1,NNOE
+                NUNOEL = NUMGLM(NUMA,K)
+                DO 30 L = 1,NEC
+                  IEC = ENTCOD(NEC,IMODE,K,L)
+                  ZI(IAPRNM-1+NEC* (NUNOEL-1)+
+     &              L) = IOR(ZI(IAPRNM-1+NEC* (NUNOEL-1)+L),IEC)
+   30           CONTINUE
+   40         CONTINUE
+            ELSE
+
+C ---          IL S'AGIT D'UNE MAILLE TARDIVE :
+C              ------------------------------
+              NUMA = -NUMA
+              DO 60 K = 1,NNOE
+                NUNOEL = NUMGLS(NUMA,K)
+                DO 50 L = 1,NEC
+                  IEC = ENTCOD(NEC,IMODE,K,L)
+                  IF (NUNOEL.GT.0) THEN
+                    ZI(IAPRNM-1+NEC* (NUNOEL-1)+
+     &                L) = IOR(ZI(IAPRNM-1+NEC* (NUNOEL-1)+L),IEC)
+                  ELSE
+                    NUNOEL = -NUNOEL
+                    ZI(IAPRNS-1+NEC* (NUNOEL-1)+
+     &                L) = IOR(ZI(IAPRNS-1+NEC* (NUNOEL-1)+L),IEC)
+                  END IF
+   50           CONTINUE
+   60         CONTINUE
+            END IF
+   70     CONTINUE
+        END IF
+   80 CONTINUE
+
+   90 CONTINUE
+
+
+C --- BOUCLE SUR LES SUPERELEMENTS :
+C     ----------------------------
+      IF (NBSSA.GT.0) THEN
+
+        CALL JEVEUO(LIGREL(1:8)//'.SSSA','L',IASSSA)
+
+C ---   LE SEUL DDL PORTE PAR UN NOEUD DE LAGRANGE EST 'LAGR' :
+C       ----------------------------------------------------
+        CALL JEVEUO(NOMA//'.NOMACR','L',IANMCR)
+
+        CALL JEVEUO(JEXNUM('&CATA.GD.NOMCMP',GD),'L',IANCMP)
+        CALL JELIRA(JEXNUM('&CATA.GD.NOMCMP',GD),'LONMAX',LGNCMP,K8BID)
+        ICMP = INDIK8(ZK8(IANCMP),'LAGR',1,LGNCMP)
+        IF (ICMP.EQ.0) THEN
+          CALL UTMESS('F','CREPRN','ON NE TROUVE PAS '//
+     &                ' LE CMP "LAGR" DANS LA GRANDEUR')
+        END IF
+        IF (ICMP.GT.30) THEN
+          CALL UTMESS('F','CREPRN','IL EST IMPREVU '//
+     &                'D AVOIR LE CMP "LAGR" AU DELA DE 30')
+        END IF
+
+        ICODLA = 2**ICMP
+
+        DO 120,IMA = 1,NBSMA
+          NOMACR = ZK8(IANMCR-1+IMA)
+          CALL DISMOI('F','NOM_NUME_DDL',NOMACR,'MACR_ELEM_STAT',IBID,
+     &                NUM2,IER)
+          CALL JEVEUO(NOMACR//'.CONX','L',IACONX)
+          CALL JEVEUO(JEXNUM(NUM2//'.NUME.PRNO',1),'L',IAPRNO)
+          IF (ZI(IASSSA-1+IMA).EQ.1) THEN
+            CALL JEVEUO(JEXNUM(NOMA//'.SUPMAIL',IMA),'L',IAMAIL)
+            CALL JELIRA(JEXNUM(NOMA//'.SUPMAIL',IMA),'LONMAX',NBNM,
+     &                  K8BID)
+
+            DO 110,I = 1,NBNM
+              INO = ZI(IAMAIL-1+I)
+              INOLD = ZI(IACONX-1+3* (I-1)+2)
+              IF (INO.GT.NM) THEN
+
+C ---        CAS D'UN NOEUD DE LAGRANGE :
+C            --------------------------
+                ZI(IAPRNM-1+NEC* (INO-1)+1) = IOR(ZI(IAPRNM-1+NEC* (INO-
+     &            1)+1),ICODLA)
+              ELSE IF (INOLD.GT.0) THEN
+
+C ---        CAS D'UN NOEUD PHYSIQUE DU MAILLAGE :
+C            -----------------------------------
+                DO 100,IEC = 1,NEC
+                  ZI(IAPRNM-1+NEC* (INO-1)+IEC) = IOR(ZI(IAPRNM-1+
+     &              NEC* (INO-1)+IEC),ZI(IAPRNO-1+ (NEC+2)* (INOLD-1)+2+
+     &              IEC))
+  100           CONTINUE
+              ELSE
+                CALL UTMESS('F','CREPRN','ON TRAITE UN SUPERELEMENT '//
+     &                      ' ET LE NOEUD COURANT N''EST NI UN NOEUD '//
+     &                     'LAGRANGE, NI UN NOEUD PHYSQIUE DU MAILLAGE.'
+     &                      )
+              END IF
+  110       CONTINUE
+          END IF
+  120   CONTINUE
+      END IF
+      CALL JEDETR('&MAILLA            .NOMA')
+
+      CALL JEDEMA()
+
+      END

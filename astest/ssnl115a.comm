@@ -1,0 +1,155 @@
+# MODIF  DATE 07/06/2002   AUTEUR DURAND C.DURAND 
+# TITRE POUTRE EN FLEXION SIMPLE
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+#======================================================================
+
+DEBUT( CODE=_F(  NOM = 'SSNL115A',NIV_PUB_WEB='INTERNET') )
+
+MA=LIRE_MAILLAGE( )
+
+MO=AFFE_MODELE(
+           MAILLAGE=MA,
+           VERIF=('MAILLE', 'NOEUD',),
+          
+                AFFE=_F( GROUP_MA = ( 'STICK', ),
+                PHENOMENE = 'MECANIQUE',
+                MODELISATION = 'POU_D_TG')
+                )
+
+MAT=DEFI_MATERIAU( 
+      ELAS=_F(  E = 2.100000E+05,   NU = 3.000000E-01,  RHO = 7.850000E-06,
+             ALPHA = 6.700000E-06),
+   ECRO_LINE=_F(  D_SIGM_EPSI = 1.050000E+05,  SY = 2.400000E+02),
+    ECRO_FLEJOU=_F(  EP = 1.050000E+05,  SU = 3.600000E+02,
+                  SY = 2.400000E+02,  PUISS = 6.500000E-01),
+    VMIS_POUTRE=_F( 
+       NP = 2.234400E+05, MEY = 3.336336E+06, MPY = 5.258208E+06,
+       CAY = 8.100000E-01, CBY = 3.000000E-03, MEZ = 1.490016E+06,
+       MPZ = 2.650968E+06, CAZ = 8.100000E-01, CBZ = 3.000000E-03,
+       MPX = 5.474160E+05)
+)
+
+CHMAT=AFFE_MATERIAU(   MAILLAGE=MA,
+                 MODELE=MO,
+                
+                  AFFE=_F(  GROUP_MA = ( 'STICK', ),
+                    MATER = MAT)
+                      )
+
+CAREL=AFFE_CARA_ELEM(
+       MODELE=MO,
+      
+     POUTRE=_F( SECTION = 'GENERALE',
+      GROUP_MA = ( 'STICK', ),
+      CARA = ( 'A', 'IY', 'IZ', 'AY',
+             'AZ', 'EY', 'EZ', 'JX',
+             'JG', 'IYR2', 'IZR2',),
+      VALE = ( 9.310000E+02, 6.880870E+05, 1.762940E+05, 1.170200E+00,
+              1.196400E+00, 2.344600E+01, 0.000000E+00, 1.520600E+04,
+              5.603900E+06, 0.000000E+00, 7.955270E+06, ))
+                       )
+
+ENCASTRT=AFFE_CHAR_MECA(
+        MODELE=MO,
+       
+       DDL_IMPO=_F(  NOEUD = ( 'N1', ),
+   DX = 0.0,   DY = 0.0,   DZ = 0.0,
+   DRX = 0.0,   DRY = 0.0,   DRZ = 0.0)
+)
+
+CHARGT=AFFE_CHAR_MECA(
+        MODELE=MO,
+       
+       FORCE_NODALE=_F(  NOEUD = ( 'N2', 'N3', ),
+         FX = 500.0)
+)
+
+RELINE=10
+
+NBIGLOB=10
+
+NBIINTE=20
+
+RESIINTE=1.0E-05
+
+L_INST=DEFI_LIST_REEL( 
+           DEBUT=0.0,  INTERVALLE=_F( JUSQU_A = 1.0, PAS = 1.) )
+
+RESU=STAT_NON_LINE( 
+                            MODELE=MO,
+                        CHAM_MATER=CHMAT,
+                         CARA_ELEM=CAREL,EXCIT=(
+                             _F( 
+                CHARGE = ENCASTRT), _F( 
+                CHARGE = CHARGT)),
+                         INCREMENT=_F( 
+                LIST_INST = L_INST,
+                NUME_INST_FIN = 1),
+                            NEWTON=_F( 
+                MATRICE = 'TANGENTE',
+                REAC_ITER = 1),
+                       CONVERGENCE=_F( 
+                ITER_GLOB_MAXI = NBIGLOB,
+                RESO_INTE = 'RUNGE_KUTTA_4',
+                ITER_INTE_MAXI = NBIINTE),
+                         COMP_INCR=_F( 
+                RELATION = 'VMIS_POU_FLEJOU',
+                DEFORMATION = 'PETIT',
+                GROUP_MA = (
+                  'STICK',  )),
+                     RECH_LINEAIRE=_F( 
+                ITER_LINE_MAXI = RELINE)
+              )
+
+RESU=CALC_ELEM(reuse=RESU,    RESULTAT=RESU,
+                        MODELE=MO,
+                    CHAM_MATER=CHMAT,
+                     CARA_ELEM=CAREL,
+                    TOUT_ORDRE='OUI',
+                        OPTION='VARI_ELNO_ELGA',
+                      GROUP_MA='STICK'   )
+
+RESU=CALC_NO(reuse=RESU,    RESULTAT=RESU,
+                  TOUT_ORDRE='OUI',
+                      OPTION='VARI_NOEU_ELGA',
+                    GROUP_MA='STICK'      )
+
+# ----------------------------------------------------------
+TEST_RESU(RESU=(
+   _F(   RESULTAT = RESU,
+           NOM_CHAM = 'VARI_NOEU_ELGA',
+           NOM_CMP = 'V7',
+           NUME_ORDRE = 1,
+           NOEUD = 'N1',
+           REFERENCE = 'NON_REGRESSION',
+           VALE = 8.99996E-01,
+           PRECISION = 1.E-3),
+   _F(   RESULTAT = RESU,
+           NOM_CHAM = 'VARI_NOEU_ELGA',
+           NOM_CMP = 'V7',
+           NUME_ORDRE = 1,
+           NOEUD = 'N2',
+           REFERENCE = 'NON_REGRESSION',
+           VALE = 3.01879E-01,
+           PRECISION = 1.E-3))
+)
+
+FIN()
+#
+#

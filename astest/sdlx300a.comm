@@ -1,0 +1,973 @@
+# MODIF  DATE 07/06/2002   AUTEUR DURAND C.DURAND 
+# TITRE TUYAUTERIE SOUMISE A UNE EXCITATION EN DEPLACEMENT,
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+# VITESSE ACCELERATION
+#
+DEBUT( CODE=_F(  NOM = 'SDLX300A',NIV_PUB_WEB='INTERNET')  )
+
+#
+MA=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='NON'),  )
+
+#
+MA=DEFI_GROUP( reuse=MA,        MAILLAGE=MA,
+                           CREA_GROUP_NO=_F( GROUP_MA = ( 'LIGN',
+                                                       'COUDE1',
+                                                       'COUDE2',
+                                                       'DROIT1',
+                                                       'LRESSORT',
+                                                     ))
+                        )
+
+#
+# DEFINITION DES PARAMETRES GEOMETRIQUE POUR LES TUYAUX
+#
+# RAYON EXTERIEUR DU TUYAU
+#
+R1=DEFI_VALEUR(    R8=0.024 )
+
+#
+# EPAISSEUR DU TUYAU
+#
+EP1=DEFI_VALEUR(    R8=0.005  )
+
+#
+# RAYON DE COURBURE
+#
+RCOURB=DEFI_VALEUR(    R8=0.170 )
+
+#
+# ANGLE DU COUDE
+#
+ANGL1=DEFI_VALEUR(    R8=90. )
+
+#
+# RAYON MOYEN
+#
+RM=DEFI_VALEUR(    R8=EVAL("""R1 - (EP1/2.)  """))
+
+#
+# COEFFICIENT DE FLEXIBILITE
+# ATTENTION, SELON LE RCCM, COEF_FLEX ET INDI SONT TOUJOURS SUPERIEURS
+# OU EGAUX A 1. CE N'EST PAS LE CAS DANS CE CAS TEST
+
+H=DEFI_VALEUR(    R8=EVAL("""(EP1*RCOURB)/(RM*RM)  """))
+
+#
+C_FLE1=DEFI_VALEUR(    R8=EVAL("""1.65/H  """))
+
+#
+# INDICE D'INTENSIFICATION DE CONTRAINTES
+#
+IND1=DEFI_VALEUR(    R8=EVAL("""0.9/(H**0.666666)"""))
+
+#
+# DEFINITION DES PARAMETRES POUR LES RAIDEURS DES RESSORTS
+#
+KTXYZ=80.E3
+
+KRXYZ=DEFI_VALEUR(    R8=EVAL("""1.2*180./PI """) )
+
+#
+# DEFINITION DU PARAMETRE POUR LA MASSE PONCTUELLE
+#
+MZ=DEFI_VALEUR(    R8=10. )
+
+#
+# DEFINITIN DU MODELE
+#
+MO=AFFE_MODELE(    MAILLAGE=MA,AFFE=(
+                                _F( PHENOMENE = 'MECANIQUE',
+                                      GROUP_MA = 'DROIT1',
+                                      MODELISATION = 'POU_D_T'),
+                                     _F( PHENOMENE = 'MECANIQUE',
+                                      GROUP_MA = ('COUDE1', 'COUDE2',),
+                                      MODELISATION = 'POU_C_T'),
+                                     _F( PHENOMENE = 'MECANIQUE',
+                                      GROUP_MA = 'LRESSORT',
+                                      MODELISATION = 'DIS_TR'),
+                                     _F( PHENOMENE = 'MECANIQUE',
+                                      GROUP_MA = 'MP4',
+                                      MODELISATION = 'DIS_T'))
+                        )
+
+#
+# CARACTERISTIQUES DES POUTRES, ET AUTRES ELEMENTS
+#
+CARAELEM=AFFE_CARA_ELEM(      MODELE=MO,
+#
+# LES POUTRES
+                                 POUTRE=_F(  GROUP_MA = 'LIGN',
+                                          SECTION = 'CERCLE',
+                                          CARA = ('R',  'EP',),
+                                          VALE = ( R1,   EP1,)),
+#
+# LES COUDES
+                               DEFI_ARC=_F(  GROUP_MA = ('COUDE1', 'COUDE2',),
+                                          RAYON = RCOURB,
+                                          ORIE_ARC = ANGL1,
+                                          COEF_FLEX = C_FLE1,
+                                          INDI_SIGM = IND1),DISCRET=(
+#
+# LES RESSORTS
+                                _F(  GROUP_MA = 'LRESSORT',
+                                          REPERE = 'GLOBAL',
+                                          CARA = 'K_TR_D_N',
+                                          VALE = ( KTXYZ,
+                                                       KTXYZ,
+                                                       KTXYZ,
+                                                       KRXYZ,
+                                                       KRXYZ,
+                                                       KRXYZ,
+                                                     )),
+#
+# LA MASSE
+                                        _F(  GROUP_MA = 'MP4',
+                                          REPERE = 'GLOBAL',
+                                          CARA = 'M_T_D_N',
+                                          VALE = MZ))
+                          )
+
+#
+# DEFINITION DU MATERIAU
+#
+MAT=DEFI_MATERIAU(    ELAS=_F( E = 1.9E11,
+                                    NU = 0.3,
+                                    RHO = 7960.)
+                          )
+
+#
+# AFFECTATION DU MATERIAU
+#
+#
+CHMAT=AFFE_MATERIAU(    MAILLAGE=MA,
+                                  AFFE=_F( TOUT = 'OUI',
+                                        MATER = MAT)
+                          )
+
+#
+# CALCUL DE LA BASE MODALE
+#
+#
+# CONDITIONS AUX LIMITES
+#
+CH1A=AFFE_CHAR_MECA(      MODELE=MO,DDL_IMPO=(
+                                _F(  GROUP_NO = ('P7',),
+                                           DX = 0.,
+                                           DY = 0.,
+                                           DZ = 0.,
+                                           DRX = 0.,
+                                           DRY = 0.,
+                                           DRZ = 0.),
+                                _F(  GROUP_NO = ('P1',),
+                                           DX = 0.,
+                                           DY = 0.,
+                                           DZ = 0.))
+                            )
+
+#
+# CALCUL DES MATRICES ELEMENTAIRES DE RIGIDITES
+#
+RIGIELEM=CALC_MATR_ELEM(        MODELE=MO,
+                                   OPTION='RIGI_MECA',
+                                   CHARGE=CH1A,
+                               CHAM_MATER=CHMAT,
+                                CARA_ELEM=CARAELEM
+                           )
+
+#
+# CALCUL DES MATRICES ELEMENTAIRES DE MASSES
+#
+MASSELEM=CALC_MATR_ELEM(        MODELE=MO,
+                                   OPTION='MASS_MECA',
+                                   CHARGE=CH1A,
+                               CHAM_MATER=CHMAT,
+                                CARA_ELEM=CARAELEM
+                           )
+
+#
+# NUMEROTATIOM
+#
+NUMEDDL=NUME_DDL(    MATR_RIGI=RIGIELEM )
+
+#
+# MATRICE DE RIGIDITE
+#
+RIGIDITE=ASSE_MATRICE(    MATR_ELEM=RIGIELEM,
+                             NUME_DDL=NUMEDDL
+                        )
+
+#
+# MATRICE DE MASSE
+#
+MASSE=ASSE_MATRICE(    MATR_ELEM=MASSELEM,
+                             NUME_DDL=NUMEDDL
+                        )
+
+#
+# CALCUL MODAL
+#
+MODE1=MODE_ITER_SIMULT(       MATR_A=RIGIDITE,
+                                   MATR_B=MASSE,
+                                CALC_FREQ=_F( NMAX_FREQ = 6,
+                                           OPTION = 'PLUS_PETITE')
+                            )
+
+#
+MODE1=CALC_ELEM( reuse=MODE1,       MODELE=MO,
+                           RESULTAT=MODE1,
+                         CHAM_MATER=CHMAT,
+                          CARA_ELEM=CARAELEM,
+                             OPTION=( 'SIEF_ELGA_DEPL',
+                                      'EFGE_ELNO_DEPL', )
+                     )
+
+#
+MODE1=CALC_NO( reuse=MODE1,       MODELE=MO,     RESULTAT=MODE1,
+                           OPTION='FORC_NODA',
+                       CHAM_MATER=CHMAT,
+                        CARA_ELEM=CARAELEM
+                   )
+
+#
+MODE1=CALC_NO( reuse=MODE1,       MODELE=MO,     RESULTAT=MODE1,
+                           OPTION='REAC_NODA',
+                       CHAM_MATER=CHMAT,
+                        CARA_ELEM=CARAELEM
+                   )
+
+#
+# TEST_RESU
+#
+# MODES PROPRES
+#
+TEST_RESU(  RESU=_F( RESULTAT = MODE1,
+                   PARA = 'FREQ',
+                   CRITERE = 'RELATIF',
+                   PRECISION = 0.005,
+                   NUME_ORDRE = 1,
+                   VALE = 16.848)
+          )
+
+#
+TEST_RESU(  RESU=_F( RESULTAT = MODE1,
+                   PARA = 'FREQ',
+                   CRITERE = 'RELATIF',
+                   PRECISION = 0.005,
+                   NUME_ORDRE = 2,
+                   VALE = 20.762)
+          )
+
+#
+TEST_RESU(  RESU=_F( RESULTAT = MODE1,
+                   PARA = 'FREQ',
+                   CRITERE = 'RELATIF',
+                   PRECISION = 0.005,
+                   NUME_ORDRE = 3,
+                   VALE = 22.386)
+          )
+
+#
+TEST_RESU(  RESU=_F( RESULTAT = MODE1,
+                   PARA = 'FREQ',
+                   CRITERE = 'RELATIF',
+                   PRECISION = 0.005,
+                   NUME_ORDRE = 4,
+                   VALE = 44.822)
+          )
+
+#
+TEST_RESU(  RESU=_F( RESULTAT = MODE1,
+                   PARA = 'FREQ',
+                   CRITERE = 'RELATIF',
+                   PRECISION = 0.005,
+                   NUME_ORDRE = 5,
+                   VALE = 52.218)
+          )
+
+#
+TEST_RESU(  RESU=_F( RESULTAT = MODE1,
+                   PARA = 'FREQ',
+                   CRITERE = 'RELATIF',
+                   PRECISION = 0.005,
+                   NUME_ORDRE = 6,
+                   VALE = 79.692)
+          )
+
+#
+# MASSE EFFECTIVES DX
+#
+TEST_RESU(  RESU=_F( RESULTAT = MODE1,
+                   PARA = 'MASS_EFFE_DX',
+                   CRITERE = 'RELATIF',
+                   PRECISION = 0.015,
+                   NUME_ORDRE = 1,
+                   VALE = 1.6134)
+          )
+
+#
+TEST_RESU(  RESU=_F( RESULTAT = MODE1,
+                   PARA = 'MASS_EFFE_DX',
+                   CRITERE = 'RELATIF',
+                   PRECISION = 0.11,
+                   NUME_ORDRE = 2,
+                   VALE = .44041)
+          )
+
+#
+TEST_RESU(  RESU=_F( RESULTAT = MODE1,
+                   PARA = 'MASS_EFFE_DX',
+                   CRITERE = 'RELATIF',
+                   PRECISION = 0.005,
+                   NUME_ORDRE = 3,
+                   VALE = 18.187)
+          )
+
+#
+TEST_RESU(  RESU=_F( RESULTAT = MODE1,
+                   PARA = 'MASS_EFFE_DX',
+                   CRITERE = 'RELATIF',
+                   PRECISION = 0.005,
+                   NUME_ORDRE = 4,
+                   VALE = 1.06280E-02)
+          )
+
+#
+TEST_RESU(  RESU=_F( RESULTAT = MODE1,
+                   PARA = 'MASS_EFFE_DX',
+                   CRITERE = 'RELATIF',
+                   PRECISION = 0.037,
+                   NUME_ORDRE = 5,
+                   VALE = 3.85565E-02)
+          )
+
+#
+TEST_RESU(  RESU=_F( RESULTAT = MODE1,
+                   PARA = 'MASS_EFFE_DX',
+                   CRITERE = 'RELATIF',
+                   PRECISION = 0.038,
+                   NUME_ORDRE = 6,
+                   VALE = 7.77986E-02)
+          )
+
+#
+# MASSE EFFECTIVES DY
+#
+TEST_RESU(  RESU=_F( RESULTAT = MODE1,
+                   PARA = 'MASS_EFFE_DY',
+                   CRITERE = 'RELATIF',
+                   PRECISION = 0.005,
+                   NUME_ORDRE = 1,
+                   VALE = 9.2479)
+          )
+
+#
+TEST_RESU(  RESU=_F( RESULTAT = MODE1,
+                   PARA = 'MASS_EFFE_DY',
+                   CRITERE = 'RELATIF',
+                   PRECISION = 0.005,
+                   NUME_ORDRE = 2,
+                   VALE = 11.224)
+          )
+
+#
+TEST_RESU(  RESU=_F( RESULTAT = MODE1,
+                   PARA = 'MASS_EFFE_DY',
+                   CRITERE = 'RELATIF',
+                   PRECISION = 0.11,
+                   NUME_ORDRE = 3,
+                   VALE = .17076)
+          )
+
+#
+TEST_RESU(  RESU=_F( RESULTAT = MODE1,
+                   PARA = 'MASS_EFFE_DY',
+                   CRITERE = 'RELATIF',
+                   PRECISION = 0.02,
+                   NUME_ORDRE = 4,
+                   VALE = .67896)
+          )
+
+#
+TEST_RESU(  RESU=_F( RESULTAT = MODE1,
+                   PARA = 'MASS_EFFE_DY',
+                   CRITERE = 'RELATIF',
+                   PRECISION = 0.11,
+                   NUME_ORDRE = 5,
+                   VALE = 1.17843E-03)
+          )
+
+#
+TEST_RESU(  RESU=_F( RESULTAT = MODE1,
+                   PARA = 'MASS_EFFE_DY',
+                   CRITERE = 'RELATIF',
+                   PRECISION = 0.24,
+                   NUME_ORDRE = 6,
+                   VALE = 4.24599E-02)
+          )
+
+#
+# MASSE EFFECTIVES DZ
+#
+TEST_RESU(  RESU=_F( RESULTAT = MODE1,
+                   PARA = 'MASS_EFFE_DZ',
+                   CRITERE = 'RELATIF',
+                   PRECISION = 0.005,
+                   NUME_ORDRE = 1,
+                   VALE = 13.324)
+          )
+
+#
+TEST_RESU(  RESU=_F( RESULTAT = MODE1,
+                   PARA = 'MASS_EFFE_DZ',
+                   CRITERE = 'RELATIF',
+                   PRECISION = 0.01,
+                   NUME_ORDRE = 2,
+                   VALE = 11.625)
+          )
+
+#
+TEST_RESU(  RESU=_F( RESULTAT = MODE1,
+                   PARA = 'MASS_EFFE_DZ',
+                   CRITERE = 'RELATIF',
+                   PRECISION = 0.05,
+                   NUME_ORDRE = 3,
+                   VALE = 2.8852)
+          )
+
+#
+TEST_RESU(  RESU=_F( RESULTAT = MODE1,
+                   PARA = 'MASS_EFFE_DZ',
+                   CRITERE = 'RELATIF',
+                   PRECISION = 0.04,
+                   NUME_ORDRE = 4,
+                   VALE = .41979)
+          )
+
+#
+TEST_RESU(  RESU=_F( RESULTAT = MODE1,
+                   PARA = 'MASS_EFFE_DZ',
+                   CRITERE = 'RELATIF',
+                   PRECISION = 0.005,
+                   NUME_ORDRE = 5,
+                   VALE = .25868)
+          )
+
+#
+TEST_RESU(  RESU=_F( RESULTAT = MODE1,
+                   PARA = 'MASS_EFFE_DZ',
+                   CRITERE = 'RELATIF',
+                   PRECISION = 0.005,
+                   NUME_ORDRE = 6,
+                   VALE = .65858)
+          )
+
+#
+# CAS DE CHARGE STATIQUE : 100G
+#
+# CONDITIONS AUX LIMITES
+#
+CH2A=AFFE_CHAR_MECA(       MODELE=MO,
+                              PESANTEUR=(981.,1.,0.,0.,)
+                          )
+
+#
+VEPES=CALC_VECT_ELEM(        CHARGE=CH2A,
+                               CARA_ELEM=CARAELEM,
+                              CHAM_MATER=CHMAT,
+                                  OPTION='CHAR_MECA'
+                          )
+
+#
+VECTAS=ASSE_VECTEUR(    VECT_ELEM=VEPES,
+                             NUME_DDL=NUMEDDL
+                        )
+
+#
+MASS_R=CALC_MATR_ELEM(        MODELE=MO,
+                                   OPTION='RIGI_MECA',
+                                   CHARGE=CH1A,
+                               CHAM_MATER=CHMAT,
+                                CARA_ELEM=CARAELEM
+                          )
+
+#
+MASSER=ASSE_MATRICE(    MATR_ELEM=MASS_R,
+                             NUME_DDL=NUMEDDL
+                        )
+
+#
+MASSER=FACT_LDLT( reuse=MASSER,   MATR_ASSE=MASSER )
+
+#
+DEPLPES=RESO_LDLT(    MATR_FACT=MASSER,
+                           CHAM_NO=VECTAS
+                     )
+
+#
+TEST_RESU(CHAM_NO=(   _F(  CHAM_GD = DEPLPES,
+                        CRITERE = 'RELATIF',
+                        PRECISION = 0.005,
+                        GROUP_NO = 'P2',
+                        NOM_CMP = 'DX',
+                        VALE = 1.00055E-04),
+                      _F(  CHAM_GD = DEPLPES,
+                        CRITERE = 'RELATIF',
+                        PRECISION = 0.015,
+                        GROUP_NO = 'P2',
+                        NOM_CMP = 'DY',
+                        VALE = 3.82279E-03),
+                      _F(  CHAM_GD = DEPLPES,
+                        CRITERE = 'RELATIF',
+                        PRECISION = 0.01,
+                        GROUP_NO = 'P2',
+                        NOM_CMP = 'DZ',
+                        VALE = -6.60683E-03),
+                      _F(  CHAM_GD = DEPLPES,
+                        CRITERE = 'RELATIF',
+                        PRECISION = 0.005,
+                        GROUP_NO = 'P3',
+                        NOM_CMP = 'DX',
+                        VALE = 3.16941E-02),
+                      _F(  CHAM_GD = DEPLPES,
+                        CRITERE = 'RELATIF',
+                        PRECISION = 0.01,
+                        GROUP_NO = 'P3',
+                        NOM_CMP = 'DY',
+                        VALE = 7.52537E-03),
+                      _F(  CHAM_GD = DEPLPES,
+                        CRITERE = 'RELATIF',
+                        PRECISION = 0.015,
+                        GROUP_NO = 'P3',
+                        NOM_CMP = 'DZ',
+                        VALE = 1.03203E-02),
+                      _F(  CHAM_GD = DEPLPES,
+                        CRITERE = 'RELATIF',
+                        PRECISION = 0.015,
+                        GROUP_NO = 'P4',
+                        NOM_CMP = 'DX',
+                        VALE = 4.83027E-02),
+                      _F(  CHAM_GD = DEPLPES,
+                        CRITERE = 'RELATIF',
+                        PRECISION = 0.015,
+                        GROUP_NO = 'P4',
+                        NOM_CMP = 'DY',
+                        VALE = 5.55611E-03),
+                      _F(  CHAM_GD = DEPLPES,
+                        CRITERE = 'RELATIF',
+                        PRECISION = 0.015,
+                        GROUP_NO = 'P4',
+                        NOM_CMP = 'DZ',
+                        VALE = 1.03172E-02),
+                      _F(  CHAM_GD = DEPLPES,
+                        CRITERE = 'RELATIF',
+                        PRECISION = 0.005,
+                        GROUP_NO = 'P5',
+                        NOM_CMP = 'DX',
+                        VALE = 6.16297E-02),
+                      _F(  CHAM_GD = DEPLPES,
+                        CRITERE = 'RELATIF',
+                        PRECISION = 0.015,
+                        GROUP_NO = 'P5',
+                        NOM_CMP = 'DY',
+                        VALE = 3.77700E-03),
+                      _F(  CHAM_GD = DEPLPES,
+                        CRITERE = 'RELATIF',
+                        PRECISION = 0.015,
+                        GROUP_NO = 'P5',
+                        NOM_CMP = 'DZ',
+                        VALE = 1.03141E-02),
+                      _F(  CHAM_GD = DEPLPES,
+                        CRITERE = 'RELATIF',
+                        PRECISION = 0.005,
+                        GROUP_NO = 'P6',
+                        NOM_CMP = 'DX',
+                        VALE = 4.52781E-02),
+                      _F(  CHAM_GD = DEPLPES,
+                        CRITERE = 'RELATIF',
+                        PRECISION = 0.02,
+                        GROUP_NO = 'P6',
+                        NOM_CMP = 'DY',
+                        VALE = -4.51630E-06),
+                      _F(  CHAM_GD = DEPLPES,
+                        CRITERE = 'RELATIF',
+                        PRECISION = 0.02,
+                        GROUP_NO = 'P6',
+                        NOM_CMP = 'DZ',
+                        VALE = 5.63300E-03))
+          )
+
+#
+# RECOMBINAISON MODALE QUADRATIQUE
+#
+TABMASS=POST_ELEM(       MODELE=MO,
+                        CHAM_MATER=CHMAT,
+                         CARA_ELEM=CARAELEM,
+                         MASS_INER=_F(  TOUT = 'OUI')
+                    )
+
+#
+#
+A1=DEFI_VALEUR(    R8=EVAL("""4. * PI * PI * 48.E-3
+                                 """)
+                     )
+
+#
+A2=DEFI_VALEUR(    R8=EVAL("""2. * PI * 10. * 3.
+                                 """)
+                     )
+
+#
+A3=DEFI_VALEUR(    R8=EVAL("""120. * 9.81
+                                 """)
+                     )
+
+#
+# DEFINITION DE L ACCELERATION
+#
+#
+# DEFINITION DES BORNES FREQUENTIELLES
+#
+F0=DEFI_VALEUR(     R8=1.    )
+
+F1=DEFI_VALEUR(     R8=10.   )
+
+F2=DEFI_VALEUR(     R8=63.   )
+
+F3=DEFI_VALEUR(     R8=1000. )
+
+#
+#
+# INTERSPECTRE D EXCITATION
+#
+SPECT=DEFI_FONCTION(       NOM_PARA='FREQ',
+                               NOM_RESU='ACCE',
+                               INTERPOL='LIN',
+                             PROL_DROITE='CONSTANT',
+                            PROL_GAUCHE='CONSTANT',
+                                   VALE=( F0, A1,
+                                          F1, A2,
+                                          F2, A3,
+                                          F3, A3,
+                                        )
+                        )
+
+SPECT_X=DEFI_NAPPE(   NOM_PARA='AMOR',
+                          INTERPOL='LIN',
+                              PARA=( 0.0,
+                                   ),
+                          FONCTION=( SPECT,
+                                   )
+                      )
+
+#
+SISM=COMB_SISM_MODAL(   MODE_MECA=MODE1,
+                             AMOR_REDUIT=(0.0,  0.0,
+                                          0.0,  0.0,
+                                          0.0,  0.0,
+                                       ),
+                             MASS_INER=TABMASS,
+                                 EXCIT=_F( MONO_APPUI = 'OUI',
+                                        AXE = ( 1.,  0.,  0., ),
+                                        SPEC_OSCI = SPECT_X,
+                                        NATURE = 'ACCE'),
+                             COMB_MODE=_F( TYPE = 'CQC'),
+                                OPTION=('DEPL',
+                                        'REAC_NODA',
+                                        'EFGE_ELNO_DEPL',
+                                        'SIEF_ELGA_DEPL',
+                                       ),
+                             IMPRESSION=_F(  NIVEAU = 'SPEC_OSCI')
+                        )
+
+#
+#
+DEPL_MO2=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
+NOM_CHAM='REAC_NODA', RESULTAT=SISM,
+                       NOEUD_CMP=( 'DIR', 'X', ),
+                       TITRE='REACTIONS NODALES'
+                     )
+
+#
+DEPL_MO3=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='ELNO_SIEF_R',
+NOM_CHAM='EFGE_ELNO_DEPL', RESULTAT=SISM,
+                       NOEUD_CMP=( 'DIR', 'X', ),
+                       TITRE='CONTRAINTE'
+                     )
+
+#
+#
+# DEPL_MO1 : DEPLACEMENTS
+# DEPL_MO2 : REACTIONS
+# DEPL_MO3 : EFFORTS GENERALISES
+#
+TEST_RESU(RESU=( 
+         _F(  RESULTAT = SISM,  NOM_CHAM = 'DEPL',  NOEUD_CMP = ('DIR','X',),
+           PRECISION = 0.0075,
+           GROUP_NO = 'P2',   NOM_CMP = 'DX',  VALE = 1.85920E-05),
+         _F(  RESULTAT = SISM,  NOM_CHAM = 'DEPL',  NOEUD_CMP = ('DIR','X',),
+           PRECISION = 0.0075,
+           GROUP_NO = 'P2',   NOM_CMP = 'DY',  VALE = 6.76520E-03),
+         _F(  RESULTAT = SISM,  NOM_CHAM = 'DEPL',  NOEUD_CMP = ('DIR','X',),
+           PRECISION = 0.013,
+           GROUP_NO = 'P2',   NOM_CMP = 'DZ',  VALE = 1.00366E-02),
+         _F(  RESULTAT = SISM,  NOM_CHAM = 'DEPL',  NOEUD_CMP = ('DIR','X',),
+           PRECISION = 0.011,
+           GROUP_NO = 'P3',   NOM_CMP = 'DX',  VALE = 1.09177E-02),
+         _F(  RESULTAT = SISM,  NOM_CHAM = 'DEPL',  NOEUD_CMP = ('DIR','X',),
+           PRECISION = 0.0075,
+           GROUP_NO = 'P3',   NOM_CMP = 'DY',  VALE = 6.55542E-03),
+         _F(  RESULTAT = SISM,  NOM_CHAM = 'DEPL',  NOEUD_CMP = ('DIR','X',),
+           PRECISION = 0.012,
+           GROUP_NO = 'P3',   NOM_CMP = 'DZ',  VALE = 7.57382E-03),
+         _F(  RESULTAT = SISM,  NOM_CHAM = 'DEPL',  NOEUD_CMP = ('DIR','X',),
+           PRECISION = 0.01,
+           GROUP_NO = 'P4',   NOM_CMP = 'DX',  VALE = 1.72152E-02),
+         _F(  RESULTAT = SISM,  NOM_CHAM = 'DEPL',  NOEUD_CMP = ('DIR','X',),
+           PRECISION = 0.0040,
+           GROUP_NO = 'P4',   NOM_CMP = 'DY',  VALE = 5.02877E-03),
+         _F(  RESULTAT = SISM,  NOM_CHAM = 'DEPL',  NOEUD_CMP = ('DIR','X',),
+           PRECISION = 0.012,
+           GROUP_NO = 'P4',   NOM_CMP = 'DZ',  VALE = 7.57533E-03),
+         _F(  RESULTAT = SISM,  NOM_CHAM = 'DEPL',  NOEUD_CMP = ('DIR','X',),
+           PRECISION = 0.01,
+           GROUP_NO = 'P5',   NOM_CMP = 'DX',  VALE = 2.25902E-02),
+         _F(  RESULTAT = SISM,  NOM_CHAM = 'DEPL',  NOEUD_CMP = ('DIR','X',),
+           PRECISION = 0.002,
+           GROUP_NO = 'P5',   NOM_CMP = 'DY',  VALE = 3.39792E-03),
+         _F(  RESULTAT = SISM,  NOM_CHAM = 'DEPL',  NOEUD_CMP = ('DIR','X',),
+           PRECISION = 0.012,
+           GROUP_NO = 'P5',   NOM_CMP = 'DZ',  VALE = 7.57428E-03),
+         _F(  RESULTAT = SISM,  NOM_CHAM = 'DEPL',  NOEUD_CMP = ('DIR','X',),
+           PRECISION = 0.0075,
+           GROUP_NO = 'P6',   NOM_CMP = 'DX',  VALE = 1.69451E-02),
+         _F(  RESULTAT = SISM,  NOM_CHAM = 'DEPL',  NOEUD_CMP = ('DIR','X',),
+           PRECISION = 0.045,
+           GROUP_NO = 'P6',   NOM_CMP = 'DY',  VALE = 2.39839E-06),
+         _F(  RESULTAT = SISM,  NOM_CHAM = 'DEPL',  NOEUD_CMP = ('DIR','X',),
+           PRECISION = 0.022,
+           GROUP_NO = 'P6',   NOM_CMP = 'DZ',  VALE = 4.23766E-03),
+
+# REACTIONS
+         _F(  RESULTAT = SISM,  NOM_CHAM = 'REAC_NODA',  NOEUD_CMP = ('DIR','X',),
+           PRECISION = 0.0075,
+           GROUP_NO = 'P7',   NOM_CMP = 'DX',   VALE = 1284.2),
+         _F(  RESULTAT = SISM,  NOM_CHAM = 'REAC_NODA',  NOEUD_CMP = ('DIR','X',),
+           PRECISION = 0.045,
+           GROUP_NO = 'P7',   NOM_CMP = 'DY',   VALE = 307.87),
+         _F(  RESULTAT = SISM,  NOM_CHAM = 'REAC_NODA',  NOEUD_CMP = ('DIR','X',),
+           PRECISION = 0.059,
+           GROUP_NO = 'P7',   NOM_CMP = 'DZ',   VALE = 407.00),
+         _F(  RESULTAT = SISM,  NOM_CHAM = 'REAC_NODA',  NOEUD_CMP = ('DIR','X',),
+           PRECISION = 0.033,
+           GROUP_NO = 'P7',   NOM_CMP = 'DRX',  VALE = 374.78),
+         _F(  RESULTAT = SISM,  NOM_CHAM = 'REAC_NODA',  NOEUD_CMP = ('DIR','X',),
+           PRECISION = 0.0075,
+           GROUP_NO = 'P7',   NOM_CMP = 'DRY',  VALE = 230.14),
+         _F(  RESULTAT = SISM,  NOM_CHAM = 'REAC_NODA',  NOEUD_CMP = ('DIR','X',),
+           PRECISION = 0.01,
+           GROUP_NO = 'P7',   NOM_CMP = 'DRZ',  VALE = 1431.7),
+
+# EFFORTS INTERNES A GAUCHE
+         _F(  RESULTAT = SISM, NOM_CHAM = 'EFGE_ELNO_DEPL', NOEUD_CMP = ('DIR','X',),
+           PRECISION = 0.0075,
+           MAILLE = 'M20',   GROUP_NO = 'P2',   NOM_CMP = 'N',  VALE = 2385.0),
+         _F(  RESULTAT = SISM, NOM_CHAM = 'EFGE_ELNO_DEPL', NOEUD_CMP = ('DIR','X',),
+           PRECISION = 0.05,
+           MAILLE = 'M20',   GROUP_NO = 'P2',   NOM_CMP = 'VY',  VALE = 227.5),
+         _F(  RESULTAT = SISM, NOM_CHAM = 'EFGE_ELNO_DEPL', NOEUD_CMP = ('DIR','X',),
+           PRECISION = 0.015,
+           MAILLE = 'M20',   GROUP_NO = 'P2',   NOM_CMP = 'VZ',  VALE = 518.3),
+         _F(  RESULTAT = SISM, NOM_CHAM = 'EFGE_ELNO_DEPL', NOEUD_CMP = ('DIR','X',),
+           PRECISION = 0.06,
+           MAILLE = 'M20',   GROUP_NO = 'P2',   NOM_CMP = 'MT',  VALE = .3067),
+         _F(  RESULTAT = SISM, NOM_CHAM = 'EFGE_ELNO_DEPL', NOEUD_CMP = ('DIR','X',),
+           PRECISION = 0.02,
+           MAILLE = 'M20',   GROUP_NO = 'P2',   NOM_CMP = 'MFY',  VALE = 798.4),
+         _F(  RESULTAT = SISM, NOM_CHAM = 'EFGE_ELNO_DEPL', NOEUD_CMP = ('DIR','X',),
+           PRECISION = 0.005,
+           MAILLE = 'M20',   GROUP_NO = 'P2',   NOM_CMP = 'MFZ',  VALE = 236.7),
+         _F(  RESULTAT = SISM, NOM_CHAM = 'EFGE_ELNO_DEPL', NOEUD_CMP = ('DIR','X',),
+           PRECISION = 0.02,
+           MAILLE = 'M34',   GROUP_NO = 'P3',   NOM_CMP = 'N',    VALE = 609.2),
+         _F(  RESULTAT = SISM, NOM_CHAM = 'EFGE_ELNO_DEPL', NOEUD_CMP = ('DIR','X',),
+           PRECISION = 0.07,
+           MAILLE = 'M34',   GROUP_NO = 'P3',   NOM_CMP = 'VY',   VALE = 255.5),
+         _F(  RESULTAT = SISM, NOM_CHAM = 'EFGE_ELNO_DEPL', NOEUD_CMP = ('DIR','X',),
+           PRECISION = 0.01,
+           MAILLE = 'M34',   GROUP_NO = 'P3',   NOM_CMP = 'VZ',   VALE = 2151.0),
+         _F(  RESULTAT = SISM, NOM_CHAM = 'EFGE_ELNO_DEPL', NOEUD_CMP = ('DIR','X',),
+           PRECISION = 0.005,
+           MAILLE = 'M34',   GROUP_NO = 'P3',   NOM_CMP = 'MT',   VALE = 361.1),
+         _F(  RESULTAT = SISM, NOM_CHAM = 'EFGE_ELNO_DEPL', NOEUD_CMP = ('DIR','X',),
+           PRECISION = 0.075,
+           MAILLE = 'M34',   GROUP_NO = 'P3',   NOM_CMP = 'MFY',  VALE = 141.7),
+         _F(  RESULTAT = SISM, NOM_CHAM = 'EFGE_ELNO_DEPL', NOEUD_CMP = ('DIR','X',),
+           PRECISION = 0.03,
+           MAILLE = 'M34',   GROUP_NO = 'P3',   NOM_CMP = 'MFZ',  VALE = 111.4),
+         _F(  RESULTAT = SISM, NOM_CHAM = 'EFGE_ELNO_DEPL', NOEUD_CMP = ('DIR','X',),
+           PRECISION = 0.015,
+           MAILLE = 'M39',   GROUP_NO = 'P4',   NOM_CMP = 'N',    VALE = 873.3),
+         _F(  RESULTAT = SISM, NOM_CHAM = 'EFGE_ELNO_DEPL', NOEUD_CMP = ('DIR','X',),
+           PRECISION = 0.02,
+           MAILLE = 'M39',   GROUP_NO = 'P4',   NOM_CMP = 'VY',   VALE = 377.7),
+         _F(  RESULTAT = SISM, NOM_CHAM = 'EFGE_ELNO_DEPL', NOEUD_CMP = ('DIR','X',),
+           PRECISION = 0.02,
+           MAILLE = 'M39',   GROUP_NO = 'P4',   NOM_CMP = 'VZ',   VALE = 2665.0),
+         _F(  RESULTAT = SISM, NOM_CHAM = 'EFGE_ELNO_DEPL', NOEUD_CMP = ('DIR','X',),
+           PRECISION = 0.005,
+           MAILLE = 'M39',   GROUP_NO = 'P4',   NOM_CMP = 'MT',   VALE = 361.7),
+         _F(  RESULTAT = SISM, NOM_CHAM = 'EFGE_ELNO_DEPL', NOEUD_CMP = ('DIR','X',),
+           PRECISION = 0.02,
+           MAILLE = 'M39',   GROUP_NO = 'P4',   NOM_CMP = 'MFY',  VALE = 608.1),
+         _F(  RESULTAT = SISM, NOM_CHAM = 'EFGE_ELNO_DEPL', NOEUD_CMP = ('DIR','X',),
+           PRECISION = 0.015,
+           MAILLE = 'M39',   GROUP_NO = 'P4',   NOM_CMP = 'MFZ',  VALE = 189.4),
+         _F(  RESULTAT = SISM, NOM_CHAM = 'EFGE_ELNO_DEPL', NOEUD_CMP = ('DIR','X',),
+           PRECISION = 0.055,
+           MAILLE = 'M44',   GROUP_NO = 'P5',   NOM_CMP = 'N',    VALE = 637.3),
+         _F(  RESULTAT = SISM, NOM_CHAM = 'EFGE_ELNO_DEPL', NOEUD_CMP = ('DIR','X',),
+           PRECISION = 0.04,
+           MAILLE = 'M44',   GROUP_NO = 'P5',   NOM_CMP = 'VY',   VALE = 448.9),
+         _F(  RESULTAT = SISM, NOM_CHAM = 'EFGE_ELNO_DEPL', NOEUD_CMP = ('DIR','X',),
+           PRECISION = 0.03,
+           MAILLE = 'M44',   GROUP_NO = 'P5',   NOM_CMP = 'VZ',   VALE = 1284.0),
+         _F(  RESULTAT = SISM, NOM_CHAM = 'EFGE_ELNO_DEPL', NOEUD_CMP = ('DIR','X',),
+           PRECISION = 0.005,
+           MAILLE = 'M44',   GROUP_NO = 'P5',   NOM_CMP = 'MT',   VALE = 361.5),
+         _F(  RESULTAT = SISM, NOM_CHAM = 'EFGE_ELNO_DEPL', NOEUD_CMP = ('DIR','X',),
+           PRECISION = 0.02,
+           MAILLE = 'M44',   GROUP_NO = 'P5',   NOM_CMP = 'MFY',  VALE = 341.6),
+         _F(  RESULTAT = SISM, NOM_CHAM = 'EFGE_ELNO_DEPL', NOEUD_CMP = ('DIR','X',),
+           PRECISION = 0.06,
+           MAILLE = 'M44',   GROUP_NO = 'P5',   NOM_CMP = 'MFZ',  VALE = 176.6),
+         _F(  RESULTAT = SISM, NOM_CHAM = 'EFGE_ELNO_DEPL', NOEUD_CMP = ('DIR','X',),
+           PRECISION = 0.045,
+           MAILLE = 'M58',   GROUP_NO = 'P6',   NOM_CMP = 'N',    VALE = 307.8),
+         _F(  RESULTAT = SISM, NOM_CHAM = 'EFGE_ELNO_DEPL', NOEUD_CMP = ('DIR','X',),
+           PRECISION = 0.02,
+           MAILLE = 'M58',   GROUP_NO = 'P6',   NOM_CMP = 'VY',   VALE = 1922.0),
+         _F(  RESULTAT = SISM, NOM_CHAM = 'EFGE_ELNO_DEPL', NOEUD_CMP = ('DIR','X',),
+           PRECISION = 0.065,
+           MAILLE = 'M58',   GROUP_NO = 'P6',   NOM_CMP = 'VZ',   VALE = 569.2),
+         _F(  RESULTAT = SISM, NOM_CHAM = 'EFGE_ELNO_DEPL', NOEUD_CMP = ('DIR','X',),
+           PRECISION = 0.01,
+           MAILLE = 'M58',   GROUP_NO = 'P6',   NOM_CMP = 'MT',   VALE = 230.6),
+         _F(  RESULTAT = SISM, NOM_CHAM = 'EFGE_ELNO_DEPL', NOEUD_CMP = ('DIR','X',),
+           PRECISION = 0.03,
+           MAILLE = 'M58',   GROUP_NO = 'P6',   NOM_CMP = 'MFY',  VALE = 142.0),
+         _F(  RESULTAT = SISM, NOM_CHAM = 'EFGE_ELNO_DEPL', NOEUD_CMP = ('DIR','X',),
+           PRECISION = 0.015,
+           MAILLE = 'M58',   GROUP_NO = 'P6',   NOM_CMP = 'MFZ',  VALE = 341.5),
+
+# EFFORTS INTERNES A DROITE
+         _F(  RESULTAT = SISM, NOM_CHAM = 'EFGE_ELNO_DEPL', NOEUD_CMP = ('DIR','X',),
+           PRECISION = 0.0075,
+           MAILLE = 'M21',   GROUP_NO = 'P2',   NOM_CMP = 'N',    VALE = 2387.0),
+         _F(  RESULTAT = SISM, NOM_CHAM = 'EFGE_ELNO_DEPL', NOEUD_CMP = ('DIR','X',),
+           PRECISION = 0.025,
+           MAILLE = 'M21',   GROUP_NO = 'P2',   NOM_CMP = 'VY',   VALE = 433.3),
+         _F(  RESULTAT = SISM, NOM_CHAM = 'EFGE_ELNO_DEPL', NOEUD_CMP = ('DIR','X',),
+           PRECISION = 0.035,
+           MAILLE = 'M21',   GROUP_NO = 'P2',   NOM_CMP = 'VZ',   VALE = 1164.0),
+         _F(  RESULTAT = SISM, NOM_CHAM = 'EFGE_ELNO_DEPL', NOEUD_CMP = ('DIR','X',),
+           PRECISION = 0.025,
+           MAILLE = 'M21',   GROUP_NO = 'P2',   NOM_CMP = 'MT',   VALE = .2781),
+         _F(  RESULTAT = SISM, NOM_CHAM = 'EFGE_ELNO_DEPL', NOEUD_CMP = ('DIR','X',),
+           PRECISION = 0.02,
+           MAILLE = 'M21',   GROUP_NO = 'P2',   NOM_CMP = 'MFY',  VALE = 798.5),
+         _F(  RESULTAT = SISM, NOM_CHAM = 'EFGE_ELNO_DEPL', NOEUD_CMP = ('DIR','X',),
+           PRECISION = 0.005,
+           MAILLE = 'M21',   GROUP_NO = 'P2',   NOM_CMP = 'MFZ',  VALE = 236.8),
+         _F(  RESULTAT = SISM, NOM_CHAM = 'EFGE_ELNO_DEPL', NOEUD_CMP = ('DIR','X',),
+           PRECISION = 0.06,
+           MAILLE = 'M35',   GROUP_NO = 'P3',   NOM_CMP = 'N',    VALE = 965.6),
+         _F(  RESULTAT = SISM, NOM_CHAM = 'EFGE_ELNO_DEPL', NOEUD_CMP = ('DIR','X',),
+           PRECISION = 0.025,
+           MAILLE = 'M35',   GROUP_NO = 'P3',   NOM_CMP = 'VY',   VALE = 451.1),
+         _F(  RESULTAT = SISM, NOM_CHAM = 'EFGE_ELNO_DEPL', NOEUD_CMP = ('DIR','X',),
+           PRECISION = 0.015,
+           MAILLE = 'M35',   GROUP_NO = 'P3',   NOM_CMP = 'VZ',   VALE = 2955.0),
+         _F(  RESULTAT = SISM, NOM_CHAM = 'EFGE_ELNO_DEPL', NOEUD_CMP = ('DIR','X',),
+           PRECISION = 0.005,
+           MAILLE = 'M35',   GROUP_NO = 'P3',   NOM_CMP = 'MT',   VALE = 361.8),
+         _F(  RESULTAT = SISM, NOM_CHAM = 'EFGE_ELNO_DEPL', NOEUD_CMP = ('DIR','X',),
+           PRECISION = 0.075,
+           MAILLE = 'M35',   GROUP_NO = 'P3',   NOM_CMP = 'MFY',  VALE = 142.9),
+         _F(  RESULTAT = SISM, NOM_CHAM = 'EFGE_ELNO_DEPL', NOEUD_CMP = ('DIR','X',),
+           PRECISION = 0.03,
+           MAILLE = 'M35',   GROUP_NO = 'P3',   NOM_CMP = 'MFZ',  VALE = 111.3),
+         _F(  RESULTAT = SISM, NOM_CHAM = 'EFGE_ELNO_DEPL', NOEUD_CMP = ('DIR','X',),
+           PRECISION = 0.005,
+           MAILLE = 'M40',   GROUP_NO = 'P4',   NOM_CMP = 'N',    VALE = 528.1),
+         _F(  RESULTAT = SISM, NOM_CHAM = 'EFGE_ELNO_DEPL', NOEUD_CMP = ('DIR','X',),
+           PRECISION = 0.01,
+           MAILLE = 'M40',   GROUP_NO = 'P4',   NOM_CMP = 'VY',   VALE = 392.8),
+         _F(  RESULTAT = SISM, NOM_CHAM = 'EFGE_ELNO_DEPL', NOEUD_CMP = ('DIR','X',),
+           PRECISION = 0.08,
+           MAILLE = 'M40',   GROUP_NO = 'P4',   NOM_CMP = 'VZ',   VALE = 865.2),
+         _F(  RESULTAT = SISM, NOM_CHAM = 'EFGE_ELNO_DEPL', NOEUD_CMP = ('DIR','X',),
+           PRECISION = 0.005,
+           MAILLE = 'M40',   GROUP_NO = 'P4',   NOM_CMP = 'MT',   VALE = 361.6),
+         _F(  RESULTAT = SISM, NOM_CHAM = 'EFGE_ELNO_DEPL', NOEUD_CMP = ('DIR','X',),
+           PRECISION = 0.02,
+           MAILLE = 'M40',   GROUP_NO = 'P4',   NOM_CMP = 'MFY',  VALE = 608.1),
+         _F(  RESULTAT = SISM, NOM_CHAM = 'EFGE_ELNO_DEPL', NOEUD_CMP = ('DIR','X',),
+           PRECISION = 0.015,
+           MAILLE = 'M40',   GROUP_NO = 'P4',   NOM_CMP = 'MFZ',  VALE = 189.4),
+         _F(  RESULTAT = SISM, NOM_CHAM = 'EFGE_ELNO_DEPL', NOEUD_CMP = ('DIR','X',),
+           PRECISION = 0.045,
+           MAILLE = 'M45',   GROUP_NO = 'P5',   NOM_CMP = 'N',    VALE = 222.3),
+         _F(  RESULTAT = SISM, NOM_CHAM = 'EFGE_ELNO_DEPL', NOEUD_CMP = ('DIR','X',),
+           PRECISION = 0.045,
+           MAILLE = 'M45',   GROUP_NO = 'P5',   NOM_CMP = 'VY',   VALE = 275.3),
+         _F(  RESULTAT = SISM, NOM_CHAM = 'EFGE_ELNO_DEPL', NOEUD_CMP = ('DIR','X',),
+           PRECISION = 0.13,
+           MAILLE = 'M45',   GROUP_NO = 'P5',   NOM_CMP = 'VZ',   VALE = 475.2),
+         _F(  RESULTAT = SISM, NOM_CHAM = 'EFGE_ELNO_DEPL', NOEUD_CMP = ('DIR','X',),
+           PRECISION = 0.005,
+           MAILLE = 'M45',   GROUP_NO = 'P5',   NOM_CMP = 'MT',   VALE = 362.7),
+         _F(  RESULTAT = SISM, NOM_CHAM = 'EFGE_ELNO_DEPL', NOEUD_CMP = ('DIR','X',),
+           PRECISION = 0.02,
+           MAILLE = 'M45',   GROUP_NO = 'P5',   NOM_CMP = 'MFY',  VALE = 340.3),
+         _F(  RESULTAT = SISM, NOM_CHAM = 'EFGE_ELNO_DEPL', NOEUD_CMP = ('DIR','X',),
+           PRECISION = 0.06,
+           MAILLE = 'M45',   GROUP_NO = 'P5',   NOM_CMP = 'MFZ',  VALE = 176.6),
+         _F(  RESULTAT = SISM, NOM_CHAM = 'EFGE_ELNO_DEPL', NOEUD_CMP = ('DIR','X',),
+           PRECISION = 0.045,
+           MAILLE = 'M59',   GROUP_NO = 'P6',   NOM_CMP = 'N',    VALE = 307.6),
+         _F(  RESULTAT = SISM, NOM_CHAM = 'EFGE_ELNO_DEPL', NOEUD_CMP = ('DIR','X',),
+           PRECISION = 0.08,
+           MAILLE = 'M59',   GROUP_NO = 'P6',   NOM_CMP = 'VY',   VALE = 658.8),
+         _F(  RESULTAT = SISM, NOM_CHAM = 'EFGE_ELNO_DEPL', NOEUD_CMP = ('DIR','X',),
+           PRECISION = 0.04,
+           MAILLE = 'M59',   GROUP_NO = 'P6',   NOM_CMP = 'VZ',   VALE = 284.2),
+         _F(  RESULTAT = SISM, NOM_CHAM = 'EFGE_ELNO_DEPL', NOEUD_CMP = ('DIR','X',),
+           PRECISION = 0.01,
+           MAILLE = 'M59',   GROUP_NO = 'P6',   NOM_CMP = 'MT',   VALE = 229.9),
+         _F(  RESULTAT = SISM, NOM_CHAM = 'EFGE_ELNO_DEPL', NOEUD_CMP = ('DIR','X',),
+           PRECISION = 0.03,
+           MAILLE = 'M59',   GROUP_NO = 'P6',   NOM_CMP = 'MFY',  VALE = 141.80),
+         _F(  RESULTAT = SISM, NOM_CHAM = 'EFGE_ELNO_DEPL', NOEUD_CMP = ('DIR','X',),
+           PRECISION = 0.015,
+           MAILLE = 'M59',   GROUP_NO = 'P6',   NOM_CMP = 'MFZ',  VALE = 339.6))
+         )
+
+#
+FIN()
+#

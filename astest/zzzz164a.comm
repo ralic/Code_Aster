@@ -1,0 +1,277 @@
+# MODIF  DATE 25/09/2002   AUTEUR GREFFET N.GREFFET 
+# TITRE VALIDATION ROTATION, TRANSLATION, MODI_BASE ET ECHELLE DANS MODI_MAILLAGE
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+#********************************************************************
+# - ROTATION, TRANSLATION, CHANGEMENT DE REPERE 
+#   ET D'ECHELLE D'UN MAILLAGE 3D OU 2D
+# - COMPARAISON AVEC RESULTATS ANALYTIQUES
+#********************************************************************
+#
+DEBUT ( CODE=_F( NOM = 'ZZZZ164a', NIV_PUB_WEB = 'INTERNET' ) )
+#
+PRE_GIBI ( UNITE_GIBI = 19 , UNITE_MAILLAGE = 20 )
+#
+MA = LIRE_MAILLAGE ( UNITE = 20 )
+#
+IMPR_RESU( RESU = _F ( MAILLAGE = MA , ) , )  
+#
+MA = MODI_MAILLAGE (  reuse = MA ,
+                      MAILLAGE = MA ,
+                      TRANSLATION = ( 2.5 , 3.9 , -12.3 ) ,
+                      ROTATION = (_F ( POIN_1 = ( 10. , 0.5 , 3.8 ) ,
+                                       ANGL = 33 ,
+                                       POIN_2 = ( 0. , 10. , 0. ) , ) ,    
+                                  _F ( POIN_1 = ( -3.  , 0.5 , 3.8 ) ,
+                                       ANGL = -161 ,
+                                       DIR = ( 0. , 1. , 0. ) , ) , ) ,
+                      ECHELLE = 5. ,   
+                       )
+#
+CHCO = CREA_CHAMP ( OPERATION = 'EXTR' ,
+                    TYPE_CHAM = 'NOEU_GEOM_R' ,
+                    NOM_CHAM = 'GEOMETRIE' , 
+                    MAILLAGE = MA , 
+                    INFO = 2 , )
+#
+CHC2 = CREA_CHAMP ( OPERATION = 'ASSE' , 
+                    MAILLAGE = MA , 
+                    TYPE_CHAM = 'NOEU_DEPL_R' ,
+                    ASSE = _F ( TOUT = 'OUI' ,
+                                CHAM_GD = CHCO ,
+                                NOM_CMP = ( 'X' , 'Y' , 'Z' , ) , 
+                                NOM_CMP_RESU = ('DX' , 'DY' , 'DZ' , ) ,
+                                ) , )
+
+#
+RES1 = CREA_RESU ( OPERATION  = 'AFFE' ,
+                   TYPE_RESU = 'EVOL_ELAS' ,
+                   NOM_CHAM  = 'DEPL' ,
+                   AFFE = _F ( INST = 1.0 ,
+#                        NUME_ORDRE_INIT = 1 ,
+                               CHAM_GD = CHC2 , ) , )
+#
+PREC1 = 1.E-13
+TEST_RESU ( RESU = ( _F ( RESULTAT = RES1 ,
+                          NOM_CHAM  = 'DEPL' ,
+                          NUME_ORDRE = 1 ,
+                          GROUP_NO = 'P1' ,
+                          NOM_CMP = 'DX' ,
+                          VALE = ( 5.25013688901230 ) ,
+                          CRITERE = 'RELATIF' ,
+                          PRECISION = PREC1 ,
+                          REFERENCE = 'ANALYTIQUE' , ) ,
+                     _F ( RESULTAT = RES1 ,
+                          NOM_CHAM  = 'DEPL' ,
+                          NUME_ORDRE = 1 ,
+                          GROUP_NO = 'P1' ,
+                          NOM_CMP = 'DY' ,
+                          VALE = ( -2.15514860206805 ),
+                          CRITERE = 'RELATIF' ,
+                          PRECISION = PREC1 ,
+                          REFERENCE = 'ANALYTIQUE' , ) ,
+                     _F ( RESULTAT = RES1 ,
+                          NOM_CHAM  = 'DEPL' ,
+                          NUME_ORDRE = 1 ,
+                          GROUP_NO = 'P1' ,
+                          NOM_CMP = 'DZ' ,
+                          VALE = ( 78.60011878692355 ) ,
+                          CRITERE = 'RELATIF' ,
+                          PRECISION = PREC1 ,
+                          REFERENCE = 'ANALYTIQUE' , ) ,
+                     _F ( RESULTAT = RES1 ,
+                          NOM_CHAM  = 'DEPL' ,
+                          NUME_ORDRE = 1 ,
+                          GROUP_NO = 'P7' ,
+                          NOM_CMP = 'DX' ,
+                          VALE = ( -13.71441445562070 ) ,
+                          CRITERE = 'RELATIF' ,
+                          PRECISION = PREC1 ,
+                          REFERENCE = 'ANALYTIQUE' , ) ,
+                     _F ( RESULTAT = RES1 ,
+                          NOM_CHAM  = 'DEPL' ,
+                          NUME_ORDRE = 1 ,
+                          GROUP_NO = 'P7' ,
+                          NOM_CMP = 'DY' ,
+                          VALE = ( 19.19990692163805 ),
+                          CRITERE = 'RELATIF' ,
+                          PRECISION = PREC1 ,
+                          REFERENCE = 'ANALYTIQUE' , ) ,
+                     _F ( RESULTAT = RES1 ,
+                          NOM_CHAM  = 'DEPL' ,
+                          NUME_ORDRE = 1 ,
+                          GROUP_NO = 'P7' ,
+                          NOM_CMP = 'DZ' ,
+                          VALE = ( 70.89898926741745 ) ,
+                          CRITERE = 'RELATIF' ,
+                          PRECISION = PREC1 ,
+                          REFERENCE = 'ANALYTIQUE' , ) ,
+                     _F ( RESULTAT = RES1 ,
+                          NOM_CHAM  = 'DEPL' ,
+                          NUME_ORDRE = 1 ,
+                          GROUP_NO = 'P8' ,
+                          NOM_CMP = 'DX' ,
+                          VALE = ( -9.91685765218495 ) ,
+                          CRITERE = 'RELATIF' ,
+                          PRECISION = PREC1 ,
+                          REFERENCE = 'ANALYTIQUE' , ) ,
+                     _F ( RESULTAT = RES1 ,
+                          NOM_CHAM  = 'DEPL' ,
+                          NUME_ORDRE = 1 ,
+                          GROUP_NO = 'P8' ,
+                          NOM_CMP = 'DY' ,
+                          VALE = ( 20.29757780434485 ) ,
+                          CRITERE = 'RELATIF' ,
+                          PRECISION = PREC1 ,
+                          REFERENCE = 'ANALYTIQUE' , ) ,
+                     _F ( RESULTAT = RES1 ,
+                          NOM_CHAM  = 'DEPL' ,
+                          NUME_ORDRE = 1 ,
+                          GROUP_NO = 'P8' ,
+                          NOM_CMP = 'DZ' ,
+                          VALE = ( 67.83734249518255 )  ,
+                          CRITERE = 'RELATIF' ,
+                          PRECISION = PREC1 ,
+                          REFERENCE = 'ANALYTIQUE' , ) , ) ,  
+          )
+#
+IMPR_RESU( RESU = _F ( MAILLAGE = MA , ) , )  
+#
+PRE_GIBI ( UNITE_GIBI = 21 , UNITE_MAILLAGE = 22 )
+#
+MA2 = LIRE_MAILLAGE ( UNITE = 22 )
+#
+IMPR_RESU( RESU = _F ( MAILLAGE = MA2 , ) , )  
+#
+MA2 = MODI_MAILLAGE ( reuse=MA2 ,
+                      MAILLAGE = MA2 ,
+                      MODI_BASE = _F( VECT_X = ( 1.23 , 0.23 , 0. , ) ,
+                                      VECT_Y = ( -2.3 , 12.3 , 0. , ) ,
+                                    ) , 
+                      ECHELLE = 5. ,  
+                    )
+#
+CHCO2 = CREA_CHAMP ( OPERATION = 'EXTR' ,
+                     TYPE_CHAM = 'NOEU_GEOM_R' ,
+                     NOM_CHAM = 'GEOMETRIE' , 
+                     MAILLAGE = MA2 , 
+                     INFO = 2 , )
+#
+CHC22 = CREA_CHAMP ( OPERATION = 'ASSE' , 
+                     MAILLAGE = MA2 , 
+                     TYPE_CHAM = 'NOEU_DEPL_R' ,
+                     ASSE = _F ( TOUT = 'OUI' ,
+                                 CHAM_GD = CHCO2 ,
+                                 NOM_CMP = ( 'X' , 'Y' , 'Z' , ) , 
+                                 NOM_CMP_RESU = ('DX' , 'DY' , 'DZ' , )
+                                 , ) , )
+
+#
+RES2 = CREA_RESU ( OPERATION  = 'AFFE' ,
+                   TYPE_RESU = 'EVOL_ELAS' ,
+                   NOM_CHAM  = 'DEPL' ,
+                   AFFE = _F ( INST = 1.0 ,
+#                        NUME_ORDRE_INIT = 1 ,
+                               CHAM_GD = CHC22 , ) , )
+#
+TEST_RESU ( RESU = ( _F ( RESULTAT = RES2 ,
+                          NOM_CHAM  = 'DEPL' ,
+                          NUME_ORDRE = 1 ,
+                          GROUP_NO = 'P2' ,
+                          NOM_CMP = 'DX' ,
+                          VALE = ( 4.91481269524612 ) ,
+                          CRITERE = 'RELATIF' ,
+                          PRECISION = PREC1 ,
+                          REFERENCE = 'ANALYTIQUE' , ) ,
+                     _F ( RESULTAT = RES2 ,
+                          NOM_CHAM  = 'DEPL' ,
+                          NUME_ORDRE = 1 ,
+                          GROUP_NO = 'P2' ,
+                          NOM_CMP = 'DY' ,
+                          VALE = ( -0.91903001618423 ),
+                          CRITERE = 'RELATIF' ,
+                          PRECISION = PREC1 ,
+                          REFERENCE = 'ANALYTIQUE' , ) ,
+                     _F ( RESULTAT = RES2 ,
+                          NOM_CHAM  = 'DEPL' ,
+                          NUME_ORDRE = 1 ,
+                          GROUP_NO = 'P2' ,
+                          NOM_CMP = 'DZ' ,
+                          VALE = ( 0. ) ,
+                          CRITERE = 'RELATIF' ,
+                          PRECISION = PREC1 ,
+                          REFERENCE = 'ANALYTIQUE' , ) ,
+                     _F ( RESULTAT = RES2 ,
+                          NOM_CHAM  = 'DEPL' ,
+                          NUME_ORDRE = 1 ,
+                          GROUP_NO = 'P7' ,
+                          NOM_CMP = 'DX' ,
+                          VALE = ( 7.67190274379882 ) ,
+                          CRITERE = 'RELATIF' ,
+                          PRECISION = PREC1 ,
+                          REFERENCE = 'ANALYTIQUE' , ) ,
+                     _F ( RESULTAT = RES2 ,
+                          NOM_CHAM  = 'DEPL' ,
+                          NUME_ORDRE = 1 ,
+                          GROUP_NO = 'P7' ,
+                          NOM_CMP = 'DY' ,
+                          VALE = ( 13.82540806955412 ),
+                          CRITERE = 'RELATIF' ,
+                          PRECISION = PREC1 ,
+                          REFERENCE = 'ANALYTIQUE' , ) ,
+                     _F ( RESULTAT = RES2 ,
+                          NOM_CHAM  = 'DEPL' ,
+                          NUME_ORDRE = 1 ,
+                          GROUP_NO = 'P7' ,
+                          NOM_CMP = 'DZ' ,
+                          VALE = ( 25. ) ,
+                          CRITERE = 'RELATIF' ,
+                          PRECISION = PREC1 ,
+                          REFERENCE = 'ANALYTIQUE' , ) ,
+                     _F ( RESULTAT = RES2 ,
+                          NOM_CHAM  = 'DEPL' ,
+                          NUME_ORDRE = 1 ,
+                          GROUP_NO = 'P8' ,
+                          NOM_CMP = 'DX' ,
+                          VALE = ( 2.75709004855270 ) ,
+                          CRITERE = 'RELATIF' ,
+                          PRECISION = PREC1 ,
+                          REFERENCE = 'ANALYTIQUE' , ) ,
+                     _F ( RESULTAT = RES2 ,
+                          NOM_CHAM  = 'DEPL' ,
+                          NUME_ORDRE = 1 ,
+                          GROUP_NO = 'P8' ,
+                          NOM_CMP = 'DY' ,
+                          VALE = ( 14.74443808573835 ) ,
+                          CRITERE = 'RELATIF' ,
+                          PRECISION = PREC1 ,
+                          REFERENCE = 'ANALYTIQUE' , ) ,
+                     _F ( RESULTAT = RES2 ,
+                          NOM_CHAM  = 'DEPL' ,
+                          NUME_ORDRE = 1 ,
+                          GROUP_NO = 'P8' ,
+                          NOM_CMP = 'DZ' ,
+                          VALE = ( 25. )  ,
+                          CRITERE = 'RELATIF' ,
+                          PRECISION = PREC1 ,
+                          REFERENCE = 'ANALYTIQUE' , ) , ) ,  
+          )
+#
+IMPR_RESU( RESU = _F ( MAILLAGE = MA2 , ) , )  
+#
+FIN ()

@@ -1,0 +1,419 @@
+      SUBROUTINE TE0358(OPTION,NOMTE)
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ELEMENTS  DATE 11/04/2002   AUTEUR CIBHHLV L.VIVAN 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+      IMPLICIT REAL*8 (A-H,O-Z)
+      CHARACTER*16 OPTION,NOMTE
+C ......................................................................
+C    - FONCTION REALISEE:  CALCUL DES VECTEURS ELEMENTAIRES
+C                          OPTION : 'CHAR_MECA_META_Z  '
+C                          POUR LES ELEMENTS 3D
+C    - ARGUMENTS:
+C        DONNEES:      OPTION       -->  OPTION DE CALCUL
+C                      NOMTE        -->  NOM DU TYPE ELEMENT
+C ......................................................................
+
+
+C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
+      CHARACTER*32 JEXNUM,JEXNOM,JEXR8,JEXATR
+      INTEGER ZI
+      COMMON /IVARJE/ZI(1)
+      REAL*8 ZR
+      COMMON /RVARJE/ZR(1)
+      COMPLEX*16 ZC
+      COMMON /CVARJE/ZC(1)
+      LOGICAL ZL
+      COMMON /LVARJE/ZL(1)
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32
+      CHARACTER*80 ZK80
+      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
+      PARAMETER (NBRES=21)
+      CHARACTER*24 CARAC,FF
+      CHARACTER*16 COMPOR
+      CHARACTER*8 ELREFE,NOMRES(NBRES),NOMCLE(5)
+      CHARACTER*2 CODRET(NBRES),REP,TEST
+      REAL*8 VALRES(NBRES),E,NU
+      REAL*8 ZFBM,ZAUST,SIG(6),KPT(5),SIGDV(6),DEUXMU
+      REAL*8 DFDX(27),DFDY(27),DFDZ(27),TPG,POIDS
+      REAL*8 VFI,VFJ,KRON(6),R8BID
+      REAL*8 PHAS(5),DSDE,RPRIM,COEF,R0(5),TRANS,VI(5)
+
+      INTEGER NNO,KP,K,NPG1,I,ITEMPE,IVECTU,NDIM,NBFPG
+      INTEGER ICARAC,IFF,IPOIDS,IVF,IDFDE,IDFDK,IDFDN
+      INTEGER IGEOM,IMATE,ICONTM,JTAB(7)
+      INTEGER JPROL,JVALE,NBVAL
+      DATA KRON/1.D0,1.D0,1.D0,0.D0,0.D0,0.D0/
+C ---------------------------------------------------------------------
+      CALL ELREF1(ELREFE)
+C --- FONCTIONS DE FORMES ET POINTS DE GAUSS
+      CARAC = '&INEL.'//ELREFE//'.CARACTE'
+      CALL JEVETE(CARAC,'L',ICARAC)
+      NDIM = ZI(ICARAC)
+      NNO = ZI(ICARAC+1)
+      NPG1 = ZI(ICARAC+3)
+
+      FF = '&INEL.'//ELREFE//'.FFORMES'
+      CALL JEVETE(FF,'L',IFF)
+      IPOIDS = IFF + (NDIM+1)*NNO*NNO
+      IVF = IPOIDS + NPG1
+      IDFDE = IVF + NPG1*NNO
+      IDFDN = IDFDE + 1
+      IDFDK = IDFDN + 1
+C PARAMETRES EN ENTREE
+      CALL JEVECH('PGEOMER','L',IGEOM)
+      CALL JEVECH('PMATERC','L',IMATE)
+      CALL JEVECH('PCOMPOR','L',ICOMPO)
+      MATER = ZI(IMATE)
+      COMPOR=ZK16(ICOMPO+7)
+
+      CALL JEVECH('PTEMPER','L',ITEMPE)
+      CALL JEVECH('PPHASMR','L',IPHASM)
+      CALL JEVECH('PPHASPR','L',IPHASP)
+      CALL JEVECH('PCONTMR','L',ICONTR)
+      CALL JEVECH('PCOMPOR','L',ICOMPO)
+      COMPOR=ZK16(ICOMPO+7)
+      CALL TECACH(.TRUE.,.TRUE.,'PVARIPR',7,JTAB)
+      LGPG = MAX(JTAB(6),1)*JTAB(7)
+      CALL JEVECH('PVARIPR','L',IVARI)
+      CALL JEVECH('PVECTUR','E',IVECTU)
+
+      IF (COMPOR(1:5) .EQ. 'ACIER') THEN
+
+         NOMRES(1) ='E'
+         NOMRES(2) ='NU'
+         NOMRES(3) ='F1_K'
+         NOMRES(4) ='F2_K'
+         NOMRES(5) ='F3_K'
+         NOMRES(6) ='F4_K'
+         NOMRES(7) ='F1_D_F_M'
+         NOMRES(8) ='F2_D_F_M'
+         NOMRES(9) ='F3_D_F_M'
+         NOMRES(10) ='F4_D_F_M'
+         NOMRES(11) ='SY_MELAN'
+
+           IF(ZK16(ICOMPO)(1:9).EQ.'META_P_IL' .OR.
+     &     ZK16(ICOMPO)(1:9).EQ.'META_V_IL' .OR.
+     &     ZK16(ICOMPO)(1:9).EQ.'META_P_CL' .OR.
+     &     ZK16(ICOMPO)(1:9).EQ.'META_V_CL'   ) THEN
+           NOMRES(12) ='F1_D_SIGM'
+           NOMRES(13) ='F2_D_SIGM'
+           NOMRES(14) ='F3_D_SIGM'
+           NOMRES(15) ='F4_D_SIGM'
+           NOMRES(16) ='C_D_SIGM'
+         ENDIF
+          IF(ZK16(ICOMPO)(1:10).EQ.'META_P_INL' .OR.
+     &      ZK16(ICOMPO)(1:10).EQ.'META_V_INL' ) THEN
+            NOMCLE(1) = 'SIGM_F1'
+            NOMCLE(2) = 'SIGM_F2'
+            NOMCLE(3) = 'SIGM_F3'
+            NOMCLE(4) = 'SIGM_F4'
+            NOMCLE(5) = 'SIGM_C'
+         ENDIF
+         NOMRES(17) = 'F1_ETA'
+         NOMRES(18) = 'F2_ETA'
+         NOMRES(19) = 'F3_ETA'
+         NOMRES(20) = 'F4_ETA'
+         NOMRES(21) = 'C_ETA'
+
+      ELSEIF (COMPOR(1:4) .EQ. 'ZIRC') THEN
+         NOMRES(1) ='E'
+         NOMRES(2) ='NU'
+         NOMRES(3) ='F1_K'
+         NOMRES(4) ='F2_K'
+         NOMRES(5) ='F1_D_F_ME'
+         NOMRES(6) ='F2_D_F_ME'
+         NOMRES(7) ='SY_MELAN'
+
+          IF(ZK16(ICOMPO)(1:9).EQ.'META_P_IL' .OR.
+     &     ZK16(ICOMPO)(1:9).EQ.'META_V_IL' ) THEN
+           NOMRES(8) ='F1_D_SIGM'
+           NOMRES(9) ='F2_D_SIGM'
+           NOMRES(10) ='C_D_SIGM'
+         ENDIF
+            IF(ZK16(ICOMPO)(1:10).EQ.'META_P_INL' .OR.
+     &      ZK16(ICOMPO)(1:10).EQ.'META_V_INL' ) THEN
+            NOMCLE(1) = 'SIGM_F1'
+            NOMCLE(2) = 'SIGM_F2'
+            NOMCLE(3) = 'SIGM_C'
+         ENDIF
+         NOMRES(14) = 'F1_ETA'
+         NOMRES(15) = 'F2_ETA'
+         NOMRES(16) = 'C_ETA'
+
+      ENDIF
+      DO 5 I=1,NBRES
+         CODRET(I)='  '
+ 5     CONTINUE
+
+      DO 80 KP = 1,NPG1
+        K = (KP-1)*NNO*3
+        ICPG = 6* (KP-1)
+        CALL DFDM3D(NNO,ZR(IPOIDS+KP-1),ZR(IDFDE+K),ZR(IDFDN+K),
+     +              ZR(IDFDK+K),ZR(IGEOM),DFDX,DFDY,DFDZ,POIDS)
+        TPG = 0.D0
+        DO 10 I = 1,NNO
+          TPG = TPG + ZR(ITEMPE+I-1)*ZR(IVF+K+I-1)
+   10   CONTINUE
+        CALL RCVALA (MATER,'ELAS_META',1,'TEMP',TPG,2,NOMRES,VALRES,
+     &               CODRET, 'FM' )
+        E = VALRES(1)
+        NU = VALRES(2)
+        DEUXMU = E/ (1.D0+NU)
+
+        IF (COMPOR(1:5) .EQ. 'ACIER') THEN
+
+           CALL RCVALA(MATER,'META_PT',1,'TEMP',TPG,4,NOMRES(3),
+     +                 VALRES(3),CODRET(3),' ')
+
+           DO 20 I = 3,6
+             IF (CODRET(I).NE.'OK') THEN
+               KPT(I-2) = 0.D0
+             ELSE
+               KPT(I-2) = VALRES(I)
+             END IF
+   20      CONTINUE
+
+           ZFBM = ZR(IPHASP+ (KP-1)*7)
+           DO 30 I = 1,3
+             ZFBM = ZFBM + ZR(IPHASP+ (KP-1)*7+I)
+   30      CONTINUE
+
+           TRANS = 0.D0
+           DO 40 I = 1,4
+             ZVARIM = ZR(IPHASM+ (KP-1)*7+I-1)
+             ZVARIP = ZR(IPHASP+ (KP-1)*7+I-1)
+             DELTAZ = (ZVARIP-ZVARIM)
+           IF (DELTAZ.GT.0) THEN
+             J = 6 + I
+             CALL RCVALA(MATER,'META_PT',1,'META',ZFBM,1,
+     +                  NOMRES(J),VALRES(J),CODRET(J),'  ')
+             IF (CODRET(J).NE.'OK')  VALRES(J)=0.D0
+
+             TRANS = TRANS + KPT(I)*VALRES(J)*DELTAZ
+           END IF
+   40      CONTINUE
+
+           CALL RCVALA(MATER,'META_VISC',5,'TEMP',TPG,1,
+     +              NOMRES(17),VALRES(17),CODRET(17),' ')
+           TEST='NO'
+           DO 41 I=17,21
+             IF (CODRET(I).EQ.'OK')   TEST='OK'
+ 41        CONTINUE
+           IF ((ZR(IVARI+ (KP-1)*LGPG+5).GT.0.5D0) .AND.
+     +     (TEST.EQ.'NO')) THEN
+
+              CALL RCVALA(MATER,'ELAS_META',1,'META',ZFBM,1,
+     &                   NOMRES(11),VALRES(11),CODRET(11),'  ')
+              IF (CODRET(11).NE.'OK') THEN
+                VALRES(11) = ZFBM
+              ENDIF
+
+              PHAS(1) = ZR(IPHASP+ (KP-1)*7)
+              PHAS(2) = ZR(IPHASP+ (KP-1)*7+1)
+              PHAS(3) = ZR(IPHASP+ (KP-1)*7+2)
+              PHAS(4) = ZR(IPHASP+ (KP-1)*7+3)
+              PHAS(5) = 1.D0 - (PHAS(1)+PHAS(2)+PHAS(3)+PHAS(4))
+
+              IF(ZK16(ICOMPO)(1:9).EQ.'META_P_IL' .OR.
+     &           ZK16(ICOMPO)(1:9).EQ.'META_V_IL'   ) THEN  
+                                                       
+                CALL RCVALA(MATER,'META_ECRO_LINE',1,'TEMP',TPG,5,
+     &                    NOMRES(12),VALRES(12),CODRET(12), 'FM' )
+                R0(1) = VALRES(12)*E/(E-VALRES(12))
+                R0(2) = VALRES(13)*E/(E-VALRES(13))
+                R0(3) = VALRES(14)*E/(E-VALRES(14))
+                R0(4) = VALRES(15)*E/(E-VALRES(15))
+                R0(5) = VALRES(16)*E/(E-VALRES(16))
+              ENDIF
+              IF( ZK16(ICOMPO)(1:9).EQ.'META_P_CL' .OR.
+     &           ZK16(ICOMPO)(1:9).EQ.'META_V_CL'   ) THEN
+                CALL RCVALA(MATER,'META_ECRO_LINE',1,'TEMP',TPG,5,
+     &                    NOMRES(12),VALRES(12),CODRET(12), 'FM' )
+                R0(1) = (2.D0/3.D0)*VALRES(12)*E/(E-VALRES(12))
+                R0(2) = (2.D0/3.D0)*VALRES(13)*E/(E-VALRES(13))
+                R0(3) = (2.D0/3.D0)*VALRES(14)*E/(E-VALRES(14))
+                R0(4) = (2.D0/3.D0)*VALRES(15)*E/(E-VALRES(15))
+                R0(5) = (2.D0/3.D0)*VALRES(16)*E/(E-VALRES(16))
+              ENDIF
+              
+             IF(ZK16(ICOMPO)(1:10).EQ.'META_P_INL' .OR.
+     &         ZK16(ICOMPO)(1:10).EQ.'META_V_INL' ) THEN
+                VI(1) = ZR(IVARI+(KP-1)*LGPG)
+                VI(2) = ZR(IVARI+(KP-1)*LGPG+1)
+                VI(3) = ZR(IVARI+(KP-1)*LGPG+2)
+                VI(4) = ZR(IVARI+(KP-1)*LGPG+3)
+                VI(5) = ZR(IVARI+(KP-1)*LGPG+4)
+                DO 44 I=1,5
+                 CALL RCTRAC(MATER,'META_TRACTION',NOMCLE(I),TPG,
+     &                    JPROL,JVALE,NBVAL,R8BID)
+                 CALL RCFONC('V','META_TRACTION',JPROL,JVALE,NBVAL,
+     &           R8BID,R8BID,R8BID,VI(I),R8BID,R0(I),R8BID,R8BID,R8BID)
+   44           CONTINUE
+              ENDIF
+
+              IF(ZFBM.GT.0.D0) THEN
+                 RPRIM=PHAS(1)*R0(1)+PHAS(2)*R0(2)+PHAS(3)*R0(3)
+     &                 +PHAS(4)*R0(4)
+                 RPRIM = RPRIM/ZFBM
+              ELSE
+                 RPRIM = 0.D0
+              ENDIF
+              RPRIM = (1.D0-VALRES(11))*R0(5)+VALRES(11)*RPRIM
+              COEF = 1.D0 - (1.5D0*DEUXMU)/(1.5D0*DEUXMU+RPRIM)
+
+           ELSE
+              COEF = 1.D0
+           ENDIF
+
+        ELSEIF (COMPOR(1:4) .EQ. 'ZIRC') THEN
+           CALL RCVALA(MATER,'META_PT',1,'TEMP',TPG,2,NOMRES(3),
+     +                 VALRES(3),CODRET(3),' ')
+
+           DO 21 I = 3,4
+             IF (CODRET(I).NE.'OK') THEN
+               KPT(I-2) = 0.D0
+             ELSE
+               KPT(I-2) = VALRES(I)
+             END IF
+   21      CONTINUE
+
+           ZALPHA = ZR(IPHASP+ (KP-1)*3)+ZR(IPHASP+ (KP-1)*3+1)
+
+
+           ZVARIM = ZR(IPHASM+ (KP-1)*3)
+           ZVARIP = ZR(IPHASP+ (KP-1)*3)
+           DELTAZ = (ZVARIP-ZVARIM)
+
+           TRANS = 0.D0
+           IF (DELTAZ.GT.0) THEN
+             CALL RCVALA(MATER,'META_PT',1,'META',ZFBM,1,NOMRES(5),
+     +                   VALRES(5),CODRET(5),'  ')
+             IF (CODRET(5).NE.'OK')  VALRES(5)=0.D0
+
+             TRANS = TRANS + KPT(1)*VALRES(5)*DELTAZ
+           END IF
+
+
+           ZVARIM = ZR(IPHASM+ (KP-1)*3+1)
+           ZVARIP = ZR(IPHASP+ (KP-1)*3+1)
+           DELTAZ = (ZVARIP-ZVARIM)
+           IF (DELTAZ.GT.0) THEN
+
+             CALL RCVALA(MATER,'META_PT',1,'META',ZFBM,1,
+     +                  NOMRES(6),VALRES(6),CODRET(6),'  ')
+             IF (CODRET(6).NE.'OK')  VALRES(6)=0.D0
+
+             TRANS = TRANS + KPT(2)*VALRES(6)*DELTAZ
+           END IF
+
+
+           CALL RCVALA(MATER,'META_VISC',3,'TEMP',TPG,1,
+     +              NOMRES(14),VALRES(14),CODRET(14),' ')
+           TEST='NO'
+           DO 48 I=14,16
+            IF (CODRET(14).EQ.'OK')  TEST='OK'
+  48       CONTINUE
+           IF ((ZR(IVARI+ (KP-1)*LGPG+3).GT.0.5D0) .AND.
+     +     (TEST.EQ.'NO')) THEN
+
+             CALL RCVALA(MATER,'ELAS_META',1,'META',ZALPHA,1,
+     &                NOMRES(7),VALRES(7),CODRET(7),'  ')
+             IF (CODRET(7).NE.'OK') THEN
+               VALRES(7) = ZALPHA
+             ENDIF
+
+             PHAS(1) = ZR(IPHASP+ (KP-1)*3)
+             PHAS(2) = ZR(IPHASP+ (KP-1)*3+1)
+
+             PHAS(3) = 1.D0 - (PHAS(1)+PHAS(2))
+
+            IF(ZK16(ICOMPO)(1:9).EQ.'META_P_IL' .OR.
+     &           ZK16(ICOMPO)(1:9).EQ.'META_V_IL' ) THEN
+     &          
+                   CALL RCVALA(MATER,'META_ECRO_LINE',1,'TEMP',TPG,3,
+     &                 NOMRES(8),VALRES(8),CODRET(8), 'FM' )
+                   R0(1) = VALRES(8)*E/(E-VALRES(8))
+                   R0(2) = VALRES(9)*E/(E-VALRES(9))
+                   R0(3) = VALRES(10)*E/(E-VALRES(10))
+                ENDIF
+                IF( ZK16(ICOMPO)(1:9).EQ.'META_P_CL' .OR.
+     &           ZK16(ICOMPO)(1:9).EQ.'META_V_CL'   ) THEN 
+                CALL RCVALA(MATER,'META_ECRO_LINE',1,'TEMP',TPG,5,
+     &                    NOMRES(8),VALRES(8),CODRET(8), 'FM' )
+                R0(1) = (2.D0/3.D0)*VALRES(8)*E/(E-VALRES(8))
+                R0(2) = (2.D0/3.D0)*VALRES(9)*E/(E-VALRES(9))
+                R0(3) = (2.D0/3.D0)*VALRES(10)*E/(E-VALRES(10))
+                
+              ENDIF 
+              
+             IF(ZK16(ICOMPO)(1:10).EQ.'META_P_INL' .OR.
+     &       ZK16(ICOMPO)(1:10).EQ.'META_V_INL' ) THEN
+               VI(1) = ZR(IVARI+(KP-1)*LGPG)
+               VI(2) = ZR(IVARI+(KP-1)*LGPG+1)
+               VI(3) = ZR(IVARI+(KP-1)*LGPG+2)
+
+               DO 49 I=1,3
+                CALL RCTRAC(MATER,'META_TRAC_ZIRC',NOMCLE(I),TPG,
+     &                    JPROL,JVALE,NBVAL,R8BID)
+                CALL RCFONC('V','META_TRAC_ZIRC',JPROL,JVALE,NBVAL,
+     &          R8BID,R8BID,R8BID,VI(I),R8BID,R0(I),R8BID,R8BID,R8BID)
+   49          CONTINUE
+             ENDIF
+
+             IF(ZALPHA.GT.0.D0) THEN
+                RPRIM=PHAS(1)*R0(1)+PHAS(2)*R0(2)
+                RPRIM = RPRIM/ZALPHA
+             ELSE
+                RPRIM = 0.D0
+             ENDIF
+             RPRIM = (1.D0-VALRES(7))*R0(3)+VALRES(7)*RPRIM
+             COEF = 1.D0 - (1.5D0*DEUXMU)/(1.5D0*DEUXMU+RPRIM)
+
+         ELSE
+             COEF = 1.D0
+         ENDIF
+       ENDIF
+
+
+        SIGMO = 0.D0
+        DO 50 I = 1,3
+          SIGMO = SIGMO + ZR(ICONTR+ICPG+I-1)
+   50   CONTINUE
+        SIGMO = SIGMO/3.D0
+        DO 60 I = 1,6
+          SIGDV(I) = ZR(ICONTR+ICPG+I-1) - SIGMO*KRON(I)
+          SIG(I) = COEF* (+1.5D0*TRANS*SIGDV(I))
+          SIG(I) = DEUXMU*SIG(I)
+   60   CONTINUE
+        DO 70 I = 1,NNO
+          ZR(IVECTU+3* (I-1)) = ZR(IVECTU+3* (I-1)) +
+     +                          POIDS* (SIG(1)*DFDX(I)+SIG(4)*DFDY(I)+
+     +                          SIG(5)*DFDZ(I))
+          ZR(IVECTU+3* (I-1)+1) = ZR(IVECTU+3* (I-1)+1) +
+     +                            POIDS* (SIG(2)*DFDY(I)+SIG(4)*DFDX(I)+
+     +                            SIG(6)*DFDZ(I))
+          ZR(IVECTU+3* (I-1)+2) = ZR(IVECTU+3* (I-1)+2) +
+     +                            POIDS* (SIG(3)*DFDZ(I)+SIG(5)*DFDX(I)+
+     +                            SIG(6)*DFDY(I))
+   70   CONTINUE
+   80 CONTINUE
+      END

@@ -1,0 +1,145 @@
+      SUBROUTINE DINIT (NEQ,V0VIT,V0ACC,A0VIT,A0ACC,ALPHA,DELTA,INSTAM,
+     &                 INSTAP,COEVIT,COEACC,DEPPLU,POUGD,DEPENT,VITENT,
+     &                 ACCENT,MULTIA,NBMODS)
+
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 03/07/2001   AUTEUR PABHHHH N.TARDIEU 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+C RESPONSABLE PABHHHH N.TARDIEU
+
+      IMPLICIT     NONE
+      INTEGER       NEQ, NBMODS
+      REAL*8        V0VIT,  V0ACC,  A0VIT, ALPHA, DELTA, INSTAM, INSTAP
+      REAL*8        COEVIT, COEACC, A0ACC
+      CHARACTER*24 DEPPLU, DEPENT, VITENT, ACCENT
+      CHARACTER*24 MULTIA(8), POUGD(8)
+      
+C -------------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ----------------
+C
+      CHARACTER*32       JEXNUM
+      INTEGER            ZI
+      COMMON  / IVARJE / ZI(1)
+      REAL*8             ZR
+      COMMON  / RVARJE / ZR(1)
+      COMPLEX*16         ZC
+      COMMON  / CVARJE / ZC(1)
+      LOGICAL            ZL
+      COMMON  / LVARJE / ZL(1)
+      CHARACTER*8        ZK8
+      CHARACTER*16                ZK16
+      CHARACTER*24                          ZK24
+      CHARACTER*32                                    ZK32
+      CHARACTER*80                                              ZK80
+      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+C
+C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
+
+
+      CHARACTER*24 VITPLU,ACCPLU,DEPKM1,VITKM1,ACCKM1,ROMKM1
+      CHARACTER*24 ROMK
+      CHARACTER*24  FONDEP,FONVIT,FONACC,MULTAP,PSIDEL, K24BLA
+      INTEGER       JVITP,JACCP,JDEPKM,JVITKM,JACCKM,JROMKM,JROMK
+      INTEGER       I,J,IE,JDEPP,JDEPEN,JVITEN,JACCEN,JNODEP
+      INTEGER       JNOVIT,JNOACC,JMLTAP,JPSDEL,NBEXCI,IER
+      REAL*8        PAS,V0ACC1,A0VIT1,COEF1,COEF2,COEF3
+
+C ----------------------------------------------------------------------
+      CALL JEMARQ()
+C
+         PAS = INSTAP - INSTAM
+         V0ACC1 = V0ACC*PAS
+         A0VIT1 = A0VIT/PAS
+         COEVIT = DELTA/ALPHA/PAS
+         COEACC = 1.D0/ALPHA/PAS/PAS
+
+
+C -- EXTRACTION DES NOMS DES CHAMPS
+      CALL DESAGG(POUGD, DEPKM1, VITKM1, ACCKM1, VITPLU,
+     &            ACCPLU, ROMKM1, ROMK , K24BLA)
+      IF (NBMODS.NE.0) THEN
+        CALL DESAGG(MULTIA, FONDEP, FONVIT, FONACC, MULTAP,
+     &              PSIDEL, K24BLA, K24BLA, K24BLA)
+      ENDIF
+
+C -- INITIALISATION DES CHAMPS DYNAMIQUES        
+         CALL JEVEUO(DEPPLU(1:19)//'.VALE','L',JDEPP )
+         CALL JEVEUO(VITPLU(1:19)//'.VALE','E',JVITP )
+         CALL JEVEUO(ACCPLU(1:19)//'.VALE','E',JACCP )
+         CALL JEVEUO(DEPKM1(1:19)//'.VALE','E',JDEPKM)
+         CALL JEVEUO(VITKM1(1:19)//'.VALE','E',JVITKM)
+         CALL JEVEUO(ACCKM1(1:19)//'.VALE','E',JACCKM)
+         CALL JEVEUO(ROMKM1(1:19)//'.VALE','E',JROMKM)
+         CALL JEVEUO(ROMK(1:19)  //'.VALE','E',JROMK )
+C         
+         DO 10 I = 1,NEQ
+           ZR(JDEPKM+I-1) = ZR(JDEPP+I-1)
+           ZR(JVITKM+I-1) = ZR(JVITP+I-1)
+           ZR(JACCKM+I-1) = ZR(JACCP+I-1)
+           ZR(JVITP+I-1)  = V0VIT*ZR(JVITKM+I-1) + V0ACC1*ZR(JACCKM+I-1)
+           ZR(JACCP+I-1)  = A0VIT1*ZR(JVITKM+I-1) + A0ACC*ZR(JACCKM+I-1)
+           ZR(JROMKM+I-1) = 0.D0
+           ZR(JROMK+I-1)  = 0.D0
+10       CONTINUE
+
+
+C -- INITIALISATION DES CHAMPS "MULTI-APPUIS"
+          IF (NBMODS.NE.0) THEN
+          CALL GETFAC('EXCIT',NBEXCI)
+          CALL JEVEUO(DEPENT(1:19)//'.VALE','E',JDEPEN)
+          CALL JEVEUO(VITENT(1:19)//'.VALE','E',JVITEN)
+          CALL JEVEUO(ACCENT(1:19)//'.VALE','E',JACCEN)
+          CALL JEVEUO(FONDEP,'L',JNODEP)
+          CALL JEVEUO(FONVIT,'L',JNOVIT)
+          CALL JEVEUO(FONACC,'L',JNOACC)
+          CALL JEVEUO(MULTAP,'L',JMLTAP)
+          CALL JEVEUO(PSIDEL,'L',JPSDEL)
+          DO 710 IE = 1,NEQ
+            ZR(JDEPEN+IE-1) = 0.D0
+            ZR(JVITEN+IE-1) = 0.D0
+            ZR(JACCEN+IE-1) = 0.D0
+  710     CONTINUE
+          DO 910 J = 1,NBEXCI
+            IF (ZI(JMLTAP+J-1).EQ.1) THEN
+              CALL FOINTE('F ',ZK8(JNODEP+J-1),1,'INST',INSTAP,COEF1,
+     +                    IER)
+              CALL FOINTE('F ',ZK8(JNOVIT+J-1),1,'INST',INSTAP,COEF2,
+     +                    IER)
+              CALL FOINTE('F ',ZK8(JNOACC+J-1),1,'INST',INSTAP,COEF3,
+     +                    IER)
+            ELSE
+              COEF1 = 0.D0
+              COEF2 = 0.D0
+              COEF3 = 0.D0
+            ENDIF
+            DO 810 IE = 1,NEQ
+              ZR(JDEPEN+IE-1) = ZR(JDEPEN+IE-1) +
+     +                          ZR(JPSDEL+ (J-1)*NEQ+IE-1)*COEF1
+              ZR(JVITEN+IE-1) = ZR(JVITEN+IE-1) +
+     +                          ZR(JPSDEL+ (J-1)*NEQ+IE-1)*COEF2
+              ZR(JACCEN+IE-1) = ZR(JACCEN+IE-1) +
+     +                          ZR(JPSDEL+ (J-1)*NEQ+IE-1)*COEF3
+  810        CONTINUE
+  910      CONTINUE
+         ENDIF
+
+
+
+
+ 9999 CONTINUE
+      CALL JEDEMA()
+      END

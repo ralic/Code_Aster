@@ -1,0 +1,96 @@
+      SUBROUTINE TE0557 ( OPTION , NOMTE )
+C
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ELEMENTS  DATE 04/04/2002   AUTEUR VABHHTS J.PELLET 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+C
+      IMPLICIT NONE
+C
+      CHARACTER*16        OPTION , NOMTE
+C
+C ......................................................................
+C    - FONCTION REALISEE:  CALCUL DE LA DERIVEE EULERIENNE DE U
+C                          A PARTIR DE LA DERIVEE LAGRANGIENNE DE U
+C                          OPTION : DEDE_ELNO_DLDE
+C
+C    DERIVEE EULERIENNE DE T = DERIVEE LAGRANGIENNE DE T - GRAD(T).THETA
+C
+C    - ELEMENTS ISOPARAMETRIQUES 2D
+C
+C    - ARGUMENTS:
+C        DONNEES:      OPTION       -->  OPTION DE CALCUL
+C                      NOMTE        -->  NOM DU TYPE ELEMENT
+C ......................................................................
+C
+C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
+      INTEGER            ZI
+      COMMON  / IVARJE / ZI(1)
+      REAL*8             ZR
+      COMMON  / RVARJE / ZR(1)
+      CHARACTER*8        ZK8
+      CHARACTER*16                ZK16
+      CHARACTER*24                          ZK24
+      CHARACTER*32                                    ZK32
+      CHARACTER*80                                              ZK80
+      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
+C
+      CHARACTER*24       CARAC,FF,MATCNO
+      CHARACTER*8        ELREFE
+C
+C
+      INTEGER            IGEOM, ICARAC, NPG3, OFFSET
+      INTEGER            IFF, IPOIDS, IVF, IDFDE, IDFDK
+      INTEGER            NNO, NPG, NPG1, NPG2
+      INTEGER            IDEPL, IDLAGD, IDEULD
+      INTEGER            ITHETA
+C ......................................................................
+      CALL ELREF1(ELREFE)
+
+C    3E FAMILLE DE POINTS D'INTEGRATION : LES NOEUDS
+
+      CARAC='&INEL.'//ELREFE//'.CARAC'
+      CALL JEVETE(CARAC,'L',ICARAC)
+      NNO  = ZI(ICARAC)
+      NPG1 = ZI(ICARAC+2)
+      NPG2 = ZI(ICARAC+3)
+      NPG3 = ZI(ICARAC+4)
+
+      FF   ='&INEL.'//ELREFE//'.FF'
+      CALL JEVETE(FF,'L',IFF)
+      OFFSET = (3*NNO+1) * (NPG1+NPG2)
+      IPOIDS = IFF   + OFFSET
+      IVF    = IPOIDS+ NPG3
+      IDFDE  = IVF   + NPG3*NNO
+      IDFDK  = IDFDE + NPG3*NNO
+
+
+C    LECTURE DES CHAMPS
+
+      CALL JEVECH('PGEOMER','L',IGEOM)
+      CALL JEVECH('PDEPLAR','L',IDEPL)
+      CALL JEVECH('PVECTTH','L',ITHETA)
+      CALL JEVECH('PDLAGDE','L',IDLAGD)
+      CALL JEVECH('PDEDENO','E',IDEULD)
+
+
+C    CALCUL DE LA DERIVEE EULERIENNE
+      CALL SELE2D(NNO,ZR(IDFDE),ZR(IDFDK),ZR(IGEOM),ZR(ITHETA),
+     &            2,ZR(IDEPL),ZR(IDLAGD),ZR(IDEULD))
+
+      END

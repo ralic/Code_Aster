@@ -1,0 +1,179 @@
+# MODIF  DATE 07/06/2002   AUTEUR DURAND C.DURAND 
+# TITRE MUR PLAN EN THERMIQUE STATIONNAIRE (QUAD8/TRIA6)
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+# CAS TEST TPLL01B
+
+DEBUT(CODE=_F( NOM = 'TPLL01B',NIV_PUB_WEB='INTERNET'))
+
+PHI0=DEFI_CONSTANTE(    NOM_RESU='FLUN',  VALE=0.0        )
+
+PHI1=DEFI_CONSTANTE(    NOM_RESU='FLUN',  VALE=-1200.0    )
+
+COEH=DEFI_CONSTANTE(    NOM_RESU='FLUN',  VALE=30.0       )
+
+T_EX=DEFI_CONSTANTE(    NOM_RESU='FLUN',  VALE=140.0      )
+
+T_IM=DEFI_CONSTANTE(    NOM_RESU='FLUN',  VALE=100.0      )
+
+ACIER=DEFI_MATERIAU( THER=_F(  LAMBDA = 0.75, RHO_CP = 2.0))
+
+MAIL=LIRE_MAILLAGE( )
+
+CHMAT=AFFE_MATERIAU(  MAILLAGE=MAIL,
+                AFFE=_F(  TOUT = 'OUI', MATER = ACIER) )
+
+MOTH=AFFE_MODELE(  MAILLAGE=MAIL,
+                      AFFE=_F( TOUT = 'OUI', MODELISATION = 'PLAN',
+                                      PHENOMENE = 'THERMIQUE'))
+
+T40=DEFI_CONSTANTE(    VALE=40. )
+
+CHTH=AFFE_CHAR_THER_F(  MODELE=MOTH,FLUX_REP=(
+          _F( GROUP_MA = 'GRMA13', FLUN = PHI0),
+          _F( GROUP_MA = 'GRMA12', FLUN = PHI1)),
+           ECHANGE=_F( GROUP_MA = 'GRMA14', COEF_H = COEH, TEMP_EXT = T_EX),
+          TEMP_IMPO=_F( GROUP_NO = 'GRNM15', TEMP = T_IM),
+          LIAISON_DDL=_F( NOEUD = ('N13', 'N6',), COEF_MULT = (1., -1.,),
+                       COEF_IMPO = T40)
+         )
+
+LR8=DEFI_LIST_REEL(        DEBUT=0.,
+       INTERVALLE=_F(    JUSQU_A = 10.0,   NOMBRE = 2)
+                       )
+
+TEMPE=THER_LINEAIRE(        MODELE=MOTH,
+           TEMP_INIT=_F( STATIONNAIRE = 'OUI'),
+          INCREMENT=_F( LIST_INST = LR8),
+             CHAM_MATER=CHMAT, EXCIT=_F( CHARGE = CHTH)
+             )
+
+TEMPE=CALC_ELEM( reuse=TEMPE,     MODELE=MOTH,
+                        RESULTAT=TEMPE,
+                        CHAM_MATER=CHMAT,
+                            OPTION='FLUX_ELNO_TEMP'  )
+
+CO=INTE_MAIL_2D(   MAILLAGE=MAIL,
+                      DEFI_SEGMENT=_F( ORIGINE = ( 0.04,  0.07, ),
+                                    EXTREMITE = ( 0.07,  0.03, ))
+                   )
+
+TR1_C=POST_RELEVE_T(    ACTION=_F(  INTITULE = 'FLU_NORM',
+                           CHEMIN = CO,
+                           RESULTAT = TEMPE,
+                           NOM_CHAM = 'FLUX_ELNO_TEMP',
+                           NUME_ORDRE = 2,
+                           TRAC_NOR = 'OUI',
+                           NOM_CMP = ( 'FLUX', 'FLUY', ),
+                           OPERATION = 'EXTRACTION')  )
+
+TEST_TABLE(    TABLE=TR1_C,
+                FILTRE=_F(  NOM_PARA = 'ABSC_CURV',
+                         VALE = 0.00000E+00),
+                NOM_PARA='TRAC_NOR',
+                    VALE=1200.0
+            )
+
+TEST_TABLE(    TABLE=TR1_C,
+                FILTRE=_F(  NOM_PARA = 'ABSC_CURV',
+                         VALE = 2.50000E-02),
+                NOM_PARA='TRAC_NOR',
+                    VALE=1200.0
+            )
+
+TEST_TABLE(    TABLE=TR1_C,
+                FILTRE=_F(  NOM_PARA = 'ABSC_CURV',
+                         VALE = 5.00000E-02),
+                NOM_PARA='TRAC_NOR',
+                    VALE=1200.0
+            )
+
+T2=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_TEMP_R',
+NOM_CHAM='TEMP', RESULTAT=TEMPE,
+                   NUME_ORDRE=2)
+
+FLUXN=CALC_CHAM_ELEM(    MODELE=MOTH,  TEMP=T2,
+            CHAM_MATER=CHMAT,   OPTION='FLUX_ELNO_TEMP')
+
+FLUXG=CALC_CHAM_ELEM(    MODELE=MOTH,  TEMP=T2,
+            CHAM_MATER=CHMAT,   OPTION='FLUX_ELGA_TEMP')
+
+TEST_RESU(CHAM_NO=(
+   _F( CHAM_GD = T2, NOEUD = 'N22',  NOM_CMP = 'TEMP', VALE = 100.0),
+   _F( CHAM_GD = T2, NOEUD = 'N6',   NOM_CMP = 'TEMP', VALE = 20.0),
+   _F( CHAM_GD = T2, NOEUD = 'N13',  NOM_CMP = 'TEMP', VALE = 60.0)),CHAM_ELEM=(
+   
+   _F( CHAM_GD = FLUXN, MAILLE = 'M1', POINT = 3, NOM_CMP = 'FLUX', VALE = 960.0),
+   _F( CHAM_GD = FLUXN, MAILLE = 'M2', POINT = 2, NOM_CMP = 'FLUY', VALE = 720.0),
+   _F( CHAM_GD = FLUXG, MAILLE = 'M1', POINT = 3, NOM_CMP = 'FLUX', VALE = 960.0),
+   _F( CHAM_GD = FLUXG, MAILLE = 'M2', POINT = 2, NOM_CMP = 'FLUY', VALE = 720.0))
+          )
+
+#==============================================================
+# POUR TESTER LES POST-TRAITEMENTS AUX POINTS DE GAUSS :
+# ----------------------------------------------------------
+
+TEMPE=CALC_ELEM( reuse=TEMPE, MODELE=MOTH,       RESULTAT=TEMPE,
+                 CHAM_MATER=CHMAT,   OPTION='FLUX_ELGA_TEMP' )
+
+MA2=CREA_MAILLAGE(  MAILLAGE=MAIL,
+        ECLA_PG=_F( MODELE = MOTH,  SHRINK = 0.80)
+                       )
+
+U2B=CREA_RESU( OPERATION='ECLA_PG', TYPE_RESU='EVOL_THER',
+            ECLA_PG=_F(  MODELE_INIT = MOTH,
+                      RESU_INIT = TEMPE,
+                      MAILLAGE = MA2,
+                      NOM_CHAM = ('FLUX_ELGA_TEMP',),
+                      INST = (0.,10.,))
+                 )
+
+TEST_RESU(RESU=(  
+       _F(  RESULTAT = U2B,    NUME_ORDRE = 0,
+         NOM_CHAM = 'FLUX_ELGA_TEMP', TYPE_TEST = 'SOMM_ABS',
+         VALE = 2.6220503736070E+05),
+       _F(  RESULTAT = U2B,    NUME_ORDRE = 2,
+         NOM_CHAM = 'FLUX_ELGA_TEMP', TYPE_TEST = 'SOMM_ABS',
+         VALE = 2.6220503736070E+05))
+         )
+
+# POUR FAIRE DU POST_RELEVE_T :
+# --------------------------------
+CHEM1=INTE_MAIL_2D(   MAILLAGE=MA2,  INFO=2,
+       DEFI_SEGMENT=_F( 
+       ORIGINE = (0., 0.05,), EXTREMITE = (0.1, 0.04,))
+       )
+
+RELTEMP=POST_RELEVE_T(
+     ACTION=_F(  CHEMIN = CHEM1,
+            INTITULE = 'EXT_FLUX',  RESULTAT = U2B,
+            NOM_CHAM = 'FLUX_ELGA_TEMP',  TOUT_ORDRE = 'OUI',
+            TOUT_CMP = 'OUI', OPERATION = 'EXTRACTION')
+            )
+
+TEST_TABLE(      TABLE=RELTEMP,       NOM_PARA='FLUX',
+                  CRITERE='ABSOLU',    TYPE_TEST='SOMM_ABS',
+                      VALE=2.3051962097337E+04  )
+
+TEST_TABLE(      TABLE=RELTEMP,       NOM_PARA='ABSC_CURV',
+                  CRITERE='ABSOLU',    TYPE_TEST='SOMM_ABS',
+                      VALE=8.8110298921256E-01  )
+
+#==============================================================
+FIN()
+#

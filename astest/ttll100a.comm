@@ -1,0 +1,131 @@
+# MODIF  DATE 11/09/2002   AUTEUR VABHHTS J.PELLET 
+# TITRE CHOC THERMIQUE SUR UN MUR PLAN AVEC CONDITION D ECHANGE
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+# MODELISATION TRIA3 QUAD4
+
+
+DEBUT( CODE=_F( NOM = 'TTLL100A',NIV_PUB_WEB='INTERNET'))
+
+PRE_GIBI()
+
+MA=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='NON'), )
+
+MA=DEFI_GROUP( reuse=MA,        MAILLAGE=MA,
+                      CREA_GROUP_NO=_F(  TOUT_GROUP_MA = 'OUI')
+                   )
+
+MOTHER=AFFE_MODELE(    MAILLAGE=MA,
+                            VERIF='MAILLE',
+                              AFFE=_F(  TOUT = 'OUI',
+                                     PHENOMENE = 'THERMIQUE',
+                                     MODELISATION = 'PLAN_DIAG')
+                      )
+
+INOX=DEFI_MATERIAU(    THER=_F( LAMBDA = 1.,
+#                                             W/M.DEGC
+                                RHO_CP = 1000.)
+#                                             J/M3.DEGC
+                       )
+
+CHMAT=AFFE_MATERIAU(    MAILLAGE=MA,
+                               AFFE=_F(  TOUT = 'OUI',
+                                      MATER = INOX,
+                                      TEMP_REF = 100.)
+                        )
+
+PAROI=DEFI_CONSTANTE(   VALE=100. )
+
+#                                             W/M2.DEGC
+
+
+T_EXT=DEFI_FONCTION(       NOM_PARA='INST',
+                                  VALE=( 0.0E0,   100.,
+                                         1.0E-2,    0.,
+                                         10.E0,     0., ),
+                           PROL_GAUCHE='CONSTANT',
+                            PROL_DROITE='CONSTANT'
+                         )
+
+CHAR_TH=AFFE_CHAR_THER_F(     MODELE=MOTHER,
+                                ECHANGE=_F(  GROUP_MA = 'ECHANGE',
+                                          COEF_H = PAROI,
+                                          TEMP_EXT = T_EXT)
+                             )
+
+LISTTH=DEFI_LIST_REEL(         DEBUT=0.,INTERVALLE=(
+                             _F(  JUSQU_A = 1.E-2,  NOMBRE = 10),
+                                        _F(  JUSQU_A = 1.E-1,  NOMBRE = 9),
+                                        _F(  JUSQU_A = 1.,     NOMBRE = 9),
+                                        _F(  JUSQU_A = 2.,     NOMBRE = 5),
+                                        _F(  JUSQU_A = 10.,     NOMBRE = 8))
+                         )
+
+LIST=DEFI_LIST_REEL(  VALE=(0.1, 0.5, 2.0, 10.0) );
+
+TEMPE=THER_LINEAIRE(        MODELE=MOTHER,
+                           CHAM_MATER=CHMAT,
+                                EXCIT=_F( CHARGE = CHAR_TH),
+                            TEMP_INIT=_F( VALE = 100.),
+                            INCREMENT=_F( LIST_INST = LISTTH),
+                            ARCHIVAGE=_F( LIST_INST = LIST)
+                       )
+
+TEMP_1=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_TEMP_R',
+NOM_CHAM='TEMP', RESULTAT=TEMPE,
+          INST=0.1 )
+
+TEMP_2=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_TEMP_R',
+NOM_CHAM='TEMP', RESULTAT=TEMPE,
+          INST=0.5 )
+
+TEMP_3=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_TEMP_R',
+NOM_CHAM='TEMP', RESULTAT=TEMPE,
+          INST=2.0 )
+
+TEMP_4=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_TEMP_R',
+NOM_CHAM='TEMP', RESULTAT=TEMPE,
+          INST=10. )
+
+TEST_RESU(CHAM_NO=( 
+
+# NOEUDS ELEMENT QUAD4
+ _F( CHAM_GD = TEMP_1, NOEUD = 'N16', NOM_CMP = 'TEMP', VALE = 100.00, PRECISION = 1.E-2),
+ _F( CHAM_GD = TEMP_2, NOEUD = 'N16', NOM_CMP = 'TEMP', VALE = 99.408, PRECISION = 1.E-2),
+ _F( CHAM_GD = TEMP_3, NOEUD = 'N16', NOM_CMP = 'TEMP', VALE = 79.859, PRECISION = 1.E-2),
+ _F( CHAM_GD = TEMP_4, NOEUD = 'N16', NOM_CMP = 'TEMP', VALE = 15.717, PRECISION = 3.E-2),
+
+ _F( CHAM_GD = TEMP_1, NOEUD = 'N6', NOM_CMP = 'TEMP', VALE = 93.666, PRECISION = 1.E-2),
+ _F( CHAM_GD = TEMP_2, NOEUD = 'N6', NOM_CMP = 'TEMP', VALE = 63.500, PRECISION = 1.E-2),
+ _F( CHAM_GD = TEMP_3, NOEUD = 'N6', NOM_CMP = 'TEMP', VALE = 35.717, PRECISION = 1.E-2),
+ _F( CHAM_GD = TEMP_4, NOEUD = 'N6', NOM_CMP = 'TEMP', VALE = 6.7948, PRECISION = 3.E-2),
+
+# NOEUDS ELEMENT TRIA3
+ _F( CHAM_GD = TEMP_1, NOEUD = 'N14', NOM_CMP = 'TEMP', VALE = 100.00, PRECISION = 1.E-2),
+ _F( CHAM_GD = TEMP_2, NOEUD = 'N14', NOM_CMP = 'TEMP', VALE = 99.408, PRECISION = 1.E-2),
+ _F( CHAM_GD = TEMP_3, NOEUD = 'N14', NOM_CMP = 'TEMP', VALE = 79.859, PRECISION = 1.E-2),
+ _F( CHAM_GD = TEMP_4, NOEUD = 'N14', NOM_CMP = 'TEMP', VALE = 15.717, PRECISION = 4.E-2),
+
+ _F( CHAM_GD = TEMP_1, NOEUD = 'N4', NOM_CMP = 'TEMP', VALE = 93.666, PRECISION = 1.E-2),
+ _F( CHAM_GD = TEMP_2, NOEUD = 'N4', NOM_CMP = 'TEMP', VALE = 63.500, PRECISION = 3.E-2),
+ _F( CHAM_GD = TEMP_3, NOEUD = 'N4', NOM_CMP = 'TEMP', VALE = 35.717, PRECISION = 2.E-2),
+ _F( CHAM_GD = TEMP_4, NOEUD = 'N4', NOM_CMP = 'TEMP', VALE = 6.7948, PRECISION = 2.E-2))
+    )
+
+FIN()
+#

@@ -1,0 +1,154 @@
+      SUBROUTINE INIALG(NBM,NP2,NP3,NP4,NBMC,NBNL,NPF,NPFMAX,NPFTS,
+     &                  DEPG,VITG,DEPG0,VITG0,ACCG0,
+     &                  AMOR00,PULS00,FEXTTR,FEXT,TEXT,FEXTTS,TEXTS,
+     &                  TYPCH,NBSEG,PHII,ALPHA,BETA,GAMMA,ORIG,RC,THETA,
+     &                  ICONFB,TCONF1,FTEST0)
+      IMPLICIT NONE
+C-----------------------------------------------------------------------
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 16/05/2000   AUTEUR KXBADNG T.KESTENS 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+C TOLE  CRP_21
+C-----------------------------------------------------------------------
+C DESCRIPTION : INITIALISATIONS POUR ALGO ITMI EN REGIME ETABLI
+C -----------
+C               APPELANTS : MDITM2, TRANSI
+C
+C-------------------   DECLARATION DES VARIABLES   ---------------------
+C
+C ARGUMENTS
+C ---------
+      INTEGER    NBM, NP2, NP3, NP4, NBMC, NBNL, NPF, NPFMAX, NPFTS
+      REAL*8     DEPG(*), VITG(*), DEPG0(*), VITG0(*), ACCG0(*),
+     &           AMOR00(*), PULS00(*),
+     &           FEXTTR(*), FEXT(NP4,*), TEXT(*),
+     &           FEXTTS(NP4,*), TEXTS(*)
+      INTEGER    TYPCH(*), NBSEG(*)
+      REAL*8     PHII(NP2,NBM,*),
+     &           ALPHA(2,*), BETA(2,*), GAMMA(2,*), ORIG(6,*),
+     &           RC(NP3,*), THETA(NP3,*)
+      INTEGER    ICONFB(*)
+      REAL*8     TCONF1(4,*), FTEST0
+C
+C VARIABLES LOCALES
+C -----------------
+      INTEGER    I, IC, J, TYPOBS, NBS
+      REAL*8     XGLO0(3), XLOC0(3),
+     &           XORIG(3), SINA, COSA, SINB, COSB, SING, COSG,
+     &           DNORM0, XJEU, SINT, COST
+C
+C FONCTIONS INTRINSEQUES
+C ----------------------
+C     INTRINSIC  ABS
+C
+C ROUTINES EXTERNES
+C -----------------
+C     EXTERNAL   ACCELE, DISBUT, GLOLOC, INITMA, INITVE, PROJMG
+C
+C-------------------   DEBUT DU CODE EXECUTABLE    ---------------------
+C
+      NPFTS = NPFMAX - NPF + 1
+      CALL INITMA(NP4,NBM,FEXTTS)
+      CALL INITVE(NP4,TEXTS)
+C
+C  1. DEPLACEMENT, VITESSE ET ACCELERATION INITIAUX POUR ALGO ITMI
+C     ------------------------------------------------------------
+C
+      DO 10 I = 1, NBMC
+         DEPG0(I) = DEPG(I)
+  10  CONTINUE
+      DO 20 I = 1, NBMC
+         VITG0(I) = VITG(I)
+  20  CONTINUE
+      CALL ACCELE(NBMC,AMOR00,PULS00,FEXTTR,ACCG0,VITG0,DEPG0)
+C
+C  2. FORCES MODALES POUR SIMULATION NON-LINEAIRE ITMI
+C     ------------------------------------------------
+C
+      DO 60 I = 1, NBMC
+         DO 61 J = 1, NPFTS
+            FEXTTS(J,I) = FEXT(NPF+J-1,I)
+  61     CONTINUE
+  60  CONTINUE
+C
+C  3. TABLEAU TEMPS POUR SIMULATION NON-LINEAIRE ITMI
+C     -----------------------------------------------
+C
+      DO 70 J = 1, NPFTS
+         TEXTS(J) = TEXT(NPF+J-1) - TEXT(NPF)
+  70  CONTINUE
+C
+C  4. SUPPRIME (BASE REDUITE)
+C
+C  5. INDICATEURS DE CHANGEMENT DE CONFIGURATION
+C     ------------------------------------------
+C
+      DO 90 IC = 1, NBNL
+         ICONFB(IC) = 1
+  90  CONTINUE
+C
+C  6. COORDONNEES DES NOEUDS DE CHOC DANS LES REPERES LOCAUX LIES AUX
+C     BUTEES ET DISTANCES NORMALES DES NOEUDS DE CHOC AUX BUTEES
+C     ----------------------------------------------------------
+C
+      FTEST0 = 1.0D+10
+C
+      DO 100 IC = 1, NBNL
+C
+C  6.1   CONVERSION DDLS GENERALISES -> DDLS PHYSIQUES
+C
+         CALL PROJMG(NBM,NP2,IC,NBMC,PHII,DEPG0,XGLO0)
+C
+C  6.2   PASSAGE REPERE GLOBAL -> REPERE LOCAL
+C
+         XORIG(1) = ORIG(1,IC)
+         XORIG(2) = ORIG(2,IC)
+         XORIG(3) = ORIG(3,IC)
+         XGLO0(1) = XGLO0(1) + ORIG(4,IC)
+         XGLO0(2) = XGLO0(2) + ORIG(5,IC)
+         XGLO0(3) = XGLO0(3) + ORIG(6,IC)
+         SINA = ALPHA(1,IC)
+         COSA = ALPHA(2,IC)
+         SINB = BETA(1,IC)
+         COSB = BETA(2,IC)
+         SING = GAMMA(1,IC)
+         COSG = GAMMA(2,IC)
+C
+         CALL GLOLOC(XGLO0,XORIG,SINA,COSA,SINB,COSB,SING,COSG,XLOC0)
+         TCONF1(1,IC) = XLOC0(1)
+         TCONF1(2,IC) = XLOC0(2)
+         TCONF1(3,IC) = XLOC0(3)
+C
+C  6.3   CALCUL DE LA DISTANCE NORMALE DU NOEUD DE CHOC A LA BUTEE
+C
+         TYPOBS = TYPCH(IC)
+         NBS    = NBSEG(IC)
+         IF ( (TYPOBS.EQ.0).OR.(TYPOBS.EQ.1).OR.(TYPOBS.EQ.2) )
+     &      XJEU = RC(1,IC)
+C
+         CALL DISBUT(NP3,IC,XLOC0,TYPOBS,XJEU,RC,THETA,NBS,COST,SINT,
+     &               DNORM0)
+C
+         TCONF1(4,IC) = DNORM0
+C
+         IF ( ABS(DNORM0).LT.FTEST0 ) FTEST0 = ABS(DNORM0)
+C
+ 100  CONTINUE
+C
+C --- FIN DE INIALG.
+      END

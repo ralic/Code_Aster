@@ -1,0 +1,92 @@
+      SUBROUTINE PEENC2 ( CHAMP , RCOEF )
+      IMPLICIT   NONE
+      CHARACTER*(*)       CHAMP
+      REAL*8                      RCOEF
+C     ------------------------------------------------------------------
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF CALCULEL  DATE 11/09/2002   AUTEUR VABHHTS J.PELLET 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+C ======================================================================
+C     FAIRE DES OPERATIONS SUR UN CHAM_ELEM DE TYPE ENERGIE
+C            (NOTION D'INTEGRALE DU CHAMP SUR LE MODELE)
+C     ------------------------------------------------------------------
+C IN  : CHAMP  : NOM DU CHAM_ELEM
+C IN  : RCOEF  : COEFFICIENT MULTIPLICATIF
+C     ------------------------------------------------------------------
+C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
+      INTEGER          ZI
+      COMMON  /IVARJE/ ZI(1)
+      REAL*8           ZR
+      COMMON  /RVARJE/ ZR(1)
+      COMPLEX*16       ZC
+      COMMON  /CVARJE/ ZC(1)
+      LOGICAL          ZL
+      COMMON  /LVARJE/ ZL(1)
+      CHARACTER*8      ZK8
+      CHARACTER*16             ZK16
+      CHARACTER*24                      ZK24
+      CHARACTER*32                               ZK32
+      CHARACTER*80                                        ZK80
+      COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
+C     ------------------------------------------------------------------
+      INTEGER      IBID, NBGR, NBGREL, NBELEM, DIGDEL, I, J, K, INDIC
+      INTEGER      LCELK, JCELD, LVALE, MODE, LONGT, NEL, IDECGR ,ICOEF
+      CHARACTER*4  DOCU
+      CHARACTER*19 CHAMP2, LIGREL
+C     ------------------------------------------------------------------
+      CALL JEMARQ()
+      CHAMP2 = CHAMP
+C
+C     --- ON RETROUVE LE NOM DU LIGREL ---
+
+C     -- ON VERIFIE QUE LE CHAM_ELEM N'EST PAS TROP DYNAMIQUE :
+      CALL CELVER(CHAMP2,'NBVARI_CST','STOP',IBID)
+      CALL CELVER(CHAMP2,'NBSPT_1','STOP',IBID)
+
+      CALL JELIRA ( CHAMP2//'.CELD', 'DOCU', IBID, DOCU )
+      IF( DOCU .NE. 'CHML') THEN
+         CALL UTMESS('F','PEENC2','LE CHAMP DOIT ETRE UN CHAM_ELEM.')
+      ENDIF
+      CALL JEVEUO ( CHAMP2//'.CELK', 'L', LCELK )
+      LIGREL = ZK24(LCELK)(1:19)
+C
+      CALL JEVEUO ( CHAMP2//'.CELD', 'L', JCELD )
+C
+C     --- ON NE VERIFIE PAS LES LONGUEURS, CAR ELLES SONT DIFFERENTES
+C         SUIVANT LE TYPE D'ELEMENT.
+C     --- LA VALEUR "TOTALE" QUE L'ON VEUT RECUPERER EST PLACE EN 1
+      NBGR  =  NBGREL( LIGREL )
+C
+      CALL JEVEUO ( CHAMP2//'.CELV', 'E', LVALE )
+      DO 30 J = 1,NBGR
+         MODE=ZI(JCELD-1+ZI(JCELD-1+4+J) +2)
+         IF ( MODE .EQ. 0 ) GOTO 30
+         ICOEF=MAX(1,ZI(JCELD-1+4))
+         LONGT = DIGDEL(MODE) * ICOEF
+         NEL   = NBELEM( LIGREL, J )
+         IDECGR=ZI(JCELD-1+ZI(JCELD-1+4+J)+8)
+         DO 32 K = 1,NEL
+C
+C            --- TOTALE ---
+             I = 1
+             INDIC = LVALE-1+IDECGR+(K-1)*LONGT+I-1
+             ZR(INDIC) = ZR(INDIC) * RCOEF
+ 32       CONTINUE
+ 30    CONTINUE
+C
+      CALL JEDEMA()
+      END

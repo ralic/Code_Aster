@@ -1,0 +1,60 @@
+      SUBROUTINE SIGVTE ( SIGMTD , SIGMT )
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ELEMENTS  DATE 10/11/98   AUTEUR D6BHHMA M.ALMIKDAD 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+C
+      IMPLICIT NONE
+C
+C ......................................................................
+C     FONCTION  :  CALCUL DE   SIGMT  ( 3 , 3 ) TENSEUR 3D
+C
+C                  A PARTIR DE SIGMTD  ( 5 ) VECTEUR CONTRAINTES PLANES
+C
+C ......................................................................
+C
+      REAL * 8 SIGMTD  ( 5 )
+C
+      REAL * 8 SIGMT ( 3 , 3 )
+C
+C
+C
+C DEB
+C
+C
+C---- CONTRAINTES NORMALES
+C
+      SIGMT ( 1 , 1 ) = SIGMTD ( 1 )
+      SIGMT ( 2 , 2 ) = SIGMTD ( 2 )
+C
+      SIGMT ( 3 , 3 ) = 0.D0
+C
+C---- CISAILLEMENT
+C
+      SIGMT ( 1 , 2 ) = SIGMTD ( 3 ) 
+      SIGMT ( 1 , 3 ) = SIGMTD ( 4 )
+      SIGMT ( 2 , 3 ) = SIGMTD ( 5 )
+C
+C---- SYMETRISATION
+C
+      SIGMT ( 2 , 1 ) = SIGMT ( 1 , 2 )
+      SIGMT ( 3 , 1 ) = SIGMT ( 1 , 3 )
+      SIGMT ( 3 , 2 ) = SIGMT ( 2 , 3 )
+C
+C FIN
+C
+      END

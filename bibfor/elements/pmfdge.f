@@ -1,0 +1,36 @@
+      SUBROUTINE PMFDGE(B,DEPL,DEGE)
+      IMPLICIT NONE
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ELEMENTS  DATE 29/05/2002   AUTEUR VABHHTS J.PELLET 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C              SEE THE FILE "LICENSE.TERMS" FOR INFORMATION ON USAGE AND
+C              REDISTRIBUTION OF THIS FILE.
+C ======================================================================
+C -----------------------------------------------------------
+C ---  CALCUL DES DEFORMATIONS GENERALISEES
+C         DE L'ELEMENT POUTRE EULER (A LA POSITION X)
+C --- IN : MATRICE B POUR LA POSITION CONSIDEREE
+C --- IN : DEPLACEMENTS DANS LE REPERE LOCAL (6 DDL PAR NOEUD)
+C          DEPL(12)
+C --- OUT : DEFORMATIONS GENERALISEES A LA POSITION OU B EST CALCULEE
+C          DEGE(6)
+C           1 : DEFORMATION AXIALE
+C           2 ET 3 : DISTORSION TRANCHANTE NULLE POUR EULER BERNOULLI
+C           4 : ANGLE UNITAIRE DE TORSION
+C           5 : COURBURE AUTOUR DE Y
+C           6 : COURBURE AUTOUR DE Z
+C -----------------------------------------------------------
+      REAL*8 B(4),DEPL(12),DEGE(6)
+      REAL*8 ZERO
+      PARAMETER (ZERO=0.0D+0)
+
+C --- DEF. GENERALISEES DE L'ELEMENT POUTRE EULER A LA POSITION DE B
+      DEGE(1)=(DEPL(7)-DEPL(1))*B(1)
+      DEGE(2)=ZERO
+      DEGE(3)=ZERO
+      DEGE(4)=(DEPL(10)-DEPL(4))*B(1)
+      DEGE(5)=B(4)*DEPL(11)+B(3)*DEPL(5)+B(2)*(DEPL(9)-DEPL(3))
+      DEGE(6)=B(4)*DEPL(12)+B(3)*DEPL(6)+B(2)*(DEPL(2)-DEPL(8))
+
+      END

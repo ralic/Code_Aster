@@ -1,0 +1,67 @@
+#& MODIF COMMANDE  DATE 09/10/2002   AUTEUR DURAND C.DURAND 
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+DEBUT=MACRO(nom="DEBUT",op=0 ,docu="U4.11.01-g2",repetable='n',
+            UIinfo={"groupes":("Gestion du travail",)},
+           fr="Ouverture d une étude. Allocation des ressources mémoire et disque",
+          sd_prod=ops.DEBUT,
+
+         PAR_LOT         =SIMP(fr="mode de traitement des commandes",statut='f',typ='TXM',
+                           into=("OUI","NON"),defaut="OUI"),
+         BASE            =FACT(fr="définition des paramètres associés aux bases JEVEUX",
+                               statut='f',min=1,max=3,
+           FICHIER         =SIMP(fr="nom de la base",statut='o',typ='TXM',
+                                 into=('GLOBALE','VOLATILE','LOCALE'),),
+           TITRE           =SIMP(statut='f',typ='TXM'),
+           CAS             =SIMP(statut='f',typ='TXM'),
+           NMAX_ENRE       =SIMP(fr="nombre maximum d enregistrements",statut='f',typ='I'),
+           LONG_ENRE       =SIMP(fr="longueur des enregistrements",statut='f',typ='I'),
+           LONG_REPE       =SIMP(fr="longueur du répertoire",statut='f',typ='I'),
+         ),
+         IMPRESSION      =FACT(statut='f',min=1,max=3,
+           FICHIER         =SIMP(statut='o',typ='TXM'),
+           UNITE           =SIMP(statut='o',typ='I'),
+         ),
+         CATALOGUE       =FACT(statut='f',min=1,max=10,
+           FICHIER         =SIMP(statut='o',typ='TXM'),
+           TITRE           =SIMP(statut='f',typ='TXM'),
+           UNITE           =SIMP(statut='f',typ='I'),
+         ),
+         CODE            =FACT(fr="définition d un nom pour l'esemble d'une étude",
+                               statut='f',min=1,max=1,
+           NOM             =SIMP(statut='o',typ='TXM'),
+           NIV_PUB_WEB     =SIMP(statut='o',typ='TXM',into=('INTERNET','INTRANET')),
+           UNITE           =SIMP(statut='f',typ='I',defaut=15),
+         ),
+         DEBUG           =FACT(fr="option de déboggage reservée aux développeurs",
+                               statut='f',min=1,max=1,
+           JXVERI          =SIMP(fr="vérifie l intégrité de la segmentation mémoire",
+                                 statut='f',typ='TXM',into=('OUI','NON'),defaut='NON'),
+           JEVEUX          =SIMP(fr="force les déchargement sur disque",
+                                 statut='f',typ='TXM',into=('OUI','NON'),defaut='NON'),
+           ENVIMA          =SIMP(fr="imprime les valeurs définies dans ENVIMA",
+                                 statut='f',typ='TXM',into=('TEST',)),
+         ),
+         MEMOIRE         =FACT(fr="mode de gestion mémoire utilisé",statut='f',min=1,max=1,
+           GESTION         =SIMP(statut='f',typ='TXM',into=('COMPACTE','RAPIDE'),defaut='RAPIDE'),
+           TYPE_ALLOCATION =SIMP(statut='f',typ='I',into=(1,2,3,4),defaut=1),
+           TAILLE          =SIMP(statut='f',typ='I'),
+           TAILLE_BLOC     =SIMP(statut='f',typ='R',defaut=800.),
+           PARTITION       =SIMP(statut='f',typ='R'),
+         ),
+ );

@@ -1,0 +1,186 @@
+# MODIF  DATE 16/10/2002   AUTEUR CIBHHLV L.VIVAN 
+# TITRE VALIDATION DE L'OPERATEUR POST_RCCM
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+# RESPONSABLE JMBHH01 J.M.PROIX
+# ANCIEN TEST ZZZZ107
+
+DEBUT( CODE=_F(  NOM = 'RCCM01A',NIV_PUB_WEB='INTERNET') )
+
+MA=LIRE_MAILLAGE( )
+
+MA=DEFI_GROUP(reuse=MA,  MAILLAGE=MA,
+                  CREA_GROUP_NO=_F(  TOUT_GROUP_MA = 'OUI')  )
+
+MO=AFFE_MODELE(  MAILLAGE=MA,
+                  AFFE=_F(  TOUT = 'OUI',   PHENOMENE = 'MECANIQUE',
+                         MODELISATION = 'C_PLAN')  )
+
+WOHLER=DEFI_FONCTION(
+             NOM_PARA='SIGM',
+   VALE=(
+               138.,     1000000.,
+               152.,      500000.,
+               165.,      200000.,
+               180.,      100000.,
+               200.,       50000.,
+               250.,       20000.,
+               295.,       12000.,
+               305.,       10000.,
+               340.,        5000.,
+               430.,        2000.,
+               540.,        1000.,
+               690.,         500.,
+               930.,         200.,
+              1210.,         100.,
+              1590.,          50.,
+              2210.,          20.,
+              2900.,          10.,
+               ),
+               INTERPOL='LOG',
+            PROL_DROITE='LINEAIRE',
+            PROL_GAUCHE='LINEAIRE' )
+
+MAT=DEFI_MATERIAU(  ELAS=_F( E = 200000.,  NU = 0.3,  ALPHA = 1.0E-5),
+                     FATIGUE=_F(  WOHLER = WOHLER, E_REFE = 200000.),
+                        RCCM=_F(  M_KE = 1.7,
+                               N_KE = 0.3,
+                               SM = 200.)
+                               )
+
+CHMAT=AFFE_MATERIAU(  MAILLAGE=MA, 
+                        AFFE=_F( TOUT = 'OUI', MATER = MAT)  )
+
+# DEPLACEMENT IMPOSE DY = A1*X+A2
+
+A1=0.0E-3
+
+A2=1.0E-3
+
+DY1=DEFI_VALEUR(  R8=EVAL("""( -1.0 * A1 ) + A2 """) )
+
+DY2=DEFI_VALEUR(  R8=EVAL("""( +1.0 * A1 ) + A2 """) )
+
+DYCD=DEFI_FONCTION(   NOM_PARA='X',
+                      VALE=( -1.0, DY1,  1.0, DY2, )  )
+
+NUL=DEFI_CONSTANTE(    VALE=0. )
+
+CHMEC=AFFE_CHAR_MECA_F(  MODELE=MO,
+                         DDL_IMPO=( _F( GROUP_NO = 'CD', DY = DYCD),
+                                    _F( GROUP_NO = 'AB', DY = NUL ),
+                                    _F( GROUP_NO = 'A' , DX = NUL )) )
+
+LINST=DEFI_LIST_REEL(   DEBUT=0.,
+                        INTERVALLE=_F(  JUSQU_A = 3.,  PAS = 1.)  )
+
+FCTMUL=DEFI_FONCTION(  NOM_PARA='INST',
+                       VALE=( 0.0,  0.0,   1.0,  1.0,
+                              2.0,  1.0,   3.0,  0.0,  )   )
+
+#----------------------------------------------------------------------
+# CHARGEMENT MECANIQUE SEUL
+
+RESU1=MECA_STATIQUE(  MODELE=MO,       CHAM_MATER=CHMAT,
+                      LIST_INST=LINST,
+                      EXCIT=_F( CHARGE = CHMEC,  FONC_MULT = FCTMUL),
+                      OPTION=( 'SIGM_ELNO_DEPL',
+                       )
+                    )
+
+TEST_RESU(RESU=( 
+     _F(  RESULTAT = RESU1,    NOM_CHAM = 'SIGM_ELNO_DEPL',   NUME_ORDRE = 2,
+       REFERENCE = 'ANALYTIQUE',
+       MAILLE = 'M1',    NOEUD = 'N1',    NOM_CMP = 'SIYY',    VALE = 200.),
+     _F(  RESULTAT = RESU1,    NOM_CHAM = 'SIGM_ELNO_DEPL',   NUME_ORDRE = 3,
+       REFERENCE = 'ANALYTIQUE',
+       MAILLE = 'M1',    NOEUD = 'N1',    NOM_CMP = 'SIYY',    VALE = 200.))
+            )
+
+#----------------------------------------------------------------------
+# TEMPERATURE IMPOSEE T = T1*X+T2
+
+T1=50.0
+
+T2=0.0
+
+T = FORMULE(REEL="""(REEL:X) =  T1*X+T2 """)
+
+CHT0=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R', MAILLAGE=MA,
+                      AFFE=_F(  TOUT = 'OUI', NOM_CMP = 'TEMP', VALE = 0.0) )
+
+CHT1=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_F', MAILLAGE=MA,
+                      AFFE=_F(  TOUT = 'OUI', NOM_CMP = 'TEMP', VALE_F = T) )
+
+TEMP=CREA_RESU(  OPERATION='AFFE', TYPE_RESU='EVOL_THER',    NOM_CHAM='TEMP',
+                 AFFE=( _F(  INST = 0.,  CHAM_GD = CHT0),
+                        _F(  INST = 1.,  CHAM_GD = CHT0),
+                        _F(  INST = 2.,  CHAM_GD = CHT1),
+                        _F(  INST = 3.,  CHAM_GD = CHT1))  )
+
+CHTHER=AFFE_CHAR_MECA(  MODELE=MO,     TEMP_CALCULEE=TEMP )
+
+#----------------------------------------------------------------------
+# CHARGEMENTS MECANIQUE + THERMIQUE
+
+
+RESU2=MECA_STATIQUE(  MODELE=MO,      CHAM_MATER=CHMAT,
+                      LIST_INST=LINST,
+                      EXCIT=( _F(  CHARGE = CHTHER),
+                              _F(  CHARGE = CHMEC, FONC_MULT = FCTMUL)),
+                      OPTION=( 'SIGM_ELNO_DEPL',
+                       )
+                   )
+
+TEST_RESU(RESU=( 
+     _F(  RESULTAT = RESU2,    NOM_CHAM = 'SIGM_ELNO_DEPL',   NUME_ORDRE = 3,
+       REFERENCE = 'ANALYTIQUE',
+       MAILLE = 'M1',    NOEUD = 'N1',    NOM_CMP = 'SIYY',    VALE = 300.),
+     _F(  RESULTAT = RESU2,    NOM_CHAM = 'SIGM_ELNO_DEPL',   NUME_ORDRE = 4,
+       REFERENCE = 'ANALYTIQUE',
+       MAILLE = 'M1',    NOEUD = 'N1',    NOM_CMP = 'SIYY',    VALE = 100.))
+            )
+
+#----------------------------------------------------------------------
+# POUR LE CALCUL DE SN* : CHARGEMENT THERMIQUE SEUL
+
+
+CHMEC0=AFFE_CHAR_MECA(  MODELE=MO,
+                        DDL_IMPO=( _F( GROUP_NO = 'AB',  DY = 0.0),
+                                   _F( GROUP_NO = 'A' ,  DX = 0.0),
+                                   _F( GROUP_NO = 'CD',  DY = 0.0)) )
+
+RESUTH=MECA_STATIQUE(  MODELE=MO,    CHAM_MATER=CHMAT,
+                       LIST_INST=LINST,
+                       EXCIT=( _F( CHARGE = CHTHER),
+                               _F( CHARGE = CHMEC0,  FONC_MULT = FCTMUL)),
+                       OPTION='SIGM_ELNO_DEPL'
+                     )
+
+
+TEST_RESU(RESU=( 
+     _F(  RESULTAT = RESUTH,   NOM_CHAM = 'SIGM_ELNO_DEPL',   NUME_ORDRE = 3,
+       REFERENCE = 'ANALYTIQUE',
+       MAILLE = 'M1',    NOEUD = 'N1',    NOM_CMP = 'SIYY',    VALE = 100.),
+     _F(  RESULTAT = RESUTH,   NOM_CHAM = 'SIGM_ELNO_DEPL',   NUME_ORDRE = 4,
+       REFERENCE = 'ANALYTIQUE',
+       MAILLE = 'M1',    NOEUD = 'N1',    NOM_CMP = 'SIYY',    VALE = 100.))
+            )
+
+FIN( )
+#

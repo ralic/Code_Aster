@@ -1,0 +1,589 @@
+# MODIF  DATE 03/10/2001   AUTEUR DURAND C.DURAND 
+# TITRE PORTIQUE PLAN ARTICULE EN PIED
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+#=======================================================================
+
+
+DEBUT( CODE=_F(  NOM = 'SSLL14A',NIV_PUB_WEB='INTERNET') )
+
+MAILLAGE=LIRE_MAILLAGE(  )
+
+I1=5.E-04
+
+J1=10.E-04
+
+I2=2.5E-04
+
+J2=5.E-04
+
+E=2.1E+11
+
+#  DONNEES GEOMETRIQUES:
+
+A=4.
+
+H=8.
+
+L=20.
+
+B=DEFI_VALEUR(  R8=EVAL("""( A**2 + ( L / 2 )**2 ) ** 0.5 """) )
+
+HSL=DEFI_VALEUR(  R8=EVAL("""H  / L """) )
+
+TGB=DEFI_VALEUR(  R8=EVAL("""L / ( 2. * ( A + H ) ) """) )
+
+CSA=DEFI_VALEUR(  R8=EVAL("""L / ( 2. * B ) """) )
+
+#  SOLLICITATIONS:
+
+F0=-20.
+
+F1=-20000.
+
+F2=-10000.
+
+P=-3000.
+
+M=-100000.
+
+MATERIAU=DEFI_MATERIAU( ELAS=_F(  E = E,  NU = 0.3) )
+
+CH_MATER=AFFE_MATERIAU(  MAILLAGE=MAILLAGE,
+                             AFFE=_F(  TOUT = 'OUI', MATER = MATERIAU) )
+
+MODELE=AFFE_MODELE(  MAILLAGE=MAILLAGE,
+                           AFFE=_F(  TOUT = 'OUI', PHENOMENE = 'MECANIQUE',
+                                  MODELISATION = 'POU_D_E') )
+
+CARA_ELE=AFFE_CARA_ELEM(  MODELE=MODELE,POUTRE=(
+                     _F(  SECTION = 'GENERALE',
+                              GROUP_MA = ( 'D1',  'D4', ),
+                              CARA = ( 'A', 'IY', 'IZ', 'JX', ),
+                              VALE = ( 1.,   I1,   I1,   J1,  )),
+                            _F(  SECTION = 'GENERALE',
+                            GROUP_MA = ( 'D2',  'D3', ),
+                              CARA = ( 'A', 'IY', 'IZ', 'JX', ),
+                              VALE = ( 1.,   I2,   I2,   J2,  )))  )
+
+BLOQU=AFFE_CHAR_MECA(  MODELE=MODELE,DDL_IMPO=(
+             _F(  TOUT = 'OUI',          DZ = 0.),
+                      _F(  GROUP_NO = ( 'A',  'B', ),  DX = 0.,   DY = 0.))   )
+
+CHARG1=AFFE_CHAR_MECA(  MODELE=MODELE,
+             FORCE_POUTRE=_F(  GROUP_MA = 'D2',   FY = P)   )
+
+CHARG2=AFFE_CHAR_MECA(  MODELE=MODELE,
+             FORCE_NODALE=_F(  GROUP_NO = 'C',    FY = F1)   )
+
+CHARG3=AFFE_CHAR_MECA(  MODELE=MODELE,
+             FORCE_NODALE=_F(  GROUP_NO = 'D',    FX = F2)   )
+
+CHARG4=AFFE_CHAR_MECA(  MODELE=MODELE,
+             FORCE_NODALE=_F(  GROUP_NO = 'D',    MZ = M)   )
+
+CHARG5=AFFE_CHAR_MECA(  MODELE=MODELE,
+             FORCE_POUTRE=_F(  GROUP_MA = 'D2',   FY = P),FORCE_NODALE=(
+             _F(  GROUP_NO = 'C',    FY = F1),
+                          _F(  GROUP_NO = 'D',    FX = F2),
+                          _F(  GROUP_NO = 'D',    MZ = M))   )
+
+STATIQUE=MACRO_ELAS_MULT( MODELE=MODELE,
+                          CHAM_MATER=CH_MATER,
+                          CARA_ELEM=CARA_ELE,
+                          CHAR_MECA_GLOBAL=BLOQU,
+                          NUME_DDL=CO("NU_DDL"),
+                          CAS_CHARGE=(
+                   _F( 
+            NOM_CAS = 'CHARGE NUMERO 1',
+            CHAR_MECA = CHARG1,
+            SOUS_TITRE = 'CHARGE REPARTIE VERTICALE SUR LE TRONCON DC',
+            OPTION = ( 'SIEF_ELGA_DEPL', 'REAC_NODA', ),),),)
+
+STATIQUE=MACRO_ELAS_MULT( reuse=STATIQUE,
+                          MODELE=MODELE,
+                          CHAM_MATER=CH_MATER,
+                          CARA_ELEM=CARA_ELE,
+                          CHAR_MECA_GLOBAL=BLOQU,
+                          CAS_CHARGE=(
+                   _F( 
+            NOM_CAS = 'CHARGE NUMERO 2',
+            CHAR_MECA = CHARG2,
+            SOUS_TITRE = 'FORCE PONCTUELLE VERTICALE EN C',
+            OPTION = ( 'SIEF_ELGA_DEPL','REAC_NODA', )),
+                   _F( 
+            NOM_CAS = 'CHARGE NUMERO 3',
+            CHAR_MECA = CHARG3,
+            SOUS_TITRE = 'FORCE PONCTUELLE HORIZONTALE EN C',
+            OPTION = ( 'SIEF_ELGA_DEPL','REAC_NODA', )),
+                   _F( 
+            NOM_CAS = 'CHARGE NUMERO 4',
+            CHAR_MECA = CHARG4,
+            SOUS_TITRE = 'MOMEMT EN C',
+            OPTION = ( 'SIEF_ELGA_DEPL','REAC_NODA', )),
+                   _F( 
+            NOM_CAS = 'CHARGE NUMERO 5',
+            CHAR_MECA = CHARG5,
+            SOUS_TITRE = 'COMBINAISON DES 4 CHARGEMENTS PRECEDENTS',
+            OPTION = ( 'SIEF_ELGA_DEPL','REAC_NODA', )))
+                             )
+
+TAB_REAC=POST_RELEVE_T(   
+       ACTION=_F(  RESULTAT = STATIQUE,      INTITULE = 'REACTION',
+         NOM_CHAM = 'REAC_NODA',   TOUT_ORDRE = 'OUI',
+         REPERE = 'GLOBAL',  OPERATION = 'EXTRACTION',
+         NOEUD = ( 'N41', 'N1', ),  RESULTANTE = ( 'DX',  'DY',  'DZ', ),
+         MOMENT = ( 'DX',  'DY',  'DZ', ),  POINT = ( 10., 12., 0., ))
+            )
+IMPR_TABLE ( TABLE = TAB_REAC)
+
+TEST_TABLE(        TABLE=TAB_REAC,
+                   FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
+                            VALE_I = 1),
+                 NOM_PARA='RESULT_X',
+                  CRITERE='ABSOLU',
+                     VALE=0.          )
+
+TEST_TABLE(        TABLE=TAB_REAC,
+                   FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
+                            VALE_I = 2),
+                 NOM_PARA='RESULT_Y',
+                     VALE=1.999999996E+04          )
+
+TEST_TABLE(        TABLE=TAB_REAC,
+                   FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
+                            VALE_I = 3),
+                 NOM_PARA='RESULT_X',
+                     VALE=9.999999768E+03          )
+
+TEST_TABLE(        TABLE=TAB_REAC,
+                   FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
+                            VALE_I = 4),
+                 NOM_PARA='MOMENT_Z',
+                     VALE=1.000000003E+05          )
+
+TEST_TABLE(        TABLE=TAB_REAC,
+                   FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
+                            VALE_I = 5),
+                 NOM_PARA='MOMENT_Y',
+                     VALE=5.231098875E+04          )
+
+# TEST_RESU, VALEUR DE REFERENCE: NOTE V3.90.01 (F. VOLDOIRE)
+
+TEST_RESU(RESU=( 
+           _F(  RESULTAT = STATIQUE,         NOM_CHAM = 'DEPL',
+             NOM_CAS = 'CHARGE NUMERO 1',
+             GROUP_NO = 'C',   NOM_CMP = 'DX',   VALE = 1.10476E-02),
+           _F(  RESULTAT = STATIQUE,         NOM_CHAM = 'DEPL',
+             NOM_CAS = 'CHARGE NUMERO 1',
+             GROUP_NO = 'C',   NOM_CMP = 'DY',   VALE = -1.24228E-02),
+           _F(  RESULTAT = STATIQUE,         NOM_CHAM = 'REAC_NODA',
+             NOM_CAS = 'CHARGE NUMERO 1',
+             GROUP_NO = 'A',   NOM_CMP = 'DX',   VALE = 5.17537E+03),
+           _F(  RESULTAT = STATIQUE,         NOM_CHAM = 'REAC_NODA',
+             NOM_CAS = 'CHARGE NUMERO 1',
+             GROUP_NO = 'A',   NOM_CMP = 'DY',   VALE = 2.42332E+04))
+           )
+
+TEST_RESU(RESU=( 
+           _F(  RESULTAT = STATIQUE,         NOM_CHAM = 'DEPL',
+             NOM_CAS = 'CHARGE NUMERO 2', CRITERE = 'ABSOLU',
+             GROUP_NO = 'C',   NOM_CMP = 'DX',   VALE = 0.),
+           _F(  RESULTAT = STATIQUE,         NOM_CHAM = 'DEPL',
+             NOM_CAS = 'CHARGE NUMERO 2',
+             GROUP_NO = 'C',   NOM_CMP = 'DY',   VALE = -1.49733E-02),
+           _F(  RESULTAT = STATIQUE,         NOM_CHAM = 'REAC_NODA',
+             NOM_CAS = 'CHARGE NUMERO 2',
+             GROUP_NO = 'A',   NOM_CMP = 'DX',   VALE = 4.88148E+03),
+           _F(  RESULTAT = STATIQUE,         NOM_CHAM = 'REAC_NODA',
+             NOM_CAS = 'CHARGE NUMERO 2',
+             GROUP_NO = 'A',   NOM_CMP = 'DY',   VALE = 1.00000E+04))
+           )
+
+TEST_RESU(RESU=( 
+           _F(  RESULTAT = STATIQUE,         NOM_CHAM = 'DEPL',
+             NOM_CAS = 'CHARGE NUMERO 3',
+             GROUP_NO = 'C',   NOM_CMP = 'DX',   VALE = -3.00095E-02),
+           _F(  RESULTAT = STATIQUE,         NOM_CHAM = 'DEPL',
+             NOM_CAS = 'CHARGE NUMERO 3',
+             GROUP_NO = 'C',   NOM_CMP = 'DY',   VALE = -2.99466E-03),
+           _F(  RESULTAT = STATIQUE,         NOM_CHAM = 'REAC_NODA',
+             NOM_CAS = 'CHARGE NUMERO 3',
+             GROUP_NO = 'A',   NOM_CMP = 'DX',   VALE = 5.97630E+03),
+           _F(  RESULTAT = STATIQUE,         NOM_CHAM = 'REAC_NODA',
+             NOM_CAS = 'CHARGE NUMERO 3',
+             GROUP_NO = 'A',   NOM_CMP = 'DY',   VALE = 4.00000E+03))
+           )
+
+TEST_RESU(RESU=( 
+           _F(  RESULTAT = STATIQUE,         NOM_CHAM = 'DEPL',
+             NOM_CAS = 'CHARGE NUMERO 4',
+             GROUP_NO = 'C',   NOM_CMP = 'DX',   VALE = 2.73532E-02),
+           _F(  RESULTAT = STATIQUE,         NOM_CHAM = 'DEPL',
+             NOM_CAS = 'CHARGE NUMERO 4',
+             GROUP_NO = 'C',   NOM_CMP = 'DY',   VALE = -1.21564E-03),
+           _F(  RESULTAT = STATIQUE,         NOM_CHAM = 'REAC_NODA',
+             NOM_CAS = 'CHARGE NUMERO 4',
+             GROUP_NO = 'A',   NOM_CMP = 'DX',   VALE = 4.57640E+03),
+           _F(  RESULTAT = STATIQUE,         NOM_CHAM = 'REAC_NODA',
+             NOM_CAS = 'CHARGE NUMERO 4',
+             GROUP_NO = 'A',   NOM_CMP = 'DY',   VALE = -5.00000E+03))
+           )
+
+TEST_RESU(RESU=( 
+           _F(  RESULTAT = STATIQUE,         NOM_CHAM = 'DEPL',
+             NOM_CAS = 'CHARGE NUMERO 5',
+             GROUP_NO = 'C',   NOM_CMP = 'DX',   VALE = 0.00839124),
+           _F(  RESULTAT = STATIQUE,         NOM_CHAM = 'DEPL',
+             NOM_CAS = 'CHARGE NUMERO 5',
+             GROUP_NO = 'C',   NOM_CMP = 'DY',   VALE = -0.03160598),
+           _F(  RESULTAT = STATIQUE,         NOM_CHAM = 'REAC_NODA',
+             NOM_CAS = 'CHARGE NUMERO 5',
+             GROUP_NO = 'A',   NOM_CMP = 'DX',   VALE = 20609.548),
+           _F(  RESULTAT = STATIQUE,         NOM_CHAM = 'REAC_NODA',
+             NOM_CAS = 'CHARGE NUMERO 5',
+             GROUP_NO = 'A',   NOM_CMP = 'DY',   VALE = 33233.24))
+           )
+
+DEPL1=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
+NOM_CHAM='DEPL', RESULTAT=STATIQUE,
+                       NOM_CAS='CHARGE NUMERO 1'
+                                            )
+
+DEPL2=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
+NOM_CHAM='DEPL', RESULTAT=STATIQUE,
+                       NOM_CAS='CHARGE NUMERO 2'
+                                            )
+
+DEPL3=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
+NOM_CHAM='DEPL', RESULTAT=STATIQUE,
+                       NOM_CAS='CHARGE NUMERO 3'
+                                            )
+
+DEPL4=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
+NOM_CHAM='DEPL', RESULTAT=STATIQUE,
+                       NOM_CAS='CHARGE NUMERO 4'
+                                            )
+
+DEPL5=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
+NOM_CHAM='DEPL', RESULTAT=STATIQUE,
+                       NOM_CAS='CHARGE NUMERO 5'
+                                            )
+
+TEST_RESU(CHAM_NO=( 
+           _F(  CHAM_GD = DEPL1,
+             GROUP_NO = 'C',   NOM_CMP = 'DX',   VALE = 1.10476E-02),
+           _F(  CHAM_GD = DEPL1,
+             GROUP_NO = 'C',   NOM_CMP = 'DY',   VALE = -1.24228E-02))
+           )
+
+DEPL_T=COMB_CHAM_NO(COMB_R=( _F(  CHAM_NO = DEPL1,   COEF_R = 1.),
+                                _F(  CHAM_NO = DEPL2,   COEF_R = 1.),
+                                _F(  CHAM_NO = DEPL3,   COEF_R = 1.),
+                                _F(  CHAM_NO = DEPL4,   COEF_R = 1.))  )
+
+TEST_RESU(CHAM_NO=( 
+           _F(  CHAM_GD = DEPL_T,
+             GROUP_NO = 'C',   NOM_CMP = 'DX',   VALE = 0.00839124),
+           _F(  CHAM_GD = DEPL_T,
+             GROUP_NO = 'C',   NOM_CMP = 'DY',   VALE = -0.03160598))
+           )
+
+# ---------------------------------------------------------------------
+#          VALIDATION COMB_CHAM_NO AVEC NUME_DDL DIFFERENTS
+# ---------------------------------------------------------------------
+# DEUX FOIS LE MEME CAS DE CHARGE (CAS NUMERO 2) F1 EN C
+# UNE FOIS A FORCE IMPOSEE,(DEPL2), L AUTRE FOIS A DEPLACEMENT IMPOSE
+# LA COMBINAISON DES DEUX DONNE UN DEPLACEMENT DOUBLE EN C
+
+
+CHARG7=AFFE_CHAR_MECA(  MODELE=MODELE,DDL_IMPO=(
+             _F(  TOUT = 'OUI',          DZ = 0.),
+                      _F(  GROUP_NO = ('A', 'B',),     DX = 0.,   DY = 0.),
+             _F(  GROUP_NO = 'C',     DY = -1.497330E-02))
+             )
+
+STATIQU7=MECA_STATIQUE(       MODELE=MODELE,
+                              CHAM_MATER=CH_MATER,
+                               CARA_ELEM=CARA_ELE,
+                             EXCIT=_F(   CHARGE = CHARG7)       )
+
+DEPL7=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
+NOM_CHAM='DEPL', RESULTAT=STATIQU7,  NUME_ORDRE=1
+                                            )
+
+DEPL_T2=COMB_CHAM_NO(COMB_R=( _F(  CHAM_NO = DEPL2,   COEF_R = 1.),
+                                 _F(  CHAM_NO = DEPL7,   COEF_R = 1.))  )
+
+TEST_RESU(CHAM_NO=( 
+           _F(  CHAM_GD = DEPL_T2,  GROUP_NO = 'C',
+             CRITERE = 'ABSOLU',  NOM_CMP = 'DX',   VALE = 0.),
+           _F(  CHAM_GD = DEPL_T2,  GROUP_NO = 'C',
+             NOM_CMP = 'DY',   VALE = -0.02994660))
+             )
+
+# ---------------------------------------------------------------------
+#          VALIDATION POST_RELEVE_T SUR RESULTANTE ET MOMENT
+# ---------------------------------------------------------------------
+REAC5=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
+NOM_CHAM='REAC_NODA', RESULTAT=STATIQUE,
+                       NOM_CAS='CHARGE NUMERO 5'
+                                     )
+
+TR1=POST_RELEVE_T(   
+       ACTION=_F(  CHAM_GD = REAC5,     INTITULE = 'REA1',
+         REPERE = 'GLOBAL',  OPERATION = 'EXTRACTION',
+         NOEUD = ( 'N41', 'N1', ),  RESULTANTE = ( 'DX',  'DY',  'DZ', ),
+         MOMENT = ( 'DX',  'DY',  'DZ', ),  POINT = ( 10., 12., 0., ))
+            )
+
+TEST_TABLE(        TABLE=TR1,
+                 NOM_PARA='RESULT_X',
+                     VALE=1.00000E+04          )
+
+TEST_TABLE(        TABLE=TR1,
+                 NOM_PARA='RESULT_Y',
+                     VALE=5.23110E+04          )
+
+TEST_TABLE(        TABLE=TR1,
+                 NOM_PARA='RESULT_Z',
+                  CRITERE='ABSOLU',
+                     VALE=0.00000E+00          )
+
+TEST_TABLE(        TABLE=TR1,
+                 NOM_PARA='MOMENT_X',
+                     VALE=1.00000E+04          )
+
+TEST_TABLE(        TABLE=TR1,
+                 NOM_PARA='MOMENT_Y',
+                     VALE=5.23110E+04          )
+
+TEST_TABLE(        TABLE=TR1,
+                 NOM_PARA='MOMENT_Z',
+                     VALE=-2.15549E+04         )
+
+TR2=POST_RELEVE_T(   
+       ACTION=_F(  CHAM_GD = REAC5,     INTITULE = 'REA2',
+         REPERE = 'GLOBAL',  OPERATION = 'EXTRACTION',
+         NOEUD = ( 'N41', 'N1', ),  RESULTANTE = ( 'DX',  'DY',  'DZ', ),
+         MOMENT = ( 'DRX',  'DRY',  'DRZ', ),  POINT = ( 10., 12., 0., ))
+            )
+
+TEST_TABLE(        TABLE=TR2,
+                 NOM_PARA='RESULT_X',
+                     VALE=1.00000E+04          )
+
+TEST_TABLE(        TABLE=TR2,
+                 NOM_PARA='RESULT_Y',
+                     VALE=5.23110E+04          )
+
+TEST_TABLE(        TABLE=TR2,
+                 NOM_PARA='RESULT_Z',
+                  CRITERE='ABSOLU',
+                     VALE=0.00000E+00          )
+
+TEST_TABLE(        TABLE=TR2,
+                 NOM_PARA='MOMENT_X',
+                  CRITERE='ABSOLU',
+                     VALE=0.00000E+00          )
+
+TEST_TABLE(        TABLE=TR2,
+                 NOM_PARA='MOMENT_Y',
+                  CRITERE='ABSOLU',
+                     VALE=0.00000E+00          )
+
+TEST_TABLE(        TABLE=TR2,
+                 NOM_PARA='MOMENT_Z',
+                     VALE=-2.15549E+04         )
+
+TDG=POST_RELEVE_T(   
+         ACTION=_F(  CHAM_GD = DEPL5,      INTITULE = 'DEG',
+           REPERE = 'GLOBAL',   OPERATION = 'EXTRACTION',
+           GROUP_NO = 'PORTIQ',     NOM_CMP = ('DX', 'DY',))  )
+
+TEST_TABLE(        TABLE=TDG,
+                   FILTRE=_F(  NOM_PARA = 'NOEUD',
+                            VALE_K = 'N3'),
+                 NOM_PARA='DX',
+                     VALE=5.86205E-03         )
+
+TEST_TABLE(        TABLE=TDG,
+                   FILTRE=_F(  NOM_PARA = 'NOEUD',
+                            VALE_K = 'N3'),
+                 NOM_PARA='DY',
+                     VALE=-1.45354E-07         )
+
+TEST_TABLE(        TABLE=TDG,
+                   FILTRE=_F(  NOM_PARA = 'NOEUD',
+                            VALE_K = 'N13'),
+                 NOM_PARA='DX',
+                     VALE=2.01811E-02         )
+
+TEST_TABLE(        TABLE=TDG,
+                   FILTRE=_F(  NOM_PARA = 'NOEUD',
+                            VALE_K = 'N13'),
+                 NOM_PARA='DY',
+                     VALE=-2.13045E-03         )
+
+TEST_TABLE(        TABLE=TDG,
+                   FILTRE=_F(  NOM_PARA = 'NOEUD',
+                            VALE_K = 'N23'),
+                 NOM_PARA='DX',
+                     VALE=8.70918E-03         )
+
+TEST_TABLE(        TABLE=TDG,
+                   FILTRE=_F(  NOM_PARA = 'NOEUD',
+                            VALE_K = 'N23'),
+                 NOM_PARA='DY',
+                     VALE=-3.24029E-02         )
+
+TEST_TABLE(        TABLE=TDG,
+                   FILTRE=_F(  NOM_PARA = 'NOEUD',
+                            VALE_K = 'N33'),
+                 NOM_PARA='DX',
+                     VALE=-8.22436E-03         )
+
+TEST_TABLE(        TABLE=TDG,
+                   FILTRE=_F(  NOM_PARA = 'NOEUD',
+                            VALE_K = 'N33'),
+                 NOM_PARA='DY',
+                     VALE=-1.01282E-06         )
+
+TDL=POST_RELEVE_T(   
+         ACTION=_F(  CHAM_GD = DEPL5,      INTITULE = 'DEL',
+           REPERE = 'LOCAL',    OPERATION = 'EXTRACTION',
+           GROUP_NO = 'PORTIQ',     NOM_CMP = ('DX', 'DY',))  )
+
+TEST_TABLE(        TABLE=TDL,
+                   FILTRE=_F(  NOM_PARA = 'NOEUD',
+                            VALE_K = 'N3'),
+                 NOM_PARA='DX',
+                     VALE=-1.45354E-07         )
+
+TEST_TABLE(        TABLE=TDL,
+                   FILTRE=_F(  NOM_PARA = 'NOEUD',
+                            VALE_K = 'N3'),
+                 NOM_PARA='DY',
+                     VALE=-5.86205E-03         )
+
+TEST_TABLE(        TABLE=TDL,
+                   FILTRE=_F(  NOM_PARA = 'NOEUD',
+                            VALE_K = 'N13'),
+                 NOM_PARA='DX',
+                     VALE=-1.95289E-02         )
+
+TEST_TABLE(        TABLE=TDL,
+                   FILTRE=_F(  NOM_PARA = 'NOEUD',
+                            VALE_K = 'N13'),
+                 NOM_PARA='DY',
+                     VALE=-5.51700E-03         )
+
+TEST_TABLE(        TABLE=TDL,
+                   FILTRE=_F(  NOM_PARA = 'NOEUD',
+                            VALE_K = 'N23'),
+                 NOM_PARA='DX',
+                     VALE=3.94786E-03         )
+
+TEST_TABLE(        TABLE=TDL,
+                   FILTRE=_F(  NOM_PARA = 'NOEUD',
+                            VALE_K = 'N23'),
+                 NOM_PARA='DY',
+                     VALE=3.33198E-02         )
+
+TEST_TABLE(        TABLE=TDL,
+                   FILTRE=_F(  NOM_PARA = 'NOEUD',
+                            VALE_K = 'N33'),
+                 NOM_PARA='DX',
+                     VALE=1.01282E-06         )
+
+TEST_TABLE(        TABLE=TDL,
+                   FILTRE=_F(  NOM_PARA = 'NOEUD',
+                            VALE_K = 'N33'),
+                 NOM_PARA='DY',
+                     VALE=-8.22436E-03         )
+
+TDG1=POST_RELEVE_T(   
+         ACTION=_F(  CHAM_GD = DEPL5,      INTITULE = 'DEG1',
+           REPERE = 'GLOBAL',   OPERATION = 'EXTRACTION',
+           GROUP_NO = 'PORTI1',     NOM_CMP = ('DX', 'DY',))  )
+
+TEST_TABLE(        TABLE=TDG1,
+                   FILTRE=_F(  NOM_PARA = 'NOEUD',
+                            VALE_K = 'N3'),
+                 NOM_PARA='DX',
+                     VALE=5.86205E-03         )
+
+TEST_TABLE(        TABLE=TDG1,
+                   FILTRE=_F(  NOM_PARA = 'NOEUD',
+                            VALE_K = 'N3'),
+                 NOM_PARA='DY',
+                     VALE=-1.45354E-07         )
+
+TDL1=POST_RELEVE_T(   
+         ACTION=_F(  CHAM_GD = DEPL5,      INTITULE = 'DEL1',
+           REPERE = 'LOCAL',    OPERATION = 'EXTRACTION',
+           GROUP_NO = 'PORTI1',     NOM_CMP = ('DX', 'DY',))  )
+
+TEST_TABLE(        TABLE=TDL1,
+                   FILTRE=_F(  NOM_PARA = 'NOEUD',
+                            VALE_K = 'N3'),
+                 NOM_PARA='DX',
+                     VALE=1.45354E-07         )
+
+TEST_TABLE(        TABLE=TDL1,
+                   FILTRE=_F(  NOM_PARA = 'NOEUD',
+                            VALE_K = 'N3'),
+                 NOM_PARA='DY',
+                     VALE=5.86205E-03         )
+
+TDG3=POST_RELEVE_T(   
+         ACTION=_F(  CHAM_GD = DEPL5,      INTITULE = 'DEG3',
+           REPERE = 'GLOBAL',   OPERATION = 'EXTRACTION',
+           GROUP_NO = 'PORTI3',     NOM_CMP = ('DX', 'DY',))  )
+
+TEST_TABLE(        TABLE=TDG3,
+                   FILTRE=_F(  NOM_PARA = 'NOEUD',
+                            VALE_K = 'N23'),
+                 NOM_PARA='DX',
+                     VALE=8.70918E-03         )
+
+TEST_TABLE(        TABLE=TDG3,
+                   FILTRE=_F(  NOM_PARA = 'NOEUD',
+                            VALE_K = 'N23'),
+                 NOM_PARA='DY',
+                     VALE=-3.24029E-02         )
+
+TDL3=POST_RELEVE_T(   
+         ACTION=_F(  CHAM_GD = DEPL5,      INTITULE = 'DEL3',
+           REPERE = 'LOCAL',    OPERATION = 'EXTRACTION',
+           GROUP_NO = 'PORTI3',     NOM_CMP = ('DX', 'DY',))  )
+
+TEST_TABLE(        TABLE=TDL3,
+                   FILTRE=_F(  NOM_PARA = 'NOEUD',
+                            VALE_K = 'N23'),
+                 NOM_PARA='DX',
+                     VALE=-3.94786E-03         )
+
+TEST_TABLE(        TABLE=TDL3,
+                   FILTRE=_F(  NOM_PARA = 'NOEUD',
+                            VALE_K = 'N23'),
+                 NOM_PARA='DY',
+                     VALE=-3.33198E-02         )
+
+FIN( )
+#

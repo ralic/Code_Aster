@@ -1,0 +1,214 @@
+# MODIF  DATE 20/03/2001   AUTEUR CIBHHLV L.VIVAN 
+# RESPONSABLE JMBHH01 J.M.PROIX
+
+# TITRE FORMATION  THERMO-PLASTICITE DANS LE CODE_ASTER ENONCE DU TP1
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+
+# ESSAI DE TRACTION-CISAILLEMENT (MISES ECROUISSAGE CINEMATIQUE)
+
+
+DEBUT(CODE=_F( NOM = 'FORMA02A',NIV_PUB_WEB='INTERNET'))
+
+MA=LIRE_MAILLAGE( )
+
+MO=AFFE_MODELE( 
+                           MAILLAGE=MA,
+                              VERIF='MAILLE',
+                               AFFE=_F(  TOUT = 'OUI',
+                                      PHENOMENE = 'MECANIQUE',
+                                      MODELISATION = '3D')
+                        )
+
+ACIER=DEFI_MATERIAU( 
+                                 ELAS=_F( E = 195000.,
+                                       NU = 0.3),
+                            ECRO_LINE=_F( D_SIGM_EPSI = 1930.,
+                                       SY = 181.)
+                          )
+
+CM=AFFE_MATERIAU( 
+                             MAILLAGE=MA,
+                                 AFFE=_F(  TOUT = 'OUI',
+                                        MATER = ACIER)
+                          )
+
+SIGMA=AFFE_CHAR_MECA( 
+                                 MODELE=MO,
+                             FORCE_FACE=_F(  MAILLE = 'GAUCHE',
+                                          FX = -1.)
+                          )
+
+TAU=AFFE_CHAR_MECA( 
+                                 MODELE=MO,FORCE_FACE=(
+                            
+                                _F( MAILLE = 'GAUCHE',          FY = -1.),
+                                _F( MAILLE = 'DROITE',          FY = 1.),
+                                _F( MAILLE = 'HAUT',    FX = 1.),
+                                _F( MAILLE = 'BAS',     FX = -1.))
+                          )
+
+SIGMA_F=DEFI_FONCTION( 
+                                NOM_PARA='INST',
+                             PROL_DROITE='EXCLU',
+                             PROL_GAUCHE='EXCLU',
+                                    VALE=( 0.0,    0.0,
+                                           1.0,  151.2,
+                                           2.0,  257.2,
+                                           3.0,  259.3,
+                                           4.0,    0.0, )
+                          )
+
+TAU_F=DEFI_FONCTION( 
+                                NOM_PARA='INST',
+                             PROL_DROITE='EXCLU',
+                             PROL_GAUCHE='EXCLU',
+                                    VALE=( 0.0,    0.0,
+                                           1.0,   93.1,
+                                           2.0,   33.1,
+                                           3.0,    0.0,
+                                           4.0,    0.0, )
+                          )
+
+LIAISON=AFFE_CHAR_MECA( 
+                             MODELE=MO,DDL_IMPO=(
+                            
+                                _F( NOEUD = 'NO4', DX = 0.,  DY = 0.),
+                                _F( NOEUD = 'NO8', DX = 0.,  DY = 0.,  DZ = 0.),
+                                _F( NOEUD = 'NO2', DX = 0.),
+                                _F( NOEUD = 'NO6', DX = 0.))
+                          )
+
+L_INST=DEFI_LIST_REEL( 
+                             DEBUT=0.0,INTERVALLE=(
+                             _F( JUSQU_A = 1.0,  NOMBRE = 1),
+                             _F( JUSQU_A = 2.0,  NOMBRE = 1),
+                             _F( JUSQU_A = 3.0,  NOMBRE = 1))
+                          )
+
+UE=MECA_STATIQUE( 
+                                  MODELE=MO,
+                              CHAM_MATER=CM,EXCIT=(
+                                  
+                                _F(  CHARGE = LIAISON),
+                                _F(  CHARGE = SIGMA,   FONC_MULT = SIGMA_F),
+                                _F(  CHARGE = TAU,     FONC_MULT = TAU_F)),
+                             LIST_INST=L_INST
+                          )
+
+U=STAT_NON_LINE( 
+                                  MODELE=MO,
+                              CHAM_MATER=CM,EXCIT=(
+                                  
+                                _F(  CHARGE = LIAISON),
+                                _F(  CHARGE = SIGMA,   FONC_MULT = SIGMA_F),
+                                _F(  CHARGE = TAU,     FONC_MULT = TAU_F)),
+                             INCREMENT=_F( LIST_INST = L_INST),
+                               COMP_INCR=_F(  RELATION = 'ELAS')
+                          )
+
+UE=CALC_ELEM(     reuse=UE,
+                                  MODELE=MO,
+                                RESULTAT=UE,
+                              CHAM_MATER=CM,
+                                 OPTION=('EPSI_ELNO_DEPL',
+                                          'EPSI_ELGA_DEPL',)
+                          )
+
+UE=CALC_NO(      reuse=UE,
+                               CHAM_MATER=CM,
+                               RESULTAT=UE,
+                                   OPTION='EPSI_NOEU_DEPL'
+                        )
+
+U=CALC_ELEM(     reuse=U,
+                                  MODELE=MO,
+                                RESULTAT=U,
+                              CHAM_MATER=CM,
+                                 OPTION=('EPSI_ELNO_DEPL',
+                                        'EPSI_ELGA_DEPL',)
+                          )
+
+U=CALC_NO(      reuse=U,
+                             CHAM_MATER=CM,
+                              RESULTAT=U, 
+                                  OPTION='EPSI_NOEU_DEPL'
+                        )
+
+IMPR_RESU(
+              MODELE=MO,
+                RESU=_F(  RESULTAT = UE,
+                       NOEUD = 'NO1',
+                       NOM_CHAM = 'EPSI_ELNO_DEPL',
+                       NOM_CMP = ('EPXX', 'EPXY',))
+           )
+
+IMPR_RESU(
+              MODELE=MO,
+                RESU=_F(  RESULTAT = U,
+                       NOEUD = 'NO1',
+                       NOM_CHAM = 'EPSI_ELNO_DEPL',
+                       NOM_CMP = ('EPXX', 'EPXY',))
+           )
+
+TEST_RESU(RESU=( 
+           _F(  RESULTAT = U,       INST = 3.,
+             NOM_CHAM = 'EPSI_ELNO_DEPL',  REFERENCE = 'NON_REGRESSION',
+MAILLE = 'CUBE', NOEUD = 'NO1', NOM_CMP = 'EPXX', VALE = 1.32974E-03),
+           _F(  RESULTAT = U,       INST = 2.,
+             NOM_CHAM = 'EPSI_ELNO_DEPL',  REFERENCE = 'NON_REGRESSION',
+ MAILLE = 'CUBE', NOEUD = 'NO1', NOM_CMP = 'EPXY', VALE = 2.20667E-04))
+             )
+
+FIN()
+#
+#  
+#
+## STRUCTURE DE LA COMMANDE STAT_NON_LINE (VERSION STA5)
+#
+# U        = STAT_NON_LINE (
+#                            MODELE     :
+#                            CHAM_MATER :
+#                            EXCIT      :
+#                                ( CHARGE     :
+#                                  FONC_MULT  :        )
+#                            COMP_INCR  : ( RELATION:
+#                                           DEFORMATION:          )
+#                            INCREMENT  : ( LIST_INST:
+#                                           NUME_INST_FIN: 
+#                                           OU INST_FIN :
+#                                           SUBD_PAS :
+#                                           SUBD_PAS_MINI :
+#                                           COEF_SUBD_PAS_1 :
+#                                                      )
+#                            ETAT_INIT  : ( EVOL_NOLI:INST
+#                                     #   OU NUME_ORDRE    )
+#                            NEWTON     : ( PREDICTION    :
+#                                           MATRICE       :
+#                                           REAC_INCR     :
+#                                           REAC_ITER     :
+#                                             )
+#                            CONVERGENCE: ( RESI_GLOB_RELA:
+#                                           RESI_GLOB_MAXI:
+#                                           ITER_GLOB_MAXI:
+#                                           RESI_INTE_RELA:
+#                                           ITER_INTE_MAXI:
+#                                           RESO_INTE     :   )
+#                           
+#                            RECH_LINEAIRE:(ITER_LINE_MAXI:)
+#                          ) ;

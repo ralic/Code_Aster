@@ -1,0 +1,274 @@
+      SUBROUTINE ARLCHA(DIME,MAIL,CINE,MORS1Z,MORS2Z,CHARGE)
+
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF MODELISA  DATE 02/04/2002   AUTEUR RATEAU G.RATEAU 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C                                                                       
+C                                                                       
+C ======================================================================
+C ----------------------------------------------------------------------
+C   TRANSFORMATION DES MATRICES ARLEQUIN MORSE EN RELATIONS LINEAIRES
+C ----------------------------------------------------------------------
+C VARIABLES D'ENTREE 
+C INTEGER        DIME    : DIMENSION DE L'ESPACE
+C CHARACTER*8    MAIL    : SD MAILLAGE
+C CHARACTER*8    CINE(*) : CINEMATIQUES DES MODELES (MOD1,MOD2,MOD COLL)
+C CHARACTER*(16) MORS1Z  : SD MATRICE MORSE ARLEQUIN 1 (CF ARLCAL)
+C CHARACTER*(16) MORS2Z  : SD MATRICE MORSE ARLEQUIN 2 (CF ARLCAL)
+C CHARACTER*8    CHARGE  : SD CHARGE
+C
+C SD D'ENTREE / SORTIE
+C CHARGE.CHME.LIGRE : LIGREL DE CHARGE
+C CHARGE.CHME.CIMPO : CARTE COEFFICIENTS IMPOSES
+C CHARGE.CHME.CMULT : CARTE COEFFICIENTS MULTIPLICATEURS
+C ----------------------------------------------------------------------
+
+      IMPLICIT NONE
+
+C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
+      CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
+      INTEGER            ZI
+      COMMON  / IVARJE / ZI(1)
+      REAL*8             ZR
+      COMMON  / RVARJE / ZR(1)
+      COMPLEX*16         ZC
+      COMMON  / CVARJE / ZC(1)
+      LOGICAL            ZL
+      COMMON  / LVARJE / ZL(1)
+      CHARACTER*8        ZK8
+      CHARACTER*16                ZK16
+      CHARACTER*24                          ZK24
+      CHARACTER*32                                    ZK32
+      CHARACTER*80                                              ZK80
+      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
+
+C --- PARAMETRE
+      REAL*8       PREC
+      PARAMETER   (PREC = 1.D-12)
+
+C --- VARIABLES
+      CHARACTER*(*) MORS1Z,MORS2Z
+      CHARACTER*19  LIGRE,CIMPO,CMULT
+      CHARACTER*16  MORSE1,MORSE2
+      CHARACTER*8   CINE(*),CHARGE,MAIL
+      INTEGER       DIME,NNC,DDC,NL,NU(6),NT,MX
+      INTEGER       B0,B1,B2,C0,C1,C2,D0,D1,D2,D3,D4,D5
+      INTEGER       P0,P1,I,I1,I2,NEL0,NEL,NDD0,NDD,NLG0,NLG
+      LOGICAL       IA1,IA2,IAC
+
+C --- TABLE
+      CHARACTER*16 TECMP(6)
+      DATA TECMP / 'D_DEPL_R_DX ','D_DEPL_R_DY ','D_DEPL_R_DZ ',
+     &             'D_DEPL_R_DRX','D_DEPL_R_DRY','D_DEPL_R_DRZ' /
+
+      MORSE1 = MORS1Z
+      MORSE2 = MORS2Z
+
+      LIGRE = CHARGE//'.CHME.LIGRE'
+      CIMPO = CHARGE//'.CHME.CIMPO'
+      CMULT = CHARGE//'.CHME.CMULT'
+
+      IA1 = (CINE(1).EQ.'COQUE   ')
+      IA2 = (CINE(2).EQ.'COQUE   ')
+      IAC = (CINE(3).EQ.'COQUE   ')      
+
+      DDC = DIME
+      IF (IAC) DDC = DDC + DIME - 1
+
+C --- NUMERO D'ASSEMBLAGE
+
+      I1 = 0
+      IF (IA1) I1 = IOR(I1,1)
+      IF (IAC) I1 = IOR(I1,2)
+        
+      I2 = 0
+      IF (IA2) I2 = IOR(I2,1)
+      IF (IAC) I2 = IOR(I2,2)
+
+C --- LECTURE DONNEES
+
+      CALL JEMARQ()
+
+      CALL JELIRA(MORSE1//'.INO','NMAXOC',NNC,ZK8)
+      NL = DDC*NNC
+
+      CALL JEVEUO(MORSE1//'.VALE','L',B0)
+      CALL JEVEUO(MORSE1//'.INO','L',B1)
+      CALL JEVEUO(JEXATR(MORSE1//'.INO','LONCUM'),'L',B2)
+
+      CALL JEVEUO(MORSE2//'.VALE','L',C0)
+      CALL JEVEUO(MORSE2//'.INO','L',C1)
+      CALL JEVEUO(JEXATR(MORSE2//'.INO','LONCUM'),'L',C2)
+ 
+      DO 10 I = 1, 6
+        CALL JENONU(JEXNOM('&CATA.TE.NOMTE',TECMP(I)),NU(I))
+ 10   CONTINUE
+
+C --- ADIMENSIONEMENT ET COMPTE NOMBRE DE TERMES
+
+      CALL WKVECT('&&ARLASS.MAX','V V R',2*NNC,MX)
+
+      NT = 0
+      DO 20 I = 1, 2*NNC
+        ZR(MX-1+I) = 0.D0
+ 20   CONTINUE
+
+      CALL ARLMAX(DIME,IA1,IAC,NNC,ZR(B0),ZI(B2),ZR(MX))
+      CALL ARLMAX(DIME,IA2,IAC,NNC,ZR(C0),ZI(C2),ZR(MX))
+      CALL ARLCH0(DIME,IA1,IAC,NNC,ZI(B2),ZR(MX),PREC,ZR(B0),NT)
+      CALL ARLCH0(DIME,IA2,IAC,NNC,ZI(C2),ZR(MX),PREC,ZR(C0),NT)
+      CALL JEDETR('&&ARLASS.MAX')
+
+C --- ALLOCATION / AGRANDISSEMENT .CHME
+
+      CALL JEEXIN(LIGRE//'.LIEL',I)
+      IF (I.NE.0) THEN
+        CALL JELIRA(LIGRE//'.LIEL','LONT',NEL,ZK8)
+        CALL JEVEUO(LIGRE//'.LIEL','L',D0)
+        NEL0 = -ZI(D0-2+NEL)
+      ELSE
+        NEL0 = 0
+      ENDIF
+
+      CALL CRAGCH(NT,'REEL','REEL',LIGRE)
+      CALL CRAGLC(NT,LIGRE)
+
+      CALL JEVEUO(CIMPO//'.DESC','E',D0)
+      CALL JEVEUO(CIMPO//'.NOLI','E',D1)
+      CALL JEVEUO(CIMPO//'.LIMA','E',D2)
+
+      CALL JEVEUO(CMULT//'.DESC','E',D3)
+      CALL JEVEUO(CMULT//'.NOLI','E',D4)
+      CALL JEVEUO(CMULT//'.LIMA','E',D5)
+
+      NDD0 = ZI(D0+2)
+      ZI(D0+2) = ZI(D0+1)
+      ZI(D3+2) = ZI(D3+1)
+
+      NDD = NDD0
+      P0 = 3 + 2*NDD0
+      P1 = P0 + NDD0 + 2*NT
+
+      NEL = NEL0
+
+      DO 30 I = 1, NT
+
+        ZK24(D1+NDD) = LIGRE
+        ZK24(D4+NDD) = LIGRE
+        NDD = NDD + 1
+        NEL = NEL + 1
+        ZI(D0+P0  )  = -3
+        ZI(D3+P0  )  = -3
+        ZI(D0+P0+1)  = NDD
+        ZI(D3+P0+1)  = NDD
+        ZI(D0+P1  )  = 2
+        ZI(D3+P1  )  = 2
+        ZI(D2-1+NDD) = -NEL
+        ZI(D5-1+NDD) = -NEL
+        CALL JECROC(JEXNUM(CIMPO//'.LIMA',NDD))
+        CALL JEECRA(JEXNUM(CIMPO//'.LIMA',NDD),'LONMAX',1,' ')
+        CALL JECROC(JEXNUM(CMULT//'.LIMA',NDD))
+        CALL JEECRA(JEXNUM(CMULT//'.LIMA',NDD),'LONMAX',1,' ')
+        CALL JECROC(JEXNUM(LIGRE//'.LIEL',NEL))
+        CALL JEECRA(JEXNUM(LIGRE//'.LIEL',NEL),'LONMAX',2,' ')
+        CALL JECROC(JEXNUM(LIGRE//'.NEMA',NEL))
+        CALL JEECRA(JEXNUM(LIGRE//'.NEMA',NEL),'LONMAX',4,' ')
+        P0 = P0 + 2
+        P1 = P1 + 1
+
+ 30   CONTINUE
+
+      CALL JEVEUO(LIGRE//'.NBNO','E',D0)
+      NLG0 = ZI(D0)
+      ZI(D0) = NLG0 + 2*NL 
+
+      CALL POSLAG('12',P0,P1)
+      CALL JEVEUO(LIGRE//'.LGNS','E',D0)
+      D0 = D0 + NLG0
+
+      DO 40 I = 1, NL
+        ZI(D0  ) = P0
+        ZI(D0+1) = P1
+        D0 = D0 + 2
+ 40   CONTINUE
+
+C --- ECRITURE .CHME      
+
+      CALL JEVEUO(CIMPO//'.VALE','E',D0)
+      CALL JEVEUO(CMULT//'.VALE','E',D1)
+      CALL JEVEUO(LIGRE//'.LIEL','E',D2)
+      CALL JEVEUO(JEXNUM(LIGRE//'.NEMA',NEL0+1),'E',D3)
+
+      D3 = D3 - 4*NEL0
+
+      NDD = NDD0
+      NEL = NEL0
+
+C --- MATRICE MORSE 1
+
+      NLG = NLG0
+      GOTO (50,60,70) I1
+
+      CALL ARLCH1(DIME,NNC,0,NU,ZR(B0),ZI(B1),ZI(B2),PREC,
+     &            NDD,NEL,NLG,ZR(D0),ZR(D1),ZI(D2),ZI(D3))
+      GOTO 80
+
+ 50   CONTINUE
+      CALL ARLCH2(DIME,NNC,0,NU,ZR(B0),ZI(B1),ZI(B2),PREC,
+     &            NDD,NEL,NLG,ZR(D0),ZR(D1),ZI(D2),ZI(D3))
+      GOTO 80
+
+ 60   CONTINUE
+      CALL ARLCH3(DIME,NNC,0,NU,ZR(B0),ZI(B1),ZI(B2),PREC,
+     &            NDD,NEL,NLG,ZR(D0),ZR(D1),ZI(D2),ZI(D3))
+      GOTO 80
+
+ 70   CONTINUE
+      CALL ARLCH4(DIME,NNC,0,NU,ZR(B0),ZI(B1),ZI(B2),PREC,
+     &            NDD,NEL,NLG,ZR(D0),ZR(D1),ZI(D2),ZI(D3))
+
+ 80   CONTINUE
+
+C --- MATRICE MORSE 2
+
+      NLG = NLG0
+      GOTO (90,100,110) I2
+      
+      CALL ARLCH1(DIME,NNC,1,NU,ZR(C0),ZI(C1),ZI(C2),PREC,
+     &            NDD,NEL,NLG,ZR(D0),ZR(D1),ZI(D2),ZI(D3))
+      GOTO 120
+
+ 90   CONTINUE
+      CALL ARLCH2(DIME,NNC,1,NU,ZR(C0),ZI(C1),ZI(C2),PREC,
+     &            NDD,NEL,NLG,ZR(D0),ZR(D1),ZI(D2),ZI(D3))
+      GOTO 120
+
+ 100  CONTINUE
+      CALL ARLCH3(DIME,NNC,1,NU,ZR(C0),ZI(C1),ZI(C2),PREC,
+     &            NDD,NEL,NLG,ZR(D0),ZR(D1),ZI(D2),ZI(D3))
+      GOTO 120
+      
+ 110  CONTINUE
+      CALL ARLCH4(DIME,NNC,1,NU,ZR(C0),ZI(C1),ZI(C2),PREC,
+     &            NDD,NEL,NLG,ZR(D0),ZR(D1),ZI(D2),ZI(D3))
+
+ 120  CONTINUE
+         
+      CALL JEDEMA()
+
+      END

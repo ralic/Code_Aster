@@ -1,0 +1,248 @@
+       SUBROUTINE  NMEL3D(NNO, NPG, POIDSG, VFF, DFDE, DFDN, DFDK,
+     &             GEOM, TYPMOD, OPTION, IMATE, COMPOR, LGPG, CRIT, T,
+     &             HYDR, SECH, TREF, DEPL, DFDI, PFF, DEF, SIG, VI,
+     &             MATUU, VECTU, CODRET )
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 21/06/2000   AUTEUR CIBHHLV L.VIVAN 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+C TOLE CRP_21
+       IMPLICIT NONE
+C
+       INTEGER       NNO, NPG, IMATE, LGPG, CODRET
+       CHARACTER*8   TYPMOD(*)
+       CHARACTER*16  OPTION, COMPOR(4)
+C
+       REAL*8        POIDSG(NPG), VFF(NNO,NPG), DFDE(*), DFDN(*)
+       REAL*8        DFDK(*), GEOM(3,NNO), CRIT(3), T(NNO), TREF
+       REAL*8        HYDR(NNO), SECH(NNO)
+       REAL*8        DEPL(1:3,1:NNO), DFDI(NNO,3)
+       REAL*8        PFF(6,NNO,NNO),  DEF(6,NNO,3)
+       REAL*8        SIG(6,NPG), VI(LGPG,NPG),SIGP(6)
+       REAL*8        MATUU(*), VECTU(3,NNO)
+C.......................................................................
+C
+C     BUT:  CALCUL  DES OPTIONS RIGI_MECA_TANG, RAPH_MECA ET FULL_MECA
+C           EN HYPER-ELASTICITE
+C.......................................................................
+C IN  NNO     : NOMBRE DE NOEUDS DE L'ELEMENT
+C IN  NPG     : NOMBRE DE POINTS DE GAUSS
+C IN  POIDSG  : POIDS DES POINTS DE GAUSS
+C IN  VFF     : VALEUR  DES FONCTIONS DE FORME
+C IN  DFDE    : DERIVEE DES FONCTIONS DE FORME ELEMENT DE REFERENCE
+C IN  DFDN    : DERIVEE DES FONCTIONS DE FORME ELEMENT DE REFERENCE
+C IN  DFDK    : DERIVEE DES FONCTIONS DE FORME ELEMENT DE REFERENCE
+C IN  GEOM    : COORDONEES DES NOEUDS
+C IN  TYPMOD  : TYPE DE MODELISATION
+C IN  OPTION  : OPTION DE CALCUL
+C IN  IMATE   : MATERIAU CODE
+C IN  COMPOR  : COMPORTEMENT
+C IN  LGPG  : "LONGUEUR" DES VARIABLES INTERNES POUR 1 POINT DE GAUSS
+C              CETTE LONGUEUR EST UN MAJORANT DU NBRE REEL DE VAR. INT.
+C IN  CRIT    : CRITERES DE CONVERGENCE LOCAUX
+C IN  T       : TEMPERATURE AUX NOEUDS
+C IN  HYDR    : HYDRATATION AUX POINTS DE GAUSS
+C IN  SECH    : SECHAGE AUX NOEUDS
+C IN  TREF    : TEMPERATURE DE REFERENCE
+C IN  DEPL    : DEPLACEMENT A PARTIR DE LA CONF DE REF
+C OUT DFDI    : DERIVEE DES FONCTIONS DE FORME  AU DERNIER PT DE GAUSS
+C OUT PFF     : PRODUIT DES FCT. DE FORME       AU DERNIER PT DE GAUSS
+C OUT DEF     : PRODUIT DER. FCT. FORME PAR F   AU DERNIER PT DE GAUSS
+C OUT SIG     : CONTRAINTES DE CAUCHY (RAPH_MECA ET FULL_MECA)
+C OUT VI      : VARIABLES INTERNES    (RAPH_MECA ET FULL_MECA)
+C OUT MATUU   : MATRICE DE RIGIDITE PROFIL (RIGI_MECA_TANG ET FULL_MECA)
+C OUT VECTU   : FORCES NODALES (RAPH_MECA ET FULL_MECA)
+C......................................................................
+C
+      INTEGER  KPG,KK,N,I,M,J,J1,K,KL,PQ,KKD
+      LOGICAL  GRDEPL, GRROTA
+      REAL*8   DSIDEP(6,6),F(3,3),EPS(6),R,SIGMA(6),FTF,DETF
+      REAL*8   POIDS,TEMP,TMP1,TMP2,HYDRG,SECHG
+C
+      INTEGER INDI(6),INDJ(6)
+      REAL*8  RIND(6),RAC2
+      DATA    INDI / 1 , 2 , 3 , 1 , 1 , 2 /
+      DATA    INDJ / 1 , 2 , 3 , 2 , 3 , 3 /
+      DATA    RIND / 0.5D0,0.5D0,0.5D0,0.70710678118655D0,
+     &               0.70710678118655D0,0.70710678118655D0 /
+      DATA    RAC2 / 1.4142135623731D0 /
+C
+C
+C - INITIALISATION
+C
+      GRDEPL  = COMPOR(3)(1:8) .EQ. 'GREEN   '
+      GRROTA  = COMPOR(3)(1:8) .EQ. 'GREEN_GR'
+C
+      IF ( GRROTA ) THEN
+        CALL UTMESS ('F','NMEL3D','ELEMENTS ISOPARAMETRIQUES 3D NON'
+     &              //' DISPONIBLES EN GRANDES ROTATIONS')
+      ENDIF
+C
+C - CALCUL POUR CHAQUE POINT DE GAUSS
+C - DE L HYDRATATION ET DU SECHAGE AU POINT DE GAUSS
+C
+      DO 10 KPG=1,NPG
+C
+C - CALCUL DE LA TEMPERATURE AU POINT DE GAUSS
+C
+        TEMP = 0.D0
+        HYDRG = HYDR(KPG)
+        SECHG = 0.D0
+        DO 15 N=1,NNO
+          TEMP = TEMP + T(N)*VFF(N,KPG)
+          SECHG = SECHG + SECH(N)*VFF(N,KPG)
+ 15     CONTINUE
+C
+C
+C - CALCUL DES ELEMENTS GEOMETRIQUES
+C
+C      CALCUL DE DFDI, F, EPS, R (EN AXI) ET POIDS
+        CALL NMGEOM(3,NNO,.FALSE.,GRDEPL,GEOM,KPG,POIDSG(KPG),
+     &              VFF(1,KPG),DFDE,DFDN,DFDK,DEPL,POIDS,DFDI,
+     &              F,EPS,R)
+C
+C      CALCUL DES PRODUITS SYMETR. DE F PAR N,
+        DO 120 N=1,NNO
+          DO 121 I=1,3
+            DEF(1,N,I) =  F(I,1)*DFDI(N,1)
+            DEF(2,N,I) =  F(I,2)*DFDI(N,2)
+            DEF(3,N,I) =  F(I,3)*DFDI(N,3)
+            DEF(4,N,I) = (F(I,1)*DFDI(N,2) + F(I,2)*DFDI(N,1))/RAC2
+            DEF(5,N,I) = (F(I,1)*DFDI(N,3) + F(I,3)*DFDI(N,1))/RAC2
+            DEF(6,N,I) = (F(I,2)*DFDI(N,3) + F(I,3)*DFDI(N,2))/RAC2
+ 121      CONTINUE
+ 120    CONTINUE
+C
+C      CALCUL DES PRODUITS DE FONCTIONS DE FORMES (ET DERIVEES)
+        IF ( (OPTION(1:16) .EQ. 'RIGI_MECA_TANG'
+     &  .OR.  OPTION(1: 9) .EQ. 'FULL_MECA'    ) .AND. GRDEPL) THEN
+          DO 125 N=1,NNO
+            DO 126 M=1,N
+              PFF(1,N,M) =  DFDI(N,1)*DFDI(M,1)
+              PFF(2,N,M) =  DFDI(N,2)*DFDI(M,2)
+              PFF(3,N,M) =  DFDI(N,3)*DFDI(M,3)
+              PFF(4,N,M) =(DFDI(N,1)*DFDI(M,2)+DFDI(N,2)*DFDI(M,1))/RAC2
+              PFF(5,N,M) =(DFDI(N,1)*DFDI(M,3)+DFDI(N,3)*DFDI(M,1))/RAC2
+              PFF(6,N,M) =(DFDI(N,2)*DFDI(M,3)+DFDI(N,3)*DFDI(M,2))/RAC2
+ 126        CONTINUE
+ 125      CONTINUE
+        ENDIF
+C
+C
+C - LOI DE COMPORTEMENT : S(E) ET DS/DE
+C
+        CALL NMCPEL(3,TYPMOD,IMATE,COMPOR,CRIT,TEMP,TREF,HYDRG,
+     &              SECHG,OPTION,EPS,SIGMA,VI(1,KPG),DSIDEP,CODRET)
+C
+C
+C - CALCUL DE LA MATRICE DE RIGIDITE
+C
+        IF ( OPTION(1:16) .EQ. 'RIGI_MECA_TANG'
+     &  .OR. OPTION(1: 9) .EQ. 'FULL_MECA'    ) THEN
+C
+          DO 130 N=1,NNO
+            DO 131 I=1,3
+              KKD = (3*(N-1)+I-1) * (3*(N-1)+I) /2
+              DO 151,KL=1,6
+                SIGP(KL)=0.D0
+                SIGP(KL)=SIGP(KL)+DEF(1,N,I)*DSIDEP(1,KL)
+                SIGP(KL)=SIGP(KL)+DEF(2,N,I)*DSIDEP(2,KL)
+                SIGP(KL)=SIGP(KL)+DEF(3,N,I)*DSIDEP(3,KL)
+                SIGP(KL)=SIGP(KL)+DEF(4,N,I)*DSIDEP(4,KL)
+                SIGP(KL)=SIGP(KL)+DEF(5,N,I)*DSIDEP(5,KL)
+                SIGP(KL)=SIGP(KL)+DEF(6,N,I)*DSIDEP(6,KL)
+151           CONTINUE
+              DO 140 J=1,3
+                DO 141 M=1,N
+                  IF (M.EQ.N) THEN
+                    J1 = I
+                  ELSE
+                    J1 = 3
+                  ENDIF
+C
+C                 RIGIDITE GEOMETRIQUE
+                  TMP1 = 0.D0
+                  IF (GRDEPL .AND. I.EQ.J) THEN
+                    TMP1 = 0.D0
+                    TMP1 = TMP1+PFF(1,N,M)*SIGMA(1)
+                    TMP1 = TMP1+PFF(2,N,M)*SIGMA(2)
+                    TMP1 = TMP1+PFF(3,N,M)*SIGMA(3)
+                    TMP1 = TMP1+PFF(4,N,M)*SIGMA(4)
+                    TMP1 = TMP1+PFF(5,N,M)*SIGMA(5)
+                    TMP1 = TMP1+PFF(6,N,M)*SIGMA(6)
+                  ENDIF
+C
+C                 RIGIDITE ELASTIQUE
+                  TMP2=0.D0
+                  TMP2=TMP2+SIGP(1)*DEF(1,M,J)
+                  TMP2=TMP2+SIGP(2)*DEF(2,M,J)
+                  TMP2=TMP2+SIGP(3)*DEF(3,M,J)
+                  TMP2=TMP2+SIGP(4)*DEF(4,M,J)
+                  TMP2=TMP2+SIGP(5)*DEF(5,M,J)
+                  TMP2=TMP2+SIGP(6)*DEF(6,M,J)
+C                 STOCKAGE EN TENANT COMPTE DE LA SYMETRIE
+                  IF (J.LE.J1) THEN
+                     KK = KKD + 3*(M-1)+J
+                     MATUU(KK) = MATUU(KK) + (TMP1+TMP2)*POIDS
+                  END IF
+C
+ 141            CONTINUE
+ 140          CONTINUE
+ 131        CONTINUE
+ 130      CONTINUE
+        ENDIF
+C
+C
+C - CALCUL DE LA FORCE INTERIEURE ET DES CONTRAINTES DE CAUCHY
+C
+        IF(OPTION(1:9).EQ.'FULL_MECA'.OR.
+     &     OPTION(1:9).EQ.'RAPH_MECA') THEN
+C
+          DO 180 N=1,NNO
+            DO 181 I=1,3
+              DO 182 KL=1,6
+                VECTU(I,N)=VECTU(I,N)+DEF(KL,N,I)*SIGMA(KL)*POIDS
+ 182          CONTINUE
+ 181        CONTINUE
+ 180      CONTINUE
+C
+          IF (GRDEPL) THEN
+C          CONVERSION LAGRANGE -> CAUCHY
+            DETF = F(3,3)*(F(1,1)*F(2,2)-F(1,2)*F(2,1))
+     &           - F(2,3)*(F(1,1)*F(3,2)-F(3,1)*F(1,2))
+     &           + F(1,3)*(F(2,1)*F(3,2)-F(3,1)*F(2,2))
+            DO 190 PQ = 1,6
+              SIG(PQ,KPG) = 0.D0
+              DO 200 KL = 1,6
+                FTF = (F(INDI(PQ),INDI(KL))*F(INDJ(PQ),INDJ(KL)) +
+     &              F(INDI(PQ),INDJ(KL))*F(INDJ(PQ),INDI(KL)))*RIND(KL)
+                SIG(PQ,KPG) =  SIG(PQ,KPG)+ FTF*SIGMA(KL)
+ 200          CONTINUE
+              SIG(PQ,KPG) = SIG(PQ,KPG)/DETF
+ 190        CONTINUE
+          ELSE
+C          SIMPLE CORRECTION DES CONTRAINTES
+            DO 210 KL=1,3
+              SIG(KL,KPG) = SIGMA(KL)
+ 210        CONTINUE
+            DO 220 KL=4,6
+              SIG(KL,KPG) = SIGMA(KL)/RAC2
+ 220        CONTINUE
+          ENDIF
+        ENDIF
+ 10   CONTINUE
+      END

@@ -1,0 +1,112 @@
+      SUBROUTINE PIPERE(NPG, A, TAU, NSOL, DETA)
+
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 03/05/2000   AUTEUR VABHHTS J.PELLET 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+
+      IMPLICIT NONE
+
+      INTEGER  NPG, NSOL
+      REAL*8   A(0:1,NPG), TAU
+      REAL*8   DETA(2)
+
+C ----------------------------------------------------------------------
+C   RESOLUTION P(DETA) = TAU POUR LE PILOTAGE PAR PREDICTION ELASTIQUE
+C ----------------------------------------------------------------------
+C IN       NPG     I   NOMBRE DE POINTS DE GAUSS CONSIDERES
+C IN       A      R8   COEFFICIENTS DROITES : TAU = A(1,G)*DETA + A(0,G)
+C IN       TAU    R8   SECOND MEMBRE DE L'EQUATION SCALAIRE
+C OUT      NSOL    I   NOMBRE DE SOLUTIONS (0, 1 OU 2)
+C OUT      DETA   R8   SOLUTIONS OU ESTIMATION SI NSOL=0
+C ----------------------------------------------------------------------
+
+      INTEGER  G
+      REAL*8   X, INFINI
+      REAL*8   R8MAEM
+C ----------------------------------------------------------------------
+
+
+C -- INITIALISATION DE I0
+
+      INFINI  =  R8MAEM()
+      DETA(1) = -INFINI
+      DETA(2) =  INFINI
+
+
+C -- CONSTRUCTION DES INTERVALLES IG PAR RECURRENCE
+
+      DO 10 G = 1, NPG
+
+C      LA PENTE DE LA DROITE CONSIDEREE EST NULLE
+        IF (ABS(A(1,G)) .LE. ABS(TAU - A(0,G))/INFINI) THEN
+
+C      SON ORDONNEE EST SUPERIEURE AU SECOND MEMBRE -> PAS DE SOL.
+          IF ( A(0,G) .GT. TAU) GOTO 1000
+
+
+C      LA PENTE DE LA DROITE CONSIDEREE EST NEGATIVE
+        ELSE IF (A(1,G) .LT. 0) THEN
+          X = (TAU - A(0,G)) / A(1,G)
+          IF (X .GT. DETA(2)) THEN
+            DETA(1) = DETA(2)
+            GOTO 1000
+          ELSE IF (X .GT. DETA(1)) THEN
+            DETA(1) = X
+          END IF
+
+
+C      LA PENTE DE LA DROITE CONSIDEREE EST POSITIVE
+        ELSE
+          X = (TAU - A(0,G)) / A(1,G)
+          IF (X .LT. DETA(1)) THEN
+            DETA(2) = DETA(1)
+            GOTO 1000
+          ELSE IF (X .LT. DETA(2)) THEN
+            DETA(2) = X
+          END IF
+
+        END IF
+ 10   CONTINUE
+
+
+C -- TRAITEMENT DU NOMBRE DE SOLUTION
+
+      IF (DETA(1).EQ. -INFINI  .AND. DETA(2).EQ.INFINI) THEN
+        GOTO 1000
+      ELSE IF (DETA(1).EQ.-INFINI) THEN
+        NSOL = 1
+        DETA(1) = DETA(2)
+      ELSE IF (DETA(2).EQ.INFINI) THEN
+        NSOL = 1
+        DETA(2) = DETA(1)
+      ELSE
+        NSOL = 2
+      END IF
+      GOTO 9999
+
+
+C -- CONSTRUCTION D'UNE ESTIMATION QUAND L'INTERVALLE EST VIDE
+
+ 1000 CONTINUE
+      NSOL = 0
+      IF (DETA(1).EQ.-INFINI) DETA(1) = DETA(2)
+      IF (DETA(1).EQ. INFINI) DETA(1) = 0.D0
+
+
+ 9999 CONTINUE
+      END

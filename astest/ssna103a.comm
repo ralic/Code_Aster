@@ -1,0 +1,330 @@
+# MODIF  DATE 11/12/2001   AUTEUR D6BHHJP J.P.LEFEBVRE 
+# TITRE CALAGE DES PARAMETRES DU MODELE DE WEIBULL
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+# MODELE AXISYMETRIQUE : EPROUVETTE CYLINDRIQUE
+#
+DEBUT(   CODE=_F(  NOM = 'SSNA103A',NIV_PUB_WEB='INTERNET'))
+
+#......................................................................
+
+
+PRE_GIBI()
+
+M=LIRE_MAILLAGE( )
+
+M=DEFI_GROUP(      reuse=M,
+                            MAILLAGE=M,CREA_GROUP_NO=(
+                     
+                              _F(   GROUP_MA = 'CB'),
+                              _F(   GROUP_MA = 'BO'),
+                              _F(   GROUP_MA = 'OA'))
+                             )
+
+MO=AFFE_MODELE(   MAILLAGE=M,
+            AFFE=_F( TOUT = 'OUI',PHENOMENE = 'MECANIQUE',MODELISATION = 'AXIS')
+                     )
+
+SIGY=DEFI_FONCTION(    NOM_PARA='TEMP',
+                                         PROL_DROITE='LINEAIRE',
+                                         PROL_GAUCHE='LINEAIRE',
+                                        VALE=(-150.,   750.,
+                                              -100.,   700.,
+                                               -50.,   650.,
+                                              ))
+
+YOUNG=DEFI_CONSTANTE(    VALE=200000. )
+
+NU=DEFI_CONSTANTE(    VALE=0.3 )
+
+ALPHA=DEFI_CONSTANTE(    VALE=0. )
+
+ET=DEFI_CONSTANTE(    VALE=2000. )
+
+ACIER=DEFI_MATERIAU( 
+               ELAS_FO=_F(  E = YOUNG,  NU = NU,  ALPHA = ALPHA, TEMP_DEF_ALPHA=0.0),
+               ECRO_LINE_FO=_F(  D_SIGM_EPSI = ET,  SY = SIGY),
+               WEIBULL=_F( M = 24., VOLU_REFE = 1.25E-4,
+                        SIGM_REFE = 2600.0E0)
+             )
+
+CM=AFFE_MATERIAU(   MAILLAGE=M,
+                         AFFE=_F(  TOUT = 'OUI', MATER = ACIER)  )
+
+ZERO=DEFI_CONSTANTE(   VALE=0. )
+
+TRAC50=DEFI_FONCTION(        NOM_PARA='INST',
+                             PROL_DROITE='EXCLU',
+                            PROL_GAUCHE='EXCLU',
+                            VALE=(   0.,  0.,
+                                  10.00,  10.68,
+                                  20.00,  28.78,
+                                  30.00,  30.31,
+                                  40.00,  31.66,
+                                  50.00,  32.53,
+                                  60.00,  33.90,
+                                  70.00,  34.38,
+                                  80.00,  35.82,
+                                  90.00,  36.69,
+                                 100.00,  37.09,
+                                 110.00,  37.37,
+                                 120.00,  37.49,
+                                 130.00,  38.45,
+                                 140.00,  39.77,
+                                 150.00,  44.39,
+
+                                    )    )
+
+TRAC100=DEFI_FONCTION(        NOM_PARA='INST',
+                             PROL_DROITE='EXCLU',
+                            PROL_GAUCHE='EXCLU',
+                            VALE=(   0.,  0.,
+                                  10.00,  20.57,
+                                  20.00,  21.68,
+                                  30.00,  23.32,
+                                  40.00,  24.37,
+                                  50.00,  24.66,
+                                  60.00,  25.59,
+                                  70.00,  25.84,
+                                  80.00,  27.51,
+                                  90.00,  28.44,
+                                 100.00,  29.30,
+                                 110.00,  29.68,
+                                 120.00,  30.16,
+                                 130.00,  30.18,
+                                 140.00,  30.20,
+                                 150.00,  30.95,
+
+                                    )    )
+
+TRAC150=DEFI_FONCTION(        NOM_PARA='INST',
+                             PROL_DROITE='EXCLU',
+                            PROL_GAUCHE='EXCLU',
+                            VALE=(   0.,  0.,
+                                  10.00,  11.33,
+                                  20.00,  14.70,
+                                  30.00,  14.79,
+                                  40.00,  14.90,
+                                  50.00,  18.62,
+                                  60.00,  18.87,
+                                  70.00,  19.00,
+                                  80.00,  19.37,
+                                  90.00,  19.61,
+                                 100.00,  20.07,
+                                 110.00,  21.19,
+                                 120.00,  22.79,
+                                 130.00,  23.28,
+                                 140.00,  24.17,
+                                 150.00,  24.41,
+
+                                    )    )
+
+CHARG50=AFFE_CHAR_MECA_F(   MODELE=MO,DDL_IMPO=( 
+                    _F(  GROUP_NO = 'CB',  DY = TRAC50),
+                    _F(  GROUP_NO = 'BO',  DX = ZERO),
+                    _F(  GROUP_NO = 'OA',  DY = ZERO))
+                          )
+
+CHARG100=AFFE_CHAR_MECA_F(   MODELE=MO,DDL_IMPO=( 
+                    _F(  GROUP_NO = 'CB',  DY = TRAC100),
+                    _F(  GROUP_NO = 'BO',  DX = ZERO),
+                    _F(  GROUP_NO = 'OA',  DY = ZERO))
+                          )
+
+CHARG150=AFFE_CHAR_MECA_F(   MODELE=MO,DDL_IMPO=( 
+                    _F(  GROUP_NO = 'CB',  DY = TRAC150),
+                    _F(  GROUP_NO = 'BO',  DX = ZERO),
+                    _F(  GROUP_NO = 'OA',  DY = ZERO))
+                          )
+
+TEMP50=CREA_CHAMP(OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R',
+MAILLAGE=M,
+               AFFE=_F(  TOUT = 'OUI', NOM_CMP = 'TEMP', VALE = -50.)
+                    )
+
+TEMP100=CREA_CHAMP(OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R',
+MAILLAGE=M,
+               AFFE=_F(  TOUT = 'OUI', NOM_CMP = 'TEMP', VALE = -100.)
+                    )
+
+TEMP150=CREA_CHAMP(OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R',
+MAILLAGE=M,
+               AFFE=_F(  TOUT = 'OUI', NOM_CMP = 'TEMP', VALE = -150.)
+                    )
+
+CHTEMP1=AFFE_CHAR_MECA(   MODELE=MO, 
+                     TEMP_CALCULEE=TEMP50
+                          )
+
+CHTEMP2=AFFE_CHAR_MECA(   MODELE=MO, 
+                     TEMP_CALCULEE=TEMP100
+                          )
+
+CHTEMP3=AFFE_CHAR_MECA(   MODELE=MO, 
+                     TEMP_CALCULEE=TEMP150
+                          )
+
+L_INST=DEFI_LIST_REEL(    DEBUT=0.,
+                            INTERVALLE=_F(  JUSQU_A = 150.,  NOMBRE = 15)
+                        )
+
+U1=STAT_NON_LINE( 
+             MODELE=MO,    CHAM_MATER=CM,EXCIT=( 
+              _F(  CHARGE = CHARG50),
+              _F(  CHARGE = CHTEMP1)),
+              COMP_INCR=_F(  RELATION = 'VMIS_ISOT_LINE'),
+              NEWTON=_F( REAC_ITER = 1),
+              INCREMENT=_F(  LIST_INST = L_INST, NUME_INST_FIN = 15),
+            CONVERGENCE=_F(  RESI_GLOB_RELA = 1.E-6,
+                          ITER_GLOB_MAXI = 100,
+                          RESI_INTE_RELA = 1.E-6,
+                          ITER_INTE_MAXI = 100)
+                        )
+
+U2=STAT_NON_LINE( 
+             MODELE=MO,    CHAM_MATER=CM,EXCIT=( 
+              _F(  CHARGE = CHARG100),
+              _F(  CHARGE = CHTEMP2)),
+              COMP_INCR=_F(  RELATION = 'VMIS_ISOT_LINE'),
+              INCREMENT=_F(  LIST_INST = L_INST, NUME_INST_FIN = 15),
+              NEWTON=_F( REAC_ITER = 1),
+            CONVERGENCE=_F(  RESI_GLOB_RELA = 1.E-6,
+                          ITER_GLOB_MAXI = 100,
+                          RESI_INTE_RELA = 1.E-6,
+                          ITER_INTE_MAXI = 100)
+                        )
+
+U3=STAT_NON_LINE( 
+             MODELE=MO,    CHAM_MATER=CM,EXCIT=( 
+              _F(  CHARGE = CHARG150),
+              _F(  CHARGE = CHTEMP3)),
+              NEWTON=_F( REAC_ITER = 1),
+              COMP_INCR=_F(  RELATION = 'VMIS_ISOT_LINE'),
+              INCREMENT=_F(  LIST_INST = L_INST, NUME_INST_FIN = 15),
+            CONVERGENCE=_F(  RESI_GLOB_RELA = 1.E-6,
+                          ITER_GLOB_MAXI = 100,
+                          RESI_INTE_RELA = 1.E-6,
+                          ITER_INTE_MAXI = 100)
+                        )
+
+T1=RECA_WEIBULL( 
+
+                   LIST_PARA=('SIGM_REFE','M',),RESU=(
+
+                        _F(   EVOL_NOLI = U1,
+                               CHAM_MATER = CM,
+                                    TEMPE = -50.,
+
+                           LIST_INST_RUPT = ( 10., 20., 30., 
+                                 40., 50., 60., 70., 80., 90., 100.,
+                                 110.,  120.,  130., 140.,  150.,),
+
+                               MODELE = MO,
+                               TOUT = 'OUI',
+                            COEF_MULT = 12.5664),
+
+                          _F(  EVOL_NOLI = U2,
+                                CHAM_MATER = CM,
+                                     TEMPE = -100.,
+
+                            LIST_INST_RUPT = ( 10.,  20., 30., 
+                                 40., 50., 60., 70., 80., 90., 100.,
+                                 110.,  120.,  130., 140.,  150.,),
+
+                               MODELE = MO,
+                               TOUT = 'OUI',
+                            COEF_MULT = 12.5664),
+                        _F(  EVOL_NOLI = U3,
+                               CHAM_MATER = CM,
+                                    TEMPE = -150.,
+
+                             LIST_INST_RUPT = (  10., 20., 30., 
+                                 40., 50., 60., 70., 80., 90., 100.,
+                                 110.,  120.,  130., 140.,  150.,),
+
+                               MODELE = MO,
+                               TOUT = 'OUI',
+                            COEF_MULT = 12.5664)),
+
+                                METHODE='MAXI_VRAI',
+                                CORR_PLAST='NON',
+                                   OPTION='SIGM_ELMOY',
+                                ITER_GLOB_MAXI=25,
+                                INCO_GLOB_RELA=1.E-3
+                   )
+
+#
+TEST_TABLE(      TABLE=T1,
+                 FILTRE=_F(  NOM_PARA = 'PROBA_THE',
+                          VALE = 3.23729E-04),
+               REFERENCE='NON_REGRESSION',
+               NOM_PARA='SIGMA_WEIBULL',
+                    VALE=1.87749E+03)
+
+TEST_TABLE(      TABLE=T1,
+                 FILTRE=_F(  NOM_PARA = 'PROBA_THE',
+                          VALE = 9.96997E-01),
+               REFERENCE='NON_REGRESSION',
+               NOM_PARA='SIGMA_WEIBULL',
+               VALE=2.70856E+03)
+
+#
+TEST_TABLE(      TABLE=T1,
+                 FILTRE=_F(  NOM_PARA = 'TEMP',
+                          VALE = -5.00000E+01),
+               REFERENCE='NON_REGRESSION',
+               NOM_PARA='SIGMA_U',
+                   VALE=2.53596E+03)
+
+TEST_TABLE(      TABLE=T1,
+                 FILTRE=_F(  NOM_PARA = 'TEMP',
+                          VALE = -1.00000E+02),
+               REFERENCE='NON_REGRESSION',
+               NOM_PARA='SIGMA_U',
+                   VALE=2.42851E+03)
+
+TEST_TABLE(      TABLE=T1,
+                 FILTRE=_F(  NOM_PARA = 'TEMP',
+                          VALE = -1.50000E+02),
+               REFERENCE='NON_REGRESSION',
+               NOM_PARA='SIGMA_U',
+                   VALE=2.37247E+03)
+
+TEST_TABLE(      TABLE=T1,
+                 FILTRE=_F(  NOM_PARA = 'TEMP',
+                          VALE = -5.00000E+01),
+               REFERENCE='NON_REGRESSION',
+               NOM_PARA='M',
+                   VALE=2.67267E+01)
+
+TEST_TABLE(      TABLE=T1,
+                 FILTRE=_F(  NOM_PARA = 'TEMP',
+                          VALE = -1.00000E+02),
+               REFERENCE='NON_REGRESSION',
+               NOM_PARA='M',
+                   VALE=2.67267E+01)
+
+TEST_TABLE(      TABLE=T1,
+                 FILTRE=_F(  NOM_PARA = 'TEMP',
+                          VALE = -1.50000E+02),
+               REFERENCE='NON_REGRESSION',
+               NOM_PARA='M',
+                   VALE=2.67267E+01)
+
+FIN()
+#

@@ -1,0 +1,265 @@
+      SUBROUTINE OP0115(IER)
+      IMPLICIT REAL*8 (A-H,O-Z)
+      INTEGER           IER
+C ----------------------------------------------------------------------
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 14/05/2002   AUTEUR DURAND C.DURAND 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+C     DEFINITION D'UNE MATRICE INTERSPECTRALE
+C     A PARTIR DE FONCTIONS COMPLEXES
+C ----------------------------------------------------------------------
+C OUT : IER = 0 => TOUT S'EST BIEN PASSE
+C     : IER > 0 => NOMBRE D'ERREURS RENCONTREES
+C     ------------------------------------------------------------------
+C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
+      INTEGER          ZI
+      COMMON  /IVARJE/ ZI(1)
+      REAL*8           ZR
+      COMMON  /RVARJE/ ZR(1)
+      COMPLEX*16       ZC
+      COMMON  /CVARJE/ ZC(1)
+      LOGICAL          ZL
+      COMMON  /LVARJE/ ZL(1)
+      CHARACTER*8      ZK8
+      CHARACTER*16             ZK16
+      CHARACTER*24                      ZK24
+      CHARACTER*32                               ZK32
+      CHARACTER*80                                        ZK80
+      COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
+C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
+C
+      PARAMETER   ( NBPAR = 6 )
+      INTEGER       IBID, DIM, IVAL(2)
+      REAL*8        R8B, FRQMIN, FRQMAX, FRQMOY, PAS, AMOR
+      CHARACTER*4   INTERP(2)
+      CHARACTER*8   TYPAR(NBPAR), PROLG, PROLD, NOMFON
+      CHARACTER*16  TYPINT, NOMCMD, K16TST, NOPAR(NBPAR), KVAL(2)
+      CHARACTER*19  NOMU, NOMCOD
+      COMPLEX*16    C16B, Y1, G0
+C
+      DATA NOPAR / 'NOM_CHAM' , 'OPTION' , 'DIMENSION' ,
+     +             'NUME_ORDRE_I' , 'NUME_ORDRE_J' ,'FONCTION' /
+      DATA TYPAR / 'K16' , 'K16' , 'I' , 'I' , 'I' , 'K24' /
+C     ------------------------------------------------------------------
+C
+      CALL JEMARQ()
+C
+      CALL GETRES ( NOMU, TYPINT, NOMCMD )
+      CALL GETVIS ( ' ', 'DIMENSION', 0,1,1, DIM, L )
+C
+      CALL GETFAC ( 'PAR_FONCTION' , NFONC  )
+      CALL GETFAC ( 'KANAI_TAJIMI' , NKANAI )
+      CALL GETFAC ( 'CONSTANT'     , NCONST )
+      NFNTOT = NFONC + NKANAI + NCONST
+C
+C---0------- VERIFICATIONS DU NOMBRE DE FONCTIONS ---
+C
+C
+C---0.1----- VERIFICATION DU NOMBRE DE FONCTIONS ---
+C
+C       --- POUR UNE MATRICE HERMITIENNE ---
+C
+      DIMH = (DIM*(DIM+1))/2
+      IF (DIMH .NE. NFNTOT) THEN
+        CALL UTMESS('F',NOMCMD//'ERREUR.02)',
+     +    'NOMBRE DE FONCTIONS ERRONE POUR UNE MATRICE HERMITIENNE')
+        ENDIF
+C
+C---0.2 --- VERIFICATION DES INDICES DES FONCTIONS ---
+C
+      CALL WKVECT('&&OP0115.TEMP.INDI','V V I' ,NFNTOT,LINDI)
+      CALL WKVECT('&&OP0115.TEMP.INDJ','V V I' ,NFNTOT,LINDJ)
+      DO 20 IFONC=1,NFNTOT
+        IF(IFONC.LE.NFONC)THEN
+          K16TST='PAR_FONCTION'
+          IFONC1=IFONC
+        ELSEIF(IFONC.LE.(NFONC+NKANAI))THEN
+          K16TST='KANAI_TAJIMI'
+          IFONC1=IFONC-NFONC
+        ELSE
+          K16TST='CONSTANT'
+          IFONC1=IFONC-NKANAI-NFONC
+        ENDIF
+        CALL GETVIS(K16TST,'NUME_ORDRE_I',IFONC1,1,1,
+     +                                  ZI(LINDI+IFONC-1),L)
+        CALL GETVIS(K16TST,'NUME_ORDRE_J',IFONC1,1,1,
+     +                                  ZI(LINDJ+IFONC-1),L)
+C
+C      ----VERIFICATION FREQMIN < FREQ_MAX
+C
+        IF (K16TST.NE.'PAR_FONCTION') THEN
+        CALL GETVR8(K16TST,'FREQ_MIN',IFONC1,1,1,FRQMIN,IBID)
+        CALL GETVR8(K16TST,'FREQ_MAX',IFONC1,1,1,FRQMAX,IBID)
+        IF(FRQMIN.GE.FRQMAX)THEN
+          CALL UTMESS('F',NOMCMD//K16TST//'ERREUR.04',
+     &                  'FREQ_MIN < FREQ_MAX')
+        ENDIF
+        ENDIF
+   20 CONTINUE
+      IS = 0
+      JS = 0
+      DO 30 IFONC=1,NFNTOT
+        IS = IS + ZI(LINDI+IFONC-1)
+        JS = JS + ZI(LINDJ+IFONC-1)
+   30 CONTINUE
+C
+C       --- POUR UNE MATRICE HERMITIENNE ---
+C
+        IH = 0
+        JH = 0
+        DO 40 K=1,DIM
+          IH = IH + K*(DIM-K+1)
+          JH = JH + K*K
+   40   CONTINUE
+        IF (IS.NE.IH .OR. JS.NE.JH) THEN
+          CALL UTMESS('F',NOMCMD//'ERREUR.03',
+     +            'ERREUR SUR LES INDICES')
+        ENDIF
+      CALL JEDETR('&&OP0115.TEMP.INDI')
+      CALL JEDETR('&&OP0115.TEMP.INDJ')
+      CALL INFMAJ
+C
+C---2 --- CREATION ET REMPLISSAGE DE L'OBJET  NOMU ---
+C
+      CALL TBCRSD ( NOMU, 'G' )
+      CALL TBAJPA ( NOMU, NBPAR, NOPAR, TYPAR )
+C
+      KVAL(1) = 'DSP'
+      KVAL(2) = 'TOUT'
+      CALL TBAJLI ( NOMU, 3, NOPAR, DIM, R8B, C16B, KVAL, 0 )
+C
+C---3 --- CREATION ET REMPLISSAGE DE .TABL DU .PROL ET DU .VALE
+C
+      CALL GETFAC ( 'PAR_FONCTION' , NFONC  )
+      CALL GETFAC ( 'KANAI_TAJIMI' , NKANAI )
+      CALL GETFAC ( 'CONSTANT'     , NCONST )
+C
+      DO 100 IFONC = 1 , NFONC
+         CALL GETVIS('PAR_FONCTION','NUME_ORDRE_I',IFONC,1,1,IVAL(1), L)
+         CALL GETVIS('PAR_FONCTION','NUME_ORDRE_J',IFONC,1,1,IVAL(2), L)
+         CALL GETVID ( 'PAR_FONCTION', 'FONCTION', IFONC,1,1,NOMFON , L)
+         WRITE(NOMCOD,'(A8,A3,2I4.4)') NOMU,'.FO',IVAL(1),IVAL(2)
+         CALL COPISD ( 'FONCTION' , 'G' , NOMFON , NOMCOD )
+         CALL TBAJLI ( NOMU, 3, NOPAR(4), 
+     +                        IVAL, R8B, C16B, NOMCOD, 0 )
+ 100  CONTINUE
+C
+      DO 200 IFONC = 1 , NKANAI
+         CALL GETVIS('KANAI_TAJIMI','NUME_ORDRE_I',IFONC,1,1,IVAL(1), L)
+         CALL GETVIS('KANAI_TAJIMI','NUME_ORDRE_J',IFONC,1,1,IVAL(2), L)
+C
+         WRITE(NOMCOD,'(A8,A3,2I4.4)') NOMU,'.FO',IVAL(1),IVAL(2)
+         CALL TBAJLI ( NOMU, 3, NOPAR(4), 
+     +                        IVAL, R8B, C16B, NOMCOD, 0 )
+C
+         CALL GETVTX('KANAI_TAJIMI','INTERPOL'   ,IFONC,1,2,INTERP,L)
+         IF (L.EQ.1) INTERP(2) = INTERP(1)
+         CALL GETVTX('KANAI_TAJIMI','PROL_GAUCHE',IFONC,1,1,PROLG ,L)
+         CALL GETVTX('KANAI_TAJIMI','PROL_DROITE',IFONC,1,1,PROLD ,L)
+C
+         CALL WKVECT(NOMCOD//'.PROL','G V K8',5,IADPRL)
+         ZK8(IADPRL  ) = 'FONCT_C '
+         ZK8(IADPRL+1) = INTERP(1)//INTERP(2)
+         ZK8(IADPRL+2) = 'FREQ    '
+         ZK8(IADPRL+3) = 'DSP     '
+         ZK8(IADPRL+4) = PROLG(1:1)//PROLD(1:1)//'      '
+C
+         CALL GETVR8('KANAI_TAJIMI','FREQ_MIN'   ,IFONC,1,1, FRQMIN, L)
+         CALL GETVR8('KANAI_TAJIMI','FREQ_MAX'   ,IFONC,1,1, FRQMAX, L)
+         CALL GETVR8('KANAI_TAJIMI','PAS'        ,IFONC,1,1, PAS   , L)
+         CALL GETVR8('KANAI_TAJIMI','AMOR_REDUIT',IFONC,1,1, AMOR  , L)
+         CALL GETVR8('KANAI_TAJIMI','FREQ_MOY'   ,IFONC,1,1, FRQMOY, L)
+         CALL GETVR8('KANAI_TAJIMI','VALE_R'     ,IFONC,1,1, R8B ,NBR )
+         CALL GETVC8('KANAI_TAJIMI','VALE_C'     ,IFONC,1,1, C16B,NBC )
+         IF ( NBR .NE. 0 )THEN
+            G0 = DCMPLX( R8B, 0.D0 )
+         ELSEIF ( NBC .NE. 0 )THEN
+            G0 = C16B
+         ELSE
+            G0 = DCMPLX( 1.D0 , 0.D0 )
+         ENDIF
+         XNBVAL = ( FRQMAX - FRQMIN ) / PAS
+         NBVALE = INT( XNBVAL ) + 2
+C
+         CALL WKVECT ( NOMCOD//'.VALE', 'G V R', NBVALE*3, IADVAL )
+         DO 210 IVALE = 1 , NBVALE
+            IF ( IVALE .EQ. NBVALE ) THEN
+               X1 = FRQMAX
+            ELSE
+               X1 = FRQMIN + ( IVALE - 1 ) * PAS
+            ENDIF
+            ZR(IADVAL-1+IVALE) = X1
+            CALL KANAI ( AMOR, FRQMOY, DBLE(G0), X1, Y1 )
+            ZR(IADVAL+NBVALE-1+2*(IVALE-1)+1) = DBLE(Y1)
+            ZR(IADVAL+NBVALE-1+2*(IVALE-1)+2) = DIMAG(Y1)
+ 210     CONTINUE
+C
+ 200  CONTINUE
+C
+      DO 300 IFONC = 1 , NCONST
+         CALL GETVIS ( 'CONSTANT', 'NUME_ORDRE_I',IFONC,1,1, IVAL(1), L)
+         CALL GETVIS ( 'CONSTANT', 'NUME_ORDRE_J',IFONC,1,1, IVAL(2), L)
+C
+         WRITE(NOMCOD,'(A8,A3,2I4.4)') NOMU,'.FO',IVAL(1),IVAL(2)
+         CALL TBAJLI ( NOMU, 3, NOPAR(4), 
+     +                        IVAL, R8B, C16B, NOMCOD, 0 )
+C
+         CALL GETVTX('CONSTANT','INTERPOL'   ,IFONC,1,2,INTERP,L)
+         IF (L.EQ.1) INTERP(2) = INTERP(1)
+         CALL GETVTX('CONSTANT','PROL_GAUCHE',IFONC,1,1,PROLG ,L)
+         CALL GETVTX('CONSTANT','PROL_DROITE',IFONC,1,1,PROLD ,L)
+C
+         CALL WKVECT(NOMCOD//'.PROL','G V K8',5,IADPRL)
+         ZK8(IADPRL  ) = 'FONCT_C '
+         ZK8(IADPRL+1) = INTERP(1)//INTERP(2)
+         ZK8(IADPRL+2) = 'FREQ    '
+         ZK8(IADPRL+3) = 'DSP     '
+         ZK8(IADPRL+4) = PROLG(1:1)//PROLD(1:1)//'      '
+C
+         CALL GETVR8('CONSTANT','FREQ_MIN',IFONC,1,1, FRQMIN, L)
+         CALL GETVR8('CONSTANT','FREQ_MAX',IFONC,1,1, FRQMAX, L)
+         CALL GETVR8('CONSTANT','PAS'     ,IFONC,1,1, PAS   , L)
+         CALL GETVR8('CONSTANT','VALE_R'  ,IFONC,1,1, R8B ,NBR )
+         CALL GETVC8('CONSTANT','VALE_C'  ,IFONC,1,1, C16B,NBC )
+         IF ( NBR .NE. 0 )THEN
+            G0 = DCMPLX( R8B, 0.D0 )
+         ELSEIF ( NBC .NE. 0 )THEN
+            G0 = C16B
+         ELSE
+            G0 = DCMPLX( 1.D0 , 0.D0 )
+         ENDIF
+         XNBVAL = ( FRQMAX - FRQMIN ) / PAS
+         NBVALE = INT( XNBVAL ) + 2
+C
+         CALL WKVECT ( NOMCOD//'.VALE', 'G V R', NBVALE*3, IADVAL )
+         DO 310 IVALE = 1 , NBVALE
+            IF ( IVALE .EQ. NBVALE ) THEN
+               X1 = FRQMAX
+            ELSE
+               X1 = FRQMIN + ( IVALE - 1 ) * PAS
+            ENDIF
+            ZR(IADVAL-1+IVALE) = X1
+            ZR(IADVAL+NBVALE-1+2*(IVALE-1)+1) = DBLE(G0)
+            ZR(IADVAL+NBVALE-1+2*(IVALE-1)+2) = DIMAG(G0)
+ 310     CONTINUE
+ 300  CONTINUE
+C
+      CALL TITRE
+C
+      CALL JEDEMA()
+      END

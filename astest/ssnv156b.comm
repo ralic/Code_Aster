@@ -1,0 +1,444 @@
+# MODIF  DATE 07/06/2002   AUTEUR DURAND C.DURAND 
+# TITRE COLONNE PLASTIQUE A GRADIENT SOUS CHARGE VOLUMIQUE (D_PLAN) 
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+# RESPONSABLE GJBHHEL E.LORENTZ 
+
+
+DEBUT(  CODE=_F(NOM='SSNV156B',NIV_PUB_WEB='INTERNET') )
+  
+MA  =  LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='NON'),)
+
+MA  =  DEFI_GROUP(reuse  = MA, 
+  MAILLAGE = MA, 
+  CREA_GROUP_MA = (
+    _F(NOM = 'HAUT',      GROUP_MA = 'GMA31'), 
+    _F(NOM = 'COTE',      GROUP_MA = 'GMA32'),
+    _F(NOM = 'MATIERE',   GROUP_MA = 'GMA33'),
+    ),
+  CREA_GROUP_NO = (
+    _F(NOM = 'MESURE', GROUP_MA = 'GMA30'),
+    _F(TOUT_GROUP_MA = 'OUI'),
+    )
+  )
+
+COURBE = DEFI_FONCTION(
+  NOM_PARA = 'EPSI',
+  VALE     = (0.001, 100, 0.002, 110),
+  PROL_DROITE = 'LINEAIRE'
+  )
+
+METAL = DEFI_MATERIAU(
+  ELAS       = _F(E = 1.E5,  NU = 0.3), 
+  ECRO_LINE  = _F(SY= 100, D_SIGM_EPSI = 1.E4),
+  TRACTION   = _F(SIGM = COURBE),
+  NON_LOCAL  = _F(LONG_CARA = 0.982707629824)
+  )
+
+CHMAT = AFFE_MATERIAU(
+  MAILLAGE = MA, 
+  AFFE = (
+    _F(GROUP_MA = 'MATIERE', MATER = METAL),
+    )
+  )
+  
+
+MO = AFFE_MODELE(
+  MAILLAGE = MA, 
+  AFFE     = _F(
+    GROUP_MA     = ('MATIERE'),
+    PHENOMENE    = 'MECANIQUE', 
+    MODELISATION = 'D_PLAN_GRAD_VARI'
+    )
+  )
+  
+  
+LIAISON = AFFE_CHAR_MECA(
+  MODELE    = MO, 
+  FACE_IMPO = (
+    _F(GROUP_MA = 'HAUT', DY = 0),
+    _F(GROUP_MA = 'COTE', DX = 0)
+    ),
+  )
+  
+TRACTION = AFFE_CHAR_MECA(
+  MODELE = MO, 
+  FORCE_INTERNE = (
+    _F(GROUP_MA = 'MATIERE', FY=-1), 
+    )
+  )
+
+RAMPE = DEFI_FONCTION(
+  NOM_PARA = 'INST', 
+  VALE = (
+    0, 0,
+    1, 1
+    ), 
+  PROL_DROITE = 'LINEAIRE'
+  )
+
+
+INSTANTS = DEFI_LIST_REEL(
+  DEBUT = 0,   INTERVALLE = (
+    _F(JUSQU_A =  87.5         , NOMBRE = 1),
+    _F(JUSQU_A = 104.811963481 , NOMBRE = 1),
+    _F(JUSQU_A = 146.159407709 , NOMBRE = 1),
+    _F(JUSQU_A = 250.078993329 , NOMBRE = 1),
+    _F(JUSQU_A = 875.079453484 , NOMBRE = 1),
+    )
+  )
+
+EVOL = STAT_NON_LINE(
+  MODELE = MO, 
+  CHAM_MATER = CHMAT, 
+  EXCIT = (
+    _F(CHARGE = LIAISON), 
+    _F(CHARGE = TRACTION, FONC_MULT = RAMPE)
+    ), 
+  COMP_INCR = _F(
+    RELATION = 'VMIS_ISOT_TRAC', 
+    DEFORMATION = 'PETIT'
+    ), 
+  INCREMENT = _F(
+    LIST_INST = INSTANTS,
+    NUME_INST_FIN = 3
+    ), 
+  NEWTON = _F(
+    MATRICE = 'ELASTIQUE',
+    REAC_INCR = 0
+    ), 
+  CONVERGENCE = _F(
+    RESI_GLOB_RELA = 1.E-6, 
+    ITER_GLOB_MAXI = 100, 
+    ),
+  SOLVEUR = _F(RENUM = 'METIS'),
+  LAGR_NON_LOCAL = _F(
+    ITER_DUAL_MAXI = 15,
+    RESI_DUAL_ABSO = 1.E-7,
+    RESI_PRIM_ABSO = 1.E-8,
+    R = 1000.0,
+    ITER_PRIM_MAXI = 20
+    ),
+  SOLV_NON_LOCAL = _F(RENUM = 'METIS')
+  )
+
+EVOL = STAT_NON_LINE(
+  reuse = EVOL,
+  ETAT_INIT = _F(EVOL_NOLI = EVOL),
+  MODELE = MO, 
+  CHAM_MATER = CHMAT, 
+  EXCIT = (
+    _F(CHARGE = LIAISON), 
+    _F(CHARGE = TRACTION, FONC_MULT = RAMPE)
+    ), 
+  COMP_INCR = _F(
+    RELATION = 'VMIS_ISOT_LINE', 
+    DEFORMATION = 'PETIT'
+    ), 
+  INCREMENT = _F(
+    LIST_INST = INSTANTS,
+    ), 
+  NEWTON = _F(
+    MATRICE = 'ELASTIQUE',
+    REAC_INCR = 0
+    ), 
+  CONVERGENCE = _F(
+    RESI_GLOB_RELA = 1.E-6, 
+    ITER_GLOB_MAXI = 100, 
+    ),
+  SOLVEUR = _F(RENUM = 'METIS'),
+  LAGR_NON_LOCAL = _F(
+    ITER_DUAL_MAXI = 15,
+    RESI_DUAL_ABSO = 1.E-7,
+    RESI_PRIM_ABSO = 1.E-8,
+    R = 1000.0,
+    ITER_PRIM_MAXI = 20
+    ),
+  SOLV_NON_LOCAL = _F(RENUM = 'METIS')
+  )
+
+
+EVOL = CALC_ELEM (reuse = EVOL,
+  RESULTAT   = EVOL,
+  MODELE     = MO,
+  CHAM_MATER = CHMAT,
+  OPTION     = ('SIEF_ELNO_ELGA', 'EPSI_ELNO_DEPL', 'EQUI_ELNO_SIGM',
+                'VARI_ELNO_ELGA')
+  )
+
+EVOL = CALC_NO (reuse = EVOL,
+  RESULTAT = EVOL,
+  OPTION   = ('VARI_NOEU_ELGA','SIEF_NOEU_ELGA','EQUI_NOEU_SIGM',
+              'EPSI_NOEU_DEPL')
+   ) 
+
+
+# --- RESULTATS POUR UNE ZONE PLASTIQUE A 1.5 ---
+
+TEST_RESU(
+  RESU = _F(
+    RESULTAT   = EVOL,
+    NUME_ORDRE = 2,
+    NOM_CHAM   = 'VARI_NOEU_ELGA',
+    NOM_CMP    = 'V1',
+    GROUP_NO   = 'MESURE',
+    REFERENCE  = 'ANALYTIQUE',
+    VALE       = 1.16597576654E-4,
+    )
+  )
+
+TEST_RESU(
+  RESU = _F(
+    RESULTAT   = EVOL,
+    NUME_ORDRE = 2,
+    NOM_CHAM   = 'VARI_NON_LOCAL',
+    NOM_CMP    = 'VANL',
+    GROUP_NO   = 'MESURE',
+    REFERENCE  = 'ANALYTIQUE',
+    VALE       = 1.16597576654E-4,
+    )
+  )
+
+TEST_RESU(
+  RESU = _F(
+    RESULTAT   = EVOL,
+    NUME_ORDRE = 2,
+    NOM_CHAM   = 'SIEF_NOEU_ELGA',
+    NOM_CMP    = 'SIXX',
+    GROUP_NO   = 'MESURE',
+    REFERENCE  = 'ANALYTIQUE',
+    VALE       = 98.1672241733
+    )
+  )
+
+TEST_RESU(
+  RESU = _F(
+    RESULTAT   = EVOL,
+    NUME_ORDRE = 2,
+    NOM_CHAM   = 'EQUI_NOEU_SIGM',
+    NOM_CMP    = 'VMIS',
+    GROUP_NO   = 'MESURE',
+    REFERENCE  = 'ANALYTIQUE',
+    VALE       = 111.456702789
+    )
+  )
+
+
+TEST_RESU(
+  RESU = _F(
+    RESULTAT   = EVOL,
+    NUME_ORDRE = 2,
+    NOM_CHAM   = 'EPSI_NOEU_DEPL',
+    NOM_CMP    = 'EPYY',
+    GROUP_NO   = 'MESURE',
+    REFERENCE  = 'ANALYTIQUE',
+    VALE       = 1.62383350123E-3
+    )
+  )
+
+# --- RESULTATS POUR UNE ZONE PLASTIQUE A 1.0 ---
+
+TEST_RESU(
+  RESU = _F(
+    RESULTAT   = EVOL,
+    NUME_ORDRE = 3,
+    NOM_CHAM   = 'VARI_NOEU_ELGA',
+    NOM_CMP    = 'V1',
+    GROUP_NO   = 'MESURE',
+    REFERENCE  = 'ANALYTIQUE',
+    VALE       = 6.12541544725E-4,
+    )
+  )
+
+TEST_RESU(
+  RESU = _F(
+    RESULTAT   = EVOL,
+    NUME_ORDRE = 3,
+    NOM_CHAM   = 'VARI_NON_LOCAL',
+    NOM_CMP    = 'VANL',
+    GROUP_NO   = 'MESURE',
+    REFERENCE  = 'ANALYTIQUE',
+    VALE       = 6.12541544725E-4,
+    )
+  )
+
+TEST_RESU(
+  RESU = _F(
+    RESULTAT   = EVOL,
+    NUME_ORDRE = 3,
+    NOM_CHAM   = 'SIEF_NOEU_ELGA',
+    NOM_CMP    = 'SIXX',
+    GROUP_NO   = 'MESURE',
+    REFERENCE  = 'ANALYTIQUE',
+    VALE       = 169.032459802
+    )
+  )
+
+TEST_RESU(
+  RESU = _F(
+    RESULTAT   = EVOL,
+    NUME_ORDRE = 3,
+    NOM_CHAM   = 'EQUI_NOEU_SIGM',
+    NOM_CMP    = 'VMIS',
+    GROUP_NO   = 'MESURE',
+    REFERENCE  = 'ANALYTIQUE',
+    VALE       = 123.286355616
+    )
+  )
+
+
+TEST_RESU(
+  RESU = _F(
+    RESULTAT   = EVOL,
+    NUME_ORDRE = 3,
+    NOM_CHAM   = 'EPSI_NOEU_DEPL',
+    NOM_CMP    = 'EPYY',
+    GROUP_NO   = 'MESURE',
+    REFERENCE  = 'ANALYTIQUE',
+    VALE       = 2.52153494009E-3
+    )
+  )
+
+# --- RESULTATS POUR UNE ZONE PLASTIQUE A 0.5 ---
+
+TEST_RESU(
+  RESU = _F(
+    RESULTAT   = EVOL,
+    NUME_ORDRE = 4,
+    NOM_CHAM   = 'VARI_NOEU_ELGA',
+    NOM_CMP    = 'V1',
+    GROUP_NO   = 'MESURE',
+    REFERENCE  = 'ANALYTIQUE',
+    VALE       = 1.90521334607E-3,
+    )
+  )
+
+TEST_RESU(
+  RESU = _F(
+    RESULTAT   = EVOL,
+    NUME_ORDRE = 4,
+    NOM_CHAM   = 'VARI_NON_LOCAL',
+    NOM_CMP    = 'VANL',
+    GROUP_NO   = 'MESURE',
+    REFERENCE  = 'ANALYTIQUE',
+    VALE       = 1.90521334607E-3,
+    )
+  )
+
+TEST_RESU(
+  RESU = _F(
+    RESULTAT   = EVOL,
+    NUME_ORDRE = 4,
+    NOM_CHAM   = 'SIEF_NOEU_ELGA',
+    NOM_CMP    = 'SIXX',
+    GROUP_NO   = 'MESURE',
+    REFERENCE  = 'ANALYTIQUE',
+    VALE       = 350.44009043
+    )
+  )
+
+TEST_RESU(
+  RESU = _F(
+    RESULTAT   = EVOL,
+    NUME_ORDRE = 4,
+    NOM_CHAM   = 'EQUI_NOEU_SIGM',
+    NOM_CMP    = 'VMIS',
+    GROUP_NO   = 'MESURE',
+    REFERENCE  = 'ANALYTIQUE',
+    VALE       = 149.717896228
+    )
+  )
+
+
+TEST_RESU(
+  RESU = _F(
+    RESULTAT   = EVOL,
+    NUME_ORDRE = 4,
+    NOM_CHAM   = 'EPSI_NOEU_DEPL',
+    NOM_CMP    = 'EPYY',
+    GROUP_NO   = 'MESURE',
+    REFERENCE  = 'ANALYTIQUE',
+    VALE       = 4.80415267007E-3
+    )
+  )
+
+# --- RESULTATS POUR UNE ZONE PLASTIQUE A 0 ---
+
+TEST_RESU(
+  RESU = _F(
+    RESULTAT   = EVOL,
+    NUME_ORDRE = 5,
+    NOM_CHAM   = 'VARI_NOEU_ELGA',
+    NOM_CMP    = 'V1',
+    GROUP_NO   = 'MESURE',
+    REFERENCE  = 'ANALYTIQUE',
+    VALE       = 9.69340781747E-3,
+    )
+  )
+
+TEST_RESU(
+  RESU = _F(
+    RESULTAT   = EVOL,
+    NUME_ORDRE = 5,
+    NOM_CHAM   = 'VARI_NON_LOCAL',
+    NOM_CMP    = 'VANL',
+    GROUP_NO   = 'MESURE',
+    REFERENCE  = 'ANALYTIQUE',
+    VALE       = 9.69340781747E-3,
+    )
+  )
+
+TEST_RESU(
+  RESU = _F(
+    RESULTAT   = EVOL,
+    NUME_ORDRE = 5,
+    NOM_CHAM   = 'SIEF_NOEU_ELGA',
+    NOM_CMP    = 'SIXX',
+    GROUP_NO   = 'MESURE',
+    REFERENCE  = 'ANALYTIQUE',
+    VALE       = 1442.4543566
+    )
+  )
+
+TEST_RESU(
+  RESU = _F(
+    RESULTAT   = EVOL,
+    NUME_ORDRE = 5,
+    NOM_CHAM   = 'EQUI_NOEU_SIGM',
+    NOM_CMP    = 'VMIS',
+    GROUP_NO   = 'MESURE',
+    REFERENCE  = 'ANALYTIQUE',
+    VALE       = 307.704531305
+    )
+  )
+
+
+TEST_RESU(
+  RESU = _F(
+    RESULTAT   = EVOL,
+    NUME_ORDRE = 5,
+    NOM_CHAM   = 'EPSI_NOEU_DEPL',
+    NOM_CMP    = 'EPYY',
+    GROUP_NO   = 'MESURE',
+    REFERENCE  = 'ANALYTIQUE',
+    VALE       = 1.85402706332E-2
+    )
+  )
+
+
+FIN()

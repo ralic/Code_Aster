@@ -1,0 +1,188 @@
+      SUBROUTINE ETENCA(CHINZ,LIGRLZ,IRET)
+      IMPLICIT REAL*8 (A-H,O-Z)
+
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF CALCULEL  DATE 25/09/2002   AUTEUR VABHHTS J.PELLET 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+C RESPONSABLE                            VABHHTS J.PELLET
+C     ARGUMENTS:
+C     ----------
+      CHARACTER*19 LIGREL,CHIN
+      CHARACTER*(*) LIGRLZ,CHINZ
+      INTEGER IRET
+C ----------------------------------------------------------------------
+C     ENTREES:
+C     CHINZ  : NOM DE LA CARTE A ETENDRE
+C     LIGRLZ : NOM DU LIGREL SUR LEQUEL ETENDRE LA CARTE
+
+C     SORTIES:
+C     ON CREE LES OBJETS CHIN.PTMA ET CHIN.PTMS SUR LA VOLATILE
+
+C        (SI LES OBJETS .PTMA ET/OU .PTMS EXISTENT DEJA, C'EST QUE LA
+C         CARTE EST DEJA ETENDUE. CAS OU LA CARTE EXISTE PLUSIEURS FOIS
+C         DANS LA LISTE LCHIN(*). ON SUPPOSE QU'ELLE EST ETENDUE SUR LE
+C         BON LIGREL PUISQUE CALCUL CES OBJETS EN FIN D'ALGORITHME.)
+
+
+C     IRET : CODE RETOUR   0 --> OK
+C                          1 --> PROBLEME
+C ----------------------------------------------------------------------
+
+C     FONCTIONS EXTERNES:
+C     -------------------
+      CHARACTER*8 MAILLA
+      CHARACTER*32 JEXNUM
+
+C     VARIABLES LOCALES:
+C     ------------------
+      INTEGER NMA,NMS,NBEDIT,IGD,CODE,IENT,I,II,NB
+      INTEGER DESC,GRPMA,LIMA
+      INTEGER PTMA,PTMS
+      LOGICAL BONLIG
+      INTEGER NOLI
+      CHARACTER*8 MA,KBID
+      CHARACTER*24 LIGRI
+C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
+      COMMON /IVARJE/ZI(1)
+      COMMON /RVARJE/ZR(1)
+      COMMON /CVARJE/ZC(1)
+      COMMON /LVARJE/ZL(1)
+      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+      INTEGER ZI
+      REAL*8 ZR
+      COMPLEX*16 ZC
+      LOGICAL ZL
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32
+      CHARACTER*80 ZK80
+      CHARACTER*1 K1BID
+
+
+      CALL JEMARQ()
+      LIGREL = LIGRLZ
+      CHIN = CHINZ
+
+      IRET = 0
+      CALL JEEXIN(CHIN//'.NOLI',IRET0)
+      IF (IRET0.LE.0) THEN
+        CALL UTMESS('E','ETENCA','ON NE TROUVE PAS LE '//'CHAMP: '//
+     +              CHIN)
+        IRET = 1
+        GO TO 70
+      END IF
+      CALL JEVEUO(CHIN//'.NOLI','L',NOLI)
+
+
+C     ----ALLOCATION DES OBJETS PTMA ET PTMS:
+
+      CALL DISMOI('F','NB_MA_MAILLA',LIGREL,'LIGREL',NMA,KBID,IERD)
+      CALL DISMOI('F','NB_MA_SUP',LIGREL,'LIGREL',NMS,KBID,IERD)
+
+      IF (NMA.GT.0) THEN
+        CALL JEEXIN(CHIN//'.PTMA',IBID)
+C       -- LA CARTE EST DEJA ETENDUE:
+        IF (IBID.GT.0) GO TO 70
+        CALL WKVECT(CHIN//'.PTMA','V V I',NMA,PTMA)
+      END IF
+      IF (NMS.GT.0) THEN
+        CALL JEEXIN(CHIN//'.PTMS',IBID)
+C       -- LA CARTE EST DEJA ETENDUE:
+        IF (IBID.GT.0) GO TO 70
+        CALL WKVECT(CHIN//'.PTMS','V V I',NMS,PTMS)
+      END IF
+
+
+C     ----REMPLISSAGE DES OBJETS PTMA ET PTMS:
+
+      CALL JEVEUO(CHIN//'.DESC','L',DESC)
+      NBEDIT = ZI(DESC-1+3)
+      DO 60 IGD = 1,NBEDIT
+        CODE = ZI(DESC-1+3+2*IGD-1)
+        IENT = ZI(DESC-1+3+2*IGD)
+
+C        ------- ON NOTE SI LE LIGREL ASSOCIE A IGD EST LE MEME
+C        QUE CELUI SUR LEQUEL ON ETEND:
+        LIGRI = ZK24(NOLI-1+IGD)
+        IF (LIGRI(1:19).EQ.LIGREL) THEN
+          BONLIG = .TRUE.
+        ELSE
+          BONLIG = .FALSE.
+        END IF
+
+C        ------ GROUPE PREDEFINI "TOUT":
+        IF (CODE.EQ.1) THEN
+          DO 10 I = 1,NMA
+            ZI(PTMA-1+I) = IGD
+   10     CONTINUE
+          GO TO 60
+        END IF
+        IF ((CODE.EQ.-1) .AND. BONLIG) THEN
+          DO 20 I = 1,NMS
+            ZI(PTMS-1+I) = IGD
+   20     CONTINUE
+          GO TO 60
+        END IF
+
+C        ------- GROUPE DE MAILLES DU MAILLAGE:
+        IF (CODE.EQ.2) THEN
+          MA = MAILLA(LIGREL)
+          CALL JELIRA(JEXNUM(MA//'.GROUPEMA',IENT),'LONMAX',NB,K1BID)
+          CALL JEVEUO(JEXNUM(MA//'.GROUPEMA',IENT),'L',GRPMA)
+          DO 30 I = 1,NB
+            II = ZI(GRPMA-1+I)
+            ZI(PTMA-1+II) = IGD
+   30     CONTINUE
+          GO TO 60
+        END IF
+
+C        ------- LISTE TARDIVE DE MAILLES ASSOCIEE A LA CARTE:
+        IF (ABS(CODE).EQ.3) THEN
+          CALL JELIRA(JEXNUM(CHIN//'.LIMA',IENT),'LONMAX',NB,K1BID)
+          CALL JEVEUO(JEXNUM(CHIN//'.LIMA',IENT),'L',LIMA)
+          IF (CODE.GT.0) THEN
+            DO 40 I = 1,NB
+              II = ZI(LIMA-1+I)
+              IF (II.LE.0) THEN
+                CALL UTDEBM('F',' ETENCA','PB LISTE DE MAILLES')
+                CALL UTIMPK('L',' CARTE :',1,CHIN)
+                CALL UTIMPI('L',' NUMERO ENTITE :',1,IENT)
+                CALL UTIMPI('L',' POSITION DS LISTE :',1,I)
+                CALL UTIMPI('L',' NUMERO DE MAILLE  :',1,II)
+                CALL UTFINM()
+              END IF
+              ZI(PTMA-1+II) = IGD
+   40       CONTINUE
+          ELSE
+            IF (BONLIG) THEN
+              DO 50 I = 1,NB
+                II = ZI(LIMA-1+I)
+                IF (II.GE.0) THEN
+                  CALL UTMESS('F',' ETENCA','3')
+                END IF
+                ZI(PTMS-1-II) = IGD
+   50         CONTINUE
+            END IF
+          END IF
+          GO TO 60
+        END IF
+   60 CONTINUE
+   70 CONTINUE
+      CALL JEDEMA()
+      END

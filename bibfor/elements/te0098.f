@@ -1,0 +1,152 @@
+      SUBROUTINE TE0098(OPTION,NOMTE)
+      IMPLICIT   NONE
+      CHARACTER*16 OPTION,NOMTE
+C ......................................................................
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ELEMENTS  DATE 04/04/2002   AUTEUR VABHHTS J.PELLET 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+
+C     FONCTION REALISEE:  CALCUL DES CHAMELEM AUX NOEUDS A PARTIR DES
+C     VALEURS AUX POINTS DE GAUSS ( SIEF_ELNO_ELGA VARI_ELNO_ELGA )
+C                         CALCUL DES CHAMELEM AUX POINTS DE GAUSS A
+C     PARTIR DES VALEURS AUX NOEUDS ( SIEF_ELGA_ELNO VARI_ELGA_ELNO )
+C     ELEMENTS 2D ET 2D AXISYMETRIQUE
+
+C IN  OPTION : OPTION DE CALCUL
+C IN  NOMTE  : NOM DU TYPE ELEMENT
+C ......................................................................
+
+C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
+      INTEGER ZI
+      COMMON /IVARJE/ZI(1)
+      REAL*8 ZR
+      COMMON /RVARJE/ZR(1)
+      COMPLEX*16 ZC
+      COMMON /CVARJE/ZC(1)
+      LOGICAL ZL
+      COMMON /LVARJE/ZL(1)
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32
+      CHARACTER*80 ZK80
+      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
+
+      CHARACTER*24 CARAC,FF
+      CHARACTER*8 ELREFE
+      REAL*8 S
+      INTEGER I,ICHG,ICHN,ICARAC,JMAT,IC,IFF,IPOIDS,IVF,JTAB(7)
+      INTEGER NNO,NPG,NPG1,NCMP,NNOS,NCMP2,KP,K,LGPG,ICOMPO
+      INTEGER LGPG1
+C     ------------------------------------------------------------------
+
+      CALL ELREF1(ELREFE)
+      IF (ELREFE.EQ.'XXXXXXXX') ELREFE=NOMTE(1:8)
+
+      NCMP2 = 0
+      IF ((NOMTE(1:2).EQ.'SO') .OR. (NOMTE(1:2).EQ.'SN')) THEN
+C NOMBRE DE COMPOSANTES DES CONTRAINTES SUPPLEMENTAIRES
+        NCMP2 = 7
+      END IF
+
+      IF (NOMTE(1:2).EQ.'MI') NCMP2 = 1
+
+      CARAC = '&INEL.'//ELREFE//'.CARAC'
+      CALL JEVETE(CARAC,'L',ICARAC)
+      NNO = ZI(ICARAC)
+      NPG1 = ZI(ICARAC+2)
+      FF = '&INEL.'//ELREFE//'.FF'
+      CALL JEVETE(FF,'L',IFF)
+      IPOIDS = IFF
+      IVF = IPOIDS + NPG1
+
+      NPG = NPG1
+      IF (NOMTE(5:8).EQ.'TR3 ') THEN
+        NNOS = NNO
+      ELSE IF (NOMTE(5:8).EQ.'QU4 ') THEN
+        NNOS = NNO
+      ELSE IF (NOMTE(5:8).EQ.'TR6 ') THEN
+        NNOS = 3
+      ELSE IF (NOMTE(5:8).EQ.'QS8 ') THEN
+        NNOS = 4
+      ELSE IF (NOMTE(5:8).EQ.'QU8 ' .OR. NOMTE(5:8).EQ.'QU9 ') THEN
+        NNOS = 4
+      END IF
+C
+      IF (OPTION.EQ.'SIEF_ELNO_ELGA  ') THEN
+C     ---------------------------------------
+        NCMP = 4 + NCMP2
+        LGPG = NCMP
+        CALL JEVECH('PCONTRR','L',ICHG)
+        CALL JEVECH('PSIEFNOR','E',ICHN)
+
+
+      ELSE IF (OPTION.EQ.'SIEF_ELGA_ELNO  ') THEN
+C     ---------------------------------------
+        NCMP = 4
+        LGPG = NCMP
+        CALL JEVECH('PCONTRR','L',ICHN)
+        CALL JEVECH('PSIEFGR','E',ICHG)
+
+
+      ELSE IF (OPTION.EQ.'VARI_ELGA_ELNO  ') THEN
+C     ---------------------------------------
+
+        CALL JEVECH('PVARINR','L',ICHN)
+        CALL JEVECH('PVARIGR','E',ICHG)
+
+        CALL TECACH(.TRUE.,.TRUE.,'PVARINR',7,JTAB)
+        LGPG1= MAX(JTAB(6),1)*JTAB(7)
+
+        NCMP = LGPG1
+
+        LGPG=NCMP
+
+
+      ELSE IF (OPTION.EQ.'VARI_ELNO_ELGA  ') THEN
+C     ---------------------------------------
+
+        CALL JEVECH('PVARIGR','L',ICHG)
+        CALL JEVECH('PVARINR','E',ICHN)
+
+        CALL TECACH(.TRUE.,.TRUE.,'PVARINR',7,JTAB)
+        LGPG1= MAX(JTAB(6),1)*JTAB(7)
+
+        NCMP = LGPG1
+
+        LGPG=NCMP
+
+
+      END IF
+
+C --- CHAMELEM(NOEUD) = P * CHAMELEM(GAUSS)
+
+      IF (OPTION(6:9).EQ.'ELNO') THEN
+
+        CALL PPGANO(NNOS,NPG,NCMP,ZR(ICHG),ZR(ICHN))
+
+      ELSE
+
+C --- CHAMELEM(GAUSS) = P * CHAMELEM(NOEUD)
+
+        CALL NOPG2D(NCMP,NPG,NNO,LGPG,ZR(IVF),ZR(ICHN),ZR(ICHG))
+
+      END IF
+C FIN ------------------------------------------------------------------
+      END

@@ -1,0 +1,80 @@
+#& MODIF COMMANDE  DATE 09/10/2002   AUTEUR DURAND C.DURAND 
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+# RESPONSABLE G8BHHXD X.DESROCHES
+
+from Macro.macro_elas_mult_ops import macro_elas_mult_ops
+
+def macro_elas_mult_prod(self,NUME_DDL,CAS_CHARGE,**args ):
+  self.type_sdprod(NUME_DDL,nume_ddl)
+  if CAS_CHARGE[0]['NOM_CAS']      != None : return mult_elas
+  if CAS_CHARGE[0]['MODE_FOURIER'] != None : return fourier_elas
+  raise AsException("type de concept resultat non prevu")
+
+MACRO_ELAS_MULT=MACRO(nom="MACRO_ELAS_MULT",op=macro_elas_mult_ops,sd_prod=macro_elas_mult_prod,docu="U4.51.02-d2",reentrant='f',
+            UIinfo={"groupes":("Résolution",)},
+         regles=(UN_PARMI('CHAR_MECA_GLOBAL','CHAR_CINE_GLOBAL','LIAISON_DISCRET', ),),
+         MODELE          =SIMP(statut='o',typ=modele),
+         CHAM_MATER      =SIMP(statut='f',typ=cham_mater),
+         CARA_ELEM       =SIMP(statut='f',typ=cara_elem),
+         NUME_DDL        =SIMP(statut='f',typ=(nume_ddl,CO)),
+         CHAR_MECA_GLOBAL=SIMP(statut='f',typ=char_meca,max='**'),
+         CHAR_CINE_GLOBAL=SIMP(statut='f',typ=char_meca,max='**'),
+         LIAISON_DISCRET =SIMP(statut='f',typ='TXM',into=("OUI",)),
+         CAS_CHARGE      =FACT(statut='o',min=1,max='**',
+           regles=(UN_PARMI('NOM_CAS','MODE_FOURIER'),
+                   UN_PARMI('CHAR_MECA','CHAR_CINE','VECT_ASSE'),),
+           NOM_CAS         =SIMP(statut='f',typ='TXM' ),
+           MODE_FOURIER    =SIMP(statut='f',typ='I' ),
+           TYPE_MODE       =SIMP(statut='f',typ='TXM',defaut="SYME",into=("SYME","ANTI","TOUS") ),
+           CHAR_MECA       =SIMP(statut='f',typ=char_meca,max='**'),
+           CHAR_CINE       =SIMP(statut='f',typ=char_meca,max='**'),
+           OPTION          =SIMP(statut='f',typ='TXM',max='**',
+                                 into=("EFGE_ELNO_DEPL","EPOT_ELEM_DEPL","SIGM_ELNO_DEPL","SIEF_ELGA_DEPL",
+                                       "SIGM_ELNO_CART","EFGE_ELNO_CART","DEGE_ELNO_DEPL","EPSI_ELNO_DEPL",
+                                       "EPSI_ELGA_DEPL","EPSG_ELNO_DEPL","EPSG_ELGA_DEPL","EPSP_ELNO","EPSP_ELGA",
+                                       "ECIN_ELEM_DEPL","FLUX_ELGA_TEMP","FLUX_ELNO_TEMP","SOUR_ELGA_ELEC",
+                                       "PRES_ELNO_DBEL","PRES_ELNO_REEL","PRES_ELNO_IMAG","INTE_ELNO_ACTI",
+                                       "INTE_ELNO_REAC","SIGM_NOZ1_ELGA","ERRE_ELEM_NOZ1","SIGM_NOZ2_ELGA",
+                                       "ERRE_ELEM_NOZ2","VNOR_ELEM_DEPL","ERRE_ELNO_ELGA","SIRE_ELNO_DEPL",
+                                       "ERRE_ELGA_NORE","EQUI_ELNO_SIGM","EQUI_ELGA_SIGM","EQUI_ELNO_EPSI",
+                                       "EQUI_ELGA_EPSI","FORC_NODA","REAC_NODA","EPSI_NOEU_DEPL","SIGM_NOEU_DEPL",
+                                       "EFGE_NOEU_DEPL","EQUI_NOEU_SIGM","EQUI_NOEU_EPSI","FLUX_NOEU_TEMP") ),
+           NUME_COUCHE     =SIMP(statut='f',typ='I',defaut=1),
+           NIVE_COUCHE     =SIMP(statut='f',typ='TXM',defaut="MOY",into=("SUP","INF","MOY")),
+           SOUS_TITRE      =SIMP(statut='f',typ='TXM',max='**'),
+           VECT_ASSE       =SIMP(statut='f',typ=cham_no_depl_r),
+         ),
+         SOLVEUR         =FACT(statut='d',min=1,max=1,
+           METHODE         =SIMP(statut='f',typ='TXM',defaut="MULT_FRONT",into=("MULT_FRONT","LDLT") ),
+           b_mult_front    = BLOC ( condition = "METHODE == 'MULT_FRONT' ",
+                                    fr="Paramètres de la méthode multi frontale",
+             RENUM           =SIMP(statut='f',typ='TXM',defaut="METIS",into=("MD","MDA","METIS") ),
+           ),
+           b_ldlt          =BLOC(condition = "METHODE == 'LDLT' ",fr="Paramètres de la méthode LDLT",
+             RENUM           =SIMP(statut='f',typ='TXM',defaut="RCMK",into=("RCMK","SANS") ),
+            ),
+           b_ldlt_mult     =BLOC(condition = "METHODE == 'LDLT' or METHODE == 'MULT_FRONT' ",
+                                   fr="Paramètres relatifs à la non inversibilité de la matrice à factorise",
+             NPREC           =SIMP(statut='f',typ='I',defaut= 8 ),
+             STOP_SINGULIER  =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
+           ),
+         ),
+         INFO            =SIMP(statut='f',typ='I',defaut= 1,into=(1,2)),
+         TITRE           =SIMP(statut='f',typ='TXM',max='**'),
+)  ;

@@ -1,0 +1,144 @@
+# MODIF  DATE 17/11/2000   AUTEUR MJBHHPE J.L.FLEJOU 
+# TITRE VALIDATION DE AFFE_CHAR_MECA/EVOL_CHAR (DE TYPE PRESSION)
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+
+DEBUT(CODE=_F( NOM = 'ZZZZ137A',NIV_PUB_WEB='INTERNET') )
+
+# POUR AVOIR UN MAILLAGE VENANT D'IDEAS
+# (ALORS QU'IL A ETE FAIT PAR GIBI) :
+#----------------------------------------
+#  PRE_GIBI(); MA = LIRE_MAILLAGE(  ) ;
+#  &MA = DEFI_GROUP(MAILLAGE:MA
+#                CREA_GROUP_NO : (TOUT_GROUP_MA : 'OUI' ));
+#  IMPR_RESU(RESU:(MAILLAGE:MA FORMAT:'IDEAS'));
+#  PRE_IDEAS(); MA2 = LIRE_MAILLAGE();
+#  IMPR_RESU(RESU:(MAILLAGE:MA2));FIN();
+
+
+MA=LIRE_MAILLAGE(  )
+
+MO=AFFE_MODELE(  MAILLAGE=MA,
+         AFFE=_F(  TOUT = 'OUI',PHENOMENE = 'MECANIQUE',
+                           MODELISATION = 'AXIS'))
+
+MAT=DEFI_MATERIAU(ELAS=_F( E = 1.,  NU = 0.0, RHO = 1.E-7))
+
+CHMAT=AFFE_MATERIAU(  MAILLAGE=MA,
+                        AFFE=_F(  TOUT = 'OUI', MATER = MAT, TEMP_REF = 0.))
+
+LINST=DEFI_LIST_REEL(VALE=( 0., 1.,))
+
+F1=DEFI_FONCTION(NOM_PARA='INST', VALE=(0., 0., 10., 20.,))
+
+F2=DEFI_FONCTION(NOM_PARA='INST', VALE=(0., 0., 10., 30.,))
+
+PRESLU=LIRE_RESU(      MODELE=MO,     UNITE=37,
+                              FORMAT='IDEAS',     TYPE_RESU='EVOL_CHAR',
+                            NOM_CHAM=('PRES',),   TOUT_ORDRE='OUI',
+                        FORMAT_IDEAS=_F(     NOM_CHAM = 'PRES',
+                             NUME_DATASET = 57,
+                                       RECORD_6 = ( 1, 4, 1, 15, 2, 1, ),
+                             POSI_ORDRE = ( 7, 4,),
+                             POSI_INST = ( 8, 1,),
+                             NOM_CMP = ('PRES',))
+                      )
+
+CH0=AFFE_CHAR_MECA(  MODELE=MO,
+           DDL_IMPO=_F(  GROUP_MA = 'AB',   DY = 0.) )
+
+CH1=AFFE_CHAR_MECA(  MODELE=MO,
+         PRES_REP=_F(  GROUP_MA = 'CD',   PRES = 1.),
+           EVOL_CHAR=PRESLU    )
+
+CH2=AFFE_CHAR_MECA(  MODELE=MO,
+         PRES_REP=_F(  GROUP_MA = 'CD',   PRES = 3.),
+         FORCE_CONTOUR=_F(  GROUP_MA = 'CD',   FY = -2.),
+           EVOL_CHAR=PRESLU
+         )
+
+# 1) VALIDATION DE EVOL_CHAR (DE TYPE PRESSION) AVEC MECA_STATIQUE :
+# ------------------------------------------------------------------
+U1=MECA_STATIQUE(       MODELE=MO,   CHAM_MATER=CHMAT,
+           LIST_INST=LINST,EXCIT=(
+              _F( CHARGE = CH0),
+              _F( CHARGE = CH1, FONC_MULT = F1),
+              _F( CHARGE = CH2, FONC_MULT = F2))
+                        )
+
+TEST_RESU(  RESU=_F(  RESULTAT = U1,   NOM_CHAM = 'DEPL',   INST = 1.E0,
+            NOEUD = 'NO1', NOM_CMP = 'DY',  VALE = -37.00000,  PRECISION = 1.0E-6,
+            REFERENCE = 'ANALYTIQUE'))
+
+# 2) VALIDATION DE EVOL_CHAR (DE TYPE PRESSION) AVEC STAT_NON_LINE :
+# ----------------------------------------------------------------
+U2=STAT_NON_LINE(       MODELE=MO,   CHAM_MATER=CHMAT,
+           INCREMENT=_F( LIST_INST = LINST),EXCIT=(
+              _F( CHARGE = CH0),
+              _F( CHARGE = CH1, FONC_MULT = F1),
+              _F( CHARGE = CH2, FONC_MULT = F2)),
+           COMP_INCR=_F( TOUT = 'OUI', RELATION = 'ELAS')
+                        )
+
+TEST_RESU(  RESU=_F(  RESULTAT = U2,   NOM_CHAM = 'DEPL',   INST = 1.E0,
+            NOEUD = 'NO1', NOM_CMP = 'DY',  VALE = -37.00000,  PRECISION = 1.0E-6,
+            REFERENCE = 'ANALYTIQUE'))
+
+# 3) VALIDATION DE EVOL_CHAR (DE TYPE PRESSION) AVEC DYNA_NON_LINE :
+# ------------------------------------------------------------------
+U3=DYNA_NON_LINE(       MODELE=MO,   CHAM_MATER=CHMAT,
+           INCREMENT=_F( LIST_INST = LINST),EXCIT=(
+              _F( CHARGE = CH0),
+              _F( CHARGE = CH1, FONC_MULT = F1),
+              _F( CHARGE = CH2, FONC_MULT = F2)),
+           COMP_INCR=_F( TOUT = 'OUI', RELATION = 'ELAS'),
+             NEWMARK=_F()
+                        )
+
+TEST_RESU(  RESU=_F(  RESULTAT = U3,   NOM_CHAM = 'DEPL',   INST = 1.E0,
+            NOEUD = 'NO1', NOM_CMP = 'DY',  VALE = -37.00000,  PRECISION = 1.0E-6,
+            REFERENCE = 'ANALYTIQUE'))
+
+# 4) VALIDATION DE VOL_CHAR (DE TYPE PRESSION) AVEC DYNA_LINE_TRAN :
+# -----------------------------------------------------------------
+MACRO_MATR_ASSE(  MODELE=MO,  CHAM_MATER=CHMAT,
+                     CHARGE=CH0,
+                    NUME_DDL=CO("NU"),MATR_ASSE=(
+                   
+                        _F( MATRICE = CO("MATRRIGI"),
+                         OPTION = 'RIGI_MECA'),
+                        _F( MATRICE = CO("MATRMASS"),
+                         OPTION = 'MASS_MECA'))
+                   )
+
+U4=DYNA_LINE_TRAN(    MODELE=MO,      CHAM_MATER=CHMAT,
+           INCREMENT=_F( LIST_INST = LINST),EXCIT=(
+              _F( CHARGE = CH0),
+              _F( CHARGE = CH1, FONC_MULT = F1),
+              _F( CHARGE = CH2, FONC_MULT = F2)),
+             MATR_MASS=MATRMASS,
+             MATR_RIGI=MATRRIGI,
+             NEWMARK=_F()
+                           )
+
+TEST_RESU(  RESU=_F(  RESULTAT = U4,   NOM_CHAM = 'DEPL',   INST = 1.E0,
+            NOEUD = 'NO1', NOM_CMP = 'DY',  VALE = -37.00000,  PRECISION = 1.0E-6,
+            REFERENCE = 'ANALYTIQUE'))
+
+FIN()
+#

@@ -1,0 +1,180 @@
+      SUBROUTINE MDCHII ( IDFIMD, NOCHMD, TYPENT, TYPGEO, 
+     >                    PREFIX, NBTV,
+     >                    CODRET )
+C_____________________________________________________________________
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF PREPOST  DATE 14/05/2002   AUTEUR DURAND C.DURAND 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
+C              SEE THE FILE "LICENSE.TERMS" FOR INFORMATION ON USAGE AND
+C              REDISTRIBUTION OF THIS FILE.
+C ======================================================================
+C ======================================================================
+C RESPONSABLE GNICOLAS G.NICOLAS
+C ======================================================================
+C     FORMAT MED - CHAMP - INFORMATIONS - FICHIER CONNU PAR IDENTIFIANT
+C            --    --      -                                -
+C     DONNE LE NOMBRE DE TABLEAUX DE VALEURS ET LEURS CARACTERISTIQUES
+C     TEMPORELLES POUR UN CHAMP ET UN SUPPORT GEOMETRIQUE
+C-----------------------------------------------------------------------
+C      ENTREES:
+C        IDFIMD : IDENTIFIANT DU FICHIER MED
+C        NOCHMD : NOM MED DU CHAMP A LIRE
+C        TYPENT : TYPE D'ENTITE AU SENS MED
+C        TYPGEO : TYPE DE SUPPORT AU SENS MED
+C      ENTREES/SORTIES:
+C        PREFIX : BASE DU NOM DES STRUCTURES
+C                 POUR LE TABLEAU NUMERO I
+C                 PREFIX//'.NUME' : T(2I-1) = NUMERO DE PAS DE TEMPS
+C                                   T(2I)   = NUMERO D'ORDRE
+C                 PREFIX//'.INST' : T(I) = INSTANT S'IL EXISTE
+C                 PREFIX//'.MAIL' : T(I) = NOM DU MAILLAGE (K32)
+C                 PREFIX//'.UNII' : T(I) = UNITE DE L'INSTANT (K8)
+C      SORTIES:
+C        NBTV   : NOMBRE DE TABLEAUX DE VALEURS DU CHAMP
+C        CODRET : CODE DE RETOUR (0 : PAS DE PB, NON NUL SI PB)
+C_____________________________________________________________________
+C
+      IMPLICIT NONE
+C
+C 0.1. ==> ARGUMENTS
+C
+      INTEGER IDFIMD
+      INTEGER NBTV
+      INTEGER TYPENT, TYPGEO
+      INTEGER CODRET
+C
+      CHARACTER*19 PREFIX
+      CHARACTER*32 NOCHMD
+C
+C 0.2. ==> COMMUNS
+C     ----- DEBUT COMMUNS NORMALISES  JEVEUX --------------------------
+      INTEGER ZI
+      COMMON /IVARJE/ZI(1)
+      REAL*8 ZR
+      COMMON /RVARJE/ZR(1)
+      COMPLEX*16 ZC
+      COMMON /CVARJE/ZC(1)
+      LOGICAL ZL
+      COMMON /LVARJE/ZL(1)
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32
+      CHARACTER*80 ZK80
+      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+C     -----  FIN  COMMUNS NORMALISES  JEVEUX --------------------------
+C 0.3. ==> VARIABLES LOCALES
+C
+      CHARACTER*6 NOMPRO
+      PARAMETER ( NOMPRO = 'MDCHII' )
+C
+      INTEGER EDNOPT
+      PARAMETER (EDNOPT=-1)
+      INTEGER EDNONO
+      PARAMETER (EDNONO=-1)
+C
+      INTEGER IFM, NIVINF
+      INTEGER IAUX
+      INTEGER FINBPG, FINUPT, FINUNO
+      INTEGER ADNUME, ADINST, ADMAIL, ADUNII
+C
+      CHARACTER*8 SAUX08
+      CHARACTER*8 FIUNIN
+      CHARACTER*32 FIMAIL
+C
+      REAL*8 FIINST
+C
+      CALL JEMARQ()
+      CALL INFMAJ
+      CALL INFNIV ( IFM, NIVINF )
+C
+C====
+C 1. NOMBRE DE TABLEAUX DE VALEURS ASSOCIES AU CHAMP
+C====
+C
+      CALL EFNPDT ( IDFIMD, NOCHMD, TYPENT, TYPGEO, NBTV, CODRET )
+C
+      IF ( CODRET.NE.0 ) THEN
+        CALL CODENT ( CODRET,'G',SAUX08 )
+        CALL UTMESS ('F',NOMPRO,'MED: ERREUR EFNPDT NUMERO '//SAUX08)
+      ENDIF
+C
+      IF ( NIVINF.GT.1 ) THEN
+        WRITE (IFM,10001) NOCHMD, NBTV
+      ENDIF
+10001 FORMAT('LE CHAMP MED ',A32,' CONTIENT ',I6,' TABLEAUX.')
+C
+C====
+C 2. ALLOCATION DES TABLEAUX
+C====
+C
+      IF ( NBTV.GT.0 ) THEN
+C
+        CALL WKVECT ( PREFIX//'.NUME' ,'V V I',   2*NBTV, ADNUME )
+        CALL WKVECT ( PREFIX//'.INST' ,'V V R',     NBTV, ADINST )
+        CALL WKVECT ( PREFIX//'.UNII' ,'V V K8',    NBTV, ADUNII )
+        CALL WKVECT ( PREFIX//'.MAIL' ,'V V K32',   NBTV, ADMAIL )
+C
+      ENDIF
+C
+C====
+C 3. POUR CHAQUE TABLEAU : ON LIT :
+C    . LE MAILLAGE : FIMAIL
+C    . NOMBRE DE POINTS DE GAUSS : FINBPG
+C    . NUMERO, UNITE ET VALEUR DU PAS DE TEMPS : FINUPT, FIUNIN, FIINST
+C    . NUMERO D'ORDRE : FINUNO
+C    ON COMPARE AVEC CELUI QUE L'ON VEUT
+C====
+C
+      DO 30 , IAUX = 1 , NBTV
+C
+C 3.1. ==> LECTURE
+C
+        CALL EFPDTI ( IDFIMD, NOCHMD, TYPENT, TYPGEO, IAUX,
+     >                FIMAIL, FINBPG, FINUPT, FIUNIN, FIINST, FINUNO,
+     >                CODRET )
+C
+        IF ( CODRET.NE.0 ) THEN
+          CALL CODENT ( CODRET,'G',SAUX08 )
+          CALL UTMESS ('F',NOMPRO,'MED: ERREUR EFPDTI NUMERO '//SAUX08)
+        ENDIF
+C
+        IF ( NIVINF.GT.1 ) THEN
+          WRITE (IFM,30001) IAUX, FIMAIL, FINBPG
+          IF ( FINUPT.EQ.EDNOPT ) THEN
+            WRITE (IFM,30012)
+          ELSE
+            WRITE (IFM,30022) FINUPT, FIUNIN, FIINST
+          ENDIF
+          IF ( FINUNO.EQ.EDNONO ) THEN
+            WRITE (IFM,30013)
+          ELSE
+            WRITE (IFM,30023) FINUNO
+          ENDIF
+      ENDIF
+C
+C 3.2. ==> ARCHIVAGE
+C
+      ZI(ADNUME+2*IAUX-2)  = FINUPT
+      ZI(ADNUME+2*IAUX-1)  = FINUNO
+      ZK32(ADMAIL+IAUX-1)  = FIMAIL
+      IF ( FINUPT.NE.EDNOPT ) THEN
+        ZR(ADINST+IAUX-1)  = FIINST
+        ZK8(ADUNII+IAUX-1) = FIUNIN
+      ENDIF
+C
+   30 CONTINUE
+C
+30001 FORMAT(/,'TABLEAU NUMERO ',I6,/,21('-'),
+     >       /,2X,'. MAILLAGE : ',A32,
+     >       /,2X,'. NOMBRE DE POINTS DE GAUSS : ',I3)
+30012 FORMAT(  2X,'. AUCUNE INDICATION DE PAS DE TEMPS')
+30022 FORMAT(  2X,'. PAS DE TEMPS NUMERO ',I5,
+     >       /,2X,'. INSTANT : ',G13.5,
+     >       /,2X,'. UNITE DU PAS DE TEMPS : ',A8)
+30013 FORMAT(  2X,'. AUCUNE INDICATION DE NUMERO D''ORDRE')
+30023 FORMAT(  2X,'. NUMERO D''ORDRE : ',I5)
+C
+      CALL JEDEMA()
+      END

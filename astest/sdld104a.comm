@@ -1,0 +1,295 @@
+# MODIF  DATE 24/09/2002   AUTEUR A3BHHAE H.ANDRIAMBOLOLONA 
+# TITRE VALIDATION DE PROJ_MESU_MODAL: CAS DISCRET, BASE (MODE_MECA)
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+#
+######################################################################
+#
+#         *** VALIDATION DE LA COMMANDE PROJ_MESU_MODAL ***
+#
+# SYSTEME A 2 MASSES - 3 RESSORTS ENCASTRE - ENCASTRE
+#    - M1 = M2 = M = 10 KG
+#    - K1 = K2 = K3 = K = 1000 N/M
+#
+# REPONSE TRANSITOIRE A UN EFFORT SINUSOIDAL APPLIQUE SUR UNE MASSE
+#    - PAS D'AMORTISSEMENT
+#    - F = SIN (WT)  DE FREQUENCE 2 HZ
+#
+# PROJECTION SUR UN CONCEPT MODE_MECA CREE PAR MODE_ITER_SIMULT
+#
+######################################################################
+#
+DEBUT(  CODE=_F( NOM = 'SDLD104A',NIV_PUB_WEB='INTERNET') )
+
+#
+# DEFINITION DU MODELE NUMERIQUE
+# ==============================
+#
+MAIL=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='NON'),  UNITE=20)
+
+#
+MODEL=AFFE_MODELE(   MAILLAGE=MAIL,
+                           AFFE=_F( TOUT = 'OUI',
+                                 PHENOMENE = 'MECANIQUE',
+                                 MODELISATION = 'DIS_T')         )
+
+#
+CARAELEM=AFFE_CARA_ELEM(    MODELE=MODEL,DISCRET=(
+                             _F( MAILLE = ('P1','P2',),
+                                      CARA = 'M_T_D_N',
+                                      VALE = 10.),
+                             _F( MAILLE = ('M1','M2','M3',),
+                                      CARA = 'K_T_D_L',
+                                      VALE = (1000., 1000., 1000.,))) )
+
+#
+BLOCAGE=AFFE_CHAR_MECA(     MODELE=MODEL,DDL_IMPO=(
+                           _F( TOUT = 'OUI',     DY = 0., DZ = 0.),
+                           _F( NOEUD = ('N1', 'N4',),  DX = 0.))       )
+
+#
+RIGIELEM=CALC_MATR_ELEM(      MODELE=MODEL,
+                             CARA_ELEM=CARAELEM,
+                                CHARGE=BLOCAGE,
+                               OPTION='RIGI_MECA'                  )
+
+#
+MASSELEM=CALC_MATR_ELEM(      MODELE=MODEL,
+                             CARA_ELEM=CARAELEM,
+                                CHARGE=BLOCAGE,
+                               OPTION='MASS_MECA'                  )
+
+#
+NU=NUME_DDL(   MATR_RIGI=RIGIELEM                                )
+
+#
+RIGIASSE=ASSE_MATRICE(    MATR_ELEM=RIGIELEM,
+                             NUME_DDL=NU                           )
+
+#
+MASSASSE=ASSE_MATRICE(    MATR_ELEM=MASSELEM,
+                             NUME_DDL=NU                           )
+
+#
+MODES=MODE_ITER_SIMULT(      MATR_A=RIGIASSE, 
+                               MATR_B=MASSASSE, 
+                              METHODE='TRI_DIAG',
+                            CALC_FREQ=_F( OPTION = 'BANDE',
+                                       FREQ = (1., 3.,))            )
+#
+# DEFINITION DU MAILLAGE DE MESURE
+# ================================
+#
+MAILMESU=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='NON'),  UNITE=21       )
+
+#
+MODLMESU=AFFE_MODELE(   MAILLAGE=MAILMESU,AFFE=(
+                              _F( MAILLE = ('P1','P2',),
+                                    PHENOMENE = 'MECANIQUE',
+                                    MODELISATION = 'DIS_T'),
+                              _F( NOEUD = ('N2','N3',),
+                                    PHENOMENE = 'MECANIQUE',
+                                    MODELISATION = 'DIS_T'))        )
+
+#
+MESURE=LIRE_RESU(FORMAT='IDEAS',
+                 UNITE=33,
+                 DATASET_58='OUI',
+                 MAILLAGE=MAILMESU,
+                 TYPE_RESU='DYNA_TRANS',
+                 NOM_CHAM='DEPL',
+                 REDEFI_ORIENT=(_F(CODE_DIR=1,
+                                   DIRECTION=(1.,1.,0.),
+                                   NOEUD=('N3',),),),
+                 TOUT_ORDRE='OUI',)
+#
+# PROJECTION DES MESURES SUR LA BASE MODALE DU MODELE
+# ===================================================
+#
+REPGENE=PROJ_MESU_MODAL(
+                         MODELE_CALCUL=_F( MODELE = MODEL,
+                                    BASE = MODES,),
+                         MODELE_MESURE=_F( MODELE = MODLMESU,
+                                    MESURE = MESURE,
+                                    NOM_PARA = 'INST',
+                                    NOM_CHAM = 'DEPL',),
+                         RESOLUTION=_F( REGUL = 'NORM_MIN',
+                                    COEF_PONDER = 0.,),       )
+#
+# RESTITUTION DES RESULTATS 
+# =========================
+#
+REPONSE=REST_BASE_PHYS(   RESU_GENE=REPGENE,
+                           TOUT_CHAM='OUI'                          )
+
+#
+# TEST DES RESULTATS
+# ==================
+TEST_RESU(RESU=(  _F( RESULTAT = REPONSE,      NOEUD = 'N2',
+                   NOM_CHAM = 'DEPL',       NOM_CMP = 'DX',
+                   CRITERE = 'RELATIF',    PRECISION = 1.E-2,
+                   NUME_ORDRE = 100,          VALE = 1.745E-4),
+#
+             _F( RESULTAT = REPONSE,      NOEUD = 'N2',
+                   NOM_CHAM = 'DEPL',       NOM_CMP = 'DX',
+                   CRITERE = 'RELATIF',    PRECISION = 1.E-2,
+                   NUME_ORDRE = 300,          VALE = 6.797E-4),
+#
+             _F( RESULTAT = REPONSE,      NOEUD = 'N2',
+                   NOM_CHAM = 'DEPL',       NOM_CMP = 'DX',
+                   CRITERE = 'RELATIF',    PRECISION = 1.E-2,
+                   NUME_ORDRE = 500,          VALE = -1.217E-3),
+#
+             _F( RESULTAT = REPONSE,      NOEUD = 'N2',
+                   NOM_CHAM = 'DEPL',       NOM_CMP = 'DX',
+                   CRITERE = 'RELATIF',    PRECISION = 1.E-2,
+                   NUME_ORDRE = 700,          VALE = 5.214E-4),
+#
+             _F( RESULTAT = REPONSE,      NOEUD = 'N2',
+                   NOM_CHAM = 'DEPL',       NOM_CMP = 'DX',
+                   CRITERE = 'RELATIF',    PRECISION = 1.E-2,
+                   NUME_ORDRE = 900,          VALE = 9.031E-4),
+#
+             _F( RESULTAT = REPONSE,      NOEUD = 'N3',
+                   NOM_CHAM = 'DEPL',       NOM_CMP = 'DX',
+                   CRITERE = 'RELATIF',    PRECISION = 1.E-2,
+                   NUME_ORDRE = 100,          VALE = 9.154E-6),
+#
+             _F( RESULTAT = REPONSE,      NOEUD = 'N3',
+                   NOM_CHAM = 'DEPL',       NOM_CMP = 'DX',
+                   CRITERE = 'RELATIF',    PRECISION = 1.E-2,
+                   NUME_ORDRE = 300,          VALE = 6.414E-4),
+#
+             _F( RESULTAT = REPONSE,      NOEUD = 'N3',
+                   NOM_CHAM = 'DEPL',       NOM_CMP = 'DX',
+                   CRITERE = 'RELATIF',    PRECISION = 1.E-2,
+                   NUME_ORDRE = 500,          VALE = -8.636E-4),
+#
+             _F( RESULTAT = REPONSE,      NOEUD = 'N3',
+                   NOM_CHAM = 'DEPL',       NOM_CMP = 'DX',
+                   CRITERE = 'RELATIF',    PRECISION = 1.E-2,
+                   NUME_ORDRE = 700,          VALE = -1.107E-4),
+#
+             _F( RESULTAT = REPONSE,      NOEUD = 'N3',
+                   NOM_CHAM = 'DEPL',       NOM_CMP = 'DX',
+                   CRITERE = 'RELATIF',    PRECISION = 1.E-2,
+                   NUME_ORDRE = 900,          VALE = 1.633E-3),
+#
+             _F( RESULTAT = REPONSE,      NOEUD = 'N2',
+                   NOM_CHAM = 'VITE',       NOM_CMP = 'DX',
+                   CRITERE = 'RELATIF',    PRECISION = 1.E-2,
+                   NUME_ORDRE = 100,          VALE = 4.586E-3),
+#
+             _F( RESULTAT = REPONSE,      NOEUD = 'N2',
+                   NOM_CHAM = 'VITE',       NOM_CMP = 'DX',
+                   CRITERE = 'RELATIF',    PRECISION = 1.E-2,
+                   NUME_ORDRE = 300,          VALE = -7.598E-3),
+#
+             _F( RESULTAT = REPONSE,      NOEUD = 'N2',
+                   NOM_CHAM = 'VITE',       NOM_CMP = 'DX',
+                   CRITERE = 'ABSOLU',     PRECISION = 1.E-4,
+                   NUME_ORDRE = 500,          VALE = -1.581E-4),
+#
+             _F( RESULTAT = REPONSE,      NOEUD = 'N2',
+                   NOM_CHAM = 'VITE',       NOM_CMP = 'DX',
+                   CRITERE = 'RELATIF',    PRECISION = 1.E-2,
+                   NUME_ORDRE = 700,          VALE = 9.382E-3),
+#
+             _F( RESULTAT = REPONSE,      NOEUD = 'N2',
+                   NOM_CHAM = 'VITE',       NOM_CMP = 'DX',
+                   CRITERE = 'RELATIF',    PRECISION = 1.E-2,
+                   NUME_ORDRE = 900,          VALE = -7.481E-3),
+#
+             _F( RESULTAT = REPONSE,      NOEUD = 'N3',
+                   NOM_CHAM = 'VITE',       NOM_CMP = 'DX',
+                   CRITERE = 'RELATIF',    PRECISION = 1.8E-2,
+                   NUME_ORDRE = 100,          VALE = 4.328E-4),
+#
+             _F( RESULTAT = REPONSE,      NOEUD = 'N3',
+                   NOM_CHAM = 'VITE',       NOM_CMP = 'DX',
+                   CRITERE = 'RELATIF',    PRECISION = 1.E-2,
+                   NUME_ORDRE = 300,          VALE = 3.671E-3),
+#
+             _F( RESULTAT = REPONSE,      NOEUD = 'N3',
+                   NOM_CHAM = 'VITE',       NOM_CMP = 'DX',
+                   CRITERE = 'RELATIF',    PRECISION = 1.E-2,
+                   NUME_ORDRE = 500,          VALE = -1.539E-2),
+#
+             _F( RESULTAT = REPONSE,      NOEUD = 'N3',
+                   NOM_CHAM = 'VITE',       NOM_CMP = 'DX',
+                   CRITERE = 'RELATIF',    PRECISION = 1.E-2,
+                   NUME_ORDRE = 700,          VALE = 2.453E-2),
+#
+             _F( RESULTAT = REPONSE,      NOEUD = 'N3',
+                   NOM_CHAM = 'VITE',       NOM_CMP = 'DX',
+                   CRITERE = 'RELATIF',    PRECISION = 1.E-2,
+                   NUME_ORDRE = 900,          VALE = -1.899E-2),
+#
+             _F( RESULTAT = REPONSE,      NOEUD = 'N2',
+                   NOM_CHAM = 'ACCE',       NOM_CMP = 'DX',
+                   CRITERE = 'RELATIF',    PRECISION = 1.E-2,
+                   NUME_ORDRE = 100,          VALE = 6.112E-2),
+#
+             _F( RESULTAT = REPONSE,      NOEUD = 'N2',
+                   NOM_CHAM = 'ACCE',       NOM_CMP = 'DX',
+                   CRITERE = 'RELATIF',    PRECISION = 1.E-2,
+                   NUME_ORDRE = 300,          VALE = -1.306E-1),
+#
+             _F( RESULTAT = REPONSE,      NOEUD = 'N2',
+                   NOM_CHAM = 'ACCE',       NOM_CMP = 'DX',
+                   CRITERE = 'RELATIF',    PRECISION = 1.9E-2,
+                   NUME_ORDRE = 500,          VALE = 1.571E-1),
+#
+             _F( RESULTAT = REPONSE,      NOEUD = 'N2',
+                   NOM_CHAM = 'ACCE',       NOM_CMP = 'DX',
+                   CRITERE = 'RELATIF',    PRECISION = 2.6E-2,
+                   NUME_ORDRE = 700,          VALE = -5.657E-2),
+#
+             _F( RESULTAT = REPONSE,      NOEUD = 'N2',
+                   NOM_CHAM = 'ACCE',       NOM_CMP = 'DX',
+                   CRITERE = 'RELATIF',    PRECISION = 1.E-2,
+                   NUME_ORDRE = 900,          VALE = -1.124E-1),
+#
+             _F( RESULTAT = REPONSE,      NOEUD = 'N3',
+                   NOM_CHAM = 'ACCE',       NOM_CMP = 'DX',
+                   CRITERE = 'RELATIF',    PRECISION = 3.6E-2,
+                   NUME_ORDRE = 100,          VALE = 1.562E-2),
+#
+             _F( RESULTAT = REPONSE,      NOEUD = 'N3',
+                   NOM_CHAM = 'ACCE',       NOM_CMP = 'DX',
+                   CRITERE = 'RELATIF',    PRECISION = 3.2E-2,
+                   NUME_ORDRE = 300,          VALE = -6.031E-2),
+#
+             _F( RESULTAT = REPONSE,      NOEUD = 'N3',
+                   NOM_CHAM = 'ACCE',       NOM_CMP = 'DX',
+                   CRITERE = 'RELATIF',    PRECISION = 5.4E-2,
+                   NUME_ORDRE = 500,          VALE = 5.102E-2),
+#
+             _F( RESULTAT = REPONSE,      NOEUD = 'N3',
+                   NOM_CHAM = 'ACCE',       NOM_CMP = 'DX',
+                   CRITERE = 'RELATIF',    PRECISION = 5.2E-2,
+                   NUME_ORDRE = 700,          VALE = 7.428E-2),
+#
+             _F( RESULTAT = REPONSE,      NOEUD = 'N3',
+                   NOM_CHAM = 'ACCE',       NOM_CMP = 'DX',
+                   CRITERE = 'RELATIF',    PRECISION = 4.3E-2,
+                   NUME_ORDRE = 900,          VALE = -2.364E-1)) )
+
+#
+FIN()
+#

@@ -1,0 +1,164 @@
+      SUBROUTINE TE0596 ( OPTION , NOMTE )
+      IMPLICIT NONE
+      CHARACTER*16        OPTION , NOMTE
+C ......................................................................
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ELEMENTS  DATE 11/04/2002   AUTEUR CIBHHLV L.VIVAN 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+C
+C    - FONCTION REALISEE:  CALCUL DE LA DERIVEE LAGRANGIENNE DE T
+C                          A PARTIR DE LA DERIVEE EULERIENNE DE T
+C                          OPTION : 'DLAG_NOEU_TEMP    '
+C                          CHAMP AUX NOEUDS
+C
+C    DERIVEE LAGRANGIENNE DE T = DERIVEE EULERIENNE DE T + GRAD(T).THETA
+C
+C    - ELEMENTS ISOPARAMETRIQUES 2D
+C
+C    - ARGUMENTS:
+C        DONNEES:      OPTION       -->  OPTION DE CALCUL
+C                      NOMTE        -->  NOM DU TYPE ELEMENT
+C ......................................................................
+C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
+      INTEGER            ZI
+      COMMON  / IVARJE / ZI(1)
+      REAL*8             ZR
+      COMMON  / RVARJE / ZR(1)
+      CHARACTER*8        ZK8
+      CHARACTER*16                ZK16
+      CHARACTER*24                          ZK24
+      CHARACTER*32                                    ZK32
+      CHARACTER*80                                              ZK80
+      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
+C
+      CHARACTER*24       CARAC,FF
+      CHARACTER*8        ELREFE
+
+C
+      REAL*8             POIDS, DFDX(9), DFDY(9)
+      REAL*8             EPSI, R8PREM,  DLAGTE(18), GRADT(2)
+      REAL*8             THETAX, THETAY
+C
+      INTEGER            IGEOM, ICARAC
+      INTEGER            IFF, IPOIDS, IVF, IDFDE, IDFDK
+      INTEGER            NNO, NPG, NPG1, NPG2, NNOS, NCMP
+      INTEGER            KP, I, K, IDEB, IFIN
+      INTEGER            ITEMP, IDEULT, IDLAGT, ITHETA
+C
+      LOGICAL THTNUL
+C
+C
+C====
+C 1. INITIALISATIONS ET CONTROLE DE LA NULLITE DE THETA
+C====
+C
+      CALL ELREF1(ELREFE)
+      EPSI = R8PREM ()
+C
+      CARAC='&INEL.'//ELREFE//'.CARAC'
+      CALL JEVETE(CARAC,'L',ICARAC)
+      NNO  = ZI(ICARAC)
+      NPG1 = ZI(ICARAC+2)
+      NPG2 = ZI(ICARAC+3)
+      IF (NOMTE(5:8).EQ.'TR3 ' .OR. NOMTE(5:8).EQ.'QU4 ') THEN
+        NNOS = NNO
+      ELSE
+        NNOS = (NNO-MOD(NNO,2))/2
+      ENDIF
+C
+      CALL JEVECH('PGEOMER','L',IGEOM)
+      CALL JEVECH('PTEMPER','L',ITEMP)
+      CALL JEVECH('PVECTTH','L',ITHETA)
+      CALL JEVECH('PDEULTG','L',IDEULT)
+C
+C
+      FF   ='&INEL.'//ELREFE//'.FF'
+      CALL JEVETE(FF,'L',IFF)
+      IPOIDS = IFF   +NPG1*(1+3*NNO)
+      IVF    = IPOIDS+NPG2
+      IDFDE  = IVF   +NPG2*NNO
+      IDFDK  = IDFDE +NPG2*NNO
+      NPG    = NPG2
+C
+      CALL JEVECH('PDLAGTE','E',IDLAGT)
+C
+      IDEB = ITHETA
+      IFIN = ITHETA + 2*NNO - 1
+      THTNUL = .TRUE.
+      DO 102 , I = IDEB , IFIN
+        IF ( ABS(ZR(I)).GT.EPSI ) THEN
+          THTNUL = .FALSE.
+        ENDIF
+  102 CONTINUE
+C
+C====
+C 2. BOUCLE SUR LES POINTS DE GAUSS POUR LE CALCUL DE LA DERIVEE
+C    LAGRANGIENNE DE T
+C====
+C
+      DO 20 , KP = 1 , NPG
+C
+        K = (KP-1)*NNO
+C
+        CALL DFDM2D ( NNO,ZR(IPOIDS+KP-1),ZR(IDFDE+K),ZR(IDFDK+K),
+     >                ZR(IGEOM),DFDX,DFDY,POIDS )
+C
+        IF ( THTNUL ) THEN
+C
+C DERIVEE LAGRANGIENNE LOCALE AU POINT DE GAUSS :
+C        D T / D E  =  DEULTG
+C
+          DLAGTE(KP) = ZR(IDEULT+KP-1)
+C
+        ELSE
+C
+C CALCUL DU VECTEUR THETA, DE LA DERIVEE EULERIENNE DE T ET DU
+C GRADIENT DE T AU POINT DE GAUSS
+C
+          THETAX = 0.D0
+          THETAY = 0.D0
+          GRADT(1) = 0.D0
+          GRADT(2) = 0.D0
+          DO 202 , I = 1 , NNO
+            THETAX   = THETAX + ZR(ITHETA+2*I-2)*ZR(IVF+K+I-1)
+            THETAY   = THETAY + ZR(ITHETA+2*I-1)*ZR(IVF+K+I-1)
+            GRADT(1) = GRADT(1) + ZR(ITEMP+I-1)*DFDX(I)
+            GRADT(2) = GRADT(2) + ZR(ITEMP+I-1)*DFDY(I)
+  202     CONTINUE
+C
+C DERIVEE LAGRANGIENNE LOCALE AU POINT DE GAUSS :
+C        D T / D E  =  DEULTG  - GRAD(T).THETA
+C
+          DLAGTE(KP) = ZR(IDEULT+KP-1)
+     >               - THETAX*GRADT(1) - THETAY*GRADT(2)
+C
+        ENDIF
+C
+   20 CONTINUE
+C
+  200 CONTINUE
+C
+C====
+C 3. PASSAGE AUX NOEUDS
+C====
+C
+      NCMP = 1
+      CALL PPGANO (NNOS,NPG,NCMP,DLAGTE,ZR(IDLAGT))
+C
+      END

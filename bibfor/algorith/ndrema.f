@@ -1,0 +1,95 @@
+      SUBROUTINE NDREMA(INIT,METHOD,PARMEI,NUMORD,ITERAT,OPTION,REASMA)
+      IMPLICIT REAL*8 (A-H,O-Z)
+      CHARACTER*(*)     INIT
+      CHARACTER*16           METHOD(5),                  OPTION
+      INTEGER                       PARMEI(3),NUMORD,ITERAT
+      LOGICAL                                                   REASMA
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 23/02/2000   AUTEUR GJBHHEL E.LORENTZ 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+C ----------------------------------------------------------------------
+C     RENVOIE UN LOGIQUE ORDONNANT OU NON LE REASSEMBLAGE DE LA MATRICE
+C     ET INITIALISE LE NOM D'OPTION POUR L'APPEL A CALCUL
+C
+C     SI REAC_ITER=N, ON REASSEMBLE AUX ITERATIONS DE NEWTON N,2N,3N...
+C     ON NE REASSEMBLE A LA 1ERE ITERATION DE NEWTON QUE SI REAC_ITER=1,
+C     SINON ON GARDE LE RIGI_MECA_TANG DE LA PHASE DE PREDICTION.
+C
+C IN  INIT    : PREND LES VALEURS : "INIT" POUR INITIALISATION,
+C               "ITER" POUR REACTUALISATION AU COURS DES ITERATIONS,
+C               "PAS" POUR REACTUALISATION AU COURS DES INCREMENTS DE
+C               CHARGE.
+C IN  METHOD  : DESCRIPTION DE LA METHODE DE RESOLUTION
+C IN  PARMEI  : PARAMETRES ENTIERS DE LA METHODE
+C               PARMEI(1) = REAC_INCR  PARMEI(2) = REAC_ITER
+C IN  NUMORD  : NUMERO D'ORDRE (INCREMENT EN TEMPS)
+C IN  ITERAT  : NUMERO D'ITERATION INTERNE
+C OUT OPTION  : NOM D'OPTION PASSE A CALCUL
+C OUT REASMA  : LOGIQUE INDIQUANT LE REASSEMBLAGE
+C ----------------------------------------------------------------------
+      LOGICAL      NMREPR
+      INTEGER                    NUMINI
+      SAVE         NMREPR,NUMINI
+C DEB ------------------------------------------------------------------
+      IF(INIT(1:4).EQ.'INIT') THEN
+        NMREPR = .TRUE.
+      ELSE
+        IF (NMREPR) THEN
+          NMREPR = .FALSE.
+          NUMINI = NUMORD
+          REASMA = .TRUE.
+          IF (METHOD(5).EQ.'ELASTIQUE'.OR.METHOD(5).EQ.'EXTRAPOL') THEN
+            OPTION = 'RIGI_MECA'
+          ELSE
+            OPTION = 'RIGI_MECA_TANG'
+          END IF
+        ELSE IF (INIT(1:3).EQ.'PAS') THEN
+          IF (METHOD(5).EQ.'ELASTIQUE'.OR.METHOD(5).EQ.'EXTRAPOL') THEN
+            IF (METHOD(2).EQ.'ELASTIQUE') THEN
+              REASMA = .FALSE.
+            ELSE
+              OPTION = 'RIGI_MECA'
+              REASMA = .TRUE.
+            END IF
+          ELSE
+            OPTION = 'RIGI_MECA_TANG'
+            REASMA = ((NUMORD-NUMINI)/PARMEI(1))*PARMEI(1)
+     &                 .EQ. (NUMORD-NUMINI)
+          END IF
+        ELSE IF (INIT(1:4).EQ.'ITER') THEN
+          IF ((PARMEI(2).EQ.0).OR.(METHOD(2).EQ.'ELASTIQUE')) THEN
+            REASMA = .FALSE.
+          ELSE
+            IF (ITERAT.GT.1) THEN
+              REASMA = (ITERAT/PARMEI(2))*PARMEI(2).EQ.ITERAT
+            ELSE
+              REASMA = PARMEI(2) .EQ. 1
+              IF (METHOD(5).NE.'TANGENTE') REASMA = .TRUE.
+            ENDIF
+          ENDIF
+          IF (REASMA) THEN
+            OPTION = 'FULL_MECA'
+          ELSE
+            OPTION = 'RAPH_MECA'
+          ENDIF
+        ELSE
+          CALL UTMESS ('F','NDREMA_1','APPEL INCONNU')
+        END IF
+      END IF
+C FIN ------------------------------------------------------------------
+      END

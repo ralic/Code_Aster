@@ -1,0 +1,163 @@
+#& MODIF COMMANDE  DATE 09/10/2002   AUTEUR DURAND C.DURAND 
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+#              SEE THE FILE "LICENSE.TERMS" FOR INFORMATION ON USAGE AND
+#              REDISTRIBUTION OF THIS FILE.
+# ======================================================================
+# RESPONSABLE VABHHTS J.PELLET
+def lire_resu_prod(TYPE_RESU,**args):
+  if TYPE_RESU == "EVOL_CHAR" :  return evol_char
+  if TYPE_RESU == "EVOL_THER" :  return evol_ther
+  if TYPE_RESU == "EVOL_ELAS" :  return evol_elas
+  if TYPE_RESU == "EVOL_NOLI" :  return evol_noli
+  if TYPE_RESU == "DYNA_TRANS" : return dyna_trans
+  if TYPE_RESU == "DYNA_HARMO" : return dyna_harmo
+  if TYPE_RESU == "HARM_GENE" :  return harm_gene
+  if TYPE_RESU == "MODE_MECA" :  return mode_meca
+  raise AsException("type de concept resultat non prevu")
+
+LIRE_RESU=OPER(nom="LIRE_RESU",op=150,sd_prod=lire_resu_prod,docu="U7.02.01-d2",reentrant='n',
+            UIinfo={"groupes":("Maillage",)},
+               fr="Lecture de champs aux noeuds ou par éléments aux noeuds sur un fichier IDEAS ou EnSight",
+
+
+# 0 mots clés généraux :
+#----------------------
+         TYPE_RESU       =SIMP(statut='o',typ='TXM',into=("EVOL_THER","EVOL_ELAS","EVOL_NOLI","MODE_MECA",
+                                                          "DYNA_TRANS","DYNA_HARMO","HARM_GENE","EVOL_CHAR") ),
+
+         FORMAT          =SIMP(statut='f',typ='TXM',defaut="IDEAS",into=("IDEAS","ENSIGHT","MED") ),
+         DATASET_58      =SIMP(statut='f',typ='TXM',defaut='NON',into=('OUI','NON',) ),
+
+         INFO            =SIMP(statut='f',typ='I',into=(1,2) ),
+         TITRE           =SIMP(statut='f',typ='TXM',max='**'),
+
+         regles=(UN_PARMI('MAILLAGE','MODELE'),),
+         MAILLAGE        =SIMP(statut='f',typ=maillage),
+         MODELE          =SIMP(statut='f',typ=modele),
+
+         NB_VARI         =SIMP(statut='f',typ='I' ),
+
+
+# 1 blocs selon le format choisi :
+#---------------------------------
+
+# 1-1 ideas :
+# ---------
+         b_ideas         =BLOC(condition="FORMAT=='IDEAS'",
+           UNITE           =SIMP(statut='f',typ='I',defaut= 19 ),
+         ),
+
+         b_format_ideas = BLOC(condition="DATASET_58=='NON'",
+           FORMAT_IDEAS    =FACT(statut='f',max='**',
+             regles=(UN_PARMI('POSI_INST','POSI_FREQ'),),
+             NOM_CHAM        =SIMP(statut='o',typ='TXM',max='**',into=("TEMP","DEPL","VITE","ACCE","PRES","VARI_ELNO",
+                                                                     "SIEF_ELNO","EPSA_ELNO","TEMP_PEAU","VITE_VENT",
+                                                                     "FVOL_3D","FVOL_2D","FSUR_3D","FSUR_2D") ),
+             NUME_DATASET    =SIMP(statut='f',typ='I',into=(55,57,2414) ),
+             RECORD_3        =SIMP(statut='f',typ='I',max=10),
+             RECORD_6        =SIMP(statut='f',typ='I',max=10),
+             RECORD_9        =SIMP(statut='f',typ='I',max=10),
+             POSI_ORDRE      =SIMP(statut='o',typ='I',min=2,max=2),
+             POSI_NUME_MODE  =SIMP(statut='f',typ='I',min=2,max=2),
+             POSI_MASS_GENE  =SIMP(statut='f',typ='I',min=2,max=2),
+             POSI_INST       =SIMP(statut='f',typ='I',min=2,max=2),
+             POSI_FREQ       =SIMP(statut='f',typ='I',min=2,max=2),
+             NOM_CMP         =SIMP(statut='o',typ='TXM',max='**'),),
+         ),
+         b_dataset_58 = BLOC(condition="(DATASET_58=='OUI') and ((TYPE_RESU=='DYNA_TRANS') or\
+                                        (TYPE_RESU=='DYNA_HARMO') or (TYPE_RESU=='HARM_GENE'))",
+             NOM_CHAM=SIMP(statut='o',typ='TXM',into=("DEPL","VITE","ACCE","EPSI_NOEU_DEPL","SIEF_NOEU",) ),
+             REDEFI_ORIENT=FACT(statut='f',max='**',
+                                regles=(PRESENT_PRESENT('CODE_DIR','DIRECTION','NOEUD',),),
+                                CODE_DIR =SIMP(statut='f',typ='I',into=(1,2,3,) ),
+                                DIRECTION=SIMP(statut='f',typ='R',min=3,max=3,),
+                                NOEUD    =SIMP(statut='f',typ=no,max='**'),),
+         ),
+# 1-2 ensight :
+# -------------
+         b_ensight       =BLOC(condition="FORMAT=='ENSIGHT'",
+           NOM_FICHIER     =SIMP(statut='f',typ='TXM'),
+         ),
+# 1-3 med :
+# ---------
+         b_med           =BLOC(condition = "FORMAT == 'MED'",fr="Nom du champ dans le fichier MED",
+#                           regles=(UN_PARMI('NOM_CMP_IDEM','NOM_CMP'),
+#                           PRESENT_PRESENT('NOM_CMP','NOM_CMP_MED' ),),
+           NOM_MED         =SIMP(statut='o',typ='TXM',
+                                 fr="Nom du champ dans le fichier MED.",
+                                 ang="Name of the field in the MED file." ),
+           NOM_CMP_IDEM    =SIMP(statut='f',typ='TXM',into=("OUI",),
+                                 fr="Les composantes ont le meme nom dans MED et ASTER.",
+                                 ang="The names of the components are the same in ASTER and MED." ),
+           NOM_CMP         =SIMP(statut='f',typ='TXM',max='**',
+                                 fr="Nom des composantes dans ASTER.",
+                                 ang="Names of the components in ASTER" ),
+           NOM_CMP_MED     =SIMP(statut='f',typ='TXM',max='**',
+                                 fr="Nom des composantes dans MED.",
+                                 ang="Names of the components in MED" ),
+# Pour une lecture dans un fichier MED, on peut préciser le nom sous lequel
+# le maillage associé au champ y a été enregistré. Par défaut, on prendra le premier maillage.
+           NOM_MAIL_MED    =SIMP(statut='f',typ='TXM',
+                                 fr="Nom du maillage dans le fichier MED.",
+                                 ang="Name of the mesh into the MED file.",),
+           UNITE           =SIMP(statut='f',typ='I',defaut= 81,
+                                 fr="Le fichier est : fort.n.",
+                                 ang="File is : fort.n" ),
+                  ),
+
+
+# 2 blocs selon le type du résultat :
+#---------------------------------
+         b_evol_elas     =BLOC(condition="TYPE_RESU=='EVOL_ELAS'",
+           NOM_CHAM        =SIMP(statut='o',typ='TXM',max='**',
+                                 into=("DEPL",) ),
+         ),
+         b_evol_ther     =BLOC(condition="TYPE_RESU=='EVOL_THER'",
+           NOM_CHAM        =SIMP(statut='o',typ='TXM',max='**',
+                                 into=("TEMP","TEMP_PEAU") ),
+         ),
+         b_evol_char     =BLOC(condition="TYPE_RESU=='EVOL_CHAR'",
+           NOM_CHAM        =SIMP(statut='o',typ='TXM',max='**',
+                                 into=("PRES","VITE_VENT",
+                                       "FVOL_3D","FVOL_2D",
+                                       "FSUR_3D","FSUR_2D") ),
+         ),
+         b_evol_noli     =BLOC(condition="TYPE_RESU=='EVOL_NOLI'",
+           NOM_CHAM        =SIMP(statut='o',typ='TXM',max='**',
+                                 into=("DEPL","VITE","ACCE","VARI_ELNO",
+                                       "SIEF_ELNO","EPSA_ELNO") ),
+         ),
+         b_mode_meca     =BLOC(condition="TYPE_RESU=='MODE_MECA'",
+           NOM_CHAM        =SIMP(statut='o',typ='TXM',max='**',
+                                 into=("DEPL",) 
+                                                 ),
+           MATR_A         =SIMP(statut='f',typ=matr_asse_depl_r,min=1,max=1,),
+           MATR_B         =SIMP(statut='f',typ=matr_asse_depl_r,min=1,max=1,),
+         ),
+         b_dyna          =BLOC(condition="((TYPE_RESU=='DYNA_TRANS') or (TYPE_RESU=='DYNA_HARMO') or\
+                                          (TYPE_RESU=='HARM_GENE')) and (DATASET_58=='NON')",
+           NOM_CHAM        =SIMP(statut='o',typ='TXM',max='**',
+                                 into=("DEPL","VITE","ACCE",) ),
+         ),
+
+
+# 3 autres blocs :
+#---------------------------------
+         b_extrac        =BLOC(condition="1",fr="accès à un champ dans la structure de données résultat",
+           regles=(UN_PARMI('TOUT_ORDRE','NUME_ORDRE','LIST_ORDRE','INST','LIST_INST','FREQ','LIST_FREQ'),),
+           TOUT_ORDRE      =SIMP(statut='f',typ='TXM',into=("OUI",) ),
+           NUME_ORDRE      =SIMP(statut='f',typ='I',max='**'),
+           INST            =SIMP(statut='f',typ='R',max='**'),
+           LIST_INST       =SIMP(statut='f',typ=listr8),
+           LIST_ORDRE      =SIMP(statut='f',typ=listis),
+           FREQ            =SIMP(statut='f',typ='R',max='**'),
+           LIST_FREQ       =SIMP(statut='f',typ=listr8),
+
+           b_acce_reel     =BLOC(condition="(INST != None)or(LIST_INST != None)or(FREQ != None)or(LIST_FREQ != None)",
+             PRECISION       =SIMP(statut='f',typ='R',defaut=1.0E-3),
+             CRITERE         =SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU") ),
+           ),
+         ),
+)  ;

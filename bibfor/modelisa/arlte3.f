@@ -1,0 +1,110 @@
+      SUBROUTINE ARLTE3(DIM,PG,FG,DFG,NG,NO1,NN1,TM2,NO2,NN2,H2,MQ,B)
+
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF MODELISA  DATE 02/04/2002   AUTEUR RATEAU G.RATEAU 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C                                                                       
+C                                                                       
+C ======================================================================
+C ---------------------------------------------------------------------
+C               MATRICE ELEMENTAIRE DE COUPLAGE ARLEQUIN
+C               MAILLES DIFFERENTES INTEGRATION STANDARD
+C ---------------------------------------------------------------------
+C VARIABLES D'ENTREE 
+C INTEGER      DIM             : DIMENSION DE L'ESPACE
+C REAL*8       PG(NG)          : POIDS DE GAUSS
+C REAL*8       FG(NNO,NG)      : FONCTIONS DE FORME AUX POINTS DE GAUSS
+C REAL*8       DFG(DIM,NNO,NG) : DERIVEES FONCT. DE FORME AUX PTS GAUSS
+C INTEGER      NG              : NOMBRE DE POINTS DE GAUSS
+C REAL*8       NO1(DIM,NN1)    : COORD. NOEUDS MAILLE D'INTEGRATION 
+C                                (CF CONOEU)
+C INTEGER      NN1             : NOMBRE DE NOEUDS MAILLE D'INTEGRATION
+C CHARACTER*8  TM2             : TYPE DE MAILLE EN VIS-A-VIS
+C REAL*8       NO2(DIM,NN2)    : COORD. NOEUDS MAILLE EN VIS-A-VIS 
+C                                (CF CONOEU)
+C INTEGER      NN2             : NOMBRE DE NOEUDS MAILLE EN VIS-A-VIS
+C REAL*8       H2              : TAILLE MAILLE EN VIS-A-VIS (CF BOITE)
+C REAL*8       MQ(DIM,DIM)     : METRIQUE D'ADIMENSIONEMENT (CF ARLMTR)
+C
+C VARIABLES D'ENTREE / SORTIE
+C REAL*8       B(NN2,NN1)      : MATRICE ELEMENTAIRE COUPLAGE ARLEQUIN
+C ---------------------------------------------------------------------
+
+      IMPLICIT NONE
+
+C --- FONCTIONS
+      REAL*8  R8DOT
+
+C --- VARIABLES
+      CHARACTER*8 TM2
+      LOGICAL IRET,FAUX
+      INTEGER DIM,NG,NN1,NN2,NN,I,J,K,P0,P1,P2
+      REAL*8  PG(*),NO1(*),FG(NN1,*),DFG(*),NO2(*),H2,MQ(*),B(NN2,*),Z
+      REAL*8  JAC(9),DF0(81),DF1(81),G(3),G2(3),F2(27),DF2(81),DET,R0,R1
+
+C --- INTEGRATION
+
+      P0 = 1
+      Z = 0.D0
+      DET = 1.D0
+      IRET = .TRUE.
+      FAUX = .FALSE.
+      NN = DIM*NN1
+
+      DO 10 I = 1, NG
+
+        CALL R8COPY(NN,DFG(P0),1,DF0,1)
+        CALL MTPROD(NO1,DIM,0,DIM,0,NN1,DF0,DIM,0,DIM,0,JAC)
+        CALL MGAUST(JAC,DF0,DIM,DIM,NN1,DET,IRET)
+        CALL MMPROD(MQ,DIM,0,DIM,0,DIM,DF0,DIM,0,0,NN1,DF1)
+        DET = ABS(DET) * PG(I)
+
+        IF (.NOT.IRET) CALL UTMESS('F','ARLTE3','MAILLE NON CONFORME')
+
+        CALL MTPROD(NO1,DIM,0,DIM,0,NN1,FG(1,I),1,0,1,0,G)
+        CALL REFERE(G,NO2,DIM,TM2,H2,.TRUE.,G2,IRET,.TRUE.,F2) 
+        
+        IF (.NOT.IRET) CALL UTMESS('F','ARLTE3','MAILLE NON CONFORME')
+
+        CALL FORME1(G2,TM2,DF0,NN2,DIM)
+        CALL MTPROD(NO2,DIM,0,DIM,0,NN2,DF0,DIM,0,DIM,0,JAC)
+        CALL MGAUST(JAC,DF0,DIM,DIM,NN2,Z,FAUX)        
+        CALL MMPROD(MQ,DIM,0,DIM,0,DIM,DF0,DIM,0,0,NN2,DF2)
+
+        P1 = 1
+        P0 = P0 + NN
+
+        DO 10 J = 1, NN1
+
+          P2 = 1
+          R0 = FG(J,I)
+
+          DO 20 K = 1, NN2
+
+            R1 = R8DOT(DIM,DF1(P1),1,DF2(P2),1)
+            B(K,J) = B(K,J) + DET*(R1 + R0*F2(K))
+C            B(K,J) = B(K,J) + DET*R0*F2(K)
+C            B(K,J) = B(K,J) + DET*R1
+            P2 = P2 + DIM
+
+ 20       CONTINUE
+
+          P1 = P1 + DIM
+
+ 10   CONTINUE
+
+      END

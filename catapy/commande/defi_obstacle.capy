@@ -1,0 +1,53 @@
+#& MODIF COMMANDE  DATE 09/10/2002   AUTEUR DURAND C.DURAND 
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+DEFI_OBSTACLE=OPER(nom="DEFI_OBSTACLE",op=  73,sd_prod=obstacle
+                    ,fr="Définition d un obstacle plan perpendiculaire à une structure filaire",
+                     docu="U4.44.21-e",reentrant='n',
+            UIinfo={"groupes":("Modélisation",)},
+         TYPE            =SIMP(statut='o',typ='TXM',defaut="CERCLE",
+                             into=("CERCLE","PLAN_Y","PLAN_Z","DISCRET",
+                             "BI_CERCLE","BI_PLAN_Y","BI_PLAN_Z","BI_CERC_INT",
+                             "CRAYON_900","CRAYON_1300","GUID_A_CARTE_900",
+                             "GUID_B_CARTE_900","GUID_C_CARTE_900",
+                             "GUID_D_CARTE_900","GUID_E_CARTE_900",
+                             "GUID_F_CARTE_900","GUID_A_CARTE_1300",
+                             "GUID_B_CARTE_1300","GUID_C_CARTE_1300",
+                             "GUID_D_CARTE_1300","GUID_E_CARTE_1300",
+                             "GUID_F_CARTE_1300","GUID_A_CARSP_900",
+                             "GUID_B_CARSP_900","GUID_C_CARSP_900",
+                             "GUID_D_CARSP_900","GUID_E_CARSP_900",
+                             "GUID_F_CARSP_900","GUID_A_CARSP_1300",
+                             "GUID_B_CARSP_1300","GUID_C_CARSP_1300",
+                             "GUID_D_CARSP_1300","GUID_E_CARSP_1300",
+                             "GUID_F_CARSP_1300","GUID_A_GCONT_900",
+                             "GUID_B_GCONT_900","GUID_C_GCONT_900",
+                             "GUID_D_GCONT_900","GUID_E_GCONT_900",
+                             "GUID_F_GCONT_900","GUID_A_GCONT_1300",
+                             "GUID_B_GCONT_1300","GUID_C_GCONT_1300",
+                             "GUID_D_GCONT_1300","GUID_E_GCONT_1300",
+                             "GUID_F_GCONT_1300","GUID_A_GCOMB_900",
+                             "GUID_B_GCOMB_900","GUID_C_GCOMB_900",
+                             "GUID_D_GCOMB_900","GUID_E_GCOMB_900",
+                             "GUID_F_GCOMB_900","GUID_A_GCOMB_1300",
+                             "GUID_B_GCOMB_1300","GUID_C_GCOMB_1300",
+                             "GUID_D_GCOMB_1300","GUID_E_GCOMB_1300",
+                             "GUID_F_GCOMB_1300",) ),
+         VALE            =SIMP(statut='f',typ='R',max='**'),
+         VERIF           =SIMP(statut='f',typ='TXM',defaut="FERME"),
+)  ;

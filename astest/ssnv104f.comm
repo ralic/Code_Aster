@@ -1,0 +1,628 @@
+# MODIF  DATE 01/05/2002   AUTEUR CIBHHBC R.FERNANDES 
+#
+# TITRE CONTACT DE DEUX SPHERES
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+#              SEE THE FILE "LICENSE.TERMS" FOR INFORMATION ON USAGE AND
+#              REDISTRIBUTION OF THIS FILE.
+# ======================================================================
+#
+# MODELISATION 2D AXI ELEMENTS LINEAIRES : TRIA3 ET QUAD4
+#
+######
+
+DEBUT(   CODE=_F( NOM = 'SSNV104F',NIV_PUB_WEB='INTERNET'))
+
+MA=LIRE_MAILLAGE()
+
+MO=AFFE_MODELE(
+                           MAILLAGE=MA,
+                          AFFE=_F( 
+                                TOUT = 'OUI',
+                                PHENOMENE = 'MECANIQUE',
+                                MODELISATION = 'AXIS')
+                        )
+
+#
+
+MAT=DEFI_MATERIAU(
+                            ELAS=_F( 
+                                  E = 20000.0,
+                                  NU = 0.3,
+                                  ALPHA = 0.01)
+                          )
+
+#
+
+CHMAT=AFFE_MATERIAU(
+                            MAILLAGE=MA,
+                           AFFE=_F( 
+                                 TOUT = 'OUI',
+                                 MATER = MAT)
+                           )
+
+#
+
+CHA2=AFFE_CHAR_MECA(
+                     MODELE=MO,DDL_IMPO=(
+                     _F(  GROUP_NO = 'SPHSUP',  DY = -2.0),
+                              _F(  GROUP_NO = 'SPHINF',  DY = 2.0),
+                              _F(  GROUP_NO = 'AXE',     DX = 0.0)),
+                     CONTACT=_F(  APPARIEMENT = 'NODAL',
+                               RECHERCHE = 'NOEUD_BOUCLE',
+                               METHODE = 'LAGRANGIEN',
+                               PROJECTION = 'LINEAIRE',
+                               NORMALE = 'MAIT_ESCL',
+                               GROUP_MA_1 = 'CON1',
+                               GROUP_MA_2 = 'CON2'),
+                     INFO=2
+                           )
+
+#
+
+CHA3=AFFE_CHAR_MECA(
+                     MODELE=MO,DDL_IMPO=(
+                     _F(  GROUP_NO = 'SPHSUP',  DY = -2.0),
+                              _F(  GROUP_NO = 'SPHINF',  DY = 2.0),
+                              _F(  GROUP_NO = 'AXE',     DX = 0.0)),
+                     CONTACT=_F(  APPARIEMENT = 'MAIT_ESCL',
+                               RECHERCHE = 'NOEUD_BOUCLE',
+                               METHODE = 'LAGRANGIEN',
+                               PROJECTION = 'LINEAIRE',
+                               NORMALE = 'MAIT_ESCL',
+                               GROUP_MA_1 = 'CON1',
+                               GROUP_MA_2 = 'CON2'),
+                     INFO=2
+                           )
+
+#
+
+CHA4=AFFE_CHAR_MECA(
+                     MODELE=MO,DDL_IMPO=(
+                     _F(  GROUP_NO = 'SPHSUP',  DY = -2.0),
+                              _F(  GROUP_NO = 'SPHINF',  DY = 2.0),
+                              _F(  GROUP_NO = 'AXE',     DX = 0.0)),
+                     CONTACT=_F(  APPARIEMENT = 'MAIT_ESCL',
+                               RECHERCHE = 'NOEUD_BOUCLE',
+                               METHODE = 'CONTRAINTE',
+                               PROJECTION = 'LINEAIRE',
+                               NORMALE = 'MAIT_ESCL',
+                               GROUP_MA_1 = 'CON1',
+                               GROUP_MA_2 = 'CON2'),
+                     INFO=2
+                           )
+
+#
+CHA5=AFFE_CHAR_MECA(
+                     MODELE=MO,DDL_IMPO=(
+                     _F(  GROUP_NO = 'SPHSUP',  DY = -2.0),
+                              _F(  GROUP_NO = 'SPHINF',  DY = 2.0),
+                              _F(  GROUP_NO = 'AXE',     DX = 0.0)),
+                     CONTACT=_F(  APPARIEMENT = 'MAIT_ESCL',
+                               RECHERCHE = 'NOEUD_BOUCLE',
+                               METHODE = 'CONTRAINTE',
+                               PROJECTION = 'LINEAIRE',
+                               NORMALE = 'MAIT_ESCL',
+                               LISSAGE = 'OUI',
+                               GROUP_MA_1 = 'CON1',
+                               GROUP_MA_2 = 'CON2'),
+                     INFO=2
+                           )
+
+#
+
+RAMPE=DEFI_FONCTION(   NOM_PARA='INST',
+            PROL_GAUCHE='LINEAIRE',   PROL_DROITE='LINEAIRE',
+            VALE=(0.0,0.0,1.0,1.0,) )
+
+#
+
+L_INST=DEFI_LIST_REEL(
+                             DEBUT=0.0,
+                              INTERVALLE=_F( JUSQU_A = 1., NOMBRE = 10)
+                           )
+
+#
+
+RESU2=STAT_NON_LINE( 
+                            MODELE=MO,
+                        CHAM_MATER=CHMAT,
+                             EXCIT=_F( 
+                CHARGE = CHA2,
+                FONC_MULT = RAMPE),
+                         COMP_ELAS=_F( 
+                RELATION = 'ELAS'),
+                            NEWTON=_F( 
+                MATRICE = 'ELASTIQUE'),
+                         INCREMENT=_F( 
+                LIST_INST = L_INST,
+                NUME_INST_FIN = 10),
+                       CONVERGENCE=_F( 
+                ARRET = 'OUI',
+                ITER_GLOB_MAXI = 10)
+              )
+
+RESU2=CALC_ELEM( reuse=RESU2,
+                            OPTION=(
+                  'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
+                          RESULTAT=RESU2,
+                            MODELE=MO,
+                        CHAM_MATER=CHMAT
+              )
+
+#
+SIELGA2=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='ELGA_SIEF_R',
+NOM_CHAM='SIEF_ELGA',
+                        RESULTAT=RESU2,
+                        NUME_ORDRE=10
+                       )
+
+#
+SIELNO2=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='ELNO_SIEF_R',
+NOM_CHAM='SIEF_ELNO_ELGA',
+                        RESULTAT=RESU2,
+                        NUME_ORDRE=10
+                       )
+
+# TEST DE LA CONFORMITE AVEC LA SOLUTION DE REFERENCE ANALYTIQUE
+
+
+TEST_RESU(
+            CHAM_ELEM=_F( 
+                       CHAM_GD = SIELNO2,
+                       MAILLE = 'M31',
+                       NOEUD = 'N291',
+                       NOM_CMP = 'SIYY',
+                       VALE = -2.7983E+03,
+                       PRECISION = 0.7E-01,
+                       REFERENCE='ANALYTIQUE',
+                       CRITERE = 'RELATIF')
+           )
+
+# TEST DE LA CONFORMITE PAR RAPPORT AUX RESULTATS ASTER
+# PRECEDENTS
+
+
+TEST_RESU(
+            CHAM_ELEM=_F( 
+                       CHAM_GD = SIELNO2,
+                       MAILLE = 'M31',
+                       NOEUD = 'N291',
+                       NOM_CMP = 'SIYY',
+                       VALE = -2.97137E+03,
+                       PRECISION = 1.0E-03,
+                       REFERENCE='NON_REGRESSION',
+                       VERSION = '6.2.8',
+                       CRITERE = 'RELATIF'),RESU=(
+            _F( 
+                  RESULTAT = RESU2,
+                  NUME_ORDRE = 10,
+                  NOM_CHAM = 'DEPL',
+                  NOEUD = 'N291',
+                  NOM_CMP = 'DX',
+                  VALE = 0.0,
+                  PRECISION = 1.0E-10,
+                  REFERENCE='ANALYTIQUE',
+                  CRITERE = 'ABSOLU'),
+            _F( 
+                  RESULTAT = RESU2,
+                  NUME_ORDRE = 10,
+                  NOM_CHAM = 'DEPL',
+                  NOEUD = 'N287',
+                  NOM_CMP = 'DX',
+                  VALE = -1.10211E-01,
+                  PRECISION = 1.0E-03,
+                  REFERENCE='NON_REGRESSION',
+                  VERSION = '6.2.8',
+                  CRITERE = 'RELATIF'),
+            _F( 
+                  RESULTAT = RESU2,
+                  NUME_ORDRE = 10,
+                  NOM_CHAM = 'DEPL',
+                  NOEUD = 'N287',
+                  NOM_CMP = 'DY',
+                  VALE = -1.62911E-01,
+                  PRECISION = 1.0E-03,
+                  REFERENCE='NON_REGRESSION',
+                  VERSION = '6.2.8',
+                  CRITERE = 'RELATIF'),
+            _F( 
+                  RESULTAT = RESU2,
+                  NUME_ORDRE = 10,
+                  NOM_CHAM = 'DEPL',
+                  NOEUD = 'N285',
+                  NOM_CMP = 'DX',
+                  VALE = -1.65946E-01,
+                  PRECISION = 1.E-03,
+                  REFERENCE='NON_REGRESSION',
+                  VERSION = '6.2.8',
+                  CRITERE = 'RELATIF'),
+            _F( 
+                  RESULTAT = RESU2,
+                  NUME_ORDRE = 10,
+                  NOM_CHAM = 'DEPL',
+                  NOEUD = 'N285',
+                  NOM_CMP = 'DY',
+                  VALE = -6.29666E-01,
+                  REFERENCE='NON_REGRESSION',
+                  VERSION = '6.2.8',
+                  PRECISION = 1.0E-03,
+                  CRITERE = 'RELATIF'))
+           )
+
+RESU3=STAT_NON_LINE( 
+                            MODELE=MO,
+                        CHAM_MATER=CHMAT,
+                             EXCIT=_F( 
+                CHARGE = CHA3,
+                FONC_MULT = RAMPE),
+                         COMP_ELAS=_F( 
+                RELATION = 'ELAS'),
+                            NEWTON=_F( 
+                MATRICE = 'ELASTIQUE'),
+                         INCREMENT=_F( 
+                LIST_INST = L_INST,
+                NUME_INST_FIN = 10),
+                       CONVERGENCE=_F( 
+                ARRET = 'OUI',
+                ITER_GLOB_MAXI = 10)
+              )
+
+RESU3=CALC_ELEM( reuse=RESU3,
+                            OPTION=(
+                  'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
+                          RESULTAT=RESU3,
+                            MODELE=MO,
+                        CHAM_MATER=CHMAT
+              )
+
+#
+SIELGA3=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='ELGA_SIEF_R',
+NOM_CHAM='SIEF_ELGA',
+                        RESULTAT=RESU3,
+                        NUME_ORDRE=10
+                       )
+
+#
+SIELNO3=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='ELNO_SIEF_R',
+NOM_CHAM='SIEF_ELNO_ELGA',
+                        RESULTAT=RESU3,
+                        NUME_ORDRE=10
+                       )
+
+TEST_RESU(
+            CHAM_ELEM=_F( 
+                       CHAM_GD = SIELNO3,
+                       MAILLE = 'M31',
+                       NOEUD = 'N291',
+                       NOM_CMP = 'SIYY',
+                       VALE = -2.7983E+03,
+                       PRECISION = 0.7E-01,
+                       REFERENCE='ANALYTIQUE',
+                       CRITERE = 'RELATIF')
+           )
+
+# TEST DE LA CONFORMITE PAR RAPPORT AUX RESULTATS ASTER
+# PRECEDENTS
+
+
+TEST_RESU(
+            CHAM_ELEM=_F( 
+                       CHAM_GD = SIELNO3,
+                       MAILLE = 'M31',
+                       NOEUD = 'N291',
+                       NOM_CMP = 'SIYY',
+                       VALE = -2.97180E+03,
+                       PRECISION = 1.0E-03,
+                       REFERENCE='NON_REGRESSION',
+                       VERSION = '6.2.8',
+                       CRITERE = 'RELATIF'),RESU=(
+            _F( 
+                  RESULTAT = RESU3,
+                  NUME_ORDRE = 10,
+                  NOM_CHAM = 'DEPL',
+                  NOEUD = 'N291',
+                  NOM_CMP = 'DX',
+                  VALE = 0.0,
+                  PRECISION = 1.0E-10,
+                  REFERENCE='ANALYTIQUE',
+                  CRITERE = 'ABSOLU'),
+            _F( 
+                  RESULTAT = RESU3,
+                  NUME_ORDRE = 10,
+                  NOM_CHAM = 'DEPL',
+                  NOEUD = 'N287',
+                  NOM_CMP = 'DX',
+                  VALE = -1.09737E-01,
+                  PRECISION = 1.0E-03,
+                  REFERENCE='NON_REGRESSION',
+                  VERSION = '6.2.8',
+                  CRITERE = 'RELATIF'),
+            _F( 
+                  RESULTAT = RESU3,
+                  NUME_ORDRE = 10,
+                  NOM_CHAM = 'DEPL',
+                  NOEUD = 'N287',
+                  NOM_CMP = 'DY',
+                  VALE = -1.63093E-01,
+                  PRECISION = 1.0E-03,
+                  REFERENCE='NON_REGRESSION',
+                  VERSION = '6.2.8',
+                  CRITERE = 'RELATIF'),
+            _F( 
+                  RESULTAT = RESU3,
+                  NUME_ORDRE = 10,
+                  NOM_CHAM = 'DEPL',
+                  NOEUD = 'N285',
+                  NOM_CMP = 'DX',
+                  VALE = -1.64712E-01,
+                  REFERENCE='NON_REGRESSION',
+                  VERSION = '6.2.8',
+                  PRECISION = 1.E-03,
+                  CRITERE = 'RELATIF'),
+            _F( 
+                  RESULTAT = RESU3,
+                  NUME_ORDRE = 10,
+                  NOM_CHAM = 'DEPL',
+                  NOEUD = 'N285',
+                  NOM_CMP = 'DY',
+                  REFERENCE='NON_REGRESSION',
+                  VERSION = '6.2.8',
+                  VALE = -6.30014E-01,
+                  PRECISION = 1.0E-03,
+                  CRITERE = 'RELATIF'))
+           )
+
+RESU4=STAT_NON_LINE( 
+                            MODELE=MO,
+                        CHAM_MATER=CHMAT,
+                             EXCIT=_F( 
+                CHARGE = CHA4,
+                FONC_MULT = RAMPE),
+                         COMP_ELAS=_F( 
+                RELATION = 'ELAS'),
+                            NEWTON=_F( 
+                MATRICE = 'ELASTIQUE'),
+                         INCREMENT=_F( 
+                LIST_INST = L_INST,
+                NUME_INST_FIN = 10),
+                       CONVERGENCE=_F( 
+                ARRET = 'OUI',
+                ITER_GLOB_MAXI = 10)
+              )
+
+RESU4=CALC_ELEM( reuse=RESU4,
+                            OPTION=(
+                  'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
+                          RESULTAT=RESU4,
+                            MODELE=MO,
+                        CHAM_MATER=CHMAT
+              )
+
+#
+SIELGA4=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='ELGA_SIEF_R',
+NOM_CHAM='SIEF_ELGA',
+                        RESULTAT=RESU4,
+                        NUME_ORDRE=10
+                       )
+
+#
+SIELNO4=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='ELNO_SIEF_R',
+NOM_CHAM='SIEF_ELNO_ELGA',
+                        RESULTAT=RESU4,
+                        NUME_ORDRE=10
+                       )
+
+TEST_RESU(
+            CHAM_ELEM=_F( 
+                       CHAM_GD = SIELNO4,
+                       MAILLE = 'M31',
+                       NOEUD = 'N291',
+                       NOM_CMP = 'SIYY',
+                       VALE = -2.7983E+03,
+                       PRECISION = 0.7E-01,
+                       REFERENCE='ANALYTIQUE',
+                       CRITERE = 'RELATIF')
+           )
+
+# TEST DE LA CONFORMITE PAR RAPPORT AUX RESULTATS ASTER
+# PRECEDENTS
+
+
+TEST_RESU(
+            CHAM_ELEM=_F( 
+                       CHAM_GD = SIELNO4,
+                       MAILLE = 'M31',
+                       NOEUD = 'N291',
+                       NOM_CMP = 'SIYY',
+                       VALE = -2.97180E+03,
+                       PRECISION = 1.0E-03,
+                       REFERENCE='NON_REGRESSION',
+                       VERSION = '6.2.8',
+                       CRITERE = 'RELATIF'),RESU=(
+            _F( 
+                  RESULTAT = RESU4,
+                  NUME_ORDRE = 10,
+                  NOM_CHAM = 'DEPL',
+                  NOEUD = 'N291',
+                  NOM_CMP = 'DX',
+                  VALE = 0.0,
+                  PRECISION = 1.0E-10,
+                  REFERENCE='ANALYTIQUE',
+                  CRITERE = 'ABSOLU'),
+            _F( 
+                  RESULTAT = RESU4,
+                  NUME_ORDRE = 10,
+                  NOM_CHAM = 'DEPL',
+                  NOEUD = 'N287',
+                  NOM_CMP = 'DX',
+                  VALE = -1.09737E-01,
+                  PRECISION = 1.0E-03,
+                  REFERENCE='NON_REGRESSION',
+                  VERSION = '6.2.8',
+                  CRITERE = 'RELATIF'),
+            _F( 
+                  RESULTAT = RESU4,
+                  NUME_ORDRE = 10,
+                  NOM_CHAM = 'DEPL',
+                  NOEUD = 'N287',
+                  NOM_CMP = 'DY',
+                  VALE = -1.63093E-01,
+                  PRECISION = 1.0E-03,
+                  REFERENCE='NON_REGRESSION',
+                  VERSION = '6.2.8',
+                  CRITERE = 'RELATIF'),
+            _F( 
+                  RESULTAT = RESU4,
+                  NUME_ORDRE = 10,
+                  NOM_CHAM = 'DEPL',
+                  NOEUD = 'N285',
+                  NOM_CMP = 'DX',
+                  VALE = -1.64712E-01,
+                  PRECISION = 1.E-03,
+                  REFERENCE='NON_REGRESSION',
+                  VERSION = '6.2.8',
+                  CRITERE = 'RELATIF'),
+            _F( 
+                  RESULTAT = RESU4,
+                  NUME_ORDRE = 10,
+                  NOM_CHAM = 'DEPL',
+                  NOEUD = 'N285',
+                  NOM_CMP = 'DY',
+                  VALE = -6.30013E-01,
+                  PRECISION = 1.0E-03,
+                  REFERENCE='NON_REGRESSION',
+                  VERSION = '6.2.8',
+                  CRITERE = 'RELATIF'))
+           )
+
+# TEST DE LA CONFORMITE AVEC LA SOLUTION DE REFERENCE ANALYTIQUE
+
+RESU5=STAT_NON_LINE( 
+                            MODELE=MO,
+                        CHAM_MATER=CHMAT,
+                             EXCIT=_F( 
+                CHARGE = CHA5,
+                FONC_MULT = RAMPE),
+                         COMP_ELAS=_F( 
+                RELATION = 'ELAS'),
+                            NEWTON=_F( 
+                MATRICE = 'ELASTIQUE'),
+                         INCREMENT=_F( 
+                LIST_INST = L_INST,
+                NUME_INST_FIN = 10),
+                       CONVERGENCE=_F( 
+                ARRET = 'OUI',
+                ITER_GLOB_MAXI = 10)
+              )
+
+RESU5=CALC_ELEM( reuse=RESU5,
+                            OPTION=(
+                  'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
+                          RESULTAT=RESU5,
+                            MODELE=MO,
+                        CHAM_MATER=CHMAT
+              )
+
+#
+SIELGA5=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='ELGA_SIEF_R',
+NOM_CHAM='SIEF_ELGA',
+                        RESULTAT=RESU5,
+                        NUME_ORDRE=10
+                       )
+
+#
+SIELNO5=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='ELNO_SIEF_R',
+NOM_CHAM='SIEF_ELNO_ELGA',
+                        RESULTAT=RESU5,
+                        NUME_ORDRE=10
+                       )
+
+TEST_RESU(
+            CHAM_ELEM=_F( 
+                       CHAM_GD = SIELNO5,
+                       MAILLE = 'M31',
+                       NOEUD = 'N291',
+                       NOM_CMP = 'SIYY',
+                       VALE = -2.7983E+03,
+                       PRECISION = 0.7E-01,
+                       REFERENCE='ANALYTIQUE',
+                       CRITERE = 'RELATIF')
+           )
+
+# TEST DE LA CONFORMITE PAR RAPPORT AUX RESULTATS ASTER
+# PRECEDENTS
+
+
+TEST_RESU(
+            CHAM_ELEM=_F( 
+                       CHAM_GD = SIELNO5,
+                       MAILLE = 'M31',
+                       NOEUD = 'N291',
+                       NOM_CMP = 'SIYY',
+                       VALE = -2.97137E+03,
+                       PRECISION = 1.0E-03,
+                       REFERENCE='NON_REGRESSION',
+                       VERSION = '6.2.8',
+                       CRITERE = 'RELATIF'),RESU=(
+            _F( 
+                  RESULTAT = RESU5,
+                  NUME_ORDRE = 10,
+                  NOM_CHAM = 'DEPL',
+                  NOEUD = 'N291',
+                  NOM_CMP = 'DX',
+                  VALE = 0.0,
+                  PRECISION = 1.0E-10,
+                  REFERENCE='ANALYTIQUE',
+                  CRITERE = 'ABSOLU'),
+            _F( 
+                  RESULTAT = RESU5,
+                  NUME_ORDRE = 10,
+                  NOM_CHAM = 'DEPL',
+                  NOEUD = 'N287',
+                  NOM_CMP = 'DX',
+                  VALE = -1.10211E-01,
+                  PRECISION = 1.0E-03,
+                  REFERENCE='NON_REGRESSION',
+                  VERSION = '6.2.8',
+                  CRITERE = 'RELATIF'),
+            _F( 
+                  RESULTAT = RESU5,
+                  NUME_ORDRE = 10,
+                  NOM_CHAM = 'DEPL',
+                  NOEUD = 'N287',
+                  NOM_CMP = 'DY',
+                  VALE = -1.62911E-01,
+                  PRECISION = 1.0E-03,
+                  REFERENCE='NON_REGRESSION',
+                  VERSION = '6.2.8',
+                  CRITERE = 'RELATIF'),
+            _F( 
+                  RESULTAT = RESU5,
+                  NUME_ORDRE = 10,
+                  NOM_CHAM = 'DEPL',
+                  NOEUD = 'N285',
+                  NOM_CMP = 'DX',
+                  VALE = -1.65946E-01,
+                  PRECISION = 1.0E-03,
+                  REFERENCE='NON_REGRESSION',
+                  VERSION = '6.2.8',
+                  CRITERE = 'RELATIF'),
+            _F( 
+                  RESULTAT = RESU5,
+                  NUME_ORDRE = 10,
+                  NOM_CHAM = 'DEPL',
+                  NOEUD = 'N285',
+                  NOM_CMP = 'DY',
+                  VALE = -6.29666E-01,
+                  PRECISION = 1.0E-03,
+                  REFERENCE='NON_REGRESSION',
+                  VERSION = '6.2.8',
+                  CRITERE = 'RELATIF'))
+           )
+
+# TEST DE LA CONFORMITE AVEC LA SOLUTION DE REFERENCE ANALYTIQUE
+
+FIN()
+#

@@ -1,0 +1,75 @@
+      SUBROUTINE LRMNGR ( NGRMAX,NGRP,NUMGRP,NOMGRP,JNOGRP,JLGGRP,
+     +                    NBNUFA,NOMJNG,NOMJLG )
+      IMPLICIT REAL*8 (A-H,O-Z)
+C     ------------------------------------------------------------------
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF MODELISA  DATE 01/03/2000   AUTEUR DURAND C.DURAND 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+C     CREATION DES VECTEURS NOMS DE GROUPES DE MAILLES ET DE NOEUDS 
+C     ------------------------------------------------------------------
+      INTEGER         NGRP,   NUMGRP, JNOGRP, JLGGRP, NGRMAX, NBNUFA 
+      CHARACTER*(*)   NOMJNG, NOMJLG
+      CHARACTER*8     NOMGRP
+C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
+      INTEGER            ZI
+      COMMON  / IVARJE / ZI(1)
+      REAL*8             ZR
+      COMMON  / RVARJE / ZR(1)
+      COMPLEX*16         ZC
+      COMMON  / CVARJE / ZC(1)
+      LOGICAL            ZL
+      COMMON  / LVARJE / ZL(1)
+      CHARACTER*8        ZK8
+      CHARACTER*16                ZK16
+      CHARACTER*24                          ZK24
+      CHARACTER*32                                    ZK32
+      CHARACTER*80                                              ZK80
+      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
+      INTEGER            I, NUM
+C     ------------------------------------------------------------------
+C     SI CE NOM DE GROUPE EXISTE DEJA ON NE LE RESTOCKE PAS MAIS
+C     ON INCREMENTE DU NB NOEUDS/MAILLES DE LA FAMILLE OU IL APPARAIT
+      DO 1 I = 1,NGRP
+          IF ( ZK8(JNOGRP+I-1) .EQ. NOMGRP ) THEN
+               ZI (JLGGRP+I-1) = ZI(JLGGRP+I-1) + NBNUFA
+               GOTO 100 
+          ENDIF
+ 1    CONTINUE
+C     SOIT ON NUMEROTE A LA SUITE NGRP
+      IF ( NUMGRP .EQ. 99999999 ) THEN
+          NGRP = NGRP + 1
+          NUM  = NGRP
+C     SOIT ON UTILISE CE NUMERO DE NOEUD NUMGRP
+C     ET ON MEMORISE LE PLUS GRAND NUMERO ATTEINT DANS NGRP
+      ELSE
+          IF ( NUMGRP .GT. NGRP )  NGRP =  NUMGRP   
+          NUM  = NUMGRP 
+      ENDIF
+C     ON AGRANDI NOMJNG + NOMJLG SI NECESSAIRE
+      IF ( NUM .GT. NGRMAX ) THEN
+          NGRMAX = NINT(NUM * 1.5D0)
+          CALL JUVECA(NOMJNG,NGRMAX)
+          CALL JEVEUO(NOMJNG,'E',JNOGRP)
+          CALL JUVECA(NOMJLG,NGRMAX)
+          CALL JEVEUO(NOMJLG,'E',JLGGRP)
+      ENDIF  
+      ZK8(JNOGRP+NUM-1) = NOMGRP
+      ZI (JLGGRP+NUM-1) = NBNUFA
+ 100  CONTINUE
+      END 

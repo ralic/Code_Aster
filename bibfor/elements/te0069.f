@@ -1,0 +1,317 @@
+      SUBROUTINE TE0069 ( OPTION , NOMTE )
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ELEMENTS  DATE 03/06/2002   AUTEUR BOITEAU O.BOITEAU 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+C ----------------------------------------------------------------------
+C CALCUL DU FLUX AUX NOEUDS/POINTS DE GAUSS
+C ELEMENTS ISO 2D  OPTION : 'FLUX_ELGA/ELNO_TEMP' (CALCUL STD)
+C                           'FLUX_ELGA/ELNO_SENS' (CALCUL SENSIBILITE)
+C
+C     ENTREES  ---> OPTION : OPTION DE CALCUL
+C              ---> NOMTE  : NOM DU TYPE ELEMENT
+C   -------------------------------------------------------------------
+C     ASTER INFORMATIONS:
+C       30/04/02 (OB): CALCUL DE LA SENSIBILITE DU FLUX THERMIQUE VIA
+C                      L'OPTION 'FLUX_ELGA/ELNO_SENS' + MODIFS
+C                      FORMELLES (IMPLICIT NONE, IDENTATION...)
+C----------------------------------------------------------------------
+C CORPS DU PROGRAMME
+      IMPLICIT NONE
+
+C PARAMETRES D'APPELS      
+      CHARACTER*16      OPTION,NOMTE
+
+C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
+      CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
+      INTEGER            ZI
+      COMMON  / IVARJE / ZI(1)
+      REAL*8             ZR
+      COMMON  / RVARJE / ZR(1)
+      COMPLEX*16         ZC
+      COMMON  / CVARJE / ZC(1)
+      LOGICAL            ZL
+      COMMON  / LVARJE / ZL(1)
+      CHARACTER*8        ZK8
+      CHARACTER*16                ZK16
+      CHARACTER*24                          ZK24
+      CHARACTER*32                                    ZK32
+      CHARACTER*80                                              ZK80
+      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
+
+      CHARACTER*2   CODRET(2)
+      CHARACTER*8   NOMRES(2),ELREFE
+      CHARACTER*16  PHENOM,PHESEN
+      CHARACTER*24  CARAC,FF
+      REAL*8        DFDX(9),DFDY(9),TPG,POIDS,LAMBDA,FPG(18),LAMBOR(2),
+     &              P(2,2),POINT(2),ORIG(2),FLUGLO(2),FLULOC(2),
+     &              VALRES(2),LAMBS,PREC,R8PREM,LAMBOS(2),FLUGLS(2),
+     &              FLULOS(2),R8DGRD,ALPHA,FLUXX,FLUXY,FLUSX,FLUSY,
+     &              XU,YU,XNORM,TRACE
+      INTEGER       NNO,KP,K,ITEMPE,ITEMP,IFLUX,ICARAC,IFF,J,NNOS,IFPG,
+     &              IPOIDS,IVF,IDFDE,IDFDK,IGEOM,IMATE,NPG,NPG1,NPG2,
+     &              NPG3,IMATSE,ITEMSE,NUNO,NPG4,ICAMAS,NCMP
+      LOGICAL       ANISO,GLOBAL,LSENS
+      
+C====
+C 1.1 PREALABLES: RECUPERATION ADRESSES FONCTIONS DE FORMES...
+C====
+      PREC = R8PREM()      
+      CALL ELREF1(ELREFE)
+      CARAC='&INEL.'//ELREFE//'.CARAC'
+      CALL JEVETE(CARAC,'L',ICARAC)
+      NNO  = ZI(ICARAC)
+      NPG1 = ZI(ICARAC+2)
+      NPG2 = ZI(ICARAC+3)
+      NPG3 = ZI(ICARAC+4)
+      NPG4 = ZI(ICARAC+5)
+
+      FF   ='&INEL.'//ELREFE//'.FF'
+      CALL JEVETE(FF,'L',IFF)
+      IF ( OPTION(1:10) .EQ. 'FLUX_ELNO_') THEN
+        IF (   NOMTE(5:8).EQ.'TR3 '
+     &    .OR. NOMTE(5:8).EQ.'TL3 '
+     &    .OR. NOMTE(5:8).EQ.'TL6 '
+     &    .OR. NOMTE(5:8).EQ.'QL9 '
+     &    .OR. NOMTE(5:8).EQ.'QU4 '
+     &    .OR. NOMTE(5:8).EQ.'QL4 ') THEN
+          NNOS   = NNO
+          IPOIDS = IFF   +NPG1*(1+3*NNO)
+          IVF    = IPOIDS+NPG2
+          IDFDE  = IVF   +NPG2*NNO
+          IDFDK  = IDFDE +NPG2*NNO
+          NPG    = NPG2
+        ELSE
+          NNOS   = NNO/2
+          IPOIDS = IFF   +(NPG1+NPG2+NPG3)*(1+3*NNO)
+          IVF    = IPOIDS+NPG4
+          IDFDE  = IVF   +NPG4*NNO
+          IDFDK  = IDFDE +NPG4*NNO
+          NPG    = NPG4
+        ENDIF
+      ELSE  IF ( OPTION(1:10) .EQ. 'FLUX_ELGA_') THEN
+        IPOIDS = IFF   +NPG1*(1+3*NNO)
+        IVF    = IPOIDS+NPG2
+        IDFDE  = IVF   +NPG2*NNO
+        IDFDK  = IDFDE +NPG2*NNO
+        NPG    = NPG2
+      ENDIF
+      
+C====
+C 1.2 PREALABLES LIES AUX CALCULS DE SENSIBILITE
+C====
+C CALCUL DE SENSIBILITE PART I
+      IF (OPTION(11:14).EQ.'SENS') THEN
+        LSENS = .TRUE.
+        CALL JEVECH('PMATSEN','L',IMATSE)
+        CALL JEVECH('PTEMSEN','L',ITEMSE)
+      ELSE
+        LSENS = .FALSE.
+      ENDIF
+      
+C====
+C 1.3 PREALABLES LIES AUX RECHERCHES DE DONNEES GENERALES
+C====
+      CALL JEVECH('PGEOMER','L',IGEOM )
+      CALL JEVECH('PMATERC','L',IMATE )
+      CALL JEVECH('PTEMPSR','L',ITEMP )
+      CALL JEVECH('PTEMPER','L',ITEMPE)
+      CALL JEVECH('PFLUX_R','E',IFLUX )
+      CALL RCCOMA(ZI(IMATE),'THER',PHENOM,CODRET)
+C CALCUL DE SENSIBILITE PART II. TEST DE COHERENCE PHENOM STD/
+C PHENOM MAT DERIVEE
+      IF (LSENS) THEN
+        CALL RCCOMA(ZI(IMATSE),'THER',PHESEN,CODRET)
+        IF (PHESEN.NE.PHENOM)
+     &    CALL UTMESS('F','TE0069','! PB PHESEN.NE.PHENOM !')
+      ENDIF
+
+C====
+C 1.4 PREALABLES LIES A LA RECUPERATION DES DONNEES MATERIAUX EN
+C     THERMIQUE LINEAIRE ISOTROPE OU ORTHOTROPE
+C====
+      LAMBDA = 0.D0
+      IF ( PHENOM .EQ. 'THER') THEN
+         NOMRES(1) = 'LAMBDA'
+         CALL RCVALA(ZI(IMATE),PHENOM,1,'INST',ZR(ITEMP),
+     &               1,NOMRES,VALRES,CODRET,'FM')
+         LAMBDA = VALRES(1)
+         ANISO = .FALSE.
+
+C CALCUL DE SENSIBILITE PART III (ISOTROPE)
+        IF (LSENS) THEN
+          CALL RCVALA(ZI(IMATSE),PHENOM,1,'INST',
+     &                ZR(ITEMP),1,NOMRES,LAMBS,CODRET,'FM')
+C SI SENSIBILITE /RHO_CP OU /AUTRE LAMBDA ON A PAS DE TERME COMPLE
+C MENTAIRE A ASSEMBLER
+          IF (ABS(LAMBS).LT.PREC) LSENS = .FALSE.
+        ENDIF
+        
+      ELSEIF ( PHENOM .EQ. 'THER_ORTH') THEN
+         NOMRES(1) = 'LAMBDA_L'
+         NOMRES(2) = 'LAMBDA_T'
+         CALL RCVALA(ZI(IMATE),PHENOM,1,'INST',ZR(ITEMP),
+     &               2,NOMRES,VALRES,CODRET,'FM')
+         LAMBOR(1) = VALRES(1)
+         LAMBOR(2) = VALRES(2)
+         ANISO = .TRUE.
+
+C CALCUL DE SENSIBILITE PART IV (ORTHOTROPE)
+        IF (LSENS) THEN
+          CALL RCVALA(ZI(IMATSE),PHENOM,1,'INST',ZR(ITEMP),
+     &                2,NOMRES,VALRES,CODRET,'FM')
+C SI SENSIBILITE /RHO_CP OU /AUTRE LAMBDA ON A PAS DE TERME COMPLE
+C MENTAIRE A ASSEMBLER
+          LAMBOS(1) = VALRES(1)
+          LAMBOS(2) = VALRES(2)
+          TRACE = LAMBOS(1) + LAMBOS(2)
+          IF (ABS(TRACE).LT.PREC) LSENS = .FALSE.
+        ENDIF
+        
+      ELSEIF ( PHENOM .EQ. 'THER_NL') THEN
+        ANISO = .FALSE.
+        
+C CALCUL DE SENSIBILITE PART V (THERMIQUE NON-LINEAIRE)
+        IF (LSENS) THEN
+          TPG = 0.D0
+          CALL RCVALA(ZI(IMATSE),PHENOM,1,
+     &              'TEMP',TPG,1,'LAMBDA',LAMBS,CODRET,'FM')
+          IF (ABS(LAMBS).LT.PREC) LSENS = .FALSE.
+        ENDIF
+        
+      ELSE
+        CALL UTMESS ('F','TE0069','COMPORTEMENT NON TROUVE')
+      ENDIF
+
+C====
+C 1.5 PREALABLES LIES A L'ANISOTROPIE
+C====
+      ORIG(1) = 0.D0
+      ORIG(2) = 0.D0
+      GLOBAL  = .FALSE.
+      IF ( ANISO ) THEN
+        CALL JEVECH('PCAMASS','L',ICAMAS)
+        IF (ZR(ICAMAS).GT.0.D0) THEN
+          GLOBAL = .TRUE.
+          ALPHA  = ZR(ICAMAS+1)*R8DGRD()
+          P(1,1) =  COS(ALPHA)
+          P(2,1) =  SIN(ALPHA)
+          P(1,2) = -SIN(ALPHA)
+          P(2,2) =  COS(ALPHA)
+        ELSE
+          ORIG(1) = ZR(ICAMAS+4)
+          ORIG(2) = ZR(ICAMAS+5)
+        ENDIF
+      ENDIF
+
+C====
+C 2. CALCULS TERMES DE FLUX (STD ET/OU SENSIBLE)
+C====
+      DO 101 KP=1,NPG
+        K=(KP-1)*NNO
+        IFPG=(KP-1)*2
+        CALL DFDM2D ( NNO,ZR(IPOIDS+KP-1),ZR(IDFDE+K),ZR(IDFDK+K),
+     &                ZR(IGEOM),DFDX,DFDY,POIDS )
+        TPG   = 0.0D0
+        FLUXX = 0.0D0
+        FLUXY = 0.0D0
+        IF ( .NOT.GLOBAL .AND. ANISO ) THEN
+          POINT(1)=0.D0
+          POINT(2)=0.D0
+          DO 103 NUNO=1,NNO
+            POINT(1) = POINT(1) + ZR(IVF+K+NUNO-1)*ZR(IGEOM+2*NUNO-2)
+            POINT(2) = POINT(2) + ZR(IVF+K+NUNO-1)*ZR(IGEOM+2*NUNO-1)
+ 103      CONTINUE
+          XU = ORIG(1) - POINT(1)
+          YU = ORIG(2) - POINT(2)
+          XNORM = SQRT( XU**2 + YU**2 )
+          XU = XU / XNORM
+          YU = YU / XNORM
+          P(1,1) =  XU
+          P(2,1) =  YU
+          P(1,2) = -YU
+          P(2,2) =  XU
+        ENDIF
+        
+C     CALCUL DE T ET DE GRAD(T) AUX POINTS DE GAUSS (EN STD)
+C     OU DE DT/DS ET GRAD(DT/DS) (EN SENSIBILITE)
+        DO 110 J=1,NNO
+          TPG   = TPG   + ZR(ITEMPE+J-1)*ZR(IVF+K+J-1)
+          FLUXX = FLUXX + ZR(ITEMPE+J-1)*DFDX(J)
+          FLUXY = FLUXY + ZR(ITEMPE+J-1)*DFDY(J)
+ 110    CONTINUE
+ 
+C CALCUL DE SENSIBILITE PART VI : CALCUL DE T ET DE GRAD(T)
+        IF (LSENS) THEN
+          TPG   = 0.0D0
+          FLUSX = 0.0D0
+          FLUSY = 0.0D0
+          DO 108 J=1,NNO
+            TPG  = TPG  +  ZR(ITEMSE-1+J) * ZR(IVF+K+J-1)
+            FLUSX = FLUSX +  ZR(ITEMSE-1+J) * DFDX(J)
+            FLUSY = FLUSY +  ZR(ITEMSE-1+J) * DFDY(J)
+108       CONTINUE
+        ENDIF
+        IF (PHENOM.EQ.'THER_NL') CALL RCVALA(ZI(IMATE),PHENOM,1,
+     &                  'TEMP',TPG,1,'LAMBDA',LAMBDA,CODRET,'FM')
+
+        IF (.NOT.ANISO) THEN
+          FLUGLO(1) = LAMBDA*FLUXX
+          FLUGLO(2) = LAMBDA*FLUXY
+C CALCUL DE SENSIBILITE PART VII: RAJOUT TERME COMPLEMENTAIRE (ISO)
+          IF (LSENS) THEN
+            FLUGLO(1) = FLUGLO(1) + LAMBS*FLUSX
+            FLUGLO(2) = FLUGLO(2) + LAMBS*FLUSY
+          ENDIF
+        ELSE
+          FLULOC(1) = P(1,1)*FLUXX + P(2,1)*FLUXY
+          FLULOC(2) = P(1,2)*FLUXX + P(2,2)*FLUXY
+          FLULOC(1) = LAMBOR(1)*FLULOC(1)
+          FLULOC(2) = LAMBOR(2)*FLULOC(2)
+          FLUGLO(1) = P(1,1)*FLULOC(1) + P(1,2)*FLULOC(2)
+          FLUGLO(2) = P(2,1)*FLULOC(1) + P(2,2)*FLULOC(2)
+C CALCUL DE SENSIBILITE PART VIII: RAJOUT TERME COMPLEMENTAIRE (ORT)
+          IF (LSENS) THEN
+            FLULOS(1) = P(1,1)*FLUSX + P(2,1)*FLUSY
+            FLULOS(2) = P(1,2)*FLUSX + P(2,2)*FLUSY
+            FLULOS(1) = LAMBOS(1)*FLULOS(1)
+            FLULOS(2) = LAMBOS(2)*FLULOS(2)
+            FLUGLS(1) = P(1,1)*FLULOS(1) + P(1,2)*FLULOS(2)
+            FLUGLS(2) = P(2,1)*FLULOS(1) + P(2,2)*FLULOS(2)
+            FLUGLO(1) = FLUGLO(1) + FLUGLS(1)
+            FLUGLO(2) = FLUGLO(2) + FLUGLS(2)
+          ENDIF
+        ENDIF
+
+        FPG(IFPG+1) = -FLUGLO(1)
+        FPG(IFPG+2) = -FLUGLO(2)
+ 101  CONTINUE
+
+      IF ( OPTION(1:10) .EQ. 'FLUX_ELNO_' ) THEN
+
+C ----- RECUPERATION DE LA MATRICE DE PASSAGE PTS DE GAUSS - NOEUDS
+        NCMP = 2
+        CALL PPGANO(NNOS,NPG,NCMP,FPG,ZR(IFLUX))
+      ELSE
+        DO 90 KP=1,NPG
+          ZR(IFLUX+(KP-1)*2)   = FPG(2*(KP-1)+1)
+          ZR(IFLUX+(KP-1)*2+1) = FPG(2*(KP-1)+2)
+ 90     CONTINUE
+      ENDIF
+
+      END

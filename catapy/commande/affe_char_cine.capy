@@ -1,0 +1,70 @@
+#& MODIF COMMANDE  DATE 09/10/2002   AUTEUR DURAND C.DURAND 
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+# RESPONSABLE VABHHTS J.PELLET
+def affe_char_cine_prod(MECA_IMPO,THER_IMPO,ACOU_IMPO,**args):
+  if MECA_IMPO != None  : return char_cine_meca
+  if THER_IMPO != None  : return char_cine_ther
+  if ACOU_IMPO != None  : return char_cine_acou
+  raise AsException("type de concept resultat non prevu")
+
+AFFE_CHAR_CINE=OPER(nom="AFFE_CHAR_CINE",op= 101,sd_prod=affe_char_cine_prod
+                    ,fr="Affectation de conditions aux limites cinématiques pour traitement sans dualisation",
+                     docu="U4.44.03-e",reentrant='n',
+            UIinfo={"groupes":("Modélisation",)},
+         regles=(AU_MOINS_UN('MECA_IMPO','THER_IMPO','ACOU_IMPO'),
+                 EXCLUS('MECA_IMPO','THER_IMPO'),
+                 EXCLUS('MECA_IMPO','ACOU_IMPO'),
+                 EXCLUS('THER_IMPO','ACOU_IMPO'),),
+         MODELE          =SIMP(statut='o',typ=modele ),
+         MECA_IMPO       =FACT(statut='f',min=1,max='**',
+           regles=(UN_PARMI('TOUT','GROUP_NO','NOEUD'),
+                   AU_MOINS_UN('DX','DY','DZ','DRX','DRY','DRZ','GRX','PRES','TEMP','PHI'),),
+           TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),
+           GROUP_NO        =SIMP(statut='f',typ=grno,max='**'),
+           NOEUD           =SIMP(statut='f',typ=no,max='**'),
+           DX              =SIMP(statut='f',typ='R' ),
+           DY              =SIMP(statut='f',typ='R' ),
+           DZ              =SIMP(statut='f',typ='R' ),
+           DRX             =SIMP(statut='f',typ='R' ),
+           DRY             =SIMP(statut='f',typ='R' ),
+           DRZ             =SIMP(statut='f',typ='R' ),
+           GRX             =SIMP(statut='f',typ='R' ),
+           PRES            =SIMP(statut='f',typ='R' ),
+           TEMP            =SIMP(statut='f',typ='R' ),
+           PHI             =SIMP(statut='f',typ='R' ),
+         ),
+         THER_IMPO       =FACT(statut='f',min=1,max='**',
+           regles=(UN_PARMI('TOUT','GROUP_NO','NOEUD'),
+                   AU_MOINS_UN('TEMP','TEMP_INF','TEMP_SUP'),),
+           TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),
+           GROUP_NO        =SIMP(statut='f',typ=grno,max='**'),
+           NOEUD           =SIMP(statut='f',typ=no,max='**'),
+           TEMP_SUP        =SIMP(statut='f',typ='R' ),
+           TEMP            =SIMP(statut='f',typ='R' ),
+           TEMP_INF        =SIMP(statut='f',typ='R' ),
+         ),
+         ACOU_IMPO       =FACT(statut='f',min=1,max='**',
+           regles=(UN_PARMI('TOUT','GROUP_NO','NOEUD' ),),
+           TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),
+           GROUP_NO        =SIMP(statut='f',typ=grno,max='**'),
+           NOEUD           =SIMP(statut='f',typ=no,max='**'),
+           PRES            =SIMP(statut='o',typ='C' ),
+         ),
+         INFO            =SIMP(statut='f',typ='I',defaut= 1,into=( 1 , 2) ),
+)  ;

@@ -1,0 +1,253 @@
+      SUBROUTINE SSDMDM(MAG)
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF SOUSTRUC  DATE 24/09/2001   AUTEUR CIBHHLV L.VIVAN 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+      IMPLICIT REAL*8 (A-H,O-Z)
+C     ARGUMENTS:
+C     ----------
+      CHARACTER*8 MAG
+C ----------------------------------------------------------------------
+C     BUT:
+C        - TRAITER LE MOT CLEF "DEFI_MAILLE"
+C          DE LA COMMANDE DEFI_MAILLAGE.
+C        - CREER LES OBJETS :
+C            BASE GLOBALE : .DIME ,   .NOMACR, .SUPMAIL
+C            BASE VOLATILE: .DIME_2 , .PARA_R, .COORDO_2
+C
+C     IN:
+C        MAG : NOM DU MAILLAGE QUE L'ON DEFINIT.
+C
+C ---------------- COMMUNS NORMALISES  JEVEUX  -------------------------
+      COMMON /IVARJE/ZI(1)
+      COMMON /RVARJE/ZR(1)
+      COMMON /CVARJE/ZC(1)
+      COMMON /LVARJE/ZL(1)
+      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+      CHARACTER*8  KBI81,KBI82,NOMACR,NOMAIL,KBID,MA
+      INTEGER ZI
+      REAL*8 ZR,LISR8(9),DIST,A1,A2,A3,DMIN,DMAX,R1,R8DGRD
+      COMPLEX*16 ZC
+      LOGICAL ZL
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32,JEXNUM,JEXNOM
+      CHARACTER*80 ZK80
+C ----------------------------------------------------------------------
+      CALL JEMARQ()
+      R1= R8DGRD()
+C
+C     -- ON COMPTE LES (SUPER)MAILLES :
+C     ---------------------------------
+      CALL GETFAC('DEFI_MAILLE',NOCC)
+      NBSMA=0
+      DO 1, IOCC=1,NOCC
+        CALL GETVID('DEFI_MAILLE','MACR_ELEM_STAT',IOCC,1,0,KBI81,N1)
+        NBSMA=NBSMA-N1
+ 1    CONTINUE
+C
+C
+C     -- ON ALLOUE .DIME , .NOMACR ,.PARA_R ET .SUPMAIL:
+C     --------------------------------------------------
+      CALL WKVECT(MAG//'.DIME','G V I',6,IADIME)
+      ZI(IADIME-1+3)=0
+      ZI(IADIME-1+4)=NBSMA
+      ZI(IADIME-1+5)=NBSMA
+C
+      CALL WKVECT(MAG//'.NOMACR','G V K8',NBSMA,IANMCR)
+      CALL JECREC(MAG//'.SUPMAIL','G V I','NO','DISPERSE',
+     +            'VARIABLE',NBSMA)
+      CALL WKVECT(MAG//'.PARA_R','G V R',NBSMA*14,IAPARR)
+C
+C
+C     -- ON ALLOUE DES OBJETS DE TRAVAIL :
+C     ------------------------------------
+      CALL WKVECT('&&SSDMDM.LK81','V V K8',NBSMA,IALK81)
+      CALL WKVECT('&&SSDMDM.LK82','V V K8',NBSMA,IALK82)
+      CALL WKVECT(MAG//'.DIME_2','V V I',NBSMA*4,IADIM2)
+C
+C
+C     -- BOUCLE SUR LES OCCURENCES DU MOT-CLEF:
+C     -----------------------------------------
+      ISMA=0
+      DO 2, IOCC=1,NOCC
+C
+        CALL GETVID('DEFI_MAILLE','MACR_ELEM_STAT',IOCC,1,NBSMA,
+     +  ZK8(IALK81),N1)
+        CALL GETVID('DEFI_MAILLE','MAILLE',
+     +              IOCC,1,NBSMA,ZK8(IALK82),N2)
+        IF (N2.LT.0) CALL UTMESS('F','SSDMDM','LISTE DE MAILLES TROP '
+     +              //'LONGUE.')
+        IF ((N2.GT.0).AND.(N2.NE.N1)) CALL UTMESS('F','SSDMDM',
+     +     'LA LISTE DES MAILLES EST PLUS '
+     +     //'LONGUE QUE LA LISTE DES MACR_ELEM_STAT.')
+C
+        DO 3 ,K=1,9
+          LISR8(K)=0.0D0
+ 3      CONTINUE
+        CALL GETVR8('DEFI_MAILLE','TRAN',IOCC,1,3,LISR8(1),N3)
+        CALL GETVR8('DEFI_MAILLE','ANGL_NAUT',IOCC,1,3,LISR8(4),N4)
+        CALL GETVR8('DEFI_MAILLE','CENTRE',IOCC,1,3,LISR8(7),N5)
+        IF  (N3.LT.0) CALL UTMESS('F','SSDMDM',
+     +     'TROP DE REELS POUR LE MOT CLEF "TRAN" ')
+        IF  (N4.LT.0) CALL UTMESS('F','SSDMDM',
+     +     'TROP DE REELS POUR LE MOT CLEF "ANGL_NAUT" ')
+        IF  (N5.LT.0) CALL UTMESS('F','SSDMDM',
+     +     'TROP DE REELS POUR LE MOT CLEF "CENTRE" ')
+C
+        DO 4,I=1,N1
+          ISMA=ISMA+1
+          NOMACR=ZK8(IALK81-1+I)
+          ZK8(IANMCR-1+ISMA)=NOMACR
+C
+          CALL DISMOI('F','NOM_MAILLA',NOMACR,'MACR_ELEM_STAT',
+     +              IBID,MA,IERD)
+          CALL DISMOI('F','Z_CST',MA,'MAILLAGE',IDIM,KBID,IERD)
+          IF ( KBID(1:3) .EQ. 'OUI' ) THEN
+             IDIM = 2
+          ELSE
+             IDIM = 3
+          ENDIF
+          IF (ISMA.EQ.1) THEN
+            IDIMTO=IDIM
+            ZI(IADIME-1+6)=IDIMTO
+          ELSE
+            IF (IDIM.NE.IDIMTO) CALL UTMESS('F','SSDMDM','MELANGE DE '
+     +          //'MAILLAGES 2D ET 3D')
+          ENDIF
+C
+          NOMAIL=NOMACR
+          IF (N2.GT.0) NOMAIL=ZK8(IALK82-1+I)
+C
+          CALL JECROC(JEXNOM(MAG//'.SUPMAIL',NOMAIL))
+          CALL JEEXIN(NOMACR//'.DESM',IRET)
+          IF (IRET.EQ.0) CALL UTMESS('F','SSDMDM',' LE MACR_ELEM_STAT :'
+     +              //NOMACR//' N''EXISTE PAS.')
+          CALL JEVEUO(NOMACR//'.DESM','L',IADESM)
+          NBNOE=ZI(IADESM-1+2)
+          NBNOL=ZI(IADESM-1+8)+ZI(IADESM-1+9)
+          NBNOET =NBNOE+NBNOL
+          ZI(IADIM2-1+4*(ISMA-1)+1)= NBNOE
+          ZI(IADIM2-1+4*(ISMA-1)+2)= NBNOL
+          CALL JEECRA(JEXNOM(MAG//'.SUPMAIL',NOMAIL),'LONMAX'
+     +               ,NBNOET,KBID)
+C
+          DO 5,K=1,9
+            ZR(IAPARR-1+14*(ISMA-1)+K)=LISR8(K)
+ 5        CONTINUE
+C         ON CHANGE LES DEGRES EN RADIANS:
+          DO 6,K=4,6
+            ZR(IAPARR-1+14*(ISMA-1)+K)=ZR(IAPARR-1+14*(ISMA-1)+K)*R1
+ 6        CONTINUE
+ 4      CONTINUE
+C
+ 2    CONTINUE
+C
+C
+C     -- MISE A JOUR DE .DIME_2 (3,4) ET .DIME :
+C     ------------------------------------------
+      DO 10,ISMA=1,NBSMA-1
+        NBNOE=ZI(IADIM2-1+4*(ISMA-1)+1)
+        NBNOL=ZI(IADIM2-1+4*(ISMA-1)+2)
+        ZI(IADIM2-1+4*(ISMA)+3)=ZI(IADIM2-1+4*(ISMA-1)+3)+NBNOE
+        ZI(IADIM2-1+4*(ISMA)+4)=ZI(IADIM2-1+4*(ISMA-1)+4)+NBNOL
+ 10   CONTINUE
+      ISMA=NBSMA
+      NBNOE=ZI(IADIM2-1+4*(ISMA-1)+1)
+      NBNOL=ZI(IADIM2-1+4*(ISMA-1)+2)
+      NNNOE=ZI(IADIM2-1+4*(ISMA-1)+3)+NBNOE
+      NNNOL=ZI(IADIM2-1+4*(ISMA-1)+4)+NBNOL
+      ZI(IADIME-1+1) =NNNOE
+      ZI(IADIME-1+2) =NNNOL
+C
+C
+C     -- CREATION DE .COORDO_2 ET REMPLISSAGE DE .SUPMAIL:
+C     ---------------------------------------------------
+      CALL WKVECT(MAG//'.COORDO_2','V V R',3*NNNOE,IACOO2)
+      DO 21, ISMA=1,NBSMA
+        NOMACR=ZK8(IANMCR-1+ISMA)
+        CALL JEVEUO(NOMACR//'.CONX','L',IACONX)
+        CALL JEVEUO(JEXNUM(MAG//'.SUPMAIL',ISMA),'E',IASUPM)
+        CALL DISMOI('F','NOM_MAILLA',NOMACR,'MACR_ELEM_STAT',
+     +              IBID,MA,IERD)
+        CALL JEVEUO(MA//'.COORDO    .VALE','L',IACOOR)
+        NBNOE=ZI(IADIM2-1+4*(ISMA-1)+1)
+        NBNOL=ZI(IADIM2-1+4*(ISMA-1)+2)
+        NBNOET=NBNOE+NBNOL
+        I1NOE=ZI(IADIM2-1+4*(ISMA-1)+3)
+        I1NOL=ZI(IADIM2-1+4*(ISMA-1)+4)
+C
+        DO 22, INO=1,NBNOET
+C
+C         -- SI C'EST UN NOEUD PHYSIQUE:
+          IF (    (ZI(IACONX-1+3*(INO-1)+1).EQ.1)
+     +       .AND.(ZI(IACONX-1+3*(INO-1)+3).EQ.0) )THEN
+            INOLD=ZI(IACONX-1+3*(INO-1)+2)
+            I1NOE=I1NOE+1
+            ZI(IASUPM-1+INO)=I1NOE
+            CALL SSDMGE(ZR(IACOOR+3*(INOLD-1)),ZR(IACOO2+3*(I1NOE-1)),
+     +                  ZR(IAPARR+14*(ISMA-1)),IDIM)
+          ELSE
+C           -- SI C'EST UN NOEUD DE LAGRANGE:
+            I1NOL=I1NOL+1
+            ZI(IASUPM-1+INO)=NNNOE+I1NOL
+          END IF
+ 22     CONTINUE
+ 21   CONTINUE
+C
+C
+C     -- REMPLISSAGE DE .PARA_R (13,14):
+C     ----------------------------------
+      DO 31,ISMA=1,NBSMA
+        CALL JEVEUO(JEXNUM(MAG//'.SUPMAIL',ISMA),'L',IASUPM)
+        NBNOE=ZI(IADIM2-1+4*(ISMA-1)+1)
+        NBNOL=ZI(IADIM2-1+4*(ISMA-1)+2)
+        NBNOET= NBNOE+NBNOL
+        DMIN=0.0D0
+        DMAX=0.0D0
+        ITROU=0
+        DO 32, I=1,NBNOET
+          INO=ZI(IASUPM-1+I)
+          IF (INO.GT.NNNOE) GO TO 32
+          DO 33, J=I+1,NBNOET
+            JNO=ZI(IASUPM-1+J)
+            IF (JNO.GT.NNNOE) GO TO 33
+            A1=  ZR(IACOO2-1+3*(INO-1)+1)-ZR(IACOO2-1+3*(JNO-1)+1)
+            A2=  ZR(IACOO2-1+3*(INO-1)+2)-ZR(IACOO2-1+3*(JNO-1)+2)
+            A3=  ZR(IACOO2-1+3*(INO-1)+3)-ZR(IACOO2-1+3*(JNO-1)+3)
+            DIST=SQRT(A1**2+A2**2+A3**2)
+            IF (ITROU.EQ.0) THEN
+              ITROU=1
+              DMIN=DIST
+              DMAX=DIST
+            ELSE
+              DMIN=MIN(DMIN,DIST)
+              DMAX=MAX(DMAX,DIST)
+            END IF
+ 33       CONTINUE
+ 32     CONTINUE
+        ZR(IAPARR-1+14*(ISMA-1)+13)=DMIN
+        ZR(IAPARR-1+14*(ISMA-1)+14)=DMAX
+ 31   CONTINUE
+C
+C
+C
+ 9999 CONTINUE
+      CALL JEDETC('V','&&SSDMDM',1)
+      CALL JEDEMA()
+      END

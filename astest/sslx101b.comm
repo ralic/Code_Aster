@@ -1,0 +1,153 @@
+# MODIF  DATE 16/05/2002   AUTEUR DURAND C.DURAND 
+# TITRE POUTRE ENCASTREE A UNE EXTREMITE ET CHARGEE PAR DES FORCES
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+#       UNITAIRES SUR SON AUTRE EXTREMITE. AXE INCLINE DE 30 DEGRES
+# MODELISATION COQUE - TUYAU - RELATIONS LINEAIRES COQUES-TUYAU
+#======================================================================
+
+
+DEBUT( CODE=_F(  NOM = 'SSLX101B',NIV_PUB_WEB='INTERNET') )
+
+COS30=DEFI_VALEUR(    R8=EVAL("""0.8660254037844 """))
+
+MA=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='NON'),    )
+
+#-----------   SECTION TUBE FIN CIRCULAIRE  --------------------
+#  SUR UNE MOITIE DE LA LONGUEUR POUTRE MAILLEE EN COQUES
+#  SUR L'AUTRE MOITIE DE LA LONGUEUR POUTRE MAILLEE EN POUTRES
+#---------------------------------------------------------------
+
+MA=DEFI_GROUP(reuse=MA,  MAILLAGE=MA,
+                 CREA_GROUP_NO=_F( GROUP_MA = 'CERCL1'))
+
+MO1=AFFE_MODELE(      
+           MAILLAGE=MA,AFFE=(
+          _F( GROUP_MA = ('CYL','CERCL1','CERCL2',),
+                    PHENOMENE = 'MECANIQUE',MODELISATION = 'DKT'),
+          _F( GROUP_MA = 'POU',
+                    PHENOMENE = 'MECANIQUE',MODELISATION = 'TUYAU_3M'),
+          _F( MAILLE = 'P_ORIG',
+                    PHENOMENE = 'MECANIQUE',MODELISATION = 'DIS_TR'))
+                        )
+
+MATR=DEFI_MATERIAU(   ELAS=_F( E = 2.E11,  NU = 0.3) )
+
+CHMAT=AFFE_MATERIAU(   MAILLAGE=MA,
+                           AFFE=_F( TOUT = 'OUI', MATER = MATR)            )
+
+CAREL1=AFFE_CARA_ELEM(   MODELE=MO1, 
+  
+                          # INFO:2
+
+           POUTRE=_F(  GROUP_MA = 'POU',   SECTION = 'CERCLE',
+                    CARA = (   'R',            'EP',      ),
+                    VALE = (  2.,           0.1,      )),
+
+            COQUE=_F(  GROUP_MA = ('CYL','CERCL1','CERCL2',),
+                     EPAIS = 0.1),
+
+            DISCRET=_F(  MAILLE = 'P_ORIG',
+                      CARA = 'M_TR_D_N',
+                      VALE = ( 0., 0., 0., 0., 0.,
+                               0., 0., 0., 0., 0., )),
+
+            ORIENTATION=_F( 
+                      GROUP_NO = 'NOPOU2',
+                      CARA = 'GENE_TUYAU',  
+                      VALE = ( 0.,  0.,  -1., ),
+                      PRECISION = 1.E-6,  
+                      CRITERE = 'RELATIF')
+
+                      )
+
+CH1=AFFE_CHAR_MECA(  MODELE=MO1,
+                        DDL_IMPO=_F( GROUP_NO = 'P_ORIG',
+                            DX = 0., DY = 0., DZ = 0., DRX = 0., DRY = 0., DRZ = 0.),
+                          LIAISON_ELEM=_F(  OPTION = 'COQ_POU',
+                                       CARA_ELEM = CAREL1,
+                                       AXE_POUTRE = (COS30, 0.5, 0.,),
+                                       GROUP_MA_1 = 'CERCL1',
+                                       GROUP_NO_2 = 'P_ORIG')
+                      )
+
+CH2=AFFE_CHAR_MECA(  MODELE=MO1,  
+                         LIAISON_ELEM=_F( OPTION = 'COQ_TUYAU',
+                                       CARA_ELEM = CAREL1,
+                                       AXE_POUTRE = (COS30, 0.5, 0.,),
+                                       GROUP_MA_1 = 'CERCL2',
+                                       GROUP_NO_2 = 'NOPOU1')
+                      )
+
+CHTX=AFFE_CHAR_MECA(    MODELE=MO1,
+         FORCE_NODALE=_F(  GROUP_NO = 'NOPOU2',  FX = COS30, FY = 0.5)
+                      )
+
+CHRX=AFFE_CHAR_MECA(    MODELE=MO1,
+         FORCE_NODALE=_F(  GROUP_NO = 'NOPOU2',  MX = COS30, MY = 0.5)
+                      )
+
+CHRY=AFFE_CHAR_MECA(    MODELE=MO1,
+         FORCE_NODALE=_F(  GROUP_NO = 'NOPOU2',  MX = -0.5, MY = COS30)
+                      )
+
+CHRZ=AFFE_CHAR_MECA(    MODELE=MO1,
+         FORCE_NODALE=_F(  GROUP_NO = 'NOPOU2',  MZ = 1.)
+                      )
+
+MEST1=MACRO_ELAS_MULT(    MODELE=MO1,
+                              CHAM_MATER=CHMAT,
+                               CARA_ELEM=CAREL1,
+                            CHAR_MECA_GLOBAL=(CH1, CH2,),CAS_CHARGE=(
+                _F(  NOM_CAS = 'TX', CHAR_MECA = CHTX),
+                _F(  NOM_CAS = 'RX', CHAR_MECA = CHRX),
+                           _F(  NOM_CAS = 'RY', CHAR_MECA = CHRY),
+                           _F(  NOM_CAS = 'RZ', CHAR_MECA = CHRZ))
+                         )
+
+TEST_RESU(RESU=(
+_F( RESULTAT = MEST1, NOM_CHAM = 'DEPL',  NOM_CAS = 'TX', GROUP_NO = 'NOPOU2',
+      NOM_CMP = 'DX', VALE = 2.8273E-10,    PRECISION = 0.03),
+_F( RESULTAT = MEST1, NOM_CHAM = 'DEPL',  NOM_CAS = 'TX', GROUP_NO = 'NOPOU2',
+      NOM_CMP = 'DY', VALE = 1.6324E-10,    PRECISION = 0.03),
+
+_F( RESULTAT = MEST1, NOM_CHAM = 'DEPL',  NOM_CAS = 'RX', GROUP_NO = 'NOPOU2',
+      NOM_CMP = 'DRX', VALE = 1.93195E-10,  PRECISION = 0.04),
+_F( RESULTAT = MEST1, NOM_CHAM = 'DEPL',  NOM_CAS = 'RX', GROUP_NO = 'NOPOU2',
+      NOM_CMP = 'DRY', VALE = 1.11541E-10,  PRECISION = 0.04),
+
+_F( RESULTAT = MEST1, NOM_CHAM = 'DEPL',  NOM_CAS = 'RY', GROUP_NO = 'NOPOU2',
+      NOM_CMP = 'DZ', VALE = -6.864E-9,     PRECISION = 0.06),
+_F( RESULTAT = MEST1, NOM_CHAM = 'DEPL',  NOM_CAS = 'RY', GROUP_NO = 'NOPOU2',
+      NOM_CMP = 'DRX', VALE = -8.58E-11,    PRECISION = 0.04),
+_F( RESULTAT = MEST1, NOM_CHAM = 'DEPL',  NOM_CAS = 'RY', GROUP_NO = 'NOPOU2',
+      NOM_CMP = 'DRY', VALE = 1.48611E-10,  PRECISION = 0.04),
+
+_F( RESULTAT = MEST1, NOM_CHAM = 'DEPL',  NOM_CAS = 'RZ', GROUP_NO = 'NOPOU2',
+     NOM_CMP = 'DX', VALE = -3.432E-9,      PRECISION = 0.06),
+_F( RESULTAT = MEST1, NOM_CHAM = 'DEPL',  NOM_CAS = 'RZ', GROUP_NO = 'NOPOU2',
+     NOM_CMP = 'DY', VALE = 5.944E-9,      PRECISION = 0.06),
+_F( RESULTAT = MEST1, NOM_CHAM = 'DEPL',  NOM_CAS = 'RZ', GROUP_NO = 'NOPOU2',
+     NOM_CMP = 'DRZ', VALE = 1.716E-10,     PRECISION = 0.04))
+          )
+
+FIN()
+#
+##MPR_RESU( RESU:( RESULTAT: MEST1 GROUP_NO : (NOPOU1,NOPOU2 ) )) ;
+##MPR_RESU( MODELE : MO1
+#     RESU:( MAILLAGE : MA RESULTAT: MEST1 FORMAT :'CASTEM'));

@@ -1,0 +1,103 @@
+      SUBROUTINE NMCOFR ( INSTAP, NOMA, DEPPLU, DEPDEL, DDEPLA, DEFICO,
+     &                    RESOCO, CNCINE, ITERAT, SOLVEU, CONV, LICCVG,
+     &                    LREAC )
+C
+      IMPLICIT      NONE
+      LOGICAL       LREAC(4)
+      INTEGER       LDSCON, ITERAT, LICCVG(*)
+      REAL*8        INSTAP, CONV(*)
+      CHARACTER*8   NOMA
+      CHARACTER*19  SOLVEU
+      CHARACTER*24  DEPPLU, DEPDEL, DDEPLA, DEFICO, RESOCO, CNCINE
+C ----------------------------------------------------------------------
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 18/09/2002   AUTEUR CIBHHLV L.VIVAN 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+C
+C TRAITEMENT DU CONTACT AVEC OU SANS FROTTEMENT DANS STAT_NON_LINE.
+C BRANCHEMENT SUR LES ROUTINES DE RESOLUTION.
+C
+C -------------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ----------------
+C
+      CHARACTER*32       JEXNUM
+      INTEGER            ZI
+      COMMON  / IVARJE / ZI(1)
+      REAL*8             ZR
+      COMMON  / RVARJE / ZR(1)
+      COMPLEX*16         ZC
+      COMMON  / CVARJE / ZC(1)
+      LOGICAL            ZL
+      COMMON  / LVARJE / ZL(1)
+      CHARACTER*8        ZK8
+      CHARACTER*16                ZK16
+      CHARACTER*24                          ZK24
+      CHARACTER*32                                    ZK32
+      CHARACTER*80                                              ZK80
+      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+C
+C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
+      LOGICAL       LBID, PREMIE
+      INTEGER       IBID, ICONTA, LMAT, JPREM
+      REAL*8        R8BID
+      CHARACTER*16  K16BID
+      CHARACTER*19  K19BID, MATR, MATASS, MATRIX(2)
+      CHARACTER*24  K24BID
+C ----------------------------------------------------------------------
+C
+      CALL JEMARQ()
+C
+C --- INITIALISATION DES VARIABLES DE CONVERGENCE DU CONTACT
+      LICCVG(3) = 0
+      LICCVG(4) = 0
+C
+C --- RECUPERATION DU DESCRIPTEUR DE LA MATRICE DE CONTACT :
+      MATR = RESOCO(1:14)//'.MATR'
+      CALL MTDSCR ( MATR )
+      CALL JEVEUO ( MATR(1:19)//'.&INT', 'E', LDSCON )
+C
+C --- TRAITEMENT DU CONTACT : NOUVELLE VERSION (NMCONT)
+C
+      CALL JEEXIN ( RESOCO(1:14)//'.APREAC', ICONTA )
+      IF ( ICONTA .NE. 0 ) THEN
+C
+C ------ RECUPERATION DU DESCRIPTEUR DE LA MATRICE MECANIQUE
+C        (ADHERENCE A LA METHODE DE NEWTON)
+         CALL NMMATR ( 'CONTACT_FR', K24BID, K24BID, K24BID, K24BID,
+     &                       K24BID, K24BID, K19BID, K24BID, RESOCO,
+     &                       K16BID, K19BID, 0.D0  , K24BID, K19BID,
+     &                       0     , ITERAT, K24BID, K24BID, K24BID,
+     &                       K24BID, MATRIX, K16BID, DEFICO, K24BID,
+     &                       LBID,   K16BID, K24BID, K24BID, LBID,
+     &                       K24BID, K24BID, K24BID, R8BID,  R8BID,
+     &                       IBID)
+C
+         MATASS=MATRIX(1)
+         CALL JEVEUO ( MATASS//'.&INT', 'E', LMAT )
+C
+C ------ PREMIERE UTILISATION DU CONTACT OU NON
+         CALL JEVEUO ( RESOCO(1:14) // '.PREM', 'E', JPREM )
+         PREMIE = ZL(JPREM)
+         IF ( PREMIE )  ZL(JPREM) = .FALSE.
+C
+         CALL NMCONT ( PREMIE, INSTAP, NOMA  , DEPPLU, DDEPLA, DEFICO,
+     &                 RESOCO, LMAT  , LDSCON, CNCINE, ITERAT, LICCVG,
+     &                 CONV  , DEPDEL, LREAC)
+      ENDIF
+C
+      CALL JEDEMA()
+      END

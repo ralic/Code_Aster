@@ -1,0 +1,485 @@
+# MODIF  DATE 07/06/2002   AUTEUR DURAND C.DURAND 
+# TITRE CALCUL D AMORTISSEMENT AJOUTE EN ECOULEMENT ANNULAIRE
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+
+#      CALCUL DE DIVERS AMORTISSEMENTS AJOUTES EN ECOULEMENT
+
+#  ANNULAIRE POTENTIEL POUR DIFFERENTES VITESSES D'ECOULEMENT
+
+#                ECOULEMENT AMORTISSANT
+
+#                   VITESSE CRITIQUE
+
+#                     FLOTTEMENT
+
+#                      CALCUL 3D
+
+#                CALCUL MODAL COMPLEXE EN EAU
+
+#                   CAS TEST FDLV106A
+
+DEBUT(CODE=_F( NOM = 'FDLV106A',NIV_PUB_WEB='INTERNET'))
+
+METHODE='MULT_FRONT'
+
+PRE_IDEAS(      UNITE_IDEAS=19,
+                 UNITE_MAILLAGE=23  )
+
+MAYA=LIRE_MAILLAGE( VERI_MAIL=_F(VERIF='NON'), UNITE=23)
+
+# CARACTERISTIQUES DE LA STRUCTURE: CYLINDRES CONCENTRIQUES
+# SEPARES PAR UN FLUIDE ANNULAIRE
+
+
+ACIER=DEFI_MATERIAU( ELAS=_F( RHO = 7800.,  NU = 0.3, E = 2.E11))
+
+DOMSTRUC=AFFE_MATERIAU(  MAILLAGE=MAYA,
+                            AFFE=_F( GROUP_MA = 'INTERFAC', MATER = ACIER) )
+
+STRUCTUR=AFFE_MODELE( MAILLAGE=MAYA,
+                          AFFE=_F( GROUP_MA = 'INTERFAC',
+                       MODELISATION = 'DKT', PHENOMENE = 'MECANIQUE')  )
+
+CARA=AFFE_CARA_ELEM(  MODELE=STRUCTUR,
+                        COQUE=_F( GROUP_MA = 'INTERFAC', EPAIS = 1.E-3) )
+
+CHARGS=AFFE_CHAR_MECA( MODELE=STRUCTUR,DDL_IMPO=(
+                          _F(  GROUP_NO = 'NOEXT',
+                                     DX = 0.,   DRZ = 0.,  DRY = 0.),
+                          _F(  GROUP_NO = 'NOINT',
+                                     DX = 0.,  DY = 0.,  DZ = 0.,
+                                     DRX = 0.,  DRY = 0.,  DRZ = 0.))  )
+
+MEL_KSTR=CALC_MATR_ELEM( MODELE=STRUCTUR,
+                               CARA_ELEM=CARA,
+                              CHAM_MATER=DOMSTRUC,  OPTION='RIGI_MECA',
+                               CHARGE=CHARGS       )
+
+MEL_MSTR=CALC_MATR_ELEM( MODELE=STRUCTUR,
+                               CARA_ELEM=CARA,
+                              CHAM_MATER=DOMSTRUC,  OPTION='MASS_MECA',
+                               CHARGE=CHARGS       )
+
+NUSTR=NUME_DDL(MATR_RIGI=MEL_KSTR)
+
+MATASKS=ASSE_MATRICE( MATR_ELEM=MEL_KSTR,  NUME_DDL=NUSTR)
+
+MATASMS=ASSE_MATRICE( MATR_ELEM=MEL_MSTR,  NUME_DDL=NUSTR)
+
+# CARACTERISTIQUES DU FLUIDE EN ECOULEMENT
+# MATERIAU (CARACTERISTIQUES THERMIQUES EQUIVALENTES)
+
+
+EAU=DEFI_MATERIAU( THER=_F( LAMBDA = 1., RHO_CP = 1000.))
+
+DOMFLUI=AFFE_MATERIAU(  MAILLAGE=MAYA,AFFE=(
+                       _F( GROUP_MA = 'FLUIDE', MATER = EAU),
+                       _F( GROUP_MA = 'ENTREE', MATER = EAU),
+                            _F( GROUP_MA = 'SORTIE', MATER = EAU),
+                        _F( GROUP_MA = 'INTERFAC', MATER = EAU))   )
+
+DOMINTER=AFFE_MATERIAU(  MAILLAGE=MAYA,
+                            AFFE=_F( GROUP_MA = 'INTERFAC', MATER = EAU)  )
+
+# MODELES FLUIDES ET INTERFACE
+
+
+FLUIDE=AFFE_MODELE( MAILLAGE=MAYA,AFFE=(
+                     _F( GROUP_MA = 'FLUIDE',
+                MODELISATION = '3D',  PHENOMENE = 'THERMIQUE'),
+                     _F( GROUP_MA = 'ENTREE',
+                MODELISATION = '3D',  PHENOMENE = 'THERMIQUE'),
+                     _F( GROUP_MA = 'SORTIE',
+                MODELISATION = '3D',  PHENOMENE = 'THERMIQUE'))  )
+
+FLUIDE2=AFFE_MODELE( MAILLAGE=MAYA,AFFE=(
+                     _F( GROUP_MA = 'FLUIDE',
+                MODELISATION = '3D',  PHENOMENE = 'THERMIQUE'),
+                     _F( GROUP_MA = 'INTERFAC',
+                MODELISATION = '3D',  PHENOMENE = 'THERMIQUE'))  )
+
+INTERFAC=AFFE_MODELE( MAILLAGE=MAYA,
+                      AFFE=_F( GROUP_MA = 'INTERFAC',
+                   MODELISATION = '3D', PHENOMENE = 'THERMIQUE')  )
+
+# DIRICHLET POUR LES PROBLEMES POTENTIELS INSTATIONNAIRES
+
+
+CL2=AFFE_CHAR_THER( MODELE=FLUIDE2,
+                    TEMP_IMPO=_F( GROUP_NO = 'TEMPIMPO', TEMP = 0.)  )
+
+# CALCUL DU POTENTIEL DES VITESSES A 4 M/S (ECOULEMENT AMORTISSANT)
+
+CL=AFFE_CHAR_THER( MODELE=FLUIDE,
+                    TEMP_IMPO=_F( GROUP_NO = 'NOSORT', TEMP = 0.),FLUX_REP=(
+                    _F( GROUP_MA = 'ENTREE',   FLUN = -4.),
+                    _F( GROUP_MA = 'SORTIE',   FLUN = 4.))  )
+
+PHIBAR=THER_LINEAIRE(  MODELE=FLUIDE,
+                         CHAM_MATER=DOMFLUI,
+                       EXCIT=_F( CHARGE = CL))
+
+# CALCUL DU POTENTIEL DES VITESSES A 4.24 M/S (VITESSE CRITIQUE)
+
+CLCRIT=AFFE_CHAR_THER( MODELE=FLUIDE,
+                    TEMP_IMPO=_F( GROUP_NO = 'NOSORT', TEMP = 0.),FLUX_REP=(
+                    _F( GROUP_MA = 'ENTREE',  FLUN = -4.24),
+                    _F( GROUP_MA = 'SORTIE',  FLUN = 4.24))  )
+
+PHIBCRIT=THER_LINEAIRE(  MODELE=FLUIDE,
+                         CHAM_MATER=DOMFLUI,
+                       EXCIT=_F( CHARGE = CLCRIT))
+
+# CALCUL DU POTENTIEL DES VITESSES A 6 M/S (FLOTTEMENT)
+
+CLFLOT=AFFE_CHAR_THER( MODELE=FLUIDE,
+                    TEMP_IMPO=_F( GROUP_NO = 'NOSORT', TEMP = 0.),FLUX_REP=(
+                    _F( GROUP_MA = 'ENTREE',  FLUN = -6.),
+                    _F( GROUP_MA = 'SORTIE',  FLUN = 6.))  )
+
+PHIBFLOT=THER_LINEAIRE(  MODELE=FLUIDE,
+                         CHAM_MATER=DOMFLUI,
+                       EXCIT=_F( CHARGE = CLFLOT))
+
+# AFFECTATION DU DEPLACEMENT AU CYLINDRE EXTERNE
+# ROTATION AUTOUR D UN PIVOT EN AVAL DE L ECOULEMENT
+
+CHAMNO=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_DEPL_R', 
+MAILLAGE=MAYA,AFFE=(
+                         _F( GROUP_NO = 'NOINT',
+                                NOM_CMP = ('DX','DY','DZ',),
+                                VALE = (0.,0.,0.,)),
+                        _F( GROUP_NO = 'GRNO5',
+                               NOM_CMP = ('DX','DY','DZ',),
+                                VALE = (0.,0.,0.,)),
+                        _F( GROUP_NO = 'GRNO4',
+                               NOM_CMP = ('DX','DY','DZ',),
+                                VALE = (12.5,0.,0.,)),
+                         _F( GROUP_NO = 'GRNO3',
+                               NOM_CMP = ('DX','DY','DZ',),
+                                VALE = (25.,0.,0.,)),
+                         _F( GROUP_NO = 'GRNO2',
+                               NOM_CMP = ('DX','DY','DZ',),
+                                VALE = (37.5,0.,0.,)),
+                        _F( GROUP_NO = 'GRNO1',
+                               NOM_CMP = ('DX','DY','DZ',),
+                                VALE = (50.,0.,0.,))),
+
+                              NUME_DDL=NUSTR)
+
+# MASSE ET AMORTISSEMENT AJOUTES A 4 M/S
+
+
+AMOR=CALC_MATR_AJOU(  MODELE_FLUIDE=FLUIDE2,
+                           MODELE_INTERFACE=INTERFAC,
+                           CHARGE=CL2,
+                          CHAM_MATER=DOMFLUI,
+                           CHAM_NO=CHAMNO,
+                          OPTION='AMOR_AJOU',
+                           POTENTIEL=PHIBAR,
+                            SOLVEUR=_F( METHODE = 'GCPC'))
+
+MASS=CALC_MATR_AJOU(  MODELE_FLUIDE=FLUIDE2,
+                           MODELE_INTERFACE=INTERFAC,
+                           CHARGE=CL2,
+                          CHAM_MATER=DOMFLUI,
+                           CHAM_NO=CHAMNO,
+                          OPTION='MASS_AJOU',
+                          POTENTIEL=PHIBAR,
+                            SOLVEUR=_F( METHODE = 'GCPC'))
+
+RIGI=CALC_MATR_AJOU(  MODELE_FLUIDE=FLUIDE2,
+                           MODELE_INTERFACE=INTERFAC,
+                           CHARGE=CL2,
+                          CHAM_MATER=DOMFLUI,
+                           CHAM_NO=CHAMNO,
+                          OPTION='RIGI_AJOU',
+                          POTENTIEL=PHIBAR,
+                            SOLVEUR=_F( METHODE = 'GCPC'))
+
+ENGENDRE_TEST(CO=(MASS,RIGI,AMOR,))
+
+#TESTS DES VALEURS DES MATRICES D'AMORTISSEMENT ET DE MASSE AJOUTES
+#NE COMPRENNENT QU'UN ELEMENT
+TEST_RESU(OBJET=(
+_F( NOM = 'MASS               .VALE', S_R = 1.6668E+09, PRECISION = 1.E-2),
+
+_F( NOM = 'AMOR               .VALE', S_R = -4.0004E8, PRECISION = 1.E-2))
+          )
+
+#NOUVELLE METHODE AVEC MACRO_MATR_AJOU
+
+
+MACRO_MATR_AJOU(MAILLAGE=MAYA,
+                  GROUP_MA_FLUIDE='FLUIDE',
+                  GROUP_MA_INTERF='INTERFACE',
+                  FLUIDE=_F( RHO = 1000.),
+                  INFO=2,
+                  MODELISATION='3D',DDL_IMPO=(
+                  _F( GROUP_NO = 'TEMPIMPO',
+                            PRES_FLUIDE = 0.),
+                  _F( GROUP_NO = 'NOSORT',
+                            PRES_SORTIE = 0.)),
+                  ECOULEMENT=_F( GROUP_MA_1 = 'ENTREE',
+                              GROUP_MA_2 = 'SORTIE',
+                               VNOR_1 = -4.,
+                               
+                               VNOR_2 = 4.),
+
+                  MATR_MASS_AJOU=CO("MASSAJ"),
+                  MATR_AMOR_AJOU=CO("AMORAJ"),
+                  MATR_RIGI_AJOU=CO("RIGIAJ"),
+
+                  DEPL_IMPO=CHAMNO,
+                            SOLVEUR=_F( METHODE = 'GCPC')
+                  )
+
+# MASSE ET AMORTISSEMENT AJOUTES A 4.24 M/S
+
+
+AMORCRIT=CALC_MATR_AJOU(  MODELE_FLUIDE=FLUIDE2,
+                           MODELE_INTERFACE=INTERFAC,
+                           CHARGE=CL2,
+                          CHAM_MATER=DOMFLUI,
+                           CHAM_NO=CHAMNO,
+                          OPTION='AMOR_AJOU',
+                           POTENTIEL=PHIBCRIT,
+                            SOLVEUR=_F( METHODE = 'LDLT'))
+
+MASSCRIT=CALC_MATR_AJOU(  MODELE_FLUIDE=FLUIDE2,
+                           MODELE_INTERFACE=INTERFAC,
+                           CHARGE=CL2,
+                          CHAM_MATER=DOMFLUI,
+                           CHAM_NO=CHAMNO,
+                          OPTION='MASS_AJOU',
+                          POTENTIEL=PHIBCRIT,
+                            SOLVEUR=_F( METHODE = 'LDLT'))
+
+ENGENDRE_TEST(CO=(MASSCRIT,AMORCRIT,))
+
+TEST_RESU(OBJET=(
+_F( NOM = 'MASSCRIT           .VALE', S_R = 1.6668E+09, PRECISION = 1.E-2),
+_F( NOM = 'AMORCRIT           .VALE', S_R = -4.24042E+08, PRECISION = 1.E-2))
+          )
+
+# MASSE ET AMORTISSEMENT AJOUTES A 6 M/S
+
+
+AMORFLOT=CALC_MATR_AJOU(  MODELE_FLUIDE=FLUIDE2,
+                           MODELE_INTERFACE=INTERFAC,
+                           CHARGE=CL2,
+                          CHAM_MATER=DOMFLUI,
+                           CHAM_NO=CHAMNO,
+                          OPTION='AMOR_AJOU',
+                           POTENTIEL=PHIBFLOT,
+                            SOLVEUR=_F( METHODE = METHODE))
+
+MASSFLOT=CALC_MATR_AJOU(  MODELE_FLUIDE=FLUIDE2,
+                           MODELE_INTERFACE=INTERFAC,
+                           CHARGE=CL2,
+                          CHAM_MATER=DOMFLUI,
+                           CHAM_NO=CHAMNO,
+                          OPTION='MASS_AJOU',
+                          POTENTIEL=PHIBFLOT,
+                            SOLVEUR=_F( METHODE = METHODE))
+
+TEST_RESU(OBJET=(
+_F( NOM = 'MASSFLOT           .VALE', S_R = 1.6668E+09, PRECISION = 1.E-2),
+_F( NOM = 'AMORFLOT           .VALE', S_R = -6.0006E+08, PRECISION = 1.E-2))
+          )
+
+# SYSTEME A UN DDL EQUIVALENT SUR LEQUEL ON CALCULE LES MODES
+# COMPLEXES
+
+
+PRE_IDEAS(  UNITE_IDEAS=21,
+               UNITE_MAILLAGE=22)
+
+MAYA2=LIRE_MAILLAGE( VERI_MAIL=_F(VERIF='NON'),UNITE=22)
+
+SYSTEQ=AFFE_MODELE( MAILLAGE=MAYA2,
+                         AFFE=_F( TOUT = 'OUI',
+                  MODELISATION = 'DIS_T', PHENOMENE = 'MECANIQUE')
+
+                          )
+
+# MODE COMPLEXE AVEC AMORTISSEMENT FLUIDE
+
+
+CARAC=AFFE_CARA_ELEM( MODELE=SYSTEQ,DISCRET=(
+
+                     _F( GROUP_MA = 'MASS', CARA = 'M_T_N',
+                              VALE = (1.645E9, 0.,1.645E9,0.,0.,
+                                     1.645E9,)),
+                     _F( GROUP_MA = 'RESSORT', CARA = 'K_T_D_L',
+                              VALE = (1.E13,1.E13,
+                                     1.E13,)),
+                     _F( GROUP_MA = 'DASHPOT',  CARA = 'A_T_D_L',
+                              VALE = (2.8E7,2.8E7,
+                                     2.8E7,))))
+
+ENCASTR=AFFE_CHAR_MECA( MODELE=SYSTEQ,DDL_IMPO=(
+            _F( GROUP_NO = 'ENCAST',  DX = 0., DY = 0.,  DZ = 0.),
+            _F( GROUP_NO = 'GUIDE',         DY = 0.,  DZ = 0.))  )
+
+RIGIELEM=CALC_MATR_ELEM( MODELE=SYSTEQ,
+                               CARA_ELEM=CARAC,
+                              OPTION='RIGI_MECA',
+                               CHARGE=ENCASTR   )
+
+MASSELEM=CALC_MATR_ELEM( MODELE=SYSTEQ,
+                               CARA_ELEM=CARAC,
+                              OPTION='MASS_MECA',
+                               CHARGE=ENCASTR    )
+
+AMORELEM=CALC_MATR_ELEM( MODELE=SYSTEQ,
+                               CARA_ELEM=CARAC,
+                              OPTION='AMOR_MECA',
+                               CHARGE=ENCASTR    )
+
+NUMERO=NUME_DDL(MATR_RIGI=RIGIELEM)
+
+RAIDEUR=ASSE_MATRICE( MATR_ELEM=RIGIELEM,  NUME_DDL=NUMERO)
+
+MASSE=ASSE_MATRICE( MATR_ELEM=MASSELEM,  NUME_DDL=NUMERO)
+
+AMORT=ASSE_MATRICE( MATR_ELEM=AMORELEM,  NUME_DDL=NUMERO)
+
+MODBIS=MODE_ITER_SIMULT(      MATR_A=RAIDEUR,
+                              MATR_B=MASSE,
+                              MATR_C=AMORT,
+                              METHODE='TRI_DIAG',
+                              VERI_MODE=_F( SEUIL = 1.E-2),
+###CDURAND##             CALC_FREQ=_F(  APPROCHE = 'REEL',
+###CDURAND##                            FREQ = (0.5,1000.,)),
+                                )
+
+# MODE COMPLEXE A VITESSE CRITIQUE
+
+
+CARACRIT=AFFE_CARA_ELEM( MODELE=SYSTEQ,DISCRET=(
+
+                     _F( GROUP_MA = 'MASS', CARA = 'M_T_N',
+                              VALE = (1.645E9, 0.,1.645E9,0.,0.,
+                                     1.645E9,)),
+                     _F( GROUP_MA = 'RESSORT', CARA = 'K_T_D_L',
+                              VALE = (1.E13, 1.E13, 1.E13,)),
+                     _F( GROUP_MA = 'DASHPOT',  CARA = 'A_T_D_L',
+                              VALE = (3.56E6, 3.56E6, 3.56E6,)))
+                                       )
+
+RIGELCR=CALC_MATR_ELEM( MODELE=SYSTEQ,
+                               CARA_ELEM=CARACRIT,
+                              OPTION='RIGI_MECA',
+                               CHARGE=ENCASTR     )
+
+MASELCR=CALC_MATR_ELEM( MODELE=SYSTEQ,
+                               CARA_ELEM=CARACRIT,
+                              OPTION='MASS_MECA',
+                               CHARGE=ENCASTR   )
+
+AMELCR=CALC_MATR_ELEM( MODELE=SYSTEQ,
+                               CARA_ELEM=CARACRIT,
+                              OPTION='AMOR_MECA',
+                               CHARGE=ENCASTR  )
+
+NUMCR=NUME_DDL(MATR_RIGI=RIGELCR)
+
+RAIDCR=ASSE_MATRICE( MATR_ELEM=RIGELCR,  NUME_DDL=NUMCR)
+
+MASSCR=ASSE_MATRICE( MATR_ELEM=MASELCR,  NUME_DDL=NUMCR)
+
+AMORCR=ASSE_MATRICE( MATR_ELEM=AMELCR,  NUME_DDL=NUMCR)
+
+MODCRIT=MODE_ITER_SIMULT(     MATR_A=RAIDCR,
+                              MATR_B=MASSCR,
+                              MATR_C=AMORCR,
+                              METHODE='TRI_DIAG',
+                              VERI_MODE=_F( SEUIL = 1.E-2),
+###CDURAND##    CALC_FREQ=_F(APPROCHE = 'REEL',
+###CDURAND##                 FREQ = (0.5,1000.,)),
+                                )
+
+# MODE COMPLEXE AU FLOTTEMENT
+
+
+CARAFLOT=AFFE_CARA_ELEM(   MODELE=SYSTEQ,DISCRET=(
+                     _F( GROUP_MA = 'MASS', CARA = 'M_T_N',
+                              VALE = (1.645E9, 0.,1.645E9,0.,0.,
+                                     1.645E9,)),
+                     _F( GROUP_MA = 'RESSORT', CARA = 'K_T_D_L',
+                              VALE = (1.E13, 1.E13, 1.E13,)),
+                     _F( GROUP_MA = 'DASHPOT',  CARA = 'A_T_D_L',
+                              VALE = (-1.7E8, -1.7E8, -1.7E8,)))
+                          )
+
+RIGELFL=CALC_MATR_ELEM( MODELE=SYSTEQ,
+                               CARA_ELEM=CARAFLOT,
+                              OPTION='RIGI_MECA',
+                               CHARGE=ENCASTR   )
+
+MASELFL=CALC_MATR_ELEM( MODELE=SYSTEQ,
+                               CARA_ELEM=CARAFLOT,
+                              OPTION='MASS_MECA',
+                               CHARGE=ENCASTR   )
+
+AMELFL=CALC_MATR_ELEM( MODELE=SYSTEQ,
+                               CARA_ELEM=CARAFLOT,
+                              OPTION='AMOR_MECA',
+                               CHARGE=ENCASTR    )
+
+NUMFL=NUME_DDL(MATR_RIGI=RIGELFL)
+
+RAIDFL=ASSE_MATRICE( MATR_ELEM=RIGELFL,  NUME_DDL=NUMFL)
+
+MASSFL=ASSE_MATRICE( MATR_ELEM=MASELFL,  NUME_DDL=NUMFL)
+
+AMORFL=ASSE_MATRICE( MATR_ELEM=AMELFL,  NUME_DDL=NUMFL)
+
+MODFLOT=MODE_ITER_SIMULT(     MATR_A=RAIDFL,
+                              MATR_B=MASSFL,
+                              MATR_C=AMORFL,
+                              METHODE='TRI_DIAG',
+                              VERI_MODE=_F( SEUIL = 1.E-2),
+###CDURAND##           CALC_FREQ=_F(   APPROCHE = 'REEL',
+###CDURAND##               FREQ = (0.5,1000.,)),
+                                 )
+
+TEST_RESU(RESU=(_F( RESULTAT = MODBIS, PARA = 'FREQ',
+                CRITERE = 'RELATIF', PRECISION = 1.E-2,
+                NUME_ORDRE = 1,  VALE = 12.5),
+          _F( RESULTAT = MODBIS, PARA = 'AMOR_REDUIT',
+                CRITERE = 'RELATIF', PRECISION = 1.E-2,
+                NUME_ORDRE = 1,  VALE = 0.00011),
+          _F( RESULTAT = MODCRIT, PARA = 'FREQ',
+                CRITERE = 'RELATIF', PRECISION = 1.E-2,
+                NUME_ORDRE = 1,  VALE = 12.5),
+          _F( RESULTAT = MODCRIT, PARA = 'AMOR_REDUIT',
+                CRITERE = 'RELATIF', PRECISION = 1.E-2,
+                NUME_ORDRE = 1,  VALE = 0.0000138),
+          _F( RESULTAT = MODFLOT, PARA = 'FREQ',
+                CRITERE = 'RELATIF', PRECISION = 1.E-2,
+                NUME_ORDRE = 1,  VALE = 12.5),
+          _F( RESULTAT = MODFLOT, PARA = 'AMOR_REDUIT',
+                CRITERE = 'RELATIF', PRECISION = 1.E-2,
+                NUME_ORDRE = 1,  VALE = -0.00066))
+           )
+
+FIN()
+#

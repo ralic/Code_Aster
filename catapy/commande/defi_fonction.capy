@@ -1,0 +1,60 @@
+#& MODIF COMMANDE  DATE 09/10/2002   AUTEUR DURAND C.DURAND 
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+# RESPONSABLE MCOURTOI M.COURTOIS
+def defi_fonction_prod(VALE,VALE_PARA,VALE_C,NOEUD_PARA,**args):
+  if VALE != None  : return fonction
+  if VALE_C != None  : return fonction_c
+  if VALE_PARA != None  : return fonction
+  if NOEUD_PARA != None  : return fonction
+  raise AsException("type de concept resultat non prevu")
+
+DEFI_FONCTION=OPER(nom="DEFI_FONCTION",op=3,sd_prod=defi_fonction_prod
+                    ,fr="Définition des valeurs réelles ou complexes d une fonction réelle",
+                     docu="U4.31.02-g3",reentrant='n',
+            UIinfo={"groupes":("Fonction",)},
+         regles=(UN_PARMI('VALE','VALE_C','VALE_PARA','NOEUD_PARA'),),
+         NOM_PARA        =SIMP(statut='o',typ='TXM',
+                               into=("DX","DY","DZ","DRX","DRY","DRZ","TEMP",
+                                     "INST","X","Y","Z","EPSI","META","FREQ","PULS",
+                                     "AMOR","ABSC","SIGM","HYDR","SECH","PORO","SAT",
+                                     "PGAZ","PCAP","VITE") ),
+         NOM_RESU        =SIMP(statut='f',typ='TXM',defaut="TOUTRESU"),
+         VALE            =SIMP(statut='f',typ='R',min=2,max='**',
+                               fr ="Fonction réelle définie par une liste de couples (abscisse,ordonnée)"),
+         VALE_C          =SIMP(statut='f',typ='R',min=2,max='**',
+                               fr ="Fonction complexe définie par une liste de couples"),
+         VALE_PARA       =SIMP(statut='f',typ=listr8,
+                               fr ="Fonction réelle définie par deux concepts de type listr8" ),
+         b_vale_para     =BLOC(condition = "VALE_PARA != None",
+           VALE_FONC       =SIMP(statut='o',typ=listr8 ),
+         ),
+         NOEUD_PARA      =SIMP(statut='f',typ=no,max='**',
+                               fr ="Fonction réelle définie par une liste de noeuds et un maillage"),
+         b_noeud_para    =BLOC(condition = "NOEUD_PARA != None",
+           MAILLAGE        =SIMP(statut='o',typ=maillage ),
+           VALE_Y          =SIMP(statut='o',typ='R',max='**'),
+         ),
+
+         INTERPOL        =SIMP(statut='f',typ='TXM',max=2,defaut="LIN",into=("NON","LIN","LOG") ),
+         PROL_DROITE     =SIMP(statut='f',typ='TXM',defaut="EXCLU",into=("CONSTANT","LINEAIRE","EXCLU") ),
+         PROL_GAUCHE     =SIMP(statut='f',typ='TXM',defaut="EXCLU",into=("CONSTANT","LINEAIRE","EXCLU") ),
+         VERIF           =SIMP(statut='f',typ='TXM',defaut="CROISSANT",into=("CROISSANT","NON") ),
+         INFO            =SIMP(statut='f',typ='I',defaut= 1,into=( 1 , 2) ),
+         TITRE           =SIMP(statut='f',typ='TXM',max='**'),
+)  ;

@@ -1,0 +1,119 @@
+      SUBROUTINE EDCOMP(NDIM, TYPMOD, OPTION, COMPOR, IMATE, CARCRI,
+     &                  TREF, TM, TP, EPSM, DEPS, SIGM,
+     &                  VIM, RLAG, CHAMP, LAGR, PONDER, DVIDA,
+     &                  ENER, VIP)
+
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 20/03/2002   AUTEUR GJBHHEL E.LORENTZ 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+C TOLE CRP_21
+
+      IMPLICIT NONE
+      CHARACTER*8  TYPMOD(*)
+      CHARACTER*16 OPTION, COMPOR
+      INTEGER      NDIM, IMATE
+      REAL*8       CARCRI(*), TREF, TM, TP, EPSM(*), SIGM(*), DEPS(*)
+      REAL*8       VIM(*), VIP(*)
+      REAL*8       RLAG, CHAMP(0:3), LAGR(0:NDIM), PONDER(0:NDIM)
+      REAL*8       DVIDA(0:3,0:3), ENER
+
+C ----------------------------------------------------------------------
+C     AIGUILLAGE SELON LE COMPORTEMENT DELOCALISE
+C ----------------------------------------------------------------------
+C IN  NDIM    DIMENSION DE L'ESPACE
+C IN  TYPMOD  TYPE DE MODELISATION
+C IN  OPTION  OPTION DE CALCUL
+C IN  COMPOR  NATURE DU COMPORTEMENT
+C IN  IMATE   NATURE DU MATERIAU
+C IN  CARCRI  CRITERES DE CONVERGENCE LOCAUX
+C                               (1) = NB ITERATIONS MAXI A CONVERGENCE
+C                                     (ITER_INTE_MAXI == ITECREL)
+C                               (2) = TYPE DE JACOBIEN A T+DT
+C                                     (TYPE_MATR_COMP == MACOMP)
+C                                     0 = EN VITESSE     >SYMETRIQUE
+C                                     1 = EN INCREMENTAL >NON-SYMETRIQUE
+C                               (3) = VALEUR TOLERANCE DE CONVERGENCE
+C                                     (RESI_INTE_RELA == RESCREL)
+C                               (5) = NOMBRE D'INCREMENTS POUR LE
+C                                     REDECOUPAGE LOCAL DU PAS DE TEMPS
+C                                     (ITER_INTE_PAS  == ITEDEC)
+C                                     -1,0,1 = PAS DE REDECOUPAGE
+C                                     N = NOMBRE DE PALIERS
+C                               (6) = TYPE D INTEGRATION LOCAL POUR
+C                                     LA LOI DE COMPORTEMENT
+C                                     (RESO_INTE == INTLOC)
+C                                     0 = IMPLICITE
+C                                     1 = RUNGE_KUTTAC
+C IN  TREF    TEMPERATURE DE REFERENCE
+C IN  TM      TEMPERATURE EN T-
+C IN  TP      TEMPERATURE EN T+
+C IN  EPSM    CHAMP DE DEFORMATION EN T-  (F- SI SIMO_MIEHE)
+C IN  DEPS    INCREMENT DE DEFORMATION    (DF SI SIMO_MIEHE)
+C IN  SIGM    CONTRAINTES EN T-
+C IN  VIM     VARIABLES INTERNES EN T-
+C IN  RLAG    COEFFICIENT DE PENALISATION DU LAGRANGIEN AUGMENTE
+C IN  CHAMP   CHAMP LISSE (BA)
+C IN  LAGR    MULTIPLICATEURS DE LAGRANGE (/LC SUR GRAD)
+C OUT GRAD    - GRADIENT DE L'ENERGIE( -G=-(BA-VARLOP), /LC SUR GRAD )
+C               SIGNE OPPOSE AFIN DE MINIMISER ET NON MAXIMISER
+C OUT RES     RESIDU LOCAL (SECOND MEMBRE)
+C OUT DRESDA  MATRICE TANGENTE
+C OUT ENER    ENERGIE (OPPOSE DU LAGRANGIEN AUGMENTE) AU POINT DE GAUSS
+C               SIGNE OPPOSE POUR LA MEME RAISON
+C VAR VIP     PARTIE NON LOCALE DES VARIABLES INTERNES
+C              IN  ESTIMATION (ITERATION PRECEDENTE)
+C              OUT CALCULEES
+C ----------------------------------------------------------------------
+
+      REAL*8 RBID(6), RES(4), DRESDA(4,4), GRAD(4)
+
+
+   
+C    RESOLUTION DU PROBLEME LOCAL
+
+      IF (COMPOR .EQ. 'ENDO_FRAGILE') THEN
+
+        CALL LCFRGV (NDIM  , TYPMOD, OPTION, IMATE , EPSM  , 
+     &               DEPS  , VIM   , RLAG  , CHAMP , LAGR  ,
+     &               PONDER, DVIDA , ENER  , RBID  , VIP   ,
+     &               RBID)
+
+      ELSE IF (COMPOR .EQ. 'RUPT_FRAG') THEN
+
+        CALL RUFRAG (NDIM, TYPMOD, IMATE, CARCRI, EPSM, DEPS,
+     &               VIM, RLAG, CHAMP, LAGR, PONDER, DVIDA, ENER,
+     &               VIP)
+
+      ELSE IF (COMPOR .EQ. 'VMIS_ISOT_LINE'
+     &    .OR. COMPOR .EQ. 'VMIS_ISOT_TRAC') THEN
+     
+        IF (TYPMOD(1).EQ.'C_PLAN') CALL UTMESS('F','EDCOMP',
+     &   'PAS DE MODEILISATION C_PLAN POUR LA PLASTICITE A GRADIENT')
+
+        CALL LCPLGR (COMPOR, NDIM, OPTION, IMATE, CARCRI, TREF, TM,
+     &          TP, EPSM, DEPS, SIGM, VIM, RLAG, CHAMP, LAGR, VIP,
+     &               ENER, DVIDA, PONDER, RBID)
+
+
+      ELSE
+        CALL UTMESS('F','EDCOMP','COMPORTEMENT NON PREVU POUR UN '
+     &               // 'ALGO DE LAGRANGIEN AUGMENTE')
+
+      END IF
+
+      END

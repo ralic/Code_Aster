@@ -1,0 +1,361 @@
+# MODIF  DATE 07/06/2002   AUTEUR DURAND C.DURAND 
+# TITRE RESSORT AVEC UNE NON-LINEARITE SOUMIS A UNE ACCELERATION
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+#
+DEBUT( CODE=_F(  NOM = 'SDND103A',NIV_PUB_WEB='INTERNET') )
+
+#
+K0=1.E+05
+
+M0=450.0
+
+X0=0.10
+
+A0=DEFI_VALEUR(  R8=EVAL("""X0 / 10.0 """))
+
+W0=DEFI_VALEUR(  R8=EVAL("""PI/4. """))
+
+V0=DEFI_VALEUR(  R8=EVAL("""W0 * A0 """))
+
+#
+PAS=0.02
+
+DER=18.
+
+METHOD1='EULER'
+
+METHOD2='DEVOGE'
+
+#
+# EMPLOI DE FORMULE POUR DEFINIR L ACCELERATION ET LA NON-LINEARITE----
+ACCE_X = FORMULE(REEL="""(REEL:INST) =
+A0*SIN(W0*INST) *
+                  (-W0**2 +(K0/M0)*(1. - ABS(A0*SIN(W0*INST))/X0))
+                """)
+NON_LIN = FORMULE(REEL="""(REEL:DX) =
+K0*DX*((ABS(DX)-1.E-6)/X0) """)
+
+NON_LIN=CALC_FONC_INTERP(reuse=NON_LIN,  FONCTION=NON_LIN,  VALE_R=1.E-6,
+                             INTERPOL='INT', PROL_DROITE='INTERPRE',
+                             PROL_GAUCHE='INTERPRE')
+
+# ---------------------------------------------------------------------
+MAILLAGE=LIRE_MAILLAGE( )
+
+#
+MODELE=AFFE_MODELE(  MAILLAGE=MAILLAGE,
+         AFFE=_F(  PHENOMENE = 'MECANIQUE', MODELISATION = 'DIS_T',
+                GROUP_MA = 'DISCRET')
+                    )
+
+CON_LIM=AFFE_CHAR_MECA(  MODELE=MODELE,
+               DDL_IMPO=_F(  TOUT = 'OUI',  DY = 0., DZ = 0.)
+                        )
+
+CARA_ELE=AFFE_CARA_ELEM(  MODELE=MODELE,DISCRET=(
+                _F(  MAILLE = 'NN', CARA = 'M_T_D_N', VALE = M0),
+                        _F(  MAILLE = 'NN', CARA = 'K_T_D_N',
+                          VALE = (K0, K0, K0, )))
+                         )
+
+#
+RIGI_ELE=CALC_MATR_ELEM(  MODELE=MODELE, OPTION='RIGI_MECA',
+                            CARA_ELEM=CARA_ELE,  CHARGE=CON_LIM
+                         )
+
+MASS_ELE=CALC_MATR_ELEM(  MODELE=MODELE, OPTION='MASS_MECA',
+                            CARA_ELEM=CARA_ELE,  CHARGE=CON_LIM
+                         )
+
+#
+NUME_DDL=NUME_DDL(  MATR_RIGI=RIGI_ELE )
+
+RIGIDITE=ASSE_MATRICE(  MATR_ELEM=RIGI_ELE,  NUME_DDL=NUME_DDL  )
+
+MASSE=ASSE_MATRICE(  MATR_ELEM=MASS_ELE,  NUME_DDL=NUME_DDL  )
+
+VIT_INIT=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_DEPL_R',
+MAILLAGE=MAILLAGE,
+                          NUME_DDL=NUME_DDL,
+                         AFFE=_F(  TOUT = 'OUI',  NOM_CMP = 'DX',  VALE = V0)
+                        )
+
+#
+MODE_MEC=MODE_ITER_SIMULT(  MATR_A=RIGIDITE,   MATR_B=MASSE,
+                 CALC_FREQ=_F(  OPTION = 'PLUS_PETITE',  NMAX_FREQ = 1)
+                           )
+
+TEST_RESU( RESU=_F(  RESULTAT = MODE_MEC,  PARA = 'FREQ',
+                  NUME_ORDRE = 1,  VALE = 2.37254)
+                )
+
+#
+MONO_X=CALC_CHAR_SEISME(  MATR_MASS=MASSE,   DIRECTION=(-1., 0., 0.,),
+                           MONO_APPUI='OUI'
+                         )
+
+#
+# PROJECTION DES MATRICES M ET K SUR LA BASE MODALE
+#---------------------------------------------------
+MACRO_PROJ_BASE(BASE=MODE_MEC,MATR_ASSE_GENE=(
+           _F( MATRICE = CO("MASS_GEN"), MATR_ASSE = MASSE),
+           _F( MATRICE = CO("RIGI_GEN"), MATR_ASSE = RIGIDITE)),VECT_ASSE_GENE=(
+           _F( VECTEUR = CO("VECT_GEN"), VECT_ASSE = VIT_INIT),
+           _F( VECTEUR = CO("VECT_X"), VECT_ASSE = MONO_X))
+               )
+
+#
+# CALCUL TRANSITOIRE PAR SUPERPOSITION MODALE
+# -------------------------------------------
+TRAN_GEE=DYNA_TRAN_MODAL(  MASS_GENE=MASS_GEN,   RIGI_GENE=RIGI_GEN,
+                 METHODE=METHOD1,
+                 ETAT_INIT=_F( VITE_INIT_GENE = VECT_GEN),
+                EXCIT=_F(  VECT_GENE = VECT_X,  FONC_MULT = ACCE_X),
+                RELA_EFFO_DEPL=_F(  NOEUD = 'N01',  NOM_CMP = 'DX',
+                                 RELATION = NON_LIN),
+                 INCREMENT=_F( INST_INIT = 0., INST_FIN = DER, PAS = PAS)
+                )
+
+#
+TRAN_GED=DYNA_TRAN_MODAL(  MASS_GENE=MASS_GEN,   RIGI_GENE=RIGI_GEN,
+                 METHODE=METHOD2,
+                 ETAT_INIT=_F( VITE_INIT_GENE = VECT_GEN),
+                EXCIT=_F(  VECT_GENE = VECT_X,  FONC_MULT = ACCE_X),
+                RELA_EFFO_DEPL=_F(  NOEUD = 'N01',  NOM_CMP = 'DX',
+                                 RELATION = NON_LIN),
+                 INCREMENT=_F( INST_INIT = 0., INST_FIN = DER, PAS = PAS)
+                )
+
+#
+TABLE=POST_DYNA_MODA_T(  RESU_GENE=TRAN_GED,
+                 RELA_EFFO_DEPL=_F(  NOEUD = 'N01', NOM_CMP = 'DX') )
+
+#
+TT=POST_DYNA_MODA_T(  RESU_GENE=TRAN_GEE,
+                 RELA_EFFO_DEPL=_F(  NOEUD = 'N01', NOM_CMP = 'DX') )
+
+TEST_TABLE(      TABLE=TT,FILTRE=(
+                   _F(  NOM_PARA = 'RELATION',
+                            VALE_K = 'NON_LIN'),
+                          _F(  NOM_PARA = 'PHASE',
+                            VALE_I = 1)),
+                 NOM_PARA='INST_INIT',
+                      VALE=2.00000E-02         )
+
+TEST_TABLE(      TABLE=TT,FILTRE=(
+                   _F(  NOM_PARA = 'RELATION',
+                            VALE_K = 'NON_LIN'),
+                          _F(  NOM_PARA = 'PHASE',
+                            VALE_I = 1)),
+                 NOM_PARA='INST_FIN',
+                      VALE=3.98000E+00         )
+
+TEST_TABLE(      TABLE=TT,FILTRE=(
+                   _F(  NOM_PARA = 'RELATION',
+                            VALE_K = 'NON_LIN'),
+                          _F(  NOM_PARA = 'PHASE',
+                            VALE_I = 1)),
+                 NOM_PARA='MAXI',
+                      VALE=0.010               )
+
+TEST_TABLE(      TABLE=TT,FILTRE=(
+                   _F(  NOM_PARA = 'RELATION',
+                            VALE_K = 'NON_LIN'),
+                          _F(  NOM_PARA = 'PHASE',
+                            VALE_I = 1)),
+                 NOM_PARA='INST_MAXI',
+                     VALE=2.00000E+00          )
+
+TEST_TABLE(      TABLE=TT,FILTRE=(
+                   _F(  NOM_PARA = 'RELATION',
+                            VALE_K = 'NON_LIN'),
+                          _F(  NOM_PARA = 'PHASE',
+                            VALE_I = 4)),
+                 NOM_PARA='MAXI',
+                     VALE=-0.010               )
+
+TEST_TABLE(      TABLE=TT,FILTRE=(
+                   _F(  NOM_PARA = 'RELATION',
+                            VALE_K = 'NON_LIN'),
+                          _F(  NOM_PARA = 'PHASE',
+                            VALE_I = 5)),
+                 NOM_PARA='MAXI',
+                      VALE=0.010               )
+
+#
+L_RECU=DEFI_LIST_REEL(  DEBUT=0.,INTERVALLE=(
+                      _F(  JUSQU_A = 2.,   PAS = 2.),
+                      _F(  JUSQU_A = DER,  PAS = 4.)) )
+
+#
+# RECUPERATION DES DEPLACEMENTS RELATIFS CALCULES
+# -----------------------------------------------
+F_E=RECU_FONCTION(  NOEUD='N01',  NOM_CMP='DX',  NOM_CHAM='DEPL',
+            RESU_GENE=TRAN_GEE,    LIST_INST=L_RECU
+                    )
+
+F_D=RECU_FONCTION(  NOEUD='N01',  NOM_CMP='DX',  NOM_CHAM='DEPL',
+            RESU_GENE=TRAN_GED,    LIST_INST=L_RECU
+                    )
+
+#
+TEST_FONCTION(VALEUR=(
+     _F(  FONCTION = F_E, VALE_PARA = 2., VALE_REFE = 1.E-02),
+            _F(  FONCTION = F_E, VALE_PARA = 6., VALE_REFE = -1.E-02),
+            _F(  FONCTION = F_E, VALE_PARA = 10., VALE_REFE = 1.E-02),
+            _F(  FONCTION = F_E, VALE_PARA = 14., VALE_REFE = -1.E-02),
+            _F(  FONCTION = F_E, VALE_PARA = 18., VALE_REFE = 1.E-02))
+             )
+
+#
+TEST_FONCTION(VALEUR=(
+     _F(  FONCTION = F_D, VALE_PARA = 2., VALE_REFE = 1.E-02),
+            _F(  FONCTION = F_D, VALE_PARA = 6., VALE_REFE = -1.E-02),
+            _F(  FONCTION = F_D, VALE_PARA = 10., VALE_REFE = 1.E-02),
+            _F(  FONCTION = F_D, VALE_PARA = 14., VALE_REFE = -1.E-02),
+            _F(  FONCTION = F_D, VALE_PARA = 18., VALE_REFE = 1.E-02))
+             )
+
+#
+
+TR_PH_D=REST_BASE_PHYS(  RESU_GENE=TRAN_GEE,  LIST_INST=L_RECU,
+                              PRECISION=1.E-06,   NOM_CHAM='DEPL'    )
+
+#
+
+DEPL_R = FORMULE(REEL="""(REEL:INST) =
+A0 * SIN(W0*INST) """)
+
+TEST_RESU(RESU=( _F(  RESULTAT = MODE_MEC,  PARA = 'FREQ',
+                    NUME_ORDRE = 1,       VALE = 2.37254),
+           _F(  RESULTAT = TR_PH_D,  NUME_ORDRE = 1,  NOM_CHAM = 'DEPL',
+             NOEUD = 'N01', NOM_CMP = 'DX', VALE = EVAL("""DEPL_R( 2.) """)),
+           _F(  RESULTAT = TR_PH_D,  NUME_ORDRE = 2,  NOM_CHAM = 'DEPL',
+             NOEUD = 'N01', NOM_CMP = 'DX', VALE = EVAL("""DEPL_R( 6.) """)),
+           _F(  RESULTAT = TR_PH_D,  NUME_ORDRE = 3,  NOM_CHAM = 'DEPL',
+             NOEUD = 'N01', NOM_CMP = 'DX', VALE = EVAL("""DEPL_R( 10.) """)),
+           _F(  RESULTAT = TR_PH_D,  NUME_ORDRE = 4,  NOM_CHAM = 'DEPL',
+             NOEUD = 'N01', NOM_CMP = 'DX', VALE = EVAL("""DEPL_R( 14.) """)),
+           _F(  RESULTAT = TR_PH_D,  NUME_ORDRE = 5,  NOM_CHAM = 'DEPL',
+             NOEUD = 'N01', NOM_CMP = 'DX', VALE = EVAL("""DEPL_R( 18.) """)))
+           )
+
+#
+
+TR_PH_V=REST_BASE_PHYS(  RESU_GENE=TRAN_GEE,  LIST_INST=L_RECU,
+                              PRECISION=1.E-06,   NOM_CHAM='VITE'    )
+
+#
+
+VITE_R = FORMULE(REEL="""(REEL:INST) =
+A0 * W0 * COS(W0*INST) """)
+
+TEST_RESU(RESU=( _F(  RESULTAT = MODE_MEC,  PARA = 'FREQ',
+                    NUME_ORDRE = 1,       VALE = 2.37254),
+           _F(  RESULTAT = TR_PH_V,  NUME_ORDRE = 1,  NOM_CHAM = 'VITE',
+             NOEUD = 'N01', NOM_CMP = 'DX', CRITERE = 'ABSOLU',
+             VALE = EVAL("""VITE_R( 2.) """)),
+           _F(  RESULTAT = TR_PH_V,  NUME_ORDRE = 2,  NOM_CHAM = 'VITE',
+             NOEUD = 'N01', NOM_CMP = 'DX', CRITERE = 'ABSOLU',
+             VALE = EVAL("""VITE_R( 6.) """)),
+           _F(  RESULTAT = TR_PH_V,  NUME_ORDRE = 3,  NOM_CHAM = 'VITE',
+             NOEUD = 'N01', NOM_CMP = 'DX', CRITERE = 'ABSOLU',
+             VALE = EVAL("""VITE_R( 10.) """)),
+           _F(  RESULTAT = TR_PH_V,  NUME_ORDRE = 4,  NOM_CHAM = 'VITE',
+             NOEUD = 'N01', NOM_CMP = 'DX', CRITERE = 'ABSOLU',
+             VALE = EVAL("""VITE_R( 14.) """)),
+           _F(  RESULTAT = TR_PH_V,  NUME_ORDRE = 5,  NOM_CHAM = 'VITE',
+             NOEUD = 'N01', NOM_CMP = 'DX', CRITERE = 'ABSOLU',
+             VALE = EVAL("""VITE_R( 18.) """)))
+           )
+
+#
+
+TR_PH_A=REST_BASE_PHYS(  RESU_GENE=TRAN_GEE,  LIST_INST=L_RECU,
+                              PRECISION=1.E-06,   NOM_CHAM='ACCE'    )
+
+#
+
+ACCE_R = FORMULE(REEL="""(REEL:INST) =
+-A0*W0*W0*SIN(W0*INST) """)
+
+TEST_RESU(RESU=( _F(  RESULTAT = MODE_MEC,  PARA = 'FREQ',
+                    NUME_ORDRE = 1,       VALE = 2.37254),
+           _F(  RESULTAT = TR_PH_A,  NUME_ORDRE = 1,  NOM_CHAM = 'ACCE',
+             NOEUD = 'N01', NOM_CMP = 'DX', VALE = EVAL("""ACCE_R( 2.) """)),
+           _F(  RESULTAT = TR_PH_A,  NUME_ORDRE = 2,  NOM_CHAM = 'ACCE',
+             NOEUD = 'N01', NOM_CMP = 'DX', VALE = EVAL("""ACCE_R( 6.) """)),
+           _F(  RESULTAT = TR_PH_A,  NUME_ORDRE = 3,  NOM_CHAM = 'ACCE',
+             NOEUD = 'N01', NOM_CMP = 'DX', VALE = EVAL("""ACCE_R( 10.) """)),
+           _F(  RESULTAT = TR_PH_A,  NUME_ORDRE = 4,  NOM_CHAM = 'ACCE',
+             NOEUD = 'N01', NOM_CMP = 'DX', VALE = EVAL("""ACCE_R( 14.) """)),
+           _F(  RESULTAT = TR_PH_A,  NUME_ORDRE = 5,  NOM_CHAM = 'ACCE',
+             NOEUD = 'N01', NOM_CMP = 'DX', VALE = EVAL("""ACCE_R( 18.) """)))
+           )
+
+#=======================================================================
+
+TRAN_GE3=DYNA_TRAN_MODAL(  MASS_GENE=MASS_GEN,   RIGI_GENE=RIGI_GEN,
+                        METHODE=METHOD1,
+                        ETAT_INIT=_F( VITE_INIT_GENE = VECT_GEN),
+                       EXCIT=_F(  VECT_GENE = VECT_X, FONC_MULT = ACCE_X),
+                       RELA_EFFO_DEPL=_F(  NOEUD = 'N01',  NOM_CMP = 'DX',
+                                        RELATION = NON_LIN),
+                        INCREMENT=_F( INST_INIT = 0.,  INST_FIN = DER)
+                       )
+
+TRAN_GE4=DYNA_TRAN_MODAL(  MASS_GENE=MASS_GEN,   RIGI_GENE=RIGI_GEN,
+                        METHODE=METHOD2,
+                        ETAT_INIT=_F( VITE_INIT_GENE = VECT_GEN),
+                       EXCIT=_F(  VECT_GENE = VECT_X, FONC_MULT = ACCE_X),
+                       RELA_EFFO_DEPL=_F(  NOEUD = 'N01',  NOM_CMP = 'DX',
+                                        RELATION = NON_LIN),
+                        INCREMENT=_F( INST_INIT = 0.,  INST_FIN = DER)
+                       )
+
+#
+
+F3=RECU_FONCTION(  RESU_GENE=TRAN_GE3,  NOM_CHAM='DEPL',
+                       NOEUD='N01',  NOM_CMP='DX',  LIST_INST=L_RECU,
+                       INTERP_NUME='LIN',      INTERPOL='LIN'
+                    )
+
+F4=RECU_FONCTION(  RESU_GENE=TRAN_GE4,  NOM_CHAM='DEPL',
+                       NOEUD='N01',  NOM_CMP='DX',  LIST_INST=L_RECU,
+                       INTERP_NUME='LIN',      INTERPOL='LIN'
+                    )
+
+#
+
+TEST_FONCTION(VALEUR=( 
+               _F(  FONCTION = F3, VALE_PARA = 2.,  VALE_REFE = 1.E-02),
+               _F(  FONCTION = F3, VALE_PARA = 6.,  VALE_REFE = -1.E-02),
+               _F(  FONCTION = F3, VALE_PARA = 10.,  VALE_REFE = 1.E-02),
+               _F(  FONCTION = F3, VALE_PARA = 14.,  VALE_REFE = -1.E-02),
+               _F(  FONCTION = F3, VALE_PARA = 18.,  VALE_REFE = 1.E-02)) )
+
+TEST_FONCTION(VALEUR=( 
+               _F(  FONCTION = F4, VALE_PARA = 2.,  VALE_REFE = 1.E-02),
+               _F(  FONCTION = F4, VALE_PARA = 6.,  VALE_REFE = -1.E-02),
+               _F(  FONCTION = F4, VALE_PARA = 10.,  VALE_REFE = 1.E-02),
+               _F(  FONCTION = F4, VALE_PARA = 14.,  VALE_REFE = -1.E-02),
+               _F(  FONCTION = F4, VALE_PARA = 18.,  VALE_REFE = 1.E-02)) )
+
+FIN( )
+#

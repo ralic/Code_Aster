@@ -1,0 +1,103 @@
+      SUBROUTINE EPS1MC (MODELI,NNO,NDIM,NBSIG,NPG,NI,DNIDX,DNIDY,DNIDZ,
+     +                   POIDS,XYZ,DEPL,NHARM,EPS1)
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ELEMENTS  DATE 19/08/97   AUTEUR CIBHHGB G.BERTRAND 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+C.======================================================================
+      IMPLICIT REAL*8 (A-H,O-Z)
+C
+C      EPS1MC   -- CALCUL DES  DEFORMATIONS AUX POINTS D'INTEGRATION
+C                  POUR LES ELEMENTS ISOPARAMETRIQUES 
+C
+C   ARGUMENT        E/S  TYPE         ROLE
+C    MODELI         IN     K8       MODELISATION (AXI,FOURIER,...)
+C    NNO            IN     I        NOMBRE DE NOEUDS DE L'ELEMENT
+C    NDIM           IN     I        DIMENSION DE L'ELEMENT (2 OU 3)
+C    NBSIG          IN     I        NOMBRE DE CONTRAINTES ASSOCIE
+C                                   A L'ELEMENT
+C    NPG            IN     I        NOMBRE DE POINTS D'INTEGRATION
+C                                   DE L'ELEMENT
+C    NI(1)          IN     R        FONCTIONS DE FORME
+C    DNIDX(1)       IN     R        DERIVEES DES FONCTIONS DE FORME
+C                                   / X SUR L'ELEMENT DE REFERENCE
+C    DNIDY(1)       IN     R        DERIVEES DES FONCTIONS DE FORME
+C                                   / Y SUR L'ELEMENT DE REFERENCE
+C    DNIDZ(1)       IN     R        DERIVEES DES FONCTIONS DE FORME
+C                                   / Z SUR L'ELEMENT DE REFERENCE
+C    POIDS(1)       IN     R        POIDS D'INTEGRATION
+C    XYZ(1)         IN     R        COORDONNEES DES CONNECTIVITES
+C    DEPL(1)        IN     R        VECTEUR DES DEPLACEMENTS SUR 
+C                                   L'ELEMENT 
+C    NHARM          IN     R        NUMERO D'HARMONIQUE
+C    EPS1(1)        OUT    R        DEFORMATIONS DU PREMIER ORDRE
+C                                   AUX POINTS D'INTEGRATION
+C
+C.========================= DEBUT DES DECLARATIONS ====================
+C -----  ARGUMENTS
+           CHARACTER*8  MODELI
+           REAL*8       NI(1),DNIDX(1), DNIDY(1), DNIDZ(1), POIDS(1)
+           REAL*8       XYZ(1), DEPL(1), EPS1(1)
+           REAL*8       NHARM
+C -----  VARIABLES LOCALES
+           REAL*8       B(486), JACGAU
+C.========================= DEBUT DU CODE EXECUTABLE ==================
+C
+C --- INITIALISATIONS :
+C     -----------------
+      ZERO   = 0.0D0
+      UNDEMI = 0.5D0
+      NBINCO = NDIM*NNO
+C
+      DO 10 I = 1, NBSIG*NPG
+         EPS1(I) = ZERO
+ 10   CONTINUE
+C
+C --- CALCUL DES DEFORMATIONS AUX POINTS D'INTEGRATION
+C ---  BOUCLE SUR LES POINTS D'INTEGRATION 
+C      -----------------------------------
+      DO 20 IGAU = 1, NPG 
+C
+C  --      CALCUL DE LA MATRICE B RELIANT LES DEFORMATIONS DU 
+C  --      PREMIER ORDRE AUX DEPLACEMENTS AU POINT D'INTEGRATION 
+C  --      COURANT : (EPS_1) = (B)*(UN)
+C          ----------------------------
+          CALL BMATMC(IGAU, NBSIG, MODELI, XYZ, NI, DNIDX, DNIDY, 
+     +                DNIDZ, POIDS, NNO, NHARM, JACGAU, B)
+C
+C ---      CALCUL DU VECTEUR DES COMPOSANTES DU TENSEUR DES
+C ---      DEFORMATIONS AU POINT D'INTEGRATION COURANT
+C          -------------------------------------------
+          DO 30 I = 1, NBSIG 
+C
+             S = ZERO
+C
+             DO 40 J = 1, NBINCO
+               S = S + DEPL(J)*B((J-1)*NBSIG+I)
+  40         CONTINUE
+C
+             EPS1(NBSIG*(IGAU-1)+I) = S
+  30      CONTINUE
+C
+          DO 50 I = 4, NBSIG 
+             EPS1(NBSIG*(IGAU-1)+I) = UNDEMI*EPS1(NBSIG*(IGAU-1)+I)
+  50      CONTINUE
+C
+  20  CONTINUE
+C
+C.============================ FIN DE LA ROUTINE ======================
+      END

@@ -1,0 +1,242 @@
+# MODIF  DATE 04/04/2000   AUTEUR DURAND C.DURAND 
+# TITRE MODES PROPRES D'UNE POUTRE DROITE AVEC EXCENTRICITE  
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+# DU CENTRE DE TORSION
+#======================================================================
+DEBUT( CODE=_F(  NOM = 'SDLL400A',NIV_PUB_WEB='INTERNET') )
+
+#
+MA=LIRE_MAILLAGE(    )
+
+MA=DEFI_GROUP( reuse=MA,   MAILLAGE=MA,
+  CREA_GROUP_MA=_F(  NOM = 'TOUT', TOUT = 'OUI'))
+
+#
+MO=AFFE_MODELE(    MAILLAGE=MA,
+                        AFFE=_F( TOUT = 'OUI',
+                              PHENOMENE = 'MECANIQUE',
+                              MODELISATION = 'POU_D_E')
+                 )
+
+#
+MATR=DEFI_MATERIAU(    ELAS=_F( E = 2.07E11, 
+                                NU = 0.3E0, 
+                                RHO = 7850.E0) 
+                      )
+
+#
+CHMAT=AFFE_MATERIAU(    MAILLAGE=MA,
+                              AFFE=_F( TOUT = 'OUI',
+                                    MATER = MATR)
+                      )
+
+#
+#--- DEFINITION DES CARACTERISTIQUES ELEMENTAIRES ---------------------
+#
+CAREL=AFFE_CARA_ELEM(    MODELE=MO,
+                           POUTRE=_F( GROUP_MA = 'TOUT',
+                                   SECTION = 'GENERALE',
+                                   CARA = ('A',  'IY', 'IZ',
+                                              'EY', 'EZ', 'JX',
+                                              'AY', 'AZ',
+                                             ),
+                                   VALE = (6.117E-3, 5.022E-5, 5.022E-5,
+                                              0.E0,     -0.2215E0, 1.28E-7,
+                                              3.65E0,   0.E0,
+                                              ))
+                       )
+
+#
+#--- CONDITIONS APPUYE-APPUYE NOEUDS N1 N2 ET PROBLEME PLAN 2D --------
+#
+CHARG=AFFE_CHAR_MECA(      MODELE=MO,DDL_IMPO=(
+                           _F( TOUT = 'OUI',
+                                     DZ = 0.,
+                                     DRY = 0.),
+                                    _F( NOEUD = 'N1',
+                                     DX = 0.),
+                                    _F( NOEUD = 'N2',
+                                     DX = 0.)),LIAISON_DDL=(
+                        _F( NOEUD = ('N1', 'N1',),
+                                     DDL = ('DY', 'DRX',),
+                                     COEF_MULT = (1.,  -0.2215E0,),
+                                     COEF_IMPO = 0.),
+                        _F( NOEUD = ('N2', 'N2',),
+                                     DDL = ('DY', 'DRX',),
+                                     COEF_MULT = (1.,  -0.2215E0,),
+                                     COEF_IMPO = 0.))
+                       )
+
+#
+#--- MATRICE DE RAIDEUR  EXPRIMEE SUR L'AXE DE TORSION -----------------
+#
+MELK=CALC_MATR_ELEM(        MODELE=MO,
+                              CHARGE=CHARG,
+                              OPTION='RIGI_MECA',
+                          CHAM_MATER=CHMAT,
+                           CARA_ELEM=CAREL
+                      )
+
+#
+#--- MATRICE DE MASSE EXPRIMEE SUR L'AXE DE TORSION -------------------
+#
+MELM=CALC_MATR_ELEM(        MODELE=MO,
+                              CHARGE=CHARG,
+                              OPTION='MASS_MECA',
+                          CHAM_MATER=CHMAT,
+                           CARA_ELEM=CAREL
+                      )
+
+#
+#--- ASSEMBLAGE -------------------------------------------------------
+#
+NUMP=NUME_DDL(    MATR_RIGI=MELK )
+
+#
+MATASSK=ASSE_MATRICE(    MATR_ELEM=MELK,
+                            NUME_DDL=NUMP
+                       )
+
+#
+MATASSM=ASSE_MATRICE(    MATR_ELEM=MELM,
+                            NUME_DDL=NUMP
+                       )
+
+#
+#--- CALCUL DES MODES PROPRES, IL Y A UN MODE RIGIDE ------------------ 
+#
+MODES=MODE_ITER_SIMULT(       MATR_A=MATASSK,
+                                MATR_B=MATASSM,
+                               METHODE='JACOBI',
+                             OPTION='SANS',
+                             CALC_FREQ=_F( OPTION = 'CENTRE',
+                                        FREQ = 10.,
+                                        NMAX_FREQ = 10)
+                          )
+
+#
+# TEST_RESU 
+# 
+# REFERENCE : CODE CAILLOU
+#
+# MODES PROPRES
+#
+TEST_RESU(  RESU=_F( RESULTAT = MODES,
+                   PARA = 'FREQ',
+                   CRITERE = 'RELATIF',
+                   PRECISION = 0.001,
+                   NUME_ORDRE = 2,
+                   VALE = 3.79432)
+          )
+
+#
+TEST_RESU(  RESU=_F( RESULTAT = MODES,
+                   PARA = 'FREQ',
+                   CRITERE = 'RELATIF',
+                   PRECISION = 0.003,
+                   NUME_ORDRE = 3,
+                   VALE = 7.43340)
+          )
+
+#
+TEST_RESU(  RESU=_F( RESULTAT = MODES,
+                   PARA = 'FREQ',
+                   CRITERE = 'RELATIF',
+                   PRECISION = 0.006,
+                   NUME_ORDRE = 4,
+                   VALE = 11.4450)
+          )
+
+#
+TEST_RESU(  RESU=_F( RESULTAT = MODES,
+                   PARA = 'FREQ',
+                   CRITERE = 'RELATIF',
+                   PRECISION = 0.011,
+                   NUME_ORDRE = 5,
+                   VALE = 15.3439)
+          )
+
+#
+TEST_RESU(  RESU=_F( RESULTAT = MODES,
+                   PARA = 'FREQ',
+                   CRITERE = 'RELATIF',
+                   PRECISION = 0.017,
+                   NUME_ORDRE = 6,
+                   VALE = 19.4766)
+          )
+
+#
+#
+# TEST_RESU 
+# 
+# REFERENCE : DYNAMIC ANALYSIS OF A CHANNEL BEAM DUE 
+#             TO A MOVING LOAD. J.
+#             OF SOUND AND VIBRATION,
+#            VOL. 188, N 3, PP 337-345, 1995.
+#
+# MODES PROPRES
+#
+TEST_RESU(  RESU=_F( RESULTAT = MODES,
+                   PARA = 'FREQ',
+                   CRITERE = 'RELATIF',
+                   PRECISION = 0.001,
+                   NUME_ORDRE = 2,
+                   VALE = 3.797)
+          )
+
+#
+TEST_RESU(  RESU=_F( RESULTAT = MODES,
+                   PARA = 'FREQ',
+                   CRITERE = 'RELATIF',
+                   PRECISION = 0.044,
+                   NUME_ORDRE = 3,
+                   VALE = 7.788)
+          )
+
+#
+TEST_RESU(  RESU=_F( RESULTAT = MODES,
+                   PARA = 'FREQ',
+                   CRITERE = 'RELATIF',
+                   PRECISION = 0.02,
+                   NUME_ORDRE = 4,
+                   VALE = 11.74)
+          )
+
+#
+TEST_RESU(  RESU=_F( RESULTAT = MODES,
+                   PARA = 'FREQ',
+                   CRITERE = 'RELATIF',
+                   PRECISION = 0.012,
+                   NUME_ORDRE = 5,
+                   VALE = 15.68)
+          )
+
+#
+TEST_RESU(  RESU=_F( RESULTAT = MODES,
+                   PARA = 'FREQ',
+                   CRITERE = 'RELATIF',
+                   PRECISION = 0.01,
+                   NUME_ORDRE = 6,
+                   VALE = 19.62)
+          )
+
+#
+FIN( )
+#
+#

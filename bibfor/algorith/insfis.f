@@ -1,0 +1,273 @@
+      SUBROUTINE INSFIS (EPSD,DEPS,SIGD,DSIG,SIGF,VIND,VINF,DSDE,
+     1  JFIS1 , SCT , IMAT , NMAT , MATERF , MOD)
+        IMPLICIT REAL*8 (A-H,O-Z)
+C       -----------------------------------------------------------
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 27/03/2002   AUTEUR VABHHTS J.PELLET 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+C       -----------------------------------------------------------
+C       NADAI_B :  GESTION DE LA FISSURATION DU BETON
+C                  JFIS1 = 0 : LE MATERIAU ETAIT NON FISSURE A  T
+C                  JFIS1 = 1 : LE MATERIAU ETAIT FISSURE A  T
+C       IN  SIGD   :  CONTRAINTE A T
+C       IN  EPSD   :  DEFORMATION A T
+C       IN  DEPS   :  INCREMENT DE DEFORMATION TOTALE
+C       IN  VIND   :  VARIABLES INTERNES A T
+C       IN  IMAT   :  ADRESSE DU MATERIAU CODE
+C       IN  NMAT   :  DIMENSION MATER
+C       IN  MATERF :  COEFFICIENTS MATERIAU A T+DT
+C       OUT JFIS1  :  INDICATEUR DE FISSURATION (0 = NON, 1 = OUI)
+C       OUT DSDE   :  MATRICE TANGENTE (BETON FISSURE)
+C       OUT VINF   :  VARIABLES INTERNES A T+DT
+C       OUT SIGF   :  CONTRAINTE A T+DT ( TAU = TAU * SQRT(2) )
+C       -----------------------------------------------------------
+        INTEGER   NMAT , IMAT , NDT , NDI , JFIS1
+        INTEGER   IPLA1 , IPLA2 , IFISU1 , IFISU2 , JFISU , JFISU2
+        REAL*8    VIND(*), VINF(*) , ZERO , UN
+        PARAMETER       ( ZERO     = 0.D0   )
+        PARAMETER       ( UN       = 1.D0   )
+C
+        CHARACTER*8     MOD
+        REAL*8    SIGF(6)    , SIGD(6)  ,  DSIG(6) , DSDE(6,6)
+        REAL*8    EPSD(6)    , DEPS(6)  ,  EPSFI(6)
+        REAL*8    MATERF(NMAT,2), E , NU, LCS, LTR, KRUPC,SEUIL0
+        REAL*8    KPIC , KRUPT , FACTC , RAC2  , SCT , SIGMRX
+        REAL*8    SI0(3) , ST0(3) , STRNR(3) , S1(3) , ST(3)
+        REAL*8    SI(3), DSI(3), DST(3), DSI0X(3), ST0X(3), SI0X(3)
+        REAL*8    OUV1 , OUV2 , TETA , PHI  , RTM1 , RTM2 , EDC1 , EDC2
+        REAL*8    ETS1 , ETS2 , EDT1 , EDT2 , TANG1, TANG2
+        REAL*8    EQSTR1, EPSEQ1, EPST1, EPST2, EQSTR2, EPSEQ2
+        REAL*8    EPSC1 , EPSC2 , DEFR1, DEFR2
+        REAL*8    ALRT1 , ALRT2 , D33 , PENT , DST0(3)
+C       ------------------------------------------------------------
+C  TEMPORAIRE
+        INTEGER   ICC , ICU
+        REAL*8  EX,EXX,RBB,RB,ALPHA,ALPH,EPO1,EPO,PXY
+        REAL*8  EMAX,EMAXX,EPSU,EPSUT,FTC,FLIM,SCT1
+      COMMON /DBETO/ POU1(4),RB,ALPHA,EX,PXY,EMAX,EPSU,FTC,FLIM,
+     &    EPO,EPO1,POU2(6),ICC,IPOU1(9)
+      COMMON /CARBE/ RTM1,RTM2,TETA,SCT1,EDC1,EDC2,ETS1,ETS2,EDT1,EDT2,
+     &               TANG1,TANG2,OUV2,OUV1,POU(6),IPLA2,IPOU(9)
+      COMMON /CYCLIC/ EQSTR1,EPSEQ1,EPST1,EPST2,EQSTR2,EPSEQ2,EPSC1,
+     &  EPSC2,DEFR1,DEFR2,IPLA1,IFISU2,IFISU1,JFISU,JFISU2
+      COMMON /CARMA/ EXX,RBB,ALPH,EMAXX,PENT,ICU
+C       ------------------------------------------------------------
+        COMMON /TDIM/   NDT , NDI
+C       ------------------------------------------------------------
+C
+        RAC2 = SQRT(2.D0)
+        E       = MATERF(1,1)
+        NU      = MATERF(2,1)
+        LCS     = MATERF(1,2)
+        LTR     = MATERF(2,2)
+        SEUIL0  = MATERF(3,2)
+        KPIC    = MATERF(4,2)
+        KRUPC   = MATERF(5,2)
+        KRUPT   = MATERF(6,2)
+        FACTC   = MATERF(7,2)
+C
+      CALL LCINVN (6 , ZERO , EPSFI)
+      CALL LCINVN (3 , ZERO , SI    )
+      CALL LCINVN (3 , ZERO , DSI   )
+      CALL LCINVN (3 , ZERO , DST   )
+      CALL LCINVN (3 , ZERO , DSI0X )
+      CALL LCINVN (3 , ZERO , ST0X  )
+      CALL LCINVN (3 , ZERO , SI0X  )
+      CALL LCINVN (3 , ZERO , SI0   )
+      CALL LCINVN (3 , ZERO , ST0   )
+      CALL LCEQVN (6 , EPSD , EPSFI)
+      CALL LCINVN (3 , ZERO , DST0  )
+C
+      IF( JFIS1 .EQ. 1 ) THEN
+      SCT = ZERO
+      EPSFI(1) = VIND(3)
+      EPSFI(2) = VIND(4)
+      EPSFI(3) = VIND(5)
+      ENDIF
+C
+C  CORRESPONDANCE DES VARIABLES INTERNES
+C
+      TETA    = VIND(6)
+      TANG2   = VIND(7)
+      TANG1   = VIND(8)
+      EPST2   = VIND(9)
+      EPST1   = VIND(10)
+      ETS2    = VIND(11)
+      ETS1    = VIND(12)
+      RTM2    = VIND(13)
+      RTM1    = VIND(14)
+      DEFR2   = VIND(15)
+      DEFR1   = VIND(16)
+      EPSC2   = VIND(17)
+      EPSC1   = VIND(18)
+      EDT2    = VIND(19)
+      EDT1    = VIND(20)
+      EDC2    = VIND(21)
+      EDC1    = VIND(22)
+      EQSTR2  = VIND(23)
+      EQSTR1  = VIND(24)
+      EPSEQ2  = VIND(25)
+      EPSEQ1  = VIND(26)
+      IPLA2   = INT(VIND(27))
+      IPLA1   = INT(VIND(28))
+      IFISU2  = INT(VIND(29))
+      IFISU1  = INT(VIND(30))
+      JFISU2  = INT(VIND(31))
+      JFISU   = INT(VIND(32))
+C
+      DO 10 I = 1,3
+      DST0(I)  = ( UN - SCT ) * DEPS(I)
+      DSI0X(I) = ( UN - SCT ) * DSIG(I)
+      SI0X(I)  = SIGD(I) + SCT  * DSIG(I)
+      ST0X(I)  = EPSFI(I) +  SCT  * DEPS(I)
+   10 CONTINUE
+      PHI = TETA - 90.D0
+C
+C ON TOURNE LES DEFORMATIONS ET CONTRAINTES DANS LE REPERE
+C DE FISSURATION
+C
+      CALL INSCRF( SI0X  , PHI , SI0 )
+      CALL INSCRF( DSI0X , PHI , DSI )
+      CALL INSDRF( ST0X  , PHI , ST0 )
+      CALL INSDRF( DST0  , PHI , DST )
+C       ------------------------------------------------------------
+C  AFFECTATION  DES COMMON DBETO / CYCLIC / CARMA / CARBE
+C
+      EX = E
+      EXX = E
+      RBB = LCS
+      RB = LCS
+      ALPHA = LTR / LCS
+      ALPH = ALPHA
+      EPO1 = KPIC +  LCS / E
+      EPO = EPO1
+      ICC = 3
+      ICU = 3
+      PXY = NU
+      EMAX = KRUPC
+      EMAXX = KRUPC
+      EPSU = KRUPT
+      EPSUT = KRUPT
+      FTC = FACTC
+      FLIM = SEUIL0
+      SCT1 = SCT
+C       ------------------------------------------------------------
+C
+      IF( JFIS1 .EQ. 0 ) THEN
+C
+C  INITIALISATIONS DES VARIABLES INTERNES (DIRECTION 1)
+C
+      CALL INSPIF (SI0(1),ST0(1),ETS1,EDC1,EPST1,IFISU1,JFISU,
+     1    EDT1,RTM1,EPSC1,DEFR1,TANG1,IPLA1,EQSTR1,EPSEQ1,1)
+C
+C  INITIALISATIONS DES VARIABLES INTERNES (DIRECTION 2)
+C
+      CALL INSPIF (SI0(2),ST0(2),ETS2,EDC2,EPST2,IFISU2,JFISU2,
+     1    EDT2,RTM2,EPSC2,DEFR2,TANG2,IPLA2,EQSTR2,EPSEQ2,2)
+C
+      SI0(3) = ZERO
+      ENDIF
+C
+      ST(1)  = ST0(1) + DST(1)
+      ST(2)  = ST0(2) + DST(2)
+      ST(3)  = ST0(3) + DST(3)
+C
+C CALCUL DE L ETAT DE CONTRAINTES A T+DT DIR 1  DIR 2 (REPERE FISSURE)
+C ET DES VARIABLES INTERNES A T+DT
+C
+      PENT   = ETS1
+      SIGMRX = SI0(1) + DSI(1)
+      CALL INSORT (ST0(1),SI0(1),DST(1),SI(1),IFISU1,IPLA1,EQSTR1,
+     1 EPSEQ1,JFISU,TANG1,EPST1,EPSC1,EDC1,EDT1,RTM1,DEFR1,SIGMRX,1)
+C
+      PENT   = ETS2
+      SIGMRX = SI0(2) + DSI(2)
+      CALL INSORT (ST0(2),SI0(2),DST(2),SI(2),IFISU2,IPLA2,EQSTR2,
+     1 EPSEQ2,JFISU2,TANG2,EPST2,EPSC2,EDC2,EDT2,RTM2,DEFR2,SIGMRX,2)
+C
+C CALCUL DES OUVERTURES DE FISSURES DIR 1 ET DIR 2
+C
+      IF( IFISU1 .EQ. 1 ) THEN
+        OUV1 = ST(1) - DEFR1 - KRUPT
+        IF( OUV1 .LT. ZERO) OUV1 = ZERO
+      ENDIF
+      IF( IFISU2 .EQ. 1 ) THEN
+        OUV2 = ST(2) - DEFR2 - KRUPT
+        IF( OUV2 .LT. ZERO) OUV2 = ZERO
+      ENDIF
+C
+C TRAITEMENT DU CISAILLEMENT
+C
+      ALRT1 = 2.D0 * EPSUT
+      ALRT2 = 4.D0 * EPSUT
+      IF( OUV1 .GT. ALRT1 .OR. OUV2 .GT. ALRT1) FTC = ZERO
+      IF (OUV1 .GT. ALRT2 .OR. OUV2 .GT. ALRT2) SI0(3) = ZERO
+      D33 = E /(UN+NU) / 2.D0
+      SI(3) = SI0(3) + FTC * D33 * DST(3)
+C
+C ON TOURNE LES DEFORMATIONS ET CONTRAINTES DANS LE REPERE GLOBAL
+C
+      CALL INSDRG( ST , PHI , STRNR )
+      CALL INSCRG( SI , PHI , S1    )
+C
+C CALCUL DE DSDE (MATRICE TANGENTE BETON FISSURE) REPERE GLOBAL
+C
+      CALL INSDPF( SI,SI0,DST,IMAT,NMAT,MATERF,TETA,FTC,DSDE,MOD )
+C
+C ACTUALISATION DE SIGF ET VINF
+C
+      SIGF(1) = S1(1)
+      SIGF(2) = S1(2)
+      SIGF(3) = ZERO
+      SIGF(4) = S1(3) * RAC2
+C
+      VINF(3) = STRNR(1)
+      VINF(4) = STRNR(2)
+      VINF(5) = STRNR(3)
+      VINF(6) = TETA
+      VINF(7) = TANG2
+      VINF(8) = TANG1
+      VINF(9) = EPST2
+      VINF(10)= EPST1
+      VINF(11)= ETS2
+      VINF(12)= ETS1
+      VINF(13)= RTM2
+      VINF(14)= RTM1
+      VINF(15)= DEFR2
+      VINF(16)= DEFR1
+      VINF(17)= EPSC2
+      VINF(18)= EPSC1
+      VINF(19)= EDT2
+      VINF(20)= EDT1
+      VINF(21)= EDC2
+      VINF(22)= EDC1
+      VINF(23)= EQSTR2
+      VINF(24)= EQSTR1
+      VINF(25)= EPSEQ2
+      VINF(26)= EPSEQ1
+      VINF(27)= DBLE(IPLA2)
+      VINF(28)= DBLE(IPLA1)
+      VINF(29)= DBLE(IFISU2)
+      VINF(30)= DBLE(IFISU1)
+      VINF(31)= DBLE(JFISU2)
+      VINF(32)= DBLE(JFISU)
+      VINF(33)= 1
+      VINF(34)= VIND(34)
+      JFIS1 = 1
+C
+      END

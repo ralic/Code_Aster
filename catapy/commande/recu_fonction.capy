@@ -1,0 +1,224 @@
+#& MODIF COMMANDE  DATE 09/10/2002   AUTEUR DURAND C.DURAND 
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+# RESPONSABLE MCOURTOI M.COURTOIS
+def recu_fonction_prod(RESULTAT=None,TABLE=None,OBSTACLE=None,
+                       RESU_GENE=None,BASE_ELAS_FLUI=None,CHAM_GD=None,
+                       TYPE_RESU=None,**args):
+  if AsType(RESULTAT) == dyna_harmo : return fonction_c
+#  On ne sait pas interpreter les deux conditions suivantes
+  if TABLE != None :
+     if TYPE_RESU != None :
+        if TYPE_RESU == "FONCTION_C" : return fonction_c
+        if TYPE_RESU == "FONCTION"   : return fonction
+     else:
+        return fonction
+  if RESU_GENE      != None         : return fonction
+  if BASE_ELAS_FLUI != None         : return fonction
+  if RESULTAT       != None         : return fonction
+  if CHAM_GD        != None         : return fonction
+  if OBSTACLE       != None         : return fonction
+  raise AsException("type de concept resultat non prevu")
+
+RECU_FONCTION=OPER(nom="RECU_FONCTION",op=  90,sd_prod=recu_fonction_prod,
+                   fr="Extraire sous forme d une fonction, l évolution temporelle d une composante d un champ ou d une table",
+                   docu="U4.32.03-f2",reentrant='n',
+            UIinfo={"groupes":("Fonction",)},
+         regles=(UN_PARMI('CHAM_GD','RESULTAT','RESU_GENE','TABLE','BASE_ELAS_FLUI','OBSTACLE'),),
+
+         CHAM_GD         =SIMP(statut='f',typ=(cham_no_depl_r,cham_no_temp_r,cham_no_pres_r,cham_elem_sief_r,
+                                               cham_elem_vari_r,cham_elem_epsi_r,cham_elem_flux_r,
+                                               cham_elem_pres_r,cham_elem_meta_r ) ),
+         RESULTAT        =SIMP(statut='f',typ=(evol_elas,dyna_trans,evol_noli,evol_ther,dyna_harmo ) ),
+         RESU_GENE       =SIMP(statut='f',typ=tran_gene),
+#  concept table à créer
+         TABLE           =SIMP(statut='f',typ=table),
+         BASE_ELAS_FLUI  =SIMP(statut='f',typ=melasflu),
+         REPERE          =SIMP(statut='f',typ='TXM',into=("POLAIRE","GLOBAL") ),
+         OBSTACLE        =SIMP(statut='f',typ=obstacle),
+
+         b_tran_gene = BLOC ( condition = "RESU_GENE != None",
+                              fr="Récupération de la fonction concernant les chocs à partir d un concept TRAN_GENE",
+            regles=(PRESENT_PRESENT('SOUS_STRUC','INTITULE'),
+                    EXCLUS('MULT_APPUI','CORR_STAT'),),
+             MULT_APPUI      =SIMP(statut='f',typ='TXM',into=("OUI",) ),
+             CORR_STAT       =SIMP(statut='f',typ='TXM',into=("OUI",) ),
+             ACCE_MONO_APPUI =SIMP(statut='f',typ=fonction),
+             PARA_X          =SIMP(statut='f',typ='TXM' ),
+             PARA_Y          =SIMP(statut='f',typ='TXM' ),
+             SOUS_STRUC      =SIMP(statut='f',typ='TXM' ),
+             LIST_PARA       =SIMP(statut='f',typ=listr8 ),
+             INTITULE        =SIMP(statut='f',typ='TXM' ),
+         ),
+         b_base_elas_flui = BLOC ( condition = "BASE_ELAS_FLUI != None",
+                                   fr="Récupération de la fonction à partir d un concept melasflu",
+           regles=(UN_PARMI('TOUT_ORDRE','NUME_ORDRE'),),
+           TOUT_ORDRE      =SIMP(statut='f',typ='TXM',into=("OUI",) ),
+           NUME_ORDRE      =SIMP(statut='f',typ='I',max='**'),
+           NUME_MODE       =SIMP(statut='o',typ='I' ),
+           PARA_X          =SIMP(statut='o',typ='TXM',into=("VITE_FLU",) ),
+           PARA_Y          =SIMP(statut='o',typ='TXM',into=("FREQ","AMOR") ),
+         ),
+         b_table = BLOC ( condition = "TABLE != None",fr="Récupération de la fonction à partir d un concept table",
+           regles=(UN_PARMI('PARA_X','NOM_PARA_TABL'),
+                   PRESENT_PRESENT('PARA_X','PARA_Y'),),
+           PARA_X          =SIMP(statut='f',typ='TXM',
+                                 fr="1ère colonne de la table qui définit la fonction à récupérer", ),
+           PARA_Y          =SIMP(statut='f',typ='TXM',
+                                 fr="2ème colonne de la table qui définit la fonction à récupérer", ),
+           NOM_PARA_TABL   =SIMP(statut='f',typ='TXM',into=("FONCTION",),
+                                 fr="Nom du paramètre de la table à qui est associé la fonction" ),
+           b_nom_para_tabl = BLOC (condition = "NOM_PARA_TABL != None",
+             TYPE_RESU       =SIMP(statut='f',typ='TXM',defaut="FONCTION",into=("FONCTION","FONCTION_C") ),
+           ),
+
+           FILTRE          =FACT(statut='f',min=1,max='**',
+              NOM_PARA        =SIMP(statut='o',typ='TXM' ),
+              CRIT_COMP       =SIMP(statut='f',typ='TXM',defaut="EQ",
+                                    into=("EQ","LT","GT","NE","LE","GE","VIDE",
+                                          "NON_VIDE","MAXI","ABS_MAXI","MINI","ABS_MINI") ),
+              b_vale          =BLOC(condition = "(CRIT_COMP in ('EQ','NE','GT','LT','GE','LE'))",
+                 regles=(UN_PARMI('VALE','VALE_I','VALE_K','VALE_C',),),
+                 VALE            =SIMP(statut='f',typ='R' ),
+                 VALE_I          =SIMP(statut='f',typ='I' ),
+                 VALE_C          =SIMP(statut='f',typ='C' ),
+                 VALE_K          =SIMP(statut='f',typ='TXM' ),),
+
+              CRITERE         =SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU") ),
+              PRECISION       =SIMP(statut='f',typ='R',defaut= 1.E-3 ),
+           ),
+         ),
+# RESULTAT
+         b_resu = BLOC ( condition = "RESULTAT != None", fr="Opérandes en cas de RESULTAT",
+           regles=(
+#    A voir par Mathieu Courtois : il existe de tests (SDNX300B) qui ne satisfont pas ce UN_PARMI
+#           UN_PARMI('TOUT_ORDRE','NUME_ORDRE','LIST_ORDRE','TOUT_INST','LIST_INST','FREQ','LIST_FREQ'),
+                   AU_MOINS_UN('MAILLE','GROUP_MA','GROUP_NO','NOEUD','NOEUD_CHOC','GROUP_NO_CHOC','NOM_PARA_RESU'),
+                   PRESENT_PRESENT('MAILLE','NOM_CMP'),
+                   PRESENT_PRESENT('GROUP_MA','NOM_CMP'),
+                   PRESENT_PRESENT('NOEUD','NOM_CMP'),
+                   PRESENT_PRESENT('GROUP_NO','NOM_CMP'),
+                   PRESENT_PRESENT('POINT','NOM_CMP'),
+                   EXCLUS('POINT','NOEUD'),
+                   EXCLUS('GROUP_MA','MAILLE'),
+                   EXCLUS('GROUP_NO','NOEUD'),
+                   EXCLUS('NOEUD_CHOC','GROUP_NO_CHOC'),
+                   UN_PARMI('NOM_CHAM','NOM_PARA_RESU'),),
+           NOM_CHAM        =SIMP(statut='f',typ='TXM' ),
+           NOM_PARA_RESU   =SIMP(statut='f',typ='TXM' ),
+           TOUT_ORDRE      =SIMP(statut='f',typ='TXM',into=("OUI",) ),
+           NUME_ORDRE      =SIMP(statut='f',typ='I',max='**'),
+           LIST_ORDRE      =SIMP(statut='f',typ=listis ),
+           TOUT_INST       =SIMP(statut='f',typ='TXM',into=("OUI",) ),
+           INST            =SIMP(statut='f',typ='R',max='**'),
+           LIST_INST       =SIMP(statut='f',typ=listr8 ),
+           FREQ            =SIMP(statut='f',typ='R',max='**'),
+           LIST_FREQ       =SIMP(statut='f',typ=listr8 ),
+           b_prec = BLOC ( condition = "(INST != None) or (LIST_INST != None) or (FREQ != None) or (LIST_FREQ != None)",
+             PRECISION       =SIMP(statut='f',typ='R',defaut= 1.E-3 ),
+             CRITERE         =SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU") ),
+             INTERP_NUME     =SIMP(statut='f',typ='TXM',max=2,into=("NON","LIN") ),
+           ),
+           NOM_CMP         =SIMP(statut='f',typ='TXM' ),
+
+           MAILLE          =SIMP(statut='f',typ=ma),
+           GROUP_MA        =SIMP(statut='f',typ=grma),
+           NOEUD           =SIMP(statut='f',typ=no),
+           GROUP_NO        =SIMP(statut='f',typ=grno),
+           POINT           =SIMP(statut='f',typ='I' ),
+           SOUS_POINT      =SIMP(statut='f',typ='I' ),
+           NOEUD_CHOC      =SIMP(statut='f',typ=no),
+           GROUP_NO_CHOC   =SIMP(statut='f',typ=grno),
+         ),
+# RESU_GENE
+         b_resu_gene = BLOC ( condition = "RESU_GENE != None", fr="Opérandes en cas de RESU_GENE",
+#    A voir par Mathieu Courtois : il existe de tests (SDNX300B) qui ne satisfont pas ce UN_PARMI
+#           regles=(UN_PARMI('TOUT_ORDRE','NUME_ORDRE','LIST_ORDRE','TOUT_INST','LIST_INST','FREQ','LIST_FREQ'),),
+           NOM_CHAM        =SIMP(statut='f',typ='TXM',into=("DEPL","VITE","ACCE","PTEM") ),
+           TOUT_ORDRE      =SIMP(statut='f',typ='TXM',into=("OUI",) ),
+           NUME_ORDRE      =SIMP(statut='f',typ='I',max='**'),
+           LIST_ORDRE      =SIMP(statut='f',typ=listis ),
+           TOUT_INST       =SIMP(statut='f',typ='TXM',into=("OUI",) ),
+           INST            =SIMP(statut='f',typ='R',max='**'),
+           LIST_INST       =SIMP(statut='f',typ=listr8 ),
+           FREQ            =SIMP(statut='f',typ='R',max='**'),
+           LIST_FREQ       =SIMP(statut='f',typ=listr8 ),
+           b_prec = BLOC ( condition = "(INST != None) or (LIST_INST != None) or (FREQ != None) or (LIST_FREQ != None)",
+             PRECISION       =SIMP(statut='f',typ='R',defaut= 1.E-3 ),
+             CRITERE         =SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU") ),
+             INTERP_NUME     =SIMP(statut='f',typ='TXM',max=2,into=("NON","LIN") ),
+           ),
+           b_local_cham = BLOC ( condition = "NOM_CHAM!='PTEM'", fr="Opérandes de localisation du champ",
+             regles=(AU_MOINS_UN('MAILLE','GROUP_MA','GROUP_NO','NOEUD','NOEUD_CHOC','GROUP_NO_CHOC'),
+                     PRESENT_PRESENT('MAILLE','NOM_CMP'),
+                     PRESENT_PRESENT('GROUP_MA','NOM_CMP'),
+                     PRESENT_PRESENT('NOEUD','NOM_CMP'),
+                     PRESENT_PRESENT('GROUP_NO','NOM_CMP'),
+                     PRESENT_PRESENT('POINT','NOM_CMP'),
+                     EXCLUS('POINT','NOEUD'),
+                     EXCLUS('GROUP_MA','MAILLE'),
+                     EXCLUS('GROUP_NO','NOEUD'),
+                     EXCLUS('NOEUD_CHOC','GROUP_NO_CHOC'),),
+             NOM_CMP         =SIMP(statut='f',typ='TXM' ),
+
+             MAILLE          =SIMP(statut='f',typ=ma),
+             GROUP_MA        =SIMP(statut='f',typ=grma),
+             NOEUD           =SIMP(statut='f',typ=no),
+             GROUP_NO        =SIMP(statut='f',typ=grno),
+             POINT           =SIMP(statut='f',typ='I' ),
+             SOUS_POINT      =SIMP(statut='f',typ='I' ),
+             NOEUD_CHOC      =SIMP(statut='f',typ=no),
+             GROUP_NO_CHOC   =SIMP(statut='f',typ=grno),
+           ),
+         ),
+# CHAM_GD
+         b_cham_gd = BLOC ( condition = "(CHAM_GD != None)", fr="Opérandes en cas de CHAM_GD",
+
+           regles=(AU_MOINS_UN('MAILLE','GROUP_MA','GROUP_NO','NOEUD','NOEUD_CHOC','GROUP_NO_CHOC'),
+                   PRESENT_PRESENT('MAILLE','NOM_CMP'),
+                   PRESENT_PRESENT('GROUP_MA','NOM_CMP'),
+                   PRESENT_PRESENT('NOEUD','NOM_CMP'),
+                   PRESENT_PRESENT('GROUP_NO','NOM_CMP'),
+                   PRESENT_PRESENT('POINT','NOM_CMP'),
+                   EXCLUS('POINT','NOEUD'),
+                   EXCLUS('GROUP_MA','MAILLE'),
+                   EXCLUS('GROUP_NO','NOEUD'),
+                   EXCLUS('NOEUD_CHOC','GROUP_NO_CHOC'),),
+           NOM_CMP         =SIMP(statut='f',typ='TXM' ),
+
+           MAILLE          =SIMP(statut='f',typ=ma),
+           GROUP_MA        =SIMP(statut='f',typ=grma),
+           NOEUD           =SIMP(statut='f',typ=no),
+           GROUP_NO        =SIMP(statut='f',typ=grno),
+           POINT           =SIMP(statut='f',typ='I' ),
+           SOUS_POINT      =SIMP(statut='f',typ='I' ),
+           NOEUD_CHOC      =SIMP(statut='f',typ=no),
+           GROUP_NO_CHOC   =SIMP(statut='f',typ=grno),
+         ),
+###
+         NOM_PARA        =SIMP(statut='f',typ='TXM',
+                               into=("DX","DY","DZ","DRX","DRY","DRZ","TEMP",
+                                     "INST","X","Y","Z","EPSI","FREQ","PULS","AMOR","ABSC") ),
+         NOM_RESU        =SIMP(statut='f',typ='TXM' ),
+         INTERPOL        =SIMP(statut='f',typ='TXM',max=2,into=("NON","LIN","LOG") ),
+         PROL_DROITE     =SIMP(statut='f',typ='TXM',into=("CONSTANT","LINEAIRE","EXCLU") ),
+         PROL_GAUCHE     =SIMP(statut='f',typ='TXM',into=("CONSTANT","LINEAIRE","EXCLU") ),
+
+         TITRE           =SIMP(statut='f',typ='TXM',max='**'),
+         INFO            =SIMP(statut='f',typ='I',defaut= 1,into=( 1 , 2 ) ),
+)  ;

@@ -1,0 +1,275 @@
+# MODIF  DATE 16/05/2002   AUTEUR DURAND C.DURAND 
+# TITRE PLAQUE CIRCULAIRE ENCASTREE SOUS PRESSION Q4G  169 N - 147 QUAD4
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+
+DEBUT(    CODE=_F(  NOM = 'SSLS100H',NIV_PUB_WEB='INTERNET')  )
+
+#----------------------------------------------------------------------
+# POINTS: O      MAILLES  M1
+#         A               M147
+#         B               M98   M111
+#         C               M14
+#         D               M85   M99
+#         E               M7    M8
+#         F               M91   M92    M105
+#----------------------------------------------------------------------
+
+
+MATER=DEFI_MATERIAU( ELAS=_F(  E = 1., NU = 0.3,  RHO = 1.) )
+
+MAILL=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='NON'),   )
+
+MAILL=DEFI_GROUP( reuse=MAILL,   MAILLAGE=MAILL,
+  CREA_GROUP_MA=_F(  NOM = 'TOUT', TOUT = 'OUI'))
+
+CHMAT=AFFE_MATERIAU(  MAILLAGE=MAILL,
+                          AFFE=_F(  TOUT = 'OUI',   MATER = MATER) )
+
+MODEL=AFFE_MODELE(  MAILLAGE=MAILL,    VERIF='MAILLE',
+                        AFFE=_F( TOUT = 'OUI',   MODELISATION = 'Q4G',
+                              PHENOMENE = 'MECANIQUE') )
+
+CINE=AFFE_CHAR_MECA(   MODELE=MODEL,DDL_IMPO=(
+              _F( GROUP_NO = 'GRNO_ABC', DX = 0.,  DY = 0.,  DZ = 0.,
+                                          DRX = 0.,  DRY = 0.,  DRZ = 0.),
+                       _F( GROUP_NO = 'GRNO_OA',  DY = 0.,  DRX = 0.,  DRZ = 0.),
+                       _F( GROUP_NO = 'GRNO_OC',  DX = 0.,  DRY = 0.,  DRZ = 0.),
+                       _F( NOEUD = 'O',        DX = 0.,  DY = 0.,
+                                          DRX = 0.,  DRY = 0.,  DRZ = 0.))
+                           )
+
+PRES=AFFE_CHAR_MECA(   MODELE=MODEL,
+                    FORCE_COQUE=_F(  TOUT = 'OUI',   PRES = 1.)   )
+
+CHF3=AFFE_CHAR_MECA(   MODELE=MODEL,
+                    FORCE_COQUE=_F(  TOUT = 'OUI',   F3 = -1.)   )
+
+CHPE=AFFE_CHAR_MECA(   MODELE=MODEL,
+                      PESANTEUR=( 10., 0., 0., -1.,                 )   )
+
+CARELEM=AFFE_CARA_ELEM(   MODELE=MODEL,
+                               COQUE=_F(  
+       GROUP_MA = 'TOUT',
+  EPAIS = 0.1) )
+
+MATELEM=CALC_MATR_ELEM(   MODELE=MODEL,        CHARGE=CINE,
+                               CARA_ELEM=CARELEM,   CHAM_MATER=CHMAT,
+                               OPTION='RIGI_MECA' )
+
+VEPR=CALC_VECT_ELEM(   CHARGE=(CINE, PRES, ),  CARA_ELEM=CARELEM,
+                               CHAM_MATER=CHMAT, OPTION='CHAR_MECA' )
+
+VEF3=CALC_VECT_ELEM(   CHARGE=(CINE, CHF3, ),  CARA_ELEM=CARELEM,
+                               CHAM_MATER=CHMAT, OPTION='CHAR_MECA' )
+
+VEPE=CALC_VECT_ELEM(   CHARGE=(CINE, CHPE, ),  CARA_ELEM=CARELEM,
+                               CHAM_MATER=CHMAT, OPTION='CHAR_MECA' )
+
+NU=NUME_DDL(         MATR_RIGI=MATELEM )
+
+MATASS=ASSE_MATRICE(     MATR_ELEM=MATELEM,   NUME_DDL=NU )
+
+VEPRAS=ASSE_VECTEUR(     VECT_ELEM=VEPR,      NUME_DDL=NU )
+
+VEF3AS=ASSE_VECTEUR(     VECT_ELEM=VEF3,      NUME_DDL=NU )
+
+VEPEAS=ASSE_VECTEUR(     VECT_ELEM=VEPE,      NUME_DDL=NU )
+
+MATASS=FACT_LDLT(reuse=MATASS,MATR_ASSE=MATASS )
+
+DEPR=RESO_LDLT(        MATR_FACT=MATASS,   CHAM_NO=VEPRAS)
+
+DEF3=RESO_LDLT(        MATR_FACT=MATASS,   CHAM_NO=VEF3AS)
+
+DEPE=RESO_LDLT(        MATR_FACT=MATASS,   CHAM_NO=VEPEAS)
+
+#--------------------------------------------------------------------
+
+TEST_RESU(CHAM_NO=(
+     # DEPLACEMENTS PRESSION
+        
+          _F(  CHAM_GD = DEPR, CRITERE = 'RELATIF',  PRECISION = 0.40E-2,  # O
+            NOEUD = 'O',          NOM_CMP = 'DZ',     VALE = -178.419),
+          _F(  CHAM_GD = DEPR, CRITERE = 'ABSOLU',   PRECISION = 1.0E-10, # A
+            NOEUD = 'A',          NOM_CMP = 'DZ',     VALE = 0.),
+          _F(  CHAM_GD = DEPR, CRITERE = 'ABSOLU',   PRECISION = 1.0E-10, # B
+            NOEUD = 'B',          NOM_CMP = 'DZ',     VALE = 0.),
+          _F(  CHAM_GD = DEPR, CRITERE = 'ABSOLU',   PRECISION = 1.0E-10, # C
+            NOEUD = 'C',          NOM_CMP = 'DZ',     VALE = 0.),
+          _F(  CHAM_GD = DEPR, CRITERE = 'RELATIF',  PRECISION = 0.40E-2,  # D
+            NOEUD = 'D',          NOM_CMP = 'DZ',     VALE = -101.82),
+          _F(  CHAM_GD = DEPR, CRITERE = 'RELATIF',  PRECISION = 0.40E-2,  # E
+            NOEUD = 'E',          NOM_CMP = 'DZ',     VALE = -101.82),
+          _F(  CHAM_GD = DEPR, CRITERE = 'RELATIF',  PRECISION = 0.40E-2,  # F
+            NOEUD = 'F',          NOM_CMP = 'DZ',     VALE = -84.198),
+     # DEPLACEMENTS F3
+        
+          _F(  CHAM_GD = DEF3, CRITERE = 'RELATIF',  PRECISION = 0.40E-2,  # O
+            NOEUD = 'O',          NOM_CMP = 'DZ',     VALE = -178.419),
+          _F(  CHAM_GD = DEF3, CRITERE = 'ABSOLU',   PRECISION = 1.0E-10, # A
+            NOEUD = 'A',          NOM_CMP = 'DZ',     VALE = 0.),
+          _F(  CHAM_GD = DEF3, CRITERE = 'ABSOLU',   PRECISION = 1.0E-10, # B
+            NOEUD = 'B',          NOM_CMP = 'DZ',     VALE = 0.),
+          _F(  CHAM_GD = DEF3, CRITERE = 'ABSOLU',   PRECISION = 1.0E-10, # C
+            NOEUD = 'C',          NOM_CMP = 'DZ',     VALE = 0.),
+          _F(  CHAM_GD = DEF3, CRITERE = 'RELATIF',  PRECISION = 0.40E-2,  # D
+            NOEUD = 'D',          NOM_CMP = 'DZ',     VALE = -101.82),
+          _F(  CHAM_GD = DEF3, CRITERE = 'RELATIF',  PRECISION = 0.40E-2,  # E
+            NOEUD = 'E',          NOM_CMP = 'DZ',     VALE = -101.82),
+          _F(  CHAM_GD = DEF3, CRITERE = 'RELATIF',  PRECISION = 0.40E-2,  # F
+            NOEUD = 'F',          NOM_CMP = 'DZ',     VALE = -84.198),
+     # DEPLACEMENTS PESANTEUR
+        
+          _F(  CHAM_GD = DEPE, CRITERE = 'RELATIF',  PRECISION = 0.40E-2,  # O
+            NOEUD = 'O',          NOM_CMP = 'DZ',     VALE = -178.419),
+          _F(  CHAM_GD = DEPE, CRITERE = 'ABSOLU',   PRECISION = 1.0E-10, # A
+            NOEUD = 'A',          NOM_CMP = 'DZ',     VALE = 0.),
+          _F(  CHAM_GD = DEPE, CRITERE = 'ABSOLU',   PRECISION = 1.0E-10, # B
+            NOEUD = 'B',          NOM_CMP = 'DZ',     VALE = 0.),
+          _F(  CHAM_GD = DEPE, CRITERE = 'ABSOLU',   PRECISION = 1.0E-10, # C
+            NOEUD = 'C',          NOM_CMP = 'DZ',     VALE = 0.),
+          _F(  CHAM_GD = DEPE, CRITERE = 'RELATIF',  PRECISION = 0.40E-2,  # D
+            NOEUD = 'D',          NOM_CMP = 'DZ',     VALE = -101.82),
+          _F(  CHAM_GD = DEPE, CRITERE = 'RELATIF',  PRECISION = 0.40E-2,  # E
+            NOEUD = 'E',          NOM_CMP = 'DZ',     VALE = -101.82),
+          _F(  CHAM_GD = DEPE, CRITERE = 'RELATIF',  PRECISION = 0.40E-2,  # F
+            NOEUD = 'F',          NOM_CMP = 'DZ',     VALE = -84.198))
+          )
+
+#--------------------------------------------------------------------
+
+EFPR=CALC_CHAM_ELEM(  MODELE=MODEL,        DEPL=DEPR,
+                          OPTION='EFGE_ELNO_DEPL',
+                           CHAM_MATER=CHMAT,  CARA_ELEM=CARELEM )
+
+COPR=CALC_CHAM_ELEM(  MODELE=MODEL,        DEPL=DEPR,
+                          OPTION='SIGM_ELNO_DEPL',
+                           CHAM_MATER=CHMAT,  CARA_ELEM=CARELEM )
+
+#--------------------------------------------------------------------
+RELEVE_1=POST_RELEVE_T( 
+                   ACTION=_F(  NOEUD = ( 'O',  'A',  'B',  'C',  'D',  'E',  'F', ), 
+                            INTITULE = 'EFGE_R',
+                            CHAM_GD = EFPR,
+                            NOM_CMP = ( 'MXX', 'MYY', ),
+                            OPERATION = 'EXTRACTION')
+                          )
+
+TEST_TABLE(       TABLE=RELEVE_1,
+                    FILTRE=_F(  NOM_PARA = 'NOEUD',
+                             VALE_K = 'O'),
+                  NOM_PARA='MXX',
+                 PRECISION=0.1E-2,
+                      VALE=-0.08125       )
+
+TEST_TABLE(       TABLE=RELEVE_1,
+                    FILTRE=_F(  NOM_PARA = 'NOEUD',
+                             VALE_K = 'O'),
+                  NOM_PARA='MYY',
+                 PRECISION=0.1E-2,
+                      VALE=-0.08125       )
+
+TEST_TABLE(       TABLE=RELEVE_1,
+                    FILTRE=_F(  NOM_PARA = 'NOEUD',
+                             VALE_K = 'A'),
+                  NOM_PARA='MXX',
+                 PRECISION=11.0E-2,
+                      VALE=0.1250       )
+
+TEST_TABLE(       TABLE=RELEVE_1,
+                    FILTRE=_F(  NOM_PARA = 'NOEUD',
+                             VALE_K = 'A'),
+                  NOM_PARA='MYY',
+                 PRECISION=11.0E-2,
+                      VALE=0.0375       )
+
+TEST_TABLE(       TABLE=RELEVE_1,
+                    FILTRE=_F(  NOM_PARA = 'NOEUD',
+                             VALE_K = 'B'),
+                  NOM_PARA='MXX',
+                 PRECISION=11.0E-2,
+                      VALE=0.08125       )
+
+TEST_TABLE(       TABLE=RELEVE_1,
+                    FILTRE=_F(  NOM_PARA = 'NOEUD',
+                             VALE_K = 'B'),
+                  NOM_PARA='MYY',
+                 PRECISION=11.0E-2,
+                      VALE=0.08125       )
+
+TEST_TABLE(       TABLE=RELEVE_1,
+                    FILTRE=_F(  NOM_PARA = 'NOEUD',
+                             VALE_K = 'C'),
+                  NOM_PARA='MXX',
+                 PRECISION=11.0E-2,
+                      VALE=0.0375       )
+
+TEST_TABLE(       TABLE=RELEVE_1,
+                    FILTRE=_F(  NOM_PARA = 'NOEUD',
+                             VALE_K = 'C'),
+                  NOM_PARA='MYY',
+                 PRECISION=11.0E-2,
+                      VALE=0.1250       )
+
+TEST_TABLE(       TABLE=RELEVE_1,
+                    FILTRE=_F(  NOM_PARA = 'NOEUD',
+                             VALE_K = 'D'),
+                  NOM_PARA='MXX',
+                 PRECISION=0.5E-2,
+                      VALE=-0.02969       )
+
+TEST_TABLE(       TABLE=RELEVE_1,
+                    FILTRE=_F(  NOM_PARA = 'NOEUD',
+                             VALE_K = 'D'),
+                  NOM_PARA='MYY',
+                 PRECISION=1.50E-2,
+                      VALE=-0.05156       )
+
+TEST_TABLE(       TABLE=RELEVE_1,
+                    FILTRE=_F(  NOM_PARA = 'NOEUD',
+                             VALE_K = 'E'),
+                  NOM_PARA='MXX',
+                 PRECISION=1.5E-2,
+                      VALE=-0.05156       )
+
+TEST_TABLE(       TABLE=RELEVE_1,
+                    FILTRE=_F(  NOM_PARA = 'NOEUD',
+                             VALE_K = 'E'),
+                  NOM_PARA='MYY',
+                 PRECISION=0.5E-2,
+                      VALE=-0.02969       )
+
+TEST_TABLE(       TABLE=RELEVE_1,
+                    FILTRE=_F(  NOM_PARA = 'NOEUD',
+                             VALE_K = 'F'),
+                  NOM_PARA='MXX',
+                 PRECISION=1.0E-2,
+                      VALE=-0.02925       )
+
+TEST_TABLE(       TABLE=RELEVE_1,
+                    FILTRE=_F(  NOM_PARA = 'NOEUD',
+                             VALE_K = 'F'),
+                  NOM_PARA='MYY',
+                 PRECISION=1.0E-2,
+                      VALE=-0.02925       )
+
+#--------------------------------------------------------------------
+
+FIN()
+#

@@ -1,0 +1,86 @@
+# MODIF  DATE 07/06/2002   AUTEUR DURAND C.DURAND 
+# TITRE LIRE_FONCTION D'UN SPECTRE D'OSCILLATEUR
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+
+
+DEBUT( CODE=_F(  NOM = 'ZZZZ102B',NIV_PUB_WEB='INTERNET')  )
+
+#=======================================================================
+#
+#          LIRE_FONCTION D'UN SPECTRE D'OSCILLATEUR FORMAT LIBRE
+#
+#=======================================================================
+
+SPO=LIRE_FONCTION(     UNITE=20,
+              TITRE='SPECTRE OSCILLATEUR FORMAT LIBRE',
+                       INTERPOL='LIN',
+                     PROL_DROITE='LINEAIRE', 
+                    PROL_GAUCHE='CONSTANT',
+                  INTERPOL_FONC='LIN',
+                PROL_DROITE_FONC='EXCLU', 
+               PROL_GAUCHE_FONC='EXCLU'
+                       )
+
+VAL=DEFI_VALEUR(    R8=1.09558E-02 )
+
+AM1=DEFI_VALEUR(    R8=0.01 )
+
+AM2=DEFI_VALEUR(    R8=0.05 )
+
+AM3=DEFI_VALEUR(    R8=0.1 )
+
+D01=DEFI_VALEUR(   R8=EVAL("""VAL/AM3""") )
+
+D001=DEFI_VALEUR(   R8=EVAL("""VAL/AM1""") )
+
+D005=DEFI_VALEUR(   R8=EVAL("""D01 + ((5./9.)*( D001 - D01))"""))
+
+TEST_FONCTION(VALEUR=(
+         _F(  FONCTION = SPO,
+                  NOM_PARA = ( 'FREQ',  'AMOR', ),
+                  VALE_PARA = ( 5.E-1,   AM1,    ),
+                  VALE_REFE = D001),
+         _F(  FONCTION = SPO,
+                  NOM_PARA = ( 'FREQ',  'AMOR', ),
+                  VALE_PARA = ( 5.E-1,   AM2,   ),
+                  VALE_REFE = D005),
+         _F(  FONCTION = SPO,
+                  NOM_PARA = ( 'FREQ',  'AMOR', ),
+                  VALE_PARA = ( 5.E-1,   AM3,   ),
+                  VALE_REFE = D01)),ATTRIBUT=(
+       _F(  FONCTION = SPO,   ATTR = 'NOM_RESU',
+                     PARA = AM1,     ATTR_REFE = 'ACCE'),
+       _F(  FONCTION = SPO,   ATTR = 'PROL_DROITE',
+                                   ATTR_REFE = 'LINEAIRE'),
+       _F(  FONCTION = SPO,   ATTR = 'PROL_GAUCHE',
+                                   ATTR_REFE = 'CONSTANT'),
+       _F(  FONCTION = SPO,   ATTR = 'INTERPOL',
+                     PARA = AM1,     ATTR_REFE = 'LIN LIN '),
+       _F(  FONCTION = SPO,   ATTR = 'PROL_DROITE_FONC',
+                                   ATTR_REFE = 'EXCLU'),
+       _F(  FONCTION = SPO,   ATTR = 'PROL_GAUCHE_FONC',
+                                   ATTR_REFE = 'EXCLU'),
+       _F(  FONCTION = SPO,   ATTR = 'INTERPOL_FONC',
+                     PARA = AM1,     ATTR_REFE = 'LIN LIN '))
+                 )
+
+#----------------------------------------------------------------------
+
+FIN()
+#

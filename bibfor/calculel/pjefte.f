@@ -1,0 +1,274 @@
+      SUBROUTINE PJEFTE()
+      IMPLICIT NONE
+C ----------------------------------------------------------------------
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF CALCULEL  DATE 16/07/2002   AUTEUR VABHHTS J.PELLET 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+C ======================================================================
+C     COMMANDE:  PROJ_CHAMP  METHODE:'ELEM'
+C ----------------------------------------------------------------------
+C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
+
+      CHARACTER*32 JEXNUM,JEXNOM,JEXR8,JEXATR
+      INTEGER ZI
+      COMMON /IVARJE/ZI(1)
+      REAL*8 ZR
+      COMMON /RVARJE/ZR(1)
+      COMPLEX*16 ZC
+      COMMON /CVARJE/ZC(1)
+      LOGICAL ZL
+      COMMON /LVARJE/ZL(1)
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32
+      CHARACTER*80 ZK80
+      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+
+C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
+
+      CHARACTER*4 CDIM1,CDIM2,EXIVOL
+      CHARACTER*8 K8B,NOMA1,NOMA2,EVO1,MODEL1,MODEL2
+      CHARACTER*16 TYPRES,NOMCMD,CORRES,CORRE1,CORRE2,CORRE3
+      CHARACTER*16 TYMOCL(5),MOTCLE(5)
+      CHARACTER*19 RESU
+      INTEGER NDIM,NCAS,N1,NBOCC,IOCC,IE,IBID,NBNO2,NBMA1
+      INTEGER IAGNO2,IAGMA1,K,JTYPM1,TYPM1
+      INTEGER KK,LTMVOL(9),INDIIS
+C----------------------------------------------------------------------
+C       DESCRIPTION DE LA SD CORRESP_2_MAILLA : CORRES
+C       --------------------------------------------------------
+C          (CORRESPONDANCE ENTRE LES 2 MODELES MODEL1 ET MODEL2)
+C  DESCRIPTION DE LA SD CORRESP_2_MAILLA :
+
+C  CORRESP_2_MAILLA (K16)  ::= RECORD
+C     '.PJEF_NO'  : S V K8 LONG=2
+C     '.PJEF_NB'  : S V I  LONG=NNO2 (= NB_NO(M2))
+C     '.PJEF_NU'  : S V I  LONG=LONT
+C     '.PJEF_CF'  : S V R  LONG=LONT
+
+C     '.PJEF_NO' (1) : NOM DU MAILLAGE 1 : M1
+C     '.PJEF_NO' (2) : NOM DU MAILLAGE 2 : M2
+
+
+C     '.PJEF_NB' (INO2) : NOMBRE DE NOEUDS DE M1 QUI DOIVENT SERVIR
+C                          A L'INTERPOLATION DU NOEUD INO2 DE M2
+
+C     '.PJEF_NU' : CONTIENT LES NUMEROS DES NOEUDS DE M1 SERVANT A
+C                  L'INTERPOLATION DES NOEUDS DE M2 (MIS BOUT A BOUT)
+C     '.PJEF_CF' : CONTIENT LES COEFFICIENTS POUR LES NOEUDS DE
+C                  M1 SERVANT A L'INTERPOLATION DES NOEUDS DE M2
+C                  (MIS BOUT A BOUT)
+
+C    EXEMPLE D'UTILISATION :
+C      ON VEUT SAVOIR COMMENT INTERPOLER INO2 A PARTIR DU MAILLAGE M1
+C      SOIT NBNO1='.PJEF_NB'(INO2)
+C      SOIT DECAL= SOMME POUR INO<INO2 DE '.PJEF_NB'(INO)
+C      VAL2(INO2)=0
+C      DO I=1,NBNO1
+C        NUNO1='.PJEF_NU' (DECAL+I)
+C        COEFR='.PJEF_CF' (DECAL+I)
+C        VAL2(INO2)=VAL2(INO2)+COEFR*VAL1(UNO1)
+C      END DO
+C----------------------------------------------------------------------
+C DEB ------------------------------------------------------------------
+      CALL JEMARQ()
+      CORRES = '&&PJEFTE.CORRESP'
+      CORRE1 = '&&PJEFTE.CORRES1'
+      CORRE2 = '&&PJEFTE.CORRES2'
+      CORRE3 = '&&PJEFTE.CORRES3'
+
+      CALL GETRES(RESU,TYPRES,NOMCMD)
+      CALL GETVID(' ','RESULTAT',1,1,1,EVO1,N1)
+
+      CALL GETVID(' ','MODELE_1',1,1,1,MODEL1,N1)
+      CALL GETVID(' ','MODELE_2',1,1,1,MODEL2,N1)
+
+      CALL DISMOI('F','NOM_MAILLA',MODEL1,'MODELE',IBID,NOMA1,IE)
+      CALL JEVEUO(NOMA1//'.TYPMAIL','L',JTYPM1)
+      CALL DISMOI('F','NOM_MAILLA',MODEL2,'MODELE',IBID,NOMA2,IE)
+
+
+
+C     DETERMINATION DE LA DIMENSION DE L'ESPACE (NDIM) :
+C     --------------------------------------------------------
+      CALL DISMOI('F','Z_CST',NOMA1,'MAILLAGE',IBID,CDIM1,IE)
+      CALL DISMOI('F','Z_CST',NOMA2,'MAILLAGE',IBID,CDIM2,IE)
+      IF (CDIM1.NE.CDIM2) CALL UTMESS('F','PJEFTE',
+     +        'LES 2 MAILLAGES DOIVENT ETRE TOUS LES DEUX "2D" OU "3D".'
+     +                                )
+      IF (CDIM1.EQ.'OUI') THEN
+        NDIM = 2
+      ELSE
+        NDIM = 3
+      END IF
+
+
+C     REMPLISSAGE DE LTMVOL : LISTE DES NUMEROS DES TYPE_MAILLE
+C     VOLUMIQUES :
+C     --------------------------------------------------------
+      CALL JENONU(JEXNOM('&CATA.TM.NOMTM','HEXA8'),LTMVOL(1))
+      CALL JENONU(JEXNOM('&CATA.TM.NOMTM','HEXA20'),LTMVOL(2))
+      CALL JENONU(JEXNOM('&CATA.TM.NOMTM','HEXA27'),LTMVOL(3))
+      CALL JENONU(JEXNOM('&CATA.TM.NOMTM','TETRA4'),LTMVOL(4))
+      CALL JENONU(JEXNOM('&CATA.TM.NOMTM','TETRA10'),LTMVOL(5))
+      CALL JENONU(JEXNOM('&CATA.TM.NOMTM','PENTA6'),LTMVOL(6))
+      CALL JENONU(JEXNOM('&CATA.TM.NOMTM','PENTA15'),LTMVOL(7))
+      CALL JENONU(JEXNOM('&CATA.TM.NOMTM','PYRAM5'),LTMVOL(8))
+      CALL JENONU(JEXNOM('&CATA.TM.NOMTM','PYRAM13'),LTMVOL(9))
+
+
+      CALL GETFAC('VIS_A_VIS',NBOCC)
+      IF (NBOCC.EQ.0) THEN
+
+
+C       -- CAS : TOUT:'OUI'
+C       ------------------------
+
+C     DETERMINATION DU CAS DE FIGURE : 2D, 3D OU 2.5D : NCAS
+C     --------------------------------------------------------
+        IF (NDIM.EQ.2) THEN
+          NCAS = 2
+        ELSE IF (NDIM.EQ.3) THEN
+          CALL DISMOI('F','EXI_ELTVOL',MODEL1,'MODELE',IBID,EXIVOL,IE)
+          IF (EXIVOL.EQ.'OUI') THEN
+            NCAS = 3
+          ELSE
+            NCAS = 4
+          END IF
+        END IF
+
+
+        IF (NCAS.EQ.2) THEN
+          CALL PJ2DCO('TOUT',MODEL1,MODEL2,0,0,0,0,' ',' ',CORRES)
+        ELSE IF (NCAS.EQ.3) THEN
+          CALL PJ3DCO('TOUT',MODEL1,MODEL2,0,0,0,0,' ',' ',CORRES)
+        ELSE IF (NCAS.EQ.4) THEN
+          CALL PJ4DCO('TOUT',MODEL1,MODEL2,0,0,0,0,' ',' ',CORRES)
+        ELSE
+          CALL UTMESS('F','PJEFTE','STOP 4')
+        END IF
+
+      ELSE
+
+
+C       -- CAS : VIS_A_VIS
+C       ------------------------
+        DO 30 IOCC = 1,NBOCC
+
+C        -- RECUPERATION DE LA LISTE DE MAILLES LMA1 :
+C        ----------------------------------------------
+          MOTCLE(1) = 'MAILLE_1'
+          TYMOCL(1) = 'MAILLE'
+          MOTCLE(2) = 'GROUP_MA_1'
+          TYMOCL(2) = 'GROUP_MA'
+          MOTCLE(3) = 'TOUT_1'
+          TYMOCL(3) = 'TOUT'
+          CALL RELIEM(MODEL1,NOMA1,'NU_MAILLE','VIS_A_VIS',IOCC,3,
+     +                MOTCLE,TYMOCL,'&&PJEFTE.LIMANU1',NBMA1)
+          CALL JEVEUO('&&PJEFTE.LIMANU1','L',IAGMA1)
+
+
+C        -- RECUPERATION DE LA LISTE DE NOEUDS LNO2 :
+C        ----------------------------------------------
+          MOTCLE(1) = 'NOEUD_2'
+          TYMOCL(1) = 'NOEUD'
+          MOTCLE(2) = 'GROUP_NO_2'
+          TYMOCL(2) = 'GROUP_NO'
+          MOTCLE(3) = 'MAILLE_2'
+          TYMOCL(3) = 'MAILLE'
+          MOTCLE(4) = 'GROUP_MA_2'
+          TYMOCL(4) = 'GROUP_MA'
+          MOTCLE(5) = 'TOUT_2'
+          TYMOCL(5) = 'TOUT'
+          CALL RELIEM(MODEL2,NOMA2,'NU_NOEUD','VIS_A_VIS',IOCC,5,MOTCLE,
+     +                TYMOCL,'&&PJEFTE.LINONU2',NBNO2)
+          CALL JEVEUO('&&PJEFTE.LINONU2','L',IAGNO2)
+
+
+
+C         DETERMINATION DU CAS DE FIGURE : 2D, 3D OU 2.5D : NCAS
+C         --------------------------------------------------------
+          IF (NDIM.EQ.2) THEN
+            NCAS = 2
+          ELSE IF (NDIM.EQ.3) THEN
+C            -- SI UNE MAILLE EST DE TYPE "VOLUMIQUE" : NCAS=3
+C               SINON NCAS=4
+            NCAS = 4
+            DO 10,K = 1,NBMA1
+              TYPM1 = ZI(JTYPM1-1+ZI(IAGMA1-1+K))
+              KK = INDIIS(LTMVOL,TYPM1,1,9)
+              IF (KK.GT.0) THEN
+                NCAS = 3
+                GO TO 20
+              END IF
+   10       CONTINUE
+   20       CONTINUE
+          END IF
+
+
+C        -- CALCUL DU CORRESP_2_MAILLA POUR IOCC :
+C        ----------------------------------------------
+          CALL DETRSD('CORRESP_2_MAILLA',CORRE1)
+          IF (NCAS.EQ.2) THEN
+            CALL PJ2DCO('PARTIE',MODEL1,MODEL2,NBMA1,ZI(IAGMA1),NBNO2,
+     +                  ZI(IAGNO2),' ',' ',CORRE1)
+          ELSE IF (NCAS.EQ.3) THEN
+            CALL PJ3DCO('PARTIE',MODEL1,MODEL2,NBMA1,ZI(IAGMA1),NBNO2,
+     +                  ZI(IAGNO2),' ',' ',CORRE1)
+          ELSE IF (NCAS.EQ.4) THEN
+            CALL PJ4DCO('PARTIE',MODEL1,MODEL2,NBMA1,ZI(IAGMA1),NBNO2,
+     +                  ZI(IAGNO2),' ',' ',CORRE1)
+          ELSE
+            CALL UTMESS('F','PJEFTE','STOP 5')
+          END IF
+
+
+C        -- SURCHARGE DU CORRESP_2_MAILLA :
+C        ----------------------------------------------
+          IF (IOCC.EQ.1) THEN
+            CALL COPISD('CORRESP_2_MAILLA','V',CORRE1,CORRE2)
+          ELSE
+            CALL PJFUCO(CORRE2,CORRE1,'V',CORRE3)
+            CALL DETRSD('CORRESP_2_MAILLA',CORRE2)
+            CALL COPISD('CORRESP_2_MAILLA','V',CORRE3,CORRE2)
+          END IF
+
+          CALL JEDETR('&&PJEFTE.LIMANU1')
+          CALL JEDETR('&&PJEFTE.LINONU2')
+   30   CONTINUE
+        CALL COPISD('CORRESP_2_MAILLA','V',CORRE2,CORRES)
+        CALL DETRSD('CORRESP_2_MAILLA',CORRE1)
+        CALL DETRSD('CORRESP_2_MAILLA',CORRE2)
+        CALL DETRSD('CORRESP_2_MAILLA',CORRE3)
+
+      END IF
+
+
+
+
+C       3 -- PROJECTION DES CHAMPS DE EVO1 SUR MODEL2
+C          SUIVANT LA CORRESPONDANCE CORRES
+C       --------------------------------------------------------
+      CALL PJEFPR(NDIM,TYPRES,EVO1,RESU(1:8),MODEL2,CORRES)
+
+      CALL DETRSD('CORRESP_2_MAILLA',CORRES)
+      CALL JEDETC('V',RESU(1:8),1)
+
+
+      CALL JEDEMA()
+      END

@@ -1,0 +1,143 @@
+# MODIF  DATE 16/07/96   AUTEUR CIBHHRA R.MEDDOURI 
+# TITRE  PARALLEPEPIPEDE ISOTROPE TRANSVERSE SOUS SON PROPRE POIDS 
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+
+DEBUT(   CODE=_F(  NOM = 'SSLV121A',NIV_PUB_WEB='INTERNET') )
+
+MA=LIRE_MAILLAGE(  )
+
+MO=AFFE_MODELE(  MAILLAGE=MA,
+       AFFE=_F(  TOUT = 'OUI',PHENOMENE = 'MECANIQUE',MODELISATION = '3D') )
+
+F1=DEFI_CONSTANTE( VALE=5.0E+11)
+
+F2=DEFI_CONSTANTE( VALE=2.0E+11)
+
+F3=DEFI_CONSTANTE( VALE=0.1)
+
+F4=DEFI_CONSTANTE( VALE=0.3)
+
+F5=DEFI_CONSTANTE( VALE=76923.1E+6)
+
+MAT=DEFI_MATERIAU( ELAS_ISTR_FO=_F(  E_L = F1,
+                                 E_N = F2,
+                               NU_LT = F3,
+                                NU_LN = F4,
+ 
+  G_LN = F5,RHO = 7800.)  )
+
+CHMAT=AFFE_MATERIAU(  MAILLAGE=MA,
+                       AFFE=_F(  TOUT = 'OUI',  MATER = MAT) )
+
+# ------------------------------------------------------------------
+#    --- STRUCTURE SUSPENDUE //Z EN A + PAS DE ROTATION
+
+CH=AFFE_CHAR_MECA(  MODELE=MO,
+       PESANTEUR=(  9.81,  0.,  0.,   -1., ),
+#      PRES_REP:( GROUP_MA: FACESUP       PRES: -229553.   )
+       FORCE_FACE=_F(  GROUP_MA = 'FACESUP',       FZ = 229553.),DDL_IMPO=(
+       _F(  GROUP_NO = 'A',   DX = 0.,   DY = 0.,   DZ = 0.),
+                _F(  GROUP_NO = 'D',             DY = 0.),
+                _F(  GROUP_NO = 'ABSANSA',      DX = 0.,   DY = 0.)) )
+
+# ------------------------------------------------------------------
+
+MELR=CALC_MATR_ELEM(  MODELE=MO,            CHARGE=CH,
+                        CHAM_MATER=CHMAT,    OPTION='RIGI_MECA' )
+
+VEL=CALC_VECT_ELEM(  CHARGE=CH,            CHAM_MATER=CHMAT,
+                        OPTION='CHAR_MECA'                     )
+
+NUM=NUME_DDL(  MATR_RIGI=MELR )
+
+#
+MATASSR=ASSE_MATRICE(  MATR_ELEM=MELR,    NUME_DDL=NUM  )
+
+VECASS=ASSE_VECTEUR(  VECT_ELEM=VEL,     NUME_DDL=NUM  )
+
+#
+MATASSR=FACT_LDLT(reuse=MATASSR,  MATR_ASSE=MATASSR  )
+
+VECASS=RESO_LDLT(reuse=VECASS,  MATR_FACT=MATASSR,   CHAM_NO=VECASS )
+
+#
+SIG=CALC_CHAM_ELEM(  MODELE=MO,            DEPL=VECASS,
+                      CHAM_MATER=CHMAT,
+                      OPTION='SIGM_ELNO_DEPL'  )
+
+#
+#IMPR_RESU( MODELE: MO  ,
+#          RESU: ( CHAM_GD : VECASS ) (  CHAM_GD : SIG   )   ) ;
+#
+
+#---------------------------------------------------------------------
+
+TEST_RESU(CHAM_NO=( 
+     # B 
+            _F(  CHAM_GD = VECASS,   CRITERE = 'ABSOLU',    PRECISION = 1.E-10,
+              NOEUD = 'N53',      NOM_CMP = 'DX',            VALE = 0.),
+            _F(  CHAM_GD = VECASS,   CRITERE = 'ABSOLU',    PRECISION = 1.E-10,
+              NOEUD = 'N53',      NOM_CMP = 'DY',            VALE = 0.),
+            _F(  CHAM_GD = VECASS,   CRITERE = 'RELATIF',   PRECISION = 1.E-3,
+              NOEUD = 'N53',      NOM_CMP = 'DZ',            VALE = -1.721655E-6),
+     # C 
+            _F(  CHAM_GD = VECASS,   CRITERE = 'ABSOLU',    PRECISION = 1.E-10,
+              NOEUD = 'N12',      NOM_CMP = 'DX',            VALE = 0.),
+            _F(  CHAM_GD = VECASS,   CRITERE = 'ABSOLU',    PRECISION = 1.E-10,
+              NOEUD = 'N12',      NOM_CMP = 'DY',            VALE = 0.),
+            _F(  CHAM_GD = VECASS,   CRITERE = 'RELATIF',   PRECISION = 1.E-3,
+              NOEUD = 'N12',      NOM_CMP = 'DZ',            VALE = -1.707308E-6),
+     # D 
+            _F(  CHAM_GD = VECASS,   CRITERE = 'RELATIF',   PRECISION = 1.E-3,
+              NOEUD = 'N18',      NOM_CMP = 'DX',            VALE = -1.721655E-7),
+            _F(  CHAM_GD = VECASS,   CRITERE = 'ABSOLU',    PRECISION = 1.E-10,
+              NOEUD = 'N18',      NOM_CMP = 'DY',            VALE = 0.),
+            _F(  CHAM_GD = VECASS,   CRITERE = 'RELATIF',   PRECISION = 3.E-3,
+              NOEUD = 'N18',      NOM_CMP = 'DZ',            VALE = 1.434713E-8),
+     # E 
+            _F(  CHAM_GD = VECASS,   CRITERE = 'ABSOLU',    PRECISION = 1.E-10,
+              NOEUD = 'N56',      NOM_CMP = 'DX',            VALE = 0.),
+            _F(  CHAM_GD = VECASS,   CRITERE = 'ABSOLU',    PRECISION = 1.E-10,
+              NOEUD = 'N56',      NOM_CMP = 'DY',            VALE = 0.),
+            _F(  CHAM_GD = VECASS,   CRITERE = 'RELATIF',   PRECISION = 1.E-3,
+              NOEUD = 'N56',      NOM_CMP = 'DZ',            VALE = -1.291241E-6),
+     # X 
+            _F(  CHAM_GD = VECASS,   CRITERE = 'ABSOLU',    PRECISION = 1.E-10,
+              NOEUD = 'N70',      NOM_CMP = 'DX',            VALE = 0.),
+            _F(  CHAM_GD = VECASS,   CRITERE = 'ABSOLU',    PRECISION = 1.E-10,
+              NOEUD = 'N70',      NOM_CMP = 'DY',            VALE = -1.721655E-7),
+            _F(  CHAM_GD = VECASS,   CRITERE = 'RELATIF',   PRECISION = 2.E-3,
+              NOEUD = 'N70',      NOM_CMP = 'DZ',            VALE = 1.4347125E-8)),CHAM_ELEM=(
+     # CONTRAINTES EN A , E ET X
+            
+            _F(  CHAM_GD = SIG,      CRITERE = 'RELATIF',   PRECISION = 1.E-3,
+              MAILLE = 'HEX3',
+              NOEUD = 'N59',   NOM_CMP = 'SIZZ',          VALE = 2.29554E5),
+            
+            _F(  CHAM_GD = SIG,      CRITERE = 'RELATIF',   PRECISION = 1.E-3,
+              MAILLE = 'HEX2',
+              NOEUD = 'N56',   NOM_CMP = 'SIZZ',          VALE = 1.14777E5),
+            
+            _F(  CHAM_GD = SIG,      CRITERE = 'RELATIF',   PRECISION = 1.E-3,
+              MAILLE = 'HEX6',
+              NOEUD = 'N70',   NOM_CMP = 'SIZZ',          VALE = 2.29554E5))
+              )
+
+FIN()
+#

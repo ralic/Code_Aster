@@ -1,0 +1,283 @@
+      SUBROUTINE NMVMPJ(MATER,SIGP,VIP,DP,DSIDEP)
+
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 25/07/2001   AUTEUR RATEAU G.RATEAU 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+C TOLE CRP_7
+
+      IMPLICIT NONE
+
+      REAL*8 SIGP(4),VIP(7),MATER(*),DSIDEP(6,6),DP
+C
+C    - FONCTION REALISEE: COMPORTEMENT VMIS_POUTRE
+C      RESOLUTION LOCALE IMPLCIITE POUR UN POINT DE GAUSS
+C      CALCUL DE LA MATRICE TANGENTE
+C    - ARGUMENTS IN:
+C         EPS0     : DEFORMATIONS A L'INSTANT PRECEDENT
+C         DEPS0    : ACCROISSEMENT DE DEFORMATION
+C         VIM0     : VARIABLES INTERNES A L'INSTANT PRECEDENT
+C         SIGM0    : CONTRAINTES A L'INSTANT PRECEDENT
+C         MATER   : COEFFICIENTS MATERIAU
+C         OPTION   : RAPH_MECA, FULL_MECA OU RIGI_MECA_TANG
+C         MATRIC   : INDIQUE SI ON DOIT CALCULER HOTA
+C         CARCRI   : PARAMETRES UTILISATEUR DE CONVERGENCE
+C    - ARGUMENTS OUT:
+C         SIGP     : CONTRAINTES A L'INSTANT ACTUEL
+C         VIP      : VARIABLES INTERNES A L'INSTANT ACTUEL
+C         DSIDEP   : MATRICE DE COMPORTEMENT TANGENT
+
+      INTEGER I,J,NUMLOI
+      REAL*8 DPDN,DPDMY,DPDMZ,DPDMX,DPDQYP,DPDQZP
+      REAL*8 MPY,MEY,ALPHAY,BETAY,MPZ,MEZ,MPX,ALPHAZ,BETAZ,SU,SY,EP
+      REAL*8 PUISS,AA,NP,EA,EIY,EIZ,GJX,NX,MY,MZ,MX,P,QPY,QPZ,NP2,AN
+      REAL*8 RC,RP,SEUIL,AY,POUAQP,AZ,AX,DAYDQY,DAY1,AY3,DAZDQZ,DAZ1
+      REAL*8 AZ3,DRDP,EPU,DEN1,DEN2,H,HT(4,4),H1(4,4),PREC,R8MIEM
+      REAL*8 A1,E1,B2,E2,F2,C3,E3,G3,D4,E4,A5,B5,C5,D5,E5,F5,G5,B6,E6
+      REAL*8 C7,E7,G7,R5,K5,L5,M5,N5,K6,L6,M6,N6,K7,L7,M7,N7,F6,ZERO
+      LOGICAL FAUX
+
+      ZERO = 0.D0
+      FAUX = .FALSE.
+
+      NUMLOI = NINT(MATER( 1))
+      MPY    = MATER( 2)
+      MEY    = MATER( 3)
+      ALPHAY = MATER( 4)
+      BETAY  = MATER( 5)
+      MPZ    = MATER( 6)
+      MEZ    = MATER( 7)
+      MPX    = MATER( 8)
+      ALPHAZ = MATER( 9)
+      BETAZ  = MATER(10)
+      SU     = MATER(11)
+      SY     = MATER(12)
+      EP     = MATER(14)
+      PUISS  = MATER(15)
+      AA     = MATER(16)
+      NP     = MATER(21)
+      EA     = MATER(25)
+      EIY    = MATER(26)
+      EIZ    = MATER(27)
+      GJX    = MATER(28)
+
+      NX   = SIGP(1)
+      MY   = SIGP(2)
+      MZ   = SIGP(3)
+      MX   = SIGP(4)
+
+      P   = VIP(5)
+      QPY = VIP(6)
+      QPZ = VIP(7)
+
+      NP2=NP*NP
+      AN = 1.D0/NP2
+      CALL POUCRI(MATER,SIGP,VIP,RC,RP,SEUIL)
+      AY = POUAQP(QPY,ALPHAY,BETAY,MEY,MPY)
+      AZ = POUAQP(QPZ,ALPHAZ,BETAZ,MEZ,MPZ)
+      AX = 1.D0/MPX/MPX
+
+      DPDN =NP2*AN*NX/RC
+      DPDMY=NP2*AY*MY/RC
+      DPDMZ=NP2*AZ*MZ/RC
+      DPDMX=NP2*AX*MZ/RC
+C
+      IF (QPY.EQ.0.D0) THEN
+         DPDQYP=0.D0
+         DAYDQY=0.D0
+      ELSE
+         DAY1 = QPY**(ALPHAY-1.D0)
+         AY3  = QPY**ALPHAY + BETAY
+         DAYDQY=ALPHAY*BETAY*DAY1*(1.D0/MPY**2-1.D0/MEY**2)/AY3/AY3
+         DPDQYP=NP2*MY*MY/2.D0/RC*DAYDQY
+      ENDIF
+C
+      IF (QPZ.EQ.0.D0) THEN
+         DPDQZP=0.D0
+         DAZDQZ=0.D0
+      ELSE
+         DAZ1 = QPZ**(ALPHAZ-1.D0)
+         AZ3  = QPZ**ALPHAZ + BETAZ
+         DAZDQZ=ALPHAZ*BETAZ*DAZ1*(1.D0/MPZ**2-1.D0/MEZ**2)/AZ3/AZ3
+         DPDQZP=NP2*MZ*MZ/2.D0/RC*DAZDQZ
+      ENDIF
+
+      IF ( NUMLOI .EQ. 1 ) THEN
+        DRDP=AA*EP
+      ELSE IF ( NUMLOI .EQ. 2 ) THEN
+        EPU = (SU - SY ) / EP
+        IF (P.EQ.0.D0) THEN
+           DEN1=1.D0
+        ELSE
+           DEN1=1.D0+(P/EPU)**PUISS
+        ENDIF
+        DEN2=DEN1**(1.D0+1.D0/PUISS)
+        DRDP= AA*EP/DEN2
+      ENDIF
+
+      H=1.D0-DRDP*DP/RP
+      A1=1.D0+EA*DP/RP
+      E1=EA*NX*H/RP
+
+      B2=1.D0+EIY*DP*NP2*AY/RP
+      E2=EIY*NP2*AY*MY*H/RP
+      F2=EIY*NP2*DP*MY*DAYDQY/RP
+
+      C3=1.D0+EIZ*DP*NP2*AZ/RP
+      E3=EIZ*NP2*AZ*MZ*H/RP
+      G3=EIZ*NP2*DP*MZ*DAZDQZ/RP
+
+      D4=1.D0+GJX*DP*NP2*AX/RP
+      E4=GJX*NP2*AX*MX*H/RP
+
+      A5=DPDN
+      B5=DPDMY
+      C5=DPDMZ
+      D5=DPDMX
+      E5=-DRDP
+      F5=DPDQYP
+      G5=DPDQZP
+
+      B6=NP2*DP*AY*MY
+      E6=NP2*AY*MY*MY*H
+      F6=NP2*DP*MY*MY*DAYDQY-RP*ABS(MY)
+
+      C7=NP2*DP*AZ*MZ
+      E7=NP2*AZ*MZ*MZ*H
+      G7=NP2*DP*MZ*MZ*DAZDQZ-RP*ABS(MZ)
+
+      DO 42 I=1,4
+         DO 43 J=1,4
+            HT(I,J)=0.D0
+            H1(I,J)=0.D0
+43       CONTINUE
+42    CONTINUE
+
+      PREC = R8MIEM()
+      IF ((ABS(F6).GT.PREC).AND.(ABS(G7).GT.PREC)) THEN
+
+         R5=F5*E6/F6+G5*E7/G7-E5
+         K5=A5/R5
+         L5=(B5-F5*B6/F6)/R5
+         M5=(C5-G5*C7/G7)/R5
+         N5=D5/R5
+
+         K6=-E6/F6*K5
+         L6=-(B6/F6+E6*L5/F6)
+         M6=-E6*M5/F6
+         N6=-E6*N5/F6
+
+         K7=-E7/G7*K5
+         L7=-E7*L5/G7
+         M7=-(C7/G7+E7*M5/G7)
+         N7=-E7*N5/G7
+
+      ELSEIF ((ABS(F6).GT.PREC)) THEN
+
+         R5=F5*E6/F6 - E5
+         K5=A5/R5
+         L5=(B5-F5*B6/F6)/R5
+         M5=0.D0
+         N5=D5/R5
+
+         K6=-E6/F6*K5
+         L6=-(B6/F6+E6*L5/F6)
+         M6= 0.D0
+         N6=-E6*N5/F6
+
+         K7= 0.D0
+         L7= 0.D0
+         M7= 0.D0
+         N7= 0.D0
+
+      ELSEIF (ABS(G7).GT.PREC) THEN
+
+         R5=G5*E7/G7-E5
+         K5=A5/R5
+         L5=0.D0
+         M5=(C5-G5*C7/G7)/R5
+         N5=D5/R5
+
+         K6=0.D0
+         L6=0.D0
+         M6=0.D0
+         N6=0.D0
+
+         K7=-E7/G7*K5
+         L7=-E7*L5/G7
+         M7=-(C7/G7+E7*M5/G7)
+         N7=-E7*N5/G7
+
+      ELSEIF((ABS(G7).LE.PREC).AND.(ABS(F6).LE.PREC)) THEN
+         IF (ABS(E5).GT.PREC) THEN
+            R5=-E5
+            K5=A5/R5
+            L5=0.D0
+            M5=0.D0
+            N5=D5/R5
+         ELSE
+            R5=0.D0
+            K5=0.D0
+            L5=0.D0
+            M5=0.D0
+            N5=0.D0
+         ENDIF
+
+         K6=0.D0
+         L6=0.D0
+         M6=0.D0
+         N6=0.D0
+
+         K7= 0.D0
+         L7= 0.D0
+         M7= 0.D0
+         N7= 0.D0
+
+      ENDIF
+
+      H1(1,1)=A1+E1*K5
+      H1(1,2)=E1*L5
+      H1(1,3)=E1*M5
+      H1(1,4)=E1*N5
+
+      H1(2,1)=E2*K5+F2*K6
+      H1(2,2)=B2+E2*L5+F2*L6
+      H1(2,3)=E2*M5+F2*M6
+      H1(2,4)=E2*N5+F2*N6
+
+      H1(3,1)=E3*K5+G3*K7
+      H1(3,2)=E3*L5+G3*L7
+      H1(3,3)=C3+E3*M5+G3*M7
+      H1(3,4)=E3*N5+G3*N7
+
+      H1(4,1)=E4*K5
+      H1(4,2)=E4*L5
+      H1(4,3)=E4*M5
+      H1(4,4)=D4+E4*N5
+
+      DO 44 I=1,4
+         HT(I,I)=MATER(24+I)
+44    CONTINUE
+
+      CALL MGAUSS(H1,HT,4,4,4,ZERO,FAUX)
+
+      DO 55 I=1,4
+      DO 55 J=1,4
+         DSIDEP(I,J)=HT(I,J)
+55    CONTINUE
+
+      END

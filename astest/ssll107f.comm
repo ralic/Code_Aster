@@ -1,0 +1,248 @@
+
+# MODIF  DATE 29/05/2002   AUTEUR CIBHHAB S.VANDENBERGHE 
+# TITRE VALIDATION DE MACRO_CARA_POUTRE
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+#
+
+
+DEBUT(CODE=_F(NOM='SSLL107F',NIV_PUB_WEB='INTERNET'),PAR_LOT='NON',);
+
+TCARS=MACRO_CARA_POUTRE(GROUP_MA_BORD='LCERC',
+                        NOEUD='N1',);
+#
+# --- VALEURS DE REFERENCE: OPERATEUR AFFE_CARA_ELEM
+#
+#
+
+TEST_TABLE(TABLE=TCARS,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='.9000003',),
+           NOM_PARA='AIRE',REFERENCE='ANALYTIQUE',
+           VALE=1.963495E-3,
+           PRECISION=5.0000000000000001E-3,);
+
+TEST_TABLE(TABLE=TCARS,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='.9000003',),
+           NOM_PARA='CDG_X',REFERENCE='ANALYTIQUE',
+           VALE=0.0,
+           CRITERE='ABSOLU',);
+
+TEST_TABLE(TABLE=TCARS,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='.9000003',),
+           NOM_PARA='CDG_Y',REFERENCE='ANALYTIQUE',
+           VALE=0.0,
+           CRITERE='ABSOLU',);
+
+TEST_TABLE(TABLE=TCARS,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='.9000003',),
+           NOM_PARA='IX_G',REFERENCE='ANALYTIQUE',
+           VALE=3.0679610000000001E-07,
+           PRECISION=8.9999999999999993E-3,);
+
+TEST_TABLE(TABLE=TCARS,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='.9000003',),
+           NOM_PARA='IY_G',REFERENCE='ANALYTIQUE',
+           VALE=3.0679610000000001E-07,
+           PRECISION=8.9999999999999993E-3,);
+
+TEST_TABLE(TABLE=TCARS,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='.9000003',),
+           NOM_PARA='IXY_G',REFERENCE='ANALYTIQUE',
+           VALE=0.0,
+           CRITERE='ABSOLU',);
+
+TEST_TABLE(TABLE=TCARS,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='.9000003',),
+           NOM_PARA='IY_PRIN_G',REFERENCE='ANALYTIQUE',
+           VALE=3.0679610000000001E-07,
+           PRECISION=8.9999999999999993E-3,);
+
+TEST_TABLE(TABLE=TCARS,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='.9000003',),
+           NOM_PARA='IZ_PRIN_G',REFERENCE='ANALYTIQUE',
+           VALE=3.0679610000000001E-07,
+           PRECISION=8.9999999999999993E-3,);
+
+TEST_TABLE(TABLE=TCARS,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='.9000003',),
+           NOM_PARA='Y_MIN',REFERENCE='ANALYTIQUE',
+           VALE=-0.025000000000000001,);
+
+TEST_TABLE(TABLE=TCARS,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='.9000003',),
+           NOM_PARA='Y_MAX',REFERENCE='ANALYTIQUE',
+           VALE=0.025000000000000001,);
+
+TEST_TABLE(TABLE=TCARS,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='.9000003',),
+           NOM_PARA='Z_MIN',REFERENCE='ANALYTIQUE',
+           VALE=-0.025000000000000001,);
+
+TEST_TABLE(TABLE=TCARS,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='.9000003',),
+           NOM_PARA='Z_MAX',REFERENCE='ANALYTIQUE',
+           VALE=0.025000000000000001,);
+
+TEST_TABLE(TABLE=TCARS,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='.9000003',),
+           NOM_PARA='CT',REFERENCE='ANALYTIQUE',
+           VALE=6.1358999999999998E-07,
+           PRECISION=8.9999999999999993E-3,);
+
+TEST_TABLE(TABLE=TCARS,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='.9000003',),
+           NOM_PARA='AY',REFERENCE='ANALYTIQUE',
+           VALE=1.1666666667000001,);
+
+TEST_TABLE(TABLE=TCARS,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='.9000003',),
+           NOM_PARA='AZ',REFERENCE='ANALYTIQUE',
+           VALE=1.1666666667000001,);
+
+TEST_TABLE(TABLE=TCARS,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='.9000003',),
+           NOM_PARA='EY',
+           VALE=0.0,REFERENCE='ANALYTIQUE',
+           CRITERE='ABSOLU',);
+
+TEST_TABLE(TABLE=TCARS,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='.9000003',),
+           NOM_PARA='EZ',
+           VALE=0.0,REFERENCE='ANALYTIQUE',
+           CRITERE='ABSOLU',);
+
+TEST_TABLE(TABLE=TCARS,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='.9000003',),
+           NOM_PARA='JG',
+           VALE=0.0,REFERENCE='ANALYTIQUE',
+           CRITERE='ABSOLU',);
+
+
+
+
+
+# TEST DE L'ENCHAINEMENT AVEC UN CALCUL POUTRE
+#
+
+
+IMPR_TABLE( TABLE=TCARS )
+
+#
+#     Affectation du reel contenu dans la table TCARS
+#     (ligne 'DX', colonne 1) dans la variable python pop
+#
+
+rext=TCARS['Y_MAX',2]
+
+#rext=2.5E-2
+
+MA=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='NON'),UNITE=21);
+
+MO=AFFE_MODELE(MAILLAGE=MA,
+               AFFE=_F(TOUT='OUI',
+                       PHENOMENE='MECANIQUE',
+                       MODELISATION='POU_D_E',),);
+
+E=2.E11;
+
+MATR=DEFI_MATERIAU(ELAS=_F(E=E,
+                           NU=0.29999999999999999,),);
+
+CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
+                    AFFE=_F(TOUT='OUI',
+                            MATER=MATR,),);
+
+CAREL=AFFE_CARA_ELEM(MODELE=MO,
+                     INFO=2,
+                     POUTRE=_F(GROUP_MA='G4',
+                               SECTION='CERCLE',
+                               CARA=('R'),
+                            #   VALE=(0.025000000000000001)
+                               VALE=rext)
+                               ,)
+
+FTOT=1000. ;
+
+CHARG5=AFFE_CHAR_MECA(MODELE=MO,
+                      DDL_IMPO=_F(GROUP_NO='A',
+                                  DX=0.0,
+                                  DY=0.0,
+                                  DZ=0.0,
+                                  DRX=0.0,
+                                  DRY=0.0,
+                                  DRZ=0.0,),
+                      FORCE_NODALE=_F(GROUP_NO='B',
+                                      FX=FTOT,),);
+
+MEST5=MECA_STATIQUE(MODELE=MO,
+                    CHAM_MATER=CHMAT,
+                    CARA_ELEM=CAREL,
+                    EXCIT=_F(CHARGE=CHARG5,),
+                    );
+
+MEST5=CALC_NO(reuse =MEST5,
+              RESULTAT=MEST5,
+                    CARA_ELEM=CAREL,
+              OPTION='FORC_NODA',
+              MODELE=MO,);
+              
+
+# VALEUR DE REFERENCE
+              
+R = 0.025;
+
+UX = EVAL("""FTOT/E/PI/R/R""");
+
+
+
+TEST_RESU(RESU=(
+                _F(RESULTAT=MEST5,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   GROUP_NO='B',REFERENCE='ANALYTIQUE',
+                   VALE=UX,),
+                _F(RESULTAT=MEST5,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='FORC_NODA',
+                   NOM_CMP='DX',REFERENCE='ANALYTIQUE',
+                   GROUP_NO='B',
+                   VALE=FTOT,),
+                   ),
+                   )
+
+FIN()
+#

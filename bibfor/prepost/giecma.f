@@ -1,0 +1,164 @@
+      SUBROUTINE GIECMA(NFIC,IOBJ,NBELE,NOMOBJ,TYMAIL,NBNO,ICOMA)
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF PREPOST  DATE 11/12/2001   AUTEUR CIBHHLV L.VIVAN 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+      IMPLICIT REAL*8 (A-H,O-Z)
+C
+C     ARGUMENTS:
+C     ----------
+      INTEGER NFIC,IOBJ,NBELE,NBNO,ICOMA,IBID
+      CHARACTER*8 TYMAIL,NOMOBJ
+C ----------------------------------------------------------------------
+C     BUT: ECRIRE SUR LE FICHIER DE MAILLAGE ASTER
+C          LES MAILLES CORRESPONDANT A L'OBJET GIBI IOBJ
+C     ( SI CES MAILLES SONT EN DOUBLE, ON NE LES REECRIT PAS)
+C
+C     IN : NFIC : UNITE D'ECRITURE
+C          IOBJ : NUMERO DE L'OBJET.
+C          NBELE: NOMBRE DE MAILLES DANS L'OBJET.
+C          NOMBOJ:NOM DE LA SD CONTENANT LA CONNECTIVITE.
+C          TYMAIL:TYPE_MAILLE (GIBI)
+C          NBNO : NOMBRE DE NOEUD DE TYMAIL.
+C     VAR: ICOMA : COMPTEUR DE MAILLE.
+C          (ICOMA EST INCREMENTE DE NBELE A CHAQUE APPEL)
+C
+C ----------------------------------------------------------------------
+C
+C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
+      CHARACTER*32 JEXNUM,JEXNOM,JEXATR,JEXR8
+      COMMON /IVARJE/ZI(1)
+      COMMON /RVARJE/ZR(1)
+      COMMON /CVARJE/ZC(1)
+      COMMON /LVARJE/ZL(1)
+      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+      INTEGER ZI
+      REAL*8 ZR
+      COMPLEX*16 ZC
+      LOGICAL ZL
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32
+      CHARACTER*80 ZK80
+C ---------------- FIN COMMUNS NORMALISES  JEVEUX  --------------------
+C     VARIABLES LOCALES:
+      PARAMETER (NBELEM = 18)
+      CHARACTER*7 K7NOM(8)
+      CHARACTER*8 K8NOM(8),TYMAGI(NBELEM),TYMAAS(NBELEM)
+C
+C     COGIAS EST UN TAMPON POUR ECRIRE LA CONNECTIVITE DES MAILLES
+C        DANS L'ORDRE ASTER . (27 EST LE MAX DE NOEUDS POSSIBLE).
+      INTEGER COGIAS(27)
+      DATA TYMAAS/    'POI1    ','SEG2    ','SEG3    ','TRIA3   ',
+     +     'TRIA6   ','QUAD4   ','QUAD8   ','QUAD9   ','TETRA4  ',
+     +     'TETRA10 ','PENTA6  ','PENTA15 ','HEXA8   ','HEXA20  ',
+     +     'HEXA27  ','PYRAM5  ','PYRAM13 ','????    '/
+      DATA TYMAGI/    'POI1    ','SEG2    ','SEG3    ','TRI3    ',
+     +     'TRI6    ','QUA4    ','QUA8    ','QUA9    ','TET4    ',
+     +     'TE10    ','PRI6    ','PR15    ','CUB8    ','CU20    ',
+     +     'CU27    ','PYR5    ','PY13    ','????    '/
+C
+C
+      CALL JEMARQ()
+      IF (NBNO.GT.27) CALL UTMESS('F','GIECMA',
+     +               'NOMBRE DE NOEUDS SUPERIEUR AU MAXI AUTORISE : 27.'
+     +                            )
+C
+      CALL JEVEUO('&&GILIRE'//NOMOBJ//'.CONNEX','L',IACNEX)
+      CALL JEVEUO('&&GILIRE.NUMANEW','L',IANEMA)
+      CALL JEEXIN('&&GILIRE.INDIRECT' , IBID)
+      IF (IBID.EQ.0) THEN
+        CALL UTMESS('F','GIECMA','OBJET &&GILIRE.INDIRECT '//
+     +               'INEXISTANT. PROBLEME A LA LECTURE DES POINTS ')
+      ENDIF
+      CALL JEVEUO('&&GILIRE.INDIRECT' , 'L', IAPTIN)
+C
+C
+C     -- ON VERIFIE QU'IL Y A BIEN DES MAILLES A ECRIRE DANS L'OBJET:
+C     ---------------------------------------------------------------
+      DO 20 I = 1,NBELE
+        IF (ZI(IANEMA-1+ICOMA+I).EQ. (ICOMA+I)) THEN
+          GO TO 21
+
+        END IF
+
+   20 CONTINUE
+      ICOMA = ICOMA + NBELE
+      GO TO 9999
+C
+C
+   21 CONTINUE
+      CALL JEVEUO(JEXNOM('&&GILIRE.CORR_GIBI_ASTER',TYMAIL),'L',IACORR)
+      ITYMAI = INDIK8(TYMAGI(1),TYMAIL,1,NBELEM)
+      IF (ITYMAI.EQ.0) CALL UTMESS('F','GIECMA',
+     +                             'TYPE DE MAILLE : '//TYMAIL//
+     +                             ' INCONNU DE PRE_GIBI.')
+C
+      WRITE (NFIC,*) TYMAAS(ITYMAI)
+C
+C     -- BOUCLE SUR LES MAILLES DE L'OBJET SIMPLE:
+C     --------------------------------------------
+      DO 1 I = 1,NBELE
+        ICOMA = ICOMA + 1
+C
+C        --SI LA MAILLE N'A PAS SON NUMERO INITIAL, ELLE EST DEJA ECRITE
+        IF (ZI(IANEMA-1+ICOMA).NE. (ICOMA)) GO TO 1
+C
+        CALL CODENT(ICOMA,'G',K7NOM(1))
+        K8NOM(1) = 'M'//K7NOM(1)
+C
+C        -- REMPLISSAGE DE COGIAS:
+        DO 10 J = 1,NBNO
+          NUMNO = ZI(IACNEX-1+NBNO* (I-1)+J)
+          COGIAS(J) = ZI(IAPTIN+NUMNO-1)
+   10   CONTINUE
+C
+        NBFOIS = NBNO/7
+        NBREST = NBNO - 7*NBFOIS
+        ICOJ = 0
+        ICOK = 0
+C
+        DO 2 J = 1,NBFOIS
+          DO 3 K = 1,7
+            ICOK = ICOK + 1
+            NUMNO = COGIAS(ZI(IACORR-1+ICOK))
+            CALL CODENT(NUMNO,'G',K7NOM(1+K))
+            K8NOM(1+K) = 'N'//K7NOM(1+K)
+    3     CONTINUE
+          WRITE (NFIC,1001) (K8NOM(L),L=1,8)
+          K8NOM(1) = ' '
+          ICOJ = ICOJ + 7
+    2   CONTINUE
+C
+        DO 4 K = 1,NBREST
+          ICOK = ICOK + 1
+          NUMNO = COGIAS(ZI(IACORR-1+ICOK))
+          CALL CODENT(NUMNO,'G',K7NOM(1+K))
+          K8NOM(1+K) = 'N'//K7NOM(1+K)
+    4   CONTINUE
+        WRITE (NFIC,1001) (K8NOM(L),L=1,NBREST+1)
+    1 CONTINUE
+      WRITE (NFIC,*) 'FINSF'
+      WRITE (NFIC,*) '%'
+C
+ 9999 CONTINUE
+C
+ 1001 FORMAT (2X,A8,7(1X,A8),1X)
+C
+      CALL JEDEMA()
+      END

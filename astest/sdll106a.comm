@@ -1,0 +1,268 @@
+# MODIF  DATE 03/05/2000   AUTEUR CIBHHAB N.RAHNI 
+# TITRE POUTRE SOUS EXCITATION ALEATOIRE IMPOSEE SUR FONCTION DE FORME
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+#**********************************************************************
+#** CAS TEST: CALCUL DE LA REPONSE A UNE EXCITATION REPARTIE SUR*******
+#***** UNE FONCTION DE FORME                                    *******
+#**********************************************************************
+
+DEBUT( CODE=_F( NOM = 'SDLL106A',NIV_PUB_WEB='INTERNET') )
+
+#**********************************************************************
+#** MAILLAGE, MATERIAU, CONDITIONS AUX LIMITES , ASSEMBLAGE************
+#**********************************************************************
+
+MAYA=LIRE_MAILLAGE( )
+
+MAYA=DEFI_GROUP( reuse=MAYA,   MAILLAGE=MAYA,
+  CREA_GROUP_MA=_F(  NOM = 'TOUT', TOUT = 'OUI'))
+
+MATER=DEFI_MATERIAU(   ELAS=_F( 
+                                RHO = 7000.,
+                                 NU = 0.3,
+                                 E = 2.E+11)
+                         )
+
+CHAMPMAT=AFFE_MATERIAU(  MAILLAGE=MAYA,
+                             AFFE=_F( TOUT = 'OUI',
+                                   MATER = MATER)
+                            )
+
+POUTRE=AFFE_MODELE( MAILLAGE=MAYA,
+                     AFFE=_F( TOUT = 'OUI',
+                           MODELISATION = 'POU_D_T',
+                           PHENOMENE = 'MECANIQUE')
+                             )
+
+CARA=AFFE_CARA_ELEM( MODELE=POUTRE, 
+     POUTRE=_F(  
+       GROUP_MA = 'TOUT',
+
+              SECTION = 'RECTANGLE',
+                CARA = ('HZ','HY',),
+                VALE = (0.001, 0.001,))
+                              )
+
+CLIM=AFFE_CHAR_MECA( MODELE=POUTRE,DDL_IMPO=(
+              _F( GROUP_NO = 'NOEUDDL',  DZ = 0.),
+              _F( NOEUD = ('P1', 'P9',), DX = 0., DY = 0., DZ = 0., DRX = 0., DRY = 0.,
+                                             DRZ = 0.))
+                    )
+
+MATELE_K=CALC_MATR_ELEM( MODELE=POUTRE,  CARA_ELEM=CARA,
+                              CHAM_MATER=CHAMPMAT,  OPTION='RIGI_MECA',
+                              CHARGE=CLIM)
+
+MATELE_M=CALC_MATR_ELEM( MODELE=POUTRE,  CARA_ELEM=CARA,
+                              CHAM_MATER=CHAMPMAT,  OPTION='MASS_MECA',
+                              CHARGE=CLIM)
+
+NUM=NUME_DDL( MATR_RIGI=MATELE_K)
+
+MATASK=ASSE_MATRICE(MATR_ELEM=MATELE_K,NUME_DDL=NUM)
+
+MATASM=ASSE_MATRICE(MATR_ELEM=MATELE_M,NUME_DDL=NUM)
+
+#**********************************************************************
+#**  VECTEUR ASSEMBLE REPRESENTANT LA FONCTION DE FORME    ************
+#**********************************************************************
+
+EFF1=AFFE_CHAR_MECA( MODELE=POUTRE,FORCE_NODALE=(
+                     _F( NOEUD = ('P4', ),
+                                   FY = 0.5),
+                     _F( NOEUD = ('P5', ),
+                                   FY = 1.),
+                     _F( NOEUD = ('P6', ),
+                                   FY = 0.5))
+                            )
+
+VECT1=CALC_VECT_ELEM(    OPTION='CHAR_MECA',
+                              CHARGE=EFF1         )
+
+VECTASS1=ASSE_VECTEUR(    VECT_ELEM=VECT1,
+                               NUME_DDL=NUM       )
+
+#**********************************************************************
+#**  CALCUL MODAL        **********************************************
+#**********************************************************************
+
+MODES=MODE_ITER_INV( MATR_A=MATASK,  MATR_B=MATASM,
+                             CALC_FREQ=_F( OPTION = 'AJUSTE',
+                                        FREQ = (0.1, 300.,))
+                            )
+
+#**********************************************************************
+#**DEFINITION DE  L INTERSPECTRE D EXCITATION**************************
+#**********************************************************************
+INTEREX1=DEFI_INTE_SPEC(   DIMENSION=1,
+                            CONSTANT=_F(  NUME_ORDRE_I = 1,
+                                       NUME_ORDRE_J = 1,
+                                       VALE_R = 1.,
+                                       FREQ_MIN = 0.,
+                                       FREQ_MAX = 25.)
+                          )
+
+#**********************************************************************
+#***** INTERSPECTRE REPONSE A LA DSP REPARTIE SUR UNE FONCTION DE FORME
+#**********************************************************************
+
+DYNALEA1=DYNA_ALEA_MODAL(  
+          BASE_MODALE=_F( 
+             MODE_MECA = MODES,
+             NUME_ORDRE = (1, 2,),
+             AMOR_REDUIT = (0.05, 0.05,)),
+           EXCIT=_F(  INTE_SPEC = INTEREX1,
+                   NUME_ORDRE_I = 1,
+                   NUME_ORDRE_J = 1,
+                   CHAM_NO = VECTASS1),
+              REPONSE=_F( 
+             FREQ_MIN = 4.,
+             FREQ_MAX = 14.,
+             PAS = 2.)
+                      )
+
+INTERRE1=REST_SPEC_PHYS(         MODE_MECA=MODES,
+                                    NUME_ORDRE=( 1,  2, ),
+                                INTE_SPEC_GENE=DYNALEA1,
+                                      NOM_CHAM='DEPL',
+                                         NOEUD=( 'P2',   'P3',   'P4',  ),
+                                       NOM_CMP=('DY', 'DY', 'DY', ),
+                                        OPTION='TOUT_TOUT'  )
+
+#**********************************************************************
+#**** DEFINITION DE LA MATRICE INTERSPECTRALE 6 6 POUR LE CALCUL*******
+#***** DE VERIFICATION                                          *******
+#**********************************************************************
+INTEREX2=DEFI_INTE_SPEC(    DIMENSION=3,CONSTANT=(
+                            _F(  NUME_ORDRE_I = 1,
+                                       NUME_ORDRE_J = 1,
+                                       VALE_R = 0.25,
+                                       FREQ_MIN = 0.,
+                                       FREQ_MAX = 25.),
+                            _F(  NUME_ORDRE_I = 2,
+                                       NUME_ORDRE_J = 2,
+                                       VALE_R = 1.,
+                                       FREQ_MIN = 0.,
+                                       FREQ_MAX = 25.),
+                            _F(  NUME_ORDRE_I = 3,
+                                       NUME_ORDRE_J = 3,
+                                       VALE_R = 0.25,
+                                       FREQ_MIN = 0.,
+                                       FREQ_MAX = 25.),
+                            _F(  NUME_ORDRE_I = 1,
+                                       NUME_ORDRE_J = 2,
+                                       VALE_R = 0.5,
+                                       FREQ_MIN = 0.,
+                                       FREQ_MAX = 25.),
+                            _F(  NUME_ORDRE_I = 1,
+                                       NUME_ORDRE_J = 3,
+                                       VALE_R = 0.25,
+                                       FREQ_MIN = 0.,
+                                       FREQ_MAX = 25.),
+                            _F(  NUME_ORDRE_I = 2,
+                                       NUME_ORDRE_J = 3,
+                                       VALE_R = 0.5,
+                                       FREQ_MIN = 0.,
+                                       FREQ_MAX = 25.))
+                           )
+
+#**********************************************************************
+#*** INTERSPECTRE REPONSE CALCULE POUR VERIFICATION *******************
+#**********************************************************************
+
+DYNALEA2=DYNA_ALEA_MODAL(  
+          BASE_MODALE=_F( 
+             MODE_MECA = MODES,
+             NUME_ORDRE = (1, 2,),
+             AMOR_REDUIT = (0.05, 0.05,)),
+           EXCIT=_F( 
+             INTE_SPEC = INTEREX2,
+             NUME_ORDRE_I = ( 1, 2, 3, ),
+             NUME_ORDRE_J = ( 1, 2, 3, ),
+             GRANDEUR = 'EFFO',
+             NOEUD = ('P4', 'P5', 'P6',),
+             NOM_CMP = ('DY', 'DY', 'DY',)),
+              REPONSE=_F( 
+             FREQ_MIN = 4.,
+             FREQ_MAX = 14.,
+             PAS = 2.)
+                           )
+
+INTERRE2=REST_SPEC_PHYS(         MODE_MECA=MODES,
+                                    NUME_ORDRE=( 1,  2, ),
+                                INTE_SPEC_GENE=DYNALEA2,
+                                      NOM_CHAM='DEPL',
+                                         NOEUD=( 'P2',   'P3',   'P4',  ),
+                                       NOM_CMP=('DY', 'DY', 'DY', ),
+                                        OPTION='TOUT_TOUT'  )
+
+TEST_FONCTION(TABL_INTSP=( 
+      _F(  INTE_SPEC = INTERRE1,   
+                   NOEUD_I = 'P3',   NOEUD_J = 'P3',
+                   NOM_CMP_I = 'DY',  NOM_CMP_J = 'DY', 
+                   VALE_PARA = 4., VALE_REFE_C = ('RI',4.0298E-2,0.,),
+                   PRECISION = 1.E-3),
+      _F(  INTE_SPEC = INTERRE1,   
+                   NOEUD_I = 'P3',   NOEUD_J = 'P3',
+                   NOM_CMP_I = 'DY',  NOM_CMP_J = 'DY', 
+                   VALE_PARA = 6., VALE_REFE_C = ('MP',9.2971E-2,0.,),
+                   PRECISION = 1.E-3),
+      _F(  INTE_SPEC = INTERRE1,   
+                   NOEUD_I = 'P3',   NOEUD_J = 'P3',
+                   NOM_CMP_I = 'DY',  NOM_CMP_J = 'DY', 
+                   VALE_PARA = 8., VALE_REFE_C = ('RI',9.5164E-1,0.,),
+                   PRECISION = 1.E-3),
+      _F(  INTE_SPEC = INTERRE1,   
+                   NOEUD_I = 'P3',   NOEUD_J = 'P3',
+                   NOM_CMP_I = 'DY',  NOM_CMP_J = 'DY', 
+                   VALE_PARA = 10., VALE_REFE_C = ('RI',1.7617E-1,0.,),
+                   PRECISION = 1.E-3),
+      _F(  INTE_SPEC = INTERRE1, 
+                   NOEUD_I = 'P3',   NOEUD_J = 'P3',
+                   NOM_CMP_I = 'DY',  NOM_CMP_J = 'DY', 
+                   VALE_PARA = 12., VALE_REFE_C = ('RI',2.6695E-2,0.,),
+                   PRECISION = 1.E-3),
+      _F(  INTE_SPEC = INTERRE2, 
+                   NOEUD_I = 'P3',   NOEUD_J = 'P3',
+                   NOM_CMP_I = 'DY',  NOM_CMP_J = 'DY', 
+                   VALE_PARA = 4., VALE_REFE_C = ('RI',4.0298E-2,0.,),
+                   PRECISION = 1.E-3),
+      _F(  INTE_SPEC = INTERRE2,
+                   NOEUD_I = 'P3',   NOEUD_J = 'P3',
+                   NOM_CMP_I = 'DY',  NOM_CMP_J = 'DY', 
+                   VALE_PARA = 6., VALE_REFE_C = ('RI',9.2971E-2,0.,),
+                   PRECISION = 1.E-3),
+      _F(  INTE_SPEC = INTERRE2,
+                   NOEUD_I = 'P3',   NOEUD_J = 'P3',
+                   NOM_CMP_I = 'DY',  NOM_CMP_J = 'DY', 
+                   VALE_PARA = 8., VALE_REFE_C = ('RI',9.5164E-1,0.,),
+                   PRECISION = 1.E-3),
+      _F(  INTE_SPEC = INTERRE2,
+                   NOEUD_I = 'P3',   NOEUD_J = 'P3',
+                   NOM_CMP_I = 'DY',  NOM_CMP_J = 'DY', 
+                   VALE_PARA = 10., VALE_REFE_C = ('RI',1.7617E-1,0.,),
+                   PRECISION = 1.E-3),
+      _F(  INTE_SPEC = INTERRE2, 
+                   NOEUD_I = 'P3',   NOEUD_J = 'P3',
+                   NOM_CMP_I = 'DY',  NOM_CMP_J = 'DY', 
+                   VALE_PARA = 12., VALE_REFE_C = ('RI',2.6695E-2,0.,),
+                   PRECISION = 1.E-3)) )
+
+FIN( )
+#

@@ -1,0 +1,97 @@
+      SUBROUTINE ZEROFC(F,XMIN,XMAX,NITER,PREC,DP,IRET,NIT)
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 06/07/99   AUTEUR JMBHH01 J.M.PROIX 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+      IMPLICIT NONE
+      INTEGER            NITER,IRET
+      REAL*8             XMIN,XMAX,PREC,DP
+C ----------------------------------------------------------------------
+C     RECHERCHE DU ZERO DE F. ON SAIT QUE VAL0=F(0) < 0 ET F CROISSANTE
+C     APPEL A ZEROCO (METHODE DE CORDE) APRES RECHERCHE DE DPMAX TEL QUE
+C     F(DPMAX) > 0.
+C
+C IN  F       : FONCTION F
+C IN  XMIN    : VALEUR DE X POUR LAQUELLE F(X) < 0 (XMIN = 0 EN GENERAL)
+C IN  XMAX    : ESTIMATION DE LA VALEUR DE X POUR LAQUELLE F > 0
+C IN  NITER   : NOMBRE D'ITERATIONS MAXIMUM (ITER_INTE_MAXI)
+C IN  PREC    : PRECISION ABSOLUE : LA SOLUTION EST TELLE QUE F(DP)<PREC
+C OUT DP      : SOLUTION : ACCROISSEMENT DE LA VARIABLE INTERNE P
+C OUT IRET    : CODE RETOUR : IRET = 0 : OK
+C             :               IRET = 1 : ON NE TROUVE PAS DPMAX
+C             :               IRET = 2 : NITER INSUFFISANT
+C             :               IRET = 3 : F(XMIN) > 0
+C OUT NIT     : NOMBRE D'ITERATIONS NECESSAIRE POUR CONVERGER
+C
+      REAL*8  X(4),Y(4),BB,FB,F,YMIN
+      INTEGER I,NIT
+C DEB ------------------------------------------------------------------
+      X(1)  = XMIN
+      YMIN  = F(XMIN)
+      IF (ABS(YMIN).LT.PREC) THEN
+         DP = XMIN
+         GOTO 40
+      ELSEIF (YMIN.GT.0.D0) THEN
+         IRET = 3
+         CALL UTMESS('A','ZEROFC','F(XMIN) NON NEGATIVE')
+         GOTO 9999
+      ENDIF
+      Y(1)  = YMIN
+
+C     FA < 0 ON CHERCHE DONC BB TEL QUE FB > 0
+      BB = XMAX
+      DO 10 I=1,NITER
+         FB = F(BB)
+         IF ( ABS(FB).LT.PREC) THEN
+            DP=BB
+            NIT=0
+            IRET=0
+            GOTO 40
+         ENDIF
+         IF (FB.GE.0.D0) THEN
+            X(2)  = BB
+            Y(2)  = FB
+            GOTO 30
+         ELSE
+            BB = BB * 10.D0
+         ENDIF
+10    CONTINUE
+         CALL UTMESS('A','ZEROFC','F RESTE TOUJOURS NEGATIVE')
+         IRET = 1
+         GOTO 9999
+30    CONTINUE
+C     CALCUL DE X(4) SOLUTION EQUATION SCALAIRE F=0
+      X(3)  = X(1)
+      Y(3)  = Y(1)
+      X(4)  = X(2)
+      Y(4)  = Y(2)
+      DO 20 I = 1,NITER
+         IF ( ABS(Y(4)).LT.PREC) GOTO 40
+         CALL ZEROCO(X,Y)
+         DP = X(4)
+         Y(4) = F(DP)
+20    CONTINUE
+      CALL UTMESS('A','ZEROFC','F=0 : PAS CONVERGE')
+      CALL UTMESS('A','ZEROFC','F=0 : AUGMENTER ITER_INTE_MAXI')
+      IRET = 2
+      NIT = I
+      GOTO 9999
+40    CONTINUE
+      IRET = 0
+9999  CONTINUE
+      NIT = I
+      END

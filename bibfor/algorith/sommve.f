@@ -1,0 +1,55 @@
+      SUBROUTINE SOMMVE(NP,VEC1,N1,VEC2,N2,VECRES)
+C
+C ********************************************************************
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 21/05/96   AUTEUR KXBADNG T.FRIOU 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+C ********************************************************************
+C DESCRIPTION : SOMME DE DEUX VECTEURS
+C ------------ 
+C
+C ****************** DECLARATION DES VARIABLES ***********************
+C
+      IMPLICIT NONE
+C
+C ARGUMENTS
+C ---------
+      INTEGER NP, N1,N2
+      REAL*8 VEC1(*),VEC2(*),VECRES(*)
+C
+C VARIABLES LOCALES
+C -----------------
+      INTEGER  I,IER
+C
+C ****************** DEBUT DU CODE EXECUTABLE ************************
+C
+      IER = 0
+      CALL INITVE(NP,VECRES)
+C
+      IF (N1 .GT. NP .OR. N2 .GT.NP .OR. N1 .NE. N2) THEN
+        IER = 1
+        CALL UTMESS ('F','SOMMVE','TAILLE VECTEURS INCOMPATIBLE')
+      ENDIF
+C
+      IF (IER .EQ. 0) THEN
+      DO 10 I=1,N1
+        VECRES(I) = VEC1(I) + VEC2(I)
+ 10   CONTINUE
+      ENDIF
+C
+      END

@@ -1,0 +1,338 @@
+      SUBROUTINE NMVMPK(KP,NC,XL,EPS,DEPS,VIM,SIGM,LOI346,HOEL,
+     &                  VECTEU,MATRIC,CARCRI,SIGP,VIP,HOTA)
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 01/03/2000   AUTEUR DURAND C.DURAND 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+      IMPLICIT NONE
+      INTEGER NC,KP
+      REAL*8 SIGM(NC),SIGP(NC),VIM(9),VIP(9),LOI346(*)
+      REAL*8 EPS(NC),DEPS(NC),HOEL(NC,NC),HOTA(NC,NC),XL,CARCRI(*)
+      LOGICAL VECTEU,MATRIC
+
+C    - FONCTION REALISEE: COMPORTEMENT VMIS_POUTRE
+C      RESOLUTION LOCALE POUR UN POINT DE GAUSS
+C      PAR RUNGE-KUTTA D'ORDRE 4
+
+C    - ARGUMENTS IN:
+C         KP       : NUMERO DU POINT DE GAUSS COURANT
+C         NC       : NOMBRE DE COMPOSANTES DE CONTRAINTES
+C         XL       : LONGUEUR DE L ELEMENT
+C         EPS      : DEFORMATIONS A L'INSTANT PRECEDENT
+C         DEPS     : ACCROISSEMENT DE DEFORMATION
+C         VIM      : VARIABLES INTERNES A L'INSTANT PRECEDENT
+C         SIGM     : CONTRAINTES A L'INSTANT PRECEDENT
+C         LOI346   : COEFFICIENTS MATERIAU
+C         HOEL     : MATRICE ELASTIQUE
+C         VECTEU   : INDIQUE SI ON DOIT CALCULER SIGP ET VIP
+C         MATRIC   : INDIQUE SI ON DOIT CALCULER HOTA
+C         CARCRI   : PARAMETRES UTILISATEUR DE CONVERGENCE
+C    - ARGUMENTS OUT:
+C         SIGP     : CONTRAINTES A L'INSTANT ACTUEL
+C         VIP      : VARIABLES INTERNES A L'INSTANT ACTUEL
+C         HOTA     : MATRICE DE COMPORTEMENT TANGENT
+
+      LOGICAL DEPASS
+      INTEGER NUMLOI,NPILOT,II,JJ,I,J,ICORES(4),NEQ,RKMAX
+      PARAMETER ( NPILOT = 6 )
+      PARAMETER (NEQ = NPILOT + 12 )
+      REAL*8 XNP,XMPY,XMEY,XAY,XBY,XMPZ,XMEZ,XMPX,XAZ,XBZ,DSY,DEP
+      REAL*8 DSIGM(7),SU,SY,E,EP,PUISS,AA,XIY,XIZ,XJX,XNU,CRIT,ERRMAX
+      REAL*8 EPSX,XNX,XMY,XMZ,XMX,EPSXP,QSIYP,QSIZP,QSIXP
+      REAL*8 RC,XAN,XAX,EPU,AYP,AZP,PCUM,DPCUM,SIGMA,QPY,QPZ,AY,AZ
+      REAL*8 VEC2(4),VEC1(4),SC1,SC2,DGDP,DENO,DPILOT(6)
+      REAL*8 DGDT(4),MAT1(4,4),DGDPY,DGDPZ
+      REAL*8 VRINT0(NEQ),VRINT1(NEQ),VMAX(NEQ),VRINEL(NEQ),DVRIEL(NEQ)
+      REAL*8 VRI0(NEQ),RK1(NEQ),RK2(NEQ),RK3(NEQ),RK4(NEQ)
+      REAL*8 DVRINT(NEQ),VROUT1(NEQ),VROUT2(NEQ),VECT(NEQ),DVAR(NEQ)
+C TOLE CRP_7
+      EXTERNAL RK0346
+C
+C     ICORES : CORRESPONDANCE ENTRE LES 6 OU 7 DDLS DE CONTRAINTES
+C              ET LES 4 DDLS UTILISES DANS LE CRITERE :N,MY,MZ,MX
+
+      DATA ICORES/1,5,6,4/
+
+      RKMAX = NINT(CARCRI(1))
+      ERRMAX = CARCRI(3)
+
+      NUMLOI = NINT(LOI346(1    ))
+      XMPY   = LOI346(1+ 1 )
+      XMEY   = LOI346(1+ 2 )
+      XAY    = LOI346(1+ 3 )
+      XBY    = LOI346(1+ 4 )
+      XMPZ   = LOI346(1+ 5 )
+      XMEZ   = LOI346(1+ 6 )
+      XMPX   = LOI346(1+ 7 )
+      XAZ    = LOI346(1+ 8 )
+      XBZ    = LOI346(1+ 9 )
+      SU     = LOI346(1+10 )
+      SY     = LOI346(1+11 )
+      E      = LOI346(1+12 )
+      EP     = LOI346(1+13 )
+      PUISS  = LOI346(1+14 )
+      AA     = LOI346(1+15 )
+      XIY    = LOI346(1+16 )
+      XIZ    = LOI346(1+17 )
+      XJX    = LOI346(1+18 )
+      XNU    = LOI346(1+19 )
+      XNP    = LOI346(1+20 )
+      DSY=LOI346(22)
+      DEP=LOI346(23)
+
+      VRINT0(1)   = EPS(1)
+      VRINT0(2)   = EPS(5)
+      VRINT0(3)   = EPS(6)
+      VRINT0(4)   = EPS(4)
+      VRINT0(5) = SY
+      VRINT0(6) = EP
+      VRINT0(NPILOT+1)  = VIM(1)
+      VRINT0(NPILOT+2)  = VIM(2)
+      VRINT0(NPILOT+3)  = VIM(3)
+      VRINT0(NPILOT+4)  = VIM(4)
+      VRINT0(NPILOT+5)  = VIM(5)
+      VRINT0(NPILOT+6) = VIM(6)
+      VRINT0(NPILOT+7) = SIGM(1)
+      VRINT0(NPILOT+8) = SIGM(5)
+      VRINT0(NPILOT+9) = SIGM(6)
+      VRINT0(NPILOT+10) = SIGM(4)
+      VRINT0(NPILOT+11) = VIM(8)
+      VRINT0(NPILOT+12) = VIM(9)
+C
+C     ESTIMATION ELASTIQUES AVEC VARIABLES INITIALES
+C
+      DO 255 I = 1,NEQ
+         VRINEL(I) = VRINT0(I)
+  255 CONTINUE
+      DO 212 I = 1,NC
+         DSIGM(I) = HOEL(I,I)*DEPS(I)
+  212 CONTINUE
+      VRINEL(NPILOT+7) = SIGM(1) + DSIGM(1)
+      VRINEL(NPILOT+8) = SIGM(5) + DSIGM(5)
+      VRINEL(NPILOT+9) = SIGM(6) + DSIGM(6)
+      VRINEL(NPILOT+10) = SIGM(4) + DSIGM(4)
+      DVRIEL(1)  = DEPS(1)
+      DVRIEL(2)  = DEPS(5)
+      DVRIEL(3)  = DEPS(6)
+      DVRIEL(4)  = DEPS(4)
+      DVRIEL(5) = DSY
+      DVRIEL(6) = DEP
+      CALL RK0346(LOI346,NEQ,VRINEL,DVRIEL)
+      DPCUM = DVRIEL(NPILOT+5)
+C
+C     ON RESTE ELASTIQUE
+C
+      IF (DPCUM.EQ.0.D0) THEN
+         DEPASS = .FALSE.
+         EPSXP = VRINEL(NPILOT+1)
+         QSIYP = VRINEL(NPILOT+2)
+         QSIZP = VRINEL(NPILOT+3)
+         QSIXP = VRINEL(NPILOT+4)
+         PCUM  = VRINEL(NPILOT+5)
+         SIGMA = VRINEL(NPILOT+6)
+         XNX   = VRINEL(NPILOT+7)
+         XMY   = VRINEL(NPILOT+8)
+         XMZ   = VRINEL(NPILOT+9)
+         XMX   = VRINEL(NPILOT+10)
+         QPY    = VRINEL(NPILOT+11)
+         QPZ    = VRINEL(NPILOT+12)
+         VRINT1(1)  = EPS(1) +  DEPS(1)
+C
+      ELSE
+C
+C        CELA PLASTIFIE . RESOLUTION PAR RUNGE-KUTTA
+C
+C        ON NORME PAR RAPPORT
+C         A LA DEFORMATION ELASTIQUE POUR LES GRANDEURS
+C                        HOMOGENES AUX DEFORMATIONS
+C         A LA COURBURE ELASTIQUE POUR LES GRANDEURS
+C                        HOMOGENES AUX COURBURES
+C
+         VMAX( 1) = XNP/HOEL(1,1)
+         VMAX( 2) = XMPY/HOEL(5,5)
+         VMAX( 3) = XMPZ/HOEL(6,6)
+         VMAX( 4) = XMPX/HOEL(4,4)
+         VMAX(5) = SY
+         VMAX(6) = E
+         VMAX(NPILOT+1) = VMAX( 1)
+         VMAX(NPILOT+2) = VMAX( 2)
+         VMAX(NPILOT+3) = VMAX( 3)
+         VMAX(NPILOT+4) = VMAX( 4)
+         VMAX(NPILOT+5) = VMAX( 1)
+         VMAX(NPILOT+6) = SY
+         VMAX(NPILOT+7) = XNP
+         VMAX(NPILOT+8) = XMPY
+         VMAX(NPILOT+9) = XMPZ
+         VMAX(NPILOT+10)= XMPX
+         VMAX(NPILOT+11) = VMAX( 2)
+         VMAX(NPILOT+12) = VMAX( 3)
+C
+C        RUNGE-KUTTA :  VARIABLES DE PILOTAGE FINALE
+C
+         VRINT1(1)  = EPS(1) +  DEPS(1)
+         VRINT1(2)  = EPS(5) +  DEPS(5)
+         VRINT1(3)  = EPS(6) +  DEPS(6)
+         VRINT1(4)  = EPS(4) +  DEPS(4)
+         VRINT1(5) = SY+DSY
+         VRINT1(6) = EP+DEP
+C
+C        INTEGRATION PAR RUNGE-KUTTA A PAS VARIABLE
+C
+         CALL RUNGEK(NEQ,NPILOT,RK0346,LOI346,VRINT0,VMAX,ERRMAX,RKMAX,
+     &   VRINT1,DPILOT,DVRINT,VROUT1,VROUT2,VECT,DVAR,RK1,RK2,RK3,RK4,
+     &   VRI0)
+C
+         DEPASS = .TRUE.
+C
+         EPSXP = VRINT1(NPILOT+1)
+         QSIYP = VRINT1(NPILOT+2)
+         QSIZP = VRINT1(NPILOT+3)
+         QSIXP = VRINT1(NPILOT+4)
+         PCUM  = VRINT1(NPILOT+5)
+         SIGMA = VRINT1(NPILOT+6)
+         XNX   = VRINT1(NPILOT+7)
+         XMY   = VRINT1(NPILOT+8)
+         XMZ   = VRINT1(NPILOT+9)
+         XMX   = VRINT1(NPILOT+10)
+         QPY    = VRINT1(NPILOT+11)
+         QPZ    = VRINT1(NPILOT+12)
+      ENDIF
+C
+C     CALCUL DE L'INDICATEUR DE TAUX DE CHARGEMENT DE LA BARRE
+C     UTILISE POUR POST-TRAITEMENTS PYLONES
+C
+      XAN = 1.0D0/XNP**2
+      XAX = 1.0D0/XMPX**2
+
+      IF (XBY.EQ.0.D0) THEN
+         AY = (  1.D0/XMPY**2 )
+      ELSE
+         IF (QPY.EQ.0.D0) THEN
+            AY = (  1.D0/XMEY**2 )
+         ELSE
+            AY = ( QPY**XAY/XMPY**2 + XBY/XMEY**2 )/(QPY**XAY +XBY)
+         ENDIF
+      ENDIF
+
+      IF (XBZ.EQ.0.D0) THEN
+         AZ = (  1.D0/XMPZ**2 )
+      ELSE
+         IF (QPZ.EQ.0.D0) THEN
+            AZ = 1.D0/XMEZ**2
+         ELSE
+            AZ = ( QPZ**XAZ/XMPZ**2 + XBZ/XMEZ**2 )/(QPZ**XAZ +XBZ)
+         ENDIF
+      ENDIF
+      RC = SQRT(AY*XMY**2 + AZ*XMZ**2 + XAN*XNX**2 + XAX*XMX**2)
+      CRIT =  RC * XNP / ( AA * SY )
+      IF ( SIGMA .GT. 0.D0 ) CRIT = 1.D0 + SIGMA / SY
+      EPSX = VRINT1(1)
+      IF ( EPSX  .LT. 0.D0 ) CRIT = - CRIT
+C
+C     CALCUL DE LA MATRICE TANGENTE ELEMENTAIRE :
+C
+      IF ( MATRIC ) THEN
+         IF ( DEPASS ) THEN
+C
+            CALL R8INIR(NC*NC,0.D0,HOTA,1)
+            DGDT(1) = XAN*XNX*XNP/RC
+            DGDT(2) =  AY*XMY*XNP/RC
+            DGDT(3) =  AZ*XMZ*XNP/RC
+            DGDT(4) = XAX*XMX*XNP/RC
+            IF ( QPY .GT. 0.D0 ) THEN
+              AYP = XAY*XBY*(QPY**(XAY-1.D0))*
+     &              (1.D0/XMPY**2-1.D0/XMEY**2)/(QPY**XAY +XBY)**2
+              IF ( QSIYP .LT. 0.D0 ) AYP = - AYP
+            ELSE
+              AYP = 0.D0
+            ENDIF
+            IF ( QPZ .GT. 0.D0 ) THEN
+              AZP = XAZ*XBZ*(QPZ**(XAZ-1.D0))*
+     &              (1.D0/XMPZ**2-1.D0/XMEZ**2)/(QPZ**XAZ +XBZ)**2
+              IF ( QSIZP .LT. 0.D0 ) AZP = - AZP
+            ELSE
+              AZP = 0.D0
+            ENDIF
+
+            CALL R8INIR(4*4,0.D0,MAT1,1)
+            MAT1(1,1) = E*AA
+            MAT1(2,2) = E*XIY
+            MAT1(3,3) = E*XIZ
+            MAT1(4,4) = E*XJX/(2.0D0*(1.0D0+XNU))
+            CALL VHVHMA(VEC1,DGDT,MAT1,4)
+            CALL SCVHVV(SC1,VEC1,DGDT,4)
+
+            DGDPY = AYP*XMY**2*XNP/(2.D0*RC)
+            DGDPZ = AZP*XMZ**2*XNP/(2.D0*RC)
+            SC2=DGDPY*ABS(DGDT(2))+DGDPZ*ABS(DGDT(3))
+
+            IF ( NUMLOI .EQ. 1 ) THEN
+              DGDP = EP
+            ELSE IF ( NUMLOI .EQ. 2 ) THEN
+              EPU = ( SU - SY ) / EP
+              DGDP = EP/(1.D0+(PCUM/EPU)**PUISS)**(1.D0/PUISS+1.D0)
+            ENDIF
+            DENO = SC1 - SC2 + DGDP*AA
+            CALL VVMAVV(VEC1,MAT1,DGDT,4)
+            CALL VHVHMA(VEC2,DGDT,MAT1,4)
+            CALL MAVVVH(MAT1,VEC1,VEC2,4)
+C
+C           CALCUL DE LA MATRICE MATERIELLE TANGENTE :
+C
+            DO 771 I = 1,4
+              II = ICORES(I)
+              DO 772 J = 1,4
+                JJ = ICORES(J)
+                HOTA(II,JJ) = - MAT1(I,J)/DENO
+772           CONTINUE
+771         CONTINUE
+            DO 774, I = 1, NC
+              HOTA(I,I) = HOTA(I,I) + HOEL(I,I)
+774         CONTINUE
+         ELSE
+            DO 775 I = 1, NC
+              HOTA(I,I) = HOEL(I,I)
+775         CONTINUE
+         ENDIF
+      ENDIF
+C
+C        ON CALCULE LES  VARIABLES INTERNES "+"
+C        LES CONTRAINTES "+" ET LE RESIDU :
+C
+        IF (VECTEU) THEN
+C
+           VIP(1) = EPSXP
+           VIP(2) = QSIYP
+           VIP(3) = QSIZP
+           VIP(4) = QSIXP
+           VIP(5) = PCUM
+           VIP(6) = SIGMA
+           VIP(7) = CRIT
+           VIP(8) = QPY
+           VIP(9) = QPZ
+C
+           SIGP(1) = XNX
+           SIGP(2) = SIGM(2)+DSIGM(2)
+           SIGP(3) = SIGM(3)+DSIGM(3)
+           SIGP(4) = XMX
+           SIGP(5) = XMY
+           SIGP(6) = XMZ
+           IF (NC.EQ.7) THEN
+              SIGP(7) = SIGM(7)+DSIGM(7)
+           END IF
+        END IF
+      END

@@ -1,0 +1,408 @@
+      SUBROUTINE ADDM05 ( IERUSR, ICMD,
+     >                    NBOPT, TABENT, TABREE, TABCAR, LGCAR )
+C
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 16/10/2002   AUTEUR GNICOLAS G.NICOLAS 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C ======================================================================
+C RESPONSABLE GNICOLAS G.NICOLAS
+C     ------------------------------------------------------------------
+C      ADAPTATION - DECODAGE DE LA MACRO-COMMANDE - PHASE 05
+C      --           -              -                      --
+C      ECRITURE DE LA COMMANDE DE LECTURE DES RESULTATS MED
+C     ------------------------------------------------------------------
+C
+C     REMARQUE : CELA N'A LIEU QUE POUR UNE ADAPTATION
+C
+      IMPLICIT NONE
+C
+C 0.1. ==> ARGUMENTS
+C
+      INTEGER IERUSR, ICMD
+      INTEGER NBOPT
+      INTEGER TABENT(NBOPT), LGCAR(NBOPT)
+C
+      REAL*8 TABREE(NBOPT)
+C
+      CHARACTER*(*) TABCAR(NBOPT)
+C
+C 0.2. ==> COMMUNS
+C
+C --------------- COMMUNS NORMALISES  JEVEUX  --------------------------
+      INTEGER      ZI
+      CHARACTER*8  ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32
+      CHARACTER*80 ZK80
+      COMMON /IVARJE/ZI(1)
+      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+C     -----  FIN  COMMUNS NORMALISES  JEVEUX --------------------------
+C
+C 0.3. ==> VARIABLES LOCALES
+C
+      CHARACTER*6 NOMPRO
+      PARAMETER ( NOMPRO = 'ADDM05' )
+C
+      INTEGER EDNONO
+      PARAMETER (EDNONO=-1)
+      INTEGER EDNOPT
+      PARAMETER (EDNOPT=-1)
+C
+      INTEGER CODRET
+      INTEGER IAUX, JAUX, KAUX
+C
+      INTEGER NIVINF
+      INTEGER LNOCHM
+      INTEGER LCMN, LCMN1, LCRN
+      INTEGER LCO
+      INTEGER LNMMN1
+      INTEGER LTYPEC
+      INTEGER MODHOM
+      INTEGER NUMUNI
+      INTEGER MNGMAI, MNGRES
+      INTEGER NBMAJS
+      INTEGER NUMPT, NUMORD
+      INTEGER ADTRA1, ADTRA2
+      INTEGER ADAUX1, ADAUX2
+C
+      CHARACTER*8 CMN, CMNP1, CRN
+      CHARACTER*8 CONCPT
+      CHARACTER*8 NORESU
+      CHARACTER*8 NOPASE
+      CHARACTER*16 TYPECH
+      CHARACTER*16 NOMSYM
+      CHARACTER*24 NTRAV1, NTRAV2
+      CHARACTER*32 NMDMN1
+      CHARACTER*32 NOCHMD
+      CHARACTER*128 REP
+C
+      LOGICAL DELMAI, DELRES
+      LOGICAL LIRMAI
+      LOGICAL LRESU
+C
+C     ------------------------------------------------------------------
+C
+      MODHOM = TABENT(2)
+C
+      IF ( MODHOM.EQ.1 ) THEN
+C
+C     ------------------------------------------------------------------
+C
+C====
+C 1. RECUPERATION DES ARGUMENTS
+C====
+C
+      CODRET = 0
+C
+C 1.1. ==> ENTIERS
+C
+      MODHOM = TABENT(1)
+      NBMAJS = TABENT(8)
+C
+      MNGMAI = TABENT(18)
+      MNGRES = TABENT(19)
+      NUMUNI = TABENT(22)
+      NIVINF = TABENT(30)
+C
+C 1.2. ==> CARACTERES
+C
+C 1.2.1. ==> CONCEPT MAILLAGE
+C
+      LCMN   = LGCAR(2)
+      IF ( LCMN.LT.0 .OR. LCMN.GT.8 ) THEN
+        CODRET = CODRET + 1
+      ELSEIF ( LCMN.GT.0 ) THEN
+        CMN = '        '
+        CMN(1:LCMN) = TABCAR(2)(1:LCMN)
+      ENDIF
+C
+      LCMN1  = LGCAR(3)
+      IF ( LCMN1.LT.0 .OR. LCMN1.GT.8 ) THEN
+        CODRET = CODRET + 1
+      ELSEIF ( LCMN1.EQ.0 ) THEN
+        LIRMAI = .FALSE.
+      ELSE
+        CMNP1 = '        '
+        CMNP1(1:LCMN1) = TABCAR(3)(1:LCMN1)
+        LIRMAI = .TRUE.
+      ENDIF
+C
+C 1.2.2. ==> CONCEPT RESULTAT
+C
+      LCRN  = LGCAR(4)
+      IF ( LCRN.LT.0 .OR. LCRN.GT.8 ) THEN
+        CODRET = CODRET + 1
+      ELSEIF ( LCRN.GT.0 ) THEN
+        CRN = '        '
+        CRN(1:LCRN) = TABCAR(4)(1:LCRN)
+      ENDIF
+C
+C 1.2.3. ==> NOMS DE TABLEAUX UTILES A LA CONVERSION
+C
+      IAUX = LGCAR(26)
+      IF ( IAUX.NE.0 ) THEN
+C                 123456789012345678901234
+        NTRAV1 = '                        '
+        NTRAV1(1:IAUX) = TABCAR(26)(1:IAUX)
+      ENDIF
+C
+      IAUX = LGCAR(27)
+      IF ( IAUX.NE.0 ) THEN
+        NTRAV2 = '                        '
+        NTRAV2(1:IAUX) = TABCAR(27)(1:IAUX)
+      ENDIF
+C
+C 1.2.4. ==> NOM DE L'OBJET MED DU MAILLAGE A L'ITERATION N+1
+C
+      LNMMN1 = LGCAR(32)
+      IF ( LNMMN1.NE.0 ) THEN
+        NMDMN1(1:LNMMN1) = TABCAR(32)(1:LNMMN1)
+      ENDIF
+C
+C 1.3. ==> OPTIONS
+C
+      IF ( MNGMAI.EQ.1 ) THEN
+        DELMAI = .TRUE.
+      ELSE
+        DELMAI = .FALSE.
+      ENDIF
+C
+      IF ( MNGRES.EQ.1 ) THEN
+        DELRES = .TRUE.
+      ELSE
+        DELRES = .FALSE.
+      ENDIF
+C
+C====
+C 2. ECRITURE DES COMMANDES DE DESTRUCTION DES CONCEPTS
+C====
+C
+      IF ( DELMAI ) THEN
+C
+C 2.1.1. ==> INITIALISATION
+C
+      ICMD = ICMD + 1
+      CALL SMDCMD ( ICMD, CMNP1, 'DETRUIRE', CODRET )
+C
+C 2.1.2. ==> LE MOT-CLE
+C
+      CONCPT = CMN
+      CALL PUTVID ( 'FORMAT', 1, CONCPT, CODRET)
+C
+C 2.1.3. ==> FIN DE LA COMMANDE
+C
+      CALL SMFCMD ( CODRET )
+C
+      ENDIF
+C
+      IF ( DELRES) THEN
+C
+C 2.2.1. ==> INITIALISATION
+C
+      ICMD = ICMD + 1
+      CALL SMDCMD ( ICMD, CMNP1, 'DETRUIRE', CODRET )
+C
+C 2.2.2. ==> LE MOT-CLE
+C
+      CONCPT = CRN
+      CALL PUTVID ( 'FORMAT', 1, CONCPT, CODRET)
+C
+C 2.2.3. ==> FIN DE LA COMMANDE
+C
+      CALL SMFCMD ( CODRET )
+C
+      ENDIF
+C
+C====
+C 3. ECRITURE DES COMMANDES DE LECTURE DES CONCEPTS
+C====
+C
+C 3.1. ==> LE MAILLAGE
+C
+      IF ( LIRMAI ) THEN
+C
+C 3.1.1. ==> INITIALISATION
+C
+      ICMD = ICMD + 1
+      CALL SMDCMD ( ICMD, CMNP1, 'LIRE_MAILLAGE', CODRET )
+C
+C 3.1.2. ==> LES MOTS-CLES
+C
+      IAUX = 3
+      REP(1:IAUX) = 'MED'
+      CALL PUTVTX ( 'FORMAT', 1, REP, IAUX, CODRET)
+C
+      CALL PUTVIS ( 'UNITE', 1, NUMUNI, CODRET)
+C
+      CALL PUTVTX ( 'NOM_MED', 1, NMDMN1, LNMMN1, CODRET)
+C
+      CALL PUTVIS ( 'INFO_MED', 1, NIVINF, CODRET)
+C
+C 3.1.3. ==> FIN DE LA COMMANDE
+C
+      CALL SMFCMD ( CODRET )
+C
+      ENDIF
+C
+C 3.2. ==> LES RESULTATS
+C
+      IF ( NBMAJS.NE.0 ) THEN
+C
+C 3.2.1. ==> REPERAGE DES TABLEAUX DE STOCKAGE
+C          ON TROUVE POUR CHAQUE CHAMP A INTERPOLER :
+C       K8 : NOM DU RESULTAT (LG MAX = 8)
+C            NOM SYMBOLIQUE DU CHAMP (LG MAX = 16)
+C            TYPE DU CHAMP (LG MAX = 16)
+C            NOM DE L'OBJET (LG MAX = 8)
+C       I  : LONGUEUR DU NOM DU RESULTAT
+C            LONGUEUR DU NOM SYMBOLIQUE DU CHAMP
+C            LONGUEUR DU TYPE DU CHAMP
+C            LONGUEUR DU NOM DE L'OBJET
+C            NUMERO D'ORDRE
+C            NUMERO DU PAS DE TEMPS
+C
+        CALL JEVEUO ( NTRAV1, 'L', ADTRA1 )
+        CALL JEVEUO ( NTRAV2, 'L', ADTRA2 )
+C
+        ADAUX1 = ADTRA1 - 1
+        ADAUX2 = ADTRA2 - 1
+C
+        DO 32 , IAUX = 1 , NBMAJS
+C
+C 3.2.2. ==> RECUPERATION DES ARGUMENTS
+C
+C                   12345678
+          NORESU = '        '
+          ADAUX2 = ADAUX2 + 1
+          JAUX = ZI(ADAUX2)
+          ADAUX1 = ADAUX1 + 1
+          NORESU(1:JAUX) = ZK8(ADAUX1)(1:JAUX)
+C
+C                   1234567812345678
+          NOMSYM = '                '
+          ADAUX2 = ADAUX2 + 1
+          JAUX = ZI(ADAUX2)
+          ADAUX1 = ADAUX1 + 1
+          IF ( JAUX.LE.8 ) THEN
+            NOMSYM(1:JAUX) = ZK8(ADAUX1)(1:JAUX)
+            ADAUX1 = ADAUX1 + 1
+          ELSE
+            NOMSYM(1:8) = ZK8(ADAUX1)
+            ADAUX1 = ADAUX1 + 1
+            NOMSYM(9:JAUX) = ZK8(ADAUX1)(1:JAUX-8)
+          ENDIF
+C
+C                   1234567812345678
+          TYPECH = '                '
+          ADAUX2 = ADAUX2 + 1
+          LTYPEC = ZI(ADAUX2)
+          ADAUX1 = ADAUX1 + 1
+          IF ( LTYPEC.LE.8 ) THEN
+            TYPECH(1:LTYPEC) = ZK8(ADAUX1)(1:LTYPEC)
+            ADAUX1 = ADAUX1 + 1
+          ELSE
+            TYPECH(1:8) = ZK8(ADAUX1)
+            ADAUX1 = ADAUX1 + 1
+            TYPECH(9:LTYPEC) = ZK8(ADAUX1)(1:LTYPEC-8)
+          ENDIF
+C
+C                   12345678
+          CONCPT = '        '
+          ADAUX1 = ADAUX1 + 1
+          ADAUX2 = ADAUX2 + 1
+          LCO = ZI(ADAUX2)
+          CONCPT(1:LCO) = ZK8(ADAUX1)(1:LCO)
+C
+          ADAUX2 = ADAUX2 + 1
+          NUMORD = ZI(ADAUX2)
+C
+          ADAUX2 = ADAUX2 + 1
+          NUMPT  = ZI(ADAUX2)
+C
+C                   12345678
+          NOPASE = '        '
+C
+          LRESU = .TRUE.
+C
+          CALL MDNOCH ( NOCHMD, LNOCHM,
+     >                  LRESU, NORESU, NOMSYM, NOPASE, KAUX )
+          IF ( KAUX.NE.0 ) THEN
+            CODRET = CODRET + 1
+          ENDIF
+C
+C 3.2.3. ==> INITIALISATION DE LA COMMANDE
+C
+          ICMD = ICMD + 1
+          CALL SMDCMD ( ICMD, CONCPT, 'LIRE_CHAMP', CODRET )
+C
+C 3.2.4. ==> LES MOTS-CLES
+C
+          CONCPT = CMNP1
+          CALL PUTVID ( 'MAILLAGE', 1, CONCPT, CODRET)
+C
+          JAUX = 3
+          REP(1:JAUX) = 'MED'
+          CALL PUTVTX ( 'FORMAT', 1, REP, JAUX, CODRET)
+C
+          JAUX = LNOCHM
+          REP(1:JAUX) = NOCHMD
+          CALL PUTVTX ( 'NOM_MED', 1, REP, JAUX, CODRET)
+C
+          JAUX = 3
+          REP(1:JAUX) = 'OUI'
+          CALL PUTVTX ( 'NOM_CMP_IDEM', 1, REP, JAUX, CODRET)
+C
+          JAUX = LTYPEC
+          REP(1:JAUX) = TYPECH(1:LTYPEC)
+          CALL PUTVTX ( 'TYPE_CHAM', 1, REP, JAUX, CODRET)
+C
+          IF ( NUMORD.NE.EDNONO ) THEN
+            CALL PUTVIS ( 'NUME_ORDRE', 1, NUMORD, CODRET)
+          ENDIF
+C
+          IF ( NUMPT.NE.EDNOPT ) THEN
+            CALL PUTVIS ( 'NUME_PT', 1, NUMPT, CODRET)
+          ENDIF
+C
+          CALL PUTVIS ( 'UNITE', 1, NUMUNI, CODRET)
+C
+C 3.2.5. ==> FIN DE LA COMMANDE
+C
+          CALL SMFCMD ( CODRET )
+C
+   32   CONTINUE
+C
+      ENDIF
+C
+C====
+C 4. BILAN
+C====
+C
+      IF ( CODRET .GT. 0 ) THEN
+        CALL UTMESS
+     > ('E',NOMPRO,'ERREURS CONSTATEES POUR MACR_ADAP')
+         IERUSR = IERUSR + CODRET
+      ENDIF
+C
+C     ------------------------------------------------------------------
+C
+      ENDIF
+C
+C     ------------------------------------------------------------------
+C
+      END
