@@ -1,6 +1,6 @@
       FUNCTION JJPREM ( NOMBRE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 20/06/2002   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF JEVEUX  DATE 28/06/2004   AUTEUR D6BHHJP J.P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,7 +24,7 @@ C     ==================================================================
       PARAMETER      ( PGME = 'JJPREM' )
       CHARACTER *75    CMESS
       INTEGER          NPRE
-      PARAMETER      ( NPRE = 60 )
+      PARAMETER      ( NPRE = 62 )
       INTEGER          JPREM
       COMMON /JPREJE/  JPREM(NPRE)
 C     ==================================================================
@@ -39,7 +39,7 @@ C
      &        ,2459,3203,4177,5431,6121,7069,8111,9199,10271,11959,15551
      &        ,20219,26293,34183,44449,57787,66179,75133,86113,97673,
      &        126989,165089,214631,279029,362741,471571,540703,611957,
-     &        1000003,1299827,2015179,5023309/
+     &        1000003,1299827,2015179,5023309,5800139,10000019/
 C     ------------------------------------------------------------------
       IF ( FACT * NOMBRE .GT. IPR(NPRE) ) THEN
          CMESS = 'TAILLE DE REPERTOIRE DEMANDEE TROP GRANDE'

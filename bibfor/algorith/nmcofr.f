@@ -9,7 +9,7 @@ C
       CHARACTER*24  DEPPLU, DEPDEL, DDEPLA, DEFICO, RESOCO, CNCINE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 29/06/2004   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,12 +49,10 @@ C
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C
 C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
-      LOGICAL       LBID, PREMIE
-      INTEGER       IBID, ICONTA, LMAT, JPREM
-      REAL*8        R8BID
-      CHARACTER*16  K16BID
-      CHARACTER*19  K19BID, MATR, MATASS, MATRIX(2)
-      CHARACTER*24  K24BID
+      LOGICAL       PREMIE
+      INTEGER       ICONTA, LMAT, JPREM
+      CHARACTER*19  MATR, MATASS
+
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
@@ -75,16 +73,8 @@ C
 C
 C ------ RECUPERATION DU DESCRIPTEUR DE LA MATRICE MECANIQUE
 C        (ADHERENCE A LA METHODE DE NEWTON)
-         CALL NMMATR ( 'CONTACT_FR', K24BID, K24BID, K24BID, K24BID,
-     &                       K24BID, K24BID, K19BID, K24BID, RESOCO,
-     &                       K16BID, K19BID, 0.D0  , K24BID, K19BID,
-     &                       0     , ITERAT, K24BID, K24BID, K24BID,
-     &                       K24BID, MATRIX, K16BID, DEFICO, K24BID,
-     &                       LBID,   K16BID, K24BID, K24BID, LBID,
-     &                       K24BID, K24BID, K24BID, R8BID,  R8BID,
-     &                       IBID)
-C
-         MATASS=MATRIX(1)
+         CALL NMMAFR(ITERAT,RESOCO(1:14),DEFICO,MATASS)
+
          CALL JEVEUO ( MATASS//'.&INT', 'E', LMAT )
 C
 C ------ PREMIERE UTILISATION DU CONTACT OU NON

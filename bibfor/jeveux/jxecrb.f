@@ -1,6 +1,6 @@
       SUBROUTINE JXECRB ( IC , IADDI , IADMO , LSO , IDCO , IDOS)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 24/05/2004   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF JEVEUX  DATE 28/06/2004   AUTEUR D6BHHJP J.P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -80,7 +80,7 @@ C     ------------------------------------------------------------------
           NUMEXT = (IADDI+I-2)/NBENRG(IC)
           IADLOC = (IADDI+I-1)-(NUMEXT*NBENRG(IC))
           CALL CODENT(NUMEXT+1,'G',NOM(6:7))
-          JIECR = (JK1ZON+IADMO+LGBL*(I-1))/LOIS+1
+          JIECR = (JK1ZON+IADMO-1+LGBL*(I-1))/LOIS+1
           CALL WRITDR ( NOM , ISZON(JIECR) ,
      +                  LGBL/LOUA , IADLOC , -1 , IB , IERR )
           IF ( IERR .NE. 0 ) THEN
@@ -100,7 +100,7 @@ C     ------------------------------------------------------------------
           NUMEXT = (IADDI+NBLENT-1)/NBENRG(IC)
           IADLOC = (IADDI+NBLENT)-(NUMEXT*NBENRG(IC))
           CALL CODENT(NUMEXT+1,'G',NOM(6:7))
-          JIECR = (JK1ZON+IADMO+LSO-LGBL)/LOIS+1
+          JIECR = (JK1ZON+IADMO-1+LSO-LGBL)/LOIS+1
           CALL WRITDR ( NOM , ISZON(JIECR) ,
      +                  LGBL/LOUA , IADLOC ,-1, IB , IERR )
           IF ( IERR .NE. 0 ) THEN

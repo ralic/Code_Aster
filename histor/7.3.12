@@ -1,0 +1,765 @@
+
+
+-----------------------------------------------------------------------
+--- AUTEUR assire A.ASSIRE   DATE  le 29/06/2004 a 18:30:04
+
+------------------------------------------------------------------------------
+CORRECTION AO 2004-181
+   INTERET_UTILISATEUR : OUI
+   TITRE  Plantage Stanley.
+   FONCTIONNALITE Stanley et tracé de courbes.
+   RESU_FAUX_VERSION_EXPLOITATION   :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT  :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+   Non.
+   DETAILS
+   Lorsque l'on utilisait Xmgrace depuis Stanley (tracé de courbes), que l'on
+   changeait de resultat et que l'on voulait tracer a nouveau une courbe,
+   Stanley se plantait.
+   Le Terminal xmgrace est dorenavent systematiquement fermé.
+   NB_JOURS_TRAV  : 0.5
+
+------------------------------------------------------------------------------
+CORRECTION AL 2004-238
+   INTERET_UTILISATEUR : OUI
+   TITRE  Stanley ne marche plus depuis la 7.3.8.
+   FONCTIONNALITE  Stanley
+   RESU_FAUX_VERSION_EXPLOITATION   :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT  :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+   Non.
+   DETAILS
+   Suite au renommage des concepts Aster, Stanley etait cassé. On change les
+   noms des concepts Aster dans Stanley.
+   NB_JOURS_TRAV  : 0.2
+
+------------------------------------------------------------------------------
+REALISATION EL 2004-119
+   INTERET_UTILISATEUR : NON
+   TITRE  Restitution partielle du partionement de maillage.
+   FONCTIONNALITE  On restitue uniquement la commande de partitionement
+                   manuelle DEFI_PART_OPS.
+   RESU_FAUX_VERSION_EXPLOITATION   :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT  :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+   fet001a
+   DETAILS
+   On restitue la commande DEFI_PART_OPS qui permet de construire la structure
+   de donnée sd_feti utilisée par la suite dans le solveur avec FETI.
+
+   Pour le moment, seule la version "manuelle" de la commande est restituée,
+   afin de pouvoir travailler sur le solveur FETI avec plus de facilités.
+
+   Plus tard, une nouvelle commande DEFI_PART_FETI s'occupera du partitionnement
+   automatique du maillage, appelant en sous-terrain la commande DEFI_PART_OPS,
+   qui continuera d'etre utilisable par l'utilisateur voulant imposer lui meme
+   un partitionement.
+
+   sdfeti = DEFI_PART_OPS(NOM='SD',
+                          MODELE=modele,
+                          INFO=1,
+                     DEFI=(_F(GROUP_MA = 'GMA1', GROUP_MA_BORD = 'GMB1',),
+                           _F(GROUP_MA = 'GMA1', GROUP_MA_BORD = 'GMB1',),
+                           ....
+                           ),
+                    );
+
+   Explications:
+   NOM : nom interne des SD dans la sdfeti : ils s'appeleront NOM1, NOM2, etc..
+   Mot-clé facteur DEFI : GROUP_MA : les groupes de mailles definissant les SD,
+   GROUP_MA_BORD : les groupes de mailles defionissant les mailles de bords des
+   SD.
+
+   NB_JOURS_TRAV  : 10.
+
+
+-----------------------------------------------------------------------
+--- AUTEUR boyere E.BOYERE   DATE  le 28/06/2004 a 14:00:53
+
+------------------------------------------------------------------------------
+REALISATION EL 2003-206
+   INTERET_UTILISATEUR : NON
+   NB_JOURS_TRAV  : 2.0
+   TITRE exception "bande de frequence vide" dans MODE_ITER_SIMULT
+   FONCTIONNALITE
+     Suite aux restitutions de Mathieu Courtois (cf. histor 7.2.24 et 7.3.10)
+     on peut lever des exceptions corespondant a des arrets bien determines
+     du code. En particulier MODE_ITER_SIMULT s'arrete lorsque l'on lui
+     demande de trouver des modes propres dans une bande de frequence ou
+     le test de Sturm montre qu'il n'y en a aucune.
+     Plutot que d'arreter automatiquement l'utilisateur, on lui offre
+     maintenant la possibilite par un "try/except" de tenter de poursuivre
+     l'execution, par exemple en lancant l'analyse modale sur une autre
+     bande de frequence.
+     L'exception correspondant a ce scenario est :
+       aster.BandeFrequenceVideError
+
+     NB : ne pas oublier de preciser PAR_LOT='NON' dans DEBUT
+          pour pouvoir employer le mecanisme d'exception.
+
+   DETAILS
+     Grace au travail de Mathieu, il a suffit de remplacer l'arret
+     par UTMESS suivant :
+            CALL UTMESS('F','OP0045.23','PAS DE MODE PROPRE DANS LA '//
+     +           'BANDE DEMANDEE, CALCUL IMPOSSIBLE : ARRET IMMEDIAT')
+     par un arret par UTEXCP :
+            CALL UTEXCP(24,'OP0045','PAS DE MODE PROPRE DANS LA '//
+     &           'BANDE DEMANDEE : ARRET DU CALCUL DES MODES')
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_U : U4.52.03
+       EXPL_ : lorsque le test de Sturm decele une bande de frequence
+               vide on peut maintenant eviter l'arret de l'execution
+               du code en levant l'exception suivante : BandeFrequenceVide
+     DOC_V : V2.02.011
+       EXPL_ : ajout d'un exemple d'utilisation de l'exception BandeFrequenceVide
+   VALIDATION
+     ajout d'un exemple d'utilisation de l'exception BandeFrequenceVide
+     dans le cas test SDLL011a
+     try:
+          MODE1=MODE_ITER_SIMULT(  MATR_A=K_ASSE,
+                                   MATR_B=M_ASSE,
+                                CALC_FREQ=_F( OPTION = 'BANDE',
+                                              FREQ = ( 100., 200., )))
+     except aster.BandeFrequenceVideError:
+          MODE1=MODE_ITER_SIMULT(  MATR_A=K_ASSE,
+                                   MATR_B=M_ASSE,
+                                CALC_FREQ=_F( OPTION = 'BANDE',
+                                              FREQ = ( 200., 3500., )))
+
+
+-----------------------------------------------------------------------
+--- AUTEUR d6bhhjp J.P.LEFEBVRE   DATE  le 28/06/2004 a 13:54:44
+
+------------------------------------------------------------------------------
+RESTITUTION HORS AREX
+   INTERET_UTILISATEUR : NON
+   NB_JOURS_TRAV  : 0.2
+   FONCTIONNALITE Recuperation d'un signal de type kill -USR1
+   DETAILS
+     Il est possible d'utiliser la fonction systeme C signal pour récupérer
+     certaines valeurs envoyées par le système d'exploitation (par exemple
+     à l'aide de la commande kill). On modifie la fonction inisig pour pouvoir
+     détecter sur l'AlphaServer et sous linux l'envoi de la commande kill -USR1
+     et de la commande CRTL C.
+     L'envoi de "kill -USR1" sur le numéro de processus associé permet
+     d'interrompre une exécution Aster et de s'arreter proprement en fermant
+     les bases (appel à UTMESS ('S',...  )).
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+     sur essai personnel : impossibilité de rendre un test.
+
+------------------------------------------------------------------------------
+REALISATION EL 2004-071
+   INTERET_UTILISATEUR : NON
+   NB_JOURS_TRAV  : 8
+   TITRE : portabilité sous distribution linux Fedora - noyau 2.6
+   FONCTIONNALITE
+   DETAILS
+     La compilation des catalogues d'éléments échouait sous la distribution Fedora.
+     L'origine du problème était multiple :
+     - la routine LECTL2 de conversion du fichier ASCII des catalogues vers une
+       base de type JEVEUX construit un objet surdimensionné  (.OPTT2) qui ne
+       doit être rempli que par les valeurs licites contenu dans l'objet .OPTTE
+     - l'allocation de la zone mémoire gérée par JEVEUX rendait des adresses
+       négatives (zone allouée avant les variables du code). Ce type d'allocation
+       n'avait jamais été identifié, elle conduit à traiter différemment les
+       adresses renvoyées par rapport aux variables de référence ("offsets" pour
+       les types dont la longueur est différente du type INTEGER dans la routine
+       JXLOCS). Une anomalie sur le passage des adresses exprimées en octets
+       vers les adresses exprimées en entiers est corrigée dansles routines
+       JXECRB et JXLIRB.
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  OUI
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+        	
+------------------------------------------------------------------------------
+REALISATION EL 2004-011
+   NB_JOURS_TRAV : 3
+   INTERET_UTILISATEUR : NON
+   TITRE : passage python 2.3 sur alphaserver
+   FONCTIONNALITE
+   DETAILS
+     La version linux s'appuie sur python 2.3 et la plupart des tests sur
+     l'AlphaServer fonctionnent maintenant correctement. Aussi on bascule
+     maintenant la version de python sur la machine de référence pour
+     la version de développement NEW7.
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+
+------------------------------------------------------------------------------
+RESTITUTION HORS AREX
+   INTERET_UTILISATEUR : NON
+   NB_JOURS_TRAV : 0.0
+   FONCTIONNALITE
+     Modification de la taille limite des répertoires gérés par JEVEUX
+   DETAILS
+     La routine JJPREM utilisée par JEVEUX pour dimensionner les répertoires
+     de noms pour le H_CODING, est modifiée pour introduire deux nouveaux
+     nombres premiers et permettre ainsi d'allouer des répertoires de noms
+     plus grands (la taille d'un répertoire est égale à 1.3*nombre de noms).
+     Les valeurs introduites sont égales à 5800139 et 10000019.
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+     Avec l'etude ayant rencontrée le problème.
+
+
+-----------------------------------------------------------------------
+--- AUTEUR durand C.DURAND   DATE  le 28/06/2004 a 15:53:01
+
+--------------------------------------------------------------------------
+CORRECTION AL 2004-148
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : NON
+   TITRE : blindage poutres multi-fibres
+   FONCTIONNALITE
+   DETAILS
+     étude venant du site web très manifestement pas claire :
+     resi_glob_rela = 0.1 et 80 itérations pour y arriver.
+     On plante sur une division par zéro, en fait par (D13-1.), qui vaut
+     alors 0., dans la routine nmcb13.f
+     On ne s'embete pas : blindage par un UTMESS si D13=UN
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  OUI
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+
+--------------------------------------------------------------------------
+CORRECTION AL 2004-236
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : NON
+   TITRE : test en absolu sur valeur nulle
+   FONCTIONNALITE test ssls109b
+   DETAILS
+     test en absolu sur valeur nulle
+     restitué en version 7.3.11, oubli dans l'histor
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+     ssls109b
+
+--------------------------------------------------------------------------
+CORRECTION AL 2004-235
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : NON
+   TITRE : IMPR_COURBE et LIRE_FONCTION
+   FONCTIONNALITE test zzzz102a
+   DETAILS
+     voir réponse à la fiche AL2004-234
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+     zzzz102a
+
+--------------------------------------------------------------------------
+RESTITUTION HORS AREX
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : NON
+   FONCTIONNALITE routines d'évaluation de fonctions
+   DETAILS
+     petit ménage dans les routines foint*
+     dans op0135.f : on appele FOINTE plutot que FOINT2
+                     on appele FOINRI plutot que FOINT3
+     dans mdfcho.f : on appele FOINTE plutot que FIINTE ou FOINT2
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+
+--------------------------------------------------------------------------
+CLASSEMENT SANS SUITE EL 2004-087
+   POUR_LE_COMPTE_DE : J. PELLET
+   NB_JOURS_TRAV  : 0.
+   INTERET_UTILISATEUR : NON
+   TITRE : macr_elem_stat et mult_front
+   FONCTIONNALITE : macr_elem_stat
+   DETAILS :
+     fiche en double avec EL2004-092
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+   IMPACT_DOCUMENTAIRE : NON
+
+---------------------------------------------------------------------------------
+CLASSEMENT SANS SUITE AL 2004-052
+   POUR_LE_COMPTE_DE : S. GENIAUT
+   NB_JOURS_TRAV  : 0.
+   INTERET_UTILISATEUR : NON
+   TITRE : ssnv166b
+   FONCTIONNALITE : ssnv166b
+   DETAILS :
+     fiche en double avec AL2003-301
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+   IMPACT_DOCUMENTAIRE : NON
+
+---------------------------------------------------------------------------------
+CLASSEMENT SANS SUITE AL 2004-209
+   NB_JOURS_TRAV  : 0.
+   INTERET_UTILISATEUR : NON
+   TITRE : dbgjeveux et getvectjev
+   FONCTIONNALITE superviseur
+   DETAILS
+     fiche déjà corrigée en 7.3.11 / identique à AL 2004-228
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+
+
+-----------------------------------------------------------------------
+--- AUTEUR f1bhhaj J.ANGLES   DATE  le 29/06/2004 a 15:21:44
+
+------------------------------------------------------------------------
+REALISATION EL 2002-208
+   INTERET_UTILISATEUR : OUI
+   NB_JOURS_TRAV  : 8
+   TITRE : Chaînage Code_Aster avec STREAM_FM par EXEC_LOGICIEL.
+   FONCTIONNALITE : On ajoute deux macro commandes "privées" :
+     - CALC_CHAR_HOULE qui assure l'appel à STREAM et imprime le résultat issu de
+       STREAM dans un fichier qui contient autant de tables au format Aster
+       qu'il y a de pas de temps ;
+     - MACR_CALC_EOLIENNE qui gère les appels à CALC_CHAR_HOULE et à d'autres
+       méthodes python qui permettent de réaliser le calcul d'un mât d'éolienne
+       offshore soumit à un chargement qui varie dans le temps.
+     Les méthodes python, les deux macros ainsi que leur catalogue sont dans le
+     fichier calc_eolienne.py qui se trouve dans le répertoire .../bibpyt/Outils.
+   DETAILS :
+Une première version du fichier calc_eolienne.datg a été rendue dans la
+version 7.3.5, nous rendons dans la version 7.3.12 une évolution de ce fichier
+qui consiste à supprimer la création d'un fichier auxiliaire par GIBI. Cela
+avait l'inconvénient de nécessité deux exécution successive de
+calc_eolienne.datg. Ce fichier auxiliaire est maintenant créé par la fonction
+python qui fournit à GIBI les données nécessaires à la réalisation du maillage.
+Cette fonction python est dans calc_eolienne.py. Nous rendons dans la version
+7.3.12 le fichier calc_eolienne.py et le cas test ZZZZ183A.
+Les exécutables de STREAM (STREAM_HT et STREAM_FM) se trouvent sur la machine
+clayastr dans le répertoire /home/eolien/STREAM_PUBLIC/OSF1. Les procédures
+python qui gèrent le lancement de STREAM sont dans le répertoire
+/home/eolien/ASTER_EOLIEN.
+Pour exécuter le POST_RELEVE_T et ensuite le TEST_TABLE, nous ajoutons le
+cham_no_facy_r à la liste des cham_no lisibles par POST_RELEVE_T dans son
+catalogue python : post_releve_t.capy.
+
+   RESU_FAUX_VERSION_EXPLOITATION : NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT : NON
+   RESTITUTION_VERSION_EXPLOITATION : NON
+   RESTITUTION_VERSION_DEVELOPPEMENT : OUI
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_V : V1.01.183
+     DOC_U : U2.09.04
+       EXPL_ : La documentation U2 contient la description des commandes des
+       macro-commandes : CALC_CHAR_HOULE et MACR_CALC_EOLIENNE ainsi que les éléments
+       clefs de l'ensemble du développement.
+   VALIDATION : La validation de ce développement est assurée par le
+      cas test ZZZZ183A.
+
+
+-----------------------------------------------------------------------
+--- AUTEUR jmbhh01 J.M.PROIX   DATE  le 28/06/2004 a 12:31:19
+
+------------------------------------------------------------------------------
+CORRECTION AL 2004-230
+   INTERET_UTILISATEUR : NON
+   NB_JOURS_TRAV  : 1
+   TITRE   SDNL130A NOOK avec Python 2.3
+   FONCTIONNALITE
+     En utilisant python 2.3 avec la version NEW7 sur l'AlphaServer,
+     le test sdnl130a (POU_D_EM) s'arrete en NOOK :
+
+ ---- RESULTAT:  RERE     NUME_ORDRE: 175 NOM_CHAM: REAC_NODA
+REFERENCE: SOURCE_EXTERNE
+NOOK DY           RELA    22.560 % VALE:-4.5347127175994D+04
+         N1       TOLE    16.000 % REFE:-3.7000000000000D+04
+ ---- RESULTAT:  RERE     NUME_ORDRE: 204 NOM_CHAM: REAC_NODA
+REFERENCE: SOURCE_EXTERNE
+NOOK DY           RELA     6.740 % VALE: 3.7358910136690D+04
+         N1       TOLE     1.000 % REFE: 3.5000000000000D+04
+ ---- RESULTAT:  RERE     NUME_ORDRE: 269 NOM_CHAM: REAC_NODA
+REFERENCE: SOURCE_EXTERNE
+NOOK DY           RELA     2.730 % VALE:-6.9856470618676D+04
+         N1       TOLE     2.500 % REFE:-6.8000000000000D+04
+ ---- RESULTAT:  RERE     NUME_ORDRE: 287 NOM_CHAM: REAC_NODA
+REFERENCE: SOURCE_EXTERNE
+NOOK DY           RELA     8.590 % VALE: 5.2123258865358D+04
+         N1       TOLE     3.500 % REFE: 4.8000000000000D+04
+
+   En fait ce test est NOOK depuis la 7.3.7, et aussi sur linux,
+   et a fait l'objet d'une fiche : AL2004-206 ou Francis Lebouvier
+   signalait qu'après le stockage des charges dans la S.D.resultat,
+   ce test était NOOK. En effet, on y calcule REAC_NODA, sans fournir
+   le chargement. Ce que l'on calcule (et ce qui est testé) est donc
+   exactement FORC_NODA, pusique REAC_NODA = FORC_NODA - chargement.
+   Je l'ai vérifié en remplacant REAC_NODA par FORC_NODA : alors
+   les résultats sont OK et identiques en STA7 et NEW7. De plus, i
+   on ajoute les charges dans REAC_NODA en STA7 , alors on trouve les
+   memes résultats (NOOK) qu'en NEW7.
+   Je propose donc de remplacer REAC_NODA par FORC_NODA dans ce test.
+   Et Python 2.3 n'y est pour rien. Du coup cela corrige aussi
+   l'AL 2004-206.
+
+   Au passage j'enlève un write intempestif dans PMFRIG
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+     SDNL130A
+
+------------------------------------------------------------------------------
+CORRECTION AL 2004-206
+   INTERET_UTILISATEUR : NON
+   NB_JOURS_TRAV  : 0
+   TITRE   SDNL130A : CALC_NO ET REAC_NODA
+   FONCTIONNALITE
+   Texte de la fiche :
+     Dans le cadre de la restitution de la fiche EL2003_223:
+     " Stockage du modele, du materiau, des caractéristiques élémentaires
+     et des chargements dans la SD résultat prévue dans la 7.3.7 le cas-test
+     sdnl130a est NOOK pour les reactions nodales REAC_NODA.
+     Dans le cas-test de référence le chargement est absent de CALC_NO,
+     il devrait être présent pour calculer effectivement REAC_NODA.
+     Sinon on calcule en fait FORC_NODA. (cf AL 2004-230)
+     On corrige en remplacant REAC_NODA par FORC_NODA.
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+     SDNL130A
+
+------------------------------------------------------------------------------
+RESTITUTION HORS AREX
+   INTERET_UTILISATEUR : NON
+   NB_JOURS_TRAV  : 0.5
+   TITRE
+    Modification de l'opérateur tangent pour les comportements monocristallins
+   FONCTIONNALITE
+     Petite correction sur le calcul de l'opérateur tangent, cf la doc R
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_R : R5.03.11
+   VALIDATION
+     SSNV171B, SSNV172A
+
+
+-----------------------------------------------------------------------
+--- AUTEUR mabbas M.ABBAS   DATE  le 29/06/2004 a 13:32:13
+
+------------------------------------------------------------------------
+REALISATION EL 2004-101
+   INTERET_UTILISATEUR : OUI
+   NB_JOURS_TRAV  : 4
+   TITRE   Gestion memoire et contact sans frottement
+   FONCTIONNALITE
+     Lorsqu'on fait du contact sans frottement, la matrice de contact
+     est allouée à la taille du contact avec frottement. Cette matrice
+     étant stockée triangulaire pleine, on stocke 3NBESC(3NBESC+1)/2
+     coefficients au lieu de NBESC(NBESC+1)/2.
+     (NBESC est le nb de noeuds esclaves)
+     ce qui fait un facteur 9 en plus !!
+
+     Dans Mac3, pour un coeur C1300 à 193 assemblages, on a 400 zones
+     de contacts avec 50 noeuds esclaves, ce qui conduit à une matrice
+     de contact de 1.8 milliards de coefficients et il est impossible
+     d'allouer une mémoire suffisante pour stocker cette matrice.
+     Avec 9 fois moins, on passerait sans problème.
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+     Tous les cas-tests de contact
+
+   DETAILS
+   Il n'y a distinction du cas contact simple et contact avec frottement
+   que pour quelques objets (CM1A, CM2A et CM3A).
+   Nous distinguons donc desormais les deux cas et creons les objets
+   a la taille stricte.
+   On en profite pour faire evoluer cfdisc (qui donne des infos sur
+la methode de contact):
+    SUBROUTINE CFDISC(DEFICO,RESOCO,TYPALC,TYPALF,FROT3D,MATTAN)
+C ----------------------------------------------------------------------
+C  PERMET DE SAVOIR S'IL Y A CONTACT/FROTTEMENT
+C ----------------------------------------------------------------------
+C
+C IN  DEFICO  : SD DE DEFINITION DU CONTACT (ISSUE D'AFFE_CHAR_MECA)
+C IN  RESOCO  : SD DE TRAITEMENT NUMERIQUE DU CONTACT
+C OUT TYPALC  : TYPE ALGO UTILISE POUR LE CONTACT
+C   LES VALEURS SONT NEGATIVES SI AUCUNE LIAISON ACTIVE
+C   0 PAS DE CONTACT
+C   1 CONTACT PENALISE
+C   2 CONTACT LAGRANGIEN
+C   3 CONTACT METHODE CONTINUE
+C   4 CONTACT CONTRAINTES ACTIVES
+C OUT TYPALF  : TYPE ALGO UTILISE POUR LE FROTTEMENT
+C   LES VALEURS SONT NEGATIVES SI AUCUNE LIAISON ACTIVE
+C   0 PAS DE FROTTEMENT
+C   1 FROTTEMENT PENALISE
+C   2 FROTTEMENT LAGRANGIEN
+C   3 FROTTEMENT METHODE CONTINUE
+C OUT FROT3D  : VAUT 1 LORSQU'ON CONSIDERE LE FROTTEMENT EN 3D
+C OUT MATTAN  : INDIQUE SI LA MATRICE TANGENTE GLOBALE EST MODIFIEE
+C   PAR LA PRESENCE DE CONTACT/FROTTEMENT
+C   0 NON
+C   1 OUI
+
+   Grace a cette info, on cree les objets de maniere intelligentes dans
+   CRSDCO.
+      IF (TYPALF.NE.0) THEN
+        AFMU   = RESOCO(1:14)//'.AFMU'
+        CALL JEEXIN (AFMU,IER)
+        IF (IER.EQ.0) CALL WKVECT (AFMU,'V V R',NEQ,JBID)
+
+        APCOFR = RESOCO(1:14)//'.APCOFR'
+        CALL WKVECT (APCOFR,'V V R',60*NESMAX ,JAPCOF)
+
+        APJEFX = RESOCO(1:14)//'.APJEFX'
+        APJEFY = RESOCO(1:14)//'.APJEFY'
+        CALL WKVECT (APJEFX,'V V R',NESMAX    ,JAPJFX)
+        CALL WKVECT (APJEFY,'V V R',NESMAX    ,JAPJFY)
+
+      ENDIF
+
+C CAS PARTICULIER DE LA METHODE PENALISEE: ON UTILISE AFMU
+      IF (ABS(TYPALC).EQ.1) THEN
+        AFMU   = RESOCO(1:14)//'.AFMU'
+        CALL JEEXIN (AFMU,IER)
+        IF (IER.EQ.0) CALL WKVECT (AFMU,'V V R',NEQ,JBID)
+      ENDIF
+
+      IF (TYPALF.EQ.0) THEN
+         NBREEL = NBLIAI
+      ELSE
+         NBREEL = 3*NBLIAI
+      ENDIF
+
+      NBREEL sert a creer CM1Q, CM2A, CM3A et MATR.
+
+      Il n'y a pas de modif dans les routines de contact puisqu'on
+     "truandait" la matrice de contact pour ne factoriser que le
+      strict minimum.
+
+      Notons que la matrice de contact RESOCO\\'.MATR' est stockee
+      en ligne de ciel, triangulaire pleine symetrique. On en profite
+      pour gerer son stockage par bloc.
+
+      On en profite pour faire un peu le menage en nettoyant des appels
+      jeveux superflus dans certaines routines.
+
+
+------------------------------------------------------------------------
+REALISATION EL 2004-106
+   INTERET_UTILISATEUR : OUI
+   NB_JOURS_TRAV  : 0.5
+   TITRE   STAT_NON_LINE - Routine rechco
+   FONCTIONNALITE
+     Il existe une limitation en dur dans le contact qui devrait être
+     supprimée. Dans la routine rechco, le paramètre NZOMAX (nombre
+     maximal de zones de contact) est fixé à 100 pour allouer des
+     tableaux en dur. Il devrait être déduit du problème traité et
+     les tableaux alloués par JEVEUX. Dans le cadre de Mac3Coeur,
+     on a beaucoup plus de 100 occurrences du mot-clé facteur CONTACT.
+   DETAILS
+     On leve cette limitation qui n'a pas de legitimite (la preuve avec
+     MAC3C). On cree des vecteurs d'entier dynamiques (F90) exactement
+     dimensionnes au nombre de zones de contact actuel.
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+     Tous les cas-tests de contact
+
+------------------------------------------------------------------------
+CLASSEMENT SANS SUITE AL 2003-229
+   INTERET_UTILISATEUR : NON
+   NB_JOURS_TRAV  : 0.5
+   TITRE   Validation contact - Test de Wagoner
+   FONCTIONNALITE
+     Validation indépendante Contact-Frottement
+     ------------------------------------------
+     Cas-test: SSNV501 "Emboutissage d'une tôle par un poinçon
+               hémisphérique (test de Wagoner)
+
+     Dans cette modélisation on utilise le mot-clé CONTACT associé à la
+     methode LAGRANGIEN avec un frottement de coulomb.
+     Les calculs s'arrêtent lorsque l'on atteint 9% de la charge
+     totale avec le message suivant:
+     <S> <ASTER  5. 6. 0 26/04/2001 >
+     <S> <STAT_NON_LINE> <OP0070> ARRET PAR ECHEC DE L'INTEGRATION
+                                  DE LA LOI DE COMPORTEMENT
+     fiche version 5 ré-émise en version 7 après traduction du fichier
+     de commandes en syntaxe actuelle.
+
+   DETAILS
+     Ce cas-test presente une instabilite locale de type cloquage.
+     On ne peut resoudre qu'en pilotage. Comme il est precise dans la
+     fiche EL2001-205.
+     Or PILOTAGE et CONTACT sont toujours incompatibles. Donc le
+     probleme n'est pas soluble actuellement avec Aster.
+
+   RESU_FAUX_VERSION_EXPLOITATION   :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT  :  NON
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+
+
+
+-----------------------------------------------------------------------
+--- AUTEUR rose C.ROSE   DATE  le 28/06/2004 a 11:17:48
+
+-----------------------------------------------------------------------
+REALISATION EL 2004-118
+   INTERET_UTILISATEUR : NON
+   NB_JOURS_TRAV  : 3
+   TITRE :  " Resolution mult_front pour une matrice complexe"
+   FONCTIONNALITE :
+     Apport au solveur mult_frontcomplexe  des optimisations déja effectues en real*8
+   DETAILS :
+     La version complexe ne beneficiait pas des optimisations existant
+     dans la version symetrique (decoupage par blocs et utilisation de
+     blas matrice*matrice). Ce mode de factorisastion entraine une
+     meilleure localité des données dans le cache de niveau 1, plus
+     proche du processeur et d'accès plus rapide que le cache de niveau 2
+     utilise avant.
+     Cas test etudie : le plus gros cas test complexe utilisant DYNA_LINE_HARM
+                       a 18000 ddl
+     le temps de calcul de factorisation passe de 65 secondes à 55
+
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+       C AJOUT utilitai/cgemx                   rose C.ROSE              74     74      0
+       C MODIF utilitai/inisig               d6bhhjp J.P.LEFEBVRE       142     26      6
+ CASTEST AJOUT zzzz183a                      f1bhhaj J.ANGLES           221    221      0
+ CASTEST MODIF sdll11a                        boyere E.BOYERE           446     12      3
+ CASTEST MODIF sdnl130a                      jmbhh01 J.M.PROIX          133      6      6
+CATALOPY AJOUT commande/defi_part_ops         assire A.ASSIRE            37     37      0
+CATALOPY MODIF commande/post_releve_t        f1bhhaj J.ANGLES           100      2      2
+ FORTRAN AJOUT algeline/blacmm                  rose C.ROSE              35     35      0
+ FORTRAN AJOUT algeline/mlncld                  rose C.ROSE              64     64      0
+ FORTRAN AJOUT algeline/mlnclj                  rose C.ROSE             244    244      0
+ FORTRAN AJOUT algeline/mltcld                  rose C.ROSE              61     61      0
+ FORTRAN AJOUT algeline/mltclj                  rose C.ROSE             222    222      0
+ FORTRAN AJOUT algorith/cfdisd                mabbas M.ABBAS             79     79      0
+ FORTRAN AJOUT algorith/nmmafr                mabbas M.ABBAS             89     89      0
+ FORTRAN AJOUT elements/fetcrf                assire A.ASSIRE          1117   1117      0
+ FORTRAN AJOUT supervis/sigusr               d6bhhjp J.P.LEFEBVRE        28     28      0
+ FORTRAN MODIF algeline/mlfc16                  rose C.ROSE             328     57     23
+ FORTRAN MODIF algeline/mlnclm                  rose C.ROSE             118     90     54
+ FORTRAN MODIF algeline/mlncmg                  rose C.ROSE             145    121     29
+ FORTRAN MODIF algeline/mlncmj                  rose C.ROSE             158    130     39
+ FORTRAN MODIF algeline/mltasc                  rose C.ROSE             169      2      2
+ FORTRAN MODIF algeline/mltcc1                  rose C.ROSE             152     54     82
+ FORTRAN MODIF algeline/mltccb                  rose C.ROSE             224     84     85
+ FORTRAN MODIF algeline/mltclm                  rose C.ROSE             101     76     41
+ FORTRAN MODIF algeline/mltcmj                  rose C.ROSE             135    110     31
+ FORTRAN MODIF algeline/op0045                boyere E.BOYERE          1041      3      3
+ FORTRAN MODIF algorith/algocl                mabbas M.ABBAS            591      6     11
+ FORTRAN MODIF algorith/algoco                mabbas M.ABBAS            683      2      2
+ FORTRAN MODIF algorith/algocp                mabbas M.ABBAS            313      3      6
+ FORTRAN MODIF algorith/cfaca1                mabbas M.ABBAS            312     11      1
+ FORTRAN MODIF algorith/cfaca2                mabbas M.ABBAS            448     11      1
+ FORTRAN MODIF algorith/cfadu                 mabbas M.ABBAS            145      2      2
+ FORTRAN MODIF algorith/cfatmu                mabbas M.ABBAS            143     13      2
+ FORTRAN MODIF algorith/cfdisc                mabbas M.ABBAS            165     89     25
+ FORTRAN MODIF algorith/chmano                mabbas M.ABBAS            273     17      7
+ FORTRAN MODIF algorith/crsdco                mabbas M.ABBAS            545    229     99
+ FORTRAN MODIF algorith/fro2gd                mabbas M.ABBAS            666      6     10
+ FORTRAN MODIF algorith/frolgd                mabbas M.ABBAS           1039      8     13
+ FORTRAN MODIF algorith/fropgd                mabbas M.ABBAS            786      7     10
+ FORTRAN MODIF algorith/lcmmjp               jmbhh01 J.M.PROIX          110     12     10
+ FORTRAN MODIF algorith/mdfcho                durand C.DURAND           528      2     15
+ FORTRAN MODIF algorith/nmasfr                mabbas M.ABBAS            111     27     20
+ FORTRAN MODIF algorith/nmcofr                mabbas M.ABBAS             91      7     17
+ FORTRAN MODIF algorith/nmcont                mabbas M.ABBAS            231     10      2
+ FORTRAN MODIF algorith/nmmatr                mabbas M.ABBAS            436      7     12
+ FORTRAN MODIF algorith/op0021                assire A.ASSIRE            85      3      2
+ FORTRAN MODIF algorith/rechco                mabbas M.ABBAS            439     16     13
+ FORTRAN MODIF algorith/rechno                mabbas M.ABBAS            626     15      5
+ FORTRAN MODIF algorith/resuco                mabbas M.ABBAS            844     30     19
+ FORTRAN MODIF cataelem/lctel2               d6bhhjp J.P.LEFEBVRE       106      2      1
+ FORTRAN MODIF elements/nmcb13                durand C.DURAND           111     10      2
+ FORTRAN MODIF elements/pmfrig               jmbhh01 J.M.PROIX          107      1      2
+ FORTRAN MODIF jeveux/jjprem                 d6bhhjp J.P.LEFEBVRE        80      3      3
+ FORTRAN MODIF jeveux/jxecrb                 d6bhhjp J.P.LEFEBVRE       120      3      3
+ FORTRAN MODIF jeveux/jxlirb                 d6bhhjp J.P.LEFEBVRE       110      3      3
+ FORTRAN MODIF jeveux/jxlocs                 d6bhhjp J.P.LEFEBVRE        80     10      4
+ FORTRAN MODIF prepost/op0135                 durand C.DURAND           472      3      4
+  PYTHON AJOUT Outils/calc_eolienne          f1bhhaj J.ANGLES          1731   1731      0
+  PYTHON MODIF Stanley/stanley                assire A.ASSIRE          2006     13      7
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :   13        4002      4002             +4002
+ MODIF :   46       16194      1354     739      +615
+ SUPPR :    0           0                 0        +0
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :   59       20196      5356     739     +4617 

@@ -2,7 +2,7 @@
      &                  RESOCO,IESCL,CMULT)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2003   AUTEUR CIBHHPD D.NUNEZ 
+C MODIF ALGORITH  DATE 29/06/2004   AUTEUR MABBAS M.ABBAS 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -104,11 +104,15 @@ C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
       CHARACTER*24 CHAMCO,NORINI,NORMCO,TANGCO,METHCO,TANDEF
       CHARACTER*24 APPARI,APPOIN,APMEMO,APJEFY
       CHARACTER*24 APCOEF,APDDL,APJEU,APJEFX,APCOFR
+      INTEGER      TYPALC,TYPALF,FROT3D,MATTAN
 
 C ----------------------------------------------------------------------
 
       CALL JEMARQ()
       CALL INFNIV(IFM,NIV)
+
+C --- INFOS SUR LA CHARGE DE CONTACT
+      CALL CFDISC(DEFICO,RESOCO(1:14),TYPALC,TYPALF,FROT3D,MATTAN)
 
 C ======================================================================
 C               RECUPERATION D'ADRESSES ET DE DIMENSIONS
@@ -185,22 +189,28 @@ C --- ADRESSES DES SD A LIRE ET / OU REMPLIR POUR LE CONTACT EFFECTIF
         PDDL   = DEFICO(1:16)//'.PDDLCO'
         APPOIN = RESOCO(1:14)//'.APPOIN'
         APCOEF = RESOCO(1:14)//'.APCOEF'
-        APCOFR = RESOCO(1:14)//'.APCOFR'
         APDDL  = RESOCO(1:14)//'.APDDL'
         APJEU  = RESOCO(1:14)//'.APJEU'
-        APJEFX = RESOCO(1:14)//'.APJEFX'
-        APJEFY = RESOCO(1:14)//'.APJEFY'
+
 
         CALL JEVEUO(CHAMCO,'L',JCHAM)
         CALL JEVEUO(DDLCO, 'L',JDDL)
         CALL JEVEUO(PDDL,  'L',JPDDL)
         CALL JEVEUO(APPOIN,'E',JAPPTR)
         CALL JEVEUO(APCOEF,'E',JAPCOE)
-        CALL JEVEUO(APCOFR,'E',JAPCOF)
+
         CALL JEVEUO(APDDL, 'E',JAPDDL)
         CALL JEVEUO(APJEU, 'E',JAPJEU)
-        CALL JEVEUO(APJEFX,'E',JAPJFX)
-        CALL JEVEUO(APJEFY,'E',JAPJFY)
+
+        IF (TYPALF.NE.0) THEN
+          APJEFX = RESOCO(1:14)//'.APJEFX'
+          APJEFY = RESOCO(1:14)//'.APJEFY'
+          APCOFR = RESOCO(1:14)//'.APCOFR'
+          CALL JEVEUO(APCOFR,'E',JAPCOF)
+          CALL JEVEUO(APJEFX,'E',JAPJFX)
+          CALL JEVEUO(APJEFY,'E',JAPJFY)
+        ENDIF
+
       END IF
 
 C ======================================================================

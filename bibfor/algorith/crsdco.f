@@ -6,7 +6,7 @@
       CHARACTER*24       NUMEDD, DEFICO, RESOCO
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/09/2003   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 29/06/2004   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,6 +23,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
+C TOLE CRP_20
 C
 C ROUTINE APPELEE PAR : NMINIT
 C ----------------------------------------------------------------------
@@ -74,10 +75,22 @@ C
       CHARACTER*24 APCOEF,APPOIN,APJEU,APDDL,APREAC,COEFMU,JEUINI
       CHARACTER*24 APCOFR,APJEFX,APJEFY,METHCO,MAESCL
       CHARACTER*24 NORINI,NORMCO,TANGCO
+      INTEGER      IFM,NIV
+      INTEGER      TYPALC,TYPALF,FROT3D,MATTAN
+      REAL*8       TMAX,JEVTBL,TVALA,TVMAX,TV
+      INTEGER      ITBLOC
+      INTEGER      IDADIA,IDHCOL,IDABLO,IDIABL,IDDESC
+      INTEGER      NBREEL,NEQU,NTBLC,HMAX,NBLC,IVALA,IEQUA,ICOMPT,I,J
+      INTEGER      NBCOL,IBLC
 C
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ ()
+C --- RECUPERATION DU NIVEAU D'IMPRESSION
+      CALL INFNIV(IFM,NIV)
+      IF (NIV.GE.3) THEN
+        WRITE (IFM,*) '<-> CREATION DE RESOCO <->'
+      END IF
 C
 C --- REPERAGE DE LA CHARGE CONTENANT DU CONTACT
 C
@@ -93,38 +106,35 @@ C
             ICON = ICON + 1
          END IF
  10   CONTINUE
-C
-C    SI METHODE CONTINUE, ON SORT
-      IF (ICON.GT.0) THEN
-         CALL  JEVEUO (CHAR(1:8)//'.CONTACT.METHCO','L',JMETH)
-         IF (ZI(JMETH+6).EQ.6) THEN
-            DEFICO=CHAR(1:8)//'.CONTACT'
-            GOTO 9999
-         ENDIF
+C --- PAS DE CHARGES DE CONTACT
+      IF (ICON.EQ.0) THEN
+        DEFICO = '&&CRSDCO'
+        GO TO 9999
+      END IF
+C --- PLUS D'UNE CHARGE DE CONTACT
+      IF (ICON.GT.1) THEN
+        CALL UTMESS ('F','CRSDCO','IL Y A PLUSIEURS '
+     &               //'CHARGES CONTENANT DES CONDITIONS DE CONTACT ')
+      END IF
+C --- NOM DE LA SD DE DEFINITION DU CONTACT
+      DEFICO = CHAR(1:8)//'.CONTACT'
+C --- INFOS SUR LA CHARGE DE CONTACT
+      CALL CFDISC(DEFICO,RESOCO(1:14),TYPALC,TYPALF,FROT3D,MATTAN)
+C --- SI METHODE CONTINUE, ON SORT
+      IF (TYPALC.EQ.3) THEN
+         GOTO 9999
       ENDIF
+
+C ----------------------------------------------------------------------
+C 
+C  STRUCTURES COMMUNES POUR CONTACT ET FROTTEMENT
 C
+C ----------------------------------------------------------------------
+
       ATMU   = RESOCO(1:14)//'.ATMU'
       CALL JEEXIN (ATMU,IER)
       IF (IER.EQ.0) CALL WKVECT (ATMU,'V V R',NEQ,JBID)
-C
-      AFMU   = RESOCO(1:14)//'.AFMU'
-      CALL JEEXIN (AFMU,IER)
-      IF (IER.EQ.0) CALL WKVECT (AFMU,'V V R',NEQ,JBID)
-C
-      IF (ICON.EQ.0) THEN
-        DEFICO = '&&CRSDCO'
-        DDLCO = DEFICO(1:16)//'.DDLCO'
-        CALL WKVECT (DDLCO,'V V I',1,JDDL)
-        GO TO 9999
-      END IF
-C
-      IF (ICON.GT.1) THEN
-        CALL UTMESS ('A','CRSDCO_01','IL Y A PLUSIEURS '
-     &               //'CHARGES CONTENANT DES CONDITIONS DE CONTACT : '
-     &               //'SEULE LA DERNIERE CHARGE SERA PRISE EN COMPTE')
-      END IF
-C
-      DEFICO = CHAR(1:8)//'.CONTACT'
+
       NDIMCO = DEFICO(1:16)//'.NDIMCO'
       CALL JEVEUO (NDIMCO, 'L',JDIM)
       NDIM = ZI(JDIM)
@@ -199,22 +209,16 @@ C
       APPARI = RESOCO(1:14)//'.APPARI'
       APMEMO = RESOCO(1:14)//'.APMEMO'
       APCOEF = RESOCO(1:14)//'.APCOEF'
-      APCOFR = RESOCO(1:14)//'.APCOFR'
       APPOIN = RESOCO(1:14)//'.APPOIN'
       APJEU  = RESOCO(1:14)//'.APJEU'
-      APJEFX = RESOCO(1:14)//'.APJEFX'
-      APJEFY = RESOCO(1:14)//'.APJEFY'
       APDDL  = RESOCO(1:14)//'.APDDL'
       JEUINI = RESOCO(1:14)//'.JEUINI'
 C
       CALL WKVECT (APPARI,'V V I',3*NESMAX+1,JAPPAR)
       CALL WKVECT (APMEMO,'V V I',4*NNOCO   ,JAPMEM)
       CALL WKVECT (APCOEF,'V V R',30*NESMAX ,JAPCOE)
-      CALL WKVECT (APCOFR,'V V R',60*NESMAX ,JAPCOF)
       CALL WKVECT (APPOIN,'V V I',NESMAX+1  ,JAPPTR)
       CALL WKVECT (APJEU ,'V V R',NESMAX    ,JAPJEU)
-      CALL WKVECT (APJEFX,'V V R',NESMAX    ,JAPJFX)
-      CALL WKVECT (APJEFY,'V V R',NESMAX    ,JAPJFY)
       CALL WKVECT (APDDL ,'V V I',30*NESMAX ,JAPDDL)
       CALL WKVECT (JEUINI,'V V R',NESMAX    ,JJEUIN)
 C
@@ -243,6 +247,8 @@ C
         ZI(JREAC+4*(IZONE-1)+2) = 1
         ZI(JREAC+4*(IZONE-1)+3) = 0
  30   CONTINUE
+
+
 C ======================================================================
 C --- VECTEURS DE TRAVAIL ----------------------------------------------
 C ======================================================================
@@ -304,34 +310,70 @@ C ---        VAUT F2 : LIAISON DE FROTTEMENT ADHERENT (2EME DIRECTION )-
 C ======================================================================
       CALL JEEXIN (CONVEC,IER)
       IF (IER.EQ.0) CALL WKVECT (CONVEC,'V V K8',2*NESMAX,JBID)
+
+
+C ----------------------------------------------------------------------
+C 
+C  STRUCTURES RESERVEES POUR LE FROTTEMENT
 C
-C - OBJETS ASSOCIES AUX MATRICES
+C ----------------------------------------------------------------------
+
+      IF (TYPALF.NE.0) THEN
+        AFMU   = RESOCO(1:14)//'.AFMU'
+        CALL JEEXIN (AFMU,IER)
+        IF (IER.EQ.0) CALL WKVECT (AFMU,'V V R',NEQ,JBID)
+
+        APCOFR = RESOCO(1:14)//'.APCOFR'
+        CALL WKVECT (APCOFR,'V V R',60*NESMAX ,JAPCOF)
+
+        APJEFX = RESOCO(1:14)//'.APJEFX'
+        APJEFY = RESOCO(1:14)//'.APJEFY'
+        CALL WKVECT (APJEFX,'V V R',NESMAX    ,JAPJFX)
+        CALL WKVECT (APJEFY,'V V R',NESMAX    ,JAPJFY)    
+
+      ENDIF
+
+C CAS DE LA METHODE PENALISEE: ON UTILISE AFMU
+      IF (ABS(TYPALC).EQ.1) THEN
+        AFMU   = RESOCO(1:14)//'.AFMU'
+        CALL JEEXIN (AFMU,IER)
+        IF (IER.EQ.0) CALL WKVECT (AFMU,'V V R',NEQ,JBID)
+      ENDIF
+
+
+C ----------------------------------------------------------------------
+C 
+C  OBJETS ASSOCIES AUX MATRICES
+C
+C ----------------------------------------------------------------------
 C
       NBLIAI = NESMAX
-      NBBLOC = 1
+      NBBLOC = 1 
 C
       CM1A   = RESOCO(1:14)//'.CM1A'
       CM2A   = RESOCO(1:14)//'.CM2A'
       CM3A   = RESOCO(1:14)//'.CM3A'
-      MATR   = RESOCO(1:14)//'.MATR'
-      STOC   = RESOCO(1:14)//'.SLCS'
 C
-      IF(ZI(JMETH+6).EQ.0.OR.ZI(JMETH+6).EQ.1.
-     &  OR.ZI(JMETH+6).EQ.-1) THEN
-         CALL JECREC(CM1A,'V V R','NU','DISPERSE','CONSTANT',NBLIAI)
-         CALL JEECRA (CM1A,'LONMAX',NEQ,K8BID)
-         DO 40 II = 1, NBLIAI
-            CALL JECROC (JEXNUM(CM1A,II))
- 40      CONTINUE
+      IF (TYPALF.EQ.0) THEN
+         NBREEL = NBLIAI
       ELSE
-         CALL JECREC (CM1A,'V V R','NU','DISPERSE','CONSTANT',3*NBLIAI)
-         CALL JECREC (CM2A,'V V R','NU','DISPERSE','CONSTANT',3*NBLIAI)
-         CALL JECREC (CM3A,'V V R','NU','DISPERSE','CONSTANT',3*NBLIAI)
-         CALL JEECRA (CM1A,'LONMAX',NEQ,K8BID)
+         NBREEL = 3*NBLIAI
+      ENDIF
+
+C --- MATRICE PRINCIPALE CM1AT (UTILISEE EN CONTACT ET FROTTEMENT)
+      CALL JECREC(CM1A,'V V R','NU','DISPERSE','CONSTANT',NBREEL)
+      CALL JEECRA(CM1A,'LONMAX',NEQ,K8BID)
+      DO 40 II = 1, NBREEL
+         CALL JECROC (JEXNUM(CM1A,II))
+ 40   CONTINUE
+
+C --- MATRICE CM2AT ET CM3AT (UTILISEE EN FROTTEMENT UNIQUEMENT)
+      IF (TYPALF.NE.0) THEN
+         CALL JECREC (CM2A,'V V R','NU','DISPERSE','CONSTANT',NBREEL)
+         CALL JECREC (CM3A,'V V R','NU','DISPERSE','CONSTANT',NBREEL)
          CALL JEECRA (CM2A,'LONMAX',NEQ,K8BID)
          CALL JEECRA (CM3A,'LONMAX',NEQ,K8BID)
-         DO 42 II = 1, 3*NBLIAI
-            CALL JECROC (JEXNUM(CM1A,II))
+         DO 42 II = 1, NBREEL
             CALL JECROC (JEXNUM(CM2A,II))
             CALL JEVEUO (JEXNUM(CM2A,II),'E',JBID)
             CALL JELIBE (JEXNUM(CM2A,II))
@@ -340,72 +382,160 @@ C
             CALL JELIBE (JEXNUM(CM3A,II))
  42      CONTINUE
       ENDIF
-C     
-      CALL JECREO (MATR//'.REFA','V V K24')
-      CALL JEECRA (MATR//'.REFA','LONMAX',4,' ')
-      CALL JEVEUO (MATR//'.REFA','E',JBID)
-      ZK24(JBID) = NOMA
-      ZK24(JBID+1) = RESOCO(1:14)
-      ZK24(JBID+2) = STOC
-C
-      CALL WKVECT (MATR//'.&VDI','V V R',3*NBLIAI,JBID)
-      CALL WKVECT (MATR//'.&TRA','V V R',3*NBLIAI,JBID)
-      CALL JECREO (MATR//'.LIME','V V K8')
-      CALL JEECRA (MATR//'.LIME','LONMAX',1,' ')
-      CALL JEVEUO (MATR//'.LIME','E',JBID)
-      ZK8(JBID) = ' '
-C
-      CALL JECREC (MATR//'.VALE','V V R','NU','DISPERSE'
-     &     ,'CONSTANT',NBBLOC)
-      CALL JEECRA (MATR//'.VALE','LONMAX',
-     &     3*NBLIAI*(3*NBLIAI+1)/2,K8BID)
-      DO 4 II = 1, NBBLOC
-         CALL JECROC (JEXNUM(MATR//'.VALE',II))
- 4    CONTINUE
-      CALL JEECRA (MATR//'.VALE','DOCU',1,'MS')
-C
+
+C ----------------------------------------------------------------------
+C --- MATRICE DE CONTACT ACM1AT
+C --- CETTE MATRICE EST STOCKEE EN LIGNE DE CIEL
+C ---   TRIANGULAIRE SYMETRIQUE PLEINE   
+C ----------------------------------------------------------------------
+
+C ---
+C --- OBJET NUME_DDL
+C ---
+      STOC   = RESOCO(1:14)//'.SLCS'
+
+C     NOMBRE D'EQUATIONS DE LA MATRICE
+      NEQU = NBREEL
+C     TAILLE MAXI D'UN BLOC      
+      TMAX   = JEVTBL()
+      ITBLOC = NINT(TMAX*1024)
+C     HAUTEUR MAXI D'UNE COLONNE
+      HMAX   = NEQU
+
+C --- CREATION REFE
       CALL JECREO (STOC//'.REFE','V V K24')
       CALL JEECRA (STOC//'.REFE','LONMAX',1,' ')
       CALL JEECRA (STOC//'.REFE','DOCU',1,'SLCS')
       CALL JEVEUO (STOC//'.REFE','E',JBID)
       ZK24(JBID) = '??CONTACT??'
-C
-      CALL JECREO (STOC//'.DESC','V V I')
-      CALL JEECRA (STOC//'.DESC','LONMAX',6,' ')
-      CALL JEVEUO (STOC//'.DESC','E',JBID)
-      ZI(JBID)   = 3*NBLIAI
-      ZI(JBID+1) = 3*NBLIAI*(3*NBLIAI+1)/2
-      ZI(JBID+2) = NBBLOC
-      ZI(JBID+3) = 3*NBLIAI
-C
-      CALL JECREO (STOC//'.HCOL','V V I')
-      CALL JEECRA (STOC//'.HCOL','LONMAX',3*NBLIAI,' ')
-      CALL JEVEUO (STOC//'.HCOL','E',JBID)
-      DO 5 II = 1, 3*NBLIAI
-         ZI(JBID+II-1) = II
+
+C --- CREATION HCOL
+      CALL WKVECT (STOC//'.HCOL','V V I',NEQU,IDHCOL)
+      DO 5 II = 1, NEQU
+         ZI(IDHCOL+II-1) = II
  5    CONTINUE
-C
-      CALL JECREO (STOC//'.ADIA','V V I')
-      CALL JEECRA (STOC//'.ADIA','LONMAX',3*NBLIAI,' ')
-      CALL JEVEUO (STOC//'.ADIA','E',JBID)
-      DO 6 II = 1, 3*NBLIAI
-         ZI(JBID+II-1) = II*(II+1)/2
+C --- CREATION ADIA
+      CALL WKVECT (STOC//'.ADIA','V V I',NEQU,IDADIA)
+      DO 6 II = 1, NEQU
+         ZI(IDADIA+II-1) = II*(II+1)/2
  6    CONTINUE
 C
-      CALL JECREO (STOC//'.ABLO','V V I')
-      CALL JEECRA (STOC//'.ABLO','LONMAX',NBBLOC+1,' ')
-      CALL JEVEUO (STOC//'.ABLO','E',JBID)
-      ZI(JBID) = 0
-      DO 7 II = 1, NBBLOC
-         ZI(JBID+II) = 3*NBLIAI
- 7    CONTINUE
+      ZI(IDADIA) = ZI(IDHCOL)
+C     HAUTEUR COLONNE CUMULEE
+      NTBLC =  ZI(IDHCOL)
+C     NOMBRE DE BLOCS
+      NBLC  = 1
+C     TAUX DE VIDE MAXI POUR ALARME
+      TVALA = 0.25D0
+C     NOMBRE DE BLOCS TROP VIDES
+      IVALA = 0
+C     TAUX DE VIDE MAXI
+      TVMAX = 1.D0
+
+      DO 180 IEQUA = 2,NEQU
+        NTBLC = NTBLC + ZI(IDHCOL+IEQUA-1)
+        IF (NTBLC.LE.ITBLOC) THEN
+C         ON PEUT TOUJOURS AJOUTER LA COLONNE DANS LE BLOC
+          ZI(IDADIA+IEQUA-1) = ZI(IDADIA+IEQUA-2) + ZI(IDHCOL+IEQUA-1)
+        ELSE
+
+C         LA COLONNE NE PEUT PAS ENTRER DANS LE NOUVEAU BLOC
+C         TAUX DE VIDE LAISSE DANS LE BLOC
+          TV = (ITBLOC-NTBLC)/ITBLOC
+          IF (TV.GE.TVMAX) THEN
+            TVMAX = TV
+            IF (TVMAX.GE.TVALA) THEN
+              IVALA = IVALA+1
+            ENDIF
+          ENDIF
+C         NOUVEAU BLOC
+          NTBLC = ZI(IDHCOL+IEQUA-1)
+          IF (NTBLC.GT.ITBLOC) THEN
+           CALL UTDEBM('F','CRSDCO','---')
+           CALL UTIMPI('L',' LA TAILLE BLOC  :',1,ITBLOC)
+           CALL UTIMPI('S','EST < HAUTEUR_MAX :',1,HMAX)
+           CALL UTIMPK('L',' CHANGEZ LA TAILLE_BLOC DES PROFILS:',0,' ')
+           CALL UTIMPI('S',' PRENEZ AU MOINS :',1,HMAX/1024+1)
+           CALL UTFINM()
+          ENDIF
+          NBLC = NBLC + 1
+          ZI(IDADIA+IEQUA-1) = ZI(IDHCOL+IEQUA-1)
+        END IF
+  180 CONTINUE          
+
+      IF (NIV.GE.3) THEN
+        WRITE (IFM,*) '--- TAILLE MAXI DES BLOCS : ',ITBLOC
+        WRITE (IFM,*) '--- HAUTEUR MAXIMUM D''UNE COLONNE : ',HMAX
+        WRITE (IFM,*) '--- TAUX DE VIDE MAXI DANS UN BLOC : ',TVMAX
+        WRITE (IFM,*) '--- NOMBRE DE BLOCS UTILISES : ',NBLC
+        WRITE (IFM,*) '--- TAUX DE VIDE PROVOQUANT ALARME: ',TVALA
+        WRITE (IFM,*) '--- NOMBRE DE BLOCS ALARMANT ',IVALA
+      END IF
 C
-      CALL JECREO (STOC//'.IABL','V V I')
-      CALL JEECRA (STOC//'.IABL','LONMAX',3*NBLIAI,' ')
-      CALL JEVEUO (STOC//'.IABL','E',JBID)
-      DO 8 II = 1, 3*NBLIAI
-         ZI(JBID+II-1) = 1
- 8    CONTINUE
+C --- CREATION ABLO
+      CALL WKVECT (STOC//'.ABLO','V V I',NBLC+1,IDABLO)
+
+      ZI(IDABLO) = 0
+      IBLC = 1
+      NTBLC = ZI(IDHCOL)
+
+      DO 190 IEQUA = 2,NEQU
+        NTBLC = NTBLC + ZI(IDHCOL+IEQUA-1)
+        IF (NTBLC.GT.ITBLOC) THEN
+          NTBLC = ZI(IDHCOL+IEQUA-1)
+          ZI(IDABLO+IBLC) = IEQUA - 1
+          IBLC = IBLC + 1
+        END IF
+  190 CONTINUE
+      ZI(IDABLO+NBLC) = NEQU
+      IF (NBLC.EQ.1) THEN
+        ITBLOC = NTBLC
+      END IF      
+
+C --- CREATION IABL 
+      CALL WKVECT(STOC//'.IABL','V V I',NEQU,IDIABL)
+      ICOMPT = 0
+      DO 210 I = 1,NBLC
+        NBCOL = ZI(IDABLO+I) - ZI(IDABLO+I-1)
+        DO 200 J = 1,NBCOL
+          ICOMPT = ICOMPT + 1
+          ZI(IDIABL-1+ICOMPT) = I
+  200   CONTINUE
+  210 CONTINUE
+      IF (ICOMPT.NE. (NEQU)) THEN
+        CALL UTMESS('F','CRSDCO','ERREUR PGMEUR 1')
+      END IF
+
+C --- CREATION DESC
+      CALL WKVECT(STOC//'.DESC','V V I',6,IDDESC)
+      ZI(IDDESC)   = NEQU
+      ZI(IDDESC+1) = ITBLOC
+      ZI(IDDESC+2) = NBLC
+      ZI(IDDESC+3) = HMAX
+
+C ---
+C --- OBJET MATR_ASSE
+C ---
+      MATR   = RESOCO(1:14)//'.MATR'
+C
+      CALL WKVECT(MATR//'.REFA','V V K24',4,JBID)
+      ZK24(JBID)   = NOMA
+      ZK24(JBID+1) = RESOCO(1:14)
+      ZK24(JBID+2) = STOC
+C
+      CALL WKVECT (MATR//'.&VDI','V V R',NBREEL,JBID)
+      CALL WKVECT (MATR//'.&TRA','V V R',NBREEL,JBID)
+      CALL WKVECT (MATR//'.LIME','V V K8',1,JBID)
+      ZK8(JBID) = ' '
+C
+      CALL JECREC (MATR//'.VALE','V V R','NU','DISPERSE'
+     &     ,'CONSTANT',NBBLOC)
+      CALL JEECRA (MATR//'.VALE','LONMAX',
+     &     NBREEL*(NBREEL+1)/2,K8BID)
+      DO 4 II = 1, NBBLOC
+         CALL JECROC (JEXNUM(MATR//'.VALE',II))
+ 4    CONTINUE
+      CALL JEECRA (MATR//'.VALE','DOCU',1,'MS')
 C
  9999 CONTINUE
 C

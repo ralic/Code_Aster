@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF inisig utilitai  DATE 23/09/2002   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF inisig utilitai  DATE 28/06/2004   AUTEUR D6BHHJP J.P.LEFEBVRE */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -34,6 +34,7 @@ void hancpu (int sig);
 #if defined CRAY || HPUX || P_LINUX || TRU64  || SOLARIS64
   void hanfpe (int sig);
   void stptrap ( int sig) ;
+  void stpusr1 ( int sig) ;
 #elif defined SOLARIS
 /*#include <sunmath.h>*/
 #include <siginfo.h>
@@ -61,7 +62,7 @@ void hancpu (int sig);
 #endif
 {
 int ier;
-#if defined CRAY || SOLARIS || IRIX || TRU64 || SOLARIS64 
+#if defined CRAY || SOLARIS || IRIX || TRU64 || SOLARIS64 || P_LINUX
   struct sigaction action_CPU_LIM;
 #endif
 #if defined IRIX
@@ -74,7 +75,7 @@ int ier;
 /*            */
 /* CPU LIMITE */
 /*            */
-#if defined CRAY || SOLARIS || IRIX || TRU64 || SOLARIS64 
+#if defined CRAY || SOLARIS || IRIX || TRU64 || SOLARIS64 || P_LINUX
   action_CPU_LIM.sa_handler=hancpu;
   sigemptyset(&action_CPU_LIM.sa_mask);
   action_CPU_LIM.sa_flags=0;
@@ -82,7 +83,7 @@ int ier;
 
 #ifdef CRAY
    sigaction(SIGCPULIM,&action_CPU_LIM,NULL);
-#elif defined SOLARIS || IRIX || TRU64 || SOLARIS64 
+#elif defined SOLARIS || IRIX || TRU64 || SOLARIS64 || P_LINUX
    sigaction(SIGXCPU  ,&action_CPU_LIM,NULL);
 #endif
 
@@ -111,12 +112,31 @@ int ier;
 /*                          */
 /* Arret par CRTL C         */
 /*                          */
-#if defined PPRO_NT || IRIX || TRU64 
+#if defined PPRO_NT || IRIX || TRU64 || P_LINUX
    signal(SIGINT,  stptrap);
+#endif
+
+/*                          */
+/* Arret par SIGUSR1        */
+/*                          */
+#if defined PPRO_NT || IRIX || TRU64 || P_LINUX
+   signal(SIGUSR1,  stpusr1);
 #endif
 }
 void stptrap (int sig)
 {
-  printf(" \n arret sur CTRL C \n");
+  printf(" \n <I> arret sur CTRL C \n");
   exit(1);
+}
+
+void stpusr1 (int sig)
+{
+  printf(" \n <I> arret sur signal SIGUSR1 \n");
+#ifdef CRAY
+   SIGUSR();
+#endif
+#if defined SOLARIS || IRIX || TRU64 || SOLARIS64 || P_LINUX
+   sigusr_();
+#endif
+exit(sig);
 }

@@ -16,7 +16,7 @@
       REAL*8             TEMPS,PSIDEL(NBCHOC,NBEXCI,*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 10/05/2004   AUTEUR BOYERE E.BOYERE 
+C MODIF ALGORITH  DATE 28/06/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -69,7 +69,7 @@ C ----------------------------------------------------------------------
      +            OLDFT(2), OLDXL(3), OLDVT(2), POND,
      +            SIGNE(2), FDISPO
 C     ------------------------------------------------------------------
-      INTEGER       IEX,IPAR
+      INTEGER       IEX
       CHARACTER*8   NOMPAR
       REAL*8        COEDEP(NBEXCI), COEVIT(NBEXCI), COEACC(NBEXCI)
 C
@@ -80,24 +80,11 @@ C
       ORIG(3) = ZERO
 C
       NOMPAR = 'INST'
-      IPAR = 1
       IF (NONMOT(1:3).NE.'NON') THEN
          DO 11 IEX=1,NBEXCI
-           IF (NOFDEP(IEX+NBEXCI).EQ.'INTERPRE') THEN
-            CALL FIINTE('F',NOFDEP(IEX),1,IPAR,TEMPS,COEDEP(IEX),IER)
-           ELSE
-            CALL FOINTE('F',NOFDEP(IEX),1,NOMPAR,TEMPS,COEDEP(IEX),IER)
-           ENDIF
-           IF (NOFVIT(IEX+NBEXCI).EQ.'INTERPRE') THEN
-            CALL FIINTE('F',NOFVIT(IEX),1,IPAR,TEMPS,COEVIT(IEX),IER)
-           ELSE
-            CALL FOINTE('F',NOFVIT(IEX),1,NOMPAR,TEMPS,COEVIT(IEX),IER)
-           ENDIF
-           IF (NOFACC(IEX+NBEXCI).EQ.'INTERPRE') THEN
-            CALL FIINTE('F',NOFACC(IEX),1,IPAR,TEMPS,COEACC(IEX),IER)
-           ELSE
-            CALL FOINTE('F',NOFACC(IEX),1,NOMPAR,TEMPS,COEACC(IEX),IER)
-           ENDIF
+           CALL FOINTE('F',NOFDEP(IEX),1,NOMPAR,TEMPS,COEDEP(IEX),IER)
+           CALL FOINTE('F',NOFVIT(IEX),1,NOMPAR,TEMPS,COEVIT(IEX),IER)
+           CALL FOINTE('F',NOFACC(IEX),1,NOMPAR,TEMPS,COEACC(IEX),IER)
  11      CONTINUE
       ENDIF
 

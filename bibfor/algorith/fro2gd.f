@@ -2,7 +2,7 @@
      &                   CINE,RESU,DEPTOT,ITERAT,LREAC,DEPDEL,ISTO)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 29/06/2004   AUTEUR MABBAS M.ABBAS 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -94,7 +94,7 @@ C ======================================================================
       INTEGER      IBID,IER,IFM,NIV,NDECI,ISINGU,NPVNEG,JAPJFX
       INTEGER      ICONTA,II,JJ,KK,IDEBUT,ILIAC,KCOUNT,NUMIN,KKMIN
       INTEGER      JRESU,JDEPP,JMU,JCMU,JATMU,POSMA,NDIM,NEQMAX
-      INTEGER      JDELT0,JDELTA,JLIAC,JVALE,JCOCO,JRCINE,JVA
+      INTEGER      JDELT0,JDELTA,JLIAC,JCOCO,JRCINE,JVA
       INTEGER      NEQ,NESCL,NBLIAC,NBLIAI,NBLIAP,INDIC,INDFAC
       INTEGER      LLIAC,LLJAC,POS1,POS2,NUM1,NUM2,JDECAL,NBDDL
       INTEGER      JAPPAR,JAPPTR,JAPCOE,JAPJEU,JAPDDL,JNOCO,JMACO
@@ -202,14 +202,10 @@ C ======================================================================
 C --- NBLIAC : NOMBRE DE LIAISONS ACTIVES ------------------------------
 C --- LLF    : NOMBRE DE LIAISONS ADHERENTES (DEUX DIRECTIONS) ---------
 C ======================================================================
-      NDIM   = ZI(JCOCO  )
-      INDIC  = ZI(JCOCO+1)
-      NBLIAC = ZI(JCOCO+2)
-      AJLIAI = ZI(JCOCO+3)
-      SPLIAI = ZI(JCOCO+4)
-      LLF    = ZI(JCOCO+5)
-      LLF1   = ZI(JCOCO+6)
-      LLF2   = ZI(JCOCO+7)
+      CALL CFDISD(JCOCO,
+     &            NDIM,INDIC,NBLIAC,AJLIAI,SPLIAI,
+     &            LLF,LLF1,LLF2)
+
 C ======================================================================
 C --- INITIALISATION DE VARIABLES --------------------------------------
 C ======================================================================

@@ -1,8 +1,10 @@
-      SUBROUTINE MLTCCB(NBLOC,NCBLOC,DECAL,NBSN,FILS,FRERE,SEQ,
-     +     LGSN,LFRONT,ADRESS,LOCAL,LGPILE,NBASS,ADPER,T1,
-     +     T2,FACTOL,FACTOU,TYPSYM,AD,NOMPIL,NMPILU,EPS,IER,SBLOC)
+      SUBROUTINE MLTCCB(NBLOC,NCBLOC,DECAL,NBSN,
+     +                  SUPND, FILS,FRERE,SEQ,
+     +                  LGSN,LFRONT,ADRESS,LOCAL,LGPILE,NBASS,ADPER,T1,
+     +                  T2,FACTOL,FACTOU,TYPSYM,AD,NOMPIL,NMPILU,EPS,
+     +                  IER,SBLOC,NB,CL,CU)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGELINE  DATE 28/06/2004   AUTEUR ROSE C.ROSE 
 C RESPONSABLE JFBHHUC C.ROSE
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,23 +23,24 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
 C TOLE CRP_21
-C VERSION COMPLEXE DE MLTFCB
-C     VERSION MODIFIEE POUR L' APPEL A CGEMV (PRODUITS MATRICE-VECTEUR)
+C     VERSION MODIFIEE POUR L' APPEL A DGEMV (PRODUITS MATRICE-VECTEUR)
 C     LE STOCKAGE DES COLONNES DE LA FACTORISEE EST MODIFIE, ET AINSI
 C      ADPER LES COLONNES FORMENT UN BLOC RECTANGULAIRE
+C
       IMPLICIT NONE
-      INTEGER PMIN
+      INTEGER PMIN,NB
       PARAMETER (PMIN=10)
       INTEGER NBLOC,NCBLOC(*),DECAL(*)
-      INTEGER NBSN,LGSN(*),LFRONT(*),TYPSYM
+      INTEGER NBSN,LGSN(*),LFRONT(*),TYPSYM,SUPND(*)
       INTEGER LOCAL(*),NBASS(*),LGPILE(*),FILS(*)
       INTEGER ADRESS(*),FRERE(*),SEQ(*),AD(*)
       CHARACTER*32 JEXNUM,JEXNOM
       CHARACTER*24 FACTOL,FACTOU,NOMPIL,NMPILU
 C
-      COMPLEX*16 T1(*),T2(*)
       REAL*8 EPS
+      COMPLEX*16 T1(*),T2(*),CL(NB,NB,*),CU(NB,NB,*)
       INTEGER ADPER(*),IFACL,IFACU,PPERE,PFILS,IER,SBLOC,PPEREU,PFILSU
+      INTEGER LG
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
@@ -53,173 +56,169 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32 ZK32
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-      CHARACTER*6 PGC
-      COMMON /NOMAJE/PGC
+      COMMON /IMLTF1/SNI
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
-      INTEGER I,ISND,SNI,SN,N,M,P,NL,NC,ADFACL,IB,NB,ADFACU
+      INTEGER I,J,ISND,SNI,SN,N,M,P,NL,NC,MEM,ADFACL,IB,LN,L,ADFACU
       CALL JEMARQ()
-      IF(SBLOC.EQ.1) THEN
+      IF (SBLOC.EQ.1) THEN
 C=======================================================================
 C     CREATION D'UNE COLLECTION DISPERSEE
-         CALL JECREC(NOMPIL,' V V C ','NO','DISPERSE','VARIABLE',NBSN)
-         DO 120 I = 1,NBSN
-            WRITE(CARACI,'(I8)') I
-            CALL JECROC(JEXNOM(NOMPIL,CARACI))
-            CALL JEECRA(JEXNOM(NOMPIL,CARACI),'LONMAX',LGPILE(I),' ')
- 120     CONTINUE
-         IF( TYPSYM.EQ.0) THEN
+        CALL JECREC(NOMPIL,' V V R ','NO','DISPERSE','VARIABLE',NBSN)
+        DO 10 I = 1,NBSN
+          WRITE (CARACI,'(I8)') I
+          CALL JECROC(JEXNOM(NOMPIL,CARACI))
+          LG= LFRONT(I)
+          LGPILE(I)=(LG*(LG+1))/2
+          CALL JEECRA(JEXNOM(NOMPIL,CARACI),'LONMAX',LGPILE(I),' ')
+   10   CONTINUE
+        IF (TYPSYM.EQ.0) THEN
 C     CREATION D'UNE AUTRE COLLECTION DISPERSEE ( CAS NON SYMETRIQUE)
-            CALL JECREC(NMPILU,' V V C ','NO','DISPERSE','VARIABLE',
-     +           NBSN)
-
-            DO 121 I = 1,NBSN
-               WRITE(CARACI,'(I8)') I
-               CALL JECROC(JEXNOM(NMPILU,CARACI))
-               CALL JEECRA(JEXNOM(NMPILU,CARACI),'LONMAX',LGPILE(I),' ')
- 121        CONTINUE
-         ENDIF
-      ENDIF
+          CALL JECREC(NMPILU,' V V R ','NO','DISPERSE','VARIABLE',NBSN)
+          DO 20 I = 1,NBSN
+            WRITE (CARACI,'(I8)') I
+            CALL JECROC(JEXNOM(NMPILU,CARACI))
+            CALL JEECRA(JEXNOM(NMPILU,CARACI),'LONMAX',LGPILE(I),' ')
+   20     CONTINUE
+        END IF
+      END IF
       ISND = 0
-      DO 159 IB = 1,SBLOC-1
-         DO 159 NC = 1,NCBLOC(IB)
-            ISND = ISND + 1
- 159     CONTINUE
-         DO 160 IB = SBLOC ,NBLOC
-            DO 150 NC = 1,NCBLOC(IB)
-               ISND = ISND + 1
-               SNI = SEQ(ISND)
-               P = LGSN(SNI)
-               M = LFRONT(SNI)
-               N = M + P
-               IF( M.NE.0)  THEN
-                  CALL JEVEUO(JEXNUM(NOMPIL,SNI),'E',PPERE)
-                  IF( TYPSYM.EQ.0) THEN
-                     CALL JEVEUO(JEXNUM(NMPILU,SNI),'E',PPEREU)
-                  ENDIF
-               ENDIF
-               DO 19 I=1,P
-                  ADPER(I) = (I-1)*N+I
- 19            CONTINUE
-               DO 130 I = P,N - 1
-                  ADPER(I+1) = 1 + (N+ (N-I+1))*I/2
- 130           CONTINUE
-               SN = FILS(SNI)
+      DO 40 IB = 1,SBLOC - 1
+        DO 30 NC = 1,NCBLOC(IB)
+          ISND = ISND + 1
+   30   CONTINUE
+   40 CONTINUE
+      DO 110 IB = SBLOC,NBLOC
+        DO 100 NC = 1,NCBLOC(IB)
+          ISND = ISND + 1
+          SNI = SEQ(ISND)
+          P = LGSN(SNI)
+          M = LFRONT(SNI)
+          N = M + P
+          IF (M.NE.0) THEN
+            CALL JEVEUO(JEXNUM(NOMPIL,SNI),'E',PPERE)
+            IF (TYPSYM.EQ.0) THEN
+              CALL JEVEUO(JEXNUM(NMPILU,SNI),'E',PPEREU)
+            END IF
+          END IF
+          DO 19 I=1,P
+             ADPER(I) = (I-1)*N+I
+ 19       CONTINUE
+          DO 50 I = P,N - 1
+             ADPER(I+1) = 1 + (N+ (N-I+1))*I/2
+ 50       CONTINUE
+          SN = FILS(SNI)
 C     BOUCLE D ASSEMBLAGE
 C------------------------------------------------------------------
 C     ASSEMBLAGE POUR LA PARTIE INFERIEURE
 C     C
- 140           CONTINUE
-               IF (SN.NE.0) THEN
-                  CALL JEVEUO(JEXNUM(NOMPIL,SN),'L',PFILS)
-                  NL = LGSN(SN)
-                  NB = NBASS(SN)
+   60     CONTINUE
+          IF (SN.NE.0) THEN
+            CALL JEVEUO(JEXNUM(NOMPIL,SN),'L',PFILS)
+            NL = LGSN(SN)
+            NB = NBASS(SN)
 C     ASSEMBLAGE FILS -> PERE ( INFERIEURE)
 C
-                  CALL MLTACF(LFRONT(SN),NB,ADPER,ZC(PPERE),
-     +                 ZC(PFILS),LOCAL(ADRESS(SN)+NL),P)
-                  CALL JELIBE(JEXNUM(NOMPIL,SN))
-                  SN = FRERE(SN)
-                  GO TO 140
-               END IF
-               IF( M.NE.0 )  CALL JELIBE(JEXNUM(NOMPIL,SNI))
+            CALL MLTACF(LFRONT(SN),NB,ADPER,ZC(PPERE),ZC(PFILS),
+     +                  LOCAL(ADRESS(SN)+NL),P)
+            CALL JELIBE(JEXNUM(NOMPIL,SN))
+            SN = FRERE(SN)
+            GO TO 60
+          END IF
+          IF (M.NE.0) CALL JELIBE(JEXNUM(NOMPIL,SNI))
 C
-               CALL JEVEUO(JEXNUM(FACTOL,IB),'E',IFACL)
-               ADFACL = IFACL - 1 + DECAL(SNI)
-               SN = FILS(SNI)
- 145           CONTINUE
+          CALL JEVEUO(JEXNUM(FACTOL,IB),'E',IFACL)
+          ADFACL = IFACL - 1 + DECAL(SNI)
+          SN = FILS(SNI)
+   70     CONTINUE
 C     ASSEMBLAGE FILS -> FACTOR ( INFERIEURE)
-               IF (SN.NE.0) THEN
-                  CALL JEVEUO(JEXNUM(NOMPIL,SN),'L',PFILS)
-                  NL = LGSN(SN)
-                  NB = NBASS(SN)
-                  CALL MLTACP(LFRONT(SN),NB,ADPER,ZC(ADFACL),
-     +                 ZC(PFILS),LOCAL(ADRESS(SN)+NL))
+          IF (SN.NE.0) THEN
+            CALL JEVEUO(JEXNUM(NOMPIL,SN),'L',PFILS)
+            NL = LGSN(SN)
+            NB = NBASS(SN)
+            CALL MLTACP(LFRONT(SN),NB,ADPER,ZC(ADFACL),ZC(PFILS),
+     +                  LOCAL(ADRESS(SN)+NL))
 C     ON DETRUIT LA MATRICE FRONTALE QUI NE SERA PLUS UTILISEE
-                  CALL JEDETR(JEXNUM(NOMPIL,SN))
-                  SN = FRERE(SN)
-                  GO TO 145
-               END IF
+            CALL JEDETR(JEXNUM(NOMPIL,SN))
+            SN = FRERE(SN)
+            GO TO 70
+          END IF
 C------------------------------------------------------------------
 C     ASSEMBLAGE POUR LA PARTIE SUPERIEURE
 C
-               IF( TYPSYM.EQ.0) THEN
-                  CALL JELIBE( JEXNUM(FACTOL,IB))
-                  SN = FILS(SNI)
- 141              CONTINUE
-                  IF (SN.NE.0) THEN
-                     CALL JEVEUO(JEXNUM(NMPILU,SN),'L',PFILSU)
-                     NL = LGSN(SN)
-                     NB = NBASS(SN)
+          IF (TYPSYM.EQ.0) THEN
+            CALL JELIBE(JEXNUM(FACTOL,IB))
+            SN = FILS(SNI)
+   80       CONTINUE
+            IF (SN.NE.0) THEN
+              CALL JEVEUO(JEXNUM(NMPILU,SN),'L',PFILSU)
+              NL = LGSN(SN)
+              NB = NBASS(SN)
 C     ASSEMBLAGE FILS -> PERE ( SUPERIEURE)
-                     CALL MLTACF(LFRONT(SN),NB,ADPER,ZC(PPEREU),
-     +                    ZC(PFILSU),LOCAL(ADRESS(SN)+NL),P)
-                     CALL JELIBE(JEXNUM(NMPILU,SN))
-                     SN = FRERE(SN)
-                     GO TO 141
-                  END IF
-
-                  IF( M.NE.0 )  CALL JELIBE(JEXNUM(NMPILU,SNI))
-                  CALL JEVEUO(JEXNUM(FACTOU,IB),'E',IFACU)
-                  ADFACU = IFACU - 1 + DECAL(SNI)
-                  SN = FILS(SNI)
- 146              CONTINUE
-                  IF (SN.NE.0) THEN
-                     CALL JEVEUO(JEXNUM(NMPILU,SN),'L',PFILSU)
-                     NL = LGSN(SN)
-                     NB = NBASS(SN)
+              CALL MLTACF(LFRONT(SN),NB,ADPER,ZC(PPEREU),ZC(PFILSU),
+     +                    LOCAL(ADRESS(SN)+NL),P)
+              CALL JELIBE(JEXNUM(NMPILU,SN))
+              SN = FRERE(SN)
+              GO TO 80
+            END IF
+            IF (M.NE.0) CALL JELIBE(JEXNUM(NMPILU,SNI))
+            CALL JEVEUO(JEXNUM(FACTOU,IB),'E',IFACU)
+            ADFACU = IFACU - 1 + DECAL(SNI)
+            SN = FILS(SNI)
+   90       CONTINUE
+            IF (SN.NE.0) THEN
+              CALL JEVEUO(JEXNUM(NMPILU,SN),'L',PFILSU)
+              NL = LGSN(SN)
+              NB = NBASS(SN)
 C     ASSEMBLAGE FILS -> FACTOR ( SUPERIEURE)
-                     CALL MLTACP(LFRONT(SN),NB,ADPER,ZC(ADFACU),
-     +                    ZC(PFILSU),LOCAL(ADRESS(SN)+NL))
+              CALL MLTACP(LFRONT(SN),NB,ADPER,ZC(ADFACU),ZC(PFILSU),
+     +                    LOCAL(ADRESS(SN)+NL))
 C     ON DETRUIT LA MATRICE FRONTALE QUI NE SERA PLUS UTILISEE
-                     CALL JEDETR(JEXNUM(NMPILU,SN))
-                     SN = FRERE(SN)
-                     GO TO 146
-                  END IF
-               END IF
+              CALL JEDETR(JEXNUM(NMPILU,SN))
+              SN = FRERE(SN)
+              GO TO 90
+            END IF
+          END IF
 C
 C     FIN DE L'ASSEMBLAGE POUR LA PARTIE SUPERIEURE
 C------------------------------------------------------------------
 C
 C     FACTORISATION
-            IF( TYPSYM.EQ.1) THEN
-               IF( M.NE.0)  CALL JEVEUO(JEXNUM(NOMPIL,SNI),'E',PPERE)
-               IF (P.LE.PMIN) THEN
-                  CALL MLTC21(P,ZC(ADFACL),ZC(PPERE),N,T1,T2,EPS,IER)
-               ELSE
-                  CALL MLTCLM(N,P,ZC(ADFACL),ADPER,T1,AD,EPS,IER)
-                  CALL MLTCMJ(N,P,ZC(ADFACL),ZC(PPERE),ADPER,T1,AD)
-               END IF
-               IF( M.NE.0 )  CALL JELIBE(JEXNUM(NOMPIL,SNI))
+          IF (TYPSYM.EQ.1) THEN
+            IF (M.NE.0) CALL JEVEUO(JEXNUM(NOMPIL,SNI),'E',PPERE)
+            IF (P.LE.PMIN) THEN
+              CALL MLTC21(P,ZC(ADFACL),ZC(PPERE),N,T1,T2,EPS,IER)
+              IF (IER.NE.0) GO TO 9999
             ELSE
-               CALL JEVEUO(JEXNUM(FACTOL,IB),'E',IFACL)
-               ADFACL = IFACL - 1 + DECAL(SNI)
-               CALL MLNCLM(N,P,ZC(ADFACL),ZC(ADFACU),ADPER,
-     +              T1,T2,AD,EPS,IER)
-               IF( M.NE.0)  CALL JEVEUO(JEXNUM(NOMPIL,SNI),'E',PPERE)
-               CALL MLNCMG(N,P,ZC(ADFACL),ZC(ADFACU),ZC(PPERE),
-     +              ADPER,T1,AD)
-               IF( M.NE.0)  CALL JELIBE(JEXNUM(NOMPIL,SNI))
-               IF( M.NE.0)  CALL JEVEUO(JEXNUM(NMPILU,SNI),'E',PPEREU)
-               CALL MLNCMG(N,P,ZC(ADFACU),ZC(ADFACL),ZC(PPEREU),
-     +              ADPER,T1,AD)
-               IF( M.NE.0)  CALL JELIBE(JEXNUM(NMPILU,SNI))
-               CALL JELIBE(JEXNUM(FACTOU,IB))
-            ENDIF
-            CALL JELIBE(JEXNUM(FACTOL,IB))
-C
-            IF (IER.EQ.1) THEN
-               CALL UTDEBM('E','FACTORISATION (MULFR8)',
-     +              'MATRICE SINGULIERE.')
-               CALL UTIMPI('L','PIVOT NUL AU SUPERNOEUD',1,SNI)
-               CALL UTIMPI('L','BLOC NO ',1,IB)
-               CALL UTIMPI('L','SND RELATIF NO ',1,NC)
-               CALL UTFINM()
+              CALL MLTCLM(NB,N,P,ZC(ADFACL),ADPER,T1,AD,EPS,IER,CL)
+              IF (IER.NE.0) GO TO 9999
+              CALL MLTCMJ(NB,N,P,ZC(ADFACL),ZC(PPERE),ADPER,T1,CL)
             END IF
+            IF (M.NE.0) CALL JELIBE(JEXNUM(NOMPIL,SNI))
+          ELSE
+            CALL JEVEUO(JEXNUM(FACTOL,IB),'E',IFACL)
+            ADFACL = IFACL - 1 + DECAL(SNI)
+            CALL MLNCLM(NB,N,P,ZC(ADFACL),ZC(ADFACU),ADPER,T1,T2,AD,EPS,
+     +                  IER,CL,CU)
+            IF (IER.NE.0) GO TO 9999
+            IF (M.NE.0) CALL JEVEUO(JEXNUM(NOMPIL,SNI),'E',PPERE) 
+            CALL MLNCMG(NB,N,P,ZC(ADFACL),ZC(ADFACU),ZC(PPERE),ADPER,T1,
+     %                  CL)
+            IF (M.NE.0) THEN 
+                CALL JELIBE(JEXNUM(NOMPIL,SNI))
+                CALL JEVEUO(JEXNUM(NMPILU,SNI),'E',PPEREU)
+            END IF 
+            CALL MLNCMG(NB,N,P,ZC(ADFACU),ZC(ADFACL),ZC(PPEREU),ADPER,T1
+     +                  ,CL)
+            IF (M.NE.0) CALL JELIBE(JEXNUM(NMPILU,SNI))
+            CALL JELIBE(JEXNUM(FACTOU,IB))
+          END IF
+          CALL JELIBE(JEXNUM(FACTOL,IB))
 C
- 150     CONTINUE
- 160  CONTINUE
-C     CALL JEIMPM('MESSAGE',' AV DESTRUCTION DE LA PILE ')
+C
+  100   CONTINUE
+  110 CONTINUE
+ 9999 CONTINUE
+      IF(IER.NE.0) IER =IER +SUPND(SNI)-1
       CALL JEDETR(NOMPIL)
       CALL JEDEMA()
-
       END

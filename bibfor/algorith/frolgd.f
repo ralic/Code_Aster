@@ -2,7 +2,7 @@
      &                        RESU,DEPTOT,ITERAT,LREAC,CONV,DEPDEL,ISTO)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION 
-C MODIF ALGORITH  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 29/06/2004   AUTEUR MABBAS M.ABBAS 
 C TOLE CRP_20 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -97,7 +97,7 @@ C ======================================================================
       INTEGER       IBID,IER,IFM,NIV,NDECI,ISINGU,NPVNEG,LCOUNT,LFMIN2 
       INTEGER       ICONTA,II,JJ,KK,IDEBUT,ILIAC,KCONT,NUMIN,IRET,KK2 
       INTEGER       JRESU,JDEPP,JMU,JCMU,JATMU,POSMA,NDIM,NEQMAX 
-      INTEGER       JDELT0,JDELTA,JLIAC,JVALE,JCOCO,JRCINE,JVA,KCOUNT 
+      INTEGER       JDELT0,JDELTA,JLIAC,JCOCO,JRCINE,JVA,KCOUNT 
       INTEGER       NEQ,NESCL,NBLIAC,NBLIAI,INDIC,KKMIN,LLMIN,SOM
       INTEGER       LLIAC,LLJAC,POS1,POS2,NUM1,NUM2,JDECAL,NBDDL 
       INTEGER       JAPPAR,JAPPTR,JAPCOE,JAPJEU,JAPDDL,JNOCO,JMACO 
@@ -118,7 +118,7 @@ C ======================================================================
       CHARACTER*14  CHAIN,NUMEDD 
       CHARACTER*16  NMGLI1,NMGLI2, NMADHR 
       CHARACTER*19  AFMU,MAT,CM2A,CM3A,MAF1,MAF2,MAFROT 
-      CHARACTER*19  LIAC,MU,ATMU,DELT0,DELTA,MATR,COCO,LIOT 
+      CHARACTER*19  LIAC,MU,ATMU,DELT0,DELTA,COCO,LIOT 
       CHARACTER*19  CONVEC
       CHARACTER*24  MACONT,APJEFX,APJEFY 
       CHARACTER*24  APPARI,APPOIN,APCOEF,APJEU,APDDL,COEFMU 
@@ -174,7 +174,6 @@ C ======================================================================
       DELTA    = RESOCO(1:14)//'.DELT' 
       CM2A     = RESOCO(1:14)//'.CM2A' 
       CM3A     = RESOCO(1:14)//'.CM3A' 
-      MATR     = RESOCO(1:14)//'.MATR' 
       MAFROT   = RESOCO(1:8)//'.MAFR' 
       MAF1     = '&&FROLGD.MAF1' 
       MAF2     = '&&FROLGD.MAF2' 
@@ -213,7 +212,7 @@ C ======================================================================
       NEQ = ZI(LMAT+2) 
       MAT = ZK24(ZI(LMAT+1)) 
       CALL DISMOI ('F','NOM_NUME_DDL',MAT,'MATR_ASSE',IBID,NUMEDD,IER) 
-      CALL JEVEUO (JEXNUM(MATR//'.VALE',1),'E',JVALE) 
+
 C ======================================================================
 C --- SOUVENIRS DE L'ETAT DE CONTACT -> ON NE PEUT PAS S'EN SERVIR 
 C --- AU DEBUT CAR SI ON A REAPPARIE LES LIAISONS SONT DIFFERENTES 
@@ -227,14 +226,10 @@ C          -1 ON A ENLEVE UNE LIAISON  (KKMIN)
 C ======================================================================
       COCO   = RESOCO(1:14)//'.COCO' 
       CALL JEVEUO (COCO,'E',JCOCO) 
-      NDIM   = ZI(JCOCO  ) 
-      INDIC  = ZI(JCOCO+1) 
-      NBLIAC = ZI(JCOCO+2) 
-      AJLIAI = ZI(JCOCO+3) 
-      SPLIAI = ZI(JCOCO+4) 
-      LLF    = ZI(JCOCO+5) 
-      LLF1   = ZI(JCOCO+6) 
-      LLF2   = ZI(JCOCO+7)
+      CALL CFDISD(JCOCO,
+     &            NDIM,INDIC,NBLIAC,AJLIAI,SPLIAI,
+     &            LLF,LLF1,LLF2)
+
 C ======================================================================
 C --- INITIALISATION DE VARIABLES --------------------------------------
 C ======================================================================

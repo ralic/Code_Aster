@@ -1,0 +1,37 @@
+#& MODIF COMMANDE  DATE 29/06/2004   AUTEUR ASSIRE A.ASSIRE 
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                  
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+# RESPONSABLE ASSIRE A.ASSIRE
+
+DEFI_PART_OPS=OPER(nom="DEFI_PART_OPS",op=21,sd_prod=sd_feti_sdaster,
+                    fr="Creation partitionnement en sous-domaines pour FETI",
+                    docu="U4.23.05",reentrant='n',
+                    UIinfo={"groupes":("Résolution",)},
+         MODELE          =SIMP(statut='o',typ=(modele_sdaster) ),
+#          UNITE_MAILLE    =SIMP(statut='f',typ='I',defaut=67),
+#          UNITE_METIS_OUT =SIMP(statut='f',typ='I',defaut=68),
+         NOM             =SIMP(statut='f',typ='TXM',defaut='SD'),
+         INFO            =SIMP(statut='f',typ='I',defaut=1,into=(1,2,3,4) ),
+
+         DEFI          =FACT(statut='f',max='**',
+#            regles=(UN_PARMI('MAILLE','GROUP_MA'),),
+#            MAILLE          =SIMP(statut='f',typ=ma,min=2,validators=NoRepeat(),max='**'),
+           GROUP_MA        =SIMP(statut='f',typ=grma),
+           GROUP_MA_BORD   =SIMP(statut='f',typ=grma),
+         ),
+)  ;

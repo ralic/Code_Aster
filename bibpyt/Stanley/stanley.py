@@ -1,4 +1,4 @@
-#@ MODIF stanley Stanley  DATE 20/04/2004   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF stanley Stanley  DATE 29/06/2004   AUTEUR ASSIRE A.ASSIRE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -967,8 +967,6 @@ class STANLEY :
     self.interface  = INTERFACE(self)
     self.selection.Interface(self.interface)
 
-    self.terminal  = None               # Terminal xmgrace
-
    # Drivers d'outils de post-traitement
     self.driver = {
       'Isovaleurs' : DRIVER_GMSH(self),
@@ -980,7 +978,7 @@ class STANLEY :
 
    # Menage
     self.interface.Kill()
-    
+
     for driver in self.driver.keys() :
       try :
         self.driver[driver].Fermer()
@@ -1085,7 +1083,14 @@ class STANLEY :
       DETRUIRE(CONCEPT=_F(NOM='_MA_'+str(i)), INFO=1)
     self.selection.interface.rootTk.quit()
 
-  def Select(self) :
+  def Select(self):
+
+    for driver in self.driver.keys() :
+      try :
+        self.driver[driver].Fermer()
+      except AttributeError :
+        pass
+
     for i in range(_NUM):
       DETRUIRE(CONCEPT=_F(NOM='_MA_'+str(i)), INFO=1)
     self.interface.rootTk.destroy()
@@ -1732,6 +1737,7 @@ class DRIVER_GRACE(DRIVER) :
   def Tracer(self, selection) :
   
    # Ouverture ou rafraichissement du terminal si necessaire
+
     if not self.terminal : 
       self.terminal = xmgrace.Xmgr()
     else :
@@ -1884,9 +1890,9 @@ class PRE_STANLEY :
 
     for i in self.jdc_recupere.sds_dict.keys( ):
 #         print i,self.jdc_recupere.sds_dict[i].__class__.__name__,self.jdc_recupere.sds_dict[i]
-        if self.jdc_recupere.sds_dict[i].__class__.__name__ == 'maillage':
+        if self.jdc_recupere.sds_dict[i].__class__.__name__ == 'maillage_sdaster':
           t_maillage.append( i )
-        if self.jdc_recupere.sds_dict[i].__class__.__name__ == 'modele':
+        if self.jdc_recupere.sds_dict[i].__class__.__name__ == 'modele_sdaster':
           t_modele.append( i )
         if self.jdc_recupere.sds_dict[i].__class__.__name__ == 'evol_elas':
           t_evol.append( i )
@@ -1896,7 +1902,7 @@ class PRE_STANLEY :
           t_evol.append( i )
         if self.jdc_recupere.sds_dict[i].__class__.__name__ == 'cham_mater':
           t_cham_mater.append( i )
-        if self.jdc_recupere.sds_dict[i].__class__.__name__ == 'cara_elem':
+        if self.jdc_recupere.sds_dict[i].__class__.__name__ == 'cara_elem_sdaster':
           t_cara_elem.append( i )
 
     self.t_maillage=t_maillage

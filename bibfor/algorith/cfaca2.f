@@ -2,7 +2,7 @@
      +                             NESMAX, RESOCO, LMAT, NBLIAI, XJVMAX)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/05/2003   AUTEUR PABHHHH N.TARDIEU 
+C MODIF ALGORITH  DATE 29/06/2004   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -76,7 +76,17 @@ C ======================================================================
       CALL JEVEUO (APDDL, 'L',JAPDDL) 
       CALL JEVEUO (LIAC,  'L',JLIAC ) 
       CALL JEVEUO (APCOEF,'L',JAPCOE) 
-      CALL JEVEUO (APCOFR,'L',JAPCOF) 
+      IF (LLF.NE.0) THEN
+        CALL JEVEUO (APCOFR,'L',JAPCOF)
+      ELSE
+        IF (LLF1.NE.0) THEN
+          CALL JEVEUO (APCOFR,'L',JAPCOF)
+        ELSE
+          IF (LLF2.NE.0) THEN
+            CALL JEVEUO (APCOFR,'L',JAPCOF)
+          ENDIF
+        ENDIF
+      ENDIF
       CALL JEVEUO (CONVEC,'L',JVECC ) 
       CALL JEVEUO (JEXNUM(MATR//'.VALE',1),'E',JVALE) 
 C ======================================================================

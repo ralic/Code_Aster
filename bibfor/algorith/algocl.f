@@ -1,7 +1,7 @@
        SUBROUTINE ALGOCL(DEFICO,RESOCO,LMAT,LDSCON,NOMA,CINE,RESU,
      &                   DEPTOT,ITERAT,LREAC,ISTO)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 29/06/2004   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -87,7 +87,7 @@ C ======================================================================
       INTEGER IBID,IER,IFM,NIV,NDECI,ISINGU,NPVNEG,NBLCIN
       INTEGER ICONTA,II,JJ,KK,IDEBUT,ILIAC,KCOUNT,NUMIN,BTOTAL
       INTEGER JRESU,JDEPP,JMU,JCMU,JATMU,POSMA,NDIM,NEQMAX
-      INTEGER JDELT0,JDELTA,JLIAC,JVALE,JCOCO,JCM1A,JRCINE,JVA,JLIOT
+      INTEGER JDELT0,JDELTA,JLIAC,JCOCO,JCM1A,JRCINE,JVA,JLIOT
       INTEGER NEQ,NESCL,NBLIAC,NBLIAI,NBLIAP,INDIC,LLMIN,IOTE
       INTEGER LLIAC,LLJAC,POS1,POS2,NUM1,NUM2,JDECAL,NBDDL,PIVOT
       INTEGER JAPPAR,JAPPTR,JAPCOE,JAPJEU,JAPDDL,JNOCO,JMACO,JVALC
@@ -99,7 +99,7 @@ C ======================================================================
       CHARACTER*2 TYPEC0
       CHARACTER*8 NOM1,NOM2
       CHARACTER*14 CHAIN
-      CHARACTER*19 LIAC,MU,ATMU,DELT0,DELTA,CM1A,MATR,COCO,LIOT
+      CHARACTER*19 LIAC,MU,ATMU,DELT0,DELTA,CM1A,COCO,LIOT
       CHARACTER*19 MATASS,MATAS1,MATPRE,CHASEC,CHASOL,SOLVEU
       CHARACTER*24 APPARI,APPOIN,APCOEF,APJEU,APDDL,COEFMU
       CHARACTER*24 CONTNO,CONTMA,MACONT,K24BID
@@ -151,8 +151,6 @@ C ======================================================================
       DELT0  = RESOCO(1:14)//'.DEL0'
       DELTA  = RESOCO(1:14)//'.DELT'
       CM1A   = RESOCO(1:14)//'.CM1A'
-      MATR   = RESOCO(1:14)//'.MATR'
-C      COMPOR = '&&NMDORC.COMPOR'
 C ======================================================================
       CALL JEVEUO(CONTNO,'L',JNOCO)
       CALL JEVEUO(CONTMA,'L',JMACO)
@@ -175,7 +173,6 @@ C ======================================================================
       MACONT = ZK24(ZI(LDSCON+1))
       CALL JEECRA(MACONT(1:19)//'.REFA','DOCU',IBID,'ASSE')
       NEQ = ZI(LMAT+2)
-      CALL JEVEUO(JEXNUM(MATR//'.VALE',1),'E',JVALE)
 C ======================================================================
 C --- SOUVENIRS DE L'ETAT DE CONTACT -> ON NE PEUT PAS S'EN SERVIR
 C --- AU DEBUT CAR SI ON A REAPPARIE LES LIAISONS SONT DIFFERENTES
@@ -184,11 +181,9 @@ C NBLIAC : NOMBRE DE LIAISONS ACTIVES
 C ======================================================================
       COCO = RESOCO(1:14)//'.COCO'
       CALL JEVEUO(COCO,'E',JCOCO)
-      NDIM   = ZI(JCOCO  ) 
-      INDIC  = ZI(JCOCO+1) 
-      NBLIAC = ZI(JCOCO+2) 
-      AJLIAI = ZI(JCOCO+3) 
-      SPLIAI = ZI(JCOCO+4) 
+      CALL CFDISD(JCOCO,
+     &            NDIM,INDIC,NBLIAC,AJLIAI,SPLIAI,
+     &            LLF,LLF1,LLF2)
       LLF    = 0
       LLF1   = 0
       LLF2   = 0
@@ -556,7 +551,7 @@ C ======================================================================
 C ======================================================================
 C --- CALCUL DE AT.MU --------------------------------------------------
 C ======================================================================
-      CALL CFATMU(NEQ , NESMAX, NDIM, NBLIAC, LLF, LLF1, LLF2, RESOCO) 
+      CALL CFATMU(NEQ , NESMAX, NDIM, NBLIAC, LLF, LLF1, LLF2, RESOCO)
 C ======================================================================
 C --- STOCKAGE DE L'ETAT DE CONTACT DEFINITIF
 C ======================================================================

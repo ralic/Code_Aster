@@ -1,6 +1,7 @@
-      SUBROUTINE VERSIO(VERS,UTIL,NIVO,DATE,EXPLOI)
-C ======================================================================
-C MODIF UTILIFOR  DATE 30/06/2004   AUTEUR gcbhhhh M.ADMINISTRATEUR
+      SUBROUTINE BLACMM(N,M,P,MAT,LDA,TRAV,LDB,C,LDC)
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGELINE  DATE 28/06/2004   AUTEUR ROSE C.ROSE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,26 +18,18 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
-C     INITIALISATION DES PARAMETRES DE VERSION D'ASTER
-C----------------------------------------------------------------------
-C     PARAMETRES :
-C OUT   VERS  : VERSION ASTER
-C OUT   UTIL  : SOUS-VERSION D'ASTER
-C OUT   NIVO  : NIVEAU DE SOUS-VERSION D'ASTER
-C OUT   DATE  : DATE DE LA MISE A JOUR DE CETTE VERSION
-C OUT   EXPLOI: BOOLEEN POUR INDIQUER QUE C"EST UNE VERSION 
-C               D'EXPLOITAION OU UN VERSION NORMALE
-C----------------------------------------------------------------------
-C   
-      IMPLICIT NONE   
-      INTEGER VERS,UTIL,NIVO
-      CHARACTER*16 DATE
-      LOGICAL     EXPLOI
+      IMPLICIT NONE
+      INTEGER N,M,P,LDA,LDB,LDC
+      COMPLEX*16 C(LDC,*),TRAV(LDB,*),MAT(LDA,*),S
+      INTEGER I,J,K
 C
-      VERS = 7
-      UTIL = 3
-      NIVO = 12
-      DATE = '30/06/2004'
-      EXPLOI = .FALSE.
-C      
+      DO 2 J=1,M
+         DO 1 I=1,N
+            S=0.D0
+            DO 3 K=1,P
+               S= S +MAT(I,K)*TRAV(K,J)
+ 3             CONTINUE
+            C(I,J) =  - S
+ 1       CONTINUE
+ 2    CONTINUE
       END

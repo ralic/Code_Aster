@@ -4,7 +4,7 @@
      &                   DSDE )
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/06/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 28/06/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -49,7 +49,7 @@ C     ----------------------------------------------------------------
       INTEGER         NDT , NDI , NMAT , NVI,I,J,NR, NVV
 C DIMENSIONNEMENT DYNAMIQUE
       REAL*8          DRDY(NR,NR),Y0(6*6),Y1(6*(NVI-1)),DSDE(6,6)
-      REAL*8          MATER(NMAT*2),Y2((NVI-1)*6),Y1Y2(6,6),DET,I6(6,6)
+      REAL*8          MATER(NMAT*2),Y2((NVI-1)*6),KYL(6,6),DET,I6(6,6)
       REAL*8          Y3((NVI-1)*(NVI-1)),HOOK(6,6),Y2D((NVI-1)*6)
       REAL*8          YD(NR),YF(NR),DY(NR),Y2Y1((NVI-1)*(NVI-1)),UN,ZERO
       CHARACTER*8     MOD
@@ -82,23 +82,25 @@ C
 C     RECALCUL DE LA DERNIERE MATRICE JACOBIENNE      
       CALL LCMMJA ( MOD, NMAT, MATER, TIMED, TIMEF,
      &              COMP,NBCOMM, CPMONO, PGL,NR,NVI,YF,DY,DRDY)
-      NVV=NVI-1
+C     NVV est le nombre de varaibles internes liées aux systemes de
+C     glissement, il y en a 3*Ns     
+      NVV=NVI-1-6
       DET=0.D0
       CALL LCICMA (DRDY,NR,NR,NDT,NDT,1,1 ,Y0 ,6,6,1,1)
-      CALL LCICMA (DRDY,NR,NR,NDT,NVV,1,NDT+1,Y1,6,NVV,1,1)
-      CALL LCICMA (DRDY,NR,NR,NVV,NDT,NDT+1,1,Y2,NVV,6,1,1)
-      CALL LCICMA (DRDY,NR,NR,NVV,NVV,NDT+1,NDT+1,Y3,NVV,NVV,1,1)
+      CALL LCICMA (DRDY,NR,NR,NDT,NVV,NDT,NDT+7,Y1,6,NVV,1,1)
+      CALL LCICMA (DRDY,NR,NR,NVV,NDT,NDT+7,1,Y2,NVV,6,1,1)
+      CALL LCICMA (DRDY,NR,NR,NVV,NVV,NDT+7,NDT+7,Y3,NVV,NVV,1,1)
       IRET = .TRUE.
       
 C       Y2=INVERSE(Y3)*Y2
       CALL MGAUSS ( Y3, Y2, NVV, NVV, 6, DET, IRET )
       IF (.NOT.IRET) CALL UTMESS('F','LCMMJP','Y3 SINGULIERE')
       
-C      Y1Y2=Y1*INVERSE(Y3)*Y2
-      CALL PROMAT(Y1,6,6,NVV,Y2,NVV,NVV,6,Y1Y2)
+C      KYL=Y1*INVERSE(Y3)*Y2
+      CALL PROMAT(Y1,6,6,NVV,Y2,NVV,NVV,6,KYL)
       
-C      Y0=Y0-Y1*INVERSE(Y3)*Y2
-      CALL R8AXPY(36, -1.D0, Y1Y2, 1,Y0, 1)
+C      Y0=Y0+Y1*INVERSE(Y3)*Y2
+      CALL R8AXPY(36, 1.D0, KYL, 1,Y0, 1)
       CALL LCEQMA ( I6     , DSDE           )
       
 C      DSDE = INVERSE(Y0-Y1*INVERSE(Y3)*Y2)

@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
+C MODIF PREPOST  DATE 28/06/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -61,7 +61,6 @@ C
 C
       ZERO   = 0.D0
       ZEROC  = DCMPLX(0.D0,0.D0)
-      EPSIF = SQRT ( R8PREM() )
       CALL GETVTX(' ','TEST_NOOK',0,1,1,OUINON,N1)
       CALL GETFAC('TABL_INTSP',NOCC)
       IF ( OUINON.EQ.'OUI' .AND. NOCC.NE.0 ) THEN
@@ -135,7 +134,7 @@ C
          WRITE(LABEL(6:17),'(1P,E12.5)' ) VALPU(NBPU)
 C
          IF (ZK16(LPROL).EQ. 'FONCT_C') THEN
-           CALL FOINT3(NOMFON,VALPU(1),EPSIF,RESURE,RESUIM,IRET)
+           CALL FOINRI(NOMFON,0,' ',VALPU(1),RESURE,RESUIM,IRET)
            IF ( OUINON .EQ. 'OUI' ) THEN
               K12 = ZK16(LPROL+2)
               TESTOK = ' OK '
@@ -236,7 +235,7 @@ C
              ENDIF
            ENDIF
          ELSE
-           CALL FOINT2 (NOMFON,NBPU,NOMPU,VALPU,EPSIF,VALR,IRET)
+           CALL FOINTE (' ',NOMFON,NBPU,NOMPU,VALPU,VALR,IRET)
            IF ( OUINON .EQ. 'OUI' ) THEN
               K12 = NOMPU(NBPU)
               TESTOK = ' OK '

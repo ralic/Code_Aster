@@ -1,7 +1,7 @@
       SUBROUTINE OP0045(IER)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
+C MODIF ALGELINE  DATE 28/06/2004   AUTEUR BOYERE E.BOYERE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -452,8 +452,8 @@ C      - CAS REEL
      +               NBLAGR)
          IF (NFREQ.LE.0) THEN
             IF ( ARRET(1:3) .EQ. 'OUI' ) THEN
-            CALL UTMESS('F','OP0045.23','PAS DE MODE PROPRE DANS LA '//
-     +           'BANDE DEMANDEE, CALCUL IMPOSSIBLE : ARRET IMMEDIAT')
+               CALL UTEXCP(24,'OP0045','PAS DE MODE PROPRE DANS LA '//
+     &        'BANDE DEMANDEE : ARRET DU CALCUL DES MODES')
             ELSE
                NFREQ = 1
                CALL RSCRSD ( MODES , TYPCON , NFREQ )

@@ -1,6 +1,6 @@
       SUBROUTINE JXLOCS ( ITAB, GENR, LTYP, LONO, IADM , LDEPS, JITAB)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 06/12/2003   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF JEVEUX  DATE 28/06/2004   AUTEUR D6BHHJP J.P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -45,6 +45,7 @@ C ----------------------------------------------------------------------
       COMMON /ILOCJE/  ILOC
 C
       CHARACTER*75     CMESS
+      INTEGER          IDEC
       INTEGER*8        VALLOC,IA
 C DEB-------------------------------------------------------------------
       KADM = IADM
@@ -53,8 +54,13 @@ C DEB-------------------------------------------------------------------
       VALLOC = LOC(ITAB)
       IA = (ILOC-VALLOC)*LOUA + KADM*LOIS
       IR = 0
-      IF ( MOD(IA,LTYP) .NE. 0 .AND. GENR(1:1) .NE. 'N' ) THEN
-        IR = LTYP - ABS(MOD(IA,LTYP))
+      IDEC = MOD(IA,LTYP)
+      IF ( IDEC .NE. 0 .AND. GENR(1:1) .NE. 'N' ) THEN
+        IF ( IDEC .GT. 0 ) THEN
+          IR = LTYP - IDEC
+        ELSE 
+          IR = -IDEC
+        ENDIF
       ENDIF
       IF ( LTYP .NE. LOIS .AND. GENR(1:1) .NE. 'N' ) THEN
         IF ( IR .NE. LADM ) THEN
@@ -68,7 +74,7 @@ C DEB-------------------------------------------------------------------
           ENDIF
         ENDIF
       ENDIF
+      JITAB = 1 + (IA+IR)/LTYP
       ISZON(JISZON + KADM - 3 ) = IR
-      JITAB = 1 + ( IA + IR ) / LTYP
 C FIN ------------------------------------------------------------------
       END

@@ -2,7 +2,7 @@
      &                   LMAT,LDSCON,CNNUL,ITERAT,LICCVG,CONV,DEPDEL,
      &                   LREAC)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 29/06/2004   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -75,6 +75,7 @@ C
       CHARACTER*19 SOLVEU
       CHARACTER*24 OLDGEO,NEWGEO,NDIMCO,METHCO,CHAMCO,APREAC,COEFMU
       CHARACTER*24 APPARI,NOZOCO
+      REAL*8       TPS1(6)
 C
 C ----------------------------------------------------------------------
 C
@@ -115,7 +116,9 @@ C ======================================================================
 C ======================================================================
 C --- REACTUALISATION ? ------------------------------------------------
 C ======================================================================
+
       IF (LREAC(1)) THEN
+         
          IF(NIV.EQ.2) THEN
             WRITE (IFM,1010)'REACTUALISATION GEOMETRIQUE' 
          ENDIF
@@ -123,14 +126,18 @@ C ======================================================================
 C --- REACTUALISATION GEOMETRIQUE --------------------------------------
 C ======================================================================
          CALL VTGPLD (OLDGEO, ALPHA, DEPPLU, 'V', NEWGEO )
+
 C ======================================================================
 C         APPARIEMENT NOEUD ESCLAVE - MAILLE (OU NOEUD) MAITRE
 C ======================================================================
-         CALL RECHCO (PREMIE,LREAC,INST,NOMA,NEWGEO,DEFICO,RESOCO)
+         CALL RECHCO (PREMIE,LREAC,INST,NOMA,NEWGEO,
+     &                DEFICO,NZOCO,RESOCO)
+
 C ======================================================================
 C     PROJECTION (NOEUDS MAITRES, DDLS MAITRES, COEFFICIENTS, JEU)
 C ======================================================================
          CALL PROJCO (NOMA,NEWGEO,DEFICO,RESOCO)
+
 C ======================================================================
 C --- SAUVEGARDE DU JEU EN DEBUT DE PAS DE TEMPS EN CAS DE REDECOUPAGE -
 C ======================================================================
@@ -186,6 +193,7 @@ C           ARRET OU NON SI MATRICE DE CONTACT SINGULIERE
 C ======================================================================
       ISTO = ZI(JMETH+9)
 C ======================================================================
+      
       IF(ZI(JMETH+6).EQ.-1) THEN
          CALL ALGOCP(DEFICO,RESOCO,LMAT,LDSCON,DDEPLA,
      &        DEPPLU,LREAC,DEPDEL)    
