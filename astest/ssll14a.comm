@@ -1,4 +1,4 @@
-# MODIF  DATE 03/10/2001   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 17/05/2004   AUTEUR CIBHHBC M.LOPES 
 # TITRE PORTIQUE PLAN ARTICULE EN PIED
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -42,13 +42,13 @@ H=8.
 
 L=20.
 
-B=DEFI_VALEUR(  R8=EVAL("""( A**2 + ( L / 2 )**2 ) ** 0.5 """) )
+B=( A**2 + ( L / 2 )**2 ) ** 0.5
 
-HSL=DEFI_VALEUR(  R8=EVAL("""H  / L """) )
+HSL=H  / L
 
-TGB=DEFI_VALEUR(  R8=EVAL("""L / ( 2. * ( A + H ) ) """) )
+TGB=L / ( 2. * ( A + H ) )
 
-CSA=DEFI_VALEUR(  R8=EVAL("""L / ( 2. * B ) """) )
+CSA=L / ( 2. * B )
 
 #  SOLLICITATIONS:
 

@@ -1,4 +1,4 @@
-# MODIF  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 17/05/2004   AUTEUR CIBHHBC M.LOPES 
 # RESPONSABLE O.BOITEAU
 # TITRE Maillage adaptatif mecanique sur une poutre en flexion
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -86,7 +86,7 @@ FLEC    = [None]*nb_calc1
 #-------------------------------------------------------------------
 #                       CALCUL ASTER
 #-------------------------------------------------------------------
-DEBUT(CODE=_F(NOM = 'FORMA04C',NIV_PUB_WEB='INTERNET'),PAR_LOT='NON');
+DEBUT(CODE=_F(NOM = 'FORMA04C',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),PAR_LOT='NON');
 
 # DEFINITION DU MATERIAU
 ACIER=DEFI_MATERIAU(ELAS=_F(E=210.E3,

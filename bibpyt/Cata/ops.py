@@ -1,4 +1,4 @@
-#@ MODIF ops Cata  DATE 12/11/2003   AUTEUR DURAND C.DURAND 
+#@ MODIF ops Cata  DATE 18/05/2004   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,6 +20,7 @@
 # Modules Python
 import types
 import string,linecache,os,traceback,re
+import pickle
 
 # Modules Eficas
 import Accas
@@ -114,7 +115,32 @@ def POURSUITE(self,PAR_LOT,CODE,HDF=None,**args):
      for k,v in d.items():
        self.parent.NommerSdprod(v,k)
      self.g_context=d
+
+     # Il peut exister un contexte python sauvegardé sous forme  pickled
+     # On récupère ces objets après la restauration des concepts pour que
+     # la récupération des objets pickled soit prioritaire.
+     # On vérifie que les concepts relus dans glob.1 sont bien tous
+     # presents sous le meme nom et du meme type dans pick.1
+     # Le contexte est ensuite updaté (surcharge) et donc enrichi des
+     # variables qui ne sont pas des concepts.
+     pickle_context=get_pickled_context()
+     if pickle_context==None :
+        self.jdc.cr.fatal("<F> Erreur a la relecture du fichier pick.1 : aucun objet sauvegardé ne sera récupéré")
+        return
+     for elem in pickle_context.keys():
+         if type(pickle_context[elem])==types.InstanceType :
+            pickle_class=pickle_context[elem].__class__
+            if elem in self.g_context.keys():
+               poursu_class=self.g_context[elem].__class__
+               if poursu_class!=pickle_class :
+                  self.jdc.cr.fatal("<F> types incompatibles entre glob.1 et pick.1 pour concept de nom "+elem)
+                  return
+            else: 
+               self.jdc.cr.fatal("<F> concept de nom "+elem+" et de type "+str(pickle_class)+" introuvable dans la base globale")
+               return
+     self.g_context.update(pickle_context)
      return
+
    else:
      # Si le module d'execution n est pas accessible ou glob.1 absent on 
      # demande un fichier (EFICAS)
@@ -123,6 +149,32 @@ def POURSUITE(self,PAR_LOT,CODE,HDF=None,**args):
      if hasattr(self,'fichier_init'):
         return
      self.make_poursuite()
+
+def get_pickled_context():
+    """
+       Cette fonction permet de réimporter dans le contexte courant du jdc (jdc.g_context)
+       les objets python qui auraient été sauvegardés, sous forme pickled, lors d'une 
+       précédente étude. Un fichier pick.1 doit etre présent dans le répertoire de travail
+    """
+    if os.path.isfile("pick.1"):
+       file="pick.1"
+    else: return None
+   
+    # Le fichier pick.1 est présent. On essaie de récupérer les objets python sauvegardés
+    context={}
+    try:
+       file=open(file,'r')
+       # Le contexte sauvegardé a été picklé en une seule fois. Il est seulement
+       # possible de le récupérer en bloc. Si cette opération echoue, on ne récupère
+       # aucun objet.
+       context=pickle.load(file)
+       file.close()
+    except:
+       # En cas d'erreur on ignore le contenu du fichier
+       # traceback.print_exc()
+       return None
+
+    return context
 
 def POURSUITE_context(self,d):
    """

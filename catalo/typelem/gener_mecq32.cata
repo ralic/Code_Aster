@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 02/12/2003   AUTEUR PBADEL P.BADEL 
+%& MODIF TYPELEM  DATE 18/05/2004   AUTEUR CIBHHLV L.VIVAN 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,12 +20,14 @@ GENER_MECQ32
 TYPE_GENE__
 
 ENTETE__ ELEMENT__ MEC3QU9H         MAILLE__ QUAD9
-   ELREFE__  MEC3QU9H  GAUSS__  NELGA=FPG1
+   ELREFE__  QU9     GAUSS__  RIGI=FPG4   MASS=FPG9
+   ELREFE__  MEC3QU9H
    ENS_NOEUD__  EN2     =     9
    ENS_NOEUD__  EN1     =     1  2  3  4  5  6  7  8
    OPTION__   CHAR_MECA_SFCO3D        486
 ENTETE__ ELEMENT__ MEC3TR7H         MAILLE__ TRIA7
-   ELREFE__  MEC3TR7H  GAUSS__  NELGA=FPG1
+   ELREFE__  TR7     GAUSS__  RIGI=FPG3   MASS=FPG7
+   ELREFE__  MEC3TR7H
    ENS_NOEUD__  EN2     =     7
    ENS_NOEUD__  EN1     =     1  2  3  4  5  6
 
@@ -52,7 +54,7 @@ MODE_LOCAL__
     CFREQR   = FREQ_R   ELEM__         (FREQ     )
     CGEOMER  = GEOM_R   ELEM__         (X        Y        Z        )
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        Z        )
-    EHYDRER  = HYDR_R   ELGA__ NELGA   (HYDR     )
+    EHYDRER  = HYDR_R   ELGA__ MASS    (HYDR     )
     CTEMPSR  = INST_R   ELEM__         (INST     )
     EMASSINE = MASS_R   ELEM__         (M        CDGX     CDGY     CDGZ     IXX      IYY
                                         IZZ      IXY      IXZ      IYZ      )
@@ -65,7 +67,7 @@ MODE_LOCAL__
     EPRESNO  = PRES_R   ELNO__ IDEN__  (PRES     )
     CROTATR  = ROTA_R   ELEM__         (OME      AR       BR       CR       X        Y
                                         Z        )
-    ECONTPG  = SIEF_R   ELGA__ NELGA   (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     )
+    ECONTPG  = SIEF_R   ELGA__ MASS    (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     )
     ESIGMNOR = SIEF_R   ELNO__ IDEN__  (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     )
     ECOEQNO  = SIEF_R   ELNO__ IDEN__  (VMIS     TRESCA   PRIN_1   PRIN_2   PRIN_3   VMIS_SG  )
     EEFGENOR = SIEF_R   ELNO__ IDEN__  (NXX      NYY      NXY      MXX      MYY      MXY
@@ -73,7 +75,7 @@ MODE_LOCAL__
     CTEMPEF  = TEMP_F   ELEM__         (TEMP     )
     CTEREFE  = TEMP_R   ELEM__         (TEMP     )
     NTEMPER  = TEMP_R   ELNO__ IDEN__  (TEMP     TEMP_INF TEMP_SUP )
-    ZVARIPG  = VARI_R   ELGA__ NELGA   (VARI     )
+    ZVARIPG  = VARI_R   ELGA__ MASS    (VARI     )
     ZVARINO  = VARI_R   ELNO__ IDEN__  (VARI     )
 
 VECTEUR__

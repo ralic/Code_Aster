@@ -1,4 +1,4 @@
-# MODIF  DATE 01/07/2003   AUTEUR GNICOLAS G.NICOLAS 
+# MODIF  DATE 17/05/2004   AUTEUR CIBHHBC M.LOPES 
 # RESPONSABLE BOITEAU O.BOITEAU
 # TITRE validation de la sensibilite par rapport a la chaleur volumique et
 # a l'emissivite en thermique non-lineaire transitoire lumpe
@@ -20,7 +20,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
 #
-DEBUT( CODE=_F(  NOM = 'SENST05A',NIV_PUB_WEB='INTERNET') ,PAR_LOT='NON' )
+DEBUT( CODE=_F(  NOM = 'SENST05A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON') ,PAR_LOT='NON' )
 #
 #
 #          J    BORD_SU1       BORD_SU2    
@@ -80,7 +80,7 @@ MEMO_NOM_SENSI(NOM=_F(NOM_COMPOSE='PS_UN',PARA_SENSI=PS1,NOM_SD='PS1',),);
 PS2=DEFI_PARA_SENSI(VALE=0.3,);
 MEMO_NOM_SENSI(NOM=_F(NOM_COMPOSE='PS_UN',PARA_SENSI=PS2,NOM_SD='PS2',),);
 #
-EPSA=DEFI_VALEUR(R8=1.E-6);
+EPSA=1.E-6;
 eps = 1.0e-6
 eps1 = 1.e-4
 A1=DEFI_CONSTANTE(VALE=30.0);

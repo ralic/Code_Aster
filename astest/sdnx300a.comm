@@ -1,0 +1,3204 @@
+# MODIF  DATE 17/05/2004   AUTEUR CIBHHBC M.LOPES 
+# TITRE REPONSE TEMPORELLE LINEAIRE D'UNE TUYAUTERIE
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+#  
+#
+DEBUT( CODE=_F( NOM = 'SDNX300A',NIV_PUB_WEB='INTERNET'))
+
+#
+TUYAU=LIRE_MAILLAGE(  )
+
+#
+TUYAU=DEFI_GROUP(reuse=TUYAU,   MAILLAGE=TUYAU, 
+                CREA_GROUP_NO=_F( GROUP_MA = ( 'LIGN', 'COUDE1', 'COUDE2',
+                                           'DROIT1', 'LRESSORT',))
+                   )
+
+#
+# DEFINITION DES PARAMETRES GEOMETRIQUE POUR LES TUYAUX
+#
+# RAYON EXTERIEUR DU TUYAU
+#
+R1=0.024
+
+#
+# EPAISSEUR DU TUYAU
+#
+EP1=0.005
+
+#
+# RAYON DE COURBURE
+#
+RCOURB=0.170
+
+#
+# ANGLE DU COUDE
+#
+ANGL1=90.
+
+#
+# RAYON MOYEN
+#
+RM=R1 - (EP1/2.)
+
+#
+# COEFFICIENT DE FLEXIBILITE
+# ATTENTION, SELON LE RCCM, COEF_FLEX ET INDI SONT TOUJOURS SUPERIEURS
+# OU EGAUX A 1. CE N'EST PAS LE CAS DANS CE CAS TEST
+#
+H=(EP1*RCOURB)/(RM*RM)
+
+#
+C_FLE1=1.65/H
+
+#
+# INDICE D'INTENSIFICATION DE CONTRAINTES SELON RCCM
+#
+IND1=0.9/(H**0.666666)
+
+#
+# DEFINITION DES PARAMETRES POUR LES RAIDEURS DES RESSORTS
+#
+KTXYZ=80.E3
+
+KRXYZ=1.2*180./pi
+
+#
+# DEFINITION DU PARAMETRE POUR LA MASSE PONCTUELLE
+#
+MZ=10.
+
+#
+# DEFINITION DES PARAMETRES POUR LA DISCRETISATION TEMPORELLE
+#
+DEBUTR=0.
+
+DEBUTI=0
+
+TFIN=0.1
+
+PAS=1.E-4
+
+# 
+NPAS=1000
+
+#
+# DISCRETISATION TEMPORELLE
+#
+L_INST1=DEFI_LIST_REEL(   DEBUT=DEBUTR,
+                            INTERVALLE=_F( JUSQU_A = TFIN, PAS = 2.E-4)
+                        )
+
+#
+# LISTE D ARCHIVAGE
+#
+L_ARCH=DEFI_LIST_ENTI(   DEBUT=DEBUTI,
+                           INTERVALLE=_F( JUSQU_A = NPAS, PAS = 2)
+                       )
+
+#
+# DEFINITIN DU MODELE
+#
+MODELE=AFFE_MODELE(   MAILLAGE=TUYAU,AFFE=(
+               _F( PHENOMENE = 'MECANIQUE', MODELISATION = 'POU_D_T',
+                     GROUP_MA = 'DROIT1'),
+               _F( PHENOMENE = 'MECANIQUE', MODELISATION = 'POU_C_T',
+                     GROUP_MA = ('COUDE1', 'COUDE2',)),
+               _F( PHENOMENE = 'MECANIQUE', MODELISATION = 'DIS_TR',
+                     GROUP_MA = 'LRESSORT'),
+               _F( PHENOMENE = 'MECANIQUE', MODELISATION = 'DIS_T',
+                     GROUP_MA = 'MP4'))
+                    )
+
+#
+# CARACTERISTIQUES DES POUTRES, ET AUTRES ELEMENTS
+#
+CARAELEM=AFFE_CARA_ELEM(   MODELE=MODELE,
+#
+# LES POUTRES
+                  POUTRE=_F(  GROUP_MA = 'LIGN', 
+                           SECTION = 'CERCLE',
+                           CARA = ('R', 'EP',), VALE = ( R1, EP1,)),
+# LES COUDES
+                  DEFI_ARC=_F(  GROUP_MA = ('COUDE1', 'COUDE2',),
+                             RAYON = RCOURB, ORIE_ARC = ANGL1,
+                             COEF_FLEX = C_FLE1, INDI_SIGM = IND1),DISCRET=(
+# LES RESSORTS
+                  _F(  GROUP_MA = 'LRESSORT',
+                            REPERE = 'GLOBAL',
+                            CARA = 'K_TR_D_N',
+                            VALE = ( KTXYZ, KTXYZ, KTXYZ,
+                                    KRXYZ, KRXYZ, KRXYZ,)),
+# LA MASSE
+                          _F(  GROUP_MA = 'MP4',
+                            REPERE = 'GLOBAL',
+                            CARA = 'M_T_D_N',
+                            VALE = MZ))
+                          )
+
+#
+# DEFINITION DU MATERIAU
+#
+MAT=DEFI_MATERIAU(    ELAS=_F( E = 1.9E11,
+                                    NU = 0.3,
+                                    RHO = 7960.)
+                          )
+
+#
+# AFFECTATION DU MATERIAU
+#
+#
+CHMAT=AFFE_MATERIAU(    MAILLAGE=TUYAU,
+                                  AFFE=_F( TOUT = 'OUI',
+                                        MATER = MAT)
+                          )
+
+#
+# CONDITIONS AUX LIMITES
+#
+CH1A=AFFE_CHAR_MECA(     MODELE=MODELE,DDL_IMPO=(
+                         _F(  GROUP_NO = ('P7',),
+                                    DX = 0., DY = 0., DZ = 0.,
+                                    DRX = 0., DRY = 0., DRZ = 0.),
+                         _F(  GROUP_NO = 'P1',
+                                    DX = 0., DY = 0., DZ = 0.))
+                     )
+
+#
+# CALCUL DES MATRICES ELEMENTAIRES DE RIGIDITES
+#
+RIGIELEM=CALC_MATR_ELEM(        MODELE=MODELE,
+                                   OPTION='RIGI_MECA',
+                                   CHARGE=CH1A,
+                               CHAM_MATER=CHMAT,
+                                CARA_ELEM=CARAELEM
+                           )
+
+#
+# CALCUL DES MATRICES ELEMENTAIRES DE MASSES
+#
+MASSELEM=CALC_MATR_ELEM(        MODELE=MODELE,
+                                   OPTION='MASS_MECA',
+                                   CHARGE=CH1A,
+                               CHAM_MATER=CHMAT,
+                                CARA_ELEM=CARAELEM
+                           )
+
+#
+# NUMEROTATIOM
+#
+NUMEDDL=NUME_DDL(    MATR_RIGI=RIGIELEM )
+
+#
+# MATRICE DE RIGIDITE
+#
+RIGIDITE=ASSE_MATRICE(    MATR_ELEM=RIGIELEM,
+                             NUME_DDL=NUMEDDL
+                        )
+
+#
+# MATRICE DE MASSE
+#
+MASSE=ASSE_MATRICE(    MATR_ELEM=MASSELEM,
+                             NUME_DDL=NUMEDDL
+                        )
+
+#
+# CALCUL MODAL
+#
+MODE1=MODE_ITER_SIMULT(       MATR_A=RIGIDITE,
+                                   MATR_B=MASSE,
+                                CALC_FREQ=_F( NMAX_FREQ = 5,
+                                           OPTION = 'PLUS_PETITE')
+                            )
+
+#
+MODE1=CALC_ELEM( reuse=MODE1,       MODELE=MODELE,
+                           RESULTAT=MODE1,
+                         CHAM_MATER=CHMAT,
+                          CARA_ELEM=CARAELEM,
+                             OPTION='SIEF_ELGA_DEPL'
+                     )
+
+#
+MODE1=CALC_NO( reuse=MODE1,     RESULTAT=MODE1,
+                             MODELE=MODELE,    OPTION='FORC_NODA', 
+                       CHAM_MATER=CHMAT,
+                        CARA_ELEM=CARAELEM
+                   )
+
+#
+MODE1=CALC_NO( reuse=MODE1,     RESULTAT=MODE1,
+                             MODELE=MODELE,    OPTION='REAC_NODA', 
+                       CHAM_MATER=CHMAT,
+                        CARA_ELEM=CARAELEM
+                   )
+
+#
+#
+# TEST_RESU
+#
+# MODES PROPRES
+#
+TEST_RESU(  RESU=_F( RESULTAT = MODE1,
+                   PARA = 'FREQ',
+                   CRITERE = 'RELATIF',
+                   PRECISION = 0.005,
+                   NUME_ORDRE = 1,
+                   VALE = 16.848)
+          )
+
+#
+TEST_RESU(  RESU=_F( RESULTAT = MODE1,
+                   PARA = 'FREQ',
+                   CRITERE = 'RELATIF',
+                   PRECISION = 0.005,
+                   NUME_ORDRE = 2,
+                   VALE = 20.762)
+          )
+
+#
+TEST_RESU(  RESU=_F( RESULTAT = MODE1,
+                   PARA = 'FREQ',
+                   CRITERE = 'RELATIF',
+                   PRECISION = 0.005,
+                   NUME_ORDRE = 3,
+                   VALE = 22.386)
+          )
+
+#
+TEST_RESU(  RESU=_F( RESULTAT = MODE1,
+                   PARA = 'FREQ',
+                   CRITERE = 'RELATIF',
+                   PRECISION = 0.005,
+                   NUME_ORDRE = 4,
+                   VALE = 44.822)
+          )
+
+#
+TEST_RESU(  RESU=_F( RESULTAT = MODE1,
+                   PARA = 'FREQ',
+                   CRITERE = 'RELATIF',
+                   PRECISION = 0.005,
+                   NUME_ORDRE = 5,
+                   VALE = 52.218)
+          )
+
+#
+# DEFINITION DE L ACCELERATION
+#
+#
+# DEFINITION DES BORNES TEMPORELLES
+#
+T0=0.
+
+T1A=0.006 - (PAS / 100.)
+
+T1B=0.006 + (PAS / 100.)
+
+T2A=0.033 - (PAS / 100.)
+
+T2B=0.033 + (PAS / 100.)
+
+#
+# DEFINITION DES ACCELERATIONS
+#
+G1=500.
+
+G2=-111.11
+
+G3=0.
+
+#
+# ACCELERATION SUIVANT X
+#
+ACCE_X=DEFI_FONCTION(       NOM_PARA='INST',
+                                NOM_RESU='ACCE',
+                                INTERPOL='LIN',
+                              PROL_DROITE='CONSTANT',
+                             PROL_GAUCHE='CONSTANT',
+                                    VALE=( T0,  G1,
+                                           T1A, G1,
+                                           T1B, G2,
+                                           T2A, G2,
+                                           T2B, G3,
+                                         )
+                         )
+
+#
+# DEFINITION DE LA DIRECTION DU SEISME
+#
+MONO_X=CALC_CHAR_SEISME(     MATR_MASS=MASSE,
+                                 DIRECTION=(1., 0., 0.,),
+                                MONO_APPUI='OUI'
+                            )
+
+#
+# -------------------------------------------------------------------
+#  RESOLUTION TEMPORELLE LINEAIRE
+# -------------------------------------------------------------------
+#
+#
+# PROJECTION DANS LA BASE DES MODES : MODE1
+#
+NUMGEN=NUME_DDL_GENE(        BASE=MODE1,
+                             STOCKAGE='PLEIN'
+                         )
+
+#
+RIGIGEN=PROJ_MATR_BASE(             BASE=MODE1,
+                              NUME_DDL_GENE=NUMGEN,
+                                  MATR_ASSE=RIGIDITE
+                          )
+
+#
+MASSGEN=PROJ_MATR_BASE(             BASE=MODE1,
+                              NUME_DDL_GENE=NUMGEN,
+                                  MATR_ASSE=MASSE
+                          )
+
+#
+VECTGEN=PROJ_VECT_BASE(             BASE=MODE1,
+                              NUME_DDL_GENE=NUMGEN,
+                                  VECT_ASSE=MONO_X
+                          )
+
+#
+REPBASE=DYNA_TRAN_MODAL(      METHODE='DEVOGE',
+                               RIGI_GENE=RIGIGEN,
+                               MASS_GENE=MASSGEN,
+                               ARCHIVAGE=_F( LIST_ARCH = L_ARCH),
+                             INCREMENT=_F( INST_INIT = DEBUTR,
+                                        PAS = PAS,
+                                        INST_FIN = TFIN),
+                                   EXCIT=_F(  VECT_GENE = VECTGEN,
+                                           FONC_MULT = ACCE_X)
+                           )
+
+#
+# PROJECTION DANS LA BASE PHYSIQUE
+#
+REP_LINE=REST_BASE_PHYS(    RESU_GENE=REPBASE,
+                               NOM_CHAM='DEPL'
+                          )
+
+#
+REP_LINE=CALC_ELEM( reuse=REP_LINE,       MODELE=MODELE,
+                            RESULTAT=REP_LINE,
+                          CHAM_MATER=CHMAT,
+                           CARA_ELEM=CARAELEM,
+                           LIST_INST=L_INST1,
+                              OPTION='SIEF_ELGA_DEPL'
+                      )
+
+#
+# CALCUL DES REACTIONS NODALES
+#
+#
+REP_LINE=CALC_NO( reuse=REP_LINE,     RESULTAT=REP_LINE,
+                              MODELE=MODELE,    OPTION='REAC_NODA',
+                        CHAM_MATER=CHMAT,
+                         CARA_ELEM=CARAELEM,
+                         LIST_INST=L_INST1
+                    )
+
+#
+# RECUPERATION DES FONCTIONS
+#
+# DEPLACEMENT AU POINT P2
+#
+P2_DX=RECU_FONCTION(    RESULTAT=REP_LINE,
+                             NOM_CHAM='DEPL',
+                             GROUP_NO='P2',
+                                  NOM_CMP='DX'
+                         )
+
+#
+P2_DY=RECU_FONCTION(    RESULTAT=REP_LINE,
+                             NOM_CHAM='DEPL',
+                             GROUP_NO='P2',
+                                  NOM_CMP='DY'
+                         )
+
+#
+P2_DZ=RECU_FONCTION(    RESULTAT=REP_LINE,
+                             NOM_CHAM='DEPL',
+                             GROUP_NO='P2',
+                                  NOM_CMP='DZ'
+                         )
+
+#
+# DEPLACEMENT AU POINT P3
+#
+P3_DX=RECU_FONCTION(    RESULTAT=REP_LINE,
+                             NOM_CHAM='DEPL',
+                             GROUP_NO='P3',
+                                  NOM_CMP='DX'
+                         )
+
+#
+P3_DY=RECU_FONCTION(    RESULTAT=REP_LINE,
+                             NOM_CHAM='DEPL',
+                             GROUP_NO='P3',
+                                  NOM_CMP='DY'
+                         )
+
+#
+P3_DZ=RECU_FONCTION(    RESULTAT=REP_LINE,
+                             NOM_CHAM='DEPL',
+                             GROUP_NO='P3',
+                                  NOM_CMP='DZ'
+                         )
+
+#
+# DEPLACEMENT AU POINT P4
+#
+P4_DX=RECU_FONCTION(    RESULTAT=REP_LINE,
+                             NOM_CHAM='DEPL',
+                             GROUP_NO='P4',
+                                  NOM_CMP='DX'
+                         )
+
+#
+P4_DY=RECU_FONCTION(    RESULTAT=REP_LINE,
+                             NOM_CHAM='DEPL',
+                             GROUP_NO='P4',
+                                  NOM_CMP='DY'
+                         )
+
+#
+P4_DZ=RECU_FONCTION(    RESULTAT=REP_LINE,
+                             NOM_CHAM='DEPL',
+                             GROUP_NO='P4',
+                                  NOM_CMP='DZ'
+                         )
+
+#
+# DEPLACEMENT AU POINT P5
+#
+P5_DX=RECU_FONCTION(    RESULTAT=REP_LINE,
+                             NOM_CHAM='DEPL',
+                             GROUP_NO='P5',
+                                  NOM_CMP='DX'
+                         )
+
+#
+P5_DY=RECU_FONCTION(    RESULTAT=REP_LINE,
+                             NOM_CHAM='DEPL',
+                             GROUP_NO='P5',
+                                  NOM_CMP='DY'
+                         )
+
+#
+P5_DZ=RECU_FONCTION(    RESULTAT=REP_LINE,
+                             NOM_CHAM='DEPL',
+                             GROUP_NO='P5',
+                                  NOM_CMP='DZ'
+                         )
+
+#
+# DEPLACEMENT AU POINT P6
+#
+P6_DX=RECU_FONCTION(    RESULTAT=REP_LINE,
+                             NOM_CHAM='DEPL',
+                             GROUP_NO='P6',
+                                  NOM_CMP='DX'
+                         )
+
+#
+P6_DY=RECU_FONCTION(    RESULTAT=REP_LINE,
+                             NOM_CHAM='DEPL',
+                             GROUP_NO='P6',
+                                  NOM_CMP='DY'
+                         )
+
+#
+P6_DZ=RECU_FONCTION(    RESULTAT=REP_LINE,
+                             NOM_CHAM='DEPL',
+                             GROUP_NO='P6',
+                                  NOM_CMP='DZ'
+                         )
+
+#
+# EFFORTS AU POINT P7
+#
+F7_DX=RECU_FONCTION(    RESULTAT=REP_LINE,
+                             NOM_CHAM='REAC_NODA',
+                             GROUP_NO='P7',
+                                  NOM_CMP='DX'
+                         )
+
+#
+F7_DY=RECU_FONCTION(    RESULTAT=REP_LINE,
+                             NOM_CHAM='REAC_NODA',
+                             GROUP_NO='P7',
+                                  NOM_CMP='DY'
+                         )
+
+#
+F7_DZ=RECU_FONCTION(    RESULTAT=REP_LINE,
+                             NOM_CHAM='REAC_NODA',
+                             GROUP_NO='P7',
+                                  NOM_CMP='DZ'
+                         )
+
+#
+M7_DX=RECU_FONCTION(    RESULTAT=REP_LINE,
+                             NOM_CHAM='REAC_NODA',
+                             GROUP_NO='P7',
+                                  NOM_CMP='DRX'
+                         )
+
+#
+M7_DY=RECU_FONCTION(    RESULTAT=REP_LINE,
+                             NOM_CHAM='REAC_NODA',
+                             GROUP_NO='P7',
+                                  NOM_CMP='DRY'
+                         )
+
+#
+M7_DZ=RECU_FONCTION(    RESULTAT=REP_LINE,
+                             NOM_CHAM='REAC_NODA',
+                             GROUP_NO='P7',
+                                  NOM_CMP='DRZ'
+                         )
+
+#
+# -------------------------------------------------------------------
+# CALCUL DES RMS ET VERIFICATION AVEC CASTEM 2000 
+# -------------------------------------------------------------------
+
+RMS_SP2=CALC_FONCTION( RMS=(   _F( FONCTION = P2_DX,  
+                                 METHODE = 'SIMPSON',
+                                 CRITERE = 'ABSOLU',
+                                 PRECISION = 1.0E-6),
+                                   _F( FONCTION = P2_DY,  
+                                 METHODE = 'SIMPSON',
+                                 CRITERE = 'ABSOLU',
+                                 PRECISION = 1.0E-6),
+                                   _F( FONCTION = P2_DZ,  
+                                 METHODE = 'SIMPSON',
+                                 CRITERE = 'ABSOLU',
+                                 PRECISION = 1.0E-6))
+                           )
+
+#
+RMS_TP2=CALC_FONCTION( RMS=(   _F( FONCTION = P2_DX,  
+                                 METHODE = 'TRAPEZE',
+                                 CRITERE = 'ABSOLU',
+                                 PRECISION = 1.0E-6),
+                                   _F( FONCTION = P2_DY,  
+                                 METHODE = 'TRAPEZE',
+                                 CRITERE = 'ABSOLU',
+                                 PRECISION = 1.0E-6),
+                                   _F( FONCTION = P2_DZ,  
+                                 METHODE = 'TRAPEZE',
+                                 CRITERE = 'ABSOLU',
+                                 PRECISION = 1.0E-6))
+                           )
+
+#
+RMS_SP3=CALC_FONCTION( RMS=(   _F( FONCTION = P3_DX,  
+                                 METHODE = 'SIMPSON',
+                                 CRITERE = 'ABSOLU',
+                                 PRECISION = 1.0E-6),
+                                   _F( FONCTION = P3_DY,  
+                                 METHODE = 'SIMPSON',
+                                 CRITERE = 'ABSOLU',
+                                 PRECISION = 1.0E-6),
+                                   _F( FONCTION = P3_DZ,  
+                                 METHODE = 'SIMPSON',
+                                 CRITERE = 'ABSOLU',
+                                 PRECISION = 1.0E-6))
+                           )
+
+#
+RMS_TP3=CALC_FONCTION( RMS=(   _F( FONCTION = P3_DX,  
+                                 METHODE = 'TRAPEZE',
+                                 CRITERE = 'ABSOLU',
+                                 PRECISION = 1.0E-6),
+                                   _F( FONCTION = P3_DY,  
+                                 METHODE = 'TRAPEZE',
+                                 CRITERE = 'ABSOLU',
+                                 PRECISION = 1.0E-6),
+                                   _F( FONCTION = P3_DZ,  
+                                 METHODE = 'TRAPEZE',
+                                 CRITERE = 'ABSOLU',
+                                 PRECISION = 1.0E-6))
+                           )
+
+#
+RMS_SP4=CALC_FONCTION( RMS=(   _F( FONCTION = P4_DX,  
+                                 METHODE = 'SIMPSON',
+                                 CRITERE = 'ABSOLU',
+                                 PRECISION = 1.0E-6),
+                                   _F( FONCTION = P4_DY,  
+                                 METHODE = 'SIMPSON',
+                                 CRITERE = 'ABSOLU',
+                                 PRECISION = 1.0E-6),
+                                   _F( FONCTION = P4_DZ,  
+                                 METHODE = 'SIMPSON',
+                                 CRITERE = 'ABSOLU',
+                                 PRECISION = 1.0E-6))
+                           )
+
+#
+RMS_TP4=CALC_FONCTION( RMS=(   _F( FONCTION = P4_DX,  
+                                 METHODE = 'TRAPEZE',
+                                 CRITERE = 'ABSOLU',
+                                 PRECISION = 1.0E-6),
+                                   _F( FONCTION = P4_DY,  
+                                 METHODE = 'TRAPEZE',
+                                 CRITERE = 'ABSOLU',
+                                 PRECISION = 1.0E-6),
+                                   _F( FONCTION = P4_DZ,  
+                                 METHODE = 'TRAPEZE',
+                                 CRITERE = 'ABSOLU',
+                                 PRECISION = 1.0E-6))
+                           )
+
+#
+RMS_SP5=CALC_FONCTION( RMS=(   _F( FONCTION = P5_DX,  
+                                 METHODE = 'SIMPSON',
+                                 CRITERE = 'ABSOLU',
+                                 PRECISION = 1.0E-6),
+                                   _F( FONCTION = P5_DY,  
+                                 METHODE = 'SIMPSON',
+                                 CRITERE = 'ABSOLU',
+                                 PRECISION = 1.0E-6),
+                                   _F( FONCTION = P5_DZ,  
+                                 METHODE = 'SIMPSON',
+                                 CRITERE = 'ABSOLU',
+                                 PRECISION = 1.0E-6))
+                           )
+
+#
+RMS_TP5=CALC_FONCTION( RMS=(   _F( FONCTION = P5_DX,  
+                                 METHODE = 'TRAPEZE',
+                                 CRITERE = 'ABSOLU',
+                                 PRECISION = 1.0E-6),
+                                   _F( FONCTION = P5_DY,  
+                                 METHODE = 'TRAPEZE',
+                                 CRITERE = 'ABSOLU',
+                                 PRECISION = 1.0E-6),
+                                   _F( FONCTION = P5_DZ,  
+                                 METHODE = 'TRAPEZE',
+                                 CRITERE = 'ABSOLU',
+                                 PRECISION = 1.0E-6))
+                           )
+
+#
+RMS_SP6=CALC_FONCTION( RMS=(   _F( FONCTION = P6_DX,  
+                                 METHODE = 'SIMPSON',
+                                 CRITERE = 'ABSOLU',
+                                 PRECISION = 1.0E-6),
+                                   _F( FONCTION = P6_DY,  
+                                 METHODE = 'SIMPSON',
+                                 CRITERE = 'ABSOLU',
+                                 PRECISION = 1.0E-6),
+                                   _F( FONCTION = P6_DZ,  
+                                 METHODE = 'SIMPSON',
+                                 CRITERE = 'ABSOLU',
+                                 PRECISION = 1.0E-6))
+                           )
+
+#
+RMS_TP6=CALC_FONCTION( RMS=(   _F( FONCTION = P6_DX,  
+                                 METHODE = 'TRAPEZE',
+                                 CRITERE = 'ABSOLU',
+                                 PRECISION = 1.0E-6),
+                                   _F( FONCTION = P6_DY,  
+                                 METHODE = 'TRAPEZE',
+                                 CRITERE = 'ABSOLU',
+                                 PRECISION = 1.0E-6),
+                                   _F( FONCTION = P6_DZ,  
+                                 METHODE = 'TRAPEZE',
+                                 CRITERE = 'ABSOLU',
+                                 PRECISION = 1.0E-6))
+                           )
+
+#
+RMS_SF7=CALC_FONCTION( RMS=(   _F( FONCTION = F7_DX,  
+                                 METHODE = 'SIMPSON',
+                                 CRITERE = 'ABSOLU',
+                                 PRECISION = 1.0E-6),
+                                   _F( FONCTION = F7_DY,  
+                                 METHODE = 'SIMPSON',
+                                 CRITERE = 'ABSOLU',
+                                 PRECISION = 1.0E-6),
+                                   _F( FONCTION = F7_DZ,  
+                                 METHODE = 'SIMPSON',
+                                 CRITERE = 'ABSOLU',
+                                 PRECISION = 1.0E-6))
+                           )
+
+#
+RMS_TF7=CALC_FONCTION( RMS=(   _F( FONCTION = F7_DX,  
+                                 METHODE = 'TRAPEZE',
+                                 CRITERE = 'ABSOLU',
+                                 PRECISION = 1.0E-6),
+                                   _F( FONCTION = F7_DY,  
+                                 METHODE = 'TRAPEZE',
+                                 CRITERE = 'ABSOLU',
+                                 PRECISION = 1.0E-6),
+                                   _F( FONCTION = F7_DZ,  
+                                 METHODE = 'TRAPEZE',
+                                 CRITERE = 'ABSOLU',
+                                 PRECISION = 1.0E-6))
+                           )
+
+#
+RMS_SM7=CALC_FONCTION( RMS=(   _F( FONCTION = M7_DX,  
+                                 METHODE = 'SIMPSON',
+                                 CRITERE = 'ABSOLU',
+                                 PRECISION = 1.0E-6),
+                                   _F( FONCTION = M7_DY,  
+                                 METHODE = 'SIMPSON',
+                                 CRITERE = 'ABSOLU',
+                                 PRECISION = 1.0E-6),
+                                   _F( FONCTION = M7_DZ,  
+                                 METHODE = 'SIMPSON',
+                                 CRITERE = 'ABSOLU',
+                                 PRECISION = 1.0E-6))
+                           )
+
+#
+RMS_TM7=CALC_FONCTION( RMS=(   _F( FONCTION = M7_DX,  
+                                 METHODE = 'TRAPEZE',
+                                 CRITERE = 'ABSOLU',
+                                 PRECISION = 1.0E-6),
+                                   _F( FONCTION = M7_DY,  
+                                 METHODE = 'TRAPEZE',
+                                 CRITERE = 'ABSOLU',
+                                 PRECISION = 1.0E-6),
+                                   _F( FONCTION = M7_DZ,  
+                                 METHODE = 'TRAPEZE',
+                                 CRITERE = 'ABSOLU',
+                                 PRECISION = 1.0E-6))
+                           )
+
+#
+
+TEST_TABLE(   TABLE=RMS_SP2,FILTRE=(
+                 _F(  NOM_PARA = 'FONCTION',
+                          VALE_K = 'P2_DX'),
+                 _F(  NOM_PARA = 'METHODE',
+                          VALE_K = 'SIMPSON')),
+                 NOM_PARA='RMS',
+                PRECISION=0.0085,
+                     VALE=0.1633E-04           )
+
+#
+
+TEST_TABLE(   TABLE=RMS_TP2,FILTRE=(
+                 _F(  NOM_PARA = 'FONCTION',
+                          VALE_K = 'P2_DX'),
+                 _F(  NOM_PARA = 'METHODE',
+                          VALE_K = 'TRAPEZE')),
+                 NOM_PARA='RMS',
+                PRECISION=0.0085,
+                     VALE=0.1633E-04          )
+
+#
+
+TEST_TABLE(   TABLE=RMS_TP2,FILTRE=(
+                 _F(  NOM_PARA = 'FONCTION',
+                          VALE_K = 'P2_DY'),
+                 _F(  NOM_PARA = 'METHODE',
+                          VALE_K = 'TRAPEZE')),
+                 NOM_PARA='RMS',
+                PRECISION=0.0095,
+                     VALE=0.56859E-02          )
+
+#
+
+TEST_TABLE(   TABLE=RMS_TP2,FILTRE=(
+                 _F(  NOM_PARA = 'FONCTION',
+                          VALE_K = 'P2_DZ'),
+                 _F(  NOM_PARA = 'METHODE',
+                          VALE_K = 'TRAPEZE')),
+                 NOM_PARA='RMS',
+                PRECISION=0.011,
+                     VALE=0.80417E-02          )
+
+#
+
+TEST_TABLE(   TABLE=RMS_TP3,FILTRE=(
+                 _F(  NOM_PARA = 'FONCTION',
+                          VALE_K = 'P3_DX'),
+                 _F(  NOM_PARA = 'METHODE',
+                          VALE_K = 'TRAPEZE')),
+                 NOM_PARA='RMS',
+                PRECISION=0.002,
+                     VALE=0.97738E-02          )
+
+#
+
+TEST_TABLE(   TABLE=RMS_TP3,FILTRE=(
+                 _F(  NOM_PARA = 'FONCTION',
+                          VALE_K = 'P3_DY'),
+                 _F(  NOM_PARA = 'METHODE',
+                          VALE_K = 'TRAPEZE')),
+                 NOM_PARA='RMS',
+                PRECISION=0.003,
+                     VALE=0.52278E-02          )
+
+#
+
+TEST_TABLE(   TABLE=RMS_TP3,FILTRE=(
+                 _F(  NOM_PARA = 'FONCTION',
+                          VALE_K = 'P3_DZ'),
+                 _F(  NOM_PARA = 'METHODE',
+                          VALE_K = 'TRAPEZE')),
+                 NOM_PARA='RMS',
+                PRECISION=0.0001,
+                     VALE=0.61052E-02          )
+
+#
+
+TEST_TABLE(   TABLE=RMS_TP4,FILTRE=(
+                 _F(  NOM_PARA = 'FONCTION',
+                          VALE_K = 'P4_DX'),
+                 _F(  NOM_PARA = 'METHODE',
+                          VALE_K = 'TRAPEZE')),
+                 NOM_PARA='RMS',
+                PRECISION=0.007,
+                     VALE=0.15494E-01          )
+
+#
+
+TEST_TABLE(   TABLE=RMS_TP4,FILTRE=(
+                 _F(  NOM_PARA = 'FONCTION',
+                          VALE_K = 'P4_DY'),
+                 _F(  NOM_PARA = 'METHODE',
+                          VALE_K = 'TRAPEZE')),
+                 NOM_PARA='RMS',
+                PRECISION=0.009,
+                     VALE=0.41654E-02          )
+
+#
+
+TEST_TABLE(   TABLE=RMS_TP4,FILTRE=(
+                 _F(  NOM_PARA = 'FONCTION',
+                          VALE_K = 'P4_DZ'),
+                 _F(  NOM_PARA = 'METHODE',
+                          VALE_K = 'TRAPEZE')),
+                 NOM_PARA='RMS',
+                PRECISION=0.008,
+                     VALE=0.60630E-02          )
+
+#
+
+TEST_TABLE(   TABLE=RMS_TP5,FILTRE=(
+                 _F(  NOM_PARA = 'FONCTION',
+                          VALE_K = 'P5_DX'),
+                 _F(  NOM_PARA = 'METHODE',
+                          VALE_K = 'TRAPEZE')),
+                 NOM_PARA='RMS',
+                PRECISION=0.008,
+                     VALE=0.20264E-01          )
+
+#
+
+TEST_TABLE(   TABLE=RMS_TP5,FILTRE=(
+                 _F(  NOM_PARA = 'FONCTION',
+                          VALE_K = 'P5_DY'),
+                 _F(  NOM_PARA = 'METHODE',
+                          VALE_K = 'TRAPEZE')),
+                 NOM_PARA='RMS',
+                PRECISION=0.008,
+                     VALE=0.29033E-02          )
+
+#
+
+TEST_TABLE(   TABLE=RMS_TP5,FILTRE=(
+                 _F(  NOM_PARA = 'FONCTION',
+                          VALE_K = 'P5_DZ'),
+                 _F(  NOM_PARA = 'METHODE',
+                          VALE_K = 'TRAPEZE')),
+                 NOM_PARA='RMS',
+
+                PRECISION=0.008,
+                     VALE=0.60622E-02          )
+
+#
+
+TEST_TABLE(   TABLE=RMS_TP6,FILTRE=(
+                 _F(  NOM_PARA = 'FONCTION',
+                          VALE_K = 'P6_DX'),
+                 _F(  NOM_PARA = 'METHODE',
+                          VALE_K = 'TRAPEZE')),
+                 NOM_PARA='RMS',
+                PRECISION=0.006,
+                     VALE=0.15213E-01          )
+
+#
+
+TEST_TABLE(   TABLE=RMS_TP6,FILTRE=(
+                 _F(  NOM_PARA = 'FONCTION',
+                          VALE_K = 'P6_DY'),
+                 _F(  NOM_PARA = 'METHODE',
+                          VALE_K = 'TRAPEZE')),
+                 NOM_PARA='RMS',
+                PRECISION=0.025,
+                     VALE=0.20859E-05          )
+
+#
+
+TEST_TABLE(   TABLE=RMS_TP6,FILTRE=(
+                 _F(  NOM_PARA = 'FONCTION',
+                          VALE_K = 'P6_DZ'),
+                 _F(  NOM_PARA = 'METHODE',
+                          VALE_K = 'TRAPEZE')),
+                 NOM_PARA='RMS',
+                PRECISION=0.0095,
+                     VALE=0.31580E-02          )
+
+#
+
+TEST_TABLE(   TABLE=RMS_TF7,FILTRE=(
+                 _F(  NOM_PARA = 'FONCTION',
+                          VALE_K = 'F7_DX'),
+                 _F(  NOM_PARA = 'METHODE',
+                          VALE_K = 'TRAPEZE')),
+                 NOM_PARA='RMS',
+                PRECISION=0.002,
+                     VALE=1171.7          )
+
+#
+
+TEST_TABLE(   TABLE=RMS_TF7,FILTRE=(
+                 _F(  NOM_PARA = 'FONCTION',
+                          VALE_K = 'F7_DY'),
+                 _F(  NOM_PARA = 'METHODE',
+                          VALE_K = 'TRAPEZE')),
+                 NOM_PARA='RMS',
+                PRECISION=0.025,
+                     VALE=267.74          )
+
+#
+
+TEST_TABLE(   TABLE=RMS_TF7,FILTRE=(
+                 _F(  NOM_PARA = 'FONCTION',
+                          VALE_K = 'F7_DZ'),
+                 _F(  NOM_PARA = 'METHODE',
+                          VALE_K = 'TRAPEZE')),
+                 NOM_PARA='RMS',
+                PRECISION=0.035,
+                     VALE=197.49          )
+
+#
+
+TEST_TABLE(   TABLE=RMS_TM7,FILTRE=(
+                 _F(  NOM_PARA = 'FONCTION',
+                          VALE_K = 'M7_DX'),
+                 _F(  NOM_PARA = 'METHODE',
+                          VALE_K = 'TRAPEZE')),
+                 NOM_PARA='RMS',
+                PRECISION=0.015,
+                     VALE=249.49          )
+
+#
+
+TEST_TABLE(   TABLE=RMS_TM7,FILTRE=(
+                 _F(  NOM_PARA = 'FONCTION',
+                          VALE_K = 'M7_DY'),
+                 _F(  NOM_PARA = 'METHODE',
+                          VALE_K = 'TRAPEZE')),
+                 NOM_PARA='RMS',
+                PRECISION=0.009,
+                     VALE=201.91          )
+
+#
+
+TEST_TABLE(   TABLE=RMS_TM7,FILTRE=(
+                 _F(  NOM_PARA = 'FONCTION',
+                          VALE_K = 'M7_DZ'),
+                 _F(  NOM_PARA = 'METHODE',
+                          VALE_K = 'TRAPEZE')),
+                 NOM_PARA='RMS',
+                PRECISION=0.007,
+                     VALE=1293.2          )
+
+#
+#------------------------------------------------------------
+# TEST_RESU DES DEPLACEMENTS ET DES EFFORTS
+#
+# REACTIONS NODALES AU POINT P7
+#
+# REACTIONS SUIVANT X
+#------------------------------------------------------------
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'REAC_NODA',
+                    NUME_ORDRE = 50,
+                    GROUP_NO = 'P7',
+                    NOM_CMP = 'DX',
+                    VALE = 971.60,
+                    PRECISION = 0.01)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'REAC_NODA',
+                    NUME_ORDRE = 100,
+                    GROUP_NO = 'P7',
+                    NOM_CMP = 'DX',
+                    VALE = 521.94,
+                    PRECISION = 0.027)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'REAC_NODA',
+                    NUME_ORDRE = 150,
+                    GROUP_NO = 'P7',
+                    NOM_CMP = 'DX',
+                    VALE = -1526.4,
+                    PRECISION = 0.01)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'REAC_NODA',
+                    NUME_ORDRE = 200,
+                    GROUP_NO = 'P7',
+                    NOM_CMP = 'DX',
+                    VALE = -1340.5,
+                    PRECISION = 0.018)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'REAC_NODA',
+                    NUME_ORDRE = 250,
+                    GROUP_NO = 'P7',
+                    NOM_CMP = 'DX',
+                    VALE = 943.72,
+                    PRECISION = 0.015)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'REAC_NODA',
+                    NUME_ORDRE = 300,
+                    GROUP_NO = 'P7',
+                    NOM_CMP = 'DX',
+                    VALE = 1666.3,
+                    PRECISION = 0.01)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'REAC_NODA',
+                    NUME_ORDRE = 350,
+                    GROUP_NO = 'P7',
+                    NOM_CMP = 'DX',
+                    VALE = -366.82,
+                    PRECISION = 0.12)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'REAC_NODA',
+                    NUME_ORDRE = 400,
+                    GROUP_NO = 'P7',
+                    NOM_CMP = 'DX',
+                    VALE = -1802.7,
+                    PRECISION = 0.013)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'REAC_NODA',
+                    NUME_ORDRE = 450,
+                    GROUP_NO = 'P7',
+                    NOM_CMP = 'DX',
+                    VALE = -124.32,
+                    PRECISION = 0.30)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'REAC_NODA',
+                    NUME_ORDRE = 500,
+                    GROUP_NO = 'P7',
+                    NOM_CMP = 'DX',
+                    VALE = 1610.1,
+                    PRECISION = 0.015)
+          )
+
+#
+# REACTIONS SUIVANT Y
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'REAC_NODA',
+                    NUME_ORDRE = 50,
+                    GROUP_NO = 'P7',
+                    NOM_CMP = 'DY',
+                    VALE = -268.09,
+                    PRECISION = 0.01)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'REAC_NODA',
+                    NUME_ORDRE = 100,
+                    GROUP_NO = 'P7',
+                    NOM_CMP = 'DY',
+                    VALE = 68.339,
+                    PRECISION = 0.01)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'REAC_NODA',
+                    NUME_ORDRE = 150,
+                    GROUP_NO = 'P7',
+                    NOM_CMP = 'DY',
+                    VALE = 157.97,
+                    PRECISION = 0.035)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'REAC_NODA',
+                    NUME_ORDRE = 200,
+                    GROUP_NO = 'P7',
+                    NOM_CMP = 'DY',
+                    VALE = 363.70,
+                    PRECISION = 0.01)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'REAC_NODA',
+                    NUME_ORDRE = 250,
+                    GROUP_NO = 'P7',
+                    NOM_CMP = 'DY',
+                    VALE = -266.45,
+                    PRECISION = 0.01)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'REAC_NODA',
+                    NUME_ORDRE = 300,
+                    GROUP_NO = 'P7',
+                    NOM_CMP = 'DY',
+                    VALE = -325.65,
+                    PRECISION = 0.03)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'REAC_NODA',
+                    NUME_ORDRE = 350,
+                    GROUP_NO = 'P7',
+                    NOM_CMP = 'DY',
+                    VALE = -16.096,
+                    PRECISION = 0.255)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'REAC_NODA',
+                    NUME_ORDRE = 400,
+                    GROUP_NO = 'P7',
+                    NOM_CMP = 'DY',
+                    VALE = 418.41,
+                    PRECISION = 0.015)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'REAC_NODA',
+                    NUME_ORDRE = 450,
+                    GROUP_NO = 'P7',
+                    NOM_CMP = 'DY',
+                    VALE = 290.27,
+                    PRECISION = 0.026)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'REAC_NODA',
+                    NUME_ORDRE = 500,
+                    GROUP_NO = 'P7',
+                    NOM_CMP = 'DY',
+                    VALE = -400.77,
+                    PRECISION = 0.035)
+          )
+
+#
+# REACTIONS SUIVANT Z
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'REAC_NODA',
+                    NUME_ORDRE = 50,
+                    GROUP_NO = 'P7',
+                    NOM_CMP = 'DZ',
+                    VALE = 95.933,
+                    PRECISION = 0.025)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'REAC_NODA',
+                    NUME_ORDRE = 100,
+                    GROUP_NO = 'P7',
+                    NOM_CMP = 'DZ',
+                    VALE = 42.620,
+                    PRECISION = 0.04)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'REAC_NODA',
+                    NUME_ORDRE = 150,
+                    GROUP_NO = 'P7',
+                    NOM_CMP = 'DZ',
+                    VALE = 41.029,
+                    PRECISION = 0.055)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'REAC_NODA',
+                    NUME_ORDRE = 200,
+                    GROUP_NO = 'P7',
+                    NOM_CMP = 'DZ',
+                    VALE = -233.50,
+                    PRECISION = 0.035)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'REAC_NODA',
+                    NUME_ORDRE = 250,
+                    GROUP_NO = 'P7',
+                    NOM_CMP = 'DZ',
+                    VALE = -175.15,
+                   PRECISION = 0.01)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'REAC_NODA',
+                    NUME_ORDRE = 300,
+                    GROUP_NO = 'P7',
+                    NOM_CMP = 'DZ',
+                    VALE = 72.726,
+                    PRECISION = 0.15)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'REAC_NODA',
+                    NUME_ORDRE = 350,
+                    GROUP_NO = 'P7',
+                    NOM_CMP = 'DZ',
+                    VALE = 343.47,
+                    PRECISION = 0.024)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'REAC_NODA',
+                    NUME_ORDRE = 400,
+                    GROUP_NO = 'P7',
+                    NOM_CMP = 'DZ',
+                    VALE = 120.63,
+                    PRECISION = 0.085)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'REAC_NODA',
+                    NUME_ORDRE = 450,
+                    GROUP_NO = 'P7',
+                    NOM_CMP = 'DZ',
+                    VALE = -336.64,
+                    PRECISION = 0.055)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'REAC_NODA',
+                    NUME_ORDRE = 500,
+                    GROUP_NO = 'P7',
+                    NOM_CMP = 'DZ',
+                    VALE = -269.52,
+                    PRECISION = 0.028)
+          )
+
+#
+# MOMENTS NODAUX AU POINT P7
+#
+# MOMENTS SUIVANT X
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'REAC_NODA',
+                    NUME_ORDRE = 50,
+                    GROUP_NO = 'P7',
+                    NOM_CMP = 'DRX',
+                    VALE = -78.597,
+                    PRECISION = 0.016)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'REAC_NODA',
+                    NUME_ORDRE = 100,
+                    GROUP_NO = 'P7',
+                    NOM_CMP = 'DRX',
+                    VALE = -99.779,
+                    PRECISION = 0.015)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'REAC_NODA',
+                    NUME_ORDRE = 150,
+                    GROUP_NO = 'P7',
+                    NOM_CMP = 'DRX',
+                    VALE = -60.391,
+                    PRECISION = 0.025)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'REAC_NODA',
+                    NUME_ORDRE = 200,
+                    GROUP_NO = 'P7',
+                    NOM_CMP = 'DRX',
+                    VALE = 234.95,
+                    PRECISION = 0.025)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'REAC_NODA',
+                    NUME_ORDRE = 250,
+                    GROUP_NO = 'P7',
+                    NOM_CMP = 'DRX',
+                    VALE = 301.36,
+                    PRECISION = 0.01)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'REAC_NODA',
+                    NUME_ORDRE = 300,
+                    GROUP_NO = 'P7',
+                    NOM_CMP = 'DRX',
+                    VALE = -5.3042,
+                    PRECISION = 1.49)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'REAC_NODA',
+                    NUME_ORDRE = 350,
+                    GROUP_NO = 'P7',
+                    NOM_CMP = 'DRX',
+                    VALE = -423.49,
+                    PRECISION = 0.017)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'REAC_NODA',
+                    NUME_ORDRE = 400,
+                    GROUP_NO = 'P7',
+                    NOM_CMP = 'DRX',
+                    VALE = -299.22,
+                    PRECISION = 0.024)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'REAC_NODA',
+                    NUME_ORDRE = 450,
+                    GROUP_NO = 'P7',
+                    NOM_CMP = 'DRX',
+                    VALE = 271.51,
+                    PRECISION = 0.05)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'REAC_NODA',
+                    NUME_ORDRE = 500,
+                    GROUP_NO = 'P7',
+                    NOM_CMP = 'DRX',
+                    VALE = 459.41,
+                    PRECISION = 0.01)
+          )
+
+#
+# MOMENTS SUIVANT Y
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'REAC_NODA',
+                    NUME_ORDRE = 50,
+                    GROUP_NO = 'P7',
+                    NOM_CMP = 'DRY',
+                    VALE = -173.84,
+                    PRECISION = 0.01)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'REAC_NODA',
+                    NUME_ORDRE = 100,
+                    GROUP_NO = 'P7',
+                    NOM_CMP = 'DRY',
+                    VALE = -97.756,
+                    PRECISION = 0.018)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'REAC_NODA',
+                    NUME_ORDRE = 150,
+                    GROUP_NO = 'P7',
+                    NOM_CMP = 'DRY',
+                    VALE = 268.67,
+                    PRECISION = 0.015)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'REAC_NODA',
+                    NUME_ORDRE = 200,
+                    GROUP_NO = 'P7',
+                    NOM_CMP = 'DRY',
+                    VALE = 242.22,
+                    PRECISION = 0.01)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'REAC_NODA',
+                    NUME_ORDRE = 250,
+                    GROUP_NO = 'P7',
+                    NOM_CMP = 'DRY',
+                    VALE = -154.30,
+                    PRECISION = 0.03)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'REAC_NODA',
+                    NUME_ORDRE = 300,
+                    GROUP_NO = 'P7',
+                    NOM_CMP = 'DRY',
+                    VALE = -288.91,
+                    PRECISION = 0.005)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'REAC_NODA',
+                    NUME_ORDRE = 350,
+                    GROUP_NO = 'P7',
+                    NOM_CMP = 'DRY',
+                    VALE = 55.064,
+                    PRECISION = 0.155)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'REAC_NODA',
+                    NUME_ORDRE = 400,
+                    GROUP_NO = 'P7',
+                    NOM_CMP = 'DRY',
+                    VALE = 299.49,
+                    PRECISION = 0.005)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'REAC_NODA',
+                    NUME_ORDRE = 450,
+                    GROUP_NO = 'P7',
+                    NOM_CMP = 'DRY',
+                    VALE = 15.527,
+                    PRECISION = 0.43)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'REAC_NODA',
+                    NUME_ORDRE = 500,
+                    GROUP_NO = 'P7',
+                    NOM_CMP = 'DRY',
+                    VALE = -265.78,
+                    PRECISION = 0.022)
+          )
+
+#
+# MOMENTS SUIVANT Z
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'REAC_NODA',
+                    NUME_ORDRE = 50,
+                    GROUP_NO = 'P7',
+                    NOM_CMP = 'DRZ',
+                    VALE = 1159.8,
+                    PRECISION = 0.006)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'REAC_NODA',
+                    NUME_ORDRE = 100,
+                    GROUP_NO = 'P7',
+                    NOM_CMP = 'DRZ',
+                    VALE = 568.84,
+                    PRECISION = 0.03)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'REAC_NODA',
+                    NUME_ORDRE = 150,
+                    GROUP_NO = 'P7',
+                    NOM_CMP = 'DRZ',
+                    VALE = -1692.3,
+                    PRECISION = 0.005)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'REAC_NODA',
+                    NUME_ORDRE = 200,
+                    GROUP_NO = 'P7',
+                    NOM_CMP = 'DRZ',
+                    VALE = -1582.1,
+                    PRECISION = 0.02)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'REAC_NODA',
+                    NUME_ORDRE = 250,
+                    GROUP_NO = 'P7',
+                    NOM_CMP = 'DRZ',
+                    VALE = 1001.2,
+                    PRECISION = 0.015)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'REAC_NODA',
+                    NUME_ORDRE = 300,
+                    GROUP_NO = 'P7',
+                    NOM_CMP = 'DRZ',
+                    VALE = 1868.9,
+                    PRECISION = 0.015)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'REAC_NODA',
+                    NUME_ORDRE = 350,
+                    GROUP_NO = 'P7',
+                    NOM_CMP = 'DRZ',
+                    VALE = -348.35,
+                    PRECISION = 0.12)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'REAC_NODA',
+                    NUME_ORDRE = 400,
+                    GROUP_NO = 'P7',
+                    NOM_CMP = 'DRZ',
+                    VALE = -1917.9,
+                    PRECISION = 0.015)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'REAC_NODA',
+                    NUME_ORDRE = 450,
+                    GROUP_NO = 'P7',
+                    NOM_CMP = 'DRZ',
+                    VALE = -177.71,
+                    PRECISION = 0.28)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'REAC_NODA',
+                    NUME_ORDRE = 500,
+                    GROUP_NO = 'P7',
+                    NOM_CMP = 'DRZ',
+                    VALE = 1749.6,
+                    PRECISION = 0.005)
+          )
+
+#
+# DEPLACEMENT AU POINT P2
+#
+# DEPLACEMENT SUIVANT X
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 50,
+                    GROUP_NO = 'P2',
+                    NOM_CMP = 'DX',
+                    VALE = -1.52940E-05,
+                    PRECISION = 0.01)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 100,
+                    GROUP_NO = 'P2',
+                    NOM_CMP = 'DX',
+                    VALE = -4.67738E-06,
+                    PRECISION = 0.028)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 150,
+                    GROUP_NO = 'P2',
+                    NOM_CMP = 'DX',
+                    VALE = 2.02111E-05,
+                    PRECISION = 0.013)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 200,
+                    GROUP_NO = 'P2',
+                    NOM_CMP = 'DX',
+                    VALE = 1.90427E-05,
+                    PRECISION = 0.006)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 250,
+                    GROUP_NO = 'P2',
+                    NOM_CMP = 'DX',
+                    VALE = -1.43008E-05,
+                    PRECISION = 0.034)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 300,
+                    GROUP_NO = 'P2',
+                    NOM_CMP = 'DX',
+                    VALE = -2.31707E-05,
+                    PRECISION = 0.007)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 350,
+                    GROUP_NO = 'P2',
+                    NOM_CMP = 'DX',
+                    VALE = 6.68134E-06,
+                    PRECISION = 0.075)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 400,
+                    GROUP_NO = 'P2',
+                    NOM_CMP = 'DX',
+                    VALE = 2.47294E-05,
+                    PRECISION = 0.008)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 450,
+                    GROUP_NO = 'P2',
+                    NOM_CMP = 'DX',
+                    VALE = 2.35854E-06,
+                    PRECISION = 0.36)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 500,
+                    GROUP_NO = 'P2',
+                    NOM_CMP = 'DX',
+                    VALE = -2.53734E-05,
+                    PRECISION = 0.007)
+          )
+
+#
+# DEPLACEMENT SUIVANT Y
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 50,
+                    GROUP_NO = 'P2',
+                    NOM_CMP = 'DY',
+                    VALE = 4.73559E-04,
+                    PRECISION = 0.002)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 100,
+                    GROUP_NO = 'P2',
+                    NOM_CMP = 'DY',
+                    VALE = -1.05016E-03,
+                    PRECISION = 0.02)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 150,
+                    GROUP_NO = 'P2',
+                    NOM_CMP = 'DY',
+                    VALE = -3.92476E-03,
+                    PRECISION = 0.005)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 200,
+                    GROUP_NO = 'P2',
+                    NOM_CMP = 'DY',
+                    VALE = 8.64116E-04,
+                    PRECISION = 0.044)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 250,
+                    GROUP_NO = 'P2',
+                    NOM_CMP = 'DY',
+                    VALE = 7.28705E-03,
+                    PRECISION = 0.008)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 300,
+                    GROUP_NO = 'P2',
+                    NOM_CMP = 'DY',
+                    VALE = 5.38505E-03,
+                    PRECISION = 0.006)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 350,
+                    GROUP_NO = 'P2',
+                    NOM_CMP = 'DY',
+                    VALE = -6.32551E-03,
+                    PRECISION = 0.013)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 400,
+                    GROUP_NO = 'P2',
+                    NOM_CMP = 'DY',
+                    VALE = -1.15705E-02,
+                    PRECISION = 0.005)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 450,
+                    GROUP_NO = 'P2',
+                    NOM_CMP = 'DY',
+                    VALE = -1.19642E-03,
+                    PRECISION = 0.073)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 500,
+                    GROUP_NO = 'P2',
+                    NOM_CMP = 'DY',
+                    VALE = 1.17198E-02,
+                    PRECISION = 0.01)
+          )
+
+#
+# DEPLACEMENT SUIVANT Z
+# 
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 50,
+                    GROUP_NO = 'P2',
+                    NOM_CMP = 'DZ',
+                    VALE = 3.94246E-03,
+                    PRECISION = 0.01)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 100,
+                    GROUP_NO = 'P2',
+                    NOM_CMP = 'DZ',
+                    VALE = -3.25276E-04,
+                    PRECISION = 0.165)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 150,
+                    GROUP_NO = 'P2',
+                    NOM_CMP = 'DZ',
+                    VALE = -7.60057E-03,
+                    PRECISION = 0.013)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 200,
+                    GROUP_NO = 'P2',
+                    NOM_CMP = 'DZ',
+                    VALE = -2.91422E-03,
+                    PRECISION = 0.027)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 250,
+                    GROUP_NO = 'P2',
+                    NOM_CMP = 'DZ',
+                    VALE = 1.00093E-02,
+                    PRECISION = 0.02)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 300,
+                    GROUP_NO = 'P2',
+                    NOM_CMP = 'DZ',
+                    VALE = 8.16768E-03,
+                    PRECISION = 0.011)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 350,
+                    GROUP_NO = 'P2',
+                    NOM_CMP = 'DZ',
+                    VALE = -8.65260E-03,
+                    PRECISION = 0.032)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 400,
+                    GROUP_NO = 'P2',
+                    NOM_CMP = 'DZ',
+                    VALE = -1.40477E-02,
+                    PRECISION = 0.005)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 450,
+                    GROUP_NO = 'P2',
+                    NOM_CMP = 'DZ',
+                    VALE = 2.15334E-03,
+                    PRECISION = 0.185)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 500,
+                    GROUP_NO = 'P2',
+                    NOM_CMP = 'DZ',
+                    VALE = 1.63184E-02,
+                    PRECISION = 0.006)
+          )
+
+#
+# DEPLACEMENT DU POINT P3
+#
+# DEPLACEMENT SUIVANT X
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 50,
+                    GROUP_NO = 'P3',
+                    NOM_CMP = 'DX',
+                    VALE = -9.81210E-03,
+                    PRECISION = 0.01)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 100,
+                    GROUP_NO = 'P3',
+                    NOM_CMP = 'DX',
+                    VALE = -4.23369E-03,
+                    PRECISION = 0.031)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 150,
+                    GROUP_NO = 'P3',
+                    NOM_CMP = 'DX',
+                    VALE = 1.28765E-02,
+                    PRECISION = 0.002)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 200,
+                    GROUP_NO = 'P3',
+                    NOM_CMP = 'DX',
+                    VALE = 1.32629E-02,
+                    PRECISION = 0.017)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 250,
+                    GROUP_NO = 'P3',
+                    NOM_CMP = 'DX',
+                    VALE = -7.05364E-03,
+                    PRECISION = 0.017)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 300,
+                    GROUP_NO = 'P3',
+                    NOM_CMP = 'DX',
+                    VALE = -1.45843E-02,
+                    PRECISION = 0.018)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 350,
+                    GROUP_NO = 'P3',
+                    NOM_CMP = 'DX',
+                    VALE = 1.79181E-03,
+                    PRECISION = 0.135)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 400,
+                    GROUP_NO = 'P3',
+                    NOM_CMP = 'DX',
+                    VALE = 1.37400E-02,
+                    PRECISION = 0.013)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 450,
+                    GROUP_NO = 'P3',
+                    NOM_CMP = 'DX',
+                    VALE = 2.12105E-03,
+                    PRECISION = 0.21)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 500,
+                    GROUP_NO = 'P3',
+                    NOM_CMP = 'DX',
+                    VALE = -1.28344E-02,
+                    PRECISION = 0.008)
+          )
+
+#
+# DEPLACEMENT SUIVANT Y
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 50,
+                    GROUP_NO = 'P3',
+                    NOM_CMP = 'DY',
+                    VALE = -4.67955E-04,
+                    PRECISION = 0.005)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 100,
+                    GROUP_NO = 'P3',
+                    NOM_CMP = 'DY',
+                    VALE = -2.28887E-03,
+                    PRECISION = 0.005)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 150,
+                    GROUP_NO = 'P3',
+                    NOM_CMP = 'DY',
+                    VALE = -1.95953E-03,
+                    PRECISION = 0.005)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 200,
+                    GROUP_NO = 'P3',
+                    NOM_CMP = 'DY',
+                    VALE = 2.46472E-03,
+                    PRECISION = 0.015)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 250,
+                    GROUP_NO = 'P3',
+                    NOM_CMP = 'DY',
+                    VALE = 7.14188E-03,
+                    PRECISION = 0.006)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 300,
+                    GROUP_NO = 'P3',
+                    NOM_CMP = 'DY',
+                    VALE = 3.22672E-03,
+                    PRECISION = 0.006)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 350,
+                    GROUP_NO = 'P3',
+                    NOM_CMP = 'DY',
+                    VALE = -6.68798E-03,
+                    PRECISION = 0.012)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 400,
+                    GROUP_NO = 'P3',
+                    NOM_CMP = 'DY',
+                    VALE = -1.00537E-02,
+                    PRECISION = 0.005)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 450,
+                    GROUP_NO = 'P3',
+                    NOM_CMP = 'DY',
+                    VALE = -5.15656E-04,
+                    PRECISION = 0.125)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 500,
+                    GROUP_NO = 'P3',
+                    NOM_CMP = 'DY',
+                    VALE = 1.10534E-02,
+                    PRECISION = 0.01)
+          )
+
+#
+# DEPLACEMENT SUIVANT Z
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 50,
+                    GROUP_NO = 'P3',
+                    NOM_CMP = 'DZ',
+                    VALE = -1.15583E-03,
+                    PRECISION = 0.012)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 100,
+                    GROUP_NO = 'P3',
+                    NOM_CMP = 'DZ',
+                    VALE = -2.84153E-03,
+                    PRECISION = 0.01)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 150,
+                    GROUP_NO = 'P3',
+                    NOM_CMP = 'DZ',
+                    VALE = -1.68461E-03,
+                    PRECISION = 0.01)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 200,
+                    GROUP_NO = 'P3',
+                    NOM_CMP = 'DZ',
+                    VALE = 4.46236E-03,
+                    PRECISION = 0.022)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 250,
+                    GROUP_NO = 'P3',
+                    NOM_CMP = 'DZ',
+                    VALE = 8.10725E-03,
+                    PRECISION = 0.01)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 300,
+                    GROUP_NO = 'P3',
+                    NOM_CMP = 'DZ',
+                    VALE = 1.29429E-03,
+                    PRECISION = 0.085)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 350,
+                    GROUP_NO = 'P3',
+                    NOM_CMP = 'DZ',
+                    VALE = -9.60057E-03,
+                    PRECISION = 0.015)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 400,
+                    GROUP_NO = 'P3',
+                    NOM_CMP = 'DZ',
+                    VALE = -9.14529E-03,
+                    PRECISION = 0.01)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 450,
+                    GROUP_NO = 'P3',
+                    NOM_CMP = 'DZ',
+                    VALE = 4.01275E-03,
+                    PRECISION = 0.055)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 500,
+                    GROUP_NO = 'P3',
+                    NOM_CMP = 'DZ',
+                    VALE = 1.23486E-02,
+                    PRECISION = 0.005)
+          )
+
+#
+# DEPLACEMENT DU POINT P4
+#
+# DEPLACEMENT SUIVANT X
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 50,
+                    GROUP_NO = 'P4',
+                    NOM_CMP = 'DX',
+                    VALE = -1.51181E-02,
+                    PRECISION = 0.007)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 100,
+                    GROUP_NO = 'P4',
+                    NOM_CMP = 'DX',
+                    VALE = -6.60012E-03,
+                    PRECISION = 0.03)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 150,
+                    GROUP_NO = 'P4',
+                    NOM_CMP = 'DX',
+                    VALE = 2.02137E-02,
+                    PRECISION = 0.005)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 200,
+                    GROUP_NO = 'P4',
+                    NOM_CMP = 'DX',
+                    VALE = 2.03922E-02,
+                    PRECISION = 0.02)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 250,
+                    GROUP_NO = 'P4',
+                    NOM_CMP = 'DX',
+                    VALE = -1.13515E-02,
+                    PRECISION = 0.018)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 300,
+                    GROUP_NO = 'P4',
+                    NOM_CMP = 'DX',
+                    VALE = -2.27756E-02,
+                    PRECISION = 0.018)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 350,
+                    GROUP_NO = 'P4',
+                    NOM_CMP = 'DX',
+                    VALE = 3.22795E-03,
+                    PRECISION = 0.125)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 400,
+                    GROUP_NO = 'P4',
+                    NOM_CMP = 'DX',
+                    VALE = 2.18957E-02,
+                    PRECISION = 0.012)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 450,
+                    GROUP_NO = 'P4',
+                    NOM_CMP = 'DX',
+                    VALE = 3.00923E-03,
+                    PRECISION = 0.23)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 500,
+                    GROUP_NO = 'P4',
+                    NOM_CMP = 'DX',
+                    VALE = -2.04769E-02,
+                    PRECISION = 0.005)
+          )
+
+#
+# DEPLACEMENT SUIVANT Y
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 50,
+                    GROUP_NO = 'P4',
+                    NOM_CMP = 'DY',
+                    VALE = -1.80312E-04,
+                    PRECISION = 0.014)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 100,
+                    GROUP_NO = 'P4',
+                    NOM_CMP = 'DY',
+                    VALE = -1.88692E-03,
+                    PRECISION = 0.0075)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 150,
+                    GROUP_NO = 'P4',
+                    NOM_CMP = 'DY',
+                    VALE = -1.58724E-03,
+                    PRECISION = 0.005)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 200,
+                    GROUP_NO = 'P4',
+                    NOM_CMP = 'DY',
+                    VALE = 1.76276E-03,
+                    PRECISION = 0.025)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 250,
+                    GROUP_NO = 'P4',
+                    NOM_CMP = 'DY',
+                    VALE = 5.79738E-03,
+                    PRECISION = 0.008)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 300,
+                    GROUP_NO = 'P4',
+                    NOM_CMP = 'DY',
+                    VALE = 2.52241E-03,
+                    PRECISION = 0.009)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 350,
+                    GROUP_NO = 'P4',
+                    NOM_CMP = 'DY',
+                    VALE = -5.40502E-03,
+                    PRECISION = 0.015)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 400,
+                    GROUP_NO = 'P4',
+                    NOM_CMP = 'DY',
+                    VALE = -7.92448E-03,
+                    PRECISION = 0.005)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 450,
+                    GROUP_NO = 'P4',
+                    NOM_CMP = 'DY',
+                    VALE = -1.47970E-04,
+                    PRECISION = 0.47)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 500,
+                    GROUP_NO = 'P4',
+                    NOM_CMP = 'DY',
+                    VALE = 8.93368E-03,
+                    PRECISION = 0.01)
+          )
+
+#
+# DEPLACEMENT SUIVANT Z
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 50,
+                    GROUP_NO = 'P4',
+                    NOM_CMP = 'DZ',
+                    VALE = -1.15512E-03,
+                    PRECISION = 0.012)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 100,
+                    GROUP_NO = 'P4',
+                    NOM_CMP = 'DZ',
+                    VALE = -2.84142E-03,
+                    PRECISION = 0.01)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 150,
+                    GROUP_NO = 'P4',
+                    NOM_CMP = 'DZ',
+                    VALE = -1.68610E-03,
+                    PRECISION = 0.01)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 200,
+                    GROUP_NO = 'P4',
+                    NOM_CMP = 'DZ',
+                    VALE = 4.46171E-03,
+                    PRECISION = 0.025)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 250,
+                    GROUP_NO = 'P4',
+                    NOM_CMP = 'DZ',
+                    VALE = 8.10899E-03,
+                    PRECISION = 0.0075)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 300,
+                    GROUP_NO = 'P4',
+                    NOM_CMP = 'DZ',
+                    VALE = 1.29589E-03,
+                    PRECISION = 0.085)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 350,
+                    GROUP_NO = 'P4',
+                    NOM_CMP = 'DZ',
+                    VALE = -9.60196E-03,
+                    PRECISION = 0.015)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 400,
+                    GROUP_NO = 'P4',
+                    NOM_CMP = 'DZ',
+                    VALE = -9.14791E-03,
+                    PRECISION = 0.01)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 450,
+                    GROUP_NO = 'P4',
+                    NOM_CMP = 'DZ',
+                    VALE = 4.01303E-03,
+                    PRECISION = 0.055)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 500,
+                    GROUP_NO = 'P4',
+                    NOM_CMP = 'DZ',
+                    VALE = 1.23514E-02,
+                    PRECISION = 0.005)
+          )
+
+#
+# DEPLACEMENT DU POINT P5
+#
+# DEPLACEMENT SUIVANT X
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 50,
+                    GROUP_NO = 'P5',
+                    NOM_CMP = 'DX',
+                    VALE = -1.94690E-02,
+                    PRECISION = 0.0075)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 100,
+                    GROUP_NO = 'P5',
+                    NOM_CMP = 'DX',
+                    VALE = -8.71210E-03,
+                    PRECISION = 0.03)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 150,
+                    GROUP_NO = 'P5',
+                    NOM_CMP = 'DX',
+                    VALE = 2.64891E-02,
+                    PRECISION = 0.005)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 200,
+                    GROUP_NO = 'P5',
+                    NOM_CMP = 'DX',
+                    VALE = 2.63061E-02,
+                    PRECISION = 0.018)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 250,
+                    GROUP_NO = 'P5',
+                    NOM_CMP = 'DX',
+                    VALE = -1.50210E-02,
+                    PRECISION = 0.018)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 300,
+                    GROUP_NO = 'P5',
+                    NOM_CMP = 'DX',
+                    VALE = -2.96830E-02,
+                    PRECISION = 0.018)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 350,
+                    GROUP_NO = 'P5',
+                    NOM_CMP = 'DX',
+                    VALE = 4.50480E-03,
+                    PRECISION = 0.125)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 400,
+                    GROUP_NO = 'P5',
+                    NOM_CMP = 'DX',
+                    VALE = 2.89003E-02,
+                    PRECISION = 0.015)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 450,
+                    GROUP_NO = 'P5',
+                    NOM_CMP = 'DX',
+                    VALE = 3.60768E-03,
+                    PRECISION = 0.245)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 500,
+                    GROUP_NO = 'P5',
+                    NOM_CMP = 'DX',
+                    VALE = -2.69203E-02,
+                    PRECISION = 0.005)
+          )
+
+#
+# DEPLACEMENT SUIVANT Y
+#
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 50,
+                    GROUP_NO = 'P5',
+                    NOM_CMP = 'DY',
+                    VALE = -7.30975E-05,
+                    PRECISION = 0.0575)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 100,
+                    GROUP_NO = 'P5',
+                    NOM_CMP = 'DY',
+                    VALE = -1.35058E-03,
+                    PRECISION = 0.0075)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 150,
+                    GROUP_NO = 'P5',
+                    NOM_CMP = 'DY',
+                    VALE = -1.08727E-03,
+                    PRECISION = 0.005)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 200,
+                    GROUP_NO = 'P5',
+                    NOM_CMP = 'DY',
+                    VALE = 1.20554E-03,
+                    PRECISION = 0.0275)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 250,
+                    GROUP_NO = 'P5',
+                    NOM_CMP = 'DY',
+                    VALE = 4.07180E-03,
+                    PRECISION = 0.0075)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 300,
+                    GROUP_NO = 'P5',
+                    NOM_CMP = 'DY',
+                    VALE = 1.65046E-03,
+                    PRECISION = 0.015)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 350,
+                    GROUP_NO = 'P5',
+                    NOM_CMP = 'DY',
+                    VALE = -3.85187E-03,
+                    PRECISION = 0.0175)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 400,
+                    GROUP_NO = 'P5',
+                    NOM_CMP = 'DY',
+                    VALE = -5.39719E-03,
+                    PRECISION = 0.005)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 450,
+                    GROUP_NO = 'P5',
+                    NOM_CMP = 'DY',
+                    VALE = 1.46699E-04,
+                    PRECISION = 0.43)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 500,
+                    GROUP_NO = 'P5',
+                    NOM_CMP = 'DY',
+                    VALE = 6.25148E-03,
+                    PRECISION = 0.01)
+          )
+
+#
+# DEPLACEMENT SUIVANT Z
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 50,
+                    GROUP_NO = 'P5',
+                    NOM_CMP = 'DZ',
+                    VALE = -1.15460E-03,
+                    PRECISION = 0.015)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 100,
+                    GROUP_NO = 'P5',
+                    NOM_CMP = 'DZ',
+                    VALE = -2.84085E-03,
+                    PRECISION = 0.01)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 150,
+                    GROUP_NO = 'P5',
+                    NOM_CMP = 'DZ',
+                    VALE = -1.68634E-03,
+                    PRECISION = 0.01)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 200,
+                    GROUP_NO = 'P5',
+                    NOM_CMP = 'DZ',
+                    VALE = 4.46052E-03,
+                    PRECISION = 0.022)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 250,
+                    GROUP_NO = 'P5',
+                    NOM_CMP = 'DZ',
+                    VALE = 8.10809E-03,
+                    PRECISION = 0.075)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 300,
+                    GROUP_NO = 'P5',
+                    NOM_CMP = 'DZ',
+                    VALE = 1.29635E-03,
+                    PRECISION = 0.085)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 350,
+                    GROUP_NO = 'P5',
+                    NOM_CMP = 'DZ',
+                    VALE = -9.60053E-03,
+                    PRECISION = 0.015)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 400,
+                    GROUP_NO = 'P5',
+                    NOM_CMP = 'DZ',
+                    VALE = -9.14725E-03,
+                    PRECISION = 0.01)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 450,
+                    GROUP_NO = 'P5',
+                    NOM_CMP = 'DZ',
+                    VALE = 4.01209E-03,
+                    PRECISION = 0.055)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 500,
+                    GROUP_NO = 'P5',
+                    NOM_CMP = 'DZ',
+                    VALE = 1.23501E-02,
+                    PRECISION = 0.005)
+          )
+
+#
+# DEPLACEMENT AU POINT P6
+#
+#
+# DEPLACEMENT SUIVANT X
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 50,
+                    GROUP_NO = 'P6',
+                    NOM_CMP = 'DX',
+                    VALE = -1.40419E-02,
+                    PRECISION = 0.0075)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 100,
+                    GROUP_NO = 'P6',
+                    NOM_CMP = 'DX',
+                    VALE = -6.66991E-03,
+                    PRECISION = 0.03)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 150,
+                    GROUP_NO = 'P6',
+                    NOM_CMP = 'DX',
+                    VALE = 1.99336E-02,
+                    PRECISION = 0.005)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 200,
+                    GROUP_NO = 'P6',
+                    NOM_CMP = 'DX',
+                    VALE = 1.90874E-02,
+                    PRECISION = 0.02)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 250,
+                    GROUP_NO = 'P6',
+                    NOM_CMP = 'DX',
+                    VALE = -1.15629E-02,
+                    PRECISION = 0.018)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 300,
+                    GROUP_NO = 'P6',
+                    NOM_CMP = 'DX',
+                    VALE = -2.21063E-02,
+                    PRECISION = 0.015)
+          )
+
+#
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 350,
+                    GROUP_NO = 'P6',
+                    NOM_CMP = 'DX',
+                    VALE = 3.81133E-03,
+                    PRECISION = 0.125)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 400,
+                    GROUP_NO = 'P6',
+                    NOM_CMP = 'DX',
+                    VALE = 2.21910E-02,
+                    PRECISION = 0.015)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 450,
+                    GROUP_NO = 'P6',
+                    NOM_CMP = 'DX',
+                    VALE = 2.27183E-03,
+                    PRECISION = 0.27)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 500,
+                    GROUP_NO = 'P6',
+                    NOM_CMP = 'DX',
+                    VALE = -2.04080E-02,
+                    PRECISION = 0.005)
+          )
+
+#
+# DEPLACEMENT SUIVANT Y
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 50,
+                    GROUP_NO = 'P6',
+                    NOM_CMP = 'DY',
+                    VALE = 2.08842E-06,
+                    PRECISION = 0.01)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 100,
+                    GROUP_NO = 'P6',
+                    NOM_CMP = 'DY',
+                    VALE = -5.32012E-07,
+                    PRECISION = 0.0075)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 150,
+                    GROUP_NO = 'P6',
+                    NOM_CMP = 'DY',
+                    VALE = -1.23111E-06,
+                    PRECISION = 0.035)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 200,
+                    GROUP_NO = 'P6',
+                    NOM_CMP = 'DY',
+                    VALE = -2.83326E-06,
+                    PRECISION = 0.01)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 250,
+                    GROUP_NO = 'P6',
+                    NOM_CMP = 'DY',
+                    VALE = 2.07572E-06,
+                    PRECISION = 0.01)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 300,
+                    GROUP_NO = 'P6',
+                    NOM_CMP = 'DY',
+                    VALE = 2.53740E-06,
+                    PRECISION = 0.028)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 350,
+                    GROUP_NO = 'P6',
+                    NOM_CMP = 'DY',
+                    VALE = 1.25293E-07,
+                    PRECISION = 0.255)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 400,
+                    GROUP_NO = 'P6',
+                    NOM_CMP = 'DY',
+                    VALE = -3.25998E-06,
+                    PRECISION = 0.015)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 450,
+                    GROUP_NO = 'P6',
+                    NOM_CMP = 'DY',
+                    VALE = -2.26137E-06,
+                    PRECISION = 0.026)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 500,
+                    GROUP_NO = 'P6',
+                    NOM_CMP = 'DY',
+                    VALE = 3.12227E-06,
+                    PRECISION = 0.035)
+          )
+
+#
+# DEPLACEMENT SUIVANT Z
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 50,
+                    GROUP_NO = 'P6',
+                    NOM_CMP = 'DZ',
+                    VALE = -7.81777E-04,
+                    PRECISION = 0.015)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 100,
+                    GROUP_NO = 'P6',
+                    NOM_CMP = 'DZ',
+                    VALE = -1.42001E-03,
+                    PRECISION = 0.015)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 150,
+                    GROUP_NO = 'P6',
+                    NOM_CMP = 'DZ',
+                    VALE = -8.00077E-04,
+                    PRECISION = 0.02)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 200,
+                    GROUP_NO = 'P6',
+                    NOM_CMP = 'DZ',
+                    VALE = 2.63239E-03,
+                    PRECISION = 0.025)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 250,
+                    GROUP_NO = 'P6',
+                    NOM_CMP = 'DZ',
+                    VALE = 4.07104E-03,
+                    PRECISION = 0.0075)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 300,
+                    GROUP_NO = 'P6',
+                    NOM_CMP = 'DZ',
+                    VALE = 3.28410E-04,
+                    PRECISION = 0.23)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 350,
+                    GROUP_NO = 'P6',
+                    NOM_CMP = 'DZ',
+                    VALE = -5.18391E-03,
+                    PRECISION = 0.017)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 400,
+                    GROUP_NO = 'P6',
+                    NOM_CMP = 'DZ',
+                    VALE = -4.34838E-03,
+                    PRECISION = 0.015)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 450,
+                    GROUP_NO = 'P6',
+                    NOM_CMP = 'DZ',
+                    VALE = 2.68041E-03,
+                    PRECISION = 0.055)
+          )
+
+#
+TEST_RESU(   RESU=_F( RESULTAT = REP_LINE,
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 500,
+                    GROUP_NO = 'P6',
+                    NOM_CMP = 'DZ',
+                    VALE = 6.19591E-03,
+                    PRECISION = 0.01)
+          )
+
+#
+FIN()
+#
+#

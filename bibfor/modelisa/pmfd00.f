@@ -1,5 +1,5 @@
       SUBROUTINE PMFD00()
-C MODIF MODELISA  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
+C MODIF MODELISA  DATE 17/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -69,7 +69,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER NGMS,NMAS,NDGMS,NDMAS,LMAXS
       INTEGER IRET,IBID
       INTEGER NBVM,NMAILP,NBV,NMAILS,NUMAIL,NBFIB
-      INTEGER IN,I,J,NO,NNO,NUMMAI,IOC,IPOS,IPOINT
+      INTEGER IN,I,J,NO,NNO,NUMMAI,IOC,IPOS,IPOINT,JJ
       INTEGER JDLS,JDNM,JDTM,JDCO,JDNO,JMS,JPO,JCF,JNF,JMP
       REAL*8 X(4),Y(4),CENTRE(2),AXEP(2),SURF,CASECT(6)
       INTEGER NTSEG2,NTTRI3,NTQUA4,NUTYMA
@@ -245,6 +245,7 @@ C     ----------------------------------------------------------
 C -----------------------------------------------------------------
 C --- TRAITEMENT DES AFFE_SECT
 C -----------------------------------------------------------------
+      JJ = 0
       DO 90 IOC = 1,NBOCCS
 C ---   ON RECUPERE LE NOM EVENTUEL DE LA SECTION
         CALL GETVTX('AFFE_SECT','NOM',IOC,1,1,KNS,IRET)
@@ -280,6 +281,7 @@ C ---  ON RECUPERE LES MAILLES DE LA SECTION CONCERNEES
 C ---     COORDONNEES NOEUDS
           NUTYMA = ZI(JDTM+NUMMAI-1)
           IF (NUTYMA.EQ.NTSEG2) GO TO 70
+          JJ=JJ+1
           CALL JEVEUO(JEXNUM(MLGCNX,NUMMAI),'L',JDNO)
           NNO = 3
           IF (NUTYMA.EQ.NTQUA4) NNO = 4
@@ -291,7 +293,7 @@ C ---     COORDONNEES NOEUDS
 C ---     SURFACE ET CENTRE
           CALL PMFSCE(NNO,X,Y,SURF,CENTRE)
 C --- STOCKAGE DES CARACTERISTIQUES DE FIBRES DANS
-          IPOS = JCF + IPOINT - 1 + NCARFI* (J-1)
+          IPOS = JCF + IPOINT - 1 + NCARFI* (JJ-1)
           ZR(IPOS) = CENTRE(1)
           ZR(IPOS+1) = CENTRE(2)
           ZR(IPOS+2) = SURF

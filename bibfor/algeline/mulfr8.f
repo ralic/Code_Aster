@@ -7,7 +7,7 @@
       LOGICAL PILMEM
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 04/05/2004   AUTEUR ROSE C.ROSE 
+C MODIF ALGELINE  DATE 12/05/2004   AUTEUR ROSE C.ROSE 
 C RESPONSABLE ROSE C.ROSE
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -94,9 +94,8 @@ C     -------------------------------------------------- VARIABLES
       REAL*8 TEMPS(6)
       INTEGER NPROC,IFM,NIV,LPMAX,IADIGS,MLNBPR
 C     NB : ORDRE DES MATRICES CL ET CU (LES PRODUITS MATRICE*MATRICE)
-C     96 EST OPTIMUM POUR EV68
-      PARAMETER(NB=96)
-      INTEGER CL,CU
+C     96 EST OPTIMUM POUR EV68, 32 EST OPTIMUM POUR PENTIUM 4
+      INTEGER CL,CU,LLBLOC
 C     ------------------------------------------------------------------
       DATA NOMPR1/'&&MULFR8.PROVISOI.REELS1'/
       DATA NOMPR2/'&&MULFR8.PROVISOI.REELS2'/
@@ -120,6 +119,7 @@ C     ------------------------------------------------------------------
 
       CALL INFNIV(IFM,NIV)
 C----------------------------------------------------------------------
+      NB=LLBLOC()
       NOMA19 = NOMMAT
       NPIVOT = 0
       CALL DISMOI('F','NOM_NUME_DDL',NOMMAT,'MATR_ASSE',IBID,NU,IERD)
@@ -211,7 +211,6 @@ C--------------------------------------------------------------------
       CALL JEVEUO(NOMP20 ,'L',SEQ)
       LTEMPR=NB*LPMAX*NPROC
       CALL WKVECT(NMPRT1,' V V R ',LTEMPR,TRAV1)
-
       CALL WKVECT(NMPRT2,' V V R ',LTEMPR,TRAV2)
       CALL WKVECT(NMPRCL,' V V R ',NPROC*NB**2,CL)
       CALL WKVECT(NMPRCU,' V V R ',NPROC*NB**2,CU)

@@ -1,7 +1,7 @@
       SUBROUTINE DELTAU(JRWORK, JNBPG, NBPGT, NBORDR, NMAINI, NBMAP,
      &                  NUMPAQ, TSPAQ, NOMMET, NOMCRI, CESR)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 26/01/2004   AUTEUR F1BHHAJ J.ANGLES 
+C MODIF PREPOST  DATE 17/05/2004   AUTEUR F1BHHAJ J.ANGLES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -332,19 +332,20 @@ C
             MNMAX(2) = 1
 C
             DO 430 I=1, NBVEC
-               IF ( (ABS(ZR(JDTAUM + (I-1)) - DTAUM(1)) .GT. EPSILO)
-     &               .AND. ( ZR(JDTAUM + (I-1)) .GT. DTAUM(1)) ) THEN
-                  DTAUM(2) = DTAUM(1)
-                  MNMAX(2) = MNMAX(1)
-                  DTAUM(1) = ZR(JDTAUM + (I-1))
-                  MNMAX(1) = I
-               ENDIF
-               IF ( (ABS(ZR(JDTAUM + (I-1)) - DTAUM(2)) .GT. EPSILO)
-     &               .AND. (ZR(JDTAUM + (I-1)) .GT. DTAUM(2))
-     &               .AND. (I .NE. MNMAX(1)) ) THEN
-                  DTAUM(2) = ZR(JDTAUM + (I-1))
-                  MNMAX(2) = I
-               ENDIF
+              IF ( ZR(JDTAUM + (I-1)) .GT. EPSILO ) THEN
+                 IF ( (ZR(JDTAUM + (I-1))-DTAUM(1))/ZR(JDTAUM + (I-1))
+     &                 .GT. EPSILO ) THEN
+                    DTAUM(2) = DTAUM(1)
+                    MNMAX(2) = MNMAX(1)
+                    DTAUM(1) = ZR(JDTAUM + (I-1))
+                    MNMAX(1) = I
+                 ENDIF
+                 IF ( ((ZR(JDTAUM + (I-1))-DTAUM(2))/ZR(JDTAUM + (I-1))
+     &                 .GT. EPSILO)  .AND. (I .NE. MNMAX(1)) ) THEN
+                    DTAUM(2) = ZR(JDTAUM + (I-1))
+                    MNMAX(2) = I
+                 ENDIF
+              ENDIF
  430        CONTINUE
 C
 C 4/ PREMIER RAFFINEMENT CONCERNANT LA DETERMINATION DU VECTEUR NORMAL

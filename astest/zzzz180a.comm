@@ -1,4 +1,4 @@
-# MODIF  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 17/05/2004   AUTEUR CIBHHBC M.LOPES 
 # TITRE TEST ANALYTIQUE DE LA GENERATION DE FONCTIONS ALEATOIRES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -27,7 +27,7 @@
 from Numeric import arange, power, exp, sqrt, log, pi
 from math import atan
 
-DEBUT(CODE=_F(  NOM = 'zzzz180a',NIV_PUB_WEB='INTERNET') ,PAR_LOT='NON' )
+DEBUT(CODE=_F(  NOM = 'zzzz180a',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON') ,PAR_LOT='NON' )
 
 #
 #################################################################

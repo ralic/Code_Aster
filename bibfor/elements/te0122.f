@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 18/05/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -46,7 +46,7 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
-      INTEGER ICHG,ICHN,ICOM,JTAB(7),NNO,NCMP,NGA,N,C,IBID
+      INTEGER ICHG,ICHN,ICOM,JTAB(7),NCMP,N,C,IBID,I,IN,IG
 C     ------------------------------------------------------------------
 
       IF (OPTION.EQ.'SIEF_ELNO_ELGA') THEN
@@ -66,8 +66,14 @@ C     ------------------------------------------------------------------
       END IF
       
 C    EXTRAPOLATION AUX NOEUDS
-      NNO = 4
-      NGA = 2
-      CALL GATONO(ZR(ICHG),ZR(ICHN),NCMP,NNO,NGA)
+
+      DO 10 I = 1,NCMP
+        IG = ICHG-1+I
+        IN = ICHN-1+I
+        ZR(IN)        = ZR(IG) + (ZR(IG+NCMP)-ZR(IG))*(1-SQRT(3.D0))/2
+        ZR(IN+3*NCMP) = ZR(IG) + (ZR(IG+NCMP)-ZR(IG))*(1-SQRT(3.D0))/2
+        ZR(IN+NCMP)   = ZR(IG) + (ZR(IG+NCMP)-ZR(IG))*(1+SQRT(3.D0))/2
+        ZR(IN+2*NCMP) = ZR(IG) + (ZR(IG+NCMP)-ZR(IG))*(1+SQRT(3.D0))/2
+   10 CONTINUE                
         
       END

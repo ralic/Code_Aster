@@ -1,4 +1,4 @@
-# MODIF  DATE 07/06/2002   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 17/05/2004   AUTEUR CIBHHBC M.LOPES 
 # TITRE SYSTEME MASSE RESSORT A 8 DEGRES DE LIBERTE T_N
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -123,7 +123,7 @@ MODE8=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
 
 # --------------------------------------------------------------------
 
-CMP=DEFI_VALEUR(   TX='DY' )
+CMP='DY'
 
 MA=DEFI_GROUP(  reuse=MA,  MAILLAGE=MA,
                     CREA_GROUP_NO=_F(  NOEUD = 'P8',  NOM = 'GRP8') )
@@ -245,7 +245,7 @@ TEST_RESU(RESU=(
 
 #
 
-QPI2=DEFI_VALEUR(   R8=EVAL("""4.* PI * PI """) )
+QPI2=4.* pi * pi
 
 # ----------------------------------------------------------------------
 

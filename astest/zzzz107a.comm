@@ -1,0 +1,387 @@
+# MODIF  DATE 17/05/2004   AUTEUR CIBHHBC M.LOPES 
+# TITRE TEST DE LA RECUPERATION DES EXCEPTIONS
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+DEBUT(CODE=_F(NOM='ZZZZ107A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON',),PAR_LOT='NON',);
+
+# REMARQUE : LE TRAITEMENT DES EXCEPTIONS N'A DE SENS QU'EN PAR_LOT='NON'
+
+# PREMIERE PARTIE : TEST DE L'IMPLEMENTATION DES EXCEPTIONS PYTHON
+# DEUXIEME PARTIE : LEVEES D'EXCEPTIONS PAR LES COMMANDES ASTER
+
+# CE CAS TEST EST IDENTIQUE A SSNL102A. IL SERT A VALIDER
+# LA LEVEE D EXCEPTION PAR UTEXCP(numero) DANS LE FORTRAN 
+
+# ======================================================================
+#                          PREMIERE PARTIE
+# ======================================================================
+
+# TEST DU MECANISME D'EXCEPTION DANS CODE_ASTER
+sep='\n------------------------------------------------------------------------\n'
+print sep
+
+is_ok = 0
+try:
+   raise aster.error, \
+      "CAS 1 : declencher error sans declencher NonConvergenceError ou EchecComportement"
+
+except aster.NonConvergenceError,err:
+   print "Exception NonConvergence interceptee"
+   print "Raison : " + str(err)
+
+except aster.EchecComportementError,err:
+   print "Exception EchecComportement interceptee"
+   print "Raison : " + str(err)
+
+except aster.error,err:
+   is_ok = 1
+   print "Exception error interceptee"
+   print "Raison : " + str(err)
+
+print sep
+
+# TEST_RESU
+TAB1=CREA_TABLE(LISTE=(_F(PARA='TEST',TYPE_K='K8',LISTE_K='VALEUR  ',),
+                       _F(PARA='BOOLEEN',LISTE_I=is_ok,),
+                       ),
+                )
+TEST_TABLE(TABLE=TAB1,
+           FILTRE=_F(NOM_PARA='TEST',VALE_K='VALEUR  ',),
+           NOM_PARA='BOOLEEN',
+           VALE_I=1,
+           REFERENCE='ANALYTIQUE',
+           )
+DETRUIRE(CONCEPT=_F(NOM='TAB1'))
+
+print sep
+
+is_ok = 0
+try:
+   raise aster.NonConvergenceError, \
+      "CAS 2 : declencher NonConvergence plus precis que error"
+
+except aster.NonConvergenceError,err:
+   is_ok = 1
+   print "Exception NonConvergence interceptee"
+   print "Raison : " + str(err)
+
+except aster.error,err:
+   print "Exception error interceptee"
+   print "Raison : " + str(err)
+
+print sep
+
+# TEST_RESU
+TAB1=CREA_TABLE(LISTE=(_F(PARA='TEST',TYPE_K='K8',LISTE_K='VALEUR  ',),
+                       _F(PARA='BOOLEEN',LISTE_I=is_ok,),
+                       ),
+                )
+TEST_TABLE(TABLE=TAB1,
+           FILTRE=_F(NOM_PARA='TEST',VALE_K='VALEUR  ',),
+           NOM_PARA='BOOLEEN',
+           VALE_I=1,
+           REFERENCE='ANALYTIQUE',
+           )
+DETRUIRE(CONCEPT=_F(NOM='TAB1'))
+
+print sep
+
+is_ok = 0
+try:
+   raise aster.EchecComportementError, \
+      "CAS 3 : declencher EchecComportement sans declencher NonConvergence"
+
+except aster.NonConvergenceError,err:
+   print "Exception NonConvergence interceptee"
+   print "Raison : " + str(err)
+
+except aster.EchecComportementError,err:
+   is_ok = 1
+   print "Exception EchecComportement interceptee"
+   print "Raison : " + str(err)
+
+except aster.error,err:
+   print "Exception error interceptee"
+   print "Raison : " + str(err)
+
+print sep
+
+# TEST_RESU
+TAB1=CREA_TABLE(LISTE=(_F(PARA='TEST',TYPE_K='K8',LISTE_K='VALEUR  ',),
+                       _F(PARA='BOOLEEN',LISTE_I=is_ok,),
+                       ),
+                )
+TEST_TABLE(TABLE=TAB1,
+           FILTRE=_F(NOM_PARA='TEST',VALE_K='VALEUR  ',),
+           NOM_PARA='BOOLEEN',
+           VALE_I=1,
+           REFERENCE='ANALYTIQUE',
+           )
+DETRUIRE(CONCEPT=_F(NOM='TAB1'))
+
+print sep
+
+# Verifier que l'on s'arrete en <S>_ERREUR si on n'intercepte pas
+# l'exception qui est levee par le code...
+# ... mais on ne peut pas l'inserer dans le cas-test !
+# try:
+#    raise aster.error, \
+#       "CAS 4 : declencher error non interceptee donc erreur S"
+# 
+# except aster.NonConvergenceError,err:
+#    print "Exception EchecComportement interceptee"
+#    print "Raison : " + str(err)
+
+
+
+# ======================================================================
+#                          DEUXIEME PARTIE
+# ======================================================================
+# TROIS CAS : GROUP_MA NE FIGURANT PAS DANS LE MAILLAGE
+#             VERIMA EMET UNE ERREUR UTMESS S
+#             ON TRAPPE L EXCEPTION, PUIS ON DETRUIT
+#             LE CONCEPT POUR LE RECREER CORRECTEMENT
+#             --> exception generique aster.error
+#
+#             PAS ASSEZ D ITERATIONS DANS STAT_NON_LINE
+#             ON RECUPERE LE DERNIER INSTANT CALCULE
+#             POUR REPRENDRE LE CALCUL A PARTIR DE LA
+#             AVEC UN ITER_GLOB_MAXI PLUS GRAND.
+#             --> exception NonConvergenceError
+#
+#             NOM DE CHAMP ET DE COMPOSANTE INEXISTANT 
+#             DANS LE CHAMP A POST-TRAITER DANS POST_RELEVE_T
+#             ON TRAPPE L EXCEPTION, PUIS ON DETRUIT
+#             LE CONCEPT POUR LE RECREER CORRECTEMENT
+#             --> exception generique aster.error
+
+MA=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='NON',),);
+
+try:
+   MO=AFFE_MODELE(MAILLAGE=MA,
+                  AFFE=_F(MAILLE='XXX',
+                          PHENOMENE='MECANIQUE',
+                          MODELISATION='DIS_TR',),);
+except aster.error:
+   DETRUIRE(CONCEPT=_F(NOM=MO),)
+   MO=AFFE_MODELE(MAILLAGE=MA,
+                  AFFE=_F(MAILLE='D1',
+                          PHENOMENE='MECANIQUE',
+                          MODELISATION='DIS_TR',),);
+
+
+F1=DEFI_FONCTION(NOM_PARA='INST',
+                 VALE=(0.0,0.0,1.0,6.0,3.0,4.0,6.0,7.0,7.0,17.0,8.0,40.0,10.0,20.0,12.0,42.0,),
+                 PROL_DROITE='LINEAIRE',
+                 PROL_GAUCHE='LINEAIRE',);
+
+LINST=DEFI_LIST_REEL(DEBUT=0.0,
+                     INTERVALLE=_F(JUSQU_A=12.0,
+                                   PAS=1.0,),);
+
+MAT02=DEFI_MATERIAU(ASSE_CORN=_F(NU_1=10050.0,
+                                 MU_1=150000.0,
+                                 DXU_1=1.0,
+                                 DRYU_1=0.067,
+                                 C_1=0.95,
+                                 NU_2=50000.0,
+                                 MU_2=750000.0,
+                                 DXU_2=10.0,
+                                 DRYU_2=0.01,
+                                 C_2=0.95,
+                                 KY=1000000.0,
+                                 KZ=1000000.0,
+                                 KRX=1000000000.0,
+                                 KRZ=1000000000.0,),);
+
+CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
+                    AFFE=_F(MAILLE='D1',
+                            MATER=MAT02,),);
+
+CAREL=AFFE_CARA_ELEM(MODELE=MO,
+                     DISCRET=_F(MAILLE='D1',
+                                CARA='K_TR_D_L',
+                                VALE=(1000000.0,1000000.0,1000000.0,1000000000.0,1000000000.0,1000000000.0,),),
+                     ORIENTATION=_F(MAILLE='D1',
+                                    CARA='ANGL_NAUT',
+                                    VALE=(0.0,0.0,0.0,),),);
+
+CH1=AFFE_CHAR_MECA(MODELE=MO,
+                   DDL_IMPO=_F(NOEUD='N2',
+                               DX=0.0,
+                               DY=0.0,
+                               DZ=0.0,
+                               DRX=0.0,
+                               DRY=0.0,
+                               DRZ=0.0,),
+                   FORCE_NODALE=_F(NOEUD='N3',
+                                   FX=1000.0,
+                                   FY=0.0,
+                                   FZ=0.0,
+                                   MX=0.0,
+                                   MY=3000.0,
+                                   MZ=0.0,),);
+
+try :
+     STATNL=STAT_NON_LINE(MODELE=MO,
+                          CHAM_MATER=CHMAT,
+                          CARA_ELEM=CAREL,
+                          EXCIT=_F(CHARGE=CH1,
+                                   FONC_MULT=F1,),
+                          COMP_INCR=_F(RELATION='ASSE_CORN',
+                                       MAILLE='D1',),
+                          INCREMENT=_F(LIST_INST=LINST,
+                                       NUME_INST_FIN=12,),
+                          NEWTON=_F(MATRICE='TANGENTE',
+                                    REAC_ITER=1,),
+                          CONVERGENCE=_F(ITER_GLOB_MAXI=4,),)
+
+except aster.NonConvergenceError:
+     print """\nNon convergence, on augmente le nombre d'iterations...\n"""
+# on recupere le dernier instant proprement calcule dans le try precedent
+# dans la variable last_iter pour repartir de cet ETAT_INIT
+     last_iter=STATNL.LIST_VARI_ACCES()['NUME_ORDRE'][-1]
+
+     STATNL=STAT_NON_LINE(reuse=STATNL,
+                          MODELE=MO,
+                          CHAM_MATER=CHMAT,
+                          CARA_ELEM=CAREL,
+                          EXCIT=_F(CHARGE=CH1,
+                                   FONC_MULT=F1,),
+                          ETAT_INIT=_F(EVOL_NOLI=STATNL,
+                                       NUME_ORDRE=last_iter,),
+                          COMP_INCR=_F(RELATION='ASSE_CORN',
+                                       MAILLE='D1',),
+                          INCREMENT=_F(LIST_INST=LINST,
+                                       NUME_INST_FIN=12,),
+                          NEWTON=_F(MATRICE='TANGENTE',
+                                    REAC_ITER=1,),
+                          CONVERGENCE=_F(ITER_GLOB_MAXI=10,),);
+
+try:
+    TAB_DEPL=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
+                                     NOEUD='N2',
+                                     RESULTAT=STATNL,
+                                     NOM_CHAM='TEMP',
+                                     NOM_CMP='TEMP',
+                                     OPERATION='EXTRACTION',),);
+except aster.error:
+    DETRUIRE(CONCEPT=_F(NOM=TAB_DEPL),)
+    TAB_DEPL=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
+                                     NOEUD='N2',
+                                     RESULTAT=STATNL,
+                                     NOM_CHAM='DEPL',
+                                     NOM_CMP='DY',
+                                     OPERATION='EXTRACTION',),);
+STATNL=CALC_ELEM(reuse =STATNL,
+                 MODELE=MO,
+                 CHAM_MATER=CHMAT,
+                 CARA_ELEM=CAREL,
+                 RESULTAT=STATNL,
+                 OPTION=('SIEF_ELNO_ELGA','VARI_ELNO_ELGA',),);
+#
+
+TEST_RESU(RESU=(_F(RESULTAT=STATNL,
+                   NUME_ORDRE=12,
+                   PARA='INST',
+                   VALE=12.0,
+                   REFERENCE='AUTRE_ASTER'),
+                _F(RESULTAT=STATNL,
+                   NUME_ORDRE=7,
+                   PARA='ITER_GLOB',
+                   VALE_I=0,
+                   CRITERE='ABSOLU',
+                   PRECISION=2.0,
+                   REFERENCE='AUTRE_ASTER'),
+                _F(RESULTAT=STATNL,
+                   NUME_ORDRE=12,
+                   PARA='ITER_GLOB',
+                   VALE_I=0,
+                   CRITERE='ABSOLU',
+                   PRECISION=6.0,
+                   REFERENCE='AUTRE_ASTER'),
+                _F(RESULTAT=STATNL,
+                   NUME_ORDRE=12,
+                   PARA='RESI_GLOB_RELA',
+                   VALE=0.0,
+                   CRITERE='ABSOLU',
+                   PRECISION=1e-05,
+                   REFERENCE='AUTRE_ASTER'),
+                _F(RESULTAT=STATNL,
+                   NUME_ORDRE=12,
+                   PARA='RESI_GLOB',
+                   VALE=0.0,
+                   CRITERE='ABSOLU',
+                   PRECISION=1.0,
+                   REFERENCE='AUTRE_ASTER'),
+                _F(RESULTAT=STATNL,
+                   NUME_ORDRE=12,
+                   PARA='ITER_LINE',
+                   VALE_I=0,
+                   CRITERE='ABSOLU',
+                   PRECISION=2.0,
+                   REFERENCE='AUTRE_ASTER'),),);
+
+TEST_RESU(RESU=(_F(RESULTAT=STATNL,
+                   NUME_ORDRE=6,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   NOEUD='N3',
+                   VALE=0.0946805,
+                   REFERENCE='AUTRE_ASTER'),
+                _F(RESULTAT=STATNL,
+                   NUME_ORDRE=6,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DRY',
+                   NOEUD='N3',
+                   VALE=0.00127506,
+                   REFERENCE='AUTRE_ASTER'),
+                _F(RESULTAT=STATNL,
+                   NUME_ORDRE=12,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   NOEUD='N3',
+                   VALE=3.7365,
+                   REFERENCE='AUTRE_ASTER'),
+                _F(RESULTAT=STATNL,
+                   NUME_ORDRE=12,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DRY',
+                   NOEUD='N3',
+                   VALE=0.049951,
+                   REFERENCE='AUTRE_ASTER'),
+                _F(RESULTAT=STATNL,
+                   NUME_ORDRE=6,
+                   NOM_CHAM='VARI_ELNO_ELGA',
+                   NOM_CMP='V1',
+                   MAILLE='D1',
+                   NOEUD='N3',
+                   VALE=0.0965742,
+                   REFERENCE='AUTRE_ASTER'),
+                _F(RESULTAT=STATNL,
+                   NUME_ORDRE=7,
+                   NOM_CHAM='VARI_ELGA',
+                   NOM_CMP='V1',
+                   MAILLE='D1',
+                   POINT=2,
+                   VALE=1.07699,
+                   REFERENCE='AUTRE_ASTER'),),);
+
+FIN();
+#

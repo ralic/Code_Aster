@@ -1,4 +1,4 @@
-# MODIF  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 17/05/2004   AUTEUR CIBHHBC M.LOPES 
 # TITRE Calcul d'indicateur d'erreur en thermique lineaire
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -26,7 +26,7 @@
 #-------------------------------------------------------------------------------
 #                            PREALABLES
 #-------------------------------------------------------------------------------
-DEBUT(CODE=_F( NOM = 'TPLL01J',NIV_PUB_WEB='INTERNET'))
+DEBUT(CODE=_F( NOM = 'TPLL01J',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'))
 # Concepts a chaque iteration
 nbcalc = 3
 M=[None]*(nbcalc+0)

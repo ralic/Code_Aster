@@ -1,0 +1,223 @@
+# MODIF  DATE 17/05/2004   AUTEUR CIBHHBC M.LOPES 
+# RESPONSABLE GNICOLAS G.NICOLAS
+# TITRE SENSIBILITE AUX DONNEES - EXEMPLE D'UTILISATION
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+DEBUT(CODE=_F(NOM='SENSM07A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'));
+#
+# Ce cas-test est celui qui sert d'exemple a
+# la notice d'utilisation des sensibilites, U2.08.02.
+# C'est un domaine rectangulaire 2D, compose de 3 materiaux distincts.
+# La structure est encastre sur la gauche. On applique des pressions
+# sur la face superieure.
+# On s'interesse aux sensibilites par rapport aux 2 pressions imposees
+# et aux trois modules d'Young.
+#
+# Voici le schema simplifie du domaine de calcul.
+# Les groupes y sont designes par leurs noms.
+#
+#   'COIN_HG'    'BORD_H_1'       'BORD_H_2'    'COIN_HD'
+#       y=6 *-----------------------------------*
+#           !                 !                 !
+#       y=5 !                 !                 !
+#           !                 !                 !
+#       y=4 !     'ZONE_1'    !      'ZONE_2'   !
+#           !                 !                 !
+#       y=3 !                 !                 !
+#           !                 !                 !
+#       y=2 !                 !                 !
+#           !                 !                 !
+#       y=1 !                !---!              !
+#           !                ! <-!-- 'ZONE_3'   !
+#       y=0 *-----------------------------------*
+#   'COIN_BG'                               'COIN_BD'
+#       x = 0  1  2  3  4  5  6  7  8  9 10 11 12
+#
+#
+# 1. Definitions de fonctions
+# 1.1. Definition des parametres sensibles
+#
+PA=DEFI_PARA_SENSI(VALE=1000.);
+PB=DEFI_PARA_SENSI(VALE=8000.);
+E1=DEFI_PARA_SENSI(VALE=430000.);
+E2=DEFI_PARA_SENSI(VALE=380000.);
+E3=DEFI_PARA_SENSI(VALE=130000.);
+NU3=DEFI_PARA_SENSI(VALE=0.27);
+#
+# 1.2. Definition des constantes
+#
+NU1=DEFI_CONSTANTE(VALE=0.33);
+NU2=DEFI_CONSTANTE(VALE=0.38);
+#
+# 2. Definition des materiaux
+#
+mater_1=DEFI_MATERIAU ( ELAS_FO=_F(E=E1,NU=NU1) );
+
+mater_2=DEFI_MATERIAU ( ELAS_FO=_F(E=E2,NU=NU2) );
+
+mater_3=DEFI_MATERIAU ( ELAS_FO=_F(E=E3,NU=NU3) );
+#
+# 3. Le maillage
+# 3.1. Lecture du maillage
+#
+PRE_GMSH();
+maill_d1=LIRE_MAILLAGE();
+maill_d2=CREA_MAILLAGE( MAILLAGE  = maill_d1,LINE_QUAD = _F(TOUT='OUI'))
+#
+# 3.2. Nommage des groupes
+#
+maill_d2=DEFI_GROUP(reuse =maill_d2,
+        MAILLAGE=maill_d2,
+        CREA_GROUP_MA=(_F(GROUP_MA='GM11',NOM='BORD_H_1'),
+                       _F(GROUP_MA='GM12',NOM='BORD_H_2'),
+                       _F(GROUP_MA='GM13',NOM='BORD_GAU'),
+                       _F(GROUP_MA='GM21',NOM='ZONE_1'),
+                       _F(GROUP_MA='GM22',NOM='ZONE_2'),
+                       _F(GROUP_MA='GM23',NOM='ZONE_3')),
+        CREA_GROUP_NO=_F(GROUP_MA=('GM1'    ,'GM2'    ,'GM3'    ,'GM4'    ),
+                              NOM=('COIN_BG','COIN_BD','COIN_HD','COIN_HG')) );
+#
+# 4. Le modele
+#
+modele=AFFE_MODELE(MAILLAGE=maill_d2,
+                   AFFE=_F(TOUT='OUI',
+                           PHENOMENE='MECANIQUE',
+                           MODELISATION='D_PLAN'));
+#
+maill_d2=MODI_MAILLAGE(reuse =maill_d2,
+             MAILLAGE=maill_d2,
+             ORIE_PEAU_2D=_F(GROUP_MA=('BORD_H_1','BORD_H_2','BORD_GAU')),
+             MODELE=modele);
+#
+# 5. Les chargements
+#
+encastre=AFFE_CHAR_MECA(MODELE=modele,
+             DDL_IMPO=_F(GROUP_NO='COIN_BG',DY=0.0),
+             FACE_IMPO=_F(GROUP_MA='BORD_GAU',DNOR=0.0) );
+#
+pression=AFFE_CHAR_MECA_F(MODELE=modele,
+             PRES_REP=(_F(GROUP_MA='BORD_H_1',PRES=PA),
+                       _F(GROUP_MA='BORD_H_2',PRES=PB)) );
+#
+# 6. Mise en place des materiaux
+#
+ch_mater=AFFE_MATERIAU(MAILLAGE=maill_d2,
+             MODELE=modele,
+             AFFE=(_F(GROUP_MA='ZONE_1',MATER=mater_1),
+                   _F(GROUP_MA='ZONE_2',MATER=mater_2),
+                   _F(GROUP_MA='ZONE_3',MATER=mater_3)) );
+#
+# 7. Calcul avec derivations
+#
+resultat=MECA_STATIQUE(MODELE=modele,
+                       CHAM_MATER=ch_mater,
+                       EXCIT=(_F(CHARGE=encastre),
+                              _F(CHARGE=pression)),
+                       SENSIBILITE=(E1,E2,E3,PA,PB));
+#
+# 8. Autres champs
+# 8.1. Les contraintes standard
+#
+resultat=CALC_ELEM(reuse =resultat,
+                   RESULTAT=resultat,
+                   MODELE=modele,
+                   CHAM_MATER=ch_mater,
+                   EXCIT=(_F(CHARGE=encastre),
+                          _F(CHARGE=pression)),
+                   OPTION=('SIGM_ELNO_DEPL','ERRE_ELGA_NORE'));
+#
+# 8.2. Les derivees des contraintes aux points de Gauss
+#
+resultat=CALC_ELEM(reuse =resultat,
+                   RESULTAT=resultat,
+                   SENSIBILITE=(E1,E2,E3,PA,PB),
+                   MODELE=modele,
+                   CHAM_MATER=ch_mater,
+                   EXCIT=(_F(CHARGE=encastre),
+                          _F(CHARGE=pression)),
+                   OPTION=('SIEF_ELGA_DEPL','SIGM_ELNO_DEPL'));
+#
+# 8.3. Les derivees des contraintes aux noeuds
+#
+resultat=CALC_NO(reuse =resultat,
+                 RESULTAT=resultat,
+                 SENSIBILITE=(E1,E2,E3),
+                 EXCIT=(_F(CHARGE=encastre),
+                        _F(CHARGE=pression)),
+                 OPTION='SIGM_NOEU_DEPL');
+#
+# 9. Impressions des resultats
+#
+# 9.1. Le resultat standard
+#
+DEFI_FICHIER(FICHIER='RESUGMSH',UNITE=37,ACTION='ASSOCIER');
+IMPR_RESU(RESU=_F(FORMAT='GMSH',RESULTAT=resultat,FICHIER='RESUGMSH'));
+DEFI_FICHIER(ACTION='LIBERER',UNITE=37);
+#
+IMPR_RESU(RESU=_F(FORMAT='MED',RESULTAT=resultat,
+                  NOM_CHAM=('DEPL','ERRE_ELGA_NORE','SIEF_ELGA_DEPL'),));
+#
+# 9.2. Le resultat des derivees
+#
+##IMPR_RESU(RESU=_F(FORMAT='MED',
+##                  RESULTAT=resultat,
+##                  SENSIBILITE=(E1,E2,E3,PA,PB)));
+#
+# 9.3. Les valeurs extremes du deplacement et des contraintes dans les 
+#
+IMPR_RESU(RESU=_F(RESULTAT=resultat,
+                  NOM_CHAM=('DEPL','SIEF_ELGA_DEPL'),
+                  GROUP_MA='ZONE_1',
+                  VALE_MAX='OUI',
+                  VALE_MIN='OUI',
+                  FORMAT_R='1PE12.5'));
+#
+IMPR_RESU(RESU=_F(RESULTAT=resultat,
+                  NOM_CHAM=('DEPL','SIEF_ELGA_DEPL'),
+                  GROUP_MA='ZONE_2',
+                  VALE_MAX='OUI',
+                  VALE_MIN='OUI',
+                  FORMAT_R='1PE12.5'));
+#
+IMPR_RESU(RESU=_F(RESULTAT=resultat,
+                  NOM_CHAM=('DEPL','SIEF_ELGA_DEPL'),
+                  GROUP_MA='ZONE_3',
+                  VALE_MAX='OUI',
+                  VALE_MIN='OUI',
+                  FORMAT_R='1PE12.5'));
+#
+# 9.4. Les valeurs extremes des derivees des contraintes dans la zone 3
+#
+IMPR_RESU(RESU=_F(RESULTAT=resultat,
+                  SENSIBILITE=(E1,E2,E3,PA,PB),
+                  NOM_CHAM='SIEF_ELGA_DEPL',
+                  GROUP_MA='ZONE_3',
+                  VALE_MAX='OUI',
+                  VALE_MIN='OUI',
+                  FORMAT_R='1PE12.3'));
+#
+# 9.5. Test de non regression sur une composante de derivee de contrainte
+#
+TEST_RESU(RESU=_F(RESULTAT=resultat,
+                  SENSIBILITE=E3,
+                  NOM_CHAM='SIGM_NOEU_DEPL',NOM_CMP='SIXX',
+                  NUME_ORDRE=1,GROUP_NO='COIN_BD',
+                  VALE=3.160121E-5,CRITERE='RELATIF',PRECISION=1e-05,
+                  REFERENCE='NON_REGRESSION', VERSION = '7.01.09'));
+#
+FIN();

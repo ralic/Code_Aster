@@ -1,0 +1,203 @@
+# MODIF  DATE 17/05/2004   AUTEUR CIBHHBC M.LOPES 
+# RESPONSABLE MABBAS M.ABBAS
+#
+# TITRE INDENTATION D'UN MASSIF PAR UN POINCON
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+DEBUT(CODE=_F(  NOM = 'DEMO003A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'));
+
+PRE_GMSH();
+
+MA=LIRE_MAILLAGE();
+
+
+MA=DEFI_GROUP(reuse=MA,
+              MAILLAGE=MA,
+              CREA_GROUP_NO=(_F(NOM='GM12',
+                                GROUP_MA='GM12',),
+                             ),);   
+
+
+MO=AFFE_MODELE(MAILLAGE=MA,
+               AFFE=_F(TOUT='OUI',
+                       PHENOMENE='MECANIQUE',
+                       MODELISATION='AXIS',),);
+
+# On reoriente les group_ma GM11 et GM12 qui 
+# interviennent dans le contact car leurs normales
+# doivent absolument etre sortantes
+MA=MODI_MAILLAGE(reuse =MA,
+                 MAILLAGE=MA,
+                 ORIE_PEAU_2D=(_F(GROUP_MA=('GM11')),
+                               _F(GROUP_MA=('GM12'))),
+                 MODELE=MO);
+
+
+MAT=DEFI_MATERIAU(ELAS=_F(E=2.E5,
+                           NU=0.29999999999999999,),
+                   ECRO_LINE=_F(D_SIGM_EPSI=5000.0,
+                                SY=300.0,),);
+
+CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
+                    AFFE=(_F(GROUP_MA=('GM15'),
+                             MATER=MAT,),),);
+
+CHA=AFFE_CHAR_MECA(MODELE=MO,
+                   DDL_IMPO=(_F(GROUP_MA='GM14',
+                                DX= 0.0,
+                                DY= 0.0,),
+                             _F(GROUP_MA=('GM9','GM10','GM11'),
+                                DX=0.0,
+                                DY=-0.4,),
+                             _F(GROUP_MA=('GM13'),
+                                DX=0.0,),
+                                ),
+                   CONTACT=_F(APPARIEMENT='MAIT_ESCL',
+                              GROUP_MA_MAIT='GM11',
+                              GROUP_MA_ESCL='GM12',
+                              NORMALE='MAIT_ESCL'
+                              ),);
+
+L_INST=DEFI_LIST_REEL(DEBUT=0.0,
+                      INTERVALLE=_F(JUSQU_A=1.0,
+                                    NOMBRE=50,),);
+
+F=DEFI_FONCTION(NOM_PARA='INST',
+                VALE=(0.0,  0.0,
+                      0.8,  1.0,
+                      1.0,  0.98),
+                      );
+
+RESU=STAT_NON_LINE(MODELE=MO,
+                   CHAM_MATER=CHMAT,
+                   EXCIT=_F(CHARGE=CHA,
+                            FONC_MULT=F,),
+                   COMP_INCR=_F(RELATION='VMIS_ISOT_LINE',
+                                DEFORMATION='SIMO_MIEHE'),
+                   INCREMENT=_F(LIST_INST=L_INST,
+                                INST_FIN=1.,
+                                SUBD_PAS=4,
+                                SUBD_PAS_MINI=1.E-4,
+                                COEF_SUBD_PAS_1=1.0,),
+                   NEWTON=_F(MATRICE='TANGENTE',
+                             PREDICTION='ELASTIQUE',
+                             REAC_ITER=1,),
+                   ARCHIVAGE=_F(LIST_INST=L_INST,
+                                ARCH_ETAT_INIT='OUI',),);
+
+
+# On definit un fichier pour le post traitement 
+# des deplacements avec gmsh
+
+DEFI_FICHIER(FICHIER='DEPLA', UNITE=37)
+                     
+IMPR_RESU (RESU = _F(
+           FORMAT = 'GMSH',
+           RESULTAT = RESU,
+           NOM_CHAM = ('DEPL'),
+           FICHIER='DEPLA')
+           );
+           
+DEFI_FICHIER(ACTION='LIBERER',UNITE=37);
+
+# On calcule la force de reaction du massif
+# attention : la force est en n/radian
+RESU=CALC_NO(reuse =RESU,
+             MODELE=MO,
+             CHAM_MATER=CHMAT,
+             OPTION='REAC_NODA',
+             RESULTAT=RESU,);
+
+TAB_FORC=POST_RELEVE_T(ACTION=_F(INTITULE='FORCE',
+                            GROUP_NO='GM12',
+                            RESULTAT=RESU,
+                            NOM_CHAM='REAC_NODA',
+                            TOUT_ORDRE='OUI',
+                            RESULTANTE='DY',
+                            OPERATION='EXTRACTION',),);
+                                 
+TEST_RESU(RESU=(_F(RESULTAT=RESU,
+                   INST=0.50,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   GROUP_NO='GM16',
+                   VALE=-2.50000E-01,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='7.1.07',),
+                _F(RESULTAT=RESU,
+                   INST=0.50,
+                   NOM_CHAM='REAC_NODA',
+                   NOM_CMP='DX',
+                   GROUP_NO='GM16',
+                   VALE=-1.72144E+01,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='7.1.07',),
+                _F(RESULTAT=RESU,
+                   INST=0.50,
+                   NOM_CHAM='REAC_NODA',
+                   NOM_CMP='DY',
+                   GROUP_NO='GM16',
+                   VALE=-1.63087E+01,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='7.1.07',),   
+                   ),);
+
+TEST_RESU(RESU=(_F(RESULTAT=RESU,
+                   INST=1.0,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   GROUP_NO='GM16',
+                   VALE=-3.92000E-01,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='7.1.07',),
+                _F(RESULTAT=RESU,
+                   INST=1.0,
+                   NOM_CHAM='REAC_NODA',
+                   NOM_CMP='DX',
+                   GROUP_NO='GM16',
+                   VALE=-1.86982E+01,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='7.1.07',),
+                _F(RESULTAT=RESU,
+                   INST=1.0,
+                   NOM_CHAM='REAC_NODA',
+                   NOM_CMP='DY',
+                   GROUP_NO='GM16',
+                   VALE=-1.37081E+01,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='7.1.07',),   
+                   ),);
+                   
+FY=RECU_FONCTION(TABLE=TAB_FORC,
+                 PARA_X='INST',
+                 PARA_Y='DY')
+
+DY=RECU_FONCTION(RESULTAT=RESU,
+                 NOM_CHAM='DEPL',
+                 NOM_CMP='DY',
+                 GROUP_NO='GM16')
+
+IMPR_COURBE(FORMAT='AGRAF',
+            FICHIER='RESULTAT',
+            LEGENDE_X='Deplacement (mm)',
+            LEGENDE_Y='Force (N/rd)',
+            COURBE=(_F(FONC_X = DY,
+                       FONC_Y = FY,)));
+
+FIN();

@@ -1,7 +1,7 @@
       SUBROUTINE  EPSTMC(MODELI, TEMPE, TREF, HYDR, SECH, SREF, INSTAN,
      &                    MATER,OPTION, EPSTH)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 04/05/2004   AUTEUR SMICHEL S.MICHEL-PONNELLE 
+C MODIF ELEMENTS  DATE 17/05/2004   AUTEUR ROMEO R.FERNANDES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -113,8 +113,7 @@ C ---- ---------------------------------------------------------------
 C ---- CALCUL DES DEFORMATIONS DU AU SECAHGE (OPTION CHAR_MECA_SECH_R)
 C ---- ---------------------------------------------------------------
       ELSEIF (OPTION(11:14).EQ.'SECH' ) THEN
-         IF (SECH.NE.0.D0) THEN
-C
+
             PHENOM = 'ELAS'
             NOMRES(1) = 'K_DESSIC'
             NBV = 1
@@ -136,8 +135,7 @@ C
      +          MODELI(1:2).EQ.'FO'.OR.MODELI(1:2).EQ.'AX') THEN
                 EPSTH(3) = - KDESSI*(SREF-SECH)
             ENDIF
-         ENDIF
-C
+
 C ---- ------------------------------------------------------------
 C ---- CALCUL DES DEFORMATIONS THERMIQUES (OPTION CHAR_MECA_TEMP_R)
 C ---- ------------------------------------------------------------

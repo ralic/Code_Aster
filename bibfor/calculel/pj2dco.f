@@ -8,7 +8,7 @@
       INTEGER NBMA1,LIMA1(*),NBNO2,LINO2(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 16/02/2004   AUTEUR MJBHHPE J.L.FLEJOU 
+C MODIF CALCULEL  DATE 18/05/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -74,13 +74,13 @@ C
 C
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C
-      REAL*8   COBARY(3)
-      CHARACTER*8   KB,M1,M2,NONO2
-      CHARACTER*16 CORTR3
-      CHARACTER*14 BOITE
-      PARAMETER (NBTM=5)
-      INTEGER     NUTM(NBTM),IFM,NIV
-      CHARACTER*8 NOTM(NBTM)
+      REAL*8        COBARY(3)
+      CHARACTER*8   KB, M1, M2, NONO2
+      CHARACTER*16  CORTR3
+      CHARACTER*14  BOITE
+      PARAMETER    (NBTM=5)
+      INTEGER      NUTM(NBTM), IFM, NIV
+      CHARACTER*8  NOTM(NBTM), ELRF(NBTM)
       LOGICAL DBG
 
       LOGICAL LDMAX
@@ -98,8 +98,6 @@ C DEB ------------------------------------------------------------------
 
       CALL INFNIV(IFM,NIV)
 
-
-
 C     1. ON CHERCHE LES MAILLES (ET LES NOEUDS) UTILES :
 C        CE SONT LES MAILLES SURFACIQUES QUI PORTENT DES ELEMENTS FINIS
 C        ET LES NOEUDS PORTES PAR CES MAILLES
@@ -112,6 +110,12 @@ C     -----------------------------
       NOTM(3)='QUAD4'
       NOTM(4)='QUAD8'
       NOTM(5)='QUAD9'
+
+      ELRF(1)='TR3'
+      ELRF(2)='TR6'
+      ELRF(3)='QU4'
+      ELRF(4)='QU8'
+      ELRF(5)='QU9'
 
       DO 9,K=1,NBTM
         CALL JENONU(JEXNOM('&CATA.TM.NOMTM',NOTM(K)),NUTM(K))
@@ -358,7 +362,7 @@ C     ------------------------------------------------
 
 C  5. ON TRANSFORME CORTR3 EN CORRES (RETOUR AUX VRAIES MAILLES)
 C     ----------------------------------------------------------
-      CALL PJ2DTR(CORTR3,CORRES,NUTM,NOTM)
+      CALL PJ2DTR(CORTR3,CORRES,NUTM,ELRF)
       DBG=.FALSE.
       IF (DBG) THEN
          CALL UTIMSD('MESSAGE',2,.FALSE.,.TRUE.,'&&PJ2DCO',1,' ')

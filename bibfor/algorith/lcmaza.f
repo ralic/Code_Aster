@@ -1,8 +1,9 @@
       SUBROUTINE LCMAZA (NDIM, TYPMOD, IMATE,COMPOR, EPSM,
      &                   DEPS, VIM, TM,TP,TREF,
+     &                   HYDRM,HYDRP,SECHM,SECHP,SREF,
      &                   OPTION, SIG, VIP,  DSIDEP)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 17/05/2004   AUTEUR ROMEO R.FERNANDES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,14 +24,17 @@ C
 C ======================================================================
 
       IMPLICIT NONE
-      CHARACTER*8        TYPMOD(2)
-      CHARACTER*16       COMPOR(*),OPTION
+      CHARACTER*8       TYPMOD(2)
+      CHARACTER*16      COMPOR(*),OPTION
       INTEGER            NDIM, IMATE
       REAL*8             EPSM(6), DEPS(6), VIM(3), TM, TP, TREF
+      REAL*8             HYDRM,HYDRP,SECHM,SECHP,SREF
       REAL*8             SIG(6), VIP(3), DSIDEP(6,6)
 C ----------------------------------------------------------------------
 C     LOI DE COMPORTEMENT ENDOMMAGEABLE : MODELE DE MAZARS
 C     POUR MAZARS  OU MAZARS_FO COMBINABLE AVEC ELAS OU ELAS_FO
+C     NB. LES PARAMETRES MATERIAUX PEUVENT DEPENDRE DE LA TEMPERATURE,
+C      DE L'HYDRATATION OU DU SECHAGE
 C
 C IN  NDIM    : DIMENSION DE L'ESPACE
 C IN  TYPMOD  : TYPE DE MODELISATION
@@ -41,6 +45,11 @@ C IN  VIM     : VARIABLES INTERNES EN T-
 C IN  TM      : TEMPERATURE EN T-
 C IN  TP      : TEMPERATURE EN T+
 C IN  TREF    : TEMPERATURE DE REFERENCE
+C IN  HYDRM   : HYDRATATION A L'INSTANT PRECEDENT
+C IN  HYDRP   : HYDRATATION A L'INSTANT DU CALCUL
+C IN  SECHM   : SECHAGE A L'INSTANT PRECEDENT
+C IN  SECHP   : SECHAGE A L'INSTANT DU CALCUL
+C IN  SREF    : SECHAGE DE REFERENCE
 C IN  OPTION  : OPTION DEMANDEE
 C                 RIGI_MECA_TANG ->     DSIDEP
 C                 FULL_MECA      -> SIG DSIDEP VIP
@@ -61,17 +70,18 @@ C         BC = CONSTANTE DE COMPRESSION (1000 A 2000)[REEL OU FCT]
 C ----------------------------------------------------------------------
       LOGICAL     RIGI, RESI, PROG, ELAS, CPLAN
       CHARACTER*2 CODRET(6)
-      CHARACTER*8 NOMRES(6)
+      CHARACTER*8 NOMRES(6), NOMPAR(3)
       INTEGER     NDIMSI, NPERM, NITJAC, TRIJ, ORDREJ
       INTEGER     I,J,K,L
-      REAL*8      RAC2, EPS(6), D , TOL, TOLDYN, TR(6),TU(6)
-      REAL*8      VECPE(3,3), EPSEP(3), JACAUX(3)
-      REAL*8      EPSEQ, LAMBDA, DEUXMU
-      REAL*8      SIGEL(6), TMP1, ALPHAT, EPST(3), TRSIG
-      REAL*8      DC, DT, AC, AT, BC, BT, BETA, EPSD0, SIGELP(3)
-      REAL*8      E, NU, COEF, EPSPLU(6), RTEMPC,RTEMPT
-      REAL*8      VALRES(6), COPLAN
-      REAL*8      ALPHA, EPSE(6), KRON(6), TEMP,TMAX,TMAXM
+      REAL*8      E, NU, ALPHA, KDESS, BENDO 
+      REAL*8      DC, DT, AC, AT, BC, BT, BETA, EPSD0
+      REAL*8      EPS(6), EPSE(6), EPSPLU(6), EPSEP(3), EPST(3), EPSEQ
+      REAL*8      SIGEL(6), SIGELP(3), TRSIG
+      REAL*8      TEMP, TMAX, TMAXM, HYDR, SECH      
+      REAL*8      TOL, TOLDYN, TR(6), TU(6), JACAUX(3), VECPE(3,3)
+      REAL*8      RAC2, LAMBDA, DEUXMU, ALPHAT, COEF, RTEMPC, RTEMPT
+      REAL*8      VALRES(6), VALPAR(3), COPLAN, D, TMP1
+      REAL*8      KRON(6)  
       DATA        KRON/1.D0,1.D0,1.D0,0.D0,0.D0,0.D0/
 
 C ======================================================================
@@ -95,53 +105,76 @@ C -- OPTION ET MODELISATION
       NDIMSI = 2*NDIM
       RAC2=SQRT(2.D0)
 
-C     DETERMINATION DE LA TEMPERATURE DE REFERENCE (TMAX)
+C   DETERMINATION DE LA TEMPERATURE DE REFERENCE (TMAX) ET 
+C   DES CONDITIONS D HYDRATATION OU DE SECHAGE
       TMAXM = VIM(3)
       IF (RESI) THEN
         TEMP = TP
+        HYDR = HYDRP
+        SECH = SECHP
         TMAX = MAX(TMAXM, TP) 
         IF (TMAX.GT.TMAXM) VIP(3) = TMAX
       ELSE
         TEMP = TM
+        HYDR = HYDRM
+        SECH = SECHM
         TMAX = TMAXM
       ENDIF
 
-C    LECTURE DES CARACTERISTIQUES ELASTIQUES A TMAX
+C  RECUPERATION DES CARACTERISTIQUES MATERIAUX QUI PEUVENT VARIER
+C  AVEC LA TEMPERATURE (MAXIMALE), L'HYDRATATION OU LE SECHAGE
+C-----------------------------------------------------
+
+      NOMPAR(1) = 'TEMP'
+      NOMPAR(2) = 'HYDR'
+      NOMPAR(3) = 'SECH'
+      VALPAR(1) = TMAX
+      VALPAR(2) = HYDR
+      VALPAR(3) = SECH
+
+C    LECTURE DES CARACTERISTIQUES ELASTIQUES 
+
       NOMRES(1) = 'E'
       NOMRES(2) = 'NU'
       NOMRES(3) = 'ALPHA'
-      IF ((((COMPOR(1)(1:6) .EQ. 'KIT_HM') .OR. 
-     &     (COMPOR(1)(1:7) .EQ. 'KIT_HHM') .OR.
-     &     (COMPOR(1)(1:7) .EQ. 'KIT_THM') .OR.
-     &     (COMPOR(1)(1:8) .EQ. 'KIT_THHM')).AND.
-     &     (COMPOR(11)(1:6) .EQ. 'MAZARS')).OR.
-     &     (COMPOR(1)(1:6) .EQ. 'MAZARS'))      THEN
-      CALL RCVALA(IMATE,' ','ELAS',1,'TEMP',TMAX,2,
-     &              NOMRES,VALRES,CODRET, 'FM')
-      CALL RCVALA(IMATE,' ','ELAS',1,'TEMP',TMAX,1,
+
+      CALL RCVALA(IMATE,' ','ELAS',3,NOMPAR,VALPAR,2,
+     &             NOMRES,VALRES,CODRET, 'FM')
+      CALL RCVALA(IMATE,' ','ELAS',3,NOMPAR,VALPAR,1,
      &              NOMRES(3),VALRES(3),CODRET(3), ' ')
       IF ( CODRET(3) .NE. 'OK' ) VALRES(3) = 0.D0
       E     = VALRES(1)
       NU    = VALRES(2)
       ALPHA = VALRES(3)
-      END IF      
       LAMBDA = E * NU / (1.D0+NU) / (1.D0 - 2.D0*NU)
       DEUXMU = E/(1.D0+NU)
-
+      
+C --- LECTURE DU RETRAIT ENDOGENE ET RETRAIT DE DESSICCATION
+C     SAUF EN CAS DE COUPLAGE
+      IF (COMPOR(1)(1:6) .EQ. 'MAZARS')      THEN
+        NOMRES(1)='B_ENDOGE'
+        NOMRES(2)='K_DESSIC'
+        CALL RCVALA(IMATE,' ','ELAS',0,' ',0.D0,1,
+     +            NOMRES(1),VALRES(1),CODRET(1), ' ' )
+        IF ( CODRET(1) .NE. 'OK' ) VALRES(1) = 0.D0
+        BENDO = VALRES(1)
+        CALL RCVALA(IMATE,' ','ELAS',0,' ',0.D0,1,
+     +            NOMRES(2),VALRES(2),CODRET(2), ' ' )
+        IF ( CODRET(2) .NE. 'OK' ) VALRES(2) = 0.D0
+        KDESS = VALRES(2)
+      ELSE 
+        BENDO = 0.D0
+        KDESS = 0.D0
+      ENDIF
+            
 C    LECTURE DES CARACTERISTIQUES D'ENDOMMAGEMENT
-       NOMRES(1) = 'EPSD0'
-       NOMRES(2) = 'BETA'
-       NOMRES(3) = 'AC'
-       NOMRES(4) = 'BC'
-       NOMRES(5) = 'AT'
-       NOMRES(6) = 'BT'
-      IF ((((COMPOR(1)(1:6) .EQ. 'KIT_HM') .OR. 
-     &     (COMPOR(1)(1:7) .EQ. 'KIT_HHM') .OR.
-     &     (COMPOR(1)(1:7) .EQ. 'KIT_THM') .OR.
-     &     (COMPOR(1)(1:8) .EQ. 'KIT_THHM')).AND.
-     &     (COMPOR(11)(1:6) .EQ. 'MAZARS')).OR.
-     &     (COMPOR(1)(1:6) .EQ. 'MAZARS' ))THEN
-       CALL RCVALA(IMATE,' ','MAZARS',1,'TEMP',TMAX,6,
+      NOMRES(1) = 'EPSD0'
+      NOMRES(2) = 'BETA'
+      NOMRES(3) = 'AC'
+      NOMRES(4) = 'BC'
+      NOMRES(5) = 'AT'
+      NOMRES(6) = 'BT'
+      CALL RCVALA(IMATE,' ','MAZARS',3,NOMPAR,VALPAR,6,
      &            NOMRES,VALRES,CODRET,'FM')
       EPSD0 = VALRES(1)
       BETA  = VALRES(2)
@@ -149,7 +182,7 @@ C    LECTURE DES CARACTERISTIQUES D'ENDOMMAGEMENT
       BC    = VALRES(4)
       AT    = VALRES(5)
       BT    = VALRES(6)
-      END IF
+      
 
 C ======================================================================
 C       CALCUL DES GRANDEURS UTILES QUELQUE SOIT OPTION
@@ -181,7 +214,9 @@ C    A FAIRE EVOLUER L'ENDOMMAGEMENT)
 
       CALL R8INIR(6, 0.D0, EPSE,1)
       DO 35 K=1,NDIMSI
-        EPSE(K) = EPS(K) - ALPHA * (TEMP - TREF) * KRON(K)
+        EPSE(K) = EPS(K) - (   ALPHA * (TEMP - TREF) 
+     &                      - KDESS * (SREF-SECH)
+     &                      - BENDO *  HYDR         ) * KRON(K)
 35    CONTINUE 
       IF (CPLAN) THEN
         COPLAN  = - NU/(1.D0-NU)
@@ -314,6 +349,7 @@ C      EXP(RTEMP) SI RTEMP TROP GRAND
             IF (D.GT.VIM(1)) PROG = .TRUE.
             IF (D.GT.0.D0)   ELAS = .FALSE.
         END IF
+        
 C    2 -   MISE A JOUR DES VARIABLES INTERNES
 C ------------------------------------------------------------
           

@@ -1,4 +1,4 @@
-# MODIF  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 17/05/2004   AUTEUR CIBHHBC M.LOPES 
 # TITRE SYSTEME 2 MASSES 3 RESSORTS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -284,20 +284,20 @@ TEST_RESU(RESU=(
 #
 #--------------------------------
 #
-F0=DEFI_VALEUR(    R8=1.0    )
+F0=1.0
 
 #
-F1=DEFI_VALEUR(    R8=1.5    )
+F1=1.5
 
-F2=DEFI_VALEUR(    R8=2.0    )
+F2=2.0
 
-OMEGA1=DEFI_VALEUR(    R8=EVAL("""2*PI*F1 """) )
+OMEGA1=2*pi*F1
 
-OMEGA2=DEFI_VALEUR(    R8=EVAL("""2*PI*F2 """) )
+OMEGA2=2*pi*F2
 
-A1=DEFI_VALEUR(    R8=0.5    )
+A1=0.5
 
-A2=DEFI_VALEUR(    R8=0.5    )
+A2=0.5
 
 #
 L_FREQ=DEFI_LIST_REEL(        DEBUT=0.01,
@@ -309,15 +309,6 @@ A1*(2*PI*FREQ)**2/ABS(OMEGA1**2-(2*PI*FREQ)**2)""")
 #
 FSRO2 = FORMULE(REEL="""(REEL:FREQ) =
 A2*(2*PI*FREQ)**2/ABS(OMEGA2**2-(2*PI*FREQ)**2)""")
-#
-SRO1_1=DEFI_VALEUR(    R8=EVAL("""FSRO1(F0        )"""))
-
-SRO1_2=DEFI_VALEUR(    R8=EVAL("""FSRO1(2.236*F0  )"""))
-
-SRO2_1=DEFI_VALEUR(    R8=EVAL("""FSRO2(F0        )"""))
-
-SRO2_2=DEFI_VALEUR(    R8=EVAL("""FSRO2(2.236*F0  )"""))
-
 #
 
 SRO1=CALC_FONC_INTERP(           FONCTION=FSRO1,

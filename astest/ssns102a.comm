@@ -1,0 +1,611 @@
+# MODIF  DATE 17/05/2004   AUTEUR CIBHHBC M.LOPES 
+# RESPONSABLE JMBHH01 J.M.PROIX
+# TITRE ANNEAU AVEC RAIDISSEUR SOUS PRESSION EXTERNE
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+
+DEBUT(CODE=_F(NOM='SSNS102A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),PAR_LOT='NON');
+
+interactif=0
+impr_gmsh=0
+
+PRE_GIBI();
+
+MAIL=LIRE_MAILLAGE();
+
+MAIL=MODI_MAILLAGE(reuse=MAIL,MAILLAGE=MAIL,
+ORIE_SHB8=_F(GROUP_MA='GEOTOT'),)
+
+
+MODMECA=AFFE_MODELE(MAILLAGE=MAIL,
+                    AFFE=_F(TOUT='OUI',
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='SHB8',),);
+                            
+
+MAIL=MODI_MAILLAGE(MAILLAGE=MAIL,reuse=MAIL,
+                   ORIE_PEAU_3D=_F(GROUP_MA='SUEXTEXT',),
+                   MODELE=MODMECA);
+
+MAT=DEFI_MATERIAU(ELAS=_F(E=2.0000000000E11,
+                          NU=0.3,),);
+
+CHM=AFFE_MATERIAU(MAILLAGE=MAIL,
+                  AFFE=_F(TOUT='OUI',
+                          MATER=MAT,),);
+
+
+CHARCL=AFFE_CHAR_MECA(MODELE=MODMECA,
+                      DDL_IMPO=(_F(GROUP_MA=('SU0'),
+                                   DY=0.0,),
+                                _F(GROUP_MA='SU90',
+                                   DX=0.0,),
+                                _F(GROUP_MA='SUINF',
+                                   DZ=0.0,),
+#                                _F(GROUP_MA='SUSUP',
+#                                   DZ=0.0,),
+                                ),)
+                                
+# perturbation  
+                              
+CHARGT=AFFE_CHAR_MECA(MODELE=MODMECA,
+                      FORCE_NODALE=(_F(GROUP_NO='P4',
+                                      FX=-500.,),
+                                   _F(GROUP_NO='P11',
+                                      FX=-500.,),
+                                      ),
+                                    )
+                                    
+                                    
+CHARGP=AFFE_CHAR_MECA(MODELE=MODMECA,
+                      PRES_REP=_F(GROUP_MA='SUEXTEXT',
+                                   PRES=5.57493E+6,),);
+
+# CHARGE CRITIQUE FLAMBAGE D EULER
+
+##########################################################
+
+###### MATRICE DE RIGIDITE ELEMENTAIRE
+#
+MATR=CALC_MATR_ELEM(MODELE=MODMECA,
+                    CHARGE=CHARCL,
+                    CHAM_MATER=CHM,
+                    OPTION='RIGI_MECA' )
+
+###### MATRICE DE RIGIDITE ASSEMBLEE
+#
+NU=NUME_DDL(MATR_RIGI=MATR)
+MATASS_1=ASSE_MATRICE(MATR_ELEM=MATR, NUME_DDL=NU)
+
+
+###### DEPLACEMENT INITIAL
+#
+RESU=MECA_STATIQUE(MODELE=MODMECA,
+                   CHAM_MATER=CHM,
+                   EXCIT=(_F(CHARGE=CHARCL,),
+                          _F(CHARGE=CHARGP,),),);
+
+
+###### ETAT DE CONTRAINTES
+#
+SIGMA_1=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='ELGA_SIEF_R',
+                    RESULTAT=RESU, NUME_ORDRE=1,
+                    NOM_CHAM='SIEF_ELGA_DEPL' ),
+
+#IMPR_RESU(MODELE=MODMECA,
+#          RESU=(_F(FORMAT='RESULTAT',
+#                   CHAM_GD=SIGMA_1,VALE_MAX='OUI',VALE_MIN='OUI',
+#                   ),
+#                   ),);
+#
+###### MATRICE DE RIGIDITE GEOMETRIQUE ELEMENTAIRE
+#
+RIGELG_1=CALC_MATR_ELEM( MODELE=MODMECA, 
+                         OPTION='RIGI_GEOM',
+                         SIEF_ELGA=SIGMA_1 )
+
+###### MATRICE DE RIGIDITE GEOMETRIQUE ASSEMBLEE
+#
+RIGASG_1=ASSE_MATRICE(MATR_ELEM=RIGELG_1,NUME_DDL=NU)
+
+##### RESOLUTION DU PROBLEME DE VALEURS PROPRES
+#
+MOD_1=MODE_ITER_SIMULT( MATR_A=MATASS_1,
+                        MATR_B=RIGASG_1,
+                        TYPE_RESU='MODE_FLAMB',
+                        CALC_FREQ =_F (OPTION ='PLUS_PETITE',
+                                       NMAX_FREQ = 1,),
+                        )
+                        
+# REFERENCE CODE INCA INSA LYON                        
+TEST_RESU(RESU=(
+                 _F(RESULTAT=MOD_1, NUME_MODE=1, PARA='CHAR_CRIT',REFERENCE='SOURCE_EXTERNE',
+                   VALE=-1.275226, PRECISION=0.03,),
+                   ),)
+
+if impr_gmsh==1 :                   
+   DEFI_FICHIER ( FICHIER='GMSH',UNITE=55)
+   IMPR_RESU(MODELE=MODMECA,
+          RESU=(_F(FORMAT='GMSH',FICHIER='GMSH',
+                   RESULTAT=MOD_1,
+                   NOM_CHAM=('DEPL'),),
+                   ),);
+                   
+
+D_FONC=DEFI_FONCTION(NOM_PARA='INST',
+                     VALE=(0.0,0.0,10000.0,10000.0,),);
+
+L_INST=DEFI_LIST_REEL(DEBUT=0.0,
+                      INTERVALLE=(_F(JUSQU_A=.9,
+                                    PAS=0.1,),
+                                  _F(JUSQU_A=1.21,
+                                    PAS=0.01,),),
+                    );
+
+LISTPILO=DEFI_LIST_REEL(DEBUT=0.0,
+                        INTERVALLE=_F(JUSQU_A=0.03,
+                                      NOMBRE=30,),);
+
+# SANS PRESSION SUIVEUSE, SOLUTION DE REFERENCE INCA
+
+NONLIN=STAT_NON_LINE(MODELE=MODMECA,
+                     CHAM_MATER=CHM,
+                     EXCIT=(
+                              _F(CHARGE=CHARCL),
+                              _F(CHARGE=CHARGT,
+#                              TYPE_CHARGE='FIXE_PILO',),
+                              FONC_MULT=D_FONC,),
+                            _F(CHARGE=CHARGP,
+                            #  TYPE_CHARGE='SUIV',
+                              FONC_MULT=D_FONC,),), 
+                     COMP_INCR=_F(RELATION='ELAS',
+                                  DEFORMATION='GREEN',
+                                  TOUT='OUI',),
+#                     INCREMENT=_F(LIST_INST=LISTPILO,
+                     INCREMENT=_F(LIST_INST=L_INST,
+                     SUBD_PAS=4,
+                     SUBD_PAS_MINI=0.000001),
+                     NEWTON=_F(REAC_ITER=0,),
+#                     PILOTAGE=_F(TYPE='DDL_IMPO',
+#                                 COEF_MULT=-1.0,
+#                                 GROUP_NO='P1',
+#                                 NOM_CMP='DX',),
+                     CONVERGENCE=_F(RESI_GLOB_RELA=1E-06,
+                                    ITER_GLOB_MAXI=155,),);
+
+if impr_gmsh==1 :                   
+   DEFI_FICHIER(FICHIER='GMSH2',UNITE=56)
+   IMPR_RESU(MODELE=MODMECA,
+          RESU=(
+                _F(FORMAT='GMSH',FICHIER='GMSH2',
+                   RESULTAT=NONLIN,INST=0.9,
+                   NOM_CHAM='DEPL',),
+                _F(FORMAT='GMSH',FICHIER='GMSH2',
+                   RESULTAT=NONLIN,INST=0.9,
+                   NOM_CHAM='SIEF_ELGA',NOM_CMP=('SIXX','SIYY','SIZZ'),),
+                   ),);
+
+TABDX=POST_RELEVE_T(ACTION=_F(INTITULE='F',
+                              GROUP_NO='P1',
+                              RESULTAT=NONLIN,
+                              NOM_CHAM='DEPL',
+                              TOUT_ORDRE='OUI',
+                              NOM_CMP='DX',
+                              OPERATION='EXTRACTION',),);
+
+FETA=RECU_FONCTION(TABLE=TABDX,INTERPOL='LIN',PROL_GAUCHE='CONSTANT',PROL_DROITE='CONSTANT',
+                  PARA_X='INST',
+                  PARA_Y='DX',);
+
+#FETA=RECU_FONCTION(RESULTAT=NONLIN,
+#                   NOM_PARA_RESU='ETA_PILOTAGE',);
+
+
+IMPR_COURBE( FORMAT='EXCEL',
+            COURBE=( _F(FONCTION=FETA,),
+                    ),);
+
+# SANS PRESSION SUIVEUSE, NON REGRESSION
+
+TEST_FONCTION(VALEUR=(
+_F(FONCTION=FETA,REFERENCE='NON_REGRESSION', VALE_PARA =1.00000E-01,VALE_REFE=-6.30195E-04 ),
+_F(FONCTION=FETA,REFERENCE='NON_REGRESSION', VALE_PARA =2.00000E-01,VALE_REFE=-1.26325E-03 ),
+_F(FONCTION=FETA,REFERENCE='NON_REGRESSION', VALE_PARA =3.00000E-01,VALE_REFE=-1.89997E-03 ),
+_F(FONCTION=FETA,REFERENCE='NON_REGRESSION', VALE_PARA =4.00000E-01,VALE_REFE=-2.54164E-03 ),
+_F(FONCTION=FETA,REFERENCE='NON_REGRESSION', VALE_PARA =5.00000E-01,VALE_REFE=-3.19020E-03 ),
+_F(FONCTION=FETA,REFERENCE='NON_REGRESSION', VALE_PARA =6.00000E-01,VALE_REFE=-3.84882E-03 ),
+_F(FONCTION=FETA,REFERENCE='NON_REGRESSION', VALE_PARA =7.00000E-01,VALE_REFE=-4.52294E-03 ),
+_F(FONCTION=FETA,REFERENCE='NON_REGRESSION', VALE_PARA =8.00000E-01,VALE_REFE=-5.22528E-03 ),
+_F(FONCTION=FETA,REFERENCE='NON_REGRESSION', VALE_PARA =9.00000E-01,VALE_REFE=-5.97557E-03 ),
+_F(FONCTION=FETA,REFERENCE='NON_REGRESSION', VALE_PARA =9.10000E-01,VALE_REFE=-6.05663E-03 ),
+_F(FONCTION=FETA,REFERENCE='NON_REGRESSION', VALE_PARA =9.20000E-01,VALE_REFE=-6.13734E-03 ),
+_F(FONCTION=FETA,REFERENCE='NON_REGRESSION', VALE_PARA =9.30000E-01,VALE_REFE=-6.21928E-03 ),
+_F(FONCTION=FETA,REFERENCE='NON_REGRESSION', VALE_PARA =9.40000E-01,VALE_REFE=-6.30256E-03 ),
+_F(FONCTION=FETA,REFERENCE='NON_REGRESSION', VALE_PARA =9.50000E-01,VALE_REFE=-6.38734E-03 ),
+_F(FONCTION=FETA,REFERENCE='NON_REGRESSION', VALE_PARA =9.60000E-01,VALE_REFE=-6.47375E-03 ),
+),)
+
+ # solution de reference INCA SANS PRESSION SUIVEUSE
+          
+INCA=DEFI_FONCTION(NOM_PARA='INST',INTERPOL='LIN',PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',
+                   VALE=(
+1.000E-01, -6.414E-04,
+2.000E-01, -1.288E-03,
+3.001E-01, -1.942E-03,
+4.000E-01, -2.604E-03,
+4.999E-01, -3.279E-03,
+5.996E-01, -3.971E-03,
+6.987E-01, -4.688E-03,
+7.964E-01, -5.443E-03,
+8.909E-01, -6.256E-03,
+9.768E-01, -7.142E-03,
+1.056E+00, -8.254E-03,
+1.103E+00, -9.278E-03,
+1.130E+00, -1.020E-02,
+1.148E+00, -1.106E-02,
+1.160E+00, -1.189E-02,
+1.169E+00, -1.271E-02,
+1.175E+00, -1.351E-02,
+1.181E+00, -1.430E-02,
+1.185E+00, -1.509E-02,
+1.188E+00, -1.587E-02,
+1.191E+00, -1.681E-02,
+1.194E+00, -1.774E-02,
+1.196E+00, -1.866E-02,
+1.197E+00, -1.959E-02,
+),);
+
+TEST_FONCTION(VALEUR=(
+_F(FONCTION=FETA,REFERENCE='SOURCE_EXTERNE', VALE_PARA =1.000E-01,VALE_REFE=-6.414E-04 ,PRECISION=0.06),
+_F(FONCTION=FETA,REFERENCE='SOURCE_EXTERNE', VALE_PARA =2.000E-01,VALE_REFE=-1.288E-03 ,PRECISION=0.06),
+_F(FONCTION=FETA,REFERENCE='SOURCE_EXTERNE', VALE_PARA =3.001E-01,VALE_REFE=-1.942E-03 ,PRECISION=0.06),
+_F(FONCTION=FETA,REFERENCE='SOURCE_EXTERNE', VALE_PARA =4.000E-01,VALE_REFE=-2.604E-03 ,PRECISION=0.06),
+_F(FONCTION=FETA,REFERENCE='SOURCE_EXTERNE', VALE_PARA =4.999E-01,VALE_REFE=-3.279E-03 ,PRECISION=0.06),
+_F(FONCTION=FETA,REFERENCE='SOURCE_EXTERNE', VALE_PARA =5.996E-01,VALE_REFE=-3.971E-03 ,PRECISION=0.06),
+_F(FONCTION=FETA,REFERENCE='SOURCE_EXTERNE', VALE_PARA =6.987E-01,VALE_REFE=-4.688E-03 ,PRECISION=0.06),
+_F(FONCTION=FETA,REFERENCE='SOURCE_EXTERNE', VALE_PARA =7.964E-01,VALE_REFE=-5.443E-03 ,PRECISION=0.06),
+_F(FONCTION=FETA,REFERENCE='SOURCE_EXTERNE', VALE_PARA =8.909E-01,VALE_REFE=-6.256E-03 ,PRECISION=0.06),
+),)                                                     
+                         
+IMPR_COURBE(FICHIER='RESULTAT',
+            FORMAT='EXCEL',
+            COURBE=(_F(FONCTION=INCA,),
+                    _F(FONCTION=FETA,),),);
+
+
+DIFF=CALC_FONCTION(COMB=(
+                          _F(  FONCTION = FETA, COEF =  1.), 
+                          _F(  FONCTION = INCA, COEF = -1.), 
+                          ) )
+
+IMPR_COURBE(FICHIER='RESULTAT',
+            FORMAT='EXCEL',
+            COURBE=(_F(FONCTION=DIFF,),),);
+                    
+# CECI NE CONVIENT PAS CAR CALCULE LE MAX DE INST
+MAXINCA=CALC_FONCTION( MAX=_F(  FONCTION = INCA)    )
+
+IMPR_TABLE(TABLE=MAXINCA)
+
+liste1=[]
+liste2=[]
+valINCA=INCA.LIST_VALEURS()
+print 'INCA=',valINCA
+nbval=len(valINCA)/2
+valmax1=0.0
+for i in range(0,nbval-1):
+   i2=2*i
+   inst1=valINCA[i2]
+   forc1=valINCA[i2+1]
+   liste1.append(inst1)
+   liste2.append(forc1)
+   ordo1=abs(forc1)
+   valmax1=max(ordo1,valmax1)
+   
+TINCA=CREA_TABLE(LISTE=(_F(LISTE_R=tuple(liste1),
+                         PARA='INST'),
+                      _F(LISTE_R=tuple(liste2),
+                         PARA='TOUTRESU'))); 
+                         
+IMPR_TABLE(TABLE=TINCA)
+
+liste01=[]
+liste02=[]
+valaster=FETA.LIST_VALEURS()
+print 'valaster=',valaster
+nbval=len(valaster)/2
+valmax0=0.0
+for i in range(0,nbval-1):
+   i2=2*i
+   inst0=valaster[i2]
+   forc0=valaster[i2+1]
+   ordo0=abs(forc0)
+   valmax0=max(ordo0,valmax0)
+   liste01.append(inst0)
+   liste02.append(forc0)
+   
+TFETA=CREA_TABLE(LISTE=(_F(LISTE_R=tuple(liste01),
+                         PARA='INST'),
+                      _F(LISTE_R=tuple(liste02),
+                         PARA='DX'))); 
+IMPR_TABLE(TABLE=TFETA)
+
+# calcul de l ecart maxi entre les deux courbes
+
+valdiff=DIFF.LIST_VALEURS()
+print 'diff=',valdiff
+nbval=len(valdiff)/2
+valmax2=0.0
+for i in range(0,nbval-1):
+   i2=2*i
+   ordo=valdiff[i2+1]
+   ordo2=abs(ordo)
+   valmax2=max(ordo2,valmax2)
+   
+valmax=valmax2/valmax1
+print 'Valeur maxi fonction reference ',valmax1
+print 'Valeur maxi fonction difference ',valmax2
+
+
+TOLE=0.03*valmax1
+
+# COMPARAISON A LA SOLUTION INCA
+
+TEST_FONCTION(VALEUR=(
+_F(FONCTION=DIFF,REFERENCE='SOURCE_EXTERNE', VALE_PARA =1.00000E-01,VALE_REFE=0.,PRECISION=TOLE,CRITERE='ABSOLU',),
+_F(FONCTION=DIFF,REFERENCE='SOURCE_EXTERNE', VALE_PARA =2.00000E-01,VALE_REFE=0.,PRECISION=TOLE,CRITERE='ABSOLU',),
+_F(FONCTION=DIFF,REFERENCE='SOURCE_EXTERNE', VALE_PARA =3.00000E-01,VALE_REFE=0.,PRECISION=TOLE,CRITERE='ABSOLU',),
+_F(FONCTION=DIFF,REFERENCE='SOURCE_EXTERNE', VALE_PARA =4.00000E-01,VALE_REFE=0.,PRECISION=TOLE,CRITERE='ABSOLU',),
+_F(FONCTION=DIFF,REFERENCE='SOURCE_EXTERNE', VALE_PARA =5.00000E-01,VALE_REFE=0.,PRECISION=TOLE,CRITERE='ABSOLU',),
+_F(FONCTION=DIFF,REFERENCE='SOURCE_EXTERNE', VALE_PARA =6.00000E-01,VALE_REFE=0.,PRECISION=TOLE,CRITERE='ABSOLU',),
+_F(FONCTION=DIFF,REFERENCE='SOURCE_EXTERNE', VALE_PARA =7.00000E-01,VALE_REFE=0.,PRECISION=TOLE,CRITERE='ABSOLU',),
+_F(FONCTION=DIFF,REFERENCE='SOURCE_EXTERNE', VALE_PARA =8.00000E-01,VALE_REFE=0.,PRECISION=TOLE,CRITERE='ABSOLU',),
+_F(FONCTION=DIFF,REFERENCE='SOURCE_EXTERNE', VALE_PARA =9.00000E-01,VALE_REFE=0.,PRECISION=TOLE,CRITERE='ABSOLU',),
+_F(FONCTION=DIFF,REFERENCE='SOURCE_EXTERNE', VALE_PARA =9.10000E-01,VALE_REFE=0.,PRECISION=TOLE,CRITERE='ABSOLU',),
+_F(FONCTION=DIFF,REFERENCE='SOURCE_EXTERNE', VALE_PARA =9.20000E-01,VALE_REFE=0.,PRECISION=TOLE,CRITERE='ABSOLU',),
+_F(FONCTION=DIFF,REFERENCE='SOURCE_EXTERNE', VALE_PARA =9.30000E-01,VALE_REFE=0.,PRECISION=TOLE,CRITERE='ABSOLU',),
+_F(FONCTION=DIFF,REFERENCE='SOURCE_EXTERNE', VALE_PARA =9.40000E-01,VALE_REFE=0.,PRECISION=TOLE,CRITERE='ABSOLU',),
+_F(FONCTION=DIFF,REFERENCE='SOURCE_EXTERNE', VALE_PARA =9.50000E-01,VALE_REFE=0.,PRECISION=TOLE,CRITERE='ABSOLU',),
+_F(FONCTION=DIFF,REFERENCE='SOURCE_EXTERNE', VALE_PARA =9.60000E-01,VALE_REFE=0.,PRECISION=TOLE,CRITERE='ABSOLU',),
+            ),)                                         
+            
+
+
+
+
+
+# AVEC PRESSION SUIVEUSE = NON REGRESSION
+
+L_INSTS=DEFI_LIST_REEL(DEBUT=0.0,
+                      INTERVALLE=(_F(JUSQU_A=.9,
+                                    PAS=0.1,),
+                                  _F(JUSQU_A=.96,
+                                    PAS=0.01,),),
+                    );
+
+NONLINS=STAT_NON_LINE(MODELE=MODMECA,
+                     CHAM_MATER=CHM,
+                     EXCIT=(
+                              _F(CHARGE=CHARCL),
+                              _F(CHARGE=CHARGT,  FONC_MULT=D_FONC,),
+                            _F(CHARGE=CHARGP,
+                              TYPE_CHARGE='SUIV',FONC_MULT=D_FONC,),), 
+                     COMP_INCR=_F(RELATION='ELAS',
+                                  DEFORMATION='GREEN',
+                                  TOUT='OUI',),
+                     INCREMENT=_F(LIST_INST=L_INSTS,
+                     SUBD_PAS=4,
+                     SUBD_PAS_MINI=0.000001),
+                     NEWTON=_F(REAC_ITER=0,),
+                     CONVERGENCE=_F(RESI_GLOB_RELA=1e-04,
+                                    ITER_GLOB_MAXI=55,),);
+
+
+TABDXS=POST_RELEVE_T(ACTION=_F(INTITULE='F',
+                              GROUP_NO='P1',
+                              RESULTAT=NONLINS,
+                              NOM_CHAM='DEPL',
+                              TOUT_ORDRE='OUI',
+                              NOM_CMP='DX',
+                              OPERATION='EXTRACTION',),);
+
+FETAS=RECU_FONCTION(TABLE=TABDXS,INTERPOL='LIN',PROL_GAUCHE='CONSTANT',PROL_DROITE='CONSTANT',
+                  PARA_X='INST',
+                  PARA_Y='DX',);
+
+
+IMPR_COURBE( FORMAT='EXCEL',
+            COURBE=( _F(FONCTION=FETAS,),
+                    ),);
+
+
+
+TEST_FONCTION(VALEUR=(
+_F(FONCTION=FETAS,REFERENCE='NON_REGRESSION', VALE_PARA =1.00000E-01,VALE_REFE=-6.30422E-04 ),
+_F(FONCTION=FETAS,REFERENCE='NON_REGRESSION', VALE_PARA =2.00000E-01,VALE_REFE=-1.26451E-03 ),
+_F(FONCTION=FETAS,REFERENCE='NON_REGRESSION', VALE_PARA =3.00000E-01,VALE_REFE=-1.90392E-03 ),
+_F(FONCTION=FETAS,REFERENCE='NON_REGRESSION', VALE_PARA =4.00000E-01,VALE_REFE=-2.55153E-03 ),
+_F(FONCTION=FETAS,REFERENCE='NON_REGRESSION', VALE_PARA =5.00000E-01,VALE_REFE=-3.21271E-03 ),
+_F(FONCTION=FETAS,REFERENCE='NON_REGRESSION', VALE_PARA =6.00000E-01,VALE_REFE=-3.89847E-03 ),
+_F(FONCTION=FETAS,REFERENCE='NON_REGRESSION', VALE_PARA =7.00000E-01,VALE_REFE=-4.64070E-03 ),
+_F(FONCTION=FETAS,REFERENCE='NON_REGRESSION', VALE_PARA =8.00000E-01,VALE_REFE=-5.53446E-03 ),
+_F(FONCTION=FETAS,REFERENCE='NON_REGRESSION', VALE_PARA =9.00000E-01,VALE_REFE=-7.28226E-03 ),
+_F(FONCTION=FETAS,REFERENCE='NON_REGRESSION', VALE_PARA =9.10000E-01,VALE_REFE=-7.70012E-03 ),
+_F(FONCTION=FETAS,REFERENCE='NON_REGRESSION', VALE_PARA =9.20000E-01,VALE_REFE=-8.25659E-03 ),
+_F(FONCTION=FETAS,REFERENCE='NON_REGRESSION', VALE_PARA =9.30000E-01,VALE_REFE=-9.09468E-03 ),
+_F(FONCTION=FETAS,REFERENCE='NON_REGRESSION', VALE_PARA =9.40000E-01,VALE_REFE=-1.05511E-02 ),
+_F(FONCTION=FETAS,REFERENCE='NON_REGRESSION', VALE_PARA =9.50000E-01,VALE_REFE=-1.38470E-02 ),
+_F(FONCTION=FETAS,REFERENCE='NON_REGRESSION', VALE_PARA =9.60000E-01,VALE_REFE=-2.95708E-02 ),
+),)
+
+
+
+
+
+
+
+# FONCTION PYTHON POUR AFFICHAGE DE COURBES  
+
+def COURBES(listcourb,titre=' ',soustitre=' ',legx=' ',legy=' ',bornex=None,borney=None,fichier=None):
+
+# ARGUMENTS 
+
+# listcourb : tuple de courbes, chaque courbe etant definie soit par 
+#             (TABLE1, NOM_PARA_X, TABLE2, NOM_PARA_Y, LEGENDE)
+# soit par :
+#             (FONCTION,LEGENDE)
+# titre et sous_titre : facultatifs, titre et sous-tritre du graphique
+# legx, legy          : facultatifs, legendes des axes
+# bornex, borney      : facultatifs, bornes sur les axes
+# fichier             : facultatif : sortie au format postscript si present
+#
+# exemples  d'appel :
+#--------------------
+# courb1=(SYYPRT,'ABSC_CURV',SYYPRT,'SIYY','PRT')
+# courb2=(SYYMLC10,'ABSC_CURV',SYYMLC10,'SIYY','MLC10')
+# courb3=(SYYML100,'ABSC_CURV',SYYML100,'SIYY','MLC100')
+# listcourb=(courb1,courb2,courb3)
+# COURBES(listcourb,titre='Plaque trouee',legx='Abcisses curvilignes',legy='Contraintes (MPa)',bornex=(0,100),borney=(500,1000))
+# fonc1=(F1,'F_PRT')
+# fonc2=(F2,'F_MLC10')
+# fonc3=(F3,'F_MLC100')
+# listfonc=(fonc1,fonc2,fonc3)
+# COURBES(listfonc,titre='Fonctions')
+# postscript
+# COURBES(listfonc,titre='Plaque trouee',fichier='./fort.24')
+#--------------------------------------------------------------
+
+
+
+# COURBES AVEC XMGRACE EN INTERACTIF OU EN POSTSCRIPT
+
+  import Stanley
+  from Stanley import as_courbes
+  from Stanley import xmgrace
+
+
+# initialisation du trace de  courbes
+
+  if (fichier!=None):
+     graphe=xmgrace.Xmgr(10,' -hardcopy -nosafe')
+     print "Nombre de courbes  ",len(listcourb)," sur le fichier :",fichier
+
+  else:
+     graphe=xmgrace.Xmgr(10,' -noask')
+     print "Nombre de courbes  ",len(listcourb)
+
+  graphe.Nouveau_graphe()
+
+# dimensionnement des axes 
+  if bornex != None : 
+     xmin=list(bornex)[0]
+     xmax=list(bornex)[1]
+     ctest1 = as_courbes.Courbe()
+     ctest1.x=[xmin,xmax]
+     ctest1.y=[0.0,0.0]
+     graphe.Courbe(ctest1)
+
+  if borney != None : 
+     ymin=list(borney)[0]
+     ymax=list(borney)[1]
+     ctest2 = as_courbes.Courbe()
+     ctest2.x=[0.0,0.0]
+     ctest2.y=[ymin,ymax]
+     graphe.Courbe(ctest2)
+
+  if titre != None :
+     if soustitre != None :
+        graphe.Titre(titre,soustitre)
+     else :
+        graphe.Titre(titre,' ')
+     
+  if legx != None :
+     graphe.Axe_x(legx)
+     
+  if legy != None :
+     graphe.Axe_y(legy)
+
+  k = 0
+       
+  for courbi in listcourb:
+     sigi = as_courbes.Courbe()
+     
+     try :
+        # cas d une table
+        sigi.Lire_x(courbi[0],courbi[1])
+        sigi.Lire_y(courbi[2],courbi[3])
+        legende=courbi[4]
+     except :
+        # cas d une fonction
+        val=courbi[0].LIST_VALEURS()
+        nb=len(val)/2
+        valx=[None]*nb
+        valy=[None]*nb
+        for i in range(nb):
+           valx[i]=val[2*i]
+           valy[i]=val[2*i+1]           
+        sigi.x=valx
+        sigi.y=valy
+        legende=courbi[1]
+        
+     graphe.Courbe(sigi,legende)
+     graphe.Send('WITH G'+repr(graphe.gr_act))
+     graphe.Send('S' + str(k) + ' SYMBOL ' + str(k+2))
+     graphe.Send('S' + str(k) + ' SYMBOL SIZE 0.5')
+     graphe.Send('S' + str(k) + ' SYMBOL COLOR '+str(k+2))
+     graphe.Send('S' + str(k) + ' LINE COLOR '+str(k+2))
+     k = k + 1
+     graphe.Send('REDRAW')
+  
+  if (fichier!=None):
+     graphe.Sortie_EPS(fichier)
+     graphe.Fermer()
+  else:
+     graphe.Attendre()
+
+  k=0
+
+#===========================================
+
+
+courb1=(TFETA,'DX',TFETA,'INST','ASTER')
+courb2=(TINCA,'TOUTRESU',TINCA,'INST','INCA')
+courb3=(TABDXS,'DX',TABDXS,'INST','ASTER PRESSION SUIVEUSE')
+listcourb=(courb1,courb2,courb3)
+
+if interactif==1 :
+   COURBES(listcourb,titre='SSNS101',legx='INST',legy='DX')
+else :
+# postscript
+   COURBES(listcourb,titre='SSNS101',legx='INST',legy='DX',fichier='./fort.24')
+
+
+
+FIN();
+
+
+
+
+
+
+
+
+
+
+

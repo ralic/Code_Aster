@@ -8,7 +8,7 @@
       INTEGER NBMA1,LIMA1(*),NBNO2,LINO2(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 16/02/2004   AUTEUR MJBHHPE J.L.FLEJOU 
+C MODIF CALCULEL  DATE 18/05/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -74,14 +74,14 @@ C
 C
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C
-      REAL*8   COBARY(4)
-      CHARACTER*8   KB,M1,M2,NONO2
-      CHARACTER*16 CORTR3
-      CHARACTER*14 BOITE
-      PARAMETER (NBTM=9)
-      INTEGER     NUTM(NBTM),IFM,NIV
-      CHARACTER*8 NOTM(NBTM)
-      LOGICAL DBG
+      REAL*8        COBARY(4)
+      CHARACTER*8   KB, M1, M2, NONO2
+      CHARACTER*16  CORTR3
+      CHARACTER*14  BOITE
+      PARAMETER     (NBTM=9)
+      INTEGER       NUTM(NBTM), IFM, NIV
+      CHARACTER*8   NOTM(NBTM), ELRF(NBTM)
+      LOGICAL       DBG
       
       LOGICAL LDMAX
       REAL*8  DISTMA
@@ -116,6 +116,16 @@ C     ----------------------------
       NOTM(7)='HEXA27'
       NOTM(8)='PYRAM5'
       NOTM(9)='PYRAM13'
+
+      ELRF(1)='TE4'
+      ELRF(2)='T10'
+      ELRF(3)='PE6'
+      ELRF(4)='P15'
+      ELRF(5)='HE8'
+      ELRF(6)='H20'
+      ELRF(7)='H27'
+      ELRF(8)='PY5'
+      ELRF(9)='P13'
 
       DO 9,K=1,NBTM
         CALL JENONU(JEXNOM('&CATA.TM.NOMTM',NOTM(K)),NUTM(K))
@@ -451,7 +461,7 @@ C     ------------------------------------------------
 
 C  5. ON TRANSFORME CORTR3 EN CORRES (RETOUR AUX VRAIES MAILLES)
 C     ----------------------------------------------------------
-      CALL PJ3DTR(CORTR3,CORRES,NUTM,NOTM)
+      CALL PJ3DTR(CORTR3,CORRES,NUTM,ELRF)
       DBG=.FALSE.
       IF (DBG) THEN
          CALL UTIMSD('MESSAGE',2,.FALSE.,.TRUE.,'&&PJ3DCO',1,' ')

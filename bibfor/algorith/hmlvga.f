@@ -1,12 +1,14 @@
       SUBROUTINE HMLVGA(OPTION,MECA,THER,HYDR,IMATE,NDIM,DIMDEF,DIMCON,
-     +                  NVIMEC,NVITH,YAMEC,YATE,ADDEME,ADCOME,ADVITH,
-     +                  ADDEP1,ADCP11,ADCP12,ADDEP2,ADCP21,ADCP22,
-     +                  ADDETE,ADCOTE,CONGEM,CONGEP,VINTM,VINTP,DSDE,
-     +                  EPSV,DEPSV,P1,P2,DP1,DP2,T,DT,PHI,PADP,PVP,
-     +                  H11,H12,H21,H22,KH,RHO11,PHI0,PVP0,
-     +                  SAT,RETCOM,THMC)
+     +                  NBVARI,YAMEC,YATE,ADDEME,ADCOME,ADVIHY,ADVICO,
+     +                  VIHRHO,VICPHI,VICPVP,VICSAT,ADDEP1,ADCP11,
+     +                  ADCP12,ADDEP2,ADCP21,ADCP22,ADDETE,ADCOTE,
+     +                  CONGEM,CONGEP,VINTM,VINTP,DSDE,EPSV,DEPSV,P1,P2,
+     +                  DP1,DP2,T,DT,PHI,PADP,PVP,H11,H12,H21,H22,KH,
+     +                  RHO11,PHI0,PVP0,SAT,RETCOM,THMC)
+C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
+C ======================================================================
+C MODIF ALGORITH  DATE 17/05/2004   AUTEUR ROMEO R.FERNANDES 
 C RESPONSABLE GRANET S.GRANET
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -41,11 +43,12 @@ C                       = 3 SIZZ NON NUL (DEBORST) ON CONTINUE A ITERER
 C  VARIABLES IN / OUT
 C ======================================================================
       IMPLICIT      NONE
-      INTEGER       NDIM,DIMDEF,DIMCON,NVIMEC,NVITH,IMATE,YAMEC
-      INTEGER       YATE,RETCOM,ADCOME,ADCP11,ADCP12,ADVITH
+      INTEGER       NDIM,DIMDEF,DIMCON,NBVARI,IMATE,YAMEC
+      INTEGER       YATE,RETCOM,ADCOME,ADCP11,ADCP12,ADVIHY,ADVICO
+      INTEGER       VIHRHO,VICPHI,VICPVP,VICSAT
       INTEGER       ADCP21,ADCP22,ADCOTE,ADDEME,ADDEP1,ADDEP2,ADDETE
-      REAL*8        CONGEM(DIMCON),CONGEP(DIMCON),VINTM(NVIMEC+NVITH)
-      REAL*8        VINTP(NVIMEC+NVITH),DSDE(DIMCON,DIMDEF),EPSV,DEPSV
+      REAL*8        CONGEM(DIMCON),CONGEP(DIMCON),VINTM(NBVARI)
+      REAL*8        VINTP(NBVARI),DSDE(DIMCON,DIMDEF),EPSV,DEPSV
       REAL*8        P1,DP1,P2,DP2,T,DT,PHI,PADP,PVP,H11,H12,H21,H22
       REAL*8        RHO11,PHI0,PVP0,KH 
       CHARACTER*16  OPTION,MECA,THER,HYDR,THMC
@@ -170,7 +173,7 @@ C fin traitement provisoire
 
       IF ((OPTION(1:9).EQ.'RAPH_MECA') .OR.
      &    (OPTION(1:9).EQ.'FULL_MECA')) THEN
-        VINTP(ADVITH+3) = SAT
+        VINTP(ADVICO+VICSAT) = SAT
       END IF
 C   CALCUL DES ARGUMENTS D EXP
 
@@ -197,7 +200,7 @@ C
      &             (1.D0/ (T-DT)-1.D0/T)*MAMOLV/R
           VARIA = VARIA + (CP12-CP11)* (LOG(T/ (T-DT))- (DT/T))*MAMOLV/R
         END IF
-        PVPM = VINTM(ADVITH+2) + PVP0
+        PVPM = VINTM(ADVICO+VICPVP) + PVP0
         VARIA = (PVPM)*EXP(VARIA)
         PVP = MAMOLV*(PVPM+(P2-DP2)*R*LOG(T/ (T-DT)))
         PVP = RHO110*KH-PVP
@@ -256,8 +259,8 @@ C CALCUL DE LA VARIABLE INTERNE PHI A L'INSTANT PLUS
               VARIA = VARIA - 3.D0*ALPHA0*DT
             END IF
             VARIA = VARIA + CS* (DP2-SAT*DP1)
-            VINTP(ADVITH) = BIOT - PHI0 -
-     &                      (BIOT-VINTM(ADVITH)-PHI0)*EXP(-VARIA)
+            VINTP(ADVICO+VICPHI) = BIOT - PHI0 -
+     &                      (BIOT-VINTM(ADVICO+VICPHI)-PHI0)*EXP(-VARIA)
         END IF
       END IF
 
@@ -267,14 +270,14 @@ C CALCUL DE PHI  A L'INSTANT COURANT
 
       IF (OPTION(1:16).EQ.'RIGI_MECA_TANG') THEN
         IF (YAMEC.EQ.1) THEN
-          PHI = VINTM(ADVITH) + PHI0
+          PHI = VINTM(ADVICO+VICPHI) + PHI0
         ELSE
           PHI = PHI0
         END IF
       ELSE
         IF (YAMEC.EQ.1) THEN
-          PHI = VINTP(ADVITH) + PHI0
-          PHIM = VINTM(ADVITH) + PHI0
+          PHI = VINTP(ADVICO+VICPHI) + PHI0
+          PHIM = VINTM(ADVICO+VICPHI) + PHI0
         ELSE
           PHI = PHI0
         END IF
@@ -295,15 +298,15 @@ C
 C **********************************************************************
 C RECUPERATION DE LA MASSE VOLUMIQUE A L INSTANT MOINS
 C 
-        RHO11M = VINTM(ADVITH+1) + RHO110
+        RHO11M = VINTM(ADVIHY+VIHRHO) + RHO110
 
 C **********************************************************************
 C  CALCUL DE LA VARIABLE INTERNE PRESSION VAPEUR PUIS 
 C  PRESSIONS AIR SEC DISSOUS ET EAU
 
       IF (OPTION(1:16).EQ.'RIGI_MECA_TANG') THEN
-        PVP = VINTM(ADVITH+2) + PVP0
-        PVPM = VINTM(ADVITH+2) + PVP0
+        PVP = VINTM(ADVICO+VICPVP) + PVP0
+        PVPM = VINTM(ADVICO+VICPVP) + PVP0
       ELSE
         VARIA = MAMOLV*(1/R/T-1/KH)* DP2/RHO11M-MAMOLV/R/T*DP1/RHO11M
         IF (YATE.EQ.1) THEN
@@ -311,12 +314,12 @@ C  PRESSIONS AIR SEC DISSOUS ET EAU
      &             (1.D0/ (T-DT)-1.D0/T)*MAMOLV/R
           VARIA = VARIA + (CP12-CP11)* (LOG(T/ (T-DT))- (DT/T))*MAMOLV/R
         END IF
-        PVPM = VINTM(ADVITH+2) + PVP0
+        PVPM = VINTM(ADVICO+VICPVP) + PVP0
         VARIA = (PVPM)*EXP(VARIA)
         PVP = MAMOLV*(PVPM+(P2-DP2)*R*LOG(T/ (T-DT)))
         PVP = RHO11M*KH-PVP
         PVP = PVP/((RHO11M*KH/VARIA)-MAMOLV*(1+R*LOG(T/ (T-DT))))
-        VINTP(ADVITH+2) = PVP - PVP0
+        VINTP(ADVICO+VICPVP) = PVP - PVP0
       END IF
       PADP = (P2 - PVP)*R*T/KH
       PADM = ((P2-DP2) - PVPM)*R*T/KH
@@ -344,7 +347,8 @@ C
         IF (YATE.EQ.1) THEN
           VARIA = VARIA - 3.D0*ALPLIQ*DT
         END IF
-        VINTP(ADVITH+1) = -RHO110 + (VINTM(ADVITH+1)+RHO110)*EXP(VARIA)
+        VINTP(ADVIHY+VIHRHO) =
+     +                -RHO110 + (VINTM(ADVIHY+VIHRHO)+RHO110)*EXP(VARIA)
       END IF
 
 C **********************************************************************
@@ -352,11 +356,11 @@ C  CALCUL DES MASSES VOLUMIQUES  A L'INSTANT COURANT
 C 
 
       IF (OPTION(1:16).EQ.'RIGI_MECA_TANG') THEN
-        RHO11 = VINTM(ADVITH+1) + RHO110
-        RHO11M = VINTM(ADVITH+1) + RHO110
+        RHO11 = VINTM(ADVIHY+VIHRHO) + RHO110
+        RHO11M = VINTM(ADVIHY+VIHRHO) + RHO110
       ELSE
-        RHO11 = VINTP(ADVITH+1) + RHO110
-        RHO11M = VINTM(ADVITH+1) + RHO110
+        RHO11 = VINTP(ADVIHY+VIHRHO) + RHO110
+        RHO11M = VINTM(ADVIHY+VIHRHO) + RHO110
       END IF
 
 C

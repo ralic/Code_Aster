@@ -1,4 +1,4 @@
-# MODIF  DATE 18/11/2003   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 17/05/2004   AUTEUR CIBHHBC M.LOPES 
 # ======================================================================
 # TITRE IMPACT POUTRE AVEC ELEMENTS 3D SUR PLAN RIGIDE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -106,14 +106,14 @@ RAMPE=DEFI_FONCTION(   NOM_PARA='INST',
                   0.0001,     1.0,
                   0.00010001, 0.0,) )
 #
-DT=DEFI_VALEUR(     R8=2.E-6 )
+DT=2.E-6
 
 L_INST=DEFI_LIST_REEL(   DEBUT=0.,
              INTERVALLE=_F( JUSQU_A = 0.00014,  PAS = DT))
 #
-ALF=DEFI_VALEUR(     R8=0.28  )
+ALF=0.28
 #
-DEL=DEFI_VALEUR(     R8=0.55  )
+DEL=0.55
 #
 U=DYNA_NON_LINE(  MODELE=MODE,  CHAM_MATER=CM,
            EXCIT=(_F( CHARGE = CH,

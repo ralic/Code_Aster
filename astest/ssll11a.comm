@@ -1,4 +1,4 @@
-# MODIF  DATE 07/06/2002   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 17/05/2004   AUTEUR CIBHHBC M.LOPES 
 # TITRE TREILLIS DE BARRES ARTICULEES SOUS CHARGE PONCTUELLE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -42,9 +42,9 @@ MODELE=AFFE_MODELE(   MAILLAGE=MA,
 
 EP1=0.005
 
-RAY1=DEFI_VALEUR(  R8=EVAL("""(1.E-04 + PI*EP1*EP1) / (2.*PI*EP1) """) )
+RAY1=(1.E-04 + pi*EP1*EP1) / (2.*pi*EP1)
 
-RAY2=DEFI_VALEUR(  R8=EVAL("""( 2.E-04 / PI ) ** 0.5 """) )
+RAY2=( 2.E-04 / pi ) ** 0.5
 
 CAREL=AFFE_CARA_ELEM(  MODELE=MODELE,POUTRE=(
                      _F(  MAILLE = ( 'AC',  'BC', ),  SECTION = 'CERCLE',

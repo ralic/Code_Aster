@@ -4,7 +4,8 @@
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 02/09/98   AUTEUR CIBHHLV L.VIVAN 
+C MODIF MODELISA  DATE 18/05/2004   AUTEUR CIBHHLV L.VIVAN 
+C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -94,7 +95,7 @@ C ARGUMENTS
 C ---------
       CHARACTER*19  LIRELA
       CHARACTER*8   MAILLA, NNOECA
-      INTEGER       NOEBE, NBCNX, CXMA(*), ITRIA, IPROJ
+      INTEGER       NOEBE, NBCNX, CXMA(*), ITRIA, IPROJ,NNO
       REAL*8        NORMAL(*), XBAR(*), EXCENT
 C
 C VARIABLES LOCALES
@@ -108,7 +109,7 @@ C -----------------
       CHARACTER*24  NONOMA
       LOGICAL       NOTLIN
 C
-      REAL*8        FFEL2D
+      REAL*8        FFEL2D, X(2), FF(9)
 C
 C-------------------   DEBUT DU CODE EXECUTABLE    ---------------------
 C
@@ -182,14 +183,187 @@ C
                CALL JENUNO(JEXNUM(NONOMA,CXMA(I2)),ZK8(JNOMNO+2))
                ZK8(JDDL+1) = 'DEPL'
                ZK8(JDDL+2) = 'DEPL'
-               ZR(JCMUR+1) = -FFEL2D(NBCNX,I1,KSI1,KSI2)
-               ZR(JCMUR+2) = -FFEL2D(NBCNX,I2,KSI1,KSI2)
+               IF ( NBCNX.EQ.3 ) THEN
+                 IF ( I1.EQ.1 ) THEN
+                   FFEL2D = 0.5D0 * ( 1.0D0 + KSI2 )
+                 ELSE IF ( I1.EQ.2 ) THEN
+                   FFEL2D = -0.5D0 * ( KSI1 + KSI2 )
+                 ELSE
+                   FFEL2D = 0.5D0 * ( 1.0D0 + KSI1 )
+                 ENDIF
+               ELSE IF ( NBCNX.EQ.6 ) THEN
+                 IF ( I1.EQ.1 ) THEN
+                   FFEL2D = 0.5D0 * ( 1.0D0 + KSI2 ) * KSI2
+                 ELSE IF ( I1.EQ.2 ) THEN
+                   FFEL2D = 0.5D0 * ( KSI1 + KSI2 )*(KSI1+KSI2 +1.0D0 )
+                 ELSE IF ( I1.EQ.3 ) THEN
+                   FFEL2D = 0.5D0 * ( 1.0D0 + KSI1 ) * KSI1
+                 ELSE IF ( I1.EQ.4 ) THEN
+                   FFEL2D = -1.0D0 * ( 1.0D0 + KSI2 ) * ( KSI1 + KSI2 )
+                 ELSE IF ( I1.EQ.5 ) THEN
+                   FFEL2D = -1.0D0 * ( 1.0D0 + KSI1 ) * ( KSI1 + KSI2 )
+                 ELSE
+                   FFEL2D = ( 1.0D0 + KSI1 ) * ( 1.0D0 + KSI2 )
+                 ENDIF
+               ELSE IF ( NBCNX.EQ.4 ) THEN
+                  X(1) = KSI1
+                  X(2) = KSI2
+                  CALL ELRFVF('QU4',X,4,FF,NNO)
+                  IF ( I1.EQ.1 ) THEN 
+                    FFEL2D = FF(4)
+                  ELSE 
+                    FFEL2D = FF(I1-1)
+                  ENDIF
+               ELSE IF ( NBCNX.EQ.8 ) THEN
+                  X(1) = KSI1
+                  X(2) = KSI2
+                  CALL ELRFVF('QU8',X,8,FF,NNO)
+                  IF ( I1.EQ.1 ) THEN 
+                    FFEL2D = FF(4)
+                  ELSE IF ( I1.EQ.5 ) THEN 
+                    FFEL2D = FF(8)
+                  ELSE 
+                    FFEL2D = FF(I1-1)
+                  ENDIF
+               ELSE IF ( NBCNX.EQ.9 ) THEN
+                  X(1) = KSI1
+                  X(2) = KSI2
+                  CALL ELRFVF('QU9',X,9,FF,NNO)
+                  IF ( I1.EQ.1 ) THEN 
+                    FFEL2D = FF(4)
+                  ELSE IF ( I1.EQ.5 ) THEN 
+                    FFEL2D = FF(8)
+                  ELSE IF ( I1.EQ.9 ) THEN 
+                    FFEL2D = FF(9)
+                  ELSE 
+                    FFEL2D = FF(I1-1)
+                  ENDIF
+               ENDIF
+C
+               ZR(JCMUR+1) = -FFEL2D
+C
+               IF ( NBCNX.EQ.3 ) THEN
+                 IF ( I2.EQ.1 ) THEN
+                   FFEL2D = 0.5D0 * ( 1.0D0 + KSI2 )
+                 ELSE IF ( I2.EQ.2 ) THEN
+                   FFEL2D = -0.5D0 * ( KSI1 + KSI2 )
+                 ELSE
+                   FFEL2D = 0.5D0 * ( 1.0D0 + KSI1 )
+                 ENDIF
+               ELSE IF ( NBCNX.EQ.6 ) THEN
+                 IF ( I2.EQ.1 ) THEN
+                   FFEL2D = 0.5D0 * ( 1.0D0 + KSI2 ) * KSI2
+                 ELSE IF ( I2.EQ.2 ) THEN
+                   FFEL2D = 0.5D0 * ( KSI1 + KSI2 )*(KSI1+KSI2+1.0D0 )
+                 ELSE IF ( I2.EQ.3 ) THEN
+                   FFEL2D = 0.5D0 * ( 1.0D0 + KSI1 ) * KSI1
+                 ELSE IF ( I2.EQ.4 ) THEN
+                   FFEL2D = -1.0D0 * ( 1.0D0 + KSI2 ) * ( KSI1 + KSI2 )
+                 ELSE IF ( I2.EQ.5 ) THEN
+                   FFEL2D = -1.0D0 * ( 1.0D0 + KSI1 ) * ( KSI1 + KSI2 )
+                 ELSE
+                   FFEL2D = ( 1.0D0 + KSI1 ) * ( 1.0D0 + KSI2 )
+                 ENDIF
+               ELSE IF ( NBCNX.EQ.4 ) THEN
+                  X(1) = KSI1
+                  X(2) = KSI2
+                  CALL ELRFVF('QU4',X,4,FF,NNO)
+                  IF ( I2.EQ.1 ) THEN 
+                    FFEL2D = FF(4)
+                  ELSE 
+                    FFEL2D = FF(I2-1)
+                  ENDIF
+               ELSE IF ( NBCNX.EQ.8 ) THEN
+                  X(1) = KSI1
+                  X(2) = KSI2
+                  CALL ELRFVF('QU8',X,8,FF,NNO)
+                  IF ( I2.EQ.1 ) THEN 
+                    FFEL2D = FF(4)
+                  ELSE IF ( I2.EQ.5 ) THEN 
+                    FFEL2D = FF(8)
+                  ELSE 
+                    FFEL2D = FF(I2-1)
+                  ENDIF
+               ELSE IF ( NBCNX.EQ.9 ) THEN
+                  X(1) = KSI1
+                  X(2) = KSI2
+                  CALL ELRFVF('QU9',X,9,FF,NNO)
+                  IF ( I2.EQ.1 ) THEN 
+                    FFEL2D = FF(4)
+                  ELSE IF ( I2.EQ.5 ) THEN 
+                    FFEL2D = FF(8)
+                  ELSE IF ( I2.EQ.9 ) THEN 
+                    FFEL2D = FF(9)
+                  ELSE 
+                    FFEL2D = FF(I2-1)
+                  ENDIF
+               ENDIF
+                ZR(JCMUR+2) = -FFEL2D
+C               ZR(JCMUR+1) = -FFEL2D(NBCNX,I1,KSI1,KSI2)
+C               ZR(JCMUR+2) = -FFEL2D(NBCNX,I2,KSI1,KSI2)
                IF ( NOTLIN ) THEN
                   NBTERM = 4
                   I3 = I1 + NBSOM
                   CALL JENUNO(JEXNUM(NONOMA,CXMA(I3)),ZK8(JNOMNO+3))
                   ZK8(JDDL+3) = 'DEPL'
-                  ZR(JCMUR+3) = -FFEL2D(NBCNX,I3,KSI1,KSI2)
+                  IF ( NBCNX.EQ.3 ) THEN
+                    IF ( I3.EQ.1 ) THEN
+                      FFEL2D = 0.5D0 * ( 1.0D0 + KSI2 )
+                    ELSE IF ( I3.EQ.2 ) THEN
+                      FFEL2D = -0.5D0 * ( KSI1 + KSI2 )
+                    ELSE
+                      FFEL2D = 0.5D0 * ( 1.0D0 + KSI1 )
+                    ENDIF
+                  ELSE IF ( NBCNX.EQ.6 ) THEN
+                    IF ( I3.EQ.1 ) THEN
+                      FFEL2D = 0.5D0 * ( 1.0D0 + KSI2 ) * KSI2
+                    ELSE IF ( I3.EQ.2 ) THEN
+                      FFEL2D = 0.5D0 * ( KSI1 + KSI2)*(KSI1+KSI2+1.0D0)
+                    ELSE IF ( I3.EQ.3 ) THEN
+                      FFEL2D = 0.5D0 * ( 1.0D0 + KSI1 ) * KSI1
+                    ELSE IF ( I3.EQ.4 ) THEN
+                      FFEL2D = -1.0D0 * ( 1.0D0 + KSI2 ) * ( KSI1+KSI2)
+                    ELSE IF ( I3.EQ.5 ) THEN
+                      FFEL2D = -1.0D0 * ( 1.0D0 + KSI1 ) * ( KSI1+KSI2)
+                    ELSE
+                      FFEL2D = ( 1.0D0 + KSI1 ) * ( 1.0D0 + KSI2 )
+                    ENDIF
+                  ELSE IF ( NBCNX.EQ.4 ) THEN
+                    X(1) = KSI1
+                    X(2) = KSI2
+                    CALL ELRFVF('QU4',X,4,FF,NNO)
+                    IF ( I3.EQ.1 ) THEN 
+                      FFEL2D = FF(4)
+                    ELSE 
+                      FFEL2D = FF(I3-1)
+                    ENDIF
+                  ELSE IF ( NBCNX.EQ.8 ) THEN
+                    X(1) = KSI1
+                    X(2) = KSI2
+                    CALL ELRFVF('QU8',X,8,FF,NNO)
+                    IF ( I3.EQ.1 ) THEN 
+                      FFEL2D = FF(4)
+                    ELSE IF ( I3.EQ.5 ) THEN 
+                      FFEL2D = FF(8)
+                    ELSE 
+                      FFEL2D = FF(I3-1)
+                    ENDIF
+                  ELSE IF ( NBCNX.EQ.9 ) THEN
+                    X(1) = KSI1
+                    X(2) = KSI2
+                    CALL ELRFVF('QU9',X,9,FF,NNO)
+                    IF ( I3.EQ.1 ) THEN 
+                      FFEL2D = FF(4)
+                    ELSE IF ( I3.EQ.5 ) THEN 
+                      FFEL2D = FF(8)
+                    ELSE IF ( I3.EQ.9 ) THEN 
+                      FFEL2D = FF(9)
+                    ELSE 
+                      FFEL2D = FF(I3-1)
+                    ENDIF
+                  ENDIF
+                  ZR(JCMUR+3) = -FFEL2D
+C                  ZR(JCMUR+3) = -FFEL2D(NBCNX,I3,KSI1,KSI2)
                ENDIF
 C
             ELSE
@@ -199,7 +373,65 @@ C
                   CALL JENUNO(JEXNUM(NONOMA,CXMA(ICNX)),
      &                        ZK8(JNOMNO+ICNX))
                   ZK8(JDDL+ICNX) = 'DEPL'
-                  ZR(JCMUR+ICNX) = -FFEL2D(NBCNX,ICNX,KSI1,KSI2)
+
+                  IF ( NBCNX.EQ.3 ) THEN
+                    IF ( ICNX.EQ.1 ) THEN
+                      FFEL2D = 0.5D0 * ( 1.0D0 + KSI2 )
+                    ELSE IF ( ICNX.EQ.2 ) THEN
+                      FFEL2D = -0.5D0 * ( KSI1 + KSI2 )
+                    ELSE
+                      FFEL2D = 0.5D0 * ( 1.0D0 + KSI1 )
+                    ENDIF
+                  ELSE IF ( NBCNX.EQ.6 ) THEN
+                    IF ( ICNX.EQ.1 ) THEN
+                      FFEL2D = 0.5D0 * ( 1.0D0 + KSI2 ) * KSI2
+                    ELSE IF ( ICNX.EQ.2 ) THEN
+                      FFEL2D = 0.5D0 * ( KSI1 + KSI2 )*(KSI1+KSI2+1.0D0)
+                    ELSE IF ( ICNX.EQ.3 ) THEN
+                      FFEL2D = 0.5D0 * ( 1.0D0 + KSI1 ) * KSI1
+                    ELSE IF ( ICNX.EQ.4 ) THEN
+                      FFEL2D = -1.0D0 * ( 1.0D0 + KSI2 ) * (KSI1+KSI2)
+                    ELSE IF ( ICNX.EQ.5 ) THEN
+                      FFEL2D = -1.0D0 * ( 1.0D0 + KSI1 ) * (KSI1+KSI2)
+                    ELSE
+                      FFEL2D = ( 1.0D0 + KSI1 ) * ( 1.0D0 + KSI2 )
+                    ENDIF
+                  ELSE IF ( NBCNX.EQ.4 ) THEN
+                    X(1) = KSI1
+                    X(2) = KSI2
+                    CALL ELRFVF('QU4',X,4,FF,NNO)
+                    IF ( ICNX.EQ.1 ) THEN 
+                      FFEL2D = FF(4)
+                    ELSE 
+                      FFEL2D = FF(ICNX-1)
+                    ENDIF
+                  ELSE IF ( NBCNX.EQ.8 ) THEN
+                    X(1) = KSI1
+                    X(2) = KSI2
+                    CALL ELRFVF('QU8',X,8,FF,NNO)
+                    IF ( ICNX.EQ.1 ) THEN 
+                      FFEL2D = FF(4)
+                    ELSE IF ( ICNX.EQ.5 ) THEN 
+                      FFEL2D = FF(8)
+                    ELSE 
+                      FFEL2D = FF(ICNX-1)
+                  ENDIF
+                  ELSE IF ( NBCNX.EQ.9 ) THEN
+                    X(1) = KSI1
+                    X(2) = KSI2
+                    CALL ELRFVF('QU9',X,9,FF,NNO)
+                    IF ( ICNX.EQ.1 ) THEN 
+                      FFEL2D = FF(4)
+                    ELSE IF ( ICNX.EQ.5 ) THEN 
+                      FFEL2D = FF(8)
+                    ELSE IF ( ICNX.EQ.9 ) THEN 
+                      FFEL2D = FF(9)
+                    ELSE 
+                      FFEL2D = FF(ICNX-1)
+                    ENDIF
+                  ENDIF
+                  ZR(JCMUR+ICNX) = -FFEL2D
+C                  ZR(JCMUR+ICNX) = -FFEL2D(NBCNX,ICNX,KSI1,KSI2)
   10           CONTINUE
 C
             ENDIF
@@ -286,9 +518,125 @@ C
                ZK8(JDDL+2) = 'ROTA'
                ZK8(JDDL+3) = 'DEPL'
                ZK8(JDDL+4) = 'ROTA'
-               ZR(JCMUR+1) = -FFEL2D(NBCNX,I1,KSI1,KSI2)
+C
+               IF ( NBCNX.EQ.3 ) THEN
+                 IF ( I1.EQ.1 ) THEN
+                   FFEL2D = 0.5D0 * ( 1.0D0 + KSI2 )
+                 ELSE IF ( I1.EQ.2 ) THEN
+                   FFEL2D = -0.5D0 * ( KSI1 + KSI2 )
+                 ELSE
+                   FFEL2D = 0.5D0 * ( 1.0D0 + KSI1 )
+                 ENDIF
+               ELSE IF ( NBCNX.EQ.6 ) THEN
+                 IF ( I1.EQ.1 ) THEN
+                   FFEL2D = 0.5D0 * ( 1.0D0 + KSI2 ) * KSI2
+                 ELSE IF ( I1.EQ.2 ) THEN
+                   FFEL2D = 0.5D0 * ( KSI1 + KSI2 ) *(KSI1+KSI2+1.0D0)
+                 ELSE IF ( I1.EQ.3 ) THEN
+                   FFEL2D = 0.5D0 * ( 1.0D0 + KSI1 ) * KSI1
+                 ELSE IF ( I1.EQ.4 ) THEN
+                   FFEL2D = -1.0D0 * ( 1.0D0 + KSI2 ) * ( KSI1 + KSI2 )
+                 ELSE IF ( I1.EQ.5 ) THEN
+                   FFEL2D = -1.0D0 * ( 1.0D0 + KSI1 ) * ( KSI1 + KSI2 )
+                 ELSE
+                   FFEL2D = ( 1.0D0 + KSI1 ) * ( 1.0D0 + KSI2 )
+                 ENDIF
+               ELSE IF ( NBCNX.EQ.4 ) THEN
+                 X(1) = KSI1
+                 X(2) = KSI2
+                 CALL ELRFVF('QU4',X,4,FF,NNO)
+                 IF ( I1.EQ.1 ) THEN 
+                   FFEL2D = FF(4)
+                 ELSE 
+                   FFEL2D = FF(I1-1)
+                 ENDIF
+               ELSE IF ( NBCNX.EQ.8 ) THEN
+                 X(1) = KSI1
+                 X(2) = KSI2
+                 CALL ELRFVF('QU8',X,8,FF,NNO)
+                 IF ( I1.EQ.1 ) THEN 
+                   FFEL2D = FF(4)
+                 ELSE IF ( I1.EQ.5 ) THEN 
+                   FFEL2D = FF(8)
+                 ELSE 
+                   FFEL2D = FF(I1-1)
+                 ENDIF
+               ELSE IF ( NBCNX.EQ.9 ) THEN
+                 X(1) = KSI1
+                 X(2) = KSI2
+                 CALL ELRFVF('QU9',X,9,FF,NNO)
+                 IF ( I1.EQ.1 ) THEN 
+                   FFEL2D = FF(4)
+                 ELSE IF ( I1.EQ.5 ) THEN 
+                   FFEL2D = FF(8)
+                 ELSE IF ( I1.EQ.9 ) THEN 
+                   FFEL2D = FF(9)
+                 ELSE 
+                   FFEL2D = FF(I1-1)
+                 ENDIF
+               ENDIF
+               ZR(JCMUR+1) = -FFEL2D
+C               ZR(JCMUR+1) = -FFEL2D(NBCNX,I1,KSI1,KSI2)
                ZR(JCMUR+2) = EXCENT*ZR(JCMUR+1)
-               ZR(JCMUR+3) = -FFEL2D(NBCNX,I2,KSI1,KSI2)
+C
+               IF ( NBCNX.EQ.3 ) THEN
+                 IF ( I2.EQ.1 ) THEN
+                   FFEL2D = 0.5D0 * ( 1.0D0 + KSI2 )
+                 ELSE IF ( I2.EQ.2 ) THEN
+                   FFEL2D = -0.5D0 * ( KSI1 + KSI2 )
+                 ELSE
+                   FFEL2D = 0.5D0 * ( 1.0D0 + KSI1 )
+                 ENDIF
+               ELSE IF ( NBCNX.EQ.6 ) THEN
+                 IF ( I2.EQ.1 ) THEN
+                   FFEL2D = 0.5D0 * ( 1.0D0 + KSI2 ) * KSI2
+                 ELSE IF ( I2.EQ.2 ) THEN
+                   FFEL2D = 0.5D0 * ( KSI1 + KSI2 )*(KSI1+KSI2+1.0D0)
+                 ELSE IF ( I2.EQ.3 ) THEN
+                   FFEL2D = 0.5D0 * ( 1.0D0 + KSI1 ) * KSI1
+                 ELSE IF ( I2.EQ.4 ) THEN
+                   FFEL2D = -1.0D0 * ( 1.0D0 + KSI2 ) * ( KSI1 + KSI2 )
+                 ELSE IF ( I2.EQ.5 ) THEN
+                   FFEL2D = -1.0D0 * ( 1.0D0 + KSI1 ) * ( KSI1 + KSI2 )
+                 ELSE
+                   FFEL2D = ( 1.0D0 + KSI1 ) * ( 1.0D0 + KSI2 )
+                 ENDIF
+               ELSE IF ( NBCNX.EQ.4 ) THEN
+                 X(1) = KSI1
+                 X(2) = KSI2
+                 CALL ELRFVF('QU4',X,4,FF,NNO)
+                 IF ( I2.EQ.1 ) THEN 
+                   FFEL2D = FF(4)
+                 ELSE 
+                   FFEL2D = FF(I2-1)
+                 ENDIF
+               ELSE IF ( NBCNX.EQ.8 ) THEN
+                 X(1) = KSI1
+                 X(2) = KSI2
+                 CALL ELRFVF('QU8',X,8,FF,NNO)
+                 IF ( I2.EQ.1 ) THEN 
+                   FFEL2D = FF(4)
+                 ELSE IF ( I2.EQ.5 ) THEN 
+                   FFEL2D = FF(8)
+                 ELSE 
+                   FFEL2D = FF(I2-1)
+                 ENDIF
+               ELSE IF ( NBCNX.EQ.9 ) THEN
+                 X(1) = KSI1
+                 X(2) = KSI2
+                 CALL ELRFVF('QU9',X,9,FF,NNO)
+                 IF ( I2.EQ.1 ) THEN 
+                   FFEL2D = FF(4)
+                 ELSE IF ( I2.EQ.5 ) THEN 
+                   FFEL2D = FF(8)
+                 ELSE IF ( I2.EQ.9 ) THEN 
+                   FFEL2D = FF(9)
+                 ELSE 
+                   FFEL2D = FF(I2-1)
+                 ENDIF
+               ENDIF
+               ZR(JCMUR+3) = -FFEL2D
+C               ZR(JCMUR+3) = -FFEL2D(NBCNX,I2,KSI1,KSI2)
                ZR(JCMUR+4) = EXCENT*ZR(JCMUR+3)
                IF ( NOTLIN ) THEN
                   NBTERM = 7
@@ -297,7 +645,65 @@ C
                   ZK8(JNOMNO+6) = ZK8(JNOMNO+5)
                   ZK8(JDDL+5) = 'DEPL'
                   ZK8(JDDL+6) = 'ROTA'
-                  ZR(JCMUR+5) = -FFEL2D(NBCNX,I3,KSI1,KSI2)
+C
+                  IF ( NBCNX.EQ.3 ) THEN
+                    IF ( I3.EQ.1 ) THEN
+                      FFEL2D = 0.5D0 * ( 1.0D0 + KSI2 )
+                    ELSE IF ( I3.EQ.2 ) THEN
+                      FFEL2D = -0.5D0 * ( KSI1 + KSI2 )
+                    ELSE
+                      FFEL2D = 0.5D0 * ( 1.0D0 + KSI1 )
+                    ENDIF
+                  ELSE IF ( NBCNX.EQ.6 ) THEN
+                    IF ( I3.EQ.1 ) THEN
+                      FFEL2D = 0.5D0 * ( 1.0D0 + KSI2 ) * KSI2
+                    ELSE IF ( I3.EQ.2 ) THEN
+                      FFEL2D = 0.5D0 * ( KSI1 + KSI2 )*(KSI1+KSI2+1.0D0)
+                    ELSE IF ( I3.EQ.3 ) THEN
+                      FFEL2D = 0.5D0 * ( 1.0D0 + KSI1 ) * KSI1
+                    ELSE IF ( I3.EQ.4 ) THEN
+                      FFEL2D = -1.0D0 * ( 1.0D0 + KSI2 ) * ( KSI1+KSI2 )
+                    ELSE IF ( I3.EQ.5 ) THEN
+                      FFEL2D = -1.0D0 * ( 1.0D0 + KSI1 ) * ( KSI1+KSI2 )
+                    ELSE
+                      FFEL2D = ( 1.0D0 + KSI1 ) * ( 1.0D0 + KSI2 )
+                    ENDIF
+                  ELSE IF ( NBCNX.EQ.4 ) THEN
+                    X(1) = KSI1
+                    X(2) = KSI2
+                    CALL ELRFVF('QU4',X,4,FF,NNO)
+                    IF ( I3.EQ.1 ) THEN 
+                      FFEL2D = FF(4)
+                    ELSE 
+                      FFEL2D = FF(I3-1)
+                    ENDIF
+                  ELSE IF ( NBCNX.EQ.8 ) THEN
+                    X(1) = KSI1
+                    X(2) = KSI2
+                    CALL ELRFVF('QU8',X,8,FF,NNO)
+                    IF ( I3.EQ.1 ) THEN 
+                      FFEL2D = FF(4)
+                    ELSE IF ( I3.EQ.5 ) THEN 
+                      FFEL2D = FF(8)
+                    ELSE 
+                      FFEL2D = FF(I3-1)
+                    ENDIF
+                  ELSE IF ( NBCNX.EQ.9 ) THEN
+                    X(1) = KSI1
+                    X(2) = KSI2
+                    CALL ELRFVF('QU9',X,9,FF,NNO)
+                    IF ( I3.EQ.1 ) THEN 
+                      FFEL2D = FF(4)
+                    ELSE IF ( I3.EQ.5 ) THEN 
+                      FFEL2D = FF(8)
+                    ELSE IF ( I3.EQ.9 ) THEN 
+                      FFEL2D = FF(9)
+                    ELSE 
+                      FFEL2D = FF(I3-1)
+                    ENDIF
+                  ENDIF
+                  ZR(JCMUR+5) = -FFEL2D
+C                  ZR(JCMUR+5) = -FFEL2D(NBCNX,I3,KSI1,KSI2)
                   ZR(JCMUR+6) = EXCENT*ZR(JCMUR+5)
                ENDIF
 C
@@ -310,7 +716,65 @@ C
                   ZK8(JNOMNO+2*ICNX) = ZK8(JNOMNO+2*(ICNX-1)+1)
                   ZK8(JDDL+2*(ICNX-1)+1) = 'DEPL'
                   ZK8(JDDL+2*ICNX) = 'ROTA'
-                  ZR(JCMUR+2*(ICNX-1)+1) = -FFEL2D(NBCNX,ICNX,KSI1,KSI2)
+C
+                  IF ( NBCNX.EQ.3 ) THEN
+                    IF ( ICNX.EQ.1 ) THEN
+                      FFEL2D = 0.5D0 * ( 1.0D0 + KSI2 )
+                    ELSE IF ( ICNX.EQ.2 ) THEN
+                      FFEL2D = -0.5D0 * ( KSI1 + KSI2 )
+                    ELSE
+                      FFEL2D = 0.5D0 * ( 1.0D0 + KSI1 )
+                    ENDIF
+                  ELSE IF ( NBCNX.EQ.6 ) THEN
+                    IF ( ICNX.EQ.1 ) THEN
+                      FFEL2D = 0.5D0 * ( 1.0D0 + KSI2 ) * KSI2
+                    ELSE IF ( ICNX.EQ.2 ) THEN
+                      FFEL2D = 0.5D0 * ( KSI1 + KSI2 )*(KSI1+KSI2+1.0D0)
+                    ELSE IF ( ICNX.EQ.3 ) THEN
+                      FFEL2D = 0.5D0 * ( 1.0D0 + KSI1 ) * KSI1
+                    ELSE IF ( ICNX.EQ.4 ) THEN
+                      FFEL2D = -1.0D0 * ( 1.0D0 + KSI2 ) * ( KSI1+KSI2 )
+                    ELSE IF ( ICNX.EQ.5 ) THEN
+                      FFEL2D = -1.0D0 * ( 1.0D0 + KSI1 ) * ( KSI1+KSI2 )
+                    ELSE
+                      FFEL2D = ( 1.0D0 + KSI1 ) * ( 1.0D0 + KSI2 )
+                    ENDIF
+                  ELSE IF ( NBCNX.EQ.4 ) THEN
+                    X(1) = KSI1
+                    X(2) = KSI2
+                    CALL ELRFVF('QU4',X,4,FF,NNO)
+                    IF ( ICNX.EQ.1 ) THEN 
+                      FFEL2D = FF(4)
+                    ELSE 
+                      FFEL2D = FF(ICNX-1)
+                    ENDIF
+                  ELSE IF ( NBCNX.EQ.8 ) THEN
+                    X(1) = KSI1
+                    X(2) = KSI2
+                    CALL ELRFVF('QU8',X,8,FF,NNO)
+                    IF ( ICNX.EQ.1 ) THEN 
+                      FFEL2D = FF(4)
+                    ELSE IF ( ICNX.EQ.5 ) THEN 
+                      FFEL2D = FF(8)
+                    ELSE 
+                      FFEL2D = FF(ICNX-1)
+                  ENDIF
+                  ELSE IF ( NBCNX.EQ.9 ) THEN
+                    X(1) = KSI1
+                    X(2) = KSI2
+                    CALL ELRFVF('QU9',X,9,FF,NNO)
+                    IF ( ICNX.EQ.1 ) THEN 
+                      FFEL2D = FF(4)
+                    ELSE IF ( ICNX.EQ.5 ) THEN 
+                      FFEL2D = FF(8)
+                    ELSE IF ( ICNX.EQ.9 ) THEN 
+                      FFEL2D = FF(9)
+                    ELSE 
+                      FFEL2D = FF(ICNX-1)
+                    ENDIF
+                  ENDIF
+                  ZR(JCMUR+2*(ICNX-1)+1) = -FFEL2D
+C            ZR(JCMUR+2*(ICNX-1)+1) = -FFEL2D(NBCNX,ICNX,KSI1,KSI2)
                   ZR(JCMUR+2*ICNX) = EXCENT*ZR(JCMUR+2*(ICNX-1)+1)
   60           CONTINUE
 C

@@ -1,4 +1,4 @@
-# MODIF  DATE 27/05/2003   AUTEUR D6BHHJP J.P.LEFEBVRE 
+# MODIF  DATE 17/05/2004   AUTEUR CIBHHBC M.LOPES 
 # TITRE LIRE_FONCTION ET SPECTRE D'OSCILLATEUR
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -58,7 +58,7 @@ TEST_TABLE(      TABLE=MAXLBEWA,FILTRE=(
                   NOM_PARA='MAXI',
                       VALE=-6.38000E-01              )
 
-G=DEFI_VALEUR(  R8=9.81 )
+G=9.81
 
 SLBEWA=CALC_FONCTION(
                  SPEC_OSCI=_F(  FONCTION = LBEWA,
@@ -102,7 +102,7 @@ SLBEWD=CALC_FONCTION(
                             NATURE = 'DEPL', AMOR_REDUIT = ( 0.01, ),
                             NORME = 1.)  )
 
-OMEGA2=DEFI_VALEUR(  R8=EVAL("""4. * PI * PI * 35.5 * 35.5 """) )
+OMEGA2=4. * pi * pi * 35.5 * 35.5
 
 TEST_FONCTION(
          VALEUR=_F(  FONCTION = SLBEWD,        NOM_PARA = ('AMOR', 'FREQ',),

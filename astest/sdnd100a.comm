@@ -1,4 +1,4 @@
-# MODIF  DATE 07/06/2000   AUTEUR VABHHTS J.PELLET 
+# MODIF  DATE 17/05/2004   AUTEUR CIBHHBC M.LOPES 
 # TITRE LACHER D'UN PATIN FROTTANT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -35,7 +35,7 @@ U0=0.85E-03
 
 COULOMB=0.1
 
-ANG=DEFI_VALEUR(  R8=EVAL("""COS( PI / 4. ) """) )
+ANG=cos( pi / 4. )
 
 #
 
@@ -107,7 +107,7 @@ MODES=MODE_ITER_INV(   MATR_A=MATRRIGI,  MATR_B=MATRMASS,
 
 #
 
-U1=DEFI_VALEUR(  R8=EVAL("""U0 * ANG """) )
+U1=U0 * ANG
 
 DEPLPHYS=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_DEPL_R',
 MAILLAGE=POUTRE,
@@ -164,25 +164,25 @@ DYNAMODA=DYNA_TRAN_MODAL(       METHODE='EULER',
 
 #
 
-W0=DEFI_VALEUR(  R8=EVAL("""( K / M ) ** 0.5 """) )
+W0=( K / M ) ** 0.5
 
-C=DEFI_VALEUR(  R8=EVAL("""COULOMB * M * G / K """) )
+C=COULOMB * M * G / K
 
-T1=DEFI_VALEUR(  R8=EVAL("""PI / W0 """) )
+T1=pi / W0
 
-R1=DEFI_VALEUR(  R8=EVAL("""( ( 2. * C ) - U0 ) * ANG """) )
+R1=( ( 2. * C ) - U0 ) * ANG
 
-T2=DEFI_VALEUR(  R8=EVAL("""2. * PI / W0 """) )
+T2=2. * pi / W0
 
-R2=DEFI_VALEUR(  R8=EVAL("""( U0 - ( 4. * C ) ) * ANG """) )
+R2=( U0 - ( 4. * C ) ) * ANG
 
-T3=DEFI_VALEUR(  R8=EVAL("""3. * PI / W0 """) )
+T3=3. * pi / W0
 
-R3=DEFI_VALEUR(  R8=EVAL("""( ( 6. * C ) - U0 ) * ANG """) )
+R3=( ( 6. * C ) - U0 ) * ANG
 
-T4=DEFI_VALEUR(  R8=EVAL("""4. * PI / W0 """) )
+T4=4. * pi / W0
 
-R4=DEFI_VALEUR(  R8=EVAL("""( U0 - ( 8. * C ) ) * ANG """) )
+R4=( U0 - ( 8. * C ) ) * ANG
 
 DYNATRA1=REST_BASE_PHYS(   RESU_GENE=DYNAMODA,
                                NOM_CHAM='DEPL',

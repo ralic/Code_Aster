@@ -1,4 +1,4 @@
-# MODIF  DATE 23/02/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 17/05/2004   AUTEUR CIBHHBC M.LOPES 
 # TITRE VALIDATION DE L'OPERATEUR POST_RCCM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -72,9 +72,9 @@ A1=0.0E-3
 
 A2=1.0E-3
 
-DY1=DEFI_VALEUR(  R8=EVAL("""( -1.0 * A1 ) + A2 """) )
+DY1=( -1.0 * A1 ) + A2
 
-DY2=DEFI_VALEUR(  R8=EVAL("""( +1.0 * A1 ) + A2 """) )
+DY2=( +1.0 * A1 ) + A2
 
 DYCD=DEFI_FONCTION(   NOM_PARA='X',
                       VALE=( -1.0, DY1,  1.0, DY2, )  )

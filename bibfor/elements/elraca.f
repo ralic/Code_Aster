@@ -6,7 +6,7 @@
       CHARACTER*(*) ELREFZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 18/05/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -571,18 +571,20 @@ C     -------------------------------------------------------
         NNOS = 3
         VOL  = 1.D0/2.D0
 
-        NBFPG = 5
+        NBFPG = 6
         NBPG(1) = NNO
         NBPG(2) = NNOS
         NBPG(3) = 1
         NBPG(4) = 3
         NBPG(5) = 6
+        NBPG(6) = 7
 
         FAPG(1) = 'NOEU'
         FAPG(2) = 'NOEU_S'
         FAPG(3) = 'FPG1'
         FAPG(4) = 'FPG3'
         FAPG(5) = 'FPG6'
+        FAPG(6) = 'FPG7'
 
         XIN(1) = 0.D0
         YIN(1) = 0.D0
@@ -613,17 +615,20 @@ C     ------------------------------------------------------------------
         VOL = 4.D0
 
         NBFPG = 5
+CCC        NBFPG = 6
         NBPG(1) = NNO
         NBPG(2) = NNOS
         NBPG(3) = 1
         NBPG(4) = 4
         NBPG(5) = 9
+CCC        NBPG(6) = 2
 
         FAPG(1) = 'NOEU'
         FAPG(2) = 'NOEU_S'
         FAPG(3) = 'FPG1'
         FAPG(4) = 'FPG4'
         FAPG(5) = 'FPG9'
+CCC        FAPG(6) = 'FIS2'
 
         XIN(1) = -1.D0
         YIN(1) = -1.D0
@@ -806,7 +811,7 @@ C     ------------------------------------------------------------------
 
 C     ------------------------------------------------------------------
       ELSE
-        CALL ASSERT(.FALSE.)
+         CALL UTMESS('F','ELRACA','ELREFA INCONNU: '//ELREFA)
       END IF
 
       DO 150 I = 0,NNO - 1

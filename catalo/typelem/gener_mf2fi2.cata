@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 02/12/2003   AUTEUR PBADEL P.BADEL 
+%& MODIF TYPELEM  DATE 18/05/2004   AUTEUR CIBHHLV L.VIVAN 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,9 +20,9 @@ GENER_MF2FI2
 TYPE_GENE__
 
 ENTETE__ ELEMENT__ MFPLQU4          MAILLE__ QUAD4
-   ELREFE__  QUAD4_FI  GAUSS__  NELGA=FPG1
+   ELREFE__  QU4     GAUSS__  RIGI=FIS2
 ENTETE__ ELEMENT__ MFAXQU4          MAILLE__ QUAD4
-   ELREFE__  QUAD4_FI  GAUSS__  NELGA=FPG1
+   ELREFE__  QU4     GAUSS__  RIGI=FIS2
 
 MODE_LOCAL__
     CMATERC  = ADRSJEVE ELEM__         (I1       )
@@ -34,12 +34,12 @@ MODE_LOCAL__
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        )
     CTEMPSR  = INST_R   ELEM__         (INST     )
     CTYPEPI  = PILO_K   ELEM__         (TYPE     )
-    ECOPILO  = PILO_R   ELGA__ NELGA   (A0       A1       A2       A3       ETA      )
+    ECOPILO  = PILO_R   ELGA__ RIGI    (A0       A1       A2       A3       ETA      )
     CBORNPI  = PILO_R   ELEM__         (A0       A1       )
     CCDTAU   = PILO_R   ELEM__         (A0       )
-    ECONTPG  = SIEF_R   ELGA__ NELGA   (SIGN     SITX     )
+    ECONTPG  = SIEF_R   ELGA__ RIGI    (SIGN     SITX     )
     ECONTNO  = SIEF_R   ELNO__ IDEN__  (SIGN     SITX     )
-    ZVARIPG  = VARI_R   ELGA__ NELGA   (VARI     )
+    ZVARIPG  = VARI_R   ELGA__ RIGI    (VARI     )
     ZVARINO  = VARI_R   ELNO__ IDEN__  (VARI     )
 
 VECTEUR__

@@ -1,4 +1,4 @@
-# MODIF  DATE 01/04/2003   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 17/05/2004   AUTEUR CIBHHBC M.LOPES 
 # TITRE TEST DE LA MACRO COMMANDE DE RECALAGE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -17,7 +17,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-DEBUT(CODE=_F(NOM='ZZZZ159A',NIV_PUB_WEB='INTERNET'),PAR_LOT='OUI')
+DEBUT(CODE=_F(NOM='ZZZZ159A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),PAR_LOT='OUI')
 
 import Numeric
 import Macro

@@ -2,7 +2,7 @@
      %TRAVL,TRAVU,CL,CU)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 04/05/2004   AUTEUR ROSE C.ROSE 
+C MODIF ALGELINE  DATE 12/05/2004   AUTEUR ROSE C.ROSE 
 C RESPONSABLE ROSE C.ROSE
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -36,6 +36,7 @@ C ======================================================================
       RESTL = LL-(NB*NLB)
       DECAL = ADPER(P+1) -1
       NPROC = MLNBPR()
+      NUMPRO = 1
       IF(NMB.GE.NPROC) THEN
 C$OMP PARALLEL DO DEFAULT(PRIVATE)
 C$OMP+SHARED(N,M,P,NMB,NBL,NLB,NB,RESTM,RESTL,CL,CU)

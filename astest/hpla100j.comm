@@ -1,4 +1,4 @@
-# MODIF  DATE 06/04/2004   AUTEUR CIBHHPD S.VANDENBERGHE 
+# MODIF  DATE 17/05/2004   AUTEUR CIBHHBC M.LOPES 
 # TITRE CYLINDRE CREUX THERMOELASTIQUE PESANT EN ROTATION UNIFORME
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -28,32 +28,31 @@ H=1.0
 
 ALPHA_FO=DEFI_CONSTANTE(VALE= 1.E-05)
 
-C_MEM=DEFI_VALEUR(  R8=EVAL("""E * H / ( 1. - ( NU * NU ) ) """) )
+C_MEM=E * H / ( 1. - ( NU * NU ) )
 
-C_FLE=DEFI_VALEUR(  R8=EVAL("""( E * H * H * H ) /
-                               ( 12. *  ( 1. - ( NU * NU ) ) ) """) )
+C_FLE=( E * H * H * H ) / ( 12. *  ( 1. - ( NU * NU ) ) )
 
-C_CIS=DEFI_VALEUR(  R8=EVAL("""E * H / ( 1. + NU ) """) )
+C_CIS=E * H / ( 1. + NU )
 
-C1111=DEFI_VALEUR(  R8=EVAL("""C_MEM * 1. """) )
+C1111=C_MEM * 1.
 
-C1112=DEFI_VALEUR(  R8=EVAL("""C_MEM * NU """) )
+C1112=C_MEM * NU
 
-C2222=DEFI_VALEUR(  R8=EVAL("""C_MEM * 1. """) )
+C2222=C_MEM * 1.
 
-C1212=DEFI_VALEUR(  R8=EVAL("""C_MEM * ( 1. - NU ) / 2. """) )
+C1212=C_MEM * ( 1. - NU ) / 2.
 
-D1111=DEFI_VALEUR(  R8=EVAL("""C_FLE * 1. """) )
+D1111=C_FLE * 1.
 
-D1112=DEFI_VALEUR(  R8=EVAL("""C_FLE * NU """) )
+D1112=C_FLE * NU
 
-D2222=DEFI_VALEUR(  R8=EVAL("""C_FLE * 1. """) )
+D2222=C_FLE * 1.
 
-D1212=DEFI_VALEUR(  R8=EVAL("""C_FLE * ( 1. - NU ) / 2. """) )
+D1212=C_FLE * ( 1. - NU ) / 2.
 
-G11=DEFI_VALEUR(  R8=EVAL("""C_CIS * 5. / 12. """) )
+G11=C_CIS * 5. / 12.
 
-G22=DEFI_VALEUR(  R8=EVAL("""C_CIS * 5. / 12. """) )
+G22=C_CIS * 5. / 12.
 
 C1111_FO=DEFI_CONSTANTE(VALE=C1111)
 
@@ -433,9 +432,7 @@ TEST_RESU(RESU=(
         REFERENCE = 'ANALYTIQUE',       NOEUD = 'N11', NOM_CMP = 'NYY',   VALE = -0.20000E+0),
              _F(  RESULTAT = DEPLDI2T,  CRITERE = 'RELATIF',   PRECISION = 1.E-3,
         NUME_ORDRE = 1,     MAILLE = 'M39', NOM_CHAM = 'EFGE_ELNO_DEPL',
-        REFERENCE = 'ANALYTIQUE',       NOEUD = 'N161', NOM_CMP = 'NYY',   VALE = -0.20000E+0))
-#
-            )
+        REFERENCE = 'ANALYTIQUE',       NOEUD = 'N161', NOM_CMP = 'NYY',   VALE = -0.20000E+0)))
 
 FIN()
 #

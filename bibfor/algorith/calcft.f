@@ -1,8 +1,8 @@
         SUBROUTINE CALCFT(OPTION,MECA,THMC,HYDR,IMATE,NDIM,DIMDEF,
-     +                    DIMCON,NVIMEC,NVITH,YAMEC,YAP1,NBPHA1,YAP2,
+     +                    DIMCON,YAMEC,YAP1,NBPHA1,YAP2,
      +                    NBPHA2,YATE,ADDETE,ADDEME,ADDEP1,ADDEP2,
-     +                    ADCOTE,CONGEM,CONGEP,VINTM,VINTP,ADVIME,
-     +                    ADVITH,DSDE,EPSV,P1,P2,T,GRAT,PHI,SATBID,PVP,
+     +                    ADCOTE,CONGEM,CONGEP,
+     +                    DSDE,EPSV,P1,P2,T,GRAT,PHI,SATBID,PVP,
      +                    RGAZ, RHOD, CPD, BIOT, SATM, SAT,DSATP1, 
      +                    PESA, PERMFH, PERMLI, DPERML, PERMGZ,DPERMS, 
      +                    DPERMP, FICK, DFICKT, DFICKG, LAMBP,
@@ -14,7 +14,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 17/05/2004   AUTEUR ROMEO R.FERNANDES 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -39,12 +39,10 @@ C CALCULE LES CONTRAINTES GENERALISEES ET LA MATRICE TANGENTE DES FLUX -
 C OUT RETCOM : RETOUR LOI DE COMPORTEMENT ------------------------------
 C ======================================================================
       IMPLICIT      NONE
-      INTEGER       NDIM,DIMDEF,DIMCON,NVIMEC,NVITH,IMATE
+      INTEGER       NDIM,DIMDEF,DIMCON,IMATE,RETCOM
       INTEGER       YAMEC,YAP1,NBPHA1,YAP2,NBPHA2,YATE
       INTEGER       ADDETE,ADDEME,ADDEP1,ADDEP2,ADCOTE
-      INTEGER       ADVIME,ADVITH,RETCOM
       REAL*8        CONGEM(1:DIMCON),CONGEP(1:DIMCON)
-      REAL*8        VINTM(1:NVIMEC+NVITH),VINTP(1:NVIMEC+NVITH)
       REAL*8        DSDE(1:DIMCON,1:DIMDEF),EPSV,P1,P2,MAMOLV
       REAL*8        T,GRAT(3),PHI,SAT,DSATP1,PVP,LAMBDT(5),I,J,SATBID
       REAL*8        RGAZ, RHOD, CPD, BIOT, SATM, SATUR,DSATUR, PESA(3)

@@ -1,0 +1,86 @@
+# MODIF  DATE 17/05/2004   AUTEUR CIBHHBC M.LOPES 
+# RESPONSABLE DURAND C.DURAND
+# TITRE TEST FICTIF POUR PRODUIRE LE VOCABULAIRE DU CATALOGUE DE COMMANDES
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+DEBUT(CODE=_F( NOM = 'VOCAB01A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'))
+
+
+# Ceci n est pas un vrai cas test
+#
+# le programme python ci-dessous permet de naviguer dans l ensemble des
+# commandes du catalogue, et d extraire pour chacune son vocabulaire :
+# mots cles simple et facteurs.
+#
+# Ensuite ce vocabulaire est ordonne et on imprime dans le fichier message
+# pour chaque mot la liste des commandes qui le contiennent :
+#
+#      DDL       :: AFFE_CHAR_ACOU   / AFFE_CHAR_THER   / ...
+#      DDL_1     :: AFFE_CHAR_THER   / AFFE_CHAR_MECA_F / ...
+#      DDL_2     :: AFFE_CHAR_THER   / AFFE_CHAR_MECA_F / 
+#
+# la methode permettant de recuperer le vocabulaire d une commande est
+# get_mc_simp/get_mc_fact de la classe ENTITE (B_ENTITE.py)
+#
+# ceci remplace l ancien script de l agla : maj_voca
+
+from Cata import cata
+import string
+
+l_commande =[]
+vocabulaire=[]
+com_voca   ={}
+inv_voca   ={}
+
+for elem in cata.__dict__.keys() :
+    if   isinstance(cata.__dict__[elem],OPER):  l_commande.append(cata.__dict__[elem])
+    elif isinstance(cata.__dict__[elem],PROC):  l_commande.append(cata.__dict__[elem])
+    elif isinstance(cata.__dict__[elem],MACRO): l_commande.append(cata.__dict__[elem])
+
+for elem in l_commande :
+    com_voca[elem.nom]=elem.get_mc_simp(niv=2)+elem.get_mc_fact()
+    vocabulaire=vocabulaire+com_voca[elem.nom]
+
+vocabulaire.sort()
+for i in vocabulaire:
+    while vocabulaire.count(i)>1 : vocabulaire.pop(vocabulaire.index(i))
+print '\n Nombre de mots cles = ',len(vocabulaire)
+
+
+for i in vocabulaire:
+    inv_voca[i]=[]
+    for j in com_voca.keys() :
+        if i in com_voca[j] : inv_voca[i].append(j)
+
+for i in vocabulaire:
+    texte=string.ljust(i,28)+' :: '
+    for j in inv_voca[i]:texte=texte+string.ljust(j,17)+'/ '
+    print texte
+
+# un test bidon sur une fonction bidon permet de passer sous les fourches caudines 
+# de l agla qui exige au moins un test par cas-test.
+
+FO =DEFI_FONCTION(  NOM_PARA='X',
+                    NOM_RESU='Y',
+                    VALE=(0.,0.) )
+
+TEST_FONCTION(VALEUR = _F(  FONCTION  = FO ,  PRECISION = 1.E-08,
+                            VALE_PARA = 0.,   VALE_REFE = 0.,
+                            REFERENCE = 'NON_REGRESSION'      ), )
+
+FIN()

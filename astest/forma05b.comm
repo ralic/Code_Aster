@@ -1,4 +1,4 @@
-# MODIF  DATE 02/03/2004   AUTEUR D6BHHJP J.P.LEFEBVRE 
+# MODIF  DATE 17/05/2004   AUTEUR CIBHHBC M.LOPES 
 # RESPONSABLE O.BOITEAU
 # TITRE Maillage adaptatif thermo-mecanique sur une culasse fissuree
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -88,7 +88,7 @@ ENER     = [None]*nb_calc1
 #-------------------------------------------------------------------
 #                       CALCUL ASTER
 #-------------------------------------------------------------------
-DEBUT(CODE=_F(NOM = 'FORMA05B',NIV_PUB_WEB='INTERNET'),PAR_LOT='NON');
+DEBUT(CODE=_F(NOM = 'FORMA05B',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),PAR_LOT='NON');
 
 # DEFINITION DU MATERIAU (ACIER 16MND5)
 ACIER_M=DEFI_MATERIAU(ELAS=_F(E=210.E3,NU=0.2,),);

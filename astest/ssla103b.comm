@@ -1,5 +1,5 @@
 
-# MODIF  DATE 04/05/2004   AUTEUR SMICHEL S.MICHEL-PONNELLE 
+# MODIF  DATE 17/05/2004   AUTEUR ROMEO R.FERNANDES 
 # -----------------------------------------------------------------
 # TITRE CALCUL DU RETRAIT DE DESSICCATION SUR UN CYLINDRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -31,26 +31,27 @@ MO=AFFE_MODELE(MAILLAGE=M,
                        PHENOMENE='MECANIQUE',
                        MODELISATION='3D',),);
 
-E=DEFI_CONSTANTE(VALE=3.73E10,);
+E=DEFI_CONSTANTE(VALE=3.E10,);
 
 NU=DEFI_CONSTANTE(VALE=0.2,);
 
 BETON=DEFI_MATERIAU(ELAS_FO=_F(E=E,
                                NU=NU,
-                               K_DESSIC=1.66e-05,),);
+                               K_DESSIC=1.66e-05,
+                               B_ENDOGE = 1.5E-5,),);
 
 CM=AFFE_MATERIAU(MAILLAGE=M,
                  AFFE=_F(TOUT='OUI',
                          MATER=BETON,
                          TEMP_REF=20.0,
-                         SECH_REF=105.7), );
+                         SECH_REF=100.), );
 
 SECHI=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
                  OPERATION='AFFE',
                  MAILLAGE=M,
                  AFFE=_F(TOUT='OUI',
                          NOM_CMP='TEMP',
-                         VALE=105.7,),);
+                         VALE=100.,),);
 
 SECHF=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
                  OPERATION='AFFE',
@@ -82,23 +83,45 @@ TEMP1=CREA_RESU(OPERATION='AFFE',
                 _F(CHAM_GD=TEMP,
                    INST=0.0,),),);
 
+HYDRI=CREA_CHAMP(TYPE_CHAM='ELGA_HYDR_R',
+                OPERATION='AFFE',
+                MODELE = MO,
+                AFFE=_F(TOUT='OUI',
+                        NOM_CMP='HYDR',
+                        VALE=0.0,),);
+
+HYDRF=CREA_CHAMP(TYPE_CHAM='ELGA_HYDR_R',
+                OPERATION='AFFE',
+                MODELE = MO,
+                AFFE=_F(TOUT='OUI',
+                        NOM_CMP='HYDR',
+                        VALE=1.0,),);
+                        
+HYDR1=CREA_RESU(OPERATION='AFFE',
+                TYPE_RESU='EVOL_THER',
+                NOM_CHAM='HYDR_ELGA',
+                AFFE=(
+                _F(CHAM_GD=HYDRI,
+                   INST=0.0,),
+                _F(CHAM_GD=HYDRF,
+                   INST=3600.0,  ),),);
+
 CH1=AFFE_CHAR_MECA(MODELE=MO,
-                   DDL_IMPO=(_F(GROUP_NO='FACEXY',
+                   FACE_IMPO=(_F(GROUP_MA='FACEXY',
                                 DZ=0.0,),
-                             _F(GROUP_NO='FACEYZ',
+                             _F(GROUP_MA='FACEYZ',
                                 DX=0.0,),
-                             _F(GROUP_NO='FACEXZ',
+                             _F(GROUP_MA='FACEXZ',
                                 DY=0.0,),),);
 
 CH2=AFFE_CHAR_MECA(MODELE=MO,
                    TEMP_CALCULEE=TEMP1,
-                   SECH_CALCULEE=SECH1,);
+                   SECH_CALCULEE=SECH1,
+                   HYDR_CALCULEE=HYDR1);
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
-                      INTERVALLE=(_F(JUSQU_A=400.0,
-                                     NOMBRE=40,),
-                                  _F(JUSQU_A=3600.0,
-                                     NOMBRE=16,),),);
+                      INTERVALLE=_F(JUSQU_A=3600.0,
+                                     NOMBRE=2,  ),);
 
 U=STAT_NON_LINE(MODELE=MO,
                 CHAM_MATER=CM,
@@ -129,11 +152,11 @@ TEST_RESU(RESU=(
   _F(  RESULTAT = U,  NOM_CHAM = 'EPSI_NOEU_DEPL', INST = 3600.,
          NOM_CMP = 'EPXX',   NOEUD = 'N5',
          PRECISION = 5.E-3,  REFERENCE = 'ANALYTIQUE',
-         VALE = -4.2662E-4),
+         VALE = -3.47E-4),
   _F(  RESULTAT = U,  NOM_CHAM = 'EPSI_NOEU_DEPL', INST = 3600.,
          NOM_CMP = 'EPYY',   NOEUD = 'N5',
          PRECISION = 5.E-3,  REFERENCE = 'ANALYTIQUE',
-         VALE = -4.2662E-4),
+         VALE = -3.47E-4),
   _F(  RESULTAT = U,  NOM_CHAM = 'SIEF_NOEU_ELGA', INST = 3600.,
          NOM_CMP = 'SIXX',   NOEUD = 'N5',
          PRECISION = 1.E-6,  REFERENCE = 'ANALYTIQUE',
@@ -176,11 +199,11 @@ TEST_RESU(RESU=(
   _F(  RESULTAT = U2,  NOM_CHAM = 'EPSI_NOEU_DEPL', INST = 3600.,
          NOM_CMP = 'EPXX',   NOEUD = 'N5',
          PRECISION = 5.E-3,  REFERENCE = 'ANALYTIQUE',
-         VALE = -4.2662E-4),
+         VALE = -3.47E-4),
   _F(  RESULTAT = U2,  NOM_CHAM = 'EPSI_NOEU_DEPL', INST = 3600.,
          NOM_CMP = 'EPYY',   NOEUD = 'N5',
          PRECISION = 5.E-3,  REFERENCE = 'ANALYTIQUE',
-         VALE = -4.2662E-4),
+         VALE = -3.47E-4),
   _F(  RESULTAT = U2,  NOM_CHAM = 'SIGM_NOEU_DEPL', INST = 3600.,
          NOM_CMP = 'SIXX',   NOEUD = 'N5',
          PRECISION = 1.E-6,  REFERENCE = 'ANALYTIQUE',

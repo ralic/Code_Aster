@@ -1,7 +1,7 @@
       SUBROUTINE CER3PT ( CUPN0, CVPN0, CUPN1, CVPN1, CUPN2, CVPN2,
      &                    CUON, CVON, RAYON )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 26/05/2003   AUTEUR F1BHHAJ J.ANGLES 
+C MODIF PREPOST  DATE 17/05/2004   AUTEUR F1BHHAJ J.ANGLES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -69,8 +69,8 @@ C234567                                                              012
 
       CALL JEMARQ()
 
-      EPS1 = 1.0D-8
-      EPS2 = 1.0D+1*EPS1
+      EPS1 = 1.0D-7
+      EPS2 = 1.0D-4
 
       CUON = 0.0D0
       CVON = 0.0D0
@@ -208,27 +208,41 @@ C
          CVON3 = (A01*B02 - A02*B01)/(A01 - A02)
       ENDIF
 
-C ON VERIFIE QUE : CUON1 = CUON2 = CUON3 ET QUE : CVON1 = CVON2 = CVON3.
+C ON CALCULE LE RAYON ET ON VERIFIE LA PRECISION DE SON CALCUL.
 
-      IF ( (ABS(CUON1-CUON2) .LT. EPS2) .AND.
-     &     (ABS(CUON2-CUON3) .LT. EPS2) .AND.
-     &     (ABS(CVON1-CVON2) .LT. EPS2) .AND.
-     &     (ABS(CVON2-CVON3) .LT. EPS2) ) THEN
-         CUON = CUON1
-         CVON = CVON1
-         RAY0 = SQRT((CUON - CUPN0)**2 + (CVON - CVPN0)**2)
-         RAY1 = SQRT((CUON - CUPN1)**2 + (CVON - CVPN1)**2)
-         RAY2 = SQRT((CUON - CUPN2)**2 + (CVON - CVPN2)**2)
-         RAYON = MAX(RAY0,RAY1,RAY2)
-         RAYMIN = MIN(RAY0,RAY1,RAY2)
+      RAY0 = SQRT((CUON1 - CUPN0)**2 + (CVON1 - CVPN0)**2)
+      RAY1 = SQRT((CUON2 - CUPN1)**2 + (CVON2 - CVPN1)**2)
+      RAY2 = SQRT((CUON3 - CUPN2)**2 + (CVON3 - CVPN2)**2)
+      RAYON = MAX(RAY0,RAY1,RAY2)
+      RAYMIN = MIN(RAY0,RAY1,RAY2)
 C
-         IF ( ABS(RAYON - RAYMIN) .GT. 1.0D-5 ) THEN
-           CALL UTMESS('F','CER3PT.1','LE CALCUL DU RAYON N''EST PAS '//
-     &               'ASSEZ PRECIS.')
-         ENDIF
+      IF ( (((RAYON - RAYMIN)/RAYMIN) .GT. EPS2) .AND.
+     &     ((RAYON - RAYMIN) .GT. EPS2) ) THEN
+        CALL UTDEBM('F','CER3PT.1','LE CALCUL DU RAYON N''EST PAS '//
+     &            'ASSEZ PRECIS.')
+        CALL UTIMPR('L','CUPN0 = ',1,CUPN0)
+        CALL UTIMPR('S',' CVPN0 = ',1,CVPN0)
+        CALL UTIMPR('L','CUPN1 = ',1,CUPN1)
+        CALL UTIMPR('S',' CVPN1 = ',1,CVPN1)
+        CALL UTIMPR('L','CUPN2 = ',1,CUPN2)
+        CALL UTIMPR('S',' CVPN2 = ',1,CVPN2)
+        CALL UTIMPI('L','FLAG = ',1,FLAG)
+        CALL UTIMPR('L','CUON1 = ',1,CUON1)
+        CALL UTIMPR('S',' CUON2 = ',1,CUON2)
+        CALL UTIMPR('L','CUON3 = ',1,CUON3)
+        CALL UTIMPR('L','CVON1 = ',1,CVON1)
+        CALL UTIMPR('S',' CVON2 = ',1,CVON2)
+        CALL UTIMPR('L','CVON3 = ',1,CVON3)
+        CALL UTIMPR('L','RAYON = ',1,RAYON)
+        CALL UTIMPR('S',' RAYMIN = ',1,RAYMIN)
+        CALL UTIMPR('L','(RAYON - RAYMIN) = ',1,(RAYON - RAYMIN))
+        CALL UTIMPR('L','((RAYON-RAYMIN)/RAYMIN) = ',1,
+     &                   ((RAYON-RAYMIN)/RAYMIN) )
+C
+        CALL UTFINM( )
       ELSE
-         CALL UTMESS('F','CER3PT.2','LE POINT QUI DEVAIT ETRE A '//
-     &               'EGALE DISTANCE DES TROIS POINTS NE L''EST PAS.')
+        CUON = CUON1
+        CVON = CVON1
       ENDIF
 C
       CALL JEDEMA()

@@ -1,8 +1,7 @@
         SUBROUTINE CALCFH(OPTION,MECA,THMC,THER,HYDR,IMATE,NDIM,DIMDEF,
-     +                    DIMCON,NVIMEC,NVITH,YAMEC,YATE,ADDEP1,ADDEP2,
+     +                    DIMCON,YAMEC,YATE,ADDEP1,ADDEP2,
      +                    ADCP11,ADCP12,ADCP21,ADCP22,ADDEME,ADDETE,
-     +                    VINTM, VINTP,
-     +                    CONGEM,CONGEP,ADVIME,ADVITH,DSDE,P1,P2,
+     +                    CONGEM,CONGEP,DSDE,P1,P2,
      +                    GRAP1,GRAP2,T,GRAT,PHI,PVP,PAD,RHO11,H11,H12,
      +                    H21,H22,R, RHOD, CPD, BIOT, SAT, DSATP1,
      +                    PESA, PERMFH, PERMLI, DPERML, PERMGZ, DPERMS,
@@ -15,7 +14,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 17/02/2004   AUTEUR GRANET S.GRANET 
+C MODIF ALGORITH  DATE 17/05/2004   AUTEUR ROMEO R.FERNANDES 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -55,11 +54,9 @@ C OUT RETCOM : RETOUR LOI DE COMPORTEMENT
 C ======================================================================
 C
       IMPLICIT      NONE
-      INTEGER       NDIM,DIMDEF,DIMCON,NVIMEC,NVITH,IMATE,YAMEC,YATE
+      INTEGER       NDIM,DIMDEF,DIMCON,IMATE,YAMEC,YATE,ADCP22,RETCOM
       INTEGER       ADDEME,ADDEP1,ADDEP2,ADDETE,ADCP11,ADCP12,ADCP21
-      INTEGER       ADCP22,ADVIME,ADVITH,RETCOM
       REAL*8        CONGEM(1:DIMCON),CONGEP(1:DIMCON)
-      REAL*8        VINTM(1:NVIMEC+NVITH),VINTP(1:NVIMEC+NVITH)
       REAL*8        DSDE(1:DIMCON,1:DIMDEF),P1,GRAP1(3),P2,T
       REAL*8        GRAP2(3),GRAT(3),PHI,PVP,PAD,H11,H12,H21,H22,RHO11
       REAL*8        R, RHOD, CPD, BIOT, SAT, DSATP1, PESA(3), PERMFH

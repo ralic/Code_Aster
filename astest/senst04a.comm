@@ -1,4 +1,4 @@
-# MODIF  DATE 01/07/2003   AUTEUR GNICOLAS G.NICOLAS 
+# MODIF  DATE 17/05/2004   AUTEUR CIBHHBC M.LOPES 
 # RESPONSABLE O.BOITEAU
 # TITRE Validation de la sensibilite par rapport au coefficient d'echan
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -8,7 +8,7 @@
 #              REDISTRIBUTION OF THIS FILE.
 # ======================================================================
 #    ge convectif et a la conductivite en thermique lineaire transitoire
-DEBUT(  CODE=_F(  NOM = 'SENST04A',NIV_PUB_WEB='INTERNET'),PAR_LOT='NON'  )
+DEBUT(  CODE=_F(  NOM = 'SENST04A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),PAR_LOT='NON'  )
 #
 # Cas-test inspire du cas test TTLP100A traitant la reponse thermique
 # transitoire lineaire de deux plaques separees par un jeu dans lequel
@@ -71,12 +71,12 @@ MEMO_NOM_SENSI(NOM=_F(NOM_COMPOSE='PS_UN',PARA_SENSI=PS2,NOM_SD='PS2',),);
 #
 PS1P=FORMULE(REEL="""(REEL:INST) =80.00001""");
 PS2P=DEFI_CONSTANTE(VALE=40.00001);
-LONTOT=DEFI_VALEUR(R8=0.990)
-LONMAX=DEFI_VALEUR(R8=1.000)
-A1=DEFI_VALEUR(R8=100.0);
-A2=DEFI_VALEUR(R8=300.0);
-A3=DEFI_VALEUR(R8=80.0);
-A4=DEFI_VALEUR(R8=40.0);
+LONTOT=0.990
+LONMAX=1.000
+A1=100.0;
+A2=300.0;
+A3=80.0;
+A4=40.0;
 A5=DEFI_CONSTANTE(VALE=7.3E-4);
 TEMPG=FORMULE(REEL="""(REEL:INST) = A1""");
 TEMPD=FORMULE(REEL="""(REEL:INST) = A2""");
@@ -188,10 +188,8 @@ RESU2P=THER_LINEAIRE(MODELE=MODTHER,CHAM_MATER=CMATP,
 # 5.1 Verifications analytiques des sensibilites par rapport
 #     au coefficient d'echange
 #
-GRADS1=FORMULE(REEL="""(REEL:BIDON)=A4*(A2-A1)/((A4+A3*LONTOT)**2)""")
-GRADTS1=DEFI_VALEUR(R8=EVAL("""GRADS1(0.)""") )
-TINTGS1=FORMULE(REEL="""(REEL:X)=GRADTS1*X""")
-TINTDS1=FORMULE(REEL="""(REEL:X)=-GRADTS1*(LONMAX-X)""")
+TINTGS1=FORMULE(REEL="""(REEL:X)=A4*(A2-A1)/((A4+A3*LONTOT)**2)*X""")
+TINTDS1=FORMULE(REEL="""(REEL:X)=-A4*(A2-A1)/((A4+A3*LONTOT)**2)*(LONMAX-X)""")
 #
 # 5.1.1 TEST_RESU sur les sensibilites numeriques
 #
@@ -254,10 +252,8 @@ TEST_FONCTION(VALEUR=(
 # 5.2 Verifications analytiques des sensibilites par rapport
 #     a la conductivite thermique
 #
-GRADS2=FORMULE(REEL="""(REEL:BIDON)=A3*(A1-A2)/((A4+A3*LONTOT)**2)""")
-GRADTS2=DEFI_VALEUR(R8=EVAL("""GRADS2(0.)""") )
-TINTGS2=FORMULE(REEL="""(REEL:X)=GRADTS2*X""")
-TINTDS2=FORMULE(REEL="""(REEL:X)=-GRADTS2*(LONMAX-X)""")
+TINTGS2=FORMULE(REEL="""(REEL:X)=A3*(A1-A2)/((A4+A3*LONTOT)**2)*X""")
+TINTDS2=FORMULE(REEL="""(REEL:X)=-A3*(A1-A2)/((A4+A3*LONTOT)**2)*(LONMAX-X)""")
 #
 # 5.2.1 TEST_RESU sur les sensibilites numeriques
 #

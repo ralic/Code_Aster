@@ -1,0 +1,301 @@
+# MODIF  DATE 17/05/2004   AUTEUR CIBHHBC M.LOPES 
+# RESPONSABLE H.ANDRIAMBOLOLONA
+# TITRE SENSIBILITE AUX MATERIAUX EN DYNAMIQUE LINEAIRE TRANSITOIRE ISOTROPE 3D
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+DEBUT( CODE=_F(  NOM = 'SENSD05A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),
+       PAR_LOT='NON' )
+
+# ----------------------------------------------------------------------
+#                 *-------------------------------*
+#               /                               / !
+#          J  /                            OPPOSE !
+#           *-------------------------------*     !
+#           !               !               !     !
+#           !               !               !     !
+#           !               !               !     !
+#           !               * CENTRE        !     !
+#           !               !               !     *
+#           !               !               !   /  
+#           !               !               ! /
+#           *-------------------------------*
+#       ORIGINE                              I
+#
+#              1   < X < 11
+#             -1.5 < Y <  1.5
+#              0.  < Z < 1.
+#
+# Chargement par une force nodale au noeud OPPOSE calcule 
+# avec CALC_VECT_ELEM et un ASSE_VECTEUR
+# Calcul des derives des champs resulat par rapport a E et NU
+# La solution de reference de sensibilite parvient 
+# d'un calcul par differences finies.
+# ----------------------------------------------------------------------
+# Initialisations
+
+I_DEBUT = 0.
+I_FIN = 1.E-4
+
+E_INI = 1.E5
+NU_INI = 0.3
+
+#      
+# 1. Definition/memorisation des fonctions constantes
+#
+PS_UN=DEFI_CONSTANTE(VALE=1.0,);
+MEMO_NOM_SENSI ( NOM_UN = PS_UN ) ;
+#
+PS_ZERO=DEFI_CONSTANTE(VALE=0.0,);
+MEMO_NOM_SENSI ( NOM_ZERO = PS_ZERO ) ;
+
+#
+# 2. Definition des parametres sensibles
+#
+mot_cle =[   "E",    "NU" ]
+sensible=[ E_INI,  NU_INI ]
+
+n=len(sensible)
+PS=[None]*n
+
+for i in range(n):
+  PS[i]=DEFI_PARA_SENSI(VALE=sensible[i])
+  MEMO_NOM_SENSI ( NOM=_F(NOM_SD=PS[i].nom,
+                          PARA_SENSI=PS[i],
+                          NOM_COMPOSE=PS_UN.nom ),);
+
+ALPHA=DEFI_PARA_SENSI(VALE=2.E-3,);
+BETA=DEFI_PARA_SENSI(VALE=3.E-1,);
+
+#
+# 3. Prealable
+#
+PRE_GIBI()
+MAILLAGE=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='NON'),);
+
+MAILLAGE=DEFI_GROUP(reuse=MAILLAGE,
+                    MAILLAGE=MAILLAGE,
+                    CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI'));
+
+#
+# 3.1. Modele
+#
+MO=AFFE_MODELE(MAILLAGE=MAILLAGE,
+               AFFE=_F(TOUT='OUI',
+                       PHENOMENE='MECANIQUE',
+                       MODELISATION='3D',),);
+
+#
+# 3.2. Mise en place des materiaux
+#
+MAT=DEFI_MATERIAU(ELAS_FO=_F(E=PS[0],
+                             RHO=2400. ,
+                             NU=PS[1],
+                             AMOR_ALPHA=ALPHA ,
+                             AMOR_BETA=BETA,));
+
+MATS=[None]*n
+for i in range(n):
+  PSFONC=[PS_ZERO]*n
+  PSFONC[i]=PS_UN
+  MATS[i]=DEFI_MATERIAU(ELAS_FO=_F(E=PSFONC[0],
+                                   RHO=2400.,
+                                   NU=PSFONC[1],
+                                   AMOR_ALPHA=ALPHA,
+                                   AMOR_BETA=BETA,
+                                   ))
+  MEMO_NOM_SENSI ( NOM=_F(NOM_SD='MAT',
+                          PARA_SENSI=PS[i],
+                          NOM_COMPOSE=MATS[i].nom,
+                          MOT_CLE=mot_cle[i],
+                          MOT_FACT='ELAS_FO',
+                          VALEUR=PS[i].nom ),);
+#
+# 3.3. Affectation des materiaux
+#
+CHMAT=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
+                    AFFE=_F(TOUT='OUI',MATER=MAT,),);
+
+CHMS=[None]*n
+for i in range(n):
+  CHMS[i]=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
+                        AFFE=_F(TOUT='OUI',MATER=MATS[i],),);
+  MEMO_NOM_SENSI ( NOM=_F(NOM_SD='CHMAT',
+                          PARA_SENSI=PS[i],
+                          NOM_COMPOSE=CHMS[i].nom,
+                          MOT_CLE='MATER',
+                          MOT_FACT='AFFE',
+                          VALEUR='MAT' ),);
+#
+# 3.4. Chargements
+#
+CLIM=AFFE_CHAR_MECA(MODELE=MO,
+                    DDL_IMPO=(_F(GROUP_NO='I',DX=0.0,DY=0.0,DZ=0.0),
+                              _F(GROUP_MA='BORD_GAU',DX=0.0,DY=0.0,DZ=0.0)),);
+#
+CH=AFFE_CHAR_MECA(MODELE=MO,
+                  FORCE_NODALE=(_F(GROUP_NO='OPPOSE',
+                                   FX=100.,
+                                   FY=30.,
+                                   FZ=10.))
+                                   );
+
+VECT=CALC_VECT_ELEM(CHARGE=CH,OPTION='CHAR_MECA')
+
+# 3.5 Premier membre
+#
+MATELER=CALC_MATR_ELEM(MODELE=MO,OPTION='RIGI_MECA',
+                       CHAM_MATER=CHMAT,    
+                       CHARGE= CLIM)
+
+MATELEM=CALC_MATR_ELEM(MODELE=MO,OPTION='MASS_MECA',
+                       CHAM_MATER=CHMAT,
+                       CHARGE= CLIM)                                   
+
+MATELEC=CALC_MATR_ELEM(MODELE=MO,OPTION='AMOR_MECA',
+                       RIGI_MECA=MATELER,MASS_MECA=MATELEM,
+                       CHAM_MATER=CHMAT,
+                       CHARGE= CLIM   )
+# 3.6 Assemblage
+
+NUM=NUME_DDL(MATR_RIGI=MATELER)
+
+MATASSR=ASSE_MATRICE(MATR_ELEM=MATELER,NUME_DDL=NUM)
+
+MATASSM=ASSE_MATRICE(MATR_ELEM=MATELEM,NUME_DDL=NUM)
+
+MATASSC=ASSE_MATRICE(MATR_ELEM=MATELEC,NUME_DDL=NUM)
+
+VECTASS=ASSE_VECTEUR(VECT_ELEM=VECT,NUME_DDL=NUM)
+
+L_INST=DEFI_LIST_REEL(DEBUT=I_DEBUT,INTERVALLE=_F(JUSQU_A=I_FIN,NOMBRE=10))
+
+#
+# 4. Calcul
+#
+for i in range(n):
+  MEMO_NOM_SENSI(NOM=_F(NOM_SD='DYT',
+                        PARA_SENSI=PS[i],
+                        NOM_COMPOSE=('DYT_'+PS[i].nom)),);
+
+FC=DEFI_FONCTION(NOM_PARA='INST',
+                 PROL_DROITE='CONSTANT',
+                 PROL_GAUCHE='CONSTANT',
+                 VALE=(I_DEBUT,0.,I_FIN,1.,))
+
+DYT=DYNA_LINE_TRAN(MODELE=MO,CHAM_MATER=CHMAT,
+                   MATR_MASS=MATASSM,MATR_RIGI=MATASSR,MATR_AMOR=MATASSC,
+                   INCREMENT=_F(LIST_INST=L_INST,),
+                   SENSIBILITE=tuple(PS),
+                   EXCIT=_F(FONC_MULT=FC,VECT_ASSE=VECTASS),
+                   NEWMARK=_F(),)
+
+T_REF=POST_RELEVE_T(ACTION=_F(INTITULE='SENSIBILITE',
+                      GROUP_NO=('OPPOSE'),
+                      RESULTAT=DYT,
+                      NOM_CHAM='DEPL',
+                      NUME_ORDRE=10,
+                      NOM_CMP='DY',
+                      OPERATION='EXTRACTION',
+                      ),);
+
+#IMPR_RESU(RESU=_F(FORMAT='RESULTAT',
+#                  RESULTAT=DYT,
+#                  SENSIBILITE=tuple(PS),),);
+
+#
+# 5. Test par differences finies
+#
+epsilon=1.E-3
+
+for i in range(n):
+  eps=[1.]*n
+  eps[i]=1.0+epsilon
+  MAT2=DEFI_MATERIAU(ELAS=_F(E=sensible[0]*eps[0],
+                             RHO=2400. ,
+                             NU=sensible[1]*eps[1],
+                             AMOR_ALPHA = 2.E-3 ,
+                             AMOR_BETA = 3.E-1 ,))
+
+  CHMAT2=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
+                       AFFE=_F(TOUT='OUI',MATER=MAT2,),);
+
+  MATELER2=CALC_MATR_ELEM(MODELE=MO,OPTION='RIGI_MECA',
+                          CHAM_MATER=CHMAT2,    
+                          CHARGE=CLIM)
+
+  MATASSR2=ASSE_MATRICE(MATR_ELEM=MATELER2,NUME_DDL=NUM)
+
+  DYT2=DYNA_LINE_TRAN(MODELE=MO,CHAM_MATER=CHMAT2,
+                      MATR_MASS=MATASSM,MATR_RIGI=MATASSR2,MATR_AMOR=MATASSC,
+                      INCREMENT=_F(LIST_INST=L_INST,),
+                      EXCIT=(_F(FONC_MULT=FC,CHARGE=CH),),
+                      NEWMARK=_F(),)
+
+  T_DIF=POST_RELEVE_T(ACTION=_F(INTITULE='SENSIBILITE',
+                                  GROUP_NO=('OPPOSE'),
+                                  RESULTAT=DYT2,
+                                  NOM_CHAM='DEPL',
+                                  NUME_ORDRE=10,
+                                  NOM_CMP='DY',
+                                  OPERATION='EXTRACTION',
+                                  ),);
+
+  diff=(T_DIF['DY',1]-T_REF['DY',1])/(sensible[i]*epsilon)
+
+  TEST_RESU(RESU=(
+                  _F(RESULTAT=DYT,NUME_ORDRE=10,
+                     NOM_CHAM='DEPL',GROUP_NO='OPPOSE',
+                     CRITERE='RELATIF',PRECISION=5.E-3,
+                     NOM_CMP='DY',SENSIBILITE=PS[i],
+                     VALE=diff, 
+                     REFERENCE='AUTRE_ASTER')))
+
+  DETRUIRE(CONCEPT=_F(NOM=MAT2))
+  DETRUIRE(CONCEPT=_F(NOM=CHMAT2))
+  DETRUIRE(CONCEPT=_F(NOM=MATELER2))
+  DETRUIRE(CONCEPT=_F(NOM=MATASSR2))
+  DETRUIRE(CONCEPT=_F(NOM=DYT2))    
+  DETRUIRE(CONCEPT=_F(NOM=T_DIF))
+
+#
+# 6. Test_Resu en dur
+#
+TEST_RESU(RESU=(
+                _F(RESULTAT=DYT,NUME_ORDRE=10,
+                   NOM_CHAM='DEPL',GROUP_NO= 'OPPOSE',
+                   CRITERE='RELATIF',PRECISION=5.E-3,
+                   NOM_CMP='DZ',   
+                   VALE=(1.93E-09),REFERENCE='NON_REGRESSION',VERSION='7.1.3'),
+
+                _F(RESULTAT=DYT,NUME_ORDRE=10,
+                   NOM_CHAM='VITE',GROUP_NO='OPPOSE',
+                   CRITERE='RELATIF',PRECISION=5.E-3,
+                   NOM_CMP='DY',SENSIBILITE=PS_0,        
+                   VALE=(-4.37E-15),REFERENCE='NON_REGRESSION',VERSION='7.1.3'),
+
+                _F(RESULTAT=DYT,NUME_ORDRE=10,
+                   NOM_CHAM='ACCE',GROUP_NO='OPPOSE',
+                   CRITERE='RELATIF',PRECISION=5.E-3,
+                   NOM_CMP='DX',SENSIBILITE=PS_1,        
+                   VALE=(7.65E-06),REFERENCE='NON_REGRESSION',VERSION='7.1.3'),
+
+                ),)
+
+FIN()
+

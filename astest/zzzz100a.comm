@@ -1,4 +1,4 @@
-# MODIF  DATE 16/12/2003   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 17/05/2004   AUTEUR CIBHHBC M.LOPES 
 # RESPONSABLE MCOURTOI M.COURTOIS
 # TITRE FONCTIONS, NAPPES, FORMULES.
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -162,7 +162,7 @@ L001=DEFI_LIST_ENTI(  DEBUT=0,
 
 # ------------------  FONCTION SIMPLE 1 -------------------------------
 
-DEUX=DEFI_VALEUR(  IS=2 )
+DEUX=2
 
 L01=DEFI_LIST_REEL(  DEBUT=0.,
                          INTERVALLE=_F(  JUSQU_A = 2.,  NOMBRE = DEUX) )
@@ -298,35 +298,35 @@ TEST_FONCTION(ATTRIBUT=(
 
 # ------------------ PREPARATION FORMULE ----------------------------
 
-PI=DEFI_VALEUR(  R8=EVAL(""" PI """) )
-DEPI=DEFI_VALEUR(  R8=EVAL("""2. * PI """) )
+PI=pi
+DEPI=2. * pi
 
-PAS0=DEFI_VALEUR(  R8=EVAL("""DEPI / 200. """) )
+PAS0=DEPI / 200.
 
-PAS1=DEFI_VALEUR(  R8=EVAL("""10. * PAS0  """) )
+PAS1=10. * PAS0
 
-PAS2=DEFI_VALEUR(  R8=EVAL("""20. * PAS0  """) )
+PAS2=20. * PAS0
 
 LI1=DEFI_LIST_REEL(  DEBUT=0.,
                          INTERVALLE=_F(  JUSQU_A = DEPI, PAS = PAS0) )
 
 INST0=0.
 
-INST1=DEFI_VALEUR(  R8=EVAL("""INST0 + ( 2. * PAS1 ) """) )
+INST1=INST0 + ( 2. * PAS1 )
 
-INST2=DEFI_VALEUR(  R8=EVAL("""INST0 + ( 4. * PAS1 ) """) )
+INST2=INST0 + ( 4. * PAS1 )
 
-INST3=DEFI_VALEUR(  R8=EVAL("""INST0 + ( 6. * PAS1 ) """) )
+INST3=INST0 + ( 6. * PAS1 )
 
-INST4=DEFI_VALEUR(  R8=EVAL("""INST0 + (10. * PAS1 ) """) )
+INST4=INST0 + (10. * PAS1 )
 
-INST5=DEFI_VALEUR(  R8=EVAL("""INST0 + (12. * PAS1 ) """) )
+INST5=INST0 + (12. * PAS1 )
 
-INST6=DEFI_VALEUR(  R8=EVAL("""INST0 + (14. * PAS1 ) """) )
+INST6=INST0 + (14. * PAS1 )
 
-INST7=DEFI_VALEUR(  R8=EVAL("""INST0 + (16. * PAS1 ) """) )
+INST7=INST0 + (16. * PAS1 )
 
-INST8=DEFI_VALEUR(  R8=EVAL("""INST0 + (18. * PAS1 ) """) )
+INST8=INST0 + (18. * PAS1 )
 
 INST9=DEPI
 
@@ -365,8 +365,7 @@ TEST_FONCTION(ATTRIBUT=(
 
 # ------------------ FORMULE 2 -----------------------------------
 
-COa = FORMULE(REEL="""(REEL:INST) =
-COS(INST) """)
+COa = FORMULE(REEL="""(REEL:INST) = COS(INST) """)
 
 CO=CALC_FONC_INTERP(        FONCTION=COa,    LIST_PARA=LI1,
                             NOM_PARA='INST',
@@ -384,17 +383,11 @@ IMPR_COURBE(   COURBE=_F(  FONCTION = CO),
 IMPR_COURBE(   COURBE=_F(  FONCTION = CO),
                    FORMAT='SEISME',  FICHIER='RESULTAT' )
 
-X1=DEFI_VALEUR(  R8=EVAL("""INST0 + (199. * PAS0 ) """) )
-
-Y1=DEFI_VALEUR(  R8=EVAL("""COa(X1) """) )
-
+X1=INST0 + (199. * PAS0 )
 X2=INST9
-
-Y2=DEFI_VALEUR(  R8=EVAL("""COa(X2) """) )
-
 X0=7.
 
-Y0=DEFI_VALEUR(  R8=EVAL("""Y1+(X0-X1)*(Y2-Y1)/(X2-X1) """) )
+Y0=EVAL("""COa(X1)+(X0-X1)*(COa(X2)-COa(X1))/(X2-X1)""")
 
 TEST_FONCTION(ATTRIBUT=( 
                 _F(  FONCTION = CO,  ATTR = 'NOM_PARA',
@@ -637,7 +630,7 @@ TABS=CALC_FONCTION(ECART_TYPE=_F( FONCTION = F5)
 
 IMPR_CO(CO=TABS);
 
-SIGMA=DEFI_VALEUR(  R8=EVAL(""" PI/3.**0.5 """) )
+SIGMA=pi/3.**0.5
 
 TEST_TABLE( TABLE=TABS,
             FILTRE=_F(  NOM_PARA = 'FONCTION',
@@ -690,7 +683,7 @@ LINST=( 0., 0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.10,
 Fa = FORMULE(REEL="""(REEL:INST) =
 COS(OMEGA*INST) """)
 
-ACCE=DEFI_VALEUR(  TX='ACCE'  )
+ACCE='ACCE'
 
 F=CALC_FONC_INTERP(        FONCTION=Fa,
                            NOM_RESU=ACCE,
@@ -1722,14 +1715,11 @@ IMPR_CO(CO=NAP3)
 #=======================================================================
 # VALIDATION DU DECOUPAGE DES FORMULES
 #
-XXX = DEFI_VALEUR ( R8 = EVAL ( """
-(1./
-   (((2.E+0*PI*1.d0)**2 - OMEGA**2 )**2 +(2.E+0*1.d0*2.*PI*1.d0*OMEGA)**2))*(((2.E+0*PI*1.d0)**2 - OMEGA**2)*
-   COS(OMEGA*1.d0) + 2.E+0*1.d0*2.E+0*PI*1.d0*
-   OMEGA*SIN(OMEGA*1.d0) - ( ((2.E+0*PI*1.d0)**2 - OMEGA**2)*COS(2.E+0*PI*
-   1.d0*1.d0)+ 1.d0*((2.E+0*PI*1.d0)**2 + OMEGA**2 )*SIN(2.*PI*1.d0*1.d0))
-   *EXP(-1.d0*2.E+0*PI*1.d0*1.d0) )   """) )
 
+XXX = (1./ ((DEPI**2 - OMEGA**2 )**2 +(2.*DEPI*OMEGA)**2))*((DEPI**2 - OMEGA**2)*
+   cos(OMEGA) + 2.*DEPI* OMEGA*sin(OMEGA) - ( (DEPI**2 - OMEGA**2)*cos(DEPI) )
+   *exp(-DEPI) ) 
+   
 FXXX = DEFI_FONCTION ( NOM_PARA    = 'INST',
                        VALE        = (  0.,  0.,
                                         1.,  XXX ), )

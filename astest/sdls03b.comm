@@ -1,4 +1,4 @@
-# MODIF  DATE 06/04/2004   AUTEUR CIBHHPD S.VANDENBERGHE 
+# MODIF  DATE 17/05/2004   AUTEUR CIBHHBC M.LOPES 
 # TITRE PLAQUE RECTANGULAIRE MINCE SIMPLEMENT APPUYEE DKQ - DSQ - Q4G
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -44,7 +44,7 @@ MO2=AFFE_MODELE(  MAILLAGE=MA,AFFE=(
                           MODELISATION = 'DIS_T'))
                  )
 
-RIG=DEFI_VALEUR(  R8=EVAL("""50. / 2. """) )
+RIG=50. / 2.
 
 CA2=AFFE_CARA_ELEM(   MODELE=MO2,
                           COQUE=_F(  
@@ -82,7 +82,7 @@ MODE2=MODE_ITER_SIMULT(  MATR_A=MATR2,       MATR_B=MATM2,
 
 # --------------------------------------------------------------------
 
-FREQ1=DEFI_VALEUR(  R8=EVAL("""SQRT(100./117.) / (2. * PI)""") )
+FREQ1=sqrt(100./117.) / (2. * pi)
 
 # --------------------------------------------------------------------
 

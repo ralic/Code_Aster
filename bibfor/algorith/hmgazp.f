@@ -1,12 +1,12 @@
       SUBROUTINE HMGAZP(OPTION,MECA,THMC,THER,HYDR,IMATE,NDIM,DIMDEF,
-     +                  DIMCON,NVIMEC,NVITH,YAMEC,YATE,ADDEME,ADCOME,
-     +                  ADVITH,ADDEP1,ADCP11,ADDETE,ADCOTE,CONGEM,
-     +                  CONGEP,VINTM,VINTP,DSDE,EPSV,DEPSV,P1,
+     +                  DIMCON,NBVARI,YAMEC,YATE,ADDEME,ADCOME,
+     +                  ADVICO,VICPHI,ADDEP1,ADCP11,ADDETE,ADCOTE,
+     +                  CONGEM,CONGEP,VINTM,VINTP,DSDE,EPSV,DEPSV,P1,
      +                  DP1,T,DT,PHI,RHO11,PHI0,SAT,RETCOM)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 17/05/2004   AUTEUR ROMEO R.FERNANDES 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -39,11 +39,11 @@ C                       = 1 ECHEC DANS L'INTEGRATION : PAS DE RESULTATS
 C                       = 3 SIZZ NON NUL (DEBORST) ON CONTINUE A ITERER
 C ======================================================================
       IMPLICIT      NONE
-      INTEGER       NDIM,DIMDEF,DIMCON,NVIMEC,NVITH,IMATE,YAMEC,YATE
+      INTEGER       NDIM,DIMDEF,DIMCON,NBVARI,IMATE,YAMEC,YATE
       INTEGER       ADCOME,ADCP11,ADCOTE
-      INTEGER       ADDEME,ADDEP1,ADDETE,ADVITH,RETCOM
+      INTEGER       ADDEME,ADDEP1,ADDETE,ADVICO,VICPHI,RETCOM
       REAL*8        CONGEM(DIMCON),CONGEP(DIMCON)
-      REAL*8        VINTM(NVIMEC+NVITH),VINTP(NVIMEC+NVITH)
+      REAL*8        VINTM(NBVARI),VINTP(NBVARI)
       REAL*8        DSDE(DIMCON,DIMDEF),EPSV,DEPSV,P1,DP1,T,DT
       REAL*8        PHI,RHO11,PHI0
       CHARACTER*16  OPTION,MECA,THER,HYDR,THMC
@@ -207,8 +207,8 @@ C =====================================================================
               VARIA = VARIA - 3.D0*ALPHA0*DT
             END IF
             VARIA = VARIA + DP1*CS
-            VINTP(ADVITH) = BIOT - PHI0 -
-     &                      (BIOT-VINTM(ADVITH)-PHI0)*EXP(-VARIA)
+            VINTP(ADVICO+VICPHI) = BIOT - PHI0 -
+     &                     (BIOT-VINTM(ADVICO+VICPHI)-PHI0)*EXP(-VARIA)
         END IF
       END IF
 C =====================================================================
@@ -216,14 +216,14 @@ C --- CALCUL DE PHI ET DE RHO11 (SI LIQ) A L'INSTANT COURANT ----------
 C =====================================================================
       IF (OPTION(1:16).EQ.'RIGI_MECA_TANG') THEN
          IF (YAMEC.EQ.1) THEN
-            PHI = VINTM(ADVITH) + PHI0
+            PHI = VINTM(ADVICO+VICPHI) + PHI0
          ELSE
             PHI = PHI0
          ENDIF
       ELSE
          IF (YAMEC.EQ.1) THEN
-            PHI = VINTP(ADVITH) + PHI0
-            PHIM = VINTM(ADVITH) + PHI0
+            PHI = VINTP(ADVICO+VICPHI) + PHI0
+            PHIM = VINTM(ADVICO+VICPHI) + PHI0
          ELSE
             PHI = PHI0
          ENDIF

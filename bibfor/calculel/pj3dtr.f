@@ -1,6 +1,6 @@
-      SUBROUTINE PJ3DTR(CORTR3,CORRES,NUTM3D,NOTM3D)
+      SUBROUTINE PJ3DTR(CORTR3,CORRES,NUTM3D,ELRF3D)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 09/02/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF CALCULEL  DATE 18/05/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,8 +20,8 @@ C ======================================================================
 C TOLE CRP_20
       IMPLICIT REAL*8 (A-H,O-Z)
       CHARACTER*16 CORRES,CORTR3
-      CHARACTER*8 NOTM3D(9),NOTM
-      INTEGER NUTM3D(9)
+      CHARACTER*8  ELRF3D(9)
+      INTEGER      NUTM3D(9)
 C ----------------------------------------------------------------------
 C     BUT :
 C       TRANSFORMER CORTR3 EN CORRES EN UTILISANT LES FONC. DE FORME
@@ -30,7 +30,7 @@ C
 C  IN/JXIN   CORTR3   K16 : NOM DU CORRESP_2_MAILLA FAIT AVEC LES TETR4
 C  IN/JXOUT  CORRES   K16 : NOM DU CORRESP_2_MAILLA FINAL
 C  IN        NUTM3D(5) I  : NUMEROS DES 9 TYPES DE MAILLES 3D
-C  IN        NOTM3D(5) K8  : NOMS DES 9 TYPES DE MAILLES 3D
+C  IN        ELRF3D(5) K8  : NOMS DES 9 TYPES DE MAILLES 3D
 C ----------------------------------------------------------------------
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
 C
@@ -50,60 +50,20 @@ C
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
-      CHARACTER*8 M1,M2,KB
-      REAL*8   KSI,ETA,DZETA,FF(27),DFF(3,27),XIN(27),YIN(27),ZIN(27)
-      INTEGER CNTETR(4,1),CNPENT(4,3),CNHEXA(4,6),CNPYRA(4,2)
-      REAL*8  CRTETR(10,3),CRPENT(15,3),CRHEXA(27,3),CRPYRA(13,3)
+      INTEGER     CNTETR(4,1),CNPENT(4,3),CNHEXA(4,6),CNPYRA(4,2)
+      INTEGER     NBPG(10)
+      REAL*8      KSI,ETA,DZETA,X1,X2,X3
+      REAL*8      CRREFE(81), X(3), FF(27)
+      CHARACTER*8 ELREFA, M1, M2, KB, FAPG(10)
 C --- DEB --------------------------------------------------------------
+
       CALL JEMARQ()
 
-
-C     0. REMPLISSAGE DES TABLEAUX CONTENANT LES COORDONNEES DES NOEUDS
-C        SOMMETS DES ELEMENTS DE REFERENCE : TETRA,PENTA,HEXA,PYRA :
-C     -----------------------------------------------------------------
+C     0. DECOUPAGE DES ELEMNTS 3D EN TETRA (VOIR PJ3DC0) :
+C     ----------------------------------------------------
 
 C     0.1 : TETRAEDRE :
 C     -----------------
-      CRTETR(1,1)=0.D0
-      CRTETR(1,2)=1.D0
-      CRTETR(1,3)=0.D0
-
-      CRTETR(2,1)=0.D0
-      CRTETR(2,2)=0.D0
-      CRTETR(2,3)=1.D0
-
-      CRTETR(3,1)=0.D0
-      CRTETR(3,2)=0.D0
-      CRTETR(3,3)=0.D0
-
-      CRTETR(4,1)=1.D0
-      CRTETR(4,2)=0.D0
-      CRTETR(4,3)=0.D0
-
-      CRTETR(5,1)=0.D0
-      CRTETR(5,2)=0.5D0
-      CRTETR(5,3)=0.5D0
-
-      CRTETR(6,1)=0.D0
-      CRTETR(6,2)=0.D0
-      CRTETR(6,3)=0.5D0
-
-      CRTETR(7,1)=0.D0
-      CRTETR(7,2)=0.5D0
-      CRTETR(7,3)=0.D0
-
-      CRTETR(8,1)=0.5D0
-      CRTETR(8,2)=0.5D0
-      CRTETR(8,3)=0.D0
-
-      CRTETR(9,1)=0.5D0
-      CRTETR(9,2)=0.D0
-      CRTETR(9,3)=0.5D0
-
-      CRTETR(10,1)=0.5D0
-      CRTETR(10,2)=0.D0
-      CRTETR(10,3)=0.D0
-
       CNTETR(1,1)=1
       CNTETR(2,1)=2
       CNTETR(3,1)=3
@@ -111,66 +71,6 @@ C     -----------------
 
 C     0.2 : PENTAEDRE :
 C     -----------------
-      CRPENT(1,1)=-1.D0
-      CRPENT(1,2)= 1.D0
-      CRPENT(1,3)= 0.D0
-
-      CRPENT(2,1)=-1.D0
-      CRPENT(2,2)= 0.D0
-      CRPENT(2,3)= 1.D0
-
-      CRPENT(3,1)=-1.D0
-      CRPENT(3,2)= 0.D0
-      CRPENT(3,3)= 0.D0
-
-      CRPENT(4,1)= 1.D0
-      CRPENT(4,2)= 1.D0
-      CRPENT(4,3)= 0.D0
-
-      CRPENT(5,1)= 1.D0
-      CRPENT(5,2)= 0.D0
-      CRPENT(5,3)= 1.D0
-
-      CRPENT(6,1)= 1.D0
-      CRPENT(6,2)= 0.D0
-      CRPENT(6,3)= 0.D0
-
-      CRPENT(7,1)=-1.D0
-      CRPENT(7,2)= 0.5D0
-      CRPENT(7,3)= 0.5D0
-
-      CRPENT(8,1)=-1.D0
-      CRPENT(8,2)= 0.D0
-      CRPENT(8,3)= 0.5D0
-
-      CRPENT(9,1)=-1.D0
-      CRPENT(9,2)= 0.5D0
-      CRPENT(9,3)= 0.D0
-
-      CRPENT(10,1)= 0.D0
-      CRPENT(10,2)= 1.D0
-      CRPENT(10,3)= 0.D0
-
-      CRPENT(11,1)= 0.D0
-      CRPENT(11,2)= 0.D0
-      CRPENT(11,3)= 1.D0
-
-      CRPENT(12,1)= 0.D0
-      CRPENT(12,2)= 0.D0
-      CRPENT(12,3)= 0.D0
-
-      CRPENT(13,1)= 1.D0
-      CRPENT(13,2)= 0.5D0
-      CRPENT(13,3)= 0.5D0
-
-      CRPENT(14,1)= 1.D0
-      CRPENT(14,2)= 0.D0
-      CRPENT(14,3)= 0.5D0
-
-      CRPENT(15,1)= 1.D0
-      CRPENT(15,2)= 0.5D0
-      CRPENT(15,3)= 0.D0
-
       CNPENT(1,1)=1
       CNPENT(2,1)=3
       CNPENT(3,1)=6
@@ -188,114 +88,6 @@ C     -----------------
 
 C     0.3 : HEXAEDRE :
 C     -----------------
-      CRHEXA(1,1)=-1.D0
-      CRHEXA(1,2)=-1.D0
-      CRHEXA(1,3)=-1.D0
-
-      CRHEXA(2,1)= 1.D0
-      CRHEXA(2,2)=-1.D0
-      CRHEXA(2,3)=-1.D0
-
-      CRHEXA(3,1)= 1.D0
-      CRHEXA(3,2)= 1.D0
-      CRHEXA(3,3)=-1.D0
-
-      CRHEXA(4,1)=-1.D0
-      CRHEXA(4,2)= 1.D0
-      CRHEXA(4,3)=-1.D0
-
-      CRHEXA(5,1)=-1.D0
-      CRHEXA(5,2)=-1.D0
-      CRHEXA(5,3)= 1.D0
-
-      CRHEXA(6,1)= 1.D0
-      CRHEXA(6,2)=-1.D0
-      CRHEXA(6,3)= 1.D0
-
-      CRHEXA(7,1)= 1.D0
-      CRHEXA(7,2)= 1.D0
-      CRHEXA(7,3)= 1.D0
-
-      CRHEXA(8,1)=-1.D0
-      CRHEXA(8,2)= 1.D0
-      CRHEXA(8,3)= 1.D0
-
-      CRHEXA(9,1)= 0.D0
-      CRHEXA(9,2)=-1.D0
-      CRHEXA(9,3)=-1.D0
-
-      CRHEXA(10,1)= 1.D0
-      CRHEXA(10,2)= 0.D0
-      CRHEXA(10,3)=-1.D0
-
-      CRHEXA(11,1)= 0.D0
-      CRHEXA(11,2)= 1.D0
-      CRHEXA(11,3)=-1.D0
-
-      CRHEXA(12,1)=-1.D0
-      CRHEXA(12,2)= 0.D0
-      CRHEXA(12,3)=-1.D0
-
-      CRHEXA(13,1)=-1.D0
-      CRHEXA(13,2)=-1.D0
-      CRHEXA(13,3)= 0.D0
-
-      CRHEXA(14,1)= 1.D0
-      CRHEXA(14,2)=-1.D0
-      CRHEXA(14,3)= 0.D0
-
-      CRHEXA(15,1)= 1.D0
-      CRHEXA(15,2)= 1.D0
-      CRHEXA(15,3)= 0.D0
-
-      CRHEXA(16,1)=-1.D0
-      CRHEXA(16,2)= 1.D0
-      CRHEXA(16,3)= 0.D0
-
-      CRHEXA(17,1)= 0.D0
-      CRHEXA(17,2)=-1.D0
-      CRHEXA(17,3)= 1.D0
-
-      CRHEXA(18,1)= 1.D0
-      CRHEXA(18,2)= 0.D0
-      CRHEXA(18,3)= 1.D0
-
-      CRHEXA(19,1)= 0.D0
-      CRHEXA(19,2)= 1.D0
-      CRHEXA(19,3)= 1.D0
-
-      CRHEXA(20,1)=-1.D0
-      CRHEXA(20,2)= 0.D0
-      CRHEXA(20,3)= 1.D0
-
-      CRHEXA(21,1)= 0.D0
-      CRHEXA(21,2)= 0.D0
-      CRHEXA(21,3)=-1.D0
-
-      CRHEXA(22,1)= 0.D0
-      CRHEXA(22,2)=-1.D0
-      CRHEXA(22,3)= 0.D0
-
-      CRHEXA(23,1)= 1.D0
-      CRHEXA(23,2)= 0.D0
-      CRHEXA(23,3)= 0.D0
-
-      CRHEXA(24,1)= 0.D0
-      CRHEXA(24,2)= 1.D0
-      CRHEXA(24,3)= 0.D0
-
-      CRHEXA(25,1)=-1.D0
-      CRHEXA(25,2)= 0.D0
-      CRHEXA(25,3)= 0.D0
-
-      CRHEXA(26,1)= 0.D0
-      CRHEXA(26,2)= 0.D0
-      CRHEXA(26,3)= 1.D0
-
-      CRHEXA(27,1)= 0.D0
-      CRHEXA(27,2)= 0.D0
-      CRHEXA(27,3)= 0.D0
-
       CNHEXA(1,1)=1
       CNHEXA(2,1)=4
       CNHEXA(3,1)=8
@@ -328,59 +120,6 @@ C     -----------------
 
 C     0.4 : PYRAMIDE :
 C     -----------------
-      CRPYRA(1,1)= 1.D0
-      CRPYRA(1,2)= 0.D0
-      CRPYRA(1,3)= 0.D0
-
-      CRPYRA(2,1)= 0.D0
-      CRPYRA(2,2)= 1.D0
-      CRPYRA(2,3)= 0.D0
-
-      CRPYRA(3,1)=-1.D0
-      CRPYRA(3,2)= 0.D0
-      CRPYRA(3,3)= 0.D0
-
-      CRPYRA(4,1)= 0.D0
-      CRPYRA(4,2)=-1.D0
-      CRPYRA(4,3)= 0.D0
-
-      CRPYRA(5,1)= 0.D0
-      CRPYRA(5,2)= 0.D0
-      CRPYRA(5,3)= 1.D0
-
-      CRPYRA(6,1)= 0.5D0
-      CRPYRA(6,2)= 0.5D0
-C     CRPYRA(6,3)= 0.5D0
-      CRPYRA(6,3)= 0.D0
-
-      CRPYRA(7,1)=-0.5D0
-      CRPYRA(7,2)= 0.5D0
-      CRPYRA(7,3)= 0.D0
-
-      CRPYRA(8,1)=-0.5D0
-      CRPYRA(8,2)=-0.5D0
-      CRPYRA(8,3)= 0.D0
-
-      CRPYRA(9,1)= 0.5D0
-      CRPYRA(9,2)=-0.5D0
-      CRPYRA(9,3)= 0.D0
-
-      CRPYRA(10,1)= 0.5D0
-      CRPYRA(10,2)= 0.D0
-      CRPYRA(10,3)= 0.5D0
-
-      CRPYRA(11,1)= 0.D0
-      CRPYRA(11,2)= 0.5D0
-      CRPYRA(11,3)= 0.5D0
-
-      CRPYRA(12,1)=-0.5D0
-      CRPYRA(12,2)= 0.D0
-      CRPYRA(12,3)= 0.5D0
-
-      CRPYRA(13,1)= 0.D0
-      CRPYRA(13,2)=-0.5D0
-      CRPYRA(13,3)= 0.5D0
-
       CNPYRA(1,1)=1
       CNPYRA(2,1)=2
       CNPYRA(3,1)=3
@@ -390,8 +129,6 @@ C     CRPYRA(6,3)= 0.5D0
       CNPYRA(2,2)=3
       CNPYRA(3,2)=4
       CNPYRA(4,2)=5
-
-
 
 C     1. RECUPERATION DES INFORMATIONS GENERALES :
 C     -----------------------------------------------
@@ -448,15 +185,20 @@ C     ------------------------------------------------------
       IDECA2=0
       DO 20, INO2=1,NNO2
 C       ITR : TETR4 ASSOCIE A INO2
-        ITR=ZI(I1COTR-1+INO2)
+        ITR    = ZI(I1COTR-1+INO2)
         IF (ITR.EQ.0) GO TO 20
 C       IMA1 : MAILLE DE M1 ASSOCIE AU TETR4 ITR
-        IMA1=ZI(IATR3+6*(ITR-1)+5)
+        IMA1 = ZI(IATR3+6*(ITR-1)+5)
 C       ITYPM : TYPE DE LA MAILLE IMA1
-        ITYPM=ZI(IATYMA-1+IMA1)
-        NUTM=INDIIS(NUTM3D,ITYPM,1,9)
-        NOTM=NOTM3D(NUTM)
-        ITYP=ZI(IATR3+6*(ITR-1)+6)
+        ITYPM = ZI(IATYMA-1+IMA1)
+        NUTM   = INDIIS(NUTM3D,ITYPM,1,9)
+        ELREFA = ELRF3D(NUTM)
+        ITYP   = ZI(IATR3+6*(ITR-1)+6)
+        NBNO   = ZI(ILCNX1+IMA1)-ZI(ILCNX1-1+IMA1)
+
+        CALL ELRACA(ELREFA,NDIM,NNO,NNOS,NBFPG,FAPG,NBPG,CRREFE,VOL)
+
+        IF ( NBNO .NE. NNO ) CALL UTMESS('F','PJ3DTR','BUG')
 
 C       2.2.1 DETERMINATION DES COORDONEES DE INO2 DANS L'ELEMENT
 C             DE REFERENCE : KSI , ETA ET DZETA
@@ -464,70 +206,70 @@ C     -----------------------------------------------------------
         KSI  =0.D0
         ETA  =0.D0
         DZETA=0.D0
-        NBNO=ZI(ILCNX1+IMA1)-ZI(ILCNX1-1+IMA1)
 
-        IF (NOTM(1:4).EQ.'TETR') THEN
+        IF (ELREFA.EQ.'TE4' .OR. ELREFA.EQ.'T10') THEN
           DO 771,KK=1,4
-            KSI=KSI    +ZR(I1COCF-1+IDECA1+KK)*CRTETR(CNTETR(KK,ITYP),1)
-            ETA=ETA    +ZR(I1COCF-1+IDECA1+KK)*CRTETR(CNTETR(KK,ITYP),2)
-            DZETA=DZETA+ZR(I1COCF-1+IDECA1+KK)*CRTETR(CNTETR(KK,ITYP),3)
+            X1 = CRREFE(NDIM*(CNTETR(KK,ITYP)-1)+1)
+            X2 = CRREFE(NDIM*(CNTETR(KK,ITYP)-1)+2)
+            X3 = CRREFE(NDIM*(CNTETR(KK,ITYP)-1)+3)
+            KSI   = KSI   + ZR(I1COCF-1+IDECA1+KK)*X1
+            ETA   = ETA   + ZR(I1COCF-1+IDECA1+KK)*X2
+            DZETA = DZETA + ZR(I1COCF-1+IDECA1+KK)*X3
 771       CONTINUE
-          DO 781,INO=1,NBNO
-            XIN(INO)=CRTETR(INO,1)
-            YIN(INO)=CRTETR(INO,2)
-            ZIN(INO)=CRTETR(INO,3)
-781       CONTINUE
 
-        ELSE IF (NOTM(1:4).EQ.'PENT') THEN
+        ELSE IF (ELREFA.EQ.'PE6' .OR. ELREFA.EQ.'P15') THEN
           DO 772,KK=1,4
-            KSI=KSI    +ZR(I1COCF-1+IDECA1+KK)*CRPENT(CNPENT(KK,ITYP),1)
-            ETA=ETA    +ZR(I1COCF-1+IDECA1+KK)*CRPENT(CNPENT(KK,ITYP),2)
-            DZETA=DZETA+ZR(I1COCF-1+IDECA1+KK)*CRPENT(CNPENT(KK,ITYP),3)
+            X1 = CRREFE(NDIM*(CNPENT(KK,ITYP)-1)+1)
+            X2 = CRREFE(NDIM*(CNPENT(KK,ITYP)-1)+2)
+            X3 = CRREFE(NDIM*(CNPENT(KK,ITYP)-1)+3)
+            KSI   = KSI   + ZR(I1COCF-1+IDECA1+KK)*X1
+            ETA   = ETA   + ZR(I1COCF-1+IDECA1+KK)*X2
+            DZETA = DZETA + ZR(I1COCF-1+IDECA1+KK)*X3
 772       CONTINUE
-          DO 782,INO=1,NBNO
-            XIN(INO)=CRPENT(INO,1)
-            YIN(INO)=CRPENT(INO,2)
-            ZIN(INO)=CRPENT(INO,3)
-782       CONTINUE
 
-        ELSE IF (NOTM(1:4).EQ.'HEXA') THEN
+        ELSE IF (ELREFA.EQ.'HE8' .OR. ELREFA.EQ.'H20' .OR. 
+     +                                ELREFA.EQ.'H27' ) THEN
           DO 773,KK=1,4
-            KSI=KSI    +ZR(I1COCF-1+IDECA1+KK)*CRHEXA(CNHEXA(KK,ITYP),1)
-            ETA=ETA    +ZR(I1COCF-1+IDECA1+KK)*CRHEXA(CNHEXA(KK,ITYP),2)
-            DZETA=DZETA+ZR(I1COCF-1+IDECA1+KK)*CRHEXA(CNHEXA(KK,ITYP),3)
+            X1 = CRREFE(NDIM*(CNHEXA(KK,ITYP)-1)+1)
+            X2 = CRREFE(NDIM*(CNHEXA(KK,ITYP)-1)+2)
+            X3 = CRREFE(NDIM*(CNHEXA(KK,ITYP)-1)+3)
+            KSI   = KSI   + ZR(I1COCF-1+IDECA1+KK)*X1
+            ETA   = ETA   + ZR(I1COCF-1+IDECA1+KK)*X2
+            DZETA = DZETA + ZR(I1COCF-1+IDECA1+KK)*X3
 773       CONTINUE
-          DO 783,INO=1,NBNO
-            XIN(INO)=CRHEXA(INO,1)
-            YIN(INO)=CRHEXA(INO,2)
-            ZIN(INO)=CRHEXA(INO,3)
-783       CONTINUE
 
-        ELSE IF (NOTM(1:4).EQ.'PYRA') THEN
+        ELSE IF (ELREFA.EQ.'PY5' .OR. ELREFA.EQ.'P13') THEN
           DO 774,KK=1,4
-            KSI=KSI    +ZR(I1COCF-1+IDECA1+KK)*CRPYRA(CNPYRA(KK,ITYP),1)
-            ETA=ETA    +ZR(I1COCF-1+IDECA1+KK)*CRPYRA(CNPYRA(KK,ITYP),2)
-            DZETA=DZETA+ZR(I1COCF-1+IDECA1+KK)*CRPYRA(CNPYRA(KK,ITYP),3)
+            X1 = CRREFE(NDIM*(CNPYRA(KK,ITYP)-1)+1)
+            X2 = CRREFE(NDIM*(CNPYRA(KK,ITYP)-1)+2)
+            X3 = CRREFE(NDIM*(CNPYRA(KK,ITYP)-1)+3)
+            KSI   = KSI   + ZR(I1COCF-1+IDECA1+KK)*X1
+            ETA   = ETA   + ZR(I1COCF-1+IDECA1+KK)*X2
+            DZETA = DZETA + ZR(I1COCF-1+IDECA1+KK)*X3
 774       CONTINUE
-          DO 784,INO=1,NBNO
-            XIN(INO)=CRPYRA(INO,1)
-            YIN(INO)=CRPYRA(INO,2)
-            ZIN(INO)=CRPYRA(INO,3)
-784       CONTINUE
+
+        ELSE
+           CALL UTMESS('F','PJ3DTR','ELREFA INCONNU: '//ELREFA)
         END IF
 
+        X(1) = KSI
+        X(2) = ETA 
+        X(3) = DZETA
 
 C       2.2.2 :
 C       CALCUL DES F. DE FORME AUX NOEUDS POUR LE POINT KSI,ETA,DZETA:
 C       --------------------------------------------------------------
-        CALL CALCFF(NOTM,KSI,ETA,DZETA,XIN,YIN,ZIN,FF,DFF)
+        CALL ELRFVF ( ELREFA, X, 27, FF, NNO )
+
         DO 22,INO=1,NBNO
-          NUNO=ZI(IACNX1+ ZI(ILCNX1-1+IMA1)-2+INO)
-          ZI(I2CONU-1+IDECA2+INO)=NUNO
-          ZR(I2COCF-1+IDECA2+INO)=FF(INO)
+          NUNO = ZI(IACNX1+ ZI(ILCNX1-1+IMA1)-2+INO)
+          ZI(I2CONU-1+IDECA2+INO) = NUNO
+          ZR(I2COCF-1+IDECA2+INO) = FF(INO)
 22      CONTINUE
 
         IDECA1=IDECA1+4
         IDECA2=IDECA2+NBNO
+
 20    CONTINUE
 
 9999  CONTINUE

@@ -1,13 +1,13 @@
       SUBROUTINE HMLIGA(OPTION,MECA,THER,HYDR,IMATE,NDIM,DIMDEF,DIMCON,
-     +                  NVIMEC,NVITH,YAMEC,YATE,ADDEME,ADCOME,ADVITH,
-     +                  ADDEP1,ADCP11,ADDEP2,ADCP21,ADDETE,ADCOTE,
-     +                  CONGEM,CONGEP,VINTM,VINTP,DSDE,DEPS,EPSV,DEPSV,
-     +                  P1,P2,DP1,DP2,T,DT,PHI,RHO11,PHI0,SAT,RETCOM,
-     +                  THMC,CRIT,BIOT)
+     +                  NBVARI,YAMEC,YATE,ADDEME,ADCOME,ADVIHY,ADVICO,
+     +                  VIHRHO,VICPHI,VICSAT,ADDEP1,ADCP11,ADDEP2,
+     +                  ADCP21,ADDETE,ADCOTE,CONGEM,CONGEP,VINTM,VINTP,
+     +                  DSDE,DEPS,EPSV,DEPSV,P1,P2,DP1,DP2,T,DT,PHI,
+     +                  RHO11,PHI0,SAT,RETCOM,THMC,CRIT,BIOT)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 17/05/2004   AUTEUR ROMEO R.FERNANDES 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -40,11 +40,11 @@ C                       = 1 ECHEC DANS L'INTEGRATION : PAS DE RESULTATS
 C                       = 3 SIZZ NON NUL (DEBORST) ON CONTINUE A ITERER
 C ======================================================================
       IMPLICIT      NONE
-      INTEGER       NDIM,DIMDEF,DIMCON,NVIMEC,NVITH,IMATE,YAMEC
-      INTEGER       YATE,RETCOM,ADCOME,ADCP11,ADCP21,ADCOTE
-      INTEGER       ADDEME,ADDEP1,ADDEP2,ADDETE,ADVITH
-      REAL*8        CONGEM(DIMCON),CONGEP(DIMCON),VINTM(NVIMEC+NVITH)
-      REAL*8        VINTP(NVIMEC+NVITH),DSDE(DIMCON,DIMDEF),EPSV,DEPSV
+      INTEGER       NDIM,DIMDEF,DIMCON,NBVARI,IMATE,YAMEC,YATE,RETCOM
+      INTEGER       ADCOME,ADCP11,ADCP21,ADCOTE,ADDEME,ADDEP1,ADDEP2
+      INTEGER       ADDETE,ADVIHY,ADVICO,VIHRHO,VICPHI,VICSAT
+      REAL*8        CONGEM(DIMCON),CONGEP(DIMCON),VINTM(NBVARI)
+      REAL*8        VINTP(NBVARI),DSDE(DIMCON,DIMDEF),EPSV,DEPSV
       REAL*8        P1,DP1,P2,DP2,T,DT,PHI,RHO11,PHI0
       CHARACTER*16  OPTION,MECA,THER,HYDR,THMC
 C ======================================================================
@@ -159,7 +159,7 @@ C --- RECUPERATION DE LA VARIABLE SAT ---------------------------------
 C =====================================================================
       IF ((OPTION(1:9).EQ.'RAPH_MECA') .OR.
      &    (OPTION(1:9).EQ.'FULL_MECA')) THEN
-         VINTP(ADVITH+2) = SAT
+         VINTP(ADVICO+VICSAT) = SAT
       ENDIF
 C =====================================================================
 C --- CALCUL DES ARGUMENTS D EXP --------------------------------------
@@ -241,8 +241,8 @@ C =====================================================================
                VARIA = VARIA - 3.D0*ALPHA0*DT
             ENDIF
             VARIA = VARIA + CS* (DP2-SAT*DP1)
-            VINTP(ADVITH) = BIOT - PHI0 -
-     &                      (BIOT-VINTM(ADVITH)-PHI0)*EXP(-VARIA)
+            VINTP(ADVICO+VICPHI) = BIOT - PHI0 -
+     &                     (BIOT-VINTM(ADVICO+VICPHI)-PHI0)*EXP(-VARIA)
          ENDIF
       ENDIF
 C =====================================================================
@@ -254,28 +254,29 @@ C =====================================================================
          IF (YATE.EQ.1) THEN
             VARIA = VARIA - 3.D0*ALPLIQ*DT
          ENDIF
-         VINTP(ADVITH+1) = -RHO110 + (VINTM(ADVITH+1)+RHO110)*EXP(VARIA)
+         VINTP(ADVIHY+VIHRHO) =
+     +               -RHO110 + (VINTM(ADVIHY+VIHRHO)+RHO110)*EXP(VARIA)
       ENDIF
 C =====================================================================
 C --- CALCUL DE PHI ET DE RHO11 (SI LIQ) A L'INSTANT COURANT ----------
 C =====================================================================
       IF (OPTION(1:16).EQ.'RIGI_MECA_TANG') THEN
          IF (YAMEC.EQ.1) THEN
-            PHI = VINTM(ADVITH) + PHI0
+            PHI = VINTM(ADVICO+VICPHI) + PHI0
          ELSE
             PHI = PHI0
          ENDIF
-         RHO11 = VINTM(ADVITH+1) + RHO110
-         RHO11M = VINTM(ADVITH+1) + RHO110
+         RHO11 = VINTM(ADVIHY+VIHRHO) + RHO110
+         RHO11M = VINTM(ADVIHY+VIHRHO) + RHO110
       ELSE
          IF (YAMEC.EQ.1) THEN
-            PHI = VINTP(ADVITH) + PHI0
-            PHIM = VINTM(ADVITH) + PHI0
+            PHI = VINTP(ADVICO+VICPHI) + PHI0
+            PHIM = VINTM(ADVICO+VICPHI) + PHI0
          ELSE
             PHI = PHI0
          ENDIF
-         RHO11 = VINTP(ADVITH+1) + RHO110
-         RHO11M = VINTM(ADVITH+1) + RHO110
+         RHO11 = VINTP(ADVIHY+VIHRHO) + RHO110
+         RHO11M = VINTM(ADVIHY+VIHRHO) + RHO110
       ENDIF
 C =====================================================================
 C --- CALCUL DES AUTRES COEFFICIENTS DEDUITS : DILATATIONS ALPHA ------

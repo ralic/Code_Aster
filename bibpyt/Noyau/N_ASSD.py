@@ -1,4 +1,4 @@
-#@ MODIF N_ASSD Noyau  DATE 27/03/2002   AUTEUR DURAND C.DURAND 
+#@ MODIF N_ASSD Noyau  DATE 18/05/2004   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -94,6 +94,17 @@ class ASSD:
       """
       visitor.visitASSD(self)
 
+   def __getstate__(self):
+      """
+          Cette methode permet de pickler les objets ASSD
+          Ceci est possible car on coupe les liens avec les objets
+          parent, etape et jdc qui conduiraient à pickler de nombreux 
+          objets inutiles ou non picklables.
+      """
+      d=self.__dict__.copy()
+      for key in ('parent','etape','jdc'):
+          if d.has_key(key):del d[key]
+      return d
 
 class assd(ASSD):
    def is_object(valeur):

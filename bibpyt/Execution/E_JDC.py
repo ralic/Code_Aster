@@ -1,4 +1,4 @@
-#@ MODIF E_JDC Execution  DATE 04/02/2004   AUTEUR CAMBIER S.CAMBIER 
+#@ MODIF E_JDC Execution  DATE 18/05/2004   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,9 +22,12 @@
 """
 # Modules Python
 import sys, types,os
+import pickle
 
 # Modules Eficas
 from Noyau.N_Exception import AsException
+from Noyau.N_ASSD import ASSD
+from Noyau.N_ENTITE import ENTITE
 
 class JDC:
    """
@@ -78,13 +81,75 @@ class JDC:
 
       except self.codex.error,exc_val:
          self.traiter_user_exception(exc_val)
+         self.traiter_fin_exec("par_lot",e)
 
       except EOFError:
          # L'exception EOFError a ete levee par l'operateur FIN
+         self.traiter_fin_exec("par_lot",e)
          pass
 
       CONTEXT.unset_current_step()
       return ier
+
+   def traiter_fin_exec(self,mode,etape=None):
+       """ Cette methode realise un traitement final lorsque la derniere commande
+           a été exécutée. L'argument etape indique la derniere etape executee en traitement 
+           par lot (si mode == 'par_lot').
+
+           Le traitement réalisé est la sauvegarde du contexte courant : concepts produits
+           plus autres variables python.
+           Cette sauvegarde est réalisée par un pickle du dictionnaire python contenant 
+           ce contexte.
+       """
+       if mode == 'commande':
+          # En mode commande par commande
+          # Le contexte courant est donné par l'attribut g_context
+          context=self.g_context
+       else:
+          # En mode par lot
+          # Le contexte courant est obtenu à partir du contexte des constantes
+          # et du contexte des concepts
+
+          # On retire du contexte des constantes les concepts produits 
+          # par les commandes (exécutées et non exécutées)
+          context=self.const_context
+          for key,value in context.items():
+              if isinstance(value,ASSD) :
+                 del context[key]
+
+          # On ajoute a ce contexte les concepts produits par les commandes 
+          # qui ont été réellement exécutées (du début jusqu'à etape)
+          context.update(self.get_contexte_avant(etape))
+
+       # On élimine du contexte courant les objets qui ne supportent pas 
+       # le pickle (version 2.2)
+       context=self.filter_context(context,mode)
+       # Sauvegarde du pickle dans le fichier pick.1 du repertoire de travail
+       file=open('pick.1','w')
+       pickle.dump(context,file)
+
+   def filter_context(self,context,mode):
+       """
+          Cette methode construit un dictionnaire a partir du dictionnaire context 
+          passé en argument en supprimant tous les objets python que l'on ne veut pas 
+          ou ne peut pas sauvegarder pour une poursuite ultérieure
+          Le dictionnaire résultat est retourné par la méthode
+       """
+       d={}
+       for key,value in context.items():
+           if key in ('aster','__builtins__') :continue
+           if type(value) in (types.ModuleType,types.ClassType,types.FunctionType) :continue
+           if isinstance(value,ENTITE) :continue
+           #if type(value) == types.ClassType and issubclass(value,ASSD) :continue
+           #if type(value) == types.ClassType and issubclass(value,ENTITE) :continue
+           # Enfin on conserve seulement les objets que l'on peut pickler individuellement.
+           try:
+              pickle.dumps(value)
+              d[key]=value
+           except:
+              # Si on ne peut pas pickler value on ne le met pas dans le contexte filtré
+              pass
+       return d
 
    def traiter_user_exception(self,exc_val):
        """ Cette methode traite les exceptions en provenance du module d'execution

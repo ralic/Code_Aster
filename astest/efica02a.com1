@@ -1,0 +1,52 @@
+POURSUITE(CODE=_F(  NOM = 'EFICA02A'),PAR_LOT='NON')
+
+import aster
+
+
+L00=DEFI_LIST_REEL(  DEBUT=0.,
+                     INTERVALLE=_F(  JUSQU_A = 2.,  NOMBRE = DEUX ) )
+TUPL00=aster.getvectjev("L00                .VALE")
+L01=DEFI_LIST_REEL(  DEBUT=3.,
+                     INTERVALLE=_F(  JUSQU_A = 5.,  NOMBRE = DEUX) )
+TUPL01=aster.getvectjev("L01                .VALE")
+L02=DEFI_LIST_ENTI(  VALE=UN)
+TUPB=TUPL00+TUPL01
+
+
+FOA3=DEFI_FONCTION( NOM_PARA='X',
+                    NOM_RESU='Y',
+                    VALE=TUP )
+
+TEST_FONCTION(VALEUR=( 
+               _F(  FONCTION  = FOA3, PRECISION = 1.E-08,
+                    VALE_PARA = 10.,  VALE_REFE = 11.,
+                    REFERENCE = 'NON_REGRESSION'          ),
+               _F(  FONCTION  = FOA3, PRECISION = 1.E-08,
+                    VALE_PARA = 12.,  VALE_REFE = 13.,
+                    REFERENCE = 'NON_REGRESSION'           ), ) )
+
+FOL =DEFI_FONCTION( NOM_PARA='X',
+                    NOM_RESU='Y',
+                    VALE=TUPB )
+
+TEST_FONCTION(VALEUR=( 
+               _F(  FONCTION  = FOL,  PRECISION = 1.E-08,
+                    VALE_PARA = 1.,   VALE_REFE = 2.,
+                    REFERENCE = 'NON_REGRESSION'          ),
+               _F(  FONCTION  = FOL,  PRECISION = 1.E-08,
+                    VALE_PARA = 3.,   VALE_REFE = 4.,
+                    REFERENCE = 'NON_REGRESSION'           ), ) )
+
+yyy = xxx*2
+
+Fyyy =DEFI_FONCTION( NOM_PARA='X',
+                     NOM_RESU='Y',
+                     VALE=[1.,yyy] )
+
+TEST_FONCTION(VALEUR=
+               _F(  FONCTION  = Fyyy,  PRECISION = 1.E-08,
+                    VALE_PARA = 1.,   VALE_REFE = 69.,
+                    REFERENCE = 'NON_REGRESSION'          ),  )
+
+FIN()
+

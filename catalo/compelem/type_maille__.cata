@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
+%& MODIF COMPELEM  DATE 18/05/2004   AUTEUR CIBHHLV L.VIVAN 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -108,16 +108,16 @@ MAILLE__ TRIA7      7       DIM__  2   CODE__  'TR7'
          FAMILLE__ FPG1        1
          FAMILLE__ FPG3        3
          FAMILLE__ FPG6        6
+         FAMILLE__ FPG7        7
 
 MAILLE__ QUAD4      4       DIM__  2   CODE__  'QU4'
    ELREFE__ QU4
          FAMILLE__ NOEU        4
          FAMILLE__ NOEU_S      4
          FAMILLE__ FPG1        1
+         FAMILLE__ FIS2        2
          FAMILLE__ FPG4        4
          FAMILLE__ FPG9        9
-   ELREFE__ QUAD4_FI
-         FAMILLE__ FPG1        2
 
 MAILLE__ QUAD44     8       DIM__  2   CODE__  'Q44'
    ELREFE__ V_QUAD44

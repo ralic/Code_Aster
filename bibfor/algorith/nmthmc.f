@@ -1,7 +1,7 @@
-      SUBROUTINE NMTHMC(COMP, COMEL, NCOMEL)
+      SUBROUTINE NMTHMC(COMP, MOCLEF, K, COMEL, NCOMEL, NBNVI)
 C =====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 15/03/2004   AUTEUR JOUMANA J.EL-GHARIB 
+C MODIF ALGORITH  DATE 17/05/2004   AUTEUR ROMEO R.FERNANDES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -23,13 +23,13 @@ C =====================================================================
 C --- BUT : DETERMINER LA COHERENCE DE LA RELATION DE COUPLAGE THM ----
 C =====================================================================
       IMPLICIT      NONE
-      INTEGER       NCOMEL
-      CHARACTER*16  COMP, COMEL(NCOMEL)
+      INTEGER       NCOMEL, NBNVI(*), K
+      CHARACTER*16  COMP, MOCLEF, COMEL(NCOMEL)
 C =====================================================================
 C --- DEFINITION DES DIMENSIONS DES VECTEURS DE POSSIBILITE DES LOIS --
 C =====================================================================
-      LOGICAL       LTHMC, LHYDR, LMECA
-      INTEGER       DMTHMC, DMHYDR, DMMECA
+      LOGICAL       LTHMC, LHYDR, LMECA, EXIST, GETEXM
+      INTEGER       DMTHMC, DMHYDR, DMMECA, N1
       PARAMETER   ( DMTHMC = 9  )
       PARAMETER   ( DMHYDR = 3  )
       PARAMETER   ( DMMECA = 12 )
@@ -359,11 +359,42 @@ C =====================================================================
          ENDIF
       ENDIF
 C =====================================================================
-C --- MISE A JOUR FINALE ----------------------------------------------
+C --- MISE A JOUR DES RELATIONS DE COMPORTEMENTS ----------------------
 C =====================================================================
       COMEL(1) = THMC
       COMEL(2) = THER
       COMEL(3) = HYDR
       COMEL(4) = MECA
+C ======================================================================
+C --- POUR CHAQUE RELATION DE COMPORTEMENT PRESENTE ON RECUPERE --------
+C --- LE NOMBRE DE VARIABLES INTERNES ASSOCIE A CETTE LOI --------------
+C ======================================================================
+C --- LOI DE COUPLAGE --------------------------------------------------
+C ======================================================================
+      EXIST = GETEXM(MOCLEF,COMEL(1))
+      IF (EXIST) THEN
+         CALL GETVIS(MOCLEF,COMEL(1),K,1,1,NBNVI(1),N1)
+      ENDIF
+C ======================================================================
+C --- LOI DE THERMIQUE -------------------------------------------------
+C ======================================================================
+      EXIST = GETEXM(MOCLEF,COMEL(2))
+      IF (EXIST) THEN
+         CALL GETVIS(MOCLEF,COMEL(2),K,1,1,NBNVI(2),N1)
+      ENDIF
+C ======================================================================
+C --- LOI HYDRAULIQUE --------------------------------------------------
+C ======================================================================
+      EXIST = GETEXM(MOCLEF,COMEL(3))
+      IF (EXIST) THEN
+         CALL GETVIS(MOCLEF,COMEL(3),K,1,1,NBNVI(3),N1)
+      ENDIF
+C ======================================================================
+C --- LOI DE MECANIQUE -------------------------------------------------
+C ======================================================================
+      EXIST = GETEXM(MOCLEF,COMEL(4))
+      IF (EXIST) THEN
+         CALL GETVIS(MOCLEF,COMEL(4),K,1,1,NBNVI(4),N1)
+      ENDIF
 C =====================================================================
       END

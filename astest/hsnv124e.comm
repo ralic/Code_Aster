@@ -1,0 +1,417 @@
+
+# MODIF  DATE 17/05/2004   AUTEUR CIBHHBC M.LOPES 
+# RESPONSABLE JMBHH01 J.M.PROIX
+# TITRE TEST PHI2AS NUMERO 1 MODELISATION BARRE ECROUISSAGE CINEMATIQUE LINEAIRE
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+#
+
+
+DEBUT(    CODE=_F(  NOM = 'HSNV124E',NIV_PUB_WEB='INTERNET') )
+
+TITRE='PHI2AS TEST1 ECR CINEMATIQUE LINEAIRE';
+
+COMMENT='20 INCREMENTS ';
+
+MA=LIRE_MAILLAGE();
+
+LINST=DEFI_LIST_REEL(DEBUT=0.0,
+                     INTERVALLE=(_F(JUSQU_A=1.0,
+                                    NOMBRE=1,),
+                                 _F(JUSQU_A=2.0,
+                                    NOMBRE=20,),),);
+
+COEF=DEFI_FONCTION(NOM_PARA='INST',
+                   VALE=(0.0,0.0,1.0,1.0,2.0,1.0,),
+                   PROL_DROITE='LINEAIRE',
+                   PROL_GAUCHE='LINEAIRE',);
+YOUNG = 200000.0;
+
+
+C_F = FORMULE(REEL = '''(REEL :TEMP) = (1000.+2990.*TEMP)''');
+
+H_F = FORMULE(REEL = '''(REEL :TEMP) = YOUNG*C_F(TEMP)/(YOUNG+C_F(TEMP))''');
+
+SY_F = FORMULE(REEL = '''(REEL :TEMP) = 200.-1.7*TEMP''');
+
+TEMPE1=DEFI_LIST_REEL(DEBUT=0.0,
+                      INTERVALLE=_F(JUSQU_A=100.0,
+                                    NOMBRE=100,),);
+
+DSET=CALC_FONC_INTERP(FONCTION=H_F,
+                      LIST_PARA=TEMPE1,
+                      NOM_PARA = 'TEMP',);
+
+SYT=CALC_FONC_INTERP(FONCTION=SY_F,
+                     LIST_PARA=TEMPE1,
+                      NOM_PARA = 'TEMP',);
+
+ACIER=DEFI_MATERIAU(ELAS=_F(E=YOUNG,
+                            NU=0.29999999999999999,
+                            ALPHA=1.0000000000000001E-05,),
+                    ECRO_LINE_FO=_F(D_SIGM_EPSI=DSET,
+                                    SY=SYT,),);
+# ECMI
+#
+
+
+PRAG_F = FORMULE(REEL = '''(REEL :TEMP) = (2. /3.) * C_F(TEMP)''');
+
+PRAG=CALC_FONC_INTERP(FONCTION=PRAG_F,
+                      LIST_PARA=TEMPE1,
+                     NOM_PARA = 'TEMP',);
+
+ACIER2=DEFI_MATERIAU(ELAS=_F(E=YOUNG,
+                             NU=0.29999999999999999,
+                             ALPHA=1.0000000000000001E-05,),
+                     ECRO_LINE_FO=_F(D_SIGM_EPSI=DSET,
+                                     SY=SYT,),
+                     PRAGER_FO=_F(C=PRAG,),);
+# CIN1_CHAB
+#
+
+
+C_T=CALC_FONC_INTERP(FONCTION=C_F,
+                     LIST_PARA=TEMPE1,
+                     NOM_PARA = 'TEMP',);
+
+D_T=DEFI_CONSTANTE(VALE=0.0,);
+
+UN=DEFI_CONSTANTE(VALE=1.0,);
+
+ZERO=DEFI_CONSTANTE(VALE=0.0,);
+
+ACIER3=DEFI_MATERIAU(ELAS=_F(E=YOUNG,
+                             NU=0.29999999999999999,
+                             ALPHA=1.0000000000000001E-05,),
+                     CIN1_CHAB_FO=_F(R_0=SYT,
+                                     R_I=SYT,
+                                     B=ZERO,
+                                     C_I=C_T,
+                                     K=UN,
+                                     W=ZERO,
+                                     G_0=D_T,
+                                     A_I=UN,),);
+
+CHMATER=AFFE_MATERIAU(MAILLAGE=MA,
+                      AFFE=_F(TOUT='OUI',
+                              MATER=ACIER,),);
+
+CHMATER2=AFFE_MATERIAU(MAILLAGE=MA,
+                       AFFE=_F(TOUT='OUI',
+                               MATER=ACIER2,),);
+
+CHMATER3=AFFE_MATERIAU(MAILLAGE=MA,
+                       AFFE=_F(TOUT='OUI',
+                               MATER=ACIER3,),);
+
+MOMECA=AFFE_MODELE(MAILLAGE=MA,
+                   AFFE=_F(TOUT='OUI',
+                           PHENOMENE='MECANIQUE',
+                           MODELISATION='BARRE',),);
+
+CARAELEM=AFFE_CARA_ELEM(MODELE=MOMECA,
+                        BARRE=_F(MAILLE='M1',
+                                 SECTION='GENERALE',
+                                 CARA='A',
+                                 VALE=1.0,),);
+
+PRESSION=AFFE_CHAR_MECA(MODELE=MOMECA,
+                        FORCE_NODALE=_F(NOEUD='N7',
+                                        FZ=210.0,),);
+
+FTEMP=DEFI_FONCTION(NOM_PARA='INST',
+                    VALE=(0.0,0.0,1.0,0.0,2.0,100.0,),
+                    PROL_DROITE='LINEAIRE',
+                    PROL_GAUCHE='LINEAIRE',);
+
+CHP_TEMP=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_F',
+                    OPERATION='AFFE',
+                    MAILLAGE=MA,
+                    AFFE=_F(TOUT='OUI',
+                            NOM_CMP='TEMP',
+                            VALE_F=FTEMP,),);
+
+RTEMP=CREA_RESU(OPERATION='AFFE',
+                TYPE_RESU='EVOL_THER',
+                NOM_CHAM='TEMP',
+                AFFE=_F(CHAM_GD=CHP_TEMP,
+                        LIST_INST=LINST,),);
+
+CHR_TEMP=AFFE_CHAR_MECA(MODELE=MOMECA,
+                        TEMP_CALCULEE=RTEMP,);
+
+LIAISON=AFFE_CHAR_MECA(MODELE=MOMECA,
+                       DDL_IMPO=(_F(NOEUD='N3',
+                                    DX=0.0,
+                                    DY=0.0,
+                                    DZ=0.0,),
+                                 _F(NOEUD='N7',
+                                    DX=0.0,
+                                    DY=0.0,),),);
+
+U=STAT_NON_LINE(MODELE=MOMECA,
+                CHAM_MATER=CHMATER,
+                CARA_ELEM=CARAELEM,
+                EXCIT=(_F(CHARGE=LIAISON,),
+                       _F(CHARGE=PRESSION,
+                          FONC_MULT=COEF,),
+                       _F(CHARGE=CHR_TEMP,),),
+                COMP_INCR=_F(RELATION='VMIS_CINE_LINE',),
+                INCREMENT=_F(LIST_INST=LINST,),
+                NEWTON=_F(REAC_INCR=1,
+                       #   MATRICE='ELASTIQUE',
+                          REAC_ITER=1,),
+                RECH_LINEAIRE=_F(ITER_LINE_MAXI=5,),
+                CONVERGENCE=_F(ITER_GLOB_MAXI=50,
+                               ARRET='OUI',
+                               RESI_INTE_RELA=9.9999999999999995E-07,
+                               ITER_INTE_MAXI=50,
+                               ITER_INTE_PAS=0,
+                               RESO_INTE='IMPLICITE',),);
+
+TEMP7=RECU_FONCTION(RESULTAT=RTEMP,
+                  NOM_CHAM='TEMP',PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',
+                  NOM_CMP='TEMP',
+                  NOEUD='N7',);
+
+FU1=RECU_FONCTION(RESULTAT=U,
+                  NOM_CHAM='DEPL',PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',
+                  NOM_CMP='DZ',
+                  NOEUD='N7',);
+
+FN1=RECU_FONCTION(RESULTAT=U,
+                  NOM_CHAM='SIEF_ELGA',PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',
+                  NOM_CMP='N',
+                  MAILLE='M1',
+                  POINT=1,);
+
+EPSP1=CALC_FONCTION(COMB=(_F(FONCTION=FU1,
+                             COEF=1,),
+                          _F(FONCTION=FN1,
+                             COEF=-5.0000000000000004E-06,),
+                          _F(FONCTION=TEMP7,
+                             COEF=-1.0000000000000004E-05,),
+                             ),);
+
+TEST_FONCTION(FICHIER='RESULTAT',
+              TEST_NOOK='NON',
+              VALEUR=(_F(FONCTION=EPSP1,
+                         NOM_PARA='INST',
+                         VALE_PARA=1.0,
+                         VALE_REFE=10.E-3,
+                         PRECISION=1.E-3,
+                         REFERENCE='ANALYTIQUE',),
+                      _F(FONCTION=EPSP1,
+                         NOM_PARA='INST',
+                         VALE_PARA=2.0,
+                         VALE_REFE=8.E-4,
+                         PRECISION=1.E-3,
+                         REFERENCE='ANALYTIQUE',),),);
+#U=CALC_ELEM(reuse=U,   MODELE=MOMECA,
+#                    CHAM_MATER=CHMATER,
+#                    RESULTAT=U,
+#                      EXCIT=_F( CHARGE = CHR_TEMP,  ),
+#                      OPTION=( 'EPSP_ELNO', )
+#                   )
+#
+
+
+TEST_RESU(RESU=(_F(RESULTAT=U,
+                   INST=1.0,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='N',
+                   MAILLE='M1',
+                   POINT=1,
+                   VALE=210.0,
+                   REFERENCE='ANALYTIQUE',),),);
+
+U2=STAT_NON_LINE(MODELE=MOMECA,
+                 CHAM_MATER=CHMATER2,
+                 CARA_ELEM=CARAELEM,
+                 EXCIT=(_F(CHARGE=LIAISON,),
+                        _F(CHARGE=PRESSION,
+                           FONC_MULT=COEF,),
+                        _F(CHARGE=CHR_TEMP,),),
+                 COMP_INCR=_F(RELATION='VMIS_ECMI_LINE',ALGO_1D='DEBORST'),
+                 INCREMENT=_F(LIST_INST=LINST,),
+                 NEWTON=_F(REAC_INCR=1,
+                        #   MATRICE='TANGENTE',
+                        #   MATRICE='ELASTIQUE',
+                           REAC_ITER=1,),
+                     RECH_LINEAIRE=_F(ITER_LINE_MAXI = 8),
+                 CONVERGENCE=_F(ITER_GLOB_MAXI=500,
+                                ARRET='OUI',
+                                RESI_INTE_RELA=9.9999999999999995E-07,
+                                ITER_INTE_MAXI=50,
+                                ITER_INTE_PAS=0,
+                                RESO_INTE='IMPLICITE',),);
+U2=CALC_ELEM(reuse=U2,   MODELE=MOMECA,
+                    CHAM_MATER=CHMATER,
+                 CARA_ELEM=CARAELEM,
+                    RESULTAT=U2,
+                      EXCIT=_F( CHARGE = CHR_TEMP,  ),
+                      OPTION=( 'SIEF_ELNO_ELGA', )
+                   )
+
+
+
+TEST_RESU(RESU=(_F(RESULTAT=U2,
+                   INST=1.0,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='N',
+                   MAILLE='M1',
+                   POINT=1,
+                   VALE=210.0,
+                   REFERENCE='ANALYTIQUE',),),);
+
+FU2=RECU_FONCTION(RESULTAT=U2,
+                  NOM_CHAM='DEPL',PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',
+                  NOM_CMP='DZ',
+                  NOEUD='N7',);
+
+
+FN2=RECU_FONCTION(RESULTAT=U2,
+                  NOM_CHAM='SIEF_ELGA',PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',
+                  NOM_CMP='N',
+                  MAILLE='M1',
+                  POINT=1,);
+
+EPSP2=CALC_FONCTION(COMB=(_F(FONCTION=FU2,
+                             COEF=1,),
+                          _F(FONCTION=TEMP7,
+                             COEF=-1.0000000000000004E-05,),
+                          _F(FONCTION=FN2,
+                             COEF=-5.0000000000000004E-06,),),);
+
+TEST_FONCTION(FICHIER='RESULTAT',
+              TEST_NOOK='NON',
+              VALEUR=(_F(FONCTION=EPSP2,
+                         NOM_PARA='INST',
+                         VALE_PARA=1.0,
+                         VALE_REFE=10.E-3,
+                         PRECISION=1.E-3,
+                         REFERENCE='ANALYTIQUE',),
+                      _F(FONCTION=EPSP2,
+                         NOM_PARA='INST',
+                         VALE_PARA=2.0,
+                         VALE_REFE=8.E-4,
+                         PRECISION=1.E-3,
+                         REFERENCE='ANALYTIQUE',),),);
+
+#IMPR_RESU(RESU=_F(RESULTAT=U))
+
+#IMPR_RESU(RESU=_F(RESULTAT=U2))
+
+
+IMPR_COURBE(FICHIER='RESULTAT',
+            FORMAT='EXCEL',
+          #  TITRE_GRAPHIQUE=TITRE,
+          #  LEGENDE_X='T (S)',
+          #  LEGENDE_Y='EPYY ',
+            COURBE=(
+                     _F(FONCTION=TEMP7,
+                       LEGENDE='TEMPER',),
+                    _F(FONCTION=FU2,
+                       LEGENDE='U ECMI',),
+                     _F(FONCTION=FU1,
+                       LEGENDE='U CINE',),
+                     _F(FONCTION=EPSP1,
+                       LEGENDE='ESPP_YY CINE',),
+                    _F(FONCTION=EPSP2,
+                       LEGENDE='ESPP_YY ECMI',),
+                  #  _F(FONCTION=EPSP3,
+                  #     LEGENDE='ESPP_YY CHAB',),
+                       ),);
+
+
+U3=STAT_NON_LINE(MODELE=MOMECA,
+                 CHAM_MATER=CHMATER3,
+                 CARA_ELEM=CARAELEM,
+                 EXCIT=(_F(CHARGE=LIAISON,),
+                        _F(CHARGE=PRESSION,
+                           FONC_MULT=COEF,),
+                        _F(CHARGE=CHR_TEMP,),),
+                 COMP_INCR=_F(RELATION='VISC_CIN1_CHAB',
+                 ALGO_1D='DEBORST'),
+                 INCREMENT=_F(LIST_INST=LINST,),
+                     RECH_LINEAIRE=_F(ITER_LINE_MAXI = 8),
+                 NEWTON=_F(REAC_INCR=1,
+                         #  MATRICE='TANGENTE',
+                         #  MATRICE='ELASTIQUE',
+                           REAC_ITER=1,),
+                 CONVERGENCE=_F(ITER_GLOB_MAXI=50,
+                                ARRET='OUI',
+                                RESI_INTE_RELA=9.9999999999999995E-07,
+                                ITER_INTE_MAXI=50,
+                                ITER_INTE_PAS=0,
+                                RESO_INTE='IMPLICITE',),);
+#U3=CALC_ELEM(reuse=U3,   MODELE=MOMECA,
+#                    CHAM_MATER=CHMATER,
+#                    RESULTAT=U3,
+#                      EXCIT=_F( CHARGE = CHR_TEMP,  ),
+#                      OPTION=( 'EPSP_ELNO', )
+#                   )
+#
+
+
+TEST_RESU(RESU=(_F(RESULTAT=U3,
+                   INST=1.0,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='N',
+                   MAILLE='M1',
+                   POINT=1,
+                   VALE=210.0,
+                   REFERENCE='ANALYTIQUE',),),);
+
+
+FU3=RECU_FONCTION(RESULTAT=U3,
+                  NOM_CHAM='DEPL',PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',
+                  NOM_CMP='DZ',
+                  NOEUD='N7',);
+
+FN3=RECU_FONCTION(RESULTAT=U3,
+                  NOM_CHAM='SIEF_ELGA',PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',
+                  NOM_CMP='N',
+                  MAILLE='M1',
+                  POINT=1,);
+
+EPSP3=CALC_FONCTION(COMB=(_F(FONCTION=FU3,
+                             COEF=1,),
+                          _F(FONCTION=TEMP7,
+                             COEF=-1.0000000000000004E-05,),
+                          _F(FONCTION=FN3,
+                             COEF=-5.0000000000000004E-06,),),);
+
+TEST_FONCTION(FICHIER='RESULTAT',
+              TEST_NOOK='NON',
+              VALEUR=(_F(FONCTION=EPSP3,
+                         NOM_PARA='INST',
+                         VALE_PARA=1.0,
+                         VALE_REFE=10.E-3,
+                         PRECISION=1.E-3,
+                         REFERENCE='ANALYTIQUE',),
+                      _F(FONCTION=EPSP3,
+                         NOM_PARA='INST',
+                         VALE_PARA=2.0,
+                         VALE_REFE=8.E-4,
+                         PRECISION=1.E-3,
+                         REFERENCE='ANALYTIQUE',),),);
+                         
+FIN()
+

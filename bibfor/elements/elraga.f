@@ -4,7 +4,7 @@
       CHARACTER*(*) ELREFZ
       INTEGER NBPG,NDIM
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 18/05/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,7 +41,7 @@ C   -------------------------------------------------------------------
       REAL*8 ATY(7),ATZ(7),HT(7),U,T
       REAL*8 AA,BB,CC,HH,H1,H2,H3,RAC5,RAC15,A1,B1,B6,C1,C8,D1,D12
       REAL*8 P1,P2,P3,XXG5(5),PXG5(5),XA,XB,XC,XD
-      REAL*8 ZERO,UNQUAR,UNDEMI,UN,DEUX,XNO(3*27),VOL
+      REAL*8 ZERO,UNQUAR,UNDEMI,UN,DEUX,XNO(3*27),VOL,A2,B2
 C -----  FONCTIONS FORMULES
       T(U) = 2.0D0*U - 1.0D0
 C DEB ------------------------------------------------------------------
@@ -57,7 +57,6 @@ C DEB ------------------------------------------------------------------
 C     -- CALCUL DE NBPG,NDIM,VOL,NNO,XNO :
 C     ------------------------------------
       CALL ELRACA(ELREFA,NDIM,NNO,NNOS,NBFPG,NOFPG,NBPG1,XNO,VOL)
-
       IFAM = INDIK8(NOFPG,FAPG,1,NBFPG)
       CALL ASSERT(IFAM.GT.0)
       NBPG = NBPG1(IFAM)
@@ -666,6 +665,32 @@ C     ------------------------------------------------------------------
           HPG(1) = UN/6.D00
           HPG(2) = UN/6.D00
           HPG(3) = UN/6.D00
+        ELSEIF (FAPG.EQ.'FPG7') THEN
+          P1 = 0.066197076394253D0
+          P2 = 0.062969590272413D0
+          A2 = 0.470142064105115D0
+          B2 = 0.101286507323456D0
+          XPG(1) = 0.333333333333333D0
+          YPG(1) = 0.333333333333333D0
+          XPG(2) = A2
+          YPG(2) = A2
+          XPG(3) = UN - DEUX*A2
+          YPG(3) = A2
+          XPG(4) = A2
+          YPG(4) = UN - DEUX*A2
+          XPG(5) = B2
+          YPG(5) = B2
+          XPG(6) = UN - DEUX*B2
+          YPG(6) = B2
+          XPG(7) = B2
+          YPG(7) = UN - DEUX*B2
+          HPG(1) = 9.D0/80.D0
+          HPG(2) = P1
+          HPG(3) = P1
+          HPG(4) = P1
+          HPG(5) = P2
+          HPG(6) = P2
+          HPG(7) = P2
         ELSE
           CALL ASSERT(.FALSE.)
         END IF
@@ -678,6 +703,14 @@ C     ------------------------------------------------------------------
           XPG(1) = ZERO
           YPG(1) = ZERO
           HPG(1) = 4.D0
+        ELSEIF (FAPG.EQ.'FIS2') THEN
+C ------- ELEMENT PARTICULIER DE FISSURE, S'APPUIE SUR UN SEG2
+          XPG(1) = -0.577350269189626D0
+          YPG(1) = ZERO
+          XPG(2) =  0.577350269189626D0
+          YPG(2) = ZERO
+          HPG(1) = DEUX
+          HPG(2) = DEUX
         ELSEIF (FAPG.EQ.'FPG4') THEN
           XPG(1) = -0.577350269189626D00
           YPG(1) = -0.577350269189626D00

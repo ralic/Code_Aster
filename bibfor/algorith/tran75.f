@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 17/05/2004   AUTEUR CIBHHBC M.LOPES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,7 +53,7 @@ C ----------------------------------------------------------------------
       PARAMETER     ( MXPARA = 10 )
       INTEGER       IPAR(MXPARA), I, J, ITRESU(8)
       INTEGER       FOCI, FOCF, FOMI, FOMF, FOMO
-      REAL*8        EPSI, ALPHA, XNORM, DEPL(6)
+      REAL*8        R8B, EPSI, ALPHA, XNORM, DEPL(6)
       CHARACTER*1   COLI, K1BID
       CHARACTER*8   K8B, BLANC, BASEMO, CRIT, GRAN, INTERP, BASEM2,
      +              MAILLA, NOMRES, NOMIN, NOMCMP(6), MODE, MONMOT(2),
@@ -304,8 +304,8 @@ C APRES UNE DOUBLE PROJECTION (PRESENCE DU MOT CLEF 'MODE_MECA')
          FOMO = 0
          CALL GETVID(' ','LIST_INST',0,1,1,K8B,FOCI)
          CALL GETVID(' ','LIST_FREQ',0,1,1,K8B,FOCF)
-         CALL GETVID(' ','INST',0,1,1,K8B,FOMI)
-         CALL GETVID(' ','FREQ',0,1,1,K8B,FOMF)
+         CALL GETVR8(' ','INST',0,1,1,R8B,FOMI)
+         CALL GETVR8(' ','FREQ',0,1,1,R8B,FOMF)
          CALL GETVID(' ','MODE_MECA',0,1,1,K8B,FOMO)
          IF (FOCI.EQ.0 .AND. FOCF.EQ.0 .AND.
      &       FOMI.EQ.0 .AND. FOMF.EQ.0 .AND. FOMO.EQ.0 ) THEN

@@ -1,4 +1,4 @@
-# MODIF  DATE 26/09/2003   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 17/05/2004   AUTEUR CIBHHBC M.LOPES 
 # TITRE FISSURATION PLANE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -21,7 +21,7 @@
 # ======================================================================
 
 
-DEBUT(CODE=_F( NOM = 'SSNP118A',NIV_PUB_WEB='INTERNET'), PAR_LOT='NON')
+DEBUT(CODE=_F( NOM = 'SSNP118A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'), PAR_LOT='NON')
 
 import aster
 

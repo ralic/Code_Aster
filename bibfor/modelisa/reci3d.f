@@ -3,7 +3,7 @@
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 27/06/2001   AUTEUR DURAND C.DURAND 
+C MODIF MODELISA  DATE 18/05/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -107,8 +107,9 @@ C -----------------
       CHARACTER*8   K8B
       CHARACTER*24  NONOMA
       LOGICAL       NOTLIN
+      INTEGER       NNO
 C
-      REAL*8        FFEL3D
+      REAL*8        FFEL3D, FF(27), X(3)
 C
 C-------------------   DEBUT DU CODE EXECUTABLE    ---------------------
 C
@@ -185,7 +186,31 @@ C
          DO 20 ICNX = 1, NBCNX
             CALL JENUNO(JEXNUM(NONOMA,CXMA(ICNX)),ZK8(JNOMNO+ICNX))
             ZK8(JDDL+ICNX) = 'DEPL'
-            ZR(JCMUR+ICNX) = -FFEL3D(NBCNX,ICNX,KSI1,KSI2,KSI3)
+            X(1) = KSI1
+            X(2) = KSI2
+            X(3) = KSI3
+            IF ( NBCNX.EQ.4 ) THEN
+              CALL ELRFVF('TE4',X,4,FF,NNO)
+            ELSE IF ( NBCNX.EQ.10 ) THEN
+              CALL ELRFVF('T10',X,10,FF,NNO)
+            ELSE IF ( NBCNX.EQ.5 ) THEN
+              CALL ELRFVF('PY5',X,5,FF,NNO)
+            ELSE IF ( NBCNX.EQ.13 ) THEN
+              CALL ELRFVF('P13',X,13,FF,NNO)
+            ELSE IF ( NBCNX.EQ.6 ) THEN
+              CALL ELRFVF('PE6',X,6,FF,NNO)
+            ELSE IF ( NBCNX.EQ.15 ) THEN
+              CALL ELRFVF('P15',X,15,FF,NNO)
+            ELSE IF ( NBCNX.EQ.8 ) THEN
+              CALL ELRFVF('HE8',X,8,FF,NNO)
+            ELSE IF ( NBCNX.EQ.20 ) THEN
+              CALL ELRFVF('H20',X,20,FF,NNO)
+            ELSE IF ( NBCNX.EQ.27 ) THEN
+              CALL ELRFVF('H27',X,27,FF,NNO)
+            ENDIF
+            FFEL3D = FF(ICNX)
+            ZR(JCMUR+ICNX) = -FFEL3D
+C            ZR(JCMUR+ICNX) = -FFEL3D(NBCNX,ICNX,KSI1,KSI2,KSI3)
   20     CONTINUE
 C
       ENDIF

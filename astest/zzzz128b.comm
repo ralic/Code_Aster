@@ -1,0 +1,44 @@
+# MODIF  DATE 17/05/2004   AUTEUR CIBHHBC M.LOPES 
+# TITRE VALIDATION DE LIRE_TABLE / IMPR_TABLE
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+DEBUT( CODE=_F(  NOM = 'ZZZZ128B',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON') )
+
+# ----------------------------------------------------------------------------
+# On lit une table connue sur le fichier 38
+# On l'ecrit sur le fichier 39
+# On la relit sur le fichier 39 et on verifie qu'elle a encore le meme contenu
+# ----------------------------------------------------------------------------
+#
+T1=LIRE_TABLE(     UNITE=38, FORMAT='ASTER',  NUME_TABLE=2,
+                   SEPARATEUR='%', TYPE_TABLE='TABLE', TITRE='titre 1',)
+
+DEFI_FICHIER(FICHIER='39', UNITE=39)
+IMPR_TABLE (TABLE = T1,   FORMAT='ASTER',FICHIER='39')
+DEFI_FICHIER(ACTION='LIBERER',UNITE=39)
+
+T2=LIRE_TABLE(     UNITE=39, FORMAT='ASTER',  NUME_TABLE=1,
+                   SEPARATEUR=' ', TYPE_TABLE='TABLE', TITRE='titre 2',)
+
+TEST_TABLE(TABLE=T2, REFERENCE='ANALYTIQUE',
+           FILTRE=_F(NOM_PARA='NOEUD', VALE_K='N2'),
+           NOM_PARA='VALEUR',   VALE= 21.,  PRECISION=1.E-10,
+           );
+
+FIN( )

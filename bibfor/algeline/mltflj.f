@@ -1,6 +1,6 @@
       SUBROUTINE MLTFLJ(NB,N,LL,M,IT,P,FRONT,FRN,ADPER,TRAV,C)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 04/05/2004   AUTEUR ROSE C.ROSE 
+C MODIF ALGELINE  DATE 12/05/2004   AUTEUR ROSE C.ROSE 
 C RESPONSABLE ROSE C.ROSE
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -116,11 +116,10 @@ C     BLOC DIAGONAL
 C     SOUS LE BLOC DIAGONAL
 C     2EME ESSAI : DES PRODUITS DE LONGUEUR NB
 C
-         NUMPRO=1
          DO 2500 IB = KB,NLB
             IA = N*(IT-1)  + K + NB*(IB-KB)
             CALL DGEMX( NB,NB,NBL,FRONT(IA),N, TRAV(IT,1,1), P,
-     %                   C(1,1,NUMPRO), NB)
+     %                   C(1,1,1), NB)
 C     RECOPIE
 
 C
@@ -134,7 +133,7 @@ C
                   IND = ADPER(K + I1) - DECAL + NB*(IB-KB)  - I1
                ENDIF
                DO 234 J=J1,NB
-                  FRN(IND) = FRN(IND) +C(J,I,NUMPRO)
+                  FRN(IND) = FRN(IND) +C(J,I,1)
                   IND = IND +1
  234            CONTINUE
  235         CONTINUE
@@ -143,7 +142,7 @@ C
             IB = NLB + 1
             IA =   N*(IT-1)  +K + NB*(IB-KB)
             CALL DGEMX( RESTL,NB,NBL,FRONT(IA),N, TRAV(IT,1,1), P,
-     %                   C(1,1,NUMPRO), NB)
+     %                   C(1,1,1), NB)
 C           RECOPIE
 
 C
@@ -153,7 +152,7 @@ C              IND = ADPER(K +I1) - DECAL  + NB*(IB-KB-1) +NB - I1
                J1=1
                IND = ADPER(K + I1) - DECAL + NB*(IB-KB)  - I1
                DO 244 J=J1,RESTL
-                  FRN(IND) = FRN(IND) +C(J,I,NUMPRO)
+                  FRN(IND) = FRN(IND) +C(J,I,1)
                   IND = IND +1
  244            CONTINUE
  245         CONTINUE
@@ -180,7 +179,7 @@ C
          DO 600 IB = KB,NLB
             IA =   N*(IT-1 ) + K + NB*(IB-KB)
             CALL DGEMX( NB,RESTM,NBL,FRONT(IA),N, TRAV(IT,1,1), P,
-     %                   C(1,1,NUMPRO), NB)
+     %                   C(1,1,1), NB)
 C     RECOPIE
 
 C
@@ -195,7 +194,7 @@ C     IND = ADPER(K +I1) - DECAL  + NB*(IB-KB-1) +NB - I1
                   IND = ADPER(K + I1) - DECAL + NB*(IB-KB)  - I1
                ENDIF
                DO 54 J=J1,NB
-                  FRN(IND) = FRN(IND) +C(J,I,NUMPRO)
+                  FRN(IND) = FRN(IND) +C(J,I,1)
                   IND = IND +1
  54            CONTINUE
  55         CONTINUE
@@ -204,7 +203,7 @@ C     IND = ADPER(K +I1) - DECAL  + NB*(IB-KB-1) +NB - I1
             IB = NLB + 1
             IA =   N*(IT-1) + K + NB*(IB-KB)
             CALL DGEMX( RESTL,RESTM,NBL,FRONT(IA),N, TRAV(IT,1,1),    P,
-     %                   C(1,1,NUMPRO), NB)
+     %                   C(1,1,1), NB)
 C     RECOPIE
 
 C
@@ -214,7 +213,7 @@ C     IND = ADPER(K +I1) - DECAL  + NB*(IB-KB-1) +NB - I1
                J1=1
                IND = ADPER(K + I1) - DECAL + NB*(IB-KB)  - I1
                DO 64 J=J1,RESTL
-                  FRN(IND) = FRN(IND) +C(J,I,NUMPRO)
+                  FRN(IND) = FRN(IND) +C(J,I,1)
                   IND = IND +1
  64            CONTINUE
  65         CONTINUE

@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF ENVIMA UTILITAI  DATE 23/09/2002   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF ENVIMA UTILITAI  DATE 12/05/2004   AUTEUR ROSE C.ROSE */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -672,4 +672,21 @@ double r8rddg () {return (double)((double)180./(double)R8_PI);}
 double r8rddg_ () {return (double)((double)180./(double)R8_PI);}
 #elif defined PPRO_NT
 double __stdcall R8RDDG () {return (double)((double)180./(double)R8_PI);}
+#endif
+
+/* ------------------------------------ LONGUEUR de BLOC pour MULT_FRONT */
+#if   defined CRAY
+int LLBLOC  () {return 64;}
+#elif defined SOLARIS
+int llbloc_ () {return 64;}
+#elif defined HPUX
+int llbloc () {return 64;}
+#elif defined IRIX_32
+int llbloc_ () {return 64;}
+#elif defined IRIX_64 || TRU64 || SOLARIS64 
+long llbloc_ () {return 96;}
+#elif defined P_LINUX
+int llbloc_ () {return 32;}
+#elif defined PPRO_NT
+int __stdcall LLBLOC () {return 32;}
 #endif

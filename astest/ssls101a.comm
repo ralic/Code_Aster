@@ -1,4 +1,4 @@
-# MODIF  DATE 06/04/2004   AUTEUR CIBHHPD S.VANDENBERGHE 
+# MODIF  DATE 17/05/2004   AUTEUR CIBHHBC M.LOPES 
 # TITRE PLAQUE CIRCULAIRE POSEE     SOUS PRESSION DKT    50 N - 76 TRIA3
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -293,7 +293,7 @@ TSUP1=65.
 
 T1=50.
 
-TR1=DEFI_VALEUR(  R8=EVAL("""T1 + ( ( TSUP1 + TINF1 - ( 2. * T1 ) ) / 6. )  """) )
+TR1=T1 + ( ( TSUP1 + TINF1 - ( 2. * T1 ) ) / 6. )
 
 TINF2=70.
 
@@ -301,7 +301,7 @@ TSUP2=90.
 
 T2=75.
 
-TR2=DEFI_VALEUR(  R8=EVAL("""T2 + ( ( TSUP2 + TINF2 - ( 2. * T2 ) ) / 6. )  """) )
+TR2=T2 + ( ( TSUP2 + TINF2 - ( 2. * T2 ) ) / 6. )
 
 TINF3=95.
 
@@ -309,7 +309,7 @@ TSUP3=115.
 
 T3=100.
 
-TR3=DEFI_VALEUR(  R8=EVAL("""T3 + ( ( TSUP3 + TINF3 - ( 2. * T3 ) ) / 6. )  """) )
+TR3=T3 + ( ( TSUP3 + TINF3 - ( 2. * T3 ) ) / 6. )
 
 E1=1.
 
@@ -388,23 +388,17 @@ U2=MECA_STATIQUE(      MODELE=MODEL,
 
 #----------------------------------------------------------------------
 
-D1=DEFI_VALEUR(
-                      R8=EVAL("""E1*T*T*T / ( 12. * ( 1. - NU1*NU1 ) ) """) )
+D1=E1*T*T*T / ( 12. * ( 1. - NU1*NU1 ) )
 
-D2=DEFI_VALEUR(
-                      R8=EVAL("""E2*T*T*T / ( 12. * ( 1. - NU2*NU2 ) ) """) )
+D2=E2*T*T*T / ( 12. * ( 1. - NU2*NU2 ) )
 
-D3=DEFI_VALEUR(
-                      R8=EVAL("""E3*T*T*T / ( 12. * ( 1. - NU3*NU3 ) ) """) )
+D3=E3*T*T*T / ( 12. * ( 1. - NU3*NU3 ) )
 
-V1=DEFI_VALEUR(  R8=EVAL("""( -1. * P * ( R ** 4 ) * ( 5. + NU1 ) ) /
-             ( 64. * D1 * ( 1. + NU1 ) )   """) )
+V1=( -1. * P * ( R ** 4 ) * ( 5. + NU1 ) )/( 64. * D1 * ( 1. + NU1 ) )
 
-V2=DEFI_VALEUR(  R8=EVAL("""( -1. * P * ( R ** 4 ) * ( 5. + NU2 ) ) /
-             ( 64. * D2 * ( 1. + NU2 ) )   """) )
+V2=( -1. * P * ( R ** 4 ) * ( 5. + NU2 ) ) /( 64. * D2 * ( 1. + NU2 ) )
 
-V3=DEFI_VALEUR(  R8=EVAL("""( -1. * P * ( R ** 4 ) * ( 5. + NU3 ) ) /
-             ( 64. * D3 * ( 1. + NU3 ) )   """) )
+V3=( -1. * P * ( R ** 4 ) * ( 5. + NU3 ) ) /( 64. * D3 * ( 1. + NU3 ) )
 
 DE1=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
                 RESULTAT=U2, NOM_CHAM='DEPL', NUME_ORDRE=1 )

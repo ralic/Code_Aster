@@ -2,7 +2,7 @@
       IMPLICIT NONE
       CHARACTER*16 OPTION,NOMTE,PHENOM
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ELEMENTS  DATE 17/05/2004   AUTEUR ROMEO R.FERNANDES 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C =====================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -67,8 +67,8 @@ C
       PARAMETER (NNOMAX=20,NVOMAX=4,NSOMAX=8)
       INTEGER VOISIN(NVOMAX,NNOMAX)
       INTEGER NBVOS(NSOMAX)
-      INTEGER     ISMAEM,LI,KP,J,L,K,NSOM,JSIGTM,JFTEMP,JBSIGM,INDICE
-      REAL*8      R8BID,RHO,COEF,RX,R8VIDE,R8MIEM
+      INTEGER     ISMAEM,LI,KP,J,L,K,NSOM
+      REAL*8      R8BID,RHO,COEF,RX
       CHARACTER*2 CODRET
       LOGICAL     AXI,DPLAN,TRAITE,P2P1,LUMPED
       LOGICAL     VOL2,BORD2,VOL3,BORD3
@@ -620,156 +620,39 @@ C --- OPTION : REFE_FORC_NODA ------------------------------------------
 C ======================================================================
       IF (OPTION.EQ.'REFE_FORC_NODA') THEN
 C ======================================================================
-C --- PARAMETRES EN ENTREE ---------------------------------------------
-C ======================================================================
-        CALL JEVECH('PGEOMER','L',IGEOM)
-        CALL JEVECH('PMATERC','L',IMATE)
-        CALL JEVECH('PREFCO','L',ICONTM)
-C ======================================================================
 C --- ON RAPPELLE QUE LES PARAMETRES DU CRITERE DE CONVERGENCE SONT ----
 C --- STOCKES DE LA FACON SUIVANTE : (1) : SIGM_REFE -------------------
 C ---------------------------------- (3) : FLUX_THER_REFE --------------
 C ---------------------------------- (4) : FLUX_HYD1_REFE --------------
 C ---------------------------------- (5) : FLUX_HYD2_REFE --------------
 C ======================================================================
+C --- INITIALISATION ---------------------------------------------------
+C ======================================================================
         DT = 1.0D0
         FNOEVO = .TRUE.
+C ======================================================================
+C --- PARAMETRES EN ENTREE ---------------------------------------------
+C ======================================================================
+        CALL JEVECH('PGEOMER','L',IGEOM)
+        CALL JEVECH('PMATERC','L',IMATE)
+        CALL JEVECH('PREFCO','L',ICONTM)
 C ======================================================================
 C --- PARAMETRES EN SORTIE ---------------------------------------------
 C ======================================================================
         CALL JEVECH('PVECTUR','E',IVECTU)
 C ======================================================================
-C --- CREATION DES VECTEURS DE TRAVAIL ---------------------------------
+C --- APPEL A LA ROUTINE SUR LES CRITERES DE CONVERGENCE ---------------
 C ======================================================================
-        CALL WKVECT ('&&_TE0600.SIGTMP','V V R',DIMCON*NPGU,JSIGTM)
-        CALL WKVECT ('&&_TE0600.FTEMP','V V R',NDDL*NNO,JFTEMP)
-        CALL WKVECT ('&&_TE0600.BSIGM','V V R',NDDL*NNO,JBSIGM)
-C ======================================================================
-C --- INITIALISATIONS --------------------------------------------------
-C ======================================================================
-        CALL R8INIR(DIMCON*NPGU,0.D0,ZR(JSIGTM),1)
-        CALL R8INIR(NDDL*NNO,0.D0,ZR(JFTEMP),1)
-C ======================================================================
-C --- TESTS DE COHERENCE -----------------------------------------------
-C ======================================================================
-        IF ( MECANI(1).NE.0 ) THEN
-           INDICE = 1
-           IF ( ZR( ICONTM-1+INDICE ).EQ.R8VIDE() ) THEN
-              CALL UTMESS('F','TE0600','IL MANQUE SIGM_REFE')
-           ENDIF
-        ENDIF
-        IF ( PRESS1(1).NE.0 ) THEN
-           INDICE = 2
-           IF ( ZR( ICONTM-1+INDICE ).EQ.R8VIDE() ) THEN
-              CALL UTMESS('F','TE0600','IL MANQUE RESI_HYD1_REFE')
-           ENDIF
-        ENDIF
-        IF ( PRESS2(1).NE.0 ) THEN
-           INDICE = 3
-           IF ( ZR( ICONTM-1+INDICE ).EQ.R8VIDE() ) THEN
-              CALL UTMESS('F','TE0600','IL MANQUE RESI_HYD2_REFE')
-           ENDIF
-        ENDIF
-        IF ( TEMPE(1).NE.0 ) THEN
-           INDICE = 4
-           IF ( ZR( ICONTM-1+INDICE ).EQ.R8VIDE() ) THEN
-              CALL UTMESS('F','TE0600','IL MANQUE RESI_THER_REFE')
-           ENDIF
-        ENDIF
-C ======================================================================
-C --- TESTS DE COHERENCE -----------------------------------------------
-C ======================================================================
-        DO 200 I = 1, NPGU
-           DO 210 J = 1, DIMCON
-              IF ( J.LE.MECANI(5) ) THEN
-                 INDICE = 1
-              ELSE IF ( J.LE.
-     +                  (MECANI(5)+PRESS1(2)*PRESS1(7)) ) THEN
-                 INDICE = 2
-                 IF ( TEMPE(5).GT.0 ) THEN
-C ======================================================================
-C --- ON NE FAIT RIEN DANS LE CAS DE L'ENTHALPIE -----------------------
-C ======================================================================
-                    IF ( J.EQ.(MECANI(5)+PRESS1(7)) .OR.
-     +                   J.EQ.(MECANI(5)+PRESS1(2)*PRESS1(7)) ) THEN
-                       GO TO 210
-                    ENDIF
-                 ENDIF
-              ELSE IF ( J.LE.
-     +        (MECANI(5)+PRESS1(2)*PRESS1(7)+PRESS2(2)*PRESS2(7)) ) THEN
-                 INDICE = 3
-                 IF ( TEMPE(5).GT.0 ) THEN
-C ======================================================================
-C --- ON NE FAIT RIEN DANS LE CAS DE L'ENTHALPIE -----------------------
-C ======================================================================
-                    IF (
-     +             J.EQ.(MECANI(5)+
-     +                  PRESS1(2)*PRESS1(7)+PRESS2(7)) .OR.
-     +             J.EQ.(MECANI(5)+
-     +                  PRESS1(2)*PRESS1(7)+PRESS2(2)*PRESS2(7)) ) THEN
-                       GO TO 210
-                    ENDIF                 
-                 ENDIF
-              ELSE IF ( J.LE.(MECANI(5)+TEMPE(5)) ) THEN
-                 INDICE = 4
-              ENDIF
-
-              IF ( ZR( ICONTM-1+INDICE ).EQ.R8VIDE() ) GOTO 210
-
-              ZR( JSIGTM-1+J+DIMCON*(I-1) ) = ZR( ICONTM-1+INDICE )
-              CALL FNOTHM(FNOEVO,DT,NNO,NNOS,NPGU,IPOIDS,IVF,IDFDE,
-     &                    ZR(IGEOM),ZR(JSIGTM),
-     &              B,DFDI,R,ZR(JBSIGM),ZI(IMATE),MECANI,PRESS1,PRESS2,
-     &              TEMPE,DIMDEF,DIMCON,NDDL,NMEC,NP1,NP2,NDIM,
-     &              AXI,NVOMAX,NNOMAX,NSOMAX,NBVOS,VOISIN,P2P1)
-     
-              DO 220 K = 1,NDDL*NNOS
-                 ZR(JFTEMP-1+K) = ZR(JFTEMP-1+K) + ABS(ZR(JBSIGM-1+K))
- 220          CONTINUE
- 
-              DO 221 K = NNOS,NNO-1
-                 DO 222 L = 1,NMEC
-                    ZR(JFTEMP-1+K*NDDL+L) = ZR(JFTEMP-1+K*NDDL+L) + 
-     &                     ABS(ZR(JBSIGM-1+K*NDDL+L))
- 222            CONTINUE
-C POUR TENIR COMPTE DU P2P1 (ON EST SUR LES NOEUDS MILIEUX P1) 
-                IF (P2P1) THEN
-                   DO 223 L = NMEC+1,NDDL
-                      ZR(JFTEMP-1+K*NDDL+L) =
-     +                                   ZR(JFTEMP-1+K*NDDL+L) + 1.D0
- 223               CONTINUE
-                 ELSE
-                    DO 224 L = NMEC+1,NDDL
-                      ZR(JFTEMP-1+K*NDDL+L) =ZR(JFTEMP-1+K*NDDL+L) + 
-     &                     ABS(ZR(JBSIGM-1+K*NDDL+L))
- 224               CONTINUE
-                 ENDIF
- 221          CONTINUE
-
-              ZR( JSIGTM-1+J+DIMCON*(I-1) ) = 0.0D0
-
- 210       CONTINUE
- 200    CONTINUE
- 
-        CALL R8AXPY(NDDL*NNO,1.D0/NPGU,ZR(JFTEMP),1,ZR(IVECTU),1)
-
-        DO 230 K = 1,NDDL*NNO
-           IF ( ABS(ZR(IVECTU-1+K)).LT.R8MIEM() ) THEN
-              CALL UTMESS('F','TE0600','VECTEUR NUL ENTRAINANT '//
-     +                           'UNE DIVISION PAR ZERO DANS NMCONV')
-           ENDIF
- 230    CONTINUE
-        CALL JEDETR('&&_TE0600.SIGTMP')
-        CALL JEDETR('&&_TE0600.FTEMP')
-        CALL JEDETR('&&_TE0600.BSIGM')
+        CALL REFTHM(FNOEVO,DT,NNO,NNOS,NPGU,IPOIDS,IVF,IDFDE,ZR(IGEOM),
+     &              B,DFDI,R,ZR(IVECTU),ZI(IMATE),MECANI,PRESS1,PRESS2,
+     &              TEMPE,DIMDEF,DIMCON,NDDL,NMEC,NP1,NP2,NDIM,AXI,
+     &              NVOMAX,NNOMAX,NSOMAX,NBVOS,VOISIN,P2P1,ZR(ICONTM))
       END IF
-
 C***********************************************************************
 
 C  OPTION : SIEF_ELNO_ELGA ET VARI_ELNO_ELGA
 
 C***********************************************************************
-
 
       IF ((OPTION.EQ.'SIEF_ELNO_ELGA') .OR.
      &    (OPTION.EQ.'VARI_ELNO_ELGA')) THEN

@@ -1,0 +1,264 @@
+# MODIF  DATE 17/05/2004   AUTEUR CIBHHBC M.LOPES 
+# RESPONSABLE MABBAS M.ABBAS
+#
+# TITRE TREILLIS 3D RENFORCE 
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+DEBUT(CODE=_F(  NOM = 'SSLL116b',NIV_PUB_WEB='INTERNET'));
+
+PRE_GMSH();
+
+MA=LIRE_MAILLAGE();
+
+MATER=DEFI_MATERIAU(ELAS=_F(E=196200000000.0,
+                            NU=0.3,
+                            RHO=10000.0,
+                            AMOR_ALPHA=0.1,
+                            AMOR_BETA=0.1,),);
+
+CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
+                    AFFE=_F(TOUT='OUI',
+                            MATER=MATER,),);
+
+MODELE=AFFE_MODELE(MAILLAGE=MA,
+                   AFFE=_F(TOUT='OUI',
+                           PHENOMENE='MECANIQUE',
+                           MODELISATION='POU_D_T',),);
+
+F_VERT=-20000000.0;
+
+EP1=0.02;
+
+RAY1=0.05;
+
+RAY2=0.07;
+
+CAREL=AFFE_CARA_ELEM(MODELE=MODELE,
+                     POUTRE=(_F(GROUP_MA='GM31',
+                                SECTION='CERCLE',
+                                CARA=('R','EP',),
+                                VALE=(RAY1,EP1,),),
+                             _F(GROUP_MA='GM32',
+                                SECTION='CERCLE',
+                                CARA=('R','EP',),
+                                VALE=(RAY1,EP1,),),
+                             _F(GROUP_MA='GM33',
+                                SECTION='CERCLE',
+                                CARA=('R','EP',),
+                                VALE=(RAY1,EP1,),),
+                             _F(GROUP_MA='GM34',
+                                SECTION='CERCLE',
+                                CARA=('R','EP',),
+                                VALE=(RAY1,EP1,),),
+                             _F(GROUP_MA='GM35',
+                                SECTION='CERCLE',
+                                CARA=('R','EP',),
+                                VALE=(RAY1,EP1,),),
+                             _F(GROUP_MA='GM36',
+                                SECTION='CERCLE',
+                                CARA='R',
+                                VALE=RAY1,),
+                             _F(GROUP_MA='GM37',
+                                SECTION='CERCLE',
+                                CARA='R',
+                                VALE=RAY1,),
+                             _F(GROUP_MA='GM38',
+                                SECTION='CERCLE',
+                                CARA=('R','EP',),
+                                VALE=(RAY1,EP1,),),
+                             _F(GROUP_MA='GM39',
+                                SECTION='CERCLE',
+                                CARA=('R','EP',),
+                                VALE=(RAY1,EP1,),),                                                                
+                             _F(GROUP_MA='GM61',
+                                SECTION='CERCLE',
+                                CARA=('R','EP',),
+                                VALE=(RAY1,EP1,),),
+                             _F(GROUP_MA='GM62',
+                                SECTION='CERCLE',
+                                CARA='R',
+                                VALE=RAY1,),
+                             _F(GROUP_MA='GM63',
+                                SECTION='CERCLE',
+                                CARA=('R','EP',),
+                                VALE=(RAY1,EP1,),),
+                             _F(GROUP_MA='GM64',
+                                SECTION='CERCLE',
+                                CARA='R',
+                                VALE=RAY1,),
+                             _F(GROUP_MA='GM65',
+                                SECTION='CERCLE',
+                                CARA=('R','EP',),
+                                VALE=(RAY1,EP1,),),
+                             _F(GROUP_MA='GM66',
+                                SECTION='CERCLE',
+                                CARA=('R','EP',),
+                                VALE=(RAY1,EP1,),),
+                             _F(GROUP_MA='GM67',
+                                SECTION='CERCLE',
+                                CARA='R',
+                                VALE=RAY1,),
+                             _F(GROUP_MA='GM70',
+                                SECTION='CERCLE',
+                                CARA='R',
+                                VALE=RAY2,),
+                             _F(GROUP_MA='GM68',
+                                SECTION='CERCLE',
+                                CARA=('R','EP',),
+                                VALE=(RAY1,EP1,),),
+                             _F(GROUP_MA='GM69',
+                                SECTION='CERCLE',
+                                CARA=('R','EP',),
+                                VALE=(RAY1,EP1,),),
+                             _F(GROUP_MA='GM41',
+                                SECTION='CERCLE',
+                                CARA=('R','EP',),
+                                VALE=(RAY1,EP1,),),
+                             _F(GROUP_MA='GM42',
+                                SECTION='CERCLE',
+                                CARA=('R','EP',),
+                                VALE=(RAY1,EP1,),),
+                             _F(GROUP_MA='GM43',
+                                SECTION='CERCLE',
+                                CARA=('R','EP',),
+                                VALE=(RAY1,EP1,),),
+                             _F(GROUP_MA='GM44',
+                                SECTION='CERCLE',
+                                CARA=('R','EP',),
+                                VALE=(RAY1,EP1,),),
+                             _F(GROUP_MA='GM45',
+                                SECTION='CERCLE',
+                                CARA=('R','EP',),
+                                VALE=(RAY1,EP1,),),
+                             _F(GROUP_MA='GM46',
+                                SECTION='CERCLE',
+                                CARA='R',
+                                VALE=RAY1,),
+                             _F(GROUP_MA='GM47',
+                                SECTION='CERCLE',
+                                CARA='R',
+                                VALE=RAY1,),),);
+
+PESA=AFFE_CHAR_MECA(MODELE=MODELE,
+                    PESANTEUR=(9.81,0.0,-1.0,0.0,),);
+
+CHARGE=AFFE_CHAR_MECA(MODELE=MODELE,
+                      DDL_IMPO=(_F(GROUP_NO=('GM24','GM21','GM26','GM29',),
+                                   DX=0.0,
+                                   DY=0.0,
+                                   DZ=0.0,),),
+                      FORCE_NODALE=_F(GROUP_NO='GM90',
+                                      FY=F_VERT,),);
+
+MATRR=CALC_MATR_ELEM(OPTION='RIGI_MECA',
+                     MODELE=MODELE,
+                     CHAM_MATER=CHMAT,
+                     CARA_ELEM=CAREL,
+                     CHARGE=CHARGE,);
+
+VEL=CALC_VECT_ELEM(OPTION='CHAR_MECA',
+                   CHARGE=CHARGE,);
+
+NU=NUME_DDL(MATR_RIGI=MATRR,);
+
+MATASS=ASSE_MATRICE(MATR_ELEM=MATRR,
+                    NUME_DDL=NU,);
+
+VECASS=ASSE_VECTEUR(VECT_ELEM=VEL,
+                    NUME_DDL=NU,);
+
+MATASS=FACT_LDLT(reuse =MATASS,
+                 MATR_ASSE=MATASS,);
+
+VECASS=RESO_LDLT(reuse =VECASS,
+                 MATR_FACT=MATASS,
+                 CHAM_NO=VECASS,);
+
+
+RESU1=MECA_STATIQUE(MODELE=MODELE,
+                    CHAM_MATER=CHMAT,
+                    CARA_ELEM=CAREL,
+                    EXCIT=(_F(CHARGE=CHARGE,),
+                           _F(CHARGE=PESA,),),);
+
+# Utiliser le fichier d'unite logique 37 pour ecrire le resultat au 
+# format GMSH
+
+DEFI_FICHIER(ACTION='ASSOCIER',FICHIER='DEPL',
+                     UNITE=37,);
+
+IMPR_RESU(RESU=_F(FORMAT='GMSH',
+                  MAILLAGE=MA,
+                  RESULTAT=RESU1,
+                  NOM_CHAM='DEPL',),);
+                  
+DEFI_FICHIER(ACTION='LIBERER',UNITE=37,);
+                  
+TEST_RESU(RESU=(_F(RESULTAT=RESU1,
+                   INST=0,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   GROUP_NO='GM90',
+                   VALE=6.61627E-01,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='7.1.07',),
+                _F(RESULTAT=RESU1,
+                   INST=0,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   GROUP_NO='GM90',
+                   VALE=-1.82145E+00,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='7.1.07',),
+                _F(RESULTAT=RESU1,
+                   INST=0,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   GROUP_NO='GM90',
+                   VALE=-2.66280E-01,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='7.1.07',),                   
+                _F(RESULTAT=RESU1,
+                   INST=0,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DRX',
+                   GROUP_NO='GM90',
+                   VALE=8.48048E-01,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='7.1.07',),
+                _F(RESULTAT=RESU1,
+                   INST=0,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DRY',
+                   GROUP_NO='GM90',
+                   VALE=1.68397E-01,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='7.1.07',),
+                _F(RESULTAT=RESU1,
+                   INST=0,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DRZ',
+                   GROUP_NO='GM90',
+                   VALE=-9.43511E-02,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='7.1.07',),    
+                   
+                   ),);
+
+FIN();

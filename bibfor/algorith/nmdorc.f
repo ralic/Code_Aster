@@ -19,7 +19,7 @@ C ======================================================================
       IMPLICIT NONE
       CHARACTER*(*) MODELZ,COMPOZ
 C ----------------------------------------------------------------------
-C MODIF ALGORITH  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 17/05/2004   AUTEUR ROMEO R.FERNANDES 
 C     SAISIE ET VERIFICATION DE LA RELATION DE COMPORTEMENT UTILISEE
 C
 C IN  MODELZ  : NOM DU MODELE
@@ -44,15 +44,18 @@ C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
       CHARACTER*32     JEXNUM, JEXNOM, JEXATR
 
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
-      INTEGER NCMPMA,DIMAKI,N2,N3,IBID,NBOCC,I,ICMP,ICOMEL,II,JMA,JNCMP,
-     &        JNOMA,JVALV,K,N1,NBAP,NBET,NBMA,NBMO1,NBVARI,NC1,NC2,
-     &        NBMAT,JMAIL,NCOMEL,NS1,JMESM,IMA,IM,IRET,ICPRI,NBSYST
+      INTEGER NCMPMA,DIMAKI,N2,N3,IBID,NBOCC,I,ICMP,ICOMEL,II,JMA,JNCMP
+      INTEGER JNOMA,JVALV,K,N1,NBAP,NBET,NBMA,NBMO1,NBVARI,NC1,NC2
+      INTEGER NBMAT,JMAIL,NCOMEL,NS1,JMESM,IMA,IM,IRET,ICPRI,NBSYST
+      INTEGER INV,DIMANV
       REAL*8 RBID
       COMPLEX*16 CBID
       LOGICAL      BUG, NIVO
 C    DIMAKI = DIMENSION MAX DE LA LISTE DES RELATIONS KIT
       PARAMETER (DIMAKI=9)
-      PARAMETER (NCMPMA=7+DIMAKI)
+C    DIMAKI = DIMENSION MAX DE LA LISTE DU NOMBRE DE VAR INT EN THM
+      PARAMETER (DIMANV=4)
+      PARAMETER (NCMPMA=7+DIMAKI+DIMANV)
       LOGICAL EXIST,GETEXM,EXICP,EXI1D
       CHARACTER*8 NOMA,NOMGRD,NOMCMP(NCMPMA),K8B,TYPMCL(2),SDCOMP
       CHARACTER*16 COMP,DEFO,MOCLEF(2),K16BID,NOMCMD,MOCLES(2)
@@ -62,13 +65,14 @@ C    DIMAKI = DIMENSION MAX DE LA LISTE DES RELATIONS KIT
       CHARACTER*50 CHAIN1, CHAIN2
 C    POUR COMPORTEMENT KIT_
       INTEGER NBVEL(DIMAKI)
+      INTEGER NBNVI(DIMANV)
       CHARACTER*16 COMEL(DIMAKI)
 
       DATA NOMGRD/'COMPOR  '/
       DATA NOMCMP/'RELCOM  ','NBVARI  ','DEFORM  ','INCELA  ',
      &     'C_PLAN  ','XXXX1','XXXX2','KIT1    ','KIT2    ','KIT3    ',
      &     'KIT4    ','KIT5    ','KIT6    ','KIT7    ','KIT8    ',
-     &     'KIT9    '/
+     &     'KIT9    ', 'NVI_C   ', 'NVI_T   ', 'NVI_H   ', 'NVI_M   '/
 C     ------------------------------------------------------------------
 
       CALL JEMARQ()
@@ -337,7 +341,10 @@ C  POUR COMPORTEMENT KIT_
               
               IF ((COMP(1:6).EQ.'KIT_HM').OR.(COMP(1:7).EQ.'KIT_HHM').
      &         OR.(COMP(1:6).EQ.'KIT_TH')) THEN
-                CALL NMTHMC( COMP, COMEL(1), NCOMEL )
+                DO 122 INV = 1, DIMANV
+                   NBNVI(INV) = 0
+ 122            CONTINUE
+                CALL NMTHMC(COMP,MOCLEF(I),K,COMEL(1),NCOMEL,NBNVI(1))
               END IF
             ELSE IF (COMP(1:4).EQ.'META') THEN
               EXIST = GETEXM(MOCLEF(I),COMP)
@@ -443,6 +450,17 @@ C  POUR COMPORTEMENT KIT_
                 ZK16(JVALV-1+ICOMEL+7) = '        '
               END IF
   140       CONTINUE
+
+C ======================================================================
+C --- ON STOCKE LE NOMBRE DE VARIABLES INTERNES PAR RELATION -----------
+C --- DE COMPORTEMENT --------------------------------------------------
+C ======================================================================
+            IF ((COMP(1:6).EQ.'KIT_HM').OR.(COMP(1:7).EQ.'KIT_HHM').
+     &         OR.(COMP(1:6).EQ.'KIT_TH')) THEN
+               DO 180 INV = 1, DIMANV
+                  WRITE (ZK16(JVALV-1+7+DIMAKI+INV),'(I16)') NBNVI(INV)
+ 180           CONTINUE
+            ENDIF
 
             CALL RELIEM(MODELE,NOMA,'NU_MAILLE',MOCLEF(I),K,2,MOCLES,
      &                  TYPMCL,MESMAI,NBMA)

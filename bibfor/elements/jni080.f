@@ -1,7 +1,7 @@
       SUBROUTINE JNI080(ELREFE,NMAXOB,LIOBJ,NBOBJ)
       IMPLICIT REAL*8 (A-H,O-Z)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 17/11/2003   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 18/05/2004   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,6 +22,7 @@ C RESPONSABLE VABHHTS J.PELLET
       CHARACTER*8 ELREFE
       INTEGER NMAXOB,NBOBJ
       CHARACTER*24 LIOBJ(NMAXOB)
+
 C TOLE CRP_20
 C.......................................................................
 
@@ -280,13 +281,14 @@ C  - IL FAUDRAIT REMPLACER LES ZONES DE TRAVAIL PAR DES PASSAGES
 C  D'ARGUMENTS
 C  - ENSUITE ON POURRAIT PEUT ETE UTILISER DES ELREFE...
 C ======================================================================
-
       CHARACTER*16 ELREFL
       CHARACTER*24 DESI,DESR
-      INTEGER NNO,NPG,NPT,IRET
-      INTEGER LZI,LZR
-      REAL*8 A,B,VF(9),DFD1(9),DFD2(9)
+      INTEGER NNO,NPG,IRET,NDIM,NBPG,NPGCOU,NPGSN,NPGSR,NSO
+      INTEGER LZI,LZR,L2,I1,I2,I3,I4,I5,K,L,LL,M,NBN1,NBN2,KOMPT
+      INTEGER JMAS,LDESI,LDESR,LJMAS
+      REAL*8 A,B,AA
       REAL*8 VFESND(45)
+      REAL*8 XPG(81),POIPG(27),X(2),FF(9),DFF(3,9),XI1,XI2,XI3
 
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       CHARACTER*32 JEXNUM,JEXNOM,JEXR8,JEXATR
@@ -345,87 +347,104 @@ C DEB ------------------------------------------------------------------
 
       LDESR = 2100
       CALL WKVECT(DESR,'V V R',LDESR,LZR)
-
+C
       IF (ELREFE.EQ.'MEC3QU9H') THEN
 
 C     DEFINITION DES 4=2*2 PTS DE GAUSS REDUIT ET DES POIDS
 C     CORRESPONDANTS
+        CALL ELRAGA('QU9','FPG4    ',NDIM,NBPG,XPG,POIPG)
 
-        ZR(LZR-1+1) = -0.577350269189626D0
-        ZR(LZR-1+2) = 0.577350269189626D0
-        ZR(LZR-1+3) = 0.577350269189626D0
-        ZR(LZR-1+4) = -0.577350269189626D0
+        ZR(LZR-1+1) = XPG(1)
+        ZR(LZR-1+2) = XPG(3)
+        ZR(LZR-1+3) = XPG(5)
+        ZR(LZR-1+4) = XPG(7)
 
-        ZR(LZR-1+5) = -0.577350269189626D0
-        ZR(LZR-1+6) = -0.577350269189626D0
-        ZR(LZR-1+7) = 0.577350269189626D0
-        ZR(LZR-1+8) = 0.577350269189626D0
+        ZR(LZR-1+5) = XPG(2)
+        ZR(LZR-1+6) = XPG(4)
+        ZR(LZR-1+7) = XPG(6)
+        ZR(LZR-1+8) = XPG(8)
 
-        ZR(LZR-1+9) = 1.D0
-        ZR(LZR-1+10) = 1.D0
-        ZR(LZR-1+11) = 1.D0
-        ZR(LZR-1+12) = 1.D0
+        ZR(LZR-1+9) = POIPG(1)
+        ZR(LZR-1+10) = POIPG(2)
+        ZR(LZR-1+11) = POIPG(3)
+        ZR(LZR-1+12) = POIPG(4)
 
 C     FONCTIONS SERENDIP - POUR LES TERMES DE
 C     TRANSLATION
-
-        NPT = 8
-
+C
 C     VALEURS DES FONCTIONS DE FORME ET DE
 C     LEURS DERIVEES AUX 4 PTS DE GAUSS REDUITS
 
         DO 20 L = 1,4
           I1 = L
           I2 = 4 + L
-          XI1 = ZR(LZR-1+I1)
-          XI2 = ZR(LZR-1+I2)
-          CALL DVDRQ(NPT,XI1,XI2,VF,DFD1,DFD2)
+          X(1) = ZR(LZR-1+I1)
+          X(2) = ZR(LZR-1+I2)
+          CALL ELRFVF('QU8',X,9,FF,NNO)
+          CALL ELRFDF('QU8',X,18,DFF,NNO,NDIM)
           LL = 8* (L-1)
-          DO 10 L1 = 1,8
-            I3 = 12 + LL + L1
-            I4 = 44 + LL + L1
-            I5 = 76 + LL + L1
-            ZR(LZR-1+I3) = VF(L1)
-            ZR(LZR-1+I4) = DFD1(L1)
-            ZR(LZR-1+I5) = DFD2(L1)
-   10     CONTINUE
+          ZR(LZR-1+ 12 + LL + 1) = FF(4)
+          ZR(LZR-1+ 44 + LL + 1) = DFF(1,4)
+          ZR(LZR-1+ 76 + LL + 1) = DFF(2,4)
+          ZR(LZR-1+ 12 + LL + 2) = FF(1)
+          ZR(LZR-1+ 44 + LL + 2) = DFF(1,1)
+          ZR(LZR-1+ 76 + LL + 2) = DFF(2,1)
+          ZR(LZR-1+ 12 + LL + 3) = FF(2)
+          ZR(LZR-1+ 44 + LL + 3) = DFF(1,2)
+          ZR(LZR-1+ 76 + LL + 3) = DFF(2,2)
+          ZR(LZR-1+ 12 + LL + 4) = FF(3)
+          ZR(LZR-1+ 44 + LL + 4) = DFF(1,3)
+          ZR(LZR-1+ 76 + LL + 4) = DFF(2,3)
+          ZR(LZR-1+ 12 + LL + 5) = FF(8)
+          ZR(LZR-1+ 44 + LL + 5) = DFF(1,8)
+          ZR(LZR-1+ 76 + LL + 5) = DFF(2,8)
+          ZR(LZR-1+ 12 + LL + 6) = FF(5)
+          ZR(LZR-1+ 44 + LL + 6) = DFF(1,5)
+          ZR(LZR-1+ 76 + LL + 6) = DFF(2,5)
+          ZR(LZR-1+ 12 + LL + 7) = FF(6)
+          ZR(LZR-1+ 44 + LL + 7) = DFF(1,6)
+          ZR(LZR-1+ 76 + LL + 7) = DFF(2,6)
+          ZR(LZR-1+ 12 + LL + 8) = FF(7)
+          ZR(LZR-1+ 44 + LL + 8) = DFF(1,7)
+          ZR(LZR-1+ 76 + LL + 8) = DFF(2,7)
    20   CONTINUE
 
 C     DEFINITION DES 9=3*3 PTS DE GAUSS NORMAL
 C     POSITION DES POINTS DE GAUSS DANS LE PLAN
 C     ET VALEUR DES POIDS ASSOCIES
+        CALL ELRAGA('QU8','FPG9    ',NDIM,NBPG,XPG,POIPG)
 
-        ZR(LZR-1+109) = -0.774596669241483D0
-        ZR(LZR-1+110) = 0.000000000000000D0
-        ZR(LZR-1+111) = 0.774596669241483D0
-        ZR(LZR-1+112) = 0.774596669241483D0
-        ZR(LZR-1+113) = 0.774596669241483D0
-        ZR(LZR-1+114) = 0.000000000000000D0
-        ZR(LZR-1+115) = -0.774596669241483D0
-        ZR(LZR-1+116) = -0.774596669241483D0
-        ZR(LZR-1+117) = 0.000000000000000D0
+        ZR(LZR-1+109) = XPG(1)
+        ZR(LZR-1+110) = XPG(9)
+        ZR(LZR-1+111) = XPG(3)
+        ZR(LZR-1+112) = XPG(11)
+        ZR(LZR-1+113) = XPG(5)
+        ZR(LZR-1+114) = XPG(13)
+        ZR(LZR-1+115) = XPG(7)
+        ZR(LZR-1+116) = XPG(15)
+        ZR(LZR-1+117) = XPG(17)
 
-        ZR(LZR-1+118) = -0.774596669241483D0
-        ZR(LZR-1+119) = -0.774596669241483D0
-        ZR(LZR-1+120) = -0.774596669241483D0
-        ZR(LZR-1+121) = 0.000000000000000D0
-        ZR(LZR-1+122) = 0.774596669241483D0
-        ZR(LZR-1+123) = 0.774596669241483D0
-        ZR(LZR-1+124) = 0.774596669241483D0
-        ZR(LZR-1+125) = 0.000000000000000D0
-        ZR(LZR-1+126) = 0.000000000000000D0
+        ZR(LZR-1+118) = XPG(2)
+        ZR(LZR-1+119) = XPG(10)
+        ZR(LZR-1+120) = XPG(4)
+        ZR(LZR-1+121) = XPG(12)
+        ZR(LZR-1+122) = XPG(6)
+        ZR(LZR-1+123) = XPG(14)
+        ZR(LZR-1+124) = XPG(8)
+        ZR(LZR-1+125) = XPG(16)
+        ZR(LZR-1+126) = XPG(18)
 
 C     VALEUR DES POIDS ASSOCIES
 
-        ZR(LZR-1+127) = 0.308641975308580D0
-        ZR(LZR-1+128) = 0.493827160493728D0
-        ZR(LZR-1+129) = 0.308641975308580D0
-        ZR(LZR-1+130) = 0.493827160493728D0
-        ZR(LZR-1+131) = 0.308641975308580D0
-        ZR(LZR-1+132) = 0.493827160493728D0
-        ZR(LZR-1+133) = 0.308641975308580D0
-        ZR(LZR-1+134) = 0.493827160493728D0
-        ZR(LZR-1+135) = 0.790123456789965D0
+        ZR(LZR-1+127) = POIPG(1)
+        ZR(LZR-1+128) = POIPG(5)
+        ZR(LZR-1+129) = POIPG(2)
+        ZR(LZR-1+130) = POIPG(6)
+        ZR(LZR-1+131) = POIPG(3)
+        ZR(LZR-1+132) = POIPG(7)
+        ZR(LZR-1+133) = POIPG(4)
+        ZR(LZR-1+134) = POIPG(8)
+        ZR(LZR-1+135) = POIPG(9)
 
 C     VALEURS DES FONCTIONS DE FORME ET
 C     DERVIVEES AUX 9 PTS DE GAUSS NORMAL
@@ -433,25 +452,40 @@ C     DERVIVEES AUX 9 PTS DE GAUSS NORMAL
         DO 40 L = 1,9
           I1 = 108 + L
           I2 = 108 + 9 + L
-          XI1 = ZR(LZR-1+I1)
-          XI2 = ZR(LZR-1+I2)
-          CALL DVDRQ(NPT,XI1,XI2,VF,DFD1,DFD2)
+          X(1) = ZR(LZR-1+I1)
+          X(2) = ZR(LZR-1+I2)
+          CALL ELRFVF('QU8',X,9,FF,NNO)
+          CALL ELRFDF('QU8',X,18,DFF,NNO,NDIM)
           LL = 8* (L-1)
-          DO 30 L1 = 1,8
-            I3 = 135 + LL + L1
-            I4 = 207 + LL + L1
-            I5 = 279 + LL + L1
-            ZR(LZR-1+I3) = VF(L1)
-            ZR(LZR-1+I4) = DFD1(L1)
-            ZR(LZR-1+I5) = DFD2(L1)
-   30     CONTINUE
+          ZR(LZR-1+ 135 + LL + 1) = FF(4)
+          ZR(LZR-1+ 207 + LL + 1) = DFF(1,4)
+          ZR(LZR-1+ 279 + LL + 1) = DFF(2,4)
+          ZR(LZR-1+ 135 + LL + 2) = FF(1)
+          ZR(LZR-1+ 207 + LL + 2) = DFF(1,1)
+          ZR(LZR-1+ 279 + LL + 2) = DFF(2,1)
+          ZR(LZR-1+ 135 + LL + 3) = FF(2)
+          ZR(LZR-1+ 207 + LL + 3) = DFF(1,2)
+          ZR(LZR-1+ 279 + LL + 3) = DFF(2,2)
+          ZR(LZR-1+ 135 + LL + 4) = FF(3)
+          ZR(LZR-1+ 207 + LL + 4) = DFF(1,3)
+          ZR(LZR-1+ 279 + LL + 4) = DFF(2,3)
+          ZR(LZR-1+ 135 + LL + 5) = FF(8)
+          ZR(LZR-1+ 207 + LL + 5) = DFF(1,8)
+          ZR(LZR-1+ 279 + LL + 5) = DFF(2,8)
+          ZR(LZR-1+ 135 + LL + 6) = FF(5)
+          ZR(LZR-1+ 207 + LL + 6) = DFF(1,5)
+          ZR(LZR-1+ 279 + LL + 6) = DFF(2,5)
+          ZR(LZR-1+ 135 + LL + 7) = FF(6)
+          ZR(LZR-1+ 207 + LL + 7) = DFF(1,6)
+          ZR(LZR-1+ 279 + LL + 7) = DFF(2,6)
+          ZR(LZR-1+ 135 + LL + 8) = FF(7)
+          ZR(LZR-1+ 207 + LL + 8) = DFF(1,7)
+          ZR(LZR-1+ 279 + LL + 8) = DFF(2,7)
    40   CONTINUE
 
 C     FONCTIONS DE LAGRANGE - POUR LES TERMES
 C     DE ROTATION
-
-        NPT = 9
-
+C
 C     VALEURS AUX 4 PTS DE GAUSS REDUITS
 C     DES FONCTIONS DE FORME ET DE LEURS
 C     DERIVEES
@@ -459,18 +493,38 @@ C     DERIVEES
         DO 60 L = 1,4
           I1 = L
           I2 = 4 + L
-          XI1 = ZR(LZR-1+I1)
-          XI2 = ZR(LZR-1+I2)
-          CALL DVDRQ(NPT,XI1,XI2,VF,DFD1,DFD2)
+          X(1) = ZR(LZR-1+I1)
+          X(2) = ZR(LZR-1+I2)
+          CALL ELRFVF('QU9',X,9,FF,NNO)
+          CALL ELRFDF('QU9',X,18,DFF,NNO,NDIM)
           LL = 9* (L-1)
-          DO 50 L1 = 1,9
-            I3 = 351 + LL + L1
-            I4 = 387 + LL + L1
-            I5 = 423 + LL + L1
-            ZR(LZR-1+I3) = VF(L1)
-            ZR(LZR-1+I4) = DFD1(L1)
-            ZR(LZR-1+I5) = DFD2(L1)
-   50     CONTINUE
+          ZR(LZR-1+ 351 + LL + 1) = FF(4)
+          ZR(LZR-1+ 387 + LL + 1) = DFF(1,4)
+          ZR(LZR-1+ 423 + LL + 1) = DFF(2,4)
+          ZR(LZR-1+ 351 + LL + 2) = FF(1)
+          ZR(LZR-1+ 387 + LL + 2) = DFF(1,1)
+          ZR(LZR-1+ 423 + LL + 2) = DFF(2,1)
+          ZR(LZR-1+ 351 + LL + 3) = FF(2)
+          ZR(LZR-1+ 387 + LL + 3) = DFF(1,2)
+          ZR(LZR-1+ 423 + LL + 3) = DFF(2,2)
+          ZR(LZR-1+ 351 + LL + 4) = FF(3)
+          ZR(LZR-1+ 387 + LL + 4) = DFF(1,3)
+          ZR(LZR-1+ 423 + LL + 4) = DFF(2,3)
+          ZR(LZR-1+ 351 + LL + 5) = FF(8)
+          ZR(LZR-1+ 387 + LL + 5) = DFF(1,8)
+          ZR(LZR-1+ 423 + LL + 5) = DFF(2,8)
+          ZR(LZR-1+ 351 + LL + 6) = FF(5)
+          ZR(LZR-1+ 387 + LL + 6) = DFF(1,5)
+          ZR(LZR-1+ 423 + LL + 6) = DFF(2,5)
+          ZR(LZR-1+ 351 + LL + 7) = FF(6)
+          ZR(LZR-1+ 387 + LL + 7) = DFF(1,6)
+          ZR(LZR-1+ 423 + LL + 7) = DFF(2,6)
+          ZR(LZR-1+ 351 + LL + 8) = FF(7)
+          ZR(LZR-1+ 387 + LL + 8) = DFF(1,7)
+          ZR(LZR-1+ 423 + LL + 8) = DFF(2,7)
+          ZR(LZR-1+ 351 + LL + 9) = FF(9)
+          ZR(LZR-1+ 387 + LL + 9) = DFF(1,9)
+          ZR(LZR-1+ 423 + LL + 9) = DFF(2,9)
    60   CONTINUE
 
 C    VALEURS AUX 9 PTS DE GAUSS NORMAL
@@ -480,18 +534,38 @@ C    DERIVEES
         DO 80 L = 1,9
           I1 = 108 + L
           I2 = 108 + 9 + L
-          XI1 = ZR(LZR-1+I1)
-          XI2 = ZR(LZR-1+I2)
-          CALL DVDRQ(NPT,XI1,XI2,VF,DFD1,DFD2)
+          X(1) = ZR(LZR-1+I1)
+          X(2) = ZR(LZR-1+I2)
+          CALL ELRFVF('QU9',X,9,FF,NNO)
+          CALL ELRFDF('QU9',X,18,DFF,NNO,NDIM)
           LL = 9* (L-1)
-          DO 70 L1 = 1,9
-            I3 = 459 + LL + L1
-            I4 = 540 + LL + L1
-            I5 = 621 + LL + L1
-            ZR(LZR-1+I3) = VF(L1)
-            ZR(LZR-1+I4) = DFD1(L1)
-            ZR(LZR-1+I5) = DFD2(L1)
-   70     CONTINUE
+          ZR(LZR-1+ 459 + LL + 1) = FF(4)
+          ZR(LZR-1+ 540 + LL + 1) = DFF(1,4)
+          ZR(LZR-1+ 621 + LL + 1) = DFF(2,4)
+          ZR(LZR-1+ 459 + LL + 2) = FF(1)
+          ZR(LZR-1+ 540 + LL + 2) = DFF(1,1)
+          ZR(LZR-1+ 621 + LL + 2) = DFF(2,1)
+          ZR(LZR-1+ 459 + LL + 3) = FF(2)
+          ZR(LZR-1+ 540 + LL + 3) = DFF(1,2)
+          ZR(LZR-1+ 621 + LL + 3) = DFF(2,2)
+          ZR(LZR-1+ 459 + LL + 4) = FF(3)
+          ZR(LZR-1+ 540 + LL + 4) = DFF(1,3)
+          ZR(LZR-1+ 621 + LL + 4) = DFF(2,3)
+          ZR(LZR-1+ 459 + LL + 5) = FF(8)
+          ZR(LZR-1+ 540 + LL + 5) = DFF(1,8)
+          ZR(LZR-1+ 621 + LL + 5) = DFF(2,8)
+          ZR(LZR-1+ 459 + LL + 6) = FF(5)
+          ZR(LZR-1+ 540 + LL + 6) = DFF(1,5)
+          ZR(LZR-1+ 621 + LL + 6) = DFF(2,5)
+          ZR(LZR-1+ 459 + LL + 7) = FF(6)
+          ZR(LZR-1+ 540 + LL + 7) = DFF(1,6)
+          ZR(LZR-1+ 621 + LL + 7) = DFF(2,6)
+          ZR(LZR-1+ 459 + LL + 8) = FF(7)
+          ZR(LZR-1+ 540 + LL + 8) = DFF(1,7)
+          ZR(LZR-1+ 621 + LL + 8) = DFF(2,7)
+          ZR(LZR-1+ 459 + LL + 9) = FF(9)
+          ZR(LZR-1+ 540 + LL + 9) = DFF(1,9)
+          ZR(LZR-1+ 621 + LL + 9) = DFF(2,9)
    80   CONTINUE
 
 C    FONCTIONS ASSOCIEES AUX 4 PTS DE GAUSS REDUITS
@@ -501,17 +575,29 @@ C    VALEURS AUX 9 PTS DE GAUSS NORMAL
         DO 100 L = 1,9
           I1 = 108 + L
           I2 = 108 + 9 + L
-          XI1 = ZR(LZR-1+I1)
-          XI2 = ZR(LZR-1+I2)
-          CALL DVDRQR(XI1,XI2,VF,DFD1,DFD2)
+          X(1) = ZR(LZR-1+I1)
+          X(2) = ZR(LZR-1+I2)
+          AA=0.577350269189626D0
+          FF(1)= 0.75D0*(AA-X(1))*(AA-X(2))
+          FF(2)= 0.75D0*(AA+X(1))*(AA-X(2))
+          FF(3)= 0.75D0*(AA+X(1))*(AA+X(2))
+          FF(4)= 0.75D0*(AA-X(1))*(AA+X(2))
+          DFF(1,1)=-0.75D0*(AA-X(2))
+          DFF(1,2)= 0.75D0*(AA-X(2))
+          DFF(1,3)= 0.75D0*(AA+X(2))
+          DFF(1,4)=-0.75D0*(AA+X(2))
+          DFF(2,1)=-0.75D0*(AA-X(1))
+          DFF(2,2)=-0.75D0*(AA+X(1))
+          DFF(2,3)= 0.75D0*(AA+X(1))
+          DFF(2,4)= 0.75D0*(AA-X(1))
           LL = 4* (L-1)
           DO 90 L1 = 1,4
             I3 = 702 + LL + L1
             I4 = 738 + LL + L1
             I5 = 774 + LL + L1
-            ZR(LZR-1+I3) = VF(L1)
-            ZR(LZR-1+I4) = DFD1(L1)
-            ZR(LZR-1+I5) = DFD2(L1)
+            ZR(LZR-1+I3) = FF(L1)
+            ZR(LZR-1+I4) = DFF(1,L1)
+            ZR(LZR-1+I5) = DFF(2,L1)
    90     CONTINUE
   100   CONTINUE
 
@@ -544,16 +630,26 @@ C     ET DE LEURS DERIVEES AUX 9 NOEUDS
         DO 120 L = 1,9
           I1 = 810 + L
           I2 = 810 + 9 + L
-          XI1 = ZR(LZR-1+I1)
-          XI2 = ZR(LZR-1+I2)
-          CALL DVDRQ(8,XI1,XI2,VF,DFD1,DFD2)
+          X(1) = ZR(LZR-1+I1)
+          X(2) = ZR(LZR-1+I2)
+          CALL ELRFDF('QU8',X,18,DFF,NNO,NDIM)
           LL = 8* (L-1)
-          DO 110 L1 = 1,8
-            I3 = 828 + LL + L1
-            I4 = 900 + LL + L1
-            ZR(LZR-1+I3) = DFD1(L1)
-            ZR(LZR-1+I4) = DFD2(L1)
-  110     CONTINUE
+          ZR(LZR-1+ 828 + LL + 1) = DFF(1,4)
+          ZR(LZR-1+ 900 + LL + 1) = DFF(2,4)
+          ZR(LZR-1+ 828 + LL + 2) = DFF(1,1)
+          ZR(LZR-1+ 900 + LL + 2) = DFF(2,1)
+          ZR(LZR-1+ 828 + LL + 3) = DFF(1,2)
+          ZR(LZR-1+ 900 + LL + 3) = DFF(2,2)
+          ZR(LZR-1+ 828 + LL + 4) = DFF(1,3)
+          ZR(LZR-1+ 900 + LL + 4) = DFF(2,3)
+          ZR(LZR-1+ 828 + LL + 5) = DFF(1,8)
+          ZR(LZR-1+ 900 + LL + 5) = DFF(2,8)
+          ZR(LZR-1+ 828 + LL + 6) = DFF(1,5)
+          ZR(LZR-1+ 900 + LL + 6) = DFF(2,5)
+          ZR(LZR-1+ 828 + LL + 7) = DFF(1,6)
+          ZR(LZR-1+ 900 + LL + 7) = DFF(2,6)
+          ZR(LZR-1+ 828 + LL + 8) = DFF(1,7)
+          ZR(LZR-1+ 900 + LL + 8) = DFF(2,7)
   120   CONTINUE
 
 C     DEFINITION DES 8 FONCTIONS D'INTERPOLATION QUI PERMETTENT
@@ -617,71 +713,88 @@ C     POUR LE TRIANGLE
 
 C     DEFINITION DES 3 PTS DE HAMMER REDUIT ET DES POIDS CORRESPONDANT
 
-        ZR(LZR-1+1) = 0.166666666666667D0
-        ZR(LZR-1+2) = 0.666666666666667D0
-        ZR(LZR-1+3) = 0.166666666666667D0
+        CALL ELRAGA('TR7','FPG3    ',NDIM,NBPG,XPG,POIPG)
+        ZR(LZR-1+1) = XPG(1)
+        ZR(LZR-1+2) = XPG(3)
+        ZR(LZR-1+3) = XPG(5)
 
-        ZR(LZR-1+5) = 0.166666666666667D0
-        ZR(LZR-1+6) = 0.166666666666667D0
-        ZR(LZR-1+7) = 0.666666666666667D0
+        ZR(LZR-1+5) = XPG(2)
+        ZR(LZR-1+6) = XPG(4)
+        ZR(LZR-1+7) = XPG(6)
 
-        ZR(LZR-1+9) = 0.166666666666667D0
-        ZR(LZR-1+10) = 0.166666666666667D0
-        ZR(LZR-1+11) = 0.166666666666667D0
+        ZR(LZR-1+9) = POIPG(1)
+        ZR(LZR-1+10) = POIPG(2)
+        ZR(LZR-1+11) = POIPG(3)
 
 C     FONCTIONS DE LAGRANGE (6 FONCTIONS)
-
-        NPT = 6
-
+C
 C     VALEURS AUX 3 PTS DE HAMMER REDUITS
 C     DES FONCTIONS DE LAGRANGE ET DE LEURS
-C     DERVIVEES
+C     DERIVEES
 
         DO 190 L = 1,3
           I1 = L
           I2 = 4 + L
           XI1 = ZR(LZR-1+I1)
           XI2 = ZR(LZR-1+I2)
-          CALL DVDRT1(NPT,XI1,XI2,VF,DFD1,DFD2)
           LL = 8* (L-1)
+C
+          FF(1)= XI2*(2.D0*XI2-1.D0)
+          FF(2)=(1.D0-XI1-XI2)*(2.D0*(1.D0-XI1-XI2)-1.D0)
+          FF(3)= XI1*(2.D0*XI1-1.D0)
+          FF(4)= 4.D0*XI2*(1.D0-XI1-XI2)
+          FF(5)= 4.D0*XI1*(1.D0-XI1-XI2)
+          FF(6)= 4.D0*XI1*XI2
+          DFF(1,1)= 0.D0
+          DFF(1,2)=-4.D0*(1.D0-XI1-XI2)+1.D0
+          DFF(1,3)= 4.D0*XI1-1.D0
+          DFF(1,4)=-4.D0*XI2
+          DFF(1,5)= 4.D0*(1.D0-XI1-XI2)-4.D0*XI1
+          DFF(1,6)= 4.D0*XI2
+          DFF(2,1)= 4.D0*XI2-1.D0
+          DFF(2,2)=-4.D0*(1.D0-XI1-XI2)+1.D0
+          DFF(2,3)= 0.D0
+          DFF(2,4)= 4.D0*(1.D0-XI1-XI2)-4.D0*XI2
+          DFF(2,5)=-4.D0*XI1
+          DFF(2,6)= 4.D0*XI1
+C
           DO 180 L1 = 1,6
             I3 = 12 + LL + L1
             I4 = 44 + LL + L1
             I5 = 76 + LL + L1
-            ZR(LZR-1+I3) = VF(L1)
-            ZR(LZR-1+I4) = DFD1(L1)
-            ZR(LZR-1+I5) = DFD2(L1)
+            ZR(LZR-1+I3) = FF(L1)
+            ZR(LZR-1+I4) = DFF(1,L1)
+            ZR(LZR-1+I5) = DFF(2,L1)
   180     CONTINUE
   190   CONTINUE
 
 C     DEFINITION DES 7 PTS DE HAMMER NORMAL ET DES POIDS CORRESPONDANTS
 
-        A = 0.470142064105115D0
-        B = 0.101286507323456D0
+        CALL ELRAGA('TR7','FPG7    ',NDIM,NBPG,XPG,POIPG)
 
-        ZR(LZR-1+109) = 0.333333333333333D0
-        ZR(LZR-1+110) = A
-        ZR(LZR-1+111) = 1.D0 - 2.D0*A
-        ZR(LZR-1+112) = A
-        ZR(LZR-1+113) = B
-        ZR(LZR-1+114) = 1.D0 - 2.D0*B
-        ZR(LZR-1+115) = B
+        ZR(LZR-1+109) = XPG(1)
+        ZR(LZR-1+110) = XPG(3)
+        ZR(LZR-1+111) = XPG(5)
+        ZR(LZR-1+112) = XPG(7)
+        ZR(LZR-1+113) = XPG(9)
+        ZR(LZR-1+114) = XPG(11)
+        ZR(LZR-1+115) = XPG(13)
 
-        ZR(LZR-1+118) = 0.333333333333333D0
-        ZR(LZR-1+119) = A
-        ZR(LZR-1+120) = A
-        ZR(LZR-1+121) = 1.D0 - 2.D0*A
-        ZR(LZR-1+122) = B
-        ZR(LZR-1+123) = B
-        ZR(LZR-1+124) = 1.D0 - 2.D0*B
+        ZR(LZR-1+118) = XPG(2)
+        ZR(LZR-1+119) = XPG(4)
+        ZR(LZR-1+120) = XPG(6)
+        ZR(LZR-1+121) = XPG(8)
+        ZR(LZR-1+122) = XPG(10)
+        ZR(LZR-1+123) = XPG(12)
+        ZR(LZR-1+124) = XPG(14)
 
-        ZR(LZR-1+127) = 9.D0/80.D0
-        ZR(LZR-1+128) = 0.066197076394253D0
-        ZR(LZR-1+129) = 0.066197076394253D0
-        ZR(LZR-1+130) = 0.066197076394253D0
-        ZR(LZR-1+131) = 0.062969590272413D0
-        ZR(LZR-1+132) = 0.062969590272413D0
-        ZR(LZR-1+133) = 0.062969590272413D0
+        ZR(LZR-1+127) = POIPG(1)
+        ZR(LZR-1+128) = POIPG(2)
+        ZR(LZR-1+129) = POIPG(3)
+        ZR(LZR-1+130) = POIPG(4)
+        ZR(LZR-1+131) = POIPG(5)
+        ZR(LZR-1+132) = POIPG(6)
+        ZR(LZR-1+133) = POIPG(7)
 
 C     VALEURS AUX 7 PTS DE HAMMER NORMAL
 C     DES FONCTIONS DE LAGRANGE ET DE LEURS
@@ -692,23 +805,40 @@ C     DERVIVEEES
           I2 = 108 + 9 + L
           XI1 = ZR(LZR-1+I1)
           XI2 = ZR(LZR-1+I2)
-          CALL DVDRT1(NPT,XI1,XI2,VF,DFD1,DFD2)
           LL = 8* (L-1)
+C
+          FF(1)= XI2*(2.D0*XI2-1.D0)
+          FF(2)=(1.D0-XI1-XI2)*(2.D0*(1.D0-XI1-XI2)-1.D0)
+          FF(3)= XI1*(2.D0*XI1-1.D0)
+          FF(4)= 4.D0*XI2*(1.D0-XI1-XI2)
+          FF(5)= 4.D0*XI1*(1.D0-XI1-XI2)
+          FF(6)= 4.D0*XI1*XI2
+          DFF(1,1)= 0.D0
+          DFF(1,2)=-4.D0*(1.D0-XI1-XI2)+1.D0
+          DFF(1,3)= 4.D0*XI1-1.D0
+          DFF(1,4)=-4.D0*XI2
+          DFF(1,5)= 4.D0*(1.D0-XI1-XI2)-4.D0*XI1
+          DFF(1,6)= 4.D0*XI2
+          DFF(2,1)= 4.D0*XI2-1.D0
+          DFF(2,2)=-4.D0*(1.D0-XI1-XI2)+1.D0
+          DFF(2,3)= 0.D0
+          DFF(2,4)= 4.D0*(1.D0-XI1-XI2)-4.D0*XI2
+          DFF(2,5)=-4.D0*XI1
+          DFF(2,6)= 4.D0*XI1
+C
           DO 200 L1 = 1,6
             I3 = 135 + LL + L1
             I4 = 207 + LL + L1
             I5 = 279 + LL + L1
-            ZR(LZR-1+I3) = VF(L1)
-            ZR(LZR-1+I4) = DFD1(L1)
-            ZR(LZR-1+I5) = DFD2(L1)
+            ZR(LZR-1+I3) = FF(L1)
+            ZR(LZR-1+I4) = DFF(1,L1)
+            ZR(LZR-1+I5) = DFF(2,L1)
   200     CONTINUE
   210   CONTINUE
 
 C     7 FONCTIONS CUBIQUES (6 + 1 :  LA DERNIERE EST LA 10EME
 C                                    FONCTION DE P3)
-
-        NPT = 7
-
+C
 C     VALEURS AUX 3 PTS DE HAMMER REDUITS
 
         DO 230 L = 1,3
@@ -716,15 +846,42 @@ C     VALEURS AUX 3 PTS DE HAMMER REDUITS
           I2 = 4 + L
           XI1 = ZR(LZR-1+I1)
           XI2 = ZR(LZR-1+I2)
-          CALL DVDRT1(NPT,XI1,XI2,VF,DFD1,DFD2)
           LL = 9* (L-1)
+C
+          FF(1)= XI2*(2.D0*XI2-1.D0)+3.D0*XI1*XI2*(1.D0-XI1-XI2)
+          FF(2)=(1.D0-XI1-XI2)*(2.D0*(1.D0-XI1-XI2)-1.D0)
+     &                               +3.D0*XI1*XI2*(1.D0-XI1-XI2)
+          FF(3)= XI1*(2.D0*XI1-1.D0)+3.D0*XI1*XI2*(1.D0-XI1-XI2)
+          FF(4)= 4.D0*XI2*(1.D0-XI1-XI2)-12.D0*XI1*XI2*(1.D0-XI1-XI2)
+          FF(5)= 4.D0*XI1*(1.D0-XI1-XI2)-12.D0*XI1*XI2*(1.D0-XI1-XI2)
+          FF(6)= 4.D0*XI1*XI2-12.D0*XI1*XI2*(1.D0-XI1-XI2)
+          FF(7)= 27.D0*XI1*XI2*(1.D0-XI1-XI2)
+          DFF(1,1)=3.D0*XI2*(1.D0-XI1-XI2)-3.D0*XI1*XI2
+          DFF(1,2)=-4.D0*(1.D0-XI1-XI2)+1.D0
+     &                         +3.D0*XI2*(1.D0-XI1-XI2)-3.D0*XI1*XI2
+          DFF(1,3)= 4.D0*XI1-1.D0+3.D0*XI2*(1.D0-XI1-XI2)-3.D0*XI1*XI2
+          DFF(1,4)=-4.D0*XI2-12.D0*XI2*(1.D0-XI1-XI2)+12.D0*XI1*XI2
+          DFF(1,5)= 4.D0*(1.D0-XI1-XI2)-4.D0*XI1
+     &                    -12.D0*XI2*(1.D0-XI1-XI2)+12.D0*XI1*XI2
+          DFF(1,6)= 4.D0*XI2-12.D0*XI2*(1.D0-XI1-XI2)+12.D0*XI1*XI2
+          DFF(1,7)= 27.D0*XI2*(1.D0-XI1-XI2)-27.D0*XI1*XI2
+          DFF(2,1)= 4.D0*XI2-1.D0+3.D0*XI1*(1.D0-XI1-XI2)-3.D0*XI1*XI2
+          DFF(2,2)=-4.D0*(1.D0-XI1-XI2)+1.D0
+     &                         +3.D0*XI1*(1.D0-XI1-XI2)-3.D0*XI1*XI2
+          DFF(2,3)= 3.D0*XI1*(1.D0-XI1-XI2)-3.D0*XI1*XI2
+          DFF(2,4)= 4.D0*(1.D0-XI1-XI2)-4.D0*XI2
+     &                    -12.D0*XI1*(1.D0-XI1-XI2)+12.D0*XI1*XI2
+          DFF(2,5)=-4.D0*XI1-12.D0*XI1*(1.D0-XI1-XI2)+12.D0*XI1*XI2
+          DFF(2,6)= 4.D0*XI1-12.D0*XI1*(1.D0-XI1-XI2)+12.D0*XI1*XI2
+          DFF(2,7)= 27.D0*XI1*(1.D0-XI1-XI2)-27.D0*XI1*XI2
+C
           DO 220 L1 = 1,7
             I3 = 351 + LL + L1
             I4 = 387 + LL + L1
             I5 = 423 + LL + L1
-            ZR(LZR-1+I3) = VF(L1)
-            ZR(LZR-1+I4) = DFD1(L1)
-            ZR(LZR-1+I5) = DFD2(L1)
+            ZR(LZR-1+I3) = FF(L1)
+            ZR(LZR-1+I4) = DFF(1,L1)
+            ZR(LZR-1+I5) = DFF(2,L1)
   220     CONTINUE
   230   CONTINUE
 
@@ -735,15 +892,42 @@ C     VALEURS AUX 7 PTS DE HAMMER NORMAL
           I2 = 108 + 9 + L
           XI1 = ZR(LZR-1+I1)
           XI2 = ZR(LZR-1+I2)
-          CALL DVDRT1(NPT,XI1,XI2,VF,DFD1,DFD2)
           LL = 9* (L-1)
+C
+          FF(1)= XI2*(2.D0*XI2-1.D0)+3.D0*XI1*XI2*(1.D0-XI1-XI2)
+          FF(2)=(1.D0-XI1-XI2)*(2.D0*(1.D0-XI1-XI2)-1.D0)
+     &                               +3.D0*XI1*XI2*(1.D0-XI1-XI2)
+          FF(3)= XI1*(2.D0*XI1-1.D0)+3.D0*XI1*XI2*(1.D0-XI1-XI2)
+          FF(4)= 4.D0*XI2*(1.D0-XI1-XI2)-12.D0*XI1*XI2*(1.D0-XI1-XI2)
+          FF(5)= 4.D0*XI1*(1.D0-XI1-XI2)-12.D0*XI1*XI2*(1.D0-XI1-XI2)
+          FF(6)= 4.D0*XI1*XI2-12.D0*XI1*XI2*(1.D0-XI1-XI2)
+          FF(7)= 27.D0*XI1*XI2*(1.D0-XI1-XI2)
+          DFF(1,1)=3.D0*XI2*(1.D0-XI1-XI2)-3.D0*XI1*XI2
+          DFF(1,2)=-4.D0*(1.D0-XI1-XI2)+1.D0
+     &                         +3.D0*XI2*(1.D0-XI1-XI2)-3.D0*XI1*XI2
+          DFF(1,3)= 4.D0*XI1-1.D0+3.D0*XI2*(1.D0-XI1-XI2)-3.D0*XI1*XI2
+          DFF(1,4)=-4.D0*XI2-12.D0*XI2*(1.D0-XI1-XI2)+12.D0*XI1*XI2
+          DFF(1,5)= 4.D0*(1.D0-XI1-XI2)-4.D0*XI1
+     &                    -12.D0*XI2*(1.D0-XI1-XI2)+12.D0*XI1*XI2
+          DFF(1,6)= 4.D0*XI2-12.D0*XI2*(1.D0-XI1-XI2)+12.D0*XI1*XI2
+          DFF(1,7)= 27.D0*XI2*(1.D0-XI1-XI2)-27.D0*XI1*XI2
+          DFF(2,1)= 4.D0*XI2-1.D0+3.D0*XI1*(1.D0-XI1-XI2)-3.D0*XI1*XI2
+          DFF(2,2)=-4.D0*(1.D0-XI1-XI2)+1.D0
+     &                         +3.D0*XI1*(1.D0-XI1-XI2)-3.D0*XI1*XI2
+          DFF(2,3)= 3.D0*XI1*(1.D0-XI1-XI2)-3.D0*XI1*XI2
+          DFF(2,4)= 4.D0*(1.D0-XI1-XI2)-4.D0*XI2
+     &                    -12.D0*XI1*(1.D0-XI1-XI2)+12.D0*XI1*XI2
+          DFF(2,5)=-4.D0*XI1-12.D0*XI1*(1.D0-XI1-XI2)+12.D0*XI1*XI2
+          DFF(2,6)= 4.D0*XI1-12.D0*XI1*(1.D0-XI1-XI2)+12.D0*XI1*XI2
+          DFF(2,7)= 27.D0*XI1*(1.D0-XI1-XI2)-27.D0*XI1*XI2
+C
           DO 240 L1 = 1,7
             I3 = 459 + LL + L1
             I4 = 540 + LL + L1
             I5 = 621 + LL + L1
-            ZR(LZR-1+I3) = VF(L1)
-            ZR(LZR-1+I4) = DFD1(L1)
-            ZR(LZR-1+I5) = DFD2(L1)
+            ZR(LZR-1+I3) = FF(L1)
+            ZR(LZR-1+I4) = DFF(1,L1)
+            ZR(LZR-1+I5) = DFF(2,L1)
   240     CONTINUE
   250   CONTINUE
 
@@ -754,17 +938,28 @@ C    VALEURS AUX 7 PTS DE HAMMER NORMAL
         DO 270 L = 1,7
           I1 = 108 + L
           I2 = 108 + 9 + L
-          XI1 = ZR(LZR-1+I1)
-          XI2 = ZR(LZR-1+I2)
-          CALL DVDRTR(XI1,XI2,VF,DFD1,DFD2)
+          X(1) = ZR(LZR-1+I1)
+          X(2) = ZR(LZR-1+I2)
           LL = 4* (L-1)
+C
+          A=0.166666666666667D0
+          B=0.666666666666667D0
+          FF(1)= 2.D0*(-(X(1)-B)-(X(2)-A))
+          FF(2)= 2.D0*(X(1)-A)
+          FF(3)= 2.D0*(X(2)-A)
+          DFF(1,1)=-2.D0
+          DFF(1,2)= 2.D0
+          DFF(1,3)= 0.D0
+          DFF(2,1)=-2.D0
+          DFF(2,2)= 0.D0
+          DFF(2,3)= 2.D0
           DO 260 L1 = 1,3
             I3 = 702 + LL + L1
             I4 = 738 + LL + L1
             I5 = 774 + LL + L1
-            ZR(LZR-1+I3) = VF(L1)
-            ZR(LZR-1+I4) = DFD1(L1)
-            ZR(LZR-1+I5) = DFD2(L1)
+            ZR(LZR-1+I3) = FF(L1)
+            ZR(LZR-1+I4) = DFF(1,L1)
+            ZR(LZR-1+I5) = DFF(2,L1)
   260     CONTINUE
   270   CONTINUE
 
@@ -786,19 +981,32 @@ C     POSITION DES 7 NOEUDS
         ZR(LZR-1+824) = 0.000000000000000D0
         ZR(LZR-1+825) = 0.500000000000000D0
         ZR(LZR-1+826) = 0.333333333333333D0
-
+ 
         DO 290 L = 1,7
           I1 = 810 + L
           I2 = 810 + 9 + L
           XI1 = ZR(LZR-1+I1)
           XI2 = ZR(LZR-1+I2)
-          CALL DVDRT1(6,XI1,XI2,VF,DFD1,DFD2)
           LL = 8* (L-1)
+C
+          DFF(1,1)= 0.D0
+          DFF(1,2)=-4.D0*(1.D0-XI1-XI2)+1.D0
+          DFF(1,3)= 4.D0*XI1-1.D0
+          DFF(1,4)=-4.D0*XI2
+          DFF(1,5)= 4.D0*(1.D0-XI1-XI2)-4.D0*XI1
+          DFF(1,6)= 4.D0*XI2
+          DFF(2,1)= 4.D0*XI2-1.D0
+          DFF(2,2)=-4.D0*(1.D0-XI1-XI2)+1.D0
+          DFF(2,3)= 0.D0
+          DFF(2,4)= 4.D0*(1.D0-XI1-XI2)-4.D0*XI2
+          DFF(2,5)=-4.D0*XI1
+          DFF(2,6)= 4.D0*XI1
+C
           DO 280 L1 = 1,6
             I3 = 828 + LL + L1
             I4 = 900 + LL + L1
-            ZR(LZR-1+I3) = DFD1(L1)
-            ZR(LZR-1+I4) = DFD2(L1)
+            ZR(LZR-1+I3) = DFF(1,L1)
+            ZR(LZR-1+I4) = DFF(2,L1)
   280     CONTINUE
   290   CONTINUE
 
@@ -860,6 +1068,4 @@ C     LEURS POIDS
       END IF
 
   350 CONTINUE
-
-
       END

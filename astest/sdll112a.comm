@@ -1,0 +1,714 @@
+# MODIF  DATE 17/05/2004   AUTEUR CIBHHBC M.LOPES 
+# TITRE  CHEMINEE SOUS EXCITATION SISMIQUE MULTI-SUPPORTEE
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+#
+#******************************************************************
+#**************   NOUVELLE REALISATION                   **********
+#************** PARTIE COMMUNE A TOUTES LES MODELISATION **********
+
+DEBUT( CODE=_F(  NOM = 'SDLL112A',NIV_PUB_WEB='INTERNET') )
+
+MAILLAGE=LIRE_MAILLAGE( 
+                           )
+
+MAILLAGE=DEFI_GROUP( reuse=MAILLAGE,   MAILLAGE=MAILLAGE,
+  CREA_GROUP_MA=_F(  NOM = 'TOUT', TOUT = 'OUI'))
+
+MODELE=AFFE_MODELE(     MAILLAGE=MAILLAGE,
+                             AFFE=_F(  GROUP_MA = 'POU_D_T',
+                                    PHENOMENE = 'MECANIQUE',
+                                    MODELISATION = 'POU_D_E')
+                           )
+
+MAT=DEFI_MATERIAU(  ELAS=_F(  E = 1.658E+11,  RHO = 1.3404106E+04,
+                                    NU = 0.3)
+                           )
+
+CHAMPMAT=AFFE_MATERIAU(   MAILLAGE=MAILLAGE,
+                             AFFE=_F(  TOUT = 'OUI', MATER = MAT)
+                           )
+
+CARA_ELE=AFFE_CARA_ELEM(  MODELE=MODELE,
+                             POUTRE=_F( 
+       GROUP_MA = 'TOUT',
+  SECTION = 'GENERALE',
+                                      CARA = ( 'A',         'IZ',
+                                             'IY',        'JX',        ),
+                                      VALE = ( 3.4390E-03,  1.3770E-05,
+                                             1.3770E-05,  2.7540E-05,  ))
+                           )
+
+COND_LIM=AFFE_CHAR_MECA(  MODELE=MODELE,DDL_IMPO=(
+                             _F(  GROUP_NO = 'ENCASTRE',
+                                        DX = 0.,   DY = 0.,   DZ = 0.,
+                                        DRX = 0.,   DRY = 0.,   DRZ = 0.),
+                                      _F(  GROUP_NO = 'ATTACHE',
+                                        DX = 0.,   DY = 0.))
+                           )
+
+# --------------------------------------------------------------------
+
+MACRO_MATR_ASSE(  MODELE=MODELE,        CARA_ELEM=CARA_ELE,
+                     CHAM_MATER=CHAMPMAT,  CHARGE=COND_LIM,
+                     NUME_DDL=CO("NUME"),MATR_ASSE=(
+                     _F(  MATRICE = CO("RIGIDITE"),  OPTION = 'RIGI_MECA'),
+                               _F(  MATRICE = CO("MASSE"),     OPTION = 'MASS_MECA'))
+                  )
+
+# CALCUL DE LA MASSE DE LA  STRUCTURE:
+#-------------------------------------
+
+MAS=POST_ELEM(   MODELE=MODELE,
+                     CHAM_MATER=CHAMPMAT,   CARA_ELEM=CARA_ELE,
+                    MASS_INER=_F(  TOUT = 'OUI')
+                  )
+
+# CALCUL DES MODES AVEC BLOQUAGE DES ANCRAGES
+#         ET AJOUT DES REACTIONS D'APPUI MODALE
+#---------------------------------------------
+
+MODE=MODE_ITER_SIMULT(  MATR_A=RIGIDITE,    MATR_B=MASSE,
+                               METHODE='TRI_DIAG',
+                           CALC_FREQ=_F(  NMAX_FREQ = 10)
+                  )
+
+MODE=NORM_MODE(reuse=MODE,   MODE=MODE,    NORME='TRAN_ROTA',
+                     MASS_INER=MAS
+                  )
+
+MODE=CALC_ELEM(reuse=MODE,  MODELE=MODELE,
+                     RESULTAT=MODE,         OPTION='SIEF_ELGA_DEPL',
+                     CHAM_MATER=CHAMPMAT,   CARA_ELEM=CARA_ELE
+                  )
+
+MODE=CALC_NO(reuse=MODE,  MODELE=MODELE,  RESULTAT=MODE,
+                 OPTION=('REAC_NODA','FORC_NODA'),
+                     CHAM_MATER=CHAMPMAT,    CARA_ELEM=CARA_ELE
+                  )
+
+#
+# DEFINITION DU SPECTRE:
+#-----------------------
+
+ACCE_XY=DEFI_FONCTION(  NOM_PARA='FREQ',    INTERPOL='LOG',
+                            VALE=(     1.0,   1.962,   10.0,   19.62,
+                                      30.0,  19.62,   100.0,    1.962,
+                                   10000.0,   1.962,          )       )
+
+ACCE_Z=DEFI_FONCTION(  NOM_PARA='FREQ',    INTERPOL='LOG',
+                            VALE=(     1.0,   0.981,   10.0,    9.81,
+                                      30.0,   9.81,   100.0,    0.981,
+                                   10000.0,   0.981,          )       )
+
+SPECT_XY=DEFI_NAPPE(  NOM_PARA='AMOR',
+                            INTERPOL=( 'LIN', 'LOG', ),
+                          PARA=(     0.02,     0.05,     ),
+                          FONCTION=( ACCE_XY,  ACCE_XY,  )  )
+
+SPECT_Z=DEFI_NAPPE(  NOM_PARA='AMOR',    INTERPOL='LOG',
+                          PARA=(     0.02,     0.05,   ),
+                          FONCTION=( ACCE_Z,   ACCE_Z, )  )
+
+#
+#=======================================================================
+# 1/ ON ETUDIE LA STRUCTURE EN MONO-APPUI
+#                           SANS CORRECTION STATIQUE
+#                           SPECTRE HORIZONTAL
+#                           COMBINAISON QUADRATIQUE COMPLETE
+#-----------------------------------------
+
+SISM_MO1=COMB_SISM_MODAL(  MODE_MECA=MODE,
+                                AMOR_REDUIT=0.03,
+                               MASS_INER=MAS,
+                               CORR_FREQ='NON',
+                              EXCIT=_F(  MONO_APPUI = 'OUI',
+                                      AXE = ( 1., 0., 0., ),
+                                      SPEC_OSCI = SPECT_XY,
+                                      ECHELLE = 1.),
+                              COMB_MODE=_F(  TYPE = 'CQC'),
+                                OPTION=( 'DEPL',
+                                         'ACCE_ABSOLU', 'REAC_NODA',)
+                           )
+
+#-----------------------------------------
+# TEST DES VALEURS DE DEPLACEMENT
+# VALEUR DE REFERENCE DEPL         CASTEM2000    ASTER (3.02.16)
+
+N3_DX=(1.78952E-04 + 1.78493E-04)/ 2.
+
+N7_DX=(3.29499E-04 + 3.29271E-04)/ 2.
+
+N11_DX=(1.09032E-03 + 1.08972E-03)/ 2
+
+TEST_RESU(RESU=( _F(  RESULTAT = SISM_MO1, NOM_CHAM = 'DEPL', NOM_CMP = 'DX',
+                    NOEUD_CMP = ('DIR', 'X',),
+                    NOEUD = 'N3',  VALE = N3_DX,  PRECISION = 0.0013,
+                    # CALCUL AVEC LA METHODE DE LANCZOS
+                    REFERENCE = 'NON_REGRESSION', VERSION = '5.3.13'),
+                  _F(  RESULTAT = SISM_MO1, NOM_CHAM = 'DEPL', NOM_CMP = 'DX',
+                    NOEUD_CMP = ('DIR', 'X',),
+                    NOEUD = 'N7',  VALE = N7_DX,  PRECISION = 0.0004,
+                    # CALCUL AVEC LA METHODE DE LANCZOS
+                    REFERENCE = 'NON_REGRESSION', VERSION = '5.3.13'),
+                  _F(  RESULTAT = SISM_MO1, NOM_CHAM = 'DEPL', NOM_CMP = 'DX',
+                    NOEUD_CMP = ('DIR', 'X',),
+                    NOEUD = 'N11', VALE = N11_DX, PRECISION = 0.0003,
+                    # CALCUL AVEC LA METHODE DE LANCZOS
+                    REFERENCE = 'NON_REGRESSION', VERSION = '5.3.13'))
+           )
+
+#-----------------------------------------
+# TEST DES VALEURS DE ACCE_ABSOLU
+# VALEUR DE REFERENCE ACCE_ABSOLU       ASTER (4.02.21)
+
+N1_AX=1.96200E+00
+
+N5_AX=1.96200E+00
+
+N9_AX=1.96200E+00
+
+TEST_RESU(RESU=( _F(  RESULTAT = SISM_MO1, NOM_CHAM = 'ACCE_ABSOLU',
+                    NOM_CMP = 'DX',   NOEUD_CMP = ('DIR', 'X',),
+                    NOEUD = 'N1',  VALE = N1_AX,
+                    # CALCUL AVEC LA METHODE DE LANCZOS
+                    REFERENCE = 'NON_REGRESSION', VERSION = '5.3.13'),
+                  _F(  RESULTAT = SISM_MO1, NOM_CHAM = 'ACCE_ABSOLU',
+                    NOM_CMP = 'DX',   NOEUD_CMP = ('DIR', 'X',),
+                    NOEUD = 'N5',  VALE = N5_AX,
+                    # CALCUL AVEC LA METHODE DE LANCZOS
+                    REFERENCE = 'NON_REGRESSION', VERSION = '5.3.13'),
+                  _F(  RESULTAT = SISM_MO1, NOM_CHAM = 'ACCE_ABSOLU',
+                    NOM_CMP = 'DX',   NOEUD_CMP = ('DIR', 'X',),
+                    NOEUD = 'N9',  VALE = N9_AX,
+                    # CALCUL AVEC LA METHODE DE LANCZOS
+                    REFERENCE = 'NON_REGRESSION', VERSION = '5.3.13'))
+           )
+
+#
+#-----------------------------------------
+# TEST DES VALEURS DE REACTIONS
+# VALEUR DE REFERENCE REAC        ASTER (4.02.21)
+
+N1_RX=6.696036E+02
+
+N5_RX=1.164223E+03
+
+N9_RX=9.281995E+02
+
+TEST_RESU(RESU=( _F(  RESULTAT = SISM_MO1, NOM_CHAM = 'REAC_NODA',
+                    NOM_CMP = 'DX',   NOEUD_CMP = ('DIR', 'X',),
+                    NOEUD = 'N1',  VALE = N1_RX,
+                    # CALCUL AVEC LA METHODE DE LANCZOS
+                    REFERENCE = 'NON_REGRESSION', VERSION = '5.3.13'),
+                  _F(  RESULTAT = SISM_MO1, NOM_CHAM = 'REAC_NODA',
+                    NOM_CMP = 'DX',   NOEUD_CMP = ('DIR', 'X',),
+                    NOEUD = 'N5',  VALE = N5_RX,
+                    # CALCUL AVEC LA METHODE DE LANCZOS
+                    REFERENCE = 'NON_REGRESSION', VERSION = '5.3.13'),
+                  _F(  RESULTAT = SISM_MO1, NOM_CHAM = 'REAC_NODA',
+                    NOM_CMP = 'DX',   NOEUD_CMP = ('DIR', 'X',),
+                    NOEUD = 'N9',  VALE = N9_RX,
+                    # CALCUL AVEC LA METHODE DE LANCZOS
+                    REFERENCE = 'NON_REGRESSION', VERSION = '5.3.13'))
+           )
+
+#=======================================================================
+# 2/ ON ETUDIE LA STRUCTURE EN MONO-APPUI
+#                           AVEC CORRECTION STATIQUE
+#                           SPECTRE HORIZONTAL
+#                           COMBINAISON QUADRATIQUE COMPLETE
+#
+# CALCUL DES MODES STATIQUES POUR LA PRISE EN COMPTE DES MODES NEGLIGES:
+#-----------------------------------------------------------------------
+
+MODE_ST1=MODE_STATIQUE(  MATR_RIGI=RIGIDITE,   MATR_MASS=MASSE,
+                         PSEUDO_MODE=(_F(  AXE = ( 'X',  'Y', )),
+                                      _F(  NOEUD = ( 'N1', 'N5', 'N9', ),
+                                        AVEC_CMP = ( 'DX', 'DY', ))
+                                                  )
+                          )
+
+MODE_ST1=CALC_ELEM(reuse=MODE_ST1,  MODELE=MODELE,
+                     RESULTAT=MODE_ST1,     OPTION='SIEF_ELGA_DEPL',
+                     CHAM_MATER=CHAMPMAT,   CARA_ELEM=CARA_ELE
+                  )
+
+MODE_ST1=CALC_NO(  reuse=MODE_ST1,  RESULTAT=MODE_ST1, MODELE=MODELE,
+                       OPTION=('FORC_NODA','REAC_NODA'),
+                     CHAM_MATER=CHAMPMAT,    CARA_ELEM=CARA_ELE
+                 )
+#-----------------------------------------
+
+SISM_MO2=COMB_SISM_MODAL(  MODE_MECA=MODE,
+                                AMOR_REDUIT=0.03,
+                               MASS_INER=MAS,
+                               CORR_FREQ='NON',
+                               MODE_CORR=MODE_ST1,
+                              EXCIT=_F(  MONO_APPUI = 'OUI',
+                                      AXE = ( 1., 0., 0., ),
+                                      SPEC_OSCI = SPECT_XY,
+                                      ECHELLE = 1.),
+                              COMB_MODE=_F(  TYPE = 'CQC'),
+                                OPTION=('DEPL',
+                                        'ACCE_ABSOLU', 'REAC_NODA', )
+                           )
+
+#-----------------------------------------
+# TEST DES VALEURS DE DEPLACEMENT
+# VALEUR DE REFERENCE DEPL         CASTEM2000    ASTER (3.02.16)
+
+N3_DX_2=(1.78952E-04 + 1.78493E-04)/ 2.
+
+N7_DX_2=(3.29499E-04 + 3.29271E-04)/ 2.
+
+N11_DX_2=(1.09032E-03 + 1.08972E-03)/ 2.
+
+TEST_RESU(RESU=( _F(  RESULTAT = SISM_MO2, NOM_CHAM = 'DEPL', NOM_CMP = 'DX',
+                    NOEUD_CMP = ('DIR', 'X',),
+                    NOEUD = 'N3',  VALE = N3_DX_2,  PRECISION = 0.0013,
+                    # CALCUL AVEC LA METHODE DE LANCZOS
+                    REFERENCE = 'NON_REGRESSION', VERSION = '5.3.13'),
+                  _F(  RESULTAT = SISM_MO2, NOM_CHAM = 'DEPL', NOM_CMP = 'DX',
+                    NOEUD_CMP = ('DIR', 'X',),
+                    NOEUD = 'N7',  VALE = N7_DX_2,  PRECISION = 0.0004,
+                    # CALCUL AVEC LA METHODE DE LANCZOS
+                    REFERENCE = 'NON_REGRESSION', VERSION = '5.3.13'),
+                  _F(  RESULTAT = SISM_MO2, NOM_CHAM = 'DEPL', NOM_CMP = 'DX',
+                    NOEUD_CMP = ('DIR', 'X',),
+                    NOEUD = 'N11', VALE = N11_DX_2, PRECISION = 0.0003,
+                    # CALCUL AVEC LA METHODE DE LANCZOS
+                    REFERENCE = 'NON_REGRESSION', VERSION = '5.3.13'))
+           )
+
+#-----------------------------------------
+# TEST DES VALEURS DE ACCE_ABSOLU
+# VALEUR DE REFERENCE ACCE_ABSOLU       ASTER (4.02.21)
+
+N1_AX_2=1.96200E+00
+
+N5_AX_2=1.96200E+00
+
+N9_AX_2=1.96200E+00
+
+TEST_RESU(RESU=( _F(  RESULTAT = SISM_MO2, NOM_CHAM = 'ACCE_ABSOLU',
+                    NOM_CMP = 'DX',   NOEUD_CMP = ('DIR', 'X',),
+                    NOEUD = 'N1',  VALE = N1_AX_2,
+                    # CALCUL AVEC LA METHODE DE LANCZOS
+                    REFERENCE = 'NON_REGRESSION', VERSION = '5.3.13'),
+                  _F(  RESULTAT = SISM_MO2, NOM_CHAM = 'ACCE_ABSOLU',
+                    NOM_CMP = 'DX',   NOEUD_CMP = ('DIR', 'X',),
+                    NOEUD = 'N5',  VALE = N5_AX_2,
+                    # CALCUL AVEC LA METHODE DE LANCZOS
+                    REFERENCE = 'NON_REGRESSION', VERSION = '5.3.13'),
+                  _F(  RESULTAT = SISM_MO2, NOM_CHAM = 'ACCE_ABSOLU',
+                    NOM_CMP = 'DX',   NOEUD_CMP = ('DIR', 'X',),
+                    NOEUD = 'N9',  VALE = N9_AX_2,
+                    # CALCUL AVEC LA METHODE DE LANCZOS
+                    REFERENCE = 'NON_REGRESSION', VERSION = '5.3.13'))
+           )
+
+#-----------------------------------------
+# TEST DES VALEURS DE REACTIONS
+# VALEUR DE REFERENCE REAC  ASTER (4.02.21)
+
+N1_RX_2=6.716683E+02
+
+N5_RX_2=1.169727E+03
+
+N9_RX_2=9.373269E+02
+
+#
+
+TEST_RESU(RESU=( _F(  RESULTAT = SISM_MO2, NOM_CHAM = 'REAC_NODA',
+                    NOM_CMP = 'DX',   NOEUD_CMP = ('DIR', 'X',),
+                    NOEUD = 'N1',  VALE = N1_RX_2,
+                    # CALCUL AVEC LA METHODE DE LANCZOS
+                    REFERENCE = 'NON_REGRESSION', VERSION = '5.3.13'),
+                  _F(  RESULTAT = SISM_MO2, NOM_CHAM = 'REAC_NODA',
+                    NOM_CMP = 'DX',   NOEUD_CMP = ('DIR', 'X',),
+                    NOEUD = 'N5',  VALE = N5_RX_2,
+                    # CALCUL AVEC LA METHODE DE LANCZOS
+                    REFERENCE = 'NON_REGRESSION', VERSION = '5.3.13'),
+                  _F(  RESULTAT = SISM_MO2, NOM_CHAM = 'REAC_NODA',
+                    NOM_CMP = 'DX',   NOEUD_CMP = ('DIR', 'X',),
+                    NOEUD = 'N9',  VALE = N9_RX_2,
+                    # CALCUL AVEC LA METHODE DE LANCZOS
+                    REFERENCE = 'NON_REGRESSION', VERSION = '5.3.13'))
+           )
+
+#
+#=======================================================================
+# 3/ ON ETUDIE LA STRUCTURE EN MULTI-APPUI
+#         SANS CORRECTION STATIQUE
+#                           SPECTRE HORIZONTAL
+#                           COMBINAISON QUADRATIQUE COMPLETE
+#         SANS DEPLACEMENT RELATIF DES ANCRAGES
+#         ON VERIFIE LES RESULTATS PAR RAPPORT AU MONO-APPUI:
+#---------------------------------------------------------
+#
+# CALCUL DES MODES STATIQUES AUX POINTS D'ANCRAGE:
+#-------------------------------------------------
+
+MODE_STA=MODE_STATIQUE(  MATR_RIGI=RIGIDITE,    MATR_MASS=MASSE,
+                         MODE_STAT=_F( TOUT = 'OUI',
+                                       TOUT_CMP = 'OUI')  )
+
+MODE_STA=CALC_ELEM(reuse=MODE_STA,  MODELE=MODELE,
+                     RESULTAT=MODE_STA,     OPTION='SIEF_ELGA_DEPL',
+                     CHAM_MATER=CHAMPMAT,   CARA_ELEM=CARA_ELE
+                  )
+
+MODE_STA=CALC_NO(  reuse=MODE_STA,  RESULTAT=MODE_STA, MODELE=MODELE,
+                       OPTION=('FORC_NODA','REAC_NODA'),
+                     CHAM_MATER=CHAMPMAT,    CARA_ELEM=CARA_ELE
+                  )
+
+#
+
+SISM_MU1=COMB_SISM_MODAL(  MODE_MECA=MODE,
+                               AMOR_REDUIT=0.03,
+                               MASS_INER=MAS,
+                               CORR_FREQ='NON',EXCIT=(
+                     _F(  GROUP_NO = 'ENCASTRE',
+                              AXE = ( 1., 0., 0., ),
+                              SPEC_OSCI = SPECT_XY,
+                              ECHELLE = 1.),
+                           _F(  NOEUD = 'N5',
+                              AXE = ( 1., 0., 0., ),
+                              SPEC_OSCI = SPECT_XY,
+                              ECHELLE = 1.),
+                           _F(  NOEUD = 'N9',
+                              AXE = ( 1., 0., 0., ),
+                              SPEC_OSCI = SPECT_XY,
+                              ECHELLE = 1.)),
+
+               COMB_MULT_APPUI=(_F(  GROUP_NO = 'ENCASTRE',
+                                         TYPE_COMBI = 'LINE'),
+                                _F(  NOEUD = ( 'N5',  'N9', ),
+                                         TYPE_COMBI = 'LINE')),
+
+# DEPLACEMENT RELATIF MAXIMAL
+               DEPL_MULT_APPUI=(_F(  NUME_CAS = 1,
+                                     NOM_CAS ='DEPL EN N_ENCASTRE',
+                                     MODE_STAT = MODE_STA,
+                                     NOEUD_REFE = 'N1',
+                                     GROUP_NO = 'ENCASTRE',
+                                     DX = 0.,  DY = 0.),
+                                _F(   NUME_CAS = 2,
+                                     NOM_CAS ='DEPL EN N5 ET N9',
+                                     NOEUD = ( 'N5',  'N9', ),
+                                     DX = 0.0,   DY = 0.0)),
+
+                     COMB_MODE=_F(  TYPE = 'CQC'),
+
+                     OPTION=('DEPL', 'ACCE_ABSOLU', 'REAC_NODA', )
+                 )
+
+#-----------------------------------------
+# TEST DES VALEURS DE DEPLACEMENT
+# VALEUR DE REFERENCE DEPL         ASTER (5.04.21)
+
+N3_DX_3=5.663E-4
+
+N7_DX_3=1.687E-3
+
+N11_DX_3=5.967E-3
+
+TEST_RESU(RESU=( _F(  RESULTAT = SISM_MU1, NOM_CHAM = 'DEPL', NOM_CMP = 'DX',
+                    NOEUD_CMP = ('DIR', 'X',),
+                    NOEUD = 'N3',  VALE = N3_DX_3,
+                    # CALCUL AVEC LA METHODE DE LANCZOS
+                    REFERENCE = 'NON_REGRESSION', VERSION = '5.4.21'),
+                  _F(  RESULTAT = SISM_MU1, NOM_CHAM = 'DEPL', NOM_CMP = 'DX',
+                    NOEUD_CMP = ('DIR', 'X',),
+                    NOEUD = 'N7',  VALE = N7_DX_3,
+                    # CALCUL AVEC LA METHODE DE LANCZOS
+                    REFERENCE = 'NON_REGRESSION', VERSION = '5.4.21'),
+                  _F(  RESULTAT = SISM_MU1, NOM_CHAM = 'DEPL', NOM_CMP = 'DX',
+                    NOEUD_CMP = ('DIR', 'X',),
+                    NOEUD = 'N11', VALE = N11_DX_3,
+                    # CALCUL AVEC LA METHODE DE LANCZOS
+                    REFERENCE = 'NON_REGRESSION', VERSION = '5.4.21'))
+           )
+
+#-----------------------------------------
+# TEST DES VALEURS DE ACCE_ABSOLU
+# VALEUR DE REFERENCE ACCE_ABSOLU
+#   IDENTIQUES A CELLES DU MONO_APPUI ASTER 4.02.21
+## N1_AX  = 1.96200E+00 ;
+## N5_AX  = 1.96200E+00 ;
+## N9_AX  = 1.96200E+00 ;
+
+
+TEST_RESU(RESU=( _F(  RESULTAT = SISM_MU1, NOM_CHAM = 'ACCE_ABSOLU',
+                    NOM_CMP = 'DX',   NOEUD_CMP = ('DIR', 'X',),
+                    NOEUD = 'N1',  VALE = N1_AX,
+                    # CALCUL AVEC LA METHODE DE LANCZOS
+                    REFERENCE = 'NON_REGRESSION', VERSION = '5.3.13'),
+                  _F(  RESULTAT = SISM_MU1, NOM_CHAM = 'ACCE_ABSOLU',
+                    NOM_CMP = 'DX',   NOEUD_CMP = ('DIR', 'X',),
+                    NOEUD = 'N5',  VALE = N5_AX,
+                    # CALCUL AVEC LA METHODE DE LANCZOS
+                    REFERENCE = 'NON_REGRESSION', VERSION = '5.3.13'),
+                  _F(  RESULTAT = SISM_MU1, NOM_CHAM = 'ACCE_ABSOLU',
+                    NOM_CMP = 'DX',   NOEUD_CMP = ('DIR', 'X',),
+                    NOEUD = 'N9',  VALE = N9_AX,
+                    # CALCUL AVEC LA METHODE DE LANCZOS
+                    REFERENCE = 'NON_REGRESSION', VERSION = '5.3.13'))
+           )
+
+#
+#-----------------------------------------
+# TEST DES VALEURS DE REACTIONS
+# VALEUR DE REFERENCE REAC        ASTER (5.04.21)
+
+N1_RX_3=1.455E3
+
+N5_RX_3=2.649E3
+
+N9_RX_3=3.286E3
+
+TEST_RESU(RESU=( _F(  RESULTAT = SISM_MU1, NOM_CHAM = 'REAC_NODA',
+                    NOM_CMP = 'DX',   NOEUD_CMP = ('DIR', 'X',),
+                    NOEUD = 'N1',  VALE = N1_RX_3,
+                    # CALCUL AVEC LA METHODE DE LANCZOS
+                    REFERENCE = 'NON_REGRESSION', VERSION = '5.4.21'),
+                  _F(  RESULTAT = SISM_MU1, NOM_CHAM = 'REAC_NODA',
+                    NOM_CMP = 'DX',   NOEUD_CMP = ('DIR', 'X',),
+                    NOEUD = 'N5',  VALE = N5_RX_3,
+                    # CALCUL AVEC LA METHODE DE LANCZOS
+                    REFERENCE = 'NON_REGRESSION', VERSION = '5.4.21'),
+                  _F(  RESULTAT = SISM_MU1, NOM_CHAM = 'REAC_NODA',
+                    NOM_CMP = 'DX',   NOEUD_CMP = ('DIR', 'X',),
+                    NOEUD = 'N9',  VALE = N9_RX_3,
+                    # CALCUL AVEC LA METHODE DE LANCZOS
+                    REFERENCE = 'NON_REGRESSION', VERSION = '5.4.21'))
+           )
+
+#
+#=======================================================================
+# 4/ ON ETUDIE LA STRUCTURE EN MULTI-APPUI:
+#        EXCITATION EN X ET Y
+#        AVEC PRISE EN COMPTE DES MODES NEGLIGES
+#        AVEC DES DEPLACEMENTS D'ANCRAGE DE 0.001 PAR RAPPORT A SA BASE
+#----------------------------------------------------------------------
+
+SISM_MU2=COMB_SISM_MODAL(  MODE_MECA=MODE,
+                               AMOR_REDUIT=0.03,
+                               MASS_INER=MAS,
+                               CORR_FREQ='NON',
+                               MODE_CORR=MODE_ST1,
+
+                    EXCIT=(_F(  GROUP_NO = 'ENCASTRE',
+                              AXE = ( 1., 0., 0., ),
+                              SPEC_OSCI = SPECT_XY,
+                              ECHELLE = 1.),
+                           _F(  GROUP_NO = 'ENCASTRE',
+                              AXE = ( 0., 1., 0., ),
+                              SPEC_OSCI = SPECT_XY,
+                              ECHELLE = 1.),
+                           _F(  NOEUD = 'N5',
+                              AXE = ( 1., 0., 0., ),
+                              SPEC_OSCI = SPECT_XY,
+                              ECHELLE = 1.5),
+                           _F(  NOEUD = 'N5',
+                              AXE = ( 0., 1., 0., ),
+                              SPEC_OSCI = SPECT_XY,
+                              ECHELLE = 1.5),
+                           _F(  NOEUD = 'N9',
+                              AXE = ( 1., 0., 0., ),
+                              SPEC_OSCI = SPECT_XY,
+                              ECHELLE = 2.),
+                           _F(  NOEUD = 'N9',
+                              AXE = ( 0., 1., 0., ),
+                              SPEC_OSCI = SPECT_XY,
+                              ECHELLE = 2.)),
+
+                     COMB_MULT_APPUI=(_F(  GROUP_NO = 'ENCASTRE',
+                                               TYPE_COMBI = 'LINE'),
+                                      _F(  NOEUD = ( 'N5',  'N9', ),
+                                               TYPE_COMBI = 'LINE')),
+
+# DEPLACEMENT RELATIF MAXIMAL
+                     DEPL_MULT_APPUI=(_F(   NUME_CAS = 1,
+                                     NOM_CAS ='DEPL EN N_ENCASTRE',
+                                           MODE_STAT = MODE_STA,
+                                           NOEUD_REFE = 'ENCASTRE',
+                                           GROUP_NO = 'ENCASTRE',
+                                           DX = 0.,  DY = 0.),
+                                      _F(   NUME_CAS = 1,
+                                           NOM_CAS ='DEPL EN N5 ET N9',
+                                           NOEUD = ( 'N5',  'N9', ),
+                                           DX = 0.001,   DY = 0.001)),
+
+                     COMB_MODE=_F(  TYPE = 'CQC'),
+
+                     COMB_DIRECTION=_F(  TYPE = 'QUAD'),
+
+                       OPTION=( 'DEPL',  'REAC_NODA', )
+                           )
+
+#-----------------------------------------
+# TEST DES VALEURS DE DEPLACEMENT
+# VALEUR DE REFERENCE DEPL         ASTER (5.04.21)
+#   COMPOSANTES DX
+
+
+
+TEST_RESU(RESU=( _F(  RESULTAT = SISM_MU2, NOM_CHAM = 'DEPL', NOM_CMP = 'DX',
+                    NOEUD_CMP = ('DIR', 'X',),
+        NOEUD = 'N3',  VALE = 1.1699408E-03,
+                    # CALCUL AVEC LA METHODE DE LANCZOS
+        REFERENCE = 'NON_REGRESSION', VERSION = '5.4.23'),
+                  _F(  RESULTAT = SISM_MU2, NOM_CHAM = 'DEPL', NOM_CMP = 'DX',
+                    NOEUD_CMP = ('DIR', 'X',),
+        NOEUD = 'N5',  VALE = 1.0000000E-03,
+                    # CALCUL AVEC LA METHODE DE LANCZOS
+        REFERENCE = 'NON_REGRESSION', VERSION = '5.4.23'),
+                  _F(  RESULTAT = SISM_MU2, NOM_CHAM = 'DEPL', NOM_CMP = 'DX',
+                    NOEUD_CMP = ('DIR', 'X',),
+        NOEUD = 'N7',  VALE = 3.0922280E-03,
+                    # CALCUL AVEC LA METHODE DE LANCZOS
+        REFERENCE = 'NON_REGRESSION', VERSION = '5.4.23'),
+                  _F(  RESULTAT = SISM_MU2, NOM_CHAM = 'DEPL', NOM_CMP = 'DX',
+                    NOEUD_CMP = ('DIR', 'X',),
+        NOEUD = 'N9',  VALE = 1.0000000E-03,
+                    # CALCUL AVEC LA METHODE DE LANCZOS
+        REFERENCE = 'NON_REGRESSION', VERSION = '5.4.23'),
+                  _F(  RESULTAT = SISM_MU2, NOM_CHAM = 'DEPL', NOM_CMP = 'DX',
+                    NOEUD_CMP = ('DIR', 'X',),
+        NOEUD = 'N11', VALE = 1.0221018E-02,
+                    # CALCUL AVEC LA METHODE DE LANCZOS
+        REFERENCE = 'NON_REGRESSION', VERSION = '5.4.23'))
+           )
+
+#-----------------------------------------
+# VALEUR DE REFERENCE DEPL          ASTER (5.4.21 )
+#   COMPOSANTES DY
+
+
+TEST_RESU(RESU=( _F(  RESULTAT = SISM_MU2, NOM_CHAM = 'DEPL', NOM_CMP = 'DY',
+                    NOEUD_CMP = ('DIR', 'Y',),
+        NOEUD = 'N3',  VALE = 1.1699408E-03,
+                    # CALCUL AVEC LA METHODE DE LANCZOS
+        REFERENCE = 'NON_REGRESSION', VERSION = '5.4.23'),
+                  _F(  RESULTAT = SISM_MU2, NOM_CHAM = 'DEPL', NOM_CMP = 'DY',
+                    NOEUD_CMP = ('DIR', 'Y',),
+        NOEUD = 'N5',  VALE = 1.0000000E-03,
+                    # CALCUL AVEC LA METHODE DE LANCZOS
+        REFERENCE = 'NON_REGRESSION', VERSION = '5.4.23'),
+                  _F(  RESULTAT = SISM_MU2, NOM_CHAM = 'DEPL', NOM_CMP = 'DY',
+                    NOEUD_CMP = ('DIR', 'Y',),
+        NOEUD = 'N7',  VALE = 3.0922280E-03,
+                    # CALCUL AVEC LA METHODE DE LANCZOS
+        REFERENCE = 'NON_REGRESSION', VERSION = '5.4.23'),
+                  _F(  RESULTAT = SISM_MU2, NOM_CHAM = 'DEPL', NOM_CMP = 'DY',
+                    NOEUD_CMP = ('DIR', 'Y',),
+        NOEUD = 'N9',  VALE = 1.0000000E-03,
+                    # CALCUL AVEC LA METHODE DE LANCZOS
+        REFERENCE = 'NON_REGRESSION', VERSION = '5.4.23'),
+                  _F(  RESULTAT = SISM_MU2, NOM_CHAM = 'DEPL', NOM_CMP = 'DY',
+                    NOEUD_CMP = ('DIR', 'Y',),
+        NOEUD = 'N11', VALE = 1.0221018E-02,
+                    # CALCUL AVEC LA METHODE DE LANCZOS
+        REFERENCE = 'NON_REGRESSION', VERSION = '5.4.23'))
+           )
+
+#-----------------------------------------
+# VALEUR DE REFERENCE DEPL          ASTER (5.04.21)
+#   COMBINAISON QUADRATIQUE
+
+
+TEST_RESU(RESU=( _F(  RESULTAT = SISM_MU2, NOM_CHAM = 'DEPL', NOM_CMP = 'DX',
+                    NOEUD_CMP = ('COMBI', 'QUAD',),
+        NOEUD = 'N3',  VALE = 1.1699408E-03,
+                    # CALCUL AVEC LA METHODE DE LANCZOS
+        REFERENCE = 'NON_REGRESSION', VERSION = '5.4.23'),
+                  _F(  RESULTAT = SISM_MU2, NOM_CHAM = 'DEPL', NOM_CMP = 'DX',
+                    NOEUD_CMP = ('COMBI', 'QUAD',),
+        NOEUD = 'N5',  VALE = 1.0000000E-03,
+                    # CALCUL AVEC LA METHODE DE LANCZOS
+        REFERENCE = 'NON_REGRESSION', VERSION = '5.4.23'),
+                  _F(  RESULTAT = SISM_MU2, NOM_CHAM = 'DEPL', NOM_CMP = 'DX',
+                    NOEUD_CMP = ('COMBI', 'QUAD',),
+        NOEUD = 'N7',  VALE = 3.0922280E-03,
+                    # CALCUL AVEC LA METHODE DE LANCZOS
+        REFERENCE = 'NON_REGRESSION', VERSION = '5.4.23'),
+                  _F(  RESULTAT = SISM_MU2, NOM_CHAM = 'DEPL', NOM_CMP = 'DX',
+                    NOEUD_CMP = ('COMBI', 'QUAD',),
+        NOEUD = 'N9',  VALE = 1.0000000E-03,
+                    # CALCUL AVEC LA METHODE DE LANCZOS
+        REFERENCE = 'NON_REGRESSION', VERSION = '5.4.23'),
+                  _F(  RESULTAT = SISM_MU2, NOM_CHAM = 'DEPL', NOM_CMP = 'DX',
+                    NOEUD_CMP = ('COMBI', 'QUAD',),
+        NOEUD = 'N11', VALE = 1.0221018E-02,
+                    # CALCUL AVEC LA METHODE DE LANCZOS
+        REFERENCE = 'NON_REGRESSION', VERSION = '5.4.23'),
+                  _F(  RESULTAT = SISM_MU2, NOM_CHAM = 'DEPL', NOM_CMP = 'DY',
+                    NOEUD_CMP = ('COMBI', 'QUAD',),
+        NOEUD = 'N3',  VALE = 1.1699408E-03,
+                    # CALCUL AVEC LA METHODE DE LANCZOS
+        REFERENCE = 'NON_REGRESSION', VERSION = '5.4.23'),
+                  _F(  RESULTAT = SISM_MU2, NOM_CHAM = 'DEPL', NOM_CMP = 'DY',
+                    NOEUD_CMP = ('COMBI', 'QUAD',),
+        NOEUD = 'N5',  VALE = 1.0000000E-03,
+                    # CALCUL AVEC LA METHODE DE LANCZOS
+        REFERENCE = 'NON_REGRESSION', VERSION = '5.4.23'),
+                  _F(  RESULTAT = SISM_MU2, NOM_CHAM = 'DEPL', NOM_CMP = 'DY',
+                    NOEUD_CMP = ('COMBI', 'QUAD',),
+        NOEUD = 'N7',  VALE = 3.0922280E-03,
+                    # CALCUL AVEC LA METHODE DE LANCZOS
+        REFERENCE = 'NON_REGRESSION', VERSION = '5.4.23'),
+                  _F(  RESULTAT = SISM_MU2, NOM_CHAM = 'DEPL', NOM_CMP = 'DY',
+                    NOEUD_CMP = ('COMBI', 'QUAD',),
+        NOEUD = 'N9',  VALE = 1.0000000E-03,
+                    # CALCUL AVEC LA METHODE DE LANCZOS
+        REFERENCE = 'NON_REGRESSION', VERSION = '5.4.23'),
+                  _F(  RESULTAT = SISM_MU2, NOM_CHAM = 'DEPL', NOM_CMP = 'DY',
+                    NOEUD_CMP = ('COMBI', 'QUAD',),
+        NOEUD = 'N11', VALE = 1.0221018E-02,
+                    # CALCUL AVEC LA METHODE DE LANCZOS
+        REFERENCE = 'NON_REGRESSION', VERSION = '5.4.23'))
+           )
+
+#-----------------------------------------
+# TEST DES VALEURS DE REACTIONS
+# VALEUR DE REFERENCE REAC         ASTER (5.04.21)
+
+
+TEST_RESU(RESU=( _F(  RESULTAT = SISM_MU2, NOM_CHAM = 'REAC_NODA',
+                    NOM_CMP = 'DX',   NOEUD_CMP = ('DIR', 'X',),
+        NOEUD = 'N1',  VALE = 2.4165130E+03,
+                    # CALCUL AVEC LA METHODE DE LANCZOS
+        REFERENCE = 'NON_REGRESSION', VERSION = '5.4.23'),
+                  _F(  RESULTAT = SISM_MU2, NOM_CHAM = 'REAC_NODA',
+                    NOM_CMP = 'DX',   NOEUD_CMP = ('DIR', 'X',),
+        NOEUD = 'N5',  VALE = 4.3914492E+03,
+                    # CALCUL AVEC LA METHODE DE LANCZOS
+        REFERENCE = 'NON_REGRESSION', VERSION = '5.4.23'),
+                  _F(  RESULTAT = SISM_MU2, NOM_CHAM = 'REAC_NODA',
+                    NOM_CMP = 'DX',   NOEUD_CMP = ('DIR', 'X',),
+        NOEUD = 'N9',  VALE = 5.3699488E+03,
+                    # CALCUL AVEC LA METHODE DE LANCZOS
+        REFERENCE = 'NON_REGRESSION', VERSION = '5.4.23'))
+           )
+
+#
+FIN( )
+#

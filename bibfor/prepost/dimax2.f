@@ -4,7 +4,7 @@
       INTEGER    JDOM, NBPT, IRET
       REAL*8     CUON, CVON, RAYON, CUPN, CVPN
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 26/05/2003   AUTEUR F1BHHAJ J.ANGLES 
+C MODIF PREPOST  DATE 17/05/2004   AUTEUR F1BHHAJ J.ANGLES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -73,7 +73,7 @@ C234567                                                              012
       CUPN = 0.0D0
       CVPN = 0.0D0
       RAY0 = RAYON
-      EPSILO = 1.0D-5
+      EPSILO = 1.0D-4
 
       DO 10 I=1, NBPT
          CUI = ZR(JDOM + (I-1)*2)

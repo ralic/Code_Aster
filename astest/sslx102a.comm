@@ -1,0 +1,345 @@
+# MODIF  DATE 17/05/2004   AUTEUR CIBHHBC M.LOPES 
+# TITRE TUYAUTERIE COUDEE EN FLEXION
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+# MODELISATION DKT - TUYAU - RELATIONS LINEAIRES COQUE-TUYAU
+#======================================================================
+
+DEBUT(CODE=_F(NOM='SSLX102A',
+              NIV_PUB_WEB='INTERNET',),);
+EP = 0.00818;
+
+RMOY = 0.1055;
+
+
+RMOYN=- RMOY;
+
+REXT=RMOY + (EP/2.);
+RC = 0.305;
+
+LTUBE = 1.2;
+
+
+L=RC + LTUBE;
+YOUNG = 200000000000.0;
+
+POISSON = 0.3;
+
+SIGY = 200000000.0;
+
+H = 20000000000.0;
+
+K = 0.8333333333;
+
+MOMENTMZ = 17000.0;
+
+
+FYMAX=MOMENTMZ / (RMOY * RMOY * pi);
+
+FYMAXN=- FYMAX;
+
+PRE_GIBI();
+
+MA=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='NON',),);
+#MA = CREA_MAILLAGE (MAILLAGE : MAINI
+#                   MODI_MAILLE : (OPTION : 'QUAD8_9'
+#                                  TOUT : 'OUI'  )  );
+
+MA=DEFI_GROUP(reuse =MA,
+              MAILLAGE=MA,
+              CREA_GROUP_NO=(_F(GROUP_MA='AB',),
+                             _F(GROUP_MA='CD',),
+                             _F(GROUP_MA='CERCLE1',),
+                             _F(GROUP_MA='CERCLE2',),),);
+
+MO=AFFE_MODELE(MAILLAGE=MA,
+               AFFE=(_F(GROUP_MA=('COUDE','CERCLE1','CERCLE2',),
+                        PHENOMENE='MECANIQUE',
+                        MODELISATION='DKT',),
+                     _F(GROUP_MA=('AB','CD',),
+                        PHENOMENE='MECANIQUE',
+                        MODELISATION='TUYAU_3M',),),);
+
+CAREL=AFFE_CARA_ELEM(MODELE=MO,
+                     INFO=2,
+                     POUTRE=_F(GROUP_MA=('AB','CD',),
+                               SECTION='CERCLE',
+                               CARA=('R','EP',),
+                               VALE=(REXT,EP,),),
+                     COQUE=_F(GROUP_MA=('COUDE','CERCLE1','CERCLE2',),
+                              EPAIS=EP,),
+                     ORIENTATION=(_F(GROUP_NO='A',
+                                     CARA='GENE_TUYAU',
+                                     VALE=(0.0,0.0,1.0,),),
+                                  _F(GROUP_NO='C',
+                                     CARA='GENE_TUYAU',
+                                     VALE=(0.0,0.0,1.0,),),),);
+
+MAT=DEFI_MATERIAU(ELAS=_F(E=YOUNG,
+                          NU=POISSON,),);
+
+CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
+                    AFFE=_F(TOUT='OUI',
+                            MATER=MAT,),);
+# FLEXION PLANE
+
+CHAR1=AFFE_CHAR_MECA(MODELE=MO,
+                     DDL_IMPO=_F(GROUP_NO='A',
+                                 DX=0.0,
+                                 DY=0.0,
+                                 DZ=0.0,
+                                 DRX=0.0,
+                                 DRY=0.0,
+                                 DRZ=0.0,),
+                     LIAISON_ELEM=(_F(OPTION='COQ_TUYAU',
+                                      GROUP_MA_1='CERCLE1',
+                                      GROUP_NO_2='B',
+                                      CARA_ELEM=CAREL,
+                                      AXE_POUTRE=(0.0,1.0,0.0,),),
+                                   _F(OPTION='COQ_TUYAU',
+                                      GROUP_MA_1='CERCLE2',
+                                      GROUP_NO_2='C',
+                                      CARA_ELEM=CAREL,
+                                      AXE_POUTRE=(1.0,0.0,0.0,),),),
+                     FORCE_NODALE=_F(GROUP_NO='D',
+                                     MZ=MOMENTMZ,),
+                     INFO=2,);
+
+RESU1=MECA_STATIQUE(MODELE=MO,
+                    CHAM_MATER=CHMAT,
+                    CARA_ELEM=CAREL,
+                    EXCIT=_F(CHARGE=CHAR1,),
+                    INFO=1,);
+
+TEST_RESU(RESU=_F(RESULTAT=RESU1,
+                  NUME_ORDRE=1,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DY',
+                  GROUP_NO='D',
+                  VALE=0.02,
+                  REFERENCE='SOURCE_EXTERNE',
+                  PRECISION=0.03,),);
+# FLEXION HORS PLAN
+
+CHAR2=AFFE_CHAR_MECA(MODELE=MO,
+                     DDL_IMPO=_F(GROUP_NO='A',
+                                 DX=0.0,
+                                 DY=0.0,
+                                 DZ=0.0,
+                                 DRX=0.0,
+                                 DRY=0.0,
+                                 DRZ=0.0,),
+                     LIAISON_ELEM=(_F(OPTION='COQ_TUYAU',
+                                      GROUP_MA_1='CERCLE1',
+                                      GROUP_NO_2='B',
+                                      CARA_ELEM=CAREL,
+                                      AXE_POUTRE=(0.0,1.0,0.0,),),
+                                   _F(OPTION='COQ_TUYAU',
+                                      GROUP_MA_1='CERCLE2',
+                                      GROUP_NO_2='C',
+                                      CARA_ELEM=CAREL,
+                                      AXE_POUTRE=(1.0,0.0,0.0,),),),
+                     FORCE_NODALE=_F(GROUP_NO='D',
+                                     MY=MOMENTMZ,),
+                     INFO=2,);
+
+RESU2=MECA_STATIQUE(MODELE=MO,
+                    CHAM_MATER=CHMAT,
+                    CARA_ELEM=CAREL,
+                    EXCIT=_F(CHARGE=CHAR2,),
+                    INFO=2,);
+
+TEST_RESU(RESU=_F(RESULTAT=RESU2,
+                  NUME_ORDRE=1,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DZ',
+                  GROUP_NO='D',
+                  VALE=-0.015657,
+                  REFERENCE='SOURCE_EXTERNE',
+                  PRECISION=0.005,),);
+
+FIN();
+#
+#
+#
+#
+#
+#
+#
+#
+#             RESU : (RESULTAT : RESU
+#                      GROUP_NO : (A B C D)
+#                     )
+#             RESU : (MAILLAGE : MA
+#                       RESULTAT : RESU
+#                       FORMAT :'CASTEM'
+#                     )
+#            );
+#EVOL1= POST_RELEVE_T ( ACTION : (INTITULE : 'DEPL1'
+#  GROUP_NO:CERCLE1  RESULTAT : RESU NOM_CHAM : 'DEPL'
+#  TOUT_CMP :'OUI'  OPERATION : 'EXTRACTION'
+#  REPERE:'CYLINDRIQUE' ORIGINE:(0. 0.305 0.) AXE_Z:(0. 1. 0.)));
+#
+# #MPR_COURBE(FORMAT    : 'AGRAF'
+#             FICHIER   : 'AGRAF'
+#          TITRE_GRAPHIQUE : TITRE
+#          COMMENTAIRE     : COMMENT
+#          LEGENDE_X       : 'ABSCISSE CURV'
+#          LEGENDE_Y       : 'DX, DY, DZ'
+#        COURBE    : (TABLE:EVOL1
+#                          PARA_X : 'ABSC_CURV'
+#                          PARA_Y : 'DX'
+#                 STYLE     : 'LIGNE'
+#                 COULEUR   : 'ROUGE'
+#                 MARQUEUR  : 'ETOILE'
+#                 FREQ_MARQUEUR : 1
+#                 LEGENDE   : 'UR=F(S)')
+#        COURBE    : (TABLE:EVOL1
+#                          PARA_X : 'ABSC_CURV'
+#                          PARA_Y : 'DY'
+#                 STYLE     : 'LIGNE'
+#                 COULEUR   : 'BLEU'
+#                 MARQUEUR  : 'LOSANGE'
+#                 FREQ_MARQUEUR : 1
+#                 LEGENDE   : 'UPHI=F(S)')
+#        COURBE    : (TABLE:EVOL1
+#                          PARA_X : 'ABSC_CURV'
+#                          PARA_Y : 'DZ'
+#                 STYLE     : 'LIGNE'
+#                 COULEUR   : 'VERT'
+#                 MARQUEUR  : 'CARRE'
+#                 FREQ_MARQUEUR : 1
+#                 LEGENDE   : 'UX=F(S)')
+#            );
+#EVOL2= POST_RELEVE_T ( ACTION : (INTITULE : 'DEPL2'
+#  GROUP_NO:CERCLE2  RESULTAT : RESU NOM_CHAM : 'DEPL'
+#  TOUT_CMP :'OUI'  OPERATION : 'EXTRACTION'
+#  REPERE:'CYLINDRIQUE' ORIGINE:(0.305 0. 0.) AXE_Z:(1. 0. 0.)));
+#
+# #MPR_COURBE(FORMAT    : 'AGRAF'
+#             FICHIER   : 'AGRAF'
+#          TITRE_GRAPHIQUE : TITRE
+#          COMMENTAIRE     : COMMENT
+#          LEGENDE_X       : 'ABSCISSE CURV'
+#          LEGENDE_Y       : 'DX, DY, DZ'
+#        COURBE    : (TABLE:EVOL2
+#                          PARA_X : 'ABSC_CURV'
+#                          PARA_Y : 'DX'
+#                 STYLE     : 'LIGNE'
+#                 COULEUR   : 'ROUGE'
+#                 MARQUEUR  : 'ETOILE'
+#                 FREQ_MARQUEUR : 1
+#                 LEGENDE   : 'UR=F(S)')
+#        COURBE    : (TABLE:EVOL2
+#                          PARA_X : 'ABSC_CURV'
+#                          PARA_Y : 'DY'
+#                 STYLE     : 'LIGNE'
+#                 COULEUR   : 'BLEU'
+#                 MARQUEUR  : 'LOSANGE'
+#                 FREQ_MARQUEUR : 1
+#                 LEGENDE   : 'UPHI=F(S)')
+#        COURBE    : (TABLE:EVOL2
+#                          PARA_X : 'ABSC_CURV'
+#                          PARA_Y : 'DZ'
+#                 STYLE     : 'LIGNE'
+#                 COULEUR   : 'VERT'
+#                 MARQUEUR  : 'CARRE'
+#                 FREQ_MARQUEUR : 1
+#                 LEGENDE   : 'UX=F(S)')
+#            );
+#
+#
+# MPR_RESU (MODELE : MO
+#             RESU : (MAILLAGE : MA
+#                       RESULTAT : RESU
+#                       FORMAT :'CASTEM'
+#                     )
+#            );
+#
+#DEPAB = POST_RELEVE_T(ACTION :
+#                           (RESULTAT : RESU
+#                            NOM_CHAM : 'DEPL'
+#                            INTITULE : 'WI2'
+#                            REPERE :'GLOBAL'
+#                            OPERATION : 'EXTRACTION'
+#                            GROUP_NO : AB
+#                            TOUT_CMP : 'OUI'
+#                         ));
+#
+#MPR_TABLE ( TABLE : DEPAB
+#             TRI:(NOM_PARA:'COOR_Y')
+#);
+#DEPCD = POST_RELEVE_T(ACTION :
+#                           (RESULTAT : RESU
+#                            NOM_CHAM : 'DEPL'
+#                            INTITULE : 'WI2'
+#                            REPERE :'GLOBAL'
+#                            OPERATION : 'EXTRACTION'
+#                            GROUP_NO : CD
+#                           TOUT_CMP : 'OUI'
+#                         ));
+#
+#MPR_TABLE ( TABLE : DEPCD
+#             TRI:(NOM_PARA:'COOR_X')
+#
+#);
+#
+#
+#WI2AB = RECU_FONCTION ( TABLE : DEPAB
+#                     PARA_X : 'COOR_Y'
+#                     PARA_Y : 'WI2'
+#
+#                        );
+#
+#WI2CD = RECU_FONCTION ( TABLE : DEPAB
+#                     PARA_X : 'COOR_X'
+#                     PARA_Y : 'WI2'
+#
+#                        );
+#
+#
+# MPR_COURBE(FORMAT    : 'AGRAF'
+#             FICHIER   : 'AGRAF'
+#          TITRE_GRAPHIQUE : TITRE
+#          COMMENTAIRE     : COMMENT
+#         LEGENDE_X       : 'AB'
+#         LEGENDE_Y       : 'WI2'
+#             COURBE    : (FONCTION : WI2AB
+#                 LEGENDE   : 'DKT-TUYAU : OVALISATION'
+#                 STYLE     : 'LIGNE'
+#                 COULEUR   : 'VERT_FONCE'
+#                 MARQUEUR  : 'FUSEE_F'
+#                 FREQ_MARQUEUR : 1
+#                           )
+#            );
+#
+# MPR_COURBE(FORMAT    : 'AGRAF'
+#             FICHIER   : 'AGRAF'
+#          TITRE_GRAPHIQUE : TITRE
+#          COMMENTAIRE     : COMMENT
+#         LEGENDE_X       : 'CD'
+#         LEGENDE_Y       : 'WI2'
+#             COURBE    : (FONCTION : WI2CD
+#                 LEGENDE   : 'DKT-TUYAU : OVALISATION'
+#                 STYLE     : 'LIGNE'
+#                 COULEUR   : 'VERT_FONCE'
+#                 MARQUEUR  : 'FUSEE_F'
+#                 FREQ_MARQUEUR : 1
+#                           )
+#            );
+#

@@ -1,4 +1,4 @@
-# MODIF  DATE 09/09/2002   AUTEUR MJBHHPE J.L.FLEJOU 
+# MODIF  DATE 17/05/2004   AUTEUR CIBHHBC M.LOPES 
 # TITRE CALCUL DES MODES PROPRES D'UNE CHARPENTE : POUTRES MULTI-FIBRES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,7 +19,7 @@
 # ======================================================================
 #
 
-DEBUT( CODE=_F( NOM = 'SDLL132A', NIV_PUB_WEB='INTERNET') )
+DEBUT( CODE=_F( NOM = 'SDLL132A', NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON') )
 
 # Lecture du maillage
 MA = LIRE_MAILLAGE()

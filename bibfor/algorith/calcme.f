@@ -1,17 +1,13 @@
-        SUBROUTINE CALCME(OPTION,COMPOR,MECA,IMATE,TYPMOD,
-     +                       CRIT,INSTAM, INSTAP, TREF,
-     +                       NDIM,DIMDEF,DIMCON,NVIMEC,NVITH,        
-     +                       YATE,ADDEME,ADCOME,ADDETE,
-     +                       DEFGEM,CONGEM,CONGEP,
-     +                       VINTM,VINTP,ADVIME,ADVITH,
-     +                       ADDEP1,ADDEP2,
-     +                       DSDE,
-     +                       DEPS,DEPSV,PHI,P1,P2,T,DT,PHI0,RETCOM,
-     +                       DP1,DP2,SAT,BIOT)
+        SUBROUTINE CALCME(OPTION,COMPOR,MECA,IMATE,TYPMOD,CRIT,INSTAM,
+     +                    INSTAP,TREF,NDIM,DIMDEF,DIMCON,NVIMEC,NVITH,
+     +                    YATE,ADDEME,ADCOME,ADDETE,DEFGEM,CONGEM,
+     +                    CONGEP,VINTM,VINTP,ADVIME,ADDEP1,ADDEP2,DSDE,
+     +                    DEPS,DEPSV,PHI,P1,P2,T,DT,PHI0,RETCOM,DP1,DP2,
+     +                    SAT,BIOT)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 04/05/2004   AUTEUR SMICHEL S.MICHEL-PONNELLE 
+C MODIF ALGORITH  DATE 17/05/2004   AUTEUR ROMEO R.FERNANDES 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -54,10 +50,8 @@ C ======================================================================
       IMPLICIT      NONE
       LOGICAL       MECTRU
       INTEGER       NDIM,DIMDEF,DIMCON,NVIMEC,NVITH,ADDEME,ADDETE,ADDEP1
-      INTEGER       ADDEP2,ADCOME,ADVIME,ADVITH,IMATE
-      INTEGER       YATE,RETCOM
-      REAL*8        DEFGEM(1:DIMDEF)
-      REAL*8        CONGEM(1:DIMCON),CONGEP(1:DIMCON)
+      INTEGER       ADDEP2,ADCOME,ADVIME,IMATE,YATE,RETCOM
+      REAL*8        DEFGEM(1:DIMDEF),CONGEM(1:DIMCON),CONGEP(1:DIMCON)
       REAL*8        VINTM(1:NVIMEC+NVITH),VINTP(1:NVIMEC+NVITH)
       REAL*8        DSDE(1:DIMCON,1:DIMDEF)
       CHARACTER*8   TYPMOD(2)
@@ -308,12 +302,11 @@ C --- LOI MAZARS -------------------------------------------------------
 C ======================================================================
       IF (MECA.EQ.'MAZARS') THEN
         TF = T + DT
-        CALL LCMAZA(  NDIM, TYPMOD,  IMATE, COMPOR,
-     &                      DEFGEM(ADDEME+NDIM), 
-     >                      DEPS, 
-     >                      VINTM, T, TF, TREF, 
-     >                      OPTION, CONGEP(ADCOME), VINTP, 
-     >                      DSDEME)
+        CALL LCMAZA(  NDIM, TYPMOD,  IMATE, COMPOR,DEFGEM(ADDEME+NDIM),
+     >                      DEPS, VINTM, T, TF, TREF, 
+     >                      0.D0,0.D0,0.D0,0.D0,0.D0,
+     >                      OPTION, CONGEP(ADCOME), VINTP, DSDEME)
+     
         IF ((OPTION(1:16).EQ.'RIGI_MECA_TANG').OR.
      >            (OPTION(1:9).EQ.'FULL_MECA')) THEN
           DO 502 I = 1 , 2*NDIM

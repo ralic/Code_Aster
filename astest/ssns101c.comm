@@ -1,0 +1,308 @@
+# MODIF  DATE 17/05/2004   AUTEUR CIBHHBC M.LOPES 
+# RESPONSABLE JMBHH01 J.M.PROIX
+# TITRE CLAQUAGE  CALOTTE CYLINDRIQUE SHB8  
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+# ELEMENT SHB8PS - A.COMBESCURE - S.BAGUET -INSA LYON 2003
+#
+
+
+DEBUT(CODE=_F(NOM='SSNS101C',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON',),PAR_LOT='NON');
+
+PRE_GIBI();
+
+MAIL=LIRE_MAILLAGE();
+
+MAIL=MODI_MAILLAGE(reuse =MAIL,
+                   MAILLAGE=MAIL,
+                   ORIE_SHB8=_F(GROUP_MA='GEOTOT',),);
+#
+#
+#
+
+
+MAIL=DEFI_GROUP(reuse =MAIL,
+                MAILLAGE=MAIL,
+                CREA_GROUP_NO=(_F(GROUP_MA='SU0',),
+                               _F(GROUP_MA='L31290',),
+                               _F(GROUP_MA='SUSUP',),),);
+
+MODMECA=AFFE_MODELE(MAILLAGE=MAIL,
+                    INFO=2,
+                    AFFE=_F(TOUT='OUI',
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='SHB8',),);
+
+TRAC=DEFI_FONCTION(NOM_PARA='EPSI',
+                   VALE=(1.e-03,3.102,
+                         0.1   ,33.5,
+                         1.    ,150,
+                         ),);
+
+MAT=DEFI_MATERIAU(ELAS=_F(E=3102.75,
+                          NU=0.3,),
+                  TRACTION=_F(SIGM=TRAC,),
+                  );
+
+
+CHM=AFFE_MATERIAU(MAILLAGE=MAIL,
+                  AFFE=_F(TOUT='OUI',
+                          MATER=MAT,),);
+
+CHARGT=AFFE_CHAR_MECA(MODELE=MODMECA,
+                      DDL_IMPO=(_F(GROUP_MA='SU0',
+                                   DY=0.0,),
+                                _F(GROUP_MA='L31290',
+                                   DX=0.0,),
+                                _F(GROUP_MA='L31290',
+                                   DY=0.0,),
+                                _F(GROUP_MA='L31290',
+                                   DZ=0.0,),
+                                _F(GROUP_MA='SUSUP',
+                                   DZ=0.0,),),
+                      FORCE_NODALE=_F(GROUP_NO='P2',
+                                      FX=-0.25,),);
+
+
+D_FONC=DEFI_FONCTION(NOM_PARA='INST',
+                     VALE=(0.0,0.0,10000.0,10000.0,),);
+
+
+
+LISTPILO=DEFI_LIST_REEL(DEBUT=0.0,
+                        INTERVALLE=_F(JUSQU_A=15,
+                                      NOMBRE=15,),);
+
+
+NONLIN=STAT_NON_LINE(MODELE=MODMECA,
+                     CHAM_MATER=CHM,
+                     EXCIT=_F(CHARGE=CHARGT,
+                              TYPE_CHARGE='FIXE_PILO',),
+                     COMP_INCR=_F(RELATION='VMIS_ISOT_TRAC',
+                                  DEFORMATION='GREEN',
+                                  TOUT='OUI',),
+                     INCREMENT=_F(LIST_INST=LISTPILO,
+                     SUBD_PAS=4,
+                     SUBD_PAS_MINI=0.000001),
+                     NEWTON=_F(REAC_ITER=3,),
+                     PILOTAGE=_F(TYPE='DDL_IMPO',
+                                 COEF_MULT=-1.0,
+                                 GROUP_NO='P2',
+                                 NOM_CMP='DX',),
+                     CONVERGENCE=_F(RESI_GLOB_RELA=5.e-05,
+                                    ITER_GLOB_MAXI=60,
+                                    RESI_INTE_RELA=1.e-06),);
+
+
+
+TABDX=POST_RELEVE_T(ACTION=_F(INTITULE='F',
+                              GROUP_NO='P2',
+                              RESULTAT=NONLIN,
+                              NOM_CHAM='DEPL',
+                              TOUT_ORDRE='OUI',
+                              NOM_CMP='DX',
+                              OPERATION='EXTRACTION',),);
+
+FDX=RECU_FONCTION(TABLE=TABDX,
+                  PARA_X='INST',
+                  PARA_Y='DX',);
+
+FETA=RECU_FONCTION(RESULTAT=NONLIN,INTERPOL='LIN',
+                   NOM_PARA_RESU='ETA_PILOTAGE',);
+
+IMPR_COURBE(FICHIER='RESULTAT',
+            FORMAT='EXCEL',
+            COURBE=(_F(FONCTION=FDX,),
+                    _F(FONCTION=FETA,),),);
+
+TEST_FONCTION(VALEUR=(
+_F(FONCTION=FETA,REFERENCE='NON_REGRESSION', VALE_PARA = 1.00000E+00,VALE_REFE=4.28528E+02 ),
+_F(FONCTION=FETA,REFERENCE='NON_REGRESSION', VALE_PARA = 2.00000E+00,VALE_REFE=7.21155E+02 ),
+_F(FONCTION=FETA,REFERENCE='NON_REGRESSION', VALE_PARA = 3.00000E+00,VALE_REFE=9.10354E+02 ),
+_F(FONCTION=FETA,REFERENCE='NON_REGRESSION', VALE_PARA = 4.00000E+00,VALE_REFE=1.04105E+03 ),
+_F(FONCTION=FETA,REFERENCE='NON_REGRESSION', VALE_PARA = 5.00000E+00,VALE_REFE=1.13572E+03 ),
+_F(FONCTION=FETA,REFERENCE='NON_REGRESSION', VALE_PARA = 6.00000E+00,VALE_REFE=1.20791E+03 ),
+_F(FONCTION=FETA,REFERENCE='NON_REGRESSION', VALE_PARA = 7.00000E+00,VALE_REFE=1.26593E+03 ),
+_F(FONCTION=FETA,REFERENCE='NON_REGRESSION', VALE_PARA = 8.00000E+00,VALE_REFE=1.31620E+03 ),
+_F(FONCTION=FETA,REFERENCE='NON_REGRESSION', VALE_PARA = 9.00000E+00,VALE_REFE=1.36019E+03 ),
+_F(FONCTION=FETA,REFERENCE='NON_REGRESSION', VALE_PARA = 1.00000E+01,VALE_REFE=1.39700E+03 ),
+_F(FONCTION=FETA,REFERENCE='NON_REGRESSION', VALE_PARA = 1.10000E+01,VALE_REFE=1.42820E+03 ),
+_F(FONCTION=FETA,REFERENCE='NON_REGRESSION', VALE_PARA = 1.20000E+01,VALE_REFE=1.45366E+03 ),
+_F(FONCTION=FETA,REFERENCE='NON_REGRESSION', VALE_PARA = 1.30000E+01,VALE_REFE=1.47285E+03 ),
+_F(FONCTION=FETA,REFERENCE='NON_REGRESSION', VALE_PARA = 1.40000E+01,VALE_REFE=1.48474E+03 ),
+_F(FONCTION=FETA,REFERENCE='NON_REGRESSION', VALE_PARA = 1.50000E+01,VALE_REFE=1.48608E+03 ),
+            ),)
+
+NONLIN=CALC_ELEM(reuse=NONLIN, RESULTAT=NONLIN,
+                    MODELE=MODMECA,
+                    CHAM_MATER=CHM,
+                    EXCIT=_F(CHARGE=CHARGT,),
+                    OPTION=('SIEF_ELNO_ELGA','EQUI_ELGA_SIGM','EQUI_ELNO_SIGM','VARI_ELNO_ELGA'),
+                    );
+                    
+IMPR_RESU(MODELE=MODMECA,
+          RESU=(_F(
+                  VALE_MAX='OUI',VALE_MIN='OUI',
+                  FORMAT='RESULTAT',INST=15.,
+                   RESULTAT=NONLIN,),),);
+
+
+TEST_RESU(RESU=(
+                 _F(RESULTAT=NONLIN,
+                   INST=15.,
+                   NOM_CHAM='VARI_ELNO_ELGA',NOM_CMP='V1',
+                   MAILLE='M141',NOEUD='N1',
+                   VALE=1.38931E-02,
+                   REFERENCE='NON_REGRESSION',),
+                _F(RESULTAT=NONLIN,
+                   INST=15.,
+                   NOM_CHAM='VARI_ELNO_ELGA',NOM_CMP='V1',
+                   MAILLE='M141',NOEUD='N141',
+                   VALE=1.45049E-02,
+                   REFERENCE='NON_REGRESSION',),
+                   ),)
+
+ # solution de reference INCA
+          
+INCA=DEFI_FONCTION(NOM_PARA='INST',INTERPOL='LIN',PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',
+                   VALE=(
+                        1.144, 479.9,
+                        2.483, 810.6,
+                        3.877, 1004,
+                        5.225, 1125,
+                        6.291, 1195,
+                        7.146, 1242,
+                        7.837, 1276,
+                        8.510, 1308,
+                        9.167, 1336,
+                        9.807, 1361,
+                        10.42, 1382,
+                        10.92, 1399,
+                        11.41, 1414,
+                        11.89, 1427,
+                        12.36, 1439,
+                        12.81, 1449,
+                        13.25, 1458,
+                        13.68, 1465,
+                        14.10, 1470,
+                        14.51, 1475,
+                        14.90, 1477,
+                         ),);
+                         
+IMPR_COURBE(FICHIER='RESULTAT',
+            FORMAT='EXCEL',
+            COURBE=(_F(FONCTION=INCA,),
+                    _F(FONCTION=FETA,),),);
+
+
+DIFF=CALC_FONCTION(COMB=(
+                          _F(  FONCTION = FETA, COEF =  1.), 
+                          _F(  FONCTION = INCA, COEF = -1.), 
+                          ) )
+
+IMPR_COURBE(FICHIER='RESULTAT',
+            FORMAT='EXCEL',
+            COURBE=(_F(FONCTION=DIFF,),),);
+                    
+MAXINCA=CALC_FONCTION( MAX=_F(  FONCTION = INCA)    )
+
+IMPR_TABLE(TABLE=MAXINCA)
+
+TOLE=0.03*MAXINCA['MAXI',1]
+
+# COMPARAISON A LA SOLUTION INCA
+
+TEST_FONCTION(VALEUR=(
+_F(FONCTION=DIFF,REFERENCE='SOURCE_EXTERNE', VALE_PARA = 2.00000E+00,VALE_REFE=0.,PRECISION=TOLE,CRITERE='ABSOLU',),
+_F(FONCTION=DIFF,REFERENCE='SOURCE_EXTERNE', VALE_PARA = 3.00000E+00,VALE_REFE=0.,PRECISION=TOLE,CRITERE='ABSOLU',),
+_F(FONCTION=DIFF,REFERENCE='SOURCE_EXTERNE', VALE_PARA = 4.00000E+00,VALE_REFE=0.,PRECISION=TOLE,CRITERE='ABSOLU',),
+_F(FONCTION=DIFF,REFERENCE='SOURCE_EXTERNE', VALE_PARA = 5.00000E+00,VALE_REFE=0.,PRECISION=TOLE,CRITERE='ABSOLU',),
+_F(FONCTION=DIFF,REFERENCE='SOURCE_EXTERNE', VALE_PARA = 6.00000E+00,VALE_REFE=0.,PRECISION=TOLE,CRITERE='ABSOLU',),
+_F(FONCTION=DIFF,REFERENCE='SOURCE_EXTERNE', VALE_PARA = 7.00000E+00,VALE_REFE=0.,PRECISION=TOLE,CRITERE='ABSOLU',),
+_F(FONCTION=DIFF,REFERENCE='SOURCE_EXTERNE', VALE_PARA = 8.00000E+00,VALE_REFE=0.,PRECISION=TOLE,CRITERE='ABSOLU',),
+_F(FONCTION=DIFF,REFERENCE='SOURCE_EXTERNE', VALE_PARA = 9.00000E+00,VALE_REFE=0.,PRECISION=TOLE,CRITERE='ABSOLU',),
+_F(FONCTION=DIFF,REFERENCE='SOURCE_EXTERNE', VALE_PARA = 1.00000E+01,VALE_REFE=0.,PRECISION=TOLE,CRITERE='ABSOLU',),
+_F(FONCTION=DIFF,REFERENCE='SOURCE_EXTERNE', VALE_PARA = 1.10000E+01,VALE_REFE=0.,PRECISION=TOLE,CRITERE='ABSOLU',),
+_F(FONCTION=DIFF,REFERENCE='SOURCE_EXTERNE', VALE_PARA = 1.20000E+01,VALE_REFE=0.,PRECISION=TOLE,CRITERE='ABSOLU',),
+_F(FONCTION=DIFF,REFERENCE='SOURCE_EXTERNE', VALE_PARA = 1.30000E+01,VALE_REFE=0.,PRECISION=TOLE,CRITERE='ABSOLU',),
+_F(FONCTION=DIFF,REFERENCE='SOURCE_EXTERNE', VALE_PARA = 1.40000E+01,VALE_REFE=0.,PRECISION=TOLE,CRITERE='ABSOLU',),
+_F(FONCTION=DIFF,REFERENCE='SOURCE_EXTERNE', VALE_PARA = 1.50000E+01,VALE_REFE=0.,PRECISION=TOLE,CRITERE='ABSOLU',),
+            ),)
+            
+
+
+TINCA=CREA_TABLE(FONCTION=_F(FONCTION=INCA))
+TFETA=CREA_TABLE(FONCTION=_F(FONCTION=FETA))
+IMPR_TABLE(TABLE=TINCA)
+IMPR_TABLE(TABLE=TFETA)
+
+# calcul de l ecart maxi entre les deux courbes
+
+valINCA=INCA.LIST_VALEURS()
+nbval=len(valINCA)/2
+valmax1=0.0
+for i in range(0,nbval-1):
+   i2=2*i
+   inst1=valINCA[i2]
+   forc1=valINCA[i2+1]
+   ordo1=abs(forc1)
+   valmax1=max(ordo1,valmax1)
+
+valdiff=DIFF.LIST_VALEURS()
+print 'diff=',valdiff
+nbval=len(valdiff)/2
+valmax2=0.0
+for i in range(0,nbval-1):
+   i2=2*i
+   ordo=valdiff[i2+1]
+   ordo2=abs(ordo)
+   valmax2=max(ordo2,valmax2)
+   
+valmax=valmax2/valmax1
+print 'Valeur maxi fonction reference ',valmax1
+print 'Valeur maxi fonction difference ',valmax2
+
+INCLUDE(UNITE=10)
+
+courb1=(TFETA,'INST',TFETA,'ETA_PILO','ASTER')
+courb2=(TINCA,'INST',TINCA,'TOUTRESU','INCA')
+listcourb=(courb1,courb2,)
+#COURBES(listcourb,titre='SSNS101',legx='INST',legy='FORCE')
+
+courb1f=(FETA,'ASTER')
+courb2f=(INCA,'INCA')
+listcourb2=(courb1f,courb2f,)
+#COURBES(listcourb2,titre='SSNS101',legx='INST',legy='FORCE')
+
+
+COURBES(listcourb,titre='SSNS101',legx='INST',legy='FORCE',fichier='./fort.24')
+
+DEFI_FICHIER(FICHIER='GMSH',UNITE=37)
+IMPR_RESU(MODELE=MODMECA,
+          RESU=(
+                 _F(FORMAT='GMSH',VERSION=1.2,
+                   FICHIER='GMSH',
+                   RESULTAT=NONLIN,INST=15.,
+                   NOM_CHAM=('DEPL',
+                   #'SIEF_ELNO_ELGA',
+                   'VARI_ELNO_ELGA',
+                   ),
+                   ),
+                   ),)
+
+FIN()
