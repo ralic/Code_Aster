@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
+C MODIF ALGELINE  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -45,11 +45,12 @@ C
       REAL*8       FMIN,   FMAX, PRECDC
       REAL*8       MANTIS
       REAL*8       FREQOM
-      INTEGER      IUNIFI
+      INTEGER      IUNIFI, N1
       INTEGER      EXPO  , PIVOT1, PIVOT2, MXDDL, NPREC, NBRSS,IERD
       INTEGER      NBLAGR, NBCINE, NEQACT, NEQ
       INTEGER      LTYPRE, L, LPR, LBRSS, LMASSE, LRAIDE, LDDL, LDYNAM,
      &             LPROD, IFR, IRET, ICOMP, IERX, NBFREQ
+      LOGICAL      ULEXIS
       CHARACTER*19 MASSE , RAIDE
       CHARACTER*8  CBID
       CHARACTER*16 CONCEP, NOMCMD, TYPRES, FICHIE
@@ -90,12 +91,19 @@ C
       ENDIF
 C
 C     --- FICHIER D'IMPRESSION ---
-      FICHIE = 'RESULTAT'
-      CALL GETVTX(' ','FICHIER' ,1,1,1,FICHIE,L)
-      IFR = IUNIFI(FICHIE)
-      IF ( IFR .EQ. 0 ) THEN
-         CALL UTMESS('F','IMPR_STURM',
-     +                   'LE FICHIER "'//FICHIE//'" N''EST PAS ACTIF.')
+C
+      IFR    = 0
+      FICHIE = ' '
+      CALL GETVIS ( ' ', 'UNITE'  , 1,1,1, IFR   , N1 )
+      CALL GETVTX ( ' ', 'FICHIER', 1,1,1, FICHIE, N1 )
+      IF ( N1 .NE. 0 ) THEN
+         CALL UTMESS('A','IMPR_STURM',
+     +               'LE MOT CLE "FICHIER" EST APPELE A DISPARAITRE.'//
+     +               ' UTILISER LE MOT CLE "UNITE"')
+         IFR = IUNIFI( FICHIE )
+      ENDIF
+      IF ( .NOT. ULEXIS( IFR ) ) THEN
+         CALL ULOPEN ( IFR, ' ', FICHIE, 'NEW', 'O' )
       ENDIF
 C
       CALL GETRES( CBID , CONCEP , NOMCMD )
@@ -127,9 +135,6 @@ C     CALCUL DU NOMBRE DE LAGRANGE
       CALL WKVECT('&&OP0032.DDL.BLOQ.CINE','V V I',NEQ,LPROD)
       CALL VPDDL(RAIDE, MASSE, NEQ, NBLAGR, NBCINE, NEQACT, ZI(LDDL),
      &           ZI(LPROD),IERD)
-
-
-
 C
       OMECOR = OMEGA2(FCORIG)
 

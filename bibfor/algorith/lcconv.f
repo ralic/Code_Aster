@@ -1,9 +1,9 @@
         SUBROUTINE LCCONV ( LOI,  DY,     DDY,  NR, ITMAX, TOLER, ITER,
-     &                      INTG, TYPESS, ESSAI, ICOMP, IRTETI)
+     &                INTG, R,RINI, TYPESS, ESSAI, ICOMP, IRTETI)
         IMPLICIT   NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 16/06/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,16 +51,12 @@ C           IRTETI = 3:  REDECOUPAGE DU PAS DE TEMPS
 C       ----------------------------------------------------------------
         INTEGER         TYPESS, ITMAX,  ITER,   INTG, NR,  ICOMP
         INTEGER         IRTET, IRTETI
-        REAL*8          TOLER,  ESSAI,  DDY(*), DY(*)
+        REAL*8          TOLER,  ESSAI,  DDY(*), DY(*),R(*),RINI(*)
         CHARACTER*16    LOI
 C       ----------------------------------------------------------------
 C
          IRTETI = 0
-C         IF     ( LOI(1:8) .EQ. 'ROUSS_PR' ) THEN
-C         CALL RSLCVG (       DY,     DDY,   NR, ITMAX,  TOLER, ITER,
-C     &                 INTG, TYPESS, ESSAI, IRTET )
-C         IF ( IRTET.NE.0 ) GOTO( 1, 2 ), IRTET
-C
+
       IF ( LOI(1:8) .EQ. 'CHABOCHE' ) THEN
          CALL CHBCVG (       DY,     DDY,   NR, ITMAX,  TOLER, ITER,
      &                 INTG, TYPESS, ESSAI, ICOMP, IRTET)
@@ -85,17 +81,23 @@ C
          CALL INSCVG (       DY,     DDY,   NR, ITMAX,  TOLER, ITER,
      &                 INTG, TYPESS, ESSAI, ICOMP, IRTET)
          IF ( IRTET.GT.0 ) GOTO (1,2,3), IRTET
+         
+      ELSEIF ( LOI(1:8) .EQ. 'MONOCRIS' ) THEN
+         CALL LCMMCV (       DY,     DDY,   NR, ITMAX,  TOLER, ITER,
+     &          R,RINI,IRTET)
+         IF ( IRTET.GT.0 ) GOTO (1,2,3), IRTET
 C
       ELSE
          CALL LCCTRL ( LOI,  DY,     DDY,   NR, ITMAX,  TOLER, ITER,
      &                 IRTET)
          IF ( IRTET.GT.0 ) GOTO (1), IRTET
       ENDIF
-C
+C CONVERGENCE, TOUT VA BIEN
       IRTETI = 0
       GOTO 9999
 C
  1    CONTINUE
+C      =1 ITERATIONS SUPPLEMENTAIRE (ITER<ITMAX)
       IRTETI = 1
       GOTO 9999
 C
@@ -104,6 +106,7 @@ C
       GOTO 9999
 C
  3    CONTINUE
+C       =3 ITMAX ATTEINT : redecoupage si demande.
       IRTETI = 3
       GOTO 9999
 C

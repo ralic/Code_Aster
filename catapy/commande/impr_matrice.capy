@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,6 +22,8 @@ IMPR_MATRICE=PROC(nom="IMPR_MATRICE",op= 159,
          regles=(AU_MOINS_UN('MATR_ELEM','MATR_ASSE'),),
 
          MATR_ELEM       =FACT(statut='f',max='**',
+                 regles=(EXCLUS('UNITE','FICHIER'),),
+           UNITE           =SIMP(statut='f',typ='I' ),  
            FICHIER         =SIMP(statut='f',typ='TXM' ),
            FORMAT          =SIMP(statut='f',typ='TXM',defaut="IDEAS",
                                  into=("IDEAS","RESULTAT") ),
@@ -42,6 +44,8 @@ IMPR_MATRICE=PROC(nom="IMPR_MATRICE",op= 159,
            NB_CHIFFRE      =SIMP(statut='f',typ='I',defaut= 4 ),
          ),
          MATR_ASSE       =FACT(statut='f',max='**',
+                 regles=(EXCLUS('UNITE','FICHIER'),),
+           UNITE           =SIMP(statut='f',typ='I' ),  
            FICHIER         =SIMP(statut='f',typ='TXM' ),
            FORMAT          =SIMP(statut='f',typ='TXM',defaut="IDEAS",
                                  into=("IDEAS","RESULTAT") ),

@@ -1,10 +1,10 @@
         SUBROUTINE LCINIT ( LOI,   TYPESS, ESSAI,  MOD, NMAT,
-     1                      MATERF,TIMED,
-     2                      TIMEF, YD,     EPSD,   DEPS, DY )
+     1                      MATERF,TIMED,TIMEF,
+     2                      NR, NVI, YD,     EPSD,   DEPS, DY )
         IMPLICIT   NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 16/06/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,7 +39,7 @@ C           YD     :  VARIABLES A T   = ( SIG  VIN  (EPS3)  )
 C       VAR DEPS   :  INCREMENT DE DEFORMATION
 C       OUT DY     :  SOLUTION ESSAI  = ( DSIG DVIN (DEPS3) )
 C       ----------------------------------------------------------------
-        INTEGER         TYPESS ,  NMAT
+        INTEGER         TYPESS ,  NMAT, NR,NVI
         REAL*8          DEPS(6), EPSD(6), ESSAI
         REAL*8          YD(*) ,  DY(*)
         REAL*8          MATERF(NMAT,2)
@@ -68,6 +68,9 @@ C
 C
       ELSEIF ( LOI(1:7)  .EQ. 'NADAI_B' ) THEN
          CALL INSINI(TYPESS,ESSAI,MOD,NMAT,MATERF,YD,DEPS,DY)
+C
+      ELSEIF ( LOI(1:8)  .EQ. 'MONOCRIS' ) THEN
+         CALL LCMMIN(TYPESS,ESSAI,MOD,NMAT,MATERF,NR, NVI,YD,DEPS,DY)
       ENDIF
 C
       END

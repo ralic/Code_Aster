@@ -1,7 +1,7 @@
-      SUBROUTINE IMELNV ( FICHIE, NOMSDZ, NBCMP, LISCMZ,
+      SUBROUTINE IMELNV ( IFM, NOMSDZ, NBCMP, LISCMZ,
      +                    NBELEM, LISMAZ, NBCHIF )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 23/06/99   AUTEUR CIBHHGB G.BERTRAND 
+C MODIF PREPOST  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -30,9 +30,9 @@ C                (I.E. ON IMPRIME UNE VALEUR PAR LIGNE)
 C                
 C
 C   ARGUMENT        E/S  TYPE         ROLE
-C    FICHIE          IN    K*     NOM DU FICHIER OU L'ON IMPRIME
-C                                 LE MATR_ELEM,
-C    NOMSDZ          IN    K*     NOM DU MATR_ELEM
+C    IFM             IN    I     UNITE LOGIQUE D'IMPRESSION DU
+C                                MATR_ELEM,
+C    NOMSDZ          IN    K*    NOM DU MATR_ELEM
 C    NBCMP           IN    I     NOMBRE DE COMPOSANTES DE LA LISTE
 C                                LISCMZ DES COMPOSANTES
 C    LISCMZ          IN    K*    LISTE DES COMPOSANTES POUR-LESQUELLES
@@ -61,7 +61,7 @@ C ----- COMMUNS NORMALISES  JEVEUX
       COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
       CHARACTER*32     JEXNUM, JEXNOM
 C -----  ARGUMENTS
-      CHARACTER*(*) FICHIE, NOMSDZ, LISMAZ, LISCMZ
+      CHARACTER*(*) NOMSDZ, LISMAZ, LISCMZ
 C -----  VARIABLES LOCALES
       PARAMETER     (NBNOMX = 27)
       PARAMETER     (NBTELI = 810)
@@ -104,10 +104,6 @@ C
       DO 1 I =1, NBECMX
         DG(I) = 0
  1    CONTINUE
-C
-C --- UNITE LOGIQUE DU FICHIER D'IMPRESSION :
-C     -------------------------------------
-      IFM = IUNIFI(FICHIE)
 C
 C --- RECUPERATION DES NOEUDS POUR-LESQUELS ON VEUT L'IMPRESSION 
 C --- DE LA MATRICE :
@@ -529,7 +525,7 @@ C ---          IMPRESSION DE LA LIGNE COURANTE SELON LE GRAIN 'VALEUR':
 C              ------------------------------------------------------
                  CALL IMPFR3 (NOMNO1, NOMCM1, LONLI2, ZK8(IDNONO),
      +                        ZK8(IDNOMC), ZR(IDVALE), NOMAIL, 
-     +                        NBCHIF, FICHIE)
+     +                        NBCHIF, IFM)
 C
  140         CONTINUE
 C
@@ -596,7 +592,7 @@ C ---          IMPRESSION DE LA LIGNE COURANTE SELON LE GRAIN 'VALEUR':
 C              ------------------------------------------------------
                  CALL IMPFR3 (NOMNO1, NOMCM1, LONLI2, ZK8(IDNONO),
      +                        ZK8(IDNOMC), ZR(IDVALE), NOMAIL, 
-     +                        NBCHIF, FICHIE)
+     +                        NBCHIF, IFM)
 C
  180          CONTINUE
              ENDIF
@@ -919,7 +915,7 @@ C ---          IMPRESSION DE LA LIGNE COURANTE SELON LE GRAIN 'VALEUR':
 C              ------------------------------------------------------
                  CALL IMPFC3 (NOMNO1, NOMCM1, LONLI2, ZK8(IDNONO),
      +                        ZK8(IDNOMC), ZC(IDVALE), NOMAIL, 
-     +                        NBCHIF, FICHIE)
+     +                        NBCHIF, IFM)
 C
  350         CONTINUE
 C
@@ -986,7 +982,7 @@ C ---          IMPRESSION DE LA LIGNE COURANTE SELON LE GRAIN 'VALEUR':
 C              ------------------------------------------------------
                  CALL IMPFC3 (NOMNO1, NOMCM1, LONLI2, ZK8(IDNONO),
      +                        ZK8(IDNOMC), ZC(IDVALE), NOMAIL, 
-     +                        NBCHIF, FICHIE)
+     +                        NBCHIF, IFM)
 C
  390          CONTINUE
              ENDIF

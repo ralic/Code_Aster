@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,7 +18,9 @@
 # ======================================================================
 IMPR_CHARGE=PROC(nom="IMPR_CHARGE",op= 158,
                  fr="Impression des charges mécaniques de type ddl imposés et relations linéaires entre les ddl",
-            UIinfo={"groupes":("Fonction",)},
+                 UIinfo={"groupes":("Fonction",)},
+                 regles=(EXCLUS('UNITE','FICHIER'),),
+         UNITE           =SIMP(statut='f',typ='I'),  
          FICHIER         =SIMP(statut='f',typ='TXM' ),
          FORMAT          =SIMP(statut='f',typ='TXM',defaut="IDEAS",into=("IDEAS",) ),
          VERSION         =SIMP(statut='f',typ='I',defaut= 5,into=( 5 ,) ),

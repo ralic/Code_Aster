@@ -1,10 +1,10 @@
-      SUBROUTINE FOIMPR(NOMF,IMPR,FICHIE,IND,FONINS)
+      SUBROUTINE FOIMPR(NOMF,IMPR,IUL,IND,FONINS)
       IMPLICIT REAL*8 (A-H,O-Z)
-      CHARACTER*(*)     NOMF,     FICHIE,    FONINS
-      INTEGER                IMPR,       IND
+      CHARACTER*(*)     NOMF,             FONINS
+      INTEGER                IMPR,IUL,IND
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 28/01/2003   AUTEUR DURAND C.DURAND 
+C MODIF UTILITAI  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,7 +40,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
-      CHARACTER*8   FILE, K8B
+      CHARACTER*8   K8B
       CHARACTER*16  NOMCMD
       CHARACTER*19  NOMFON, NOMF1, LISTR
       CHARACTER*24  PROL, VALE, PARA
@@ -51,14 +51,9 @@ C
 C     ------------------------------------------------------------------
       CALL JEMARQ()
       IF ( IMPR .LE. 0) GOTO 9999
-      FILE = FICHIE
-      IUL  = IUNIFI(FILE)
       IF ( IUL .LE. 0 ) THEN
          CALL GETRES(K8B,K8B,NOMCMD)
-         LG = MAX(1,LXLGUT(FILE))
-         CALL UTMESS('A',NOMCMD//' (ERREUR 01)',
-     +               'LE FICHIER "'//FILE(1:LG)//'" N''EST RELIE '//
-     +               'A AUCUNE UNITE LOGIQUE.')
+         CALL UTMESS('A',NOMCMD,'UNITE LOGIQUE INEXISTANTE')
          GOTO 9999
       ENDIF
       LISTR = FONINS

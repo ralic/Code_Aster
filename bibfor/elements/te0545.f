@@ -1,7 +1,7 @@
       SUBROUTINE TE0545(OPTION,NOMTE)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 04/05/2004   AUTEUR SMICHEL S.MICHEL-PONNELLE 
+C MODIF ELEMENTS  DATE 15/06/2004   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -33,7 +33,7 @@ C ......................................................................
       CHARACTER*8 TYPMOD(2),NOMAIL
 
       INTEGER NNO,NPG1,I,IMATUU,LGPG,LGPG1,LGPG2,NDIM
-      INTEGER IPOIDS,IVF,IDFDE,IGEOM,IMATE
+      INTEGER IPOIDS,IVF,IDFDE,IGEOM,IMATE,ICAMAS
       INTEGER ITREF,ICONTM,IVARIM,ITEMPM,ITEMPP,IPHASM,IPHASP
       INTEGER IINSTM,IINSTP,IDEPLM,IDEPLP,ICOMPO,ICARCR
       INTEGER IVECTU,ICONTP,IVARIP,LI,IDEFAM,IDEFAP,NNOS,JGANO
@@ -41,6 +41,7 @@ C ......................................................................
       INTEGER NDDL,KK,NI,MJ,JTAB(7),IADZI,IAZK24,NZ,JCRET,CODRET
       REAL*8  MATNS(2*9*2*9)
       REAL*8  VECT1(54), VECT2(4*27*27), VECT3(4*27*2)
+      REAL*8  R8VIDE,ANGMAS(3),R8DGRD
       LOGICAL DEFANE
 
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
@@ -92,7 +93,16 @@ C - PARAMETRES EN ENTREE
       CALL TECACH('OON','PVARIMR',7,JTAB,IRET)
       LGPG1 = MAX(JTAB(6),1)*JTAB(7)
       LGPG = LGPG1
-
+C     ORIENTATION DU MASSIF     
+      CALL TECACH('NNN','PCAMASS',1,ICAMAS,IRET)
+      CALL R8INIR(3, R8VIDE(), ANGMAS ,1)
+      IF (ICAMAS.GT.0) THEN
+        IF (ZR(ICAMAS).GT.0.D0) THEN
+         ANGMAS(1) = ZR(ICAMAS+1)*R8DGRD()
+         ANGMAS(2) = ZR(ICAMAS+2)*R8DGRD()
+         ANGMAS(3) = ZR(ICAMAS+3)*R8DGRD()
+        ENDIF
+      ENDIF
 
 C - VARIABLES DE COMMANDE
 
@@ -183,12 +193,16 @@ CCDIR$ IVDEP
 
           CALL NMPL2D(NNO,NPG1,IPOIDS,IVF,IDFDE,
      &                ZR(IGEOM),TYPMOD,OPTION,ZI(IMATE),ZK16(ICOMPO),
-     &                LGPG,ZR(ICARCR),ZR(IINSTM),ZR(IINSTP),ZR(ITEMPM),
-     &                ZR(ITEMPP),ZR(IHYDRM),ZR(IHYDRP),
+     &                LGPG,ZR(ICARCR),
+     &                ZR(IINSTM),ZR(IINSTP),
+     &                ZR(ITEMPM),ZR(ITEMPP),
+     &                ZR(IHYDRM),ZR(IHYDRP),ZR(ITREF),
      &                ZR(ISECHM),ZR(ISECHP),ZR(ISREF),
-     &                NZ,ZR(IPHASM),ZR(IPHASP),ZR(ITREF),
+     &                NZ,ZR(IPHASM),ZR(IPHASP),
      &                ZR(IDEPLM),ZR(IDEPLP),ZR(IDEFAM),ZR(IDEFAP),
-     &                DEFANE,ZR(ICONTM),ZR(IVARIM),.TRUE.,VECT1,
+     &                DEFANE,
+     &                ANGMAS,
+     &                ZR(ICONTM),ZR(IVARIM),.TRUE.,VECT1,
      &                VECT3,ZR(ICONTP),ZR(IVARIP),
      &                ZR(IMATUU),ZR(IVECTU),CODRET)
 
@@ -198,11 +212,15 @@ C      GRANDES DEFORMATIONS : FORMULATION SIMO - MIEHE
         ELSE IF (ZK16(ICOMPO+2) (1:10).EQ.'SIMO_MIEHE') THEN
           CALL NMGP2D(NNO,NPG1,IPOIDS,IVF,IDFDE,
      &                ZR(IGEOM),TYPMOD,OPTION,ZI(IMATE),ZK16(ICOMPO),
-     &                LGPG,ZR(ICARCR),ZR(IINSTM),ZR(IINSTP),ZR(ITEMPM),
-     &                ZR(ITEMPP),ZR(IHYDRM),ZR(IHYDRP),
+     &                LGPG,ZR(ICARCR),
+     &                ZR(IINSTM),ZR(IINSTP),
+     &                ZR(ITEMPM),ZR(ITEMPP),ZR(ITREF),
+     &                ZR(IHYDRM),ZR(IHYDRP),
      &                ZR(ISECHM),ZR(ISECHP),ZR(ISREF),
-     &                NZ,ZR(IPHASM),ZR(IPHASP),ZR(ITREF),
-     &                ZR(IDEPLM),ZR(IDEPLP),ZR(ICONTM),ZR(IVARIM),
+     &                NZ,ZR(IPHASM),ZR(IPHASP),
+     &                ZR(IDEPLM),ZR(IDEPLP),
+     &                ANGMAS,
+     &                ZR(ICONTM),ZR(IVARIM),
      &                VECT1,VECT2,ZR(ICONTP),ZR(IVARIP),
      &                MATNS,ZR(IVECTU),CODRET)
 
@@ -228,13 +246,17 @@ C 7.3 - GRANDES ROTATIONS ET PETITES DEFORMATIONS
 
           CALL NMGR2D(NNO,NPG1,IPOIDS,IVF,IDFDE,
      &                ZR(IGEOM),TYPMOD,OPTION,ZI(IMATE),ZK16(ICOMPO),
-     &                LGPG,ZR(ICARCR),ZR(IINSTM),ZR(IINSTP),ZR(ITEMPM),
-     &                ZR(ITEMPP),ZR(IHYDRM),ZR(IHYDRP),
+     &                LGPG,ZR(ICARCR),
+     &                ZR(IINSTM),ZR(IINSTP),
+     &                ZR(ITEMPM),ZR(ITEMPP),ZR(ITREF),
+     &                ZR(IHYDRM),ZR(IHYDRP),
      &                ZR(ISECHM),ZR(ISECHP),ZR(ISREF),
-     &                NZ,ZR(IPHASM),ZR(IPHASP),ZR(ITREF),
+     &                NZ,ZR(IPHASM),ZR(IPHASP),
      &                ZR(IDEPLM),ZR(IDEPLP),ZR(IDEFAM),ZR(IDEFAP),
-     &                DEFANE,ZR(ICONTM),ZR(IVARIM),VECT1,
-     &                VECT2,VECT3,
+     &                DEFANE,
+     &                ANGMAS,
+     &                ZR(ICONTM),ZR(IVARIM),
+     &                VECT1,VECT2,VECT3,
      &                ZR(ICONTP),ZR(IVARIP),
      &                ZR(IMATUU),ZR(IVECTU),CODRET)
         ELSE

@@ -5,7 +5,7 @@
       CHARACTER*8         NOMU, NOMA
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 09/04/2002   AUTEUR CIBHHLV L.VIVAN 
+C MODIF MODELISA  DATE 15/06/2004   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,9 +50,9 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32     JEXNOM, JEXNUM
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER      JDCC, JDVC, JDLS, IOC,  NG, NM, N1, N2, N3, N4, N5,
-     +             N6, N6A, N7, N8, I, AXYZM, NUNOE, NBMAT, IER, NBMA,
+     +             I, AXYZM, NUNOE, NBMAT, IER, NBMA,
      +             IMA, NBNO, INO, JNUMA, ADRM, NUMA, JGRMA, IGR,NBMAT0
-      REAL*8       ANG(3), PCL, PCT, SL,EZ,EZA,CTR, ORIG(3), Z, R8RDDG,
+      REAL*8       ANG(2), SL,EZ,EZA,CTR, ORIG(3), Z, R8RDDG,
      +             AXEZ(3), XNORM, EPSI, AXER(3), PSCAL, AXET(3), X, Y
       CHARACTER*8  K8B
       CHARACTER*16 TOU
@@ -85,20 +85,14 @@ C
       ZK8(JDCC  ) = 'SECT_L'
       ZK8(JDCC+1) = 'ALPHA'
       ZK8(JDCC+2) = 'BETA'
-      ZK8(JDCC+3) = 'ANGL_L'
-      ZK8(JDCC+4) = 'P_CENT_L'
-      ZK8(JDCC+5) = 'P_CENT_T'
-      ZK8(JDCC+6) = 'DIST_N'
-      ZK8(JDCC+7) = 'CTOR'
+      ZK8(JDCC+3) = 'DIST_N'
+      ZK8(JDCC+4) = 'CTOR'
 C
 C
 C --- LECTURE DES VALEURS ET AFFECTATION DANS LA CARTE CARTPF
       DO 10 IOC = 1 , NBOCC
         ANG(1) = 0.0D0
         ANG(2) = 0.0D0
-        ANG(3) = 0.0D0
-        PCL    = 1.0D0
-        PCT    = 1.0D0
         SL     = 0.0D0
         EZ     = 0.0D0
         CTR    = 1.D-10
@@ -108,43 +102,36 @@ C
         CALL GETVEM(NOMA,'MAILLE','GRILLE','MAILLE',
      +         IOC,1,LMAX,ZK8(JDLS),NM)
 C
-        CALL GETVR8('GRILLE','SECTION_L'    ,IOC,1,1   ,SL       ,N1)
+        CALL GETVR8('GRILLE','SECTION'      ,IOC,1,1   ,SL       ,N1)
         CALL GETVR8('GRILLE','ANGL_REP'     ,IOC,1,2   ,ANG      ,N2)
-        CALL GETVR8('GRILLE','ANGL_L'       ,IOC,1,1   ,ANG(3)   ,N3)
-        CALL GETVR8('GRILLE','POUR_CENT_L'  ,IOC,1,1   ,PCL      ,N4)
-        CALL GETVR8('GRILLE','POUR_CENT_T'  ,IOC,1,1   ,PCT      ,N5)
-        CALL GETVR8('GRILLE','EXCENTREMENT' ,IOC,1,1   ,EZ       ,N6)
-        CALL GETVR8('GRILLE','COEF_RIGI_DRZ',IOC,1,1   ,CTR      ,N7)
-        CALL GETVR8('GRILLE','ORIG_AXE'     ,IOC,1,0   ,ORIG     ,N8)
+        CALL GETVR8('GRILLE','EXCENTREMENT' ,IOC,1,1   ,EZ       ,N3)
+        CALL GETVR8('GRILLE','COEF_RIGI_DRZ',IOC,1,1   ,CTR      ,N4)
+        CALL GETVR8('GRILLE','ORIG_AXE'     ,IOC,1,0   ,ORIG     ,N5)
 C
         ZR(JDVC  ) = SL
         ZR(JDVC+1) = ANG(1)
         ZR(JDVC+2) = ANG(2)
-        ZR(JDVC+3) = ANG(3)
+        ZR(JDVC+3) = EZ
+        ZR(JDVC+4) = CTR
 C
-        ZR(JDVC+4) = PCL
-        ZR(JDVC+5) = PCT
-        ZR(JDVC+6) = EZ
-        ZR(JDVC+7) = CTR
-C
-        IF ( N8 .EQ. 0 ) THEN
+        IF ( N5 .EQ. 0 ) THEN
 C
 C ---     "GROUP_MA" = TOUTES LES MAILLES DE LA LISTE DE GROUPES MAILLES
            IF (NG.GT.0) THEN
               DO 20 I = 1 , NG
-                 CALL NOCART(CARTGR,2,ZK8(JDLS+I-1),' ',0,' ',0,' ',8)
+                 CALL NOCART(CARTGR,2,ZK8(JDLS+I-1),' ',0,' ',0,' ',5)
  20           CONTINUE
            ENDIF
 C
 C ---     "MAILLE" = TOUTES LES MAILLES DE LA LISTE DE MAILLES
            IF (NM.GT.0) THEN
-             CALL NOCART(CARTGR,3,' ','NOM',NM,ZK8(JDLS),0,' ',8)
+             CALL NOCART(CARTGR,3,' ','NOM',NM,ZK8(JDLS),0,' ',5)
            ENDIF
 C
         ELSE
 C
-           CALL GETVR8 ( 'GRILLE', 'ORIG_AXE', IOC,1,3 ,ORIG, N8 )
-           CALL GETVR8 ( 'GRILLE', 'AXE'     , IOC,1,3 ,AXEZ, N8 )
+           CALL GETVR8 ( 'GRILLE', 'ORIG_AXE', IOC,1,3 ,ORIG, N5 )
+           CALL GETVR8 ( 'GRILLE', 'AXE'     , IOC,1,3 ,AXEZ, N5 )
 C
            IF (NG.GT.0) THEN
              NBMAT = 0
@@ -222,7 +209,7 @@ C
              ZR(JDVC+1) = ANG(1) * R8RDDG()
              ZR(JDVC+2) = ANG(2) * R8RDDG()
 C
-             CALL NOCART(CARTGR,3,' ','NUM',1,K8B,NUMA,' ',8)
+             CALL NOCART(CARTGR,3,' ','NUM',1,K8B,NUMA,' ',5)
 C
  200       CONTINUE
         ENDIF

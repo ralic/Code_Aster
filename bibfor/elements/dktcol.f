@@ -6,7 +6,7 @@
       LOGICAL             GRILLE
       CHARACTER*16        NOMTE, OPTION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ELEMENTS  DATE 15/06/2004   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -108,7 +108,7 @@ C     -------- CALCUL DE D1I ET D2I ------------------------------------
         CALL JEVECH('PCACOQU','L',JCACO)
         EPAIS = ZR(JCACO)
         X3I = 0.D0
-        IF (GRILLE) X3I = ZR(JCACO+6)
+        IF (GRILLE) X3I = ZR(JCACO+3)
 
         IF (INIV.LT.0) THEN
           X3I = X3I - EPAIS/DEUX
@@ -248,7 +248,7 @@ C        ------ CIST = D1I.VT ( + D2I.LAMBDA SI MULTICOUCHES ) ---------
         IF (MULTIC.EQ.0) THEN
           CALL JEVECH ( 'PCACOQU', 'L', JCACO )
           EPAIS = ZR(JCACO)
-          IF (GRILLE) DISTN = ZR(JCACO+6)
+          IF (GRILLE) DISTN = ZR(JCACO+3)
         ELSE
           CALL JEVECH ( 'PMATERC', 'L', JMATE )
         ENDIF

@@ -5,7 +5,7 @@
       CHARACTER*14 BOITE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 29/02/2000   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -192,6 +192,9 @@ C     -------------------------------------------------------
   110 CONTINUE
 
       DBG = .FALSE.
-      IF (DBG) CALL UTIMSD('MESSAGE',2,.FALSE.,.TRUE.,BOITE,1,' ')
+      IF (DBG) THEN
+         IFM = IUNIFI('MESSAGE')
+         CALL UTIMSD(IFM,2,.FALSE.,.TRUE.,BOITE,1,' ')
+      ENDIF
       CALL JEDEMA()
       END

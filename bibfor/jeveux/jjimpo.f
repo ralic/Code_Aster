@@ -1,7 +1,7 @@
-      SUBROUTINE JJIMPO (CUNIT , IADMI , IDECI , IDATOC , GENRI , TYPEI,
+      SUBROUTINE JJIMPO (UNIT , IADMI , IDECI , IDATOC , GENRI , TYPEI,
      &                   LT    , LONOI , MESS , PARM )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 04/11/2003   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF JEVEUX  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,12 +20,13 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CFT_726 CFT_720 CFT_753 CRP_18 CRP_4 CRS_508 CRS_512
       IMPLICIT REAL*8 (A-H,O-Z)
+      INTEGER            UNIT
       INTEGER            IADMI , IDECI , IDATOC        , LT , LONOI
-      CHARACTER*(*)      CUNIT , MESS  , PARM  , GENRI , TYPEI
+      CHARACTER*(*)      MESS  , PARM  , GENRI , TYPEI
 C ----------------------------------------------------------------------
 C ROUTINE UTILISATEUR : IMPRIME UN SEGMENT DE VALEURS
 C
-C IN  CUNIT  : NOM LOCAL DU FICHIER D'IMPRESSION
+C IN  UNIT   : UNITE LOGIQUE D'IMPRESSION
 C IN  IADMI  : ADRESSE DU PREMIER MOT DU SEGMENT DE VALEUR
 C IN  IDECI  : DECALLAGE PAR RAPPORT A IADMI (EN OCTETS)
 C IN  IDATOC : IDENTIFICATEUR DE L'OBJET
@@ -70,8 +71,8 @@ C ----------------------------------------------------------------------
       CHARACTER*75     CMESS
       CHARACTER*18     FMT
 C DEB ------------------------------------------------------------------
-      JULIST = IUNIFI ( CUNIT )
-      IF ( JULIST .EQ. 0 ) GOTO 999
+C
+      IF ( UNIT .EQ. 0 ) GOTO 999
       KADM = IADMI
       LADM = ISZON ( JISZON + KADM - 3 )
       IPS  = KADM - 4
@@ -99,60 +100,60 @@ C
          ENDIF
       ENDIF
       IF ( IDATOC .EQ. 0 ) THEN
-         WRITE (JULIST,'(/,'' IMPRESSION SEGMENT DE VALEURS >'',A,
+         WRITE (UNIT,'(/,'' IMPRESSION SEGMENT DE VALEURS >'',A,
      &            ''<'')') RNOM(JRNOM(ICLS)+IDOS)(1:32)
       ELSE IF ( IDATOC .EQ . -1 ) THEN
-         WRITE (JULIST,'(/,'' IMPRESSION COLLECTION ENTIERE >''
+         WRITE (UNIT,'(/,'' IMPRESSION COLLECTION ENTIERE >''
      &            ,A,''<'')') RNOM(JRNOM(ICLS)+IDOS)(1:24)
       ELSE IF ( IDCO .GT. 0 ) THEN
-         WRITE(JULIST,'(/,'' IMPRESSION OBJET DE COLLECTION >''
+         WRITE(UNIT,'(/,'' IMPRESSION OBJET DE COLLECTION >''
      &         ,A,''<  OC : '',I6)') RNOM(JRNOM(ICLS)+IDCO)(1:24),IDOS
       ELSE IF ( IDCO .EQ. 0 ) THEN
-         WRITE(JULIST,'(/,'' IMPRESSION OBJET DE COLLECTION CONTIGUE>''
+         WRITE(UNIT,'(/,'' IMPRESSION OBJET DE COLLECTION CONTIGUE>''
      &       ,A,''<  OC : '',I6)') RNOM(JRNOM(ICLS)+IDOS)(1:24),IDATOC
       ENDIF
-      WRITE (JULIST,'(A,A)' ) ' >>>>> ',MESS(1:MIN(50,LEN(MESS)))
+      WRITE (UNIT,'(A,A)' ) ' >>>>> ',MESS(1:MIN(50,LEN(MESS)))
       IF ( GENRI .NE. 'N') THEN
          IF ( TYPEI .EQ. 'S' ) THEN
             JI = 1 + ((JISZON +KADM-1)*LOIS+IDECI)*2/LOR8 + LADM*2/LOR8
             NL = LONOI / (5*LOR8/2)
             ND = MOD( LONOI , (5*LOR8/2) ) / (LOR8/2)
-            WRITE ( JULIST , '((I7,'' - '',5(I12,1X)))')
+            WRITE ( UNIT , '((I7,'' - '',5(I12,1X)))')
      &            (5*(L-1)+1,(I4ZON( JI + 5*(L-1)+K-1),K=1,5),L=1,NL)
             IF ( ND .NE. 0 ) THEN
-               WRITE ( JULIST , '(I7,'' - '',5(I12,1X))')
+               WRITE ( UNIT , '(I7,'' - '',5(I12,1X))')
      &                  5*NL+1,(I4ZON( JI + 5*NL+K-1),K=1,ND)
             ENDIF
          ELSE IF ( TYPEI .EQ. 'I' ) THEN
             JI = JISZON + KADM + IDECI/LOIS
             NL = LONOI / (5*LOIS)
             ND = MOD( LONOI , (5*LOIS) ) / LOIS
-            WRITE ( JULIST , '((I7,'' - '',5(I12,1X)))')
+            WRITE ( UNIT , '((I7,'' - '',5(I12,1X)))')
      &            (5*(L-1)+1,(ISZON( JI + 5*(L-1)+K-1),K=1,5),L=1,NL)
             IF ( ND .NE. 0 ) THEN
-               WRITE ( JULIST , '(I7,'' - '',5(I12,1X))')
+               WRITE ( UNIT , '(I7,'' - '',5(I12,1X))')
      &                  5*NL+1,(ISZON( JI + 5*NL+K-1),K=1,ND)
             ENDIF
          ELSE IF ( TYPEI .EQ. 'R' ) THEN
             JI =   1 + ( (JISZON +KADM - 1)*LOIS +IDECI +LADM) / LOR8
             NL = LONOI / ( 5 * LOR8 )
             ND = MOD( LONOI , (5*LOR8) ) / LOR8
-            WRITE ( JULIST , '((I7,'' - '',5(1PD12.5,1X)))')
+            WRITE ( UNIT , '((I7,'' - '',5(1PD12.5,1X)))')
      &              (5*(L-1)+1,(R8ZON( JI + 5*(L-1)+K-1),K=1,5),L=1,NL)
             IF ( ND .NE. 0 ) THEN
-               WRITE ( JULIST , '(I7,'' - '',5(1PD12.5,1X))')
+               WRITE ( UNIT , '(I7,'' - '',5(1PD12.5,1X))')
      &                  5*NL+1,(R8ZON( JI +5*NL+K-1),K=1,ND)
             ENDIF
          ELSE IF ( TYPEI .EQ. 'C' ) THEN
             JI =   1 + ( (JISZON +KADM - 1)*LOIS +IDECI +LADM) / LOR8
             NL = LONOI / ( 2 * LOC8)
             ND = MOD( LONOI , ( 2 * LOC8) ) / LOC8
-            WRITE ( JULIST , '((I7,'' - '',1P,
+            WRITE ( UNIT , '((I7,'' - '',1P,
      &                                   2(A1,D12.5,'','',D12.5,A1)))')
      &      (2*(L-1)+1,('(',R8ZON(JI+4*(L-1)+2*K),
      &                      R8ZON(JI+4*(L-1)+2*K+1),')',K=0,1),L=1,NL)
             IF ( ND .NE. 0 ) THEN
-               WRITE ( JULIST , '((I7,'' - '',1P,
+               WRITE ( UNIT , '((I7,'' - '',1P,
      &                                   2(A1,D12.5,'','',D12.5,A1)))')
      &         2*NL+1,'(',R8ZON(JI+4*(L-1)),
      &                     R8ZON(JI+4*(L-1)+1),')'
@@ -161,10 +162,10 @@ C
             JI = JISZON + KADM + IDECI/LOIS
             NL = LONOI / (20*LOLS)
             ND = MOD( LONOI , (20*LOLS) ) / LOLS
-            WRITE ( JULIST , '((I7,'' - '',20(L1,1X)))')
+            WRITE ( UNIT , '((I7,'' - '',20(L1,1X)))')
      &            (20*(L-1)+1,(LSZON( JI +20*(L-1)+K-1),K=1,20),L=1,NL)
             IF ( ND .NE. 0 ) THEN
-               WRITE ( JULIST , '(I7,'' - '',20(L1,1X))')
+               WRITE ( UNIT , '(I7,'' - '',20(L1,1X))')
      &                  20*NL+1,(LSZON( JI + 20*NL+K-1),K=1,ND)
             ENDIF
          ELSE IF ( TYPEI .EQ. 'K' ) THEN
@@ -173,12 +174,12 @@ C
             NL = LONOI / (NB* LT)
             ND = (MOD( LONOI , NB*LT )) / LT
             WRITE ( FMT,'(I2,''(A1,'',I2,''A1,A1)'')' ) NB,LT
-            WRITE ( JULIST , '((I7,'' - '','//FMT//'))')
+            WRITE ( UNIT , '((I7,'' - '','//FMT//'))')
      &              ( NB*(L-1)+1,
      &         ('>',(K1ZON( JI+LT*((K-1)+(L-1)*NB)+J-1 ),J=1,LT),'<',
      &                                       K= 1,NB ) , L = 1,NL )
             IF ( ND .NE. 0 ) THEN
-              WRITE ( JULIST , '(I7,'' - '','//FMT//')') NB*NL+1,
+              WRITE ( UNIT , '(I7,'' - '','//FMT//')') NB*NL+1,
      &        ('>',(K1ZON (JI +LT*((K-1)+NL*NB)+J-1),J=1,LT),'<',K=1,ND)
             ENDIF
          ELSE
@@ -195,12 +196,12 @@ C
          NL = NM / NB
          ND = MOD(NM,NB)
          WRITE ( FMT,'(I2,''(A1,'',I2,''A1,A1)'')' ) NB,LT
-         WRITE ( JULIST , '((I7,'' - '','//FMT//'))')
+         WRITE ( UNIT , '((I7,'' - '','//FMT//'))')
      &        ( NB*(L-1)+1,
      &      ('>',(K1ZON( JI+LT*((K-1)+(L-1)*NB)+J-1 ),J=1,LT),'<',
      &                                      K= 1,NB ) , L = 1,NL )
          IF ( ND .NE. 0 ) THEN
-            WRITE ( JULIST , '(I7,'' - '','//FMT//')') NB*NL+1,
+            WRITE ( UNIT , '(I7,'' - '','//FMT//')') NB*NL+1,
      &        ('>',(K1ZON (JI +LT*((K-1)+NL*NB)+J-1),J=1,LT),'<',K=1,ND)
          ENDIF
       ENDIF

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,7 +20,8 @@ AIDE=PROC(nom="AIDE",op=42,
        UIinfo={"groupes":("Modélisation",)},
        fr="Interrogation sur le catalogue des commandes et les concepts produits",
        regles=(AU_MOINS_UN('CONCEPT','TYPE_ELEM', ),),
-       FICHIER     =SIMP(statut='f',typ='TXM',defaut="RESULTAT"),
+       UNITE       =SIMP(statut='f',typ='I',defaut=8),  
+       FICHIER     =SIMP(statut='f',typ='TXM'),
        TYPE_ELEM   =FACT(fr="couple type_elem option",statut='f',
          INITEL       =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON",) ),
                         ),

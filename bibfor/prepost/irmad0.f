@@ -1,10 +1,10 @@
-      SUBROUTINE IRMAD0 ( FICH, VERSIO, NSTAT, CHAMNO, NOMSYM )
+      SUBROUTINE IRMAD0 ( IFC, VERSIO, NSTAT, CHAMNO, NOMSYM )
       IMPLICIT REAL*8 (A-H,O-Z)
-      INTEGER                   VERSIO, NSTAT
-      CHARACTER*(*)       FICH ,               CHAMNO(*) , NOMSYM
+      INTEGER                  VERSIO, NSTAT
+      CHARACTER*(*)                       CHAMNO(*) , NOMSYM
 C--------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF PREPOST  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -126,7 +126,7 @@ C     --- CREATION LISTES DES NOMS ET DES NUMEROS DES NOEUDS A IMPRIMER
 C
       IF ( NUM .GE. 0 ) THEN
          NCMPMX = 6
-         CALL IRMAD1 ( FICH,VERSIO,NBNO,ZI(IAPRNO),ZI(IANUEQ),NEC,
+         CALL IRMAD1 ( IFC,VERSIO,NBNO,ZI(IAPRNO),ZI(IANUEQ),NEC,
      +                 ZI(IAEC),NCMPMX,ITYPE,NSTAT,CHAMNO,
      +                 ZK8(IAD),NOMSYM,ZI(JNU) )
       ELSE

@@ -1,12 +1,14 @@
         SUBROUTINE LCPLAS ( LOI,  TOLER, ITMAX, MOD,   IMAT,
      1                      NMAT, MATERD, MATERF, MATCST,NR, NVI,TEMPD,
      2                      TEMPF,TIMED, TIMEF, DEPS,  EPSD, SIGD,VIND,
-     3                      SIGF, VINF, ICOMP, IRTETI, THETA,
+     3                      SIGF, VINF, 
+     3                COMP,NBCOMM, CPMONO, PGL,
+     5               ICOMP, IRTETI, THETA,
      4                      SEUIL, DEVG, DEVGII)
         IMPLICIT   NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 16/06/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,6 +55,7 @@ C           IRTETI = 1:  CONTROLE DU REDECOUPAGE DU PAS DE TEMPS
 C       ----------------------------------------------------------------
         INTEGER         ITMAX, ICOMP, IRTETI, IRTET
         INTEGER         IMAT, NMAT,   NVI,    NR
+
 C
         REAL*8          TEMPD,          TEMPF, TIMED, TIMEF,DELTAT
         REAL*8          TOLER,          THETA
@@ -65,6 +68,10 @@ C
         CHARACTER*8     MOD
         CHARACTER*16    LOI
         CHARACTER*3     MATCST
+        
+        INTEGER         NBCOMM(NMAT,3)
+        REAL*8          PGL(3,3)
+        CHARACTER*16    CPMONO(5*NMAT+1),COMP(*)
 C       ----------------------------------------------------------------
 C
       IRTETI = 0
@@ -81,10 +88,12 @@ C
      1         LOI(1:5) .EQ. 'LMARC'       .OR.
      1         LOI(1:9) .EQ. 'VISCOCHAB'   .OR.
      1         LOI(1:4) .EQ. 'OHNO  '      .OR.    
+     1         LOI(1:8) .EQ. 'MONOCRIS'    .OR.    
      1         LOI(1:7) .EQ. 'NADAI_B'     ) THEN
          CALL LCPLNL ( LOI,  TOLER, ITMAX, MOD,   IMAT,
      1                 NMAT, MATERD,MATERF,MATCST,NR, NVI, TEMPD,
      2                 TEMPF,TIMED, TIMEF, DEPS,  EPSD, SIGD, VIND,
+     3                COMP,NBCOMM, CPMONO, PGL,
      3                 SIGF, VINF, ICOMP, IRTET)
          IF ( IRTET.GT.0 ) GOTO (1), IRTET
 C

@@ -1,6 +1,6 @@
-      SUBROUTINE UTIMOS(FICOU,OBIN,LATTR,LCONT)
+      SUBROUTINE UTIMOS(UNIT,OBIN,LATTR,LCONT)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF UTILITAI  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,11 +21,12 @@ C ======================================================================
 C     --
 C     ARGUMENTS:
 C     ----------
-      CHARACTER*(*) OBIN,FICOU
+      CHARACTER*(*) OBIN
+      INTEGER       UNIT  
       LOGICAL LATTR,LCONT
 C ----------------------------------------------------------------------
 C     IN:
-C       FICOU  : NOM DU FICHIER OU ON VEUT L'IMPRESSION
+C       UNIT   : UNITE LOGIQUE D'IMPRESSION
 C       OBIN   : NOM D'UN OBJET SIMPLE JEVEUX (K24) A IMPRIMER
 C      LATTR   : VRAI : ON IMPRIME LES ATTRIBUTS
 C              : FAUX : ON N'IMPRIME PAS LES ATTRIBUTS
@@ -47,11 +48,11 @@ C
       END IF
 C
       IF (LATTR) THEN
-         CALL JEIMPA(FICOU,OB1,' ')
+         CALL JEIMPA(UNIT,OB1,' ')
       END IF
 C
       IF (LCONT) THEN
-         CALL JEIMPO(FICOU,OB1,' ',' ')
+         CALL JEIMPO(UNIT,OB1,' ',' ')
       END IF
 C
  9999 CONTINUE

@@ -1,4 +1,4 @@
-      SUBROUTINE IRCHME ( FICH, CHANOM,
+      SUBROUTINE IRCHME ( IFI, CHANOM,
      >                    LRESU, NORESU, NOSIMP, NOPASE, NOMSYM,
      >                    TYPECH, NUMORD,
      >                    NBCMP,  NOMCMP, 
@@ -6,7 +6,7 @@
      >                    CODRET )
 C_______________________________________________________________________
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 16/10/2002   AUTEUR GNICOLAS G.NICOLAS 
+C MODIF PREPOST  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
 C RESPONSABLE GNICOLAS G.NICOLAS
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -27,7 +27,7 @@ C ======================================================================
 C        IMPRESSION DU CHAMP CHANOM NOEUD/ELEMENT ENTIER/REEL 
 C        AU FORMAT MED
 C     ENTREES:
-C        FICH   : NOM DU FICHIER OU ON DOIT IMPRIMER LE CHAMP
+C        IFI    : UNITE LOGIQUE D'IMPRESSION DU CHAMP
 C        CHANOM : NOM ASTER DU CHAM A ECRIRE
 C        LRESU  : .TRUE. : INDIQUE IMPRESSION D'UN CONCEPT RESULTAT
 C                 .FALSE. : IMPRESSION D'UN CHAMP GRANDEUR
@@ -54,11 +54,11 @@ C
       CHARACTER*8 NORESU, NOSIMP, NOPASE, TYPECH
       CHARACTER*16 NOMSYM
       CHARACTER*19 CHANOM
-      CHARACTER*(*) FICH, NOMCMP(*)
+      CHARACTER*(*)  NOMCMP(*)
 C
       LOGICAL LRESU
 C
-      INTEGER NUMORD, NBCMP
+      INTEGER NUMORD, NBCMP, IFI
       INTEGER NBNOEC, NBMAEC
       INTEGER LINOEC(*), LIMAEC(*)
 C
@@ -170,13 +170,13 @@ C
       IF ( CODRET.EQ.0 ) THEN
 C
       IF ( TYPECH(1:4).EQ.'NOEU' ) THEN
-        CALL IRCNME ( FICH, NOCHMD, CHANOM,
+        CALL IRCNME ( IFI, NOCHMD, CHANOM,
      >                NBCMP, NOMCMP,
      >                NUMPT, INSTAN, UNIINS, NUMORD,
      >                NBNOEC, LINOEC,
      >                CODRET )
       ELSE IF ( TYPECH(1:2).EQ.'EL' ) THEN
-        CALL IRCEME ( FICH, NOCHMD, CHANOM,
+        CALL IRCEME ( IFI, NOCHMD, CHANOM,
      >                NBCMP, NOMCMP,
      >                NUMPT, INSTAN, UNIINS, NUMORD,
      >                NBMAEC, LIMAEC,

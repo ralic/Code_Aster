@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 16/06/2004   AUTEUR JMBHH01 J.M.PROIX 
 # RESPONSABLE JMBHH01 J.M.PROIX
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -34,5 +34,5 @@ DEFI_COMPOR=OPER(nom="DEFI_COMPOR",op=59,sd_prod=compor_sdaster,
                    fr="Donner le nom du mot-clé facteur de DEFI_MATERIAU précisant le comportement élastique (un et un seul)"),
              FAMI_SYST_GLIS  =SIMP(statut='o',typ='TXM', max=1, 
                                 into=('BASAL', 'PRISMATIQUE', 'OCTAEDRIQUE', 'PYRAMIDAL1',
-                                'PYRAMIDAL2', 'CUBIQUE', 'MACLAGE', 'JOINT_GRAIN', 'RL', 'UNIAXIAL'),),),);
+                                'PYRAMIDAL2', 'CUBIQUE1', 'CUBIQUE2', 'MACLAGE', 'JOINT_GRAIN', 'RL', 'UNIAXIAL'),),),);
                    

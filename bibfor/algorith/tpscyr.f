@@ -1,6 +1,6 @@
-      SUBROUTINE TPSCYR(TPS,S,DPC,T,EPSFAB,TPREC,FLUPHI,PREC)
+      SUBROUTINE TPSCYR(TPS,S,DPC,TEMP,EPSFAB,TPREC,FLUPHI,PREC,NITER)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/01/95   AUTEUR G8BHHAC A.Y.PORTABILITE 
+C MODIF ALGORITH  DATE 15/06/2004   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,7 +17,9 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
+      REAL*8  TPS,S,DPC,TEMP,EPSFAB,TPREC,FLUPHI,PREC
+      INTEGER NITER
 C
 CDEB
 C---------------------------------------------------------------
@@ -26,11 +28,12 @@ C---------------------------------------------------------------
 C IN  S     :R: CONTRAINTE EQUIVALENTE SIGMA
 C     DPC   :R: SCALAIRE RESUMANT L'ETAT VISCOPLASTIQUE DU POINT
 C               CONSIDERE DU MATERIAU (LAMBDA)
-C     T     :R: TEMPERATURE DU POINT CONSIDERE
+C     TEMP  :R: TEMPERATURE DU POINT CONSIDERE
 C     EPSFAB:R: PARAMETRE EPS_FAB
 C     TPREC :R: PARAMETRE TEMP_RECUIT
 C     FLUPHI:R: PARAMETRE FLUX_PHI
 C     PREC  :R: PRECISION DE LA RESOLUTION EN TEMPS
+C     NITER :I: NOMBRE D'ITERATIONS DE LA RESOLUTION EN TEMPS
 C OUT TPS   :R: TEMPS CALCULE
 C---------------------------------------------------------------
 C                                                         .
@@ -45,7 +48,13 @@ C            LAMBDA = F(SIGMA,TEMPS,TEMPERATURE)     (EN 3D)
 C---------------------------------------------------------------
 CFIN
 C
-      REAL*8 R8GAEM
+      REAL*8 R8GAEM,R3S2
+      REAL*8 CTH,CTPS,FREC,CTPS2,ATH,XN,XK,AIRR
+      REAL*8 S1,TPS1,TPSANC,TEST
+      REAL*8 F1,F2,FP1,FP2,G1,G2,FF,FFP
+      INTEGER ITER
+
+      ITER = 0
 C
       R3S2 = 0.5D0*SQRT(3.D0)
 C
@@ -60,7 +69,7 @@ C---------------------------------------------------------------
 C
 C----CALCUL DE F1,FP1-------------------------------------------
 C
-        CTH = 4450.D0
+        CTH  = 4450.D0
         CTPS = 4.5 D-3
         FREC = 1.816D-4*EXP(6400.D0/(TPREC+273.15D0))
 C
@@ -111,7 +120,7 @@ C
         ATH = 9.529D17
         XN = EXP(2.304D-3*S1-0.413D0)
         XK = 39000.D0
-        G1 = ATH*EXP(-XK/(T+273.15D0))*S1**XN
+        G1 = ATH*EXP(-XK/(TEMP+273.15D0))*S1**XN
         G1 = G1/R3S2
 C
 C----CALCUL DE G2-----------------------------------------------
@@ -138,6 +147,10 @@ C
           ENDIF
         ENDIF
    20   CONTINUE
+        ITER = ITER + 1
+        IF (ITER.EQ.NITER) THEN
+           CALL UTMESS('F','TPSCYR','ECHEC DANS ELIMINATION TEMPS')
+        ENDIF
 C
 C---------------------------------------------------------------
 C---------------------------------------------------------------
@@ -195,7 +208,7 @@ C
         ATH = 9.529D17
         XN = EXP(2.304D-3*S1-0.413D0)
         XK = 39000.D0
-        G1 = ATH*EXP(-XK/(T+273.15D0))*S1**XN
+        G1 = ATH*EXP(-XK/(TEMP+273.15D0))*S1**XN
         G1 = G1/R3S2
 C
 C----CALCUL DE G2-----------------------------------------------

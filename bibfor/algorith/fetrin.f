@@ -2,7 +2,7 @@
      &                  CHSECM,SDFETI,VLAGI,OPTION,CHSOL,TESTCO)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/05/2004   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGORITH  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -276,7 +276,7 @@ C MONITORING
             WRITE(IFM,*)'DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD'        
           ENDIF
           IF (NIV.GE.4)
-     &      CALL UTIMSD('MESSAGE',2,.FALSE.,.TRUE.,CHAMLS(1:19),1,' ')
+     &      CALL UTIMSD(IFM,2,.FALSE.,.TRUE.,CHAMLS(1:19),1,' ')
         ENDIF
                 
    40 CONTINUE

@@ -5,7 +5,7 @@
         IMPLICIT REAL*8 (A-H,O-Z)
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 04/05/2004   AUTEUR SMICHEL S.MICHEL-PONNELLE 
+C MODIF ALGORITH  DATE 16/06/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -93,6 +93,7 @@ C               EPSDT   DEFORMATION TOTALE A T
 C               DEPST   INCREMENT DE DEFORMATION TOTALE
 C               SIGD    CONTRAINTE A T
 C               VIND    VARIABLES INTERNES A T    + INDICATEUR ETAT T
+C    ATTENTION  VIND    VARIABLES INTERNES A T MODIFIEES SI REDECOUPAGE
 C       OUT     SIGF    CONTRAINTE A T+DT
 C               VINF    VARIABLES INTERNES A T+DT + INDICATEUR ETAT T+DT
 C               DSDE    MATRICE DE COMPORTEMENT TANGENT A T+DT OU T
@@ -133,8 +134,7 @@ C       ----------------------------------------------------------------
 C
         INTEGER         ICOMP,        NPAL,      IPAL
         INTEGER         NMOD ,        IRTET,     K
-        PARAMETER       ( NMOD = 40     )
-        REAL*8          EPS(6),       DEPS(6),   SD(6),    VD(NMOD)
+        REAL*8          EPS(6),       DEPS(6),   SD(6)
         REAL*8          DSDELO(6,6)
         REAL*8          TD,           TF,        DELTAT
         REAL*8          TEMD,         TEMF,      DETEMP
@@ -231,7 +231,6 @@ C --       INITIALISATION DES VARIABLES POUR LE REDECOUPAGE DU PAS
                 CALL LCEQVE ( DEPST     , DEPS           )
                 CALL LCPRSV ( 1.D0/NPAL , DEPS    , DEPS )
                 CALL LCEQVN ( NDT       , SIGD    , SD   )
-                CALL LCEQVN ( NVI       , VIND    , VD   )
 C
 C --        REACTUALISATION DES VARIABLES POUR L INCREMENT SUIVANT
             ELSE IF ( K .GT. 1 ) THEN
@@ -246,7 +245,7 @@ C --        REACTUALISATION DES VARIABLES POUR L INCREMENT SUIVANT
                 CALL LCSOVE ( EPS     , DEPS    , EPS  )
                 IF ( OPT .NE. 'RIGI_MECA_TANG' ) THEN
                     CALL LCEQVN ( NDT     , SIGF    , SD   )
-                    CALL LCEQVN ( NVI     , VINF    , VD   )
+                    CALL LCEQVN ( NVI     , VINF    , VIND   )
                 ENDIF
             ENDIF
 C
@@ -255,13 +254,13 @@ C
               CALL PLASBE ( TYPMOD,  IMAT,   COMP,   CRIT,
      1                    TEMD,   TEMF,   TREF,  HYDD, HYDF,
      2                    SECD, SECF, SREF, EPS,   DEPS,
-     3                    SD,    VD,     OPT,  ELGEOM,  SIGF,   VINF,
+     3                    SD,  VIND,   OPT, ELGEOM, SIGF, VINF,
      4                    DSDELO,  ICOMP,   NVI,  IRTET)
             ELSE
               CALL PLASTI ( TYPMOD,  IMAT,   COMP,   CRIT,  TD,
      1                    TF,    TEMD,   TEMF,   TREF,  HYDD, HYDF,
      2                    SECD, SECF, SREF,  EPS,   DEPS,
-     2                    SD,    VD,     OPT,    SIGF,   VINF,
+     2                    SD,    VIND,     OPT,    SIGF,   VINF,
      3                    DSDELO,  ICOMP,   NVI,  IRTET)
             ENDIF
             IF ( IRTET.GT.0 ) GOTO (1), IRTET

@@ -3,7 +3,7 @@
       INTEGER IER
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 17/12/2002   AUTEUR CIBHHGB G.BERTRAND 
+C MODIF UTILITAI  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -98,6 +98,8 @@ C
                NBCOUP = NV / 2
                CALL WKVECT('&&OP0004.TEMP.PARA','V V R',NV,LPARA)
                CALL WKVECT('&&OP0004.TEMP.PAR2','V V R',NBCOUP,LPAR2)
+               CALL GETVR8('DEFI_FONCTION','VALE',IOCC,1,NV,
+     +                                                ZR(LPARA),NBVAL)
                DO 12 I = 0,NBCOUP-1
                   ZR(LPAR2+I) = ZR(LPARA+2*I)
  12            CONTINUE
@@ -221,7 +223,7 @@ C     --- CREATION D'UN TITRE ---
       CALL TITRE
 C
 C     --- IMPRESSIONS ---
-      IF (NIV.GT.1) CALL FOIMPR(NOMFON,NIV,'MESSAGE',0,K8B)
+      IF (NIV.GT.1) CALL FOIMPR(NOMFON,NIV,IFM,0,K8B)
 C
       CALL JEDEMA()
       END

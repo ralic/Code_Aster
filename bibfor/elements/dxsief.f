@@ -4,7 +4,7 @@
       REAL*8          XYZL(3,4), DEPL(*), PGL(3,3), SIGMA(*)
       CHARACTER*16    NOMTE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ELEMENTS  DATE 15/06/2004   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -59,9 +59,9 @@ C --------------------------------------------------------------------
       REAL*8       HIC, H, ZIC, ZMIN, VALPU(2), TINF, TMOY, TSUP
       REAL*8       ZERO, DEUX, HYDR, SECH, TEMPG, SIG, C1, C2, C3
       REAL*8       TREF, ALPHA,E,SIGP(4),SIGL(3),R8DGRD,BETA,ALPH
-      REAL*8       EPS2D(6), KHI(3), DEPF(12), DEPM(8),ANGLL,PCT,PCL
+      REAL*8       EPS2D(6), KHI(3), DEPF(12), DEPM(8)
       REAL*8       BF(3,3*NNO), BM(3,2*NNO), EPSM(3), EPSTH(4),EPSG(4)
-      LOGICAL      TEMPNO, GRILLE, DKT, DKQ,PCTNZR
+      LOGICAL      TEMPNO, GRILLE, DKT, DKQ 
       CHARACTER*2  CODRET
       CHARACTER*8  NOMPAR(2)
 C     ------------------------------------------------------------------
@@ -134,20 +134,11 @@ C     ---------------------------
       DISTN = ZERO
       IF ( GRILLE ) THEN
          CALL GTRIA3(XYZL,ZR(LZR))
-         DISTN = ZR(ICACOQ+6)
+         DISTN = ZR(ICACOQ+3)
          CALL GRDMAT(ICACOQ,MATER,PGL,DH,ROT)
          ALPH = ZR(ICACOQ+1) * R8DGRD()
          BETA  = ZR(ICACOQ+2) * R8DGRD()
-         ANGLL = ZR(ICACOQ+3) * R8DGRD()
-C       --- POURCENTAGE D'ARMATURES 1 / UNITE DE LARGEUR
-         PCL   = ZR(ICACOQ+4)
-         IF ( PCL.EQ.0.D0)THEN
-             CALL UTMESS('F','NMGRIL_02',
-     &           ' PCENTAGE ARMATURE 1 NUL: ')
-         ENDIF
-C        --- POURCENTAGE D'ARMATURES 2 / UNITE DE LARGEUR
-         PCT   = ZR(ICACOQ+5)
-         CALL GRIROT ( ALPH , BETA , ANGLL ,PGL , ROT, C, S )
+         CALL GRIROT ( ALPH , BETA ,PGL , ROT, C, S )
          PI = R8PI()
          PHI= 0.D0
 C         IF(ABS(C).GT.1.D-14) PHI= (ATAN(S/C)*180.D0/PI)-90.D0
@@ -321,10 +312,8 @@ C
                SIGL(2)=E*EPSL(2)
                SIGL(3)=0.D0
 C
-C              MULTIPLICATION CONTRAINTES DANS DIR 2
-C              PAR % ARMATURE
 C
-               SIGL(2) = SIGL(2)*PCT/PCL
+               SIGL(2) = 0.D0
                CALL R8INIR(4,0.D0,SIGP,1)
                CALL INSCRG ( SIGL , PHI , SIGP)
                SIGMA(ICPG+1)=SIGP(1)

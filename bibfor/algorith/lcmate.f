@@ -6,7 +6,7 @@
         IMPLICIT   NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 16/06/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -124,6 +124,7 @@ C
       ELSEIF ( LOI(1:8) .EQ. 'MONOCRIS' ) THEN
          CALL LCMMAT ( COMP, MOD, IMAT, NMAT, TEMPD, TEMPF,PGL, MATERD,
      1            MATERF, MATCST, NBCOMM,CPMONO,NDT, NDI, NR, NVI )
+         TYPMA='COHERENT'
       ENDIF
 C
       END

@@ -2,7 +2,7 @@
       IMPLICIT  REAL*8 (A-H,O-Z)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,6 +46,7 @@ C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
       CALL INFMAJ()
+      CALL INFNIV ( IFM, NIV )
 C
       CALL GETRES(NOMRES,TYPRES,NOMCOM)
 C
@@ -73,8 +74,8 @@ C
             ZR(IDRAYO+I-1) = ZR(IDTEMP+2*I-1)
             ZR(IDTHET+I-1) = ZR(IDTEMP+2*(I-1)) * RAD
  10     CONTINUE
-        CALL JEIMPO('MESSAGE',NOMRES//'           .VALR',' ',' RAYONS ')
-        CALL JEIMPO('MESSAGE',NOMRES//'           .VALT',' ',' ANGLES ')
+        CALL JEIMPO(IFM,NOMRES//'           .VALR',' ',' RAYONS ')
+        CALL JEIMPO(IFM,NOMRES//'           .VALT',' ',' ANGLES ')
         CALL JEDETR('&&OP0073.TEMP')
       ENDIF
       IF (TYPE(1:5).EQ.'GUID_') THEN

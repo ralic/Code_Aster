@@ -1,7 +1,11 @@
-      SUBROUTINE NMCO1D(IMATE, COMPOR, OPTION, EPSM, DEPS,
-     +               SIGM, VIM, TM, TP, TREF, SIGP, VIP, DSIDEP,CODRET)
+      SUBROUTINE NMCO1D(IMATE, COMPOR, OPTION, 
+     &                  EPSM, DEPS,
+     &                  ANGMAS,
+     &                  SIGM, VIM,
+     &                  TM, TP, TREF, 
+     &                  SIGP, VIP, DSIDEP,CODRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 15/06/2004   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -22,7 +26,7 @@ C ======================================================================
       INTEGER       IMATE,CODRET
       CHARACTER*16  COMPOR(*),OPTION
       REAL*8        EPSM,DEPS,SIGM,VIM(*)
-      REAL*8        TM,TP,TREF
+      REAL*8        TM,TP,TREF,ANGMAS(3)
       REAL*8        SIGP,VIP(*),DSIDEP
 C ----------------------------------------------------------------------
 C          REALISE LES LOIS 1D (DEBORST OU EXPLICITEMENT 1D)
@@ -40,8 +44,9 @@ C IN   TM     : TEMPERATURE L'INSTANT DU CALCUL PRECEDENT
 C IN   TP     : TEMPERATURE A L'INSTANT DU
 C IN  TREF    : TEMPERATURE DE REFERENCE
 C OUT SIGP    : CONTRAINTE A L'INSTANT ACTUEL
-C OUT VIP     : VARIABLES INTERNES A L'INSTANT ACTUEL
-C OUT DSIDEP  : RIGIDITE (SCALAIRE DANS CE CAS)
+C     VIP     : VARIABLES INTERNES A L'INSTANT ACTUEL
+C     DSIDEP  : RIGIDITE (SCALAIRE DANS CE CAS)
+C     CODRET  : CODE RETOUR NON NUL SI SIGYY OU SIGZZ NON NULS
 C ----------------------------------------------------------------------
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
 C
@@ -119,8 +124,12 @@ C --- CARACTERISTIQUES ELASTIQUES A TPLUS
         CALL NM1DCI(IMATE,TM,TP,TREF,EM,EP,ALPHAM,ALPHAP,SIGM,
      &            DEPS,VIM,OPTION,SIGP,VIP,DSIDEP)
       ELSE IF (COM1D) THEN
-        CALL COMP1D(OPTION,SIGM,EPSM,DEPS,TREF,TM,TP,
-     &                VIM,VIP,SIGP,DSIDEP,CODRET,R8VIDE(),R8VIDE())
+        CALL COMP1D(OPTION,
+     &              SIGM,EPSM,DEPS,
+     &              TM,TP,TREF,
+     &              R8VIDE(),R8VIDE(),
+     &              ANGMAS,
+     &              VIM,VIP,SIGP,DSIDEP,CODRET)
       ELSE IF (PINTO) THEN
         CALL NM1DPM(OPTION,NVARPI,ALPH,TM,NCSTPM,CSTPM,
      &              SIGM,VIM,TP,DEPS,VIP,SIGP,DSIDEP)

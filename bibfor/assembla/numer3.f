@@ -1,6 +1,6 @@
       SUBROUTINE NUMER3 (MO,INFCHA,SOLVEU,BASE,NU)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 11/09/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ASSEMBLA  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -35,9 +35,10 @@ C                  : BASE(2:2) : BASE POUR CREER LE PROF_CHNO
 C IN/JXVAR K14  NU      : NOM DU NUME_DDL
 C
 C -----------------------------------------------------------
-      CHARACTER*14 NU2,NUAV
-      CHARACTER*24 OB1,OB2
-      LOGICAL IDENOB
+      INTEGER       IUL, IUNIFI
+      CHARACTER*14  NU2, NUAV
+      CHARACTER*24  OB1, OB2
+      LOGICAL       IDENOB
 C
       NU2=NU
       NUAV='&&NUMER3.NUAV'
@@ -45,14 +46,14 @@ C
       CALL COPISD('NUME_DDL','V',NU,NUAV)
       CALL DETRSD('NUME_DDL',NU)
 
-
       CALL NUMERO (' ',MO,INFCHA,SOLVEU,BASE,NU)
 
       OB1=NU2//'.NUME.DEEQ'
       OB2=NUAV//'.NUME.DEEQ'
-      IF(.NOT.IDENOB(OB1,OB2))  THEN
-        CALL JEIMPO ( 'MESSAGE' , OB1 , ' ' , ' ' )
-        CALL JEIMPO ( 'MESSAGE' , OB2 , ' ' , ' ' )
+      IF( .NOT. IDENOB(OB1,OB2) )  THEN
+        IUL = IUNIFI('MESSAGE')
+        CALL JEIMPO ( IUL , OB1 , ' ' , ' ' )
+        CALL JEIMPO ( IUL , OB2 , ' ' , ' ' )
         CALL UTMESS('F','NUMER3','LES DDLS DU NUME_DDL ONT BOUGE.')
       END IF
 

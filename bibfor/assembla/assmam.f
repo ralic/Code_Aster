@@ -10,7 +10,7 @@ C              IL FAUT APPELER SON "CHAPEAU" : ASMATR.
       CHARACTER*4 MOTCLE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 05/05/2004   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ASSEMBLA  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -756,9 +756,9 @@ C MONITORING
           WRITE(IFM,*)
           WRITE (IFM,1000) COEF
           IF ((NIV.GE.4).AND.(IDD.NE.0)) 
-     &      CALL UTIMSD('MESSAGE',2,.FALSE.,.TRUE.,KMAREF(1:19),1,' ')
+     &      CALL UTIMSD(IFM,2,.FALSE.,.TRUE.,KMAREF(1:19),1,' ')
           IF ((NIV.GE.4).AND.(IDD.EQ.NBSD)) 
-     &      CALL UTIMSD('MESSAGE',2,.FALSE.,.TRUE.,MATDEV(1:19),1,' ')
+     &      CALL UTIMSD(IFM,2,.FALSE.,.TRUE.,MATDEV(1:19),1,' ')
         ENDIF 
 
      

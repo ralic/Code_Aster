@@ -1,9 +1,9 @@
         SUBROUTINE LCCNVX ( LOI, IMAT, NMAT, MATERF, TEMPF, SIGF, VIND,
-     +                      SEUIL )
+     &                      COMP, NBCOMM, CPMONO, PGL,NR,NVI,SEUIL )
         IMPLICIT  NONE
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 16/06/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -33,10 +33,13 @@ C --- : MATERF :  COEFFICIENTS MATERIAU A T+DT -------------------------
 C OUT : SEUIL  :  SEUIL  ELASTICITE  A T+DT ----------------------------
 C ----------------------------------------------------------------------
 C ======================================================================
-        INTEGER         NMAT , IMAT
+        INTEGER         NMAT , IMAT, NR, NVI
         REAL*8          MATERF(NMAT,2), TEMPF , SEUIL
         REAL*8          SIGF(6) , VIND(*)
         CHARACTER*16    LOI
+      INTEGER         NBCOMM(NMAT,3)
+      REAL*8          PGL(3,3)
+      CHARACTER*16    CPMONO(5*NMAT+1),COMP(*)
 C ======================================================================
       IF ( LOI(1:8) .EQ. 'ROUSS_PR'  )THEN
          CALL RSLCVX ( IMAT, NMAT, MATERF, TEMPF, SIGF, VIND, SEUIL )
@@ -61,6 +64,10 @@ C ======================================================================
 C ======================================================================
       ELSEIF ( LOI(1:6)  .EQ. 'LAIGLE') THEN
          CALL LGLCVX ( SIGF, VIND, NMAT, MATERF, SEUIL)
+C ======================================================================
+      ELSEIF ( LOI(1:8)  .EQ. 'MONOCRIS') THEN
+         CALL LCMMVX ( SIGF, VIND, NMAT, MATERF, 
+     &                   COMP,NBCOMM, CPMONO, PGL, NR, NVI, SEUIL)
 C ======================================================================
       ENDIF
 C ======================================================================

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -58,7 +58,8 @@ CALC_THETA=OPER(nom="CALC_THETA",op=54,sd_prod=theta_geom,reentrant='n',
          ),
          GRAD_NOEU_THETA =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON") ),
          IMPRESSION      =FACT(statut='f',
-           FICHIER         =SIMP(statut='f',typ='TXM',defaut="RESULTAT",into=("RESULTAT",) ),
+           UNITE           =SIMP(statut='f',typ='I',defaut=8),  
+           FICHIER         =SIMP(statut='f',typ='TXM'),
            FORMAT          =SIMP(statut='f',typ='TXM',defaut="EXCEL",into=("EXCEL","AGRAF") ),
          ),
 )  ;

@@ -1,4 +1,4 @@
-# MODIF  DATE 17/05/2004   AUTEUR CIBHHBC M.LOPES 
+# MODIF  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
 # TITRE LIRE_FONCTION D'UN SPECTRE D'OSCILLATEUR
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -28,13 +28,24 @@ DEBUT( CODE=_F(  NOM = 'ZZZZ102B',NIV_PUB_WEB='INTERNET')  )
 #=======================================================================
 
 SPO=LIRE_FONCTION(     UNITE=20,
-              TITRE='SPECTRE OSCILLATEUR FORMAT LIBRE',
+                       TYPE='NAPPE',
+                       TITRE='SPECTRE OSCILLATEUR FORMAT LIBRE',
                        INTERPOL='LIN',
-                     PROL_DROITE='LINEAIRE', 
-                    PROL_GAUCHE='CONSTANT',
-                  INTERPOL_FONC='LIN',
-                PROL_DROITE_FONC='EXCLU', 
-               PROL_GAUCHE_FONC='EXCLU'
+                       PROL_DROITE='LINEAIRE', 
+                       PROL_GAUCHE='CONSTANT',
+                       INTERPOL_FONC='LIN',
+                       PROL_DROITE_FONC='EXCLU', 
+                       PROL_GAUCHE_FONC='EXCLU',
+                       NOM_RESU      ='ACCE',
+                       NOM_PARA      ='AMOR',
+                       NOM_PARA_FONC ='FREQ',
+                       INDIC_PARA    =[1,1],
+                       INDIC_ABSCISSE=[2,1],
+                       DEFI_FONCTION =( _F(INDIC_RESU=[2,2]),
+                                        _F(INDIC_RESU=[2,3]),
+                                        _F(INDIC_RESU=[2,4]),
+                                        _F(INDIC_RESU=[2,5]),
+                                        _F(INDIC_RESU=[2,6]),),
                        )
 
 VAL=1.09558E-02

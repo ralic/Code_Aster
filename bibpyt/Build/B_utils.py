@@ -1,4 +1,4 @@
-#@ MODIF B_utils Build  DATE 13/01/2004   AUTEUR DURAND C.DURAND 
+#@ MODIF B_utils Build  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -177,18 +177,19 @@ def Typast(ty):
       du concept ou de la liste de concepts passé en argument (ty)
    """
    if type(ty) == types.TupleType : 
-      t=ty[0]
+#      t=ty[0]
+      return [Typast(elem) for elem in ty]
    else : 
       t=ty
-   if t == 'I': return "IS "
-   if t == 'R': return "R8 "
-   if t == 'C': return "C8 "
+   if t == 'I'  : return "IS "
+   if t == 'R'  : return "R8 "
+   if t == 'C'  : return "C8 "
    if t == 'TXM': return "TX "
    if type(t)==types.ClassType :
-      if t.__name__ == 'reel':return "R8 "
-      if t.__name__ == 'entier':return "IS "
+      if t.__name__ == 'reel'    :return "R8 "
+      if t.__name__ == 'entier'  :return "IS "
       if t.__name__ == 'complexe':return "C8 "
-      if t.__name__ == 'chaine':return "TX "
+      if t.__name__ == 'chaine'  :return "TX "
       return t.__name__
    return None
 

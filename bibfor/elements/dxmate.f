@@ -23,7 +23,7 @@ C ======================================================================
       REAL*8 PGL(3,3),R(*)
       LOGICAL GRILLE,ELASCQ
 C     ------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ELEMENTS  DATE 15/06/2004   AUTEUR MABBAS M.ABBAS 
 C TOLE CRP_20
 C     ------------------------------------------------------------------
 C     CALCUL DES MATRICES DE RIGIDITE DE FLEXION, MEMBRANE , COUPLAGE
@@ -61,12 +61,13 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       REAL*8       XAB1(3,3),XAB2(2,2),XAB3(3,2),DH(3,3),ROT(3,3)
       REAL*8       DX,DY,DZ,S,C,NORM,PS,PJDX,PJDY,PJDZ
       REAL*8       ALPHA,BETA,R8DGRD,R8PREM,DET
-      REAL*8       ANGLL,PCL,PCT,YOUNG1,YOUNG2,ZERO,DEUX
+      REAL*8       YOUNG1,YOUNG2,ZERO,DEUX
       CHARACTER*2  CODRET(33)
       CHARACTER*3  NUM
       CHARACTER*8  NOMRES(33),NOMPAR
       CHARACTER*8  ELREFE
       CHARACTER*10 PHENOM
+
 C     ------------------------------------------------------------------
 
       ZERO   = 0.0D0
@@ -84,15 +85,6 @@ C
       ALPHA = ZR(JCOQU+1)*R8DGRD()
       BETA  = ZR(JCOQU+2)*R8DGRD()
       EXCENT= ZR(JCOQU+4)
-
-      IF (GRILLE) THEN
-C        --- ANGLE EN DEGRES: 1IERE DIRECTION D'ARMATURES
-        ANGLL = ZR(JCOQU+3)*R8DGRD()
-C        --- POURCENTAGE D'ARMATURES 1 / UNITE DE LARGEUR
-        PCL = ZR(JCOQU+4)
-C        --- POURCENTAGE D'ARMATURES 2 / UNITE DE LARGEUR
-        PCT = ZR(JCOQU+5)
-      END IF
 
       DX = COS(BETA)*COS(ALPHA)
       DY = COS(BETA)*SIN(ALPHA)
@@ -286,7 +278,7 @@ C        ------ MATERIAU ISOTROPE --------------------------------------
         IF (GRILLE) THEN
 C        ---- CALCUL DE LA MATRICE DE RIGIDITE ORTHOTROPE ------------
           YOUNG1 = YOUNG
-          YOUNG2 = YOUNG*PCT/PCL
+          YOUNG2 = 0.D0
           CALL R8INIR(9,0.D0,DH,1)
           CALL R8INIR(9,0.D0,DMF,1)
           CALL R8INIR(4,0.D0,DC,1)
@@ -297,7 +289,7 @@ C        ---- CALCUL DE LA MATRICE DE RIGIDITE ORTHOTROPE ------------
 
 C   MATRICE PASSAGE DU REPERE D'ORTHOTROPIE VERS LE REPERE DE L'ELEMENT
 
-          CALL GRIROT(ALPHA,BETA,ANGLL,PGL,ROT,C,S)
+          CALL GRIROT(ALPHA,BETA,PGL,ROT,C,S)
 
 C   PASSAGE DU REPERE D'ORTHOTROPIE VERS LE REPERE DE L'ELEMENT
 

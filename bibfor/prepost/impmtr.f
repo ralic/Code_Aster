@@ -1,7 +1,7 @@
-      SUBROUTINE IMPMTR ( FICHIE, NOMSDZ, GRAINZ, OPTIOZ, NBNO, LISNOZ,
+      SUBROUTINE IMPMTR ( IFM, NOMSDZ, GRAINZ, OPTIOZ, NBNO, LISNOZ,
      +                    NBCMP, LISCMZ, NBCHIF, EPS )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 05/11/96   AUTEUR CIBHHGB G.BERTRAND 
+C MODIF PREPOST  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,7 +26,7 @@ C                DANS LE FICHIER DE NOM FICHIER.
 C                
 C
 C   ARGUMENT        E/S  TYPE         ROLE
-C    FICHIE          IN    K*     NOM DU FICHIER OU L'ON IMPRIME
+C    IFM             IN    I      UNITE LOGIQUE D'IMPRESSION DE
 C                                 LA MATR_ASSE,
 C    NOMSDZ          IN    K*     NOM DE LA MATR_ASSE
 C    GRAINZ          IN    K*     'GRAIN' DE L'IMPRESSION
@@ -95,7 +95,7 @@ C ----- COMMUNS NORMALISES  JEVEUX
       COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
       CHARACTER*32     JEXNUM, JEXNOM
 C -----  ARGUMENTS
-      CHARACTER*(*) FICHIE, NOMSDZ, GRAINZ, OPTIOZ, LISNOZ, LISCMZ
+      CHARACTER*(*)  NOMSDZ, GRAINZ, OPTIOZ, LISNOZ, LISCMZ
 C -----  VARIABLES LOCALES
       CHARACTER*6   GRAIN 
       CHARACTER*19  NOMSD
@@ -144,13 +144,13 @@ C
 C ---     IMPRESSION SELON LE GRAIN NOEUD  :
 C         -------------------------------
           IF (GRAIN(1:5).EQ.'NOEUD') THEN
-              CALL IMRSLN (FICHIE, NOMSDZ, OPTIOZ, NBNO, 
+              CALL IMRSLN (IFM, NOMSDZ, OPTIOZ, NBNO, 
      +                     LISNOZ, NBCMP, LISCMZ, NBCHIF, EPS )
 C
 C ---     IMPRESSION SELON LE GRAIN VALEUR :
 C         --------------------------------
           ELSEIF (GRAIN.EQ.'VALEUR') THEN
-              CALL IMRSLV (FICHIE, NOMSDZ, OPTIOZ, NBNO, 
+              CALL IMRSLV (IFM, NOMSDZ, OPTIOZ, NBNO, 
      +                     LISNOZ, NBCMP, LISCMZ, NBCHIF, EPS )
           ELSE
               CALL UTMESS ('F','IMPMTR','LA VALEUR DU GRAIN '//
@@ -166,13 +166,13 @@ C
 C ---     IMPRESSION SELON LE GRAIN NOEUD :
 C         -------------------------------
           IF (GRAIN(1:5).EQ.'NOEUD') THEN
-              CALL IMRSMN (FICHIE, NOMSDZ, OPTIOZ, NBNO, 
+              CALL IMRSMN (IFM, NOMSDZ, OPTIOZ, NBNO, 
      +                     LISNOZ, NBCMP, LISCMZ, NBCHIF, EPS )
 C
 C ---     IMPRESSION SELON LE GRAIN VALEUR :
 C         --------------------------------
           ELSEIF (GRAIN.EQ.'VALEUR') THEN
-              CALL IMRSMV (FICHIE, NOMSDZ, OPTIOZ, NBNO, 
+              CALL IMRSMV (IFM, NOMSDZ, OPTIOZ, NBNO, 
      +                     LISNOZ, NBCMP, LISCMZ, NBCHIF, EPS )
           ELSE
               CALL UTMESS ('F','IMPMTR','LA VALEUR DU GRAIN '//
@@ -198,13 +198,13 @@ C
 C ---     IMPRESSION SELON LE GRAIN NOEUD :
 C         -------------------------------
           IF (GRAIN(1:5).EQ.'NOEUD') THEN
-              CALL IMRNLN (FICHIE, NOMSDZ, OPTIOZ, NBNO, 
+              CALL IMRNLN (IFM, NOMSDZ, OPTIOZ, NBNO, 
      +                     LISNOZ, NBCMP, LISCMZ, NBCHIF, EPS )
 C
 C ---     IMPRESSION SELON LE GRAIN VALEUR :
 C         --------------------------------
           ELSEIF (GRAIN.EQ.'VALEUR') THEN
-              CALL IMRNLV (FICHIE, NOMSDZ, OPTIOZ, NBNO, 
+              CALL IMRNLV (IFM, NOMSDZ, OPTIOZ, NBNO, 
      +                     LISNOZ, NBCMP, LISCMZ, NBCHIF, EPS )
 
           ELSE
@@ -221,13 +221,13 @@ C
 C ---     IMPRESSION SELON LE GRAIN NOEUD :
 C         -------------------------------
           IF (GRAIN(1:5).EQ.'NOEUD') THEN
-              CALL IMRNMN (FICHIE, NOMSDZ, OPTIOZ, NBNO, 
+              CALL IMRNMN (IFM, NOMSDZ, OPTIOZ, NBNO, 
      +                     LISNOZ, NBCMP, LISCMZ, NBCHIF, EPS )
 C
 C ---     IMPRESSION SELON LE GRAIN VALEUR :
 C         --------------------------------
           ELSEIF (GRAIN.EQ.'VALEUR') THEN
-              CALL IMRNMV (FICHIE, NOMSDZ, OPTIOZ, NBNO, 
+              CALL IMRNMV (IFM, NOMSDZ, OPTIOZ, NBNO, 
      +                     LISNOZ, NBCMP, LISCMZ, NBCHIF, EPS )
           ELSE
               CALL UTMESS ('F','IMPMTR','LA VALEUR DU GRAIN '//
@@ -265,13 +265,13 @@ C
 C ---     IMPRESSION SELON LE GRAIN NOEUD :
 C         -------------------------------
           IF (GRAIN(1:5).EQ.'NOEUD') THEN
-              CALL IMCSLN (FICHIE, NOMSDZ, OPTIOZ, NBNO, 
+              CALL IMCSLN (IFM, NOMSDZ, OPTIOZ, NBNO, 
      +                     LISNOZ, NBCMP, LISCMZ, NBCHIF, EPS )
 C
 C ---     IMPRESSION SELON LE GRAIN VALEUR :
 C         --------------------------------
           ELSEIF (GRAIN.EQ.'VALEUR') THEN
-              CALL IMCSLV (FICHIE, NOMSDZ, OPTIOZ, NBNO, 
+              CALL IMCSLV (IFM, NOMSDZ, OPTIOZ, NBNO, 
      +                     LISNOZ, NBCMP, LISCMZ, NBCHIF, EPS )
           ELSE
               CALL UTMESS ('F','IMPMTR','LA VALEUR DU GRAIN '//
@@ -287,13 +287,13 @@ C
 C ---     IMPRESSION SELON LE GRAIN NOEUD :
 C         -------------------------------
           IF (GRAIN(1:5).EQ.'NOEUD') THEN
-              CALL IMCSMN (FICHIE, NOMSDZ, OPTIOZ, NBNO, 
+              CALL IMCSMN (IFM, NOMSDZ, OPTIOZ, NBNO, 
      +                     LISNOZ, NBCMP, LISCMZ, NBCHIF, EPS )
 C
 C ---     IMPRESSION SELON LE GRAIN VALEUR :
 C         --------------------------------
           ELSEIF (GRAIN.EQ.'VALEUR') THEN
-              CALL IMCSMV (FICHIE, NOMSDZ, OPTIOZ, NBNO, 
+              CALL IMCSMV (IFM, NOMSDZ, OPTIOZ, NBNO, 
      +                     LISNOZ, NBCMP, LISCMZ, NBCHIF, EPS )
           ELSE
               CALL UTMESS ('F','IMPMTR','LA VALEUR DU GRAIN '//
@@ -319,13 +319,13 @@ C
 C ---     IMPRESSION SELON LE GRAIN NOEUD :
 C         -------------------------------
           IF (GRAIN(1:5).EQ.'NOEUD') THEN
-              CALL IMCNLN (FICHIE, NOMSDZ, OPTIOZ, NBNO, 
+              CALL IMCNLN (IFM, NOMSDZ, OPTIOZ, NBNO, 
      +                     LISNOZ, NBCMP, LISCMZ, NBCHIF, EPS )
 C
 C ---     IMPRESSION SELON LE GRAIN VALEUR :
 C         --------------------------------
           ELSEIF (GRAIN.EQ.'VALEUR') THEN
-              CALL IMCNLV (FICHIE, NOMSDZ, OPTIOZ, NBNO, 
+              CALL IMCNLV (IFM, NOMSDZ, OPTIOZ, NBNO, 
      +                     LISNOZ, NBCMP, LISCMZ, NBCHIF, EPS )
 
           ELSE
@@ -342,13 +342,13 @@ C
 C ---     IMPRESSION SELON LE GRAIN NOEUD :
 C         -------------------------------
           IF (GRAIN(1:5).EQ.'NOEUD') THEN
-              CALL IMCNMN (FICHIE, NOMSDZ, OPTIOZ, NBNO, 
+              CALL IMCNMN (IFM, NOMSDZ, OPTIOZ, NBNO, 
      +                     LISNOZ, NBCMP, LISCMZ, NBCHIF, EPS )
 C
 C ---     IMPRESSION SELON LE GRAIN VALEUR :
 C         --------------------------------
           ELSEIF (GRAIN.EQ.'VALEUR') THEN
-              CALL IMCNMV (FICHIE, NOMSDZ, OPTIOZ, NBNO, 
+              CALL IMCNMV (IFM, NOMSDZ, OPTIOZ, NBNO, 
      +                     LISNOZ, NBCMP, LISCMZ, NBCHIF, EPS )
           ELSE
               CALL UTMESS ('F','IMPMTR','LA VALEUR DU GRAIN '//

@@ -1,6 +1,6 @@
       SUBROUTINE TE0449(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 15/06/2004   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -30,7 +30,7 @@ C ......................................................................
 
       CHARACTER*8   TYPMOD(2)
       CHARACTER*8   ELREFE,ELREF2
-      INTEGER NNO1,NNO2,NPG1,IMATUU,JCRET,CODRET,IRET
+      INTEGER NNO1,NNO2,NPG1,IMATUU,JCRET,CODRET,IRET,ICAMAS
       INTEGER IPOIDS,IVF1,IVF2,IDFDE1,IGEOM,NDIM,NNOS,JGANO
       INTEGER IMATE,ITREF,ICONTM,IVARIM,ITEMPM,ITEMPP,NPG2,IDFDE2
       INTEGER IINSTM,IINSTP,IDEPLM,IDEPLP,ICOMPO,LGPG,ICARCR
@@ -39,6 +39,7 @@ C ......................................................................
       REAL*8  DEPLM(2,9),DDEPL(2,9),GONFLM(2,4),DGONFL(2,4)
       REAL*8  FINTU(2,9), FINTA(2,4), KUU(2,9,2,9)
       REAL*8  KUA(2,9,2,4), KAA(2,4,2,4), TRAV1(54), TRAV2(54)
+      REAL*8  ANGMAS(3),R8VIDE,R8DGRD
 
 
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
@@ -102,7 +103,17 @@ C PARAMETRES EN ENTREE
       CALL TECACH('OON','PVARIMR',7,JTAB,IRET)
       LGPG = MAX(JTAB(6),1)*JTAB(7)
       CALL JEVECH('PCARCRI','L',ICARCR)
+C     ORIENTATION DU MASSIF     
+      CALL TECACH('NNN','PCAMASS',1,ICAMAS,IRET)
+      CALL R8INIR(3, R8VIDE(), ANGMAS ,1)
 
+      IF (ICAMAS.GT.0) THEN
+        IF (ZR(ICAMAS).GT.0.D0) THEN
+         ANGMAS(1) = ZR(ICAMAS+1)*R8DGRD()
+         ANGMAS(2) = ZR(ICAMAS+2)*R8DGRD()
+         ANGMAS(3) = ZR(ICAMAS+3)*R8DGRD()
+        ENDIF
+      ENDIF
 C PARAMETRES EN SORTIE
 
       IF (OPTION(1:14).EQ.'RIGI_MECA_TANG' .OR.
@@ -139,18 +150,24 @@ C FORMATTAGE DES INCONNUES
           CALL NIPL2D(NNO1,NNO2,NPG1,IPOIDS,IVF1,IVF2,IDFDE1,
      +                TRAV1,ZR(IGEOM),TYPMOD,
      +                OPTION,ZI(IMATE),ZK16(ICOMPO),LGPG,ZR(ICARCR),
-     +                ZR(IINSTM),ZR(IINSTP),ZR(ITEMPM),ZR(ITEMPP),
-     +                ZR(ITREF),DEPLM,DDEPL,GONFLM,DGONFL,
-     +                ZR(ICONTM),ZR(IVARIM),ZR(ICONTP),
-     +                ZR(IVARIP),FINTU, FINTA, KUU,KUA, KAA,CODRET)
+     +                ZR(IINSTM),ZR(IINSTP),
+     +                ZR(ITEMPM),ZR(ITEMPP),ZR(ITREF),
+     +                DEPLM,DDEPL,
+     +                ANGMAS, 
+     +                GONFLM,DGONFL,
+     +                ZR(ICONTM),ZR(IVARIM),ZR(ICONTP),ZR(IVARIP),
+     +                FINTU, FINTA, KUU,KUA, KAA,CODRET)
         ELSE IF (ZK16(ICOMPO+2) (1:10).EQ.'SIMO_MIEHE') THEN
            CALL NIGP2D(NNO1,NNO2,NPG1,IPOIDS,IVF1,IVF2,IDFDE1,
      +                TRAV1,TRAV2,ZR(IGEOM),TYPMOD,
      +                OPTION,ZI(IMATE),ZK16(ICOMPO),LGPG,ZR(ICARCR),
-     +                ZR(IINSTM),ZR(IINSTP),ZR(ITEMPM),ZR(ITEMPP),
-     +                ZR(ITREF),DEPLM,DDEPL,GONFLM,DGONFL,
-     +                ZR(ICONTM),ZR(IVARIM),ZR(ICONTP),
-     +                ZR(IVARIP),FINTU, FINTA, KUU,KUA, KAA,CODRET)
+     +                ZR(IINSTM),ZR(IINSTP),
+     +                ZR(ITEMPM),ZR(ITEMPP),ZR(ITREF),
+     +                DEPLM,DDEPL,
+     +                ANGMAS,    
+     +                GONFLM,DGONFL,
+     +                ZR(ICONTM),ZR(IVARIM),ZR(ICONTP),ZR(IVARIP),
+     +                FINTU, FINTA, KUU,KUA, KAA,CODRET)
           
         ELSE
           CALL UTMESS('F','TE0449','COMPORTEMENT:'//ZK16(ICOMPO+2)//

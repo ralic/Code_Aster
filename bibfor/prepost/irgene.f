@@ -1,14 +1,14 @@
-      SUBROUTINE IRGENE (IOCC, RESU, FORM, FICH, NBNOSY,NOSY,
+      SUBROUTINE IRGENE (IOCC, RESU, FORM, IFI, NBNOSY,NOSY,
      +                   NBCMPG,CMPG, NBPARA,PARA,
      +                   NBORDR,ORDR, NBINST,TEMP,NUME, LHIST )
       IMPLICIT REAL*8 (A-H,O-Z)
       INTEGER         CMPG(*), ORDR(*), NUME(*)
       REAL*8          TEMP(*)
-      CHARACTER*(*)   RESU, NOSY(*), PARA(*), FORM, FICH
+      CHARACTER*(*)   RESU, NOSY(*), PARA(*), FORM
       LOGICAL         LHIST
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
+C MODIF PREPOST  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,7 +53,6 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       LOGICAL      LORDR
 C     ------------------------------------------------------------------
       CALL JEMARQ()
-      IFI = IUNIFI(FICH)
       NOMST = '&&IRGENE.SOUS_TITRE.TITR'
 C
 C     --- QUEL TYPE DE CONCEPT ? ---
@@ -67,7 +66,7 @@ C
 C=======================================================================
       IF ( TYPCON .EQ. 'VECT_ASSE_GENE' ) THEN
 C
-         CALL IRVGEN ( RESU, FICH, NBCMPG,CMPG, LHIST )
+         CALL IRVGEN ( RESU, IFI, NBCMPG,CMPG, LHIST )
 C
 C=======================================================================
 C
@@ -76,10 +75,10 @@ C
 C=======================================================================
       ELSEIF ( TYPCON .EQ. 'HARM_GENE' .OR.
      +         TYPCON .EQ. 'MODE_GENE' ) THEN
-         CALL IRPARB (RESU,NBPARA,PARA,'&&OP0157.PARAMETRE',NPARA)
-         CALL JEEXIN('&&OP0157.PARAMETRE',IRET)
+         CALL IRPARB (RESU,NBPARA,PARA,'&&IRGENE.PARAMETRE',NPARA)
+         CALL JEEXIN('&&IRGENE.PARAMETRE',IRET)
          IF (IRET.GT.0) THEN
-            CALL JEVEUO('&&OP0157.PARAMETRE','E',JPARA)
+            CALL JEVEUO('&&IRGENE.PARAMETRE','E',JPARA)
          ELSE
             JPARA=1
          ENDIF
@@ -87,7 +86,7 @@ C=======================================================================
          CECR = 'L'
          DO 100 IORD = 1,NBORDR
             WRITE(IFI,2000)
-            CALL IRPARA (RESU, FORM,FICH, 1,ORDR(IORD),
+            CALL IRPARA (RESU, FORM,IFI, 1,ORDR(IORD),
      +                                      NPARA,ZK16(JPARA), CECR )
             DO 110 ISY = 1,NBNOSY
               CALL RSEXCH(RESU,NOSY(ISY),ORDR(IORD),NOCH19,IRET)
@@ -97,11 +96,11 @@ C=======================================================================
                 CALL JEVEUO(NOMST,'L',JTITR)
                 CALL JELIRA(NOMST,'LONMAX',NBTITR,K1BID)
                 WRITE(IFI,'(1X,A)') (ZK80(JTITR+I-1),I=1,NBTITR)
-                CALL IRVGEN ( NOCH19, FICH, NBCMPG,CMPG, LHIST )
+                CALL IRVGEN ( NOCH19, IFI, NBCMPG,CMPG, LHIST )
               ENDIF
  110        CONTINUE
  100     CONTINUE
-         CALL JEDETR ('&&OP0157.PARAMETRE')
+         CALL JEDETR ('&&IRGENE.PARAMETRE')
          CALL JEEXIN ( NOMST, IRET )
          IF ( IRET .NE. 0 ) CALL JEDETR ( NOMST )
 C
@@ -144,7 +143,7 @@ C=======================================================================
               DO 220 IM = 1 , NBMODE
                  ZR(KVALE+IM-1) = ZR(ITRESU+(IORD-1)*NBMODE+IM-1)
  220          CONTINUE
-              CALL IRVGEN ( NOCH19, FICH, NBCMPG,CMPG, LHIST )
+              CALL IRVGEN ( NOCH19, IFI, NBCMPG,CMPG, LHIST )
  210       CONTINUE
  200     CONTINUE
          CALL JEDETR ( NOCH19//'.DESC' )

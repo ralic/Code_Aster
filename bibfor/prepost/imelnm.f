@@ -1,7 +1,7 @@
-      SUBROUTINE IMELNM ( FICHIE, NOMSDZ, NBCMP, LISCMZ, NBELEM,
+      SUBROUTINE IMELNM ( IFM, NOMSDZ, NBCMP, LISCMZ, NBELEM,
      +                    LISMAZ, NBCHIF )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 23/06/99   AUTEUR CIBHHGB G.BERTRAND 
+C MODIF PREPOST  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -31,9 +31,9 @@ C                      ELEMENTAIRES)
 C
 C
 C   ARGUMENT        E/S  TYPE         ROLE
-C    FICHIE          IN    K*     NOM DU FICHIER OU L'ON IMPRIME
-C                                 LE MATR_ELEM,
-C    NOMSDZ          IN    K*     NOM DU MATR_ELEM
+C    IFM             IN    I     UNITE LOGIQUE D'IMPRESSION DU
+C                                MATR_ELEM,
+C    NOMSDZ          IN    K*    NOM DU MATR_ELEM
 
 C    NBCMP           IN    I     NOMBRE DE COMPOSANTES DE LA LISTE
 C                                LISCMZ DES COMPOSANTES
@@ -64,7 +64,7 @@ C ----- COMMUNS NORMALISES  JEVEUX
       COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
       CHARACTER*32     JEXNUM, JEXNOM
 C -----  ARGUMENTS
-      CHARACTER*(*) FICHIE, NOMSDZ, LISCMZ, LISMAZ
+      CHARACTER*(*) NOMSDZ, LISCMZ, LISMAZ
 C -----  VARIABLES LOCALES
       PARAMETER     (NBNOMX = 27)
       PARAMETER     (NBTELI = 810)
@@ -121,10 +121,6 @@ C
       DO 1 I =1, NBECMX
         DG(I) = 0
  1    CONTINUE
-C
-C --- UNITE LOGIQUE DU FICHIER D'IMPRESSION :
-C     -------------------------------------
-      IFM = IUNIFI(FICHIE)
 C
 C --- RECUPERATION DES NOEUDS POUR-LESQUELS ON VEUT L'IMPRESSION
 C --- DE LA MATRICE :
@@ -636,7 +632,7 @@ C ---          IMPRESSION DE LA LIGNE COURANTE SELON LE GRAIN 'MAILLE':
 C              ------------------------------------------------------
                  CALL IMPFR5 (NONOEU(I), NOCMP(I),
      +                        LONLI2, ZR(IDVALE), FORM3, FORM4,
-     +                        FICHIE)
+     +                        IFM)
 C
                 ENDIF
  140           CONTINUE
@@ -705,7 +701,7 @@ C ---          IMPRESSION DE LA LIGNE COURANTE SELON LE GRAIN 'MAILLE':
 C              ------------------------------------------------------
                  CALL IMPFR5 (NONOEU(I), NOCMP(I),
      +                        LONLI2, ZR(IDVALE), FORM3, FORM4,
-     +                        FICHIE)
+     +                        IFM)
 C
                 ENDIF
  180          CONTINUE
@@ -1109,7 +1105,7 @@ C ---          IMPRESSION DE LA LIGNE COURANTE SELON LE GRAIN 'MAILLE':
 C              ------------------------------------------------------
                  CALL IMPFC5 (NONOEU(I), NOCMP(I),
      +                        LONLI2, ZC(IDVALE), FORMC3, FORMC4,
-     +                        FICHIE)
+     +                        IFM)
 C
                 ENDIF
  350          CONTINUE
@@ -1178,7 +1174,7 @@ C ---          IMPRESSION DE LA LIGNE COURANTE SELON LE GRAIN 'MAILLE':
 C              ------------------------------------------------------
                  CALL IMPFC5 (NONOEU(I), NOCMP(I),
      +                        LONLI2, ZC(IDVALE), FORMC3, FORMC4,
-     +                        FICHIE)
+     +                        IFM)
 C
                 ENDIF
  390          CONTINUE

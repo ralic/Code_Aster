@@ -1,7 +1,7 @@
       SUBROUTINE IMPFR5 (NOMNOZ, NOMCMZ, LONLIS, VALE, 
-     +                   FORM3, FORM4, FICHIE)
+     +                   FORM3, FORM4, IFM)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 05/11/96   AUTEUR CIBHHGB G.BERTRAND 
+C MODIF PREPOST  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -47,10 +47,10 @@ C                                CADRE
 C    FORM4           IN   K72    FORMAT D'IMPRESSION D'UNE LIGNE DE
 C                                LA MATRICE ELEMENTAIRE
 C    NBCHIF          IN    I     NOMBRE DE CHIFFRES SIGNIFICATIFS
-C    FICHIE          IN    K*     NOM DU FICHIER D'IMPRESSION
+C    IFM             IN    I     UNITE LOGIQUE D'IMPRESSION
 C.========================= DEBUT DES DECLARATIONS ====================
 C -----  ARGUMENTS
-      CHARACTER*(*) NOMNOZ, NOMCMZ, FICHIE
+      CHARACTER*(*) NOMNOZ, NOMCMZ
       CHARACTER*72  FORM3, FORM4
       REAL*8        VALE(*)
 C -----  VARIABLES LOCALES
@@ -68,10 +68,6 @@ C     ---------------
       NOMNO1 = NOMNOZ
       NOMCM1 = NOMCMZ
       NOMNC1 = NOMNO1(1:LXLGUT(NOMNO1))//SLACH//NOMCM1
-C
-C --- UNITE LOGIQUE DU FICHIER D'IMPRESSION :
-C     -------------------------------------
-      IFM = IUNIFI(FICHIE)
 C
 C --- IMPRESSION DES VALEURS PAR LIGNE :
 C     --------------------------------

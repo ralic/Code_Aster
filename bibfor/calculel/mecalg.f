@@ -4,7 +4,7 @@
      &                 CHVITE,CHACCE)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 24/05/2004   AUTEUR GALENNE E.GALENNE 
+C MODIF CALCULEL  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -408,7 +408,7 @@ C- IMPRESSION DE G ET ECRITURE DANS LA TABLE RESULT
 
       IF (NIV.GE.2) THEN
         OBVALE = LCHOUT(1) (1:19)//'.VALE'
-        CALL JEIMPO('MESSAGE',OBVALE,' ',
+        CALL JEIMPO(IFM,OBVALE,' ',
      &              'OBJET CONTENANT LA VALEUR DE G SUR CHAQUE ELEMENT')
       END IF
 

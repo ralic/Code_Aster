@@ -1,4 +1,4 @@
-# MODIF  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE COUDE EN FLEXION EN ELASTOPLASTICITE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -20,162 +20,8 @@
 # ======================================================================
 # GEOMETRIE PROCHE DU CPP N4
 
-
-import Gnuplot
-import Numeric
-
-#===========================================
-# FONCTION PYTHON "EXTRACT"
-
-def EXTRACT(Table,Para,Champ):
-# Definition des variables
-  __Result = [[None]*2]
-  __nb_temp = 0
-# Boucle de lecture sur les temps
-  while 1: 
-#   Si on n a pas lu tous les temps
-    try:
-#     alors on lit les 2 champs abscisse et ordonnee
-        __Result[__nb_temp][0] = Table[Para,__nb_temp+1]
-        __Result[__nb_temp][1] = Table[Champ,__nb_temp+1]
-        __nb_temp = __nb_temp + 1  
-#     on ajoute une ligne supplementaire a __Result
-        __Result.append([None]*2)
-#   Si on a lu tous les temps alors on sort de la boucle
-    except KeyError:
-      break
-# on renvoie le resultat en fin
-  __Rep = __Result[0:__nb_temp]
-  F=Numeric.zeros((len(__Rep),2),Numeric.Float)   #on transforme __Rep en array Numeric
-  for i in range(len(__Rep)):
-   for j in range(2) :
-      F[i][j] = __Rep[i][j]
-  del(__Rep)
-  del(__Result)
-  return F
-
-
-
-# ===========================================================================
-#           CORPS DE LA MACRO "MACR_ROTA_GLOBALE"
-#           -------------------------------------
-# USAGE :
-#  RESULTAT : resultat
-#  GROUP_NO_ORIG : un groupe d un noeud definissant l entree du coude (A)
-#  GROUP_NO_EXTR : un groupe d un noeud definissant la sortie du coude (B)
-# 
-#              /
-#           A /
-#            (______
-#            B
-#  
-# ===========================================================================
-# script PYTHON : rotation globale sur une tuyauterie
-
-
-def macr_rota_globale_ops(self,RESULTAT,GROUP_NO_ORIG,GROUP_NO_EXTR,**args):
-
-
-  """
-     Ecriture de la macro MACR_ROTA_GLOBALE
-  """
-  import os
-  from Accas import _F
-  from Noyau.N_utils import AsType
-  ier=0
-
-  # On importe les definitions des commandes a utiliser dans la macro
-  POST_RELEVE_T  = self.get_cmd('POST_RELEVE_T')
-  DEFI_LIST_REEL = self.get_cmd('DEFI_LIST_REEL')
-  DEFI_FONCTION  = self.get_cmd('DEFI_FONCTION')
-
-  # La macro compte pour 1 dans la numerotation des commandes
-  self.icmd=1
-
-  # Le concept sortant (de type fonction) est nomme ROTGD dans 
-  # le contexte de la macro
-
-  self.DeclareOut('ROTGD',self.sd)
-
-  # Commandes de la macro
-  
-  __ROTAB=POST_RELEVE_T(ACTION=_F(INTITULE='__ROTAB',
-                                GROUP_NO=GROUP_NO_ORIG,
-                                RESULTAT=RESULTAT,
-                                NOM_CHAM='DEPL',
-                                NOM_CMP=('DRX','DRY','DRZ',),
-                                OPERATION='EXTRACTION',),
-                                )
-
-  __ROTAC=POST_RELEVE_T(ACTION=_F(INTITULE='__ROTAC',
-                                GROUP_NO=GROUP_NO_EXTR,
-                                RESULTAT=RESULTAT,
-                                NOM_CHAM='DEPL',
-                                NOM_CMP=('DRX','DRY','DRZ',),
-                                OPERATION='EXTRACTION',),);
-  
-  __DRXC  = EXTRACT(__ROTAC,'INST','DRX')
-  __DRYC  = EXTRACT(__ROTAC,'INST','DRY')
-  __DRZC  = EXTRACT(__ROTAC,'INST','DRZ')
-  __DRXB  = EXTRACT(__ROTAB,'INST','DRX')
-  __DRYB  = EXTRACT(__ROTAB,'INST','DRY')
-  __DRZB  = EXTRACT(__ROTAB,'INST','DRZ')
-  __DRXBC = __DRXC-__DRXB
-  __DRYBC = __DRYC-__DRYB
-  __DRZBC = __DRZC-__DRZB
-  __ROTG  = __DRXBC*__DRXBC
-  __ROTG  = __ROTG+__DRYBC*__DRYBC
-  __ROTG  = __ROTG+__DRZBC*__DRZBC
-  __ROTG  = __ROTG**(0.5)
-  
-  __livalr = []
-  __livali = []
-  for i in range(len(__ROTG)):
-    __livalr.append(__ROTG[i,1])
-    __livali.append(__DRXC[i,0])
-
-  print __livalr
-  print __livali
-
-  __LROTG = DEFI_LIST_REEL(VALE=__livalr)
-  __LINST = DEFI_LIST_REEL(VALE=__livali)
-
-  ROTGD = DEFI_FONCTION(NOM_PARA='INST',
-                        VALE_PARA=__LINST,
-                        VALE_FONC=__LROTG,
-                       )
-
-  return ier
-
-
-
-# ===========================================================================
-#           CATALOGUE DE LA MACRO "MACR_ROTA_GLOBALE"
-#           -----------------------------------------
-# USAGE :
-#  RESULTAT : resultat
-#  GROUP_NO_ORIG : un groupe d un noeud definissant l entree du coude (A)
-#  GROUP_NO_EXTR : un groupe d un noeud definissant la sortie du coude (B)
-# 
-#              /
-#           A /
-#            (______
-#            B
-#  
-# ===========================================================================
-
-MACR_ROTA_GLOBALE=MACRO(nom="MACR_ROTA_GLOBALE",op=macr_rota_globale_ops,sd_prod=fonction_sdaster,
-                       reentrant='n',
-                       fr="calcul de la rotation globale dans un coude.",
-         RESULTAT        =SIMP(statut='o',typ=(evol_elas,evol_noli,evol_ther) ),
-         GROUP_NO_ORIG   =SIMP(statut='o',typ=grno,max=1),
-         GROUP_NO_EXTR   =SIMP(statut='o',typ=grno,max=1),
-)  ;
-
-
-
-
-# ======================================================================
+from Outils.macro_rota_globale import MACR_ROTA_GLOBALE
+from Utilitai.extract          import EXTRACT
 
 DEBUT( CODE=_F( NOM = 'SSNL117B',NIV_PUB_WEB='INTERNET'),PAR_LOT='NON')
 
@@ -188,9 +34,9 @@ EP=0.077
 
 RMOY=0.3955
 
-RMOYN=DEFI_VALEUR(  R8=EVAL("""- RMOY""") )
+RMOYN=-RMOY
 
-REXT=DEFI_VALEUR(  R8=EVAL("""RMOY + (EP/2.) """) )
+REXT=RMOY + (EP/2.)
 
 RC=1.25
 
@@ -204,35 +50,35 @@ H=2.E10
 
 MLSURMLS=0.8
 
-RINT=DEFI_VALEUR(  R8=EVAL("""RMOY - (EP/2.) """) )
+RINT=RMOY - (EP/2.)
 
-LAMBDA=DEFI_VALEUR(  R8=EVAL("""EP*RC/RMOY/RMOY """) )
+LAMBDA=EP*RC/RMOY/RMOY
 
-SURF=DEFI_VALEUR( R8=EVAL("""PI* (REXT*REXT-RINT*RINT) """) )
+SURF=pi* (REXT*REXT-RINT*RINT)
 
-IY=DEFI_VALEUR(R8=EVAL("""PI*(REXT**4-RINT**4)/4."""))
+IY=pi*(REXT**4-RINT**4)/4.
 
 IZ=IY
 
-IX=DEFI_VALEUR(  R8=EVAL("""IY + IZ """) )
+IX=IY + IZ 
 
-MEDR=DEFI_VALEUR(  R8=EVAL("""SIGY*IY/REXT """) )
+MEDR=SIGY*IY/REXT
 
-MPDR=DEFI_VALEUR(  R8=EVAL("""4.0*MEDR/PI """) )
+MPDR=4.0*MEDR/pi
 
-MPX=DEFI_VALEUR(  R8=EVAL("""SIGY*IX/REXT """) )
+MPX=SIGY*IX/REXT
 
-GAMMA=DEFI_VALEUR(  R8=EVAL("""RC/RMOY""") )
+GAMMA=RC/RMOY
 
-STHETA1=DEFI_VALEUR(  R8=EVAL("""1.89/(LAMBDA**(0.666667)) """) )
+STHETA1=1.89/(LAMBDA**(0.666667))
 
-STHETA2=DEFI_VALEUR(  R8=EVAL("""0.96/(LAMBDA**(0.333333))/GAMMA """) )
+STHETA2=0.96/(LAMBDA**(0.333333))/GAMMA
 
-STHETA=DEFI_VALEUR(  R8=EVAL("""STHETA1 - STHETA2 """) )
+STHETA=STHETA1 - STHETA2
 
-MEFL=DEFI_VALEUR(  R8=EVAL("""MEDR / STHETA """) )
+MEFL=MEDR / STHETA
 
-MPFL=DEFI_VALEUR(  R8=EVAL("""MPDR * MLSURMLS """) )
+MPFL=MPDR * MLSURMLS
 
 PRE_GIBI()
 
@@ -269,7 +115,7 @@ MAT=DEFI_MATERIAU(    ELAS=_F( E = YOUNG, NU = POISSON),
 CHMAT=AFFE_MATERIAU(   MAILLAGE=MA,
                        AFFE=_F( TOUT = 'OUI', MATER = MAT))
 
-EFOND=DEFI_VALEUR(  R8=EVAL("""PI*PRESSION*RINT*RINT """) )
+EFOND=pi*PRESSION*RINT*RINT
 
 CHART=AFFE_CHAR_MECA(  MODELE=MO,
      DDL_IMPO=_F( GROUP_NO = 'A', DX = 0., DY = 0., DZ = 0., DRX = 0., DRY = 0., DRZ = 0.),

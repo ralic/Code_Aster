@@ -1,0 +1,231 @@
+# MODIF  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
+# TITRE ABSORPTION D'UNE ONDE DE COMPRESSION DANS UN BARREAU ELASTIQUE
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+# CAS_TEST__: SDLV120A
+#
+# PROPAGATION D'UNE ONDE DE COMPRESSION DANS UN BARREAU
+# ELASTIQUE INFINI - ABSORPTION DE L'ONDE A LA FRONTIERE DU MAILLAGE 
+# ELEMENTS FINIS
+# CAS 3D
+#=======================================================================
+
+DEBUT(CODE=_F( NOM = 'SDLV120A',NIV_PUB_WEB='INTERNET'))
+
+MAIL=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='NON'),)
+
+MAIL=DEFI_GROUP( reuse=MAIL,   MAILLAGE=MAIL,
+                       CREA_GROUP_NO=_F(  GROUP_MA = 'IIMPO')
+                     )
+
+MAT1=DEFI_MATERIAU( ELAS=_F(  E = 3.6E+10, RHO = 2400.,  NU = 0.2)
+                    )
+
+MODELE=AFFE_MODELE(    MAILLAGE=MAIL,AFFE=(
+                         _F(  GROUP_MA = 'SOLIDE',
+                                PHENOMENE = 'MECANIQUE',
+                                MODELISATION = '3D'),
+                         _F(  GROUP_MA = 'IABSO',
+                                PHENOMENE = 'MECANIQUE',
+                                MODELISATION = '3D_ABSO'))
+                        )
+
+CHAMPMAT=AFFE_MATERIAU(    MAILLAGE=MAIL,
+                   AFFE=_F(  GROUP_MA = ('SOLIDE', 'IABSO',),
+                          MATER = MAT1)
+                           )
+
+COND_LIM=AFFE_CHAR_MECA(    MODELE=MODELE,
+                   DDL_IMPO=_F(  GROUP_NO = 'IIMPO',
+                              DX = 1.E-3)
+                             )
+
+RIGI_ELE=CALC_MATR_ELEM(    MODELE=MODELE,
+                              OPTION='RIGI_MECA',
+                              CHAM_MATER=CHAMPMAT,
+                              CHARGE=COND_LIM
+                            )
+
+MASS_ELE=CALC_MATR_ELEM(    MODELE=MODELE,
+                              OPTION='MASS_MECA',
+                              CHAM_MATER=CHAMPMAT,
+                              CHARGE=COND_LIM
+                            )
+
+VECTELEM=CALC_VECT_ELEM(    OPTION='CHAR_MECA',
+                              CHAM_MATER=CHAMPMAT,
+                              CHARGE=COND_LIM
+                            )
+
+NUME_DDL=NUME_DDL(    MATR_RIGI=RIGI_ELE )
+#METHODE : 'LDLT');
+
+RIGIDITE=ASSE_MATRICE(    MATR_ELEM=RIGI_ELE,
+                            NUME_DDL=NUME_DDL
+                          )
+
+MASSE=ASSE_MATRICE(    MATR_ELEM=MASS_ELE,
+                         NUME_DDL=NUME_DDL
+                       )
+
+VECTASS=ASSE_VECTEUR(    VECT_ELEM=VECTELEM,
+                           NUME_DDL=NUME_DDL
+                         )
+
+# --- LECTURE DE LA FONCTION D'EXCITATION ---
+INCLUDE(   UNITE=11,   INFO=1 )
+
+TEMPLI=DEFI_LIST_REEL(DEBUT=0., INTERVALLE=_F( JUSQU_A = 1.8, NOMBRE = 3600))
+
+INTLI=DEFI_LIST_ENTI( DEBUT=1, INTERVALLE=_F( JUSQU_A = 3601, PAS = 1))
+
+DYN=DYNA_LINE_TRAN(      MATR_MASS=MASSE, 
+                         MATR_RIGI=RIGIDITE,
+                        #IMPED : 'OUI'
+                         EXCIT=_F(  VECT_ASSE = VECTASS,
+                                    FONC_MULT = FONC),
+####CDURAND              ETAT_INIT=_F(  INST_INIT = 0.),
+                                     #DEPL_INIT : PRESINI )
+                         INCREMENT=_F( LIST_INST = TEMPLI),
+####CDURAND              ARCHIVAGE=_F(  LIST_ARCH = INTLI),
+                         NEWMARK=_F() 
+                        )
+
+DXN16=RECU_FONCTION(    LIST_INST=TEMPLI,   PRECISION=1.E-4,
+                        RESULTAT=DYN,   NOEUD='N16',
+                        NOM_CHAM='DEPL',
+                        NOM_CMP='DX'
+                      )
+
+DXN18=RECU_FONCTION(    LIST_INST=TEMPLI,   PRECISION=1.E-4,
+                        RESULTAT=DYN,   NOEUD='N18',
+                        NOM_CHAM='DEPL',
+                        NOM_CMP='DX'
+                      )
+
+DXN43=RECU_FONCTION(    LIST_INST=TEMPLI,   PRECISION=1.E-4,
+                        RESULTAT=DYN,   NOEUD='N43',
+                        NOM_CHAM='DEPL',
+                        NOM_CMP='DX'
+                      )
+
+TEST_FONCTION(VALEUR=(   _F( 
+                   FONCTION = DXN16,
+                   VALE_PARA = 5.39500E-01,
+                   VALE_REFE = 9.91869E-04,
+                   CRITERE = 'RELATIF',
+                   PRECISION = 1.E-3, 
+                   REFERENCE = 'NON_REGRESSION'),
+                  _F( 
+                   FONCTION = DXN16,
+                   VALE_PARA = 1.20000E+00,
+                   VALE_REFE = 0.E0,
+                   CRITERE = 'ABSOLU',
+                   PRECISION = 1.E-7,
+                   REFERENCE = 'ANALYTIQUE'))
+                )
+
+TEST_FONCTION(VALEUR=(   _F( 
+                   FONCTION = DXN18,
+                   VALE_PARA = 5.40000E-01,
+                   VALE_REFE = 9.91393E-04,
+                   CRITERE = 'RELATIF',
+                   PRECISION = 1.E-3,
+                   REFERENCE = 'NON_REGRESSION'),
+                  _F( 
+                   FONCTION = DXN43,
+                   VALE_PARA = 5.00000E-01,
+                   VALE_REFE = 1.00000E-03,
+                   CRITERE = 'RELATIF',
+                   PRECISION = 1.E-3,
+                   REFERENCE = 'ANALYTIQUE'))
+                )
+
+TEMLI=DEFI_LIST_REEL(DEBUT=0., INTERVALLE=_F( JUSQU_A = 1.2, NOMBRE = 600))
+
+TEMLI2=DEFI_LIST_REEL(DEBUT=0.002, 
+                       INTERVALLE=_F( JUSQU_A = 1.2, NOMBRE = 599))
+
+INLI=DEFI_LIST_ENTI( DEBUT=1, INTERVALLE=_F( JUSQU_A = 601, PAS = 1))
+
+DYNA=DYNA_NON_LINE(    MODELE=MODELE,
+                       CHAM_MATER=CHAMPMAT,
+                       EXCIT=_F(  CHARGE = COND_LIM,
+                                  FONC_MULT = FONC),
+#                      ETAT_INIT=_F( INST_INIT = 0.),
+                       COMP_INCR=_F( RELATION = 'ELAS',
+                                     TOUT = 'OUI'),
+                       CONVERGENCE=_F( RESI_GLOB_RELA = 1.E-4),
+                       INCREMENT=_F( LIST_INST = TEMLI),
+####CDURAND            ARCHIVAGE=_F(  LIST_ARCH = INLI),
+                       NEWMARK=_F() 
+                        )
+
+DXNA16=RECU_FONCTION(    LIST_INST=TEMLI2,   PRECISION=1.E-4,
+                        RESULTAT=DYNA,   NOEUD='N16',
+                        NOM_CHAM='DEPL',
+                        NOM_CMP='DX'
+                      )
+
+DXNA18=RECU_FONCTION(    LIST_INST=TEMLI2,   PRECISION=1.E-4,
+                        RESULTAT=DYNA,   NOEUD='N18',
+                        NOM_CHAM='DEPL',
+                        NOM_CMP='DX'
+                      )
+
+DXNA43=RECU_FONCTION(    LIST_INST=TEMLI2,   PRECISION=1.E-4,
+                        RESULTAT=DYNA,   NOEUD='N43',
+                        NOM_CHAM='DEPL',
+                        NOM_CMP='DX'
+                      )
+
+TEST_FONCTION(VALEUR=(   _F( 
+                   FONCTION = DXNA16,
+                   VALE_PARA = 5.40000E-01,
+                   VALE_REFE = 9.92640E-04,
+                   CRITERE = 'RELATIF',
+                   PRECISION = 3.E-3, 
+                   REFERENCE = 'NON_REGRESSION'),
+                  _F( 
+                   FONCTION = DXNA16,
+                   VALE_PARA = 1.20000E+00,
+                   VALE_REFE = 0.E0,
+                   CRITERE = 'ABSOLU',
+                   PRECISION = 1.E-7, 
+                   REFERENCE = 'ANALYTIQUE'))
+                )
+
+TEST_FONCTION(VALEUR=(   _F( 
+                   FONCTION = DXNA18,
+                   VALE_PARA = 5.40000E-01,
+                   VALE_REFE = 9.92182E-04,
+                   CRITERE = 'RELATIF',
+                   PRECISION = 3.E-3, 
+                   REFERENCE = 'NON_REGRESSION'),
+                  _F( 
+                   FONCTION = DXNA43,
+                   VALE_PARA = 5.00000E-01,
+                   VALE_REFE = 1.00000E-03,
+                   CRITERE = 'RELATIF',
+                   PRECISION = 1.E-3, 
+                   REFERENCE = 'ANALYTIQUE'))
+                )
+
+FIN()
+#
+#

@@ -1,4 +1,4 @@
-#@ MODIF B_ETAPE Build  DATE 04/02/2004   AUTEUR CAMBIER S.CAMBIER 
+#@ MODIF B_ETAPE Build  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -598,10 +598,25 @@ class ETAPE(B_OBJECT.OBJECT,CODE):
       lty=[]
       for name in dico_mcsimp.keys() :
          if dico_mcsimp[name] != None :
-           child=mcfact.definition.get_entite(name)
-           if child and child.label == 'SIMP':
-             lmc.append(name)
-             lty.append(B_utils.Typast(child.type))
+            lmc.append(name)
+            if type(dico_mcsimp[name]) in (types.ListType,types.TupleType) : obj=dico_mcsimp[name][0]
+            else                                                           : obj=dico_mcsimp[name]
+            if type(obj)==types.InstanceType :
+               if obj.__class__.__name__=='EVAL' : lty.append('R8')
+               else                              : lty.append(obj.__class__.__name__)
+            if type(obj)==types.FloatType        : lty.append('R8')
+            if type(obj)==types.StringType       :
+                if string.strip(obj) in ('RI','MP') : lty.append('C8')
+                else                                : lty.append('TX')
+            if type(obj)==types.IntType      :
+            ### on gere le cas d un reel entre par l utilisateur sans le '.' distinctif d un entier
+            ### pour ca on teste la presence de R8 dans la liste des types attendus cote catalogue
+                                               child=mcfact.definition.get_entite(name)
+                                               list_cata=B_utils.Typast(child.type)
+                                               if ('IS ' not in list_cata) and  ('R8 ' in list_cata) :
+                                                 lty.append('R8')
+                                               else :
+                                                 lty.append('I')
       return (lmc,lty)
 
 

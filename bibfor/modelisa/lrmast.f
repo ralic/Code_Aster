@@ -12,7 +12,7 @@ C     OUT
       INTEGER         NBNOEU,NBMAIL,NBCOOR
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
+C MODIF MODELISA  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -697,7 +697,7 @@ C
         DO 2000 J = 1,DIMDBG(1)
         CALL JEEXIN(NOMDBG(J,1),IRET)
         IF(IRET.GT.0)THEN
-        CALL JEIMPO('MESSAGE',NOMDBG(J,1),' ','DUMP DE '//NOMDBG(J,1))
+          CALL JEIMPO(IFM,NOMDBG(J,1),' ','DUMP DE '//NOMDBG(J,1))
         ENDIF
  2000   CONTINUE
         ENDIF

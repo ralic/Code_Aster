@@ -1,0 +1,117 @@
+POURSUITE(CODE=_F(NOM='SSNV172A'),PAR_LOT='NON')
+
+# courbe contrainte-deformation en un point de Gauss
+
+nbt=NPAS+1
+numaille = 1
+numpoint = 3
+
+sigx=[]
+sig2=[]
+epsp=[]
+
+for it in xrange(1,nbt+1):
+   print 'it=',it
+   CONTR1=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
+                 OPERATION='EXTR',
+                 RESULTAT=SOLNL,
+                 NUME_ORDRE=it,
+                 NOM_CHAM='SIEF_ELGA',);
+
+
+   EPSP1=CREA_CHAMP(TYPE_CHAM='ELGA_EPSI_R',
+                 OPERATION='EXTR',
+                 RESULTAT=SOLNL,
+                 NUME_ORDRE=it,
+                 NOM_CHAM='EPSP_ELGA',);
+
+
+   SIGX = CONTR1.EXTR_COMP('SIXX',[],1)
+
+
+   EPPX = EPSP1.EXTR_COMP('EPXX',['TOUT'],0)
+   nbval = len(SIGX.valeurs)
+   for j in range(nbval):
+      if SIGX.maille[j]==numaille:
+         if SIGX.point[j]==numpoint:
+            sigx.append(SIGX.valeurs[j])
+            epsp.append(EPPX.valeurs[j])           
+   
+   DETRUIRE(CONCEPT=_F( NOM = 'CONTR1'))
+   DETRUIRE(CONCEPT=_F( NOM = 'EPSP1'))
+
+
+# trace interactif a l'aide de xmgrace si inter==1
+#inter=1
+inter=0
+
+if (inter==1):
+    import Stanley
+    from Stanley import as_courbes
+    from Stanley import xmgrace
+    graphe=xmgrace.Xmgr(10,' -noask')    
+    graphe.Nouveau_graphe()
+    ctest1 = as_courbes.Courbe()
+    ctest1.x=epsp
+    ctest1.y=sigx
+    graphe.Courbe(ctest1)
+    graphe.Attendre()
+
+# impression 
+
+import Numeric
+from Numeric import *
+sig1=array(sigx)
+eps2=array(epsp)
+a=array((eps2,sig1))
+Fcalc=transpose(a)
+
+Titre= 'Courbe Contrainte-Déformation Plastique, maille '
+Titre = Titre + str(numaille) + ' point ' + str(numpoint)
+
+print Titre
+print Fcalc
+
+
+# Calcul des moyennes a l'instant final
+CONTR0=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
+                 OPERATION='EXTR',
+                 RESULTAT=SOLNL,
+                 NUME_ORDRE=nbt,
+                 NOM_CHAM='SIEF_ELGA',);
+
+
+CHAMELG=CALC_CHAM_ELEM(MODELE=TROISD,
+                       CHAM_MATER=MAT,
+                       OPTION='COOR_ELGA',);
+               
+POIDS=CHAMELG.EXTR_COMP('W',[],1)
+
+SIGX = CONTR0.EXTR_COMP('SIXX',[],1)
+dir(SIGX)
+
+print 'SIGX.maille'
+print SIGX.maille
+
+print 'SIGX.point'
+print SIGX.point
+
+nbval = len(SIGX.valeurs)
+print nbval
+sigx=[None]*nbval
+
+volume=0
+for i in   range(nbval):
+    poidg=POIDS.valeurs[i]   
+    volume=volume+poidg
+somme = 0
+for i in   range(nbval):
+    sigx[i]=SIGX.valeurs[i]
+    poidg=POIDS.valeurs[i]
+    somme = somme+sigx[i]*poidg
+
+moduley=somme/volume    
+print 'moyenne de SIGX', somme/volume
+print 'volume total', volume
+
+FIN()

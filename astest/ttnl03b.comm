@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
 # TITRE THERMO-HYDRATATION EN ADIABATIQUE 2D AXI QUAD4
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -132,13 +132,13 @@ CHMATNL=AFFE_MATERIAU(
 # ----------
 #
 
-TEMPEXT=DEFI_VALEUR(   R8=25. )
+TEMPEXT=25.
 
-TEMPINI=DEFI_VALEUR(   R8=20.9 )
+TEMPINI=20.9
 
 #COEFF D'ECHANGE EN KJ/H/M**2/K NUL EN ADIABATIQUE
 
-COEFH=DEFI_VALEUR(   R8=0.0  )
+COEFH=0.0
 
 CHATHER=AFFE_CHAR_THER( 
                               MODELE=MODTHER,
@@ -266,7 +266,6 @@ RESUTHYD=CALC_ELEM(  reuse=RESUTHYD,
 RESUTHYD=CALC_NO  (  reuse=RESUTHYD,
                      OPTION=('HYDR_NOEU_ELGA'),
                      RESULTAT=RESUTHYD,
-                   #  
               )
 
 HYDRELNO=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='ELNO_HYDR_R',
@@ -416,7 +415,6 @@ RESUMECA=STAT_NON_LINE(
 
 RESUMECA=CALC_ELEM( reuse=RESUMECA,
                     OPTION=('SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
-                    
                     RESULTAT=RESUMECA,
               )
 

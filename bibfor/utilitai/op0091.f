@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
+C MODIF UTILITAI  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -542,7 +542,7 @@ C     ON NE LE FAIT PAS POUR LES TABL_FONC
      +    NOMOPE .NE. 'PUISSANCE       ' .AND.
      +    NOMOPE .NE. 'NORME           ' ) THEN
          CALL FOATTR(' ',1,SORTIE)
-         IF (NIV.GT.1) CALL FOIMPR(SORTIE,NIV,'MESSAGE',0,LISTR)
+         IF (NIV.GT.1) CALL FOIMPR(SORTIE,NIV,IFM,0,LISTR)
 C
 C     --- VERIFICATION QU'ON A BIEN CREER UNE FONCTION ---
 C         ET REMISE DES ABSCISSES EN ORDRE CROISSANT

@@ -1,4 +1,4 @@
-# MODIF  DATE 17/05/2004   AUTEUR CIBHHBC M.LOPES 
+# MODIF  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE CLAQUAGE  CALOTTE CYLINDRIQUE SHB8  APPUI SURFACE MOYENNE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -283,47 +283,10 @@ print 'Valeur maxi fonction difference ',valmax2
 
 FIN()
 
+from Utilitai.courbes import COURBES
 
-# FONCTION PYTHON "COURBES"
-def COURBES(listcourb,titre=' ',soustitre=' ',legx=' ',legy=' ',fichier=None):
-
-# COURBES AVEC XMGRACE EN INTERACTIF OU EN POSTSCRIPT
-
-  import os
-  import Stanley
-  from Stanley import as_courbes
-  from Stanley import xmgrace
-
-  l=len(listcourb)
-  print "Nombre de courbes  ",l
-
-  if (fichier!=None):
-     toto=xmgrace.Xmgr(10,' -hardcopy -nosafe')
-  else:
-     toto=xmgrace.Xmgr(10,' -noask')
-
-  toto.Nouveau_graphe()
-  toto.Titre(titre,soustitre)
-  toto.Axe_x(legx)
-  toto.Axe_y(legy)
-  lcourb=list(listcourb)
-  for i in range(l):
-     sigi = as_courbes.Courbe()
-     courbi=list(listcourb[i])
-     sigi.Lire_x(courbi[0],courbi[1])
-     sigi.Lire_y(courbi[0],courbi[2])
-     toto.Courbe(sigi,courbi[3])
-
-  if (fichier!=None):
-     toto.Sortie_EPS(fichier)
-     print 'Trace Postscript sur ',fichier
-  else:
-     toto.Attendre()
-  return l
-#===========================================
-
-courb1=(TFETA,'INST','ETA_PILO','ASTER')
-courb2=(TINCA,'INST','TOUTRESU','INCA')
+courb1=(TFETA,'INST',TFETA,'ETA_PILO','ASTER')
+courb2=(TINCA,'INST',TINCA,'TOUTRESU','INCA')
 listcourb=(courb1,courb2,)
 
 

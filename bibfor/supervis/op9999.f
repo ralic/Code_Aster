@@ -3,7 +3,7 @@
       INTEGER            ICOND , IER , IFIN
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 08/06/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF SUPERVIS  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,10 +41,11 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER      IEND, IVERI, IFM, NOCC
+      REAL*8       XTT, TEMPS(6)
+      LOGICAL      ULEXIS
       CHARACTER*8  K8B, OUINON, OUIPER, TYPRES, OUIHDF
       CHARACTER*16 FCHIER,FHDF
       CHARACTER*80 FICH
-      REAL*8       XTT, TEMPS(6)
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
@@ -58,9 +59,21 @@ C     -----  FIN DE LA ZONE DE TEST ------------------------------------
 C
 C     --- IMPRESSION DES SD RESULTAT
 C
+      IFM    = 0
+      FCHIER = ' '
+      CALL GETVIS ( ' ', 'UNITE'  , 1,1,1, IFM   , L )
+      CALL GETVTX ( ' ', 'FICHIER', 1,1,1, FCHIER, L )
+      IF ( L .NE. 0 ) THEN
+         CALL UTMESS('A','FIN',
+     +               'LE MOT CLE "FICHIER" EST APPELE A DISPARAITRE.'//
+     +               ' UTILISER LE MOT CLE "UNITE"')
+         IFM = IUNIFI( FCHIER )
+      ENDIF
+      IF ( .NOT. ULEXIS( IFM ) ) THEN
+         CALL ULOPEN ( IFM, ' ', FCHIER, 'NEW', 'O' )
+      ENDIF
+C
       IEND = 0
-      CALL GETVTX(' ','FICHIER',1,1,1,FCHIER,L)
-      IFM = IUNIFI( FCHIER )
       TYPRES = 'RESULTAT'
       CALL GCURES ( TYPRES, IEND, NBCMD, K8B )
       IF ( NBCMD .GT. 0 ) THEN
@@ -69,7 +82,7 @@ C
          CALL GCURES ( TYPRES, IEND, NBCMD, ZK8(JCMD) )
          DO 10 I = 1 , NBCMD
             WRITE(IFM,1000)
-            CALL RSINFO ( ZK8(JCMD+I-1) , FCHIER )
+            CALL RSINFO ( ZK8(JCMD+I-1) , IFM )
  10      CONTINUE
          CALL JEDETR ( '&&OP9999.NOM' )
       ENDIF

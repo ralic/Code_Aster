@@ -3,7 +3,7 @@
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C RESPONSABLE JMBHH01 J.M.PROIX
-C MODIF ALGORITH  DATE 08/06/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 16/06/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -24,6 +24,8 @@ C ======================================================================
         REAL*8  COEFT(NMAT),VIS(3),TAUS,DGAMMA,DALPHA,DP
         CHARACTER*16 NECRCI
 C ======================================================================
+C  INTEGRATION DES LOIS MONOCRISTALLINES : ECROUISSAGE CINEMATIQUE
+C ======================================================================
 C       IN  TAUS     :  SCISSION REDUITE
 C           COEFT   :  PARAMETRES MATERIAU
 C           IFA :  NUMERO DE FAMILLE
@@ -31,10 +33,9 @@ C           NBCOMM :  NOMBRE DE COEF MATERIAU PAR FAMILLE
 C           NECRCI  :  NOM DE LA LOI D'ECROUISSAGE CINEMATIQUE
 C           VIS   VARIABLES INTERNES DU SYSTEME DE GLISSEMENT COURANT
 C           DGAMMA    :  DERIVEES DES VARIABLES INTERNES A T
-C           DP
+C           DP        
 C     OUT:
 C           DALPHA  : VARIABLE INTERNE ECROUISSAGE CINEMATIQUE
-C  INTEGRATION DES LOIS MONOCRISTALLINES PAR UNE METHODE DE RUNGE KUTTA
 C
 C     ----------------------------------------------------------------
       REAL*8 D,ALPHA,GM,PM,C,CC
@@ -45,6 +46,13 @@ C     DANS VIS : 1 = ALPHA, 2=GAMMA, 3=P
 
       IEC=NBCOMM(IFA,2)
       ALPHA=VIS(1)
+
+
+C----------------------------------------------------------------------
+C   POUR UN NOUVEAU TYPE D'ECROUISSAGE CINEMATIQUE, AJOUTER UN BLOC IF
+C----------------------------------------------------------------------
+
+
       IF (NECRCI.EQ.'ECRO_CINE1') THEN
           D=COEFT(IEC-1+1)
           DALPHA=DGAMMA-D*ALPHA*DP

@@ -1,7 +1,7 @@
-      SUBROUTINE IMPVEL ( FICHIE, NOMSDZ, GRAINZ, NBMA, LISMAZ,
+      SUBROUTINE IMPVEL ( IFM, NOMSDZ, GRAINZ, NBMA, LISMAZ,
      +                    NBCMP, LISCMZ, NBCHIF )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 07/04/98   AUTEUR CIBHHGB G.BERTRAND 
+C MODIF PREPOST  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,8 +26,8 @@ C                DANS LE FICHIER DE NOM FICHIER.
 C                
 C
 C   ARGUMENT        E/S  TYPE         ROLE
-C    FICHIE          IN    K*     NOM DU FICHIER OU L'ON IMPRIME
-C                                 LE VECT_ELEM,
+C    IFM             IN    I      UNITE LOGIQUE D'IMPRESSION DU
+C                                 VECT_ELEM,
 C    NOMSDZ          IN    K*     NOM DU VECT_ELEM
 C    GRAINZ          IN    K*     'GRAIN' DE L'IMPRESSION
 C                                     = 'VALEUR'
@@ -73,7 +73,7 @@ C ----- COMMUNS NORMALISES  JEVEUX
       COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
       CHARACTER*32     JEXNUM, JEXNOM
 C -----  ARGUMENTS
-      CHARACTER*(*) FICHIE, NOMSDZ, GRAINZ, LISMAZ, LISCMZ
+      CHARACTER*(*)  NOMSDZ, GRAINZ, LISMAZ, LISCMZ
 C -----  VARIABLES LOCALES
       CHARACTER*6   GRAIN 
       CHARACTER*19  NOMSD
@@ -88,19 +88,19 @@ C
 C ---   IMPRESSION SELON LE GRAIN NOEUD :
 C       -------------------------------
           IF (GRAIN(1:5).EQ.'NOEUD') THEN
-              CALL IMVELN (FICHIE, NOMSDZ, NBCMP, LISCMZ,
+              CALL IMVELN (IFM, NOMSDZ, NBCMP, LISCMZ,
      +                     NBMA, LISMAZ, NBCHIF )
 C
 C ---   IMPRESSION SELON LE GRAIN VALEUR :
 C       --------------------------------
           ELSEIF (GRAIN.EQ.'VALEUR') THEN
-              CALL IMVELV (FICHIE, NOMSDZ, NBCMP, LISCMZ,
+              CALL IMVELV (IFM, NOMSDZ, NBCMP, LISCMZ,
      +                     NBMA, LISMAZ, NBCHIF )
 C
 C ---   IMPRESSION SELON LE GRAIN MAILLE :
 C       --------------------------------
           ELSEIF (GRAIN.EQ.'MAILLE') THEN
-              CALL IMVELM (FICHIE, NOMSDZ, NBCMP, LISCMZ,
+              CALL IMVELM (IFM, NOMSDZ, NBCMP, LISCMZ,
      +                     NBMA, LISMAZ, NBCHIF )
           ELSE
               CALL UTMESS ('F','IMPVEL','LA VALEUR DU GRAIN '//

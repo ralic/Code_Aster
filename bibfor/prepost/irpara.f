@@ -1,11 +1,11 @@
-      SUBROUTINE IRPARA(RESU,FORM,FICH,NBORDR,ORDR,NBPA,NOMPAR,CECR)
+      SUBROUTINE IRPARA(RESU,FORM,IFI,NBORDR,ORDR,NBPA,NOMPAR,CECR)
       IMPLICIT REAL*8 (A-H,O-Z)
       CHARACTER*(*)                               NOMPAR(*)
       CHARACTER*(*)                                            CECR
-      CHARACTER*(*)       RESU,FORM,FICH
+      CHARACTER*(*)       RESU,FORM
       INTEGER                          NBORDR,ORDR(*),NBPA
 C     ------------------------------------------------------------------
-C MODIF PREPOST  DATE 05/12/2001   AUTEUR VABHHTS J.PELLET 
+C MODIF PREPOST  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -28,7 +28,7 @@ C     IMPRESSION DES PARAMETRES
 C     ------------------------------------------------------------------
 C IN  RESU   : K8  : NOM DU CONCEPT
 C IN  FORM   : K8  : FORMAT D'ECRITURE
-C IN  FICH   : K16 : FICHIER D'ECRITURE
+C IN  IFI    : IS  : UNITE LOGIQUE D'ECRITURE
 C IN  NBORDR : I   : NOMBRE D'ORDRE
 C IN  ORDR   : I   : LISTE DES NUMEROS D'ORDRE
 C IN  NBPA   : I   : NOMBRE DE PARAMETRES
@@ -65,7 +65,6 @@ C
 C      --- IMPRESSION DES PARAMETRES AU FORMAT RESULTAT ---
       IF(NBPA.NE.0) THEN
         IF (FORM.EQ.'RESULTAT') THEN
-          IFI = IUNIFI (FICH)
 C
 C     --- STOCKAGE DES NOMS ET VALEURS DES PARAMETRES A IMPRIMER ---
 C

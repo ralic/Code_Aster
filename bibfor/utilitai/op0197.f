@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 17/11/2003   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -609,8 +609,7 @@ C
       CALL UTFINM
 C
       NOPASE = '        '
-      CALL TBIMPR ( TAPAIT, NOPASE, 'EXCEL', 'MESSAGE',
-     >              NTPSI+2, ZK16(INOPA),
+      CALL TBIMPR ( TAPAIT, NOPASE, 'EXCEL', IFM, NTPSI+2, ZK16(INOPA),
      >              0, K16BID, '1PE12.5', ' ')
 
       CALL DETRSD('TABLE',TAPAIT)

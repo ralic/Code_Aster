@@ -1,7 +1,7 @@
       SUBROUTINE OP0176 ( IER )
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 24/03/2003   AUTEUR CIBHHPD D.NUNEZ 
+C MODIF PREPOST  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,7 +53,7 @@ C
 C
       INTEGER       IBID, NBORDR, JORDR, NBEXCL, JEXCL, NBARCH, JARCH
       INTEGER       NBAC, NBPA, JPA, IRET, NBNOSY, NBPARA
-      INTEGER       IAUX, JAUX, IZERO,NIVE,VERSIO
+      INTEGER       IAUX, JAUX, IZERO,NIVE,VERSIO,IUL,IUNIFI
       INTEGER NRPASS, NBPASS
       INTEGER ADRECG
       REAL*8        R8B
@@ -183,7 +183,8 @@ C     --- IMPRESSION ---
 C
         FORM = 'RESULTAT'
         FICH = 'MESSAGE'
-        CALL RSINFO ( LERES1, FICH )
+        IUL  = IUNIFI( FICH )
+        CALL RSINFO ( LERES1, IUL )
 C
         CALL RSORAC ( LERES1,'LONUTI',IBID,R8B,K8B,C16B,R8B,K8B,
      >                                                 NBORDR,1,IBID)
@@ -192,7 +193,7 @@ C
         K8B  = '        '
         CECR = 'T'
         IZERO = 0
-        CALL IRECRI ( LERES1,NOSIMP,NOPASE,FORM,FICH,K8B,LBID,
+        CALL IRECRI ( LERES1,NOSIMP,NOPASE,FORM,IUL,K8B,LBID,
      >                IZERO,K8B,NBPARA,ZK16(JPA),
      >               NBORDR,ZI(JORDR),TRUE,'RESU',1,K8B,CECR,FALS,IZERO,
      >                IBID,IZERO,IBID,IZERO,K8B,FALS,R8B,FALS,R8B,FALS,

@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
+C MODIF UTILITAI  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,7 +39,8 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*80                                    ZK80
       COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
-      INTEGER      VERSIO
+      INTEGER      VERSIO, IUNIFI
+      LOGICAL      ULEXIS
       CHARACTER*8  K8B, FORMAT
       CHARACTER*16 FICHIE
 C     ------------------------------------------------------------------
@@ -48,10 +49,25 @@ C     ------------------------------------------------------------------
 C
       CALL GETVTX (' ','FORMAT' ,1,1,1,FORMAT,N1)
 C
-      FICHIE = FORMAT
-      CALL GETVTX (' ','FICHIER',1,1,1,FICHIE,N2)
+      CALL GETVIS (' ','VERSION',1,1,1,VERSIO,N2)
 C
-      CALL GETVIS (' ','VERSION',1,1,1,VERSIO,N3)
+      IFIC   = 0
+      FICHIE = ' ' 
+      CALL GETVIS ( ' ', 'UNITE'  , 1,1,1, IFIC  , N3 )
+      CALL GETVTX ( ' ', 'FICHIER', 1,1,1, FICHIE, N3 )
+      IF ( N3 .NE. 0 ) THEN
+         CALL UTMESS('A','IMPR_CHARGE',
+     +               'LE MOT CLE "FICHIER" EST APPELE A DISPARAITRE.'//
+     +               ' UTILISER LE MOT CLE "UNITE"')
+         IFIC = IUNIFI( FICHIE )
+      ENDIF
+      IF ( IFIC .EQ. 0 )  THEN
+         IF ( FICHIE .EQ. ' ' )  FICHIE = FORMAT
+         IFIC = IUNIFI( FICHIE )
+      ENDIF
+      IF ( .NOT. ULEXIS( IFIC ) ) THEN
+         CALL ULOPEN ( IFIC, ' ', FICHIE, 'NEW', 'O' )
+      ENDIF
 C
       NBCHAR = 0
       CALL GETVID (' ','CHARGE',1,1,0,K8B   ,N4)
@@ -63,14 +79,12 @@ C
 C
 C     ------------------------------------------------------------------
       IF ( FORMAT .EQ. 'IDEAS' ) THEN
-         CALL IRCHSU ( NBCHAR, ZK8(LCHA), FICHIE, VERSIO )
+         CALL IRCHSU ( NBCHAR, ZK8(LCHA), IFIC, VERSIO )
       ELSE
          CALL UTMESS('F','OP0158','ERREUR 1')
       ENDIF
 C
-      IF ( NBCHAR .NE. 0 ) THEN
-         CALL JEDETR ( '&&OP0158.CHARGES' )
-      ENDIF
+      IF ( NBCHAR .NE. 0 )  CALL JEDETR ( '&&OP0158.CHARGES' )
 C
       CALL JEDEMA()
       END

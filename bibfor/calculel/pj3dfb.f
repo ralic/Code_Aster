@@ -5,7 +5,7 @@
       CHARACTER*(*) MAILLZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 11/09/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -289,6 +289,6 @@ C     -------------------------------------------------------
   130 CONTINUE
 
       DBG = .FALSE.
-      IF (DBG) CALL UTIMSD('MESSAGE',2,.FALSE.,.TRUE.,BOITE,1,' ')
+      IF (DBG) CALL UTIMSD(IFM,2,.FALSE.,.TRUE.,BOITE,1,' ')
       CALL JEDEMA()
       END

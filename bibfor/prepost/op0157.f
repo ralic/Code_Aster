@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
+C MODIF PREPOST  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,7 +44,7 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       CHARACTER*16 NOMCMD, TYPCON, CRIT, K16BID, FICH
       CHARACTER*19 GENE, KNUM, KINST, KRANG
       CHARACTER*80 TITRE
-      LOGICAL      LHIST
+      LOGICAL      LHIST, ULEXIS
 C     ------------------------------------------------------------------
       CALL JEMARQ()
       CALL INFMAJ()
@@ -60,9 +60,23 @@ C
 C
 C        --- FICHIER ---
 C
-         FICH = FORM
-         CALL GETVTX(MOTFAC,'FICHIER',IOCC,1,1,FICH,N)
-         IFI = IUNIFI(FICH)
+         IFI = 0
+         FICH = ' '
+         CALL GETVIS ( MOTFAC, 'UNITE'  , IOCC,1,1, IFI , N )
+         CALL GETVTX ( MOTFAC, 'FICHIER', IOCC,1,1, FICH, N )
+         IF ( N .NE. 0 ) THEN
+            CALL UTMESS('A',NOMCMD,
+     +               'LE MOT CLE "FICHIER" EST APPELE A DISPARAITRE.'//
+     +               ' UTILISER LE MOT CLE "UNITE"')
+            IFI = IUNIFI( FICH )
+         ENDIF
+         IF ( IFI .EQ. 0 ) THEN
+            IF ( FICH .EQ. ' ' ) FICH = FORM
+            IFI = IUNIFI( FICH )
+         ENDIF
+         IF ( .NOT. ULEXIS( IFI ) ) THEN
+            CALL ULOPEN ( IFI, ' ', FICH, 'NEW', 'O' )
+         ENDIF
 C
 C        --- SEPARATION DES DIFFERENTES OCCURENCES---
 C
@@ -74,13 +88,13 @@ C
 C        --- ECRITURE DU TITRE ---
 C
          K8B = '        '
-         CALL IRTITR(GENE,K8B,K8B,FORM,FICH,TITRE)
+         CALL IRTITR(GENE,K8B,K8B,FORM,IFI,TITRE)
 C
 C        --- IMPRESSION DE LA STRUCTURE DU RESU_GENE ---
 C
          IF (TYPCON.EQ.'MODE_GENE' .OR. TYPCON.EQ.'HARM_GENE') THEN
             CALL GETVTX(MOTFAC,'INFO_GENE',IOCC,1,1,K8B,N01)
-            IF( K8B(1:3) .EQ. 'OUI' ) CALL RSINFO ( GENE , FICH )
+            IF( K8B(1:3) .EQ. 'OUI' ) CALL RSINFO ( GENE , IFI )
          ENDIF
 C
 C        --- QUELS SONT LES NOM_CHAMP A IMPRIMER ---
@@ -174,7 +188,7 @@ C
          CALL GETVTX(MOTFAC,'INFO_CMP_GENE',IOCC,1,1,K8B,N)
          IF ( K8B(1:3) .EQ. 'NON' ) LHIST = .FALSE.
 C
-         CALL IRGENE (IOCC, GENE, FORM,FICH, NBNOSY,ZK16(JNOSY),
+         CALL IRGENE (IOCC, GENE, FORM,IFI, NBNOSY,ZK16(JNOSY),
      +                NBCMPG,ZI(JCMPG), NBPARA,ZK16(JPARA),
      +            NBORDR,ZI(JORDR), NBINST,ZR(JINST),ZI(JRANG), LHIST )
 C

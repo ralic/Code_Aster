@@ -1,11 +1,15 @@
        SUBROUTINE  NIGP2D ( NNO1, NNO2, NPG1, IPOIDS, IVF1 , IVF2,
      &                      IDFDE1, DFDIM, DFDIP, GEOM,
      &                      TYPMOD, OPTION, IMATE, COMPOR, LGPG, CRIT,
-     &                      INSTAM, INSTAP, TM, TP, TREF, DEPLM, DDEPL ,
-     &                      GONFLM, DGONFL, SIGM, VIM, SIGP, VIP,
+     &                      INSTAM, INSTAP,
+     &                      TM, TP, TREF,
+     &                      DEPLM, DDEPL,
+     &                      ANGMAS,
+     &                      GONFLM, DGONFL, 
+     &                      SIGM, VIM, SIGP, VIP,
      &                      FINTU, FINTA, KUU, KUA, KAA, CODRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 04/05/2004   AUTEUR SMICHEL S.MICHEL-PONNELLE 
+C MODIF ALGORITH  DATE 15/06/2004   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,7 +43,8 @@ C TOLE CRP_21
        REAL*8         DGONFL(2,4), SIGM(5,NPG1), SIGP(5,NPG1)
        REAL*8         VIM(LGPG,NPG1), VIP(LGPG,NPG1)
        REAL*8         KUU(2,9,2,9), KUA(2,9,2,4), KAA(2,4,2,4)
-       REAL*8         FINTU(2,9), FINTA(2,4),R8VIDE
+       REAL*8         FINTU(2,9), FINTA(2,4)
+       REAL*8         ANGMAS(3)
 
 C......................................................................
 C     BUT:  CALCUL  DES OPTIONS RIGI_MECA_TANG, RAPH_MECA ET FULL_MECA
@@ -70,6 +75,7 @@ C IN  TP      : TEMPERATURE AUX NOEUDS A L'INSTANT DE CALCUL
 C IN  TREF    : TEMPERATURE DE REFERENCE
 C IN  DEPLM   : DEPLACEMENT A L'INSTANT PRECEDENT
 C IN  DDEPL   : INCREMENT DE DEPLACEMENT
+C IN  ANGMAS  : LES TROIS ANGLES DU MOT_CLEF MASSIF (AFFE_CARA_ELEM)
 C IN  GONFLM  : P ET G  A L'INSTANT PRECEDENT
 C IN  DGONFL  : INCREMENT POUR P ET G
 C IN  SIGM    : CONTRAINTES A L'INSTANT PRECEDENT
@@ -117,7 +123,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       REAL*8    DSIDEP(6,3,3),SIGEQ(4),SIGDF(2,9)
       REAL*8    DSIDF(2,2,2,9),SIGDF2(2,9),PROJ(6,3,3)
       REAL*8    TINT(3,3),TL(3,3), TLDF, VFF2, VFFN, VFFM
-      REAL*8    RBID, TMP
+      REAL*8    RBID, TMP, R8VIDE
 
       DATA        KRON/1.D0,1.D0,1.D0,0.D0,0.D0,0.D0/
       DATA    IND / 1, 4, 5,
@@ -223,13 +229,21 @@ C      CONTRAINTE EN T- POUR LA LOI DE COMPORTEMENT
  62     CONTINUE
         SIGMC(4) = SIGM(4,KPG) / TETJD
 
-C - APPEL A LA LOI DE COMPORTEMENT
-C      IF (.NOT.AXI)  TYPMOD(1) = 'AXIS    '
-       CALL NMCOMP(2,TYPMOD,IMATE,COMPOR,CRIT,INSTAM,INSTAP,
-     &              TEMPM,TEMPP,TREF, 0.D0, 0.D0, 0.D0, 0.D0,0.D0,
-     &              FMLDC,DFLDC,SIGMC,VIM(1,KPG),OPTION,RBID,RBID,0,
-     &              RBID, RBID, RBID, SIGPC,
-     &              VIP(1,KPG),DSIDEP,COD(KPG),R8VIDE(),R8VIDE())
+
+       CALL NMCOMP(2,TYPMOD,IMATE,COMPOR,CRIT,
+     &             INSTAM,INSTAP,
+     &             TEMPM,TEMPP,TREF,
+     &             0.D0, 0.D0,
+     &             0.D0, 0.D0,0.D0,
+     &             FMLDC,DFLDC,
+     &             SIGMC,VIM(1,KPG),
+     &             OPTION,
+     &             RBID,RBID,
+     &             0,RBID,RBID,
+     &             R8VIDE(),R8VIDE(),
+     &             ANGMAS,
+     &             RBID,
+     &             SIGPC,VIP(1,KPG),DSIDEP,COD(KPG))
 C       IF (.NOT.AXI)  TYPMOD(1) = 'D_PLAN  '
 
       IF(COD(KPG).EQ.1) THEN

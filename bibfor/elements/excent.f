@@ -1,6 +1,6 @@
       SUBROUTINE EXCENT ( OPTION, NOMTE, NNO, TENS , ICOMPX )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 06/03/2002   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 15/06/2004   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -71,7 +71,7 @@ C
             IF ((.NOT.GRILLE)) THEN
                EXCEN = ZR(JCARA+5-1)
             ELSE
-               EXCEN = ZR(JCARA+7-1)
+               EXCEN = ZR(JCARA+4-1)
             ENDIF
             IPLAN  = NINT(ZR(JPLAN))
          ENDIF

@@ -1,9 +1,10 @@
-      SUBROUTINE TBIMFO ( TABLE, FICHIE)
+      SUBROUTINE TBIMFO ( TABLE, IFR )
       IMPLICIT   NONE
-      CHARACTER*(*)       TABLE, FICHIE
+      INTEGER                    IFR
+      CHARACTER*(*)       TABLE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
+C MODIF UTILITAI  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -151,7 +152,7 @@ C
             ELSEIF ( TYPVAL(1:2) .EQ. 'K8'  ) THEN
                NOMFON = ZK8(JFONC-1+IOC)
             ENDIF
-            CALL FOIMPR ( NOMFON, IMPR, FICHIE, 0, ' ' )
+            CALL FOIMPR ( NOMFON, IMPR, IFR, 0, ' ' )
  200     CONTINUE
 C
  10   CONTINUE

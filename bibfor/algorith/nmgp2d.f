@@ -1,12 +1,17 @@
-       SUBROUTINE NMGP2D(NNO, NPG, IPOIDS, IVF, IDFDE, GEOMI,
-     &                   TYPMOD, OPTION, IMATE, COMPOR, LGPG, CRIT,
-     &                   INSTM, INSTP, TM, TP, HYDRM, HYDRP, SECHM,
-     &                   SECHP, SREF, NZ,PHASM, PHASP, TREF,
-     &                   DEPLM, DDEPL, SIGM, VIM, DFDIM,
+       SUBROUTINE NMGP2D(NNO, NPG, IPOIDS, IVF, IDFDE, GEOMI,TYPMOD,
+     &                   OPTION, IMATE, COMPOR, LGPG, CRIT,
+     &                   INSTM, INSTP,
+     &                   TM, TP, TREF,
+     &                   HYDRM, HYDRP,
+     &                   SECHM, SECHP, SREF,
+     &                   NZ,PHASM, PHASP, 
+     &                   DEPLM, DDEPL,
+     &                   ANGMAS, 
+     &                   SIGM, VIM, DFDIM,
      &                   DFDIP, SIGP, VIP, MATNS, VECTU, CODRET )
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 04/05/2004   AUTEUR SMICHEL S.MICHEL-PONNELLE 
+C MODIF ALGORITH  DATE 15/06/2004   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -37,6 +42,7 @@ C TOLE CRP_21
        REAL*8        VIM(LGPG,NPG), DFDIM(NNO,2),DFDIP(NNO,2)
        REAL*8        SIGP(4,NPG), VIP(LGPG,NPG)
        REAL*8        MATNS(2,NNO,2,NNO), VECTU(2,NNO)
+       REAL*8        ANGMAS(3)
 
 C.......................................................................
 C
@@ -61,6 +67,7 @@ C IN  INSTM   : VALEUR DE L'INSTANT T-
 C IN  INSTP   : VALEUR DE L'INSTANT T+
 C IN  TM      : TEMPERATURE AUX NOEUDS EN T-
 C IN  TP      : TEMPERATURE AUX NOEUDS EN T+
+C IN  TREF    : TEMPERATURE DE REFERENCE
 C IN  HYDRM   : HYDRATATION AUX POINTS DE GAUSS EN T-
 C IN  HYDRP   : HYDRATATION AUX POINTS DE GAUSS EN T+
 C IN  SECHM   : SECHAGE AUX NOEUDS EN T-
@@ -68,9 +75,9 @@ C IN  SECHP   : SECHAGE AUX NOEUDS EN T+
 C IN  SREF    : SECHAGE DE REFERENCE
 C IN  PHASM   : PHASES METALLURGIQUES EN T-
 C IN  PHASP   : PHASES METALLURGIQUES EN T+
-C IN  TREF    : TEMPERATURE DE REFERENCE
 C IN  DEPLM   : DEPLACEMENT EN T-
 C IN  DDEPL   : INCREMENT DE DEPLACEMENT ENTRE T- ET T+
+C IN  ANGMAS  : LES TROIS ANGLES DU MOT_CLEF MASSIF (AFFE_CARA_ELEM)
 C IN  SIGM    : CONTRAINTES DE CAUCHY EN T-
 C IN  VIM     : VARIABLES INTERNES EN T-
 C OUT DFDIM   : DERIVEES DES FONCTIONS DE FORMES CONF T- (DERN PT GAUSS)
@@ -175,13 +182,21 @@ C     CALCUL DE DFDIP, RP ET POIDS EN T+
      &              IVF,IDFDE,DEPLM,POIDS,DFDIP,
      &              FBID,EPS,RP)
 
-C - LOI DE COMPORTEMENT
-       CALL NMCOMP(2,TYPMOD,IMATE,COMPOR,CRIT,INSTM,INSTP,
-     &            TEMPM,TEMPP,TREF,HYDRGM,HYDRGP,SECHGM,SECHGP,SREF,
-     &            FM,DF,SIGM(1,KPG),VIM(1,KPG),
-     &            OPTION,DEFAM,DEFAP,NZ,PHASM(1,KPG),PHASP(1,KPG),
-     &            ELGEOM,SIGP(1,KPG),VIP(1,KPG),DSIDEP,COD(KPG),R8VIDE()
-     &,R8VIDE())
+C -   APPEL A LA LOI DE COMPORTEMENT
+       CALL NMCOMP(2,TYPMOD,IMATE,COMPOR,CRIT,
+     &             INSTM,INSTP,
+     &             TEMPM,TEMPP,TREF,
+     &             HYDRGM,HYDRGP,
+     &             SECHGM,SECHGP,SREF,
+     &             FM,DF,
+     &             SIGM(1,KPG),VIM(1,KPG),
+     &             OPTION,
+     &             DEFAM,DEFAP,
+     &             NZ,PHASM(1,KPG),PHASP(1,KPG),
+     &             R8VIDE(),R8VIDE(),
+     &             ANGMAS,
+     &             ELGEOM,
+     &             SIGP(1,KPG),VIP(1,KPG),DSIDEP,COD(KPG))
 
        IF(COD(KPG).EQ.1) THEN
          GOTO 10

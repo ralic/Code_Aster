@@ -1,6 +1,6 @@
       SUBROUTINE OP0016(IER)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/01/2004   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF UTILITAI  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -117,7 +117,7 @@ C
          CALL GETVTX(' ','COMMENTAIRE',0,1,1,TXT,N)
          IF (N.EQ.0) TXT=' '
          WRITE(IUNI,*) ' '
-         CALL JEIMPA(FICH,NOMOBJ,TXT)
+         CALL JEIMPA(IUNI,NOMOBJ,TXT)
          WRITE(IUNI,*) ' '
          WRITE(IUNI,*) ' '
          IF (IRET.EQ.2) THEN
@@ -134,8 +134,8 @@ C           CALL LXCAPS(NOM)
                   WRITE(IUNI,*) ' CONTENU DE L''OBJET : "',NUM,
      &              '" DE LA COLLECTION : "',NOMOBJ,'"'
                   WRITE(IUNI,*) ' '
-                  CALL JEIMPA(FICH,JEXNUM(NOMOBJ,NUM),TXT)
-                  CALL JEIMPO(FICH,JEXNUM(NOMOBJ,NUM),' ',TXT)
+                  CALL JEIMPA(IUNI,JEXNUM(NOMOBJ,NUM),TXT)
+                  CALL JEIMPO(IUNI,JEXNUM(NOMOBJ,NUM),' ',TXT)
                   WRITE(IUNI,*) ' '
                END IF
             ELSE IF (N2.NE.0) THEN
@@ -147,13 +147,13 @@ C           CALL LXCAPS(NOM)
                   WRITE(IUNI,*) ' CONTENU DE L''OBJET : "',NOM,
      &              '" DE LA COLLECTION : "',NOMOBJ,'"'
                   WRITE(IUNI,*) ' '
-                  CALL JEIMPA(FICH,JEXNOM(NOMOBJ,NOM),TXT)
-                  CALL JEIMPO(FICH,JEXNOM(NOMOBJ,NOM),' ',TXT)
+                  CALL JEIMPA(IUNI,JEXNOM(NOMOBJ,NOM),TXT)
+                  CALL JEIMPO(IUNI,JEXNOM(NOMOBJ,NOM),' ',TXT)
                   WRITE(IUNI,*) ' '
                END IF
             ELSE IF (N3.NE.0) THEN
                NOML32 = NOMOBJ
-               CALL JEPRAT(FICH,NOML32,NOM(1:8),' ',TXT)
+               CALL JEPRAT(IUNI,NOML32,NOM(1:8),' ',TXT)
                WRITE(IUNI,*) ' '
             ELSE
                CALL JELIRA(NOMOBJ,'NMAXOC',NOC,K1BID)
@@ -163,8 +163,8 @@ C           CALL LXCAPS(NOM)
                      WRITE(IUNI,*) ' CONTENU DE L''OBJET : "',I,
      &              '" DE LA COLLECTION : "',NOMOBJ,'"'
                      WRITE(IUNI,*) ' '
-                     CALL JEIMPA(FICH,JEXNUM(NOMOBJ,I),TXT)
-                     CALL JEIMPO(FICH,JEXNUM(NOMOBJ,I),' ',TXT)
+                     CALL JEIMPA(IUNI,JEXNUM(NOMOBJ,I),TXT)
+                     CALL JEIMPO(IUNI,JEXNUM(NOMOBJ,I),' ',TXT)
                      WRITE(IUNI,*) ' '
                   END IF
     1          CONTINUE
@@ -172,7 +172,7 @@ C           CALL LXCAPS(NOM)
          ELSE
             WRITE(IUNI,*) ' '
             WRITE(IUNI,*) ' CONTENU DE L''OBJET : "',NOMOBJ,'"'
-            CALL JEIMPO(FICH,NOMOBJ,' ',TXT)
+            CALL JEIMPO(IUNI,NOMOBJ,' ',TXT)
             WRITE(IUNI,*) ' '
          END IF
          WRITE(IUNI,*) ' '
@@ -185,7 +185,7 @@ C
          CALL GETVTX(' ','CLASSE',0,1,1,NOMCLA,N)
          CALL GETVTX(' ','NOMATR',0,1,1,NOM,N3)
          IF (N3.NE.0) THEN
-            CALL JEPRAT(FICH,'$'//NOMCLA(1:1),NOM(1:8),' ',TXT)
+            CALL JEPRAT(IUNI,'$'//NOMCLA(1:1),NOM(1:8),' ',TXT)
             WRITE(IUNI,*) ' '
          END IF
 C
@@ -203,7 +203,7 @@ C
             WRITE(IUNI,*)' ECRITURE DES ATTRIBUTS DE "',NOMOBJ,'"'
          END IF
          WRITE(IUNI,*) ' '
-         CALL JEIMPA(FICH,NOMOBJ,TXT)
+         CALL JEIMPA(IUNI,NOMOBJ,TXT)
          WRITE(IUNI,*) ' '
       ENDIF
  9999 CONTINUE

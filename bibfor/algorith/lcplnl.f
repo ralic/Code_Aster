@@ -1,11 +1,12 @@
         SUBROUTINE LCPLNL ( LOI,  TOLER, ITMAX, MOD,   IMAT,
      1                      NMAT, MATERD,MATERF,MATCST,NR, NVI, TEMPD,
      2                      TEMPF,TIMED, TIMEF, DEPS,  EPSD, SIGD, VIND,
+     3                      COMP,NBCOMM, CPMONO, PGL,
      3                      SIGF, VINF, ICOMP, IRTETI)
         IMPLICIT REAL*8 (A-H,O-Z)
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 16/06/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -75,7 +76,6 @@ C           INTG   :  COMPTEUR DU NOMBRE DE TENTATIVES D'INTEGRATIONS
 C       ----------------------------------------------------------------
         INTEGER         IMAT, NMAT,    NMOD  , ICOMP
 C
-        PARAMETER       ( NMOD = 40     )
 C
         INTEGER         TYPESS, ITMAX
         INTEGER         NR,     NDT,    NDI,    NVI,  ITER
@@ -86,9 +86,10 @@ C
         REAL*8          EPSD(6),        DEPS(6)
         REAL*8          SIGD(6),        SIGF(6)
         REAL*8          VIND(*),        VINF(*)
-        REAL*8          R(NMOD),        DRDY(NMOD,NMOD)
-        REAL*8          DRDY1(NMOD,NMOD)
-        REAL*8          DDY(NMOD),      DY(NMOD),  YD(NMOD) , YF(NMOD)
+C      DIMENSIONNEMENT DYNAMIQUE (MERCI F90)
+        REAL*8          R(NR),        DRDY(NR,NR), RINI(NR)
+        REAL*8          DRDY1(NR,NR)
+        REAL*8          DDY(NR),      DY(NR),  YD(NR) , YF(NR)
         REAL*8          MATERD(NMAT,2) ,MATERF(NMAT,2)
         REAL*8          TEMPD, TEMPF,   TIMED, TIMEF
 C
@@ -97,22 +98,26 @@ C
         CHARACTER*3     MATCST
 C       ----------------------------------------------------------------
         COMMON /TDIM/   NDT  , NDI
-        COMMON /JACOB/  DRDY
-        COMMON /OPTI/   IOPTIO , IDNR
 C       ----------------------------------------------------------------
         INTEGER I
+        
+        INTEGER         NBCOMM(NMAT,3)
+        REAL*8          PGL(3,3)
+        CHARACTER*16    CPMONO(5*NMAT+1),COMP(*)
 
 C       ----------------------------------------------------------------
 C
 C --    INITIALISATION YD = ( SIGD , VIND , (EPSD(3)) )
 C
         ESSAI = 1.D-5
-        DO 100  I = 1 , NMOD
-        R( I ) = 0.D0
-        DDY( I ) = 0.D0
-        DY( I ) = 0.D0
-        YD( I ) = 0.D0
-        YF( I ) = 0.D0
+
+C       DIMENSION DYNAMIQUE DE YD,YF,DY,R,DDY
+        DO 100  I = 1 , NR
+           R( I ) = 0.D0
+           DDY( I ) = 0.D0
+           DY( I ) = 0.D0
+           YD( I ) = 0.D0
+           YF( I ) = 0.D0
  100   CONTINUE
 
         ZERO = 0.D0
@@ -141,14 +146,14 @@ C
 C --    CALCUL DE LA SOLUTION D ESSAI INITIALE DU SYSTEME NL EN DY
 C
         CALL LCINIT ( LOI,   TYPESS, ESSAI, MOD, NMAT,
-     &                MATERF,TIMED,TIMEF,YD,
+     &                MATERF,TIMED,TIMEF,NR, NVI,YD,
      &                EPSD,  DEPS,   DY )
-C               CALL LCIMVN ( 'DY0 =' , NR , DY )
 C
 
         ITER = 0
  1      CONTINUE
         ITER = ITER + 1
+        
 C
 C --    INCREMENTATION DE  YF = YD + DY
 C
@@ -157,33 +162,43 @@ C
 C --    CALCUL DES TERMES DU SYSTEME A T+DT = -R(DY)
 C
         CALL LCRESI ( LOI,   MOD,   IMAT, NMAT, MATERD,MATERF,
+     3                COMP,NBCOMM, CPMONO, PGL,NR,NVI,
      &                TEMPF,TIMED,TIMEF,YD,YF,DEPS,EPSD,DY,R )
 C               CALL LCIMVN ( 'R =' , NR , R )
+
+C       SAUVEGARDE DE R(DY0) POUR TEST DE CONVERGENCE
+        IF(ITER.EQ.1) THEN
+           CALL LCEQVN ( NR ,   R ,   RINI )
+        ENDIF
 C
 C --    CALCUL DU JACOBIEN DU SYSTEME A T+DT = DRDY(DY)
 C
         CALL LCJACB ( LOI,   MOD,   IMAT, NMAT, MATERF,
      &                  TIMED,TIMEF,     YF,    DEPS,
-     &                  EPSD,  DY,    NMOD,  DRDY )
+     3                COMP,NBCOMM, CPMONO, PGL,NR,NVI,
+     &                  EPSD,  DY,    DRDY )
+
 C               CALL LCIMMN ( 'DRDY =' , NR ,NR, DRDY )
 C
 C --    RESOLUTION DU SYSTEME LINEAIRE DRDY(DY).DDY = -R(DY)
 C
-        CALL LCEQMN ( NMOD , DRDY , DRDY1 )
+
+        CALL LCEQMN ( NR , DRDY , DRDY1 )
         CALL LCEQVN ( NR ,   R ,   DDY )
-        CALL MGAUSS ( DRDY1 , DDY , NMOD , NR , 1, ZERO, FAUX )
-C               CALL LCIMVN ( 'DDY =' , NR , DDY )
+
+        CALL MGAUSS ( DRDY1 , DDY , NR , NR , 1, ZERO, FAUX )
+
 C
 C --    REACTUALISATION DE DY = DY + DDY
 C
         CALL LCSOVN ( NR , DDY , DY , DY )
                 IF ( MOD(1:6).EQ.'C_PLAN' ) DEPS(3) = DY(NR)
-C               CALL LCIMVN ( 'DY =' , NR , DY )
+
 C
 C --    VERIFICATION DE LA CONVERGENCE EN DY  ET RE-INTEGRATION ?
 C
         CALL LCCONV( LOI,    DY,   DDY, NR, ITMAX, TOLER, ITER, INTG,
-     &               TYPESS, ESSAI, ICOMP, IRTET)
+     &               R,RINI,TYPESS, ESSAI, ICOMP, IRTET)
         IF ( IRTET.GT.0 ) GOTO (1,2,3), IRTET
 C
 C --    CONVERGENCE > INCREMENTATION DE  YF = YD + DY
@@ -195,11 +210,14 @@ C
         CALL LCEQVN ( NDT ,   YF(1)     , SIGF )
         CALL LCEQVN ( NVI-1 , YF(NDT+1) , VINF )
         IF ( LOI(1:7) .EQ. 'NADAI_B' ) THEN
-        DO 10  I = 3 , NVI-1
-        VIND ( I ) = 0.D0
-   10   CONTINUE
+           DO 10  I = 3 , NVI-1
+              VIND ( I ) = 0.D0
+   10      CONTINUE
         ENDIF
         VINF (NVI) = 1.D0
+        IF (LOI(1:8).EQ.'MONOCRIS') THEN
+           VINF (NVI) = ITER
+        ENDIF
 C
 C
         IRTETI = 0

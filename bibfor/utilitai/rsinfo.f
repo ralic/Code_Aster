@@ -1,10 +1,10 @@
-      SUBROUTINE RSINFO ( NOMCON , FICH )
+      SUBROUTINE RSINFO ( NOMCON , IFI )
 C
 C     RESULTAT - INFORMATION
 C     * *        ****
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 28/01/2003   AUTEUR DURAND C.DURAND 
+C MODIF UTILITAI  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,13 +26,13 @@ C TOLE CRP_20
 C     ECRITURE DE LA STRUCTURE D'UN CONCEPT RESULTAT
 C
 C IN  NOMCON : NOM DU CONCEPT A IMPRIMER
-C IN  FICH   : NOM DU FICHIER
+C IN  IFI    : UNITE LOGIQUE D'IMPRESSION
 C     ------------------------------------------------------------------
       IMPLICIT   NONE
 C
 C 0.1. ==> ARGUMENTS
 C
-      CHARACTER*(*)       NOMCON , FICH
+      CHARACTER*(*)       NOMCON
 C 0.2. ==> COMMUNS
 C
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
@@ -59,7 +59,7 @@ C
       PARAMETER ( NOMPRO = 'RSINFO' )
 C
       INTEGER       IFI, IBID, NBNOSY, LRES, INOMSY, I, J, K, ISY, II
-      INTEGER       IUNIFI, IATACH, LNOSY, LATAC, LG, LXLGUT, LB
+      INTEGER       IATACH, LNOSY, LATAC, LG, LXLGUT, LB
       INTEGER       IRET, LTIRT, NBAC, NBPA, IAC, IPAR, IAD, JPA
       INTEGER       NBORDT, IPCD, IPCF, LPOIN, LONGT
       INTEGER NBSTSE, NBSTRU, NRSTRU, ADSTDE
@@ -93,7 +93,6 @@ C
 C
 C 1.2. ==> CONSTANTES
 C
-      IFI = IUNIFI(FICH)
 C              1234567890123456
       BLANC = '                '
       RUNDF = R8VIDE()

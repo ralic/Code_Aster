@@ -1,5 +1,5 @@
 
-# MODIF  DATE 08/06/2004   AUTEUR JMBHH01 J.M.PROIX 
+# MODIF  DATE 16/06/2004   AUTEUR JMBHH01 J.M.PROIX 
 # TITRE COMPORTEMENTS ELASTOVISCOPLASTIQUES MONOCRISTALLINS
 # RESPONSABLE JMBHH01 J.M.PROIX
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -25,26 +25,30 @@ DEBUT(CODE=_F(NOM='SSNV172A',
 
 CUBE=LIRE_MAILLAGE();
 
+
 TROISD=AFFE_MODELE(MAILLAGE=CUBE,
                    AFFE=_F(TOUT='OUI',
                            PHENOMENE='MECANIQUE',
                            MODELISATION='3D',),);
 TFIN = 0.955;
 
-NPAS=20
+NPAS = 20;
 
-NPASC=200
+NPASC = 200;
+
+
 LINSTC=DEFI_LIST_REEL(DEBUT=0.0,
-                     INTERVALLE=(_F(JUSQU_A=0.755,
-                                    NOMBRE=1,),
-                                 _F(JUSQU_A=TFIN,
-                                    NOMBRE=NPASC,),),);
+                      INTERVALLE=(_F(JUSQU_A=0.755,
+                                     NOMBRE=1,),
+                                  _F(JUSQU_A=TFIN,
+                                     NOMBRE=NPASC,),),);
 
 LINST=DEFI_LIST_REEL(DEBUT=0.0,
                      INTERVALLE=(_F(JUSQU_A=0.755,
                                     NOMBRE=1,),
                                  _F(JUSQU_A=TFIN,
                                     NOMBRE=NPAS,),),);
+
 TRAC=AFFE_CHAR_MECA(MODELE=TROISD,
                     DDL_IMPO=(_F(NOEUD='NO4',
                                  DX=0.0,
@@ -67,88 +71,71 @@ COEF=DEFI_FONCTION(NOM_PARA='INST',
                    PROL_DROITE='LINEAIRE',
                    PROL_GAUCHE='LINEAIRE',);
 
-
 ACIER=DEFI_MATERIAU(ELAS=_F(E=145200.0,
-                            NU=0.,),
-                            
-                    ECOU_VISC1=_F( N        =10.,
-                                   K        =40.,
-                                   C        =10.,
-                                  ),
-                                  
-                    ECOU_VISC2=_F( N=10.0,
-                                   K=40.0,
-                                   C=10.0,
-                                   D=1.E10,
-                                   A=0.000000000,),
-                                   
-                    ECOU_VISC3=_F( K=40.0,
-                                   TAUMU=75.5,
-                                   GAMMA0=10.E-6,
-                                   V=1.E-6,),
-                                   
+                            NU=0.0,),
+                    CIN1_CHAB=_F(R_0=75.5,
+                                 R_I=85.27,
+                                 B=19.34,
+                                 C_I=10.0,
+                                 K=1.0,
+                                 W=0.0,
+                                 G_0=36.68,
+                                 A_I=1.0,),
+                    LEMAITRE=_F(N=10.0,
+                                UN_SUR_K=0.025,
+                                UN_SUR_M=0.0,),
+                    ECOU_VISC1=_F(N=10.0,
+                                  K=40.0,
+                                  C=10.0,),
+                    ECOU_VISC2=_F(N=10.0,
+                                  K=40.0,
+                                  C=10.0,
+                                  D=10000000000.0,
+                                  A=0.0,),
+                    ECOU_VISC3=_F(K=40.0,
+                                  TAUMU=75.5,
+                                  GAMMA0=1e-05,
+                                  V=1e-06,),
                     ECOU_PLAS1=_F(C=40000.0,),
-                                   
                     ECRO_ISOT1=_F(R_0=75.5,
                                   Q=9.77,
                                   B=19.34,
                                   H=0.0,),
-                                  
-                    ECRO_ISOT2=_F(R_0      =75.5,
-                                  B1       =19.34,
-                                  B2       =0.00000,
-                                  Q1       =9.77,  
-                                  Q2       =0.00000,  
-                                  H        =0.),
-                                  
-                    ECRO_CINE1=_F(D        =36.68,),
-                    
-                    ECRO_CINE2=_F( D=36.68,
-                                  GM=10.E10,
+                    ECRO_ISOT2=_F(R_0=75.5,
+                                  Q1=9.77,
+                                  B1=19.34,
+                                  H=0.0,
+                                  Q2=0.0,
+                                  B2=0.0,),
+                    ECRO_CINE1=_F(D=36.68,),
+                    ECRO_CINE2=_F(D=36.68,
+                                  GM=100000000000.0,
                                   PM=0.0,
-                                  C=0.00000,),
-                                  
-                     CIN1_CHAB=_F( 
-                                 R_0 = 75.5,   
-                               #  R_I = 85.27,  
-                                 R_I = 75.5,  
-                                 B = 19.34,  
-                                 C_I = 10.,  
-                                 K = 1.0,  
-                                 W = 0.0,  
-                                 G_0 = 36.68,  
-                                 A_I = 1.0,  
-                                    ),
-                     LEMAITRE=_F(N = 10.,
-                               UN_SUR_K = (1.0/40.0),
-                               UN_SUR_M = 0.)
-                                   );
-
+                                  C=0.0,),);
 
 MAT=AFFE_MATERIAU(MAILLAGE=CUBE,
                   AFFE=_F(TOUT='OUI',
                           MATER=ACIER,),);
-
 # ATTENTION TRES SENSIBLE AU PAS DE TEMPS.
+
 SOLCHAB=STAT_NON_LINE(MODELE=TROISD,
-                    CHAM_MATER=MAT,
-                    EXCIT=(_F(CHARGE=TRAC,
-                              FONC_MULT=COEF,
-                              TYPE_CHARGE='FIXE_CSTE',),),
-                    COMP_INCR=(_F(RELATION='VISC_CIN1_CHAB',
-                                  DEFORMATION='PETIT',
-                                  TOUT='OUI',),),
-                    INCREMENT=(_F(LIST_INST=LINSTC,
-                                  SUBD_PAS=4,
-                                  SUBD_PAS_MINI=1e-06,),),
-                    NEWTON=(_F(REAC_ITER=1,),),
-                    CONVERGENCE=(_F( ITER_INTE_MAXI=100,),),
-                      ARCHIVAGE=_F(LIST_INST=LINST,),
-                                    );
+                      CHAM_MATER=MAT,
+                      EXCIT=(_F(CHARGE=TRAC,
+                                FONC_MULT=COEF,
+                                TYPE_CHARGE='FIXE_CSTE',),),
+                      COMP_INCR=(_F(RELATION='VISC_CIN1_CHAB',
+                                    DEFORMATION='PETIT',
+                                    TOUT='OUI',),),
+                      INCREMENT=(_F(LIST_INST=LINSTC,
+                                    SUBD_PAS=4,
+                                    SUBD_PAS_MINI=1e-06,),),
+                      NEWTON=(_F(REAC_ITER=1,),),
+                      CONVERGENCE=(_F(ITER_INTE_MAXI=100,),),
+                      ARCHIVAGE=_F(LIST_INST=LINST,),);
 
 SOLCHAB=CALC_ELEM(reuse =SOLCHAB,
-                RESULTAT=SOLCHAB,
-                OPTION=('EPSI_ELGA_DEPL','EPSP_ELGA',),);
+                  RESULTAT=SOLCHAB,
+                  OPTION=('EPSI_ELGA_DEPL','EPSP_ELGA',),);
 
 TEST_RESU(RESU=(_F(RESULTAT=SOLCHAB,
                    INST=TFIN,
@@ -164,7 +151,7 @@ TEST_RESU(RESU=(_F(RESULTAT=SOLCHAB,
                    NOM_CMP='EPXX',
                    MAILLE='MA1',
                    POINT=1,
-                   VALE=-6.7594E-04,
+                   VALE=-0.000675943476554,
                    REFERENCE='NON_REGRESSION',),
                 _F(RESULTAT=SOLCHAB,
                    INST=TFIN,
@@ -172,7 +159,7 @@ TEST_RESU(RESU=(_F(RESULTAT=SOLCHAB,
                    NOM_CMP='EPXX',
                    MAILLE='MA1',
                    POINT=1,
-                   VALE=-1.823E-05,
+                   VALE=-1.82299780001e-05,
                    REFERENCE='NON_REGRESSION',),),);
 
 COMPOR1=DEFI_COMPOR(MONOCRISTAL=(_F(MATER=ACIER,
@@ -182,11 +169,8 @@ COMPOR1=DEFI_COMPOR(MONOCRISTAL=(_F(MATER=ACIER,
                                     ELAS='ELAS',
                                     FAMI_SYST_GLIS='UNIAXIAL',),),);
 
-
-
 SOLNL=STAT_NON_LINE(MODELE=TROISD,
                     CHAM_MATER=MAT,
-                 #   CARA_ELEM=ORIEN,
                     EXCIT=(_F(CHARGE=TRAC,
                               FONC_MULT=COEF,
                               TYPE_CHARGE='FIXE_CSTE',),),
@@ -225,7 +209,7 @@ TEST_RESU(RESU=(_F(RESULTAT=SOLNL,
                    NOM_CMP='EPXX',
                    MAILLE='MA1',
                    POINT=1,
-                   VALE=-6.7577049928861E-04,
+                   VALE=-0.00067575375081,
                    REFERENCE='NON_REGRESSION',),
                 _F(RESULTAT=SOLNL,
                    INST=TFIN,
@@ -233,9 +217,8 @@ TEST_RESU(RESU=(_F(RESULTAT=SOLNL,
                    NOM_CMP='EPXX',
                    MAILLE='MA1',
                    POINT=1,
-                   VALE=-1.8057172603154E-05,
+                   VALE=-1.80404222067e-05,
                    REFERENCE='NON_REGRESSION',),),);
-
 # COMPARASION A VISC_CIN1_CHAB, MAIS PROBLEME DE SENSIBILITE AU PAS DE 
 # TEMPS. CELA CONVERGE QUAND DELTAT TEND VERS 0
 
@@ -253,7 +236,7 @@ TEST_RESU(RESU=(_F(RESULTAT=SOLNL,
                    NOM_CMP='EPXX',
                    MAILLE='MA1',
                    POINT=1,
-                   VALE=-6.7594E-04,
+                   VALE=-0.00067594,
                    REFERENCE='AUTRE_ASTER',),
                 _F(RESULTAT=SOLNL,
                    INST=TFIN,
@@ -261,21 +244,19 @@ TEST_RESU(RESU=(_F(RESULTAT=SOLNL,
                    NOM_CMP='EPXX',
                    MAILLE='MA1',
                    POINT=1,
-                   VALE=-1.823E-05,PRECISION=0.01,
+                   VALE=-1.82299780001e-05,
+                   PRECISION=(0.02,0.0001,),
                    REFERENCE='AUTRE_ASTER',),),);
 
-
-
 COMPOR2=DEFI_COMPOR(MONOCRISTAL=(_F(MATER=ACIER,
-                                     ECOULEMENT='ECOU_VISC2',
-                                     ECRO_ISOT='ECRO_ISOT2',
-                                     ECRO_CINE='ECRO_CINE2',
-                                     ELAS='ELAS',
-                                     FAMI_SYST_GLIS='UNIAXIAL',),),);
+                                    ECOULEMENT='ECOU_VISC2',
+                                    ECRO_ISOT='ECRO_ISOT2',
+                                    ECRO_CINE='ECRO_CINE2',
+                                    ELAS='ELAS',
+                                    FAMI_SYST_GLIS='UNIAXIAL',),),);
 
 SOLNL2=STAT_NON_LINE(MODELE=TROISD,
                      CHAM_MATER=MAT,
-                  #   CARA_ELEM=ORIEN,
                      EXCIT=(_F(CHARGE=TRAC,
                                FONC_MULT=COEF,
                                TYPE_CHARGE='FIXE_CSTE',),),
@@ -313,7 +294,7 @@ TEST_RESU(RESU=(_F(RESULTAT=SOLNL2,
                    NOM_CMP='EPXX',
                    MAILLE='MA1',
                    POINT=1,
-                   VALE=-6.7577049928861E-04,
+                   VALE=-0.00067575375081,
                    REFERENCE='NON_REGRESSION',),
                 _F(RESULTAT=SOLNL2,
                    INST=TFIN,
@@ -321,40 +302,113 @@ TEST_RESU(RESU=(_F(RESULTAT=SOLNL2,
                    NOM_CMP='EPXX',
                    MAILLE='MA1',
                    POINT=1,
-                   VALE=-1.8057172603154E-05,
+                   VALE=-1.80404222067e-05,
                    REFERENCE='NON_REGRESSION',),),);
-                   
-                   
+# INTEGRATION IMPLICITE
 
+SOLNL3=STAT_NON_LINE(MODELE=TROISD,
+                     CHAM_MATER=MAT,
+                     EXCIT=(_F(CHARGE=TRAC,
+                               FONC_MULT=COEF,
+                               TYPE_CHARGE='FIXE_CSTE',),),
+                     COMP_INCR=(_F(RELATION='MONOCRISTAL',
+                                   COMPOR=COMPOR1,
+                                   DEFORMATION='PETIT',
+                                   TOUT='OUI',),),
+                     INCREMENT=(_F(LIST_INST=LINST,
+                                   SUBD_PAS=4,
+                                   SUBD_PAS_MINI=1e-06,),),
+                     NEWTON=(_F(REAC_ITER=1,),),
+                     CONVERGENCE=(_F(RESI_GLOB_RELA=1e-06,
+                                     ITER_GLOB_MAXI=100,
+                                     RESI_INTE_RELA=1e-06,
+                                     ITER_INTE_MAXI=100,
+                                     ITER_INTE_PAS=10,
+                                     RESO_INTE='IMPLICITE',),),);
 
+SOLNL3=CALC_ELEM(reuse =SOLNL3,
+                 RESULTAT=SOLNL3,
+                 OPTION=('EPSI_ELGA_DEPL','EPSP_ELGA',),);
+
+TEST_RESU(RESU=(_F(RESULTAT=SOLNL3,
+                   INST=TFIN,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SIXX',
+                   MAILLE='MA1',
+                   POINT=1,
+                   VALE=-95.5,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=SOLNL3,
+                   INST=TFIN,
+                   NOM_CHAM='EPSI_ELGA_DEPL',
+                   NOM_CMP='EPXX',
+                   MAILLE='MA1',
+                   POINT=1,
+                   VALE=-0.000676254731722,
+                   REFERENCE='NON_REGRESSION',),
+                _F(RESULTAT=SOLNL3,
+                   INST=TFIN,
+                   NOM_CHAM='EPSP_ELGA',
+                   NOM_CMP='EPXX',
+                   MAILLE='MA1',
+                   POINT=1,
+                   VALE=-1.85415145142e-05,
+                   REFERENCE='NON_REGRESSION',),),);
+# COMPARASION A VISC_CIN1_CHAB, MAIS PROBLEME DE SENSIBILITE AU PAS DE 
+# TEMPS. CELA CONVERGE QUAND DELTAT TEND VERS 0
+
+TEST_RESU(RESU=(_F(RESULTAT=SOLNL3,
+                   INST=TFIN,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SIXX',
+                   MAILLE='MA1',
+                   POINT=1,
+                   VALE=-95.5,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=SOLNL3,
+                   INST=TFIN,
+                   NOM_CHAM='EPSI_ELGA_DEPL',
+                   NOM_CMP='EPXX',
+                   MAILLE='MA1',
+                   POINT=1,
+                   VALE=-0.000675943476554,
+                   REFERENCE='AUTRE_ASTER',),
+                _F(RESULTAT=SOLNL3,
+                   INST=TFIN,
+                   NOM_CHAM='EPSP_ELGA',
+                   NOM_CMP='EPXX',
+                   MAILLE='MA1',
+                   POINT=1,
+                   VALE=-1.82299780001e-05,
+                   PRECISION=(0.02,0.0001,),
+                   REFERENCE='AUTRE_ASTER',),),);
 #  TEST SANS VALEUR DE COMPARAISON
 
 ORIEN=AFFE_CARA_ELEM(MODELE=TROISD,
                      MASSIF=_F(GROUP_MA='TOUT',
                                ANGL_REP=(30.0,0.0,0.0,),),);
 
-COMPORT=DEFI_COMPOR(MONOCRISTAL=(
-                                 _F(MATER=ACIER,
+COMPORT=DEFI_COMPOR(MONOCRISTAL=(_F(MATER=ACIER,
                                     ECOULEMENT='ECOU_VISC1',
                                     ECRO_ISOT='ECRO_ISOT1',
                                     ECRO_CINE='ECRO_CINE1',
                                     ELAS='ELAS',
                                     FAMI_SYST_GLIS='BASAL',),
                                  _F(MATER=ACIER,
-                                     ECOULEMENT='ECOU_VISC2',
-                                     ECRO_ISOT='ECRO_ISOT2',
-                                     ECRO_CINE='ECRO_CINE2',
-                                     FAMI_SYST_GLIS='PRISMATIQUE',),
-                                _F(MATER=ACIER,
-                                     ECOULEMENT='ECOU_VISC3',
-                                     ECRO_ISOT='ECRO_ISOT1',
-                                     ECRO_CINE='ECRO_CINE2',
-                                     FAMI_SYST_GLIS='CUBIQUE',),
-                                _F(MATER=ACIER,
-                                     ECOULEMENT='ECOU_VISC3',
-                                     ECRO_ISOT='ECRO_ISOT2',
-                                     ECRO_CINE='ECRO_CINE1',
-                                     FAMI_SYST_GLIS='MACLAGE',),),);
+                                    ECOULEMENT='ECOU_VISC2',
+                                    ECRO_ISOT='ECRO_ISOT2',
+                                    ECRO_CINE='ECRO_CINE2',
+                                    FAMI_SYST_GLIS='PRISMATIQUE',),
+                                 _F(MATER=ACIER,
+                                    ECOULEMENT='ECOU_VISC3',
+                                    ECRO_ISOT='ECRO_ISOT1',
+                                    ECRO_CINE='ECRO_CINE2',
+                                    FAMI_SYST_GLIS='CUBIQUE1',),
+                                 _F(MATER=ACIER,
+                                    ECOULEMENT='ECOU_VISC3',
+                                    ECRO_ISOT='ECRO_ISOT2',
+                                    ECRO_CINE='ECRO_CINE1',
+                                    FAMI_SYST_GLIS='MACLAGE',),),);
 
 SOLNL4=STAT_NON_LINE(MODELE=TROISD,
                      CHAM_MATER=MAT,
@@ -370,13 +424,13 @@ SOLNL4=STAT_NON_LINE(MODELE=TROISD,
                                    SUBD_PAS_MINI=1e-06,),),
                      NEWTON=(_F(PREDICTION='EXTRAPOL',
                                 MATRICE='ELASTIQUE',
-                                REAC_ITER=0,),),
+                                REAC_ITER=1,),),
                      CONVERGENCE=(_F(RESI_GLOB_RELA=1e-06,
                                      ITER_GLOB_MAXI=100,
                                      RESI_INTE_RELA=1e-06,
                                      ITER_INTE_MAXI=100,
-                                     ITER_INTE_PAS=4,
-                                     RESO_INTE='RUNGE_KUTTA_2',),),);
+                                     ITER_INTE_PAS=10,
+                                     RESO_INTE='IMPLICITE',),),);
 
 SOLNL4=CALC_ELEM(reuse =SOLNL4,
                  RESULTAT=SOLNL4,
@@ -396,10 +450,9 @@ TEST_RESU(RESU=(_F(RESULTAT=SOLNL4,
                    NOM_CMP='EPXX',
                    MAILLE='MA1',
                    POINT=1,
-                   VALE=-6.5771349862259E-04,
-                   REFERENCE='NON_REGRESSION',),
-                   ),);
+                   VALE=-0.000657713498623,
+                   REFERENCE='NON_REGRESSION',),),);
+#IMPR_RESU(RESU=_F(RESULTAT=SOLNL3),)
+#IMPR_RESU(RESU=_F(RESULTAT=SOLNL4),)
 
-
-
-FIN();
+FIN(FORMAT_HDF='OUI',);

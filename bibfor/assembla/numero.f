@@ -1,6 +1,6 @@
       SUBROUTINE NUMERO(NUPOSS,MODELZ,INFCHZ,SOLVEU,BASE,NU)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 05/05/2004   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ASSEMBLA  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -226,7 +226,7 @@ C MONITORING
      &      WRITE (IFM,*)'<FETI/NUMERO> REMPLISSAGE OBJET JEVEUX ',
      &        LIGRSD(1:19)
           IF (NIV.GE.4) 
-     & CALL UTIMSD('MESSAGE',2,.FALSE.,.TRUE.,LIGRSD(1:19),1,'V')
+     & CALL UTIMSD(IFM,2,.FALSE.,.TRUE.,LIGRSD(1:19),1,'V')
 
 C --------------------------------------------------------------
 C CREATION ET REMPLISSAGE DE LA SD NUME_DDL "ESCLAVE" LIEE A
@@ -253,7 +253,7 @@ C MONITORING
             WRITE(IFM,*)            
           ENDIF 
           IF (NIV.GE.4) 
-     &      CALL UTIMSD('MESSAGE',2,.FALSE.,.TRUE.,
+     &      CALL UTIMSD(IFM,2,.FALSE.,.TRUE.,
      &      NOMFE2(1:14),1,' ')
      
 C REMISE A JOUR DU LIGREL DE MODELE GLOBALE
@@ -281,7 +281,7 @@ C MONITORING
      &        NU(1:14)
           ENDIF   
           IF (NIV.GE.4) 
-     &      CALL UTIMSD('MESSAGE',2,.FALSE.,.TRUE.,NU(1:14),1,' ')
+     &      CALL UTIMSD(IFM,2,.FALSE.,.TRUE.,NU(1:14),1,' ')
           IF (NIV.GE.3) THEN 
             WRITE(IFM,*)'DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD'        
             WRITE(IFM,*)

@@ -1,6 +1,6 @@
-      SUBROUTINE UTIMOB(FICOU,OBIN,NIVO,LATTR,LCONT,XOUS)
+      SUBROUTINE UTIMOB(UNIT,OBIN,NIVO,LATTR,LCONT,XOUS)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF UTILITAI  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,12 +21,12 @@ C ======================================================================
 C     --
 C     ARGUMENTS:
 C     ----------
-      CHARACTER*(*) OBIN,FICOU,XOUS
-      INTEGER NIVO
+      CHARACTER*(*) OBIN,XOUS
+      INTEGER NIVO,UNIT
       LOGICAL LATTR,LCONT
 C ----------------------------------------------------------------------
 C     IN:
-C       FICOU  : NOM DU FICHIER OU ON VEUT L'IMPRESSION
+C       UNIT   : UNITE LOGIQUE D'IMPRESSION
 C       OBIN   : NOM D'UN OBJET JEVEUX (K24) A IMPRIMER
 C       NIVO   : NIVEAU D'IMPRESSION
 C      LATTR   : VRAI : ON IMPRIME LES ATTRIBUTS
@@ -45,14 +45,13 @@ C
 C
       OB1 = OBIN
       XOUS2=XOUS
-      IFM=IUNIFI(FICOU)
       LB='----------------------------------------'
-      WRITE(IFM,'(A40,A40)') LB,LB
+      WRITE(UNIT,'(A40,A40)') LB,LB
 C
       IF (XOUS2 .EQ.'X') THEN
-         CALL UTIMCO(FICOU,OB1,NIVO,LATTR,LCONT)
+         CALL UTIMCO(UNIT,OB1,NIVO,LATTR,LCONT)
       ELSE IF (XOUS2 .EQ.'S') THEN
-         CALL UTIMOS(FICOU,OB1,LATTR,LCONT)
+         CALL UTIMOS(UNIT,OB1,LATTR,LCONT)
       ELSE
 C
          CALL UTMESS('F','UTIMOB','XOUS : '//XOUS2//' NON PREVU.')

@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 17/05/2004   AUTEUR ROMEO R.FERNANDES 
+%& MODIF COMPELEM  DATE 15/06/2004   AUTEUR MABBAS M.ABBAS 
 % RESPONSABLE JMBHH01 J.M.PROIX
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -47,8 +47,7 @@ GRANDEUR_SIMPLE__
     CACOQU   = R    EP       SECT_L   C        ALPHA    BETA     KAPPA    C_METR   X
                     Y        Z        PAS_T    PAS_N    COEF_ECH K_DRL    K_DRT    K_DRN
                     KT_DL    KT_DT    KT_DN    KT_DRL   KT_DRT   KT_DRN   KN_DL    KN_DT
-                    KN_DN    KN_DRL   KN_DRT   KN_DRN   ANGL_L   P_CENT_L P_CENT_T DIST_N
-                    CTOR     EXCENT   INERTIE
+                    KN_DN    KN_DRL   KN_DRT   KN_DRN   DIST_N   CTOR     EXCENT   INERTIE
     CADISA   = R    A1       A2       A3       A4       A5       A6       A7       A8
                     A9       A10      A11      A12      A13      A14      A15      A16
                     A17      A18      A19      A20      A21      A22      A23      A24

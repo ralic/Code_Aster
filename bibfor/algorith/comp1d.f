@@ -1,14 +1,17 @@
-      SUBROUTINE COMP1D(OPTION,SIGX,EPSX,DEPX,TREF,TEMPM,
-     +                  TEMPP,VIM,VIP,SIGXP,ETAN,CODRET,
-     +                   CORRM,CORRP)
+      SUBROUTINE COMP1D(OPTION,
+     &                  SIGX,EPSX,DEPX,
+     &                  TEMPM,TEMPP,TREF,
+     &                  CORRM,CORRP,
+     &                  ANGMAS,
+     &                  VIM,VIP,SIGXP,ETAN,CODRET)
       IMPLICIT NONE
       CHARACTER*16   OPTION
       INTEGER        CODRET
-      REAL*8         TEMPM,TEMPP,TREF
+      REAL*8         TEMPM,TEMPP,TREF,ANGMAS(3)
       REAL*8         VIM(*),VIP(*),SIGX,SIGXP,EPSX,DEPX,ETAN
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 04/05/2004   AUTEUR SMICHEL S.MICHEL-PONNELLE 
+C MODIF ALGORITH  DATE 15/06/2004   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,21 +51,21 @@ C   EN SORTIE DE COMP1D, CE CODE RETOUR EST TRANSMIS A LA ROUTINE NMCONV
 C   POUR AJOUTER DES ITERATIONS SI SIGYY OU SIGZZ NE SONT PAS NULLES. 
 
 C ----------------------------------------------------------------------
-C IN  : OPTION    : NOM DE L'OPTION A CALCULER 
-C IN  : SIGM      : SIGMA XX A L'INSTANT MOINS
-C IN  : EPSX      : EPSI XX A L'INSTANT MOINS
-C IN  : DEPX      : DELTA-EPSI XX A L'INSTANT ACTUEL
-C IN  : TREF      : TEMPERATURE DE REFERENCE
-C IN  : TEMPM     : TEMPERATURE A L'INSTANT MOINS
-C IN  : TEMPP     : TEMPERATURE A L'INSTANT PLUS
-C IN  : VIM       : VARIABLES INTERNES A L'INSTANT MOINS
-C VAR : VIP       : VARIABLES INTERNES A L'INSTANT PLUS EN SORTIE
-C IN  CORRM  : CORROSION A L'INSTANT MOINS
-C IN  CORRP  : CORROSION A L'INSTANT PLUS
-C                  VARIABLES INTERNES A L'ITERATION PRECEDENTE EN ENTREE
-C OUT : SIGXP     : CONTRAINTES A L'INSTANT PLUS
-C OUT : ETAN      : MODULE TANGENT DIRECTION X
-C OUT : CODRET    : CODE RETOUR NON NUL SI SIGYY OU SIGZZ NON NULS
+C IN  OPTION    : NOM DE L'OPTION A CALCULER 
+C     SIGM      : SIGMA XX A L'INSTANT MOINS
+C     EPSX      : EPSI XX A L'INSTANT MOINS
+C     DEPX      : DELTA-EPSI XX A L'INSTANT ACTUEL
+C     TREF      : TEMPERATURE DE REFERENCE
+C     TEMPM     : TEMPERATURE A L'INSTANT MOINS
+C     TEMPP     : TEMPERATURE A L'INSTANT PLUS
+C     CORRM     : CORROSION A L'INSTANT MOINS
+C     CORRP     : CORROSION A L'INSTANT PLUS
+C     VIM       : VARIABLES INTERNES A L'INSTANT MOINS
+C VAR VIP       : VARIABLES INTERNES A L'INSTANT PLUS EN SORTIE
+C                 VARIABLES INTERNES A L'ITERATION PRECEDENTE EN ENTREE
+C OUT SIGXP     : CONTRAINTES A L'INSTANT PLUS
+C     ETAN      : MODULE TANGENT DIRECTION X
+C     CODRET    : CODE RETOUR NON NUL SI SIGYY OU SIGZZ NON NULS
 C ----------------------------------------------------------------------
 C
 C **************** DEBUT COMMUNS NORMALISES JEVEUX *********************
@@ -87,16 +90,15 @@ C
 C
 C *************** DECLARATION DES VARIABLES LOCALES ********************
 C
-      INTEGER        NEQ,NVAMAX,IMATE,IINSTM
+      INTEGER        NEQ,IMATE,IINSTM
       INTEGER        IINSTP,ICOMPO,ICARCR,NZ
-      INTEGER        I,J,NZMAX,ICOMPT,ITER      
+      INTEGER        NZMAX      
 C
       REAL*8         DSIDEP(6,6)
-      REAL*8         ZERO,UN,DEUX,XM,XI,XS,ALPH,SIGYI,SIGYS
+      REAL*8         ZERO
       REAL*8         HYDRGM,HYDRGP,SECHGM,SECHGP,SREF
       REAL*8         EPSANM(6),EPSANP(6),PHASM(7),PHASP(7)
-      REAL*8         LC(10,27),SIGMAY,CORRM,CORRP
-      REAL*8         R8PREM,R8MIEM,NU,ALPHA,SIGXI,SIGXS
+      REAL*8         LC(10,27),CORRM,CORRP
       REAL*8         SIGM(6),SIGP(6),EPS(6),DEPS(6)
 C
       CHARACTER*8    TYPMOD(2)
@@ -105,6 +107,8 @@ C *********** FIN DES DECLARATIONS DES VARIABLES LOCALES ***************
 C
 C ********************* DEBUT DE LA SUBROUTINE *************************
 C
+
+
 C ---    INITIALISATIONS :
          NEQ  = 6
          ZERO = 0.0D0
@@ -145,16 +149,25 @@ C
          CALL R8INIR (NZMAX,ZERO,PHASP,1) 
          NZ = NZMAX        
          CALL R8INIR (270,ZERO,LC,1) 
-C
+
+C -    APPEL A LA LOI DE COMPORTEMENT
          CALL NMCOMP(2,TYPMOD,ZI(IMATE),ZK16(ICOMPO),ZR(ICARCR),
-     +               ZR(IINSTM),ZR(IINSTP),TEMPM,TEMPP,TREF,HYDRGM,
-     +               HYDRGP,SECHGM,SECHGP,SREF,EPS,DEPS,SIGM,
-     +               VIM,OPTION,EPSANM,EPSANP,NZ,PHASM,
-     +               PHASP,LC,SIGP,VIP,DSIDEP,
-     +               CODRET,CORRM,CORRP)
+     &               ZR(IINSTM),ZR(IINSTP),
+     &               TEMPM,TEMPP,TREF,
+     &               HYDRGM,HYDRGP,
+     &               SECHGM,SECHGP,SREF,
+     &               EPS,DEPS,
+     &               SIGM,VIM,
+     &               OPTION,
+     &               EPSANM,EPSANP,
+     &               NZ,PHASM,PHASP,
+     &               CORRM,CORRP,
+     &               ANGMAS,
+     &               LC,
+     &               SIGP,VIP,DSIDEP,CODRET)
 C         
          SIGXP=SIGP(1)
          ETAN=DSIDEP(1,1)
 C
-9999  CONTINUE
+
       END

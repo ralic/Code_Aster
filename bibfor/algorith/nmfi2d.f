@@ -3,7 +3,7 @@
      &                   COMPOR,TYPMOD,INSTM,INSTP)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/06/2004   AUTEUR NDOMING N.DOMINGUEZ 
+C MODIF ALGORITH  DATE 15/06/2004   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -57,8 +57,9 @@ C-----------------------------------------------------------------------
       REAL*8 VALRES,HPEN,LONG
       REAL*8 CRIT
       REAL*8 TEMPM,TEMPP,TREF
-      REAL*8 EPS(4),DEPS(4),SIGN,EPSANM,EPSANP
-      REAL*8 COD(NPG)
+      REAL*8 EPS(4),DEPS(4)
+      REAL*8 SIGN,EPSANM,EPSANP
+      REAL*8 COD(NPG),ANGMAS(3)
       CHARACTER*2 CODRET
       CHARACTER*8 NOMRES
 
@@ -66,7 +67,9 @@ C-----------------------------------------------------------------------
       CALL R8INIR(8 , 0.D0, FINT,1)
       CALL R8INIR(64, 0.D0, KTAN,1)
       CALL R8INIR(4,  0.D0, SIGMA ,1)
-
+C --- ANGLE DU MOT_CLEF MASSIF (AFFE_CARA_ELEM)
+C --- INITIALISE A R8VIDE (ON NE S'EN SERT PAS)
+      CALL R8INIR(3,  R8VIDE(), ANGMAS ,1)
       AXI   = TYPMOD(1) .EQ. 'AXIS'
       RESI  = OPTION.EQ.'RAPH_MECA' .OR. OPTION(1:9).EQ.'FULL_MECA'
       RIGI  = OPTION(1:9).EQ.'FULL_MECA'.OR.OPTION(1:10).EQ.'RIGI_MECA_'
@@ -131,11 +134,23 @@ C CALCUL DU SAUT DE DEPLACEMENT DANS L'ELEMENT (SU_N,SU_T) = B U :
 18        CONTINUE
 
           CALL R8INIR(2,  0.D0, SIG ,1)
-          CALL NMCOMP(2,TYPMOD,MATE,COMPOR,CRIT,INSTM,INSTP,
-     &            RBID,RBID,RBID,RBID,RBID,RBID,RBID,RBID,
-     &            EPS,DEPS,SIGN,VIMOIN,OPTION,EPSANM,EPSANP,
-     &            1,RBID,RBID,RBID,
-     &            SIG,VIPLUS,DSIDEP,IBID,R8VIDE(),R8VIDE())
+
+C -   APPEL A LA LOI DE COMPORTEMENT
+        CALL NMCOMP (2,TYPMOD,MATE,COMPOR,CRIT,
+     &               INSTM,INSTP,
+     &               RBID,RBID,RBID,
+     &               RBID,RBID,
+     &               RBID,RBID,RBID,
+     &               EPS,DEPS,
+     &               SIGN,VIMOIN,
+     &               OPTION,
+     &               EPSANM,EPSANP,
+     &               1,RBID,RBID,
+     &               R8VIDE(),R8VIDE(),
+     &               ANGMAS,
+     &               RBID,
+     &               SIG,VIPLUS,DSIDEP,IBID)
+
 
         IF (RESI) THEN               
           SIGMA(1,KPG)=SIG(1)
@@ -154,10 +169,23 @@ C DE CELLE-CI PAR RAPPORT AU SAUT DE DEPLACEMENT (SIGMA ET DSIDEP) :
           VIMOIN(3)=VIM(3,KPG)
 
           CALL R8INIR(2,  0.D0, SIG ,1)
-          CALL NMCOMP (2,TYPMOD,MATE,COMPOR,RBID,RBID,RBID,RBID,
-     &                 RBID,RBID,RBID,RBID,RBID,RBID,RBID,SU,RBID,RBID,
-     &                 VIMOIN,OPTION,RBID,RBID,1,RBID,RBID,RBID,
-     &                 SIG,VIPLUS,DSIDEP,IBID,R8VIDE(),R8VIDE())
+
+
+C -   APPEL A LA LOI DE COMPORTEMENT
+          CALL NMCOMP (2,TYPMOD,MATE,COMPOR,RBID,
+     &               RBID,RBID,
+     &               RBID,RBID,RBID,
+     &               RBID,RBID,
+     &               RBID,RBID,RBID,
+     &               SU,RBID,
+     &               RBID,VIMOIN,
+     &               OPTION,
+     &               RBID,RBID,
+     &               1,RBID,RBID,
+     &               R8VIDE(),R8VIDE(),
+     &               ANGMAS,
+     &               RBID,
+     &               SIG,VIPLUS,DSIDEP,IBID)
 
           IF (RESI) THEN
             SIGMA(1,KPG)=SIG(1)

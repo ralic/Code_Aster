@@ -1,6 +1,6 @@
       SUBROUTINE TE0239(OPTION,NOMTE)
 
-C MODIF ELEMENTS  DATE 04/05/2004   AUTEUR SMICHEL S.MICHEL-PONNELLE 
+C MODIF ELEMENTS  DATE 15/06/2004   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -70,7 +70,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       REAL*8 X3,T,TINF,TSUP
       REAL*8 DTILD(5,5),DTILDI(5,5),DSIDEP(6,6)
       REAL*8 RTANGI(9,9),RTANGE(9,9)
-      REAL*8 XI,XS,XM,SIGMA
+      REAL*8 XI,XS,XM,SIGMA,ANGMAS(3)
       REAL*8 HYDRGM,HYDRGP,SECHGM,SECHGP,SREF,LC
       INTEGER NNO,NNOS,JGANO,NDIM,KP,NPG,I,J,K,IMATUU,ITEMPR,ICACO,
      &        NDIMV,IVARIX
@@ -91,7 +91,6 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
       CALL ELREF1(ELREFE)
       CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDK,JGANO)
-
 
       TYPMOD(1) = 'C_PLAN  '
       TYPMOD(2) = '        '
@@ -153,7 +152,6 @@ C---- MESSAGES LIMITATION NBRE DE COUCHES
      &                             )
 C---- EPAISSEUR DE CHAQUE COUCHE
       HIC = H/NBCOU
-
       IF (VECTEU) THEN
         CALL JEVECH('PVECTUR','E',IVECTU)
         CALL JEVECH('PCONTPR','E',ICONTP)
@@ -164,12 +162,10 @@ C---- EPAISSEUR DE CHAQUE COUCHE
         CALL JEVECH('PVARIMP','L',IVARIX)
         CALL R8COPY(NDIMV,ZR(IVARIX),1,ZR(IVARIP),1)
       END IF
-
       IF (MATRIC) THEN
         CALL JEVECH('PMATUUR','E',IMATUU)
 C        IVARIP=IVARIM
       END IF
-
 C     POUR AVOIR UN TABLEAU BIDON A DONNER A NMCOMP
 
       DO 10 J = 1,4
@@ -184,24 +180,19 @@ C     POUR AVOIR UN TABLEAU BIDON A DONNER A NMCOMP
 
       CALL R8INIR(81,0.D0,RTANGE,1)
       KPKI = 0
-
 C ---  VARIABLE D HYDRATATION ET DE SECHAGE
-
       HYDRGM = 0.D0
       HYDRGP = 0.D0
       SECHGM = 0.D0
       SECHGP = 0.D0
       SREF   = 0.D0
 C-- DEBUT DE BOUCLE D'INTEGRATION SUR LA SURFACE NEUTRE
-
       DO 140 KP = 1,NPG
         K = (KP-1)*NNO
         CALL DFDM1D(NNO,ZR(IPOIDS+KP-1),ZR(IDFDK+K),ZR(IGEOM),DFDX,COUR,
      &              JACP,COSA,SINA)
-
         R = ZERO
         TPG = ZERO
-
         TMPG1 = ZERO
         TMPG2 = ZERO
         TMPG3 = ZERO
@@ -372,13 +363,26 @@ C-- APPEL DE NMCOMP: LOI PLASTIQUE
    50       CONTINUE
             ITER = ITER + 1
             DEPS2D(2) = XM
+C --- ANGLE DU MOT_CLEF MASSIF (AFFE_CARA_ELEM)
+C --- INITIALISE A R8VIDE (ON NE S'EN SERT PAS)
+            ANGMAS(1) = R8VIDE()
+            ANGMAS(2) = R8VIDE()
+            ANGMAS(3) = R8VIDE()
 
             CALL NMCOMP(2,TYPMOD,ZI(IMATE),ZK16(ICOMPO),ZR(ICARCR),
-     &                  ZR(IINSTM),ZR(IINSTP),TMC,TPC,ZR(ITREF),HYDRGM,
-     &                  HYDRGP,SECHGM,SECHGP,SREF,EPS2D,DEPS2D,
-     &                  ZR(ICONTM+K1),ZR(IVARIM+K2),OPTION,EPSANM,
-     &                  EPSANP,NZ,PHASM,PHASP,LC,ZR(ICONTP+K1),
-     &                  ZR(IVARIP+K2),DSIDEP,COD,R8VIDE(),R8VIDE())
+     &                  ZR(IINSTM),ZR(IINSTP),
+     &                  TMC,TPC,ZR(ITREF),
+     &                  HYDRGM,HYDRGP,
+     &                  SECHGM,SECHGP,SREF,
+     &                  EPS2D,DEPS2D,
+     &                  ZR(ICONTM+K1),ZR(IVARIM+K2),
+     &                  OPTION,
+     &                  EPSANM,EPSANP,NZ,
+     &                  PHASM,PHASP,
+     &                  R8VIDE(),R8VIDE(),
+     &                  ANGMAS,
+     &                  LC,
+     &                  ZR(ICONTP+K1),ZR(IVARIP+K2),DSIDEP,COD)
 
 C           COD=1 : ECHEC INTEGRATION LOI DE COMPORTEMENT
 C           COD=3 : C_PLAN DEBORST SIGZZ NON NUL

@@ -3,7 +3,7 @@
       INTEGER             IER
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 03/02/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+C MODIF CALCULEL  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -155,34 +155,34 @@ C
 C IMPRESSION DES OBJETS
 C
       IF ( NIV .GT. 1 ) THEN
-        CALL JEIMPO('MESSAGE',RESU//'.FOND      .NOEU',' ',
+        CALL JEIMPO(IFM,RESU//'.FOND      .NOEU',' ',
      &                'OBJET POUR LE MOT CLE FOND')
 C
         CALL JEEXIN(RESU//'.LEVRESUP  .MAIL',IRET)
         IF(IRET.NE.0) THEN
-          CALL JEIMPO('MESSAGE',RESU//'.LEVRESUP  .MAIL',' ',
+          CALL JEIMPO(IFM,RESU//'.LEVRESUP  .MAIL',' ',
      &                  'OBJET POUR LE MOT CLE LEVRE_SUP')
 C
         ENDIF
 C
         CALL JEEXIN(RESU//'.LEVREINF  .MAIL',IRET)
         IF(IRET.NE.0) THEN
-            CALL JEIMPO('MESSAGE',RESU//'.LEVREINF  .MAIL',' ',
+            CALL JEIMPO(IFM,RESU//'.LEVREINF  .MAIL',' ',
      &                'OBJET POUR LE MOT CLE LEVRE_INF')
         ENDIF
 C
         IF(IRETNO.NE.0) THEN
-          CALL JEIMPO('MESSAGE',RESU//'.NORMALE',' ',
+          CALL JEIMPO(IFM,RESU//'.NORMALE',' ',
      &                  'OBJET POUR LE MOT CLE NORMALE')
         ENDIF
 C
         IF(IRETOR.NE.0) THEN
-          CALL JEIMPO('MESSAGE',RESU//'.DTAN_ORIGINE',' ',
+          CALL JEIMPO(IFM,RESU//'.DTAN_ORIGINE',' ',
      &                  'OBJET POUR LE MOT CLE DTAN_ORIG')
         ENDIF
 C
         IF(IRETEX.NE.0) THEN
-          CALL JEIMPO('MESSAGE',RESU//'.DTAN_EXTREMITE',' ',
+          CALL JEIMPO(IFM,RESU//'.DTAN_EXTREMITE',' ',
      &                  'OBJET POUR LE MOT CLE DTAN_EXTR')
         ENDIF
       ENDIF

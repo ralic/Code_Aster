@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF PREPOST  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,7 +53,7 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       CHARACTER*24 CHPROL, CHPARA
       CHARACTER*50 TEXTE
       COMPLEX*16   REFC, VALC , ZEROC
-      LOGICAL      LOK
+      LOGICAL      LOK, ULEXIS
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
@@ -69,18 +69,18 @@ C
      +                 'VALIDE AVEC LE MOT CLE FACTEUR "INTE_SPEC".')
       ENDIF
 C
-      CALL GETVTX(' ','FICHIER',0,1,1,NOMFIC,N1)
+      IFIC   = 0
+      NOMFIC = ' '
+      CALL GETVIS ( ' ', 'UNITE'  , 1,1,1, IFIC  , N1 )
+      CALL GETVTX ( ' ', 'FICHIER', 1,1,1, NOMFIC, N1 )
       IF (N1.NE.0) THEN
+         CALL UTMESS('A','TEST_FONCTION',
+     +               'LE MOT CLE "FICHIER" EST APPELE A DISPARAITRE.'//
+     +               ' UTILISER LE MOT CLE "UNITE"')
          IFIC = IUNIFI(NOMFIC)
-         IF (IFIC.EQ.0) THEN
-            CALL UTMESS('A','TEST_FONCTION',
-     +                  'LE NOM DU FICHIER D''IMPRESSION EST '//
-     +                  'INCONNU : '//NOMFIC//' ON PRENDRA LE FICHIER'//
-     +                  ' "RESULTAT". ')
-            IFIC = IUNIFI('RESULTAT')
-         ENDIF
-      ELSE
-         IFIC = IUNIFI('RESULTAT')
+      ENDIF
+      IF ( .NOT. ULEXIS( IFIC ) ) THEN
+         CALL ULOPEN ( IFIC, ' ', NOMFIC, 'NEW', 'O' )
       ENDIF
       WRITE(IFIC,1000)
 C

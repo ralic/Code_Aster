@@ -1,11 +1,10 @@
-      SUBROUTINE IRMEID ( MATREL, FICH, VERSIO, NMSUP, TABIMA, TABELE )
+      SUBROUTINE IRMEID ( MATREL, IFC, VERSIO, NMSUP, TABIMA, TABELE )
       IMPLICIT REAL*8 (A-H,O-Z)
       INTEGER                          VERSIO,NMSUP,TABIMA(*),TABELE(*)
       CHARACTER*8         MATREL
-      CHARACTER*(*)       FICH
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 13/01/2003   AUTEUR CIBHHLV L.VIVAN 
+C MODIF UTILITAI  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -56,7 +55,6 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ ( )
-      IFC = IUNIFI(FICH)
       IFM = IUNIFI('MESSAGE')
 C
       CALL JEVEUO(MATREL//'.LISTE_RESU','L',JLRESU)

@@ -1,6 +1,6 @@
-      SUBROUTINE TPSVIL(TPS,S,DPC,TEMP,FLUPHI,A,B,CTPS,ENER,PREC)
+      SUBROUTINE TPSVIL(TPS,S,DPC,TEMP,FLUPHI,A,B,CTPS,ENER,PREC,NITER)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 02/03/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 15/06/2004   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -20,8 +20,8 @@ C ======================================================================
 C    
        IMPLICIT NONE
        REAL*8  TPS,S,DPC,TEMP,FLUPHI,A,B,CTPS,ENER,PREC
+       INTEGER NITER
 C
-CDEB
 C---------------------------------------------------------------
 C     CALCUL DE TPS (TEMPS) EN FONCTION DE SIGMA,LAMBDA,T
 C---------------------------------------------------------------
@@ -35,6 +35,7 @@ C     B     :R: PARAMETRE B
 C     CTPS  :R: PARAMETRE CSTE_TPS
 C     ENER  :R: PARAMETRE ENER_ACT
 C     PREC  :R: PRECISION DE LA RESOLUTION EN TEMPS
+C     NITER :I: NOMBRE D'ITERATIONS DE LA RESOLUTION EN TEMPS
 C OUT TPS   :R: TEMPS CALCULE
 C---------------------------------------------------------------
 C            DANS LE CAS DE LA LOI DE FLUAGE AXIAL EN LOG
@@ -49,101 +50,94 @@ C                    OU
 C
 C            LAMBDA = F(SIGMA,TEMPS,TEMPERATURE)     (EN 3D)
 C---------------------------------------------------------------
-CFIN
 C
-      REAL*8 R3R2,NRJACT
       REAL*8 F1,F2,FP1,FP2,G1,G2,FF,FFP,TPS1,TPSANC,TEST
+      INTEGER ITER
 
-C----CONSTANTES
-
-      R3R2 = 1.D0
-      
-      NRJACT = ENER
-
+      ITER = 0
       IF (DPC.EQ.0.D0) THEN
         TPS = 0.D0
       ELSE
         TPS = 1.D-3 
-   10 CONTINUE
-C
-C---------------------------------------------------------------
-C---------------------------------------------------------------
-C
+   10   CONTINUE
 
-C
+
 C----CALCUL DE F1,FP1-------------------------------------------
-C  
-      IF ((1+(CTPS*TPS*FLUPHI)).LE.0.D0) THEN 
-         CALL UTMESS('F','TPSVIL_1','ERREUR LOG NEGATIF OU NUL')
-      ENDIF
+  
+        IF ((1+(CTPS*TPS*FLUPHI)).LE.0.D0) THEN 
+         CALL UTMESS('F','TPSVIL','ERREUR LOG NEGATIF OU NUL')
+        ENDIF
 
-      F1 = LOG(1+CTPS*TPS*FLUPHI)
-      FP1= CTPS*FLUPHI / (1+CTPS*TPS*FLUPHI)
+        F1 = LOG(1+CTPS*TPS*FLUPHI)
+        FP1= CTPS*FLUPHI / (1+CTPS*TPS*FLUPHI)
 C       
 C----CALCUL DE F2,FP2-------------------------------------------
 C
-      F2 = TPS*FLUPHI
-      FP2= FLUPHI
+        F2 = TPS*FLUPHI
+        FP2= FLUPHI
 C
 C----CALCUL DE G1-----------------------------------------------
 C
-      G1 = A*EXP(-NRJACT/(TEMP+273.15D0))*S*R3R2      
+        G1 = A*EXP(-ENER/(TEMP+273.15D0))*S   
 C
 C----CALCUL DE G2-----------------------------------------------
 C
-      G2 = B*EXP(-NRJACT/(TEMP+273.15D0))*S*R3R2
+        G2 = B*EXP(-ENER/(TEMP+273.15D0))*S
 C
-C---------------------------------------------------------------
-C---------------------------------------------------------------
+C----CALCUL DE F -----------------------------------------------
 C
-      FF = F1*G1+F2*G2
-      IF (FF.GT.DPC) THEN
-        FFP = FP1*G1 + FP2*G2
-        TPS1 = TPS - (FF-DPC)/FFP
-        IF (TPS1.GT.0.D0) THEN
-          TPS = TPS1
-          GO TO 20
-        ELSE
-          TPS = TPS * 0.5D0
-          GO TO 10
+        FF = F1*G1+F2*G2
+        IF (FF.GT.DPC) THEN
+          FFP  = FP1*G1 + FP2*G2
+          TPS1 = TPS - (FF-DPC)/FFP
+          IF (TPS1.GT.0.D0) THEN
+            TPS = TPS1
+            GO TO 20
+          ELSE
+            TPS = TPS * 0.5D0
+            GO TO 10
+          ENDIF
         ENDIF
-      ENDIF
-   20 CONTINUE
+
+   20   CONTINUE
+        ITER = ITER + 1
+        IF (ITER.EQ.NITER) THEN
+           CALL UTMESS('F','TPSVIL','ECHEC DANS ELIMINATION TEMPS')
+        ENDIF
    
 C
 C----CALCUL DE F1,FP1-------------------------------------------
-C  
-      IF ((1+(CTPS*TPS*FLUPHI)).LE.0.D0) THEN 
-         CALL UTMESS('F','TPSVIL_2','ERREUR LOG NEGATIF OU NUL')
-      ENDIF
+C   
+        IF ((1+(CTPS*TPS*FLUPHI)).LE.0.D0) THEN 
+           CALL UTMESS('F','TPSVIL','ERREUR LOG NEGATIF OU NUL')
+        ENDIF
 
-      F1 = LOG(1+CTPS*TPS*FLUPHI)
-      FP1= CTPS*FLUPHI / (1+CTPS*TPS*FLUPHI)
+        F1 = LOG(1+CTPS*TPS*FLUPHI)
+        FP1= CTPS*FLUPHI / (1+CTPS*TPS*FLUPHI)
 C       
 C----CALCUL DE F2,FP2-------------------------------------------
 C
-      F2 = TPS*FLUPHI
-      FP2= FLUPHI
+        F2 = TPS*FLUPHI
+        FP2= FLUPHI
 C
 C----CALCUL DE G1-----------------------------------------------
 C
-      G1 = A*EXP(-NRJACT/(TEMP+273.15D0))*S*R3R2      
+        G1 = A*EXP(-ENER/(TEMP+273.15D0))*S     
 C
 C----CALCUL DE G2-----------------------------------------------
 C
-      G2 = B*EXP(-NRJACT/(TEMP+273.15D0))*S*R3R2   
-      
+        G2 = B*EXP(-ENER/(TEMP+273.15D0))*S        
 C
-C---------------------------------------------------------------
+C----CALCUL DE F -----------------------------------------------
 C
-      FF = F1*G1+F2*G2
-      FFP = FP1*G1 + FP2*G2
-      TPSANC = TPS
-      TPS = (TPS*FFP-FF+DPC)/FFP
-      TEST = ABS((TPS-TPSANC)/TPSANC)
+        FF  = F1*G1+F2*G2
+        FFP = FP1*G1 + FP2*G2
+        TPSANC = TPS
+        TPS  = (TPS*FFP-FF+DPC)/FFP
+        TEST = ABS((TPS-TPSANC)/TPSANC)
       
       
-      IF (TEST.GT.PREC) GO TO 20
+        IF (TEST.GT.PREC) GO TO 20
       ENDIF     
       
   299 CONTINUE      

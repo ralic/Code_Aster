@@ -5,7 +5,7 @@ C
 C
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 09/03/2000   AUTEUR CIBHHLV L.VIVAN 
+C MODIF POSTRELE  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -133,7 +133,7 @@ C           /* LE CHAMP SYMBOLIQUE N' EXISTE PAS */
                WRITE(IFR,*)'CHAMP SYMBOLIQUE >',NCHSYM,'< NON '//
      +                      'AUTORISE POUR LE RESULTAT >',NRESU,'<'
                WRITE(IFR,*)'LES CHAMPS SYMBOLIQUES AUTORISES SONT :'
-              CALL JEIMPO('RESULTAT',NRESU//'           .DESC',' ',' ')
+              CALL JEIMPO(IFR,NRESU//'           .DESC',' ',' ')
             ENDIF
             IF ( (N1 .EQ. 0) .OR. (N2 .NE. 0) )THEN
 C           /* ALTERNATIVE :                              */

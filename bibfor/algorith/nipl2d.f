@@ -1,13 +1,16 @@
        SUBROUTINE  NIPL2D ( NNO1 , NNO2 , NPG1 , IPOIDS, IVF1 , IVF2,
      &                      IDFDE1,DFDI, GEOM  , TYPMOD, OPTION,
-     &                      IMATE , COMPOR ,LGPG, CRIT , INSTAM, INSTAP,
-     &                      TM ,TP , TREF , DEPLM , DDEPL ,
-     &                      GONFLM , DGONFL , SIGM , VIM ,
-     &                      SIGP , VIP , FINTU, FINTA ,
-     &                      KUU , KUA , KAA , CODRET)
+     &                      IMATE , COMPOR ,LGPG, CRIT , 
+     &                      INSTAM, INSTAP,
+     &                      TM ,TP , TREF ,
+     &                      DEPLM , DDEPL ,
+     &                      ANGMAS,
+     &                      GONFLM , DGONFL ,
+     &                      SIGM , VIM , SIGP , VIP ,
+     &                      FINTU, FINTA ,KUU , KUA , KAA , CODRET)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 04/05/2004   AUTEUR SMICHEL S.MICHEL-PONNELLE 
+C MODIF ALGORITH  DATE 15/06/2004   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -36,6 +39,7 @@ C TOLE CRP_21
        REAL*8 SIGM(5,NPG1),VIM(LGPG,NPG1),SIGP(5,NPG1), VIP(LGPG,NPG1)
        REAL*8 KUU(2,9,2,9), KUA(2,9,2,4),KAA(2,4,2,4)
        REAL*8 FINTU(2,9), FINTA(2,4)
+       REAL*8        ANGMAS(3)
        CHARACTER*8   TYPMOD(*)
        CHARACTER*16  COMPOR(*), OPTION
 
@@ -67,6 +71,7 @@ C IN  TP      : TEMPERATURE AUX NOEUDS A L'INSTANT DE CALCUL
 C IN  TREF    : TEMPERATURE DE REFERENCE
 C IN  DEPLM   : DEPLACEMENT A L'INSTANT PRECEDENT
 C IN  DDEPL   : INCREMENT DE DEPLACEMENT
+C IN  ANGMAS  : LES TROIS ANGLES DU MOT_CLEF MASSIF (AFFE_CARA_ELEM)
 C IN  GONFLM  : P ET G  A L'INSTANT PRECEDENT
 C IN  DGONFL  : INCREMENT POUR P ET G
 C IN  SIGM    : CONTRAINTES A L'INSTANT PRECEDENT
@@ -106,7 +111,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       REAL*8 EPSLDC(6), DEPLDC(6) , SIGMAM(6), SIGMA(6),DSIDEP(6,6)
       REAL*8 EPSM(6), DEF(4,9,2), DEFD(4,9,2), DEFTR(9,2), SIGTR
       REAL*8 DIVUM, DDIVU, RBID, TMP, TMP2
-      REAL*8  PM, GM, DP, DG, POIDS, VFF1, VFF2, VFFN, VFFM
+      REAL*8 PM, GM, DP, DG, POIDS, VFF1, VFF2, VFFN, VFFM
       REAL*8 R8DOT,R8VIDE
 
 C-----------------------------------------------------------------------
@@ -216,13 +221,24 @@ C      CONTRAINTE EN T- POUR LA LOI DE COMPORTEMENT
         SIGMAM(5) = 0.D0
         SIGMAM(6) = 0.D0
 
-C - LOI DE COMPORTEMENT
+C -    APPEL A LA LOI DE COMPORTEMENT
       IF (.NOT.AXI)  TYPMOD(1) = 'AXIS    '
-      CALL NMCOMP(2,TYPMOD,IMATE,COMPOR,CRIT,INSTAM,INSTAP,TEMPM,TEMPP,
-     &              TREF, 0.D0, 0.D0, 0.D0, 0.D0,0.D0,
-     &              EPSLDC,DEPLDC,SIGMAM,VIM(1,KPG),OPTION,RBID,RBID,0,
-     &              RBID, RBID, RBID, SIGMA,
-     &              VIP(1,KPG),DSIDEP,CODRET,R8VIDE(),R8VIDE())
+
+C -    APPEL A LA LOI DE COMPORTEMENT
+      CALL NMCOMP(2,TYPMOD,IMATE,COMPOR,CRIT,
+     &            INSTAM,INSTAP,
+     &            TEMPM,TEMPP,TREF,
+     &            0.D0, 0.D0,
+     &            0.D0, 0.D0,0.D0,
+     &            EPSLDC,DEPLDC,
+     &            SIGMAM,VIM(1,KPG),
+     &            OPTION,
+     &            RBID,RBID,
+     &            0,RBID,RBID,
+     &            R8VIDE(),R8VIDE(),
+     &            ANGMAS,
+     &            RBID,
+     &            SIGMA,VIP(1,KPG),DSIDEP,CODRET)
        IF (.NOT.AXI)  TYPMOD(1) = 'C_PLAN  '
 
 

@@ -1,10 +1,14 @@
        SUBROUTINE  NIPL3D(NNO1,NNO2,NPG1,IPOIDS,IVF1,IVF2,IDFDE1,
      &                  GEOM,TYPMOD,OPTION,IMATE,COMPOR,LGPG,CRIT,
-     &                  INSTAM,INSTAP,TM,TP,TREF,DEPLM,DDEPL,GONFLM,
-     &                  DGONFL,SIGM,VIM,DFDI,SIGP,VIP,FINTU, FINTA,
-     &                  KUU , KUA , KAA ,CODRET)
+     &                  INSTAM,INSTAP,
+     &                  TM,TP,TREF,
+     &                  DEPLM,DDEPL,
+     &                  ANGMAS,
+     &                  GONFLM,DGONFL,
+     &                  SIGM,VIM,DFDI,SIGP,VIP,
+     &                  FINTU, FINTA,KUU , KUA , KAA ,CODRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 04/05/2004   AUTEUR SMICHEL S.MICHEL-PONNELLE 
+C MODIF ALGORITH  DATE 15/06/2004   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -38,6 +42,7 @@ C TOLE CRP_21
        REAL*8        VIM(LGPG,NPG1),VIP(LGPG,NPG1)
        REAL*8        KUU(3,20,3,20),KUA(3,20,2,8), KAA(2,8,2,8)
        REAL*8        FINTU(3,20), FINTA(2,8)
+       REAL*8        ANGMAS(3)
 C......................................................................
 C
 C     BUT:  CALCUL  DES OPTIONS RIGI_MECA_TANG, RAPH_MECA ET FULL_MECA
@@ -68,9 +73,9 @@ C IN  TP      : TEMPERATURE AUX NOEUDS A L'INSTANT DE CALCUL
 C IN  TREF    : TEMPERATURE DE REFERENCE
 C IN  DEPLM   : DEPLACEMENT A L'INSTANT PRECEDENT
 C IN  DDEPL   : INCREMENT DE DEPLACEMENT
+C IN  ANGMAS  : LES TROIS ANGLES DU MOT_CLEF MASSIF (AFFE_CARA_ELEM)
 C IN  GONFLM  : P ET G  A L'INSTANT PRECEDENT
 C IN  DGONFL  : INCREMENT POUR P ET G
-
 C IN  SIGM    : CONTRAINTES A L'INSTANT PRECEDENT
 C IN  VIM     : VARIABLES INTERNES A L'INSTANT PRECEDENT
 C OUT DFDI    : DERIVEE DES FONCTIONS DE FORME  AU DERNIER PT DE GAUSS
@@ -216,13 +221,21 @@ C      CONTRAINTE EN T- POUR LA LOI DE COMPORTEMENT
           SIGMAM(I) = SIGM(I,KPG)*RAC2
  65     CONTINUE
 
-C - LOI DE COMPORTEMENT
-
-      CALL NMCOMP(3,TYPMOD,IMATE,COMPOR,CRIT,INSTAM,INSTAP,TEMPM,TEMPP,
-     &              TREF, 0.D0, 0.D0, 0.D0, 0.D0,0.D0,
-     &              EPSLDC,DEPLDC,SIGMAM,VIM(1,KPG),OPTION,RBID,RBID,0,
-     &              RBID, RBID, RBID, SIGMA,
-     &              VIP(1,KPG),DSIDEP,CODRET,R8VIDE(),R8VIDE())
+C -    APPEL A LA LOI DE COMPORTEMENT
+      CALL NMCOMP(3,TYPMOD,IMATE,COMPOR,CRIT,
+     &            INSTAM,INSTAP,
+     &            TEMPM,TEMPP,TREF,
+     &            0.D0, 0.D0,
+     &            0.D0, 0.D0, 0.D0,
+     &            EPSLDC,DEPLDC,
+     &            SIGMAM,VIM(1,KPG),
+     &            OPTION,
+     &            RBID,RBID,
+     &            0,RBID,RBID,
+     &            R8VIDE(),R8VIDE(),
+     &            ANGMAS,
+     &            RBID, 
+     &            SIGMA,VIP(1,KPG),DSIDEP,CODRET)
 
 C - CALCUL DE LA MATRICE DE RIGIDITE
 

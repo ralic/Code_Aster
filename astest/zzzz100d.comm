@@ -1,4 +1,4 @@
-# MODIF  DATE 17/05/2004   AUTEUR CIBHHBC M.LOPES 
+# MODIF  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
 # TITRE CALCUL DES INDICES DE NOCIVITE D'UN SEISME
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -81,15 +81,23 @@ INLBNS18=CALC_FONCTION(    NOCI_SEISME=_F(
                        )
 
 #
-SPEC_H=LIRE_FONCTION(   
-                                             UNITE=18,
-                                          INTERPOL='LOG',
-                                     INTERPOL_FONC='LOG',
-                                        PROL_DROITE='CONSTANT',
-                                       PROL_GAUCHE='CONSTANT',
-                                   PROL_DROITE_FONC='CONSTANT',
-                                  PROL_GAUCHE_FONC='CONSTANT',
-                                             TITRE='SRO_H ACCE'
+SPEC_H=LIRE_FONCTION(  UNITE=18,
+                       TYPE='NAPPE',
+                       INDIC_PARA=[1,1],
+                       NOM_PARA='AMOR',
+                       NOM_PARA_FONC='FREQ',
+                       NOM_RESU='ACCE',
+                       INDIC_ABSCISSE=[2,1],
+                       DEFI_FONCTION=(_F(INDIC_RESU=[2,2]  ),
+                                      _F(INDIC_RESU=[2,3]  ),
+                                      _F(INDIC_RESU=[2,4]  ),),
+                       INTERPOL='LOG',
+                       INTERPOL_FONC='LOG',
+                       PROL_DROITE='CONSTANT',
+                       PROL_GAUCHE='CONSTANT',
+                       PROL_DROITE_FONC='CONSTANT',
+                       PROL_GAUCHE_FONC='CONSTANT',
+                       TITRE='SRO_H ACCE'
                              )
 
 #

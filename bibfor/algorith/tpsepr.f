@@ -1,7 +1,6 @@
-      SUBROUTINE TPSEPR(TPS,S,DPC,T,FLUPHI,VALDRP,TTAMAX,PREC)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      SUBROUTINE TPSEPR(TPS,S,DPC,TEMP,FLUPHI,VALDRP,TTAMAX,PREC,NITER)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/01/96   AUTEUR F6BHHBO P.DEBONNIERES 
+C MODIF ALGORITH  DATE 15/06/2004   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,18 +18,22 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
 C
-CDEB
+      IMPLICIT NONE
+      REAL*8  TPS,S,DPC,TEMP,FLUPHI,VALDRP,TTAMAX,PREC
+      INTEGER NITER
+C
 C---------------------------------------------------------------
 C     CALCUL DE TPS (TEMPS) EN FONCTION DE SIGMA,LAMBDA,T
 C---------------------------------------------------------------
 C IN  S     :R: CONTRAINTE EQUIVALENTE SIGMA
 C     DPC   :R: SCALAIRE RESUMANT L'ETAT VISCOPLASTIQUE DU POINT
 C               CONSIDERE DU MATERIAU (LAMBDA)
-C     T     :R: TEMPERATURE DU POINT CONSIDERE
+C     TEMP  :R: TEMPERATURE DU POINT CONSIDERE
 C     FLUPHI:R: FLUX NEUTRONIQUE
 C     VALDRP:R: LIMITE ELASTIQUE R_P
 C     TTAMAX:R: ANGLE THETA_MAX
 C     PREC  :R: PRECISION DE LA RESOLUTION EN TEMPS
+C     NITER :I: NOMBRE D'ITERATIONS DE LA RESOLUTION EN TEMPS
 C OUT TPS   :R: TEMPS CALCULE
 C---------------------------------------------------------------
 C                                                         .
@@ -46,6 +49,12 @@ C---------------------------------------------------------------
 CFIN
 C
 C---------------------------------------------------------------
+      REAL*8 A1,A2,A3,A4,A5,A6,A7,B1,B2,B3,B4,B5,B6,B7
+      REAL*8 F1,F2,FP1,FP2,G1,G2,FF,FFP
+      REAL*8 TPS1,TPSANC,TEST
+      INTEGER ITER
+
+      ITER = 0
 C---------------------------------------------------------------
 C     ECRITURE DE LA LOI DE FLUAGE EN CONTRAINTE ET
 C      DEFORMATION VISQUEUSE EQUIVALENTES (AU LIEU DE
@@ -94,14 +103,14 @@ C
 C----CALCUL DE G1-----------------------------------------------
 C
         G1 = A1*EXP(A4*LOG(SINH(A2*EXP(A3*LOG(S))))+A6*LOG(VALDRP)
-     *       -A7/(T+273.15D0))
+     *       -A7/(TEMP+273.15D0))
 C
 C----CALCUL DE G2-----------------------------------------------
 C
         IF (FLUPHI.EQ.0.D0) THEN
           G2 = 0.D0
         ELSE
-          G2 = B1*EXP(B3*LOG(FLUPHI)+B4*LOG(S)-B5/(T+273.15D0)
+          G2 = B1*EXP(B3*LOG(FLUPHI)+B4*LOG(S)-B5/(TEMP+273.15D0)
      *         +B6*LOG(VALDRP)+B7*LOG(COS(TTAMAX)))
         ENDIF
 C---------------------------------------------------------------
@@ -120,6 +129,10 @@ C
           ENDIF
         ENDIF
    20   CONTINUE
+        ITER = ITER + 1
+        IF (ITER.EQ.NITER) THEN
+           CALL UTMESS('F','TPSEPR','ECHEC DANS ELIMINATION TEMPS')
+        ENDIF
 C
 C---------------------------------------------------------------
 C---------------------------------------------------------------
@@ -137,14 +150,14 @@ C
 C----CALCUL DE G1-----------------------------------------------
 C
         G1 = A1*EXP(A4*LOG(SINH(A2*EXP(A3*LOG(S))))+A6*LOG(VALDRP)
-     *       -A7/(T+273.15D0))
+     *       -A7/(TEMP+273.15D0))
 C
 C----CALCUL DE G2-----------------------------------------------
 C
         IF (FLUPHI.EQ.0.D0) THEN
           G2 = 0.D0
         ELSE
-          G2 = B1*EXP(B3*LOG(FLUPHI)+B4*LOG(S)-B5/(T+273.15D0)
+          G2 = B1*EXP(B3*LOG(FLUPHI)+B4*LOG(S)-B5/(TEMP+273.15D0)
      *         +B6*LOG(VALDRP)+B7*LOG(COS(TTAMAX)))
         ENDIF
 C---------------------------------------------------------------

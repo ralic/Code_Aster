@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -33,9 +33,9 @@ def recu_fonction_prod(RESULTAT=None,TABLE=None,OBSTACLE=None,
   if RESULTAT       != None         : return fonction_sdaster
   if CHAM_GD        != None         : return fonction_sdaster
   if OBSTACLE       != None         : return fonction_sdaster
-  raise AsException("type de concept resultat_sdaster non prevu")
+  raise AsException("type de concept resultat non prevu")
 
-RECU_FONCTION=OPER(nom="RECU_FONCTION",op=  90,sd_prod=recu_fonction_prod,
+RECU_FONCTION=OPER(nom="RECU_FONCTION",op=90,sd_prod=recu_fonction_prod,
                    fr="Extraire sous forme d une fonction, l évolution temporelle d une composante d un champ ou d une table",
                    reentrant='n',
             UIinfo={"groupes":("Fonction",)},
@@ -65,7 +65,7 @@ RECU_FONCTION=OPER(nom="RECU_FONCTION",op=  90,sd_prod=recu_fonction_prod,
              INTITULE        =SIMP(statut='f',typ='TXM' ),
          ),
          b_base_elas_flui = BLOC ( condition = "BASE_ELAS_FLUI != None",
-                                   fr="Récupération de la fonction à partir d un concept melasflu_sdaster",
+                                   fr="Récupération de la fonction à partir d un concept melasflu",
            regles=(UN_PARMI('TOUT_ORDRE','NUME_ORDRE'),),
            TOUT_ORDRE      =SIMP(statut='f',typ='TXM',into=("OUI",) ),
            NUME_ORDRE      =SIMP(statut='f',typ='I',validators=NoRepeat(),max='**'),
@@ -73,7 +73,7 @@ RECU_FONCTION=OPER(nom="RECU_FONCTION",op=  90,sd_prod=recu_fonction_prod,
            PARA_X          =SIMP(statut='o',typ='TXM',into=("VITE_FLU",) ),
            PARA_Y          =SIMP(statut='o',typ='TXM',into=("FREQ","AMOR") ),
          ),
-         b_table = BLOC ( condition = "TABLE != None",fr="Récupération de la fonction à partir d un concept table_sdaster",
+         b_table = BLOC ( condition = "TABLE != None",fr="Récupération de la fonction à partir d un concept table",
            regles=(UN_PARMI('PARA_X','NOM_PARA_TABL'),
                    PRESENT_PRESENT('PARA_X','PARA_Y'),),
            PARA_X          =SIMP(statut='f',typ='TXM',
@@ -214,11 +214,7 @@ RECU_FONCTION=OPER(nom="RECU_FONCTION",op=  90,sd_prod=recu_fonction_prod,
             REPERE          =SIMP(statut='f',typ='TXM',into=("POLAIRE","GLOBAL") ),
          ),
 ###
-         NOM_PARA        =SIMP(statut='f',typ='TXM',
-                               into=("DX","DY","DZ","DRX","DRY","DRZ","TEMP",
-                                     "INST","X","Y","Z","EPSI","META","FREQ","PULS","DSP",
-                                     "AMOR","ABSC","SIGM","HYDR","SECH","PORO","SAT",
-                                     "PGAZ","PCAP","VITE","ENDO","NORM") ),
+         NOM_PARA        =SIMP(statut='f',typ='TXM', into=C_PARA_FONCTION() ),
          NOM_RESU        =SIMP(statut='f',typ='TXM' ),
          INTERPOL        =SIMP(statut='f',typ='TXM',max=2,into=("NON","LIN","LOG") ),
          PROL_DROITE     =SIMP(statut='f',typ='TXM',into=("CONSTANT","LINEAIRE","EXCLU") ),

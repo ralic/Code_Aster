@@ -1,8 +1,11 @@
-        SUBROUTINE LCJPLC ( LOI  , MOD , NMAT, MATER, DSDE )
-        IMPLICIT REAL*8 (A-H,O-Z)
+        SUBROUTINE LCJPLC ( LOI  ,MOD , NMAT, MATER, 
+     &            TIMED, TIMEF, COMP,NBCOMM, CPMONO, PGL,NR,NVI,
+     &                  SIGF,VINF,SIGD,VIND, 
+     &                   DSDE )
+        IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 16/06/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,17 +32,26 @@ C           NMAT   :  DIMENSION MATER
 C           MATER  :  COEFFICIENTS MATERIAU
 C       OUT DSDE   :  MATRICE DE COMPORTEMENT TANGENT = DSIG/DEPS
 C       ----------------------------------------------------------------
-        INTEGER         NMAT , NMOD
+        INTEGER         NMAT , NMOD, NR, NVI
         REAL*8          DSDE(6,6)
         REAL*8          MATER(NMAT,2)
         CHARACTER*3     INST
         CHARACTER*8     MOD
         CHARACTER*16    LOI
+      
+      INTEGER         NBCOMM(NMAT,3)
+      REAL*8  SIGF(*),SIGD(*),VIND(*),VINF(*),TIMED,TIMEF,PGL(3,3)
+      CHARACTER*16    CPMONO(5*NMAT+1),COMP(*)
 C       ----------------------------------------------------------------
          IF     ( LOI(1:9) .EQ. 'VISCOCHAB' ) THEN
             CALL  CVMJPL (MOD,NMAT,MATER,DSDE)
          ELSEIF ( LOI(1:5) .EQ. 'LMARC'     ) THEN
             CALL  LMAJPL (MOD,NMAT,MATER,DSDE)
+         ELSEIF ( LOI(1:8) .EQ. 'MONOCRIS'     ) THEN
+            CALL  LCMMJP (MOD,NMAT,MATER,
+     &            TIMED, TIMEF, COMP,NBCOMM, CPMONO, PGL,NR,NVI,
+     &                  SIGF,VINF,SIGD,VIND, 
+     &                   DSDE )
          ENDIF
 C
          END

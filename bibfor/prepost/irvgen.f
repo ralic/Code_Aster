@@ -1,11 +1,11 @@
-      SUBROUTINE IRVGEN ( GENEIN, FICH, NBCMPG,CMPG, LHIST )
+      SUBROUTINE IRVGEN ( GENEIN, IFI, NBCMPG,CMPG, LHIST )
       IMPLICIT REAL*8 (A-H,O-Z)
       INTEGER         CMPG(*)
-      CHARACTER*(*)   GENEIN, FICH
+      CHARACTER*(*)   GENEIN
       LOGICAL         LHIST
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
+C MODIF PREPOST  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -52,7 +52,6 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C     ------------------------------------------------------------------
       CALL JEMARQ()
       BLAN = ' '
-      IFI = IUNIFI(FICH)
       GENE = GENEIN
 C
       CALL JEVEUO(GENE//'.DESC','L',JDESC)

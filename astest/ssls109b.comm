@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 15/06/2004   AUTEUR MABBAS M.ABBAS 
 # TITRE PLAQUE ENCASTREE EN TRACTION CONSTITUEE DE 3 NAPPES D'ARMATURES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -26,23 +26,55 @@ DEBUT(    CODE=_F(  NOM = 'SSLS109B',NIV_PUB_WEB='INTERNET') )
 
 MAILL1=LIRE_MAILLAGE(   )
 
+
 MAILL2=CREA_MAILLAGE( 
                MAILLAGE=MAILL1,
                CREA_GROUP_MA=_F( 
-                   NOM = 'GEOB1',  
+                   NOM = 'GEOBB',  
                    GROUP_MA = 'GEOB',  
                    PREF_MAILLE = 'A',  
                               )
                            )
 
-MAILTOT=CREA_MAILLAGE( 
+MAILL3=CREA_MAILLAGE( 
                MAILLAGE=MAILL2,
                CREA_GROUP_MA=_F( 
-                   NOM = 'GEOB2',  
+                   NOM = 'GEOB1',  
                    GROUP_MA = 'GEOB',  
                    PREF_MAILLE = 'B',  
                               )
                            )
+
+MAILL4=CREA_MAILLAGE( 
+               MAILLAGE=MAILL3,
+               CREA_GROUP_MA=_F( 
+                   NOM = 'GEOBB1',  
+                   GROUP_MA = 'GEOB',  
+                   PREF_MAILLE = 'C',  
+                              )
+                           )
+
+
+MAILL5=CREA_MAILLAGE( 
+               MAILLAGE=MAILL4,
+               CREA_GROUP_MA=_F( 
+                   NOM = 'GEOB2',  
+                   GROUP_MA = 'GEOB',  
+                   PREF_MAILLE = 'D',  
+                              )
+                           )
+
+
+MAILTOT=CREA_MAILLAGE( 
+               MAILLAGE=MAILL5,
+               CREA_GROUP_MA=_F( 
+                   NOM = 'GEOBB2',  
+                   GROUP_MA = 'GEOB',  
+                   PREF_MAILLE = 'E',  
+                              )
+                           )
+
+
 
 #
 # -----------------------------------------------------
@@ -68,13 +100,13 @@ MATER3=DEFI_MATERIAU(  ELAS=_F(  E = 3.,       NU = 0., ),
 # -------------------------------------------------
 #
 MATAF=AFFE_MATERIAU(    MAILLAGE=MAILTOT,AFFE=(
-                          _F(  GROUP_MA = 'GEOB',    
+                          _F(  GROUP_MA = ('GEOB','GEOBB'),    
                                  MATER = MATER1,  
                                ),
-                          _F(  GROUP_MA = 'GEOB1',    
+                          _F(  GROUP_MA = ('GEOB1','GEOBB1'),    
                                  MATER = MATER2,  
                                ),
-                          _F(  GROUP_MA = 'GEOB2',    
+                          _F(  GROUP_MA = ('GEOB2','GEOBB2'),    
                                  MATER = MATER3,  
                                )) 
                       )
@@ -85,15 +117,15 @@ MATAF=AFFE_MATERIAU(    MAILLAGE=MAILTOT,AFFE=(
 # -------------------------------------------------
 #
 LEMOD=AFFE_MODELE(    MAILLAGE=MAILTOT,     VERIF='MAILLE',AFFE=( 
-                        _F(  GROUP_MA = 'GEOB',     
+                        _F(  GROUP_MA = ('GEOB','GEOBB'),     
                                MODELISATION = 'GRILLE',  
                                PHENOMENE = 'MECANIQUE',   
                              ),
-                        _F(  GROUP_MA = 'GEOB1',     
+                        _F(  GROUP_MA = ('GEOB1','GEOBB1'),     
                                MODELISATION = 'GRILLE',  
                                PHENOMENE = 'MECANIQUE',   
                              ),
-                        _F(  GROUP_MA = 'GEOB2',     
+                        _F(  GROUP_MA = ('GEOB2','GEOBB2'),     
                                MODELISATION = 'GRILLE',  
                                PHENOMENE = 'MECANIQUE',   
                              ))
@@ -105,28 +137,34 @@ LEMOD=AFFE_MODELE(    MAILLAGE=MAILTOT,     VERIF='MAILLE',AFFE=(
 #
 LACAR=AFFE_CARA_ELEM(    MODELE=LEMOD,GRILLE=(
                        _F( GROUP_MA = 'GEOB',   
-                                SECTION_L = .01,    
-                                ANGL_REP = (30.0, 10.0,),    
-                                ANGL_L = 0.,        
-                                POUR_CENT_L = 1.,  
-                                POUR_CENT_T = 1.,  
-                                EXCENTREMENT = -.01, 
-                              ),
-                       _F( GROUP_MA = 'GEOB1',   
-                                SECTION_L = .01,    
-                                ANGL_REP = (30.0, 10.0,),    
-                                ANGL_L = -20.0,       
-                                POUR_CENT_L = 1.,  
-                                POUR_CENT_T = 1.,  
+                                SECTION = .01,    
+                                ANGL_REP = (30.0, 0.0,),    
+                                EXCENTREMENT = -.01,
+                             ),
+                       _F( GROUP_MA = 'GEOBB',
+                                SECTION = .01,    
+                                ANGL_REP = (120.0, 0.0,),    
+                                EXCENTREMENT = -.01,
+                             ),     
+                       _F( GROUP_MA = 'GEOB1',
+                                SECTION = .01,    
+                                ANGL_REP = (10.0, 0.0,),     
+                                EXCENTREMENT = 0.,
+                             ),
+                       _F( GROUP_MA = 'GEOBB1',
+                                SECTION = .01,    
+                                ANGL_REP = (100.0, 0.0,),    
                                 EXCENTREMENT = 0., 
-                              ),
-                       _F( GROUP_MA = 'GEOB2',   
-                                SECTION_L = .01,    
-                                ANGL_REP = (30.0, 10.0,),    
-                                ANGL_L = -75.0,       
-                                POUR_CENT_L = 1.,  
-                                POUR_CENT_T = 1.,  
-                                EXCENTREMENT = .01, 
+                             ),     
+                       _F( GROUP_MA = 'GEOB2',
+                                SECTION = .01,    
+                                ANGL_REP = (-45.0, 0.0,),    
+                                EXCENTREMENT = .01,
+                             ), 
+                       _F( GROUP_MA = 'GEOBB2',   
+                                SECTION = .01,    
+                                ANGL_REP = (45.0, 0.0,),     
+                                EXCENTREMENT = .01,
                               ))
                         )
 
@@ -159,17 +197,15 @@ RESU0=MECA_STATIQUE(    MODELE=LEMOD,       CHAM_MATER=MATAF,
 RESU0=CALC_ELEM(reuse=RESU0,     RESULTAT=RESU0,        
                              OPTION='EFGE_ELNO_DEPL' )
 
-RESU0=CALC_ELEM(reuse=RESU0,     RESULTAT=RESU0,        
+RESU0=CALC_ELEM(reuse=RESU0,     RESULTAT=RESU0,       
                              OPTION='SIGM_ELNO_DEPL' )
 
 #RESU0=CALC_ELEM(reuse=RESU0,     RESULTAT=RESU0,        
-#                             
 #                             OPTION='SIEF_ELGA_DEPL' )
 
-RESU0=CALC_NO(  reuse=RESU0,   RESULTAT=RESU0,  
+RESU0=CALC_NO(  reuse=RESU0,   RESULTAT=RESU0,
                                TOUT='OUI',
-                               OPTION='FORC_NODA',
-                               )
+                               OPTION='FORC_NODA',)
 
 
 RESU0=CALC_ELEM(reuse=RESU0,     RESULTAT=RESU0,        
@@ -200,10 +236,9 @@ RESU1=STAT_NON_LINE(    MODELE=LEMOD,       CHAM_MATER=MATAF,
                                INCREMENT=_F(LIST_INST = LINST),
                                COMP_INCR=_F(RELATION = 'GRILLE_ISOT_LINE' ),)
 
-RESU1=CALC_NO(  reuse=RESU1,   RESULTAT=RESU1,  
+RESU1=CALC_NO(  reuse=RESU1,   RESULTAT=RESU1,
                                TOUT='OUI',
-                               OPTION='FORC_NODA',
-                               )
+                               OPTION='FORC_NODA', )
 
 RESU1=CALC_ELEM(reuse=RESU1,     RESULTAT=RESU1,        
                              OPTION='SIEF_ELNO_ELGA' )
@@ -212,12 +247,14 @@ IMPR_RESU(RESU=_F(RESULTAT=RESU1,NOM_CHAM=('FORC_NODA','SIEF_ELNO_ELGA','SIEF_EL
 
 
 TEST_RESU(RESU=(
-              
+
+# -- TEST SUR LES DEPLACEMENTS ET LES ROTATIONS
+             
                 _F( 
                 RESULTAT = RESU0,   
                 NUME_ORDRE = 1,
                 NOM_CHAM = 'DEPL',  
-                MAILLE = 'BMA1',     
+                MAILLE = 'DMA1',     
                 NOEUD = 'NO2',      
                 NOM_CMP = 'DX',   
                 REFERENCE='NON_REGRESSION',VALE= 81.9373,       
@@ -226,7 +263,7 @@ TEST_RESU(RESU=(
                 RESULTAT = RESU0,   
                 NUME_ORDRE = 1,
                 NOM_CHAM = 'DEPL',  
-                MAILLE = 'BMA1',     
+                MAILLE = 'DMA1',     
                 NOEUD = 'NO2',      
                 NOM_CMP = 'DY',   
                 REFERENCE='NON_REGRESSION',VALE= -18.6398,       
@@ -235,7 +272,7 @@ TEST_RESU(RESU=(
                 RESULTAT = RESU0,   
                 NUME_ORDRE = 1,
                 NOM_CHAM = 'DEPL',  
-                MAILLE = 'BMA1',     
+                MAILLE = 'DMA1',     
                 NOEUD = 'NO2',      
                 NOM_CMP = 'DZ',   
                 REFERENCE='NON_REGRESSION',VALE= 2098.66,       
@@ -244,7 +281,7 @@ TEST_RESU(RESU=(
                 RESULTAT = RESU0,   
                 NUME_ORDRE = 1,
                 NOM_CHAM = 'DEPL',  
-                MAILLE = 'BMA1',     
+                MAILLE = 'DMA1',     
                 NOEUD = 'NO2',      
                 NOM_CMP = 'DRX',   
                 REFERENCE='NON_REGRESSION',VALE= -1239.88,       
@@ -253,34 +290,47 @@ TEST_RESU(RESU=(
                 RESULTAT = RESU0,   
                 NUME_ORDRE = 1,
                 NOM_CHAM = 'DEPL',  
-                MAILLE = 'BMA1',     
+                MAILLE = 'DMA1',     
                 NOEUD = 'NO2',      
                 NOM_CMP = 'DRY',   
                 REFERENCE='NON_REGRESSION',VALE= -3820.42,       
                 ),
+
+# -- TEST SUR LES DEFORMATIONS DANS LE SOLIDE 1
+# LE SOLIDE 1 EST CONSTITUE DES MAILLES DMA1 (ANGLE_REP=-45)
+#                                    et EMA1 (ANGLE_REP= 45)
                 _F( 
                 RESULTAT = RESU0,   
                 NUME_ORDRE = 1,
                 NOM_CHAM = 'EPSI_ELNO_DEPL',  
-                MAILLE = 'BMA1',     
+                MAILLE = 'DMA1',     
                 NOEUD = 'NO2',      
                 NOM_CMP = 'EPXX',   
-                REFERENCE='NON_REGRESSION',VALE= 32.9433,       
+                REFERENCE='NON_REGRESSION',VALE= 21.5569,       
                 ),
                 _F( 
                 RESULTAT = RESU0,   
                 NUME_ORDRE = 1,
                 NOM_CHAM = 'EPSI_ELNO_DEPL',  
-                MAILLE = 'BMA1',     
+                MAILLE = 'DMA1',     
                 NOEUD = 'NO2',      
                 NOM_CMP = 'EPYY',   
-                REFERENCE='NON_REGRESSION',VALE= 2.33011,       
+                REFERENCE='NON_REGRESSION',VALE= 13.7165,       
                 ),
                 _F( 
                 RESULTAT = RESU0,   
                 NUME_ORDRE = 1,
                 NOM_CHAM = 'EPSI_ELNO_DEPL',  
-                MAILLE = 'BMA1',     
+                MAILLE = 'DMA1',     
+                NOEUD = 'NO2',      
+                NOM_CMP = 'EPXY',   
+                REFERENCE='NON_REGRESSION',VALE= 37.4032,       
+                ),
+                _F( 
+                RESULTAT = RESU0,   
+                NUME_ORDRE = 1,
+                NOM_CHAM = 'EPSI_ELNO_DEPL',  
+                MAILLE = 'DMA1',     
                 NOEUD = 'NO2',      
                 NOM_CMP = 'EPZZ',   
                 REFERENCE='NON_REGRESSION',VALE= 0.0,       
@@ -290,11 +340,96 @@ TEST_RESU(RESU=(
                 RESULTAT = RESU0,   
                 NUME_ORDRE = 1,
                 NOM_CHAM = 'EPSI_ELNO_DEPL',  
-                MAILLE = 'BMA1',     
+                MAILLE = 'EMA1',     
+                NOEUD = 'NO2',      
+                NOM_CMP = 'EPXX',   
+                REFERENCE='NON_REGRESSION',VALE= 13.7165,       
+                ),
+                _F( 
+                RESULTAT = RESU0,   
+                NUME_ORDRE = 1,
+                NOM_CHAM = 'EPSI_ELNO_DEPL',  
+                MAILLE = 'EMA1',     
+                NOEUD = 'NO2',      
+                NOM_CMP = 'EPYY',   
+                REFERENCE='NON_REGRESSION',VALE= 21.5569,       
+                ),
+                _F( 
+                RESULTAT = RESU0,   
+                NUME_ORDRE = 1,
+                NOM_CHAM = 'EPSI_ELNO_DEPL',  
+                MAILLE = 'EMA1',     
                 NOEUD = 'NO2',      
                 NOM_CMP = 'EPXY',   
-                REFERENCE='NON_REGRESSION',VALE= -34.3522,       
+                REFERENCE='NON_REGRESSION',VALE= -37.4032,       
                 ),
+                _F( 
+                RESULTAT = RESU0,   
+                NUME_ORDRE = 1,
+                NOM_CHAM = 'EPSI_ELNO_DEPL',  
+                MAILLE = 'EMA1',     
+                NOEUD = 'NO2',      
+                NOM_CMP = 'EPZZ',   
+                REFERENCE='NON_REGRESSION',VALE= 0.0,       
+                CRITERE = 'ABSOLU',    
+                ),
+
+# -- TEST SUR LES COURBURES DANS LE SOLIDE 1, mailles DMA1 et EMA1
+                _F( 
+                RESULTAT = RESU0,   
+                NUME_ORDRE = 1,
+                NOM_CHAM = 'DEGE_ELNO_DEPL',  
+                MAILLE = 'DMA1',     
+                NOEUD = 'NO2',      
+                NOM_CMP = 'KXX',   
+                REFERENCE='NON_REGRESSION',VALE= -2963.651,       
+                ),
+                _F( 
+                RESULTAT = RESU0,   
+                NUME_ORDRE = 1,
+                NOM_CHAM = 'DEGE_ELNO_DEPL',  
+                MAILLE = 'DMA1',     
+                NOEUD = 'NO2',      
+                NOM_CMP = 'KYY',   
+                REFERENCE='NON_REGRESSION',VALE= 397.418,       
+                ),
+                _F( 
+                RESULTAT = RESU0,   
+                NUME_ORDRE = 1,
+                NOM_CHAM = 'DEGE_ELNO_DEPL',  
+                MAILLE = 'DMA1',     
+                NOEUD = 'NO2',      
+                NOM_CMP = 'KXY',   
+                REFERENCE='NON_REGRESSION',VALE= -1406.625,       
+                ),
+                _F( 
+                RESULTAT = RESU0,   
+                NUME_ORDRE = 1,
+                NOM_CHAM = 'DEGE_ELNO_DEPL',  
+                MAILLE = 'EMA1',     
+                NOEUD = 'NO2',      
+                NOM_CMP = 'KXX',   
+                REFERENCE='NON_REGRESSION',VALE= 397.418,       
+                ),
+                _F( 
+                RESULTAT = RESU0,   
+                NUME_ORDRE = 1,
+                NOM_CHAM = 'DEGE_ELNO_DEPL',  
+                MAILLE = 'EMA1',     
+                NOEUD = 'NO2',      
+                NOM_CMP = 'KYY',   
+                REFERENCE='NON_REGRESSION',VALE= -2963.651,      
+                ),
+                _F( 
+                RESULTAT = RESU0,   
+                NUME_ORDRE = 1,
+                NOM_CHAM = 'DEGE_ELNO_DEPL',  
+                MAILLE = 'EMA1',     
+                NOEUD = 'NO2',      
+                NOM_CMP = 'KXY',   
+                REFERENCE='NON_REGRESSION',VALE= 1406.625,       
+                ),
+# -- TEST SUR LES COURBURES DANS LE SOLIDE 2, mailles BMA1 et CMA1
                 _F( 
                 RESULTAT = RESU0,   
                 NUME_ORDRE = 1,
@@ -302,7 +437,7 @@ TEST_RESU(RESU=(
                 MAILLE = 'BMA1',     
                 NOEUD = 'NO2',      
                 NOM_CMP = 'KXX',   
-                REFERENCE='NON_REGRESSION',VALE= -531.043,       
+                REFERENCE='NON_REGRESSION',VALE= -2030.135,       
                 ),
                 _F( 
                 RESULTAT = RESU0,   
@@ -311,7 +446,7 @@ TEST_RESU(RESU=(
                 MAILLE = 'BMA1',     
                 NOEUD = 'NO2',      
                 NOM_CMP = 'KYY',   
-                REFERENCE='NON_REGRESSION',VALE= -2035.19,       
+                REFERENCE='NON_REGRESSION',VALE= -536.098,       
                 ),
                 _F( 
                 RESULTAT = RESU0,   
@@ -320,31 +455,115 @@ TEST_RESU(RESU=(
                 MAILLE = 'BMA1',     
                 NOEUD = 'NO2',      
                 NOM_CMP = 'KXY',   
+                REFERENCE='NON_REGRESSION',VALE= 2060.280,       
+                ),
+                _F( 
+                RESULTAT = RESU0,   
+                NUME_ORDRE = 1,
+                NOM_CHAM = 'DEGE_ELNO_DEPL',  
+                MAILLE = 'CMA1',     
+                NOEUD = 'NO2',      
+                NOM_CMP = 'KXX',   
+                REFERENCE='NON_REGRESSION',VALE= -536.098,       
+                ),
+                _F( 
+                RESULTAT = RESU0,   
+                NUME_ORDRE = 1,
+                NOM_CHAM = 'DEGE_ELNO_DEPL',  
+                MAILLE = 'CMA1',     
+                NOEUD = 'NO2',      
+                NOM_CMP = 'KYY',   
+                REFERENCE='NON_REGRESSION',VALE= -2030.135,      
+                ),
+                _F( 
+                RESULTAT = RESU0,   
+                NUME_ORDRE = 1,
+                NOM_CHAM = 'DEGE_ELNO_DEPL',  
+                MAILLE = 'CMA1',     
+                NOEUD = 'NO2',      
+                NOM_CMP = 'KXY',   
+                REFERENCE='NON_REGRESSION',VALE= -2060.280,       
+                ),
+# -- TEST SUR LES COURBURES DANS LE SOLIDE 3, mailles MA1 et AMA1
+                _F( 
+                RESULTAT = RESU0,   
+                NUME_ORDRE = 1,
+                NOM_CHAM = 'DEGE_ELNO_DEPL',  
+                MAILLE = 'MA1',     
+                NOEUD = 'NO2',      
+                NOM_CMP = 'KXX',   
+                REFERENCE='NON_REGRESSION',VALE= -531.043,       
+                ),
+                _F( 
+                RESULTAT = RESU0,   
+                NUME_ORDRE = 1,
+                NOM_CHAM = 'DEGE_ELNO_DEPL',  
+                MAILLE = 'MA1',     
+                NOEUD = 'NO2',      
+                NOM_CMP = 'KYY',   
+                REFERENCE='NON_REGRESSION',VALE= -2035.19,       
+                ),
+                _F( 
+                RESULTAT = RESU0,   
+                NUME_ORDRE = 1,
+                NOM_CHAM = 'DEGE_ELNO_DEPL',  
+                MAILLE = 'MA1',     
+                NOEUD = 'NO2',      
+                NOM_CMP = 'KXY',   
                 REFERENCE='NON_REGRESSION',VALE= 2058.44,       
                 ),
                 _F( 
                 RESULTAT = RESU0,   
                 NUME_ORDRE = 1,
+                NOM_CHAM = 'DEGE_ELNO_DEPL',  
+                MAILLE = 'AMA1',     
+                NOEUD = 'NO2',      
+                NOM_CMP = 'KXX',   
+                REFERENCE='NON_REGRESSION',VALE= -2035.19,       
+                ),
+                _F( 
+                RESULTAT = RESU0,   
+                NUME_ORDRE = 1,
+                NOM_CHAM = 'DEGE_ELNO_DEPL',  
+                MAILLE = 'AMA1',     
+                NOEUD = 'NO2',      
+                NOM_CMP = 'KYY',   
+                REFERENCE='NON_REGRESSION',VALE= -531.043,      
+                ),
+                _F( 
+                RESULTAT = RESU0,   
+                NUME_ORDRE = 1,
+                NOM_CHAM = 'DEGE_ELNO_DEPL',  
+                MAILLE = 'AMA1',     
+                NOEUD = 'NO2',      
+                NOM_CMP = 'KXY',   
+                REFERENCE='NON_REGRESSION',VALE= -2060.280,       
+                ),
+
+# -- TEST SUR LES CONTRAINTES DANS LE SOLIDE 1, mailles DMA1 et EMA1
+                _F( 
+                RESULTAT = RESU0,   
+                NUME_ORDRE = 1,
                 NOM_CHAM = 'SIGM_ELNO_DEPL',  
-                MAILLE = 'BMA1',     
+                MAILLE = 'DMA1',     
                 NOEUD = 'NO2',      
                 NOM_CMP = 'SIXX',   
-                REFERENCE='NON_REGRESSION',VALE= 42.7252,        
+                REFERENCE='NON_REGRESSION',VALE= 64.6707,        
                 ),
                 _F( 
                 RESULTAT = RESU0,   
                 NUME_ORDRE = 1,
                 NOM_CHAM = 'SIGM_ELNO_DEPL',  
-                MAILLE = 'BMA1',     
+                MAILLE = 'DMA1',     
                 NOEUD = 'NO2',      
                 NOM_CMP = 'SIYY',   
-                REFERENCE='NON_REGRESSION',VALE= 63.0951,       
+                REFERENCE='NON_REGRESSION',VALE= 0.,       
                 ),
                 _F( 
                 RESULTAT = RESU0,   
                 NUME_ORDRE = 1,
                 NOM_CHAM = 'SIGM_ELNO_DEPL',  
-                MAILLE = 'BMA1',     
+                MAILLE = 'DMA1',     
                 NOEUD = 'NO2',      
                 NOM_CMP = 'SIZZ',   
                 REFERENCE='NON_REGRESSION',VALE= 0.,       
@@ -354,41 +573,53 @@ TEST_RESU(RESU=(
                 RESULTAT = RESU0,   
                 NUME_ORDRE = 1,
                 NOM_CHAM = 'SIGM_ELNO_DEPL',  
-                MAILLE = 'BMA1',     
+                MAILLE = 'DMA1',     
+                NOEUD = 'NO2',  
+                NOM_CMP = 'SIXY',    
+                REFERENCE='NON_REGRESSION',VALE= 0.,       
+                CRITERE = 'ABSOLU',       
+                ),
+
+                _F( 
+                RESULTAT = RESU0,   
+                NUME_ORDRE = 1,
+                NOM_CHAM = 'SIGM_ELNO_DEPL',  
+                MAILLE = 'EMA1',     
                 NOEUD = 'NO2',      
-                NOM_CMP = 'SIXY',   
-                REFERENCE='NON_REGRESSION',VALE= -5.88029,       
-                ),
-
-
-                _F( 
-                RESULTAT = RESU0,   
-                NUME_ORDRE = 1,
-                NOM_CHAM = 'SIEF_ELGA_DEPL',  
-                MAILLE = 'MA1',     
-                POINT=1,      
                 NOM_CMP = 'SIXX',   
-                REFERENCE='NON_REGRESSION',VALE= 5.96512E+01,       
+                REFERENCE='NON_REGRESSION',VALE= 41.1496,        
                 ),
                 _F( 
                 RESULTAT = RESU0,   
                 NUME_ORDRE = 1,
-                NOM_CHAM = 'SIEF_ELGA_DEPL',  
-                MAILLE = 'MA1',     
-                POINT=1,      
+                NOM_CHAM = 'SIGM_ELNO_DEPL',  
+                MAILLE = 'EMA1',     
+                NOEUD = 'NO2',      
                 NOM_CMP = 'SIYY',   
-                REFERENCE='NON_REGRESSION',VALE= 5.43569E+01,       
+                REFERENCE='NON_REGRESSION',VALE= 0.,       
                 ),
                 _F( 
                 RESULTAT = RESU0,   
                 NUME_ORDRE = 1,
-                NOM_CHAM = 'SIEF_ELGA_DEPL',  
-                MAILLE = 'MA1',     
-                POINT=1,      
-                NOM_CMP = 'SIXY',   
-                REFERENCE='NON_REGRESSION',VALE= 4.58504E+00,       
+                NOM_CHAM = 'SIGM_ELNO_DEPL',  
+                MAILLE = 'EMA1',     
+                NOEUD = 'NO2',      
+                NOM_CMP = 'SIZZ',   
+                REFERENCE='NON_REGRESSION',VALE= 0.,       
+                CRITERE = 'ABSOLU',    
+                ),
+                _F( 
+                RESULTAT = RESU0,   
+                NUME_ORDRE = 1,
+                NOM_CHAM = 'SIGM_ELNO_DEPL',  
+                MAILLE = 'EMA1',     
+                NOEUD = 'NO2', 
+                NOM_CMP = 'SIXY',     
+                REFERENCE='NON_REGRESSION',VALE= 0.,       
+                CRITERE = 'ABSOLU',       
                 ),
 
+# -- TEST SUR LES EFFORTS GENERALISES DANS LE SOLIDE 1, mailles MA1 et AMA1
 
                 _F( 
                 RESULTAT = RESU0,   
@@ -403,9 +634,9 @@ TEST_RESU(RESU=(
                 RESULTAT = RESU0,   
                 NUME_ORDRE = 1,
                 NOM_CHAM = 'SIEF_ELNO_ELGA',  
-                MAILLE = 'MA1',     
+                MAILLE = 'AMA1',     
                 NOEUD = 'NO1',      
-                NOM_CMP = 'NYY',   
+                NOM_CMP = 'NXX',   
                 REFERENCE='NON_REGRESSION',VALE= 5.6104E-01,       
                 ),
                 _F( 
@@ -421,12 +652,13 @@ TEST_RESU(RESU=(
                 RESULTAT = RESU0,   
                 NUME_ORDRE = 1,
                 NOM_CHAM = 'SIEF_ELNO_ELGA',  
-                MAILLE = 'MA1',     
+                MAILLE = 'AMA1',     
                 NOEUD = 'NO1',      
-                NOM_CMP = 'MYY',   
+                NOM_CMP = 'MXX',   
                 REFERENCE='NON_REGRESSION',VALE= -2.78516E-04,       
                 ),
 
+# -- TEST SUR LES FORCES NODALES
 
                 _F( 
                 RESULTAT = RESU0,   

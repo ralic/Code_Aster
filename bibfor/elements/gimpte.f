@@ -1,13 +1,13 @@
       SUBROUTINE GIMPTE ( RESU, OPTIOZ, RAYINF, RAYSUP, THETA, NOMNOE,
-     &                    DIR, ABSC, NBNO, FORMAT, FICHIE )
+     &                    DIR, ABSC, NBNO, FORMAT, UNIT )
       IMPLICIT   NONE
-      INTEGER             NBNO
+      INTEGER             NBNO, UNIT
       REAL*8              RAYINF(*), RAYSUP(*), THETA(*),DIR(*),ABSC(*)
       CHARACTER*8         RESU, NOMNOE(*)
-      CHARACTER*(*)       FORMAT, FICHIE, OPTIOZ
+      CHARACTER*(*)       FORMAT, OPTIOZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 19/11/98   AUTEUR CIBHHGB G.BERTRAND 
+C MODIF ELEMENTS  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -38,14 +38,13 @@ C IN : NBNO   : NOMBRE DE NOEUDS SUR LE FOND DE FISSURE
 C
 C ----------------------------------------------------------------------
 C
-      INTEGER      UNIT, IUNIFI, I, J
+      INTEGER      I, J
       REAL*8       RINF, RSUP, MODULE, NX, NY, NZ
       CHARACTER*1  BACS
       CHARACTER*9  IMPNOE
       CHARACTER*19 OPTION
 C     ------------------------------------------------------------------
 C
-      UNIT   = IUNIFI( FICHIE )
       BACS   = CHAR(92)
       OPTION = OPTIOZ
 C

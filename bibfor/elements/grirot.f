@@ -1,9 +1,9 @@
-      SUBROUTINE GRIROT ( ALPHA , BETA , ANGLL ,PGL , ROT , C, S)
+      SUBROUTINE GRIROT ( ALPHA , BETA ,PGL , ROT , C, S)
 C
       IMPLICIT REAL*8 (A-H,O-Z)
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 01/10/97   AUTEUR UFBHHLL C.CHAVANT 
+C MODIF ELEMENTS  DATE 15/06/2004   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,14 +26,13 @@ C     VERS LE REPERE LOCAL DE L'ELEMENT GRILLE
 C       ----------------------------------------------------------------
 C       IN   ALPHA  :  ANGLE AXE DE REFERENCE DANS LE PLAN TANGENT
 C            BETA   :  ANGLE AXE DE REFERENCE DANS LE PLAN TANGENT
-C            ANGLL  :  ANGLE 1IERE DIRECTION D'ARMATURES
 C            PGL    :  MATRICE PASSAGE REPERE GLOBAL/LOCAL ELEMENT
 C       OUT  ROT    :  MATRICE DE PASSAGE REPERE ORTHOTRO/LOCAL ELEMENT
 C       OUT  C , S  :  COSINUS DIRECTEURS DE LA 1IERE DIRECTION 
 C                      D'ORTHOTROPIE / LOCAL ELEMENT
 C     ------------------------------------------------------------------
       REAL*8        PGL(3,3) , ROT(3,3)
-      REAL*8        ALPHA , BETA , ANGLL , R8PREM
+      REAL*8        ALPHA , BETA , R8PREM
       REAL*8        DX , DY , DZ , NORM , PJDX , PJDY
       REAL*8        C , S , C2 , S2 , SC ,COR , SOR
 C     ------------------------------------------------------------------
@@ -57,10 +56,9 @@ C     ------------------------------------------------
 C
       PJDX = PJDX/NORM
       PJDY = PJDY/NORM
-      COR= COS(ANGLL)
-      SOR= SIN(ANGLL)
-      C  = COR*PJDX - SOR*PJDY
-      S  = SOR*PJDX + COR*PJDY
+ 
+      C  = PJDX
+      S  = PJDY
 C
       C2 = C * C
       S2 = S * S

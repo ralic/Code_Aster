@@ -1,6 +1,6 @@
-      SUBROUTINE JEIMPO ( CUNIT , NOMLU , PARM , MESS )
+      SUBROUTINE JEIMPO ( UNIT , NOMLU , PARM , MESS )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 04/11/2003   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF JEVEUX  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,7 +19,8 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CFT_726 CFT_720 CRP_18 CRP_4 CRS_508 CRS_512
       IMPLICIT REAL*8 (A-H,O-Z)
-      CHARACTER *(*)      CUNIT , NOMLU , PARM , MESS
+      INTEGER             UNIT
+      CHARACTER *(*)      NOMLU , PARM , MESS
 C     ------------------------------------------------------------------
       CHARACTER*1      K1ZON
       COMMON /KZONJE/  K1ZON(8)
@@ -101,7 +102,7 @@ C
           IADMI = IADM ( JIADM(ICLAOS) + IDATOS )
         ENDIF
         IDECI = 0
-        CALL JJIMPO ( CUNIT,IADMI, IDECI, 0, GENRI, TYPEI, LTYPI, LONOI,
+        CALL JJIMPO ( UNIT,IADMI, IDECI, 0, GENRI, TYPEI, LTYPI, LONOI,
      +                MESS , PARM)
         IF ( IADMEX .EQ. 0 ) THEN
           CALL JJLIDE ( 'JEIMPO' , NOML32 , INAT )
@@ -148,7 +149,7 @@ C
           ENDIF
           LONOI  = LONO( JLONO(ICLACO) + IXDESO ) * LTYPI
           IDECI  = 0
-          CALL JJIMPO ( CUNIT,IADMI, IDECI, -1, GENRI,TYPEI,LTYPI,LONOI,
+          CALL JJIMPO ( UNIT,IADMI, IDECI, -1, GENRI,TYPEI,LTYPI,LONOI,
      +                  MESS , PARM)
           IF ( IADMEX .EQ. 0 ) THEN
             CALL JJLIDE ( 'JEIMPO' , NOML32 , INAT )
@@ -177,7 +178,7 @@ C
               IBLONO = IADM ( JIADM(ICLACO) + IXLONO )
               LONOI  = ISZON ( JISZON + IBLONO - 1 + K ) * LTYPI
             ENDIF
-            CALL JJIMPO(CUNIT,IADMI,IDECI,K,GENRI,TYPEI,LTYPI,
+            CALL JJIMPO(UNIT,IADMI,IDECI,K,GENRI,TYPEI,LTYPI,
      +                  LONOI,MESS,PARM)
             NUMEC = K
             CALL JJLIDE ('JEIMPO' , NOML32//'$$XNUM  ' , 2)
@@ -221,7 +222,7 @@ C           ----------- COLLECTION CONTIGUE
              IADMI = IBDESO
              IDECI = (LTYPI*(ISZON(JISZON+IBLONO-1+IDATOC)-1)) 
            ENDIF
-           CALL JJIMPO(CUNIT,IADMI,IDECI,IDATOC,GENRI,TYPEI,LTYPI,LONOI,
+           CALL JJIMPO(UNIT,IADMI,IDECI,IDATOC,GENRI,TYPEI,LTYPI,LONOI,
      +                   MESS , PARM)
            IF ( IADMEX .EQ. 0 ) THEN
               CALL JJLIDE ( 'JEIMPO' , NOML32 , INAT )
@@ -253,7 +254,7 @@ C
              IBLONO = IADM ( JIADM(ICLACO) + IXLONO )
              LONOI  = ISZON ( JISZON + IBLONO + IDATOC - 1 ) * LTYPI
            ENDIF
-           CALL JJIMPO(CUNIT,IADMI,IDECI,IDATOC,GENRI,TYPEI,LTYPI,LONOI,
+           CALL JJIMPO(UNIT,IADMI,IDECI,IDATOC,GENRI,TYPEI,LTYPI,LONOI,
      +                   MESS , PARM)
            IF ( IADMEX .EQ. 0 ) THEN
              CALL JJLIDE ( 'JEIMPO' , NOML32 , INAT )

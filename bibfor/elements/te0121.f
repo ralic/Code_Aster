@@ -1,6 +1,6 @@
       SUBROUTINE TE0121(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 04/05/2004   AUTEUR SMICHEL S.MICHEL-PONNELLE 
+C MODIF ELEMENTS  DATE 15/06/2004   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -30,7 +30,7 @@ C ......................................................................
 
       CHARACTER*8 TYPMOD(2),NOMAIL
       INTEGER NNO,NNOB,NPG,IMATUU,LGPG,LGPG1,LGPG2
-      INTEGER IPOIDS,IVF,IDFDE,IGEOM,IMATE
+      INTEGER IPOIDS,IVF,IDFDE,IGEOM,IMATE,ICAMAS
       INTEGER IPOIDB,IRET
       INTEGER IVFB,IDFDEB
       INTEGER ITREF,ICONTM,IVARIM,ITEMPM,ITEMPP,IPHASM,IPHASP
@@ -42,6 +42,7 @@ C ......................................................................
       CHARACTER*8 LIELRF(10)
       LOGICAL DEFANE
       REAL*8 DFDI(27*3),DFDIB(27*3),DEF(6*27*3)
+      REAL*8 R8VIDE,ANGMAS(3),R8DGRD
 
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       INTEGER ZI
@@ -106,7 +107,16 @@ C - ON VERIFIE QUE PVARIMR ET PVARIPR ONT LE MEME NOMBRE DE V.I. :
       END IF
 
       LGPG = LGPG1
-
+C --- ORIENTATION DU MASSIF     
+      CALL TECACH('NNN','PCAMASS',1,ICAMAS,IRET)
+      CALL R8INIR(3, R8VIDE(), ANGMAS ,1)
+      IF (ICAMAS.GT.0) THEN
+        IF (ZR(ICAMAS).GT.0.D0) THEN
+         ANGMAS(1) = ZR(ICAMAS+1)*R8DGRD()
+         ANGMAS(2) = ZR(ICAMAS+2)*R8DGRD()
+         ANGMAS(3) = ZR(ICAMAS+3)*R8DGRD()
+        ENDIF
+      ENDIF
 
 C - VARIABLES DE COMMANDE
 
@@ -160,14 +170,18 @@ C - HYPO-ELASTICITE
 
         CALL NMPL3G(NNO,NNOB,NPG,IPOIDS,IVF,IVFB,IDFDE,IDFDEB,
      &              ZR(IGEOM),TYPMOD,NDIM,OPTION,ZI(IMATE),ZK16(ICOMPO),
-     &              LGPG,ZR(ICARCR),ZR(IINSTM),ZR(IINSTP),
-     &              ZR(ITEMPM),ZR(ITEMPP),ZR(IHYDRM),ZR(IHYDRP),
-     &              ZR(ISECHM),ZR(ISECHP),ZR(ISREF),NZ,ZR(IPHASM),
-     &              ZR(IPHASP),ZR(ITREF),ZR(IDPLGM),ZR(IDDPLG),
-     &              ZR(IDEFAM),ZR(IDEFAP),
-     &              DEFANE,ZR(ICONTM),ZR(IVARIM),DFDI,DEF,
-     &              DFDIB,ZR(ICONTP),ZR(IVARIP),ZR(IMATUU),ZR(IVECTU),
-     &              CODRET)
+     &              LGPG,ZR(ICARCR),
+     &              ZR(IINSTM),ZR(IINSTP),
+     &              ZR(ITEMPM),ZR(ITEMPP),ZR(ITREF),
+     &              ZR(IHYDRM),ZR(IHYDRP),
+     &              ZR(ISECHM),ZR(ISECHP),ZR(ISREF),
+     &              NZ,ZR(IPHASM),ZR(IPHASP),
+     &              ZR(IDPLGM),ZR(IDDPLG),
+     &              ANGMAS,
+     &              ZR(IDEFAM),ZR(IDEFAP),DEFANE,
+     &              ZR(ICONTM),ZR(IVARIM),
+     &              DFDI,DEF,DFDIB,ZR(ICONTP),ZR(IVARIP),
+     &              ZR(IMATUU),ZR(IVECTU),CODRET)
 
       ELSE
         CALL UTMESS('F','TE0121','COMPORTEMENT:'//ZK16(ICOMPO+2)//

@@ -1,12 +1,16 @@
-      SUBROUTINE NMASSG (ICODMA, COEFGR)
+      SUBROUTINE NMASSG (ICODMA,
+     &                   TYPPAR,INST,TEMP,
+     &                   COEFGR)
 C ----------------------------------------------------------------------
       IMPLICIT NONE
-      INTEGER ICODMA
-      INTEGER NCOEFG
-      PARAMETER (NCOEFG = 3)
-      REAL*8  COEFGR(NCOEFG)
+      INTEGER     ICODMA
+      CHARACTER*2 TYPPAR
+      REAL*8      INST,TEMP
+      INTEGER      NCOEFG
+      PARAMETER   (NCOEFG = 3)
+      REAL*8      COEFGR(NCOEFG)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 15/06/2004   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,18 +33,22 @@ C     POUR LES ELEMENTS DE POUTRE DANS LE CAS DES COMPORTEMENTS
 C     D'ASSEMBLAGE COMBUSTIBLE.
 C ----------------------------------------------------------------------
 C
-C IN :
-C     ICODMA : NUMERO DU MATERIAU CODE
-C
-C OUT :
-C     COEFGR : COEFFICIENTS CONSTANTS POUR LE GRANDISSEMENT DES TUBES
+C IN  ICODMA  : ADRESSE DU MATERIAU CODE
+C IN  TYPPAR  : TYPE DE PARAMETRE SCRUTE
+C               '  ' (DEUX BLANCS): PAS DE PARAMETRES
+C               'T ' (T/BLANC):     TEMPS MAIS PAS DE TEMPERATURE
+C               ' T' (BLANC/T):     TEMPERATURE MAIS PAS DE TEMPS
+C               'TT' (T/T):         TEMPERATURE ET TEMPS
+C IN  INST    : INSTANT CONSIDERE
+C IN  TEMP    : TEMPERATURE CONSIDEREE
+C OUT COEFGR  : COEFFICIENTS CONSTANTS POUR LE GRANDISSEMENT DES TUBES
 C
 C *************** DECLARATION DES VARIABLES LOCALES ********************
 C
       INTEGER      NBVAL, NBPAR
       PARAMETER    (NBVAL = 14)
       REAL*8       VALPAR(3),VALRES(NBVAL)
-      CHARACTER*2  BL2, FB2, CODRES(NBVAL)
+      CHARACTER*2  CODRES(NBVAL)
       CHARACTER*8  NOMPAR(3),NOMGRD(3)
 C
 C *********** FIN DES DECLARATIONS DES VARIABLES LOCALES ***************
@@ -54,36 +62,39 @@ C
 C --- INITIALISATIONS
 C
       CALL R8INIR (NCOEFG,0.D0,COEFGR,1)
-C
-      BL2 = '  '
-      FB2 = 'FM'
-C
       CALL R8INIR (NBVAL,0.D0,VALRES,1)
+
+C INIT DES PARAMETRES
+      NBPAR  = 0
+      NOMPAR(1) = ' '
+      NOMPAR(2) = ' '
+      IF (TYPPAR(1:1).EQ.'T') THEN
+       NBPAR = NBPAR +1
+       NOMPAR(1) = 'INST'
+       VALPAR(1) = INST
+      ENDIF
+      IF (TYPPAR(2:2).EQ.'T') THEN
+       NBPAR = NBPAR +1
+       NOMPAR(2) = 'TEMP'
+       VALPAR(2) = TEMP
+      ENDIF
 C
 C --- CARACTERISTIQUES D'UN ASSEMBLAGE COMBUSTIBLE
 C
 C
 C    - GRANDISSEMENT
 C
-         NBPAR  = 0
-         NOMPAR(1) = ' '
-         VALPAR(1) = 0.D0
+         CALL RCVALA(ICODMA,' ','GRAN_IRRA',NBPAR,NOMPAR,VALPAR,
+     &              1,NOMGRD(1),VALRES(1),CODRES(1), 'FM' )
 C
          CALL RCVALA(ICODMA,' ','GRAN_IRRA',NBPAR,NOMPAR,VALPAR,
-     &              1,NOMGRD(1),VALRES(1),CODRES(1), FB2 )
-         NBPAR  = 0
-         NOMPAR(1) = ' '
-         VALPAR(1) = 0.D0
+     &              1,NOMGRD(2),VALRES(2),CODRES(2), 'FM' )
 C
          CALL RCVALA(ICODMA,' ','GRAN_IRRA',NBPAR,NOMPAR,VALPAR,
-     &              1,NOMGRD(2),VALRES(2),CODRES(2), FB2 )
-         NBPAR  = 0
-         NOMPAR(1) = ' '
-         VALPAR(1) = 0.D0
-C
-         CALL RCVALA(ICODMA,' ','GRAN_IRRA',NBPAR,NOMPAR,VALPAR,
-     &              1,NOMGRD(3),VALRES(3),CODRES(3), BL2 )
-         IF (CODRES(3).NE.'OK') VALRES(3) = 1.D0
+     &              1,NOMGRD(3),VALRES(3),CODRES(3), '  ' )
+         IF (CODRES(3).NE.'OK') THEN 
+           VALRES(3) = 1.D0
+         ENDIF
          CALL R8COPY (NCOEFG,VALRES,1,COEFGR,1)
 C
       END

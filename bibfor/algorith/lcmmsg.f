@@ -1,7 +1,7 @@
         SUBROUTINE LCMMSG(NOMFAM,NBSYS,NUSYS,PGL,MS)
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/06/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 16/06/2004   AUTEUR JMBHH01 J.M.PROIX 
 C RESPONSABLE JMBHH01 J.M.PROIX
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -78,10 +78,10 @@ C HCP LATTICE, BASAL PLANE {001}={0001}
          L(3,2)=1.D0
          L(3,3)=0.D0
 C   N ET L DOIVENT ETRE UNITAIRES
-         DO 121 J=1,3
-         DO 121 K=1,3
-            L(J,K)=L(J,K)/SQRT(2.D0)
- 121     CONTINUE     
+      DO 120 J=1,3
+      DO 120 K=1,3
+         L(J,K)=L(J,K)/SQRT(2.D0)
+ 120  CONTINUE
       ELSE IF (NOMFAM.EQ.'OCTAEDRIQUE') THEN
 C FCC LATTICE      
          NBSYS=12
@@ -168,7 +168,7 @@ C   N ET L DOIVENT ETRE UNITAIRES
          CALL UTMESS('F','LCMMSG','PYRAMIDAL1 PAS ENCORE DISPONIBLE')
       ELSE IF (NOMFAM.EQ.'PYRAMIDAL2') THEN
          CALL UTMESS('F','LCMMSG','PYRAMIDAL2 PAS ENCORE DISPONIBLE')
-      ELSE IF (NOMFAM.EQ.'CUBIQUE') THEN
+      ELSE IF (NOMFAM.EQ.'CUBIQUE1') THEN
 C BCC LATTICE, {110} SLIP      
          NBSYS=12
          IF (NUSYS.EQ.0)  GOTO 9999
@@ -209,7 +209,6 @@ C BCC LATTICE, {110} SLIP
          N(12,2)=-1.D0
          N(12,3)=0.D0
          L(1,1)=1.D0
-C         L(1,2)=0.D0 ???
          L(1,2)=1.D0
          L(1,3)=-1.D0
          L(2,1)=1.D0
@@ -246,21 +245,109 @@ C         L(1,2)=0.D0 ???
          L(12,2)=1.D0
          L(12,3)=1.D0
 C   N ET L DOIVENT ETRE UNITAIRES
-      DO 122 J=1,12
-      DO 122 K=1,3
-         L(J,K)=L(J,K)/SQRT(2.D0)
-         N(J,K)=N(J,K)/SQRT(3.D0)
- 122   CONTINUE     
+      DO 123 J=1,12
+      DO 123 K=1,3
+         L(J,K)=L(J,K)/SQRT(3.D0)
+         N(J,K)=N(J,K)/SQRT(2.D0)
+ 123  CONTINUE
+         ELSE IF (NOMFAM.EQ.'CUBIQUE2') THEN
+C BCC LATTICE, {211} SLIP      
+         NBSYS=12
+         IF (NUSYS.EQ.0)  GOTO 9999
+         N(1,1)=2.D0
+         N(1,2)=-1.D0
+         N(1,3)=1.D0
+         N(2,1)=1.D0
+         N(2,2)=-2.D0
+         N(2,3)=-1.D0
+         N(3,1)=1.D0
+         N(3,2)=1.D0
+         N(3,3)=2.D0
+         N(4,1)=2.D0
+         N(4,2)=1.D0
+         N(4,3)=1.D0
+         N(5,1)=1.D0
+         N(5,2)=2.D0
+         N(5,3)=-1.D0
+         N(6,1)=1.D0
+         N(6,2)=-1.D0
+         N(6,3)=2.D0
+         N(7,1)=2.D0
+         N(7,2)=1.D0
+         N(7,3)=-1.D0
+         N(8,1)=1.D0
+         N(8,2)=2.D0
+         N(8,3)=1.D0
+         N(9,1)=1.D0
+         N(9,2)=-1.D0
+         N(9,3)=-2.D0
+         N(10,1)=2.D0
+         N(10,2)=-1.D0
+         N(10,3)=-1.D0
+         N(11,1)=1.D0
+         N(11,2)=-2.D0
+         N(11,3)=1.D0
+         N(12,1)=1.D0
+         N(12,2)=1.D0
+         N(12,3)=-2.D0
+         L(1,1)=1.D0
+         L(1,2)=1.D0
+         L(1,3)=-1.D0
+         L(2,1)=1.D0
+         L(2,2)=1.D0
+         L(2,3)=-1.D0
+         L(3,1)=1.D0
+         L(3,2)=1.D0
+         L(3,3)=-1.D0
+         L(4,1)=1.D0
+         L(4,2)=-1.D0
+         L(4,3)=-1.D0
+         L(5,1)=1.D0
+         L(5,2)=-1.D0
+         L(5,3)=-1.D0
+         L(6,1)=1.D0
+         L(6,2)=-1.D0
+         L(6,3)=-1.D0
+         L(7,1)=1.D0
+         L(7,2)=-1.D0
+         L(7,3)=1.D0
+         L(8,1)=1.D0
+         L(8,2)=-1.D0
+         L(8,3)=1.D0
+         L(9,1)=1.D0
+         L(9,2)=-1.D0
+         L(9,3)=1.D0
+         L(10,1)=1.D0
+         L(10,2)=1.D0
+         L(10,3)=1.D0
+         L(11,1)=1.D0
+         L(11,2)=1.D0
+         L(11,3)=1.D0
+         L(12,1)=1.D0
+         L(12,2)=1.D0
+         L(12,3)=1.D0
+C   N ET L DOIVENT ETRE UNITAIRES
+      DO 124 J=1,12
+      DO 124 K=1,3
+         L(J,K)=L(J,K)/SQRT(3.D0)
+         N(J,K)=N(J,K)/2.D0
+ 124  CONTINUE
       ELSE IF (NOMFAM.EQ.'MACLAGE') THEN
 C FCC LATTICE
          NBSYS=1
          IF (NUSYS.EQ.0)  GOTO 9999
-         N(1,1)=1.D0/SQRT(3.D0)
-         N(1,2)=1.D0/SQRT(3.D0)
-         N(1,3)=1.D0/SQRT(3.D0)
-         L(1,1)=1.D0/2.D0
-         L(1,2)=1.D0/2.D0
-         L(1,3)=-2.D0/2.D0
+         N(1,1)=1.D0
+         N(1,2)=1.D0
+         N(1,3)=1.D0
+         L(1,1)=1.D0
+         L(1,2)=1.D0
+         L(1,3)=-2.D0
+C   N ET L DOIVENT ETRE UNITAIRES
+      DO 125 J=1,1
+      DO 125 K=1,3
+         L(J,K)=L(J,K)/2.D0
+         N(J,K)=N(J,K)/SQRT(3.D0)
+ 125  CONTINUE
       ELSE IF (NOMFAM.EQ.'JOINT_GRAIN') THEN
          CALL UTMESS('F','LCMMSG','JOINT_GRAIN PAS ENCORE DISPONIBLE')
       ELSE IF (NOMFAM.EQ.'RL') THEN

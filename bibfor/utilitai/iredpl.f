@@ -1,9 +1,9 @@
-      SUBROUTINE IREDPL ( MACR,  FICH ,VERSIO)
+      SUBROUTINE IREDPL ( MACR,  IFC ,VERSIO)
       IMPLICIT NONE
-      CHARACTER*(*)       MACR, FICH
+      CHARACTER*(*)       MACR
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
+C MODIF UTILITAI  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -58,13 +58,11 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER NBNOEU, NBMODT, NBMODE, NBMODS
       REAL*8 ZERO
       LOGICAL      F,LMOD,LBID
-      INTEGER IUNIFI,VERSIO
+      INTEGER  VERSIO
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ ( )
-C      FICH='IDEAS'
 C
-      IFC = IUNIFI(FICH)
       ZERO = 0.D0
       IERO = 0
       CECR = 'L'
@@ -181,7 +179,7 @@ C         CALL JENONU(JEXNOM(MANONO,ZK16(JNOEU+I-1)(1:8)),INOE)
           WRITE (IFC,'(40A2)') 'PS', 'I_', 'A '
           WRITE (IFC,'(A)') '    -1'
           TITRE = 'MODE STATIQUE: '//K10B//' '//CMP//'+++++++'
-          CALL IRECRI  ( BASEMO,NOSIMP,NOPASE,'IDEAS',FICH,TITRE,
+          CALL IRECRI  ( BASEMO,NOSIMP,NOPASE,'IDEAS',IFC,TITRE,
      >                  LBID,1,'DEPL',IERO,K8B, 1,IORD,
      >                  .TRUE.,B,IERO,B,CECR,F,IERO,
      >                  IBID,IERO,IBID,IERO,K8B,
@@ -194,7 +192,7 @@ C         CALL JENONU(JEXNOM(MANONO,ZK16(JNOEU+I-1)(1:8)),INOE)
           WRITE (IFC,'(40A2)') 'PH', 'I_', 'A '
           WRITE (IFC,'(A)') '    -1'
           TITRE = 'MODE DYNAMIQUE'
-          CALL IRECRI ( BASEMO,NOSIMP,NOPASE,'IDEAS',FICH,TITRE,
+          CALL IRECRI ( BASEMO,NOSIMP,NOPASE,'IDEAS',IFC,TITRE,
      >                  LBID,1,'DEPL',IERO,K8B, 1,IORD,
      >                  .TRUE.,B,IERO,B,CECR,F,IERO,
      >                  IBID,IERO,IBID,IERO,K8B,

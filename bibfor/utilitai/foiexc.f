@@ -1,10 +1,10 @@
-      SUBROUTINE FOIEXC(LISFON,FICHIE,IND,FONINS)
+      SUBROUTINE FOIEXC(LISFON,IUL,IND,FONINS)
       IMPLICIT REAL*8 (A-H,O-Z)
-      CHARACTER*(*)     LISFON,FICHIE    ,FONINS
-      INTEGER                          IND
+      CHARACTER*(*)     LISFON,        FONINS
+      INTEGER                  IUL,IND
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 31/03/2003   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF UTILITAI  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,7 +44,6 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
       INTEGER       LEXT, LVT, LRES
       INTEGER       NBVAL, NBVT, NCOL
-      CHARACTER*80  FILE
       CHARACTER*8   K8B
       CHARACTER*16  NOMCMD
       CHARACTER*19  NOMFON, LISTR
@@ -53,14 +52,9 @@ C
       CHARACTER*24  NOMPAR, NOMRES, TITR
 C     ------------------------------------------------------------------
       CALL JEMARQ()
-      FILE = FICHIE
-      IUL  = IUNIFI(FILE)
       IF ( IUL .LE. 0 ) THEN
          CALL GETRES(K8B,K8B,NOMCMD)
-         LG = MAX(1,LXLGUT(FILE))
-         CALL UTMESS('A',NOMCMD//' (ERREUR 01)',
-     +                   'LE FICHIER "'//FILE(1:LG)//'" N''EST RELIE '//
-     +                   'A AUCUNE UNITE LOGIQUE.')
+         CALL UTMESS('A',NOMCMD,'UNITE LOGIQUE INEXISTANTE')
          GOTO 9999
       ENDIF
       LISTR = FONINS

@@ -5,7 +5,7 @@
         IMPLICIT   NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 16/06/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,6 +53,7 @@ C
       IF  ( LOI(1:8)  .EQ. 'CHABOCHE'    .OR.
      1      LOI(1:5)  .EQ. 'LMARC'       .OR.
      1      LOI(1:9)  .EQ. 'VISCOCHAB'   .OR.
+     1      LOI(1:8)  .EQ. 'MONOCRIS'    .OR.
      1      LOI(1:4)  .EQ. 'OHNO'        .OR.
      1      LOI(1:7)  .EQ. 'NADAI_B'     .OR.
      1      LOI(1:6)  .EQ. 'LAIGLE'          ) THEN

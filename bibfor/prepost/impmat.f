@@ -1,8 +1,8 @@
-      SUBROUTINE IMPMAT ( FICHIE, NOMSDZ, TYPSDZ, GRAINZ, OPTIOZ, NBNO,
+      SUBROUTINE IMPMAT ( IFM, NOMSDZ, TYPSDZ, GRAINZ, OPTIOZ, NBNO,
      +                    LISNOZ, NBMA, LISMAZ, NBCMP, LISCMZ, NBCHIF,
      +                    EPS )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 07/04/98   AUTEUR CIBHHGB G.BERTRAND 
+C MODIF PREPOST  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -27,8 +27,7 @@ C                DANS LE FICHIER DE NOM FICHIER.
 C                
 C
 C   ARGUMENT        E/S  TYPE         ROLE
-C    FICHIE          IN    K*     NOM DU FICHIER OU L'ON IMPRIME
-C                                 LA S.D,
+C    IFM             IN    IS     UNITE LOGIQUE D'IMPRESSION DE LA S.D,
 C    NOMSDZ          IN    K*     NOM DE LA S.D.
 C    TYPSDZ          IN    K*     TYPE DE S.D.
 C                                 = 'MATR_ASSE'
@@ -113,7 +112,7 @@ C ----- COMMUNS NORMALISES  JEVEUX
       COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
       CHARACTER*32     JEXNUM, JEXNOM
 C -----  ARGUMENTS
-      CHARACTER*(*) FICHIE,NOMSDZ,TYPSDZ,GRAINZ,OPTIOZ,LISNOZ,LISCMZ
+      CHARACTER*(*) NOMSDZ,TYPSDZ,GRAINZ,OPTIOZ,LISNOZ,LISCMZ
       CHARACTER*(*) LISMAZ
 C -----  VARIABLES LOCALES
       CHARACTER*2   KLONLG , KLONLS
@@ -131,10 +130,6 @@ C
       NOMSD  = NOMSDZ
       RESU   = NOMSDZ
       GRAIN  = GRAINZ
-C
-C --- UNITE LOGIQUE DU FICHIER D'IMPRESSION :
-C     -------------------------------------
-      IFM = IUNIFI(FICHIE)
 C
 C --- LONGUEUR UTILE DE LA CHAINE DE CARACTERES NOMSD :
 C     -----------------------------------------------
@@ -159,13 +154,13 @@ C     ----------------------------
       ENDIF
 C
       IF (TYPSD.EQ.'MATR_ASSE') THEN
-        CALL IMPMTR ( FICHIE, NOMSDZ, GRAINZ, OPTIOZ, NBNO,
+        CALL IMPMTR ( IFM, NOMSDZ, GRAINZ, OPTIOZ, NBNO,
      +                LISNOZ, NBCMP, LISCMZ, NBCHIF, EPS )
       ELSEIF (TYPSD.EQ.'MATR_ELEM') THEN
-        CALL IMPMEL ( FICHIE, NOMSDZ, GRAINZ, NBMA, LISMAZ, 
+        CALL IMPMEL ( IFM, NOMSDZ, GRAINZ, NBMA, LISMAZ, 
      +                NBCMP, LISCMZ,NBCHIF )
       ELSEIF (TYPSD.EQ.'VECT_ELEM') THEN
-        CALL IMPVEL ( FICHIE, NOMSDZ, GRAINZ, NBMA, LISMAZ, 
+        CALL IMPVEL ( IFM, NOMSDZ, GRAINZ, NBMA, LISMAZ, 
      +                NBCMP, LISCMZ,NBCHIF )
       ELSEIF (TYPSD.EQ.'RESU_ELEM') THEN
 C
@@ -181,13 +176,13 @@ C
 C ---    CAS OU IL S'AGIT D'UN RESUELEM D'UN MATR_ELEM :
 C        ---------------------------------------------
         IF (TYPSYM.EQ.'SYMETRI'.OR.TYPSYM.EQ.'NON_SYM') THEN
-            CALL IMPMEL ( FICHIE, '&&IMPMAT'//'.LISTE_RESU', GRAINZ, 
+            CALL IMPMEL ( IFM, '&&IMPMAT'//'.LISTE_RESU', GRAINZ, 
      +                   NBMA, LISMAZ,  NBCMP, LISCMZ, NBCHIF )
 C
 C ---    CAS OU IL S'AGIT D'UN RESUELEM D'UN VECT_ELEM :
 C        ---------------------------------------------
         ELSE
-            CALL IMPVEL ( FICHIE, '&&IMPMAT'//'.LISTE_RESU', GRAINZ, 
+            CALL IMPVEL ( IFM, '&&IMPMAT'//'.LISTE_RESU', GRAINZ, 
      +                   NBMA, LISMAZ,  NBCMP, LISCMZ, NBCHIF )
         ENDIF
 C

@@ -1,7 +1,7 @@
-      SUBROUTINE IMVELN ( FICHIE, NOMSDZ, NBCMP, LISCMZ,
+      SUBROUTINE IMVELN ( IFM, NOMSDZ, NBCMP, LISCMZ,
      +                    NBELEM, LISMAZ, NBCHIF)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 23/06/99   AUTEUR CIBHHGB G.BERTRAND 
+C MODIF PREPOST  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -28,7 +28,7 @@ C                LE GRAIN DE L'IMPRESSION EST 'NOEUD'
 C
 C
 C   ARGUMENT        E/S  TYPE         ROLE
-C    FICHIE          IN    K*     NOM DU FICHIER OU L'ON IMPRIME
+C    IFM             IN    I     UNITE LOGIQUE D'IMPRESSION
 C                                 LE VECT_ELEM,
 C    NOMSDZ          IN    K*     NOM DU VECT_ELEM
 C    NBCMP           IN    I     NOMBRE DE COMPOSANTES DE LA LISTE
@@ -59,7 +59,7 @@ C ----- COMMUNS NORMALISES  JEVEUX
       COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
       CHARACTER*32     JEXNUM, JEXNOM
 C -----  ARGUMENTS
-      CHARACTER*(*) FICHIE, NOMSDZ, LISMAZ, LISCMZ
+      CHARACTER*(*) NOMSDZ, LISMAZ, LISCMZ
 C -----  VARIABLES LOCALES
       PARAMETER     (NBNOMX = 27)
       PARAMETER     (NBVAIM = 1323)
@@ -101,10 +101,6 @@ C
       DO 1 I =1, NBECMX
         DG(I) = 0
  1    CONTINUE
-C
-C --- UNITE LOGIQUE DU FICHIER D'IMPRESSION :
-C     -------------------------------------
-      IFM = IUNIFI(FICHIE)
 C
 C --- RECUPERATION DES NOEUDS POUR-LESQUELS ON VEUT L'IMPRESSION
 C --- DU VECTEUR :
@@ -587,7 +583,7 @@ C              ------------------------------
      +                    ZR(IDVALE), ZI(IDIDCM),
      +                    ZI(IDIDNO),ZI(IDNUNO),ZK8(IDNCM2),
      +                    ZR(IDNVAL),ZI(IDNBCM), NCMPMM,
-     +                    NBCHIF, FICHIE)
+     +                    NBCHIF, IFM)
 C
  80        CONTINUE
           ENDIF
@@ -810,7 +806,7 @@ C              ------------------------------
      +                    ZC(IDVALE), ZI(IDIDCM),
      +                    ZI(IDIDNO),ZI(IDNUNO),ZK8(IDNCM2),
      +                    ZC(IDNVAL),ZI(IDNBCM), NCMPMM,
-     +                    NBCHIF, FICHIE)
+     +                    NBCHIF, IFM)
 C
  200       CONTINUE
           ENDIF

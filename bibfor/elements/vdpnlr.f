@@ -1,5 +1,5 @@
       SUBROUTINE VDPNLR ( OPTION , NOMTE , CODRET )
-C MODIF ELEMENTS  DATE 04/05/2004   AUTEUR SMICHEL S.MICHEL-PONNELLE 
+C MODIF ELEMENTS  DATE 15/06/2004   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -185,7 +185,7 @@ C---- LES REALS
       INTEGER IMATE, ICARCR, IINSTM, IINSTP, ITREF, IVARIM , IER
       INTEGER NBVARI, ITAB(8), LGPG, NZ, K2 ,ITABM(8) ,ITABP(8)
       INTEGER NBV , NBPAR,IRET
-      REAL * 8 RAC2
+      REAL * 8 RAC2,ANGMAS(3)
       REAL * 8 HYDRGM, HYDRGP, SECHGM, SREF, SECHGP, LC
       REAL * 8 VALRES ( 26 ), VALPAR, VALPU ( 2 )
       REAL * 8 TMPG1 , TMPG2 , TMPG3 , TPPG1 , TPPG2 , TPPG3
@@ -831,13 +831,25 @@ C
  636          CONTINUE
               SIGN(4) = ZR( ICONTM - 1 + ( KPGS - 1 ) * 6 + 4 )*RAC2
 
-
-            CALL NMCOMP(2,TYPMOD,ZI(IMATE),ZK16(ICOMPO),ZR(ICARCR),
-     &                  ZR(IINSTM),ZR(IINSTP),TMC,TPC,ZR(ITREF),HYDRGM,
-     &                  HYDRGP,SECHGM,SECHGP,SREF,EPS2D,DEPS2D,SIGN,
-     &                  ZR(IVARIM+K2),OPTION,EPSANM,EPSANP,NZ,PHASM,
-     &                  PHASP,LC,SIGMA,ZR(IVARIP+K2),DSIDEP,COD,R8VIDE()
-     &,R8VIDE())
+C - LOI DE COMPORTEMENT
+C --- ANGLE DU MOT_CLEF MASSIF (AFFE_CARA_ELEM)
+C --- INITIALISE A R8VIDE (ON NE S'EN SERT PAS)
+              CALL R8INIR(3,  R8VIDE(), ANGMAS ,1)
+C -    APPEL A LA LOI DE COMPORTEMENT
+              CALL NMCOMP(2,TYPMOD,ZI(IMATE),ZK16(ICOMPO),ZR(ICARCR),
+     &                    ZR(IINSTM),ZR(IINSTP),
+     &                    TMC,TPC,ZR(ITREF),
+     &                    HYDRGM,HYDRGP,
+     &                    SECHGM,SECHGP,SREF,
+     &                    EPS2D,DEPS2D,
+     &                    SIGN,ZR(IVARIM+K2),
+     &                    OPTION,
+     &                    EPSANM,EPSANP,
+     &                    NZ,PHASM,PHASP,
+     &                    R8VIDE(),R8VIDE(),
+     &                    ANGMAS,
+     &                    LC,
+     &                    SIGMA,ZR(IVARIP+K2),DSIDEP,COD)
 
 C           COD=1 : ECHEC INTEGRATION LOI DE COMPORTEMENT
 C           COD=3 : C_PLAN DEBORST SIGZZ NON NUL

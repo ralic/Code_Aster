@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 10/05/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF UTILITAI  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,6 +39,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       INTEGER       NSST,LEXT,IRET
+      LOGICAL       ULEXIS
       CHARACTER*4   KIOCC, PARTIE
       CHARACTER*8   K8B, NOPARA, NOMTAB, INTITU, NOEUD, SST, BASEMO,
      +              RAIDE, NOMGR, NOMA, INTERP, PROLGD
@@ -62,18 +63,24 @@ C
       IMPR = 3
 C
 C     --- FORMAT ET FICHIER DE SORTIE DEMANDE ---
-      CALL GETVTX(' ','FICHIER',1,1,1,FILE  ,N)
-      FORMAT = FILE
-      CALL GETVTX(' ','FORMAT' ,1,1,1,FORMAT,N)
-
-      
-      IUL = IUNIFI(FILE)
-      IF ( IUL .LE. 0 ) THEN
-         LG = MAX(1,LXLGUT(FILE))
-         CALL UTMESS('A',NOMCMD//' (ERREUR 01)',
-     +                   'LE FICHIER "'//FILE(1:LG)//'" N''EST RELIE '//
-     +                   'A AUCUNE UNITE LOGIQUE.')
-         GOTO 9999
+      CALL GETVTX ( ' ', 'FORMAT' , 1,1,1, FORMAT, N )
+C
+      IUL = 0
+      FILE = ' '
+      CALL GETVIS ( ' ', 'UNITE'  , 1,1,1, IUL , N )
+      CALL GETVTX ( ' ', 'FICHIER', 1,1,1, FILE, N )
+      IF ( N .NE. 0 ) THEN
+         CALL UTMESS('A','IMPR_COURBE',
+     +               'LE MOT CLE "FICHIER" EST APPELE A DISPARAITRE.'//
+     +               ' UTILISER LE MOT CLE "UNITE"')
+         IUL = IUNIFI( FILE )
+      ENDIF
+      IF ( IUL .EQ. 0 )  THEN
+         IF ( FILE .EQ. ' ' )  FILE = FORMAT
+         IUL = IUNIFI( FILE )
+      ENDIF
+      IF ( .NOT. ULEXIS( IUL ) ) THEN
+         CALL ULOPEN ( IUL, ' ', FILE, 'NEW', 'O' )
       ENDIF
 C
       IF ( FORMAT .EQ. 'EXCEL' ) THEN
@@ -319,7 +326,7 @@ C        ON STOCKE LES NOMS DE FONCTIONS DE L'UTILISATEUR
          ENDIF
 C
          IF     ( FORMAT .EQ. 'RESULTAT' ) THEN
-            CALL FOIMPR(NOMFON,IMPR,FILE,IND,LISTR)
+            CALL FOIMPR(NOMFON,IMPR,IUL,IND,LISTR)
          ELSEIF ( FORMAT .EQ. 'COMMANDE' ) THEN
             CALL FOECCF(NOMFON,IUL,IND)
          ELSEIF ( FORMAT .EQ. 'SEISME'   ) THEN
@@ -355,7 +362,7 @@ C       FORMAT EXCEL, ON IMPRIME TOUTES LES FONCTIONS EN UNE SEULE FOIS
 C        DO 333 IC=1,NBCOUR
 C          WRITE(6,*) 'IMPR_COURBE :',ZK24(LEXT+IC-1)
 C333     CONTINUE
-        CALL FOIEXC(LISFON,FILE,IND,LISTR)
+        CALL FOIEXC(LISFON,IUL,IND,LISTR)
         CALL JEDETR('&&OP0141.TABEXCEL')
         CALL JEDETC('V','&&COURBE',1)
         CALL JEDETC('V','&&PARTIE',1)

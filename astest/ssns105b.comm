@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 15/06/2004   AUTEUR MABBAS M.ABBAS 
 # TITRE TEST NAPPE D'ARMATURE (MODELISATION GRILLE_MEMBRANE)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -83,19 +83,13 @@ LEMOD=AFFE_MODELE(    MAILLAGE=MAILTOT,     VERIF='MAILLE',
 #
 LACAR=AFFE_CARA_ELEM(    MODELE=LEMOD,
                        GRILLE=(_F( GROUP_MA = 'GEOB',
-                                SECTION_L = .1,
+                                SECTION = .1,
                                 ANGL_REP = (0., 0.0,),
-                                ANGL_L = 0.,
-                                POUR_CENT_L = 1.,
-                                POUR_CENT_T = 0.,
                                 EXCENTREMENT = 0.0,
                               ),
                               _F( GROUP_MA = 'GEOBB',
-                                SECTION_L = .1,
+                                SECTION = .1,
                                 ANGL_REP = (90.0, 0.0,),
-                                ANGL_L = 0.,
-                                POUR_CENT_L = 1.,
-                                POUR_CENT_T = 0.,
                                 EXCENTREMENT = 0.0,
                               ))
                         )
@@ -171,9 +165,6 @@ LEDEP=STAT_NON_LINE(
 LEDEP=CALC_NO( reuse = LEDEP,
                  OPTION     = ('FORC_NODA',),
                  RESULTAT   = LEDEP,
-                 MODELE     = LEMOD,
-                 CHAM_MATER = MATAF,
-                 CARA_ELEM  = LACAR
                )
 
 # 

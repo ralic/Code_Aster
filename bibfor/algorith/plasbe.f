@@ -6,7 +6,7 @@
         IMPLICIT REAL*8 (A-H,O-Z)
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 04/05/2004   AUTEUR SMICHEL S.MICHEL-PONNELLE 
+C MODIF ALGORITH  DATE 16/06/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -214,7 +214,7 @@ C
         IRTETI = 0
         ITMAX    = INT(CRIT(1))
         TOLER    =     CRIT(3)
-        LOI      = COMP(1)
+C        LOI      = COMP(1)
         MOD      = TYPMOD(1)
         NSEUIL   = 0
         NSEUI1   = 0
@@ -449,7 +449,7 @@ C    1                    TEMPD, TIMED, DEPS,  EPSD, SIGD ,  VIND, DSDE)
 C   ------> ELASTOPLASTICITE ==> TYPMA = 'VITESSE '
 C   ------> VISCOPLASTICITE  ==> TYPMA = 'COHERENT '==> CALCUL ELASTIQUE
                 IF     ( TYPMA .EQ. 'COHERENT' ) THEN
-                CALL LCJELA ( LOI  , MOD ,  NMAT, MATERD,VIND, DSDE)
+C PAS UTILISE ICI  CALL LCJELA ( LOI  , MOD ,  NMAT, MATERD,VIND, DSDE)
                 ELSEIF ( TYPMA .EQ. 'VITESSE ' ) THEN
                CALL BETJPL (MOD, NMAT, MATERD, SIGD,
      1                      VIND, ELGEOM, DSDE)
@@ -465,7 +465,7 @@ C    1                    TEMPF, TIMEF, DEPS,  EPSD, SIGF ,  VINF, DSDE)
 C   ------> ELASTOPLASTICITE ==>  TYPMA = 'VITESSE '
 C   ------> VISCOPLASTICITE  ==>  TYPMA = 'COHERENT '
                 IF     ( TYPMA .EQ. 'COHERENT' ) THEN
-                CALL LCJPLC ( LOI  , MOD ,  NMAT, MATERD, DSDE)
+C PAS UTILISE ICI  CALL LCJPLC ( LOI  , MOD ,  NMAT, MATERD, DSDE)
                 ELSEIF ( TYPMA .EQ. 'VITESSE ' ) THEN
                CALL BETJPL (MOD, NMAT, MATERD, SIGF,
      1                      VINF, ELGEOM, DSDE)

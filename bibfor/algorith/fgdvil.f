@@ -2,7 +2,7 @@
      &                  F1,FP1,FS1,F2,
      &                  FP2,FS2,G1,DG1DS,G2,DG2DS)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 15/03/2004   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 15/06/2004   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -54,15 +54,7 @@ C            EV = F1(TPS)*G1(S,T) + F2(TPS)*G2(S,T)
 C
 C      ET LEURS DERIVEES F'1,F"1,DG1/DSIGMA,F'2,F"2,DG2/DSIGMA
 C---------------------------------------------------------------
-CFIN
 C
-      REAL*8 R3R2,NRJACT
-C
-C----CONSTANTES
-      R3R2 = SQRT(3.D0/2.D0)
-      R3R2 = 1.D0
-      
-      NRJACT = ENER
 C
 C----CALCUL DE F1,FP1,FS1---------------------------------------
 C
@@ -76,8 +68,7 @@ C
       FS1= -(CTPS*FLUPHI*CTPS*FLUPHI) / 
      &            ((1+CTPS*TPS*FLUPHI)*(1+CTPS*TPS*FLUPHI))
       FS1 = -FP1*FP1
-      
-      
+        
 C
 C----CALCUL DE F2,FP2,FS2---------------------------------------
 C
@@ -87,13 +78,13 @@ C
 C
 C----CALCUL DE G1,DG1DS-----------------------------------------
 C
-      G1 = A*EXP(-NRJACT/(TEMP+273.15D0))*S*R3R2
-      DG1DS = A*EXP(-NRJACT/(TEMP+273.15D0))*R3R2
+      G1 = A*EXP(-ENER/(TEMP+273.15D0))*S
+      DG1DS = A*EXP(-ENER/(TEMP+273.15D0))
 C
 C----CALCUL DE G2,DG2DS-----------------------------------------
 C
-      G2 = B*EXP(-NRJACT/(TEMP+273.15D0))*S*R3R2
-      DG2DS = B*EXP(-NRJACT/(TEMP+273.15D0))*R3R2      
+      G2 = B*EXP(-ENER/(TEMP+273.15D0))*S
+      DG2DS = B*EXP(-ENER/(TEMP+273.15D0))      
 
 299   CONTINUE
       END

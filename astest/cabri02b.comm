@@ -1,0 +1,417 @@
+# MODIF  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
+# RESPONSABLE MABBAS M.ABBAS
+#
+# TITRE TEST DE LA MACRO DE CALCUL DE BRIDES CABRI
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+
+
+DEBUT(CODE=_F(  NOM = 'CABRI02B',NIV_PUB_WEB='INTRANET'));
+
+# Maillage de la bride
+MA = MACR_CABRI_MAIL(EXEC_MAILLAGE=_F(LOGICIEL='GIBI2000',),
+                       RAFF_MAILLAGE = _F(NB_RADIAL = 4,
+                                      NB_CIRCONF = 3,
+                                       NB_VERTICAL = 3,
+                                       NB_ALESAGE = 10,
+                                      ),
+                       GEOM_BRID = _F(NORME = 'NON',
+                          TUBU_D_EXT     = 88.9,
+                          TUBU_H         = 50.,
+                          BRID_D_EXT     = 267.,
+                          BRID_D_INT     = 66.7,
+                          BRID_H         = 51.2,
+                          BRID_D_CONGE   = 133.,
+                          BRID_R_CONGE   = 10.,
+                          BRID_D_EPAUL   = 168.,
+                          BRID_H_EPAUL   = 6,
+                          BRID_D_ALESAG  = 31.8,
+                          BRID_P_ALESAG  = 203.2,
+                          BRID_H_ALESAG  = 47.8,
+                          GOUJ_N_GOUJON  = 8,
+                          GOUJ_D_GOUJON  = 29.9,
+                          GOUJ_E_FILET   = 3.8,
+                          GOUJ_D_RONDEL  = 60.5,
+                          GOUJ_E_RONDEL  = 4.,
+                          GOUJ_D_ECROU   = 53.1,
+                          GOUJ_E_ECROU   = 30.,
+                          ETAN_E_JOINT   = 8.,
+                                      ),
+                       VERI_MAIL = _F(VERIF = 'NON',),
+                        IMPRESSION=_F(FORMAT='IDEAS'),
+                               );
+
+# DEFINITION DES DONNEES MATERIAUX
+# Temperature initiale, assemblage libre de contraintes
+TEMP_INI=25.0
+
+# Temperature moyenne du transitoire pour calcul de lambda et rhoCp
+TEMP_MOY=170.0
+
+INCLUDE_MATERIAU(NOM_AFNOR='Z2CN1810',
+                 UNITE_LONGUEUR='MM',
+                 TYPE_MODELE='REF',
+                 VARIANTE='A',
+                 TYPE_VALE='NOMI',
+                 NOM_MATER='MA_BRI',
+                 EXTRACTION=_F(COMPOR='THER',
+                               TEMP_EVAL=TEMP_MOY,),);
+
+INCLUDE_MATERIAU(NOM_AFNOR='Z12CN13',
+                 UNITE_LONGUEUR='MM',
+                 TYPE_MODELE='REF',
+                 VARIANTE='A',
+                 TYPE_VALE='NOMI',
+                 NOM_MATER='MA_ECR',
+                 EXTRACTION=_F(COMPOR='THER',
+                               TEMP_EVAL=TEMP_MOY,),);
+
+INCLUDE_MATERIAU(NOM_AFNOR='Z12CN13',
+                 UNITE_LONGUEUR='MM',
+                 TYPE_MODELE='REF',
+                 VARIANTE='A',
+                 TYPE_VALE='NOMI',
+                 NOM_MATER='MA_RON',
+                 EXTRACTION=_F(COMPOR='THER',
+                               TEMP_EVAL=TEMP_MOY,),);
+
+INCLUDE_MATERIAU(NOM_AFNOR='Z2CN1810',
+                 UNITE_LONGUEUR='MM',
+                 TYPE_MODELE='REF',
+                 VARIANTE='A',
+                 TYPE_VALE='NOMI',
+                 NOM_MATER='MA_GOU',
+                 EXTRACTION=_F(COMPOR='THER',
+                               TEMP_EVAL=TEMP_MOY,),);
+
+INCLUDE_MATERIAU(NOM_AFNOR='Z6CND1712',
+                 UNITE_LONGUEUR='MM',
+                 TYPE_MODELE='REF',
+                 VARIANTE='A',
+                 TYPE_VALE='NOMI',
+                 NOM_MATER='MA_LIM',
+                 EXTRACTION=_F(COMPOR='THER',
+                               TEMP_EVAL=TEMP_MOY,),);
+
+
+# Definition des parametres thermiques
+T_INT=DEFI_FONCTION(NOM_PARA='INST',
+                    VALE=(0.0,TEMP_INI,1.0,TEMP_INI,11.0,60.0,20.0,60.0,),
+                    PROL_DROITE='CONSTANT',
+                    PROL_GAUCHE='CONSTANT',);
+
+H_INT=DEFI_FONCTION(NOM_PARA='INST',
+                    VALE=(0.0,0.016,20.0,0.016,),
+                    PROL_DROITE='CONSTANT',
+                    PROL_GAUCHE='CONSTANT',);
+
+T_EXT=DEFI_FONCTION(NOM_PARA='INST',
+                    VALE=(0.0,20.0,20.0,20.0,),
+                    PROL_DROITE='CONSTANT',
+                    PROL_GAUCHE='CONSTANT',);
+
+H_EXT=DEFI_FONCTION(NOM_PARA='INST',
+                    VALE=(0.0,1e-05,20.0,1e-05,),
+                    PROL_DROITE='CONSTANT',
+                    PROL_GAUCHE='CONSTANT',);
+# Pretensionnement
+# Valeur cible de Sizz : 30 MPa
+# Valeur de l'allongement a determiner par tatonnements
+F_PRET=DEFI_FONCTION(NOM_PARA='INST',
+                     VALE=(0.0,0.0,1.0,-0.02,),
+                     PROL_DROITE='CONSTANT',
+                     PROL_GAUCHE='CONSTANT',);
+
+# Pression due au fluide
+PRE_INT=DEFI_FONCTION(NOM_PARA='INST',
+                      VALE=(0.0,0.0,1.0,0.0,11.0,16.0,),
+                      PROL_DROITE='CONSTANT',
+                      PROL_GAUCHE='CONSTANT',);
+
+# Effet de fond
+EFF_FOND=DEFI_FONCTION(NOM_PARA='INST',
+                       VALE=(0.0,-0.0,1.0,-0.0,11.0,-20.607059,),
+                       PROL_DROITE='CONSTANT',
+                       PROL_GAUCHE='CONSTANT',);
+
+# Definition des pas de temps thermiques et mecaniques
+
+# Liste complete du transitoire
+
+LR_T1=DEFI_LIST_REEL(DEBUT=0.0,
+                     INTERVALLE=(_F(JUSQU_A=1.0,
+                                    NOMBRE=1,),
+                                 _F(JUSQU_A=11.0,
+                                    NOMBRE=10,),
+                                 _F(JUSQU_A=20.0,
+                                    NOMBRE=10,),),);
+
+LR_T2=DEFI_LIST_REEL(DEBUT=0.0,
+                     INTERVALLE=(_F(JUSQU_A=1.0,
+                                    NOMBRE=2,),
+                                 _F(JUSQU_A=11.0,
+                                    NOMBRE=10,),
+                                 _F(JUSQU_A=20.0,
+                                    NOMBRE=10,),),);
+
+
+
+
+ME1TH = MACR_CABRI_CALC( MAILLAGE = MA,
+                        AFFE_MATERIAU =(
+                                _F(
+                                  GROUP_MA='BRIDE',
+                                  MATER=MA_BRI,
+                                  ),
+                                _F(
+                                  GROUP_MA='ECROU',
+                                  MATER=MA_ECR,
+                                  ),
+                                _F(
+                                  GROUP_MA='ROND',
+                                  MATER=MA_RON,
+                                  ),
+                                 _F(
+                                  GROUP_MA='GOUJON',
+                                  MATER=MA_GOU,
+                                  ),
+                                _F(
+                                  GROUP_MA='JOINT',
+                                  MATER=MA_LIM,
+                                  ),),
+
+                        CHAM_MATER=CO("CHMAT"),
+                        DEFI_CHAR_THER = _F(
+                                 COEF_H_FLUI   = H_INT,
+                                 TEMP_EXT_FLUI   = T_INT,
+                                 COEF_H_AIR   = H_EXT,
+                                 TEMP_EXT_AIR   = T_EXT,
+                                 LIST_INST  = LR_T2,
+                                 TEMP_INIT   = 25.,
+                                 ),
+                        CHAR_THER  = (
+                                 _F(
+                                 CHARGE  = CO("CL_TH1"),
+                                 TYPE  = "BRIDE_FLUIDE",
+                                 ),
+                                 _F(
+                                 CHARGE  = CO("CL_TH2"),
+                                 TYPE  = "BRIDE_AIR",
+                                 ),
+                                 _F(
+                                 CHARGE  = CO("CH_L_G1"),
+                                 TYPE  = "ECROU_GOUJON",
+                                 ),
+                                 _F(
+                                 CHARGE  = CO("CH_L_G2"),
+                                 TYPE  = "BRIDE_JOINT",
+                                 ),
+                              ),
+                        RESU_THER = CO("TH1"),
+                        MODELE_THER   = CO("MO_TH"),
+                        DEFI_CHAR_MECA = _F(
+                                 PRES_REP   = PRE_INT,
+                                 PRETENS    = F_PRET,
+                                 EFFE_FOND = EFF_FOND,
+                                 ),
+                        MODELE_MECA   = CO("MO_ME"),
+                        CHAR_MECA  = (
+                                 _F(
+                                 CHARGE  = CO("CL_ME1"),
+                                 TYPE  = "BLOC_BAS_GOUJ",
+                                 ),
+                                 _F(
+                                 CHARGE  = CO("CL_ME2"),
+                                 TYPE  = "BLOC_BAS_JOINT",
+                                 ),
+                                 _F(
+                                 CHARGE  = CO("CL_ME3"),
+                                 TYPE  = "BLOC_LAT_ALES",
+                                 ),
+                                 _F(
+                                 CHARGE  = CO("CL_ME4"),
+                                 TYPE  = "BLOC_LAT_NALES",
+                                 ),
+                                 _F(
+                                 CHARGE  = CO("CL_ME5"),
+                                 TYPE  = "PLAN_TUBE",
+                                 ),
+                                 _F(
+                                 CHARGE  = CO("CHA_ME1"),
+                                 TYPE  = "PRES_FLU",
+                                 ),
+                                 _F(
+                                 CHARGE  = CO("CHA_ME2"),
+                                 TYPE  = "EFFET_FOND",
+                                 ),
+                                 _F(
+                                 CHARGE  = CO("CON_BJ1"),
+                                 TYPE  = "CONT_JOINT",
+                                 ),
+                                 _F(
+                                 CHARGE  = CO("CHA_TH1"),
+                                 TYPE  = "DEFO_THER",
+                                 ),
+                                 _F(
+                                 CHARGE  = CO("CHA_ME3"),
+                                 TYPE  = "SERR_ECROU_1",
+                                 ),
+                                 _F(
+                                 CHARGE  = CO("CHA_ME4"),
+                                 TYPE  = "SERR_ECROU_2",
+                                 ),
+                                 ),
+                        INCREMENT = _F(
+                                 LIST_INST  = LR_T2,
+                                 ),
+                        NEWTON=_F(REAC_ITER=3,),
+                        RELATION='ELAS',
+
+               );
+
+MA=DEFI_GROUP(reuse =MA,
+              MAILLAGE=MA,
+              CREA_GROUP_NO=(_F(GROUP_MA='ECROU',
+                                NOM='N_ECROU',),
+                             _F(GROUP_MA='TRANCHE',
+                                NOM='N_TRANCHE',),),);
+
+ME1TH=CALC_ELEM(reuse =ME1TH,
+                MODELE=MO_ME,
+                CHAM_MATER=CHMAT,
+                RESULTAT=ME1TH,
+                TOUT_ORDRE='OUI',
+                OPTION=('SIEF_ELNO_ELGA','EQUI_ELNO_SIGM',),
+                EXCIT=(
+                _F(CHARGE=CHA_TH1,),),);
+
+
+TB=POST_RELEVE_T(ACTION=_F(INTITULE='TEMP_BRI',
+                           GROUP_NO='P_BRI',
+                           RESULTAT=TH1,
+                           NOM_CHAM='TEMP',
+                           TOUT_CMP='OUI',
+                           OPERATION='EXTRACTION',),);
+
+IMPR_TABLE(TABLE=TB,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=20.0,),
+                     );
+
+TEST_TABLE(TABLE=TB,
+           NOM_PARA='TEMP',
+           VALE=2.78182E+01,
+           PRECISION = 0.001,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=20.0,),
+           REFERENCE='NON_REGRESSION',
+           );
+
+TG=POST_RELEVE_T(ACTION=_F(INTITULE='TEMP_GOU',
+                           GROUP_NO='P_GOU',
+                           RESULTAT=TH1,
+                           NOM_CHAM='TEMP',
+                           TOUT_CMP='OUI',
+                           OPERATION='EXTRACTION',),);
+
+IMPR_TABLE(TABLE=TG,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=20.0,),);
+
+TEST_TABLE(TABLE=TG,
+           NOM_PARA='TEMP',
+           VALE=2.50000E+01,
+           PRECISION = 0.001,
+           REFERENCE='NON_REGRESSION',
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=20.0,),
+           );
+
+TE=POST_RELEVE_T(ACTION=_F(INTITULE='TEMP_ECR',
+                           GROUP_NO='N_ECROU',
+                           RESULTAT=TH1,
+                           NOM_CHAM='TEMP',
+                           TOUT_CMP='OUI',
+                           OPERATION='MOYENNE',),);
+
+IMPR_TABLE(TABLE=TE,
+           FILTRE=(_F(NOM_PARA='INST',
+                     VALE=20.0,),
+                  _F(NOM_PARA='QUANTITE',
+                     VALE_K='MOMENT_0',),),);
+
+TEST_TABLE(TABLE=TE,
+           NOM_PARA='TEMP',
+           VALE=2.49694E+01,
+           PRECISION = 0.001,
+           FILTRE=(_F(NOM_PARA='INST',
+                     VALE=20.0,),
+                  _F(NOM_PARA='QUANTITE',
+                     VALE_K='MOMENT_0',),),
+           REFERENCE='NON_REGRESSION',
+           );
+
+TSZGOU=POST_RELEVE_T(ACTION=_F(INTITULE='SZP_GOU',
+                               GROUP_NO='P_GOU',
+                               RESULTAT=ME1TH,
+                               NOM_CHAM='SIEF_ELNO_ELGA',
+                               NOM_CMP='SIZZ',
+                               OPERATION='EXTRACTION',),);
+
+
+IMPR_TABLE(TABLE=TSZGOU,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=20.0,),);
+
+TEST_TABLE(TABLE=TSZGOU,
+           NOM_PARA='SIZZ',
+           VALE=2.55508E+01,
+           PRECISION = 0.001,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=20.0,),
+           REFERENCE='NON_REGRESSION',
+           );
+
+SZTRA=POST_RELEVE_T(ACTION=_F(INTITULE='PRET',
+                              GROUP_NO='N_TRANCHE',
+                              RESULTAT=ME1TH,
+                              NOM_CHAM='SIEF_ELNO_ELGA',
+                              NOM_CMP='SIZZ',
+                              OPERATION='MOYENNE',),);
+
+
+IMPR_TABLE(TABLE=SZTRA,
+           FILTRE=(_F(NOM_PARA='INST',
+                     VALE=20.0,),
+                  _F(NOM_PARA='QUANTITE',
+                     VALE_K='MOMENT_0',),),);
+
+TEST_TABLE(TABLE=SZTRA,
+           NOM_PARA='SIZZ',
+           VALE=2.31100E+01,
+           PRECISION = 0.001,
+           FILTRE=(_F(NOM_PARA='INST',
+                     VALE=20.0,),
+                  _F(NOM_PARA='QUANTITE',
+                     VALE_K='MOMENT_0',),),
+           REFERENCE='NON_REGRESSION',
+           );
+
+
+
+FIN();

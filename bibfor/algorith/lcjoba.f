@@ -1,7 +1,7 @@
       SUBROUTINE LCJOBA (NDIM, TYPMOD, IMATE, CRIT, EPSM,
      &                   DEPS, VIM,OPTION, SIG, VIP,  DSIDEP)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/06/2004   AUTEUR NDOMING N.DOMINGUEZ 
+C MODIF ALGORITH  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -216,7 +216,7 @@ C    SEUIL D'ADHERENCE NORMALE PARFAITE
 
 C    ENDOMMAGEMENT DANS LA DIRECTION NORMALE
 
-        IF (ADHER .EQ. .FALSE.) THEN
+        IF (.NOT.ADHER) THEN
 
           DFN = 1.D0 - 1.D0/(1.D0+ADN*((YIN-Y0N)**BDN))
 
@@ -338,7 +338,7 @@ C----------------------------------------------------------------
         SIG(1)=DSIDEP(1,1)*(1.D0-DFN)*EPSE(2)
         SIG(2)=DSIDEP(2,2)*(1.D0-DFT)*EPSE(4)
         TAOFRO=DSIDEP(2,2)*DFT*(EPSE(4)-GAMFRO)
-        IF(TRAC .AND. (ADHER .EQ. .FALSE.)) TAOFRO=0.D0
+        IF(TRAC .AND. (.NOT.ADHER)) TAOFRO=0.D0
         SIG(2)=SIG(2)+TAOFRO
       
       END IF   

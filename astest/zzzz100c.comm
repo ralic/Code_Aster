@@ -1,4 +1,4 @@
-# MODIF  DATE 10/05/2004   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
 # RESPONSABLE MCOURTOI M.COURTOIS
 # TITRE VALIDATION IMPR_COURBE AU FORMAT SEISME
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -23,7 +23,7 @@
 
 DEBUT(   CODE=_F(  NOM = 'ZZZZ100C',NIV_PUB_WEB='INTERNET') )
 
-DEUX=DEFI_VALEUR(  IS=2 )
+DEUX=2
 
 L01=DEFI_LIST_REEL(  DEBUT=0.,
                          INTERVALLE=_F(  JUSQU_A = 2.,  NOMBRE = DEUX) )
@@ -63,16 +63,15 @@ IMPR_COURBE(   COURBE=_F(  FONC_X = DFC1,
                            FONC_Y = DFC2) )
 
 IMPR_COURBE(   FICHIER='TEMPO1',
-                  FORMAT='SEISME',
+                  FORMAT='EXCEL',
                   COURBE=_F(  FONC_X = DFC1,
                            FONC_Y = DFC2) )
-
 DEFI_FICHIER( ACTION="LIBERER", UNITE = 50 ) 
-                            
+                        
 FF1=LIRE_FONCTION(        UNITE=50,
-                           NOM_PARA='FREQ'
+                          NOM_PARA='FREQ',
+                          NOM_RESU='AMOR'
                        )
-
 TEST_FONCTION(VALEUR=(  
   _F(   FONCTION = FF1, VALE_PARA = 1.,  VALE_REFE = 2.), 
   _F(   FONCTION = FF1, VALE_PARA = 2.,  VALE_REFE = 3.), 
@@ -91,7 +90,7 @@ IMPR_COURBE(   COURBE=_F(  FONC_X = DFC1,
                            PARA = 'FONC_Y') )
 
 IMPR_COURBE(   FICHIER='TEMPO2',
-                  FORMAT='SEISME',
+               FORMAT='EXCEL',
                   COURBE=_F(  FONC_X = DFC1,
                            FONC_Y = DFC2, 
                            PARA = 'FONC_Y') )
@@ -99,7 +98,8 @@ IMPR_COURBE(   FICHIER='TEMPO2',
 DEFI_FICHIER( ACTION="LIBERER", UNITE = 51 )
 
 FF2=LIRE_FONCTION(     UNITE=51,
-                           NOM_PARA='FREQ'
+                       NOM_RESU='AMOR',
+                       NOM_PARA='FREQ'
                        )
 
 TEST_FONCTION(VALEUR=(  
@@ -123,7 +123,7 @@ IMPR_COURBE(   COURBE=_F(  FONC_X = DFC1,
                   )
 
 IMPR_COURBE(   FICHIER='TEMPO3',
-                  FORMAT='SEISME',
+               FORMAT='EXCEL',
                   COURBE=_F(  FONC_X = DFC1,
                            FONC_Y = DFC2,
                            LIST_PARA = L03)
@@ -132,7 +132,8 @@ IMPR_COURBE(   FICHIER='TEMPO3',
 DEFI_FICHIER( ACTION="LIBERER", UNITE = 52) 
 
 FF3=LIRE_FONCTION(        UNITE=52,
-                           NOM_PARA='FREQ'
+                          NOM_RESU='AMOR',
+                          NOM_PARA='FREQ'
                        )
 
 TEST_FONCTION(VALEUR=(  
@@ -159,14 +160,15 @@ IMPR_COURBE(   COURBE=_F(  FONC_X = DFC2,
                            FONC_Y = DFC1) )
 
 IMPR_COURBE(   FICHIER='TEMPO4',
-                  FORMAT='SEISME',
+               FORMAT='EXCEL',
                   COURBE=_F(  FONC_X = DFC2,
                            FONC_Y = DFC1) )
 
 DEFI_FICHIER( ACTION="LIBERER", UNITE = 53 )
 
 FF4=LIRE_FONCTION(        UNITE=53,
-                           NOM_PARA='AMOR'
+                          NOM_PARA='AMOR',
+                          NOM_RESU='FREQ'
                        )
 
 TEST_FONCTION(VALEUR=(  

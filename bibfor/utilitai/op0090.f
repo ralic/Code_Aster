@@ -1,7 +1,7 @@
       SUBROUTINE OP0090(IER)
       IMPLICIT NONE
 C     ------------------------------------------------------------------
-C MODIF UTILITAI  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
+C MODIF UTILITAI  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -281,6 +281,6 @@ C         ET REMISE DES ABSCISSES EN ORDRE CROISSANT
       CALL ORDONN(NOMFON,NOMCMD,0)
 C
       CALL TITRE
-      IF (NIV.GT.1) CALL FOIMPR(NOMFON,NIV,'MESSAGE',0,K8B)
+      IF (NIV.GT.1) CALL FOIMPR(NOMFON,NIV,IFM,0,K8B)
       CALL JEDEMA()
       END

@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 17/12/2002   AUTEUR CIBHHGB G.BERTRAND 
+C MODIF UTILITAI  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -264,6 +264,6 @@ C     --- CREATION D'UN TITRE ---
       CALL TITRE()
 C
 C     --- IMPRESSIONS ---
-      IF (NIV.GT.1) CALL FOIMPR(NOMFON,NIV,'MESSAGE',0,' ')
+      IF (NIV.GT.1) CALL FOIMPR(NOMFON,NIV,IFM,0,' ')
       CALL JEDEMA()
       END

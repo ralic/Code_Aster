@@ -1,6 +1,6 @@
       SUBROUTINE OP0023(IER)
 C ----------------------------------------------------------------------
-C MODIF CALCULEL  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
+C MODIF CALCULEL  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -59,7 +59,7 @@ C 0.3. ==> VARIABLES LOCALES
      &        N1,N2,N3,N4,NBORDR,NC,NOCC,NP,NUMORD,NUPO,NBCMP,JCMP
       INTEGER NRPASS,NBPASS,ADRECG,NUSP
       INTEGER IAUX
-
+      LOGICAL ULEXIS
       REAL*8 EPSI,VALR,REFR,PREC,EPSIR(2)
       CHARACTER*1 TYPRES
       CHARACTER*4 TYPCH,TESTOK
@@ -91,20 +91,19 @@ C     ------------------------------------------------------------------
    10 CONTINUE
 
 
-
-      CALL GETVTX(' ','FICHIER',0,1,1,NOMFI,N2)
+      IFIC = 0
+      NOMFI = ' '
+      CALL GETVIS(' ','UNITE'  , 1,1,1, IFIC , N1 )
+      CALL GETVTX(' ','FICHIER', 1,1,1, NOMFI, N2 )
       IF (N2.NE.0) THEN
+         CALL UTMESS('A','TEST_RESU',
+     +               'LE MOT CLE "FICHIER" EST APPELE A DISPARAITRE.'//
+     +               ' UTILISER LE MOT CLE "UNITE"')
         IFIC = IUNIFI(NOMFI)
-        IF (IFIC.EQ.0) THEN
-          CALL UTMESS('A','TEST_RESU',
-     &                'LE NOM DU FICHIER D''IMPRESSION EST '//
-     &                'INCONNU : '//NOMFI//' ON PRENDRA LE FICHIER'//
-     &                ' "RESULTAT". ')
-          IFIC = IUNIFI('RESULTAT')
-        END IF
-      ELSE
-        IFIC = IUNIFI('RESULTAT')
       END IF
+      IF ( .NOT. ULEXIS( IFIC ) ) THEN
+        CALL ULOPEN ( IFIC, ' ', NOMFI, 'NEW', 'O' )
+      ENDIF
       WRITE (IFIC,1000)
 
 C     --- TRAITEMENT D'UN OBJET JEVEUX  ---

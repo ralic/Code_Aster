@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
+C MODIF UTILITAI  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,6 +41,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32      JEXNOM, JEXNUM
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER      VERSIO, NBELEM
+      LOGICAL      ULEXIS
       CHARACTER*8  K8B, FORMAT, MATRIC, MODEL1, NOMMAI, GRAIN
       CHARACTER*9  TYPSD
       CHARACTER*16 OPTION, OPTIO2, OPTIO3, FICHIE
@@ -67,9 +68,25 @@ C
         CALL GETVID ('MATR_ELEM','MATRICE',1,1,1,MATRIC,N4)
         CALL GETVTX ('MATR_ELEM','FORMAT' ,1,1,1,FORMAT,N1)
         CALL GETVIS ('MATR_ELEM','VERSION',1,1,1,VERSIO,N3)
-        FICHIE = FORMAT
-        CALL GETVTX ('MATR_ELEM','FICHIER',1,1,1,FICHIE,N2)
-        IFC = IUNIFI(FICHIE)
+C
+        IFIC   = 0
+        FICHIE = ' '
+        CALL GETVIS ( 'MATR_ELEM', 'UNITE'  , 1,1,1, IFIC  , N2 )
+        CALL GETVTX ( 'MATR_ELEM', 'FICHIER', 1,1,1, FICHIE, N2 )
+        IF ( N2 .NE. 0 ) THEN
+           CALL UTMESS('A','IMPR_MATRICE',
+     +               'LE MOT CLE "FICHIER" EST APPELE A DISPARAITRE.'//
+     +               ' UTILISER LE MOT CLE "UNITE"')
+           IFIC = IUNIFI( FICHIE )
+        ENDIF
+        IF ( IFIC .EQ. 0 ) THEN
+           IF ( FICHIE .EQ. ' ' ) FICHIE = FORMAT
+           IFIC = IUNIFI( FICHIE )
+        ENDIF
+        IF ( .NOT. ULEXIS( IFIC ) ) THEN
+           CALL ULOPEN ( IFIC, ' ', FICHIE, 'NEW', 'O' )
+        ENDIF
+C
         IF ( FORMAT .EQ. 'IDEAS'  .AND.  VERSIO .EQ. 5 ) THEN
         CALL DISMOI('F','NOM_MODELE',MATRIC,'MATR_ELEM',IBID,MODEL1,IE)
         CALL DISMOI('F','NOM_LIGREL',MODEL1,'MODELE'   ,IBID,LIGRE1,IE)
@@ -80,8 +97,8 @@ C
         IF ( NMSUP .NE. 0 ) THEN
           CALL WKVECT('&&OP0159.NUME_MAILLE ','V V I',NMSUP,JNSUP1)
           CALL WKVECT('&&OP0159.NUME_ELEMENT','V V I',NMSUP,JNSUP2)
-            WRITE (IFC,'(A)') '    -1'
-            WRITE (IFC,'(A)') '   780'
+            WRITE (IFIC,'(A)') '    -1'
+            WRITE (IFIC,'(A)') '   780'
           K = 0
           CALL JEVEUO(MATRIC//'.LISTE_RESU','L',JLRESU)
           CALL JELIRA(MATRIC//'.LISTE_RESU','LONMAX',NBRESU,K8B)
@@ -121,15 +138,15 @@ C
                   ZI(JNSUP2+K-1) = NBELET
                   IELM = NEL -1
                   IF ( FORMAT.EQ.'IDEAS' .AND. VERSIO.EQ.5 ) THEN
-                    WRITE (IFC,'(8I10)') NBELET,ITYPM,1,2,1,1,7,IELM
-                    WRITE (IFC,'(8I10)') ( ZI(JNEM+J-1) , J=1,IELM )
+                    WRITE (IFIC,'(8I10)') NBELET,ITYPM,1,2,1,1,7,IELM
+                    WRITE (IFIC,'(8I10)') ( ZI(JNEM+J-1) , J=1,IELM )
                   ENDIF
                 ENDIF
  16           CONTINUE
  14         CONTINUE
  12       CONTINUE
           IF ( FORMAT .EQ. 'IDEAS'  .AND.  VERSIO .EQ. 5 ) THEN
-            WRITE (IFC,'(A)') '    -1'
+            WRITE (IFIC,'(A)') '    -1'
           ENDIF
         ENDIF
        ENDIF
@@ -137,8 +154,25 @@ C
 C
       DO 100 I = 1 , NBMAEL
          CALL GETVTX ('MATR_ELEM','FORMAT' ,I,1,1,FORMAT,N1)
-         FICHIE = FORMAT
-         CALL GETVTX ('MATR_ELEM','FICHIER',I,1,1,FICHIE,N2)
+C
+         IFIC  = 0
+         FICHIE = ' '
+         CALL GETVIS ( 'MATR_ELEM', 'UNITE'  , I,1,1, IFIC  , N2 )
+         CALL GETVTX ( 'MATR_ELEM', 'FICHIER', I,1,1, FICHIE, N2 )
+         IF ( N2 .NE. 0 ) THEN
+            CALL UTMESS('A','IMPR_MATRICE',
+     +               'LE MOT CLE "FICHIER" EST APPELE A DISPARAITRE.'//
+     +               ' UTILISER LE MOT CLE "UNITE"')
+            IFIC = IUNIFI( FICHIE )
+         ENDIF
+         IF ( IFIC .EQ. 0 ) THEN
+           IF ( FICHIE .EQ. ' ' ) FICHIE = FORMAT
+           IFIC = IUNIFI( FICHIE )
+         ENDIF
+         IF ( .NOT. ULEXIS( IFIC ) ) THEN
+           CALL ULOPEN ( IFIC, ' ', FICHIE, 'NEW', 'O' )
+         ENDIF
+C
          CALL GETVIS ('MATR_ELEM','VERSION',I,1,1,VERSIO,N3)
          CALL GETVID ('MATR_ELEM','MATRICE',I,1,1,MATRIC,N4)
 C
@@ -183,7 +217,7 @@ C       ------------------------------------------------
          ENDIF
 C
          IF ( FORMAT .EQ. 'IDEAS' ) THEN
-           CALL IRMEID(MATRIC,FICHIE,VERSIO,NMSUP,ZI(JNSUP1),ZI(JNSUP2))
+           CALL IRMEID(MATRIC,IFIC,VERSIO,NMSUP,ZI(JNSUP1),ZI(JNSUP2))
          ELSE
 C
 C ---     RECUPERATION DU TYPE 'MATR_ELEM' OU 'VECT_ELEM' DE LA S.D.
@@ -207,7 +241,7 @@ C         ----------
      +                 //'S.D. '//MATRIC//' A IMPRIMER, IL NE S''AGIT'
      +                 //' NI D''UN MATR_ELEM, NI D''UN VECT_ELEM.')
              ENDIF
-             CALL IMPMAT(FICHIE,MATRIC,TYPSD,GRAIN,OPTIO3,NBNOEU,
+             CALL IMPMAT(IFIC,MATRIC,TYPSD,GRAIN,OPTIO3,NBNOEU,
      +                  '&OP0159.LISNOE',NBEL,'&OP0159.LISMAI',
      +                   NBCMP,'&OP0159.CMP',NBCHIF,EPS)
            ENDIF
@@ -221,9 +255,25 @@ C
       CALL GETFAC('MATR_ASSE',NBASSE)
       DO 200 I = 1 , NBASSE
          CALL GETVTX ('MATR_ASSE','FORMAT' ,I,1,1,FORMAT,N1)
-         FICHIE = '        '
-         CALL GETVTX ('MATR_ASSE','FICHIER',I,1,1,FICHIE,N2)
-         IF ( FICHIE .EQ. '        ' ) FICHIE = FORMAT
+C
+         IFIC  = 0
+         FICHIE = ' '
+         CALL GETVIS ( 'MATR_ASSE', 'UNITE'  , I,1,1, IFIC  , N2 )
+         CALL GETVTX ( 'MATR_ASSE', 'FICHIER', I,1,1, FICHIE, N2 )
+         IF ( N2 .NE. 0 ) THEN
+            CALL UTMESS('A','IMPR_MATRICE',
+     +               'LE MOT CLE "FICHIER" EST APPELE A DISPARAITRE.'//
+     +               ' UTILISER LE MOT CLE "UNITE"')
+            IFIC = IUNIFI( FICHIE )
+         ENDIF
+         IF ( IFIC .EQ. 0 ) THEN
+           IF ( FICHIE .EQ. ' ' ) FICHIE = FORMAT
+           IFIC = IUNIFI( FICHIE )
+         ENDIF
+         IF ( .NOT. ULEXIS( IFIC ) ) THEN
+           CALL ULOPEN ( IFIC, ' ', FICHIE, 'NEW', 'O' )
+         ENDIF
+C
          CALL GETVIS ('MATR_ASSE','VERSION',I,1,1,VERSIO,N3)
          CALL GETVID ('MATR_ASSE','MATRICE',I,1,1,MATRIC,N4)
 C
@@ -282,9 +332,9 @@ C       --------------------------------------
         ENDIF
 C
          IF ( FORMAT .EQ. 'IDEAS' ) THEN
-            CALL IRMAID ( MATRIC, FICHIE, VERSIO )
+            CALL IRMAID ( MATRIC, IFIC, VERSIO )
          ELSE
-           CALL IMPMAT(FICHIE,MATRIC,'MATR_ASSE',GRAIN,OPTIO3,NBNOEU,
+           CALL IMPMAT(IFIC,MATRIC,'MATR_ASSE',GRAIN,OPTIO3,NBNOEU,
      +                  '&OP0159.LISNOE',NBEL,'&OP0159.LISMAI',
      +                   NBCMP,'&OP0159.CMP',NBCHIF,EPS)
          ENDIF

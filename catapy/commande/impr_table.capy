@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -24,7 +24,8 @@ IMPR_TABLE=PROC(nom="IMPR_TABLE",op=155,
          SENSIBILITE     =SIMP(statut='f',typ=(para_sensi,theta_geom),validators=NoRepeat(),max='**',
                                fr="Liste des paramètres de sensibilité.",
                                ang="List of sensitivity parameters"),
-         FICHIER         =SIMP(statut='f',typ='TXM',defaut="RESULTAT", ),
+         UNITE           =SIMP(statut='f',typ='I',defaut=8),  
+         FICHIER         =SIMP(statut='f',typ='TXM'),
          FORMAT          =SIMP(statut='f',typ='TXM',defaut="EXCEL",
                                into=("EXCEL","AGRAF","MOT_CLE","TABLEAU","ASTER") ),
          FILTRE          =FACT(statut='f',max='**',

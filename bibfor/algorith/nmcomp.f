@@ -1,10 +1,21 @@
       SUBROUTINE NMCOMP (NDIM,TYPMOD,IMATE,COMPOR,CRIT,
-     &                   INSTAM,INSTAP,TM,TP,TREF,HYDRM,HYDRP,SECHM,
-     &                   SECHP,SREF,EPSM,DEPS,SIGM,VIM,
-     &                   OPTION,DEFAM,DEFAP,NZ,PHASM, PHASP,ELGEOM,
-     &                   SIGP,VIP,DSIDEP,CODRET,CORRM,CORRP)
+     &                   INSTAM,INSTAP,
+     &                   TM,TP,TREF,
+     &                   HYDRM,HYDRP,
+     &                   SECHM,SECHP,SREF,
+     &                   EPSM,DEPS,
+     &                   SIGM,VIM,
+     &                   OPTION,
+     &                   DEFAM,DEFAP,
+     &                   NZ,PHASM,PHASP,
+     &                   CORRM,CORRP,
+     &                   ANGMAS,
+     &                   ELGEOM,
+     &                   SIGP,VIP,DSIDEP,CODRET)
+
+
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/06/2004   AUTEUR NDOMING N.DOMINGUEZ 
+C MODIF ALGORITH  DATE 15/06/2004   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -34,6 +45,8 @@ C TOLE CRP_21
       REAL*8             SIGM(*), VIM(*), SIGP(*), VIP(*)
       REAL*8             ELGEOM(*),CORRM,CORRP
       REAL*8             DEFAP(*), DEFAM(*)
+      REAL*8             ANGMAS(3)
+
 C ----------------------------------------------------------------------
 C     INTEGRATION DES LOIS DE COMPORTEMENT NON LINEAIRE POUR LES
 C     ELEMENTS ISOPARAMETRIQUES EN PETITES DEFORMATIONS
@@ -80,6 +93,12 @@ C     VIM     : VARIABLES INTERNES A L'INSTANT DU CALCUL PRECEDENT
 C     OPTION  : OPTION DEMANDEE : RIGI_MECA_TANG , FULL_MECA , RAPH_MECA
 C     DEFAM   : DEFORMATIONS ANELASTIQUES A L'INSTANT PRECEDENT
 C     DEFAP   : DEFORMATIONS ANELASTIQUES A L'INSTANT DU CALCUL
+C     NZ      : NOMBRE DE PHASES
+C     PHASEM  : PHASES A L'INSTANT PRECEDENT
+C     PHASEP  : PHASES A L'INSTANT DU CALCUL
+C     CORRM   : CORROSION A L'INSTANT PRECEDENT
+C     CORRP   : CORROSION A L'INSTANT DU CALCUL
+C     ANGMAS  : LES TROIS ANGLES DU MOT_CLEF MASSIF (AFFE_CARA_ELEM)
 C VAR VIP     : VARIABLES INTERNES
 C                IN  : ESTIMATION (ITERATION PRECEDENTE OU LAG. AUGM.)
 C                OUT : EN T+
@@ -111,6 +130,8 @@ C
       LOGICAL CP
       INTEGER CPL
       CODRET = 0
+
+
 C      CONTRAINTES PLANES
       CALL NMCPL1(COMPOR,TYPMOD,OPTION,VIP,DEPS,OPTIO2,CPL,NVV)
       CP=(CPL.NE.0)
@@ -293,11 +314,11 @@ C PETITES DEFORMATIONS
           IF ( INT(CRIT(6)) .NE. 0 )  THEN
               CALL UTMESS('F','NMCOMP_1',
      &          'INTEGRATION EXPLICITE DU COMPORTEMENT NON PROGRAMMEE')
-            ELSE
+          ELSE
             CALL LCMAZA(NDIM, TYPMOD, IMATE, COMPOR, EPSM, DEPS,
      &                   VIM,TM,TP,TREF,HYDRM,HYDRP,SECHM,SECHP,SREF,
      &                   OPTION, SIGP, VIP,  DSIDEP)
-            ENDIF
+          ENDIF
         ELSE IF ( COMPOR(1) .EQ. 'JOINT_BA' ) THEN
           CALL LCJOBA(NDIM, TYPMOD, IMATE, CRIT, EPSM, 
      &                DEPS, VIM, OPTION, SIGP, VIP,  DSIDEP)
@@ -476,9 +497,14 @@ C-- INTEGRATION IMPLICITE: METHODE D'EULER
      &           COMPOR(1)(1:9)  .EQ. 'ZIRC_EPRI'  .OR.
      &           COMPOR(1)(1:10) .EQ. 'VISC_IRRA_' ) THEN
           IF ( INT(CRIT(6)) .EQ. 0 ) THEN
-            CALL NMVPIR ( NDIM,  IMATE, COMPOR,CRIT,TYPMOD,
-     &                  INSTAM,INSTAP,TM,    TP,    TREF,
-     &                  DEPS,  SIGM,  VIM,   OPTION, DEFAM, DEFAP,
+            CALL NMVPIR (NDIM,TYPMOD,IMATE,COMPOR,CRIT,
+     &                  INSTAM,INSTAP,
+     &                  TM,TP,TREF,
+     &                  DEPS,
+     &                  SIGM,VIM,
+     &                  OPTION,
+     &                  DEFAM, DEFAP,
+     &                  ANGMAS,
      &                  SIGP, VIP, DSIDEP )
           ELSE
             CALL UTMESS('F','NMCOMP_1','INTEGRATION EXPLICITE DU

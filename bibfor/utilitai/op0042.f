@@ -1,6 +1,6 @@
       SUBROUTINE OP0042 ( IER )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF UTILITAI  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,7 +22,8 @@ C ======================================================================
 C     ------------------------------------------------------------------
 C     COMMANDE D'AIDE
 C     ------------------------------------------------------------------
-      CHARACTER*16 CBID, CONCEP, NOMCMD
+      LOGICAL       ULEXIS
+      CHARACTER*16  CBID, CONCEP, NOMCMD
       CHARACTER*24  FICHIE
 C     ------------------------------------------------------------------
 C
@@ -30,15 +31,19 @@ C
       CALL GETRES( CBID , CONCEP , NOMCMD )
 C
 C     ---------- FICHIER D'ECRITURE ------------------------------------
-      CALL GETVTX(' ','FICHIER',0,1,1,FICHIE,L)
-      IF ( L .EQ. 0 ) THEN
-         FICHIE = 'RESULTAT'
+C
+      IMPR   = 0
+      FICHIE = ' '
+      CALL GETVIS ( ' ', 'UNITE'  , 1,1,1, IMPR  , N1 )
+      CALL GETVTX ( ' ', 'FICHIER', 1,1,1, FICHIE, N1 )
+      IF ( N1 .NE. 0 ) THEN
+         CALL UTMESS('A','AIDE',
+     +               'LE MOT CLE "FICHIER" EST APPELE A DISPARAITRE.'//
+     +               ' UTILISER LE MOT CLE "UNITE"')
+         IMPR = IUNIFI( FICHIE )
       ENDIF
-      IMPR = IUNIFI(FICHIE)
-      IF ( IMPR .EQ. 0 ) THEN
-         CALL UTMESS('I','AIDE','LE FICHIER "'//FICHIE(1:7)//
-     +                                          '" N''EST PAS OUVERT.')
-         GOTO 9999
+      IF ( .NOT. ULEXIS( IMPR ) ) THEN
+         CALL ULOPEN ( IMPR, ' ', FICHIE, 'NEW', 'O' )
       ENDIF
 C
 C     ---------- TRAITEMENT DE CE QUI EST RELATIF AUX CONCEPTS ------

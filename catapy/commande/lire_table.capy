@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,15 +16,19 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-def lire_table_prod(TYPE_TABLE,**args):
+
+from Macro.lire_table_ops import lire_table_ops
+
+def lire_table_prod(self,TYPE_TABLE,**args):
   if TYPE_TABLE == "TABLE"          : return table_sdaster
   if TYPE_TABLE == "TABL_CARA_GEOM" : return tabl_cara_geom
   if TYPE_TABLE == "TABL_POST_RELE" : return tabl_post_rele
   if TYPE_TABLE == "TABL_POST_USUR" : return tabl_post_usur
   if TYPE_TABLE == "TABL_POST_ALEA" : return tabl_post_alea
   raise AsException("type de concept resultat non prevu")
-LIRE_TABLE=OPER(nom="LIRE_TABLE",op=29,sd_prod=lire_table_prod,
-                fr="Lecture d un concept de type table_sdaster",
+
+LIRE_TABLE=MACRO(nom="LIRE_TABLE",op=lire_table_ops,sd_prod=lire_table_prod,
+                 fr="Lecture d un concept de type table",
             UIinfo={"groupes":("Maillage",)},
          UNITE           =SIMP(statut='o',typ='I' ),
          FORMAT          =SIMP(statut='f',typ='TXM',into=("ASTER",),defaut="ASTER"),
@@ -36,5 +40,7 @@ LIRE_TABLE=OPER(nom="LIRE_TABLE",op=29,sd_prod=lire_table_prod,
                                     "TABL_POST_USUR",
                                     "TABL_POST_ALEA" ) ),
          SEPARATEUR      =SIMP(statut='o',typ='TXM'),
+         PARA            =SIMP(statut='f',typ='TXM',max='**'),
          TITRE           =SIMP(statut='f',typ='TXM',max='**'),
          )  ;
+

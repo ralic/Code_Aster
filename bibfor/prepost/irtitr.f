@@ -1,9 +1,10 @@
-      SUBROUTINE IRTITR(CHAM,NOPASE,NOMA,FORM,FICH,TITRE)
+      SUBROUTINE IRTITR(CHAM,NOPASE,NOMA,FORM,IFI,TITRE)
       IMPLICIT NONE
-      CHARACTER*(*)     CHAM,NOPASE,NOMA,FORM,FICH
-      CHARACTER*80                     TITRE
+      INTEGER           IFI
+      CHARACTER*(*)     CHAM,NOPASE,NOMA,FORM
+      CHARACTER*80      TITRE
 C     ------------------------------------------------------------------
-C MODIF PREPOST  DATE 05/12/2001   AUTEUR VABHHTS J.PELLET 
+C MODIF PREPOST  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -26,7 +27,7 @@ C     ------------------------------------------------------------------
 C IN  CHAM   : K8  : NOM DU CONCEPT
 C IN  NOMMA  : K8  : NOM DU MAILLAGE
 C IN  FORM   : K8  : FORMAT D'ECRITURE
-C IN  FICH   : K16 : FICHIER D'ECRITURE
+C IN  IFI    : IS  : UNITE LOGIQUE D'ECRITURE
 C OUT TITRE  : K80 : TITRE
 C     ------------------------------------------------------------------
       COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
@@ -37,12 +38,7 @@ C     ------------------------------------------------------------------
       CHARACTER*80 ZK80
 C     ------------------------------------------------------------------
       INTEGER       VERS,UTIL,NIVO,NBTITR,JTITR,LGNOMA
-      INTEGER    IFIEN1
-      PARAMETER (IFIEN1=31)
-      INTEGER IUNIFI
-C
-      INTEGER LXLGUT
-      INTEGER I, IER, IFI, IOS1, IOS2, IRET
+      INTEGER       LXLGUT, I, IER, IOS1, IOS2, IRET
 C
       LOGICAL       EXS
       CHARACTER*1   K1BID
@@ -58,11 +54,6 @@ C
       NOMMA=NOMA
       CHAM19 = CHAM
       TITRE = ' '
-      IF(FORM(1:7).NE.'ENSIGHT') THEN
-        IFI=IUNIFI(FICH)
-      ELSE
-        IFI=IFIEN1
-      ENDIF
 C
 C     SOUS-TITRE POUR LES CAS DE SENSIBILITE
       IF ( NOPASE.NE.' ' ) THEN

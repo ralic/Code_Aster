@@ -1,7 +1,7 @@
       SUBROUTINE TE0350(OPTION,NOMTE)
       
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 04/05/2004   AUTEUR SMICHEL S.MICHEL-PONNELLE 
+C MODIF ALGORITH  DATE 15/06/2004   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -28,7 +28,7 @@ C ======================================================================
        CHARACTER*16 OPTION,NOMTE
       
       CHARACTER*8 TYPMOD(2)
-      INTEGER NNO,NPG1,I,IMATUU,LGPG,LGPG1
+      INTEGER NNO,NPG1,I,IMATUU,LGPG,LGPG1,ICAMAS
       INTEGER IPOIDS,IVF,IDFDE,IGEOM,IMATE
       INTEGER ITREF,ICONTM,IVARIM,ITEMPM,ITEMPP,IPHASM,IPHASP
       INTEGER IINSTM,IINSTP,IDEPLM,IDEPLP,ICOMPO,ICARCR
@@ -37,6 +37,8 @@ C ======================================================================
       INTEGER JTAB(7),NZ,JCRET,CODRET,NDIM,NNOS,JGANO
       LOGICAL DEFANE
       REAL*8  VECT1(54), VECT3(4*27*2)
+      REAL*8  ANGMAS(3),R8VIDE,R8DGRD
+
 
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
 
@@ -95,6 +97,17 @@ C - PARAMETRES EN ENTREE
       LGPG1 = MAX(JTAB(6),1)*JTAB(7)
       LGPG = LGPG1
 
+C     ORIENTATION DU MASSIF     
+      CALL TECACH('NNN','PCAMASS',1,ICAMAS,IRET)
+      CALL R8INIR(3, R8VIDE(), ANGMAS ,1)
+
+      IF (ICAMAS.GT.0) THEN
+        IF (ZR(ICAMAS).GT.0.D0) THEN
+         ANGMAS(1) = ZR(ICAMAS+1)*R8DGRD()
+         ANGMAS(2) = ZR(ICAMAS+2)*R8DGRD()
+         ANGMAS(3) = ZR(ICAMAS+3)*R8DGRD()
+        ENDIF
+      ENDIF
 
 C - VARIABLES DE COMMANDE
 
@@ -162,13 +175,17 @@ CCDIR$ IVDEP
 
           CALL NMAS2D(NNO,NPG1,IPOIDS,IVF,IDFDE,
      &                ZR(IGEOM),TYPMOD,OPTION,ZI(IMATE),ZK16(ICOMPO),
-     &                LGPG,ZR(ICARCR),ZR(IINSTM),ZR(IINSTP),ZR(ITEMPM),
-     &                ZR(ITEMPP),ZR(IHYDRM),ZR(IHYDRP),
+     &                LGPG,ZR(ICARCR),
+     &                ZR(IINSTM),ZR(IINSTP),
+     &                ZR(ITEMPM),ZR(ITEMPP),ZR(ITREF),
+     &                ZR(IHYDRM),ZR(IHYDRP),
      &                ZR(ISECHM),ZR(ISECHP),ZR(ISREF),
-     &                NZ,ZR(IPHASM),ZR(IPHASP),ZR(ITREF),
-     &                ZR(IDEPLM),ZR(IDEPLP),ZR(IDEFAM),ZR(IDEFAP),
-     &                DEFANE,ZR(ICONTM),ZR(IVARIM),VECT1,
-     &                VECT3,ZR(ICONTP),ZR(IVARIP),
+     &                NZ,ZR(IPHASM),ZR(IPHASP),
+     &                ZR(IDEPLM),ZR(IDEPLP),
+     &                ANGMAS, 
+     &                ZR(IDEFAM),ZR(IDEFAP),DEFANE,
+     &                ZR(ICONTM),ZR(IVARIM),
+     &                VECT1,VECT3,ZR(ICONTP),ZR(IVARIP),
      &                ZR(IMATUU),ZR(IVECTU),CODRET)
 
         ELSE

@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
+%& MODIF TYPELEM  DATE 15/06/2004   AUTEUR MABBAS M.ABBAS 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -26,8 +26,7 @@ ENTETE__ ELEMENT__ MEGRDKT          MAILLE__ TRIA3
 
 MODE_LOCAL__
     CMATERC  = ADRSJEVE ELEM__         (I1       )
-    CCACOQU  = CACOQU   ELEM__         (SECT_L   ALPHA    BETA     ANGL_L   P_CENT_L P_CENT_T
-                                        DIST_N   CTOR     )
+    CCACOQU  = CACOQU   ELEM__         (SECT_L   ALPHA    BETA     DIST_N   CTOR     )
     CCARCRI  = CARCRI   ELEM__         (ITECREL  MACOMP   RESCREL  THETA    ITEDEC   INTLOC   )
     ECODRET  = CODE_I   ELEM__         (IRET     )
     CCOMPOR  = COMPOR   ELEM__         (RELCOM   NBVARI   DEFORM   INCELA   C_PLAN   XXXX1    )

@@ -1,6 +1,6 @@
       SUBROUTINE TE0139(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 04/05/2004   AUTEUR SMICHEL S.MICHEL-PONNELLE 
+C MODIF ELEMENTS  DATE 15/06/2004   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -35,9 +35,10 @@ C ......................................................................
       INTEGER IVECTU,ICONTP,IVARIP,LI,IDEFAM,IDEFAP,JCRET,CODRET
       INTEGER IHYDRM,IHYDRP,ISECHM,ISECHP,ISREF,IVARIX
       LOGICAL DEFANE, MATSYM
-      INTEGER NDDL,KK,NI,MJ,JTAB(7),NZ,NNOS,ICORRM,ICORRP
+      INTEGER NDDL,KK,NI,MJ,JTAB(7),NZ,NNOS,ICORRM,ICORRP,ICAMAS
       REAL*8 MATNS(3*27*3*27),CORRM,CORRP
       REAL*8 PFF(6*27*27),DEF(6*27*3),DFDI(3*27),DFDI2(3*27)
+      REAL*8 ANGMAS(3),R8VIDE,R8DGRD
 
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       INTEGER ZI
@@ -82,6 +83,16 @@ C - PARAMETRES EN ENTREE
       CALL TECACH('OON','PVARIMR',7,JTAB,IRET)
       LGPG1 = MAX(JTAB(6),1)*JTAB(7)
       LGPG = LGPG1
+C --- ORIENTATION DU MASSIF     
+      CALL TECACH('NNN','PCAMASS',1,ICAMAS,IRET)
+      CALL R8INIR(3, R8VIDE(), ANGMAS ,1)
+      IF (ICAMAS.GT.0) THEN
+        IF (ZR(ICAMAS).GT.0.D0) THEN
+         ANGMAS(1) = ZR(ICAMAS+1)*R8DGRD()
+         ANGMAS(2) = ZR(ICAMAS+2)*R8DGRD()
+         ANGMAS(3) = ZR(ICAMAS+3)*R8DGRD()
+        ENDIF
+      ENDIF
 
 
 C - VARIABLES DE COMMANDE
@@ -172,14 +183,19 @@ C      PETITES DEFORMATIONS (AVEC EVENTUELLEMENT REACTUALISATION)
           END IF
           CALL NMPL3D(NNO,NPG,IPOIDS,IVF,IDFDE,
      &                ZR(IGEOM),TYPMOD,OPTION,ZI(IMATE),
-     &                ZK16(ICOMPO),LGPG,ZR(ICARCR),ZR(IINSTM),
-     &                ZR(IINSTP),ZR(ITEMPM),ZR(ITEMPP),ZR(IHYDRM),
-     &                ZR(IHYDRP),ZR(ISECHM),ZR(ISECHP),ZR(ISREF),
-     &                NZ,ZR(IPHASM),
-     &                ZR(IPHASP),ZR(ITREF),ZR(IDEPLM),ZR(IDEPLP),
-     &                ZR(IDEFAM),ZR(IDEFAP),DEFANE,ZR(ICONTM),
-     &                ZR(IVARIM),MATSYM,DFDI,DEF,ZR(ICONTP),ZR(IVARIP),
-     &                ZR(IMATUU),ZR(IVECTU),CODRET,CORRM,CORRP)
+     &                ZK16(ICOMPO),LGPG,ZR(ICARCR),
+     &                ZR(IINSTM),ZR(IINSTP),
+     &                ZR(ITEMPM),ZR(ITEMPP),ZR(ITREF),
+     &                ZR(IHYDRM),ZR(IHYDRP),
+     &                ZR(ISECHM),ZR(ISECHP),ZR(ISREF),
+     &                NZ,ZR(IPHASM),ZR(IPHASP),
+     &                CORRM,CORRP,
+     &                ZR(IDEPLM),ZR(IDEPLP),
+     &                ANGMAS,
+     &                ZR(IDEFAM),ZR(IDEFAP),DEFANE,
+     &                ZR(ICONTM),ZR(IVARIM),
+     &                MATSYM,DFDI,DEF,ZR(ICONTP),ZR(IVARIP),
+     &                ZR(IMATUU),ZR(IVECTU),CODRET)
 
 
 C      GRANDES DEFORMATIONS : FORMULATION SIMO - MIEHE
@@ -187,13 +203,18 @@ C      GRANDES DEFORMATIONS : FORMULATION SIMO - MIEHE
         ELSE IF (ZK16(ICOMPO+2) (1:10).EQ.'SIMO_MIEHE') THEN
           CALL NMGP3D(NNO,NPG,IPOIDS,IVF,IDFDE,
      &                ZR(IGEOM),TYPMOD,OPTION,ZI(IMATE),
-     &                ZK16(ICOMPO),LGPG,ZR(ICARCR),ZR(IINSTM),
-     &                ZR(IINSTP),ZR(ITEMPM),ZR(ITEMPP),ZR(IHYDRM),
-     &                ZR(IHYDRP),ZR(ISECHM),ZR(ISECHP),ZR(ISREF),
-     &                NZ,ZR(IPHASM),
-     &                ZR(IPHASP),ZR(ITREF),ZR(IDEPLM),ZR(IDEPLP),
-     &                ZR(ICONTM),ZR(IVARIM),DFDI,DFDI2,ZR(ICONTP),
-     &                ZR(IVARIP),MATNS,ZR(IVECTU),CODRET,CORRM,CORRP)
+     &                ZK16(ICOMPO),LGPG,ZR(ICARCR),
+     &                ZR(IINSTM),ZR(IINSTP),
+     &                ZR(ITEMPM),ZR(ITEMPP),ZR(ITREF),
+     &                ZR(IHYDRM),ZR(IHYDRP),
+     &                ZR(ISECHM),ZR(ISECHP),ZR(ISREF),
+     &                NZ,ZR(IPHASM),ZR(IPHASP),
+     &                CORRM,CORRP,
+     &                ZR(IDEPLM),ZR(IDEPLP),
+     &                ANGMAS,
+     &                ZR(ICONTM),ZR(IVARIM),
+     &                DFDI,DFDI2,
+     &                ZR(ICONTP),ZR(IVARIP),MATNS,ZR(IVECTU),CODRET)
 
 C        SYMETRISATION DE MATNS DANS MATUU
           IF (OPTION(1:10).EQ.'RIGI_MECA_' .OR.
@@ -218,14 +239,19 @@ C 7.3 - GRANDES ROTATIONS ET PETITES DEFORMATIONS
 
           CALL NMGR3D(NNO,NPG,IPOIDS,IVF,IDFDE,
      &                ZR(IGEOM),TYPMOD,OPTION,ZI(IMATE),
-     &                ZK16(ICOMPO),LGPG,ZR(ICARCR),ZR(IINSTM),
-     &                ZR(IINSTP),ZR(ITEMPM),ZR(ITEMPP),ZR(IHYDRM),
-     &                ZR(IHYDRP),ZR(ISECHM),ZR(ISECHP),ZR(ISREF),
-     &                NZ,ZR(IPHASM),
-     &                ZR(IPHASP),ZR(ITREF),ZR(IDEPLM),ZR(IDEPLP),
-     &                ZR(IDEFAM),ZR(IDEFAP),DEFANE,ZR(ICONTM),
-     &                ZR(IVARIM),DFDI,PFF,DEF,ZR(ICONTP),ZR(IVARIP),
-     &                ZR(IMATUU),ZR(IVECTU),CODRET,CORRM,CORRP)
+     &                ZK16(ICOMPO),LGPG,ZR(ICARCR),
+     &                ZR(IINSTM),ZR(IINSTP),
+     &                ZR(ITEMPM),ZR(ITEMPP),ZR(ITREF),
+     &                ZR(IHYDRM),ZR(IHYDRP),
+     &                ZR(ISECHM),ZR(ISECHP),ZR(ISREF),
+     &                NZ,ZR(IPHASM),ZR(IPHASP),
+     &                CORRM,CORRP,
+     &                ZR(IDEPLM),ZR(IDEPLP),
+     &                ANGMAS,
+     &                ZR(IDEFAM),ZR(IDEFAP),DEFANE,
+     &                ZR(ICONTM),ZR(IVARIM),
+     &                DFDI,PFF,DEF,ZR(ICONTP),ZR(IVARIP),
+     &                ZR(IMATUU),ZR(IVECTU),CODRET)
         ELSE
           CALL UTMESS('F','TE0139','COMPORTEMENT:'//ZK16(ICOMPO+2)//
      &                'NON IMPLANTE')

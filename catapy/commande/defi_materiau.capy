@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -355,8 +355,8 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
              VERI_P          =SIMP(statut='c',typ='TXM',max='**',defaut=("EPSI","TEMP","HYDR","SECH",) ),
            ),
            ECRO_LINE       =FACT(statut='f',
-             D_SIGM_EPSI     =SIMP(statut='o',typ='R'),
-             SY              =SIMP(statut='o',typ='R'),
+             D_SIGM_EPSI     =SIMP(statut='o',typ=(fonction_sdaster,'R',)),
+             SY              =SIMP(statut='o',typ=(fonction_sdaster,'R',)),
            ),
            ECRO_LINE_FO    =FACT(statut='f',
              D_SIGM_EPSI     =SIMP(statut='o',typ=(fonction_sdaster,formule)),

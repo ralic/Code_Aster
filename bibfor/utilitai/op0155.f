@@ -1,7 +1,7 @@
       SUBROUTINE OP0155 ( IER )
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
+C MODIF UTILITAI  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -47,6 +47,7 @@ C
       INTEGER IAUX, JAUX, IBID, IRET
       INTEGER NRPASS, NBPASS
       INTEGER ADRECG
+      LOGICAL      ULEXIS
 C
       CHARACTER*3  IMPRFO
       CHARACTER*8  FORMAR, FORMAC
@@ -93,13 +94,21 @@ C
 C                    --- LE FICHIER D'IMPRESSION ---
 C
 C     ------------------------------------------------------------------
+C
+      IFR    = 0
+      FICHIE = ' '
+      CALL GETVIS ( ' ', 'UNITE'  , 1,1,1, IFR   , N1 )
       CALL GETVTX ( ' ', 'FICHIER', 1,1,1, FICHIE, N1 )
-      IFR = IUNIFI(FICHIE)
-      IF ( IFR .EQ. 0 ) THEN 
-         CALL UTMESS('A',NOMPRO,'DESOLE, PAS D''IMPRESSION CAR'//
-     +               ' MAUVAISE DEFINITION DU FICHIER D''IMPRESSION.')
-         GOTO 9999
-      ELSEIF (IFR.EQ.25) THEN
+      IF ( N1 .NE. 0 ) THEN
+         CALL UTMESS('A','IMPR_TABLE',
+     +               'LE MOT CLE "FICHIER" EST APPELE A DISPARAITRE.'//
+     +               ' UTILISER LE MOT CLE "UNITE"')
+         IFR = IUNIFI(FICHIE)
+      ENDIF
+      IF ( .NOT. ULEXIS( IFR ) ) THEN
+         CALL ULOPEN ( IFR, ' ', FICHIE, 'NEW', 'O' )
+      ENDIF
+      IF (IFR.EQ.25) THEN
          CALL UTMESS('A',NOMPRO,'ATTENTION, LES VALEURS SERONT'//
      +             ' ECRITES SUR LE FICHIER DE TYPE DIGR DANS ASTERIX')
       ENDIF
@@ -183,14 +192,14 @@ C
 C
 C 3.5. ==> IMPRESSION DE LA TABLE
 C
-        CALL TBIMPR ( NEWTAB, NOPASE, FORMAT, FICHIE, 
+        CALL TBIMPR ( NEWTAB, NOPASE, FORMAT, IFR, 
      >                NPARIM, ZK24(JPAIM), 
      >                NPARPG, ZK24(JPAPG), FORMAR, FORMAC )
 C
 C 3.6. ==> IMPRESSION DES FONCTIONS
 C
         IF ( IMPRFO .EQ. 'OUI' ) THEN
-          CALL TBIMFO ( NEWTAB, FICHIE)
+          CALL TBIMFO ( NEWTAB, IFR)
         ENDIF
 C
 C 3.7. ==> MENAGE EVENTUEL

@@ -1,10 +1,10 @@
-      SUBROUTINE IRMHDF ( FICH, NDIM,NBNOEU,COORDO,NBMAIL,CONNEX,
+      SUBROUTINE IRMHDF ( IFI, NDIM,NBNOEU,COORDO,NBMAIL,CONNEX,
      >                    POINT,NOMAST,TYPMA,TITRE,NBTITR,
      >                    NBGRNO,NOMGNO,NBGRMA,NOMGMA,NOMMAI,NOMNOE,
      >                    INFMED )
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF PREPOST  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
 C RESPONSABLE GNICOLAS G.NICOLAS
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -26,7 +26,7 @@ C     ECRITURE DU MAILLAGE - FORMAT MED
 C        -  -     -                 ---
 C-----------------------------------------------------------------------
 C     ENTREE:
-C       FICH   : NOM DU FICHIER OU ON DOIT IMPRIMER LE MAILLAGE
+C       IFI    : UNITE LOGIQUE D'IMPRESSION DU MAILLAGE
 C       NDIM   : DIMENSION DU PROBLEME (2  OU 3)
 C       NBNOEU : NOMBRE DE NOEUDS DU MAILLAGE
 C       COORDO : VECTEUR DES COORDONNEES DES NOEUDS
@@ -50,10 +50,9 @@ C
 C 0.1. ==> ARGUMENTS
 C
       INTEGER      CONNEX(*),TYPMA(*),POINT(*)
-      INTEGER      NDIM,NBNOEU,NBMAIL,NBGRNO,NBGRMA
+      INTEGER      IFI,NDIM,NBNOEU,NBMAIL,NBGRNO,NBGRMA
       INTEGER      INFMED,NBTITR
 C
-      CHARACTER*(*) FICH
       CHARACTER*80 TITRE(*)
       CHARACTER*8  NOMGNO(*),NOMGMA(*),NOMMAI(*),NOMNOE(*),NOMAST
 C
@@ -88,8 +87,6 @@ C
 C
       LOGICAL EXISTM
 C
-      INTEGER IUNIFI
-C
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
@@ -104,7 +101,7 @@ C
 C
 C 1.2. ==> NOM DU FICHIER MED
 C
-      IAUX = IUNIFI (FICH)
+      IAUX = IFI
       CALL CODENT ( IAUX, 'G', SAUX08 )
       NOFIMD = 'fort.'//SAUX08
       IF ( NIVINF.GT.1 ) THEN
@@ -219,8 +216,7 @@ C====
 C 7. LES EQUIVALENCES
 C====
 C
-      CALL IRMMEQ ( FID, NOMAMD,
-     >              INFMED )
+      CALL IRMMEQ ( FID, NOMAMD, INFMED )
 C
 C====
 C 8. FERMETURE DU FICHIER MED  

@@ -1,6 +1,6 @@
-      SUBROUTINE UTIMSD(FICOU,NIVEAU,LATTR,LCONT,SCH1,IPOS,BASE)
+      SUBROUTINE UTIMSD(UNIT,NIVEAU,LATTR,LCONT,SCH1,IPOS,BASE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 31/08/1999   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,8 +21,8 @@ C ======================================================================
 C     --
 C     ARGUMENTS:
 C     ----------
-      CHARACTER*(*) SCH1,FICOU,BASE
-      INTEGER       IPOS,NIVEAU
+      CHARACTER*(*) SCH1,BASE
+      INTEGER       IPOS,NIVEAU,UNIT
       LOGICAL LATTR,LCONT
 C ----------------------------------------------------------------------
 C BUT:
@@ -31,7 +31,7 @@ C   LA CHAINE SCH1 EN POSITION IPOS DANS LEURS NOMS.
 C
 C
 C IN:
-C  FICOU  : NOM DU FICHIER OU ON VEUT L'IMPRESSION
+C  UNIT     : UNITE LOGIQUE D'IMPRESSION
 C  NIVEAU   : NIVEAU D'IMPRESSION
 C    NIVEAU 0 --> IMPRESSION DES NOMS DES OBJETS.
 C    NIVEAU 1 --> IMPRESSION DU CONTENU DES 10 1ER OBJETS DE COLLEC.
@@ -51,7 +51,7 @@ C     ------------------
       CHARACTER*24 OB1,CHAIN2
       CHARACTER*40 LB
       CHARACTER*1 XOUS,BAS2
-      INTEGER RESUME,LONG,IFM,IUNIFI,NBVAL,NBOBJ,IALIOB,I,IBID,IRET
+      INTEGER RESUME,LONG,NBVAL,NBOBJ,IALIOB,I,IBID,IRET
       REAL*8 SOMMR
 C --------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32 JEXNUM,JEXNOM,JEXATR,JEXR8
@@ -91,18 +91,17 @@ C     -------------------------
 C
 C     -- ECRITURE DE L'ENTETE :
 C    --------------------------
-      IFM=IUNIFI(FICOU)
       CHAIN2='????????????????????????'
       CHAIN2(IPOS:IPOS-1+LONG)=SCH1
-      WRITE(IFM,*) ' '
-      WRITE(IFM,*) '====> IMPR_CO DE LA STRUCTURE DE DONNEE : ',
+      WRITE(UNIT,*) ' '
+      WRITE(UNIT,*) '====> IMPR_CO DE LA STRUCTURE DE DONNEE : ',
      +                CHAIN2
-      WRITE(IFM,*) 'ATTRIBUT : ',LATTR
+      WRITE(UNIT,*) 'ATTRIBUT : ',LATTR
      +                   ,' CONTENU : ',LCONT,' BASE : >',BAS2,'<'
       CALL JELSTC(BAS2 ,SCH1,IPOS,0,KBID,NBVAL)
       NBOBJ= -NBVAL
-      WRITE(IFM,*) 'NOMBRE D''OBJETS (OU COLLECTIONS) TROUVES :',NBOBJ
-      WRITE(IFM,*) ' '
+      WRITE(UNIT,*) 'NOMBRE D''OBJETS (OU COLLECTIONS) TROUVES :',NBOBJ
+      WRITE(UNIT,*) ' '
       IF (NBVAL.EQ.0) GO TO 9999
 C
 C     -- RECHERCHE DES NOMS DES OBJETS VERIFIANT LE CRITERE:
@@ -119,7 +118,7 @@ C     -----------------------------------------------
       IF (NIVEAU.EQ.0) THEN
         DO 1   I=1,NBOBJ
            OB1 = ZK24(IALIOB-1+I)
-           WRITE(IFM,*) '      >',OB1,'<'
+           WRITE(UNIT,*) '      >',OB1,'<'
  1      CONTINUE
 
 
@@ -127,7 +126,7 @@ C     -----------------------------------------------
         DO 4   I=1,NBOBJ
            OB1 = ZK24(IALIOB-1+I)
            CALL TSTOBJ(OB1,RESUME,IBID,SOMMR,IBID,IBID,KBID(1:3),IRET)
-           WRITE(IFM,*) '      >',OB1,'< RESUME:',RESUME
+           WRITE(UNIT,*) '      >',OB1,'< RESUME:',RESUME
      &     ,'SOMMR:',SOMMR,' IRET:',IRET
  4      CONTINUE
 
@@ -138,31 +137,31 @@ C
 C       -- IMPRESSION DES ATTRIBUTS :
 C       -----------------------------
         IF (LATTR) THEN
-          WRITE(IFM,'(A40,A40)') LB,LB
-          WRITE(IFM,*) ' IMPRESSION DES ATTRIBUTS DES OBJETS TROUVES :'
+          WRITE(UNIT,'(A40,A40)') LB,LB
+          WRITE(UNIT,*) ' IMPRESSION DES ATTRIBUTS DES OBJETS TROUVES :'
           DO 2   I=1,NBOBJ
             OB1 = ZK24(IALIOB-1+I)
             CALL JELIRA(OB1,'XOUS',IBID,XOUS)
-            CALL UTIMOB(FICOU,OB1,NIVEAU,.TRUE.,.FALSE.,XOUS)
+            CALL UTIMOB(UNIT,OB1,NIVEAU,.TRUE.,.FALSE.,XOUS)
  2        CONTINUE
         END IF
 C
 C       -- IMPRESSION DES VALEURS :
 C       ---------------------------
         IF (LCONT) THEN
-          WRITE(IFM,'(A40,A40)') LB,LB
-          WRITE(IFM,*) ' IMPRESSION DU CONTENU DES OBJETS TROUVES :'
+          WRITE(UNIT,'(A40,A40)') LB,LB
+          WRITE(UNIT,*) ' IMPRESSION DU CONTENU DES OBJETS TROUVES :'
           DO 3   I=1,NBOBJ
             OB1 = ZK24(IALIOB-1+I)
             CALL JELIRA(OB1,'XOUS',IBID,XOUS)
-            CALL UTIMOB(FICOU,OB1,NIVEAU,.FALSE.,.TRUE.,XOUS)
+            CALL UTIMOB(UNIT,OB1,NIVEAU,.FALSE.,.TRUE.,XOUS)
  3        CONTINUE
         END IF
 C
       END IF
 C
 C
-      WRITE(IFM,*) '====> FIN IMPR_CO DE DE STRUCTURE DE DONNEE : ',
+      WRITE(UNIT,*) '====> FIN IMPR_CO DE DE STRUCTURE DE DONNEE : ',
      +                CHAIN2
 C
 C

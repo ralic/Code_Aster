@@ -3,7 +3,7 @@
       INTEGER             IER 
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
+C MODIF CALCULEL  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -45,9 +45,9 @@ C     ----- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
       INTEGER       NBV, NBR8, NBNO, IRET, NOCC2D, NOCC3D, IADRT1
       INTEGER       IADRNO, IMPR, IADRCO, IADRMA, IADRT2, IADRT3,
-     +              IADRT4, IADRT5, ICODE, NOCCTB
+     +              IADRT4, IADRT5, ICODE, NOCCTB, IFIC, N1, IUNIFI
       REAL*8        R8B, DIR(3), RINF, RSUP, ABSC
-      LOGICAL       DIREC
+      LOGICAL       DIREC, ULEXIS
       CHARACTER*3   OUINON
       CHARACTER*8   K8B, NOMA, MODELE, FOND, RESU, NOEUD, FORMAT
       CHARACTER*16  TYPE, OPER, FICHIE
@@ -76,8 +76,20 @@ C
       CALL GETFAC ( 'IMPRESSION' , IMPR )
 C
       IF ( IMPR .NE. 0 ) THEN
-         CALL GETVTX ( 'IMPRESSION', 'FICHIER', 1,1,1, FICHIE, NBV )
          CALL GETVTX ( 'IMPRESSION', 'FORMAT ', 1,1,1, FORMAT, NBV )
+         IFIC   = 0
+         FICHIE = ' ' 
+         CALL GETVIS ( 'IMPRESSION', 'UNITE'  , 1,1,1, IFIC  , N1 )
+         CALL GETVTX ( 'IMPRESSION', 'FICHIER', 1,1,1, FICHIE, N1 )
+         IF ( N1 .NE. 0 ) THEN
+            CALL UTMESS('A',OPER,
+     +               'LE MOT CLE "FICHIER" EST APPELE A DISPARAITRE.'//
+     +               ' UTILISER LE MOT CLE "UNITE"')
+            IFIC = IUNIFI( FICHIE )
+         ENDIF
+         IF ( .NOT. ULEXIS( IFIC ) ) THEN
+            CALL ULOPEN ( IFIC, ' ', FICHIE, 'NEW', 'O' )
+         ENDIF
       ENDIF
 C
 C --- CREATION DE LA STRUCTURE DE DONNEES DE TYPE THETA_GEOM QUI EST
@@ -173,7 +185,7 @@ C
             CALL JEVEUO ( STOK4, 'L', IADRT5 )
             CALL GIMPTE ( THETA(1:8), OPTION, ZR(IADRT1), ZR(IADRT2), 
      +               ZR(IADRT3), ZK8(IADRNO), ZR(IADRT5), ZR(IADRT4), 
-     +               NBNO, FORMAT, FICHIE )
+     +               NBNO, FORMAT, IFIC )
          ENDIF
 C
 C        --- DESTRUCTION DES OBJETS DE TRAVAIL ---
@@ -263,7 +275,7 @@ C
             NBNO = 1
             ABSC = 0.D0
             CALL GIMPTE ( THETA(1:8), OPTION, RINF, RSUP, MODULE, 
-     +                    NOEUD, DIR, ABSC, NBNO, FORMAT, FICHIE )
+     +                    NOEUD, DIR, ABSC, NBNO, FORMAT, IFIC )
          ENDIF
 C
       ENDIF

@@ -3,7 +3,7 @@
         INTEGER         IER
 C       ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 03/05/2004   AUTEUR F1BHHAJ J.ANGLES 
+C MODIF PREPOST  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -363,7 +363,8 @@ C
      &            IMPR,ZR(IVDMG))
 C
       IF(IMPR.GE.2) THEN
-        CALL JEIMPO('MESSAGE','&&OP0151.DOMMAGE',' ','DOMMAGE')
+        IFM = IUNIFI('MESSAGE')
+        CALL JEIMPO(IFM,'&&OP0151.DOMMAGE',' ','DOMMAGE')
       ENDIF
 C
 C ----- TRANSFORMATION DU VECTEUR DOMMAGE EN UN VRAI CHAM_ELEM

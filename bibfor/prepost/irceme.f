@@ -1,11 +1,11 @@
-      SUBROUTINE IRCEME ( FICH, NOCHMD, CHANOM,
+      SUBROUTINE IRCEME ( IFI, NOCHMD, CHANOM,
      >                    NBCMP, NOMCMP,
      >                    NUMPT, INSTAN, UNIINS, NUMORD,
      >                    NBMAEC, LIMAEC,
      >                    CODRET )
 C_______________________________________________________________________
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 16/10/2002   AUTEUR GNICOLAS G.NICOLAS 
+C MODIF PREPOST  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
 C RESPONSABLE GNICOLAS G.NICOLAS
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -26,7 +26,7 @@ C ======================================================================
 C        IMPRESSION DU CHAMP CHANOM ELEMENT ENTIER/REEL
 C        AU FORMAT MED
 C     ENTREES:
-C        FICH   : NOM DU FICHIER OU ON DOIT IMPRIMER LE CHAMP
+C        IFI    : UNITE LOGIQUE D'IMPRESSION DU CHAMP
 C        NOCHMD : NOM MED DU CHAM A ECRIRE
 C        CHANOM : NOM ASTER DU CHAM A ECRIRE
 C        NBCMP  : NOMBRE DE COMPOSANTES A ECRIRE
@@ -50,11 +50,11 @@ C
       CHARACTER*8 UNIINS
       CHARACTER*19 CHANOM
       CHARACTER*32 NOCHMD
-      CHARACTER*(*) FICH, NOMCMP(*)
+      CHARACTER*(*)  NOMCMP(*)
 C
       INTEGER NBCMP, NUMPT, NUMORD
       INTEGER NBMAEC
-      INTEGER LIMAEC(*)
+      INTEGER IFI, LIMAEC(*)
 C
       REAL*8 INSTAN
 C
@@ -98,7 +98,7 @@ C 2. ECRITURE DES CHAMPS AU FORMAT MED
 C====
 C
       SUPNOE = .FALSE.
-      CALL IRCAME ( FICH, NOCHMD,
+      CALL IRCAME ( IFI, NOCHMD,
      >              NBCMP, NOMCMP,
      >              NUMPT, INSTAN, UNIINS, NUMORD,
      >              JCESK, JCESD, JCESC, JCESV, JCESL,

@@ -1,9 +1,10 @@
-      SUBROUTINE TUFULL(OPTION,NOMTE,NBRDDL,DEPLM,DEPLP,B,KTILD,EFFINT,
+      SUBROUTINE TUFULL(OPTION,NOMTE,NBRDDL,DEPLM,DEPLP,
+     &                  B,KTILD,EFFINT,
      &                  PASS,KTEMP,VTEMP,CODRET)
       IMPLICIT   NONE
       CHARACTER*16 OPTION
 C ......................................................................
-C MODIF ELEMENTS  DATE 04/05/2004   AUTEUR SMICHEL S.MICHEL-PONNELLE 
+C MODIF ELEMENTS  DATE 15/06/2004   AUTEUR MABBAS M.ABBAS 
 C TOLE CRP_20
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -67,7 +68,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       REAL*8 PASS(NBRDDL,NBRDDL),KTEMP(NBRDDL,NBRDDL)
       REAL*8 PGL(3,3),TMC,TPC,OMEGA,VTEMP(NBRDDL)
       REAL*8 PGL1(3,3),PGL2(3,3),PGL3(3,3),RAYON,THETA
-      REAL*8 HYDRGM,HYDRGP,SECHGM,SECHGP,SREF,LC
+      REAL*8 HYDRGM,HYDRGP,SECHGM,SECHGP,SREF,LC,ANGMAS(3)
       INTEGER NNO,NPG,NBCOU,NBSEC,M,ICOMPO,NDIMV,IVARIX
       INTEGER IPOIDS,IVF,NBVARI,LGPG,JTAB(7)
       INTEGER IMATE,ITEMP,IMATUU,ICAGEP,IGEOM,NBPAR,ITABM(8),ITABP(8)
@@ -363,7 +364,7 @@ C               FI = FI - OMEGA
             K2 = LGPG* (IGAU-1) + ((2*NBSEC+1)* (ICOU-1)+ (ISECT-1))*
      &           NBVARI
 
-C ======= CALCUL DES DEFORMARIONS ET INCREMENTS DE DEFORMATION
+C ======= CALCUL DES DEFORMATIONS ET INCREMENTS DE DEFORMATION
 
             CALL EPSETT('DEFORM',NBRDDL,DEPLM,B,X,EPSI,WGT,X)
             EPS2D(1) = EPSI(1)
@@ -399,12 +400,22 @@ C         ---------------------------------------------------
               CALL FOINTE('FM',ZK8(ITEMP),2,NOMPU,VALPU,TPC,IER)
             END IF
 
+C -    APPEL A LA LOI DE COMPORTEMENT
+C           ORIENTATION DU MASSIF     
+            CALL R8INIR(3, R8VIDE(), ANGMAS ,1)
             CALL NMCOMP(2,TYPMOD,ZI(IMATE),ZK16(ICOMPO),ZR(ICARCR),
-     &                  ZR(IINSTM),ZR(IINSTP),TMC,TPC,ZR(ITREF),HYDRGM,
-     &                  HYDRGP,SECHGM,SECHGP,SREF,EPS2D,DEPS2D,SIGN,
-     &                  ZR(IVARIM+K2),OPTION,EPSANM,EPSANP,NZ,PHASM,
-     &                  PHASP,LC,SIGMA,ZR(IVARIP+K2),DSIDEP,COD,R8VIDE()
-     &,R8VIDE())
+     &                  ZR(IINSTM),ZR(IINSTP),
+     &                  TMC,TPC,ZR(ITREF),
+     &                  HYDRGM,HYDRGP,
+     &                  SECHGM,SECHGP,SREF, 
+     &                  EPS2D,DEPS2D,
+     &                  SIGN,ZR(IVARIM+K2),
+     &                  OPTION,
+     &                  EPSANM,EPSANP,
+     &                  NZ,PHASM,PHASP,
+     &                  R8VIDE(),R8VIDE(),
+     &                  ANGMAS,
+     &                  LC,SIGMA,ZR(IVARIP+K2),DSIDEP,COD)
 
 C           COD=1 : ECHEC INTEGRATION LOI DE COMPORTEMENT
 C           COD=3 : C_PLAN DEBORST SIGZZ NON NUL

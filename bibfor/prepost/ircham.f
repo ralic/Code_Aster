@@ -3,7 +3,7 @@
       CHARACTER*(*)       CHAM19
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 25/09/2001   AUTEUR GNICOLAS G.NICOLAS 
+C MODIF PREPOST  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,7 +39,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*80                                        ZK80
       COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
-      CHARACTER*8  MODELE, FORM, FICH, TITRE, NOMCMP, FORMAR, K8BID
+      CHARACTER*8  MODELE, FORM, TITRE, NOMCMP, FORMAR, K8BID
       CHARACTER*8 NOSIMP, NOPASE
       CHARACTER*19 CHAMP,NOMSD,NOMSYM
       REAL*8       ZERO
@@ -50,7 +50,6 @@ C
       CALL JEMARQ()
       IFR = IUNIFI('RESULTAT')
       FORM   = 'RESULTAT'
-      FICH   = 'RESULTAT'
       CHAMP  = CHAM19
       NOMSD  = CHAM19
       TITRE  = ' '
@@ -78,7 +77,7 @@ C
 C
       CALL DISMOI('F','NOM_MODELE',CHAM19,'CHAMP',IBID,MODELE,IBID)
 C
-      CALL IRCH19 ( CHAMP,FORM,FICH,TITRE,MODELE,
+      CALL IRCH19 ( CHAMP,FORM,IFR,TITRE,MODELE,
      >              NOMSD,NOSIMP,NOPASE,NOMSYM,
      >              UN,UN,UN,UN,UN,UN,
      >              FAUX,FAUX,IZERO,IZERO,IZERO,IZERO,IZERO,

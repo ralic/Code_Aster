@@ -2,7 +2,7 @@
       IMPLICIT  NONE
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 11/02/98   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -183,7 +183,7 @@ C
       WRITE(UNIT,*)
 C
       OBVALE = CHAMEL(1:8)//'           .VALE'
-      CALL JEIMPO('MESSAGE',OBVALE,' ',
+      CALL JEIMPO(UNIT,OBVALE,' ',
      &        'OBJET CONTENANT LA VALEUR DES FIC SUR CHAQUE ELEMENT')
 C
 555   FORMAT(60('*'))

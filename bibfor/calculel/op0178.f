@@ -3,7 +3,7 @@
       INTEGER IER
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
+C MODIF CALCULEL  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -45,7 +45,8 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       CHARACTER*100 FORM1
       CHARACTER*3 TYPE
       INTEGER RESUME,SOMMI,LONUTI,LONMAX
-      REAL*8 SOMMR
+      LOGICAL ULEXIS
+      REAL*8  SOMMR
 
 
       CALL JEMARQ()
@@ -54,22 +55,24 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 
 C     -- RECUPERATION DES DONNEES :
 C     ----------------------------
-      CALL GETVTX(' ','FICHIER',0,1,1,NOMFI,N2)
-      IF (N2.NE.0) THEN
-        IFIC = IUNIFI(NOMFI)
-        IF (IFIC.EQ.0) THEN
-          CALL UTMESS('A','TEST_RESU',
-     +                'LE NOM DU FICHIER D''IMPRESSION EST '//
-     +                'INCONNU : '//NOMFI//' ON PRENDRA LE FICHIER'//
-     +                ' "RESULTAT". ')
-          IFIC = IUNIFI('RESULTAT')
-        END IF
-      ELSE
-        IFIC = IUNIFI('RESULTAT')
-      END IF
-      CALL GETVTX(' ','FORMAT_R',0,1,1,FORMR,IBID)
-      CALL GETVTX(' ','PREC_R',0,1,1,PRECI,IBID)
-      CALL GETVTX(' ','TYPE_TEST',0,1,1,TYPTES,IBID)
+C
+      IFIC  = 0
+      NOMFI = ' '
+      CALL GETVIS ( ' ', 'UNITE'  , 1,1,1, IFIC , N1 )
+      CALL GETVTX ( ' ', 'FICHIER', 1,1,1, NOMFI, N2 )
+      IF ( N2 .NE. 0 ) THEN
+         CALL UTMESS('A','ENGENDRE_TEST',
+     +               'LE MOT CLE "FICHIER" EST APPELE A DISPARAITRE.'//
+     +               ' UTILISER LE MOT CLE "UNITE"')
+         IFIC = IUNIFI( NOMFI )
+      ENDIF
+      IF ( .NOT. ULEXIS( IFIC ) ) THEN
+         CALL ULOPEN ( IFIC, ' ', NOMFI, 'NEW', 'O' )
+      ENDIF
+
+      CALL GETVTX ( ' ', 'FORMAT_R' , 0,1,1, FORMR  ,IBID)
+      CALL GETVTX ( ' ', 'PREC_R'   , 0,1,1, PRECI  ,IBID)
+      CALL GETVTX ( ' ', 'TYPE_TEST', 0,1,1, TYPTES ,IBID)
 
 
 C     -- CAS : TOUT:'OUI'

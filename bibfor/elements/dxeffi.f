@@ -4,7 +4,7 @@
       CHARACTER*16        NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHPD S.VANDENBERGHE 
+C MODIF ELEMENTS  DATE 15/06/2004   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -95,7 +95,7 @@ C     ---------------------------
       IF ( GRILLE ) THEN
          CALL JEVECH('PMATERC','L',IMATE)
          NPGH = 1
-         DISTN = ZR(ICACOQ+6)
+         DISTN = ZR(ICACOQ+3)
          COEF = DEUX
          ZMIN = -H/DEUX + HIC/DEUX + DISTN
          CALL GTRIA3 ( XYZL, ZR(LZR) )

@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 15/06/2004   AUTEUR MABBAS M.ABBAS 
 # TITRE PLAQUE ENCASTREE EN TRACTION CONSTITUEE D'UNE NAPPE D'ARMATURES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -24,8 +24,17 @@ DEBUT(    CODE=_F(  NOM = 'SSNS100B',NIV_PUB_WEB='INTERNET') )
 # VALIDATION DU MODELE GRILLE_CINE_LINE EN PLASTICITE
 #-----------------------------------------------------------------------
 
-MAILTOT=LIRE_MAILLAGE(   )
+MAILL1=LIRE_MAILLAGE(   )
 
+
+MAILTOT=CREA_MAILLAGE( 
+               MAILLAGE=MAILL1,
+               CREA_GROUP_MA=_F( 
+                   NOM = 'GEOBB',  
+                   GROUP_MA = 'GEOB',  
+                   PREF_MAILLE = 'B', 
+                              )
+                           )
 #
 # -----------------------------------------------------
 # DEFINITION DES MATERIAUX
@@ -43,10 +52,15 @@ ACIER=DEFI_MATERIAU(
 # -------------------------------------------------
 #
 MATAF=AFFE_MATERIAU(    MAILLAGE=MAILTOT,
-                          AFFE=_F(  GROUP_MA = 'GEOB',
+                          AFFE= (
+                          _F(  GROUP_MA = 'GEOB',
                                  MATER = ACIER,
                                  TEMP_REF = 50.,
-                               )
+                               ),
+                          _F(  GROUP_MA = 'GEOBB',
+                                 MATER = ACIER,
+                                 TEMP_REF = 50.,
+                               ),),
                       )
 
 #
@@ -55,7 +69,7 @@ MATAF=AFFE_MATERIAU(    MAILLAGE=MAILTOT,
 # -------------------------------------------------
 #
 LEMOD=AFFE_MODELE(    MAILLAGE=MAILTOT,     VERIF='MAILLE',
-                        AFFE=_F(  GROUP_MA = 'GEOB',
+                        AFFE=_F(  GROUP_MA = ('GEOB','GEOBB',),
                                PHENOMENE = 'MECANIQUE',
                                MODELISATION = 'GRILLE',
                              )
@@ -66,16 +80,16 @@ LEMOD=AFFE_MODELE(    MAILLAGE=MAILTOT,     VERIF='MAILLE',
 # -------------------------------------------------
 #
 LACAR=AFFE_CARA_ELEM(    MODELE=LEMOD,
-                       GRILLE=_F( GROUP_MA = 'GEOB',
-                                SECTION_L = .01,
-                                ANGL_REP = (0.0, 0.0,),
-                                ANGL_L = 0.,
-                                POUR_CENT_L = 1.,
-                                POUR_CENT_T = 0.1,
-                                EXCENTREMENT = 0.0,
+                       GRILLE=(_F( GROUP_MA = 'GEOB',
+                                SECTION = .01,
+                                ANGL_REP=(0,0),
+                                EXCENTREMENT = 0.0),
+                               _F( GROUP_MA = 'GEOBB',
+                                SECTION = .01,
+                                ANGL_REP=(90,0),
+                                EXCENTREMENT = 0.0)
                               )
                         )
-
 # -------------------------------------------------
 # CONSTRUCTION DU CHAMP DE TEMPERATURE POUR
 # TENTER DE REPRODUIRE LA PRECONTRAINTE
@@ -290,10 +304,10 @@ TEST_RESU(RESU=(
             _F( RESULTAT = LEDEP,
              INST = 1.,
              NOM_CHAM = 'SIGM_ELNO_COQU',
-             NOM_CMP = 'SIYY',
-             MAILLE = 'MA1',
+             NOM_CMP = 'SIXX',
+             MAILLE = 'BMA1',
              NOEUD = 'NO1',
-             VALE = 2.E7,
+             VALE = 2.E8,
              PRECISION = 0.001,
             ),
             _F( RESULTAT = LEDEP,
@@ -308,10 +322,10 @@ TEST_RESU(RESU=(
             _F( RESULTAT = LEDEP,
              INST = 2.,
              NOM_CHAM = 'SIGM_ELNO_COQU',
-             NOM_CMP = 'SIYY',
-             MAILLE = 'MA1',
+             NOM_CMP = 'SIXX',
+             MAILLE = 'BMA1',
              NOEUD = 'NO1',
-             VALE = 2.4E7,
+             VALE = 2.4E8,
              PRECISION = 0.001,
             ),
             _F( RESULTAT = LEDEP,
@@ -326,10 +340,10 @@ TEST_RESU(RESU=(
             _F( RESULTAT = LEDEP,
              INST = 3.,
              NOM_CHAM = 'SIGM_ELNO_COQU',
-             NOM_CMP = 'SIYY',
-             MAILLE = 'MA1',
+             NOM_CMP = 'SIXX',
+             MAILLE = 'BMA1',
              NOEUD = 'NO1',
-             VALE = 4.E6,
+             VALE = 4.E7,
              PRECISION = 0.001,
             ),
             _F( RESULTAT = LEDEP,
@@ -344,10 +358,10 @@ TEST_RESU(RESU=(
             _F( RESULTAT = LEDEP,
              INST = 4.,
              NOM_CHAM = 'SIGM_ELNO_COQU',
-             NOM_CMP = 'SIYY',
-             MAILLE = 'MA1',
+             NOM_CMP = 'SIXX',
+             MAILLE = 'BMA1',
              NOEUD = 'NO1',
-             VALE = 2.4E7,
+             VALE = 2.4E8,
              PRECISION = 0.001,
             ),
             _F( RESULTAT = LEDEP,
@@ -362,10 +376,10 @@ TEST_RESU(RESU=(
             _F( RESULTAT = LEDEP,
              INST = 5.,
              NOM_CHAM = 'SIGM_ELNO_COQU',
-             NOM_CMP = 'SIYY',
-             MAILLE = 'MA1',
+             NOM_CMP = 'SIXX',
+             MAILLE = 'BMA1',
              NOEUD = 'NO1',
-             VALE = -1.6E7,
+             VALE = -1.6E8,
              PRECISION = 0.001,
             ),
             _F( RESULTAT = LEDEP,
@@ -380,10 +394,10 @@ TEST_RESU(RESU=(
             _F( RESULTAT = LEDEP,
              INST = 6.,
              NOM_CHAM = 'SIGM_ELNO_COQU',
-             NOM_CMP = 'SIYY',
-             MAILLE = 'MA1',
+             NOM_CMP = 'SIXX',
+             MAILLE = 'BMA1',
              NOEUD = 'NO1',
-             VALE = -2.4E7,
+             VALE = -2.4E8,
              PRECISION = 0.001,
             ),
             _F( RESULTAT = LEDEP,
@@ -398,10 +412,10 @@ TEST_RESU(RESU=(
             _F( RESULTAT = LEDEP,
              INST = 7.,
              NOM_CHAM = 'SIGM_ELNO_COQU',
-             NOM_CMP = 'SIYY',
-             MAILLE = 'MA1',
+             NOM_CMP = 'SIXX',
+             MAILLE = 'BMA1',
              NOEUD = 'NO1',
-             VALE = 1.6E7,
+             VALE = 1.6E8,
              PRECISION = 0.001,
             ),
             _F( RESULTAT = LEDEP,
@@ -416,10 +430,10 @@ TEST_RESU(RESU=(
             _F( RESULTAT = LEDEP,
              INST = 8.,
              NOM_CHAM = 'SIGM_ELNO_COQU',
-             NOM_CMP = 'SIYY',
-             MAILLE = 'MA1',
+             NOM_CMP = 'SIXX',
+             MAILLE = 'BMA1',
              NOEUD = 'NO1',
-             VALE = 2.8E7,                  ),
+             VALE = 2.8E8,                  ),
             _F( RESULTAT = LEDEP,
              INST = 9.,
              NOM_CHAM = 'SIGM_ELNO_COQU',
@@ -432,10 +446,10 @@ TEST_RESU(RESU=(
             _F( RESULTAT = LEDEP,
              INST = 9.,
              NOM_CHAM = 'SIGM_ELNO_COQU',
-             NOM_CMP = 'SIYY',
-             MAILLE = 'MA1',
+             NOM_CMP = 'SIXX',
+             MAILLE = 'BMA1',
              NOEUD = 'NO1',
-             VALE = -1.2E7,
+             VALE = -1.2E8,
              PRECISION = 0.001,
             ),
             _F( RESULTAT = LEDEP,
@@ -450,10 +464,10 @@ TEST_RESU(RESU=(
             _F( RESULTAT = LEDEP,
              INST = 10.,
              NOM_CHAM = 'SIGM_ELNO_COQU',
-             NOM_CMP = 'SIYY',
-             MAILLE = 'MA1',
+             NOM_CMP = 'SIXX',
+             MAILLE = 'BMA1',
              NOEUD = 'NO1',
-             VALE = -3.E7,
+             VALE = -3.E8,
              PRECISION = 0.001,
             ),
             _F( RESULTAT = LEDEP,
@@ -468,10 +482,10 @@ TEST_RESU(RESU=(
             _F( RESULTAT = LEDEP,
              INST = 11.,
              NOM_CHAM = 'SIGM_ELNO_COQU',
-             NOM_CMP = 'SIYY',
-             MAILLE = 'MA1',
+             NOM_CMP = 'SIXX',
+             MAILLE = 'BMA1',
              NOEUD = 'NO1',
-             VALE = 1.E7,
+             VALE = 1.E8,
              PRECISION = 0.001,
             ))
         )

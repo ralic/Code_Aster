@@ -1,6 +1,6 @@
       SUBROUTINE OP0128 ( IER )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,54 +29,27 @@ C
 C-----------------------------------------------------------------------
 C
       INTEGER          IER
-C
-C-------- DEBUT COMMUNS NORMALISES  JEVEUX  ----------------------------
-C
-      INTEGER          ZI
-      COMMON  /IVARJE/ ZI(1)
-      REAL*8           ZR
-      COMMON  /RVARJE/ ZR(1)
-      COMPLEX*16       ZC
-      COMMON  /CVARJE/ ZC(1)
-      LOGICAL          ZL
-      COMMON  /LVARJE/ ZL(1)
-      CHARACTER*8      ZK8
-      CHARACTER*16              ZK16
-      CHARACTER*24                        ZK24
-      CHARACTER*32                                  ZK32
-      CHARACTER*80                                            ZK80
-      COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-C
-C-----  FIN  COMMUNS NORMALISES  JEVEUX  -------------------------------
-C
       CHARACTER*8 NOMRES,NUMEG
       CHARACTER*9 OPTION
       CHARACTER*19 NOMNUM,NOMSTO
       CHARACTER*16 NOMCON,NOMOPE
-C
-C-----------------------------------------------------------------------
 C-----------------------------------------------------------------------
       CALL INFMAJ()
 C
-      CALL GETRES(NOMRES,NOMCON,NOMOPE)
-C
+      CALL GETRES ( NOMRES, NOMCON, NOMOPE )
 C
 C-------------------RECUPERATION CONCEPTS AMONT-------------------------
 C
-      CALL GETVID(' ','NUME_DDL_GENE',1,1,1,NUMEG,IBID)
-      NOMNUM=NUMEG//'      .NUME'
-      NOMSTO=NUMEG//'      .SLCS'
+      CALL GETVID ( ' ', 'NUME_DDL_GENE', 1,1,1, NUMEG, IBID )
+      NOMNUM = NUMEG//'      .NUME'
+      NOMSTO = NUMEG//'      .SLCS'
 C
 C-------------------------RECUPERATION DE L'OPTION----------------------
 C
-      CALL GETVTX(' ','OPTION',1,1,1,OPTION,IOC)
+      CALL GETVTX ( ' ', 'OPTION', 1,1,1, OPTION, IBID )
 C
 C---------------------------------ASSEMBLAGE----------------------------
 C
-      CALL ASSGEN(NOMRES,OPTION,NOMNUM,NOMSTO)
-C
-C
-C
-C      CALL UTIMSD('MESSAGE',2,.TRUE.,.TRUE.,NOMRES,1,'G')
+      CALL ASSGEN ( NOMRES, OPTION, NOMNUM, NOMSTO )
 C
       END

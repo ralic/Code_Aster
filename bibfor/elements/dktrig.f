@@ -21,7 +21,7 @@ C ======================================================================
       LOGICAL       GRILLE
       CHARACTER*16  OPTION , NOMTE
 C     ------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 21/01/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 15/06/2004   AUTEUR MABBAS M.ABBAS 
 C
 C     MATRICE DE RIGIDITE DE L'ELEMENT DE PLAQUE DKT
 C     ------------------------------------------------------------------
@@ -83,8 +83,8 @@ C
       CALL JEVECH('PCACOQU','L',JCOQU)
 C
       IF ( GRILLE ) THEN
-         DISTN = ZR(JCOQU+6)
-         CTOR = ZR(JCOQU+7)
+         DISTN = ZR(JCOQU+3)
+         CTOR = ZR(JCOQU+4)
       ELSE
          CTOR = ZR(JCOQU+3)
       ENDIF

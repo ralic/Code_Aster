@@ -1,10 +1,10 @@
-      SUBROUTINE IRMAID(MATR,FICH,VERSIO)
+      SUBROUTINE IRMAID(MATR,IFC,VERSIO)
       IMPLICIT REAL*8 (A-H,O-Z)
       INTEGER VERSIO
-      CHARACTER*(*) MATR,FICH
+      CHARACTER*(*) MATR
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 01/02/2000   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,7 +54,6 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C     ------------------------------------------------------------------
 
       CALL JEMARQ()
-      IFC = IUNIFI(FICH)
 
       CALL MTDSCR(MATR)
       CALL JEVEUO(MATR(1:8)//'           .&INT','E',LMAT)

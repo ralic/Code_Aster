@@ -1,6 +1,6 @@
-      SUBROUTINE UTIMCO(FICOU,OBIN,NIVO,LATTR,LCONT)
+      SUBROUTINE UTIMCO(UNIT,OBIN,NIVO,LATTR,LCONT)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 23/01/95   AUTEUR G8BHHAC A.Y.PORTABILITE 
+C MODIF UTILITAI  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,12 +21,12 @@ C ======================================================================
 C
 C     ARGUMENTS:
 C     ----------
-      CHARACTER*(*) OBIN,FICOU
-      INTEGER NIVO
+      CHARACTER*(*) OBIN
+      INTEGER NIVO,UNIT
       LOGICAL LATTR,LCONT
 C ----------------------------------------------------------------------
 C     IN:
-C       FICOU  : NOM DU FICHIER OU ON VEUT L'IMPRESSION
+C       UNIT   : UNITE LOGIQUE D'IMPRESSION
 C       OBIN   : NOM D'UNE COLLECTION  JEVEUX (K24) A IMPRIMER
 C       NIVO   : NIVEAU D'IMPRESSION
 C      LATTR   : VRAI : ON IMPRIME LES ATTRIBUTS
@@ -43,7 +43,6 @@ C     ------------------
 C DEB-------------------------------------------------------------------
 C
       OB1 = OBIN
-      IFM=IUNIFI(FICOU)
 C
       CALL JEEXIN(OB1,IRET)
       IF (IRET.LE.0) THEN
@@ -54,11 +53,11 @@ C
       CALL JELIRA(OB1,'NMAXOC',NMAXOC,KBID)
       CALL JELIRA(OB1,'ACCES',IBID,ACCES)
 C
-      WRITE(IFM,*)'IMPRESSION DE LA COLLECTION : ',OB1
+      WRITE(UNIT,*)'IMPRESSION DE LA COLLECTION : ',OB1
 C
-      IF (LATTR) CALL JEIMPA(FICOU,OB1,' ')
+      IF (LATTR) CALL JEIMPA(UNIT,OB1,' ')
       IF((LCONT).AND.(ACCES(1:2).EQ.'NO'))
-     +    CALL JEPRAT(FICOU,OB1,'$$NOM',' ','REPERTOIRE DE NOMS'
+     +    CALL JEPRAT(UNIT,OB1,'$$NOM',' ','REPERTOIRE DE NOMS'
      +            //' DE LA COLLECTION :'//OB1)
 C
 C     -- BOUCLE SUR LES ELEMENTS DE LA COLLECTION :
@@ -68,10 +67,10 @@ C     ---------------------------------------------
          CALL JEEXIN(JEXNUM(OB1,IOC),IRET)
          IF (IRET.EQ.0)  GO TO 1
          IF (LATTR) THEN
-            CALL JEIMPA(FICOU,JEXNUM(OB1,IOC),' ')
+            CALL JEIMPA(UNIT,JEXNUM(OB1,IOC),' ')
          END IF
          IF (LCONT) THEN
-            CALL JEIMPO(FICOU,JEXNUM(OB1,IOC),' ',' ')
+            CALL JEIMPO(UNIT,JEXNUM(OB1,IOC),' ',' ')
          END IF
  1    CONTINUE
 C

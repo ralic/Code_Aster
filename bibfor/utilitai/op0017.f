@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
+C MODIF UTILITAI  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,7 +40,7 @@ C
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
-      LOGICAL       LATTR, LCONT
+      LOGICAL       LATTR, LCONT, ULEXIS
       CHARACTER*1   BASE
       CHARACTER*8   NOMCO
       CHARACTER*16  NOMFI
@@ -70,15 +70,19 @@ C
       CALL GETVTX(' ','BASE',0,1,1,CHAINE,N1)
       BASE=CHAINE(1:1)
 C
-      CALL GETVTX(' ','FICHIER',0,1,1,NOMFI,N2)
-      IFI = IUNIFI(NOMFI)
-      IF (IFI.EQ.0) THEN
+      IFI = 0
+      NOMFI = ' '
+      CALL GETVIS ( ' ', 'UNITE'  , 1,1,1, IFI  , N2 )
+      CALL GETVTX ( ' ', 'FICHIER', 1,1,1, NOMFI, N2 )
+      IF ( N2 .NE. 0 ) THEN
          CALL UTMESS('A','IMPR_CO',
-     +                   'NOM DE FICHIER D IMPRESSION INCONNU:'//NOMFI//
-     +               ' ON PRENDRA  LE FICHIER "RESULTAT"')
-         IFI = IUNIFI('RESULTAT')
-         NOMFI = 'RESULTAT'
-      END IF
+     +               'LE MOT CLE "FICHIER" EST APPELE A DISPARAITRE.'//
+     +               ' UTILISER LE MOT CLE "UNITE"')
+         IFI  = IUNIFI( NOMFI )
+      ENDIF
+      IF ( .NOT. ULEXIS( IFI ) ) THEN
+         CALL ULOPEN ( IFI, ' ', NOMFI, 'NEW', 'O' )
+      ENDIF
 C
       CALL GETVID(' ','CO',0,1,0,NOMCO,N1)
       NBCO= -N1
@@ -86,7 +90,7 @@ C
         CALL WKVECT ('&&OP0017.LISTE_CO','V V K8',NBCO,IALICO)
         CALL GETVID(' ','CO',0,1,NBCO,ZK8(IALICO),N1)
         DO 1, I=1,NBCO
-          CALL UTIMSD(NOMFI,NIVO,LATTR,LCONT,ZK8(IALICO-1+I),1,BASE)
+          CALL UTIMSD(IFI,NIVO,LATTR,LCONT,ZK8(IALICO-1+I),1,BASE)
  1      CONTINUE
         CALL JEDETR ('&&OP0017.LISTE_CO')
       END IF
@@ -95,7 +99,7 @@ C
       IF (N2.GT.0) THEN
          CALL GETLTX(' ','CHAINE',0,1,1,LONG,N3)
          CALL GETVIS(' ','POSITION',0,1,1,IPOS,N4)
-         CALL UTIMSD(NOMFI,NIVO,LATTR,LCONT,CHAINE(1:LONG),IPOS,BASE)
+         CALL UTIMSD(IFI,NIVO,LATTR,LCONT,CHAINE(1:LONG),IPOS,BASE)
       END IF
 C
       CALL JEDEMA()

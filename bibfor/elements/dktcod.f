@@ -6,7 +6,7 @@
       LOGICAL       GRILLE
       CHARACTER*16  NOMTE, OPTION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 21/01/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 15/06/2004   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -109,7 +109,7 @@ C     -------- CALCUL DE D1I ET D2I ------------------------------------
         EPAIS = ZR(JCACO)
         X3I = 0.D0
 
-        IF (GRILLE) X3I = ZR(JCACO+6)
+        IF (GRILLE) X3I = ZR(JCACO+3)
 
         IF (INIV.LT.0) THEN
           X3I = X3I - EPAIS/2.D0

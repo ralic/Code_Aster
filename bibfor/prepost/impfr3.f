@@ -1,7 +1,7 @@
       SUBROUTINE IMPFR3 (NOMNOZ, NOMCMZ, LONLIS, NOMNOE, NOMCMP,
-     +                   VALE, NOMAIL, NBCHIF, FICHIE )
+     +                   VALE, NOMAIL, NBCHIF, IFM )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 05/11/96   AUTEUR CIBHHGB G.BERTRAND 
+C MODIF PREPOST  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,11 +43,11 @@ C                                DE LA COLONNE A IMPRIMER
 C    NOMAIL          IN    K8    NOM DE LA MAILLE DONT ON IMPRIME LES
 C                                VALEURS
 C    NBCHIF          IN    I     NOMBRE DE CHIFFRES SIGNIFICATIFS
-C    FICHIE          IN    K*    NOM DU FICHIER OU L'ON IMPRIME
+C    IFM             IN    I     UNITE LOGIQUE D'IMPRESSION
 C                                LA MATRICE ELEMENTAIRE
 C.========================= DEBUT DES DECLARATIONS ====================
 C -----  ARGUMENTS
-      CHARACTER*(*) NOMNOZ, NOMCMZ, FICHIE
+      CHARACTER*(*) NOMNOZ, NOMCMZ
       CHARACTER*8   NOMNOE(*), NOMCMP(*), NOMAIL
       REAL*8        VALE(*)
 C -----  VARIABLES LOCALES
@@ -64,10 +64,6 @@ C     ---------------
       SLACH  = '/'
       NOMNO1 = NOMNOZ
       NOMCM1 = NOMCMZ
-C
-C --- UNITE LOGIQUE DU FICHIER D'IMPRESSION :
-C     -------------------------------------
-      IFM = IUNIFI(FICHIE)
 C
 C --- NOMBRE DE CHIFFRES A METTRE APRES LA VIRGULE
 C --- ON RAPPELLE QUE LA FONCTION NDRSEM() RENVOIE LE NOMBRE 

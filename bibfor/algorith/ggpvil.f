@@ -1,8 +1,8 @@
       SUBROUTINE GGPVIL(S,DPC,TEMP,FLUPHI,A,B,CTPS,ENER,THETA,
-     *                  DEUXMU,PREC,
+     *                  DEUXMU,PREC,NITER,
      *                  G,DGDST,DGDEV)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/04/2004   AUTEUR F6BHHBO P.DEBONNIERES 
+C MODIF ALGORITH  DATE 15/06/2004   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -23,9 +23,8 @@ C ======================================================================
        REAL*8   S,DPC,TEMP,FLUPHI,A,B,CTPS,ENER,DEUXMU,PREC
        REAL*8   THETA
        REAL*8   G,DGDST,DGDEV
+       INTEGER  NITER
 C 
-C
-CDEB
 C---------------------------------------------------------------
 C     VITESSE DE DEF. VISQUEUSE ET SA DERIVEE PAR RAPPORT A SIGMA
 C---------------------------------------------------------------
@@ -42,7 +41,8 @@ C     THETA :R: PARAMETRE DU SCHEMA D'INTEGRATION (0.5 OU 1)
 C                  THETA = 0.5 -> SEMI-IMPLICITE
 C                  THETA = 1.0 -> IMPLICITE 
 C     DEUXMU:R: PARAMETRE DEUX MU (ELASTIQUE)
-C     PREC  :R: PRECISION DE LA RESOLUTION EN TEMPS(ROUTINE TPSTFM)
+C     PREC  :R: PRECISION DE LA RESOLUTION EN TEMPS
+C     NITER :I: NOMBRE D'ITERATIONS DE LA RESOLUTION EN TEMPS
 C OUT G     :R: VALEUR DE LA FONCTION G
 C     DGDST :R: DERIVEE TOTALE DE G PAR RAPPORT A SIGMA
 C     DGDEV :R: DERIVEE PARTIELLE DE G PAR RAPPORT A EV (I.E. DPC)
@@ -57,7 +57,6 @@ C            EV = G(SIGMA,LAMBDA,T)
 C
 C     ET LA DERIVEE TOTALE DE CETTE FONCTION G PAR RAPPORT A SIGMA
 C---------------------------------------------------------------
-CFIN
 C
       REAL*8 TPS,F1,FP1,FS1,F2,FP2,FS2
       REAL*8 G1,DG1DS,G2,DG2DS
@@ -68,7 +67,7 @@ C
         DGDEV = 0.D0
         GO TO 99 
       ELSE
-        CALL TPSVIL(TPS,S,DPC,TEMP,FLUPHI,A,B,CTPS,ENER,PREC)
+        CALL TPSVIL(TPS,S,DPC,TEMP,FLUPHI,A,B,CTPS,ENER,PREC,NITER)
         
         CALL FGDVIL(TPS,S,TEMP,FLUPHI,A,B,CTPS,ENER,F1,FP1,FS1,F2,
      *              FP2,FS2,G1,DG1DS,G2,DG2DS)

@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
+C MODIF UTILITAI  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,34 +22,74 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     OPERATEUR   IMPR_MACR_ELEM
 C     ------------------------------------------------------------------
-      INTEGER       VERSIO, N1
+      INTEGER       VERSIO, N1, IFIC, IUNIFI
+      LOGICAL       ULEXIS
       CHARACTER*8   FORMAT, MACREL
       CHARACTER*16  FICHIE
 C     ------------------------------------------------------------------
       CALL INFMAJ()
 C
-      CALL GETVTX (' ','FORMAT',1,1,1,FORMAT,N1)
+      IFIC   = 0
+      FICHIE = ' ' 
 C
-      FICHIE = FORMAT
-      IF ( FORMAT .EQ. 'PLEXUS' ) FICHIE = 'IDEAS'
-      CALL GETVTX (' ','FICHIER',1,1,1,FICHIE,N1)
+      CALL GETVID ( ' ', 'MACR_ELEM_DYNA', 1,1,1, MACREL, N1 )
 C
-      CALL GETVIS (' ','VERSION',1,1,1,VERSIO,N1)
-C
-      CALL GETVID (' ','MACR_ELEM_DYNA',1,1,1,MACREL,N1)
+      CALL GETVTX ( ' ', 'FORMAT', 1,1,1, FORMAT, N1 )
 C
 C     ------------------------------------------------------------------
       IF ( FORMAT .EQ. 'IDEAS' ) THEN
-         CALL IREDSU ( MACREL, FORMAT, FICHIE , VERSIO )
+
+         CALL GETVIS ( ' ', 'VERSION', 1,1,1, VERSIO, N1 )
+
+         CALL GETVIS ( ' ', 'UNITE'  , 1,1,1, IFIC , N1 )
+         CALL GETVTX ( ' ', 'FICHIER', 1,1,1, FICHIE, N1 )
+         IF ( N1 .NE. 0 ) THEN
+            CALL UTMESS('A','IMPR_MACR_ELEM',
+     +               'LE MOT CLE "FICHIER" EST APPELE A DISPARAITRE.'//
+     +               ' UTILISER LE MOT CLE "UNITE"')
+            IFIC = IUNIFI( FICHIE )
+         ENDIF
+         IF ( IFIC .EQ. 0 )  THEN
+            IF ( FICHIE .EQ. ' ' )  FICHIE = FORMAT
+            IFIC = IUNIFI( FICHIE )
+         ENDIF
+         IF ( .NOT. ULEXIS( IFIC ) ) THEN
+            CALL ULOPEN ( IFIC, ' ', FICHIE, 'NEW', 'O' )
+         ENDIF
+
+         CALL IREDSU ( MACREL, FORMAT, IFIC , VERSIO )
 C
+C     ------------------------------------------------------------------
       ELSEIF ( FORMAT .EQ. 'MISS_3D' ) THEN
          CALL IREDMI ( MACREL)
 C
+C     ------------------------------------------------------------------
       ELSEIF ( FORMAT .EQ. 'CADYRO' ) THEN
          CALL IREDCA ( MACREL )
 C
+C     ------------------------------------------------------------------
       ELSEIF ( FORMAT .EQ. 'PLEXUS' ) THEN
-         CALL IREDPL ( MACREL,FICHIE, VERSIO )
+
+         CALL GETVIS ( ' ', 'VERSION', 1,1,1, VERSIO, N1 )
+
+         CALL GETVIS ( ' ', 'UNITE'  , 1,1,1, IFIC , N1 )
+         CALL GETVTX ( ' ', 'FICHIER', 1,1,1, FICHIE, N1 )
+         IF ( N1 .NE. 0 ) THEN
+            CALL UTMESS('A','IMPR_MACR_ELEM',
+     +               'LE MOT CLE "FICHIER" EST APPELE A DISPARAITRE.'//
+     +               ' UTILISER LE MOT CLE "UNITE"')
+            IFIC = IUNIFI( FICHIE )
+         ENDIF
+         IF ( IFIC .EQ. 0 )  THEN
+            IF ( FICHIE .EQ. ' ' ) FICHIE = 'IDEAS'
+            IFIC = IUNIFI( FICHIE )
+         ENDIF
+         IF ( .NOT. ULEXIS( IFIC ) ) THEN
+            CALL ULOPEN ( IFIC, ' ', FICHIE, 'NEW', 'O' )
+         ENDIF
+
+         CALL IREDPL ( MACREL, IFIC, VERSIO )
+C
       ELSE
          CALL UTMESS('F','OP0160','ERREUR 1')
       ENDIF

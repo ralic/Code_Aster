@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 02/03/2004   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF ALGELINE  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -47,7 +47,7 @@ C     ------------------------------------------------------------------
       INTEGER      NIVE, VERSIO
       REAL*8       R8B, ZERO, UN, COEF(3)
       CHARACTER*8  K8B, RESU, NOMMA, MONAXE, FORMAR
-      CHARACTER*8  NOMNOE, NOMCMP, KNUM, NOMDIR,FICNAM
+      CHARACTER*8  NOMNOE, NOMCMP, KNUM, NOMDIR
       CHARACTER*8 NOSIMP, NOPASE
       CHARACTER*14 NUME
       CHARACTER*16 NOMCMD, CONCEP, ACCES(3)
@@ -488,11 +488,11 @@ C     --- ECRITURE EVENTUELLE DES VALEURS ET DES VECTEURS PROPRES ---
             JPARA = 1
             NBPAR = 0
          END IF
-         FICNAM = 'MESSAGE'
          R8B = 0.D0
          IBID = 0
          K8B = ' '
-         CALL IRECRI ( RESU,NOSIMP,NOPASE, 'RESULTAT', FICNAM, K8B,
+         IUL = IUNIFI( 'MESSAGE' )
+         CALL IRECRI ( RESU,NOSIMP,NOPASE, 'RESULTAT',IUL, K8B,
      >                 LBID,IBID, K8B, NBPAR,
      >                 ZK16(JPARA), NBMODE, ZI(LRES), .TRUE., K8B,
      >                 IBID, K8B, 'T', .FALSE., IBID, IBID, IBID, IBID,

@@ -1,7 +1,7 @@
-      SUBROUTINE IMELNN ( FICHIE, NOMSDZ, NBCMP, LISCMZ,
+      SUBROUTINE IMELNN ( IFM, NOMSDZ, NBCMP, LISCMZ,
      +                    NBELEM, LISMAZ, NBCHIF )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF PREPOST  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -31,9 +31,9 @@ C                      COUPLENT 2 NOEUDS)
 C                
 C
 C   ARGUMENT        E/S  TYPE         ROLE
-C    FICHIE          IN    K*     NOM DU FICHIER OU L'ON IMPRIME
-C                                 LE MATR_ELEM,
-C    NOMSDZ          IN    K*     NOM DU MATR_ELEM
+C    IFM             IN    I     UNITE LOGIQUE D'IMPRESSION DU
+C                                MATR_ELEM,
+C    NOMSDZ          IN    K*    NOM DU MATR_ELEM
 C    NBCMP           IN    I     NOMBRE DE COMPOSANTES DE LA LISTE
 C                                LISCMZ DES COMPOSANTES
 C    LISCMZ          IN    K*    LISTE DES COMPOSANTES POUR-LESQUELLES
@@ -62,7 +62,7 @@ C ----- COMMUNS NORMALISES  JEVEUX
       COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
       CHARACTER*32     JEXNUM, JEXNOM
 C -----  ARGUMENTS
-      CHARACTER*(*) FICHIE, NOMSDZ, LISMAZ, LISCMZ
+      CHARACTER*(*) NOMSDZ, LISMAZ, LISCMZ
 C -----  VARIABLES LOCALES
       PARAMETER     (NBNOMX = 27)
       PARAMETER     (NBVAIM = 1323)
@@ -107,10 +107,6 @@ C
       DO 1 I =1, NBECMX
         DG(I) = 0
  1    CONTINUE
-C
-C --- UNITE LOGIQUE DU FICHIER D'IMPRESSION :
-C     -------------------------------------
-      IFM = IUNIFI(FICHIE)
 C
 C --- RECUPERATION DES NOEUDS POUR-LESQUELS ON VEUT L'IMPRESSION 
 C --- DE LA MATRICE :
@@ -734,7 +730,7 @@ C              ------------------------------
      +                          ZI(IDIDNO),ZI(IDNUNO),ZK8(IDNCM2),
      +                          ZR(IDNVAL),ZI(IDNBCM), NCMPMM, NBCM,
      +                          ZK8(IDNCM1), NBCMP, ZK8(IDLICM), 
-     +                          NBCHIF, FICHIE)
+     +                          NBCHIF, IFM)
 C
  170         CONTINUE
 C
@@ -880,7 +876,7 @@ C              ------------------------------
      +                          ZI(IDIDNO),ZI(IDNUNO),ZK8(IDNCM2),
      +                          ZR(IDNVAL),ZI(IDNBCM), NCMPMM, NBCM,
      +                          ZK8(IDNCM1), NBCMP, ZK8(IDLICM), 
-     +                          NBCHIF, FICHIE)
+     +                          NBCHIF, IFM)
 C
  250         CONTINUE
             ENDIF
@@ -1238,7 +1234,7 @@ C              ------------------------------
      +                          ZI(IDIDNO),ZI(IDNUNO),ZK8(IDNCM2),
      +                          ZC(IDNVAL),ZI(IDNBCM), NCMPMM, NBCM,
      +                          ZK8(IDNCM1), NBCMP, ZK8(IDLICM), 
-     +                          NBCHIF, FICHIE)
+     +                          NBCHIF, IFM)
 C
  480         CONTINUE
 C
@@ -1384,7 +1380,7 @@ C              ------------------------------
      +                          ZI(IDIDNO),ZI(IDNUNO),ZK8(IDNCM2),
      +                          ZC(IDNVAL),ZI(IDNBCM), NCMPMM, NBCM,
      +                          ZK8(IDNCM1), NBCMP, ZK8(IDLICM), 
-     +                          NBCHIF, FICHIE)
+     +                          NBCHIF, IFM)
 C
  560         CONTINUE
             ENDIF

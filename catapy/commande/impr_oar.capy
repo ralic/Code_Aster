@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -41,6 +41,6 @@ IMPR_OAR =PROC(nom="IMPR_OAR",op= 40,
            ),
 
 
-           FICHIER         =SIMP(statut='f',typ='TXM'),
+           UNITE           =SIMP(statut='f',typ='I',defaut=38),  
            INFO            =SIMP(statut='f',typ='I',defaut=1,into=(1,2) ),
 ) ;

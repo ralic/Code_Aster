@@ -1,6 +1,6 @@
-      SUBROUTINE JEIMPA ( CUNIT , NOMLU , COM )
+      SUBROUTINE JEIMPA ( UNIT , NOMLU , COM )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 27/03/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF JEVEUX  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,7 +19,8 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CFT_726 CFT_720 CRP_18 CRS_508 CRS_512
       IMPLICIT REAL*8 (A-H,O-Z)
-      CHARACTER *(*)      CUNIT , NOMLU , COM
+      INTEGER             UNIT
+      CHARACTER *(*)      NOMLU , COM
 C
       CHARACTER*1      K1ZON
       COMMON /KZONJE/  K1ZON(8)
@@ -151,7 +152,7 @@ C
       IF ( GENRI .EQ. 'V' )  JLON = 2
       IF ( GENRI .EQ. 'N' )  JLON = 3
 C
-      CALL JVRINI ( CUNIT )
+      CALL JVRINI ( UNIT )
       CALL JVDEBM ( 'X' , 'JEIMPA' , 'IMPRESSION DES '//
      +              'ATTRIBUTS DE >'//NOML32(1:24)//'<'  )
       CALL JVIMPK ( 'L' , ' ' , 1 , COML )
@@ -195,7 +196,8 @@ C
           ENDIF
    20 CONTINUE
       CALL JVFINM
-      CALL JVRINI ( ' ' )
+      IUL = 0
+      CALL JVRINI ( IUL )
       IF ( LCOL ) THEN
          CALL JJLIDE ( 'JEIMPA' , NOML32(1:24) , 2 )
       ENDIF

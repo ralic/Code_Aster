@@ -1,6 +1,6 @@
       SUBROUTINE JVRINI ( CUNIT )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 05/01/95   AUTEUR G8BHHAC A.Y.PORTABILITE 
+C MODIF JEVEUX  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,7 +18,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
       IMPLICIT REAL*8 (A-H,O-Z)
-      CHARACTER *(*)      CUNIT
+      INTEGER        CUNIT  
 C
       INTEGER          MXUNIT     , MXNUML
       PARAMETER      ( MXUNIT = 7 , MXNUML = 4 )
@@ -27,7 +27,7 @@ C
 C     ------------------------------------------------------------------
 C     REDIRECTION DES MESSAGES D'IMPRESSION X
 C
-      UNIT(MXUNIT,1) = IUNIFI(CUNIT)
+      UNIT(MXUNIT,1) = CUNIT
       IF ( UNIT(MXUNIT,1) .EQ. 0 ) THEN
          NBUNIT(MXUNIT) = 0
       ELSE

@@ -1,7 +1,7 @@
       SUBROUTINE VTDEFS(CHPOUT,CHPIN,BASE,TYPC)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 05/05/2004   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGELINE  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -139,10 +139,10 @@ C MONITORING
      &         ARG2(1:19)
           WRITE(IFM,*)
           IF ((NIV.GE.4).AND.(IDD.GT.0))
-     &      CALL UTIMSD('MESSAGE',2,.FALSE.,.TRUE.,ARG2(1:19),
+     &      CALL UTIMSD(IFM,2,.FALSE.,.TRUE.,ARG2(1:19),
      &      1,' ')
           IF ((NIV.GE.4).AND.(IDD.EQ.NBSD))
-     &      CALL UTIMSD('MESSAGE',2,.FALSE.,.TRUE.,CHPOUT(1:19),
+     &      CALL UTIMSD(IFM,2,.FALSE.,.TRUE.,CHPOUT(1:19),
      &      1,' ')     
           WRITE(IFM,*)'DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD'        
           WRITE(IFM,*)

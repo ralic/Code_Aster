@@ -5,7 +5,7 @@
       REAL*8          XYZL(3,*), UL(6,*), DUL(6,*), PGL(3,3)
       REAL*8          KTAN(*), BTSIG(6,*)
       CHARACTER*16    NOMTE, OPT
-C MODIF ELEMENTS  DATE 04/05/2004   AUTEUR SMICHEL S.MICHEL-PONNELLE 
+C MODIF ELEMENTS  DATE 15/06/2004   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -65,7 +65,7 @@ CCC      PARAMETER (NNO=4)  POUR LES DKQ
       INTEGER    NNO
       PARAMETER (NNO=4)
 C            NNO:    NOMBRE DE NOEUDS DE L'ELEMENT
-      REAL*8   DISTN, POIDS2, ROT(9), DH(9)
+      REAL*8   DISTN, POIDS2, ROT(9), DH(9), ANGMAS(3)
 C
 C --------- VARIABLES LOCALES :
 C  -- GENERALITES :
@@ -241,8 +241,8 @@ C     ---------------------------
       DISTN = 0.D0
       IF ( GRILLE ) THEN
          CALL GTRIA3(XYZL,ZR(LZR))
-         DISTN = ZR(ICACOQ+6)
-         CTOR  = ZR(ICACOQ+7)
+         DISTN = ZR(ICACOQ+3)
+         CTOR  = ZR(ICACOQ+4)
          CALL GRDMAT(ICACOQ,ZI(IMATE),PGL,DH,ROT)
       ELSEIF ( DKT ) THEN
          CALL GTRIA3(XYZL,ZR(LZR))
@@ -455,22 +455,37 @@ C         ---------------------------------------------------
 C         -- APPEL A NMCOMP POUR RESOUDRE LE PB SUR LA COUCHE :
 C         -----------------------------------------------------
             IF ( GRILLE ) THEN
-               CALL NMGRIL(ZI(IMATE),TYPMOD,ZK16(ICOMPO),OPT,EPS2D,
-     &                  DEPS2D,ZR(ICONTM+ICPG),ZR(IVARIM+IVPG),TMC,TPC,
-     &                  ZR(ITREF),ZR(ICONTP+ICPG),ZR(IVARIP+IVPG),
-     &                  DSIDEP,COD)
+C --- ANGLE DU MOT_CLEF MASSIF (AFFE_CARA_ELEM)
+C --- INITIALISE A R8VIDE (ON NE S'EN SERT PAS)
+               CALL R8INIR(3,  R8VIDE(), ANGMAS ,1)
+               CALL NMGRIL(ZI(IMATE),TYPMOD,ZK16(ICOMPO),OPT,
+     &                     EPS2D,DEPS2D,
+     &                     ANGMAS,
+     &                     ZR(ICONTM+ICPG),ZR(IVARIM+IVPG),
+     &                     TMC,TPC,ZR(ITREF),
+     &                     ZR(ICONTP+ICPG),ZR(IVARIP+IVPG),DSIDEP,COD)
             ELSE
                DO 1 J=1,4
                SIGM(J)=ZR(ICONTM+ICPG-1+J)
   1            CONTINUE
                SIGM(4)=SIGM(4)*RAC2
-               
+C --- ANGLE DU MOT_CLEF MASSIF (AFFE_CARA_ELEM)
+C --- INITIALISE A R8VIDE (ON NE S'EN SERT PAS)
+               CALL R8INIR(3,  R8VIDE(), ANGMAS ,1)               
                CALL NMCOMP(2,TYPMOD,ZI(IMATE),ZK16(ICOMPO),ZR(ICARCR),
-     &                  ZR(IINSTM),ZR(IINSTP),TMC,TPC,ZR(ITREF),HYDRGM,
-     &                  HYDRGP,SECHGM,SECHGP,SREF,EPS2D,DEPS2D,
-     &                  SIGM,ZR(IVARIM+IVPG),OPT,EPSANM,
-     &                  EPSANP,NZ,PHASM,PHASP,LC,ZR(ICONTP+ICPG),
-     &                  ZR(IVARIP+IVPG),DSIDEP,COD,R8VIDE(),R8VIDE())
+     &                  ZR(IINSTM),ZR(IINSTP),
+     &                  TMC,TPC,ZR(ITREF),
+     &                  HYDRGM,HYDRGP,
+     &                  SECHGM,SECHGP,SREF,
+     &                  EPS2D,DEPS2D,
+     &                  SIGM,ZR(IVARIM+IVPG),
+     &                  OPT,
+     &                  EPSANM,EPSANP,
+     &                  NZ,PHASM,PHASP,
+     &                  R8VIDE(),R8VIDE(),
+     &                  ANGMAS,
+     &                  LC,
+     &                  ZR(ICONTP+ICPG),ZR(IVARIP+IVPG),DSIDEP,COD)
             ENDIF
 
 C            DIVISION DE LA CONTRAINTE DE CISAILLEMENT PAR SQRT(2)

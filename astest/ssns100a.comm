@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 15/06/2004   AUTEUR MABBAS M.ABBAS 
 # TITRE PLAQUE ENCASTREE EN TRACTION CONSTITUEE D'UNE NAPPE D'ARMATURES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -13,7 +13,17 @@ DEBUT(    CODE=_F(  NOM = 'SSNS100A',NIV_PUB_WEB='INTERNET') )
 # VALIDATION DU MODELE GRILLE_ISOT_LINE EN PLASTICITE
 #-----------------------------------------------------------------------
 
-MAILTOT=LIRE_MAILLAGE(   )
+MAILL1=LIRE_MAILLAGE(   )
+
+
+MAILTOT=CREA_MAILLAGE( 
+               MAILLAGE=MAILL1,
+               CREA_GROUP_MA=_F( 
+                   NOM = 'GEOBB',  
+                   GROUP_MA = 'GEOB',  
+                   PREF_MAILLE = 'B', 
+                              )
+                           )
 
 #
 # -----------------------------------------------------
@@ -32,9 +42,15 @@ ACIER=DEFI_MATERIAU(
 # -------------------------------------------------
 #
 MATAF=AFFE_MATERIAU(    MAILLAGE=MAILTOT,
-                          AFFE=_F(  GROUP_MA = 'GEOB',
+                          AFFE=(
+                          _F(  GROUP_MA = ('GEOB',),
                                  MATER = ACIER,
                                  TEMP_REF = 50.,
+                               ),
+                          _F(  GROUP_MA = ('GEOBB'),
+                                 MATER = ACIER,
+                                 TEMP_REF = 50.,
+                               )
                                )
                       )
 
@@ -44,7 +60,7 @@ MATAF=AFFE_MATERIAU(    MAILLAGE=MAILTOT,
 # -------------------------------------------------
 #
 LEMOD=AFFE_MODELE(    MAILLAGE=MAILTOT,     VERIF='MAILLE',
-                        AFFE=_F(  GROUP_MA = 'GEOB',
+                        AFFE=_F(  GROUP_MA = ('GEOB','GEOBB'),
                                PHENOMENE = 'MECANIQUE',
                                MODELISATION = 'GRILLE',
                              )
@@ -55,16 +71,16 @@ LEMOD=AFFE_MODELE(    MAILLAGE=MAILTOT,     VERIF='MAILLE',
 # -------------------------------------------------
 #
 LACAR=AFFE_CARA_ELEM(    MODELE=LEMOD,
-                       GRILLE=_F( GROUP_MA = 'GEOB',
-                                SECTION_L = .01,
-                                ANGL_REP = (0.0, 0.0,),
-                                ANGL_L = 0.,
-                                POUR_CENT_L = 1.,
-                                POUR_CENT_T = 0.1,
-                                EXCENTREMENT = 0.0,
+                       GRILLE=(_F( GROUP_MA = 'GEOB',
+                                SECTION = .01,
+                                ANGL_REP=(0,0),
+                                EXCENTREMENT = 0.0),
+                               _F( GROUP_MA = 'GEOBB',
+                                SECTION = .01,
+                                ANGL_REP=(90,0),
+                                EXCENTREMENT = 0.0)
                               )
                         )
-
 # -------------------------------------------------
 # CONSTRUCTION DU CHAMP DE TEMPERATURE POUR
 # TENTER DE REPRODUIRE LA PRECONTRAINTE
@@ -262,16 +278,12 @@ LEDEP=CALC_ELEM(reuse    = LEDEP,
               OPTION     = 'SIGM_ELNO_COQU'
                )
 
-U1=CALC_ELEM( 
-              TOUT_ORDRE  = 'OUI',
+U1=CALC_ELEM( TOUT_ORDRE  = 'OUI',
               OPTION      = ('VARI_ELNO_COQU',),
               NIVE_COUCHE = 'MOY',
               RESULTAT    = LEDEP
             )
 
-IMPR_RESU(RESU=_F(RESULTAT=LEDEP,),);
-
-IMPR_RESU(RESU=_F(RESULTAT=U1,),);
 
 
 TEST_RESU(RESU=(
@@ -288,10 +300,10 @@ TEST_RESU(RESU=(
             _F( RESULTAT = LEDEP,
              INST = 1.,
              NOM_CHAM = 'SIGM_ELNO_COQU',
-             NOM_CMP = 'SIYY',
-             MAILLE = 'MA1',
+             NOM_CMP = 'SIXX',
+             MAILLE = 'BMA1',
              NOEUD = 'NO1',
-             VALE = 2.E7,
+             VALE = 2.E8,
              PRECISION = 0.001,
             ),
             _F( RESULTAT = LEDEP,
@@ -306,10 +318,11 @@ TEST_RESU(RESU=(
             _F( RESULTAT = LEDEP,
              INST = 2.,
              NOM_CHAM = 'SIGM_ELNO_COQU',
-             NOM_CMP = 'SIYY',
-             MAILLE = 'MA1',
+#             NOM_CMP = 'SIYY',            
+             NOM_CMP = 'SIXX',
+             MAILLE = 'BMA1',
              NOEUD = 'NO1',
-             VALE = 2.4E7,
+             VALE = 2.4E8,
              PRECISION = 0.001,
             ),
             _F( RESULTAT = LEDEP,
@@ -324,10 +337,10 @@ TEST_RESU(RESU=(
             _F( RESULTAT = LEDEP,
              INST = 3.,
              NOM_CHAM = 'SIGM_ELNO_COQU',
-             NOM_CMP = 'SIYY',
-             MAILLE = 'MA1',
+             NOM_CMP = 'SIXX',
+             MAILLE = 'BMA1',              
              NOEUD = 'NO1',
-             VALE = 4.E6,
+             VALE = 4.E7,
              PRECISION = 0.001,
             ),
             _F( RESULTAT = LEDEP,
@@ -342,10 +355,10 @@ TEST_RESU(RESU=(
             _F( RESULTAT = LEDEP,
              INST = 4.,
              NOM_CHAM = 'SIGM_ELNO_COQU',
-             NOM_CMP = 'SIYY',
-             MAILLE = 'MA1',
+             NOM_CMP = 'SIXX',
+             MAILLE = 'BMA1',                      
              NOEUD = 'NO1',
-             VALE = 2.4E7,
+             VALE = 2.4E8,
              PRECISION = 0.001,
             ),
             _F( RESULTAT = LEDEP,
@@ -360,10 +373,10 @@ TEST_RESU(RESU=(
             _F( RESULTAT = LEDEP,
              INST = 5.,
              NOM_CHAM = 'SIGM_ELNO_COQU',
-             NOM_CMP = 'SIYY',
-             MAILLE = 'MA1',
+             NOM_CMP = 'SIXX',
+             MAILLE = 'BMA1',             
              NOEUD = 'NO1',
-             VALE = -1.6E7,
+             VALE = -1.6E8,
              PRECISION = 0.001,
             ),
             _F( RESULTAT = LEDEP,
@@ -378,10 +391,10 @@ TEST_RESU(RESU=(
             _F( RESULTAT = LEDEP,
              INST = 6.,
              NOM_CHAM = 'SIGM_ELNO_COQU',
-             NOM_CMP = 'SIYY',
-             MAILLE = 'MA1',
+             NOM_CMP = 'SIXX',
+             MAILLE = 'BMA1',            
              NOEUD = 'NO1',
-             VALE = -3.12E7,
+             VALE = -3.12E8,
              PRECISION = 0.001,
             ),
             _F( RESULTAT = LEDEP,
@@ -396,10 +409,10 @@ TEST_RESU(RESU=(
             _F( RESULTAT = LEDEP,
              INST = 7.,
              NOM_CHAM = 'SIGM_ELNO_COQU',
-             NOM_CMP = 'SIYY',
-             MAILLE = 'MA1',
+             NOM_CMP = 'SIXX',
+             MAILLE = 'BMA1',            
              NOEUD = 'NO1',
-             VALE = 2.88E7,
+             VALE = 2.88E8,
              PRECISION = 0.001,
             ),
             _F( RESULTAT = LEDEP,
@@ -414,10 +427,10 @@ TEST_RESU(RESU=(
             _F( RESULTAT = LEDEP,
              INST = 8.,
              NOM_CHAM = 'SIGM_ELNO_COQU',
-             NOM_CMP = 'SIYY',
-             MAILLE = 'MA1',
+             NOM_CMP = 'SIXX',
+             MAILLE = 'BMA1',          
              NOEUD = 'NO1',
-             VALE = 4.096E7,                  ),
+             VALE = 4.096E8,                  ),
             _F( RESULTAT = LEDEP,
              INST = 9.,
              NOM_CHAM = 'SIGM_ELNO_COQU',
@@ -430,10 +443,10 @@ TEST_RESU(RESU=(
             _F( RESULTAT = LEDEP,
              INST = 9.,
              NOM_CHAM = 'SIGM_ELNO_COQU',
-             NOM_CMP = 'SIYY',
-             MAILLE = 'MA1',
+             NOM_CMP = 'SIXX',
+             MAILLE = 'BMA1',           
              NOEUD = 'NO1',
-             VALE = -2.704E7,
+             VALE = -2.704E8,
              PRECISION = 0.001,
             ),
             _F( RESULTAT = LEDEP,
@@ -448,10 +461,10 @@ TEST_RESU(RESU=(
             _F( RESULTAT = LEDEP,
              INST = 10.,
              NOM_CHAM = 'SIGM_ELNO_COQU',
-             NOM_CMP = 'SIYY',
-             MAILLE = 'MA1',
+             NOM_CMP = 'SIXX',
+             MAILLE = 'BMA1',          
              NOEUD = 'NO1',
-             VALE = -5.2768E7,
+             VALE = -5.2768E8,
              PRECISION = 0.001,
             ),
             _F( RESULTAT = LEDEP,
@@ -466,10 +479,10 @@ TEST_RESU(RESU=(
             _F( RESULTAT = LEDEP,
              INST = 11.,
              NOM_CHAM = 'SIGM_ELNO_COQU',
-             NOM_CMP = 'SIYY',
-             MAILLE = 'MA1',
+             NOM_CMP = 'SIXX',
+             MAILLE = 'BMA1',           
              NOEUD = 'NO1',
-             VALE = 4.7232E7,
+             VALE = 4.7232E8,
              PRECISION = 0.001,
             ))
         )
@@ -493,9 +506,9 @@ TEST_RESU(RESU=(
             _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 2.,   TYPE_TEST='MAX',
              CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V1',         VALE = 1.80000E-03),
             _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 2.,   TYPE_TEST='MIN',
-             CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V3',         VALE = 1.80000E-03),
+             CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V1',         VALE = 1.80000E-03),
             _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 2.,   TYPE_TEST='MAX',
-             CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V3',         VALE = 1.80000E-03),
+             CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V1',         VALE = 1.80000E-03),
              ),)
 
 
@@ -505,9 +518,9 @@ TEST_RESU(RESU=(
             _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 3.,   TYPE_TEST='MAX',
              CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V1',         VALE = 1.80000E-03),
             _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 3.,   TYPE_TEST='MIN',
-             CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V3',         VALE = 1.80000E-03),
+             CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V1',         VALE = 1.80000E-03),
             _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 3.,   TYPE_TEST='MAX',
-             CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V3',         VALE = 1.80000E-03),
+             CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V1',         VALE = 1.80000E-03),
              ),)
 
 TEST_RESU(RESU=( 
@@ -516,9 +529,9 @@ TEST_RESU(RESU=(
             _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 4.,   TYPE_TEST='MAX',
              CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V1',         VALE = 1.80000E-03),
             _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 4.,   TYPE_TEST='MIN',
-             CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V3',         VALE = 1.80000E-03),
+             CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V1',         VALE = 1.80000E-03),
             _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 4.,   TYPE_TEST='MAX',
-             CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V3',         VALE = 1.80000E-03),
+             CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V1',         VALE = 1.80000E-03),
              ),)
 
 TEST_RESU(RESU=( 
@@ -527,9 +540,9 @@ TEST_RESU(RESU=(
             _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 5.,   TYPE_TEST='MAX',
              CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V1',         VALE = 1.80000E-03),
             _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 5.,   TYPE_TEST='MIN',
-             CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V3',         VALE = 1.80000E-03),
+             CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V1',         VALE = 1.80000E-03),
             _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 5.,   TYPE_TEST='MAX',
-             CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V3',         VALE = 1.80000E-03),
+             CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V1',         VALE = 1.80000E-03),
              ),)
 
 TEST_RESU(RESU=( 
@@ -538,9 +551,9 @@ TEST_RESU(RESU=(
             _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 6.,   TYPE_TEST='MAX',
              CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V1',         VALE = 5.04000E-03),
             _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 6.,   TYPE_TEST='MIN',
-             CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V3',         VALE = 5.04000E-03),
+             CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V1',         VALE = 5.04000E-03),
             _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 6.,   TYPE_TEST='MAX',
-             CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V3',         VALE = 5.04000E-03),
+             CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V1',         VALE = 5.04000E-03),
              ),)
 
 TEST_RESU(RESU=( 
@@ -549,9 +562,9 @@ TEST_RESU(RESU=(
             _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 7.,   TYPE_TEST='MAX',
              CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V1',         VALE = 5.04000E-03),
             _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 7.,   TYPE_TEST='MIN',
-             CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V3',         VALE = 5.04000E-03),
+             CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V1',         VALE = 5.04000E-03),
             _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 7.,   TYPE_TEST='MAX',
-             CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V3',         VALE = 5.04000E-03),
+             CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V1',         VALE = 5.04000E-03),
              ),)
 
 TEST_RESU(RESU=( 
@@ -560,9 +573,9 @@ TEST_RESU(RESU=(
             _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 8.,   TYPE_TEST='MAX',
              CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V1',         VALE = 9.43200E-03),
             _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 8.,   TYPE_TEST='MIN',
-             CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V3',         VALE = 9.43200E-03),
+             CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V1',         VALE = 9.43200E-03),
             _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 8.,   TYPE_TEST='MAX',
-             CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V3',         VALE = 9.43200E-03),
+             CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V1',         VALE = 9.43200E-03),
              ),)
 
 TEST_RESU(RESU=( 
@@ -571,9 +584,9 @@ TEST_RESU(RESU=(
             _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 9.,   TYPE_TEST='MAX',
              CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V1',         VALE = 9.43200E-03),
             _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 9.,   TYPE_TEST='MIN',
-             CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V3',         VALE = 9.43200E-03),
+             CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V1',         VALE = 9.43200E-03),
             _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 9.,   TYPE_TEST='MAX',
-             CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V3',         VALE = 9.43200E-03),
+             CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V1',         VALE = 9.43200E-03),
              ),)
 
 TEST_RESU(RESU=( 
@@ -582,9 +595,9 @@ TEST_RESU(RESU=(
             _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 10.,   TYPE_TEST='MAX',
              CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V1',         VALE = 1.47456E-02),
             _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 10.,   TYPE_TEST='MIN',
-             CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V3',         VALE = 1.47456E-02),
+             CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V1',         VALE = 1.47456E-02),
             _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 10.,   TYPE_TEST='MAX',
-             CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V3',         VALE = 1.47456E-02),
+             CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V1',         VALE = 1.47456E-02),
              ),)
 
 TEST_RESU(RESU=( 
@@ -593,10 +606,15 @@ TEST_RESU(RESU=(
             _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 11.,   TYPE_TEST='MAX',
              CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V1',         VALE = 1.47456E-02),
             _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 11.,   TYPE_TEST='MIN',
-             CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V3',         VALE = 1.47456E-02),
+             CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V1',         VALE = 1.47456E-02),
             _F(  RESULTAT = U1,  NOM_CHAM = 'VARI_ELNO_COQU',  INST = 11.,   TYPE_TEST='MAX',
-             CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V3',         VALE = 1.47456E-02),
+             CRITERE = 'ABSOLU',    PRECISION = 1.E-4,     NOM_CMP = 'V1',         VALE = 1.47456E-02),
              ),)
+
+
+IMPR_RESU(RESU=_F(RESULTAT=LEDEP,),);
+
+IMPR_RESU(RESU=_F(RESULTAT=U1,),);
 
 FIN()
 #

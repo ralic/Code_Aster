@@ -6,7 +6,7 @@
         IMPLICIT REAL*8 (A-H,O-Z)
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 04/05/2004   AUTEUR SMICHEL S.MICHEL-PONNELLE 
+C MODIF ALGORITH  DATE 16/06/2004   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -253,7 +253,6 @@ C
         CHARACTER*3     MATCST
 C       ----------------------------------------------------------------
         COMMON /TDIM/   NDT  , NDI
-        COMMON /OPTI/   IOPTIO , IDNR
 C       ----------------------------------------------------------------
 C
 C --    INITIALISATION DES PARAMETRES DE CONVERGENCE ET ITERATIONS
@@ -279,16 +278,6 @@ C
           TYPMA = 'VITESSE '
 C
           IF ( ITMAX .LE. 0 )ITMAX = -ITMAX
-C
-C --    RECHERCHE DES LOIS DE COMPORTEMENT A DEUX SEUILS
-C -->   IOPTIO = 0 ==> LOI A 1 SEUIL
-C -->   IOPTIO > 0 ==> LOI A 2 SEUILS, INITIALISE DANS LCMATE
-C -->      IOPTIO = 1 ==> LOI A 2 SEUILS, CALCUL EFFECTUE AVEC 1 SEUIL
-C -->      IOPTIO = 2 ==> LOI A 2 SEUILS, CALCUL EFFECTUE AVEC 2 SEUILS
-C       NR      ==> NB EQUATION SYSTEME INTEGRE A RESOUDRE POUR 1 SEUIL
-C       NR+IDNR ==> NB EQUATION SYSTEME INTEGRE A RESOUDRE POUR 2 SEUILS
-        IOPTIO = 0
-        IDNR = 0
 C
 C --    RECUPERATION COEF(TEMP(T))) LOI ELASTO-PLASTIQUE A T ET/OU T+DT
 C                    NB DE CMP DIRECTES/CISAILLEMENT + NB VAR. INTERNES
@@ -360,7 +349,7 @@ C
 C --    PREDICTION ETAT ELASTIQUE A T+DT : F(SIG(T+DT),VIN(T)) = 0 ?
 C
         CALL LCCNVX ( LOI, IMAT, NMAT, MATERF, TEMPF, SIGF, VIND,
-     1                SEUIL)
+     &                COMP, NBCOMM, CPMONO, PGL, NR, NVI, SEUIL )
 C
           IF ( SEUIL .GE. 0.D0 ) THEN
 C
@@ -368,33 +357,12 @@ C --      PREDICTION INCORRECTE > INTEGRATION ELASTO-PLASTIQUE SUR DT
 C
           ETATF = 'PLASTIC'
 C
-C --      CAS DES LOIS DE COMPORTEMENT A DEUX SEUILS
-          NR = NR + IDNR
-C
           CALL LCPLAS ( LOI, TOLER, ITMAX, MOD, IMAT, NMAT, MATERD,
      1                  MATERF, MATCST, NR, NVI, TEMPD, TEMPF, TIMED,
      2                  TIMEF, DEPS,   EPSD,  SIGD ,VIND, SIGF, VINF,
+     3                COMP,NBCOMM, CPMONO, PGL,
      3                  ICOMP, IRTET, THETA, SEUIL, DEVG, DEVGII)
 C
-C --      CAS DES LOIS DE COMPORTEMENT A DEUX SEUILS
-C
-C            IF ( IOPTIO .GT. 0 ) THEN
-C            IOPTIO = 2
-C            CALL LCCDVX ( LOI,  IMAT, NMAT, MATERF, TEMPF ,EPSD, DEPS,
-C     1                    SIGF, VIND , SEUIL )
-C              IF ( SEUIL .GE. 0.D0 ) THEN
-C
-C --          PREDICTION INCORRECTE > RE-INTEGRATION PLASTIQUE SUR DT
-C
-C              NR = NR + IDNR
-C              CALL LCPLAS ( LOI,  TOLER,  ITMAX, MOD,    IMAT,
-C     1                  NMAT, MATERD, MATERF,MATCST, NR,   NVI,  TEMPD,
-C     2                  TEMPF,TIMED,  TIMEF, DEPS,   EPSD,  SIGD ,VIND,
-C     3                  SIGF, VINF ,ICOMP, IRTET)
-C              ELSE
-C              IOPTIO = 1
-C              ENDIF
-C            ENDIF
           IF ( IRTET.GT.0 ) GOTO (1), IRTET
           ELSE
 C
@@ -455,7 +423,12 @@ C
 C   ------> ELASTOPLASTICITE ==>  TYPMA = 'VITESSE '
 C   ------> VISCOPLASTICITE  ==>  TYPMA = 'COHERENT '
                 IF     ( TYPMA .EQ. 'COHERENT' ) THEN
-                CALL LCJPLC ( LOI  , MOD ,  NMAT, MATERD, DSDE)
+
+                CALL LCJPLC ( LOI  , MOD ,  NMAT, MATERF,
+     &            TIMED, TIMEF, COMP,NBCOMM, CPMONO, PGL,NR,NVI,
+     &                  SIGF,VINF,SIGD,VIND, 
+     &                   DSDE )
+
                 ELSEIF ( TYPMA .EQ. 'VITESSE ' ) THEN
                CALL LCJPLA ( LOI  , MOD ,  IMAT,  NMAT, MATERD, NVI,
      2              TEMPD, DEPS, SIGF ,  VINF, DSDE, VIND,
@@ -478,7 +451,6 @@ C
  137        CONTINUE
  136      CONTINUE
          ENDIF
-C
         ENDIF
 C
 C       ----------------------------------------------------------------

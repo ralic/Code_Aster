@@ -1,10 +1,10 @@
-      SUBROUTINE IREDSU ( MACR, FORM, FICH , VERSIO )
+      SUBROUTINE IREDSU ( MACR, FORM, IFC , VERSIO )
       IMPLICIT NONE
       INTEGER                          VERSIO
-      CHARACTER*(*)       MACR, FORM, FICH
+      CHARACTER*(*)       MACR, FORM
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 24/03/2003   AUTEUR CIBHHPD D.NUNEZ 
+C MODIF UTILITAI  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -61,11 +61,9 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER NBNOEU, NBMODT, NBMODE, NBMODS
       REAL*8 ZERO
       LOGICAL      F,LMOD,LBID
-      INTEGER IUNIFI
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ ( )
-      IFC = IUNIFI(FICH)
       ZERO = 0.D0
       IERO = 0
       CECR = 'L'
@@ -178,7 +176,7 @@ C          CALL JENONU(JEXNOM(MANONO,ZK16(JNOEU+I-1)(1:8)),INOE)
 C          CALL CODENT(INOE,'D',K10B)
 C          CMP = ZK16(JNOEU+I-1)(9:16)
 C          TITRE = 'MODE STATIQUE: '//K10B//' '//CMP//'+++++++'
-C      CALL IRECRI ( NOCH19,FORM,FICH,TITRE,1,NOCH19,LBID,IERO,K8B,
+C      CALL IRECRI ( NOCH19,FORM,IFC,TITRE,1,NOCH19,LBID,IERO,K8B,
 C     >                  1,IIOO,F,B,IERO,B,CECR,F,IERO,IBID,
 C     >                  IERO,IBID,IERO,K8B,F,ZERO,F,ZERO,F,F,FORMAR,
 C     >                  LMOD,NIVE,VERSIO)
@@ -189,7 +187,7 @@ C     >                  LMOD,NIVE,VERSIO)
           WRITE (IFC,'(40A2)') 'Ph', 'i_', 'a '
           WRITE (IFC,'(A)') '    -1'
           TITRE = 'MODE DYNAMIQUE'
-          CALL IRECRI ( BASEMO,NOSIMP,NOPASE,FORM,FICH,TITRE,
+          CALL IRECRI ( BASEMO,NOSIMP,NOPASE,FORM,IFC,TITRE,
      >                 LBID,1,'DEPL',IERO,K8B, 1,IORD,
      >                  .TRUE.,B,IERO,B,CECR,F,IERO,
      >                  IBID,IERO,IBID,IERO,K8B,
@@ -203,7 +201,7 @@ C     >                  LMOD,NIVE,VERSIO)
          WRITE (IFC,'(I10)') 1
          WRITE (IFC,'(40A2)') 'Ps', 'i_', 'a '
          WRITE (IFC,'(A)') '    -1'
-         CALL IRMAD0 ( FICH, VERSIO, NSTAT, ZK24(JMST), NOMSYM )
+         CALL IRMAD0 ( IFC, VERSIO, NSTAT, ZK24(JMST), NOMSYM )
       ENDIF
       CALL JEDETR ( '&&IREDSU.MODE_STAT' )
 C     ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

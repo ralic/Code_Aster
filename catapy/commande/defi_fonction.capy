@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,9 +18,9 @@
 # ======================================================================
 # RESPONSABLE MCOURTOI M.COURTOIS
 def defi_fonction_prod(VALE,VALE_PARA,VALE_C,NOEUD_PARA,**args):
-  if VALE != None  : return fonction_sdaster
-  if VALE_C != None  : return fonction_c
-  if VALE_PARA != None  : return fonction_sdaster
+  if VALE       != None  : return fonction_sdaster
+  if VALE_C     != None  : return fonction_c
+  if VALE_PARA  != None  : return fonction_sdaster
   if NOEUD_PARA != None  : return fonction_sdaster
   raise AsException("type de concept resultat non prevu")
 
@@ -29,18 +29,14 @@ DEFI_FONCTION=OPER(nom="DEFI_FONCTION",op=3,sd_prod=defi_fonction_prod
                      reentrant='n',
             UIinfo={"groupes":("Fonction",)},
          regles=(UN_PARMI('VALE','VALE_C','VALE_PARA','NOEUD_PARA'),),
-         NOM_PARA        =SIMP(statut='o',typ='TXM',
-                               into=("DX","DY","DZ","DRX","DRY","DRZ","TEMP",
-                                     "INST","X","Y","Z","EPSI","META","FREQ","PULS","DSP",
-                                     "AMOR","ABSC","SIGM","HYDR","SECH","PORO","SAT",
-                                     "PGAZ","PCAP","VITE","ENDO","NORM") ),
+         NOM_PARA        =SIMP(statut='o',typ='TXM',into=C_PARA_FONCTION() ),
          NOM_RESU        =SIMP(statut='f',typ='TXM',defaut="TOUTRESU"),
          VALE            =SIMP(statut='f',typ='R',min=2,max='**',
                                fr ="Fonction réelle définie par une liste de couples (abscisse,ordonnée)"),
          VALE_C          =SIMP(statut='f',typ='R',min=2,max='**',
                                fr ="Fonction complexe définie par une liste de couples"),
          VALE_PARA       =SIMP(statut='f',typ=listr8_sdaster,
-                               fr ="Fonction réelle définie par deux concepts de type listr8_sdaster" ),
+                               fr ="Fonction réelle définie par deux concepts de type listr8" ),
          b_vale_para     =BLOC(condition = "VALE_PARA != None",
            VALE_FONC       =SIMP(statut='o',typ=listr8_sdaster ),
          ),

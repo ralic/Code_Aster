@@ -1,9 +1,9 @@
       SUBROUTINE IMPFR4 (NOMAIL,NOMNOZ, LONLIS, NOMNOE, 
      +                   NOMCMP, VALE, INDCMP, INDNOE, NUMNOE,
      +                   NOMCM2, VALE2,NBCM2, NCMPMX, NBCMP1, NOMCM1,
-     +                   NBCMP2, LISCMP, NBCHIF, FICHIE)
+     +                   NBCMP2, LISCMP, NBCHIF, IFM)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF PREPOST  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -64,10 +64,10 @@ C                                LISTE LISCMP
 C    LISCMP          IN   K*     LISTE DES NOMS DES COMPOSANTES
 C                                A IMPRIMER
 C    NBCHIF          IN   I      NOMBRE DE CHIFFRES SIGNIFICATIFS
-C    FICHIE          IN   K*     NOM DU FICHIER D'IMPRESSION
+C    IFM             IN   I      UNITE LOGIQUE D'IMPRESSION
 C.========================= DEBUT DES DECLARATIONS ====================
 C -----  ARGUMENTS
-      CHARACTER*(*) NOMNOZ, FICHIE
+      CHARACTER*(*) NOMNOZ
       CHARACTER*8   NOMNOE(*), NOMCMP(*), NOMCM2(*), NOMCM1(*), NOMAIL
       CHARACTER*8   LISCMP(*)
       REAL*8        VALE(*), VALE2(*)
@@ -99,10 +99,6 @@ C     ---------------
       M8BLAN = '        '
       NOMNO1 = NOMNOZ
       TIRET = TIRE1//TIRE1//TIRE1//TIRE1//TIRE1(1:20)
-C
-C --- UNITE LOGIQUE DU FICHIER D'IMPRESSION :
-C     -------------------------------------
-      IFM = IUNIFI(FICHIE)
 C
 C --- NOMBRE DE CHIFFRES SIGNIFICATIFS
 C --- ON RAPPELLE QUE LA FONCTION NDRSEM() RENVOIE LE NOMBRE 

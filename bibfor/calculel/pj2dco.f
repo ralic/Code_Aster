@@ -8,7 +8,7 @@
       INTEGER NBMA1,LIMA1(*),NBNO2,LINO2(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 18/05/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF CALCULEL  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -365,8 +365,8 @@ C     ----------------------------------------------------------
       CALL PJ2DTR(CORTR3,CORRES,NUTM,ELRF)
       DBG=.FALSE.
       IF (DBG) THEN
-         CALL UTIMSD('MESSAGE',2,.FALSE.,.TRUE.,'&&PJ2DCO',1,' ')
-         CALL UTIMSD('MESSAGE',2,.FALSE.,.TRUE.,CORRES,1,' ')
+         CALL UTIMSD(IFM,2,.FALSE.,.TRUE.,'&&PJ2DCO',1,' ')
+         CALL UTIMSD(IFM,2,.FALSE.,.TRUE.,CORRES,1,' ')
       END IF
       CALL DETRSD('CORRESP_2_MAILLA',CORTR3)
 

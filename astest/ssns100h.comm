@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 15/06/2004   AUTEUR MABBAS M.ABBAS 
 # TITRE PLAQUE ENCASTREE EN DEPLACEMENT IMPOSE CONSTITUEE D'UNE NAPPE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -82,11 +82,8 @@ MOD=AFFE_MODELE(    MAILLAGE=MAIL,     VERIF='MAILLE',
 #
 CARGR=AFFE_CARA_ELEM(    MODELE=MOD,
                        GRILLE=_F( GROUP_MA = 'GEOB',
-                                SECTION_L = .01,
+                                SECTION = .01,
                                 ANGL_REP = (0.0, 0.0,),
-                                ANGL_L = 0.,
-                                POUR_CENT_L = 1.,
-                                POUR_CENT_T = 0.0,
                                 EXCENTREMENT = 0.0,
 #                                COEF_RIGI_DRZ : 0.00001
                               )

@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 16/06/2004   AUTEUR JMBHH01 J.M.PROIX 
 # TITRE COMPARAISON POLY_CFC ET MONOCRISTAL. MOD A : POLY_CFC
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -60,14 +60,13 @@ ACIER=DEFI_MATERIAU(ELAS=_F(E=145200.0,
                                 K=40.0,
                                 TAU_0=75.5,
                                 B1=19.34,
-                                HL=0.,
+                                HL=0.5,
                                 Q1=9.77,
                                 Q2=-33.27,
                                 B2=5.345,
-                             ##   C1=6333.0,
-                                C1=0.00001,
+                                C1=1.,
                                 D1=36.68,
-                                C2=0,),);
+                                C2=10,),);
 
 COEF=DEFI_FONCTION(NOM_PARA='INST',
                    VALE=(0.0,0.0,1.0,1.0,),
@@ -136,7 +135,7 @@ TEST_RESU(RESU=(_F(RESULTAT=SOLNL,
                    MAILLE='MA1',
                    POINT=1,
                    REFERENCE='NON_REGRESSION',
-                   VALE=-1.8955E-03,),
+                   VALE=-1.8909E-03,),
                 _F(RESULTAT=SOLNL,
                    INST=TFIN,
                    NOM_CHAM='EPSI_ELGA_DEPL',
@@ -144,15 +143,7 @@ TEST_RESU(RESU=(_F(RESULTAT=SOLNL,
                    MAILLE='MA1',
                    POINT=1,
                    REFERENCE='NON_REGRESSION',
-                   VALE=5.03377E-04 ,),
-                _F(RESULTAT=SOLNL,
-                   INST=TFIN,
-                   NOM_CHAM='EPSP_ELGA',
-                   NOM_CMP='EPXX',
-                   MAILLE='MA1',
-                   POINT=1,
-                   REFERENCE='NON_REGRESSION',
-                   VALE=-4.49212E-04 ,),
+                   VALE=5.02667E-04 ,),
                 _F(RESULTAT=SOLNL,
                    INST=TFIN,
                    NOM_CHAM='EPSP_ELGA',
@@ -160,12 +151,12 @@ TEST_RESU(RESU=(_F(RESULTAT=SOLNL,
                    MAILLE='MA1',
                    POINT=1,
                    REFERENCE='NON_REGRESSION',
-                   VALE=6.94934E-05,),
+                   VALE=6.878285E-05,),
                    ),);
 
+FIN();
 IMPR_RESU(RESU=_F(RESULTAT=SOLNL,
                   INST=TFIN,PRECISION=1e-06,
                    NOM_CHAM=('EPSI_ELGA_DEPL','SIEF_ELGA','EPSP_ELGA'),
                 #  NUME_ORDRE=(1,56,57,NUMFIN),
                   ),);
-FIN();

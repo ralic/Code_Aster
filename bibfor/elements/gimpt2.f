@@ -1,7 +1,7 @@
       SUBROUTINE GIMPT2 (RESU,NBRE,TRAV1,TRAV2,TRAV3,CHFOND,STOK4,
      &                   LOBJ2,IMPR)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 15/05/96   AUTEUR CIBHHRA R.MEDDOURI 
+C MODIF ELEMENTS  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -106,13 +106,13 @@ C
                ENDIF
 C
                CHAMNO(20:24) = '.VALE'
-               CALL JEIMPO('RESULTAT',CHAMNO,' ','OBJET .VALE')
+               CALL JEIMPO(UNIT,CHAMNO,' ','OBJET .VALE')
 C
                CHAMNO(20:24) = '.DESC'
-               CALL JEIMPO('RESULTAT',CHAMNO,' ','OBJET .DESC')
+               CALL JEIMPO(UNIT,CHAMNO,' ','OBJET .DESC')
 C
                CHAMNO(20:24) = '.REFE'
-               CALL JEIMPO('RESULTAT',CHAMNO,' ','OBJET .REFE')
+               CALL JEIMPO(UNIT,CHAMNO,' ','OBJET .REFE')
 C
             ENDIF
  10      CONTINUE

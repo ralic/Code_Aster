@@ -1,4 +1,4 @@
-#@ MODIF recal Macro  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
+#@ MODIF recal Macro  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -26,6 +26,7 @@ import Gnuplot
 import Cata
 from Cata.cata import INCLUDE,DETRUIRE
 from Accas import _F
+from Utilitai.extract import EXTRACT
 
 import os
 
@@ -173,40 +174,6 @@ def calcul_F(self,UL,para,val,reponses):
       x.writelines(fichiersauv)
       x.close()
       return self.g_context['Lrep']
-
-#----------------------------------------------------------
-
-
-def EXTRACT(Table,Para,Champ):
-# Definition des variables
-  #Table = reponse[0]
-  #Para = reponse[1]
-  #Champ = reponse[2] 
-  Result = [[None]*2]
-  nb_temp = 0
-# Boucle de lecture sur les temps
-  while 1: 
-#   Si on n'a pas lu tous les temps
-    try:
-#     alors on lit les 2 champs abscisse et ordonnee
-        Result[nb_temp][0] = Table[Para,nb_temp+1]
-        Result[nb_temp][1] = Table[Champ,nb_temp+1]
-        nb_temp = nb_temp + 1  
-#     on ajoute une dimension temporelle supplementaire au resultat
-        Result.append([None]*2)
-#   Si on a lu tous les temps alors on sort de la boucle
-    except KeyError:
-      break
-# on renvoie le resultat en fin
-  Rep = Result[0:nb_temp]
-  F=Numeric.zeros((len(Rep),2),Numeric.Float)   #on transforme Rep en array Numeric
-  for i in range(len(Rep)):
-   for j in range(2) :
-      F[i][j] = Rep[i][j]
-  del(Rep)
-  del(Result)
-  return F
-  
 
 #_____________________________________________
 #

@@ -1,6 +1,6 @@
       SUBROUTINE TE0402 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 10/11/98   AUTEUR D6BHHMA M.ALMIKDAD 
+C MODIF ELEMENTS  DATE 14/06/2004   AUTEUR CIBHHPD S.VANDENBERGHE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -122,10 +122,9 @@ C
 C
       REAL * 8 BTILD3 ( 5 , 27 )
 C
-      PARAMETER       ( NPGE = 2 )
-      REAL * 8 EPSVAL ( NPGE ) , KSI3S2
+      PARAMETER       ( NPGE = 3 )
+      REAL * 8 EPSVAL ( NPGE ) , KSI3S2 , POIDS (NPGE)
 C
-      REAL * 8 RAC2
 C
 C
 C
@@ -133,10 +132,12 @@ C DEB
 C
 C---- LES NOMBRES
 C
-      RAC2 = SQRT (2.D0)
-C
-      EPSVAL ( 1 ) = - 1.D0 / SQRT (3.D0)
-      EPSVAL ( 2 ) =   1.D0 / SQRT (3.D0)
+
+C       POIDS DES POINTS DE GAUSS DANS LA TRANCHE
+     
+      POIDS ( 1 ) = 0.33333333333333D0
+      POIDS ( 2 ) = 1.33333333333333D0
+      POIDS ( 3 ) = 0.33333333333333D0
 C
 C---- RECUPERATION DES POINTEURS ( L : LECTURE, E : ECRITURE )
 C
@@ -182,6 +183,17 @@ C
         CALL JEVECH ( 'PCACOQU' , 'L' , JCARA )
 C
         EPAIS = ZR ( JCARA )
+
+C       COORDONNEES DES POINTS DE GAUSS DANS LA TRANCHE
+        EPSVAL ( 1 ) = ZR(LZR-1+1251)
+        EPSVAL ( 2 ) = ZR(LZR-1+1252)
+        EPSVAL ( 3 ) = ZR(LZR-1+1253)
+
+C       POIDS DES POINTS DE GAUSS DANS LA TRANCHE
+     
+        POIDS ( 1 ) = 0.33333333333333D0
+        POIDS ( 2 ) = 1.33333333333333D0
+        POIDS ( 3 ) = 0.33333333333333D0
 C
 C
 C
@@ -192,7 +204,6 @@ C
 C
 C
 C
-C______________________________________________________________________
 C        CALCUL DE LA MATRICE DE RIGIDITE GEOMETRIQUE 
 C
 C            RIG ( 6 * NB1 + 3 , 6 * NB1 + 3 ) 
@@ -200,7 +211,6 @@ C
 C        DANS
 C
 C            VRI ( 6 * NB1 + 3 ) * ( 6 * NB1 + 3 ) )
-C______________________________________________________________________
 C
 C---- INITIALISATION DE LA MATRICE DE RIGIDITE GEOMETRIQUE
 C
@@ -233,10 +243,10 @@ C
             SIGMTD ( 1 )=ZR ( ICONTR - 1 + ( KPGS - 1 ) * 6 + 1 )
             SIGMTD ( 2 )=ZR ( ICONTR - 1 + ( KPGS - 1 ) * 6 + 2 ) 
 C
-            SIGMTD ( 3 )=ZR ( ICONTR - 1 + ( KPGS - 1 ) * 6 + 4 ) * RAC2
+            SIGMTD ( 3 )=ZR ( ICONTR - 1 + ( KPGS - 1 ) * 6 + 4 )
 C
-            SIGMTD ( 4 )=ZR ( ICONTR - 1 + ( KPGS - 1 ) * 6 + 5 ) * RAC2
-            SIGMTD ( 5 )=ZR ( ICONTR - 1 + ( KPGS - 1 ) * 6 + 6 ) * RAC2
+            SIGMTD ( 4 )=ZR ( ICONTR - 1 + ( KPGS - 1 ) * 6 + 5 )
+            SIGMTD ( 5 )=ZR ( ICONTR - 1 + ( KPGS - 1 ) * 6 + 6 )
 C
 C---------- TENSEUR 3 * 3 CONTRAINTES LOCALES TRIANGULAIRE SUPERIEURE
 C
@@ -290,8 +300,8 @@ C           POIDS SURFACE MOYENNE * DETJ * POIDS EPAISSEUR
 C           VOIR ROUTINE INI080 , HSJ1F
 C
             CALL BTSIG ( 3 * NB2 , 5 , 
-     &                   ZR (LZR - 1 + 127 + INTSN - 1) * DETJ * 1.D0 ,
-     &                   BTILD3 , SIGMTD , VECZN )
+     &           ZR (LZR - 1 + 127 + INTSN - 1) * DETJ * POIDS(INTE),
+     &           BTILD3 , SIGMTD , VECZN )
 C
 C
 C
@@ -322,8 +332,8 @@ C           POIDS SURFACE MOYENNE * DETJ * POIDS EPAISSEUR
 C           VOIR ROUTINE INI080 , HSJ1F
 C
             CALL  BTDBMA ( J1DN2 , BARSIG , 
-     &                  ZR (LZR - 1 + 127 + INTSN - 1) * DETJ * 1.D0 ,
-     &                  9 , 6 * NB1 + 3 , VRI )
+     &            ZR (LZR - 1 + 127 + INTSN - 1) * DETJ * POIDS(INTE),
+     &            9 , 6 * NB1 + 3 , VRI )
 C
  610     CONTINUE
  600  CONTINUE

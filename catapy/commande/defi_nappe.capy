@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -23,10 +23,7 @@ DEFI_NAPPE=OPER(nom="DEFI_NAPPE",op=   4,sd_prod=nappe_sdaster,
          regles=(UN_PARMI('FONCTION','DEFI_FONCTION'),
                  EXCLUS('FONCTION','NOM_PARA_FONC',),
                  ENSEMBLE('NOM_PARA_FONC','DEFI_FONCTION'),),
-         NOM_PARA        =SIMP(statut='o',typ='TXM',into=("TEMP","INST","X","Y","Z","FREQ","PULS",
-                                                          "AMOR","EPAIS","TSEC","HYDR","SECH",
-                                                          "SAT", "PGAZ","PCAP"
-                                                          ) ),
+         NOM_PARA        =SIMP(statut='o',typ='TXM',into=C_PARA_FONCTION() ),
          NOM_RESU        =SIMP(statut='f',typ='TXM',defaut="TOUTRESU"),       
          PARA            =SIMP(statut='o',typ='R',max='**'),
          FONCTION        =SIMP(statut='f',typ=(fonction_sdaster,formule),max='**' ),

@@ -1,6 +1,6 @@
       SUBROUTINE VDEFGE(NOMTE,OPTION,NB1,NPGSR,XR,EPAIS,SIGMA,EFFGT)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 25/02/97   AUTEUR JMBHHMA M.A.REDON 
+C MODIF ELEMENTS  DATE 14/06/2004   AUTEUR CIBHHPD S.VANDENBERGHE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -34,58 +34,101 @@ C
 C
       L1 =1452
 C
-         A=-SQRT(3.D0)/12.D0
-         B= SQRT(3.D0)/12.D0
-         EPAIS2=EPAIS**2
+      DEMIEP=EPAIS/2.D0
+C
+      WNC1 = 0.33333333333333D0
+      WNC2 = 1.33333333333333D0
+      WNC3 = 0.33333333333333D0
+      ZIC = -EPAIS/2.D0
+C
+      ZIC1 = ZIC
+      ZIC2 = ZIC1 + DEMIEP
+      ZIC3 = ZIC2 + DEMIEP
 C
       IF (NOMTE(1:8).EQ.'MEC3QU9H') THEN
-         EFFGTG(1,1)=EPAIS/2.D0*(SIGMA(1,1)+SIGMA(1,5))
-         EFFGTG(1,2)=EPAIS/2.D0*(SIGMA(1,2)+SIGMA(1,6))
-         EFFGTG(1,3)=EPAIS/2.D0*(SIGMA(1,3)+SIGMA(1,7))
-         EFFGTG(1,4)=EPAIS/2.D0*(SIGMA(1,4)+SIGMA(1,8))
+         EFFGTG(1,1)=DEMIEP*(WNC1*SIGMA(1,1)+WNC2*SIGMA(1,5)
+     &                                      +WNC3*SIGMA(1,9)) 
+         EFFGTG(1,2)=DEMIEP*(WNC1*SIGMA(1,2)+WNC2*SIGMA(1,6)
+     &                                      +WNC3*SIGMA(1,10))
+         EFFGTG(1,3)=DEMIEP*(WNC1*SIGMA(1,3)+WNC2*SIGMA(1,7)
+     &                                      +WNC3*SIGMA(1,11))
+         EFFGTG(1,4)=DEMIEP*(WNC1*SIGMA(1,4)+WNC2*SIGMA(1,8)
+     &                                      +WNC3*SIGMA(1,12))
 C
-         EFFGTG(2,1)=EPAIS/2.D0*(SIGMA(2,1)+SIGMA(2,5))
-         EFFGTG(2,2)=EPAIS/2.D0*(SIGMA(2,2)+SIGMA(2,6))
-         EFFGTG(2,3)=EPAIS/2.D0*(SIGMA(2,3)+SIGMA(2,7))
-         EFFGTG(2,4)=EPAIS/2.D0*(SIGMA(2,4)+SIGMA(2,8))
+         EFFGTG(2,1)=DEMIEP*(WNC1*SIGMA(2,1)+WNC2*SIGMA(2,5)
+     &                                      +WNC3*SIGMA(2,9)) 
+         EFFGTG(2,2)=DEMIEP*(WNC1*SIGMA(2,2)+WNC2*SIGMA(2,6)
+     &                                      +WNC3*SIGMA(2,10))
+         EFFGTG(2,3)=DEMIEP*(WNC1*SIGMA(2,3)+WNC2*SIGMA(2,7)
+     &                                      +WNC3*SIGMA(2,11))
+         EFFGTG(2,4)=DEMIEP*(WNC1*SIGMA(2,4)+WNC2*SIGMA(2,8)
+     &                                      +WNC3*SIGMA(2,12))
 C
-         EFFGTG(3,1)=EPAIS/2.D0*(SIGMA(4,1)+SIGMA(4,5))
-         EFFGTG(3,2)=EPAIS/2.D0*(SIGMA(4,2)+SIGMA(4,6))
-         EFFGTG(3,3)=EPAIS/2.D0*(SIGMA(4,3)+SIGMA(4,7))
-         EFFGTG(3,4)=EPAIS/2.D0*(SIGMA(4,4)+SIGMA(4,8))
+         EFFGTG(3,1)=DEMIEP*(WNC1*SIGMA(4,1)+WNC2*SIGMA(4,5)
+     &                                      +WNC3*SIGMA(4,9)) 
+         EFFGTG(3,2)=DEMIEP*(WNC1*SIGMA(4,2)+WNC2*SIGMA(4,6)
+     &                                      +WNC3*SIGMA(4,10))
+         EFFGTG(3,3)=DEMIEP*(WNC1*SIGMA(4,3)+WNC2*SIGMA(4,7)
+     &                                      +WNC3*SIGMA(4,11))
+         EFFGTG(3,4)=DEMIEP*(WNC1*SIGMA(4,4)+WNC2*SIGMA(4,8)
+     &                                      +WNC3*SIGMA(4,12))
 C
-         EFFGTG(4,1)=(A*SIGMA(1,1)+B*SIGMA(1,5))*EPAIS2
-         EFFGTG(4,2)=(A*SIGMA(1,2)+B*SIGMA(1,6))*EPAIS2
-         EFFGTG(4,3)=(A*SIGMA(1,3)+B*SIGMA(1,7))*EPAIS2
-         EFFGTG(4,4)=(A*SIGMA(1,4)+B*SIGMA(1,8))*EPAIS2
+         EFFGTG(4,1)=DEMIEP*(WNC1*ZIC1*SIGMA(1,1)
+     &                      +WNC2*ZIC2*SIGMA(1,5)
+     &                      +WNC3*ZIC3*SIGMA(1,9))
+         EFFGTG(4,2)=DEMIEP*(WNC1*ZIC1*SIGMA(1,2)
+     &                      +WNC2*ZIC2*SIGMA(1,6)
+     &                      +WNC3*ZIC3*SIGMA(1,10))
+         EFFGTG(4,3)=DEMIEP*(WNC1*ZIC1*SIGMA(1,3)
+     &                      +WNC2*ZIC2*SIGMA(1,7)
+     &                      +WNC3*ZIC3*SIGMA(1,11))
+         EFFGTG(4,4)=DEMIEP*(WNC1*ZIC1*SIGMA(1,4)
+     &                      +WNC2*ZIC2*SIGMA(1,8)
+     &                      +WNC3*ZIC3*SIGMA(1,12))
 C
-         EFFGTG(5,1)=(A*SIGMA(2,1)+B*SIGMA(2,5))*EPAIS2
-         EFFGTG(5,2)=(A*SIGMA(2,2)+B*SIGMA(2,6))*EPAIS2
-         EFFGTG(5,3)=(A*SIGMA(2,3)+B*SIGMA(2,7))*EPAIS2
-         EFFGTG(5,4)=(A*SIGMA(2,4)+B*SIGMA(2,8))*EPAIS2
+         EFFGTG(5,1)=DEMIEP*(WNC1*ZIC1*SIGMA(2,1)
+     &                      +WNC2*ZIC2*SIGMA(2,5)
+     &                      +WNC3*ZIC3*SIGMA(2,9))
+         EFFGTG(5,2)=DEMIEP*(WNC1*ZIC1*SIGMA(2,2)
+     &                      +WNC2*ZIC2*SIGMA(2,6)
+     &                      +WNC3*ZIC3*SIGMA(2,10))
+         EFFGTG(5,3)=DEMIEP*(WNC1*ZIC1*SIGMA(2,3)
+     &                      +WNC2*ZIC2*SIGMA(2,7)
+     &                      +WNC3*ZIC3*SIGMA(2,11))
+         EFFGTG(5,4)=DEMIEP*(WNC1*ZIC1*SIGMA(2,4)
+     &                      +WNC2*ZIC2*SIGMA(2,8)
+     &                      +WNC3*ZIC3*SIGMA(2,12))
 C
-         EFFGTG(6,1)=(A*SIGMA(4,1)+B*SIGMA(4,5))*EPAIS2
-         EFFGTG(6,2)=(A*SIGMA(4,2)+B*SIGMA(4,6))*EPAIS2
-         EFFGTG(6,3)=(A*SIGMA(4,3)+B*SIGMA(4,7))*EPAIS2
-         EFFGTG(6,4)=(A*SIGMA(4,4)+B*SIGMA(4,8))*EPAIS2
+         EFFGTG(6,1)=DEMIEP*(WNC1*ZIC1*SIGMA(4,1)
+     &                      +WNC2*ZIC2*SIGMA(4,5)
+     &                      +WNC3*ZIC3*SIGMA(4,9))
+         EFFGTG(6,2)=DEMIEP*(WNC1*ZIC1*SIGMA(4,2)
+     &                      +WNC2*ZIC2*SIGMA(4,6)
+     &                      +WNC3*ZIC3*SIGMA(4,10))
+         EFFGTG(6,3)=DEMIEP*(WNC1*ZIC1*SIGMA(4,3)
+     &                      +WNC2*ZIC2*SIGMA(4,7)
+     &                      +WNC3*ZIC3*SIGMA(4,11))
+         EFFGTG(6,4)=DEMIEP*(WNC1*ZIC1*SIGMA(4,4)
+     &                      +WNC2*ZIC2*SIGMA(4,8)
+     &                      +WNC3*ZIC3*SIGMA(4,12))
 C
-         EFFGTG(7,1)=EPAIS/2.D0*(SIGMA(5,1)+SIGMA(5,5))
-         EFFGTG(7,2)=EPAIS/2.D0*(SIGMA(5,2)+SIGMA(5,6))
-         EFFGTG(7,3)=EPAIS/2.D0*(SIGMA(5,3)+SIGMA(5,7))
-         EFFGTG(7,4)=EPAIS/2.D0*(SIGMA(5,4)+SIGMA(5,8))
+         EFFGTG(7,1)=DEMIEP*(WNC1*SIGMA(5,1)+WNC2*SIGMA(5,5)
+     &                                      +WNC3*SIGMA(5,9)) 
+         EFFGTG(7,2)=DEMIEP*(WNC1*SIGMA(5,2)+WNC2*SIGMA(5,6)
+     &                                      +WNC3*SIGMA(5,10))
+         EFFGTG(7,3)=DEMIEP*(WNC1*SIGMA(5,3)+WNC2*SIGMA(5,7)
+     &                                      +WNC3*SIGMA(5,11))
+         EFFGTG(7,4)=DEMIEP*(WNC1*SIGMA(5,4)+WNC2*SIGMA(5,8)
+     &                                      +WNC3*SIGMA(5,12))
 C
-         EFFGTG(8,1)=EPAIS/2.D0*(SIGMA(6,1)+SIGMA(6,5))
-         EFFGTG(8,2)=EPAIS/2.D0*(SIGMA(6,2)+SIGMA(6,6))
-         EFFGTG(8,3)=EPAIS/2.D0*(SIGMA(6,3)+SIGMA(6,7))
-         EFFGTG(8,4)=EPAIS/2.D0*(SIGMA(6,4)+SIGMA(6,8))
-C
-         IF (OPTION(1:9).EQ.'SIEF_ELGA') THEN
-         DO 11 I=1,NPGSR
-         DO 12 J=1,8
-         EFFGT(J,I)=EFFGTG(J,I)
- 12      CONTINUE
- 11      CONTINUE
-         ELSE IF (OPTION(1:9).EQ.'EFGE_ELNO') THEN
+         EFFGTG(8,1)=DEMIEP*(WNC1*SIGMA(6,1)+WNC2*SIGMA(6,5)
+     &                                      +WNC3*SIGMA(6,9)) 
+         EFFGTG(8,2)=DEMIEP*(WNC1*SIGMA(6,2)+WNC2*SIGMA(6,6)
+     &                                      +WNC3*SIGMA(6,10))
+         EFFGTG(8,3)=DEMIEP*(WNC1*SIGMA(6,3)+WNC2*SIGMA(6,7)
+     &                                      +WNC3*SIGMA(6,11))
+         EFFGTG(8,4)=DEMIEP*(WNC1*SIGMA(6,4)+WNC2*SIGMA(6,8)
+     &                                      +WNC3*SIGMA(6,12))
 C
          DO 15 I=1,NB1
             I1=L1+4*(I-1)
@@ -113,48 +156,72 @@ C
          EFFGT(7,9)=(EFFGT(7,5)+EFFGT(7,6)+EFFGT(7,7)+EFFGT(7,8))/4.D0
          EFFGT(8,9)=(EFFGT(8,5)+EFFGT(8,6)+EFFGT(8,7)+EFFGT(8,8))/4.D0
 C
-         ENDIF
       ELSE IF (NOMTE(1:8).EQ.'MEC3TR7H') THEN
 C
-         EFFGTG(1,1)=EPAIS/2.D0*(SIGMA(1,1)+SIGMA(1,4))
-         EFFGTG(1,2)=EPAIS/2.D0*(SIGMA(1,2)+SIGMA(1,5))
-         EFFGTG(1,3)=EPAIS/2.D0*(SIGMA(1,3)+SIGMA(1,6))
+         EFFGTG(1,1)=DEMIEP*(WNC1*SIGMA(1,1)+WNC2*SIGMA(1,4)
+     &                                      +WNC3*SIGMA(1,7)) 
+         EFFGTG(1,2)=DEMIEP*(WNC1*SIGMA(1,2)+WNC2*SIGMA(1,5)
+     &                                      +WNC3*SIGMA(1,8))
+         EFFGTG(1,3)=DEMIEP*(WNC1*SIGMA(1,3)+WNC2*SIGMA(1,6)
+     &                                      +WNC3*SIGMA(1,9))
 C
-         EFFGTG(2,1)=EPAIS/2.D0*(SIGMA(2,1)+SIGMA(2,4))
-         EFFGTG(2,2)=EPAIS/2.D0*(SIGMA(2,2)+SIGMA(2,5))
-         EFFGTG(2,3)=EPAIS/2.D0*(SIGMA(2,3)+SIGMA(2,6))
+         EFFGTG(2,1)=DEMIEP*(WNC1*SIGMA(2,1)+WNC2*SIGMA(2,4)
+     &                                      +WNC3*SIGMA(2,7)) 
+         EFFGTG(2,2)=DEMIEP*(WNC1*SIGMA(2,2)+WNC2*SIGMA(2,5)
+     &                                      +WNC3*SIGMA(2,8))
+         EFFGTG(2,3)=DEMIEP*(WNC1*SIGMA(2,3)+WNC2*SIGMA(2,6)
+     &                                      +WNC3*SIGMA(2,9))
 C
-         EFFGTG(3,1)=EPAIS/2.D0*(SIGMA(4,1)+SIGMA(4,4))
-         EFFGTG(3,2)=EPAIS/2.D0*(SIGMA(4,2)+SIGMA(4,5))
-         EFFGTG(3,3)=EPAIS/2.D0*(SIGMA(4,3)+SIGMA(4,6))
+         EFFGTG(3,1)=DEMIEP*(WNC1*SIGMA(4,1)+WNC2*SIGMA(4,4)
+     &                                      +WNC3*SIGMA(4,7)) 
+         EFFGTG(3,2)=DEMIEP*(WNC1*SIGMA(4,2)+WNC2*SIGMA(4,5)
+     &                                      +WNC3*SIGMA(4,8))
+         EFFGTG(3,3)=DEMIEP*(WNC1*SIGMA(4,3)+WNC2*SIGMA(4,6)
+     &                                      +WNC3*SIGMA(4,9))
 C
-         EFFGTG(4,1)=(A*SIGMA(1,1)+B*SIGMA(1,4))*EPAIS2
-         EFFGTG(4,2)=(A*SIGMA(1,2)+B*SIGMA(1,5))*EPAIS2
-         EFFGTG(4,3)=(A*SIGMA(1,3)+B*SIGMA(1,6))*EPAIS2
+         EFFGTG(4,1)=DEMIEP*(WNC1*ZIC1*SIGMA(1,1)
+     &                      +WNC2*ZIC2*SIGMA(1,4)
+     &                      +WNC3*ZIC3*SIGMA(1,7))
+         EFFGTG(4,2)=DEMIEP*(WNC1*ZIC1*SIGMA(1,2)
+     &                      +WNC2*ZIC2*SIGMA(1,5)
+     &                      +WNC3*ZIC3*SIGMA(1,8))
+         EFFGTG(4,3)=DEMIEP*(WNC1*ZIC1*SIGMA(1,3)
+     &                      +WNC2*ZIC2*SIGMA(1,6)
+     &                      +WNC3*ZIC3*SIGMA(1,9))
 C
-         EFFGTG(5,1)=(A*SIGMA(2,1)+B*SIGMA(2,4))*EPAIS2
-         EFFGTG(5,2)=(A*SIGMA(2,2)+B*SIGMA(2,5))*EPAIS2
-         EFFGTG(5,3)=(A*SIGMA(2,3)+B*SIGMA(2,6))*EPAIS2
+         EFFGTG(5,1)=DEMIEP*(WNC1*ZIC1*SIGMA(2,1)
+     &                      +WNC2*ZIC2*SIGMA(2,4)
+     &                      +WNC3*ZIC3*SIGMA(2,7))
+         EFFGTG(5,2)=DEMIEP*(WNC1*ZIC1*SIGMA(2,2)
+     &                      +WNC2*ZIC2*SIGMA(2,5)
+     &                      +WNC3*ZIC3*SIGMA(2,8))
+         EFFGTG(5,3)=DEMIEP*(WNC1*ZIC1*SIGMA(2,3)
+     &                      +WNC2*ZIC2*SIGMA(2,6)
+     &                      +WNC3*ZIC3*SIGMA(2,9))
 C
-         EFFGTG(6,1)=(A*SIGMA(4,1)+B*SIGMA(4,4))*EPAIS2
-         EFFGTG(6,2)=(A*SIGMA(4,2)+B*SIGMA(4,5))*EPAIS2
-         EFFGTG(6,3)=(A*SIGMA(4,3)+B*SIGMA(4,6))*EPAIS2
+         EFFGTG(6,1)=DEMIEP*(WNC1*ZIC1*SIGMA(4,1)
+     &                      +WNC2*ZIC2*SIGMA(4,4)
+     &                      +WNC3*ZIC3*SIGMA(4,7))
+         EFFGTG(6,2)=DEMIEP*(WNC1*ZIC1*SIGMA(4,2)
+     &                      +WNC2*ZIC2*SIGMA(4,5)
+     &                      +WNC3*ZIC3*SIGMA(4,8))
+         EFFGTG(6,3)=DEMIEP*(WNC1*ZIC1*SIGMA(4,3)
+     &                       +WNC2*ZIC2*SIGMA(4,6)
+     &                      +WNC3*ZIC3*SIGMA(4,9))
 C
-         EFFGTG(7,1)=EPAIS/2.D0*(SIGMA(5,1)+SIGMA(5,4))
-         EFFGTG(7,2)=EPAIS/2.D0*(SIGMA(5,2)+SIGMA(5,5))
-         EFFGTG(7,3)=EPAIS/2.D0*(SIGMA(5,3)+SIGMA(5,6))
+         EFFGTG(7,1)=DEMIEP*(WNC1*SIGMA(5,1)+WNC2*SIGMA(5,4)
+     &                                      +WNC3*SIGMA(5,7)) 
+         EFFGTG(7,2)=DEMIEP*(WNC1*SIGMA(5,2)+WNC2*SIGMA(5,5)
+     &                                      +WNC3*SIGMA(5,8))
+         EFFGTG(7,3)=DEMIEP*(WNC1*SIGMA(5,3)+WNC2*SIGMA(5,6)
+     &                                      +WNC3*SIGMA(5,9))
 C
-         EFFGTG(8,1)=EPAIS/2.D0*(SIGMA(6,1)+SIGMA(6,4))
-         EFFGTG(8,2)=EPAIS/2.D0*(SIGMA(6,2)+SIGMA(6,5))
-         EFFGTG(8,3)=EPAIS/2.D0*(SIGMA(6,3)+SIGMA(6,6))
-C
-         IF (OPTION(1:9).EQ.'SIEF_ELGA') THEN
-         DO 21 I=1,NPGSR
-         DO 22 J=1,8
-         EFFGT(J,I)=EFFGTG(J,I)
- 22      CONTINUE
- 21      CONTINUE
-         ELSE IF (OPTION(1:9).EQ.'EFGE_ELNO') THEN
+         EFFGTG(8,1)=DEMIEP*(WNC1*SIGMA(6,1)+WNC2*SIGMA(6,4)
+     &                                      +WNC3*SIGMA(6,7)) 
+         EFFGTG(8,2)=DEMIEP*(WNC1*SIGMA(6,2)+WNC2*SIGMA(6,5)
+     &                                      +WNC3*SIGMA(6,8))
+         EFFGTG(8,3)=DEMIEP*(WNC1*SIGMA(6,3)+WNC2*SIGMA(6,6)
+     &                                      +WNC3*SIGMA(6,9))
 C
          DO 35 I=1,NB1
             I1=L1+4*(I-1)
@@ -181,8 +248,6 @@ C
          EFFGT(6,7)=(EFFGT(6,1)+EFFGT(6,2)+EFFGT(6,3))/3.D0
          EFFGT(7,7)=(EFFGT(7,1)+EFFGT(7,2)+EFFGT(7,3))/3.D0
          EFFGT(8,7)=(EFFGT(8,1)+EFFGT(8,2)+EFFGT(8,3))/3.D0
-C
-         ENDIF
 C
       ENDIF
 C

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,19 +16,28 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-CREA_TABLE=OPER(nom="CREA_TABLE",op=  36,sd_prod=table_sdaster,
+def crea_table_prod(TYPE_TABLE,**args):
+  if TYPE_TABLE == "TABLE"          : return table_sdaster
+  if TYPE_TABLE == "TABL_CARA_GEOM" : return tabl_cara_geom
+  if TYPE_TABLE == "TABL_POST_RELE" : return tabl_post_rele
+  if TYPE_TABLE == "TABL_POST_USUR" : return tabl_post_usur
+  if TYPE_TABLE == "TABL_POST_ALEA" : return tabl_post_alea
+  raise AsException("type de concept resultat non prevu")
+
+CREA_TABLE=OPER(nom="CREA_TABLE",op=  36,sd_prod=crea_table_prod,
                 fr="Creation d'une table a partir d'une fonction ou de deux listes",
                 reentrant='n',UIinfo={"groupes":("Table",)},
 
            regles=(EXCLUS('FONCTION','LISTE')),
 
-           FONCTION=FACT(statut='f',min=1,max=1,
-                    fr="Creation d'une table a partir d'une fonction",
-                        FONCTION=SIMP(statut='o',typ=fonction_sdaster),
-                        PARA=SIMP(statut='f',typ='TXM',min=2,max=2)),  
-
-           LISTE=FACT(statut='f',min=2,max=2,
-                 fr="Creation d'une table a partir de deux listes",
+           TYPE_TABLE=SIMP(statut='f',typ='TXM',defaut="TABLE",
+                           into=("TABLE",
+                                 "TABL_CARA_GEOM",
+                                 "TABL_POST_RELE",
+                                 "TABL_POST_USUR",
+                                 "TABL_POST_ALEA" ) ),
+           LISTE=FACT(statut='f',min=2,max='**',
+                 fr="Creation d'une table a partir de listes",
                  regles=(UN_PARMI('LISTE_I','LISTE_R','LISTE_K')), 
                         PARA=SIMP(statut='o',typ='TXM'),
                         TYPE_K=SIMP(statut='f',typ='TXM',defaut='K8',
@@ -36,6 +45,11 @@ CREA_TABLE=OPER(nom="CREA_TABLE",op=  36,sd_prod=table_sdaster,
                         LISTE_I=SIMP(statut='f',typ='I',max='**'),
                         LISTE_R=SIMP(statut='f',typ='R',max='**'),
                         LISTE_K=SIMP(statut='f',typ='TXM', max='**')),
+           FONCTION=FACT(statut='f',min=1,max=1,
+                    fr="Creation d'une table a partir d'une fonction",
+                        FONCTION=SIMP(statut='o',typ=fonction_sdaster),
+                        PARA=SIMP(statut='f',typ='TXM',min=2,max=2)),  
+           TITRE=SIMP(statut='f',typ='TXM',max='**'),
 )  ;
 
 

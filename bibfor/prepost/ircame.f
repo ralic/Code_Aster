@@ -1,4 +1,4 @@
-      SUBROUTINE IRCAME ( FICH, NOCHMD,
+      SUBROUTINE IRCAME ( IFI, NOCHMD,
      >                    NBCMP, NOMCMP,
      >                    NUMPT, INSTAN, UNIINS, NUMORD,
      >                    ADSK, ADSD, ADSC, ADSV, ADSL,
@@ -6,7 +6,7 @@
      >                    SUPNOE, CODRET )
 C_______________________________________________________________________
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 22/07/2003   AUTEUR LAVERNE J.LAVERNE 
+C MODIF PREPOST  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
 C RESPONSABLE GNICOLAS G.NICOLAS
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -28,7 +28,7 @@ C     ECRITURE D'UN CHAMP - FORMAT MED
 C        -  -       - -            --
 C-----------------------------------------------------------------------
 C     ENTREES :
-C       FICH   : NOM DU FICHIER OU ON DOIT IMPRIMER LE CHAMP
+C       IFI    : UNITE LOGIQUE D'IMPRESSION DU CHAMP
 C       NOCHMD : NOM MED DU CHAMP A ECRIRE
 C       NCMPRF : NOMBRE DE COMPOSANTES DU CHAMP DE REFERENCE
 C       NBCMP  : NOMBRE DE COMPOSANTES A ECRIRE. S'IL EST NUL, ON
@@ -54,9 +54,8 @@ C
       CHARACTER*8 UNIINS
       CHARACTER*32 NOCHMD
       CHARACTER*(*) NOMCMP(*)
-      CHARACTER*(*) FICH
 C
-      INTEGER NBCMP, NUMPT, NUMORD
+      INTEGER NBCMP, NUMPT, NUMORD, IFI
       INTEGER ADSK, ADSD, ADSC, ADSV, ADSL
       INTEGER NBVATO, NCMPRF
       INTEGER NBENEC
@@ -129,8 +128,6 @@ C
       LOGICAL LGAUX
       LOGICAL EXISTM
 C
-      INTEGER IUNIFI
-C
       CALL JEMARQ ( )
 C
 C====
@@ -152,7 +149,7 @@ C               12   345678   9012345678901234
 C
 C 1.3. ==> NOM DU FICHIER MED
 C
-      IAUX = IUNIFI (FICH)
+      IAUX = IFI
       CALL CODENT ( IAUX, 'G', SAUX08 )
       NOFIMD = 'fort.'//SAUX08
       IF ( NIVINF.GT.1 ) THEN
@@ -194,7 +191,7 @@ C
         SAUX08 = 'MED     '
         LGAUX = .FALSE.
         K8BID = '        '
-        CALL IRMAIL ( SAUX08, FICH, IAUX, NOMAAS, LGAUX, K8BID, JAUX,
+        CALL IRMAIL ( SAUX08, IFI, IAUX, NOMAAS, LGAUX, K8BID, JAUX,
      >                NIVINF )
       ENDIF
 C

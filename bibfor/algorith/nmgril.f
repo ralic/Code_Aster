@@ -1,9 +1,13 @@
-      SUBROUTINE NMGRIL ( IMATE, TYPMOD, COMPOR, OPTION, EPSM, DEPS,
-     +               SIGM, VIM, TM, TP, TREF, SIGP, VIP, DSIDEP,CODRET )
+      SUBROUTINE NMGRIL (IMATE, TYPMOD, COMPOR, OPTION,
+     &                   EPSM, DEPS,
+     &                    ANGMAS,
+     &                   SIGM, VIM,
+     &                   TM, TP, TREF,
+     &                   SIGP, VIP, DSIDEP,CODRET )
 C TOLE CRP_6
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 30/03/2004   AUTEUR CIBHHPD S.VANDENBERGHE 
+C MODIF ALGORITH  DATE 15/06/2004   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -38,6 +42,9 @@ C IN  EPSM    : DEFORMATIONS A L'INSTANT DU CALCUL PRECEDENT
 C IN  DEPS    : INCREMENT DE DEFORMATIONS
 C               SI C_PLAN DEPS(3) EST EN FAIT INCONNU (ICI:0)
 C                 =>  ATTENTION LA PLACE DE DEPS(3) EST ALORS UTILISEE.
+C IN  ANGMAS  : ANGLE DU MOT_CLEF 'MASSIF' DE AFFE_CARA_ELEM
+C               (ORIENTATION DU REPERE POUR ORTHOTROPIE ET GRANDISSEMENT
+C                SOUS IRRADIATION)
 C IN  SIGM    : CONTRAINTES A L'INSTANT DU CALCUL PRECEDENT
 C IN  VIM     : VARIABLES INTERNES A L'INSTANT DU CALCUL PRECEDENT
 C IN   TM     : TEMPERATURE L'INSTANT DU CALCUL PRECEDENT
@@ -80,7 +87,7 @@ C
       CHARACTER*8   TYPMOD(*)
       CHARACTER*16  COMPOR(*),OPTION
       REAL*8        EPSM(6),DEPS(6),SIGM(6),VIM(*)
-      REAL*8        TM,TP,TREF
+      REAL*8        TM,TP,TREF,ANGMAS(3)
       REAL*8        SIGP(6),VIP(*),DSIDEP(6,6)
 C
 C     VARIABLES LOCALES
@@ -94,13 +101,11 @@ C     DSDEM1  : MODULE TANGENT DIRECTION 1 INSTANT MOINS
 C     DSDE1   : MODULE TANGENT UTILISE SELON OPTION DIR 1
 C     DSDEP2  : MODULE TANGENT DIRECTION 2 INSTANT PLUS
 C     DSDEM2  : MODULE TANGENT DIRECTION 2 INSTANT MOINS
-C     DSDE2   : MODULE TANGENT UTILISE SELON OPTION DIR 1
 C
 C     SIGL    : CONTRAINTES TEMPS PLUS REPERE LOCAL
 C     DEPSL   : DEF TOTALES TEMPS PLUS - TEMPS MOINS  REPERE LOCAL
 C     DEPSG   : DEF TOTALES TEMPS PLUS - TEMPS MOINS REPERE GLOBAL
-C     LOGICAL : PCTNZR VRAI SI PCENTAGE TRANSVERSALE NE 0
-
+C
 C
       INTEGER       JGEOM,JCOQU,I,J
       INTEGER       NVARPI
@@ -111,15 +116,15 @@ C
       REAL*8        DX , DY , DZ , S , C , NORM, RAC2
       REAL*8        PJDX , PJDY
       REAL*8        ALPHA ,BETA, R8DGRD, R8PREM, PI, PHI
-      REAL*8        ANGLL , PCL , PCT
       REAL*8        ALPH,E,ET,SIGY
-      REAL*8        DSDEP1, DSDEP2,DSDEM1, DSDEM2,DSDE1,DSDE2
+      REAL*8        DSDEP1, DSDEP2,DSDEM1, DSDEM2,DSDE1
       REAL*8        SIGMG(3),SIGML(3)
       REAL*8        DH(3,3),SIGL(3),DEPSG(3),DEPSL(3),EPSMG(3),EPSML(3)
       REAL*8        PGL(3,3),ROT(3,3), XAB1(3,3)
       REAL*8        EM,EP,ALPHAM,ALPHAP
       CHARACTER*2  CODRES
-      LOGICAL       CINE,ISOT,PINTO,PCTNZR,COM1D,VECTEU
+      LOGICAL       CINE,ISOT,PINTO,COM1D,VECTEU
+C
 C     ------------------------------------------------------------------
       RAC2=SQRT(2.D0)
       ISOT = .FALSE.
@@ -170,29 +175,8 @@ C     ------------------------------------------------
      &      //' LES CONTRAINTES.')
       ENDIF
 C     ------------------------------------------------
-      IF ( TYPMOD(2)(1:7) .NE. 'MEGRDKT') THEN
-        PCL   = 1.D0
-        PCT   = 1.D0
-        ANGLL = 0.D0
-      ELSE
-        ANGLL = ZR(JCOQU+3) * R8DGRD()
-C       --- POURCENTAGE D'ARMATURES 1 / UNITE DE LARGEUR
-        PCL   = ZR(JCOQU+4)
-        IF ( PCL.EQ.0.D0)THEN
-          CALL UTMESS('F','NMGRIL_02',
-     &           ' PCENTAGE ARMATURE 1 NUL: ')
-        ENDIF
-C       --- POURCENTAGE D'ARMATURES 2 / UNITE DE LARGEUR
-        PCT   = ZR(JCOQU+5)
-        IF ( PCT.EQ.0.D0)THEN
-          PCTNZR = .FALSE.
-        ELSE
-          PCTNZR = .TRUE.
-        ENDIF
-
-      ENDIF
 C
-      CALL GRIROT ( ALPHA , BETA , ANGLL ,PGL , ROT, C, S )
+      CALL GRIROT ( ALPHA , BETA ,PGL , ROT, C, S )
 C
 C     -- INITIALISATIONS
 C     ---------------------------------------
@@ -202,8 +186,6 @@ C     ---------------------------------------
       CALL R8INIR(3,0.D0,DEPSL ,1)
       CALL R8INIR(3,0.D0,SIGL ,1)
       CALL R8INIR(4,0.D0,VIP  ,1)
-C
-C     MODULES DANS LA DIRECTION 2
 C
 C
 C     DEFORMATIONS PLUS REPERE GLOBAL
@@ -225,13 +207,7 @@ C     CONTRAINTES MOINS REPERE LOCAL
 C
       CALL INSCRF(SIGMG,PHI,SIGML)
 C
-C  ON RESTITUE A SIGML SA VRAIE VALEUR
-C
-      IF (PCTNZR) THEN
-          SIGML(2) = SIGML(2)*PCL/PCT
-      ELSE
-          SIGML(2) = 0.D0
-      ENDIF
+      SIGML(2) = 0.D0
 C
 C     DEFORMATIONS REPERE LOCAL
 C
@@ -242,53 +218,31 @@ C     CALCUL DES CONTRAINTES PLUS DANS REPERE LOCAL
 C     ET VARIABLES INTERNES
 C
 
-      CALL NMCO1D(IMATE,COMPOR,OPTION,EPSML(1),
-     &            DEPSL(1),SIGML(1),VIM(1),TM,TP,
-     &            TREF,SIGL(1),VIP(1),
-     &            DSDE1,CODRET)
+      CALL NMCO1D(IMATE,COMPOR,OPTION,
+     &            EPSML(1),DEPSL(1),
+     &            ANGMAS,
+     &            SIGML(1),VIM(1),
+     &            TM,TP,TREF,
+     &            SIGL(1),VIP(1),DSDE1,CODRET)
+      
 
-      IF (PCTNZR) THEN
-        IF ( COM1D) THEN
-            CALL UTMESS('F','GRILLES','UTILISER POURCENTAGE'//
-     &            ' ARMTURE DIR 2 = 0 POUR '//COMPOR(1))
-        ELSE IF (PINTO) THEN
-          CALL NMCO1D(IMATE,COMPOR,OPTION,EPSML(2),
-     &            DEPSL(2),SIGML(2),VIM(1+NVARPI),TM,TP,
-     &            TREF,SIGL(2),VIP(1+NVARPI),
-     &            DSDE2,CODRET)
-        ELSE
-          CALL NMCO1D(IMATE,COMPOR,OPTION,EPSML(2),
-     &            DEPSL(2),SIGML(2),VIM(3),TM,TP,
-     &            TREF,SIGL(2),VIP(3),
-     &            DSDE2,CODRET) 
-        ENDIF
-      ELSE 
-C RAPPEL A NMMABA POUR LA DIRECTION 2 : C EST SALE MAIS LA DIRECTION 
-C 2 NE DEVRAIT PLUS VIVRE LONGTEMPS (P.B. 12/03/2004)     
         CALL NMMABA (IMATE,COMPOR,E,ALPH,ET,SIGY,
      &             NCSTPM,CSTPM)
         IF (COM1D) THEN
               SIGL(2) = 0.D0
-              DSDE2  = E
         ELSE IF (CINE.OR.ISOT) THEN
               SIGL(2) = 0.D0
               VIP(3)  = 0.D0
               VIP(4)  = 0.D0
-              DSDE2  = E
         ELSE IF (PINTO) THEN
               SIGL(2) = 0.D0
               DO 2 I = 1 , NVARPI
                   VIP(NVARPI+I)  = 0.D0
 2             CONTINUE
-              DSDE2  = CSTPM(1)
-        ENDIF       
-      ENDIF
-      
+        ENDIF
+
 C
-C   MULTIPLICATION CONTRAINTES DANS DIR 2
-C   PAR % ARMATURE
-C
-      SIGL(2) = SIGL(2)*PCT/PCL
+      SIGL(2) = 0.D0
       CALL R8INIR(6,0.D0,SIGP,1)
       CALL INSCRG ( SIGL , PHI , SIGP)
       SIGP(4)= SIGP(3)*RAC2
@@ -297,7 +251,7 @@ C
       IF ( (OPTION(1:14) .EQ. 'RIGI_MECA_TANG').OR.
      >     ( OPTION(1:9)  .EQ. 'FULL_MECA' )) THEN
           DH(1,1) = DSDE1
-          DH(2,2) = DSDE2 *PCT/PCL
+          DH(2,2) = 0.D0
           DH(3,3) = 1.D-7*DSDE1
           CALL UTBTAB ('ZERO', 3 , 3 , DH , ROT , XAB1 , DH )
 C

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -34,7 +34,8 @@ IMPR_STURM=PROC(nom="IMPR_STURM",op=32,fr="Calculer et imprimer le nombre de val
          ),
          NPREC_SOLVEUR   =SIMP(statut='f',typ='I',defaut= 8 ),
          NMAX_ITER_SHIFT =SIMP(statut='f',typ='I',defaut= 5 ),
-         FICHIER         =SIMP(statut='f',typ='TXM',defaut="RESULTAT"),
+         UNITE           =SIMP(statut='f',typ='I',defaut=8),  
+         FICHIER         =SIMP(statut='f',typ='TXM'),
          PREC_SHIFT      =SIMP(statut='f',typ='R',defaut= 1.E-2 ),
          SEUIL_FREQ      =SIMP(statut='f',typ='R',defaut= 1.E-2 ),
 )  ;
