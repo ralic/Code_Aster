@@ -1,6 +1,6 @@
       SUBROUTINE TE0370(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ELEMENTS  DATE 13/09/2004   AUTEUR GREFFET N.GREFFET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,8 +40,10 @@ C
       INTEGER            NBPG(10),NBFPG,NDIM,NNO,NPG1,IPG,NNOS,JGANO
       INTEGER            JIN,JVAL,IPOIDS,IVF,IDFRDE,IDFRDK,IMATUU
       REAL*8                  POIDS,DFRDE(1),DFRDK(1),COOR(1)
-      REAL*8             PESA,JAC
+      REAL*8             PESA,JAC,ZERO
       REAL*8             DXDE,DXDK,DYDE,DYDK
+      REAL*8             B(54,54),UL(54),C(1485)
+      INTEGER            IVECTU,JCRET,NNO2,NT2,N1,N2,NN
 C
 C
 C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
@@ -65,9 +67,9 @@ C
 C
       CALL JEVECH('PGEOMER','L',IGEOM)
       CALL JEVECH('PMATERC','L',IMATE)
-      CALL JEVECH('PMATUUR','E',IMATUU)
       CALL JEVECH('PPESANR','L', LPESA)
       PESA = ZR(LPESA)
+      ZERO = 0.D0
 C
       CALL RCVALA(ZI(IMATE),' ','FLUIDE',0,' ',R8B,1,'RHO',RHO,
      &           CODRET,'FM')
@@ -126,10 +128,66 @@ C
                 IK = ((2*I+K-3) * (2*I+K-2)) / 2
                 DO 164 J=1,I
                    IJKL = IK + 2 * (J-1) + L
-                   ZR(IMATUU+IJKL-1) = A(K,L,I,J)
+                   C(IJKL) = A(K,L,I,J)
 164             CONTINUE
 162         CONTINUE
 160   CONTINUE
 C
+      NNO2 = NNO*2
+      NT2 = NNO* (NNO2+1)
+      IF (OPTION(1:9).NE.'FULL_MECA'.AND.OPTION(1:9).NE.'RIGI_MECA')
+     &  GO TO 9998
+      IF (OPTION.EQ.'RIGI_MECA_HYST') THEN
+        CALL JEVECH('PMATUUC','E',IMATUU)
+        DO 115 I = 1,NT2
+          ZC(IMATUU+I-1) = DCMPLX(C(I),ZERO)
+115     CONTINUE
+      ELSE
+        CALL JEVECH('PMATUUR','E',IMATUU)
+        DO 114 I = 1,NT2
+          ZR(IMATUU+I-1) = C(I)
+114     CONTINUE
+      END IF
+ 9998 CONTINUE
+C
+      IF (OPTION(1:9).NE.'FULL_MECA'.AND.OPTION(1:9).NE.'RAPH_MECA'
+     &     .AND.OPTION(1:9).NE.'FORC_NODA') GO TO 9999
+      CALL TECAEL(IAD1,IAD2)
+      CALL JEVECH('PVECTUR','E',IVECTU)
+      CALL JEVECH('PDEPLMR','L',IDEPLM)
+      CALL JEVECH('PDEPLPR','L',IDEPLP)
+      DO 111 I = 1,NNO2
+        ZR(IVECTU+I-1) = 0.D0
+        UL(I) = ZR(IDEPLM+I-1) + ZR(IDEPLP+I-1)
+111   CONTINUE
+C
+      NN = 0
+      DO 120 N1 = 1,NNO2
+        DO 121 N2 = 1,N1
+          NN = NN + 1
+          B(N1,N2) = C(NN)
+          B(N2,N1) = C(NN)
+121     CONTINUE
+120   CONTINUE
+C
+      DO 131 N1 = 1,NNO2
+        DO 132 N2 = 1,NNO2
+          ZR(IVECTU+N1-1) = ZR(IVECTU+N1-1) + B(N1,N2)*UL(N2)
+132     CONTINUE
+131   CONTINUE
+      IF (ZK24(IAD2+2)(1:8).EQ.'M1') THEN
+        WRITE(6,*) 'OPTION PESA ',OPTION,PESA
+        WRITE(6,*) 'NNO2 UL ',NNO2,(UL(I),I=1,NNO2)
+        WRITE(6,*) 'B(1,*) ',(B(1,N2),N2=1,NNO2)
+        WRITE(6,*) 'B(2,*) ',(B(2,N2),N2=1,NNO2)
+        WRITE(6,*) 'VECTEUR ',(ZR(IVECTU+I-1),I=1,NNO2)
+      ENDIF        
+C
  9999 CONTINUE
+      IF (OPTION(1:9).EQ.'FULL_MECA' .OR.
+     &    OPTION(1:9).EQ.'RAPH_MECA') THEN
+        CALL JEVECH('PCODRET','E',JCRET)
+        ZI(JCRET) = 0
+      END IF
+C
       END

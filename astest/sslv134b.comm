@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 13/09/2004   AUTEUR GALENNE E.GALENNE 
 # TITRE CALCUL 3D DE G FISSURE CIRCULAIRE EN MILIEU INFINI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -250,7 +250,7 @@ TABL_K1=POST_K1_K2_K3(  MODELISATION='3D',
                         MATER=MAT,
                         TABL_DEPL_SUP=DEPH1,
                         TABL_DEPL_INF=DEPB1,
-                        ABSC_CURV_MAXI=0.539,
+                        ABSC_CURV_MAXI=0.35,
                         VECT_K1=(0., 0., 1.,)
                       )
 
@@ -277,7 +277,7 @@ TABL_K2=POST_K1_K2_K3(  MODELISATION='3D',
                         MATER=MAT,
                         TABL_DEPL_SUP=DEPH2,
                         TABL_DEPL_INF=DEPB2,
-                        ABSC_CURV_MAXI=0.539,
+                        ABSC_CURV_MAXI=0.35,
                         VECT_K1=(0., 0., 1.,)
                       )
 
@@ -304,7 +304,7 @@ TABL_K3=POST_K1_K2_K3(  MODELISATION='3D',
                         MATER=MAT,
                         TABL_DEPL_SUP=DEPH3,
                         TABL_DEPL_INF=DEPB3,
-                        ABSC_CURV_MAXI=0.539,
+                        ABSC_CURV_MAXI=0.35,
                         VECT_K1=(0., 0., 1.,)
                       )
 
@@ -320,7 +320,7 @@ TEST_TABLE(       TABLE=TABL_K1,
                       REFERENCE='AUTRE_ASTER',
                        NOM_PARA='K1_MAX',
                            VALE=K1,
-                      PRECISION=0.010           )
+                      PRECISION=0.008           )
 
 TEST_TABLE(       TABLE=TABL_K1,
                         FILTRE=_F(  NOM_PARA = 'METHODE',
@@ -328,7 +328,7 @@ TEST_TABLE(       TABLE=TABL_K1,
                       REFERENCE='AUTRE_ASTER',
                        NOM_PARA='K1_MIN',
                            VALE=K1,
-                      PRECISION=0.007           )
+                      PRECISION=0.001           )
 
 TEST_TABLE(       TABLE=TABL_K1,
                         FILTRE=_F(  NOM_PARA = 'METHODE',
@@ -344,7 +344,7 @@ TEST_TABLE(       TABLE=TABL_K1,
                       REFERENCE='AUTRE_ASTER',
                        NOM_PARA='G_MIN',
                            VALE=GLOC,
-                      PRECISION=0.01           )
+                      PRECISION=0.001           )
 
 TEST_TABLE(       TABLE=TABL_K1,
                         FILTRE=_F(  NOM_PARA = 'METHODE',
@@ -360,7 +360,7 @@ TEST_TABLE(       TABLE=TABL_K1,
                       REFERENCE='AUTRE_ASTER',
                        NOM_PARA='K1_MIN',
                            VALE=K1,
-                      PRECISION=0.08           )
+                      PRECISION=0.05           )
 
 TEST_TABLE(       TABLE=TABL_K1,
                         FILTRE=_F(  NOM_PARA = 'METHODE',
@@ -376,7 +376,24 @@ TEST_TABLE(       TABLE=TABL_K1,
                       REFERENCE='AUTRE_ASTER',
                        NOM_PARA='G_MIN',
                            VALE=GLOC,
-                      PRECISION=0.14           )
+                      PRECISION=0.09           )
+
+TEST_TABLE(       TABLE=TABL_K1,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 3),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='K1_MAX',
+                           VALE=K1,
+                      PRECISION=0.03           )
+
+
+TEST_TABLE(       TABLE=TABL_K1,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 3),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='G_MAX',
+                           VALE=GLOC,
+                      PRECISION=0.06           )
 
 # ---------------
 
@@ -386,7 +403,7 @@ TEST_TABLE(       TABLE=TABL_K2,
                       REFERENCE='AUTRE_ASTER',
                        NOM_PARA='K1_MAX',
                            VALE=K1,
-                      PRECISION=0.01           )
+                      PRECISION=0.007           )
 
 TEST_TABLE(       TABLE=TABL_K2,
                         FILTRE=_F(  NOM_PARA = 'METHODE',
@@ -394,7 +411,7 @@ TEST_TABLE(       TABLE=TABL_K2,
                       REFERENCE='AUTRE_ASTER',
                        NOM_PARA='K1_MIN',
                            VALE=K1,
-                      PRECISION=0.004           )
+                      PRECISION=0.001           )
 
 TEST_TABLE(       TABLE=TABL_K2,
                         FILTRE=_F(  NOM_PARA = 'METHODE',
@@ -402,7 +419,7 @@ TEST_TABLE(       TABLE=TABL_K2,
                       REFERENCE='AUTRE_ASTER',
                        NOM_PARA='G_MAX',
                            VALE=GLOC,
-                      PRECISION=0.015           )
+                      PRECISION=0.014           )
 
 TEST_TABLE(       TABLE=TABL_K2,
                         FILTRE=_F(  NOM_PARA = 'METHODE',
@@ -410,7 +427,7 @@ TEST_TABLE(       TABLE=TABL_K2,
                       REFERENCE='AUTRE_ASTER',
                        NOM_PARA='G_MIN',
                            VALE=GLOC,
-                      PRECISION=0.008           )
+                      PRECISION=0.001           )
 
 TEST_TABLE(       TABLE=TABL_K2,
                         FILTRE=_F(  NOM_PARA = 'METHODE',
@@ -426,7 +443,7 @@ TEST_TABLE(       TABLE=TABL_K2,
                       REFERENCE='AUTRE_ASTER',
                        NOM_PARA='K1_MIN',
                            VALE=K1,
-                      PRECISION=0.08           )
+                      PRECISION=0.05           )
 
 TEST_TABLE(       TABLE=TABL_K2,
                         FILTRE=_F(  NOM_PARA = 'METHODE',
@@ -442,7 +459,24 @@ TEST_TABLE(       TABLE=TABL_K2,
                       REFERENCE='AUTRE_ASTER',
                        NOM_PARA='G_MIN',
                            VALE=GLOC,
-                      PRECISION=0.14           )
+                      PRECISION=0.09           )
+
+TEST_TABLE(       TABLE=TABL_K2,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 3),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='K1_MAX',
+                           VALE=K1,
+                      PRECISION=0.03          )
+
+TEST_TABLE(       TABLE=TABL_K2,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 3),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='G_MAX',
+                           VALE=GLOC,
+                      PRECISION=0.06           )
+
 
 # ---------------
 
@@ -460,7 +494,7 @@ TEST_TABLE(       TABLE=TABL_K3,
                       REFERENCE='AUTRE_ASTER',
                        NOM_PARA='K1_MIN',
                            VALE=K1,
-                      PRECISION=0.004           )
+                      PRECISION=0.001           )
 
 TEST_TABLE(       TABLE=TABL_K3,
                         FILTRE=_F(  NOM_PARA = 'METHODE',
@@ -468,7 +502,7 @@ TEST_TABLE(       TABLE=TABL_K3,
                       REFERENCE='AUTRE_ASTER',
                        NOM_PARA='G_MAX',
                            VALE=GLOC,
-                      PRECISION=0.015           )
+                      PRECISION=0.013           )
 
 TEST_TABLE(       TABLE=TABL_K3,
                         FILTRE=_F(  NOM_PARA = 'METHODE',
@@ -476,7 +510,7 @@ TEST_TABLE(       TABLE=TABL_K3,
                       REFERENCE='AUTRE_ASTER',
                        NOM_PARA='G_MIN',
                            VALE=GLOC,
-                      PRECISION=0.011           )
+                      PRECISION=0.002           )
 
 TEST_TABLE(       TABLE=TABL_K3,
                         FILTRE=_F(  NOM_PARA = 'METHODE',
@@ -484,7 +518,7 @@ TEST_TABLE(       TABLE=TABL_K3,
                       REFERENCE='AUTRE_ASTER',
                        NOM_PARA='K1_MAX',
                            VALE=K1,
-                      PRECISION=0.008           )
+                      PRECISION=0.003           )
 
 TEST_TABLE(       TABLE=TABL_K3,
                         FILTRE=_F(  NOM_PARA = 'METHODE',
@@ -508,7 +542,24 @@ TEST_TABLE(       TABLE=TABL_K3,
                       REFERENCE='AUTRE_ASTER',
                        NOM_PARA='G_MIN',
                            VALE=GLOC,
-                      PRECISION=0.14           )
+                      PRECISION=0.09           )
 
+TEST_TABLE(       TABLE=TABL_K3,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 3),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='K1_MAX',
+                           VALE=K1,
+                      PRECISION=0.03           )
+
+TEST_TABLE(       TABLE=TABL_K3,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 3),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='G_MAX',
+                           VALE=GLOC,
+                      PRECISION=0.06           )
+
+                     
 FIN()
 #

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 14/09/2004   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,8 +21,9 @@
 from Macro.macr_fiab_impr_ops import macr_fiab_impr_ops
 
 MACR_FIAB_IMPR=MACRO(nom="MACR_FIAB_IMPR",op=macr_fiab_impr_ops,
-                   fr="Imprimer les valeurs à transmettre au logiciel de fiabilité.",
-                   ang="Print values for the fiability software",
+                     docu="U7.04.41",
+                     fr="Imprimer les valeurs à transmettre au logiciel de fiabilité.",
+                     ang="Print values for the fiability software",
 #
 # 1. Le niveau d'information
 #

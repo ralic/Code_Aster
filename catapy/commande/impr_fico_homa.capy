@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 14/09/2004   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,7 +17,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
 # RESPONSABLE GNICOLAS G.NICOLAS
-IMPR_FICO_HOMA=PROC(nom="IMPR_FICO_HOMA",op= 189,
+IMPR_FICO_HOMA=PROC(nom="IMPR_FICO_HOMA",op= 189, docu="U7.04.01-b",
             UIinfo={"groupes":("Fonction",)},
                     fr="Imprime le fichier de configuration de HOMARD.",
                     ang="Writes the configuration file for HOMARD.",
@@ -29,9 +29,9 @@ IMPR_FICO_HOMA=PROC(nom="IMPR_FICO_HOMA",op= 189,
 # 2. Langue des messages issus de HOMARD
 #
          LANGUE =SIMP(statut='f',typ='TXM',defaut="FRANCAIS",    
-                               into=("FRANCAIS","FRENCH","ANGLAIS","ENGLISH",),
-                           fr="Langue des messages issus de HOMARD.",
-                           ang="Language for HOMARD messages." ),
+                      into=("FRANCAIS","FRENCH","ANGLAIS","ENGLISH",),
+                      fr="Langue des messages issus de HOMARD.",
+                      ang="Language for HOMARD messages." ),
 #
 # 3. Le nom local du fichier de configuration HOMARD
 #
@@ -47,8 +47,8 @@ IMPR_FICO_HOMA=PROC(nom="IMPR_FICO_HOMA",op= 189,
 #       2 : tous
 #
          NON_SIMPLEXE   = SIMP(statut='f',typ='I',defaut=0,into=(0,1,2),
-                          fr="Acceptation d'éléments quad, hexa et penta",
-                          ang="quad, hexa and penta elements allowed" ),
+                          fr="Type d'éléments acceptés.",
+                          ang="Type of authorized elements." ),
 #
 # 6. Le type de traitement :
 #
@@ -124,18 +124,15 @@ IMPR_FICO_HOMA=PROC(nom="IMPR_FICO_HOMA",op= 189,
                            NOM_MED_MAILLAGE_N   =SIMP(statut='f',typ='TXM',),
                            ) ,
 #
-           b_iteration_maj_champ =BLOC(condition = "( UNIFORME != None ) or ( ADAPTATION != None ) ",
-                           fr="Nom MED du maillage en sortie, numero d'iteration et mise à jour de champs",
-                           ang="MED name of the out-mesh, iteration rank and field updating",
+           b_iteration =BLOC(condition = "( UNIFORME != None ) or ( ADAPTATION != None ) ",
+                           fr="Nom MED du maillage en sortie, numero d'iteration",
+                           ang="MED name of the out-mesh, iteration rank",
                            NITER                =SIMP(statut='o',typ='I',
                            fr="Numéro d'itération.",
                            ang="Iteration number." ),
                            NOM_MED_MAILLAGE_NP1 =SIMP(statut='o',typ='TXM',
                            fr="Nom MED du maillage en sortie",
                            ang="MED name of the out-mesh" ),
-                           MAJ_CHAM             =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON"),
-                           fr="Mise à jour de champs",
-                           ang="Field updating" ),
                            ) ,
 #
            b_indicateur_d_erreur  =BLOC(condition = "ADAPTATION != None",
@@ -230,7 +227,40 @@ IMPR_FICO_HOMA=PROC(nom="IMPR_FICO_HOMA",op= 189,
 #
          ),
 #
-# 7. L'ANALYSE DU MAILLAGE
+# 7. Mise à jour de champs sur le nouveau maillage
+#
+         MAJ_CHAM        =FACT(statut='f',max='**',
+                           fr="Mise à jour de champs sur le nouveau maillage.",
+                           ang="Updating of fields over the new mesh.",
+                           regles=(AU_MOINS_UN('NUME_ORDRE','INST','RESULTAT'),
+                                   EXCLUS('NUME_ORDRE','INST'),
+                                   EXCLUS('NUME_ORDRE','RESULTAT'),
+                                   PRESENT_PRESENT('RESULTAT','NOM_CHAM'),),
+                           NOM_MED  =SIMP(statut='o',typ='TXM',
+                           fr="Nom MED du champ à mettre à jour.",
+                           ang="MED name of field.",),
+                           NUME_ORDRE  =SIMP(statut='f',typ='I',
+                           fr="Numero d'ordre du champ à mettre à jour.",
+                           ang="Rank number of field.",),
+                           INST        =SIMP(statut='f',typ='R',
+                           fr="Instant du champ à mettre à jour.",
+                           ang="Instant of field.",),
+                           b_precision     =BLOC(condition="(INST != None)",
+                             PRECISION       =SIMP(statut='f',typ='R',defaut=1.0E-3,
+                             fr="Précision sur le choix de l'instant associé",
+                             ang="Accuracy over instant choice" ),
+                             CRITERE         =SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU"),
+                             fr="Critère de précision sur le choix de l'instant associé",
+                             ang="Accuracy criterium over instant choice" ),),
+                           RESULTAT  =SIMP(statut='f',typ=(evol_elas,evol_noli,evol_ther),
+                           fr="Concept contenant le champ à mettre à jour.",
+                           ang="Conceipt wich contains the field.",),
+                           NOM_CHAM  =SIMP(statut='f',typ='TXM',
+                           fr="Nom du champ dans le résultat du champ à mettre à jour.",
+                           ang="Name of the field.",),
+         ),
+#
+# 8. L'ANALYSE DU MAILLAGE
 #
          ANALYSE         =FACT(statut='f',
                                fr="Analyse du maillage.",

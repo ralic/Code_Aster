@@ -1,5 +1,4 @@
-
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 13/09/2004   AUTEUR CIBHHLV L.VIVAN 
 # TITRE PLAQUE SOUMISE A UN GRADIENT DE TEMPERATURE DANS L'EPAISSEUR
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -23,9 +22,6 @@
 # MODELISATION : DKT ET COQUE_3D
 # ----------------------------------------------------------------------
 #
-#
-
-
 DEBUT(CODE=_F(NOM='HSNS100A',
               NIV_PUB_WEB='INTERNET',),);
 
@@ -162,10 +158,10 @@ U2=CALC_ELEM(reuse =U2,
              
              NUME_COUCHE=1,
              NIVE_COUCHE='SUP',);
+
 #L'OPTION DEGE_ELNO_DEPL N'EXISTE PAS POUR LES ELEMENTS COQUE
 #NECESSITE DU PARTAGE DES OPTIONS SUIVANT LES ELEMENTS
 #
-
 
 U2=CALC_ELEM(reuse =U2,
              RESULTAT=U2,
@@ -199,9 +195,9 @@ TEST_RESU(RESU=(_F(RESULTAT=U2,
                    NUME_ORDRE=3,
                    NOM_CHAM='SIEF_ELGA',
                    NOM_CMP='SIXY',
-                   MAILLE='M1',
-                   POINT=3,
-                   SOUS_POINT=16,
+                   MAILLE='M2',
+                   POINT=1,
+                   SOUS_POINT=1,
                    VALE=-674.339667,
                    REFERENCE='NON_REGRESSION',),
                 _F(RESULTAT=U2,

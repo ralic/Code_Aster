@@ -1,6 +1,7 @@
       SUBROUTINE JEDETV()
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 09/10/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF JEVEUX  DATE 14/09/2004   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C TOLE CRP_18 CRS_508 CRS_512
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,54 +18,180 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C ----------------------------------------------------------------------
-C DETRUIT LES OBJETS JEVEUX SUR LA VOLATILE
+C 
+C DETRUIT TOUS LES OBJETS JEVEUX PRESENTS SUR LA BASE VOLATILE A 
+C L'EXCEPTION DES OBJETS SYSTEME
+C 
+C 
       IMPLICIT REAL*8 (A-H,O-Z)
-
+      INTEGER          NIVIMP
 C ----------------------------------------------------------------------
-
-C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
-
-      CHARACTER*32 JEXNUM,JEXNOM,JEXR8,JEXATR
-      INTEGER ZI
-      COMMON /IVARJE/ZI(1)
-      REAL*8 ZR
-      COMMON /RVARJE/ZR(1)
-      COMPLEX*16 ZC
-      COMMON /CVARJE/ZC(1)
-      LOGICAL ZL
-      COMMON /LVARJE/ZL(1)
-      CHARACTER*8 ZK8
-      CHARACTER*16 ZK16
-      CHARACTER*24 ZK24
-      CHARACTER*32 ZK32
-      CHARACTER*80 ZK80
-      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-
-C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
-
-      CHARACTER*24 OB1,OBJ(100)
+      CHARACTER*1      K1ZON
+      COMMON /KZONJE/  K1ZON(8)
+      INTEGER          LK1ZON , JK1ZON , LISZON , JISZON , ISZON(1)
+      COMMON /IZONJE/  LK1ZON , JK1ZON , LISZON , JISZON
+      EQUIVALENCE    ( ISZON(1) , K1ZON(1) )
+      PARAMETER  ( N = 5 )
+      INTEGER          LTYP    , LONG    , DATE    , IADD    , IADM    ,
+     +                 LONO    , HCOD    , CARA    , LUTI    , IMARQ
+      COMMON /IATRJE/  LTYP(1) , LONG(1) , DATE(1) , IADD(1) , IADM(1) ,
+     +                 LONO(1) , HCOD(1) , CARA(1) , LUTI(1) , IMARQ(1)
+      COMMON /JIATJE/  JLTYP(N), JLONG(N), JDATE(N), JIADD(N), JIADM(N),
+     +                 JLONO(N), JHCOD(N), JCARA(N), JLUTI(N), JMARQ(N)
+C
+      CHARACTER*1      GENR    , TYPE
+      CHARACTER*4      DOCU
+      CHARACTER*8      ORIG
+      CHARACTER*32     RNOM
+      COMMON /KATRJE/  GENR(8) , TYPE(8) , DOCU(2) , ORIG(1) , RNOM(1)
+      COMMON /JKATJE/  JGENR(N), JTYPE(N), JDOCU(N), JORIG(N), JRNOM(N)
+      CHARACTER*2      DN2
+      CHARACTER*5      CLASSE
+      CHARACTER*8                  NOMFIC    , KSTOUT    , KSTINI
+      COMMON /KFICJE/  CLASSE    , NOMFIC(N) , KSTOUT(N) , KSTINI(N) ,
+     +                 DN2(N)
+      INTEGER          NRHCOD    , NREMAX    , NREUTI
+      COMMON /ICODJE/  NRHCOD(N) , NREMAX(N) , NREUTI(N)
+      CHARACTER *24                     NOMCO
+      CHARACTER *32    NOMUTI , NOMOS ,         NOMOC , BL32
+      COMMON /NOMCJE/  NOMUTI , NOMOS , NOMCO , NOMOC , BL32
+      INTEGER          IPGC, KDESMA, LGD, LGDUTI, KPOSMA, LGP, LGPUTI
+      COMMON /IADMJE/  IPGC, KDESMA, LGD, LGDUTI, KPOSMA, LGP, LGPUTI
+      INTEGER          IFNIVO, NIVO
+      COMMON /JVNIVO/  IFNIVO, NIVO
+C     ------------------------------------------------------------------
+      INTEGER        IVNMAX     , IDDESO     ,IDIADD     , IDIADM     ,
+     +               IDMARQ     , IDNOM      ,IDREEL     , IDLONG     ,
+     +               IDLONO     , IDLUTI     ,IDNUM
+      PARAMETER    ( IVNMAX = 0 , IDDESO = 1 ,IDIADD = 2 , IDIADM = 3 ,
+     +               IDMARQ = 4 , IDNOM  = 5 ,IDREEL = 6 , IDLONG = 7 ,
+     +               IDLONO = 8 , IDLUTI = 9 ,IDNUM  = 10 )
+C     ------------------------------------------------------------------
+      INTEGER          LIDBAS      , LIDEFF
+      PARAMETER      ( LIDBAS = 20 , LIDEFF = 15 )
+      INTEGER          IC,J,ID(IDNUM),IDO,IADDI(2)
+      CHARACTER*1      CGENR
+      CHARACTER*32     CRNOM,NOM32
 C DEB ------------------------------------------------------------------
-
-
-C --- DESTRUCTION DES DESCRIPTEUR_MATRICE QUI SONT RESTES EN MEMOIRE
-
-      CALL JEDETC('V','.&IN',20)
-
-
-      CALL JELSTC('V',' ',0,100,OBJ,NBVAL)
-      IF (NBVAL.LT.0) THEN
-        CALL UTMESS('A','JEDETV','ERREUR 1')
-      ELSE
-
-C --- BOUCLE SUR TOUS LES OBJETS TROUVES
-
-        DO 10 I = 1,NBVAL
-          OB1 = OBJ(I)
-          CALL UTMESS('E','VOLATILE','OBJET <'//OB1(1:24)//
-     &                '> PRESENT SUR LA VOLATILE')
-          CALL JEDETR(OB1)
-   10   CONTINUE
-      END IF
+C
+      IC = INDEX ( CLASSE , 'V')
+C
+      DO 150 IDO = LIDBAS+1 , NREMAX(IC)
+        CRNOM = RNOM(JRNOM(IC)+IDO)
+        IF ( CRNOM(1:1) .EQ. '?' .OR.
+     &       CRNOM(25:32) .NE. '     ' ) GOTO 150 
+        CGENR = GENR(JGENR(IC)+IDO)
+        IF ( CGENR .EQ. 'X' ) THEN
+C
+C    ON TRAITE D'ABORD LES COLLECTIONS
+C
+        CALL JJALLC (IC ,IDO ,'E' ,IBACOL )
+        IXIADM = ISZON( JISZON + IBACOL + IDIADM )
+        IXIADD = ISZON( JISZON + IBACOL + IDIADD )
+        IXLONO = ISZON( JISZON + IBACOL + IDLONO )
+        IXDESO = ISZON( JISZON + IBACOL + IDDESO )
+        IXMARQ = ISZON( JISZON + IBACOL + IDMARQ )
+        IF ( IXIADM .GT. 0 ) THEN
+          IBIADM = IADM ( JIADM(IC) + IXIADM )
+          IBIADD = IADM ( JIADM(IC) + IXIADD )
+          IBMARQ = IADM ( JIADM(IC) + IXMARQ )
+          NMAX   = ISZON(JISZON+IBACOL+IVNMAX )
+          DO 10 K = 1,NMAX
+            IADMAR = ISZON( JISZON + IBMARQ -1 + 2*K )
+            IF ( IADMAR .GT. 0 ) THEN
+              ISZON(JISZON+KDESMA+IADMAR-1) = 0
+            ENDIF
+            IADMOC = ISZON( JISZON + IBIADM + K - 1 )
+            IF ( IADMOC .GT. 0 ) THEN
+              CALL JJLIBP ( IADMOC )
+            ENDIF
+            IADDI(1) = ISZON( JISZON + IBIADD - 1 + 2*K-1 )
+            IADDI(2) = ISZON( JISZON + IBIADD - 1 + 2*K   )
+            IF ( IADDI(1) .GT. 0 ) THEN
+              IF ( IXLONO .GT. 0 ) THEN
+                IBLONO=IADM(JIADM(IC)+IXLONO)
+                LONOI =ISZON(JISZON+IBLONO+K-1)*LTYP(JLTYP(IC)+IXDESO)
+              ELSE
+                LONOI = LONO(JLONO(IC)+IXDESO)*LTYP(JLTYP(IC)+IXDESO)
+              ENDIF
+              CALL JXLIBD (IDO, K, IC, IADDI, LONOI)
+            ENDIF
+ 10       CONTINUE
+        ENDIF
+        DO 1 K = 1 , IDNUM
+          ID(K) = ISZON ( JISZON + IBACOL + K )
+          IF ( ID(K) .GT. 0 ) THEN
+            NOM32 = RNOM ( JRNOM(IC) + ID(K) )
+            IF ( NOM32(1:24) .EQ. CRNOM(1:24) .OR. 
+     +           NOM32(25:26) .EQ. '&&'       ) THEN
+              IADMI = IADM (JIADM(IC) + ID(K) )
+              IF ( IADMI .GT. 0 ) THEN
+                CALL JJLIBP ( IADMI )
+              ENDIF
+              IADDI(1) = IADD (JIADD(IC) + 2*ID(K)-1 )
+              IADDI(2) = IADD (JIADD(IC) + 2*ID(K)   )
+              IF ( IADDI(1) .GT. 0 ) THEN
+                LONOI=LONO(JLONO(IC)+ID(K))*LTYP(JLTYP(IC)+ID(K))
+                CALL JXLIBD ( 0 , ID(K) , IC , IADDI , LONOI )
+              ENDIF
+            ELSE
+              ID(K) = 0
+            ENDIF
+          ENDIF
+ 1      CONTINUE
+        DO 2 K = 1 , IDNUM
+          IF ( ID(K) .GT. 0 ) THEN
+            NOM32 = RNOM ( JRNOM(IC) + ID(K) )
+            IF (NIVO .GE. 2) THEN
+              CALL JVMESS('I','JEDETV','DESTRUCTION DE '//NOM32)
+            ENDIF
+            CALL JJCREN ( NOM32 , -2 , IRET )
+            CALL JJMZAT ( IC , ID(K) )
+          ENDIF
+2       CONTINUE
+        CRNOM = RNOM ( JRNOM(IC) + IDO )
+        CALL JJLIBP ( IBACOL)
+        IADDI(1) = IADD (JIADD(IC) + 2*IDO-1)
+        IADDI(2) = IADD (JIADD(IC) + 2*IDO  )
+        IF ( IADDI(1) .GT. 0 ) THEN
+          LONOI = LONO(JLONO(IC)+IDO)*LTYP(JLTYP(IC)+IDO)
+          CALL JXLIBD ( 0, IDO, IC, IADDI, LONOI )
+        ENDIF
+        IF (NIVO .GE. 2) THEN
+          CALL JVMESS('I','JEDETV','DESTRUCTION DE '//CRNOM(1:24))
+        ENDIF
+        CALL JJCREN ( CRNOM(1:24) , -2 , IRET )
+        CALL JJMZAT ( IC , IDO )
+        NOMCO = '$$$$$$$$$$$$$$$$$$$$$$$$'
+      ENDIF
+ 150  CONTINUE
+C
+      DO 250 IDO = LIDBAS+1 , NREMAX(IC)
+        CRNOM = RNOM(JRNOM(IC)+IDO)
+        IF ( CRNOM(1:1) .EQ. '?' .OR.
+     &       CRNOM(25:32) .NE. '      ' ) GOTO 250
+        CGENR = GENR(JGENR(IC)+IDO)
+C
+C    ON TRAITE LES OBJETS SIMPLES
+C
+        IF ( CGENR .NE. 'X' ) THEN
+          IADMI = IADM (JIADM(IC) + IDO)
+          IF ( IADMI .GT. 0 ) THEN
+            CALL JJLIBP ( IADMI )
+          ENDIF
+          IADDI(1) = IADD (JIADD(IC) + 2*IDO-1 )
+          IADDI(2) = IADD (JIADD(IC) + 2*IDO   )
+          IF ( IADDI(1) .GT. 0 ) THEN
+            LONOI = LONO(JLONO(IC)+IDO)*LTYP(JLTYP(IC)+IDO) 
+            CALL JXLIBD ( 0, IDO , IC , IADDI , LONOI )
+          ENDIF
+          IF (NIVO .GE. 2) THEN
+            CALL JVMESS('I','JEDETV','DESTRUCTION DE '//CRNOM(1:24))
+          ENDIF
+          CALL JJCREN ( CRNOM , -1 , IRET )
+          NOMOS = '$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$'
+          CALL JJMZAT ( IC , IDO )
+        ENDIF
+ 250  CONTINUE
 C FIN ------------------------------------------------------------------
       END

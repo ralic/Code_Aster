@@ -1,4 +1,5 @@
-#@ MODIF macr_adap_mail_ops Macro  DATE 06/09/2004   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF macr_adap_mail_ops Macro  DATE 14/09/2004   AUTEUR MCOURTOI M.COURTOIS 
+# -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,9 +17,6 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-
-# -*- coding: iso-8859-1 -*-
-
 # RESPONSABLE GNICOLAS G.NICOLAS
 #
 def macr_adap_mail_ops ( self,
@@ -27,7 +25,7 @@ def macr_adap_mail_ops ( self,
                          NON_SIMPLEXE, MAILLAGE_FRONTIERE,
                          **args):
   """
-     Ecriture de la macro MACR_ADAP_MAIL/MACR_INFO_MAIL
+     Ecriture des macros MACR_ADAP_MAIL/MACR_INFO_MAIL
      Remarque : on ne mentionne explicitement que les mots-clés communs aux
                 deux macros. Les autres sont dans le dictionnaire args
   """
@@ -41,43 +39,43 @@ def macr_adap_mail_ops ( self,
 ###  print args
 ###  print args.keys()
 ###  if len (args.keys())>0 : print args.keys()[0]
-###  print args['MAILLAGE']
+###  print args["MAILLAGE"]
 #
 #  2. Les caractéristiques d'un passage sont conservées dans un dictionnaire. Il y a autant de
 #     dictionnaires que de sollicitations pour une série d'adaptation. L'ensemble de ces dictionnaires
 #     est conservé dans la liste Liste_Passages. Cette liste est nécessairement globale pour pouvoir
 #     la retrouver à chaque nouveau passage.
 #     Description du dictionnaire de passages :
-#        dico['Maillage_0']             = o ; string ; nom du concept du maillage initial de la série d'adaptation
-#        dico['Maillage_NP1']           = o ; string ; nom du concept du dernier maillage adapté
-#        dico['Rep_Calc_HOMARD_global'] = o ; string ; Nom global du répertoire de calcul pour HOMARD
-#        dico['Rep_Calc_HOMARD_local']  = o ; string ; Nom local du répertoire de calcul pour HOMARD
+#        dico["Maillage_0"]             = o ; string ; nom du concept du maillage initial de la série d'adaptation
+#        dico["Maillage_NP1"]           = o ; string ; nom du concept du dernier maillage adapté
+#        dico["Rep_Calc_HOMARD_global"] = o ; string ; Nom global du répertoire de calcul pour HOMARD
+#        dico["Rep_Calc_HOMARD_local"]  = o ; string ; Nom local du répertoire de calcul pour HOMARD
 #                                                      depuis le répertoire de calcul pour ASTER
-#        dico['niter']                  = o ; entier ; numéro d'itération
+#        dico["niter"]                  = o ; entier ; numéro d'itération
 #
 #  3. Les caractéristiques d'un maillage sont conservées dans un dictionnaire. Il y a autant de
 #     dictionnaires que de maillages manipulés. L'ensemble de ces dictionnaires est conservé
 #     dans la liste Liste_Maillages.
 #     Description du dictionnaire de maillages :
-#        dico['Type_Maillage'] = o ; string ; 'MAILLAGE_N', 'MAILLAGE_NP1' ou 'MAILLAGE_FRONTIERE'
-#        dico['Nom_ASTER']     = o ; concept ASTER associé
-#        dico['Action']        = o ; string ; 'A_ecrire' ou 'A_lire'
-#        dico['NOM_MED']       = o ; string ; Nom MED du maillage
+#        dico["Type_Maillage"] = o ; string ; "MAILLAGE_N", "MAILLAGE_NP1" ou "MAILLAGE_FRONTIERE"
+#        dico["Nom_ASTER"]     = o ; concept ASTER associé
+#        dico["Action"]        = o ; string ; "A_ecrire" ou "A_lire"
+#        dico["NOM_MED"]       = o ; string ; Nom MED du maillage
 #
 #  4. Les caractéristiques d'un champ sont conservées dans un dictionnaire. Il y a autant de
 #     dictionnaires que de champs manipulés. L'ensemble de ces dictionnaires est conservé
 #     dans la liste Liste_Champs.
 #     Description du dictionnaire de champs :
-#        dico['Type_Champ']   = o ; string ; 'INDICATEUR' ou 'CHAMP'
-#        dico['RESULTAT']     = o ; concept ASTER du résutat associé
-#        dico['NOM_CHAM']     = o ; string ; Nom ASTER du champ
-#        dico['COMPOSANTE']   = f ; string ; Nom ASTER de la composante
-#        dico['NUME_ORDRE']   = f ; entier ; Numéro d'ordre du champ
-#        dico['INST']         = f ; entier ; Instant du champ
-#        dico['PRECISION']    = f ; entier ; Précision sur l'instant du champ
-#        dico['CRITERE']      = f ; entier ; Critère de précision sur l'instant du champ
-#        dico['CHAM_MAJ']     = f ; string ; Nom ASTER du champ interpolé sur le nouveau maillage
-#        dico['NOM_MED']      = o ; string ; Nom MED du champ
+#        dico["Type_Champ"]   = o ; string ; "INDICATEUR" ou "CHAMP"
+#        dico["RESULTAT"]     = o ; concept ASTER du résutat associé
+#        dico["NOM_CHAM"]     = o ; string ; Nom ASTER du champ
+#        dico["COMPOSANTE"]   = f ; string ; Nom ASTER de la composante (dans le cas de l'indicateur)
+#        dico["NUME_ORDRE"]   = f ; entier ; Numéro d'ordre du champ
+#        dico["INST"]         = f ; entier ; Instant du champ
+#        dico["PRECISION"]    = f ; entier ; Précision sur l'instant du champ
+#        dico["CRITERE"]      = f ; entier ; Critère de précision sur l'instant du champ
+#        dico["CHAM_MAJ"]     = f ; string ; Nom ASTER du champ interpolé sur le nouveau maillage
+#        dico["NOM_MED"]      = o ; string ; Nom MED du champ
 #
   from Accas import _F
   import aster 
@@ -107,17 +105,17 @@ def macr_adap_mail_ops ( self,
 #
 # 1.3. ==> On importe les definitions des commandes a utiliser dans la macro
 #
-  DEFI_FICHIER    = self.get_cmd('DEFI_FICHIER')
-  IMPR_RESU       = self.get_cmd('IMPR_RESU')
-  EXEC_LOGICIEL   = self.get_cmd('EXEC_LOGICIEL')
-  IMPR_FICO_HOMA  = self.get_cmd('IMPR_FICO_HOMA')
-  LIRE_MAILLAGE   = self.get_cmd('LIRE_MAILLAGE')
-  LIRE_CHAMP      = self.get_cmd('LIRE_CHAMP')
+  DEFI_FICHIER    = self.get_cmd("DEFI_FICHIER")
+  IMPR_RESU       = self.get_cmd("IMPR_RESU")
+  EXEC_LOGICIEL   = self.get_cmd("EXEC_LOGICIEL")
+  IMPR_FICO_HOMA  = self.get_cmd("IMPR_FICO_HOMA")
+  LIRE_MAILLAGE   = self.get_cmd("LIRE_MAILLAGE")
+  LIRE_CHAMP      = self.get_cmd("LIRE_CHAMP")
 #
 # 1.4. ==> Le nom du programme HOMARD à lancer
 #
   repertoire_outils = aster.repout()
-  homard            = repertoire_outils + 'homard'
+  homard            = repertoire_outils + "homard"
 #
 # 1.5. ==> Initialisations
 #
@@ -127,6 +125,7 @@ def macr_adap_mail_ops ( self,
 #
   Liste_Maillages = []
   Liste_Champs    = []
+  dico_indi = {}
 #
   ADAPTATION = None
   MAJ_CHAM = None
@@ -138,43 +137,44 @@ def macr_adap_mail_ops ( self,
 #--------------------------------------------------------------------
 # 2.1. ==> Données de pilotage de l'adaptation
 #
-  if ( self.nom == 'MACR_ADAP_MAIL' ) :
+  if ( self.nom == "MACR_ADAP_MAIL" ) :
 #
     modhom = "ADAP"
 #
-    ADAPTATION = args['ADAPTATION']
-    if args.has_key('MAJ_CHAM') :
-      MAJ_CHAM = args['MAJ_CHAM']
+    ADAPTATION = args["ADAPTATION"]
+    if args.has_key("MAJ_CHAM") :
+      MAJ_CHAM = args["MAJ_CHAM"]
 #
-# 2.1.1. ==> Les concepts 'maillage'
+# 2.1.1. ==> Les concepts "maillage"
 #
-    for mot_cle in ['MAILLAGE_N','MAILLAGE_NP1'] :
+    for mot_cle in ["MAILLAGE_N","MAILLAGE_NP1"] :
       dico = {}
-      dico['Type_Maillage'] = mot_cle
-      dico['Nom_ASTER']     = ADAPTATION[mot_cle]
-      if ( mot_cle == 'MAILLAGE_N' ) :
-        dico['Action'] = 'A_ecrire'
+      dico["Type_Maillage"] = mot_cle
+      dico["Nom_ASTER"]     = ADAPTATION[mot_cle]
+      if ( mot_cle == "MAILLAGE_N" ) :
+        dico["Action"] = "A_ecrire"
       else :
-        dico['Action'] = 'A_lire'
+        dico["Action"] = "A_lire"
       Liste_Maillages.append(dico)
 #
 # 2.1.2. ==> L'éventuel indicateur d'erreur
 #
-    if ADAPTATION['LIBRE'] != None :
+    if ADAPTATION["LIBRE"] != None :
       dico = {}
-      dico['Type_Champ'] = 'INDICATEUR'
-      dico['RESULTAT']   = ADAPTATION['RESULTAT_N']
-      dico['NOM_CHAM']   = ADAPTATION['INDICATEUR']
-      dico['COMPOSANTE'] = ADAPTATION['NOM_CMP_INDICA']
-      if ( ADAPTATION['NUME_ORDRE'] != None ) :
-        dico['NUME_ORDRE'] = ADAPTATION['NUME_ORDRE']
-      if ( ADAPTATION['INST'] != None ) :
-        dico['INST'] = ADAPTATION['INST']
-        for cle in [ 'PRECISION', 'CRITERE' ] :
+      dico["Type_Champ"] = "INDICATEUR"
+      dico["RESULTAT"]   = ADAPTATION["RESULTAT_N"]
+      dico["NOM_CHAM"]   = ADAPTATION["INDICATEUR"]
+      dico["COMPOSANTE"] = ADAPTATION["NOM_CMP_INDICA"]
+      if ( ADAPTATION["NUME_ORDRE"] != None ) :
+        dico["NUME_ORDRE"] = ADAPTATION["NUME_ORDRE"]
+      if ( ADAPTATION["INST"] != None ) :
+        dico["INST"] = ADAPTATION["INST"]
+        for cle in [ "PRECISION", "CRITERE" ] :
           if ( ADAPTATION[cle] != None ) :
             dico[cle] = ADAPTATION[cle]
-      dico['NOM_MED'] = aster.mdnoch ( dico['RESULTAT'].nom , dico['NOM_CHAM'] )
+      dico["NOM_MED"] = aster.mdnoch ( dico["RESULTAT"].nom , dico["NOM_CHAM"] )
       Liste_Champs.append(dico)
+      dico_indi = dico
 ###      print dico
 #
 # 2.1.3. ==> Les champs à mettre à jour
@@ -182,17 +182,20 @@ def macr_adap_mail_ops ( self,
     if ( MAJ_CHAM != None ) :
 #
       for maj_cham in MAJ_CHAM :
+###        print maj_cham
 #
         dico = {}
-        dico['Type_Champ'] = 'CHAMP'
-        for cle in [ 'CHAM_MAJ', 'TYPE_CHAM', 'RESULTAT', 'NOM_CHAM', 'NUME_ORDRE' ] :
+        dico["Type_Champ"] = "CHAMP"
+        for cle in [ "CHAM_MAJ", "TYPE_CHAM", "RESULTAT", "NOM_CHAM" ] :
           dico[cle] = maj_cham[cle]
-        if ( maj_cham['INST'] != None ) :
-          dico['INST'] = maj_cham['INST']
-          for cle in [ 'PRECISION', 'CRITERE' ] :
+        if ( maj_cham["NUME_ORDRE"] != None ) :
+          dico["NUME_ORDRE"] = maj_cham["NUME_ORDRE"]
+        elif ( maj_cham["INST"] != None ) :
+          dico["INST"] = maj_cham["INST"]
+          for cle in [ "PRECISION", "CRITERE" ] :
             if ( maj_cham[cle] != None ) :
               dico[cle] = maj_cham[cle]
-        dico['NOM_MED'] = aster.mdnoch ( dico['RESULTAT'].nom , dico['NOM_CHAM'] )
+        dico["NOM_MED"] = aster.mdnoch ( dico["RESULTAT"].nom , dico["NOM_CHAM"] )
 #
 ###        print dico
         Liste_Champs.append(dico)
@@ -204,9 +207,9 @@ def macr_adap_mail_ops ( self,
     modhom = "INFO"
 #
     dico = {}
-    dico['Type_Maillage'] = 'MAILLAGE_N'
-    dico['Nom_ASTER']     = args['MAILLAGE']
-    dico['Action']        = 'A_ecrire'
+    dico["Type_Maillage"] = "MAILLAGE_N"
+    dico["Nom_ASTER"]     = args["MAILLAGE"]
+    dico["Action"]        = "A_ecrire"
     Liste_Maillages.append(dico)
 #
 # 2.3. ==> Suivi de frontière
@@ -214,9 +217,9 @@ def macr_adap_mail_ops ( self,
   if ( MAILLAGE_FRONTIERE != None ) :
 #
     dico = {}
-    dico['Type_Maillage'] = 'MAILLAGE_FRONTIERE'
-    dico['Nom_ASTER']     = MAILLAGE_FRONTIERE
-    dico['Action']        = 'A_ecrire'
+    dico["Type_Maillage"] = "MAILLAGE_FRONTIERE"
+    dico["Nom_ASTER"]     = MAILLAGE_FRONTIERE
+    dico["Action"]        = "A_ecrire"
     Liste_Maillages.append(dico)
 #
 #--------------------------------------------------------------------
@@ -230,12 +233,12 @@ def macr_adap_mail_ops ( self,
 #
   L = []
   for dico in Liste_Maillages :
-    dico['NOM_MED'] = aster.mdnoma(dico['Nom_ASTER'].nom)
+    dico["NOM_MED"] = aster.mdnoma(dico["Nom_ASTER"].nom)
     L.append(dico)
-    if ( dico['Type_Maillage'] == 'MAILLAGE_N' ) :
-      Nom_Concept_Maillage_N = dico['Nom_ASTER'].nom
-    elif ( dico['Type_Maillage'] == 'MAILLAGE_NP1' ) :
-      Nom_Concept_Maillage_NP1 = dico['Nom_ASTER'].nom
+    if ( dico["Type_Maillage"] == "MAILLAGE_N" ) :
+      Nom_Concept_Maillage_N = dico["Nom_ASTER"].nom
+    elif ( dico["Type_Maillage"] == "MAILLAGE_NP1" ) :
+      Nom_Concept_Maillage_NP1 = dico["Nom_ASTER"].nom
   Liste_Maillages = L
 #
 # 3.2. ==> Recherche du numéro d'itération et du répertoire de travail
@@ -247,7 +250,7 @@ def macr_adap_mail_ops ( self,
 #
   niter = 0
   Nom_Rep_local = Nom_Concept_Maillage_N + "_" + modhom + "_" + str(Numero_Passage_Fonction)
-  Rep_Calc_HOMARD_local = os.path.join('.',Nom_Rep_local)
+  Rep_Calc_HOMARD_local = os.path.join(".",Nom_Rep_local)
   Rep_Calc_HOMARD_global = os.path.join(Rep_Calc_ASTER,Nom_Rep_local)
 ###  print "Rep_Calc_HOMARD_local  = ", Rep_Calc_HOMARD_local
 ###  print "Rep_Calc_HOMARD_global = ", Rep_Calc_HOMARD_global
@@ -263,10 +266,10 @@ def macr_adap_mail_ops ( self,
 #              d'itération est celui de l'adaptation précédente augmenté de 1.
 #
     for dico in Liste_Passages :
-      if ( dico['Maillage_NP1'] == Nom_Concept_Maillage_N ) :
-        niter   = dico['niter'] + 1
-        Rep_Calc_HOMARD_local  = dico['Rep_Calc_HOMARD_local']
-        Rep_Calc_HOMARD_global = dico['Rep_Calc_HOMARD_global']
+      if ( dico["Maillage_NP1"] == Nom_Concept_Maillage_N ) :
+        niter   = dico["niter"] + 1
+        Rep_Calc_HOMARD_local  = dico["Rep_Calc_HOMARD_local"]
+        Rep_Calc_HOMARD_global = dico["Rep_Calc_HOMARD_global"]
 #
 # 3.2.2.2. ==> Memorisation de ce passage
 #
@@ -274,11 +277,11 @@ def macr_adap_mail_ops ( self,
 #
     if ( niter == 0 ) :
       dico = {}
-      dico['Maillage_0']   = Nom_Concept_Maillage_N
-      dico['Maillage_NP1'] = Nom_Concept_Maillage_NP1
-      dico['Rep_Calc_HOMARD_local']  = Rep_Calc_HOMARD_local
-      dico['Rep_Calc_HOMARD_global'] = Rep_Calc_HOMARD_global
-      dico['niter']        = niter
+      dico["Maillage_0"]   = Nom_Concept_Maillage_N
+      dico["Maillage_NP1"] = Nom_Concept_Maillage_NP1
+      dico["Rep_Calc_HOMARD_local"]  = Rep_Calc_HOMARD_local
+      dico["Rep_Calc_HOMARD_global"] = Rep_Calc_HOMARD_global
+      dico["niter"]        = niter
       Liste_Passages.append(dico)
 #
 # 3.2.2.2.2. ==> Modification du cas en cours
@@ -286,9 +289,9 @@ def macr_adap_mail_ops ( self,
     else :
       L = []
       for dico in Liste_Passages :
-        if ( dico['Maillage_NP1'] == Nom_Concept_Maillage_N ) :
-          dico['Maillage_NP1'] = Nom_Concept_Maillage_NP1
-          dico['niter']        = niter
+        if ( dico["Maillage_NP1"] == Nom_Concept_Maillage_N ) :
+          dico["Maillage_NP1"] = Nom_Concept_Maillage_NP1
+          dico["niter"]        = niter
         L.append(dico)
       Liste_Passages = L
 #
@@ -310,7 +313,6 @@ def macr_adap_mail_ops ( self,
       self.cr.warn("Code d'erreur de mkdir : " + str(codret_partiel[0]) + " : " + codret_partiel[1])
       self.cr.fatal("<F> <MACR_ADAP_MAIL> Impossible de créer le répertoire de travail pour HOMARD : "+Rep_Calc_HOMARD_global)
       codret = codret + 1
-      return codret
 #
 # 4.2. ==> Ecriture des commandes de creation des donnees MED
 #
@@ -321,8 +323,8 @@ def macr_adap_mail_ops ( self,
 #
 #  Chacune de ces écritures est optionnelle selon le contexte.
 #
-  if ( INFO > 1 ) : infomail='OUI'
-  else :            infomail='NON'
+  if ( INFO > 1 ) : infomail = "OUI"
+  else :            infomail = "NON"
 #
 # 4.2.1. ==> Noms des fichiers d'ASTER vers HOMARD et éventuellement de HOMARD vers ASTER
 #            Remarque : aujourd'hui, les écritures ou les lectures au format MED se font obligatoirement sur
@@ -345,7 +347,6 @@ def macr_adap_mail_ops ( self,
     self.cr.warn("Code d'erreur de symlink : " + str(codret_partiel[0]) + " : " + codret_partiel[1])
     self.cr.fatal("<F> <MACR_ADAP_MAIL> Probleme au lien entre " + Fichier_ASTER_vers_HOMARD + " et " + Fichier_HOMARD_Entree)
     codret = codret + 1
-    return codret
 #
 # 4.2.1.2. ==> De HOMARD vers ASTER
 #  
@@ -361,7 +362,6 @@ def macr_adap_mail_ops ( self,
       self.cr.warn("Code d'erreur de symlink : " + str(codret_partiel[0]) + " : " + codret_partiel[1])
       self.cr.fatal("<F> <MACR_ADAP_MAIL> Probleme au lien entre " + Fichier_HOMARD_vers_ASTER + " et " + Fichier_HOMARD_Sortie)
       codret = codret + 1
-      return codret
 #
 # 4.2.2. La définition du fichier de ASTER vers HOMARD
 # 
@@ -380,11 +380,11 @@ def macr_adap_mail_ops ( self,
 # Donc on va toujours écrire.
 #
   for dico in Liste_Maillages :
-    if ( dico['Action'] == 'A_ecrire' ) :
+    if ( dico["Action"] == "A_ecrire" ) :
       motscsi={}
-      motscsi['MAILLAGE'] = dico['Nom_ASTER']
+      motscsi["MAILLAGE"] = dico["Nom_ASTER"]
       motscfa={}
-      motscfa['RESU']=_F( INFO_MAILLAGE=infomail,
+      motscfa["RESU"]=_F( INFO_MAILLAGE=infomail,
                           **motscsi )
 #
       IMPR_RESU ( INFO = INFO, 
@@ -392,17 +392,72 @@ def macr_adap_mail_ops ( self,
                   **motscfa )
 #
 # 4.2.4. Le(s) champ(s)
+#        Attention : il se peut que l'on demande la mise à jour du champ qui a servi comme
+#                    indicateur d'erreur. Si c'est le cas, il ne faut pas demander son
+#                    impression sinon il y a plantage d'IMPR_RESU qui ne sait pas substituer
+#                    deux champs. D'ailleurs, c'est plus économique ainsi !
+#        Remarque : pour l'adaptation, on ne demande a priori qu'une composante du champ d'indicateur.
+#                   s'il y a demande de mise à jour, toutes les composantes sont concernées. Il faut
+#                   donc dans ce cas imprimer le champ total.
+#        dico["Type_Champ"]   = o ; string ; "INDICATEUR" ou "CHAMP"
+#        dico["RESULTAT"]     = o ; concept ASTER du résutat associé
+#        dico["NOM_CHAM"]     = o ; string ; Nom ASTER du champ
+#        dico["COMPOSANTE"]   = f ; string ; Nom ASTER de la composante (dans le cas de l'indicateur)
+#        dico["NUME_ORDRE"]   = f ; entier ; Numéro d'ordre du champ
+#        dico["INST"]         = f ; entier ; Instant du champ
+#        dico["PRECISION"]    = f ; entier ; Précision sur l'instant du champ
+#        dico["CRITERE"]      = f ; entier ; Critère de précision sur l'instant du champ
+#        dico["CHAM_MAJ"]     = f ; string ; Nom ASTER du champ interpolé sur le nouveau maillage
+#        dico["NOM_MED"]      = o ; string ; Nom MED du champ
 #
+# 4.2.4.1. Recherche d'un doublon éventuel sur le champ d'indicateur d'erreur
+#
+  if len(dico_indi) > 0 :
+    imprime_indic = 0
+  else :
+    imprime_indic = 1
+#
+  Liste_Champs_imprime = []
   for dico in Liste_Champs :
+#   Pour un champ à mettre à jour, on a toujours impression
+    if ( dico["Type_Champ"] == "CHAMP" ) :
+      Liste_Champs_imprime.append(dico)
+#     Si le champ d'indicateur n'a pas été repéré comme champ à mettre à jour :
+      if not imprime_indic :
+#       Est-ce le meme champ ?
+        ok = 1
+        for cle in [ "RESULTAT", "NOM_CHAM" ] :
+          if ( dico_indi[cle] != dico[cle] ) :
+            ok = 0
+            break
+#       Si oui, est-ce au meme moment ? (remarque : si rien n'est désigné, c'est qu'il n'y a qu'un
+#       seul instant ... donc c'est le meme ! En revanche, on ne sait pas comparer une donnée
+#       en numéro d'ordre et une donnée en instant. On croise les doigts.)
+        if ok :
+          for cle in [ "NUME_ORDRE", "INST" ] :
+            if dico.has_key(cle) :
+              if ( dico[cle] != None ) :
+                if dico_indi.has_key(cle) :
+                  if ( dico_indi[cle] != dico[cle] ) :
+                    ok = 0
+                    break
+        if ok : imprime_indic = 1
+#   Si le champ d'indicateur n'a pas été repéré comme champ à mettre à jour, il faut
+#   l'inclure dans les champs à imprimer
+  if not imprime_indic : Liste_Champs_imprime.append(dico_indi)
+#
+# 4.2.4.2. Impressions après le filtrage précédent
+#
+  for dico in Liste_Champs_imprime :
     motscsi={}
-    for cle in [ 'RESULTAT', 'NOM_CHAM', 'NUME_ORDRE', 'INST', 'PRECISION', 'CRITERE' ] :
+    for cle in [ "RESULTAT", "NOM_CHAM", "NUME_ORDRE", "INST", "PRECISION", "CRITERE" ] :
       if dico.has_key(cle) :
         if ( dico[cle] != None ) :
           motscsi[cle] = dico[cle]
-    if dico.has_key('COMPOSANTE') :
-      motscsi['NOM_CMP'] = dico['COMPOSANTE']
+    if dico.has_key("COMPOSANTE") :
+      motscsi["NOM_CMP"] = dico["COMPOSANTE"]
     motscfa={}
-    motscfa['RESU']=_F( INFO_MAILLAGE=infomail,
+    motscfa["RESU"]=_F( INFO_MAILLAGE=infomail,
                         **motscsi
                       )
 #
@@ -421,28 +476,28 @@ def macr_adap_mail_ops ( self,
 # 4.3.1.1. ==> Le type de traitement
 #
   if ( modhom == "ADAP" ) :
-    if ( ADAPTATION['UNIFORME'] != None ) :
-      motscsi['UNIFORME'] = ADAPTATION['UNIFORME']
+    if ( ADAPTATION["UNIFORME"] != None ) :
+      motscsi["UNIFORME"] = ADAPTATION["UNIFORME"]
     else :
-      motscsi['ADAPTATION'] = ADAPTATION['LIBRE']
+      motscsi["ADAPTATION"] = ADAPTATION["LIBRE"]
   else :
-    motscsi['INFORMATION'] = 'OUI'
+    motscsi["INFORMATION"] = "OUI"
 #
 # 4.3.1.2. ==> Les noms med des maillages
 #
   for dico in Liste_Maillages :
-###    print "Nom MED de " + dico['Type_Maillage'] + " = " + dico['NOM_MED']
-    motscsi[ 'NOM_MED_'+dico['Type_Maillage'] ] = dico['NOM_MED']
+###    print "Nom MED de " + dico["Type_Maillage"] + " = " + dico["NOM_MED"]
+    motscsi[ "NOM_MED_"+dico["Type_Maillage"] ] = dico["NOM_MED"]
 #
 # 4.3.1.3. ==> Les caracteristiques de l'éventuel indicateur d'erreur
 #
   for dico in Liste_Champs :
-    if ( dico['Type_Champ'] == 'INDICATEUR' ) :
-      Liste_aux = [ 'NOM_MED', 'COMPOSANTE' ]
-      if dico.has_key('NUME_ORDRE') :
-        Liste_aux.append('NUME_ORDRE')
+    if ( dico["Type_Champ"] == "INDICATEUR" ) :
+      Liste_aux = [ "NOM_MED", "COMPOSANTE" ]
+      if dico.has_key("NUME_ORDRE") :
+        Liste_aux.append("NUME_ORDRE")
       else :
-        for cle in [ 'RESULTAT', 'NOM_CHAM', 'INST', 'PRECISION', 'CRITERE' ] :
+        for cle in [ "RESULTAT", "NOM_CHAM", "INST", "PRECISION", "CRITERE" ] :
           Liste_aux.append(cle)
       for cle in Liste_aux :
         if dico.has_key(cle) :
@@ -453,101 +508,117 @@ def macr_adap_mail_ops ( self,
 #
   if ( modhom == "ADAP" ) :
     Liste_aux = [ ]
-    if ( ADAPTATION['LIBRE'] == 'RAFF_DERA' or ADAPTATION['LIBRE'] == 'RAFFINEMENT' ) :
-      Liste_aux.append('CRIT_RAFF_ABS')
-      Liste_aux.append('CRIT_RAFF_REL')
-      Liste_aux.append('CRIT_RAFF_PE')
-    if ( ADAPTATION['LIBRE'] == 'RAFF_DERA' or ADAPTATION['LIBRE'] == 'DERAFFINEMENT' ) :
-      Liste_aux.append('CRIT_DERA_ABS')
-      Liste_aux.append('CRIT_DERA_REL')
-      Liste_aux.append('CRIT_DERA_PE')
+    if ( ADAPTATION["LIBRE"] == "RAFF_DERA" or ADAPTATION["LIBRE"] == "RAFFINEMENT" ) :
+      Liste_aux.append("CRIT_RAFF_ABS")
+      Liste_aux.append("CRIT_RAFF_REL")
+      Liste_aux.append("CRIT_RAFF_PE")
+    if ( ADAPTATION["LIBRE"] == "RAFF_DERA" or ADAPTATION["LIBRE"] == "DERAFFINEMENT" ) :
+      Liste_aux.append("CRIT_DERA_ABS")
+      Liste_aux.append("CRIT_DERA_REL")
+      Liste_aux.append("CRIT_DERA_PE")
     niveau = 0
-    if ( ADAPTATION['LIBRE'] == 'RAFF_DERA' or ADAPTATION['LIBRE'] == 'RAFFINEMENT' or ADAPTATION['UNIFORME'] == 'RAFFINEMENT' ) :
-      Liste_aux.append('NIVE_MAX')
+    if ( ADAPTATION["LIBRE"] == "RAFF_DERA" or ADAPTATION["LIBRE"] == "RAFFINEMENT" or ADAPTATION["UNIFORME"] == "RAFFINEMENT" ) :
+      Liste_aux.append("NIVE_MAX")
       niveau = niveau + 1
-    if ( ADAPTATION['LIBRE'] == 'RAFF_DERA' or ADAPTATION['LIBRE'] == 'DERAFFINEMENT' or ADAPTATION['UNIFORME'] == 'DERAFFINEMENT' ) :
-      Liste_aux.append('NIVE_MIN')
+    if ( ADAPTATION["LIBRE"] == "RAFF_DERA" or ADAPTATION["LIBRE"] == "DERAFFINEMENT" or ADAPTATION["UNIFORME"] == "DERAFFINEMENT" ) :
+      Liste_aux.append("NIVE_MIN")
       niveau = niveau + 2
     for mot_cle in Liste_aux :
       if ( ADAPTATION[mot_cle] != None ) :
         motscsi[mot_cle] = ADAPTATION[mot_cle]
 #
     if ( niveau == 2 ) : 
-      if ( ADAPTATION['NIVE_MIN'] > ADAPTATION['NIVE_MAX'] ) :
+      if ( ADAPTATION["NIVE_MIN"] > ADAPTATION["NIVE_MAX"] ) :
         self.cr.fatal("<F> <MACR_ADAP_MAIL> Le niveau minimum doit etre inferieur au niveau maximum.")
         codret = codret + 1
-        return codret
 #
-# 4.3.1.5. ==> Mise à jour de la solution
-#
-  if ( MAJ_CHAM != None ) :
-    motscsi['MAJ_CHAM'] = 'OUI'
-#
-# 4.3.1.6. ==> Numéro d'itération
+# 4.3.1.5. ==> Numéro d'itération
 #
   if ( modhom == "ADAP" ) :
-    motscsi['NITER'] = niter
+    motscsi["NITER"] = niter
 #
-# 4.3.1.7. ==> Suivi de la frontiere
+# 4.3.1.6. ==> Suivi de la frontiere
 #
-  if args.has_key('GROUP_MA') :
-    if ( args['GROUP_MA'] != None ) :
-      motscsi['GROUP_MA'] = args['GROUP_MA']
+  if args.has_key("GROUP_MA") :
+    if ( args["GROUP_MA"] != None ) :
+      motscsi["GROUP_MA"] = args["GROUP_MA"]
 #
-# 4.3.1.8. ==> Bilan
+# 4.3.1.7. ==> Bilan
 #
-  motscfa['TRAITEMENT'] = _F(**motscsi)
+  motscfa["TRAITEMENT"] = _F(**motscsi)
 #
 # 4.3.2. ==> L'analyse
 #
   motscsi={}
-  if ( NOMBRE != None )           : motscsi['NOMBRE' ]           = NOMBRE
-  if ( QUALITE != None )          : motscsi['QUALITE' ]          = QUALITE
-  if ( CONNEXITE != None )        : motscsi['CONNEXITE' ]        = CONNEXITE
-  if ( TAILLE != None )           : motscsi['TAILLE' ]           = TAILLE
-  if ( INTERPENETRATION != None ) : motscsi['INTERPENETRATION' ] = INTERPENETRATION
+  if ( NOMBRE != None )           : motscsi["NOMBRE" ]           = NOMBRE
+  if ( QUALITE != None )          : motscsi["QUALITE" ]          = QUALITE
+  if ( CONNEXITE != None )        : motscsi["CONNEXITE" ]        = CONNEXITE
+  if ( TAILLE != None )           : motscsi["TAILLE" ]           = TAILLE
+  if ( INTERPENETRATION != None ) : motscsi["INTERPENETRATION" ] = INTERPENETRATION
 #
-  motscfa['ANALYSE'] = _F(**motscsi)
+  motscfa["ANALYSE"] = _F(**motscsi)
 #
-# 4.3.3. ==> La commande
+# 4.3.3. ==> La mise à jour de champs
 #
-# 4.3.3.1. ==> Les fichiers annexes
+  prem = 1
+  for dico in Liste_Champs :
+    motscsi={}
+    if ( dico["Type_Champ"] == "CHAMP" ) :
+      Liste_aux = [ "NOM_MED", "COMPOSANTE" ]
+      if dico.has_key("NUME_ORDRE") :
+        Liste_aux.append("NUME_ORDRE")
+      else :
+        for cle in [ "RESULTAT", "NOM_CHAM", "INST", "PRECISION", "CRITERE" ] :
+          Liste_aux.append(cle)
+      for cle in Liste_aux :
+        if dico.has_key(cle) :
+          if ( dico[cle] != None ) :
+            motscsi[cle] = dico[cle]
+###      print motscsi
+      if prem :
+        motscfa["MAJ_CHAM"] = [_F(**motscsi),]
+        prem = 0
+      else :
+        motscfa["MAJ_CHAM"].append(_F(**motscsi))
+#
+# 4.3.4. ==> La commande
+#
+# 4.3.4.1. ==> Les fichiers annexes
 #
   dico = {}
 #
-  Nom_Fichier_Configuration = 'HOMARD.Configuration'
-  Fichier_Configuration = os.path.join(Rep_Calc_HOMARD_local,'HOMARD.Configuration')
-#                                 1234567890123456
-  dico[Fichier_Configuration] = ('HOMARD_CONFIG','FICHIER_CONF',unite)
+  Nom_Fichier_Configuration = "HOMARD.Configuration"
+  Fichier_Configuration = os.path.join(Rep_Calc_HOMARD_local,Nom_Fichier_Configuration)
+  dico[Fichier_Configuration] = ("HOMARD_CONFIG","FICHIER_CONF",unite)
 #
   if ( modhom != "ADAP" ) :
     unite = unite + 1
-    Nom_Fichier_Donnees = 'HOMARD.Donnees'
+    Nom_Fichier_Donnees = "HOMARD.Donnees"
     Fichier_Donnees = os.path.join(Rep_Calc_HOMARD_local,Nom_Fichier_Donnees)
 #                             1234567890123456
-    dico[Fichier_Donnees] = ('HOMARD_DONN','FICHIER_DONN',unite)
+    dico[Fichier_Donnees] = ("HOMARD_DONN","FICHIER_DONN",unite)
 #
-# 4.3.3.2. ==> L'ouverture de ces fichiers
+# 4.3.4.2. ==> L'ouverture de ces fichiers
 #
   for fic in dico.keys() :
     DEFI_FICHIER ( ACTION= "ASSOCIER", NOM_SYSTEME = fic, FICHIER = dico[fic][0], UNITE = dico[fic][2],
                    TYPE = "ASCII", ACCES = "NEW", INFO = INFO )
     motscfa[dico[fic][1]] = dico[fic][0]
 #
-# 4.3.3.3. ==> Ecriture
+# 4.3.4.3. ==> Ecriture
 #
 ###  print motscfa
   IMPR_FICO_HOMA ( INFO=INFO, LANGUE = LANGUE, NON_SIMPLEXE = NON_SIMPLEXE, **motscfa )
 #
 ###  for fic in dico.keys() :
 ###    print "\nContenu de ", fic
-###    fichier = open (fic,'r')
+###    fichier = open (fic,"r")
 ###    les_lignes = fichier.readlines()
 ###    fichier.close()
 ###    for ligne in les_lignes :
 ###      print ligne[:-1]
 #
-# 4.3.3.4. ==> La fermeture des fichiers locaux
+# 4.3.4.4. ==> La fermeture des fichiers locaux
 #              Remarque : il faut le faire ici pour que le gestionnaire de DEFI_FICHIER soit à jour
 #              Remarque : aujourd'hui on est obligé de passer par le numéro d'unité logique
 #
@@ -564,14 +635,14 @@ def macr_adap_mail_ops ( self,
 #    Remarque : pour le nommage des fichiers d'échange entre ASTER et HOMARD, on utilise
 #               la convention implicite du fort.n des entrees/sorties au format MED
 #
-  VERSION_HOMARD=string.replace(VERSION_HOMARD,'_','.')
-  VERSION_HOMARD=string.replace(VERSION_HOMARD,'N','n')
-  if ( VERSION_HOMARD[-6:]=='_PERSO' ):
-#    motscsi['ARGUMENT']=_F('TYPEXE'='-PERSO')
+  VERSION_HOMARD=string.replace(VERSION_HOMARD,"_",".")
+  VERSION_HOMARD=string.replace(VERSION_HOMARD,"N","n")
+  if ( VERSION_HOMARD[-6:]=="_PERSO" ):
+#    motscsi["ARGUMENT"]=_F("TYPEXE"="-PERSO")
     VERSION_HOMARD=VERSION_HOMARD[:-6]
 #
   if ( modhom == "ADAP" ) :
-    Nom_Fichier_Donnees = '0'
+    Nom_Fichier_Donnees = "0"
 #
   EXEC_LOGICIEL ( ARGUMENT = (_F(NOM_PARA=Rep_Calc_HOMARD_global), # nom du repertoire
                               _F(NOM_PARA=VERSION_HOMARD),  # version de homard
@@ -586,39 +657,39 @@ def macr_adap_mail_ops ( self,
 #          La fonction self.DeclareOut(a,b) focntionne ainsi :
 #          a est une chaine de caracteres
 #          b est la variable déclarée dans la commande
-#          le but est de associer le contenu de b à la vaiable locale qui sera désignée par a
+#          le but est de associer le contenu de b à la variable locale qui sera désignée par a
 #          Exemple :
-#          self.DeclareOut('maillage_np1',ADAPTATION['MAILLAGE_NP1'])
-#          ==> la variable maillage_np1 est identifiée à l'argument 'MAILLAGE_NP1' du mot-clé ADAPTATION
+#          self.DeclareOut("maillage_np1",ADAPTATION["MAILLAGE_NP1"])
+#          ==> la variable maillage_np1 est identifiée à l'argument "MAILLAGE_NP1" du mot-clé ADAPTATION
 #
   if ( modhom == "ADAP" ) :
 #
 # 4.5.1. ==> Le maillage
 #
-    self.DeclareOut('maillage_np1',ADAPTATION['MAILLAGE_NP1'])
+    self.DeclareOut("maillage_np1",ADAPTATION["MAILLAGE_NP1"])
     for dico in Liste_Maillages :
-      if ( dico['Action'] == 'A_lire' ) :
+      if ( dico["Action"] == "A_lire" ) :
         maillage_np1 = LIRE_MAILLAGE ( UNITE = Unite_Fichier_HOMARD_vers_ASTER,
-                                       FORMAT = 'MED',
-                                       NOM_MED = dico['NOM_MED'],
-                                       VERI_MAIL = _F(VERIF='NON'), INFO_MED = INFO, INFO = INFO )
+                                       FORMAT = "MED",
+                                       NOM_MED = dico["NOM_MED"],
+                                       VERI_MAIL = _F(VERIF="NON"), INFO_MED = INFO, INFO = INFO )
 #
 # 4.5.2. ==> Les champs
 #
     for dico in Liste_Champs :
-      if ( dico['Type_Champ'] == 'CHAMP' ) :
+      if ( dico["Type_Champ"] == "CHAMP" ) :
 ###        print dico
-        self.DeclareOut('champ_maj',dico['CHAM_MAJ'])
+        self.DeclareOut("champ_maj",dico["CHAM_MAJ"])
         motscsi={}
-        for cle in [ 'NUME_ORDRE', 'INST', 'PRECISION', 'CRITERE' ] :
+        for cle in [ "NUME_ORDRE", "INST", "PRECISION", "CRITERE" ] :
           if dico.has_key(cle) :
             if ( dico[cle] != None ) :
               motscsi[cle] = dico[cle]
-        if dico.has_key('NUME_ORDRE') :
-          motscsi['NUME_PT'] = dico['NUME_ORDRE']
-        champ_maj = LIRE_CHAMP ( UNITE = Unite_Fichier_HOMARD_vers_ASTER, FORMAT = 'MED',
+        if dico.has_key("NUME_ORDRE") :
+          motscsi["NUME_PT"] = dico["NUME_ORDRE"]
+        champ_maj = LIRE_CHAMP ( UNITE = Unite_Fichier_HOMARD_vers_ASTER, FORMAT = "MED",
                                  MAILLAGE = maillage_np1,
-                                 NOM_MED = dico['NOM_MED'], NOM_CMP_IDEM = 'OUI', TYPE_CHAM = dico['TYPE_CHAM'],
+                                 NOM_MED = dico["NOM_MED"], NOM_CMP_IDEM = "OUI", TYPE_CHAM = dico["TYPE_CHAM"],
                                  INFO = INFO, **motscsi )
 #
 #--------------------------------------------------------------------

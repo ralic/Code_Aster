@@ -6,7 +6,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 08/06/2004   AUTEUR ROMEO R.FERNANDES 
+C MODIF ALGORITH  DATE 14/09/2004   AUTEUR ROMEO R.FERNANDES 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -113,7 +113,7 @@ C =====================================================================
       CALL THMRCP( 'INTERMED', IMATE, THMC, MECA, HYDR, THER,
      +            RBID1, RBID2, RBID3, RBID4, RBID5, T, P1, RBID40,
      +            RBID6,
-     +            RBID7, RBID8, RBID9, RBID10, RBID11, RHO0, CSIGM,
+     +            RBID7, RBID8, RBID10, RBID11, RHO0, CSIGM,
      +            BIOT, RBID12, SAT, RBID13, RBID14, RBID15, RBID16,
      +            RBID17,RBID18, RBID19, RBID20, RBID21, RBID22,
      +            RBID23,RBID24, RBID25, RHO110, CLIQ, ALPLIQ, CP11,

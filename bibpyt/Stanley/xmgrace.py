@@ -1,4 +1,5 @@
-#@ MODIF xmgrace Stanley  DATE 06/09/2004   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF xmgrace Stanley  DATE 14/09/2004   AUTEUR MCOURTOI M.COURTOIS 
+# -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,7 +21,6 @@
 #                       TERMINAL GRAPHIQUE XMGRACE
 # =========================================================================
 
-# -*- coding: iso-8859-1 -*-
 
 
 import os, string, glob

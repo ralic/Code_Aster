@@ -8,7 +8,7 @@
      +                    ABSINF, DXINF, DYINF, DZINF
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 17/08/2004   AUTEUR DURAND C.DURAND 
+C MODIF PREPOST  DATE 13/09/2004   AUTEUR GALENNE E.GALENNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -259,27 +259,30 @@ C
          KG3(I) = 0.D0
  310  CONTINUE
      
-       RN=ZR(JABSCS+NBVAL)
+       RN=ZR(JABSCS+NBVAL-1)
        DE=0.D0
        K1=0.D0
        K2=0.D0
        K3=0.D0
        DE=RN
-       DO 302 I = 1 , NBVAL
+       DO 302 I = 1 , NBVAL-1
          R1 = ZR(JABSCS+I-1)
          R2 = ZR(JABSCS+I-1+1)
          Y1 = ZR(JSAUTX+I-1)
-         K1 = K1+(ABS(SQRT(Y1)*SQRT(R2)*(R2-R1)))
+         Y2 = ZR(JSAUTX+I-1+1)
+         K1 = K1+(SQRT(Y2)*SQRT(R2)+SQRT(Y1)*SQRT(R1))*(R2-R1)
          Y1 = ZR(JSAUTY+I-1)
-         K2 = K2+(ABS(SQRT(Y1)*SQRT(R2)*(R2-R1)))
+         Y2 = ZR(JSAUTY+I-1+1)
+         K2 = K2+(SQRT(Y2)*SQRT(R2)+SQRT(Y1)*SQRT(R1))*(R2-R1)
           IF ( NDIM .EQ. 3 ) THEN
             Y1 = ZR(JSAUTZ+I-1)
-            K3 = K3 +(ABS(SQRT(Y1)*SQRT(R2)*(R2-R1)))
+            Y2 = ZR(JSAUTZ+I-1+1)
+            K3 = K3 +(SQRT(Y2)*SQRT(R2)+SQRT(Y1)*SQRT(R1))*(R2-R1)
           ENDIF   
   302    CONTINUE   
             
-            VK1 = 2*ISIGX * (K1/(DE**(2)))
-            VK2 = 2*ISIGY * (K2/(DE**(2)))
+            VK1 = ISIGX * (K1/(DE**(2)))
+            VK2 = ISIGY * (K2/(DE**(2)))
             G  = COEFG *(VK2**(2)+VK1**(2))
              IF ( NDIM. EQ .2 ) THEN
                IF ( NIV .EQ. 2 )WRITE(IFM,1010) VK1, VK2, G
@@ -290,7 +293,7 @@ C
                KG3(5)=G
                KG3(6)=G
              ELSEIF( NDIM. EQ. 3) THEN
-               VK3 = 2*ISIGZ * (K3/DE**(2))
+               VK3 = ISIGZ * (K3/DE**(2))
               G =COEFG*(VK2**(2)+VK1**(2))
      +         +(COEFG3*(VK3)**(2))
                IF ( NIV .EQ. 2 )WRITE(IFM,1010) VK1,VK2,VK3,G

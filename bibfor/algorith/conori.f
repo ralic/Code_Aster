@@ -1,6 +1,6 @@
       SUBROUTINE CONORI(MA)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 14/09/2004   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,7 +19,7 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C
 C  ROUTINE CONORI
-C    ROUTINE RACINE D ORIENTATION DES MAILLES DE CONTACT
+C    ROUTINE RACINE D ORIENTATION DES MAILLES DE FISSURE
 C  DECLARATIONS
 C    NBGCO  : NOMBRE DE GROUPE DE CONTACT
 C    IC     : NB D'OCCURENCE DE GROUP_MA
@@ -65,7 +65,6 @@ C    NBMAR  : NOMBRE DE MAILLE              POUR UNE MAILLE REFERENCE
 C    NBNOMX : NOMBRE DE NOEUD MAXIMUM POUR UNE MAILLE ( 100 )
 C    NIV    : NIVEAU D'IMPRESSION (OPTION INFO)
 C
-C  MOT_CLEF : ORIE_CONTACT
 C
 C
       IMPLICIT REAL*8 (A-H,O-Z)
@@ -122,7 +121,7 @@ C     ------------------------------------------------------------------
 C     RECHERCHE DU NOMBRE DE GROUP_MA_CONTACT DANS .COMM
 C     ------------------------------------------------------------------
       IC = 1
-      CALL GETVEM(MA,'GROUP_MA','ORIE_CONTACT','GROUP_MA',
+      CALL GETVEM(MA,'GROUP_MA','ORIE_FISSURE','GROUP_MA',
      +               IC,1,0,KBID,NBGCO)
       NBGCO = -NBGCO
 C
@@ -152,16 +151,16 @@ C     CREATION D UN TABLEAU DE TRAVAIL
 C     ------------------------------------------------------------------
          CALL WKVECT('&&OP0154.NOGCO','V V K8',NBGCO,IO8GCO)
 C     ------------------------------------------------------------------
-C     RECHERCHE DES NOMS DES GROUP_MA_CONTACT DANS .COMM
+C     RECHERCHE DES NOMS DES GROUP_MA_FISSURE DANS .COMM
 C     ------------------------------------------------------------------
-         CALL GETVEM(MA,'GROUP_MA','ORIE_CONTACT','GROUP_MA',
+         CALL GETVEM(MA,'GROUP_MA','ORIE_FISSURE','GROUP_MA',
      +                  IC,1,NBGCO,ZK8(IO8GCO),IDUM)
          IF (NIV.EQ.2) THEN
          WRITE(IFM,*) ' '
-         WRITE(IFM,*) ' LA LISTE DES ORIE_CONTACT'
+         WRITE(IFM,*) ' LA LISTE DES ORIE_FISSURE'
          WRITE(IFM,*) ' '
          DO 2 IGCO=1,NBGCO
-            WRITE(IFM,*) '   ORIE_CONTACT: ',ZK8(IO8GCO+IGCO-1)
+            WRITE(IFM,*) '   ORIE_FISSURE: ',ZK8(IO8GCO+IGCO-1)
 2        CONTINUE
          WRITE(IFM,*) ' '
          ENDIF
@@ -183,11 +182,11 @@ C
 C
 C     ==================================================================
 C     ------------------------------------------------------------------
-C     BOUCLE SUR LES GROUPE_MA_CONTACT
+C     BOUCLE SUR LES GROUPE_MA_FISSURE
 C     ------------------------------------------------------------------
          DO 3 IGCO=1,NBGCO
 C     ------------------------------------------------------------------
-C     RECHERCHE D EXISTENCE DU GROUP_MA_CONTACT CONSIDERE
+C     RECHERCHE D EXISTENCE DU GROUP_MA_FISSURE CONSIDERE
 C     ------------------------------------------------------------------
             CALL JENONU(JEXNOM(MA//'.GROUPEMA',ZK8(IO8GCO+IGCO-1)),IGMA)
 C
@@ -275,7 +274,7 @@ C     ------------------------------------------------------------------
 300               CONTINUE
 C
 C     ------------------------------------------------------------------
-C     SAUVEGARDE DE LA MAILLE DE CONTACT
+C     SAUVEGARDE DE LA MAILLE DE FISSURE
 C     ------------------------------------------------------------------
                   DO 301 IDUM=1,NBCOC+2
                      MACOS(IDUM)=MACOC(IDUM)
@@ -323,7 +322,7 @@ C     ------------------------------------------------------------------
 C     ==================================================================
 C     ------------------------------------------------------------------
 C     APPEL DE CONTAC
-C                      ORIENTATION DE LA MAILLE CONTACT SI NECESSAIRE
+C                      ORIENTATION DE LA MAILLE FISSURE SI NECESSAIRE
 C                      LOMODI = .TRUE.  SI MODIFICATION
 C                      LOMODI = .FALSE. SINON
 C     ------------------------------------------------------------------
@@ -336,7 +335,7 @@ C     ------------------------------------------------------------------
       IF (LOCOR0.OR.LOMOD0) THEN
         NBMAC=NBMAC+1
         IF (NIV.EQ.2) THEN
-          WRITE(IFM,*) 'LA MAILLE DE CONTACT   ',
+          WRITE(IFM,*) 'LA MAILLE DE FISSURE   ',
      .                 MACOC(1),' DE TYPE ',MACOC(2)
           WRITE(IFM,*) (MACOC(I+2),I=1,NBCOC)
           WRITE(IFM,*) 'S''APPUIE SUR LA MAILLE ',

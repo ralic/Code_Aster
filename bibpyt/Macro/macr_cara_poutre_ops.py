@@ -1,4 +1,5 @@
-#@ MODIF macr_cara_poutre_ops Macro  DATE 06/09/2004   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF macr_cara_poutre_ops Macro  DATE 14/09/2004   AUTEUR MCOURTOI M.COURTOIS 
+# -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -558,7 +559,6 @@ def macr_cara_poutre_ops(self,UNITE_MAILLAGE,SYME_X,SYME_Y,GROUP_MA_BORD,
 # --- =        DES COEFFICIENTS DE CISAILLEMENT                        =
 #     ==================================================================
 
-# -*- coding: iso-8859-1 -*-
 
 #
 

@@ -1,4 +1,4 @@
-# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 14/09/2004   AUTEUR MCOURTOI M.COURTOIS 
 # TITRE Test de arrachement axisymmetrique(La Borderie & Pijaudier Cabot)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -41,7 +41,7 @@ MALLA=DEFI_GROUP(reuse =MALLA,
 
 MALLA = MODI_MAILLAGE (reuse = MALLA,
                        MAILLAGE = MALLA,
-                       ORIE_CONTACT = _F(GROUP_MA = 'LIAISON'),
+                       ORIE_FISSURE = _F(GROUP_MA = 'LIAISON'),
                        INFO = 2,);                                  
 
 #---------------------------------

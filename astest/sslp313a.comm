@@ -1,4 +1,4 @@
-# MODIF  DATE 24/05/2004   AUTEUR GALENNE E.GALENNE 
+# MODIF  DATE 13/09/2004   AUTEUR GALENNE E.GALENNE 
 # TITRE MURAKAMI 4.2 FISSURE INCLINEE DANS UNE PLAQUE ILLIMITEE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -241,6 +241,30 @@ TEST_TABLE(       TABLE=TABL_K,
                            VALE=1.001883E2,
                       PRECISION=0.210           )
 
+TEST_TABLE(       TABLE=TABL_K,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 3),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='K1_MAX',
+                           VALE=3.574968087E6,
+                      PRECISION=0.025           )
+
+TEST_TABLE(       TABLE=TABL_K,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 3),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='K2_MAX',
+                           VALE=2.693931681E6,
+                      PRECISION=0.04            )
+
+TEST_TABLE(       TABLE=TABL_K,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 3),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='G_MAX',
+                           VALE=1.001883E2,
+                      PRECISION=0.056           )
+
 # ---------------
 
 TEST_TABLE(       TABLE=TABL_K,
@@ -326,6 +350,31 @@ TEST_TABLE(       TABLE=TABL_K,
                       REFERENCE='NON_REGRESSION',
                        NOM_PARA='G_MIN',
                            VALE=8.0828290356898E+01   )
+
+TEST_TABLE(       TABLE=TABL_K,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 3),
+                      REFERENCE='NON_REGRESSION',
+                       NOM_PARA='K1_MAX',
+                           VALE= 3.49969E+06   )
+
+
+TEST_TABLE(       TABLE=TABL_K,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 3),
+                      REFERENCE='NON_REGRESSION',
+                       NOM_PARA='K2_MAX',
+                           VALE=2.58730E+06  )
+
+
+TEST_TABLE(       TABLE=TABL_K,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 3),
+                      REFERENCE='NON_REGRESSION',
+                       NOM_PARA='G_MAX',
+                           VALE= 9.47097E+01  )
+
+
 
 # ---------------
 # ON A INVERSE LES DONNEES DES DEPLACEMENTS DES LEVRES
@@ -437,6 +486,29 @@ TEST_TABLE(       TABLE=TABL_K1,
                            VALE=1.001883E2,
                       PRECISION=0.210           )
 
+TEST_TABLE(       TABLE=TABL_K1,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 3),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='K1_MAX',
+                           VALE=3.574968087E6,
+                      PRECISION=0.025           )
+
+TEST_TABLE(       TABLE=TABL_K1,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 3),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='K2_MAX',
+                           VALE=-2.693931681E6,
+                      PRECISION=0.04           )
+
+TEST_TABLE(       TABLE=TABL_K1,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 3),
+                      REFERENCE='AUTRE_ASTER',
+                       NOM_PARA='G_MAX',
+                           VALE=1.001883E2,
+                      PRECISION=0.056           )
 # ---------------
 
 TEST_TABLE(       TABLE=TABL_K1,
@@ -523,6 +595,27 @@ TEST_TABLE(       TABLE=TABL_K1,
                        NOM_PARA='G_MIN',
                            VALE=8.0828290356898E+01   )
 
+TEST_TABLE(       TABLE=TABL_K1,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 3),
+                      REFERENCE='NON_REGRESSION',
+                       NOM_PARA='K1_MAX',
+                           VALE= 3.49969E+06   )
 
+
+TEST_TABLE(       TABLE=TABL_K1,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 3),
+                      REFERENCE='NON_REGRESSION',
+                       NOM_PARA='K2_MAX',
+                           VALE=-2.58730E+06  )
+
+
+TEST_TABLE(       TABLE=TABL_K1,
+                        FILTRE=_F(  NOM_PARA = 'METHODE',
+                                 VALE_I = 3),
+                      REFERENCE='NON_REGRESSION',
+                       NOM_PARA='G_MAX',
+                           VALE= 9.47097E+01  )
 FIN()
 #

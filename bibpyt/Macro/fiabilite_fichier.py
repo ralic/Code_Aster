@@ -1,4 +1,5 @@
-#@ MODIF fiabilite_fichier Macro  DATE 06/09/2004   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF fiabilite_fichier Macro  DATE 14/09/2004   AUTEUR MCOURTOI M.COURTOIS 
+# -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -266,7 +267,6 @@ class fiabilite_fichier :
 #=======================================================================================
 #=======================================================================================
 
-# -*- coding: iso-8859-1 -*-
 
 #
 #

@@ -1,4 +1,5 @@
-#@ MODIF A_FORM_ETAPE Accas  DATE 06/09/2004   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF A_FORM_ETAPE Accas  DATE 14/09/2004   AUTEUR MCOURTOI M.COURTOIS 
+# -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,7 +20,6 @@
 #                                                                       
 # ======================================================================
 
-# -*- coding: iso-8859-1 -*-
 
 from Noyau import N_FORM_ETAPE
 from Validation import V_MACRO_ETAPE

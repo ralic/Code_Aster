@@ -1,0 +1,1246 @@
+
+
+-----------------------------------------------------------------------
+--- AUTEUR cibhhlv L.VIVAN   DATE  le 13/09/2004 a 08:51:14
+
+--------------------------------------------------------------------------
+CORRECTION AL 2004-309
+   INTERET_UTILISATEUR : NON
+   NB_JOURS_TRAV  : 0.5
+   POUR_LE_COMPTE_DE   : J.PELLET
+   TITRE :  UTCHDL
+   FONCTIONNALITE :
+     NEW7.3.18, les tests hsns100a et hsns101b terminent en NOOK_TEST_RESU
+     suite à la correction de AL 2004-157.
+     Le numéro du sous-point n'était pas le bon.
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+
+
+-----------------------------------------------------------------------
+--- AUTEUR cibhhpd L.SALMONA   DATE  le 13/09/2004 a 19:30:37
+
+--------------------------------------------------------------------------
+CORRECTION AL 2004-314
+   NB_JOURS_TRAV  : 0
+   POUR_LE_COMPTE_DE : J.M PROIX
+   INTERET_UTILISATEUR : NON
+   TITRE : Resultat du cas test ssls129a NOOK sous linux
+   FONCTIONNALITE :
+   DETAILS :
+   Les TEST_RESU etaient ajuste trop severement ce qui causaient des
+   NOOK sous linux. On reajuste les tolerance (passage de 1.E-09 a 1.E-08)
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION : ssls129a
+
+--------------------------------------------------------------------------
+CORRECTION AL 2004-316
+   NB_JOURS_TRAV  : 1
+   POUR_LE_COMPTE_DE : J.M PROIX
+   INTERET_UTILISATEUR : OUI
+   TITRE : CALC_ELEM ssnp123a sous linux
+   FONCTIONNALITE : Le cas test plantait sur une incoherence FORTRAN/CATALOGUE
+   pour l option de post traitement SIEF_ELNO_ELGA
+   DETAILS :
+   La modelisation utilisee etait un D_PLAN_SI. Or suite a la modification du
+   te098 calculant entre autre les SIEF_ELNO_ELGA, la valeur du nombre de champ
+   etait fausse ( on passait de 4 a 11 ). On ecrasait donc une partie de la
+   memoire. On inclue une condition sur le nom de l element et si celui-ci est
+   de type SI on passe le nombre de champ a 4.
+        IF (NOMTE(5:7).EQ.'QS4') THEN
+	   NCMP=4
+	ENDIF
+   Cette anomalie n avait donc rien a voir avec l AL2004-173.
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION : sssnp123a
+
+
+-----------------------------------------------------------------------
+--- AUTEUR d6bhhjp J.P.LEFEBVRE   DATE  le 14/09/2004 a 07:40:06
+
+------------------------------------------------------------------------
+CORRECTION AL 2004-286
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : NON
+   TITRE : DEFI_FICHIER
+   FONCTIONNALITE : allocation et désallocation des unités logiques
+   DETAILS :
+   L'unité logique n'est plus désallouée dans la commande IMPR_RESU (op0039.f),
+   la libération par DEFI_FICHIER ne provoque plus d'erreur.
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE:  NON
+   VALIDATION
+
+------------------------------------------------------------------------
+CORRECTION AL 2004-270
+   NB_JOURS_TRAV  : 0.0
+   INTERET_UTILISATEUR : NON
+   TITRE : forma05b et DEFI_FICHIER
+   FONCTIONNALITE : allocation et désallocation des unités logiques
+   DETAILS :
+   idem AL 2004-286
+   L'unité logique n'est plus désallouée dans la commande IMPR_RESU (op0039.f),
+   la libération par DEFI_FICHIER ne provoque plus d'erreur.
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE:  NON
+   VALIDATION
+
+------------------------------------------------------------------------
+CORRECTION AL 2004-256
+   NB_JOURS_TRAV  : 0.0
+   INTERET_UTILISATEUR : NON
+   TITRE : forma04c et DEFI_FICHIER(ACTION='LIBERER'
+   FONCTIONNALITE : allocation et désallocation des unités logiques
+   DETAILS :
+   idem AL 2004-286
+   L'unité logique n'est plus désallouée dans la commande IMPR_RESU (op0039.f),
+   la libération par DEFI_FICHIER ne provoque plus d'erreur.
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE:  NON
+   VALIDATION
+
+------------------------------------------------------------------------
+CORRECTION AL 2004-260
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : OUI
+   TITRE : STAT_NON_LINE Evaluation du temps par itération
+   FONCTIONNALITE : arrêt par manque de temps CPU dans les commandes globales
+   DETAILS :
+   L'utilisateur ignorait que les incréments de calcul réalisés avant l'arrêt
+   étaient effectivement sauvegardés dans la base Globale. Le message émis
+   lors de l'arret par manque de temps CPU est complété pour indiquer :
+   " LA BASE GLOBALE EST SAUVEGARDEE, ELLE CONTIENT LES PAS ARCHIVES AVANT L'ARRET "
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_U : U4.51.03 U4.53.01 U4.53.03 U4.54.01 U4.54.02
+     EXPL_ : Preciser le comportement lors d'un arret CPU dans les commandes globales
+   VALIDATION
+
+------------------------------------------------------------------------
+REALISATION EL 2004-013
+   NB_JOURS_TRAV  : 1.0
+   INTERET_UTILISATEUR : NON
+   TITRE : Macros FORTRAN et purge de la base volatile
+   FONCTIONNALITE : purge de la base volatile entre deux commandes
+   DETAILS :
+   On rétablit l'appel à la routine JEDETV dans le superviseur entre
+   chaque commande, les macros "FORTRAN" ayant été éradiquées, il n'y a
+   plus de passage de données souterraines par ce biais.
+   On livre une nouvelle version de la routine JEDETV qui traite directement
+   les objets systèmes JEVEUX.
+   On modifie la taille mémoire associée au test hsnv129a de 16 à 32 Mo, ce
+   dernier s'arretant en erreur mémoire avec les modifications ci-dessus.
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE:  NON
+   VALIDATION
+
+------------------------------------------------------------------------
+CORRECTION AL 2004-313
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : NON
+   TITRE : IMPR_RESU, format RESULTAT
+   FONCTIONNALITE : gestion des unités logiques
+   DETAILS :
+   L'écriture du bilan de consommation CPU apparaissait dans le fichier
+   associé à l'unité logique 23 utilisée dans la commande IMPR_RESU au lieu
+   du fichier RESULTAT. Dans la commande IMPR_RESU, un association entre
+   le numéro d'unité logique et un nom de fichier construit à partir du
+   format est réalisée. Au format "RESULTAT", on associait donc l'unité 23, ce
+   qui redéfinissait implicitement l'unité logique 8 asociée au fichier RESULTAT.
+   Pour remédier à cette anomalie, dans la commande IMPR_RESU on compose un
+   nom de fichier à partir des chaines "F_" et du format.
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE:  NON
+   VALIDATION : 	
+     Etude associée à la fiche.
+
+--------------------------------------------------------------------------
+CORRECTION AO 2003-071
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : NON
+   TITRE : asterix et astk avec enchainement de fichiers de commandes
+   FONCTIONNALITE : astk et fichiers de commandes multiples
+   DETAILS :
+   Afin de pouvoir récupérer la base Globale, cette dernière est maintenant
+   sauvegardée non plus sous le répertoire d'exécution temporaire (détruit
+   lorsque le job s'arrete) mais sous le /tmp sous un un nom construit à
+   partir du numéro du job. Il est alors possible de récupérer les fichiers
+   en cas d'arrêt brutal (dans la limite de la durée d'existence des fichiers
+   sous /tmp).
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+   IMPACT_DOCUMENTAIRE:  NON
+   VALIDATION
+
+------------------------------------------------------------------------
+CORRECTION AO 2004-301
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : NON
+   TITRE : Executable à partir d'un répertoire fortran
+   FONCTIONNALITE : astk sur AlphaServer
+   DETAILS :
+   Bug introduit lors de la correction de l'AO2004-071 : lorsqu'on essayait
+   de construire un exécutable sans faire d'exécution, le script généré
+   utilisait la variable BASE_PREC sans l'avoir positionnée.
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+   IMPACT_DOCUMENTAIRE:  NON
+   VALIDATION
+
+
+-----------------------------------------------------------------------
+--- AUTEUR galenne E.GALENNE   DATE  le 13/09/2004 a 13:07:59
+
+--------------------------------------------------------------------------
+CORRECTION AL 2004-213
+   INTERET_UTILISATEUR : NON
+   NB_JOURS_TRAV  : 2.0
+   TITRE   POST_K1_K2_K3  (méthode 3)
+   FONCTIONNALITE
+   Une troisième méthode de calcul des facteurs d'intensité de contrainte à partir des
+   sauts de déplacements (recalage par moindres carrés) a été récemment implémentée.
+   Il apparait qu'il y avait une erreur dans la programmation de cette méthode et que la
+   validation n'avait pas été menée correctement, les résultats obtenus sur les cas test
+   existants n'étant pas satisfaisant.
+   On corrige donc la programmation de la méthode dans la routine pkcalc.f. On complète
+   deux cas test afin de tester les résultats de la méthode 3.
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  OUI   DEPUIS : 7.2.24
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_R : R7.02.08
+     DOC_V : V3.02.313, V3.04.134
+   VALIDATION
+     Cas test sslp313a/b (2D) et sslv134b (3D)
+
+
+-----------------------------------------------------------------------
+--- AUTEUR greffet N.GREFFET   DATE  le 13/09/2004 a 15:57:46
+
+--------------------------------------------------------------------------
+CORRECTION AL 2002-567
+   INTERET_UTILISATEUR : OUI
+   NB_JOURS_TRAV : 20
+   TITRE  :  Complétude catalogue élément mefp_face9
+   FONCTIONNALITE
+     L'objectif est de pouvoir utiliser des surfaces libres
+     en IFS dans l'opérateur DYNA_NON_LINE.
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_V : V8.03.100
+       EXPL_ :  Ballottement d'une cuve remplie d'eau avec paroi souple
+                et surface libre. Cas-test de non regression.
+   VALIDATION : FDNV100A
+
+
+-----------------------------------------------------------------------
+--- AUTEUR mabbas M.ABBAS   DATE  le 13/09/2004 a 13:43:31
+
+--------------------------------------------------------------------------
+CLASSEMENT SANS SUITE AL 2004-160
+   INTERET_UTILISATEUR : NON
+   NB_JOURS_TRAV  : 0
+   TITRE  Contact matrice singuliere alors que pas de contact
+   FONCTIONNALITE
+     lors de mon étude en STA7, le message d'erreur recu est le suivant :
+       <STAT_NON_LINE> <OP0070>     ARRET SUR MATRICE DE CONTACT SINGULIERE
+     pourtant je ne fais pas de contact !
+     (pour plus de detail, voici le fichier output complet, si besoin est,
+     je peux fournir l'étude complete) :
+   DETAILS
+     Je n'ai pas eu l'etude, je ne peux donc rien conclure.
+     La fiche date de plus de 4 mois, sur une version STA7.
+     Si le probleme se repose... En attendant je propose le classement
+     sans suite
+   IMPACT_DOCUMENTAIRE : NON
+
+--------------------------------------------------------------------------
+CORRECTION AL 2003-122
+   INTERET_UTILISATEUR : NON
+   NB_JOURS_TRAV  : 0
+   TITRE   MACR_ASCOUF_CALC
+   FONCTIONNALITE
+     J'utilise MACR_ASCOUF_CALC pour un calcul elastique sur un coude
+     fissure.
+     J'applique une pression variant lineairement jusqu'a 10 MPa en 5 pas,
+     grace a FONC_MULT. On tient compte de l'effet de fond et de la
+     pression sur les levres (mot-cle : PRES_LEVRE).
+     On regarde G local et plus precisement le noeud au centre de
+     l'entaille semi-elliptique. Le calcul est elastique et on s'attend
+     a ce que G varie selon le carre de P. La valeur pour 10 MPa est
+     correcte. Le tableau ci-dessous montre la valeur Aster et la valeur
+     attendue
+          P   GAster        G(10)*(p/10)^2
+          2  2.56605E-02     2.0304E-2
+          4  8.92511E-02     8.1216E-2
+          6  1.90772E-01     1.8274E-2
+          8  3.30222E-01     3.2487E-2
+         10  5.07603E-01     5.07603E-01
+     Il y a peut-etre un probleme avec le FONC_MULT et la pression sur les
+     levres.
+   DETAILS
+     Le résultat faux du calcul de G provenait effectivement de la
+     mauvaise prise en compte de la fonction multiplicatrice de la
+     charge de pression sur les lèvres de la fissure.
+     Cette anomalie a été corrigée lors du remplacement du mot clé
+     CHARGE par EXCIT dans EL2004-039.
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+      l'etude passe
+
+--------------------------------------------------------------------------
+CLASSEMENT SANS SUITE EL 2002-181
+   INTERET_UTILISATEUR : NON
+   NB_JOURS_TRAV  : 0
+   TITRE   Validation LIAISON_GROUP/DNOR
+   FONCTIONNALITE
+     Il faudrait réaliser un test validant LIAISON_GROUP et DNOR.
+   IMPACT_DOCUMENTAIRE : NON
+   DETAILS
+   Ca va etre difficile. DNOR n'est pas un mot-clef de LIAISON_GROUP.
+   Nicolas nous expliquera.
+
+--------------------------------------------------------------------------
+REALISATION EL 2004-063
+   INTERET_UTILISATEUR : NON
+   NB_JOURS_TRAV  : 10
+   TITRE  AOM POST_RCCM option FATIGUE_SPMAX
+   FONCTIONNALITE
+     Cette étude est à l'initiative du cas test RCCM06 et fait suite
+     à l'AOM 2003-158:
+     Calcul de tenue à la pression et à la fatigue de la boite à eau
+     de l'échangeur régénérateur du RCV N4.
+     Dans le comparatif avec les résultats du constructeur (FRAMATOME),
+     les valeurs des contraintes Sn et Sp, données par FATIGUE_SPMAX,
+     pour les segments "Li1_1", "Li2_1" et "Li15" ont un écart d'environ
+     50% par rapport aux résultats de Framatome. Alors que pour les
+     autres segments, cet écart est inférieur à 10%.
+     Une copie de la note de calcul de Framatome IN/MMC-DC-0054 est
+     détenue par Mickael ABBAS (DER/AMA) qui a suivi l'AOM 2003_158.
+
+   DETAILS
+   De nombreux essais ont ete menes afin d'obtenir des meilleurs resultats.
+   Le passage en mailles quadratiques ameliore
+   sensiblement la qualite des resultats du chargement mecanique (voir
+   EL2003-158)
+   Mais impossible d'obtenir des valeurs semblables a la note FRA
+   en ce qui concerne Sn et Sp sur plusieurs segments.
+    Aucun bug de POST_RCCM n'a ete mis en evidence et il nous est impossible
+de cerner l'origine de cet ecart puisque nous n'avons pas de resultat
+intermediaire dans la note FRA comme, par exemple, le champ de temperature
+resultant du chargement thermique.
+Entre temps, des calculs avec CASTEM ont donne des resultats semblables
+a ceux obtenus par ASTER. De mauvaises donnees sur la note FRA ou une difference
+d'interpretation du RCCM pourraient expliquer ces ecarts.
+Le 7N a tente d'utiliser une Ke correctif de type elastoplastique.
+Les resultats sont interessants.
+
+Quelques remarques de JMP sur ce dernier sujet (pour memoire):
+- l'utilisation de la courbe d'écrouissage cyclique comme loi de
+comportement. De plus, comme vous avec effectué plusieurs cycles,
+afin d'atteindre le cycle stabilisé, vous auriez pu utiliser
+ directement la courbe monotone, pour atteindre le cycle stabilisé.
+
+- un écrouissage cinématique linéaire (comment se place-t-il par
+ rapport à la courbe réelle ?). A-t-il tendance à sur- ou sous- évaluer
+ l'amplitude de déformations ? Ce point peut être vérifié en utilisant
+un modèle plus riche (Chaboche, ou simplement écrouissage combiné),
+ou plus simplement en essayant deux écrouissages cinématiques linéaires
+ à pentes différentes.
+
+- le calcul de l'amplitude maximum de déformation : pouquoi ne pas
+ l'extraire directement du calcul ? Cela évite de se poser le
+ prolème de la norme de TRESCA et de repasser par la courbe cyclique.
+ On pourrait imaginer une fonctionnalité d'Aster qui calcule
+directement l'amplitude maxi de déformation. On doit déjà pouvoir le
+ faire en python.
+
+- Les 2 méthodes proposées  ("méthode de la contrainte de point
+ de Tresca" et "méthode du coefficient de concentration" sont elles
+codifiées ?
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+
+
+-----------------------------------------------------------------------
+--- AUTEUR mcourtoi M.COURTOIS   DATE  le 14/09/2004 a 10:00:27
+
+--------------------------------------------------------------------------
+REALISATION EL 2004-158
+   POUR_LE_COMPTE_DE : G.NICOLAS
+   NB_JOURS_TRAV : 5
+   INTERET_UTILISATEUR : OUI
+   TITRE : livrer la nouvelle version de HOMARD
+   FONCTIONNALITE :
+      La nouvelle version de HOMARD, référencée V6.6, permet de
+réaliser l'adaptation de maillages comportant des mailles-points, des segments,
+des triangles, des tétraèdres comme auparavant, mais aussi des quadrangles,
+QUAD4 ou QUAD8. Les fonctionnalités disponibles avec les triangles sont
+opérationnelles : raffinement/déraffinement libre ou uniforme, suivi de
+frontière 2D courbe, mise à jour des champs aux noeuds ou constants par élément,
+information sur les maillages (qualité, interpénétration, connexité, taille).
+Le fonctionnement est inchangé du point de vue du pilotage par Code_Aster.
+
+Remarque : une formation à l'adaptation de maillage est programmée les 18 et
+19 octobre 2004 à Clamart. Voir le site web de Code_Aster pour les détails et
+l'inscription.
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+
+   IMPACT_DOCUMENTAIRE:  OUI
+     DOC_U : U7.03.01
+     EXPL_ : U7.03.01 : macro-commande MACR_ADAP_MAIL ; numéro de version,
+      commentaires sur les impressions HOMARD.
+     DOC_U : U7.03.02
+     EXPL_ : U7.03.02 : macro-commande MACR_INFO_MAIL ; numéro de version,
+      commentaires sur les impressions HOMARD.
+     DOC_U : U7.04.01
+     EXPL_ : U7.04.01 : macro-commande IMPR_FICO_HOMA ; numéro de version,
+      insertion de l'opérande MAJ_CHAM
+     DOC_V : V1.01.121
+     EXPL_ : V1.01.121 : insertion de la description du cas-test zzzz121d,
+      pour l'adaptation en quadrangles.
+   VALIDATION : ZZZZ121D
+
+   DETAILS : Le nombre de jours de travail ne représente que la partie
+   spécifique à Code_Aster : modification des catalogues, création du test
+   zzzz121d, documentation, etc. Le développement de HOMARD est pris en compte
+   dans l'affaire A001A.
+
+------------------------------------------------------------------------------
+REALISATION EL 2004-161
+   POUR_LE_COMPTE_DE : J.M. PROIX
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : OUI
+   TITRE : ORIE_CONTACT
+   FONCTIONNALITE
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   DETAILS :
+   Renommage dans la commande MODI_MAILLAGE du mot-cle ORIE_CONTACT en
+   ORIE_FISSURE. La fonctionnalite ORIE_CONTACT est un reliquat des elements
+   de contact aujourd'hui. Les fonctionnalites de ce mot-cle, renomme en
+   ORIE_FISSURE, sont utilisees dans le cadre des elements joints (modelisation
+   PLAN_FISSURE, AXIS_FISSURE) pour orienter les mailles support de ces elements.
+   Ces elements permettent de modeliser l'ouverture d'une fissure en tenant compte
+   d'une force de cohesion entre les levres de celles_ci (loi de comportement
+   de Barenblatt).
+   Fichiers modifies suite a cette modification :
+   - SRC : op0154.f, conori.f
+   - CATAPY : modi_maillage.capy
+   - TEST : ssna112a
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_U : U4.23.04
+       EXPL_ : renommage du mot-cle ORIE_CONTACT en ORIE_FISSURE
+               de la commande MODI_MAILLAGE.
+   VALIDATION : cas-test ssna112a et liste restreinte
+
+------------------------------------------------------------------------------
+RESTITUTION HORS AREX
+   INTERET_UTILISATEUR : NON
+   NB_JOURS_TRAV  : 0.5
+   TITRE
+      Python 2.4 : les warnings dûs aux caractères accentués seront des erreurs
+   FONCTIONNALITE
+      La carte 'coding' doit être sur la première ou deuxième ligne du fichier
+      en la mettant après le copyright, ce n'était pas bon !
+
+      Pour éviter qu'elle soit retirée par erreur, on transforme le warning
+      en erreur dans Accas/__init__.py
+
+      # permet de se proteger de l'oubli de carte coding
+      # ce warning deviendra fatal en python 2.4
+      import warnings
+      warnings.filterwarnings('error','Non-ASCII character.*pep-0263', \
+            DeprecationWarning)
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+
+------------------------------------------------------------------------------
+CORRECTION AL 2004-304
+   INTERET_UTILISATEUR : NON
+   NB_JOURS_TRAV  : 1
+   TITRE ssls108a et b NOOK par TEST_FICHIER
+   FONCTIONNALITE
+      En fait, quand TEST_FICHIER analyse les fichiers, ils sont encore ouverts,
+      certaines lignes n'ont pas encore été écrites donc normal que la valeur
+      retournée par md5file (définie dans test_fichier_ops.py) soit différente.
+
+      Deux solutions :
+         - l'utilisateur doit penser à faire un DEFI_FICHIER/ACTION='LIBERER'
+           avant d'appeler TEST_FICHIER,
+         - on le fait pour lui dans TEST_FICHIER avant l'appel à md5file.
+
+      L'EDA a choisi la première solution. Si le fichier n'est pas fermé,
+      on déclenche une alarme et le test est NOOK.
+      On introduit alors dans INFO_EXEC_ASTER une nouvelle info : ETAT_UNITE
+      qui retourne dans une table OUVERT ou FERME.
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : OUI
+      DOC_U : U4.92.04
+      EXPL_ : alerter l'utilisateur/développeur qu'il doit penser à fermer
+         le fichier AVANT l'appel à TEST_FICHIER.
+      DOC_U : U4.13.04
+      EXPL_ : Info ETAT_UNITE, nouveaux mots clés UNITE et FICHIER.
+   VALIDATION
+      ssls108a et ssls108b
+
+------------------------------------------------------------------------------
+CORRECTION AL 2004-315
+   INTERET_UTILISATEUR : NON
+   NB_JOURS_TRAV  : 0.5
+   TITRE
+      LIRE_RESU, format MED quand la numérotation des mailles est fournie
+   FONCTIONNALITE
+      Dans la restit précédente, on a introduit la numérotation automatique
+      des mailles quand elle n'est pas dispo dans le fichier MED.
+      Dans l'appel à EFNUML, on passait le tableau des types de mailles MED
+      au lieu DU type courant !
+
+      Dans ssnp115b : on crée un modèle sur un maillage lu dans un fichier GMSH
+      après un CREA_MAILLAGE/LINE_QUAD, puis on lit dans un fichier MED des
+      champs que l'on affecte sur le maillage GMSH.
+      Cà fonctionne mais au moins à titre d'exemple, on lit maintenant le
+      maillage du fichier MED (si jamais LINE_QUAD modifie le numéro des
+      mailles, on met des valeurs n'importe où !).
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+      ssnp115b yyyy106a yyyy106b zzzz161a zzzz162a zzzz162b
+
+------------------------------------------------------------------------------
+CORRECTION AL 2004-317
+   INTERET_UTILISATEUR : NON
+   NB_JOURS_TRAV  : 1.5
+   TITRE   CREA_MAILLAGE, option QUAD_TRIA3
+   FONCTIONNALITE
+      Trois anomalies :
+      - avant de créer une nouvelle maille TRIA3, on vérifie que son nom
+      n'est pas déjà utilisé. L'appel :
+         CALL JEEXIN ( JEXNOM(NOMMAI,NOMG), IRET )
+      n'était fait que pour les QUAD9 et les mailles que l'on recopie telles
+      quelles (sans les découper).
+         => quand on tombait sur une maille de type QUAD4 ou QUAD8 à découper
+      avant une maille QUAD9 ou une maille à recopier telle quelle, IRET
+      n'était pas initialisé, il se trouvait être non nul,
+      donc "<F> MS1 EXISTE DEJA !"
+
+      - si on donne derrière GROUP_MA, MAILLE des éléments qui ne sont pas de
+      type QUAD (4, 8 ou 9), ils n'étaient pas recopiés dans le maillage
+      résultat ! On plantait ensuite car il y avait moins de mailles que prévu
+      (dans cargeo).
+         => maintenant, on recopie telles quelles les mailles qui ne sont pas
+      dans la liste des mailles à découper ou qui ne sont pas QUADi.
+
+      - les groupes de mailles qui contiennent des mailles découpées étaient
+      supprimés du maillage résultat !
+         => tous les groupes sont maintenant conservés et contiennent les
+         nouvelles mailles.
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+      ssls04e + tests sur le maillage de ssnv135a
+   DETAILS
+      cmqutr.f : on utilise les tableaux de découpage de irgmtb.f
+
+------------------------------------------------------------------------------
+CORRECTION AL 2004-297
+   INTERET_UTILISATEUR : NON
+   NB_JOURS_TRAV  : 0.5
+   TITRE   MODI_MAILLAGE, option MODI_MAILLE / NOEUD_QUART
+   FONCTIONNALITE
+      Une seule occurence de MODI_MAILLE est permise et GROUP_NO_FOND,
+      GROUP_MA_FOND, NOEUD_FOND, MAILLE_FOND ne doivent contenir qu'une
+      seule entité.
+         => max=1 partout
+
+      Si on a plusieurs fonds de fissure, il suffit d'appeler plusieurs fois
+      MODI_MAILLAGE.
+
+      Pour les mots-clés simples, on blinde le catalogue de MODI_MAILLAGE.
+
+      Le problème de la répétition du mot-clé facteur existe pour quasiment
+      tous les MCF de MODI_MAILLAGE.
+         => En v7, on blinde le catalogue (pris en compte depuis 7.3.16),
+         en v6, on vérifie NBOCC=1 dans l'op0154 !
+
+         => seuls ORIE_PEAU_2D/3D, ORIE_NORM_COQUE, ROTATION, SYMETRIE peuvent
+         être répétés plusieurs fois.
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  OUI   DEPUIS : 6.0.0
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  OUI   DEPUIS : 7.0.0
+   RESTITUTION_VERSION_EXPLOITATION  :  OUI
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+      maillage joint
+
+------------------------------------------------------------------------------
+RESTITUTION HORS AREX
+   INTERET_UTILISATEUR : NON
+   NB_JOURS_TRAV  : 0.5
+   TITRE   Mot-clé FICHIER dans TEST_FICHIER
+   FONCTIONNALITE
+      FICHIER est supprimé, seule l'UNITE reste.
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : OUI
+      DOC_U : U4.92.04
+      EXPL_ : suppression du mot-clé fichier
+   VALIDATION
+      pas besoin, çà ne plantait pas avec FICHIER présent alors qu'il n'était
+      plus dans TEST_TABLE !
+   DETAILS
+      ajout de DETRUIRE
+
+------------------------------------------------------------------------------
+RESTITUTION HORS AREX
+   INTERET_UTILISATEUR : NON
+   NB_JOURS_TRAV  : 0.5
+   TITRE   Classes Graph et ImprGraph + IMPR_FONCTION
+   FONCTIONNALITE
+      Un objet Graph a des attributs définissant les min/max ("bounding box"),
+      et une méthode SetExtrema qui comme son nom l'indique les positionne en
+      fonction du contenu de Valeurs.
+      On ajoute dans le constructeur d'ImprGraph l'appel à SetExtrema SI la
+      bounding box est incohérente (Min > Max).
+
+      Ajout d'un argument au constructeur, fmod = mode d'ouverture du fichier,
+      'w' par défaut (on écrase si le fichier existe).
+      IMPR_FONCTION :
+         au format TABLEAU, fmod='a'
+         autres formats, fmod='w'
+
+      Il y avait une erreur lors de l'attribution des styles, couleurs, symboles
+      et fréquence de marqueur...
+
+      Méthode Parametres des fonctions : 'PROL' est un ZK16, on ne prenait que
+      les 4 premiers caractères des NOM_PARA, NOM_RESU !
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+   DETAILS
+      impr_fonction_ops.py : retirer l'appel systématique à SetExtrema
+         + ajout de DETRUIRE des concepts créés dans la macro
+
+------------------------------------------------------------------------------
+CORRECTION AL 2004-134
+   INTERET_UTILISATEUR : NON
+   NB_JOURS_TRAV  : 0.5
+   TITRE   Nom de fichier trop long dans GIBI
+   FONCTIONNALITE
+      macr_cabri_mail_ops construit le fichier de commandes GIBI, la déclaration
+      du nom de fichier de sauvegarde n'est pas protégé, on plante quand le
+      chemin complet est de l'ordre de 60 caractères.
+      Dans GIBI, une chaine fait au plus 72 caractères, on ajoute donc un
+      test sur la longueur du nom de fichier, et on découpe en 2 pour aller au
+      maximum des 72 caractères.
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+      cabri01a
+   DETAILS
+      macr_cabri_mail_ops (à deux endroits)
+      On supprime 'opti nive 10' qui me semble être une mauvaise idée
+
+------------------------------------------------------------------------------
+RESTITUTION HORS AREX
+   INTERET_UTILISATEUR : NON
+   NB_JOURS_TRAV  : 0.5
+   TITRE   PRE_GIBI niveaux de fichier tolérés
+   FONCTIONNALITE
+      GIBI2003 écrit en niveau 13 que PRE_GIBI sait relire (pas de différence
+      par rapport au niveau 11 pour les maillages).
+
+      REMARQUE IMPORTANTE : PRE_GIBI sait lit des maillages de gibi2003, mais
+      les macros ASPIC/ASCOUF/CABRI s'appuient sur la syntaxe de gibi2000.
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+      cabri01a le maillage étant créé par gibi2003 en local
+   DETAILS
+      op0049 : ajout du niveau 13
+
+------------------------------------------------------------------------------
+CORRECTION AO 2004-299
+   INTERET_UTILISATEUR : NON
+   NB_JOURS_TRAV  : 0.5
+   TITRE  astk et Stanley
+   FONCTIONNALITE
+      Dans le 'template' de ASTK_SERV/lib qui lance Stanley, on utilisait une
+      instruction python 2.3 : dico=dict()
+      La version 6 étant construite avec python 2.1, on remplace par : dico={}
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+
+------------------------------------------------------------------------------
+CORRECTION AO 2004-195
+   INTERET_UTILISATEUR : NON
+   NB_JOURS_TRAV  : 0.5
+   TITRE   astk : ajout de l'extension .gz pour les fichiers unv
+   FONCTIONNALITE
+      L'utilisateur dit que le fait de cocher/décocher la case 'C' (compressé),
+      ajoute/retire l'extension .gz pour les fichiers de type "pos", mais pas
+      pour le type "unv".
+
+      Il n'y a pas de distinction sur le type, çà fonctionne aussi pour unv.
+      En revanche, si on change le type d'un fichier présent dans la liste en
+      unv, le défaut est RC (résultat+compressé), mais on ne modifie pas le nom
+      du fichier.
+      On améliore ce point, on ajoutant/supprimant .gz en fonction du défaut
+      du type sélectionné.
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+
+
+-----------------------------------------------------------------------
+--- AUTEUR romeo R.FERNANDES   DATE  le 14/09/2004 a 16:17:10
+
+--------------------------------------------------------------------------
+REALISATION EL 2004-055
+   NB_JOURS_TRAV  : 6.0
+   INTERET_UTILISATEUR : OUI
+   TITRE Elements P1 en THHD et THVD
+   FONCTIONNALITE
+      Modélisations THH, THH2, THV
+   DETAILS
+   On propose pour les études de couplages thermo-hydraulique
+   d'utiliser directement des éléments P1 en pressions et
+   temperature sans avoir à définir les noeuds milieux. Cela
+   évite des calculs inutiles. En effet pour les études avec
+   mécanique (éléments P2P1) on calcule les pressions et
+   température aux noeuds milieux par une moyenne des valeurs
+   aux sommets.
+
+   routine modifiée : caethm, te0466, te0472, te0600
+   catalogues modifiés : gener_me3g32,gener_me3g33,gener_me3h32,
+                         gener_me3h33,gener_meaa11,gener_meaa12,
+                         gener_meag31,gener_meag32,gener_meah31,
+                         gener_meah32,gener_meda11,gener_meda12,
+                         gener_medg31,gener_medg32,gener_medh31,
+                         gener_medh32,phenomene_modelisation__
+
+   VALIDATION
+   ajout des cas-tests suivants :
+   wtnp100 : D_PLAN_THVD modélisation a (QUAD8 et TRIA6)
+                         modélisation b (QUAD4 et TRIA3)
+   wtnp102 : D_PLAN_THHD modélisation a (QUAD8 et TRIA6)
+                         modélisation b (QUAD4 et TRIA3)
+   wtnv102 : 3_THHD      modélisation a (HEXA20 et PENTA15)
+                         modélisation b (HEXA8 et PENTA6)
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_V : V7.31.102
+
+-------------------------------------------------------------------
+REALISATION EL 2004-001
+   NB_JOURS_TRAV  : 1.0
+   INTERET_UTILISATEUR : NON
+   TITRE Interpolation de la fonction SATURATION pour la THM
+   FONCTIONNALITE
+     Lois de comportements LIQU_GAZ, LIQU_GAZ_ATM, LIQU_VAPE,
+     LIQU_VAPE_GAZ, LIQU_AD_GAZ_VAPE.
+   DETAILS
+     On ajoute un test qui vérifie que la variable SATURATION est
+     bien comprise entre 0 et 1. Dans le cas contraire on s'arrete
+     en fatale.
+     routine modifiée : thmrcp
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+     cas-tests de la base aster.
+
+-------------------------------------------------------------------
+CORRECTION AL 2004-289
+   NB_JOURS_TRAV  : 1.0
+   INTERET_UTILISATEUR : OUI
+   TITRE  modélisation D_PLAN_THMD (test wtnl102a)
+   FONCTIONNALITE
+     Toutes les modélisations THMs
+   DETAILS
+     Lors du passage en critère RELATIF pour le calcul d'erreur
+     des TEST_RESU du cas-test wtnl102a on s'est aperçu que l'erreur
+     relative était de l'ordre de 33% par rapport aux résultats analytiques.
+     Cette erreur est en fait due à une mauvaise discrétisation du maillage.
+     En raffinant le maillage on diminue l'erreur.
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_V : V7.30.102
+   VALIDATION
+     modification du maillage du cas-test wtnl102a.
+     Restitution de la doc_V associée
+
+-------------------------------------------------------------------
+REALISATION ED 2004-022
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : NON
+   TITRE Mise à jour des docs wtnv100, wtnv101
+   FONCTIONNALITE
+     wtnv100 : cas-test avec loi CJS
+     wtnv101 : cas-test avec loi de LAIGLE
+   DETAILS
+     Attention il faut garder les docs ssnv159 et ssnv165
+     pour la version 6.
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   VALIDATION
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_V : V7.31.100, V7.31.101
+
+-------------------------------------------------------------------
+CLASSEMENT SANS SUITE AL 2002-457
+   NB_JOURS_TRAV  : 0.1
+   INTERET_UTILISATEUR : NON
+   TITRE  régles d'utilisation pour la loi CJS
+   FONCTIONNALITE
+     Loi de comportement CJS
+   DETAILS
+     Une vérification est déjà faite au niveau du fortran.
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+
+-------------------------------------------------------------------
+RESTITUTION HORS AREX
+   NB_JOURS_TRAV  : 1.0
+   INTERET_UTILISATEUR : OUI
+   TITRE  Quelques corrections informatiques
+   FONCTIONNALITE
+   * Variable devenue inutile en paramètre de sortie de la routine
+     thmrcp et dans toutes les routines appelant thmrcp.
+   * Erreur dans le calcul de la matrice B en THM dans le cas 3D
+     sans mécanique.
+   * Les modélisations 3D_THHM et 3D_THHMD ne peuvent pas marcher
+     avec des éléments de bords de type triangle.
+   DETAILS
+   * Variable SATURATION non initialisée.
+   * Dans le calcul de la matrice B une erreur de test fait que
+     si la dimension est 3 on calcule toujours un terme associé
+     à la mécanique. Cette erreur pourrait, je pense, conduire à
+     un résultat FAUX! Je n'ai pas trouvé de tests montrant
+     des résultats faux, mais uniquement des tests s'arretant en
+     écrasement (problème de dimension).
+   * Une erreur dans le catalogue phenomene_modelisation__ associe
+     toujours des QUAD8 aux éléments de bords.
+
+   routines modifiées : cabthm, hmgazp, hmlgat, hmliga, hmlisa,
+                        hmliva, hmlvag, hmlvga, kitdec, thmlec,
+                        thmrcp.
+   catalogue : phenomene_modelisation__.cata
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+     Passage des cas tests THM
+
+-------------------------------------------------------------------
+CORRECTION AL 2004-220
+   NB_JOURS_TRAV  : 1.0
+   INTERET_UTILISATEUR : OUI
+   TITRE  INDI_LOCA_ELGA et comportement DRUCKER_PRAGER
+   FONCTIONNALITE
+     Indicateur de localisation et cas-test ssnp125
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_V : V6.03.125
+   VALIDATION
+     modification des TEST_RESU non mis-à-jour suite à la
+     nouvelle formulation du calcul du tenseur acoustique
+     de la version 7.3.8
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+ CASTEST AJOUT fdnv100a                      greffet N.GREFFET          329    329      0
+ CASTEST AJOUT wtnp100b                        romeo R.FERNANDES        310    310      0
+ CASTEST AJOUT wtnp102b                        romeo R.FERNANDES        354    354      0
+ CASTEST AJOUT wtnv102a                        romeo R.FERNANDES        346    346      0
+ CASTEST AJOUT wtnv102b                        romeo R.FERNANDES        356    356      0
+ CASTEST AJOUT zzzz121d                     mcourtoi M.COURTOIS         463    463      0
+ CASTEST MODIF hsns100a                      cibhhlv L.VIVAN            272      5      9
+ CASTEST MODIF hsns101b                      cibhhlv L.VIVAN            414      8     35
+ CASTEST MODIF hsnv129a                      d6bhhjp J.P.LEFEBVRE       193      1      1
+ CASTEST MODIF sslp313a                      galenne E.GALENNE          621     94      1
+ CASTEST MODIF sslp313b                      galenne E.GALENNE          597     89      2
+ CASTEST MODIF ssls108a                     mcourtoi M.COURTOIS         189      9      1
+ CASTEST MODIF ssls108b                     mcourtoi M.COURTOIS         200      9      1
+ CASTEST MODIF ssls129a                      cibhhpd L.SALMONA          873     51     51
+ CASTEST MODIF sslv134b                      galenne E.GALENNE          565     71     20
+ CASTEST MODIF ssna112a                     mcourtoi M.COURTOIS         399      2      2
+ CASTEST MODIF ssnp115b                     mcourtoi M.COURTOIS         179     32     27
+ CASTEST MODIF tpll01j                      mcourtoi M.COURTOIS         119      6      5
+ CASTEST MODIF wtnl102a                        romeo R.FERNANDES        215     22     53
+ CASTEST MODIF wtnp100a                        romeo R.FERNANDES        308     54     64
+ CASTEST MODIF wtnp102a                        romeo R.FERNANDES        348     66     64
+ CASTEST MODIF zzzz121a                     mcourtoi M.COURTOIS         271      3      3
+ CASTEST MODIF zzzz121c                     mcourtoi M.COURTOIS         380      4      4
+CATALOGU AJOUT typelem/d_depl_r_dh           greffet N.GREFFET           65     65      0
+CATALOGU MODIF compelem/phenomene_modelisation__      romeo R.FERNANDES        760     25      3
+CATALOGU MODIF options/forc_noda             greffet N.GREFFET           75      3      1
+CATALOGU MODIF options/raph_meca             greffet N.GREFFET           80      2      1
+CATALOGU MODIF options/rigi_meca_elas        greffet N.GREFFET           83      2      1
+CATALOGU MODIF options/rigi_meca_hyst        greffet N.GREFFET           32      2      1
+CATALOGU MODIF options/rigi_meca_tang        greffet N.GREFFET           83      2      1
+CATALOGU MODIF typelem/gener_me2fp2          greffet N.GREFFET           83     33      1
+CATALOGU MODIF typelem/gener_me3g32            romeo R.FERNANDES         48      5      1
+CATALOGU MODIF typelem/gener_me3g33            romeo R.FERNANDES        112     11      2
+CATALOGU MODIF typelem/gener_me3h32            romeo R.FERNANDES         49      5      1
+CATALOGU MODIF typelem/gener_me3h33            romeo R.FERNANDES        121     11      1
+CATALOGU MODIF typelem/gener_meaa11            romeo R.FERNANDES         44      3      1
+CATALOGU MODIF typelem/gener_meaa12            romeo R.FERNANDES        105      7      1
+CATALOGU MODIF typelem/gener_meag31            romeo R.FERNANDES         44      3      1
+CATALOGU MODIF typelem/gener_meag32            romeo R.FERNANDES         98      7      1
+CATALOGU MODIF typelem/gener_meah31            romeo R.FERNANDES         45      3      1
+CATALOGU MODIF typelem/gener_meah32            romeo R.FERNANDES        110      7      1
+CATALOGU MODIF typelem/gener_meda11            romeo R.FERNANDES         44      1      1
+CATALOGU MODIF typelem/gener_meda12            romeo R.FERNANDES        105      1      1
+CATALOGU MODIF typelem/gener_medg31            romeo R.FERNANDES         44      3      1
+CATALOGU MODIF typelem/gener_medg32            romeo R.FERNANDES         98      7      1
+CATALOGU MODIF typelem/gener_medh31            romeo R.FERNANDES         45      1      1
+CATALOGU MODIF typelem/gener_medh32            romeo R.FERNANDES        115      1      1
+CATALOPY MODIF commande/impr_fico_homa      mcourtoi M.COURTOIS         300     41     11
+CATALOPY MODIF commande/info_exec_aster     mcourtoi M.COURTOIS          37     10      2
+CATALOPY MODIF commande/macr_adap_mail      mcourtoi M.COURTOIS         325     20     21
+CATALOPY MODIF commande/macr_fiab_impr      mcourtoi M.COURTOIS          64      2      1
+CATALOPY MODIF commande/macr_fiabilite      mcourtoi M.COURTOIS         379      2      1
+CATALOPY MODIF commande/macr_info_mail      mcourtoi M.COURTOIS         104      7      7
+CATALOPY MODIF commande/modi_maillage       mcourtoi M.COURTOIS         146     17     17
+CATALOPY MODIF commande/test_fichier        mcourtoi M.COURTOIS          41      1      2
+CATALOPY MODIF entete/accas                 mcourtoi M.COURTOIS         532      6      7
+ FORTRAN AJOUT modelisa/ingrma              mcourtoi M.COURTOIS         131    131      0
+ FORTRAN MODIF algeline/cmqutr              mcourtoi M.COURTOIS         383    155    192
+ FORTRAN MODIF algorith/adhc00              mcourtoi M.COURTOIS         856    124     79
+ FORTRAN MODIF algorith/adhc01              mcourtoi M.COURTOIS         569     62     14
+ FORTRAN MODIF algorith/adhc02              mcourtoi M.COURTOIS         108      6      4
+ FORTRAN MODIF algorith/cabthm                 romeo R.FERNANDES        313      2      3
+ FORTRAN MODIF algorith/chtota               greffet N.GREFFET          110      2      2
+ FORTRAN MODIF algorith/conori              mcourtoi M.COURTOIS         415     12     13
+ FORTRAN MODIF algorith/hmgazp                 romeo R.FERNANDES        346      2      2
+ FORTRAN MODIF algorith/hmlgat                 romeo R.FERNANDES        392      2      2
+ FORTRAN MODIF algorith/hmliga                 romeo R.FERNANDES        450      2      2
+ FORTRAN MODIF algorith/hmlisa                 romeo R.FERNANDES        385      2      2
+ FORTRAN MODIF algorith/hmliva                 romeo R.FERNANDES        522      3      3
+ FORTRAN MODIF algorith/hmlvag                 romeo R.FERNANDES        527      2      2
+ FORTRAN MODIF algorith/hmlvga                 romeo R.FERNANDES        590      2      2
+ FORTRAN MODIF algorith/kitdec                 romeo R.FERNANDES         68      3      3
+ FORTRAN MODIF algorith/merimo               greffet N.GREFFET          447     14      8
+ FORTRAN MODIF algorith/mxfife               greffet N.GREFFET          188      2      2
+ FORTRAN MODIF algorith/nddoet               greffet N.GREFFET          499      5      2
+ FORTRAN MODIF algorith/nmprta               greffet N.GREFFET          265      2      2
+ FORTRAN MODIF algorith/op0025               d6bhhjp J.P.LEFEBVRE       344      5      1
+ FORTRAN MODIF algorith/op0060               d6bhhjp J.P.LEFEBVRE       598      5      1
+ FORTRAN MODIF algorith/op0069               d6bhhjp J.P.LEFEBVRE       677      4      1
+ FORTRAN MODIF algorith/op0070               d6bhhjp J.P.LEFEBVRE       849      7      1
+ FORTRAN MODIF algorith/op0154              mcourtoi M.COURTOIS         286      4      4
+ FORTRAN MODIF algorith/op0186               d6bhhjp J.P.LEFEBVRE       643     10      1
+ FORTRAN MODIF algorith/op0189              mcourtoi M.COURTOIS         171      5      2
+ FORTRAN MODIF algorith/thmlec                 romeo R.FERNANDES        151      8      8
+ FORTRAN MODIF algorith/thmrcp                 romeo R.FERNANDES       1557     69      5
+ FORTRAN MODIF algorith/vefnme               greffet N.GREFFET          212     24      8
+ FORTRAN MODIF calculel/calcul               greffet N.GREFFET          328      4      4
+ FORTRAN MODIF calculel/op0008               greffet N.GREFFET          254      2      2
+ FORTRAN MODIF calculel/op0171               d6bhhjp J.P.LEFEBVRE       405      4      1
+ FORTRAN MODIF elements/caethm                 romeo R.FERNANDES       1187    179     16
+ FORTRAN MODIF elements/te0098               cibhhpd L.SALMONA          137      6      1
+ FORTRAN MODIF elements/te0370               greffet N.GREFFET          193     62      4
+ FORTRAN MODIF elements/te0371               greffet N.GREFFET          132      1      1
+ FORTRAN MODIF elements/te0466                 romeo R.FERNANDES        576      5      4
+ FORTRAN MODIF elements/te0472                 romeo R.FERNANDES        508      5      3
+ FORTRAN MODIF elements/te0600                 romeo R.FERNANDES        679      4      2
+ FORTRAN MODIF jeveux/jedetv                 d6bhhjp J.P.LEFEBVRE       197    172     45
+ FORTRAN MODIF prepost/lrcame               mcourtoi M.COURTOIS         585      4      7
+ FORTRAN MODIF prepost/op0039                d6bhhjp J.P.LEFEBVRE       804      2      2
+ FORTRAN MODIF prepost/op0049               mcourtoi M.COURTOIS         110      3      3
+ FORTRAN MODIF prepost/op0106                greffet N.GREFFET          820      3      2
+ FORTRAN MODIF prepost/pkcalc                galenne E.GALENNE          337     12      9
+ FORTRAN MODIF supervis/execop               d6bhhjp J.P.LEFEBVRE       135      2      2
+ FORTRAN MODIF utilitai/op0035              mcourtoi M.COURTOIS         115     27      5
+  PYTHON MODIF Accas/A_AU_MOINS_UN          mcourtoi M.COURTOIS          32      2      2
+  PYTHON MODIF Accas/A_A_CLASSER            mcourtoi M.COURTOIS          31      2      2
+  PYTHON MODIF Accas/A_BLOC                 mcourtoi M.COURTOIS          29      2      2
+  PYTHON MODIF Accas/A_ENSEMBLE             mcourtoi M.COURTOIS          32      2      2
+  PYTHON MODIF Accas/A_ETAPE                mcourtoi M.COURTOIS          34      2      2
+  PYTHON MODIF Accas/A_EVAL                 mcourtoi M.COURTOIS          30      2      2
+  PYTHON MODIF Accas/A_EXCLUS               mcourtoi M.COURTOIS          32      2      2
+  PYTHON MODIF Accas/A_FACT                 mcourtoi M.COURTOIS          31      2      2
+  PYTHON MODIF Accas/A_FORM                 mcourtoi M.COURTOIS          29      2      2
+  PYTHON MODIF Accas/A_FORM_ETAPE           mcourtoi M.COURTOIS          34      2      2
+  PYTHON MODIF Accas/A_JDC                  mcourtoi M.COURTOIS          33      2      2
+  PYTHON MODIF Accas/A_JDC_CATA             mcourtoi M.COURTOIS          30      2      2
+  PYTHON MODIF Accas/A_MACRO                mcourtoi M.COURTOIS          29      2      2
+  PYTHON MODIF Accas/A_MACRO_ETAPE          mcourtoi M.COURTOIS          35      2      2
+  PYTHON MODIF Accas/A_MCBLOC               mcourtoi M.COURTOIS          31      2      2
+  PYTHON MODIF Accas/A_MCFACT               mcourtoi M.COURTOIS          30      2      2
+  PYTHON MODIF Accas/A_MCLIST               mcourtoi M.COURTOIS          29      2      2
+  PYTHON MODIF Accas/A_MCSIMP               mcourtoi M.COURTOIS          30      2      2
+  PYTHON MODIF Accas/A_OPER                 mcourtoi M.COURTOIS          29      2      2
+  PYTHON MODIF Accas/A_PRESENT_ABSENT       mcourtoi M.COURTOIS          32      2      2
+  PYTHON MODIF Accas/A_PRESENT_PRESENT      mcourtoi M.COURTOIS          32      2      2
+  PYTHON MODIF Accas/A_PROC                 mcourtoi M.COURTOIS          29      2      2
+  PYTHON MODIF Accas/A_PROC_ETAPE           mcourtoi M.COURTOIS          35      2      2
+  PYTHON MODIF Accas/A_SIMP                 mcourtoi M.COURTOIS          28      2      2
+  PYTHON MODIF Accas/A_UN_PARMI             mcourtoi M.COURTOIS          32      2      2
+  PYTHON MODIF Build/B_CODE                 mcourtoi M.COURTOIS          31      2      2
+  PYTHON MODIF Build/B_ENTITE               mcourtoi M.COURTOIS         138      2      2
+  PYTHON MODIF Build/B_ETAPE                mcourtoi M.COURTOIS         670      2      2
+  PYTHON MODIF Build/B_EVAL                 mcourtoi M.COURTOIS          46      2      2
+  PYTHON MODIF Build/B_JDC                  mcourtoi M.COURTOIS         173      2      2
+  PYTHON MODIF Build/B_MACRO_ETAPE          mcourtoi M.COURTOIS         213      2      2
+  PYTHON MODIF Build/B_OBJECT               mcourtoi M.COURTOIS         106      2      2
+  PYTHON MODIF Build/B_PROC_ETAPE           mcourtoi M.COURTOIS          34      2      2
+  PYTHON MODIF Build/B_SENSIBILITE_COMMANDES_SENSIBLES   mcourtoi M.COURTOIS         234      2      2
+  PYTHON MODIF Build/B_SENSIBILITE_DERIVATION   mcourtoi M.COURTOIS         631      2      2
+  PYTHON MODIF Build/B_SENSIBILITE_JDC      mcourtoi M.COURTOIS         492      2      2
+  PYTHON MODIF Build/B_SENSIBILITE_MEMO_NOM_SENSI   mcourtoi M.COURTOIS         244      2      2
+  PYTHON MODIF Build/B_utils                mcourtoi M.COURTOIS         198      2      2
+  PYTHON MODIF Build/codex                  mcourtoi M.COURTOIS         158      2      2
+  PYTHON MODIF Cata/ops                     mcourtoi M.COURTOIS         456      2      2
+  PYTHON MODIF Execution/E_ETAPE            mcourtoi M.COURTOIS         227      2      2
+  PYTHON MODIF Execution/E_JDC              mcourtoi M.COURTOIS         194      2      2
+  PYTHON MODIF Execution/E_MACRO_ETAPE      mcourtoi M.COURTOIS         200      2      2
+  PYTHON MODIF Execution/E_PROC_ETAPE       mcourtoi M.COURTOIS          25      2      2
+  PYTHON MODIF Execution/E_SUPERV           mcourtoi M.COURTOIS         329      2      2
+  PYTHON MODIF Execution/E_utils            mcourtoi M.COURTOIS          90      2      2
+  PYTHON MODIF Execution/genpy              mcourtoi M.COURTOIS         317      2      2
+  PYTHON MODIF Lecture_Cata_Ele/imprime     mcourtoi M.COURTOIS         929      2      2
+  PYTHON MODIF Lecture_Cata_Ele/lecture     mcourtoi M.COURTOIS        1087      2      2
+  PYTHON MODIF Lecture_Cata_Ele/make_capy_offi   mcourtoi M.COURTOIS         118      2      2
+  PYTHON MODIF Lecture_Cata_Ele/make_surch_offi   mcourtoi M.COURTOIS         125      2      2
+  PYTHON MODIF Lecture_Cata_Ele/spark       mcourtoi M.COURTOIS         580      2      2
+  PYTHON MODIF Lecture_Cata_Ele/utilit      mcourtoi M.COURTOIS         751      2      2
+  PYTHON MODIF Macro/ajout_quad_gmsh        mcourtoi M.COURTOIS         252      2      2
+  PYTHON MODIF Macro/calc_precont_ops       mcourtoi M.COURTOIS         472      2      2
+  PYTHON MODIF Macro/defi_cable_bp_ops      mcourtoi M.COURTOIS         313      2      2
+  PYTHON MODIF Macro/fiabilite_fichier      mcourtoi M.COURTOIS         335      2      2
+  PYTHON MODIF Macro/fiabilite_mefisto      mcourtoi M.COURTOIS         448      2      2
+  PYTHON MODIF Macro/impr_fonction_ops      mcourtoi M.COURTOIS         357     49     46
+  PYTHON MODIF Macro/lire_fonction_ops      mcourtoi M.COURTOIS         222      2      2
+  PYTHON MODIF Macro/lire_table_ops         mcourtoi M.COURTOIS         177      2      2
+  PYTHON MODIF Macro/macr_adap_mail_ops     mcourtoi M.COURTOIS         728    243    172
+  PYTHON MODIF Macro/macr_ascouf_calc_ops   mcourtoi M.COURTOIS         683      2      2
+  PYTHON MODIF Macro/macr_ascouf_mail_ops   mcourtoi M.COURTOIS        2836      2      2
+  PYTHON MODIF Macro/macr_aspic_calc_ops    mcourtoi M.COURTOIS         829      2      2
+  PYTHON MODIF Macro/macr_aspic_mail_ops    mcourtoi M.COURTOIS         845      2      2
+  PYTHON MODIF Macro/macr_cabri_calc_ops    mcourtoi M.COURTOIS         542      2      2
+  PYTHON MODIF Macro/macr_cabri_mail_dat    mcourtoi M.COURTOIS         630      2      2
+  PYTHON MODIF Macro/macr_cabri_mail_ops    mcourtoi M.COURTOIS         461     22      7
+  PYTHON MODIF Macro/macr_cara_poutre_ops   mcourtoi M.COURTOIS         816      2      2
+  PYTHON MODIF Macro/macr_fiab_impr_ops     mcourtoi M.COURTOIS         109      2      2
+  PYTHON MODIF Macro/macr_fiabilite_ops     mcourtoi M.COURTOIS         324      2      2
+  PYTHON MODIF Macro/macr_lign_coupe_ops    mcourtoi M.COURTOIS         173      2      2
+  PYTHON MODIF Macro/macr_recal_ops         mcourtoi M.COURTOIS         162      2      2
+  PYTHON MODIF Macro/macro_elas_mult_ops    mcourtoi M.COURTOIS         275      2      2
+  PYTHON MODIF Macro/macro_matr_ajou_ops    mcourtoi M.COURTOIS         260      2      2
+  PYTHON MODIF Macro/macro_matr_asse_ops    mcourtoi M.COURTOIS         160      2      2
+  PYTHON MODIF Macro/macro_miss_3d_ops      mcourtoi M.COURTOIS          74      2      2
+  PYTHON MODIF Macro/macro_mode_meca_ops    mcourtoi M.COURTOIS         136      2      2
+  PYTHON MODIF Macro/macro_proj_base_ops    mcourtoi M.COURTOIS          63      2      2
+  PYTHON MODIF Macro/reca_algo              mcourtoi M.COURTOIS         260      2      2
+  PYTHON MODIF Macro/reca_interp            mcourtoi M.COURTOIS         180      2      2
+  PYTHON MODIF Macro/reca_message           mcourtoi M.COURTOIS         115      2      2
+  PYTHON MODIF Macro/recal                  mcourtoi M.COURTOIS         379      2      2
+  PYTHON MODIF Macro/stanley_ops            mcourtoi M.COURTOIS          53      2      2
+  PYTHON MODIF Macro/test_fichier_ops       mcourtoi M.COURTOIS         159     26     15
+  PYTHON MODIF Noyau/N_ASSD                 mcourtoi M.COURTOIS         121      2      2
+  PYTHON MODIF Noyau/N_BLOC                 mcourtoi M.COURTOIS         149      2      2
+  PYTHON MODIF Noyau/N_CO                   mcourtoi M.COURTOIS          42      2      2
+  PYTHON MODIF Noyau/N_CR                   mcourtoi M.COURTOIS         291      2      2
+  PYTHON MODIF Noyau/N_ENTITE               mcourtoi M.COURTOIS         116      2      2
+  PYTHON MODIF Noyau/N_ETAPE                mcourtoi M.COURTOIS         420      2      2
+  PYTHON MODIF Noyau/N_EVAL                 mcourtoi M.COURTOIS          46      2      2
+  PYTHON MODIF Noyau/N_Exception            mcourtoi M.COURTOIS          43      2      2
+  PYTHON MODIF Noyau/N_FACT                 mcourtoi M.COURTOIS         158      2      2
+  PYTHON MODIF Noyau/N_FONCTION             mcourtoi M.COURTOIS          28      2      2
+  PYTHON MODIF Noyau/N_FORM                 mcourtoi M.COURTOIS          34      2      2
+  PYTHON MODIF Noyau/N_FORM_ETAPE           mcourtoi M.COURTOIS          32      2      2
+  PYTHON MODIF Noyau/N_GEOM                 mcourtoi M.COURTOIS          69      2      2
+  PYTHON MODIF Noyau/N_JDC                  mcourtoi M.COURTOIS         440      2      2
+  PYTHON MODIF Noyau/N_JDC_CATA             mcourtoi M.COURTOIS         136      2      2
+  PYTHON MODIF Noyau/N_MACRO                mcourtoi M.COURTOIS         183      2      2
+  PYTHON MODIF Noyau/N_MACRO_ETAPE          mcourtoi M.COURTOIS         571      2      2
+  PYTHON MODIF Noyau/N_MCBLOC               mcourtoi M.COURTOIS         133      2      2
+  PYTHON MODIF Noyau/N_MCCOMPO              mcourtoi M.COURTOIS         377      2      2
+  PYTHON MODIF Noyau/N_MCFACT               mcourtoi M.COURTOIS         102      2      2
+  PYTHON MODIF Noyau/N_MCLIST               mcourtoi M.COURTOIS         186      2      2
+  PYTHON MODIF Noyau/N_MCSIMP               mcourtoi M.COURTOIS         155      2      2
+  PYTHON MODIF Noyau/N_OBJECT               mcourtoi M.COURTOIS         101      2      2
+  PYTHON MODIF Noyau/N_OPER                 mcourtoi M.COURTOIS         167      2      2
+  PYTHON MODIF Noyau/N_PROC                 mcourtoi M.COURTOIS         159      2      2
+  PYTHON MODIF Noyau/N_PROC_ETAPE           mcourtoi M.COURTOIS         143      2      2
+  PYTHON MODIF Noyau/N_REGLE                mcourtoi M.COURTOIS          85      2      2
+  PYTHON MODIF Noyau/N_SIMP                 mcourtoi M.COURTOIS         139      2      2
+  PYTHON MODIF Noyau/N_VALIDATOR            mcourtoi M.COURTOIS         892      2      2
+  PYTHON MODIF Noyau/N__F                   mcourtoi M.COURTOIS          55      2      2
+  PYTHON MODIF Noyau/N_utils                mcourtoi M.COURTOIS         149      2      2
+  PYTHON MODIF Noyau/context                mcourtoi M.COURTOIS          69      2      2
+  PYTHON MODIF Noyau/nommage                mcourtoi M.COURTOIS         147      2      2
+  PYTHON MODIF Noyau/properties             mcourtoi M.COURTOIS          24      2      1
+  PYTHON MODIF Outils/calc_eolienne         mcourtoi M.COURTOIS        1734      2      2
+  PYTHON MODIF Outils/macro_rota_globale    mcourtoi M.COURTOIS         142      2      2
+  PYTHON MODIF Stanley/__init__             mcourtoi M.COURTOIS          21      2      2
+  PYTHON MODIF Stanley/as_courbes           mcourtoi M.COURTOIS         298      2      2
+  PYTHON MODIF Stanley/cata_champs          mcourtoi M.COURTOIS         147      2      2
+  PYTHON MODIF Stanley/gmsh                 mcourtoi M.COURTOIS         266      2      2
+  PYTHON MODIF Stanley/graphiqueTk          mcourtoi M.COURTOIS         537      2      2
+  PYTHON MODIF Stanley/stanley              mcourtoi M.COURTOIS        2016      2      2
+  PYTHON MODIF Stanley/xmgrace              mcourtoi M.COURTOIS         232      2      2
+  PYTHON MODIF Utilitai/Graph               mcourtoi M.COURTOIS         938     36     51
+  PYTHON MODIF Utilitai/courbes             mcourtoi M.COURTOIS         135      2      2
+  PYTHON MODIF Utilitai/extract             mcourtoi M.COURTOIS          57      2      2
+  PYTHON MODIF Utilitai/funct_root          mcourtoi M.COURTOIS          95      2     21
+  PYTHON MODIF Utilitai/sup_gmsh            mcourtoi M.COURTOIS        1135      2      2
+  PYTHON MODIF Utilitai/transpose           mcourtoi M.COURTOIS          35      2      2
+  PYTHON MODIF Validation/V_AU_MOINS_UN     mcourtoi M.COURTOIS          52      2      2
+  PYTHON MODIF Validation/V_A_CLASSER       mcourtoi M.COURTOIS         117      2      2
+  PYTHON MODIF Validation/V_ENSEMBLE        mcourtoi M.COURTOIS          59      2      2
+  PYTHON MODIF Validation/V_ETAPE           mcourtoi M.COURTOIS         226      2      2
+  PYTHON MODIF Validation/V_EXCLUS          mcourtoi M.COURTOIS          51      2      2
+  PYTHON MODIF Validation/V_JDC             mcourtoi M.COURTOIS         103      2      2
+  PYTHON MODIF Validation/V_MACRO_ETAPE     mcourtoi M.COURTOIS         177      2      2
+  PYTHON MODIF Validation/V_MCBLOC          mcourtoi M.COURTOIS          79      2      2
+  PYTHON MODIF Validation/V_MCCOMPO         mcourtoi M.COURTOIS         123      2      2
+  PYTHON MODIF Validation/V_MCFACT          mcourtoi M.COURTOIS          92      2      2
+  PYTHON MODIF Validation/V_MCLIST          mcourtoi M.COURTOIS         113      2      2
+  PYTHON MODIF Validation/V_MCSIMP          mcourtoi M.COURTOIS         404      2      2
+  PYTHON MODIF Validation/V_PRESENT_ABSENT   mcourtoi M.COURTOIS          55      2      2
+  PYTHON MODIF Validation/V_PRESENT_PRESENT   mcourtoi M.COURTOIS          52      2      2
+  PYTHON MODIF Validation/V_PROC_ETAPE      mcourtoi M.COURTOIS          80      2      2
+  PYTHON MODIF Validation/V_UN_PARMI        mcourtoi M.COURTOIS          52      2      2
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :    8        2354      2354             +2354
+ MODIF :  247       69904      2487    1523      +964
+ SUPPR :    0           0                 0        +0
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :  255       72258      4841    1523     +3318 

@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 06/09/2004   AUTEUR SMICHEL S.MICHEL-PONNELLE 
+C MODIF ELEMENTS  DATE 13/09/2004   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -72,6 +72,11 @@ C        NCMP = 4 + NCMP2
 C        CALL JEVECH('PCONTRR','L',ICHG)
         CALL TECACH('OOO','PCONTRR',3,JTAB,IRET)
         NCMP=JTAB(2)/JTAB(3)
+C       POUR LES ELEMENTS SOUS-INTEGRES LE NOMBRE 
+C       DE COMPOSANTE EST 4
+        IF (NOMTE(5:7).EQ.'QS4') THEN
+           NCMP=4
+        ENDIF
         LGPG = NCMP
         ICHG=JTAB(1)
         CALL JEVECH('PSIEFNOR','E',ICHN)

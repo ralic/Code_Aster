@@ -14,7 +14,7 @@
       CHARACTER*24  DEPMOI,VITPLU,ACCPLU,SIGMOI,VARMOI,CARCRI
       CHARACTER*19  SOLVEU,MAPREC,LISCHA,PARTPS
 C ----------------------------------------------------------------------
-C MODIF ALGORITH  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 13/09/2004   AUTEUR GREFFET N.GREFFET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -73,7 +73,7 @@ C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
       INTEGER      IBID,IRETVI,IRETAC,IERR,IAUX,JAUX
       INTEGER      JINFC,NBCHAR,N2,NUME,NRPASE
-      INTEGER      JCHAR,IACHA2,I,JINST,NCHOUT
+      INTEGER      JCHAR,IACHA2,I,JINST,NCHOUT,IACHAR
       INTEGER      IRET,NOCC,REENTR,N1,NBR
       REAL*8       RBID,INST,PREC,R8VIDE,DT
       COMPLEX*16   CBID
@@ -191,6 +191,9 @@ C ======================================================================
 C ======================================================================
 
 C -  CALCUL DES MATRICES ELEMENTAIRES DE MASSE
+      CALL JEVEUO(LISCHA//'.INFC','L',JINFC)
+      NBCHAR = ZI(JINFC)
+      CALL JEVEUO(LISCHA//'.LCHA','L',IACHAR)
       CALL WKVECT('&&NDDOET.LISTE_CHARGE','V V K8',NBCHAR,IACHA2)
       DO 10,I = 1,NBCHAR
         ZK8(IACHA2-1+I) = ZK24(JCHAR-1+I) (1:8)

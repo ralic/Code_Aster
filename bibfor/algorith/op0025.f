@@ -2,7 +2,7 @@
 C
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+C MODIF ALGORITH  DATE 14/09/2004   AUTEUR D6BHHJP J.P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -278,6 +278,10 @@ C
             CALL UTIMPR('L',' TEMPS MOYEN PAR INCREMENT DE TEMPS: ',1,
      >                  TPS1(4))
             CALL UTIMPR('L',' TEMPS CPU RESTANT: ',1,TPS1(1))
+            CALL UTIMPI('L',' LA BASE GLOBALE EST SAUVEGARDEE,',0,
+     >                        NUMORD)
+            CALL UTIMPI('S',' ELLE CONTIENT LES PAS ARCHIVES',0,NUMORD)
+            CALL UTIMPI('S',' AVANT L''ARRET' ,0,NUMORD)
             CALL UTFINM()
           ELSE
             WRITE (IFM,'(A,1X,I6,2(1X,A,1X,1PE11.3))')

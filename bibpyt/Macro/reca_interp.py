@@ -1,4 +1,5 @@
-#@ MODIF reca_interp Macro  DATE 06/09/2004   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF reca_interp Macro  DATE 14/09/2004   AUTEUR MCOURTOI M.COURTOIS 
+# -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -24,7 +25,6 @@ from Macro.recal import calcul_F
 
 #===========================================================================================
 
-# -*- coding: iso-8859-1 -*-
 
 # INTERPOLATION, CALCUL DE SENSIBILITE, ETC....
 

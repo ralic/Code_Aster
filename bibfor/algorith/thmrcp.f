@@ -1,7 +1,7 @@
       SUBROUTINE THMRCP( ETAPE, IMATE, THMC, MECA, HYDR, THER,
      +                   T0, P10, P20, PHI0, PVP0, T, P1, 
      +                   P1M, P2, PHI,END,
-     +                   SAT, PVP, RGAZ, RHOD, CPD, BIOT, SATM, SATUR,
+     +                   PVP, RGAZ, RHOD, CPD, BIOT, SATM, SATUR,
      +                   DSATUR, PESA, PERMFH, PERMLI, DPERML, PERMGZ,
      +                   DPERMS, DPERMP, FICK, DFICKT, DFICKG, LAMBP,
      +                   DLAMBP, RHOL, UNSURK, ALPHA, CPL, LAMBS,
@@ -10,7 +10,7 @@
      +                   DVISVG,FICKAD,DFADT,CPAD,KH,PAD,EM,LAMBCT)
 C =====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 17/08/2004   AUTEUR ROMEO R.FERNANDES 
+C MODIF ALGORITH  DATE 14/09/2004   AUTEUR ROMEO R.FERNANDES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -36,7 +36,7 @@ C --- BUT : RECUPERER LES DONNEES MATERIAUX THM -----------------------
 C =====================================================================
       IMPLICIT      NONE
       INTEGER       IMATE
-      REAL*8        T0, P10, P20, PHI0, PVP0, T, P1, P2, PHI, SAT, PVP
+      REAL*8        T0, P10, P20, PHI0, PVP0, T, P1, P2, PHI, PVP
       REAL*8        RGAZ, RHOD, CPD, BIOT, SATM, SATUR, DSATUR, PESA(3)
       REAL*8        PERMFH, PERMLI, DPERML, PERMGZ, DPERMS, DPERMP
       REAL*8        FICK, DFICKT, DFICKG, LAMBP, DLAMBP, RHOL
@@ -559,6 +559,10 @@ C =====================================================================
             CPL     = VAL7(4)
             MAMOLV  = VAL8(1)
             CPVG    = VAL8(2)
+            IF (SATM.GT.1.0D0.OR.SATM.LT.0.0D0) THEN
+               CALL UTMESS('F','THMRCP_1','PROBLEME DANS LA '//
+     +                                   'DEFINITION DE LA SATURATION')
+            ENDIF
          ELSE IF (THMC.EQ.'LIQU_VAPE_GAZ') THEN
 C =====================================================================
 C --- LOI DE COUPLAGE DE TYPE LIQU_VAPE_GAZ ---------------------------
@@ -618,6 +622,14 @@ C =====================================================================
             CPG     = VAL11(2)
             MAMOLV  = VAL12(1)
             CPVG    = VAL12(2)
+            IF (SATM.GT.1.0D0.OR.SATM.LT.0.0D0) THEN
+               CALL UTMESS('F','THMRCP_2','PROBLEME DANS LA '//
+     +                                   'DEFINITION DE LA SATURATION')
+            ENDIF
+            IF (SATUR.GT.1.0D0.OR.SATUR.LT.0.0D0) THEN
+               CALL UTMESS('F','THMRCP_3','PROBLEME DANS LA '//
+     +                                   'DEFINITION DE LA SATURATION')
+            ENDIF
          ELSE IF (THMC.EQ.'LIQU_AD_GAZ_VAPE') THEN
 C =====================================================================
 C --- LOI DE COUPLAGE DE TYPE LIQU_AD_GAZ_VAPE   -----------
@@ -684,8 +696,16 @@ C =====================================================================
             CPG     = VAL37(2)
             MAMOLV  = VAL38(1)
             CPVG    = VAL38(2)
-            CPAD = VAL39( 1)
-            KH   = VAL39(2)
+            CPAD    = VAL39(1)
+            KH      = VAL39(2)
+            IF (SATM.GT.1.0D0.OR.SATM.LT.0.0D0) THEN
+               CALL UTMESS('F','THMRCP_4','PROBLEME DANS LA '//
+     +                                   'DEFINITION DE LA SATURATION')
+            ENDIF
+            IF (SATUR.GT.1.0D0.OR.SATUR.LT.0.0D0) THEN
+               CALL UTMESS('F','THMRCP_5','PROBLEME DANS LA '//
+     +                                   'DEFINITION DE LA SATURATION')
+            ENDIF
          ELSE IF (THMC.EQ.'LIQU_GAZ') THEN
 C =====================================================================
 C --- LOI DE COUPLAGE DE TYPE LIQU_GAZ --------------------------------
@@ -738,6 +758,14 @@ C =====================================================================
             CPL     = VAL14(4)
             MAMOLG  = VAL15(1)
             CPG     = VAL15(2)
+            IF (SATM.GT.1.0D0.OR.SATM.LT.0.0D0) THEN
+               CALL UTMESS('F','THMRCP_6','PROBLEME DANS LA '//
+     +                                   'DEFINITION DE LA SATURATION')
+            ENDIF
+            IF (SATUR.GT.1.0D0.OR.SATUR.LT.0.0D0) THEN
+               CALL UTMESS('F','THMRCP_7','PROBLEME DANS LA '//
+     +                                   'DEFINITION DE LA SATURATION')
+            ENDIF
          ELSE IF (THMC.EQ.'LIQU_GAZ_ATM') THEN
 C =====================================================================
 C --- LOI DE COUPLAGE DE TYPE LIQU_GAZ_ATM ----------------------------
@@ -780,6 +808,14 @@ C =====================================================================
             UNSURK  = VAL17(2)
             ALPHA   = VAL17(3)
             CPL     = VAL17(4)
+            IF (SATM.GT.1.0D0.OR.SATM.LT.0.0D0) THEN
+               CALL UTMESS('F','THMRCP_8','PROBLEME DANS LA '//
+     +                                   'DEFINITION DE LA SATURATION')
+            ENDIF
+            IF (SATUR.GT.1.0D0.OR.SATUR.LT.0.0D0) THEN
+               CALL UTMESS('F','THMRCP_9','PROBLEME DANS LA '//
+     +                                   'DEFINITION DE LA SATURATION')
+            ENDIF
          ENDIF
       ELSE IF (ETAPE.EQ.'SATURATI') THEN
          IF (HYDR.EQ.'HYDR_UTIL' .OR. HYDR.EQ.'HYDR_ENDO') THEN
@@ -789,6 +825,10 @@ C =====================================================================
             DSATUR = VALSAT(2)
          ELSE
             CALL SATURA(HYDR,P1,SATUR,DSATUR)
+         ENDIF
+         IF (SATUR.GT.1.0D0.OR.SATUR.LT.0.0D0) THEN
+               CALL UTMESS('F','THMRCP_10','PROBLEME DANS LA '//
+     +                                   'DEFINITION DE LA SATURATION')
          ENDIF
       ELSE IF (ETAPE.EQ.'FINALE') THEN
 C =====================================================================
@@ -1009,6 +1049,10 @@ C =====================================================================
             MAMOLV  = VAL24( 1)
             VISCVG  = VAL24( 2)
             DVISVG  = VAL24( 3)
+            IF (SATUR.GT.1.0D0.OR.SATUR.LT.0.0D0) THEN
+               CALL UTMESS('F','THMRCP_11','PROBLEME DANS LA '//
+     +                                   'DEFINITION DE LA SATURATION')
+            ENDIF
          ELSE IF (THMC.EQ.'LIQU_VAPE_GAZ') THEN
 C =====================================================================
 C --- LOI DE COUPLAGE DE TYPE LIQU_VAPE_GAZ ---------------------------
@@ -1143,6 +1187,10 @@ C
             VISCG   = VAL27( 2)
             DVISCG  = VAL27( 3)
             MAMOLV  = VAL28( 1)
+            IF (SATUR.GT.1.0D0.OR.SATUR.LT.0.0D0) THEN
+               CALL UTMESS('F','THMRCP_12','PROBLEME DANS LA '//
+     +                                   'DEFINITION DE LA SATURATION')
+            ENDIF
          ELSE IF (THMC.EQ.'LIQU_AD_GAZ_VAPE') THEN
 C =====================================================================
 C --- LOI DE COUPLAGE DE TYPE LIQU_AD_GAZ_VAPE provisoire--------------
@@ -1303,6 +1351,10 @@ C
             VISCG   = VAL42( 2)
             DVISCG  = VAL42( 3)
             MAMOLV  = VAL43( 1)
+            IF (SATUR.GT.1.0D0.OR.SATUR.LT.0.0D0) THEN
+               CALL UTMESS('F','THMRCP_13','PROBLEME DANS LA '//
+     +                                   'DEFINITION DE LA SATURATION')
+            ENDIF
          ELSE IF (THMC.EQ.'LIQU_GAZ') THEN
 C =====================================================================
 C --- LOI DE COUPLAGE DE TYPE LIQU_GAZ --------------------------------
@@ -1395,6 +1447,10 @@ C =====================================================================
             MAMOLG  = VAL31( 1)
             VISCG   = VAL31( 2)
             DVISCG  = VAL31( 3)
+            IF (SATUR.GT.1.0D0.OR.SATUR.LT.0.0D0) THEN
+               CALL UTMESS('F','THMRCP_14','PROBLEME DANS LA '//
+     +                                   'DEFINITION DE LA SATURATION')
+            ENDIF
          ELSE IF (THMC.EQ.'LIQU_GAZ_ATM') THEN
 C =====================================================================
 C --- LOI DE COUPLAGE DE TYPE LIQU_GAZ_ATM ----------------------------
@@ -1444,7 +1500,7 @@ C =====================================================================
                CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'PCAP', P1,
      +                          2, NCRA32(13), VAL32(13), CODRET, 'FM')
             ELSE
-               CALL SATURA(HYDR,P1,SAT,RBID1)
+               CALL SATURA(HYDR,P1,VAL32(13),VAL32(14))
             ENDIF
             NOMPAR(1) = 'SAT'
             NOMPAR(2) = 'PGAZ'
@@ -1475,6 +1531,10 @@ C =====================================================================
             VISCL   = VAL33( 2)
             DVISCL  = VAL33( 3)
             ALPHA   = VAL33( 4)
+            IF (SATUR.GT.1.0D0.OR.SATUR.LT.0.0D0) THEN
+               CALL UTMESS('F','THMRCP_15','PROBLEME DANS LA '//
+     +                                   'DEFINITION DE LA SATURATION')
+            ENDIF
          ENDIF
          IF (HYDR.EQ.'HYDR') THEN
             CALL PERMEA(IMATE,HYDR,PHI,T,SATUR,NCON,COND)
@@ -1487,6 +1547,10 @@ C =====================================================================
             FICK   = COND( 7)
             DFICKT = COND( 8)
             DFICKG = COND( 9)
+            IF (SATUR.GT.1.0D0.OR.SATUR.LT.0.0D0) THEN
+               CALL UTMESS('F','THMRCP_16','PROBLEME DANS LA '//
+     +                                   'DEFINITION DE LA SATURATION')
+            ENDIF
          ENDIF
       ENDIF
 C =====================================================================

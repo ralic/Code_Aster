@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 14/09/2004   AUTEUR ROMEO R.FERNANDES 
 # TITRE DESATURATION D UN MILIEU POREUX SANS AIR
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,25 +19,18 @@
 # ======================================================================
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 
-
 DEBUT(CODE=_F(NOM='WTNP100A',NIV_PUB_WEB='INTERNET'),);
-PRE_IDEAS();
+
+PRE_GIBI();
 ####################################
 ##### PERMEABILITE RELATIVE AU LIQ.ET SA DERIVEE (BO)
 ##### PERMEABILITE RELATIVE AU GAZ ET SA DERIRVEE (BO )
 ###### DERIVEE DE PERM21 DU GAZ PAR RAPPORT A SAT (BO )
-#############################
-############################
-
-#  LISTE DES INSTANTS DE CALCUL
-#
-#                                   NOMBRE=100,),);
-                                   
+#############################                                  
                                    
 INST1=DEFI_LIST_REEL(DEBUT=0.0,
                      INTERVALLE=_F(
                       JUSQU_A=10000.,NOMBRE=1,),);
-
 
 MAIL=LIRE_MAILLAGE();
 
@@ -54,9 +47,6 @@ MODELE=AFFE_MODELE(MAILLAGE=MAIL,
                    AFFE=_F(TOUT='OUI',
                            PHENOMENE='MECANIQUE',
                            MODELISATION='D_PLAN_THVD',),);
-#
-#
-
 
 UN=DEFI_CONSTANTE(VALE=1.0,);
 UNDEMI=DEFI_CONSTANTE(VALE=0.5,);
@@ -86,10 +76,6 @@ LI1=DEFI_LIST_REEL(DEBUT=0.10000000000000001,
                    INTERVALLE=_F(JUSQU_A=0.98999999999999999,
                                  PAS=1.E-2,),);
 
-
-
-
-
 LAMBT=DEFI_CONSTANTE(VALE=8.3300000000000001,);
 LS = FORMULE(REEL = '''(REEL:SAT) = 
                 (0.3*SAT)''');
@@ -102,15 +88,10 @@ LAMBS=CALC_FONC_INTERP(FONCTION=LS,
                         INFO=2,);
 DLS=DEFI_CONSTANTE(VALE=0.3,);
 LAMBCT=DEFI_CONSTANTE(VALE=0.5,);
-#
-
-
-
 
 # LIMITATION DE LA SATURATION MAX (<1)
 #CONSTBO = DEFI_CONSTANTE ( VALE : 0.99);
 #
-
 
 SLO = FORMULE(REEL = '''(REEL:PCAP) = 
                 (0.5-1.E-12*(PCAP-3700.+1.E5))''');
@@ -122,11 +103,7 @@ NOM_PARA='PCAP',
                         PROL_DROITE='LINEAIRE',
                         INFO=2,);
 
-
 DSATBO=DEFI_CONSTANTE(VALE=-1.E-12,);
-#
-
-
 
 PERMO = FORMULE(REEL = '''(REEL:SAT) = 
              (1.+(0.5*(-1.+SAT**(-16.667))**0.940)**2)**(-0.5)''');
@@ -144,15 +121,12 @@ DPERMO = FORMULE(REEL =  '''(REEL:SAT) =
  *0.47*(-1.+(SAT)**(-16.667))**(-0.06)
   * (-16.667) * (SAT)**(-17.667)''');
 
-
-
 DPR11BO=CALC_FONC_INTERP(FONCTION=DPERMO,
 LIST_PARA=LI1,
 NOM_PARA='SAT',
                          PROL_GAUCHE='CONSTANT',
                          PROL_DROITE='CONSTANT',
                          INFO=2,);
-
 
 KINTBO=DEFI_CONSTANTE(VALE=9.9999999999999995E-21,);
 
@@ -207,7 +181,6 @@ CHMAT0=AFFE_MATERIAU(MAILLAGE=MAIL,
                               MATER=MATERBO,),
                               ),);
 
-
 CHAMNO=CREA_CHAMP(MAILLAGE=MAIL,
                     OPERATION='AFFE', 
                     TYPE_CHAM='NOEU_DEPL_R',
@@ -218,7 +191,6 @@ CHAMNO=CREA_CHAMP(MAILLAGE=MAIL,
                              NOM_CMP='PRE1',
                              VALE=1.E5,),
                              ),);
-                             
 
 FLUTH=AFFE_CHAR_MECA(MODELE=MODELE,
                        FLUX_THM_REP=_F(GROUP_MA=('GAUCHE','DROIT','BAS','HAUT'),
@@ -227,8 +199,6 @@ FLUTH=AFFE_CHAR_MECA(MODELE=MODELE,
                                        ),
                                       );
 
-               
-                                   
 SIGINIT=CREA_CHAMP(MAILLAGE=MAIL,
                    OPERATION='AFFE', 
                    TYPE_CHAM='CART_SIEF_R',
@@ -242,7 +212,6 @@ SIGINIT=CREA_CHAMP(MAILLAGE=MAIL,
                              0.0,0.0,0.0, 2500000.0,
                              0.0,0.0,0.0),),
                              ),);
-                                   
 
 U0=STAT_NON_LINE(MODELE=MODELE,
                  CHAM_MATER=CHMAT0,
@@ -274,45 +243,66 @@ U0=STAT_NON_LINE(MODELE=MODELE,
 #                              ARCH_ETAT_INIT='OUI',
                               ),
                  );
+
 U0=CALC_ELEM(reuse =U0,
              TOUT_ORDRE='OUI',
-             OPTION=('SIEF_ELNO_ELGA','VARI_ELNO_ELGA'),
+             OPTION=('VARI_ELNO_ELGA'),
+             RESULTAT=U0,);
+      
+U0=CALC_NO(reuse =U0,
+             TOUT_ORDRE='OUI',
+             OPTION=('VARI_NOEU_ELGA'),
              RESULTAT=U0,);
              
-         
-TEST_RESU(RESU=_F(RESULTAT=U0,
-                  NUME_ORDRE=1,
-                  NOM_CHAM='DEPL',
-                  NOM_CMP='TEMP',
-                  NOEUD='NO1',
-                  VALE=14.4,
-                  CRITERE='RELATIF',
-                  PRECISION=1.E-3,
-                  REFERENCE='ANALYTIQUE',),);   
-                        
-TEST_RESU(RESU=_F(RESULTAT=U0,
-                  NUME_ORDRE=1,
-                  NOM_CHAM='DEPL',
-                  NOM_CMP='PRE1',
-                  NOEUD='NO1',
-                  VALE=-1.E7,
-                  CRITERE='RELATIF',
-                  PRECISION=0.3,
-                  REFERENCE='ANALYTIQUE',),);
-                                          
-TEST_RESU(RESU=_F(RESULTAT=U0,
-                  NUME_ORDRE=1,
-                  NOM_CHAM='VARI_ELNO_ELGA',
-                  NOM_CMP='V3',
-                  NOEUD='NO1',
-                  MAILLE='MA1',
-                  VALE=3.E3,
-                  CRITERE='RELATIF',
-                  PRECISION=0.5,
-                  REFERENCE='ANALYTIQUE',),);
+#################################################
+#IMPR_RESU(RESU=_F(RESULTAT=U0,
+#                  NOM_CHAM='DEPL',
+#                  GROUP_NO=('BO',),),);
+#         
+#IMPR_RESU(RESU=_F(RESULTAT=U0,
+#                  NOM_CHAM='VARI_NOEU_ELGA',
+#                  GROUP_NO=('BO',),),);
+#################################################
 
+TEST_RESU(RESU=(
+                _F(RESULTAT=U0,
+                   INST=1.00000E+04,
+                   NOM_CHAM='VARI_NOEU_ELGA',
+                   NOM_CMP='V3',
+                   NOEUD='N2',
+                   VALE=4.59613E+05,
+                   PRECISION=1.E-3,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION = '7.3.20', ),
+                _F(RESULTAT=U0,
+                   INST=1.00000E+04,
+                   NOM_CHAM='VARI_NOEU_ELGA',
+                   NOM_CMP='V4',
+                   NOEUD='N2',
+                   VALE=4.99159E-01,
+                   PRECISION=1.E-3,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION = '7.3.20', ),
+                _F(RESULTAT=U0,
+                   INST=1.00000E+04,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='PRE1',
+                   NOEUD='N2',
+                   VALE=-8.40767E+08,
+                   PRECISION=1.E-3,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION = '7.3.20', ),
+                _F(RESULTAT=U0,
+                   INST=1.00000E+04,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='TEMP',
+                   NOEUD='N2',
+                   VALE=2.87642E+02,
+                   PRECISION=1.E-3,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION = '7.3.20', ),
 
-
+),);
 
 FIN();
 

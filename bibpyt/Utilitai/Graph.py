@@ -1,4 +1,5 @@
-#@ MODIF Graph Utilitai  DATE 06/09/2004   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF Graph Utilitai  DATE 14/09/2004   AUTEUR MCOURTOI M.COURTOIS 
+# -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,7 +18,6 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 
-# -*- coding: iso-8859-1 -*-
 
 # RESPONSABLE MCOURTOI M.COURTOIS
 
@@ -220,6 +220,24 @@ class Graph:
 #-------------------------------------------------
 #-------------------------------------------------
 #-------------------------------------------------
+def ValCycl(val,vmin,vmax,vdef):
+   """
+   Retourne une valeur entre vmin et vmax (bornes incluses) :
+      - si val<vmin, on utilise val=vdef,
+      - si val>vmax, on cycle tel que val=vmax+1 retourne vmin, etc.
+      - si vmax<vmin, il n'y a pas de max
+   """
+   v = val
+   if v < vmin:
+      v = vdef
+   if vmax < vmin:
+      return v
+   else:
+      return (((v-vmin) % (vmax+1-vmin))+vmin)
+
+#-------------------------------------------------
+#-------------------------------------------------
+#-------------------------------------------------
 class ImprGraph:
    """
    Cette classe définit l'impression d'un objet Graph dans un fichier.
@@ -236,9 +254,10 @@ class ImprGraph:
    d'une courbe, méthode de tracé/impressiion) sont définies dans une classe dérivée.
    """
 #-------------------------------------------------
-   def __init__(self,graph,nomfich,dform=None):
+   def __init__(self,graph,nomfich,fmod='w',dform=None):
       """
-      Construction, ouverture du fichier, surcharge éventuelle du formatage
+      Construction, ouverture du fichier, surcharge éventuelle du formatage (dform),
+      mode d'ouverture du fichier (fmod)
       """
       # Ouverture du(des) fichier(s)
       self.NomFich=[]
@@ -248,10 +267,13 @@ class ImprGraph:
          self.NomFich=nomfich
       self.Fich=[]
       for ff in self.NomFich:
-         self.Fich.append(open(ff,'w'))
+         self.Fich.append(open(ff,fmod))
       
       # objet Graph
       self.Graph=graph
+      # si Min/Max incohérents
+      if graph.Min_X > graph.Max_X or graph.Min_Y > graph.Max_Y:
+         graph.SetExtrema()
       
       # formats de base
       self.DicForm={
@@ -628,29 +650,10 @@ class ImprXmgrace(ImprGraph):
       Retourne la chaine de caractères décrivant les paramètres de la courbe.
       """
       # valeurs par défaut
-      sty=args['Sty']
-      if sty<0:
-         sty='1'
-      else:
-         nbstyle=8
-         sty=str((nbstyle+sty) % nbstyle)
-      color=args['Coul']
-      if color<0:
-         color=str(args['NumSet'])
-      else:
-         nbcolor=15
-         color=str((nbcolor+color) % nbcolor + 1)
-      symbol=args['Marq']
-      if symbol<0:
-         symbol=str(args['NumSet'])
-      else:
-         nbsymbol=10
-         symbol=str((nbsymbol+symbol) % nbsymbol + 1)
-      freqm=args['FreqM']
-      if freqm<0:
-         freqm='0'
-      else:
-         freqm=str(freqm)
+      sty   = str(ValCycl(args['Sty'],0,8,1))
+      color = str(ValCycl(args['Coul'],1,15,args['NumSet']+1))
+      symbol= str(ValCycl(args['Marq'],0,10,args['NumSet']))
+      freqm = str(ValCycl(args['FreqM'],0,-1,0))
 
       sn=str(args['NumSet'])
       descr=[]
@@ -873,29 +876,11 @@ GRAPHIQUE:
       """
       Retourne la chaine de caractères décrivant les paramètres de la courbe.
       """
-      sty=args['Sty']
-      if sty<0:
-         sty='0'
-      else:
-         nbstyle=2
-         sty=str((nbstyle+sty) % nbstyle)
-      color=args['Coul']
-      if color<0:
-         color=str(args['NumSet'])
-      else:
-         nbcolor=12
-         color=str((nbcolor+color) % nbcolor)
-      symbol=args['Marq']
-      if symbol<0:
-         symbol=str(args['NumSet'])
-      else:
-         nbsymbol=12
-         symbol=str((nbsymbol+symbol) % nbsymbol)
-      freqm=args['FreqM']
-      if freqm<0:
-         freqm='0'
-      else:
-         freqm=str(freqm)
+      # valeurs par défaut
+      sty   = str(ValCycl(args['Sty'],0,2,0))
+      color = str(ValCycl(args['Coul'],0,12,args['NumSet']))
+      symbol= str(ValCycl(args['Marq'],0,12,args['NumSet']))
+      freqm = str(ValCycl(args['FreqM'],0,-1,0))
 
       descr=[]
       descr.append('  COURBE:\n')

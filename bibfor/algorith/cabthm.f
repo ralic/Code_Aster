@@ -7,7 +7,7 @@
        IMPLICIT NONE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ALGORITH  DATE 14/09/2004   AUTEUR ROMEO R.FERNANDES 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -180,8 +180,6 @@ C
                B(ADDEME+NDIM+3,(N-1)*NDDL+2)=
      &                    B(ADDEME+NDIM+3,(N-1)*NDDL+2)+DFDI(N,1)/RAC
 C
-                ENDIF
-
 C
 C CALCUL DE EPSXZ ET EPSYZ EN 3D
 C
@@ -197,6 +195,7 @@ C
                  B(ADDEME+NDIM+5,(N-1)*NDDL+3)=
      &                    B(ADDEME+NDIM+5,(N-1)*NDDL+3)+DFDI(N,2)/RAC
                ENDIF
+            ENDIF
 C
 C
             IF (YAP1.EQ.1) THEN

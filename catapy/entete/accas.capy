@@ -1,4 +1,5 @@
-#& MODIF ENTETE  DATE 06/09/2004   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF ENTETE  DATE 14/09/2004   AUTEUR MCOURTOI M.COURTOIS 
+# -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,8 +17,6 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-
-# -*- coding: iso-8859-1 -*-
 
 import Accas
 from Accas import *
@@ -367,8 +366,8 @@ class fonction_class(ASSD):
       prol=aster.getvectjev(string.ljust(self.get_name(),19)+'.PROL')
       dico={
          'INTERPOL'    : [prol[1][0:3],prol[1][4:7]],
-         'NOM_PARA'    : prol[2][0:4],
-         'NOM_RESU'    : prol[3][0:4],
+         'NOM_PARA'    : prol[2][0:16],
+         'NOM_RESU'    : prol[3][0:16],
          'PROL_DROITE' : TypeProl[prol[4][0]],
          'PROL_GAUCHE' : TypeProl[prol[4][1]],
       }
@@ -428,8 +427,8 @@ class nappe_sdaster(fonction_class):
       prol=aster.getvectjev(string.ljust(self.get_name(),19)+'.PROL')
       dico={
          'INTERPOL'      : [prol[1][0:3],prol[1][4:7]],
-         'NOM_PARA'      : prol[2][0:4],
-         'NOM_RESU'      : prol[3][0:4],
+         'NOM_PARA'      : prol[2][0:16],
+         'NOM_RESU'      : prol[3][0:16],
          'PROL_DROITE'   : TypeProl[prol[4][0]],
          'PROL_GAUCHE'   : TypeProl[prol[4][1]],
          'NOM_PARA_FONC' : prol[5][0:4],

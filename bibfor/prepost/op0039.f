@@ -19,7 +19,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C MODIF PREPOST  DATE 23/08/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF PREPOST  DATE 14/09/2004   AUTEUR D6BHHJP J.P.LEFEBVRE 
 C TOLE CRP_20
 C     PROCEDURE IMPR_RESU
 C     ------------------------------------------------------------------
@@ -150,7 +150,7 @@ C     --- VERSION D'ECRITURE  ----
 C
 C     --- FICHIER ---
       IFI = 0
-      FICH = FORM
+      FICH = 'F_'//FORM
       CALL GETVIS ( ' ', 'UNITE', 1,1,1, IFI , N11 )
       IFC = IFI
       IF ( .NOT. ULEXIS( IFI ) ) THEN

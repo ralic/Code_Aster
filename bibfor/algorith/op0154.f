@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/02/2004   AUTEUR MJBHHPE J.L.FLEJOU 
+C MODIF ALGORITH  DATE 14/09/2004   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,7 +21,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
 C
-C   OPERATEUR: MODI_MAILLA
+C   OPERATEUR: MODI_MAILLAGE
 C
 C     ------------------------------------------------------------------
 C     --- DEBUT DECLARATIONS NORMALISEES  JEVEUX -----------------------
@@ -65,9 +65,9 @@ C
      +    //' AU CONCEPT DONNE DANS L''ARGUMENT MAILLAGE.')
 C
 C
-C     --- TRAITEMENT DU MOT CLEF  "ORIEN_CONTACT" :
+C     --- TRAITEMENT DU MOT CLEF  "ORIE_FISSURE" :
 C     ---------------------------------------------
-      CALL GETFAC ( 'ORIE_CONTACT', NBOCC )
+      CALL GETFAC ( 'ORIE_FISSURE', NBOCC )
       IF ( NBOCC .NE. 0 ) THEN
          CALL CONORI ( MA )
       ENDIF

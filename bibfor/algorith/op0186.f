@@ -1,6 +1,6 @@
       SUBROUTINE OP0186(IER)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+C MODIF ALGORITH  DATE 14/09/2004   AUTEUR D6BHHJP J.P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -492,6 +492,11 @@ C SOLUTION: VTEMPM = VTEMPR = T+,I+1BIS
                 CALL UTIMPR('L',' TEMPS MOYEN PAR ITERATION : ',1,
      &                      TPS2(4))
                 CALL UTIMPR('L',' TEMPS CPU RESTANT: ',1,TPS2(1))
+                CALL UTIMPI('L',' LA BASE GLOBALE EST SAUVEGARDEE,',
+     &                        0,NUMORD)
+                CALL UTIMPI('S',' ELLE CONTIENT LES PAS ARCHIVES',
+     &                       0,NUMORD)
+                CALL UTIMPI('S',' AVANT L''ARRET' ,0,NUMORD)
                 CALL UTFINM()
               ELSE
                 GO TO 20
@@ -576,6 +581,10 @@ C --- TEMPS DISPONIBLE POUR CONTINUER ?
             CALL UTIMPI('S',' AU NUMERO D''ORDRE: ',1,NUMORD)
             CALL UTIMPR('L',' TEMPS MOYEN PAR PAS DE TEMPS: ',1,TPS1(4))
             CALL UTIMPR('L',' TEMPS CPU RESTANT: ',1,TPS1(1))
+            CALL UTIMPI ('L',' LA BASE GLOBALE EST SAUVEGARDEE,',0,
+     &                    NUMORD)
+            CALL UTIMPI ('S',' ELLE CONTIENT LES PAS ARCHIVES',0,NUMORD)
+            CALL UTIMPI ('S',' AVANT L''ARRET' ,0,NUMORD)
             CALL UTFINM()
           END IF
 

@@ -1,4 +1,5 @@
-#@ MODIF spark Lecture_Cata_Ele  DATE 06/09/2004   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF spark Lecture_Cata_Ele  DATE 14/09/2004   AUTEUR MCOURTOI M.COURTOIS 
+# -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 #  Copyright (c) 1998-2000 John Aycock
 #
@@ -21,7 +22,6 @@
 #  TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 #  SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-# -*- coding: iso-8859-1 -*-
 
 __version__ = 'SPARK-0.6.1'
 

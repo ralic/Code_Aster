@@ -1,4 +1,5 @@
-#@ MODIF test_fichier_ops Macro  DATE 06/09/2004   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF test_fichier_ops Macro  DATE 14/09/2004   AUTEUR MCOURTOI M.COURTOIS 
+# -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,10 +18,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 
-# -*- coding: iso-8859-1 -*-
-
-
-def test_fichier_ops(self, FICHIER, NOM_SYSTEME, NB_CHIFFRE, EPSILON, VALE_K, INFO, **args):
+def test_fichier_ops(self, UNITE, NOM_SYSTEME, NB_CHIFFRE, EPSILON, VALE_K, INFO, **args):
    """
      Macro TEST_FICHIER permettant de tester la non-regression d'un fichier
      'a une tolerance' pres pour les nombres reels en calculant
@@ -35,42 +33,53 @@ def test_fichier_ops(self, FICHIER, NOM_SYSTEME, NB_CHIFFRE, EPSILON, VALE_K, IN
 
    # On importe les definitions des commandes a utiliser dans la macro
    # Le nom de la variable doit etre obligatoirement le nom de la commande
-   CREA_TABLE   =self.get_cmd('CREA_TABLE')
-   TEST_TABLE   =self.get_cmd('TEST_TABLE')
+   INFO_EXEC_ASTER = self.get_cmd('INFO_EXEC_ASTER')
+   DETRUIRE        = self.get_cmd('DETRUIRE')
+   CREA_TABLE      = self.get_cmd('CREA_TABLE')
+   TEST_TABLE      = self.get_cmd('TEST_TABLE')
 
    import os.path
    from Macro.test_fichier_ops import md5file
 
-   # calcule le md5sum du fichier
-   ier, mdsum = md5file(NOM_SYSTEME, NB_CHIFFRE, EPSILON, INFO)
-   if ier != 0:
-      if ier==4:
-         texte_erreur='Fichier inexistant : '+NOM_SYSTEME
-      else:
-         texte_erreur='Erreur dans md5file, code retour = '+str(ier)
-      texte_erreur='<F> <TEST_FICHIER> '+texte_erreur
-#      raise aster.FatalError,texte_erreur
-      self.cr.fatal(texte_erreur)
-      return ier
-
-   # comparaison a la reference
    is_ok=0
-   if INFO > 0 :
-      print ' %-20s : %32s' % ('REFERENCE',VALE_K)
-      print
 
-   if mdsum == VALE_K:
-      is_ok=1
+   # vérifier que le fichier a été fermé
+   tinfo__ = INFO_EXEC_ASTER(LISTE_INFO='ETAT_UNITE', FICHIER=NOM_SYSTEME)
+   
+   if tinfo__['ETAT_UNITE',1].find('OUVERT')>-1:
+      print "<A> <TEST_FICHIER> LE FICHIER N'A PAS ETE FERME :\n",NOM_SYSTEME
+
+   # fichier correctement fermé
+   else:
+      # calcule le md5sum du fichier
+      ier, mdsum = md5file(NOM_SYSTEME, NB_CHIFFRE, EPSILON, INFO)
+      if ier != 0:
+         if ier==4:
+            texte_erreur='Fichier inexistant : '+NOM_SYSTEME
+         else:
+            texte_erreur='Erreur dans md5file, code retour = '+str(ier)
+         texte_erreur='<S> <TEST_FICHIER> '+texte_erreur
+         # aujourd'hui, je ne sais pas déclencher autre chose que <F>...
+         self.cr.fatal(texte_erreur)
+         return ier
+
+      # comparaison a la reference
+      if INFO > 0 :
+         print ' %-20s : %32s' % ('REFERENCE',VALE_K)
+         print
+
+      if mdsum == VALE_K:
+         is_ok=1
 
    # produit le TEST_TABLE
-   __tab1=CREA_TABLE(LISTE=(_F(PARA='TEST',
+   tab1__=CREA_TABLE(LISTE=(_F(PARA='TEST',
                                TYPE_K='K8',
                                LISTE_K='VALEUR  ',),
                             _F(PARA='BOOLEEN',
                                LISTE_I=is_ok,),),)
    if args['REFERENCE'] == 'NON_REGRESSION':
-      TEST_TABLE(FICHIER=FICHIER,
-                 TABLE=__tab1,
+      TEST_TABLE(UNITE=UNITE,
+                 TABLE=tab1__,
                  FILTRE=_F(NOM_PARA='TEST',
                            VALE_K='VALEUR  ',),
                  NOM_PARA='BOOLEEN',
@@ -80,8 +89,8 @@ def test_fichier_ops(self, FICHIER, NOM_SYSTEME, NB_CHIFFRE, EPSILON, VALE_K, IN
                  REFERENCE=args['REFERENCE'],
                  VERSION=args['VERSION'],)
    else:
-      TEST_TABLE(FICHIER=FICHIER,
-                 TABLE=__tab1,
+      TEST_TABLE(UNITE=UNITE,
+                 TABLE=tab1__,
                  FILTRE=_F(NOM_PARA='TEST',
                            VALE_K='VALEUR  ',),
                  NOM_PARA='BOOLEEN',
@@ -89,6 +98,8 @@ def test_fichier_ops(self, FICHIER, NOM_SYSTEME, NB_CHIFFRE, EPSILON, VALE_K, IN
                  PRECISION=1.e-3,
                  CRITERE='ABSOLU',
                  REFERENCE=args['REFERENCE'],)
+
+   DETRUIRE(CONCEPT=_F(NOM=('tinfo__','tab1__'),),)
    return ier
 
 

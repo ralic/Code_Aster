@@ -7,7 +7,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 08/06/2004   AUTEUR ROMEO R.FERNANDES 
+C MODIF ALGORITH  DATE 14/09/2004   AUTEUR ROMEO R.FERNANDES 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -125,7 +125,7 @@ C =====================================================================
       CALL THMRCP( 'INTERMED', IMATE, THMC, MECA, HYDR, THER,
      +             RBID1, RBID2, RBID3, RBID4, RBID5, T, RBID40,
      +             PVPM-P1+DP1,RBID6,RBID7,RBID8,
-     +             RBID9, RBID10, R, RHO0, CSIGM,BIOT, SATM, RBID42,
+     +             RBID10, R, RHO0, CSIGM,BIOT, SATM, RBID42,
      +             RBID43, RBID14, RBID15, RBID16,RBID17, RBID18,
      +             RBID19, RBID20, RBID21, RBID22,RBID23, RBID24,
      +             RBID25, RHO110, CLIQ, ALPLIQ, CP11,RBID26,
@@ -311,7 +311,7 @@ C =====================================================================
       CALL THMRCP( 'SATURATI', IMATE, THMC, MECA, HYDR, THER,
      +             RBID1, RBID2, RBID3, RBID4, RBID5, RBID50,PVP-P1,
      +             RBID41,RBID6,RBID7, RBID8,
-     +             RBID9, RBID10, RBID51, RBID52,RBID53,RBID54, RBID41,
+     +             RBID10, RBID51, RBID52,RBID53,RBID54, RBID41,
      +             SAT, DSATP1, RBID14, RBID15,RBID16,
      +             RBID17, RBID18,RBID19, RBID20, RBID21, RBID22,
      +             RBID23, RBID24,RBID25, RHO110, RBID53, RBID52,

@@ -1,4 +1,4 @@
-# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 14/09/2004   AUTEUR MCOURTOI M.COURTOIS 
 # TITRE Calcul d'indicateur d'erreur en thermique lineaire
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -99,20 +99,21 @@ TEST_RESU(RESU=(
                 POINT =1,                    PRECISION = 1.E-5,
                 NOM_CMP = 'ERTREL',          REFERENCE='NON_REGRESSION',
                 VALE = 4.1591876225226E-05,
-                VERSION='V6.2.1',            CRITERE='RELATIF')))
+                VERSION='V6.6',              CRITERE='RELATIF')))
 TEST_RESU(RESU=(       
             _F( RESULTAT = RESU[1],          NUME_ORDRE = 0, 
                 NOM_CHAM = 'ERTH_ELNO_ELEM', MAILLE = 'MA1',
                 NOEUD = 'NO4',               PRECISION = 1.E-5,
                 NOM_CMP = 'ERTREL',          REFERENCE='NON_REGRESSION',
                 VALE = 4.1591876225226E-05,
-                VERSION='V6.2.1',            CRITERE='RELATIF')))
+                VERSION='V6.6',              CRITERE='RELATIF')))
+
 TEST_RESU(RESU=(       
             _F( RESULTAT = RESU[2],          NUME_ORDRE = 0, 
-                NOM_CHAM = 'ERTH_ELEM_TEMP', MAILLE = 'M1', 
+                NOM_CHAM = 'ERTH_ELEM_TEMP', MAILLE = 'M25', 
                 POINT =1,
                 NOM_CMP = 'ERTREL',          REFERENCE='NON_REGRESSION',
                 VALE = 4.3627678192699E-05,  PRECISION = 1.E-5,
-                VERSION='ASTER V7.1.9/HOMARD V6.2', CRITERE='RELATIF')))
+                VERSION='ASTER V7.1.9/HOMARD V6.6', CRITERE='RELATIF')))
 
 FIN()

@@ -3,7 +3,7 @@
 
       IMPLICIT NONE
 
-C MODIF CALCULEL  DATE 31/08/2004   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 13/09/2004   AUTEUR GREFFET N.GREFFET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -48,8 +48,8 @@ C     SORTIES:
 C       ALLOCATION ET CALCUL DES OBJETS CORRESPONDANT AUX CHAMPS "OUT"
 
 C ----------------------------------------------------------------------
-      CHARACTER*19 LCHIN2(50),LCHOU2(50)
-      CHARACTER*8 LPAIN2(50),LPAOU2(50)
+      CHARACTER*19 LCHIN2(NIN),LCHOU2(NOU)
+      CHARACTER*8 LPAIN2(NIN),LPAOU2(NOU)
       CHARACTER*19 LIGREL
       CHARACTER*1 STOP
       INTEGER IACHII,IACHIK,IACHIX,IADSGD,IBID
@@ -178,7 +178,7 @@ C     2- ON REND PROPRES LES LISTES : LPAIN,LCHIN,LPAOU,LCHOU :
 C        EN NE GARDANT QUE LES PARAMETRES DU CATALOGUE DE L'OPTION
 C        QUI SERVENT A AU MOINS UN TYPE_ELEMENT
 C     ---------------------------------------------------------
-      IF (NIN.GT.50) CALL UTMESS('F','CALCUL',
+      IF (NIN.GT.51) CALL UTMESS('F','CALCUL',
      &                        'ERREUR PROGRAMMEUR : TROP DE CHAMPS "IN"'
      &                           )
       NIN3 = ZI(IAOPDS-1+2)

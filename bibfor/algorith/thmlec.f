@@ -7,7 +7,7 @@
      +                   DVISCG, MAMOLV, FICKAD, DFADT, LAMBCT)
 C =====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/08/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 14/09/2004   AUTEUR ROMEO R.FERNANDES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -56,7 +56,7 @@ C =====================================================================
       IF (THMC.EQ.'LIQU_SATU') THEN
          CALL THMRCP( 'FINALE  ', IMATE, THMC, MECA, HYDR, THER,
      +                RBID1, RBID2, RBID3, RBID4, RBID5, T, RBID6,
-     +                RBID41, RBID7, PHI, END, RBID9, RBID11, RBID12,
+     +                RBID41, RBID7, PHI, END, RBID11, RBID12,
      +                RBID13, RBID14, BIOT, RBID16, RBID17,
      +                RBID18, PESA, PERMFH, RBID19, RBID20, RBID21,
      +                RBID22, RBID23, RBID24, RBID25, RBID26,LAMBP,
@@ -68,7 +68,7 @@ C =====================================================================
       ELSE IF (THMC.EQ.'GAZ') THEN
          CALL THMRCP( 'FINALE  ', IMATE, THMC, MECA, HYDR, THER,
      +                   RBID1, RBID2, RBID3, RBID4, RBID5, T, RBID6,
-     +             RBID44,  RBID7, PHI, END, RBID9, RBID11, RGAZ,
+     +             RBID44,  RBID7, PHI, END, RBID11, RGAZ,
      +                   RBID13, RBID14, BIOT, RBID16, RBID17,
      +                   RBID18, PESA, PERMFH, RBID19, RBID20, RBID21,
      +                   RBID22, RBID23, RBID24, RBID25, RBID26,
@@ -81,7 +81,7 @@ C =====================================================================
          CALL THMRCP( 'FINALE  ', IMATE, THMC, MECA, HYDR, THER,
      +                   RBID1, RBID2, RBID3, RBID4, RBID5, T, P1,
      +                   RBID6, P2, PHI, END,
-     +                   RBID7, PVP, RGAZ, RBID8, RBID9, BIOT, RBID11,
+     +                   PVP, RGAZ, RBID8, RBID9, BIOT, RBID11,
      +                   SATUR, DSATUR, PESA, PERMFH, PERMLI, DPERML,
      +                   PERMGZ,
      +                   DPERMS, DPERMP, RBID14, RBID15, RBID16,
@@ -94,7 +94,7 @@ C =====================================================================
          CALL THMRCP( 'FINALE  ', IMATE, THMC, MECA, HYDR, THER,
      +                   RBID1, RBID2, RBID3, RBID4, RBID5, T, P1,
      +                   RBID6, P2, PHI, END,
-     +                   RBID7, PVP, RGAZ, RBID8, RBID9, BIOT,
+     +                   PVP, RGAZ, RBID8, RBID9, BIOT,
      +                   RBID11,
      +                   SATUR, DSATUR, PESA, PERMFH, PERMLI, DPERML,
      +                   PERMGZ,
@@ -108,7 +108,7 @@ C =====================================================================
          CALL THMRCP( 'FINALE  ', IMATE, THMC, MECA, HYDR, THER,
      +                   RBID1, RBID2, RBID3, RBID4, RBID5, T, P1,
      +                   RBID6, P2, PHI, END,
-     +                   RBID7, RBID28, RGAZ, RBID8, RBID9, BIOT,
+     +                   RBID28, RGAZ, RBID8, RBID9, BIOT,
      +                   RBID11,
      +                   SATUR, DSATUR, PESA, PERMFH, PERMLI, DPERML,
      +                   PERMGZ,
@@ -122,7 +122,7 @@ C =====================================================================
          CALL THMRCP( 'FINALE  ', IMATE, THMC, MECA, HYDR, THER,
      +                   RBID1, RBID2, RBID3, RBID4, RBID5, T, P1,
      +                   RBID6, P2, PHI, END,
-     +                   RBID7, RBID28, RGAZ, RBID8, RBID9, BIOT,
+     +                   RBID28, RGAZ, RBID8, RBID9, BIOT,
      +                   RBID11,
      +                   SATUR, DSATUR, PESA, PERMFH, PERMLI, DPERML,
      +                   PERMGZ,
@@ -136,7 +136,7 @@ C =====================================================================
          CALL THMRCP( 'FINALE  ', IMATE, THMC, MECA, HYDR, THER,
      +                   RBID1, RBID2, RBID3, RBID4, RBID5, T, P1,
      +                   RBID6, P2, PHI, END,
-     +                   RBID7, RBID28, RBID29, RBID8, RBID9, BIOT,
+     +                   RBID28, RBID29, RBID8, RBID9, BIOT,
      +                   RBID11,
      +                   SATUR, DSATUR, PESA, PERMFH, PERMLI, DPERML,
      +                   RBID30,

@@ -1,5 +1,4 @@
-
-# MODIF  DATE 17/08/2004   AUTEUR ROMEO R.FERNANDES 
+# MODIF  DATE 14/09/2004   AUTEUR ROMEO R.FERNANDES 
 # TITRE  - COUPLE TH ANALYTIQUE  
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -20,16 +19,23 @@
 #                                                                       
 #                                                                       
 # ======================================================================
-#
-#
-#
-
 
 DEBUT(CODE=_F(NOM='WTNL102A',NIV_PUB_WEB='INTERNET'),);
+
+PRE_GIBI();
 
 LAMBDA=DEFI_CONSTANTE(VALE=10.0,);
 
 MAIL=LIRE_MAILLAGE();
+
+MAIL=DEFI_GROUP(reuse =MAIL,
+                MAILLAGE=MAIL,
+                CREA_GROUP_NO=(_F(GROUP_MA='BAS',),
+                               _F(GROUP_MA='HAUT',),
+                               _F(GROUP_MA='GAUCHE',),
+                               _F(GROUP_MA='DROIT',),
+                               _F(GROUP_MA='BO',),
+                               ),);
 
 MODELE=AFFE_MODELE(MAILLAGE=MAIL,
                    AFFE=_F(TOUT='OUI',
@@ -143,7 +149,7 @@ CHAR=AFFE_CHAR_MECA(MODELE=MODELE,
                               _F(GROUP_NO='GAUCHE',
                                  TEMP=0.0,
                                  PRE1=1,),
-                              _F(GROUP_NO='DROITE',
+                              _F(GROUP_NO='DROIT',
                                  TEMP=1.0,
                                  PRE1=0.0,),),);
 
@@ -169,78 +175,41 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU1,
                    NUME_ORDRE=10,
                    NOM_CHAM='DEPL',
                    NOM_CMP='TEMP',
-                   NOEUD='NO32',
+                   NOEUD='N604',
                    VALE=0.018271068599999999,
-                   PRECISION=4.E-1,
+                   PRECISION=1.E-3,
                    REFERENCE='ANALYTIQUE',),
                 _F(RESULTAT=RESU1,
                    NUME_ORDRE=10,
                    NOM_CHAM='DEPL',
                    NOM_CMP='TEMP',
-                   NOEUD='NO37',
+                   NOEUD='N704',
                    VALE=0.049743927,
-                   PRECISION=4.E-1,
+                   PRECISION=1.E-3,
                    REFERENCE='ANALYTIQUE',),
                 _F(RESULTAT=RESU1,
                    NUME_ORDRE=10,
                    NOM_CHAM='DEPL',
                    NOM_CMP='TEMP',
-                   NOEUD='NO42',
+                   NOEUD='N804',
                    VALE=0.13529602600000001,
-                   PRECISION=4.E-1,
+                   PRECISION=1.E-3,
                    REFERENCE='ANALYTIQUE',),
                 _F(RESULTAT=RESU1,
                    NUME_ORDRE=10,
                    NOM_CHAM='DEPL',
                    NOM_CMP='TEMP',
-                   NOEUD='NO47',
+                   NOEUD='N904',
                    VALE=0.36785074000000001,
-                   PRECISION=4.E-1,
+                   PRECISION=1.E-3,
                    REFERENCE='ANALYTIQUE',),
                 _F(RESULTAT=RESU1,
                    NUME_ORDRE=10,
                    NOM_CHAM='DEPL',
                    NOM_CMP='TEMP',
-                   NOEUD='NO52',
+                   NOEUD='N2',
                    VALE=1.0,
                    PRECISION=1.E-3,
                    REFERENCE='ANALYTIQUE',),),);
-
-TEST_RESU(RESU=(_F(RESULTAT=RESU1,
-                   NUME_ORDRE=10,
-                   NOM_CHAM='DEPL',
-                   NOM_CMP='TEMP',
-                   NOEUD='NO32',
-                   VALE=0.012306690001720,
-                   PRECISION=1.E-3,
-                   VERSION = '7.3.16',
-                   REFERENCE='NON_REGRESSION',),
-                _F(RESULTAT=RESU1,
-                   NUME_ORDRE=10,
-                   NOM_CHAM='DEPL',
-                   NOM_CMP='TEMP',
-                   NOEUD='NO37',
-                   VALE=0.036996866827991,
-                   PRECISION=1.E-3,
-                   VERSION = '7.3.16',
-                   REFERENCE='NON_REGRESSION',),
-                _F(RESULTAT=RESU1,
-                   NUME_ORDRE=10,
-                   NOM_CHAM='DEPL',
-                   NOM_CMP='TEMP',
-                   NOEUD='NO42',
-                   VALE=0.11107264732832,
-                   PRECISION=1.E-3,
-                   VERSION = '7.3.16',
-                   REFERENCE='NON_REGRESSION',),
-                _F(RESULTAT=RESU1,
-                   NUME_ORDRE=10,
-                   NOM_CHAM='DEPL',
-                   NOM_CMP='TEMP',
-                   NOEUD='NO47',
-                   VALE=0.33330403141206,
-                   PRECISION=1.E-3,
-                   VERSION = '7.3.16',
-                   REFERENCE='NON_REGRESSION',),),);
 
 FIN();

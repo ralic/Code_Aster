@@ -3,7 +3,7 @@
       INTEGER            ICMD  , ICOND , IERTOT, IER , IFIN
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 11/03/2004   AUTEUR DURAND C.DURAND 
+C MODIF SUPERVIS  DATE 14/09/2004   AUTEUR D6BHHJP J.P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -130,6 +130,6 @@ C     --LIBERATION DES OBJETS RANENES EN MEMOIRE PAR JEVEUT :
       ISTAT = 2
       CALL EXSTAT( ISTAT , ICOND , XTT )
       IF (ICOND .EQ. 0) THEN
-C        CALL JEDETV()
+        CALL JEDETV()
       ENDIF
       END

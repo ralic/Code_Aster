@@ -6,7 +6,7 @@
       CHARACTER*(*)       BASZ
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 24/06/2003   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ALGELINE  DATE 14/09/2004   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -46,70 +46,40 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER      I, IMA, NBMAT, NBMAIL, TYPTRI, NBTRI, IRET, NBGRNO,
      +             NBNOMX, NBPT, INO, IMA2, IMAV, IATYMA, JREFE, JVG,
      +             JTYPM, JDIME, JOPT, JNPT, NBNO, IER, JGG, IM, J, 
-     +             LGPREF, LXLGUT, LGND, NBGRMA, NBMAG, NBGRM, JGROUP,
-     +             IFM, NIV, IQ4, IQ8, IQ9
-      INTEGER      TQUA4(2,3), TQUA8(6,3), TQUA9(6,3)
+     +             LGPREF, LXLGUT, LGND, NBMAG, NBGRM,
+     +             IFM, NIV, IQ4, IQ8, IQ9, IGRMA, NBGM, JLGRMA, JGRMA,
+     +             NBMA2, JDEC, IG, IND
       LOGICAL      LOGIC
       CHARACTER*1  K1B, BASE
-      CHARACTER*8  K8B, NOMG, TYPM
+      CHARACTER*8  K8B, NOMG, TYPM, NIMA
       CHARACTER*16 KNUME
       CHARACTER*24 NOMMAI, TYPMAI, CONNEX, NODIME, NOMNOE, GRPNOE,
      &             COOVAL, COODSC, COOREF, GRPMAI
       CHARACTER*24 TYPMAV, CONNEV, NODIMV, NOMNOV, GRPNOV, 
      &             COOVAV, COODSV, COOREV, NOMMAV, GRPMAV
+      INTEGER     VERSIO
+      PARAMETER ( VERSIO = 1 )
+C  --- TABLEAU DE DECOUPAGE
+      INTEGER    NTYELE,MAXEL,MAXNO
+      PARAMETER (NTYELE = 27)
+      PARAMETER (MAXEL  = 48)
+      PARAMETER (MAXNO  =  8)
+      INTEGER             TDEC(NTYELE,MAXEL,MAXNO)
+      INTEGER                   TYPD(NTYELE,3)
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
       CALL INFNIV(IFM,NIV)
 C
-C --- ECLATEMENT QUAD4 EN 2 TRIA3
-      TQUA4(1,1) = 1
-      TQUA4(1,2) = 2
-      TQUA4(1,3) = 3
-      TQUA4(2,1) = 1
-      TQUA4(2,2) = 3
-      TQUA4(2,3) = 4
+C====
+C 1. TABLEAU DE DECOUPAGE
+C====
 C
-C --- ECLATEMENT QUAD8 EN 6 TRIA3
-      TQUA8(1,1) = 1
-      TQUA8(1,2) = 5
-      TQUA8(1,3) = 8
-      TQUA8(2,1) = 5
-      TQUA8(2,2) = 2
-      TQUA8(2,3) = 6
-      TQUA8(3,1) = 6
-      TQUA8(3,2) = 3
-      TQUA8(3,3) = 7
-      TQUA8(4,1) = 7
-      TQUA8(4,2) = 4
-      TQUA8(4,3) = 8
-      TQUA8(5,1) = 5
-      TQUA8(5,2) = 7
-      TQUA8(5,3) = 8
-      TQUA8(6,1) = 5
-      TQUA8(6,2) = 6
-      TQUA8(6,3) = 7
+      CALL IRGMTB(TDEC,TYPD,VERSIO)
 C
-C --- ECLATEMENT QUAD9 EN 6 TRIA3 COMME QUAD8 
-C --- CAR DX DY DZ INCONNUS SUR LE NOEUD 9 EN COQUE_3D
-      TQUA9(1,1) = 1
-      TQUA9(1,2) = 5
-      TQUA9(1,3) = 8
-      TQUA9(2,1) = 5
-      TQUA9(2,2) = 2
-      TQUA9(2,3) = 6
-      TQUA9(3,1) = 6
-      TQUA9(3,2) = 3
-      TQUA9(3,3) = 7
-      TQUA9(4,1) = 7
-      TQUA9(4,2) = 4
-      TQUA9(4,3) = 8
-      TQUA9(5,1) = 5
-      TQUA9(5,2) = 7
-      TQUA9(5,3) = 8
-      TQUA9(6,1) = 5
-      TQUA9(6,2) = 6
-      TQUA9(6,3) = 7
+C====
+C 2. INITIALISATIONS DES NOMS D'OBJETS
+C====
 C
       BASE = BASZ
 C
@@ -137,7 +107,18 @@ C
 C
       CALL JEVEUO ( TYPMAV, 'L', JTYPM )
       CALL JEVEUO ( NODIMV, 'L', JDIME )
+C
+C====
+C 3. DIMENSIONNEMENT DU MAILLAGE RESULTAT
+C    NBRE DE TRIANGLES A CREER
+C====
+C
+C  NBMAT  : NB DE MAILLES DU MAILLAGE INITIAL
+C  NBMA   : NB DE MAILLES POTENTIELLEMENT A DECOUPER
+C  NBMAIL : NB DE MAILLES EN SORTIE DONT NBTRI TRIA3 CREES
       NBMAT = ZI(JDIME+3-1)
+C  --- VECTEUR A_DECOUPER_EN(NUM_MAILLE) = 0 OU N TRIA3 A CREER
+      CALL WKVECT('&&CMQUTR.A_DECOUPER_EN  ', 'V V I', NBMAT, JDEC)
 C
       LOGIC = .FALSE.
       NBTRI = 0
@@ -155,16 +136,19 @@ C
             NBMAIL =  NBMAIL- 1
             NBTRI = NBTRI + 2
             IQ4 = IQ4 + 1
+            ZI(JDEC-1+IMA) = 2
 C
          ELSE IF (TYPM .EQ. 'QUAD8') THEN
             NBMAIL =  NBMAIL- 1
             NBTRI = NBTRI + 6
             IQ8 = IQ8 + 1
+            ZI(JDEC-1+IMA) = 6
 C
          ELSE IF (TYPM .EQ. 'QUAD9') THEN
             NBMAIL =  NBMAIL- 1
             NBTRI = NBTRI + 6
             IQ9 = IQ9 + 1
+            ZI(JDEC-1+IMA) = 6
          ENDIF
  10   CONTINUE
 C
@@ -188,11 +172,13 @@ C
 C
       CALL JEVEUO ( NODIME, 'E', JDIME )
       ZI(JDIME+3-1) = NBMAIL
-
-C ----------------------------------------------------------------------
-C     LE '.NOMMAI' ET LE '.CONNEX'
-C ----------------------------------------------------------------------
-
+C
+C====
+C 4. CREATION DE SD DU MAILLAGE RESULTAT
+C====
+C
+C 4.1. ==> CREATION DU .NOMMAI ET DU .CONNEX
+C
       CALL JENONU ( JEXNOM('&CATA.TM.NOMTM', 'TRIA3'  ), TYPTRI )
 
       CALL JECREO ( NOMMAI, BASE//' N K8' )
@@ -207,105 +193,117 @@ C     NBNOMX = NBRE DE NOEUDS MAX. POUR UNE MAILLE :
      +                                                    NBMAIL )
       CALL JEECRA ( CONNEX, 'LONT', NBNOMX*NBMAIL, ' ' )
 C
+C 4.2. ==> LE .GROUPMA EST CREE ICI,
+C          LES GROUPES EUX-MEMES SERONT REMPLIS A LA VOLEE
+C
+      CALL JEEXIN ( GRPMAV, IGRMA )
+      IF ( IGRMA .NE. 0 ) THEN
+         CALL JELIRA ( GRPMAV, 'NOMUTI', NBGRM, K1B )
+         CALL JECREC ( GRPMAI, BASE//' V I', 'NO', 'DISPERSE',
+     +                 'VARIABLE', NBGRM )
+C     --- BCLE SUR LES GROUP_MA DU MAILLAGE INITIAL
+         DO 421 I = 1, NBGRM
+            CALL JENUNO( JEXNUM(GRPMAV, I), NOMG)
+            CALL JEVEUO( JEXNUM(GRPMAV, I), 'L', JGRMA)
+            CALL JELIRA( JEXNUM(GRPMAV, I), 'LONMAX', NBMAG, K1B)
+            NBMA2 = NBMAG
+C        --- BCLE SUR LES MAILLES DU GROUP_MA
+            DO 4210 J = 1, NBMAG
+               IM = ZI(JGRMA-1+J)
+               IF (ZI(JDEC-1+IM).NE.0) THEN
+                  NBMA2 = NBMA2 - 1 + ZI(JDEC-1+IM)
+               ENDIF
+ 4210       CONTINUE
+            CALL JECROC( JEXNOM(GRPMAI, NOMG))
+C        --- LE NOUVEAU GROUP_MA CONTIENDRA NBMA2 MAILLES
+            CALL JEECRA( JEXNOM(GRPMAI, NOMG), 'LONMAX', NBMA2, ' ')
+            CALL JEECRA( JEXNOM(GRPMAI, NOMG), 'LONUTI', 0, ' ')
+            IF ( NIV.GT.1 ) THEN
+               WRITE(IFM,*) 'GROUP_MA '//NOMG,' (',I,') PASSE DE ',
+     &                      NBMAG,' A ',NBMA2,' MAILLES'
+            ENDIF
+ 421     CONTINUE
+C     --- VECTEUR POUR STOCKER TEMPORAIREMENT LA LISTE DES GROUP_MA
+C         D'UNE MAILLE
+         CALL WKVECT('&&CMQUTR.LISTE_GROUP_MA ', 'V V I', NBMAG, JLGRMA)
+      ENDIF
+C
+C====
+C 5. ON PARCOURT LES MAILLES DU MAILLAGE INITIAL
+C====
+C
       LGPREF = LXLGUT(PREFIX)
       IMAV  = NDINIT - 1
 C
-      DO 100 IMA = 1 , NBMAT
+      DO 500 IMA = 1 , NBMAT
 C
-         CALL JENUNO ( JEXNUM('&CATA.TM.NOMTM',ZI(JTYPM+IMA-1)), TYPM )
+         IND = ZI(JTYPM+IMA-1)
+         CALL JENUNO ( JEXNUM('&CATA.TM.NOMTM',IND), TYPM )
          CALL JEVEUO ( JEXNUM(CONNEV,IMA), 'L', JOPT )
          CALL JELIRA ( JEXNUM(CONNEV,IMA), 'LONMAX', NBPT, K1B )
 C
-         DO 210 IM = 1 , NBMA
-            IF ( IMA .EQ. NUMMAI(IM) ) GOTO 300
- 210     CONTINUE
+C 5.0. ==> PREPARE LA MISE DES GROUPES DE MAILLES
 C
-         CALL JENUNO ( JEXNUM(NOMMAV,IMA), NOMG )
-         CALL JEEXIN ( JEXNOM(NOMMAI,NOMG), IRET )
-         IF (IRET.EQ.0) THEN
-            CALL JECROC(JEXNOM(NOMMAI,NOMG))
+         CALL JENUNO ( JEXNUM(NOMMAV,IMA), NIMA )
+         IF ( IGRMA.NE.0 ) THEN
+C        --- GROUP_MA CONTENANT IMA
+            CALL INGRMA(NOMAIN, NIMA, ZI(JLGRMA), NBGM, IER)
+         ENDIF
+C
+C 5.1. ==> ON REGARDE SI LA MAILLE IMA DOIT ETRE DECOUPEE...
+C
+         IF ( ZI(JDEC-1+IMA) .EQ. 0 ) THEN
+C
+C 5.2. ==> ON CONSERVE LA MAILLE IMA TELLE QUELLE*
+C          CAR IMA N'EST PAS DANS NUMMAI()
+C
+            CALL JEEXIN ( JEXNOM(NOMMAI,NIMA), IRET )
+            IF (IRET.EQ.0) THEN
+               CALL JECROC(JEXNOM(NOMMAI,NIMA))
+            ELSE
+               CALL UTDEBM('F','CMQUTR','ERREUR DONNEES')
+               CALL UTIMPK('L','MAILLE DEJA EXISTANTE : ',1,NIMA)
+               CALL UTFINM
+            END IF
+C
+C 5.2.1. ==> TYPE DE MAILLE ET CONNECTIVITE
+C
+            CALL JENONU ( JEXNOM(NOMMAI,NIMA), IMA2 )
+            ZI(IATYMA-1+IMA2) = ZI(JTYPM+IMA-1)
+
+            CALL JEECRA(JEXNUM(CONNEX,IMA2),'LONMAX',NBPT,K8B)
+            CALL JEVEUO(JEXNUM(CONNEX,IMA2),'E',JNPT)
+            DO 521 INO = 1 , NBPT
+               ZI(JNPT-1+INO) = ZI(JOPT+INO-1)
+ 521        CONTINUE
+C
+C 5.2.2. ==> MISE DES GROUPES DE MAILLES
+C
+            IF ( IGRMA.NE.0 .AND. IER.EQ.0 .AND. NBGM.GT.0) THEN
+               DO 522 I = 1, NBGM
+                  IG = ZI(JLGRMA-1+I)
+                  CALL JEVEUO( JEXNUM(GRPMAI, IG), 'E', JGRMA)
+                  CALL JELIRA( JEXNUM(GRPMAI, IG), 'LONUTI', IM, K1B )
+                  IM = IM + 1
+C                  print *,'GROUP_MA ',IG,' : ',IM,' MAILLES'
+                  ZI(JGRMA-1+IM) = IMA2
+                  CALL JEECRA( JEXNUM(GRPMAI, IG), 'LONUTI', IM, K1B )
+ 522           CONTINUE
+            ENDIF
+C
+C 5.3. ==> LA MAILLE IMA DOIT ETRE DECOUPE
+C
          ELSE
-            CALL UTDEBM('F','CMQUTR','ERREUR DONNEES')
-            CALL UTIMPK('L','MAILLE DEJA EXISTANTE : ',1,NOMG)
-            CALL UTFINM
-         END IF
-
-         CALL JENONU ( JEXNOM(NOMMAI,NOMG), IMA2 )
-         ZI(IATYMA-1+IMA2) = ZI(JTYPM+IMA-1)
-
-         CALL JEECRA(JEXNUM(CONNEX,IMA2),'LONMAX',NBPT,K8B)
-         CALL JEVEUO(JEXNUM(CONNEX,IMA2),'E',JNPT)
-         DO 140 INO = 1 , NBPT
-            ZI(JNPT-1+INO) = ZI(JOPT+INO-1)
- 140     CONTINUE
-         GOTO 100
 C
- 300     CONTINUE
-         IF ( TYPM .EQ. 'QUAD4' ) THEN
-C             -----------------
             NBPT = 3
-            DO 110 I = 1 , 2
+            NBTRI = ZI(JDEC-1+IMA)
+            DO 530 I = 1 , NBTRI
                IMAV = IMAV + 1
                CALL CODENT ( IMAV, 'G', KNUME )
                LGND = LXLGUT(KNUME)
-               IF (LGND+LGPREF.GT.8) CALL UTMESS('F','CMQUTR',
-     &         'PREF_MAILLE EST TROP LONG OU PREF_NUME EST TROP GRAND')
-               NOMG = PREFIX(1:LGPREF)//KNUME
-               IF (IRET.EQ.0) THEN
-                   CALL JECROC(JEXNOM(NOMMAI,NOMG))
-               ELSE
-                  CALL UTDEBM('F','CMQUTR','ERREUR DONNEES')
-                  CALL UTIMPK('L','MAILLE DEJA EXISTANTE : ',1,NOMG)
-                  CALL UTFINM
-               END IF
-C
-               CALL JENONU ( JEXNOM(NOMMAI,NOMG), IMA2 )
-               ZI(IATYMA-1+IMA2) = TYPTRI
-C
-               CALL JEECRA ( JEXNUM(CONNEX,IMA2), 'LONMAX', NBPT, K8B )
-               CALL JEVEUO ( JEXNUM(CONNEX,IMA2), 'E', JNPT )
-               DO 112 INO = 1 , NBPT
-                  ZI(JNPT-1+INO) = ZI(JOPT-1+TQUA4(I,INO))
- 112           CONTINUE
- 110        CONTINUE
-C
-         ELSEIF ( TYPM .EQ. 'QUAD8' ) THEN
-C                 -----------------
-            NBPT = 3
-            DO 120 I = 1 , 6
-               IMAV = IMAV + 1
-               CALL CODENT ( IMAV, 'G', KNUME )
-               LGND = LXLGUT(KNUME)
-               IF (LGND+LGPREF.GT.8) CALL UTMESS('F','CMQUTR',
-     &         'PREF_MAILLE EST TROP LONG OU PREF_NUME EST TROP GRAND')
-               NOMG = PREFIX(1:LGPREF)//KNUME
-               IF (IRET.EQ.0) THEN
-                   CALL JECROC(JEXNOM(NOMMAI,NOMG))
-               ELSE
-                  CALL UTDEBM('F','CMQUTR','ERREUR DONNEES')
-                  CALL UTIMPK('L','MAILLE DEJA EXISTANTE : ',1,NOMG)
-                  CALL UTFINM
-               END IF
-C
-               CALL JENONU ( JEXNOM(NOMMAI,NOMG), IMA2 )
-               ZI(IATYMA-1+IMA2) = TYPTRI
-C
-               CALL JEECRA ( JEXNUM(CONNEX,IMA2), 'LONMAX', NBPT, K8B )
-               CALL JEVEUO ( JEXNUM(CONNEX,IMA2), 'E', JNPT )
-               DO 122 INO = 1 , NBPT
-                  ZI(JNPT-1+INO) = ZI(JOPT-1+TQUA8(I,INO))
- 122           CONTINUE
- 120        CONTINUE
-C
-         ELSEIF ( TYPM .EQ. 'QUAD9' ) THEN
-C                 -----------------
-            NBPT = 3
-            DO 130 I = 1 , 6
-               IMAV = IMAV + 1
-               CALL CODENT ( IMAV, 'G', KNUME )
-               LGND = LXLGUT(KNUME)
-               IF (LGND+LGPREF.GT.8) CALL UTMESS('F','CMQUTR',
-     &         'PREF_MAILLE EST TROP LONG OU PREF_NUME EST TROP GRAND')
+               IF (LGND+LGPREF.GT.8)
+     &            CALL UTMESS('F','CMQUTR','PREF_MAILLE EST '//
+     &                        'TROP LONG OU PREF_NUME EST TROP GRAND')
                NOMG = PREFIX(1:LGPREF)//KNUME
                CALL JEEXIN ( JEXNOM(NOMMAI,NOMG), IRET )
                IF (IRET.EQ.0) THEN
@@ -314,25 +312,41 @@ C                 -----------------
                   CALL UTDEBM('F','CMQUTR','ERREUR DONNEES')
                   CALL UTIMPK('L','MAILLE DEJA EXISTANTE : ',1,NOMG)
                   CALL UTFINM
-               END IF
+               ENDIF
 C
                CALL JENONU ( JEXNOM(NOMMAI,NOMG), IMA2 )
                ZI(IATYMA-1+IMA2) = TYPTRI
 C
-               CALL JEECRA ( JEXNUM(CONNEX,IMA2), 'LONMAX', NBPT, K8B )
+               CALL JEECRA ( JEXNUM(CONNEX,IMA2), 'LONMAX', NBPT, K8B)
                CALL JEVEUO ( JEXNUM(CONNEX,IMA2), 'E', JNPT )
-               DO 132 INO = 1 , NBPT
-                  ZI(JNPT-1+INO) = ZI(JOPT-1+TQUA9(I,INO))
- 132           CONTINUE
- 130        CONTINUE
+               DO 5300 INO = 1 , NBPT
+C              --- TABLEAU DE DECOUPAGE SELON LE TYPE
+                  ZI(JNPT-1+INO) = ZI(JOPT-1+TDEC(IND, I, INO))
+ 5300          CONTINUE
+C
+               IF ( IGRMA.NE.0 .AND. IER.EQ.0 .AND. NBGM.GT.0 ) THEN
+                  DO 5301 J = 1, NBGM
+                     IG = ZI(JLGRMA-1+J)
+                     CALL JEVEUO( JEXNUM(GRPMAI,IG),'E', JGRMA)
+                     CALL JELIRA( JEXNUM(GRPMAI,IG),'LONUTI', IM, K1B)
+                     IM = IM + 1
+C                     print *,'GROUP_MA ',IG,' : ',IM,' MAILLES'
+                     ZI(JGRMA-1+IM) = IMA2
+                     CALL JEECRA( JEXNUM(GRPMAI,IG),'LONUTI', IM, K1B)
+ 5301             CONTINUE
+               ENDIF
+C
+ 530        CONTINUE
 C
          ENDIF
-
- 100  CONTINUE
 C
-C ----------------------------------------------------------------------
-C     LE '.GROUPENO'
-C ----------------------------------------------------------------------
+C  --- MAILLE SUIVANTE
+C
+ 500  CONTINUE
+C
+C====
+C 6. LE .GROUPENO REPRIS A L'IDENTIQUE
+C====
 C
       CALL JEEXIN ( GRPNOV, IRET )
       IF ( IRET .NE. 0 ) THEN
@@ -347,73 +361,22 @@ C
             IF (IRET.EQ.0) THEN
                CALL JECROC ( JEXNOM( GRPNOE, NOMG ) )
             ELSE
+C           --- NE DEVRAIT PAS ARRIVER !
                CALL UTDEBM('F','CMQUTR','ERREUR DONNEES')
                CALL UTIMPK('L','GROUP_NO DEJA EXISTANT : ',1,NOMG)
                CALL UTFINM
             END IF
             CALL JEECRA(JEXNOM(GRPNOE,NOMG),'LONMAX',NBNO,' ')
             CALL JEVEUO(JEXNOM(GRPNOE,NOMG),'E',JGG)
-            DO 22 J = 0,NBNO - 1
-               ZI(JGG+J) = ZI(JVG+J)
+            DO 22 J = 1, NBNO
+               ZI(JGG-1+J) = ZI(JVG-1+J)
   22        CONTINUE
   20     CONTINUE
-      END IF
-C
-C ----------------------------------------------------------------------
-C     LE '.GROUPEMA' : ON ELIMINE LES GROUP_MA CONTENANT NUMMAI(I)
-C ----------------------------------------------------------------------
-C
-      CALL JEEXIN ( GRPMAV, IRET )
-      IF ( IRET .NE. 0 ) THEN
-         NBGRMA = 0
-         CALL JELIRA ( GRPMAV, 'NOMUTI', NBGRM, K1B )
-         CALL WKVECT ( '&&CMQUTR.GROUP_MA', 'V V I', NBGRM, JGROUP )
-         DO 30 I = 1,NBGRM
-            ZI(JGROUP+I-1) = 0
-            CALL JEVEUO ( JEXNUM(GRPMAV,I), 'L', JVG )
-            CALL JELIRA ( JEXNUM(GRPMAV,I), 'LONMAX', NBMAG, K1B )
-            DO 32 J = 0,NBMAG - 1
-               IMA = ZI(JVG+J)
-               DO 200 IM = 1 , NBMA
-                  IF ( IMA .EQ. NUMMAI(IM) ) GOTO 30
- 200           CONTINUE
-  32        CONTINUE
-            NBGRMA = NBGRMA + 1
-            ZI(JGROUP+I-1) = 1
-  30     CONTINUE
-
-         IF ( NBGRMA .NE. 0 ) THEN
-         CALL JECREC ( GRPMAI, BASE//' V I', 'NO', 'DISPERSE',
-     +                 'VARIABLE', NBGRMA )
-         DO 34 I = 1,NBGRM
-            IF ( ZI(JGROUP+I-1) .EQ. 0 ) GOTO 34
-            CALL JENUNO ( JEXNUM(GRPMAV,I), NOMG )
-            CALL JEVEUO ( JEXNUM(GRPMAV,I), 'L', JVG )
-            CALL JELIRA ( JEXNUM(GRPMAV,I), 'LONMAX', NBMAG, K1B )
-            CALL JEEXIN ( JEXNOM(GRPMAI,NOMG), IRET )
-            IF (IRET.EQ.0) THEN
-               CALL JECROC ( JEXNOM( GRPMAI, NOMG ) )
-            ELSE
-               CALL UTDEBM('F','CMQUTR','ERREUR DONNEES')
-               CALL UTIMPK('L','GROUP_MA DEJA EXISTANT : ',1,NOMG)
-               CALL UTFINM
-            END IF
-            CALL JEECRA(JEXNOM(GRPMAI,NOMG),'LONMAX',NBMAG,' ')
-            CALL JEVEUO(JEXNOM(GRPMAI,NOMG),'E',JGG)
-            DO 36 J = 0,NBMAG - 1
-               CALL JENUNO ( JEXNUM(NOMMAV,ZI(JVG+J)), NOMG )
-               CALL JENONU ( JEXNOM(NOMMAI,NOMG), ZI(JGG+J) )
-  36        CONTINUE
-  34     CONTINUE
-         END IF
-         CALL JEDETR ( '&&CMQUTR.GROUP_MA' )
       END IF
 C
  1000 FORMAT('MOT CLE FACTEUR "MODI_MAILLE", OCCURRENCE ',I4)
  1002 FORMAT('  MODIFICATION DE ',I6,' MAILLES ',A8,
      +                     ' EN ',I6,' MAILLES ',A8)
-C
-      CALL JEDETR ( '&&CMQUTR.NUME_MAILLE' )
 C
       CALL JEDEMA()
 C

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 14/09/2004   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -23,7 +23,15 @@ INFO_EXEC_ASTER=OPER(nom="INFO_EXEC_ASTER",op=35,sd_prod=table_sdaster,
                     UIinfo={"groupes":("Gestion du travail",)},
 
          regles=(),
-         LISTE_INFO      =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max=2,into=("CPU_RESTANT","CPU","UNITE_LIBRE",),),
-         TITRE           =SIMP(statut='f',typ='TXM',max='**'),
-         INFO            =SIMP(statut='f',typ='I',defaut=1,into=(1,2) ),
+         LISTE_INFO     =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max=3,
+                              into=("CPU_RESTANT","UNITE_LIBRE","ETAT_UNITE"),),
+         b_etat_unite   =BLOC(condition = "'ETAT_UNITE' in LISTE_INFO", 
+            regles=(UN_PARMI('UNITE','FICHIER'),),
+            UNITE          =SIMP(statut='f',typ='I',val_min=1,val_max=99,max=1,
+                                 fr="Unité logique dont on veut obtenir l'état",),
+            FICHIER        =SIMP(statut='f',typ='TXM',validators=LongStr(1,255),
+                                 fr="Nom du fichier dont on veut obtenir l'état",),
+         ),
+         TITRE          =SIMP(statut='f',typ='TXM',max='**'),
+         INFO           =SIMP(statut='f',typ='I',defaut=1,into=(1,2) ),
 )  ;

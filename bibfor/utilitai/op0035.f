@@ -1,7 +1,7 @@
       SUBROUTINE OP0035 ( IER )
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 03/02/2004   AUTEUR ASSIRE A.ASSIRE 
+C MODIF UTILITAI  DATE 14/09/2004   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -41,11 +41,14 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
 C DECLARATION VARIABLES LOCALES      
-      CHARACTER*8  RESULT,TYPVAL,K8BID
-      CHARACTER*16 TYPE, NOMCMD,K16BID
-      COMPLEX*16   CBID
-      INTEGER      NBVAL,JKVAL,JTVAL,IBID,K,ULNUME,UL
-      REAL*8       RVAL,RBID
+      CHARACTER*8   RESULT,TYPVAL,K8BID, ETAT
+      CHARACTER*16  TYPE, NOMCMD,K16BID
+      CHARACTER*255 KFIC
+      COMPLEX*16    CBID
+      INTEGER       ULNUME, ULISOP, ULNOMF
+      INTEGER       NBVAL,JKVAL,JTVAL,IBID,K,UL
+      INTEGER       NBUNIT, NBFIC, ISOP
+      REAL*8        RVAL,RBID
 C
       CALL JEMARQ()
       CALL INFMAJ
@@ -66,6 +69,8 @@ C=======================================================================
           ZK8(JTVAL+K-1) = 'R'
         ELSEIF ( ZK16(JKVAL+K-1) .EQ. 'UNITE_LIBRE' ) THEN
           ZK8(JTVAL+K-1) = 'I'
+        ELSEIF ( ZK16(JKVAL+K-1) .EQ. 'ETAT_UNITE' ) THEN
+          ZK8(JTVAL+K-1) = 'K8'
         ENDIF
  20   CONTINUE
 
@@ -77,11 +82,28 @@ C=======================================================================
           CALL UTTCPU (0,'    ',1,RVAL)
           CALL TBAJLI(RESULT,NBVAL,ZK16(JKVAL+K-1),IBID,RVAL,
      &                CBID,K8BID,0)
-        ENDIF 
-        IF ( ZK16(JKVAL+K-1) .EQ. 'UNITE_LIBRE' ) THEN
+        ELSEIF ( ZK16(JKVAL+K-1) .EQ. 'UNITE_LIBRE' ) THEN
           UL = ULNUME ()
           CALL TBAJLI(RESULT,NBVAL,ZK16(JKVAL+K-1),UL,RBID,
      &                CBID,K8BID,0)
+        ELSEIF ( ZK16(JKVAL+K-1) .EQ. 'ETAT_UNITE' ) THEN
+          CALL GETVIS(' ','UNITE',      0,1,1,UL,NBUNIT)
+          IF ( NBUNIT .EQ. 0 ) THEN
+            CALL GETVTX(' ','FICHIER',0,1,1,KFIC,NBFIC)
+            UL = ULNOMF (KFIC, K8BID, K8BID)
+          ENDIF
+          IF ( UL .LT. 0 ) THEN
+            ISOP = 0
+          ELSE
+            ISOP = ULISOP (UL, K16BID)
+          ENDIF
+          IF ( ISOP .EQ. 0 ) THEN
+            ETAT='FERME   '
+          ELSE
+            ETAT='OUVERT  '
+          ENDIF
+          CALL TBAJLI(RESULT,NBVAL,ZK16(JKVAL+K-1),IBID,RBID,
+     &                CBID,ETAT,0)
         ENDIF 
  100  CONTINUE      
 
