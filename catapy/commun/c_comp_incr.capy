@@ -1,4 +1,4 @@
-#& MODIF COMMUN  DATE 04/04/2005   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF COMMUN  DATE 11/04/2005   AUTEUR F6BHHBO P.DEBONNIERES 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -121,6 +121,7 @@ def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',  #COMMUN#
                                         "MONOCRISTAL",
                                         "POLYCRISTAL",
                                         "ZMAT",
+                                        "GATT_MONERIE",
                                      ) ),
           ELAS            =SIMP(statut='c',typ='I',defaut=1,into=(1,)),
           SANS            =SIMP(statut='c',typ='I',defaut=1,into=(1,)),
@@ -217,6 +218,7 @@ def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',  #COMMUN#
           VMIS_ASYM_LINE  =SIMP(statut='c',typ='I',defaut=4,into=(4,)),
           BETON_UMLV_FP   =SIMP(statut='c',typ='I',defaut=21,into=(21,)),
           GLRC            =SIMP(statut='c',typ='I',defaut=7,into=(7,)),
+          GATT_MONERIE    =SIMP(statut='c',typ='I',defaut=2,into=(2,)),
 
            b_monox     = BLOC(condition = "RELATION == 'MONOCRISTAL' ",
                                  fr="SD issue de DEFI_COMPOR",

@@ -15,7 +15,7 @@
      &                   SIGP,VIP,DSIDEP,CODRET)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 04/04/2005   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF ALGORITH  DATE 11/04/2005   AUTEUR F6BHHBO P.DEBONNIERES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -536,6 +536,16 @@ C-- INTEGRATION IMPLICITE: METHODE D'EULER
         ELSEIF ( COMPOR(1)(1:8)  .EQ. 'LEMAITRE') THEN
           IF ( INT(CRIT(6)) .EQ. 0 ) THEN
             CALL NMVPLE ( NDIM,  IMATE, COMPOR,CRIT,TYPMOD,
+     &                  INSTAM,INSTAP,TM,    TP,    TREF, 
+     &                  DEPS,  SIGM,  VIM,   OPTION, DEFAM, DEFAP,
+     &                  SIGP, VIP, DSIDEP )
+          ELSE
+            CALL UTMESS('F','NMCOMP_1','INTEGRATION EXPLICITE DU
+     &      COMPORTEMENT NON PROGRAMMEE')
+          ENDIF   
+        ELSEIF ( COMPOR(1)(1:12)  .EQ. 'GATT_MONERIE') THEN
+          IF ( INT(CRIT(6)) .EQ. 0 ) THEN
+            CALL NMVPGM ( NDIM,  IMATE, COMPOR,CRIT,TYPMOD,
      &                  INSTAM,INSTAP,TM,    TP,    TREF, 
      &                  DEPS,  SIGM,  VIM,   OPTION, DEFAM, DEFAP,
      &                  SIGP, VIP, DSIDEP )

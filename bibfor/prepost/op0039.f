@@ -19,7 +19,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C MODIF PREPOST  DATE 03/11/2004   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF PREPOST  DATE 12/04/2005   AUTEUR CIBHHPD L.SALMONA 
 C TOLE CRP_20
 C     PROCEDURE IMPR_RESU
 C     ------------------------------------------------------------------
@@ -71,6 +71,7 @@ C
       REAL*8 PREC, BORSUP, BORINF, VERSI2, EPS
 C
       LOGICAL LRESU,LCOR,LMAX,LMIN,LINF,LSUP,LCASTS,LMOD,LGMSH,ULEXIS
+      LOGICAL LMAIL
 C     ------------------------------------------------------------------
       CHARACTER*1  CECR,K1BID
       CHARACTER*3  INFRES,TOUPAR,TOUCHA,COOR,TMAX,TMIN, SAUX03
@@ -190,14 +191,12 @@ C           ---  IMPRESSION DU MAILLAGE -----
      >                          //' INTRODUITS NE SONT PAS COHERENTS')
                   ENDIF
                ENDIF
-               IF (FORM(1:4).NE.'GMSH'.OR.NR.EQ.0) THEN
-                  CALL IRMAIL ( FORM,IFI,VERSIO,NOMA,LMOD,MODELE,NIVE,
-     >                        INFMAI )
-                  NUMEMO = NUMEMO + 1
-               ENDIF
+               CALL IRMAIL ( FORM,IFI,VERSIO,NOMA,LMOD,MODELE,NIVE,
+     >                     INFMAI )
+               NUMEMO = NUMEMO + 1
             ENDIF
  200     CONTINUE
-C
+
          IF ( NUMEMO .LE. 1 ) THEN
             CALL UTMESS('F',NOMCMD,'IL FAUT DONNER LE MAILLAGE POUR '//
      &                            'UNE IMPRESSION AU FORMAT "CASTEM".')
@@ -207,16 +206,38 @@ C
          IF(IRET.EQ.0)  CALL WKVECT('&&OP0039.LAST','V V I',8,JLAST)
 C
       ENDIF
+
+      IF (FORM(1:4).EQ.'GMSH') THEN
+         LMAIL=.FALSE.
+         LRESU=.FALSE.
+         DO 220 IOCC = 1 , NOCC
+            CALL GETVID ( 'RESU','MAILLAGE',IOCC,1,1,NOMA,NM )
+            CALL GETVID ( 'RESU','RESULTAT',IOCC,1,1,RESU,NR )
+            CALL GETVID ( 'RESU','CHAM_GD',IOCC,1,1,RESU,NC )
+            IF ( NR.NE.0 .OR. NC.NE.0 ) THEN
+               LRESU=.TRUE.
+               GOTO 220
+            ENDIF
+
+            IF ( NM.NE.0 ) THEN
+               LMAIL=.TRUE.
+            ENDIF
+
+ 220     CONTINUE
+         
+         IF ( LMAIL.AND.LRESU ) THEN
+            CALL UTMESS ('A','IMPR_RESU','VOUS VOULEZ IMPRIMER
+     & SUR UN MEME FICHIER LE MAILLAGE ET UN CHAMP CE QUI EST
+     & INCOMPATIBLE AVEC LE FORMAT GMSH')
+            GOTO 9999
+         ENDIF
+      ENDIF
+C
 C
 C     -------------------------------------------
 C
 C     --- BOUCLE SUR LE NOMBRE DE MISES EN FACTEUR ---
       DO 10 IOCC = 1,NOCC
-         NBNOS = 0
-         NBNOT = 0
-         NBNOU = 0
-         NBMAT = 0
-         NBCMP = 0
          LMAX = .FALSE.
          LMIN = .FALSE.
          LINF = .FALSE.
@@ -300,6 +321,12 @@ C
 C
 C===================================
          DO 11 , NRPASS = 1 , NBPASS
+
+         NBCMP = 0
+         NBMAT = 0
+         NBNOS = 0
+         NBNOT = 0
+         NBNOU = 0
 C
 C        POUR LE PASSAGE NUMERO NRPASS :
 C        . NOM DU CHAMP DE RESULTAT OU DE GRANDEUR
@@ -315,7 +342,7 @@ C             IRTITR SE RESUME ALORS A L'ECRITURE D'UN TITRE DANS UN K80
 C
 C        ---  IMPRESSION DU MAILLAGE AU PREMIER PASSAGE -----
          IF( NM.NE.0 .AND. FORM.NE.'CASTEM' .AND. NRPASS.EQ.1 ) THEN
-           IF (FORM(1:4).NE.'GMSH'.OR.NR.EQ.0) THEN
+           IF (FORM(1:4).NE.'GMSH'.OR.(NR.EQ.0.AND.NC.EQ.0)) THEN
              CALL IRMAIL ( FORM, IFI, VERSIO, NOMA, LMOD, MODELE, NIVE,
      >                     INFMAI )
            ENDIF
@@ -795,5 +822,6 @@ C
          ENDIF
       ENDIF
 
+9999  CONTINUE      
       CALL JEDEMA()
       END

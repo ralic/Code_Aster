@@ -1,4 +1,5 @@
-# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
+
+# MODIF  DATE 12/04/2005   AUTEUR CIBHHPD L.SALMONA 
 # TITRE : FLAMBEMENT D'UNE PLAQUE CIRCULAIRE SOUMISE A UNE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -23,7 +24,8 @@
 # MODELISATION : AXIS
 # MAILLAGE     : 1840 QUAD8, 6449 NOEUDS
 
-DEBUT( CODE=_F(  NOM = 'SSLV139B',NIV_PUB_WEB='INTERNET') )
+DEBUT(CODE=_F(NOM='SSLV139B',
+              NIV_PUB_WEB='INTERNET',),);
 
 PRE_GIBI();
 
@@ -39,24 +41,27 @@ MODMECA=AFFE_MODELE(MAILLAGE=MAIL,
                             PHENOMENE='MECANIQUE',
                             MODELISATION='AXIS',),);
 
-MAIL = MODI_MAILLAGE(MAILLAGE=MAIL, reuse=MAIL,MODELE=MODMECA,
-                     ORIE_PEAU_2D=_F(GROUP_MA=('BC',),),);
+MAIL=MODI_MAILLAGE(reuse =MAIL,
+                   MAILLAGE=MAIL,
+                   ORIE_PEAU_2D=_F(GROUP_MA='BC',),
+                   MODELE=MODMECA,);
 
-MAT1=DEFI_MATERIAU(ELAS=_F(E=2.1E11,
-                           NU=0.3,),);
+MAT1=DEFI_MATERIAU(ELAS=_F(E=210000000000.0,
+                           NU=0.3,
+                           RHO=7800.0,),);
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
                     MODELE=MODMECA,
                     AFFE=_F(TOUT='OUI',
                             MATER=MAT1,),);
+PCRIT = 1./(2.*pi);
 
-PCRIT=1./(2.*pi);
 
 CLS=AFFE_CHAR_MECA(MODELE=MODMECA,
                    DDL_IMPO=(_F(GROUP_MA='DA',
                                 DX=0.0,),
                              _F(GROUP_MA='BC',
-                                DY=0.,),),);
+                                DY=0.0,),),);
 
 CHAR=AFFE_CHAR_MECA(MODELE=MODMECA,
                     FORCE_CONTOUR=_F(GROUP_MA='BC',
@@ -86,6 +91,9 @@ MAT_RI_G=CALC_MATR_ELEM(OPTION='RIGI_GEOM',
                         MODELE=MODMECA,
                         SIEF_ELGA=SIG,);
 
+MAT_MAS=CALC_MATR_ELEM(OPTION='MASS_MECA',
+                       MODELE=MODMECA,
+                       CHAM_MATER=CHMAT,);
 
 NUM=NUME_DDL(MATR_RIGI=MAT_RI_M,);
 
@@ -95,15 +103,49 @@ MAS_RI_M=ASSE_MATRICE(MATR_ELEM=MAT_RI_M,
 MAS_RI_G=ASSE_MATRICE(MATR_ELEM=MAT_RI_G,
                       NUME_DDL=NUM,);
 
+MASMA=ASSE_MATRICE(MATR_ELEM=MAT_MAS,
+                   NUME_DDL=NUM,);
+
 RESULT=MODE_ITER_SIMULT(MATR_A=MAS_RI_M,
                         MATR_B=MAS_RI_G,
                         METHODE='SORENSEN',
                         NMAX_ITER_SOREN=20,
                         TYPE_RESU='MODE_FLAMB',
-                        CALC_FREQ=_F(OPTION='PLUS_PETITE',
-                                     NMAX_FREQ=10,),
-                        VERI_MODE=_F(SEUIL=1e-04,),);
+                        CALC_FREQ=_F(
+                        OPTION='PLUS_PETITE',
+                        NMAX_FREQ=10,),
+                        VERI_MODE=_F(SEUIL=0.0001,),);
 
+MODE=MODE_ITER_SIMULT(MATR_A=MAS_RI_M,
+                      MATR_B=MASMA,
+                      METHODE='SORENSEN',
+                      NMAX_ITER_SOREN=20,
+                      VERI_MODE=_F(SEUIL=0.0001,),);
+
+MODE=CALC_ELEM(reuse =MODE,
+               MODELE=MODMECA,
+               CHAM_MATER=CHMAT,
+               RESULTAT=MODE,
+               OPTION=('SIEF_ELGA_DEPL','ETOT_ELGA','ETOT_ELNO_ELGA','ETOT_ELEM',),);
+
+DEPL=CREA_CHAMP(TYPE_CHAM='ELNO_DEPL_R',
+                OPERATION='EXTR',
+                RESULTAT=MODE,
+                NOM_CHAM='DEPL',
+                NUME_ORDRE=1,);
+
+EVOLELAS=CREA_RESU(OPERATION='AFFE',
+                   TYPE_RESU='EVOL_ELAS',
+                   NOM_CHAM='DEPL',
+                   AFFE=_F(
+                   CHAM_GD=DEPL,
+                   MODELE=MODMECA,
+                   CHAM_MATER=CHMAT,
+                   INST=0.0,),);
+
+EVOLELAS=CALC_ELEM(reuse =EVOLELAS,
+                   RESULTAT=EVOLELAS,
+                   OPTION=('SIEF_ELGA_DEPL','ETOT_ELGA','ETOT_ELNO_ELGA','ETOT_ELEM',),);
 
 RES_NORM=NORM_MODE(MODE=RESULT,
                    NORME='TRAN',);
@@ -115,21 +157,74 @@ CHA_DEPL=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                     NUME_MODE=1,);
 
 MODE_1=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
-                   OPERATION='EXTR',
-                   RESULTAT=RES_NORM,
-                   NOM_CHAM='DEPL',
-                   NUME_ORDRE=1,);
+                  OPERATION='EXTR',
+                  RESULTAT=RES_NORM,
+                  NOM_CHAM='DEPL',
+                  NUME_ORDRE=1,);
 
 TEST_RESU(CHAM_NO=_F(CHAM_GD=MODE_1,
-                     NOM_CMP='DY',
-                     REFERENCE='ANALYTIQUE',  
                      NOEUD='N4',
-                     VALE=1.0),
-             RESU=_F(RESULTAT=RES_NORM,
-                     NUME_MODE=1,
-                     PARA='CHAR_CRIT',
-                     VALE=849350.9396,
-                     PRECISION=2.E-3,
-                     REFERENCE='ANALYTIQUE',))
+                     NOM_CMP='DY',
+                     VALE=1.0,
+                     REFERENCE='ANALYTIQUE',),
+          RESU=_F(RESULTAT=RES_NORM,
+                  NUME_MODE=1,
+                  PARA='CHAR_CRIT',
+                  VALE=849350.9396,
+                  PRECISION=0.002,
+                  REFERENCE='ANALYTIQUE',),);
+
+TEST_RESU(RESU=(_F(RESULTAT=EVOLELAS,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='ETOT_ELEM',
+                   NOM_CMP='TOTALE',
+                   MAILLE='M20',
+                   POINT=1,
+                   VALE=6.6948111485693E-02,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='8.0.15',),
+                _F(RESULTAT=EVOLELAS,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='ETOT_ELGA',
+                   NOM_CMP='TOTALE',
+                   MAILLE='M10',
+                   POINT=1,
+                   VALE=6.7300645536778E+08,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='8.0.15',),
+                _F(RESULTAT=EVOLELAS,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='ETOT_ELNO_ELGA',
+                   NOM_CMP='TOTALE',
+                   MAILLE='M3',
+                   NOEUD='N10',
+                   VALE=7.2802885013540E+08,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='8.0.15',),),);
+
+TEST_RESU(RESU=(_F(RESULTAT=MODE,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='ETOT_ELEM',
+                   NOM_CMP='TOTALE',
+                   MAILLE='M20',
+                   POINT=1,
+                   VALE=6.6948111485693E-02,
+                   REFERENCE='AUTRE_ASTER',),
+                _F(RESULTAT=MODE,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='ETOT_ELGA',
+                   NOM_CMP='TOTALE',
+                   MAILLE='M10',
+                   POINT=1,
+                   VALE=6.7300645536778E+08,
+                   REFERENCE='AUTRE_ASTER',),
+                _F(RESULTAT=MODE,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='ETOT_ELNO_ELGA',
+                   NOM_CMP='TOTALE',
+                   MAILLE='M3',
+                   NOEUD='N10',
+                   VALE=7.2802885013540E+08,
+                   REFERENCE='AUTRE_ASTER',),),);
 
 FIN();

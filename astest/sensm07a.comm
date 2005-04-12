@@ -1,4 +1,4 @@
-# MODIF  DATE 23/08/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 12/04/2005   AUTEUR CIBHHPD L.SALMONA 
 # RESPONSABLE GNICOLAS G.NICOLAS
 # TITRE SENSIBILITE AUX DONNEES - EXEMPLE D'UTILISATION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -154,6 +154,18 @@ resultat=CALC_NO(reuse =resultat,
 # 9. Impressions des resultats
 #
 # 9.1. Le resultat standard
+IMPR_RESU(RESU=_F(RESULTAT=resultat,
+                  SENSIBILITE=(E1,E2,E3,PA,PB),
+                  NOM_CHAM='SIEF_ELGA_DEPL',
+                  GROUP_MA='ZONE_3',));
+IMPR_RESU(RESU=_F(RESULTAT=resultat,
+                  SENSIBILITE=(E1,E2,E3,PA,PB),
+                  NOM_CHAM='SIEF_ELGA_DEPL',
+                  GROUP_NO='GM1',));
+IMPR_RESU(RESU=_F(RESULTAT=resultat,
+                  SENSIBILITE=(E1,E2,E3,PA,PB),
+                  NOM_CHAM='DEPL',
+                  GROUP_NO='GM1',));
 #
 #
 # 9.2. Le resultat des derivees

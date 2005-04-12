@@ -3,7 +3,7 @@
      &                   COMPOR,TYPMOD,INSTM,INSTP,TM,TP)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/03/2005   AUTEUR LAVERNE J.LAVERNE 
+C MODIF ALGORITH  DATE 11/04/2005   AUTEUR SMICHEL S.MICHEL-PONNELLE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -59,7 +59,6 @@ C-----------------------------------------------------------------------
       REAL*8 SUM(2),DSU(2),POIDS
       REAL*8 CRIT
       REAL*8 TEMPM(2),TEMPP(2),TREF
-      REAL*8 SIGN,EPSANM,EPSANP
       REAL*8 COD(NPG),ANGMAS(3)
 
 
@@ -124,15 +123,15 @@ C CALCUL DE LA CONTRAINTE DANS L'ELEMENT AINSI QUE LA DERIVEE
 C DE CELLE-CI PAR RAPPORT AU SAUT DE DEPLACEMENT (SIGMA ET DSIDEP) :
 
           CALL NMCOMP (2,TYPMOD,MATE,COMPOR,CRIT,
-     &                 INSTM,INSTP,
+     &                 RBID,RBID,
      &                 RBID,RBID,RBID,
      &                 RBID,RBID,
      &                 RBID,RBID,RBID,
-     &                 -1.D0,-1.D0,
+     &                 RBID,RBID,
      &                 SUM,DSU,
-     &                 SIGN,VIM(1,KPG),
+     &                 RBID,VIM(1,KPG),
      &                 OPTION,
-     &                 EPSANM,EPSANP,
+     &                 RBID,RBID,
      &                 1,RBID,RBID,
      &                 R8VIDE(),R8VIDE(),
      &                 ANGMAS,

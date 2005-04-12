@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 21/03/2005   AUTEUR LAVERNE J.LAVERNE 
+#& MODIF COMMANDE  DATE 11/04/2005   AUTEUR F6BHHBO P.DEBONNIERES 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -1092,6 +1092,12 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
              CY2             =SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster,formule)),
              CXY2            =SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster,formule)),
              VERI_P          =SIMP(statut='c',typ='TXM',max='**',defaut=("NORM",) ),
+           ),
+           GATT_MONERIE    =FACT(statut='f',min=0,max=1,
+             D_GRAIN         =SIMP(statut='o',typ='R',val_min=0.E+0),
+             PORO_INIT       =SIMP(statut='o',typ='R',val_min=0.E+0),
+             EPSI_01         =SIMP(statut='o',typ='R',defaut= 2.7252E-10,val_min=0.E+0),
+             EPSI_02         =SIMP(statut='o',typ='R',defaut= 9.1440E-41,val_min=0.E+0),
            ),
            CORR_ACIER   =FACT(statut='f',min=0 ,max=1,
              D_CORR           =SIMP(statut='o',typ='R'),

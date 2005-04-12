@@ -10,7 +10,7 @@
      &                   CHONDP, MATRIX, MERIGI, CNVCPR)
      
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/09/2004   AUTEUR BOYERE E.BOYERE 
+C MODIF ALGORITH  DATE 12/04/2005   AUTEUR PBADEL P.BADEL 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -123,7 +123,7 @@ C ======================================================================
      &                  VALPLU, MATRIX, K16BID, STADYN,
      &                  PREMIE,    DEPENT, VITENT, LAMORT,
      &                  MEMASS, MASSE,  AMORT,  COEVIT, COEACC,
-     &                  MERIGI, LICCVG(5))
+     &                  LICCVG(5))
       
       IF (LICCVG(5).NE.0) GOTO 9999
 

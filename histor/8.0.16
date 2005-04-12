@@ -1,0 +1,519 @@
+
+
+-----------------------------------------------------------------------
+--- AUTEUR cibhhpd L.SALMONA   DATE  le 12/04/2005 a 12:07:23
+
+-----------------------------------------------------------------------
+CORRECTION AL 2005-032
+   NB_JOURS_TRAV  : 2
+   POUR_LE_COMPTE_DE   : A.ASSIRE
+   INTERET_UTILISATEUR : OUI
+   TITRE : IMPR_RESU / GMSH
+   FONCTIONNALITE : L'impression au format GMSH possédait deux bugs indentifiés
+
+   DETAILS : L'écriture d'un résultat au format GMSH était bloqué à
+   999999 mailles de meme type. Au dela l'affichage du nombre de mailles par
+   type indiquait *****.
+   La routine IRGMPV qui écrit l'entete au format GMSH utilise pour calculer le
+   nombre de maille des INTEGER (donc des INTEGER*8). Or lors de l'écriture
+   proprement dite dans le fichier GMSH, on utilisait un FORMAT qui n'autorisait
+   que des INTEGER*6. On remplace donc ce FORMAT par INTEGER*8 ce qui donne :
+
+ 1030 FORMAT(3(I6,1X))
+
+ devient
+
+ 1030 FORMAT(3(I8,1X))
+
+   De plus, le logiciel GMSH ne peut recevoir un fichier a post traiter ou il y
+   a mélange d'un maillage et de champs à visualiser. Dans le cas ou un
+   maillage est présent, seul ce maillage est visualisable. Les types de
+   syntaxes ci-dessous sont donc erronés.
+
+   IMPR_RESU(FORMAT='GMSH',
+          UNITE=20,
+	  RESU=(_F(MAILLAGE=MA,),
+		_F(CHAM_GD=TEMP0,
+		  NOM_CMP='TEMP'),
+                  ),
+	      );
+
+   IMPR_RESU(FORMAT='GMSH',
+          UNITE=21,
+	  RESU=(_F(RESULTAT=TEMPV,
+		  NOM_CHAM='TEMP',
+		  INST=0.,
+		  NOM_CMP='TEMP'),
+                _F(MAILLAGE=MA,),
+                ),
+
+            );
+
+
+   On émet donc une alarme pour prévenir l'utilisateur et on interrompt la
+   commande IMPR_RESU en cours.
+
+   Un autre bug faisait que dans la syntaxe suivante
+
+   IMPR_RESU(FORMAT='GMSH',
+          UNITE=20,
+	  RESU=_F(CHAM_GD=TEMP0,
+		  NOM_CMP='TEMP',
+		  MAILLAGE=MAIL),
+	      );
+
+   Le code considérait que l'on voulait imprimer le maillage et le champ TEMP0.
+   Comme il a été précisé dessus, GMSH n'accepte pas un mélange entre maillage
+   et champ ce qui avait pour conséquence de ne pouvoir visualiser que le
+   maillage.
+
+   RESU_FAUX_VERSION_EXPLOITATION    : NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   : NON
+   RESTITUTION_VERSION_EXPLOITATION  : OUI
+   RESTITUTION_VERSION_DEVELOPPEMENT : OUI
+   IMPACT_DOCUMENTAIRE : OUI
+   DOC_U : U7.05.32-B
+   EXPL_ : On précise dans la doc que l'impression d'un maillage et d'un champ
+           est interdite
+   VALIDATION : cas tests personnel
+
+-------------------------------------------------------------------------------
+REALISATION EL 2005-064
+   NB_JOURS_TRAV  : 5.
+   POUR_LE_COMPTE_DE   : O.NICOLAS
+   INTERET_UTILISATEUR : OUI
+   TITRE : CALC_ELEM pour la dynamique
+   FONCTIONNALITE : Initialement, cette fiche devait traiter des options non
+   traités pour les concepts DYNA_HARMO et MODE_MECA. Une fiche analogue (
+   EL2005-063) a été émise pour demander le calcul des indicateurs d'erreurs
+   pour ces memes concepts. Il apparait plus logique de gérer tout ce qui a
+   trait a un concept dans chaque fiche. Aussi cette fiche concerne l'ajout des
+   options non traitées pour le concept MODE_MECA.
+
+   DETAILS :
+   Les options ETOT_XXX n'avait pas été prévu pour le concept MODE_MECA.
+   Deux points ont du etre modifiés pour adapter ce calcul.
+
+   Le premier point concerne les contraintes aux point de Gauss nécessaire au
+   calcul des options. Le seul champ que l'on récupérait était le champ
+   SIEF_ELGA. Or dans le cas d'un concept MODE_MECA, le champ de contraintes aux
+   points de Gauss est SIEF_ELGA_DEPL. J'ai donc rajouté un RSEXCH sur ce champ.
+
+   De plus, pour des numéros d'ordre supérieur à 1, on utilisait en plus des
+   contraintes au numéro d'ordre courant les contraintes au numéro d'ordre
+   précédent. Bien sur dans le cas d'un concept MODE_MECA les contraintes au
+   numéro d'ordre précédent n'ont rien a voir et ne nécessitent pas d'être prises
+   en compte.
+
+   Les validations ont été réalisées en comparant les valeurs issues directement
+   du calcul des options avec le calcul de ces options sur le champ de
+   déplacement extrait du mode qui nous interesse.
+
+   RESU_FAUX_VERSION_EXPLOITATION    : NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   : NON
+   RESTITUTION_VERSION_EXPLOITATION  : NON
+   RESTITUTION_VERSION_DEVELOPPEMENT : OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION : sdll133a (3D), sdls501a (D_PLAN), sslv139a (AXIS_FOURIER)
+   et sslv139b (AXIS)
+
+-----------------------------------------------------------------------
+CORRECTION AL 2004-251
+   NB_JOURS_TRAV  : 0.5
+   POUR_LE_COMPTE_DE   : G.NICOLAS
+   INTERET_UTILISATEUR : OUI
+   TITRE : non affichage des valeurs extraitres par CALC_ELEM dans le .resu
+   FONCTIONNALITE
+     Lorsque l'on imprime un champ de déplacement de sensibilité par rapport
+     à au moins 2 paramètres et sur une liste de noeuds, l'impression
+     se plante lors de la récupération des noms des noeuds.
+     Pas de problème si l'impression est sur tout le maillage.
+   DETAIL
+     routine op0039.f:
+       initialisation des variables NBCMP, NBMAT, NBNOT, NBNOS,
+       NBNOU dans la boucle "SENSIBILITE"
+   RESU_FAUX_VERSION_EXPLOITATION    : NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   : NON
+   RESTITUTION_VERSION_EXPLOITATION  : OUI
+   RESTITUTION_VERSION_DEVELOPPEMENT : OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+     sensm07a
+
+-----------------------------------------------------------------------
+CORRECTION AL 2004-336
+   NB_JOURS_TRAV  : 0.5
+   POUR_LE_COMPTE_DE   : G.NICOLAS
+   INTERET_UTILISATEUR : OUI
+   TITRE : IMPR_RESU et calcul de sensibilité
+   FONCTIONNALITE
+     Lorsque l'on imprime un champ de déplacement de sensibilité par rapport
+     à au moins 2 paramètres et sur une liste de noeuds, l'impression
+     se plante lors de la récupération des noms des noeuds.
+     Pas de problème si l'impression est sur tout le maillage.
+   DETAIL
+     routine op0039.f:
+       initialisation des variables NBCMP, NBMAT, NBNOT, NBNOS,
+       NBNOU dans la boucle "SENSIBILITE"
+   RESU_FAUX_VERSION_EXPLOITATION    : NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   : NON
+   RESTITUTION_VERSION_EXPLOITATION  : OUI
+   RESTITUTION_VERSION_DEVELOPPEMENT : OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+     sensm07a
+
+-----------------------------------------------------------------------
+CORRECTION AL 2005-072
+   NB_JOURS_TRAV  : 0.5
+   POUR_LE_COMPTE_DE   : M.COURTOIS
+   INTERET_UTILISATEUR : OUI
+   TITRE : IMPR_RESU format MED
+   FONCTIONNALITE
+     IMPR_RESU(FORMAT='MED',
+               RESU=_F(RESULTAT=resu1,
+                       GROUP_MA=('SSUP','SINF',),),);
+     ca plante avec le message :
+     <S> <JJALLS01> LONGUEUR DU SEGMENT DE VALEURS INVALIDE
+         >&&IRCMPE.PROFIL_MED             <
+   DETAIL
+     Depuis la réalisation de l'EL 2005-062, on attribue au mot
+     clé FORMAT "position='global'". Ceci permet de réaliser
+     des blocs sous le mot clé facteur RESU.
+     Pour etre en conformité avec la doc U7.05.21, le bloc
+     b_topologie (NOEUD, GROUP_NO, MAILLE, GROUP_MA) ne
+     s'applique pas au format MED.
+
+   RESU_FAUX_VERSION_EXPLOITATION    : NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   : NON
+   RESTITUTION_VERSION_EXPLOITATION  : OUI
+   RESTITUTION_VERSION_DEVELOPPEMENT : OUI
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_U : U7.05.21
+       EXPL_ : NOM_CMP s'applique au format MED
+   VALIDATION
+     passage des 59 cas tests validant MED
+
+
+-----------------------------------------------------------------------
+--- AUTEUR f6bhhbo P.DEBONNIERES   DATE  le 11/04/2005 a 15:14:43
+
+-----------------------------------------------------------------------------
+REALISATION EL 2005-026
+   NB_JOURS_TRAV : 5.(FL)+15.(RM)+1.(PdB)
+   POUR LE COMPTE DE : Ph de BONNIERES
+   INTERET_UTILISATEUR : OUI
+   TITRE : Loi GATT_MONERIE
+   FONCTIONNALITE :
+   DETAIL :
+   Intégration dans Code_Aster de la loi de comportement thermomécanique du
+   combustible "Gatt-Monerie" afin de simuler des essais d'indentation. Cette
+   loi de comportement est une loi élasto-viscoplastique isotrope sans
+   écrouissage dont les spécifités sont :
+   - le potentiel de dissipation est la somme de deux potentiels de type Norton
+     (sans seuil),
+   - le combustible présentant une porosité résiduelle susceptible d'évoluer en
+     compression (densification), ce potentiel dépend, en plus de la contrainte
+     équivalente, de la contrainte hydrostatique.
+   Les deux variables internes de ce modèle sont la déformation plastique
+   cumulée et la fraction volumique de porosité.
+   Ce développement a ete réalisé par Renaud Masson et Francis Lebouvier.
+
+   SYNTAXE :
+   - DEFI_MATERIAU
+     ACIER=DEFI_MATERIAU(ELAS=_F(NU=0.3, E=2.E5,),
+                         GATT_MONERIE=_F( D_GRAIN= 6.E-6,
+                                       PORO_INIT=0.01,
+                                       EPSI_01=2.7252E-10,
+                                       EPSI_02=9.1440E-41,),)
+     avec D_GRAIN    : taille du grain combustible
+          PORO_INIT  : porosité initiale
+          EPSI_01    : coefficient vitesse de deformation basse contrainte
+          EPSI_02    : coefficient vitesse de deformation forte contrainte
+
+   - STAT_NON_LINE
+
+           COMP_INCR=_F(TOUT='OUI',
+                        RELATION='GATT_MONERIE',
+                        DEFORMATION='PETIT_REAC',),
+     Variables internes
+        V1 : déformation plastique cumulée
+        V2 : fraction volumique de porosité
+   DEVELOPPEMENT :
+     - Routines fortran
+       . nouvelles : ggpgmo.f nmvpgm.f  vpagm1.f  vpagm2.f
+       . modifiées : nmcomp.f
+     - Catalogues
+       . modifiés : defi_materiau, c_comp_incr
+
+   RESU_FAUX_VERSION_EXPLOITATION    : NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   : NON
+   RESTITUTION_VERSION_EXPLOITATION  : NON
+   RESTITUTION_VERSION_DEVELOPPEMENT : OUI
+   VALIDATION :
+      nouveau cas-test (ssnv114a) essai de compression avec le
+      modèle de GATT-MONERIE
+   IMPACT_DOCUMENTAIRE : OUI
+      DOC_U : U4.43.01 DEFI_MATERIAU
+          EXPL_  : - ajout des mots clés GATT_MONERIE, D_GRAIN,
+                     PORO_INIT, EPSI_01, EPSI02
+      DOC_U : U4.51.11 COMP_INCR
+          EXPL_  : - ajout de la relation GATT_MONERIE
+      DOC_R : R5.03.08 : Intégration des relations de comportement
+                         viscoélastiques dans l'opérateur STAT_NON_LINE
+          EXPL_  : - ajout de la loi de comportement GATT_MONERIE
+      DOC_V : V6.01.114
+          EXPL_  : nouveau cas-test ssna114a: essai de compression avec le
+                   modèle de GATT-MONERIE
+
+
+-----------------------------------------------------------------------
+--- AUTEUR pbadel P.BADEL   DATE  le 12/04/2005 a 20:25:50
+
+------------------------------------------------------------------------------
+REALISATION EL 2004-012
+   NB_JOURS_TRAV  : 2.
+   INTERET_UTILISATEUR : NON
+   TITRE : sauvegarde base en cas de non convergence
+   FONCTIONNALITE
+      on donne aux arrets de STAT_NON_LINE :
+         - iteration maxi
+         - echec (loi de comportement, contact, etc)
+         - arret CPU (iteration ou pas)
+      le meme comportement au l'arret CPU (au niveau du pas
+      de temps) : on archive le dernier pas de calcul OK
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_U : U4.51.03
+       EXPL_ : precision sur l'archivage
+   VALIDATION : test perso (il faut s'arreter sur un probleme)
+   DETAILS
+      on en profite pour faire un peu de menage dans op0070 : l'initialisation
+      a 0 (resp. l'agglomeration) se font maintenant dans nmini0 (resp.
+      nminit)
+
+      on regroupe la gestion des differentes erreurs a la fin de op0070
+
+      on a mutualisé ce point avec l'AL2005-090 (Cf. ci-dessous)
+
+      op0070.f
+      nmini0.f (new) avec CRP_21
+
+------------------------------------------------------------------------------
+CORRECTION AL 2005-090
+   INTERET_UTILISATEUR : NON
+   TITRE : stockage incorrect de la SD_INFO_CHARGE dans la SD EVOL_NOLI
+   FONCTIONNALITE :
+     en cas d'arret imprévu (iteration max, echecs loi de comportement,
+     temps CPU), la SD INFO_CHARGE - qui permet de faire des calculs
+     en post-traitement CALC_ELEM, CALC_NO sans préciser le chargement
+     utilisé pour faire le calcul - n'etait pas toujours bien stockee.
+     Cela interdisait de faire des CALC_ELEM, CALC_NO par la suite.
+     On corrige ce point.
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  OUI
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION : test perso (il faut s'arreter sur un probleme)
+   DETAILS :
+     avant le travail de menage de fond décrit précédemment, le bug
+     venait d'une erreur bete de nommage de variable : un LISCHA  a la
+     place d'un LISCH2
+   NB_JOURS_TRAV  : 2.
+------------------------------------------------------------------------------
+CORRECTION AL 2005-063
+   NB_JOURS_TRAV  : 1.
+   INTERET_UTILISATEUR : NON
+   TITRE : prise en compte de REAC_ITER_ELAS
+   FONCTIONNALITE :
+     le REAC_ITER_ELAS fourni par l'utilisateur n'etait pas utilisé,
+     a cause d'un bug : erreur dans nmmatr sur l'indice de tableau PARMET :
+      on prenait pour REAC_ITER_ELAS la valeur entière de PAS_MINI_ELAS...
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  OUI
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+      wtnl103b.comm
+
+------------------------------------------------------------------------------
+REALISATION EL 2003-135
+   NB_JOURS_TRAV  : 6.
+   INTERET_UTILISATEUR : NON
+   TITRE : DYNA_TRAN_EXPLI dans op0070
+   FONCTIONNALITE
+      L'opérateur DYNA_TRAN_EXPLI rejoint DYNA_NON_LINE
+      et STAT_NON_LINE dans op0070
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION : le test de DYNA_TRAN_EXPLI
+   DETAILS
+      on remet les développements de DYNA_TRAN_EXPLI qui s'etaient
+      fait dans op0069 (clone d'op0070) dans op0070
+
+      RESTE A FAIRE :
+        1. valider (un seul cas-test de DYNA_TRAN_EXPLI),
+           en particulier toutes les fonctionnalites :
+           variables de commandes, archivage, etc... blinder
+           les incompatibilités
+        2. faire de DYNA_TRAN_EXPLI un sous produit de
+           DYNA_NON_LINE (SOLVEUR='EXPLICITE')
+        3. commenter dignement les routines de dynamique
+           sous op0070 (a minima les IN/OUT)
+
+      IMPACT :
+        mxcacc.f
+        mxfife.f
+        mxmass.f
+        ndlect.f
+        nmdepl.f
+        nminit.f
+        nmlect.f
+        nmmatr.f
+        nmpred.f
+        nmprta.f
+
+        op0069.f (!!! pour une petite faiblesse de l'AGLA !!!)
+
+
+-----------------------------------------------------------------------
+--- AUTEUR rezette C.REZETTE   DATE  le 12/04/2005 a 08:52:48
+
+------------------------------------------------------------------------------
+CORRECTION AL 2005-062
+   NB_JOURS_TRAV  : 0.5
+   POUR_LE_COMPTE_DE : S.MICHEL-PONNELLE
+   INTERET_UTILISATEUR : OUI
+   TITRE : Modélisation 3D_NS
+   FONCTIONNALITE Suppression des fichiers relatifs à cette modélisation.
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  OUI
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION : liste restreinte
+   DETAILS :
+   La modélisation 3D_NS permettait d'utiliser une matrice non symétrique dans
+   le cas par exemple du couplage fluage-fissuration.
+   Depuis la restitution de cette modélisation (histor 7.2.6 décembre 2003), des
+   évolutions de la modélisation classique 3D ont permis l'accès aux matrices non
+   symétriques. La modélisation non-symétrique n'a donc plus de raison d'etre,
+   on fait donc le ménage.
+
+   En parcourant les catalogues, nous avons constaté que la modélisation 3D_NS
+   était absente du fichier phenomene_modelisation__.capy, de ce fait aucun
+   élément fini n'est rattaché à cette modélisation. De plus, les catalogues
+   d'éléments mentionnés dans l'histor 7.2.6 n'existent plus.
+   En parcourant les fichiers de commandes de la base de tests, on s'est apercu
+   que la modélisation 3D_NS n'était plus utilisée.
+   Aucune doc U3 ne fait référence à cette modélisation.
+   Seul le catalogue de commandes affe_modele.capy reconnait cette modélisation.
+   Nous l'avons donc corrigé.
+   Source modifiée  : affe_modele.capy
+
+
+-----------------------------------------------------------------------
+--- AUTEUR smichel S.MICHEL-PONNELLE   DATE  le 11/04/2005 a 13:31:30
+
+-----------------------------------------------------------------------------
+CORRECTION AL 2005-119
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : NON
+   TITRE : comportement JOINT_BA
+   FONCTIONNALITE
+   Lors d'une étude avec la loi de comportement, le calcul peut planter pour cause
+   de memory fault. Ceci est dû au fait que dans la routine lcjoba.f, les variables
+   internes sont mises à jour quelque soit l'option et donc même si on est dans le
+   cas RIGI_MECA_TANG.
+   DETAILS
+   On (re)met la mise à jour des variables internes dans la condition IF (RESI)
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  OUI
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+     etude en cours
+
+-----------------------------------------------------------------------------
+CORRECTION AL 2005-105
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : NON
+   POUR_LE_COMPTE_DE : J. LAVERNE
+   TITRE : STAT_NON_LINE / nmcomp - lcjoba
+   FONCTIONNALITE
+     c'est en fait le même problème que pour AL2005-119
+     + ménage dans nmfi2d à la demande de Jérome
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  OUI
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+     passage des cas-tests utilisant joint_ba
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+ CASTEST AJOUT ssna114a                      f6bhhbo P.DEBONNIERES      128    128      0
+ CASTEST MODIF sdll133a                      cibhhpd L.SALMONA          244     89      1
+ CASTEST MODIF sdls501a                      cibhhpd L.SALMONA          244     85      1
+ CASTEST MODIF sensm07a                      cibhhpd L.SALMONA          216     13      1
+ CASTEST MODIF sslv139a                      cibhhpd L.SALMONA          237    101      2
+ CASTEST MODIF sslv139b                      cibhhpd L.SALMONA          230    110     15
+ CASTEST MODIF wtnl103b                       pbadel P.BADEL            426     54     75
+ CASTEST MODIF zzzz161a                      cibhhpd L.SALMONA          226      2      3
+CATALOPY MODIF commande/affe_modele          rezette C.REZETTE          177      1      2
+CATALOPY MODIF commande/defi_materiau        f6bhhbo P.DEBONNIERES     2818      7      1
+CATALOPY MODIF commande/dyna_tran_expli       pbadel P.BADEL            260      2      2
+CATALOPY MODIF commande/impr_resu            cibhhpd L.SALMONA          146      2      2
+CATALOPY MODIF commun/c_comp_incr            f6bhhbo P.DEBONNIERES      312      3      1
+ FORTRAN AJOUT algorith/diagp2                pbadel P.BADEL             92     92      0
+ FORTRAN AJOUT algorith/ggpgmo               f6bhhbo P.DEBONNIERES      118    118      0
+ FORTRAN AJOUT algorith/nmini0                pbadel P.BADEL            119    119      0
+ FORTRAN AJOUT algorith/nmvpgm               f6bhhbo P.DEBONNIERES      367    367      0
+ FORTRAN AJOUT algorith/vpagm1               f6bhhbo P.DEBONNIERES       84     84      0
+ FORTRAN AJOUT algorith/vpagm2               f6bhhbo P.DEBONNIERES       90     90      0
+ FORTRAN MODIF algorith/dinit                 pbadel P.BADEL            264     61     14
+ FORTRAN MODIF algorith/iniobs                pbadel P.BADEL            100     17     10
+ FORTRAN MODIF algorith/lcjoba               smichel S.MICHEL-PONNELLE    377      4      2
+ FORTRAN MODIF algorith/mxcacc                pbadel P.BADEL            180      9     31
+ FORTRAN MODIF algorith/mxfife                pbadel P.BADEL            188      2      2
+ FORTRAN MODIF algorith/mxmass                pbadel P.BADEL            201      5      8
+ FORTRAN MODIF algorith/ndlect                pbadel P.BADEL            221     45      9
+ FORTRAN MODIF algorith/nmcomp               f6bhhbo P.DEBONNIERES      688     11      1
+ FORTRAN MODIF algorith/nmdepl                pbadel P.BADEL            288     24      3
+ FORTRAN MODIF algorith/nmfi2d               smichel S.MICHEL-PONNELLE    198      5      6
+ FORTRAN MODIF algorith/nminit                pbadel P.BADEL            492    123     17
+ FORTRAN MODIF algorith/nmlect                pbadel P.BADEL            158      3      1
+ FORTRAN MODIF algorith/nmmatr                pbadel P.BADEL            442      5      3
+ FORTRAN MODIF algorith/nmpred                pbadel P.BADEL            125     19     10
+ FORTRAN MODIF algorith/nmprta                pbadel P.BADEL            309     54     10
+ FORTRAN MODIF algorith/op0069                pbadel P.BADEL            657     20     19
+ FORTRAN MODIF algorith/op0070                pbadel P.BADEL            798    147    190
+ FORTRAN MODIF calculel/mecalm               cibhhpd L.SALMONA         2335     18      7
+ FORTRAN MODIF elements/te0575               cibhhpd L.SALMONA          336      2      2
+ FORTRAN MODIF prepost/irgmpv                cibhhpd L.SALMONA          148      2      2
+ FORTRAN MODIF prepost/op0039                cibhhpd L.SALMONA          827     38     10
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :    7         998       998              +998
+ MODIF :   33       14868      1083     463      +620
+ SUPPR :    0           0                 0        +0
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :   40       15866      2081     463     +1618 

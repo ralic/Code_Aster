@@ -1,4 +1,4 @@
-# MODIF  DATE 07/03/2005   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 12/04/2005   AUTEUR CIBHHPD L.SALMONA 
 # RESPONSABLE GNICOLAS G.NICOLAS
 # TITRE ESSAI MED POUR DIFFERENTS TYPES D ELEMENTS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -135,8 +135,7 @@ IMPR_RESU ( FORMAT='MED', RESU=_F( RESULTAT=RESUTRQ2,
                                    NOM_CHAM = ('SIGM_ELNO_DEPL',),),
             INFO=2 ) ;
 IMPR_RESU ( FORMAT='MED', RESU=_F( RESULTAT=RESUTRQ2,
-                                   NOM_CHAM = ('ERRE_ELGA_NORE',),
-                                   GROUP_MA = 'MILIEU' ),
+                                   NOM_CHAM = 'ERRE_ELGA_NORE',),
             INFO=2 ) ;
 #
 # 5. Relecture

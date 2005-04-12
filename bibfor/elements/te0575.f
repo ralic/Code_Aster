@@ -3,7 +3,7 @@
       CHARACTER*16      OPTION,NOMTE
 C.......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 12/04/2005   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -187,7 +187,7 @@ C       ------------------------------
 C
          CALL DFDM2D ( NNO,IGAU,IPOIDS,IDFDE,ZR(IGEOM),DFDX,DFDY,POIDS)
 C
-         IF (MODELI(1:2).EQ.'AX') THEN
+         IF ((MODELI(1:2).EQ.'AX').OR.(MODELI(1:2).EQ.'FO')) THEN
              RAYON = 0.D0
              DO 41 I = 1, NNO
                 RAYON = RAYON + ZR(IVF+K+I-1)*ZR(IGEOM+2*(I-1))

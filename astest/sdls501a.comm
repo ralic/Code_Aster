@@ -1,5 +1,5 @@
 
-# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 12/04/2005   AUTEUR CIBHHPD L.SALMONA 
 # RESPONSABLE ADBHHPM P.MASSIN
 # DATE   : 24/03/2000
 # AUTEUR : F. LEBOUVIER (DELTACAD)
@@ -131,6 +131,31 @@ MODE=MODE_ITER_SIMULT(MATR_A=MAT_AS_R,
                       CALC_FREQ=_F(OPTION='BANDE',
                                    FREQ=(500.0,5000.0,),),
                       INFO=2,);
+
+MODE=CALC_ELEM(reuse=MODE,RESULTAT=MODE,MODELE=MODELE,
+                        CHAM_MATER=AFF_MAT,
+                OPTION=('SIEF_ELGA_DEPL','ETOT_ELEM','ETOT_ELGA','ETOT_ELNO_ELGA'),
+                );
+
+DEPL=CREA_CHAMP(TYPE_CHAM='ELNO_DEPL_R',
+                OPERATION='EXTR',
+                RESULTAT=MODE,
+                NOM_CHAM='DEPL',
+                NUME_ORDRE=1,);
+
+ELAS=CREA_RESU(OPERATION='AFFE',
+               TYPE_RESU='EVOL_ELAS',
+               NOM_CHAM='DEPL',
+               AFFE=_F(
+               CHAM_GD=DEPL,
+               MODELE=MODELE,
+               CHAM_MATER=AFF_MAT,
+               INST=0.0,),);
+
+ELAS=CALC_ELEM(reuse =ELAS,
+               RESULTAT=ELAS,
+               OPTION=('SIEF_ELGA_DEPL','ETOT_ELGA','ETOT_ELNO_ELGA','ETOT_ELEM',),);
+
 #
 #---------------------------------------------------------------------
 #                     VERIFICATIONS DES RESULTATS
@@ -155,6 +180,65 @@ TEST_RESU(RESU=(_F(RESULTAT=MODE,
                    VALE=3225.4161,
                    CRITERE='RELATIF',
                    PRECISION=0.01,),),);
+
+TEST_RESU(RESU=(_F(RESULTAT=ELAS,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='ETOT_ELEM',
+                   NOM_CMP='TOTALE',
+                   MAILLE='MA5',
+                   VALE=2.227508550862E+05,
+                   POINT=1,
+                   PRECISION=1e-10,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='8.0.15',),
+                _F(RESULTAT=ELAS,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='ETOT_ELGA',
+                   NOM_CMP='TOTALE',
+                   MAILLE='MA10',
+                   POINT=1,
+                   VALE=9.5995307118466E+08,
+                   PRECISION=1e-10,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='8.0.15',),
+                _F(RESULTAT=ELAS,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='ETOT_ELNO_ELGA',
+                   NOM_CMP='TOTALE',
+                   MAILLE='MA25',
+                   NOEUD='NO100',
+                   VALE=5.0435078630760E+10,
+                   PRECISION=1e-10,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='8.0.15',),),);
+
+TEST_RESU(RESU=(_F(RESULTAT=MODE,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='ETOT_ELEM',
+                   NOM_CMP='TOTALE',
+                   MAILLE='MA5',
+                   POINT=1,
+                   VALE=2.227508550862E+05,
+                   PRECISION=1e-10,
+                   REFERENCE='AUTRE_ASTER',),
+                _F(RESULTAT=MODE,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='ETOT_ELGA',
+                   NOM_CMP='TOTALE',
+                   MAILLE='MA10',
+                   POINT=1,
+                   VALE=9.5995307118466E+08,
+                   PRECISION=1e-10,
+                   REFERENCE='AUTRE_ASTER',),
+                _F(RESULTAT=MODE,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='ETOT_ELNO_ELGA',
+                   NOM_CMP='TOTALE',
+                   MAILLE='MA25',
+                   NOEUD='NO100',
+                   VALE=5.0435078630760E+10,
+                   PRECISION=1e-10,
+                   REFERENCE='AUTRE_ASTER',),),);
 
 FIN();
 #

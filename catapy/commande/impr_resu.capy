@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 21/03/2005   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 12/04/2005   AUTEUR CIBHHPD L.SALMONA 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -121,7 +121,7 @@ IMPR_RESU=PROC(nom="IMPR_RESU",op=39,
            ),
 ###
            b_topologie=BLOC(condition="""((CHAM_GD != None)or(RESULTAT != None))and\
-           ((FORMAT == 'RESULTAT')or(FORMAT == 'IDEAS')or(FORMAT == 'MED'))""",
+           ((FORMAT == 'RESULTAT')or(FORMAT == 'IDEAS'))""",
                                 fr="sélection des entités toplogiques",
              TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),
              NOEUD           =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),

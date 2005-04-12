@@ -6,7 +6,7 @@
 C
 C TOLE CRP_20
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 08/02/2005   AUTEUR CIBHHPD L.SALMONA 
+C MODIF CALCULEL  DATE 12/04/2005   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -139,7 +139,6 @@ C     --- VARIABLES LOCALES ---
 
 
       CALL JEMARQ()
-
 C               123456789012345678901234
       BLAN24 = '                        '
 C               12   345678   90123
@@ -1501,23 +1500,28 @@ C ---- VERIF SENSIBILITE FIN
 
 C ---       RECUPERATION DES CONTRAINTES DE L'INSTANT COURANT :
 C           -------------------------------------------------
-              CALL RSEXC2(1,1,RESUCO,'SIEF_ELGA',IORDR,CHSIG,OPTION,
+              CALL RSEXC2(1,2,RESUCO,'SIEF_ELGA',IORDR,CHSIG,OPTION,
      &                    IRET1)
               IF (IRET1.GT.0) THEN
-                CALL UTMESS('A',NOMCMD,'LE RESULTAT '//RESUCO//
+                 CALL RSEXC2(2,2,RESUCO,'SIEF_ELGA_DEPL',IORDR,CHSIG,
+     &                    OPTION,IRET2)
+                 IF (IRET2.GT.0) THEN
+                    CALL UTMESS('A',NOMCMD,'LE RESULTAT '//RESUCO//
      &                      ' DOIT COMPORTER UN CHAMP DE CONTRAINTES '//
      &                      'AU NUMERO D''ORDRE '//KIORD//' .')
-                GO TO 330
-              END IF
+     
+                    GO TO 330
+                 END IF
+              ENDIF
 
 C ---       SI LE NUMERO D'ORDRE COURANT EST SUPERIEUR A 1, ON
 C ---       RECUPERE LES CONTRAINTES DE L'INSTANT PRECEDENT :
 C           -----------------------------------------------
-              IF (IAUX.GT.1) THEN
+              IF ((IAUX.GT.1).AND.(CONCEP.NE.'MODE_MECA')) THEN
                 IORDRM = ZI(JORDR+IAUX-2)
                 CALL CODENT(IORDRM,'G',KIORDM)
-                CALL RSEXC2(1,1,RESUCO,'SIEF_ELGA',IORDRM,CHSIGM,OPTION,
-     &                      IRET1)
+                CALL RSEXC2(1,1,RESUCO,'SIEF_ELGA',IORDRM,CHSIGM,
+     &                      OPTION,IRET1)
                 IF (IRET1.GT.0) THEN
                   CALL UTMESS('A',NOMCMD,'LE RESULTAT '//RESUCO//
      &                        ' DOIT COMPORTER UN CHAMP DE CONTRAINTES '
@@ -1539,7 +1543,7 @@ C           ---------------------------------------------------------
 C ---       SI LE NUMERO D'ORDRE COURANT EST SUPERIEUR A 1, ON
 C ---       RECUPERE LES DEPLACEMENTS DE L'INSTANT PRECEDENT :
 C           ------------------------------------------------
-              IF (IAUX.GT.1) THEN
+              IF ((IAUX.GT.1).AND.(CONCEP.NE.'MODE_MECA')) THEN
                 CALL RSEXC2(1,1,RESUCO,'DEPL',IORDRM,CHDEPM,OPTION,
      &                      IRET1)
                 IF (IRET1.GT.0) THEN
@@ -1552,8 +1556,15 @@ C           ------------------------------------------------
 
               CALL RSEXC1(LERES1,OPTION,IORDR,CHELEM)
 
+              IF (CONCEP.EQ.'MODE_MECA') THEN
+              CALL ENETOT(OPTION,1,LIGREL,CHGEOM,CHDEPL,CHDEPM,CHSIG,
+     &                    CHSIGM,CHELEM)
+              ELSE
+
               CALL ENETOT(OPTION,IAUX,LIGREL,CHGEOM,CHDEPL,CHDEPM,CHSIG,
      &                    CHSIGM,CHELEM)
+              ENDIF
+
               CALL RSNOCH(RESUCO,OPTION,IORDR,' ')
               CALL JEDEMA()
   320       CONTINUE

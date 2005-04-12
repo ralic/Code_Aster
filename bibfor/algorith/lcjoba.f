@@ -1,7 +1,7 @@
       SUBROUTINE LCJOBA (NDIM, TYPMOD, IMATE, CRIT, SUM, DSU,
      &                    VIM,OPTION, SIG, VIP,  DSIDEP)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/03/2005   AUTEUR LAVERNE J.LAVERNE 
+C MODIF ALGORITH  DATE 11/04/2005   AUTEUR SMICHEL S.MICHEL-PONNELLE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -260,6 +260,7 @@ C         ENDOMMAGEMENT EN REGION 2
             ZF2  = Z2
           ENDIF          
           DFT  = 1.D0 - DF0T*DF2T
+C          write(6,*)eps(2),yit,df0t,df2t,dft
           DFN = D0N
         ELSE
 
@@ -334,7 +335,6 @@ C----------------------------------------------------------------
         IF(TRAC .AND. (.NOT.ADHER)) TAOFRO=0.D0
         SIG(2)=SIG(2)+TAOFRO
       
-      END IF   
 
 C    6 -   MISE A JOUR DES VARIABLES INTERNES
 C ------------------------------------------------------------
@@ -345,6 +345,8 @@ C ------------------------------------------------------------
         VIP(4) = ZF2
         VIP(5) = GAMFRO
         VIP(6) = X0
+
+      END IF   
 
 C ======================================================================
 C     CALCUL  DE LA MATRICE TANGENTE DSIDEP

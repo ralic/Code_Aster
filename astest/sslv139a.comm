@@ -1,4 +1,4 @@
-# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 12/04/2005   AUTEUR CIBHHPD L.SALMONA 
 # TITRE : FLAMBEMENT D'UNE PLAQUE CIRCULAIRE SOUMISE A UNE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -43,7 +43,8 @@ MAIL = MODI_MAILLAGE(MAILLAGE=MAIL, reuse=MAIL,MODELE=MODMECA,
                      ORIE_PEAU_2D=_F(GROUP_MA=('BC',),),);
 
 MAT1=DEFI_MATERIAU(ELAS=_F(E=2.1E11,
-                           NU=0.3,),);
+                           NU=0.3,
+                           RHO=7800,),);
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
                     MODELE=MODMECA,
@@ -89,6 +90,9 @@ MAT_RI_G=CALC_MATR_ELEM(OPTION='RIGI_GEOM',
                         SIEF_ELGA=SIG,
                         MODE_FOURIER=0,);
 
+MAT_MAS=CALC_MATR_ELEM(OPTION='MASS_MECA',
+                       MODELE=MODMECA,
+                       CHAM_MATER=CHMAT,);
 
 NUM=NUME_DDL(MATR_RIGI=MAT_RI_M,);
 
@@ -98,6 +102,9 @@ MAS_RI_M=ASSE_MATRICE(MATR_ELEM=MAT_RI_M,
 MAS_RI_G=ASSE_MATRICE(MATR_ELEM=MAT_RI_G,
                       NUME_DDL=NUM,);
 
+MASSE=ASSE_MATRICE(MATR_ELEM=MAT_MAS,
+                   NUME_DDL=NUM,);
+
 RESULT=MODE_ITER_SIMULT(MATR_A=MAS_RI_M,
                         MATR_B=MAS_RI_G,
                         METHODE='SORENSEN',
@@ -106,6 +113,38 @@ RESULT=MODE_ITER_SIMULT(MATR_A=MAS_RI_M,
                         CALC_FREQ=_F(OPTION='PLUS_PETITE',
                                      NMAX_FREQ=10,),
                         VERI_MODE=_F(SEUIL=1e-04,),);
+
+
+MODE=MODE_ITER_SIMULT(MATR_A=MAS_RI_M,
+                      MATR_B=MASSE,
+                      METHODE='SORENSEN',
+                      NMAX_ITER_SOREN=20,
+                      VERI_MODE=_F(SEUIL=1e-04,),);
+
+MODE=CALC_ELEM(reuse =MODE,
+               CHAM_MATER=CHMAT,
+               RESULTAT=MODE,
+               MODELE=MODMECA,
+               OPTION=('SIEF_ELGA_DEPL','ETOT_ELGA','ETOT_ELNO_ELGA','ETOT_ELEM',),);
+
+DEPL=CREA_CHAMP(TYPE_CHAM='ELNO_DEPL_R',
+                OPERATION='EXTR',
+                RESULTAT=MODE,
+                NOM_CHAM='DEPL',
+                NUME_ORDRE=1,);
+
+EVOLELAS=CREA_RESU(OPERATION='AFFE',
+                  TYPE_RESU='EVOL_ELAS',
+                  NOM_CHAM='DEPL',
+                  AFFE=_F(
+                  CHAM_GD=DEPL,
+                  MODELE=MODMECA,
+                  CHAM_MATER=CHMAT,
+                  INST=0.0,),);
+
+EVOLELAS=CALC_ELEM(reuse =EVOLELAS,
+                  RESULTAT=EVOLELAS,
+                  OPTION=('SIEF_ELGA_DEPL','ETOT_ELGA','ETOT_ELNO_ELGA','ETOT_ELEM',),);
 
 
 RES_NORM=NORM_MODE(MODE=RESULT,
@@ -134,5 +173,65 @@ TEST_RESU(CHAM_NO=_F(CHAM_GD=MODE_1,
                      VALE=849350.9396,
                      PRECISION=2.E-3,
                      REFERENCE='ANALYTIQUE',))
+
+TEST_RESU(RESU=(_F(RESULTAT=EVOLELAS,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='ETOT_ELEM',
+                   NOM_CMP='TOTALE',
+                   POINT=1,
+                   MAILLE='M10',
+                   VALE= 1.5224280768128E-03,
+                   PRECISION=1e-10,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='8.0.15',),
+                _F(RESULTAT=EVOLELAS,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='ETOT_ELGA',
+                   NOM_CMP='TOTALE',
+                   MAILLE='M10',
+                   POINT=1,
+                   VALE=3.4615986863405E+08,
+                   PRECISION=1e-10,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='8.0.15',),
+                _F(RESULTAT=EVOLELAS,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='ETOT_ELNO_ELGA',
+                   NOM_CMP='TOTALE',
+                   MAILLE='M6',
+                   NOEUD='N15',
+                   VALE= 3.0300594994087E+08,
+                   PRECISION=1e-10,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='8.0.15',),),);
+
+
+TEST_RESU(RESU=(_F(RESULTAT=MODE,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='ETOT_ELEM',
+                   NOM_CMP='TOTALE',
+                   POINT=1,
+                   MAILLE='M10',
+                   VALE= 1.5224280768128E-03,
+                   PRECISION=1e-10,
+                   REFERENCE='AUTRE_ASTER',),
+                _F(RESULTAT=MODE,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='ETOT_ELGA',
+                   NOM_CMP='TOTALE',
+                   MAILLE='M10',
+                   POINT=1,
+                   VALE=3.4615986863405E+08,
+                   PRECISION=1e-10,
+                   REFERENCE='AUTRE_ASTER',),
+                _F(RESULTAT=MODE,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='ETOT_ELNO_ELGA',
+                   NOM_CMP='TOTALE',
+                   MAILLE='M6',
+                   NOEUD='N15',
+                   VALE= 3.0300594994087E+08,
+                   PRECISION=1e-10,
+                   REFERENCE='AUTRE_ASTER',),),);
 
 FIN();

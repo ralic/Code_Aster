@@ -4,7 +4,7 @@
      &                   INPSCO, PARCON )
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+C MODIF ALGORITH  DATE 12/04/2005   AUTEUR PBADEL P.BADEL 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -59,6 +59,8 @@ C      OUT SOLVEU : NOM DU SOLVEUR
 C      OUT PARMET : PARAMETRES DE LA METHODE DE RESOLUTION
 C                     1 : REAC_INCR
 C                     2 : REAC_ITER
+C                     3 : PAS_MINI_ELAS
+C                     4 : REAC_ITER_ELAS
 C                    10 : ITER_LINE_MAXI
 C                    11 : RESI_LINE_RELA
 C                    20 : RHO (LAGRANGIEN)

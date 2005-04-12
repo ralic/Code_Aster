@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 25/01/2005   AUTEUR GENIAUT S.GENIAUT 
+#& MODIF COMMANDE  DATE 12/04/2005   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -57,7 +57,6 @@ AFFE_MODELE=OPER(nom="AFFE_MODELE",op=18,sd_prod=modele_sdaster,
                                                                       "3D_HM",
                                                                       "3D_INCO",
                                                                       "3D_JOINT_CT",
-                                                                      "3D_NS",
                                                                       "3D_SI",
                                                                       "3D_THH",
                                                                       "3D_THHM",
