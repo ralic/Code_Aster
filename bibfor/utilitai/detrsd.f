@@ -3,8 +3,7 @@
       CHARACTER*(*) TYPESD,NOMSD
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 01/04/2005   AUTEUR VABHHTS J.PELLET 
-C TOLE CRP_20
+C MODIF UTILITAI  DATE 18/04/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -35,12 +34,13 @@ C          'TABLE'        'DEFI_CONT'    'RESO_CONT'
 C          'SOLVEUR'      'CORRESP_2_MAILLA'
 C          'CHAM_NO_S'    'CHAM_ELEM_S'
 C          'CHAM_NO'      'CHAM_ELEM'  'CARTE'
-C          'CHAMP_GD' (CHAPEAU AUX CHAM_NO/CHAM_ELEM/CARTE/RESUELEM)
+C          'CHAMP' (CHAPEAU AUX CHAM_NO/CHAM_ELEM/CARTE/RESUELEM)
+C          'CHAMP_GD' (CHAPEAU DESUET AUX CHAM_NO/CHAM_ELEM/...)
 C          'RESULTAT'  'LIGREL'  'NUAGE'  'MAILLAGE'
 C          (OU ' ' QUAND ON NE CONNAIT PAS LE TYPE).
 C       NOMSD   : NOM DE LA STRUCTURE DE DONNEES A DETRUIRE
 C          NUME_DDL(K14),MATR_ASSE(K19),VECT_ASSE(K19)
-C          CHAMP_GD(K19),MATR_ELEM(K8),VECT_ELEM(K8),VARI_COM(K14)
+C          CHAMP(K19),MATR_ELEM(K8),VECT_ELEM(K8),VARI_COM(K14)
 C          DEFI_CONT(K16),RESO_CONT(K14),TABLE(K19)
 C          CHAM_NO(K19),CHAM_NO_S(K19),CHAM_ELEM(K19),CHAM_ELEM_S(K19)
 
@@ -64,13 +64,13 @@ C     ----- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     ----- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
-      INTEGER IRET,IAD,LONG,I,NBCH,ILIRES,JNSLV,IBID
+      INTEGER IRET,IAD,LONG,I,NBCH,ILIRES,IBID
       CHARACTER*1 K1BID
       CHARACTER*8 MATEL,MAILLA,MUMPS
       CHARACTER*14 NU,RESOCO,COM
       CHARACTER*16 DEFICO,TYP2SD,CORRES
       CHARACTER*19 CHAMP,MATAS,TABLE,SOLVEU,CNS,CES,CNO,CEL,FNC
-      CHARACTER*19 LIGREL,CARTE,NUAGE,LIGRET,MLTF
+      CHARACTER*19 LIGREL,CARTE,NUAGE,LIGRET,MLTF,STOCK
 
 C -DEB------------------------------------------------------------------
 
@@ -80,7 +80,7 @@ C -DEB------------------------------------------------------------------
 C     ------------------------------------------------------------------
       IF (TYP2SD.EQ.' ') THEN
 C     -----------------------
-C       TYPE_SD INCONNU => CALL JEDETC => COUT CPU IMPORTANT
+C       TYPE_SD INCONNU => CALL JEDETC => COUT CPU IMPORTANT + DANGER
         CALL JEDETC(' ',NOMSD,1)
 
 C     ------------------------------------------------------------------
@@ -162,13 +162,11 @@ C     ------------------------------------------------------------------
       ELSE IF (TYP2SD.EQ.'MAILLAGE') THEN
 C     ----------------------------------
         MAILLA = NOMSD
+        CALL DETRS2('CHAM_NO',MAILLA//'.COORDO')
         CALL JEDETR(MAILLA//'           .LTNS')
         CALL JEDETR(MAILLA//'           .LTNT')
         CALL JEDETR(MAILLA//'           .TITR')
         CALL JEDETR(MAILLA//'.CONNEX')
-        CALL JEDETR(MAILLA//'.COORDO    .DESC')
-        CALL JEDETR(MAILLA//'.COORDO    .REFE')
-        CALL JEDETR(MAILLA//'.COORDO    .VALE')
         CALL JEDETR(MAILLA//'.DIME')
         CALL JEDETR(MAILLA//'.GROUPEMA')
         CALL JEDETR(MAILLA//'.GROUPENO')
@@ -257,12 +255,6 @@ C       -- DESTRUCTION DE L'EVENTUELLE INSTANCE MUMPS :
         CALL JEDETR(MATAS//'.&VDI')
 
 C     ------------------------------------------------------------------
-      ELSE IF (TYP2SD.EQ.'VECT_ASSE') THEN
-C     ------------------------------------
-
-        GOTO 30
-
-C     ------------------------------------------------------------------
       ELSE IF (TYP2SD.EQ.'CHAM_NO') THEN
 C     ----------------------------------
         CNO = NOMSD
@@ -286,11 +278,19 @@ C     ------------------------------------------------------------------
       ELSE IF (TYP2SD.EQ.'PROF_CHNO') THEN
 C     ------------------------------------
         CNO = NOMSD
-        CALL JEDETR(CNO//'.LILI')
-        CALL JEDETR(CNO//'.PRNO')
-        CALL JEDETR(CNO//'.NUEQ')
-        CALL JEDETR(CNO//'.LPRN')
         CALL JEDETR(CNO//'.DEEQ')
+        CALL JEDETR(CNO//'.LILI')
+        CALL JEDETR(CNO//'.LPRN')
+        CALL JEDETR(CNO//'.NUEQ')
+        CALL JEDETR(CNO//'.PRNO')
+
+      ELSE IF (TYP2SD.EQ.'NUME_EQUA') THEN
+C     ------------------------------------
+        CNO = NOMSD
+        CALL DETRS2('PROF_CHNO',CNO)
+        CALL JEDETR(CNO//'.DELG')
+        CALL JEDETR(CNO//'.NEQU')
+        CALL JEDETR(CNO//'.REFN')
 
 C     ------------------------------------------------------------------
       ELSE IF (TYP2SD.EQ.'CHAM_ELEM') THEN
@@ -331,68 +331,35 @@ C     -----------------------------------
         CALL JEDETR(MLTF//'.RENU')
 
 C     ------------------------------------------------------------------
+      ELSE IF (TYP2SD.EQ.'STOCKAGE') THEN
+C     -----------------------------------
+        STOCK = NOMSD
+        CALL JEDETR(STOCK//'.ABLO')
+        CALL JEDETR(STOCK//'.ADIA')
+        CALL JEDETR(STOCK//'.DESC')
+        CALL JEDETR(STOCK//'.HCOL')
+        CALL JEDETR(STOCK//'.IABL')
+        CALL JEDETR(STOCK//'.REFE')
+
+C     ------------------------------------------------------------------
       ELSE IF (TYP2SD.EQ.'NUME_DDL') THEN
 C     -----------------------------------
         NU = NOMSD
+        CALL DETRS2('NUME_EQUA',NU//'.NUME')
+        CALL DETRS2('MLTF',NU//'.MLTF')
+        CALL DETRS2('STOCKAGE',NU//'.SLCS')
+        CALL DETRS2('STOCKAGE',NU//'.SMOS')
         CALL JEDETR(NU//'.NSLV')
 
-        CALL JEDETR(NU//'.NUME.DEEQ')
-        CALL JEDETR(NU//'.NUME.DELG')
-        CALL JEDETR(NU//'.NUME.NEQU')
-        CALL JEDETR(NU//'.NUME.NUEQ')
-        CALL JEDETR(NU//'.NUME.PRNO')
-        CALL JEDETR(NU//'.NUME.LILI')
-        CALL JEDETR(NU//'.NUME.LPRN')
-        CALL JEDETR(NU//'.NUME.REFN')
-        CALL JEDETR(NU//'.SLCS.ABLO')
-        CALL JEDETR(NU//'.SLCS.ADIA')
-        CALL JEDETR(NU//'.SLCS.DESC')
-        CALL JEDETR(NU//'.SLCS.HCOL')
-        CALL JEDETR(NU//'.SLCS.IABL')
-        CALL JEDETR(NU//'.SLCS.REFE')
-        CALL JEDETR(NU//'.SMOS.ABLO')
-        CALL JEDETR(NU//'.SMOS.ADIA')
-        CALL JEDETR(NU//'.SMOS.DESC')
-        CALL JEDETR(NU//'.SMOS.HCOL')
-        CALL JEDETR(NU//'.SMOS.IABL')
-        CALL JEDETR(NU//'.SMOS.REFE')
-        CALL JEDETR(NU//'.MLTF.GLOB')
-        CALL JEDETR(NU//'.MLTF.LOCL')
-        CALL JEDETR(NU//'.MLTF.ADNT')
-        CALL JEDETR(NU//'.MLTF.PNTI')
-
-        CALL JEDETR(NU//'.MLTF.DESC')
-        CALL JEDETR(NU//'.MLTF.DIAG')
-        CALL JEDETR(NU//'.MLTF.ADRE')
-        CALL JEDETR(NU//'.MLTF.SUPN')
-        CALL JEDETR(NU//'.MLTF.PARE')
-        CALL JEDETR(NU//'.MLTF.FILS')
-        CALL JEDETR(NU//'.MLTF.FRER')
-        CALL JEDETR(NU//'.MLTF.LGSN')
-        CALL JEDETR(NU//'.MLTF.LFRN')
-        CALL JEDETR(NU//'.MLTF.NBAS')
-        CALL JEDETR(NU//'.MLTF.DEBF')
-        CALL JEDETR(NU//'.MLTF.DEFS')
-        CALL JEDETR(NU//'.MLTF.ADPI')
-        CALL JEDETR(NU//'.MLTF.ANCI')
-        CALL JEDETR(NU//'.MLTF.NBLI')
-        CALL JEDETR(NU//'.MLTF.LGBL')
-        CALL JEDETR(NU//'.MLTF.NCBL')
-        CALL JEDETR(NU//'.MLTF.DECA')
-        CALL JEDETR(NU//'.MLTF.NOUV')
-        CALL JEDETR(NU//'.MLTF.SEQU')
-        CALL JEDETR(NU//'.MLTF.RENU')
-
-        CALL JEDETR(NU//'.DERLI    ')
-        CALL JEDETR(NU//'.EXISTE   ')
-        CALL JEDETR(NU//'.NUM2     ')
-        CALL JEDETR(NU//'.NUM21    ')
-        CALL JEDETR(NU//'.LSUIVE   ')
-        CALL JEDETR(NU//'.PSUIVE   ')
-        CALL JEDETR(NU//'.VSUIVE   ')
+        CALL JEDETR(NU//'.DERLI')
+        CALL JEDETR(NU//'.EXISTE')
+        CALL JEDETR(NU//'.NUM2')
+        CALL JEDETR(NU//'.NUM21')
+        CALL JEDETR(NU//'.LSUIVE')
+        CALL JEDETR(NU//'.PSUIVE')
+        CALL JEDETR(NU//'.VSUIVE')
         CALL JEDETR(NU//'.OLDN')
         CALL JEDETR(NU//'.NEWN')
-
 C     ------------------------------------------------------------------
       ELSE IF (TYP2SD.EQ.'VARI_COM') THEN
 C     -------------------------------------
@@ -400,15 +367,15 @@ C     -------------------------------------
         CALL ASSDE1(COM//'.TEMP')
         CALL ASSDE1(COM//'.HYDR')
         CALL ASSDE1(COM//'.SECH')
-        CALL ASSDE1(COM//'.IRRA')
         CALL ASSDE1(COM//'.PHAS')
         CALL ASSDE1(COM//'.EPAN')
         CALL ASSDE1(COM//'.INST')
+        CALL ASSDE1(COM//'.IRRA')
         CALL ASSDE1(COM//'.CORR')
         CALL JEDETR(COM//'.EXISTENCE')
 
 C     ------------------------------------------------------------------
-      ELSE IF (TYP2SD.EQ.'CHAMP_GD') THEN
+      ELSE IF ((TYP2SD.EQ.'CHAMP').OR.(TYP2SD.EQ.'CHAMP_GD')) THEN
 C     ---------------------------------------
 C       POUR LES CARTE, CHAM_NO, CHAM_ELEM, ET RESU_ELEM :
         CHAMP = NOMSD
@@ -481,18 +448,9 @@ C     ------------------------------------
         CALL JEDETR(RESOCO//'.CM1A')
         CALL JEDETR(RESOCO//'.CM2A')
         CALL JEDETR(RESOCO//'.CM3A')
-        CALL JEDETR(RESOCO//'.MATR'//'.VALE')
-        CALL JEDETR(RESOCO//'.MATR'//'.REFA')
-        CALL JEDETR(RESOCO//'.MATR'//'.LIME')
-        CALL JEDETR(RESOCO//'.MATR'//'.&VDI')
-        CALL JEDETR(RESOCO//'.MATR'//'.&TRA')
-        CALL JEDETR(RESOCO//'.MATR'//'.LIME')
-        CALL JEDETR(RESOCO//'.SLCS'//'.REFE')
-        CALL JEDETR(RESOCO//'.SLCS'//'.DESC')
-        CALL JEDETR(RESOCO//'.SLCS'//'.HCOL')
-        CALL JEDETR(RESOCO//'.SLCS'//'.ADIA')
-        CALL JEDETR(RESOCO//'.SLCS'//'.ABLO')
-        CALL JEDETR(RESOCO//'.SLCS'//'.IABL')
+
+        CALL DETRS2('MATR_ASSE',RESOCO//'.MATR')
+        CALL DETRS2('STOCKAGE',RESOCO//'.SLCS')
 
 C     ------------------------------------------------------------------
       ELSE IF (TYP2SD.EQ.'RESULTAT') THEN

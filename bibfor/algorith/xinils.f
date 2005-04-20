@@ -5,7 +5,7 @@
       CHARACTER*19  CNSLT,CNSLN
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/01/2005   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 18/04/2005   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -22,8 +22,8 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
-C RESPONSABLE CIBHHLV L.VIVAN
-C                      CALCUL DES LEVEL-SETS
+C RESPONSABLE GENIAUT S.GENIAUT
+C                      CALCUL INITIAL DES LEVEL-SETS
 C
 C    ENTREE :
 C              IFM    :   FICHIER D'IMPRESSION
@@ -58,12 +58,13 @@ C
       INTEGER       JLTSV,JLTSL,JLNSV,JLNSL,AR(12,2)
       REAL*8        VALPU(3),AB(3),AC(3),AP(3),VN(3),VNT(3),BC(3)
       REAL*8        A(3),P(3),B(3),C(3),M(3),PM(3),VNREF(3)
-      REAL*8        NORME,PS,PS1,PS2,LSNA,LSNB,D
+      REAL*8        NORME,PS,PS1,PS2,LSNA,LSNB,D,PREREA
       CHARACTER*8   K8BID,NOMPU(3),TYPMA 
       CHARACTER*16  K16BID
       CHARACTER*19  MAI
       CHARACTER*24  LISMA,LISNO,LISSE
       LOGICAL       MA2FF
+      PARAMETER     (PREREA=1.D-2)
 C
       CALL JEMARQ()
 C
@@ -396,13 +397,13 @@ C       BOUCLE SUR LES ARETES DE LA MAILLE VOLUMIQUE
           LSNB=ZR(JLNSV-1+(NUNOB-1)+1)    
           IF (LSNA*LSNB.LT.0) THEN
             D=LSNA/(LSNA-LSNB)
-            IF (D.LE.1.D-2) THEN
+            IF (D.LE.PREREA) THEN
 C              RÉAJUSTEMENT DE LSNA
                ZR(JLNSV-1+(NUNOA-1)+1)=0.D0
                ZL(JLNSL-1+(NUNOA-1)+1)=.TRUE.
                CLSM=CLSM+1
             ENDIF
-            IF (D.GE.(1.D0-1.D-2)) THEN
+            IF (D.GE.(1.D0-PREREA)) THEN
 C              RÉAJUSTEMENT DE LSNB
                ZR(JLNSV-1+(NUNOB-1)+1)=0.D0
                ZL(JLNSL-1+(NUNOB-1)+1)=.TRUE.
@@ -411,7 +412,15 @@ C              RÉAJUSTEMENT DE LSNB
           ENDIF 
  210    CONTINUE
  200  CONTINUE
-      WRITE(IFM,*)'NOMBRE DE LSN REAJUSTEES :',CLSM
+C     CONTROLE ET MIZE A ZERO 
+C      DO 300 INO=1,NBNO
+C        IF (ZL(JLNSL-1+(INO-1)+1).AND.
+C     &      ABS(ZR(JLNSV-1+(INO-1)+1)).LE.1.D-16) THEN
+C          ZR(JLNSV-1+(INO-1)+1)=0.D0
+C          CLSM=CLSM+1
+C        ENDIF
+C 300  CONTINUE
+      WRITE(IFM,*)'NOMBRE DE LSN REAJUSTEES APRES CONTROLE:',CLSM
       WRITE(IFM,*)'FIN DU CALCUL DES LEVEL-SETS'
 
 C-----------------------------------------------------------------------

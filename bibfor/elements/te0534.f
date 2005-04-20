@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 25/01/2005   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ELEMENTS  DATE 18/04/2005   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -20,7 +20,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
-C.......................................................................
+C RESPONSABLE GENIAUT S.GENIAUT
 C
 C               CALCUL DES SECONDS MEMBRES DE CONTACT FROTTEMENT
 C                   POUR X-FEM  (METHODE CONTINUE) 
@@ -56,12 +56,12 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       INTEGER     IDEPM,IDEPL,IMATT,JSTANO,JPTINT,JAINT,JCFACE,JLONCH
       INTEGER     IPOIDF,IVFF,IDFDEF,IADZI,IAZK24,IBID,IVECT,JBASEC
       INTEGER     NDIM,DDLH,DDLC,DDLE,DDLS,NDDL,NNO,NNOS,NNOM,NNOF
-      INTEGER     NPG,NPGF,AR(12,2),NBAR,XOULA
-      INTEGER     INDCO(60),NINTER,NFACE,CFACE(5,3)
+      INTEGER     NPG,NPGF,AR(12,2),NBAR,XOULA,IN(3),FAC(6,4),NBF
+      INTEGER     INDCO(60),NINTER,NFACE,CFACE(5,3),IBID2(12,3),CPT
 
       CHARACTER*8 ELREF,TYPMA
       REAL*8      HE,SIGN,VTMP(27*7),REAC,REAC12(3),FFI,LAMBDA,JAC
-      REAL*8      ND(3),DN,SAUT(3),FFP(27),NND(3),PTPB(3),PADIST
+      REAL*8      ND(3),DN,SAUT(3),FFP(27),NND(3),PTPB(3),PADIST,MULT
       REAL*8      METR(2),AL,RHON,MU,RHOTK,P(3,3),SEUIL(60)
       REAL*8      NDN(3,6),TAU1(3,6),TAU2(3,6),PB(3),RPB(3)
       REAL*8      RBID1(3,3),RBID2(3,3),RBID3(3,3),NBARY(3)
@@ -98,6 +98,7 @@ C
       CALL TECAEL(IADZI,IAZK24)
       TYPMA=ZK24(IAZK24-1+3+ZI(IADZI-1+2)+3)
       CALL CONARE(TYPMA,AR,NBAR)
+      CALL CONFAC(TYPMA,IBID2,IBID,FAC,NBF)
 C
 C-----------------------------------------------------------------------
 C     RECUPERATION DES ENTRÉES / SORTIE
@@ -163,6 +164,28 @@ C
 C     BOUCLE SUR LES FACETTES
       DO 100 IFA=1,NFACE
 C
+C       PETIT TRUC EN PLUS POUR LES FACES EN DOUBLE
+        MULT=1.D0
+        DO 101 I=1,3
+          NLI=CFACE(IFA,I)
+          IN(I)=NINT(ZR(JAINT-1+4*(NLI-1)+2))
+101     CONTINUE
+C       SI LES 3 SOMMETS DE LA FACETTE SONT DES NOEUDS DE L'ÉLÉMENT
+        IF (IN(1).NE.0.AND.IN(2).NE.0.AND.IN(3).NE.0) THEN
+          DO 102 I=1,NBF
+            CPT=0
+            DO 103 INO=1,4
+              IF (IN(1).EQ.FAC(I,INO).OR.IN(2).EQ.FAC(I,INO).OR.
+     &            IN(3).EQ.FAC(I,INO))    CPT=CPT+1     
+ 103        CONTINUE
+            IF (CPT.EQ.3) THEN
+              MULT=0.5D0
+              GOTO 104
+            ENDIF  
+ 102      CONTINUE            
+        ENDIF
+ 104    CONTINUE
+CC
 C       LA FAMILLE 'XCON' A 12 PG INTEGRE ORDRE I+J=6
         CALL ELREF4('TR3','XCON',IBID,NNOF,IBID,NPGF,IPOIDF,IVFF,
      &                                                     IDFDEF,IBID)
@@ -222,7 +245,7 @@ C
                 CALL XPLMAT(NDIM,DDLH,DDLE,DDLC,NNO,NNOM,NI,PLI)
 C                write(6,*)'PLACE ',PLI
 
-                VTMP(PLI) = VTMP(PLI) - REAC * FFI * JAC / RHON
+                VTMP(PLI) = VTMP(PLI) - REAC * FFI * JAC * MULT / RHON
 
  130          CONTINUE
 C
@@ -244,7 +267,7 @@ C             TERME LN1
               DO 150 I = 1,NNO
                 DO 151 J = 1,DDLH
                   VTMP(DDLS*(I-1)+J+3) = VTMP(DDLS*(I-1)+J+3)
-     &                              + (REAC-RHON*DN)*2*FFP(I)*ND(J)*JAC
+     &                       + (REAC-RHON*DN)*2*FFP(I)*ND(J)*JAC*MULT
  151            CONTINUE
  150          CONTINUE
 C
@@ -255,7 +278,7 @@ C             TERME LN2
                 NI=XOULA(CFACE,IFA,I,JAINT,TYPMA)
                 CALL XPLMAT(NDIM,DDLH,DDLE,DDLC,NNO,NNOM,NI,PLI)
 
-                VTMP(PLI) = VTMP(PLI) - DN * FFI * JAC 
+                VTMP(PLI) = VTMP(PLI) - DN * FFI * JAC * MULT
 
  160          CONTINUE
  
@@ -285,7 +308,7 @@ C           SI PAS DE CONTACT POUR CE PG : ON REMPLIT QUE LN3
                 CALL PSCAL(3,TAU2(1,NLI),REAC12,METR(2))
 
                 DO 171 K = 1,2
-                  VTMP(PLI+K) = VTMP(PLI+K) + FFI * METR(K) * JAC 
+                  VTMP(PLI+K) = VTMP(PLI+K) + FFI * METR(K) * JAC * MULT
  171            CONTINUE
  170          CONTINUE
 
@@ -319,7 +342,7 @@ C             TERME LN1
               DO 185 I = 1,NNO
                 DO 186 J = 1,DDLH
                   VTMP(DDLS*(I-1)+J+3) = VTMP(DDLS*(I-1)+J+3)
-     &                     +2.D0*MU*SEUIL(ISSPG)* PTPB(J)*FFP(I)*JAC
+     &                  + 2.D0*MU*SEUIL(ISSPG)* PTPB(J)*FFP(I)*JAC*MULT
  186            CONTINUE
  185          CONTINUE
 
@@ -335,7 +358,7 @@ C             TERME LN3
 
                 DO 191 K=1,2
                   VTMP(PLI+K) = VTMP(PLI+K)
-     &                  - MU*SEUIL(ISSPG)/RHOTK * METR(K)*FFI*JAC
+     &                  - MU*SEUIL(ISSPG)/RHOTK * METR(K)*FFI*JAC*MULT
  191            CONTINUE
  190          CONTINUE
 

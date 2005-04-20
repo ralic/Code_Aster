@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 25/01/2005   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ELEMENTS  DATE 18/04/2005   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -20,7 +20,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
-C.......................................................................
+C RESPONSABLE GENIAUT S.GENIAUT
 C
 C       CALCUL DES DONNÉES TOPOLOGIQUES CONCERNANT LES INTERSECTIONS
 C              DES ÉLÉMENTS ENRICHIS ET DU PLAN DE LA FISSURE
@@ -57,7 +57,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX --------------------
       INTEGER       JPTINT,JAINT,IADZI,IAZK24
       INTEGER       NINTER,NFACE,CFACE(5,3),AR(12,2),NBAR,IN,IA,NA,NB
       INTEGER       I,J,NLI
-      REAL*8        LONGAR,AL,ND(3),TAU1(3),TAU2(3),NORME
+      REAL*8        LONGAR,AL,ND(3),GRLT(3),TAU1(3),TAU2(3),NORME,PS
 C......................................................................
 
       CALL JEMARQ()
@@ -115,6 +115,10 @@ C     ARCHIVAGE DE LONCHAM
 
 C ----------------------------------------------------------------------
 C     CALCUL DE LA BASE COVARIANTE AUX POINTS D'INTERSECTION
+C     ND EST LA NORMALE À LA SURFACE : GRAD(LSN)
+C     TAU1 EST LE PROJETÉ DE GRAD(LST) SUR LA SURFACE
+C     TAU2 EST LE PRODUIT VECTORIEL : ND ^ TAU1
+C                   (BOOK IV 01/02/05)
       DO 130 NLI=1,NINTER
 
         IA=NINT(ZR(JAINT-1+4*(NLI-1)+1))
@@ -123,9 +127,8 @@ C     CALCUL DE LA BASE COVARIANTE AUX POINTS D'INTERSECTION
         IF (IN.NE.0) THEN
           DO 131 J=1,3
             ND(J)  =ZR(JGRLSN-1+3*(IN-1)+J)
-            TAU1(J)=ZR(JGRLST-1+3*(IN-1)+J)
- 131      CONTINUE 
-          CALL PROVEC(ND,TAU1,TAU2)
+            GRLT(J)=ZR(JGRLST-1+3*(IN-1)+J)
+ 131      CONTINUE   
         ELSE
           CALL ASSERT(IA.NE.0)
           NA=AR(IA,1)
@@ -135,22 +138,25 @@ C     CALCUL DE LA BASE COVARIANTE AUX POINTS D'INTERSECTION
           DO 132 J=1,3
             ND(J)  = (1-AL/LONGAR) * ZR(JGRLSN-1+3*(NA-1)+J)
      &             +    AL/LONGAR  * ZR(JGRLSN-1+3*(NB-1)+J)
-            TAU1(J)= (1-AL/LONGAR) * ZR(JGRLST-1+3*(NA-1)+J)
+            GRLT(J)= (1-AL/LONGAR) * ZR(JGRLST-1+3*(NA-1)+J)
      &             +    AL/LONGAR  * ZR(JGRLST-1+3*(NB-1)+J)
- 132      CONTINUE 
-                    
+ 132      CONTINUE             
         ENDIF  
 
         CALL NORMEV(ND,NORME)
+        CALL PSCAL(3,GRLT,ND,PS)
+        DO 133 J=1,3
+          TAU1(J)=GRLT(J)-PS*ND(J)
+ 133    CONTINUE
         CALL NORMEV(TAU1,NORME)
         CALL PROVEC(ND,TAU1,TAU2) 
 
 C       ARCHIVAGE DE BASECO
-        DO 133 J=1,3
+        DO 134 J=1,3
           ZR(JOUT5-1+9*(NLI-1)+J)  =ND(J)
           ZR(JOUT5-1+9*(NLI-1)+J+3)=TAU1(J)
           ZR(JOUT5-1+9*(NLI-1)+J+6)=TAU2(J)
- 133    CONTINUE
+ 134    CONTINUE
 
  130  CONTINUE
 

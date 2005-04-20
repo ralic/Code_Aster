@@ -1,7 +1,7 @@
-      SUBROUTINE COPICH ( BASE, CH1, CH2 )
+      SUBROUTINE COPICH ( BASE, CH1Z, CH2Z )
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 17/11/2003   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 18/04/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,17 +22,17 @@ C RESPONSABLE VABHHTS J.PELLET
 
       IMPLICIT NONE
       CHARACTER*1   BASE
-      CHARACTER*19  CH1, CH2
+      CHARACTER*(*)  CH1Z, CH2Z
 C ----------------------------------------------------------------------
 C
 C   BUT:
 C   DUPLIQUER UN CHAMP_GD SOUS UN AUTRE NOM.
-C    L'EXISTENCE DE CH1 EST OBLIGATOIRE
-C   (SI CH2 EXISTE DEJA, ON L'ECRASE)
+C    L'EXISTENCE DE CH1Z EST OBLIGATOIRE
+C   (SI CH2Z EXISTE DEJA, ON L'ECRASE)
 C
 C     IN       BASE        'G' , 'V' , ... : BASE DE CREATION DE CH2
-C     IN       CH1    K19  NOM DU CHAMP_GD A DUPLIQUER
-C     IN/JXOUT CH2    K19  NOM DU CHAMP_GD A CREER
+C     IN       CH1Z    K19  NOM DU CHAMP_GD A DUPLIQUER
+C     IN/JXOUT CH2Z    K19  NOM DU CHAMP_GD A CREER
 C
 C-----------------------------------------------------------------------
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
@@ -51,6 +51,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
+      CHARACTER*19  CH1, CH2
 
 
       CHARACTER*4  DOCU
@@ -59,14 +60,14 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*19 PRNO,PRNO2
       CHARACTER*24 O1, O2,NOOJB
       INTEGER      IBID,IRET,IRET1,IRET2,JAD,IER
-
-
+C-----------------------------------------------------------------------
       CALL JEMARQ()
+      CH1=CH1Z
+      CH2=CH2Z
 
       CALL JEEXIN(CH1 // '.DESC',IRET1)
       CALL JEEXIN(CH1 // '.CELD',IRET2)
-      IRET= MAX (IRET1,IRET2)
-      IF (IRET.EQ.0) CALL UTMESS('F','COPICH','CHAMP IN INEXISTANT')
+      IF (MAX(IRET1,IRET2).EQ.0) GO TO 9999
 
       IF (IRET1.GT.0) THEN
         CALL JELIRA(CH1//'.DESC','DOCU',IBID,DOCU)
@@ -78,24 +79,9 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     -- CAS DES CHAM_NO :
 C     ----------------------
       IF  (DOCU.EQ.'CHNO') THEN
-
-C       -- .DESC :
-        O1=CH1//'.DESC'
-        O2=CH2//'.DESC'
-        CALL JEEXIN(O1,IRET)
-        IF (IRET.GT.0) CALL JEDUPO(O1,BASE,O2,.FALSE.)
-
-C       -- .REFE :
-        O1=CH1//'.REFE'
-        O2=CH2//'.REFE'
-        CALL JEEXIN(O1,IRET)
-        IF (IRET.GT.0) CALL JEDUPO(O1,BASE,O2,.FALSE.)
-
-C       -- .VALE :
-        O1=CH1//'.VALE'
-        O2=CH2//'.VALE'
-        CALL JEEXIN(O1,IRET)
-        IF (IRET.GT.0) CALL JEDUPO(O1,BASE,O2,.FALSE.)
+        CALL JEDUP1(CH1//'.DESC',BASE,CH2//'.DESC')
+        CALL JEDUP1(CH1//'.REFE',BASE,CH2//'.REFE')
+        CALL JEDUP1(CH1//'.VALE',BASE,CH2//'.VALE')
 
 
 C       SI LE NOUVEAU CHAM_NO DOIT ETRE CREE SUR 'G', ON IMPOSE
@@ -119,92 +105,36 @@ C         -- REMARQUE : UN CHAM_NO PEUT NE PAS AVOIR DE PROF_CHNO (' '):
         END IF
 
 
-
 C     -- CAS DES CARTES :
 C     ----------------------
-
       ELSE IF  (DOCU.EQ.'CART') THEN
-C
-C       -- .DESC :
-        O1=CH1//'.DESC'
-        O2=CH2//'.DESC'
-        CALL JEEXIN(O1,IRET)
-        IF (IRET.GT.0) CALL JEDUPO(O1,BASE,O2,.FALSE.)
-C
-C       -- .LIMA :
-        O1=CH1//'.LIMA'
-        O2=CH2//'.LIMA'
-        CALL JEEXIN(O1,IRET)
-        IF (IRET.GT.0) CALL JEDUPO(O1,BASE,O2,.FALSE.)
-C
-C       -- .NOLI :
-        O1=CH1//'.NOLI'
-        O2=CH2//'.NOLI'
-        CALL JEEXIN(O1,IRET)
-        IF (IRET.GT.0) CALL JEDUPO(O1,BASE,O2,.FALSE.)
-C
-C       -- .NOMA :
-        O1=CH1//'.NOMA'
-        O2=CH2//'.NOMA'
-        CALL JEEXIN(O1,IRET)
-        IF (IRET.GT.0) CALL JEDUPO(O1,BASE,O2,.FALSE.)
-C
-C       -- .VALE :
-        O1=CH1//'.VALE'
-        O2=CH2//'.VALE'
-        CALL JEEXIN(O1,IRET)
-        IF (IRET.GT.0) CALL JEDUPO(O1,BASE,O2,.FALSE.)
+        CALL JEDUP1(CH1//'.DESC',BASE,CH2//'.DESC')
+        CALL JEDUP1(CH1//'.LIMA',BASE,CH2//'.LIMA')
+        CALL JEDUP1(CH1//'.NOLI',BASE,CH2//'.NOLI')
+        CALL JEDUP1(CH1//'.NOMA',BASE,CH2//'.NOMA')
+        CALL JEDUP1(CH1//'.VALE',BASE,CH2//'.VALE')
 
 
 C     -- CAS DES CHAM_ELEM :
 C     ----------------------
       ELSE IF  (DOCU.EQ.'CHML') THEN
-
-C       -- .CELD :
-        O1=CH1//'.CELD'
-        O2=CH2//'.CELD'
-        CALL JEEXIN(O1,IRET)
-        IF (IRET.GT.0) CALL JEDUPO(O1,BASE,O2,.FALSE.)
-
-C       -- .CELK :
-        O1=CH1//'.CELK'
-        O2=CH2//'.CELK'
-        CALL JEEXIN(O1,IRET)
-        IF (IRET.GT.0) CALL JEDUPO(O1,BASE,O2,.FALSE.)
-
-C       -- .CELV :
-        O1=CH1//'.CELV'
-        O2=CH2//'.CELV'
-        CALL JEEXIN(O1,IRET)
-        IF (IRET.GT.0) CALL JEDUPO(O1,BASE,O2,.FALSE.)
+        CALL JEDUP1(CH1//'.CELD',BASE,CH2//'.CELD')
+        CALL JEDUP1(CH1//'.CELK',BASE,CH2//'.CELK')
+        CALL JEDUP1(CH1//'.CELV',BASE,CH2//'.CELV')
 
 
 C     -- CAS DES RESUELEM :
 C     ----------------------
       ELSE IF  (DOCU.EQ.'RESL') THEN
-
-C       -- .DESC :
-        O1=CH1//'.DESC'
-        O2=CH2//'.DESC'
-        CALL JEEXIN(O1,IRET)
-        IF (IRET.GT.0) CALL JEDUPO(O1,BASE,O2,.FALSE.)
-
-C       -- .NOLI :
-        O1=CH1//'.NOLI'
-        O2=CH2//'.NOLI'
-        CALL JEEXIN(O1,IRET)
-        IF (IRET.GT.0) CALL JEDUPO(O1,BASE,O2,.FALSE.)
-
-C       -- .RESL :
-        O1=CH1//'.RESL'
-        O2=CH2//'.RESL'
-        CALL JEEXIN(O1,IRET)
-        IF (IRET.GT.0) CALL JEDUPO(O1,BASE,O2,.FALSE.)
+        CALL JEDUP1(CH1//'.DESC',BASE,CH2//'.DESC')
+        CALL JEDUP1(CH1//'.NOLI',BASE,CH2//'.NOLI')
+        CALL JEDUP1(CH1//'.RESL',BASE,CH2//'.RESL')
 
 
       ELSE
          CALL UTMESS('F',' COPICH ','TYPE DE CHAMP INCONNU')
       END IF
 
+9999  CONTINUE
       CALL JEDEMA()
       END

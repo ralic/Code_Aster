@@ -7,7 +7,7 @@
       CHARACTER*(*)     CHOIXZ, NUMEZ
 C----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 25/11/98   AUTEUR CIBHHGB G.BERTRAND 
+C MODIF UTILITAI  DATE 18/04/2005   AUTEUR NICOLAS O.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -142,19 +142,23 @@ C
         MODGEN = ZK24(JREFE)
         CALL JENONU(JEXNOM(NORIG(1:19)//'.LILI','&SOUSSTR'),IBID)
         CALL JELIRA(JEXNUM(NORIG,IBID),'LONMAX',NBSST,K8B)
-        CALL JEVEUO(JEXNUM(NORIG,IBID),'L',JORIG)
-        CALL JEVEUO(JEXNUM(NPRNO,IBID),'L',JPRNO)
-        DO 23 I=1,NBSST
-          NUSST = ZI(JORIG-1+I)
-          KBID = '        '
-          CALL MGUTDM(MODGEN,KBID,NUSST,'NOM_BASE_MODALE',IBID,BASEMO)
-          CALL BMNBMD(BASEMO,'DEFORMEE',NBDEFO)
-          N1DDL = ZI(JPRNO+2*(I-1))+ZI(JPRNO+2*(I-1)+1)-NBDEFO
-          N2DDL = ZI(JPRNO+2*(I-1))+ZI(JPRNO+2*(I-1)+1)-1
-          DO 24 J=N1DDL,N2DDL
-            TABDDL(J)=-J
-24        CONTINUE
-23      CONTINUE
+C On compte que si il y a plus d'une sous-structure        
+        IF (NBSST.GT.2) THEN
+          CALL JEVEUO(JEXNUM(NORIG,IBID),'L',JORIG)
+          CALL JEVEUO(JEXNUM(NPRNO,IBID),'L',JPRNO)
+          DO 23 I=1,NBSST
+            NUSST = ZI(JORIG-1+I)
+            KBID = '        '
+            CALL MGUTDM(MODGEN,KBID,NUSST,'NOM_BASE_MODALE',IBID,
+     +                 BASEMO)
+            CALL BMNBMD(BASEMO,'DEFORMEE',NBDEFO)
+            N1DDL = ZI(JPRNO+2*(I-1))+ZI(JPRNO+2*(I-1)+1)-NBDEFO
+            N2DDL = ZI(JPRNO+2*(I-1))+ZI(JPRNO+2*(I-1)+1)-1
+            DO 24 J=N1DDL,N2DDL
+              TABDDL(J)=-J
+24          CONTINUE
+23        CONTINUE
+        ENDIF
       ENDIF
 C
       ENDIF

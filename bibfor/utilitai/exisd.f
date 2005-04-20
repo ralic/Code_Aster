@@ -4,7 +4,7 @@
       CHARACTER*(*) TYPESD,NOMSD
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
+C MODIF UTILITAI  DATE 18/04/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -28,7 +28,8 @@ C  BUT : DETERMINER SI UNE SD EXISTE
 C  IN   TYPESD : TYPE DE LA STRUCTURE DE DONNEE A TESTER
 C         / 'CARTE'        /'CHAM_NO'      /'CHAM_ELEM'   /'RESUELEM'
 C         / 'CHAM_ELEM_S'  /'CHAM_NO_S'
-C         / 'CHAMP_GD' (CHAPEAU AUX CHAM_NO/CHAM_ELEM/CARTE/RESUELEM)
+C         / 'CHAMP' (CHAPEAU AUX CHAM_NO/CHAM_ELEM/CARTE/RESUELEM)
+C         / 'CHAMP_GD' (CHAPEAU DESUET AUX CHAM_NO/CHAM_ELEM/...)
 C         / 'TABLE'
 C         / 'RESULTAT'
 C         / 'FONCTION'
@@ -117,8 +118,8 @@ C     ------------------------------
         IF (I1*I2*I3.NE.0) GO TO 20
 
 
-      ELSE IF (TYP2SD.EQ.'CHAMP_GD') THEN
-C     ------------------------------
+      ELSE IF ((TYP2SD.EQ.'CHAMP').OR.(TYP2SD.EQ.'CHAMP_GD')) THEN
+C     -------------------------------------------------------------
         CH = NOMSD
 
 C       -- CHAM_ELEM ?

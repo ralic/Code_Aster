@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 25/01/2005   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ELEMENTS  DATE 18/04/2005   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -20,7 +20,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
-C.......................................................................
+C RESPONSABLE GENIAUT S.GENIAUT
 C
 C         CALCUL DES MATRICES DE CONTACT FROTTEMENT POUR X-FEM 
 C                       (METHODE CONTINUE)
@@ -56,12 +56,12 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX --------------------
       INTEGER      IDEPM,IDEPD,IMATT,JSTANO,JPTINT,JAINT,JCFACE,JLONCH
       INTEGER      IPOIDF,IVFF,IDFDEF,IADZI,IAZK24,IBID,JBASEC,JSEUIL
       INTEGER      NDIM,DDLH,DDLC,DDLE,DDLS,NDDL,NNO,NNOS,NNOM,NNOF
-      INTEGER      NPG,NPGF,AR(12,2),NBAR,XOULA
-      INTEGER      INDCO(60),NINTER,NFACE,CFACE(5,3)
+      INTEGER      NPG,NPGF,AR(12,2),NBAR,XOULA,IN(3),FAC(6,4),NBF
+      INTEGER      INDCO(60),NINTER,NFACE,CFACE(5,3),IBID2(12,3),CPT
 
       CHARACTER*8  ELREF,TYPMA
       REAL*8       LSN(27),HE,SIGN,XG,FFI,FFJ,FFP(27),SAUT(3),KNP(3,3)
-      REAL*8       MMAT(27*7,27*7),JAC,AL,RHON,MU,RHOTK,PADIST
+      REAL*8       MMAT(27*7,27*7),JAC,AL,RHON,MU,RHOTK,PADIST,MULT
       REAL*8       NDN(3,6),TAU1(3,6),TAU2(3,6),LAMB1(3),LAMB2(3)
       REAL*8       ND(3),METR(2,2),P(3,3),KN(3,3),R3(3),SEUIL(60)
       REAL*8       PTKNP(3,3),TAUKNP(2,3),TAIKTA(2,2),IK(3,3),NBARY(3)
@@ -73,6 +73,8 @@ C
 C-----------------------------------------------------------------------
 C     INITIALISATIONS
 C-----------------------------------------------------------------------
+
+
 
       CALL ELREF1(ELREF)
       CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
@@ -96,6 +98,7 @@ C
       CALL TECAEL(IADZI,IAZK24)
       TYPMA=ZK24(IAZK24-1+3+ZI(IADZI-1+2)+3)
       CALL CONARE(TYPMA,AR,NBAR)
+      CALL CONFAC(TYPMA,IBID2,IBID,FAC,NBF)
 C
 C-----------------------------------------------------------------------
 C     RECUPERATION DES ENTRÉES / SORTIE
@@ -138,6 +141,9 @@ C     SUR LA TOPOLOGIE DES FACETTES
  12      CONTINUE
  11   CONTINUE
 C
+
+      IF (OPTION.EQ.'RIGI_FROT') WRITE(6,*)'SEUIL ',ZR(JSEUIL)
+
 C     RÉCUPÉRATION DE LA BASE COVARIANTE AUX POINTS D'INTERSECTION
       DO 13 NLI=1,NINTER
         DO 14 J=1,3
@@ -145,6 +151,11 @@ C     RÉCUPÉRATION DE LA BASE COVARIANTE AUX POINTS D'INTERSECTION
           TAU1(J,NLI)=ZR(JBASEC-1+9*(NLI-1)+J+3)
           TAU2(J,NLI)=ZR(JBASEC-1+9*(NLI-1)+J+6)
  14     CONTINUE
+C        write(6,*)'tau2',TAU2(1,NLI),TAU2(2,NLI),TAU2(3,NLI)
+C           CALL ASSERT(ABS(NDN(1,NLI)).LE.1.D-12)
+C           CALL ASSERT(ABS(NDN(2,NLI)).LE.1.D-12)           
+C           CALL ASSERT(ABS(NDN(3,NLI)-1.D0).LE.1.D-12)           
+           
  13   CONTINUE
 C    
 C     REACTUALISATION DE LA GEOMETRIE AVEC DEPMOI
@@ -160,6 +171,29 @@ C-----------------------------------------------------------------------
 C
 C     BOUCLE SUR LES FACETTES
       DO 100 IFA=1,NFACE
+C
+C       PETIT TRUC EN PLUS POUR LES FACES EN DOUBLE
+        MULT=1.D0
+        DO 101 I=1,3
+          NLI=CFACE(IFA,I)
+          IN(I)=NINT(ZR(JAINT-1+4*(NLI-1)+2))
+101     CONTINUE
+C       SI LES 3 SOMMETS DE LA FACETTE SONT DES NOEUDS DE L'ÉLÉMENT
+        IF (IN(1).NE.0.AND.IN(2).NE.0.AND.IN(3).NE.0) THEN
+          DO 102 I=1,NBF
+            CPT=0
+            DO 103 INO=1,4
+              IF (IN(1).EQ.FAC(I,INO).OR.IN(2).EQ.FAC(I,INO).OR.
+     &            IN(3).EQ.FAC(I,INO))    CPT=CPT+1     
+ 103        CONTINUE
+            IF (CPT.EQ.3) THEN
+              MULT=0.5D0
+
+              GOTO 104
+            ENDIF  
+ 102      CONTINUE            
+        ENDIF
+ 104    CONTINUE
 C
 C       LA FAMILLE 'XCON' A 12 PG INTEGRE ORDRE I+J=6
         CALL ELREF4('TR3','XCON',IBID,NNOF,IBID,NPGF,IPOIDF,IVFF,
@@ -208,7 +242,8 @@ C               XOULA  : RENVOIE LE NUMÉRO DU NOEUD PORTANT CE LAMBDA
                   NJ=XOULA(CFACE,IFA,J,JAINT,TYPMA)
                   CALL XPLMAT(NDIM,DDLH,DDLE,DDLC,NNO,NNOM,NJ,PLJ)
 C
-                  MMAT(PLI,PLJ) = MMAT(PLI,PLJ) - FFJ * FFI * JAC / RHON
+                  MMAT(PLI,PLJ) = MMAT(PLI,PLJ)
+     &                     - FFJ * FFI * JAC * MULT / RHON
 
  121            CONTINUE
  120          CONTINUE
@@ -226,11 +261,11 @@ C             I.1. CALCUL DE A ET DE At
                 DO 131 J = 1,NNO
                   DO 132 L = 1,DDLH
 C
-                   MMAT(PLI,DDLS*(J-1)+NDIM+L)=
-     &             MMAT(PLI,DDLS*(J-1)+NDIM+L)+2.D0*FFI*FFP(J)*ND(L)*JAC
+                 MMAT(PLI,DDLS*(J-1)+NDIM+L)=MMAT(PLI,DDLS*(J-1)+NDIM+L)
+     &             + 2.D0 * FFI * FFP(J) * ND(L) * JAC * MULT
 C
-                   MMAT(DDLS*(J-1)+NDIM+L,PLI)=
-     &             MMAT(DDLS*(J-1)+NDIM+L,PLI)+2.D0*FFI*FFP(J)*ND(L)*JAC
+                 MMAT(DDLS*(J-1)+NDIM+L,PLI)=MMAT(DDLS*(J-1)+NDIM+L,PLI)
+     &             + 2.D0 * FFI * FFP(J) * ND(L) * JAC * MULT
 C
  132              CONTINUE
  131            CONTINUE
@@ -245,7 +280,7 @@ C             I.2. CALCUL DE A_U
 C
                       MMAT(DDLS*(I-1)+NDIM+K,DDLS*(J-1)+NDIM+L) =  
      &                MMAT(DDLS*(I-1)+NDIM+K,DDLS*(J-1)+NDIM+L)+
-     &                         4.D0*RHON*FFP(I)*FFP(J)*ND(K)*ND(L)*JAC
+     &                4.D0*RHON*FFP(I)*FFP(J)*ND(K) * ND(L) * JAC * MULT
 C
  143                CONTINUE
  142              CONTINUE
@@ -289,7 +324,7 @@ C             METR : MÉTRIQUE DE LA BASE COVARIANTE AUX PTS D'INTERSECT
                     DO 153 L = 1,2
                       
                       MMAT(PLI+K,PLJ+L) = MMAT(PLI+K,PLJ+L)
-     &                                  + FFI * FFJ * METR(K,L) * JAC 
+     &                           + FFI * FFJ * METR(K,L) * JAC * MULT
 
  153                CONTINUE
  152              CONTINUE
@@ -351,10 +386,10 @@ C               CALCUL DE TAU.KN.P
                     DO 167 L = 1,DDLH
 C
              MMAT(PLI+K,DDLS*(J-1)+NDIM+L)=MMAT(PLI+K,DDLS*(J-1)+NDIM+L)
-     &               +  2.D0*MU*SEUIL(ISSPG)*FFI*FFP(J)*TAUKNP(K,L)*JAC
+     &           +  2.D0*MU*SEUIL(ISSPG)*FFI*FFP(J)*TAUKNP(K,L)*JAC*MULT
 C
              MMAT(DDLS*(J-1)+NDIM+L,PLI+K)=MMAT(DDLS*(J-1)+NDIM+L,PLI+K)
-     &               +  2.D0*MU*SEUIL(ISSPG)*FFI*FFP(J)*TAUKNP(K,L)*JAC
+     &           +  2.D0*MU*SEUIL(ISSPG)*FFI*FFP(J)*TAUKNP(K,L)*JAC*MULT
 C
  167                CONTINUE
  166              CONTINUE
@@ -369,7 +404,7 @@ C             II.2. CALCUL DE B_U
 C
                       MMAT(DDLS*(I-1)+NDIM+K,DDLS*(J-1)+NDIM+L) =  
      &                MMAT(DDLS*(I-1)+NDIM+K,DDLS*(J-1)+NDIM+L) -
-     &    4.D0*MU*SEUIL(ISSPG)*RHOTK*FFP(I)*FFP(J)*PTKNP(K,L)*JAC
+     &      4.D0*MU*SEUIL(ISSPG)*RHOTK*FFP(I)*FFP(J)*PTKNP(K,L)*JAC*MULT
 C
  173                CONTINUE
  172              CONTINUE
@@ -395,7 +430,7 @@ C                 CALCUL DE TAIKTA = TAUt.(Id-KN).TAU
                     DO 183 L = 1,2
                       
                       MMAT(PLI+K,PLJ+L) = MMAT(PLI+K,PLJ+L)
-     &        - MU * SEUIL(ISSPG)/RHOTK * FFI * FFJ * TAIKTA(K,L) * JAC
+     &              - MU*SEUIL(ISSPG)/RHOTK*FFI*FFJ*TAIKTA(K,L)*JAC*MULT
 
  183                CONTINUE
  182              CONTINUE

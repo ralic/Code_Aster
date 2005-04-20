@@ -2,7 +2,7 @@
       IMPLICIT NONE
       CHARACTER*16        OPTION , NOMTE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 21/01/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 20/04/2005   AUTEUR GODARD V.GODARD 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,7 +51,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       INTEGER      IADZI, IAZK24, LPESA
       REAL*8       PGL(3,3) , XYZL(3,4) , PGLO(3)  , PLOC(3)
       REAL*8       VECL(24) , FOR(6,4)  , RHO      , EPAIS
-      REAL*8       PCL , PCT , COEFRO, UNDEMI
+      REAL*8       UNDEMI
       REAL*8       VALPAR(4), DIST , EXCENT , PR
       LOGICAL      GLOBAL, LOCAPR
       CHARACTER*8  NOMPAR(4), MOPLAN, NOMAIL
@@ -226,15 +226,8 @@ C
       ELSE IF ( OPTION.EQ.'CHAR_MECA_PESA_R') THEN
 C              ------------------------------
          GLOBAL = .TRUE.
-         IF( NOMTE(1:8) .EQ. 'MEGRDKT ' ) THEN
-           PCL  = ZR(JCOQU+4)
-           PCT  = ZR(JCOQU+5)
-           COEFRO = 1.D0 + PCT/PCL
-         ELSE
-           COEFRO = 1.D0
-         ENDIF
+
          CALL DXROEP ( RHO , EPAIS )
-         RHO = RHO * COEFRO
          CALL JEVECH ('PPESANR', 'L', LPESA)
          DO 240 I = 1, 3
             PGLO(I) = ZR(LPESA) * ZR(LPESA+I) * RHO * EPAIS

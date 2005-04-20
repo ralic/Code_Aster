@@ -3,7 +3,7 @@
       INTEGER           IER
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/01/2005   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 18/04/2005   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -177,8 +177,6 @@ C-----------------------------------------------------------------------
           IMA=ZI(J1-1+IEL)
           JJ=JTAB-1+5*(IMA-1)
           
-C          write(6,*)'notype ',NOTYPE
-          
           IF (NOTYPE.EQ.'MECA_X_HEXA20') THEN
             IF (ZI(JJ+1).EQ.1)  ZI(JJ+5)=ITYXH8(1)
             IF (ZI(JJ+2).EQ.1)  ZI(JJ+5)=ITYXH8(2)
@@ -257,13 +255,6 @@ C-----------------------------------------------------------------------
       DO 400 IMA=1,NBMA
         ZI(JMAIL2-1+IMA)=ZI(JTAB-1+5*(IMA-1)+5)
  400  CONTINUE     
-
-      IF (NIV.GT.1) THEN 
-        WRITE(IFM,*)'.MAILLE2'
-        DO 490 I=1,NBMA
-          WRITE(IFM,*)' ',ZI(JMAIL2-1+I)
- 490    CONTINUE
-      ENDIF
       
       WRITE(IFM,*)'OP0113-4) : FIN DE CREATION DU MAILLE2'
       

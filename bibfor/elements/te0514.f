@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 25/01/2005   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ELEMENTS  DATE 18/04/2005   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -20,7 +20,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
-C.......................................................................
+C RESPONSABLE GENIAUT S.GENIAUT
 C
 C       CALCUL DES DONNÉES TOPOLOGIQUES CONCERNANT CONCERNANT 
 C       LA DÉCOUPE DES ÉLÉMENTS POUR L'INTÉGRATION AVEC X-FEM
@@ -105,8 +105,9 @@ C       DÉCOUPAGE EN NSE SOUS-ÉLÉMENTS
  
 C       ARCHIVAGE DE LONCHAM
         NSETOT=NSETOT+NSE
-        IF (NSETOT.GT.28) CALL UTMESS('F','TE0514','NOMBRE TOTAL DE '//
-     &                                'SOUS-ELEMENTS LIMITE A 28.')
+        
+        IF (NSETOT.GT.32) CALL UTMESS('F','TE0514','NOMBRE TOTAL DE '//
+     &                                'SOUS-ELEMENTS LIMITE A 32.')
         ZI(JOUT4-1+IT+1)=NSE
  
 C       BOUCLE SUR LES NINTER POINTS D'INTERSETION
@@ -129,8 +130,8 @@ C         VERIF SI EXISTE DEJA DANS PINTERTO
  111      CONTINUE
           IF (.NOT.DEJA) THEN
             NP=NP+1
-            IF (NP.GT.9) CALL UTMESS('F','TE0514','TROP DE POINTS '//
-     &                                             'DANS PINTERTO.')
+            IF (NP.GT.11) CALL UTMESS('F','TE0514','NOMBRE TOTAL DE '//
+     &                         'POINTS D''INTERSECTION LIMITE A 11.')
 C           ARCHIVAGE DE PINTERTO
             ZR(JOUT1-1+3*(NP-1)+1)=ZR(JPTINT-1+3*(IPT-1)+1)
             ZR(JOUT1-1+3*(NP-1)+2)=ZR(JPTINT-1+3*(IPT-1)+2)

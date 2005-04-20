@@ -1,10 +1,10 @@
-      SUBROUTINE       CONFAC(TYPMA,FT,NBFT)
+      SUBROUTINE       CONFAC(TYPMA,FT,NBFT,F,NBF)
       IMPLICIT NONE
-      INTEGER          FT(12,3),NBFT
+      INTEGER          FT(12,3),NBFT,F(6,4),NBF
       CHARACTER*8      TYPMA
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ALGORITH  DATE 18/04/2005   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -21,6 +21,8 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
+C RESPONSABLE GENIAUT S.GENIAUT
+C
 C                       RENVOIE LA MATRICE DE CONNECTIVITÉ DES 
 C                 FACES TRIANGULAIRES D'UNE MAILLE DE TYPE TYPMA
 C
@@ -30,6 +32,8 @@ C
 C    SORTIE : 
 C              FT   : MATRICE DE CONNECTIVITÉ DES FACES TRIANGULAIES
 C              NBFT : NOMBRE DE FACES TRIANGULAIRES
+C              F    : MATRICE DE CONNECTIVITÉ DES FACES
+C              NBF  : NOMBRE DE FACES
 C     ------------------------------------------------------------------
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER          ZI
@@ -59,9 +63,9 @@ C ----------------------------------------------------------------------
  110    CONTINUE
  100  CONTINUE    
 
-      IF (TYPMA.EQ.'HEXA8') THEN
+      IF (TYPMA.EQ.'HEXA8'.OR.TYPMA.EQ.'HEXA20') THEN
         NBFT=12
-C       CONNECTIVITÉ DES FACES TRIANGLES POUR UNE MAILLE HEXA8
+C       CONNECTIVITÉ DES FACES TRIANGLES POUR UNE MAILLE HEXA8 OU HEXA20
         FT(1,1)=1
         FT(1,2)=2
         FT(1,3)=3
@@ -97,10 +101,38 @@ C       CONNECTIVITÉ DES FACES TRIANGLES POUR UNE MAILLE HEXA8
         FT(11,3)=7
         FT(12,1)=7
         FT(12,2)=6
-        FT(12,3)=2         
-      ELSEIF (TYPMA.EQ.'PENTA6') THEN
+        FT(12,3)=2 
+
+        NBF=6
+C       CONNECTIVITÉ DES FACES POUR UNE MAILLE HEXA8 OU HEXA20
+        F(1,1)=1
+        F(1,2)=2
+        F(1,3)=3
+        F(1,4)=4
+        F(2,1)=1
+        F(2,2)=2
+        F(2,3)=6
+        F(2,4)=5
+        F(3,1)=3
+        F(3,2)=4
+        F(3,3)=8
+        F(3,4)=7
+        F(4,1)=5
+        F(4,2)=6
+        F(4,3)=7
+        F(4,4)=8
+        F(5,1)=1
+        F(5,2)=4
+        F(5,3)=8
+        F(5,4)=5
+        F(6,1)=2
+        F(6,2)=3
+        F(6,3)=7
+        F(6,4)=6
+          
+      ELSEIF (TYPMA.EQ.'PENTA6'.OR.TYPMA.EQ.'PENTA15') THEN
         NBFT=8
-C       CONNECTIVITÉ DES FACES TRIANGLES POUR UNE MAILLE PENTA6
+C     CONNECTIVITÉ DES FACES TRIANGLES POUR UNE MAILLE PENTA6 OU PENTA15
         FT(1,1)=1
         FT(1,2)=2
         FT(1,3)=3
@@ -125,9 +157,33 @@ C       CONNECTIVITÉ DES FACES TRIANGLES POUR UNE MAILLE PENTA6
         FT(8,1)=5
         FT(8,2)=4
         FT(8,3)=1
-      ELSEIF (TYPMA.EQ.'TETRA4') THEN
+
+        NBF=5
+C       CONNECTIVITÉ DES FACES POUR UNE MAILLE PENTA6 OU PENTA15
+        F(1,1)=1
+        F(1,2)=2
+        F(1,3)=3
+        F(1,4)=0
+        F(2,1)=4
+        F(2,2)=5
+        F(2,3)=6
+        F(2,4)=0
+        F(3,1)=1
+        F(3,2)=3
+        F(3,3)=6
+        F(3,4)=4
+        F(4,1)=2
+        F(4,2)=3
+        F(4,3)=6
+        F(4,4)=5        
+        F(5,1)=1
+        F(5,2)=2
+        F(5,3)=5
+        F(5,4)=4
+
+      ELSEIF (TYPMA.EQ.'TETRA4'.OR.TYPMA.EQ.'TETRA10') THEN
         NBFT=4
-C       CONNECTIVITÉ DES FACES TRIANGLES POUR UNE MAILLE TETRA4
+C     CONNECTIVITÉ DES FACES TRIANGLES POUR UNE MAILLE TETRA4 OU TETRA10
         FT(1,1)=1
         FT(1,2)=3
         FT(1,3)=2
@@ -140,9 +196,29 @@ C       CONNECTIVITÉ DES FACES TRIANGLES POUR UNE MAILLE TETRA4
         FT(4,1)=1
         FT(4,2)=2
         FT(4,3)=4
+
+        NBF=4
+C       CONNECTIVITÉ DES FACES POUR UNE MAILLE TETRA4 OU TETRA10
+        F(1,1)=1
+        F(1,2)=3
+        F(1,3)=2
+        F(1,4)=0
+        F(2,1)=2
+        F(2,2)=3
+        F(2,3)=4
+        F(2,4)=0
+        F(3,1)=1
+        F(3,2)=4
+        F(3,3)=3
+        F(3,4)=0
+        F(4,1)=1
+        F(4,2)=2
+        F(4,3)=4
+        F(4,4)=0
       ELSE
-        CALL UTMESS('F','CONFAC','MAILLE NI HEXA8 NI PENTA6 '//
-     &      'NI TETRA4. LA MAILLE EST DE TYPE :'//TYPMA//'.') 
+        CALL UTMESS('F','CONFAC','LA MAILLE DOIT ETRE DE TYPE '//
+     &      'TETRA4, TETRA10, PENTA6, PENTA15, HEXA8 OU HEXA20. '//
+     &      'OR LA MAILLE EST DE TYPE : '//TYPMA//'.') 
       ENDIF
 
       CALL JEDEMA()

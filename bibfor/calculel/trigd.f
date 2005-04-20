@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 30/01/2002   AUTEUR VABHHTS J.TESELET 
+C MODIF CALCULEL  DATE 18/04/2005   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -79,7 +79,7 @@ C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32 ZK32
       CHARACTER*80 ZK80
 C    -------------------------------------------------------------------
-      PARAMETER (NEC2=4)
+      PARAMETER (NEC2=5)
       INTEGER DG1OLD(NEC2),DG2OLD(NEC2),POSCMP(NEC2*30)
       SAVE DG1OLD,DG2OLD,POSCMP,IND2,NECOLD
       DATA DG1OLD/NEC2*0/

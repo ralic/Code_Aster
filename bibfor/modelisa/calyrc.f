@@ -3,7 +3,7 @@
       CHARACTER*(*) CHARGZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 14/03/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 18/04/2005   AUTEUR NICOLAS O.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -168,7 +168,9 @@ C        -- 2eme groupe maitre --
         TYMOCL(2) = 'GROUP_MA'
         CALL RELIEM(MO,NOMA,'NU_MAILLE',MOTFAC,IOCC,2,MOTCLE,TYMOCL,
      &              '&&CALYRC.LIMANU2',NBMA2)
-        CALL JEVEUO('&&CALYRC.LIMANU2','L',IAGMA2)
+        IF (NBMA2.GT.0) THEN
+          CALL JEVEUO('&&CALYRC.LIMANU2','L',IAGMA2)
+        ENDIF
 
 C        1.2 RECUPERATION DES NOEUD_ESCL
 C        -------------------------------
@@ -263,16 +265,20 @@ C       -------------------
 C        -- 1er groupe esclave / 1er groupe maitre --
           CALL PJ2DCO('PARTIE',MO,MO,NBMA1,ZI(IAGMA1),NBNO3,ZI(IAGNO3),
      &                ' ',GEOM3,CORES1,.FALSE.,RBID)
+          IF (NBMA2.GT.0) THEN
 C        -- 1er groupe esclave  / 2eme groupe maitre --
           CALL PJ2DCO('PARTIE',MO,MO,NBMA2,ZI(IAGMA2),NBNO3,ZI(IAGNO3),
      &                ' ',GEOM3,CORES2,.FALSE.,RBID)
+          ENDIF
         ELSE IF (NDIM.EQ.3) THEN
 C        -- 1er groupe esclave / 1er groupe maitre --
           CALL PJ3DCO('PARTIE',MO,MO,NBMA1,ZI(IAGMA1),NBNO3,ZI(IAGNO3),
      &                ' ',GEOM3,CORES1,.FALSE.,RBID)
+          IF (NBMA2.GT.0) THEN
 C        -- 1er groupe esclave  / 2eme groupe maitre --
           CALL PJ3DCO('PARTIE',MO,MO,NBMA2,ZI(IAGMA2),NBNO3,ZI(IAGNO3),
      &                ' ',GEOM3,CORES2,.FALSE.,RBID)
+          ENDIF
         END IF
 
 C        -- 1er groupe maitre --
@@ -281,11 +287,13 @@ C        -- 1er groupe maitre --
         CALL JEVEUO(CORES1//'.PJEF_CF','L',ICOCF1)
         CALL JELIRA(CORES1//'.PJEF_NB','LONMAX',NBNO2,KB)
 
+        IF (NBMA2.GT.0) THEN
 C        -- 2eme groupe maitre --
-        CALL JEVEUO(CORES2//'.PJEF_NB','L',ICONB2)
-        CALL JEVEUO(CORES2//'.PJEF_NU','L',ICONU2)
-        CALL JEVEUO(CORES2//'.PJEF_CF','L',ICOCF2)
-C        CALL JELIRA(CORES2//'.PJEF_NB','LONMAX',NBNO2,KB)
+          CALL JEVEUO(CORES2//'.PJEF_NB','L',ICONB2)
+          CALL JEVEUO(CORES2//'.PJEF_NU','L',ICONU2)
+          CALL JEVEUO(CORES2//'.PJEF_CF','L',ICOCF2)
+C         CALL JELIRA(CORES2//'.PJEF_NB','LONMAX',NBNO2,KB)
+        ENDIF
 
 
 C       3. ECRITURE DES RELATIONS LINEAIRES :
@@ -298,11 +306,13 @@ C        -- 1er groupe maitre --
         IF (ICOEF1.LE.0) THEN
           COEF11 = 1.D0
         END IF
+        IF (NBMA2.GT.0) THEN
 C        -- 2eme groupe maitre --
         CALL GETVR8(MOTFAC,'COEF_MAIT2',IOCC,1,1,COEF12,ICOEF2)
-        IF (ICOEF2.LE.0) THEN
-          COEF12 = 1.D0
-        END IF
+          IF (ICOEF2.LE.0) THEN
+            COEF12 = 1.D0
+          END IF
+        ENDIF
 C        -- 1er groupe esclave --
         CALL GETVR8(MOTFAC,'COEF_ESCL',IOCC,1,1,COEF3,ICOEF3)
         IF (ICOEF3.LE.0) THEN
@@ -322,7 +332,11 @@ C       -------------------------------------
 C           NNO11: NB DE NOEUD_MAIT LIES A INO2 SELON CORES1
               NNO11 = ZI(ICONB1-1+INO2)
 C           NNO12: NB DE NOEUD_MAIT LIES A INO2 SELON CORES2
-              NNO12 = ZI(ICONB2-1+INO2)
+               IF (NBMA2.GT.0) THEN
+                NNO12 = ZI(ICONB2-1+INO2)
+              ELSE
+                NNO12 = 0
+              ENDIF
               IF ((NNO11.EQ.0) .AND. (NNO12.EQ.0)) GO TO 90
 
               NUNO2 = INO2
@@ -392,7 +406,11 @@ C       ---------------------------------
 C ---       NNO1: NB DE NOEUD_MAIT LIES A INO2 :
 C           ------------------------------------
               NNO11 = ZI(ICONB1-1+INO2)
-              NNO12 = ZI(ICONB2-1+INO2)
+              IF (NBMA2.GT.0) THEN
+                NNO12 = ZI(ICONB2-1+INO2)
+              ELSE
+                NNO12 = 0
+              ENDIF
               IF ((NNO11.EQ.0) .AND. (NNO12.EQ.0)) GO TO 250
               DO 110 K = 1,IDMAX
                 ZK8(IDNOMN+K-1) = M8BLAN

@@ -1,7 +1,7 @@
       SUBROUTINE OP0044(IER)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 05/10/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGELINE  DATE 14/04/2005   AUTEUR A3BHHAE H.ANDRIAMBOLOLONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -748,7 +748,7 @@ C     ------------------------------------------------------------------
 
       CALL GETVID(' ','SENSIBILITE',1,IERD,1,K8BID,IRET)
 
-      IF (IRET.GT.0) THEN
+      IF (IRET.NE.0) THEN
         IF ((KTYP.EQ.'R').AND.(LAMOR.EQ.0)) THEN
           CALL SEMORE(LRAIDE,LAMOR,LMASSE,NEQ,MXRESF,NBMOD,
      &            ZR(LRESUR),ZR(LVEC),

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/02/2005   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 18/04/2005   AUTEUR NICOLAS O.NICOLAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,8 +21,11 @@ ASSE_VECT_GENE=OPER(nom="ASSE_VECT_GENE",op= 140,sd_prod=vect_asse_gene_r,
                     reentrant='n',
             UIinfo={"groupes":("Matrices/vecteurs",)},
          NUME_DDL_GENE   =SIMP(statut='o',typ=nume_ddl_gene ),
-         CHAR_SOUS_STRUC =FACT(statut='o',max='**',
-           SOUS_STRUC      =SIMP(statut='o',typ='TXM' ),
-           VECT_ASSE       =SIMP(statut='o',typ=cham_no_depl_r ),
+         METHODE          =SIMP(statut='f',typ='TXM',defaut="CLASSIQUE",into=("CLASSIQUE","INITIAL") ),
+         b_nume     =BLOC(condition = "METHODE == 'CLASSIQUE'",
+             CHAR_SOUS_STRUC =FACT(statut='o',max='**',
+             SOUS_STRUC      =SIMP(statut='o',typ='TXM' ),
+             VECT_ASSE       =SIMP(statut='o',typ=cham_no_depl_r ),
+           ),
          ),
 )  ;

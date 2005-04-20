@@ -1,4 +1,4 @@
-# MODIF  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 18/04/2005   AUTEUR GALENNE E.GALENNE 
 # TITRE BIBLIO_18 FISSURE PRESSURISEE DANS UN DOMAINE PLAN ILLIMITE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -31,7 +31,8 @@ MO=AFFE_MODELE(  MAILLAGE=MA,
 
 MA=MODI_MAILLAGE( reuse=MA,   MAILLAGE=MA,
                               MODELE=MO,
-                  ORIE_PEAU_2D=_F(  GROUP_MA = ( 'LPOP8',  'LPOP8S', ) )
+                  ORIE_PEAU_2D=_F(GROUP_MA = ('LEV_SUP', 
+                                              'LEV_INF',) )
                      )
 
 MAT=DEFI_MATERIAU(ELAS=_F(  E = 1000., NU = 0.3))
@@ -41,7 +42,8 @@ CHMAT=AFFE_MATERIAU(  MAILLAGE=MA,AFFE=_F(  TOUT = 'OUI',MATER = MAT))
 MA=DEFI_GROUP( reuse=MA,   MAILLAGE=MA, 
                      CREA_GROUP_NO=_F( 
                    GROUP_MA = ( 'L12',  'L56',   'LPOP11',  'LPOP11S', 
-                                'LPOP8',  'LPOP8S', ))
+                                'LEV_SUP',
+                                'LEV_INF' ))
                  )
 
 EXP1 = FORMULE(NOM_PARA='X',VALE='( exp(X) ) ')
@@ -58,7 +60,8 @@ COS5 = FORMULE(NOM_PARA='X',VALE='( cos(2.4048255577 * X))')
 
 CL=AFFE_CHAR_MECA(   MODELE=MO, 
 
-            DDL_IMPO=_F( GROUP_NO = ( 'L12',  'L56',  'LPOP11',  'LPOP11S', ), DY = 0.),
+            DDL_IMPO=_F( GROUP_NO = ( 'L12',  'L56',  'LPOP11',  
+                                      'LPOP11S', ), DY = 0.),
 
             LIAISON_DDL=_F(  GROUP_NO = ('P0',  'P0BIS',),
                           DDL = ('DX',  'DX',),
@@ -66,39 +69,57 @@ CL=AFFE_CHAR_MECA(   MODELE=MO,
                           COEF_IMPO = 0.) )
 
 CH_UNI=AFFE_CHAR_MECA(   MODELE=MO, 
-                 PRES_REP=_F(  GROUP_MA = ( 'LPOP8',  'LPOP8S', ),  PRES = 1.)
+                 PRES_REP=_F(  GROUP_MA = ( 'LEV_SUP', 
+                                            'LEV_INF' ),  
+                                PRES = 1.)
                                   )
 
 CH_EXP1=AFFE_CHAR_MECA_F(   MODELE=MO, 
-                 PRES_REP=_F(  GROUP_MA = ( 'LPOP8',  'LPOP8S', ),  PRES = EXP1)
+                 PRES_REP=_F(  GROUP_MA = ( 'LEV_SUP', 
+                                            'LEV_INF' ),  
+                                PRES = EXP1)
                                   )
 
 CH_EXP5=AFFE_CHAR_MECA_F(   MODELE=MO, 
-                 PRES_REP=_F(  GROUP_MA = ( 'LPOP8',  'LPOP8S', ),  PRES = EXP5)
+                 PRES_REP=_F(   GROUP_MA = ( 'LEV_SUP', 
+                                             'LEV_INF' ),  
+                                 PRES = EXP5)
                                   )
 
 CH_SINH1=AFFE_CHAR_MECA_F(   MODELE=MO, 
-                  PRES_REP=_F(  GROUP_MA = ( 'LPOP8',  'LPOP8S', ),  PRES = SINH1)
+                  PRES_REP=_F(   GROUP_MA = ( 'LEV_SUP', 
+                                              'LEV_INF' ),  
+                                 PRES = SINH1)
                                   )
 
 CH_SINH5=AFFE_CHAR_MECA_F(   MODELE=MO, 
-                  PRES_REP=_F(  GROUP_MA = ( 'LPOP8',  'LPOP8S', ),  PRES = SINH5)
+                  PRES_REP=_F(   GROUP_MA = ( 'LEV_SUP', 
+                                              'LEV_INF' ), 
+                                  PRES = SINH5)
                                   )
 
 CH_COSH1=AFFE_CHAR_MECA_F(   MODELE=MO, 
-                  PRES_REP=_F(  GROUP_MA = ( 'LPOP8',  'LPOP8S', ),  PRES = COSH1)
+                  PRES_REP=_F(   GROUP_MA = ( 'LEV_SUP', 
+                                              'LEV_INF' ),
+                                  PRES = COSH1)
                                   )
 
 CH_COSH5=AFFE_CHAR_MECA_F(   MODELE=MO, 
-                  PRES_REP=_F(  GROUP_MA = ( 'LPOP8',  'LPOP8S', ),  PRES = COSH5)
+                  PRES_REP=_F(   GROUP_MA = ( 'LEV_SUP', 
+                                              'LEV_INF' ),
+                                   PRES = COSH5)
                                   )
 
 CH_COS1=AFFE_CHAR_MECA_F(   MODELE=MO, 
-                 PRES_REP=_F(  GROUP_MA = ( 'LPOP8',  'LPOP8S', ),  PRES = COS1)
+                 PRES_REP=_F(   GROUP_MA = ( 'LEV_SUP', 
+                                             'LEV_INF' ),  
+                                 PRES = COS1)
                                   )
 
 CH_COS5=AFFE_CHAR_MECA_F(   MODELE=MO, 
-                 PRES_REP=_F(  GROUP_MA = ( 'LPOP8',  'LPOP8S', ),  PRES = COS5)
+                 PRES_REP=_F(   GROUP_MA = ( 'LEV_SUP', 
+                                             'LEV_INF' ), 
+                                 PRES = COS5)
                                   )
 
 RE_UNI=MECA_STATIQUE(   MODELE=MO,   CHAM_MATER=CHMAT,EXCIT=( 
@@ -186,8 +207,8 @@ NOM_CHAM='DEPL', RESULTAT=RE_COS5,
 # -----------------------------
 
 FOND=DEFI_FOND_FISS(    MAILLAGE=MA,
-                           FOND_FISS=_F( GROUP_NO = ('P0',)),
-                           NORMALE=(0., 1., 0.,)
+                        FOND_FISS=_F( GROUP_NO = ('P0',)),
+                        NORMALE=(0., 1., 0.,)
                       )
 
 # DEFINITION DES CHAMPS THETA
@@ -242,7 +263,7 @@ G_UNI0=CALC_G_THETA_T(    MODELE=MO,
                               FOND_FISS=FOND,
                             EXCIT=_F(CHARGE=CH_UNI,),
                             CHAM_MATER=CHMAT,
-                            SYME_CHAR='SYME',
+                            SYME_CHAR='SANS',
                             OPTION='CALC_K_G'
                         )
 
@@ -252,7 +273,7 @@ G_EXP10=CALC_G_THETA_T(    MODELE=MO,
                                FOND_FISS=FOND,
                              EXCIT=_F(CHARGE=CH_EXP1,),
                              CHAM_MATER=CHMAT,
-                             SYME_CHAR='SYME',
+                             SYME_CHAR='SANS',
                              OPTION='CALC_K_G'
                          )
 
@@ -262,7 +283,7 @@ G_EXP50=CALC_G_THETA_T(    MODELE=MO,
                                FOND_FISS=FOND,
                              EXCIT=_F(CHARGE=CH_EXP5,),
                              CHAM_MATER=CHMAT,
-                             SYME_CHAR='SYME',
+                             SYME_CHAR='SANS',
                              OPTION='CALC_K_G'
                          )
 
@@ -272,7 +293,7 @@ G_SINH10=CALC_G_THETA_T(    MODELE=MO,
                                 FOND_FISS=FOND,
                               EXCIT=_F(CHARGE=CH_SINH1,),
                               CHAM_MATER=CHMAT,
-                              SYME_CHAR='SYME',
+                              SYME_CHAR='SANS',
                               OPTION='CALC_K_G'
                           )
 
@@ -282,7 +303,7 @@ G_SINH50=CALC_G_THETA_T(    MODELE=MO,
                                 FOND_FISS=FOND,
                               EXCIT=_F(CHARGE=CH_SINH5,),
                               CHAM_MATER=CHMAT,
-                              SYME_CHAR='SYME',
+                              SYME_CHAR='SANS',
                               OPTION='CALC_K_G'
                           )
 
@@ -292,7 +313,7 @@ G_COSH10=CALC_G_THETA_T(    MODELE=MO,
                                 FOND_FISS=FOND,
                               EXCIT=_F(CHARGE=CH_COSH1,),
                               CHAM_MATER=CHMAT,
-                              SYME_CHAR='SYME',
+                              SYME_CHAR='SANS',
                               OPTION='CALC_K_G'
                           )
 
@@ -302,7 +323,7 @@ G_COSH50=CALC_G_THETA_T(    MODELE=MO,
                                 FOND_FISS=FOND,
                               EXCIT=_F(CHARGE=CH_COSH5,),
                               CHAM_MATER=CHMAT,
-                              SYME_CHAR='SYME',
+                              SYME_CHAR='SANS',
                               OPTION='CALC_K_G'
                           )
 
@@ -312,7 +333,7 @@ G_COS10=CALC_G_THETA_T(    MODELE=MO,
                                FOND_FISS=FOND,
                              EXCIT=_F(CHARGE=CH_COS1,),
                              CHAM_MATER=CHMAT,
-                             SYME_CHAR='SYME',
+                             SYME_CHAR='SANS',
                              OPTION='CALC_K_G'
                          )
 
@@ -322,7 +343,7 @@ G_COS50=CALC_G_THETA_T(    MODELE=MO,
                                FOND_FISS=FOND,
                              EXCIT=_F(CHARGE=CH_COS5,),
                              CHAM_MATER=CHMAT,
-                             SYME_CHAR='SYME',
+                             SYME_CHAR='SANS',
                              OPTION='CALC_K_G'
                          )
 
@@ -335,7 +356,7 @@ G_UNI1=CALC_G_THETA_T(    MODELE=MO,
                               FOND_FISS=FOND,
                             EXCIT=_F(CHARGE=CH_UNI,),
                             CHAM_MATER=CHMAT,
-                            SYME_CHAR='SYME',
+                            SYME_CHAR='SANS',
                             OPTION='CALC_K_G'
                         )
 
@@ -345,7 +366,7 @@ G_EXP11=CALC_G_THETA_T(    MODELE=MO,
                                FOND_FISS=FOND,
                              EXCIT=_F(CHARGE=CH_EXP1,),
                              CHAM_MATER=CHMAT,
-                             SYME_CHAR='SYME',
+                             SYME_CHAR='SANS',
                              OPTION='CALC_K_G'
                          )
 
@@ -355,7 +376,7 @@ G_EXP51=CALC_G_THETA_T(    MODELE=MO,
                                FOND_FISS=FOND,
                              EXCIT=_F(CHARGE=CH_EXP5,),
                              CHAM_MATER=CHMAT,
-                             SYME_CHAR='SYME',
+                             SYME_CHAR='SANS',
                              OPTION='CALC_K_G'
                          )
 
@@ -365,7 +386,7 @@ G_SINH11=CALC_G_THETA_T(    MODELE=MO,
                                 FOND_FISS=FOND,
                               EXCIT=_F(CHARGE=CH_SINH1,),
                               CHAM_MATER=CHMAT,
-                              SYME_CHAR='SYME',
+                              SYME_CHAR='SANS',
                               OPTION='CALC_K_G'
                           )
 
@@ -375,7 +396,7 @@ G_SINH51=CALC_G_THETA_T(    MODELE=MO,
                                 FOND_FISS=FOND,
                               EXCIT=_F(CHARGE=CH_SINH5,),
                               CHAM_MATER=CHMAT,
-                              SYME_CHAR='SYME',
+                              SYME_CHAR='SANS',
                               OPTION='CALC_K_G'
                           )
 
@@ -385,7 +406,7 @@ G_COSH11=CALC_G_THETA_T(    MODELE=MO,
                                 FOND_FISS=FOND,
                               EXCIT=_F(CHARGE=CH_COSH1,),
                               CHAM_MATER=CHMAT,
-                              SYME_CHAR='SYME',
+                              SYME_CHAR='SANS',
                               OPTION='CALC_K_G'
                           )
 
@@ -395,7 +416,7 @@ G_COSH51=CALC_G_THETA_T(    MODELE=MO,
                                 FOND_FISS=FOND,
                               EXCIT=_F(CHARGE=CH_COSH5,),
                               CHAM_MATER=CHMAT,
-                              SYME_CHAR='SYME',
+                              SYME_CHAR='SANS',
                               OPTION='CALC_K_G'
                           )
 
@@ -405,7 +426,7 @@ G_COS11=CALC_G_THETA_T(    MODELE=MO,
                                FOND_FISS=FOND,
                              EXCIT=_F(CHARGE=CH_COS1,),
                              CHAM_MATER=CHMAT,
-                             SYME_CHAR='SYME',
+                             SYME_CHAR='SANS',
                              OPTION='CALC_K_G'
                          )
 
@@ -415,7 +436,7 @@ G_COS51=CALC_G_THETA_T(    MODELE=MO,
                                FOND_FISS=FOND,
                              EXCIT=_F(CHARGE=CH_COS5,),
                              CHAM_MATER=CHMAT,
-                             SYME_CHAR='SYME',
+                             SYME_CHAR='SANS',
                              OPTION='CALC_K_G'
                          )
 
@@ -428,7 +449,7 @@ G_UNI2=CALC_G_THETA_T(    MODELE=MO,
                               FOND_FISS=FOND,
                             EXCIT=_F(CHARGE=CH_UNI,),
                             CHAM_MATER=CHMAT,
-                            SYME_CHAR='SYME',
+                            SYME_CHAR='SANS',
                             OPTION='CALC_K_G'
                         )
 
@@ -438,7 +459,7 @@ G_EXP12=CALC_G_THETA_T(    MODELE=MO,
                                FOND_FISS=FOND,
                              EXCIT=_F(CHARGE=CH_EXP1,),
                              CHAM_MATER=CHMAT,
-                             SYME_CHAR='SYME',
+                             SYME_CHAR='SANS',
                              OPTION='CALC_K_G'
                          )
 
@@ -448,7 +469,7 @@ G_EXP52=CALC_G_THETA_T(    MODELE=MO,
                                FOND_FISS=FOND,
                              EXCIT=_F(CHARGE=CH_EXP5,),
                              CHAM_MATER=CHMAT,
-                             SYME_CHAR='SYME',
+                             SYME_CHAR='SANS',
                              OPTION='CALC_K_G'
                          )
 
@@ -458,7 +479,7 @@ G_SINH12=CALC_G_THETA_T(    MODELE=MO,
                                 FOND_FISS=FOND,
                               EXCIT=_F(CHARGE=CH_SINH1,),
                               CHAM_MATER=CHMAT,
-                              SYME_CHAR='SYME',
+                              SYME_CHAR='SANS',
                               OPTION='CALC_K_G'
                           )
 
@@ -468,7 +489,7 @@ G_SINH52=CALC_G_THETA_T(    MODELE=MO,
                                 FOND_FISS=FOND,
                               EXCIT=_F(CHARGE=CH_SINH5,),
                               CHAM_MATER=CHMAT,
-                              SYME_CHAR='SYME',
+                              SYME_CHAR='SANS',
                               OPTION='CALC_K_G'
                           )
 
@@ -478,7 +499,7 @@ G_COSH12=CALC_G_THETA_T(    MODELE=MO,
                                 FOND_FISS=FOND,
                               EXCIT=_F(CHARGE=CH_COSH1,),
                               CHAM_MATER=CHMAT,
-                              SYME_CHAR='SYME',
+                              SYME_CHAR='SANS',
                               OPTION='CALC_K_G'
                           )
 
@@ -488,7 +509,7 @@ G_COSH52=CALC_G_THETA_T(    MODELE=MO,
                                 FOND_FISS=FOND,
                               EXCIT=_F(CHARGE=CH_COSH5,),
                               CHAM_MATER=CHMAT,
-                              SYME_CHAR='SYME',
+                              SYME_CHAR='SANS',
                               OPTION='CALC_K_G'
                           )
 
@@ -498,7 +519,7 @@ G_COS12=CALC_G_THETA_T(    MODELE=MO,
                                FOND_FISS=FOND,
                              EXCIT=_F(CHARGE=CH_COS1,),
                              CHAM_MATER=CHMAT,
-                             SYME_CHAR='SYME',
+                             SYME_CHAR='SANS',
                              OPTION='CALC_K_G'
                          )
 
@@ -508,7 +529,7 @@ G_COS52=CALC_G_THETA_T(    MODELE=MO,
                                FOND_FISS=FOND,
                              EXCIT=_F(CHARGE=CH_COS5,),
                              CHAM_MATER=CHMAT,
-                             SYME_CHAR='SYME',
+                             SYME_CHAR='SANS',
                              OPTION='CALC_K_G'
                          )
 
@@ -521,7 +542,7 @@ G_UNI3=CALC_G_THETA_T(    MODELE=MO,
                               FOND_FISS=FOND,
                             EXCIT=_F(CHARGE=CH_UNI,),
                             CHAM_MATER=CHMAT,
-                            SYME_CHAR='SYME',
+                            SYME_CHAR='SANS',
                             OPTION='CALC_K_G'
                         )
 
@@ -531,7 +552,7 @@ G_EXP13=CALC_G_THETA_T(    MODELE=MO,
                                FOND_FISS=FOND,
                              EXCIT=_F(CHARGE=CH_EXP1,),
                              CHAM_MATER=CHMAT,
-                             SYME_CHAR='SYME',
+                             SYME_CHAR='SANS',
                              OPTION='CALC_K_G'
                          )
 
@@ -541,7 +562,7 @@ G_EXP53=CALC_G_THETA_T(    MODELE=MO,
                                FOND_FISS=FOND,
                              EXCIT=_F(CHARGE=CH_EXP5,),
                              CHAM_MATER=CHMAT,
-                             SYME_CHAR='SYME',
+                             SYME_CHAR='SANS',
                              OPTION='CALC_K_G'
                          )
 
@@ -551,7 +572,7 @@ G_SINH13=CALC_G_THETA_T(    MODELE=MO,
                                 FOND_FISS=FOND,
                               EXCIT=_F(CHARGE=CH_SINH1,),
                               CHAM_MATER=CHMAT,
-                              SYME_CHAR='SYME',
+                              SYME_CHAR='SANS',
                               OPTION='CALC_K_G'
                           )
 
@@ -561,7 +582,7 @@ G_SINH53=CALC_G_THETA_T(    MODELE=MO,
                                 FOND_FISS=FOND,
                               EXCIT=_F(CHARGE=CH_SINH5,),
                               CHAM_MATER=CHMAT,
-                              SYME_CHAR='SYME',
+                              SYME_CHAR='SANS',
                               OPTION='CALC_K_G'
                           )
 
@@ -571,7 +592,7 @@ G_COSH13=CALC_G_THETA_T(    MODELE=MO,
                                 FOND_FISS=FOND,
                               EXCIT=_F(CHARGE=CH_COSH1,),
                               CHAM_MATER=CHMAT,
-                              SYME_CHAR='SYME',
+                              SYME_CHAR='SANS',
                               OPTION='CALC_K_G'
                           )
 
@@ -581,7 +602,7 @@ G_COSH53=CALC_G_THETA_T(    MODELE=MO,
                                 FOND_FISS=FOND,
                               EXCIT=_F(CHARGE=CH_COSH5,),
                               CHAM_MATER=CHMAT,
-                              SYME_CHAR='SYME',
+                              SYME_CHAR='SANS',
                               OPTION='CALC_K_G'
                           )
 
@@ -591,7 +612,7 @@ G_COS13=CALC_G_THETA_T(    MODELE=MO,
                                FOND_FISS=FOND,
                              EXCIT=_F(CHARGE=CH_COS1,),
                              CHAM_MATER=CHMAT,
-                             SYME_CHAR='SYME',
+                             SYME_CHAR='SANS',
                              OPTION='CALC_K_G'
                          )
 
@@ -601,7 +622,7 @@ G_COS53=CALC_G_THETA_T(    MODELE=MO,
                                FOND_FISS=FOND,
                              EXCIT=_F(CHARGE=CH_COS5,),
                              CHAM_MATER=CHMAT,
-                             SYME_CHAR='SYME',
+                             SYME_CHAR='SANS',
                              OPTION='CALC_K_G'
                          )
 
@@ -1263,5 +1284,6 @@ TEST_TABLE(       TABLE=G_COS53,
                         CRITERE='ABSOLU',
                       PRECISION=0.00001 )
 
+                      
 FIN( )
 #

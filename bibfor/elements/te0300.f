@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C.......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 26/01/2004   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 18/04/2005   AUTEUR GALENNE E.GALENNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -64,6 +64,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       REAL*8 THE,DFXDE,DFYDE,PRESNO,CISANO,FXNO,FYNO,R8PREM
 C                                            2*NNO     2*NNO
       REAL*8 PRESG(2),FORCG(2),PRESN(6),FORCN(6)
+      REAL*8 XNO1,YNO1,XNO2,YNO2,D1,D2
 
       CHARACTER*2 CODRET(3)
       CHARACTER*8 NOMRES(3),NOMPAR(3),ELREFE
@@ -238,6 +239,24 @@ C   RPOL,PHI COORDONNEES POLAIRES DU POINT DE GAUSS
 
         RPOL = SQRT(XG*XG+YG*YG)
         PHI = ATAN2(YG,XG)
+        
+        IF ((ABS(YG) .LT. 1.0D-16) .AND.
+     &      (XG .LT. 0.0D0)) THEN
+C
+C ON DETERMINE SI ON EST SUR LA LEVRE X2 > 0 OU 
+C SUR LA LEVRE X2 < 0
+C
+          XNO1 = ZR(IGEOM)
+          YNO1 = ZR(IGEOM + 1)
+          XNO2 = ZR(IGEOM + 2)
+          YNO2 = ZR(IGEOM + 3)
+          D1 = ((XNO1-XA) * (XNO1-XA)) + ((YNO1-YA) * (YNO1-YA))
+          D2 = ((XNO2-XA) * (XNO2-XA)) + ((YNO2-YA) * (YNO2-YA))
+          IF (D2 .GT. D1) THEN
+             PHI = -1.0D0 * PHI
+          END IF
+        END IF
+
         CPHI = COS(PHI)
         CPHI2 = COS(0.5D0*PHI)
         SPHI2 = SIN(0.5D0*PHI)

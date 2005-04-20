@@ -9,7 +9,7 @@ C ----------------------------------------------------------------------
       REAL*8  VARMO(7),VARPL(7)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 13/04/2005   AUTEUR MJBHHPE J.L.FLEJOU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -28,7 +28,7 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_21
 C
-C     RELATION DE COMPORTEMENT "DIS_CONTACT"
+C     RELATION DE COMPORTEMENT "DIS_CHOC"
 C
 C ----------------------------------------------------------------------
 C
@@ -70,14 +70,15 @@ CC
 C
 C --- CARACTERISTIQUES DU MATERIAU
 C
-C     MOT_CLE RIGI_NOR OBLIGATOIRE
-C
-      NBRE2 = 1
-      CALL RCVALA(ICODMA,' ','DIS_CONTACT',NBPAR,NOMPAR,VALPAR,NBRE2,
-     &                            NOMRE1,VALRE1,CODRE1,'FM')
+C     SI MOT_CLE RIGI_NOR ==> RIGNOR = VALRE1(1)
+C     SINON               ==> RIGNOR = KLV(1)
       CALL RCVALA(ICODMA,' ','DIS_CONTACT',NBPAR,NOMPAR,VALPAR,NBRE1,
      &                            NOMRE1,VALRE1,CODRE1, ' ' )
-      RIGNOR = VALRE1(1)
+      IF ( CODRE1(1).EQ.'OK' ) THEN
+         RIGNOR = VALRE1(1)
+      ELSE
+         RIGNOR = KLV(1)
+      ENDIF
       RIGTAN = VALRE1(2)
 C      AMONOR = VALRE1(3)
 C      AMOTAN = VALRE1(4)
@@ -173,9 +174,15 @@ C
 C
 C --- CARACTERISTIQUES DU MATERIAU
 C
+C     SI MOT_CLE RIGI_NOR ==> RIGNOR = VALRE1(1)
+C     SINON               ==> RIGNOR = KLV(1)
       CALL RCVALA(ICODMA,' ','DIS_CONTACT',NBPAR,NOMPAR,VALPAR,NBRE1,
      &                            NOMRE1,VALRE1,CODRE1, ' ' )
-      RIGNOR = VALRE1(1)
+      IF ( CODRE1(1).EQ.'OK' ) THEN
+         RIGNOR = VALRE1(1)
+      ELSE
+         RIGNOR = KLV(1)
+      ENDIF
       RIGTAN = VALRE1(2)
 C      AMONOR = VALRE1(3)
 C      AMOTAN = VALRE1(4)

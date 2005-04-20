@@ -1,4 +1,4 @@
-%& MODIF OPTIONS  DATE 17/09/2002   AUTEUR CIBHHGB G.BERTRAND 
+%& MODIF OPTIONS  DATE 19/04/2005   AUTEUR CIBHHLV L.VIVAN 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -24,6 +24,8 @@ OPTION__
         PDEPLM   DEPL_R
         PDEPLR   DEPL_R
         PGEOMER  GEOM_R
+        PHARMON  HARMON
+       <<  PHARMON : NUMERO D'HARMONIQUE DE FOURIER >>
    OUT__
 PENERDR ENER_R ELGA__
 

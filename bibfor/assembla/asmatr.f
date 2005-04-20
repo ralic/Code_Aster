@@ -1,6 +1,6 @@
       SUBROUTINE ASMATR(NBMAT,TLIMAT,LICOEF,NU,SOLVEU,INFCHA,MOTCLE,
      &                  BASE,TYPE,MATAS)
-C MODIF ASSEMBLA  DATE 01/04/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ASSEMBLA  DATE 18/04/2005   AUTEUR VABHHTS J.PELLET 
 C RESPONSABLE VABHHTS J.PELLET
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
@@ -91,7 +91,10 @@ CDEB-------------------------------------------------------------------
       INFCH2 = INFCHA
       LICOE2 = LICOEF
       NBMAT2=NBMAT
+
+      IF (MOTCLE.EQ.'ZERO') CALL DETRSD('MATR_ASSE',MATAS)
       INDSUI=.FALSE.
+
 C     -- ON AJOUTE '&&CFMMEL' SI NECESSAIRE :
 C      IF (NBMAT2.GT.99) CALL JXABOR()
       DO 10,K = 1,NBMAT2

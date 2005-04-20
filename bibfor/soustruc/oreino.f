@@ -7,7 +7,7 @@
       CHARACTER*(*)       CRIT
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 08/12/2003   AUTEUR CIBHHLV L.VIVAN 
+C MODIF SOUSTRUC  DATE 18/04/2005   AUTEUR GALENNE E.GALENNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -56,7 +56,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER       IBID, I, J, K, N, IDIS, INOE, INOD, IRE1, IRE2
       REAL*8        XA, YA, ZA, XB, YB, ZB, XAB, YAB, ZAB, AB2, XM, YM,
-     +              ZM, XAM, YAM, ZAM, C, XV, YV, ZV, V2, R8B
+     +              ZM, XAM, YAM, ZAM, C, C2, XV, YV, ZV, V2, R8B
       COMPLEX*16    C16B
       CHARACTER*8   K8B, NOMN
       CHARACTER*19  NOMT19
@@ -98,6 +98,7 @@ C
          YAM = YM-YA
          ZAM = ZM-ZA
          C = (XAM*XAB+YAM*YAB+ZAM*ZAB) / AB2
+         C2 = XAM**2 + YAM**2 + ZAM**2
          XV = XAM - C*XAB
          YV = YAM - C*YAB
          ZV = ZAM - C*ZAB
@@ -127,7 +128,7 @@ C                         NE DEPASSE PAS LA TOLERANCE ---
          ENDIF
 C        --- VERIFICATION QUE LA PROJECTION EST BIEN
 C                         SITUEE ENTRE LES POINTS A ET B ---
-         IF ( C.LT.0.0D0 .OR. C.GT.1.0D0 ) THEN
+         IF ( C.LT.0.0D0 .OR. C2.GT.AB2 ) THEN
             CALL JENUNO( JEXNUM(NOMNOE,INOD),NOMN)
             CALL UTDEBM('A','OREINO','NOEUD ')
             CALL UTIMPK('S',' ',1,NOMN)

@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 04/04/2005   AUTEUR CIBHHPD L.SALMONA 
+%& MODIF TYPELEM  DATE 18/04/2005   AUTEUR GENIAUT S.GENIAUT 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -113,11 +113,12 @@ MODE_LOCAL__
                                         X7       X8       )
     N9NEUT_R = NEUT_R   ELNO__ IDEN__  (X1       X2       X3       X4       X5       X6       
                                         X7       X8       X9       )
-    E27NEUTR = NEUT_R   ELEM__         (X1       X2       X3       X4       X5       X6       
+    E33NEUTR = NEUT_R   ELEM__         (X1       X2       X3       X4       X5       X6       
                                         X7       X8       X9       X10      X11      X12      
                                         X13      X14      X15      X16      X17      X18       
                                         X19      X20      X21      X22      X23      X24      
-                                        X25      X26      X27       )
+                                        X25      X26      X27      X28      X29      X30 
+                                        X31      X32      X33       )
     G27NEUTR = NEUT_R   ELGA__ RIGI    (X1       X2       X3       X4       X5       X6       
                                         X7       X8       X9       X10      X11      X12      
                                         X13      X14      X15      X16      X17      X18       
@@ -129,7 +130,7 @@ MODE_LOCAL__
                                         X19      X20      X21      X22      X23      X24      
                                         X25      X26      X27      X28      X29      X30
                                         X31      X32      X33      X34      X35      X36      )
-    E112NEUI = NEUT_I   ELEM__         (X1       X2       X3       X4       X5       X6       
+    E128NEUI = NEUT_I   ELEM__         (X1       X2       X3       X4       X5       X6       
                                         X7       X8       X9       X10      X11      X12      
                                         X13      X14      X15      X16      X17      X18
                                         X19      X20      X21      X22      X23      X24
@@ -147,15 +148,16 @@ MODE_LOCAL__
                                         X91      X92      X93      X94      X95      X96
                                         X97      X98      X99      X100     X101     X102
                                         X103     X104     X105     X106     X107     X108
-                                        X109     X110     X111     X112      )
+                                        X109     X110     X111     X112     X113     X114
+                                        X115     X116     X117     X118     X119     X120
+                                        X121     X122     X123     X124     X125     X126 
+                                        X127     X128    )
     CREFERE  = NEUT_I   ELEM__         (X1       X2       X3       X4       X5       X6
                                         X7       X8       X9       X10      X11      X12      )
     CSOUSOP  = NEUT_K24 ELEM__         (Z1       )
     CALPHAR  = NEUT_R   ELEM__         (X1       )
     EGNEUT_R = NEUT_R   ELGA__ RIGI     (X1       X2       X3       X4       X5       X6       )
     EGNEUT1R = NEUT_R   ELGA__ RIGI     (X1       )
-    EGNEUT9R = NEUT_R   ELGA__ RIGI    (X1       X2       X3       X4       X5       X6       
-                                        X7       X8       X9       )
     ENNEUT_R = NEUT_R   ELNO__ IDEN__  (X1       X2       X3       X4       X5       X6       )
     CPESANR  = PESA_R   ELEM__         (G        AG       BG       CG       )
     CTYPEPI  = PILO_K   ELEM__         (TYPE     )
@@ -268,7 +270,7 @@ OPTION__
     CALC_K_G            295   IN__   NGEOMER  PGEOMER  DDL_MECA PDEPLAR  DDL_MECA PTHETAR  CMATERC  PMATERC
                                      NTEMPER  PTEMPER  CTEREFE  PTEREF   NFORCER  PFRVOLU  CPESANR  PPESANR
                                      CROTATR  PROTATR  CEPSINR  PEPSINR  CCOMPOR  PCOMPOR  ECONTNO  PSIGINR
-                                     DDL_MECA PDEPINR  EGNEUT9R PBASLOR  G27NEUTR PCOURB
+                                     DDL_MECA PDEPINR  N9NEUT_R PBASLOR  G27NEUTR PCOURB
                               OUT__  EKTHETA  PGTHETA
     CHAR_ALPH_ZAC       567   IN__   EDEFOPG  PALPHAR  NGEOMER  PGEOMER  CMATERC  PMATERC  NTEMPER  PTEMPER
                               OUT__  MVECTUR  PVECTUR
@@ -415,7 +417,8 @@ OPTION__
                                      EPHASRR  PPHASMR  EPHASRR  PPHASPR  NTEMPER  PSECHMR  NTEMPER  PSECHPR
                                      CTEREFE  PSECREF  NTEMPER  PTEMPMR  NTEMPER  PTEMPPR  CTEREFE  PTEREF   
                                      ZVARIPG  PVARIMP  ZVARIPG  PVARIMR  ECORR_R  PCORRMR  ECORR_R  PCORRPR
-                                     E27NEUTR PPINTTO  E112NEUI PCNSETO  E36NEUTI PHEAVTO  E8NEUTI  PLONCHA
+                                     E33NEUTR PPINTTO  E128NEUI PCNSETO  E36NEUTI PHEAVTO  E8NEUTI  PLONCHA
+                                     N9NEUT_R PBASLOR  
                               OUT__  ECODRET  PCODRET  ECONTPG  PCONTPR  MMATUUR  PMATUUR  MMATUNS  PMATUNS
                                      ZVARIPG  PVARIPR  MVECTUR  PVECTUR
     FULL_MECA_ELAS      139   IN__   CCAMASS  PCAMASS  CCARCRI  PCARCRI  CCOMPOR  PCOMPOR  ECONTPG  PCONTMR
@@ -491,7 +494,8 @@ OPTION__
                                      EPHASRR  PPHASMR  EPHASRR  PPHASPR  NTEMPER  PSECHMR  NTEMPER  PSECHPR
                                      CTEREFE  PSECREF  NTEMPER  PTEMPMR  NTEMPER  PTEMPPR  CTEREFE  PTEREF   
                                      ZVARIPG  PVARIMP  ZVARIPG  PVARIMR  ECORR_R  PCORRMR  ECORR_R  PCORRPR
-                                     E27NEUTR PPINTTO  E112NEUI PCNSETO  E36NEUTI PHEAVTO  E8NEUTI  PLONCHA
+                                     E33NEUTR PPINTTO  E128NEUI PCNSETO  E36NEUTI PHEAVTO  E8NEUTI  PLONCHA
+                                     N9NEUT_R PBASLOR  
                               OUT__  ECODRET  PCODRET  ECONTPG  PCONTPR  ZVARIPG  PVARIPR  MVECTUR  PVECTUR
     REFE_FORC_NODA      9     IN__   NGEOMER  PGEOMER  EREFCO   PREFCO
                               OUT__  MVECTUR  PVECTUR
@@ -530,8 +534,8 @@ OPTION__
                                      CTEMPSR  PINSTPR  NIRRAER  PIRRAMR  NIRRAER  PIRRAPR  CMATERC  PMATERC
                                      EPHASRR  PPHASMR  EPHASRR  PPHASPR  NTEMPER  PSECHMR  NTEMPER  PSECHPR
                                      CTEREFE  PSECREF  NTEMPER  PTEMPMR  NTEMPER  PTEMPPR  CTEREFE  PTEREF  
-                                     ZVARIPG  PVARIMR  ECORR_R  PCORRMR  ECORR_R  PCORRPR  E27NEUTR PPINTTO  
-                                     E112NEUI PCNSETO  E36NEUTI PHEAVTO  E8NEUTI  PLONCHA
+                                     ZVARIPG  PVARIMR  ECORR_R  PCORRMR  ECORR_R  PCORRPR  E33NEUTR PPINTTO  
+                                     E128NEUI PCNSETO  E36NEUTI PHEAVTO  E8NEUTI  PLONCHA  N9NEUT_R PBASLOR  
                               OUT__  MMATUUR  PMATUUR  MMATUNS  PMATUNS
     SIEF_ELGA_DEPL      22    IN__   CCAMASS  PCAMASS  DDL_MECA PDEPLAR  NGEOMER  PGEOMER  CMATERC  PMATERC
                                      NTEMPER  PTEMPER  CTEREFE  PTEREF   NTEMPER  PSECHER  CTEREFE  PSECREF 
@@ -560,7 +564,7 @@ OPTION__
     SYME_MDNS_R         222   IN__   MMATUNS  PNOSYM
                               OUT__  MMATUUR  PSYM
     TOPOSE              99    IN__   NGEOMER  PGEOMER  N1NEUT_R PLEVSET  
-                              OUT__  E27NEUTR PPINTTO  E112NEUI PCNSETO  E36NEUTI PHEAVTO  E8NEUTI  PLONCHA
+                              OUT__  E33NEUTR PPINTTO  E128NEUI PCNSETO  E36NEUTI PHEAVTO  E8NEUTI  PLONCHA
     TOU_INI_ELGA        99    IN__   NGEOMER  PGEOMER
                               OUT__  EDOMGGA  PDOMMAG  EFACY_R  PFACY_R  EGGEOM_R PGEOM_R  EHYDRER  PHYDR_R
                                      EGINST_R PINST_R  EGNEUT_F PNEUT_F  EGNEUT_R PNEUT_R  ECONTPG  PSIEF_R

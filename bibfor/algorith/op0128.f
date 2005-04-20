@@ -1,6 +1,6 @@
       SUBROUTINE OP0128 ( IER )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 18/04/2005   AUTEUR NICOLAS O.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -30,7 +30,7 @@ C-----------------------------------------------------------------------
 C
       INTEGER          IER
       CHARACTER*8 NOMRES,NUMEG
-      CHARACTER*9 OPTION
+      CHARACTER*9 OPTION,METHOD
       CHARACTER*19 NOMNUM,NOMSTO
       CHARACTER*16 NOMCON,NOMOPE
 C-----------------------------------------------------------------------
@@ -50,6 +50,11 @@ C
 C
 C---------------------------------ASSEMBLAGE----------------------------
 C
-      CALL ASSGEN ( NOMRES, OPTION, NOMNUM, NOMSTO )
+      CALL GETVTX(' ','METHODE',1,1,1,METHOD,IOPT)
+      IF (METHOD.EQ.'CLASSIQUE') THEN
+        CALL ASSGEN ( NOMRES, OPTION, NOMNUM, NOMSTO )
+      ELSE
+        CALL ASSGCY ( NOMRES, NOMNUM, NOMSTO )
+      ENDIF
 C
       END

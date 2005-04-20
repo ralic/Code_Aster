@@ -1,5 +1,5 @@
       SUBROUTINE BMNBMD(BASMDZ,OPTINZ,NBOUT)
-C MODIF ALGORITH  DATE 19/12/2001   AUTEUR CIBHHPD D.NUNEZ 
+C MODIF ALGORITH  DATE 18/04/2005   AUTEUR NICOLAS O.NICOLAS 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -57,6 +57,7 @@ C
       CHARACTER*8 BASMOD,INTF
       CHARACTER*8 OPTION
       CHARACTER*(*) BASMDZ, OPTINZ
+      INTEGER       IDESC,LLDESC,LLREF,NBOUT,LLUTI
 
 C
 C-----------------------------------------------------------------------
@@ -71,7 +72,6 @@ C
 C
       CALL JEVEUO(BASMOD//'           .UTIL','L',LLUTI)
       IDESC=ZI(LLUTI)
-      NBMOD=ZI(LLUTI+1)
 C
 C--------------------RECUPERATION INTERF_DYNA---------------------------
 C                          EVENTUELLE
@@ -82,11 +82,11 @@ C--------------------CAS BASE MODALE CLASSIQUE--------------------------
 C
       IF(IDESC.EQ.1) THEN
         IF(OPTION.EQ.'MODE') THEN
-           NBOUT=NBMOD
+           NBOUT=ZI(LLUTI+2)
            GOTO 9999
         ELSEIF (OPTION.EQ.'TOUT') THEN
            CALL JEVEUO(INTF//'      .INTD.DESC','L',LLDESC)
-           NBOUT=NBMOD+ZI(LLDESC+4)
+           NBOUT=ZI(LLUTI+2)+ZI(LLDESC+4)
            GOTO 9999
         ELSEIF(OPTION.EQ.'DEFORMEE') THEN
            CALL JEVEUO(INTF//'      .INTD.DESC','L',LLDESC)
@@ -105,7 +105,7 @@ C--------------------CAS BASE MODALE CYCLIQUE--------------------------
 C
       IF(IDESC.EQ.2) THEN
         IF(OPTION.EQ.'MODE'.OR.OPTION.EQ.'TOUT') THEN
-           NBOUT=NBMOD
+           NBOUT=ZI(LLUTI+2)
            GOTO 9999
         ELSEIF(OPTION.EQ.'DEFORMEE') THEN
            NBOUT=0
@@ -123,7 +123,8 @@ C--------------------CAS BASE MODALE RIT OU DIAG_MASS------------------
 C
       IF((IDESC.EQ.3).OR.(IDESC.EQ.4)) THEN
         IF(OPTION.EQ.'TOUT') THEN
-           NBOUT=NBMOD
+C           NBOUT=NBMOD
+           NBOUT=ZI(LLUTI+1)
            GOTO 9999
         ELSEIF(OPTION.EQ.'DEFORMEE') THEN
            NBOUT=ZI(LLUTI+3)

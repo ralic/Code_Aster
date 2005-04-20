@@ -1,7 +1,7 @@
       SUBROUTINE TE0140(OPTION,NOMTE)
       IMPLICIT REAL*8 (A-H,O-Z)
 C     ------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ELEMENTS  DATE 14/04/2005   AUTEUR A3BHHAE H.ANDRIAMBOLOLONA 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -27,6 +27,8 @@ C     ------------------------------------------------------------------
 C IN  OPTION : K16 : NOM DE L'OPTION A CALCULER
 C       'RIGI_MECA '     : CALCUL DE LA MATRICE DE RIGIDITE
 C       'RIGI_FLUI_STRU' : CALCUL DE LA MATRICE DE RIGIDITE (ABS_CURV)
+C       'RIGI_MECA_SENSI': CALCUL DU VECTEUR -DK/DP*U
+C          POUR L'INSTANT : EULER UNIQUEMENT
 C IN  NOMTE  : K16 : NOM DU TYPE ELEMENT
 C       'MECA_POU_D_E' : POUTRE DROITE D'EULER       (SECTION VARIABLE)
 C       'MECA_POU_D_T' : POUTRE DROITE DE TIMOSHENKO (SECTION VARIABLE)
@@ -51,17 +53,20 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 
+      INTEGER LVECT,LVAPR,NDDL,NL
+      PARAMETER (NDDL=12,NL=NDDL*(NDDL+1)/2)
       PARAMETER (NBRES=2)
-      REAL*8 VALRES(NBRES)
-      CHARACTER*2 CODRES(NBRES)
+      REAL*8 VALRES(NBRES),VALTOR
+      CHARACTER*2 CODRES(NBRES),DERIVE
       CHARACTER*8 NOMPAR,NOMRES(NBRES)
       CHARACTER*16 CH16,OPTI
-      REAL*8 PGL(3,3),PGL1(3,3),PGL2(3,3),KLV(78)
+      REAL*8 PGL(3,3),PGL1(3,3),PGL2(3,3),KLV(NL),KGV(NL),WK(NDDL,NDDL)
 C     ------------------------------------------------------------------
       DATA NOMRES/'E','NU'/
 C     ------------------------------------------------------------------
       ZERO = 0.D0
       DEUX = 2.D0
+      DERIVE = '  '
 C     ------------------------------------------------------------------
 
 C     --- RECUPERATION DES CARACTERISTIQUES MATERIAUX ---
@@ -76,7 +81,6 @@ C     --- RECUPERATION DES CARACTERISTIQUES MATERIAUX ---
      &              'L''OPTION "'//CH16//'" EST INCONNUE')
       END IF
 
-      CALL JEVECH('PMATERC','L',IMATE)
       IF (OPTION(1:14).EQ.'RIGI_MECA_TANG') THEN
         CALL TECACH('ONN','PTEMPPR',1,ITEMPE,IRET)
       ELSE
@@ -91,10 +95,44 @@ C     --- RECUPERATION DES CARACTERISTIQUES MATERIAUX ---
         NOMPAR = 'TEMP'
         VALPAR = ZR(ITEMPE)
       END IF
-      CALL RCVALA(ZI(IMATE),' ',OPTI,NBPAR,NOMPAR,VALPAR,NBRES,NOMRES,
-     &            VALRES,CODRES,'FM')
-      E = VALRES(1)
-      XNU = VALRES(2)
+
+      IF (OPTION(11:14).EQ.'SENS') THEN
+C ON SE LIMITE POUR L'INSTANT AUX : POU_D_E
+        IF (NOMTE.NE.'MECA_POU_D_E') THEN
+          CALL UTMESS('F','TE0140','CALCUL DE SENSIBILITE : '//
+     &      ' ACTUELLEMENT, ON NE DERIVE QUE LES : POU_D_E')
+        ENDIF
+        CALL JEVECH('PMATSEN','L',IMATE)
+        CALL RCVALA(ZI(IMATE),' ',OPTI,NBPAR,NOMPAR,VALPAR,NBRES,
+     &            NOMRES,VALRES,CODRES,'FM')
+        E = VALRES(1)
+        XNU = VALRES(2)
+
+C A CE NIVEAU : LA PROCEDURE HABITUELLE DE CALCUL DE SENSIBILITE DONNE :
+C   SI : DERIVATION PAR RAPPORT A E ALORS : E = 1 ET XNU = 0
+C   SI : DERIVATION PAR RAPPORT A NU ALORS : E = 0 ET XNU = 1
+C ICI, LA FORMULATION DE LA DERIVEE EST PLUS COMPLEXE
+
+        CALL JEVECH('PMATERC','L',IMATE)
+        CALL RCVALA(ZI(IMATE),' ',OPTI,NBPAR,NOMPAR,VALPAR,NBRES,
+     &            NOMRES,VALRES,CODRES,'FM')
+        IF(ABS(XNU).LT.R8PREM()) THEN
+          DERIVE = 'E'
+          XNU = VALRES(2)
+        ELSE IF(ABS(E).LT.R8PREM()) THEN
+          DERIVE = 'NU'
+          E = VALRES(1)
+          XNU = VALRES(2)
+C ET ON NE CONSIDERE QUE LES DDL DE TORSION (VOIR PLUS BAS)
+        END IF
+
+      ELSE
+        CALL JEVECH('PMATERC','L',IMATE)
+        CALL RCVALA(ZI(IMATE),' ',OPTI,NBPAR,NOMPAR,VALPAR,NBRES,
+     &            NOMRES,VALRES,CODRES,'FM')
+        E = VALRES(1)
+        XNU = VALRES(2)
+      END IF
 
 C     --- RECUPERATION DES ORIENTATIONS ---
 
@@ -108,14 +146,54 @@ C     --- CALCUL DE LA MATRICE DE RIGIDITE LOCALE ---
         CALL PORIGI(NOMTE,E,XNU,KLV)
       END IF
 
-      CALL JEVECH('PMATUUR','E',LMAT)
+      IF (OPTION(11:14).EQ.'SENS') THEN
+        IF (OPTION(15:16).EQ.'_C') THEN
+          CALL JEVECH('PVECTUC','E',LVECT)
+        ELSE
+          CALL JEVECH('PVECTUR','E',LVECT)
+        END IF
+        CALL JEVECH('PVAPRIN','L',LVAPR)
+      ELSE
+        CALL JEVECH('PMATUUR','E',LMAT)
+      END IF
 
       IF (NOMTE(1:12).EQ.'MECA_POU_D_E' .OR.
      &    NOMTE(1:12).EQ.'MECA_POU_D_T') THEN
         NNO = 2
         NC = 6
         CALL MATROT(ZR(LORIEN),PGL)
-        CALL UTPSLG(NNO,NC,PGL,KLV,ZR(LMAT))
+        IF (OPTION(11:14).EQ.'SENS') THEN
+          IF(DERIVE(1:2).EQ.'NU') THEN
+C VALEUR NULLE SAUF POUR LES DDL DE TORSION
+            VALTOR = -KLV(10)/(1.D0 + XNU)
+            DO 300 I = 1,NL
+              KLV(I) = 0.D0
+300         CONTINUE
+            KLV(10) = VALTOR
+            KLV(49) = -VALTOR
+            KLV(55) = VALTOR
+          ENDIF
+          CALL UTPSLG(NNO,NC,PGL,KLV,KGV)
+          CALL VECMA(KGV,NL,WK,NDDL)
+          DO 100 I = 1,NDDL
+            IF (OPTION(15:16).EQ.'_C') THEN
+              ZC(LVECT-1+I) = DCMPLX(0.D0,0.D0)
+            ELSE
+              ZR(LVECT-1+I) = 0.D0
+            END IF
+            DO 110 J = 1,NDDL
+              IF (OPTION(15:16).EQ.'_C') THEN
+                ZC(LVECT-1+I) = ZC(LVECT-1+I)
+     &             - WK(I,J)*ZC(LVAPR-1+J)
+              ELSE
+                ZR(LVECT-1+I) = ZR(LVECT-1+I)
+     &             - WK(I,J)*ZR(LVAPR-1+J)
+              END IF
+110         CONTINUE
+100       CONTINUE
+        ELSE
+          CALL UTPSLG(NNO,NC,PGL,KLV,ZR(LMAT))
+        END IF
 
       ELSE IF (NOMTE(1:12).EQ.'MECA_POU_C_T') THEN
         CALL JEVECH('PGEOMER','L',LX)

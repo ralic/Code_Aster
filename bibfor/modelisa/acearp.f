@@ -1,11 +1,11 @@
       SUBROUTINE ACEARP(NOMA,NOMO,LMAX,NOEMAF,NOCADI,NMTGDI,NBOCC,IVR,
      +                  IFM)
       IMPLICIT REAL*8 (A-H,O-Z)
-      INTEGER                     LMAX,NOCADI(*),NMTGDI(*),NBOCC,IVR(*)
+      INTEGER           IFM,LMAX,NOEMAF,NOCADI(*),NMTGDI(*),NBOCC,IVR(*)
       CHARACTER*8       NOMA,NOMO
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 03/11/2004   AUTEUR ACBHHCD G.DEVESA 
+C MODIF MODELISA  DATE 13/04/2005   AUTEUR MJBHHPE J.L.FLEJOU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,19 +51,20 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
       CHARACTER*32     JEXNUM, JEXNOM
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
-      PARAMETER    ( NBCAR = 100 , NBVAL = 1000 , NRD = 2 )
-      INTEGER      JDC(3), JDV(3)
-      REAL*8       VAL(NBVAL), ETA, VALE(6)
+      PARAMETER    ( NBCAR = 100 , NBVAL = 12 , NRD = 2 )
+      INTEGER      JDC(3), JDV(3),IBID,NIV
+      REAL*8       VAL(NBVAL), ETA, VALE(6),RIROT(3)
       CHARACTER*1  KMA(3)
-      CHARACTER*6  KI
       CHARACTER*8  K8B, NOMU, CAR(NBCAR)
-      CHARACTER*16 SEC, REP, TOU, REPDIS(NRD), CONCEP, CMD
+      CHARACTER*16 REP, REPDIS(NRD), CONCEP, CMD
       CHARACTER*19 CARTDK, CARTDM, CARTDA, CART(3), LIGMO
       CHARACTER*24 TMPNDM, TMPVDM, TMPNDA, TMPVDA, TMPNDK, TMPVDK
       CHARACTER*24 TMPDIS, MLGNNO, MLGNMA
       CHARACTER*24 MODNEM
-      CHARACTER*1 K1BID
+      CHARACTER*1  K1BID
       CHARACTER*8  NOMNOE, NOGP, NOMMAI
+      
+      LOGICAL      TRANS
       DATA REPDIS  /'GLOBAL          ','LOCAL           '/
       DATA KMA     /'K','M','A'/
 C     ------------------------------------------------------------------
@@ -92,8 +93,23 @@ C
 C
 C --- RECUPERATION DE LA DIMENSION DU MAILLAGE
       NDIM = 3
-      CALL DISMOI('F','Z_CST',NOMO,'MODELE',IBID,K8B,IER)
-      IF ( K8B(1:3) .EQ. 'OUI' )  NDIM = 2
+C      CALL DISMOI('F','Z_CST',NOMO,'MODELE',IBID,K8B,IER)
+C      IF ( K8B(1:3) .EQ. 'OUI' )  NDIM = 2
+
+      CALL DISMOI('F','DIM_GEOM',NOMO,'MODELE',IBID,K8B,IER)
+      IF (IBID.GE.1000) IBID = IBID - 1000
+      IF (IBID.GE.100) THEN
+         IBID = IBID - 100
+         NDIM=1
+      ENDIF
+      IF (IBID.GE.20) THEN
+         IBID = IBID - 20      
+         NDIM=2
+      ENDIF
+      IF (IBID.EQ.3) THEN
+         NDIM=3
+      ENDIF
+ 
 C
 C --- CONSTRUCTION DES CARTES ET ALLOCATION
       CARTDM = NOMU//'.CARDISCM'
@@ -126,127 +142,261 @@ C
       CALL JEVEUO(TMPVDM,'E',JDV(2))
       CALL JEVEUO(TMPNDA,'E',JDC(3))
       CALL JEVEUO(TMPVDA,'E',JDV(3))
+
+C     RECUPERATION DU NIVEAU D'IMPRESSION
+C     -----------------------------------
+      CALL INFNIV(IBID,NIV)
 C
 C
+C     PAR DEFAUT ON EST DANS LE REPERE GLOBAL
+      IREP = 1
+      REP  = REPDIS(IREP)
 C --- BOUCLE SUR LES OCCURENCES DE DISCRET
       DO 30 IOC = 1 , NBOCC
          ETA = 0.D0
          CALL GETVEM(NOMA,'GROUP_MA','RIGI_PARASOL','GROUP_MA',
-     +                  IOC,1,LMAX,ZK8(JDLS),NG)
+     +               IOC,1,LMAX,ZK8(JDLS),NG)
          CALL GETVTX('RIGI_PARASOL','CARA'    ,IOC,1,NBCAR,CAR,NCAR)
          CALL GETVR8('RIGI_PARASOL','VALE'    ,IOC,1,NBVAL,VAL,NVAL)
          CALL GETVTX('RIGI_PARASOL','REPERE'  ,IOC,1,1,REP,NREP)
          CALL GETVID('RIGI_PARASOL','GROUP_MA_POI1',IOC,1,1,NOGP,NGP)
-         IF (IOC.EQ.1 .AND. NREP.EQ.0) REP = REPDIS(1)
-         DO 32 I = 1 , NRD
-            IF (REP.EQ.REPDIS(I)) IREP = I
- 32      CONTINUE
+         IF ( NGP .EQ. 0 ) THEN
+            CALL GETVID('RIGI_PARASOL','GROUP_MA_SEG2',IOC,1,1,NOGP,NGP)
+         ENDIF
+         IF (NGP.EQ.0) THEN
+            CALL UTMESS('F','ACEARP_NGP',
+     +            'PAS TAPIS DE RESSORTS MODELISES PAR DES DISCRETS')
+         ENDIF
+
+         IF ( NREP .NE. 0) THEN
+            DO 32 I = 1 , NRD
+               IF (REP.EQ.REPDIS(I)) IREP = I
+ 32         CONTINUE
+         ENDIF
+
          IF (NCAR.GT.0) NCARAC = NCAR
          IF (IVR(3).EQ.1) THEN
-            WRITE(IFM,1000)REP,IOC
+            WRITE(IFM,1000) REP,IOC
  1000       FORMAT(/,3X,
      +            '<DISCRET> MATRICES AFFECTEES AUX ELEMENTS DISCRET ',
      +                                '(REPERE ',A6,'), OCCURENCE ',I4)
          ENDIF
 C
 C ---    "GROUP_MA" = TOUTES LES MAILLES DE TOUS LES GROUPES DE MAILLES
-         IF (NG.GT.0) THEN
-           II = 0
-           DO 34 NC = 1,NCARAC
+         IF (NG.LE.0) GOTO 30
+
+         II = 0
+         DO 34 NC = 1,NCARAC
             IF (NC.EQ.2.AND.CAR(1)(1:1).EQ.CAR(2)(1:1))
-     +                   CALL UTMESS('F','ACEARP.00',
-     +        'SI 2 CARACTERISTIQUES 1 AMOR ET 1 RIGI OBLIGATOIRES')   
-            IF (CAR(NC)(1:8) .EQ.'K_TR_D_N') THEN
-              DO 57 J = 1,6
-                 VALE(J) = VAL(II+J)
- 57           CONTINUE
-              CALL RAIREP(NOMA,IOC,CAR(NC),VALE,NG,ZK8(JDLS),NBNO,
-     +         ZK8(ITBNO),ZR(IRGNO),ZR(IRGTO),ZR(IAMTO),IREP)
-              II = II + 6
-            ELSEIF (CAR(NC)(1:7) .EQ.'K_T_D_N') THEN
-              DO 58 J = 1,3
-                 VALE(J) = VAL(II+J)
- 58           CONTINUE
-              CALL RAIREP(NOMA,IOC,CAR(NC),VALE,NG,ZK8(JDLS),NBNO,
-     +         ZK8(ITBNO),ZR(IRGNO),ZR(IRGTO),ZR(IAMTO),IREP)
-              II = II + 3
-            ELSEIF (CAR(NC)(1:8) .EQ.'A_TR_D_N') THEN
-              DO 59 J = 1,6
-                 VALE(J) = VAL(II+J)
- 59           CONTINUE
-              CALL RAIREP(NOMA,IOC,CAR(NC),VALE,NG,ZK8(JDLS),NBNO,
-     +         ZK8(ITBNO),ZR(IRGNO),ZR(IRGTO),ZR(IAMTO),IREP)
-              II = II + 6
-            ELSEIF (CAR(NC)(1:7) .EQ.'A_T_D_N') THEN
-              DO 60 J = 1,3
-                 VALE(J) = VAL(II+J)
- 60           CONTINUE
-              CALL RAIREP(NOMA,IOC,CAR(NC),VALE,NG,ZK8(JDLS),NBNO,
-     +         ZK8(ITBNO),ZR(IRGNO),ZR(IRGTO),ZR(IAMTO),IREP)
-              II = II + 3
+     +         CALL UTMESS('F','ACEARP.00',
+     +         'SI 2 CARACTERISTIQUES 1 AMOR ET 1 RIGI OBLIGATOIRES')
+            IF     (CAR(NC)(1:8).EQ.'K_TR_D_N') THEN
+               DO 131 J = 1,6
+                  VALE(J) = VAL(II+J)
+131            CONTINUE
+               CALL RAIREP(NOMA,IOC,CAR(NC),VALE,NG,ZK8(JDLS),NBNO,
+     +               ZK8(ITBNO),ZR(IRGNO),ZR(IRGTO),ZR(IAMTO),RIROT)
+               II = II + 6
+            ELSEIF (CAR(NC)(1:7).EQ.'K_T_D_N') THEN
+               DO 132 J = 1,3
+                  VALE(J) = VAL(II+J)
+132            CONTINUE
+               CALL RAIREP(NOMA,IOC,CAR(NC),VALE,NG,ZK8(JDLS),NBNO,
+     +               ZK8(ITBNO),ZR(IRGNO),ZR(IRGTO),ZR(IAMTO),RIROT)
+               II = II + 3
+            ELSEIF (CAR(NC)(1:8).EQ.'K_TR_D_L') THEN
+               DO 133 J = 1,6
+                  VALE(J) = VAL(II+J)
+133            CONTINUE
+               CALL RAIREP(NOMA,IOC,CAR(NC),VALE,NG,ZK8(JDLS),NBNO,
+     +               ZK8(ITBNO),ZR(IRGNO),ZR(IRGTO),ZR(IAMTO),RIROT)
+               II = II + 6
+            ELSEIF (CAR(NC)(1:7).EQ.'K_T_D_L') THEN
+               DO 134 J = 1,3
+                  VALE(J) = VAL(II+J)
+134            CONTINUE
+               CALL RAIREP(NOMA,IOC,CAR(NC),VALE,NG,ZK8(JDLS),NBNO,
+     +               ZK8(ITBNO),ZR(IRGNO),ZR(IRGTO),ZR(IAMTO),RIROT)
+               II = II + 3
+
+            ELSEIF (CAR(NC)(1:8).EQ.'A_TR_D_N') THEN
+               DO 135 J = 1,6
+                  VALE(J) = VAL(II+J)
+135            CONTINUE
+               CALL RAIREP(NOMA,IOC,CAR(NC),VALE,NG,ZK8(JDLS),NBNO,
+     +               ZK8(ITBNO),ZR(IRGNO),ZR(IRGTO),ZR(IAMTO),RIROT)
+               II = II + 6
+            ELSEIF (CAR(NC)(1:7).EQ.'A_T_D_N') THEN
+               DO 136 J = 1,3
+                  VALE(J) = VAL(II+J)
+136            CONTINUE
+               CALL RAIREP(NOMA,IOC,CAR(NC),VALE,NG,ZK8(JDLS),NBNO,
+     +               ZK8(ITBNO),ZR(IRGNO),ZR(IRGTO),ZR(IAMTO),RIROT)
+               II = II + 3
+            ELSEIF (CAR(NC)(1:8).EQ.'A_TR_D_L') THEN
+               DO 137 J = 1,6
+                  VALE(J) = VAL(II+J)
+137            CONTINUE
+               CALL RAIREP(NOMA,IOC,CAR(NC),VALE,NG,ZK8(JDLS),NBNO,
+     +               ZK8(ITBNO),ZR(IRGNO),ZR(IRGTO),ZR(IAMTO),RIROT)
+               II = II + 6
+            ELSEIF (CAR(NC)(1:7).EQ.'A_T_D_L') THEN
+               DO 138 J = 1,3
+                  VALE(J) = VAL(II+J)
+138            CONTINUE
+               CALL RAIREP(NOMA,IOC,CAR(NC),VALE,NG,ZK8(JDLS),NBNO,
+     +               ZK8(ITBNO),ZR(IRGNO),ZR(IRGTO),ZR(IAMTO),RIROT)
+               II = II + 3
             ELSE
-              CALL UTMESS('F','ACEARP.01',
-     +        'CARACTERISTIQUE NON ADMISE ACTUELLEMENT')
+               CALL UTMESS('F','ACEARP01','CARACTERISTIQUE '//CAR(NC)//
+     &                     ' NON ADMISE ACTUELLEMENT')
             ENDIF
             IF (IXNW.NE.0.AND.NGP.EQ.0) THEN
-              DO 39 I = 1,NBNO
-               ITROU = 0
-               DO 100 K = 1 , NBMTRD
-                NUMNOE = ZI(JDNW+K*2-2)
-                CALL JENUNO(JEXNUM(MLGNNO,NUMNOE),NOMNOE)
-                IF (ZK8(ITBNO+I-1).EQ.NOMNOE) THEN
-                  ITROU = 1
-                  GOTO 101
-                ENDIF
- 100           CONTINUE
- 101           CONTINUE
-               IF (ITROU.EQ.0) CALL UTMESS('F','ACEARP.02',
-     +     'LE NOEUD '//ZK8(ITBNO+I-1)//' NON MODELISE PAR UN DISCRET') 
- 39           CONTINUE
+               DO 39 I = 1,NBNO
+                  ITROU = 0
+                  DO 100 K = 1 , NBMTRD
+                     NUMNOE = ZI(JDNW+K*2-2)
+                     CALL JENUNO(JEXNUM(MLGNNO,NUMNOE),NOMNOE)
+                     IF (ZK8(ITBNO+I-1).EQ.NOMNOE) THEN
+                        ITROU = 1
+                        GOTO 101
+                     ENDIF
+ 100              CONTINUE
+ 101              CONTINUE
+                  IF (ITROU.EQ.0) CALL UTMESS('F','ACEARP02',
+     +               'LE NOEUD '//ZK8(ITBNO+I-1)//
+     &               ' NON MODELISE PAR UN DISCRET')
+ 39            CONTINUE
             ELSEIF (IXNW.EQ.0.AND.NGP.EQ.0) THEN
-              CALL UTMESS('F','ACEARP.03',
-     +        'PAS DE NOEUDS DU RADIER MODELISES PAR DES DISCRETS')
+               CALL UTMESS('F','ACEARP03',
+     +            'PAS DE NOEUDS DU RADIER MODELISES PAR DES DISCRETS')
             ENDIF
             IF (NGP.NE.0) THEN
-              CALL JELIRA(JEXNOM(NOMA//'.GROUPEMA',NOGP),'LONMAX',
-     +                    NMA,K8B)
-              CALL JEVEUO(JEXNOM(NOMA//'.GROUPEMA',NOGP),'L',LDGM)
-              DO 22 IN = 0,NMA-1
-               CALL JEVEUO(JEXNUM(NOMA//'.CONNEX',ZI(LDGM+IN)),'L',LDNM)
-               INOE = ZI(LDNM)
-               CALL JENUNO(JEXNUM(MLGNMA,ZI(LDGM+IN)),NOMMAI)
-               CALL JENUNO(JEXNUM(MLGNNO,INOE),NOMNOE)
-               DO 24 INO = 1, NBNO
-                IF (ZK8(ITBNO+INO-1).EQ.NOMNOE) THEN
-                 ZK8(ITBMP+INO-1) = NOMMAI
-                 GOTO 22
-                ENDIF
- 24            CONTINUE
- 22           CONTINUE
-              GOTO 40
+               IF     (CAR(NC)(1:8).EQ.'K_TR_D_N') THEN
+                  NBNOEU = 1
+                  LOKM = 8
+                  TRANS = .FALSE.
+               ELSEIF (CAR(NC)(1:8).EQ.'A_TR_D_N') THEN
+                  NBNOEU = 1
+                  LOKM = 8
+                  TRANS = .FALSE.
+               ELSEIF (CAR(NC)(1:8).EQ.'K_TR_D_L') THEN
+                  NBNOEU = 2
+                  LOKM = 8
+                  TRANS = .FALSE.
+               ELSEIF (CAR(NC)(1:8).EQ.'A_TR_D_L') THEN
+                  NBNOEU = 2
+                  LOKM = 8
+                  TRANS = .FALSE.
+               ELSEIF (CAR(NC)(1:7).EQ.'K_T_D_N')  THEN
+                  NBNOEU = 1
+                  LOKM = 7
+                  TRANS = .TRUE.
+               ELSEIF (CAR(NC)(1:7).EQ.'A_T_D_N')  THEN
+                  NBNOEU = 1
+                  LOKM = 7
+                  TRANS = .TRUE.
+               ELSEIF (CAR(NC)(1:7).EQ.'K_T_D_L')  THEN
+                  NBNOEU = 2
+                  LOKM = 7
+                  TRANS = .TRUE.
+               ELSEIF (CAR(NC)(1:7).EQ.'A_T_D_L')  THEN
+                  NBNOEU = 2
+                  LOKM = 7
+                  TRANS = .TRUE.
+               ENDIF
+
+               CALL JELIRA(JEXNOM(NOMA//'.GROUPEMA',NOGP),'LONMAX',
+     +                     NMA,K8B)
+               CALL JEVEUO(JEXNOM(NOMA//'.GROUPEMA',NOGP),'L',LDGM)
+               DO 22 IN = 0,NMA-1
+C                 RECUPERE LE NOMBRE DE NOEUD DE LA MAILLE
+                  CALL JELIRA(JEXNUM(NOMA//'.CONNEX',ZI(LDGM+IN)),
+     &                        'LONMAX',NBNMA,K8B)
+                  CALL JEVEUO(JEXNUM(NOMA//'.CONNEX',ZI(LDGM+IN)),
+     &                        'L',LDNM)
+                  CALL JENUNO(JEXNUM(MLGNMA,ZI(LDGM+IN)),NOMMAI)
+C                 BOUCLE SUR LE NB DE NOEUD DE LA MAILLE
+                  IF ( NBNMA .NE. NBNOEU) THEN
+                     CALL UTMESS('F','ACEARP04','LE DISCRET '//NOMMAI//
+     &                  ' N A PAS LE BON NOMBRE DE NOEUDS.')
+                  ENDIF
+                  DO 25 INBN = 1 , NBNMA
+                     INOE = ZI(LDNM+INBN-1)
+                     CALL JENUNO(JEXNUM(MLGNNO,INOE),NOMNOE)
+                     DO 24 INO = 1, NBNO
+                        IF (ZK8(ITBNO+INO-1) .EQ. NOMNOE) THEN
+                           ZK8(ITBMP+INO-1) = NOMMAI
+                           GOTO 22
+                        ENDIF
+ 24                  CONTINUE
+ 25               CONTINUE
+C                 SI ON PASSE ICI AUCUN DES NOEUDS DU DISCRET APPARTIENT
+C                 A LA SURFACE, ET CE N'EST PAS NORMAL
+                  WRITE(IFM,*)'GROUP_MA :',(' '//ZK8(JDLS+II-1),II=1,NG)
+                  CALL UTMESS('F','ACEARP05','LE NOEUD '//NOMNOE//
+     &             ' EXTREMITE D UN DES DISCRETS'//
+     &             ' N EXISTE PAS DANS LA SURFACE DONNEE PAR GROUP_MA.')
+ 22            CONTINUE
+C              PREPARATION DES IMPRESSIONS DANS LE FICHIER RESULTAT
+               IFR = IUNIFI('RESULTAT')
+               IF ( IREP .EQ. 1) THEN
+                  LOREP  = 6
+               ELSE
+                  LOREP  = 5
+               ENDIF
+               IF ( TRANS .AND. (NIV .EQ. 2) ) THEN
+                  WRITE(IFR,1005) CAR(NC)(1:LOKM)
+               ELSEIF ( NIV .EQ. 2 ) THEN
+                  WRITE(IFR,1006) CAR(NC)(1:LOKM),
+     &                            RIROT(1),RIROT(2),RIROT(3)
+               ENDIF
+               DO 28 I = 1,NBNO
+                  IV = 1
+                  JD = ITBMP + I - 1
+                  JN = ITBNO + I - 1
+                  IF ( NBNOEU .EQ. 1 ) THEN
+                     IF ( TRANS .AND. (NIV .EQ. 2) ) THEN
+                        WRITE(IFR,1010) 'NOEUD',ZK8(JN),
+     &                        CAR(NC)(1:LOKM),
+     &                       (ZR(IRGNO+6*I-6+JJ),JJ=0,2),
+     &                        REPDIS(IREP)(1:LOREP)
+                     ELSEIF ( NIV .EQ. 2 ) THEN
+                        WRITE(IFR,1011) 'NOEUD',ZK8(JN),
+     &                        CAR(NC)(1:LOKM),
+     &                       (ZR(IRGNO+6*I-6+JJ),JJ=0,5),
+     &                        REPDIS(IREP)(1:LOREP)
+                     ENDIF
+                  ELSE
+                     IF ( TRANS .AND. (NIV .EQ. 2) ) THEN
+                        WRITE(IFR,1010) 'MAILLE',ZK8(JD),
+     &                        CAR(NC)(1:LOKM),
+     &                       (ZR(IRGNO+6*I-6+JJ),JJ=0,2),
+     &                        REPDIS(IREP)(1:LOREP)
+                     ELSEIF ( NIV .EQ. 2 ) THEN
+                        WRITE(IFR,1011) 'MAILLE',ZK8(JD),
+     &                        CAR(NC)(1:LOKM),
+     &                       (ZR(IRGNO+6*I-6+JJ),JJ=0,5),
+     &                        REPDIS(IREP)(1:LOREP)
+                     ENDIF
+                  ENDIF
+                  CALL AFFDIS(NDIM,IREP,ETA,CAR(NC),ZR(IRGNO+6*I-6),
+     &                        JDC,JDV,IVR,IV,KMA,NCMP,L,IFM)
+                  CALL NOCART(CART(L),3,' ','NOM',1,ZK8(JD),0,' ',NCMP)
+ 28            CONTINUE
+            ELSE
+               DO 36 I = 1,NBNO
+                  IV = 1
+                  JD = ITBNO + I - 1
+                  CALL CRLINU('NOM', MLGNNO, 1, IBID, ZK8(JD),
+     +                        NBMTRD, ZI(JDNW), ZI(JDDI), KK )
+                  CALL AFFDIS(NDIM,IREP,ETA,CAR(NC),ZR(IRGNO+6*I-6),
+     &                        JDC,JDV,IVR,IV,KMA,NCMP,L,IFM)
+                  CALL NOCART(CART(L),-3,' ','NUM',KK,' ',ZI(JDDI),
+     +                        LIGMO,NCMP)
+ 36            CONTINUE
             ENDIF
-            DO 36 I = 1,NBNO
-              IV = 1
-              JD = ITBNO + I - 1
-              CALL CRLINU ('NOM', MLGNNO, 1, IBID, ZK8(JD),
-     +                      NBMTRD, ZI(JDNW), ZI(JDDI), KK )
-              CALL AFFDIS(NDIM,IREP,ETA,CAR(NC),ZR(IRGNO+6*I-6),JDC,
-     +                    JDV,IVR,IV,KMA,NCMP,L,IFM)
-              CALL NOCART(CART(L),-3,' ','NUM',KK,' ',ZI(JDDI),
-     +                                                       LIGMO,NCMP)
- 36         CONTINUE
-            GOTO 34
- 40         CONTINUE
-            DO 41 I = 1,NBNO
-              IV = 1
-              JD = ITBMP + I - 1
-              CALL AFFDIS(NDIM,IREP,ETA,CAR(NC),ZR(IRGNO+6*I-6),JDC,
-     +                    JDV,IVR,IV,KMA,NCMP,L,IFM)
-              CALL NOCART(CART(L),3,' ','NOM',1,ZK8(JD),0,' ',NCMP)
- 41         CONTINUE
- 34        CONTINUE
-         ENDIF
-C
+ 34      CONTINUE
  30   CONTINUE
 C
       IF (IXNW.NE.0) CALL JEDETR(TMPDIS)
@@ -266,4 +416,15 @@ C
       ENDIF
 C
       CALL JEDEMA()
+ 1005 FORMAT(/,' PAS DE REPARTITION EN ROTATION POUR DES ',A,/)
+ 1006 FORMAT(/,' RAIDEURS DE ROTATION A REPARTIR POUR DES ',A,/
+     +        ,'  KRX: ',1PE12.5,' KRY: ',1PE12.5,' KRZ: ',1PE12.5,/)
+ 1010 FORMAT(' _F(',A,'=''',A8,''', CARA=''',A,''',',/,
+     +       '    VALE=(',3(1X,1PE12.5,','),'),',/,
+     +       '    REPERE=''',A,'''),')
+
+ 1011 FORMAT(' _F(',A,'=''',A8,''', CARA=''',A,''',',/,
+     +       '    VALE=(',3(1X,1PE12.5,','),/,
+     +       '          ',3(1X,1PE12.5,','),'),',/,
+     +       '    REPERE=''',A,'''),')
       END

@@ -1,0 +1,1371 @@
+
+
+-----------------------------------------------------------------------
+--- AUTEUR a3bhhae H.ANDRIAMBOLOLONA   DATE  le 14/04/2005 a 09:55:56
+
+------------------------------------------------------------------------
+REALISATION EL 2005-067
+   NB_JOURS_TRAV : 10
+   INTERET_UTILISATEUR : OUI
+   TITRE : derivation des POU_D_E par rapport aux parametres materiau
+   FONCTIONNALITE
+     Possibilite d'effectuer des calculs de derivee de la matrice de raideur
+     des elements POU_D_E par rapport aux parametres materiau E et NU.
+     On pourra ainsi realiser un calcul de sensibilte de modes propres,
+     de reponse statique ou de reponse dynamique par rapport a ces
+     deux parametres avec un modele compose d'elements POU_D_E.
+   DETAILS
+     Le module d'Young E et le coefficient de Poisson NU se trouvent
+     respectivement au numerateur et au denominateur des termes de
+     la matrice de raideur elementaire d'un element POU_D_E.
+     Les derivees des matrices elementaires ont ete recalculees
+     de facon analytique.
+     Deux options (RIGI_MECA_SENSI et RIGI_MECA_SENS_C) ont ete rajoutees
+     dans le catalogue des options de l'element POU_D_E.
+     Ces options calculent le produit de la derivee de la matrice de raideur
+     elementaire par un vecteur deplacement.
+
+     Routines modifiees :
+         te0140.f : calcul de la derivee de la matrice de rigidite
+                    elementaire si option RIGI_MECA_SENSI ou
+                    RIGI_MECA_SENS_C.
+         vechde.f : recuperation des caracteristiques elementaires avant l'appel
+                    du programme de verification des champs donnes (mecham.f)
+         op0044.f, op0045.f : modification du test de presence de calcul de sensibilite
+
+     Catalogue modifie :
+         gener_mepde1.cata : rajout des options RIGI_MECA_SENSI et RIGI_MECA_SENS_C
+
+     Nouveaux cas test :
+         sensd09 : voir rubrique VALIDATION ci-dessous
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_V : V1.01.207
+       EXPL_ : nouveau cas test (sensd09) : Sensibilite de modes propres
+               d'une poutre POU_D_E par rapport aux parametres materiau.
+     DOC_U : U4.50.02 Mot cle SENSIBILITE
+       EXPL_ : mise a jour de la liste des types d'element derivables.
+   VALIDATION :
+     sensd09 : ce cas test calcule les derivees des modes propres de
+     flexion et de torsion d'une poutre de section circulaire.
+     La poutre est appuyee-appuyee en flexion et encastree-encastree en torsion.
+     Pour cette configuration, la solution peut se calculer analytiquement.
+     La modelisation A realise la derivation des modes propres reels
+     calcules par la methode iteration inverse.
+     La modelisation B realise la derivation des modes propres complexes
+     calcules par la methode iterations simultannes.
+
+
+-----------------------------------------------------------------------
+--- AUTEUR cibhhlv L.VIVAN   DATE  le 19/04/2005 a 10:23:23
+
+--------------------------------------------------------------------------
+CORRECTION AL 2005-129
+   NB_JOURS_TRAV  : 0.5
+   POUR_LE_COMPTE_DE   : C.DURAND
+   INTERET_UTILISATEUR : NON
+   TITRE : cas test sslv200a
+   FONCTIONNALITE
+     si on imprime la fonction FO20, on obtient :
+     # Courbe 0 FO20
+      INST             VITE_0
+           0.00000E+00 -1.97453E+05
+           2.00000E+00          NAN
+           4.00000E+00          NAN
+           ...
+     Mais ça n'empèche nullement ASTER de continuer, de dériver la dite
+     fonction ...
+     Avec clayastr, le jdc s'arrete en erreur :
+       <F> <CALC_FONC_INTERP> <"FLOATING POINT EXCEPTION">
+       IL Y A PROBABLEMENT UNE ERREUR DANS LA PROGRAMMATION
+   DETAIL
+     La fonction FO20 est issue d'un RECU_FONCTION et on a imposé une
+     interpolation LIN LOG. Cette fonction n'a que des ordonnées
+     négatives, ce qui rend impossible une interpolation LOG.
+     On a changé le type d'interpolation LIN LOG en LIN LIN.
+     Apres ce changement, aucun problème pour imprimer la fonction.
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+
+--------------------------------------------------------------------------
+CORRECTION AL 2005-131
+   NB_JOURS_TRAV  : 1
+   POUR_LE_COMPTE_DE   : O.NICOLAS
+   INTERET_UTILISATEUR : NON
+   TITRE : CALC_ELEM
+   FONCTIONNALITE
+     Avec la version NEW8.0.16 compilée sous linux, le tests sslv139a
+     pose probleme :
+       NOOK sous Calibre3 (clp50a8)
+       ERREUR sous Rocks (clpaster)
+     Ajout dans ce cas test du calcul des énergies en 8.0.16
+   DETAIL
+     routine TE0575 (calcul de 'ENEL_ELGA' et 'ETOT_ELGA')
+      * pour FOURIER, le nombre de contraintes est 6,
+        or tous les tableaux de travail étaient dimensionnés à 4
+      * pour FOURIER, le numéro d'harmonique n'était pas transmis au te
+        catalogue d'élément gener_meafo2.cata et catalogues d'option
+        etot_elem, etot_elga et etot_elno_elga modifiés
+   RESU_FAUX_VERSION_EXPLOITATION    :  OUI  DEPUIS: 7.0.0
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  OUI  DEPUIS: 8.0.0
+   RESTITUTION_VERSION_EXPLOITATION  :  OUI
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+
+--------------------------------------------------------------------------
+CORRECTION AL 2005-132
+   NB_JOURS_TRAV  : 0.5
+   POUR_LE_COMPTE_DE   : E.BOYERE
+   INTERET_UTILISATEUR : NON
+   TITRE : sdnd102b sous linux et clayastr
+   FONCTIONNALITE
+     avec la version 8.0.16, le test sdnd102b s'arrete en <F>_ERREUR
+     <S> <JJVERN03> LE CARACTERE "@" EST ILLICITE
+   DETAIL
+     variables non initialisées, passage d'argument supplémentaires
+     à ndlect.f
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+
+
+-----------------------------------------------------------------------
+--- AUTEUR galenne E.GALENNE   DATE  le 18/04/2005 a 14:40:45
+
+------------------------------------------------------------------------
+CORRECTION AL 2005-113
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : NON
+   TITRE aspic08a sous Linux
+   FONCTIONNALITE
+   Le cas test aspic08a plante sous linux depuis la version NEW8.0.13 : erreur dans un
+   DEFI_GROUP/SEGM_DROI_ORDO (routine oreino).
+   Le problème est spécifique à Linux : on a vérifié que les maillage générés sous Linux
+   ou sur clayastr sont identiques.
+   Le problème provient donc de la routine oreino qui oriente le segment AB en calculant
+   le réel C = AM.AB/AB^2 pour tout noeud M du groupe de noeuds. Sous Linux, il apparait
+   que C est très légérement supérieur à 1 (1+0.2e-15), ce qui provoque l'erreur.
+   Sur la suggestion de Lionel Vivan, on remplace le test (C < 1) par (AM < AB).
+
+   Avec cette modification, le cas test aspic08a tourne correctement sous clayastr et sous
+   linux.
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  OUI
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+      aspic08a
+
+------------------------------------------------------------------------
+CORRECTION AL 2004-237
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : NON
+   TITRE ascou02a et ascou03a sous Linux
+   FONCTIONNALITE
+   Les cas test ascou02a et ascou03a plantent sous linux depuis la version NEW7.3.10 dans
+   un calcul de l'opérateur POST_RCCM.
+
+   Suite à la réalisation de l'EL2005-011 (extraction des tables en dehors de post_rccm)
+   et à la modification de la routine oreino (AL2005-113), ces deux cas test tournent
+   correctement sous clayastr et sous linux.
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  OUI
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+      ascou03a et ascou02a
+
+------------------------------------------------------------------------
+CORRECTION AL 2005-111
+   NB_JOURS_TRAV  : 3
+   INTERET_UTILISATEUR : OUI
+   TITRE CALC_G_LOCAL_T : prise en compte des forces surfaciques en 2D
+   FONCTIONNALITE
+   Les forces surfaciques (pression) sur les lèvres de la fissure apportent une
+   contribution supplémentaire dans le calcul du taux de restitution d'énergie G et des
+   facteurs d'intensité de contraintes K1, K2.
+   Il y a cependant une erreur dans la prise en compte de ce terme en 2D : on retrouve un
+   même G mais un K1 très différent selon que l'on applique une pression sur la lèvre
+   supérieure ou sur la lèvre inférieure d'une fissure dans une structure symétrique. Pour
+   une entaille, on retrouve bien un résultat identique pour G et pour K1.
+
+   Modification de la routine te0300 : on s'appuie sur l'orientation des mailles linéiques
+   pour déterminer sur quelle lèvre de la fissure on se trouve et introduire ainsi
+   correctement les déplacements singuliers.
+   Pour que cette vérification soit licite, il faut que les mailles de bords soient
+   orientées correctement. C'est forcément le cas si la force est une pression mais pas
+   nécessairement si elle est du type force_contour.
+   Il faut donc OBLIGATOIREMENT faire un ORIE_PEAU_2D sur les lèvres de la fissure si on
+   veut que les forces qui s'exercent sur celles-ci soient correctement prises en compte.
+
+   Remarque : le terme surfacique n'est pas encore développé en 3D pour le calcul de K1,
+   K2 et K3 mais ça fait l'objet de la fiche EL2005-073.
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  OUI  DEPUIS : 7.0.0
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  OUI  DEPUIS : 8.0.0
+   RESTITUTION_VERSION_EXPLOITATION  :  OUI
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_U : U4.82.03  (CALC_G_THETA_T)
+         EXPL_ : Réorientation des mailles des lèvres de la fissure obligatoire pour le
+         calcul du terme surfacique de G et K
+     DOC_V : V3.02.310
+         EXPL_ : Modification du maillage
+   VALIDATION
+      sslp310 : modification du maillage pour prendre en compte une fissure entière
+      (et non une lèvre unique)
+      + cas test perso comparaison fissure/entaille
+
+------------------------------------------------------------------------
+CORRECTION AL 2004-268
+   NB_JOURS_TRAV  : 6
+   INTERET_UTILISATEUR : OUI
+   TITRE CALC_G_LOCAL_T en 3D : oscillations de G le long du fond de fissure
+   FONCTIONNALITE
+   Observations :
+   * On observe des oscillations, parfois importantes, de la valeur de G_LOCAL le long du
+   fond de fissure entre les noeuds sommets et les noeuds milieux (maillage quadratique,
+   lissage LAGRANGE_LAGRANGE). Ces oscillations sont généralement accompagnées d'une très
+   forte sensibilité de la valeur de G aux noeuds sommets aux choix des couronnes
+   d'intégration (Rinf, Rsup).
+   * la régularisation LAGRANGE_NO_NO (qui traite chaque noeud du fond de fissure
+   individuellement) réduit sensiblement ces oscillations et conduit à des valeurs de G
+   satisfaisantes aux noeuds milieux.
+   * cas test perso : Quand les rayon Rinf et Rsup coincident avec des frontières des
+   éléments, les valeurs de G aux noeuds milieux et aux noeuds sommets sont très proches
+   (moins de 2% d'écart). Quand Rinf et/ou Rsup traversent les éléments, des écarts parfois
+   importants apparaissent (jusqu'à 20%).
+
+   Explication :
+   Quand Rinf et Rsup coincident avec des frontières des éléments, on peut vérifier que
+   le profil du champ theta dans la direction normale au fond de fissure est identique
+   selon que l'on traite les noeuds milieux ou les noeuds sommets.
+   Quand Rinf et/ou Rsup traversent les éléments, le profil du champ theta est différent
+   entre noeuds sommets et noeuds milieux. Par exemple on peut calculer 'analytiquement'
+   que déplacer Rinf d'un longueur égale à 10% d'un élément entraine une différence de
+   plusieurs pour-cent entre theta(sommet) et theta(milieu). Le champ theta des noeuds
+   sommets est plus sensible à la valeur des rayons (Rinf, Rsup), car il suit plus
+   précisément le profil imposé de theta.
+   La différence entre theta(sommet) et theta(milieu) décroît si le nombre d'éléments
+   entre Rinf et Rsup augmente.
+
+   Sauf à changer profondément la programmation de la méthode théta, il semble difficile
+   de faire disparaitre ces oscillations pour des couronnes d'intégration quelconques.
+   On remarque que de telles oscillations n'apparaissent pas sous castem, car dans ce code
+   l'utilsateur définit directement un nombre de couches d'éléments se propageant pour le
+   calcul du champ théta... ce qui doit revenir à définir des couronnes d'intégration en
+   cohérence avec le maillage.
+
+   Conclusion et Conseils
+   * si le maillage du fond de fissure est rayonnant, il est vivement conseillé de définir
+   les couronnes d'intégration (Rinf, Rsup) sur les frontières des tores.
+   * utiliser le lissage LAGRANGE_NO_NO de préférence
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_U : U4.82.04 (CALC_G_LOCAL_T)
+      EXPL_ : Ajout des conseils sur le choix des couronnes d'intégration
+     DOC_U : U2.05.01
+      EXPL_ : Ajout des conseils sur le choix des couronnes d'intégration
+   VALIDATION
+      ssl134a : modification de Rinf/Rsup et ajout d'un test sur l'erreur min/max
+      de G_local
+
+
+-----------------------------------------------------------------------
+--- AUTEUR geniaut S.GENIAUT   DATE  le 18/04/2005 a 14:25:08
+
+------------------------------------------------------------------------
+REALISATION EL 2005-047
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : NON
+   TITRE  : Base locale au fond de fissure avec les level sets
+   FONCTIONNALITE
+     Le paramètre d'entrée concernant la base locale au fond de fissure
+     est maintenant un champ aux noeuds (et non plus un champ aux points
+     de Gauss), pour l'option CALC_K_G de la commande CALC_G_LOCAL_T.
+   DETAILS
+     Dans le te0295, on a besoin de la base locale aux noeuds et aux
+     points de Gauss. Avant, on avait comme champ d'entrée un champ_elem
+     aux points de Gauss, et on faisait un passage Gauss -> Noeuds.
+     Maintenant, on a directment le champ au noeuds, et on le passe aux
+     points de Gauss quand nécessaire avec les fonctions de forme.
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+     ssnv166c
+
+------------------------------------------------------------------------
+CORRECTION AL 2005-054
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : NON
+   TITRE  Bug contact X-FEM
+   FONCTIONNALITE
+     Lorsque la fissure coincide avec une face d'une élément, le terme de
+     rigidité de contact associé était pris en compte deux fois (une fois
+     pour l'élément du haut, une fois pour l'élément du bas), on avait
+     donc une pression de contact deux fois trop faible.
+     Maintenant, un test au niveau du calcul de la rigidité et du 2nd
+     membre permet de corriger ce bug en multipliant par 1/2 le terme
+     élémentaire provenant des éléments haut et bas, losque le cas se
+     présente.
+   DETAILS
+     Pour savoir si la fissure coincide avec une face d'un élément, on
+     regarde si les 3 sommets de la facette de contact sont 3 noeuds d'une
+     meme face de l'élement en question.
+     La cas test ssnv182b est ajouté. Ainsi, les deux modélisations (a et b)
+     permettent de tester le cas où la fissure borde les faces des
+     éléments, et le cas où la fissure traverse complètement les éléments.
+     Important : une alarme est émise dans le cas test ssnv182b.
+     En effet, la fissure traverse complètement la structure donc le fond de
+     fissure n'existe pas. L'utilisateur est alors prévenu par cette alarme
+     légitime, car dans la plupart des cas (pour une vraie fissure), cette
+     alarme témoigne d'une erreur dans le choix utilisateur des level sets.
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  OUI   DEPUIS : 8.0.6
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_R : R7.02.12 Méthode X-FEM
+       EXPL_ :
+     DOC_V : V6.04.182 Bloc avec interface en contact frottant avec X-FEM
+   VALIDATION
+     ssnv182a et b
+
+----------------------------------------------------------------------
+CORRECTION AL 2005-055
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : NON
+   TITRE : Sous-découpage des éléments finis X-FEM
+   FONCTIONNALITE
+     Lorsque la fissure traverse un élément, on sous-découpe cet élément
+     en sous-tétras afin d'avoir une intégrande continue sur chaque sous-
+     tétra. Le nombre de points d'intersection avec la fissure avait été
+     prévu trop faible. Il peut en fait y avoir 11 maximum (et non 9).
+   DETAILS
+     Le nombre de sous-tétras passe aussi de 28 à 32, soit 4x32=128 valeurs
+     pour le tableau de connectivité des sous-tétras.
+     Ce dimensionnement provoque un champ d'entrée de te à 128 composantes
+     ce qui nécessite nb_ec=5 dans la routine trigd.f
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_R : R7.02.12 Méthode X-FEM
+        EXPL_ :
+   VALIDATION
+     cas test perso
+
+----------------------------------------------------------------------
+CORRECTION AL 2005-056
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : NON
+   TITRE : Bug du à l'introduction de mailles quadratiques X-FEM
+   FONCTIONNALITE
+     Les mailles X-FEM sont des mailles quadratiques dont les noeuds sommets
+     portent les inconnnues de déplacement et les noeuds milieux les inconnues
+     de contact. Dans la recherche des noeuds à enrichir, il faut boucler sur les
+     noeuds "réels" des mailles, cad les noeuds de la maille linéaire associée et
+     non pas sur tous les noeuds de la maille quadratique.
+   DETAILS
+     Le nombre de noeuds sommets de la maille quadratique volumique :
+     NB NOEUDS SOMMETS = 2/5 x NB NOEUDS TOTAL
+   RESU_FAUX_VERSION_EXPLOITATION   :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT  :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+     ssnv182b
+
+
+-----------------------------------------------------------------------
+--- AUTEUR godard V.GODARD   DATE  le 20/04/2005 a 14:29:32
+
+------------------------------------------------------------------------------
+CORRECTION AL 2005-047
+   NB_JOURS_TRAV  : 0.1
+   INTERET_UTILISATEUR : NON
+   TITRE : affectation de la pesanteur pour les grilles
+   FONCTIONNALITE
+     pesanteur pour les grilles
+   DETAILS
+     La modification de la modélisation des grilles n'a pas été répercutée
+     dans l'affectation des chargements de pesanteur.
+     Le te0032 qui calcule le poids fait toujours référence aux anciennes grilles
+     (avec le POUR_CENT_L et le POUR_CENT_T), on tombe donc sur un NaN
+     car ces grandeurs n'existent plus dans la nouvelle modélisation.
+     Le bug se situe dans le te0032, il n'y a a priori plus de raison de distinguer
+     les grilles des autres elements (ligne 229 de te0032.f).
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  OUI
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION : personnelle
+
+------------------------------------------------------------------------------
+CORRECTION AL 2005-106
+   NB_JOURS_TRAV  : 0.1
+   INTERET_UTILISATEUR : NON
+   TITRE : STAT_NON_LINE/FLOATING POINT EXCEPTION
+   FONCTIONNALITE : pas de test sur les parametres materiau pour endo_isot_beton
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  OUI
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION : etude jointe a la fiche
+   DETAILS
+     Lorsque l'utilisateur essaie d'utiliser la loi ENDO_ISOT_BETON sans avoir
+     spécifié les paramètres sous l'opérande BETON_ECRO_LINE dans DEFI_MATERIAU,
+     il obtient le message suivant:
+         <F> <STAT_NON_LINE> <"FLOATING POINT EXCEPTION">
+         IL Y A PROBABLEMENT UNE ERREUR DANS LA PROGRAMMATION
+     On interdit donc ce cas de figure avec l'arret fatal suivant dans la
+     routine lceib1.f:
+         <F> <STAT_NON_LINE> <LCLDSB>  SYT ET D_SIGM_EPSI DOIVENT  ETRE
+         SPECIFIES SOUS L OPERANDE BETON_ECRO_LINE DANS DEFI_MATERIAU
+         POUR UTILISER LA LOI ENDO_ISOT_BETON
+
+
+-----------------------------------------------------------------------
+--- AUTEUR mabbas M.ABBAS   DATE  le 18/04/2005 a 13:03:51
+
+-----------------------------------------------------------------------
+CLASSEMENT SANS SUITE AL 2005-001
+   NB_JOURS_TRAV  : 0
+   INTERET_UTILISATEUR : NON
+   TITRE : ssnv505b sous linux et contact
+   FONCTIONNALITE
+     STAT_NON_LINE et contact
+     Avec la version NEW8.0.1 compilée sous linux Calibre3, le test
+     ssnv505b s'arrete en erreur fatale :
+
+INSTANT DE CALCUL :  3.513672066E-01
+---------------------------------------------------------------------
+|   ITERATIONS   |     RESIDU     |     RESIDU     |     OPTION     |
+|                |    RELATIF     |     ABSOLU     |   ASSEMBLAGE   |
+|                | RESI_GLOB_RELA | RESI_GLOB_MAXI |                |
+---------------------------------------------------------------------
+---------------------------------------------------------------------
+
+                 ECHEC DANS LE TRAITEMENT DU CONTACT
+                      SUBDIVISER LE PAS DE TEMPS
+
+ <ASTER  8. 0. 1 17/12/2004 >
+ <STAT_NON_LINE>
+ <OP0070> ARRET PAR ECHEC DE TRAITEMENT DU CONTACT
+
+  %  FIN COMMANDE: STAT_NON_LINE    DUREE TOTALE:      25.30 s (SYST:    0.13 s)
+ <I> <SUPERVISEUR> VERIFICATIONS SUPPLEMENTAIRES : AUCUNE ERREUR DETECTEE.
+
+   DETAILS
+     Ca marche !
+     Je ne sais pas ce qui s'est passe ???.
+   RESU_FAUX_VERSION_EXPLOITATION   :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT  :  NON
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+
+-----------------------------------------------------------------------
+CLASSEMENT SANS SUITE AL 2005-084
+   NB_JOURS_TRAV  : 1 (VG)
+   INTERET_UTILISATEUR : NON
+   TITRE : DEFI_MATERIAU (DIS_CONTACT)
+   FONCTIONNALITE
+     Le problème relevé dans cette fiche a été vu préalablement avec Mickaël
+     ABBAS lors d'une réunion de suivi PACHYDERME le 15/02/2005.
+     Dans le fichier mate_def_trans.comm (unité=10), la suppression des
+     lignes 417 à 420, 439 à 442, 473 à 476, 495 à 498, 519 à 522 et
+     541 à 544 correspondant au glissement axial de la liaison grille-crayon
+     permet au calcul de converger.Y a t-il, à votre avis, un soucis avec
+     DIS_CONTACT ??
+   DETAILS
+     Probleme dans le modele. Il arrive un moment ou les crayons glissent
+     et ne sont plus tenus. Le deplacement vertical tend alors vers l'infini
+     et ca ne converge plus.
+     En ajoutant un contact en bas, Ca converge normalement jusqu'a
+     a un probleme dans la definition du materiau DIS_CONTACT (RELA_MZ
+     n'est pas defini assez loin), avec un messgae clair.
+   RESU_FAUX_VERSION_EXPLOITATION   :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT  :   NON
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+
+-----------------------------------------------------------------------
+CLASSEMENT SANS SUITE  AL 2005-118
+   NB_JOURS_TRAV  : 1
+   INTERET_UTILISATEUR : OUI
+   TITRE : STAT_NON_LINE - Contact dans gros problemes
+   FONCTIONNALITE
+     Je suis actuellement en stage avec Louis Ratier sur le contact,
+     et j'ai rencontre un probleme avec Aster que l'assistance m'a
+     demande de vous transmettre. J'obtiens dans STAT_NON_LINE l'erreur
+        <S> <JJCROC03> NUMERO D'OBJET INVALIDE : 2 ,
+     alors que ce meme fichier commande marche avec d'autres maillages
+     (moins denses).
+     !!!! EN STA7 !!!!
+   DETAILS
+     Le calcul multi-bloc a ete corrige en version 8.0.2 (AL2004-407)
+     et repercute en version 7.4.1 (NEW7).
+     On cherche un deuxieme bloc qui n'existe pas et on plante
+     en erreur <S> <JJCROC03> NUMERO D'OBJET INVALIDE : 2
+     Contexte du bug: problemes d'une certaine taille activant plusieurs
+     blocs.
+   RESU_FAUX_VERSION_EXPLOITATION   :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT  :   NON
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+
+
+-----------------------------------------------------------------------
+--- AUTEUR mjbhhpe J.L.FLEJOU   DATE  le 13/04/2005 a 09:11:52
+
+------------------------------------------------------------------------
+REALISATION EL 2005-028
+   NB_JOURS_TRAV  : 8
+   INTERET_UTILISATEUR : OUI
+   TITRE : RIGI_PARASOL + discrets + association de DIS_CONTACT et DIS_CHOC.
+   FONCTIONNALITE
+   Permettre à RIGI_PARASOL de traiter les "K_TR_D_L","K_T_D_L","A_TR_D_L","A_T_D_L"
+   Dans ce cas les discrets sont affectés par un nouveau mot clé GROUP_MA_SEG2. Un
+   des points des SEG doit appartenir à un maillage de surface défini dans le mot
+   clé GROUP_MA. L'utilisateur doit appliquer les conditions adéquates à l'autre
+   extrémité des segments. Il est donc maintenant possible de déplacer le tapis
+   de ressort pour par exemple simuler un déplacement de fondation, un glissement
+   de terrain, etc ...., tout en gardant fonctionnel les discrets.
+   Il est également possible d'appliquer des conditions aux limites en efforts.
+
+   Pour simuler le décollement avec des RIGI_PARASOL il faut mettre en série avec
+   tous les discrets définis dans RIGI_PARASOL (qui ont un comportement élastique
+   linéaire), des discrets sur lesquels on affecte un comportement DIS_CHOC avec
+   une raideur INFINIE en compression (leur raideur en traction est nulle).
+   L'idée est d'affecter aux ressorts définis dans RIGI_PARASOL un comportement
+   DIS_CHOC. Dans ce cas la raideur en compression est la raideur calculée dans
+   RIGI_PARASOL et non plus une raideur infinie que l'on doit entrer dans la
+   commande DEFI_MATERIAU avec le mot clé DIS_CONTACT. Si RIGI_NOR est présent
+   c'est cette raideur qui est prise pour la compression, si RIGI_NOR est absent
+   c'est la raideur du discret calculée par RIGI_PARASOL. Il n'y a donc plus besoin
+   de mettre 2 ressorts en série pour simuler un contact unilatéral.
+
+   DETAILS
+      * affe_cara_elem.capy
+         ajout du mot clé GROUP_MA_SEG2 sous le mot clé RIGI_PARASOL et de la règle suivante
+            on ne peut pas avoir des discrets de type POI1 et SEG dans la même occurence
+                    UN_PARMI('GROUP_MA_POI1','GROUP_MA_SEG2'),
+         ajout de 'RIGI_PARASOL' dans les mots clés possibles de affe_cara_elem
+            on ne pouvait pas faire un affe_cara_elem avec seulement un RIGI_PARASOL
+      * acearp.f, rairep.f
+         - Traitement du mot clé GROUP_MA_SEG2
+         - Traitement des "K_TR_D_L","K_T_D_L","A_TR_D_L","A_T_D_L"
+         - L'affichage des résultats se faisait systématiquement dans le .resu (rairep.f)
+           Maintenant il se fait toujours dans le .resu mais seulement si l'utilisateur
+           met INFO=2 dans la commande AFFE_CARA_ELEM. L'affichage se fait sous la forme
+           suivante
+                  _F(MAILLE='M66     ', CARA='K_T_D_L',
+                     VALE=(  3.90625E+01,  3.90625E+01,  3.90625E+01,),
+                     REPERE='GLOBAL'),
+      * dichoc.f
+         - si le mot clé RIGI_NOR est présent on prend cette valeur sinon on prend la
+           raideur affectée par ailleurs.
+      * op0019.f, aceinc.f, vafcar.f
+         - par défaut dans AFFE_CARA_ELEM les orientations sont mises à zéro pour tous
+           les éléments POUTRE,DISCRET,BARRE,DISCRET_2D, par un appel à ACEAOR. Pour les
+           éléments discrets affectés par RIGI_PARASOL ce n'était pas le cas, maintenant si.
+         - Il y a également une vérification de l'affectation des caractéristiques (routine
+           ACEINC). Les éléments discrets affectés par RIGI_PARASOL étaient exclus de cette
+           vérification, maintenant elle est réalisée. J'ajoute ou je supprime des NBOCC(10)
+           là ou il faut et j'ajoute des CALL GETVEM sur les GROUP_MA_POI1 et GROUP_MA_SEG2
+           du mot clé RIGI_PARASOL. ACEINC appelle VAFCAR pour une vérification de la bonne
+           affectation des données notamment sur les discrets dont étaient exclus ceux
+           affectés par RIGI_PARASOL, maintenant ils sont vérifiés.
+
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   VALIDATION : création d'un nouveau cas test
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_U : U4.43.01 : DEFI_MATERIAU
+       EXPL_ : Sous le mot clé facteur DIS_CONTACT mentionner que si RIGI_NOR est
+       présent c'est cette valeur qui est prise en compte. Si elle n'est pas
+       présente, les éléments discrets auxquels on affecte ce matériau doivent
+       avoir leur raideur définie par ailleurs (par exemple à l'aide de la
+       commande AFFE_CARA_ELEM avec les mots clés DISCRET ou RIGI_PARASOL).
+     DOC_U : U4.42.01 : AFFE_CARA_ELEM
+       EXPL_ : Ajout pour le mot clef facteur RIGI_PARASOL. Les types des discrets sont
+       "K_TR_D_N","K_T_D_N","K_TR_D_L","K_T_D_L","A_TR_D_N","A_T_D_N","A_TR_D_L","A_T_D_L"
+       Les discrets "K_TR_D_N","K_T_D_N",A_TR_D_N","A_T_D_N" sont affectés sur des noeuds
+       on utilise donc le mot clé simple GROUP_MA_POI1
+       Les discrets "K_TR_D_L","K_T_D_L","A_TR_D_L","A_T_D_L" sont affectés sur des
+       segments, on utilise donc le mot clé simple GROUP_MA_SEG2.
+
+       GROUP_MA_SEG2 : liste des groupes de segment modélisant le tapis de ressort. Tous
+       les segments définis dans GROUP_MA_SEG2 doivent avoir un noeud et un seul
+       appartenant aux mailles de surface définie par GROUP_MA. Cela permet d'affecter
+       les raideurs aux discrets au prorata des mailles de surfaces auxquelles ces
+       noeuds appartiennent.
+     DOC_V : V6.02.130 :
+        EXPL_ : SSNL130 - Plaque indéformable sur un tapis de ressorts
+     DOC_U : U2.06.08 : Décollement dynamique ... méthode de ressorts de sol
+        EXPL_ : Il n'est plus nécessaire de mettre en série les ressorts 'LIGRAD'
+
+
+-----------------------------------------------------------------------
+--- AUTEUR nicolas O.NICOLAS   DATE  le 18/04/2005 a 15:05:30
+
+------------------------------------------------------------------------------
+CORRECTION AL 2005-108
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : NON
+   TITRE : DEFI_MODELE_GENE et IMPR_CO
+   FONCTIONNALITE : DEFI_MODELE_GENE
+   DETAILS
+     Les collections crees dans la routine arg126 sont du type 'CONTIG'
+     'CONSTANT' mais il n'y avait pas d'appel a JECROC d'ou l'impossibilite
+     pour JEEXIN de recuperer le contenu de la collection
+     Je rajoute la boucle suivante dans arg126 :
+      DO 300 I=1,NBSST
+        CALL JECROC(JEXNUM(NOMMCL,I))
+        CALL JECROC(JEXNUM(ROTSST,I))
+        CALL JECROC(JEXNUM(TRASST,I))
+ 300  CONTINUE
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  OUI
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+     Par IMPR_CO dans cas test
+
+------------------------------------------------------------------------------
+CLASSEMENT SANS SUITE AL 2005-006
+   NB_JOURS_TRAV  : 0.1
+   INTERET_UTILISATEUR : NON
+   TITRE : IMPR_CO
+   FONCTIONNALITE : IMPR_CO
+   DETAILS
+      Fiche identique a la fiche AL 2005-108 resolue
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+
+------------------------------------------------------------------------------
+REALISATION EL 2005-087
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : OUI
+   TITRE : AFFE_CHAR_MECA / LIAISON_CYCL
+   FONCTIONNALITE : AFFE_CHAR_MECA
+   DETAILS
+     Lors de la restitution de LIASON_CYCL, la presence des paires GROUP_MA1&2
+     etait obligatoire. Cette restitution a pour but de permettre d'utiliser
+     LIAISON_CYCL comme LIAISON_MAILLE en ne renseignant que GROUP_MA1.
+     L'interet, par rapport à LIAISON_MAIL, est de conserver la possibilite
+     de specifier un coefficient impose a la relation lineaire.
+     Ainsi, il devient possible de traiter des calculs cycliques pour des
+     diametres nodaux nuls ou egaux a N/2 pour N (nbre de secteur) pair.
+     Seule la routine CALYRC est modifiee
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+     Cas test personnel
+
+------------------------------------------------------------------------------
+REALISATION EL 2004-062
+   NB_JOURS_TRAV  : 5
+   INTERET_UTILISATEUR : OUI
+   TITRE : matrices et vecteurs generalises dans des numarray
+   FONCTIONNALITE : Python
+   DETAILS
+     Il s'agit de pouvoir recuperer dans Python, les matrices et vecteurs
+     generalises calcules par Aster.
+     On fait pour cela un ajout dans l'accas.capy en exploitant les _getvect et
+     getcol. On recupere le .VALE des matrices et vecteurs generalises et on
+     traite le cas profil diagonal ou plein, matrice reelle ou complexe. On met
+     sous la forme d'une matrice de type Numeric.Array de Python.
+     La syntaxe est alors la suivante :
+       K=KGENERALISE.EXTR_MATR_GENE() qui renvoie le numerical array K de
+     dimension (n*n) a partir de la matrice generalisee issue des operateurs
+     classiques d'aster
+     Seul ACCAS.CAPY est impacte
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_U : U1.03.02
+     EXPL_:  Introduction des methode d'extraction des matrices et vecteurs
+             generalisees
+   VALIDATION
+     Cas test ZZZZ208A
+
+------------------------------------------------------------------------------
+REALISATION EL 2005-042
+   NB_JOURS_TRAV  : 10
+   INTERET_UTILISATEUR : OUI
+   TITRE : passerelle sur matrice et vecteur generalise
+   FONCTIONNALITE : Python
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_U : U1.03.02, U4.65.03, U4.65.04,U4.65.05
+     EXPL_:  Introduction des methode d'extraction et de restitution des
+             matrices et vecteurs generalisees
+             Introduction des mots cles "METHODE" dans NUME_DDL_GENE,
+             ASSE_MATR_GENE et ASSE_VECT_GENE
+   VALIDATION
+     Cas test ZZZZ208B
+   DETAILS
+     Il s'agit de pouvoir recuperer dans Python, les matrices et vecteurs
+     generalises calcules par Aster dans le cadre de la sous structuration
+     dynamique puis de les renvoyer dans Aster une fois modifiee.
+
+     1/ Extraction des matrices generalisees
+     ---------------------------------------
+     On fait pour cela un ajout dans l'accas.capy en exploitant les _getvect et
+     getcol. On recupere le .VALE des matrices generalises contenues dans un
+     concept MACR_ELEM_DYNA. On met ensuite
+     sous la forme d'une matrice de type Numeric.Array de Python.
+
+     La syntaxe est alors la suivante :
+
+     K=MACRO.EXTR_MATR_GENE('RIGI_GENE')
+     M=MACRO.EXTR_MATR_GENE('MASS_GENE')
+     C=MACRO.EXTR_MATR_GENE('AMOR_GENE')
+
+     qui renvoie le numerical array K (resp. M et C) de
+     dimension (n*n) a partir de la matrice  de raideur (resp.
+     masse et amortissement) generalisee issue
+     de l'operateur MACR_ELEM_DYNA
+
+     On extrait aussi le nombre de modes dynamiques, d'interface... au travers
+     de la methode suivante :
+
+     nbmode_tot,nbmode_dyn,nbmode_int = MACRO.NBRE_MODES()
+     Ou :
+     * nbmode_tot est le nbre de modes total dans la base
+     * nbmode_dyn est le nbre de modes dynamique dans la base
+     * nbmode_int est le nbre de modes d'interface (ou statique) dans la base
+
+     Afin de traiter ceci de maniere plus generique, on uniformise l'objet
+     ".UTIL" associe aux bases qu'elles soient classiques, de Ritz ou autre.
+     Les routines impactees sont les suivantes :
+
+     bmnbmd, bmnodi et clas99 afin de corriger l'appel suite a la modification
+     de la structure de .UTIL
+
+     On en profite pour extraire des infos sur le concept modele_gene notamment
+     la liste des sous-structures et des liaisons par la methode suivante :
+
+        LIST_SSTRUC = MODELRG.LIST_SOUS_STRUCT()
+        LIST_LIAIS  = MODELRG.LIST_LIAIS_STRUCT()
+
+     Sur cette partie d'extraction, seul ACCAS.CAPY est impacte
+
+     2/ Recuperation des matrices generalisees modifiees
+     ---------------------------------------------------
+     Afin de pouvoir renvoyer le contenu d'un objet PYTHON dans un objet jeveux
+     le mirroir de la routine getcon.f est introduite sous le nom putcon.f
+     astermodule.c est modifie afin de brancher les deux nouvelles
+     fonctionnalites que sont
+
+     aster.put_vect_jev <-----------------> aster.get_vect_jev
+     aster.put_coll_jev <-----------------> aster.get_coll_jev
+
+     Ces derniers permettent de renvoyer vers un objet jeveux EXISTANT le
+     contenu d'un vecteur reel ou complexe. La syntaxe est la suivante :
+
+     aster.putvectjev(objet,Longueur,indice,vectR,vectC,Nbordre)
+
+     Ou :
+
+     * objet est le nom de l'objet ou la collection dans jeveux
+     * Longueur est la longueur du vecteur a envoyer dans l'objet
+     * indice est un vecteur d'entier comportant les indices dans l'objet jeveux
+       des valeurs a remplacer par celles contenu dans le vecteur python
+     * vectR est un vecteur de reels
+     * vectC est un vecteur de reels consideres comme la partie imaginaire du
+       premier
+
+     Ces fonctionnalites disponibles, les methodes mirroirs de celles decrites
+     dans le point 1 sont introduites dans ACCAS.CAPY. Ces methodes permettent
+     de renvoer une matrice python dans un concept matr_asse_gene ou
+     macr_elem_dyna suivant la syntaxe :
+
+     KGENERALISE.RECU_MATR_GENE(MATRICE_PYTHON)
+
+     de manniere similaire, pour les macro-elements dynamiques
+
+     MACRO.RECU_MATR_GENE('RIGI_GENE',MATRICE_PYTHON)
+
+     On introduit aussi une option d'initialisation aux operateurs generalises
+     afin de permettre la construction d'une numerotation de taille pilotable
+     par python et les matrices et vecteurs de taille adaptée mais tous
+     initialises a zero. Le mot cle "METHODE" est ajoute aux operateurs
+     NUME_DDL_GENE, ASSE_MATR_GENE et ASSE_VECT_GENE
+
+     Les routines numgcy, assgcy, vecgcy et vecgen sont ajoutees
+     Les routines op0140, assgen, op0128 et OP0127 sont modifees
+
+     Afin de permettre l'exploitation de ces matrices avec MODE_ITER_*, on
+     ajoute un test a la routine TYPDDL afin de ne pas compter les ddl de
+     Lagrange si le nbre de sous-structure est < a 2.
+
+
+-----------------------------------------------------------------------
+--- AUTEUR pbadel P.BADEL   DATE  le 18/04/2005 a 15:43:26
+
+------------------------------------------------------------------------
+REALISATION EL 2005-086
+   NB_JOURS_TRAV  : 2
+   INTERET_UTILISATEUR : NON
+   TITRE
+   FONCTIONNALITE
+     loi reglementaire de beton developpée par NECS dite 'parabole rectangle'
+   DETAILS
+     nom de la loi 'BETON_REGLE_PR'
+     impact :
+        defi_materiau  c_comp_incr
+        nmcomp.f  lclbr1.f lclbr2.f
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_U : U4.43.01
+       EXPL_ : ajout du mot cle BETON_REGLE_PR
+     DOC_U : U4.41.11
+       EXPL_ : ajout dans les comportements disponibles
+     DOC_R : R7.01.22
+       EXPL_ : nouvelle doc R pour la loi BETON_REGLE_PR
+     DOC_V : V6.03.129
+       EXPL_ : nouvelle doc V du cas test SSNP129A
+   VALIDATION :
+     1 nouveau cas-test ssnp129a
+
+
+-----------------------------------------------------------------------
+--- AUTEUR vabhhts J.PELLET   DATE  le 18/04/2005 a 18:24:32
+
+------------------------------------------------------------------------------
+CORRECTION AL 2005-121
+   NB_JOURS_TRAV : 0
+   INTERET_UTILISATEUR : NON
+   TITRE  "les tests ssnl106g et ssnp123a manquent de mémoire"
+   FONCTIONNALITE
+     Ces 2 tests n'utilisaient que 16 Mo de mémoire, je les "poussent" à 32 Mo
+     sans état d'âme.
+   DETAILS
+     Liste des fichiers modifiés:
+     ssnl106g.comm  ssnp123a.comm
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+
+------------------------------------------------------------------------------
+CORRECTION AL 2005-123
+   NB_JOURS_TRAV : 3
+   INTERET_UTILISATEUR : OUI
+   TITRE  "routine ATASMO peu performante => contact frottement aussi"
+
+   FONCTIONNALITE
+   Le contact/frottement (methode : pénalisation ou lagrangien) nécessite de calculer
+   une matrice AT*A où A est une matrice rectangulaire (p lignes, neq colonnes).
+   Chaque ligne de A représente une condition de contact/frottement (liaison entre ddls).
+
+   La routine qui calculait le produit AT*A en stockage Morse (méthode MULT_FRONT) était
+   très mal programmée :
+     - elle mettait en mémoire toute la matrice A (ce qui peut être très volumineux si
+       le contact/frottement concerne beaucoup de noeuds => p grand)
+     - elle générait une matrice AT*A artificiellement grosse (parfois 20 fois trop grosse !).
+
+   J'ai réécrit entièrement cette routine (en m'inspirant de ce qui est fait pour l'assemblage
+   des matrices élémentaires).
+
+   Après réécriture, j'ai observé les résultats suivants :
+    -------------------------------------------------------------------------------
+    ssnv128i / U3M= ... (SOLVEUR MULT_FRONT) :
+
+    Remarque : les modifs ne changent pas du tout la convergence les tableaux imprimés sont
+               rigoureusement identiques
+
+    Mémoire minimale :
+          avant : > 150 Mo
+          après : <  64 Mo
+
+    Taille des objets :                 avant       après       après/avant
+          objets de travail            951000         793         0,08%
+          matrice ATA résultat         187000        8293         4,4%
+
+    Temps CPU :
+       *256 Mo :
+        avant :
+           * STAT_NON_LINE    :     124.75 :      26.60 :     151.35 *  (mise à jour 8.00.13)
+           * STAT_NON_LINE    :     106.43 :      15.98 :     122.42 *
+           * STAT_NON_LINE    :     104.67 :      15.98 :     120.65 *
+        après :
+           * STAT_NON_LINE    :      81.07 :      11.73 :      92.80 *
+           * STAT_NON_LINE    :      91.42 :      14.92 :     106.33 *
+           * STAT_NON_LINE    :      84.88 :      13.13 :      98.02 *
+
+      *128 Mo :
+        avant : -> <F> manque de mémoire
+        après :
+           * STAT_NON_LINE    :      83.45 :       9.38 :      92.83 *
+           * STAT_NON_LINE    :      82.65 :       9.67 :      92.32 *
+
+      *64 Mo :
+        avant : -> <F> manque de mémoire
+        après :
+           * STAT_NON_LINE    :      84.53 :      14.50 :      99.03 *
+           * STAT_NON_LINE    :      84.93 :      14.07 :      99.00 *
+    ------------------------------------------------------------------------
+
+
+   RESU_FAUX_VERSION_EXPLOITATION  :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   OUI (l'amélioration de performance est bonne à prendre)
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+   DETAILS
+
+   Liste des fichiers modifiés:
+  ata000.f  atasmo.f  copich.f  copis2.f  copisd.f  detrs2.f
+  detrsd.f  jedup1.f  moinip.f  moinsr.f
+
+------------------------------------------------------------------------------
+CLASSEMENT SANS SUITE AL 2005-092
+   POUR_LE_COMPTE_DE : C. ROSE
+   NB_JOURS_TRAV : 0.5
+   INTERET_UTILISATEUR : NON
+   TITRE "Metis ne donne pas les mêmes résultats sur alphaserver et sur Linux"
+
+   FONCTIONNALITE
+   C. Rose a regardé ce problème Cf. son mail ci-dessous.
+   Il en ressort que :
+   1) C'est vrai que Metis ne donne pas les mêmes résultats sur les 2 plateformes.
+   2) Malgré tout, les résultats ne sont pas très différents.
+   3) Metis utilise une fonction "RandomPermute" dont il est raisonnable de penser
+      qu'elle ne donne pas le même résultat sur les 2 plateformes (32 bits / 64 bits)
+      On n'a donc pas de raison de suspecter une anomalie dans Metis.
+
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_U : U4.50.01
+     EXPL_: en dire un mot dans la doc de SOLVEUR
+
+   DETAILS
+   Il reste un petit mystère :
+   Christian dit dans son mail que le résultat de métis n'est pas très différent
+   (10% de remplissage en plus sur Linux) alors que dans ma fiche, j'avais annoncé 40% !
+   Je me suis peut-etre trompé ... ou bien l'aspect aléatoire de Metis prend encompte
+   également l'intallation Linux : clp50a8 vs la machine personnelle de Christian ?
+
+-------------------------------------------------------------------------------------------
+   mail de C. Rose :
+   ------------------
+  J'ai regardé attentivement les comportements de metis sur claster et sur ma machine Linux
+Sur claster metis crée 4626 SN et estime le remplissage(hors ddl ) à 5,1 Méga mots +grd SN 792
+Sur Linux metis crée 4875 SN et remplissage 5,5 Méga mots , +grand Sn 1012
+
+les ordres de grandeur sont les memes, que se passe il dans metis?
+
+à partir d'un graphe, metis crée un separateur (groupe de nds numerotés en dernier)
+et deux sous- graphes de chaque coté du separateur.
+on voit ci dessous : au départ 20030 nds,
+apres une premiere dichotomie 10006 à gauche t 9021 à droite pour Linux
+apres une premiere dichotomie 10335 à gauche t 9058 à droite pour claster
+
+D'ou vient la différence, je n'en sais rien si ce n'est qu'il fait appel à une fonction
+RandomPermute qui ne doit pas faire la meme chose sur claster (compilateur cc -i8)
+et sur Linux (gcc  -i4)
+
+Voila
+
+j'espère que ces explications suffisent
+je ne pense pas nécessaire d'y passer + de temps.
+ tu me rappelles ?
+
+Ch.
+Impressions :
+
+Linux
+
+ Node ND maxvwgt 300
+ MlevelDiss tvwgt 20030 20030
+appel a RandomPermute
+ appel a RandomPermute
+ appel a RandomPermute
+ appel a RandomPermute
+apres Split nbg 10006 nbd 9021
+
+
+Claster
+
+ Node ND maxvwgt 300
+ MlevelDiss tvwgt 20030
+apres Split nbg 10335 nbd 9058
+ MlevelDiss tvwgt 9058
+
+------------------------------------------------------------------------------
+RESTITUTION HORS AREX   (H1)
+   NB_JOURS_TRAV : 0.5
+   INTERET_UTILISATEUR : NON
+   FONCTIONNALITE
+
+   Je corrige un certain nombre de routines qui créaient des objets indument
+   sur la base GLOBALE => une perte de place sur la base de l'utilisateur
+
+   1) La routine charme.f créait par erreur un LIGREL temporaire (CALICO.LIGREL)
+      sur la base Globale.
+
+   2) la commande POST_ZAC crée des objets de travail sur la base globale :
+      => je les détruis.
+
+   3) la commande DEFI_FLUI_STRU crée des objets de travail sur la base globale :
+      => je les détruis.
+      En fait : pas tous ! DEFI_FLUI_STRU créait des objets nommés '&&OP0143.UNIT_XXXX'
+      qui étaient réutilisés dans CALC_FLUI_STRU !!
+      J'intègre donc ces objets à la SD produite par DEFI_FLUI_STRU.
+
+   4) la commande CALC_FLUI_STRU crée des objets de travail sur la base globale :
+      => je les détruis.
+
+   5) la routine nmflam.f créait 1 MATR_ELEM de travail sur 'G'
+      => je le crée sur 'V'
+
+   6) la routine ss2mme.f créait 1 objet .LISTE_CHAR systématiquement sur 'G'
+      => je modifie ss2mme.f pour ajouter l'argument BASE
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+     ##DOC_D## : D4.xx.xx (SD TYPE_FUI_STRU) : doc inexistante
+     ##EXPL_##: ajout des 2 objets .UNIT_FAISCEAU et .UNIT_GRAPPES
+   VALIDATION
+   DETAILS
+   Correction de charme.f : 'G' -> 'V' :
+          CALL LGTLGR('V',LIGRET,LIGREL)
+
+------------------------------------------------------------------------------
+RESTITUTION HORS AREX   (H2)
+   NB_JOURS_TRAV : 1.5
+   INTERET_UTILISATEUR : NON
+   FONCTIONNALITE
+
+   1) Je modifie certaines commandes qui créaient des SD "cachées" dont les noms
+   étaient de la forme : "_0000ijk.XXXX"
+   Cette convention de nom (obtenue grâce à la routine GCNCON) a été en vogue à une
+   certaine époque : je trouvait ça élégant !
+   Mais maintenant que l'on utilise beaucoup plus la commande DETRUIRE dans des
+   boucles python, il vaut mieux que les SD cachées aient un nom commençant par le
+   nom "utilisateur" du concept créé par la commande.
+
+   Je remplace donc l'usage de GCNCON par GNOMSD dans les commandes suivantes :
+
+   FACT_GRAD : SD cachée NUME_DDL           -> routine pcldlt.f
+   DEF_MATERIAU : SD cachée FONCTION (beta : integration de RHO_CP dans THER_NON_LINE)
+                 -> routine rcstoc.f
+      Finalement, je ne fais pas cette modif car il faudrait pour cela modifier la SD COMPOR :
+                VALK : K8 -> K24  et je n'en ai pas le courage aujourd'hui
+   CALC_FLUI_STRU : SD cachées NUME_DDL_GENE + MATR_ASSE_GENE        -> routine mefist.f
+   RECA_WEYBULL : SD cachées TABLE        -> routine op0197.f
+
+   2) Je modifie la routine numero.f / FETI pour qu'elle ne crée plus de nume_ddl FETI
+   de noms : NOMRES(1:6)//'F000ij'. Car ces nume_ddl ne peuvent pas etre détruits par
+   la commande DETRUIRE.
+   Ces nume_ddl s'appellent maintenant : NOMRES(1:8)//'.000ij' ce qui permet quand même
+   d'en créer 100 000.
+
+   DETAILS
+     Liste des fichiers modifiés:
+      cajgr2.f  charme.f  coefal.f
+      coefrl.f  crelrl.f  irchsu.f  kajgr2.f  mefist.f  mefsm1.f
+      mefsma.f  meribi.f  nmchar.f  nmflam.f  numero.f  op0008.f
+      op0143.f  op0144.f  op0175.f  op0197.f  pcldlt.f
+      rcstoc.f  ss2mme.f
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+
+------------------------------------------------------------------------------
+REALISATION EL 2005-072
+   NB_JOURS_TRAV : 0.5
+   INTERET_UTILISATEUR : NON
+   TITRE  'assemblage en mode "cumul" dans une matr_asse existante'
+
+   FONCTIONNALITE
+   Dans la fiche, j'avais demandé la résorption de la possibilité de "cumul"
+   de matr_elem dans une matr_asse existante. Je pensais que personne ne s'en servait ...
+
+   Je m'étais trompé : cette possibilité ('CUMU') est utilisée dans la routine ASCOMA
+   pour traiter le supplément de rigidité du aux forces suiveuses.
+   On ne peut donc pas résorber 'CUMU' simplement aujourd'hui.
+
+   Pour résoudre quand même le problème révélé par Chokri Zamalli
+   (dyna_non_line + contact='CONTINU'), je me contente donc de réallouer systématiquement
+   la matr_asse résultat si on n'utilise pas 'CUMU'.
+
+
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  OUI (c'est nécessaire pour DYNA_NON_LINE+CONTACT='CONTINU')
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+   DETAILS
+
+   Liste des fichiers modifiés:
+  asmatr.f  assmam.f  assmat.f
+
+------------------------------------------------------------------------------
+CORRECTION AL 2005-128
+   NB_JOURS_TRAV : 0.5
+   INTERET_UTILISATEUR : OUI
+
+   TITRE  "Bug AFFE_CHAR_MECA/DDL_IMPO si sous-structures statiques"
+
+   FONCTIONNALITE
+   le mot clé DDL_IMPO de AFFE_CHAR_MECA était bogué dans le cas suivant :
+     - le modèle contient un (ou plusieurs) macro-élément statique (MACR_ELEM_STAT).
+     - ce macro-élément possède des conditions aux limites sur des noeuds exterieurs
+
+   La plupart du temps, cela se traduisait par une erreur fatale.
+
+   Resultats faux :
+   ----------------
+   Je pense qu'il y avait un risque de résultats faux dans le cas LIAISON='ENCASTRE'
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  OUI   DEPUIS : 7.0.0
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  OUI   DEPUIS : 8.0.0
+   RESTITUTION_VERSION_EXPLOITATION  :  OUI
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+   DETAILS
+   routine caddli.f :
+   le nombre d'entiers codés (NBEC) de la grandeur DEPL_R était obtenu par la division
+   de la longueur de l'objets .PRNM par le nombre de noeuds physiques du maillage (NM).
+   Malheureusement, l'objet .PRNM est dimensionné à NBEC*(NM+NL) où NL est le nombre de
+   noeuds de Lagrange des macro-éléments statiques.
+   Donc dès que NL /= 0 , NBEC était faux.
+
+   Liste des fichiers modifiés:  caddli.f
+
+------------------------------------------------------------------------------
+RESTITUTION HORS AREX   (H4)
+   NB_JOURS_TRAV : 0.2
+   INTERET_UTILISATEUR : NON
+   FONCTIONNALITE
+   Correction de petites bévues de programmation qui plantent le compilateur
+   fortran90 Linux/absoft :
+     - déclaration de IMPLICIT_NONE + utilisation de ZSQRT sans déclaration :
+       vpgskc.f  et  wpgskp.f
+       => je remplace ZSQRT -> SQRT qui est la fonction intrinsèque.
+     - déclaration d'un indice de boucle (et de tableau) de type REAL :
+       te0320.f
+
+   remarque :
+   Contrairement à ce que m'avait prédit O. Nicolas, je n'ai pas eu de
+   problème pour compiler SRQRT(complex*16) avec :
+      alphaserver + f90 -> OK
+      alphaserver + f77 -> OK
+      alphaserver + g77 -> NOOK  (mais le problème ne vient pas de SQRT : AO émise ce jour)
+      Linux (clp50a8) + g77 -> OK
+      Linux (clp50a8) + f77 -> OK
+      Linux (clp50a8) + f90 -> NOOK (n'existe pas !)
+      Solaris + f90 -> OK
+      Solaris + f77 -> OK
+      Solaris + g77 -> OK
+   DETAILS
+     Liste des fichiers modifiés:  vpgskc.f  wpgskp.f
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+       C MODIF supervis/astermodule          nicolas O.NICOLAS         3949    186      1
+ CASTEST AJOUT sensd09a                      a3bhhae H.ANDRIAMBOLOLONA    176    176      0
+ CASTEST AJOUT sensd09b                      a3bhhae H.ANDRIAMBOLOLONA    193    193      0
+ CASTEST AJOUT ssnl130a                      mjbhhpe J.L.FLEJOU         166    166      0
+ CASTEST AJOUT ssnp129a                       pbadel P.BADEL            147    147      0
+ CASTEST AJOUT ssnv182b                      geniaut S.GENIAUT          262    262      0
+ CASTEST MODIF sdnd102b                      cibhhlv L.VIVAN            459      1      1
+ CASTEST MODIF sslp310a                      galenne E.GALENNE         1289     71     49
+ CASTEST MODIF sslv134a                      galenne E.GALENNE          320     49     28
+ CASTEST MODIF sslv139a                      cibhhlv L.VIVAN            230     10     17
+ CASTEST MODIF sslv200a                      cibhhlv L.VIVAN           1298      4      4
+ CASTEST MODIF ssnl106g                      vabhhts J.PELLET           240      1      1
+ CASTEST MODIF ssnp123a                      vabhhts J.PELLET           225      1      1
+ CASTEST MODIF ssnv166c                      geniaut S.GENIAUT          229      2      2
+ CASTEST MODIF ssnv182a                      geniaut S.GENIAUT          226     22     57
+CATALOGU MODIF compelem/grandeur_simple__    geniaut S.GENIAUT          561      3      1
+CATALOGU MODIF options/etot_elem             cibhhlv L.VIVAN             31      3      1
+CATALOGU MODIF options/etot_elga             cibhhlv L.VIVAN             31      3      1
+CATALOGU MODIF options/etot_elno_elga        cibhhlv L.VIVAN             31      3      1
+CATALOGU MODIF typelem/gener_me3d_3          geniaut S.GENIAUT          582     17     13
+CATALOGU MODIF typelem/gener_me_x            geniaut S.GENIAUT          567     17     13
+CATALOGU MODIF typelem/gener_me_xh           geniaut S.GENIAUT          250     18     13
+CATALOGU MODIF typelem/gener_meafo2          cibhhlv L.VIVAN            162      4      4
+CATALOGU MODIF typelem/gener_mepde1          a3bhhae H.ANDRIAMBOLOLONA    274      7      1
+CATALOPY MODIF commande/affe_cara_elem       mjbhhpe J.L.FLEJOU         430     14      9
+CATALOPY MODIF commande/asse_matr_gene       nicolas O.NICOLAS           28      4      1
+CATALOPY MODIF commande/asse_vect_gene       nicolas O.NICOLAS           31      4      1
+CATALOPY MODIF commande/defi_materiau         pbadel P.BADEL           2825      8      1
+CATALOPY MODIF commande/nume_ddl_gene        nicolas O.NICOLAS           34      2      1
+CATALOPY MODIF commun/c_comp_incr             pbadel P.BADEL            314      3      1
+CATALOPY MODIF entete/accas                  nicolas O.NICOLAS         1023    376     10
+ FORTRAN AJOUT algorith/assgcy               nicolas O.NICOLAS          157    157      0
+ FORTRAN AJOUT algorith/lclbr1                pbadel P.BADEL            211    211      0
+ FORTRAN AJOUT algorith/lclbr2                pbadel P.BADEL             77     77      0
+ FORTRAN AJOUT algorith/numgcy               nicolas O.NICOLAS          248    248      0
+ FORTRAN AJOUT algorith/vecgcy               nicolas O.NICOLAS           90     90      0
+ FORTRAN AJOUT algorith/vecgen               nicolas O.NICOLAS          476    476      0
+ FORTRAN AJOUT jeveux/jedup1                 vabhhts J.PELLET            29     29      0
+ FORTRAN AJOUT supervis/putcon               nicolas O.NICOLAS          128    128      0
+ FORTRAN AJOUT utilitai/copis2               vabhhts J.PELLET            25     25      0
+ FORTRAN AJOUT utilitai/detrs2               vabhhts J.PELLET            25     25      0
+ FORTRAN MODIF algeline/cajgr2               vabhhts J.PELLET           232      6      3
+ FORTRAN MODIF algeline/kajgr2               vabhhts J.PELLET           143      6      3
+ FORTRAN MODIF algeline/mefist               vabhhts J.PELLET           554     27     11
+ FORTRAN MODIF algeline/mefsm1               vabhhts J.PELLET            98      3      2
+ FORTRAN MODIF algeline/mefsma               vabhhts J.PELLET            74      6      5
+ FORTRAN MODIF algeline/op0044               a3bhhae H.ANDRIAMBOLOLONA    777      2      2
+ FORTRAN MODIF algeline/op0045               a3bhhae H.ANDRIAMBOLOLONA   1059      2      2
+ FORTRAN MODIF algeline/op0144               vabhhts J.PELLET           381      7      3
+ FORTRAN MODIF algeline/pcldlt               vabhhts J.PELLET           216      8      3
+ FORTRAN MODIF algeline/vpgskc               vabhhts J.PELLET           207      3      3
+ FORTRAN MODIF algeline/wpgskp               vabhhts J.PELLET           263      3      3
+ FORTRAN MODIF algorith/arg126               nicolas O.NICOLAS          407      6      1
+ FORTRAN MODIF algorith/assgen               nicolas O.NICOLAS          373     16      2
+ FORTRAN MODIF algorith/bmnbmd               nicolas O.NICOLAS          143      7      6
+ FORTRAN MODIF algorith/bmnodi               nicolas O.NICOLAS          190      2      2
+ FORTRAN MODIF algorith/clas99               nicolas O.NICOLAS          159      9      4
+ FORTRAN MODIF algorith/confac               geniaut S.GENIAUT          225     87     11
+ FORTRAN MODIF algorith/lceib1                godard V.GODARD           154      7      1
+ FORTRAN MODIF algorith/merimo               geniaut S.GENIAUT          464     12     14
+ FORTRAN MODIF algorith/ndlect               cibhhlv L.VIVAN            216      5     10
+ FORTRAN MODIF algorith/nmchar               vabhhts J.PELLET           455      7      7
+ FORTRAN MODIF algorith/nmcomp                pbadel P.BADEL            696      9      1
+ FORTRAN MODIF algorith/nmflam               vabhhts J.PELLET           155      2      5
+ FORTRAN MODIF algorith/op0041               geniaut S.GENIAUT          190     17      8
+ FORTRAN MODIF algorith/op0069               cibhhlv L.VIVAN             31      3    629
+ FORTRAN MODIF algorith/op0070               cibhhlv L.VIVAN            799      4      3
+ FORTRAN MODIF algorith/op0113               geniaut S.GENIAUT          315      1     10
+ FORTRAN MODIF algorith/op0127               nicolas O.NICOLAS           91      9      3
+ FORTRAN MODIF algorith/op0128               nicolas O.NICOLAS           60      7      2
+ FORTRAN MODIF algorith/op0140               nicolas O.NICOLAS           81      9    400
+ FORTRAN MODIF algorith/vechde               a3bhhae H.ANDRIAMBOLOLONA    445      2      2
+ FORTRAN MODIF algorith/xbaslo               geniaut S.GENIAUT          158     12     36
+ FORTRAN MODIF algorith/xenrch               geniaut S.GENIAUT          387     22     11
+ FORTRAN MODIF algorith/xinils               geniaut S.GENIAUT          431     16      7
+ FORTRAN MODIF algorith/xmel3d               geniaut S.GENIAUT          160      4      4
+ FORTRAN MODIF algorith/xptfon               geniaut S.GENIAUT          165      4      3
+ FORTRAN MODIF algorith/xstano               geniaut S.GENIAUT          205     28     13
+ FORTRAN MODIF assembla/asmatr               vabhhts J.PELLET           253      4      1
+ FORTRAN MODIF assembla/assmam               vabhhts J.PELLET           925     15     15
+ FORTRAN MODIF assembla/assmat               vabhhts J.PELLET           693     13     14
+ FORTRAN MODIF assembla/moinip               vabhhts J.PELLET            71      4      4
+ FORTRAN MODIF assembla/moinsr               vabhhts J.PELLET           199      3      2
+ FORTRAN MODIF assembla/numero               vabhhts J.PELLET           326     16     18
+ FORTRAN MODIF calculel/meribi               vabhhts J.PELLET           108      4      4
+ FORTRAN MODIF calculel/op0008               vabhhts J.PELLET           247      3      3
+ FORTRAN MODIF calculel/op0175               vabhhts J.PELLET           565     10      6
+ FORTRAN MODIF calculel/trigd                geniaut S.GENIAUT          192      2      2
+ FORTRAN MODIF elements/dichoc               mjbhhpe J.L.FLEJOU         259     14      7
+ FORTRAN MODIF elements/te0032                godard V.GODARD           270      3     10
+ FORTRAN MODIF elements/te0140               a3bhhae H.ANDRIAMBOLOLONA    216     85      7
+ FORTRAN MODIF elements/te0295               geniaut S.GENIAUT          471     16     10
+ FORTRAN MODIF elements/te0300               galenne E.GALENNE          324     20      1
+ FORTRAN MODIF elements/te0320               vabhhts J.PELLET           140      3      3
+ FORTRAN MODIF elements/te0510               geniaut S.GENIAUT          168     15      9
+ FORTRAN MODIF elements/te0514               geniaut S.GENIAUT          179      7      6
+ FORTRAN MODIF elements/te0533               geniaut S.GENIAUT          468     51     16
+ FORTRAN MODIF elements/te0534               geniaut S.GENIAUT          392     34     11
+ FORTRAN MODIF elements/te0539               geniaut S.GENIAUT          341     14     10
+ FORTRAN MODIF elements/te0575               cibhhlv L.VIVAN            345     32     23
+ FORTRAN MODIF elements/xbsigm               geniaut S.GENIAUT          126      4      2
+ FORTRAN MODIF modelisa/acearp               mjbhhpe J.L.FLEJOU         430    212     51
+ FORTRAN MODIF modelisa/aceinc               mjbhhpe J.L.FLEJOU         416     15      5
+ FORTRAN MODIF modelisa/ata000               vabhhts J.PELLET           102      2      2
+ FORTRAN MODIF modelisa/atasmo               vabhhts J.PELLET           302    200    252
+ FORTRAN MODIF modelisa/caddli               vabhhts J.PELLET           349     13     13
+ FORTRAN MODIF modelisa/calyrc               nicolas O.NICOLAS          602     19      1
+ FORTRAN MODIF modelisa/charme               vabhhts J.PELLET           388      2      2
+ FORTRAN MODIF modelisa/coefal               vabhhts J.PELLET           150      6      3
+ FORTRAN MODIF modelisa/coefrl               vabhhts J.PELLET           151      6      3
+ FORTRAN MODIF modelisa/op0019               mjbhhpe J.L.FLEJOU         518      2      2
+ FORTRAN MODIF modelisa/op0143               vabhhts J.PELLET           543     13      8
+ FORTRAN MODIF modelisa/rairep               mjbhhpe J.L.FLEJOU         322     20     55
+ FORTRAN MODIF modelisa/vafcar               mjbhhpe J.L.FLEJOU         154      3      2
+ FORTRAN MODIF soustruc/oreino               galenne E.GALENNE          173      4      3
+ FORTRAN MODIF soustruc/ss2mme               vabhhts J.PELLET           158      4      3
+ FORTRAN MODIF utilitai/copich               vabhhts J.PELLET           140     27     97
+ FORTRAN MODIF utilitai/copisd               vabhhts J.PELLET           319    197    375
+ FORTRAN MODIF utilitai/detrsd               vabhhts J.PELLET           470     46     88
+ FORTRAN MODIF utilitai/exisd                vabhhts J.PELLET           207      5      4
+ FORTRAN MODIF utilitai/irchsu               vabhhts J.PELLET           386      2      2
+ FORTRAN MODIF utilitai/op0197               vabhhts J.PELLET           625     22     15
+ FORTRAN MODIF utilitai/typddl               nicolas O.NICOLAS          261      6      2
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :   15        2410      2410             +2410
+ MODIF :  108       41242      2411    2640      -229
+ SUPPR :    0           0                 0        +0
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :  123       43652      4821    2640     +2181 

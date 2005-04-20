@@ -4,7 +4,7 @@
 
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/01/2005   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 18/04/2005   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -52,12 +52,13 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C     
       INTEGER      IFM,NIV,IBID,ME1,ME2,NVAL,IADRMA,IOCCC,CRIT(2)
+      INTEGER      NMAEN1,NMAEN3
       REAL*8       PFI(3),VOR(3),ORI(3),NORME,RHON,MU,RHOT,SEUIL0
       CHARACTER*8  FISS,MODE,NFONF,NFONG,MAFIS,FONFIS,MAENR,NOMA,METH
       CHARACTER*8  FROTT,STACO0
       CHARACTER*16 K16BID
-      CHARACTER*19 CNSLT,CNSLN,GRLT,GRLN,CNSEN
-      CHARACTER*24 OBJMA,CHFOND,BASLOC
+      CHARACTER*19 CNSLT,CNSLN,GRLT,GRLN,CNSEN,CNSBAS
+      CHARACTER*24 OBJMA,CHFOND
 C
 C-----------------------------------------------------------------------
 C     DÉBUT
@@ -149,7 +150,8 @@ C
       IF (NORME.LT.1.D-10) CALL UTMESS('F','OP0041','LA NORME '//
      &                              'DU VECTEUR VECT_ORIE EST NULLE')
       
-      CALL XENRCH(IFM,NIV,NOMA,CNSLT,CNSLN,CNSEN,PFI,VOR,ORI,FISS)
+      CALL XENRCH(IFM,NIV,NOMA,CNSLT,CNSLN,CNSEN,PFI,VOR,ORI,
+     &            FISS,NMAEN1,NMAEN3)
 
       CALL CNSCNO(CNSEN,' ','G',FISS//'.STNO')
 
@@ -161,21 +163,28 @@ C-----------------------------------------------------------------------
 C     CALCUL DE LA BASE LOCALE AU FOND DE FISSURE
 C-----------------------------------------------------------------------
 C
-      BASLOC=FISS//'.BASLOC'
       CHFOND = FISS//'.FONDFISS'  
-      CALL XBASLO(MODE,NOMA,CHFOND,GRLT,GRLN,BASLOC)
+      CNSBAS='&&OP0041.CNSBAS'
+      CALL XBASLO(MODE,NOMA,CHFOND,GRLT,GRLN,CNSBAS)
+
+      CALL CNSCNO(CNSBAS,' ','G',FISS//'.BASLOC')
+      CALL DETRSD('CHAM_NO_S',CNSBAS)
+
+C      CALL IMPRSD('CHAMP',FISS//'.BASLOC',IFM,'FISSURE.BASLOC=')
+
 C
 C-----------------------------------------------------------------------
 C     STRUCTURE DE DONNÉES SUR LE CONTACT
 C-----------------------------------------------------------------------
 C
-      IF (IOCCC.GT.0) THEN 
+C     SEULEMENT S'IL Y A DES MAILLES DE CONTACT
+      IF (NMAEN1.GT.0.OR.NMAEN3.GT.0) THEN 
         CALL SDCONX(RHON,CRIT,FROTT,MU,RHOT,SEUIL0,STACO0,FISS)
       ENDIF
 C
 C-----------------------------------------------------------------------
 C     FIN
 C-----------------------------------------------------------------------
-
+      CALL JXVERI(' ',' ')
       CALL JEDEMA()
       END

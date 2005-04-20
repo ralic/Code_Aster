@@ -3,7 +3,7 @@
       CHARACTER*16      OPTION,NOMTE
 C.......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 12/04/2005   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ELEMENTS  DATE 19/04/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -59,20 +59,20 @@ C ----- DEBUT --- COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C------------FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
-      PARAMETER          (MXCMEL = 54)
+      PARAMETER          (MXCMEL = 162)
       PARAMETER          (NBNOMX = 27)
-      PARAMETER          (NBCONT =  4)
-      INTEGER            NBSIGM
+      PARAMETER          (NBCONT =  6)
+      INTEGER            NBSIGM, IHARMO, NH
       REAL*8             EPSI(NBCONT), EPSIM(NBCONT), DELTA(NBCONT)
       REAL*8             INSTAN, NHARM, REPERE(7)
       REAL*8             ENERPG(NBNOMX), EPSS(MXCMEL)
-      REAL*8             D1(NBCONT,NBCONT), XYZGAU(3)
+      REAL*8             D1(36), XYZGAU(3)
       REAL*8             EPSSM(MXCMEL), SIGMM(NBCONT), SIGMA(NBCONT)
       REAL*8             INTEG1, INTEG2, INTEG
       REAL*8             DFDX(9), DFDY(9)
       CHARACTER*8        MODELI
 C
-C
+      MODELI = '        '
       MODELI(1:2) = NOMTE(3:4)
 C
 C ---- CARACTERISTIQUES DU TYPE D'ELEMENT :
@@ -123,9 +123,7 @@ C
 C ----   RECUPERATION DE L'INSTANT DE CALCUL
 C        -----------------------------------
         CALL TECACH('ONN','PTEMPSR',1,ITEMPS,IRET)
-        IF (ITEMPS.NE.0) THEN
-           INSTAN = ZR(ITEMPS)
-        ENDIF
+        IF (ITEMPS.NE.0)  INSTAN = ZR(ITEMPS)
 C
       ENDIF
 C
@@ -158,6 +156,14 @@ C       -------------------
           CALL JEVECH('PCONTMR','L',IDSIGM)
         ENDIF
 C
+C ---   RECUPERATION EVENTUELLE DU NUMERO D'HARMONIQUE :
+C       ----------------------------------------------
+        CALL TECACH('NNN','PHARMON',1,IHARMO,IRET)
+        IF (IHARMO.NE.0) THEN
+          NH    = ZI(IHARMO)
+          NHARM = DBLE(NH)
+        ENDIF
+C
 C ---   CALCUL DU CHAMP DE DEFORMATIONS AU PREMIER ORDRE
 C ---   CORRESPONDANT AU CHAMP DE DEPLACEMENT COURANT :
 C       ---------------------------------------------
@@ -170,7 +176,7 @@ C       -----------------------------------------------------------
         IF (IDEPLM.NE.0) THEN
           CALL EPS1MC(MODELI,NNO,NDIM,NBSIG,NPG,IPOIDS,IVF,IDFDE,
      +                ZR(IGEOM),ZR(IDEPMM),NHARM,EPSSM)
-           ENDIF
+        ENDIF
 C
       ENDIF
 C
@@ -188,14 +194,14 @@ C
          CALL DFDM2D ( NNO,IGAU,IPOIDS,IDFDE,ZR(IGEOM),DFDX,DFDY,POIDS)
 C
          IF ((MODELI(1:2).EQ.'AX').OR.(MODELI(1:2).EQ.'FO')) THEN
-             RAYON = 0.D0
-             DO 41 I = 1, NNO
-                RAYON = RAYON + ZR(IVF+K+I-1)*ZR(IGEOM+2*(I-1))
-  41         CONTINUE
-             POIDS=POIDS*RAYON
+            RAYON = ZERO
+            DO 41 I = 1, NNO
+               RAYON = RAYON + ZR(IVF+K+I-1)*ZR(IGEOM+NDIM*(I-1))
+  41        CONTINUE
+            POIDS=POIDS*RAYON
          ENDIF
          DO 30 ISIG = 1, NBSIG
-           EPSI(ISIG) = ZERO
+            EPSI(ISIG) = ZERO
   30     CONTINUE
 C
 C  --      COORDONNEES ET TEMPERATURE AU POINT D'INTEGRATION
@@ -211,13 +217,12 @@ C
             DO 50 IDIM = 1, NDIM
                XYZGAU(IDIM) = XYZGAU(IDIM) +
      +                        ZR(IVF+I+NNO*(IGAU-1)-1)*
-     +                        ZR(IGEOM+IDIM+NDIM*(I-1)-1)
-  50         CONTINUE
+     +                        ZR(IGEOM-1+IDIM+NDIM*(I-1))
+  50        CONTINUE
 C
-             IF (OPTION(1:4).EQ.'ENEL') THEN
-               TEMPG     = TEMPG     + ZR(IVF+I+NNO*(IGAU-1)-1)*
-     +                                 ZR(ITEMPE+I-1)
-             ENDIF
+            IF (OPTION(1:4).EQ.'ENEL') THEN
+               TEMPG = TEMPG + ZR(IVF+I+NNO*(IGAU-1)-1)*ZR(ITEMPE+I-1)
+            ENDIF
 C
   40     CONTINUE
 C
@@ -228,21 +233,21 @@ C
 C  --      CALCUL DE L'INVERSE DE LA MATRICE DE HOOKE (LE MATERIAU
 C  --      POUVANT ETRE ISOTROPE, ISOTROPE-TRANSVERSE OU ORTHOTROPE)
 C          ---------------------------------------------------------
-         CALL D1MAMC(MODELI, ZI(IMATE), TEMPG, INSTAN, REPERE, XYZGAU,
-     +               NBSIG, D1)
+           CALL D1MAMC(MODELI, ZI(IMATE), TEMPG, INSTAN, REPERE, 
+     +                 XYZGAU, NBSIG, D1)
 C
 C  --      DENSITE D'ENERGIE POTENTIELLE ELASTIQUE AU POINT
 C  --      D'INTEGRATION COURANT
 C          ---------------------
-         DO 60 ISIG = 1, NBSIG
-            DO 70 JSIG = 1, NBSIG
-              EPSI(ISIG) = EPSI(ISIG) + D1(ISIG,JSIG)*
-     +                     ZR(IDCONT+NBSIG*(IGAU-1)+JSIG-1)
-  70        CONTINUE
+           DO 60 ISIG = 1, NBSIG
+              DO 70 JSIG = 1, NBSIG
+                 EPSI(ISIG) = EPSI(ISIG) + D1(NBSIG*(ISIG-1)+JSIG)*
+     +                                ZR(IDCONT+NBSIG*(IGAU-1)+JSIG-1)
+  70          CONTINUE
 C
-            ENERPG(IGAU) = ENERPG(IGAU) +
+              ENERPG(IGAU) = ENERPG(IGAU) +
      +               UNDEMI*ZR(IDCONT+NBSIG*(IGAU-1)+ISIG-1)*EPSI(ISIG)
-  60     CONTINUE
+  60       CONTINUE
 C
 C  --    CALCUL DE LA DENSITE D'ENERGIE TOTALE :
 C        =====================================
@@ -253,35 +258,39 @@ C  --      TEMPS COURANT ET AU PAS DE TEMPS PRECEDENT S'IL Y A LIEU,
 C  --      AU POINT D'INTEGRATION COURANT :
 C          ------------------------------
            DO 80 I = 1, NBSIG
-             EPSI(I) = EPSS(I+(IGAU-1)*NBSIG)
-             IF (IDEPLM.NE.0) THEN
-               EPSIM(I) = EPSSM(I+(IGAU-1)*NBSIG)
-             ENDIF
-             SIGMA(I) = ZR(IDSIG+(IGAU-1)*NBSIG+I-1)
-             IF (IDSIGM.NE.0) THEN
-               SIGMM(I) = ZR(IDSIGM+(IGAU-1)*NBSIG+I-1)
-             ENDIF
+              EPSI(I) = EPSS(I+(IGAU-1)*NBSIG)
+              IF (IDEPLM.NE.0) THEN
+                 EPSIM(I) = EPSSM(I+(IGAU-1)*NBSIG)
+              ENDIF
+              SIGMA(I) = ZR(IDSIG+(IGAU-1)*NBSIG+I-1)
+              IF (IDSIGM.NE.0) THEN
+                 SIGMM(I) = ZR(IDSIGM+(IGAU-1)*NBSIG+I-1)
+              ENDIF
   80       CONTINUE
 C
            IF (IDEPLM.NE.0) THEN
-             DO 90 I = 1, NBSIG
-               DELTA(I) = EPSI(I) - EPSIM(I)
-  90        CONTINUE
+              DO 90 I = 1, NBSIG
+                 DELTA(I) = EPSI(I) - EPSIM(I)
+  90          CONTINUE
            ELSE
               DO 91 I = 1, NBSIG
-               DELTA(I) = 0.D0
-  91        CONTINUE
+                 DELTA(I) = 0.D0
+  91          CONTINUE
            ENDIF
 C
 C  --      CALCUL DES TERMES A SOMMER POUR OBTENIR LA DENSITE
 C  --      D'ENERGIE TOTALE :
 C          ----------------
-           INTEG1 =       SIGMA(1)*DELTA(1) +      SIGMA(2)*DELTA(2)
-     +             +      SIGMA(3)*DELTA(3) + DEUX*SIGMA(4)*DELTA(4)
-C
            IF (IDEPLM.NE.0.AND.IDSIGM.NE.0) THEN
+             INTEG1 =       SIGMA(1)*DELTA(1) +      SIGMA(2)*DELTA(2)
+     +               +      SIGMA(3)*DELTA(3) + DEUX*SIGMA(4)*DELTA(4)
+             IF (MODELI(1:2).EQ.'FO') INTEG1 = INTEG1 +
+     &                 DEUX*SIGMA(5)*DELTA(5) + DEUX*SIGMA(6)*DELTA(6)
+C
              INTEG2 =       SIGMM(1)*DELTA(1) +      SIGMM(2)*DELTA(2)
      +               +      SIGMM(3)*DELTA(3) + DEUX*SIGMM(4)*DELTA(4)
+             IF (MODELI(1:2).EQ.'FO') INTEG2 = INTEG2 +
+     &                 DEUX*SIGMM(5)*DELTA(5) + DEUX*SIGMM(6)*DELTA(6)
 C
              ENERPG(IGAU) = UNDEMI*(INTEG1+INTEG2)
            ELSE
@@ -290,6 +299,8 @@ C  --        CAS D'ORDRE NUMERO 1 :
 C            --------------------
              INTEG  =       SIGMA(1)*EPSI(1) +      SIGMA(2)*EPSI(2)
      +               +      SIGMA(3)*EPSI(3) + DEUX*SIGMA(4)*EPSI(4)
+             IF (MODELI(1:2).EQ.'FO') INTEG = INTEG +
+     &                 DEUX*SIGMA(5)*EPSI(5) + DEUX*SIGMA(6)*EPSI(6)
 C
              ENERPG(IGAU) = UNDEMI*INTEG
 C
@@ -306,29 +317,27 @@ C ---- ELASTIQUE EN SORTIE
 C      -------------------
       CALL JEVECH('PENERDR','E',IDENER)
 C
-C ---- OPTIONS ENEL_ELGA ET ETOT_ELGA
-C      ==============================
+C --- OPTIONS ENEL_ELGA ET ETOT_ELGA
+C     ==============================
       IF (OPTION(6:9).EQ.'ELGA') THEN
          DO 100 IGAU = 1, NPG
            ZR(IDENER+IGAU-1) = ENERPG(IGAU)
  100     CONTINUE
 C
-C ---- OPTION ENEL_ELNO_ELGA ET ETOT_ELNO_ELGA
-C      =======================================
+C --- OPTION ENEL_ELNO_ELGA ET ETOT_ELNO_ELGA
+C     =======================================
       ELSEIF (OPTION(6:9).EQ.'ELNO') THEN
-C
         IF (NPG.EQ.1) THEN
            DO 110 I = 1, NNOS
               ZR(IDENER+I-1) = ENERPG(1)
  110       CONTINUE
         ELSE
-C
           NCMP = 1
           CALL PPGAN2 ( JGANO, NCMP, ENERPG, ZR(IDENER) )
         ENDIF
 C
-C ---- OPTION ETOT_ELEM
-C      ================
+C --- OPTION ETOT_ELEM
+C     ================
       ELSEIF (OPTION(6:9).EQ.'ELEM') THEN
         ZR(IDENER) = ENELEM
       ENDIF

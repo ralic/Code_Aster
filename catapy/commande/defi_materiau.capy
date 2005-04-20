@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 11/04/2005   AUTEUR F6BHHBO P.DEBONNIERES 
+#& MODIF COMMANDE  DATE 18/04/2005   AUTEUR PBADEL P.BADEL 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -368,6 +368,13 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
              D_SIGM_EPSI     =SIMP(statut='o',typ='R'),
              SYT             =SIMP(statut='o',typ='R'),
              SYC             =SIMP(statut='f',typ='R'),
+           ),
+           BETON_REGLE_PR =FACT(statut='f',
+             D_SIGM_EPSI     =SIMP(statut='o',typ='R'),
+             SYT             =SIMP(statut='o',typ='R'),
+             SYC             =SIMP(statut='f',typ='R'),
+             EPSC            =SIMP(statut='f',typ='R'),
+             N               =SIMP(statut='f',typ='R'),
            ),
            ENDO_ORTH_BETON  =FACT(statut='f',
              ALPHA            =SIMP(statut='f',typ='R',defaut=0.9),

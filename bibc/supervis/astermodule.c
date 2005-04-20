@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF astermodule supervis  DATE 14/02/2005   AUTEUR DURAND C.DURAND */
+/* MODIF astermodule supervis  DATE 18/04/2005   AUTEUR NICOLAS O.NICOLAS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -144,6 +144,12 @@
 #define DEFSPPSSP(UN,LN,a,la,b,c,d,ld,e,le,f)                      STDCALL(UN,LN)(a,b,c,d,e,f,la,ld,le)
 #define DEFSSS(UN,LN,a,la,b,lb,c,lc)    STDCALL(UN,LN)(a,b,c,la,lb,lc)
 #define CALLSSS(UN,LN,a,b,c)    F_FUNC(UN,LN)(a,b,c,strlen(a),strlen(b),strlen(c))
+/* TEST OLIVIER */
+#define DEFSSSS(UN,LN,a,la,b,lb,c,lc,d,ld)    STDCALL(UN,LN)(a,b,c,d,la,lb,lc,ld)
+#define CALLSSSS(UN,LN,a,b,c,d)    F_FUNC(UN,LN)(a,b,c,d,strlen(a),strlen(b),strlen(c),strlen(d))
+#define DEFSPPPPPP(UN,LN,a,la,b,c,d,e,f,g)    STDCALL(UN,LN)(a,b,c,d,e,f,g,la)
+#define CALLSPPPPPP(UN,LN,a,b,c,d,e,f,g)    F_FUNC(UN,LN)(a,b,c,d,e,f,g,strlen(a))
+/* TEST OLIVIER */
 #define DEFPS(UN,LN,a,b,lb)                      STDCALL(UN,LN)(a,b,lb)
 #define DEFPSP(UN,LN,a,b,lb,c)                      STDCALL(UN,LN)(a,b,c,lb)
 #define DEFPSSP(UN,LN,a,b,lb,c,lc,d)    STDCALL(UN,LN)(a,b,c,d,lb,lc)
@@ -212,6 +218,12 @@
 #define DEFSPPSSP(UN,LN,a,la,b,c,d,ld,e,le,f)                      STDCALL(UN,LN)(a,la,b,c,d,ld,e,le,f)
 #define DEFSSS(UN,LN,a,la,b,lb,c,lc)    STDCALL(UN,LN)(a,la,b,lb,c,lc)
 #define CALLSSS(UN,LN,a,b,c)    F_FUNC(UN,LN)(a,strlen(a),b,strlen(b),c,strlen(c))
+/* TEST OLIVIER */
+#define DEFSSSS(UN,LN,a,la,b,lb,c,lc,d,ld)    STDCALL(UN,LN)(a,la,b,lb,c,lc,d,ld)
+#define CALLSSSS(UN,LN,a,b,c,d)    F_FUNC(UN,LN)(a,strlen(a),b,strlen(b),c,strlen(c),d,strlen(d))
+#define DEFSPPPPPP(UN,LN,a,la,b,c,d,e,f,g)    STDCALL(UN,LN)(a,b,c,d,e,f,g,la)
+#define CALLSPPPPPP(UN,LN,a,b,c,d,e,f,g)    F_FUNC(UN,LN)(a,b,c,d,e,f,g,strlen(a))
+/* TEST OLIVIER */
 #define DEFPS(UN,LN,a,b,lb)                      STDCALL(UN,LN)(a,b,lb)
 #define DEFPSP(UN,LN,a,b,c,lb)                      STDCALL(UN,LN)(a,b,c,lb)
 #define DEFPSSP(UN,LN,a,b,lb,c,lc,d)    STDCALL(UN,LN)(a,b,lb,c,lc,d)
@@ -2697,6 +2709,175 @@ PyObject *args;
         }
 }
 
+
+
+/* test olivier */                
+#define CALL_PUTCON(nomsd,nbind,ind,valr,valc,num,iret) CALLSPPPPPP(PUTCON,putcon,nomsd,nbind,ind,valr,valc,num,iret)
+void DEFSPPPPPP(PUTCON,putcon,char *,int,INTEGER *,INTEGER *,double *,double *,INTEGER *,INTEGER *);
+
+static char putvectjev_doc[]=
+"putvectjev(nomsd)->valsd      \n\
+\n\
+Renvoie le contenu d'un objet python dans  \n\
+un vecteur jeveux.";
+
+static PyObject* aster_putvectjev(self, args)
+PyObject *self; /* Not used */
+PyObject *args;
+{
+        PyObject *tupi  = (PyObject*)0 ;
+        PyObject *tupr  = (PyObject*)0 ;
+        PyObject *tupc  = (PyObject*)0 ;
+        char *nomsd;
+        double *valr;
+        double *valc;
+        INTEGER *ind;
+        INTEGER *num;
+        INTEGER *nbind;
+        unsigned int nind  = 0 ;
+        int ok        = 0 ;
+        INTEGER iret=0;
+        INTEGER lnom=0;
+
+        _DEBUT(aster_putvectjev) ;
+        
+        nbind = (INTEGER *)malloc((1)*sizeof(INTEGER));
+        num = (INTEGER *)malloc((1)*sizeof(INTEGER));
+
+        ok = PyArg_ParseTuple(args, "slOOOl",&nomsd,nbind,&tupi,&tupr,&tupc,num);
+        if (!ok)MYABORT("erreur dans la partie Python");
+/*        PyObject_Print(args, stdout, 0);*/
+                
+        nind = (unsigned int)(*nbind);
+
+        ind = (INTEGER *)malloc((nind)*sizeof(INTEGER));
+        valr = (double *)malloc((nind)*sizeof(double));
+        valc = (double *)malloc((nind)*sizeof(double));
+
+        if ( nind>0 ){
+                 convert(nind,tupi,ind);
+                 convr8(nind,tupr,valr);
+                 convr8(nind,tupc,valc);
+        }
+        try(1){
+        
+                                   SSCRUTE(nomsd);
+                                   ISCRUTE(*nbind);
+                                   TISCRUTE(nind,ind);
+                                   TDSCRUTE(nind,valr);
+                                   TDSCRUTE(nind,valc);
+                                   ISCRUTE(*num);
+          CALL_PUTCON(nomsd,nbind,ind,valr,valc,num,&iret);
+                                   ISCRUTE(iret);
+                                   
+          if(iret == 0){
+            /* Erreur */
+            PyErr_SetString(PyExc_KeyError, "Concept inexistant");
+            _FIN(aster_putvectjev) ;
+            return NULL;
+          }
+
+          free((char *)valc);                           
+          free((char *)valr);                           
+          free((char *)ind);                                                   
+          free((char *)nbind);                           
+          free((char *)num);                           
+                                   
+          CALL_JELIBE(nomsd);
+        }
+        catch(CodeAbortAster){
+          /* une exception a ete levee, elle est destinee a etre traitee dans l'appelant */
+          PyErr_SetString(PyExc_KeyError, "Concept inexistant");
+          _FIN(aster_putvectjev) ;
+          return NULL;
+        }  
+        _FIN(aster_putvectjev) ;
+        Py_INCREF( Py_None ) ;
+        return Py_None;
+}
+
+
+static char putcolljev_doc[]=
+"putcolljev(nomsd)->valsd      \n\
+\n\
+Renvoie le contenu d'un objet python dans  \n\
+un vecteur jeveux.";
+
+static PyObject* aster_putcolljev(self, args)
+PyObject *self; /* Not used */
+PyObject *args;
+{
+        PyObject *tupi  = (PyObject*)0 ;
+        PyObject *tupr  = (PyObject*)0 ;
+        PyObject *tupc  = (PyObject*)0 ;
+        char *nomsd;
+        double *valr;
+        double *valc;
+        INTEGER *ind;
+        INTEGER *num;
+        INTEGER *nbind;
+        unsigned int nind  = 0 ;
+        int ok        = 0 ;
+        INTEGER iret=0;
+        INTEGER lnom=0;
+
+        _DEBUT(aster_putcolljev) ;
+        
+        nbind = (INTEGER *)malloc((1)*sizeof(INTEGER));
+        num = (INTEGER *)malloc((1)*sizeof(INTEGER));
+
+        ok = PyArg_ParseTuple(args, "slOOOl",&nomsd,nbind,&tupi,&tupr,&tupc,num);
+        if (!ok)MYABORT("erreur dans la partie Python");
+/*        PyObject_Print(args, stdout, 0);*/
+                
+        nind = (unsigned int)(*nbind);
+
+        ind = (INTEGER *)malloc((nind)*sizeof(INTEGER));
+        valr = (double *)malloc((nind)*sizeof(double));
+        valc = (double *)malloc((nind)*sizeof(double));
+
+        if ( nind>0 ){
+                 convert(nind,tupi,ind);
+                 convr8(nind,tupr,valr);
+                 convr8(nind,tupc,valc);
+        }
+        
+                                   SSCRUTE(nomsd);
+                                   ISCRUTE(*nbind);
+                                   TISCRUTE(nind,ind);
+                                   TDSCRUTE(nind,valr);
+                                   TDSCRUTE(nind,valc);
+                                   ISCRUTE(*num);
+        CALL_PUTCON(nomsd,nbind,ind,valr,valc,num,&iret);
+                                   ISCRUTE(iret);
+                                   
+        if(iret == 0){
+          /* Erreur */
+          PyErr_SetString(PyExc_KeyError, "Concept inexistant");
+          _FIN(aster_putcolljev) ;
+          return NULL;
+          }
+
+        free((char *)valc);                           
+        free((char *)valr);                           
+        free((char *)ind);                                                   
+        free((char *)nbind);                           
+        free((char *)num);                           
+                                   
+        _FIN(aster_putcolljev) ;
+        Py_INCREF( Py_None ) ;
+        return Py_None;
+}
+/* test olivier */                
+
+
+
+
+
+
+
+
+
 void DEFSPSPPPS(RSACCH,rsacch,char *, int, INTEGER *, char *,int,INTEGER *, INTEGER *, INTEGER *, char *,int);
 void DEFSPSSPPP(RSACVA,rsacva,char *, int,INTEGER *, char *,int,char *,int,INTEGER *, double *,INTEGER *);
 void DEFSPSSPPP(RSACPA,rsacpa,char *, int,INTEGER *, char *,int,char *,int,INTEGER *, double *,INTEGER *);
@@ -3482,6 +3663,10 @@ static PyMethodDef aster_methods[] = {
                 {"argv" ,       aster_argv ,              METH_VARARGS},
                 {"prepcompcham",aster_prepcompcham,       METH_VARARGS},
                 {"getvectjev" , aster_getvectjev ,        METH_VARARGS, getvectjev_doc},
+/* test olivier */                
+                {"putvectjev"  , aster_putvectjev ,         METH_VARARGS},
+                {"putcolljev"  , aster_putcolljev ,         METH_VARARGS},
+/* test olivier */
                 {"getcolljev" , aster_getcolljev ,        METH_VARARGS, getcolljev_doc},
                 {"GetResu",     aster_GetResu,            METH_VARARGS},
                 {NULL,                NULL}/* sentinel */

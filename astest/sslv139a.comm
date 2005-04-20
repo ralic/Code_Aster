@@ -1,4 +1,4 @@
-# MODIF  DATE 12/04/2005   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 19/04/2005   AUTEUR CIBHHLV L.VIVAN 
 # TITRE : FLAMBEMENT D'UNE PLAQUE CIRCULAIRE SOUMISE A UNE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -146,7 +146,6 @@ EVOLELAS=CALC_ELEM(reuse =EVOLELAS,
                   RESULTAT=EVOLELAS,
                   OPTION=('SIEF_ELGA_DEPL','ETOT_ELGA','ETOT_ELNO_ELGA','ETOT_ELEM',),);
 
-
 RES_NORM=NORM_MODE(MODE=RESULT,
                    NORME='TRAN',);
 
@@ -180,30 +179,27 @@ TEST_RESU(RESU=(_F(RESULTAT=EVOLELAS,
                    NOM_CMP='TOTALE',
                    POINT=1,
                    MAILLE='M10',
-                   VALE= 1.5224280768128E-03,
-                   PRECISION=1e-10,
+                   VALE= 1.1414821265010E-01,
                    REFERENCE='NON_REGRESSION',
-                   VERSION='8.0.15',),
+                   VERSION='8.0.17',),
                 _F(RESULTAT=EVOLELAS,
                    NUME_ORDRE=1,
                    NOM_CHAM='ETOT_ELGA',
                    NOM_CMP='TOTALE',
                    MAILLE='M10',
                    POINT=1,
-                   VALE=3.4615986863405E+08,
-                   PRECISION=1e-10,
+                   VALE= 1.1612386752963E+09,
                    REFERENCE='NON_REGRESSION',
-                   VERSION='8.0.15',),
+                   VERSION='8.0.17',),
                 _F(RESULTAT=EVOLELAS,
                    NUME_ORDRE=1,
                    NOM_CHAM='ETOT_ELNO_ELGA',
                    NOM_CMP='TOTALE',
                    MAILLE='M6',
                    NOEUD='N15',
-                   VALE= 3.0300594994087E+08,
-                   PRECISION=1e-10,
+                   VALE= 1.8163004696786E+09,
                    REFERENCE='NON_REGRESSION',
-                   VERSION='8.0.15',),),);
+                   VERSION='8.0.17',),),);
 
 
 TEST_RESU(RESU=(_F(RESULTAT=MODE,
@@ -212,8 +208,7 @@ TEST_RESU(RESU=(_F(RESULTAT=MODE,
                    NOM_CMP='TOTALE',
                    POINT=1,
                    MAILLE='M10',
-                   VALE= 1.5224280768128E-03,
-                   PRECISION=1e-10,
+                   VALE= 1.1414821265010E-01,
                    REFERENCE='AUTRE_ASTER',),
                 _F(RESULTAT=MODE,
                    NUME_ORDRE=1,
@@ -221,8 +216,7 @@ TEST_RESU(RESU=(_F(RESULTAT=MODE,
                    NOM_CMP='TOTALE',
                    MAILLE='M10',
                    POINT=1,
-                   VALE=3.4615986863405E+08,
-                   PRECISION=1e-10,
+                   VALE= 1.1612386752963E+09,
                    REFERENCE='AUTRE_ASTER',),
                 _F(RESULTAT=MODE,
                    NUME_ORDRE=1,
@@ -230,8 +224,7 @@ TEST_RESU(RESU=(_F(RESULTAT=MODE,
                    NOM_CMP='TOTALE',
                    MAILLE='M6',
                    NOEUD='N15',
-                   VALE= 3.0300594994087E+08,
-                   PRECISION=1e-10,
+                   VALE= 1.8163004696786E+09,
                    REFERENCE='AUTRE_ASTER',),),);
 
 FIN();
