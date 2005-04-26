@@ -7,7 +7,7 @@
       CHARACTER*(*)       CRIT
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 18/04/2005   AUTEUR GALENNE E.GALENNE 
+C MODIF SOUSTRUC  DATE 26/04/2005   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -56,7 +56,8 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER       IBID, I, J, K, N, IDIS, INOE, INOD, IRE1, IRE2
       REAL*8        XA, YA, ZA, XB, YB, ZB, XAB, YAB, ZAB, AB2, XM, YM,
-     +              ZM, XAM, YAM, ZAM, C, C2, XV, YV, ZV, V2, R8B
+     +              ZM, XAM, YAM, ZAM, C, C2, XV, YV, ZV, V2, R8B,
+     &              ECART,R8PREM
       COMPLEX*16    C16B
       CHARACTER*8   K8B, NOMN
       CHARACTER*19  NOMT19
@@ -128,14 +129,17 @@ C                         NE DEPASSE PAS LA TOLERANCE ---
          ENDIF
 C        --- VERIFICATION QUE LA PROJECTION EST BIEN
 C                         SITUEE ENTRE LES POINTS A ET B ---
+         ECART = (C2-AB2)/AB2
          IF ( C.LT.0.0D0 .OR. C2.GT.AB2 ) THEN
-            CALL JENUNO( JEXNUM(NOMNOE,INOD),NOMN)
-            CALL UTDEBM('A','OREINO','NOEUD ')
-            CALL UTIMPK('S',' ',1,NOMN)
-            CALL UTIMPK('S','  EN DEHORS DU SEGMENT',0,NOMN)
-            CALL UTIMPR('L','  ABSCISSE CURVILIGNE',1,C)
-            CALL UTFINM
-            IER = IER + 1
+            IF (ECART.GT.R8PREM()) THEN
+               CALL JENUNO( JEXNUM(NOMNOE,INOD),NOMN)
+               CALL UTDEBM('A','OREINO','NOEUD ')
+               CALL UTIMPK('S',' ',1,NOMN)
+               CALL UTIMPK('S','  EN DEHORS DU SEGMENT',0,NOMN)
+               CALL UTIMPR('L','  ABSCISSE CURVILIGNE',1,C)
+               CALL UTFINM
+               IER = IER + 1
+            ENDIF
          ENDIF
          ZR(IDIS-1+INOE) = C
   100 CONTINUE

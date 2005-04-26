@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 25/01/2005   AUTEUR GENIAUT S.GENIAUT 
+%& MODIF COMPELEM  DATE 26/04/2005   AUTEUR LAVERNE J.LAVERNE 
 % RESPONSABLE JMBHH01 J.M.PROIX
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -496,11 +496,19 @@ PHENOMENE_MODELISATION__
               MAILLE__ TRIA6     ELEMENT__ MECA_FACE6
               MAILLE__ SEG3      ELEMENT__ MECA_ARETE3
 
-       MODELISATION__ 'PLAN_FISSURE'     DIM__ 2 2   CODE__ 'PFI'
+       MODELISATION__ 'PLAN_JOINT'     DIM__ 2 2   CODE__ 'PFI'
               MAILLE__ QUAD4     ELEMENT__ MFPLQU4
 
-       MODELISATION__ 'AXIS_FISSURE'     DIM__ 2 2   CODE__ 'AFI'
+       MODELISATION__ 'AXIS_JOINT'     DIM__ 2 2   CODE__ 'AFI'
               MAILLE__ QUAD4     ELEMENT__ MFAXQU4
+
+       MODELISATION__ 'PLAN_ELDI'     DIM__ 2 2   CODE__ 'PDI'
+              MAILLE__ QUAD4     ELEMENT__ MDDPQU4
+              MAILLE__ SEG2      ELEMENT__ MEPLSE2
+              
+       MODELISATION__ 'AXIS_ELDI'     DIM__ 2 2   CODE__ 'ADI'
+              MAILLE__ QUAD4     ELEMENT__ MDAXQU4
+              MAILLE__ SEG2      ELEMENT__ MEAXSE2
 
        MODELISATION__ 'C_PLAN_SI'        DIM__ 2 2   CODE__ 'CPS'
               MAILLE__ QUAD8     ELEMENT__ MECPQS8

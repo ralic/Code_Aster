@@ -3,7 +3,7 @@
       INTEGER IER
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 05/10/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF UTILITAI  DATE 26/04/2005   AUTEUR DURAND C.DURAND 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -168,13 +168,13 @@ C           CE N'EST PAS LA PEINE SI LA CROISSANTE STRICTE A ETE IMPOSEE
                CALL FOVERF(ZR(LVAL),NBCOUP,IRET2)
                IF(IRET2.EQ.0)THEN
                   TYPFON='FONCTION'
-                  CALL UTTRIF(ZR(LVAL),NBPTS,TYPFON)
+                  CALL UTTRIF(ZR(LVAL),NBCOUP,TYPFON)
                   CALL UTDEBM('A',NOMCMD,'LES ABSCISSES DE LA FONCTION')
                   CALL UTIMPK('S',' ',1,NOMFON)
                   CALL UTIMPK('L','ONT ETE REORDONNEES.',0,K8B)
                   CALL UTFINM()
                ELSEIF(IRET2.LT.0)THEN
-                  CALL ORDON1(ZR(LVAL),NBPTS)
+                  CALL ORDON1(ZR(LVAL),NBCOUP)
           CALL UTDEBM('A',NOMCMD,'L ORDRE DES ABSCISSES DE LA FONCTION')
                   CALL UTIMPI('S',' NUMERO ',1,IFONC)
                   CALL UTIMPK('L','A ETE INVERSE .',0,K8B)

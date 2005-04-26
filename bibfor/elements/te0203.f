@@ -1,7 +1,7 @@
       SUBROUTINE TE0203(OPTION,NOMTE)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 21/03/2005   AUTEUR LAVERNE J.LAVERNE 
+C MODIF ELEMENTS  DATE 26/04/2005   AUTEUR LAVERNE J.LAVERNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,9 +24,13 @@ C ======================================================================
       IMPLICIT NONE
       CHARACTER*16  NOMTE, OPTION
       
-C***********************************************************************
-C     BUT: PILOTAGE  PILO_PRED_ELAS
-CC**********************************************************************
+C-----------------------------------------------------------------------
+C
+C     BUT: PILOTAGE POUR LES ELEMENTS DE JOINT
+C
+C     OPTION : PILO_PRED_ELAS
+C
+C-----------------------------------------------------------------------
 
 
 C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
@@ -68,7 +72,7 @@ C - PARAMETRES EN ENTREE
       ELSE
         TYPMOD(1) = 'PLAN'
       END IF
-      TYPMOD(2) = ' '
+      TYPMOD(2) = 'ELEMJOIN'
       
 C RECUPERATION DU NOMBRE DE VARIABLES INTERNES PAR POINTS DE GAUSS : 
       CALL TECACH('OON','PVARIMR',7,JTAB,IRET)

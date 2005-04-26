@@ -1,6 +1,6 @@
       SUBROUTINE CMCREA(MAIN,MAOUT,NBOCC,MOTFAC,NUMOCC)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 21/03/2005   AUTEUR LAVERNE J.LAVERNE 
+C MODIF ALGELINE  DATE 26/04/2005   AUTEUR LAVERNE J.LAVERNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -17,6 +17,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
+      
       IMPLICIT NONE
       INTEGER  NBOCC,NUMOCC(NBOCC)
       CHARACTER*8  MAIN,MAOUT
@@ -62,7 +63,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*24 LINOMA, LICONN, LITYMA, LINGMA, LIGPMA
       CHARACTER*24 DIMIN,DIMOUT,NMAIN,NMAOUT,TMAIN,TMAOUT,CONIN,CONOUT
       CHARACTER*24 GMAIN,GMAOUT
-
+      
       DATA LINOMA /'&&CMCREA.LINOMA'/
       DATA LICONN /'&&CMCREA.LICONN'/
       DATA LITYMA /'&&CMCREA.LITYMA'/
@@ -80,9 +81,7 @@ C          NBR DE MAILLES DU GROUP_MA
 C          NUMERO DES MAILLES (NEGATIF QUAND NOUVELLE MAILLE)
 C ----------------------------------------------------------------------
 
-
-      CALL JEMARQ()      
-      
+      CALL JEMARQ()
    
 C ----------------------------------------------------------------------
 C                          INITIALISATION
@@ -120,24 +119,26 @@ C ----------------------------------------------------------------------
 
       DO 20 I = 1, NBOCC
         
-        IF (MOTFAC(I) .EQ. 'CREA_JOINT') THEN
+        IF (MOTFAC(I) .EQ. 'CREA_FISS') THEN
+
           CALL GETVTX(MOTFAC(I),'PREF_MAILLE',NUMOCC(I),1,1,PREFIX,IB)
           CALL GETVIS(MOTFAC(I),'PREF_NUME'  ,NUMOCC(I),1,1,NUMARE,IB)
           CALL GETVID(MOTFAC(I),'GROUP_NO_1' ,NUMOCC(I),1,1,GNO1  ,IB)
           CALL GETVID(MOTFAC(I),'GROUP_NO_2' ,NUMOCC(I),1,1,GNO2  ,IB)
           CALL GETVID(MOTFAC(I),'NOM'        ,NUMOCC(I),1,1,NOMGMA,IB)
           
-          CALL CMJOIN(MAIN, GNO1, GNO2, PREFIX, NUMARE,NOMGMA, 
+          CALL CMFISS(MAIN, GNO1, GNO2, PREFIX, NUMARE,NOMGMA, 
      &      ZK24(JLNOMA-1+I),ZK24(JLCONN-1 + I),ZK24(JLTYMA-1 + I),
      &      ZK24(JLNGMA-1 + I),ZK24(JLGPMA-1 + I) )
-        
+     
         ELSE
+        
           CALL UTMESS('F','CMCREA','MOT-CLE FACTEUR '//MOTFAC(I)//
      &        ' NON TRAITE')
+     
         END IF      
         
  20   CONTINUE
-   
    
    
 C ----------------------------------------------------------------------

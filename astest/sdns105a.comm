@@ -1,4 +1,4 @@
-# MODIF  DATE 21/03/2005   AUTEUR LAVERNE J.LAVERNE 
+# MODIF  DATE 26/04/2005   AUTEUR LAVERNE J.LAVERNE 
 # TITRE PROPAGATION DYNAMIQUE D'UNE FISSURE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -44,7 +44,7 @@ MODELE=AFFE_MODELE(MAILLAGE=MAIL,
                             MODELISATION='D_PLAN',),
                          _F(GROUP_MA=('JOINT',),
                             PHENOMENE='MECANIQUE',
-                            MODELISATION='PLAN_FISSURE',),
+                            MODELISATION='PLAN_JOINT',),
                           ),
                             );
 T_X=DEFI_FONCTION(PROL_GAUCHE='CONSTANT',PROL_DROITE='CONSTANT',
@@ -166,7 +166,7 @@ evol=DYNA_NON_LINE(MODELE=MODELE,
                            _F(CHARGE=chartemp)),
                    COMP_INCR=(_F(RELATION='ELAS',
                                  GROUP_MA=('SURFACE1',),),
-                              _F(RELATION='BARENBLATT',
+                              _F(RELATION='CZM_EXP_REG',
                                  GROUP_MA=('JOINT',),),),
                    INCREMENT=_F(LIST_INST=TEMPLI,),
                    NEWMARK=_F(ALPHA=0.25,

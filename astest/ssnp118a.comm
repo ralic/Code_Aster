@@ -1,4 +1,4 @@
-# MODIF  DATE 21/03/2005   AUTEUR LAVERNE J.LAVERNE 
+# MODIF  DATE 26/04/2005   AUTEUR LAVERNE J.LAVERNE 
 # TITRE FISSURATION PLANE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -43,7 +43,7 @@ MO=AFFE_MODELE(
                  _F(
                    MAILLE = 'CUBEDEG',
                    PHENOMENE = 'MECANIQUE',
-                   MODELISATION = 'PLAN_FISSURE'
+                   MODELISATION = 'PLAN_JOINT'
                    )
                  )
               )
@@ -120,7 +120,7 @@ U=STAT_NON_LINE(
     _F(CHARGE = TRACTION, FONC_MULT = FCT),
   ),
   COMP_INCR  = (
-          _F(RELATION = 'BARENBLATT',
+          _F(RELATION = 'CZM_EXP_REG',
              MAILLE = 'CUBEDEG', ),
           _F(RELATION = 'ELAS',
              MAILLE = 'CUBE',),
@@ -151,7 +151,7 @@ STAT_NON_LINE(reuse = U,
     ETA_PILO_MAX = 1
     ),
   COMP_INCR  = (
-          _F(RELATION = 'BARENBLATT',
+          _F(RELATION = 'CZM_EXP_REG',
              MAILLE = 'CUBEDEG', ),
           _F(RELATION = 'ELAS',
              GROUP_MA = gma,),

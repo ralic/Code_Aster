@@ -1,4 +1,4 @@
-# MODIF  DATE 15/11/2004   AUTEUR MCOURTOI M.COURTOIS 
+# MODIF  DATE 26/04/2005   AUTEUR LAVERNE J.LAVERNE 
 # TITRE cas test de validation de la loi de comportement JOINT_BA
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -38,7 +38,7 @@ MO=AFFE_MODELE(
                  _F(
                    MAILLE = 'CUBEDEG',
                    PHENOMENE = 'MECANIQUE',
-                   MODELISATION = 'PLAN_FISSURE'
+                   MODELISATION = 'PLAN_JOINT'
                    )
                  )
               );

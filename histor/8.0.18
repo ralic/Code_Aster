@@ -1,0 +1,345 @@
+
+
+-----------------------------------------------------------------------
+--- AUTEUR cibhhlv L.VIVAN   DATE  le 25/04/2005 a 18:27:00
+
+--------------------------------------------------------------------------
+CORRECTION AL 2005-136
+   NB_JOURS_TRAV  : 0.5
+   POUR_LE_COMPTE_DE   : E.BOYERE
+   INTERET_UTILISATEUR : NON
+   TITRE : DYNA_TRAN_MODAL
+   FONCTIONNALITE
+     Si on veut générer des tests via la procédure ENGENDRE_TEST à partir
+     d'un concept issu de l'opérateur DYNA_TRAN_MODAL, le code se plante:
+        <S> <JJVERN03> LE CARACTERE "@" EST ILLICITE
+   DETAIL
+     variables non initialisées dans la routine mdchoc.f
+   RESU_FAUX_VERSION_EXPLOITATION    : NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   : NON
+   RESTITUTION_VERSION_EXPLOITATION  : OUI
+   RESTITUTION_VERSION_DEVELOPPEMENT : OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+
+
+-----------------------------------------------------------------------
+--- AUTEUR cibhhpd L.SALMONA   DATE  le 26/04/2005 a 10:18:54
+
+-----------------------------------------------------------------------
+CORRECTION AL 2005-139
+   NB_JOURS_TRAV  : 0.5
+   POUR_LE_COMPTE_DE   : X. DESROCHES
+   INTERET_UTILISATEUR : NON
+   TITRE : POST_RELEVE_T
+   FONCTIONNALITE : Le cas test zzzz136a plante sous Linux
+
+   DETAIL :
+   Comme lors de la restitution de la semaine derniere, l'erreur se produit dans
+   la routine oreino. Pour verifier que la  projection des noeuds se situent
+   bien sur le segment de projection, on compare la valeur de ||AM||**2 avec
+   ||AB||**2, A et B etant les extremites du segment et M le noeud concerne.
+
+   L erreur se produit quand le noeud M est en fait egal au noeud B.
+
+   Or la facon de calculer ||AM||**2 et ||AB||**2 est la meme . Les valeurs
+   observees sur le cas test qui plante sont :
+
+  ||AM||**2         8.3578647213750856E-01
+
+  ||AB||**2         8.3578647213750845E-01
+
+  R8PREM            2.2204460492503131E-16
+
+  ECART (relatif)   1.3283572558739575E-16
+
+  La solution qui a ete adoptee pour l'instant est de comparer l'ecart a R8PREM et
+  de ne declencher le message d erreur que dans le cas ou ECART > R8PREM.
+
+
+  Sur l'alphaserveur, les valeurs relevees sont strictement identiques et egale
+  a 8.3578647213750845D-01.
+   RESU_FAUX_VERSION_EXPLOITATION    : NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   : NON
+   RESTITUTION_VERSION_EXPLOITATION  : OUI
+   RESTITUTION_VERSION_DEVELOPPEMENT : OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION : zzzz136a
+
+
+
+-----------------------------------------------------------------------
+--- AUTEUR durand C.DURAND   DATE  le 26/04/2005 a 10:42:02
+
+--------------------------------------------------------------------------
+CORRECTION AL 2003-301
+   NB_JOURS_TRAV  : 0.
+   INTERET_UTILISATEUR : NON
+   TITRE : performances mémoire linux ssnv166b
+   FONCTIONNALITE ssnv166b
+   DETAIL
+      fiche indirectement corrigée en version 8.0.12 par restitution
+      AL 2004-443
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+
+--------------------------------------------------------------------------
+CORRECTION AL 2005-140
+   NB_JOURS_TRAV  : 0.
+   INTERET_UTILISATEUR : NON
+   TITRE : reca_weibull
+   FONCTIONNALITE op0197.f
+   DETAIL
+     suite restitution JP en version 8.0.17, pb sur :
+        READ(NOOBJ(12:16),'(I5)') KK
+     on lit un I5 plutot qu'un simple I
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+     ssna103a
+
+--------------------------------------------------------------------------
+CORRECTION AL 2005-087
+   NB_JOURS_TRAV  : 0.
+   INTERET_UTILISATEUR : NON
+   TITRE : properties.py
+   FONCTIONNALITE properties.py
+   DETAIL
+     fichier contenant le numéro de version. En double dans Accas et Noyau.
+     Seul celui de Accas est utilisé et à jour.
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  OUI
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+
+--------------------------------------------------------------------------
+CORRECTION AL 2005-104
+   NB_JOURS_TRAV  : 0.
+   INTERET_UTILISATEUR : NON
+   TITRE : zzzz206a
+   FONCTIONNALITE zzzz206a
+   DETAIL
+     suppression du GROUP_MA dans l'impression au format gmsh du maillage
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+
+--------------------------------------------------------------------------
+CORRECTION AL 2005-112
+   NB_JOURS_TRAV  : 0.
+   INTERET_UTILISATEUR : NON
+   TITRE : xfem
+   FONCTIONNALITE xfem
+   DETAIL
+     suppression d'impressions parasites dans CAXFEM.f
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+
+--------------------------------------------------------------------------
+CORRECTION AL 2005-127
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : NON
+   TITRE : reca_weibull
+   FONCTIONNALITE reca_weibull
+   DETAIL
+     pb avec l'objet temporaire TAPAIT, créé avec un nom fixe, sur la base
+     global.
+     Je le renomme "&&"qquechose et je le créée sur la volatile.
+     Nécessairement, le conflit de noms interdisait l'exécution consécutive
+     de plusieurs RECA_WEIBULL.
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  OUI
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+     passage de ssna103a avec 2 RECA_WEIBULL
+
+
+-----------------------------------------------------------------------
+--- AUTEUR laverne J.LAVERNE   DATE  le 26/04/2005 a 13:33:19
+
+-----------------------------------------------------------------------
+REALISATION EL 2004-175
+   NB_JOURS_TRAV : 50
+   INTERET_UTILISATEUR : OUI
+   TITRE Eléments de fissuration à discontinuité interne.
+   FONCTIONNALITE
+   RESU_FAUX_VERSION_EXPLOITATION  :     NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT :     NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_R : R7.02.12
+       EXPL_: Elements finis à discontinuité interne et comportement cohésif (CZM)
+     DOC_R : R7.02.11
+       EXPL_: Mise à jour de la loi Barenblatt avec les nouvelles notations et nouveaux paramètres
+     DOC_U : U3.13.14
+       EXPL_: Modification des noms de modelisation pour les EJ et mise en place des XXXX_ELDI
+     DOC_U : U4.23.02
+       EXPL_: Changement du mot clé CREA_JOINT en CREA_FISS dans CREA_MAILLAGE
+     DOC_U : U4.41.01
+       EXPL_: Nouvelles modélisations possibles dans AFFE_MODELE : PLAN_ELDI, PLAN_JOINT,
+             AXIS_ELDI et AXIS_JOINT
+     DOC_U : U4.43.01
+       EXPL_: Nouveaux parametres dans RUPT_FRAG de DEFI_MATERIAU (oubli de EL 2005-051)
+     DOC_U : U4.51.11
+       EXPL_: Nouvelles lois dans la doc de COMP_INCR :
+                CZM_EXP_REG (éléments de joint, remplace BARENBLATT)
+                CZM_EXP     (éléments a discontinuité interne)
+     DOC_V : V6.03.118
+       EXPL_: Mise à jour du nom de la modélisation : PLAN_FISSURE devient PLAN_JOINT
+     DOC_V : V6.03.126
+       EXPL_: Mise à jour du nom de la modélisation : PLAN_FISSURE devient PLAN_JOINT
+     DOC_V : V6.01.112
+       EXPL_: Mise à jour du nom de la modélisation : AXIS_FISSURE devient AXIS_JOINT
+     DOC_V : V6.03.128
+       EXPL_: Eléments à discontinuité en 2D plan avec saut non constant le long d'une fissure.
+   VALIDATION SSNP128A
+   DETAILS
+
+-------------------------------------------------------------------------------------------
+- ELEMENTS A DISCONTINUITE INTERNE (ELDI) :
+
+  Ces elements permettent de prendre en compte un saut de déplacement et de modéliser
+  une fissure dans une direction donnée. Ils ont un comportement élastique jusqu'a
+  un seuil en contrainte puis un comportement adouscissant avec une loi type CZM (ou Barenblatt).
+  L'un des avantages par rapport a l'element de joint est qu'il permet de s'affranchir
+  de la petite regularisation de l'énergie au voisinage de zero. Il n'y a donc plus
+  de parametre PENA_ADHERANCE et PENA_CONTACT pour ces elements mais juste GC et SIGM_C
+  ainsi que E et NU. Cela permet en particulier de les disposer partout dans une
+  direction donnée. En revanche, ils ne peuvent supplanter les éléments de joint car
+  leur comportement initialement élastique exclus leur utilisation dans des
+  structures ayant un comportement autre qu'élastique.
+
+    * DEUX MODELISATIONS POUR L'ELDI : PLAN_ELDI et AXIS_ELDI basées sur le QUAD4 de la mécanique.
+
+    * LOI DE COMPORTEMENT : 'CZM_EXP' (pour Cohesive Zone Model EXPonentielle)
+
+    * VARIABLES INTERNES : VI1 = Saut normal
+                           VI2 = Saut tangentiel
+                           VI3 = Variable seuil (plus grande norme du saut atteinte)
+                           VI4 = régime (dissipatif : 1 ou linéaire : 0)
+                           VI5 = Pourcentage d'énergie dissipée dans l'élément
+                           VI6 = Contrainte normale
+                           VI7 = Contrainte tangentielle
+
+    * PARAMETRES MATERIAU : E, NU, GC (tenacité) et SIGM_C (contrainte critique) les deux
+                            derniers mots clés sont renseignés dans RUPT_FRAG de DEFI_MATERIAU.
+
+    * PILOTAGE PAR PREDICTION ELASTIQUE
+
+AJOUT : NMED2D.F, NMEDCO.F, NMEDEL.F, NMEDAL.F, NMEDPI.F, NMEDSQ.F, PIPEED.F, LCEDEX.F
+        SSNP128A.COMM
+MODIF : TE0100.F , NMCOMP.F , TE0543.F
+        AFFE_MODELE.CAPY , C_COMP_INCR.CAPY
+        GENER_MEDPL2.CATA, GENER_MEAX_2.CATA, PHENOMENE_MODELISATION__.CATA,
+
+---------------------------------------------------------------------------------------------
+- HARMONISATION DU NOM DE MOTS CLE
+
+    * CHANGEMENT MOT CLE 'CREA_JOINT' EN 'CREA_FISS' :
+      Ce dernier permet de creer une ligne d'éléments de joint
+      OU d'éléments a discontinuité interne bien orientés, à partir de deux group_no.
+      NB : Avant il faut orienter les deux group_no avec la commande NOEUD_ORDO
+      et faire en sorte que la numérotation soit dans le sens trigo.
+
+    * CHANGEMENT DU NOM DE ROUTINE : pour plus de clareté CMJOIN.F devient CMFISS.F
+
+AJOUT : CMFISS.F
+MODIF : CMCREA.F, OP0167.F, CREA_MAILLAGE.CAPY
+SUPPR : CMJOINT.F
+
+----------------------------------------------------------------------------------------------
+- MISES A JOUR POUR L'ELEMENT DE JOINT
+
+   * Les modélisations AXIS_FISSURE et PLAN_FISSURE sont remplacées par AXIS_JOINT et PLAN_JOINT
+     pour les distinguer des fissures avec éléments à discontinuité.
+
+   * Definition de TYPMOD(2)='ELEMJOIN' dans les te de l'élément de joint. Et modif de l'appel
+     des ldc cohesives (CZM_EXP_REG ou JOINT_BA) dans nmcomp.
+
+   * La loi de comportement 'BARENBLATT' devient 'CZM_EXP_REG'
+     (pour Cohésive Zone Model EXPonentielle REGularisée)
+
+   * Mise a jour des noms des routines de comportement pour l'element de joint :
+      La routine LCBARE.F devient LCEJEX.F
+
+AJOUT : LCEJEX.F
+MODIF : TE0201.F, TE0202.F, TE0203.F, NMCOMP.F
+        AFFE_MODELE.CAPY, C_COMP_INCR.CAPY
+        PHENOMENE_MODELISATION__.CATA,
+        SDNS105A.COMM , SSNP118A.COMM  , SSNA112A.COMM , SSNP126A.COMM
+SUPPR : LCBARE.F
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+ CASTEST AJOUT ssnp128a                      laverne J.LAVERNE          896    896      0
+ CASTEST MODIF sdns105a                      laverne J.LAVERNE          305      3      3
+ CASTEST MODIF ssna112a                      laverne J.LAVERNE          399      2      2
+ CASTEST MODIF ssnp118a                      laverne J.LAVERNE          231      4      4
+ CASTEST MODIF ssnp126a                      laverne J.LAVERNE          388      2      2
+ CASTEST MODIF zzzz206a                       durand C.DURAND            52      2      4
+CATALOGU MODIF compelem/phenomene_modelisation__    laverne J.LAVERNE          780     11      3
+CATALOGU MODIF typelem/gener_meax_2          laverne J.LAVERNE          560      3      1
+CATALOGU MODIF typelem/gener_medpl2          laverne J.LAVERNE          567      3      1
+CATALOPY MODIF commande/affe_modele          laverne J.LAVERNE          179      5      3
+CATALOPY MODIF commande/crea_maillage        laverne J.LAVERNE          156      9      9
+CATALOPY MODIF commun/c_comp_incr            laverne J.LAVERNE          316      5      3
+ FORTRAN AJOUT algeline/cmfiss               laverne J.LAVERNE          154    154      0
+ FORTRAN AJOUT algorith/lcedex               laverne J.LAVERNE          209    209      0
+ FORTRAN AJOUT algorith/lcejex               laverne J.LAVERNE          167    167      0
+ FORTRAN AJOUT algorith/nmed2d               laverne J.LAVERNE          455    455      0
+ FORTRAN AJOUT algorith/nmedal               laverne J.LAVERNE          265    265      0
+ FORTRAN AJOUT algorith/nmedco               laverne J.LAVERNE           68     68      0
+ FORTRAN AJOUT algorith/nmedel               laverne J.LAVERNE          113    113      0
+ FORTRAN AJOUT algorith/nmedpi               laverne J.LAVERNE          142    142      0
+ FORTRAN AJOUT algorith/nmedsq               laverne J.LAVERNE          199    199      0
+ FORTRAN AJOUT algorith/pipeed               laverne J.LAVERNE          506    506      0
+ FORTRAN MODIF algeline/cmcrea               laverne J.LAVERNE          332      7      6
+ FORTRAN MODIF algeline/op0167               laverne J.LAVERNE          878      4      6
+ FORTRAN MODIF algorith/mdfcho               cibhhlv L.VIVAN            529      9      8
+ FORTRAN MODIF algorith/nmcomp               laverne J.LAVERNE          718     30      8
+ FORTRAN MODIF elements/te0100               laverne J.LAVERNE          318     19      6
+ FORTRAN MODIF elements/te0201               laverne J.LAVERNE          124      6      6
+ FORTRAN MODIF elements/te0202               laverne J.LAVERNE           72      6      5
+ FORTRAN MODIF elements/te0203               laverne J.LAVERNE           89      9      5
+ FORTRAN MODIF elements/te0543               laverne J.LAVERNE          147     14      1
+ FORTRAN MODIF modelisa/caxfem                durand C.DURAND           104      4      4
+ FORTRAN MODIF soustruc/oreino               cibhhpd L.SALMONA          177      6      2
+ FORTRAN MODIF utilitai/op0004                durand C.DURAND           226      3      3
+ FORTRAN MODIF utilitai/op0197                durand C.DURAND           625      4      4
+ FORTRAN SUPPR algeline/cmjoin               laverne J.LAVERNE          146      0    146
+ FORTRAN SUPPR algorith/lcbare               laverne J.LAVERNE          167      0    167
+  PYTHON SUPPR Noyau/properties               durand C.DURAND             0      0      0
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :   11        3174      3174             +3174
+ MODIF :   24        8272       170      99       +71
+ SUPPR :    3         313               313      -313
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :   38       11759      3344     412     +2932 

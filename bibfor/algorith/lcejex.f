@@ -1,9 +1,9 @@
-      SUBROUTINE LCBARE(MATE,OPTION,AM,DA,TM,TP,SIGMA,DSIDEP,VIM,VIP)
+      SUBROUTINE LCEJEX(MATE,OPTION,AM,DA,TM,TP,SIGMA,DSIDEP,VIM,VIP)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/03/2005   AUTEUR LAVERNE J.LAVERNE 
+C MODIF ALGORITH  DATE 26/04/2005   AUTEUR LAVERNE J.LAVERNE 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -21,11 +21,12 @@ C ======================================================================
 
       IMPLICIT NONE   
       INTEGER MATE
-      REAL*8  AM(2),DA(2),SIGMA(2),DSIDEP(2,2),VIM(*),VIP(*)
+      REAL*8  AM(2),DA(2),SIGMA(2),DSIDEP(2,2),VIM(*),VIP(*),TM,TP
       CHARACTER*16 OPTION
 
 C-----------------------------------------------------------------------
-C           LOI DE COMPORTEMENT D'INTERFACE : BARENBLATT (2D)
+C                  LOI DE COMPORTEMENT D'INTERFACE
+C                  POUR LES ELEMENTS DE JOINT : CZM_EXP_REG
 C
 C IN : AM SAUT INSTANT - : AM(1) = SAUT NORMAL, AM(2) = SAUT TANGENTIEL
 C IN : DA    INCREMENT DE SAUT
@@ -35,12 +36,11 @@ C-----------------------------------------------------------------------
 
       LOGICAL RESI, RIGI, ELAS
       INTEGER DISS
-      REAL*8  SC,GC,LC,K0,VAL(4),VALPA,TM,TP
+      REAL*8  SC,GC,LC,K0,VAL(4),VALPA
       REAL*8  A(2),NA,KA,KAP,R0,RC,BETA,RK,RA,COEF,COEF2
       CHARACTER*2 COD(4)
       CHARACTER*8 NOM(4)
-C-----------------------------------------------------------------------
-
+      
 
 C OPTION CALCUL DU RESIDU OU CALCUL DE LA MATRICE TANGENTE
 
@@ -118,18 +118,18 @@ C    CONTRAINTE DE FISSURATION
         
       
 C ACTUALISATION DES VARIABLES INTERNES
-      
+
       KAP    = MAX(KA,NA)
       VIP(1) = KAP
       VIP(2) = DISS
       VIP(3) = 1 - EXP(-KAP/LC)
-      IF (A(1).GT.0) THEN
+      IF (A(1).GT.0.D0) THEN
         VIP(4) = 1
       ELSE
         VIP(4) = 2
       END IF
-  
-      
+
+
 C -- MATRICE TANGENTE
 
  5000 CONTINUE
@@ -138,17 +138,17 @@ C -- MATRICE TANGENTE
       CALL R8INIR(4, 0.D0, DSIDEP,1)
 
 C    MATRICE TANGENTE DE CONTACT PENALISE
-      IF (A(1).LE.0) DSIDEP(1,1) = DSIDEP(1,1) + RC
+      IF (A(1).LE.0.D0) DSIDEP(1,1) = DSIDEP(1,1) + RC
 
 C    MATRICE TANGENTE DE FISSURATION
       IF ((DISS.EQ.0) .OR. ELAS) THEN
       
-        IF (A(1).GT.0) DSIDEP(1,1) = DSIDEP(1,1) + RK
+        IF (A(1).GT.0.D0) DSIDEP(1,1) = DSIDEP(1,1) + RK
         DSIDEP(2,2) = DSIDEP(2,2) + RK
       
       ELSE
       
-        IF (A(1).LE.0) THEN
+        IF (A(1).LE.0.D0) THEN
           DSIDEP(2,2) = DSIDEP(2,2) - SC/LC * EXP(-NA/LC)
         ELSE
           COEF        = (SC/LC + SC/NA) / NA**2

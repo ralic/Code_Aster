@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 04/04/2005   AUTEUR CIBHHPD L.SALMONA 
+%& MODIF TYPELEM  DATE 26/04/2005   AUTEUR LAVERNE J.LAVERNE 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -25,6 +25,8 @@ ENTETE__ ELEMENT__ MEAXQU4          MAILLE__ QUAD4
    OPTION__   CALC_DG                 -1
    OPTION__   CALC_DG_F               -1
    OPTION__   DESI_ELNO_DLSI          -1
+ENTETE__ ELEMENT__ MDAXQU4          MAILLE__ QUAD4
+   ELREFE__  QU4     GAUSS__  RIGI=FPG4   MASS=FPG4  GANO=FPG4  NOEU_S=NOEU_S  NOEU=NOEU  FPG1=FPG1
 ENTETE__ ELEMENT__ MEAXQU8          MAILLE__ QUAD8
    ELREFE__  QU8     GAUSS__  RIGI=FPG9   MASS=FPG9  GANO=FPG4  NOEU_S=NOEU_S  NOEU=NOEU  FPG1=FPG1
    ELREFE__  SE3     GAUSS__  RIGI=FPG4
@@ -126,7 +128,7 @@ MODE_LOCAL__
     NTEMPER  = TEMP_R   ELNO__ IDEN__  (TEMP     )
     NSECHER  = TEMP_R   ELNO__ IDEN__  (TEMP     )
     ZVARI1   = VARI_R   ELEM__         (VARI     )
-    EPHASRR  = VARI_R   ELNO__ IDEN__    (VARI     )
+    EPHASRR  = VARI_R   ELNO__ IDEN__  (VARI     )
     ZVARIPG  = VARI_R   ELGA__ RIGI    (VARI     )
     ZVARINO  = VARI_R   ELNO__ IDEN__  (VARI     )
     EVOISIN  = VOISIN   ELEM__         (V0       V1       V2       V3       V4       V5

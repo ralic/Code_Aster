@@ -1,7 +1,7 @@
       SUBROUTINE TE0201(OPTION,NOMTE)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 21/03/2005   AUTEUR LAVERNE J.LAVERNE 
+C MODIF ELEMENTS  DATE 26/04/2005   AUTEUR LAVERNE J.LAVERNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,13 +24,14 @@ C ======================================================================
       IMPLICIT NONE
       CHARACTER*16       NOMTE, OPTION
       
-
+C-----------------------------------------------------------------------
+C
 C     BUT: CALCUL DES OPTIONS NON LINEAIRES DES ELEMENTS DE
 C          FISSURE JOINT
 C
 C     OPTION : RAPH_MECA, FULL_MECA, RIGI_MECA_TANG, RIGI_MECA_ELAS
 C
-C.......................................................................
+C-----------------------------------------------------------------------
 
 C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON /IVARJE/ZI(1)
@@ -63,7 +64,7 @@ C------------FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       ELSE
         TYPMOD(1) = 'PLAN'
       END IF
-      TYPMOD(2) = ' '
+      TYPMOD(2) = 'ELEMJOIN'
       
       CALL JEVECH('PGEOMER','L',IGEOM)
       CALL JEVECH('PMATERC','L',IMATER)
@@ -85,7 +86,7 @@ C RECUPERATION DU NOMBRE DE VARIABLES INTERNES PAR POINTS DE GAUSS :
       IF (OPTION.EQ.'RAPH_MECA' .OR. OPTION(1:9).EQ.'FULL_MECA') THEN
       
           CALL JEVECH('PDEPLPR','L',IDDEP) 
-          CALL JEVECH('PVARIPR','L',IVARIP)  
+          CALL JEVECH('PVARIPR','E',IVARIP)  
 
       ENDIF
       
@@ -114,7 +115,6 @@ C RECUPERATION DU NOMBRE DE VARIABLES INTERNES PAR POINTS DE GAUSS :
       
           CALL JEVECH('PCONTPR','E',ICONT)
           CALL JEVECH('PVECTUR','E',IVECT)
-          CALL JEVECH('PVARIPR','E',IVARIP)      
           CALL DCOPY(4, SIGMA,1, ZR(ICONT),1) 
           CALL DCOPY(8, FINT ,1, ZR(IVECT),1)
         

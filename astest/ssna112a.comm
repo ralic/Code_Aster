@@ -1,4 +1,4 @@
-# MODIF  DATE 15/11/2004   AUTEUR MCOURTOI M.COURTOIS 
+# MODIF  DATE 26/04/2005   AUTEUR LAVERNE J.LAVERNE 
 # TITRE Test de arrachement axisymmetrique(La Borderie & Pijaudier Cabot)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -58,7 +58,7 @@ MODELO=AFFE_MODELE(MAILLAGE=MALLA,
                             MODELISATION = 'AXIS'),
                          _F(GROUP_MA = 'LIAISON',
                             PHENOMENE='MECANIQUE',
-                            MODELISATION = 'AXIS_FISSURE',),
+                            MODELISATION = 'AXIS_JOINT',),
                            ),);
 
 #---------------------------------

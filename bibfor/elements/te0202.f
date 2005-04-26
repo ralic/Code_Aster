@@ -1,7 +1,7 @@
       SUBROUTINE TE0202(OPTION,NOMTE)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 26/04/2005   AUTEUR LAVERNE J.LAVERNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,14 +23,15 @@ C ======================================================================
 
       IMPLICIT NONE
       CHARACTER*16       NOMTE, OPTION
-      
 
-C     BUT: CALCUL DES OPTIONS NON LINEAIRES DES ELEMENTS DE
+C-----------------------------------------------------------------------
+C
+C     BUT : CALCUL DES OPTIONS NON LINEAIRES DES ELEMENTS DE
 C          FISSURE JOINT
 C
-C          OPTION : FORC_NODA
+C     OPTION : FORC_NODA
 C
-C.......................................................................
+C-----------------------------------------------------------------------
 
 C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON /IVARJE/ZI(1)
@@ -58,7 +59,7 @@ C------------FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       ELSE
         TYPMOD(1) = 'PLAN'
       END IF
-      TYPMOD(2) = ' '
+      TYPMOD(2) = 'ELEMJOIN'
       
       NPG=2
 

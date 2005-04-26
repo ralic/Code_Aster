@@ -1,6 +1,6 @@
       SUBROUTINE TE0100(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 04/04/2005   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ELEMENTS  DATE 26/04/2005   AUTEUR LAVERNE J.LAVERNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -79,7 +79,10 @@ C - TYPE DE MODELISATION
       ELSE
         CALL UTMESS('F','TE0100','NOM D''ELEMENT ILLICITE')
       END IF
-      IF (NOMTE(1:2).EQ.'MI') THEN
+      
+      IF (NOMTE(1:2).EQ.'MD') THEN
+        TYPMOD(2) = 'ELEMDISC'
+      ELSE IF (NOMTE(1:2).EQ.'MI') THEN
         TYPMOD(2) = 'INCO    '
       ELSE
         TYPMOD(2) = '        '
@@ -143,11 +146,7 @@ C  passage de PPHASMR et PPHASPR aux points de Gauss
   7       CONTINUE          
   9     CONTINUE
       END IF
-      
-
-
-
-            
+                  
       CALL JEVECH('PHYDRMR','L',IHYDRM)
       CALL JEVECH('PHYDRPR','L',IHYDRP)
       CALL JEVECH('PSECHMR','L',ISECHM)
@@ -219,23 +218,37 @@ CCDIR$ IVDEP
         END IF
 
         IF (ZK16(ICOMPO+2) (1:5).EQ.'PETIT') THEN
+        
+C -       ELEMENT A DISCONTINUITE INTERNE
+          IF (TYPMOD(2).EQ.'ELEMDISC') THEN
+                    
+            CALL NMED2D(NNO,NPG1,IPOIDS,IVF,IDFDE,
+     &                  ZR(IGEOM),TYPMOD,OPTION,ZI(IMATE),ZK16(ICOMPO),
+     &                  LGPG,ZR(ICARCR),
+     &                  ZR(IDEPLM),ZR(IDEPLP),
+     &                  ZR(ICONTM),ZR(IVARIM),VECT1,
+     &                  VECT3,ZR(ICONTP),ZR(IVARIP),
+     &                  ZR(IMATUU),ZR(IVECTU),CODRET)
 
-          CALL NMPL2D(NNO,NPG1,IPOIDS,IVF,IDFDE,
-     &                ZR(IGEOM),TYPMOD,OPTION,ZI(IMATE),ZK16(ICOMPO),
-     &                LGPG,ZR(ICARCR),
-     &                ZR(IINSTM),ZR(IINSTP),
-     &                ZR(ITEMPM),ZR(ITEMPP),ZR(ITREF),
-     &                ZR(IHYDRM),ZR(IHYDRP),
-     &                ZR(ISECHM),ZR(ISECHP),ZR(ISREF),
-     &                ZR(IIRRAM),ZR(IIRRAP),
-     &                NZ,PHASM,PHASP,
-     &                ZR(IDEPLM),ZR(IDEPLP),ZR(IDEFAM),ZR(IDEFAP),
-     &                DEFANE,
-     &                ANGMAS,
-     &                ZR(ICONTM),ZR(IVARIM),MATSYM,VECT1,
-     &                VECT3,ZR(ICONTP),ZR(IVARIP),
-     &                ZR(IMATUU),ZR(IVECTU),CODRET)
+          ELSE
+          
+            CALL NMPL2D(NNO,NPG1,IPOIDS,IVF,IDFDE,
+     &                  ZR(IGEOM),TYPMOD,OPTION,ZI(IMATE),ZK16(ICOMPO),
+     &                  LGPG,ZR(ICARCR),
+     &                  ZR(IINSTM),ZR(IINSTP),
+     &                  ZR(ITEMPM),ZR(ITEMPP),ZR(ITREF),
+     &                  ZR(IHYDRM),ZR(IHYDRP),
+     &                  ZR(ISECHM),ZR(ISECHP),ZR(ISREF),
+     &                  ZR(IIRRAM),ZR(IIRRAP),
+     &                  NZ,PHASM,PHASP,
+     &                  ZR(IDEPLM),ZR(IDEPLP),ZR(IDEFAM),ZR(IDEFAP),
+     &                  DEFANE,
+     &                  ANGMAS,
+     &                  ZR(ICONTM),ZR(IVARIM),MATSYM,VECT1,
+     &                  VECT3,ZR(ICONTP),ZR(IVARIP),
+     &                  ZR(IMATUU),ZR(IVECTU),CODRET)
 
+          ENDIF
 
 C      GRANDES DEFORMATIONS : FORMULATION SIMO - MIEHE
 

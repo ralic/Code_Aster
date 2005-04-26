@@ -16,7 +16,7 @@
       REAL*8             TEMPS,PSIDEL(NBCHOC,NBEXCI,*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/06/2004   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 25/04/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -69,7 +69,7 @@ C ----------------------------------------------------------------------
      +            OLDFT(2), OLDXL(3), OLDVT(2), POND,
      +            SIGNE(2), FDISPO
 C     ------------------------------------------------------------------
-      INTEGER       IEX
+      INTEGER       IEX, I, J
       CHARACTER*8   NOMPAR
       REAL*8        COEDEP(NBEXCI), COEVIT(NBEXCI), COEACC(NBEXCI)
 C
@@ -90,21 +90,22 @@ C
 
 C
       DO 10 I = 1,NBCHOC
+C
          FN = ZERO
          FTANGE(1) = ZERO
          FTANGE(2) = ZERO
          FFLUID = ZERO
          FDISPO = ZERO
-         VNORM = ZERO
-         ANORM = ZERO
+         VNORM  = ZERO
+         ANORM  = ZERO
          VTANG(1) = ZERO
          VTANG(2) = ZERO
-         VITLOC(1) = ZERO
-         VITLOC(2) = ZERO
-         VITLOC(3) = ZERO
-         VITLOC(4) = ZERO
-         VITLOC(5) = ZERO
-         VITLOC(6) = ZERO
+         DEFPLA = ZERO
+         DO 12 J = 1,6
+            DEPLOC(J) = ZERO
+            VITLOC(J) = ZERO
+ 12      CONTINUE
+C
          ORIGOB(1) = PARCHO(I,13)
          ORIGOB(2) = PARCHO(I,14)
          ORIGOB(3) = PARCHO(I,15)

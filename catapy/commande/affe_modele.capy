@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 12/04/2005   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 26/04/2005   AUTEUR LAVERNE J.LAVERNE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -79,7 +79,8 @@ AFFE_MODELE=OPER(nom="AFFE_MODELE",op=18,sd_prod=modele_sdaster,
                                                                       "AXIS_THHM",
                                                                       "AXIS_THM",
                                                                       "AXIS_GRAD_VARI",
-                                                                      "AXIS_FISSURE",
+                                                                      "AXIS_JOINT",
+                                                                      "AXIS_ELDI",
                                                                       "BARRE",
                                                                       "2D_BARRE",
                                                                       "C_PLAN",
@@ -97,7 +98,8 @@ AFFE_MODELE=OPER(nom="AFFE_MODELE",op=18,sd_prod=modele_sdaster,
                                                                       "D_PLAN_GRAD_EPSI",
                                                                       "D_PLAN_GRAD_VARI",
                                                                       "D_PLAN_NS",
-                                                                      "PLAN_FISSURE",
+                                                                      "PLAN_JOINT",
+                                                                      "PLAN_ELDI",
                                                                       "D_PLAN_ABSO",
                                                                       "D_PLAN_HHM",
                                                                       "D_PLAN_HM",

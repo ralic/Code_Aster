@@ -15,7 +15,7 @@
      &                   SIGP,VIP,DSIDEP,CODRET)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/04/2005   AUTEUR PBADEL P.BADEL 
+C MODIF ALGORITH  DATE 26/04/2005   AUTEUR LAVERNE J.LAVERNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -239,11 +239,39 @@ C -- MAZARS
      &                   OPTION, SIGP, VIP,  DSIDEP)
           GOTO 9000
         END IF
-        
 
       END IF
           
+C----------------------------------------------------------------------
+C                 CAS DES LOIS COHESIVES (POUR L'ELEMENT DE JOINT)
+C----------------------------------------------------------------------
+      
+      IF (TYPMOD(2) .EQ. 'ELEMJOIN') THEN
+
+        IF ( COMPOR(1) .EQ. 'CZM_EXP_REG' ) THEN
+        
+          CALL LCEJEX(IMATE, OPTION, EPSM, DEPS, TM, TP, 
+     &                SIGP, DSIDEP, VIM, VIP)     
+          GOTO 9000
           
+        ELSE IF ( COMPOR(1) .EQ. 'JOINT_BA' ) THEN
+        
+          CALL LCJOBA(NDIM, TYPMOD, IMATE, CRIT, EPSM, DEPS,
+     &                 VIM, OPTION, SIGP, VIP,  DSIDEP)     
+          GOTO 9000
+          
+        ELSE
+        
+          CALL UTMESS('F','NMCOMP','LOI NON TRAITEE POUR LES ELEMJOIN :'
+     &                //COMPOR(1))
+     
+        ENDIF
+        
+      ENDIF
+      
+C----------------------------------------------------------------------
+      
+                 
       IF (COMPOR(3).EQ.'SIMO_MIEHE') THEN
         IF (INT(CRIT(6)) .NE. 0) CALL UTMESS('F','NMCOMP',
      &      'INTEGRATION EXPLICITE IMPOSSIBLE')
@@ -349,15 +377,9 @@ C PETITES DEFORMATIONS
               CALL LCLBR1(NDIM, TYPMOD, IMATE, COMPOR, EPSM, DEPS,
      &                   VIM,TM,TP,TREF,OPTION, SIGP, VIP,  DSIDEP)
             ENDIF
-        ELSE IF ( COMPOR(1) .EQ. 'JOINT_BA' ) THEN
-          CALL LCJOBA(NDIM, TYPMOD, IMATE, CRIT, EPSM, DEPS,
-     &                 VIM, OPTION, SIGP, VIP,  DSIDEP)
         ELSE IF ( COMPOR(1) .EQ. 'DRUCKER_PRAGER' ) THEN
           CALL LCDRPR(TYPMOD,OPTION,IMATE,SIGM,TM,TP,TREF,
      &                            DEPS,VIM,VIP,SIGP,DSIDEP,CODRET)
-        ELSE IF ( COMPOR(1)(1:10) .EQ. 'BARENBLATT' ) THEN
-          CALL LCBARE(IMATE, OPTION, EPSM, DEPS, TM, TP, 
-     &                SIGP, DSIDEP, VIM, VIP)
         ELSE IF (COMPOR(1).EQ. 'META_P_IL       '.OR.
      &           COMPOR(1).EQ. 'META_P_IL_PT    '.OR.
      &           COMPOR(1).EQ. 'META_P_IL_RE    '.OR.
