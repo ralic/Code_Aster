@@ -1,4 +1,4 @@
-# MODIF  DATE 15/11/2004   AUTEUR MCOURTOI M.COURTOIS 
+# MODIF  DATE 09/05/2005   AUTEUR REZETTE C.REZETTE 
 # TITRE IMPACT D UNE BARRE DE TAYLOR ELASTOPLASTIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -70,6 +70,7 @@ CH=AFFE_CHAR_MECA(
                COULOMB = 0.25,
                METHODE = 'PENALISATION',
                E_T = 1.E5,
+               RECHERCHE = 'NOEUD_BOUCLE',
                ),
                );
 

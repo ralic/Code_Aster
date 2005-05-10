@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 13/04/2005   AUTEUR MJBHHPE J.L.FLEJOU 
+#& MODIF COMMANDE  DATE 09/05/2005   AUTEUR MJBHHPE J.L.FLEJOU 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -350,7 +350,7 @@ AFFE_CARA_ELEM=OPER(nom="AFFE_CARA_ELEM",op=  19,sd_prod=cara_elem,
          RIGI_PARASOL    =FACT(statut='f',max='**',
             regles=(UN_PARMI('COEF_GROUP','FONC_GROUP'),
                     UN_PARMI('COOR_CENTRE','NOEUD_CENTRE','GROUP_NO_CENTRE'),
-                    UN_PARMI('GROUP_MA_POI1','GROUP_MA_SEG2'),),
+                    EXCLUS('GROUP_MA_POI1','GROUP_MA_SEG2'),),
             GROUP_MA        =SIMP(statut='o',typ=ma,validators=NoRepeat(),max='**',
                fr="Surface servant à répartir les caractéristiques des discrets"),
             GROUP_MA_POI1   =SIMP(statut='f',typ=ma,validators=NoRepeat(),max=1,

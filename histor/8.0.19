@@ -1,0 +1,1368 @@
+
+
+-----------------------------------------------------------------------
+--- AUTEUR cibhhlv L.VIVAN   DATE  le 09/05/2005 a 09:19:43
+
+-----------------------------------------------------------------------
+REALISATION EL 2005-078
+   NB_JOURS_TRAV  : 2,5
+   POUR_LE_COMPTE_DE   : J.PELLET
+   INTERET_UTILISATEUR : OUI
+   TITRE : TEST_RESU d'un RESU_GENE
+   FONCTIONNALITE
+     Possibilité de tester la valeur d'un resu_gene autrement que sur
+     ses parametres (FREQ,...)
+     Syntaxe:
+     le vocabulaire est issu de la commande IMPR_GENE
+     TEST_RESU( GENE =_F( o / RESU_GENE     = resu   [vect_asse_gene]
+                              NUME_CMP_GENE = ncmp                [I]
+
+                            / RESU_GENE     = resu        [harm_gene]
+                                                          [mode_gene]
+                              o / NOM_CHAM      = nosymb         [Kn]
+                                  NUME_CMP_GENE = ncmp            [I]
+                                / PARA          = para           [Kn]
+                              o / NUME_ORDRE = nuor               [I]
+                                / NUME_MODE  = mode               [I]
+                                / FREQ       = freq               [R]
+                                  f  CRITERE   =/'RELATIF'   [défaut]
+                                                /'ABSOLU'
+                                  f  PRECISION =/ 1.E-03     [défaut]
+                                                /prec             [R]
+
+                            / RESU_GENE     = resu        [tran_gene]
+                              NOM_CHAM      = nosymb             [Kn]
+                              NUME_CMP_GENE = ncmp                [I]
+                              o / NUME_ORDRE = nuor               [I]
+                                / INST       = inst               [R]
+                                  f  CRITERE   =/'RELATIF'   [défaut]
+                                                /'ABSOLU'
+                                  f  PRECISION =/ 1.E-03     [défaut]
+                                                /prec             [R]
+                            )
+   DETAIL
+     découpage de l'op0023 (TEST_RESU) selon les mots clés facteur
+   RESU_FAUX_VERSION_EXPLOITATION    : NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   : NON
+   RESTITUTION_VERSION_EXPLOITATION  : NON
+   RESTITUTION_VERSION_DEVELOPPEMENT : OUI
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_U : U4.92.01
+       EXPL_ : ajout concept RESU_GENE
+   VALIDATION
+     test sdld22a pour un vect_asse_gene et tran_gene
+     test sdld102a pour un mode_gene
+
+
+-----------------------------------------------------------------------
+--- AUTEUR gjbhhel E.LORENTZ   DATE  le 10/05/2005 a 11:05:01
+
+------------------------------------------------------------------------------
+CORRECTION AL 2005-150
+   NB_JOURS_TRAV  : 1
+   INTERET_UTILISATEUR : OUI
+   TITRE : LONGUEUR CARACTERISTIQUE DU MATERIAU (GRAD_EPSI)
+   FONCTIONNALITE
+      Dorénavant, derrière le paramètre LONG_CARA (DEFI_MATERIAU, NON_LOCAL),
+      c'est la longueur caractéristique (et non plus son carré) qui est renseignée.
+      ATTENTION : les fichiers de commande doivent être modifiés sous peine de
+      conduire à des résultats faux.
+   DETAILS
+      Code source impacté :
+        Ajout:        nmplge.f   (CRP_21)
+
+   RESU_FAUX_VERSION_EXPLOITATION    :   OUI   DEPUIS : 6.2.20
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   OUI   DEPUIS : 6.2.20
+   RESTITUTION_VERSION_EXPLOITATION  :   OUI
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION :
+     SSNP127A, SSNP127B,
+     SSNV157A, SSNV157B, SSNV157C, SSNV157D, SSNV157E, SSNV157F, SSNV157G,
+     SSNV175A
+
+------------------------------------------------------------------------------
+REALISATION EL 2005-114
+   NB_JOURS_TRAV  : 3
+   INTERET_UTILISATEUR : OUI
+   TITRE : COUPURE DE LA REGULARISATION POUR LA MODELISATION GRAD_EPSI
+   FONCTIONNALITE
+      Lorsque un point est totalement cassé, il ne devrait plus contribuer à
+      la régularisation de la déformation. Cette coupure de la loi peut être
+      isotrope (régularisation tronquée pour toutes les composantes de la
+      documentation) ou bien anisotrope. Cette fonctionnalité était déjà
+      active pour la loi d'endommagement ENDO_ORTH_BETON. Elle est complétée
+      pour les lois :
+       - ENDO_FRAGILE     (coupure isotrope)
+       - ENDO_ISOT_BETON  (coupure isotrope)
+       - MAZARS           (coupure isotrope)
+      En revanche, rien n'est fait pour l'instant en ce qui concerne la loi de
+      plasticité DRUCKER_PRAGER car on ne sait pas caractériser un element rompu.
+   DETAILS
+      Sur le plan de l'implémentation, c'est maintenant les routines de comportement
+      (et non la routine de l'element fini) qui decide du projecteur de coupure (tenseur
+      symétrique d'ordre 4). Quand une loi ne fait rien de particulier, le projecteur
+      vaut alors l'identite.
+
+      A la différence de ce qui était fait jusqu'à présent pour ENDO_ORTH_BETON, le
+      projecteur modifie non seulement le terme de valeurs de deformation dans l'équation
+      de régularisation mais aussi le terme en gradient de deformation (cela correspond
+      bien à la disparition de l'élément de matière). Du coup, pour un element totalement
+      endommage dans toutes les directions, on prend le risque (avéré) d'un pivot nul. On
+      maintient donc une petite valeur pour éviter le pivot nul (ce n'est plus tout-à-fait la
+      matrice tangente) ; c'est identique à ce qui est fait pour la rigidité mécanique.
+
+      Code source impacté :
+        Ajout:        nmplge.f
+        Modification: lcdpnl.f, lcfrge.f, lcdsbe.f, lcmzge.f, lceobg.f, nmcomp.f
+
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_R : R5.04.02
+   VALIDATION : impossible par un cas-test élémentaire
+
+------------------------------------------------------------------------------
+REALISATION EL 2005-115
+   NB_JOURS_TRAV  : 5
+   INTERET_UTILISATEUR : OUI
+   TITRE : TOILETTAGE DE L'ARCHITECTURE DES ELEMENTS FINIS GRAD_EPSI
+   FONCTIONNALITE
+      Le seul impact pour l'utilisateur est la possibilité de demander la
+      symétrisation de sa matrice depuis STAT_NON_LINE.
+
+   DETAILS
+      Cette évolution se décompose en plusieurs points.
+      a)  Pour les lois de comportement à gradient de déformation, deux matrices
+      tangentes sont utilisées : la variation de la contrainte par rapport à la
+      déformtation cinematique et la variation de la contrainte par rapport à la
+      déformation régularisée. Ces matrices sont dorénavant stockées plus
+      logiquement sous la forme :
+         DSIDEP(I,J,NUMERO_MATRICE) et non plus DSIDEP(NUMERO_MATRICE,I,J)
+      Cela permet d'éviter des recopies dans les routines de comportement.
+
+      b)  Les routines pour le 2D (nmpl2g.f) et le 3D (nmpl3g) sont fusionnées (nmplge.f).
+      Il en va de meme des TE0113 et TE0121 (ce dernier est résorbé). On introduit une
+      technique d'indexation des variables nodales qui permet d'accéder simplement dans
+      un vecteur ou une matrice qui mélange des degrés de liberté correspondant à une
+      physique différente (déplacement et déformation dans le cas présent). On évite ainsi
+      la recopie des degrés de liberté, des forces intérieures et de la matrice tangente
+      dans des variables locales.
+
+      c)  Le calcul des termes cinématiques est separé en des tâches plus élémentaires. On
+      éclate les appels à NMGEOM et NMGEOB sur des routines plus basiques :
+
+        DFDMIP     calcul des derivees des fonctions de forme et du jacobien
+                    2D,AXI,3D
+
+        NMMABU     calcul de la matrice B (DEPS = B.DU)
+                    2D,3D
+                    AXI et GRANDES DEFORMATIONS restent a faire si besoin
+
+        NMEPSI     calcul des deformations cinematiques
+                    2D,AXI,3D,GRAND
+
+        NMEPSB     calcul des deformations regularisees et leurs gradients
+                    2D,3D
+                    AXI jamais implante (termes plus delicats a calculer)
+
+      d)  Les catalogues (génériques) des éléments C_PLAN et D_PLAN sont fusionnés.
+
+      e)  L'option de symétrisation des matrices SYME_MDNS_R y est rajoutée.
+
+      f) les options RIGI_MECA_ELAS et FULL_MECA_ELAS sont prises en compte au
+         niveau des routines de comportement.
+
+      Code source impacté :
+        Ajout:        nmplge.f, dfdmip.f, nmmabu.f, nmepsi.f, nmepsb.f
+                      gener_me2dg_2.cata
+        Modification: lcdpnl.f, lcdsbe.f, lceobg.f, lcfrge.f, lcmzge.f, te0113.f
+                      te0544.f, pipepe.f
+                      gener_me3dg_3.cata
+        Suppression:  nmpl2g.f, nmpl3g.f, te0121.f, nmgeob.f
+                      gener_mecpg2.cata, gener_medpg2.cata
+
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_D : D6.00.01
+       EXPL_ :  Mention des routines utilitaires du point c)
+   VALIDATION
+     SSNP127A, SSNP127B,
+     SSNV157A, SSNV157B, SSNV157C, SSNV157D, SSNV157E, SSNV157F, SSNV157G,
+     SSNV175A
+
+------------------------------------------------------------------------------
+REALISATION EL 2005-116
+   NB_JOURS_TRAV  : 1
+   INTERET_UTILISATEUR : OUI
+   TITRE : ELEMENTS LINEAIRES POUR LA MODELISATION GRAD_EPSI
+   FONCTIONNALITE
+      La modélisation 'GRAD_EPSI', jusque là réservée aux éléments quadratiques,
+      peut dorénavant s'appuyer sur le triangle TRIA3 en contraintes planes et en
+      déformations planes ainsi que sur le tétraèdre TETRA4 en 3D. Ces éléments à
+      un point de Gauss et à l'interpolation linéaire des déplacements et des
+      déformations régularisées ne sont pas précis mais en contrepartie, ils sont
+      très peu coûteux.
+      Pour le confort de l'utilisateur, les éléments correspondants de face et
+      d'arête sont également introduits mais ils pointent simplement vers les éléments
+      correspondants de mécanique usuelle.
+
+   DETAILS
+      Les elements de contraintes planes et de deformations planes sont regroupes sous le
+      même catalogue générique. En revanche, on peut déplorer qu'il ne soit pas possible
+      (apparemment) de regrouper les éléments P2 et les éléments P1.
+
+      Code source impacté :
+        Ajout:        gener_me2dg2_1.cata, gener_me3dg_1.cata
+        Modification: te0113.f, te0544.f
+                      phenomene_modelisation__.cata
+
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_U : U3.13.06 et U3.14.11
+       EXPL_ : déclaration des éléments linéaires qui couvrent les mêmes fonctionnalités
+               que les éléments quadratiques.
+     DOC_R : R5.04.02
+     DOC_V : V6.04.157
+   VALIDATION
+      SSNV157H, SSNV157I, SSNV157J (cas-tests de non-régression)
+
+------------------------------------------------------------------------------
+RESTITUTION HORS AREX
+   NB_JOURS_TRAV  : 1
+   INTERET_UTILISATEUR : OUI
+   FONCTIONNALITE
+      En grandes déformations de type 'SIMO_MIEHE', les matrices tangentes ne
+      sont pas symétriques à l'exception du cas (hyper)-élastique. Jusqu'à
+      présent, on procédait à une symétrisation systématique de la matrice.
+      Dorénavant, c'est la matrice non symétrique qui est fournie. S'il le
+      souhaite, l'utilisateur peut néanmoins demander de la symétriser sous le
+      mot-clé SOLVEUR = _F(SYME = 'OUI').
+      Attention : SYME = 'OUI' n'est pas le défaut. Les calculs prendront donc
+      a priori plus de temps avec cette nouvelle version si l'ont ne fait rien
+      en ce qui concerne le fichier de commande.
+
+   DETAILS
+      La décision de construire une matrice symétrique ou non s'appuie sur
+      la routine NMTSTM via la carte COMPOR. Elle est appelée par les routines
+      TE0100 (éléments 2D standard), TE0139 (éléments 3D standard), TE0431
+      (éléments 'GRILLE_MEMBRANE') et TE0539 (éléments X-FEM). Toutefois, dans
+      le cas des grilles, le stockage est toujours effectué de manière
+      symétrique triangulaire inférieur, même quand la matrice ne l'est pas, ce
+      qui peut conduire à de sérieux problèmes de convergence le cas échéant.
+      On n'y fait donc plus appel à NMTSTM mais on décide d'office que la matrice
+      est symétrique. Pour les éléments X-FEM, la fonctionnalité est interdite au
+      stade actuelle du développement : on informe du changement de NMTSTM dans
+      un commentaire. Quant à NMTSTM, on la modifie pour tenir compte du fait qu'il
+      s'agit de grandes déformations 'SIMO_MIEHE' et d'une loi plastique ou pas.
+
+      Pour les autres éléments qui supportent les grandes déformations 'SIMO_MIEHE',
+      rien n'est fait : pour la modélisation à gradients de variables internes,
+      on ne calcule pas de matrice tangente ; pour les éléments quasi-incompressibles,
+      il reste à construire la partie supérieure de la matrice (une évolution future).
+
+      Pour permettre la symétrisation de la matrice tangente à la demande de
+      l'utilisateur, on ajoute l'option 'SYME_MDNS_R' dans le catalogues de l'élément
+      MEDPTR6 qui, visiblement, avait été oublié.
+
+      La validation est en fait assurée par tous les tests qui utilisent 'SIMO_MIEHE'
+      et les éléments standard. Le cas-test SSNV103D a été modifié pour forcer la
+      symétrisation par SOLVEUR = _F(SYME = 'OUI') car il y a combinaison des matrices,
+      ce qui n'existe actuellement que pour les matrices symétriques.
+
+
+      BUG NON REFERENCE:
+      Dans la routine NMTSTM, on appelait les matrices tangentes en mode lecture
+      alors qu'on y écrivait (JEVECH 'L' au lieu de 'E'). Conséquences potentielles ?
+
+
+
+      Code source impacté :
+        Modification: nmtstm.f, te0100.f, te0139.f, te0431.f, te0539.f
+                      medptr6.cata
+
+      Conflit de notation : te0139.f     (JP)       --> DENOTATION
+                            te0431.f     (JP)       --> DENOTATION
+                            medptr6.cata (JP)       --> DENOTATION
+                            SDNV103D     (REZETTE)  --> NON RESTITUE ICI
+
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_U : U4.51.11-A
+       EXPL_ : Rajouter une remarque au paragraphe 3.1.3
+   VALIDATION
+     SDNV103D
+
+------------------------------------------------------------------------------
+RESTITUTION HORS AREX
+   NB_JOURS_TRAV  : 10
+   INTERET_UTILISATEUR : NON
+   FONCTIONNALITE
+      Développement de routines qui offrent des facilités pour développer des
+      lois en grandes déformations de type 'SIMO_MIEHE', avec une application
+      à la loi de 'ROUSSELIER' locale.
+
+   DETAILS
+      La programmation a été modifiée pour mieux distinguer ce qui relève des
+      grandes déformations (Simo - Miehe) de ce qui est spécifique a la loi
+      de Rousselier.
+
+      Pour la partie relative aux grandes déformations, on a introduit 4 routines
+      (méthodes) et un common qui regroupe les differents attributs à mettre en
+      commun :
+        LCSMIN : initialisation
+        LCSMCI : calcul des grandeurs cinématiques
+        LCSMCO : calcul des contraintes à partir de la déformation thermo-élastique
+        LCSMTG : calcul des dérivees par rapport à une variation de la déformation
+
+      Pour la partie relative à la loi de Rousselier, on a modifié la programmation
+      pour revenir à un stockage des tenseurs symetriques sous la forme d'un vecteur
+      à 6 composantes avec racines de 2 sur les termes extra-diagonaux.
+      En outre, certains termes de la matrice tangente ont vu leur expression
+      simplifiée, tout en conduisant aux mêmes résultats.
+
+      Ces facilités sont également employées dans la loi de Rousselier non locale
+      pour la partie mécanique (mais pas encore pour la partie liée à la plasticité
+      non locale).
+
+      Le parametre COMPOR est supprimé de l'interface de LCROLO car il ne sert pas.
+
+      Code source impacté :
+        Ajout:        lcsmin.f, lcsmci.f, lcsmco.f, lcsmtg.f
+        Modification: nmcomp.f, lcrolo.f, lcroma.f, lcrofg.f, lcrofs.f,
+                      lcroy1.f, lcroy2.f, lcroyi.f, lcrotg.f, lcronl.f
+
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : OUI
+      DOC_D : D6.00.01
+        EXPL_ : Mention des routines utilitaires LCSM*
+   VALIDATION :
+      SSNP122A, SSNV147I
+      et tous les cas-test existants de 'ROUSSELIER' avec 'SIMO_MIEHE'
+
+------------------------------------------------------------------------------
+RESTITUTION HORS AREX
+   NB_JOURS_TRAV  : 10
+   INTERET_UTILISATEUR : OUI
+   FONCTIONNALITE
+      Evolutions du superviseur pour piloter GMSH :
+      1. Il est dorénavant possible de mailler des arcs de cercle :
+           C = sup_gmsh.Circle(Point_initial, Point_centre, Point_final)
+         La portion angulaire doit être strictement inférieure à 180° (c'est
+         une restriction de Gmsh, pas du superviseur).
+         Par ailleurs, le cercle possède toutes les propriétés des lignes (Line).
+
+      2. Lors de la déclaration d'un Physical, on peut maintenant renseigner des
+         listes d'objets géométriques :
+           avant -> mesh.Physical('GMA',obj1,obj2,obj3,obj4,...)
+           après -> mesh.Physical('GMA',obj1,[obj2,obj3],obj4,...)
+
+      3. On peut maintenant réaliser des maillages volumiques qui s'appuient sur
+         des surfaces (classe Volume).
+
+      4. Comme Gmsh le permet à nouveau, on peut demander depuis le superviseur
+         à ce que le maillage soit quadratique (mais dans ce cas, tous les éléments
+         sont quadratiques, une autre restriction de Gmsh).
+           m = sup_gmsh.Mesh(order=2)
+         Par défaut, on réalise un maillage linéaire (order=1).
+
+      5. Le nom d'un physical (la chaîne 'GMA' dans l'exemple précédent) est transmis
+         à Gmsh, ce qui permet de le retrouver sous ce même nom dans la liste des
+         physicals lorsqu'on lance Gmsh en interactif.
+
+      6. La méthode Translate est disponible pour les volumes. Son interface change :
+         au lieu de fournir un vecteur numpy [x,y,z], on fournit directement x,y et z
+         comme paramètres de la méthode.
+
+   DETAILS
+      Les classes sont documentées directement dans le source.
+      Code source impacté :
+        Modification: sup_gmsh.py
+
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+
+------------------------------------------------------------------------------
+REALISATION EL 2005-075
+   NB_JOURS_TRAV  : 5
+   INTERET_UTILISATEUR : OUI
+   TITRE : PRE_GMSH
+   FONCTIONNALITE
+      Lecture des éléments quadratiques issus de GMSH.
+      On sait lire les SEG3, TRIA6, QUAD8, TETRA10, PENTA15, PYRAM13 et HEXA20.
+
+      En fait, GMSH crée les éléments SEG3, TRIA6, QUAD9, TETRA10, PENTA18, PYRAM14
+      et HEXA27 en insérant des noeuds aux centres des faces carrées et au centre
+      du cube le cas échéant. L'opération de transformation du maillage
+        QUAD9   -> QUAD8
+        PENTA18 -> PENTA15
+        PYRAM14 -> PYRAM13
+        HEXA27  -> HEXA20
+      est effectuée directement au sein de la commande PRE_GMSH car certains des
+      éléments produits par GMSH (PENTA18, PYRAM14) n'existent pas dans Aster.
+      Il y a donc aussi suppression de certains noeuds produits par GMSH.
+
+      Il a fallu également prendre garde à la numérotation des noeuds milieux
+      qui n'est pas identique dans GMSH et Aster.
+
+   DETAILS
+      Une table de correspondance des noeuds GMSH <-> Aster pour chaque type
+      de maille a été introduite dans la routine INIGMS.
+
+      Il a fallu également gérer la problématique des noeuds orphelins (ceux
+      qui disparaissent lors de la transformation des mailles). On a fait le
+      choix de les supprimer du maillage : ils n'apparaissent donc pas dans la
+      liste des noeuds et coordonnées.
+
+      Cette suppression a soulevé une difficulté informatique. Il faut lire la
+      connectivité de toutes les mailles du maillage pour repérer les noeuds à
+      supprimer. Or, les numéros des noeuds ne sont pas consécutifs dans GMSH.
+      Du coup, on a opté pour la performance au détriment de la mémoire : on
+      a créé un (trop) grand tableau dont la taille est le numéro du plus grand
+      noeud de GMSH. Accéder ou modifier l'information qu'un noeud de numéro N
+      doit être supprimé se fait en accédant à la composante N de ce tableau.
+      On aurait pu dimensionner ce tableau au plus juste (le nombre de noeuds du
+      maillage) mais l'accès à l'information propre au noeud de numéro N en aurait
+      été rendue complexe (tri, accès par dichotomie, et ce pour chaque noeud de
+      chaque maille !).
+
+      Il faut donc espérer que les numéros des noeuds dans GMSH ne sont pas des
+      labels. C'est vrai si le caractère non consécutif des noeuds est ié à la
+      sauvegarde de certaines parties du maillage (les physicals) mais pas tout
+      le maillage. Auquel cas le numéro du plus grand noeud serait égal au nombre
+      total de noeud du maillage complet, un nombre compatible avec l'espace
+      mémoire alloué à Aster.
+
+      Les routines impactées sont :
+        inigms.f       tableau numero Aster <-> numero Gmsh
+        gmlneu.f       initialisation du tableau des noeuds orphelins
+        gmeneu.f       ecriture des noeuds qui ne sont pas orphelins
+        gmlelt.f       reperage des noeuds orphelins
+        gmeelt.f       ecriture des mailles avec la nouvelle numerotation
+        pregms.f       passage des arguments necessaires, lecture des elements
+                         avant l'ecriture des noeuds
+
+      La validation pour les éléments quadratiques proprement dits n'est pas
+      assurée car le test ZZZZ176A ne s'occupe que des éléments linéaires. Il
+      procède en sommant les coordonnées des noeuds du maillage, ce qui ne teste
+      pas la lecture des mailles, ie l'objet de notre modification. Notons d'ailleurs
+      qu'il a fallu modifier la somme de contrôle du test car des noeuds orphelins
+      subsistaient dans le maillage (somme des coordonnées égales à 201.0) qui ne
+      sont dorénavant plus répercutés à la lecture par PRE_GMSH.
+
+      On suggère l'idée d'un cas-test plus pertinent fondé sur le test des coordonnées
+      des points de Gauss (qui reflètent également l'ordre des noeuds).
+
+      Code source impacté :
+        Modification: inigms.f, gmlneu.f, gmeneu.f, gmlelt.f, gmeelt.f,
+                      pregms.f
+
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION :
+      ZZZZ176A
+
+
+-----------------------------------------------------------------------
+--- AUTEUR granet S.GRANET   DATE  le 09/05/2005 a 14:14:29
+
+--------------------------------------------------------------------------------
+CORRECTION AL 2004-276
+   NB_JOURS_TRAV  : 2.
+   INTERET_UTILISATEUR : NON
+   TITRE  Probleme dans la modélisation 3D_THVD
+   FONCTIONNALITE
+     Il y a une erreure dans le catalogue gener_me3g33.cata qui intervient
+     lors de l'initialisation des contraintes (il y a un H21 en trop).
+     On modifie le catalogue. Pour valider cette modélisation on rend un cas
+     test à solution analytique (wtnv127a).
+     On en profite également pour générer ce meme cas test analytique mais
+     pour D_PLAN_THV (wtnp115a qui correspond au wtnp100a de la V6)
+
+     catalogue modifié :
+        gener_me3g33.cata
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  OUI
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : OUI
+      DOC_V : V7.31.127
+         EXPL_ : Doc V : désaturation d'un milieu poreux sans air sur cellule unitaire(modélisation 3D_THV)
+      DOC_V : V7.32.115
+         EXPL_ : Doc V : désaturation d'un milieu poreux sans air sur cellule unitaire(modélisation D_PLAN_THV)
+   VALIDATION
+      Passage de  wtnp115a, wtnv127a
+
+
+-----------------------------------------------------------------------
+--- AUTEUR lebouvie F.LEBOUVIER   DATE  le 09/05/2005 a 13:38:38
+
+------------------------------------------------------------------------------
+REALISATION EL 2004-212
+   NB_JOURS_TRAV  : 8.5
+   POUR_LE_COMPTE_DE : E. GALENNE
+   Restitution partielle
+   INTERET_UTILISATEUR : OUI
+   TITRE : MACR_ASCOUF_MAIL / Extension du domaine Rm/e
+   FONCTIONNALITE : MACR_ASCOUF_MAIL
+   DETAILS :
+   Objectifs
+   ---------
+   La macro-commande MACR_ASCOUF_MAIL est aujourd'hui largement utilisée par les
+   différentes unités d'EDF pour mailler rapidement des tubes/coudes fissurés
+   ou présentant une sous-épaisseur. La gamme de géométrie autorisée est
+   aujourd'hui limitée à des valeurs de Rayon moyen / Epaisseur comprises entre
+   5 et 12. Ce qui correspond à la majorité des géométries rencontrées dans le
+   CPP et le CSP des REP.
+   L'objectif de cette évolution est d'étendre cette gamme jusqu'à une valeur
+   de Rm/e de 50 afin de pouvoir utiliser cette macro-commande pour du matériel
+   de l'îlot conventionnel.
+
+   Modifications
+   -------------
+   Les travaux effectués dans le cadre de cette restitution partielle concernent
+   l'extension du domaine de validité dans le cas ou le défaut est de type
+   sous-épaisseur, et unique. Les principales modifications effectuées dans la
+   procédure ascouf_ssep_mono_v1.datg sont les suivantes:
+   - Le nombre d'éléments dans le coude, dans le sens circonférentiel fixé en dur
+     à 20 dans la procédure a été levée pour Rm/e > 12, elle est égale désormais
+     au nombre d'éléments défini dans le bloc de sous-épaisseur.
+   - le nombre d'éléments dans le coude, dans le sens longitudinal (suivant la
+     courbure) est défini en fonction de Rm/e :
+      * 12 < Rm/e <= 22 un élément tous les 5°
+      * 22 < Rm/e <= 36 un élément tous les 3°
+      * 36 < Rm/e <= 50 un élément tous les 2.5°
+   - Dans le cas ou le défaut est axisymétrique, la taille du bloc suivant z
+     de la sous-épaisseur est multiplié par Rm/e/12*2.
+   - Le discrétisation (nombre d'éléments et raffinnement) du maillage des tubes P1
+     et P2 n'est plus fixé en dur dans la procédure, mais varie en fonction du
+     rapport Rm/e, puisque la longueur des tubes P1 et P2 doit-être supérieure à la longueur
+     [=3/2(Rm**3/e)**.0.5] d'amortissement de l'onde de flexion se propageant
+     depuis la partie coude.
+
+   Remarque:
+   Ces modifications n'ont pas d'impact sur les coudes dont le rapport Rm/e < 12.
+
+   Validation
+   ----------
+   Pour mettre au point de la procédure GIBI "ascouf_ssep_mono_v1.datg" six tests,
+   avec des rapports Rm/e = 21,35 et 47, basés sur les deux cas-tests de référence
+   suivants ont été créés :
+    - ascou02 : Coude élancé avec sous-épaisseur axisymétrique,
+                calcul élastique linéaire
+    - ascou03 : Coude élancé avec sous épaisseur elliptique,
+                calcul élastique linéaire
+
+   Les vérifications suivantes ont été effectuées :
+    - Maillage: analyse avec IDEAS de la qualité des mailles volumiques
+                (Distortion, étirement, bords libres)
+    - Résultat : analyse des déplacements et des contraintes
+
+   Les 2 cas-tests restitués sont les suivants:
+     - ascou20a (basé sur le cas-test ascou02a) Rm/e = 47,
+     - ascou21a (basé sur le cas-test ascou03a) Rm/e = 47,
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_U : U4.CF.10
+       EXPL_ : Macro commande MACR_ASCOU_MAIL
+     DOC_V : V1.01.209
+       EXPL_ : Description du cas-test ascou20a
+     DOC_V : V1.01.210
+       EXPL_ : Description du cas-test ascou21a
+   VALIDATION : cas-tests ascou20a, ascou21a
+
+
+
+-----------------------------------------------------------------------
+--- AUTEUR mabbas M.ABBAS   DATE  le 09/05/2005 a 12:59:16
+
+-----------------------------------------------------------------------
+CORRECTION AL 2002-339
+   NB_JOURS_TRAV  : 1
+   INTERET_UTILISATEUR : OUI
+   TITRE :  CONTACT et elements quadratiques avec noeuds au quart
+   FONCTIONNALITE
+     Un petit sujet de réflexion pour passer l'été:
+     quand on fait du contact en quadratique on lie
+     les noeuds milieux aux noeuds sommets.
+     La question est : est-ce légitime quand on utilise des
+     éléments avec noeuds au quart?
+     Que valent alors les résultats?
+     Sinon, quelle approximation utiliser?
+     Faire attention au fait que sur ces éléments, seuls
+     les noeuds jouxtant le fond de fissure sont au quart.
+   DETAILS
+     Solution préconisée : faire du contact sur les lèvres de la fissure à
+     l'exclusion de la zone BARSOUM. Cette AL se transforme donc en ED pour
+
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   OUI
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_U : U2.05.01
+       EXPL_ : Domaine d'application des opérateurs de mécanique de
+               la rupture du Code_Aster et conseils d'utilisation. Precisez
+               l'usage avec contact et noeuds au quart.
+
+     DOC_U : U2.04.04
+       EXPL_ : Precisez l'usage du contact avec noeuds au quart.
+   VALIDATION
+     Etude associee a la fiche
+
+-----------------------------------------------------------------------
+REALISATION EL 2005-068
+   NB_JOURS_TRAV  : 3
+   INTERET_UTILISATEUR : OUI
+   TITRE : AOM - DYNA_NON_LINE ET CONTACT
+   FONCTIONNALITE
+Cette étude traite du lâcher libre d'un bloc pesant sur une table
+par rotation autour d'un de ses coins bas et de chocs successifs.
+
+Dans cette étude, il y a plusieurs fichiers de commande :
+1 en sta 7.3 : test_rocking_block.comm
+1 en sta 7.4 : test_rocking_block_V74.comm
+1 en new 8.0.x : test_rocking_block_V8.comm
+
+il y a plusieurs fichiers de message :
+1 en old 7.3 : test_rocking_block.mess
+1 en sta 7.4 : test_rocking_block_V74.mess
+1 en new 8.0.x : test_rocking_block_V8.mess
+
+tandis qu'en 7.3, le fichier .comm marche : tous les pas convergent, le premier impact ayant lieu à t = 0.05564 s sans que la convergence soit très affectée,
+ni de même à t = 0.05569 s,
+
+en 7.4 et 8.0.x, à l'instant 0.05569 s le résidu reste constant pendant 20 itérations.
+Ce pas semble correspondre à la collison du bloc sur la table ?
+
+   DETAILS
+Après analyse, j'ai découvert un bug dans le contact.
+
+Situation:
+Modeles 2D purs avec contact/frottement de type lagrangien
+Modeles impliquant peu de noeuds en contact (probleme non regulier)
+
+Explication du bug:
+Une mauvaise initialisation du vecteur des forces de contact dans le
+cas ou aucun contact n'etait actif provoquait un defaut dans
+l'evaluation du residu.
+
+Correction du bug:
+Dans fro2gd, le vecteur ATMU contient les forces nodales de contact.
+Ce vecteur est initialise a zero puis est rempli avec le calcul effectif
+ de ces forces dans la routine cfatmu.
+Si aucune liaison n'est activee, l'initialisation de ATMU n'etait pas
+faite et on recuperait les anciennes valeurs (a l'iteration de Newton
+precedente). Residu faux.
+
+   RESU_FAUX_VERSION_EXPLOITATION    :   OUI   DEPUIS : 7.3.12
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   OUI   DEPUIS : 8.0.0
+   RESTITUTION_VERSION_EXPLOITATION  :   OUI
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+     Liste cas-test contact
+     FV a l'intention de restituer cette etude comme cas-test.
+
+
+-----------------------------------------------------------------------
+CORRECTION AL 2005-075
+   NB_JOURS_TRAV  : 0
+   INTERET_UTILISATEUR : NON
+   TITRE : DYNA_NON_LINE et POURSUITE
+   FONCTIONNALITE
+     Le calcul concerné est fait avec DYNA_NON_LINE et un pas de temps de
+     5 par seconde. On définit le CONTACT en CONTROLE avec une
+     réactualisation de 1 ou 2 par pas de temps.
+     Les jobs n° 179712 et 179707 correspondent respectivement à ces deux
+     cas.
+     Le calcul avec 1 tourne et celui avec deux plante en erreur numérique.
+   DETAILS
+     Bug generique (voir fiche AL2005-091)
+
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   OUI
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+     Etude associee a la fiche
+
+-----------------------------------------------------------------------
+CORRECTION AL 2005-076
+   NB_JOURS_TRAV  : 0
+   INTERET_UTILISATEUR : NON
+   TITRE : CONTACT
+   FONCTIONNALITE
+     en complément de l'AL (2005-075) signalée ce matin le fichier associé
+     correspond au même calcul lancé avec réactualistion AUTOMATIQUE
+     erreur numérique
+   DETAILS
+     Idem fiche AL2005-075
+     Bug generique (voir fiche AL2005-091)
+
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   OUI
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+     Etude associee a la fiche
+
+-----------------------------------------------------------------------
+CORRECTION AL 2005-133
+   NB_JOURS_TRAV  : 0
+   INTERET_UTILISATEUR : NON
+   TITRE :  Plantage contact
+   FONCTIONNALITE
+     J'obtiens un ENDED ERR_NUMERIQUE pour la simulation ci-jointe.
+      <F> <ASTER  7. 4. 3 07/04/2005 >
+      <F> <STAT_NON_LINE> <"FLOATING POINT EXCEPTION"> IL Y A PROBABLEMENT
+      UNE ERREUR  DANS LA PROGRAMMATION
+   DETAILS
+     Il y a effectivement un bug dans le contact
+     Idem fiche AL2005-075 et AL2005-076
+     Bug generique (voir fiche AL2005-091)
+     NB: l'etude ne passe pas sans contact (pivot nul)
+
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   OUI
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+     Etude associee a la fiche
+
+-----------------------------------------------------------------------
+CORRECTION AL 2005-091
+   NB_JOURS_TRAV  : 6
+   INTERET_UTILISATEUR : OUI
+   TITRE :  CONTACT - Bug reactualisation geometrique
+   FONCTIONNALITE
+Depuis la version 7.3.23, la suppression d'un noeud esclave du contact
+ se fait exactement et non plus par l'introduction d'un grand jeu
+fictif.
+Dans les algos de contact AVEC frottement, la procedure de recuperation
+ de l'info apres réactualisation géométrique est bugguée et ne
+réinitialise pas certains vecteurs. Ce qui provoque des plantages du
+style division par zéro et, probablement, des résultats faux dans
+certaines situations.
+
+   DETAILS
+     Il y a un bug dans le contact
+     L'introduction d'un vecteur variable des noeuds esclaves en contact
+n'est pas bien pris en compte. Depuis la >7.3.23<, le nombre de
+noeuds esclaves peut varier d'un pas de temps a l'autre ou apres
+une reactualisation geometrique.
+En effet, si on detecte une projection hors de la maille (gere par
+le mot-clef 'TOLE_PROJ_EXT') ou si on active l'appariement
+symetrique ('APPARIEMENT=MAIT_ESCL_SYME'), il peut arriver que le
+nombre effectif de noeuds esclave varie.
+Dans ce cas, soit le calcul passe avec _probablement_ un resultat faux
+sur l'etat d'adherence, soit il plante en erreur numerique quand
+l'algo de contact/frottement tape au mauvais endroit dans le vecteur
+et tente une division par zero (c'est le cas de toutes les fiches AL
+emises a ce sujet)
+
+Circonstances de declenchement du bug:
+1/ Maillage peu adapte avec une distorsion importante de la finesse
+relative des surfaces maitres et esclaves ou des surfaces crees
+_a maxima_
+2/ Glissement relatif des deux surfaces tres important
+Ces deux cas relevent du reglage de TOLE_PROJ_EXT, on desactive le bug
+si on autorise la projection "infinie" (TOLE_PROJ_EXT=1E15).
+
+Correction du bug:
+Au lieu de supprimer le noeud esclave, on le marque dans le vecteur
+ APMEMO.
+Ce vecteur, de longueur egale au nombre total de noeuds des surfaces
+en contact (noeuds maitres ET esclaves) est modifie.
+
+POSNO est le noeud contenu dans le vecteur DEFICO.CONTNO
+
+APMEMO = RESOCO(1:14)//'.APMEMO'
+CALL JEVEUO(APMEMO,'L',JAPMEM)
+ZI(JAPMEM+4*(POSNO-1)) = IMARQ
+
+IMARQ vaut 0 si POSNO est un noeud maitre
+IMARQ vaut 1 si POSNO est un noeud esclave autorise
+IMARQ vaut -1 si POSNO est un noeud esclave interdit
+ -> FAIT PARTIE DE SANS_GROUP_NO OU SANS_NOEUD
+IMARQ vaut -2 si POSNO est un noeud esclave interdit
+ -> PIVOT NUL DANS APPARIEMENT SYMETRIQUE
+IMARQ vaut -3 si POSNO est un noeud esclave interdit
+ -> PROJECTION HORS DE LA MAILLE INTERDITE
+
+On modifie cfsupm, chmano et cfelsn pour modifier ce vecteur
+au moment de l'appariement.
+
+Dans les algorithmes de contact, quand on verifie la condition de
+non-penetration, on verifie pralablement que cette liaison peut
+etre activee via la fonction cfexcl
+
+C ----------------------------------------------------------------------
+C ROUTINE APPELEE PAR : ALGOS DE CONTACT/FROTTEMENT
+C ----------------------------------------------------------------------
+C
+C ON VERIFIE QUE LE NOEUD ESCLAVE N'EST PAS EXCLU DE L'APPARIEMENT
+C
+C IN  JAPMEM : POINTEUR VERS RESOCO(1:14)//'.APMEMO'
+C IN  JAPPAR : POINTEUR VERS RESOCO(1:14)//'.APPARI'
+C IN  IESCL  : NUMERO DU NOEUD ESCLAVE DANS LE TABLEAU D'APPARIEMENT
+C RETOUR     : SI CFEXCL=.TRUE. CE NOEUD DOIT ETRE EXCLU
+C              SINON, LE NOEUD EST BON
+
+On modifie en consequence toutes les routines du contact:
+algocl,algoco,algocp,algogl,fro2gd,frogdp,frolgd,fropgd
+
+
+On en profite pour corriger un bug dans frolgd qui provoque un plantage
+lors des affichages si INFO = 2.
+
+C --- LA LIAISON II N'ETAIT PAS DEJA ACTIVE -> ON L'ACTIVE
+                   IF (.NOT.TROUAC) THEN
+                     POSIT = NBLIAC + LLF + LLF1 + LLF2 + 1
+                     CALL CFTABL(INDIC,NBLIAC,AJLIAI,SPLIAI,LLF,LLF1,
+     &                          LLF2,RESOCO,TYPEAJ,POSIT,II,TYPEC0)
+                     IF (NIV.GE.2) THEN
+      --------------------------------------* (II a la place de LLIAC)
+                       CALL CFIMP2(IFM,NOMA,II,TYPEC0,TYPEAJ,'ALG',
+     &                             AJEU,JAPPAR,JNOCO,JMACO)
+                     END IF
+                   ENDIF
+
+
+
+   RESU_FAUX_VERSION_EXPLOITATION    :   OUI   DEPUIS : 7.3.23
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   OUI   DEPUIS : 8.0.0
+   RESTITUTION_VERSION_EXPLOITATION  :   OUI
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_D : D4.06.14
+       EXPL_ : Modif de la SD de contact (modif de RESOCO.APMEMO)
+    VALIDATION
+      Voir fiches 2005-075/2005-075/2005-133
+      + liste complete contact
+
+-----------------------------------------------------------------------
+CORRECTION AL 2005-138
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : OUI
+   TITRE : CONTACT ssnv505b
+   FONCTIONNALITE
+Avec la version NEW8.0.17 compilée sous linux Rocks, le tests ssnv505b s'arrete avec le message suivant :
+INSTANT DE CALCUL :  3.477881622E-01
+---------------------------------------------------------------------
+|   ITERATIONS   |     RESIDU     |     RESIDU     |     OPTION     |
+|                |    RELATIF     |     ABSOLU     |   ASSEMBLAGE   |
+|                | RESI_GLOB_RELA | RESI_GLOB_MAXI |                |
+---------------------------------------------------------------------
+
+                 ECHEC DANS LE TRAITEMENT DU CONTACT
+                      SUBDIVISER LE PAS DE TEMPS
+
+   CHAMP STOCKE : VALE_CONT        INSTANT :  3.47788E-01  NUMERO D'ORDRE :     9
+   CHAMP STOCKE : DEPL             INSTANT :  3.47788E-01  NUMERO D'ORDRE :     9
+   CHAMP STOCKE : SIEF_ELGA        INSTANT :  3.47788E-01  NUMERO D'ORDRE :     9
+   CHAMP STOCKE : VARI_ELGA        INSTANT :  3.47788E-01  NUMERO D'ORDRE :     9
+      <ASTER  8. 0.17 21/04/2005 >
+      <STAT_NON_LINE>
+      <OP0070> ARRET PAR ECHEC DE TRAITEMENT DU CONTACT
+     Il fonctionne correctement sur clp50a8
+
+   DETAILS
+     Meme bug qu'AL2005-091.
+     Le declenchement apparement aleatoire de ce bug (ne se declenche que
+     sur clpaster) est explicable. La difference relative de precision des
+     machines fait qu'un noeud esclave peut etre exclu (parce qu'il se
+     projette en dehors de la maille maitre) ou pas.
+     Si le noeud esclave est exclu sur une machine, on peut "tomber" alors
+     dans le bug AL2005-091.
+
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   OUI
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+     ssnv505b
+
+
+-----------------------------------------------------------------------
+--- AUTEUR mjbhhpe J.L.FLEJOU   DATE  le 09/05/2005 a 17:01:13
+
+-----------------------------------------------------------------------
+CORRECTION AL 2005-141
+   NB_JOURS_TRAV  : 0.25
+   INTERET_UTILISATEUR : NON
+   TITRE : AFFE_CARA_ELEM / RIGI_PARA_SOL
+   FONCTIONNALITE : NEW8.0.17 les cas tests sdls108a et zzzz115a s'arretent en ERREUR
+   DETAILS
+     Lors de ma restitution précédente, en 8.0.17, j'avais ajouté dans le catalogue de
+     AFFE_CARA_ELEM un nouveau mot clé sous RIGI_PARA_SOL : GROUP_MA_SEG2. Ce mot clé
+     étant incompatible avec GROUP_MA_POI1, j'avais donc ajouté la règle
+     UN_PARMI('GROUP_MA_POI1','GROUP_MA_SEG2'). Or on peut très bien utiliser
+     RIGI_PARA_SOL sans aucun des 2 mots clés, Cf les cas tests sdls108a et zzzz115a.
+     La règle UN_PARMI est remplacé par EXCLUS('GROUP_MA_POI1','GROUP_MA_SEG2')
+
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+      passage des cas tests sdls108a et zzzz115a sur clayastr
+
+
+
+-----------------------------------------------------------------------
+--- AUTEUR rezette C.REZETTE   DATE  le 09/05/2005 a 14:26:49
+
+------------------------------------------------------------------------------
+REALISATION EL 2005-003
+   NB_JOURS_TRAV  : 20.5
+   POUR_LE_COMPTE_DE : S.GENIAUT
+     Restitution partielle
+   INTERET_UTILISATEUR : OUI
+   TITRE : POST-TRAITEMENT POUR LA METHODE X-FEM
+   FONCTIONNALITE : VISUALISATION DU MAILLAGE FISSURE
+   DETAILS :
+
+   Objectifs
+   ---------
+   Cette fiche fait l'objet de 2 réalisations :
+   - création d'une nouvelle commande POST_MAIL_XFEM permettant de générer
+     un maillage fissuré mettant en oeuvre les sous-éléments utilisés lors
+     l'intégration. Ce maillage est uniquement destiné au post-traitement,
+     en aucun cas il doit être utilisé pour le calcul.
+   - création d'une nouvelle commande POST_CHAM_XFEM dédiée au post-traitement
+     permettant de créer une SD RESULTAT contenant les champs de déplacements
+     et de contraintes sur le maillage fissuré, produit par POST_MAIL_XFEM.
+
+     La restitution s'effectuera en 2 étapes. La première restitution présentée
+     ci-dessous porte sur les commandes POST_MAIL_XFEM et  POST_CHAM_XFEM
+     (restreinte à l'option 'DEPL').
+
+    1-Opérateur POST_MAIL_XFEM
+    ==========================
+       Commande:
+       --------
+       MA2 = POST_MAIL_XFEM ( MODELE = MO ),
+
+        avec: MO  : modèle X-FEM issu de MODI_MODELE_XFEM
+	      MA2 : maillage fissuré
+	
+       Terminologie:
+       ------------
+        - mailles X-FEM :
+            mailles volumiques du maillage initial qui sont soit
+            traversées par la fissure , soit adjacentes aux mailles
+            traversées par la fissure.
+        - noeuds d'intersection :
+            noeuds du plan de fissure utilisés pour le sous-découpage
+            des mailles X-FEM et ne faisant pas partie des noeuds
+	    du maillage initial.
+        - SD MAILLAGE XFEM : SD MAILLAGE relative au nouveau maillage.
+
+       Précisions sur la construction du maillage:
+       ------------------------------------------
+       Afin de visualiser un maillage se conformant à la géométrie de la fissure,
+       il est nécessaire d'éclater les mailles XFEM en sous-éléments.
+       Ce principe de sous-découpage est déjà utilisé pour l'intégration
+       numérique,les informations permettant de décrire ces sous-éléments
+       (coordonnées des noeuds d'intersection et connectivités des sous-élements)
+       sont évaluées en début de calcul dans l'opérateur MODI_MODELE_XFEM et sont
+       stockées dans la base globale.
+       Ces informations sont reprises pour la construction de la SD MAILLAGE XFEM:
+       de la manière suivante:
+       - Mailles non XFEM:
+          Les mailles volumiques non XFEM sont linéarisées (HEXA20 --> HEXA8).
+       - Mailles XFEM :
+          on les remplace par les sous-élements associés (TETRA4) . Les noeuds
+          d'intersection situé dans le plan de la fissure sont doublés. Ils ont été
+          nommés par convention NXPxxxx (pour les noeuds situés au-dessus de la
+          fissure) et NXMxxxx (pour les noeuds situés en-dessous). Les nouvelles
+          mailles (TETRA) ont été nommées MXxxxx.
+	
+
+    2-Opérateur POST_CHAM_XFEM
+    ==========================
+       Commande:
+       --------
+       RESU  =  POST_CHAM_XFEM (  MAILLAGE = MA2 ,
+                                  MODELE   = MO,
+			          RESULTAT = RESUCO,
+			          NOM_CHAM = 'DEPL' , )
+
+
+        avec: MA2 : maillage X-FEM issu de POST_MAIL_XFEM
+	      MO  : modèle X-FEM issu de MODI_MODELE_XFEM
+	      RESUCO : nom de la SD RESULTAT créée par STAT_NON_LINE
+	      NOM_CHAM : nom du champ à post-traiter : 'DEPL'
+
+        Précision sur la construction du champ déplacement:
+	--------------------------------------------------
+	Le déplacement aux noeuds du maillage X-FEM est défini par:
+        - Pour un noeud classique du maillage, le déplacement est directement issu
+          des composantes du champ déplacement du maillage initial.
+        - Pour un noeud enrichi du maillage initial, i.e. un noeud sommet d'une maille X-FEM,
+          le déplacement s'écrit:
+                     depx  =   dcx  +/-  h1x
+	             depy  =   dcy  +/-  h1y
+	             depz  =   dcz  +/-  h1z
+	     avec : dcx,dcy,dcz les DDLS classiques X-FEM
+	         h1x,h1y,h1z les DDLS Heavyside X-FEM
+		 +/- : + si le noeud est au-dessus de la fissure
+		       - si le noeud est en-dessous de la fissure
+       - Pour un noeud d'intersection, il faut utiliser l'approximation par les fonctions
+         de forme de l'élément X-FEM parent, le déplacement s'écrit:
+	             depx  =  ff(i)(x) [ dcx(i) +/- h1x(i) ] , i=1,nnop
+                     depy  =  ff(i)(x) [ dcx(i) +/- h1x(i) ] , i=1,nnop
+                     depz  =  ff(i)(x) [ dcx(i) +/- h1x(i) ] , i=1,nnop
+             avec : nnop le nombre de noeuds de l'élément X-FEM parent portant les ddls de
+                          déplacement
+	            ff(i)(x) la fonction de forme associé au noeud i de l'élément X-FEM
+                             évaluée en x
+		    +/- :  + si le noeud est au-dessus de la fissure
+		           - si le noeud est en-dessous de la fissure
+
+
+
+               O-----------0              0: noeud classique
+	       |           |              1: noeud enrichi
+	       |           |              2: noeud d'intersection
+	       |           | \
+	       |           |  \
+	       O-----------0    maille non XFEM
+	       |           |
+	       |           | -- maille XFEM non fissurée
+	       |           |
+	       |           |    maille XFEM fissurée
+               1-----------1  /       	
+	       |           | /
+	_______2___________2_________  <-- fissure
+	       |           |
+	       |           |
+ 	       1-----------1
+	       |           |
+	       |           |
+	       |           |
+	       |           |
+	       O-----------0
+	
+
+
+      Source ajoutée  : op0187.f (POST_MAIL_XFEM), op0196.f (POST_CHAM_XFEM)
+                        te0515.f , xdel3d.f,
+      Catalogues modifiés :  post_cham_xfem.capy, post_mail_xfem.capy
+                             gener_me_xh.cata, grandeur_simple__.cata
+      Catalogue ajouté: depl_post_xfem.cata
+      Cas-tests modifiés: ssnv173a, ssnv173b, ssnv182a
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_U : U4.82.08
+       EXPL_ : OPERATEUR POST_MAIL_XFEM
+     DOC_U : U4.82.09
+       EXPL_ : OPERATEUR POST_CHAM_XFEM
+   VALIDATION : cas-tests ssnv173a, ssnv173b, ssnv182a
+
+------------------------------------------------------------------------------
+CORRECTION AL 2005-035
+   NB_JOURS_TRAV  : 7.5
+   POUR_LE_COMPTE_DE : M.ABBAS
+   INTERET_UTILISATEUR : OUI
+   TITRE : CONTACT - NOEUD_VOISIN
+   FONCTIONNALITE
+   DETAILS :
+   1 - DESCRIPTION DU PROBLEME
+       La possibilité de restreindre la recherche de voisinage dans
+     l'appariement (contact discret) n'a jamais été fonctionnelle. L'option
+     'NOEUD_VOISIN' n'était pas branchée correctement (voir cazoco.f)  depuis
+     au moins la version 5.3.19. En pratique, l'option NOEUD_BOUCLE (Option par
+     défaut dans le catalogue d'AFFE_CHAR_MECA) était systématiquement utilisée,
+     même lorsqu'on précisait NOEUD_VOISIN.
+       Les tests suivants utilisent (enfin, pensent l'utiliser) la fonction
+     NOEUD_VOISIN et sont cassés lorsqu'on rétablit le branchement:
+        sdnl111c             NOOK_TEST_RESU
+        sdnv103a             ERREUR_<F>
+        sdnv103b             ERREUR_<F>
+        sdnv103c             ARRET_ANORMAL
+        sdnv103d             ARRET_ANORMAL
+        ssna102a             ARRET_ANORMAL
+        ssna102b             NOOK_TEST_RESU
+        ssna102c             NOOK_TEST_RESU
+        ssna105a             NOOK_TEST_RESU
+        ssna111a             NOOK_TEST_RESU
+        ssnp121b             NOOK_TEST_RESU
+        ssnp121c             NOOK_TEST_RESU
+        ssnv104i             NOOK_TEST_RESU
+        ssnv127c             ARRET_ANORMAL
+        ssnv127d             ARRET_ANORMAL
+        ssnv167b             NOOK_TEST_RESU
+        ssnv167c             NOOK_TEST_RESU
+        ssnv505a             ARRET_ANORMAL
+        ssnv505b             NOOK_TEST_RESU
+        ssnv506a             NOOK_TEST_RESU
+        ssnv506b             NOOK_TEST_RESU
+   2 - ANALYSE
+         Une analyse au cas par cas des résultats a été effectuée. Plusieurs
+       essais on été réalisés (modification des valeurs de certains mots clés
+       REAC_GEOM, NB_REAC_GEOM, Subdivision du pas de temps, ...) pour
+       comprendre ce qui s'est passé et améliorer les résultats. La description des
+       essais et le bilan des analyses ont été décrits dans un fichier excel.
+   3 - MODIFICATIONS EFFECTUEES
+         Suite au branchement de l'option NOEUD VOISIN dans la routine cazoco.f,
+       et aux résultats des analyses, les modifications suivantes ont été
+       effectuées dans les cas-tests :
+       - L'option NOEUD_BOUCLE a été appliquée pour les cas-tests suivants:
+         sdnl111c,sdnv103a,sdnv103b,sdnv103c,sdnv103d,ssna102a,ssna102b,
+         ssna102c,ssna105a,ssnp121b,ssnp121c,ssnv104i,ssnv127c,ssnv127d,
+         ssnv505a,ssnv505b,ssnv506a,ssnv506b
+       - L'option NOEUD_VOISIN a été conservée pour 3 cas-tests, permettant
+         ainsi de disposer de cas-tests validant cette option.
+         ssna111a, ssnv167b, ssnv167c
+         Les valeurs de non-regression ont été réactualisées pour ces 3
+         cas-tests.
+
+   Source modifiée  : cazoco.f
+   Cas-tests modifiés :
+       sdnv103a,sdnv103b,sdnv103c,sdnv103d,ssna102a,ssna102b,ssna102c,ssna105a,
+       ssna111a,ssnp121b,ssnp121c,ssnv104i,ssnv127c,ssnv127d,ssnv167b,ssnv167c,
+       ssnv505a,ssnv505b,ssnv506a,ssnv506b,sdnl111c
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_R : R5.03.50
+       EXPL_ : Rappeler que l'option NOEUD_VOISIN doit etre prise avec
+               beaucoup de précautions
+     DOC_U : U4.44.01
+       EXPL_ : Rappeler que l'option NOEUD_VOISIN doit etre prise avec
+               beaucoup de précautions
+   VALIDATION : liste restreinte, cas-tests ci-dessous
+
+
+-----------------------------------------------------------------------
+--- AUTEUR smichel S.MICHEL-PONNELLE   DATE  le 09/05/2005 a 11:47:47
+
+-----------------------------------------------------------------------
+CORRECTION AL 2004-431
+   NB_JOURS_TRAV  : 0.8
+   INTERET_UTILISATEUR : OUI
+   TITRE couplage BETON_UMLV_FP /  ENDO_ISOT_BETON
+   FONCTIONNALITE
+   Dans le cadre du couplage entre BETON_UMLV et EIB, les paramètres de température,
+   de séchage et d'hydratation n'étaient pas passé comme argument de la loi EIB.
+   En conséquence, en présence de déformations liées à l'un de ces 3 phénomènes, on
+   n'utilisait pas la même déformation pour les 2 lois. En particulier, l'endommagement
+   était calculé à partir de la déformation totale, alors que dans ENDO_ISOT_BETON seum,
+   on considère que seule la déformation élastique crée de l'endommagement.
+
+   En ce qui concerne la question de la dépendance des paramètres matériaux à la
+   température, pas de problème, tout est cohérent dans les 2 lois puisque le RCVALA
+   est fait dans les 2 cas pour TEMP = 0.
+   DETAILS
+   On passe en argument les variables TM,TP,TREF,HYDRM,HYDRP lors des appels à la routine
+   lcldsb. Et pour la routine lceibt qui calcule des termes complémentaires à la matrice
+   tangente on transmet EPS-EPSth-EPSretrait au lieu de EPS
+
+   RESU_FAUX_VERSION_EXPLOITATION    :   OUI   DEPUIS : 7.2.6
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   OUI   DEPUIS : 7.2.6
+   RESTITUTION_VERSION_EXPLOITATION  :   OUI
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_V : V3.06.103
+       EXPL_ : ajout de la dilatation thermique dans toutes les modélisations
+             + ajout modélisation F
+   VALIDATION
+   On ajoute une modélisation F au cas-test ssla103 (qui valide les calculs de retrait)
+   en utilisant le couplage ENDO_ISOT_BETOB/BETON_UMLV_FP mais en désactivant le fluage
+   en prenant des paramètres matériaux fictifs pour BETON_UMLV_F. Pour être plus pertinent
+   (dilatation et non retrait), on rajoute de la dilatation thermique dans toutes
+   les modélisations de ce test.
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+ CASTEST AJOUT ascou20a                     lebouvie F.LEBOUVIER         81     81      0
+ CASTEST AJOUT ascou21a                     lebouvie F.LEBOUVIER         89     89      0
+ CASTEST AJOUT ssla103f                      smichel S.MICHEL-PONNELLE    208    208      0
+ CASTEST AJOUT ssnv157h                      gjbhhel E.LORENTZ          142    142      0
+ CASTEST AJOUT ssnv157i                      gjbhhel E.LORENTZ          142    142      0
+ CASTEST AJOUT ssnv157j                      gjbhhel E.LORENTZ          142    142      0
+ CASTEST AJOUT wtnp115a                       granet S.GRANET           276    276      0
+ CASTEST AJOUT wtnv127a                       granet S.GRANET           229    229      0
+ CASTEST MODIF sdld102a                      cibhhlv L.VIVAN            795     49      1
+ CASTEST MODIF sdld22a                       cibhhlv L.VIVAN            302     22      3
+ CASTEST MODIF sdls108a                      mjbhhpe J.L.FLEJOU        2424      1      1
+ CASTEST MODIF sdnl111c                      rezette C.REZETTE          181      2      1
+ CASTEST MODIF sdnv103a                      rezette C.REZETTE          223      2      1
+ CASTEST MODIF sdnv103b                      rezette C.REZETTE          403      2      1
+ CASTEST MODIF sdnv103c                      rezette C.REZETTE          245      2      1
+ CASTEST MODIF sdnv103d                      rezette C.REZETTE          243      3      2
+ CASTEST MODIF ssla103a                      smichel S.MICHEL-PONNELLE    217     21      8
+ CASTEST MODIF ssla103b                      smichel S.MICHEL-PONNELLE    221     23     10
+ CASTEST MODIF ssla103c                      smichel S.MICHEL-PONNELLE    219     27     10
+ CASTEST MODIF ssla103d                      smichel S.MICHEL-PONNELLE    221     25     10
+ CASTEST MODIF ssla103e                      smichel S.MICHEL-PONNELLE    192     24      7
+ CASTEST MODIF ssna102a                      rezette C.REZETTE          484      7      7
+ CASTEST MODIF ssna102b                      rezette C.REZETTE          310      4      4
+ CASTEST MODIF ssna102c                      rezette C.REZETTE          313      4      4
+ CASTEST MODIF ssna105a                      rezette C.REZETTE          230      2      1
+ CASTEST MODIF ssna111a                      rezette C.REZETTE          213     13     13
+ CASTEST MODIF ssnp121b                      rezette C.REZETTE          168      2      1
+ CASTEST MODIF ssnp121c                      rezette C.REZETTE          165      2      1
+ CASTEST MODIF ssnp127a                      gjbhhel E.LORENTZ          151      2      2
+ CASTEST MODIF ssnp127b                      gjbhhel E.LORENTZ          151      2      2
+ CASTEST MODIF ssnv104i                      rezette C.REZETTE          367      2      1
+ CASTEST MODIF ssnv127c                      rezette C.REZETTE          470      2      1
+ CASTEST MODIF ssnv127d                      rezette C.REZETTE          469      2      1
+ CASTEST MODIF ssnv157a                      gjbhhel E.LORENTZ          135      2      2
+ CASTEST MODIF ssnv157b                      gjbhhel E.LORENTZ          135      2      2
+ CASTEST MODIF ssnv157c                      gjbhhel E.LORENTZ          135      2      2
+ CASTEST MODIF ssnv157d                      gjbhhel E.LORENTZ          136      2      2
+ CASTEST MODIF ssnv157e                      gjbhhel E.LORENTZ          139      2      2
+ CASTEST MODIF ssnv157f                      gjbhhel E.LORENTZ          142      2      2
+ CASTEST MODIF ssnv157g                      gjbhhel E.LORENTZ          139      2      2
+ CASTEST MODIF ssnv167b                      rezette C.REZETTE          460     33     33
+ CASTEST MODIF ssnv167c                      rezette C.REZETTE          286     35     35
+ CASTEST MODIF ssnv173a                      rezette C.REZETTE          347     14      1
+ CASTEST MODIF ssnv173b                      rezette C.REZETTE          655     13      1
+ CASTEST MODIF ssnv175a                      gjbhhel E.LORENTZ          146      2      2
+ CASTEST MODIF ssnv182a                      rezette C.REZETTE          244     19      1
+ CASTEST MODIF ssnv182b                      rezette C.REZETTE          279     18      1
+ CASTEST MODIF ssnv505a                      rezette C.REZETTE          234      2      1
+ CASTEST MODIF ssnv505b                      rezette C.REZETTE          182      2      1
+ CASTEST MODIF ssnv506a                      rezette C.REZETTE          226      2      1
+ CASTEST MODIF ssnv506b                      rezette C.REZETTE          228      2      1
+ CASTEST MODIF zzzz115a                      mjbhhpe J.L.FLEJOU         391      1      1
+ CASTEST MODIF zzzz176a                      gjbhhel E.LORENTZ          153      2      2
+CATALOGU AJOUT options/depl_post_xfem        rezette C.REZETTE           33     33      0
+CATALOGU AJOUT typelem/gener_me2dg_1         gjbhhel E.LORENTZ          356    356      0
+CATALOGU AJOUT typelem/gener_me2dg_2         gjbhhel E.LORENTZ          371    371      0
+CATALOGU AJOUT typelem/gener_me3dg_1         gjbhhel E.LORENTZ          332    332      0
+CATALOGU MODIF compelem/grandeur_simple__    rezette C.REZETTE          566      6      1
+CATALOGU MODIF compelem/phenomene_modelisation__    gjbhhel E.LORENTZ          786      8      2
+CATALOGU MODIF typelem/gener_me3dg_3         gjbhhel E.LORENTZ          356     11     15
+CATALOGU MODIF typelem/gener_me3g33           granet S.GRANET           119      3      3
+CATALOGU MODIF typelem/gener_me_xh           rezette C.REZETTE          268     19      1
+CATALOGU MODIF typelem/gener_mecpg2          gjbhhel E.LORENTZ          352      3     12
+CATALOGU MODIF typelem/gener_medpg2          gjbhhel E.LORENTZ          354      3     12
+CATALOGU MODIF typelem/medptr6               gjbhhel E.LORENTZ          545      3      2
+CATALOPY AJOUT commande/post_cham_xfem       rezette C.REZETTE           26     26      0
+CATALOPY AJOUT commande/post_mail_xfem       rezette C.REZETTE           24     24      0
+CATALOPY MODIF commande/affe_cara_elem       mjbhhpe J.L.FLEJOU         430      2      2
+CATALOPY MODIF commande/test_resu            cibhhlv L.VIVAN            164     37      3
+    DATG MODIF ascouf_ssep_mono_v1.datg   F.LEBOUVIER 4052               110     10      0
+ FORTRAN AJOUT algorith/cfexcl                mabbas M.ABBAS             85     85      0
+ FORTRAN AJOUT algorith/dfdmip               gjbhhel E.LORENTZ           63     63      0
+ FORTRAN AJOUT algorith/lcsmci               gjbhhel E.LORENTZ          103    103      0
+ FORTRAN AJOUT algorith/lcsmco               gjbhhel E.LORENTZ           71     71      0
+ FORTRAN AJOUT algorith/lcsmin               gjbhhel E.LORENTZ           96     96      0
+ FORTRAN AJOUT algorith/lcsmtg               gjbhhel E.LORENTZ          157    157      0
+ FORTRAN AJOUT algorith/nmepsb               gjbhhel E.LORENTZ           61     61      0
+ FORTRAN AJOUT algorith/nmepsi               gjbhhel E.LORENTZ           95     95      0
+ FORTRAN AJOUT algorith/nmmabu               gjbhhel E.LORENTZ           75     75      0
+ FORTRAN AJOUT algorith/nmplge               gjbhhel E.LORENTZ          324    324      0
+ FORTRAN AJOUT calculel/trchel               cibhhlv L.VIVAN            127    127      0
+ FORTRAN AJOUT calculel/trchno               cibhhlv L.VIVAN            116    116      0
+ FORTRAN AJOUT calculel/trgene               cibhhlv L.VIVAN            257    257      0
+ FORTRAN AJOUT calculel/trjeve               cibhhlv L.VIVAN             61     61      0
+ FORTRAN AJOUT calculel/trprec               cibhhlv L.VIVAN             65     65      0
+ FORTRAN AJOUT calculel/trresu               cibhhlv L.VIVAN            215    215      0
+ FORTRAN AJOUT elements/te0515               rezette C.REZETTE          183    183      0
+ FORTRAN AJOUT elements/xdel3d               rezette C.REZETTE          101    101      0
+ FORTRAN AJOUT prepost/op0187                rezette C.REZETTE          753    753      0
+ FORTRAN AJOUT prepost/op0196                rezette C.REZETTE          457    457      0
+ FORTRAN MODIF algorith/algocl                mabbas M.ABBAS            674     19     10
+ FORTRAN MODIF algorith/algoco                mabbas M.ABBAS            690     15      8
+ FORTRAN MODIF algorith/algocp                mabbas M.ABBAS            371     17      9
+ FORTRAN MODIF algorith/algogl                mabbas M.ABBAS            681     15      8
+ FORTRAN MODIF algorith/cfelsn                mabbas M.ABBAS            105      4      7
+ FORTRAN MODIF algorith/cfsupm                mabbas M.ABBAS            107      7     39
+ FORTRAN MODIF algorith/chmano                mabbas M.ABBAS            547     21     11
+ FORTRAN MODIF algorith/fro2gd                mabbas M.ABBAS            757     15      4
+ FORTRAN MODIF algorith/frogdp                mabbas M.ABBAS            647     30     14
+ FORTRAN MODIF algorith/frolgd                mabbas M.ABBAS           1105     14      5
+ FORTRAN MODIF algorith/fropgd                mabbas M.ABBAS            850     13      5
+ FORTRAN MODIF algorith/lcdpnl               gjbhhel E.LORENTZ          125     25     23
+ FORTRAN MODIF algorith/lcdsbe               gjbhhel E.LORENTZ          372     16     23
+ FORTRAN MODIF algorith/lceobg               gjbhhel E.LORENTZ         1154     79     26
+ FORTRAN MODIF algorith/lcfrge               gjbhhel E.LORENTZ          257     27     44
+ FORTRAN MODIF algorith/lcmzge               gjbhhel E.LORENTZ          468     24     27
+ FORTRAN MODIF algorith/lcrofg               gjbhhel E.LORENTZ           73     25     16
+ FORTRAN MODIF algorith/lcrofs               gjbhhel E.LORENTZ           70     25      9
+ FORTRAN MODIF algorith/lcrolo               gjbhhel E.LORENTZ          312    156    123
+ FORTRAN MODIF algorith/lcroma               gjbhhel E.LORENTZ           93     21     18
+ FORTRAN MODIF algorith/lcronl               gjbhhel E.LORENTZ          153     85     93
+ FORTRAN MODIF algorith/lcrotg               gjbhhel E.LORENTZ          221    138    261
+ FORTRAN MODIF algorith/lcroy1               gjbhhel E.LORENTZ          115     28     12
+ FORTRAN MODIF algorith/lcroy2               gjbhhel E.LORENTZ           91     24      9
+ FORTRAN MODIF algorith/lcroyi               gjbhhel E.LORENTZ           92     24      8
+ FORTRAN MODIF algorith/lcumfp               smichel S.MICHEL-PONNELLE    539     17      7
+ FORTRAN MODIF algorith/nmcomp               gjbhhel E.LORENTZ          720     18     16
+ FORTRAN MODIF algorith/nmtstm               gjbhhel E.LORENTZ           60      4      1
+ FORTRAN MODIF algorith/pipepe               gjbhhel E.LORENTZ          249     13     23
+ FORTRAN MODIF calculel/op0023               cibhhlv L.VIVAN             73     17    384
+ FORTRAN MODIF elements/te0100               gjbhhel E.LORENTZ          304      3     17
+ FORTRAN MODIF elements/te0113               gjbhhel E.LORENTZ          180     31     82
+ FORTRAN MODIF elements/te0139               gjbhhel E.LORENTZ          278      4     17
+ FORTRAN MODIF elements/te0431               gjbhhel E.LORENTZ          290      2      4
+ FORTRAN MODIF elements/te0539               gjbhhel E.LORENTZ          345      6      2
+ FORTRAN MODIF elements/te0544               gjbhhel E.LORENTZ          123      8     21
+ FORTRAN MODIF modelisa/acearp               mjbhhpe J.L.FLEJOU         426      1      5
+ FORTRAN MODIF modelisa/cazoco               rezette C.REZETTE          572      2      2
+ FORTRAN MODIF prepost/gmeelt                gjbhhel E.LORENTZ          233     12      8
+ FORTRAN MODIF prepost/gmeneu                gjbhhel E.LORENTZ          135      6      2
+ FORTRAN MODIF prepost/gmlelt                gjbhhel E.LORENTZ          206     18      3
+ FORTRAN MODIF prepost/gmlneu                gjbhhel E.LORENTZ          105     12      1
+ FORTRAN MODIF prepost/inigms                gjbhhel E.LORENTZ          142     94      3
+ FORTRAN MODIF prepost/pregms                gjbhhel E.LORENTZ          135      9      8
+  PYTHON MODIF Macro/macr_ascouf_mail_ops   lebouvie F.LEBOUVIER       2849      3      3
+  PYTHON MODIF Utilitai/sup_gmsh             gjbhhel E.LORENTZ         1415    338     56
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :   34        5916      5916             +5916
+ MODIF :  102       37728      1996    1719      +277
+ SUPPR :    0           0                 0        +0
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :  136       43644      7912    1719     +6193 

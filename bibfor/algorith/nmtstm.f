@@ -1,6 +1,6 @@
       SUBROUTINE NMTSTM (COMPOR,IMATRI,MATSYM)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/01/2005   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ALGORITH  DATE 10/05/2005   AUTEUR GJBHHEL E.LORENTZ 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -49,6 +49,9 @@ C ----------------------------------------------------------------------
       IF (COMPOR(1)(1:6) . EQ . 'MAZARS') THEN
         MATSYM = .FALSE.
       ENDIF
+
+      IF (COMPOR(3).EQ.'SIMO_MIEHE') MATSYM = .FALSE.
+
       IF (MATSYM) THEN
         CALL JEVECH('PMATUUR','L',IMATRI)
       ELSE

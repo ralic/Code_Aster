@@ -1,0 +1,142 @@
+# MODIF  DATE 10/05/2005   AUTEUR GJBHHEL E.LORENTZ 
+# TITRE LOIS NON LOCALES A DEFO REGULARISEES SUR BARREAU 2D DPLAN
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+
+DEBUT( CODE=_F( NOM = 'SSNV157J',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),PAR_LOT='NON',);
+TOTO0=LIRE_MAILLAGE(INFO=2,);
+
+TOTO = CREA_MAILLAGE(
+  MAILLAGE = TOTO0,
+  QUAD_LINE = _F(TOUT = 'OUI'),
+  )
+
+TOTO=DEFI_GROUP(reuse =TOTO,
+                MAILLAGE=TOTO,
+                CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI',),);
+
+MAT1=DEFI_MATERIAU(NON_LOCAL=_F(LONG_CARA=3.0**0.5,),
+                   ECRO_LINE=_F(D_SIGM_EPSI=-2000.0,
+                                SY=3.0,),
+                   ELAS=_F(NU=0.1,
+                           E=10000,),);
+
+CHMAT=AFFE_MATERIAU(AFFE=_F(MATER=MAT1,
+                            TOUT='OUI',),
+                    MAILLAGE=TOTO,);
+
+MO=AFFE_MODELE(AFFE=_F(TOUT='OUI',
+                                           PHENOMENE='MECANIQUE',
+                                           MODELISATION='D_PLAN_GRAD_EPSI',),
+                               MAILLAGE=TOTO,
+                               INFO=2,);
+
+
+CL1=AFFE_CHAR_MECA(DDL_IMPO=_F(DY=0,
+                               GROUP_NO='GMA7',),
+                   MODELE=MO,);
+
+CL2=AFFE_CHAR_MECA(DDL_IMPO=(_F(DX=0,
+                               GROUP_NO='GMA8',),
+                             ),  
+                   MODELE=MO,);
+
+TRACTION=AFFE_CHAR_MECA(FORCE_CONTOUR=_F(FY=1.0,
+                                    GROUP_MA='GMA9',),
+                        MODELE=MO,);
+
+INSTANTS=DEFI_LIST_REEL(INTERVALLE=(_F(JUSQU_A=0.0,
+                                      NOMBRE=1,),
+                                    _F(JUSQU_A=10,
+                                      NOMBRE=100,),),
+                        DEBUT=-1.,);
+
+FONCMULT=DEFI_FONCTION(NOM_PARA='INST',
+                       VALE=(-1.,0,0,0.005),);
+
+EVOL1=STAT_NON_LINE(CHAM_MATER=CHMAT,
+                    MODELE=MO,
+                    CONVERGENCE=_F(ITER_GLOB_MAXI=10,
+                                   ITER_GLOB_ELAS=25,
+                                   RESI_GLOB_RELA=1.E-06,),
+                    COMP_INCR=_F(RELATION='ENDO_FRAGILE',),
+                    INCREMENT=_F(LIST_INST=INSTANTS,
+                                 INST_FIN=0.,
+                                 SUBD_PAS=4,
+                                 SUBD_PAS_MINI=1.E-6,),
+                    NEWTON=_F(PREDICTION='TANGENTE',
+                              REAC_ITER=1,
+                              PAS_MINI_ELAS=1.E-03,
+                              MATRICE='TANGENTE',
+                              REAC_INCR=1,),
+                    EXCIT=(_F(CHARGE=TRACTION,
+                              FONC_MULT=FONCMULT,),
+                           _F(CHARGE=CL1,),
+                           _F(CHARGE=CL2,),),);
+
+EVOL1=STAT_NON_LINE(reuse=EVOL1,
+                     MODELE=MO,
+                       CHAM_MATER=CHMAT,
+                    EXCIT=(_F(CHARGE=TRACTION,
+                              TYPE_CHARGE='FIXE_PILO',),
+                           _F(CHARGE=CL1,),
+                           _F(CHARGE=CL2,),),
+                    COMP_INCR=_F(RELATION='ENDO_FRAGILE',),
+                    ETAT_INIT=_F(EVOL_NOLI=EVOL1,),
+                    INCREMENT=_F(LIST_INST=INSTANTS,
+                                 SUBD_PAS=4,
+                                 SUBD_PAS_MINI=1.E-6,),
+                    CONVERGENCE=_F(ITER_GLOB_MAXI=10,
+                                   ITER_GLOB_ELAS=100,
+                                   RESI_GLOB_RELA=1.E-06,),
+                    NEWTON=_F(PREDICTION='TANGENTE',
+                              REAC_ITER=1,
+                              PAS_MINI_ELAS=1.E-04,
+                              MATRICE='TANGENTE',
+                              REAC_INCR=1,),
+                       PILOTAGE=_F(TYPE='PRED_ELAS',
+                                 SELECTION='RESIDU',
+                                 GROUP_MA = ('GMA10',),
+                                 ETA_PILO_R_MIN=0.,
+                                 ETA_PILO_MIN=0.4,),
+                       );
+
+# Recuperation du dernier numero d'ordre
+dico = EVOL1.LIST_VARI_ACCES()
+no   = dico['NUME_ORDRE'][-1]
+
+TEST_RESU(RESU=(  _F(
+               RESULTAT = EVOL1,
+               REFERENCE = 'NON_REGRESSION',
+               NUME_ORDRE = no,
+               NOEUD = 'N2',
+               NOM_CHAM = 'DEPL',
+               NOM_CMP = 'DY',
+               VALE = 7.522563E-03), _F(
+               RESULTAT = EVOL1,
+               REFERENCE = 'NON_REGRESSION',
+               NUME_ORDRE = no,
+               MAILLE = 'M31',
+               POINT = 1,
+               NOM_CHAM = 'VARI_ELGA',
+               NOM_CMP = 'V1',
+               VALE = 9.951545E-01))
+            )
+
+FIN();

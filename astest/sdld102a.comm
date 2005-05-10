@@ -1,4 +1,4 @@
-# MODIF  DATE 15/11/2004   AUTEUR MCOURTOI M.COURTOIS 
+# MODIF  DATE 09/05/2005   AUTEUR CIBHHLV L.VIVAN 
 # TITRE SOUS-STRUCTURATION TRANSITOIRE : SYSTEME MASSES-RESSORTS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -203,6 +203,26 @@ FGEN=ASSE_VECT_GENE(    NUME_DDL_GENE=NUMEGE,
                            CHAR_SOUS_STRUC=_F( SOUS_STRUC = 'COTE1', 
                                             VECT_ASSE = V_ASSE))
 
+TEST_RESU( GENE=( _F(  RESU_GENE = FGEN,
+                       REFERENCE = 'NON_REGRESSION',
+                       NUME_CMP_GENE = 1,
+                       VALE = 1.00000E+00 ) ,
+                  _F(  RESU_GENE = FGEN,
+                       REFERENCE = 'NON_REGRESSION',
+                       NUME_CMP_GENE = 2,
+                       VALE = 0.50000E+00 ) ,
+                  _F(  RESU_GENE = FGEN,
+                       REFERENCE = 'NON_REGRESSION',
+                       NUME_CMP_GENE = 3,
+                       CRITERE = 'ABSOLU',
+                       VALE = 0.00000E+00 ) ,
+                  _F(  RESU_GENE = FGEN,
+                       REFERENCE = 'NON_REGRESSION',
+                       NUME_CMP_GENE = 4,
+                       CRITERE = 'ABSOLU',
+                       VALE = 0.00000E+00 ) ,
+                  ) ) ;
+
 IMPR_GENE(GENE=( _F(  RESU_GENE = FGEN, 
                      TOUT_CMP_GENE = 'OUI'),
                    _F(  RESU_GENE = FGEN,
@@ -223,6 +243,34 @@ RESGEN=MODE_ITER_SIMULT(     MATR_A=RIGGEN,
 
 # IMPRESSION D'UN MODE_GENE
 
+TEST_RESU( GENE=( _F(  RESU_GENE = RESGEN, 
+                       REFERENCE = 'NON_REGRESSION',
+                       NUME_ORDRE = 1,
+                       PARA = 'FREQ',
+                       VALE = 1.21812E-01 ) ,
+                  _F(  RESU_GENE = RESGEN, 
+                       REFERENCE = 'NON_REGRESSION',
+                       NUME_MODE = 1,
+                       PARA = 'MASS_GENE',
+                       VALE = 2.00000E+00 ) ,
+                  _F(  RESU_GENE = RESGEN, 
+                       REFERENCE = 'NON_REGRESSION',
+                       FREQ = 1.21812E-01,
+                       PARA = 'RIGI_GENE',
+                       VALE = 1.17157E+00 ) ,
+                  _F(  RESU_GENE = RESGEN, 
+                       REFERENCE = 'NON_REGRESSION',
+                       NUME_ORDRE = 1,
+                       NOM_CHAM = 'DEPL',
+                       NUME_CMP_GENE = 2,
+                       VALE = 1.00000E+00 ) ,
+                  _F(  RESU_GENE = RESGEN, 
+                       REFERENCE = 'NON_REGRESSION',
+                       FREQ = 1.21812E-01,
+                       NOM_CHAM = 'DEPL',
+                       NUME_CMP_GENE = 4,
+                       VALE = 1.00000E+00 ) ,
+                  ) ) ;
 
 IMPR_GENE(GENE=( _F(  RESU_GENE = RESGEN, 
                    TOUT_PARA = 'OUI',

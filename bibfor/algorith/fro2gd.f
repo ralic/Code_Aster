@@ -2,7 +2,7 @@
      &                    DEPTOT,ITERAT,LREAC,DEPDEL,RESU,LICCVG)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/02/2005   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 09/05/2005   AUTEUR MABBAS M.ABBAS 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -112,7 +112,7 @@ C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C
       INTEGER      ZCONV
       PARAMETER    (ZCONV=4)
-      LOGICAL      TROUAC,DELPOS,LELPIV
+      LOGICAL      TROUAC,DELPOS,LELPIV,CFEXCL
       INTEGER      IBID,IER,IFM,NIV,NDECI,ISINGU,NPVNEG,ITEMAX
       INTEGER      II,JJ,KK,IOTE,ILIAC,NUMIN,IZONE,ITEMUL,ISTO
       INTEGER      JRESU,JDEPP,NDIM,NEQMAX,ITER
@@ -133,8 +133,8 @@ C
       INTEGER      JAPPAR,JAPPTR,JAPCOE,JAPJEU,JAPDDL,JCMU
       CHARACTER*24 CONTNO,CONTMA,APCOFR,FROTE,APJEFX,MACONT
       INTEGER      JNOCO,JMACO,JAPCOF,IFRO,JAPJFX
-      CHARACTER*24 NOZOCO,CONVCO
-      INTEGER      JZOCO,JCONV
+      CHARACTER*24 NOZOCO,CONVCO,APMEMO,ATMU
+      INTEGER      JZOCO,JCONV,JAPMEM,JATMU
 C
 C ======================================================================
 C
@@ -171,12 +171,14 @@ C ======================================================================
       APCOFR   = RESOCO(1:14)//'.APCOFR'
       APJEU    = RESOCO(1:14)//'.APJEU'
       APJEFX   = RESOCO(1:14)//'.APJEFX'
+      APMEMO   = RESOCO(1:14)//'.APMEMO'
       APDDL    = RESOCO(1:14)//'.APDDL'
       LIAC     = RESOCO(1:14)//'.LIAC'
       LIOT     = RESOCO(1:14)//'.LIOT'
       MU       = RESOCO(1:14)//'.MU'
       COEFMU   = RESOCO(1:14)//'.COEFMU'
       AFMU     = RESOCO(1:14)//'.AFMU'
+      ATMU     = RESOCO(1:14)//'.ATMU'
       DELT0    = RESOCO(1:14)//'.DEL0'
       DELTA    = RESOCO(1:14)//'.DELT'
       COCO     = RESOCO(1:14)//'.COCO'
@@ -194,6 +196,7 @@ C ======================================================================
       CALL JEVEUO(APCOFR,'L',JAPCOF)
       CALL JEVEUO(APJEU, 'E',JAPJEU)
       CALL JEVEUO(APJEFX,'E',JAPJFX)
+      CALL JEVEUO(APMEMO,'L',JAPMEM)
       CALL JEVEUO(APDDL, 'L',JAPDDL)
       CALL JEVEUO(CONVEC,'L',JVECC)
       CALL JEVEUO(LIAC,  'E',JLIAC)
@@ -201,6 +204,7 @@ C ======================================================================
       CALL JEVEUO(MU,    'E',JMU)
       CALL JEVEUO(COEFMU,'L',JCMU)
       CALL JEVEUO(AFMU , 'E',JAFMU)
+      CALL JEVEUO(ATMU , 'E',JATMU)
       CALL JEVEUO(DELT0, 'E',JDELT0)
       CALL JEVEUO(DELTA, 'E',JDELTA)
       CALL JEVEUO(FROTE, 'L',IFRO)
@@ -295,12 +299,14 @@ C ======================================================================
             ZR(JMU-1+  NBLIAI+II) = 0.D0
             ZR(JMU-1+         II) = 0.D0
             ZR(JAPJFX-1+II) = 0.D0
-            AJEU = ZR(JAPJEU+II-1)
-            IF ( AJEU.LT.0.0D0 ) THEN
-               POSIT  = NBLIAC + LLF + 1
-               CALL CFTABL(INDIC,NBLIAC,AJLIAI,SPLIAI,LLF,LLF1,LLF2,
-     &                     RESOCO,TYPEAJ,POSIT,II,TYPEC0)
-            END IF
+            IF (.NOT.CFEXCL(JAPPAR,JAPMEM,II)) THEN
+              AJEU = ZR(JAPJEU+II-1)
+              IF ( AJEU.LT.0.0D0 ) THEN
+                POSIT  = NBLIAC + LLF + 1
+                CALL CFTABL(INDIC,NBLIAC,AJLIAI,SPLIAI,LLF,LLF1,LLF2,
+     &                      RESOCO,TYPEAJ,POSIT,II,TYPEC0)
+              END IF
+            ENDIF
  4       CONTINUE
 C ======================================================================
 C --- TOUTES LES LIAISONS DE CONTACT SONT CONSIDEREES ADHERENTES 
@@ -326,23 +332,25 @@ C ======================================================================
          IF (LREAC(1)) THEN
             BTOTAL  = NBLIAC + LLF
             DO 5 II = 1,NBLIAI
-               AJEU = ZR(JAPJEU+II-1)
-               IF (AJEU.LT.0.0D0) THEN
-                  TROUAC = .FALSE.
-                  DO 940 JJ = 1, BTOTAL
+               IF (.NOT.CFEXCL(JAPPAR,JAPMEM,II)) THEN
+                 AJEU = ZR(JAPJEU+II-1)
+                 IF (AJEU.LT.0.0D0) THEN
+                   TROUAC = .FALSE.
+                   DO 940 JJ = 1, BTOTAL
                      IF (ZI(JLIAC-1+JJ).EQ.II) THEN
                         TROUAC = .TRUE.
                      ENDIF
- 940              CONTINUE
-                  IF (.NOT.TROUAC) THEN
-                    POSIT = NBLIAC + LLF + 1
-                    CALL CFTABL(INDIC,NBLIAC,AJLIAI,SPLIAI,LLF,LLF1,
-     &                         LLF2,RESOCO,TYPEAJ,POSIT,II,TYPEC0)
-                    IF (NIV.GE.2) THEN
-                      CALL CFIMP2(IFM,NOMA,II,TYPEC0,TYPEAJ,'ALG',
+ 940               CONTINUE
+                   IF (.NOT.TROUAC) THEN
+                     POSIT = NBLIAC + LLF + 1
+                     CALL CFTABL(INDIC,NBLIAC,AJLIAI,SPLIAI,LLF,LLF1,
+     &                           LLF2,RESOCO,TYPEAJ,POSIT,II,TYPEC0)
+                     IF (NIV.GE.2) THEN
+                       CALL CFIMP2(IFM,NOMA,II,TYPEC0,TYPEAJ,'ALG',
      &                      AJEU,JAPPAR,JNOCO,JMACO)
-                    END IF
-                  ENDIF
+                     END IF
+                   ENDIF
+                 ENDIF
                ENDIF
  5          CONTINUE 
          ENDIF
@@ -603,11 +611,13 @@ C ======================================================================
                DELPOS = .TRUE.
                CALL CALADU(NEQ,NBDDL,ZR(JAPCOE+JDECAL),
      &                                  ZI(JAPDDL+JDECAL),ZR(JRESU),VAL)
-               AJEU = ZR(JAPJEU+II-1) - VAL
-               AJEU = AJEU/AADELT
-               IF (AJEU.LT.RHO) THEN
-                  RHO = AJEU
-                  NUMIN = II
+               IF (.NOT.CFEXCL(JAPPAR,JAPMEM,II)) THEN
+                 AJEU = ZR(JAPJEU+II-1) - VAL
+                 AJEU = AJEU/AADELT
+                 IF (AJEU.LT.RHO) THEN
+                   RHO = AJEU
+                   NUMIN = II
+                 ENDIF
                ENDIF
             ENDIF
  70      CONTINUE
@@ -653,6 +663,7 @@ C ======================================================================
 C --- INITIALISATION DE AFMU
 C ======================================================================
       DO 111 II = 1, NEQ
+         ZR(JATMU+II-1) = 0.0D0
          ZR(JAFMU+II-1) = 0.0D0
  111  CONTINUE
 C ======================================================================

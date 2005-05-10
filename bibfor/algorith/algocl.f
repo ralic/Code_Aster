@@ -1,7 +1,7 @@
        SUBROUTINE ALGOCL(DEFICO,RESOCO,LMAT,LDSCON,NOMA,CINE,
      &                   DEPTOT,ITERAT,LREAC,RESU,LICCVG)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/02/2005   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 09/05/2005   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -118,8 +118,8 @@ C
       COMPLEX*16   CBID
       CHARACTER*24 APPARI,COCO,APPOIN,DELTA,CONTNO,CONTMA,CONVCO
       INTEGER      JAPPAR,JCOCO,JAPPTR,JDELTA,JNOCO,JMACO,JCONV
-      CHARACTER*24 NOZOCO,APCOEF,APDDL,APJEU
-      INTEGER      JZOCO,JAPCOE,JAPDDL,JAPJEU
+      CHARACTER*24 NOZOCO,APCOEF,APDDL,APJEU,APMEMO
+      INTEGER      JZOCO,JAPCOE,JAPDDL,JAPJEU,JAPMEM
       CHARACTER*24 MACONT,K24BID
       CHARACTER*19 MATAS1,MATASS,MATPRE
       CHARACTER*19 DELT0,LIAC,CM1A,LIOT,MU
@@ -140,6 +140,7 @@ C
       REAL*8       XJVMAX,AJEU,VAL,AADELT,RHO,RHORHO,X1
       REAL*8       R8MAEM,R8PREM
       INTEGER      ITER,ITEMAX,ITEMUL,ISTO
+      LOGICAL      CFEXCL
 C
 C ----------------------------------------------------------------------
 C
@@ -172,6 +173,7 @@ C ======================================================================
       APPOIN = RESOCO(1:14)//'.APPOIN'
       APCOEF = RESOCO(1:14)//'.APCOEF'
       APJEU  = RESOCO(1:14)//'.APJEU'
+      APMEMO = RESOCO(1:14)//'.APMEMO'
       APDDL  = RESOCO(1:14)//'.APDDL'
       LIAC   = RESOCO(1:14)//'.LIAC'
       LIOT   = RESOCO(1:14)//'.LIOT'
@@ -192,6 +194,7 @@ C ======================================================================
       CALL JEVEUO(APCOEF,'L',JAPCOE)
       CALL JEVEUO(APDDL,'L',JAPDDL)
       CALL JEVEUO(APJEU,'E',JAPJEU)
+      CALL JEVEUO(APMEMO,'L',JAPMEM)
       CALL JEVEUO(LIAC,'E',JLIAC)
       CALL JEVEUO(LIOT,'E',JLIOT)
       CALL JEVEUO(MU,'E',JMU)
@@ -300,8 +303,9 @@ C ======================================================================
          NBLIAC   = 0
          ZI(JLIOT+4*NBLIAI) = 0
          DO 30 II = 1,NBLIAI
-            AJEU = ZR(JAPJEU+II-1)
-            IF (AJEU.LT.0.0D0) THEN
+            IF (.NOT.CFEXCL(JAPPAR,JAPMEM,II)) THEN 
+              AJEU = ZR(JAPJEU+II-1)
+              IF (AJEU.LT.0.0D0) THEN
                POSIT  = NBLIAC + 1 
                CALL CFTABL(INDIC,NBLIAC,AJLIAI,SPLIAI,LLF,LLF1,LLF2, 
      &                     RESOCO,TYPEAJ,POSIT,II,TYPEC0)
@@ -309,8 +313,9 @@ C ======================================================================
                IF (NIV.GE.2) THEN
                 CALL CFIMP2(IFM,NOMA,II,TYPEC0,TYPEAJ,'ALG',AJEU,
      &                      JAPPAR,JNOCO,JMACO)
-               END IF
-            END IF
+               ENDIF
+              ENDIF
+            ENDIF
    30   CONTINUE
       ELSE
 C ======================================================================
@@ -319,24 +324,26 @@ C ======================================================================
         IF (LREAC(1)) THEN
           BTOTAL = NBLIAC
           DO 50 II = 1,NBLIAI
-            AJEU = ZR(JAPJEU+II-1)
-            IF (AJEU.LT.0.0D0) THEN
-              TROUAC = .FALSE.
-              DO 40,JJ = 1,BTOTAL
-                IF (ZI(JLIAC-1+JJ).EQ.II) THEN
-                  TROUAC = .TRUE.
-                END IF
-   40         CONTINUE
-              IF (.NOT.TROUAC) THEN
-                 POSIT  = NBLIAC + 1
-                 CALL CFTABL(INDIC,NBLIAC,AJLIAI,SPLIAI,LLF,LLF1,LLF2, 
+            IF (.NOT.CFEXCL(JAPPAR,JAPMEM,II)) THEN 
+              AJEU = ZR(JAPJEU+II-1)
+              IF (AJEU.LT.0.0D0) THEN
+                TROUAC = .FALSE.
+                DO 40,JJ = 1,BTOTAL
+                  IF (ZI(JLIAC-1+JJ).EQ.II) THEN
+                    TROUAC = .TRUE.
+                  END IF
+   40           CONTINUE
+                IF (.NOT.TROUAC) THEN
+                  POSIT  = NBLIAC + 1
+                  CALL CFTABL(INDIC,NBLIAC,AJLIAI,SPLIAI,LLF,LLF1,LLF2, 
      &                       RESOCO,TYPEAJ,POSIT,II,TYPEC0)
-                 IF (NIV.GE.2) THEN
-                  CALL CFIMP2(IFM,NOMA,II,TYPEC0,TYPEAJ,'ALG',AJEU,
+                  IF (NIV.GE.2) THEN
+                    CALL CFIMP2(IFM,NOMA,II,TYPEC0,TYPEAJ,'ALG',AJEU,
      &                    JAPPAR,JNOCO,JMACO)
-                 END IF
-              END IF
-            END IF
+                   ENDIF
+                ENDIF
+              ENDIF
+            ENDIF
    50     CONTINUE
         END IF
       END IF
@@ -549,13 +556,15 @@ C ======================================================================
                DELPOS = .TRUE.
                CALL CALADU(NEQ,NBDDL,ZR(JAPCOE+JDECAL),
      &                     ZI(JAPDDL+JDECAL),ZR(JRESU),VAL)
-               AJEU = ZR(JAPJEU+II-1) - VAL
-               AJEU = AJEU/AADELT
-               IF (AJEU.LT.RHO) THEN
-                 RHO = AJEU
-                 LLMIN = II
-               END IF
-             END IF
+               IF (.NOT.CFEXCL(JAPPAR,JAPMEM,II)) THEN
+                 AJEU = ZR(JAPJEU+II-1) - VAL
+                 AJEU = AJEU/AADELT
+                 IF (AJEU.LT.RHO) THEN
+                   RHO = AJEU
+                   LLMIN = II
+                 ENDIF
+               ENDIF
+             ENDIF
           END IF
  180   CONTINUE
 C ======================================================================

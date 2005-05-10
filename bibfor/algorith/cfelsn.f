@@ -3,7 +3,7 @@
      &                  SUPPOK)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/10/2004   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 09/05/2005   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -69,15 +69,14 @@ C
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 
 C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
-      INTEGER      IBID,K
-      INTEGER      TYPSUP,ISUPP,POSSUP
+      INTEGER      K
+      INTEGER      TYPSUP,POSSUP
       INTEGER      NSANS,NUMSAN,JDEC
 C ----------------------------------------------------------------------
       CALL JEMARQ()
 C
 
       SUPPOK = 0
-      IBID   = 0
 
 
       NSANS = ZI(JPSANS+IZONE) - ZI(JPSANS+IZONE-1)
@@ -89,10 +88,8 @@ C
         NUMSAN = ZI(JSANS+JDEC+K-1)
         IF (NUMNOE.EQ.NUMSAN) THEN
           TYPSUP = -1
-          ISUPP  = IBID
           POSSUP = POSNOE
-          CALL CFSUPM(NOMA,IBID,JNOCO,JAPMEM,
-     &            ISUPP,POSSUP,TYPSUP,IBID)
+          CALL CFSUPM(NOMA,JNOCO,JAPMEM,POSSUP,TYPSUP)
           SUPPOK = 1
           GO TO 999
         END IF

@@ -1,25 +1,26 @@
       SUBROUTINE LCFRGE (NDIM, TYPMOD, IMATE, EPSM, DEPS,
-     &                   VIM, OPTION, SIG, VIP,  DSIDPT)
+     &                   VIM, OPTION, SIG, VIP,DSIDPT,
+     &                   PROJ)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 10/05/2005   AUTEUR GJBHHEL E.LORENTZ 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
-C                                                                       
-C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+C
+C
 C ======================================================================
 
 
@@ -28,7 +29,7 @@ C ======================================================================
       CHARACTER*16       OPTION
       INTEGER            NDIM, IMATE
       REAL*8             EPSM(12), DEPS(12), VIM(2)
-      REAL*8             SIG(6), VIP(2), DSIDPT(12,6)
+      REAL*8             SIG(6), VIP(2), DSIDPT(6,6,2),PROJ(6,6)
 C ----------------------------------------------------------------------
 C     LOI DE COMPORTEMENT ELASTIQUE FRAGILE (SANS REGULARISATION)
 C
@@ -47,16 +48,17 @@ C OUT VIP     : VARIABLES INTERNES
 C                 1   -> VALEUR DE L'ENDOMMAGEMENT
 C                 2   -> ELASTIQUE (0) OU DISSIPATIF (1)
 C OUT DSIDEP  : MATRICE TANGENTE
+C OUT PROJ    : COUPURE (0.D0) OU NON (1.D0) DU TERME DE REGULARISATION
 C ----------------------------------------------------------------------
 
 
 
 
-      LOGICAL     CPLAN, TANG, ELAS, FULL, RAPH, NONLIN
+      LOGICAL     CPLAN, RESI, RIGI, ELAS, NONLIN
       INTEGER     NDIMSI, K, L, ETAT
 
       REAL*8      EPS(6), EPSR(6),TREPS, COPLAN, SIGEL(6)
-      REAL*8      KRON(6), TREPSR, SIGELR(6), DSIDEP(6,6),DSIDPR(6,6)
+      REAL*8      KRON(6), TREPSR, SIGELR(6)
       REAL*8      RIGMIN, FD, D, DM, ENER, COEF
       REAL*8      E, NU, ALPHA, LAMBDA, DEUXMU, GAMMA, SY, WY
 
@@ -80,10 +82,10 @@ C ======================================================================
 
 C -- OPTION ET MODELISATION
 
-      FULL = OPTION .EQ. 'FULL_MECA'
-      RAPH = OPTION .EQ. 'RAPH_MECA'
-      ELAS = OPTION .EQ. 'RIGI_MECA_ELAS'
-      TANG = OPTION .EQ. 'RIGI_MECA_TANG'
+      RESI = OPTION(1:4).EQ.'RAPH' .OR. OPTION(1:4).EQ.'FULL'
+      RIGI = OPTION(1:4).EQ.'RIGI' .OR. OPTION(1:4).EQ.'FULL'
+      ELAS = OPTION(11:14).EQ.'ELAS'
+
       CPLAN = (TYPMOD(1).EQ.'C_PLAN  ')
       NDIMSI = 2*NDIM
 
@@ -115,10 +117,16 @@ C -- DEFORMATIONS
 
       CALL DCOPY(NDIMSI, EPSM,1, EPS,1)
       CALL DCOPY(NDIMSI, EPSM(7),1, EPSR,1)
-      IF (RAPH .OR. FULL) THEN
+      IF (RESI) THEN
         CALL DAXPY(NDIMSI, 1.D0, DEPS,1, EPS,1)
         CALL DAXPY(NDIMSI, 1.D0, DEPS(7),1, EPSR,1)
       END IF
+
+
+C -- COUPURE ISOTROPE DE LA REGULARISATION SI ENDOMMAGEMENT SATURE
+      CALL R8INIR(36,0.D0,PROJ,1)
+      IF (VIM(2).NE.2) CALL R8INIR(6,1.D0,PROJ,7)
+
 
 
 C ======================================================================
@@ -150,7 +158,7 @@ C ======================================================================
 C                 INTEGRATION DE LA LOI DE COMPORTEMENT
 C ======================================================================
 
-      IF (RAPH .OR. FULL) THEN
+      IF (RESI) THEN
 
         DM   = VIM(1)
         ETAT = NINT(VIM(2))
@@ -160,8 +168,8 @@ C -- POINT DEJA SATURE
 
        IF (ETAT.EQ.2) THEN
          D = DM
-         
-         
+
+
 C -- CALCUL DE L'ETAT D'ENDOMMAGEMENT
         ELSE
           IF (ENER .LE. WY*((1+GAMMA)/(1+GAMMA-DM))**2) THEN
@@ -201,47 +209,31 @@ C ======================================================================
 C                            MATRICE TANGENTE
 C ======================================================================
 
-       
-      IF (FULL .OR. TANG .OR. ELAS) THEN
 
-
-C -- RIGI_MECA_ELAS : MATRICE ELASTIQUE IMPOSEE
-
-        IF (ELAS) NONLIN = .FALSE.
-       
-
-C -- RIGI_MECA_TANG : MATRICE ELASTIQUE FONCTION DU PAS PRECEDENT
-
-        IF (TANG) NONLIN = ETAT.EQ.1
-
-
-C -- FULL_MECA : MATRICE ELASTIQUE FONCTION DU COMPORTEMENT
-
-        IF (FULL) NONLIN = ETAT.EQ.1
-
+      IF (RIGI) THEN
+        NONLIN = (.NOT. ELAS) .AND. (ETAT.EQ.1)
 
 C -- CONTRIBUTION ELASTIQUE
 
-        CALL R8INIR(36, 0.D0, DSIDEP, 1)
+        CALL R8INIR(72, 0.D0, DSIDPT, 1)
         FD = 1-D
         DO 100 K = 1,3
           DO 110 L = 1,3
-            DSIDEP(K,L) = FD*LAMBDA
+            DSIDPT(K,L,1) = FD*LAMBDA
  110      CONTINUE
  100    CONTINUE
         DO 120 K = 1,NDIMSI
-          DSIDEP(K,K) = DSIDEP(K,K) + FD*DEUXMU
+          DSIDPT(K,K,1) = DSIDPT(K,K,1) + FD*DEUXMU
  120    CONTINUE
 
 
 C -- CONTRIBUTION DISSIPATIVE
 
-        CALL R8INIR(36, 0.D0, DSIDPR, 1)
         IF (NONLIN) THEN
           COEF = (1+GAMMA-D)**3 / (WY*2*(1+GAMMA)**2)
           DO 200 K = 1,NDIMSI
             DO 210 L = 1, NDIMSI
-              DSIDPR(K,L) = DSIDPR(K,L) - COEF * SIGEL(K) * SIGELR(L)
+              DSIDPT(K,L,2) = DSIDPT(K,L,2)-COEF*SIGEL(K)*SIGELR(L)
  210        CONTINUE
  200      CONTINUE
         END IF
@@ -254,21 +246,12 @@ C -- CORRECTION CONTRAINTES PLANES
             IF (K.EQ.3) GO TO 300
             DO 310 L=1,NDIMSI
               IF (L.EQ.3) GO TO 310
-              DSIDEP(K,L)=DSIDEP(K,L)
-     &        - 1.D0/DSIDEP(3,3)*DSIDEP(K,3)*DSIDEP(3,L)
+              DSIDPT(K,L,1)=DSIDPT(K,L,1)
+     &        - 1.D0/DSIDPT(3,3,1)*DSIDPT(K,3,1)*DSIDPT(3,L,1)
  310        CONTINUE
  300      CONTINUE
         ENDIF
 
-
-C -- STOCKAGE DE LA MATRICE SOUS FORME COMPACTE
-
-         DO 313 K=1,6
-           DO 314 L=1,6
-             DSIDPT(K,L)   = DSIDEP(K,L)
-             DSIDPT(K+6,L) = DSIDPR(K,L)
- 314       CONTINUE
- 313     CONTINUE
 
       END IF
       END

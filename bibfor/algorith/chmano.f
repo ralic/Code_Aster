@@ -2,7 +2,7 @@
      &                  RESOCO,IESCL)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/10/2004   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 09/05/2005   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -92,13 +92,13 @@ C
       INTEGER      PROJ,POSNO(10),DDL(30)
       REAL*8       JEUMIN,R8GAEM,OLDJEU,JEU
       REAL*8       NORM(3),TANG(6),COEF(30),COFX(30),COFY(30)
-      REAL*8       CMULT,ECAN,R8MIEM,R8PREM
+      REAL*8       CMULT,ECAN,R8VIDE
       LOGICAL      MULNOR
       CHARACTER*3  PROJOP
       INTEGER      REAC,PROYES,POSMIN,PROMIN
       INTEGER      ZONESY,NZOCP,JSYEXC,TYPSUP,IZONPR,IZONSY,ISURFM
       INTEGER      NBNOM,JDECM,SUPPOK,NUMNOM
-      INTEGER      POSSUP,ISUPP
+      INTEGER      POSSUP
       INTEGER      POSSTC,NUMSTC
       INTEGER      POSPIV,NUMPIV
    
@@ -404,7 +404,20 @@ C --- ON APPARIE (NOUVEAU OU REMPLACE ANCIEN)
      &              NBNO,POSNO,
      &              NBDDL,DDL)           
           ELSE IF (PROJOP.EQ.'SUP') THEN
-C --- ON SUPPRIME APPARIEMENT
+C --- ON APPARIE (NOUVEAU OU REMPLACE ANCIEN)
+C --- MAIS:
+C --- * ON INFORMERA LE VECTEUR RESOCO.APMEMO QUE CE NOEUD EST EXCLU
+C ---    VIA LA ROUTINE CFSUPM
+C --- * ON BLOQUE LE JEU A R8VIDE PAR PRECAUTION SUPPLEMENTAIRE
+            JEU = R8VIDE()
+            CALL CFADDM(JAPPTR,JAPPAR,JAPMEM,JAPJEU,JNORMO,JPDDL, 
+     &              JTANGO,JAPCOF,JAPCOE,JAPJFX,JAPJFY,JAPDDL,
+     &              TYPALF,FROT3D,
+     &              POSNOE,POSMIN,IND,NESMAX,REAC,
+     &              NORM,TANG,
+     &              COEF,COFX,COFY,JEU,
+     &              NBNO,POSNO,
+     &              NBDDL,DDL)
           ELSE IF (PROJOP.EQ.'NOP') THEN
 C --- ON NE FAIT RIEN
           ENDIF
@@ -423,7 +436,6 @@ C --- LE NOEUD ESCLAVE EST EXCLU (VA AU COIN !)
 C
           TYPSUP = -3
           POSSUP = POSNOE
-          ISUPP  = IND
         ELSE IF (PROJOP.EQ.'STC') THEN
 C
 C --- LE NOEUD ESCLAVE SE PROJETE 'PILE' SUR UN NOEUD MAITRE
@@ -480,8 +492,7 @@ C
 C --- LE NOEUD ESCLAVE EST EXCLU (VA AU COIN !)
 C
               TYPSUP = -2
-              POSSUP = POSNOE
-              ISUPP  = IND      
+              POSSUP = POSNOE     
               GOTO 12          
             ENDIF
  11       CONTINUE
@@ -506,11 +517,10 @@ C
 C --- EXCLUSION DU NOEUD ESCLAVE 
 C
           ZI(JAPPAR+ZAPPAR* (IND-1)+3) = 0 
-          CALL CFSUPM(NOMA,JAPPAR,JNOCO,JAPMEM,
-     &                ISUPP,POSSUP,TYPSUP,NESMAX)
-
-          NESCL  = NESCL -1
-          IESCL  = IESCL -1
+          CALL CFSUPM(NOMA,JNOCO,JAPMEM,POSSUP,TYPSUP)
+          IND = IND + 1 
+C          NESCL  = NESCL -1
+C          IESCL  = IESCL -1
 
         ENDIF
 

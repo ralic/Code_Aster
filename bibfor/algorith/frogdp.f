@@ -2,7 +2,7 @@
      &                  DEPTOT,ITERAT,LREAC,CONV,DEPDEL)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 09/05/2005   AUTEUR MABBAS M.ABBAS 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -119,8 +119,8 @@ C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C
       INTEGER      IBID,IER,IFM,NIV,JCM2A1,JCM2A2,JCM2A3
       INTEGER      ICOMA,II,JJ,KK,JAPJFX,JAPJFY,JZOCO
-      INTEGER      JRESU,JDEPP,JMU,JATMU,POSMA,NDIM
-      INTEGER      JDEPDE,JDELT0,JDELTA,JLIAC,JVALE,JCOCO
+      INTEGER      JRESU,JDEPP,JMU,JATMU,NDIM
+      INTEGER      JDEPDE,JDELT0,JDELTA,JLIAC,JVALE,JCOCO,JAPMEM
       INTEGER      NEQ,NESCL,NBLIAC,NBLIAI,NBLCIN,NBLIG,NBDDL
       INTEGER      LLIAC,JDECAL,IPENA
       INTEGER      JAPPAR,JAPPTR,JAPCOE,JAPJEU,JAPDDL,JNOCO,JMACO
@@ -134,8 +134,9 @@ C
       CHARACTER*19 AFMU,MAT,CM1A,CM2A,CM3A,MAF1,MAF2,MAFROT
       CHARACTER*19 LIAC,MU,ATMU,DELT0,DELTA,MATR,COCO
       CHARACTER*24 MACONT,APJEFX,APJEFY,NOZOCO
-      CHARACTER*24 APPARI,APPOIN,APCOEF,APJEU,APDDL
+      CHARACTER*24 APPARI,APPOIN,APCOEF,APJEU,APDDL,APMEMO
       CHARACTER*24 NDIMCO,CONTNO,CONTMA,APCOFR,FROTE,PENAL,COMAFO
+      LOGICAL      CFEXCL
       
 C
 C ======================================================================
@@ -174,6 +175,7 @@ C ======================================================================
       APJEFX   = RESOCO(1:14)//'.APJEFX'
       APJEFY   = RESOCO(1:14)//'.APJEFY'
       APDDL    = RESOCO(1:14)//'.APDDL'
+      APMEMO   = RESOCO(1:14)//'.APMEMO'
       LIAC     = RESOCO(1:14)//'.LIAC'
       MU       = RESOCO(1:14)//'.MU'
       ATMU     = RESOCO(1:14)//'.ATMU'
@@ -205,6 +207,7 @@ C ======================================================================
       CALL JEVEUO(APJEU, 'E',JAPJEU)
       CALL JEVEUO(APJEFX,'E',JAPJFX)
       CALL JEVEUO(APJEFY,'E',JAPJFY)
+      CALL JEVEUO(APMEMO,'L',JAPMEM)
       CALL JEVEUO(APDDL, 'L',JAPDDL)
       CALL JEVEUO(LIAC,  'E',JLIAC)
       CALL JEVEUO(MU,    'E',JMU)
@@ -311,22 +314,27 @@ C
          ZR(JMU-1+3*NBLIAI+II) = 0.D0
          JDECAL = ZI(JAPPTR+II-1)
          NBDDL  = ZI(JAPPTR+II) - ZI(JAPPTR+II-1)
-         CALL CALADU (NEQ,NBDDL,ZR(JAPCOE+JDECAL),
-     &                ZI(JAPDDL+JDECAL),ZR(JDELT0),VAL)
-         ZR(JAPJEU+II-1) = ZR(JAPJEU+II-1) - VAL
          CALL JEVEUO ( JEXNUM(CM1A,II), 'E', JCM1A )
          DO 20 KK = 1, NEQ
             ZR(JCM1A-1+KK) = 0.0D0
  20      CONTINUE
-         IF ( ZR(JAPJEU+II-1).LT.0.0D0 ) THEN
-            POSIT  = NBLIAC + 1 
-            CALL CFTABL(INDIC,NBLIAC,AJLIAI,SPLIAI,LLF,LLF1,LLF2, 
+
+         CALL CALADU (NEQ,NBDDL,ZR(JAPCOE+JDECAL),
+     &                ZI(JAPDDL+JDECAL),ZR(JDELT0),VAL)
+
+         IF (.NOT.CFEXCL(JAPPAR,JAPMEM,II)) THEN
+           ZR(JAPJEU+II-1) = ZR(JAPJEU+II-1) - VAL
+
+           IF ( ZR(JAPJEU+II-1).LT.0.0D0 ) THEN
+             POSIT  = NBLIAC + 1 
+             CALL CFTABL(INDIC,NBLIAC,AJLIAI,SPLIAI,LLF,LLF1,LLF2, 
      +                                   RESOCO,TYPEAJ,POSIT,II,TYPEC0) 
-            XMU    = 1.D0
-            CALL CALATM (NEQ,NBDDL,XMU,ZR(JAPCOE+JDECAL),
+             XMU    = 1.D0
+             CALL CALATM (NEQ,NBDDL,XMU,ZR(JAPCOE+JDECAL),
      &                                ZI(JAPDDL+JDECAL),ZR(JCM1A))
-            ZR(JMU-1+NBLIAC) = -ZR(JAPJEU+II-1)*ZR(IPENA-1+2*II-1)
-            CALL DAXPY(NEQ,ZR(JMU-1+NBLIAC),ZR(JCM1A),1,ZR(JATMU),1) 
+             ZR(JMU-1+NBLIAC) = -ZR(JAPJEU+II-1)*ZR(IPENA-1+2*II-1)
+             CALL DAXPY(NEQ,ZR(JMU-1+NBLIAC),ZR(JCM1A),1,ZR(JATMU),1) 
+           ENDIF
          ENDIF
          CALL JELIBE(JEXNUM(CM1A,II))
  50   CONTINUE
@@ -393,14 +401,16 @@ C
                ZR(JCM2A2-1+KK) = 0.0D0
                ZR(JCM2A3-1+KK) = 0.0D0
  200        CONTINUE
-            IF ( ZR(JAPJEU+II-1).LT.0.0D0 ) THEN
-               JDECAL = ZI(JAPPTR+II-1)
-               NBDDL  = ZI(JAPPTR+II)   - ZI(JAPPTR+II-1)
-               XMU  = ZR(JMU-1+3*NBLIAI+II)
-               CALL CALATM (NEQ,NBDDL,XMU,ZR(JAPCOF+JDECAL+30*NESMAX),
-     &                                     ZI(JAPDDL+JDECAL),ZR(JCM2A3))
-               CALL CALATM (NEQ,NBDDL,XMU,ZR(JAPCOF+JDECAL),
-     &                                     ZI(JAPDDL+JDECAL),ZR(JCM2A2))
+            IF (.NOT.CFEXCL(JAPPAR,JAPMEM,II)) THEN
+              IF ( ZR(JAPJEU+II-1).LT.0.0D0 ) THEN
+                JDECAL = ZI(JAPPTR+II-1)
+                NBDDL  = ZI(JAPPTR+II)   - ZI(JAPPTR+II-1)
+                XMU    = ZR(JMU-1+3*NBLIAI+II)
+                CALL CALATM(NEQ,NBDDL,XMU,ZR(JAPCOF+JDECAL+30*NESMAX),
+     &                      ZI(JAPDDL+JDECAL),ZR(JCM2A3))
+                CALL CALATM(NEQ,NBDDL,XMU,ZR(JAPCOF+JDECAL),
+     &                      ZI(JAPDDL+JDECAL),ZR(JCM2A2))
+              ENDIF
             ENDIF
             CALL JELIBE(JEXNUM(CM2A,II)       )
             CALL JELIBE(JEXNUM(CM2A,II+NBLIAI))
@@ -462,19 +472,21 @@ C
                ZR(JCM2A2-1+KK) = 0.0D0
                ZR(JCM2A3-1+KK) = 0.0D0
  230        CONTINUE
-            IF ( ZR(JAPJEU+II-1).LT.0.0D0 ) THEN
-               JDECAL = ZI(JAPPTR+II-1)
-               NBDDL  = ZI(JAPPTR+II)-ZI(JAPPTR+II-1)
-               XMU1   = SQRT(ZR(IPENA-1+2*II-1))
-               CALL CALATM (NEQ,NBDDL,XMU1,ZR(JAPCOE+JDECAL),
-     &                              ZI(JAPDDL+JDECAL),ZR(JCM2A1))
-               ZR(JMU-1+2*NBLIAI+II) = 1.D0
-               XMU2   = ZR(JMU-1+3*NBLIAI+II)
-               CALL CALATM (NEQ,NBDDL,XMU2,ZR(JAPCOF+JDECAL),
+            IF (.NOT.CFEXCL(JAPPAR,JAPMEM,II)) THEN
+              IF ( ZR(JAPJEU+II-1).LT.0.0D0 ) THEN
+                JDECAL = ZI(JAPPTR+II-1)
+                NBDDL  = ZI(JAPPTR+II)-ZI(JAPPTR+II-1)
+                XMU1   = SQRT(ZR(IPENA-1+2*II-1))
+                CALL CALATM(NEQ,NBDDL,XMU1,ZR(JAPCOE+JDECAL),
+     &                      ZI(JAPDDL+JDECAL),ZR(JCM2A1))
+                ZR(JMU-1+2*NBLIAI+II) = 1.D0
+                XMU2   = ZR(JMU-1+3*NBLIAI+II)
+                CALL CALATM(NEQ,NBDDL,XMU2,ZR(JAPCOF+JDECAL),
      &                      ZI(JAPDDL+JDECAL),ZR(JCM2A2))
-               CALL CALATM (NEQ,NBDDL,XMU2,
+                CALL CALATM(NEQ,NBDDL,XMU2,
      &                      ZR(JAPCOF+JDECAL+30*NESMAX),
      &                      ZI(JAPDDL+JDECAL),ZR(JCM2A3))
+              ENDIF
             ENDIF
             CALL JELIBE(JEXNUM(CM2A,II))
             CALL JELIBE(JEXNUM(CM2A,II+NBLIAI))
@@ -488,16 +500,18 @@ C
                ZR(JCM2A1-1+KK) = 0.0D0
                ZR(JCM2A2-1+KK) = 0.0D0
  232        CONTINUE
-            IF ( ZR(JAPJEU+II-1).LT.0.0D0 ) THEN
-               JDECAL = ZI(JAPPTR+II-1)
-               NBDDL  = ZI(JAPPTR+II)-ZI(JAPPTR+II-1)
-               XMU1   = SQRT(ZR(IPENA-1+2*II-1))
-               CALL CALATM (NEQ,NBDDL,XMU1,ZR(JAPCOE+JDECAL),
-     &                              ZI(JAPDDL+JDECAL),ZR(JCM2A1))
-               ZR(JMU-1+2*NBLIAI+II) = 1.D0
-               XMU2   = ZR(JMU-1+3*NBLIAI+II)
-               CALL CALATM (NEQ,NBDDL,XMU2,ZR(JAPCOF+JDECAL),
-     &                      ZI(JAPDDL+JDECAL),ZR(JCM2A2))
+            IF (.NOT.CFEXCL(JAPPAR,JAPMEM,II)) THEN
+              IF ( ZR(JAPJEU+II-1).LT.0.0D0 ) THEN
+                JDECAL = ZI(JAPPTR+II-1)
+                NBDDL  = ZI(JAPPTR+II)-ZI(JAPPTR+II-1)
+                XMU1   = SQRT(ZR(IPENA-1+2*II-1))
+                CALL CALATM(NEQ,NBDDL,XMU1,ZR(JAPCOE+JDECAL),
+     &                      ZI(JAPDDL+JDECAL),ZR(JCM2A1))
+                ZR(JMU-1+2*NBLIAI+II) = 1.D0
+                XMU2   = ZR(JMU-1+3*NBLIAI+II)
+                CALL CALATM(NEQ,NBDDL,XMU2,ZR(JAPCOF+JDECAL),
+     &                     ZI(JAPDDL+JDECAL),ZR(JCM2A2))
+              ENDIF
             ENDIF
             CALL JELIBE(JEXNUM(CM2A,II))
             CALL JELIBE(JEXNUM(CM2A,II+NBLIAI))
@@ -520,27 +534,28 @@ C
          DO 310 KK = 1, NEQ
             ZR(JCM3A-1+KK) = 0.0D0
  310     CONTINUE
-         IF ( ZR(JAPJEU+II-1).LT.0.0D0 ) THEN
-            AJEUFX = 0.D0
-            AJEUFY = 0.D0
-            JDECAL = ZI(JAPPTR+II-1)
-            NBDDL  = ZI(JAPPTR+II) - ZI(JAPPTR+II-1)
-            CALL CALADU (NEQ,NBDDL,ZR(JAPCOF+JDECAL),
+         IF (.NOT.CFEXCL(JAPPAR,JAPMEM,II)) THEN
+           IF ( ZR(JAPJEU+II-1).LT.0.0D0 ) THEN
+             AJEUFX = 0.D0
+             AJEUFY = 0.D0
+             JDECAL = ZI(JAPPTR+II-1)
+             NBDDL  = ZI(JAPPTR+II) - ZI(JAPPTR+II-1)
+             CALL CALADU (NEQ,NBDDL,ZR(JAPCOF+JDECAL),
      &                   ZI(JAPDDL+JDECAL),ZR(JDELT0),VAL1)
-            CALL CALADU (NEQ,NBDDL,ZR(JAPCOF+JDECAL),
+             CALL CALADU (NEQ,NBDDL,ZR(JAPCOF+JDECAL),
      &                   ZI(JAPDDL+JDECAL),ZR(JDEPDE),VAL2)
-            VAL = VAL1 + VAL2
-            AJEUFX = ZR(JAPJFX-1+II)-VAL
-            IF (NDIM.EQ.3) THEN
+             VAL = VAL1 + VAL2
+             AJEUFX = ZR(JAPJFX-1+II)-VAL
+             IF (NDIM.EQ.3) THEN
                CALL CALADU (NEQ,NBDDL,ZR(JAPCOF+JDECAL+30*NESMAX),
      &                      ZI(JAPDDL+JDECAL),ZR(JDELT0),VAL1)
                CALL CALADU (NEQ,NBDDL,ZR(JAPCOF+JDECAL+30*NESMAX),
      &                   ZI(JAPDDL+JDECAL),ZR(JDEPDE),VAL2)
                VAL = VAL1 + VAL2
                AJEUFY = ZR(JAPJFY-1+II)-VAL
-            ENDIF
-            XK = ZR(IFRO-1+II)
-            DO 320 JJ = 1,NBLIAC
+             ENDIF
+             XK = ZR(IFRO-1+II)
+             DO 320 JJ = 1,NBLIAC
                LLIAC = ZI(JLIAC-1+JJ)
                IF(LLIAC.EQ.II) THEN
                   IF ( ZR(JMU-1+JJ) .GT. 0.D0 ) THEN
@@ -549,31 +564,32 @@ C
                      XK = 0.D0
                   ENDIF
                ENDIF
- 320        CONTINUE
-            IF ( XK . EQ . 0.D0) THEN
+ 320         CONTINUE
+             IF ( XK . EQ . 0.D0) THEN
                BETA = 0.D0
                GOTO 305
-            ENDIF
-            XF = SQRT(ZR(IPENA-1+2*II))
-            XX = SQRT( AJEUFX**2 + AJEUFY**2 )
-            IF ( ZR(JMU-1+2*NBLIAI+II).NE.0.D0) THEN
+             ENDIF
+             XF = SQRT(ZR(IPENA-1+2*II))
+             XX = SQRT( AJEUFX**2 + AJEUFY**2 )
+             IF ( ZR(JMU-1+2*NBLIAI+II).NE.0.D0) THEN
                IF ( XX .LE. XK/XF**2 ) THEN
                   BETA = 0.D0
                ELSE
                   BETA = SQRT(1.D0/(XK*XX))
                ENDIF
-            ELSE
+             ELSE
                BETA = 0.D0
-            ENDIF
-            IF ( RESIGR .GE. 1.0D-03 ) THEN
+             ENDIF
+             IF ( RESIGR .GE. 1.0D-03 ) THEN
                XMU = SQRT(ZR(ICOMA-1+II))
                BETA = BETA*XMU
-            ENDIF
-            CALL CALAPR(NEQ,NBDDL,BETA,ZR(JAFMU),
+             ENDIF
+             CALL CALAPR(NEQ,NBDDL,BETA,ZR(JAFMU),
      &                                ZI(JAPDDL+JDECAL),ZR(JCM3A))
-            ZR(JMU-1+2*NBLIAI+II) = 1.D0
-         ELSE
-            ZR(JMU-1+2*NBLIAI+II) = 0.D0 
+             ZR(JMU-1+2*NBLIAI+II) = 1.D0
+           ELSE
+             ZR(JMU-1+2*NBLIAI+II) = 0.D0 
+           ENDIF
          ENDIF
  305     CONTINUE
          CALL JELIBE(JEXNUM(CM3A,II))

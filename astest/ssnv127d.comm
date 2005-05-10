@@ -1,4 +1,4 @@
-# MODIF  DATE 21/03/2005   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 09/05/2005   AUTEUR REZETTE C.REZETTE 
 # TITRE CYLINDRE DANS UN ALESAGE AVEC CONTACT ET FROTTEMENT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -137,6 +137,7 @@ CHA1=AFFE_CHAR_MECA(MODELE=MO,
 
 CHA2=AFFE_CHAR_MECA(MODELE=MO,
                     CONTACT=_F(METHODE='PENALISATION',
+                               RECHERCHE = 'NOEUD_BOUCLE',
                                E_T=6.E9,
                                E_N=1.E18,
                                FROTTEMENT='COULOMB',

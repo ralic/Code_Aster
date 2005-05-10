@@ -1,4 +1,4 @@
-# MODIF  DATE 25/01/2005   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 10/05/2005   AUTEUR GJBHHEL E.LORENTZ 
 # TITRE LOI ENDO_ORTHO_BETON NON LOCALE A DEFO REGULARISEES SUR BARREAU 2D CPLAN
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -26,7 +26,7 @@ TOTO=DEFI_GROUP(reuse =TOTO,
                 MAILLAGE=TOTO,
                 CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI',),);
 
-MAT1= DEFI_MATERIAU(NON_LOCAL=_F(LONG_CARA=3.0,),
+MAT1= DEFI_MATERIAU(NON_LOCAL=_F(LONG_CARA=3.0**0.5,),
               ELAS = _F(E = 32000.,  NU = 0.2), 
               ENDO_ORTH_BETON = _F(ALPHA = 0.87,
                                    K0 = 3.e-4,

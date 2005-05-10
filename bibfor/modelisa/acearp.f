@@ -5,7 +5,7 @@
       CHARACTER*8       NOMA,NOMO
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/04/2005   AUTEUR MJBHHPE J.L.FLEJOU 
+C MODIF MODELISA  DATE 09/05/2005   AUTEUR MJBHHPE J.L.FLEJOU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -162,10 +162,6 @@ C --- BOUCLE SUR LES OCCURENCES DE DISCRET
          CALL GETVID('RIGI_PARASOL','GROUP_MA_POI1',IOC,1,1,NOGP,NGP)
          IF ( NGP .EQ. 0 ) THEN
             CALL GETVID('RIGI_PARASOL','GROUP_MA_SEG2',IOC,1,1,NOGP,NGP)
-         ENDIF
-         IF (NGP.EQ.0) THEN
-            CALL UTMESS('F','ACEARP_NGP',
-     +            'PAS TAPIS DE RESSORTS MODELISES PAR DES DISCRETS')
          ENDIF
 
          IF ( NREP .NE. 0) THEN

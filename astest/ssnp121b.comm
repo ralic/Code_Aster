@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 09/05/2005   AUTEUR REZETTE C.REZETTE 
 # TITRE CONTACT DE DEUX PLAQUES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -69,6 +69,7 @@ CHA1=AFFE_CHAR_MECA(MODELE=MO,
 
 CHA2=AFFE_CHAR_MECA(MODELE=MO,
                     CONTACT=(_F(METHODE='CONTRAINTE',
+                                RECHERCHE = 'NOEUD_BOUCLE',
                                 GROUP_MA_MAIT='AB',
                                 GROUP_MA_ESCL='EF',),),);
 

@@ -1,6 +1,6 @@
       SUBROUTINE TE0139(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 04/04/2005   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ELEMENTS  DATE 10/05/2005   AUTEUR GJBHHEL E.LORENTZ 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -84,7 +84,7 @@ C - PARAMETRES EN ENTREE
       CALL TECACH('OON','PVARIMR',7,JTAB,IRET)
       LGPG1 = MAX(JTAB(6),1)*JTAB(7)
       LGPG = LGPG1
-C --- ORIENTATION DU MASSIF     
+C --- ORIENTATION DU MASSIF
       CALL TECACH('NNN','PCAMASS',1,ICAMAS,IRET)
       CALL R8INIR(3, R8VIDE(), ANGMAS ,1)
       IF (IRET.EQ.0) THEN
@@ -110,7 +110,7 @@ C - VARIABLES DE COMMANDE
       CALL JEVECH('PSECREF','L',ISREF)
       CALL JEVECH('PIRRAMR','L',IIRRAM)
       CALL JEVECH('PIRRAPR','L',IIRRAP)
- 
+
       CALL TECACH('ONN','PDEFAMR',1,IDEFAM,IRET)
       DEFANE = IRET .EQ. 0
       CALL TECACH('ONN','PDEFAPR',1,IDEFAP,IRET)
@@ -119,24 +119,24 @@ C - VARIABLES DE COMMANDE
       IF (IRET.EQ.0) THEN
         CALL TECACH('OON','PPHASPR',7,JTAB,IRET)
         NZ = JTAB(6)
-C  passage de PPHASMR et PPHASPR aux points de Gauss
+C  PASSAGE DE PPHASMR ET PPHASPR AUX POINTS DE GAUSS
         DO 9 KP = 1,NPG
           K = (KP-1)*NNO
-          DO 7 L = 1,NZ   
+          DO 7 L = 1,NZ
             PHASM(NZ*(KP-1)+L)=0.D0
             PHASP(NZ*(KP-1)+L)=0.D0
-            DO 5 I = 1,NNO   
-              PHASM(NZ*(KP-1)+L) = PHASM(NZ*(KP-1)+L) + 
+            DO 5 I = 1,NNO
+              PHASM(NZ*(KP-1)+L) = PHASM(NZ*(KP-1)+L) +
      +                           ZR(IPHASM+NZ*(I-1)+L-1)*ZR(IVF+K+I-1)
-              PHASP(NZ*(KP-1)+L) = PHASP(NZ*(KP-1)+L) + 
+              PHASP(NZ*(KP-1)+L) = PHASP(NZ*(KP-1)+L) +
      +                           ZR(IPHASP+NZ*(I-1)+L-1)*ZR(IVF+K+I-1)
-  5         CONTINUE        
-  7       CONTINUE          
+  5         CONTINUE
+  7       CONTINUE
   9     CONTINUE
       END IF
-      
 
-  
+
+
 C - PARAMETRES EN SORTIE
 
       IF (OPTION(1:10).EQ.'RIGI_MECA_' .OR.
@@ -235,22 +235,9 @@ C      GRANDES DEFORMATIONS : FORMULATION SIMO - MIEHE
      &                ZR(IDEPLM),ZR(IDEPLP),
      &                ANGMAS,
      &                ZR(ICONTM),ZR(IVARIM),
-     &                DFDI,DFDI2,
-     &                ZR(ICONTP),ZR(IVARIP),MATNS,ZR(IVECTU),CODRET)
+     &                DFDI,DFDI2,ZR(ICONTP),ZR(IVARIP),
+     &                ZR(IMATUU),ZR(IVECTU),CODRET)
 
-C        SYMETRISATION DE MATNS DANS MATUU
-          IF (OPTION(1:10).EQ.'RIGI_MECA_' .OR.
-     &        OPTION(1:9).EQ.'FULL_MECA') THEN
-            NDDL = 3*NNO
-            KK = 0
-            DO 40 NI = 1,NDDL
-              DO 30 MJ = 1,NI
-                ZR(IMATUU+KK) = (MATNS((NI-1)*NDDL+MJ)+
-     &                          MATNS((MJ-1)*NDDL+NI))/2.D0
-                KK = KK + 1
-   30         CONTINUE
-   40       CONTINUE
-          END IF
 
 C 7.3 - GRANDES ROTATIONS ET PETITES DEFORMATIONS
         ELSE IF (ZK16(ICOMPO+2) (1:5).EQ.'GREEN') THEN

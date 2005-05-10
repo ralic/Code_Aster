@@ -2,7 +2,7 @@
      &                   DEPTOT,ITERAT,LREAC,CONV,DEPDEL,LICCVG)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION 
-C MODIF ALGORITH  DATE 07/02/2005   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 09/05/2005   AUTEUR MABBAS M.ABBAS 
 C TOLE CRP_20 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -126,6 +126,7 @@ C
       INTEGER      ZCONV
       PARAMETER    (ZCONV=4)
       LOGICAL      TROUAC,DELPOS,GLISS1,GLISS2,LELPIV,LELPI1,LELPI2
+      LOGICAL      CFEXCL
       INTEGER      JJC,JDEPDE,LLF,JDIM,NESMAX,LFMIN 
       INTEGER      IBID,IER,IFM,NIV,NDECI,ISINGU,NPVNEG,LFMIN2 
       INTEGER      II,JJ,KK,LL,IZONE,ILIAC,NUMIN
@@ -155,8 +156,8 @@ C
       CHARACTER*24 MACONT
       CHARACTER*24 APPARI,APPOIN,APCOEF,APJEU,APDDL,COEFMU
       CHARACTER*24 NDIMCO,CONTNO,CONTMA,APCOFR,FROTE,COMAFO,NOZOCO 
-      CHARACTER*24 CONVCO
-      INTEGER      JCONV
+      CHARACTER*24 CONVCO,APMEMO
+      INTEGER      JCONV,JAPMEM
 C
 C ======================================================================
 C
@@ -188,6 +189,7 @@ C ======================================================================
       APCOFR   = RESOCO(1:14)//'.APCOFR' 
       APDDL    = RESOCO(1:14)//'.APDDL' 
       APJEU    = RESOCO(1:14)//'.APJEU' 
+      APMEMO   = RESOCO(1:14)//'.APMEMO' 
       APPARI   = RESOCO(1:14)//'.APPARI'
       APPOIN   = RESOCO(1:14)//'.APPOIN' 
       ATMU     = RESOCO(1:14)//'.ATMU' 
@@ -222,6 +224,7 @@ C ======================================================================
       CALL JEVEUO(APCOEF,'L',JAPCOE) 
       CALL JEVEUO(APCOFR,'L',JAPCOF) 
       CALL JEVEUO(APJEU, 'E',JAPJEU) 
+      CALL JEVEUO(APMEMO,'L',JAPMEM) 
       CALL JEVEUO(APDDL, 'L',JAPDDL) 
       CALL JEVEUO(LIAC,  'E',JLIAC) 
       CALL JEVEUO(LIOT,  'E',JLIOT)      
@@ -332,14 +335,16 @@ C ======================================================================
          DO 4 II = 1,NBLIAI 
             ZR(JMU-1+2*NBLIAI+II) = 0.D0 
             ZR(JMU-1+  NBLIAI+II) = 0.D0 
-            ZR(JMU-1+         II) = 0.D0  
-            AJEU = ZR(JAPJEU+II-1) 
-            IF (AJEU.LE.R8PREM()) THEN 
+            ZR(JMU-1+         II) = 0.D0 
+            IF (.NOT.CFEXCL(JAPPAR,JAPMEM,II)) THEN 
+              AJEU = ZR(JAPJEU+II-1) 
+              IF (AJEU.LE.R8PREM()) THEN 
 C --- LA LIAISON II EST ACTIVE - NOUVELLE LIAISON ACTIVE: POSIT
-               POSIT  = NBLIAC + LLF + LLF1 + LLF2 + 1 
-               CALL CFTABL(INDIC,NBLIAC,AJLIAI,SPLIAI,LLF,LLF1,LLF2, 
-     &                     RESOCO,TYPEAJ,POSIT,II,TYPEC0)
-            END IF 
+                POSIT  = NBLIAC + LLF + LLF1 + LLF2 + 1 
+                CALL CFTABL(INDIC,NBLIAC,AJLIAI,SPLIAI,LLF,LLF1,LLF2, 
+     &                      RESOCO,TYPEAJ,POSIT,II,TYPEC0)
+              ENDIF 
+            ENDIF
  4       CONTINUE 
 C ======================================================================
 C --- TOUTES LES LIAISONS DE CONTACT SONT CONSIDEREES ADHERENTES
@@ -365,24 +370,26 @@ C ======================================================================
          IF(LREAC(1)) THEN 
             BTOTAL  = NBLIAC + LLF + LLF1 + LLF2 
             DO 5 II = 1,NBLIAI 
-               AJEU = ZR(JAPJEU+II-1) 
-               IF (AJEU.LE.R8PREM()) THEN 
-                  TROUAC = .FALSE. 
-                  DO 940 JJ = 1, BTOTAL 
+               IF (.NOT.CFEXCL(JAPPAR,JAPMEM,II)) THEN
+                 AJEU = ZR(JAPJEU+II-1) 
+                 IF (AJEU.LE.R8PREM()) THEN 
+                   TROUAC = .FALSE. 
+                   DO 940 JJ = 1, BTOTAL 
                      IF (ZI(JLIAC-1+JJ).EQ.II) THEN 
                         TROUAC = .TRUE. 
                      ENDIF 
- 940              CONTINUE 
+ 940               CONTINUE 
 C --- LA LIAISON II N'ETAIT PAS DEJA ACTIVE -> ON L'ACTIVE
-                  IF (.NOT.TROUAC) THEN 
-                    POSIT = NBLIAC + LLF + LLF1 + LLF2 + 1 
-                    CALL CFTABL(INDIC,NBLIAC,AJLIAI,SPLIAI,LLF,LLF1,
+                   IF (.NOT.TROUAC) THEN 
+                     POSIT = NBLIAC + LLF + LLF1 + LLF2 + 1 
+                     CALL CFTABL(INDIC,NBLIAC,AJLIAI,SPLIAI,LLF,LLF1,
      &                          LLF2,RESOCO,TYPEAJ,POSIT,II,TYPEC0)
-                    IF (NIV.GE.2) THEN
-                      CALL CFIMP2(IFM,NOMA,LLIAC,TYPEC0,TYPEAJ,'ALG',
-     &                      AJEU,JAPPAR,JNOCO,JMACO)
-                    END IF
-                  ENDIF 
+                     IF (NIV.GE.2) THEN
+                       CALL CFIMP2(IFM,NOMA,II,TYPEC0,TYPEAJ,'ALG',
+     &                             AJEU,JAPPAR,JNOCO,JMACO)
+                     END IF
+                   ENDIF 
+                 ENDIF
                ENDIF
  5          CONTINUE
          ENDIF
@@ -565,12 +572,14 @@ C - MINIMUM (CE SERA LA LIAISON LA PLUS VIOLEE)
                DELPOS = .TRUE. 
                CALL CALADU(NEQ,NBDDL,ZR(JAPCOE+JDECAL), 
      &                     ZI(JAPDDL+JDECAL),ZR(JRESU),VAL)
-               AJEU = ZR(JAPJEU+II-1) - VAL 
-               AJEU = AJEU/AADELT
-               IF (AJEU.LT.RHO) THEN 
-                  RHO   = AJEU 
-                  NUMIN = II
-               ENDIF 
+               IF (.NOT.CFEXCL(JAPPAR,JAPMEM,II)) THEN
+                 AJEU = ZR(JAPJEU+II-1) - VAL 
+                 AJEU = AJEU/AADELT
+                 IF (AJEU.LT.RHO) THEN 
+                   RHO   = AJEU 
+                   NUMIN = II
+                 ENDIF 
+               ENDIF
             ENDIF 
  70      CONTINUE 
 C ======================================================================

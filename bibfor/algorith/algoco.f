@@ -1,7 +1,7 @@
       SUBROUTINE ALGOCO(DEFICO,RESOCO,LMAT,LDSCON,NOMA,CINE,RESU,
      &                  DEPTOT,LICCVG)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/02/2005   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 09/05/2005   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -106,7 +106,7 @@ C
       CHARACTER*24 K24BID
       COMPLEX*16   CBID
       INTEGER      IBID
-      LOGICAL      TROUAC,DELPOS,GCPC,LELPIV
+      LOGICAL      TROUAC,DELPOS,GCPC,LELPIV,CFEXCL
       CHARACTER*19 MATASS,MATAS1,MATPRE
       INTEGER      IER,IFM,NIV,NDECI,ISINGU,NPVNEG,IZONE
       INTEGER      II,KK,ITER,ILIAC,NEQMAX
@@ -122,8 +122,8 @@ C
       CHARACTER*24 MACONT
       CHARACTER*24 APPARI,APPOIN,APCOEF,APJEU,APDDL,COEFMU,NOZOCO
       INTEGER      JAPPAR,JAPPTR,JAPCOE,JAPJEU,JAPDDL,JCMU,JZOCO
-      CHARACTER*24 CONTNO,CONTMA,CONVCO
-      INTEGER      JNOCO,JMACO,JCONV
+      CHARACTER*24 CONTNO,CONTMA,CONVCO,APMEMO
+      INTEGER      JNOCO,JMACO,JCONV,JAPMEM
       CHARACTER*19 LIAC,MU,DELT0,DELTA,CM1A,COCO,LIOT,ATMU
       INTEGER      JLIAC,JMU,JDELT0,JDELTA,JCM1A,JCOCO,JLIOT,JATMU
       CHARACTER*19 CHASEC,CHASOL,SOLVEU
@@ -163,6 +163,7 @@ C ======================================================================
       APPOIN = RESOCO(1:14)//'.APPOIN'
       APCOEF = RESOCO(1:14)//'.APCOEF'
       APJEU  = RESOCO(1:14)//'.APJEU'
+      APMEMO = RESOCO(1:14)//'.APMEMO'
       APDDL  = RESOCO(1:14)//'.APDDL'
       LIAC   = RESOCO(1:14)//'.LIAC'
       LIOT   = RESOCO(1:14)//'.LIOT'
@@ -185,6 +186,7 @@ C ======================================================================
       CALL JEVEUO(APPOIN,'L',JAPPTR)
       CALL JEVEUO(APCOEF,'L',JAPCOE)
       CALL JEVEUO(APJEU,'E',JAPJEU)
+      CALL JEVEUO(APMEMO,'L',JAPMEM)
       CALL JEVEUO(APDDL,'L',JAPDDL)
       CALL JEVEUO(LIAC,'E',JLIAC)
       CALL JEVEUO(LIOT,'E',JLIOT)
@@ -304,18 +306,21 @@ C ======================================================================
           NBDDL = ZI(JAPPTR+II) - ZI(JAPPTR+II-1)
           CALL CALADU(NEQ,NBDDL,ZR(JAPCOE+JDECAL),ZI(JAPDDL+JDECAL),
      &                ZR(JDELT0),VAL)
-          AJEU = ZR(JAPJEU+II-1) - VAL
 
-          IF ((AJEU.LT.0.0D0) .OR. (ZR(JAPJEU+II-1).LT. (0.D0))) THEN
-            INDIC = 0
-            POSIT = NBLIAC + 1
-            CALL CFTABL(INDIC,NBLIAC,AJLIAI,SPLIAI,LLF,LLF1,LLF2,
-     &                  RESOCO,TYPEAJ,POSIT,II,TYPEC0)
-            IF (NIV.GE.2) THEN
-             CALL CFIMP2(IFM,NOMA,II,TYPEC0,TYPEAJ,'ALG',AJEU,
-     &                  JAPPAR,JNOCO,JMACO)
-            END IF
-          END IF
+          IF (.NOT.CFEXCL(JAPPAR,JAPMEM,II)) THEN
+            AJEU = ZR(JAPJEU+II-1) - VAL
+
+            IF ((AJEU.LT.0.0D0).OR.(ZR(JAPJEU+II-1).LT. (0.D0))) THEN
+              INDIC = 0
+              POSIT = NBLIAC + 1
+              CALL CFTABL(INDIC,NBLIAC,AJLIAI,SPLIAI,LLF,LLF1,LLF2,
+     &                    RESOCO,TYPEAJ,POSIT,II,TYPEC0)
+              IF (NIV.GE.2) THEN
+                CALL CFIMP2(IFM,NOMA,II,TYPEC0,TYPEAJ,'ALG',AJEU,
+     &                      JAPPAR,JNOCO,JMACO)
+              ENDIF
+            ENDIF
+          ENDIF
    30   CONTINUE
       END IF
 C
@@ -528,12 +533,14 @@ C ======================================================================
               DELPOS = .TRUE.
               CALL CALADU(NEQ,NBDDL,ZR(JAPCOE+JDECAL),ZI(JAPDDL+JDECAL),
      &                    ZR(JRESU),VAL)
-              AJEU = ZR(JAPJEU+II-1) - VAL
-              AJEU = AJEU/AADELT
-              IF (AJEU.LT.RHO) THEN
-                RHO = AJEU
-                LLMIN = II
-              END IF
+              IF (.NOT.CFEXCL(JAPPAR,JAPMEM,II)) THEN
+                AJEU = ZR(JAPJEU+II-1) - VAL
+                AJEU = AJEU/AADELT
+                IF (AJEU.LT.RHO) THEN
+                  RHO = AJEU
+                  LLMIN = II
+                ENDIF
+              ENDIF
             END IF
           END IF
   112   CONTINUE

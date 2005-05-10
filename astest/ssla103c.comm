@@ -1,5 +1,7 @@
-# MODIF  DATE 17/05/2004   AUTEUR ROMEO R.FERNANDES 
+# MODIF  DATE 09/05/2005   AUTEUR SMICHEL S.MICHEL-PONNELLE 
 # TITRE CALCUL DU RETRAIT DE DESSICCATION ET D'HYDRATATION 
+#       SUR UN CYLINDRE - LOI DE MAZARS LOCALE
+# -----------------------------------------------------------------
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,8 +19,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-#       SUR UN CYLINDRE - LOI DE MAZARS LOCALE
-# -----------------------------------------------------------------
+
 DEBUT(CODE=_F(NOM='SSLA103C',
               NIV_PUB_WEB='INTERNET',),);
 
@@ -39,6 +40,8 @@ NU=DEFI_FONCTION(NOM_PARA='HYDR',
                 VALE=(  0.,  0.15,
                         1,   0.25),)
 
+ALPHA=DEFI_CONSTANTE(VALE= 1.E-5)
+
 EPSD0=DEFI_CONSTANTE(VALE=1.E-4,);
 
 AT=DEFI_FONCTION(NOM_PARA='SECH',
@@ -58,7 +61,8 @@ BETON=DEFI_MATERIAU(ELAS_FO=_F(E=E,
                                NU=NU,
                                K_DESSIC =1.66E-5,
                                B_ENDOGE = 1.5E-5,
-                               TEMP_DEF_ALPHA = 20.),
+                               TEMP_DEF_ALPHA = 20.,
+                               ALPHA=ALPHA ),
                     MAZARS_FO  =_F(BETA = 1.06,
                                    EPSD0= EPSD0,
                                    AC   = AC,
@@ -100,6 +104,13 @@ TEMPI=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
                 AFFE=_F(TOUT='OUI',
                         NOM_CMP='TEMP',
                         VALE=20.0,),);
+
+TEMPF=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
+                OPERATION='AFFE',
+                MAILLAGE=M,
+                AFFE=_F(TOUT='OUI',
+                        NOM_CMP='TEMP',
+                        VALE=120.0,),);
                        
 TEMP1=CREA_RESU(OPERATION='AFFE',
                 TYPE_RESU='EVOL_THER',
@@ -107,7 +118,7 @@ TEMP1=CREA_RESU(OPERATION='AFFE',
                 AFFE=(
                 _F(CHAM_GD=TEMPI,
                    INST=0.0,),
-                _F(CHAM_GD=TEMPI,
+                _F(CHAM_GD=TEMPF,
                    INST=3600.0,  ),),);
 HYDRI=CREA_CHAMP(TYPE_CHAM='ELGA_HYDR_R',
                 OPERATION='AFFE',
@@ -142,9 +153,11 @@ CH2=AFFE_CHAR_MECA(MODELE=MO,
                    SECH_CALCULEE=SECH1,
                    HYDR_CALCULEE=HYDR1);
 
+#  ATTENTION :METTRE  SUFFISAMMENT DE PAS DE TEMPS QUAND E VARIE AVEC LE
+#  SECHAGE SINON RESULTATS APPROXIMATIFS OU PROBLEME DE CONVERGENCE
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=3600.0,
-                                     NOMBRE=2,),)
+                                     NOMBRE=20,),)
 
 U=STAT_NON_LINE( MODELE=MO,
                 CHAM_MATER=CM,
@@ -163,22 +176,22 @@ U=CALC_ELEM(reuse =U,
              EXCIT=(_F(CHARGE=CH1,),
                     _F(CHARGE=CH2,),),
              MODELE=MO,
-             OPTION=('EPSI_ELNO_DEPL','EPSP_ELNO','SIEF_ELNO_ELGA'),         )
+             OPTION=('EPSI_ELNO_DEPL','EPSP_ELNO','SIEF_ELNO_ELGA','VARI_ELNO_ELGA'),         )
 
 U=CALC_NO(reuse =U,
              RESULTAT = U,
              CHAM_MATER=CM,
-             OPTION=('EPSI_NOEU_DEPL','SIEF_NOEU_ELGA','EPSP_NOEU'),         )
+             OPTION=('EPSI_NOEU_DEPL','SIEF_NOEU_ELGA','EPSP_NOEU','VARI_NOEU_ELGA'),         )
 
 TEST_RESU(RESU=(
   _F(  RESULTAT = U,  NOM_CHAM = 'EPSI_NOEU_DEPL', INST = 3600.,
          NOM_CMP = 'EPXX',   NOEUD = 'N5',
          PRECISION = 5.E-3,  REFERENCE = 'ANALYTIQUE',
-         VALE = -3.47E-4),
+         VALE = 6.53E-4),
   _F(  RESULTAT = U,  NOM_CHAM = 'EPSI_NOEU_DEPL', INST = 3600.,
          NOM_CMP = 'EPYY',   NOEUD = 'N5',
          PRECISION = 5.E-3,  REFERENCE = 'ANALYTIQUE',
-         VALE = -3.47E-4),
+         VALE = 6.53E-4),
   _F(  RESULTAT = U,  NOM_CHAM = 'SIEF_NOEU_ELGA', INST = 3600.,
          NOM_CMP = 'SIXX',   NOEUD = 'N5',
          PRECISION = 1.E-6,  REFERENCE = 'ANALYTIQUE',
@@ -193,6 +206,10 @@ TEST_RESU(RESU=(
          VALE = 0.,CRITERE = 'ABSOLU'),
   _F(  RESULTAT = U,  NOM_CHAM = 'EPSP_NOEU', INST = 3600.,
          NOM_CMP = 'EPYY',   NOEUD = 'N5',
+         PRECISION = 1.E-6,  REFERENCE = 'ANALYTIQUE',
+         VALE = 0., CRITERE = 'ABSOLU'),
+  _F(  RESULTAT = U,  NOM_CHAM = 'VARI_NOEU_ELGA', INST = 3600.,
+         NOM_CMP = 'V1',   NOEUD = 'N5',
          PRECISION = 1.E-6,  REFERENCE = 'ANALYTIQUE',
          VALE = 0., CRITERE = 'ABSOLU'),
                   ));

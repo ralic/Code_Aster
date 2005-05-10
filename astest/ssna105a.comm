@@ -1,4 +1,4 @@
-# MODIF  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 09/05/2005   AUTEUR REZETTE C.REZETTE 
 # RESPONSABLE F6BHHBO P.DEBONNIERES
 # TITRE CYLINDRES CREUX VISCOPLASTICITE LINEAIRE, PRESSION INTERNE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -156,6 +156,7 @@ CONT = AFFE_CHAR_MECA (MODELE = MO,
                                        GROUP_MA_ESCL = 'DBCP',
                                        REAC_GEOM = 'CONTROLE',
                                        NB_REAC_GEOM = 2,
+                                       RECHERCHE= 'NOEUD_BOUCLE',
                       ))
  
                                   

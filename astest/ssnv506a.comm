@@ -1,4 +1,4 @@
-# MODIF  DATE 03/11/2004   AUTEUR MCOURTOI M.COURTOIS 
+# MODIF  DATE 09/05/2005   AUTEUR REZETTE C.REZETTE 
 # TITRE INDENTATION ELASTOPLASTIQUE D'UN DEMI-PLAN
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -75,6 +75,7 @@ CHMAT=AFFE_MATERIAU(MAILLAGE=SSNV506A,
 #CONDITIONS AUX LIMITES
 CHA1=AFFE_CHAR_MECA(MODELE=MO,
                     CONTACT=_F(APPARIEMENT='MAIT_ESCL',
+                               RECHERCHE = 'NOEUD_BOUCLE',
                                REAC_GEOM='CONTROLE',
                                NB_REAC_GEOM=2,
                                METHODE='CONTRAINTE',

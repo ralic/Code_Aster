@@ -1,4 +1,4 @@
-#@ MODIF macr_ascouf_mail_ops Macro  DATE 30/11/2004   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF macr_ascouf_mail_ops Macro  DATE 09/05/2005   AUTEUR LEBOUVIE F.LEBOUVIER 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -2339,8 +2339,8 @@ def macr_ascouf_mail_ops(self,EXEC_MAILLAGE,TYPE_ELEM,COUDE,
 # coude fissure
 #
   if FISS_COUDE!=None:
-    if (RM/EP1)<5. or (RM/EP1)>12.:
-       print ' <MACR_ASCOUF_MAIL> valeur hors domaine de validite (5,12)'
+    if (RM/EP1)<5. or (RM/EP1)>50.:
+       print ' <MACR_ASCOUF_MAIL> valeur hors domaine de validite (5,50)'
        print ' <MACR_ASCOUF_MAIL> rapport RM/EP1 :',(RM/EP1)
        self.cr.fatal("<F> <MACR_ASCOUF_MAIL> erreur donnees ")
        ier = ier+1

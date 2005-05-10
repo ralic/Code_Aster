@@ -1,4 +1,4 @@
-# MODIF  DATE 07/03/2005   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 09/05/2005   AUTEUR REZETTE C.REZETTE 
 #  CAS_TEST  : SSNV104I
 #  TITRE : CONTACT DE DEUX SPHERES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -133,6 +133,7 @@ CHA1=AFFE_CHAR_MECA(MODELE=MO,
 
 CHA2=AFFE_CHAR_MECA(MODELE=MO,
                     CONTACT=_F(METHODE='CONTRAINTE',
+                               RECHERCHE = 'NOEUD_BOUCLE',
                                GROUP_MA_MAIT='SMAI',
                                GROUP_MA_ESCL='SESC',
                                ),);

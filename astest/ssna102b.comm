@@ -1,4 +1,4 @@
-# MODIF  DATE 07/03/2005   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 09/05/2005   AUTEUR REZETTE C.REZETTE 
 #
 # TITRE CONTACT MULTICORPS ELASTIQUES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -140,18 +140,18 @@ CONT=AFFE_CHAR_MECA(
                                          GROUP_MA_ESCL = 'CEP2',
                                          SANS_GROUP_NO = ('PA1', 'PP2',),
                                          APPARIEMENT = 'MAIT_ESCL',
-                                         RECHERCHE = 'NOEUD_VOISIN',
+                                         RECHERCHE = 'NOEUD_BOUCLE',
                                          METHODE = 'LAGRANGIEN'),
                                _F(  GROUP_MA_MAIT = 'CME2',
                                          GROUP_MA_ESCL = 'CEP3',
                                          APPARIEMENT = 'MAIT_ESCL',
-                                         RECHERCHE = 'NOEUD_VOISIN',
+                                         RECHERCHE = 'NOEUD_BOUCLE',
                                          METHODE = 'LAGRANGIEN'),
                                _F(  GROUP_MA_MAIT = 'CME3',
                                          GROUP_MA_ESCL = 'LCD4',
                                          SANS_GROUP_NO = ('PM3', 'PD4',),
                                          APPARIEMENT = 'MAIT_ESCL',
-                                         RECHERCHE = 'NOEUD_VOISIN',
+                                         RECHERCHE = 'NOEUD_BOUCLE',
                                          METHODE = 'LAGRANGIEN')),
                            INFO=1
                        )

@@ -1,6 +1,6 @@
       SUBROUTINE TE0100(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 26/04/2005   AUTEUR LAVERNE J.LAVERNE 
+C MODIF ELEMENTS  DATE 10/05/2005   AUTEUR GJBHHEL E.LORENTZ 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -38,7 +38,6 @@ C ......................................................................
       INTEGER IIRRAM, IIRRAP
       INTEGER NDDL,KK,NI,MJ,JTAB(7),IADZI,IAZK24,NZ,JCRET,CODRET
       INTEGER NDIM,NNOS,JGANO,ICAMAS
-      REAL*8  MATNS(2*9*2*9)
       REAL*8  VECT1(54), VECT2(4*27*27), VECT3(4*27*2)
       REAL*8  R8VIDE,ANGMAS(3),R8DGRD
       REAL*8  PHASM(7*27),PHASP(7*27)
@@ -66,7 +65,6 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
 C - FONCTIONS DE FORMES ET POINTS DE GAUSS
 C
-      IF (NNO.GT.9) CALL UTMESS('F','TE0100','MATNS MAL DIMENSIONNEE')
 
 C - TYPE DE MODELISATION
 
@@ -79,7 +77,7 @@ C - TYPE DE MODELISATION
       ELSE
         CALL UTMESS('F','TE0100','NOM D''ELEMENT ILLICITE')
       END IF
-      
+
       IF (NOMTE(1:2).EQ.'MD') THEN
         TYPMOD(2) = 'ELEMDISC'
       ELSE IF (NOMTE(1:2).EQ.'MI') THEN
@@ -104,7 +102,7 @@ C - PARAMETRES EN ENTREE
       LGPG1 = MAX(JTAB(6),1)*JTAB(7)
       LGPG = LGPG1
 
-C     ORIENTATION DU MASSIF     
+C     ORIENTATION DU MASSIF
       CALL TECACH('NNN','PCAMASS',1,ICAMAS,IRET)
       CALL R8INIR(3, R8VIDE(), ANGMAS ,1)
 
@@ -131,22 +129,22 @@ C - VARIABLES DE COMMANDE
       IF (IRET.EQ.0) THEN
         CALL TECACH('OON','PPHASPR',7,JTAB,IRET)
         NZ = JTAB(6)
-C  passage de PPHASMR et PPHASPR aux points de Gauss
+C  PASSAGE DE PPHASMR ET PPHASPR AUX POINTS DE GAUSS
         DO 9 KP = 1,NPG1
           K = (KP-1)*NNO
-          DO 7 L = 1,NZ   
+          DO 7 L = 1,NZ
             PHASM(NZ*(KP-1)+L)=0.D0
             PHASP(NZ*(KP-1)+L)=0.D0
-            DO 5 I = 1,NNO   
-              PHASM(NZ*(KP-1)+L) = PHASM(NZ*(KP-1)+L) + 
+            DO 5 I = 1,NNO
+              PHASM(NZ*(KP-1)+L) = PHASM(NZ*(KP-1)+L) +
      +                           ZR(IPHASM+NZ*(I-1)+L-1)*ZR(IVF+K+I-1)
-              PHASP(NZ*(KP-1)+L) = PHASP(NZ*(KP-1)+L) + 
+              PHASP(NZ*(KP-1)+L) = PHASP(NZ*(KP-1)+L) +
      +                           ZR(IPHASP+NZ*(I-1)+L-1)*ZR(IVF+K+I-1)
-  5         CONTINUE        
-  7       CONTINUE          
+  5         CONTINUE
+  7       CONTINUE
   9     CONTINUE
       END IF
-                  
+
       CALL JEVECH('PHYDRMR','L',IHYDRM)
       CALL JEVECH('PHYDRPR','L',IHYDRP)
       CALL JEVECH('PSECHMR','L',ISECHM)
@@ -218,10 +216,10 @@ CCDIR$ IVDEP
         END IF
 
         IF (ZK16(ICOMPO+2) (1:5).EQ.'PETIT') THEN
-        
+
 C -       ELEMENT A DISCONTINUITE INTERNE
           IF (TYPMOD(2).EQ.'ELEMDISC') THEN
-                    
+
             CALL NMED2D(NNO,NPG1,IPOIDS,IVF,IDFDE,
      &                  ZR(IGEOM),TYPMOD,OPTION,ZI(IMATE),ZK16(ICOMPO),
      &                  LGPG,ZR(ICARCR),
@@ -231,7 +229,7 @@ C -       ELEMENT A DISCONTINUITE INTERNE
      &                  ZR(IMATUU),ZR(IVECTU),CODRET)
 
           ELSE
-          
+
             CALL NMPL2D(NNO,NPG1,IPOIDS,IVF,IDFDE,
      &                  ZR(IGEOM),TYPMOD,OPTION,ZI(IMATE),ZK16(ICOMPO),
      &                  LGPG,ZR(ICARCR),
@@ -266,20 +264,8 @@ C      GRANDES DEFORMATIONS : FORMULATION SIMO - MIEHE
      &                ANGMAS,
      &                ZR(ICONTM),ZR(IVARIM),
      &                VECT1,VECT2,ZR(ICONTP),ZR(IVARIP),
-     &                MATNS,ZR(IVECTU),CODRET)
+     &                ZR(IMATUU),ZR(IVECTU),CODRET)
 
-C        SYMETRISATION DE MATNS DANS MATUU
-          IF (OPTION(1:4).EQ.'RIGI' .OR. OPTION(1:4).EQ.'FULL') THEN
-            NDDL = 2*NNO
-            KK = 0
-            DO 40 NI = 1,NDDL
-              DO 30 MJ = 1,NI
-                ZR(IMATUU+KK) = (MATNS((NI-1)*NDDL+MJ)+
-     &                          MATNS((MJ-1)*NDDL+NI))/2.D0
-                KK = KK + 1
-   30         CONTINUE
-   40       CONTINUE
-          END IF
 
 C 7.3 - GRANDES ROTATIONS ET PETITES DEFORMATIONS
         ELSE IF (ZK16(ICOMPO+2) .EQ.'GREEN') THEN

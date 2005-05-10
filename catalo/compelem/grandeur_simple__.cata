@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 18/04/2005   AUTEUR GENIAUT S.GENIAUT 
+%& MODIF COMPELEM  DATE 09/05/2005   AUTEUR REZETTE C.REZETTE 
 % RESPONSABLE JMBHH01 J.M.PROIX
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -427,6 +427,11 @@ GRANDEUR_SIMPLE__
                     X33      X34      X35      X36      X37      X38      X39      X40
                     X41      X42      X43      X44      X45      X46      X47      X48
                     X49      X50      X51      X52      X53      X54      X55      X56
+                    X57      X58      X59      X60      X61      X62      X63      X64
+                    X65      X66      X67      X68      X69      X70      X71      X72
+                    X73      X74      X75      X76      X77      X78      X79      X80
+                    X81      X82      X83      X84      X85      X86      X87      X88
+                    X89      X90
     NUMC_I   = I    NUMC     ORDO     ANGL
     NUMMOD   = I    NUM
     ONDE_F   = K8   PRES

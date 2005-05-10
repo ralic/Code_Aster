@@ -1,7 +1,8 @@
 
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 09/05/2005   AUTEUR SMICHEL S.MICHEL-PONNELLE 
 # -----------------------------------------------------------------
-# TITRE CALCUL DU RETRAIT DE DESSICCATION SUR UN CYLINDRE
+# TITRE CALCUL DU RETRAIT DE DESSICCATION ET D'HYDRATATION
+#       SUR UN CYLINDRE - LOI ELASTIQUE - 3D
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -35,10 +36,14 @@ E=DEFI_CONSTANTE(VALE=3.E10,);
 
 NU=DEFI_CONSTANTE(VALE=0.2,);
 
+ALPHA=DEFI_CONSTANTE(VALE= 1.E-5)
+
 BETON=DEFI_MATERIAU(ELAS_FO=_F(E=E,
                                NU=NU,
                                K_DESSIC=1.66e-05,
-                               B_ENDOGE = 1.5E-5,),);
+                               B_ENDOGE = 1.5E-5,
+                               ALPHA = ALPHA,
+                               TEMP_DEF_ALPHA =20),);
 
 CM=AFFE_MATERIAU(MAILLAGE=M,
                  AFFE=_F(TOUT='OUI',
@@ -69,19 +74,27 @@ SECH1=CREA_RESU(OPERATION='AFFE',
                 _F(CHAM_GD=SECHF,
                    INST=3600.0,),),);
 
-TEMP=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
+TEMPI=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
                 OPERATION='AFFE',
                 MAILLAGE=M,
                 AFFE=_F(TOUT='OUI',
                         NOM_CMP='TEMP',
                         VALE=20.0,),);
+TEMPF=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
+                OPERATION='AFFE',
+                MAILLAGE=M,
+                AFFE=_F(TOUT='OUI',
+                        NOM_CMP='TEMP',
+                        VALE=120.0,),);
 
 TEMP1=CREA_RESU(OPERATION='AFFE',
                 TYPE_RESU='EVOL_THER',
                 NOM_CHAM='TEMP',
                 AFFE=(
-                _F(CHAM_GD=TEMP,
-                   INST=0.0,),),);
+                _F(CHAM_GD=TEMPI,
+                   INST=0.0,),
+                _F(CHAM_GD=TEMPF,
+                   INST=3600.0,),   ),);
 
 HYDRI=CREA_CHAMP(TYPE_CHAM='ELGA_HYDR_R',
                 OPERATION='AFFE',
@@ -147,11 +160,11 @@ TEST_RESU(RESU=(
   _F(  RESULTAT = U,  NOM_CHAM = 'EPSI_NOEU_DEPL', INST = 3600.,
          NOM_CMP = 'EPXX',   NOEUD = 'N5',
          PRECISION = 5.E-3,  REFERENCE = 'ANALYTIQUE',
-         VALE = -3.47E-4),
+         VALE = 6.53E-4),
   _F(  RESULTAT = U,  NOM_CHAM = 'EPSI_NOEU_DEPL', INST = 3600.,
          NOM_CMP = 'EPYY',   NOEUD = 'N5',
          PRECISION = 5.E-3,  REFERENCE = 'ANALYTIQUE',
-         VALE = -3.47E-4),
+         VALE = 6.53E-4),
   _F(  RESULTAT = U,  NOM_CHAM = 'SIEF_NOEU_ELGA', INST = 3600.,
          NOM_CMP = 'SIXX',   NOEUD = 'N5',
          PRECISION = 1.E-6,  REFERENCE = 'ANALYTIQUE',
@@ -189,11 +202,11 @@ TEST_RESU(RESU=(
   _F(  RESULTAT = U2,  NOM_CHAM = 'EPSI_NOEU_DEPL', INST = 3600.,
          NOM_CMP = 'EPXX',   NOEUD = 'N5',
          PRECISION = 5.E-3,  REFERENCE = 'ANALYTIQUE',
-         VALE = -3.47E-4),
+         VALE = 6.53E-4),
   _F(  RESULTAT = U2,  NOM_CHAM = 'EPSI_NOEU_DEPL', INST = 3600.,
          NOM_CMP = 'EPYY',   NOEUD = 'N5',
          PRECISION = 5.E-3,  REFERENCE = 'ANALYTIQUE',
-         VALE = -3.47E-4),
+         VALE = 6.53E-4),
   _F(  RESULTAT = U2,  NOM_CHAM = 'SIGM_NOEU_DEPL', INST = 3600.,
          NOM_CMP = 'SIXX',   NOEUD = 'N5',
          PRECISION = 1.E-6,  REFERENCE = 'ANALYTIQUE',

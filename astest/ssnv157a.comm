@@ -1,4 +1,4 @@
-# MODIF  DATE 25/01/2005   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 10/05/2005   AUTEUR GJBHHEL E.LORENTZ 
 # TITRE LOIS NON LOCALES A DEFORMATIONS REGULARISEES SUR BARREAU 3D
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -25,7 +25,7 @@ TOTO=DEFI_GROUP(reuse =TOTO,
                 MAILLAGE=TOTO,
                 CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI',),);
 
-MAT1=DEFI_MATERIAU(NON_LOCAL=_F(LONG_CARA=3.0,),
+MAT1=DEFI_MATERIAU(NON_LOCAL=_F(LONG_CARA=3.0**0.5,),
                    ECRO_LINE=_F(D_SIGM_EPSI=-2000.0,
                                 SY=3.0,),
                    ELAS=_F(NU=0.1,

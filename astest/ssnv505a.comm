@@ -1,5 +1,5 @@
 
-# MODIF  DATE 03/11/2004   AUTEUR MCOURTOI M.COURTOIS 
+# MODIF  DATE 09/05/2005   AUTEUR REZETTE C.REZETTE 
 # TITRE CONTACT DE DEUX POUTRES EN GRANDS DEPLACEMENTS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -109,6 +109,7 @@ CH2=AFFE_CHAR_MECA(MODELE=MODE,
                               SANS_GROUP_NO=('LBB1','LCC1'),
                               DIST_MAIT=31.75,
                               DIST_ESCL=31.75,
+                              RECHERCHE = 'NOEUD_BOUCLE',
                               TOLE_PROJ_EXT=0.25,
                               ),
                   INFO=2);

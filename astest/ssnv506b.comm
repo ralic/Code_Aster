@@ -1,4 +1,4 @@
-# MODIF  DATE 03/11/2004   AUTEUR MCOURTOI M.COURTOIS 
+# MODIF  DATE 09/05/2005   AUTEUR REZETTE C.REZETTE 
 # TITRE INDENTATION ELASTOPLASTIQUE D'UN DEMI-PLAN
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -85,6 +85,7 @@ CHA1=AFFE_CHAR_MECA(MODELE=MO,
                                METHODE='CONTRAINTE',
                                GROUP_MA_MAIT='SMAI',
                                GROUP_MA_ESCL='SESC',
+                               RECHERCHE='NOEUD_BOUCLE',
                                SANS_GROUP_NO=('E','S'),),);
 
 CHA2=AFFE_CHAR_MECA(MODELE=MO,

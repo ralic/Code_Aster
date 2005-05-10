@@ -1,4 +1,4 @@
-# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 09/05/2005   AUTEUR REZETTE C.REZETTE 
 # TITRE IMPACT D UNE BARRE DE TAYLOR ELASTOPLASTIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -69,6 +69,7 @@ CH=AFFE_CHAR_MECA(
             CONTACT=
             _F(APPARIEMENT  = 'MAIT_ESCL',
                REAC_GEOM    = 'CONTROLE',
+               RECHERCHE    = 'NOEUD_BOUCLE',
                NB_REAC_GEOM = 1,
                GROUP_MA_MAIT='RIGID',
                GROUP_MA_ESCL='SZZ',

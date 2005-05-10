@@ -1,7 +1,7 @@
       SUBROUTINE ALGOCP(DEFICO,RESOCO,LMAT,LDSCON,NOMA,
      &                  RESU,DEPTOT,LREAC,DEPDEL)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 09/05/2005   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -109,8 +109,8 @@ C
       INTEGER      IFM,NIV
       CHARACTER*24 APPARI,ATMU,AFMU,DELT0,DELTA,APCOEF,APDDL
       INTEGER      JAPPAR,JATMU,JAFMU,JDELT0,JDELTA,JAPCOE,JAPDDL
-      CHARACTER*24 APJEU,MU,CM1A,PENAL
-      INTEGER      JAPJEU,JMU,JCM1A,IPENA,JCOCO
+      CHARACTER*24 APJEU,MU,CM1A,PENAL,APMEMO
+      INTEGER      JAPJEU,JMU,JCM1A,IPENA,JCOCO,JAPMEM
       CHARACTER*24 CONTNO,CONTMA,LIAC,NOZOCO,COCO,APPOIN
       INTEGER      JNOCO,JMACO,JLIAC,JZOCO,JAPPTR
       INTEGER      NESCL,NBLIAI,NEQ,NBLIAC,AJLIAI,SPLIAI,INDIC
@@ -123,8 +123,9 @@ C
       CHARACTER*1  TYPEAJ
       CHARACTER*2  TYPEC0
       INTEGER      JRESU,JDEPP,JDEPDE
-      INTEGER      POSMA,JDECAL,POSIT
+      INTEGER      JDECAL,POSIT
       REAL*8       VAL,XMU
+      LOGICAL      CFEXCL
 C
 C ======================================================================
 C
@@ -166,6 +167,7 @@ C ======================================================================
       APPOIN   = RESOCO(1:14)//'.APPOIN'
       APCOEF   = RESOCO(1:14)//'.APCOEF'
       APJEU    = RESOCO(1:14)//'.APJEU'
+      APMEMO   = RESOCO(1:14)//'.APMEMO'
       APDDL    = RESOCO(1:14)//'.APDDL'
       LIAC     = RESOCO(1:14)//'.LIAC'
       MU       = RESOCO(1:14)//'.MU'
@@ -186,6 +188,7 @@ C ======================================================================
       CALL JEVEUO (APPOIN,'L',JAPPTR)
       CALL JEVEUO (APCOEF,'L',JAPCOE)
       CALL JEVEUO (APJEU, 'E',JAPJEU)
+      CALL JEVEUO (APMEMO,'L',JAPMEM)
       CALL JEVEUO (APDDL, 'L',JAPDDL)
       CALL JEVEUO (LIAC,  'E',JLIAC)
       CALL JEVEUO (MU,    'E',JMU)
@@ -276,26 +279,29 @@ C ======================================================================
          ZR(JMU-1+II) = 0.0D0
          JDECAL = ZI(JAPPTR+II-1)
          NBDDL  = ZI(JAPPTR+II) - ZI(JAPPTR+II-1)
-         CALL CALADU (NEQ,NBDDL,ZR(JAPCOE+JDECAL),
-     &                ZI(JAPDDL+JDECAL),ZR(JDELT0),VAL)
-         ZR(JAPJEU+II-1) = ZR(JAPJEU+II-1) - VAL
          CALL JEVEUO ( JEXNUM(CM1A,II), 'E', JCM1A )
          DO 20 KK = 1, NEQ
             ZR(JCM1A-1+KK) = 0.0D0
  20      CONTINUE
-         IF ( ZR(JAPJEU+II-1).LT.0.0D0 ) THEN
-            POSIT  = NBLIAC + 1 
-            CALL CFTABL(INDIC,NBLIAC,AJLIAI,SPLIAI,LLF,LLF1,LLF2, 
-     &                  RESOCO,TYPEAJ,POSIT,II,TYPEC0) 
-            IF (NIV.GE.2) THEN
+
+         CALL CALADU (NEQ,NBDDL,ZR(JAPCOE+JDECAL),
+     &                ZI(JAPDDL+JDECAL),ZR(JDELT0),VAL)
+         IF (.NOT.CFEXCL(JAPPAR,JAPMEM,II)) THEN
+           ZR(JAPJEU+II-1) = ZR(JAPJEU+II-1) - VAL
+           IF ( ZR(JAPJEU+II-1).LT.0.0D0 ) THEN
+             POSIT  = NBLIAC + 1 
+             CALL CFTABL(INDIC,NBLIAC,AJLIAI,SPLIAI,LLF,LLF1,LLF2, 
+     &                RESOCO,TYPEAJ,POSIT,II,TYPEC0) 
+             IF (NIV.GE.2) THEN
                CALL CFIMP2(IFM,NOMA,II,TYPEC0,TYPEAJ,'ALG',
-     &                  ZR(JAPJEU+II-1),JAPPAR,JNOCO,JMACO)
-            END IF 
-            XMU    = 1.D0
-            CALL CALATM (NEQ,NBDDL,XMU,ZR(JAPCOE+JDECAL),
+     &                ZR(JAPJEU+II-1),JAPPAR,JNOCO,JMACO)
+             END IF 
+             XMU    = 1.D0
+             CALL CALATM(NEQ,NBDDL,XMU,ZR(JAPCOE+JDECAL),
      &                   ZI(JAPDDL+JDECAL),ZR(JCM1A))
-            ZR(JMU-1+NBLIAC) = -ZR(JAPJEU+II-1)*ZR(IPENA-1+2*II-1)
-            CALL DAXPY(NEQ,ZR(JMU-1+NBLIAC),ZR(JCM1A),1,ZR(JAFMU),1) 
+             ZR(JMU-1+NBLIAC) = -ZR(JAPJEU+II-1)*ZR(IPENA-1+2*II-1)
+             CALL DAXPY(NEQ,ZR(JMU-1+NBLIAC),ZR(JCM1A),1,ZR(JAFMU),1) 
+           ENDIF
          ENDIF
          CALL JELIBE(JEXNUM(CM1A,II))
  50   CONTINUE
@@ -311,12 +317,14 @@ C ======================================================================
          DO 200 KK = 1, NEQ
             ZR(JCM1A-1+KK) = 0.0D0
  200     CONTINUE
-         IF ( ZR(JAPJEU+II-1).LT.0.0D0 ) THEN
-            JDECAL = ZI(JAPPTR+II-1)
-            NBDDL  = ZI(JAPPTR+II)-ZI(JAPPTR+II-1)
-            XMU    = SQRT(ZR(IPENA-1+2*II-1))
-            CALL CALATM (NEQ,NBDDL,XMU,ZR(JAPCOE+JDECAL),
-     &                   ZI(JAPDDL+JDECAL),ZR(JCM1A))
+         IF (.NOT.CFEXCL(JAPPAR,JAPMEM,II)) THEN
+           IF ( ZR(JAPJEU+II-1).LT.0.0D0 ) THEN
+             JDECAL = ZI(JAPPTR+II-1)
+             NBDDL  = ZI(JAPPTR+II)-ZI(JAPPTR+II-1)
+             XMU    = SQRT(ZR(IPENA-1+2*II-1))
+             CALL CALATM(NEQ,NBDDL,XMU,ZR(JAPCOE+JDECAL),
+     &                    ZI(JAPDDL+JDECAL),ZR(JCM1A))
+           ENDIF
          ENDIF
          CALL JELIBE(JEXNUM(CM1A,II))
  210  CONTINUE

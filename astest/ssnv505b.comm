@@ -1,4 +1,4 @@
-# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 09/05/2005   AUTEUR REZETTE C.REZETTE 
 # TITRE CONTACT DE DEUX POUTRES EN GRANDS DEPLACEMENTS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -74,6 +74,7 @@ CH1=AFFE_CHAR_MECA(MODELE=MODE,
 CH2=AFFE_CHAR_MECA(MODELE=MODE,
                    CONTACT=_F(GROUP_MA_MAIT='SMAI',
                               GROUP_MA_ESCL='SESC',
+                              RECHERCHE = 'NOEUD_BOUCLE',
                               SANS_GROUP_NO=('LA3A','LBINF'),
                               ),);
 
