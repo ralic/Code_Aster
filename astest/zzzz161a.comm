@@ -1,4 +1,4 @@
-# MODIF  DATE 12/04/2005   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 11/05/2005   AUTEUR MCOURTOI M.COURTOIS 
 # RESPONSABLE GNICOLAS G.NICOLAS
 # TITRE ESSAI MED POUR DIFFERENTS TYPES D ELEMENTS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -91,7 +91,6 @@ RESUTRQ2=LIRE_RESU(
               TYPE_RESU='EVOL_ELAS',
               FORMAT='MED',
               FORMAT_MED=_F( NOM_CHAM_MED='RESUTRQUDEPL____________________',
-                             NOM_CMP_IDEM='OUI',
                              NOM_CHAM  ='DEPL' ),
               UNITE=70,
               TOUT_ORDRE ='OUI',);
@@ -146,9 +145,9 @@ DEPLRELU=LIRE_CHAMP(MAILLAGE=MAILTRQU,
                 FORMAT='MED',
                 UNITE=80,
                 NOM_MED='RESUTRQ2DEPL____________________',
-                NOM_CMP_IDEM='OUI',
                 NUME_ORDRE=1,NUME_PT=1,
                 TYPE_CHAM='NOEU_DEPL_R',
+                NOM_CMP_IDEM='OUI',
                 INFO=2
                ) ;
 IMPR_RESU ( RESU=_F( CHAM_GD=DEPLRELU, ) ) ;
@@ -160,9 +159,9 @@ SIGMRELU=LIRE_CHAMP(MAILLAGE=MAILTRQU,
                 FORMAT='MED',
                 UNITE=80,
                 NOM_MED='RESUTRQ2SIGM_ELNO_DEPL__________',
-                NOM_CMP_IDEM='OUI',
                 NUME_ORDRE=1,NUME_PT=1,
                 TYPE_CHAM='ELNO_SIEF_R',
+                NOM_CMP_IDEM='OUI',
                 INFO=2
                ) ;
 IMPR_RESU ( RESU=_F( CHAM_GD=SIGMRELU, ) ) ;
@@ -174,9 +173,9 @@ ERRERELU=LIRE_CHAMP(MAILLAGE=MAILTRQU,
                 FORMAT='MED',
                 UNITE=80,
                 NOM_MED='RESUTRQ2ERRE_ELGA_NORE__________',
-                NOM_CMP_IDEM='OUI',
                 NUME_ORDRE=1,NUME_PT=1,
                 TYPE_CHAM='ELEM_ERREUR',
+                NOM_CMP_IDEM='OUI',
                 INFO=2
                ) ;
 IMPR_RESU ( RESU=_F( CHAM_GD=ERRERELU, ) ) ;

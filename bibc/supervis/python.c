@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF config supervis  DATE 30/06/2004   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF config supervis  DATE 12/05/2005   AUTEUR DURAND C.DURAND */
 /* RESPONSABLE                                 D6BHHJP J.P.LEFEBVRE   */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
@@ -37,6 +37,7 @@
 
 extern DL_EXPORT(int) Py_Main();
 extern void initaster();
+extern void initaster_fonctions();
 
 int
 main(argc, argv)
@@ -44,5 +45,9 @@ main(argc, argv)
 	char **argv;
 {
 	PyImport_AppendInittab("aster",initaster);
+
+   /* Module définissant des opérations sur les objets fonction_sdaster */
+	PyImport_AppendInittab("aster_fonctions",initaster_fonctions);
+
 	return Py_Main(argc, argv);
 }

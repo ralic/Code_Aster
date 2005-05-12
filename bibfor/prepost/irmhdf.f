@@ -4,7 +4,7 @@
      >                    INFMED )
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 03/11/2004   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF PREPOST  DATE 11/05/2005   AUTEUR MCOURTOI M.COURTOIS 
 C RESPONSABLE GNICOLAS G.NICOLAS
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -84,12 +84,14 @@ C
       INTEGER LNOMAM
       INTEGER IFM, NIVINF
 C
+      CHARACTER*1   SAUX01
       CHARACTER*6   SAUX06
       CHARACTER*8   NOMTYP(NTYMAX)
       CHARACTER*8   SAUX08
       CHARACTER*16  SAUX16(0:3)
       CHARACTER*32  NOMAMD
       CHARACTER*200 NOFIMD
+      CHARACTER*255 KFIC
 C
       LOGICAL EXISTM
 C
@@ -107,12 +109,15 @@ C
 C
 C 1.2. ==> NOM DU FICHIER MED
 C
-      IAUX = IFI
-      CALL CODENT ( IAUX, 'G', SAUX08 )
-      NOFIMD = 'fort.'//SAUX08
-      IF ( NIVINF.GT.1 ) THEN
-        WRITE (IFM,*) NOMPRO, ' : NOM DU FICHIER MED : ', NOFIMD
+      CALL ULISOG(IFI, KFIC, SAUX01)
+      IF ( KFIC(1:1).EQ.' ' ) THEN
+         CALL CODENT ( IFI, 'G', SAUX08 )
+         NOFIMD = 'fort.'//SAUX08
+      ELSE
+         NOFIMD = KFIC(1:200)
       ENDIF
+C
+      WRITE (IFM,*) '<',NOMPRO,'> NOM DU FICHIER MED : ',NOFIMD
 C
 C 1.3. ==> NOM DU MAILLAGE
 C

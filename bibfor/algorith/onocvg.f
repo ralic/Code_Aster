@@ -3,7 +3,7 @@
         IMPLICIT REAL*8 (A-H,O-Z)
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ALGORITH  DATE 11/05/2005   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -139,13 +139,15 @@ C
                    IRTETI = 3
                    GOTO 9999
                 ELSE
-                CALL CODENT(INTG,'G',CINTG)
-                CALL CODREE(ABS(DP),'E',CDP)
-                CALL UTEXCP(23,'OHNO','ERREUR D''INTEGRATION '//
-     1          '- ESSAI D''INTEGRATION  NUMERO '//CINTG//
-     2          '- CONVERGENCE VERS  UNE SOLUTION NON CONFORME '//
-     3          '- INCREMENT DE DEFORMATION CUMULEE NEGATIVE = -'//CDP//
-     4          '- CHANGER LA TAILLE D''INCREMENT')
+                  CALL UTDEXC(23,'OHNO','ERREUR D''INTEGRATION ')
+      CALL UTIMPI('L','- ESSAI D''INTEGRATION  NUMERO ', 1, INTG)
+      CALL UTIMPI('L','- CONVERGENCE VERS  UNE SOLUTION NON CONFORME ',
+     &      0, 0)
+      CALL UTIMPR('L','- INCREMENT DE DEFORMATION CUMULEE NEGATIVE =',
+     &      1, DP)
+      CALL UTIMPI('L','- CHANGER LA TAILLE D''INCREMENT', 0, 0)
+                  CALL UTFINM
+
                 ENDIF
                 ENDIF
 C
@@ -236,13 +238,13 @@ C
                            IRTETI = 3
                            GOTO 9999
                         ELSE
-                        CALL CODENT(ITER,'G',CITER)
-                        CALL CODREE(TOLER,'E',CTOL)
-                        CALL UTEXCP(23,'OHNO','ERREUR'//
-     1                  ' - NON CONVERGENCE A ITERATION MAXI '//CITER//
-     2                  ' - CONVERGENCE REGULIERE MAIS TROP LENTE'//
-     3                  ' - ERREUR > '//CTOL//
-     4                  ' - DIMINUER LA TAILLE D''INCREMENT')
+                           CALL UTDEXC(23,'OHNO','ERREUR')
+      CALL UTIMPI('L',' - NON CONVERGENCE A ITERATION MAXI ', 1, ITER)
+      CALL UTIMPI('L',' - CONVERGENCE REGULIERE MAIS TROP LENTE', 0, 0)
+      CALL UTIMPR('L',' - ERREUR > ', 1, TOLER)
+      CALL UTIMPI('L',' - DIMINUER LA TAILLE D''INCREMENT', 0, 0)
+                           CALL UTFINM
+
                         ENDIF
                         ENDIF
 C
@@ -259,12 +261,12 @@ C
                        IRTETI = 3
                        GOTO 9999
                     ELSE
-                    CALL CODENT(ITER,'G',CITER)
-                    CALL CODREE(TOLER,'E',CTOL)
-                    CALL UTEXCP(23,'OHNO','ERREUR'//
-     1              ' - NON CONVERGENCE A ITERATION MAXI '//CITER//
-     2              ' - CONVERGENCE IRREGULIERE & ERREUR > '//CTOL//
-     4              ' - DIMINUER LA TAILLE D''INCREMENT')
+                           CALL UTDEXC(23,'OHNO','ERREUR')
+      CALL UTIMPI('L',' - NON CONVERGENCE A ITERATION MAXI ', 1, ITER)
+      CALL UTIMPR('L',' - CONVERGENCE IRRREGULIERE & ERREUR > ',1,TOLER)
+      CALL UTIMPI('L',' - DIMINUER LA TAILLE D''INCREMENT', 0, 0)
+                           CALL UTFINM
+
                     ENDIF
                     ENDIF
 C
@@ -281,12 +283,12 @@ C
                   IRTETI = 3
                   GOTO 9999
                   ELSE
-                  CALL CODENT(ITER,'G',CITER)
-                  CALL CODREE(TOLER,'E',CTOL)
-                  CALL UTEXCP(23,'OHNO','ERREUR'//
-     1            ' - NON CONVERGENCE A ITERATION MAXI '//CITER//
-     2            ' - ERREUR > '//CTOL//
-     4            ' - DIMINUER LA TAILLE D''INCREMENT')
+                           CALL UTDEXC(23,'OHNO','ERREUR')
+      CALL UTIMPI('L',' - NON CONVERGENCE A ITERATION MAXI ', 1, ITER)
+      CALL UTIMPR('L',' - ERREUR > ', 1, TOLER)
+      CALL UTIMPI('L',' - DIMINUER LA TAILLE D''INCREMENT', 0, 0)
+                           CALL UTFINM
+
                   ENDIF
                   ENDIF
 C

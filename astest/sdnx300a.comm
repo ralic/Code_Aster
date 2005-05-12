@@ -1,4 +1,4 @@
-# MODIF  DATE 17/05/2004   AUTEUR CIBHHBC M.LOPES 
+# MODIF  DATE 12/05/2005   AUTEUR DURAND C.DURAND 
 # TITRE REPONSE TEMPORELLE LINEAIRE D'UNE TUYAUTERIE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -584,7 +584,7 @@ M7_DZ=RECU_FONCTION(    RESULTAT=REP_LINE,
 # CALCUL DES RMS ET VERIFICATION AVEC CASTEM 2000 
 # -------------------------------------------------------------------
 
-RMS_SP2=CALC_FONCTION( RMS=(   _F( FONCTION = P2_DX,  
+RMS_SP2=INFO_FONCTION( RMS=(   _F( FONCTION = P2_DX,  
                                  METHODE = 'SIMPSON',
                                  CRITERE = 'ABSOLU',
                                  PRECISION = 1.0E-6),
@@ -599,7 +599,7 @@ RMS_SP2=CALC_FONCTION( RMS=(   _F( FONCTION = P2_DX,
                            )
 
 #
-RMS_TP2=CALC_FONCTION( RMS=(   _F( FONCTION = P2_DX,  
+RMS_TP2=INFO_FONCTION( RMS=(   _F( FONCTION = P2_DX,  
                                  METHODE = 'TRAPEZE',
                                  CRITERE = 'ABSOLU',
                                  PRECISION = 1.0E-6),
@@ -614,7 +614,7 @@ RMS_TP2=CALC_FONCTION( RMS=(   _F( FONCTION = P2_DX,
                            )
 
 #
-RMS_SP3=CALC_FONCTION( RMS=(   _F( FONCTION = P3_DX,  
+RMS_SP3=INFO_FONCTION( RMS=(   _F( FONCTION = P3_DX,  
                                  METHODE = 'SIMPSON',
                                  CRITERE = 'ABSOLU',
                                  PRECISION = 1.0E-6),
@@ -629,7 +629,7 @@ RMS_SP3=CALC_FONCTION( RMS=(   _F( FONCTION = P3_DX,
                            )
 
 #
-RMS_TP3=CALC_FONCTION( RMS=(   _F( FONCTION = P3_DX,  
+RMS_TP3=INFO_FONCTION( RMS=(   _F( FONCTION = P3_DX,  
                                  METHODE = 'TRAPEZE',
                                  CRITERE = 'ABSOLU',
                                  PRECISION = 1.0E-6),
@@ -644,7 +644,7 @@ RMS_TP3=CALC_FONCTION( RMS=(   _F( FONCTION = P3_DX,
                            )
 
 #
-RMS_SP4=CALC_FONCTION( RMS=(   _F( FONCTION = P4_DX,  
+RMS_SP4=INFO_FONCTION( RMS=(   _F( FONCTION = P4_DX,  
                                  METHODE = 'SIMPSON',
                                  CRITERE = 'ABSOLU',
                                  PRECISION = 1.0E-6),
@@ -659,7 +659,7 @@ RMS_SP4=CALC_FONCTION( RMS=(   _F( FONCTION = P4_DX,
                            )
 
 #
-RMS_TP4=CALC_FONCTION( RMS=(   _F( FONCTION = P4_DX,  
+RMS_TP4=INFO_FONCTION( RMS=(   _F( FONCTION = P4_DX,  
                                  METHODE = 'TRAPEZE',
                                  CRITERE = 'ABSOLU',
                                  PRECISION = 1.0E-6),
@@ -674,7 +674,7 @@ RMS_TP4=CALC_FONCTION( RMS=(   _F( FONCTION = P4_DX,
                            )
 
 #
-RMS_SP5=CALC_FONCTION( RMS=(   _F( FONCTION = P5_DX,  
+RMS_SP5=INFO_FONCTION( RMS=(   _F( FONCTION = P5_DX,  
                                  METHODE = 'SIMPSON',
                                  CRITERE = 'ABSOLU',
                                  PRECISION = 1.0E-6),
@@ -689,7 +689,7 @@ RMS_SP5=CALC_FONCTION( RMS=(   _F( FONCTION = P5_DX,
                            )
 
 #
-RMS_TP5=CALC_FONCTION( RMS=(   _F( FONCTION = P5_DX,  
+RMS_TP5=INFO_FONCTION( RMS=(   _F( FONCTION = P5_DX,  
                                  METHODE = 'TRAPEZE',
                                  CRITERE = 'ABSOLU',
                                  PRECISION = 1.0E-6),
@@ -704,7 +704,7 @@ RMS_TP5=CALC_FONCTION( RMS=(   _F( FONCTION = P5_DX,
                            )
 
 #
-RMS_SP6=CALC_FONCTION( RMS=(   _F( FONCTION = P6_DX,  
+RMS_SP6=INFO_FONCTION( RMS=(   _F( FONCTION = P6_DX,  
                                  METHODE = 'SIMPSON',
                                  CRITERE = 'ABSOLU',
                                  PRECISION = 1.0E-6),
@@ -719,7 +719,7 @@ RMS_SP6=CALC_FONCTION( RMS=(   _F( FONCTION = P6_DX,
                            )
 
 #
-RMS_TP6=CALC_FONCTION( RMS=(   _F( FONCTION = P6_DX,  
+RMS_TP6=INFO_FONCTION( RMS=(   _F( FONCTION = P6_DX,  
                                  METHODE = 'TRAPEZE',
                                  CRITERE = 'ABSOLU',
                                  PRECISION = 1.0E-6),
@@ -734,7 +734,7 @@ RMS_TP6=CALC_FONCTION( RMS=(   _F( FONCTION = P6_DX,
                            )
 
 #
-RMS_SF7=CALC_FONCTION( RMS=(   _F( FONCTION = F7_DX,  
+RMS_SF7=INFO_FONCTION( RMS=(   _F( FONCTION = F7_DX,  
                                  METHODE = 'SIMPSON',
                                  CRITERE = 'ABSOLU',
                                  PRECISION = 1.0E-6),
@@ -749,7 +749,7 @@ RMS_SF7=CALC_FONCTION( RMS=(   _F( FONCTION = F7_DX,
                            )
 
 #
-RMS_TF7=CALC_FONCTION( RMS=(   _F( FONCTION = F7_DX,  
+RMS_TF7=INFO_FONCTION( RMS=(   _F( FONCTION = F7_DX,  
                                  METHODE = 'TRAPEZE',
                                  CRITERE = 'ABSOLU',
                                  PRECISION = 1.0E-6),
@@ -764,7 +764,7 @@ RMS_TF7=CALC_FONCTION( RMS=(   _F( FONCTION = F7_DX,
                            )
 
 #
-RMS_SM7=CALC_FONCTION( RMS=(   _F( FONCTION = M7_DX,  
+RMS_SM7=INFO_FONCTION( RMS=(   _F( FONCTION = M7_DX,  
                                  METHODE = 'SIMPSON',
                                  CRITERE = 'ABSOLU',
                                  PRECISION = 1.0E-6),
@@ -779,7 +779,7 @@ RMS_SM7=CALC_FONCTION( RMS=(   _F( FONCTION = M7_DX,
                            )
 
 #
-RMS_TM7=CALC_FONCTION( RMS=(   _F( FONCTION = M7_DX,  
+RMS_TM7=INFO_FONCTION( RMS=(   _F( FONCTION = M7_DX,  
                                  METHODE = 'TRAPEZE',
                                  CRITERE = 'ABSOLU',
                                  PRECISION = 1.0E-6),

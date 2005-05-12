@@ -13,7 +13,7 @@
       REAL*8       R8B
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 17/01/2005   AUTEUR LEBOUVIE F.LEBOUVIER 
+C MODIF ALGORITH  DATE 11/05/2005   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -300,7 +300,7 @@ C             --- CAS D'UNE POURSUITE ---
                  CALL GETVID('ETAT_INIT','RESU_GENE',1,1,1,TRAN,NDT)
                  IF (NDT.NE.0) CALL RESU74(TRAN,NOMRES)
               ENDIF
-              CALL UTDEBM ('S','MDNEWM','ARRET PAR MANQUE DE TEMPS CPU')
+              CALL UTDEXC (28, 'MDNEWM','ARRET PAR MANQUE DE TEMPS CPU')
               CALL UTIMPI ('S',' AU NUMERO D''ORDRE : ',1,IA+I)
               CALL UTIMPR ('L',' DERNIER INSTANT ARCHIVE : ',1,TARCHI)
               CALL UTIMPI ('L',' NUMERO D''ORDRE CORRESPONDANT : ',1,

@@ -1,4 +1,4 @@
-# MODIF  DATE 09/11/2004   AUTEUR VABHHTS J.PELLET 
+# MODIF  DATE 11/05/2005   AUTEUR MCOURTOI M.COURTOIS 
 # TITRE VALIDATION LIRE_RESU AU FORMAT MED
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -120,7 +120,6 @@ TEMPE=LIRE_RESU(TYPE_RESU='EVOL_THER',
                 MAILLAGE=MAIL,
                 UNITE=70,
                 FORMAT_MED=_F(   NOM_CHAM_MED='TEMPE1__TEMP____________________',
-                                 NOM_CMP_IDEM='OUI',
                                  NOM_CHAM    ='TEMP',),
                 TOUT_ORDRE='OUI',);
 
@@ -159,10 +158,8 @@ UUU=LIRE_RESU(TYPE_RESU='EVOL_NOLI',
               FORMAT='MED',
               MODELE=MOMECA,
               FORMAT_MED=(_F( NOM_CHAM_MED='U_______DEPL____________________',
-                              NOM_CMP_IDEM='OUI',
                               NOM_CHAM    ='DEPL' ),
                           _F( NOM_CHAM_MED='U_______SIEF_ELNO_ELGA__________',
-                              NOM_CMP_IDEM='OUI',
                               NOM_CHAM    ='SIEF_ELNO') ) ,
               UNITE=71,
               TOUT_ORDRE='OUI',);
@@ -200,9 +197,9 @@ SIGMRELU=LIRE_CHAMP(MAILLAGE=MAIL2,
                 FORMAT='MED',
                 UNITE=71,
                 NOM_MED='U_______SIEF_ELNO_ELGA__________',
-                NOM_CMP_IDEM='OUI',
                 NUME_ORDRE=1,NUME_PT=1,
                 TYPE_CHAM='ELNO_SIEF_R',
+                NOM_CMP_IDEM='OUI',
                 INFO=2
                ) ;
 IMPR_RESU ( FORMAT='RESULTAT', RESU=_F( CHAM_GD=SIGMRELU, ) ) ;
@@ -211,9 +208,9 @@ DEPLRELU=LIRE_CHAMP(MAILLAGE=MAIL2,
                 FORMAT='MED',
                 UNITE=71,
                 NOM_MED='U_______DEPL____________________',
-                NOM_CMP_IDEM='OUI',
                 NUME_ORDRE=1,NUME_PT=1,
                 TYPE_CHAM='NOEU_DEPL_R',
+                NOM_CMP_IDEM='OUI',
                 INFO=2
                ) ;
 IMPR_RESU ( FORMAT='RESULTAT', RESU=_F( CHAM_GD=DEPLRELU, ) )

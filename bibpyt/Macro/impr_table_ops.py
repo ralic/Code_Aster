@@ -1,4 +1,4 @@
-#@ MODIF impr_table_ops Macro  DATE 30/11/2004   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF impr_table_ops Macro  DATE 11/05/2005   AUTEUR MCOURTOI M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -35,9 +35,10 @@ def impr_table_ops(self, FORMAT, TABLE, INFO, **args):
    """
    macro='IMPR_TABLE'
    import aster
-   from Accas import _F
-   from Cata.cata import table_jeveux
-   from Utilitai.Utmess import UTMESS
+   from Accas               import _F
+   from Cata.cata           import table_jeveux
+   from Utilitai.Utmess     import UTMESS
+   from Utilitai.UniteAster import UniteAster
    ier=0
    # La macro compte pour 1 dans la numerotation des commandes
    self.set_icmd(1)
@@ -45,19 +46,19 @@ def impr_table_ops(self, FORMAT, TABLE, INFO, **args):
    # On importe les definitions des commandes a utiliser dans la macro
    # Le nom de la variable doit etre obligatoirement le nom de la commande
    DETRUIRE         = self.get_cmd('DETRUIRE')
-   DEFI_FICHIER     = self.get_cmd('DEFI_FICHIER')
    RECU_FONCTION    = self.get_cmd('RECU_FONCTION')
 
    #----------------------------------------------
    # 0. Traitement des arguments, initialisations
    # unité logique des fichiers réservés
    ul_reserve=(8,)
+   UL = UniteAster()
 
    # 0.1. Fichier
    nomfich=None
    if args['UNITE'] and args['UNITE']<>6:
-      nomfich='fort.'+str(args['UNITE'])
-   if nomfich and os.path.exists(nomfich):
+      nomfich=UL.Nom(args['UNITE'])
+   if nomfich and os.path.exists(nomfich) and os.stat(nomfich).st_size<>0:
       if FORMAT=='XMGRACE':
          UTMESS('A',macro,'Le fichier '+nomfich+' existe déjà, on écrit ' \
                 'à la suite.')
@@ -111,7 +112,7 @@ def impr_table_ops(self, FORMAT, TABLE, INFO, **args):
 
    # 0.4.2. Traiter le cas des UL réservées
    if args['UNITE'] and args['UNITE'] in ul_reserve:
-      DEFI_FICHIER( ACTION='LIBERER', UNITE=args['UNITE'], )
+      UL.Etat(args['UNITE'], etat='F')
 
    #----------------------------------------------
    # Boucle sur les tables
@@ -205,9 +206,7 @@ def impr_table_ops(self, FORMAT, TABLE, INFO, **args):
             DETRUIRE(CONCEPT=_F(NOM=('__fonc',),), ALARME='NON', INFO=1,)
 
    # 99. Traiter le cas des UL réservées
-   if args['UNITE'] and args['UNITE'] in ul_reserve:
-      DEFI_FICHIER( ACTION='ASSOCIER', UNITE=args['UNITE'],
-            TYPE='ASCII', ACCES='APPEND' )
+   UL.EtatInit()
 
    return ier
 

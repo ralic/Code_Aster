@@ -1,4 +1,4 @@
-# MODIF  DATE 22/11/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 12/05/2005   AUTEUR DURAND C.DURAND 
 # TITRE TEST DE NON-REGRESSION D ASTER : MECANIQUE LINEAIRE 3D
 # RESPONSABLE VABHHTS J.PELLET
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -1204,7 +1204,7 @@ FO20=RECU_FONCTION(       RESULTAT=MSLIN,
                          INTERP_NUME='LIN',
                             NOM_PARA='INST',
                             NOM_RESU='VITE',
-                            INTERPOL=('LIN',  'LOG',),
+                            INTERPOL=('LIN',  'LIN',),
                           PROL_DROITE='LINEAIRE',
                          PROL_GAUCHE='CONSTANT'  )
 
@@ -1212,14 +1212,14 @@ FO21=RECU_FONCTION(        CHAM_GD=CHAMEL2,
                               MAILLE='M214',
                                POINT=2,
                              NOM_CMP='EPXX',
-                            INTERPOL=('LIN', 'LOG',),
+                            INTERPOL=('LIN', 'LIN',),
                           PROL_DROITE='CONSTANT',
                          PROL_GAUCHE='CONSTANT'  )
 
 FO22=RECU_FONCTION(        CHAM_GD=CHAMNO1,
                              NOM_CMP='DZ',
                                NOEUD='N341',
-                            INTERPOL=('LIN', 'LOG',),
+                            INTERPOL=('LIN', 'LIN',),
                           PROL_DROITE='CONSTANT',
                          PROL_GAUCHE='CONSTANT'  )
 
@@ -1239,8 +1239,7 @@ FO24=CALC_FONCTION(    DERIVE=_F(  FONCTION = FO20) )
 FO25=CALC_FONCTION(    INTEGRE=_F(  FONCTION = FO23,
                                    COEF = 1.4) )
 
-FO26=CALC_FONCTION(         MAX=_F(  FONCTION = FO23),
-                         NOM_PARA='DX'    )
+FO26=INFO_FONCTION(         MAX=_F(  FONCTION = FO23), )
 
 FO27=CALC_FONCTION(    ENVELOPPE=_F(  FONCTION = ( FO12, FO13, FO14, ),
                                      CRITERE = 'INF') )

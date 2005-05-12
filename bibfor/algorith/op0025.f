@@ -2,7 +2,7 @@
 C
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 01/04/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 11/05/2005   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -273,7 +273,7 @@ C 3.2.3. ==> GESTION DU TEMPS CPU
 C
           CALL UTTCPU(1,'FIN',4,TPS1)
           IF ( TPS1(4).GT..95D0*TPS1(1)-TPS1(4) ) THEN
-            CALL UTDEBM('S',NOMPRO,'ARRET PAR MANQUE DE TEMPS CPU')
+            CALL UTDEXC(28, NOMPRO,'ARRET PAR MANQUE DE TEMPS CPU')
             CALL UTIMPI('S',' AU NUMERO D''ORDRE: ',1,NUMORD)
             CALL UTIMPR('L',' TEMPS MOYEN PAR INCREMENT DE TEMPS: ',1,
      >                  TPS1(4))

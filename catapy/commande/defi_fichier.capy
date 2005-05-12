@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 05/10/2004   AUTEUR CIBHHLV L.VIVAN 
+#& MODIF COMMANDE  DATE 11/05/2005   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,7 +18,7 @@
 # ======================================================================
 # RESPONSABLE D6BHHJP J.P.LEFEBVRE
 def DEFIC_prod(self,ACTION,UNITE,**args):
-  if ACTION == "ASSOCIER" :
+  if ACTION == "ASSOCIER" or ACTION == "RESERVER":
     if UNITE != None :
       return
     else :
@@ -26,13 +26,13 @@ def DEFIC_prod(self,ACTION,UNITE,**args):
   elif ACTION == "LIBERER"  :
     return
   else :
-    raise AsException("ACTION non prevue")
+    raise AsException("ACTION non prevue : %s" % ACTION)
 
 DEFI_FICHIER=MACRO(nom="DEFI_FICHIER",op=ops.build_DEFI_FICHIER,sd_prod=DEFIC_prod,reentrant='n',
                   UIinfo={"groupes":("Gestion du travail",)},
                   fr="Gestion d une unité logique : ajout, suppression",
 
-            ACTION        =SIMP(statut='f',typ='TXM',into=("ASSOCIER","LIBERER"),defaut="ASSOCIER"),
+            ACTION        =SIMP(statut='f',typ='TXM',into=("ASSOCIER","LIBERER","RESERVER"),defaut="ASSOCIER"),
 
             b_associer    =BLOC(condition = "ACTION == 'ASSOCIER'",
                                 fr="Paramètres pour l'ouverture du fichier",
@@ -47,6 +47,15 @@ DEFI_FICHIER=MACRO(nom="DEFI_FICHIER",op=ops.build_DEFI_FICHIER,sd_prod=DEFIC_pr
                b_type_autre  =BLOC(condition = "TYPE != 'ASCII'",fr="Paramètres pour les types BINARY et LIBRE",
                   ACCES      =SIMP(statut='f',typ='TXM',into=("NEW","OLD"),defaut="NEW"),
                ),
+            ),
+
+            b_reserver    =BLOC(condition = "ACTION == 'RESERVER'",
+                                fr="Paramètres pour la réservation de l'unité du fichier",
+                                regles=(AU_MOINS_UN('FICHIER','UNITE'),),
+               UNITE      =SIMP(statut='f',typ='I' ,val_min=1),
+               FICHIER    =SIMP(statut='f',typ='TXM',validators=LongStr(1,255)),
+               TYPE       =SIMP(statut='f',typ='TXM',into=("ASCII",),defaut="ASCII"),
+               ACCES      =SIMP(statut='f',typ='TXM',into=("APPEND",),defaut="APPEND"),
             ),
 
             b_liberer    =BLOC(condition = "ACTION == 'LIBERER'",

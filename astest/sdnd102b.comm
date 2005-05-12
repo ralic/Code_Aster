@@ -1,4 +1,4 @@
-# MODIF  DATE 19/04/2005   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 12/05/2005   AUTEUR DURAND C.DURAND 
 # TITRE TEST DU MULTI-APPUIS SUR UN SYSTEME MASSES-RESSORTS NON LINEAIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -419,21 +419,23 @@ EFFOCHOC=RECU_FONCTION(  MAILLE='ELN2',   POINT=1, NOM_CMP='N',
 #
 # TESTS
 # -----
-MAXF_CHO=CALC_FONCTION( MAX=_F( FONCTION = EFF_CHOC) )
+MAXF_CHO=INFO_FONCTION( MAX=_F( FONCTION = EFF_CHOC) )
 
-MAXFCHOC=CALC_FONCTION( MAX=_F( FONCTION = EFFOCHOC) )
+MAXFCHOC=INFO_FONCTION( MAX=_F( FONCTION = EFFOCHOC) )
 
-TEST_TABLE(  TABLE=MAXF_CHO,FILTRE=(
-            _F( NOM_PARA = 'FONCTION',  VALE_K = 'EFF_CHOC'),
-            _F( NOM_PARA = 'INST',  VALE = 3.76E-1)),
-             NOM_PARA='MAXI',
+TEST_TABLE(  TABLE=MAXF_CHO,
+             FILTRE=( _F( NOM_PARA = 'FONCTION',  VALE_K = 'EFF_CHOC'),
+                      _F( NOM_PARA = 'INST',  VALE = 3.76E-1),
+                      _F( NOM_PARA = 'TYPE',  VALE_K = 'MAXI')),
+             NOM_PARA='N',
              PRECISION=0.01,
              VALE=6.29287E+2 )
 
-TEST_TABLE(  TABLE=MAXFCHOC,FILTRE=(
-            _F( NOM_PARA = 'FONCTION',  VALE_K = 'EFFOCHOC'),
-            _F( NOM_PARA = 'INST',  VALE = 3.76E-1)),
-             NOM_PARA='MAXI',
+TEST_TABLE(  TABLE=MAXFCHOC,
+             FILTRE=( _F( NOM_PARA = 'FONCTION',  VALE_K = 'EFFOCHOC'),
+                      _F( NOM_PARA = 'INST',  VALE = 3.76E-1),
+                      _F( NOM_PARA = 'TYPE',  VALE_K = 'MINI')),
+             NOM_PARA='N',
              PRECISION=0.01,
              VALE=-6.29287E+2 )
 

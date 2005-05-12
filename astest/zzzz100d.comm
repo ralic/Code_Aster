@@ -1,4 +1,4 @@
-# MODIF  DATE 15/11/2004   AUTEUR MCOURTOI M.COURTOIS 
+# MODIF  DATE 12/05/2005   AUTEUR DURAND C.DURAND 
 # TITRE CALCUL DES INDICES DE NOCIVITE D'UN SEISME
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -17,54 +17,54 @@ INCLUDE(   UNITE=20 )
 #
 #--------------------------------------------------------
 #
-INLBNS=CALC_FONCTION(  NOCI_SEISME=_F( 
+INLBNS=INFO_FONCTION(  NOCI_SEISME=_F( 
                              FONCTION = LBNS,
                              AMOR_REDUIT = 0.05E0)
                        )
 
 #
-INLBNS11=CALC_FONCTION(    NOCI_SEISME=_F( 
+INLBNS11=INFO_FONCTION(    NOCI_SEISME=_F( 
                              FONCTION = LBNS,
                              OPTION = 'INTE_ARIAS')
                        )
 
 #
-INLBNS12=CALC_FONCTION(    NOCI_SEISME=_F( 
+INLBNS12=INFO_FONCTION(    NOCI_SEISME=_F( 
                              FONCTION = LBNS,
                              OPTION = 'MAXI')
                        )
 
 #
-INLBNS13=CALC_FONCTION(    NOCI_SEISME=_F( 
+INLBNS13=INFO_FONCTION(    NOCI_SEISME=_F( 
                              FONCTION = LBNS,
                              OPTION = 'ACCE_SUR_VITE')
                        )
 
-INLBNS14=CALC_FONCTION(    NOCI_SEISME=_F( 
+INLBNS14=INFO_FONCTION(    NOCI_SEISME=_F( 
                              FONCTION = LBNS,
                              OPTION = 'VITE_ABSO_CUMU')
                        )
 
 #
-INLBNS15=CALC_FONCTION(    NOCI_SEISME=_F( 
+INLBNS15=INFO_FONCTION(    NOCI_SEISME=_F( 
                              FONCTION = LBNS,
                              OPTION = 'POUV_DEST')
                        )
 
 #
-INLBNS16=CALC_FONCTION(    NOCI_SEISME=_F( 
+INLBNS16=INFO_FONCTION(    NOCI_SEISME=_F( 
                              FONCTION = LBNS,
                              OPTION = 'DUREE_PHAS_FORT')
                        )
 
 #
-INLBNS17=CALC_FONCTION(    NOCI_SEISME=_F( 
+INLBNS17=INFO_FONCTION(    NOCI_SEISME=_F( 
                              FONCTION = LBNS, 
                              OPTION = 'INTE_SPEC',
                              AMOR_REDUIT = 0.05E0)
                        )
 
-INLBNS18=CALC_FONCTION(    NOCI_SEISME=_F( 
+INLBNS18=INFO_FONCTION(    NOCI_SEISME=_F( 
                                 FONCTION = LBNS,
                                 INST_INIT = 10.,
                                 INST_FIN = 12.,
@@ -101,14 +101,14 @@ SPEC_H=LIRE_FONCTION(  UNITE=18,
                              )
 
 #
-INH=CALC_FONCTION( 
+INH=INFO_FONCTION( 
                        NOCI_SEISME=_F( 
                                 SPEC_OSCI = SPEC_H,
                                 NATURE = 'ACCE',
                                 AMOR_REDUIT = 0.05E0)
                      )
 
-INH1=CALC_FONCTION( 
+INH1=INFO_FONCTION( 
                         NOCI_SEISME=_F( 
                                 SPEC_OSCI = SPEC_H,
                                 NATURE = 'ACCE',
@@ -312,7 +312,7 @@ TEST_TABLE(
 TEST_TABLE(
                    TABLE=INLBNS18,
                 NOM_PARA='INTE_SPECT',
-                    VALE=1.31677
+                    VALE=1.32035
             )
 
 TEST_TABLE(
@@ -324,7 +324,7 @@ TEST_TABLE(
 TEST_TABLE(
                    TABLE=INH1,
                 NOM_PARA='INTE_SPECT',
-                    VALE=4.5305
+                    VALE=1.85376
             )
 
 #
@@ -360,7 +360,7 @@ NOM_PARA='INST',
 ACCE1=CALC_FONCTION(CORR_ACCE=_F(  FONCTION = ACCE),
                        )
 
-RMS1=CALC_FONCTION( RMS=_F(  FONCTION = ACCE1)
+RMS1=INFO_FONCTION( RMS=_F(  FONCTION = ACCE1)
                          )
 
 TEST_TABLE(      TABLE=RMS1,
@@ -371,7 +371,7 @@ TEST_TABLE(      TABLE=RMS1,
 ACCE2=CALC_FONCTION(CORR_ACCE=_F(  FONCTION = LBNS, CORR_DEPL = 'NON'),
                        )
 
-RMS2=CALC_FONCTION( RMS=_F(  FONCTION = ACCE2)
+RMS2=INFO_FONCTION( RMS=_F(  FONCTION = ACCE2)
                          )
 
 TEST_TABLE(      TABLE=RMS2,
@@ -385,7 +385,7 @@ TEST_TABLE(      TABLE=RMS2,
 ACCE3=CALC_FONCTION(CORR_ACCE=_F(  FONCTION = ACCE, CORR_DEPL = 'OUI'),
                        )
 
-RMS3=CALC_FONCTION( RMS=_F(  FONCTION = ACCE3)
+RMS3=INFO_FONCTION( RMS=_F(  FONCTION = ACCE3)
                          )
 
 TEST_TABLE(      TABLE=RMS3,
@@ -396,7 +396,7 @@ TEST_TABLE(      TABLE=RMS3,
 ACCE4=CALC_FONCTION(CORR_ACCE=_F(  FONCTION = LBNS, CORR_DEPL = 'OUI'),
                        )
 
-RMS4=CALC_FONCTION( RMS=_F(  FONCTION = ACCE4)
+RMS4=INFO_FONCTION( RMS=_F(  FONCTION = ACCE4)
                          )
 
 TEST_TABLE(      TABLE=RMS4,

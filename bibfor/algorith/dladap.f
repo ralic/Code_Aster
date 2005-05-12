@@ -15,7 +15,7 @@
       INTEGER      NBPASE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 11/05/2005   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -553,7 +553,7 @@ C
  78   CONTINUE
 C
       IF (TPS1(1).LE.MAX(TJOB/100.D0,15.D0)) THEN 
-         CALL UTDEBM('S','DLADAP',
+         CALL UTDEXC(28,'DLADAP',
      *               'ARRET PAR MANQUE DE TEMPS CPU')
          CALL UTIMPI('L',' NOMBRE DE PAS CALCULES : ',
      *                1,IPAS)

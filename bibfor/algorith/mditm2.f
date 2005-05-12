@@ -17,7 +17,7 @@ C
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 11/05/2005   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -499,7 +499,7 @@ C     --- IMPRESSION DES RESULTATS DE CHOC
 C 7.6 IMPRESSIONS SUPPLEMENTAIRES SI ARRET PAR MANQUE DE TEMPS CPU
 C     ------------------------------------------------------------
       IF ( IERCPU.EQ.1 ) THEN
-         CALL UTDEBM('S','MDITM2','ARRET PAR MANQUE DE TEMPS CPU.')
+         CALL UTDEXC(28,'MDITM2','ARRET PAR MANQUE DE TEMPS CPU.')
          CALL UTIMPR('L',' INSTANT COURANT :              ' ,1,TC)
          CALL UTIMPI('L',' NOMBRE D''APPELS A ALITMI :     ',1,IT0)
          CALL UTIMPR('L',' TEMPS MOYEN PAR PAS DE TEMPS : ' ,1,TPS1(4))

@@ -1,7 +1,7 @@
       SUBROUTINE OP0150(IER)
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 14/03/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 11/05/2005   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -92,6 +92,7 @@ C 0.3. ==> VARIABLES LOCALES
       REAL*8 RBID
       CHARACTER*32 NOCHMD,NOMAMD
       CHARACTER*200 NOFIMD
+      CHARACTER*255 KFIC
       INTEGER TYPENT,TYPGOM
       INTEGER EDNOEU
       PARAMETER (EDNOEU=3)
@@ -101,6 +102,7 @@ C 0.3. ==> VARIABLES LOCALES
       PARAMETER (EDNONO=-1)
       INTEGER TYPNOE
       PARAMETER (TYPNOE=0)
+      CHARACTER*1 SAUX01
       CHARACTER*8 SAUX08
 
       CHARACTER*8 NOMGD
@@ -624,12 +626,33 @@ C     =============================
           ELSE IF (NOCH(1:9).EQ.'SIEF_ELNO') THEN
             NOMGD = 'SIEF_R'
             TYPCHA = 'ELNO'
+          ELSE IF (NOCH(1:9).EQ.'SIEF_NOEU') THEN
+            NOMGD = 'SIEF_R'
+            TYPCHA = 'NOEU'
+          ELSE IF (NOCH(1:9).EQ.'EPSI_ELNO') THEN
+            NOMGD = 'EPSI_R'
+            TYPCHA = 'ELNO'
+          ELSE IF (NOCH(1:9).EQ.'EPSI_NOEU') THEN
+            NOMGD = 'EPSI_R'
+            TYPCHA = 'NOEU'
           ELSE IF (NOCH(1:9).EQ.'EPSA_ELNO') THEN
             NOMGD = 'EPSA_R'
             TYPCHA = 'ELNO'
+          ELSE IF (NOCH(1:9).EQ.'EPSA_NOEU') THEN
+            NOMGD = 'EPSA_R'
+            TYPCHA = 'NOEU'
           ELSE IF (NOCH(1:9).EQ.'VARI_ELNO') THEN
             NOMGD = 'VARI_R'
             TYPCHA = 'ELNO'
+          ELSE IF (NOCH(1:9).EQ.'VARI_NOEU') THEN
+            NOMGD = 'VARI_R'
+            TYPCHA = 'NOEU'
+          ELSE IF (NOCH(1:14).EQ.'EQUI_ELNO_SIGM') THEN
+            NOMGD = 'SIEF_R'
+            TYPCHA = 'ELNO'
+          ELSE IF (NOCH(1:14).EQ.'EQUI_NOEU_SIGM') THEN
+            NOMGD = 'SIEF_R'
+            TYPCHA = 'NOEU'
           ELSE IF (NOCH(1:4).EQ.'PRES') THEN
             NOMGD = 'PRES_R  '
             TYPCHA = 'ELEM'
@@ -641,45 +664,41 @@ C          ==> NOM DES COMPOSANTES VOULUES
 
           NCMPVA = '&&'//NOMPRO//'.'//LCMPVA
           NCMPVM = '&&'//NOMPRO//'.'//LCMPVM
-          CALL GETVTX('FORMAT_MED','NOM_CMP_IDEM',I,1,1,REP,IAUX)
 
-C          ==> C'EST PAR IDENTITE DE NOMS
-          IF (IAUX.NE.0) THEN
-            IF (REP.EQ.'OUI') THEN
-              NBCMPV = 0
-            ELSE
-              CALL UTMESS('F',NOMPRO,'NOM_CMP_IDEM EST CURIEUX : '//REP)
-            END IF
+C         --- NOM_CMP ASTER ?
+          NBCMPV=0
+          CALL GETVTX('FORMAT_MED',LCMPVA,I,1,0,REP,IAUX)
+          IF (IAUX.LT.0) THEN
+            NBCMPV = -IAUX
+          ENDIF
+
+C         --- NOM_CMP MED ?
+          CALL GETVTX('FORMAT_MED',LCMPVM,I,1,0,REP,IAUX)
+          IF (-IAUX.NE.NBCMPV) THEN
+            CALL UTMESS('F',NOMPRO,LCMPVA//' ET '//LCMPVM//
+     &                  ' : NOMBRE '//'DE COMPOSANTES INCOMPATIBLE.')
+          ENDIF
+
+C         --- LECTURE DES NOMS DE COMPOSANTES ASSOCIEES DEUX A DEUX
+          IF (NBCMPV.GT.0) THEN
+            CALL WKVECT(NCMPVA,'V V K8',NBCMPV,JCMPVA)
+            CALL GETVTX('FORMAT_MED',LCMPVA,I,1,NBCMPV,ZK8(JCMPVA),
+     &                  IAUX)
+            CALL WKVECT(NCMPVM,'V V K16',NBCMPV,JCMPVM)
+            CALL GETVTX('FORMAT_MED',LCMPVM,I,1,NBCMPV,ZK16(JCMPVM),
+     &                  IAUX)
+          ENDIF
+
+C         --- NOM DU FICHIER MED
+          CALL ULISOG(MFICH, KFIC, SAUX01)
+          IF ( KFIC(1:1).EQ.' ' ) THEN
+            CALL CODENT ( MFICH, 'G', SAUX08 )
+            NOFIMD = 'fort.'//SAUX08
           ELSE
-
-C          ==> C'EST PAR ASSOCIATION DE LISTE
-
-            CALL GETVTX('FORMAT_MED',LCMPVA,I,1,0,REP,IAUX)
-            IF (IAUX.LT.0) THEN
-              NBCMPV = -IAUX
-            END IF
-
-            CALL GETVTX('FORMAT_MED',LCMPVM,I,1,0,REP,IAUX)
-            IF (-IAUX.NE.NBCMPV) THEN
-              CALL UTMESS('F',NOMPRO,LCMPVA//' ET '//LCMPVM//
-     &                    ' : NOMBRE '//'DE COMPOSANTES INCOMPATIBLE.')
-            END IF
-
-            IF (NBCMPV.GT.0) THEN
-              CALL WKVECT(NCMPVA,'V V K8',NBCMPV,JCMPVA)
-              CALL GETVTX('FORMAT_MED',LCMPVA,I,1,NBCMPV,ZK8(JCMPVA),
-     &                    IAUX)
-              CALL WKVECT(NCMPVM,'V V K16',NBCMPV,JCMPVM)
-              CALL GETVTX('FORMAT_MED',LCMPVM,I,1,NBCMPV,ZK16(JCMPVM),
-     &                    IAUX)
-            END IF
-
-          END IF
-
-          CALL CODENT(MFICH,'G',SAUX08)
-          NOFIMD = 'fort.'//SAUX08
+            NOFIMD = KFIC(1:200)
+          ENDIF
+C
           WRITE (IFM,*) '<',NOMPRO,'> NOM DU FICHIER MED : ',NOFIMD
-
 C                    12   345678   90123456789
           PREFIX = '&&'//NOMPRO//'.MED'
           CALL JEDETC('V',PREFIX,1)

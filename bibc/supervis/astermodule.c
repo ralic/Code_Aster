@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF astermodule supervis  DATE 18/04/2005   AUTEUR NICOLAS O.NICOLAS */
+/* MODIF astermodule supervis  DATE 11/05/2005   AUTEUR MCOURTOI M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -144,12 +144,10 @@
 #define DEFSPPSSP(UN,LN,a,la,b,c,d,ld,e,le,f)                      STDCALL(UN,LN)(a,b,c,d,e,f,la,ld,le)
 #define DEFSSS(UN,LN,a,la,b,lb,c,lc)    STDCALL(UN,LN)(a,b,c,la,lb,lc)
 #define CALLSSS(UN,LN,a,b,c)    F_FUNC(UN,LN)(a,b,c,strlen(a),strlen(b),strlen(c))
-/* TEST OLIVIER */
 #define DEFSSSS(UN,LN,a,la,b,lb,c,lc,d,ld)    STDCALL(UN,LN)(a,b,c,d,la,lb,lc,ld)
 #define CALLSSSS(UN,LN,a,b,c,d)    F_FUNC(UN,LN)(a,b,c,d,strlen(a),strlen(b),strlen(c),strlen(d))
 #define DEFSPPPPPP(UN,LN,a,la,b,c,d,e,f,g)    STDCALL(UN,LN)(a,b,c,d,e,f,g,la)
 #define CALLSPPPPPP(UN,LN,a,b,c,d,e,f,g)    F_FUNC(UN,LN)(a,b,c,d,e,f,g,strlen(a))
-/* TEST OLIVIER */
 #define DEFPS(UN,LN,a,b,lb)                      STDCALL(UN,LN)(a,b,lb)
 #define DEFPSP(UN,LN,a,b,lb,c)                      STDCALL(UN,LN)(a,b,c,lb)
 #define DEFPSSP(UN,LN,a,b,lb,c,lc,d)    STDCALL(UN,LN)(a,b,c,d,lb,lc)
@@ -218,12 +216,10 @@
 #define DEFSPPSSP(UN,LN,a,la,b,c,d,ld,e,le,f)                      STDCALL(UN,LN)(a,la,b,c,d,ld,e,le,f)
 #define DEFSSS(UN,LN,a,la,b,lb,c,lc)    STDCALL(UN,LN)(a,la,b,lb,c,lc)
 #define CALLSSS(UN,LN,a,b,c)    F_FUNC(UN,LN)(a,strlen(a),b,strlen(b),c,strlen(c))
-/* TEST OLIVIER */
 #define DEFSSSS(UN,LN,a,la,b,lb,c,lc,d,ld)    STDCALL(UN,LN)(a,la,b,lb,c,lc,d,ld)
 #define CALLSSSS(UN,LN,a,b,c,d)    F_FUNC(UN,LN)(a,strlen(a),b,strlen(b),c,strlen(c),d,strlen(d))
 #define DEFSPPPPPP(UN,LN,a,la,b,c,d,e,f,g)    STDCALL(UN,LN)(a,b,c,d,e,f,g,la)
 #define CALLSPPPPPP(UN,LN,a,b,c,d,e,f,g)    F_FUNC(UN,LN)(a,b,c,d,e,f,g,strlen(a))
-/* TEST OLIVIER */
 #define DEFPS(UN,LN,a,b,lb)                      STDCALL(UN,LN)(a,b,lb)
 #define DEFPSP(UN,LN,a,b,c,lb)                      STDCALL(UN,LN)(a,b,c,lb)
 #define DEFPSSP(UN,LN,a,b,lb,c,lc,d)    STDCALL(UN,LN)(a,b,lb,c,lc,d)
@@ -1339,7 +1335,9 @@ void DEFSSS( GETRES ,getres, _OUT char *nomres, _IN int lres, _OUT char *concep,
 
         _DEBUT(getres_) ;
                                                        ISCRUTE(lres) ; ISCRUTE(lconc) ; ISCRUTE(lcmd) ;
-        if(commande == (PyObject*)0){
+        /* (MC) le 1er test ne me semble pas suffisant car entre deux commandes,
+           commande n'est pas remis à (PyObject*)0... */
+        if(commande == (PyObject*)0 || PyObject_HasAttrString(commande, "getres")==0) {
           /* Aucune commande n'est active on retourne des chaines blanches */
           BLANK(nomres,lres);
           BLANK(concep,lconc);
@@ -2711,7 +2709,6 @@ PyObject *args;
 
 
 
-/* test olivier */                
 #define CALL_PUTCON(nomsd,nbind,ind,valr,valc,num,iret) CALLSPPPPPP(PUTCON,putcon,nomsd,nbind,ind,valr,valc,num,iret)
 void DEFSPPPPPP(PUTCON,putcon,char *,int,INTEGER *,INTEGER *,double *,double *,INTEGER *,INTEGER *);
 
@@ -2868,14 +2865,6 @@ PyObject *args;
         Py_INCREF( Py_None ) ;
         return Py_None;
 }
-/* test olivier */                
-
-
-
-
-
-
-
 
 
 void DEFSPSPPPS(RSACCH,rsacch,char *, int, INTEGER *, char *,int,INTEGER *, INTEGER *, INTEGER *, char *,int);
@@ -3663,10 +3652,8 @@ static PyMethodDef aster_methods[] = {
                 {"argv" ,       aster_argv ,              METH_VARARGS},
                 {"prepcompcham",aster_prepcompcham,       METH_VARARGS},
                 {"getvectjev" , aster_getvectjev ,        METH_VARARGS, getvectjev_doc},
-/* test olivier */                
                 {"putvectjev"  , aster_putvectjev ,         METH_VARARGS},
                 {"putcolljev"  , aster_putcolljev ,         METH_VARARGS},
-/* test olivier */
                 {"getcolljev" , aster_getcolljev ,        METH_VARARGS, getcolljev_doc},
                 {"GetResu",     aster_GetResu,            METH_VARARGS},
                 {NULL,                NULL}/* sentinel */

@@ -1,7 +1,7 @@
       SUBROUTINE ULCLOS 
       IMPLICIT   NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 10/10/2003   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF UTILITAI  DATE 11/05/2005   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -37,7 +37,9 @@ C
       DO 10 I = 1 , NBFILE
         UNIT = UNITFI(I)
         IF ( UNIT.GT.0 ) THEN
-          CLOSE ( UNIT=UNIT )
+          IF ( ETATFI(I) .EQ. 'O' ) THEN
+            CLOSE ( UNIT=UNIT )
+          ENDIF
           NAMEFI(I) = ' '
           DDNAME(I) = ' '
           UNITFI(I) = -1

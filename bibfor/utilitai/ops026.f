@@ -3,7 +3,7 @@
       INTEGER             ICMD , ICOND, IER
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 05/10/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF UTILITAI  DATE 11/05/2005   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -64,8 +64,9 @@ C           SA PRESENCE DANS LA STRUCTURE DE DONNEES
         ENDIF 
         UNITE = -UNITE
 C
-      ELSEIF ( ACTION .EQ. 'ASSOCIER' ) THEN
-C              ---------------------
+      ELSEIF ( (ACTION .EQ. 'ASSOCIER') .OR. 
+     &         (ACTION .EQ. 'RESERVER') ) THEN
+C               ---------------------
         IF ( NU .EQ. 0 .AND. NF .GT. 0 ) THEN
           SORTIE = .TRUE.
           UNITE = ULNUME()
@@ -82,7 +83,11 @@ C
       ENDIF
 C
       IF ( KTYP .EQ. 'A' ) THEN
-        CALL ULOPEN ( UNITE, FICHIE, KNOM, KACC, 'O' )
+        IF ( ACTION .EQ. 'RESERVER' ) THEN
+           CALL ULOPEN ( UNITE, FICHIE, KNOM, KACC, 'R' )
+        ELSE
+           CALL ULOPEN ( UNITE, FICHIE, KNOM, KACC, 'O' )
+        ENDIF
       ELSE IF ( KTYP .EQ. 'L' ) THEN
         CALL ULDEFI ( UNITE, FICHIE, KNOM, KTYP, KACC, 'O' ) 
       ELSE  

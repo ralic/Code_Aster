@@ -1,6 +1,6 @@
       SUBROUTINE UTVTAM
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILIFOR  DATE 06/01/95   AUTEUR G8BHHAC A.Y.PORTABILITE 
+C MODIF UTILIFOR  DATE 11/05/2005   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,7 +20,7 @@ C ======================================================================
       IMPLICIT REAL*8 (A-H,O-Z)
 C     ==================================================================
       INTEGER          MXUNIT,      MXNUML
-      PARAMETER      ( MXUNIT = 7 , MXNUML = 4 )
+      PARAMETER      ( MXUNIT = 8 , MXNUML = 4 )
       INTEGER          UNIT(MXUNIT,MXNUML), NBUNIT(MXUNIT)
       COMMON /UTINIF/  UNIT               , NBUNIT
       INTEGER          MXCOLS , ITABU , LIGCOU , COLCOU , IDF

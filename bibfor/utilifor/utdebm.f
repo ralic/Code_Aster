@@ -1,6 +1,6 @@
       SUBROUTINE UTDEBM ( CH1 , SPGLU , TEXTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILIFOR  DATE 24/05/2004   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF UTILIFOR  DATE 11/05/2005   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,11 +22,13 @@ C ======================================================================
       CHARACTER*(*)             SPGLU , TEXTE
 C     ==================================================================
       INTEGER          MXUNIT,      MXNUML
-      PARAMETER      ( MXUNIT = 7 , MXNUML = 4 )
+      PARAMETER      ( MXUNIT = 8 , MXNUML = 4 )
       INTEGER          UNIT(MXUNIT,MXNUML), NBUNIT(MXUNIT)
       COMMON /UTINIF/  UNIT               , NBUNIT
       INTEGER          MXCOLS , ITABU , LIGCOU , COLCOU , IDF
       COMMON /UTINIP/  MXCOLS , ITABU , LIGCOU , COLCOU , IDF
+      INTEGER          NEXCEP
+      COMMON /UTEXC /  NEXCEP
       INTEGER          NT
       PARAMETER      ( NT = 10 )
       CHARACTER*132    TAMPON
@@ -52,7 +54,12 @@ C     ------------------------------------------------------------------
       INTEGER          IFIC,INIVO,IUTIL,IVERS,K,LC,LL,LXLGUT         
 C     ------------------------------------------------------------------
       CALL GETRES(K8B,K8B,NOMCMD)
-      IDF  = INDEX('EFIDASX',CH1(1:1))
+C --- 'Z' (IDF=8) = LEVEE D'EXCEPTION
+      IDF  = INDEX('EFIDASXZ',CH1(1:1))
+C     --- SI EXCEPTION, NEXCEP EST FIXE PAR COMMON VIA UTEXCP/UTDEXC
+      IF ( IDF.NE.8 ) THEN
+         NEXCEP = 21
+      ENDIF
       IF ( IDF .EQ. 5) THEN
         LL=MIN(LEN(SPGLU),80)
         IF (SPGSAU(1:LL).EQ.SPGLU(1:LL) ) THEN
@@ -105,8 +112,8 @@ C -- MESSAGE:     E             F             A
           TAMPON(1) (1 : COLCOU) = '<'//CH1(1:1)//'> <'//SPG1(1:LC)//
      &                             '> <'//SPG(1:LL)//'>  '
         ENDIF
-C -- MESSAGE:          S
-      ELSE IF ( IDF.EQ.6 ) THEN
+C -- MESSAGE:          S             Z
+      ELSE IF ( IDF.EQ.6 .OR. IDF.EQ.8 ) THEN
         IF (IDF.EQ.1) NBERRE=NBERRE+1
         IF (IDF.EQ.2) NBERRF=NBERRF+1
         LC  = LXLGUT(NOMCMD)
@@ -131,13 +138,17 @@ C -- MESSAGE:          S
         TAMPON(2) = TAMPON(1)
         TAMPON(1) = '<'//CH1(1:1)//'> <ASTER '//VERS//'>  '
       ENDIF
-      IF ( IDF.EQ.6 ) THEN
+      IF ( IDF.EQ.6 .OR. IDF.EQ.8 ) THEN
         CALL VERSIO(IVERS,IUTIL,INIVO,DATE,LEXP)
         WRITE(VERS,'(I2,''.'',I2,''.'',I2,'' '',A10)')
      &        IVERS,IUTIL,INIVO,DATE(1:10)
         LIGCOU = 2
         TAMPON(2) = TAMPON(1)
         TAMPON(1) = '<ASTER '//VERS//'>  '
+        IF( IDF.EQ.8 ) THEN
+          LC  = LXLGUT(TAMPON(1))
+          TAMPON(1) = TAMPON(1)(1:LC)//' <EXCEPTION LEVEE>  '
+        ENDIF
       ENDIF
 100   CONTINUE
       CALL UTRTAM ( TEXTE )

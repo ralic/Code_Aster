@@ -1,4 +1,4 @@
-# MODIF  DATE 03/11/2004   AUTEUR MCOURTOI M.COURTOIS 
+# MODIF  DATE 12/05/2005   AUTEUR DURAND C.DURAND 
 # TITRE TP ANALYSE SISMIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -477,16 +477,16 @@ MACRO_PROJ_BASE(
 
 VITESH1=CALC_FONCTION(
                   INTEGRE=_F(FONCTION=ACCELH1,METHODE='TRAPEZE',),
-                           ),
+                  PROL_DROITE='CONSTANT'         )
 DEPLAH1=CALC_FONCTION(
                   INTEGRE=_F(FONCTION=VITESH1,METHODE='TRAPEZE',),
-                           ),                           
+                  PROL_DROITE='CONSTANT'         )
 VITESV1=CALC_FONCTION(
                   INTEGRE=_F(FONCTION=ACCELV1,METHODE='TRAPEZE',),
-                           ),
+                  PROL_DROITE='CONSTANT'         )
 DEPLAV1=CALC_FONCTION(
                   INTEGRE=_F(FONCTION=VITESV1,METHODE='TRAPEZE',),
-                           ),
+                  PROL_DROITE='CONSTANT'         )
 
 GSCA=DYNA_TRAN_MODAL(  
                   MASS_GENE=MASGEN2,

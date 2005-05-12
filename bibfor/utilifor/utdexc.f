@@ -1,12 +1,9 @@
-      SUBROUTINE NOR091 ( LINST, LCHAMP, NBMODE, NBSAUV, VAL, MAT )
-      IMPLICIT   NONE
-      INTEGER    NBSAUV, NBMODE
-      REAL*8     LINST(*), LCHAMP(*), MAT(*), VAL
-C ----------------------------------------------------------------------
+      SUBROUTINE UTDEXC( NUM, SPGLU, TEXTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/07/2002   AUTEUR VABHHTS J.PELLET 
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF UTILIFOR  DATE 11/05/2005   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -21,26 +18,20 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
+C     ------------------------------------------------------------------
+C     ROUTINE ANALOGUE A UTDEBM
 C
-C ----------------------------------------------------------------------
-C    
-      INTEGER  I, J
-      REAL*8   SUM
-C DEB ------------------------------------------------------------------
+C     ARGUMENTS :
+C        NUM    = NUMERO DE L'EXCEPTION
+C        SPGLU  = NOM DU SOUS-PROGRAMME LEVANT L'EXCEPTION
+C        TEXTE  = MESSAGE EXPLIQUANT POURQUOI L'EXCEPTION EST LEVEE.
+C     ------------------------------------------------------------------
+      IMPLICIT NONE
+      INTEGER            NUM
+      CHARACTER*(*)           SPGLU, TEXTE
+      INTEGER          NEXCEP
+      COMMON /UTEXC /  NEXCEP
 C
-      DO 10 I = 1, NBSAUV 
-         SUM = 0.D0
-         DO 12 J = 1, NBMODE
-            SUM = SUM + (LCHAMP((I-1)*NBMODE+J))**2
- 12      CONTINUE
-         MAT(I) = SUM
- 10   CONTINUE
-C
-      SUM = 0.D0
-      DO 20 I = 1, NBSAUV-1
-         SUM = SUM - (MAT(I) + MAT(I+1) )* (LINST(I) -LINST(I+1))/2.D0
- 20   CONTINUE
-C
-      VAL = SQRT(SUM)
-C
+      NEXCEP = NUM
+      CALL UTDEBM('Z', SPGLU, TEXTE)
       END

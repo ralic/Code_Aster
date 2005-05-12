@@ -1,4 +1,4 @@
-#@ MODIF Table Utilitai  DATE 14/03/2005   AUTEUR DURAND C.DURAND 
+#@ MODIF Table Utilitai  DATE 11/05/2005   AUTEUR MCOURTOI M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -113,6 +113,7 @@ class TableBase(object):
             for it in lvp:
                if it<>None and lvn.count(it)==0:
                   lvn.append(it)
+            lvn.sort()
             lvd.append(lvn)
          # création des n-uplets
          s = '[['+','.join(['x'+str(i) for i in range(npag)])+'] '

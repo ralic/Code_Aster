@@ -1,4 +1,4 @@
-# MODIF  DATE 28/09/2004   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 12/05/2005   AUTEUR DURAND C.DURAND 
 # TITRE LACHER D'UNE MASSE AVEC DISPOSITIF ANTI SISMIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -190,9 +190,9 @@ NO2_DX_A=RECU_FONCTION(  NOEUD='NO2',  NOM_CMP='DX',  NOM_CHAM='DEPL',
                             TITRE='ACCELERATION ABSOLUE AU NOEUD NO2'
                         )
 
-MAX_NO2A=CALC_FONCTION( MAX=_F( FONCTION = NO2_DX_A))
+MAX_NO2A=INFO_FONCTION( MAX=_F( FONCTION = NO2_DX_A))
 
-RMS_NO2A=CALC_FONCTION(RMS=_F(  FONCTION = NO2_DX_A,
+RMS_NO2A=INFO_FONCTION(RMS=_F(  FONCTION = NO2_DX_A,
                                METHODE = 'TRAPEZE',
                                CRITERE = 'ABSOLU',
                                 PRECISION = 1.E-6)
@@ -200,8 +200,9 @@ RMS_NO2A=CALC_FONCTION(RMS=_F(  FONCTION = NO2_DX_A,
 
 TEST_TABLE( TABLE=MAX_NO2A,FILTRE=(
             _F( NOM_PARA = 'FONCTION', VALE_K = 'NO2_DX_A'),
-            _F( NOM_PARA = 'INST', VALE = 2.5E-1)),
-             NOM_PARA='MAXI',
+            _F( NOM_PARA = 'INST', VALE = 2.5E-1),
+            _F( NOM_PARA = 'TYPE',  VALE_K = 'MAXI')),
+             NOM_PARA='DEPL',
               PRECISION=0.01,
              VALE=1.67E-2 )
 
@@ -220,9 +221,9 @@ NO2_DX_R=RECU_FONCTION(  NOEUD='NO2',  NOM_CMP='DX',  NOM_CHAM='DEPL',
                           INTERP_NUME='LIN',
                            LIST_INST=LISTIMP,   INTERPOL='LIN' )
 
-MAX_NO2R=CALC_FONCTION( MAX=_F( FONCTION = NO2_DX_R))
+MAX_NO2R=INFO_FONCTION( MAX=_F( FONCTION = NO2_DX_R))
 
-RMS_NO2R=CALC_FONCTION(RMS=_F(  FONCTION = NO2_DX_R,
+RMS_NO2R=INFO_FONCTION(RMS=_F(  FONCTION = NO2_DX_R,
                                METHODE = 'TRAPEZE',
                                CRITERE = 'ABSOLU',
                                 PRECISION = 1.E-6)
@@ -230,8 +231,9 @@ RMS_NO2R=CALC_FONCTION(RMS=_F(  FONCTION = NO2_DX_R,
 
 TEST_TABLE( TABLE=MAX_NO2R,FILTRE=(
             _F( NOM_PARA = 'FONCTION', VALE_K = 'NO2_DX_R'),
-            _F( NOM_PARA = 'INST', VALE = 7.1E-1)),
-             NOM_PARA='MAXI',
+            _F( NOM_PARA = 'INST', VALE = 7.1E-1),
+            _F( NOM_PARA = 'TYPE',  VALE_K = 'MAXI')),
+             NOM_PARA='DEPL',
               PRECISION=0.013,
              VALE=1.266E-6 )
 
@@ -247,9 +249,9 @@ FCHOC=RECU_FONCTION(   RESU_GENE=TRAN_GE,
                         NOEUD_CHOC='NO2',    INFO=2, 
                        PARA_X='INST',  PARA_Y='FN' )
 
-MAXFCHOC=CALC_FONCTION( MAX=_F( FONCTION = FCHOC) )
+MAXFCHOC=INFO_FONCTION( MAX=_F( FONCTION = FCHOC) )
 
-RMSFCHOC=CALC_FONCTION(RMS=_F(  FONCTION = FCHOC,
+RMSFCHOC=INFO_FONCTION(RMS=_F(  FONCTION = FCHOC,
                                METHODE = 'TRAPEZE',
                                CRITERE = 'ABSOLU',
                                 PRECISION = 1.E-6)
@@ -264,9 +266,10 @@ TEST_TABLE( TABLE=RMSFCHOC,FILTRE=(
 
 TEST_TABLE( TABLE=MAXFCHOC,FILTRE=(
             _F( NOM_PARA = 'FONCTION', VALE_K = 'FCHOC'),
-            _F( NOM_PARA = 'INST', VALE = 2.1E-1)),
-             NOM_PARA='MAXI',
-              PRECISION=0.01,
+            _F( NOM_PARA = 'INST', VALE = 2.1E-1),
+            _F( NOM_PARA = 'TYPE',  VALE_K = 'MAXI')),
+             NOM_PARA='FN',
+             PRECISION=0.01,
              VALE=1.266E+4 )
 
 FIN()

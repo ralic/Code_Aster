@@ -1,4 +1,4 @@
-# MODIF  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 12/05/2005   AUTEUR DURAND C.DURAND 
 # TITRE LIRE_FONCTION ET SPECTRE D'OSCILLATEUR
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,7 +19,7 @@
 # ======================================================================
 
 
-DEBUT( CODE=_F(  NOM = 'ZZZZ102A',NIV_PUB_WEB='INTERNET')  )
+DEBUT( CODE=_F(  NOM = 'ZZZZ102A',NIV_PUB_WEB='INTERNET') )
 
 #=======================================================================
 #
@@ -48,15 +48,17 @@ TEST_FONCTION(
                                            ATTR_REFE = 'LIN LIN '))
                  )
 
-MAXLBEWA=CALC_FONCTION(    MAX=_F(  FONCTION = LBEWA)  )
+MAXLBEWA=INFO_FONCTION(    MAX=_F(  FONCTION = LBEWA)  )
 
-TEST_TABLE(      TABLE=MAXLBEWA,FILTRE=(
-                    _F(  NOM_PARA = 'FONCTION',
-                             VALE_K = 'LBEWA'),
-                           _F(  NOM_PARA = 'INST',
-                             VALE = 7.93500E+00)),
-                  NOM_PARA='MAXI',
-                      VALE=-6.38000E-01              )
+TEST_TABLE(  TABLE=MAXLBEWA,
+             FILTRE=( _F(  NOM_PARA = 'FONCTION',
+                           VALE_K = 'LBEWA'),
+                      _F(  NOM_PARA = 'INST',
+                           VALE = 7.93500E+00),
+                      _F(  NOM_PARA = 'TYPE',
+                           VALE_K = 'MINI')),
+             NOM_PARA='DX',
+             VALE=-6.38000E-01              )
 
 G=9.81
 UNSURG=1/G
@@ -66,17 +68,19 @@ SLBEWA=CALC_FONCTION(
                             NATURE = 'ACCE', AMOR_REDUIT = ( 0.01, ),
                             NORME = UNSURG)  )
 
-MSLBEWA=CALC_FONCTION(    MAX=_F(  FONCTION = SLBEWA)  )
+MSLBEWA=INFO_FONCTION(    MAX=_F(  FONCTION = SLBEWA)  )
 
-TEST_TABLE(      TABLE=MSLBEWA,FILTRE=(
-                    _F(  NOM_PARA = 'FONCTION',
-                             VALE_K = 'SLBEWA'),
-                           _F(  NOM_PARA = 'AMOR',
-                             VALE = 1.00000E-02),
-                           _F(  NOM_PARA = 'FREQ',
-                             VALE = 3.70000E+00)),
-                  NOM_PARA='MAXI',
-                      VALE=3.56676E+01               )
+TEST_TABLE(   TABLE=MSLBEWA,
+              FILTRE=( _F(  NOM_PARA = 'FONCTION',
+                            VALE_K = 'SLBEWA'),
+                       _F(  NOM_PARA = 'AMOR',
+                            VALE = 1.00000E-02),
+                       _F(  NOM_PARA = 'FREQ',
+                            VALE = 3.70000E+00),
+                       _F(  NOM_PARA = 'TYPE',
+                            VALE_K = 'MAXI')),
+              NOM_PARA='ACCE',
+              VALE=3.56676E+01               )
 
 VAL=6.38000E-01 * G
 TEST_FONCTION(
@@ -140,15 +144,17 @@ TEST_FONCTION(
                                            ATTR_REFE = 'NON NON '))
                  )
 
-MAXLBEWS=CALC_FONCTION(   MAX=_F(  FONCTION = LBEWS)  )
+MAXLBEWS=INFO_FONCTION(   MAX=_F(  FONCTION = LBEWS)  )
 
-TEST_TABLE(      TABLE=MAXLBEWS,FILTRE=(
-                    _F(  NOM_PARA = 'FONCTION',
+TEST_TABLE(   TABLE=MAXLBEWS,
+              FILTRE=(  _F(  NOM_PARA = 'FONCTION',
                              VALE_K = 'LBEWS'),
-                           _F(  NOM_PARA = 'INST',
-                             VALE = 3.10000E+00)),
-                  NOM_PARA='MAXI',
-                      VALE=1.00000E+00               )
+                        _F(  NOM_PARA = 'INST',
+                             VALE = 3.10000E+00),
+                        _F(  NOM_PARA = 'TYPE',
+                             VALE_K = 'MAXI')),
+              NOM_PARA='ACCE_SOL',
+              VALE=1.00000E+00               )
 
 SLBEWS=CALC_FONCTION(
               SPEC_OSCI=_F(  FONCTION = LBEWS,

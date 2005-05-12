@@ -1,6 +1,6 @@
       SUBROUTINE UTMESS ( CH1 , SPGLU , TEXTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILIFOR  DATE 29/09/95   AUTEUR GIBHHAY A.Y.PORTABILITE 
+C MODIF UTILIFOR  DATE 11/05/2005   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,6 +22,6 @@ C ======================================================================
       CHARACTER*(*)             SPGLU , TEXTE
 C     ==================================================================
       CALL UTDEBM( CH1, SPGLU, TEXTE )
-      CALL UTFINM( )
+      CALL UTFINM
 C
       END

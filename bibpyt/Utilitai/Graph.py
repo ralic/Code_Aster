@@ -1,4 +1,4 @@
-#@ MODIF Graph Utilitai  DATE 30/11/2004   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF Graph Utilitai  DATE 11/05/2005   AUTEUR MCOURTOI M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -106,6 +106,8 @@ class Graph:
       self.Min_X     =  1.e+99
       self.Max_X     = -1.e+99
       self.Min_Y     =  1.e+99
+      self.MinP_X    =  1.e+99   # minimum > 0 pour les échelles LOG
+      self.MinP_Y    =  1.e+99
       self.Max_Y     = -1.e+99
       self.Legende_X = ''
       self.Legende_Y = ''
@@ -157,9 +159,13 @@ class Graph:
       for i in range(debut,self.NbCourbe):
          X0 = min([X0,]+list(self.Valeurs[i][0]))
          X1 = max([X1,]+list(self.Valeurs[i][0]))
+         self.MinP_X = min([self.MinP_X,]+[x for x \
+                  in list(self.Valeurs[i][0]) if x>0])
          for ny in range(1,len(self.Valeurs[i])):
             Y0 = min([Y0,]+list(self.Valeurs[i][ny]))
             Y1 = max([Y1,]+list(self.Valeurs[i][ny]))
+            self.MinP_Y = min([self.MinP_Y,]+[y for y \
+                  in list(self.Valeurs[i][0]) if y>0])
       self.BBXmin = X0
       self.BBXmax = X1
       self.BBYmin = Y0
@@ -322,6 +328,10 @@ class TraceGraph:
       # si Min/Max incohérents
       if graph.Min_X > graph.Max_X or graph.Min_Y > graph.Max_Y:
          graph.SetExtrema(marge=0.05)
+      if graph.Min_X < 0. and graph.Echelle_X=='LOG':
+         graph.Min_X=graph.MinP_X
+      if graph.Min_Y < 0. and graph.Echelle_Y=='LOG':
+         graph.Min_Y=graph.MinP_Y
       
       # formats de base (identiques à ceux du module Table)
       self.DicForm={
@@ -612,7 +622,7 @@ class TraceXmgrace(TraceGraph):
 @    xaxis  ticklabel start 0.000000
 @    xaxis  ticklabel stop type auto
 @    xaxis  ticklabel stop 0.000000
-@    xaxis  ticklabel char size 1.000000
+@    xaxis  ticklabel char size 0.800000
 @    xaxis  ticklabel font 0
 @    xaxis  ticklabel color 1
 @    xaxis  ticklabel formula ""
@@ -661,7 +671,7 @@ class TraceXmgrace(TraceGraph):
 @    yaxis  ticklabel start 0.000000
 @    yaxis  ticklabel stop type auto
 @    yaxis  ticklabel stop 0.000000
-@    yaxis  ticklabel char size 1.000000
+@    yaxis  ticklabel char size 0.800000
 @    yaxis  ticklabel font 0
 @    yaxis  ticklabel color 1
 @    yaxis  ticklabel formula ""
@@ -681,7 +691,7 @@ class TraceXmgrace(TraceGraph):
 @    legend box fill color 0
 @    legend box fill pattern 1
 @    legend font 0
-@    legend char size 1.000000
+@    legend char size 0.750000
 @    legend color 1
 @    legend length 4
 @    legend vgap 1
@@ -1003,6 +1013,7 @@ GRAPHIQUE:
                   sv=self.DicForm['formR'] % g.Valeurs[i][k][j]
                   fdogr.write(' '+sv)
                fdogr.write('\n')
+            fdogr.write('\n')
       self._FermFich()
 
 # ------------------------------------------------------------------------------

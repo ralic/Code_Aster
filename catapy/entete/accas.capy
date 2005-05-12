@@ -1,4 +1,4 @@
-#& MODIF ENTETE  DATE 18/04/2005   AUTEUR NICOLAS O.NICOLAS 
+#& MODIF ENTETE  DATE 12/05/2005   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,12 +22,14 @@ import Accas
 from Accas import *
 from Accas import _F
 import string
+import types
 import Numeric
 from math import sin,cos,tan,asin,acos,atan2,atan,sinh,cosh,tanh,exp,log,log10
 from math import sqrt,pi
 import ops
-import Utilitai
-from Utilitai.Utmess import UTMESS
+
+# pas d'import aster, Utilitai... pour ne pas gener eficas
+from Utilitai.t_fonction import t_fonction,t_fonction_c,t_nappe
 
 try:
   import aster
@@ -166,6 +168,7 @@ class macr_elem_dyna  (ASSD):
         typmat='RIGI_GENE' pour obtenir la matrice de raideur generalisee
         typmat='AMOR_GENE' pour obtenir la matrice d'amortissement generalisee
         Attributs ne retourne rien """
+    from Utilitai.Utmess import UTMESS
 
 # avertissement generique    
     UTMESS('A','RECU_MATR_GENE',' ATTENTION, VOUS ALLEZ ECRASER DES CONCEPTS EXISTANTS')
@@ -495,15 +498,30 @@ class fonction_class(ASSD):
       le type jeveux (FONCTION, FONCT_C, NAPPE) n'est pas retourne,
       le dictionnaire peut ainsi etre fourni a CALC_FONC_INTERP tel quel.
       """
-      TypeProl={'E':'EXCLU', 'L':'LINEAIRE', 'C':'CONSTANT' }
-      prol=aster.getvectjev(string.ljust(self.get_name(),19)+'.PROL')
-      dico={
+      if hasattr(self,'etape') and self.etape.nom=='DEFI_FONCTION' :
+        dico={
+         'INTERPOL'    : self.etape['INTERPOL'],
+         'NOM_PARA'    : self.etape['NOM_PARA'],
+         'NOM_RESU'    : self.etape['NOM_RESU'],
+         'PROL_DROITE' : self.etape['PROL_DROITE'],
+         'PROL_GAUCHE' : self.etape['PROL_GAUCHE'],
+        }
+        if   type(dico['INTERPOL'])==types.TupleType :
+                  dico['INTERPOL']=list(dico['INTERPOL'])
+        elif type(dico['INTERPOL'])==types.StringType :
+                  dico['INTERPOL']=[dico['INTERPOL'],]
+        if len(dico['INTERPOL'])==1 :
+           dico['INTERPOL']=dico['INTERPOL']*2
+      else :
+        TypeProl={'E':'EXCLU', 'L':'LINEAIRE', 'C':'CONSTANT' }
+        prol=aster.getvectjev(string.ljust(self.get_name(),19)+'.PROL')
+        dico={
          'INTERPOL'    : [prol[1][0:3],prol[1][4:7]],
-         'NOM_PARA'    : prol[2][0:16],
-         'NOM_RESU'    : prol[3][0:16],
-         'PROL_DROITE' : TypeProl[prol[4][0]],
-         'PROL_GAUCHE' : TypeProl[prol[4][1]],
-      }
+         'NOM_PARA'    : string.strip(prol[2][0:16]),
+         'NOM_RESU'    : string.strip(prol[3][0:16]),
+         'PROL_DROITE' : TypeProl[prol[4][1]],
+         'PROL_GAUCHE' : TypeProl[prol[4][0]],
+        }
       return dico
    def Trace(self,FORMAT='TABLEAU',**kargs):
       """Tracé d'une fonction"""
@@ -513,16 +531,32 @@ class fonction_class(ASSD):
             Lab=[self.Parametres()['NOM_PARA'],self.Parametres()['NOM_RESU']])
       gr.Trace(FORMAT=FORMAT,**kargs)
 class fonction_sdaster(fonction_class):
+   def convert(self,arg='real'):
+      """
+      Retourne un objet de la classe t_fonction
+      représentation python de la fonction
+      """
+      if arg=='real' :
+        return t_fonction(self.Absc(),
+                          self.Ordo(),
+                          self.Parametres())
+      elif arg=='complex' :
+        return t_fonction_c(self.Absc(),
+                            self.Ordo(),
+                            self.Parametres())
    def Valeurs(self) :
       """
       Retourne deux listes de valeurs : abscisses et ordonnees
       """
       if hasattr(self,'etape') and self.etape.nom=='DEFI_FONCTION' :
-        lbl=list(self.etape['VALE'])
-        dim=len(lbl)
-        lx=[lbl[i] for i in range(0,dim,2)]
-        ly=[lbl[i] for i in range(1,dim,2)]
-        return [lx,ly]
+        if self.etape['VALE']!=None:
+           lbl=list(self.etape['VALE'])
+           dim=len(lbl)
+           lx=[lbl[i] for i in range(0,dim,2)]
+           ly=[lbl[i] for i in range(1,dim,2)]
+           return [lx,ly]
+        elif self.etape['VALE_PARA']!=None:
+           return [self.etape['VALE_PARA'].Valeurs(),self.etape['VALE_FONC'].Valeurs()]
       else :
         vale=string.ljust(self.get_name(),19)+'.VALE'
         lbl=list(aster.getvectjev(vale))
@@ -539,22 +573,40 @@ class fonction_sdaster(fonction_class):
    def __call__(self,val):
       ### Pour EFICAS : substitution de l'instance de classe
       ### parametre par sa valeur
-      import types 
       if type(val)==types.InstanceType : val=val.valeur
       ###
-      lx,ly=self.Valeurs()
-      n=len(lx)
-      if val in lx : return ly[lx.index(val)]
-      lx.append(val)
-      lx.sort()
-      indic=lx.index(val)
-      if indic==0   :
-         if self.etape['PROL_GAUCHE']=='CONSTANT':return ly[0]
-      if indic==n :
-         if self.etape['PROL_DROITE']=='CONSTANT':return ly[n-1]
-      return (ly[indic-1]+(ly[indic]-ly[indic-1])*(val-lx[indic-1])/(lx[indic+1]-lx[indic-1]))
+      __ff=self.convert()
+      return __ff(val)
 class para_sensi(fonction_sdaster): pass
 class fonction_c(fonction_class):
+   def convert(self,arg='real'):
+      """
+      Retourne un objet de la classe t_fonction ou t_fonction_c,
+      représentation python de la fonction complexe
+      """
+      if arg=='real' :
+        return t_fonction(self.Absc(),
+                          self.Ordo(),
+                          self.Parametres())
+      elif arg=='imag' :
+        return t_fonction(self.Absc(),
+                          self.OrdoImg(),
+                          self.Parametres())
+      elif arg=='modul' :
+        modul=Numeric.sqrt(Numeric.array(self.Ordo())**2+Numeric.array(self.OrdoImg())**2)
+        return t_fonction(self.Absc(),
+                          modul,
+                          self.Parametres())
+      elif arg=='phase' :
+        phase=Numeric.arctan2(Numeric.array(self.OrdoImg()),Numeric.array(self.Ordo()))
+        phase=phase*180./pi
+        return t_fonction(self.Absc(),
+                          phase,
+                          self.Parametres())
+      elif arg=='complex' :
+        return t_fonction_c(self.Absc(),
+                            map(complex,self.Ordo(),self.OrdoImg()),
+                            self.Parametres())
    def Valeurs(self) :
       """
       Retourne trois listes de valeurs : abscisses, parties reelles et imaginaires.
@@ -593,7 +645,35 @@ class fonction_c(fonction_class):
       gr.AjoutCourbe(Val=self.Valeurs(),
        Lab=[self.Parametres()['NOM_PARA'],self.Parametres()['NOM_RESU'],'IMAG'])
       gr.Trace(FORMAT=FORMAT,**kargs)
+   def __call__(self,val):
+      ### Pour EFICAS : substitution de l'instance de classe
+      ### parametre par sa valeur
+      import types 
+      if type(val)==types.InstanceType : val=val.valeur
+      ###
+      __ff=convert(self)
+      return __ff(val)
 class nappe_sdaster(fonction_class):
+   def convert(self):
+      """
+      Retourne un objet de la classe t_nappe, représentation python de la nappe
+      """
+      para=self.Parametres()
+      vale=self.Valeurs()
+      l_fonc=[]
+      i=0
+      for pf in para[1] :
+          para_f={'INTERPOL'    : pf['INTERPOL_FONC'],
+                  'PROL_DROITE' : pf['PROL_DROITE_FONC'],
+                  'PROL_GAUCHE' : pf['PROL_GAUCHE_FONC'],
+                  'NOM_PARA'    : para[0]['NOM_PARA_FONC'],
+                  'NOM_RESU'    : para[0]['NOM_RESU'],
+                 }
+          l_fonc.append(t_fonction(vale[1][i][0],vale[1][i][1],para_f))
+          i+=1
+      return t_nappe(vale[0],
+                     l_fonc,
+                     para[0])
    def Valeurs(self):
       """
       Retourne la liste des valeurs du parametre,
@@ -608,7 +688,7 @@ class nappe_sdaster(fonction_class):
          lbl=dicv[k+1]
          dim=len(lbl)/2
          lval.append([lbl[0:dim],lbl[dim:2*dim]])
-      return [lpar,lval]
+      return [list(lpar),lval]
    def Parametres(self):
       """
       Retourne un dictionnaire contenant les parametres de la nappe,
@@ -620,22 +700,25 @@ class nappe_sdaster(fonction_class):
       prol=aster.getvectjev(string.ljust(self.get_name(),19)+'.PROL')
       dico={
          'INTERPOL'      : [prol[1][0:3],prol[1][4:7]],
-         'NOM_PARA'      : prol[2][0:16],
-         'NOM_RESU'      : prol[3][0:16],
-         'PROL_DROITE'   : TypeProl[prol[4][0]],
-         'PROL_GAUCHE'   : TypeProl[prol[4][1]],
-         'NOM_PARA_FONC' : prol[5][0:4],
+         'NOM_PARA'      : string.strip(prol[2][0:16]),
+         'NOM_RESU'      : string.strip(prol[3][0:16]),
+         'PROL_DROITE'   : TypeProl[prol[4][1]],
+         'PROL_GAUCHE'   : TypeProl[prol[4][0]],
+         'NOM_PARA_FONC' : string.strip(prol[5][0:4]),
       }
       lparf=[]
       nbf=(len(prol)-6)/2
       for i in range(nbf):
          dicf={
             'INTERPOL_FONC'    : [prol[6+i*2][0:3],prol[6+i*2][4:7]],
-            'PROL_DROITE_FONC' : TypeProl[prol[7+i*2][0]],
-            'PROL_GAUCHE_FONC' : TypeProl[prol[7+i*2][1]],
+            'PROL_DROITE_FONC' : TypeProl[prol[7+i*2][1]],
+            'PROL_GAUCHE_FONC' : TypeProl[prol[7+i*2][0]],
          }
          lparf.append(dicf)
       return [dico,lparf]
+   def Absc(self):
+      """Retourne la liste des abscisses"""
+      return self.Valeurs()[0]
    def Trace(self,FORMAT='TABLEAU',**kargs):
       """Tracé d'une nappe"""
       from Utilitai.Graph import Graph
@@ -691,6 +774,7 @@ class matr_asse_gene_r(matr_asse_gene):
     """ envoie les valeurs d'un Numerical Array dans des matrices 
     generalisees reelles definies dans jeveux
         Attributs ne retourne rien """
+    from Utilitai.Utmess import UTMESS
 
 # avertissement generique    
     UTMESS('A','RECU_MATR_GENE',' ATTENTION, VOUS ALLEZ ECRASER DES CONCEPTS EXISTANTS')
@@ -775,6 +859,7 @@ class matr_asse_gene_c(matr_asse_gene):
     """ envoie les valeurs d'un Numerical Array dans des matrices 
     generalisees reelles definies dans jeveux
         Attributs ne retourne rien """
+    from Utilitai.Utmess import UTMESS
 
 # avertissement generique    
     UTMESS('A','RECU_MATR_GENE',' ATTENTION, VOUS ALLEZ ECRASER DES CONCEPTS EXISTANTS')
@@ -859,12 +944,12 @@ class table_sdaster(ASSD):
          raise KeyError
       else:
          return resu[key[1]-1]
-  def Nonefy(self,l1,l2) :
-      if l2==0 : return None
-      else     : return l1
   def EXTR_TABLE(self) :
       """Produit un objet Table à partir du contenu d'une table Aster
       """
+      def Nonefy(l1,l2) :
+          if l2==0 : return None
+          else     : return l1
       from Utilitai.Table import Table
       tblp=string.ljust(self.get_name(),19)+'.TBLP'
       tabnom=list(aster.getvectjev(tblp))
@@ -877,7 +962,7 @@ class table_sdaster(ASSD):
       for i in lparam :
          value=list(aster.getvectjev(i[2]))
          exist=aster.getvectjev(i[3])
-         dval[string.strip(i[0])]=map(self.Nonefy,value,exist)
+         dval[string.strip(i[0])]=map(Nonefy,value,exist)
          lpar.append(string.strip(i[0]))
          ltyp.append(string.strip(i[1]))
       n=len(dval[lpar[0]])
@@ -954,6 +1039,7 @@ class vect_asse_gene_r(vect_asse_gene):
     """ envoie les valeurs d'un Numerical Array dans un vecteur generalise 
     reel definie dans jeveux
         Attributs ne retourne rien """
+    from Utilitai.Utmess import UTMESS
 
 # avertissement generique    
     UTMESS('A','RECU_VECT_GENE',' ATTENTION, VOUS ALLEZ ECRASER DES CONCEPTS EXISTANTS')
@@ -991,6 +1077,7 @@ class vect_asse_gene_c(vect_asse_gene):
     """ envoie les valeurs d'un Numerical Array dans un vecteur generalise 
     complexe definie dans jeveux
         Attributs ne retourne rien """
+    from Utilitai.Utmess import UTMESS
 
 # avertissement generique    
     UTMESS('A','RECU_VECT_GENE',' ATTENTION, VOUS ALLEZ ECRASER DES CONCEPTS EXISTANTS')

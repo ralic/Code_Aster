@@ -4,7 +4,7 @@
       CHARACTER*(*)             FICHIE, NAME, ACCES, AUTOR
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 10/10/2003   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF UTILITAI  DATE 11/05/2005   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -32,8 +32,9 @@ C IN  : UNIT   : NUMERO D'UNITE LOGIQUE
 C IN  : FICHIE : NOM DU FICHIER ASSOCIE AU NUMERO D'UNITE LOGIQUE UNIT
 C IN  : NAME   : NOM LOCAL ASSOCIE AU NUMERO D'UNITE LOGIQUE UNIT
 C IN  : ACCES  : TYPE D'ACCES  N -> NEW, O -> OLD, A -> APPEND 
-C IN  : AUTOR  : O -> AUTORISE LA MODIFICATION, N -> SINON 
-C
+C IN  : AUTOR  : O -> AUTORISE LA MODIFICATION
+C                N -> N'AUTORISE PAS LA MODIFICATION
+C                R -> RESERVE L'UNITE SANS OUVRIR LE FICHIER
 C     ATTENTION ecriture du NAME en minuscules.
 C     ------------------------------------------------------------------
 C
@@ -54,6 +55,18 @@ C
       INTEGER       I,K,IERR,IER1,IER2,IFILE
       LOGICAL       V11
 C     ------------------------------------------------------------------
+      INTEGER       MXIMPR
+      PARAMETER   ( MXIMPR = 5)
+C     ------------------------------------------------------------------
+C     CONSERVER LA COHERENCE AVEC IBIMPR
+      CHARACTER*16  NOMPR (MXIMPR)
+      CHARACTER*1   TYPPR (MXIMPR) , AUTPR(MXIMPR)
+      INTEGER       UNITPR (MXIMPR)   , PRESPR(MXIMPR)
+      DATA          NOMPR  /'VIGILE'  , 'MESSAGE'   , 'RESULTAT',
+     +                      'ERREUR'  ,  'MED'      /
+      DATA          UNITPR /    0     ,      6      ,     8     ,
+     +                          9     ,    80       /
+C     ------------------------------------------------------------------
 C
       NAME16 = NAME
       NAMELL = FICHIE
@@ -61,6 +74,17 @@ C
       K1AUT  = AUTOR
 C     
       IF ( UNIT .GT. 0 ) THEN
+C
+C       VALEUR PAR DEFAUT POUR LES NOMS INTERNES
+        IF ( NAME16.EQ.' ' ) THEN
+          DO 50 I = 1, MXIMPR
+            IF( UNIT .EQ. UNITPR(I) ) THEN
+              NAME16 = NOMPR(I)
+              GOTO 59
+            ENDIF
+  50      CONTINUE
+  59      CONTINUE
+        ENDIF
 C
         WRITE(K4B,'(I3)') UNIT
         IF ( FICHIE(1:1) .EQ. ' ' ) THEN
@@ -77,9 +101,9 @@ C     --- L'UNITE EST DEJA RESERVEE DANS LA SD ---
 C
             IF ( NAMEFI(I) .EQ. NAMELL ) THEN
               IF ( TYPEFI(I) .EQ. 'A' ) THEN
-                IF ( ETATFI(I) .EQ. 'O' ) THEN
+                IF ((ETATFI(I).EQ.'O').OR.(ETATFI(I).EQ.'R')) THEN
                   IF ( ACCEFI(I).EQ. K1ACCE ) THEN
-                    IF ( DDNAME(I) .EQ. NAME .OR. NAME .EQ. ' ') THEN
+                    IF ( DDNAME(I).EQ.NAME16 .OR. NAME16.EQ.' ') THEN
                       GOTO 9999
                     ENDIF
                     CALL UTMESS('E','ULOPEN01','UNITE LOGIQUE '//K4B//
@@ -160,6 +184,17 @@ C
         ACCEFI(IFILE) = K1ACCE
         ETATFI(IFILE) = 'O'
         MODIFI(IFILE) = K1AUT
+C       POUR UNE RÉSERVATION, ON FERME LE FICHIER, SON ÉTAT PASSE À 'R'
+        IF ( K1AUT .EQ. 'R' ) THEN
+           MODIFI(IFILE) = 'O'
+           ETATFI(IFILE) = 'R'
+           CLOSE (UNIT=UNIT, IOSTAT=IERR)
+           IF ( IERR .GT. 0 ) THEN
+               WRITE(K4B,'(I4)') UNIT
+               CALL UTMESS('F','ULOPEN09','UNITE LOGIQUE '//K4B
+     &         //', PROBLEME LORS DU CLOSE DE LA RESERVATION.')
+           ENDIF
+        ENDIF
 C       
       ELSE IF ( UNIT .LT. 0 ) THEN
         WRITE(K4B,'(I4)') -UNIT
@@ -167,11 +202,13 @@ C
           IF ( UNITFI(I) .EQ. -UNIT ) THEN
             IF ( MODIFI(I) .EQ. 'O' ) THEN
               IF ( TYPEFI(I) .EQ. 'A' ) THEN
-                CLOSE (UNIT=-UNIT, IOSTAT=IERR)
-                IF ( IERR .GT. 0 ) THEN
-                  CALL UTMESS('F','ULOPEN09','UNITE LOGIQUE '//K4B
+                IF ( ETATFI(I) .EQ. 'O' ) THEN
+                  CLOSE (UNIT=-UNIT, IOSTAT=IERR)
+                  IF ( IERR .GT. 0 ) THEN
+                    CALL UTMESS('F','ULOPEN20','UNITE LOGIQUE '//K4B
      &                    //', PROBLEME LORS DU CLOSE ')         
-                ENDIF     
+                  ENDIF
+                ENDIF
                 NAMEFI(I) = ' '
                 DDNAME(I) = ' '
                 UNITFI(I) = 0
@@ -181,12 +218,12 @@ C
                 MODIFI(I) = ' '
                 GOTO 9999
               ELSE
-                CALL UTMESS('F','ULOPEN10','LE FICHIER ASSOCIE'
+                CALL UTMESS('F','ULOPEN21','LE FICHIER ASSOCIE'
      &                  //'A L''UNITE LOGIQUE '//K4B//' N''EST PAS DE '
      &                  //'TYPE ASCII')
               ENDIF
             ELSE
-              CALL UTMESS('F','ULOPEN11','LA REDEFINITION DE L''UNITE '
+              CALL UTMESS('F','ULOPEN23','LA REDEFINITION DE L''UNITE '
      &                //'LOGIQUE '//K4B//' N''EST PAS AUTORISEE')
             ENDIF
           ENDIF

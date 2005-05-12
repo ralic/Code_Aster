@@ -9,7 +9,7 @@ C
       CHARACTER*8   MOD
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
+C MODIF ALGELINE  DATE 11/05/2005   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -153,12 +153,12 @@ C ======================================================================
                IRTETI = 3
                GOTO 100
             ELSE
-               CALL CODENT(ITER,'G',CITER)
-               CALL CODREE(TOLER,'E',CTOL)
-               CALL UTEXCP(23,'LAIGLE',' ERREUR'//
-     +         ' - NON CONVERGENCE A ITERATION MAXI '//CITER//
-     +         ' - CONVERGENCE IRREGULIERE & ERREUR > '//CTOL//
-     +         ' - DIMINUER LA TAILLE D INCREMENT')
+               CALL UTDEXC(23,'LAIGLE',' ERREUR')
+      CALL UTIMPI('L',' - NON CONVERGENCE A ITERATION MAXI',1,ITER)
+      CALL UTIMPR('L',' - CONVERGENCE IRREGULIERE & ERREUR > ',1,TOLER)
+      CALL UTIMPI('L',' - DIMINUER LA TAILLE D''INCREMENT', 0, 0)
+               CALL UTFINM
+
             ENDIF
          ENDIF
 C ======================================================================
@@ -235,12 +235,12 @@ C ======================================================================
                      IRTETI = 3
                      GOTO 100
                   ELSE
-                     CALL CODENT(ITER,'G',CITER)
-                     CALL CODREE(TOLER,'E',CTOL)
-                     CALL UTEXCP(23,'LAIGLE',' ERREUR'//
-     +               ' - NON CONVERGENCE A ITERATION MAXI '//CITER//
-     +               ' - CONVERGENCE IRREGULIERE & ERREUR > '//CTOL//
-     +               ' - DIMINUER LA TAILLE D INCREMENT')
+                     CALL UTDEXC(23,'LAIGLE',' ERREUR')
+      CALL UTIMPI('L',' - NON CONVERGENCE A ITERATION MAXI',1,ITER)
+      CALL UTIMPR('L',' - CONVERGENCE IRREGULIERE & ERREUR > ',1,TOLER)
+      CALL UTIMPI('L',' - DIMINUER LA TAILLE D''INCREMENT', 0, 0)
+                     CALL UTFINM
+
                   ENDIF
 C ======================================================================
 C --- ON PROJETE AU SOMMET DU DOMAINE ----------------------------------
@@ -280,12 +280,12 @@ C ======================================================================
                      IRTETI = 3
                      GOTO 100
                   ELSE
-                     CALL CODENT(ITER,'G',CITER)
-                     CALL CODREE(TOLER,'E',CTOL)
-                     CALL UTEXCP(23,'LAIGLE',' ERREUR'//
-     +               ' - NON CONVERGENCE A ITERATION MAXI '//CITER//
-     +               ' - CONVERGENCE IRREGULIERE & ERREUR > '//CTOL//
-     +               ' - DIMINUER LA TAILLE D INCREMENT')
+                     CALL UTDEXC(23,'LAIGLE',' ERREUR')
+      CALL UTIMPI('L',' - NON CONVERGENCE A ITERATION MAXI',1,ITER)
+      CALL UTIMPR('L',' - CONVERGENCE IRREGULIERE & ERREUR > ',1,TOLER)
+      CALL UTIMPI('L',' - DIMINUER LA TAILLE D''INCREMENT', 0, 0)
+                     CALL UTFINM
+
                   ENDIF
                ENDIF
             ENDIF

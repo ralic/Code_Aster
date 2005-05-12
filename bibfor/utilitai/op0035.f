@@ -1,7 +1,7 @@
       SUBROUTINE OP0035 ( IER )
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 05/10/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF UTILITAI  DATE 11/05/2005   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -41,13 +41,14 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
 C DECLARATION VARIABLES LOCALES      
+      CHARACTER*1   KETAT
       CHARACTER*8   RESULT,TYPVAL,K8BID, ETAT
       CHARACTER*16  TYPE, NOMCMD,K16BID
       CHARACTER*255 KFIC
       COMPLEX*16    CBID
-      INTEGER       ULNUME, ULISOP, ULNOMF
+      INTEGER       ULNUME, ULNOMF
       INTEGER       NBVAL,JKVAL,JTVAL,IBID,K,UL
-      INTEGER       NBUNIT, NBFIC, ISOP
+      INTEGER       NBUNIT, NBFIC
       REAL*8        RVAL,RBID
 C
       CALL JEMARQ()
@@ -92,19 +93,32 @@ C=======================================================================
             CALL GETVTX(' ','FICHIER',0,1,1,KFIC,NBFIC)
             UL = ULNOMF (KFIC, K8BID, K8BID)
           ENDIF
-          IF ( UL .LT. 0 ) THEN
-            ISOP = 0
-          ELSE
-            ISOP = ULISOP (UL, K16BID)
-          ENDIF
-          IF ( ISOP .EQ. 0 ) THEN
-            ETAT='FERME   '
-          ELSE
-            ETAT='OUVERT  '
+          ETAT='FERME  '
+          IF ( UL .GE. 0 ) THEN
+            CALL ULISOG(UL, KFIC, KETAT )
+            IF ( KETAT .EQ. 'O' ) THEN
+               ETAT='OUVERT  '
+            ELSEIF ( KETAT .EQ. 'R' ) THEN
+               ETAT='RESERVE '
+            ENDIF
           ENDIF
           CALL TBAJLI(RESULT,NBVAL,ZK16(JKVAL+K-1),IBID,RBID,
      &                CBID,ETAT,0)
-        ENDIF 
+          IF ( (KETAT .EQ. 'R').OR.(KETAT .EQ. 'O') ) THEN
+C       SI LE FICHIER EST RESERVE OU OUVERT LE NOM EST MIS DANS LA TABLE
+C             K*255 = 4*K*80 = (1,80)+(81,160)+(161,240)+(241,255)
+C                                 80      80        80        15 
+C           5 COLONNES SONT AJOUTÉES A LA LIGNE K DE LA TABLE
+            CALL TBAJCO(RESULT,'NOMFIC1','K80',1,IBID,RBID,CBID,
+     &                  KFIC(  1: 80),'A',K)
+            CALL TBAJCO(RESULT,'NOMFIC2','K80',1,IBID,RBID,CBID,
+     &                  KFIC( 81:160),'A',K)
+            CALL TBAJCO(RESULT,'NOMFIC3','K80',1,IBID,RBID,CBID,
+     &                  KFIC(161:240),'A',K)
+            CALL TBAJCO(RESULT,'NOMFIC4','K80',1,IBID,RBID,CBID,
+     &                  KFIC(241:255),'A',K)
+          ENDIF
+        ENDIF
  100  CONTINUE      
 
       CALL TITRE
