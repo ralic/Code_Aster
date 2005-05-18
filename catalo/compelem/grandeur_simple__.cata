@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 09/05/2005   AUTEUR REZETTE C.REZETTE 
+%& MODIF COMPELEM  DATE 16/05/2005   AUTEUR VABHHTS J.PELLET 
 % RESPONSABLE JMBHH01 J.M.PROIX
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -184,7 +184,7 @@ GRANDEUR_SIMPLE__
     DBEL_R   = R    DB
     DCEL_I   = I    NPG_DYN  NCMP_DYN
     DDLI_C   = C    C
-    DDLI_F   = K8   C
+    DDLI_F   = K24  C
     DDLI_R   = R    C
     DDLM_C   = C    A1       A2       A3       B1       B2       B3
     DDLM_R   = R    A1       A2       A3       B1       B2       B3
@@ -196,25 +196,25 @@ GRANDEUR_SIMPLE__
        D3 : PROJECTION DU CHAMP SUIVANT LE VECTEUR DIRECTEUR (D3X,D3Y,D3Z) >>
     DEPL_C   = C    DX       DY       DZ       DRX      DRY      DRZ      GRX      PRES
                     PRE1     PRE2     TEMP     PHI      DH       DCX      DCY      DCZ
-                    H1X      H1Y      H1Z      LAGR     LAGS_C   LAGS_F1  LAGS_F2  UI2      
-                    VI2      WI2      UI3      VI3      WI3      UI4      VI4      WI4      
+                    H1X      H1Y      H1Z      LAGR     LAGS_C   LAGS_F1  LAGS_F2  UI2
+                    VI2      WI2      UI3      VI3      WI3      UI4      VI4      WI4
                     UI5      VI5      WI5      UI6      VI6      WI6      UO2      VO2
                     WO2      UO3      VO3      WO3      UO4      VO4      WO4      UO5
                     VO5      WO5      UO6      VO6      WO6      WO       WI1      WO1
                     GONF     EPXX     EPYY     EPZZ     EPXY     EPXZ     EPYZ     D1
                     D1X      D1Y      D1Z      D2       D2X      D2Y      D2Z      D3
-                    D3X      D3Y      D3Z      E1X      E1Y      E1Z      E2X      E2Y    
+                    D3X      D3Y      D3Z      E1X      E1Y      E1Z      E2X      E2Y
                     E2Z      E3X      E3Y      E3Z      E4X      E4Y      E4Z
     DEPL_F   = K8   DX       DY       DZ       DRX      DRY      DRZ      GRX      PRES
                     PRE1     PRE2     TEMP     PHI      DH       DCX      DCY      DCZ
-                    H1X      H1Y      H1Z      LAGR     LAGS_C   LAGS_F1  LAGS_F2  UI2      
-                    VI2      WI2      UI3      VI3      WI3      UI4      VI4      WI4      
+                    H1X      H1Y      H1Z      LAGR     LAGS_C   LAGS_F1  LAGS_F2  UI2
+                    VI2      WI2      UI3      VI3      WI3      UI4      VI4      WI4
                     UI5      VI5      WI5      UI6      VI6      WI6      UO2      VO2
                     WO2      UO3      VO3      WO3      UO4      VO4      WO4      UO5
                     VO5      WO5      UO6      VO6      WO6      WO       WI1      WO1
                     GONF     EPXX     EPYY     EPZZ     EPXY     EPXZ     EPYZ     D1
                     D1X      D1Y      D1Z      D2       D2X      D2Y      D2Z      D3
-                    D3X      D3Y      D3Z      E1X      E1Y      E1Z      E2X      E2Y    
+                    D3X      D3Y      D3Z      E1X      E1Y      E1Z      E2X      E2Y
                     E2Z      E3X      E3Y      E3Z      E4X      E4Y      E4Z
 <<  DEPL_R : DEPLACEMENT REEL AUX NOEUDS
        DX, DY, DZ : TRANSLATION SUIVANT X, Y ET Z (REPERE GLOBAL)
@@ -224,20 +224,20 @@ GRANDEUR_SIMPLE__
        D3 : PROJECTION DU CHAMP SUIVANT LE VECTEUR DIRECTEUR (D3X,D3Y,D3Z)
        DCX,DCY,DCZ : DDLS CLASSIQUES X-FEM
        H1X,H1Y,H1Z : DDLS HEAVYSIDE X-FEM
-       E1X,E1Y,E1Z : DDLS ENRICHIS (CRACKTIP1) X-FEM 
-       E2X,E2Y,E2Z : DDLS ENRICHIS (CRACKTIP2) X-FEM        
-       E3X,E3Y,E3Z : DDLS ENRICHIS (CRACKTIP3) X-FEM        
+       E1X,E1Y,E1Z : DDLS ENRICHIS (CRACKTIP1) X-FEM
+       E2X,E2Y,E2Z : DDLS ENRICHIS (CRACKTIP2) X-FEM
+       E3X,E3Y,E3Z : DDLS ENRICHIS (CRACKTIP3) X-FEM
        E4X,E4Y,E4Z : DDLS ENRICHIS (CRACKTIP4) X-FEM  >>
     DEPL_R   = R    DX       DY       DZ       DRX      DRY      DRZ      GRX      PRES
                     PRE1     PRE2     TEMP     PHI      DH       DCX      DCY      DCZ
-                    H1X      H1Y      H1Z      LAGR     LAGS_C   LAGS_F1  LAGS_F2  UI2      
-                    VI2      WI2      UI3      VI3      WI3      UI4      VI4      WI4      
+                    H1X      H1Y      H1Z      LAGR     LAGS_C   LAGS_F1  LAGS_F2  UI2
+                    VI2      WI2      UI3      VI3      WI3      UI4      VI4      WI4
                     UI5      VI5      WI5      UI6      VI6      WI6      UO2      VO2
                     WO2      UO3      VO3      WO3      UO4      VO4      WO4      UO5
                     VO5      WO5      UO6      VO6      WO6      WO       WI1      WO1
                     GONF     EPXX     EPYY     EPZZ     EPXY     EPXZ     EPYZ     D1
                     D1X      D1Y      D1Z      D2       D2X      D2Y      D2Z      D3
-                    D3X      D3Y      D3Z      E1X      E1Y      E1Z      E2X      E2Y    
+                    D3X      D3Y      D3Z      E1X      E1Y      E1Z      E2X      E2Y
                     E2Z      E3X      E3Y      E3Z      E4X      E4Y      E4Z
 
 <<  DOMMAG   : DOMMAGE
@@ -416,7 +416,7 @@ GRANDEUR_SIMPLE__
                     X97      X98      X99      X100     X101     X102     X103     X104
                     X105     X106     X107     X108     X109     X110     X111     X112
                     X113     X114     X115     X116     X117     X118     X119     X120
-                    X121     X122     X123     X124     X125     X126     X127     X128           
+                    X121     X122     X123     X124     X125     X126     X127     X128
     NEUT_K24 = K24  Z1       Z2       Z3       Z4       Z5       Z6       Z7       Z8
                     Z9       Z10      Z11      Z12      Z13      Z14      Z15      Z16
                     Z17      Z18      Z19      Z20      Z21      Z22      Z23      Z24
@@ -545,7 +545,7 @@ GRANDEUR_SIMPLE__
        RHON   : COEF_REGU_CONT
        MU     : COEFFICIENT DE FROTTEMENT DE COULOMB
        RHOTK  : COEF_REGU_FROT/DELTAT
-                OU DELTAT EST L INCREMENT DE TEMPS POUR 
+                OU DELTAT EST L INCREMENT DE TEMPS POUR
                 LA DISCRETISATION EULERIENNE DES VITESSES
 >>
     XCONTAC  = R    RHON     MU       RHOTK

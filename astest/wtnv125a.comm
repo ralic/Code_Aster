@@ -1,4 +1,4 @@
-# MODIF  DATE 31/01/2005   AUTEUR ROMEO R.FERNANDES 
+# MODIF  DATE 18/05/2005   AUTEUR ROMEO R.FERNANDES 
 # ======================================================================
 # TITRE CALCUL DE RESATURATION D UNE BO PAR UNE BG SUR UN BI-MATERIAUX BO-BG
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -338,7 +338,6 @@ U0=STAT_NON_LINE(MODELE=MODELE,
                            REAC_ITER=1,),
                  CONVERGENCE=_F(RESI_GLOB_MAXI=1.E-05,
                                 ITER_GLOB_MAXI=150,
-                                ARRET='NON',
                                 ITER_INTE_MAXI=5,),
                  PARM_THETA=0.57,
                  ARCHIVAGE=_F(PAS_ARCH=1,),);

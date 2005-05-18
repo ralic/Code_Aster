@@ -1,4 +1,4 @@
-#@ MODIF N_FONCTION Noyau  DATE 20/10/2004   AUTEUR DURAND C.DURAND 
+#@ MODIF N_FONCTION Noyau  DATE 17/05/2005   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -32,7 +32,9 @@ class formule(ASSD):
       self.expression=None
 
    def __call__(self,*val):
-      context={}
+      if hasattr(self.parent,'contexte_fichier_init'):
+                        context=self.parent.contexte_fichier_init
+      else            : context={}
       i=0
       for param in self.nompar : 
          context[param]=val[i]

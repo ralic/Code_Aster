@@ -6,7 +6,7 @@
      &                   LREAC,  CNVFRE, MAILLA, CNVCF1)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/01/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 18/05/2005   AUTEUR ROMEO R.FERNANDES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -142,6 +142,7 @@ C ----------------------------------------------------------------------
 
       CALL JEMARQ()
       FINPAS = .FALSE.
+      ITEMAX = .FALSE.
       DO 2 K = 1,NBCOL
         INFO(K) = -1.D0
         MARQ(K) = ' '

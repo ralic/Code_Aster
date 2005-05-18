@@ -1,4 +1,4 @@
-# MODIF  DATE 09/05/2005   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 17/05/2005   AUTEUR DURAND C.DURAND 
 # TITRE IMPACT D UNE BARRE DE TAYLOR ELASTOPLASTIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -125,8 +125,7 @@ RESU=DYNA_NON_LINE(MODELE=MODE,
                    CONVERGENCE=_F(RESI_GLOB_RELA=1.E-6,
                                   ITER_GLOB_MAXI=20,
                                   ARRET='OUI',),
-                   SOLVEUR=_F(METHODE='LDLT'
-                              ),
+                   SOLVEUR=_F(METHODE='LDLT', SYME='OUI'),
                    ARCHIVAGE=_F(ARCH_ETAT_INIT='OUI',
                                 LIST_INST=L_SAUV),
                    );

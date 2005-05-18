@@ -1,4 +1,4 @@
-# MODIF  DATE 20/09/2004   AUTEUR BOYERE E.BOYERE 
+# MODIF  DATE 17/05/2005   AUTEUR BOYERE E.BOYERE 
 # TITRE TP ANALYSE MODALE TPAM1
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -20,38 +20,8 @@
 # RESPONSABLE BOYERE E.BOYERE
 #
 #-------------------------------------------------------------------
-#                 CORRIGE TP ANALYSE MODAL N1 (FORMAT NEW6)
+#                 CORRIGE TP ANALYSE MODAL N1 
 #                           MODES MULTIPLES 
-#
-#
-# PARAMETRE D'EXECUTION DE CETTE ETUDE: 32MO
-#
-# MODE D'EMPLOI:
-# --------------
-# MEG;'FICHIER/OUVRIR' AVEC TPAM1.PRET; BOUTON 'GO'
-# AU FIL DES QUESTIONS
-# COMPLETER LES PARTIES ADHOC NOTIFIEES PAR UN "...A COMPLETER..."
-# COMMENTARISER ET DECOMMENTARISER LES "FIN();" INTERMEDIAIRES EN
-# METTANT DANS UNE CHAINE LES LIGNES SUIVANTES QUI NE SERAIENT PAS
-# VALIDES SYNTAXIQUEMENT (EN V6, LE SUPERVISEUR ANALYSE LA TOTALITE
-# DU FICHIER SANS TENIR COMPTE DE L'EMPLACEMENT DU MOT FIN()).
-# EXEMPLE:
-#.        .........
-#        < PARTIE DU .COMM VALIDE SUR LAQUELLE ON VEUT TRAVAILLER>
-#  #FIN();
-#  CH1=AFFE_CHAR_MECA(MODELE=MO,...A COMPLETER....
-#         ..........
-#       <PARTIE DU .COMM NON VALIDE QUI NE NOUS INTERESSE PAS>
-#       <POUR L'INSTANT                                      >
-#         ..........
-#  FIN();  <FIN FINAL>
-#
-# DEVIENT
-#         ..........
-#  FIN();
-#  X="""CH1=AFFE_CHAR_MECA(MODELE=MO,...A COMPLETER....
-#         ..........
-#  FIN();"""
 #
 #-------------------------------------------------------------------
 # IMPORT PYTHON
@@ -65,7 +35,7 @@
 #-------------------------------------------------------------------
 #                       CALCUL ASTER
 #-------------------------------------------------------------------
-DEBUT(CODE=_F(NOM ='FORMA11A',NIV_PUB_WEB='INTERNET'),PAR_LOT='NON')
+DEBUT(CODE=_F(NOM ='FORMA11A',NIV_PUB_WEB='INTERNET'))
 
 # LECTURE ET INFO MAILLAGE                     
 MA=LIRE_MAILLAGE(INFO=2,VERI_MAIL=_F());

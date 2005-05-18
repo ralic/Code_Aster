@@ -1,8 +1,8 @@
       SUBROUTINE NMCCAM (NDIM,TYPMOD,IMATE,COMPOR,CRIT,
      &                   INSTAM,INSTAP,TM,TP,TREF,DEPS,SIGM,PCRM,
-     &                   OPTION,SIGP,PCRP,DSIDEP)
+     &                   OPTION,SIGP,PCRP,DSIDEP,RETCOM)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/09/2004   AUTEUR JOUMANA J.EL-GHARIB 
+C MODIF ALGORITH  DATE 18/05/2005   AUTEUR ROMEO R.FERNANDES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,7 +23,7 @@ C
 C ======================================================================
 C  TOLE CRP_20
       IMPLICIT NONE
-      INTEGER            NDIM,IMATE
+      INTEGER            NDIM,IMATE,RETCOM
       CHARACTER*8        TYPMOD(*)
       CHARACTER*16       COMPOR(*),OPTION
       REAL*8             CRIT(3),INSTAM,INSTAP,TM,TP,TP2,LINE,TREF
@@ -75,6 +75,10 @@ C
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C
       LOGICAL     CPLAN,PLASTI,IRET,LOGIC
+      INTEGER       IADZI,IAZK24,UMESS,IUNIFI
+      REAL*8        EPXMAX
+      PARAMETER    (EPXMAX = 5.D0)
+      CHARACTER*8   NOMAIL
       REAL*8      DEPSTH(6),VALRES(10),ALPHA
       REAL*8      LAMBDA,KAPA,PORO,PRESCR,M,PA
       REAL*8      DEPSMO,SIGMMO,E,NU,E0,XK0,XK,FONC
@@ -102,9 +106,10 @@ C DEB ------------------------------------------------------------------
 C
 C     -- 1 INITIALISATIONS :
 C     ----------------------
-      CPLAN =  TYPMOD(1) .EQ. 'C_PLAN'
+      CPLAN  =  TYPMOD(1) .EQ. 'C_PLAN'
       NDIMSI = 2*NDIM
-      LOGIC = .TRUE.
+      LOGIC  = .TRUE.
+      RETCOM = 0
 C
       BL2 = '  '
       FB2 = 'F '
@@ -247,6 +252,15 @@ C     -------------------------------------------------------------
  117  CONTINUE
       SIELEQ     = SQRT(1.5D0*SIELEQ)
       SIEQM    = SQRT(1.5D0*SIEQM)
+      IF ((XK0*DEPSMO).GT.EPXMAX) THEN
+         UMESS  = IUNIFI('MESSAGE')
+         CALL TECAEL(IADZI,IAZK24)
+         NOMAIL = ZK24(IAZK24-1+3) (1:8)
+         WRITE (UMESS,9001) 'NMCCAM_1','EXP EXPLOSE A LA MAILLE : ',
+     +                                                       NOMAIL
+         RETCOM = 1
+         GO TO 30
+      ENDIF
       SIMOEL    = SIGMMO*EXP(XK0*DEPSMO)
       IF (PCRM(1).EQ.0.D0)  PCRM(1) = PRESCR
 C
@@ -276,6 +290,42 @@ C     -- VOLUMIQUE PLASTIQUE : DEPPMO
 C     --RESOLUTION AVEC LA METHODE DE NEWTON ENTRE LES BORNES
        V0 = XINF
        SEUIL = M**2*PCRM(1)**2
+      IF ((-XK0*V0).GT.EPXMAX) THEN
+         UMESS  = IUNIFI('MESSAGE')
+         CALL TECAEL(IADZI,IAZK24)
+         NOMAIL = ZK24(IAZK24-1+3) (1:8)
+         WRITE (UMESS,9001) 'NMCCAM_2','EXP EXPLOSE A LA MAILLE : ',
+     +                                                        NOMAIL
+         RETCOM = 1
+         GO TO 30
+      ENDIF
+      IF ((XK*V0).GT.EPXMAX) THEN
+         UMESS  = IUNIFI('MESSAGE')
+         CALL TECAEL(IADZI,IAZK24)
+         NOMAIL = ZK24(IAZK24-1+3) (1:8)
+         WRITE (UMESS,9001) 'NMCCAM_3','EXP EXPLOSE A LA MAILLE : ',
+     +                                                        NOMAIL
+         RETCOM = 1
+         GO TO 30
+      ENDIF
+      IF ((-2.D0*XK0*V0).GT.EPXMAX) THEN
+         UMESS  = IUNIFI('MESSAGE')
+         CALL TECAEL(IADZI,IAZK24)
+         NOMAIL = ZK24(IAZK24-1+3) (1:8)
+         WRITE (UMESS,9001) 'NMCCAM_4','EXP EXPLOSE A LA MAILLE : ',
+     +                                                        NOMAIL
+         RETCOM = 1
+         GO TO 30
+      ENDIF
+      IF (((XK-XK0)*V0).GT.EPXMAX) THEN
+         UMESS  = IUNIFI('MESSAGE')
+         CALL TECAEL(IADZI,IAZK24)
+         NOMAIL = ZK24(IAZK24-1+3) (1:8)
+         WRITE (UMESS,9001) 'NMCCAM_5','EXP EXPLOSE A LA MAILLE : ',
+     +                                                        NOMAIL
+         RETCOM = 1
+         GO TO 30
+      ENDIF
        F1 = SIMOEL*EXP(-XK0*V0)
        F2 = SIMOEL*EXP(-XK0*V0)-2.D0*PCRM(1)*EXP(XK*V0)
        F3 = SIMOEL*EXP(-XK0*V0)-PCRM(1)*EXP(XK*V0)
@@ -301,6 +351,43 @@ C     --CONSTRUCTION DU NOUVEL ITERE
        ENDIF       
        
 C     --CALCUL DE LA FONCTION EN V0 ET DE SA DERIVEE
+
+      IF ((-XK0*V0).GT.EPXMAX) THEN
+         UMESS  = IUNIFI('MESSAGE')
+         CALL TECAEL(IADZI,IAZK24)
+         NOMAIL = ZK24(IAZK24-1+3) (1:8)
+         WRITE (UMESS,9001) 'NMCCAM_6','EXP EXPLOSE A LA MAILLE : ',
+     +                                                        NOMAIL
+         RETCOM = 1
+         GO TO 30
+      ENDIF
+      IF ((XK*V0).GT.EPXMAX) THEN
+         UMESS  = IUNIFI('MESSAGE')
+         CALL TECAEL(IADZI,IAZK24)
+         NOMAIL = ZK24(IAZK24-1+3) (1:8)
+         WRITE (UMESS,9001) 'NMCCAM_7','EXP EXPLOSE A LA MAILLE : ',
+     +                                                        NOMAIL
+         RETCOM = 1
+         GO TO 30
+      ENDIF
+      IF ((-2.D0*XK0*V0).GT.EPXMAX) THEN
+         UMESS  = IUNIFI('MESSAGE')
+         CALL TECAEL(IADZI,IAZK24)
+         NOMAIL = ZK24(IAZK24-1+3) (1:8)
+         WRITE (UMESS,9001) 'NMCCAM_8','EXP EXPLOSE A LA MAILLE : ',
+     +                                                        NOMAIL
+         RETCOM = 1
+         GO TO 30
+      ENDIF
+      IF (((XK-XK0)*V0).GT.EPXMAX) THEN
+         UMESS  = IUNIFI('MESSAGE')
+         CALL TECAEL(IADZI,IAZK24)
+         NOMAIL = ZK24(IAZK24-1+3) (1:8)
+         WRITE (UMESS,9001) 'NMCCAM_9','EXP EXPLOSE A LA MAILLE : ',
+     +                                                        NOMAIL
+         RETCOM = 1
+         GO TO 30
+      ENDIF
        F1 = SIMOEL*EXP(-XK0*V0)
        F2 = SIMOEL*EXP(-XK0*V0)-2.D0*PCRM(1)*EXP(XK*V0)
        F3 = SIMOEL*EXP(-XK0*V0)-PCRM(1)*EXP(XK*V0)
@@ -315,6 +402,25 @@ C     --CALCUL DE LA FONCTION EN V0 ET DE SA DERIVEE
        FP = M**2*F4**2*F5+3.D0*DEUXMU*F4*F1*F2*(F6/F3/F3)
 
 
+
+      IF ((-XK0*XINF).GT.EPXMAX) THEN
+         UMESS  = IUNIFI('MESSAGE')
+         CALL TECAEL(IADZI,IAZK24)
+         NOMAIL = ZK24(IAZK24-1+3) (1:8)
+         WRITE (UMESS,9001) 'NMCCAM_10','EXP EXPLOSE A LA MAILLE : ',
+     +                                                         NOMAIL
+         RETCOM = 1
+         GO TO 30
+      ENDIF
+      IF ((XK*XINF).GT.EPXMAX) THEN
+         UMESS  = IUNIFI('MESSAGE')
+         CALL TECAEL(IADZI,IAZK24)
+         NOMAIL = ZK24(IAZK24-1+3) (1:8)
+         WRITE (UMESS,9001) 'NMCCAM_11','EXP EXPLOSE A LA MAILLE : ',
+     +                                                         NOMAIL
+         RETCOM = 1
+         GO TO 30
+      ENDIF
        FXI1 = SIMOEL*EXP(-XK0*XINF)
        FXI2 = SIMOEL*EXP(-XK0*XINF)-2.D0*PCRM(1)*EXP(XK*XINF)
        FXI3 = SIMOEL*EXP(-XK0*XINF)-PCRM(1)*EXP(XK*XINF)
@@ -327,11 +433,36 @@ C     --CALCUL DE LA FONCTION EN V0 ET DE SA DERIVEE
        IF ((SIGNF*SIGNFI).GT.ZERO) XINF = V0
 
  200  CONTINUE
-      CALL UTMESS('F','CAM_CLAY ','ITER_INTE_MAXI INSUFFISANT')
+         UMESS  = IUNIFI('MESSAGE')
+         CALL TECAEL(IADZI,IAZK24)
+         NOMAIL = ZK24(IAZK24-1+3) (1:8)
+         WRITE (UMESS,9001) 'NMCCAM_12',
+     +              'ITER_INTE_MAXI INSUFFISANT A LA MAILLE: ',
+     +                                                   NOMAIL
+         RETCOM = 1
+         GO TO 30
  100  CONTINUE       
       DEPPMO=V0
 C
 C     -- REACTUALISATION DE LA VARIABLE INTERNE
+      IF ((XK*DEPPMO).GT.EPXMAX) THEN
+         UMESS  = IUNIFI('MESSAGE')
+         CALL TECAEL(IADZI,IAZK24)
+         NOMAIL = ZK24(IAZK24-1+3) (1:8)
+         WRITE (UMESS,9001) 'NMCCAM_13','EXP EXPLOSE A LA MAILLE : ',
+     +                                                         NOMAIL
+         RETCOM = 1
+         GO TO 30
+      ENDIF
+      IF ((XK0*(DEPSMO-DEPPMO)).GT.EPXMAX) THEN
+         UMESS  = IUNIFI('MESSAGE')
+         CALL TECAEL(IADZI,IAZK24)
+         NOMAIL = ZK24(IAZK24-1+3) (1:8)
+         WRITE (UMESS,9001) 'NMCCAM_14','EXP EXPLOSE A LA MAILLE : ',
+     +                                                         NOMAIL
+         RETCOM = 1
+         GO TO 30
+      ENDIF
         PCRP(1) = PCRM(1)*EXP(XK*DEPPMO)
 C     -- REACTUALISATION DES CONTRAINTES
         SIGPMO = SIGMMO*EXP(XK0*(DEPSMO-DEPPMO))
@@ -692,5 +823,9 @@ C
       ENDIF
       ENDIF
       ENDIF
+C ======================================================================
+ 30   CONTINUE
+C =====================================================================
+ 9001 FORMAT (A10,2X,A40,2X,A8)
 C    FIN ---------------------------------------------------------
       END

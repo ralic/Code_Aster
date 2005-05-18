@@ -1,4 +1,4 @@
-# MODIF  DATE 14/04/2005   AUTEUR A3BHHAE H.ANDRIAMBOLOLONA 
+# MODIF  DATE 17/05/2005   AUTEUR BOYERE E.BOYERE 
 # TITRE SENSIBILITE DE MODES PROPRES REELS D'UNE POUTRE POU_D_E
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -20,8 +20,8 @@
 #       PAR RAPPORT AUX PARAMETRES MATERIAU
 #       (CALCUL MODAL PAR ITERATION INVERSE)
 
-DEBUT( CODE=_F(  NOM = 'SENSD09A',NIV_PUB_WEB='INTERNET'),
-       PAR_LOT='OUI' )
+DEBUT( CODE=_F(  NOM = 'SENSD09A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON' ),
+       PAR_LOT='OUI', )
 
 # ----------------------------------------------------------------------
 # Poutre a section circulaire (L=0.4m, r=0.02m, ep=0.02m)

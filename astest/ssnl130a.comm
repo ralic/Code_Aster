@@ -1,4 +1,4 @@
-# MODIF  DATE 13/04/2005   AUTEUR MJBHHPE J.L.FLEJOU 
+# MODIF  DATE 17/05/2005   AUTEUR BOYERE E.BOYERE 
 # TITRE PLAQUE INDEFORMABLE SUR UN TAPIS DE RESSORTS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,7 +18,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 
-DEBUT( CODE=_F( NOM = 'SSNL130A',NIV_PUB_WEB='INTERNET'))
+DEBUT( CODE=_F( NOM = 'SSNL130A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'))
 
 PRE_GIBI();
 

@@ -1,4 +1,4 @@
-# MODIF  DATE 31/01/2005   AUTEUR PABHHHH N.TARDIEU 
+# MODIF  DATE 17/05/2005   AUTEUR BOYERE E.BOYERE 
 # TITRE ORIENTATION DE MAILLES PAR UNE BOUCLE PYTHON       
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -146,7 +146,7 @@ def LIST_CARA_CIRCONF(GROUP_MA,AXE,MODELE,**args):
 # ATTENTION : PAR_LOT='NON' est necessaire car ce test
 # utilise des commandes Python
 DEBUT(CODE=_F(NOM='ZZZZ189A',
-              NIV_PUB_WEB='INTERNET',),PAR_LOT='NON');
+              NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),PAR_LOT='NON');
 #
 
 MATER=DEFI_MATERIAU(ELAS=_F(E=200000.0,

@@ -1,4 +1,4 @@
-# MODIF  DATE 09/05/2005   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 17/05/2005   AUTEUR DURAND C.DURAND 
 # TITRE IMPACT D UNE BARRE DE TAYLOR ELASTOPLASTIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -139,6 +139,7 @@ RESU=DYNA_NON_LINE(MODELE=MODE,
                    NEWMARK=_F(  ALPHA = 0.49,   # Beta
                                 DELTA = 0.9  ), # Gamma
                  #  SOLVEUR=_F(METHODE='LDLT',),
+                   SOLVEUR=_F(SYME='OUI',),
                    NEWTON=_F(   REAC_INCR=1,
                                 MATRICE='TANGENTE',
                                 REAC_ITER=1,),

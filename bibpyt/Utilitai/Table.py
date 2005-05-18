@@ -1,4 +1,4 @@
-#@ MODIF Table Utilitai  DATE 11/05/2005   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF Table Utilitai  DATE 17/05/2005   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -506,6 +506,8 @@ class Colonne(TableBase):
       return self._extract(lambda v: v<>None and v>VALE)
 
    def __eq__(self, VALE, CRITERE='RELATIF', PRECISION=0.):
+      if type(VALE) in EnumTypes :
+         return self._extract(lambda v: v in VALE)
       if PRECISION==0. or not type(VALE) in NumberTypes:
          if type(VALE) in StringTypes:
             return self._extract(lambda v: v<>None and str(v).strip()==VALE.strip())
@@ -521,6 +523,8 @@ class Colonne(TableBase):
          return self._extract(lambda v: v<>None and vmin<v<vmax)
 
    def __ne__(self, VALE, CRITERE='RELATIF', PRECISION=0.):
+      if type(VALE) in EnumTypes :
+         return self._extract(lambda v: v not in VALE)
       if PRECISION==0. or not type(VALE) in NumberTypes:
          if type(VALE) in StringTypes:
             return self._extract(lambda v: v<>None and str(v).strip()<>VALE.strip())

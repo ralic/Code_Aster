@@ -1,4 +1,4 @@
-# MODIF  DATE 31/01/2005   AUTEUR ROMEO R.FERNANDES 
+# MODIF  DATE 18/05/2005   AUTEUR ROMEO R.FERNANDES 
 # TITRE  - COUPLE TH ANALYTIQUE  
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -47,22 +47,6 @@ CHXN=CREA_CHAMP(TYPE_CHAM='NOEU_GEOM_R',
                 MAILLAGE=MAIL,
                 NOM_CHAM='GEOMETRIE',);
 
-CHXG=CREA_CHAMP(TYPE_CHAM='ELGA_GEOM_R',
-                OPERATION='DISC',
-                MODELE=MODELE,
-                CHAM_GD=CHXN,);
-# ============================
-# 2) FABRICATION DE  TEMP0 :
-# ============================
-#
-#
-#
-#
-#
-#
-#
-
-
 FPRES = FORMULE(NOM_PARA=('X','Y','Z'),VALE='1.-X');
 
 P1=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_F',
@@ -83,7 +67,7 @@ PINIT=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                  ASSE=_F(TOUT='OUI',
                          CHAM_GD=P2,
                          NOM_CMP='X1',
-                         NOM_CMP_RESU='TEMP',),);
+                         NOM_CMP_RESU='PRE1',),);
 
 LI=DEFI_LIST_REEL(DEBUT=0.0,
                   INTERVALLE=_F(JUSQU_A=800.0,

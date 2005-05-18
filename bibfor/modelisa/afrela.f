@@ -1,7 +1,7 @@
       SUBROUTINE AFRELA(COEFR,COEFC,DDL,NOEUD,NDIM,DIRECT,NBTERM,BETAR,
      &                  BETAC,BETAF,TYPCOE,TYPVAL,TYPLAG,EPSI,LISREZ)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 14/03/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 16/05/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,7 +54,7 @@ C BETAR         - IN - R   - : VALEUR REELLE DU SECOND MEMBRE
 C----------------------------------------------------------------------
 C BETAC         - IN - C   - : VALEUR COMPLEXE DU SECOND MEMBRE
 C----------------------------------------------------------------------
-C BETAF         - IN - K8  - : VALEUR FONCTION DU SECOND MEMBRE
+C BETAF         - IN - K19 - : VALEUR FONCTION DU SECOND MEMBRE
 C----------------------------------------------------------------------
 C TYPCOE        - IN - K4  - : TYPE DES COEFFICIENTS DE LA RELATION :
 C                              = 'REEL' OU 'COMP'
@@ -107,7 +107,8 @@ C -----  ARGUMENTS
 
       CHARACTER*2 TYPLAG
       CHARACTER*4 TYPCOE,TYPVAL,TYPCO2
-      CHARACTER*8 BETAF,DDL(NBTERM),NOEUD(NBTERM)
+      CHARACTER*(*) BETAF
+      CHARACTER*8 DDL(NBTERM),NOEUD(NBTERM)
       CHARACTER*(*) LISREZ
 C ------ VARIABLES LOCALES
 
@@ -406,7 +407,7 @@ C      ---------------------------------------------------
       ELSE IF (TYPVAL.EQ.'COMP') THEN
         ZC(IDBETA+NBRELA-1) = BETAC
       ELSE IF (TYPVAL.EQ.'FONC') THEN
-        ZK8(IDBETA+NBRELA-1) = BETAF
+        ZK24(IDBETA+NBRELA-1) = BETAF
       END IF
 
       ZI(IDTERM+NBRELA-1) = NBTERR

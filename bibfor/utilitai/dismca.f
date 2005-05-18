@@ -1,6 +1,6 @@
       SUBROUTINE DISMCA(CODMES,QUESTI,NOMOBZ,REPI,REPKZ,IERD)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 03/11/2004   AUTEUR CIBHHPD L.SALMONA 
+C MODIF UTILITAI  DATE 16/05/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -90,8 +90,17 @@ C
          CALL JELIRA(NOMCAR//'.VALE','TYPE',IBID,TYPE)
          IF (TYPE(1:1).EQ.'K') THEN
            CALL JELIRA(NOMCAR//'.VALE','LONMAX',LONG,K8B)
+           CALL JELIRA(NOMCAR//'.VALE','LTYP',LTYP,K8B)
            DO 10 K=1,LONG
-             NOMFON = ZK8(JVALE+K-1)
+             IF (LTYP.EQ.8) THEN
+               NOMFON = ZK8(JVALE+K-1)
+             ELSE IF (LTYP.EQ.24) THEN
+               NOMFON = ZK24(JVALE+K-1)
+             ELSE
+               CALL ASSERT(.FALSE.)
+             END IF
+
+
              IF ( NOMFON(1:8) .NE. '        ' ) THEN
                CALL JEEXIN(NOMFON//'.PROL',IRET)
                IF ( IRET .GT. 0 ) THEN

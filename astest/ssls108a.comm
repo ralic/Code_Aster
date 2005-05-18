@@ -1,4 +1,4 @@
-# MODIF  DATE 01/12/2004   AUTEUR BOYERE E.BOYERE 
+# MODIF  DATE 17/05/2005   AUTEUR CIBHHLV L.VIVAN 
 # TITRE COQUE HELICOIDALE (POUTRE VRILLEE) SOUS CHARGES CONCENTREES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -136,9 +136,9 @@ TEST_FICHIER(
              FICHIER= './REPE_OUT/DEP10.pos',
              NB_CHIFFRE=6,
              EPSILON=1.E-14,
-             VALE_K='ce589133e055f3717243a7985f2ec8be',
+             VALE_K='cc954bdd1d9cae465521cc85efd35a4f',
              REFERENCE='NON_REGRESSION',
-             VERSION='7.2.23',
+             VERSION='8.0.21',
              INFO=1)
 
 #---------------------------------------------------------------------
@@ -176,9 +176,9 @@ DEFI_FICHIER(ACTION='LIBERER',UNITE=38)
 TEST_FICHIER(FICHIER='./REPE_OUT/DEP12.pos',
              NB_CHIFFRE=6,
              EPSILON=1.E-14,
-             VALE_K='d955360c754356b2ac2091e336b57f0a',
+             VALE_K='c3db57d6226b7220bb031b0f2492f3e0',
              REFERENCE='NON_REGRESSION',
-             VERSION='7.2.23',
+             VERSION='8.0.21',
              INFO=1)
 
 #---------------------------------------------------------------------

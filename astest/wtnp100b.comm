@@ -1,4 +1,4 @@
-# MODIF  DATE 31/01/2005   AUTEUR ROMEO R.FERNANDES 
+# MODIF  DATE 18/05/2005   AUTEUR ROMEO R.FERNANDES 
 # ======================================================================
 # TITRE DESATURATION D UN MILIEU POREUX SANS AIR
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -244,7 +244,6 @@ U0=STAT_NON_LINE(MODELE=MODELE,
                  CONVERGENCE=_F(
                                 RESI_GLOB_RELA=1.E-6,
                                 ITER_GLOB_MAXI=20,
-                                ARRET='NON',
                                 ITER_INTE_MAXI=5,),
                  PARM_THETA=0.57,
                  SOLVEUR=_F(METHODE='MULT_FRONT',

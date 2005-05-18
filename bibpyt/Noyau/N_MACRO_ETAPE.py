@@ -1,4 +1,4 @@
-#@ MODIF N_MACRO_ETAPE Noyau  DATE 22/02/2005   AUTEUR DURAND C.DURAND 
+#@ MODIF N_MACRO_ETAPE Noyau  DATE 17/05/2005   AUTEUR BOYERE E.BOYERE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -83,6 +83,7 @@ class MACRO_ETAPE(N_ETAPE.ETAPE):
       self.actif=1
       self.sdprods=[]
       self.make_register()
+      self.UserError="UserError"
 
    def make_register(self):
       """
@@ -327,7 +328,7 @@ class MACRO_ETAPE(N_ETAPE.ETAPE):
             raise AsException("""Erreur interne. 
 Il ne devrait y avoir qu'un seul mot cle porteur du concept CO (%s)""" % co)
          mcs=mcs[0]
-         if not CO in mcs.definition.type:
+         if not co.__class__ in mcs.definition.type:
             raise AsException("""Erreur interne. 
 Impossible de changer le type du concept (%s). Le mot cle associe ne supporte pas CO mais seulement (%s)""" %(co,mcs.definition.type))
          co.etape=self

@@ -13,7 +13,7 @@
       REAL*8       R8B
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 11/05/2005   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF ALGORITH  DATE 17/05/2005   AUTEUR ACBHHCD G.DEVESA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -144,9 +144,12 @@ C           --- FACTORISATION DE LA MATRICE KTILDA ---
                   ZR(JTRA5+IND-1) = QSDT2*MASGEN(IND)
  122           CONTINUE
                IND = IM + NBMODE*(IM-1)
-               ZR(JTRA3+IND-1) = ZR(JTRA3+IND-1) + DSDT*AMOGEN(IM)
-               ZR(JTRA4+IND-1) = ZR(JTRA4+IND-1) + AMOGEN(IM)
-               ZR(JTRA5+IND-1) = ZR(JTRA5+IND-1) + DSDT*AMOGEN(IM)
+               ZR(JTRA3+IND-1) = ZR(JTRA3+IND-1) + 
+     +                           DSDT*AMOGEN(IM)*MASGEN(IND)
+               ZR(JTRA4+IND-1) = ZR(JTRA4+IND-1) + 
+     +                           AMOGEN(IM)*MASGEN(IND)
+               ZR(JTRA5+IND-1) = ZR(JTRA5+IND-1) + 
+     +                           DSDT*AMOGEN(IM)*MASGEN(IND)
  120        CONTINUE
          ELSE
             DO 130 IM = 1 , NBMODE

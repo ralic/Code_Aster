@@ -1,4 +1,4 @@
-# MODIF  DATE 09/05/2005   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 17/05/2005   AUTEUR CIBHHLV L.VIVAN 
 # TITRE SOUS-STRUCTURATION TRANSITOIRE : SYSTEME MASSES-RESSORTS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -223,23 +223,41 @@ TEST_RESU( GENE=( _F(  RESU_GENE = FGEN,
                        VALE = 0.00000E+00 ) ,
                   ) ) ;
 
-IMPR_GENE(GENE=( _F(  RESU_GENE = FGEN, 
+#---------------------------------------------------------------------
+# TEST IMPR_GENE
+DEFI_FICHIER( UNITE=38,
+              FICHIER='./REPE_OUT/FGEN.gene')
+
+IMPR_GENE(UNITE=38,
+          GENE=( _F( RESU_GENE = FGEN, 
                      TOUT_CMP_GENE = 'OUI'),
-                   _F(  RESU_GENE = FGEN,
+                 _F( RESU_GENE = FGEN,
                      INFO_CMP_GENE = 'NON',
                      NUME_CMP_GENE = 1),
-                   _F(  RESU_GENE = FGEN,
+                 _F( RESU_GENE = FGEN,
                      INFO_CMP_GENE = 'OUI',
                      NUME_CMP_GENE = ( 1, 5, 7, )))
             )
 
+DEFI_FICHIER(ACTION='LIBERER',UNITE=38)
+
+TEST_FICHIER(FICHIER='./REPE_OUT/FGEN.gene',
+             NB_CHIFFRE=6,
+             EPSILON=1.E-14,
+             VALE_K='237245f111c3e077aa6a8f0ce7d0a36b',
+             REFERENCE='NON_REGRESSION',
+             VERSION='8.0.21',
+             INFO=1)
+
+#---------------------------------------------------------------------
 #
 # ----- CALCUL DES MODES PROPRES DE LA STRUCTURE GLOBALE
 #
 RESGEN=MODE_ITER_SIMULT(     MATR_A=RIGGEN, 
                                  MATR_B=MASGEN, 
                              CALC_FREQ=_F( OPTION = 'PLUS_PETITE', 
-                                        NMAX_FREQ = 3))
+                                        NMAX_FREQ = 3),
+                         TITRE='CALCUL DES MODES PROPRES DE LA STRUCTURE GLOBALE' )
 
 # IMPRESSION D'UN MODE_GENE
 
@@ -272,7 +290,13 @@ TEST_RESU( GENE=( _F(  RESU_GENE = RESGEN,
                        VALE = 1.00000E+00 ) ,
                   ) ) ;
 
-IMPR_GENE(GENE=( _F(  RESU_GENE = RESGEN, 
+#---------------------------------------------------------------------
+# TEST IMPR_GENE
+DEFI_FICHIER( UNITE=37,
+              FICHIER='./REPE_OUT/RESU.gene')
+
+IMPR_GENE(UNITE=37,
+          GENE=( _F(  RESU_GENE = RESGEN, 
                    TOUT_PARA = 'OUI',
                    TOUT_CHAM = 'NON',
                    INFO_CMP_GENE = 'NON'),
@@ -287,7 +311,17 @@ IMPR_GENE(GENE=( _F(  RESU_GENE = RESGEN,
                    NOM_PARA = ( 'FREQ', 'MASS_GENE', 'RIGI_GENE', ),
                    INFO_CMP_GENE = 'OUI'))
           )
+DEFI_FICHIER(ACTION='LIBERER',UNITE=37)
 
+TEST_FICHIER(FICHIER='./REPE_OUT/RESU.gene',
+             NB_CHIFFRE=6,
+             EPSILON=1.E-14,
+             VALE_K='4a96c092a776c4d9c6ca2fb940e886ad',
+             REFERENCE='NON_REGRESSION',
+             VERSION='8.0.21',
+             INFO=1)
+
+#---------------------------------------------------------------------
 #
 SQUEL=DEFI_SQUELETTE(  MODELE_GENE=MODEGE,SOUS_STRUC=(
                             _F( NOM = 'COTE1',

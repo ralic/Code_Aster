@@ -1,4 +1,4 @@
-#@ MODIF B_ETAPE Build  DATE 20/10/2004   AUTEUR DURAND C.DURAND 
+#@ MODIF B_ETAPE Build  DATE 17/05/2005   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -626,7 +626,7 @@ class ETAPE(B_OBJECT.OBJECT,CODE):
             if type(obj)==types.StringType       :
                 if string.strip(obj) in ('RI','MP') : lty.append('C8')
                 else                                : lty.append('TX')
-            if type(obj)==types.IntType      :
+            if type(obj) in (types.IntType,types.LongType)      :
             ### on gere le cas d un reel entre par l utilisateur sans le '.' distinctif d un entier
             ### pour ca on teste la presence de R8 dans la liste des types attendus cote catalogue
                                                child=mcfact.definition.get_entite(name)

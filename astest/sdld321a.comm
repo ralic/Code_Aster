@@ -1,4 +1,4 @@
-# MODIF  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 17/05/2005   AUTEUR ACBHHCD G.DEVESA 
 # TITRE SYSTEME 1 MASSE 1 RESSORT  A 3 DDL (+ 1 AMORTISSEUR DISCRET)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -126,9 +126,20 @@ MACRO_PROJ_BASE(  BASE=MODES,
                    VECT_ASSE_GENE=_F( 
                                    VECTEUR = CO("EFFOGENE"),
                                    VECT_ASSE = VECTASS) )
-
+MACRO_PROJ_BASE(  BASE=MODES,
+                 PROFIL = 'DIAG',
+                  MATR_ASSE_GENE=(
+                   _F( 
+                                   MATRICE = CO("MASSEGE2"),
+                                   MATR_ASSE = MATRMASS), 
+                   _F( 
+                                   MATRICE = CO("RIGIDGE2"),
+                                   MATR_ASSE = MATRRIGI),),
+                   VECT_ASSE_GENE=_F( 
+                                   VECTEUR = CO("EFFOGEN2"),
+                                   VECT_ASSE = VECTASS) )
 #
-# DEFINITION DE L'EXCITATION SINUSOIDALE
+# DEFINITION DE L EXCITATION SINUSOIDALE
 # --------------------------------------
 #
 SINOMEGT = FORMULE(NOM_PARA='INST',VALE='sin(50.*INST) ')
@@ -174,7 +185,35 @@ DYNMODEU=DYNA_TRAN_MODAL(  METHODE='EULER',
                              INCREMENT=_F( 
                              INST_INIT = 0.,  INST_FIN = 0.5,
                              PAS = 0.001)                   )
+#
+# 3- SCHEMA NEWMARK AVEC AMORTISSEMENT MODAL
+#
 
+DYNMONE2=DYNA_TRAN_MODAL(  METHODE='NEWMARK',
+                              MASS_GENE=MASSEGEN,  RIGI_GENE=RIGIDGEN,
+                              AMOR_REDUIT=1.00,
+                             EXCIT=_F(  VECT_GENE = EFFOGENE,
+#                                     FONC_MULT = FONCMULT),
+                                     FONC_MULT = SINOMEGT),
+                             INCREMENT=_F( 
+
+                             INST_INIT = 0.,  INST_FIN = 0.5,
+                             PAS = 0.001) 
+                                               )
+#
+# 3- SCHEMA NEWMARK AVEC AMORTISSEMENT MODAL ET STOCKAGE REDUIT
+#
+
+DYNMONE3=DYNA_TRAN_MODAL(  METHODE='NEWMARK',
+                              MASS_GENE=MASSEGE2,  RIGI_GENE=RIGIDGE2,
+                              AMOR_REDUIT=1.00,
+                             EXCIT=_F(  VECT_GENE = EFFOGEN2,
+#                                     FONC_MULT = FONCMULT),
+                                     FONC_MULT = SINOMEGT),
+                             INCREMENT=_F( 
+
+                             INST_INIT = 0.,  INST_FIN = 0.5,
+                             PAS = 0.001)                   )                             
 # 
 # DEFINITION DES INSTANTS DE CALCUL DE LA SOLUTION
 #-------------------------------------------------
@@ -187,7 +226,7 @@ L_REELV=( 0.03, 0.09, 0.16, 0.22, 0.28, 0.35, 0.41, 0.47, )
 LISTRV=DEFI_LIST_REEL(  VALE=L_REELV )
 
 #
-# RETOUR DANS L'ESPACE PHYSIQUE
+# RETOUR DANS L ESPACE PHYSIQUE
 # -----------------------------
 #
 #
@@ -202,7 +241,12 @@ DYTRANEV=REST_BASE_PHYS(  RESU_GENE=DYNMODNE,    NOM_CHAM='VITE',
 
 DYTRAEUV=REST_BASE_PHYS(  RESU_GENE=DYNMODEU,    NOM_CHAM='VITE',
                             LIST_INST=LISTRV,   INTERPOL='LIN'    )
-
+                            
+DYTRANE2=REST_BASE_PHYS(  RESU_GENE=DYNMONE2,    NOM_CHAM='DEPL',
+                            LIST_INST=LISTRD,   INTERPOL='LIN'    )
+                            
+DYTRANE3=REST_BASE_PHYS(  RESU_GENE=DYNMONE3,    NOM_CHAM='DEPL',
+                            LIST_INST=LISTRD,   INTERPOL='LIN'    )
 #
 # TESTS PAR RAPPORT A SOLUTION DE REFERENCE
 #
@@ -265,6 +309,75 @@ TEST_RESU( RESU=_F(  RESULTAT = DYTRAEUD,  NUME_ORDRE = 7,
                   NOM_CHAM = 'DEPL', PRECISION = 0.005,
                   NOEUD = 'N2',NOM_CMP = 'DX', VALE = 9.99961E-5)  )
 
+TEST_RESU( RESU=_F(  RESULTAT = DYTRANE2,  NUME_ORDRE = 1,
+                  REFERENCE = 'AUTRE_ASTER',
+                  NOM_CHAM = 'DEPL', PRECISION = 0.005,
+                  NOEUD = 'N2',NOM_CMP = 'DX', VALE = 1.18914E-4)  )
+
+TEST_RESU( RESU=_F(  RESULTAT = DYTRANE2,  NUME_ORDRE = 2,
+                  REFERENCE = 'AUTRE_ASTER',
+                  NOM_CHAM = 'DEPL', PRECISION = 0.005,
+                  NOEUD = 'N2',NOM_CMP = 'DX', VALE = -9.42819E-5)  )
+
+TEST_RESU( RESU=_F(  RESULTAT = DYTRANE2,  NUME_ORDRE = 3,
+                  REFERENCE = 'AUTRE_ASTER',
+                  NOM_CHAM = 'DEPL', PRECISION = 0.005,
+                  NOEUD = 'N2',NOM_CMP = 'DX', VALE = 9.97958E-5)  )
+
+TEST_RESU( RESU=_F(  RESULTAT = DYTRANE2,  NUME_ORDRE = 4,
+                  REFERENCE = 'AUTRE_ASTER',
+                  NOM_CHAM = 'DEPL', PRECISION = 0.005,
+                  NOEUD = 'N2',NOM_CMP = 'DX', VALE = -9.97748E-5)  )
+
+TEST_RESU( RESU=_F(  RESULTAT = DYTRANE2,  NUME_ORDRE = 5,
+                  REFERENCE = 'AUTRE_ASTER',
+                  NOM_CHAM = 'DEPL', PRECISION = 0.005,
+                  NOEUD = 'N2',NOM_CMP = 'DX', VALE = 9.78457E-5)  )
+
+TEST_RESU( RESU=_F(  RESULTAT = DYTRANE2,  NUME_ORDRE = 6,
+                  REFERENCE = 'AUTRE_ASTER',
+                  NOM_CHAM = 'DEPL', PRECISION = 0.005,
+                  NOEUD = 'N2',NOM_CMP = 'DX', VALE = -9.88705E-5)  )
+
+TEST_RESU( RESU=_F(  RESULTAT = DYTRANE2,  NUME_ORDRE = 7,
+                  REFERENCE = 'AUTRE_ASTER',
+                  NOM_CHAM = 'DEPL', PRECISION = 0.005,
+                  NOEUD = 'N2',NOM_CMP = 'DX', VALE = 9.99961E-5)  )
+                  
+TEST_RESU( RESU=_F(  RESULTAT = DYTRANE3,  NUME_ORDRE = 1,
+                  REFERENCE = 'AUTRE_ASTER',
+                  NOM_CHAM = 'DEPL', PRECISION = 0.005,
+                  NOEUD = 'N2',NOM_CMP = 'DX', VALE = 1.18914E-4)  )
+
+TEST_RESU( RESU=_F(  RESULTAT = DYTRANE3,  NUME_ORDRE = 2,
+                  REFERENCE = 'AUTRE_ASTER',
+                  NOM_CHAM = 'DEPL', PRECISION = 0.005,
+                  NOEUD = 'N2',NOM_CMP = 'DX', VALE = -9.42819E-5)  )
+
+TEST_RESU( RESU=_F(  RESULTAT = DYTRANE3,  NUME_ORDRE = 3,
+                  REFERENCE = 'AUTRE_ASTER',
+                  NOM_CHAM = 'DEPL', PRECISION = 0.005,
+                  NOEUD = 'N2',NOM_CMP = 'DX', VALE = 9.97958E-5)  )
+
+TEST_RESU( RESU=_F(  RESULTAT = DYTRANE3,  NUME_ORDRE = 4,
+                  REFERENCE = 'AUTRE_ASTER',
+                  NOM_CHAM = 'DEPL', PRECISION = 0.005,
+                  NOEUD = 'N2',NOM_CMP = 'DX', VALE = -9.97748E-5)  )
+
+TEST_RESU( RESU=_F(  RESULTAT = DYTRANE3,  NUME_ORDRE = 5,
+                  REFERENCE = 'AUTRE_ASTER',
+                  NOM_CHAM = 'DEPL', PRECISION = 0.005,
+                  NOEUD = 'N2',NOM_CMP = 'DX', VALE = 9.78457E-5)  )
+
+TEST_RESU( RESU=_F(  RESULTAT = DYTRANE3,  NUME_ORDRE = 6,
+                  REFERENCE = 'AUTRE_ASTER',
+                  NOM_CHAM = 'DEPL', PRECISION = 0.005,
+                  NOEUD = 'N2',NOM_CMP = 'DX', VALE = -9.88705E-5)  )
+
+TEST_RESU( RESU=_F(  RESULTAT = DYTRANE3,  NUME_ORDRE = 7,
+                  REFERENCE = 'AUTRE_ASTER',
+                  NOM_CHAM = 'DEPL', PRECISION = 0.005,
+                  NOEUD = 'N2',NOM_CMP = 'DX', VALE = 9.99961E-5)  )
 #
 #VITESSES
 #

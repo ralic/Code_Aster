@@ -1,4 +1,4 @@
-# MODIF  DATE 31/01/2005   AUTEUR ROMEO R.FERNANDES 
+# MODIF  DATE 18/05/2005   AUTEUR ROMEO R.FERNANDES 
 #  TITRE TEST THHM, 2D: LA COLONNE D ABOUSTIT    
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -237,8 +237,7 @@ MESTAT=STAT_NON_LINE(  MODELE     = MODELE,
                        NEWTON     =_F( MATRICE   = 'TANGENTE',
                                        REAC_ITER = 2 ),
                        CONVERGENCE=_F( ITER_GLOB_MAXI = 120,
-                                       ITER_INTE_MAXI = 5,
-                                       ARRET          = 'NON'),
+                                       ITER_INTE_MAXI = 5,),
                        PARM_THETA = 0.57
               )
 

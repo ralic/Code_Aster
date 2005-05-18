@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 23/08/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF PREPOST  DATE 17/05/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,23 +49,24 @@ C     ------------------------------------------------------------------
       CALL JEMARQ()
       CALL INFMAJ()
       CALL GETRES(K8B,K8B,NOMCMD)
+C
+C     --- FORMAT ---
+C
+      CALL GETVTX ( ' ', 'FORMAT', 1,1,1, FORM, N )
+C
+C     --- FICHIER ---
+C
+      IFI = 0
+      FICH = ' '
+      CALL GETVIS ( ' ', 'UNITE', 1,1,1, IFI , N )
+      IF ( .NOT. ULEXIS( IFI ) ) THEN
+         CALL ULOPEN ( IFI, ' ', FICH, 'NEW', 'O' )
+      ENDIF
+C
       MOTFAC = 'GENE'
-      CALL GETFAC(MOTFAC,NOCC)
+      CALL GETFAC ( MOTFAC, NOCC )
 C
       DO 10 IOCC = 1,NOCC
-C
-C        --- FORMAT ---
-C
-         CALL GETVTX(MOTFAC,'FORMAT',IOCC,1,1,FORM,N)
-C
-C        --- FICHIER ---
-C
-         IFI = 0
-         FICH = ' '
-         CALL GETVIS ( MOTFAC, 'UNITE'  , IOCC,1,1, IFI , N )
-         IF ( .NOT. ULEXIS( IFI ) ) THEN
-            CALL ULOPEN ( IFI, ' ', FICH, 'NEW', 'O' )
-         ENDIF
 C
 C        --- SEPARATION DES DIFFERENTES OCCURENCES---
 C

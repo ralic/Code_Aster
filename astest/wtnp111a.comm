@@ -1,4 +1,4 @@
-# MODIF  DATE 31/01/2005   AUTEUR ROMEO R.FERNANDES 
+# MODIF  DATE 18/05/2005   AUTEUR ROMEO R.FERNANDES 
 # TITRE TEST ELEMENTAIRE DU SUINTEMENT : EPONGE SOUS PRESSION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -99,7 +99,6 @@ MESTAT=STAT_NON_LINE(MODELE=MODELE,
                      NEWTON=_F(MATRICE='TANGENTE',
                                REAC_ITER=20,),
                      CONVERGENCE=_F(ITER_GLOB_MAXI=10,
-                                    ARRET='NON',
                                     ITER_INTE_MAXI=5,),
                      PARM_THETA=1.0,);
 

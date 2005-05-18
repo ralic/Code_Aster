@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 04/04/2005   AUTEUR CIBHHPD L.SALMONA 
+%& MODIF TYPELEM  DATE 16/05/2005   AUTEUR VABHHTS J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -170,9 +170,9 @@ OPTION__
                               OUT__  ZVARI1   PMANOPG
     META_ELNO_TEMP      67    IN__   CCOMPOR  PCOMPOR  CFTRC    PFTRC    CMATERC  PMATERC  EPHASNO_ PPHASIN
                                      DDL_THER PTEMPAR  DDL_THER PTEMPER  DDL_THER PTEMPIR  CTEMPSR  PTEMPSR
-                              OUT__  EPHASNO_ PPHASNOU       
+                              OUT__  EPHASNO_ PPHASNOU
     META_INIT_ELNO      320   IN__   CCOMPOR  PCOMPOR  CMATERC  PMATERC  EPHASIN_ PPHASIN  DDL_THER PTEMPER
-                              OUT__  EPHASNO_ PPHASNOU 
+                              OUT__  EPHASNO_ PPHASNOU
     MTAN_RIGI_MASS      134   IN__   CCOMPOR  PCOMPOR  NGEOMER  PGEOMER  CMATERC  PMATERC  DDL_THER PTEMPEI
                                      CTEMPSR  PTEMPSR  DDL_THER PTMPCHF  DDL_THER PTMPCHI
                               OUT__  MMATTTR  PMATTTR
@@ -199,6 +199,7 @@ OPTION__
     SOUR_ELGA_ELEC      318   IN__   CCAMASS  PCAMASS  NGEOMER  PGEOMER  CMATERC  PMATERC  DDL_THER PTEMPER
                                      CTEMPSR  PTEMPSR
                               OUT__  ESOURCR  PSOUR_R
+    SYME_MTNS_R         222   IN__   MMATTSR  PNOSYM  OUT__  MMATTTR  PSYM
     TOU_INI_ELNO        99    IN__   NGEOMER  PGEOMER
                               OUT__  ENGEOM_R PGEOM_R  ENINST_R PINST_R  ENNEUT_F PNEUT_F  ENNEUT_R PNEUT_R
                                      EPHASNO_ PVARI_R

@@ -1,4 +1,4 @@
-# MODIF  DATE 31/01/2005   AUTEUR ROMEO R.FERNANDES 
+# MODIF  DATE 18/05/2005   AUTEUR ROMEO R.FERNANDES 
 # RESPONSABLE JOUMANA J.EL-GHARIB
 # TITRE CAS TEST TRIAXIAL NON DRAINE AVEC CAM_CLAY EN 3D 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -284,15 +284,17 @@ U1=STAT_NON_LINE(reuse=U1,
                          INCREMENT=_F( 
                 LIST_INST = TEMPS3,
                 INST_INIT = 6., 
-                ),
+                SUBD_PAS=10,
+                SUBD_PAS_MINI=0.001,
+                              ),
                             NEWTON=_F( 
                 MATRICE = 'TANGENTE',
                 REAC_ITER=1,           
                 ),
                        CONVERGENCE=_F( 
                 RESI_GLOB_RELA = 1.E-6,    
-                ITER_INTE_MAXI=100, 
-                ITER_GLOB_MAXI = 50,    
+                ITER_INTE_MAXI=20, 
+                ITER_GLOB_MAXI = 10,    
                 )
               )
               

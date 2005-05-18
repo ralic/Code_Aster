@@ -7,7 +7,7 @@
       CHARACTER*24  CONNEX
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 16/06/2003   AUTEUR CIBHHLV L.VIVAN 
+C MODIF PREPOST  DATE 17/05/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -116,6 +116,6 @@ C
 C
       CALL JEDEMA()
 C
- 1000 FORMAT(1P,E15.8)
+ 1000 FORMAT(1P,E15.7E3)
 C
       END

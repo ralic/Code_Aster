@@ -1,4 +1,4 @@
-# MODIF  DATE 07/03/2005   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 17/05/2005   AUTEUR BOYERE E.BOYERE 
 # TITRE COUPLAGE ASTER_HOMARD - CAS BIDIMENSIONNEL
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -30,8 +30,8 @@
 # option PAR_LOT='NON' indispensable pour affecter des valeurs de
 # tables dans des variables PYTHON (paragraphe 4.9)
 #
-DEBUT(CODE=_F( NOM = 'ZZZZ121A',NIV_PUB_WEB='INTERNET'),
-               PAR_LOT='NON')
+DEBUT(CODE=_F( NOM = 'ZZZZ121A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),
+               PAR_LOT='NON',)
 #
 # 1. Definition des materiaux
 #
