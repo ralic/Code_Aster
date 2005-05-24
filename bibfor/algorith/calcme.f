@@ -7,7 +7,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 18/05/2005   AUTEUR ROMEO R.FERNANDES 
+C MODIF ALGORITH  DATE 23/05/2005   AUTEUR JOUMANA J.EL-GHARIB 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -289,7 +289,7 @@ C ======================================================================
      >                      CONGEM(ADCOME), VINTM, OPTION,
      >                      CONGEP(ADCOME), VINTP,
      >                      DSDEME,P1,P2,DP1,DP2,
-     &                      DSIDP1,SIPM,SIPP)
+     &                      DSIDP1,SIPM,SIPP,RETCOM)
         IF ((OPTION(1:16).EQ.'RIGI_MECA_TANG').OR.
      >            (OPTION(1:9).EQ.'FULL_MECA')) THEN
           DO 412 I = 1 , 2*NDIM

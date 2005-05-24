@@ -9,7 +9,7 @@
      &                   ANGMAS,
      &                   SIGP,VIP,DSIDEP)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 04/04/2005   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 23/05/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -355,28 +355,23 @@ C
 C      DEFORMATION DE GRANDISSEMENT UNIDIMENSIONNEL    
          DEPSGR = (COEFGR(1)*TP+COEFGR(2))*(IRRAP**COEFGR(3))-
      *            (COEFGR(1)*TM+COEFGR(2))*(IRRAM**COEFGR(3))
+
 C      RECUPERATION DU REPERE POUR LE GRANDISSEMENT 
-         IF (ANGMAS(1).NE.R8VIDE()) THEN
-            ALPHA = ANGMAS(1)
-            IF (NDIM.EQ.2) THEN
-               BETA = 0.D0
-            ELSE
-               IF (ANGMAS(2).EQ.R8VIDE()) THEN
-                  CALL UTMESS('F','NMVPCY_2','ERREUR DIR. '//
-     *            'GRANDISSEMENT')
-               ENDIF
-            BETA = ANGMAS(2)
+         IF (NDIM.EQ.2) THEN
+            IF (ANGMAS(2) .NE. 0.D0 ) THEN
+               CALL UTDEBM('F','NMVPIR_2','ERREUR DIR. GRANDISSEMENT')
+               CALL UTIMPR('L','   ANGLE ALPHA = ',1,ANGMAS(1))
+               CALL UTIMPR('L','    ANGLE BETA = ',1,ANGMAS(2))
+               CALL UTFINM()
             ENDIF
-            CAA = COS(ALPHA)
-            SAA = SIN(ALPHA)
-            CBA = COS(BETA)
-            SBA = SIN(BETA)
-         ELSE
-            CAA = 1.D0
-            SAA = 0.D0
-            CBA = 1.D0
-            SBA = 0.D0
          ENDIF
+         ALPHA = ANGMAS(1)
+         BETA  = ANGMAS(2)
+         CAA = COS(ALPHA)
+         SAA = SIN(ALPHA)
+         CBA = COS(BETA)
+         SBA = SIN(BETA)
+
 C      DEFORMATIONS DE GRANDISSEMENT DANS LE REPERE    
          DEGRAN(1) =  DEPSGR*CAA*CAA*CBA*CBA
          DEGRAN(2) =  DEPSGR*SAA*SAA*SBA*SBA

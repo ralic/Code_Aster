@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 12/05/2005   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 24/05/2005   AUTEUR MCOURTOI M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -82,4 +82,5 @@ INFO_FONCTION=MACRO(nom="INFO_FONCTION",op=info_fonction_ops,sd_prod=info_foncti
             CRITERE       =SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU") ),
             PRECISION     =SIMP(statut='f',typ='R',defaut= 1.E-3,val_min=0.E+0 ),
          ),     
+         INFO            =SIMP(statut='f',typ='I',defaut=1,into=(1,2) ),
 )

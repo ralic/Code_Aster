@@ -1,4 +1,4 @@
-# MODIF  DATE 16/11/2004   AUTEUR MABBAS M.ABBAS 
+# MODIF  DATE 23/05/2005   AUTEUR D6BHHJP J.P.LEFEBVRE 
 # TITRE Propagation d'un reseau de fissures en fatigue thermomecanique 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -728,7 +728,7 @@ TEST_FONCTION(VALEUR=( _F(  FONCTION = KEFF,   VALE_PARA = 1,
     _F(  FONCTION = KEFF,   VALE_PARA = 2,
                     REFERENCE = 'NON_REGRESSION',
                           VALE_REFE = .0550,  
-                    PRECISION = .011),       
+                    PRECISION = .015),       
     _F(  FONCTION = KEFF,   VALE_PARA = 3,
                     REFERENCE = 'NON_REGRESSION',
                           VALE_REFE = .0613,  

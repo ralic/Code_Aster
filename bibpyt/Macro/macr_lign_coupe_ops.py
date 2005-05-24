@@ -1,4 +1,4 @@
-#@ MODIF macr_lign_coupe_ops Macro  DATE 14/02/2005   AUTEUR DURAND C.DURAND 
+#@ MODIF macr_lign_coupe_ops Macro  DATE 24/05/2005   AUTEUR MCOURTOI M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -121,6 +121,7 @@ def macr_lign_coupe_ops(self,RESULTAT,UNITE_MAILLAGE,LIGN_COUPE,NOM_CHAM,MODELE,
   from Accas import _F
   from Noyau.N_utils import AsType
   import aster
+  from Utilitai.UniteAster import UniteAster
   ier=0
 
   # On importe les definitions des commandes a utiliser dans la macro
@@ -180,11 +181,12 @@ def macr_lign_coupe_ops(self,RESULTAT,UNITE_MAILLAGE,LIGN_COUPE,NOM_CHAM,MODELE,
   # le maillage est ensuite recopié dans l unité logique UNITE_MAILLAGE
 
   resu_mail=crea_mail_lig_coup(dime,lignes,groups)
-  cur_dir=os.getcwd()
-  nomFichierSortie   =cur_dir+'/fort.'+str(UNITE_MAILLAGE)
+  UL = UniteAster()
+  nomFichierSortie = UL.Nom(UNITE_MAILLAGE)
   fproc=open(nomFichierSortie,'w')
   fproc.write(resu_mail)
   fproc.close()
+  UL.EtatInit(UNITE_MAILLAGE)
 
   # Lecture du maillage de seg2 contenant toutes les lignes de coupe
 

@@ -1,4 +1,4 @@
-#@ MODIF lire_table_ops Macro  DATE 30/11/2004   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF lire_table_ops Macro  DATE 24/05/2005   AUTEUR MCOURTOI M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -116,8 +116,10 @@ def lire_table_ops(self,UNITE,FORMAT,NUME_TABLE,SEPARATEUR,
                         TYPE_TABLE,PARA,TITRE,**args):   
   """Méthode corps de la macro LIRE_TABLE
   """
-  from Accas import _F
   import os
+  from Accas import _F
+  from Utilitai.Utmess     import UTMESS
+  from Utilitai.UniteAster import UniteAster
 
   ier=0
   ### On importe les definitions des commandes a utiliser dans la macro
@@ -127,12 +129,12 @@ def lire_table_ops(self,UNITE,FORMAT,NUME_TABLE,SEPARATEUR,
   self.set_icmd(1)
 
   ### Lecture de la table dans un fichier d unité logique UNITE
-  file="./fort."+str(UNITE)
-  if not os.path.isfile(file) :
-     ier=ier+1
-     self.cr.fatal("<F> <LIRE_TABLE> le fichier d unité logique "+str(UNITE)+" est introuvable")
-     return ier
-  file=open(file,'r')
+  UL = UniteAster()
+  nomfich=UL.Nom(UNITE)
+  if not os.path.isfile(nomfich):
+     UTMESS('F', nompro, "le fichier '%s' est introuvable" % nomfich)
+
+  file=open(nomfich,'r')
   texte=file.readlines()
   file.close()
 
@@ -170,4 +172,6 @@ def lire_table_ops(self,UNITE,FORMAT,NUME_TABLE,SEPARATEUR,
 
   ut_tab=CREA_TABLE(TITRE=titr_tab,TYPE_TABLE=TYPE_TABLE, **motscles)
 
+  # remet UNITE dans son état initial
+  UL.EtatInit()
   return ier

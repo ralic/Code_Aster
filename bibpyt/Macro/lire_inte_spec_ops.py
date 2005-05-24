@@ -1,4 +1,4 @@
-#@ MODIF lire_inte_spec_ops Macro  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
+#@ MODIF lire_inte_spec_ops Macro  DATE 24/05/2005   AUTEUR MCOURTOI M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -25,21 +25,22 @@ def lire_inte_spec_ops(self,UNITE,FORMAT,NOM_PARA,NOM_RESU,INTERPOL,
   from Accas import _F
   import os
   from math import cos,sin
+  from Utilitai.Utmess     import UTMESS
+  from Utilitai.UniteAster import UniteAster
   # On importe les definitions des commandes a utiliser dans la macro
   DEFI_FONCTION  =self.get_cmd('DEFI_FONCTION')
   CREA_TABLE     =self.get_cmd('CREA_TABLE')
 
   # La macro compte pour 1 dans la numerotation des commandes
   self.set_icmd(1)
+  nompro='LIRE_INTE_SPEC'
 
   # Lecture de la fonction dans un fichier d unité logique UNITE
-  
-  file="./fort."+str(UNITE)
-  if not os.path.isfile(file) :
-     ier=ier+1
-     self.cr.fatal("<F> <LIRE_INTE_SPEC> le fichier d unité logique "+str(UNITE)+" est introuvable")
-     return ier
-  file=open(file,'r')
+  UL = UniteAster()
+  nomfich=UL.Nom(UNITE)
+  if not os.path.isfile(nomfich):
+     UTMESS('F', nompro, "le fichier '%s' est introuvable" % nomfich)
+  file=open(nomfich,'r')
   texte=file.read()
   file.close()
   
@@ -119,4 +120,6 @@ def lire_inte_spec_ops(self,UNITE,FORMAT,NOM_PARA,NOM_RESU,INTERPOL,
                       LISTE=mcfact,
                       TITRE=TITRE,)
 
+  # remet UNITE dans son état initial
+  UL.EtatInit()
   return ier

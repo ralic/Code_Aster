@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 08/03/2005   AUTEUR LAMARCHE S.LAMARCHE 
+#& MODIF COMMANDE  DATE 24/05/2005   AUTEUR MABBAS M.ABBAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -336,7 +336,7 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca
            regles=(UN_PARMI('GROUP_MA_ESCL','MAILLE_ESCL'),),
            APPARIEMENT     =SIMP(statut='f',typ='TXM',defaut="MAIT_ESCL",
                                  into=("NON","NODAL","MAIT_ESCL","MAIT_ESCL_SYME")),
-           RECHERCHE       =SIMP(statut='f',typ='TXM',defaut="NOEUD_VOISIN",
+           RECHERCHE       =SIMP(statut='f',typ='TXM',defaut="NOEUD_BOUCLE",
                                  into=("NOEUD_BOUCLE","NOEUD_VOISIN")),
            LISSAGE         =SIMP(statut='f',typ='TXM',defaut="NON",
                                  into=("OUI","NON")),

@@ -1,4 +1,4 @@
-# MODIF  DATE 15/11/2004   AUTEUR MCOURTOI M.COURTOIS 
+# MODIF  DATE 24/05/2005   AUTEUR MABBAS M.ABBAS 
 # RESPONSABLE MABBAS M.ABBAS
 #
 # TITRE INDENTATION D'UN MASSIF PAR UN POINCON
@@ -71,7 +71,8 @@ CHA=AFFE_CHAR_MECA(MODELE=MO,
                    CONTACT=_F(APPARIEMENT='MAIT_ESCL',
                               GROUP_MA_MAIT='GM11',
                               GROUP_MA_ESCL='GM12',
-                              NORMALE='MAIT_ESCL'
+                              NORMALE='MAIT_ESCL',
+                              RECHERCHE = 'NOEUD_BOUCLE',
                               ),);
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
@@ -84,12 +85,14 @@ F=DEFI_FONCTION(NOM_PARA='INST',
                       1.0,  0.98),
                       );
 
+
 RESU=STAT_NON_LINE(MODELE=MO,
                    CHAM_MATER=CHMAT,
                    EXCIT=_F(CHARGE=CHA,
                             FONC_MULT=F,),
                    COMP_INCR=_F(RELATION='VMIS_ISOT_LINE',
                                 DEFORMATION='SIMO_MIEHE'),
+                   CONVERGENCE=(_F(ITER_GLOB_MAXI=20,)),
                    INCREMENT=_F(LIST_INST=L_INST,
                                 INST_FIN=1.,
                                 SUBD_PAS=4,
@@ -139,17 +142,17 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU,
                    NOM_CHAM='REAC_NODA',
                    NOM_CMP='DX',
                    GROUP_NO='GM16',
-                   VALE=-1.72144E+01,
+                   VALE=-1.71879E+01,
                    REFERENCE='NON_REGRESSION',
-                   VERSION='7.1.07',),
+                   VERSION='8.0.22',),
                 _F(RESULTAT=RESU,
                    INST=0.50,
                    NOM_CHAM='REAC_NODA',
                    NOM_CMP='DY',
                    GROUP_NO='GM16',
-                   VALE=-1.63087E+01,
+                   VALE=-1.62914E+01,
                    REFERENCE='NON_REGRESSION',
-                   VERSION='7.1.07',),   
+                   VERSION='8.0.22',),   
                    ),);
 
 TEST_RESU(RESU=(_F(RESULTAT=RESU,
@@ -165,17 +168,17 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU,
                    NOM_CHAM='REAC_NODA',
                    NOM_CMP='DX',
                    GROUP_NO='GM16',
-                   VALE=-1.86982E+01,
+                   VALE=-1.84613E+01,
                    REFERENCE='NON_REGRESSION',
-                   VERSION='7.1.07',),
+                   VERSION='8.0.22',),
                 _F(RESULTAT=RESU,
                    INST=1.0,
                    NOM_CHAM='REAC_NODA',
                    NOM_CMP='DY',
                    GROUP_NO='GM16',
-                   VALE=-1.37081E+01,
+                   VALE=-1.41327E+01,
                    REFERENCE='NON_REGRESSION',
-                   VERSION='7.1.07',),   
+                   VERSION='8.0.22',),   
                    ),);
                    
 FY=RECU_FONCTION(TABLE=TAB_FORC,

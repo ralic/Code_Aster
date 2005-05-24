@@ -1,4 +1,4 @@
-# MODIF  DATE 31/01/2005   AUTEUR ROMEO R.FERNANDES 
+# MODIF  DATE 23/05/2005   AUTEUR JOUMANA J.EL-GHARIB 
 # TITRE REPONSE A DES CHEMINS MIXTES DE SATURATION - CONSOLIDATION EN 3D
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -138,7 +138,7 @@ SOL=DEFI_MATERIAU(    ELAS=_F(  E = 26.E6,    NU = 0.3,
                                 PRE2 = 1.E5,  
                                 PORO = 0.14,  
                                 PRES_VAPE = 2269.8,
-                                DEGR_SATU=0.988812,  
+                                DEGR_SATU=0.9,  
                                 )
                            )
 
@@ -191,7 +191,7 @@ DEPINIT=CREA_CHAMP(MAILLAGE=MAILLAGE,
                     TYPE_CHAM='NOEU_DEPL_R',
                     AFFE=(_F(TOUT='OUI',
                              NOM_CMP='PRE1',
-                             VALE=0.,
+                             VALE=2.E5,
                               ),
                           _F(TOUT='OUI',
                              NOM_CMP='PRE2',
@@ -210,8 +210,8 @@ SIGINIT=CREA_CHAMP(MAILLAGE=MAILLAGE,
                             'M21','FH21X','FH21Y','FH21Z','ENT21','QPRIM',
                                      'FHTX','FHTY','FHTZ'),
                            VALE=
-                           (-1.5E5,-1.5E5,-1.5E5,0.0,0.0,
-                            0.0,-0.977624E5,0.0,0.0,0.0,0.0,
+                           (-7E4,-7E4,-7E4,0.0,0.0,
+                            0.0,-8E4,0.0,0.0,0.0,0.0,
                            -200.,0.0,0.0,0.0,0.0,0.0,
                             0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0),),);
 
@@ -335,6 +335,7 @@ U1=STAT_NON_LINE(reuse=U1,
                 )
               )
 
+
 # POURSUITE DU PREMIER CHARGEMENT HYDROSTATIQUE
 
 
@@ -383,6 +384,7 @@ U1=STAT_NON_LINE(reuse=U1,
                 RESI_GLOB_RELA = 1.E-6,     
                 )
               )
+
 
 # SECHAGE 
 
@@ -505,6 +507,18 @@ U2=STAT_NON_LINE(ETAT_INIT = _F(SIGM=SIGINIT,DEPL=DEPINIT),
                 RESI_GLOB_RELA = 1.E-6,     
                 )
               )
+U2=CALC_ELEM(reuse =U2,
+               RESULTAT=U2,
+               PRECISION = 1.E-10,
+               CHAM_MATER=CHMAT,
+               MODELE=MODELE,
+               OPTION=('SIEF_ELNO_ELGA','VARI_ELNO_ELGA'),);
+
+U2=CALC_NO(reuse =U2,
+               RESULTAT=U2,
+               PRECISION = 1.E-10,
+               CHAM_MATER=CHMAT,
+               OPTION=('SIEF_NOEU_ELGA','VARI_NOEU_ELGA'),);
 
 
 # DEUXIEME MOUILLAGE 
@@ -584,7 +598,17 @@ TEST_RESU(RESU=(
                        NOM_CMP = 'DZ',     
                        INST=12.,  
                        PRECISION = (1.5E-2, 1.E-6),  
-                       VALE = -4.0542801917093E-02,        
+                       VALE = -3.2671E-02,        
+                     ),
+# PRESSION CRITIQUE
+                _F(    RESULTAT = U1,    
+                       REFERENCE = 'ANALYTIQUE',  
+                       NOEUD = 'NO8',      
+                       NOM_CHAM = 'VARI_NOEU_ELGA',    
+                       NOM_CMP = 'V1',     
+                       INST=12.,  
+                       PRECISION = (1.E-5, 1.E-6),  
+                       VALE =  3.E5,        
                      ),
 # ETAT PLASTIQUE MECANIQUE
                 _F(    RESULTAT = U1,    
@@ -622,7 +646,17 @@ TEST_RESU(RESU=(
                        NOM_CMP = 'DZ',     
                        INST=12.,  
                        PRECISION = (1.5E-2, 1.E-6),  
-                       VALE = -4.0542832445573E-02,        
+                       VALE = -3.266E-02,        
+                     ),
+# PRESSION CRITIQUE
+                _F(    RESULTAT = U3,    
+                       REFERENCE = 'ANALYTIQUE',  
+                       NOEUD = 'NO8',      
+                       NOM_CHAM = 'VARI_NOEU_ELGA',    
+                       NOM_CMP = 'V1',     
+                       INST=12.,  
+                       PRECISION = (1.E-5, 1.E-6),  
+                       VALE =  3.E5,        
                      ),
 # ETAT PLASTIQUE MECANIQUE
                 _F(    RESULTAT = U3,    
@@ -723,7 +757,17 @@ TEST_RESU(RESU=(
                        NOM_CMP = 'DZ',     
                        INST=12.,  
                        PRECISION = (1.5E-2,1.E-6),   
-                       VALE = -2.0906762986855E-02,        
+                       VALE = -1.8415E-02,        
+                     ),
+# PRESSION CRITIQUE
+                _F(    RESULTAT = U4,    
+                       REFERENCE = 'ANALYTIQUE',  
+                       NOEUD = 'NO8',      
+                       NOM_CHAM = 'VARI_NOEU_ELGA',    
+                       NOM_CMP = 'V1',     
+                       INST=12.,  
+                       PRECISION = (1.E-5, 1.E-6),  
+                       VALE =  3.5E5,        
                      ),
 # ETAT PLASTIQUE MECANIQUE
                 _F(    RESULTAT = U4,    
@@ -761,7 +805,17 @@ TEST_RESU(RESU=(
                        NOM_CMP = 'DZ',     
                        INST=24.,  
                        PRECISION = (1.5E-2,1.E-6),   
-                       VALE = -4.9815170299811E-02,        
+                       VALE = -4.4036E-02,        
+                     ),
+# PRESSION CRITIQUE
+                _F(    RESULTAT = U1,    
+                       REFERENCE = 'ANALYTIQUE',  
+                       NOEUD = 'NO8',      
+                       NOM_CHAM = 'VARI_NOEU_ELGA',    
+                       NOM_CMP = 'V1',     
+                       INST=24.,  
+                       PRECISION = (1.E-3, 1.E-6),  
+                       VALE =  6.8128E5,        
                      ),
 # ETAT PLASTIQUE MECANIQUE
                 _F(    RESULTAT = U1,    
@@ -772,6 +826,7 @@ TEST_RESU(RESU=(
                        INST=24.,  
                        PRECISION =( 1.E-5, 1.E-6),  
                        VALE =  0,        
+                       CRITERE='ABSOLU',        
                      ),
 # ETAT PLASTIQUE HYDRIQUE
                 _F(    RESULTAT = U1,    

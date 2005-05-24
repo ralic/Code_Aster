@@ -1,7 +1,7 @@
        SUBROUTINE TE0364(OPTION,NOMTE)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 31/08/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ELEMENTS  DATE 23/05/2005   AUTEUR LAMARCHE S.LAMARCHE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -476,16 +476,13 @@ C
  305      CONTINUE
  304   CONTINUE
 
-            DO 303 I = 1,NDIM
-              DO 302 J = 1,NDIM
+C
                 DO 301 K = 1,NDIM
                   TT(1,1) = TAU1(K)*TAU1(K) + TT(1,1)
                   TT(1,2) = TAU1(K)*TAU2(K) + TT(1,2)
                   TT(2,1) = TAU2(K)*TAU1(K) + TT(2,1)
                   TT(2,2) = TAU2(K)*TAU2(K) + TT(2,2)
  301           CONTINUE
- 302        CONTINUE
- 303     CONTINUE
 
 
           DO 284 I = 1,NNE

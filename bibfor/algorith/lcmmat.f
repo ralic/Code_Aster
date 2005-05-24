@@ -2,7 +2,7 @@
      &   ANGMAS,PGL,MATERD,MATERF, MATCST,NBCOMM,CPMONO,NDT,NDI,NR,NVI)
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 27/09/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 23/05/2005   AUTEUR CIBHHLV L.VIVAN 
 C RESPONSABLE JMBHH01 J.M.PROIX
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -113,14 +113,7 @@ C     LA DERNIERE VARIABLE INTERNE EST L'INDICATEUR PLASTIQUE
 C           
       NR=NVI+NDT-1
       
-      IF (ANGMAS(1).NE.R8VIDE()) THEN
-         CALL MATROT(ANGMAS,PGL)
-      ELSE
-          CALL LCINVN(9,0.D0,PGL)
-          PGL(1,1)=1.D0
-          PGL(2,2)=1.D0
-          PGL(3,3)=1.D0
-      ENDIF
+      CALL MATROT(ANGMAS,PGL)
       
       DO 111 I=1,NMAT
       DO 111 J=1,3
@@ -241,11 +234,7 @@ C
         
         REPERE(1)=1
         DO 21 I=1,3
-           IF (ANGMAS(1).NE.R8VIDE()) THEN
-               REPERE(I+1)=ANGMAS(I)
-           ELSE               
-               REPERE(I+1)=0.D0
-           ENDIF
+           REPERE(I+1)=ANGMAS(I)
  21     CONTINUE
 C
 C -    ELASTICITE ORTHOTROPE

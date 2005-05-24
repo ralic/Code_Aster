@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 22/03/2005   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF SUPERVIS  DATE 23/05/2005   AUTEUR D6BHHJP J.P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -49,16 +49,14 @@ C
           IER = 1
         ENDIF
         NTPMAX = TPMAX-LCPU
+        CALL UTCLIM ( ITPMAX-NTPMAX )
       ENDIF
 C      
       CALL GETVR8('RESERVE_CPU','POURCENTAGE',1,1,1,PCCPU,L2)
       IF ( L2 .GT. 0 ) THEN
         NTPMAX = MAX ( TPMAX*(1-PCCPU) , TPMAX-IBORNE )
+        CALL UTCLIM ( ITPMAX-NTPMAX )
       ENDIF
-C      
-C     AJUSTEMENT DU TEMPS LIMITE  
-C     
-      CALL UTCLIM ( NTPMAX )
 C      
 C     IMPRESSION D'UN MESSAGE D'INFORMATION  
 C     

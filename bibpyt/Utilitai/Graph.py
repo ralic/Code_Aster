@@ -1,4 +1,4 @@
-#@ MODIF Graph Utilitai  DATE 11/05/2005   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF Graph Utilitai  DATE 24/05/2005   AUTEUR MCOURTOI M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -24,6 +24,7 @@ import sys
 import os
 import os.path
 import string
+import re
 import types
 import time
 import Numeric
@@ -126,10 +127,16 @@ class Graph:
       self.LastTraceFormat = ''
       return
 # ------------------------------------------------------------------------------
-   def SetExtrema(self,marge=0.):
+   def SetExtrema(self,marge=0., x0=None, x1=None, y0=None, y1=None):
       """Remplit les limites du tracé (Min/Max_X/Y) avec les valeurs de la
-      bounding box +/- avec une 'marge'*(Max-Min)/2
+      bounding box +/- avec une 'marge'*(Max-Min)/2.
+      x0,x1,y0,y1 permettent de modifier la bb.
       """
+      if x0<>None:   self.BBXmin=min([self.BBXmin, x0])
+      if x1<>None:   self.BBXmax=max([self.BBXmax, x1])
+      if y0<>None:   self.BBYmin=min([self.BBYmin, y0])
+      if y1<>None:   self.BBYmax=max([self.BBYmax, y1])
+
       dx=max(self.BBXmax-self.BBXmin,0.01*self.BBXmax)
       self.Min_X = self.BBXmin - marge*dx/2.
       self.Max_X = self.BBXmax + marge*dx/2.
@@ -705,18 +712,18 @@ class TraceXmgrace(TraceGraph):
 @    frame background color 0
 @    frame background pattern 0
 """)
-      entete.append('@    title "'+g.Titre+'"\n')
-      entete.append('@    subtitle "'+g.SousTitre+'"\n')
-      entete.append('@    xaxis  label "'+g.Legende_X+'"\n')
-      entete.append('@    yaxis  label "'+g.Legende_Y+'"\n')
-      entete.append('@    xaxes scale '+dic_ech[g.Echelle_X]+'\n')
-      entete.append('@    yaxes scale '+dic_ech[g.Echelle_Y]+'\n')
-      entete.append('@    xaxis  tick major '+str(g.Grille_X)+'\n')
-      entete.append('@    yaxis  tick major '+str(g.Grille_Y)+'\n')
-      entete.append('@    world xmin '+str(g.Min_X)+'\n')
-      entete.append('@    world xmax '+str(g.Max_X)+'\n')
-      entete.append('@    world ymin '+str(g.Min_Y)+'\n')
-      entete.append('@    world ymax '+str(g.Max_Y)+'\n')
+      entete.append('@    title "'+g.Titre+'"')
+      entete.append('@    subtitle "'+g.SousTitre+'"')
+      entete.append('@    xaxis  label "'+g.Legende_X+'"')
+      entete.append('@    yaxis  label "'+g.Legende_Y+'"')
+      entete.append('@    xaxes scale '+dic_ech[g.Echelle_X])
+      entete.append('@    yaxes scale '+dic_ech[g.Echelle_Y])
+      entete.append('@    xaxis  tick major '+str(g.Grille_X))
+      entete.append('@    yaxis  tick major '+str(g.Grille_Y))
+      entete.append('@    world xmin '+str(g.Min_X))
+      entete.append('@    world xmax '+str(g.Max_X))
+      entete.append('@    world ymin '+str(g.Min_Y))
+      entete.append('@    world ymax '+str(g.Max_Y))
       return entete
 # ------------------------------------------------------------------------------
    def DescrCourbe(self,**args):
@@ -772,16 +779,16 @@ class TraceXmgrace(TraceGraph):
 
 @    s0 comment ""
 """,' s0 ',' s'+sn+' '))
-      descr.append('@    s'+sn+' symbol '+symbol+'\n')
-      descr.append('@    s'+sn+' symbol color '+color+'\n')
-      descr.append('@    s'+sn+' symbol skip '+freqm+'\n')
-      descr.append('@    s'+sn+' symbol fill color '+color+'\n')
-      descr.append('@    s'+sn+' line linestyle '+sty+'\n')
-      descr.append('@    s'+sn+' line color '+color+'\n')
-      descr.append('@    s'+sn+' fill color '+color+'\n')
-      descr.append('@    s'+sn+' avalue color '+color+'\n')
-      descr.append('@    s'+sn+' errorbar color '+color+'\n')
-      descr.append('@    s'+sn+' legend "'+args['Leg']+'"\n')
+      descr.append('@    s'+sn+' symbol '+symbol)
+      descr.append('@    s'+sn+' symbol color '+color)
+      descr.append('@    s'+sn+' symbol skip '+freqm)
+      descr.append('@    s'+sn+' symbol fill color '+color)
+      descr.append('@    s'+sn+' line linestyle '+sty)
+      descr.append('@    s'+sn+' line color '+color)
+      descr.append('@    s'+sn+' fill color '+color)
+      descr.append('@    s'+sn+' avalue color '+color)
+      descr.append('@    s'+sn+' errorbar color '+color)
+      descr.append('@    s'+sn+' legend "'+args['Leg']+'"')
       return descr
 # ------------------------------------------------------------------------------
    def Trace(self):
@@ -789,12 +796,23 @@ class TraceXmgrace(TraceGraph):
       Met en page l'entete, la description des courbes et les valeurs selon
       le format et ferme le fichier.
       """
-      if self.PILOTE=='INTERACTIF' and self.Fich[0]==sys.stdout:
+      g=self.Graph
+      if self.PILOTE=='INTERACTIF':
          self.NomFich[0]='Trace_'+time.strftime('%y%m%d%H%M%S',time.localtime())+'.dat'
          self.Fich[0]=open(self.NomFich[0],'w')
+      # initialise le graph
+      self._FermFich()
+      nbsets, x0, x1, y0, y1 = IniGrace(self.NomFich[0])
+      NumSetIni = nbsets+1
+      g.SetExtrema(0.05, x0, x1, y0, y1)
+      # si Min/Max incohérents
+      if g.Min_X < 0. and g.Echelle_X=='LOG':
+         g.Min_X=g.MinP_X
+      if g.Min_Y < 0. and g.Echelle_Y=='LOG':
+         g.Min_Y=g.MinP_Y
+      
       self._OuvrFich()
       fich=self.Fich[0]
-      g=self.Graph
       if g.NbCourbe < 1:
          self._FermFich()
          return
@@ -809,31 +827,35 @@ class TraceXmgrace(TraceGraph):
          if deltaY>4:
             g.Grille_Y=int(round(g.Grille_Y))
       # entete
-      for lig in self.Entete():
-         fich.write(lig)
+      fich.write('\n'.join(self.Entete()))
+      fich.write('\n')
       # valeurs
       it=-1
       for i in range(g.NbCourbe):
          dCi=g.Courbe(i)
          for k in range(dCi['NbCol']-1):
             it=it+1
-            dCi['NumSet']=it
-            for lig in self.DescrCourbe(**dCi):
-               fich.write(lig)
+            dCi['NumSet'] = NumSetIni + it
+            fich.write('\n'.join(self.DescrCourbe(**dCi)))
+            fich.write('\n')
       # partie données (.dat)
+      lig=[]
       it=-1
       for i in range(g.NbCourbe):
          dCi=g.Courbe(i)
          for k in range(dCi['NbCol']-1):
             it=it+1
-            fich.write('@target g0.s'+str(it)+'\n')
-            fich.write('@type xy'+'\n')
+            lig.append('@target g0.s%d' % (NumSetIni + it))
+            lig.append('@type xy')
             listX, listY = Tri(g.Tri, lx=dCi['Abs'], ly=dCi['Ord'][k])
             for j in range(dCi['NbPts']):
                svX=self.DicForm['formR'] % listX[j]
                svY=self.DicForm['formR'] % listY[j]
-               fich.write(svX+' '+svY+'\n')
-            fich.write('&'+'\n')
+               lig.append(self.DicForm['formR'] % listX[j] + \
+                  ' ' + self.DicForm['formR'] % listY[j])
+            lig.append('&')
+      fich.write('\n'.join(lig))
+      fich.write('\n')
       self._FermFich()
       
       # Production du fichier postscript, jpeg ou lancement interactif
@@ -868,6 +890,9 @@ class TraceXmgrace(TraceGraph):
                os.rename(nfhard,self.NomFich[0])
          else:
             UTMESS('A','TraceXmgrace',"Erreur lors de l'utilisation du filtre "+pilo+"\nLe fichier retourné est le fichier '.agr'")
+      # menage
+      if self.PILOTE=='INTERACTIF':
+         os.remove(self.NomFich[0])
       return
 
 # ------------------------------------------------------------------------------
@@ -1067,3 +1092,60 @@ def AjoutParaCourbe(dCourbe, args):
       if args.has_key(mc):
          dCourbe[key]=args[mc]
 
+# ------------------------------------------------------------------------------
+def IniGrace(fich):
+   """Retourne le numéro de la dernière courbe d'un fichier xmgrace (sinon 0).
+   """
+   ns=0
+   x0=None
+   x1=None
+   y0=None
+   y1=None
+   if os.path.exists(fich) and os.stat(fich).st_size<>0:
+      os.rename(fich, fich+'.prev')
+      fpre=open(fich+'.prev', 'r')
+      fnew=open(fich,         'w')
+      for line in fpre:
+         ikeep=True
+         mat=re.search('@target g[0-9]+\.s([0-9]+)', line)
+         if mat<>None and int(mat.group(1))>ns:
+            ns=int(mat.group(1))
+         mat=re.search('@[ ]+world[ ]+xmin[ ]+([\-\+\.0-9eEdD]+)', line)
+         if mat<>None:
+            try:
+               x0=float(mat.group(1))
+               ikeep=False
+            except ValueError:
+               pass
+         mat=re.search('@[ ]+world[ ]+xmax[ ]+([\-\+\.0-9eEdD]+)', line)
+         if mat<>None:
+            try:
+               x1=float(mat.group(1))
+               ikeep=False
+            except ValueError:
+               pass
+         mat=re.search('@[ ]+world[ ]+ymin[ ]+([\-\+\.0-9eEdD]+)', line)
+         if mat<>None:
+            try:
+               y0=float(mat.group(1))
+               ikeep=False
+            except ValueError:
+               pass
+         mat=re.search('@[ ]+world[ ]+ymax[ ]+([\-\+\.0-9eEdD]+)', line)
+         if mat<>None:
+            try:
+               y1=float(mat.group(1))
+               ikeep=False
+            except ValueError:
+               pass
+         if ikeep:
+            fnew.write(line)
+      fpre.close()
+      fnew.close()
+      print """
+   <I> Informations sur le fichier '%s' :
+      Nombre de courbes    : %3d
+      Bornes des abscisses : [ %13.6G , %13.6G ]
+      Bornes des ordonnées : [ %13.6G , %13.6G ]
+""" % (fich, ns, x0, x1, y0, y1)
+   return ns, x0, x1, y0, y1

@@ -4,7 +4,7 @@
       CHARACTER*(*)             FICHIE, NAME, ACCES, AUTOR
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 11/05/2005   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF UTILITAI  DATE 24/05/2005   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -228,8 +228,6 @@ C
             ENDIF
           ENDIF
 20      CONTINUE
-        CALL UTMESS('F','ULOPEN12','L''UNITE LOGIQUE '//K4B
-     &            //', N''EST PAS TROUVEE, ERREUR LORS DU CLOSE')
       ENDIF
 C
  9999 CONTINUE

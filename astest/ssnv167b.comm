@@ -1,4 +1,4 @@
-# MODIF  DATE 09/05/2005   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 24/05/2005   AUTEUR MABBAS M.ABBAS 
 
 # TITRE TESTS DE CONTACT POUR LES ELEMENTS QUADRATIQUES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -70,6 +70,7 @@ CHCO2 = AFFE_CHAR_MECA(    MODELE=MO,
                                         PROJECTION = 'QUADRATIQUE',
                                         REAC_GEOM = 'CONTROLE',
                                         NB_REAC_GEOM = 5,
+                                        RECHERCHE = 'NOEUD_VOISIN',
                                       ),
                           INFO =2)
                           

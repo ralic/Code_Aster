@@ -1,10 +1,10 @@
       SUBROUTINE NMBARC (NDIM,IMATE,CRIT,SAT,BIOT,
      &                   TM,TP,DEPS,SBISM,VIM,
      &                   OPTION,SBISP,VIP,DSIDEP,P1,P2,DP1,DP2,
-     &                   DSIDP1,SIPM,SIPP)
+     &                   DSIDP1,SIPM,SIPP,RETCOM)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/11/2004   AUTEUR KBBHHDB G.DEBRUYNE 
+C MODIF ALGORITH  DATE 23/05/2005   AUTEUR JOUMANA J.EL-GHARIB 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -24,7 +24,7 @@ C ======================================================================
 C  TOLE CRP_20
 C  TOLE CRP_21
       IMPLICIT NONE
-      INTEGER            NDIM,IMATE
+      INTEGER            NDIM,IMATE,RETCOM
       CHARACTER*16      OPTION
       REAL*8             CRIT(*),TM,TP
       REAL*8             DEPS(6),DEUXMU,BIOT,SAT,P1,P2,DP1,DP2
@@ -89,7 +89,8 @@ C
       REAL*8      V(6,6),S(6,6),T(6,6),VV(6,6),SS(6,6),TT(6,6)
       REAL*8      NUL,DIFF,DIFF1
       REAL*8      SBARM(6),SBARP(6),PC0M(2),PC0P(2),PCRM(2),PCRP(2)
-      REAL*8      P1M,P2M,PSM,PSP,PCRMP1,PAR,PCRPP
+      REAL*8      P1M,P2M,PCRMP1,PAR,PCRPP
+      REAL*8      PSP
       REAL*8      TRA,XGG,XZ,XDD,HH(6),XJ,XHH,CT1,KV(6)
       REAL*8      SSH(6),HHKV(6),VH(6,6),VHH(6,6),VVH(6,6)
       REAL*8      KKH(6),SSHH(6),BB,KCP1,KCP1M,KPMAX,KPMAXM,ZERO
@@ -100,12 +101,14 @@ C
       REAL*8      D1G(6,6),ID2(6,6),DEVHYD(6,6),DEVHYM(6,6)
       REAL*8      D1GHHM(6,6)
       INTEGER     NDIMSI,SIGNF,SIGNFI
-      INTEGER     I,K,L,ITER, MATR,IADZI,IAZK24
+      INTEGER     I,K,L,ITER, MATR,IADZI,IAZK24,UMESS,IUNIFI
       CHARACTER*2 BL2, FB2, CODRET(16)
       CHARACTER*8 NOMRES(16)
       CHARACTER*8 NOMPAR(1),TYPE
       CHARACTER*24 NOMMA
-      REAL*8      VALPAM(1),R8NNEM
+      REAL*8       EPXMAX
+      CHARACTER*8   NOMAIL
+      REAL*8      VALPAM(1),R8MAEM
       DATA        KRON/1.D0,1.D0,1.D0,0.D0,0.D0,0.D0/
       DATA        TOL/1.D-10/NUL/0.D0/ZERO/0.D0/
 C DEB ------------------------------------------------------------------
@@ -114,10 +117,12 @@ C     -- 1 INITIALISATIONS :
 C     ----------------------
       NDIMSI = 2*NDIM
       LOGIC = .TRUE.
+      EPXMAX=LOG(R8MAEM())
 C
       BL2 = '  '
       FB2 = 'F '
 C
+      RETCOM = 0
 C
 C     -- 2 RECUPERATION DES CARACTERISTIQUES
 C     ---------------------------------------
@@ -246,8 +251,9 @@ C     CONTRAINTES DE BISHOP
 C     ---------------------
       P2M=P2-DP2
       P1M=P1-DP1
+
       DO 113 K=1,NDIMSI
-        SBARM(K)   = SBISM(K) + (SIPM-P2M)*KRON(K)
+        SBARM(K)   = SBISM(K) + (SIPM+P2M)*KRON(K)
  113  CONTINUE
 C     -- 5 CALCUL DE SIGMMO, SIGMDV, SIGEL,SIMOEL,SIELEQ, SIEQM :
 C     -------------------------------------------------------------
@@ -256,7 +262,7 @@ C     -------------------------------------------------------------
         SIGMMO = SIGMMO + SBARM(K)
  116  CONTINUE
       SIGMMO = -SIGMMO/3.D0
-      IF (SIGMMO.LE.(-0.99D0*KC*P1).AND.(SIGMMO.LT.ZERO)) THEN 
+      IF (SIGMMO.LE.(-0.99D0*KC*P1)) THEN 
            CALL UTMESS('F','NMBARC','BARCELONE : IL FAUT QUE '
      &     //'LA CONTRAINTE HYDROSTATIQUE SOIT SUPERIEURE A LA ' 
      &     //' PRESSION DE COHESION -KC*PC ')
@@ -271,10 +277,29 @@ C     -------------------------------------------------------------
  117  CONTINUE
       SIELEQ     = SQRT(1.5D0*SIELEQ)
       SIEQM    = SQRT(1.5D0*SIEQM)
+
+         IF ((-XK0*DEPSMO).GT.EPXMAX) THEN
+           UMESS  = IUNIFI('MESSAGE')
+           CALL TECAEL(IADZI,IAZK24)
+           NOMAIL = ZK24(IAZK24-1+3) (1:8)
+           WRITE (UMESS,9001) 'NMBARC_2','EXP EXPLOSE A LA MAILLE: ',
+     &                                                           NOMAIL
+           RETCOM = 1
+           GO TO 8000
+         ENDIF
+         IF ((-BETA*P1M).GT.EPXMAX) THEN
+           UMESS  = IUNIFI('MESSAGE')
+           CALL TECAEL(IADZI,IAZK24)
+           NOMAIL = ZK24(IAZK24-1+3) (1:8)
+           WRITE (UMESS,9001) 'NMBARC_3','EXP EXPLOSE A LA MAILLE: ',
+     &                                                           NOMAIL
+           RETCOM = 1
+           GO TO 8000
+         ENDIF
+
+C
       SIMOEL    = SIGMMO*EXP(XK0*DEPSMO)/((P1+PA)/(P1M+PA))**(XK0/XK0S)
 C
-         KCP1M = KC*P1M
-         KPMAXM = MAX (KCP1M , ZERO)
          KCP1 = KC*P1
          KPMAX = MAX (KCP1 , ZERO)
 C    CALCUL DE LAMBDA COMME DANS LE PAPIER D'ALONSO
@@ -285,11 +310,15 @@ C     ------------------------------------
       PCRM(2) = VIM(2)
       PC0M(1) = VIM(3)
       PC0M(2) = VIM(4)
-      PSM     = -KPMAXM
-      IF (PCRM(1).EQ.0.D0)  PCRM(1) = PRESCR
-      IF (PC0M(1).EQ.0.D0)  PC0M(1) = PC0INI
+C
+      IF (PCRM(1).EQ.0.D0)  THEN
+      PCRMP1 = (PA/2.D0)*
+     &       (2*PRESCR/PA)**((LAMBDA-KAPA)/(LAMBB-KAPA))
+      ELSE
       PCRMP1=(PA/2.D0)*
      &       (2*PCRM(1)/PA)**((LAMBBM-KAPA)/(LAMBB-KAPA))
+      ENDIF
+      IF (PC0M(1).EQ.0.D0)  PC0M(1) = PC0INI 
 
 C     -- 7 CALCUL DU CRITERE MECANIQUE:
 C     ----------------------
@@ -309,14 +338,15 @@ C     -- CAS ELASTIQUE
            PCRP(2) = 0.D0
            PC0P(1) = PC0M(1)
            PC0P(2) = 0.D0
-           PSP = PSM
+           PSP = 0.D0
+C
             DO 118 K=1,NDIMSI
 C     -- REACTUALISATION DES CONTRAINTES
               SIGPMO = SIMOEL             
               SIGPDV(K) = SIGEL(K)
               SBARP(K)  = SIGEL(K)-SIMOEL*KRON(K)
 C     -- CALCUL DES CONTRAINTES DE BISHOP
-              SBISP(K) = SBARP(K)-(SIPP-P2)*KRON(K)
+              SBISP(K) = SBARP(K)-(SIPP+P2)*KRON(K)
  118  CONTINUE
         ELSE
 C     -- PLASTIFICATION : CALCUL DE LA DEFORMATION 
@@ -325,15 +355,36 @@ C     -- CRITERE HYDRIQUE EST ATTEINT
        IF (FONC2.GT.0) THEN
        PC0P(2) = 1.D0
        PC0P(1) = P1
-       PSP = -KPMAX
+C 
        DEPPMO = 1/XKS*LOG((PC0P(1)+PA)/(PC0M(1)+PA))
+       PSP = DEPPMO
+         IF ((-XK0*DEPPMO).GT.EPXMAX) THEN
+           UMESS  = IUNIFI('MESSAGE')
+           CALL TECAEL(IADZI,IAZK24)
+           NOMAIL = ZK24(IAZK24-1+3) (1:8)
+           WRITE (UMESS,9001) 'NMBARC_4','EXP EXPLOSE A LA MAILLE: ',
+     &                                                           NOMAIL
+           RETCOM = 1
+           GO TO 8000
+         ENDIF
+         
+         IF ((XK*DEPPMO).GT.EPXMAX) THEN
+           UMESS  = IUNIFI('MESSAGE')
+           CALL TECAEL(IADZI,IAZK24)
+           NOMAIL = ZK24(IAZK24-1+3) (1:8)
+           WRITE (UMESS,9001) 'NMBARC_5','EXP EXPLOSE A LA MAILLE: ',
+     &                                                           NOMAIL
+           RETCOM = 1
+           GO TO 8000
+         ENDIF
+         
        SIGPMO = SIMOEL*EXP(-XK0*DEPPMO)
        PCRP(1) = PCRMP1*EXP(XK*DEPPMO)
  
        DO 114 K = 1,NDIMSI
        SIGPDV(K) = SIGEL(K)
        SBARP(K) = SIGPDV(K)-SIGPMO*KRON(K)
-       SBISP(K) = SBARP(K)-(SIPP-P2)*KRON(K)
+       SBISP(K) = SBARP(K)-(SIPP+P2)*KRON(K)
  114  CONTINUE
        F1 = SIMOEL*EXP(-XK0*DEPPMO)
        F2 = SIMOEL*EXP(-XK0*DEPPMO)-2.D0*PCRMP1
@@ -359,6 +410,28 @@ C     -- NEWTON POUR CALCULER LA BORNE SUP
        XSUP0 = 1.D0
        XB0 = XINF0
        SEUIL0 = PCRMP1-(KC*P1)/2.D0
+       
+         IF ((-XK0*XB0).GT.EPXMAX) THEN
+           UMESS  = IUNIFI('MESSAGE')
+           CALL TECAEL(IADZI,IAZK24)
+           NOMAIL = ZK24(IAZK24-1+3) (1:8)
+           WRITE (UMESS,9001) 'NMBARC_6','EXP EXPLOSE A LA MAILLE: ',
+     &                                                           NOMAIL
+           RETCOM = 1
+           GO TO 8000
+         ENDIF
+         
+         IF ((XK*XB0).GT.EPXMAX) THEN
+           UMESS  = IUNIFI('MESSAGE')
+           CALL TECAEL(IADZI,IAZK24)
+           NOMAIL = ZK24(IAZK24-1+3) (1:8)
+           WRITE (UMESS,9001) 'NMBARC_7','EXP EXPLOSE A LA MAILLE: ',
+     &                                                           NOMAIL
+           RETCOM = 1
+           GO TO 8000
+         ENDIF
+       
+       
        F0 = SIMOEL*EXP(-XK0*XB0)-PCRMP1*EXP(XK*XB0)+(KC*P1)/2.D0
        FP0 = -XK0*SIMOEL*EXP(-XK0*XB0)-XK*PCRMP1*EXP(XK*XB0)
 
@@ -369,6 +442,26 @@ C     --CRITERE DE CONVERGENCE
 
 C     --CONSTRUCTION DU NOUVEL ITERE    
        XB0 = XB0-F0/FP0
+
+         IF ((-XK0*XB0).GT.EPXMAX) THEN
+           UMESS  = IUNIFI('MESSAGE')
+           CALL TECAEL(IADZI,IAZK24)
+           NOMAIL = ZK24(IAZK24-1+3) (1:8)
+           WRITE (UMESS,9001) 'NMBARC_8','EXP EXPLOSE A LA MAILLE: ',
+     &                                                           NOMAIL
+           RETCOM = 1
+           GO TO 8000
+         ENDIF
+
+         IF ((XK*XB0).GT.EPXMAX) THEN
+           UMESS  = IUNIFI('MESSAGE')
+           CALL TECAEL(IADZI,IAZK24)
+           NOMAIL = ZK24(IAZK24-1+3) (1:8)
+           WRITE (UMESS,9001) 'NMBARC_9','EXP EXPLOSE A LA MAILLE: ',
+     &                                                           NOMAIL
+           RETCOM = 1
+           GO TO 8000
+         ENDIF
        
 C     -- DICHOTOMIE       
        IF (XB0.LE.XINF0 .OR. XB0.GE.XSUP0)  V0 = (XINF0+XSUP0)/2
@@ -377,6 +470,26 @@ C     -- DICHOTOMIE
        FP0 = -XK0*SIMOEL*EXP(-XK0*XB0)-XK*PCRMP1*EXP(XK*XB0)
        IF (F0.GT.ZERO) SIGNF0 =  1
        IF (F0.LT.ZERO) SIGNF0 = -1
+
+         IF ((-XK0*XINF0).GT.EPXMAX) THEN
+           UMESS  = IUNIFI('MESSAGE')
+           CALL TECAEL(IADZI,IAZK24)
+           NOMAIL = ZK24(IAZK24-1+3) (1:8)
+           WRITE (UMESS,9001) 'NMBARC_10','EXP EXPLOSE A LA MAILLE: ',
+     &                                                           NOMAIL
+           RETCOM = 1
+           GO TO 8000
+         ENDIF
+
+         IF ((XK*XINF0).GT.EPXMAX) THEN
+           UMESS  = IUNIFI('MESSAGE')
+           CALL TECAEL(IADZI,IAZK24)
+           NOMAIL = ZK24(IAZK24-1+3) (1:8)
+           WRITE (UMESS,9001) 'NMBARC_11','EXP EXPLOSE A LA MAILLE: ',
+     &                                                           NOMAIL
+           RETCOM = 1
+           GO TO 8000
+         ENDIF
 
        FXI0 = SIMOEL*EXP(-XK0*XINF0)-PCRMP1*EXP(XK*XINF0)+(KC*P1)/2.D0
        
@@ -396,6 +509,47 @@ C     -- DICHOTOMIE
 C     --RESOLUTION AVEC LA METHODE DE NEWTON ENTRE LES BORNES
        V0 = XINF
        SEUIL = M**2*(PCRMP1+KC*P1/2)**2
+         
+         IF ((-XK0*V0).GT.EPXMAX) THEN
+           UMESS  = IUNIFI('MESSAGE')
+           CALL TECAEL(IADZI,IAZK24)
+           NOMAIL = ZK24(IAZK24-1+3) (1:8)
+           WRITE (UMESS,9001) 'NMBARC_12','EXP EXPLOSE A LA MAILLE:',
+     &                                                           NOMAIL
+           RETCOM = 1
+           GO TO 8000
+         ENDIF
+
+         IF ((XK*V0).GT.EPXMAX) THEN
+           UMESS  = IUNIFI('MESSAGE')
+           CALL TECAEL(IADZI,IAZK24)
+           NOMAIL = ZK24(IAZK24-1+3) (1:8)
+           WRITE (UMESS,9001) 'NMBARC_13','EXP EXPLOSE A LA MAILLE:',
+     &                                                           NOMAIL
+           RETCOM = 1
+           GO TO 8000
+         ENDIF
+       
+         IF ((-2.D0*XK0*V0).GT.EPXMAX) THEN
+           UMESS  = IUNIFI('MESSAGE')
+           CALL TECAEL(IADZI,IAZK24)
+           NOMAIL = ZK24(IAZK24-1+3) (1:8)
+           WRITE (UMESS,9001) 'NMBARC_14','EXP EXPLOSE A LA MAILLE: ',
+     &                                                           NOMAIL
+           RETCOM = 1
+           GO TO 8000
+         ENDIF
+
+         IF (((XK-XK0)*V0).GT.EPXMAX) THEN
+           UMESS  = IUNIFI('MESSAGE')
+           CALL TECAEL(IADZI,IAZK24)
+           NOMAIL = ZK24(IAZK24-1+3) (1:8)
+           WRITE (UMESS,9001) 'NMBARC_15','EXP EXPLOSE A LA MAILLE: ',
+     &                                                           NOMAIL
+           RETCOM = 1
+           GO TO 8000
+         ENDIF
+       
        F1 = SIMOEL*EXP(-XK0*V0)
        F2 = SIMOEL*EXP(-XK0*V0)-2.D0*PCRMP1*EXP(XK*V0)
        F3 = 2.D0*SIMOEL*EXP(-XK0*V0)-2.D0*PCRMP1*EXP(XK*V0)+KPMAX
@@ -424,7 +578,56 @@ C     --CONSTRUCTION DU NOUVEL ITERE
        IF (V0.LE.XSUP .OR. V0.GE.XINF)  V0 = (XINF+XSUP)/2
        ENDIF       
 
+         IF ((-XK0*V0).GT.EPXMAX) THEN
+           UMESS  = IUNIFI('MESSAGE')
+           CALL TECAEL(IADZI,IAZK24)
+           NOMAIL = ZK24(IAZK24-1+3) (1:8)
+           WRITE (UMESS,9001) 'NMBARC_16','EXP EXPLOSE A LA MAILLE:',
+     &                                                           NOMAIL
+           RETCOM = 1
+           GO TO 8000
+         ENDIF
+
+         IF ((XK*V0).GT.EPXMAX) THEN
+           UMESS  = IUNIFI('MESSAGE')
+           CALL TECAEL(IADZI,IAZK24)
+           NOMAIL = ZK24(IAZK24-1+3) (1:8)
+           WRITE (UMESS,9001) 'NMBARC_17','EXP EXPLOSE A LA MAILLE: ',
+     &                                                           NOMAIL
+           RETCOM = 1
+           GO TO 8000
+         ENDIF
        
+         IF ((-2.D0*XK0*V0).GT.EPXMAX) THEN
+           UMESS  = IUNIFI('MESSAGE')
+           CALL TECAEL(IADZI,IAZK24)
+           NOMAIL = ZK24(IAZK24-1+3) (1:8)
+           WRITE (UMESS,9001) 'NMBARC_18','EXP EXPLOSE A LA MAILLE: ',
+     &                                                           NOMAIL
+           RETCOM = 1
+           GO TO 8000
+         ENDIF
+       
+         IF ((-XK0*XINF).GT.EPXMAX) THEN
+           UMESS  = IUNIFI('MESSAGE')
+           CALL TECAEL(IADZI,IAZK24)
+           NOMAIL = ZK24(IAZK24-1+3) (1:8)
+           WRITE (UMESS,9001) 'NMBARC_19','EXP EXPLOSE A LA MAILLE: ',
+     &                                                           NOMAIL
+           RETCOM = 1
+           GO TO 8000
+         ENDIF
+
+         IF ((XK*XINF).GT.EPXMAX) THEN
+           UMESS  = IUNIFI('MESSAGE')
+           CALL TECAEL(IADZI,IAZK24)
+           NOMAIL = ZK24(IAZK24-1+3) (1:8)
+           WRITE (UMESS,9001) 'NMBARC_20','EXP EXPLOSE A LA MAILLE: ',
+     &                                                           NOMAIL
+           RETCOM = 1
+           GO TO 8000
+         ENDIF
+
 C     --CALCUL DE LA FONCTION EN V0 ET DE SA DERIVEE
        F1 = SIMOEL*EXP(-XK0*V0)
        F2 = SIMOEL*EXP(-XK0*V0)-2.D0*PCRMP1*EXP(XK*V0)
@@ -461,6 +664,36 @@ C     --CALCUL DE LA FONCTION EN V0 ET DE SA DERIVEE
  100  CONTINUE       
       DEPPMO=V0
 C
+         IF ((XK*DEPPMO).GT.EPXMAX) THEN
+           UMESS  = IUNIFI('MESSAGE')
+           CALL TECAEL(IADZI,IAZK24)
+           NOMAIL = ZK24(IAZK24-1+3) (1:8)
+           WRITE (UMESS,9001) 'NMBARC_21','EXP EXPLOSE A LA MAILLE: ',
+     &                                                           NOMAIL
+           RETCOM = 1
+           GO TO 8000
+         ENDIF
+
+         IF ((XKS*DEPPMO).GT.EPXMAX) THEN
+           UMESS  = IUNIFI('MESSAGE')
+           CALL TECAEL(IADZI,IAZK24)
+           NOMAIL = ZK24(IAZK24-1+3) (1:8)
+           WRITE (UMESS,9001) 'NMBARC_22','EXP EXPLOSE A LA MAILLE: ',
+     &                                                           NOMAIL
+           RETCOM = 1
+           GO TO 8000
+         ENDIF
+
+         IF ((XK0*(DEPSMO-DEPPMO)).GT.EPXMAX) THEN
+           UMESS  = IUNIFI('MESSAGE')
+           CALL TECAEL(IADZI,IAZK24)
+           NOMAIL = ZK24(IAZK24-1+3) (1:8)
+           WRITE (UMESS,9001) 'NMBARC_23','EXP EXPLOSE A LA MAILLE: ',
+     &                                                           NOMAIL
+           RETCOM = 1
+           GO TO 8000
+         ENDIF
+
 C     -- REACTUALISATION DE LA VARIABLE INTERNE MECANIQUE PCR
         PCRP(1) = PCRMP1*EXP(XK*DEPPMO)
 C     -- CALCUL DE LA DERIVEE DE PCRP PAR RAPPORT A P1
@@ -468,7 +701,8 @@ C     -- CALCUL DE LA DERIVEE DE PCRP PAR RAPPORT A P1
      &          ((LAMBDA-KAPA)/(LAMBB-KAPA)**2)*LAMP*PCRP(1) 
 C     -- REACTUALISATION DU SEUIL HYDRIQUE
         PC0P(1) = (PC0M(1)+PA)*EXP(XKS*DEPPMO)-PA
-        PSP = -KPMAX
+C
+        PSP = DEPPMO
 C
 C     -- REACTUALISATION DES CONTRAINTES NETTES DE BARCELONE
         SIGPMO = SIGMMO*EXP(XK0*(DEPSMO-DEPPMO))/
@@ -479,7 +713,7 @@ C     -- REACTUALISATION DES CONTRAINTES NETTES DE BARCELONE
      &         DEPPMO)/(M*M*(2.D0*SIGPMO-2.D0*PCRP(1)+KPMAX)))
            SBARP(K) = SIGPDV(K)-SIGPMO*KRON(K)
 C     -- CALCUL DES CONTRAINTES DE BISHOP
-           SBISP(K) = SBARP(K)-(SIPP-P2)*KRON(K)
+           SBISP(K) = SBARP(K)-(SIPP+P2)*KRON(K)
  119  CONTINUE 
 C 
       ENDIF
@@ -748,9 +982,7 @@ C     -- 9.7.0.3 CALCUL DE DSIDP1(6) COHERENT AU POINT CRITIQUE:
 C    -- MATRICE QUI RELIE LES CONTRAINTES A LA SUCCION
        CALL R8INIR(6*6,0.D0,DSIDP1,1)
        DO 3018 K=1,NDIMSI
-       DO 3019 L=1,NDIMSI
-            DSIDP1(K) = -KRON(K)/XK0S/(P1+PA)-BIOT*SAT
- 3019   CONTINUE                    
+            DSIDP1(K) = -KRON(K)/XK0S/(P1+PA)-BIOT*SAT*KRON(K)
  3018   CONTINUE 
                     
         ELSE
@@ -773,7 +1005,7 @@ C     -- 9.7.2 CALCUL DE VECTEURS INTERMEDIAIRES
                TPLUS(K) = SIGPDV(K) + DELTAS(K)
  142  CONTINUE              
 C
-C      9.7.3-- TERMES NECESSAIRES A LA PARTIE DEVIATORIQUE              
+C      9.7.3-- TERMES NECESSAIRES A LA PARTIE DEVIATORIQUE 
         HP = 2.D0*M**4*XK*(SIGPMO+KPMAX)*PCRP(1)*
      &                   (2.D0*SIGPMO-2.D0*PCRP(1)+KPMAX)
 C
@@ -782,7 +1014,7 @@ C
         XGG = -3.D0*M**2/HP*KC*(2.D0*PCRP(1)-SIGPMO)*DP1*ALPHAB
         XHHC = -6.D0*ALPHAB/HP*M*M*(SIGPMO+KPMAX)*PCRPP*DP1
         XV = 3.D0*SPARDS + M**2*(2.D0*SIGPMO-2.D0*PCRP(1)+KPMAX)*DELTAP-
-     &      M**2*KC*(2*PCRM(1)-SIGPMO)*DP1
+     &    M**2*(KC*(2.D0*PCRP(1)-SIGPMO)+2.D0*(SIGPMO+KPMAX)*PCRPP)*DP1
         XLAM = XV/HP
         XA = (XLAM*XK*M**4*(SIGPMO+KPMAX)*
      &       (2.D0*SIGPMO-4.D0*PCRP(1)+KPMAX)+
@@ -914,8 +1146,8 @@ C     -----------------------------------------------------------
 C     9.8.1 TERMES NECESSAIRES A LA PARTIE DEVIATORIQUE
        XZ = M*M*XLAM*(XK*KC*XLAM*M*M*XM/(1.D0/XU+XLAM)+
      &               2.D0*XK*KC*PCRP(1)*M*M*
-     &               (3.D0*SIGPMO-2.D0*PCRP(1)+KPMAX))+
-     &     (M*M*KC*DELTAP*XLAM+M*M*KC*KC*XLAM*DP1)/(1.D0/XU+XLAM)+
+     &               (3.D0*SIGPMO-2.D0*PCRP(1)+2.D0*KPMAX))+
+     &     (M**4*KC*DELTAP*XLAM+M*M*KC*KC*XLAM*DP1)/(1.D0/XU+XLAM)+
      &     M*M*KC*(2*PCRP(1)-SIGPMO-DELTAP)+
      &     2.D0*M*M*PCRPP*(SIGPMO+KPMAX+KC*DP1)
        XDD = -KC*(XLAM*M*M)**2/(M**2*XLAM+1.D0/(2.D0*XK*PCRP(1)))+
@@ -954,7 +1186,7 @@ C     9.8.5 MULTIPLICATION DE VV par H(K)-KV(K)
 C     9.8.6 LES TERMES DE L'OPERATEUR TANGENT COHERENT DSIDP1(6)     
        CALL R8INIR(6,0.D0,DSIDP1,1)
        DO 330 K=1,NDIMSI
-            DSIDP1(K) = SSH(K) 
+            DSIDP1(K) = SSH(K)-BIOT*SAT*KRON(K) 
  330   CONTINUE 
        ENDIF
        ENDIF
@@ -1011,11 +1243,13 @@ C    ------------------------------------------------------
        CALL PROMAT(VVH,6,NDIMSI,NDIMSI,KKH,6,NDIMSI,1,SSHH)
        BB = 1.D0/3.D0*(1.D0/XK0S/(P1+PA)+1.D0/XKS/(P1+PA))     
        DO 410 K=1,NDIMSI
-       DO 415 L=1,NDIMSI
-            DSIDP1(K) = SSHH(K)*BB-BIOT*SAT
- 415   CONTINUE                    
+            DSIDP1(K) = SSHH(K)*BB-BIOT*SAT*KRON(K)
  410   CONTINUE                    
        ENDIF           
       ENDIF
-C FIN ---------------------------------------------------------
+C ======================================================================
+ 8000 CONTINUE
+C =====================================================================
+ 9001 FORMAT (A10,2X,A40,2X,A8)
+C    FIN ---------------------------------------------------------
       END

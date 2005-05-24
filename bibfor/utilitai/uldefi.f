@@ -1,6 +1,6 @@
       SUBROUTINE ULDEFI( UNIT, FICNOM, DDNOM, TYPF, ACCES, AUTOR )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/01/2004   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF UTILITAI  DATE 24/05/2005   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -63,6 +63,7 @@ C
       COMMON/ ASGFI1 / FIRST, UNITFI      , NBFILE
       COMMON/ ASGFI2 / NAMEFI,DDNAME,TYPEFI,ACCEFI,ETATFI,MODIFI
 C
+      CHARACTER*255    NAMELL
       CHARACTER*16     NAME16,NOFI
       CHARACTER*8      K8B 
       CHARACTER*1      K1TYP,K1ACC,K1AUT
@@ -72,46 +73,16 @@ C
 C     --- INITIALISATION (SI NECESSAIRE) ---
       IF ( FIRST .NE. 17111990 ) CALL ULINIT
 C
+      NAMELL = FICNOM
       NAME16 = DDNOM
       K1TYP  = TYPF
       K1ACC  = ACCES
       K1AUT  = AUTOR
 
       IF ( UNIT .LT. 0 ) THEN
-C       --- ON RETIRE LE NAMEFI DE LA TABLE ----
-        DO 10 IFILE = 1, MXF
-          IF ( UNITFI(IFILE) .EQ. -UNIT ) THEN
-            IF ( MODIFI(IFILE) .EQ. 'O' ) THEN   
-              IF ( ETATFI(IFILE) .EQ. 'O' ) THEN   
-                CLOSE ( UNIT=-UNIT )
-              ENDIF
-              K1ACC = ACCEFI(IFILE)
-              IF ( TYPEFI(IFILE)(1:1).EQ.'L' .AND. K1ACC.EQ.'N' ) THEN
+C       --- ON APPELLE ULOPEN POUR LA FERMETURE
+          CALL ULOPEN ( UNIT, NAMELL, NAME16, ACCES , K1AUT)
 C
-C     DANS LE CAS D'UN FICHIER DE TYPE LIBRE (PAR EXEMPLE MED) ON  
-C     RECOPIE fort.xx DANS LE FICHIER DE NOM NAMEFI S'IL EST != ' '
-C
-                IF ( NAMEFI(IFILE) .NE. ' ') THEN
-                  CALL CODENT ( -UNIT, 'G', K8B )
-                  CALL CPFILE('M','fort.'//K8B,NAMEFI(IFILE))
-                ENDIF
-              ENDIF
-              NAMEFI(IFILE) = ' '
-              DDNAME(IFILE) = ' '
-              UNITFI(IFILE) = 0
-              TYPEFI(IFILE) = '?'
-              ACCEFI(IFILE) = '?'
-              ETATFI(IFILE) = 'F'
-              MODIFI(IFILE) = ' '
-              GOTO 11
-            ELSE
-              WRITE(K8B,'(I3)') -UNIT  
-              CALL UTMESS ('F','ULDEFI01','LA SUPPRESSION DE L''UNITE: '
-     &           //K8B//' ASSOCIEE A '//NAME16//' N''EST PAS AUTORISEE')
-            ENDIF
-          ENDIF
-  10    CONTINUE
-  11    CONTINUE
       ELSE
 C       --- INSERTION DEMANDEE ---
         IF ( K1TYP .NE. 'A' .AND. K1TYP .NE. 'B' 
@@ -130,7 +101,7 @@ C       --- INSERTION DEMANDEE ---
         IF ( K1TYP .EQ. 'A' ) THEN
 C
 C --- SI LE FICHIER EST DE TYPE ASCII, ON FAIT UN ULOPEN
-          CALL ULOPEN ( UNIT, ' ', NAME16, ACCES , K1AUT)
+          CALL ULOPEN ( UNIT, NAMELL, NAME16, ACCES , K1AUT)
         ELSE
           ILIBRE = 0
           DO 20 IFILE = 1, NBFILE
@@ -161,22 +132,16 @@ C           --- RECHERCHE DE LA DERNIERE PLACE LIBRE ---
             ENDIF 
             ILIBRE = NBFILE
           ENDIF
-
-          CALL CODENT ( UNIT, 'G', K8B )
-          IF ( K1TYP .EQ. 'L' ) THEN
 C
-C     DANS LE CAS D'UN FICHIER DE TYPE LIBRE (PAR EXEMPLE MED) ON  
-C     RECOPIE LE FICHIER DE NOM FICNOM DANS fort.xx 
-C
-            NAMEFI(ILIBRE) = FICNOM
-            IF ( K1ACC .EQ. 'O' ) THEN
-              CALL CPFILE('M',FICNOM,'fort.'//K8B)
-            ENDIF
+          IF ( FICNOM(1:1) .EQ. ' ' ) THEN
+             CALL CODENT ( UNIT, 'G', K8B )
+             NAMELL = 'fort.'//K8B
           ELSE
-            NAMEFI(ILIBRE) = 'fort.'//K8B
+             NAMELL = FICNOM
           ENDIF
 C  
-          DDNAME(ILIBRE) = NAME16  
+          NAMEFI(ILIBRE) = NAMELL
+          DDNAME(ILIBRE) = NAME16
           UNITFI(ILIBRE) = UNIT
           TYPEFI(ILIBRE) = K1TYP
           ACCEFI(ILIBRE) = K1ACC

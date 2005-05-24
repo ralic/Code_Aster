@@ -1,4 +1,4 @@
-# MODIF  DATE 31/01/2005   AUTEUR ROMEO R.FERNANDES 
+# MODIF  DATE 23/05/2005   AUTEUR JOUMANA J.EL-GHARIB 
 # RESPONSABLE JOUMANA J.EL-GHARIB
 # TITRE ESSAI TRIAXIAL A SUCCION FIXEE AVEC LE MODELE DE BARCELONE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -79,22 +79,22 @@ MAILLAGE=MODI_MAILLAGE( reuse=MAILLAGE,   MAILLAGE=MAILLAGE,
                        ORIE_PEAU_3D=_F(  GROUP_MA = ('HAUT', 'DEVANT', 'DROITE',),  )
                      )
 
-SOL=DEFI_MATERIAU(    ELAS=_F(  E = 22.4E7,    NU = 0.3,  
+SOL=DEFI_MATERIAU(    ELAS=_F(  E = 26.E6,    NU = 0.3,  
                                      RHO = 2500.,  
                                      ALPHA = 1.E-5,  
                                    ), 
                     CAM_CLAY=_F(PORO=0.14,
-                                LAMBDA=0.25,
-                                KAPA=0.05,           
-                                M=0.9,
-                                PRES_CRIT=3.E7,
+                                LAMBDA=0.2,
+                                KAPA=0.02,           
+                                M=1.,
+                                PRES_CRIT=2.E5,
                                 PA=1.E5,),
                     BARCELONE=_F(R=0.75,
                                 BETA=12.5E-6,
                                 KC=0.6,           
-                                PC0_INIT=4.882E7,
-                                KAPAS=0.01,
-                                LAMBDAS=0.05,),
+                                PC0_INIT=3.E5,
+                                KAPAS=0.008,
+                                LAMBDAS=0.08,),
                      COMP_THM = 'LIQU_GAZ',
                      THM_LIQU=_F(  
                                 RHO = 1000.,  
@@ -135,7 +135,7 @@ SOL=DEFI_MATERIAU(    ELAS=_F(  E = 22.4E7,    NU = 0.3,
                                  ),
                         THM_INIT=_F( 
                                 TEMP = 293.,  
-                                PRE1 = 1.51E7,  
+                                PRE1 = 0.E5,  
                                 PRE2 = 1.E5,  
                                 PORO = 0.14,  
                                 PRES_VAPE = 2269.8,
@@ -166,7 +166,7 @@ DEP_SYM=AFFE_CHAR_MECA(    MODELE=MODELE,FACE_IMPO=(
 
 P0=AFFE_CHAR_MECA(    MODELE=MODELE,
                                DDL_IMPO=_F(  TOUT = 'OUI',   
-                               PRE1 =0.,PRE2=0.,
+                               PRE1 =1.,PRE2=0.,
                                 )
                            )
 
@@ -177,12 +177,12 @@ TEMPS1=DEFI_LIST_REEL(   DEBUT=0.,INTERVALLE=(
                             _F(  JUSQU_A = 6.,    NOMBRE = 5, ),)
                          )
 TEMPS2=DEFI_LIST_REEL(   DEBUT=6.,INTERVALLE=(
-                            _F(  JUSQU_A = 8.,    NOMBRE = 5,  ),
-                            _F(  JUSQU_A = 15.,    NOMBRE = 5,  ),
-                            _F(  JUSQU_A = 20.,    NOMBRE = 5,  ),)
+                            _F(  JUSQU_A = 10.,    NOMBRE = 8,  ),
+                            _F(  JUSQU_A = 15.,    NOMBRE = 10,  ),
+                            _F(  JUSQU_A = 20.,    NOMBRE = 10,  ),)
                          )
 TEMPS3=DEFI_LIST_REEL(   DEBUT=20.,INTERVALLE=(
-                            _F(  JUSQU_A =22.,    NOMBRE = 5,  ),
+                            _F(  JUSQU_A = 22.,    NOMBRE = 5,  ),
                             _F(  JUSQU_A = 29.,    NOMBRE = 5,  ),
                             _F(  JUSQU_A = 34.,    NOMBRE = 5,  ),)
                          )
@@ -194,7 +194,8 @@ TEMPS4=DEFI_LIST_REEL(   DEBUT=34.,INTERVALLE=(
 TEMPS5=DEFI_LIST_REEL(   DEBUT=46.,INTERVALLE=(
                             _F(  JUSQU_A = 48.,    NOMBRE = 5,  ),
                             _F(  JUSQU_A = 55.,    NOMBRE = 5,  ),
-                            _F(  JUSQU_A = 60.,    NOMBRE = 100,  ),)
+                            _F(  JUSQU_A = 58.5,   NOMBRE = 9,  ),
+                            _F(  JUSQU_A = 60,     NOMBRE = 50,  ),)
                          )
 
 # AFFECTATION DE L ETAT INITIAL
@@ -204,7 +205,7 @@ DEPINIT=CREA_CHAMP(MAILLAGE=MAILLAGE,
                     TYPE_CHAM='NOEU_DEPL_R',
                     AFFE=(_F(TOUT='OUI',
                              NOM_CMP='PRE1',
-                             VALE=0.,
+                             VALE=2.E5,
                               ),
                           _F(TOUT='OUI',
                              NOM_CMP='PRE2',
@@ -223,18 +224,27 @@ SIGINIT=CREA_CHAMP(MAILLAGE=MAILLAGE,
                             'M21','FH21X','FH21Y','FH21Z','ENT21','QPRIM',
                                      'FHTX','FHTY','FHTZ'),
                            VALE=
-                            (-1.389E7,-1.389E7,-1.389E7,0.0,0.0,
-                            0.0,1.349E7,0.0,0.0,0.0,0.0,
-                           -15E3,0.0,0.0,0.0,0.0,0.0,
+                           (-7E4,-7E4,-7E4,0.0,0.0,
+                            0.0,-8E4,0.0,0.0,0.0,0.0,
+                           -200.,0.0,0.0,0.0,0.0,0.0,
                             0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0),),);
 #CALCUL HYDROSTATIQUE
 
+EVO_DES=DEFI_FONCTION(      NOM_PARA='INST',
+                           PROL_DROITE='CONSTANT',
+                          PROL_GAUCHE='CONSTANT',
+                         VALE=( 0.0,  2.E5,
+                                2.0,  2.E5,
+                                4.0,  2.E5,
+                                5.0,  2.E5,
+                                6.0,  2.E5,
+                               ),)
 EVOL_HYD=DEFI_FONCTION(      NOM_PARA='INST',
                            PROL_DROITE='CONSTANT',
-                         VALE=( 0.0,  0.0,
-                               1.0,   100.E5,
-                               3.0,   300.E5,
-                               6.0,   400.E5,)
+                         VALE=( 0.0,  1.5E5,
+                               1.0,   2.E5,
+                               3.0,   3.E5,
+                               6.0,   8.E5,)
                        )
 U1=STAT_NON_LINE(ETAT_INIT = _F(SIGM=SIGINIT,DEPL=DEPINIT),
                         MODELE=MODELE,
@@ -249,6 +259,7 @@ U1=STAT_NON_LINE(ETAT_INIT = _F(SIGM=SIGINIT,DEPL=DEPINIT),
                 CHARGE = DEP_SYM,            
                 ), _F( 
                 CHARGE = P0,            
+                FONC_MULT = EVO_DES,         
                 )),
                          COMP_INCR=_F( 
                 RELATION = 'KIT_HHM',          
@@ -268,12 +279,13 @@ U1=STAT_NON_LINE(ETAT_INIT = _F(SIGM=SIGINIT,DEPL=DEPINIT),
                        ITER_GLOB_MAXI=50,
                        ITER_INTE_MAXI=100, 
                 RESI_REFE_RELA=1.0E-3,
-                SIGM_REFE      = 1.0E+7,   
+                SIGM_REFE      = 1.0E+5,   
                 FLUX_HYD1_REFE = 1.0,  
                 FLUX_HYD2_REFE = 1.0,   
 #               RESI_GLOB_RELA = 1.E-6,     
                 )
               )
+
 
 #  TRIAXIAL
 #***********************************************************************
@@ -282,17 +294,21 @@ U1=STAT_NON_LINE(ETAT_INIT = _F(SIGM=SIGINIT,DEPL=DEPINIT),
 
 EVOL_DEV=DEFI_FONCTION(      NOM_PARA='INST',
                            PROL_DROITE='CONSTANT',
-                         VALE=( 6.0,  400.E5,
-                               10.0,  500.E5,
-                               15.0,  600.E5,
-                               20.0,  700.E5,)
+                         VALE=( 6.0,  8.E5,
+                               10.0,  9.E5,
+                               15.0,  10.E5,
+                               20.0,  11.E5,)
                        )
+EVO_DES1=DEFI_FONCTION(      NOM_PARA='INST',
+                           PROL_DROITE='CONSTANT',
+                          PROL_GAUCHE='CONSTANT',
+                         VALE=( 6.0,  2.E5,
+                                10.0, 2.E5,
+                                15.0, 2.E5,
+                                20.0, 2.E5,
+                               ),)
 
 
-PDEV=AFFE_CHAR_MECA(    MODELE=MODELE,
-                               DDL_IMPO=_F(  TOUT = 'OUI',   
-                               PRE1 =0.,PRE2=0.,
-                                ))
 
 U1=STAT_NON_LINE(reuse=U1, 
                   MODELE=MODELE,
@@ -306,7 +322,8 @@ U1=STAT_NON_LINE(reuse=U1,
                 CHARGE = PR_V,            
                 FONC_MULT = EVOL_DEV,         
                 ), _F( 
-                CHARGE = PDEV,            
+                CHARGE = P0,            
+                FONC_MULT = EVO_DES1,         
                 )),
                          COMP_INCR=_F( 
                 RELATION = 'KIT_HHM',          
@@ -328,25 +345,32 @@ U1=STAT_NON_LINE(reuse=U1,
                 ),
                        CONVERGENCE=_F( 
                 RESI_REFE_RELA=1.0E-3,
-                SIGM_REFE      = 1.0E+7,   
+                SIGM_REFE      = 1.0E+5,   
                 FLUX_HYD1_REFE = 1.0,   
                 FLUX_HYD2_REFE = 1.0,   
 #               RESI_GLOB_RELA = 1.E-6,     
                 ITER_INTE_MAXI=100, 
                 ITER_GLOB_MAXI = 50,    
-                RESI_INTE_RELA = 1E-06,
-                ITER_INTE_PAS  = 10,                )
+                                )
               )
 
 # DECHARGE TRIAXIALE
 
 EVOT_DEC=DEFI_FONCTION(      NOM_PARA='INST',
                            PROL_DROITE='CONSTANT',
-                         VALE=( 20.0, 700.E5,
-                               22.0,  600.E5,
-                               29.0,  500.E5,
-                               34.0,  400.E5,)
+                         VALE=( 20.0, 11.E5,
+                               22.0,  10.E5,
+                               29.0,  8.E5,
+                               34.0,  6.E5,)
                        )
+EVO_DES2=DEFI_FONCTION(      NOM_PARA='INST',
+                           PROL_DROITE='CONSTANT',
+                          PROL_GAUCHE='CONSTANT',
+                         VALE=( 20.0,  2.E5,
+                                22.0,  2.E5,
+                                29.0,  2.E5,
+                                34.0,  2.E5,
+                               ),)
 
 U1=STAT_NON_LINE(reuse=U1, 
                   MODELE=MODELE,
@@ -360,7 +384,8 @@ U1=STAT_NON_LINE(reuse=U1,
                 CHARGE = PR_V,            
                 FONC_MULT = EVOT_DEC,         
                 ), _F( 
-                CHARGE = PDEV,            
+                CHARGE = P0,            
+                FONC_MULT = EVO_DES2,         
                 )),
                          COMP_INCR=_F( 
                 RELATION = 'KIT_HHM',          
@@ -382,26 +407,33 @@ U1=STAT_NON_LINE(reuse=U1,
                 ),
                        CONVERGENCE=_F( 
                 RESI_REFE_RELA=1.0E-3,
-                SIGM_REFE      = 1.0E+7,   
+                SIGM_REFE      = 1.0E+5,   
                 FLUX_HYD1_REFE = 1.0,   
                 FLUX_HYD2_REFE = 1.0,   
 #               RESI_GLOB_RELA = 1.E-6,     
                 ITER_INTE_MAXI=100, 
                 ITER_GLOB_MAXI = 50,    
-                RESI_INTE_RELA = 1E-06,
-                ITER_INTE_PAS  = 10,                )
+                               )
               )
 
 # DECHARGE HYDROSTATIQUE
 
 EVOH_DEC=DEFI_FONCTION(      NOM_PARA='INST',
                            PROL_DROITE='CONSTANT',
-                         VALE=( 34.0, 400.E5,
-                                36.0, 350.E5,
-                                41.0, 300.E5,
-                                46.0, 175.E5,)
+                         VALE=( 34.0, 6.E5,
+                                36.0, 5.E5,
+                                41.0, 4.E5,
+                                46.0, 1.5E5,)
                        )
 
+EVO_DES3=DEFI_FONCTION(      NOM_PARA='INST',
+                           PROL_DROITE='CONSTANT',
+                          PROL_GAUCHE='CONSTANT',
+                         VALE=( 34.0,  2.E5,
+                                36.0,  2.E5,
+                                41.0,  2.E5,
+                                46.0,  2.E5,
+                               ),)
 U1=STAT_NON_LINE(reuse=U1, 
                   MODELE=MODELE,
                  CHAM_MATER=CHMAT,EXCIT=(
@@ -414,7 +446,8 @@ U1=STAT_NON_LINE(reuse=U1,
                 CHARGE = PR_V,            
                 FONC_MULT = EVOH_DEC,         
                 ), _F( 
-                CHARGE = PDEV,            
+                CHARGE = P0,            
+                FONC_MULT = EVO_DES3,         
                 )),
                          COMP_INCR=_F( 
                 RELATION = 'KIT_HHM',          
@@ -436,14 +469,13 @@ U1=STAT_NON_LINE(reuse=U1,
                 ),
                        CONVERGENCE=_F( 
                 RESI_REFE_RELA=1.0E-3,
-                SIGM_REFE      = 1.0E+7,   
+                SIGM_REFE      = 1.0E+5,   
                 FLUX_HYD1_REFE = 1.0,   
                 FLUX_HYD2_REFE = 1.0,   
 #               RESI_GLOB_RELA = 1.E-6,     
                 ITER_INTE_MAXI=100, 
                 ITER_GLOB_MAXI = 50,    
-                RESI_INTE_RELA = 1E-06,
-                ITER_INTE_PAS  = 10,                )
+                          )
               )
 
 # TRIAXIAL EN DILATANCE
@@ -452,13 +484,23 @@ DEP_V=AFFE_CHAR_MECA(    MODELE=MODELE,
                               FACE_IMPO=_F(  GROUP_MA = 'HAUT',    DZ = 1.,   )
                            )
 
+
+
 EVOL_DEP=DEFI_FONCTION(      NOM_PARA='INST',
                            PROL_DROITE='CONSTANT',
-                         VALE=(46.0,  -7.48391E-02,
-                               48.0,  -9.73485E-02,
-                               55.0,  -1.73485E-01,
-                               60.0,  -3.73485E-01,)
+                         VALE=(46.0,  -1.75288E-02,
+                               48.0,  -3.75288E-02,
+                               55.0,  -5.75288E-02,
+                               60.0,  -6.75288E-02,)
                        )
+EVO_DES4=DEFI_FONCTION(      NOM_PARA='INST',
+                           PROL_DROITE='CONSTANT',
+                          PROL_GAUCHE='CONSTANT',
+                         VALE=( 46.0,  2.E5,
+                                48.0,  2.E5,
+                                55.0,  2.E5,
+                                60.0,  2.E5,
+                               ),)
 
 U1=STAT_NON_LINE(reuse=U1, 
                   MODELE=MODELE,
@@ -472,7 +514,8 @@ U1=STAT_NON_LINE(reuse=U1,
                 CHARGE = DEP_V,            
                 FONC_MULT = EVOL_DEP,         
                 ), _F( 
-                CHARGE = PDEV,            
+                CHARGE = P0,            
+                FONC_MULT = EVO_DES4,         
                 )),
                          COMP_INCR=_F( 
                 RELATION = 'KIT_HHM',          
@@ -486,7 +529,9 @@ U1=STAT_NON_LINE(reuse=U1,
                          INCREMENT=_F( 
                 LIST_INST = TEMPS5,
                 INST_INIT = 46., 
-                INST_FIN = 55.,        
+                INST_FIN = 60.,        
+                SUBD_PAS = 10,
+                SUBD_PAS_MINI = 0.001,
                 ),
                             NEWTON=_F( 
                 MATRICE = 'TANGENTE', 
@@ -494,14 +539,13 @@ U1=STAT_NON_LINE(reuse=U1,
                 ),
                        CONVERGENCE=_F( 
                 RESI_REFE_RELA=1.0E-3,
-                SIGM_REFE      = 1.0E+7,   
+                SIGM_REFE      = 1.0E+5,   
                 FLUX_HYD1_REFE = 1.0,   
                 FLUX_HYD2_REFE = 1.0,   
 #               RESI_GLOB_RELA = 1.E-6,     
                 ITER_INTE_MAXI=300, 
                 ITER_GLOB_MAXI = 50,    
-                RESI_INTE_RELA = 1E-06,
-                ITER_INTE_PAS  = 10,                )
+                               )
               )
 
 U1=CALC_ELEM(  reuse=U1, 
@@ -520,6 +564,7 @@ U1=CALC_NO(  reuse=U1,     RESULTAT=U1,
                            ),
                 )
 
+
 #
 #-------------------------
 #    TEST_RESU 
@@ -535,7 +580,7 @@ TEST_RESU(RESU=(
                        NOM_CMP = 'DZ',     
                        INST=6.,  
                        PRECISION = 1.E-5,   
-                       VALE = -6.2844837046511E-02,        
+                       VALE = -1.84046E-02,        
                      ),
 
                 _F(    RESULTAT = U1,    
@@ -545,7 +590,7 @@ TEST_RESU(RESU=(
                        NOM_CMP = 'DZ',     
                        INST=20.,  
                        PRECISION = 1.E-4,   
-                       VALE = -1.9866010480094E-01 ,        
+                       VALE = -4.34251E-02 ,        
                      ),
                 _F(    RESULTAT = U1,    
                        REFERENCE = 'NON_REGRESSION',  
@@ -554,7 +599,7 @@ TEST_RESU(RESU=(
                        NOM_CMP = 'DZ',     
                        INST=34.,  
                        PRECISION = 1.E-4,   
-                       VALE = -7.9397443430018E-02 ,        
+                       VALE = -2.54190E-02 ,        
                      ),
                 _F(    RESULTAT = U1,    
                        REFERENCE = 'NON_REGRESSION',  
@@ -563,7 +608,16 @@ TEST_RESU(RESU=(
                        NOM_CMP = 'DZ',     
                        INST=46.,  
                        PRECISION = 1.E-4,   
-                       VALE = -6.7594266909890E-02 ,        
+                       VALE = -1.75288E-02 ,        
+                     ),
+                _F(    RESULTAT = U1,    
+                       REFERENCE = 'NON_REGRESSION',  
+                       NOEUD = 'NO8',      
+                       NOM_CHAM = 'DEPL',    
+                       NOM_CMP = 'DZ',     
+                       INST=60.,  
+                       PRECISION = 1.E-4,   
+                       VALE = -6.75288E-02 ,        
                      ),
 
 # PRESSION CRITIQUE
@@ -574,7 +628,7 @@ TEST_RESU(RESU=(
                        NOM_CMP = 'V1',     
                        INST=6.,  
                        PRECISION = 1.E-5,   
-                       VALE = 3.00000E+07,        
+                       VALE = 3.5E+05,        
                      ),
 
                 _F(    RESULTAT = U1,    
@@ -584,7 +638,7 @@ TEST_RESU(RESU=(
                        NOM_CMP = 'V1',     
                        INST=20.,  
                        PRECISION = 1.E-5,   
-                       VALE = 3.4440710651171E+07,        
+                       VALE = 4.48913E5,        
                      ),
 
                 _F(    RESULTAT = U1,    
@@ -594,7 +648,7 @@ TEST_RESU(RESU=(
                        NOM_CMP = 'V1',     
                        INST=34.,  
                        PRECISION = 1.E-5,   
-                       VALE = 3.4440710651171E+07,        
+                       VALE = 4.48913E5,        
                      ),
 
                 _F(    RESULTAT = U1,    
@@ -604,49 +658,17 @@ TEST_RESU(RESU=(
                        NOM_CMP = 'V1',     
                        INST=46.,  
                        PRECISION = 1.E-5,   
-                       VALE = 3.4440710651171E+07,        
+                       VALE = 4.48913E5,        
                      ),
-
-
-# SEUIL HYDRIQUE
+                     
                 _F(    RESULTAT = U1,    
                        REFERENCE = 'NON_REGRESSION',  
                        NOEUD = 'NO8',      
                        NOM_CHAM = 'VARI_NOEU_ELGA',    
-                       NOM_CMP = 'V3',     
-                       INST=6.,  
+                       NOM_CMP = 'V1',     
+                       INST=60.,  
                        PRECISION = 1.E-5,   
-                       VALE = 4.88200E+07,        
-                     ),
-
-                _F(    RESULTAT = U1,    
-                       REFERENCE = 'NON_REGRESSION',  
-                       NOEUD = 'NO8',      
-                       NOM_CHAM = 'VARI_NOEU_ELGA',    
-                       NOM_CMP = 'V3',     
-                       INST=20.,  
-                       PRECISION = 1.E-4,   
-                       VALE = 7.8526237377105E+07,        
-                     ),
-
-                _F(    RESULTAT = U1,    
-                       REFERENCE = 'NON_REGRESSION',  
-                       NOEUD = 'NO8',      
-                       NOM_CHAM = 'VARI_NOEU_ELGA',    
-                       NOM_CMP = 'V3',     
-                       INST=34.,  
-                       PRECISION = 1.E-4,   
-                       VALE = 7.8526237377105E+07,        
-                     ),
-
-                _F(    RESULTAT = U1,    
-                       REFERENCE = 'NON_REGRESSION',  
-                       NOEUD = 'NO8',      
-                       NOM_CHAM = 'VARI_NOEU_ELGA',    
-                       NOM_CMP = 'V3',     
-                       INST=46.,  
-                       PRECISION = 1.E-4,   
-                       VALE = 7.8526237377105E+07,        
+                       VALE = 3.40812E5,        
                      ),
 
 # INDICATEUR DE PLASTICITE MECANIQUE
@@ -657,7 +679,7 @@ TEST_RESU(RESU=(
                        NOM_CMP = 'V2',     
                        INST=6.,  
                        PRECISION = 1.E-5,   
-                       VALE = 0.,
+                       VALE = 1.,
                        CRITERE = 'ABSOLU',        
                      ),
 
@@ -692,6 +714,69 @@ TEST_RESU(RESU=(
                        VALE = 0.,        
                        CRITERE = 'ABSOLU',        
                      ),
+
+                _F(    RESULTAT = U1,    
+                       REFERENCE = 'NON_REGRESSION',  
+                       NOEUD = 'NO8',      
+                       NOM_CHAM = 'VARI_NOEU_ELGA',    
+                       NOM_CMP = 'V2',     
+                       INST=60.,  
+                       PRECISION = 1.E-5,   
+                       VALE = 1.,        
+                       CRITERE = 'ABSOLU',        
+                     ),
+
+# SEUIL HYDRIQUE
+                _F(    RESULTAT = U1,    
+                       REFERENCE = 'NON_REGRESSION',  
+                       NOEUD = 'NO8',      
+                       NOM_CHAM = 'VARI_NOEU_ELGA',    
+                       NOM_CMP = 'V3',     
+                       INST=6.,  
+                       PRECISION = 1.E-5,   
+                       VALE = 3.6876E5,        
+                     ),
+
+                _F(    RESULTAT = U1,    
+                       REFERENCE = 'NON_REGRESSION',  
+                       NOEUD = 'NO8',      
+                       NOM_CHAM = 'VARI_NOEU_ELGA',    
+                       NOM_CMP = 'V3',     
+                       INST=20.,  
+                       PRECISION = 1.E-4,   
+                       VALE = 6.45223E5,        
+                     ),
+
+                _F(    RESULTAT = U1,    
+                       REFERENCE = 'NON_REGRESSION',  
+                       NOEUD = 'NO8',      
+                       NOM_CHAM = 'VARI_NOEU_ELGA',    
+                       NOM_CMP = 'V3',     
+                       INST=34.,  
+                       PRECISION = 1.E-4,   
+                       VALE = 6.45223E5,        
+                     ),
+
+                _F(    RESULTAT = U1,    
+                       REFERENCE = 'NON_REGRESSION',  
+                       NOEUD = 'NO8',      
+                       NOM_CHAM = 'VARI_NOEU_ELGA',    
+                       NOM_CMP = 'V3',     
+                       INST=46.,  
+                       PRECISION = 1.E-4,   
+                       VALE = 6.45223E5,        
+                     ),
+                     
+                _F(    RESULTAT = U1,    
+                       REFERENCE = 'NON_REGRESSION',  
+                       NOEUD = 'NO8',      
+                       NOM_CHAM = 'VARI_NOEU_ELGA',    
+                       NOM_CMP = 'V3',     
+                       INST=60.,  
+                       PRECISION = 1.E-4,   
+                       VALE = 3.46104E5,        
+                     ),
+
 
 # INDICATEUR D'IRREVERSIBILITE HYDRIQUE
                 _F(    RESULTAT = U1,    
@@ -737,5 +822,17 @@ TEST_RESU(RESU=(
                        VALE = 0.,        
                        CRITERE = 'ABSOLU',        
                      ),
+                     
+                _F(    RESULTAT = U1,    
+                       REFERENCE = 'NON_REGRESSION',  
+                       NOEUD = 'NO8',      
+                       NOM_CHAM = 'VARI_NOEU_ELGA',    
+                       NOM_CMP = 'V4',     
+                       INST=60.,  
+                       PRECISION = 1.E-5,   
+                       VALE = 0.,        
+                       CRITERE = 'ABSOLU',        
+                     ),
                      ),),
 FIN () ;
+

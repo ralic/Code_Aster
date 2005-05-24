@@ -4,7 +4,7 @@
       IMPLICIT   NONE
       CHARACTER*16 OPTION
 C ......................................................................
-C MODIF ELEMENTS  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 23/05/2005   AUTEUR CIBHHLV L.VIVAN 
 C TOLE CRP_20
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -63,7 +63,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       REAL*8 EPSI(4),DEPSI(4),EPS2D(6),DEPS2D(6)
       REAL*8 SIGN(4),SIGMA(4),SGMTD(4),PHASM(7),PHASP(7)
       REAL*8 DSIDEP(6,6),DTILD(4,4),EPSANM(6),EPSANP(6)
-      REAL*8 CISAIL,WGT,R,R8PI,INSTM,INSTP
+      REAL*8 CISAIL,WGT,R,R8PI,R8NNEM,INSTM,INSTP
       REAL*8 KTILD(NBRDDL,NBRDDL),EFFINT(NBRDDL)
       REAL*8 PASS(NBRDDL,NBRDDL),KTEMP(NBRDDL,NBRDDL)
       REAL*8 PGL(3,3),TMC,TPC,OMEGA,VTEMP(NBRDDL)
@@ -92,10 +92,12 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       TYPMOD(2) = '        '
       CODRET = 0
 
+C --- ANGLE DU MOT_CLEF MASSIF (AFFE_CARA_ELEM)
+C --- INITIALISE A 0.D0 (ON NE S'EN SERT PAS)
+      CALL R8INIR(3, 0.D0, ANGMAS ,1)
 
       M = 3
       IF (NOMTE.EQ.'MET6SEG3') M = 6
-
 
 C=====RECUPERATION NOMBRE DE COUCHES ET DE SECTEURS ANGULAIRES
 
@@ -409,8 +411,6 @@ C         ---------------------------------------------------
             END IF
 
 C -    APPEL A LA LOI DE COMPORTEMENT
-C           ORIENTATION DU MASSIF     
-            CALL R8INIR(3, R8VIDE(), ANGMAS ,1)
             CALL NMCOMP(2,TYPMOD,ZI(IMATE),ZK16(ICOMPO),ZR(ICARCR),
      &                  ZR(IINSTM),ZR(IINSTP),
      &                  TMC,TPC,ZR(ITREF),
