@@ -4,7 +4,7 @@
       CHARACTER*(*)             FICHIE, NAME, ACCES, AUTOR
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 24/05/2005   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF UTILITAI  DATE 31/05/2005   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -201,7 +201,7 @@ C
         DO 20 I = 1 , NBFILE
           IF ( UNITFI(I) .EQ. -UNIT ) THEN
             IF ( MODIFI(I) .EQ. 'O' ) THEN
-              IF ( TYPEFI(I) .EQ. 'A' ) THEN
+C              IF ( TYPEFI(I) .EQ. 'A' ) THEN
                 IF ( ETATFI(I) .EQ. 'O' ) THEN
                   CLOSE (UNIT=-UNIT, IOSTAT=IERR)
                   IF ( IERR .GT. 0 ) THEN
@@ -217,11 +217,11 @@ C
                 ETATFI(I) = 'F'
                 MODIFI(I) = ' '
                 GOTO 9999
-              ELSE
-                CALL UTMESS('F','ULOPEN21','LE FICHIER ASSOCIE'
-     &                  //'A L''UNITE LOGIQUE '//K4B//' N''EST PAS DE '
-     &                  //'TYPE ASCII')
-              ENDIF
+C              ELSE
+C                CALL UTMESS('F','ULOPEN21','LE FICHIER ASSOCIE'
+C     &                  //'A L''UNITE LOGIQUE '//K4B//' N''EST PAS DE '
+C     &                  //'TYPE ASCII')
+C              ENDIF
             ELSE
               CALL UTMESS('F','ULOPEN23','LA REDEFINITION DE L''UNITE '
      &                //'LOGIQUE '//K4B//' N''EST PAS AUTORISEE')

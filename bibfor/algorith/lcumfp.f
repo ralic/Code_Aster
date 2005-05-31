@@ -2,7 +2,7 @@
      &                    TM,TP,TREF,HYDRM,HYDRP,SECHM,SECHP,SREF,EPSM,
      &                    DEPS,SIGM,VIM,OPTION,SIGP,VIP,DSIDEP)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/05/2005   AUTEUR SMICHEL S.MICHEL-PONNELLE 
+C MODIF ALGORITH  DATE 30/05/2005   AUTEUR SMICHEL S.MICHEL-PONNELLE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -506,14 +506,17 @@ C            CALL LCMAZA()
         IF (OPTION(2).EQ.'ENDO_ISOT_BETON') THEN
           IF (OPTION(1).EQ.'RIGI_MECA_TANG') THEN
             IF (NINT(VIM(23)).EQ.1) THEN
+              EPSRM = KDESS*(SECHM-SREF)-BENDO*HYDRM + ALPHA * (TM-TREF)
               DO 40 I=1,NSTRS
                 EPSME(I)=EPSM(I)-EPSRM*KRON(I)  
- 40           CONTINUE              
+ 40           CONTINUE    
               CALL LCEIBT(NSTRS,EPSME,EPSFM,DEP,INVN,CN,DSIDEP)
             ENDIF
           ELSE IF ((OPTION(1).EQ.'RAPH_MECA').OR.
      &              (OPTION(1).EQ.'FULL_MECA')) THEN
             IF (NINT(VIP(23)).EQ.1) THEN
+             CALL DCOPY(NSTRS,EPSM,1,EPS,1)
+             CALL DAXPY(NSTRS,1.D0,DEPS,1,EPS,1)
               DO 45 I=1,NSTRS
                 EPSE(I)=EPSM(I)+DEPS(I)-EPSRP*KRON(I)  
  45           CONTINUE              

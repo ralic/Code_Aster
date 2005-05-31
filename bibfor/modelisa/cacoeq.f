@@ -3,7 +3,7 @@
       CHARACTER*(*) FONREZ,CHARGZ,NOMAZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 14/03/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 31/05/2005   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,19 +39,17 @@ C     ----------- COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32 ZK32
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-      CHARACTER*32 JEXNOM,JEXNUM
+      CHARACTER*32 JEXNUM
 
 C---------------- FIN COMMUNS NORMALISES  JEVEUX  ----------------------
 
-      INTEGER NO(3),II,IRET,JLIST
+      INTEGER NO(3),II,IRET,JLIST,TYPALC
       COMPLEX*16 BETAC,COEMUC(3)
       CHARACTER*1 K1BID
       CHARACTER*2 TYPLAG
       CHARACTER*4 FONREE
       CHARACTER*4 TYPCOE
       CHARACTER*8 BETAF,DDL(3),NONO(3),CHAR,NOMA
-      CHARACTER*8 K8BID
-      CHARACTER*16 MOTFAC
       CHARACTER*19 LISREL
       CHARACTER*24 LISNOE
       REAL*8 COEMUR(3),DIRECT(6),BETA
@@ -94,10 +92,20 @@ C ----------------------------------------------------------------------
       NDIMCO = CHAR(1:8)//'.CONTACT.NDIMCO'
       PSANS = CHAR(1:8)//'.CONTACT.PSSNOCO'
       SANSNO = CHAR(1:8)//'.CONTACT.SSNOCO'
+
       CALL JEVEUO(NDIMCO,'L',JDIM)
       CALL JEVEUO(PSANS,'L',JPSANS)
       CALL JEVEUO(SANSNO,'L',JSANS)
       CALL JEVEUO(SANSNQ,'L',JSANSN)
+
+      CALL CFDISC(CHAR(1:8)//'.CONTACT        ',
+     &            '              ',
+     &            TYPALC,IBID,IBID,IBID)
+
+      IF (TYPALC.EQ.5) THEN
+        GOTO 40
+      ENDIF
+
       NZOCO = ZI(JDIM+1)
 
       NBELQU = NBELQU/3

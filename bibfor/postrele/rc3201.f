@@ -9,7 +9,7 @@
       CHARACTER*8         MATER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 01/04/2005   AUTEUR CIBHHLV L.VIVAN 
+C MODIF POSTRELE  DATE 30/05/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -111,6 +111,12 @@ C
       NS = 0
       NSCY = 0
       IF (SEISME) THEN
+        DO 16 IS1 = 1,NBSIGR
+           IOC1 = ZI(JNSG+IS1-1)
+           IF (IOC1.EQ.IOCS) GO TO 18
+ 16     CONTINUE
+        CALL UTMESS('F','RC3201','PB POUR RECUPERER IOC SEISME')
+ 18     CONTINUE
         NS = ZI(JNBOCC+2*IOCS-2)
         NSCY = ZI(JNBOCC+2*IOCS-1)
         PPI = ZR(JPRESA+IOCS-1)
@@ -129,26 +135,26 @@ C
         TYPEKE = MATPI(8)
         IF ( OPMPB ) THEN
           CALL RC32PM(LIEU,SEISME,PPI,MSE,MSE,PM,PB,PMPB)
-          VPMPB(6*(IOCS-1)+1) = PM
-          VPMPB(6*(IOCS-1)+2) = PB
-          VPMPB(6*(IOCS-1)+3) = PMPB
+          VPMPB(6*(IS1-1)+1) = PM
+          VPMPB(6*(IS1-1)+2) = PB
+          VPMPB(6*(IS1-1)+3) = PMPB
         ENDIF
         IF ( OSN ) THEN
           CALL RC32SN('SN_SITU',LIEU,NSITUP,PPI,MSE,NSITUQ,PPI,MSE,
      +                                                   SEISME,MSE,SN)
-          VPMPB(6*(IOCS-1)+4) = SN
+          VPMPB(6*(IS1-1)+4) = SN
         ENDIF
         IF ( OSN .AND. OSNET ) THEN
           CALL RC32SN('SN*_SITU',LIEU,NSITUP,PPI,MSE,NSITUQ,PPI,MSE,
      +                                                 SEISME,MSE,SNET)
-          VPMPB(6*(IOCS-1)+6) = SNET
+          VPMPB(6*(IS1-1)+6) = SNET
         ENDIF
         IF ( OFATIG ) THEN
           CALL RC32SP('SP_SITU',LIEU,NSITUP,PPI,MSE,NSITUQ,PPI,MSE,
      +                SEISME,MSE,SP,TYPEKE,SPMECA,SPTHER)
           CALL RC32SA(MATER,MATPI,MATPI,SN,SP,TYPEKE,SPMECA,SPTHER,
      &                KEMECA,KETHER,SALTSE,SM)
-          VPMPB(6*(IOCS-1)+5) = SALTSE
+          VPMPB(6*(IS1-1)+5) = SALTSE
         ENDIF
         IF (NIV.GE.2) THEN
           IF ( OPMPB ) THEN
@@ -237,14 +243,19 @@ C --- SITUATION P :
           IF ( OPMPB ) THEN
             CALL RC32PM(LIEU,SEISME,PPI,MPI,MSE,PMS,PBS,PMPBS)
             CALL RC32PM(LIEU,SEISME,PPJ,MPJ,MSE,PMS,PBS,PMPBS)
+            VPMPB(6*(IS1-1)+1) = PMS
+            VPMPB(6*(IS1-1)+2) = PBS
+            VPMPB(6*(IS1-1)+3) = PMPBS
           ENDIF
           IF ( OSN ) THEN
-          CALL RC32SN('SN_SITU',LIEU,NSITUP,PPI,MPI,NSITUQ,PPJ,MPJ,
+            CALL RC32SN('SN_SITU',LIEU,NSITUP,PPI,MPI,NSITUQ,PPJ,MPJ,
      +                                                  SEISME,MSE,SNS)
+            VPMPB(6*(IS1-1)+4) = SNS
           ENDIF
           IF ( OSN .AND. OSNET ) THEN
             CALL RC32SN('SN*_SITU',LIEU,NSITUP,PPI,MPI,NSITUQ,PPJ,MPJ,
      +                                                SEISME,MSE,SNETS)
+            VPMPB(6*(IS1-1)+6) = SNETS
           ENDIF
         END IF
         SNMAX = MAX(SNMAX,SNS,SN)

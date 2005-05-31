@@ -8,7 +8,7 @@
       CHARACTER*(*)     TYPZ
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 21/03/2005   AUTEUR CIBHHLV L.VIVAN 
+C MODIF POSTRELE  DATE 30/05/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -63,8 +63,9 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 
       INTEGER ICMP,JSIGU,ICMPS,LONG,NBINST,NBTHER,JTHER,ITH,NUMTH,JTHUN
-      REAL*8 PIJ,MIJ(6),SP,SIJ(6),SIJS(6),SIGU,SIJ0(6)
-      CHARACTER*8 K8B,TYPE,KNUMES,KNUMET
+      REAL*8       PIJ,MIJ(6),SP,SIJ(6),SIGU,SIJ0(6)
+      CHARACTER*4  TYP2
+      CHARACTER*8  K8B, TYPE, KNUMES, KNUMET
 C DEB ------------------------------------------------------------------
       TYPE = TYPZ
 
@@ -99,19 +100,6 @@ C ----- PRESSION
    30 CONTINUE
 
 
-C --- CALCUL DES CONTRAINTES LINEAIRISEES PAR COMBINAISON LINEAIRE
-C     POUR LE CHARGEMENT MSE (SEISME)
-
-      IF (SEISME) THEN
-        DO 50 ICMPS = 1,6
-          SIJS(ICMPS) = 0.D0
-          DO 40 ICMP = 1,6
-            SIGU = ZR(JSIGU-1+6*(ICMP-1)+ICMPS)
-            SIJS(ICMPS) = SIJS(ICMPS) + MSE(ICMP)*SIGU
-   40     CONTINUE
-   50   CONTINUE
-      END IF
-
 C CAS DE KE_MECA (PAS DE PARTITION MECANIQUE - THERMIQUE)
 
 C      IF (TYPEKE.LT.0.D0) THEN
@@ -128,10 +116,16 @@ C --- ON BOUCLE SUR LES INSTANTS DU THERMIQUE DE P
             NBINST = 0
             JTHUN = 1
             IF( TYPE .EQ. 'SP_COMB' ) THEN
-              CALL RC32ST(SIJ,NBINST,ZR(JTHUN),SEISME,SIJS,SP)
+              TYP2 = 'COMB'
             ELSEIF( TYPE .EQ. 'SP_SITU' ) THEN
-              CALL RC32S1(SIJ,NBINST,ZR(JTHUN),SEISME,SIJS,SP)
+              TYP2 = 'SITU'
             ENDIF
+            IF ( SEISME ) THEN
+               CALL RC32S0 ( TYP2, MIJ, PIJ, MSE, ZR(JSIGU), NBINST, 
+     &                                                   ZR(JTHUN), SP )
+            ELSE
+               CALL RC32ST ( TYP2, SIJ, NBINST, ZR(JTHUN), SP )
+            END IF
             SPIJ = MAX(SPIJ,SP)
           ELSE
             CALL JEVEUO(JEXNOM('&&RC3200.SITU_THERMIQUE',KNUMES),'L',
@@ -146,10 +140,16 @@ C --- ON BOUCLE SUR LES INSTANTS DU THERMIQUE DE P
      &                    'L',JTHUN)
               NBINST = LONG / 24
               IF( TYPE .EQ. 'SP_COMB' ) THEN
-                CALL RC32ST(SIJ,NBINST,ZR(JTHUN),SEISME,SIJS,SP)
+                 TYP2 = 'COMB'
               ELSEIF( TYPE .EQ. 'SP_SITU' ) THEN
-                CALL RC32S1(SIJ,NBINST,ZR(JTHUN),SEISME,SIJS,SP)
+                 TYP2 = 'SITU'
               ENDIF
+              IF ( SEISME ) THEN
+                 CALL RC32S0 ( TYP2, MIJ, PIJ, MSE, ZR(JSIGU), NBINST, 
+     &                                                   ZR(JTHUN), SP )
+              ELSE
+                 CALL RC32ST ( TYP2, SIJ, NBINST, ZR(JTHUN), SP )
+              END IF
               SPIJ = MAX(SPIJ,SP)
    60       CONTINUE
           END IF
@@ -167,10 +167,16 @@ C --- ON BOUCLE SUR LES INSTANTS DU THERMIQUE DE Q
             NBINST = 0
             JTHUN = 1
             IF( TYPE .EQ. 'SP_COMB' ) THEN
-              CALL RC32ST(SIJ,NBINST,ZR(JTHUN),SEISME,SIJS,SP)
+              TYP2 = 'COMB'
             ELSEIF( TYPE .EQ. 'SP_SITU' ) THEN
-              CALL RC32S1(SIJ,NBINST,ZR(JTHUN),SEISME,SIJS,SP)
+              TYP2 = 'SITU'
             ENDIF
+            IF ( SEISME ) THEN
+              CALL RC32S0 ( TYP2, MIJ, PIJ, MSE, ZR(JSIGU), NBINST, 
+     &                                                   ZR(JTHUN), SP )
+            ELSE
+              CALL RC32ST ( TYP2, SIJ, NBINST, ZR(JTHUN), SP )
+            END IF
             SPIJ = MAX(SPIJ,SP)
           ELSE
             CALL JEVEUO(JEXNOM('&&RC3200.SITU_THERMIQUE',KNUMES),'L',
@@ -185,10 +191,16 @@ C --- ON BOUCLE SUR LES INSTANTS DU THERMIQUE DE Q
      &                    'L',JTHUN)
               NBINST = LONG / 24
               IF( TYPE .EQ. 'SP_COMB' ) THEN
-                CALL RC32ST(SIJ,NBINST,ZR(JTHUN),SEISME,SIJS,SP)
+                TYP2 = 'COMB'
               ELSEIF( TYPE .EQ. 'SP_SITU' ) THEN
-                CALL RC32S1(SIJ,NBINST,ZR(JTHUN),SEISME,SIJS,SP)
+                TYP2 = 'SITU'
               ENDIF
+              IF ( SEISME ) THEN
+                CALL RC32S0 ( TYP2, MIJ, PIJ, MSE, ZR(JSIGU), NBINST, 
+     &                                                   ZR(JTHUN), SP )
+              ELSE
+                CALL RC32ST ( TYP2, SIJ, NBINST, ZR(JTHUN), SP )
+              END IF
               SPIJ = MAX(SPIJ,SP)
    70       CONTINUE
           END IF
@@ -210,10 +222,16 @@ C --- ON BOUCLE SUR LES INSTANTS DU THERMIQUE DE P
           NBINST = 0
           JTHUN = 1
           IF( TYPE .EQ. 'SP_COMB' ) THEN
-            CALL RC32ST(SIJ,NBINST,ZR(JTHUN),SEISME,SIJS,SP)
+            TYP2 = 'COMB'
           ELSEIF( TYPE .EQ. 'SP_SITU' ) THEN
-            CALL RC32S1(SIJ,NBINST,ZR(JTHUN),SEISME,SIJS,SP)
+            TYP2 = 'SITU'
           ENDIF
+          IF ( SEISME ) THEN
+            CALL RC32S0 ( TYP2, MIJ, PIJ, MSE, ZR(JSIGU), NBINST, 
+     &                                                   ZR(JTHUN), SP )
+          ELSE
+            CALL RC32ST ( TYP2, SIJ, NBINST, ZR(JTHUN), SP )
+          END IF
           SPMECA = MAX(SPMECA,SP)
 
           IF (NBTHER.NE.0) THEN
@@ -228,11 +246,8 @@ C --- ON BOUCLE SUR LES INSTANTS DU THERMIQUE DE P
               CALL JEVEUO(JEXNOM('&&RC3200.THER_UNIT .'//LIEU,KNUMET),
      &                    'L',JTHUN)
               NBINST = LONG / 24
-              IF( TYPE .EQ. 'SP_COMB' ) THEN
-                CALL RC32ST(SIJ0,NBINST,ZR(JTHUN),SEISME,SIJ0,SP)
-              ELSEIF( TYPE .EQ. 'SP_SITU' ) THEN
-                CALL RC32S1(SIJ0,NBINST,ZR(JTHUN),SEISME,SIJ0,SP)
-              ENDIF
+              TYP2 = 'SITU'
+              CALL RC32ST ( TYP2, SIJ0, NBINST, ZR(JTHUN), SP )
               SPTHER = MAX(SPTHER,SP)
    80       CONTINUE
           END IF
@@ -258,11 +273,8 @@ C --- ON BOUCLE SUR LES INSTANTS DU THERMIQUE DE Q
               CALL JEVEUO(JEXNOM('&&RC3200.THER_UNIT .'//LIEU,KNUMET),
      &                    'L',JTHUN)
               NBINST = LONG / 24
-              IF( TYPE .EQ. 'SP_COMB' ) THEN
-                CALL RC32ST(SIJ0,NBINST,ZR(JTHUN),SEISME,SIJ0,SP)
-              ELSEIF( TYPE .EQ. 'SP_SITU' ) THEN
-                CALL RC32S1(SIJ0,NBINST,ZR(JTHUN),SEISME,SIJ0,SP)
-              ENDIF
+              TYP2 = 'SITU'
+              CALL RC32ST ( TYP2, SIJ0, NBINST, ZR(JTHUN), SP )
               SPTHER = MAX(SPTHER,SP)
    90       CONTINUE
           END IF

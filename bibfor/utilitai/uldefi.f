@@ -1,6 +1,6 @@
       SUBROUTINE ULDEFI( UNIT, FICNOM, DDNOM, TYPF, ACCES, AUTOR )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 24/05/2005   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF UTILITAI  DATE 31/05/2005   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -111,6 +111,7 @@ C --- ASSOCIATION DEJA EFFECTUEE, ON AUTORISE LA REDEFINITION POUR
 C     LE TYPE "LIBRE"
               IF ( K1TYP .EQ. 'L' ) THEN 
                 UNITFI(IFILE) = UNIT
+                ILIBRE=IFILE
               ELSE IF ( UNITFI(IFILE) .NE. UNIT ) THEN
                 WRITE(K8B,'(I4)') UNIT 
                 CALL UTMESS ('F','ULDEFI05','REDEFINITION DE L''UNITE '
@@ -133,6 +134,7 @@ C           --- RECHERCHE DE LA DERNIERE PLACE LIBRE ---
             ILIBRE = NBFILE
           ENDIF
 C
+  21      CONTINUE
           IF ( FICNOM(1:1) .EQ. ' ' ) THEN
              CALL CODENT ( UNIT, 'G', K8B )
              NAMELL = 'fort.'//K8B
@@ -145,12 +147,11 @@ C
           UNITFI(ILIBRE) = UNIT
           TYPEFI(ILIBRE) = K1TYP
           ACCEFI(ILIBRE) = K1ACC
-          ETATFI(ILIBRE) = '?'
+          ETATFI(ILIBRE) = 'O'
           MODIFI(ILIBRE) = K1AUT
         ENDIF
 C        
 C ----
-  21    CONTINUE
       ENDIF
 C
       END

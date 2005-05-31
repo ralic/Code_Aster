@@ -1,4 +1,4 @@
-#@ MODIF t_fonction Utilitai  DATE 12/05/2005   AUTEUR DURAND C.DURAND 
+#@ MODIF t_fonction Utilitai  DATE 31/05/2005   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -46,7 +46,6 @@ class t_fonction :
     if pk!=['INTERPOL','NOM_PARA','NOM_RESU','PROL_DROITE','PROL_GAUCHE'] :
          raise StandardError, 'fonction : parametres incorrects'
     if para['INTERPOL'] not in [['NON','NON'],['LIN','LIN'],['LIN','LOG'],['LOG','LOG'],['LOG','LIN'],] :
-         print '(((((( para[INTERPOL] = ',para['INTERPOL']
          raise StandardError, 'fonction : parametre INTERPOL incorrect'
     if para['PROL_DROITE'] not in ['EXCLU','CONSTANT','LINEAIRE'] :
          raise StandardError, 'fonction : parametre PROL_DROITE incorrect'
@@ -63,18 +62,27 @@ class t_fonction :
   def __add__(self,other) :
     # addition avec une autre fonction ou un nombre, par surcharge de l'opérateur +
     if   isinstance(other,t_fonction):
-      if self.vale_x!=other.vale_x : raise StandardError, 'fonctions à support d abscisses différents'
-      return t_fonction(self.vale_x,self.vale_y+other.vale_y,self.para)
-    elif type(other) in [types.FloatType,types.IntType] :
-      return t_fonction(self.vale_x,self.vale_y+other,self.para)
+      para=copy.copy(self.para)
+      vale_x,para['PROL_GAUCHE'],para['PROL_DROITE']=self.homo_support(other)
+      fff=self.evalfonc(vale_x)
+      ggg=other.evalfonc(vale_x)
+      if   isinstance(self,t_fonction_c): return t_fonction_c(vale_x,fff.vale_y+ggg.vale_y,para)
+      else                              : return t_fonction(vale_x,fff.vale_y+ggg.vale_y,para)
+    elif type(other) in [types.FloatType,types.IntType,types.ComplexType] :
+      if   isinstance(self,t_fonction_c): return t_fonction_c(self.vale_x,self.vale_y+other,self.para)
+      else                              : return t_fonction(self.vale_x,self.vale_y+other,self.para)
     else:  raise StandardError, 'fonctions : erreur de type dans __add__'
 
   def __mul__(self,other) :
     # multiplication avec une autre fonction ou un nombre, par surcharge de l'opérateur *
     if   isinstance(other,t_fonction):
-      if self.vale_x!=other.vale_x : raise StandardError, 'fonctions à support d abscisses différents'
-      return t_fonction(self.vale_x,self.vale_y*other.vale_y,self.para)
-    elif type(other) in [types.FloatType,types.IntType,types.ComplexType] :
+      para=copy.copy(self.para)
+      vale_x,para['PROL_GAUCHE'],para['PROL_DROITE']=self.homo_support(other)
+      fff=self.evalfonc(vale_x)
+      ggg=other.evalfonc(vale_x)
+      if   isinstance(self,t_fonction_c): return t_fonction_c(vale_x,fff.vale_y*ggg.vale_y,para)
+      else                              : return t_fonction(vale_x,fff.vale_y*ggg.vale_y,para)
+    elif type(other) in [types.FloatType,types.IntType] :
       return t_fonction(self.vale_x,self.vale_y*other,self.para)
     elif type(other) ==types.ComplexType :
       return t_fonction_c(self.vale_x,self.vale_y*other,self.para)
@@ -95,24 +103,29 @@ class t_fonction :
     para['NOM_PARA']==other.para['NOM_PARA']
     return t_fonction(other.vale_x,map(self,other.vale_y),para)
 
-  def __call__(self,val):
+  def __call__(self,val,tol=1.e-6):
     # méthode pour évaluer f(x)
+    # tolérance, par défaut 1.e-6 en relatif sur la longueur de l'intervalle
+    # adjacent, pour capter les erreurs d'arrondi en cas de prolongement exclu
     i=searchsorted(self.vale_x,val)
     n=len(self.vale_x)
     if i==0 :
-      if val==self.vale_x[0]  : return self.vale_y[0]
-      if val <self.vale_x[0]  : 
-         if self.para['PROL_GAUCHE']=='EXCLU'    : raise StandardError, 'fonction évaluée hors du domaine de définition'
+      if self.para['PROL_GAUCHE']=='EXCLU'    :
+         eps_g=(val-self.vale_x[0] )/(self.vale_x[1] -self.vale_x[0])
+         if abs(eps_g)<=tol  : return self.vale_y[0]
+         else                : raise StandardError, 'fonction évaluée hors du domaine de définition'
+      else  : 
          if self.para['PROL_GAUCHE']=='CONSTANT' : return self.vale_y[0]
          if self.para['PROL_GAUCHE']=='LINEAIRE' : return interp(self.para['INTERPOL'],val,self.vale_x[0],
                                                                                            self.vale_x[1],
                                                                                            self.vale_y[0],
                                                                                            self.vale_y[1])
     elif i==n :
-      if val==self.vale_x[-1] :
-          return self.vale_y[-1]
-      if val >self.vale_x[-1]  : 
-         if self.para['PROL_DROITE']=='EXCLU'    : raise StandardError, 'fonction évaluée hors du domaine de définition'
+      if self.para['PROL_DROITE']=='EXCLU'    :
+         eps_d=(val-self.vale_x[-1])/(self.vale_x[-1]-self.vale_x[-2])
+         if abs(eps_d)<=tol  : return self.vale_y[-1]
+         else                : raise StandardError, 'fonction évaluée hors du domaine de définition'
+      else  : 
          if self.para['PROL_DROITE']=='CONSTANT' : return self.vale_y[-1]
          if self.para['PROL_DROITE']=='LINEAIRE' : return interp(self.para['INTERPOL'],val,self.vale_x[-1],
                                                                                            self.vale_x[-2],
@@ -123,6 +136,33 @@ class t_fonction :
                                               self.vale_x[i],
                                               self.vale_y[i-1],
                                               self.vale_y[i])
+
+  def homo_support(self,other) :
+    # renvoie le support d'abscisses homogénéisé entre self et other
+    # i.e. si prolongement exclu, on retient plus grand min ou plus petit max, selon
+    # si prolongement autorisé, on conserve les abscisses d'une fonction, extrapolantes
+    # sur l'autre.
+    # Pour les points intermédiaires : union et tri des valeurs des vale_x réunis.
+    if other.vale_x[0]>self.vale_x[0]:
+       if other.para['PROL_GAUCHE']!='EXCLU' : f_g=self
+       else                                  : f_g=other
+    else :
+       if self.para['PROL_GAUCHE'] !='EXCLU' : f_g=other
+       else                                  : f_g=self
+    val_min    =f_g.vale_x[0]
+    prol_gauche=f_g.para['PROL_GAUCHE']
+    if self.vale_x[0]>other.vale_x[0]:
+       if other.para['PROL_DROITE']!='EXCLU' : f_d=self
+       else                                  : f_d=other
+    else :
+       if self.para['PROL_DROITE'] !='EXCLU' : f_d=other
+       else                                  : f_d=self
+    val_max    =f_d.vale_x[-1]
+    prol_droite=f_d.para['PROL_DROITE']
+    vale_x=concatenate((self.vale_x,other.vale_x))
+    vale_x=clip(vale_x,val_min,val_max)
+    vale_x=sort(dict([(i,0) for i in vale_x]).keys())
+    return vale_x,prol_gauche,prol_droite
 
   def cut(self,rinf,rsup,prec,crit='RELATIF') :
     # renvoie la fonction self dont on a 'coupé' les extrémités en x=rinf et x=rsup
@@ -357,27 +397,12 @@ class t_fonction_c(t_fonction) :
     __tab=array([self.vale_x,self.vale_y.real,self.vale_y.imag])
     return ravel(transpose(__tab)).tolist()
 
-  def __add__(self,other) :
-    # addition avec une autre fonction ou un nombre, par surcharge de l'opérateur +
-    if   isinstance(other,t_fonction_c):
-      if self.vale_x!=other.vale_x : raise StandardError, 'fonctions à support d abscisses différents'
-      return t_fonction_c(self.vale_x,self.vale_y+other.vale_y,self.para)
-    elif type(other) in [types.FloatType,types.IntType,types.ComplexType] :
-      return t_fonction_c(self.vale_x,self.vale_y+other,self.para)
-    else:  raise StandardError, 'fonctions : erreur de type dans __add__'
-
-  def __mul__(self,other) :
-    # multiplication avec une autre fonction ou un nombre, par surcharge de l'opérateur *
-    if   isinstance(other,t_fonction_c):
-      if self.vale_x!=other.vale_x : raise StandardError, 'fonctions à support d abscisses différents'
-      return t_fonction_c(self.vale_x,self.vale_y*other.vale_y,self.para)
-    elif type(other) in [types.FloatType,types.IntType,types.ComplexType] :
-      return t_fonction_c(self.vale_x,self.vale_y*other,self.para)
-    else:  raise StandardError, 'fonctions : erreur de type dans __mul__'
-
-  def evalfonc(self,liste_val) :
-    # renvoie la mm fonction interpolée aux points définis par la liste 'liste_val'
-    return t_fonction_c(liste_val,map(self,liste_val),self.para)
+  def __repr__(self) :
+    # affichage de la fonction en double colonne
+    texte=[]
+    for i in range(len(self.vale_x)) :
+      texte.append('%f %f + %f .j' % (self.vale_x[i],self.vale_y[i].real,self.vale_y[i].imag))
+    return '\n'.join(texte)
 
   def fft(self,methode,syme) :
    # renvoie la transformée de Fourier rapide FFT (sens inverse)
@@ -532,7 +557,7 @@ class t_nappe :
     for val in vale_para :
         if   val in self.vale_para  : l_fonc.append(self.l_fonc[searchsorted(self.vale_para,val)])
         elif val in other.vale_para :
-                                      other_fonc=other.l_fonc[searchsorted(self.vale_para,val)]
+                                      other_fonc=other.l_fonc[searchsorted(other.vale_para,val)]
                                       new_vale_x=other_fonc.vale_x
                                       new_para  =other_fonc.para
                                       new_vale_y=[self(x) for x in new_vale_x]

@@ -2,7 +2,7 @@
      &                  RESOCO,IESCL)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/05/2005   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 31/05/2005   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -302,6 +302,11 @@ C
 C --- NOMBRE DE MAILLES CONTENANT LE NOEUD MAITRE
 C
         NBMA   = ZI(JPOMA+POSNOM) - ZI(JPOMA+POSNOM-1)
+
+        IF ((POSNOM.LE.0).OR.(NBMA.LE.0)) THEN
+         CALL UTMESS ('F','CHMANO','CONTACT - NOEUD MAITRE '
+     &           //' INTROUVABLE')
+        ENDIF
 C 
 C --- DECALAGE DANS LES TABLEAUX POUR LE NOEUD MAITRE
 C
@@ -313,11 +318,13 @@ C
 C
 C ---
 C
+
         JEUMIN = R8GAEM()
         PROJOP = 'NOP'
 C
 C --- BOUCLE SUR LES MAILLES CONTENANT LE NOEUD MAITRE
 C 
+        POSMIN = -1
         DO 60 IMA = 1,NBMA
 
           POSMA = ZI(JMANO+JDEC+IMA-1)
@@ -358,6 +365,7 @@ C
           ELSE 
              ECAN = ABS((OLDJEU-JEUMIN)/JEUMIN)
           ENDIF
+
 
           IF ((OLDJEU.LE.JEUMIN).AND. 
      &           (ECAN.GT.1D-15)) THEN

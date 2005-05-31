@@ -5,7 +5,7 @@
       CHARACTER*4         LIEU
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 21/03/2005   AUTEUR CIBHHLV L.VIVAN 
+C MODIF POSTRELE  DATE 30/05/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -52,7 +52,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C
       INTEGER    ICMPS, ICMP, JSIGU, NBINST
-      REAL*8     STH(6),SIJ(6),SIJS(6),SIGU,PMIJ,PBIJ,PMPBIJ
+      REAL*8     STH(6), SIJ(6), SIGU, PMIJ, PBIJ, PMPBIJ
 C DEB ------------------------------------------------------------------
       CALL JEMARQ()
 C
@@ -86,16 +86,10 @@ C ------ PRESSION
  100  CONTINUE
 C
       IF ( SEISME ) THEN
-         DO 200 ICMPS = 1 , 6
-            SIJS(ICMPS) = 0.D0
-            DO 202 ICMP = 1 , 6 
-               SIGU = ZR(JSIGU-1+84+6*(ICMP-1)+ICMPS)
-               SIJS(ICMPS) = SIJS(ICMPS) + MSE(ICMP)*SIGU
- 202        CONTINUE
- 200     CONTINUE
+         CALL RC32S0 ( 'COMB',MI,PI,MSE,ZR(JSIGU+84), NBINST,STH, PMIJ )
+      ELSE
+         CALL RC32ST ( 'COMB', SIJ, NBINST, STH, PMIJ )
       END IF
-C
-      CALL RC32ST ( SIJ, NBINST, STH, SEISME, SIJS, PMIJ )
       PM = MAX( PMIJ, PM )
 C
 C-----------------------------------------------------------------------
@@ -118,16 +112,10 @@ C ------ PRESSION
  110  CONTINUE
 C
       IF ( SEISME ) THEN
-         DO 210 ICMPS = 1 , 6
-            SIJS(ICMPS) = 0.D0
-            DO 212 ICMP = 1 , 6 
-               SIGU = ZR(JSIGU-1+126+6*(ICMP-1)+ICMPS)
-               SIJS(ICMPS) = SIJS(ICMPS) + MSE(ICMP)*SIGU
- 212        CONTINUE
- 210     CONTINUE
+         CALL RC32S0 ( 'COMB',MI,PI,MSE,ZR(JSIGU+126), NBINST,STH,PBIJ )
+      ELSE
+         CALL RC32ST ( 'COMB',SIJ, NBINST, STH, PBIJ )
       END IF
-C
-      CALL RC32ST ( SIJ, NBINST, STH, SEISME, SIJS, PBIJ )
       PB = MAX( PBIJ, PB )
 C
 C-----------------------------------------------------------------------
@@ -150,16 +138,10 @@ C ------ PRESSION
  120  CONTINUE
 C
       IF ( SEISME ) THEN
-         DO 220 ICMPS = 1 , 6
-            SIJS(ICMPS) = 0.D0
-            DO 222 ICMP = 1 , 6 
-               SIGU = ZR(JSIGU-1+42+6*(ICMP-1)+ICMPS)
-               SIJS(ICMPS) = SIJS(ICMPS) + MSE(ICMP)*SIGU
- 222        CONTINUE
- 220     CONTINUE
+         CALL RC32S0 ( 'COMB',MI,PI,MSE,ZR(JSIGU+42),NBINST,STH,PMPBIJ )
+      ELSE
+         CALL RC32ST ( 'COMB',SIJ, NBINST, STH, PMPBIJ )
       END IF
-C
-      CALL RC32ST ( SIJ, NBINST, STH, SEISME, SIJS, PMPBIJ )
       PMPB = MAX( PMPBIJ, PMPB )
 C
       CALL JEDEMA()

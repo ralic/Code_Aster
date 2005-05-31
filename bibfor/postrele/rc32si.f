@@ -2,7 +2,7 @@
       IMPLICIT   NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 01/10/2002   AUTEUR CIBHHLV L.VIVAN 
+C MODIF POSTRELE  DATE 30/05/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -46,7 +46,6 @@ C
      +             JNBOCC, JNUMGR, JPRESA, JPRESB, NBCHAR, JCHAR,
      +             JNSITU, JCOMBI, JPASSA, JNBGR, IG, NUMPAS(2), 
      +             NBGR, NUMGR, NBSIGR, JNSG, INSG, NBTH, JSEIGR
-      LOGICAL      LSEISM
       CHARACTER*8  K8B, KNUME, OUINON
       CHARACTER*16 MOTCLF
 C DEB ------------------------------------------------------------------
@@ -72,20 +71,6 @@ C
      +                               'DISPERSE', 'VARIABLE', NBSITU )
 C
       NBGR = 0
-C
-C --- ON VERIFIE UN SEUL SEISME
-C
-      LSEISM = .FALSE.
-      DO 40, IOCC = 1, NBSITU, 1
-         CALL GETVIS ( MOTCLF, 'NB_CYCL_SEISME', IOCC,1,1, NSCY, N1)
-         IF ( N1 .NE. 0 ) THEN
-            IF ( LSEISM ) THEN
-               CALL UTMESS('F','RC32SI','UN SEUL "NB_CYCL_SEISME"')
-            ELSE
-               LSEISM = .TRUE.
-            ENDIF
-         ENDIF
- 40   CONTINUE
 C
       DO 10, IOCC = 1, NBSITU, 1
 C
@@ -243,10 +228,20 @@ C
             IF ( INSG .EQ. NUMGR ) THEN
                II = II + 1
                ZI(JNSG+II-1) = IOCC
-            ENDIF
-            CALL GETVIS ( MOTCLF, 'NB_CYCL_SEISME', IOCC,1,1, NSCY, N1)
-            IF ( N1 .NE. 0 ) THEN
-               ZI(JSEIGR+IG-1) = IOCC
+C
+C ------------ A-T-ON UN SEISME DANS CE GROUPE ?
+               CALL GETVIS ( MOTCLF, 'NB_CYCL_SEISME',IOCC,1,1,NSCY,N1)
+               IF ( N1 .NE. 0 ) THEN
+                  IF ( ZI(JSEIGR+IG-1) .NE. 0 ) THEN
+                     CALL UTDEBM('F','RC32SI',
+     &                         'PLUSIEURS SEISMES DANS LE MEME GROUPE')
+                     CALL UTIMPI('L','   GROUPE NUMERO: ',1,NUMGR)
+                     CALL UTIMPI('L','   OCCURENCE SITUATION ',1,IOCC)
+                     CALL UTIMPI('S',' ET ',1,ZI(JSEIGR+IG-1))
+                     CALL UTFINM()
+                  ENDIF
+                  ZI(JSEIGR+IG-1) = IOCC
+               ENDIF
             ENDIF
  34      CONTINUE
 C

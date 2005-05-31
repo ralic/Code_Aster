@@ -1,4 +1,4 @@
-#@ MODIF calc_fonction_ops Macro  DATE 12/05/2005   AUTEUR DURAND C.DURAND 
+#@ MODIF calc_fonction_ops Macro  DATE 31/05/2005   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -44,7 +44,8 @@ def calc_fonction_ops(self,FFT,DERIVE,INTEGRE,LISS_ENVELOP,
   from Numeric import alltrue,less,array,reshape,cos,sin,exp,sqrt
   from Numeric import choose,zeros,Float
   import aster_fonctions
-
+  EnumType = (types.ListType,types.TupleType)
+  
   ### On importe les definitions des commandes a utiliser dans la macro
   DEFI_FONCTION  = self.get_cmd('DEFI_FONCTION')
   DEFI_NAPPE     = self.get_cmd('DEFI_NAPPE')
@@ -83,13 +84,6 @@ def calc_fonction_ops(self,FFT,DERIVE,INTEGRE,LISS_ENVELOP,
      __ex=__f0.cat(__f1,ASSE['SURCHARGE'])
   ###
   if (COMB        != None):
-     if args['LIST_PARA']!=None : vale_x=args['LIST_PARA'].Valeurs()
-     else               :
-        vale_x=[]
-        for mcfact in COMB :
-            vale_x=vale_x+mcfact['FONCTION'].Absc()
-     vale_x=dict([(i,0) for i in vale_x]).keys()
-     vale_x.sort()
      list_fonc=[]  
      if   isinstance(self.sd,nappe_sdaster):
         for mcfact in COMB :
@@ -104,7 +98,7 @@ def calc_fonction_ops(self,FFT,DERIVE,INTEGRE,LISS_ENVELOP,
      elif isinstance(self.sd,fonction_sdaster):
         for mcfact in COMB :
            __ex=mcfact['FONCTION'].convert()
-           list_fonc.append(__ex.evalfonc(vale_x))
+           list_fonc.append(__ex)
 
      __ex=list_fonc[0]
      __ex=__ex*COMB[0]['COEF']
@@ -115,13 +109,6 @@ def calc_fonction_ops(self,FFT,DERIVE,INTEGRE,LISS_ENVELOP,
         i=i+1
   ###
   if (COMB_C    != None):
-     if args['LIST_PARA']!=None : vale_x=args['LIST_PARA'].Valeurs()
-     else               :
-        vale_x=[]
-        for mcfact in COMB_C :
-            vale_x=vale_x+mcfact['FONCTION'].Absc()
-     vale_x=dict([(i,0) for i in vale_x]).keys()
-     vale_x.sort()
      list_fonc=[]  
      if   isinstance(self.sd,nappe_sdaster):
         for mcfact in COMB_C :
@@ -136,7 +123,7 @@ def calc_fonction_ops(self,FFT,DERIVE,INTEGRE,LISS_ENVELOP,
      elif isinstance(self.sd,fonction_sdaster) or isinstance(self.sd,fonction_c):
         for mcfact in COMB_C :
            __ex=mcfact['FONCTION'].convert(arg='complex')
-           list_fonc.append(__ex.evalfonc(vale_x))
+           list_fonc.append(__ex)
 
      __ex=list_fonc[0]
      if COMB_C[0]['COEF_R']!=None: __ex=__ex*complex(COMB_C[0]['COEF_R'])
@@ -162,8 +149,10 @@ def calc_fonction_ops(self,FFT,DERIVE,INTEGRE,LISS_ENVELOP,
   ###
   if (ENVELOPPE   != None):
      list_fonc=[]
-     if   isinstance(self.sd,nappe_sdaster):
-        for f in ENVELOPPE['FONCTION'] : list_fonc.append(f.convert())
+     l_env=ENVELOPPE['FONCTION']
+     if type(l_env) not in EnumType : l_env=(l_env,)
+     if isinstance(self.sd,nappe_sdaster):
+        for f in l_env : list_fonc.append(f.convert())
         list_fonch=[]  
         for f in list_fonc :
             __ff=f
@@ -183,7 +172,7 @@ def calc_fonction_ops(self,FFT,DERIVE,INTEGRE,LISS_ENVELOP,
             l_fonc_f.append(__ff)
         __ex=t_nappe(vale_para,l_fonc_f,para)
      elif isinstance(self.sd,fonction_sdaster):
-        for f in ENVELOPPE['FONCTION'] : list_fonc.append(f.convert())
+        for f in l_env : list_fonc.append(f.convert())
         __ex=list_fonc[0]
         if ENVELOPPE['CRITERE']=='SUP' :
            for f in list_fonc[1:] : __ex=__ex.sup(f)
@@ -224,7 +213,7 @@ def calc_fonction_ops(self,FFT,DERIVE,INTEGRE,LISS_ENVELOP,
         l_amor=[0.02,0.05,0.1]
         UTMESS('I','CALC_FONCTION',' : génération par défaut de 3 amortissements :'+str(l_amor))
      else :
-        if type(SPEC_OSCI['AMOR_REDUIT']) not in (types.ListType,types.TupleType):
+        if type(SPEC_OSCI['AMOR_REDUIT']) not in EnumType :
                l_amor=[SPEC_OSCI['AMOR_REDUIT'],]
         else : l_amor= SPEC_OSCI['AMOR_REDUIT']
      if SPEC_OSCI['FREQ']==None and SPEC_OSCI['LIST_FREQ']==None:
@@ -244,7 +233,7 @@ def calc_fonction_ops(self,FFT,DERIVE,INTEGRE,LISS_ENVELOP,
      elif SPEC_OSCI['LIST_FREQ']!=None:
         l_freq=SPEC_OSCI['LIST_FREQ'].Valeurs()
      elif SPEC_OSCI['FREQ']!=None:
-        if type(SPEC_OSCI['FREQ']) not in (types.ListType,types.TupleType):
+        if type(SPEC_OSCI['FREQ']) not in EnumType:
                l_freq=[SPEC_OSCI['FREQ'],]
         else : l_freq= SPEC_OSCI['FREQ']
      if abs(SPEC_OSCI['NORME'])<1.E-10 :

@@ -3,7 +3,7 @@
      &                   COMPOR,TYPMOD,INSTM,INSTP,TM,TP)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 11/04/2005   AUTEUR SMICHEL S.MICHEL-PONNELLE 
+C MODIF ALGORITH  DATE 30/05/2005   AUTEUR LAVERNE J.LAVERNE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -116,52 +116,25 @@ C CALCUL DU SAUT DE DEPLACEMENT DANS L'ELEMENT (SU_N,SU_T) = B U :
         END IF 
 
 C -   APPEL A LA LOI DE COMPORTEMENT
-
-        IF (COMPOR(1)(7:8).EQ.'BA') THEN
-         
 C CALCUL DE LA CONTRAINTE DANS L'ELEMENT AINSI QUE LA DERIVEE
 C DE CELLE-CI PAR RAPPORT AU SAUT DE DEPLACEMENT (SIGMA ET DSIDEP) :
 
-          CALL NMCOMP (2,TYPMOD,MATE,COMPOR,CRIT,
-     &                 RBID,RBID,
-     &                 RBID,RBID,RBID,
-     &                 RBID,RBID,
-     &                 RBID,RBID,RBID,
-     &                 RBID,RBID,
-     &                 SUM,DSU,
-     &                 RBID,VIM(1,KPG),
-     &                 OPTION,
-     &                 RBID,RBID,
-     &                 1,RBID,RBID,
-     &                 R8VIDE(),R8VIDE(),
-     &                 ANGMAS,
-     &                 RBID,
-     &                 SIGMA(1,KPG),VIP(1,KPG),DSIDEP,IBID)
+        CALL NMCOMP(2,TYPMOD,MATE,COMPOR,CRIT,
+     &              RBID,RBID,
+     &              TEMPM(KPG),TEMPP(KPG),RBID,
+     &              RBID,RBID,
+     &              RBID,RBID,RBID,
+     &              R8VIDE(),R8VIDE(),
+     &              SUM,DSU,
+     &              RBID,VIM(1,KPG),
+     &              OPTION,
+     &              RBID,RBID,
+     &              1,RBID,RBID,
+     &              R8VIDE(),R8VIDE(),
+     &              ANGMAS,
+     &              RBID,
+     &              SIGMA(1,KPG),VIP(1,KPG),DSIDEP,IBID)
 
-
-        ELSE        
-
-C CALCUL DE LA CONTRAINTE DANS L'ELEMENT AINSI QUE LA DERIVEE
-C DE CELLE-CI PAR RAPPORT AU SAUT DE DEPLACEMENT (SIGMA ET DSIDEP) :
- 
-          CALL NMCOMP (2,TYPMOD,MATE,COMPOR,RBID,
-     &                 RBID,RBID,
-     &                 TEMPM(KPG),TEMPP(KPG),RBID,
-     &                 RBID,RBID,
-     &                 RBID,RBID,RBID,
-     &                 R8VIDE(),R8VIDE(),
-     &                 SUM,DSU,
-     &                 RBID,VIM(1,KPG),
-     &                 OPTION,
-     &                 RBID,RBID,
-     &                 1,RBID,RBID,
-     &                 R8VIDE(),R8VIDE(),
-     &                 ANGMAS,
-     &                 RBID,
-     &                 SIGMA(1,KPG),VIP(1,KPG),DSIDEP,IBID)
-
-
-        ENDIF
 
 C CALCUL DES FINT (B_T SIGMA )
 

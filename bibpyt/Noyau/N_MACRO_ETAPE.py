@@ -1,4 +1,4 @@
-#@ MODIF N_MACRO_ETAPE Noyau  DATE 17/05/2005   AUTEUR BOYERE E.BOYERE 
+#@ MODIF N_MACRO_ETAPE Noyau  DATE 31/05/2005   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -43,6 +43,7 @@ class MACRO_ETAPE(N_ETAPE.ETAPE):
 
    """
    nature = "COMMANDE"
+   typeCO=CO
    def __init__(self,oper=None,reuse=None,args={}):
       """
          Attributs :
@@ -328,7 +329,7 @@ class MACRO_ETAPE(N_ETAPE.ETAPE):
             raise AsException("""Erreur interne. 
 Il ne devrait y avoir qu'un seul mot cle porteur du concept CO (%s)""" % co)
          mcs=mcs[0]
-         if not co.__class__ in mcs.definition.type:
+         if not self.typeCO in mcs.definition.type:
             raise AsException("""Erreur interne. 
 Impossible de changer le type du concept (%s). Le mot cle associe ne supporte pas CO mais seulement (%s)""" %(co,mcs.definition.type))
          co.etape=self
@@ -361,7 +362,7 @@ Le type actuel (%s) devrait etre une classe derivee du nouveau type (%s)""" % (c
             raise AsException("""Erreur interne. 
 Il ne devrait y avoir qu'un seul mot cle porteur du concept CO (%s)""" % co)
          mcs=mcs[0]
-         if not CO in mcs.definition.type:
+         if not self.typeCO in mcs.definition.type:
             raise AsException("""Erreur interne. 
 Impossible de changer le type du concept (%s). Le mot cle associe ne supporte pas CO mais seulement (%s)""" %(co,mcs.definition.type))
          co.etape=self

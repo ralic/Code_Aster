@@ -2,7 +2,7 @@
      &                   EPSIC, COMPN, GAMMA,POURC)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/04/2005   AUTEUR PBADEL P.BADEL 
+C MODIF ALGORITH  DATE 30/05/2005   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -37,7 +37,7 @@ C OUT ALPHA
 C OUT GAMMA
 C OUT SEUIL
 C ----------------------------------------------------------------------
-      CHARACTER*2 CODRET(3)
+      CHARACTER*2 CODRET(6)
       CHARACTER*8 NOMRES(6)
       INTEGER     I
       REAL*8      VALRES(6)

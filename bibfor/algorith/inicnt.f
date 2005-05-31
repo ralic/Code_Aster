@@ -1,8 +1,8 @@
-      SUBROUTINE INICNT (NUMINS,NEQ,DEFICO,FONACT,
+      SUBROUTINE INICNT (NUMINS,NEQ,DEFICO,FONACT,PARMET,
      &                   VECONT,LREAC,NUMEDD,AUTOC1,AUTOC2)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/10/2004   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 31/05/2005   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -22,6 +22,7 @@ C ======================================================================
 C
       IMPLICIT     NONE
       LOGICAL      FONACT(4)
+      REAL*8       PARMET(*)
       LOGICAL      LREAC(4)
       INTEGER      NUMINS
       INTEGER      NEQ
@@ -45,6 +46,8 @@ C                       1 - RECHERCHE LINEAIRE
 C                       2 - PILOTAGE
 C                       3 - LOIS NON LOCALES
 C                       4 - CONTACT / FROTTEMENT
+C IN  PARMET  : PARAMETRES DES METHODES DE RESOLUTION
+C                      VOIR DETAIL DES COMPOSANTES DANS NMLECT
 C I/O VECONT : (1) = NOMBRE DE REACTUALISATION GEOMETRIQUE A EFFECTUER
 C                     / -1 SI AUTOMATIQUE             
 C                     /  0 SI PAS DE REACTUALISATION  
@@ -85,13 +88,22 @@ C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
 C
       INTEGER      ZMETH
       PARAMETER    (ZMETH=8)
-      INTEGER      II, IBID, JAUTO1, JAUTO2,IZONE
+      INTEGER      II, IBID, JAUTO1, JAUTO2,IZONE,REINCR,MATTAN
       CHARACTER*24 METHCO
       INTEGER      JMETH
 C
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ ()
+C --- AUTORISATION DE DESTRUCTION DE LA MATRICE TANGENTE (VOIR NMASFR)
+      REINCR = NINT(PARMET(1))
+      IF (REINCR.EQ.0) THEN
+        CALL CFDISC(DEFICO,'              ',IBID,IBID,IBID,MATTAN)
+          IF (MATTAN.EQ.1) THEN
+            CALL UTMESS('F','INICNT',
+     &                'NE PAS UTILISER REAC_INCR=0 AVEC LE FROTTEMENT')
+          ENDIF
+      ENDIF
 C
       IZONE = 1
       LREAC(4)  =  FONACT(4)

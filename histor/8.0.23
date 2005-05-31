@@ -1,0 +1,681 @@
+
+
+-----------------------------------------------------------------------
+--- AUTEUR boyere E.BOYERE   DATE  le 30/05/2005 a 14:31:27
+
+------------------------------------------------------------------------------
+CORRECTION AL 2005-115
+   NB_JOURS_TRAV  : 0.
+   INTERET_UTILISATEUR : NON
+   TITRE  : cas test SDLL503a de fluide-structure NOOK sur Rocks
+   FONCTIONNALITE
+     On eleve pas si pudiquement que cela la tolerance (elle passe de 0.005 à 0.04).
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+
+------------------------------------------------------------------------------
+CORRECTION AL 2005-165
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : NON
+   TITRE cas test sdld22a NOOK sur Linux suite a un test de composantes generalisees
+   FONCTIONNALITE
+     On a introduit recemment (en 8.0.19) une possibilite de tester
+     des composantes generalisees (deplacements, vitesses ou accelerations
+     d'un transitoire dans l'espace modal)
+     Il convient neanmoins d'etre circonspect avec ce type de test.
+     En effet la valeur d'une composante generalisee depend entierement de la norme
+     du mode. Or celle-ci est determinee de maniere arbitraire.
+     Donc sans normalisation prealable des normes,
+     la valeur d'une grandeur generalisee est arbitraire.
+     Enfin, il n'y pas de possibilite dans Code_Aster de fixer la direction
+     d'un mode. Pour un mode multiple, cela veut dire
+     que, meme une fois les modes normes, une grandeur generalisee peut prendre
+     une valeur quelconque.
+     Dans le cas d'un mode simple, il peut etre oriente dans une direction,
+     ou dans la direction opposee.
+     On obtient alors une valeur generalisee ou son oppose.
+
+     Je conclus de ce preliminaire que :
+     - pour tester une grandeur generalisee, il faut normer les modes ;
+     - il faut faire le test en valeur absolue.
+
+     SDLD22 ne norme pas les modes et il n'est pas encore possible
+     de tester une valeur absolue dans TEST_RESU.
+     J'ote donc les tests sur les grandeurs generalisees dans SDLD22
+     et je suggere que l'on introduise la possibilite de tester
+     en valeur absolue dans TEST_RESU.
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_U : U4.92.01
+       EXPL_ : expliquer dans le paragraphe GENE la necessite de normer les modes.
+   VALIDATION
+
+------------------------------------------------------------------------------
+CORRECTION AL 2005-189
+   NB_JOURS_TRAV  : 0.
+   INTERET_UTILISATEUR : NON
+   TITRE cas test sdld102a NOOK sur Linux suite a un test de composantes generalisees
+   FONCTIONNALITE
+     C'est le meme probleme que pour l'AL2005-165.
+     Je mets en commentaire les tests sur les composantes generalisees.
+     Je supprime aussi le test sur l'impression du fichier reprennant les donnees
+     extraites par IMPR_GENE. Il faudrait le reintegrer en testant uniquement son
+     existence, peut-etre en testant a l'interieur de ce fichier une valeur qui
+     n'est pas dependante des modes.
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+
+------------------------------------------------------------------------------
+CORRECTION AL 2005-004
+   NB_JOURS_TRAV  : 9.5
+   INTERET_UTILISATEUR : NON
+   TITRE  : cas test d'usure SDNV102a NOOK
+   FONCTIONNALITE
+     Le cas test SDNV102a est un cas test qui calcule l'usure d'une poutre
+     appuyee par une force contante contre un obstacle circulaire
+     et qui entrainee par un mouvement sinusoidal, perpendiculaire
+     la force et a la poutre, frotte contre l'anneau.
+
+     Ce cas test varie beaucoup d'une machine à l'autre.
+     On a a longtemps incrimine le calcul des modes doubles.
+     J'ai verifie qu'ils sont tres exactement calcules par MODE_ITER_SIMULT,
+     meme si, selon des paramatres independants de l'utilisateur, tels que
+     le compilateur, la precision machine, le choix de coefficients dans
+     l'algorithme, ou le resultat du referundum, les modes peuvent tourner.
+     Ils restent cependant strictement equivalents.
+     En revanche lors d'un calcul avec choc dans DYNA_TRAN_MODAL, les modes doubles
+     peuvent reveler l'aspect tres raide des non linearites dues aux impacts.
+     En effet, la theorie des systemes dynamiques nous apprend que le couplage
+     entre deux equations non lineaires peuvent creer des effets chaotiques.
+     Dans le cas des chocs avec un mode double dans DYNA_TRAN_MODAL,
+     on reunit les deux ingredients du chaos :
+     - un systeme non lineaire d'autant plus raide que l'on souhaite une bonne
+     precision sur le contact en augmentant la raideur de choc par penalisation
+     - un couplage de deux equations par l'effet du mode double alors que
+     dans le cas de modes mecaniques, les equations dans l'espace modal
+     sont habituellement independantes.
+
+     Pour diminuer l'effet chaotique des impacts dans le SDNV102a, j'ai donc :
+     - diminue la raideur de contact par penalisation en la faisant passer de 1E7 a 1E6;
+     - fait archiver tous les pas de temps au lieu de n'en prendre qu'un sur 500.
+     On obtient ainsi une puissance d'usure, calculee par POST_DYNA_MODA_T,
+     precise, d'apres des calculs probabilistes, a au moins 0,1%.
+
+     Pour la suite l'usure est calculee par POST_USURE.
+     Elle etait calculee sur un intervalle allant de 0,5 a 10 secondes
+     n'incluant que 2 pas de temps alors que le calcul dynamique
+     n'est fait que jusqu'a 2s !
+     Je pense que cela peut expliquer le comportement encore plus erratique
+     du post-traitement.
+     J'ai change l'intervalle de calcul de l'usure pour qu'il corresponde
+     au calcul dynamique.
+     POST_USURE se revele couteux, et les impressions sur un grand nombre
+     de pas de temps encore plus
+     Je n'ai donc pas lance le calcul d'usure sur l'ensemble des pas de temps
+     du transitoire.
+     (400.000 pas de temps dans DYNA_TRAN_MODAL et 400 dans POST_USURE).
+     Je fais passer le temps CPU de 60s a 300s et la memoire de 64Mo a 512Mo.
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_V : V5.03.102
+       EXPL_ : description du cas test
+   VALIDATION
+
+
+-----------------------------------------------------------------------
+--- AUTEUR cibhhlv L.VIVAN   DATE  le 30/05/2005 a 14:55:49
+
+--------------------------------------------------------------------------
+CORRECTION AL 2005-152
+   NB_JOURS_TRAV  : 2
+   POUR_LE_COMPTE_DE   : E.GALENNE
+   INTERET_UTILISATEUR : OUI
+   TITRE : POST_RCCM - méthode UNITAIRE PM/PB et SN/SN*
+   FONCTIONNALITE
+     1-La méthode UNITAIRE de POST_RCCM permet de définir des tenseurs de
+       contraintes non signés (séisme).
+       Il y a un problème dans la prise en compte de ces tenseurs dans le
+       calcul de PM/PB, du SN et SN* :
+       - les combinaisons de signe sont faites (dans rc32st) sur les
+         composantes du tenseur de contraintes du séisme et non sur les
+         composantes du torseur des efforts généralisés.
+       - dans le fichier resu, on affiche la valeur du PM(seisme) et la
+         valeur du PM de chaque situation hors séisme. Il faudrait afficher
+         la combinaison des deux (qui, d'ailleurs, est calculé...)
+     2-Quand il y a un chargement de type seisme et plusieurs groupes de
+       situation, le calcul plante :
+       <JJALLS01> LONGUEUR DE SEGMENT INVALIDE >&&RC3201.NB_OCCURR     <
+
+   DETAIL
+     1/ corrections faites pour la combinaison du torseur des efforts
+        généralisés.
+        on stocke la combinaison du PM(seisme) et PM hors séisme.
+        Idem pour le SN et le SN*
+        routines modifiées: rc32pm.f, rc32sp.f, rc32sn.f, rc32se.f
+                            rc32st.f, rc32s0.f,
+     2/ on peut définir différents groupes avec ou sans seisme. Mais dans
+        tous les cas, il ne peut y avoir qu'un seul seisme par groupe.
+        routine modifiée: rc32si.f
+     3/ Quand il y a plusieurs groupes, on stockait mal les grandeurs
+        calculées pour le seisme. On avait des valeurs nulles dans la table
+        en sortie pour le numéro de l'occurence du seisme.
+        routine modifiée: rc3201.f
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  OUI
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+     passage de la liste des cas tests validant POST_RCCM.
+     modification des valeurs de non régression pour le PM/PB du rccm04a
+     (calcul avec seisme).
+     La validation du point 2 sera réalisée lors du traitement de la
+     fiche EL2004-137.
+
+
+-----------------------------------------------------------------------
+--- AUTEUR durand C.DURAND   DATE  le 31/05/2005 a 19:05:32
+
+------------------------------------------------------------------------------
+RESTITUTION HORS AREX
+   NB_JOURS_TRAV  : 1
+   INTERET_UTILISATEUR : NON
+   FONCTIONNALITE fonctions
+   DETAILS
+      Problème sur les fonctions présent depuis toujours.
+      Si on ajoute les 2 fonctions suivantes, par CALC_FONCTION/COMB :
+
+       f :   ////////[--------------]........ (exclu à gauche, pas à droite)
+       g :   ...[------------------------]/// (exclu à droite, pas à gauche)
+
+      la logique voudrait que le support d'abscisse de la somme soit :
+
+       f+g : ////////[-------------------]///
+
+      à gauche, c'est f qui l'emporte, allant moins loin et étant exclue au dela
+      à droite, on peut prolonger f ... alors allons y jusqu'aux limites de g
+
+      Dans le cas de gauche (ici), le code produit, depuis toujours, un
+      prolongement licite sur f+g jusqu'à 0. (en évaluant donc f dans son
+      domaine d'exclusion et en prenant 0. pour valeur). C'est faux.
+
+      Je corrige de façon globale en version 8 en modifiant les règles
+      d'ajout et de multiplication des fonctions (python) entre elles.
+      D'autre part, lors de l'évaluation d'une fonction à prolongement exclu,
+      on testait par une égalité entre réels si on est sur le bord ou au dela.
+      Je modifie par introduction d'une tolérance égale à 1.e-6 de la longueur
+      de l'intervalle d'abscisses adjacent. Cette tolérance est paramétrable
+      par l'argument 'tol' de la fonction __call__
+   RESU_FAUX_VERSION_EXPLOITATION    :   OUI DEPUIS : 4.0.0
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   OUI DEPUIS : 8.0.0
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : OUI
+      DOC_U : U4.32.04
+      EXPL_ : expliquer les règles de surcharge de prolongement lors de COMB
+      DOC_U : U1.03.02
+      EXPL_ : description des méthodes de somme (__add_) et de multiplication
+              (__mul__) des fonctions python
+   VALIDATION :
+      cas tests utilisant CALC_FONCTION/COMB
+
+------------------------------------------------------------------------------
+RESTITUTION HORS AREX
+   NB_JOURS_TRAV  : 0
+   INTERET_UTILISATEUR : NON
+   FONCTIONNALITE superviseur et noyau commun EFICAS
+   DETAILS
+      préparation de la stabilisation et de la livraison d'EFICAS1.8
+      On harmonise les noyaux du superviseur et d'eficas : nécessité
+      de reporter la modif utile à EFICAS de N_MACRO_ETAPE.py
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION :
+      tous cas tests avec macros
+
+------------------------------------------------------------------------------
+CORRECTION AL 2004-367
+   NB_JOURS_TRAV  : 1.
+   INTERET_UTILISATEUR : OUI
+   TITRE : différence docR, fortran sur critère Dang Van (fatigue)
+   FONCTIONNALITE CALC_FATIGUE
+   DETAILS :
+   question sur le forum d'un ingénieur Atofina sur différence docR / FORTRAN
+   sur le calcul du critère de Dang Van dans CALC_FATIGUE.
+   Réponse Jean Angles :
+   Dans les deux cas mis en évidence, il s'agit d'un pb de documentation.
+   Dans le premier cas la doc R7.04.01 utilise une norme qui se rapproche de
+   la norme Euclidienne pour définir le rayon R, or c'est une norme de type
+   Von Mises qui programmée. Au total cela revient au même.
+   Dans le second cas c'est bien un 3, comme cela est programmé, qu'il faut
+   mettre au dénominateur de a. Modification en conséquence du pararagraphe
+   4.2 de la doc R7.04.01 (intégré dans la vesion 7.4 de la doc)
+   CD : je mets "IMPACT_DOCUMENTAIRE : NON" car la doc a déjà été actualisée
+   en v7.4
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   NON
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+
+------------------------------------------------------------------------------
+CLASSEMENT SANS SUITE AL 2004-391
+   NB_JOURS_TRAV  : 0.0
+   INTERET_UTILISATEUR : NON
+   TITRE : MACR_EOLIENNE
+   FONCTIONNALITE macr_eolienne
+   DETAILS
+   Texte de la fiche :
+   Pb dans l'application de la pression due à la houle sur la base du monopode.
+   Réponse J. Angles :
+   J'attends que le vent revienne. Pour l'instant je classe cette fiche
+   SANS SUITE dans la mesure où le risque qu'un agent EDF l'utilise sans
+   que je le sache est quasi nulle.
+   Commentaire C. Durand :
+   Est ce vraiment un argument ?
+   Doit on tout résorber (test et macro) puisque le projet responsable n'est
+   plus à mm de corriger ses propres bugs ? ... à l'EDA de décider.
+   IMPACT_DOCUMENTAIRE : NON
+
+-----------------------------------------------------------------------
+CORRECTION AL 2004-404
+   NB_JOURS_TRAV  : 1.
+   INTERET_UTILISATEUR : NON
+   TITRE : cas tests homard sous linux
+   FONCTIONNALITE homard
+   DETAILS :
+   régularisation de fiche (sans retitutions):
+
+   Texte de la fiche :
+   Avec la version NEW7.3.27 utilisant la librairie med2.2.1 l'ensemble des
+   tests qui font appel a Homard s'arrete en erreur.
+
+   Réponse Mathieu Courtois 01/12/04 :
+   Les tests passent avec la livraison de HOMARD 7.1 de la part de Gérald.
+
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   NON
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+    tests homard
+
+------------------------------------------------------------------------------
+CLASSEMENT SANS SUITE AL 2005-020
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : NON
+   TITRE : AFFE_CARA_ELEM
+   FONCTIONNALITE AFFE_CARA_ELEM
+   DETAILS
+
+   Texte fiche (B. Masson 7N) :
+   le .comm joint fonctionne en V6. En V7, il faut ajouter (pour eviter un pb
+   à la compilation) une 3eme valeur à K_T_D_L (le pb est en 2D pourtant). La
+   resolution produit alors une erreur par pivot nul, les elements discrets
+   n'etant pas vus (je pense) et les mailles sont alors decrites comme non
+   supportées par des elements ayant une rigidité (d'où l'erreur).
+
+   Réponse JL Flejou :
+   Un nouveau mot clef est apparu dans la version 7. Il faut utiliser :
+      en 2D le mot clef DISCRET_2D
+      en 3D le mot clef DISCRET
+   Dans le fichier de commande remplacer DISCRET par DISCRET_2D, avec 2 réels
+   pour des K_T_D_L. C'est OK en STA7, NEW7, NEW8
+   IMPACT_DOCUMENTAIRE : NON
+
+
+-----------------------------------------------------------------------
+--- AUTEUR laverne J.LAVERNE   DATE  le 30/05/2005 a 14:17:34
+
+------------------------------------------------------------------------------
+REALISATION EL 2005-121
+   NB_JOURS_TRAV : 3
+   INTERET_UTILISATEUR : OUI
+   TITRE  : Cas test en axis pour l'elem a discontinuité + modif de nmfi2d
+   FONCTIONNALITE
+   DETAILS
+     1) Nouveau cas test pour les éléments à discontinuité en AXIS
+         => Arrachement d'une armature rigide : ssna115a.
+     2) Dans la routine nmfi2d.f (utilisée pour les elem joint),
+        il y a un test sur le compor et deux appels de nmcomp différents.
+        => A ce niveau il n'est pas nécessaire de faire cette distinction.
+        On modifie la routine en conséquence (un seul appel à nmcomp).
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_V : V6.01.115
+       EXPL_: Arrachement d'une armature rigide avec des éléments
+              à discontinuité en modélisation AXIS_ELDI
+   VALIDATION SSNA115A
+
+
+-----------------------------------------------------------------------
+--- AUTEUR lebouvie F.LEBOUVIER   DATE  le 30/05/2005 a 16:38:12
+
+------------------------------------------------------------------------------
+CORRECTION AL 2005-180
+   NB_JOURS_TRAV  : 0.5
+   POUR_LE_COMPTE_DE : C. DURAND
+   INTERET_UTILISATEUR : OUI
+   TITRE : Resultat NOOK pour le cas test ssnp129a en mode debug
+   FONCTIONNALITE
+   DETAILS :
+     Dans le fichier lclbr2.f, le tableau CODRET était dimensionné à 3
+     au lieu de 6, on a 6 paramètres matériaux.
+     Fichier restitué: lclbr2.f
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  OUI   DEPUIS: 8.0.17
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION : ssnp129a
+
+
+-----------------------------------------------------------------------
+--- AUTEUR mabbas M.ABBAS   DATE  le 31/05/2005 a 08:40:19
+
+-----------------------------------------------------------------------
+RESTITUTION HORS AREX
+   NB_JOURS_TRAV  : 0.1
+   INTERET_UTILISATEUR : OUI
+   TITRE  :  CONTACT - Methode verification
+   FONCTIONNALITE
+   DETAILS
+     La methode de contact "sans calcul" ne doit faire aucune resolution
+     et se contente de verifier les interpenetrations.
+     Or les elements de type QUAD8 font des relations lineaires entre
+     noeuds milieux et noeuds sommets. Ce qui modifie le resultat.
+     On desactive ces liaisons lineaires lorsqu'on est en mode verif
+     afin de pas modifier les resultats par rapport a un calcul sans
+     verification du contact.
+     Correction pour activer le contact sans calcul dans ASPIC/ASCOUF
+
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+
+-----------------------------------------------------------------------
+RESTITUTION HORS AREX
+   NB_JOURS_TRAV  : 0.0
+   INTERET_UTILISATEUR : NON
+   TITRE  :  DYNA_TRAN_EXPLI - Menage final
+   FONCTIONNALITE
+   DETAILS
+     Suppression definitive du fortran op0069 lie a DYNA_TRAN_EXPLI
+     suite a la restitution EL2003-135 (v8.0.16)
+     DYNA_TRAN_EXPLI et DYNA_NON_LINE partagent desormais op0070 avec
+     STAT_NON_LINE.
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+
+-----------------------------------------------------------------------
+CLASSEMENT SANS SUITE AL 2005-103
+   NB_JOURS_TRAV  : 0
+   INTERET_UTILISATEUR : NON
+   TITRE  :  CONTACT - Archivage quand aucun noeud esclave
+   FONCTIONNALITE
+     Lorsqu'il n'y a aucune noeud esclave (typiquement, projection hors
+     zone de tolérance de tous les noeuds), l'archivage du champ VALE_CONT
+     plante lors de la conversion du CHAM_NO_S en CHAM_NO.
+     Blinder par message d'erreur et arret fatal ou prévoir une sortie de
+     secours (non stockage du champ VALE_CONT) ?
+   DETAILS
+     Apres correction de l'AL2005-091, le messgae ne pourra plus se
+     declencher puisque le vecteur contiendra toujours tous les noeuds
+     esclaves definis par l'utilisateur.
+   RESU_FAUX_VERSION_EXPLOITATION   :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT  :   NON
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+
+-----------------------------------------------------------------------
+CORRECTION AL 2005-122
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : OUI
+   TITRE  :  CONTACT - REAC_INCR
+   FONCTIONNALITE
+     Le contact/frottement avec l'option REAC_INCR = 0 plante avec
+     objet inexistant.
+     Pour REAC_INCR = 0, la matrice tangente n'est évaluée qu'une fois,
+     au premier pas de temps. Le frottement implique une modification de
+     cette matrice.
+     Les opérations menées par les algos de frottement sur la matrice
+     tangente sont incompatibles avec REAC_INCR = 0.
+   DETAILS
+     La matrice tangente de la resolution du probleme mecanique est
+     composee de deux parties:
+     - la matrice tangente du probleme mecanique
+     - les termes ajoutes par le frottement (uniquement en 3D)
+     La matrice tangente globale du probleme mecanique avec frottement 3D
+     est la combinaison lineaire de ces deux parties.
+     Or, la reactualisation de la matrice tangente avec les options REAC_INCR
+     et REAC_ITER se fait UNIQUEMENT sur la partie mecanique sans frottement.
+     De fait, la partie frottement est _systematiquement_  recalculee et
+     integree dans la matrice. Ce qui est parfaitement illogique et dangereux
+     en termes de convergence (pas de resultats faux).
+     Je blinde le cas REAC_INCR=0 en l'interdisant a l'utilisateur quand
+     il y a du frottement 3D (evite l'arret brutal)
+     Il faudra veiller a faire evoluer le frottement pour avoir coherence
+     entre les deux reactualisations.
+
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+     Essai a la main
+
+-----------------------------------------------------------------------
+CORRECTION AL 2005-191
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : OUI
+   TITRE  :  CONTACT - NOEUD_VOISIN
+   FONCTIONNALITE
+     Ci joint une étude simple avec du contact, qui ne marche pas
+     Au 1re pas il n'y a aucun déplacement et pourtant Aster trouve
+     que le jeu entre les 2 solides est 0 ( cf MATAB1 dans le .resu),
+     initialement ce jeu est de 1mm.
+     Dans le fichier mess on trouve des
+        <CONTACT_DVLP>  * NOEUD MAITRE PROCHE   : N28
+        <CONTACT_DVLP>  * MAILLE MAITRE NON APPARIEE
+     et Aster continue
+   DETAILS
+     Le branchement de NOEUD_VOISIN a permis de detecter un bug
+     sur cette fonctionnalite. Appariement faux.
+     On ne mettait pas le noeud maitre le plus proche.
+     On corrige et on blinde.
+     Rappel: desormais l'option par defaut est NOEUD_BOUCLE.
+
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+     Etude + ssnv167c et ssnv167d
+
+-----------------------------------------------------------------------
+CORRECTION AL 2005-193
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : OUI
+   TITRE  :  demo003 sur Linux
+   FONCTIONNALITE
+     Test casse
+   DETAILS
+     Probleme de bug soit dans SIMO_MIEHE, soit dans le contact,
+     soit dans l'interaction entre les deux.
+     Le passage en PETIT_REAC ne modifie guere les resultats (2%)
+     et donne un resultat identique surtoutes les plate-formes.
+     On modifie pour faire passer le cas-test. Il fuadra investiguer
+     plus sur le sujet apres la stabilisation .
+
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+     Tests
+
+
+-----------------------------------------------------------------------
+--- AUTEUR mcourtoi M.COURTOIS   DATE  le 31/05/2005 a 15:12:40
+
+------------------------------------------------------------------------------
+CORRECTION AL 2005-192
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : NON
+   TITRE  :  Test zzzz175a cassé suite à la mise à jour 8.0.22
+   FONCTIONNALITE
+      DEFI_FICHIER associé au type 'LIBRE' ne remplissait pas correctement le
+      common des unités logiques : le nom de fichier n'était pas mis à jour.
+   DETAILS
+      Il faudrait vraiment fusionner ces deux routines car il ne manque que
+      le type à ULOPEN pour faire ou non l'ouverture du fichier.
+
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   OUI
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+      zzzz175a + enchainements de
+
+
+-----------------------------------------------------------------------
+--- AUTEUR romeo R.FERNANDES   DATE  le 30/05/2005 a 11:37:47
+
+------------------------------------------------------------------------------
+CORRECTION AL 2005-182
+   NB_JOURS_TRAV  : 1.0
+   INTERET_UTILISATEUR : NON
+   TITRE  Maillage WTNL100A
+   FONCTIONNALITE
+     Cas-tests de consolidation Terzaghi 2D QUAD8.
+   DETAILS
+     Le maillage de ce cas-test est une colonne discretisee en 16 elements.
+     La maille M16 se trouve curieusement inversee! Cf Jacobien.
+     Une demande d'evolution doit etre emise pour que MACR_INFO_MAIL
+     traite cette anomalie.
+     Dans le cadre de cette correction d'anomalie on se contente donc
+     de corriger le maillage.
+
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   OUI
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+     wtnl100a
+
+
+-----------------------------------------------------------------------
+--- AUTEUR smichel S.MICHEL-PONNELLE   DATE  le 30/05/2005 a 11:17:57
+
+------------------------------------------------------------------------------
+CORRECTION AL 2005-168
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : OUI
+   TITRE  : ssnv169a couplage BETON_UMLV_FP /  ENDO_ISOT_BETON
+   FONCTIONNALITE
+     Suite à la correction de l'AL2004-431, le test plantait pour cause de
+     matrice non factorisable sur Linux
+   DETAILS
+     Le problème venait du fait que le terme de retrait n'était pas calculé
+     dans le cas RIGI_MECA_TANG.
+     On calcule donc le terme EPSRM quand OPTION=RIGI_MECA_TANG
+
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   OUI
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+     passage test
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+       C MODIF utilitai/utflsh              mcourtoi M.COURTOIS          46      3      1
+ CASTEST AJOUT ssna115a                      laverne J.LAVERNE          304    304      0
+ CASTEST MODIF demo003a                       mabbas M.ABBAS            201      9      9
+ CASTEST MODIF rccm04a                       cibhhlv L.VIVAN            360      7      7
+ CASTEST MODIF sdld102a                       boyere E.BOYERE           829     64     64
+ CASTEST MODIF sdld22a                        boyere E.BOYERE           302     17     17
+ CASTEST MODIF sdll503a                       boyere E.BOYERE           322      7      7
+ CASTEST MODIF sdnv102a                       boyere E.BOYERE           669     92     86
+ CASTEST MODIF ssnv167b                       mabbas M.ABBAS            461     33     33
+ CASTEST MODIF ssnv167c                       mabbas M.ABBAS            287     35     35
+ CASTEST MODIF wtnl100a                        romeo R.FERNANDES        466      1      1
+ FORTRAN AJOUT postrele/rc32s0               cibhhlv L.VIVAN            154    154      0
+ FORTRAN MODIF algorith/chmano                mabbas M.ABBAS            555      9      1
+ FORTRAN MODIF algorith/inicnt                mabbas M.ABBAS            162     15      3
+ FORTRAN MODIF algorith/lclbr2              lebouvie F.LEBOUVIER         77      2      2
+ FORTRAN MODIF algorith/lcumfp               smichel S.MICHEL-PONNELLE    542      4      1
+ FORTRAN MODIF algorith/nmfi2d               laverne J.LAVERNE          171      2     29
+ FORTRAN MODIF algorith/op0070                mabbas M.ABBAS            799      3      3
+ FORTRAN MODIF algorith/rechme                mabbas M.ABBAS            145      1      1
+ FORTRAN MODIF algorith/rechmn                mabbas M.ABBAS            350      4      2
+ FORTRAN MODIF modelisa/cacoeq                mabbas M.ABBAS            164     13      5
+ FORTRAN MODIF postrele/rc3201               cibhhlv L.VIVAN            579     18      7
+ FORTRAN MODIF postrele/rc32pm               cibhhlv L.VIVAN            148     11     29
+ FORTRAN MODIF postrele/rc32se               cibhhlv L.VIVAN             41      3    139
+ FORTRAN MODIF postrele/rc32si               cibhhlv L.VIVAN            253     13     18
+ FORTRAN MODIF postrele/rc32sn               cibhhlv L.VIVAN            223     51     47
+ FORTRAN MODIF postrele/rc32sp               cibhhlv L.VIVAN            287     48     36
+ FORTRAN MODIF postrele/rc32st               cibhhlv L.VIVAN             77     37     94
+ FORTRAN MODIF utilitai/uldefi              mcourtoi M.COURTOIS         157      4      3
+ FORTRAN MODIF utilitai/ulopen              mcourtoi M.COURTOIS         234      7      7
+ FORTRAN SUPPR algorith/op0069                mabbas M.ABBAS             31      0     31
+ FORTRAN SUPPR postrele/rc32s1               cibhhlv L.VIVAN            132      0    132
+  PYTHON MODIF Macro/calc_fonction_ops        durand C.DURAND           311     10     21
+  PYTHON MODIF Noyau/N_MACRO_ETAPE            durand C.DURAND           651      4      3
+  PYTHON MODIF Utilitai/t_fonction            durand C.DURAND           585     64     39
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :    2         458       458              +458
+ MODIF :   31       10454       591     750      -159
+ SUPPR :    2         163               163      -163
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :   35       11075      1049     913      +136 
