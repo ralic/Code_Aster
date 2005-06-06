@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF main utilitai  DATE 23/09/2002   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF main utilitai  DATE 03/06/2005   AUTEUR MCOURTOI M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -38,7 +38,6 @@
 #if defined SOLARIS || IRIX || P_LINUX || TRU64 || SOLARIS64 
 #define INIAST iniast_
 #define LMEMEX lmemex_
-#define ISENVO isenvo_
 #define ISINTE isinte_
 #define ISSUIV issuiv_
 #define IVERIF iverif_
@@ -62,7 +61,6 @@ extern long  repmat_ (long *a, long *l, char *rep, unsigned long l_rep);
 extern long  repout_ (long *a, long *l, char *rep, unsigned long l_rep);
 extern long  repdex_ (long *a, long *l, char *rep, unsigned long l_rep);
 extern void  nodnam_ (long *a, char *n1, char *n2, char *n3, unsigned long l1, unsigned long l2, unsigned long l3);
-extern long  isenvo_ (long *a, char *argv, unsigned long l_argv);
 extern void  origin_ (long *a, char *ori, unsigned long l_ori);
 extern void  VERSIO (long *a, long *b, long *c, char *v, long *d, unsigned long *l);
 extern long  INIAST (long *a, long *b, long *c);
@@ -79,7 +77,6 @@ extern long __stdcall REPOUT (long *a, long *l, char *rep, unsigned long l_rep);
 extern long __stdcall REPDEX (long *a, long *l, char *rep, unsigned long l_rep);
 extern void __stdcall NODNAM (long *a, char *n1, unsigned long l1, char *n2, unsigned long l2, char *n3, unsigned long l3);
 extern void __stdcall ASTER ();
-extern long __stdcall ISENVO (long *a, char *argv, unsigned long l_argv);
 extern long __stdcall ISINTE (long *a);
 extern long __stdcall ISSUIV (long *a);
 extern long __stdcall IVERIF (long *a);
@@ -93,7 +90,6 @@ extern double __stdcall MAXBAS (double *a);
 #elif defined HPUX
 #define INIAST iniast
 #define LMEMEX lmemex
-#define ISENVO isenvo
 #define ISINTE isinte
 #define ISSUIV issuiv
 #define IVERIF iverif
@@ -119,7 +115,6 @@ extern long repout (long *a, long *l, char *rep, unsigned long l_rep);
 extern long repdex (long *a, long *l, char *rep, unsigned long l_rep);
 extern void nodnam (long *a, char *n1, char *n2, char *n3, unsigned long l1, unsigned long l2, unsigned long l3);
 extern void aster ();
-extern long isenvo (long *a, char *argv, unsigned long l_argv);
 extern long isinte (long *a);
 extern long issuiv (long *a);
 extern long iverif (long *a);
@@ -212,13 +207,6 @@ void asterm(long argc,char** argv)
 	VERSIO (&ivers,&iutil,&iniv,&vdate[0],&ldate,&ilog);
 #elif defined SOLARIS || HPUX || IRIX || P_LINUX || TRU64 || SOLARIS64 
 	VERSIO (&ivers,&iutil,&iniv,&vdate[0],&ilog,&ldate);
-#endif
-	inter=0;
-#if defined SOLARIS || HPUX || IRIX || PPRO_NT || P_LINUX || TRU64 || SOLARIS64 
-	l_argv = strlen(*argv);
-	cerr=ISENVO(&inter,*argv,l_argv);
-#else
-	cerr=ISENVO(&inter,*argv);
 #endif
 	*argv ++;
 
@@ -361,18 +349,6 @@ void asterm(long argc,char** argv)
 		if (strcmp(*argv,"-verif") == 0) {
 			inter=1;
 			cerr=IVERIF(&inter);
-		}
-		/*
-   ** Detection version officielle ou surchargee
-   */
-		if (strcmp(*argv,"-vo") == 0) {
-			inter=1;
-			*argv++;
-#if defined CRAY
-			cerr=ISENVO(&inter,*argv);
-#elif defined SOLARIS || HPUX || IRIX || PPRO_NT || P_LINUX || TRU64 || SOLARIS64 
-			cerr=ISENVO(&inter,*argv,l_argv);
-#endif
 		}
 		/*
    ** Limite memoire
@@ -542,7 +518,6 @@ void asterm(long argc,char** argv)
 			printf("     -suivi_batch    : suivi en interactif d'un batch\n");
 			printf("                     : (le buffer du fichier de sortie est vide a chaque ligne) \n");
 			printf("     -verif          : uniquement verification de la syntaxe des commandes\n");
-			printf("     -vo  cle        : cle pour determiner si c'est une version officielle ou surchargee\n");
 			printf("     -dbgjeveux      : mode debug JEVEUX (positionnement a UNDEF des objets liberes)\n");
 			printf("     -mem            : limite memoire superieure pour l'allocation des structures JEVEUX (en Mw)\n");
 			printf("     -memjeveux val  : memoire exacte a allouer pour les structures JEVEUX (en Mw)\n");

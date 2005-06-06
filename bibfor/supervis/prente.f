@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 25/09/2001   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF SUPERVIS  DATE 03/06/2005   AUTEUR MCOURTOI M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -25,32 +25,19 @@ C     ------------------------------------------------------------------
       CHARACTER*8   CVERS
       CHARACTER*16  DATEVE,MACH,OS,PROC,KPRO
       CHARACTER*24  LADATE
-      CHARACTER*32  CMSUP
 C     ------------------------------------------------------------------
       INTEGER       FIRST
       SAVE          FIRST, DATEVE, CVERS,LADATE
-      INTEGER       IENVO, ENVO, LSUP
-      LOGICAL       BENVO, BDVP, LEXP, VPORT
-      SAVE          BENVO, BDVP, LEXP, VPORT
+      INTEGER       LSUP
+      LOGICAL       BDVP, LEXP
+      SAVE          BDVP, LEXP
       DATA          FIRST/0/
 C     ------------------------------------------------------------------
 C
+      IFM = IUNIFI('MESSAGE')
       IF ( FIRST .NE. 7111989 ) THEN
          CALL ENLIRD(LADATE)
          CALL VERSIO(IVERS,IUTIL,INIVO,DATEVE,LEXP)
-         CMSUP = ' VERSION PORTEE ISSUE DE LA '          
-         ENVO=-1
-         IENVO=ISENVO(ENVO,' ')
-         IF (IENVO .GT. 0) THEN
-            BENVO=.TRUE.
-            IF (IENVO .EQ. 2) THEN
-              VPORT = .TRUE.
-            ELSE
-              VPORT = .FALSE.
-            ENDIF
-         ELSE
-            BENVO=.FALSE.
-         ENDIF
          IF (INIVO .EQ. 0) THEN
             CVERS = '  .  '
             BDVP=.FALSE.
@@ -69,44 +56,33 @@ C
          
       ENDIF
 C      
-      IF (BENVO) THEN
-         LSUP = 1  
-         IF (VPORT) LSUP = 28
 C     ------------------------------------------------------------------
-
-         IF (BDVP) THEN
-            CALL PRTITR('C','-- CODE_ASTER --'//CMSUP(1:LSUP)//'VERSION'
-     +                      //' DE DEVELOPPEMENT '//CVERS//' --')
-         ELSE IF (LEXP) THEN
-            CALL PRTITR('C','-- CODE_ASTER --'//CMSUP(1:LSUP)//'VERSION'
-     +                      //' D''EXPLOITATION '//CVERS//' --')
-            CALL PRTITR('D','COPYRIGHT  EDF-R&D  1991   ')
-         ELSE
-            CALL PRTITR('C','-- CODE_ASTER --'//CMSUP(1:LSUP)//'VERSION'
-     +                      //' DE DEVELOPPEMENT FIGEE '//CVERS//' --')
-            CALL PRTITR('D','COPYRIGHT  EDF-R&D  1991   ')
-         ENDIF
-         CALL PRTITR('D','COPYRIGHT  EDF-R&D  '//DATEVE(7:10)//'   ')
+      IF (BDVP) THEN
+        CALL PRTITR('C','-- CODE_ASTER -- VERSION'
+     +                  //' DE DEVELOPPEMENT '//CVERS//' --')
+      ELSE IF (LEXP) THEN
+        CALL PRTITR('C','-- CODE_ASTER -- VERSION'
+     +                  //' D''EXPLOITATION '//CVERS//' --')
       ELSE
-         CALL PRTITR('C','RESULTATS PRODUITS PAR SURCHARGE NON '//
-     +                                       'OFFICIELLE')
-         CALL PRTITR('C','DE LA VERSION '//CVERS//' DU CODE_ASTER')
-         CALL PRTITR('C','CES RESULTATS NE PEUVENT ETRE UTILISES '//
-     +     'OU PUBLIES')
-         CALL PRTITR('C','EN FAISANT REFERENCE AU CODE_ASTER')         
+        CALL PRTITR('C','-- CODE_ASTER -- VERSION'
+     +                  //' DE DEVELOPPEMENT FIGEE '//CVERS//' --')
       ENDIF
+      CALL PRTITR('C','COPYRIGHT  EDF-R&D 1991 - '//DATEVE(7:10))
+      
       WRITE(KPRO,'(I3)') MLNBPR() 
       CALL PRTITR('C','EXECUTION DU : '//LADATE)
       CALL NODNAM(1,MACH,OS,PROC)
-      CALL PRTITR('D','PLATE-FORME : '//MACH)
-      CALL PRTITR('D','NB MAX PROC : '//KPRO)
-      CALL PRTITR('D','SYSTEME : '//OS)
-      CALL PRTITR('D','CPU : '//PROC)
+      CALL PRTITR('C','PLATE-FORME : '//MACH)
+      CALL PRTITR('C','NB MAX PROC : '//KPRO)
+      CALL PRTITR('C','SYSTEME : '//OS)
+      CALL PRTITR('C','CPU : '//PROC)
+C
+C --- VERSION SURCHARGEE OU NON ?
+      CALL SURCHG(IFM)
 C
       IF ( FIRST .NE. 7111989 ) THEN
            FIRST  =   7111989
          CALL VERSIO(IVERS,IUTIL,INIVO,DATEVE,LEXP)
-         IFM = IUNIFI('MESSAGE')
          IF (IFM.GT.0) WRITE(IFM,'(//)')
       ENDIF
       END 
