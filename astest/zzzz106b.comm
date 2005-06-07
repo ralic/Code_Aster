@@ -1,0 +1,264 @@
+# MODIF  DATE 27/09/2000   AUTEUR DURAND C.DURAND 
+# TITRE CRITERES GEOMETRIQUES DANS DEFI_GROUP EN 2D
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+#CAS_TEST__: ZZZZ106B
+#  MAILLAGE : PLAQUE CARREE MINCE (C'EST LE MAILLAGE DU SDLS100B)
+# DIMENSION 10*10 M -- BLOQUEE SUR UN COTE
+# MODELISATION D_PLAN : 25 NOEUDS -- 32 MAILLES TRIA3
+#=======================================================================
+
+
+DEBUT(CODE=_F(  NOM = 'ZZZZ106B',NIV_PUB_WEB='INTERNET') )
+
+MA=LIRE_MAILLAGE( )
+
+MA=DEFI_GROUP(     reuse=MA,        MAILLAGE=MA,CREA_GROUP_MA=(
+                        _F(  NOM = 'GM1', 
+                                        OPTION = 'SPHERE',
+                                        NOEUD_CENTRE = 'N1',
+                                        RAYON = 2.),
+                        _F(   NOM = 'GM3', 
+                                         OPTION = 'BANDE',
+                                         NOEUD_CENTRE = 'N1', 
+                                         DIST = 2.,
+                                       VECT_NORMALE = (0.,1.,)),
+                        _F(   NOM = 'GM4', 
+                                         OPTION = 'FACE_NORMALE',
+                                       VECT_NORMALE = (0.,-1.,))),CREA_GROUP_NO=(
+                        _F(  NOM = 'GN1', 
+                                        OPTION = 'ENV_SPHERE',
+                                        NOEUD_CENTRE = 'N1',
+                                        RAYON = 2.5,
+                                        PRECISION = 0.1),
+                        _F(  NOM = 'GN3',
+                                        OPTION = 'PLAN',
+                                        NOEUD_CENTRE = 'N14',
+                                       VECT_NORMALE = (1.,0.,),
+                                        PRECISION = 0.1)),
+                         INFO=2
+                                      )
+
+MO=AFFE_MODELE(  MAILLAGE=MA,
+                  AFFE=_F(  TOUT = 'OUI',      PHENOMENE = 'MECANIQUE',
+                  MODELISATION = 'D_PLAN') )
+
+MAT=DEFI_MATERIAU( ELAS=_F(  E = 1.0,  NU = 0.3) )
+
+CHMAT=AFFE_MATERIAU(  MAILLAGE=MA,
+                       AFFE=_F(  TOUT = 'OUI',  MATER = MAT) )
+
+# --------------------------------------------------------------------
+#
+# ---- PLAQUE POSEE SUR UN COTE + ROT/Y BLOQUEE
+# --------------------------------------------------------------------
+#
+# ---- CONDITIONS AUX LIMITES EN DEPLACEMENTS
+# ----  
+#
+#    --- CL1 : LES NOEUDS SONT REPERES 'A LA MAIN'
+
+CLDIRI1=AFFE_CHAR_MECA(  MODELE=MO,
+                          DDL_IMPO=_F(  GROUP_NO = 'COTE',
+                         DX = 0., DY = 0.))
+
+#
+# ---- CHARGEMENT EN PRESSION SUR LES MAILLES AUXQUELLES
+# ---- APPARTIENT LE NOEUD MILIEU 
+#
+#    --- CHARGEMENT 1 : LES MAILLES SONT REPEREES 'A LA MAIN'
+
+
+#    --- CHARGEMENT 1 : ON IMPOSE UNE FORCE VOLUMIQUE DE DENSITE 1.
+#    ---                SELON Y SUR LA LISTE DE MAILLES DEVANT ETRE
+#                       EGALE A GM1
+#
+CHMEC1=AFFE_CHAR_MECA(  MODELE=MO,
+                         FORCE_INTERNE=_F( 
+                        MAILLE = ('TR6A','TR6B','TR7A','TR10B','TR11A','TR11B',),
+                        FY = 1.))
+
+#
+#    --------------------------------------------------
+#    --- CHARGEMENT 2 : GM1 EST LA LISTE DE MAILLES APPARTENANT
+#    ---                A L'INTERSECTION DE LA PLAQUE ET DU CERCLE
+#    ---                DE CENTRE MILIEU DE LA PLAQUE ET DE RAYON 2.
+
+CHMEC2=AFFE_CHAR_MECA(  MODELE=MO,
+                         FORCE_INTERNE=_F( GROUP_MA = 'GM1',  FY = -1.) )
+
+#
+#    --------------------------------------------------
+#    --- CHARGEMENT 3 : ON APPLIQUE UNE FORCE NODALE FY = 1.
+#    ---                SUR LES NOEUDS DU COTE DROIT DE LA PLAQUE
+#    ---                I.E. N14,N15,N16,N17,N18
+#    ---                CE CHARGEMENT SERA A COMBINER AVEC LE 
+#    ---                CHARGEMENT 10
+
+CHMEC3=AFFE_CHAR_MECA(  MODELE=MO,
+                         FORCE_NODALE=_F( NOEUD = ('N14','N15','N16','N17','N18',),
+                                       FY = 1.) )
+
+#
+#    --- CHARGEMENT 4 : LES MAILLES SONT REPEREES 'A LA MAIN'
+#
+# ---- ON CHARGE EN PRESSION  LES MAILLES APPARTENANT 
+# ---- A UNE BANDE PARALLELE A L'AXE X , DE LARGEUR 4., DONT
+# ---- LA LIGNE MOYENNE PASEE PAR LE CENTRE DE LA PLAQUE. 
+#
+CHMEC4=AFFE_CHAR_MECA(  MODELE=MO,
+                          DDL_IMPO=_F(  GROUP_NO = 'COTE',
+                         DX = 0., DY = 0.),
+                FORCE_INTERNE=_F( MAILLE = ('TR5A','TR5B','TR6A','TR6B','TR7A','TR7B',
+              'TR8A','TR8B','TR9A','TR9B','TR10A','TR10B','TR11A','TR11B','TR12A','TR12B',),
+               FY = 1.) )
+
+#
+#    --------------------------------------------------
+#    --- CHARGEMENT 5 : LES MAILLES SONT DEFINIES COMME APPARTENANT
+#    ---                 A LA BANDE DECRITE AU-DESSUS
+#
+CHMEC5=AFFE_CHAR_MECA(  MODELE=MO,
+                         FORCE_INTERNE=_F( GROUP_MA = 'GM3',  FY = -1.))
+
+#
+#    --------------------------------------------------
+#    --- CHARGEMENT 6 : ON IMPOSE UN PRESSION DE 1 SUR LES
+#    ---                 LES MAILLES SEG2 // A X
+#
+CHMEC6=AFFE_CHAR_MECA(  MODELE=MO,
+                         PRES_REP=_F( MAILLE = ('S1','S2','S3','S4',), PRES = 1.))
+
+#
+#    --------------------------------------------------
+#    --- CHARGEMENT 7 : ON IMPOSE UN PRESSION DE -1 SUR 
+#    ---                 LES MAILLES // A X
+#
+CHMEC7=AFFE_CHAR_MECA(  MODELE=MO,
+                         PRES_REP=_F( GROUP_MA = 'GM4', PRES = -1.))
+
+#
+#    --------------------------------------------------
+#    --- CHARGEMENT 8 : ON IMPOSE UNE FORCE NODALE EGALE A 1.
+#    ---                 SUR LES NOEUDS 3,5,7,9
+#
+CHMEC8=AFFE_CHAR_MECA(  MODELE=MO,
+                         FORCE_NODALE=_F( NOEUD = ('N3','N5','N7','N9',),
+                                       FY = 1.))
+
+#
+#    --------------------------------------------------
+#    --- CHARGEMENT 9 : ON IMPOSE UNE FORCE NODALE EGALE A -1.
+#    ---                 SUR LES NOEUDS 3,5,7,9 DU GROUP_NO GN1
+#
+CHMEC9=AFFE_CHAR_MECA(  MODELE=MO,
+                         FORCE_NODALE=_F( GROUP_NO = 'GN1',
+                                       FY = -1.))
+
+#
+#    --------------------------------------------------
+#    --- CHARGEMENT 10 : ON IMPOSE UNE FORCE NODALE EGALE A  -1.
+#    ---                 SUR LES NOEUDS DU GROUP_NO GN3
+#
+CHMEC10=AFFE_CHAR_MECA(  MODELE=MO,
+                         FORCE_NODALE=_F( GROUP_NO = 'GN3',
+                                       FY = -1.))
+
+#
+#--------------------------------------------------------------------
+#
+#    --- PREMIERE RESOLUTION : ON SUPERPOSE LES CHARGEMENTS 1 ET 2
+#
+
+RESU1=MECA_STATIQUE(    MODELE=MO,       CHAM_MATER=CHMAT,EXCIT=(
+                               _F(  CHARGE = CLDIRI1),      
+                               _F(  CHARGE = CHMEC1),      
+                               _F(  CHARGE = CHMEC2))          )
+
+#
+#    --- DEUXIEME RESOLUTION : ON SUPERPOSE LES CHARGEMENTS 4 ET 5
+#
+
+RESU2=MECA_STATIQUE(    MODELE=MO,       CHAM_MATER=CHMAT,EXCIT=(
+                               _F(  CHARGE = CHMEC4),      
+                               _F(  CHARGE = CHMEC5))          )
+
+#    --------------------------------------------------
+#
+#    --- TROISIEME RESOLUTION : ON SUPERPOSE LES CHARGEMENTS 6 ET 7
+#                               AVEC LES CONDITIONS DIRICHLET CLDIRI1
+#
+
+RESU3=MECA_STATIQUE(    MODELE=MO,       CHAM_MATER=CHMAT,EXCIT=(
+                               _F(  CHARGE = CLDIRI1),      
+                               _F(  CHARGE = CHMEC6),      
+                               _F(  CHARGE = CHMEC7))          )
+
+#    --------------------------------------------------
+#
+#    --- QUATRIEME RESOLUTION : ON SUPERPOSE LES CHARGEMENTS 8 ET 9
+#                               AVEC LES CONDITIONS DIRICHLET CLDIRI1
+#
+
+RESU4=MECA_STATIQUE(    MODELE=MO,       CHAM_MATER=CHMAT,EXCIT=(
+                               _F(  CHARGE = CLDIRI1),      
+                               _F(  CHARGE = CHMEC8),      
+                               _F(  CHARGE = CHMEC9))          )
+
+#    --------------------------------------------------
+#
+#    --- CINQUIEME RESOLUTION : ON SUPERPOSE LES CHARGEMENTS 3 ET 10
+#                               AVEC LES CONDITIONS DIRICHLET CLDIRI1
+#
+
+RESU5=MECA_STATIQUE(    MODELE=MO,       CHAM_MATER=CHMAT,EXCIT=(
+                               _F(  CHARGE = CLDIRI1),      
+                               _F(  CHARGE = CHMEC3),      
+                               _F(  CHARGE = CHMEC10))          )
+
+#--------------------------------------------------------------------
+#
+#   ON TESTE LA NULLITE DES CHAMPS DE DEPLACEMENTS
+#
+
+TEST_RESU(RESU=(
+   _F(   RESULTAT = RESU1,        NOM_CHAM = 'DEPL',
+           CRITERE = 'ABSOLU',     PRECISION = 1.E-10,
+           NUME_ORDRE = 1, NOEUD = 'N18',   NOM_CMP = 'DY',  VALE = 0.),
+#------------------------------------------------------------
+   _F(   RESULTAT = RESU2,        NOM_CHAM = 'DEPL',
+           CRITERE = 'ABSOLU',     PRECISION = 1.E-10,
+           NUME_ORDRE = 1, NOEUD = 'N18',   NOM_CMP = 'DY',  VALE = 0.),
+#------------------------------------------------------------
+   _F(   RESULTAT = RESU3,        NOM_CHAM = 'DEPL',
+           CRITERE = 'ABSOLU',     PRECISION = 1.E-10,
+           NUME_ORDRE = 1, NOEUD = 'N18',   NOM_CMP = 'DY',  VALE = 0.),
+#------------------------------------------------------------
+   _F(   RESULTAT = RESU4,        NOM_CHAM = 'DEPL',
+           CRITERE = 'ABSOLU',     PRECISION = 1.E-10,
+           NUME_ORDRE = 1, NOEUD = 'N18',   NOM_CMP = 'DY',  VALE = 0.),
+#------------------------------------------------------------
+   _F(   RESULTAT = RESU5,        NOM_CHAM = 'DEPL',
+           CRITERE = 'ABSOLU',     PRECISION = 1.E-10,
+           NUME_ORDRE = 1, NOEUD = 'N18',   NOM_CMP = 'DY',  VALE = 0.))
+#------------------------------------------------------------
+                                                   )
+
+#------------------------------------------------------------
+FIN()
+#

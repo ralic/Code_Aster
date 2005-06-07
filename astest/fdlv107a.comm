@@ -1,0 +1,631 @@
+# MODIF  DATE 06/04/2004   AUTEUR CIBHHPD S.VANDENBERGHE 
+# TITRE CALCUL DE RIGIDITE AJOUTEE EN ECOULEMENT ANNULAIRE
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+
+#      CALCUL DE DIVERSES RIGIDITES AJOUTEES EN ECOULEMENT
+
+#  ANNULAIRE POTENTIEL POUR DIFFERENTES VITESSES D'ECOULEMENT
+
+#                     JUSQU'A
+
+#                   VITESSE CRITIQUE
+
+#                     DE FLAMBAGE
+
+#                      CALCUL 3D
+
+#                CALCUL MODAL  EN EAU
+
+#                   CAS TEST FDLV107A
+
+DEBUT(CODE=_F( NOM = 'FDLV107A',NIV_PUB_WEB='INTERNET'))
+
+PRE_IDEAS(  UNITE_IDEAS=19,
+               UNITE_MAILLAGE=23)
+
+MAYA=LIRE_MAILLAGE( UNITE=23)
+
+# CARACTERISTIQUES DE LA STRUCTURE: CYLINDRES CONCENTRIQUES
+# SEPARES PAR UN FLUIDE ANNULAIRE
+
+
+ACIER=DEFI_MATERIAU( ELAS=_F( RHO = 7800.,  NU = 0.3, E = 2.E11))
+
+DOMSTRUC=AFFE_MATERIAU(  MAILLAGE=MAYA,
+                            AFFE=_F( GROUP_MA = 'INTERFACE', MATER = ACIER)
+                            )
+
+STRUCTUR=AFFE_MODELE( MAILLAGE=MAYA,
+                         AFFE=_F( GROUP_MA = 'INTERFACE',
+                  MODELISATION = 'DKT', PHENOMENE = 'MECANIQUE')  )
+
+CARA=AFFE_CARA_ELEM( MODELE=STRUCTUR,
+                      COQUE=_F( GROUP_MA = 'INTERFACE', EPAIS = 1.E-3))
+
+CHARGS=AFFE_CHAR_MECA( MODELE=STRUCTUR,
+            DDL_IMPO=_F( GROUP_NO = 'NOINT',  DX = 0., DY = 0., DZ = 0.,
+                                DRX = 0., DRY = 0.,
+                                 DRZ = 0.))
+
+MEL_KSTR=CALC_MATR_ELEM( MODELE=STRUCTUR,
+                               CARA_ELEM=CARA,
+                              CHAM_MATER=DOMSTRUC,  OPTION='RIGI_MECA',
+                               CHARGE=CHARGS
+                              )
+
+MEL_MSTR=CALC_MATR_ELEM( MODELE=STRUCTUR,
+                               CARA_ELEM=CARA,
+                              CHAM_MATER=DOMSTRUC,  OPTION='MASS_MECA',
+                               CHARGE=CHARGS
+                              )
+
+NUSTR=NUME_DDL(MATR_RIGI=MEL_KSTR)
+
+MATASKS=ASSE_MATRICE( MATR_ELEM=MEL_KSTR,  NUME_DDL=NUSTR)
+
+MATASMS=ASSE_MATRICE( MATR_ELEM=MEL_MSTR,  NUME_DDL=NUSTR)
+
+# CARACTERISTIQUES DU FLUIDE EN ECOULEMENT
+# MATERIAU (CARACTERISTIQUES THERMIQUES EQUIVALENTES)
+
+
+EAU=DEFI_MATERIAU( THER=_F( LAMBDA = 1., RHO_CP = 1000.))
+
+DOMFLUI=AFFE_MATERIAU(  MAILLAGE=MAYA,AFFE=(
+                       _F( GROUP_MA = 'FLUIDE', MATER = EAU),
+                       _F( GROUP_MA = 'ENTREE', MATER = EAU),
+                            _F( GROUP_MA = 'SORTIE', MATER = EAU),
+                        _F( GROUP_MA = 'INTERFACE', MATER = EAU))
+                            )
+
+DOMINTER=AFFE_MATERIAU(  MAILLAGE=MAYA,
+                            AFFE=_F( GROUP_MA = 'INTERFACE', MATER = EAU)
+                           )
+
+# MODELES FLUIDES ET INTERFACE
+
+
+FLUIDE=AFFE_MODELE( MAILLAGE=MAYA,AFFE=(
+                     _F( GROUP_MA = 'FLUIDE',
+                MODELISATION = '3D',  PHENOMENE = 'THERMIQUE'),
+                     _F( GROUP_MA = 'ENTREE',
+                MODELISATION = '3D',  PHENOMENE = 'THERMIQUE'),
+                     _F( GROUP_MA = 'SORTIE',
+                MODELISATION = '3D',  PHENOMENE = 'THERMIQUE'))
+
+                          )
+
+FLUIDE2=AFFE_MODELE( MAILLAGE=MAYA,AFFE=(
+                     _F( GROUP_MA = 'FLUIDE',
+                MODELISATION = '3D',  PHENOMENE = 'THERMIQUE'),
+                     _F( GROUP_MA = 'INTERFACE',
+                MODELISATION = '3D',  PHENOMENE = 'THERMIQUE')))
+
+INTERFAC=AFFE_MODELE( MAILLAGE=MAYA,
+                      AFFE=_F( GROUP_MA = 'INTERFACE',
+                   MODELISATION = '3D', PHENOMENE = 'THERMIQUE')
+                           )
+
+# DIRICHLET POUR LES PROBLEMES POTENTIELS INSTATIONNAIRES
+
+
+
+CL2=AFFE_CHAR_THER( MODELE=FLUIDE2,
+                    TEMP_IMPO=_F( GROUP_NO = 'TEMPIMPO', TEMP = 0.)
+                         )
+
+# CALCUL DU POTENTIEL DES VITESSES A 4 M/S
+
+CL=AFFE_CHAR_THER( MODELE=FLUIDE,
+                    TEMP_IMPO=_F( GROUP_NO = 'NOSORT', TEMP = 0.),FLUX_REP=(
+                    _F( GROUP_MA = 'ENTREE',
+                              FLUN = -4.),
+                    _F( GROUP_MA = 'SORTIE',
+                             FLUN = 4.))
+                               )
+
+PHIBAR=THER_LINEAIRE(  MODELE=FLUIDE,
+                         CHAM_MATER=DOMFLUI,
+                       EXCIT=_F( CHARGE = CL))
+
+# CALCUL DU POTENTIEL DES VITESSES A 0.5 M/S
+
+CLRI1=AFFE_CHAR_THER( MODELE=FLUIDE,
+                    TEMP_IMPO=_F( GROUP_NO = 'NOSORT', TEMP = 0.),FLUX_REP=(
+                    _F( GROUP_MA = 'ENTREE',
+                              FLUN = -0.5),
+                    _F( GROUP_MA = 'SORTIE',
+                             FLUN = 0.5))
+                               )
+
+PHIBRI1=THER_LINEAIRE(  MODELE=FLUIDE,
+                         CHAM_MATER=DOMFLUI,
+                       EXCIT=_F( CHARGE = CLRI1))
+
+# CALCUL DU POTENTIEL DES VITESSES A 1.5 M/S
+
+CLRI2=AFFE_CHAR_THER( MODELE=FLUIDE,
+                    TEMP_IMPO=_F( GROUP_NO = 'NOSORT', TEMP = 0.),FLUX_REP=(
+                    _F( GROUP_MA = 'ENTREE',
+                              FLUN = -1.5),
+                    _F( GROUP_MA = 'SORTIE',
+                             FLUN = 1.5))
+                               )
+
+PHIBRI2=THER_LINEAIRE(  MODELE=FLUIDE,
+                         CHAM_MATER=DOMFLUI,
+                       EXCIT=_F( CHARGE = CLRI2))
+
+# CALCUL DU POTENTIEL DES VITESSES A 2. M/S
+
+CLRI3=AFFE_CHAR_THER( MODELE=FLUIDE,
+                    TEMP_IMPO=_F( GROUP_NO = 'NOSORT', TEMP = 0.),FLUX_REP=(
+                    _F( GROUP_MA = 'ENTREE',
+                              FLUN = -2.0),
+                    _F( GROUP_MA = 'SORTIE',
+                             FLUN = 2.))
+                               )
+
+PHIBRI3=THER_LINEAIRE(  MODELE=FLUIDE,
+                         CHAM_MATER=DOMFLUI,
+                       EXCIT=_F( CHARGE = CLRI3))
+
+# CALCUL DU POTENTIEL DES VITESSES A 2.2 M/S
+
+CLRI4=AFFE_CHAR_THER( MODELE=FLUIDE,
+                    TEMP_IMPO=_F( GROUP_NO = 'NOSORT', TEMP = 0.),FLUX_REP=(
+                    _F( GROUP_MA = 'ENTREE',
+                              FLUN = -2.2),
+                    _F( GROUP_MA = 'SORTIE',
+                             FLUN = 2.2))
+                               )
+
+PHIBRI4=THER_LINEAIRE(  MODELE=FLUIDE,
+                         CHAM_MATER=DOMFLUI,
+                       EXCIT=_F( CHARGE = CLRI4))
+
+# CALCUL DU POTENTIEL DES VITESSES A 2.688 M/S (VITESSE CRITIQUE)
+
+CLRI5=AFFE_CHAR_THER( MODELE=FLUIDE,
+                    TEMP_IMPO=_F( GROUP_NO = 'NOSORT', TEMP = 0.),FLUX_REP=(
+                    _F( GROUP_MA = 'ENTREE',
+                              FLUN = -2.688),
+                    _F( GROUP_MA = 'SORTIE',
+                             FLUN = 2.688))
+                               )
+
+PHIBRI5=THER_LINEAIRE(  MODELE=FLUIDE,
+                         CHAM_MATER=DOMFLUI,
+                       EXCIT=_F( CHARGE = CLRI5))
+
+# AFFECTATION DU DEPLACEMENT AU CYLINDRE EXTERNE
+# FLEXION SUR DEUX ROTULES AUX EXTREMITES
+
+
+CHAMNO=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_DEPL_R', 
+MAILLAGE=MAYA,AFFE=(
+                         _F( GROUP_NO = 'NOINT',
+                                NOM_CMP = ('DX','DY','DZ',),
+                                VALE = (0.,0.,0.,)),
+                        _F( GROUP_NO = 'GRNO1',
+                               NOM_CMP = ('DX','DY','DZ',),
+                                VALE = (0.,0.,0.,)),
+                         _F( GROUP_NO = 'GRNO2',
+                               NOM_CMP = ('DX','DY','DZ',),
+                                VALE = (0.3090169944,0.,0.,)),
+                         _F( GROUP_NO = 'GRNO3',
+                               NOM_CMP = ('DX','DY','DZ',),
+                                VALE = (0.5877852523,0.,0.,)),
+                        _F( GROUP_NO = 'GRNO4',
+                               NOM_CMP = ('DX','DY','DZ',),
+                                VALE = (0.8090169944,0.,0.,)),
+                        _F( GROUP_NO = 'GRNO5',
+                               NOM_CMP = ('DX','DY','DZ',),
+                                VALE = (0.9510565163,0.,0.,)),
+                        _F( GROUP_NO = 'GRNO6',
+                               NOM_CMP = ('DX','DY','DZ',),
+                                VALE = (1.,0.,0.,)),
+                        _F( GROUP_NO = 'GRNO7',
+                               NOM_CMP = ('DX','DY','DZ',),
+                                VALE = (0.9510565163,0.,0.,)),
+                        _F( GROUP_NO = 'GRNO8',
+                               NOM_CMP = ('DX','DY','DZ',),
+                                VALE = (0.8090169944,0.,0.,)),
+                        _F( GROUP_NO = 'GRNO9',
+                               NOM_CMP = ('DX','DY','DZ',),
+                                VALE = (0.5877852523,0.,0.,)),
+                        _F( GROUP_NO = 'GRNO10',
+                               NOM_CMP = ('DX','DY','DZ',),
+                                VALE = (0.3090169944,0.,0.,)),
+                        _F( GROUP_NO = 'GRNO11',
+                               NOM_CMP = ('DX','DY','DZ',),
+                                VALE = (0.,0.,0.,))),
+
+                              NUME_DDL=NUSTR)
+
+# MASSE , AMORTISSEMENT ET RIGIDITE AJOUTES A 4 M/S
+#N AYANT PAS DE TEST_MATRICE OPERATIONNEL
+# ON DONNE CI_DESSOUS
+# LES RIGIDITES A CALCULER PAR ASTER EN THEORIE
+#POTENTIELLE
+# A 4 M/S
+# KA = -5.496E4
+# CA = 0.52E-2
+# MA = 3.481E6 (INDEPENDANTE DE LA VITESSE)
+#
+#A 0.5 M/S
+# KA=-858.9
+#
+#A 1.5 M/S
+# KA=-7729.8
+#
+#A 2 M/S
+# KA=-13742.
+#
+#A 2.2 M/S
+# KA=-16628
+#
+#A 2.688 M/S
+# KA=-25330 - INSTABILITE DE FLAMBAGE
+
+
+AMOR=CALC_MATR_AJOU(  MODELE_FLUIDE=FLUIDE2,
+                           MODELE_INTERFACE=INTERFAC,
+                           CHARGE=CL2,
+                          CHAM_MATER=DOMFLUI,
+                           CHAM_NO=CHAMNO,
+                          OPTION='AMOR_AJOU',
+                           POTENTIEL=PHIBAR)
+
+RIGI=CALC_MATR_AJOU(  MODELE_FLUIDE=FLUIDE2,
+                           MODELE_INTERFACE=INTERFAC,
+                           CHARGE=CL2,
+                          CHAM_MATER=DOMFLUI,
+                           CHAM_NO=CHAMNO,
+                          OPTION='RIGI_AJOU',
+                           POTENTIEL=PHIBAR)
+
+MASS=CALC_MATR_AJOU(  MODELE_FLUIDE=FLUIDE2,
+                           MODELE_INTERFACE=INTERFAC,
+                           CHARGE=CL2,
+                          CHAM_MATER=DOMFLUI,
+                           CHAM_NO=CHAMNO,
+                          OPTION='MASS_AJOU',
+                          POTENTIEL=PHIBAR)
+
+# MASSE ET RIGIDITE AJOUTEES A 0.5 M/S
+
+
+RIGI1=CALC_MATR_AJOU(  MODELE_FLUIDE=FLUIDE2,
+                           MODELE_INTERFACE=INTERFAC,
+                           CHARGE=CL2,
+                          CHAM_MATER=DOMFLUI,
+                           CHAM_NO=CHAMNO,
+                          OPTION='RIGI_AJOU',
+                           POTENTIEL=PHIBRI1)
+
+MASS1=CALC_MATR_AJOU(  MODELE_FLUIDE=FLUIDE2,
+                           MODELE_INTERFACE=INTERFAC,
+                           CHARGE=CL2,
+                          CHAM_MATER=DOMFLUI,
+                           CHAM_NO=CHAMNO,
+                          OPTION='MASS_AJOU',
+                          POTENTIEL=PHIBRI1)
+
+# MASSE ET RIGIDITE AJOUTEES A 1.5 M/S
+
+
+RIGI2=CALC_MATR_AJOU(  MODELE_FLUIDE=FLUIDE2,
+                           MODELE_INTERFACE=INTERFAC,
+                           CHARGE=CL2,
+                          CHAM_MATER=DOMFLUI,
+                           CHAM_NO=CHAMNO,
+                          OPTION='RIGI_AJOU',
+                           POTENTIEL=PHIBRI2)
+
+MASS2=CALC_MATR_AJOU(  MODELE_FLUIDE=FLUIDE2,
+                           MODELE_INTERFACE=INTERFAC,
+                           CHARGE=CL2,
+                          CHAM_MATER=DOMFLUI,
+                           CHAM_NO=CHAMNO,
+                          OPTION='MASS_AJOU',
+                          POTENTIEL=PHIBRI2)
+
+# MASSE ET RIGIDITE AJOUTEES A 2. M/S
+
+
+RIGI3=CALC_MATR_AJOU(  MODELE_FLUIDE=FLUIDE2,
+                           MODELE_INTERFACE=INTERFAC,
+                           CHARGE=CL2,
+                          CHAM_MATER=DOMFLUI,
+                           CHAM_NO=CHAMNO,
+                          OPTION='RIGI_AJOU',
+                           POTENTIEL=PHIBRI3)
+
+MASS3=CALC_MATR_AJOU(  MODELE_FLUIDE=FLUIDE2,
+                           MODELE_INTERFACE=INTERFAC,
+                           CHARGE=CL2,
+                          CHAM_MATER=DOMFLUI,
+                           CHAM_NO=CHAMNO,
+                          OPTION='MASS_AJOU',
+                          POTENTIEL=PHIBRI3)
+
+# MASSE ET RIGIDITE AJOUTEES A 2.2 M/S
+
+
+RIGI4=CALC_MATR_AJOU(  MODELE_FLUIDE=FLUIDE2,
+                           MODELE_INTERFACE=INTERFAC,
+                           CHARGE=CL2,
+                          CHAM_MATER=DOMFLUI,
+                           CHAM_NO=CHAMNO,
+                          OPTION='RIGI_AJOU',
+                           POTENTIEL=PHIBRI4)
+
+MASS4=CALC_MATR_AJOU(  MODELE_FLUIDE=FLUIDE2,
+                           MODELE_INTERFACE=INTERFAC,
+                           CHARGE=CL2,
+                          CHAM_MATER=DOMFLUI,
+                           CHAM_NO=CHAMNO,
+                          OPTION='MASS_AJOU',
+                          POTENTIEL=PHIBRI4)
+
+# MASSE ET RIGIDITE AJOUTEES A 2.688 M/S (VITESSE DE FLAMBAGE)
+
+
+RIGI5=CALC_MATR_AJOU(  MODELE_FLUIDE=FLUIDE2,
+                           MODELE_INTERFACE=INTERFAC,
+                           CHARGE=CL2,
+                          CHAM_MATER=DOMFLUI,
+                           CHAM_NO=CHAMNO,
+                          OPTION='RIGI_AJOU',
+                           POTENTIEL=PHIBRI5)
+
+MASS5=CALC_MATR_AJOU(  MODELE_FLUIDE=FLUIDE2,
+                           MODELE_INTERFACE=INTERFAC,
+                           CHARGE=CL2,
+                          CHAM_MATER=DOMFLUI,
+                           CHAM_NO=CHAMNO,
+                          OPTION='MASS_AJOU',
+                          POTENTIEL=PHIBRI5)
+
+ENGENDRE_TEST(CO=(MASS,RIGI,MASS1,RIGI1,MASS2,RIGI2,MASS3,RIGI3,
+MASS4,RIGI4,MASS5,RIGI5,))
+
+#TESTS DES VALEURS DES MATRICES D'AMORTISSEMENT ET DE MASSE AJOUTES
+#NE COMPRENNENT QU'UN ELEMENT
+
+TEST_RESU(OBJET=(
+_F( NOM = 'MASS               .VALE', S_R = 3.486E+06, PRECISION = 0.2E-2),
+_F( NOM = 'MASS               .CONL', S_R = 1.00000E+00, PRECISION = 1.E-5),
+_F( NOM = 'RIGI               .VALE', S_R = -5.609E+04, PRECISION = 2.1E-2),
+_F( NOM = 'RIGI               .CONL', S_R = 1.00000E+00, PRECISION = 1.E-5),
+_F( NOM = 'MASS1              .VALE', S_R = 3.486E+06, PRECISION = 0.2E-2),
+_F( NOM = 'MASS1              .CONL', S_R = 1.00000E+00, PRECISION = 1.E-5),
+_F( NOM = 'RIGI1              .VALE', S_R = -8.7650E+02, PRECISION = 2.1E-2),
+_F( NOM = 'RIGI1              .CONL', S_R = 1.00000E+00, PRECISION = 1.E-5),
+_F( NOM = 'MASS2              .VALE', S_R = 3.486E+06, PRECISION = 0.2E-2),
+_F( NOM = 'MASS2              .CONL', S_R = 1.00000E+00, PRECISION = 1.E-5),
+_F( NOM = 'RIGI2              .VALE', S_R = -7.8885E+03, PRECISION = 2.1E-2),
+_F( NOM = 'RIGI2              .CONL', S_R = 1.00000E+00, PRECISION = 1.E-5),
+_F( NOM = 'MASS3              .VALE', S_R = 3.486E+06, PRECISION = 0.2E-2),
+_F( NOM = 'MASS3              .CONL', S_R = 1.00000E+00, PRECISION = 1.E-5),
+_F( NOM = 'RIGI3              .VALE', S_R = -1.402395E+04, PRECISION = 2.1E-2),
+_F( NOM = 'RIGI3              .CONL', S_R = 1.00000E+00, PRECISION = 1.E-5),
+_F( NOM = 'MASS4              .CONL', S_R = 1.00000E+00, PRECISION = 1.E-5),
+_F( NOM = 'MASS4              .VALE', S_R = 3.486E+06, PRECISION = 0.2E-2),
+_F( NOM = 'RIGI4              .VALE', S_R = -1.696898E+04, PRECISION = 2.1E-2),
+_F( NOM = 'RIGI4              .CONL', S_R = 1.00000E+00, PRECISION = 1.E-5),
+_F( NOM = 'MASS5              .VALE', S_R = 3.486E+06, PRECISION = 0.2E-2),
+_F( NOM = 'MASS5              .CONL', S_R = 1.00000E+00, PRECISION = 1.E-5),
+_F( NOM = 'RIGI5              .VALE', S_R = -2.5330E+04, PRECISION = 2.1E-2),
+_F( NOM = 'RIGI5              .CONL', S_R = 1.00000E+00, PRECISION = 1.E-5))
+)
+
+# SYSTEME A UN DDL EQUIVALENT SUR LEQUEL ON CALCULE L EVOLUTION
+# DES FREQUENCES PROPRES SOUS ECOULEMENT
+
+
+MAYA2=LIRE_MAILLAGE(  )
+
+SYSTEQ=AFFE_MODELE( MAILLAGE=MAYA2,
+                         AFFE=_F( TOUT = 'OUI',
+                  MODELISATION = 'DIS_T', PHENOMENE = 'MECANIQUE')
+
+                          )
+
+# FREQUENCE 1 : 0.5 M/S
+
+
+CARA1=AFFE_CARA_ELEM( MODELE=SYSTEQ,DISCRET=(
+                   _F( GROUP_MA = 'MASS', CARA = 'M_T_N',
+                            VALE = (3.491E6, 0.,3.491E6,0.,0., 3.491E6,)),
+                   _F( GROUP_MA = 'RESSORT', CARA = 'K_T_D_L',
+                            VALE = (24471., 24471., 24471.,))))
+
+ENCASTR=AFFE_CHAR_MECA( MODELE=SYSTEQ,DDL_IMPO=(
+                 _F( GROUP_NO = 'ENCAST',  DX = 0.,  DY = 0.,  DZ = 0.),
+                 _F( GROUP_NO = 'GUIDE',          DY = 0.,  DZ = 0.))
+                              )
+
+RIG1=CALC_MATR_ELEM(  MODELE=SYSTEQ,
+                            CARA_ELEM=CARA1,
+                           OPTION='RIGI_MECA',
+                            CHARGE=ENCASTR   )
+
+MAS1=CALC_MATR_ELEM(  MODELE=SYSTEQ,
+                            CARA_ELEM=CARA1,
+                           OPTION='MASS_MECA',
+                            CHARGE=ENCASTR   )
+
+NUMER1=NUME_DDL(MATR_RIGI=RIG1)
+
+RAID1=ASSE_MATRICE( MATR_ELEM=RIG1,  NUME_DDL=NUMER1)
+
+MASSA1=ASSE_MATRICE( MATR_ELEM=MAS1, NUME_DDL=NUMER1)
+
+MOD1=MODE_ITER_SIMULT(      MATR_A=RAID1,
+                            MATR_B=MASSA1,
+###CDURAND###                     CALC_FREQ=_F(  FREQ = (0.001,1.,))
+                             )
+
+# FREQUENCE 1 : 1.5 M/S
+
+
+CARA2=AFFE_CARA_ELEM( MODELE=SYSTEQ,DISCRET=(
+
+                     _F( GROUP_MA = 'MASS', CARA = 'M_T_N',
+                              VALE = (3.491E6, 0.,3.491E6,0.,0.,
+                                     3.491E6,)),
+                     _F( GROUP_MA = 'RESSORT', CARA = 'K_T_D_L',
+                              VALE = (17600.2,17600.2,
+                                     17600.2,))))
+
+RIG2=CALC_MATR_ELEM(  MODELE=SYSTEQ,
+                            CARA_ELEM=CARA2,
+                           OPTION='RIGI_MECA',
+                            CHARGE=ENCASTR  )
+
+MAS2=CALC_MATR_ELEM(  MODELE=SYSTEQ,
+                            CARA_ELEM=CARA2,
+                           OPTION='MASS_MECA',
+                            CHARGE=ENCASTR   )
+
+NUMER2=NUME_DDL(MATR_RIGI=RIG2)
+
+RAID2=ASSE_MATRICE( MATR_ELEM=RIG2,  NUME_DDL=NUMER2)
+
+MASSA2=ASSE_MATRICE( MATR_ELEM=MAS2, NUME_DDL=NUMER2)
+
+MOD2=MODE_ITER_SIMULT(      MATR_A=RAID2,
+                            MATR_B=MASSA2,
+###CDURAND###                  CALC_FREQ=_F(  FREQ = (0.001,1.,))
+                      )
+
+# FREQUENCE 3 : 2 M/S
+
+
+CARA3=AFFE_CARA_ELEM( MODELE=SYSTEQ,DISCRET=(
+                    _F( GROUP_MA = 'MASS', CARA = 'M_T_N',
+                             VALE = (3.491E6, 0.,3.491E6,0.,0.,3.491E6,)),
+                    _F( GROUP_MA = 'RESSORT', CARA = 'K_T_D_L',
+                              VALE = (11588., 11588., 11588.,)))  )
+
+RIG3=CALC_MATR_ELEM(  MODELE=SYSTEQ,
+                            CARA_ELEM=CARA3,
+                           OPTION='RIGI_MECA',
+                            CHARGE=ENCASTR   )
+
+MAS3=CALC_MATR_ELEM(  MODELE=SYSTEQ,
+                            CARA_ELEM=CARA3,
+                           OPTION='MASS_MECA',
+                            CHARGE=ENCASTR   )
+
+NUMER3=NUME_DDL(MATR_RIGI=RIG3)
+
+RAID3=ASSE_MATRICE( MATR_ELEM=RIG3,  NUME_DDL=NUMER3)
+
+MASSA3=ASSE_MATRICE( MATR_ELEM=MAS3, NUME_DDL=NUMER3)
+
+MOD3=MODE_ITER_SIMULT(      MATR_A=RAID3,
+                            MATR_B=MASSA3,
+###CDURAND###              CALC_FREQ=_F(  FREQ = (0.001,1.,))
+                      )
+
+# FREQUENCE 4 : 2.2 M/S
+
+
+CARA4=AFFE_CARA_ELEM( MODELE=SYSTEQ,DISCRET=(
+
+                     _F( GROUP_MA = 'MASS', CARA = 'M_T_N',
+                              VALE = (3.491E6, 0.,3.491E6,0.,0.,
+                                     3.491E6,)),
+                     _F( GROUP_MA = 'RESSORT', CARA = 'K_T_D_L',
+                              VALE = (8702.,8702.,
+                                     8702.,))))
+
+RIG4=CALC_MATR_ELEM( MODELE=SYSTEQ,
+                               CARA_ELEM=CARA4,
+                              OPTION='RIGI_MECA',
+                               CHARGE=ENCASTR   )
+
+MAS4=CALC_MATR_ELEM( MODELE=SYSTEQ,
+                               CARA_ELEM=CARA4,
+                              OPTION='MASS_MECA',
+                               CHARGE=ENCASTR   )
+
+NUMER4=NUME_DDL(MATR_RIGI=RIG4)
+
+RAID4=ASSE_MATRICE( MATR_ELEM=RIG4,  NUME_DDL=NUMER4)
+
+MASSA4=ASSE_MATRICE( MATR_ELEM=MAS4, NUME_DDL=NUMER4)
+
+MOD4=MODE_ITER_SIMULT(      MATR_A=RAID4,
+                            MATR_B=MASSA4,
+####CDURAND          CALC_FREQ=_F(  FREQ = (0.001,1.,))
+                     )
+
+# FREQUENCE 5 : 2.688 M/S
+
+
+CARA5=AFFE_CARA_ELEM( MODELE=SYSTEQ,DISCRET=(
+
+                     _F( GROUP_MA = 'MASS', CARA = 'M_T_N',
+                              VALE = (3.491E6, 0.,3.491E6,0.,0.,
+                                     3.491E6,)),
+                     _F( GROUP_MA = 'RESSORT', CARA = 'K_T_D_L',
+                              VALE = (508.,508.,
+                                     508.,))))
+
+RIG5=CALC_MATR_ELEM(       MODELE=SYSTEQ,
+                             CARA_ELEM=CARA5,
+                                OPTION='RIGI_MECA',
+                                CHARGE=ENCASTR     )
+
+MAS5=CALC_MATR_ELEM(       MODELE=SYSTEQ,
+                             CARA_ELEM=CARA5,
+                               OPTION='MASS_MECA',
+                                CHARGE=ENCASTR    )
+
+NUMER5=NUME_DDL(MATR_RIGI=RIG5)
+
+RAID5=ASSE_MATRICE( MATR_ELEM=RIG5,  NUME_DDL=NUMER5)
+
+MASSA5=ASSE_MATRICE( MATR_ELEM=MAS5, NUME_DDL=NUMER5)
+
+MOD5=MODE_ITER_SIMULT(      MATR_A=RAID5,
+                            MATR_B=MASSA5,
+####CDURAND##              CALC_FREQ=_F(  FREQ = (0.001,1.,))
+                     )
+
+TEST_RESU(RESU=(_F( RESULTAT = MOD1, PARA = 'FREQ', REFERENCE='ANALYTIQUE',
+                CRITERE = 'RELATIF', PRECISION = 3.E-2,
+                NUME_ORDRE = 1,  VALE = 1.318E-2),
+          _F( RESULTAT = MOD2, PARA = 'FREQ', REFERENCE='ANALYTIQUE',
+                CRITERE = 'RELATIF', PRECISION = 3.E-2,
+                NUME_ORDRE = 1,  VALE = 1.112E-2),
+          _F( RESULTAT = MOD3, PARA = 'FREQ', REFERENCE='ANALYTIQUE',
+                CRITERE = 'RELATIF', PRECISION = 3.E-2,
+                NUME_ORDRE = 1,  VALE = 0.896E-2),
+          _F( RESULTAT = MOD4, PARA = 'FREQ', REFERENCE='ANALYTIQUE',
+                CRITERE = 'RELATIF', PRECISION = 3.E-2,
+                NUME_ORDRE = 1,  VALE = 0.772E-2))
+           )
+
+FIN()
+#

@@ -1,0 +1,202 @@
+# MODIF  DATE 20/03/2001   AUTEUR CIBHHLV L.VIVAN 
+# TITRE TUBE GENERATEUR DE CHALEUR AVEC CONDUCTIVITE VARIABLE
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+#
+# MAILLES : QUAD9
+#
+
+DEBUT(  CODE=_F( NOM = 'TPNA300D',NIV_PUB_WEB='INTERNET') )
+
+#
+# LECTURE DU MAILLAGE ----------------------------------------------
+#
+
+MAIL=LIRE_MAILLAGE( )
+
+#
+# DEFINITION DU MATERIAU ------------------------
+#
+
+CONDUC=DEFI_FONCTION(   NOM_PARA='TEMP',  NOM_RESU='LAMBDA',
+                                VALE=(    0.0,      21.461,
+                                        100.0,      44.861,),
+                          PROL_DROITE='LINEAIRE',
+                         PROL_GAUCHE='LINEAIRE'
+                         )
+
+ENTHAL=DEFI_FONCTION(   NOM_PARA='TEMP',  NOM_RESU='BETA',
+                                VALE=(    0.0,      0.0,
+                                        100.0,    100.0, ),
+                          PROL_DROITE='LINEAIRE',
+                         PROL_GAUCHE='LINEAIRE'
+                         )
+
+MATER=DEFI_MATERIAU(   THER_NL=_F(  LAMBDA = CONDUC,
+                                      BETA = ENTHAL)
+                         )
+
+#
+# AFFECTATIONS: MATERIAU, MODELE, CHARGEMENT ----------------------
+#
+
+CHMAT=AFFE_MATERIAU(   MAILLAGE=MAIL,
+                                AFFE=_F(  TOUT = 'OUI',  MATER = MATER)
+                         )
+
+MOTH=AFFE_MODELE(     MAILLAGE=MAIL,
+                                AFFE=_F(  TOUT = 'OUI',
+                                       MODELISATION = 'AXIS',
+                                       PHENOMENE = 'THERMIQUE')
+                         )
+
+CHARGE=AFFE_CHAR_THER(   MODELE=MOTH,
+                          TEMP_IMPO=_F( GROUP_NO = 'NOE_IMP',  TEMP = -17.78),
+                             SOURCE=_F( TOUT = 'OUI',         SOUR = 1.035E7)
+                          )
+
+#
+# RESOLUTION ------------------------------------------------------
+#
+
+TEMPE=THER_NON_LINE(        MODELE=MOTH,
+                             TEMP_INIT=_F(  STATIONNAIRE = 'OUI'),
+                            CHAM_MATER=CHMAT,
+                                 EXCIT=_F(  CHARGE = CHARGE)
+                        )
+
+T_RES=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_TEMP_R',
+NOM_CHAM='TEMP', RESULTAT=TEMPE, INST=0. )
+
+#
+# ANALYSE DES RESULTATS -------------------------------------------
+#
+
+TEST_RESU(CHAM_NO=( 
+#
+#                        ECART RELATIF
+#
+   _F( CHAM_GD = T_RES, NOEUD = 'N11', NOM_CMP = 'TEMP', VALE = -5.00, PRECISION = 5.E-2),
+   _F( CHAM_GD = T_RES, NOEUD = 'N21', NOM_CMP = 'TEMP', VALE = 2.22, PRECISION = 5.E-2),
+   _F( CHAM_GD = T_RES, NOEUD = 'N31', NOM_CMP = 'TEMP', VALE = 5.56, PRECISION = 5.E-2),
+   _F( CHAM_GD = T_RES, NOEUD = 'N41', NOM_CMP = 'TEMP', VALE = 6.67, PRECISION = 5.E-2),
+   _F( CHAM_GD = T_RES, NOEUD = 'N51', NOM_CMP = 'TEMP', VALE = 5.56, PRECISION = 5.E-2),
+   _F( CHAM_GD = T_RES, NOEUD = 'N61', NOM_CMP = 'TEMP', VALE = 2.78, PRECISION = 5.E-2),
+   _F( CHAM_GD = T_RES, NOEUD = 'N71', NOM_CMP = 'TEMP', VALE = -1.67, PRECISION = 14.E-2),
+   _F( CHAM_GD = T_RES, NOEUD = 'N81', NOM_CMP = 'TEMP', VALE = -8.89, PRECISION = 5.E-2),
+#
+#                        ECART ABSOLU
+#
+   _F( CHAM_GD = T_RES, NOEUD = 'N1',  NOM_CMP = 'TEMP',    CRITERE = 'ABSOLU',
+                           VALE = -17.78,    PRECISION = 1.E-10),
+   _F( CHAM_GD = T_RES, NOEUD = 'N11', NOM_CMP = 'TEMP',    CRITERE = 'ABSOLU',
+                           VALE = -5.00,    PRECISION = 3.E-1),
+   _F( CHAM_GD = T_RES, NOEUD = 'N21', NOM_CMP = 'TEMP',    CRITERE = 'ABSOLU',
+                           VALE = 2.22,    PRECISION = 3.E-1),
+   _F( CHAM_GD = T_RES, NOEUD = 'N31', NOM_CMP = 'TEMP',    CRITERE = 'ABSOLU',
+                           VALE = 5.56,    PRECISION = 3.E-1),
+   _F( CHAM_GD = T_RES, NOEUD = 'N41', NOM_CMP = 'TEMP',    CRITERE = 'ABSOLU',
+                           VALE = 6.67,    PRECISION = 3.E-1),
+   _F( CHAM_GD = T_RES, NOEUD = 'N51', NOM_CMP = 'TEMP',    CRITERE = 'ABSOLU',
+                           VALE = 5.56,    PRECISION = 3.E-1),
+   _F( CHAM_GD = T_RES, NOEUD = 'N61', NOM_CMP = 'TEMP',    CRITERE = 'ABSOLU',
+                           VALE = 2.78,    PRECISION = 3.E-1),
+   _F( CHAM_GD = T_RES, NOEUD = 'N71', NOM_CMP = 'TEMP',    CRITERE = 'ABSOLU',
+                           VALE = -1.67,    PRECISION = 3.E-1),
+   _F( CHAM_GD = T_RES, NOEUD = 'N81', NOM_CMP = 'TEMP',    CRITERE = 'ABSOLU',
+                           VALE = -8.89,    PRECISION = 3.E-1),
+   _F( CHAM_GD = T_RES, NOEUD = 'N91', NOM_CMP = 'TEMP',    CRITERE = 'ABSOLU',
+                           VALE = -17.78,    PRECISION = 1.E-10),
+#
+#                        ECART RELATIF
+#
+   _F( CHAM_GD = T_RES, NOEUD = 'N13', NOM_CMP = 'TEMP', VALE = -5.00, PRECISION = 5.E-2),
+   _F( CHAM_GD = T_RES, NOEUD = 'N23', NOM_CMP = 'TEMP', VALE = 2.22, PRECISION = 5.E-2),
+   _F( CHAM_GD = T_RES, NOEUD = 'N33', NOM_CMP = 'TEMP', VALE = 5.56, PRECISION = 5.E-2),
+   _F( CHAM_GD = T_RES, NOEUD = 'N43', NOM_CMP = 'TEMP', VALE = 6.67, PRECISION = 5.E-2),
+   _F( CHAM_GD = T_RES, NOEUD = 'N53', NOM_CMP = 'TEMP', VALE = 5.56, PRECISION = 5.E-2),
+   _F( CHAM_GD = T_RES, NOEUD = 'N63', NOM_CMP = 'TEMP', VALE = 2.78, PRECISION = 5.E-2),
+   _F( CHAM_GD = T_RES, NOEUD = 'N73', NOM_CMP = 'TEMP', VALE = -1.67, PRECISION = 14.E-2),
+   _F( CHAM_GD = T_RES, NOEUD = 'N83', NOM_CMP = 'TEMP', VALE = -8.89, PRECISION = 5.E-2),
+#
+#                        ECART ABSOLU
+#
+   _F( CHAM_GD = T_RES, NOEUD = 'N3',  NOM_CMP = 'TEMP',    CRITERE = 'ABSOLU',
+                           VALE = -17.78,    PRECISION = 1.E-10),
+   _F( CHAM_GD = T_RES, NOEUD = 'N13', NOM_CMP = 'TEMP',    CRITERE = 'ABSOLU',
+                           VALE = -5.00,    PRECISION = 3.E-1),
+   _F( CHAM_GD = T_RES, NOEUD = 'N23', NOM_CMP = 'TEMP',    CRITERE = 'ABSOLU',
+                           VALE = 2.22,    PRECISION = 3.E-1),
+   _F( CHAM_GD = T_RES, NOEUD = 'N33', NOM_CMP = 'TEMP',    CRITERE = 'ABSOLU',
+                           VALE = 5.56,    PRECISION = 3.E-1),
+   _F( CHAM_GD = T_RES, NOEUD = 'N43', NOM_CMP = 'TEMP',    CRITERE = 'ABSOLU',
+                           VALE = 6.67,    PRECISION = 3.E-1),
+   _F( CHAM_GD = T_RES, NOEUD = 'N53', NOM_CMP = 'TEMP',    CRITERE = 'ABSOLU',
+                           VALE = 5.56,    PRECISION = 3.E-1),
+   _F( CHAM_GD = T_RES, NOEUD = 'N63', NOM_CMP = 'TEMP',    CRITERE = 'ABSOLU',
+                           VALE = 2.78,    PRECISION = 3.E-1),
+   _F( CHAM_GD = T_RES, NOEUD = 'N73', NOM_CMP = 'TEMP',    CRITERE = 'ABSOLU',
+                           VALE = -1.67,    PRECISION = 3.E-1),
+   _F( CHAM_GD = T_RES, NOEUD = 'N83', NOM_CMP = 'TEMP',    CRITERE = 'ABSOLU',
+                           VALE = -8.89,    PRECISION = 3.E-1),
+   _F( CHAM_GD = T_RES, NOEUD = 'N93', NOM_CMP = 'TEMP',    CRITERE = 'ABSOLU',
+                           VALE = -17.78,    PRECISION = 1.E-10),
+#
+#                        ECART RELATIF
+#
+   _F( CHAM_GD = T_RES, NOEUD = 'N15', NOM_CMP = 'TEMP', VALE = -5.00, PRECISION = 5.E-2),
+   _F( CHAM_GD = T_RES, NOEUD = 'N25', NOM_CMP = 'TEMP', VALE = 2.22, PRECISION = 5.E-2),
+   _F( CHAM_GD = T_RES, NOEUD = 'N35', NOM_CMP = 'TEMP', VALE = 5.56, PRECISION = 5.E-2),
+   _F( CHAM_GD = T_RES, NOEUD = 'N45', NOM_CMP = 'TEMP', VALE = 6.67, PRECISION = 5.E-2),
+   _F( CHAM_GD = T_RES, NOEUD = 'N55', NOM_CMP = 'TEMP', VALE = 5.56, PRECISION = 5.E-2),
+   _F( CHAM_GD = T_RES, NOEUD = 'N65', NOM_CMP = 'TEMP', VALE = 2.78, PRECISION = 5.E-2),
+   _F( CHAM_GD = T_RES, NOEUD = 'N75', NOM_CMP = 'TEMP', VALE = -1.67, PRECISION = 14.E-2),
+   _F( CHAM_GD = T_RES, NOEUD = 'N85', NOM_CMP = 'TEMP', VALE = -8.89, PRECISION = 5.E-2),
+#
+#                        ECART ABSOLU
+#
+   _F( CHAM_GD = T_RES, NOEUD = 'N5',  NOM_CMP = 'TEMP',    CRITERE = 'ABSOLU',
+                           VALE = -17.78,    PRECISION = 1.E-10),
+   _F( CHAM_GD = T_RES, NOEUD = 'N15', NOM_CMP = 'TEMP',    CRITERE = 'ABSOLU',
+                           VALE = -5.00,    PRECISION = 3.E-1),
+   _F( CHAM_GD = T_RES, NOEUD = 'N25', NOM_CMP = 'TEMP',    CRITERE = 'ABSOLU',
+                           VALE = 2.22,    PRECISION = 3.E-1),
+   _F( CHAM_GD = T_RES, NOEUD = 'N35', NOM_CMP = 'TEMP',    CRITERE = 'ABSOLU',
+                           VALE = 5.56,    PRECISION = 3.E-1),
+   _F( CHAM_GD = T_RES, NOEUD = 'N45', NOM_CMP = 'TEMP',    CRITERE = 'ABSOLU',
+                           VALE = 6.67,    PRECISION = 3.E-1),
+   _F( CHAM_GD = T_RES, NOEUD = 'N55', NOM_CMP = 'TEMP',    CRITERE = 'ABSOLU',
+                           VALE = 5.56,    PRECISION = 3.E-1),
+   _F( CHAM_GD = T_RES, NOEUD = 'N65', NOM_CMP = 'TEMP',    CRITERE = 'ABSOLU',
+                           VALE = 2.78,    PRECISION = 3.E-1),
+   _F( CHAM_GD = T_RES, NOEUD = 'N75', NOM_CMP = 'TEMP',    CRITERE = 'ABSOLU',
+                           VALE = -1.67,    PRECISION = 3.E-1),
+   _F( CHAM_GD = T_RES, NOEUD = 'N85', NOM_CMP = 'TEMP',    CRITERE = 'ABSOLU',
+                           VALE = -8.89,    PRECISION = 3.E-1),
+   _F( CHAM_GD = T_RES, NOEUD = 'N95', NOM_CMP = 'TEMP',    CRITERE = 'ABSOLU',
+                           VALE = -17.78,    PRECISION = 1.E-10))
+    )
+
+FIN()
+#
+#
+#
+#
+#
+#
+#

@@ -1,0 +1,145 @@
+# MODIF  DATE 07/06/2000   AUTEUR VABHHTS J.PELLET 
+# TITRE BARRE CYLINDRIQUE AVEC CONVECTION
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+#
+# MAILLES : TRIA3 (ET SEG2)
+#
+
+DEBUT(  CODE=_F( NOM = 'TPLA06B',NIV_PUB_WEB='INTERNET') )
+
+#
+# LECTURE DU MAILLAGE --------------------------------------------------
+#
+
+
+MAIL=LIRE_MAILLAGE( )
+
+#
+# DEFINITION DES CHARGEMENTS ET DU MATERIAU ----------------------------
+#
+
+# ----- MATERIAU
+
+
+MATER=DEFI_MATERIAU(   THER=_F(  LAMBDA = 33.33,   RHO_CP = 1.) )
+
+#
+# AFFECTATIONS: MATERIAU, MODELE, CHARGEMENT ---------------------------
+#
+
+
+CHMAT=AFFE_MATERIAU(   MAILLAGE=MAIL,
+                           AFFE=_F(  TOUT = 'OUI',  MATER = MATER)
+                        )
+
+MOTH=AFFE_MODELE(   MAILLAGE=MAIL,
+                        AFFE=_F(  TOUT = 'OUI',
+                               PHENOMENE = 'THERMIQUE',
+                               MODELISATION = 'AXIS')
+                      )
+
+CHTH=AFFE_CHAR_THER(   MODELE=MOTH,TEMP_IMPO=(
+                           _F(  GROUP_NO = 'NOE_AD',   TEMP = 0.),
+                           _F(  GROUP_NO = 'NOE_BC',   TEMP = 500.)),
+                             ECHANGE=_F(  GROUP_MA = 'MAI_DC', COEF_H = 10.,
+                                                      TEMP_EXT = 0.)
+                        )
+
+#
+# DEFINITION DE LA STRATEGIE DE CALCUL ---------------------------------
+#
+
+#
+# RESOLUTION -----------------------------------------------------------
+#
+
+TEMPE=THER_LINEAIRE(   MODELE=MOTH,
+                           CHAM_MATER=CHMAT,
+                            EXCIT=_F(  CHARGE = CHTH)
+                         )
+
+#
+# ANALYSE DES RESULTATS ------------------------------------------------
+#
+
+TPR=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_TEMP_R',
+NOM_CHAM='TEMP', RESULTAT=TEMPE,
+                      NUME_ORDRE=0
+                    )
+
+TEST_RESU(CHAM_NO=(
+
+
+
+_F( CHAM_GD = TPR, NOEUD = 'N1',    NOM_CMP = 'TEMP', VALE = 0.00,  PRECISION = 1.E-5,
+                                                CRITERE = 'ABSOLU'),
+_F( CHAM_GD = TPR, NOEUD = 'N3',    NOM_CMP = 'TEMP', VALE = 0.00,  PRECISION = 1.E-5,
+                                                CRITERE = 'ABSOLU'),
+_F( CHAM_GD = TPR, NOEUD = 'N4',    NOM_CMP = 'TEMP', VALE = 0.00,  PRECISION = 1.E-5,
+                                                CRITERE = 'ABSOLU'),
+
+_F( CHAM_GD = TPR, NOEUD = 'N61',   NOM_CMP = 'TEMP', VALE = 0.3694,  PRECISION = 1.E-2),
+_F( CHAM_GD = TPR, NOEUD = 'N63',   NOM_CMP = 'TEMP', VALE = 0.3694,  PRECISION = 1.E-2),
+_F( CHAM_GD = TPR, NOEUD = 'N64',   NOM_CMP = 'TEMP', VALE = 0.3694,  PRECISION = 1.E-2),
+
+_F( CHAM_GD = TPR, NOEUD = 'N121',  NOM_CMP = 'TEMP', VALE = 0.9718,  PRECISION = 1.E-2),
+_F( CHAM_GD = TPR, NOEUD = 'N123',  NOM_CMP = 'TEMP', VALE = 0.9718,  PRECISION = 1.E-2),
+_F( CHAM_GD = TPR, NOEUD = 'N124',  NOM_CMP = 'TEMP', VALE = 0.9718,  PRECISION = 1.E-2),
+
+_F( CHAM_GD = TPR, NOEUD = 'N181',  NOM_CMP = 'TEMP', VALE = 2.1870,  PRECISION = 1.E-2),
+_F( CHAM_GD = TPR, NOEUD = 'N183',  NOM_CMP = 'TEMP', VALE = 2.1870,  PRECISION = 1.E-2),
+_F( CHAM_GD = TPR, NOEUD = 'N184',  NOM_CMP = 'TEMP', VALE = 2.1870,  PRECISION = 1.E-2),
+
+_F( CHAM_GD = TPR, NOEUD = 'N241',  NOM_CMP = 'TEMP', VALE = 4.7815,  PRECISION = 1.E-2),
+_F( CHAM_GD = TPR, NOEUD = 'N243',  NOM_CMP = 'TEMP', VALE = 4.7815,  PRECISION = 1.E-2),
+_F( CHAM_GD = TPR, NOEUD = 'N244',  NOM_CMP = 'TEMP', VALE = 4.7815,  PRECISION = 1.E-2),
+
+_F( CHAM_GD = TPR, NOEUD = 'N301',  NOM_CMP = 'TEMP', VALE = 10.392,   PRECISION = 1.E-2),
+_F( CHAM_GD = TPR, NOEUD = 'N303',  NOM_CMP = 'TEMP', VALE = 10.392,   PRECISION = 1.E-2),
+_F( CHAM_GD = TPR, NOEUD = 'N304',  NOM_CMP = 'TEMP', VALE = 10.392,   PRECISION = 1.E-2),
+
+_F( CHAM_GD = TPR, NOEUD = 'N361',  NOM_CMP = 'TEMP', VALE = 22.555,   PRECISION = 1.E-2),
+_F( CHAM_GD = TPR, NOEUD = 'N363',  NOM_CMP = 'TEMP', VALE = 22.555,   PRECISION = 1.E-2),
+_F( CHAM_GD = TPR, NOEUD = 'N364',  NOM_CMP = 'TEMP', VALE = 22.555,   PRECISION = 1.E-2),
+
+_F( CHAM_GD = TPR, NOEUD = 'N421',  NOM_CMP = 'TEMP', VALE = 48.944,  PRECISION = 1.E-2),
+_F( CHAM_GD = TPR, NOEUD = 'N423',  NOM_CMP = 'TEMP', VALE = 48.944,  PRECISION = 1.E-2),
+_F( CHAM_GD = TPR, NOEUD = 'N424',  NOM_CMP = 'TEMP', VALE = 48.944,  PRECISION = 1.E-2),
+
+_F( CHAM_GD = TPR, NOEUD = 'N481',  NOM_CMP = 'TEMP', VALE = 106.20,  PRECISION = 1.E-2),
+_F( CHAM_GD = TPR, NOEUD = 'N483',  NOM_CMP = 'TEMP', VALE = 106.20,  PRECISION = 1.E-2),
+_F( CHAM_GD = TPR, NOEUD = 'N484',  NOM_CMP = 'TEMP', VALE = 106.20,  PRECISION = 1.E-2),
+
+_F( CHAM_GD = TPR, NOEUD = 'N541',  NOM_CMP = 'TEMP', VALE = 230.44,  PRECISION = 1.E-2),
+_F( CHAM_GD = TPR, NOEUD = 'N543',  NOM_CMP = 'TEMP', VALE = 230.44,  PRECISION = 1.E-2),
+_F( CHAM_GD = TPR, NOEUD = 'N544',  NOM_CMP = 'TEMP', VALE = 230.44,  PRECISION = 1.E-2),
+
+_F( CHAM_GD = TPR, NOEUD = 'N601',  NOM_CMP = 'TEMP', VALE = 500.00,  PRECISION = 1.E-5),
+_F( CHAM_GD = TPR, NOEUD = 'N603',  NOM_CMP = 'TEMP', VALE = 500.00,  PRECISION = 1.E-5),
+_F( CHAM_GD = TPR, NOEUD = 'N604',  NOM_CMP = 'TEMP', VALE = 500.00,  PRECISION = 1.E-5))
+
+          )
+
+#
+# FIN ------------------------------------------------------------------
+#
+
+FIN()
+#
+#

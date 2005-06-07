@@ -1,0 +1,96 @@
+# MODIF  DATE 07/06/2000   AUTEUR VABHHTS J.PELLET 
+# TITRE DISTRIBUTION DE LA TEMPERATURE DANS SECTION D'UNE CHEMINEE
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+#
+# MAILLES : TRIA6 QUAD8
+#
+
+DEBUT(  CODE=_F( NOM = 'TPLP303B',NIV_PUB_WEB='INTERNET'))
+
+#
+# LECTURE DU MAILLAGE ----------------------------------------------
+#
+
+MAIL=LIRE_MAILLAGE()
+
+#
+# DEFINITION DES CHARGEMENTS ET DU MATERIAU ------------------------
+#
+
+
+MATE=DEFI_MATERIAU( THER=_F( RHO_CP = 1.0, LAMBDA = 1.7307))
+
+#
+# AFFECTATIONS: MATERIAU  MODELE  CHARGEMENT ----------------------
+#
+
+
+CHMAT=AFFE_MATERIAU(   MAILLAGE=MAIL,
+                     AFFE=_F( TOUT = 'OUI',  MATER = MATE))
+
+MOTH=AFFE_MODELE(  MAILLAGE=MAIL,
+               AFFE=_F( TOUT = 'OUI', MODELISATION = 'PLAN',
+                                   PHENOMENE = 'THERMIQUE'))
+
+CHTH=AFFE_CHAR_THER(  MODELE=MOTH,ECHANGE=(
+                        _F( GROUP_MA = 'CONV_INT',
+                                   COEF_H = 68.135E0,
+                                 TEMP_EXT = 37.778E0),
+                        _F( GROUP_MA = 'CONV_EXT',
+                                   COEF_H = 17.034E0,
+                                 TEMP_EXT = -17.778E0))
+         )
+
+#
+# RESOLUTION -----------------------------------------------------------
+#
+
+
+TEMPE=THER_LINEAIRE(   MODELE=MOTH,
+                            CHAM_MATER=CHMAT,
+                            EXCIT=_F(  CHARGE = CHTH)
+                         )
+
+#
+# ANALYSE DES RESULTATS ------------------------------------------------
+#
+TEMP=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_TEMP_R',
+NOM_CHAM='TEMP', RESULTAT=TEMPE,
+                   NUME_ORDRE=0)
+
+TEST_RESU(CHAM_NO=(
+   
+#
+_F( CHAM_GD = TEMP, NOEUD = 'N19', NOM_CMP = 'TEMP', VALE = 34.278, PRECISION = 1.E-2),
+_F( CHAM_GD = TEMP, NOEUD = 'N26', NOM_CMP = 'TEMP', VALE = 13.5,   PRECISION = 2.E-2),
+_F( CHAM_GD = TEMP, NOEUD = 'N30', NOM_CMP = 'TEMP', VALE = -5.444, PRECISION = 6.E-2),
+_F( CHAM_GD = TEMP, NOEUD = 'N11', NOM_CMP = 'TEMP', VALE = 34.0,   PRECISION = 1.E-2),
+_F( CHAM_GD = TEMP, NOEUD = 'N20', NOM_CMP = 'TEMP', VALE = 12.556, PRECISION = 4.E-2),
+_F( CHAM_GD = TEMP, NOEUD = 'N27', NOM_CMP = 'TEMP', VALE = -5.889, PRECISION = 7.E-2),
+_F( CHAM_GD = TEMP, NOEUD = 'N1',  NOM_CMP = 'TEMP', VALE = 30.889, PRECISION = 5.E-2),
+_F( CHAM_GD = TEMP, NOEUD = 'N12', NOM_CMP = 'TEMP', VALE = 8.611, PRECISION = 19.E-2),
+_F( CHAM_GD = TEMP, NOEUD = 'N21', NOM_CMP = 'TEMP', VALE = -7.611, PRECISION = 9.E-2),
+_F( CHAM_GD = TEMP, NOEUD = 'N3',  NOM_CMP = 'TEMP', VALE = -1.333, PRECISION = 50.E-2),
+_F( CHAM_GD = TEMP, NOEUD = 'N13', NOM_CMP = 'TEMP', VALE = -11.278, PRECISION = 3.E-2),
+_F( CHAM_GD = TEMP, NOEUD = 'N5',  NOM_CMP = 'TEMP', VALE = -15.167, PRECISION = 1.E-2))
+)
+
+FIN()
+#
+#

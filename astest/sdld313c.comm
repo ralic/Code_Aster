@@ -1,0 +1,137 @@
+# MODIF  DATE 03/03/2003   AUTEUR NICOLAS O.NICOLAS 
+# TITRE SYSTEME MAS RES A 2 DDL (AMORTISSEMENT HYSTERETIQUE)
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+#       ANALYSE MODALE
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+#
+#CAS_TEST__:SDLD313C
+#
+
+DEBUT( CODE=_F(  NOM = 'SDLD313C',NIV_PUB_WEB='INTERNET') )
+
+#
+
+MASRES=LIRE_MAILLAGE( )
+
+#
+
+MODELE=AFFE_MODELE(  MAILLAGE=MASRES,AFFE=(
+                       _F(  TOUT = 'OUI', PHENOMENE = 'MECANIQUE',
+                              MODELISATION = 'DIS_T'),  
+             _F(  NOEUD = ('B','C',),  PHENOMENE = 'MECANIQUE',
+        MODELISATION = 'DIS_T'))       )
+
+#
+RIGMAS=AFFE_CARA_ELEM(  MODELE=MODELE,DISCRET=(
+
+                _F(  GROUP_MA = 'AMORT',
+                          CARA = 'K_T_D_L',
+                          VALE = (28000., .001, .001,),
+                          AMOR_HYST = 0.1),
+
+                _F(  MAILLE = 'K2',
+                          CARA = 'K_T_D_L',
+                          VALE = (28000., .001, .001,),
+                          AMOR_HYST = 0.1),
+
+                _F(  NOEUD = 'B',
+                          CARA = 'M_T_D_N',
+                          VALE = ( 10.,)),
+
+                _F(  NOEUD = 'C',
+                          CARA = 'M_T_D_N',
+                          VALE = ( 5.,)))
+                        )
+
+#
+CONDLIM=AFFE_CHAR_MECA(  MODELE=MODELE,DDL_IMPO=(
+                         _F(  TOUT = 'OUI', DY = 0., DZ = 0.),
+                                  _F(  NOEUD = 'A',  DX = 0.)) 
+                        )
+
+RIGIELEM=CALC_MATR_ELEM(  MODELE=MODELE,       OPTION='RIGI_MECA',
+                            CARA_ELEM=RIGMAS,  CHARGE=CONDLIM     )
+
+MASSELEM=CALC_MATR_ELEM(  MODELE=MODELE,       OPTION='MASS_MECA',
+                            CARA_ELEM=RIGMAS,  CHARGE=CONDLIM     )
+
+RIGCMPLX=CALC_MATR_ELEM(  MODELE=MODELE,       OPTION='RIGI_MECA_HYST',
+                            RIGI_MECA=RIGIELEM,    CARA_ELEM=RIGMAS, 
+                            CHARGE=CONDLIM )
+
+
+INCONNUS=NUME_DDL(  MATR_RIGI=RIGCMPLX )
+
+MATRRIGI=ASSE_MATRICE(  MATR_ELEM=RIGCMPLX,  NUME_DDL=INCONNUS )
+
+MATRRIGR=ASSE_MATRICE(  MATR_ELEM=RIGIELEM,  NUME_DDL=INCONNUS )
+
+MATRMASS=ASSE_MATRICE(  MATR_ELEM=MASSELEM,  NUME_DDL=INCONNUS )
+
+
+# CALCUL DES FREQUENCES PROPRES
+#-------------------------------------------------
+#
+
+MODES=MODE_ITER_SIMULT(MATR_A=MATRRIGI,
+                       MATR_B=MATRMASS,
+                       METHODE='SORENSEN',
+                       CALC_FREQ=_F(OPTION='CENTRE',
+                                    FREQ=10.,
+                                    NMAX_FREQ=2,
+                                    APPROCHE='COMPLEXE',),
+                       VERI_MODE=_F(STOP_ERREUR='NON',),
+                       INFO=1,);
+
+
+TEST_RESU(RESU=(_F(RESULTAT=MODES,
+                   NUME_ORDRE=1,
+                   PARA='FREQ',
+                   VALE=6.4537,
+                   CRITERE='RELATIF',
+                   PRECISION=0.01,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=MODES,
+                   NUME_ORDRE=2,
+                   PARA='FREQ',
+                   VALE=15.5806,
+                   CRITERE='RELATIF',
+                   PRECISION=0.01,
+                   REFERENCE='ANALYTIQUE',),
+                   ),);
+
+TEST_RESU(RESU=(_F(RESULTAT=MODES,
+                   NUME_ORDRE=1,
+                   PARA='AMOR_REDUIT',
+                   VALE=0.05,
+                   CRITERE='RELATIF',
+                   PRECISION=0.001,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=MODES,
+                   NUME_ORDRE=2,
+                   PARA='AMOR_REDUIT',
+                   VALE=0.05,
+                   CRITERE='RELATIF',
+                   PRECISION=0.001,
+                   REFERENCE='ANALYTIQUE',),
+                   ),);
+#
+#
+FIN( )
+#

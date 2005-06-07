@@ -1,0 +1,376 @@
+# MODIF  DATE 03/02/2003   AUTEUR JMBHH01 J.M.PROIX 
+# TITRE MODELISATION TUYAU_3M 4NOEUDS POUTRE DROITE ANALYSE HARMONIQUE
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+# ON COMPARE AVEC LA SOLUTION POUTRE MAILLEE FINEMENT
+# CAR LES MODELISATION A ET B NE SONT VALABLE QUE POUR UN ELEMENT
+
+DEBUT( CODE=_F(  NOM = 'SHLL101D',NIV_PUB_WEB='INTERNET') )
+
+PRE_GIBI();
+
+MAI1=LIRE_MAILLAGE( )
+MAI2=CREA_MAILLAGE( MAILLAGE  = MAI1,
+                    LINE_QUAD = _F(TOUT='OUI',PREF_NOEUD='NM',))
+MAILLAGE=CREA_MAILLAGE(MAILLAGE=MAI2,
+                 MODI_MAILLE=_F(TOUT='OUI',
+                                OPTION='SEG3_4',),);
+
+MAILLAGE=DEFI_GROUP( reuse=MAILLAGE,   MAILLAGE=MAILLAGE,
+  CREA_GROUP_MA=_F(  NOM = 'TOUT', TOUT = 'OUI'))
+
+
+
+MODELE=AFFE_MODELE(   MAILLAGE=MAILLAGE,
+                           AFFE=_F(  TOUT = 'OUI',
+                                  PHENOMENE = 'MECANIQUE',
+                                  MODELISATION = 'TUYAU_3M')
+                         )
+
+#
+
+MAT=DEFI_MATERIAU( ELAS=_F(  E = 1.658E+11,
+                                   RHO = 1.3404106E+04,
+                                   AMOR_ALPHA = 1.E-3,
+                                   AMOR_BETA = 0.,
+                                   NU = 0.3)
+                          )
+
+#
+
+CHAMPMAT=AFFE_MATERIAU(  MAILLAGE=MAILLAGE,
+                            AFFE=_F(  TOUT = 'OUI', MATER = MAT)  )
+
+#
+
+CARA_ELE=AFFE_CARA_ELEM(  MODELE=MODELE,INFO=2,
+                    POUTRE=_F(  
+                             GROUP_MA = 'TOUT',
+                             SECTION = 'CERCLE',
+                             CARA = ( 'R','EP' ),
+                             VALE = ( 9.25E-2, 6.12E-3 ),
+                         #    MODI_METRIQUE = 'OUI',
+                             ),
+ ORIENTATION=_F( GROUP_NO = 'A', CARA = 'GENE_TUYAU', VALE = (0., 0., -1.,))
+                           )
+
+#
+# LA STRUCTURE EST ENCASTREE A SA BASE
+#-----------------------------------------------
+
+COND_LIM=AFFE_CHAR_MECA(   MODELE=MODELE,
+                              DDL_IMPO=_F(  GROUP_NO='A',
+                                         DX = 0.,  DY = 0.,  DZ = 0.,
+                                         DRX = 0.,  DRY = 0.,  DRZ = 0.)
+                            )
+
+#
+#------------------------------#
+#  CALCUL DES MATRICES         #
+#------------------------------#
+#
+
+RIGI_ELE=CALC_MATR_ELEM(  MODELE=MODELE,   OPTION='RIGI_MECA',
+                              CHAM_MATER=CHAMPMAT,   CARA_ELEM=CARA_ELE,
+                              CHARGE=COND_LIM )
+
+MASS_ELE=CALC_MATR_ELEM(  MODELE=MODELE,   OPTION='MASS_MECA',
+                              CHAM_MATER=CHAMPMAT,   CARA_ELEM=CARA_ELE,
+                              CHARGE=COND_LIM )
+
+#
+
+NUME_DDL=NUME_DDL(  MATR_RIGI=RIGI_ELE)
+
+#
+
+RIGIDITE=ASSE_MATRICE(  MATR_ELEM=RIGI_ELE,   NUME_DDL=NUME_DDL )
+
+MASSE=ASSE_MATRICE(  MATR_ELEM=MASS_ELE,   NUME_DDL=NUME_DDL )
+
+
+#
+
+FONC=DEFI_CONSTANTE( VALE=1. )
+
+#
+#-------------------------------#
+# TRACTION : SANS AMORTISSEMENT #
+#-------------------------------#
+#
+
+CHA_F=AFFE_CHAR_MECA(  MODELE=MODELE,
+                           FORCE_NODALE=_F(  GROUP_NO='B',  FX = 3.E3)  )
+
+#
+
+V_F_ELE=CALC_VECT_ELEM(   OPTION='CHAR_MECA',
+                              CHAM_MATER=CHAMPMAT,   CARA_ELEM=CARA_ELE,
+                              CHARGE=CHA_F
+                          )
+
+#
+
+VECAS_F=ASSE_VECTEUR(  VECT_ELEM=V_F_ELE,  NUME_DDL=NUME_DDL )
+
+#
+
+DYNA_F=DYNA_LINE_HARM(  MATR_MASS=MASSE,
+                            MATR_RIGI=RIGIDITE,
+                            FREQ=10.,
+                            EXCIT=_F( VECT_ASSE = VECAS_F, FONC_MULT = FONC)
+                         )
+
+#
+
+
+DYNA_F=CALC_ELEM(reuse=DYNA_F,  MODELE=MODELE,
+                        RESULTAT=DYNA_F,  OPTION='EFGE_ELNO_DEPL',
+                        CHAM_MATER=CHAMPMAT,   CARA_ELEM=CARA_ELE   )
+
+DYNA_F=CALC_NO(reuse=DYNA_F,  
+                          RESULTAT=DYNA_F,  OPTION='EFGE_NOEU_DEPL',
+                          CHAM_MATER=CHAMPMAT,   CARA_ELEM=CARA_ELE )
+
+
+TEST_RESU(RESU=(   _F(  RESULTAT = DYNA_F,             NUME_ORDRE = 1,
+                                          GROUP_NO='B',
+                       NOM_CHAM = 'EFGE_NOEU_DEPL',   NOM_CMP = 'N',
+                       VALE_C = ('RI',3000.E0,0.E0,),   REFERENCE='AUTRE_ASTER',PRECISION= 5.E-4),
+                     _F(  RESULTAT = DYNA_F,  NUME_ORDRE = 1,  GROUP_NO='B',
+                       NOM_CHAM = 'DEPL',  NOM_CMP = 'DX',
+                       VALE_C = ('RI',5.318E-5,0.E0,),  REFERENCE='AUTRE_ASTER',PRECISION= 5.E-4),
+                     _F(  RESULTAT = DYNA_F,  NUME_ORDRE = 1,  GROUP_NO='B',
+                       NOM_CHAM = 'VITE',  NOM_CMP = 'DX',
+                       VALE_C = ('RI',0.E0,3.341E-03,), REFERENCE='AUTRE_ASTER',PRECISION= 5.E-4),
+                     _F(  RESULTAT = DYNA_F,  NUME_ORDRE = 1,  GROUP_NO='B',
+                       NOM_CHAM = 'ACCE',  NOM_CMP = 'DX',
+                       VALE_C = ('RI',-2.099E-1,0.E0,),  REFERENCE='AUTRE_ASTER',PRECISION= 5.E-4))
+            )
+
+#
+#-------------------------------#
+# FLEXION  : SANS AMORTISSEMENT #
+#-------------------------------#
+#
+
+CHA_FL=AFFE_CHAR_MECA(  MODELE=MODELE,
+                            FORCE_NODALE=_F(  GROUP_NO='B',  FY = 3.E3)  )
+
+#
+
+V_FL_ELE=CALC_VECT_ELEM(   OPTION='CHAR_MECA',
+                               CHAM_MATER=CHAMPMAT,   CARA_ELEM=CARA_ELE,
+                               CHARGE=CHA_FL
+                           )
+
+#
+
+VECAS_FL=ASSE_VECTEUR(  VECT_ELEM=V_FL_ELE,  NUME_DDL=NUME_DDL )
+
+#
+
+DYNA_FL=DYNA_LINE_HARM(  MATR_MASS=MASSE,
+                             MATR_RIGI=RIGIDITE,
+                             FREQ=10.,
+                             EXCIT=_F( VECT_ASSE = VECAS_FL, FONC_MULT = FONC)
+                          )
+
+#
+
+DYNA_FL=CALC_ELEM(reuse=DYNA_FL,  MODELE=MODELE,
+                         RESULTAT=DYNA_FL,  OPTION='EFGE_ELNO_DEPL',
+                         CHAM_MATER=CHAMPMAT,   CARA_ELEM=CARA_ELE   )
+
+#
+DYNA_FL=CALC_NO(reuse=DYNA_FL,  
+                          RESULTAT=DYNA_FL,  OPTION='EFGE_NOEU_DEPL',
+                          CHAM_MATER=CHAMPMAT,   CARA_ELEM=CARA_ELE )
+
+TEST_RESU(RESU=(   _F(  RESULTAT = DYNA_FL,           NUME_ORDRE = 1,
+                                         GROUP_NO='B',
+                       NOM_CHAM = 'EFGE_NOEU_DEPL',  NOM_CMP = 'VY',
+                       VALE_C = ('RI',3000.E0,0.E0,),    REFERENCE='AUTRE_ASTER',PRECISION= 0.02),
+                     _F(  RESULTAT = DYNA_FL,  NUME_ORDRE = 1,  GROUP_NO='B',
+                       NOM_CHAM = 'DEPL',  NOM_CMP = 'DY',
+                       VALE_C = ('RI',-2.1164715868368E-02,0.E0,),   REFERENCE='AUTRE_ASTER',PRECISION= 0.02),
+                     _F(  RESULTAT = DYNA_FL,  NUME_ORDRE = 1,  GROUP_NO='B',
+                       NOM_CHAM = 'VITE',  NOM_CMP = 'DY',
+                       VALE_C = ('RI',0.E0,-1.3298183177476E+00,),  REFERENCE='AUTRE_ASTER',PRECISION= 0.02),
+                     _F(  RESULTAT = DYNA_FL,  NUME_ORDRE = 1,  GROUP_NO='B',
+                       NOM_CHAM = 'ACCE',  NOM_CMP = 'DY',
+                       VALE_C = ('RI',8.3554949152901E+01,0.E0,),   REFERENCE='AUTRE_ASTER',PRECISION= 0.02),
+                     _F(  RESULTAT = DYNA_FL,  NUME_ORDRE = 1,  GROUP_NO='B',
+                       NOM_CHAM = 'DEPL',  NOM_CMP = 'DRZ',
+                       VALE_C = ('RI',-6.6710946072560E-03,0.E0,),    REFERENCE='AUTRE_ASTER',PRECISION= 0.02),
+                     _F(  RESULTAT = DYNA_FL,  NUME_ORDRE = 1,  GROUP_NO='B',
+                       NOM_CHAM = 'VITE',  NOM_CMP = 'DRZ',
+                       VALE_C = ('RI',0.E0,-4.1915723619116E-01,), REFERENCE='AUTRE_ASTER',PRECISION= 0.02),
+                     _F(  RESULTAT = DYNA_FL,  NUME_ORDRE = 1,  GROUP_NO='B',
+                       NOM_CHAM = 'ACCE',  NOM_CMP = 'DRZ',
+                       VALE_C = ('RI',2.6336425878343E+01,0.E0,),   REFERENCE='AUTRE_ASTER',PRECISION= 0.02))
+            )
+#-------------------------------#
+# TRACTION : AVEC AMORTISSEMENT #
+#-------------------------------#
+#
+AMOR_ELE=CALC_MATR_ELEM(  MODELE=MODELE,   OPTION='AMOR_MECA',
+                              RIGI_MECA=RIGI_ELE,   MASS_MECA=MASS_ELE,
+                              CHAM_MATER=CHAMPMAT,   CARA_ELEM=CARA_ELE,
+                              CHARGE=COND_LIM )
+
+AMORTIS=ASSE_MATRICE(  MATR_ELEM=AMOR_ELE,   NUME_DDL=NUME_DDL )
+
+CHA_AF=AFFE_CHAR_MECA(  MODELE=MODELE,
+                            FORCE_NODALE=_F(  GROUP_NO='B',  FX = 3.E3) )
+
+#
+
+V_AF_ELE=CALC_VECT_ELEM(   OPTION='CHAR_MECA',
+                               CHAM_MATER=CHAMPMAT,   CARA_ELEM=CARA_ELE,
+                               CHARGE=CHA_AF
+                           )
+
+#
+
+VECAS_AF=ASSE_VECTEUR(  VECT_ELEM=V_AF_ELE,  NUME_DDL=NUME_DDL )
+
+#
+
+DYNA_AF=DYNA_LINE_HARM(  MATR_MASS=MASSE,
+                             MATR_RIGI=RIGIDITE,
+                             MATR_AMOR=AMORTIS,
+                             FREQ=10.,
+                             EXCIT=_F( VECT_ASSE = VECAS_AF, FONC_MULT = FONC)
+                          )
+
+#
+
+DYNA_AF=CALC_ELEM(reuse=DYNA_AF,  MODELE=MODELE,
+                         RESULTAT=DYNA_AF,  OPTION='EFGE_ELNO_DEPL',
+                         CHAM_MATER=CHAMPMAT,   CARA_ELEM=CARA_ELE   )
+
+#
+DYNA_AF=CALC_NO(reuse=DYNA_AF,  
+                          RESULTAT=DYNA_AF,  OPTION='EFGE_NOEU_DEPL',
+                          CHAM_MATER=CHAMPMAT,   CARA_ELEM=CARA_ELE )
+
+
+TEST_RESU(RESU=(   _F(  RESULTAT = DYNA_AF,           NUME_ORDRE = 1,
+                                         GROUP_NO='B',
+                       NOM_CHAM = 'EFGE_NOEU_DEPL',  NOM_CMP = 'N',
+                       VALE_C = ('RI',2.9879E3,-1.897E2,),
+                       REFERENCE='AUTRE_ASTER',PRECISION= 7.E-4),
+                     _F(  RESULTAT = DYNA_AF,  NUME_ORDRE = 1,  GROUP_NO='B',
+                       NOM_CHAM = 'DEPL',  NOM_CMP = 'DX',
+                       VALE_C = ('RI',5.296E-5,-3.363E-06,),
+                       REFERENCE='AUTRE_ASTER',PRECISION= 5.E-4),
+                     _F(  RESULTAT = DYNA_AF,  NUME_ORDRE = 1,  GROUP_NO='B',
+                       NOM_CHAM = 'VITE',  NOM_CMP = 'DX',
+                       VALE_C = ('RI',2.113E-04,3.327E-03,),
+                       REFERENCE='AUTRE_ASTER',PRECISION= 5.E-4),
+                     _F(  RESULTAT = DYNA_AF,  NUME_ORDRE = 1,  GROUP_NO='B',
+                       NOM_CHAM = 'ACCE',  NOM_CMP = 'DX',
+                       VALE_C = ('RI',-2.091E-01,1.327E-02,),
+                       REFERENCE='AUTRE_ASTER',PRECISION= 5.E-4))
+            )
+
+
+#
+#-------------------------------#
+# FLEXION  : AVEC AMORTISSEMENT #
+#-------------------------------#
+#
+
+
+CHA_AFL=AFFE_CHAR_MECA(  MODELE=MODELE,
+                             FORCE_NODALE=_F(  GROUP_NO='B',  FY = 3.E3) )
+
+#
+
+V_AFL_E=CALC_VECT_ELEM(   OPTION='CHAR_MECA',
+                              CHAM_MATER=CHAMPMAT,   CARA_ELEM=CARA_ELE,
+                              CHARGE=CHA_AFL
+                          )
+
+#
+
+VEC_AFL=ASSE_VECTEUR(  VECT_ELEM=V_AFL_E,  NUME_DDL=NUME_DDL )
+
+#
+
+DYNA_AFL=DYNA_LINE_HARM(  MATR_MASS=MASSE,
+                              MATR_RIGI=RIGIDITE,
+                              MATR_AMOR=AMORTIS,
+                              FREQ=10.,
+                              EXCIT=_F( VECT_ASSE = VEC_AFL,
+                                     FONC_MULT = FONC)
+                           )
+
+#
+
+
+DYNA_AFL=CALC_ELEM(reuse=DYNA_AFL,  MODELE=MODELE,
+                          RESULTAT=DYNA_AFL,  OPTION='EFGE_ELNO_DEPL',
+                          CHAM_MATER=CHAMPMAT,   CARA_ELEM=CARA_ELE )
+
+#
+
+DYNA_AFL=CALC_NO(reuse=DYNA_AFL,  
+                          RESULTAT=DYNA_AFL,  OPTION='EFGE_NOEU_DEPL',
+                          CHAM_MATER=CHAMPMAT,   CARA_ELEM=CARA_ELE )
+
+#
+
+TEST_RESU(RESU=(   _F(  RESULTAT = DYNA_AFL,          NUME_ORDRE = 1,
+                                         GROUP_NO='B',
+                       NOM_CHAM = 'EFGE_NOEU_DEPL',  NOM_CMP = 'VY',
+                       VALE_C = ('RI',2.9868951093362E+03,-1.2441983057240E+02,),
+                       REFERENCE='AUTRE_ASTER',PRECISION= 0.03),
+                     _F(  RESULTAT = DYNA_AFL,          NUME_ORDRE = 1,
+                                      GROUP_NO='A',
+                       NOM_CHAM = 'EFGE_NOEU_DEPL',  NOM_CMP = 'MFZ',
+                       VALE_C = ('RI',9.6397865167429E+03 , 6.7370390082881E+02),
+                       REFERENCE='AUTRE_ASTER',PRECISION= 0.02),
+                     _F(  RESULTAT = DYNA_AFL,  NUME_ORDRE = 1,  GROUP_NO='B',
+                       NOM_CHAM = 'DEPL',  NOM_CMP = 'DY',
+                       VALE_C = ('RI',-2.1018274341124E-02 ,-1.8232283449979E-03),
+                       REFERENCE='AUTRE_ASTER',PRECISION= 0.02),
+                     _F(  RESULTAT = DYNA_AFL,  NUME_ORDRE = 1,  GROUP_NO='B',
+                       NOM_CHAM = 'VITE',  NOM_CMP = 'DY',
+                       VALE_C = ('RI',1.1455681548924E-01, -1.3206171252242),
+                       REFERENCE='AUTRE_ASTER',PRECISION= 0.02),
+                     _F(  RESULTAT = DYNA_AFL,  NUME_ORDRE = 1,  GROUP_NO='B',
+                       NOM_CHAM = 'ACCE',  NOM_CMP = 'DY',
+                       VALE_C = ('RI',8.2976821176186E+01,  7.1978169991928E+00),
+                       REFERENCE='AUTRE_ASTER',PRECISION= 0.02),
+                     _F(  RESULTAT = DYNA_AFL,  NUME_ORDRE = 1,  GROUP_NO='B',
+                       NOM_CHAM = 'DEPL',  NOM_CMP = 'DRZ',
+                       VALE_C = ('RI',-6.6070701790266E-03, -9.5228433787342E-04),
+                       REFERENCE='AUTRE_ASTER',PRECISION= 0.02),
+                     _F(  RESULTAT = DYNA_AFL,  NUME_ORDRE = 1,  GROUP_NO='B',
+                       NOM_CHAM = 'VITE',  NOM_CMP = 'DRZ',
+                       VALE_C = ('RI',5.9833789599835E-02, -4.1513446272364E-01),
+                       REFERENCE='AUTRE_ASTER',PRECISION= 0.02),
+                     _F(  RESULTAT = DYNA_AFL,  NUME_ORDRE = 1,  GROUP_NO='B',
+                       NOM_CHAM = 'ACCE',  NOM_CMP = 'DRZ',
+                       VALE_C = ('RI',2.6083667566891E+01,  3.7594678768656E+00),
+                       REFERENCE='AUTRE_ASTER',PRECISION= 0.02))
+
+            )
+FIN()

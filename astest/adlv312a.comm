@@ -1,0 +1,191 @@
+# MODIF  DATE 06/04/2004   AUTEUR CIBHHPD S.VANDENBERGHE 
+# TITRE RESERVOIR CYLINDRIQUE SOUPLE REMPLI D'EAU
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+# ELEMENTS  : HEXA8 , PENTA6
+# REFERENCE : SAMCEF
+#--------------------------------------------------------------
+
+DEBUT(CODE=_F( NOM = 'ADLV312A',NIV_PUB_WEB='INTERNET'))
+
+MAYA=LIRE_MAILLAGE( )
+
+#
+# DEFINITION DU MODELE
+#
+
+MODELE=AFFE_MODELE(    MAILLAGE=MAYA,AFFE=(
+                             _F(  GROUP_MA = 'FLUIDE',  
+                                    PHENOMENE = 'MECANIQUE',
+                                    MODELISATION = '3D_FLUIDE'),
+                                  _F(  GROUP_MA = 'COQUE',
+                                    PHENOMENE = 'MECANIQUE',
+                                    MODELISATION = 'DKT'),
+                                  _F(  GROUP_MA = 'INTERF',
+                                    PHENOMENE = 'MECANIQUE',
+                                    MODELISATION = 'FLUI_STRU'),
+                                  _F(  GROUP_MA = 'PESANT',   
+                                    PHENOMENE = 'MECANIQUE',
+                                    MODELISATION = '2D_FLUI_PESA'))
+                     )
+
+#
+# DEFINITION DES CARACTERISTIQUES PHYSIQUES
+#
+
+EAU=DEFI_MATERIAU(    FLUIDE=_F(  RHO = 1000.,
+                                      CELE_R = 1400.)
+                         )
+
+MATER=DEFI_MATERIAU(    ELAS=_F(  RHO = 7850.,
+                                    E = 2.06E11,
+                                    NU = 0.3)
+                         )
+
+CH_MATER=AFFE_MATERIAU(    MAILLAGE=MAYA,AFFE=( 
+                                 _F(  GROUP_MA = ( 'FLUIDE', 
+                                                     'INTERF',
+                                                     'PESANT', ),
+                                        MATER = EAU),
+                                      _F(  GROUP_MA = 'COQUE', 
+                                        MATER = MATER)) 
+                         )
+
+CARA=AFFE_CARA_ELEM(      MODELE=MODELE,   
+                                 COQUE=_F(  GROUP_MA = 'COQUE',
+                                         EPAIS = 0.254E-3)
+                          )
+
+#
+# DEFINITION DES CONDITIONS AUX LIMITES
+#
+
+CONDLIM=AFFE_CHAR_MECA(       MODELE=MODELE,
+                              PESANTEUR=( 9.81, 0., 0., -1.,),DDL_IMPO=(
+ 
+                               _F(  GROUP_NO = 'FIXA',    
+                                          DX = 0., 
+                                          DY = 0., 
+                                          DZ = 0., 
+                                          DRX = 0., 
+                                          DRY = 0., 
+                                          DRZ = 0.),
+ 
+                               _F(  GROUP_NO = 'SYMETRIE',
+                                          DY = 0., 
+                                          DRX = 0., 
+                                          DRZ = 0.))
+                          )
+
+#
+# CALCUL DES MATRICES ELEMENTAIRES DE RIGIDITE ET DE MASSE
+#
+
+K_ELEM=CALC_MATR_ELEM(       MODELE=MODELE,
+                                 OPTION='RIGI_MECA',
+                                 CHARGE=CONDLIM,  
+                              CARA_ELEM=CARA,
+                             CHAM_MATER=CH_MATER )
+
+M_ELEM=CALC_MATR_ELEM(       MODELE=MODELE,
+                                 OPTION='MASS_MECA',
+                                 CHARGE=CONDLIM,  
+                              CARA_ELEM=CARA,
+                             CHAM_MATER=CH_MATER )
+
+#
+# NUMEROTATION ET ASSEMBLAGE DES MATRICES ELEMENTAIRES
+#
+
+NUMERO=NUME_DDL(          MATR_RIGI=K_ELEM   )
+
+K_ASSE=ASSE_MATRICE(      MATR_ELEM=K_ELEM,  
+                               NUME_DDL=NUMERO   )
+
+M_ASSE=ASSE_MATRICE(      MATR_ELEM=M_ELEM,  
+                               NUME_DDL=NUMERO   )
+
+TABL_MAS=POST_ELEM(        MODELE=MODELE,
+                          CHAM_MATER=CH_MATER,
+                           CARA_ELEM=CARA,
+                          MASS_INER=_F(  TOUT = 'OUI')
+                      )
+
+#
+# CALCUL DES MODES
+#
+
+MODES=MODE_ITER_SIMULT(        MATR_A=K_ASSE, 
+                                    MATR_B=M_ASSE,
+                                 CALC_FREQ=_F(  OPTION = 'BANDE',     
+                                             FREQ = (70.,  300., ))
+                            )
+
+TEST_RESU(RESU=(
+   _F(   RESULTAT = MODES,
+           PARA = 'FREQ',
+           CRITERE = 'RELATIF',
+           PRECISION = 4.6E-2,
+           NUME_MODE = 158,
+           VALE = 71.2,
+           REFERENCE='NON_REGRESSION',),
+
+   _F(   RESULTAT = MODES,
+           PARA = 'FREQ',
+           CRITERE = 'RELATIF',
+           PRECISION = 3.5E-2,
+           NUME_MODE = 160,
+           VALE = 77.4,
+           REFERENCE='NON_REGRESSION',),
+
+   _F(   RESULTAT = MODES,
+           PARA = 'FREQ',
+           CRITERE = 'RELATIF',
+           PRECISION = 5.4E-2,
+           NUME_MODE = 169,
+           VALE = 98.9,
+           REFERENCE='NON_REGRESSION',),
+
+   _F(   RESULTAT = MODES,
+           PARA = 'FREQ',
+           CRITERE = 'RELATIF',
+           PRECISION = 2.E-2,
+           NUME_MODE = 170,
+           VALE = 133.4,
+           REFERENCE='NON_REGRESSION',),
+
+   _F(   RESULTAT = MODES,
+           PARA = 'FREQ',
+           CRITERE = 'RELATIF',
+           PRECISION = 6.5E-2,
+           NUME_MODE = 171,
+           VALE = 147.8,
+           REFERENCE='NON_REGRESSION',),
+
+   _F(   RESULTAT = MODES,
+           PARA = 'FREQ',
+           CRITERE = 'RELATIF',
+           PRECISION = 7.7E-2,
+           NUME_MODE = 172,
+           VALE = 212.6,
+           REFERENCE='NON_REGRESSION',))
+
+        )
+
+FIN()
+#

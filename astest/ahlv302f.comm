@@ -1,0 +1,165 @@
+# MODIF  DATE 13/10/97   AUTEUR A2BHHWS A.C.LEGER 
+# TITRE GUIDE D'ONDE A ENTREE VIBRO-ABSORBANTE E.F. U,P,PHI
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+# MODELISATION 'MECANIQUE' AXIS_FLUIDE  
+# AVEC MEAXFL_QU8 ET MEAXFL_SE3
+#
+# VALIDATION INDEPENDANTE PAR LMS_NT (J.P.ROSSION)
+#
+DEBUT(CODE=_F( NOM = 'AHLV302F',NIV_PUB_WEB='INTERNET'))
+
+PRE_IDEAS()
+
+#
+MA=LIRE_MAILLAGE()
+
+MO=AFFE_MODELE(
+         MAILLAGE=MA, 
+         AFFE=_F( TOUT = 'OUI', 
+              PHENOMENE = 'MECANIQUE', 
+              MODELISATION = 'AXIS_FLUIDE')
+         )
+
+#
+# PROPRIETES MECANIQUES
+#
+AIR=DEFI_MATERIAU(
+          FLUIDE=_F( RHO = 1.2,
+                CELE_R = 340.0)
+         )
+
+CHM=AFFE_MATERIAU(
+         MAILLAGE=MA, 
+         AFFE=_F( TOUT = 'OUI',
+              MATER = AIR)
+         )
+
+#
+# CONDITIONS AUX LIMITES
+#
+VITES=AFFE_CHAR_MECA(
+         MODELE=MO,
+         VITE_FACE=_F( GROUP_MA = 'VELO',
+                  VNOR = -1.0),
+          IMPE_FACE=_F( GROUP_MA = 'VELO',
+                    IMPE = -1000.)  
+         )
+
+IMPE=AFFE_CHAR_MECA(
+         MODELE=MO,
+         IMPE_FACE=_F( GROUP_MA = 'IMPE',
+                   IMPE = -408.0)
+         )
+
+#
+# MATRICES ELEMENTAIRES
+#
+MK=CALC_MATR_ELEM(  MODELE=MO,
+                     CHAM_MATER=CHM,
+                      OPTION='RIGI_MECA',
+                      CHARGE=VITES
+                    )
+
+MM=CALC_MATR_ELEM(  MODELE=MO,
+                     CHAM_MATER=CHM,
+                      OPTION='MASS_MECA',
+                      CHARGE=VITES
+                    )
+
+MI=CALC_MATR_ELEM(  MODELE=MO,
+                     CHAM_MATER=CHM,
+                      OPTION='IMPE_MECA',
+                      CHARGE=(IMPE, VITES,)
+                    )
+
+VECEL=CALC_VECT_ELEM(
+         OPTION='CHAR_MECA',
+         CHAM_MATER=CHM,
+         CHARGE=VITES
+        )
+
+#
+# ASSEMBLAGE
+#
+#MACRO_MATR_ASSE (
+#    MODELE: MO
+#    CHARGE: IMPE
+#    CHAM_MATER: CHM
+#    NUME_DDL: NDDL 
+#    MATR_ASSE: ( MATRICE: MATK OPTION: 'RIGI_MECA') 
+#               ( MATRICE: MATM OPTION: 'MASS_MECA') 
+#               ( MATRICE: MATA OPTION: 'IMPE_MECA') 
+#                );
+NDDL=NUME_DDL(  MATR_RIGI=MK)
+
+MATK=ASSE_MATRICE(  MATR_ELEM=MK,
+                      NUME_DDL=NDDL)
+
+MATM=ASSE_MATRICE(  MATR_ELEM=MM,
+                      NUME_DDL=NDDL)
+
+MATA=ASSE_MATRICE(  MATR_ELEM=MI,
+                      NUME_DDL=NDDL)
+
+VECAS=ASSE_VECTEUR(
+         VECT_ELEM=VECEL,
+         NUME_DDL=NDDL
+        )
+
+#
+#  REPONSE HARMONIQUE
+#
+HARMO=DYNA_LINE_HARM( 
+         MATR_MASS=MATM,
+         MATR_RIGI=MATK,
+         MATR_IMPE_PHI=MATA,
+         FREQ=500.0,
+          EXCIT=_F( VECT_ASSE = VECAS,
+               COEF_MULT = 1.0,
+               PHAS_DEG = 90.0,
+               PUIS_PULS = 1)
+         )
+
+TEST_RESU(RESU=(
+          _F( RESULTAT = HARMO, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
+           NOEUD = 'NO160', NOM_CMP = 'PRES', VALE_C = ('RI',-289.77,0.0,)), 
+          _F( RESULTAT = HARMO, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
+           NOEUD = 'NO1', NOM_CMP = 'PRES', VALE_C = ('RI',-289.77,0.0,)),
+          _F( RESULTAT = HARMO, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
+           NOEUD = 'NO2', NOM_CMP = 'PRES', VALE_C = ('RI',284.84,-53.246,)),
+          _F( RESULTAT = HARMO, NOM_CHAM = 'DEPL', NUME_ORDRE = 1,
+           NOEUD = 'NO161', NOM_CMP = 'PRES', VALE_C = ('RI',284.84,-53.246,)))
+          )
+
+#&HARMO = CALC_ELEM (MODELE: MO 
+#                    CHAM_MATER: CHM
+#                    TOUT_ORDRE: 'OUI'
+#                    RESULTAT: HARMO
+#                    OPTION: 'PRES_ELNO_DBEL'
+#         );
+#TEST_RESU (RESU:
+#          (RESULTAT:HARMO NOM_CHAM:'PRES_ELNO_DBEL' NUME_ORDRE:01
+#           MAILLE: MA2 NOEUD:NO50 NOM_CMP:'DBEL_R' VALE: 90.97
+#           PRECISION: 3.E-2)  
+#          (RESULTAT:HARMO NOM_CHAM:'PRES_ELNO_DBEL' NUME_ORDRE:01
+#           MAILLE: MA58 NOEUD:NO716 NOM_CMP:'DBEL_R' VALE: 91.79
+#           PRECISION: 3.E-2)  
+#          );
+FIN()
+#

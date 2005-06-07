@@ -1,0 +1,383 @@
+# MODIF  DATE 24/02/2004   AUTEUR CIBHHPD S.VANDENBERGHE 
+# TITRE CYLINDRE SOUS PRESSION ET DILATATION THERMIQUE (AXIS)
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+DEBUT( CODE=_F(  NOM = 'HSLA303A',NIV_PUB_WEB='INTERNET') )
+
+MAIL=LIRE_MAILLAGE(   )
+
+#
+# DEFINITION DES GROUPES DE NOEUDS
+MAIL=DEFI_GROUP( reuse=MAIL,   MAILLAGE=MAIL,CREA_GROUP_NO=(
+                       _F(  GROUP_MA = 'EFFOND'),
+                       _F(  GROUP_MA = 'CONT_PR'),
+                       _F(  NOM = 'RESULT',
+                                       NOEUD = ('N1', 'N2', 'N3', 'N4', )),
+                       _F(  GROUP_MA = 'LCD'))
+                   )
+
+#
+# DEFINITION DU MODELE
+MODELE=AFFE_MODELE(    MAILLAGE=MAIL,
+                         AFFE=_F(  TOUT = 'OUI',
+                       PHENOMENE = 'MECANIQUE',
+                       MODELISATION = 'AXIS')  )
+
+#
+# DEFINITION DU MATERIAU
+ACIER=DEFI_MATERIAU(    ELAS=_F(  E = 2.1E11,  NU = 0.3,
+                                 ALPHA = 0.12E-4,  RHO = 7800.)
+                      )
+
+#
+# ATTRIBUTION DU MATERIAU
+CHMAT=AFFE_MATERIAU(    MAILLAGE=MAIL,
+                          AFFE=_F(  TOUT = 'OUI',
+                                 MATER = ACIER)  )
+
+#
+# DEFINITION DES CONDITIONS AUX LIMITES
+CLIM=AFFE_CHAR_MECA(    MODELE=MODELE,DDL_IMPO=(
+                           _F(  GROUP_NO = 'A',  DY = 0.),
+                           _F(  GROUP_NO = 'B',  DY = 0.))
+                        )
+
+#
+# DEFINITION DU CHARGEMENT THERMIQUE
+CHAR_NO=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R', 
+MAILLAGE=MAIL,
+                           AFFE=_F(  TOUT = 'OUI',
+                                  NOM_CMP = 'TEMP',
+                                  VALE = 100.))
+
+#
+CHAR_TH=AFFE_CHAR_MECA(    MODELE=MODELE,
+                            TEMP_CALCULEE=CHAR_NO)
+
+# DEFINITION DE LA PRESSION
+CHAR_PR=AFFE_CHAR_MECA(    MODELE=MODELE,
+                             PRES_REP=_F(  GROUP_MA = 'CONT_PR',
+                                        PRES = 2.E8),
+                             FORCE_CONTOUR=_F(  GROUP_MA = 'EFFOND',
+                                             FY = 1.95E9)
+                         )
+
+# RESOLUTION
+DEF_TH=MECA_STATIQUE(    MODELE=MODELE,
+                           CHAM_MATER=CHMAT,EXCIT=(
+                           _F(  CHARGE = CLIM),
+                                 _F(  CHARGE = CHAR_TH))
+                    )
+
+DEF_PR=MECA_STATIQUE(    MODELE=MODELE,
+                           CHAM_MATER=CHMAT,EXCIT=(
+                           _F(  CHARGE = CLIM),
+                                 _F(  CHARGE = CHAR_PR))
+                    )
+
+#
+# RECUPERATION DES CHAMPS DE DEPLACEMENTS U1 PUIS U
+U_TH=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
+RESULTAT=DEF_TH,
+                      NUME_ORDRE=1,
+                      NOM_CHAM='DEPL' )
+
+U_PR=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
+RESULTAT=DEF_PR,
+                      NUME_ORDRE=1,
+                      NOM_CHAM='DEPL' )
+
+#
+# CALCUL DES CONTRAINTES THERMIQUES
+DEF_TH=CALC_ELEM( reuse= DEF_TH ,RESULTAT= DEF_TH ,MODELE=MODELE,
+                              CHAM_MATER=CHMAT,
+                                  OPTION=('SIGM_ELNO_DEPL',)
+                          )
+#
+# CALCUL DES DEFORMATIONS DUES AU THERM. ET A LA PRESSION
+DEF_TH=CALC_ELEM( reuse= DEF_TH ,RESULTAT= DEF_TH ,MODELE=MODELE,
+                              CHAM_MATER=CHMAT,
+                                   OPTION=('EPSI_ELNO_DEPL',)
+                )
+DEF_PR=CALC_ELEM( reuse= DEF_PR ,RESULTAT= DEF_PR ,MODELE=MODELE,
+                              CHAM_MATER=CHMAT,
+                                   OPTION=('EPSI_ELNO_DEPL',)
+                )
+#
+# TEST_RESU DES DEPLACEMENTS
+#
+TEST_RESU(CHAM_NO=(
+# U(A)
+              _F(  CHAM_GD = U_TH,
+                        NOEUD = 'N1',
+                        NOM_CMP = 'DX',
+                        VALE = 5.70000E-05,
+                        PRECISION = 0.001),
+# UR(B)
+              _F(  CHAM_GD = U_TH,
+                        NOEUD = 'N2',
+                        NOM_CMP = 'DX',
+                        VALE = 6.00000E-05,
+                        PRECISION = 0.001),
+# UR(C)
+              _F(  CHAM_GD = U_TH,
+                        NOEUD = 'N3',
+                        NOM_CMP = 'DX',
+                        VALE = 6.00000E-05,
+                        PRECISION = 0.001),
+# UZ(C)
+              _F(  CHAM_GD = U_TH,
+                        NOEUD = 'N3',
+                        NOM_CMP = 'DY',
+                        VALE = 1.20000E-03,
+                        PRECISION = 0.001),
+# UR(D)
+              _F(  CHAM_GD = U_TH,
+                        NOEUD = 'N4',
+                        NOM_CMP = 'DX',
+                        VALE = 5.70000E-05,
+                        PRECISION = 0.001),
+# UZ(D)
+              _F(  CHAM_GD = U_TH,
+                        NOEUD = 'N4',
+                        NOM_CMP = 'DY',
+                        VALE = 1.20000E-03,
+                        PRECISION = 0.001))
+          )
+
+#
+TEST_RESU(CHAM_NO=(
+              _F(  CHAM_GD = U_PR,
+                        NOEUD = 'N3',
+                        NOM_CMP = 'DY',
+                        VALE = 3.714E-03,
+                        PRECISION = 0.077),
+              _F(  CHAM_GD = U_PR,
+                        NOEUD = 'N4',
+                        NOM_CMP = 'DY',
+                        VALE = 3.714E-03,
+                        PRECISION = 0.077))
+          )
+
+#
+# TEST_RESU DE DEFORMATIONS
+#
+TEST_RESU(RESU=_F(  RESULTAT = DEF_TH,
+#A                              
+                        NOM_CHAM='EPSI_ELNO_DEPL',
+                        NUME_ORDRE=1,
+                        MAILLE = 'M1',
+                        NOEUD = 'N1',
+                        NOM_CMP = 'EPXX',
+                        VALE = 1.20000E-03,
+                        PRECISION = 0.0001),
+        )
+        
+TEST_RESU(RESU=_F(  RESULTAT = DEF_TH,
+                              NOM_CHAM='EPSI_ELNO_DEPL',
+                        NUME_ORDRE=1,
+                        MAILLE = 'M1',
+                        NOEUD = 'N1',
+                        NOM_CMP = 'EPYY',
+                        VALE = 1.20000E-03,
+                        PRECISION = 0.0001),
+                )
+TEST_RESU(RESU=_F(  RESULTAT = DEF_TH,
+                              NOM_CHAM='EPSI_ELNO_DEPL',
+                        NUME_ORDRE=1,
+                        MAILLE = 'M1',
+                        NOEUD = 'N1',
+                        NOM_CMP = 'EPZZ',
+                        VALE = 1.20000E-03,
+                        PRECISION = 0.0001),
+                )
+TEST_RESU(RESU=_F(  RESULTAT = DEF_TH,
+#B
+                              NOM_CHAM='EPSI_ELNO_DEPL',
+                        NUME_ORDRE=1,
+                        MAILLE = 'M1',
+                        NOEUD = 'N2',
+                        NOM_CMP = 'EPXX',
+                        VALE = 1.20000E-03,
+                        PRECISION = 0.0001),
+                )
+TEST_RESU(RESU=_F(  RESULTAT = DEF_TH,
+                              NOM_CHAM='EPSI_ELNO_DEPL',
+                        NUME_ORDRE=1,
+                        MAILLE = 'M1',
+                        NOEUD = 'N2',
+                        NOM_CMP = 'EPYY',
+                        VALE = 1.20000E-03,
+                        PRECISION = 0.0001),
+                )
+TEST_RESU(RESU=_F(  RESULTAT = DEF_TH,
+                              NOM_CHAM='EPSI_ELNO_DEPL',
+                        NUME_ORDRE=1,
+                        MAILLE = 'M1',
+                        NOEUD = 'N2',
+                        NOM_CMP = 'EPZZ',
+                        VALE = 1.20000E-03,
+                        PRECISION = 0.0001),
+                )
+TEST_RESU(RESU=_F(  RESULTAT = DEF_TH,
+#C
+                              NOM_CHAM='EPSI_ELNO_DEPL',
+                        NUME_ORDRE=1,
+                        MAILLE = 'M10',
+                        NOEUD = 'N3',
+                        NOM_CMP = 'EPXX',
+                        VALE = 1.20000E-03,
+                        PRECISION = 0.0001),
+                )
+TEST_RESU(RESU=_F(  RESULTAT = DEF_TH,
+                              NOM_CHAM='EPSI_ELNO_DEPL',
+                        NUME_ORDRE=1,
+                        MAILLE = 'M10',
+                        NOEUD = 'N3',
+                        NOM_CMP = 'EPYY',
+                        VALE = 1.20000E-03,
+                        PRECISION = 0.0001),
+                )
+TEST_RESU(RESU=_F(  RESULTAT = DEF_TH,
+                              NOM_CHAM='EPSI_ELNO_DEPL',
+                        NUME_ORDRE=1,
+                        MAILLE = 'M10',
+                        NOEUD = 'N3',
+                        NOM_CMP = 'EPZZ',
+                        VALE = 1.20000E-03,
+                        PRECISION = 0.0001),
+                )
+TEST_RESU(RESU=_F(  RESULTAT = DEF_TH,
+#D
+                              NOM_CHAM='EPSI_ELNO_DEPL',
+                        NUME_ORDRE=1,
+                        MAILLE = 'M10',
+                        NOEUD = 'N4',
+                        NOM_CMP = 'EPXX',
+                        VALE = 1.20000E-03,
+                        PRECISION = 0.0001),
+                )
+TEST_RESU(RESU=_F(  RESULTAT = DEF_TH,
+                              NOM_CHAM='EPSI_ELNO_DEPL',
+                        NUME_ORDRE=1,
+                        MAILLE = 'M10',
+                        NOEUD = 'N4',
+                        NOM_CMP = 'EPYY',
+                        VALE = 1.20000E-03,
+                        PRECISION = 0.0001),
+                )
+TEST_RESU(RESU=_F(  RESULTAT = DEF_TH,
+                              NOM_CHAM='EPSI_ELNO_DEPL',
+                        NUME_ORDRE=1,
+                        MAILLE = 'M10',
+                        NOEUD = 'N4',
+                        NOM_CMP = 'EPZZ',
+                        VALE = 1.20000E-03,
+                        PRECISION = 0.0001),
+                )
+TEST_RESU(RESU=_F(  RESULTAT = DEF_PR,
+#C
+                              NOM_CHAM='EPSI_ELNO_DEPL',
+                        NUME_ORDRE=1,
+                        MAILLE = 'M10',
+                        NOEUD = 'N3',
+                        NOM_CMP = 'EPYY',
+                        VALE = 3.714E-3,
+                        PRECISION = 0.077),
+        )
+TEST_RESU(RESU=_F(  RESULTAT = DEF_PR,
+# D
+                              NOM_CHAM='EPSI_ELNO_DEPL',
+                        NUME_ORDRE=1,
+                        MAILLE = 'M10',
+                        NOEUD = 'N4',
+                        NOM_CMP = 'EPYY',
+                        VALE = 3.714E-3,
+                        PRECISION = 0.077),
+        )        
+#
+# DEUXIEME CALCUL AVEC DEFORMATIONS INITIALES
+#
+# DEFINITION DES DEFORM. INIT.
+DEF_INIT=AFFE_CHAR_MECA(     MODELE=MODELE,
+                             EPSI_INIT=_F(  TOUT = 'OUI',
+                             EPXX = 1.2E-3,
+                             EPYY = 1.2E-3,
+                             EPZZ = 1.2E-3,
+                             EPXY = 0.)
+                           )
+
+# RESOLUTION
+DEF_PR2=MECA_STATIQUE(    MODELE=MODELE,
+                            CHAM_MATER=CHMAT,EXCIT=(
+                            _F(  CHARGE = CLIM),
+                                  _F(  CHARGE = CHAR_PR),
+                                  _F(  CHARGE = DEF_INIT))
+                     )
+
+#
+# RECUPERATION DU CHAMP DE DEPLACEMENT U2
+U_PR2=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
+RESULTAT=DEF_PR2,
+                       NUME_ORDRE=1,
+                       NOM_CHAM='DEPL' )
+
+#
+DEF_PR2=CALC_ELEM( reuse= DEF_PR2 ,RESULTAT= DEF_PR2 ,MODELE=MODELE,
+                              CHAM_MATER=CHMAT,
+                                  OPTION=('EPSI_ELNO_DEPL',)
+                          )
+#
+# TEST_RESU DES DEPLACEMENTS
+#
+TEST_RESU(CHAM_NO=(
+# U2(C)
+              _F(  CHAM_GD = U_PR2,
+                        NOEUD = 'N3',
+                        NOM_CMP = 'DY',
+                        VALE = 4.914E-3,
+                        PRECISION = 0.058),
+# U2(D)
+              _F(  CHAM_GD = U_PR2,
+                        NOEUD = 'N4',
+                        NOM_CMP = 'DY',
+                        VALE = 4.914E-3,
+                        PRECISION = 0.058))
+           )
+TEST_RESU(RESU=_F(  RESULTAT = DEF_PR2,
+# C
+                              NOM_CHAM='EPSI_ELNO_DEPL',
+                        NUME_ORDRE=1,
+                        MAILLE = 'M10',
+                        NOEUD = 'N3',
+                        NOM_CMP = 'EPYY',
+                        VALE = 4.914E-3,
+                        PRECISION = 0.058),
+        )
+TEST_RESU(RESU=_F(  RESULTAT = DEF_PR2,
+# D
+                              NOM_CHAM='EPSI_ELNO_DEPL',
+                        NUME_ORDRE=1,
+                        MAILLE = 'M10',
+                        NOEUD = 'N4',
+                        NOM_CMP = 'EPYY',
+                        VALE = 4.914E-3,
+                        PRECISION = 0.058),
+        )        
+FIN()
+#

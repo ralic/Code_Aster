@@ -1,0 +1,262 @@
+# MODIF  DATE 22/11/2001   AUTEUR VABHHTS J.PELLET 
+# TITRE PLAQUE BIAISE SOUS CHARGEMENT CONCENTRE
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+
+DEBUT(CODE=_F( NOM = 'SSNV139A',NIV_PUB_WEB='INTERNET'))
+
+#
+# MODELISATION : COQUE_3D
+#
+# MAILLAGE     : MEC3QU9H
+#
+
+MATERI_1=DEFI_MATERIAU( ELAS=_F(  E = 2.1E6,
+                                  NU = 0.333333333333333) )
+
+#
+
+MAILLA_1=LIRE_MAILLAGE(   )
+
+MAILLA_1=DEFI_GROUP( reuse=MAILLA_1,   MAILLAGE=MAILLA_1,
+                           CREA_GROUP_MA=_F(  NOM = 'TOUT',  TOUT = 'OUI') )
+
+#
+
+CH_MAT_1=AFFE_MATERIAU(  MAILLAGE=MAILLA_1,
+                            AFFE=_F(  TOUT = 'OUI',   MATER = MATERI_1) )
+
+#
+
+MODELE_1=AFFE_MODELE(  MAILLAGE=MAILLA_1, VERIF='MAILLE',
+                     AFFE=_F( TOUT = 'OUI', MODELISATION = 'COQUE_3D',
+                                PHENOMENE = 'MECANIQUE') )
+
+#
+
+CHARGE_1=AFFE_CHAR_MECA(MODELE=MODELE_1,
+#
+
+                          DDL_IMPO=_F( GROUP_NO = 'G_41',  DX = 0., DY = 0., DZ = 0.,
+                                            DRX = 0., DRY = 0., DRZ = 0.),
+#
+                  FORCE_NODALE=_F(  GROUP_NO = 'G_10',  FZ = -1.E0)
+#
+                  )
+
+#
+
+CARAC_1=AFFE_CARA_ELEM(   MODELE=MODELE_1,
+                               COQUE=_F(  GROUP_MA = 'TOUT',
+                                       EPAIS = 0.5,
+                                       COEF_RIGI_DRZ = 1.E-4)
+                            )
+
+#
+
+D_FONC=DEFI_FONCTION(
+                            NOM_PARA='INST',
+                                VALE=( 0.,   0.,
+                                       500., 500.,
+                                     )
+                         )
+
+#
+#
+
+L_INST=DEFI_LIST_REEL(   DEBUT=0.0,INTERVALLE=(
+#
+                            _F(  JUSQU_A = 250., NOMBRE = 10),
+                            _F(  JUSQU_A = 500., NOMBRE = 4))
+# POUR DEPUIS 5.4.8. INTERVALLE : ( JUSQU_A : 500. NOMBRE  : 15 )
+#
+                         )
+
+#
+
+NONLIN=STAT_NON_LINE(
+                            MODELE=MODELE_1,
+                        CHAM_MATER=CH_MAT_1,
+                         CARA_ELEM=CARAC_1,
+                             EXCIT=_F(
+                CHARGE = CHARGE_1,
+                FONC_MULT = D_FONC),
+                         COMP_ELAS=_F(
+                RELATION = 'ELAS',
+                DEFORMATION = 'GREEN_GR'),
+                         INCREMENT=_F(
+                LIST_INST = L_INST),
+                            NEWTON=_F(
+                REAC_ITER = 1),
+                       CONVERGENCE=_F(
+                ITER_GLOB_MAXI = 100,
+                RESI_GLOB_RELA = 1.E-6)
+              )
+
+#
+#
+#   A MI-CHEMIN DE LA CHARGE MAXIMALE
+#
+##################################################################
+#
+#
+#   DEPLACEMENT HORIZONTAL
+#
+#
+
+TEST_RESU(   RESU=_F(  RESULTAT = NONLIN,
+                                          NUME_ORDRE = 10,
+                      GROUP_NO = 'G_10',
+                      NOM_CHAM = 'DEPL',
+                      CRITERE = 'RELATIF',
+                      PRECISION = 2.6E-2,
+                      NOM_CMP = 'DX',
+                                VALE = -3.8069E1)
+            )
+
+#
+#   DEPLACEMENT VERTICAL
+#
+#
+
+TEST_RESU(   RESU=_F(  RESULTAT = NONLIN,
+                                          NUME_ORDRE = 10,
+                      GROUP_NO = 'G_10',
+                      NOM_CHAM = 'DEPL',
+                      CRITERE = 'RELATIF',
+                      PRECISION = 1.E-2,
+                      NOM_CMP = 'DZ',
+                                VALE = -7.2409E1)
+            )
+
+#
+#   NON REGRESSION
+#
+#
+#   DEPLACEMENT HORIZONTAL
+#
+#
+
+TEST_RESU(   RESU=_F(  RESULTAT = NONLIN,
+                                          NUME_ORDRE = 10,
+                      GROUP_NO = 'G_10',
+                      NOM_CHAM = 'DEPL',
+                      CRITERE = 'RELATIF',
+                      REFERENCE = 'NON_REGRESSION',
+                      VERSION = '5.02.13',
+                      PRECISION = 0.5E-2,
+                      NOM_CMP = 'DX',
+                                VALE = -3.902E1)
+            )
+
+#
+#   DEPLACEMENT VERTICAL
+#
+#
+
+TEST_RESU(   RESU=_F(  RESULTAT = NONLIN,
+                                          NUME_ORDRE = 10,
+                      GROUP_NO = 'G_10',
+                      NOM_CHAM = 'DEPL',
+                      CRITERE = 'RELATIF',
+                      REFERENCE = 'NON_REGRESSION',
+                      VERSION = '5.02.13',
+                      PRECISION = 0.5E-2,
+                      NOM_CMP = 'DZ',
+                                VALE = -7.218E1)
+            )
+
+#
+#
+#
+#
+#   A LA CHARGE MAXIMALE
+#
+##################################################################
+#
+#
+#   DEPLACEMENT HORIZONTAL
+#
+#
+
+TEST_RESU(   RESU=_F(  RESULTAT = NONLIN,
+                                          NUME_ORDRE = 14,
+                      GROUP_NO = 'G_10',
+                      NOM_CHAM = 'DEPL',
+                      CRITERE = 'RELATIF',
+                      PRECISION = 7.E-2,
+                      NOM_CMP = 'DX',
+                                VALE = -5.2002E1)
+            )
+
+#
+#
+#   DEPLACEMENT VERTICAL
+#
+#
+
+TEST_RESU(   RESU=_F(  RESULTAT = NONLIN,
+                                          NUME_ORDRE = 14,
+                      GROUP_NO = 'G_10',
+                      NOM_CHAM = 'DEPL',
+                      CRITERE = 'RELATIF',
+                      PRECISION = 3.6E-2,
+                      NOM_CMP = 'DZ',
+                                VALE = -8.0734E1)
+            )
+
+#
+#   NON REGRESSION
+#
+#   DEPLACEMENT HORIZONTAL
+#
+#
+
+TEST_RESU(   RESU=_F(  RESULTAT = NONLIN,
+                                          NUME_ORDRE = 14,
+                      GROUP_NO = 'G_10',
+                      NOM_CHAM = 'DEPL',
+                      CRITERE = 'RELATIF',
+                      REFERENCE = 'NON_REGRESSION',
+                      VERSION = '5.02.13',
+                      PRECISION = 0.5E-2,
+                      NOM_CMP = 'DX',
+                                VALE = -5.432E1)
+            )
+
+#
+#
+#   DEPLACEMENT VERTICAL
+#
+#
+
+TEST_RESU(   RESU=_F(  RESULTAT = NONLIN,
+                                          NUME_ORDRE = 14,
+                      GROUP_NO = 'G_10',
+                      NOM_CHAM = 'DEPL',
+                      CRITERE = 'RELATIF',
+                      REFERENCE = 'NON_REGRESSION',
+                      VERSION = '5.02.13',
+                      PRECISION = 0.5E-2,
+                      NOM_CMP = 'DZ',
+                                VALE = -8.103E1)
+            )
+
+#
+FIN( )
+#

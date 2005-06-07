@@ -1,0 +1,218 @@
+# MODIF  DATE 12/03/2004   AUTEUR CIBHHPD S.VANDENBERGHE 
+# TITRE REPONSE HARMONIQUE CYLINDRE EN D.P. (TRIA3 QUAD4)
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+#CAS_TEST__: SHLV100E
+# ----------------------------------------------------------------------
+# SHLV100 E               COMMANDES                            23/05/91
+# CYLINDRE SOUS PRESSION INTERNE HARMONIQUE AVEC EXTREMITES BLOQUEES
+# SOLUTION ANALYTIQUE EN DEFORMATIONS PLANES
+#
+#         ..                      JWT                JWT
+# K X + M X   = P    AVEC  P = P E        ET  X = X E
+#       2
+# (K - W M) X = P    AVEC  W = 0.2 RD/S   ET  P = 1 MPA
+#
+# MODELISATION : ELEMENTS MECANIQUE D_PLAN (TRIA3+QUAD4)
+# MAILLAGE     : ALIBABA > ASTER
+#
+# ----------------------------------------------------------------------
+# GROUPES DE NOEUDS ET MAILLES:
+# A=GRNO1  B=GRNO2  C=GRNO3  D=GRNO4  E=GRNO5  F=GRNO6
+# NOEUDS(AB)=GRNM11          SEG(EF)=GRMA12    SEG(AE)=GRMA13
+# ----------------------------------------------------------------------
+#
+
+DEBUT(CODE=_F(  NOM = 'SHLV100E',NIV_PUB_WEB='INTERNET') )
+
+M=LIRE_MAILLAGE(   )
+
+MO=AFFE_MODELE(        MAILLAGE=M,
+                                AFFE=_F(  TOUT = 'OUI',
+                                       PHENOMENE = 'MECANIQUE',
+                                       MODELISATION = 'D_PLAN'))
+
+MA=DEFI_MATERIAU(          ELAS=_F(  E = 26.,
+                                       NU = 0.3,
+                                       RHO = 35.,
+                                       ALPHA = 0.))
+
+CM=AFFE_MATERIAU(      MAILLAGE=M,
+                                AFFE=_F(  TOUT = 'OUI',
+                                       MATER = MA))
+
+CH=AFFE_CHAR_MECA(       MODELE=MO,
+                           FACE_IMPO=_F(  GROUP_MA = 'GRMA12', DNOR = 0.),
+                            DDL_IMPO=_F(  GROUP_NO = 'GRNM11', DY = 0.),
+                            PRES_REP=_F(  GROUP_MA = 'GRMA13', PRES = 1.))
+
+KE=CALC_MATR_ELEM(       MODELE=MO,
+                              CHARGE=CH,
+                          CHAM_MATER=CM,
+                              OPTION='RIGI_MECA'                      )
+
+ME=CALC_MATR_ELEM(       MODELE=MO,
+                              CHARGE=CH,
+                          CHAM_MATER=CM,
+                              OPTION='MASS_MECA'                      )
+
+VE=CALC_VECT_ELEM(       CHARGE=CH,
+                          CHAM_MATER=CM,
+                              OPTION='CHAR_MECA'                      )
+
+NU=NUME_DDL(          MATR_RIGI=KE                               )
+
+KAS=ASSE_MATRICE(      MATR_ELEM=KE,
+                            NUME_DDL=NU                               )
+
+MAS=ASSE_MATRICE(      MATR_ELEM=ME,
+                             NUME_DDL=NU                  )
+
+VAS=ASSE_VECTEUR(      VECT_ELEM=VE,
+                            NUME_DDL=NU                               )
+
+DYNA=DYNA_LINE_HARM(MODELE=MO,
+                    CHAM_MATER=CM,
+                    MATR_MASS=MAS,
+                    MATR_RIGI=KAS,
+                    FREQ=0.031830988618379,
+                    EXCIT=_F(VECT_ASSE=VAS,
+                             COEF_MULT=1,),);
+
+DYNA=CALC_ELEM(reuse =DYNA,
+               MODELE=MO,
+               CHAM_MATER=CM,
+               RESULTAT=DYNA,
+               NUME_ORDRE=1,
+               OPTION='SIGM_ELNO_DEPL',);
+
+TEST_RESU(RESU=(
+   # DEPLACEMENTS
+              
+            _F(  RESULTAT = DYNA, NUME_ORDRE=1, NOM_CHAM='DEPL',  CRITERE = 'RELATIF',  PRECISION = 1.E-2,
+           GROUP_NO = 'A',        NOM_CMP = 'DX',           VALE_C = ('RI',7.3398E-3,0.),),
+            _F(  RESULTAT = DYNA, NUME_ORDRE=1, NOM_CHAM='DEPL',  CRITERE = 'ABSOLU',   PRECISION = 1.E-10,
+           GROUP_NO = 'A',        NOM_CMP = 'DY',           VALE_C = ('RI',0.,0.),),
+            _F(  RESULTAT = DYNA, NUME_ORDRE=1, NOM_CHAM='DEPL',  CRITERE = 'RELATIF',  PRECISION = 1.E-2,
+           GROUP_NO = 'B',        NOM_CMP = 'DX',           VALE_C = ('RI',4.6716E-3,0.),),
+            _F(  RESULTAT = DYNA, NUME_ORDRE=1, NOM_CHAM='DEPL',   CRITERE = 'ABSOLU',   PRECISION = 1.E-2,
+           GROUP_NO = 'B',        NOM_CMP = 'DY',           VALE_C = ('RI',0.,0.),),
+            _F(  RESULTAT = DYNA, NUME_ORDRE=1, NOM_CHAM='DEPL',   CRITERE = 'RELATIF',  PRECISION = 1.E-2,
+           GROUP_NO = 'C',        NOM_CMP = 'DX',           VALE_C = ('RI',6.78109E-3,0.),),
+            _F(  RESULTAT = DYNA, NUME_ORDRE=1, NOM_CHAM='DEPL',   CRITERE = 'RELATIF',  PRECISION = 1.E-2,
+           GROUP_NO = 'C',        NOM_CMP = 'DY',           VALE_C = ('RI',2.80882E-3,0.),),
+            _F(  RESULTAT = DYNA, NUME_ORDRE=1, NOM_CHAM='DEPL',   CRITERE = 'RELATIF',  PRECISION = 1.E-2,
+           GROUP_NO = 'D',        NOM_CMP = 'DX',           VALE_C = ('RI',4.32523E-3,0.),),
+            _F(  RESULTAT = DYNA, NUME_ORDRE=1, NOM_CHAM='DEPL',   CRITERE = 'RELATIF',  PRECISION = 1.E-2,
+           GROUP_NO = 'D',        NOM_CMP = 'DY',           VALE_C = ('RI',1.79157E-3,0.),),
+            _F(  RESULTAT = DYNA, NUME_ORDRE=1, NOM_CHAM='DEPL',   CRITERE = 'RELATIF',  PRECISION = 1.E-2,
+           GROUP_NO = 'E',        NOM_CMP = 'DX',           VALE_C = ('RI',5.19002E-3,0.),),
+            _F(  RESULTAT = DYNA, NUME_ORDRE=1, NOM_CHAM='DEPL',   CRITERE = 'RELATIF',  PRECISION = 1.E-2,
+           GROUP_NO = 'E',        NOM_CMP = 'DY',           VALE_C = ('RI',5.19002E-3,0.),),
+            _F(  RESULTAT = DYNA, NUME_ORDRE=1, NOM_CHAM='DEPL',   CRITERE = 'RELATIF',  PRECISION = 1.E-2,
+           GROUP_NO = 'F',        NOM_CMP = 'DX',           VALE_C = ('RI',3.31039E-3,0.),),
+            _F(  RESULTAT = DYNA, NUME_ORDRE=1, NOM_CHAM='DEPL',   CRITERE = 'RELATIF',  PRECISION = 1.E-2,
+           GROUP_NO = 'F',        NOM_CMP = 'DY',           VALE_C = ('RI',3.31039E-3,0.),),
+
+
+   # CONTRAINTES
+
+              
+            _F(  RESULTAT = DYNA, NUME_ORDRE=1, NOM_CHAM='SIGM_ELNO_DEPL',
+CRITERE = 'RELATIF',  PRECISION = 0.13, MAILLE = 'M1',      GROUP_NO = 'A',
+NOM_CMP = 'SIXX',         VALE_C = ('RI',-1.,0.),),
+            _F(  RESULTAT = DYNA, NUME_ORDRE=1, NOM_CHAM='SIGM_ELNO_DEPL',
+CRITERE = 'RELATIF',  PRECISION = 0.08, MAILLE = 'M1',      GROUP_NO = 'A',
+NOM_CMP = 'SIYY',         VALE_C = ('RI',1.6685,0.),),
+            _F(  RESULTAT = DYNA, NUME_ORDRE=1, NOM_CHAM='SIGM_ELNO_DEPL',
+CRITERE = 'RELATIF',  PRECISION = 0.01, MAILLE = 'M1',
+GROUP_NO = 'A',        NOM_CMP = 'SIZZ',         VALE_C = ('RI',0.20055,0.),),
+            _F(  RESULTAT = DYNA, NUME_ORDRE=1, NOM_CHAM='SIGM_ELNO_DEPL',
+CRITERE = 'ABSOLU',   PRECISION = 0.10, MAILLE = 'M1',      GROUP_NO = 'A',
+NOM_CMP = 'SIXY',         VALE_C = ('RI',0.,0.),),
+#
+            _F(  RESULTAT = DYNA, NUME_ORDRE=1, NOM_CHAM='SIGM_ELNO_DEPL',
+CRITERE = 'ABSOLU',   PRECISION = 2.E-2, MAILLE = 'M173',    GROUP_NO = 'B',
+NOM_CMP = 'SIXX',         VALE_C = ('RI',0.,0.),),
+            _F(  RESULTAT = DYNA, NUME_ORDRE=1, NOM_CHAM='SIGM_ELNO_DEPL',
+CRITERE = 'RELATIF',  PRECISION = 3.E-2, MAILLE = 'M173',    GROUP_NO = 'B',
+NOM_CMP = 'SIYY',         VALE_C = ('RI',0.66738,0.),),
+            _F(  RESULTAT = DYNA, NUME_ORDRE=1, NOM_CHAM='SIGM_ELNO_DEPL',
+CRITERE = 'RELATIF',  PRECISION = 1.E-2, MAILLE = 'M173',    GROUP_NO = 'B',
+NOM_CMP = 'SIZZ',         VALE_C = ('RI',0.20021,0.),),
+            _F(  RESULTAT = DYNA, NUME_ORDRE=1, NOM_CHAM='SIGM_ELNO_DEPL',
+CRITERE = 'ABSOLU',   PRECISION = 2.E-2, MAILLE = 'M173',    GROUP_NO = 'B',
+NOM_CMP = 'SIXY',         VALE_C = ('RI',0.,0.),),
+#
+            _F(  RESULTAT = DYNA, NUME_ORDRE=1, NOM_CHAM='SIGM_ELNO_DEPL',
+CRITERE = 'RELATIF',  PRECISION = 0.06, MAILLE = 'M50',    GROUP_NO = 'C',
+NOM_CMP = 'SIXX',         VALE_C = ('RI',-0.60921,0.),),
+            _F(  RESULTAT = DYNA, NUME_ORDRE=1, NOM_CHAM='SIGM_ELNO_DEPL',
+CRITERE = 'RELATIF',  PRECISION = 0.10, MAILLE = 'M50',    GROUP_NO = 'C',
+NOM_CMP = 'SIYY',         VALE_C = ('RI',1.27771,0.),),
+            _F(  RESULTAT = DYNA, NUME_ORDRE=1, NOM_CHAM='SIGM_ELNO_DEPL',
+CRITERE = 'RELATIF',  PRECISION = 0.24, MAILLE = 'M50',    GROUP_NO = 'C',
+NOM_CMP = 'SIZZ',         VALE_C = ('RI',0.20055,0.),),
+            _F(  RESULTAT = DYNA, NUME_ORDRE=1, NOM_CHAM='SIGM_ELNO_DEPL',
+CRITERE = 'RELATIF',  PRECISION = 0.11, MAILLE = 'M50',    GROUP_NO = 'C',
+NOM_CMP = 'SIXY',         VALE_C = ('RI',-0.94346,0.),),
+#
+            _F(  RESULTAT = DYNA, NUME_ORDRE=1, NOM_CHAM='SIGM_ELNO_DEPL',
+CRITERE = 'RELATIF',  PRECISION = 0.20, MAILLE = 'M244',   GROUP_NO = 'D',
+NOM_CMP = 'SIXX',         VALE_C = ('RI',0.09774,0.),),
+            _F(  RESULTAT = DYNA, NUME_ORDRE=1, NOM_CHAM='SIGM_ELNO_DEPL',
+CRITERE = 'RELATIF',  PRECISION = 0.05, MAILLE = 'M244',   GROUP_NO = 'D',
+NOM_CMP = 'SIYY',         VALE_C = ('RI',0.56964,0.),),
+            _F(  RESULTAT = DYNA, NUME_ORDRE=1, NOM_CHAM='SIGM_ELNO_DEPL',
+CRITERE = 'RELATIF',  PRECISION = 0.07, MAILLE = 'M244',   GROUP_NO = 'D',
+NOM_CMP = 'SIZZ',         VALE_C = ('RI',0.20021,0.),),
+            _F(  RESULTAT = DYNA, NUME_ORDRE=1, NOM_CHAM='SIGM_ELNO_DEPL',
+CRITERE = 'RELATIF',  PRECISION = 0.07, MAILLE = 'M244',   GROUP_NO = 'D',
+NOM_CMP = 'SIXY',         VALE_C = ('RI',-0.23595,0.),),
+#
+            _F(  RESULTAT = DYNA, NUME_ORDRE=1, NOM_CHAM='SIGM_ELNO_DEPL',
+CRITERE = 'RELATIF',  PRECISION = 0.3, MAILLE = 'M75',    GROUP_NO = 'E',
+NOM_CMP = 'SIXX',         VALE_C = ('RI',0.33425,0.),),
+            _F(  RESULTAT = DYNA, NUME_ORDRE=1, NOM_CHAM='SIGM_ELNO_DEPL',
+CRITERE = 'RELATIF',  PRECISION = 0.6, MAILLE = 'M75',    GROUP_NO = 'E',
+NOM_CMP = 'SIYY',         VALE_C = ('RI',0.33425,0.),),
+            _F(  RESULTAT = DYNA, NUME_ORDRE=1, NOM_CHAM='SIGM_ELNO_DEPL',
+CRITERE = 'RELATIF',  PRECISION = 0.5, MAILLE = 'M75',    GROUP_NO = 'E',
+NOM_CMP = 'SIZZ',         VALE_C = ('RI',0.20055,0.),),
+            _F(  RESULTAT = DYNA, NUME_ORDRE=1, NOM_CHAM='SIGM_ELNO_DEPL',
+CRITERE = 'RELATIF',  PRECISION = 0.05, MAILLE = 'M75',    GROUP_NO = 'E',
+NOM_CMP = 'SIXY',         VALE_C = ('RI',-1.33425,0.),),
+#
+            _F(  RESULTAT = DYNA, NUME_ORDRE=1, NOM_CHAM='SIGM_ELNO_DEPL',
+CRITERE = 'RELATIF',  PRECISION = 0.11, MAILLE = 'M249',    GROUP_NO = 'F',
+NOM_CMP = 'SIXX',         VALE_C = ('RI',0.33369,0.),),
+            _F(  RESULTAT = DYNA, NUME_ORDRE=1, NOM_CHAM='SIGM_ELNO_DEPL',
+CRITERE = 'RELATIF',  PRECISION = 0.03, MAILLE = 'M249',    GROUP_NO = 'F',
+NOM_CMP = 'SIYY',         VALE_C = ('RI',0.33369,0.),),
+            _F(  RESULTAT = DYNA, NUME_ORDRE=1, NOM_CHAM='SIGM_ELNO_DEPL',
+CRITERE = 'RELATIF',  PRECISION = 0.07, MAILLE = 'M249',    GROUP_NO = 'F',
+NOM_CMP = 'SIZZ',         VALE_C = ('RI',0.20021,0.),),
+            _F(  RESULTAT = DYNA, NUME_ORDRE=1, NOM_CHAM='SIGM_ELNO_DEPL',
+CRITERE = 'RELATIF',  PRECISION = 0.03, MAILLE = 'M249',    GROUP_NO = 'F',
+NOM_CMP = 'SIXY',         VALE_C = ('RI',-0.33369,0.),))
+
+            )
+
+#--------------------------------------------------------------------
+FIN()
+#

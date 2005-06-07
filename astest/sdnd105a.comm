@@ -1,0 +1,211 @@
+# MODIF  DATE 17/04/2002   AUTEUR BOYERE E.BOYERE 
+# TITRE CHOC D'UNE MASSE SUR UNE PAROI AU COMPORTEMENT FLAMBAGE
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+# PLASTIQUE
+# ----------------------------------------------------------------------
+#
+
+DEBUT( CODE=_F(  NOM = 'SDND105A',NIV_PUB_WEB='INTERNET') )
+
+MAILLAGE=LIRE_MAILLAGE( )
+
+MODELE=AFFE_MODELE(  MAILLAGE=MAILLAGE,AFFE=(
+                  _F(  PHENOMENE = 'MECANIQUE', MODELISATION = 'DIS_TR',
+                         GROUP_MA = 'STRUC'),
+                       _F(  PHENOMENE = 'MECANIQUE', MODELISATION = 'DIS_TR',
+                         GROUP_NO = 'AUTRE'))                    )
+
+CON_LIM=AFFE_CHAR_MECA( MODELE=MODELE,DDL_IMPO=(
+                              _F(  GROUP_NO = 'ENCASTRE',
+                                         DX = 0., DY = 0., DZ = 0.,
+                                         DRX = 0., DRY = 0., DRZ = 0.),
+                                       _F(  GROUP_NO = 'AUTRE',
+                                                  DY = 0., DZ = 0.,
+                                         DRX = 0., DRY = 0., DRZ = 0.))
+                           )
+
+CARA_ELE=AFFE_CARA_ELEM(  MODELE=MODELE,DISCRET=(
+                       _F(  NOEUD = 'N02',
+                                 CARA = 'M_TR_N',
+                                 VALE = ( 1., 0., 1., 0., 0., 1., 0.,
+                                         0., 0., 0., 0., 0., 0., 0.,
+                                         0., 0., 0., 0., 0., 0., 0.,)),
+                               _F(  GROUP_MA = 'STRUC',  CARA = 'K_TR_D_L',
+                                 VALE = ( 0.0000001, 0., 0., 0., 0., 0., ),
+                                 REPERE = 'GLOBAL'))                )
+
+#
+
+RIGI_ELE=CALC_MATR_ELEM(  MODELE=MODELE,  OPTION='RIGI_MECA',
+                              CARA_ELEM=CARA_ELE,  CHARGE=CON_LIM   )
+
+MASS_ELE=CALC_MATR_ELEM( MODELE=MODELE,  OPTION='MASS_MECA_DIAG',
+                              CARA_ELEM=CARA_ELE,  CHARGE=CON_LIM   )
+
+#
+
+NUME_DDL=NUME_DDL(  MATR_RIGI=RIGI_ELE,   METHODE='LDLT',
+                        RENUM='SANS')
+
+#
+
+RIGIDITE=ASSE_MATRICE(  MATR_ELEM=RIGI_ELE,  NUME_DDL=NUME_DDL  )
+
+MASSE=ASSE_MATRICE(  MATR_ELEM=MASS_ELE,  NUME_DDL=NUME_DDL  )
+
+#
+
+MODE_MEC=MODE_ITER_SIMULT(  MATR_A=RIGIDITE,  MATR_B=MASSE,
+              CALC_FREQ=_F(  OPTION = 'PLUS_PETITE',  NMAX_FREQ = 1)    )
+
+#
+#-----------------------------------------------------------------------
+#
+
+MACRO_PROJ_BASE(  BASE=MODE_MEC,MATR_ASSE_GENE=(
+                     _F(  MATRICE = CO("MASS_GEN"),
+                                      MATR_ASSE = MASSE),
+                     _F(  MATRICE = CO("RIGI_GEN"),
+                                      MATR_ASSE = RIGIDITE))
+                                          )
+
+#
+
+V0=2.
+
+VIT_INIT=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_DEPL_R',
+MAILLAGE=MAILLAGE,
+                             NUME_DDL=NUME_DDL,
+                            AFFE=_F(  TOUT = 'OUI',
+                                   NOM_CMP = 'DX',
+                                   VALE = V0)
+                         )
+
+#
+NUMEGE=NUME_DDL_GENE(   BASE=MODE_MEC,
+                          STOCKAGE='DIAG' )
+
+#
+
+
+VIT_GENE=PROJ_VECT_BASE(  BASE=MODE_MEC,
+                              VECT_ASSE=VIT_INIT,
+                              TYPE_VECT='VITE',
+                             NUME_DDL_GENE=NUMEGE)
+
+#
+
+PLANY=DEFI_OBSTACLE(TYPE='PLAN_Y')
+
+#
+
+
+TRAN_GEN=DYNA_TRAN_MODAL(  MASS_GENE=MASS_GEN,   RIGI_GENE=RIGI_GEN,
+                               METHODE='EULER',
+                      ETAT_INIT=_F(  VITE_INIT_GENE = VIT_GENE),
+
+                      FLAMBAGE=_F(  NOEUD_1 = 'N02',
+                                 OBSTACLE = PLANY,
+                                 NORM_OBST = (0., 1., 0.,),
+                                 ORIG_OBST = (0., 0., 0.,),
+                                 JEU = 1.,
+                                 RIGI_NOR = 1.,
+                                 FNOR_CRIT = 1.,
+                                 FNOR_POST_FL = 0.5,
+                                 RIGI_NOR_POST_FL = 0.5),
+
+                      INCREMENT=_F( 
+                                  INST_INIT = 0.,   INST_FIN = 0.5,
+                                  PAS = 0.001)
+                            )
+
+TRAN_GEN=DYNA_TRAN_MODAL(reuse=TRAN_GEN,  MASS_GENE=MASS_GEN,   RIGI_GENE=RIGI_GEN,
+                               METHODE='ADAPT',
+                      ETAT_INIT=_F(  RESU_GENE = TRAN_GEN,
+                                  INST_INIT = 0.5),
+
+                      FLAMBAGE=_F(  NOEUD_1 = 'N02',
+                                 OBSTACLE = PLANY,
+                                 NORM_OBST = (0., 1., 0.,),
+                                 ORIG_OBST = (0., 0., 0.,),
+                                 JEU = 1.,
+                                 RIGI_NOR = 1.,
+                                 FNOR_CRIT = 1.,
+                                 FNOR_POST_FL = 0.5,
+                                 RIGI_NOR_POST_FL = 0.5),
+
+                      INCREMENT=_F( 
+                                 INST_FIN = 3.,  PAS = 0.001)
+                            )
+
+TRAN_GEN=DYNA_TRAN_MODAL(reuse=TRAN_GEN,  MASS_GENE=MASS_GEN,   RIGI_GENE=RIGI_GEN,
+                               METHODE='DEVOGE',
+                      ETAT_INIT=_F(  RESU_GENE = TRAN_GEN),
+
+
+                      FLAMBAGE=_F(  NOEUD_1 = 'N02',
+                                 OBSTACLE = PLANY,
+                                 NORM_OBST = (0., 1., 0.,),
+                                 ORIG_OBST = (0., 0., 0.,),
+                                 JEU = 1.,
+                                 RIGI_NOR = 1.,
+                                 FNOR_CRIT = 1.,
+                                 FNOR_POST_FL = 0.5,
+                                 RIGI_NOR_POST_FL = 0.5),
+                      INCREMENT=_F( 
+                                 INST_FIN = 12.,  PAS = 0.001)
+                            )
+
+TRAN=REST_BASE_PHYS(   RESU_GENE=TRAN_GEN,
+                           NOM_CHAM='DEPL',
+                       )
+
+TABLE=POST_DYNA_MODA_T(   RESU_GENE=TRAN_GEN,
+                              CHOC=_F(  OPTION = 'IMPACT')
+                          )
+
+TEST_TABLE(TABLE=TABLE,FILTRE=(
+                _F(  NOM_PARA = 'CALCUL',
+                         VALE_K = 'FLAMBAGE'),
+                _F(  NOM_PARA = 'NOEUD',
+                         VALE_K = 'N02')),
+               NOM_PARA='ECRAS_RESI',
+               VALE=3.,    PRECISION=1.E-3,
+               REFERENCE='ANALYTIQUE' )
+
+TEST_TABLE(TABLE=TABLE,FILTRE=(
+                _F(  NOM_PARA = 'CALCUL',
+                         VALE_K = 'FLAMBAGE'),
+                _F(  NOM_PARA = 'NOEUD',
+                         VALE_K = 'N02')),
+               NOM_PARA='INST_FLAMB',
+               VALE=0.523598775,    PRECISION=1.E-3,
+               REFERENCE='ANALYTIQUE' )
+
+TEST_RESU(RESU=_F( RESULTAT = TRAN,
+                    NOM_CHAM = 'DEPL',  INST = 10.4518,
+                    NOEUD = 'N02',       NOM_CMP = 'DX',
+                    CRITERE = ('ABSOLU', 'RELATIF',),
+                    PRECISION = ( 3.E-3, 5.E-5,),
+                    VALE = 0.,
+                    REFERENCE = 'ANALYTIQUE')
+             )
+
+FIN()
+#

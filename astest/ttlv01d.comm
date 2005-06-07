@@ -1,0 +1,289 @@
+# MODIF  DATE 07/06/2000   AUTEUR VABHHTS J.PELLET 
+# TITRE ECHANGE DE CHALEUR PAR CONVECTION SUR UNE SPHERE
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+#
+# MAILLES : QUAD9 , TRIA6  (ET SEG3)
+#
+
+DEBUT(  CODE=_F(  NOM = 'TTLV01D',NIV_PUB_WEB='INTERNET') )
+
+#
+# LECTURE DU MAILLAGE --------------------------------------------------
+#
+
+
+MAIL=LIRE_MAILLAGE( )
+
+#
+# DEFINITION DES CHARGEMENTS ET DU MATERIAU ----------------------------
+#
+
+# ----- MATERIAU
+
+
+MATER=DEFI_MATERIAU(   THER=_F(  LAMBDA = 48.822,  RHO_CP = 4816800.) )
+
+#
+# AFFECTATIONS: MATERIAU, MODELE, CHARGEMENT ---------------------------
+#
+
+
+CHMAT=AFFE_MATERIAU(   MAILLAGE=MAIL,
+                           AFFE=_F(  TOUT = 'OUI',  MATER = MATER)
+                        )
+
+MOTH=AFFE_MODELE(     MAILLAGE=MAIL,
+                           AFFE=_F(  TOUT = 'OUI',
+                                  MODELISATION = 'AXIS',
+                                  PHENOMENE = 'THERMIQUE')
+                        )
+
+CHTH=AFFE_CHAR_THER(   MODELE=MOTH,
+                             ECHANGE=_F(  GROUP_MA = 'FACE_EXT',
+                                       COEF_H = 232.5,  TEMP_EXT = 1000.)
+                         )
+
+#
+# DEFINITION DE LA STRATEGIE DE CALCUL ---------------------------------
+#
+
+
+LTMPS=DEFI_LIST_REEL(   DEBUT=0.,INTERVALLE=(
+                            _F(  JUSQU_A = 100.,   NOMBRE = 8),
+                            _F(  JUSQU_A = 300.,   NOMBRE = 8),
+                            _F(  JUSQU_A = 700.,   NOMBRE = 8),
+                            _F(  JUSQU_A = 1400.,   NOMBRE = 7),
+                            _F(  JUSQU_A = 2400.,   NOMBRE = 5))
+                         )
+
+#
+# RESOLUTION -----------------------------------------------------------
+#
+
+TEMPE=THER_LINEAIRE(  MODELE=MOTH,
+                          TEMP_INIT=_F(  VALE = 20.E0),
+                          INCREMENT=_F(  LIST_INST = LTMPS),
+                          CHAM_MATER=CHMAT,
+                          EXCIT=_F( CHARGE = CHTH)
+                       )
+
+#
+# ANALYSE DES RESULTATS ------------------------------------------------
+#
+
+TM_0400=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_TEMP_R',
+NOM_CHAM='TEMP', RESULTAT=TEMPE,
+                            INST=400. )
+
+TM_0600=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_TEMP_R',
+NOM_CHAM='TEMP', RESULTAT=TEMPE,
+                            INST=600. )
+
+TM_0800=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_TEMP_R',
+NOM_CHAM='TEMP', RESULTAT=TEMPE,
+                            INST=800. )
+
+TM_1000=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_TEMP_R',
+NOM_CHAM='TEMP', RESULTAT=TEMPE,
+                            INST=1000. )
+
+TM_1200=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_TEMP_R',
+NOM_CHAM='TEMP', RESULTAT=TEMPE,
+                            INST=1200. )
+
+TM_1400=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_TEMP_R',
+NOM_CHAM='TEMP', RESULTAT=TEMPE,
+                            INST=1400. )
+
+TM_1600=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_TEMP_R',
+NOM_CHAM='TEMP', RESULTAT=TEMPE,
+                            INST=1600. )
+
+TM_1800=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_TEMP_R',
+NOM_CHAM='TEMP', RESULTAT=TEMPE,
+                            INST=1800. )
+
+TM_2000=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_TEMP_R',
+NOM_CHAM='TEMP', RESULTAT=TEMPE,
+                            INST=2000. )
+
+TM_2200=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_TEMP_R',
+NOM_CHAM='TEMP', RESULTAT=TEMPE,
+                            INST=2200. )
+
+TM_2400=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_TEMP_R',
+NOM_CHAM='TEMP', RESULTAT=TEMPE,
+                            INST=2400. )
+
+TEST_RESU(CHAM_NO=(
+
+   
+
+# TEMPERATURE AU CENTRE : N1
+
+_F( CHAM_GD = TM_0400,  NOEUD = 'N1', NOM_CMP = 'TEMP', VALE = 334.,  PRECISION = 5.E-2),
+_F( CHAM_GD = TM_0400,  NOEUD = 'N1', NOM_CMP = 'TEMP', VALE = 334.,  PRECISION = 2.E+1,
+                                                  CRITERE = 'ABSOLU'),
+_F( CHAM_GD = TM_0600,  NOEUD = 'N1', NOM_CMP = 'TEMP', VALE = 500.,  PRECISION = 5.E-2),
+_F( CHAM_GD = TM_0600,  NOEUD = 'N1', NOM_CMP = 'TEMP', VALE = 500.,  PRECISION = 2.E+1,
+                                                  CRITERE = 'ABSOLU'),
+_F( CHAM_GD = TM_0800,  NOEUD = 'N1', NOM_CMP = 'TEMP', VALE = 618.,  PRECISION = 5.E-2),
+_F( CHAM_GD = TM_0800,  NOEUD = 'N1', NOM_CMP = 'TEMP', VALE = 618.,  PRECISION = 2.E+1,
+                                                  CRITERE = 'ABSOLU'),
+_F( CHAM_GD = TM_1000,  NOEUD = 'N1', NOM_CMP = 'TEMP', VALE = 706.,  PRECISION = 5.E-2),
+_F( CHAM_GD = TM_1000,  NOEUD = 'N1', NOM_CMP = 'TEMP', VALE = 706.,  PRECISION = 2.E+1,
+                                                  CRITERE = 'ABSOLU'),
+_F( CHAM_GD = TM_1200,  NOEUD = 'N1', NOM_CMP = 'TEMP', VALE = 774.,  PRECISION = 5.E-2),
+_F( CHAM_GD = TM_1200,  NOEUD = 'N1', NOM_CMP = 'TEMP', VALE = 774.,  PRECISION = 2.E+1,
+                                                  CRITERE = 'ABSOLU'),
+_F( CHAM_GD = TM_1400,  NOEUD = 'N1', NOM_CMP = 'TEMP', VALE = 828.,  PRECISION = 5.E-2),
+_F( CHAM_GD = TM_1400,  NOEUD = 'N1', NOM_CMP = 'TEMP', VALE = 828.,  PRECISION = 2.E+1,
+                                                  CRITERE = 'ABSOLU'),
+_F( CHAM_GD = TM_1600,  NOEUD = 'N1', NOM_CMP = 'TEMP', VALE = 872.,  PRECISION = 5.E-2),
+_F( CHAM_GD = TM_1600,  NOEUD = 'N1', NOM_CMP = 'TEMP', VALE = 872.,  PRECISION = 2.E+1,
+                                                  CRITERE = 'ABSOLU'),
+_F( CHAM_GD = TM_1800,  NOEUD = 'N1', NOM_CMP = 'TEMP', VALE = 902.,  PRECISION = 5.E-2),
+_F( CHAM_GD = TM_1800,  NOEUD = 'N1', NOM_CMP = 'TEMP', VALE = 902.,  PRECISION = 2.E+1,
+                                                  CRITERE = 'ABSOLU'),
+_F( CHAM_GD = TM_2000,  NOEUD = 'N1', NOM_CMP = 'TEMP', VALE = 923.,  PRECISION = 5.E-2),
+_F( CHAM_GD = TM_2000,  NOEUD = 'N1', NOM_CMP = 'TEMP', VALE = 923.,  PRECISION = 2.E+1,
+                                                  CRITERE = 'ABSOLU'),
+_F( CHAM_GD = TM_2200,  NOEUD = 'N1', NOM_CMP = 'TEMP', VALE = 942.,  PRECISION = 5.E-2),
+_F( CHAM_GD = TM_2200,  NOEUD = 'N1', NOM_CMP = 'TEMP', VALE = 942.,  PRECISION = 2.E+1,
+                                                  CRITERE = 'ABSOLU'),
+_F( CHAM_GD = TM_2400,  NOEUD = 'N1', NOM_CMP = 'TEMP', VALE = 956.,  PRECISION = 5.E-2),
+_F( CHAM_GD = TM_2400,  NOEUD = 'N1', NOM_CMP = 'TEMP', VALE = 956.,  PRECISION = 2.E+1,
+                                                  CRITERE = 'ABSOLU'),
+#
+# TEMPERATURES EN SURFACE : N207 N65 N208 N209 N210 N211 N212 ... N216
+
+_F( CHAM_GD = TM_0400, NOEUD = 'N207', NOM_CMP = 'TEMP', VALE = 461.,  PRECISION = 5.E-2),
+_F( CHAM_GD = TM_0400, NOEUD = 'N207', NOM_CMP = 'TEMP', VALE = 461.,  PRECISION = 2.E+1,
+                                                   CRITERE = 'ABSOLU'),
+_F( CHAM_GD = TM_0400, NOEUD = 'N216', NOM_CMP = 'TEMP', VALE = 461.,  PRECISION = 5.E-2),
+_F( CHAM_GD = TM_0400, NOEUD = 'N216', NOM_CMP = 'TEMP', VALE = 461.,  PRECISION = 2.E+1,
+                                                   CRITERE = 'ABSOLU'),
+_F( CHAM_GD = TM_0400, NOEUD = 'N211', NOM_CMP = 'TEMP', VALE = 461.,  PRECISION = 5.E-2),
+_F( CHAM_GD = TM_0400, NOEUD = 'N211', NOM_CMP = 'TEMP', VALE = 461.,  PRECISION = 2.E+1,
+                                                   CRITERE = 'ABSOLU'),
+_F( CHAM_GD = TM_0400, NOEUD = 'N65',  NOM_CMP = 'TEMP', VALE = 461.,  PRECISION = 5.E-2),
+_F( CHAM_GD = TM_0400, NOEUD = 'N65',  NOM_CMP = 'TEMP', VALE = 461.,  PRECISION = 2.E+1,
+                                                   CRITERE = 'ABSOLU'),
+_F( CHAM_GD = TM_0600, NOEUD = 'N207', NOM_CMP = 'TEMP', VALE = 608.,  PRECISION = 5.E-2),
+_F( CHAM_GD = TM_0600, NOEUD = 'N207', NOM_CMP = 'TEMP', VALE = 608.,  PRECISION = 2.E+1,
+                                                   CRITERE = 'ABSOLU'),
+_F( CHAM_GD = TM_0600, NOEUD = 'N208', NOM_CMP = 'TEMP', VALE = 608.,  PRECISION = 5.E-2),
+_F( CHAM_GD = TM_0600, NOEUD = 'N208', NOM_CMP = 'TEMP', VALE = 608.,  PRECISION = 2.E+1,
+                                                   CRITERE = 'ABSOLU'),
+_F( CHAM_GD = TM_0600, NOEUD = 'N209', NOM_CMP = 'TEMP', VALE = 608.,  PRECISION = 5.E-2),
+_F( CHAM_GD = TM_0600, NOEUD = 'N209', NOM_CMP = 'TEMP', VALE = 608.,  PRECISION = 2.E+1,
+                                                   CRITERE = 'ABSOLU'),
+_F( CHAM_GD = TM_0800, NOEUD = 'N207', NOM_CMP = 'TEMP', VALE = 696.,  PRECISION = 5.E-2),
+_F( CHAM_GD = TM_0800, NOEUD = 'N207', NOM_CMP = 'TEMP', VALE = 696.,  PRECISION = 2.E+1,
+                                                   CRITERE = 'ABSOLU'),
+_F( CHAM_GD = TM_0800, NOEUD = 'N210', NOM_CMP = 'TEMP', VALE = 696.,  PRECISION = 5.E-2),
+_F( CHAM_GD = TM_0800, NOEUD = 'N210', NOM_CMP = 'TEMP', VALE = 696.,  PRECISION = 2.E+1,
+                                                   CRITERE = 'ABSOLU'),
+_F( CHAM_GD = TM_0800, NOEUD = 'N211', NOM_CMP = 'TEMP', VALE = 696.,  PRECISION = 5.E-2),
+_F( CHAM_GD = TM_0800, NOEUD = 'N211', NOM_CMP = 'TEMP', VALE = 696.,  PRECISION = 2.E+1,
+                                                   CRITERE = 'ABSOLU'),
+_F( CHAM_GD = TM_1000, NOEUD = 'N207', NOM_CMP = 'TEMP', VALE = 774.,  PRECISION = 5.E-2),
+_F( CHAM_GD = TM_1000, NOEUD = 'N207', NOM_CMP = 'TEMP', VALE = 774.,  PRECISION = 2.E+1,
+                                                   CRITERE = 'ABSOLU'),
+_F( CHAM_GD = TM_1000, NOEUD = 'N212', NOM_CMP = 'TEMP', VALE = 774.,  PRECISION = 5.E-2),
+_F( CHAM_GD = TM_1000, NOEUD = 'N212', NOM_CMP = 'TEMP', VALE = 774.,  PRECISION = 2.E+1,
+                                                   CRITERE = 'ABSOLU'),
+_F( CHAM_GD = TM_1000, NOEUD = 'N213', NOM_CMP = 'TEMP', VALE = 774.,  PRECISION = 5.E-2),
+_F( CHAM_GD = TM_1000, NOEUD = 'N213', NOM_CMP = 'TEMP', VALE = 774.,  PRECISION = 2.E+1,
+                                                   CRITERE = 'ABSOLU'),
+_F( CHAM_GD = TM_1200, NOEUD = 'N207', NOM_CMP = 'TEMP', VALE = 828.,  PRECISION = 5.E-2),
+_F( CHAM_GD = TM_1200, NOEUD = 'N207', NOM_CMP = 'TEMP', VALE = 828.,  PRECISION = 2.E+1,
+                                                   CRITERE = 'ABSOLU'),
+_F( CHAM_GD = TM_1200, NOEUD = 'N214', NOM_CMP = 'TEMP', VALE = 828.,  PRECISION = 5.E-2),
+_F( CHAM_GD = TM_1200, NOEUD = 'N214', NOM_CMP = 'TEMP', VALE = 828.,  PRECISION = 2.E+1,
+                                                   CRITERE = 'ABSOLU'),
+_F( CHAM_GD = TM_1200, NOEUD = 'N215', NOM_CMP = 'TEMP', VALE = 828.,  PRECISION = 5.E-2),
+_F( CHAM_GD = TM_1200, NOEUD = 'N215', NOM_CMP = 'TEMP', VALE = 828.,  PRECISION = 2.E+1,
+                                                   CRITERE = 'ABSOLU'),
+_F( CHAM_GD = TM_1400, NOEUD = 'N207', NOM_CMP = 'TEMP', VALE = 868.,  PRECISION = 5.E-2),
+_F( CHAM_GD = TM_1400, NOEUD = 'N207', NOM_CMP = 'TEMP', VALE = 868.,  PRECISION = 2.E+1,
+                                                   CRITERE = 'ABSOLU'),
+_F( CHAM_GD = TM_1400, NOEUD = 'N216', NOM_CMP = 'TEMP', VALE = 868.,  PRECISION = 5.E-2),
+_F( CHAM_GD = TM_1400, NOEUD = 'N216', NOM_CMP = 'TEMP', VALE = 868.,  PRECISION = 2.E+1,
+                                                   CRITERE = 'ABSOLU'),
+_F( CHAM_GD = TM_1400, NOEUD = 'N211', NOM_CMP = 'TEMP', VALE = 868.,  PRECISION = 5.E-2),
+_F( CHAM_GD = TM_1400, NOEUD = 'N211', NOM_CMP = 'TEMP', VALE = 868.,  PRECISION = 2.E+1,
+                                                   CRITERE = 'ABSOLU'),
+_F( CHAM_GD = TM_1400, NOEUD = 'N65',  NOM_CMP = 'TEMP', VALE = 868.,  PRECISION = 5.E-2),
+_F( CHAM_GD = TM_1400, NOEUD = 'N65',  NOM_CMP = 'TEMP', VALE = 868.,  PRECISION = 2.E+1,
+                                                   CRITERE = 'ABSOLU'),
+_F( CHAM_GD = TM_1600, NOEUD = 'N207', NOM_CMP = 'TEMP', VALE = 902.,  PRECISION = 5.E-2),
+_F( CHAM_GD = TM_1600, NOEUD = 'N207', NOM_CMP = 'TEMP', VALE = 902.,  PRECISION = 2.E+1,
+                                                   CRITERE = 'ABSOLU'),
+_F( CHAM_GD = TM_1600, NOEUD = 'N208', NOM_CMP = 'TEMP', VALE = 902.,  PRECISION = 5.E-2),
+_F( CHAM_GD = TM_1600, NOEUD = 'N208', NOM_CMP = 'TEMP', VALE = 902.,  PRECISION = 2.E+1,
+                                                   CRITERE = 'ABSOLU'),
+_F( CHAM_GD = TM_1600, NOEUD = 'N209', NOM_CMP = 'TEMP', VALE = 902.,  PRECISION = 5.E-2),
+_F( CHAM_GD = TM_1600, NOEUD = 'N209', NOM_CMP = 'TEMP', VALE = 902.,  PRECISION = 2.E+1,
+                                                   CRITERE = 'ABSOLU'),
+_F( CHAM_GD = TM_1800, NOEUD = 'N207', NOM_CMP = 'TEMP', VALE = 923.,  PRECISION = 5.E-2),
+_F( CHAM_GD = TM_1800, NOEUD = 'N207', NOM_CMP = 'TEMP', VALE = 923.,  PRECISION = 2.E+1,
+                                                   CRITERE = 'ABSOLU'),
+_F( CHAM_GD = TM_1800, NOEUD = 'N210', NOM_CMP = 'TEMP', VALE = 923.,  PRECISION = 5.E-2),
+_F( CHAM_GD = TM_1800, NOEUD = 'N210', NOM_CMP = 'TEMP', VALE = 923.,  PRECISION = 2.E+1,
+                                                   CRITERE = 'ABSOLU'),
+_F( CHAM_GD = TM_1800, NOEUD = 'N211', NOM_CMP = 'TEMP', VALE = 923.,  PRECISION = 5.E-2),
+_F( CHAM_GD = TM_1800, NOEUD = 'N211', NOM_CMP = 'TEMP', VALE = 923.,  PRECISION = 2.E+1,
+                                                   CRITERE = 'ABSOLU'),
+_F( CHAM_GD = TM_2000, NOEUD = 'N207', NOM_CMP = 'TEMP', VALE = 942.,  PRECISION = 5.E-2),
+_F( CHAM_GD = TM_2000, NOEUD = 'N207', NOM_CMP = 'TEMP', VALE = 942.,  PRECISION = 2.E+1,
+                                                   CRITERE = 'ABSOLU'),
+_F( CHAM_GD = TM_2000, NOEUD = 'N212', NOM_CMP = 'TEMP', VALE = 942.,  PRECISION = 5.E-2),
+_F( CHAM_GD = TM_2000, NOEUD = 'N212', NOM_CMP = 'TEMP', VALE = 942.,  PRECISION = 2.E+1,
+                                                   CRITERE = 'ABSOLU'),
+_F( CHAM_GD = TM_2000, NOEUD = 'N213', NOM_CMP = 'TEMP', VALE = 942.,  PRECISION = 5.E-2),
+_F( CHAM_GD = TM_2000, NOEUD = 'N213', NOM_CMP = 'TEMP', VALE = 942.,  PRECISION = 2.E+1,
+                                                   CRITERE = 'ABSOLU'),
+_F( CHAM_GD = TM_2200, NOEUD = 'N207', NOM_CMP = 'TEMP', VALE = 956.,  PRECISION = 5.E-2),
+_F( CHAM_GD = TM_2200, NOEUD = 'N207', NOM_CMP = 'TEMP', VALE = 956.,  PRECISION = 2.E+1,
+                                                   CRITERE = 'ABSOLU'),
+_F( CHAM_GD = TM_2200, NOEUD = 'N214', NOM_CMP = 'TEMP', VALE = 956.,  PRECISION = 5.E-2),
+_F( CHAM_GD = TM_2200, NOEUD = 'N214', NOM_CMP = 'TEMP', VALE = 956.,  PRECISION = 2.E+1,
+                                                   CRITERE = 'ABSOLU'),
+_F( CHAM_GD = TM_2200, NOEUD = 'N215', NOM_CMP = 'TEMP', VALE = 956.,  PRECISION = 5.E-2),
+_F( CHAM_GD = TM_2200, NOEUD = 'N215', NOM_CMP = 'TEMP', VALE = 956.,  PRECISION = 2.E+1,
+                                                   CRITERE = 'ABSOLU'),
+_F( CHAM_GD = TM_2400, NOEUD = 'N207', NOM_CMP = 'TEMP', VALE = 962.,  PRECISION = 5.E-2),
+_F( CHAM_GD = TM_2400, NOEUD = 'N207', NOM_CMP = 'TEMP', VALE = 962.,  PRECISION = 2.E+1,
+                                                   CRITERE = 'ABSOLU'),
+_F( CHAM_GD = TM_2400, NOEUD = 'N216', NOM_CMP = 'TEMP', VALE = 962.,  PRECISION = 5.E-2),
+_F( CHAM_GD = TM_2400, NOEUD = 'N216', NOM_CMP = 'TEMP', VALE = 962.,  PRECISION = 2.E+1,
+                                                   CRITERE = 'ABSOLU'),
+_F( CHAM_GD = TM_2400, NOEUD = 'N211', NOM_CMP = 'TEMP', VALE = 962.,  PRECISION = 5.E-2),
+_F( CHAM_GD = TM_2400, NOEUD = 'N211', NOM_CMP = 'TEMP', VALE = 962.,  PRECISION = 2.E+1,
+                                                   CRITERE = 'ABSOLU'))
+        )
+
+#
+# FIN ------------------------------------------------------------------
+#
+
+FIN()
+#
+#

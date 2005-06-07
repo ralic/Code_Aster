@@ -1,0 +1,165 @@
+# MODIF  DATE 02/03/2004   AUTEUR CIBHHPD S.VANDENBERGHE 
+# TITRE DEGAGEMENT DE PUISSANCE DANS UN CYLINDRE CREUX EN THERMIQUE
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+#       STATIONNAIRE LINEAIRE
+#
+# MAILLES : QUAD9 AXIS
+#
+
+DEBUT(  CODE=_F( NOM = 'TPLA04A',NIV_PUB_WEB='INTERNET')
+      )
+
+#
+# LECTURE DU MAILLAGE --------------------------------------------------
+#
+
+
+MAIL=LIRE_MAILLAGE( )
+
+#
+# DEFINITION DES CHARGEMENTS ET DU MATERIAU ----------------------------
+#
+
+# ----- MATERIAU
+
+
+MATE=DEFI_MATERIAU(   THER=_F(  LAMBDA = 1.0,  RHO_CP = 2.0)
+                       )
+
+#
+# AFFECTATIONS: MATERIAU, MODELE, CHARGEMENT ---------------------------
+#
+
+
+CHMAT=AFFE_MATERIAU(   MAILLAGE=MAIL,
+                           AFFE=_F(  TOUT = 'OUI',  MATER = MATE)
+                        )
+
+MOTH=AFFE_MODELE(   MAILLAGE=MAIL,
+                       AFFE=_F(  TOUT = 'OUI',  MODELISATION = 'AXIS',
+                              PHENOMENE = 'THERMIQUE')
+                     )
+
+CHTH=AFFE_CHAR_THER(   MODELE=MOTH,
+                           SOURCE=_F(  TOUT = 'OUI',  SOUR = 100.0),
+                           TEMP_IMPO=_F(  GROUP_NO = 'NOE_IMP',  TEMP = 20.0)
+                        )
+
+#
+# DEFINITION DE LA STRATEGIE DE CALCUL ---------------------------------
+#
+
+#
+# RESOLUTION -----------------------------------------------------------
+#
+
+
+TEMPE=THER_LINEAIRE(   MODELE=MOTH,
+                            CHAM_MATER=CHMAT,
+                            EXCIT=_F(  CHARGE = CHTH)
+                         )
+
+#
+# ANALYSE DES RESULTATS ------------------------------------------------
+#
+
+TEMPE=CALC_ELEM(reuse=TEMPE, RESULTAT=TEMPE,
+                MODELE=MOTH,
+                CHAM_MATER=CHMAT,
+                NUME_ORDRE=0,
+                OPTION='FLUX_ELNO_TEMP'
+                          )
+
+TEST_RESU(RESU=(
+
+   
+_F( RESULTAT = TEMPE, NOEUD = 'N1', NUME_ORDRE=0, NOM_CHAM='TEMP',
+NOM_CMP = 'TEMP',  VALE = 20.00,  PRECISION = 1.E-2),
+_F( RESULTAT = TEMPE, NOEUD = 'N2', NUME_ORDRE=0, NOM_CHAM='TEMP',
+NOM_CMP = 'TEMP',  VALE = 20.00,  PRECISION = 1.E-2),
+_F( RESULTAT = TEMPE, NOEUD = 'N3', NUME_ORDRE=0, NOM_CHAM='TEMP',
+NOM_CMP = 'TEMP',  VALE = 20.00,  PRECISION = 1.E-2),
+_F( RESULTAT = TEMPE, NOEUD = 'N25', NUME_ORDRE=0, NOM_CHAM='TEMP',
+NOM_CMP = 'TEMP',  VALE = 28.73,  PRECISION = 1.E-2),
+_F( RESULTAT = TEMPE, NOEUD = 'N26', NUME_ORDRE=0, NOM_CHAM='TEMP',
+NOM_CMP = 'TEMP',  VALE = 28.73,  PRECISION = 1.E-2),
+_F( RESULTAT = TEMPE, NOEUD = 'N27', NUME_ORDRE=0, NOM_CHAM='TEMP',
+NOM_CMP = 'TEMP',  VALE = 28.73,  PRECISION = 1.E-2),
+_F( RESULTAT = TEMPE, NOEUD = 'N61', NUME_ORDRE=0, NOM_CHAM='TEMP',
+NOM_CMP = 'TEMP',  VALE = 32.62,  PRECISION = 1.E-2),
+_F( RESULTAT = TEMPE, NOEUD = 'N62', NUME_ORDRE=0, NOM_CHAM='TEMP',
+NOM_CMP = 'TEMP',  VALE = 32.62,  PRECISION = 1.E-2),
+_F( RESULTAT = TEMPE, NOEUD = 'N63', NUME_ORDRE=0, NOM_CHAM='TEMP',
+NOM_CMP = 'TEMP',  VALE = 32.62,  PRECISION = 1.E-2),
+
+   
+   _F( RESULTAT = TEMPE,  MAILLE = 'M20', NUME_ORDRE=0, NOM_CHAM='FLUX_ELNO_TEMP',
+   NOEUD = 'N1',   NOM_CMP = 'FLUX',
+                                          VALE = -58.20,  PRECISION = 1.E-2),
+   _F( RESULTAT = TEMPE,  MAILLE = 'M20', NUME_ORDRE=0, NOM_CHAM='FLUX_ELNO_TEMP',
+   NOEUD = 'N2',   NOM_CMP = 'FLUX',
+                                          VALE = -58.20,  PRECISION = 1.E-2),
+   _F( RESULTAT = TEMPE,  MAILLE = 'M20', NUME_ORDRE=0, NOM_CHAM='FLUX_ELNO_TEMP',
+   NOEUD = 'N3',   NOM_CMP = 'FLUX',
+                                          VALE = -58.20,  PRECISION = 1.E-2),
+   _F( RESULTAT = TEMPE,  MAILLE = 'M17', NUME_ORDRE=0, NOM_CHAM='FLUX_ELNO_TEMP',
+   NOEUD = 'N25',  NOM_CMP = 'FLUX',
+                                          VALE = -30.17,  PRECISION = 1.E-2),
+   _F( RESULTAT = TEMPE,  MAILLE = 'M17', NUME_ORDRE=0, NOM_CHAM='FLUX_ELNO_TEMP',
+   NOEUD = 'N26',  NOM_CMP = 'FLUX',
+                                          VALE = -30.17,  PRECISION = 1.E-2),
+   _F( RESULTAT = TEMPE,  MAILLE = 'M17', NUME_ORDRE=0, NOM_CHAM='FLUX_ELNO_TEMP',
+   NOEUD = 'N27',  NOM_CMP = 'FLUX',
+                                          VALE = -30.17,  PRECISION = 1.E-2),
+   _F( RESULTAT = TEMPE,  MAILLE = 'M16', NUME_ORDRE=0, NOM_CHAM='FLUX_ELNO_TEMP',
+   NOEUD = 'N25',  NOM_CMP = 'FLUX',
+                                          VALE = -30.17,  PRECISION = 1.E-2),
+   _F( RESULTAT = TEMPE,  MAILLE = 'M16', NUME_ORDRE=0, NOM_CHAM='FLUX_ELNO_TEMP',
+   NOEUD = 'N26',  NOM_CMP = 'FLUX',
+                                          VALE = -30.17,  PRECISION = 1.E-2),
+   _F( RESULTAT = TEMPE,  MAILLE = 'M16', NUME_ORDRE=0, NOM_CHAM='FLUX_ELNO_TEMP',
+   NOEUD = 'N27',  NOM_CMP = 'FLUX',
+                                          VALE = -30.17,  PRECISION = 1.E-2),
+   _F( RESULTAT = TEMPE,  MAILLE = 'M11', NUME_ORDRE=0, NOM_CHAM='FLUX_ELNO_TEMP',
+   NOEUD = 'N61',  NOM_CMP = 'FLUX',
+                                          VALE = 2.87,  PRECISION = 1.E-2),
+   _F( RESULTAT = TEMPE,  MAILLE = 'M11', NUME_ORDRE=0, NOM_CHAM='FLUX_ELNO_TEMP',
+   NOEUD = 'N62',  NOM_CMP = 'FLUX',
+                                          VALE = 2.87,  PRECISION = 1.E-2),
+   _F( RESULTAT = TEMPE,  MAILLE = 'M11', NUME_ORDRE=0, NOM_CHAM='FLUX_ELNO_TEMP',
+   NOEUD = 'N63',  NOM_CMP = 'FLUX',
+                                          VALE = 2.87,  PRECISION = 1.E-2),
+   _F( RESULTAT = TEMPE,  MAILLE = 'M10', NUME_ORDRE=0, NOM_CHAM='FLUX_ELNO_TEMP',
+   NOEUD = 'N61',  NOM_CMP = 'FLUX',
+                                          VALE = 2.87,  PRECISION = 1.E-2),
+   _F( RESULTAT = TEMPE,  MAILLE = 'M10', NUME_ORDRE=0, NOM_CHAM='FLUX_ELNO_TEMP',
+   NOEUD = 'N62',  NOM_CMP = 'FLUX',
+                                          VALE = 2.87,  PRECISION = 1.E-2),
+   _F( RESULTAT = TEMPE,  MAILLE = 'M10', NUME_ORDRE=0, NOM_CHAM='FLUX_ELNO_TEMP',
+   NOEUD = 'N63',  NOM_CMP = 'FLUX',
+                                          VALE = 2.87,  PRECISION = 1.E-2))
+             )
+
+#
+# FIN ------------------------------------------------------------------
+#
+
+FIN()
+#
+#

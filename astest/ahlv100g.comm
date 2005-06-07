@@ -1,0 +1,236 @@
+# MODIF  DATE 07/06/2002   AUTEUR DURAND C.DURAND 
+# TITRE GUIDE D'ONDE A SORTIE ANECHOIQUE (ONDES PLANES) E.F. CLASSIQUES
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
+# (AT YOUR OPTION) ANY LATER VERSION.                                 
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# ======================================================================
+#  MODELISATION 'ACOUSTIQUE' AVEC ELEMENTS HEXA8 ET FACE4
+#  GUIDE D'ONDE ACOUSTIQUE EN E.F. CLASSIQUES
+# VALIDATION INDEPENDANTE PAR LMS_NT (J.P.ROSSION)
+#
+DEBUT(CODE=_F( NOM = 'AHLV100G',NIV_PUB_WEB='INTERNET'))
+
+PRE_IDEAS()
+
+#
+MA=LIRE_MAILLAGE()
+
+MO=AFFE_MODELE(
+         MAILLAGE=MA, 
+         AFFE=_F( TOUT = 'OUI', 
+              PHENOMENE = 'ACOUSTIQUE', 
+              MODELISATION = '3D')
+         )
+
+#
+# PROPRIETES MECANIQUES
+#
+AIR=DEFI_MATERIAU(
+          FLUIDE=_F( RHO = 1.3,
+                CELE_C = ('RI',343.0,0.,))
+         )
+
+CHM=AFFE_MATERIAU(
+         MAILLAGE=MA, 
+         AFFE=_F( TOUT = 'OUI',
+              MATER = AIR)
+         )
+
+#
+# CONDITIONS AUX LIMITES
+#
+VELO=AFFE_CHAR_ACOU(
+         MODELE=MO,
+         VITE_FACE=_F( GROUP_MA = 'VELO',
+                   VNOR = ('RI',0.014,0.0,))
+         )
+
+IMPE=AFFE_CHAR_ACOU(
+         MODELE=MO,
+         IMPE_FACE=_F( GROUP_MA = 'IMPE',
+                   IMPE = ('RI',445.9,0.0,))
+         )
+
+#
+# ASSEMBLAGE
+#
+MACRO_MATR_ASSE(
+     MODELE=MO,
+     CHARGE=IMPE,
+     CHAM_MATER=CHM,
+     NUME_DDL=CO("NDDL"),MATR_ASSE=( 
+     _F(  MATRICE = CO("MATK"), OPTION = 'RIGI_ACOU'), 
+               _F(  MATRICE = CO("MATM"), OPTION = 'MASS_ACOU'), 
+               _F(  MATRICE = CO("MATA"), OPTION = 'AMOR_ACOU')) 
+                )
+
+VECEL=CALC_VECT_ELEM(
+         OPTION='CHAR_ACOU',
+         CHAM_MATER=CHM,
+         CHARGE=VELO
+        )
+
+VECAS=ASSE_VECTEUR(
+         VECT_ELEM=VECEL,
+         NUME_DDL=NDDL
+        )
+
+#
+#  REPONSE HARMONIQUE
+#
+HARMO=DYNA_LINE_HARM( 
+         MATR_MASS=MATM,
+         MATR_RIGI=MATK,
+         MATR_AMOR=MATA,
+         FREQ=500.0,
+          EXCIT=_F( VECT_ASSE = VECAS,
+               COEF_MULT = -1.0,
+               PHAS_DEG = 90.0,
+               PUIS_PULS = 1)
+         )
+
+TEST_RESU(RESU=(
+          _F( RESULTAT = HARMO, NOM_CHAM = 'PRES', NUME_ORDRE = 1,
+           NOEUD = 'NO69', NOM_CMP = 'PRES', VALE_C = ('RI',-6.2426,0.,),
+           PRECISION = 3.E-03),
+          _F( RESULTAT = HARMO, NOM_CHAM = 'PRES', NUME_ORDRE = 1,
+           NOEUD = 'NO95', NOM_CMP = 'PRES', VALE_C = ('RI',-6.2426,0.,),
+           PRECISION = 3.E-03),
+          _F( RESULTAT = HARMO, NOM_CHAM = 'PRES', NUME_ORDRE = 1,
+           NOEUD = 'NO65', NOM_CMP = 'PRES', VALE_C = ('RI',6.0237,1.6387,),
+           PRECISION = 4.E-02),
+          _F( RESULTAT = HARMO, NOM_CHAM = 'PRES', NUME_ORDRE = 1,
+           NOEUD = 'NO876', NOM_CMP = 'PRES', VALE_C = ('RI',6.0237,1.6387,),
+           PRECISION = 4.E-02)) 
+          )
+
+HARMO=CALC_ELEM( reuse=HARMO, MODELE=MO, 
+                     CHAM_MATER=CHM,
+                     TOUT_ORDRE='OUI',
+                     RESULTAT=HARMO,
+                     OPTION='INTE_ELNO_ACTI'
+         )
+
+TEST_RESU(RESU=(
+          _F( RESULTAT = HARMO, NOM_CHAM = 'INTE_ELNO_ACTI', NUME_ORDRE = 01,
+           MAILLE = 'MA4', NOEUD = 'NO69', NOM_CMP = 'INTX', VALE = 0.04370,
+           PRECISION = 3.E-2),  
+          _F( RESULTAT = HARMO, NOM_CHAM = 'INTE_ELNO_ACTI', NUME_ORDRE = 01,
+           MAILLE = 'MA6', NOEUD = 'NO95', NOM_CMP = 'INTX', VALE = 0.04370,
+           PRECISION = 3.E-2),  
+          _F( RESULTAT = HARMO, NOM_CHAM = 'INTE_ELNO_ACTI', NUME_ORDRE = 01,
+           MAILLE = 'MA468', NOEUD = 'NO65', NOM_CMP = 'INTX', VALE = 0.04370,
+           PRECISION = 3.E-2),  
+          _F( RESULTAT = HARMO, NOM_CHAM = 'INTE_ELNO_ACTI', NUME_ORDRE = 01,
+           MAILLE = 'MA470', NOEUD = 'NO876', NOM_CMP = 'INTX', VALE = 0.04370,
+           PRECISION = 3.E-2))  
+          )
+
+#
+# CALCUL DES MODES ACOUSTIQUES
+#
+MATKR=COMB_MATR_ASSE( 
+                       COMB_R=_F( MATR_ASSE = MATK,
+                        PARTIE = 'REEL',
+                        COEF_R = 1.)
+                       )
+
+MATMR=COMB_MATR_ASSE( 
+                       COMB_R=_F( MATR_ASSE = MATM,
+                        PARTIE = 'REEL',
+                        COEF_R = 1.)
+                       )
+
+MODES=MODE_ITER_SIMULT(  MATR_A=MATKR,
+                           MATR_B=MATMR,
+                           CALC_FREQ=_F( OPTION = 'BANDE',
+                                      FREQ = (-0.01, 1000.,))
+                         )
+
+TEST_RESU(
+          RESU=_F( RESULTAT = MODES,
+           PARA = 'FREQ',
+           CRITERE = 'RELATIF',
+           PRECISION = 1.E-3,
+           NUME_ORDRE = 2,
+           VALE = 171.5)
+          )
+
+TEST_RESU(
+          RESU=_F( RESULTAT = MODES,
+           PARA = 'FREQ',
+           CRITERE = 'RELATIF',
+           PRECISION = 2.E-3,
+           NUME_ORDRE = 3,
+           VALE = 343.0)
+          )
+
+TEST_RESU(
+          RESU=_F( RESULTAT = MODES,
+           PARA = 'FREQ',
+           CRITERE = 'RELATIF',
+           PRECISION = 5.E-03,
+           NUME_ORDRE = 4,
+           VALE = 514.5)
+          )
+
+TEST_RESU(
+          RESU=_F( RESULTAT = MODES,
+           PARA = 'FREQ',
+           CRITERE = 'RELATIF',
+           PRECISION = 1.E-02,
+           NUME_ORDRE = 5,
+           VALE = 686.0)
+          )
+
+TEST_RESU(
+          RESU=_F( RESULTAT = MODES,
+           PARA = 'FREQ',
+           CRITERE = 'RELATIF',
+           PRECISION = 2.E-02,
+           NUME_ORDRE = 6,
+           VALE = 857.5)
+          )
+
+TEST_RESU(
+          RESU=_F( RESULTAT = MODES,
+           PARA = 'FREQ',
+           CRITERE = 'RELATIF',
+           PRECISION = 3.E-02,
+           NUME_ORDRE = 7,
+           VALE = 857.5)
+          )
+
+TEST_RESU(
+          RESU=_F( RESULTAT = MODES,
+           PARA = 'FREQ',
+           CRITERE = 'RELATIF',
+           PRECISION = 3.E-02,
+           NUME_ORDRE = 8,
+           VALE = 874.482)
+          )
+
+TEST_RESU(
+          RESU=_F( RESULTAT = MODES,
+           PARA = 'FREQ',
+           CRITERE = 'RELATIF',
+           PRECISION = 3.E-02,
+           NUME_ORDRE = 9,
+           VALE = 923.556)
+          )
+
+FIN()
+#
