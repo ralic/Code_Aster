@@ -1,4 +1,4 @@
-#@ MODIF calc_precont_ops Macro  DATE 07/03/2005   AUTEUR DURAND C.DURAND 
+#@ MODIF calc_precont_ops Macro  DATE 14/06/2005   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -53,7 +53,7 @@ def calc_precont_ops(self,reuse,MODELE,CHAM_MATER,CARA_ELEM,EXCIT,
   AFFE_MATERIAU    = self.get_cmd('AFFE_MATERIAU')
 
   # La macro compte pour 1 dans la numerotation des commandes
-  self.icmd=1
+  self.set_icmd(1)
 
   # Le concept sortant (de type evol_noli) est nomme RES dans 
   # le contexte de la macro

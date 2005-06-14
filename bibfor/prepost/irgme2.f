@@ -1,11 +1,12 @@
-      SUBROUTINE IRGME2 (NUMOLD,IMA,CONNEX,NBORD2,TABD,TABL,TABV,NBNO,
-     &                    LISTNO,NBCMP,IFI,IADMAX)
+      SUBROUTINE IRGME2 (NUMOLD,IMA,CONNEX,NBORD2,TABD,TABL,TABV,
+     &                   PARTIE,JTYPE,NBNO,LISTNO,NBCMP,IFI,IADMAX)
       IMPLICIT NONE
       INTEGER   NUMOLD(*),TABD(*),TABL(*),TABV(*),NBNO
-      INTEGER   LISTNO(*),NBCMP,IFI,IMA,NBORD2,IADMAX
+      INTEGER   LISTNO(*),NBCMP,IFI,IMA,NBORD2,IADMAX,JTYPE
       CHARACTER*24  CONNEX
+      CHARACTER*(*) PARTIE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 17/05/2005   AUTEUR CIBHHLV L.VIVAN 
+C MODIF PREPOST  DATE 14/06/2005   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -34,6 +35,8 @@ C     NBORD2 : I   : NOMBRE DE NUM D'ORDRE
 C     TABD   : I   : DESCRIPTEURS DU CHAMP SIMPLE A IMPRIMER
 C     TABL   : I   : DESCRIPTEURS DU CHAMP SIMPLE A IMPRIMER
 C     TABV   : I   : DESCRIPTEURS DU CHAMP SIMPLE A IMPRIMER
+C     PARTIE : K4  : IMPRESSION DE LA PARTIE COMPLEXE OU REELLE DU CHAMP
+C     JTYPE  : I   : ADRESSE DU TYPE DU CHAMP ( REEL OU COMPLEXE )
 C     NBNO   : I   : NOMBRE NOEUD DE LA NOUVELLE MAILLE
 C     LISTNO : I   : LISTE DES NOEUDS DE LA NOUVELLE MAILLE
 C     NBCMP  : I   : NOMBRE DE COMPOSANTES DU CHAMP
@@ -88,35 +91,71 @@ C
         ENDIF
 C
         ITROU=0
-        DO 14 J=1,NBNO
-           INO=LISTNO(J)
-           ITROU=0
-           DO 13 IPT = 1,NBPT
+        IF (ZK8(JTYPE-1+IOR).EQ.'R') THEN
+          DO 14 J=1,NBNO
+            INO=LISTNO(J)
+            ITROU=0
+            DO 13 IPT = 1,NBPT
               INOLD=ZI(JCNOLD-1+IPT)
               IF (INO.EQ.INOLD) THEN
-                 ITROU=1
-                 DO 16 K = 1, NBCMP
-                   CALL CESEXI('C',JCESD,JCESL,IMAOLD,IPT,ISP,K,IAD)
-                   IF (IAD.GT.0) THEN
-                     VALE = ZR(JCESV-1+IAD)
-                     IF (ABS(VALE).LE.1.D-99) VALE = 0.D0
-                     VAL2(K) = VALE
-                     IADMAX=IAD
-                   ELSE
-                     VALE = 0.D0
-                     VAL2(K) = VALE
-                   ENDIF
- 16              CONTINUE
+                ITROU=1
+                DO 16 K = 1, NBCMP
+                  CALL CESEXI('C',JCESD,JCESL,IMAOLD,IPT,ISP,K,IAD)
+                  IF (IAD.GT.0) THEN
+                    VALE = ZR(JCESV-1+IAD)
+                    IF (ABS(VALE).LE.1.D-99) VALE = 0.D0
+                    VAL2(K) = VALE
+                    IADMAX=IAD
+                  ELSE
+                    VALE = 0.D0
+                    VAL2(K) = VALE
+                  ENDIF
+ 16             CONTINUE
               ENDIF
               WRITE(IFI,1010) VAL2(1),VAL2(4),VAL2(5),VAL2(4),VAL2(2),
      +                    VAL2(6),VAL2(5),VAL2(6),VAL2(3)
               GOTO 15
- 13       CONTINUE
-          IF (ITROU.EQ.0) THEN
+ 13         CONTINUE
+            IF (ITROU.EQ.0) THEN
               CALL UTMESS('F','IRGME2','PAS DE CORRESPONDANCE')
-          ENDIF
- 15      CONTINUE
- 14      CONTINUE
+            ENDIF
+ 15         CONTINUE
+ 14       CONTINUE
+        ELSE IF (ZK8(JTYPE-1+IOR).EQ.'C') THEN
+          DO 24 J=1,NBNO
+            INO=LISTNO(J)
+            ITROU=0
+            DO 23 IPT = 1,NBPT
+              INOLD=ZI(JCNOLD-1+IPT)
+              IF (INO.EQ.INOLD) THEN
+                ITROU=1
+                DO 26 K = 1, NBCMP
+                  CALL CESEXI('C',JCESD,JCESL,IMAOLD,IPT,ISP,K,IAD)
+                  IF (IAD.GT.0) THEN
+                    IF (PARTIE.EQ.'REEL') THEN
+                      VALE = DBLE(ZC(JCESV-1+IAD))
+                    ELSEIF (PARTIE.EQ.'IMAG') THEN
+                      VALE = DIMAG(ZC(JCESV-1+IAD))
+                    ENDIF
+                    IF (ABS(VALE).LE.1.D-99) VALE = 0.D0
+                    VAL2(K) = VALE
+                    IADMAX=IAD
+                  ELSE
+                    VALE = 0.D0
+                    VAL2(K) = VALE
+                  ENDIF
+ 26             CONTINUE
+              ENDIF
+              WRITE(IFI,1010) VAL2(1),VAL2(4),VAL2(5),VAL2(4),VAL2(2),
+     +                    VAL2(6),VAL2(5),VAL2(6),VAL2(3)
+              GOTO 25
+ 23         CONTINUE
+            IF (ITROU.EQ.0) THEN
+              CALL UTMESS('F','IRGME2','PAS DE CORRESPONDANCE')
+            ENDIF
+ 25         CONTINUE
+ 24       CONTINUE
+        ENDIF
  11   CONTINUE
 C
       CALL JEDEMA()

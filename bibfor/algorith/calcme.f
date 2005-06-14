@@ -7,7 +7,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 23/05/2005   AUTEUR JOUMANA J.EL-GHARIB 
+C MODIF ALGORITH  DATE 14/06/2005   AUTEUR JMBHH01 J.M.PROIX 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -119,6 +119,7 @@ C ======================================================================
      +      (MECA.EQ.'CAM_CLAY')        .OR.
      +      (MECA.EQ.'BARCELONE')       .OR.
      +      (MECA.EQ.'LAIGLE')          .OR.
+     +      (MECA.EQ.'HOEK_BROWN')      .OR.
      +      (MECA.EQ.'MAZARS')          .OR.
      +      (MECA.EQ.'ENDO_ISOT_BETON') ) THEN
          IF ( OPTION(10:14).EQ.'_ELAS' ) THEN
@@ -190,7 +191,7 @@ C
          ENDIF
       ENDIF
 C ======================================================================
-C --- LOI CJS, LOI LAIGLE OU LOI DRUCKER_PRAGER ------------------------
+C --- LOI CJS, LOI LAIGLE, LOI HOEK-BROWN OU LOI DRUCKER_PRAGER -------
 C ======================================================================
       MECTRU = .FALSE.
       IF (MECA.EQ.'CJS') THEN
@@ -206,6 +207,16 @@ C ======================================================================
       ENDIF
       IF (MECA.EQ.'LAIGLE') THEN
         COMPLG = 'LAIGLE'
+        MECTRU = .TRUE.
+        TINI = T - DT
+        CALL REDECE(NDIM,TYPMOD,IMATE,COMPLG,CRIT,INSTAM, INSTAP, 
+     >              TINI,T,TREF,0.0D0,0.0D0,0.0D0,0.0D0,0.0D0,
+     >              DEFGEM(ADDEME+NDIM),DEPS,CONGEM(ADCOME),
+     >              VINTM,OPTION,R8BID,ANGMAS,CONGEP(ADCOME),VINTP, 
+     >              DSDEME)
+      ENDIF
+      IF (MECA.EQ.'HOEK_BROWN') THEN
+        COMPLG = 'HOEK_BROWN'
         MECTRU = .TRUE.
         TINI = T - DT
         CALL REDECE(NDIM,TYPMOD,IMATE,COMPLG,CRIT,INSTAM, INSTAP, 

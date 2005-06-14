@@ -1,6 +1,6 @@
       SUBROUTINE NMTSTM (COMPOR,IMATRI,MATSYM)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 10/05/2005   AUTEUR GJBHHEL E.LORENTZ 
+C MODIF ALGORITH  DATE 14/06/2005   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -43,6 +43,10 @@ C ----------------------------------------------------------------------
       ENDIF
 
       IF (COMPOR(1)(1:6) . EQ . 'LAIGLE') THEN
+        MATSYM = .FALSE.
+      ENDIF
+
+      IF (COMPOR(1)(1:10) . EQ . 'HOEK_BROWN') THEN
         MATSYM = .FALSE.
       ENDIF
 

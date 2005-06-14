@@ -1,4 +1,4 @@
-#& MODIF COMMUN  DATE 26/04/2005   AUTEUR LAVERNE J.LAVERNE 
+#& MODIF COMMUN  DATE 14/06/2005   AUTEUR JMBHH01 J.M.PROIX 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -98,6 +98,7 @@ def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',  #COMMUN#
                                         "BARCELONE",
                                         "LAIGLE",
                                         "DRUCKER_PRAGER",
+                                        "HOEK_BROWN",
                                         "OHNO",
                                         "GRANGER_FP",
                                         "GRANGER_FP_INDT",
@@ -207,6 +208,7 @@ def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',  #COMMUN#
           BARCELONE       =SIMP(statut='c',typ='I',defaut=5,into=(5,)),
           LAIGLE          =SIMP(statut='c',typ='I',defaut=4,into=(4,)),
           DRUCKER_PRAGER  =SIMP(statut='c',typ='I',defaut=3,into=(3,)),
+          HOEK_BROWN      =SIMP(statut='c',typ='I',defaut=3,into=(3,)),
           OHNO            =SIMP(statut='c',typ='I',defaut=32,into=(32,)),
           GRANGER_FP      =SIMP(statut='c',typ='I',defaut=55,into=(55,)),
           GRANGER_FP_INDT =SIMP(statut='c',typ='I',defaut=55,into=(55,)),
@@ -248,6 +250,7 @@ def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',  #COMMUN#
                                        "BARCELONE",
                                        "LAIGLE",
                                        "DRUCKER_PRAGER",
+                                       "HOEK_BROWN",
                                        "ELAS_THM",
                                        "SURF_ETAT_NSAT",
                                        "SURF_ETAT_SATU",

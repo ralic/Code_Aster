@@ -1,0 +1,630 @@
+
+
+-----------------------------------------------------------------------
+--- AUTEUR cibhhlv L.VIVAN   DATE  le 13/06/2005 a 16:42:20
+
+--------------------------------------------------------------------------
+CORRECTION AL 2005-200
+   NB_JOURS_TRAV  : 0,5
+   POUR_LE_COMPTE_DE   : P.BADEL
+   INTERET_UTILISATEUR : NON
+   TITRE : STAT_NON_LINE archivage redondant
+   FONCTIONNALITE
+     Si on archive avec un pas d'archivage et que le job s'arrete en ARRET_CPU,
+     STAT_NON_LINE archive 2 fois le dernier pas de temps calculé.
+     Si on archive tous les pas, pas de problème.
+   DETAIL
+     L'archivage est géré par la SD_PARA_TEMPS, mais l'archivage peut-etre
+     "forcé" si il y a un manque de temps CPU.
+     Dans le cas forcé, on a pas signalé à la SD_PARA_TEMPS qu'il y a eu
+     un archivage.
+     Lors de la gestion des erreurs, on archive le dernier instant de calcul
+     qui a convergé en interrogeant le SD_PARA_TEMPS.
+     Dans certain cas de figure, on peut archiver 2 fois le meme calcul.
+     remede:
+     dans la routine nmarch.f, on écrit dans la SD_PARA_TEMPS quand il y eu
+     un archivage
+        ZL(JARCH+NUMINS) = .TRUE.
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  OUI
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+
+--------------------------------------------------------------------------
+REALISATION EL 2005-142
+   NB_JOURS_TRAV  : 1
+   POUR_LE_COMPTE_DE   : J.PELLET
+   INTERET_UTILISATEUR : OUI
+   TITRE : TEST_RESU faire un test en valeur absolue
+   FONCTIONNALITE
+     souhait d'avoir la possibilite de tester une valeur absolue dans
+     les procédures TEST_RESU, TEST_FONCTION, TEST_TABLE.
+   DETAIL
+     introduction d'un nouveau mot clé dans les commandes TEST_xxxx
+     Ce mot clé est placé avec ses copains qui participent à la
+     valeur de référence:
+     o  / VALE =
+        / VALE_I =
+        / VALE_C =
+     f  VALE_ABS = / 'NON'      défaut
+                   / 'OUI'
+     f  CRITERE
+     f  PRECISION
+     f  REFERENCE
+
+   RESU_FAUX_VERSION_EXPLOITATION    : NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   : NON
+   RESTITUTION_VERSION_EXPLOITATION  : NON
+   RESTITUTION_VERSION_DEVELOPPEMENT : OUI
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_U : U4.92.01  commande TEST_RESU
+       EXPL_ : ajout du mot clé VALE_ABS
+     DOC_U : U4.92.02  commande TEST_FONCTION
+       EXPL_ : ajout du mot clé VALE_ABS
+     DOC_U : U4.92.03  commande TEST_TABLE
+       EXPL_ : ajout du mot clé VALE_ABS
+   VALIDATION
+     cas test sdll22a: décommentarisation des test_resu suite à l'AL2005-165
+     cas test ssns101a: validation TEST_FONCTION
+
+
+-----------------------------------------------------------------------
+--- AUTEUR cibhhpd L.SALMONA   DATE  le 14/06/2005 a 15:21:13
+
+--------------------------------------------------------------------------
+  REALISATION EL 2005-041
+   POUR_LE_COMPTE_DE : A. ADOBES
+   NB_JOURS_TRAV  : 13.
+   INTERET_UTILISATEUR : OUI
+   TITRE : Implantation de la methode de Connors
+   FONCTIONNALITE :
+     Cet EL introduit dans le code la methode de Connors
+     pour l'analyse du comportement vibratoire des GV
+   DETAIL :
+     Cette nouvelle methode ne fonctionne que pour les faisceaux de type
+     transversaux ( mot clé FAISCEAU_TRANS )
+     Pour utiliser la méthode de nouveau mots clés ont été développés pour
+     les commandes DEFI_FLUI_STRU et CALC_FLUI_STRU
+     Un exemple de commande est
+   TYPEFLUI=DEFI_FLUI_STRU (FAISCEAU_TRANS=_F(
+             COUPLAGE='OUI',
+             CARA_ELEM=CARA,
+             PROF_RHO_F_INT=RHOI,
+             PROF_RHO_F_EXT=RHOE,
+             NOM_CMP='DX',
+             TYPE_PAS='CARRE_LIGN',
+             TYPE_RESEAU=102,
+             PAS=1.439895e+00,
+             PROF_VITE_FLUI=PROFVIT1,
+	     CSTE_CONNORS=(3,5),      <==========
+	     RHO_TUBE=8.330000e+03,   <========== nouveaux mots clés
+	     NB_CONNORS=3,            <==========
+                              ),
+
+   Sous CSTE_CONNORS figurent une liste comprenant deux valeurs réelles. Il
+   s'agit des bornes de la constante de Connors. La masse volumique du tube
+   est renseigné sous le mot clé RHO_TUBE. Enfin NB_CONNORS indique la
+   discrétisation ( nombre de point ) de l'intervalle des constantes de
+   Connors.
+
+   En effet, les sorties se présentent sous forme d'un tableau
+   récapitulatif pour chaque combinaison des différentes constantes de
+   Connors indiqués par l'utilisateur.
+
+   La commande CALC_FLUI_STRU se présente sous cette forme
+
+   MELFLUI0 = CALC_FLUI_STRU (
+           VITE_FLUI=_F( VITE_MIN=1.000000e-01,
+                         VITE_MAX=1.510000e+01,
+                         NB_POIN=16,
+                       ),
+           BASE_MODALE=_F(MODE_MECA=MODES,
+
+                          NUME_ORDRE=21,
+
+                          AMOR_REDUIT=2.000000e-03,
+                          AMOR_REDUIT_CONN=6.4000000e-03, <=== Nouveau mot clé
+                         ),
+
+           TYPE_FLUI_STRU=TYPEFLUI,
+           IMPRESSION=_F( PARA_COUPLAGE='OUI',)
+   );
+
+   Le nouveau mot clé correspond à la valeur de l'amortissement réduit pour
+   chacun des modes de la base modales.
+
+   On obtient en sortie, pour la partie qui nous intéresse ce type de fichier
+
+ VALEURS DES VITESSES CRITIQUES ET DES RAPPORTS
+    D INSTABILITE PAR LA METHODE DE CONNORS
+ ===============================================
+MASSE LINEIQUE DE REFERENCE DU TUBE (kg/m) : 7.75315094383906112E-01
+MASSE VOLUMIQUE DE REFERENCE DU FLUIDE SECONDAIRE (kg/m3) : 3.55492507567652808E+02
+ *******************************************************************************************
+ *   MODE    *      FREQUENCE(Hz)      *    AMORTISSEMENT (%)    *  VITESSE EFFICACE (m/s) *
+ *******************************************************************************************
+ *    21     *      6.153761D+01       *      6.400000D-01       *      3.003949D+00       *
+ *******************************************************************************************
+
+ ============================================
+ PLAGE DE VARIATION DES CONSTANTES DE CONNORS
+ ============================================
+ *******************************
+ *          ZONE   1           *
+ *******************************
+ * 3.000000D+00 - 5.000000D+00 *
+ *******************************
+
+**************************************************************************************************************************
+*           ZONE   1          *                                                                                          *
+**************************************************************************************************************************
+*   CONSTANTES DE CONNORS     *    VITESSE CRITIQUE (m/s)   *    VITESSE REDUITE CRITIQUE    *  RAPPORT D INSTABILITE    *
+**************************************************************************************************************************
+*   3.00000000000000000E+00   *   1.72890092695502684E+00   *    1.47480478093382139E+00     *  1.73749053574209800E+00  *
+*   4.00000000000000000E+00   *   2.30520123594003579E+00   *    1.96640637457842860E+00     *  1.30311790180657350E+00  *
+*   5.00000000000000000E+00   *   2.88150154492504473E+00   *    2.45800796822303580E+00     *  1.04249432144525866E+00  *
+**************************************************************************************************************************
+
+   routines impactés : M pour modifié et A pour ajouter
+     connor.f  A
+     flust1.f  M
+     flust3.f  M
+     mdconf.f  M
+     mditmi.f  M
+     op0144.f  M
+     spect1.f  M
+     fluimp.f  M ajout tolerance CRP_20
+     flust2.f  M
+     flust4.f  M
+     op0143.f  M
+     recude.f  M
+
+   catalogues modifiés:
+     calc_flui_stru.capy
+     defi_flui_stru.capy
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_U : U4.25.01
+       EXPL_ : description des nouveaux mot clés
+     DOC_U : U4.66.02
+       EXPL_ : description des nouveaux mot clés
+     DOC_V : V2.02.134
+       EXPL_ : doc du nouveau cas test
+     DOC_R : R4.07.04
+       EXPL_ : ajout de la methode de Connors
+   VALIDATION :
+     nouveau cas test sdll134a
+
+--------------------------------------------------------------------------
+REALISATION EL 2005-117
+   NB_JOURS_TRAV  : 2.5
+   POUR_LE_COMPTE_DE   : M. COURTOIS
+   INTERET_UTILISATEUR : OUI
+   TITRE : IMPR_RESU
+   FONCTIONNALITE : Impression au format castem et GMSH de champs complexes
+   DETAILS :
+     La commande d'impression ne pouvait pas imprimer de champ complexe au
+     format castem et GMSH.
+     On introduit un nouveau mot clé PARTIE pouvant prendre les valeurs REEL et
+     IMAG pour définir quelle partie du complexe on désire imprimer.
+     Pour cela, on a modifié l'appel au routines d'impression en y ajoutant la
+     variable PARTIE provenant directement de l'utilisateur
+     Routines impactées :
+       op0039.f op0093.f op0176.f fluimp.f
+       ircham.f irdepl.f iredpl.f irgmce.f irgmcn.f irgmec.f irgmsh.f irgnte.f
+       irch19.f irchml.f irecri.f iredsu.f irgmcg.f irgme2.f irgmg1.f irgnal.f
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_U : U7.05.11-H
+      EXPL_: Ajout du mol clé PARTIE
+     DOC_U : U7.05.32-B
+      EXPL_: Ajout du mol clé PARTIE
+   VALIDATION : ssll11b
+     On ajoute des TEST_FICHIER dans le cas test pour valider le développement
+     sur la partie imaginaire et réelle séparement
+
+
+-----------------------------------------------------------------------
+--- AUTEUR durand C.DURAND   DATE  le 14/06/2005 a 11:35:46
+
+------------------------------------------------------------------------------
+RESTITUTION HORS AREX
+   NB_JOURS_TRAV  : 0
+   INTERET_UTILISATEUR : NON
+   FONCTIONNALITE macr_lign_coup
+   DETAILS
+     Validation élémentaire :
+     l'option GROUP_NO de macr_lign_coup n'était pas testée. modification de
+     tplv07a pour le faire.
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   OUI
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION :
+      tplv07a
+
+------------------------------------------------------------------------------
+RESTITUTION HORS AREX
+   NB_JOURS_TRAV  : 0
+   INTERET_UTILISATEUR : NON
+   FONCTIONNALITE superviseur
+   DETAILS
+     Erreur d'initialisation dans les corps de macros : ne déclenchait pas
+     les impressions dans fichiers mess et code
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   OUI
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION :
+      tous tests concernés.
+
+------------------------------------------------------------------------------
+RESTITUTION HORS AREX
+   NB_JOURS_TRAV  : 1
+   INTERET_UTILISATEUR : NON
+   FONCTIONNALITE commandes fluide structure
+   DETAILS
+     Ajout des cartes responsables (A. Adobes et E.Longatte pour qques uns)
+     sur les cas tests de référence GEVIBUS et autres tests fluide-structure.
+     Commentaire "# FICHIER MODELE GEVIBUS" :
+       sdll110a sdll110b sdll117a sdll501a sdll502a sdll503a
+       sdll503b sdll503c sdll504a sdll505a sdll506a sdll507a
+       sdll508a sdll508b sdll508c sdnl112a sdnl112b sdnl112c
+     Cartes responsable "# RESPONSABLE KXBADNG A.ADOBES" :
+       sdll110a sdll110b sdll117a sdll501a sdll502a sdll503a
+       sdll503b sdll503c sdll504a sdll505a sdll506a sdll507a
+       sdll508a sdll508b sdll508c sdls103a sdls104a sdnl112a
+       sdnl112b sdnl112c
+     Cartes responsable "# RESPONSABLE LONGATTE E.LONGATTE" :
+       sdll115a sdll115b sdll116a
+
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   OUI
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION :
+      tous tests concernés.
+
+
+-----------------------------------------------------------------------
+--- AUTEUR jmbhh01 J.M.PROIX   DATE  le 14/06/2005 a 08:28:01
+
+--------------------------------------------------------------------------
+CORRECTION AL 2005-212
+   NB_JOURS_TRAV  : 21.0 pour NECS, 3 pour EDF (JMP + CD)
+   INTERET_UTILISATEUR : OUI
+   TITRE : Corrections dans la loi CORR_ACIER
+   FONCTIONNALITE
+   Texte de l'AL :
+   ---------------
+   En voulant utiliser le modele de corrosion des aciers CORR_ACIER dans des
+   etudes pour EDF/MMC (projet DURO-GC), la société NECS a constaté plusieurs
+   anomalies dans la programmation :
+   - Racine de 2 pour le stockage des termes extra diagonaux des tenseurs
+   - Il manque le facteur (1-D) dans la loi de comportement lors du calcul de la force
+     (ou de la contrainte = force / aire theorique) : à décider en cohérence avec la doc R
+   - Des portions de code ne sont pas utilisées
+   - Des appels aux  fichiers de commande inutiles (GETVR8 et GETVIS)
+   - Taux de triaxialité Rv dans le modèle 3D : pour l'instant il est conservé fixe
+     et égal à 1 (taux pour le cas 1D)
+   - comportement uniaxial : la réponse en 1D en compression est élastique car il manque
+     une valeur absolue dans le critère et dans le calcul des dérivées.
+   - Pas d'activation du processus itératif de la loi (return mapping)
+     -  Pour la loi 1D (nm1dco.f), l'intégration est explicite (pas d'itération
+       sur la plasticité ni sur l'endommagement).
+     - Pour la loi 3D (nm3dco.f), meme chose.
+   - la variable de commande associée à la corrosion est passée en tant que R8VIDE par
+     les routines de COQUE_3D.
+   - les tests actuels SSNL127 a,b,c,d ne testent pas la corrosion car elle est donnée nulle.
+   Tout ceci est corrigé par la présente restitution (travail de NECS) ainsi que la doc R
+
+   DETAILS
+   Corrections apportées :
+   -----------------------
+   1 - CORR_ACIER :LOI DE LEMAITRE EN PRESENCE DE CORROSION
+        1. Correction du cisaillement, enlever le GETVR8 et GETVID (passage en argument)
+        2. mise du signe en 1D, activation de l'implicite
+        3. activation de l'implicite en 3D
+        4. Grand nettoyage de tas de choses inutiles, correction des calculs faux
+        5. Mise en place de RIGI_MECA_ELAS et FULL_MECA_ELAS
+        nm1dco.f  nm3dco.f
+
+   2 - RIGI_MECA_ELAS et FULL_MECA_ELAS
+       La prise en compte de ces options est introduites pour les coques 3D
+       (hors option grandes deformations de Green) et pour les barres.
+
+   3 - TRANSMISSION DU CODE RETOUR DANS LES ELEMENTS DE BARRE ET PMF
+       Le code retour asocié à l'intégration du comportement est transmis a TE0248.
+       te0248.f  nmiclb.f  pmfcom.f
+
+   4 - TRANSMISSION DE LA CORROSION DANS LES ELEMENTS DE COQUE
+       Le mode local et les parametres sont renseignes dans le catalogue des
+       elements COQUE_3D. Ils sont lus dans la routine en aval du TE des options
+       de mecanique non lineaire et transmis a NMCOMP.
+       gener_mecq32.cata
+       vdxnlr.f  te0414.f
+
+   5 - CODE RETOUR LOI DE COMPORTEMENT ECRASE PAR DE BORST
+       Si code retour loi de comportement = 1, ne pas passer dans DE BORST CP
+       nmcomp.f
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_R : R7.01.20
+     DOC_V : V6.02.127
+   VALIDATION
+     SSNL127A (BARRE) SSNL127B (POU_D_EM) SSNL127C(POU_D_TGM) SSNL127D (3D) SSNL127E (COQUE_3D)
+     pour 3 niveaux de corrosion (0%, 2.5%, 13%)
+
+--------------------------------------------------------------------------
+REALISATION EL 2005-098
+   NB_JOURS_TRAV  : 60	
+   POUR_LE_COMPTE_DE   : V.GERVAIS et C. CHAVANT
+   INTERET_UTILISATEUR : OUI
+   TITRE : Intégration d'une loi de comportement en mécanique des roches
+           Loi de HOEK-BROWN modifiée.
+   FONCTIONNALITE
+     Intégration d'une loi de comportement de Hoek-Brown modifiée
+     pour analyser le comportement mécanique des roches
+     (modèle de Hoek-Brown modifié - doc R7.01.18).
+   DETAIL
+     Le branchement de l'algorithme se fait à partir de la routine redece,
+     de façon à bénéficier des algorithmes de redécoupage local de
+     l'incrément de déformation.
+     Syntaxe :
+   DEFI_MATERIAU( ELAS (...)
+                  HOEK_BROWN = _F( (o) GAMMA_RUP       [R]
+                                   (o) GAMMA_RES       [R]
+                                   (o) S_END           [R]
+                                   (o) S_RUP           [R]
+                                   (o) M_END           [R]
+                                   (o) M_RUP           [R]
+                                   (o) BETA            [R]
+                                   (o) ALPHAHB         [R]
+                                   (o) PHI_RUP         [R]
+                                   (o) PHI_RES         [R]
+                                   (f) PHI_END         [R] )
+                           )
+
+     GAMMA_RUP  : Valeur du paramètre d'écrouissage à la rupture du matériau
+     GAMMA_RES  : Valeur du paramètre d'écrouissage au début de la résistance résiduelle
+     S_END      : Valeur du produit S*SIGMA_c**2 atteinte à l'initiation d'endommagement
+     S_RUP      : Valeur du produit S*SIGMA_c**2 atteinte en GAMMA_RUP
+     M_END      : Valeur du produit M*SIGMA_c atteinte à l'initiation d'endommagement
+     M_RUP      : Valeur du produit M*SIGMA_c atteinte en GAMMA_RUP
+     BETA       : Paramètre caractérisant le comportement post-rupture du matériau
+     ALPHAHB    : Paramètre caractérisant le comportement post-rupture du matériau
+     PHI_RUP    : Valeur de l'angle de frottement atteinte en GAMMA_RUP
+     PHI_RES    : Valeur de l'angle de frottement atteinte en GAMMA_RES
+     PHI_END    : Valeur de l'angle de frottement à l'initiation d'endommagement (prise
+                  nulle par défaut)
+
+     Sous le mot-clé ELAS les caractéristiques mécaniques E, NU, et ALPHA
+     doivent être définies en parallèle.
+
+   routines  :
+     calcdl : Calcul de la dérivée du déviateur plastique par rapport aux
+              déformations
+     calcvh : Calcul des fonctions intermédiaires h et g
+     hbcalc : Calcul de l'incrément du paramètre d'écrouissage par un algo de
+              Newton (df/dgamma)	
+     hbcrel : Calcul du seuil au cours des itérations de Newton permettant de calculer
+              la valeur du paramètre d'écrouissage
+     hbderi : Calcul des dérivées des paramètres fonctions du paramètre
+              d'écrouissage	
+     hbdiag : Calcul des valeurs et vecteurs propres du déviateur élastique
+     hbmajs : Mise à jour du tenseur des contraintes
+     hbrmat : Récupération des données matériau
+     hbcrvx : Calcul du seuil initial pour le convexe élasto-plastique
+     hbrjpl : Calcul de l'opérateur tangent cohérent DSIG/DEPS
+     hbvaec : Calcul des valeurs des paramètres fonctions du paramètre
+              d'écrouissage	
+     hbzero : Calcul des valeurs propres du déviateur élastique	
+     lchbvp : Calcul des valeurs et vecteurs propres du déviateur des contraintes
+              élastiques pour l'option RIGI_MECA
+     lchobr : opérateur de la loi de comportement pour la mécanique des
+              roches
+
+   routines modifiées :
+     calcme : calcul de la matrice tangente mécanique (relation_kit)
+     lccnvx : appel pour le calcul du seuil élasto-plastique
+     lcelas : intégration élastique sur DT
+     lcjela : matrice symétrique de comportement tangent élastique
+     lcjpla : matrice symétrique de comportement tangent élasto-plastique
+     lcmate : appel des routines de récupération des données matériau
+     lcplas : intégration élasto-plastique sur DT
+     nmcomp : intégration des lois de comportement non-linéaire
+     plasti : intégration de lois de comportement élasto-plastique
+     nmthmc : vérifie la cohérence de la relation de couplage THM
+     nmtstm : renvoie le type de matrice tangente symétrique ou non souhaité
+
+   catalogues modifiés :
+     defi_materiau et c_comp_incr
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_U : U4.43.01 DEFI_MATERIAU
+        EXPL_ :  Ajout de la description du mot clé facteur HOEKBROWN
+             U4.51.03 STAT_NON_LINE
+        EXPL_ :  Ajout de la relation HOEK_BROWN parmi celles permettant d'utiliser
+	         l'opérande ITER_INTE_PAS (paragraphe 3.13.7)
+             U4.51.11 Comportements non linéaires
+	EXPL_ :  Ajout de la relation HOEK_BROWN dans les différentes combinaisons
+	         possibles pour la relation KIT_XXXX (paragraphe 3.1.2.3)
+		 Ajout d'un paragraphe décrivant la relation HOEK_BROWN (paragraphe
+		 3.1.1.10, Comportement pour les milieux poreux)
+     DOC_R : R7.01.18
+        EXPL_ : LOI DE COMPORTEMENT DE HOEK-BROWN MODIFIEE
+     DOC_V : V6.01.116 :
+        EXPL_ : SSNA116: ESSAI TRIAXIAL DRAINE AVEC LE MODELE DE HOEK-BROWN
+             V6.04.184 :
+        EXPL_ : SSNV184: ESSAI TRIAXIAL DRAINE AVEC LE MODELE DE HOEK-BROWN
+	     V7.31.128 :
+        EXPL_ : WTNV128 : ESSAI TRIAXIAL NON DRAINE AVEC LE MODELE DE HOEK-BROWN
+   VALIDATION
+    Ajout des cas test : ssna116 (modélisations a-b)
+                                 Essai triaxial drainé avec le modèle de
+                                 Hoek-Brown modifié. Les deux modélisations
+                                 correspondant à 2 niveaux de confinement.
+				 La solution de référence est analytique.
+                         ssnv184 (modélisations a-b-c)
+                                 Essai triaxial drainé avec le modèle
+                                 de Hoek-Brown modifié. Les trois modélisations
+				 correspondent à 3 niveaux de confinement.
+			 wtnv128 (modélisation a)
+			         Essai triaxial non drainé avec le modèle de
+				 Hoek-Brown modifié et couplage hydraulique. 				
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+ CASTEST AJOUT sdll134a                      cibhhpd L.SALMONA          277    277      0
+ CASTEST AJOUT ssna116a                      jmbhh01 J.M.PROIX          447    447      0
+ CASTEST AJOUT ssna116b                      jmbhh01 J.M.PROIX          467    467      0
+ CASTEST AJOUT ssnl127e                      jmbhh01 J.M.PROIX          377    377      0
+ CASTEST AJOUT ssnv184a                      jmbhh01 J.M.PROIX          451    451      0
+ CASTEST AJOUT ssnv184b                      jmbhh01 J.M.PROIX          449    449      0
+ CASTEST AJOUT ssnv184c                      jmbhh01 J.M.PROIX          439    439      0
+ CASTEST AJOUT wtnv128a                      jmbhh01 J.M.PROIX          535    535      0
+ CASTEST MODIF sdld22a                       cibhhlv L.VIVAN            306     21     17
+ CASTEST MODIF ssll11b                       cibhhpd L.SALMONA          476     32      1
+ CASTEST MODIF ssnl127a                      jmbhh01 J.M.PROIX          438    390     81
+ CASTEST MODIF ssnl127b                      jmbhh01 J.M.PROIX          454    343     38
+ CASTEST MODIF ssnl127c                      jmbhh01 J.M.PROIX          456    345     38
+ CASTEST MODIF ssnl127d                      jmbhh01 J.M.PROIX          510    361     22
+ CASTEST MODIF ssns101a                      cibhhlv L.VIVAN            387      6      1
+ CASTEST MODIF tplv07a                        durand C.DURAND           398     24      8
+CATALOGU MODIF typelem/gener_mecq32          jmbhh01 J.M.PROIX          247     23      8
+CATALOPY MODIF commande/calc_flui_stru       cibhhpd L.SALMONA           43      9      8
+CATALOPY MODIF commande/defi_flui_stru       cibhhpd L.SALMONA          105      5      1
+CATALOPY MODIF commande/defi_materiau        jmbhh01 J.M.PROIX         2839     15      1
+CATALOPY MODIF commande/impr_resu            cibhhpd L.SALMONA          152      7      1
+CATALOPY MODIF commande/macr_lign_coupe       durand C.DURAND            45      2      2
+CATALOPY MODIF commande/test_fonction        cibhhlv L.VIVAN             86      2      1
+CATALOPY MODIF commande/test_resu            cibhhlv L.VIVAN            169      6      1
+CATALOPY MODIF commande/test_table           cibhhlv L.VIVAN             59      2      1
+CATALOPY MODIF commun/c_comp_incr            jmbhh01 J.M.PROIX          319      4      1
+ FORTRAN AJOUT algeline/connor               cibhhpd L.SALMONA          288    288      0
+ FORTRAN AJOUT algorith/calcdl               jmbhh01 J.M.PROIX          169    169      0
+ FORTRAN AJOUT algorith/calcvh               jmbhh01 J.M.PROIX           44     44      0
+ FORTRAN AJOUT algorith/hbcalc               jmbhh01 J.M.PROIX           77     77      0
+ FORTRAN AJOUT algorith/hbcrel               jmbhh01 J.M.PROIX           64     64      0
+ FORTRAN AJOUT algorith/hbderi               jmbhh01 J.M.PROIX           93     93      0
+ FORTRAN AJOUT algorith/hbdiag               jmbhh01 J.M.PROIX          251    251      0
+ FORTRAN AJOUT algorith/hbmajs               jmbhh01 J.M.PROIX           56     56      0
+ FORTRAN AJOUT algorith/hbrcvx               jmbhh01 J.M.PROIX           97     97      0
+ FORTRAN AJOUT algorith/hbrjpl               jmbhh01 J.M.PROIX          184    184      0
+ FORTRAN AJOUT algorith/hbrmat               jmbhh01 J.M.PROIX          171    171      0
+ FORTRAN AJOUT algorith/hbvaec               jmbhh01 J.M.PROIX           80     80      0
+ FORTRAN AJOUT algorith/hbzero               jmbhh01 J.M.PROIX          122    122      0
+ FORTRAN AJOUT algorith/lchbvp               jmbhh01 J.M.PROIX           61     61      0
+ FORTRAN AJOUT algorith/lchobr               jmbhh01 J.M.PROIX          205    205      0
+ FORTRAN MODIF algeline/fluimp               cibhhpd L.SALMONA          605    164     22
+ FORTRAN MODIF algeline/flust1               cibhhpd L.SALMONA          277     27     10
+ FORTRAN MODIF algeline/flust2               cibhhpd L.SALMONA          248      9      5
+ FORTRAN MODIF algeline/flust3               cibhhpd L.SALMONA          507      9      5
+ FORTRAN MODIF algeline/flust4               cibhhpd L.SALMONA          307      9      6
+ FORTRAN MODIF algeline/mdconf               cibhhpd L.SALMONA          498     13     10
+ FORTRAN MODIF algeline/op0093               cibhhpd L.SALMONA          503      2      2
+ FORTRAN MODIF algeline/op0144               cibhhpd L.SALMONA          399     24      6
+ FORTRAN MODIF algeline/recude               cibhhpd L.SALMONA          102      8      5
+ FORTRAN MODIF algorith/calcme               jmbhh01 J.M.PROIX          872     13      2
+ FORTRAN MODIF algorith/lccnvx               jmbhh01 J.M.PROIX           79      8      3
+ FORTRAN MODIF algorith/lcelas               jmbhh01 J.M.PROIX           71      2      1
+ FORTRAN MODIF algorith/lcjela               jmbhh01 J.M.PROIX           61      2      1
+ FORTRAN MODIF algorith/lcjpla               jmbhh01 J.M.PROIX           70      9      3
+ FORTRAN MODIF algorith/lcmate               jmbhh01 J.M.PROIX          140      5      1
+ FORTRAN MODIF algorith/lcplas               jmbhh01 J.M.PROIX          127     11      2
+ FORTRAN MODIF algorith/mditmi               cibhhpd L.SALMONA          387      3      3
+ FORTRAN MODIF algorith/nmarch               cibhhlv L.VIVAN            307      6      2
+ FORTRAN MODIF algorith/nmcomp               jmbhh01 J.M.PROIX          731     16      5
+ FORTRAN MODIF algorith/nmiclb               jmbhh01 J.M.PROIX          159      5      5
+ FORTRAN MODIF algorith/nmthmc               jmbhh01 J.M.PROIX          546      3      2
+ FORTRAN MODIF algorith/nmtstm               jmbhh01 J.M.PROIX           64      5      1
+ FORTRAN MODIF algorith/plasti               jmbhh01 J.M.PROIX          467     12      5
+ FORTRAN MODIF calculel/op0177               cibhhlv L.VIVAN            188      7      5
+ FORTRAN MODIF calculel/trchel               cibhhlv L.VIVAN            129      7      5
+ FORTRAN MODIF calculel/trchno               cibhhlv L.VIVAN            118      6      4
+ FORTRAN MODIF calculel/trgene               cibhhlv L.VIVAN            259     10      8
+ FORTRAN MODIF calculel/trjeve               cibhhlv L.VIVAN             63      6      4
+ FORTRAN MODIF calculel/trresu               cibhhlv L.VIVAN            217     11      9
+ FORTRAN MODIF calculel/utest0               cibhhlv L.VIVAN            188      4      4
+ FORTRAN MODIF calculel/utest1               cibhhlv L.VIVAN            192      4      4
+ FORTRAN MODIF calculel/utest2               cibhhlv L.VIVAN             70      4      4
+ FORTRAN MODIF calculel/utest4               cibhhlv L.VIVAN            329      4      4
+ FORTRAN MODIF calculel/utesto               cibhhlv L.VIVAN             68      6      6
+ FORTRAN MODIF calculel/utestr               cibhhlv L.VIVAN            191      5      5
+ FORTRAN MODIF elements/pmfcom               jmbhh01 J.M.PROIX          287      2      2
+ FORTRAN MODIF elements/te0248               jmbhh01 J.M.PROIX          451      2      2
+ FORTRAN MODIF elements/te0414               jmbhh01 J.M.PROIX          148      3      2
+ FORTRAN MODIF elements/vdxnlr               jmbhh01 J.M.PROIX          500      8      4
+ FORTRAN MODIF modelisa/nm1dco               jmbhh01 J.M.PROIX          237     40     25
+ FORTRAN MODIF modelisa/nm3dco               jmbhh01 J.M.PROIX          422    169    368
+ FORTRAN MODIF modelisa/op0143               cibhhpd L.SALMONA          551     11      3
+ FORTRAN MODIF modelisa/spect1               cibhhpd L.SALMONA          397      3      3
+ FORTRAN MODIF prepost/irch19                cibhhpd L.SALMONA          176     11      7
+ FORTRAN MODIF prepost/ircham                cibhhpd L.SALMONA           91      2      2
+ FORTRAN MODIF prepost/irchml                cibhhpd L.SALMONA          337     34      7
+ FORTRAN MODIF prepost/irdepl                cibhhpd L.SALMONA          416     24      3
+ FORTRAN MODIF prepost/irecri                cibhhpd L.SALMONA          472      9      8
+ FORTRAN MODIF prepost/irgmce                cibhhpd L.SALMONA          348     15     11
+ FORTRAN MODIF prepost/irgmcg                cibhhpd L.SALMONA          289     14      8
+ FORTRAN MODIF prepost/irgmcn                cibhhpd L.SALMONA          276     16     16
+ FORTRAN MODIF prepost/irgme2                cibhhpd L.SALMONA          165     43      4
+ FORTRAN MODIF prepost/irgmec                cibhhpd L.SALMONA          158     43      6
+ FORTRAN MODIF prepost/irgmg1                cibhhpd L.SALMONA          130     29      6
+ FORTRAN MODIF prepost/irgmsh                cibhhpd L.SALMONA          225     13     12
+ FORTRAN MODIF prepost/irgnal                cibhhpd L.SALMONA          172     41      6
+ FORTRAN MODIF prepost/irgnte                cibhhpd L.SALMONA          195     66      7
+ FORTRAN MODIF prepost/op0039                cibhhpd L.SALMONA          830      7      4
+ FORTRAN MODIF prepost/op0135                cibhhlv L.VIVAN            466      7      6
+ FORTRAN MODIF prepost/op0176                cibhhpd L.SALMONA          208      2      2
+ FORTRAN MODIF utilitai/iredpl               cibhhpd L.SALMONA          351      3      3
+ FORTRAN MODIF utilitai/iredsu               cibhhpd L.SALMONA          350      2      2
+ FORTRAN MODIF utilitai/utites               cibhhlv L.VIVAN            196      5      3
+  PYTHON MODIF Macro/calc_precont_ops         durand C.DURAND           468      2      2
+  PYTHON MODIF Macro/defi_part_feti_ops       durand C.DURAND           171     21     32
+  PYTHON MODIF Macro/macr_cara_poutre_ops     durand C.DURAND           815      1      2
+  PYTHON MODIF Macro/macr_lign_coupe_ops      durand C.DURAND           266      1      2
+  PYTHON MODIF Macro/macr_recal_ops           durand C.DURAND           160      1      2
+  PYTHON MODIF Macro/macro_elas_mult_ops      durand C.DURAND           274      1      2
+  PYTHON MODIF Macro/macro_matr_asse_ops      durand C.DURAND           162      1      2
+  PYTHON MODIF Macro/macro_miss_3d_ops        durand C.DURAND            75      1      2
+  PYTHON MODIF Macro/macro_mode_meca_ops      durand C.DURAND           138      1      2
+  PYTHON MODIF Macro/macro_proj_base_ops      durand C.DURAND            62      1      2
+  PYTHON MODIF Macro/stanley_ops              durand C.DURAND            66      2      2
+  PYTHON MODIF Macro/test_fichier_ops         durand C.DURAND           194      1      2
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :   23        5404      5404             +5404
+ MODIF :   93       28723      2694     986     +1708
+ SUPPR :    0           0                 0        +0
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :  116       34127      8098     986     +7112 

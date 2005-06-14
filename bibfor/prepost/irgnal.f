@@ -1,17 +1,17 @@
       SUBROUTINE IRGNAL ( IFI, NBORDR, COORD, CONNEX, POINT,
-     +                    NOCMP, NBCMP,
-     +                    NUMEL, NOBJ, NBEL, CNSC, CNSL, CNSV, CNSD )
+     +                    NOCMP, NBCMP,NUMEL, NOBJ, NBEL, CNSC,
+     +                    CNSL, CNSV, PARTIE, JTYPE, CNSD )
       IMPLICIT NONE
 C
       INTEGER        NUMEL, NBEL, IFI, NBORDR, NBCMP
       INTEGER        CONNEX(*), POINT(*),
-     +               CNSC(*), CNSL(*), CNSV(*), CNSD(*) 
+     +               CNSC(*), CNSL(*), CNSV(*), CNSD(*),JTYPE 
       REAL*8         COORD(*)
-      CHARACTER*(*)  NOBJ
+      CHARACTER*(*)  NOBJ,PARTIE
       CHARACTER*8    NOCMP(NBCMP)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 17/05/2005   AUTEUR CIBHHLV L.VIVAN 
+C MODIF PREPOST  DATE 14/06/2005   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -66,66 +66,101 @@ C
 C --- VERIF QU'ON N'EST PAS HORS SCOPE D'UTILISATION
 C     (CHAMP SCALAIRE OU VECTEUR)
       IF(NBCMP.NE.1.AND.NBCMP.NE.3)
-     +   CALL UTMESS('F','IRGNAL','ERREUR DE PROGRAMMATION : '//
-     +               'NBCMP DIFFERENT DE 1 OU 3.')
+     +  CALL UTMESS('F','IRGNAL','ERREUR DE PROGRAMMATION : '//
+     +              'NBCMP DIFFERENT DE 1 OU 3.')
 C
       CALL JEVEUO ( NOBJ, 'L', JEL )
       CALL JEVEUO(JEXNUM('&CATA.TM.NBNO',NUMEL),'L',JNO)
       NBNO=ZI(JNO)
 C
       IF(NBNO.GT.99)
-     +   CALL UTMESS('F','IRGNAL','ON NE PEUT PAS TRAITER DES ELEMENTS'
-     +                   //' A PLUS DE 99 NOEUDS !')
+     +  CALL UTMESS('F','IRGNAL','ON NE PEUT PAS TRAITER DES ELEMENTS'
+     +                  //' A PLUS DE 99 NOEUDS !')
 C
 C     BOUCLE SUR LES ELEMENTS
       DO 10 IEL = 1 , NBEL
-         IMA = ZI(JEL-1+IEL)
-         IPOIN = POINT(IMA)
+        IMA = ZI(JEL-1+IEL)
+        IPOIN = POINT(IMA)
 
-         DO 100 J=1,NBNO
-            LISTNO(J) = CONNEX(IPOIN-1+J)
- 100     CONTINUE
+        DO 100 J=1,NBNO
+          LISTNO(J) = CONNEX(IPOIN-1+J)
+ 100    CONTINUE
 
 C        COORDONNEES DES NOEUDS
-         DO 110 J=1,3
-            WRITE(IFI,1099) (COORD(3*(LISTNO(INOE)-1)+J),INOE=1,NBNO)
- 110     CONTINUE
+        DO 110 J=1,3
+          WRITE(IFI,1099) (COORD(3*(LISTNO(INOE)-1)+J),INOE=1,NBNO)
+ 110    CONTINUE
 C
 C        POUR CHAQUE INSTANT...
-         DO 120 IOR = 1 , NBORDR
-            JCNSC = CNSC(IOR)
-            JCNSL = CNSL(IOR)
-            JCNSV = CNSV(IOR)
-            JCNSD = CNSD(IOR)
-            NCMP  = ZI(JCNSD-1+2)        
-
+        DO 120 IOR = 1 , NBORDR
+          JCNSC = CNSC(IOR)
+          JCNSL = CNSL(IOR)
+          JCNSV = CNSV(IOR)
+          JCNSD = CNSD(IOR)
+          NCMP  = ZI(JCNSD-1+2)
+          IF (ZK8(JTYPE-1+IOR) .EQ.'R') THEN
 C           ...EN CHAQUE NOEUD...
             DO 1210 INOE = 1 , NBNO
 
-               DO 1215 L = 1, NBCMP
-                  VAL(L) = 0.D0
- 1215          CONTINUE
+              DO 1215 L = 1, NBCMP
+                VAL(L) = 0.D0
+ 1215         CONTINUE
 
 C              ...ON CHERCHE LES COMPOSANTES A ECRIRE...
-               DO 1220 K = 1 , NCMP
+              DO 1220 K = 1 , NCMP
                   
-                  DO 1230 L = 1, NBCMP
-                     IF ( ZK8(JCNSC-1+K) .EQ. NOCMP(L)) THEN
-                        IF (ZL(JCNSL-1+(LISTNO(INOE)-1)*NCMP+K)) THEN
-                           VAL(L) = ZR(JCNSV-1+(LISTNO(INOE)-1)*NCMP+K)
-                           IF (ABS(VAL(L)).LE.1.D-99) VAL(L)=0.D0
-                        ENDIF
-                     ENDIF
- 1230             CONTINUE
+                DO 1230 L = 1, NBCMP
+                  IF ( ZK8(JCNSC-1+K) .EQ. NOCMP(L)) THEN
+                    IF (ZL(JCNSL-1+(LISTNO(INOE)-1)*NCMP+K)) THEN
+                      VAL(L) = ZR(JCNSV-1+(LISTNO(INOE)-1)*NCMP+K)
+                      IF (ABS(VAL(L)).LE.1.D-99) VAL(L)=0.D0
+                    ENDIF
+                  ENDIF
+ 1230           CONTINUE
 
- 1220          CONTINUE
+ 1220         CONTINUE
 
 C              ...ET ON IMPRIME LES VALEURS DES COMPOSANTES DE NOCMP
-               WRITE(IFI,1099) (VAL(L),L=1,NBCMP)
+              WRITE(IFI,1099) (VAL(L),L=1,NBCMP)
 
  1210       CONTINUE
+          ELSEIF (ZK8(JTYPE-1+IOR) .EQ. 'C') THEN
+            DO 2210 INOE = 1 , NBNO
 
- 120     CONTINUE
+              DO 2215 L = 1, NBCMP
+                VAL(L) = 0.D0
+ 2215         CONTINUE
+
+C              ...ON CHERCHE LES COMPOSANTES A ECRIRE...
+              DO 2220 K = 1 , NCMP
+                  
+                DO 2230 L = 1, NBCMP
+                  IF ( ZK8(JCNSC-1+K) .EQ. NOCMP(L)) THEN
+                    IF (ZL(JCNSL-1+(LISTNO(INOE)-1)*NCMP+K)) THEN
+                      IF (PARTIE.EQ.'REEL') THEN
+                        VAL(L) = DBLE(ZC(JCNSV-1+
+     &                                (LISTNO(INOE)-1)*NCMP+K))
+                      ELSEIF ( PARTIE.EQ.'IMAG') THEN
+                        VAL(L) = DIMAG(ZC(JCNSV-1+
+     &                                 (LISTNO(INOE)-1)*NCMP+K))
+                      ELSE
+                        CALL UTMESS ('F','IRGNAL',
+     &                                 'ERREUR DE PROGRAMATION')
+                      ENDIF
+                      IF (ABS(VAL(L)).LE.1.D-99) VAL(L)=0.D0
+                    ENDIF
+                  ENDIF
+ 2230           CONTINUE
+
+ 2220         CONTINUE
+
+C              ...ET ON IMPRIME LES VALEURS DES COMPOSANTES DE NOCMP
+              WRITE(IFI,1099) (VAL(L),L=1,NBCMP)
+
+ 2210       CONTINUE
+
+          ENDIF
+ 120    CONTINUE
                  
  10   CONTINUE
 C

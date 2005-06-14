@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 14/06/2005   AUTEUR CIBHHPD L.SALMONA 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,19 +19,20 @@
 CALC_FLUI_STRU=OPER(nom="CALC_FLUI_STRU",op= 144,sd_prod=melasflu_sdaster,
                     reentrant='n',
             UIinfo={"groupes":("Matrices/vecteurs",)},
-         VITE_FLUI       =FACT(statut='o',
+         VITE_FLUI       =FACT(statut='f',
                                fr="Définir la plage de vitesse fluide étudiée",
-           VITE_MIN        =SIMP(statut='o',typ='R' ),
-           VITE_MAX        =SIMP(statut='o',typ='R' ),
-           NB_POIN         =SIMP(statut='o',typ='I' ),
+           VITE_MIN        =SIMP(statut='f',typ='R' ),
+           VITE_MAX        =SIMP(statut='f',typ='R' ),
+           NB_POIN         =SIMP(statut='f',typ='I' ),
          ),
          BASE_MODALE     =FACT(statut='o',
                                
-           regles=(UN_PARMI('AMOR_REDUIT','AMOR_UNIF'),),
+           regles=(AU_MOINS_UN('AMOR_REDUIT','AMOR_UNIF','AMOR_REDUIT_CONN'),),
            MODE_MECA       =SIMP(statut='o',typ=mode_meca ),
            NUME_ORDRE      =SIMP(statut='f',typ='I',max='**'),
-           AMOR_REDUIT     =SIMP(statut='f',typ='R',max='**'),
-           AMOR_UNIF       =SIMP(statut='f',typ='R' ),
+           AMOR_REDUIT     =SIMP(statut='f',typ='R',max='**',val_min=0.E+00),
+           AMOR_UNIF       =SIMP(statut='f',typ='R',val_min=0.E+00 ),
+           AMOR_REDUIT_CONN=SIMP(statut='f',typ='R',max='**',val_min=0.E+00),
          ),
          TYPE_FLUI_STRU  =SIMP(statut='o',typ=type_flui_stru ),
          IMPRESSION      =FACT(statut='f',

@@ -3,7 +3,7 @@
       CHARACTER*(*)       CHAM19
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
+C MODIF PREPOST  DATE 14/06/2005   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -77,7 +77,7 @@ C
 C
       CALL DISMOI('F','NOM_MODELE',CHAM19,'CHAMP',IBID,MODELE,IBID)
 C
-      CALL IRCH19 ( CHAMP,FORM,IFR,TITRE,MODELE,
+      CALL IRCH19 ( CHAMP,' ',FORM,IFR,TITRE,MODELE,
      >              NOMSD,NOSIMP,NOPASE,NOMSYM,
      >              UN,UN,UN,UN,UN,UN,
      >              FAUX,FAUX,IZERO,IZERO,IZERO,IZERO,IZERO,

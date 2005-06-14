@@ -1,7 +1,7 @@
       SUBROUTINE OP0176 ( IER )
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 05/10/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF PREPOST  DATE 14/06/2005   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -193,7 +193,7 @@ C
         CECR = 'T'
         IZERO = 0
         CALL IRECRI ( LERES1,NOSIMP,NOPASE,FORM,IUL,K8B,LBID,
-     >                IZERO,K8B,NBPARA,ZK16(JPA),
+     >                IZERO,K8B,' ',NBPARA,ZK16(JPA),
      >               NBORDR,ZI(JORDR),TRUE,'RESU',1,K8B,CECR,FALS,IZERO,
      >                IBID,IZERO,IBID,IZERO,K8B,FALS,R8B,FALS,R8B,FALS,
      >                FALS,FORMAR,LMOD,NIVE,VERSIO)

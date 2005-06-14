@@ -1,13 +1,14 @@
-      SUBROUTINE IRGMEC (NUMOLD,IMA,CONNEX,NBORD2,TABD,TABL,TABV,NBNO,
-     &                    LISTNO,ICMP,IFI,IWRI,IADMAX)
+      SUBROUTINE IRGMEC (NUMOLD,IMA,CONNEX,NBORD2,TABD,TABL,TABV,PARTIE,
+     &                   JTYPE,NBNO,LISTNO,ICMP,IFI,IWRI,IADMAX)
       IMPLICIT NONE
       INTEGER   NUMOLD(*),TABD(*),TABL(*),TABV(*),NBNO
-      INTEGER   LISTNO(*),ICMP,IFI,IMA,NBORD2,IADMAX
+      INTEGER   LISTNO(*),ICMP,IFI,IMA,NBORD2,IADMAX,JTYPE
       LOGICAL  IWRI
+      CHARACTER*(*)   PARTIE
       CHARACTER*24  CONNEX
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 17/05/2005   AUTEUR CIBHHLV L.VIVAN 
+C MODIF PREPOST  DATE 14/06/2005   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -36,6 +37,8 @@ C     NBORD2 : I   : NOMBRE DE NUM D'ORDRE
 C     TABD   : I   : DECRIPTEURS DU CHMAP SIMPLE A IMMRIMER
 C     TABL   : I   : DECRIPTEURS DU CHMAP SIMPLE A IMMRIMER
 C     TABV   : I   : DECRIPTEURS DU CHMAP SIMPLE A IMMRIMER
+C     PARTIE : K4  : IMPRESSION DE LA PARTIE COMPLEXE OU REELLE DU CHAMP
+C     JTYPE  : I   : ADRESSE DU TYPE DU CHAMP ( REEL OU COMPLEXE )
 C     NBNO   : I   : NOMBRE NOEUD DE LA NOUVELLE MAILLE
 C     LISTNO : I   : LISTE DES NOEUDS DE LA NOUVELLE MAILLE
 C     ICMP   : I   : NUMERO COMPOSANTE CHAMP
@@ -88,30 +91,64 @@ C
           CALL UTMESS('F','IRGMCE','NBSP DIFFERENT DE 1')
         ENDIF
         ITROU=0
-        DO 14 J=1,NBNO
-           INO=LISTNO(J)
-           ITROU=0
-           DO 13 IPT = 1,NBPT
+        IF (ZK8(JTYPE-1+IOR).EQ.'R') THEN
+          DO 14 J=1,NBNO
+            INO=LISTNO(J)
+            ITROU=0
+            DO 13 IPT = 1,NBPT
               INOLD=ZI(JCNOLD-1+IPT)
               IF (INO.EQ.INOLD) THEN
-                 ITROU=1
-                 CALL CESEXI('C',JCESD,JCESL,IMAOLD,IPT,ISP,ICMP,IAD)
-                 IF (IAD.GT.0) THEN
-                    VALE = ZR(JCESV-1+IAD)
-                    IF (ABS(VALE).LE.1.D-99) VALE = 0.D0
-                    IADMAX=IAD
-                 ELSE
-                    VALE = 0.D0
-                 ENDIF
-                 GOTO 15
+                ITROU=1
+                CALL CESEXI('C',JCESD,JCESL,IMAOLD,IPT,ISP,ICMP,IAD)
+                IF (IAD.GT.0) THEN
+                  VALE = ZR(JCESV-1+IAD)
+                  IF (ABS(VALE).LE.1.D-99) VALE = 0.D0
+                  IADMAX=IAD
+                ELSE
+                  VALE = 0.D0
+                ENDIF
+                GOTO 15
               ENDIF
- 13       CONTINUE
-          IF (ITROU.EQ.0) THEN
+ 13         CONTINUE
+ 15       CONTINUE
+          IF (IWRI)  WRITE(IFI,1000) VALE
+ 14       CONTINUE
+            IF (ITROU.EQ.0) THEN
               CALL UTMESS('F','IRGMEC','PAS DE CORRESPONDANCE')
-          ENDIF
- 15      CONTINUE
-         IF (IWRI)  WRITE(IFI,1000) VALE
- 14      CONTINUE
+            ENDIF
+        ELSE IF (ZK8(JTYPE-1+IOR).EQ.'C') THEN
+          DO 24 J=1,NBNO
+            INO=LISTNO(J)
+            ITROU=0
+            DO 23 IPT = 1,NBPT
+              INOLD=ZI(JCNOLD-1+IPT)
+              IF (INO.EQ.INOLD) THEN
+                ITROU=1
+                CALL CESEXI('C',JCESD,JCESL,IMAOLD,IPT,ISP,ICMP,IAD)
+                IF (IAD.GT.0) THEN
+                  IF (PARTIE.EQ.'REEL') THEN
+                    VALE = DBLE(ZR(JCESV-1+IAD))
+                  ELSEIF (PARTIE.EQ.'IMAG') THEN
+                    VALE = DIMAG(ZC(JCESV-1+IAD))
+                  ENDIF
+                  IF (ABS(VALE).LE.1.D-99) VALE = 0.D0
+                  IADMAX=IAD
+                ELSE
+                  VALE = 0.D0
+                ENDIF
+                GOTO 25
+              ENDIF
+ 23         CONTINUE
+            IF (ITROU.EQ.0) THEN
+              CALL UTMESS('F','IRGMEC','PAS DE CORRESPONDANCE')
+            ENDIF
+ 25       CONTINUE
+          IF (IWRI)  WRITE(IFI,1000) VALE
+ 24       CONTINUE
+            IF (ITROU.EQ.0) THEN
+              CALL UTMESS('F','IRGMEC','PAS DE CORRESPONDANCE')
+            ENDIF
+        ENDIF
  11   CONTINUE
 C
       CALL JEDEMA()

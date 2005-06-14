@@ -1,4 +1,4 @@
-#@ MODIF test_fichier_ops Macro  DATE 03/11/2004   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF test_fichier_ops Macro  DATE 14/06/2005   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -29,7 +29,6 @@ def test_fichier_ops(self, UNITE, FICHIER, NB_CHIFFRE, EPSILON, VALE_K, INFO, **
    from Accas import _F
    ier=0
    # La macro compte pour 1 dans la numerotation des commandes
-   #self.icmd=1
    self.set_icmd(1)
 
    # On importe les definitions des commandes a utiliser dans la macro

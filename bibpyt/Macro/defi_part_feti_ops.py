@@ -1,4 +1,4 @@
-#@ MODIF defi_part_feti_ops Macro  DATE 23/11/2004   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF defi_part_feti_ops Macro  DATE 14/06/2005   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -39,15 +39,26 @@
 
 def defi_part_feti_ops(self,MAILLAGE,MODELE,NB_PART,EXCIT,METHODE,NOM_GROUP_MA,INFO,**args):
 
-  import aster, string, sys
+  import aster, string
 
-  from Accas import _F
-  from Noyau.N_utils import AsType
-
-  from Utilitai import partition
+  from Accas           import _F
+  from Noyau.N_utils   import AsType
+  from Utilitai.Utmess import UTMESS
+  from Utilitai        import partition
 
   # DEBUT DE LA MACRO
+
+  # La macro compte pour 1 dans la numerotation des commandes
+  self.set_icmd(1)
   ier=0
+
+  # On importe les definitions des commandes a utiliser dans la macro
+  DEFI_PART_OPS   = self.get_cmd('DEFI_PART_OPS')
+  INFO_EXEC_ASTER = self.get_cmd('INFO_EXEC_ASTER')
+  DEFI_FICHIER    = self.get_cmd('DEFI_FICHIER')
+  DETRUIRE        = self.get_cmd('DETRUIRE')
+
+  nompro='DEFI_PART_FETI'
 
   INCLUSE='NON'  # On cree des GROUP_MA pour les mailles de bords (pour developpeur)
 
@@ -57,9 +68,9 @@ def defi_part_feti_ops(self,MAILLAGE,MODELE,NB_PART,EXCIT,METHODE,NOM_GROUP_MA,I
 
   # Test sur le nombre de caractères de NOM_GROUP_MA
   if ( len(NOM_GROUP_MA)+len(str(NB_PART)) > 7 ):
-    print '\n\n        ERREUR : Afin de pouvoir générer les GROUP_MA, réduisez le nombre \n                 de caractères de NOM_GROUP_MA à un maximum de :', 7-len(str(NB_PART))
-    print '\n\n'
-    sys.exit(1)
+    ln=7-len(str(NB_PART))
+    UTMESS('F', nompro, 'Afin de pouvoir générer les GROUP_MA, réduisez le nombre '\
+                        'de caractères de NOM_GROUP_MA à un maximum de : %i' %ln)
 
   # Verification que des GROUP_MA ne portent pas deja les memes noms
   _lst = []
@@ -67,13 +78,11 @@ def defi_part_feti_ops(self,MAILLAGE,MODELE,NB_PART,EXCIT,METHODE,NOM_GROUP_MA,I
     _lst.append( string.strip(i[0]) )
   for i in range(NB_PART):
     if ( NOM_GROUP_MA+str(i) in _lst ):
-      print '\n\n        ERREUR : Il existe déjà un GROUP_MA nommé : ', NOM_GROUP_MA+str(i)
-      print '\n\n'
-      sys.exit(1)
+      ngrma=NOM_GROUP_MA+str(i)
+      UTMESS('F', nompro, "Il existe déjà un GROUP_MA nommé : %s" %ngrma)
     if ( NOM_GROUP_MA_BORD+str(i) in _lst ):
-      print '\n\n        ERREUR : Il existe déjà un GROUP_MA nommé : ', NOM_GROUP_MA_BORD+str(i)
-      print '\n\n'
-      sys.exit(1)
+      ngrma=NOM_GROUP_MA_BORD+str(i)
+      UTMESS('F', nompro, "Il existe déjà un GROUP_MA nommé : %s" %ngrma)
 
   # Executable du partitionneur
   if METHODE=="AUTRE":
@@ -81,25 +90,10 @@ def defi_part_feti_ops(self,MAILLAGE,MODELE,NB_PART,EXCIT,METHODE,NOM_GROUP_MA,I
   else:
     exe_metis = aster.repout() + string.lower(METHODE)
 
-  # On importe les definitions des commandes a utiliser dans la macro
-  DEFI_PART_OPS   = self.get_cmd('DEFI_PART_OPS')
-  INFO_EXEC_ASTER = self.get_cmd('INFO_EXEC_ASTER')
-  DEFI_FICHIER    = self.get_cmd('DEFI_FICHIER')
-  DETRUIRE        = self.get_cmd('DETRUIRE')
-
-  # La macro compte pour 1 dans la numerotation des commandes
-  self.icmd=1
-
   # Le concept sortant dans le contexte de la macro
   self.DeclareOut('_SDFETI',self.sd)
 
   # Debut :
-  print """
-
-  #  ---------------------------------------------------------------------------
-  #  MACRO-COMMANDE : DEFI_PART_FETI
-  #  ----------------
-"""
 
   # Objet Partition
   _part = partition.PARTITION(jdc=self);
@@ -173,10 +167,5 @@ def defi_part_feti_ops(self,MAILLAGE,MODELE,NB_PART,EXCIT,METHODE,NOM_GROUP_MA,I
 
 
   # Fin :
-  print """
-
-  %  FIN MACRO-COMMANDE: DEFI_PART_FETI
-
-"""
 
   return ier

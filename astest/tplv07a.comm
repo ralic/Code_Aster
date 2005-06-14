@@ -1,4 +1,4 @@
-# MODIF  DATE 14/02/2005   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 14/06/2005   AUTEUR DURAND C.DURAND 
 # TITRE CUBE ORTHOTROPE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -31,6 +31,9 @@ MAIL=LIRE_MAILLAGE( )
 
 MAIL=DEFI_GROUP(   reuse=MAIL,   MAILLAGE=MAIL,
          CREA_GROUP_MA=_F(  NOM = 'TOUT',   TOUT = 'OUI'))
+
+MAIL=DEFI_GROUP(   reuse=MAIL,   MAILLAGE=MAIL,
+         CREA_GROUP_NO=( _F(  GROUP_MA='F_RQKL'),_F(  GROUP_MA='F_NRLI')))
 
 #
 # DEFINITION DES CHARGEMENTS ET DU MATERIAU ----------------------------
@@ -154,10 +157,13 @@ TEMPE=CALC_ELEM(reuse=TEMPE,RESULTAT=TEMPE,
                 );
 
 TABTE1=MACR_LIGN_COUPE(   RESULTAT    = TEMPE,
-                   LIGN_COUPE  =  _F( NB_POINTS  = 11,
+                   LIGN_COUPE  = ( _F( NB_POINTS  = 11,
                                        COOR_ORIG  = (-0.1,-0.1,-0.1),
-                                       COOR_EXTR  = ( 0.1, 0.1, 0.1), )
+                                       COOR_EXTR  = ( 0.1, 0.1, 0.1), ),
+                                   _F( GROUP_NO  = 'F_RQKL',) )
                      )
+
+IMPR_TABLE(TABLE=TABTE1)
 
 TEST_RESU(RESU=(
 #
@@ -354,24 +360,34 @@ _F( RESULTAT = TEMPE, MAILLE = 'M129', NUME_ORDRE=0, NOM_CHAM='FLUX_ELGA_TEMP',
 #
 
 TEST_TABLE( TABLE=TABTE1,
-              FILTRE=_F(  NOM_PARA = 'ABSC_CURV',VALE = 0.),
+              FILTRE=(_F(  NOM_PARA = 'ABSC_CURV',VALE = 0.),
+                      _F(  NOM_PARA = 'INTITULE', VALE_K = 'l.coupe1'),),
               NOM_PARA='TEMP', CRITERE='RELATIF',PRECISION=1.0E-3,VALE=41.0,
               REFERENCE='ANALYTIQUE',)
 TEST_TABLE( TABLE=TABTE1,
-              FILTRE=_F(  NOM_PARA = 'ABSC_CURV',VALE = 6.92820E-02),
+              FILTRE=(_F(  NOM_PARA = 'ABSC_CURV',VALE = 6.92820E-02),
+                      _F(  NOM_PARA = 'INTITULE', VALE_K = 'l.coupe1'),),
               NOM_PARA='TEMP', CRITERE='RELATIF',PRECISION=1.0E-3,VALE=33.6,
               REFERENCE='ANALYTIQUE',)
 TEST_TABLE( TABLE=TABTE1,
-              FILTRE=_F(  NOM_PARA = 'COOR_X',VALE = 0.),
+              FILTRE=(_F(  NOM_PARA = 'COOR_X',VALE = 0.),
+                      _F(  NOM_PARA = 'INTITULE', VALE_K = 'l.coupe1'),),
               NOM_PARA='TEMP', CRITERE='RELATIF',PRECISION=1.0E-3,VALE=22.5,
               REFERENCE='ANALYTIQUE',)
 TEST_TABLE( TABLE=TABTE1,
-              FILTRE=_F(  NOM_PARA = 'COOR_X',VALE = 0.04),
+              FILTRE=(_F(  NOM_PARA = 'COOR_X',VALE = 0.04),
+                      _F(  NOM_PARA = 'INTITULE', VALE_K = 'l.coupe1'),),
               NOM_PARA='TEMP', CRITERE='RELATIF',PRECISION=1.0E-3,VALE=15.1,
               REFERENCE='ANALYTIQUE',)
 TEST_TABLE( TABLE=TABTE1,
-              FILTRE=_F(  NOM_PARA = 'COOR_X',VALE = 0.1),
+              FILTRE=(_F(  NOM_PARA = 'COOR_X',VALE = 0.1),
+                      _F(  NOM_PARA = 'INTITULE', VALE_K = 'l.coupe1'),),
               NOM_PARA='TEMP', CRITERE='RELATIF',PRECISION=1.0E-3,VALE= 4.0,
+              REFERENCE='ANALYTIQUE',)
+TEST_TABLE( TABLE=TABTE1,
+              FILTRE=(_F(  NOM_PARA = 'ABSC_CURV',VALE = 0.),
+                      _F(  NOM_PARA = 'INTITULE', VALE_K = 'F_RQKL'),),
+              NOM_PARA='TEMP', CRITERE='RELATIF',PRECISION=1.0E-3,VALE= 25.0,
               REFERENCE='ANALYTIQUE',)
 #
 # FIN ------------------------------------------------------------------

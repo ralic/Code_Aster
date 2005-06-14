@@ -3,7 +3,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF MODELISA  DATE 14/06/2005   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -75,7 +75,7 @@ C
       CHARACTER*8  NOMCMP,DEPLA(3)
       CHARACTER*19 TYPFLU,CAELEM,NOMFON
       CHARACTER*24 REFE,FSIC,FSVI,FSVK,PROFVN,FRHOE,NOMCHA,VALR,VALE
-      REAL*8       SPECT2,SPECT4
+      REAL*8       SPECT2,SPECT4,RBID
       EXTERNAL     SPECT4
       DATA DEPLA   /'DX      ','DY      ','DZ      '/
 C-----------------------------------------------------------------------
@@ -141,7 +141,7 @@ C
 C
 C --- 3.RECUPERATION DU DIAMETRE EXTERIEUR DU TUBE ---
 C
-      CALL RECUDE(CAELEM,PHIE)
+      CALL RECUDE(CAELEM,PHIE,RBID)
 C
 C
 C --- 4.CREATION ET REMPLISSAGE DU VECTEUR DE TRAVAIL .DEFM ---

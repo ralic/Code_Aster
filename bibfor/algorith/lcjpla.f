@@ -1,10 +1,10 @@
         SUBROUTINE LCJPLA (LOI , MOD , IMAT , NMAT , MATER , NVI , TEMP,
-     1                     DEPS , SIG , VIN   , DSDE, VIND,
+     1                     DEPS , SIG , VIN   , DSDE, VIND, VP, VECP,
      2                     THETA, DT, DEVG, DEVGII)
         IMPLICIT   NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 14/06/2005   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -35,10 +35,13 @@ C           DEPS   :  INCREMENT DE DEFORMATION
 C           SIG    :  CONTRAINTE
 C           VIN    :  VARIABLES INTERNES
 C       OUT DSDE   :  MATRICE DE COMPORTEMENT TANGENT = DSIG/DEPS
+C           VP     : VALEURS PROPRES DU DEVIATEUR ELASTIQUE (HOEK-BROWN)
+C           VECP   : VECTEURS PROPRES DU DEVIATEUR ELASTIQUE(HOEK-BROWN)
 C       ----------------------------------------------------------------
         INTEGER         IMAT, NMAT , NVI
-        REAL*8          DSDE(6,6),DEVG(*),DEVGII,SIG(6),DEPS(6)
+        REAL*8          DSDE(6,6),DEVG(*),DEVGII,SIG(6),DEPS(6),DG
         REAL*8          VIN(*), VIND(*),TEMP,THETA,DT,MATER(NMAT,2)
+        REAL*8          VP(3),VECP(3,3)
         CHARACTER*8     MOD
         CHARACTER*16    LOI
 C       ----------------------------------------------------------------
@@ -58,6 +61,9 @@ C
 C
         ELSEIF ( LOI(1:6) .EQ. 'LAIGLE'   ) THEN
           CALL  LGLJPL(MOD,NMAT,MATER,SIG,DEVG,DEVGII,VIN,DSDE)
+C
+        ELSEIF ( LOI(1:10) .EQ. 'HOEK_BROWN'   ) THEN
+          CALL  HBRJPL(MOD,NMAT,MATER,SIG,VIN,VIND,VP,VECP,DSDE)
 C
         ENDIF
 C

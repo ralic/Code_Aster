@@ -1,4 +1,4 @@
-#@ MODIF stanley_ops Macro  DATE 30/11/2004   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF stanley_ops Macro  DATE 14/06/2005   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -35,7 +35,7 @@ def stanley_ops(self,RESULTAT,MODELE,CHAM_MATER,CARA_ELEM,**args):
   ier=0
 
   # La macro compte pour 1 dans la numerotation des commandes
-  self.icmd=1
+  self.set_icmd(1)
 
 
   # On ne lance Stanley que si la variable DISPLAY est définie

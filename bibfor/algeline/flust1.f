@@ -1,9 +1,10 @@
-      SUBROUTINE FLUST1 ( MELFLU, TYPFLU, BASE, NUOR, AMOR, FREQ, MASG,
-     &                    FACT, VITE, NBM, NPV, NIVPAR, NIVDEF )
+      SUBROUTINE FLUST1 ( MELFLU, TYPFLU, BASE, NUOR, AMOR, AMOC, FREQ,
+     &                    MASG, FACT, VITE, NBM, CALCUL, NPV, NIVPAR,
+     &                    NIVDEF )
       IMPLICIT REAL*8 (A-H,O-Z)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGELINE  DATE 14/06/2005   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -72,8 +73,11 @@ C ---------
       CHARACTER*19  MELFLU
       CHARACTER*8   TYPFLU, BASE
       INTEGER       NUOR(*)
-      REAL*8        AMOR(*), FREQ(*), MASG(*), FACT(*), VITE(*)
+      REAL*8        AMOR(*),AMOC(*), FREQ(*), MASG(*), FACT(*)
+      REAL*8        VITE(*)
+      REAL*8        CARAC(2)
       INTEGER       NBM, NPV, NIVPAR, NIVDEF
+      LOGICAL       CALCUL(2)
 C
 C VARIABLES LOCALES
 C -----------------
@@ -83,6 +87,7 @@ C -----------------
       CHARACTER*19  CAELEM, MASSE
       CHARACTER*24  FSIC, FSVI, FSVK, PVITE, FRHOE, NOMNOE
       CHARACTER*24  REFEI, FREQI, MATRIA, VALE
+      INTEGER       LZONE
 C
 C FONCTIONS EXTERNES
 C ------------------
@@ -141,16 +146,18 @@ C --- VMOYTO EST LA VITESSE MOYENNE SUR L ENSEMBLE DES ZONES.
 C --- LES PROFILS DE VITESSE NE SONT PAS NORMES.
 C
       CALL WKVECT ('&&FLUST1.TEMP.PROFV', 'V V R',(2*LNOE+1),LPROFV)
-      CALL WKVECT ('&&FLUST1.TEMP.PROFR', 'V V R',LNOE,      LRHOE)
+      CALL WKVECT ('&&FLUST1.TEMP.PROFR', 'V V R',2*LNOE,    LRHO)
       CALL WKVECT ('&&FLUST1.TEMP.ABSC' , 'V V R',LNOE,      LABSC)
       CALL WKVECT ('&&FLUST1.TEMP.IRES' , 'V V I',LNOE,      LIRES)
+      CALL WKVECT ('&&FLUST1.TEMP.ZONE' , 'V V I',2*LNOE,    LZONE)
       IF (ICOUPL.EQ.1) THEN
          CALL WKVECT('&&FLUST1.TEMP.DEFM','V V R',NBM*LNOE, LDEFM)
       ENDIF
 C
 C ---
          CALL MDCONF(TYPFLU,BASE,K8B,NBM,LNOE,NUOR,0,INDIC,
-     &         ZI(LIRES),ZR(LPROFV),ZR(LRHOE),ZR(LDEFM),PHIE,ZR(LABSC))
+     &         ZI(LIRES),ZR(LPROFV),ZR(LRHO),ZR(LDEFM),CARAC,ZR(LABSC)
+     &         )
 C
 C
 C --- 2. CALCUL DES MASS_GENE_DX, _DY, _DZ ---
@@ -195,46 +202,56 @@ C
       FREQI = BASE//'           .FREQ'
       CALL JEVEUO(FREQI,'L',IFREQI)
 C
-      IF (ICOUPL.EQ.1) THEN
+      IF (CALCUL(1)) THEN
+         IF (ICOUPL.EQ.1) THEN
 C
-        CALL WKVECT('&&FLUST1.TEMP.AMFR','V V R',2*NBM,IAMFR)
-        DO 110 IM = 1,NBM
-          IMOD = NUOR(IM)
-          ZR(IAMFR+IM-1) = 4.D0*PI*ZR(IFREQI+IMOD-1)*AMOR(IM)*
+            CALL WKVECT('&&FLUST1.TEMP.AMFR','V V R',2*NBM,IAMFR)
+            DO 110 IM = 1,NBM
+               IMOD = NUOR(IM)
+               ZR(IAMFR+IM-1) = 4.D0*PI*ZR(IFREQI+IMOD-1)*AMOR(IM)*
      &                                               ZR(KMASG+IM-1)
-          ZR(IAMFR+NBM+IM-1) = ZR(IFREQI+IMOD-1)
-  110   CONTINUE
+               ZR(IAMFR+NBM+IM-1) = ZR(IFREQI+IMOD-1)
+  110       CONTINUE
 C
-        NT = 2
-        LVALE = 2*NT*NT + 10*NT + 2
-        CALL WKVECT('&&FLUST1.TEMP.VALE','V V R',LVALE,IVALE)
+            NT = 2
+            LVALE = 2*NT*NT + 10*NT + 2
+            CALL WKVECT('&&FLUST1.TEMP.VALE','V V R',LVALE,IVALE)
 C
 C-------LANCEMENT DU CALCUL
 C
-        CALL PACOUC (TYPFLU,ZR(LPROFV),ZR(LRHOE),VITE,ZR(LDEFM),
+            CALL PACOUC (TYPFLU,ZR(LPROFV),ZR(LRHO),VITE,ZR(LDEFM),
      &               ZR(KMASG),FREQ,ZR(IAMFR),NBM,LNOE,NPV,
-     &               ZR(IVALE),ZI(LIRES),PHIE,ZR(LABSC),IER)
+     &               ZR(IVALE),ZI(LIRES),CARAC,ZR(LABSC),IER)
 C
-      ELSE
+         ELSE
 C
 C-------REMPLISSAGE DE L'OBJET .FREQ
 C
-        DO 140 IV = 1,NPV
-          DO 130 IM = 1,NBM
-            IMOD = NUOR(IM)
-            IND = 2*NBM*(IV-1)+2*(IM-1)+1
-            FREQ(IND) = ZR(IFREQI+IMOD-1)
-            FREQ(IND+1) = AMOR(IM)
- 130      CONTINUE
- 140    CONTINUE
+            DO 140 IV = 1,NPV
+               DO 130 IM = 1,NBM
+                  IMOD = NUOR(IM)
+                  IND = 2*NBM*(IV-1)+2*(IM-1)+1
+                  FREQ(IND) = ZR(IFREQI+IMOD-1)
+                  FREQ(IND+1) = AMOR(IM)
+ 130           CONTINUE
+ 140        CONTINUE
 C
+         ENDIF
       ENDIF
+      IF (CALCUL(2)) THEN
+         CALL CONNOR(MELFLU, TYPFLU,ZR(IFREQI),ZR(LDEFM),NUOR,AMOC, 
+     &               CARAC,MASG,LNOE,NBM,ZR(LPROFV),
+     &               ZR(LRHO),ZR(LABSC))
+      ENDIF
+         
+      
+
 C
 C --- 5.IMPRESSIONS DANS LE FICHIER RESULTAT SI DEMANDEES ---
 C    
       IF (NIVPAR.EQ.1 .OR. NIVDEF.EQ.1) THEN      
-        CALL FLUIMP(1,NIVPAR,NIVDEF,MELFLU,NUOR,FREQ,ZR(IFREQI),NBM,
-     &              VITE,NPV,PHIE)
+        CALL FLUIMP(1,NIVPAR,NIVDEF,MELFLU,TYPFLU,NUOR,FREQ,
+     &              ZR(IFREQI),NBM,VITE,NPV,CARAC,CALCUL,AMOC)
       ENDIF
 C
 C     NETTOYAGE SUR LA VOLATILE

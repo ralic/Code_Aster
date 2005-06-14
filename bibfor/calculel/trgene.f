@@ -3,7 +3,7 @@
       INTEGER    IFIC, NOCC
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 09/05/2005   AUTEUR CIBHHLV L.VIVAN 
+C MODIF CALCULEL  DATE 13/06/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -47,6 +47,7 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       REAL*8       VALR,REFR,EPSI,PREC,TEMPS
       COMPLEX*16   VALC,REFC
       CHARACTER*1  TYPRES
+      CHARACTER*3  SSIGNE
       CHARACTER*4  TESTOK
       CHARACTER*8  CRIT, CRIT2, NOCMP, TYPTES, INTERP, MODE
       CHARACTER*11 MOTCLE
@@ -64,9 +65,10 @@ C     ------------------------------------------------------------------
 
         CALL TRPREC ( 'GENE', IOCC, EPSI, CRIT, PREC, CRIT2 )
 
-        CALL GETVR8('GENE','VALE'  ,IOCC,1,1,REFR,N1)
-        CALL GETVIS('GENE','VALE_I',IOCC,1,1,REFI,N2)
-        CALL GETVC8('GENE','VALE_C',IOCC,1,1,REFC,N3)
+        CALL GETVTX('GENE','VALE_ABS', IOCC,1,1,SSIGNE,N1)
+        CALL GETVR8('GENE','VALE'    , IOCC,1,1,REFR  ,N1)
+        CALL GETVIS('GENE','VALE_I'  , IOCC,1,1,REFI  ,N2)
+        CALL GETVC8('GENE','VALE_C'  , IOCC,1,1,REFC  ,N3)
         TYPRES = 'R'
         IF (N2.NE.0) TYPRES = 'I'
         IF (N3.NE.0) TYPRES = 'C'
@@ -118,7 +120,7 @@ C
           LABEL = 'NUME_CMP_GENE:'
           CALL CODENT( NCMP , 'G' , LABEL(15:17)  )
           CALL UTITES(NOCMP,LABEL,TYPRES,REFI,REFR,REFC,VALI,VALR,
-     &                VALC,EPSI,CRIT,IFIC)
+     &                VALC,EPSI,CRIT,IFIC,SSIGNE)
 
 C ----------------------------------------------------------------------
         ELSEIF ( TYSD .EQ. 'MODE_GENE' .OR.
@@ -153,7 +155,7 @@ C ----------------------------------------------------------------------
             NOCMP = ' '
             LABEL = NOPARA(1:16)
             CALL UTITES(NOCMP,LABEL,TYPRES,REFI,REFR,REFC,VALI,VALR,
-     &                  VALC,EPSI,CRIT,IFIC)
+     &                  VALC,EPSI,CRIT,IFIC,SSIGNE)
             CALL JEDETR ( KNUM )
             GOTO 100
           END IF
@@ -207,7 +209,7 @@ C
           LABEL = 'NUME_CMP_GENE:'
           CALL CODENT( NCMP , 'G' , LABEL(15:17)  )
           CALL UTITES(NOCMP,LABEL,TYPRES,REFI,REFR,REFC,VALI,VALR,
-     &                VALC,EPSI,CRIT,IFIC)
+     &                VALC,EPSI,CRIT,IFIC,SSIGNE)
           CALL JEDETR ( KNUM )
 
 C ----------------------------------------------------------------------
@@ -247,7 +249,7 @@ C
           WRITE (IFIC,'(1X,4A,1P,E12.5)') '---- ',MOTCLE,
      &              RESU19(1:8),' INST:',TEMPS
           CALL UTITES(NOCMP,LABEL,'R',REFI,REFR,REFC,VALI,VALR,
-     &                VALC,EPSI,CRIT,IFIC)
+     &                VALC,EPSI,CRIT,IFIC,SSIGNE)
           CALL JEDETR ('&&TRGENE.CHAMP')
         ENDIF
 

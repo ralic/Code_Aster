@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 12/04/2005   AUTEUR CIBHHPD L.SALMONA 
+#& MODIF COMMANDE  DATE 14/06/2005   AUTEUR CIBHHPD L.SALMONA 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -71,6 +71,12 @@ IMPR_RESU=PROC(nom="IMPR_RESU",op=39,
                                    fr="Liste des paramètres de sensibilité.",
                                    ang="List of sensitivity parameters"),),
 
+           b_partie        =BLOC(condition="""((AsType(RESULTAT)==dyna_harmo) or (AsType(CHAM_GD)==cham_elem_epsi_c) 
+                            or (AsType(CHAM_GD)==cham_elem_depl_c) or (AsType(CHAM_GD)==cham_elem_sief_c) or 
+                            (AsType(CHAM_GD)==cham_no_depl_c) or (AsType(CHAM_GD)==cham_no_pres_c) or 
+                            (AsType(CHAM_GD)==cham_no_temp_c)) and ((FORMAT=='CASTEM') or (FORMAT=='GMSH'))""",
+             PARTIE          =SIMP(statut='o',typ='TXM',into=("REEL","IMAG") ),
+           ),
            b_extrac        =BLOC(condition="RESULTAT != None",
                                  fr="extraction d un champ de grandeur",
              regles=(EXCLUS('TOUT_CHAM','NOM_CHAM'),

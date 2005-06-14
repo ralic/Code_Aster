@@ -1,4 +1,4 @@
-#@ MODIF macro_mode_meca_ops Macro  DATE 30/11/2004   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF macro_mode_meca_ops Macro  DATE 14/06/2005   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -40,7 +40,6 @@ def macro_mode_meca_ops(self,MATR_A,MATR_B,INFO,METHODE,OPTION,CALC_FREQ,
   EXTR_MODE         =self.get_cmd('EXTR_MODE')
   DETRUIRE          =self.get_cmd('DETRUIRE')
   # La macro compte pour 1 dans la numerotation des commandes
-  #self.icmd=1
   self.set_icmd(1)
 
   nompro=None

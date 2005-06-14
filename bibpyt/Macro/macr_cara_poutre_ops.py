@@ -1,4 +1,4 @@
-#@ MODIF macr_cara_poutre_ops Macro  DATE 14/09/2004   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF macr_cara_poutre_ops Macro  DATE 14/06/2005   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -51,7 +51,6 @@ def macr_cara_poutre_ops(self,UNITE_MAILLAGE,SYME_X,SYME_Y,GROUP_MA_BORD,
   IMPR_TABLE      =self.get_cmd('IMPR_TABLE')
   IMPR_CO         =self.get_cmd('IMPR_CO')
   # La macro compte pour 1 dans la numerotation des commandes
-  #self.icmd=1
   self.set_icmd(1)
 
   # Le concept sortant (de type tabl_cara_geom) est nommé 'nomres' dans 

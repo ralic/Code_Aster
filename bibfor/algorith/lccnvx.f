@@ -1,9 +1,9 @@
         SUBROUTINE LCCNVX ( LOI, IMAT, NMAT, MATERF, TEMPF, SIGF, VIND,
-     &               COMP, NBCOMM, CPMONO, PGL,NR,NVI,SEUIL )
+     &               COMP, NBCOMM, CPMONO, PGL,NR,NVI,VP,VECP,SEUIL )
         IMPLICIT  NONE
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/08/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 14/06/2005   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -30,6 +30,8 @@ C --- : IMAT   :  ADRESSE DU MATERIAU CODE -----------------------------
 C --- : NMAT   :  DIMENSION MATER --------------------------------------
 C --- : TEMPF  :  TEMPERATURE A T+DT -----------------------------------
 C --- : MATERF :  COEFFICIENTS MATERIAU A T+DT -------------------------
+C OUT : VP     :  VALEURS PROPRES DU DEVIATEUR ELASTIQUE (HOEK-BROWN) --
+C OUT : VECP   :  VECTEURS PROPRES DU DEVIATEUR ELASTIQUE (HOEK-BROWN) -
 C OUT : SEUIL  :  SEUIL  ELASTICITE  A T+DT ----------------------------
 C ----------------------------------------------------------------------
 C ======================================================================
@@ -38,7 +40,7 @@ C ======================================================================
         REAL*8          SIGF(6) , VIND(*)
         CHARACTER*16    LOI
       INTEGER         NBCOMM(NMAT,3)
-      REAL*8          PGL(3,3)
+      REAL*8          PGL(3,3),VP(3),VECP(3)
       CHARACTER*16    CPMONO(5*NMAT+1),COMP(*)
 C ======================================================================
       IF ( LOI(1:8) .EQ. 'ROUSS_PR'  )THEN
@@ -64,6 +66,9 @@ C ======================================================================
 C ======================================================================
       ELSEIF ( LOI(1:6)  .EQ. 'LAIGLE') THEN
          CALL LGLCVX ( SIGF, VIND, NMAT, MATERF, SEUIL)
+C ======================================================================
+      ELSEIF ( LOI(1:10)  .EQ. 'HOEK_BROWN') THEN
+         CALL HBRCVX ( SIGF, VIND, NMAT, MATERF, SEUIL, VP, VECP)
 C ======================================================================
       ELSEIF ( LOI(1:8)  .EQ. 'MONOCRIS') THEN
          CALL LCMMVX ( SIGF, VIND, NMAT, MATERF, TEMPF,

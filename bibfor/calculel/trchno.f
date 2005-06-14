@@ -3,7 +3,7 @@
       INTEGER    IFIC, NOCC
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 09/05/2005   AUTEUR CIBHHLV L.VIVAN 
+C MODIF CALCULEL  DATE 13/06/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -45,6 +45,7 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       REAL*8       VALR, REFR, EPSI, PREC
       COMPLEX*16   VALC, REFC
       CHARACTER*1  TYPRES
+      CHARACTER*3  SSIGNE
       CHARACTER*4  TYPCH, TESTOK
       CHARACTER*8  CRIT, NODDL, NOGRNO, NOMMA, NOCMP, TYPTES
       CHARACTER*11 MOTCLE
@@ -64,6 +65,7 @@ C     ------------------------------------------------------------------
         CALL UTEST3(IFIC,'CHAM_NO',IOCC)
 
         CALL GETVTX ( 'CHAM_NO', 'NOM_CMP',   IOCC,1,1, NODDL, N1 )
+        CALL GETVTX ( 'CHAM_NO', 'VALE_ABS',  IOCC,1,1, SSIGNE,N1 )
         CALL GETVR8 ( 'CHAM_NO', 'PRECISION', IOCC,1,1, EPSI,  N1 )
         CALL GETVTX ( 'CHAM_NO', 'CRITERE',   IOCC,1,1, CRIT,  N1 )
 
@@ -79,13 +81,13 @@ C     ------------------------------------------------------------------
           CALL GETVTX('CHAM_NO','NOM_CMP',IOCC,1,0,NODDL,N4)
           IF (N4.EQ.0) THEN
             CALL UTEST1(CHAM19,TYPTES,TYPRES,REFI,REFR,REFC,EPSI,CRIT,
-     &                  IFIC)
+     &                  IFIC,SSIGNE)
           ELSE
             NBCMP = -N4
             CALL WKVECT('&&TRCHNO.NOM_CMP','V V K8',NBCMP,JCMP)
             CALL GETVTX('CHAM_NO','NOM_CMP',IOCC,1,NBCMP,ZK8(JCMP),N4)
             CALL UTEST4(CHAM19,TYPTES,TYPRES,REFI,REFR,REFC,EPSI,CRIT,
-     &                  IFIC,NBCMP,ZK8(JCMP))
+     &                  IFIC,NBCMP,ZK8(JCMP),SSIGNE)
             CALL JEDETR('&&TRCHNO.NOM_CMP')
           END IF
 
@@ -108,7 +110,7 @@ C            RIEN A FAIRE.
             NONOEU(10:17) = NOGRNO
           END IF
           CALL UTESTR(CHAM19,NONOEU,NODDL,REFI,REFR,REFC,TYPRES,EPSI,
-     &                CRIT,IFIC)
+     &                CRIT,IFIC,SSIGNE)
         END IF
  100  CONTINUE
 

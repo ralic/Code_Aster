@@ -1,17 +1,17 @@
-      SUBROUTINE IRCHML(CHAMEL,IFI,FORM,TITRE,LOC,NOMSD,NOMSYM,NUMORD,
-     +            LCOR,NBNOT,NUMNOE,NBMAT,NUMMAI,NBCMP,NOMCMP,LSUP,
-     +            BORSUP,LINF,BORINF,LMAX,LMIN,LRESU,FORMR,NCMP,NUCMP,
-     +            NIVE )
+      SUBROUTINE IRCHML(CHAMEL,PARTIE,IFI,FORM,TITRE,LOC,NOMSD,NOMSYM,
+     +            NUMORD,LCOR,NBNOT,NUMNOE,NBMAT,NUMMAI,NBCMP,NOMCMP,
+     +            LSUP,BORSUP,LINF,BORINF,LMAX,LMIN,LRESU,FORMR,NCMP,
+     +            NUCMP,NIVE )
       IMPLICIT REAL*8 (A-H,O-Z)
 C
       CHARACTER*(*)     CHAMEL,NOMCMP(*),FORM,TITRE,LOC,NOMSD,NOMSYM
-      CHARACTER*(*)     FORMR
+      CHARACTER*(*)     FORMR,PARTIE
       REAL*8            BORSUP,BORINF
       INTEGER           NBNOT,NUMNOE(*),NBMAT,NUMMAI(*),NBCMP,IFI,
      +                  NUMORD,NCMP,NUCMP(*),NIVE
       LOGICAL           LCOR,LSUP,LINF,LMAX,LMIN,LRESU
 C     ------------------------------------------------------------------
-C MODIF PREPOST  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
+C MODIF PREPOST  DATE 14/06/2005   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -34,6 +34,7 @@ C        IMPRESSION D'UN CHAM_ELEM A COMPOSANTES REELLES OU COMPLEXES
 C         AU FORMAT IDEAS, RESULTAT, CASTEM
 C  ENTREES:
 C     CHAMEL : NOM DU CHAM_ELEM A ECRIRE
+C     PARTIE : IMPRESSION DE LA PARTIE COMPLEXE OU REELLE DU CHAMP
 C     IFI    : NUMERO LOGIQUE DU FICHIER DE SORTIE
 C     FORM   : FORMAT DES SORTIES: IDEAS, RESULTAT
 C     TITRE  : TITRE POUR IDEAS
@@ -75,7 +76,7 @@ C --------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*80 ZK80
 C
       CHARACTER*1  K1BID, TYPE
-      INTEGER      GD, DATE(9), NBACC, JPARA
+      INTEGER      GD, DATE(9), NBACC, JPARA, NUTI, JCELV
       REAL*8       PARA
       CHARACTER*8  NOMMA, NOMGD, NOMEL, NOMNO, CBID
       CHARACTER*16 TSD,NOMSY2
@@ -295,6 +296,31 @@ C ---------------------------------------------------------------------
      +           //' CASTEM')
            ENDIF
          ELSEIF (ITYPE.EQ.2) THEN
+           CALL JEVEUO(NOMMA//'.TYPMAIL','L',JTYPM)
+           IF (LOC.EQ.'ELNO') THEN
+             CALL JELIRA(CHAME//'.CELV','LONUTI',NUTI,K1BID)
+             CALL WKVECT('&&IRCHML.VALE','V V R',NUTI,JVALE)
+             IF (PARTIE.EQ.'REEL') THEN
+               DO 180 I=1,NUTI
+                 ZR(JVALE-1+I)=DBLE(ZC(JCELV-1+I))
+ 180           CONTINUE
+             ELSE IF (PARTIE.EQ.'IMAG') THEN
+               DO 190 I=1,NUTI
+                 ZR(JVALE-1+I)=DIMAG(ZC(JCELV-1+I))
+ 190           CONTINUE
+             ELSE
+               CALL UTMESS ('F','IRCHML','ERREUR PROGRAMMATION')
+             ENDIF
+             CALL IRCECA(IFI,ZI(JLIGR),NBGREL,ZI(JLONGR),NCMPMX,
+     +                  ZR(JCELV),NOMGD,ZK8(IAD),
+     +                  ZI(JCELD),ZI(JNBNM),ZI(JTYPM),
+     +                  NOMSYM,NBMAT,LRESU,NBCMP,NOMCMP,IMOD,
+     +                  NCMP,NUCMP,NIVE)
+           ELSEIF (LOC.EQ.'ELGA') THEN
+             CALL UTMESS('A','IRCHML','ON NE SAIT PAS ECRIRE DES '
+     +           //' CHAMPS PAR ELEMENT AUX POINTS DE GAUSS AU FORMAT'
+     +           //' CASTEM')
+           ENDIF
          ENDIF
       END IF
  204  CONTINUE
@@ -303,6 +329,7 @@ C ---------------------------------------------------------------------
       CALL JEDETR('&&IRCHML.NBNOMA')
       CALL JEDETR('&&IRCHML.MAILLE')
       CALL JEDETR('&&IRCHML.NOMNOE')
+      CALL JEDETR('&&IRCHML.VALE')
       CALL DETRSD('CHAM_ELEM','&&IRCHML.CHAMEL1')
       CALL DETRSD('CHAM_ELEM','&&IRCHML.CHAMEL2')
  9999 CONTINUE

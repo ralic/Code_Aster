@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 23/08/2004   AUTEUR CIBHHLV L.VIVAN 
+#& MODIF COMMANDE  DATE 13/06/2005   AUTEUR CIBHHLV L.VIVAN 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -47,6 +47,7 @@ TEST_TABLE=PROC(nom="TEST_TABLE",op= 177,
          VALE            =SIMP(statut='f',typ='R' ),
          VALE_I          =SIMP(statut='f',typ='I' ),
          VALE_C          =SIMP(statut='f',typ='C' ),
+         VALE_ABS        =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON") ),
          CRITERE         =SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU") ),
          PRECISION       =SIMP(statut='f',typ='R',defaut= 1.2E-3 ),
          REFERENCE       =SIMP(statut='f',typ='TXM',

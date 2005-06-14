@@ -6,7 +6,7 @@
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/08/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 14/06/2005   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -243,6 +243,8 @@ C
 C
         REAL*8          SEUIL, THETA, DT, DEVG(6), DEVGII
 C
+        REAL*8          VP(3),VECP(3,3)
+C
         REAL*8          DSDE(6,6),  PGL(3,3), ANGMAS(3)
 C
         REAL*8          MATERD(NMAT,2) , MATERF(NMAT,2)
@@ -344,7 +346,7 @@ C
 C --    PREDICTION ETAT ELASTIQUE A T+DT : F(SIG(T+DT),VIN(T)) = 0 ?
 C
         CALL LCCNVX ( LOI, IMAT, NMAT, MATERF, TEMPF, SIGF, VIND,
-     &          COMP, NBCOMM, CPMONO, PGL, NR, NVI, SEUIL )
+     &          COMP, NBCOMM, CPMONO, PGL, NR, NVI,VP,VECP, SEUIL)
 C
           IF ( SEUIL .GE. 0.D0 ) THEN
 C
@@ -356,7 +358,7 @@ C
      1                  MATERF, MATCST, NR, NVI, TEMPD, TEMPF, TIMED,
      2                  TIMEF, DEPS,   EPSD,  SIGD ,VIND, SIGF, VINF,
      3                COMP,NBCOMM, CPMONO, PGL,
-     3                  ICOMP, IRTET, THETA, SEUIL, DEVG, DEVGII)
+     3              ICOMP, IRTET, THETA,VP,VECP,SEUIL, DEVG, DEVGII)
 C
           IF ( IRTET.GT.0 ) GOTO (1), IRTET
           ELSE
@@ -405,8 +407,13 @@ C   ------> VISCOPLASTICITE  ==> TYPMA = 'COHERENT '==> CALCUL ELASTIQUE
                 IF     ( TYPMA .EQ. 'COHERENT' ) THEN
                 CALL LCJELA ( LOI  , MOD , NMAT, MATERD,  VIND, DSDE)
                 ELSEIF ( TYPMA .EQ. 'VITESSE ' ) THEN
+C ------------ HOEK-BROWN : CALCUL DES VALEURS ET VECTEURS PROPRES DU --
+C ------------ DEVIATEUR ELASTIQUE -------------------------------------
+               IF (LOI(1:10).EQ.'HOEK_BROWN') THEN
+                  CALL LCHBVP(SIGD,VP,VECP)
+               ENDIF
                CALL LCJPLA ( LOI  , MOD ,  IMAT,  NMAT, MATERD, NVI,
-     2              TEMPD, DEPS, SIGD ,  VIND, DSDE, VIND,
+     2              TEMPD, DEPS, SIGD ,  VIND, DSDE, VIND,VP, VECP,
      3              THETA, DT, DEVG, DEVGII)
                 ENDIF
             ENDIF
@@ -426,7 +433,7 @@ C   ------> VISCOPLASTICITE  ==>  TYPMA = 'COHERENT '
 
                 ELSEIF ( TYPMA .EQ. 'VITESSE ' ) THEN
                CALL LCJPLA ( LOI  , MOD ,  IMAT,  NMAT, MATERD, NVI,
-     2              TEMPD, DEPS, SIGF ,  VINF, DSDE, VIND,
+     2              TEMPD, DEPS, SIGF ,  VINF, DSDE, VIND,VP,VECP,
      3              THETA, DT, DEVG, DEVGII)
                 ENDIF
             ENDIF

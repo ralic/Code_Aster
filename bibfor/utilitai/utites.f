@@ -1,13 +1,13 @@
       SUBROUTINE UTITES (LABEL1,LABEL2,TYPE,REFI,REFR,REFC,
-     +                                 VALI,VALR,VALC,EPSI,CRIT,IFIC)
+     +                          VALI,VALR,VALC,EPSI,CRIT,IFIC,SSIGNE)
       IMPLICIT   NONE
-      INTEGER                          VALI,REFI,               IFIC
-      CHARACTER*(*)      LABEL1,LABEL2,TYPE,               CRIT
-      REAL*8                                VALR,REFR,EPSI
-      COMPLEX*16                                 VALC,REFC
+      INTEGER                          VALI,REFI,        IFIC
+      CHARACTER*(*)      LABEL1,LABEL2,TYPE,        CRIT,     SSIGNE
+      REAL*8                          VALR,REFR,EPSI
+      COMPLEX*16                          VALC,REFC
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 03/05/2000   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 13/06/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,6 +53,7 @@ C
       TESTOK = 'NOOK '
 C
       IF ( TYPE(1:1) .EQ. 'R' ) THEN
+         IF ( SSIGNE .EQ. 'OUI' ) VALR = ABS(VALR) 
          IF ( RELA .EQ. 'RELA' ) THEN
             LOK = ( ABS(VALR-REFR) .LE. EPSI * ABS(REFR) )
             IF ( REFR .NE. ZERO ) THEN
@@ -89,6 +90,7 @@ C
          ENDIF
 C
       ELSEIF ( TYPE(1:1) .EQ. 'I' ) THEN
+         IF ( SSIGNE .EQ. 'OUI' ) VALI = ABS(VALI) 
          ERR = DBLE( VALI - REFI )
          IF ( RELA .EQ. 'RELA' ) THEN
             LOK = ( ABS( ERR ) .LE. EPSI*ABS(REFI) )

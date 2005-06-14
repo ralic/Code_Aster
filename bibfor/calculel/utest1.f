@@ -1,14 +1,14 @@
       SUBROUTINE UTEST1 ( CHAMGD, TYPTES, TYPRES, REFI, REFR, REFC,
-     +                                            EPSI, CRIT, IFIC )
+     +                                    EPSI, CRIT, IFIC, SSIGNE )
       IMPLICIT   NONE
       INTEGER              REFI, IFIC
       REAL*8               REFR, EPSI
       CHARACTER*8          TYPTES
-      CHARACTER*(*)        CHAMGD, TYPRES, CRIT
+      CHARACTER*(*)        CHAMGD, TYPRES, CRIT, SSIGNE
       COMPLEX*16           REFC
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 01/02/2000   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 13/06/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -184,7 +184,7 @@ C
       ENDIF
 C
       CALL UTITES ( LABEL1, LABEL2, TYPRES, REFI, REFR, REFC,
-     +                         VALI, VALR, VALC, EPSI, CRIT, IFIC )
+     +                      VALI, VALR, VALC, EPSI, CRIT, IFIC, SSIGNE )
 C
  9999 CONTINUE
 C

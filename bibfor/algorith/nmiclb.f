@@ -1,9 +1,9 @@
       SUBROUTINE NMICLB(OPTION,COMPOR,IMATE,XLONG0,A,DLONG0,EFFNOM,
      &                  TEMPM,TEMPP,TREF,VIM,EFFNOP,VIP,KLV,FONO,EPSM,
-     &                  CORRM,CORRP)     
+     &                  CORRM,CRILDC,CODRET)     
 C ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 14/06/2005   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,13 +23,13 @@ C ======================================================================
 C TOLE CRP_21
 C ------------------------------------------------------------------
       IMPLICIT NONE
-      INTEGER IMATE,NEQ,NBT,NBPAR
+      INTEGER IMATE,NEQ,NBT,NBPAR,CODRET
       PARAMETER (NEQ=6,NBT=21)
 
       CHARACTER*16 COMPOR(*),OPTION
       REAL*8 XLONG0,A
       REAL*8 EM,EP,ALPHAM,ALPHAP
-      REAL*8 DLONG0
+      REAL*8 DLONG0,CRILDC(3)
       REAL*8 TEMPM,TEMPP,TREF,EFFNOM,VIM(*)
       REAL*8 EFFNOP,VIP(*),FONO(NEQ),KLV(NBT)
       REAL*8 VALPAR,DSDE,EPSM,CORRM,CORRP
@@ -129,7 +129,7 @@ C --- CARACTERISTIQUES ELASTIQUES A TPLUS
         SIGP = EP* (SIGM/EM+DEPS-DEPSTH)
       ELSE IF (CORR) THEN
         CALL NM1DCO(OPTION,IMATE,TEMPM,TEMPP,EP,SIGM,EPSM,DEPS,VIM,
-     &              SIGP,VIP,DSDE,CORRM,CORRP)  
+     &              SIGP,VIP,DSDE,CORRM,CRILDC,CODRET)  
       ELSE
         CALL UTMESS('F','NMICLB_1','LOI DE COMPORTEMENT INEXISTANTE')
       END IF

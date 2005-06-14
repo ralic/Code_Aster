@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 05/10/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGELINE  DATE 14/06/2005   AUTEUR CIBHHPD L.SALMONA 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -492,7 +492,7 @@ C     --- ECRITURE EVENTUELLE DES VALEURS ET DES VECTEURS PROPRES ---
          K8B = ' '
          IUL = IUNIFI( 'MESSAGE' )
          CALL IRECRI ( RESU,NOSIMP,NOPASE, 'RESULTAT',IUL, K8B,
-     >                 LBID,IBID, K8B, NBPAR,
+     >                 LBID,IBID, K8B,' ', NBPAR,
      >                 ZK16(JPARA), NBMODE, ZI(LRES), .TRUE., K8B,
      >                 IBID, K8B, 'T', .FALSE., IBID, IBID, IBID, IBID,
      >                 IBID, K8B, .FALSE., R8B, .FALSE., R8B, .FALSE.,

@@ -1,4 +1,4 @@
-#@ MODIF macro_matr_asse_ops Macro  DATE 01/04/2005   AUTEUR VABHHTS J.PELLET 
+#@ MODIF macro_matr_asse_ops Macro  DATE 14/06/2005   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -35,7 +35,6 @@ def macro_matr_asse_ops(self,MODELE,CHAM_MATER,CARA_ELEM,MATR_ASSE,
   NUME_DDL      =self.get_cmd('NUME_DDL')
   ASSE_MATRICE  =self.get_cmd('ASSE_MATRICE')
   # La macro compte pour 1 dans la numerotation des commandes
-  #self.icmd=1
   self.set_icmd(1)
 
   if SOLVEUR:

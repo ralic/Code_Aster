@@ -1,5 +1,5 @@
-      SUBROUTINE IRGMCN ( CHAMSY, IFI, NOMCON, ORDR, NBORDR, COORD,
-     +                    CONNX, POINT, NOBJ, NBEL,
+      SUBROUTINE IRGMCN ( CHAMSY, PARTIE, IFI, NOMCON, ORDR, NBORDR,
+     +                    COORD, CONNX, POINT, NOBJ, NBEL,
      +                    NBCMPI, NOMCMP, LRESU, PARA,
      +                    VERSIO )
       IMPLICIT NONE
@@ -7,7 +7,7 @@
       INTEGER        ORDR(*), CONNX(*), POINT(*)
       REAL*8         COORD(*), PARA(*)
       LOGICAL        LRESU
-      CHARACTER*(*)  NOMCON,CHAMSY,NOMCMP(*)
+      CHARACTER*(*)  NOMCON,CHAMSY,NOMCMP(*),PARTIE
 C     NBRE, NOM D'OBJET POUR CHAQUE TYPE D'ELEMENT
       INTEGER    NELETR
       PARAMETER (NELETR =  8)
@@ -16,7 +16,7 @@ C     NBRE, NOM D'OBJET POUR CHAQUE TYPE D'ELEMENT
       CHARACTER*24 NOBJ(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 13/02/2004   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF PREPOST  DATE 14/06/2005   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,6 +39,7 @@ C
 C        CHAMSY : NOM SYMBOLIQUE DU CHAM_NO A ECRIRE
 C        IFI    : NUMERO D'UNITE LOGIQUE DU FICHIER DE SORTIE GMSH
 C        NOMCON : NOM DU CONCEPT A IMPRIMER
+C     PARTIE : K4  : IMPRESSION DE LA PARTIE COMPLEXE OU REELLE DU CHAMP
 C        ORDR   : LISTE DES NUMEROS D'ORDRE A IMPRIMER
 C        NBORDR : NOMBRE DE NUMEROS D'ORDRE DANS LE TABLEAU ORDR
 C        COORD  : VECTEUR COORDONNEES DES NOEUDS DU MAILLAGE
@@ -71,10 +72,10 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
       INTEGER      I,INE
       INTEGER      IOR, IBID, K, NCMP, IRET, NBORD2, JNCMP, NCMPU
-      INTEGER      JTABC, JTABV, JTABL, JTABD, JCNSK
+      INTEGER      JTABC, JTABV, JTABL, JTABD, JCNSK, JTYPE
       LOGICAL      SCAL, VECT, TENS
       CHARACTER*1  TSCA
-      CHARACTER*8  K8B, NOMGD, NOCMP, TBCMP(3)
+      CHARACTER*8  K8B, NOCMP, TBCMP(3)
       CHARACTER*19 NOCH19, CHAMPS
 C     ------------------------------------------------------------------
 C
@@ -89,6 +90,7 @@ C
       CALL WKVECT ( '&&IRGMCN.CNSC', 'V V I', NBORD2, JTABC )
       CALL WKVECT ( '&&IRGMCN.CNSV', 'V V I', NBORD2, JTABV )
       CALL WKVECT ( '&&IRGMCN.CNSL', 'V V I', NBORD2, JTABL )
+      CALL WKVECT ( '&&IRGMCN.TYPE', 'V V K8', NBORD2,JTYPE )
 C
 C
       DO 100 IOR = 1 , NBORD2  
@@ -106,13 +108,9 @@ C
          CALL JEVEUO ( CHAMPS//'.CNSC', 'L', ZI(JTABC+IOR-1) )
          CALL JEVEUO ( CHAMPS//'.CNSV', 'L', ZI(JTABV+IOR-1) )
          CALL JEVEUO ( CHAMPS//'.CNSL', 'L', ZI(JTABL+IOR-1) )
+         CALL JELIRA ( CHAMPS//'.CNSV','TYPE',IBID,ZK8(JTYPE+IOR-1))
 C
-         NOMGD = ZK8(JCNSK-1+2)
-         CALL DISMOI('F','TYPE_SCA',NOMGD,'GRANDEUR',IBID,TSCA,IBID)
-         IF ( TSCA .NE. 'R' ) THEN
-            CALL UTMESS('F','IRGMCN','ON IMPRIME QUE DES CHAMPS REELS')
-         ENDIF
-C
+
  100  CONTINUE
 C
 C --- 1/ ON RECHERCHE LES COMPOSANTES DX, DY, DZ
@@ -181,7 +179,7 @@ C        ON A RECUPERE L'ORDRE D'IMPRESSION PAR IRGMOR
             IF(NBEL(I).NE.0)THEN
                CALL IRGNTE ( IFI, NBORD2, COORD, CONNX, POINT,
      +                       NOBJ(I), NBEL(I),
-     +                       ZI(JTABV), ZI(JTABD) )
+     +                       ZI(JTABV), PARTIE, JTYPE, ZI(JTABD) )
             ENDIF
  101     CONTINUE
 C
@@ -216,7 +214,8 @@ C        ON A RECUPERE L'ORDRE D'IMPRESSION PAR IRGMOR
             IF(NBEL(I).NE.0)THEN
                CALL IRGNAL(IFI, NBORD2, COORD, CONNX, POINT,
      +                     TBCMP, 3, I, NOBJ(I), NBEL(I),
-     +                     ZI(JTABC), ZI(JTABL), ZI(JTABV), ZI(JTABD) )
+     +                     ZI(JTABC), ZI(JTABL), ZI(JTABV),
+     +                     PARTIE,JTYPE, ZI(JTABD) )
             ENDIF
  102     CONTINUE
 C
@@ -251,7 +250,8 @@ C        ON A RECUPERE L'ORDRE D'IMPRESSION PAR IRGMOR
             IF(NBEL(I).NE.0)THEN
                CALL IRGNAL(IFI, NBORD2, COORD, CONNX, POINT,
      +                     TBCMP, 1, I, NOBJ(I), NBEL(I),
-     +                     ZI(JTABC), ZI(JTABL), ZI(JTABV), ZI(JTABD) )
+     +                     ZI(JTABC), ZI(JTABL), ZI(JTABV),
+     +                     PARTIE, JTYPE, ZI(JTABD) )
             ENDIF
  103     CONTINUE
 C
@@ -268,7 +268,7 @@ C
       CALL JEDETR ( '&&IRGMCN.CNSV'  )
       CALL JEDETR ( '&&IRGMCN.CNSL'  )
       CALL JEDETR ( '&&IRGMCN.NOCMP' )
-C
+      CALL JEDETR ('&&IRGMCN.TYPE'   )
       CALL JEDEMA()
 C
  1000 FORMAT(A8)

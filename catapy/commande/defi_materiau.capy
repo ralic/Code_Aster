@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 18/04/2005   AUTEUR PBADEL P.BADEL 
+#& MODIF COMMANDE  DATE 14/06/2005   AUTEUR JMBHH01 J.M.PROIX 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -46,6 +46,7 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
                PRESENT_PRESENT('CAM_CLAY','ELAS'),
                PRESENT_PRESENT('LAIGLE','ELAS'),
                PRESENT_PRESENT('DRUCK_PRAGER','ELAS'),
+               PRESENT_PRESENT('HOEK_BROWN','ELAS'),
                EXCLUS('MAZARS','MAZARS_FO'),
                PRESENT_PRESENT('BAZANT_FD','ELAS_FO'),
                EXCLUS('GLRC','GLRC_FO'),
@@ -2744,6 +2745,19 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
                     SY_ULTM         =SIMP(statut='o',typ='R'),
                     TYPE_DP         =SIMP(statut='c',typ='R',defaut= 2.0,),
              ),
+           ),
+           HOEK_BROWN          =FACT(statut='f',
+             GAMMA_RUP       =SIMP(statut='o',typ='R'),
+             GAMMA_RES       =SIMP(statut='o',typ='R'),
+             S_END           =SIMP(statut='o',typ='R'),
+             S_RUP           =SIMP(statut='o',typ='R'),
+             M_END           =SIMP(statut='o',typ='R'),
+             M_RUP           =SIMP(statut='o',typ='R'),
+             BETA            =SIMP(statut='o',typ='R'),
+             ALPHAHB         =SIMP(statut='o',typ='R'),
+             PHI_RUP         =SIMP(statut='o',typ='R'),
+             PHI_RES         =SIMP(statut='o',typ='R'),
+             PHI_END         =SIMP(statut='f',typ='R'),             
            ),
 ####  MONOCRISTAL
 

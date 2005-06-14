@@ -1,7 +1,7 @@
       SUBROUTINE OP0177 ( IER )
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 05/10/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF CALCULEL  DATE 13/06/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,6 +53,7 @@ C
       COMPLEX*16   CBID, VALC, REFC
 C
       CHARACTER*1  TYPR
+      CHARACTER*3  SSIGNE
       CHARACTER*4  TESTOK
       CHARACTER*8  K8B, CRIT, CTYPE, TYPTES, TABLE0
       CHARACTER*8 LATABL,NOPASE
@@ -91,8 +92,9 @@ C
 C
       CALL GETFAC ( 'FILTRE' , NPARFI )
 C
-      CALL GETVR8 ( ' ', 'PRECISION', 1,1,1, PREC, N1 )
-      CALL GETVTX ( ' ', 'CRITERE'  , 1,1,1, CRIT, N1 )
+      CALL GETVTX ( ' ', 'VALE_ABS' , 1,1,1, SSIGNE, N1 )
+      CALL GETVR8 ( ' ', 'PRECISION', 1,1,1, PREC  , N1 )
+      CALL GETVTX ( ' ', 'CRITERE'  , 1,1,1, CRIT  , N1 )
 C
       CALL GETVR8 ( ' ', 'VALE'  , 1,1,1, REFR, N1 )
       CALL GETVIS ( ' ', 'VALE_I', 1,1,1, REFI, N2 )
@@ -148,7 +150,7 @@ C
 C
       IF ( N1. NE. 0 ) THEN
          CALL UTEST0 ( NEWTAB, PARA, TYPTES, TYPR, REFI, REFR, REFC, 
-     +                                       PREC, CRIT, IFIC )
+     +                                       PREC, CRIT, IFIC, SSIGNE )
          GOTO 9999 
       ENDIF
 C
@@ -173,7 +175,7 @@ C
          GOTO 9999
       ENDIF
       CALL UTITES ( LABEL, PARA, TYPR, REFI, REFR, REFC,
-     +                           VALI, VALR, VALC, PREC, CRIT, IFIC )
+     +                     VALI, VALR, VALC, PREC, CRIT, IFIC, SSIGNE )
 C
  9999 CONTINUE
       IF ( NPARFI .NE. 0 )  CALL DETRSD ( 'TABLE' , NEWTA1 )

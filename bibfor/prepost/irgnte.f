@@ -1,13 +1,13 @@
       SUBROUTINE IRGNTE ( IFI, NBORDR, COORD, CONNEX, POINT, 
-     +                    NJVMAI, NBMAI, CNSV, CNSD )
+     +                    NJVMAI, NBMAI, CNSV, PARTIE, JTYPE, CNSD )
       IMPLICIT NONE
 C
       INTEGER        NBHEX, IFI, NBORDR, CONNEX(*), POINT(*),
-     +               CNSV(*), CNSD(*)
+     +               CNSV(*), CNSD(*), JTYPE
       REAL*8         COORD(*)
-      CHARACTER*(*)  NJVMAI
+      CHARACTER*(*)  NJVMAI,PARTIE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 17/05/2005   AUTEUR CIBHHLV L.VIVAN 
+C MODIF PREPOST  DATE 14/06/2005   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -91,40 +91,99 @@ C
 C
          DO 14 IOR = 1 , NBORDR
 
-            JCNSV = CNSV(IOR)
-            JCNSD = CNSD(IOR)
-            NCMP  = ZI(JCNSD-1+2)        
+           JCNSV = CNSV(IOR)
+           JCNSD = CNSD(IOR)
+           NCMP  = ZI(JCNSD-1+2)
+           IF (ZK8(JTYPE-1+IOR).EQ.'R') THEN        
 
-            DO 16 INOE = 1 , NBNO
+             DO 16 INOE = 1 , NBNO
 
                IF (NJVMAI(10:12).EQ.'SEG'.OR.NJVMAI(10:12).EQ.'TRI'
      +         .OR.NJVMAI(10:12).EQ.'QUA') THEN
 
-               WRITE(IFI,1000) ZR(JCNSV-1+(LISTNO(INOE)-1)*NCMP+1),
-     +         ZR(JCNSV-1+(LISTNO(INOE)-1)*NCMP+4), ZERO,  
-     +         ZR(JCNSV-1+(LISTNO(INOE)-1)*NCMP+4),
-     +         ZR(JCNSV-1+(LISTNO(INOE)-1)*NCMP+2), ZERO,
-     +         ZERO ,ZERO ,ZR(JCNSV-1+(LISTNO(INOE)-1)*NCMP+3)   
+                 WRITE(IFI,1000) ZR(JCNSV-1+(LISTNO(INOE)-1)*NCMP+1),
+     +           ZR(JCNSV-1+(LISTNO(INOE)-1)*NCMP+4), ZERO,  
+     +           ZR(JCNSV-1+(LISTNO(INOE)-1)*NCMP+4),
+     +           ZR(JCNSV-1+(LISTNO(INOE)-1)*NCMP+2), ZERO,
+     +           ZERO ,ZERO ,ZR(JCNSV-1+(LISTNO(INOE)-1)*NCMP+3)   
 
-               ELSEIF (NJVMAI(10:12).EQ.'PYR'.OR.NJVMAI(10:12).EQ.'PRI'
-     +         .OR.NJVMAI(10:12).EQ.'HEX') THEN
+               ELSEIF (NJVMAI(10:12).EQ.'PYR'.OR.
+     +         NJVMAI(10:12).EQ.'PRI'.OR.NJVMAI(10:12).EQ.'HEX') THEN
 
-               WRITE(IFI,1000) ZR(JCNSV-1+(LISTNO(INOE)-1)*NCMP+1),
-     +         ZR(JCNSV-1+(LISTNO(INOE)-1)*NCMP+4),   
-     +         ZR(JCNSV-1+(LISTNO(INOE)-1)*NCMP+5),
-     +         ZR(JCNSV-1+(LISTNO(INOE)-1)*NCMP+4),
-     +         ZR(JCNSV-1+(LISTNO(INOE)-1)*NCMP+2),
-     +         ZR(JCNSV-1+(LISTNO(INOE)-1)*NCMP+6),
-     +         ZR(JCNSV-1+(LISTNO(INOE)-1)*NCMP+5),
-     +         ZR(JCNSV-1+(LISTNO(INOE)-1)*NCMP+6),
-     +         ZR(JCNSV-1+(LISTNO(INOE)-1)*NCMP+3)
+                 WRITE(IFI,1000) ZR(JCNSV-1+(LISTNO(INOE)-1)*NCMP+1),
+     +           ZR(JCNSV-1+(LISTNO(INOE)-1)*NCMP+4),   
+     +           ZR(JCNSV-1+(LISTNO(INOE)-1)*NCMP+5),
+     +           ZR(JCNSV-1+(LISTNO(INOE)-1)*NCMP+4),
+     +           ZR(JCNSV-1+(LISTNO(INOE)-1)*NCMP+2),
+     +           ZR(JCNSV-1+(LISTNO(INOE)-1)*NCMP+6),
+     +           ZR(JCNSV-1+(LISTNO(INOE)-1)*NCMP+5),
+     +           ZR(JCNSV-1+(LISTNO(INOE)-1)*NCMP+6),
+     +           ZR(JCNSV-1+(LISTNO(INOE)-1)*NCMP+3)
 
                ENDIF
 
- 16         CONTINUE
+ 16          CONTINUE
 
+           ELSEIF (ZK8(JTYPE-1+IOR).EQ.'C') THEN        
+
+             IF (PARTIE.EQ.'REEL') THEN
+
+               DO 26 INOE = 1 , NBNO
+
+                 IF (NJVMAI(10:12).EQ.'SEG'.OR.NJVMAI(10:12).EQ.'TRI'
+     +           .OR.NJVMAI(10:12).EQ.'QUA') THEN
+
+                   WRITE(IFI,1000) ZR(JCNSV-1+(LISTNO(INOE)-1)*NCMP+1),
+     +             ZR(JCNSV-1+(LISTNO(INOE)-1)*NCMP+4), ZERO,  
+     +             ZR(JCNSV-1+(LISTNO(INOE)-1)*NCMP+4),
+     +             ZR(JCNSV-1+(LISTNO(INOE)-1)*NCMP+2), ZERO,
+     +             ZERO ,ZERO ,ZR(JCNSV-1+(LISTNO(INOE)-1)*NCMP+3)   
+
+                 ELSEIF (NJVMAI(10:12).EQ.'PYR'.OR.
+     +           NJVMAI(10:12).EQ.'PRI'.OR.NJVMAI(10:12).EQ.'HEX') THEN
+
+                   WRITE(IFI,1000) ZR(JCNSV-1+(LISTNO(INOE)-1)*NCMP+1),
+     +             ZR(JCNSV-1+(LISTNO(INOE)-1)*NCMP+4),   
+     +             ZR(JCNSV-1+(LISTNO(INOE)-1)*NCMP+5),
+     +             ZR(JCNSV-1+(LISTNO(INOE)-1)*NCMP+4),
+     +             ZR(JCNSV-1+(LISTNO(INOE)-1)*NCMP+2),
+     +             ZR(JCNSV-1+(LISTNO(INOE)-1)*NCMP+6),
+     +             ZR(JCNSV-1+(LISTNO(INOE)-1)*NCMP+5),
+     +             ZR(JCNSV-1+(LISTNO(INOE)-1)*NCMP+6),
+     +             ZR(JCNSV-1+(LISTNO(INOE)-1)*NCMP+3)
+
+                 ENDIF
+
+ 26            CONTINUE
+             ELSEIF (PARTIE.EQ.'IMAG') THEN
+               DO 36 INOE = 1 , NBNO
+
+                 IF (NJVMAI(10:12).EQ.'SEG'.OR.NJVMAI(10:12).EQ.'TRI'
+     +           .OR.NJVMAI(10:12).EQ.'QUA') THEN
+
+                   WRITE(IFI,1000) ZR(JCNSV-1+(LISTNO(INOE)-1)*NCMP+1),
+     +             ZR(JCNSV-1+(LISTNO(INOE)-1)*NCMP+4), ZERO,  
+     +             ZR(JCNSV-1+(LISTNO(INOE)-1)*NCMP+4),
+     +             ZR(JCNSV-1+(LISTNO(INOE)-1)*NCMP+2), ZERO,
+     +             ZERO ,ZERO ,ZR(JCNSV-1+(LISTNO(INOE)-1)*NCMP+3)   
+
+                 ELSEIF (NJVMAI(10:12).EQ.'PYR'.OR.
+     +           NJVMAI(10:12).EQ.'PRI'.OR.NJVMAI(10:12).EQ.'HEX') THEN
+
+                   WRITE(IFI,1000) ZR(JCNSV-1+(LISTNO(INOE)-1)*NCMP+1),
+     +             ZR(JCNSV-1+(LISTNO(INOE)-1)*NCMP+4),   
+     +             ZR(JCNSV-1+(LISTNO(INOE)-1)*NCMP+5),
+     +             ZR(JCNSV-1+(LISTNO(INOE)-1)*NCMP+4),
+     +             ZR(JCNSV-1+(LISTNO(INOE)-1)*NCMP+2),
+     +             ZR(JCNSV-1+(LISTNO(INOE)-1)*NCMP+6),
+     +             ZR(JCNSV-1+(LISTNO(INOE)-1)*NCMP+5),
+     +             ZR(JCNSV-1+(LISTNO(INOE)-1)*NCMP+6),
+     +             ZR(JCNSV-1+(LISTNO(INOE)-1)*NCMP+3)
+                 ENDIF
+ 36            CONTINUE
+             ENDIF
+           ENDIF
  14      CONTINUE
-                 
  10   CONTINUE
 C
       CALL JELIBE ( NJVMAI )

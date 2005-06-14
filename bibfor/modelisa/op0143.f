@@ -1,7 +1,7 @@
       SUBROUTINE OP0143(IER)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 18/04/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 14/06/2005   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,6 +48,7 @@ C
      &               OCGRIL, IRET
         INTEGER      DIMVI, DIMVK, DIMVR, DIMGM , DIMGR
         INTEGER      IUNIT, UNIT1, UNIT2, IBID1, IBID2, IOCC1, IOCC2
+        INTEGER      IRHO, JRHO
         CHARACTER*2  CARAPA(4)
         CHARACTER*3  OUINON
         CHARACTER*8  K8BID
@@ -125,6 +126,8 @@ C ---     RECHERCHE DE LA DERNIERE OCCURENCE DES MOTS-CLES OBLIGATOIRES
 C ---     RECHERCHE DE LA DERNIERE OCCURENCE DES MOTS-CLES FACULTATIFS
             CALL GETVR8(NOMMCF,'COEF_MASS_AJOU',IOCC,1,0,RBID,ICM)
             IF(ICM.NE.0)   JCM = IOCC
+            CALL GETVR8(NOMMCF,'RHO_TUBE'      ,IOCC,1,0,RBID,IRHO)
+            IF(IRHO.NE.0)   JRHO=IOCC
             CALL GETVTX(NOMMCF,'TYPE_PAS'      ,IOCC,1,0,K8BID,ITPAS)
             IF(ITPAS.NE.0) JTPAS = IOCC
             CALL GETVIS(NOMMCF,'TYPE_RESEAU'   ,IOCC,1,0,IBID,ITRES)
@@ -140,11 +143,16 @@ C --------1.1.SI PRISE EN COMPTE DU COUPLAGE
 C
              ZI(LFSIC+1) = 1
 C
-             CALL WKVECT(FSVI,'G V I',2+NZEX,LFSVI)
+             CALL WKVECT(FSVR,'G V R',3+2*NZEX,LFSVR)
+             CALL WKVECT(FSVI,'G V I',2+2*NZEX,LFSVI)
              ZI(LFSVI+1) = NZEX
              DO 30 IOCC = 1 , NZEX
                 CALL GETVIS(NOMMCF,'TYPE_RESEAU',IOCC,1,1,
      &                      ZI(LFSVI+1+IOCC),IBID)
+                CALL GETVR8(NOMMCF,'CSTE_CONNORS',IOCC,1,2,
+     &                      ZR(LFSVR+2*IOCC+1),IBID)
+                CALL GETVIS(NOMMCF,'NB_CONNORS',IOCC,1,2,
+     &                      ZI(LFSVI+1+NZEX+IOCC),IBID)
  30          CONTINUE
              CALL GETVTX(NOMMCF,'TYPE_PAS',JTPAS,1,1,TPAS,IBID)
              IF (TPAS .EQ. TYPAS(1)) THEN
@@ -153,7 +161,6 @@ C
                 ZI(LFSVI) = 2
              ENDIF
 C
-             CALL WKVECT(FSVR,'G V R',2,LFSVR)
              CALL GETVR8(NOMMCF,'PAS',JPAS,1,1,PAS ,IBID)
              IF (JCM.EQ.0) THEN
                 IF (ZI(LFSVI).EQ.2) THEN
@@ -167,6 +174,7 @@ C
      &                      ZR(LFSVR),IBID)
              ENDIF
              ZR(LFSVR+1) = PAS
+             CALL GETVR8(NOMMCF,'RHO_TUBE',JRHO,1,1,ZR(LFSVR+2),IRHO)
 C
 C --------1.2.SI NON PRISE EN COMPTE DU COUPLAGE
           ELSE

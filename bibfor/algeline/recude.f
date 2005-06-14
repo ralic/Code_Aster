@@ -1,8 +1,8 @@
-      SUBROUTINE RECUDE(CAELEM,PHIE)
+      SUBROUTINE RECUDE(CAELEM,PHIE,EP)
       IMPLICIT REAL*8 (A-H,O-Z)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 09/03/2000   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ALGELINE  DATE 14/06/2005   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,12 +20,14 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
 C-----------------------------------------------------------------------
-C  RECUPERATION DU DIAMETRE EXTERIEUR D'UNE STRUCTURE TUBULAIRE A PARTIR
-C  DES DONNEES FOURNIES PAR UN CONCEPT DE TYPE CARA_ELEM
+C  RECUPERATION DU DIAMETRE EXTERIEUR ET INTERIEUR D'UNE STRUCTURE
+C  TUBULAIRE A PARTIR DES DONNEES FOURNIES PAR UN CONCEPT 
+C  DE TYPE CARA_ELEM
 C  APPELANT : SPECT1 OU FLUST1, FLUST2, MDITMI VIA MDCONF 
 C-----------------------------------------------------------------------
 C  IN : CAELEM : NOM DU CONCEPT DE TYPE CARA_ELEM
 C  OUT: PHIE   : DIAMETRE EXTERIEUR DU TUBE
+C  OUT: EP   :   EPAISSEUR DU TUBE
 C-----------------------------------------------------------------------
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER ZI
@@ -45,7 +47,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
       CHARACTER*19 CAELEM
-      REAL*8       PHIE
+      REAL*8       PHIE,EP
 C
       CHARACTER*8  NOMCMP(4)
       CHARACTER*19 CARTE
@@ -86,6 +88,7 @@ C
         ENDIF
 C
         PHIE2 = ZR(LR1)
+        EP    = ZR(LR1+1)
    10 CONTINUE
 C
       PHIE=2.D0*PHIE2

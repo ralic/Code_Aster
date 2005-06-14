@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 27/09/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF PREPOST  DATE 13/06/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,7 +43,7 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       INTEGER      REFI, VALI
       REAL*8       VALPU(2),RESURE,RESUIM,R8NNEM,RVAL
       CHARACTER*1  CBID
-      CHARACTER*3  OUINON
+      CHARACTER*3  OUINON, SSIGNE
       CHARACTER*4  TESTOK
       CHARACTER*8  K8B, CRIT
       CHARACTER*12 K12
@@ -82,9 +82,10 @@ C     --- TRAITEMENT DU MOT CLE FACTEUR "VALEUR" -----------------------
 C
       CALL GETFAC('VALEUR',NOCC)
       DO 10 IOCC = 1,NOCC
-         CALL GETVR8('VALEUR','PRECISION' ,IOCC,1,1,EPSI  ,N1)
-         CALL GETVTX('VALEUR','CRITERE'   ,IOCC,1,1,CRIT  ,N2)
-         CALL GETVID('VALEUR','FONCTION'  ,IOCC,1,1,NOMFON,N3)
+         CALL GETVTX('VALEUR','VALE_ABS' ,IOCC,1,1,SSIGNE,N1)
+         CALL GETVR8('VALEUR','PRECISION',IOCC,1,1,EPSI  ,N1)
+         CALL GETVTX('VALEUR','CRITERE'  ,IOCC,1,1,CRIT  ,N2)
+         CALL GETVID('VALEUR','FONCTION' ,IOCC,1,1,NOMFON,N3)
 C
          CHPROL = NOMFON//'.PROL'
          CALL JEVEUO(CHPROL,'L',LPROL)
@@ -224,7 +225,7 @@ C
              ELSE
                VALC = DCMPLX(RESURE,RESUIM)
                CALL UTITES(ZK16(LPROL+2),LABEL,'C',REFI,REFR,REFC,
-     +                                  VALI,VALR,VALC,EPSI,CRIT,IFIC)
+     +                            VALI,VALR,VALC,EPSI,CRIT,IFIC,SSIGNE)
              ENDIF
            ENDIF
          ELSE
@@ -322,7 +323,7 @@ C
               ELSE
 C
                  CALL UTITES(NOMPU(NBPU),LABEL,'R',REFI,REFR,REFC,
-     +                                   VALI,VALR,VALC,EPSI,CRIT,IFIC)
+     +                            VALI,VALR,VALC,EPSI,CRIT,IFIC,SSIGNE)
               ENDIF
            ENDIF
          ENDIF
@@ -441,7 +442,7 @@ C
             VALC = DCMPLX(RESURE,RESUIM)
 C
             CALL UTITES(ZK16(LPROL+2),LABEL,'C',REFI,REFR,REFC,
-     +                                   VALI,VALR,VALC,EPSI,CRIT,IFIC)
+     +                           VALI,VALR,VALC,EPSI,CRIT,IFIC,SSIGNE)
          ENDIF
 C
  30   CONTINUE

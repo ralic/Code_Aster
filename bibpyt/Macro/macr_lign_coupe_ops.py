@@ -1,4 +1,4 @@
-#@ MODIF macr_lign_coupe_ops Macro  DATE 24/05/2005   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF macr_lign_coupe_ops Macro  DATE 14/06/2005   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -133,7 +133,6 @@ def macr_lign_coupe_ops(self,RESULTAT,UNITE_MAILLAGE,LIGN_COUPE,NOM_CHAM,MODELE,
   CREA_TABLE     =self.get_cmd('CREA_TABLE')
 
   # La macro compte pour 1 dans la numerotation des commandes
-  #self.icmd=1
   self.set_icmd(1)
   
   nomresu=RESULTAT.nom

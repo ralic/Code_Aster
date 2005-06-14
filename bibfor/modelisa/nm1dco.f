@@ -1,8 +1,8 @@
       SUBROUTINE NM1DCO(OPTION,IMATE,TM,TP,E,SIGM,EPSM,DEPS,VIM,
-     &                  SIGP,VIP,DSDE,CORRM,CORRP)
+     &                  SIGP,VIP,DSDE,CORRM,CRILDC,CODRET)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF MODELISA  DATE 14/06/2005   AUTEUR JMBHH01 J.M.PROIX 
 C TOLE CRP_20
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -42,7 +42,7 @@ C               UTILISE UNIQUEMENT POUR EVALUER DSDEM
 C IN  DEPS    : DEFORMATION  TOTALE PLUS - DEFORMATION TOTALE MOINS
 C IN  EPSPM   : DEFORMATION  PLASTIQUE MOINS
 C IN  PM      : DEFORMATION  PLASTIQUE CUMULEE MOINS
-C IN  CORRM   : CORROSION A L'INSTANT MOINS
+C IN  CORRM   : CORROSION A L'INSTUTMEANT MOINS
 C IN  CORRP   : CORROSION A L'INSTANT PLUS
 
 C OUT SIGP     : CONTRAINTES PLUS
@@ -54,9 +54,9 @@ C     ARGUMENTS
 C     ------------------------------------------------------------------
       REAL*8 TP,TM,EM,EP,ET,ALPHAM,ALPHAP,TREF
       REAL*8 SIGM,DEPS,PM,VIM(*),VIP(*),RESU,EPSPM,CORRM,CORRP
-      REAL*8 SIGP,DSDE,RBID,RESI
+      REAL*8 SIGP,DSDE,RBID,RESI,CRILDC(3)
       CHARACTER*16 OPTION
-      INTEGER IMATE,IRET
+      INTEGER IMATE,IRET,CODRET
 C     ------------------------------------------------------------------
 C     VARIABLES LOCALES
 C     ------------------------------------------------------------------
@@ -71,14 +71,16 @@ C     DECLARATION DES TYPES DES VARIABLES:
       REAL*8 EPSILF,EPSD,EPSC,D,P,EPSP,ECR,FPLAS,
      1    DFDS,DFPDS,DFDECR,DIFECR,LAMBP,FD,VAR1,TC
       REAL*8 VAR2,VAR3,RV,FINI,FDINI,FPLAS2,EPSMAX
-      LOGICAL DCONV,PCONV
+      LOGICAL DCONV,PCONV,MELAS
       INTEGER ITER,ITEMAX,ICHAR,NCHAR,I,J
+      
       FB2 = 'FM'
       NBPAR = 1
       NOMPAR = 'TEMP'
       PM = VIM(1)
       EPSPM = VIM(1)
       D  = VIM(2)
+      CODRET=0
  
 C --- CARACTERISTIQUES ECROUISSAGE LINEAIRE
       VALPAR = TP
@@ -94,8 +96,8 @@ C --- CARACTERISTIQUES ECROUISSAGE LINEAIRE
      &              V,CODRES,FB2)
      
 C --- PARAMETRES DE CONVERGENCE
-      CALL GETVR8('CONVERGENCE','RESI_INTE_RELA',1,1,1,RESI,IRET)
-      CALL GETVIS('CONVERGENCE','ITER_INTE_MAXI',1,1,1,ITEMAX,IRET)
+      RESI = CRILDC(3)
+      ITEMAX = NINT(CRILDC(1))
 
         TC = CORRM
         IF (TC .LE. 15.D0)  THEN
@@ -117,6 +119,8 @@ C    RV LE PARAMETRE QUI DEPEND DU TAUX DE TRIAXIALITE
       P = PM
       SIGP=SIGM
       DCONV=.FALSE.
+      MELAS=(OPTION.EQ.'RIGI_MECA_ELAS').OR.
+     &      (OPTION.EQ.'FULL_MECA_ELAS')
       IF (OPTION.EQ.'FULL_MECA' .OR. OPTION.EQ.'RAPH_MECA') THEN
 
       ITER = 0
@@ -126,8 +130,10 @@ C    RV LE PARAMETRE QUI DEPEND DU TAUX DE TRIAXIALITE
         
 C    *******ELASTICITE********************
          SIGP = E*(EPSILF-EPSP)
+CJMP         SIGP =(1.D0-D)* E*(EPSILF-EPSP)
+
          ECR = K*(P**(1.D0/M))
-         FINI = ((SIGP/(1.D0-D))-ECR-SY)
+         FINI = ((ABS(SIGP)/(1.D0-D))-ECR-SY)
          FPLAS = FINI
          IF (FINI .LE. 0.D0) THEN
           VIP(3) = 0.D0
@@ -148,48 +154,55 @@ C    ******PLASTICITE**********************
             P = P+(LAMBP/(1.D0-D))
             SIGP = SIGP-((E*LAMBP)/(1.D0-D))
              ECR = K*(P**(1.D0/M))
-            FPLAS = ((SIGP/(1.D0-D))-ECR-SY)
+            FPLAS = ((ABS(SIGP)/(1.D0-D))-ECR-SY)
             PCONV = ((ABS(FPLAS/FINI) .LE. RESI)
      &                .OR. (LAMBP.LE.RESI))
-          END IF
-          GOTO 141
-   40   CONTINUE
-        IF(J .GE. ITEMAX)
-     &    CALL UTMESS('F','NM1DCO','ABSENCE DE CONVERGENCE')
+          ELSE
+             GOTO 141
+         END IF
+   40    CONTINUE
+  141    CONTINUE   
+          IF(J .GE. ITEMAX) THEN
+             CALL UTMESS('I','NM1DCO','ABSENCE DE CONVERGENCE J')
+             CODRET=1
+             GOTO 9999
+          ENDIF
         ENDIF
 C
-  141  CONTINUE 
         END IF
         
 C    *****ENDOMMAGEMENT*********************
         FD = EPSP-EPSD
         IF (FD .LE. 0.D0) THEN
           DCONV = .TRUE.
+          
+          GOTO 142
+        
         ELSE
          D = (DC*((RV*EPSP)-EPSD))/(EPSC-EPSD)
-         FPLAS2 = ((SIGP/(1.D0-D))-ECR-SY)
+         FPLAS2 = ((ABS(SIGP)/(1.D0-D))-ECR-SY)
          IF (ITER .EQ. 1) THEN
             FDINI = FPLAS2
          ELSE
            FD = FPLAS2
-           DCONV = ((ABS(FD/FDINI) .LE. RESI)
-     1             .OR. (ITER .LE. ITEMAX))
-           IF (ITER .EQ. ITEMAX) THEN
-             CALL UTMESS('F','NM1DCO','ABSENCE DE CONVERGENCE')
-           END IF
+           DCONV = (ABS(FD/FDINI) .LE. RESI)
+           IF (DCONV) GOTO 142
          END IF
-       END IF
-       IF (D .GT. 0.99D0)THEN
-         DCONV = .TRUE.
-         SIGP = 0.D0
-       ENDIF
-       GOTO 142
+        END IF
+        IF (D .GT. 0.99D0)THEN
+            DCONV = .TRUE.
+            SIGP = 0.D0
+            GOTO 142
+        ENDIF
    30   CONTINUE
-        IF(I .GE. ITEMAX)
-     &    CALL UTMESS('F','NM1DCO','ABSENCE DE CONVERGENCE')
+  142   CONTINUE
+        IF(I .GE. ITEMAX) THEN
+             CALL UTMESS('I','NM1DCO','ABSENCE DE CONVERGENCE I')
+             CODRET=1
+             GOTO 9999
+          ENDIF
         ENDIF
 
-  142  CONTINUE
       VIP(1) = P
       VIP(2) = D
       IF ((OPTION.EQ.'RIGI_MECA_TANG').OR.
@@ -216,7 +229,9 @@ C    *****ENDOMMAGEMENT*********************
              END IF   
           END IF
         END IF
+C     CAS RIGI_MECA_ELAS ET FULL_MECA_ELAS AVEC ENDOMMAGEMENT      
+      END IF
+      IF(MELAS)  DSDE=(1.D0-D)*DSDE
 
-       END IF
-      
+ 9999 CONTINUE      
       END

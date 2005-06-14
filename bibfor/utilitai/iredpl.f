@@ -3,7 +3,7 @@
       CHARACTER*(*)       MACR
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 16/06/2004   AUTEUR DURAND C.DURAND 
+C MODIF UTILITAI  DATE 14/06/2005   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -180,7 +180,7 @@ C         CALL JENONU(JEXNOM(MANONO,ZK16(JNOEU+I-1)(1:8)),INOE)
           WRITE (IFC,'(A)') '    -1'
           TITRE = 'MODE STATIQUE: '//K10B//' '//CMP//'+++++++'
           CALL IRECRI  ( BASEMO,NOSIMP,NOPASE,'IDEAS',IFC,TITRE,
-     >                  LBID,1,'DEPL',IERO,K8B, 1,IORD,
+     >                  LBID,1,'DEPL',' ',IERO,K8B, 1,IORD,
      >                  .TRUE.,B,IERO,B,CECR,F,IERO,
      >                  IBID,IERO,IBID,IERO,K8B,
      >                  F,ZERO,F,ZERO,F,F,FORMAR,LMOD,
@@ -193,7 +193,7 @@ C         CALL JENONU(JEXNOM(MANONO,ZK16(JNOEU+I-1)(1:8)),INOE)
           WRITE (IFC,'(A)') '    -1'
           TITRE = 'MODE DYNAMIQUE'
           CALL IRECRI ( BASEMO,NOSIMP,NOPASE,'IDEAS',IFC,TITRE,
-     >                  LBID,1,'DEPL',IERO,K8B, 1,IORD,
+     >                  LBID,1,'DEPL',' ',IERO,K8B, 1,IORD,
      >                  .TRUE.,B,IERO,B,CECR,F,IERO,
      >                  IBID,IERO,IBID,IERO,K8B,
      >                  F,ZERO,F,ZERO,F,F,FORMAR,LMOD,

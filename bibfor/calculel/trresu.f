@@ -3,7 +3,7 @@
       INTEGER    IFIC, NOCC
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 09/05/2005   AUTEUR CIBHHLV L.VIVAN 
+C MODIF CALCULEL  DATE 13/06/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -50,6 +50,7 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       REAL*8       VALR,REFR,EPSI,PREC,EPSIR(2)
       COMPLEX*16   VALC,REFC
       CHARACTER*1  TYPRES
+      CHARACTER*3  SSIGNE
       CHARACTER*4  TYPCH,TESTOK
       CHARACTER*8  CRIT,CRIT2,NOMAIL,NODDL,NOGRNO,NOMMA
       CHARACTER*8  NORESU,NOCMP,CRITR(2),TYPTES,NOMGD
@@ -79,9 +80,10 @@ C     ------------------------------------------------------------------
 
         CALL TRPREC ( 'RESU', IOCC, EPSI, CRIT, PREC, CRIT2 )
 
-        CALL GETVR8('RESU','VALE'  ,IOCC,1,1,REFR,N1)
-        CALL GETVIS('RESU','VALE_I',IOCC,1,1,REFI,N2)
-        CALL GETVC8('RESU','VALE_C',IOCC,1,1,REFC,N3)
+        CALL GETVTX('RESU','VALE_ABS', IOCC,1,1,SSIGNE,N1)
+        CALL GETVR8('RESU','VALE'    , IOCC,1,1,REFR  ,N1)
+        CALL GETVIS('RESU','VALE_I'  , IOCC,1,1,REFI  ,N2)
+        CALL GETVC8('RESU','VALE_C'  , IOCC,1,1,REFC  ,N3)
         TYPRES = 'R'
         IF (N2.NE.0) TYPRES = 'I'
         IF (N3.NE.0) TYPRES = 'C'
@@ -130,7 +132,7 @@ C                    1234567890123456789012345678901234567
             NOCMP = ' '
             LABEL = NOPARA(1:16)
             CALL UTITES(NOCMP,LABEL,TYPRES,REFI,REFR,REFC,VALI,VALR,
-     &                  VALC,EPSI,CRIT,IFIC)
+     &                  VALC,EPSI,CRIT,IFIC,SSIGNE)
           END IF
 
           CALL GETVTX('RESU','NOM_CHAM',IOCC,1,1,NOPARA,N1)
@@ -151,13 +153,13 @@ C                    1234567890123456789012345678901234567
               CALL GETVTX('RESU','NOM_CMP',IOCC,1,0,NODDL,N4)
               IF (N4.EQ.0) THEN
                 CALL UTEST1(CHAM19,TYPTES,TYPRES,REFI,REFR,REFC,EPSI,
-     &                      CRIT,IFIC)
+     &                      CRIT,IFIC,SSIGNE)
               ELSE
                 NBCMP = -N4
                 CALL WKVECT('&&TRRESU.NOM_CMP','V V K8',NBCMP,JCMP)
                 CALL GETVTX('RESU','NOM_CMP',IOCC,1,NBCMP,ZK8(JCMP),N4)
                 CALL UTEST4(CHAM19,TYPTES,TYPRES,REFI,REFR,REFC,EPSI,
-     &                      CRIT,IFIC,NBCMP,ZK8(JCMP))
+     &                      CRIT,IFIC,NBCMP,ZK8(JCMP),SSIGNE)
                 CALL JEDETR('&&TRRESU.NOM_CMP')
               END IF
             ELSE
@@ -193,7 +195,7 @@ C              RIEN A FAIRE.
                   GO TO 50
                 END IF
                 CALL UTESTR(CHAM19,NONOEU,NODDL,REFI,REFR,REFC,TYPRES,
-     &                      EPSI,CRIT,IFIC)
+     &                      EPSI,CRIT,IFIC,SSIGNE)
               ELSE IF (TYPCH(1:2).EQ.'EL') THEN
                 CALL GETVEM(NOMMA,'MAILLE','RESU','MAILLE',IOCC,1,1,
      &                      NOMAIL,N1)
@@ -201,7 +203,7 @@ C              RIEN A FAIRE.
                   CALL UTMESS('F','TEST_RESU','IL FAUT DONNER "MAILLE"')
                 END IF
                 CALL UTEST2(CHAM19,NOMAIL,NONOEU,NUPO,NUSP,IVARI,NODDL,
-     &                      REFI,REFR,REFC,TYPRES,EPSI,CRIT,IFIC)
+     &                      REFI,REFR,REFC,TYPRES,EPSI,CRIT,IFIC,SSIGNE)
               END IF
             END IF
           END IF

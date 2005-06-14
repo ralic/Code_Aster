@@ -4,7 +4,7 @@ C
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 10/10/2001   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ALGORITH  DATE 14/06/2005   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -310,10 +310,10 @@ C
       IF ( ITYPFL.EQ.1 ) THEN
          CALL WKVECT('&&MDITMI.TEMP.IRES'  ,'V V I' , NBNOEU    ,LIRES )
          CALL WKVECT('&&MDITMI.TEMP.PROFV' ,'V V R8', 2*NBNOEU+1,LPROFV)
-         CALL WKVECT('&&MDITMI.TEMP.RHOE'  ,'V V R8', NBNOEU    ,JRHOE )
+         CALL WKVECT('&&MDITMI.TEMP.RHOE'  ,'V V R8', 2*NBNOEU  ,JRHOE )
          CALL WKVECT('&&MDITMI.TEMP.BASEFL','V V R8', NBMODE*NBNOEU,
      &                                                           JBASF )
-         CALL WKVECT('&&MDITMI.TEMP.PHIE'  ,'V V R8', 1         ,JPHIE )
+         CALL WKVECT('&&MDITMI.TEMP.PHIE'  ,'V V R8', 2         ,JPHIE )
          CALL WKVECT('&&MDITMI.TEMP.ABSCV' ,'V V R8', NBNOEU    ,JABSC )
          IVECI1 = LIRES
          IVECR1 = LPROFV

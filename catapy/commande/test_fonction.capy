@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 23/08/2004   AUTEUR CIBHHLV L.VIVAN 
+#& MODIF COMMANDE  DATE 13/06/2005   AUTEUR CIBHHLV L.VIVAN 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -29,6 +29,7 @@ TEST_FONCTION=PROC(nom="TEST_FONCTION",op= 135,fr="Extraction d une valeur numér
            VALE_PARA       =SIMP(statut='o',typ='R'  ,validators=NoRepeat(),max=2),
            VALE_REFE       =SIMP(statut='f',typ='R' ),
            VALE_REFE_C     =SIMP(statut='f',typ='C' ),
+           VALE_ABS        =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON") ),
            CRITERE         =SIMP(statut='f',typ='TXM',fr="Critère de comparaison avec la solution de référence",
                                  defaut="RELATIF",into=("RELATIF","ABSOLU") ),
            PRECISION       =SIMP(statut='f',typ='R',fr="Ecart maximal autorisé avec la solution de référence",

@@ -1,4 +1,4 @@
-# MODIF  DATE 30/05/2005   AUTEUR BOYERE E.BOYERE 
+# MODIF  DATE 13/06/2005   AUTEUR CIBHHLV L.VIVAN 
 # TITRE SYSTEME MAS RES A 8 DDL (AMORTISSEMENT VISQ. PROPORTION.)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -141,23 +141,27 @@ RECUP2=RECU_GENE(   RESU_GENE=DYNAMODA,
                       NOM_CHAM='VITE'
                    )
 
-#TEST_RESU(GENE=( 
-#           _F(  RESU_GENE = RECUP2,
-#                NUME_CMP_GENE= 7 ,
-#                VALE = -6.23204E-07,  ),
-#           _F(  RESU_GENE = RECUP2,
-#                NUME_CMP_GENE= 3 ,
-#                VALE =  5.34328E-05,  ),
-#               ) , );
+TEST_RESU(GENE=( 
+           _F(  RESU_GENE = RECUP2,
+                VALE_ABS = 'OUI',
+                NUME_CMP_GENE= 7 ,
+                VALE =  6.23204E-07,  ),
+           _F(  RESU_GENE = RECUP2,
+                VALE_ABS = 'OUI',
+                NUME_CMP_GENE= 3 ,
+                VALE =  5.34328E-05,  ),
+               ) , );
 
-#TEST_RESU(GENE=( 
-#           _F(  RESU_GENE=DYNAMODA, NOM_CHAM='VITE', INST=0.455,
-#                NUME_CMP_GENE= 7 ,
-#                VALE = -6.23204E-07,  ),
-#           _F(  RESU_GENE=DYNAMODA, NOM_CHAM='VITE', NUME_ORDRE=456,
-#                NUME_CMP_GENE= 3 ,
-#                VALE =  5.34328E-05,  ),
-#               ) , );
+TEST_RESU(GENE=( 
+           _F(  RESU_GENE=DYNAMODA, NOM_CHAM='VITE', INST=0.455,
+                NUME_CMP_GENE= 7 ,
+                VALE_ABS = 'OUI',
+                VALE =  6.23204E-07,  ),
+           _F(  RESU_GENE=DYNAMODA, NOM_CHAM='VITE', NUME_ORDRE=456,
+                NUME_CMP_GENE= 3 ,
+                VALE_ABS = 'OUI',
+                VALE =  5.34328E-05,  ),
+               ) , );
 
 
 

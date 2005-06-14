@@ -1,5 +1,5 @@
       SUBROUTINE UTESTR(CHAM19,NONOEU,NOCMP,REFI,REFR,REFC,TYPRES,
-     +                                                EPSI,CRIT,IFIC)
+     +                                           EPSI,CRIT,IFIC,SSIGNE)
       IMPLICIT REAL*8 (A-H,O-Z)
       CHARACTER*19      CHAM19
       CHARACTER*17             NONOEU
@@ -8,11 +8,11 @@
       COMPLEX*16                                      REFC
       CHARACTER*1                                          TYPRES
       REAL*8                                          EPSI
-      CHARACTER*(*)                                        CRIT
+      CHARACTER*(*)                                        CRIT, SSIGNE
       INTEGER                               REFI,               IFIC
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 14/01/98   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 13/06/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -138,7 +138,7 @@ C
                   VALC = ZC(IAVALE-1+(INO-1)*NCMP+IDECAL)
               ENDIF
               CALL UTITES(NOCMP,'         '//NONOEU(1:8),TYPE,
-     +                    REFI,REFR,REFC,VALI,VALR,VALC,EPSI,CRIT,IFIC)
+     +             REFI,REFR,REFC,VALI,VALR,VALC,EPSI,CRIT,IFIC,SSIGNE)
           ELSE
               WRITE (IFIC,*) TESTOK,' ON NE TROUVE PAS LE DDL'
           END IF
@@ -181,7 +181,7 @@ C
                   VALC = ZC(IAVALE-1+ZI(IANUEQ-1+IVAL-1+IDECAL))
               ENDIF
               CALL UTITES(NOCMP,'         '//NONOEU(1:8),TYPE,
-     +                    REFI,REFR,REFC,VALI,VALR,VALC,EPSI,CRIT,IFIC)
+     +             REFI,REFR,REFC,VALI,VALR,VALC,EPSI,CRIT,IFIC,SSIGNE)
           ELSE
               WRITE (IFIC,*) TESTOK,' ON NE TROUVE PAS LE DDL'
           END IF

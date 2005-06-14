@@ -7,7 +7,7 @@
       CHARACTER*19 MELFLU
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
+C MODIF ALGELINE  DATE 14/06/2005   AUTEUR CIBHHPD L.SALMONA 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -77,8 +77,9 @@ C
       CHARACTER*24 FSVI,FSVK,FSVR,FSGM,FSCR,FSGR
       CHARACTER*24 REFEI,FREQI,MATRIA
       CHARACTER*24 GRPNO
-      REAL*8       SOM(9), RU, ALPHA, COORPE(3), DON(5)
+      REAL*8       SOM(9), RU, ALPHA, COORPE(3), DON(5), CARAC(2)
       INTEGER      IROT(3),IDDL(6),NDIM(14)
+      LOGICAL      CALCUL(2)
       DATA IDDL    /1,2,3,4,5,6/
 C
 C-----------------------------------------------------------------------
@@ -492,9 +493,12 @@ C
 C --- 14.IMPRESSIONS DANS LE FICHIER RESULTAT SI DEMANDEES ---
 C
       IF (NIVPAR.EQ.1 .OR. NIVDEF.EQ.1) THEN
-         DH = SOM(9)
-         CALL FLUIMP(3,NIVPAR,NIVDEF,MELFLU,NUOR,FREQ,ZR(IFREQI),NBM,
-     &               VITE,NPV,DH)
+         CARAC(1) = SOM(9)
+         CARAC(2)=0.D0
+         CALCUL(1)=.TRUE.
+         CALCUL(2)=.FALSE.
+         CALL FLUIMP(3,NIVPAR,NIVDEF,MELFLU,TYPFLU,NUOR,FREQ,ZR(IFREQI),
+     &               NBM,VITE,NPV,CARAC,CALCUL,RBID)
       ENDIF
 C
       CALL JEDETC('V','&&MEFGMN',1)

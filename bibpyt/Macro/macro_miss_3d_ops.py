@@ -1,4 +1,4 @@
-#@ MODIF macro_miss_3d_ops Macro  DATE 03/11/2004   AUTEUR ACBHHCD G.DEVESA 
+#@ MODIF macro_miss_3d_ops Macro  DATE 14/06/2005   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -35,7 +35,6 @@ def macro_miss_3d_ops(self,UNITE_IMPR_ASTER,UNITE_OPTI_MISS,
   DEFI_FICHIER  =self.get_cmd('DEFI_FICHIER')
   EXEC_LOGICIEL =self.get_cmd('EXEC_LOGICIEL')
   # La macro compte pour 1 dans la numerotation des commandes
-  #self.icmd=1
   self.set_icmd(1)
 
   DEFI_FICHIER(ACTION='LIBERER',UNITE=UNITE_IMPR_ASTER)

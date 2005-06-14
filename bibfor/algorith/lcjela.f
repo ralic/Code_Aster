@@ -2,7 +2,7 @@
         IMPLICIT   NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/08/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 14/06/2005   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,6 +44,7 @@ C
      1         LOI(1:9)  .EQ. 'VISCOCHAB'   .OR.
      1         LOI(1:4)  .EQ. 'OHNO'        .OR.
      1         LOI(1:7)  .EQ. 'NADAI_B'     .OR.
+     1         LOI(1:10)  .EQ. 'HOEK_BROWN' .OR.
      1         LOI(1:6)  .EQ. 'LAIGLE'           ) THEN
          CALL LCOPLI ( 'ISOTROPE' , MOD , MATER(1,1) , DSDE )
          

@@ -1,4 +1,4 @@
-#@ MODIF macro_elas_mult_ops Macro  DATE 14/09/2004   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF macro_elas_mult_ops Macro  DATE 14/06/2005   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -44,7 +44,6 @@ def macro_elas_mult_ops(self,MODELE,CHAM_MATER,CARA_ELEM,NUME_DDL,
   CALC_ELEM       =self.get_cmd('CALC_ELEM')
   CALC_NO         =self.get_cmd('CALC_NO')
   # La macro compte pour 1 dans la numerotation des commandes
-  #self.icmd=1
   self.set_icmd(1)
 
   # Le concept sortant (de type mult_elas ou fourier_elas) est nommé

@@ -1,4 +1,4 @@
-#@ MODIF macro_proj_base_ops Macro  DATE 14/09/2004   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF macro_proj_base_ops Macro  DATE 14/06/2005   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -30,7 +30,6 @@ def macro_proj_base_ops(self,BASE,NB_VECT,MATR_ASSE_GENE,VECT_ASSE_GENE,PROFIL,*
   PROJ_MATR_BASE =self.get_cmd('PROJ_MATR_BASE')
   PROJ_VECT_BASE =self.get_cmd('PROJ_VECT_BASE')
   # La macro compte pour 1 dans la numerotation des commandes
-  #self.icmd=1
   self.set_icmd(1)
 
   _num=NUME_DDL_GENE(BASE=BASE,NB_VECT=NB_VECT,STOCKAGE=PROFIL)

@@ -1,12 +1,13 @@
-      SUBROUTINE IRGMG1 (NUMOLD,IMA,NBORD2,TABD,TABL,TABV,NBNO,
-     &                   ICMP,IFI,IWRI,IADMAX)
+      SUBROUTINE IRGMG1 (NUMOLD,IMA,NBORD2,TABD,TABL,TABV,PARTIE,JTYPE,
+     &                   NBNO,ICMP,IFI,IWRI,IADMAX)
       IMPLICIT NONE
-      INTEGER           NUMOLD(*),TABD(*),TABL(*),TABV(*)
+      INTEGER           NUMOLD(*),TABD(*),TABL(*),TABV(*),JTYPE
       INTEGER           ICMP,IFI,IMA,NBORD2,IADMAX,NBNO
       LOGICAL           IWRI
+      CHARACTER*(*)     PARTIE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 17/05/2005   AUTEUR CIBHHLV L.VIVAN 
+C MODIF PREPOST  DATE 14/06/2005   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -34,6 +35,8 @@ C     NBORD2 : I   : NOMBRE DE NUM D'ORDRE
 C     TABD   : I   : DECRIPTEURS DU CHMAP SIMPLE A IMMRIMER
 C     TABL   : I   : DECRIPTEURS DU CHMAP SIMPLE A IMMRIMER
 C     TABV   : I   : DECRIPTEURS DU CHMAP SIMPLE A IMMRIMER
+C     PARTIE : K4  : IMPRESSION DE LA PARTIE COMPLEXE OU REELLE DU CHAMP
+C     JTYPE  : I   : ADRESSE DU TYPE DU CHAMP ( REEL OU COMPLEXE )
 C     ICMP   : I   : NUMERO COMPOSANTE CHAMP
 C     IFI    : I   : NUMERO D'UNITE LOGIQUE DU FICHIER GMSH
 C     IWRI    : L   : INDIQUE SI ON DOIT ECRIRE
@@ -84,19 +87,39 @@ C
             CALL UTMESS('F','IRGMG1','NBSP DIFFERENT DE 1')
          ENDIF
          VALE = 0.D0
-         DO 13 IPT = 1,NBPT
-            CALL CESEXI('C',JCESD,JCESL,IMAOLD,IPT,ISP,ICMP,IAD)
-            IF (IAD.GT.0) THEN
-               IADMAX = IAD
-               VALE = VALE + ZR(JCESV-1+IAD)
-            ENDIF
- 13      CONTINUE
+         IF (ZK8(JTYPE-1+IOR).EQ.'R') THEN
+           DO 13 IPT = 1,NBPT
+             CALL CESEXI('C',JCESD,JCESL,IMAOLD,IPT,ISP,ICMP,IAD)
+               IF (IAD.GT.0) THEN
+                 IADMAX = IAD
+                 VALE = VALE + ZR(JCESV-1+IAD)
+               ENDIF
+ 13        CONTINUE
+         ELSE IF (ZK8(JTYPE-1+IOR).EQ.'C') THEN
+           IF (PARTIE.EQ.'REEL') THEN
+             DO 15 IPT = 1,NBPT
+               CALL CESEXI('C',JCESD,JCESL,IMAOLD,IPT,ISP,ICMP,IAD)
+                 IF (IAD.GT.0) THEN
+                   IADMAX = IAD
+                   VALE = VALE + DBLE(ZC(JCESV-1+IAD))
+                 ENDIF
+ 15          CONTINUE
+           ELSEIF (PARTIE.EQ.'IMAG') THEN
+             DO 17 IPT = 1,NBPT
+               CALL CESEXI('C',JCESD,JCESL,IMAOLD,IPT,ISP,ICMP,IAD)
+                 IF (IAD.GT.0) THEN
+                   IADMAX = IAD
+                   VALE = VALE + DIMAG(ZC(JCESV-1+IAD))
+                 ENDIF
+ 17          CONTINUE
+           ENDIF           
+         ENDIF
          IF (ABS(VALE).LE.1.D-99) VALE = 0.D0
          IF ( NBPT .NE. 0 )  VALE = VALE / NBPT
          IF (IWRI) THEN
-            DO 15 INO = 1,NBNO
+            DO 19 INO = 1,NBNO
                WRITE(IFI,1000) VALE
- 15         CONTINUE
+ 19         CONTINUE
          ENDIF
  11   CONTINUE
 C

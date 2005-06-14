@@ -1,4 +1,4 @@
-#@ MODIF macr_recal_ops Macro  DATE 14/03/2005   AUTEUR DURAND C.DURAND 
+#@ MODIF macr_recal_ops Macro  DATE 14/06/2005   AUTEUR DURAND C.DURAND 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -50,7 +50,6 @@ def macr_recal_ops(self,UNITE_ESCL, RESU_EXP, POIDS, LIST_PARA, RESU_CALC,
    from Macro import reca_algo
    from Macro import reca_interp
    # La macro compte pour 1 dans l'execution des commandes
-   #self.icmd=1
    self.set_icmd(1)
 
    self.DeclareOut('nomres',self.sd)

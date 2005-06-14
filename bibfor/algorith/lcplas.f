@@ -3,12 +3,12 @@
      2                      TEMPF,TIMED, TIMEF, DEPS,  EPSD, SIGD,VIND,
      3                      SIGF, VINF, 
      3                COMP,NBCOMM, CPMONO, PGL,
-     5               ICOMP, IRTETI, THETA,
+     5               ICOMP, IRTETI, THETA,VP,VECP,
      4                      SEUIL, DEVG, DEVGII)
         IMPLICIT   NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/06/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 14/06/2005   AUTEUR JMBHH01 J.M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -47,6 +47,8 @@ C           SIGD   :  CONTRAINTE A T
 C           VIND   :  VARIABLES INTERNES A T
 C           NR     :  NB EQUATION DU SYSTEME R(DY)
 C           NVI    :  NB VARIABLES INTERNES
+C           VP     :  VALEURS PROPRES DU DEVIATEUR ELASTIQUE(HOEK-BROWN)
+C           VECP   : VECTEURS PROPRES DU DEVIATEUR ELASTIQUE(HOEK-BROWN)
 C           ICOMP  :  COMPTEUR POUR LE REDECOUPAGE DU PAS DE TEMPS
 C       VAR DEPS   :  INCREMENT DE DEFORMATION
 C       OUT SIGF   :  CONTRAINTE A T+DT
@@ -64,6 +66,7 @@ C
         REAL*8          VIND(*),        VINF(*)
         REAL*8          MATERF(NMAT,2), MATERD(NMAT,2)
         REAL*8          SEUIL, DEVG(*), DEVGII
+        REAL*8          VP(3),VECP(3,3)     
 C
         CHARACTER*8     MOD
         CHARACTER*16    LOI
@@ -95,6 +98,12 @@ C
      2                 TEMPF,TIMED, TIMEF, DEPS,  EPSD, SIGD, VIND,
      3                COMP,NBCOMM, CPMONO, PGL,
      3                 SIGF, VINF, ICOMP, IRTET)
+         IF ( IRTET.GT.0 ) GOTO (1), IRTET
+C
+      ELSEIF ( LOI(1:10) .EQ. 'HOEK_BROWN'   ) THEN
+         CALL LCHOBR ( TOLER, ITMAX, MOD, NMAT, MATERF, NR, NVI,
+     1                 DEPS, SIGD, VIND, SEUIL, VP,VECP,ICOMP, SIGF,
+     2                 VINF, IRTET)
          IF ( IRTET.GT.0 ) GOTO (1), IRTET
 C
       ELSEIF ( LOI(1:6) .EQ. 'LAIGLE'   ) THEN
