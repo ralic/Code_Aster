@@ -13,7 +13,7 @@
       LOGICAL            LAMOR,LFLU
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 15/06/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -571,7 +571,7 @@ C
 C ---   RECHERCHE DU TYPE D'OBSTACLE
         IF(MOTFAC.EQ.'CHOC' .OR. MOTFAC.EQ.'FLAMBAGE') THEN
            CALL GETVID(MOTFAC,'OBSTACLE',II,1,1,NOECHO(I,9),N1)
-           CALL JEVEUO(NOECHO(I,9)//'           .REFE','L',JREFE)
+           CALL JEVEUO(NOECHO(I,9)//'           .REFO','L',JREFE)
            IF (ZK24(JREFE)(1:9).EQ.'BI_PLAN_Y') THEN
              NOECHO(I,9) = 'BI_PLANY'
            ELSEIF (ZK24(JREFE)(1:9).EQ.'BI_PLAN_Z') THEN

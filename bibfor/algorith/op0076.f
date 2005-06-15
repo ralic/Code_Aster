@@ -1,7 +1,7 @@
       SUBROUTINE OP0076( IERR )
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 15/06/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -61,7 +61,7 @@ C
 C     --- RECUPERATION DES INFORMATIONS MODALES ---
 C
       CALL JEVEUO(TRANGE//'           .DESC','L',IADESC)
-      CALL JEVEUO(TRANGE//'           .REFE','L',IAREFE)
+      CALL JEVEUO(TRANGE//'           .REFD','L',IAREFE)
       CALL JEVEUO(TRANGE//'           .INST','L',IDINST)
       CALL JELIRA(TRANGE//'           .INST','LONMAX',NBINST,K1BID)
       CALL JEVEUO(TRANGE//'           .'//NOMCHA(1:4),'L',IDCHAM)

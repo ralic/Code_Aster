@@ -3,7 +3,7 @@
       CHARACTER*(*)       TRANGE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/03/2004   AUTEUR ACBHHCD G.DEVESA 
+C MODIF UTILITAI  DATE 15/06/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -139,9 +139,9 @@ C                 D E P L   ---   V I T E   ---   A C C E
 C----------------------------------------------------------------------
 C
       ELSE
-         CALL JEVEUO(RESU//'.REFE','L',LREFE)
+         CALL JEVEUO(RESU//'.REFD','L',LREFE)
          BASEMO = ZK24(LREFE)(1:8)
-         CALL JEVEUO(BASEMO//'           .REFE','L',LREFE)
+         CALL JEVEUO(BASEMO//'           .REFD','L',LREFE)
          MATRAS = ZK24(LREFE+2)
          CALL JEVEUO(RESU//'.DESC','L',LDESC)
          NBMODE = ZI(LDESC+1)

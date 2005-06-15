@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/11/2004   AUTEUR BOYERE E.BOYERE 
+C MODIF ALGORITH  DATE 15/06/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -113,11 +113,11 @@ C
       NBMODE = ZI(IADESC+1)
 C
       IF ( MODE .EQ. BLANC ) THEN
-         CALL JEVEUO(TRANGE//'.REFE','L',IAREFE)
+         CALL JEVEUO(TRANGE//'.REFD','L',IAREFE)
          BASEMO = ZK24(IAREFE)(1:8)
-         CALL JEVEUO(BASEMO//'           .REFE','L',IADRIF)
+         CALL JEVEUO(BASEMO//'           .REFD','L',IADRIF)
 C
-         CALL JEVEUO(NOMIN//'           .REFE','L',J1REFE)
+         CALL JEVEUO(NOMIN//'           .REFD','L',J1REFE)
          MATGEN = ZK24(J1REFE+1)
          IF (MATGEN(1:8) .NE. BLANC) THEN
            CALL JEVEUO(MATGEN//'           .REFA','L',J2REFE)
@@ -638,7 +638,7 @@ C                 --- ACCELERATION ABSOLUE = RELATIVE + ENTRAINEMENT
       ENDIF
 C
       KREFE  = NOMRES
-      CALL WKVECT(KREFE//'.REFE','G V K24',3,LREFE)
+      CALL WKVECT(KREFE//'.REFD','G V K24',3,LREFE)
       IF (MODE.EQ.BLANC) THEN
 C
          IF (TYPREP(1:9).EQ.'MODE_MECA') THEN
@@ -657,7 +657,7 @@ C
          ZK24(LREFE+1) = '  '
          ZK24(LREFE+2) = ZK24(LLCHA+1)
       ENDIF
-      CALL JELIBE(KREFE//'.REFE')
+      CALL JELIBE(KREFE//'.REFD')
 C
  9999 CONTINUE
       CALL JEDETC(' ','&&TRAN75',1)

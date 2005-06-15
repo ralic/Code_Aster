@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 05/10/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGELINE  DATE 15/06/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -47,11 +47,11 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*3   OUINON
       CHARACTER*8   K8B, MODEOU, MODEIN
       CHARACTER*16  TYPCON, NOMCMD, CRITFI, NOMPAR(3), NOMSY, NOMPAV
-      CHARACTER*24  MASSE, AMOR, RAIDE, REFE, MASSI, AMORI, RAIDI, KMODE
+      CHARACTER*24  MASSE, AMOR, RAIDE, REFD, MASSI, AMORI, RAIDI, KMODE
       CHARACTER*24  KVEC, KVALI, KVALR, KVALK, NOPARA(NBPARA)
       COMPLEX*16    C16B
 C     ------------------------------------------------------------------
-      DATA  REFE  / '                   .REFE' /
+      DATA  REFD  / '                   .REFD' /
       DATA  KVEC  / '&&OP0168.VAL_PROPRE' /
       DATA  KVALI / '&&OP0168.GRAN_MODAL_I' /
       DATA  KVALR / '&&OP0168.GRAN_MODAL_R' /
@@ -99,8 +99,8 @@ C
 C
             IF ( NBMR .EQ. 1 ) THEN
 C      --- MATRICES DE REFERENCE DES MODES ---
-               REFE(1:8) = MODEIN
-               CALL JEVEUO ( REFE, 'L', LMODE )
+               REFD(1:8) = MODEIN
+               CALL JEVEUO ( REFD, 'L', LMODE )
                MASSE = ZK24(LMODE  )
                AMOR  = ZK24(LMODE+1)
                RAIDE = ZK24(LMODE+2)
@@ -108,8 +108,8 @@ C      --- MATRICES DE REFERENCE DES MODES ---
             ENDIF
 C
             ZK8(JNOM+NBMR-1) = MODEIN
-            REFE(1:8) = MODEIN
-            CALL JEVEUO(REFE,'L',LMODE)
+            REFD(1:8) = MODEIN
+            CALL JEVEUO(REFD,'L',LMODE)
             MASSI = ZK24(LMODE  )
             AMORI = ZK24(LMODE+1)
             RAIDI = ZK24(LMODE+2)

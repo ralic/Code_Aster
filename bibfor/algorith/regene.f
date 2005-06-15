@@ -3,7 +3,7 @@
       CHARACTER*8         NOMRES, RESGEN
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/05/2004   AUTEUR NICOLAS O.NICOLAS 
+C MODIF ALGORITH  DATE 15/06/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -122,9 +122,9 @@ C
 C
 C ------ RECUPERATION DU MODELE GENERALISE
 C
-         CALL JEVEUO(RESGEN//'           .REFE','L',LLREF)
+         CALL JEVEUO(RESGEN//'           .REFD','L',LLREF)
          RAID=ZK24(LLREF+2)
-         CALL JELIBE(RESGEN//'           .REFE')
+         CALL JELIBE(RESGEN//'           .REFD')
          CALL JEVEUO(RAID//'.REFA','L',LLREF)
          NUMGEN(1:14)=ZK24(LLREF+1)
          NUMGEN(15:19)='.NUME'
@@ -132,9 +132,9 @@ C
          CALL JEVEUO(NUMGEN//'.REFN','L',LLREF)
          RESPRO=ZK24(LLREF)
          CALL JELIBE(NUMGEN//'.REFN')
-         CALL JEVEUO(RESPRO//'           .REFE','L',LLREF)
+         CALL JEVEUO(RESPRO//'           .REFD','L',LLREF)
          RAID=ZK24(LLREF+2)
-         CALL JELIBE(RESPRO//'           .REFE')
+         CALL JELIBE(RESPRO//'           .REFD')
          CALL JEVEUO(RAID//'.REFA','L',LLREF)
          NUMGEN(1:14)=ZK24(LLREF+1)
          NUMGEN(15:19)='.NUME'
@@ -207,7 +207,7 @@ C
 C-----------------------------------------------------------------------
       ELSE
 C-----------------------------------------------------------------------
-         CALL JEVEUO(BASMOD//'           .REFE','L',IADRIF)
+         CALL JEVEUO(BASMOD//'           .REFD','L',IADRIF)
 
          CALL RSORAC ( BASMOD, 'LONUTI', IBID, RBID, KBID, CBID, RBID,
      &              KBID, NBMO2, 1, IBID )
@@ -272,11 +272,11 @@ C
 20       CONTINUE
 
          KREFE  = NOMRES
-         CALL WKVECT(KREFE//'.REFE','G V K24',3,LREFE)
+         CALL WKVECT(KREFE//'.REFD','G V K24',3,LREFE)
          ZK24(LREFE  ) = ZK24(IADRIF)
          ZK24(LREFE+1) = '  '
          ZK24(LREFE+2) = ZK24(IADRIF+2)
-         CALL JELIBE(KREFE//'.REFE')
+         CALL JELIBE(KREFE//'.REFD')
       ENDIF
 
       CALL JEDETR ( '&&REGENE.NUME' )

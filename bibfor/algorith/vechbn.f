@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 14/01/98   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 15/06/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -81,8 +81,8 @@ C
           CALL JEVEUO(MACRO2//'.MAEL.MASS .REFE','L',LMACR2)
           BAMO1 = ZK24(LMACR1)
           BAMO2 = ZK24(LMACR2)
-          CALL JEVEUO(BAMO1(1:19)//'.REFE','L',LBAMO1)
-          CALL JEVEUO(BAMO2(1:19)//'.REFE','L',LBAMO2)
+          CALL JEVEUO(BAMO1(1:19)//'.REFD','L',LBAMO1)
+          CALL JEVEUO(BAMO2(1:19)//'.REFD','L',LBAMO2)
           INTF1 = ZK24(LBAMO1)
           INTF2 = ZK24(LBAMO2)
           LINO1 = INTF1(1:14)//'.INTD.LINO'

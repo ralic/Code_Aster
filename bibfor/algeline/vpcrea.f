@@ -4,7 +4,7 @@
       CHARACTER*(*)             MODES, MASSE, AMOR, RAIDE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 10/03/98   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 15/06/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,28 +48,28 @@ C
       CHARACTER*1   TYPE
       CHARACTER*8   CBID
       CHARACTER*16  NOMCMD
-      CHARACTER*24  VALE, REFE
+      CHARACTER*24  VALE, REFD
 C     ------------------------------------------------------------------
-      DATA  REFE  /'                   .REFE'/
+      DATA  REFD  /'                   .REFD'/
 C     ------------------------------------------------------------------
       CALL JEMARQ()
       IER    = 0
       PGC    = 'VPCREA'
 C
-C     --------------------------- REFE --------------------------------
+C     --------------------------- REFD --------------------------------
 C     --- AFFECTATION DES INFORMATIONS DE REFERENCE A CHAMP ---
-      REFE(1:8) = MODES
-      CALL JEEXIN(REFE,IER1)
+      REFD(1:8) = MODES
+      CALL JEEXIN(REFD,IER1)
       IF ( IER1 .EQ. 0 ) THEN
          IF ( ICOND .EQ. 0 ) THEN
             NBVAL = 3
-            CALL WKVECT(REFE,'G V K24',NBVAL,LMODE)
+            CALL WKVECT(REFD,'G V K24',NBVAL,LMODE)
             ZK24(LMODE    ) = MASSE
             ZK24(LMODE+1) = AMOR
             ZK24(LMODE+2) = RAIDE
          ENDIF
       ELSE
-         CALL JEVEUO(REFE,'L',LMODE)
+         CALL JEVEUO(REFD,'L',LMODE)
          IF ( ZK24(LMODE    ) .NE. MASSE  ) IER = IER + 1
          IF ( ZK24(LMODE+1) .NE. AMOR     ) IER = IER + 1
          IF ( ZK24(LMODE+2) .NE. RAIDE    ) IER = IER + 1
@@ -77,14 +77,14 @@ C     --- AFFECTATION DES INFORMATIONS DE REFERENCE A CHAMP ---
            CALL GETRES(CBID,CBID,NOMCMD)
            IF ( ZK24(LMODE+1)(1:8) .NE. ' ' ) THEN
               CALL UTMESS('F',NOMCMD//'.VPCREA',
-     +        'LE CONCEPT MODE "'//REFE(1:8)//'" A ETE CREE AVEC '//
+     +        'LE CONCEPT MODE "'//REFD(1:8)//'" A ETE CREE AVEC '//
      +        'LES MATRICES    MATR_A: '//ZK24(LMODE)(1:8)//
      +                      ', MATR_B: '//ZK24(LMODE+2)(1:8)//
      +                      ', MATR_C: '//ZK24(LMODE+1)(1:8)//
      +        ' ET NON AVEC CELLES  PASSEES EN ARGUMENTS.')
            ELSE
               CALL UTMESS('F',NOMCMD//'.VPCREA',
-     +        'LE CONCEPT MODE "'//REFE(1:8)//'" A ETE CREE AVEC '//
+     +        'LE CONCEPT MODE "'//REFD(1:8)//'" A ETE CREE AVEC '//
      +        'LES MATRICES    MATR_A: '//ZK24(LMODE)(1:8)//
      +                      ', MATR_B: '//ZK24(LMODE+2)(1:8)//
      +        ' ET NON AVEC CELLES  PASSEES EN ARGUMENTS.')

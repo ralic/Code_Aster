@@ -11,7 +11,7 @@
       CHARACTER*19        NOMT19
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF PREPOST  DATE 15/06/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -297,7 +297,7 @@ C
       ELSE
          CALL JEVEUO ( OBCONT//'           .VALR', 'L', IRAYO )
          CALL JEVEUO ( OBCONT//'           .VALT', 'L', ITHET )
-         CALL JEVEUO ( OBCONT//'           .REFE', 'L', IREFE )
+         CALL JEVEUO ( OBCONT//'           .REFO', 'L', IREFE )
          CALL JELIRA ( OBCONT//'           .VALT', 'LONMAX', NCO, K8B )
          CALL USOBEN ( GUIDAG, DIMOBS, OBSUSE, NCO, ZR(IRAYO), 
      &                 ZR(ITHET), NS, PARUOB, TYPUOB, NOMT19,

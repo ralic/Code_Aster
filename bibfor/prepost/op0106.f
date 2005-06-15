@@ -1,7 +1,7 @@
       SUBROUTINE OP0106(IER)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 28/01/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF PREPOST  DATE 15/06/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -182,9 +182,9 @@ C TRI DES OPTIONS SUIVANT TYSD
           EXITIM = .TRUE.
         ELSE IF (TYSD.EQ.'MODE_MECA' .OR. TYSD(1:9).EQ.'MODE_STAT' .OR.
      &           TYSD.EQ.'DYNA_TRANS') THEN
-          CALL JEEXIN(LERES0//'.REFE',IRET)
+          CALL JEEXIN(LERES0//'.REFD',IRET)
           IF (IRET.NE.0) THEN
-            CALL JEVEUO(LERES0//'.REFE','L',LREF)
+            CALL JEVEUO(LERES0//'.REFD','L',LREF)
             MASSE = ZK24(LREF)
             IF (MASSE.NE.' ') THEN
               CALL MTDSCR(MASSE)
@@ -200,9 +200,9 @@ C TRI DES OPTIONS SUIVANT TYSD
               GO TO 260
             END IF
    10     CONTINUE
-          CALL JEEXIN(LERES0//'.REFE',IRET)
+          CALL JEEXIN(LERES0//'.REFD',IRET)
           IF (IRET.NE.0) THEN
-            CALL JEVEUO(LERES0//'.REFE','L',LREF)
+            CALL JEVEUO(LERES0//'.REFD','L',LREF)
             MASSE = ZK24(LREF)
             IF (MASSE.NE.' ') THEN
               CALL MTDSCR(MASSE)

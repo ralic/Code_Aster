@@ -3,7 +3,7 @@
       CHARACTER*8         MACR
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 21/07/2003   AUTEUR NICOLAS O.NICOLAS 
+C MODIF UTILITAI  DATE 15/06/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -204,7 +204,7 @@ C ---------------------------------------------------------------------
 C
       CALL JEVEUO ( MACR//'.MAEL      .REFE' , 'L' , JREFE )
       BAMO = ZK24(JREFE)(1:19)
-      CALL JEVEUO ( BAMO//'.REFE' , 'L' , JREFE )
+      CALL JEVEUO ( BAMO//'.REFD' , 'L' , JREFE )
       INTF = ZK24(JREFE)(1:19)
       CALL JEVEUO ( INTF//'      .INTD.TYPE' , 'L' , JTYPE )
       CALL JELIRA ( INTF//'      .INTD.TYPE' , 'LONMAX' , NBT , K8B )

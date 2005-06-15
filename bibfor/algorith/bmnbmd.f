@@ -1,5 +1,5 @@
       SUBROUTINE BMNBMD(BASMDZ,OPTINZ,NBOUT)
-C MODIF ALGORITH  DATE 18/04/2005   AUTEUR NICOLAS O.NICOLAS 
+C MODIF ALGORITH  DATE 15/06/2005   AUTEUR VABHHTS J.PELLET 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -75,7 +75,7 @@ C
 C
 C--------------------RECUPERATION INTERF_DYNA---------------------------
 C                          EVENTUELLE
-      CALL JEVEUO(BASMOD//'           .REFE','L',LLREF)
+      CALL JEVEUO(BASMOD//'           .REFD','L',LLREF)
       INTF=ZK24(LLREF)
 C
 C--------------------CAS BASE MODALE CLASSIQUE--------------------------

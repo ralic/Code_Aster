@@ -3,7 +3,7 @@
       CHARACTER*8         NOMRES
 C----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/03/2002   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ALGORITH  DATE 15/06/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -72,7 +72,7 @@ C
 C
       CALL JELIRA(  MECA//'           .ORDR','LONUTI',NBMODE,K8B)
       CALL JEVEUO(  MECA//'           .ORDR','L',JORDM)
-      CALL JEVEUO(NOMRES//'           .REFE','L',LLREF)
+      CALL JEVEUO(NOMRES//'           .REFD','L',LLREF)
       MASSE  = ZK24(LLREF+3)
       NUMDDL = ZK24(LLREF+1)
       NU     = NUMDDL(1:14)

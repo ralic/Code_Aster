@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 05/10/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF PREPOST  DATE 15/06/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,10 +50,10 @@ C
       CHARACTER*14  NUME
       CHARACTER*16  CONCEP, NOMCMD, VALEK(2)
       CHARACTER*19  ENERPO
-      CHARACTER*24  NPRNO, REFE, DEEQ, NOMCH1, NOMOB1, NOMOB2
+      CHARACTER*24  NPRNO, REFD, DEEQ, NOMCH1, NOMOB1, NOMOB2
       CHARACTER*24  MAGRNO, MANONO, MAGRMA, MANOMA
 C     ------------------------------------------------------------------
-      DATA  REFE  /'                   .REFE'/
+      DATA  REFD  /'                   .REFD'/
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
@@ -80,9 +80,9 @@ C
 C     ----- RECUPERATION DES MODES -----
 C
       CALL GETVID( 'ENER_SOL','MODE_MECA',1,1,1,MECA,NMM)
-      REFE(1:8) = MECA
-      CALL JEVEUO(REFE,'L',JREFE)
-      MASSE = ZK24(JREFE)
+      REFD(1:8) = MECA
+      CALL JEVEUO(REFD,'L',JREFD)
+      MASSE = ZK24(JREFD)
 C
 C     --- ON RECUPERE LA TABLE D'ENERGIE ---
 C

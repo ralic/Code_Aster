@@ -1,7 +1,7 @@
       SUBROUTINE  REFE99 (NOMRES)
       IMPLICIT REAL*8 (A-H,O-Z)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/12/2001   AUTEUR CIBHHPD D.NUNEZ 
+C MODIF ALGORITH  DATE 15/06/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,7 +23,7 @@ C  P. RICHARD     DATE 12/90
 C-----------------------------------------------------------------------
 C  BUT : RECUPERER LES NOMS UTILISATEUR DES CONCEPTS ASSOCIES AUX
 C        MATRICES ASSEMBLEES CONSIDEREES - EFFECTUER QUELQUES CONTROLES
-C        CREER LE .REFE
+C        CREER LE .REFD
 C-----------------------------------------------------------------------
 C
 C-------- DEBUT COMMUNS NORMALISES  JEVEUX  ----------------------------
@@ -81,7 +81,7 @@ C
         CALL WKVECT('&&'//PGC//'.MODE_MECA','V V K8',NBMOME,LTMOME)
         CALL GETVID('CLASSIQUE','MODE_MECA',1,1,NBMOME,ZK8(LTMOME),IBID)
         DO 10 I=1,NBMOME
-          CALL JEVEUO(ZK8(LTMOME-1+I)//'           .REFE','L',LLRES)
+          CALL JEVEUO(ZK8(LTMOME-1+I)//'           .REFD','L',LLRES)
           MASS=ZK24(LLRES)
           RAID=ZK24(LLRES+2)
           CALL DISMOI('F','NOM_NUME_DDL',RAID,'MATR_ASSE',IBID,
@@ -119,7 +119,7 @@ C
         INTF = ' '
 C - RECUPERATION DE LA MASSE
         CALL GETVID('DIAG_MASS','MODE_MECA',1,1,1,MECA,IBID)
-        CALL JEVEUO(MECA//'           .REFE','L',LLRES)
+        CALL JEVEUO(MECA//'           .REFD','L',LLRES)
         MASS = ZK24(LLRES)
         RAID = ZK24(LLRES+2)
 
@@ -127,11 +127,11 @@ C - RECUPERATION DE LA MASSE
      &                 NUMDDL,IRET)
       ENDIF
 C
-C --- CREATION DU .REFE
+C --- CREATION DU .REFD
 C
-      CALL JEEXIN(NOMRES//'           .REFE',IRET)
+      CALL JEEXIN(NOMRES//'           .REFD',IRET)
       IF (IRET.EQ.0) THEN 
-         CALL WKVECT(NOMRES//'           .REFE','G V K24',4,LDREF)
+         CALL WKVECT(NOMRES//'           .REFD','G V K24',4,LDREF)
          ZK24(LDREF)   = INTF
          ZK24(LDREF+1) = NUMDDL
          ZK24(LDREF+2) = RAID

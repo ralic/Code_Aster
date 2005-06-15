@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 05/10/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF PREPOST  DATE 15/06/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -94,7 +94,7 @@ C     ----- RECUPERATION DES MODES -----
       CALL JEVEUO(REFE,'L',JREFE)
       BASEMO = ZK24(JREFE)
       MATRM  = ZK24(JREFE+1)
-      CALL JEVEUO(BASEMO//'           .REFE','L',IADRIF)
+      CALL JEVEUO(BASEMO//'           .REFD','L',IADRIF)
       INTERF = ZK24(IADRIF) (1:8)
       IF (INTERF.NE.' ') THEN
          CALL BMNBMD(BASEMO,'MODE',NBMODD)
@@ -220,11 +220,11 @@ C     ----- RECUPERATION TYPE DE RESULTAT ---
  90   CONTINUE
 C
       KREFE  = NOMRES
-      CALL WKVECT(KREFE//'.REFE','G V K24',3,LREFE)
+      CALL WKVECT(KREFE//'.REFD','G V K24',3,LREFE)
       ZK24(LREFE  ) = MATRM
       ZK24(LREFE+1) = '  '
       ZK24(LREFE+2) = MATRK
-      CALL JELIBE(KREFE//'.REFE')
+      CALL JELIBE(KREFE//'.REFD')
 C
  1000 FORMAT(I6)
  1001 FORMAT(6(1PE12.5))

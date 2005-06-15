@@ -4,7 +4,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 14/06/2005   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ALGELINE  DATE 15/06/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -122,7 +122,7 @@ C
 C
 C --- 1.4.NOMBRE DE POINTS DE DISCRETISATION DU TUBE
 C
-      CALL JEVEUO ( BASE//'           .REFE' , 'L', KREF )
+      CALL JEVEUO ( BASE//'           .REFD' , 'L', KREF )
       MASSE = ZK24(KREF  )
       CALL MTDSCR ( MASSE )
       CALL JEVEUO ( MASSE//'.&INT' , 'L' , LMASSE )

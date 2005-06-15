@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 11/09/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 15/06/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -76,7 +76,7 @@ C-----------------------------------------------------------------------
       INCR = 'BID'
       CALL GETVID(' ','MODELE_INTERFACE',0,1,1,MOINT,NI)
       IF (NI.LE.0) THEN
-        CALL JEVEUO(MODMEC//'           .REFE','L',IREFE)
+        CALL JEVEUO(MODMEC//'           .REFD','L',IREFE)
         CALL RSEXCH(MODMEC,'DEPL',1,NOMCHA,IRET)
         MATAS = ZK24(IREFE) (1:19)
         CALL JEVEUO(MATAS//'.LIME','L',ILIME)

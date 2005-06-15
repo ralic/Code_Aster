@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 10/12/97   AUTEUR G8BHHXD X.DESROCHES 
+C MODIF ALGELINE  DATE 15/06/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -67,7 +67,7 @@ C
 C
       CALL WKVECT('&&CPDEPL.TEMP.NUOR','V V I',1,IMOD)
 C
-      REFEI = BASE//'           .REFE'
+      REFEI = BASE//'           .REFD'
       CALL JEVEUO(REFEI,'L',IREFEI)
       MATRIA = ZK24(IREFEI)
 C

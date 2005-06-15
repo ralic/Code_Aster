@@ -13,7 +13,7 @@
       CHARACTER*16       TYPBAS
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/01/2004   AUTEUR NICOLAS O.NICOLAS 
+C MODIF ALGORITH  DATE 15/06/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -87,7 +87,7 @@ C     ------------------------------------------------------------------
 C ---    CALCUL TRANSITOIRE CLASSIQUE
       IF ((TYPBAS(1:9).EQ.'MODE_MECA').OR.
      +    (TYPBAS(1:9).EQ.'MODE_STAT')) THEN
-         CALL JEVEUO(BASEMO//'           .REFE','L',JDRIF)
+         CALL JEVEUO(BASEMO//'           .REFD','L',JDRIF)
          MATASS =  ZK24(JDRIF)(1:8)
          IF (MATASS.EQ.BLANC) MATASS =  ZK24(JDRIF+2)(1:8)
          CALL DISMOI('F','NOM_MAILLA'  ,MATASS,'MATR_ASSE',
@@ -97,7 +97,7 @@ C ---    CALCUL TRANSITOIRE CLASSIQUE
          DEEQ = NUMDDL//'.NUME.DEEQ'
          CALL JEVEUO(DEEQ,'L',IDDEEQ)
       ELSEIF (TYPBAS(1:9).EQ.'BASE_MODA') THEN
-         CALL JEVEUO(BASEMO//'           .REFE','L',JDRIF)
+         CALL JEVEUO(BASEMO//'           .REFD','L',JDRIF)
          NUMDDL = ZK24(JDRIF+1)(1:14)
          CALL DISMOI('F','NOM_MAILLA',NUMDDL,'NUME_DDL',
      +          IB,MAILLA,IER)

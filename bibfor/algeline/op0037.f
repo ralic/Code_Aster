@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 05/10/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGELINE  DATE 15/06/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -59,7 +59,6 @@ C     PARAMETRES "MODE_FLAMB"
      +              KVEC, KVALI, KVALR, KVALK,
      +              NOPARM(NBPAMT), NOPARF(NBPAFT), NOPARA(NBPAMT)
 C     ------------------------------------------------------------------
-      DATA  REFE  /'                   .REFE'/
       DATA  NOMCMP / 'LAGR', 'DX', 'DY', 'DZ', 'DRX', 'DRY', 'DRZ' /
       DATA  KVEC  / '&&OP0037.VAL_PROPRE'/
       DATA  KVALI / '&&OP0037.GRAN_MODAL_I' /
@@ -181,11 +180,10 @@ C     --- INITIALISATION ---
       LMAT(1)  = 0
       LMAT(2)  = 0
       LDDL  = 1
-      LREFE = .TRUE.
 C
 C     --- MATRICES DE REFERENCE DES MODES ---
-C      REFE(1:8) = MODEIN
-      REFE = MODEIN//'           .REFE'
+      LREFE = .TRUE.
+      REFE = MODEIN//'           .REFD'
       CALL JEEXIN(REFE,IRET)
       IF (IRET.EQ.0) THEN
          LREFE = .FALSE.

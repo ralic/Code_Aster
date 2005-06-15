@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 17/05/2005   AUTEUR ACBHHCD G.DEVESA 
+C MODIF ALGORITH  DATE 15/06/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -136,7 +136,7 @@ C     --- RECUPERATION DE LA BASE MODALE ET NOMBRE DE MODES ---
       CALL JEVEUO(MASGEN//'           .DESC','L',JDESC)
       NBMODE = ZI(JDESC+1)
       BASEMO = ZK24(JREFE) (1:8)
-      CALL JEVEUO(BASEMO//'           .REFE','L',JDRIF)
+      CALL JEVEUO(BASEMO//'           .REFD','L',JDRIF)
       RIGASS = ZK24(JDRIF+2) (1:8)
       MARIG = '&&MDTR74.RIGI'
       CALL COPISD('MATR_ASSE','V',RIGASS,MARIG)
@@ -676,7 +676,7 @@ C        --- CONDITIONS INITIALES ---
 
 C --- 1.4.NOMBRE DE POINTS DE DISCRETISATION DU TUBE
 C
-      CALL JEVEUO ( BASEMO//'           .REFE' , 'L', KREF )
+      CALL JEVEUO ( BASEMO//'           .REFD' , 'L', KREF )
       MASSE = ZK24(KREF  )
       CALL MTDSCR ( MASSE )
 C

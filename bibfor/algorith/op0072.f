@@ -1,7 +1,7 @@
       SUBROUTINE OP0072(IERR)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/02/2005   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 15/06/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -90,7 +90,7 @@ C     DES MODES ET DU VECTEUR ASSEMBLE
 C
       CALL JEVEUO(VECTAS//'           .VALE','L',IADVEC)
       CALL JEVEUO(VECTAS//'           .REFE','L',IADREF)
-      CALL JEVEUO(BASEMO//'           .REFE','L',IADRIF)
+      CALL JEVEUO(BASEMO//'           .REFD','L',IADRIF)
       IF (TYPBAS(1:9).EQ.'MODE_MECA') THEN
         NUMDD1 = ZK24(IADREF+1)
         MATRIC = ZK24(IADRIF)

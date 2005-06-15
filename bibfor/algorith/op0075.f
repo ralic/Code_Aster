@@ -3,7 +3,7 @@
       INTEGER            IER
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 15/02/2005   AUTEUR NICOLAS O.NICOLAS 
+C MODIF ALGORITH  DATE 15/06/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -110,13 +110,13 @@ C      --- PROJECTION RESULTAT SUR UN SQUELETTE ENRICHI ---
 C INDICATEUR CALCUL SANS MATRICE GENERALISEE (PROJ_MESU_MODAL)
       PROMES = .FALSE.
       IF (CONCEP(1:9).EQ.'TRAN_GENE') THEN
-        CALL JEVEUO(RESIN//'           .REFE','L',J1REFE)
+        CALL JEVEUO(RESIN//'           .REFD','L',J1REFE)
         MATGEN = ZK24(J1REFE+1)
         IF (MATGEN(1:8) .EQ. BLANC)
      &       PROMES = .TRUE.
       ELSEIF ((CONCEP(1:9).EQ.'MODE_GENE') .OR.
      &     (CONCEP(1:9).EQ.'HARM_GENE')) THEN
-        CALL JEVEUO(RESIN//'           .REFE','L',J1REFE)
+        CALL JEVEUO(RESIN//'           .REFD','L',J1REFE)
         MATGEN = ZK24(J1REFE)
         IF (MATGEN(1:8) .EQ. BLANC)
      &       PROMES = .TRUE.
@@ -126,7 +126,7 @@ C     --- DYNAMIQUE TRANSITOIRE ---
 C
       IF (CONCEP(1:9).EQ.'TRAN_GENE') THEN
         TYPRES = 'DYNA_TRANS'
-        CALL JEVEUO(RESIN//'           .REFE','L',J1REFE)
+        CALL JEVEUO(RESIN//'           .REFD','L',J1REFE)
         MATGEN = ZK24(J1REFE+1)
         IF (PROMES) THEN
           TYPMAT = ' '
@@ -189,7 +189,7 @@ C     --- CALCUL MODAL PAR SOUS-STRUCTURATION CLASSIQUE ---
 C                  OU SANS SOUS-STRUCTURATION
 C
       ELSEIF(CONCEP(1:9).EQ.'MODE_GENE') THEN
-        CALL JEVEUO(RESIN//'           .REFE','L',J1REFE)
+        CALL JEVEUO(RESIN//'           .REFD','L',J1REFE)
         MATGEN = ZK24(J1REFE)
         IF (PROMES) THEN
           TYPMAT = ' '
@@ -245,7 +245,7 @@ C     --- CALCUL HARMONIQUE PAR SOUS-STRUCTURATION CLASSIQUE ---
 C
       ELSEIF(CONCEP(1:9).EQ.'HARM_GENE' .AND. (.NOT. PROMES)) THEN
         TYPRES = 'DYNA_HARMO'
-        CALL JEVEUO(RESIN//'           .REFE','L',J1REFE)
+        CALL JEVEUO(RESIN//'           .REFD','L',J1REFE)
         MATGEN = ZK24(J1REFE)
         CALL JEVEUO(MATGEN//'           .REFA','L',J2REFE)
         NUMGEN = ZK24(J2REFE+1)(1:14)

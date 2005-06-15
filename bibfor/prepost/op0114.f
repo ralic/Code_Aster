@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 05/10/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF PREPOST  DATE 15/06/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,7 +53,7 @@ C
       REAL*8       R8B, UN, COEF, PREC, OMEGA, ZETA
 C     ------------------------------------------------------------------
       DATA  DESC  /'                   .DESC'/
-      DATA  REFE  /'                   .REFE'/
+      DATA  REFE  /'                   .REFD'/
       DATA  REFA  /'                   .REFA'/
       DATA  VALE  /'                   .VALE'/
       DATA  ADIA  /'                   .ADIA'/

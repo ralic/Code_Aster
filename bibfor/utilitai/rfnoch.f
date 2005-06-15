@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 21/06/2000   AUTEUR CIBHHLV L.VIVAN 
+C MODIF UTILITAI  DATE 15/06/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -64,9 +64,9 @@ C
 C
       ELSE
 C
-         CALL JEVEUO ( RESU//'.REFE', 'L', JREFE )
+         CALL JEVEUO ( RESU//'.REFD', 'L', JREFE )
          BASEMO = ZK24(JREFE)(1:8)
-         CALL JEVEUO ( BASEMO//'           .REFE', 'L', JREFE )
+         CALL JEVEUO ( BASEMO//'           .REFD', 'L', JREFE )
          RAIDE = ZK24(JREFE+2)(1:8)
          CALL DISMOI('F','NOM_MAILLA',RAIDE,'MATR_ASSE',IBID,NOMA,IRET)
 C

@@ -7,7 +7,7 @@
       CHARACTER*19 MELFLU
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 14/06/2005   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ALGELINE  DATE 15/06/2005   AUTEUR VABHHTS J.PELLET 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -249,7 +249,7 @@ C
 C
 C-----RECUPERATION D'INFORMATIONS POUR CREATION DES OBJETS DE TRAVAIL
 C
-      REFEI = BASE//'           .REFE'
+      REFEI = BASE//'           .REFD'
       CALL JEVEUO(REFEI,'L',IREFEI)
       MATRIA = ZK24(IREFEI)
       CALL DISMOI('F','NOM_NUME_DDL',MATRIA,'MATR_ASSE',IBI,NUMDDL,IRE)

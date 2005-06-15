@@ -15,7 +15,7 @@
       INTEGER      NBPASE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 11/05/2005   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF ALGORITH  DATE 15/06/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -287,11 +287,11 @@ C
          IARCHI = 0
          CALL RSCRSD(RESULT,TYPRES,NBSAUV)
          KREFE(1:19) = RESULT
-         CALL WKVECT(KREFE//'.REFE','G V K24',3,LREFE)
+         CALL WKVECT(KREFE//'.REFD','G V K24',3,LREFE)
          ZK24(LREFE  ) = MASSE
          ZK24(LREFE+1) = AMORT
          ZK24(LREFE+2) = RIGID
-         CALL JELIBE(KREFE//'.REFE')
+         CALL JELIBE(KREFE//'.REFD')
 C
          DO 30 ITYPE = 1, NBSORT
             IF ( TYPE(ITYPE) .EQ. '    ' ) GOTO 30

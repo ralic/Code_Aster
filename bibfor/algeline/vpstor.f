@@ -9,7 +9,7 @@
       COMPLEX*16        VECPC8(NEQ,*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 16/09/2003   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGELINE  DATE 15/06/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,15 +50,15 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C     ------------------------------------------------------------------
-      INTEGER       JREFE, IMODE, JMODE, IER, NMIN, IMIN, NMAX, IMAX,IEQ
+      INTEGER       JREFD, IMODE, JMODE, IER, NMIN, IMIN, NMAX, IMAX,IEQ
       INTEGER       NMIN1, KMODE, NORDR, IBID, I, J, LADPA, LMODE, LVALE
       CHARACTER*8   RES ,RAIDE, K8B
       CHARACTER*16  TYPCON, NOMCMD, NOSY
       CHARACTER*19  CHAMNO
-      CHARACTER*24  REFE
-      LOGICAL       LREFE
+      CHARACTER*24  REFD
+      LOGICAL       LREFD
 C     ------------------------------------------------------------------
-      DATA  REFE  /'                   .REFE'/
+      DATA  REFD  /'                   .REFD'/
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ ( )
@@ -75,14 +75,14 @@ C     POUR POUVOIR UTILISER VPSTOR DANS STAT_NON_LINE VIA NMOP45
       ELSE
         NOSY = 'DEPL'
       ENDIF
-      LREFE = .TRUE.
-      REFE(1:8) = MODES
-      CALL JEEXIN(REFE,IER)
+      LREFD = .TRUE.
+      REFD(1:8) = MODES
+      CALL JEEXIN(REFD,IER)
       IF (IER.EQ.0) THEN
-         LREFE = .FALSE.
+         LREFD = .FALSE.
       ELSE
-         CALL JEVEUO (REFE, 'L', JREFE )
-         RAIDE = ZK24(JREFE+2)
+         CALL JEVEUO (REFD, 'L', JREFD )
+         RAIDE = ZK24(JREFD+2)
       ENDIF
 C
 C
@@ -146,7 +146,7 @@ C
 C        --- VECTEUR PROPRE ---
         CALL RSEXCH (MODES, NOSY, NORDR, CHAMNO, IER )
         IF     ( IER .EQ. 0   ) THEN
-        ELSEIF ( IER .EQ. 100 .AND. LREFE ) THEN
+        ELSEIF ( IER .EQ. 100 .AND. LREFD ) THEN
           CALL VTCREM (CHAMNO, RAIDE, 'G', TYPE(1:1) )
         ELSE
           CALL UTDEBM('F',NOMCMD//'.VPSTOR','APPEL ERRONE')

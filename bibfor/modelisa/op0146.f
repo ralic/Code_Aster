@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 05/10/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF MODELISA  DATE 15/06/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -175,7 +175,7 @@ C --- 2.2.VERIFICATION DE L EXISTENCE DES ZONES ASSOCIEES DANS LE   ---
 C ---     CONCEPT TYPE_FLUI_STRU ASSOCIE, POUR LES SPECTRES DE TYPE ---
 C ---     LONGUEUR DE CORRELATION                                   ---
 C
-         BASREF = BASE//'.REFE'
+         BASREF = BASE//'.REMF'
          CALL JEVEUO(BASREF,'L',LBAREF)
          TYPFLU = ZK8(LBAREF)
          FSVI = TYPFLU(1:19)//'.FSVI'

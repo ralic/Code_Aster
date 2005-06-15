@@ -4,7 +4,7 @@ C
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 14/06/2005   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ALGORITH  DATE 15/06/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -103,7 +103,7 @@ C
 C 1.  RECUPERATION DU CONCEPT MELASFLU
 C     --------------------------------
       CALL GETVID ( ' ', 'BASE_ELAS_FLUI', 0,1,1, BASEFL, N1 )
-      CALL JEVEUO ( BASEFL//'.REFE', 'L', KREFE )
+      CALL JEVEUO ( BASEFL//'.REMF', 'L', KREFE )
       TYPFLU = ZK8(KREFE)
       NOMBM  = ZK8(KREFE+1)
 C
@@ -137,7 +137,7 @@ C
 C
 C 4.  RECUPERATION DU NOMBRE D'EQUATIONS DU MODELE
 C     --------------------------------------------
-      CALL JEVEUO(NOMBM//'           .REFE','L',KDRIF)
+      CALL JEVEUO(NOMBM//'           .REFD','L',KDRIF)
       MATASS =  ZK24(KDRIF)(1:8)
       CALL DISMOI('F','NOM_NUME_DDL',MATASS,'MATR_ASSE',IB,NUMDDL,IE)
       CALL DISMOI('F','NB_EQUA'     ,MATASS,'MATR_ASSE',NEQ,K8B,IE)

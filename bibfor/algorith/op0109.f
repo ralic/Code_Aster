@@ -3,7 +3,7 @@
       INTEGER           IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/10/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 15/06/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,14 +55,14 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*14 NUME, NUMGEC
       CHARACTER*19 KVEC, KVAL, KSPECT, KASYSP, KNOEU, KNUME
       CHARACTER*19 NOMJV, LIAR,TYPCOM
-      CHARACTER*24 DESC, REFE, NOPARA(NBPARA)
+      CHARACTER*24 DESC, REFD, NOPARA(NBPARA)
       LOGICAL      TRONC,MONOAP,COMDIR,CORFRE,CALMAS
       COMPLEX*16   C16B
 C     ------------------------------------------------------------------
       DATA  DIR    / 'X' , 'Y' , 'Z' /
       DATA  COMP   / 'DX' , 'DY' , 'DZ' /
       DATA  DESC   /'                   .DESC'/
-      DATA  REFE   /'                   .REFE'/
+      DATA  REFD   /'                   .REFD'/
       DATA  KVEC   /'&&OP0109.VAL_PROPRE'/
       DATA  KVAL   /'&&OP0109.GRAN_MODAL'/
       DATA  KSPECT /'&&OP0109.SPECTRE   '/
@@ -108,8 +108,8 @@ C
       CALL RSUTNU ( MECA, ' ', 0, KNUME, NBORDR, PREC, CRIT, IRET )
       IF (IRET.NE.0) GOTO 9999
       CALL JEVEUO ( KNUME, 'L', JORDR )
-      REFE(1:8) = MECA
-      CALL JEVEUO(REFE,'L',LMODE)
+      REFD(1:8) = MECA
+      CALL JEVEUO(REFD,'L',LMODE)
       MASSE = ZK24(LMODE  )
       NOMSY = 'DEPL'
       CALL VPRECU ( MECA, NOMSY, NBORDR,ZI(JORDR), KVEC,
@@ -167,9 +167,10 @@ C     ----- RECUPERATION DES AMORTISSEMENTS -----
             NBAMOR = NBMODE
          ELSE
 C           A MODIFIER
+            CALL ASSERT(.FALSE.)
             CALL GETVID(' ','AMOR_GENE',1,1,1,AMOGEN,N1)
-            REFE(1:8) = AMOGEN
-            CALL JEVEUO(REFE,'L',JREFC)
+            REFD(1:8) = AMOGEN
+            CALL JEVEUO(REFD,'L',JREFC)
             NUMGEC = ZK24(JREFC+1)(1:14)
             DESC(1:19) = NUMGEC//'.SLCS'
             CALL JEVEUO(DESC,'L',JDESC)

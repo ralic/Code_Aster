@@ -1,0 +1,149 @@
+
+
+-----------------------------------------------------------------------
+--- AUTEUR vabhhts J.PELLET   DATE  le 15/06/2005 a 10:17:16
+
+------------------------------------------------------------------------------
+REALISATION EL  2005-159
+   NB_JOURS_TRAV : 3
+   INTERET_UTILISATEUR : NON
+   TITRE   "un ménage du côté des objets .REFE"
+   FONCTIONNALITE
+   On veut aider à la maintenance du fortran de Code_Aster en distinguant
+   le nom de certains objets qui n'ont rien à voir entre eux.
+   Aujourd'hui, on traite les objets ".REFE".
+   1) Je renomme le .REFE (en .REFD) des SD_RESULTAT "dynamiques" suivantes :
+     <ACOU_HARMO      >           .REFE
+     <BASE_MODALE     >           .REFE
+     <DYNA_HARMO      >           .REFE
+     <DYNA_TRANS      >           .REFE
+     <HARM_GENE       >           .REFE
+     <MODE_ACOU       >           .REFE
+     <MODE_GENE       >           .REFE
+     <MODE_MECA       >           .REFE
+     <MODE_MECA_C     >           .REFE
+     <MODE_STAT_ACCE  >           .REFE
+     <MODE_STAT_DEPL  >           .REFE
+     <TRAN_GENE       >           .REFE
+   2) Je renomme le .REFE (en .REFO) de la SD <OBSTACLE_SDASTER>
+   3) Je renomme le .REFE (en .REMF) de la SD <MELASFLU_SDASTER>
+
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+     Car malheureusement aucune de ces SD ne sont documentées !
+     Mais j'ai émis récemment une série d'ED/EL pour demander leur écriture.
+   VALIDATION
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+ FORTRAN MODIF algeline/cpdepl               vabhhts J.PELLET            91      2      2
+ FORTRAN MODIF algeline/flust1               vabhhts J.PELLET           277      2      2
+ FORTRAN MODIF algeline/flust3               vabhhts J.PELLET           507      2      2
+ FORTRAN MODIF algeline/mdconf               vabhhts J.PELLET           498      3      3
+ FORTRAN MODIF algeline/modcoq               vabhhts J.PELLET           379      2      2
+ FORTRAN MODIF algeline/modeau               vabhhts J.PELLET           306      2      2
+ FORTRAN MODIF algeline/op0037               vabhhts J.PELLET           598      3      5
+ FORTRAN MODIF algeline/op0144               vabhhts J.PELLET           398      5      6
+ FORTRAN MODIF algeline/op0168               vabhhts J.PELLET           456      7      7
+ FORTRAN MODIF algeline/vpcrea               vabhhts J.PELLET            95     10     10
+ FORTRAN MODIF algeline/vpstor               vabhhts J.PELLET           206     12     12
+ FORTRAN MODIF algorith/axacti               vabhhts J.PELLET           150      2      2
+ FORTRAN MODIF algorith/bmnbmd               vabhhts J.PELLET           143      2      2
+ FORTRAN MODIF algorith/bmnodi               vabhhts J.PELLET           190      2      2
+ FORTRAN MODIF algorith/bmnoin               vabhhts J.PELLET           148      2      2
+ FORTRAN MODIF algorith/bmradi               vabhhts J.PELLET           182      2      2
+ FORTRAN MODIF algorith/bmrdda               vabhhts J.PELLET           185      2      2
+ FORTRAN MODIF algorith/calpro               vabhhts J.PELLET           157      2      2
+ FORTRAN MODIF algorith/clas99               vabhhts J.PELLET           159      2      2
+ FORTRAN MODIF algorith/ctetax               vabhhts J.PELLET           231      3      3
+ FORTRAN MODIF algorith/ctetgd               vabhhts J.PELLET           260      3      3
+ FORTRAN MODIF algorith/cynugl               vabhhts J.PELLET           237      3      3
+ FORTRAN MODIF algorith/diag99               vabhhts J.PELLET           241      2      2
+ FORTRAN MODIF algorith/dladap               vabhhts J.PELLET           594      3      3
+ FORTRAN MODIF algorith/dldiff               vabhhts J.PELLET           469      3      3
+ FORTRAN MODIF algorith/dlnewi               vabhhts J.PELLET           781      3      3
+ FORTRAN MODIF algorith/dltini               vabhhts J.PELLET           202      2      2
+ FORTRAN MODIF algorith/exmali               vabhhts J.PELLET           132      2      2
+ FORTRAN MODIF algorith/exprli               vabhhts J.PELLET           164      2      2
+ FORTRAN MODIF algorith/flexib               vabhhts J.PELLET           212      3      3
+ FORTRAN MODIF algorith/harm75               vabhhts J.PELLET           248      5      5
+ FORTRAN MODIF algorith/imbamo               vabhhts J.PELLET           189      2      2
+ FORTRAN MODIF algorith/mdallo               vabhhts J.PELLET           213      3      3
+ FORTRAN MODIF algorith/mdchoc               vabhhts J.PELLET          1034      2      2
+ FORTRAN MODIF algorith/mditmi               vabhhts J.PELLET           387      3      3
+ FORTRAN MODIF algorith/mdrecf               vabhhts J.PELLET           224      3      3
+ FORTRAN MODIF algorith/mdtr74               vabhhts J.PELLET           704      3      3
+ FORTRAN MODIF algorith/mgutdm               vabhhts J.PELLET           163      4      4
+ FORTRAN MODIF algorith/moco99               vabhhts J.PELLET           188      2      2
+ FORTRAN MODIF algorith/modiba               vabhhts J.PELLET           249      7      7
+ FORTRAN MODIF algorith/mxmoam               vabhhts J.PELLET            99      2      2
+ FORTRAN MODIF algorith/nmmoam               vabhhts J.PELLET           128      2      2
+ FORTRAN MODIF algorith/nmmuap               vabhhts J.PELLET            88      2      2
+ FORTRAN MODIF algorith/op0060               vabhhts J.PELLET           590      4      4
+ FORTRAN MODIF algorith/op0071               vabhhts J.PELLET           143      3      3
+ FORTRAN MODIF algorith/op0072               vabhhts J.PELLET           279      2      2
+ FORTRAN MODIF algorith/op0073               vabhhts J.PELLET           157      2      2
+ FORTRAN MODIF algorith/op0075               vabhhts J.PELLET           291      6      6
+ FORTRAN MODIF algorith/op0076               vabhhts J.PELLET            92      2      2
+ FORTRAN MODIF algorith/op0109               vabhhts J.PELLET           471      8      7
+ FORTRAN MODIF algorith/op0149               vabhhts J.PELLET           370      2      2
+ FORTRAN MODIF algorith/prcycb               vabhhts J.PELLET           820      3      3
+ FORTRAN MODIF algorith/prcymn               vabhhts J.PELLET           463      3      3
+ FORTRAN MODIF algorith/prekpr               vabhhts J.PELLET            72      2      2
+ FORTRAN MODIF algorith/recbec               vabhhts J.PELLET           339      3      3
+ FORTRAN MODIF algorith/recbgl               vabhhts J.PELLET           411      3      3
+ FORTRAN MODIF algorith/refe80               vabhhts J.PELLET           107      2      2
+ FORTRAN MODIF algorith/refe81               vabhhts J.PELLET           277      3      3
+ FORTRAN MODIF algorith/refe99               vabhhts J.PELLET           145      7      7
+ FORTRAN MODIF algorith/regeec               vabhhts J.PELLET           217      5      5
+ FORTRAN MODIF algorith/regegl               vabhhts J.PELLET           321      4      4
+ FORTRAN MODIF algorith/regene               vabhhts J.PELLET           288      8      8
+ FORTRAN MODIF algorith/rehaec               vabhhts J.PELLET           293      3      3
+ FORTRAN MODIF algorith/remnec               vabhhts J.PELLET           345      3      3
+ FORTRAN MODIF algorith/remngl               vabhhts J.PELLET           420      3      3
+ FORTRAN MODIF algorith/retrec               vabhhts J.PELLET           317      7      7
+ FORTRAN MODIF algorith/retrgl               vabhhts J.PELLET           407      3      3
+ FORTRAN MODIF algorith/ritz99               vabhhts J.PELLET           218      3      3
+ FORTRAN MODIF algorith/tran75               vabhhts J.PELLET           668      6      6
+ FORTRAN MODIF algorith/vecgen               vabhhts J.PELLET           476      2      2
+ FORTRAN MODIF algorith/vechbn               vabhhts J.PELLET           135      3      3
+ FORTRAN MODIF calculel/mecalm               vabhhts J.PELLET          2335      2      2
+ FORTRAN MODIF calculel/thaclm               vabhhts J.PELLET           916      2      2
+ FORTRAN MODIF modelisa/accep1               vabhhts J.PELLET           291      2      2
+ FORTRAN MODIF modelisa/op0146               vabhhts J.PELLET           387      2      2
+ FORTRAN MODIF modelisa/op0148               vabhhts J.PELLET           319      2      2
+ FORTRAN MODIF modelisa/specep               vabhhts J.PELLET           416      5      5
+ FORTRAN MODIF modelisa/specff               vabhhts J.PELLET           464      5      5
+ FORTRAN MODIF modelisa/spect1               vabhhts J.PELLET           397      2      2
+ FORTRAN MODIF prepost/lridea                vabhhts J.PELLET           564      2      2
+ FORTRAN MODIF prepost/mousto                vabhhts J.PELLET           324      2      2
+ FORTRAN MODIF prepost/op0106                vabhhts J.PELLET           813      5      5
+ FORTRAN MODIF prepost/op0114                vabhhts J.PELLET           352      2      2
+ FORTRAN MODIF prepost/op0162                vabhhts J.PELLET           276      2      2
+ FORTRAN MODIF prepost/op0163                vabhhts J.PELLET           233      4      4
+ FORTRAN MODIF prepost/op0172                vabhhts J.PELLET           455      6      6
+ FORTRAN MODIF prepost/op0182                vabhhts J.PELLET           346      4      4
+ FORTRAN MODIF utilitai/iredca               vabhhts J.PELLET           541      2      2
+ FORTRAN MODIF utilitai/iredm1               vabhhts J.PELLET           413      2      2
+ FORTRAN MODIF utilitai/iredmi               vabhhts J.PELLET           212      2      2
+ FORTRAN MODIF utilitai/peecin               vabhhts J.PELLET           365      2      2
+ FORTRAN MODIF utilitai/rfnoch               vabhhts J.PELLET            88      3      3
+ FORTRAN MODIF utilitai/rfrgen               vabhhts J.PELLET           262      3      3
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :    0           0         0                +0
+ MODIF :   93       32463       303     305        -2
+ SUPPR :    0           0                 0        +0
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :   93       32463       303     305        -2 

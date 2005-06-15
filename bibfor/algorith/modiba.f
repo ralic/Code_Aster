@@ -8,7 +8,7 @@
       LOGICAL             NEWRES
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 15/06/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -80,11 +80,11 @@ C
       CHARACTER*14  NUMDDL
       CHARACTER*16  NORM
       CHARACTER*19  NOMCHA
-      CHARACTER*24  CHAMFL, KVEC, REFE, NOPARA(NBPARA)
+      CHARACTER*24  CHAMFL, KVEC, REFD, NOPARA(NBPARA)
       CHARACTER*24  KVALI, KVALR, KVALK
       LOGICAL       LMASIN, LNORM
 C
-      DATA REFE  / '                   .REFE' /
+      DATA REFD  / '                   .REFD' /
       DATA IDDL  / 1, 2, 3, 4, 5, 6 /
       DATA  NOPARA /
      +  'NUME_MODE'       , 'ITER_QR'         , 'ITER_BATHE'      ,
@@ -112,10 +112,10 @@ C     --- CREATION DU CONCEPT MODE_MECA DE SORTIE LE CAS ECHEANT ---
 C
       IF ( NEWRES ) THEN
          CALL RSCRSD(NOMRES,'MODE_MECA',NBNUOR)
-         REFE(1:8) = BASEMO
-         CALL JEVEUO ( REFE , 'L', KREF )
-         REFE(1:8) = NOMRES
-         CALL WKVECT ( REFE, 'G V K24', 3, LREF )
+         REFD(1:8) = BASEMO
+         CALL JEVEUO ( REFD , 'L', KREF )
+         REFD(1:8) = NOMRES
+         CALL WKVECT ( REFD, 'G V K24', 3, LREF )
          ZK24(LREF  ) = ZK24(KREF  )
          ZK24(LREF+1) = ZK24(KREF+1)
          ZK24(LREF+2) = ZK24(KREF+2)

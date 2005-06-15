@@ -2,7 +2,7 @@
       IMPLICIT  REAL*8  ( A-H,O-Z )
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 05/10/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF PREPOST  DATE 15/06/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -144,7 +144,7 @@ C
 C
       IF ( NOB .EQ. 0 ) THEN
          OBST = '&&OBSTEM'
-         CALL WKVECT(OBST//'           .REFE','V V K24',1,IDREFO)
+         CALL WKVECT(OBST//'           .REFO','V V K24',1,IDREFO)
          ZK24(IDREFO) = 'DISCRET'
          NPO = 721
          CALL WKVECT(OBST//'           .VALR','V V R8',NPO,IDROB)
@@ -157,7 +157,7 @@ C
       ENDIF
       CALL JELIRA ( OBST//'           .VALR', 'LONMAX', NO, K8B )
 C
-      CALL JEVEUO ( GUIDE//'           .REFE', 'L', IDREFE )
+      CALL JEVEUO ( GUIDE//'           .REFO', 'L', IDREFE )
       CALL JELIRA ( GUIDE//'           .VALR', 'LONMAX', NCO, K8B )
       TYPE = ZK24(IDREFE)
       NOMOB1 = TYPE(1:7)
@@ -224,7 +224,7 @@ C
            IF (TYPE(14:17).EQ.'1300') RTUBE = 4.84D-3 
            IF (TYPE(14:16).EQ.'900')  RTUBE = 4.825D-3 
          ELSE
-           CALL JEVEUO(OBCRAY//'           .REFE','L',IDREF2)
+           CALL JEVEUO(OBCRAY//'           .REFO','L',IDREF2)
            IF (ZK24(IDREF2)(14:17).EQ.'1300') THEN
               RTUBE = 4.84D-3
               GOTO 61

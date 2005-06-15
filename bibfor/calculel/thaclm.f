@@ -6,7 +6,7 @@
 C TOLE CRP_20
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 04/04/2005   AUTEUR CIBHHPD L.SALMONA 
+C MODIF CALCULEL  DATE 15/06/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -155,7 +155,7 @@ C=======================================================================
       IF (EXIPOU) THEN
         IF (CONCEP.EQ.'MODE_ACOU') THEN
           REFE = RESUCO
-          CALL JEVEUO(REFE//'.REFE','L',LREFE)
+          CALL JEVEUO(REFE//'.REFD','L',LREFE)
           MASSE = ZK24(LREFE) (1:19)
           CALL MTDSCR(MASSE)
           CALL JEVEUO(MASSE(1:19)//'.&INT','E',LMAT)

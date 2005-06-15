@@ -3,7 +3,7 @@
       CHARACTER*24 FONDEP,FONVIT,FONACC,MULTAP,PSIDEL
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/03/2003   AUTEUR BOYERE E.BOYERE 
+C MODIF ALGORITH  DATE 15/06/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,7 +50,7 @@ C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
       CALL GETVID(' ','MODE_STAT',1,1,1,MODSTA,NBMD)
-      CALL JEVEUO(MODSTA//'           .REFE','L',IADRIF)
+      CALL JEVEUO(MODSTA//'           .REFD','L',IADRIF)
       MATRIC =  ZK24(IADRIF)(1:8)
       CALL DISMOI('F','NOM_MAILLA'  ,MATRIC,'MATR_ASSE',IBI,MAILLA,IER)
       CALL DISMOI('F','NOM_NUME_DDL',MATRIC,'MATR_ASSE',IBI,NUMDDL,IRET)

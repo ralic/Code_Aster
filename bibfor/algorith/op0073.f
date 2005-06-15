@@ -2,7 +2,7 @@
       IMPLICIT  REAL*8 (A-H,O-Z)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/10/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 15/06/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -57,7 +57,7 @@ C     --- VERIFICATIONS DE PREMIER NIVEAU ---
          CALL UTMESS('F',NOMCOM,'LE NOMBRE DE VALEURS DOIT ETRE PAIR.')
       ENDIF
 C
-      CALL WKVECT(NOMRES//'           .REFE','G V K24',1,IDREFE)
+      CALL WKVECT(NOMRES//'           .REFO','G V K24',1,IDREFE)
       CALL GETVTX(' ','TYPE',0,1,1,ZK24(IDREFE),N1)
       TYPE = ZK24(IDREFE)
 C
