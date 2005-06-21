@@ -1,9 +1,10 @@
-      SUBROUTINE FETPRJ(NBI,VI,VO,JGITGI,LRIGID,DIMGI,OPTION,
+       SUBROUTINE FETPRJ(NBI,VI,VO,JGITGI,LRIGID,DIMGI,OPTION,
      &                  SDFETI,IPIV,NBSD,VSDF,VDDL,MATAS,GI,LSTOGI,
-     &                  INFOFE,IREX,IPRJ)
+     &                  INFOFE,IREX,IPRJ,NBPROC,RANG,K24IRG)
+C TOLE CRP_21
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/01/2005   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGORITH  DATE 20/06/2005   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -48,10 +49,10 @@ C     IN    GI : MATR8: MATRICE GI
 C     IN  LSTOGI: LO : TRUE, GI STOCKE, FALSE, RECALCULE
 C     IN IREX/IPRJ: IN : ADRESSE DU VECTEUR AUXILAIRE EVITANT DES APPELS
 C                        JEVEUX.
-C   -------------------------------------------------------------------
-C     ASTER INFORMATIONS:
-C       28/01/04 (OB): CREATION.
-C       04/06/04 (OB): MODIFICATION POUR MODES DE CORPS RIGIDES.
+C     IN RANG  : IN  : RANG DU PROCESSEUR
+C     IN NBPROC: IN  : NOMBRE DE PROCESSEURS
+C     IN K24IRG : K24 : NOM DE L'OBJET JEVEUX VDO POUR LE PARALLELISME
+C                   SI K24IRG='VIDE', ON NE FAIT PAS LE MPI_BCAST FINAL
 C----------------------------------------------------------------------
 C RESPONSABLE BOITEAU O.BOITEAU
 C CORPS DU PROGRAMME
@@ -59,11 +60,11 @@ C CORPS DU PROGRAMME
 
 C DECLARATION PARAMETRES D'APPELS
       INTEGER      NBSD,NBI,JGITGI,DIMGI,OPTION,VSDF(NBSD),VDDL(NBSD),
-     &             IPIV,IREX,IPRJ
-      REAL*8       VI(NBI),VO(NBI),GI(NBI,DIMGI)
+     &             IPIV,IREX,IPRJ,RANG,NBPROC
+      REAL*8       VI(NBI),VO(NBI),GI(NBI,DIMGI),RBID
       LOGICAL      LRIGID,LSTOGI
       CHARACTER*19 SDFETI,MATAS
-      CHARACTER*24 INFOFE
+      CHARACTER*24 INFOFE,K24IRG
 
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       INTEGER*4          ZI4
@@ -74,8 +75,6 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON  / RVARJE / ZR(1)
       COMPLEX*16         ZC
       COMMON  / CVARJE / ZC(1)
-      LOGICAL            ZL
-      COMMON  / LVARJE / ZL(1)
       CHARACTER*8        ZK8
       CHARACTER*16                ZK16
       CHARACTER*24                          ZK24
@@ -85,30 +84,50 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       
 C DECLARATION VARIABLES LOCALES
-      INTEGER      JGITVI,JGITV1,I,J,IDECAI,K,IDECAO,L,M,IFM,
-     &             NBSDF,GII,GII1,NBDDL,NBMC,IFETR,IMC,IDD,INFOL8
+      INTEGER      JGITVI,JGITV1,I,J,IDECAI,K,IDECAO,L,M,IFM,NIVMPI,
+     &             GII,GII1,NBDDL,NBMC,IFETR,IMC,IDD,INFOL8,IBID,IBCAST
       INTEGER*4    INFOLA
       REAL*8       RAUX,DDOT
-      CHARACTER*24 NOMSDR     
-      CHARACTER*32 JEXNUM
+      CHARACTER*8  NOMSD
+      CHARACTER*24 NOMSDR,SDFETG,K24B     
+      CHARACTER*32 JEXNUM,JEXNOM
+      LOGICAL      LPARA
 
+C INITS DIVERSES
+      IF (NBPROC.EQ.1) THEN
+        LPARA=.FALSE.
+      ELSE
+        LPARA=.TRUE.
+      ENDIF
+      IF (INFOFE(10:10).EQ.'T') THEN
+        NIVMPI=2
+      ELSE
+        NIVMPI=1
+      ENDIF
+      
 C ROUTINE AVEC MOINS DE MONITORING, JEVEUX.. CAR APPELLEE SOUVENT     
       IFM=ZI(IPRJ)        
-      IF ((OPTION.NE.1).AND.(OPTION.NE.2))
-     &  CALL UTMESS('F','FETPRJ','OPTION DE CALCUL NON PREVUE !')
 
+
+C EN PARALLELE SEUL LE PROCESSUS MAITRE CONSTRUIT CET OBJET VD0
+      IF (RANG.EQ.0) THEN
+
+        IF ((OPTION.NE.1).AND.(OPTION.NE.2))
+     &    CALL UTMESS('F','FETPRJ','OPTION DE CALCUL NON PREVUE !')
+        SDFETG=SDFETI//'.FETG'
 C---------------------------------------------------------------------
 C --------------------------------------------------------------------
 C AUCUN MODE DE CORPS RIGIDE P=ID (OPTION=1 OBLIGEATOIRE)
 C --------------------------------------------------------------------
 C---------------------------------------------------------------------
-      IF (.NOT.LRIGID) THEN
+
+        IF (.NOT.LRIGID) THEN
       
-        IF (OPTION.NE.1)
-     &    CALL UTMESS('F','FETPRJ','OPTION DE CALCUL INCOHERENTE !')
-        CALL DCOPY(NBI,VI,1,VO,1)
+          IF (OPTION.NE.1)
+     &      CALL UTMESS('F','FETPRJ','OPTION DE CALCUL INCOHERENTE !')
+          CALL DCOPY(NBI,VI,1,VO,1)
        
-      ELSE
+        ELSE
 C---------------------------------------------------------------------
 C --------------------------------------------------------------------
 C PRESENCE DE MODES DE CORPS RIGIDES P (OPTION=1) OU P' (OPTION=2)
@@ -118,113 +137,115 @@ C---------------------------------------------------------------------
 C --------------------------------------------------------------------
 C CONSTITUTION DE (GI)T*VI STOCKE DANS '&&FETPRJ.GITVI.R'
 C --------------------------------------------------------------------
-        JGITVI=ZI(IPRJ+1)
-        JGITV1=JGITVI-1
-        
-        IF (LSTOGI) THEN        
-          CALL DGEMV('T',NBI,DIMGI,1.D0,GI,NBI,VI,1,0.D0,ZR(JGITVI),1)
-        ELSE
-
-          DO 9 I=1,DIMGI
-            ZR(JGITV1+I)=0.D0
-    9     CONTINUE      
-          NOMSDR=MATAS//'.FETR'      
-          NBSDF=0
-          GII=ZI(IPRJ+2)
-          GII1=GII-1
-          DO 30 IDD=1,NBSD
-            NBDDL=VDDL(IDD)
-            NBMC=VSDF(IDD)                        
-            IF (NBMC.NE.-1) THEN
-              NBSDF=NBSDF+1
-              CALL JEVEUO(JEXNUM(NOMSDR,NBSDF),'L',IFETR)
-              DO 20 IMC=1,NBMC
-                JGITV1=JGITV1+1
-                CALL FETREX(1,IDD,NBDDL,ZR(IFETR+(IMC-1)*NBDDL),NBI,
-     &                  ZR(GII),IREX)
-                DO 10 I=1,NBI
-                  ZR(JGITV1)=ZR(JGITV1)+ZR(GII1+I)*VI(I)
-   10           CONTINUE
-   20         CONTINUE
-              CALL JELIBE(JEXNUM(NOMSDR,NBSDF))
-            ENDIF
-   30     CONTINUE
+          JGITVI=ZI(IPRJ+1)
           JGITV1=JGITVI-1
+        
+          IF (LSTOGI) THEN        
+            CALL DGEMV('T',NBI,DIMGI,1.D0,GI,NBI,VI,1,0.D0,ZR(JGITVI),1)
+          ELSE
+C SANS CONSTRUIRE GI, SEULEMENT EN SEQUENTIEL
+            DO 9 I=1,DIMGI
+              ZR(JGITV1+I)=0.D0
+    9       CONTINUE      
+            NOMSDR=MATAS//'.FETR'      
+            GII=ZI(IPRJ+2)
+            GII1=GII-1
+            DO 30 IDD=1,NBSD
+              NBDDL=VDDL(IDD)
+              NBMC=VSDF(IDD)                        
+              IF (NBMC.NE.0) THEN
+                CALL JENUNO(JEXNUM(SDFETG,IDD),NOMSD)
+                CALL JEVEUO(JEXNOM(NOMSDR,NOMSD),'L',IFETR)
+                DO 20 IMC=1,NBMC
+                  JGITV1=JGITV1+1
+                  CALL FETREX(1,IDD,NBDDL,ZR(IFETR+(IMC-1)*NBDDL),NBI,
+     &                  ZR(GII),IREX)
+                  DO 10 I=1,NBI
+                    ZR(JGITV1)=ZR(JGITV1)+ZR(GII1+I)*VI(I)
+   10             CONTINUE
+   20           CONTINUE
+                CALL JELIBE(JEXNOM(NOMSDR,NOMSD))
+              ENDIF
+   30       CONTINUE
+            JGITV1=JGITVI-1
           
-        ENDIF
+          ENDIF
         
 C --------------------------------------------------------------------
 C CONSTITUTION DE ((GI)T*GI)-1*(GI)T*VI STOCKE DANS '&&FETPRJ.GITGI.R'
 C --------------------------------------------------------------------
-        INFOLA=0
-        INFOL8=0
+          INFOLA=0
+          INFOL8=0
 C DESCENTE-REMONTEE MATRICE SYMETRIQUE INDEFINIE (STOCKEE PAR PAQUET)
 C VIA LAPACK
-        CALL DSPTRS('L',DIMGI,1,ZR(JGITGI),ZI4(IPIV),ZR(JGITVI),DIMGI,
-     &  INFOLA)
-        INFOL8=INFOLA
-        IF (INFOL8.NE.0) THEN
-          CALL UTDEBM('F','FETPRJ','SYSTEME (GI)T*GI PROBABLEMENT')
-          CALL UTIMPI('S','  NON INVERSIBLE: ',0,I)
-          CALL UTIMPI('L','PB LAPACK DGETRS: ',1,INFOL8)
-          CALL UTFINM()
-        ENDIF
+          CALL DSPTRS('L',DIMGI,1,ZR(JGITGI),ZI4(IPIV),ZR(JGITVI),DIMGI,
+     &    INFOLA)
+          INFOL8=INFOLA
+          IF (INFOL8.NE.0) THEN
+            CALL UTDEBM('F','FETPRJ','SYSTEME (GI)T*GI PROBABLEMENT')
+            CALL UTIMPI('S','  NON INVERSIBLE: ',0,I)
+            CALL UTIMPI('L','PB LAPACK DGETRS: ',1,INFOL8)
+            CALL UTFINM()
+          ENDIF
         
-        IF (OPTION.EQ.1) THEN
+          IF (OPTION.EQ.1) THEN
 C --------------------------------------------------------------------
 C CONSTITUTION DE V0=VI-GI*((GI)T*GI)-1*(GI)T*VI (OPTION=1)
 C --------------------------------------------------------------------
-          CALL DCOPY(NBI,VI,1,VO,1)
+            CALL DCOPY(NBI,VI,1,VO,1)
           
-          IF (LSTOGI) THEN          
-            CALL DGEMV('N',NBI,DIMGI,-1.D0,GI,NBI,ZR(JGITVI),1,1.D0,
-     &        VO,1)
-          ELSE          
-            NBSDF=0
-            DO 200 IDD=1,NBSD
-              NBDDL=VDDL(IDD)
-              NBMC=VSDF(IDD)
+            IF (LSTOGI) THEN          
+              CALL DGEMV('N',NBI,DIMGI,-1.D0,GI,NBI,ZR(JGITVI),1,1.D0,
+     &                    VO,1)
+            ELSE
+C SANS CONSTRUIRE GI, SEULEMENT EN SEQUENTIEL          
+              DO 200 IDD=1,NBSD
+                NBDDL=VDDL(IDD)
+                NBMC=VSDF(IDD)
                         
-              IF (NBMC.NE.-1) THEN
-                NBSDF=NBSDF+1
-                CALL JEVEUO(JEXNUM(NOMSDR,NBSDF),'L',IFETR)
-                DO 190 IMC=1,NBMC
-                  JGITV1=JGITV1+1
-                  RAUX=-ZR(JGITV1)         
-                  CALL FETREX(1,IDD,NBDDL,ZR(IFETR+(IMC-1)*NBDDL),NBI,
-     &                      ZR(GII),IREX)
-                  CALL DAXPY(NBI,RAUX,ZR(GII),1,VO,1)  
-  190           CONTINUE
-                CALL JELIBE(JEXNUM(NOMSDR,NBSDF))
-              ENDIF
-  200       CONTINUE
+                IF (NBMC.NE.0) THEN
+                  CALL JENUNO(JEXNUM(SDFETG,IDD),NOMSD)
+                  CALL JEVEUO(JEXNOM(NOMSDR,NOMSD),'L',IFETR)
+                  DO 190 IMC=1,NBMC
+                    JGITV1=JGITV1+1
+                    RAUX=-ZR(JGITV1)         
+                    CALL FETREX(1,IDD,NBDDL,ZR(IFETR+(IMC-1)*NBDDL),NBI,
+     &                          ZR(GII),IREX)
+                    CALL DAXPY(NBI,RAUX,ZR(GII),1,VO,1)  
+  190             CONTINUE
+                  CALL JELIBE(JEXNOM(NOMSDR,NOMSD))
+                ENDIF
+  200         CONTINUE
             
-          ENDIF
+            ENDIF
                   
 C MONITORING
-          IF (INFOFE(1:1).EQ.'T')
-     &      WRITE(IFM,*)'<FETI/FETPRJ> LAMBDA = P * LAMBDA'
-C          IF (INFOFE(4:4).EQ.'T') THEN
-C            DO 300 I=1,NBI
-C              WRITE(IFM,*)I,'  ',VI(I),' ',VO(I)
-C  300       CONTINUE
-C          ENDIF
+            IF (INFOFE(1:1).EQ.'T')
+     &        WRITE(IFM,*)'<FETI/FETPRJ',RANG,'> LAMBDA = P * LAMBDA'
                     
-        ELSE
+          ELSE
 C --------------------------------------------------------------------
 C CONSTITUTION DE V0=((GI)T*GI)-1*(GI)T*VI (OPTION=2)
 C --------------------------------------------------------------------
-          CALL DCOPY(DIMGI,ZR(JGITVI),1,VO,1)
+            CALL DCOPY(DIMGI,ZR(JGITVI),1,VO,1)
 
 C MONITORING
-          IF (INFOFE(1:1).EQ.'T')
-     &      WRITE(IFM,*)'<FETI/FETPRJ> ALPHA = P'' * RESIDU'         
-C          IF (INFOFE(4:4).EQ.'T') THEN
-C            WRITE(IFM,*)'<FETI/FETPRJ> INPUT/OUTPUT'
-C            DO 320 I=1,DIMGI
-C              WRITE(IFM,*)I,'  ',VI(I),' ',VO(I)
-C  320       CONTINUE
-C          ENDIF                        
-        ENDIF   
-      ENDIF                
+            IF (INFOFE(1:1).EQ.'T')
+     &        WRITE(IFM,*)'<FETI/FETPRJ',RANG,'> ALPHA = P'' * RESIDU'
+            ENDIF
+C FIN DU SI LRIGID
+        ENDIF
+C FIN DU SI RANG   
+      ENDIF
+
+C EN PARALLELE, ENVOI DE VO A TOUS LES PROC POUR PREPARER LE CALCUL
+C SUIVANT
+      IF ((LPARA).AND.(K24IRG(1:4).NE.'VIDE')) THEN
+        IF (OPTION.EQ.1) THEN
+          IBCAST=NBI
+        ELSE
+          IBCAST=DIMGI
+        ENDIF
+        CALL FETMPI(9,IBCAST,IFM,NIVMPI,IBID,IBID,K24IRG,K24B,K24B,RBID)
+      ENDIF
       END

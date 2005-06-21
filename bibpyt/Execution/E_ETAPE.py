@@ -1,4 +1,4 @@
-#@ MODIF E_ETAPE Execution  DATE 14/09/2004   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF E_ETAPE Execution  DATE 20/06/2005   AUTEUR BOITEAU O.BOITEAU 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -30,6 +30,7 @@ import string,types,sys,os
 from Noyau.N_utils import prbanner
 from Noyau.N_Exception import AsException
 import genpy
+import aster
 
 class ETAPE:
    """
@@ -117,41 +118,47 @@ class ETAPE:
                   ficode.write('\n')
         ficode.close()
 
+      echo_mess=[]
       decalage="  "  # blancs au debut de chaque ligne affichee
-      sortie.write( '\n' )
-      sortie.write( decalage )
-      sortie.write("#  ---------------------------------------------------------------------------")
-      sortie.write( '\n' )
+      echo_mess.append( '\n' )
+      echo_mess.append( decalage )
+      echo_mess.append("#  ---------------------------------------------------------------------------")
+      echo_mess.append( '\n' )
 
       # Affichage numero de la commande (4 digits)
-      sortie.write( decalage+"#  COMMANDE NO : " )
+      echo_mess.append( decalage+" #  COMMANDE NO : " )
       chaine=`self.icmd`
       l=len(chaine)
       while l < 4  :
             chaine='0'+chaine
             l=l+1
-      sortie.write( chaine )
+      echo_mess.append( chaine )
       # Affichage nom du concept resultat
-      sortie.write( "          ")
-      sortie.write( "CONCEPT DE TYPE : " )
+      echo_mess.append( "          ")
+      echo_mess.append( "CONCEPT DE TYPE : " )
       if self.sd != None:
             type_concept=self.sd.__class__.__name__
-            sortie.write( type_concept )
+            echo_mess.append( type_concept )
 
-      sortie.write( '\n' )
-      sortie.write( decalage )
-      sortie.write( "#  -------------               -----------------")
+      echo_mess.append( '\n' )
+      echo_mess.append( decalage )
+      echo_mess.append( "#  -------------               -----------------")
 
       # recuperation du texte de la commande courante dans la chaine
       # commande_formatee
       v=genpy.genpy(defaut='avec')
       self.accept(v)
-      sortie.write( '\n' )
+      echo_mess.append( '\n' )
       commande_formatee=v.formate_etape()
-      sortie.write(commande_formatee)
-      sortie.write( '\n' )
+      echo_mess.append(commande_formatee)
+      echo_mess.append( '\n' )
 
-      sortie.write( '\n' ) # saut de ligne final (pour faire beau)
+      echo_mess.append( '\n' ) # saut de ligne final (pour faire beau)
+      texte_final=string.join(echo_mess)
+#jpl      print 'yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy'
+#jpl      print texte_final
+#jpl      print 'yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy'
+      aster.affiche(texte_final)
 
       return
 

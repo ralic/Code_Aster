@@ -1,5 +1,5 @@
-# MODIF  DATE 07/03/2005   AUTEUR CIBHHLV L.VIVAN 
-# TITRE COMPORTEMENT NON-LINEAIRE D'UN ASSEMBLAGE DE CORNIERE
+# MODIF  DATE 16/06/2005   AUTEUR ACBHHCD G.DEVESA 
+# TITRE COMPORTEMENT NON-LINEAIRE D UN ASSEMBLAGE DE CORNIERE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -28,7 +28,8 @@ MO=AFFE_MODELE(   MAILLAGE=MA,
                             MODELISATION = 'DIS_TR')  )
 
 F1=DEFI_FONCTION(   NOM_PARA='INST',
-         VALE=(0., 0., 1., 6., 3., 4., 6., 7., 7., 17., 8., 40., 10., 20., 12., 42., ),
+         VALE=(0., 0., 1., 6., 2., 7., 3., 17., 4., 40., 6., 20., 8., 42., 
+               10., -0.1, 11., -7., 12., -17.,),
                        PROL_DROITE='LINEAIRE',
                        PROL_GAUCHE='LINEAIRE'   )
 
@@ -91,50 +92,46 @@ STATNL=CALC_ELEM( reuse=STATNL,
               )
 
 #
-
-TEST_RESU(RESU=( 
-           _F(  RESULTAT = STATNL,         NUME_ORDRE = 12,
-             PARA = 'INST',             VALE = 1.20000E+01),
-           _F(  RESULTAT = STATNL,         NUME_ORDRE = 7,
-             PARA = 'ITER_GLOB',        VALE_I = 0,
-             CRITERE = 'ABSOLU',         PRECISION = 2.),
-           _F(  RESULTAT = STATNL,         NUME_ORDRE = 12,
-             PARA = 'ITER_GLOB',        VALE_I = 0,
-             CRITERE = 'ABSOLU',         PRECISION = 6.),
-           _F(  RESULTAT = STATNL,         NUME_ORDRE = 12,
-             CRITERE = 'ABSOLU',        PRECISION = 1.E-05,
-             PARA = 'RESI_GLOB_RELA',   VALE = 0.),
-           _F(  RESULTAT = STATNL,         NUME_ORDRE = 12,
-             CRITERE = 'ABSOLU',        PRECISION = 1.,
-             PARA = 'RESI_GLOB',        VALE = 0.),
-           _F(  RESULTAT = STATNL,         NUME_ORDRE = 12,
-             CRITERE = 'ABSOLU',         PRECISION = 2.,
-             PARA = 'ITER_LINE',        VALE_I = 0))
-           )
+IMPR_RESU(RESU=_F( RESULTAT = STATNL, ), ) 
 
 TEST_RESU(RESU=(
               _F( 
                 RESULTAT = STATNL, NOM_CHAM = 'DEPL', NOM_CMP = 'DX',
-  NUME_ORDRE = 6, NOEUD = 'N3', VALE = 9.46805E-2),
+  NUME_ORDRE = 2, NOEUD = 'N3', VALE = 9.46805E-2),
               _F( 
                 RESULTAT = STATNL, NOM_CHAM = 'DEPL', NOM_CMP = 'DRY',
-  NUME_ORDRE = 6, NOEUD = 'N3', VALE = 1.27506E-3),
+  NUME_ORDRE = 2, NOEUD = 'N3', VALE = 1.27506E-3),
 
               _F( 
                 RESULTAT = STATNL, NOM_CHAM = 'DEPL', NOM_CMP = 'DX',
-  NUME_ORDRE = 12, NOEUD = 'N3', VALE = 3.7365),
+  NUME_ORDRE = 8, NOEUD = 'N3', VALE = 3.73663),
               _F( 
                 RESULTAT = STATNL, NOM_CHAM = 'DEPL', NOM_CMP = 'DRY',
-  NUME_ORDRE = 12, NOEUD = 'N3', VALE = 4.9951E-2),
-
+  NUME_ORDRE = 8, NOEUD = 'N3', VALE = 1.37542E-2),
+  
+              _F( 
+                RESULTAT = STATNL, NOM_CHAM = 'DEPL', NOM_CMP = 'DX',
+  NUME_ORDRE = 12, NOEUD = 'N3', VALE = 2.67989),
+              _F( 
+                RESULTAT = STATNL, NOM_CHAM = 'DEPL', NOM_CMP = 'DRY',
+  NUME_ORDRE = 12, NOEUD = 'N3', VALE = 5.35978E-4),
+  
               _F( 
    RESULTAT = STATNL, NOM_CHAM = 'VARI_ELNO_ELGA', NOM_CMP = 'V1',
-   NUME_ORDRE = 6, MAILLE = 'D1', NOEUD = 'N3', VALE = 9.65742E-2),
+   NUME_ORDRE = 2, MAILLE = 'D1', NOEUD = 'N3', VALE = 9.65742E-2),
 
               _F( 
    RESULTAT = STATNL, NOM_CHAM = 'VARI_ELGA', NOM_CMP = 'V1',
-   NUME_ORDRE = 7, MAILLE = 'D1', POINT = 2, VALE = 1.07699))
+   NUME_ORDRE = 3, MAILLE = 'D1', POINT = 2, VALE = 1.07417),
 
+              _F( 
+   RESULTAT = STATNL, NOM_CHAM = 'VARI_ELNO_ELGA', NOM_CMP = 'V1',
+   NUME_ORDRE = 11, MAILLE = 'D1', NOEUD = 'N3', VALE = 9.65742E-2),
+
+              _F( 
+   RESULTAT = STATNL, NOM_CHAM = 'VARI_ELGA', NOM_CMP = 'V1',
+   NUME_ORDRE = 12, MAILLE = 'D1', POINT = 2, VALE = 1.07417),
+                )
           )
 
 FIN()

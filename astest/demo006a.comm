@@ -1,0 +1,229 @@
+# MODIF  DATE 20/06/2005   AUTEUR LEBOUVIE F.LEBOUVIER 
+import os
+
+DEBUT( CODE=_F( NOM = 'DEMO006A', NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),PAR_LOT='NON');
+
+# TITRE TUYAUTERIE COMPORTANT UN COUDE - ELEMENTS COQUES DKT
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+#       optimisation du rayon de courbure
+#
+# Cet exemple illustre l'utilisation du langage Python pour optimiser 
+# le rayon de courbure d'une tuyauterie. Il permet :
+#
+#     - De modifier de la geometrie
+#     - D'effectuer le maillage avec GMSH
+#     - D'evaluer un critere d'arret apres calculs
+#     - De lancer le post-traitement interactif
+
+
+#  Declaration et dimensionnement a 10 des tableaux des concepts variables
+#  Les tableaux de concepts n'existent pas vu d'aster a l'execution.
+#  accas renomme MODE[k] en MODE_k. attention : en cas de reprise, c'est
+#  le concept MODE_k qui est connu dans la base. De plus, il faut etre
+#  vigilant a ne pas depasser les huit caracteres pour le nom du concept,
+#  underscore k compris.
+
+MAIL=[None]*10
+MODE=[None]*10
+CARA=[None]*10
+MATE=[None]*10
+CHAR=[None]*10
+RESU=[None]*10
+RELV=[None]*10
+
+# Execution interactive : 1=OUI, 0=NON
+interactif  = 0
+
+# Si la variable d'environnement DISPLAY n'est pas definie on desactive l'interactif
+if not os.environ.has_key('DISPLAY'):
+  interactif = 0
+
+# Commande Gmsh (elle ne fait rien si c'est la version batch de Gmsh)
+cmd_gmsh = os.path.join(aster.repout(),'gmsh')
+
+# Definition des parametres
+# - Geometriques
+
+EPTUB = 0.02;
+REXT = 0.2;
+RMOY=REXT-(EPTUB/2)
+
+# - Chargement
+FYTOT = 500000.0;
+FYREP=FYTOT/2./pi/RMOY
+
+# Definition du materiau
+
+ACIER=DEFI_MATERIAU(ELAS=_F(E=1.8E11,  NU=0.3,),);
+
+import os
+f2=open("fort.44","w")
+
+# Le rayon de courbure initial
+
+RC=0.3
+
+#    Boucle sur k : a chaque iteration, geometrie,maillage, calcul mecanique
+#                   et verification de la contrainte VMIS max.
+#    ATTENTION :    en python, il faut indenter les commandes sous la
+#                   structure de controle 
+#                   (voir for statement dans PYTHON REF MANUAL)
+#    ATTENTION :    range(1,10) signifie que k varie de 1 a 9
+#                   (voir for statement dans PYTHON REF MANUAL)
+
+for k in range(1,10):
+
+   # Appel a GMSH pour le maillage
+   
+   f=open("coque.geo","w")
+   f.write("RC= %3f ;"  % RC)
+   f.close()
+   os.system('cat fort.38 >> coque.geo')
+   os.system(cmd_gmsh + ' -2 coque.geo')
+   if interactif == 1 :
+   # visualisation du maillage initial sous GMSH
+       os.system(cmd_gmsh + ' coque.msh')
+   os.system('cp coque.msh fort.19')
+   # Calcul Aster avec ce maillage
+   
+   PRE_GMSH();
+ 
+   MAIL[k]=LIRE_MAILLAGE();
+
+   MAIL[k]=DEFI_GROUP(reuse=MAIL[k],MAILLAGE=MAIL[k],
+                      CREA_GROUP_NO=_F(GROUP_MA='GM30'),)
+ 
+   MODE[k]=AFFE_MODELE(MAILLAGE=MAIL[k],
+                       AFFE=_F(GROUP_MA=('GM30','GM28'),
+                               PHENOMENE='MECANIQUE',MODELISATION='DKT',),)
+ 
+   MAIL[k]=MODI_MAILLAGE(reuse =MAIL[k],
+                         MAILLAGE=MAIL[k],
+                         ORIE_NORM_COQUE=_F(GROUP_MA='GM30',
+                                            VECT_NORM=(1.0,0.0,0.0,),
+                                            GROUP_NO='GM31',),
+                         MODELE=MODE[k],);
+
+   MATE[k]=AFFE_MATERIAU(MAILLAGE=MAIL[k],
+                       AFFE=_F(TOUT='OUI',MATER=ACIER,),)
+ 
+   CARA[k]=AFFE_CARA_ELEM(MODELE=MODE[k],
+                           COQUE=_F(GROUP_MA=('GM30','GM28'),
+                                    EPAIS=0.02,ANGL_REP=(0.0,90.0),),)
+ 
+   CHAR[k]=AFFE_CHAR_MECA(MODELE=MODE[k],
+                           DDL_IMPO=(_F(GROUP_MA='GM27',DX=0.0,DY=0.0,DZ=0.0,
+                                        DRX=0.0,DRY=0.0,DRZ=0.0,),
+                                     _F(GROUP_MA='GM29',
+                                        DZ=0.0,DRX=0.0,DRY=0.0,),),
+                         FORCE_ARETE=_F(GROUP_MA='GM28',
+                                        FY=FYREP,),)
+   RESU[k]=MECA_STATIQUE(MODELE=MODE[k],
+                       CHAM_MATER=MATE[k],
+                       CARA_ELEM=CARA[k],
+                       EXCIT=_F(CHARGE=CHAR[k],),
+                       )
+ 
+   RESU[k]=CALC_ELEM(reuse=RESU[k],RESULTAT=RESU[k],MODELE=MODE[k],
+                       CHAM_MATER=MATE[k],
+                       CARA_ELEM=CARA[k],
+                       EXCIT=_F(CHARGE=CHAR[k],),NIVE_COUCHE='SUP',
+                       OPTION=('SIGM_ELNO_DEPL','EQUI_ELNO_SIGM'),)
+ 
+   RESU[k]=CALC_NO(reuse=RESU[k],RESULTAT=RESU[k],
+                       CHAM_MATER=MATE[k],
+                       CARA_ELEM=CARA[k],
+                       EXCIT=_F(CHARGE=CHAR[k],),
+                       OPTION=('SIGM_NOEU_DEPL','EQUI_NOEU_SIGM'),)
+                           
+   # Impression des resultats au format GMSH 
+   
+   unit=50+k
+   IMPR_RESU(MODELE=MODE[k],UNITE=unit,FORMAT='GMSH',
+             RESU=(_F(MAILLAGE=MAIL[k],RESULTAT=RESU[k],
+                      NOM_CHAM='EQUI_NOEU_SIGM',NOM_CMP='VMIS',),
+                   _F(MAILLAGE=MAIL[k],RESULTAT=RESU[k],
+                      NOM_CHAM='DEPL',),)
+                     );
+   
+   # Post-traitement avec GMSH
+ 
+   if interactif  == 1 :
+   # visualisation de la deformee, de la contrainte de mises sous GMSH
+       DEFI_FICHIER(ACTION='LIBERER',UNITE=unit);
+       os.system('cp fort.'+str(unit)+' resu.pos')
+       os.system(cmd_gmsh + ' resu.pos')
+ 
+   RELV[k]=POST_RELEVE_T(
+       ACTION=_F(  RESULTAT = RESU[k],INTITULE = 'CONTRAINTES',
+                   NOM_CHAM = 'EQUI_NOEU_SIGM',NUME_ORDRE = 1,
+                   OPERATION = 'MOYENNE',GROUP_NO = 'GM30',
+                   NOM_CMP = ( 'VMIS',),))
+                      
+   IMPR_TABLE(TABLE=RELV[k])
+   
+   
+  # Recuperation de VMIS max 
+  #    Affectation du reel contenu dans la table RELV[k]
+  #   (ligne 'VMIS', colonne 4) dans la variable python SYY
+                    
+   SYY=RELV[k]['VMIS',4]
+   
+   print " Iteration numero ",k, " RC = ",RC
+   print " VMIS(",k,")=",SYY
+   
+   f2.write("RC= %3f "  % RC)
+   f2.write("Vmis= %3f \n"  % SYY)
+   
+   crit=2000.e+6
+  # Test d arret des iterations :  abs(SIYY) est-il inferieur a crit.
+  # Le critere d'arret des iterations porte sur la valeur 
+  #      de la contrainte "VMIS" max a l'iteration k
+  #      ATTENTION : decalage de l'identation sous la structure de controle "if"
+  #      ATTENTION : sortie de la boucle sur k avec "BREAK", on reprend
+  #                  en f2.close)
+
+   if abs(SYY)<crit:
+     print "arret des iterations  : iteration numero",k
+     break
+     
+   # Le critere n'est pas respecte, on continue les iterations
+   # en augmentant le rayon de courbure de 0.2.
+     
+   RC=RC+0.2
+   
+
+# Fin des iterations (boucle sur k)
+
+# Verification de la valeur de VMIS obtenue (test de non-regression)
+
+TEST_TABLE( TABLE=RELV[k],
+               FILTRE=(
+                        _F( NOM_PARA = 'QUANTITE',
+                            VALE_K = 'MAXIMUM'),),
+               NOM_PARA='VMIS', 
+               VALE=1.9669824189084E9,
+               REFERENCE='NON_REGRESSION',
+               VERSION='8.1.0'  )
+
+f2.close()
+   
+FIN()
+                                                                                    
+ 

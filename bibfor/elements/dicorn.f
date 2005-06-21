@@ -1,15 +1,15 @@
       SUBROUTINE DICORN (IRMETG,NBT,NEQ,ITERAT,ICODMA,UL,DUL,UTL,
-     &                   SIM,VARIM1,VARIM2,VARIM3,
-     &                   KLV,KLV2,VARIP1,VARIP2,VARIP3)
+     &                   SIM,VARIM,
+     &                   KLV,KLV2,VARIP)
 C ----------------------------------------------------------------------
       IMPLICIT REAL*8 (A-H,O-Z)
       INTEGER IRMETG,NBT,NEQ,ITERAT,ICODMA
       REAL*8  UL(NEQ),DUL(NEQ),UTL(NEQ)
-      REAL*8  SIM(NEQ),VARIM1,VARIM2,VARIM3
-      REAL*8  KLV(NBT),KLV2(NBT),VARIP1,VARIP2,VARIP3
+      REAL*8  SIM(NEQ),VARIM(7)
+      REAL*8  KLV(NBT),KLV2(NBT),VARIP(7)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ELEMENTS  DATE 16/06/2005   AUTEUR ACBHHCD G.DEVESA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,6 +26,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
+C TOLE CRP_20
 C
 C     RELATION DE COMPORTEMENT "ASSE_CORN" (CORNIERE).
 C
@@ -40,16 +41,16 @@ C       UL     : DEPLACEMENT PRECEDENT REPERE LOCAL (DIM NEQ)
 C       DUL    : INCREMENT DE DEPLACEMENT REPERE LOCAL (DIM NEQ)
 C       UTL    : DEPLACEMENT COURANT REPERE LOCAL (DIM NEQ)
 C       SIM    : EFFORTS GENERALISES A L'INSTANT PRECEDENT (DIM NEQ)
-C       VARIM$ : VARIABLES INTERNES A L'INSTANT PRECEDENT (3 VALEURS)
+C       VARIM$ : VARIABLES INTERNES A L'INSTANT PRECEDENT (7 VALEURS)
 C
 C OUT : KLV    :                                (DIM NBT)
 C       KLV2   :                                (DIM NBT)
-C       VARIP$ : VARIABLES INTERNES REACTUALISEES (3 VALEURS)
+C       VARIP$ : VARIABLES INTERNES REACTUALISEES (7 VALEURS)
 C
 C***************** DECLARATION DES VARIABLES LOCALES *******************
 C
       PARAMETER    ( NBRE1 = 14 )
-      REAL*8       NU1,MU1,NU2,MU2, KY,KZ,KRX,KRZ
+      REAL*8       NU1,MU1,NU2,MU2,KY,KZ,KRX,KRZ,RP0
       REAL*8       SI(12),K01(78),K02(78),KLC(144), VALRE1(NBRE1)
       CHARACTER*2  CODRE1(NBRE1)
       CHARACTER*8  NOMPAR, NOMRE1(NBRE1)
@@ -61,6 +62,7 @@ C
       DATA NOMRE1/'NU_1','MU_1','DXU_1','DRYU_1','C_1',
      &            'NU_2','MU_2','DXU_2','DRYU_2','C_2',
      &            'KY','KZ','KRX','KRZ'/
+C     &            'KY','KZ','KRX','KRZ','R_P0'/
 C
 C ----------------------------------------------------------------------
 C --- DEFINITION DES PARAMETRES
@@ -74,7 +76,7 @@ C
 C --- CARACTERISTIQUES DU MATERIAU
 C    (LES DEFINITIONS DE DRYU1 ET DRYU2 SYMETRISENT LA MATRICE)
 C
-      CALL RCVALA(ICODMA,' ','ASSE_CORN',NBPAR,NOMPAR,VALPAR,NBRE1,
+      CALL RCVALA (ICODMA,' ','ASSE_CORN',NBPAR,NOMPAR,VALPAR,NBRE1,
      &             NOMRE1,VALRE1,CODRE1, 'FM' )
 C
       NU1   = VALRE1(1)
@@ -89,8 +91,12 @@ C
       KZ    = VALRE1(12)
       KRX   = VALRE1(13)
       KRZ   = VALRE1(14)
-      DRYU1 = NU1 * DXU1 / MU1
-      DRYU2 = NU2 * DXU2 / MU2
+C      DRYU1 = NU1 * DXU1 / MU1
+C      DRYU2 = NU2 * DXU2 / MU2
+      DRYU1 = VALRE1(4)
+      DRYU2 = VALRE1(9)
+C      RP0   = VALRE1(15)
+      RP0   = 1.D4
 C
 C --- CONSTANTES DE LA RELATION DE COMPORTEMENT
 C
@@ -103,7 +109,7 @@ C --- ECRITURE DANS LE REPERE LOCAL DE K01 ET K02 (MATRICES DE
 C     RAIDEUR TANGENTE INITIALES POUR LES DEUX MECANISMES)
 C
       CALL DIKINI (NBT,NU1,MU1,DXU1,DRYU1,NU2,MU2,DXU2,DRYU2,
-     &             KY,KZ,KRX,KRZ,K01,K02)
+     &             KY,KZ,KRX,KRZ,K01,K02,RP0)
 C
 C ======================================================================
 C                  DEBUT DU TRAITEMENT DE L'ASSEMBLAGE
@@ -118,22 +124,24 @@ C
       TT = UTL(11)-UTL(5)
       UI = UL(7)-UL(1)
       TI = UL(11)-UL(5)
+C      INDECH = 0
 C
 C -*-*-*-*       TEST POUR SAVOIR SI L'ON DECHARGE OU NON      *-*-*-*-*
 C
-      IF ((((UU*DUR).GT.0.D0.AND.(UI*DUR).GE.0.D0).OR.
-     &   ((TT*DRYR).GT.0.D0.AND.(TI*DRYR).GE.0.D0)).AND.
-     &    IRMETG.NE.1) THEN
+C      IF ((((UU*DUR).GT.0.D0.AND.(UI*DUR).GE.0.D0).OR.
+C     &   ((TT*DRYR).GT.0.D0.AND.(TI*DRYR).GE.0.D0))) INDECH = 1
+
+      IF (IRMETG.NE.1) THEN
 C
 C ======================================================================
-C                       ON NE DECHARGE PAS
+C                       FULL_MECA
 C ======================================================================
 C
-         VARIP2 = 0.D0
+         VARIP(2) = 0.D0
 C
 C -*-*-*-* TEST POUR DETERMINER LE MECANISME OU L'ON SE TROUVE *-*-*-*-*
 C
-         IF (VARIM1.LE.1.D0) THEN
+         IF (VARIM(1).LE.1.D0.OR.VARIM(3).EQ.1.D0) THEN
 C
 C ====================================
 C ====== ON EST EN MECANISME 1 =======
@@ -141,7 +149,7 @@ C ====================================
 C
            CALL VECMA (K01,NBT,KLC,NEQ)
            CALL PMAVEC ('ZERO',NEQ,KLC,DUL,SI)
-           PI = SQRT ( (UI/DXU1)**2 + (TI/DRYU1)**2 )
+           PI = VARIM(1)
 C
 C ****** TEST SUR LE NUMERO D'ITERATION
 C
@@ -149,18 +157,16 @@ C
 C
 C ****** CAS DE LA PREMIERE ITERATION
 C
-             P1 = VARIM1
+             P1 = VARIM(1)
              G1 = DBAR1*P1
              RG1 = 0.5D0*(-G1+SQRT(G1**2 + 4.D0*G1))
-             FEQ1 = SQRT ( (SIM(7)/NU1)**2 + (SIM(11)/MU1)**2 )
 C
 C **** TEST SUR LA POSITION PAR RAPPORT A LA SLU1
 C
-             IF (VARIM3.NE.0.D0) THEN
 C
 C **** ON EST SUR LA SLU1
 C
-               IF (VARIM1.EQ.0.D0) THEN
+               IF (VARIM(1).EQ.0.D0) THEN
                  DNSDU2 = K01(1)
                  DMSDT2 = K01(15)
                ELSE
@@ -185,135 +191,112 @@ C
 C ** ON RESTE EN MECANISME 1
 C
                   P1 = FEQ1**2/(1.D0-FEQ1)/DBAR1
-                  IF (P1.LT.VARIM1) THEN
-                    CALL DICOR1 (K01,VARIM1,SIM,DUR,DRYR,
-     &                           DNSDU2,DMSDT2,DNSDT2,VARIP1,VARIP3,SI)
-                  ELSE
-                    CALL DICOR2 (K01,P1,P1,DUR,DRYR,DXU1,DRYU1,
-     &                           FEQ1,NU1,MU1,UU,TT,SI,DNSDU2,DMSDT2,
-     &                           DNSDT2,VARIP1,VARIP3,SI)
-                  END IF
+                  U2 = P1*DXU1*SI(7)/NU1/FEQ1
+                  T2 = P1*DRYU1*SI(11)/MU1/FEQ1
+                  UTOT = U2+VARIM(4)
+                  TTOT = T2+VARIM(5)
+C
+                  IF (DUR.NE.0.D0)  DNSDU2 = SI(7)/UTOT
+                  IF (DUR.EQ.0.D0)  DNSDU2 = K01(1)
+                  IF (DRYR.NE.0.D0) DMSDT2 = SI(11)/TTOT
+                  IF (DRYR.EQ.0.D0) DMSDT2 = K01(15)
+                  DNSDT2 = 0.D0
+                  SI(7) = DNSDU2*UU
+                  SI(11) = DMSDT2*TT
+                  VARIP(1) = P1
+                  VARIP(2) = VARIM(2)
+                  VARIP(3) = 1.0D0                               
 C
                   CALL DICOR3 (K01,DUR,DRYR,SIM,SI,DNSDU,DMSDT,DNSDT)
 C
+                  DO 5 I = 4, 7
+                    VARIP(I) = VARIM(I)
+    5             CONTINUE
                ELSE
 C
 C ** ON PASSE EN MECANISME 2
 C
-                  CALL DICOR4 (K02,SIM,SI,PI,UI,TI,DXU1,DXU2,
+                  U2 = UI - VARIM(4)
+                  T2 = TI - VARIM(5)
+                  CALL DICOR4 (K02,SIM,SI,PI,U2,T2,DXU1,DXU2,
      &                         DRYU1,DRYU2,NU1,NU2,MU1,MU2,
      &                         FEQ1,C1,DBAR2,UU,TT,DUR,DRYR,
      &                         P2,UTOT,TTOT,DNSDU,DMSDT,DNSDT,
      &                         DNSDU2,DMSDT2,DNSDT2)
-                  VARIP1 = SQRT ( (UTOT/DXU1)**2 + (TTOT/DRYU1)**2 )
-                  VARIP2 = P2
-                  VARIP3 = 2.D0
+                  VARIP(4) = UTOT - SI(7)/K02(1)
+                  VARIP(5) = TTOT - SI(11)/K02(15)
+                  VARIP(6) = SI(7)
+                  VARIP(7) = SI(11)
+                  U2 = UTOT - VARIM(4)
+                  T2 = TTOT - VARIM(5)
+                  VARIP(1) = SQRT( (U2/DXU1)**2 + (T2/DRYU1)**2 )
+                  VARIP(2) = P2
+                  VARIP(3) = 2.D0
 C
                END IF
 C
-             ELSE
+C             ELSE
 C
 C **** ON EST SOUS LA SLU1
 C
-               CALL DICOR1 (K01,VARIM2,SIM,DUR,DRYR,
-     &                      DNSDU2,DMSDT2,DNSDT2,VARIP2,VVV,SI)
-               FEQ1 = SQRT ( ((SIM(7)+K01(1)*DUR)/NU1)**2
-     &                     + ((SIM(11)+K01(15)*DRYR)/MU1)**2 )
 C
-C ** TEST POUR SAVOIR SI L'ON RESTE SOUS LA SLU1
-C
-               IF (RG1.GE.FEQ1.AND.ABS(FEQ1-RG1).GT.(1.D-3*FEQ1)) THEN
-C
-C ** ON RESTE SOUS LA SLU1
-C
-                 CALL DICOR0 (K01,VARIM1,VARIP1,VARIP3,DNSDU,
-     &                        DMSDT,DNSDT)
-C
-               ELSE
-C
-C ** ON VA SUR LA SLU1
-C
-                 FEQ1 = SQRT ( (SI(7)/NU1)**2 + (SI(11)/MU1)**2 )
-C
-C  TEST DE CHANGEMENT DE MECANISME
-C
-                 IF (FEQ1.LT.C1) THEN
-C
-C  ON RESTE EN MECANISME 1
-C
-                    P1 = FEQ1**2/(1.D0-FEQ1)/DBAR1
-                    CALL DICOR2 (K01,P1,P1,DUR,DRYR,DXU1,DRYU1,
-     &                           FEQ1,NU1,MU1,UU,TT,SI,DNSDU2,DMSDT2,
-     &                           DNSDT2,VARIP1,VARIP3,SI)
-                    CALL DICOR3 (K01,DUR,DRYR,SIM,SI,
-     &                           DNSDU,DMSDT,DNSDT)
-C
-                 ELSE
-C
-C  ON PASSE EN MECANISME 2
-C
-                    CALL DICOR4 (K02,SIM,SI,PI,UI,TI,DXU1,DXU2,DRYU1,
-     &                           DRYU2,NU1,NU2,MU1,MU2,FEQ1,C1,DBAR2,
-     &                           UU,TT,DUR,DRYR,P2,UTOT,TTOT,
-     &                           DNSDU,DMSDT,DNSDT,DNSDU2,DMSDT2,DNSDT2)
-C
-                    VARIP1 = 0.D0
-                    VARIP2 = P2
-                    VARIP3 = 2.D0
-                    IF ((UU*DUR).GT.0.D0)  VARIP1 = ABS(UTOT/DXU1)
-                    IF ((TT*DRYR).GT.0.D0) VARIP1 = ABS(TTOT/DRYU1)
-C
-                 END IF
-C
-               ENDIF
-C
-             ENDIF
+C             ENDIF
 C
            ELSEIF (ITERAT.GE.2) THEN
 C
 C ****** CAS DES ITERATIONS 2 ET SUIVANTES
 C
-                 VARIP1 = SQRT ( (UU/DXU1)**2 + (TT/DRYU1)**2 )
-                 P1 = VARIP1
+                 U2 = UU - VARIM(4)
+                 T2 = TT - VARIM(5)
+                 VARIP(1) = SQRT ( (U2/DXU1)**2 + (T2/DRYU1)**2 )
+                 P1 = VARIP(1)
 C
                  IF (P1.LE.1.D0) THEN
 C
 C **** ON RESTE EN MECANISME 1
 C
-                    FEQ1 = SQRT ( ((SIM(7)+K01(1)*DUR)/NU1)**2
-     &                          + ((SIM(1)+K01(15)*DRYR)/MU1)**2 )
                     G1 = DBAR1*P1
                     RG1 = 0.5D0*(-G1+SQRT(G1**2 + 4.D0*G1))
+                    DNSDU2 = RG1*NU1/DXU1/P1
+                    IF (DUR.EQ.0.D0) DNSDU2 = K01(1)
+                    DMSDT2 = RG1*MU1/DRYU1/P1
+                    IF (DRYR.EQ.0.D0) DMSDT2 = K01(15)
 C
-                    IF (P1.LT.VARIM1.OR.FEQ1.LT.RG1) THEN
-                      CALL DICOR1 (K01,VARIM1,SIM,DUR,DRYR,
-     &                             DNSDU2,DMSDT2,DNSDT2,VARIP1,
-     &                             VARIP3,SI)
-                    ELSE
-                      CALL DICOR2 (K01,VARIM2,P1,DUR,DRYR,DXU1,
-     &                             DRYU1,RG1,NU1,MU1,UU,TT,SIM,DNSDU2,
-     &                             DMSDT2,DNSDT2,VARIP2,VARIP3,SI)
-                    END IF
+                    DNSDT2 = 0.D0
+
 C
-                    CALL DICOR3 (K01,DUR,DRYR,SIM,SI,
-     &                           DNSDU,DMSDT,DNSDT)
+                    CALL DICOR2 (K01,VARIM(2),P1,DUR,DRYR,DXU1,
+     &                           DRYU1,RG1,NU1,MU1,U2,T2,SIM,DNSDU2,
+     &                           DMSDT2,DNSDT2,VARIP(2),VARIP(3),SI)
+C
+                    CALL DICOR3 (K01,DUR,DRYR,SIM,SI,DNSDU,DMSDT,DNSDT)
+                    DO 10 I = 4, 7
+                      VARIP(I) = VARIM(I)
+   10               CONTINUE
 C
                  ELSE
 C
 C **** ON PASSE EN MECANISME 2
 C
 
-                    G1 = DBAR1 * VARIM1
+                    G1 = DBAR1 * VARIM(1)
                     RG1 = 0.5D0 * (-G1 + SQRT(G1**2 + 4.D0*G1))
-                    CALL DICOR5 (K02,SIM,P1,PI,UI,TI,DXU1,DXU2,
+                    U2 = UI - VARIM(4)
+                    T2 = TI - VARIM(5)
+                    CALL DICOR5 (K02,SIM,P1,PI,U2,T2,DXU1,DXU2,
      &                           DRYU1,DRYU2,NU1,NU2,MU1,MU2,
      &                           C1,DBAR2,UU,TT,DUR,DRYR,
      &                           DNSDU,DMSDT,DNSDT,DNSDU2,DMSDT2,
-     &                           DNSDT2,SI,VARIP2,VARIP3)
+     &                           DNSDT2,SI,VARIP(2),VARIP(3))
+                    VARIP(4) = UU - SI(7)/K02(1)
+                    VARIP(5) = TT - SI(11)/K02(15)
+                    VARIP(6) = SI(7)
+                    VARIP(7) = SI(11)
 C
                  END IF
 C
            ENDIF
+
 C
 C -*-*-*-*-*-*-*-*-*-*-*-* FIN DU MECANISME 1 *-*-*-*-*-*-*-*-*-*-*-*-*
 C
@@ -323,34 +306,85 @@ C ====================================
 C ====== ON EST EN MECANISME 2 =======
 C ====================================
 C
-           DP2 = SQRT ( (DUR/DXU2)**2 + (DRYR/DRYU2)**2 )
-           P2 = VARIM2
-           VARIP2 = P2 + DP2
-           VARIP1 = VARIM1
+           P2 = VARIM(2)
+           VARIP(1) = VARIM(1)
            G2 = DBAR2*P2
            RG2 = 0.5D0*(-G2+SQRT(G2**2 + 4.D0*G2))
-           FEQ2 = SQRT ( (SIM(7)/NU2)**2 + (SIM(11)/MU2)**2 )
-C
 C ****** TEST SUR LA POSITION PAR RAPPORT A LA SLU2
 C
-           IF (VARIM3.NE.0.D0) THEN
+           IF (VARIM(3).EQ.2.D0) THEN
 C
 C ****** ON EST SUR LA SLU2
 C
-              FEQ2 = SQRT ( ((SIM(7)+K02(1)*DUR)/NU2)**2
-     &                    + ((SIM(11)+K02(15)*DRYR)/MU2)**2 )
-C
+              DNSDU2 = RG2*NU2/DXU2/P2
+              DMSDT2 = RG2*MU2/DRYU2/P2
+              FEQ2 = SQRT ( ((SIM(7)+DNSDU2*DUR)/NU2)**2
+     &                    + ((SIM(11)+DMSDT2*DRYR)/MU2)**2 )
               IF (FEQ2.LT.RG2) THEN
-                CALL DICOR0 (K02,VARIM2,VARIP2,VARIP3,DNSDU,DMSDT,DNSDT)
-                CALL DICOR0 (K02,VARIM2,VARIP2,VARIP3,
+                CALL DICOR0 (K02,VARIM(2),VARIP(2),VARIP(3),
+     &                       DNSDU,DMSDT,DNSDT)
+                CALL DICOR0 (K02,VARIM(2),VARIP(2),VARIP(3),
      &                       DNSDU2,DMSDT2,DNSDT2)
+                DO 15 I = 4, 7
+                  VARIP(I) = VARIM(I)
+   15           CONTINUE
               ELSE
-                CALL DICOR6 (K02,SIM,P2,DP2,DBAR2,DUR,DRYR,NU2,MU2,
-     &                       DXU2,DRYU2,VARIP3,DNSDU,DMSDT,
-     &                       DNSDT,DNSDU2,DMSDT2,DNSDT2)
+                IF (ITERAT.EQ.1) THEN
+                  IF (FEQ2.GE.C2) THEN
+                    CALL UTMESS('I','DICORN',
+     &                'CHARGEMENT EN MECA 2 TROP IMPORTANT A VERIFIER')
+                  ENDIF
+                  SI(7) = SIM(7) + DNSDU2*DUR
+                  SI(11) = SIM(11) + DMSDT2*DRYR
+                  VARIP(2) = FEQ2**2/(1.D0-FEQ2)/DBAR2   
+                  UR2 = (VARIP(2)*SI(7)/FEQ2-P2*SIM(7)/RG2)/NU2
+                  TR2 = (VARIP(2)*SI(11)/FEQ2-P2*SIM(11)/RG2)/MU2
+                  U2 = UR2*DXU2
+                  T2 = TR2*DRYU2
+                  UTOT = U2+UI
+                  TTOT = T2+TI
+C
+                  IF (DUR.NE.0.D0)  DNSDU2 = SI(7)/UTOT
+                  IF (DUR.EQ.0.D0)  DNSDU2 = K02(1)
+                  IF (DRYR.NE.0.D0) DMSDT2 = SI(11)/TTOT
+                  IF (DRYR.EQ.0.D0) DMSDT2 = K02(15)
+                  DNSDT2 = 0.D0
+                  VARIP(4) = UTOT - SI(7)/K02(1)
+                  VARIP(5) = TTOT - SI(11)/K02(15)
+                  VARIP(6) = SI(7)
+                  VARIP(7) = SI(11)
+                  SI(7) = DNSDU2*UU
+                  SI(11) = DMSDT2*TT
+                  CALL UTMESS('I','DICORN',
+     &                'ON POURSUIT EN MECANISME 2')
+                  VARIP(3) = 2.0D0
+C
+                  CALL DICOR3 (K02,DUR,DRYR,SIM,SI,DNSDU,DMSDT,DNSDT)
+                ELSE
+                  U2 = DUR + P2*SIM(7)*DXU2/RG2/NU2
+                  T2 = DRYR + P2*SIM(11)*DRYU2/RG2/MU2
+                  VARIP(2) = SQRT ( (U2/DXU2)**2 + (T2/DRYU2)**2 )
+                  G2 = DBAR2*VARIP(2)
+                  FEQ2 = 0.5D0*(-G2+SQRT(G2**2 + 4.D0*G2))
+                  DNSDU2 = FEQ2*NU2/DXU2/VARIP(2)
+                  IF (DUR.EQ.0.D0) DNSDU2 = K02(1)
+                  DMSDT2 = FEQ2*MU2/DRYU2/VARIP(2)
+                  IF (DRYR.EQ.0.D0) DMSDT2 = K02(15)
+                  DNSDT2 = 0.D0
+                  SI(7) = U2*FEQ2*NU2/DXU2/VARIP(2)
+                  SI(11) = T2*FEQ2*MU2/DRYU2/VARIP(2)
+                  CALL UTMESS('I','DICORN',
+     &                'ON POURSUIT EN MECANISME 2')
+                  CALL DICOR3 (K02,DUR,DRYR,SIM,SI,DNSDU,DMSDT,DNSDT)
+                  VARIP(3) = 2.D0
+                  VARIP(4) = UU - SI(7)/K02(1)
+                  VARIP(5) = TT - SI(11)/K02(15)
+                  VARIP(6) = SI(7)
+                  VARIP(7) = SI(11)
+                ENDIF
               END IF
 C
-           ELSEIF (VARIM3.EQ.0.D0) THEN
+           ELSEIF (VARIM(3).EQ.0.D0) THEN
 C
 C ****** ON EST SOUS LA SLU2
 C
@@ -359,29 +393,161 @@ C
 C
 C **** TEST POUR SAVOIR SI L'ON RESTE SOUS LA SLU
 C
-              IF (RG2.GE.FEQ2.AND.ABS(FEQ2-RG2).GT.(1.D-3*FEQ2)) THEN
+              IF (FEQ2.LE.RG2) THEN
 C
 C **** ON RESTE SOUS LA SLU2
 C
-                CALL DICOR0 (K02,VARIM2,VARIP2,VARIP3,DNSDU,DMSDT,DNSDT)
-                CALL DICOR0 (K02,VARIM2,VARIP2,VARIP3,
+                SI(7) = SIM(7) + K02(1)*DUR
+                SI(11) = SIM(11) + K02(15)*DRYR
+                TEST = VARIM(6)*SI(7)/NU2**2+VARIM(7)*SI(11)/MU2**2
+                IF (TEST.LT.0.D0) THEN
+                  IF (ITERAT.EQ.1) THEN
+                    FEQ1 = SQRT( (SI(7)/NU1)**2 + (SI(11)/MU1)**2 )
+                    IF (FEQ1.GE.C1) THEN
+                      CALL UTMESS('I','DICORN',
+     &                  'DECHARGE NEGATIVE SANS PASSER PAR MECA 1 '//
+     &                  'DIMINUER LE PAS DE TEMPS')
+                      GOTO 19
+                    ENDIF
+                    CALL UTMESS('I','DICORN',
+     &                  'ON REVIENT EN MECANISME 1')
+C
+C ** ON REPASSE EN MECANISME 1
+C
+                    P1 = FEQ1**2/(1.D0-FEQ1)/DBAR1
+                    U2 = P1*DXU1*SI(7)/NU1/FEQ1
+                    T2 = P1*DRYU1*SI(11)/MU1/FEQ1
+                    UTOT = U2+VARIM(4)
+                    TTOT = T2+VARIM(5)
+                    DU2 = UTOT-UI
+                    DRY2 = TTOT-TI
+                    FEQ2 = SQRT ( ((SIM(7)+K02(1)*DU2)/NU2)**2
+     &                          + ((SIM(11)+K02(15)*DRY2)/MU2)**2 )
+                    IF (FEQ2.GT.RG2) THEN
+                      CALL UTMESS('I','DICORN',
+     &                  'PAS DE RETOUR DANS MECA 1 TROP IMPORTANT '//
+     &                  'DIMINUER LE PAS DE TEMPS')
+                    ENDIF
+C
+                    IF (DUR.NE.0.D0)  DNSDU2 = SI(7)/UTOT
+                    IF (DUR.EQ.0.D0)  DNSDU2 = K01(1)
+                    IF (DRYR.NE.0.D0) DMSDT2 = SI(11)/TTOT
+                    IF (DRYR.EQ.0.D0) DMSDT2 = K01(15)
+                    DNSDT2 = 0.D0
+                    SI(7) = DNSDU2*UU
+                    SI(11) = DMSDT2*TT
+                    VARIP(1) = P1
+                    VARIP(2) = VARIM(2)
+                    VARIP(3) = 1.0D0 
+C
+                    CALL DICOR3 (K01,DUR,DRYR,SIM,SI,DNSDU,DMSDT,DNSDT)
+C
+                  ELSE
+C
+C ****** CAS DES ITERATIONS 2 ET SUIVANTES
+C
+                    U2 = UU - VARIM(4)
+                    T2 = TT - VARIM(5)
+                    VARIP(1) = SQRT ( (U2/DXU1)**2 + (T2/DRYU1)**2 )
+                    P1 = VARIP(1)
+                    CALL UTMESS('I','DICORN',
+     &                  'ON REVIENT EN MECANISME 1')
+C
+                    IF (P1.GT.1.D0) THEN
+                      CALL UTMESS('I','DICORN',
+     &                  'DECHARGE NEGATIVE SANS PASSER PAR MECA 1 '//
+     &                  'DIMINUER LE PAS DE TEMPS')
+                      GOTO 19
+                    ENDIF
+C
+C **** ON EST EN MECANISME 1
+C
+                    G1 = DBAR1*P1
+                    RG1 = 0.5D0*(-G1+SQRT(G1**2 + 4.D0*G1))
+                    DNSDU2 = RG1*NU1/DXU1/P1
+                    IF (DUR.EQ.0.D0) DNSDU2 = K01(1)
+                    DMSDT2 = RG1*MU1/DRYU1/P1
+                    IF (DRYR.EQ.0.D0) DMSDT2 = K01(15)
+C
+                    DNSDT2 = 0.D0
+
+C
+                    CALL DICOR2 (K01,VARIM(2),P1,DUR,DRYR,DXU1,
+     &                           DRYU1,RG1,NU1,MU1,U2,T2,SIM,DNSDU2,
+     &                           DMSDT2,DNSDT2,VARIP(2),VARIP(3),SI)
+C
+                    CALL DICOR3 (K01,DUR,DRYR,SIM,SI,DNSDU,DMSDT,DNSDT)
+C                 
+                  ENDIF                  
+                  GOTO 20
+                ENDIF
+   19           CONTINUE
+                CALL DICOR0 (K02,VARIM(2),VARIP(2),VARIP(3),
+     &                       DNSDU,DMSDT,DNSDT)
+                CALL DICOR0 (K02,VARIM(2),VARIP(2),VARIP(3),
      &                       DNSDU2,DMSDT2,DNSDT2)
+   20           CONTINUE
+                DO 25 I = 4, 7
+                  VARIP(I) = VARIM(I)
+   25           CONTINUE
 C
               ELSE
 C
 C **** ON REVIENT SUR LA SLU2
 C
-                COEF2 = RG2/FEQ2
                 IF (ITERAT.EQ.1) THEN
-                  SI(7) = (SIM(7)+K02(1)*DUR)*COEF2
-                  SI(11) = (SIM(11)+K02(15)*DRYR)*COEF2
-                  IF (DUR.NE.0.D0)  DNSDU = (SI(7)-SIM(7))/DUR
-                  IF (DRYR.NE.0.D0) DMSDT = (SI(11)-SIM(11))/DRYR
+                  SI(7) = SIM(7) + K02(1)*DUR
+                  SI(11) = SIM(11) + K02(15)*DRYR                
+                  VARIP(2) = FEQ2**2/(1.D0-FEQ2)/DBAR2
+                              
+                  UR2 = (VARIP(2)*SI(7)/FEQ2-P2*VARIM(6)/RG2)/NU2
+                  TR2 = (VARIP(2)*SI(11)/FEQ2-P2*VARIM(7)/RG2)/MU2
+                  U2 = UR2*DXU2
+                  T2 = TR2*DRYU2
+                  UTOT = U2+UI+(VARIM(6)-SIM(7))/K02(1)
+                  TTOT = T2+TI+(VARIM(7)-SIM(11))/K02(15)
+C
+                  IF (DUR.NE.0.D0)  DNSDU2 = SI(7)/UTOT
+                  IF (DUR.EQ.0.D0)  DNSDU2 = K02(1)
+                  IF (DRYR.NE.0.D0) DMSDT2 = SI(11)/TTOT
+                  IF (DRYR.EQ.0.D0) DMSDT2 = K02(15)
+                  DNSDT2 = 0.D0
+                  VARIP(4) = UTOT - SI(7)/K02(1)
+                  VARIP(5) = TTOT - SI(11)/K02(15)
+                  VARIP(6) = SI(7)
+                  VARIP(7) = SI(11)
+                  SI(7) = DNSDU2*UU
+                  SI(11) = DMSDT2*TT
+C
+                  CALL UTMESS('I','DICORN',
+     &                'ON POURSUIT EN MECANISME 2')
+                  VARIP(3) = 2.0D0
+                  CALL DICOR3 (K02,DUR,DRYR,SIM,SI,DNSDU,DMSDT,DNSDT)
+                ELSE
+
+                  U2 = DUR + P2*VARIM(6)*DXU2/RG2/NU2
+     &                     - (VARIM(6)-SIM(7))/K02(1)
+                  T2 = DRYR + P2*VARIM(7)*DRYU2/RG2/MU2
+     &                     - (VARIM(7)-SIM(11))/K02(15)
+                  VARIP(2) = SQRT ( (U2/DXU2)**2 + (T2/DRYU2)**2 )
+                  G2 = DBAR2*VARIP(2)
+                  FEQ2 = 0.5D0*(-G2+SQRT(G2**2 + 4.D0*G2))
+                  DNSDU2 = FEQ2*NU2/DXU2/VARIP(2)
+                  IF (DUR.EQ.0.D0) DNSDU2 = K02(1)
+                  DMSDT2 = FEQ2*MU2/DRYU2/VARIP(2)
+                  IF (DRYR.EQ.0.D0) DMSDT2 = K02(15)
+                  DNSDT2 = 0.D0
+                  SI(7) = U2*FEQ2*NU2/DXU2/VARIP(2)
+                  SI(11) = T2*FEQ2*MU2/DRYU2/VARIP(2)
+                  CALL UTMESS('I','DICORN',
+     &                'ON POURSUIT EN MECANISME 2')
+                  CALL DICOR3 (K02,DUR,DRYR,SIM,SI,DNSDU,DMSDT,DNSDT)
+                  VARIP(3) = 2.D0
+                  VARIP(4) = UU - SI(7)/K02(1)
+                  VARIP(5) = TT - SI(11)/K02(15)
+                  VARIP(6) = SI(7)
+                  VARIP(7) = SI(11)
                 ENDIF
-                CALL DICOR6 (K02,SIM,P2,DP2,DBAR2,DUR,DRYR,NU2,MU2,
-     &                       DXU2,DRYU2,VARIP3,DNSDU,DMSDT,
-     &                       DNSDT,DNSDU2,DMSDT2,DNSDT2)
-                VARIP2 = P2
 C
               ENDIF
 C
@@ -394,32 +560,35 @@ C
       ELSE
 C
 C ======================================================================
-C                             ON DECHARGE
+C                             RIGI_MECA_TANG
 C ======================================================================
 C
-         IF (VARIM1.LE.1.D0) THEN
-               CALL DICOR0 (K01,VARIM1,VARIP1,PLOUF,DNSDU,DMSDT,DNSDT)
-               CALL DICOR0 (K01,VARIM2,VARIP2,VARIP3,
+         IF (VARIM(1).LE.1.D0.OR.VARIM(3).EQ.1.D0) THEN
+               CALL DICOR0 (K01,VARIM(1),VARIP(1),PLOUF,
+     &                      DNSDU,DMSDT,DNSDT)
+               CALL DICOR0 (K01,VARIM(2),VARIP(2),VARIP(3),
      &                      DNSDU2,DMSDT2,DNSDT2)
-               IF (IRMETG.EQ.1) THEN
-                  P1 = VARIM1
-                  G1 = DBAR1*P1
-                  RG1 = 0.5D0*(-G1+SQRT(G1**2 + 4.D0*G1))
-                  IF (P1*VARIM3.NE.0.D0) DNSDU2 = RG1*NU1/DXU1/P1
-                  IF (P1*VARIM3.NE.0.D0) DMSDT2 = RG1*MU1/DRYU1/P1
-               ENDIF
+               VARIP(3) = VARIM(3)
+               P1 = VARIM(1)
+               G1 = DBAR1*P1
+               RG1 = 0.5D0*(-G1+SQRT(G1**2 + 4.D0*G1))
+               IF (P1.NE.0.D0) DNSDU2 = RG1*NU1/DXU1/P1
+               IF (P1.NE.0.D0) DMSDT2 = RG1*MU1/DRYU1/P1
          ELSE
-               CALL DICOR0 (K02,VARIM1,VARIP1,PLOUF,DNSDU,DMSDT,DNSDT)
-               CALL DICOR0 (K02,VARIM2,VARIP2,VARIP3,
+               CALL DICOR0 (K02,VARIM(1),VARIP(1),PLOUF,
+     &                      DNSDU,DMSDT,DNSDT)
+               CALL DICOR0 (K02,VARIM(2),VARIP(2),VARIP(3),
      &                      DNSDU2,DMSDT2,DNSDT2)
-               IF (IRMETG.EQ.1) THEN
-                  P2 = VARIM2
-                  G2 = DBAR2*P2
-                  RG2 = 0.5D0*(-G2+SQRT(G2**2 + 4.D0*G2))
-                  IF (P2*VARIM3.NE.0.D0) DNSDU2 = RG2*NU2/DXU2/P2
-                  IF (P2*VARIM3.NE.0.D0) DMSDT2 = RG2*MU2/DRYU2/P2
-               ENDIF
+               VARIP(3) = VARIM(3)
+               P2 = VARIM(2)
+               G2 = DBAR2*P2
+               RG2 = 0.5D0*(-G2+SQRT(G2**2 + 4.D0*G2))
+               IF (VARIM(3).EQ.2.D0) DNSDU2 = RG2*NU2/DXU2/P2
+               IF (VARIM(3).EQ.2.D0) DMSDT2 = RG2*MU2/DRYU2/P2
          ENDIF
+         DO 30 I = 4, 7
+            VARIP(I) = VARIM(I)
+   30    CONTINUE
 C
       ENDIF
 C

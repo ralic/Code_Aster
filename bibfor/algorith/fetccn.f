@@ -1,7 +1,7 @@
       SUBROUTINE FETCCN(CHAMN1,CHAMN2,CHAMN3,CHAMN4,TYPCUM,CHAMNR)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/01/2005   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGORITH  DATE 20/06/2005   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -29,16 +29,6 @@ C
 C IN CHAMN1/4 : CHAM_NOS A CONCATENER
 C IN TYPCUM   : TYPE DE CUMUL
 C OUT CHAMNR  : CHAM_NO RESULTAT
-C
-C   -------------------------------------------------------------------
-C     SUBROUTINES APPELLEES:
-C       JEVEUX:JEMARQ,JEDEMA,JEEXIN,JEVEUO,JELIRA.
-C       MSG   :UTDEBM,UTIMPI,UTFINM,UTMESS
-C     FONCTIONS INTRINSEQUES:
-C       NONE.
-C   -------------------------------------------------------------------
-C     ASTER INFORMATIONS:
-C       04/12/03 (OB): CREATION.
 C----------------------------------------------------------------------
 C RESPONSABLE BOITEAU O.BOITEAU
 C CORPS DU PROGRAMME
@@ -67,11 +57,12 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       
 C DECLARATION VARIABLES LOCALES
       INTEGER      IDD,IRET,NBSD,I1,I2,I3,I4,IR,NBVAL,K,J1,J2,J3,J4,JR,
-     &             IDD1,IFM,NIV,IINF,IREFE
+     &             IDD1,IFM,NIV,IINF,IREFE,ILIMPI
       CHARACTER*5  VALE,FETC 
       CHARACTER*8  K8BID
       CHARACTER*19 CHAM1B,CHAM2B,CHAM3B,CHAM4B,CHAMRB       
       CHARACTER*24 K24B,INFOFE
+      LOGICAL      LFETI,IDDOK
       
 C CORPS DU PROGRAMME
       CALL JEMARQ()
@@ -86,7 +77,7 @@ C FETI OR NOT ?
       K24B=CHAMNR//FETC
       CALL JEEXIN(K24B,IRET)
       IF (IRET.GT.0) THEN
-
+        LFETI=.TRUE.
 C NBRE DE SOUS-DOMAINES NBSD      
         CALL JELIRA(K24B,'LONMAX',NBSD,K8BID)
         
@@ -100,87 +91,105 @@ C DES ADRESSES DES .FETC DE CHACUN DES CHAM_NOS A CONCATENER
         CALL JEVEUO(CHAMNR//'.REFE','L',IREFE)  
         CALL JEVEUO('&&'//ZK24(IREFE+3)(1:17)//'.FINF','L',IINF)
         INFOFE=ZK24(IINF)
+        CALL JEVEUO('&FETI.LISTE.SD.MPI','L',ILIMPI)
       ELSE
+        LFETI=.FALSE.
         NBSD=0        
       ENDIF
 
-C----------------------------------------------------------------------
-C --- BOUCLE SUR LES SOUS-DOMAINES
-C----------------------------------------------------------------------
-
+C========================================
+C BOUCLE SUR LES SOUS-DOMAINES + IF MPI:
+C========================================
+C IDD=0 --> DOMAINE GLOBAL/ IDD=I --> IEME SOUS-DOMAINE
       DO 10 IDD=0,NBSD
-
-        IF (NBSD.GT.0) CALL JEMARQ()      
-        IF (IDD.EQ.0) THEN
-C DOMAINE GLOBAL        
-          CHAM1B=CHAMN1
-          CHAM2B=CHAMN2
-          CHAM3B=CHAMN3
-          CHAM4B=CHAMN4
-          CHAMRB=CHAMNR
-        ELSE
-C SOUS-DOMAINE N°IDD
-          IDD1=IDD-1    
-          IF (TYPCUM.GT.0) CHAM1B=ZK24(I1+IDD1)
-          IF (TYPCUM.GT.1) CHAM2B=ZK24(I2+IDD1)
-          IF (TYPCUM.GT.2) CHAM3B=ZK24(I3+IDD1)
-          IF (TYPCUM.GT.3) CHAM4B=ZK24(I4+IDD1)
-          CHAMRB=ZK24(IR+IDD1)    
+      
+C TRAVAIL PREALABLE POUR DETERMINER SI ON EFFECTUE LA BOUCLE SUIVANT
+C LE SOLVEUR (FETI OU NON), LE TYPE DE RESOLUTION (PARALLELE OU 
+C SEQUENTIELLE) ET L'ADEQUATION "RANG DU PROCESSEUR-NUMERO DU SD"
+        IF (.NOT.LFETI) THEN
+          IDDOK=.TRUE.
+        ELSE 
+          IF (ZI(ILIMPI+IDD).EQ.1) THEN
+            IDDOK=.TRUE.
+          ELSE
+            IDDOK=.FALSE.
+          ENDIF
         ENDIF
+        IF (IDDOK) THEN
+        
+          IF (LFETI) CALL JEMARQ()      
+          IF (IDD.EQ.0) THEN
+C DOMAINE GLOBAL        
+            CHAM1B=CHAMN1
+            CHAM2B=CHAMN2
+            CHAM3B=CHAMN3
+            CHAM4B=CHAMN4
+            CHAMRB=CHAMNR
+          ELSE
+C SOUS-DOMAINE N°IDD
+            IDD1=IDD-1    
+            IF (TYPCUM.GT.0) CHAM1B=ZK24(I1+IDD1)
+            IF (TYPCUM.GT.1) CHAM2B=ZK24(I2+IDD1)
+            IF (TYPCUM.GT.2) CHAM3B=ZK24(I3+IDD1)
+            IF (TYPCUM.GT.3) CHAM4B=ZK24(I4+IDD1)
+            CHAMRB=ZK24(IR+IDD1)    
+          ENDIF
 
-        IF (TYPCUM.GT.0) CALL JEVEUO(CHAM1B//VALE,'L',J1)
-        IF (TYPCUM.GT.1) CALL JEVEUO(CHAM2B//VALE,'L',J2)      
-        IF (TYPCUM.GT.2) CALL JEVEUO(CHAM3B//VALE,'L',J3)      
-        IF (TYPCUM.GT.3) CALL JEVEUO(CHAM4B//VALE,'L',J4)      
-        CALL JEVEUO(CHAMRB//VALE,'E',JR)
-        CALL JELIRA(CHAMRB//VALE,'LONMAX',NBVAL,K8BID)
-        NBVAL=NBVAL-1     
+          IF (TYPCUM.GT.0) CALL JEVEUO(CHAM1B//VALE,'L',J1)
+          IF (TYPCUM.GT.1) CALL JEVEUO(CHAM2B//VALE,'L',J2)      
+          IF (TYPCUM.GT.2) CALL JEVEUO(CHAM3B//VALE,'L',J3)      
+          IF (TYPCUM.GT.3) CALL JEVEUO(CHAM4B//VALE,'L',J4)      
+          CALL JEVEUO(CHAMRB//VALE,'E',JR)
+          CALL JELIRA(CHAMRB//VALE,'LONMAX',NBVAL,K8BID)
+          NBVAL=NBVAL-1     
 
 C----------------------------------------------------------------------
 C ----- BOUCLE SUR LES .VALE SELON LES TYPES DE CUMUL
 C----------------------------------------------------------------------
 
-        IF (TYPCUM.EQ.0) THEN
-          DO 2 K = 0, NBVAL
-            ZR(JR+K) = 0.D0         
-    2     CONTINUE
-        ELSEIF (TYPCUM.EQ.1) THEN
-          DO 3 K = 0, NBVAL
-            ZR(JR+K) = ZR(J1+K)
-    3     CONTINUE
-        ELSEIF (TYPCUM.EQ.2) THEN
-          DO 4 K = 0, NBVAL
-            ZR(JR+K) = ZR(J1+K) + ZR(J2+K)
-    4     CONTINUE
-        ELSEIF (TYPCUM.EQ.3) THEN
-          DO 5 K = 0, NBVAL
-            ZR(JR+K) = ZR(J1+K) + ZR(J2+K) + ZR(J3+K)
-    5     CONTINUE
-        ELSEIF (TYPCUM.EQ.4) THEN
-          DO 6  K = 0, NBVAL
-            ZR(JR+K) = ZR(J1+K) + ZR(J2+K) + ZR(J3+K) + ZR(J4+K)
-    6     CONTINUE
-        ELSE
-          CALL UTDEBM ('A','FETCCN', 'MAUVAISE VALEUR DE TYPCUM')
-          CALL UTIMPI ('S', ': ', 1, TYPCUM)
-          CALL UTFINM
-          CALL UTMESS ('F','FETCCN', 'ERREUR DE PROGRAMMATION')
-        ENDIF   
-C MONITORING
-        IF ((INFOFE(1:1).EQ.'T').AND.(NBSD.GT.0)) THEN
-          IF (IDD.EQ.0) THEN
-            WRITE(IFM,*)'<FETI/FETCCN> DOMAINE GLOBAL ',CHAMRB(1:19)
+          IF (TYPCUM.EQ.0) THEN
+            DO 2 K = 0, NBVAL
+              ZR(JR+K) = 0.D0         
+    2       CONTINUE
+          ELSEIF (TYPCUM.EQ.1) THEN
+            DO 3 K = 0, NBVAL
+              ZR(JR+K) = ZR(J1+K)
+    3       CONTINUE
+          ELSEIF (TYPCUM.EQ.2) THEN
+            DO 4 K = 0, NBVAL
+              ZR(JR+K) = ZR(J1+K) + ZR(J2+K)
+    4       CONTINUE
+          ELSEIF (TYPCUM.EQ.3) THEN
+            DO 5 K = 0, NBVAL
+              ZR(JR+K) = ZR(J1+K) + ZR(J2+K) + ZR(J3+K)
+    5       CONTINUE
+          ELSEIF (TYPCUM.EQ.4) THEN
+            DO 6  K = 0, NBVAL
+              ZR(JR+K) = ZR(J1+K) + ZR(J2+K) + ZR(J3+K) + ZR(J4+K)
+    6       CONTINUE
           ELSE
-            WRITE(IFM,*)'<FETI/FETCCN> SD: ',IDD,' ',CHAMRB(1:19)
+            CALL UTDEBM ('A','FETCCN', 'MAUVAISE VALEUR DE TYPCUM')
+            CALL UTIMPI ('S', ': ', 1, TYPCUM)
+            CALL UTFINM
+            CALL UTMESS ('F','FETCCN', 'ERREUR DE PROGRAMMATION')
+          ENDIF   
+C MONITORING
+          IF ((INFOFE(1:1).EQ.'T').AND.(NBSD.GT.0)) THEN
+            IF (IDD.EQ.0) THEN
+              WRITE(IFM,*)'<FETI/FETCCN> DOMAINE GLOBAL ',CHAMRB(1:19)
+            ELSE
+              WRITE(IFM,*)'<FETI/FETCCN> SD: ',IDD,' ',CHAMRB(1:19)
+            ENDIF
           ENDIF
+          IF ((INFOFE(2:2).EQ.'T').AND.(IDD.NE.0)) 
+     &      CALL UTIMSD(IFM,2,.FALSE.,.TRUE.,CHAMRB(1:19),1,' ')
+          IF ((INFOFE(2:2).EQ.'T').AND.(IDD.EQ.NBSD))
+     &      CALL UTIMSD(IFM,2,.FALSE.,.TRUE.,CHAMNR(1:19),1,' ')
+          IF (LFETI) CALL JEDEMA()      
         ENDIF
-        IF ((INFOFE(2:2).EQ.'T').AND.(IDD.NE.0)) 
-     &    CALL UTIMSD(IFM,2,.FALSE.,.TRUE.,CHAMRB(1:19),1,' ')
-        IF ((INFOFE(2:2).EQ.'T').AND.(IDD.EQ.NBSD))
-     &    CALL UTIMSD(IFM,2,.FALSE.,.TRUE.,CHAMNR(1:19),1,' ')
-        IF (NBSD.GT.0) CALL JEDEMA()      
-     
    10 CONTINUE   
-     
+C========================================
+C FIN BOUCLE SUR LES SOUS-DOMAINES + IF MPI:
+C========================================     
       CALL JEDEMA()
       END

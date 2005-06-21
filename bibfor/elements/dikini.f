@@ -1,15 +1,15 @@
       SUBROUTINE DIKINI (NBT,NU1,MU1,DXU1,DRYU1,NU2,MU2,DXU2,
-     &                   DRYU2,KY,KZ,KRX,KRZ,K01,K02)
+     &                   DRYU2,KY,KZ,KRX,KRZ,K01,K02,RBID)
 C ----------------------------------------------------------------------
       IMPLICIT REAL*8 (A-H,O-Z)
       INTEGER NBT
       REAL*8  NU1,MU1,DXU1,DRYU1
       REAL*8  NU2,MU2,DXU2,DRYU2
-      REAL*8  KY,KZ,KRX,KRZ
+      REAL*8  KY,KZ,KRX,KRZ,RBID
       REAL*8  K01(NBT),K02(NBT)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 10/01/95   AUTEUR D6BHHIV I.VAUTIER 
+C MODIF ELEMENTS  DATE 16/06/2005   AUTEUR ACBHHCD G.DEVESA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -47,7 +47,7 @@ C
 C ----------------------------------------------------------------------
 C --- VALEUR SIMULANT UNE GRANDE PENTE INITIALE (R(P)/P)
 C
-      RBID = 1.D4
+C      RBID = 1.D4
 C
 C --- MISE A ZERO DE K01 ET K02
 C

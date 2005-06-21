@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 01/04/2005   AUTEUR VABHHTS J.PELLET 
+#& MODIF COMMANDE  DATE 20/06/2005   AUTEUR BOITEAU O.BOITEAU 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -59,8 +59,8 @@ MECA_STATIQUE=OPER(nom="MECA_STATIQUE",op=46,sd_prod=evol_elas,
              SCALING         =SIMP(statut='f',typ='TXM',defaut="MULT",into=("SANS","MULT") ),
              VERIF_SDFETI    =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
              TEST_CONTINU    =SIMP(statut='f',typ='R',defaut=1.E-8,val_min=0.),
-             INFO_FETI       =SIMP(statut='f',typ='TXM',defaut='FFFFFFFFF'),
-             STOCKAGE_GI     =SIMP(statut='f',typ='TXM',defaut="CAL",into=("OUI","NON","CAL") ),
+             INFO_FETI       =SIMP(statut='f',typ='TXM',defaut='FFFFFFFFFF'),
+             STOCKAGE_GI     =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON","CAL") ),
            ),
 
            b_mult_front    =BLOC(condition = "METHODE == 'MULT_FRONT' ",fr="Paramètres de la méthode multi frontale",

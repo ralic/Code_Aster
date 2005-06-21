@@ -1,7 +1,7 @@
       SUBROUTINE FETREX(OPTION,IDD,NI,VI,NO,VO,IREX)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/01/2005   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGORITH  DATE 20/06/2005   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -29,9 +29,6 @@ C      IN     NO: IN   : NOMBRE DE DDLS DU VECTEUR OUTPUT
 C      OUT    VO: VR8  : VECTEUR OUTPUT DE TAILLE NO 
 C     IN IREX  : IN    : ADRESSE DU VECTEUR AUXILAIRE EVITANT DES APPELS
 C                        JEVEUX.
-C   -------------------------------------------------------------------
-C     ASTER INFORMATIONS:
-C       26/01/04 (OB): CREATION.
 C----------------------------------------------------------------------
 C RESPONSABLE BOITEAU O.BOITEAU
 C CORPS DU PROGRAMME
@@ -48,8 +45,6 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON  / RVARJE / ZR(1)
       COMPLEX*16         ZC
       COMMON  / CVARJE / ZC(1)
-      LOGICAL            ZL
-      COMMON  / LVARJE / ZL(1)
       CHARACTER*8        ZK8
       CHARACTER*16                ZK16
       CHARACTER*24                          ZK24
@@ -138,18 +133,6 @@ C EXTRACTION
    20   CONTINUE    
       ELSE
         CALL UTMESS('F','FETREX','OPTION NON PREVUE !')         
-      ENDIF    
-
-C MONITORING
-C      IF (INFOFE(4:4).EQ.'T') THEN
-C        WRITE(IFM,*)'<FETI/FETREX> INPUT I VI(I)'      
-C        DO 30 I=1,NI
-C          WRITE(IFM,*)I,'  ',VI(I)
-C  30   CONTINUE
-C       WRITE(IFM,*)'OUTPUT I VO(I)'         
-C       DO 31 I=1,NO
-C         WRITE(IFM,*)I,'  ',VO(I)
-C  31   CONTINUE          
-C     ENDIF
+      ENDIF
 
       END

@@ -1,4 +1,4 @@
-#@ MODIF Table Utilitai  DATE 17/05/2005   AUTEUR DURAND C.DURAND 
+#@ MODIF Table Utilitai  DATE 21/06/2005   AUTEUR MCOURTOI M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,10 +19,12 @@
 # ======================================================================
 
 # RESPONSABLE MCOURTOI M.COURTOIS
+__all__ = ['Table', 'merge']
 
 import sys
 import string
 import re
+from copy  import copy
 
 from types import *
 EnumTypes=(ListType, TupleType)
@@ -35,6 +37,7 @@ except ImportError:
    def UTMESS(code,sprg,texte):
       fmt='\n <%s> <%s> %s\n\n'
       print fmt % (code,sprg,texte)
+      if code=='F' : sys.exit(1)
 
 if not sys.modules.has_key('Graph'):
    try:
@@ -52,6 +55,8 @@ DicForm={
    'formR' : '%12.5E',  # réels
    'formI' : '%8d'      # entiers
 }
+# type par défaut des chaines de caractères
+Kdef='K24'
 
 # ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------
@@ -147,7 +152,7 @@ class TableBase(object):
       if kargs.get('FICHIER')<>None:
          f.close()
 
-   def ReprTable(self,FORMAT='TABLEAU',dform=DicForm,**ignore):
+   def ReprTable(self,FORMAT='TABLEAU',dform=None,**ignore):
       """Représentation d'une Table ou d'une Colonne sous forme d'un tableau.
       """
       rows=self.rows
@@ -156,6 +161,8 @@ class TableBase(object):
       if not type(para) in EnumTypes:
          para=[self.para,]
          typ =[self.type,]
+      if dform==None:
+         dform = DicForm.copy()
       # est-ce que l'attribut .type est renseigné ?
       typdef=typ<>[None]*len(typ)
       txt=[]
@@ -172,9 +179,9 @@ class TableBase(object):
       if typdef:
          stype=dform['csep'].join([''] + \
           [FMT(dform,'formK',typ[i],lmax[i]) % typ[i] for i in range(len(para))])
-      txt.append('')
-      txt.append('-'*80)
-      txt.append('')
+      txt.append(dform['ccom'])
+      txt.append(dform['ccom']+'-'*80)
+      txt.append(dform['ccom'])
       ASTER=(FORMAT=='ASTER')
       if ASTER:
          txt.append('#DEBUT_TABLE')
@@ -182,7 +189,7 @@ class TableBase(object):
          if ASTER:
             txt.extend(['#TITRE '+lig for lig in self.titr.split('\n')])
          else:
-            txt.append(self.titr)
+            txt.extend([dform['ccom']+lig for lig in self.titr.split('\n')])
       txt.append(dform['csep'].join(lspa))
       if ASTER and typdef:
          txt.append(stype)
@@ -213,6 +220,10 @@ class TableBase(object):
             txt.append(dform['csep'].join(lig))
       if ASTER:
          txt.append('#FIN_TABLE')
+      # ajout du debut de ligne
+      if dform['cdeb']<>'':
+         txt=[dform['cdeb']+t for t in txt]
+
       return dform['cfin'].join(txt)
 # ------------------------------------------------------------------------------
    def ImprTabCroise(self,**kargs):
@@ -294,15 +305,46 @@ class Table(TableBase):
       """
       self.rows=[r for r in rows if r.values()<>[None]*len(r.values())]
       self.para=list(para)
+      for i in self.para :
+          if self.para.count(i)!=1 :
+             UTMESS('F','Table','Parametre en double: %s' %i)
       if len(typ)==len(self.para):
          self.type=list(typ)
       else:
          self.type=[None]*len(self.para)
       self.titr=titr
-
+   
    def append(self, obj):
-      """Ajoute une ligne (type dict) à la Table"""
+      """Ajoute une ligne (type dict) qui peut éventuellement définir un
+      nouveau paramètre."""
+      para=obj.keys()
+      for p in para:
+         if not p in self.para:
+            self.para.append(p)
+            self.type.append(_typaster(obj[p]))
+         else:
+            ip=self.para.index(p)
+            self.type[ip]=_typaster(obj[p], self.type[ip])
       self.rows.append(obj)
+
+   def __setitem__(self, k_para, k_value):
+      """Ajoute une colonne k_para dont les valeurs sont dans k_value"""
+      if len(k_value)==0:
+         return
+      if k_para in self.para :
+         UTMESS('F','Table','(setitem) Le parametre %s existe déjà.' % k_para)
+      self.para.append(k_para)
+      self.type.append(_typaster(k_value[0]))
+      i=0
+      for row in self:
+         if i<len(k_value):
+            row[k_para]=k_value[i]
+            self.type[-1]=_typaster(k_value[i], self.type[-1])
+         else:
+            row[k_para]=None
+         i+=1
+      for j in range(i,len(k_value)): 
+         self.append({k_para:k_value[j]})
 
    def __iter__(self):
       """Itère sur les lignes de la Table"""
@@ -330,25 +372,6 @@ class Table(TableBase):
       else:
          CLES=list(CLES)
       self.rows=sort_table(self.rows, self.para, CLES, (ORDRE=='DECROISSANT'))
-#       if not type(order) in EnumTypes:
-#          order=[order,]
-#       print 'TRI clés=%s, order=%s' % (keys,order)
-#       # on ne garde que le premier si les longueurs sont différentes
-#       if len(order)<>len(keys):
-#          order=[order[0],]
-#       else:
-#          # si toutes les valeurs sont identiques, on peut ne garder que la 1ère
-#          d={}
-#          for o in order: d[o]=None
-#          if len(order)<>len(keys) or len(d.keys())==1:
-#             order=[order[0],]
-#       if len(order)==1:
-#          self.rows=sort_table(self.rows, self.para, keys, (order[0]=='DECROISSANT'))
-#       else:
-#          # de la dernière clé à la première
-#          for k,o in [(keys[i],order[i]) for i in range(len(keys)-1,-1,-1)]:
-#             print 'TRI : clé=%s, order=%s' % (k,o)
-#             self.rows=sort_table(self.rows, self.para, [k], (o=='DECROISSANT'))
 
    def __delitem__(self, args):
       """Supprime les colonnes correspondantes aux éléments de args """
@@ -369,7 +392,6 @@ class Table(TableBase):
          args=[args,]
       else:
          args=list(args)
-      #print '<getitem> args=',args
       new_rows=[]
       new_para=args
       new_type=[]
@@ -410,6 +432,42 @@ class Table(TableBase):
       dico={}
       for column in self.para:
          dico[column]=Colonne(self, column).values()
+      return dico
+
+   def dict_CREA_TABLE(self):
+      """Renvoie le dictionnaire des mots-clés à fournir à la commande CREA_TABLE
+      pour produire une table_sdaster.
+      """
+      dico={ 'TITRE' : ['%-80s' % lig for lig in self.titr.split('\n')],
+             'LISTE' : [], }
+      # remplissage de chaque occurence (pour chaque paramètre) du mot-clé facteur LISTE
+      for i in range(len(self.para)):
+         # nom du paramètre et type si K*
+         d={ 'PARA' : self.para[i], }
+         typ=self.type[i]
+         if typ[0]=='K':
+            mc='LISTE_K'
+            if not typ in ('K8', 'K16', 'K24'):
+               UTMESS('A','Table','Type du paramètre %s forcé à %s' % (self.para[i],Kdef))
+               typ=Kdef
+            d['TYPE_K']=typ
+         elif typ=='I':
+            mc='LISTE_I'
+         elif typ=='R':
+            mc='LISTE_R'
+         # valeurs sans trou / avec trou
+         vals=getattr(self, self.para[i]).values()
+         if vals.count(None)==0:
+            d[mc]=vals
+         else:
+            d['NUME_LIGN'] = [j+1 for j in range(len(vals)) if vals[j]<>None]
+            d[mc]          = [v   for v in vals             if v      <>None]
+         if len(d[mc])==0:
+            UTMESS('I','Table','Colonne %s vide' % self.para[i])
+         else:
+            dico['LISTE'].append(d)
+      if len(dico['LISTE'])==0:
+         UTMESS('F','Table','La table est vide')
       return dico
 
    def Array(self,Para,Champ):
@@ -573,7 +631,7 @@ class Colonne(TableBase):
 
    def values(self):
       """Renvoie la liste des valeurs"""
-      return [r[self.para] for r in self.Table]
+      return [r.get(self.para,None) for r in self.Table]
 
    # équivalences avec les opérateurs dans Aster
    LE=__le__
@@ -635,7 +693,6 @@ def FMT(dform, nform, typAster=None, larg=0, val=''):
       if nform=='formK':
          # convertit %12.5E en %-12s
          fmt=re.sub('([0-9]+)[\.0-9]*[diueEfFgG]+','-\g<1>s',dform['form'+typAster])
-         #print nform, typAster, fmt
       else:
          fmt=dform[nform]
    else:
@@ -647,76 +704,84 @@ def FMT(dform, nform, typAster=None, larg=0, val=''):
    return fmt
 
 # ------------------------------------------------------------------------------
-# ------------------------------------------------------------------------------
-# ------------------------------------------------------------------------------
-if __name__ == "__main__":
-   listdic = [
-   {'NOEUD': 'N1' ,'NUME_ORDRE': 1 ,'INST': 0.5, 'DX': -0.00233, 'COOR_Y': 0.53033,},
-   {'NOEUD': 'N1' ,'NUME_ORDRE': 2 ,'INST': 1.0, 'DX': -0.00467, 'COOR_Y': 0.53033,},
-   {'NOEUD': 'N1' ,'NUME_ORDRE': 3 ,'INST': 1.5, 'DX': -0.00701, 'COOR_Y': 0.53033,},
-   {'NOEUD': 'N1' ,'NUME_ORDRE': 4 ,'INST': 2.0, 'DX': -0.00934, 'COOR_Y': 0.53033,},
-   {'NOEUD': 'N1' ,'NUME_ORDRE': 5 ,'INST': 2.5, 'DX': -0.01168, 'COOR_Y': 0.53033,},
-   {'NOEUD': 'N2' ,'NUME_ORDRE': 11,'INST': 5.5, 'DX': -0.00233, 'COOR_Y': 0.53033,},
-   {'NOEUD': 'N2' ,'NUME_ORDRE': 12,'INST': 6.0, 'DX': -0.00467, 'COOR_Y': 0.53033,},
-   {'NOEUD': 'N2' ,'NUME_ORDRE': 13,'INST': 6.5, 'DX': -0.00701, 'COOR_Y': 0.53033,},
-   {'NOEUD': 'N2' ,'NUME_ORDRE': 14,'INST': 7.0, 'DX': -0.00934, 'COOR_Y': 0.53033,},
-   {'NOEUD': 'N2' ,'NUME_ORDRE': 15,'INST': 7.5, 'DX': -0.01168, 'COOR_Y': 0.53033,},
-   ]
-   import random
-   random.shuffle(listdic)
-   listpara=['NOEUD','NUME_ORDRE','INST','COOR_Y','DX']
-   listtype=['K8','I','R','R','R']
-   t=Table(listdic,listpara,listtype)
-   
-   tb=t[('NOEUD','DX')]
-   print tb.para
-   print tb.type
-   
-   print
-   print "------Table initiale----"
-   print t
-   print
-   print "--------- CRIT --------"
-   print t.NUME_ORDRE <=5
-   print
-   print "------- CRIT & CRIT -----"
-   print (t.NUME_ORDRE < 10) & (t.INST >=1.5)
-   print
-   print "----- EQ maxi / min(col), max(col) ------"
-   print t.DX == max(t.DX)
-   print min(t.DX)
-   print max(t.DX)
-   print "------ getitem sur 2 paramètres ------"
-   print t.NUME_ORDRE
-   print t.DX
-   print t['DX','NUME_ORDRE']
-   print "------ sort sur INST ------"
-   t.sort('INST')
-   print t
+def merge(tb1, tb2, labels=[]):
+   """Assemble les deux tables tb1 et tb2 selon une liste de labels communs.
+      Si labels est vide:
+       - les lignes de tb2 sont ajoutés à celles de tb1,
+      sinon :
+       - si on trouve les valeurs de tb2 sur les labels dans tb1 (et une seule fois),
+         on surcharge tb1 avec les lignes de tb2 ;
+       - sinon on ajoute la ligne de tb2 à la fin de tb1.
+   """
+   if type(labels) not in EnumTypes : labels=(labels,)
+   for key in labels :
+       if key not in tb1.para : UTMESS('F','Table','Erreur, label non présent %s' %key)
+       if key not in tb2.para : UTMESS('F','Table','Erreur, label non présent %s' %key)
+   # ensemble des paramètres et des types
+   n_para=tb1.para[:]
+   n_type=tb1.type[:]
+   for i in tb2.para :
+      if i not in tb1.para :
+         n_para.append(i)
+         n_type.append(tb2.type[tb2.para.index(i)])
+   # restriction des lignes aux labels communs
+   rows1=copy(tb1.rows)
+   dlab1={}
+   for i1 in range(len(rows1)):
+      tu1=tuple(map(rows1[i1].__getitem__,labels))
+      if dlab1.get(tu1, '')=='':
+         dlab1[tu1]=i1
+      else:
+         dlab1[tu1]=None
+   work2=[map(r2.__getitem__,labels) for r2 in tb2.rows]
+   # dic1 : clé=indice de t2[L] unique, val=tab1.index(tab2[L])
+   dic1={}
+   i2=-1
+   while len(work2)>0:
+      i2+=1
+      par2=work2.pop(0)
+      if work2.count(par2)==0:
+         tu2=tuple(par2)
+         i1=dlab1.get(tu2)
+         if i1<>None:
+            dic1[i2]=dlab1[tu2]
+   # insertion des valeurs de tb2 dans tb1 quand les labels sont communs
+   # (et uniques dans chaque table) OU ajout de la ligne de tb2 dans tb1
+   i2=-1
+   for r2 in tb2.rows:
+      i2+=1
+      if i2 in dic1.keys():
+         rows1[dic1[i2]].update(r2)
+      else :
+         rows1.append(r2)
+   # concaténation des titres + info sur le merge
+   tit='\n'.join([tb1.titr, tb2.titr, 'MERGE avec labels=%s' % repr(labels)])
+   return Table(rows1,n_para,n_type,tit)
 
-   print "------- TABLEAU_CROISE ------"
-   tabc=t['NOEUD','INST','DX'] 
-   tabc.Impr(FORMAT='TABLEAU_CROISE')
-
-   N=5
-   ldic=[]
-   for i in range(N):
-      ldic.append({'IND':float(i), 'VAL' : random.random()*i})
-   para=['IND','VAL']
-   t3=Table(ldic, para, titr='Table aléatoire')
-   col=t3.VAL.ABS_MAXI()
-   col=t3.VAL.MINI()
-   
-   t3.sort('VAL','IND')
-   
-   tg=tabc['INST','DX'].DX.NON_VIDE()
-   #tg.Impr(FORMAT='XMGRACE')
-   
-   g=Graph.Graph()
-   g.Titre="Tracé d'une fonction au format TABLEAU"
-   g.AjoutCourbe(Val=[tg.INST.values(), tg.DX.values()], Lab=['INST','DX'])
-   g.Trace(FORMAT='TABLEAU')
-   
-#   t.Impr(PAGINATION='NOEUD')
-   t.Impr(PAGINATION=('NOEUD','INST'))
-   
+# ------------------------------------------------------------------------------
+def _typaster(obj, prev=None, strict=False):
+   """Retourne le type Aster ('R', 'I', Kdef) correspondant à l'objet obj.
+   Si prev est fourni, on vérifie que obj est du type prev.
+   Si stric=False, on autorise que obj ne soit pas du type prev s'ils sont
+   tous les deux numériques ; dans ce cas, on retourne le "type enveloppe" 'R'.
+   """
+   dtyp={
+      IntType    : 'I',
+      FloatType  : 'R',
+      StringType : Kdef, UnicodeType : Kdef,
+      NoneType   : 'I',
+   }
+   if type(obj) in dtyp.keys():
+      typobj=dtyp[type(obj)]
+      if prev in [None, typobj]:
+         return typobj
+      elif strict:   # prev<>None et typobj<>prev et strict
+         raise TypeError, "La valeur %s n'est pas de type %s" % (repr(obj),repr(prev))
+      elif prev in ('I','R') and typobj in ('I','R'):
+         return 'R'
+      else:
+         raise TypeError, "La valeur %s n'est pas compatible avec le type %s" \
+               % (repr(obj),repr(prev))
+   else:
+      raise TypeError, 'Une table ne peut contenir que des entiers, réels ' \
+                       'ou chaines de caractères.'

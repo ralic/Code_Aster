@@ -2,7 +2,7 @@
      +                    CHASOL, CRITEZ )
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 01/04/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 20/06/2005   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,9 +39,6 @@ C OUT K*  CHASOL : NOM DE L'OBJET DE S.D. CHAM_NO SOLUTION
 C                  DU SYSTEME LINEAIRE A RESOUDRE
 C IN  K*  CHASOL : NOM DE L'OBJET DE S.D. CHAM_NO SOLUTION
 C                  (L'OBJET N'EST PAS ENCORE REMPLI)
-C   -------------------------------------------------------------------
-C     ASTER INFORMATIONS:
-C       16/01/04 (OB): AJOUT POUR SOLVEUR FETI.
 C-----------------------------------------------------------------------
       IMPLICIT REAL*8 (A-H,O-Z)
 
@@ -69,12 +66,12 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
 C VARIABLES LOCALES
-      INTEGER      NBSD,IDIME,IDD,IFETC,IFETM,IBID,IFM,NIV
+      INTEGER      NBSD,IDIME,IDD,IFETC,IFETM,IBID,IFM,NIV,ILIMPI
       REAL*8       TESTCO,TEMPS(6)
       CHARACTER*24 METRES,SDFETI,TYREOR,PRECO,SCALIN,STOGI
       CHARACTER*19 MATAS,MAPREC,CHSOL,PCHN1,PCHN2,ARG1,ARG2,CHSECM
       CHARACTER*4  ETAMAT
-      LOGICAL      IDENSD,LFETI
+      LOGICAL      IDENSD,LFETI,IDDOK
 
 C CORPS DU PROGRAMME
       CALL JEMARQ()
@@ -101,38 +98,63 @@ C NOMBRE DE SOUS-DOMAINES
         CALL JEVEUO(MATAS//'.FETM','L',IFETM)
         CALL JEVEUO(CHSECM//'.FETC','L',IFETC)
         LFETI=.TRUE.
+C ADRESSE JEVEUX OBJET FETI & MPI
+        CALL JEVEUO('&FETI.LISTE.SD.MPI','L',ILIMPI)
       ELSE
         NBSD=0
         LFETI=.FALSE.
       ENDIF
 
-C --- BOUCLE SUR LES SOUS-DOMAINES POUR VERIFICATION
+C========================================
+C BOUCLE SUR LES SOUS-DOMAINES + IF MPI:
+C========================================
       DO 10 IDD=0,NBSD
+      
 C     -- ON VERIFIE QUE LE PROF_CHNO DE LA MATR_ASSE
 C        EST IDENTIQUE A CELUI DU  SECOND_MEMBRE :
 C     -----------------------------------------------
-         IF (IDD.EQ.0) THEN
-           ARG1=MATAS
-           ARG2=CHSECM
-         ELSE
-           ARG1=ZK24(IFETM+IDD-1)
-           ARG2=ZK24(IFETC+IDD-1)
-         ENDIF
-         CALL DISMOI('F','PROF_CHNO',ARG1,'MATR_ASSE',IBID,PCHN1,IBID)
-         CALL DISMOI('F','PROF_CHNO',ARG2,'CHAM_NO',IBID,PCHN2,IBID)
-         IF (.NOT.IDENSD('PROF_CHNO',PCHN1,PCHN2)) THEN
+
+C TRAVAIL PREALABLE POUR DETERMINER SI ON EFFECTUE LA BOUCLE SUIVANT
+C LE SOLVEUR (FETI OU NON), LE TYPE DE RESOLUTION (PARALLELE OU 
+C SEQUENTIELLE) ET L'ADEQUATION "RANG DU PROCESSEUR-NUMERO DU SD"
+C ATTENTION SI FETI LIBERATION MEMOIRE PREVUE EN FIN DE BOUCLE
+        IF (.NOT.LFETI) THEN
+          IDDOK=.TRUE.
+        ELSE 
+          IF (ZI(ILIMPI+IDD).EQ.1) THEN
+            IDDOK=.TRUE.
+          ELSE
+            IDDOK=.FALSE.
+          ENDIF
+        ENDIF
+        IF (IDDOK) THEN
+        
+          IF (IDD.EQ.0) THEN
+            ARG1=MATAS
+            ARG2=CHSECM
+          ELSE
+            ARG1=ZK24(IFETM+IDD-1)
+            ARG2=ZK24(IFETC+IDD-1)
+          ENDIF
+          CALL DISMOI('F','PROF_CHNO',ARG1,'MATR_ASSE',IBID,PCHN1,IBID)
+          CALL DISMOI('F','PROF_CHNO',ARG2,'CHAM_NO',IBID,PCHN2,IBID)
+          IF (.NOT.IDENSD('PROF_CHNO',PCHN1,PCHN2)) THEN
            CALL UTDEBM('F','RESOUD','LA NUMEROTATION DES INCONNUES EST')
-           CALL UTIMPK('L',' INCOHERENTE ENTRE LA MATRICE ',1,ARG1)
-           CALL UTIMPK('L',' ET LE SECOND MEMBRE ',1,ARG2)
-           IF (LFETI) THEN
-             IF (IDD.EQ.0) THEN
-               CALL UTIMPI('L','DOMAINE GLOBAL',0,IBID)
-             ELSE
-               CALL UTIMPI('L','SOUS-DOMAINE NUMERO ',1,IDD)
-             ENDIF
-           ENDIF
-           CALL UTFINM()
-         ENDIF
+            CALL UTIMPK('L',' INCOHERENTE ENTRE LA MATRICE ',1,ARG1)
+            CALL UTIMPK('L',' ET LE SECOND MEMBRE ',1,ARG2)
+            IF (LFETI) THEN
+              IF (IDD.EQ.0) THEN
+                CALL UTIMPI('L','DOMAINE GLOBAL',0,IBID)
+              ELSE
+                CALL UTIMPI('L','SOUS-DOMAINE NUMERO ',1,IDD)
+              ENDIF
+            ENDIF
+            CALL UTFINM()
+          ENDIF
+C========================================
+C FIN BOUCLE SUR LES SOUS-DOMAINES + IF MPI:
+C========================================  
+        ENDIF
    10 CONTINUE
 
       IF ((NIV.GE.2).OR.(LFETI)) THEN
@@ -142,45 +164,62 @@ C     -----------------------------------------------
       IF (METRES.EQ.'LDLT'.OR.METRES.EQ.'MULT_FRO'.OR.
      &    METRES.EQ.'FETI'.OR.METRES.EQ.'MUMPS') THEN
 
-C --- BOUCLE SUR LES SOUS-DOMAINES POUR VERIFICATION
+C========================================
+C BOUCLE SUR LES SOUS-DOMAINES + IF MPI:
+C======================================== 
         DO 20 IDD=0,NBSD
 C     -- ON VERIFIE QUE CHAQUE MATRICE DE LA MATR_ASSE
 C        A BIEN ETE FACTORISEE :
 C     -----------------------------------------------
-         IF (IDD.EQ.0) THEN
-           ARG1=MATAS
-         ELSE
-           ARG1=ZK24(IFETM+IDD-1)
-         ENDIF
-         CALL JELIRA(ARG1//'.REFA','DOCU',IBID,ETAMAT)
 
-          IF (ETAMAT.NE.'DECP'.AND.ETAMAT.NE.'DECT')
-     +      CALL UTMESS('F','RESOUD','  PAS DE RESOLUTION '//
+          IF (.NOT.LFETI) THEN
+            IDDOK=.TRUE.
+          ELSE 
+            IF (ZI(ILIMPI+IDD).EQ.1) THEN
+              IDDOK=.TRUE.
+            ELSE
+              IDDOK=.FALSE.
+            ENDIF
+          ENDIF
+          IF (IDDOK) THEN
+            IF (IDD.EQ.0) THEN
+              ARG1=MATAS
+            ELSE
+              ARG1=ZK24(IFETM+IDD-1)
+            ENDIF
+            CALL JELIRA(ARG1//'.REFA','DOCU',IBID,ETAMAT)
+
+            IF (ETAMAT.NE.'DECP'.AND.ETAMAT.NE.'DECT')
+     +        CALL UTMESS('F','RESOUD','  PAS DE RESOLUTION '//
      +       'CAR LA MATRICE '//MATAS//' N"EST PAS DECOMPOSEE.' )
+          ENDIF
+C========================================
+C FIN BOUCLE SUR LES SOUS-DOMAINES + IF MPI:
+C========================================  
    20   CONTINUE
 
-         CALL DETRSD('CHAMP_GD',CHSOL)
-         CALL VTDEFS(CHSOL,CHSECM,'V',' ')
-         IF (METRES.NE.'FETI') THEN
-           IF (METRES.EQ.'MUMPS') THEN
-              CALL AMUMPS('RESOUD',SOLVEU,MATAS,CHSECM,CHSOL,CHCINE)
-           ELSE
-              CALL COPISD('CHAMP_GD',BASE,CHSECM,CHSOL)
-              CALL RESLDL(MATAS,CHCINE,CHSOL)
-           ENDIF
+        CALL DETRSD('CHAMP_GD',CHSOL)
+        CALL VTDEFS(CHSOL,CHSECM,'V',' ')
+        IF (METRES.NE.'FETI') THEN
+          IF (METRES.EQ.'MUMPS') THEN
+             CALL AMUMPS('RESOUD',SOLVEU,MATAS,CHSECM,CHSOL,CHCINE)
+          ELSE
+             CALL COPISD('CHAMP_GD',BASE,CHSECM,CHSOL)
+             CALL RESLDL(MATAS,CHCINE,CHSOL)
+          ENDIF
 
-         ELSE
-           NITER=ZI(ISLVI+1)
-           EPSI=ZR(ISLVR+1)
-           TESTCO=ZR(ISLVR+3)
-           NBREOR=ZI(ISLVI+4)
-           PRECO=ZK24(ISLVK+1)
-           TYREOR=ZK24(ISLVK+6)
-           SCALIN=ZK24(ISLVK+7)
-           STOGI=ZK24(ISLVK+8)
-           CALL RESFET(SDFETI(1:19),MATAS,CHCINE(1:19),CHSECM,CHSOL,
-     &       NITER,EPSI,CRITER,TESTCO,NBREOR,TYREOR,PRECO,SCALIN,STOGI)
-         ENDIF
+        ELSE
+          NITER=ZI(ISLVI+1)
+          EPSI=ZR(ISLVR+1)
+          TESTCO=ZR(ISLVR+3)
+          NBREOR=ZI(ISLVI+4)
+          PRECO=ZK24(ISLVK+1)
+          TYREOR=ZK24(ISLVK+6)
+          SCALIN=ZK24(ISLVK+7)
+          STOGI=ZK24(ISLVK+8)
+          CALL RESFET(SDFETI(1:19),MATAS,CHCINE(1:19),CHSECM,CHSOL,
+     &      NITER,EPSI,CRITER,TESTCO,NBREOR,TYREOR,PRECO,SCALIN,STOGI)
+        ENDIF
 
       ELSE IF (METRES.EQ.'GCPC') THEN
 C     ----------------------------------

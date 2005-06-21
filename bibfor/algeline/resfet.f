@@ -2,7 +2,7 @@
      &       EPSI,CRITER,TESTCO,NBREOR,TYREOR,PRECO,SCALIN,STOGI)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 10/01/2005   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGELINE  DATE 20/06/2005   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -47,9 +47,6 @@ C     1) SI VCINE = ' ' : ERREUR SI LE NOMBRE DE DDLS IMPOSES ELIMINES
 C                         ASSOCIES A LA MATRICE EST /=0
 C     2) SI VCINE/= ' ' : ERREUR SI LE NOMBRE DE DDLS IMPOSES ELIMINES
 C                         ASSOCIES A LA MATRICE EST =0
-C     ------------------------------------------------------------------
-C     ASTER INFORMATIONS:
-C       23/01/04 (OB): CREATION.
 C----------------------------------------------------------------------
 C CORPS DU PROGRAMME
       IMPLICIT NONE
@@ -67,8 +64,6 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON  / RVARJE / ZR(1)
       COMPLEX*16         ZC
       COMMON  / CVARJE / ZC(1)
-      LOGICAL            ZL
-      COMMON  / LVARJE / ZL(1)
       CHARACTER*8        ZK8
       CHARACTER*16                ZK16
       CHARACTER*24                          ZK24
@@ -78,7 +73,7 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       
 C DECLARATION VARIABLES LOCALES
-      INTEGER      IDIME,NBSD,IDD,IFETM
+      INTEGER      IDIME,NBSD,IDD,IFETM,ILIMPI
       
       
 C CORPS DU PROGRAMME
@@ -88,10 +83,13 @@ C CORPS DU PROGRAMME
 C NOMBRE DE SOUS-DOMAINES       
       NBSD=ZI(IDIME)
       CALL JEVEUO(MATAS//'.FETM','L',IFETM)
-      
+
+C ADRESSE JEVEUX OBJET FETI & MPI
+      CALL JEVEUO('&FETI.LISTE.SD.MPI','L',ILIMPI)
+            
 C PAR SOUCIS D'HOMOGENEITE, MAJ DES OBJETS JEVEUX TEMPORAIRE .&INT 
       DO 10 IDD=1,NBSD
-        CALL MTDSCR(ZK24(IFETM+IDD-1)(1:19))        
+        IF (ZI(ILIMPI+IDD).EQ.1) CALL MTDSCR(ZK24(IFETM+IDD-1)(1:19))
    10 CONTINUE              
 
 C SOLVEUR FETI SANS AFFE_CHAR_CINE/MECA     

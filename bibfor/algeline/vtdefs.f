@@ -1,7 +1,7 @@
       SUBROUTINE VTDEFS(CHPOUT,CHPIN,BASE,TYPC)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 24/01/2005   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGELINE  DATE 20/06/2005   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -35,9 +35,6 @@ C     ------------------------------------------------------------------
 C     PRECAUTIONS D'EMPLOI :
 C       1) LE CHAM_... "CHPOUT" NE DOIT PAS EXISTER
 C       2) LES COEFFICIENTS DU CHAM_... "CHPOUT" NE SONT PAS AFFECTES
-C     -----------------------------------------------------------------
-C     ASTER INFORMATIONS:
-C       16/01/04 (OB): MODIF POUR SOLVEUR FETI.
 C----------------------------------------------------------------------
 C CORPS DU PROGRAMME
       IMPLICIT REAL*8 (A-H,O-Z)
@@ -64,13 +61,13 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 
 C DECLARATION VARIABLES LOCALES
       INTEGER      LCHPOU,LCHPIN,IBID,IFETC,NBREFE,IREFE,IDIME,NBSD,IDD,
-     &             KFETC,IFM,NIV,IINF
+     &             KFETC,IFM,NIV,IINF,ILIMPI
       CHARACTER*1  TYPE
       CHARACTER*4  TYCH
       CHARACTER*8  CBID,K8BID
       CHARACTER*19 CH19,ARG1,ARG2
       CHARACTER*24 METHOD,SDFETI,INFOFE
-      LOGICAL      LFETI
+      LOGICAL      LFETI,IDDOK
       
       CALL JEMARQ()
       CH19 = CHPIN
@@ -82,7 +79,7 @@ C INIT. A CAUSE DE FETI
       LFETI=.FALSE.
       METHOD='XXXX'
       SDFETI='XXXX'
-      INFOFE='FFFFFFFF'
+      INFOFE='FFFFFFFFFFFFFFFFFFFFFFFF'
             
 C RECUPERATION DU NIVEAU D'IMPRESSION
       CALL INFNIV(IFM,NIV)
@@ -107,44 +104,66 @@ C FETI OR NOT ?
           CALL WKVECT(CHPOUT(1:19)//'.FETC','V V K24',NBSD,KFETC)
           LFETI=.TRUE.
           CALL JEVEUO('&&'//SDFETI(1:17)//'.FINF','L',IINF)
-          INFOFE=ZK24(IINF)                                   
+          INFOFE=ZK24(IINF)
+          CALL JEVEUO('&FETI.LISTE.SD.MPI','L',ILIMPI)
         ENDIF  
       ENDIF
       
-C-----------------------------------------------------------------------
-C --- BOUCLE SUR LES SOUS-DOMAINES
-C-----------------------------------------------------------------------
+C========================================
+C BOUCLE SUR LES SOUS-DOMAINES + IF MPI:
+C========================================
+C IDD=0 --> DOMAINE GLOBAL/ IDD=I --> IEME SOUS-DOMAINE
       DO 10 IDD=0,NBSD
-        IF (IDD.GT.0) THEN
+
+C TRAVAIL PREALABLE POUR DETERMINER SI ON EFFECTUE LA BOUCLE SUIVANT
+C LE SOLVEUR (FETI OU NON), LE TYPE DE RESOLUTION (PARALLELE OU 
+C SEQUENTIELLE) ET L'ADEQUATION "RANG DU PROCESSEUR-NUMERO DU SD"
+        IF (.NOT.LFETI) THEN
+          IDDOK=.TRUE.
+        ELSE 
+          IF (ZI(ILIMPI+IDD).EQ.1) THEN
+            IDDOK=.TRUE.
+          ELSE
+            IDDOK=.FALSE.
+          ENDIF
+        ENDIF
+        IF (IDDOK) THEN
+        
+          IF (IDD.GT.0) THEN
 C CHAM_NO ET FETI       
-          ARG2=ZK24(IFETC+IDD-1)
+            ARG2=ZK24(IFETC+IDD-1)
 C CONVENTION DE NOM:
 C POUR LES SOUS-DOMAINES: '&&'//NOMPRO(1:6)//'_S.'//NOMSD(1:8)
 C POUR DOMAINE GLOBALE: '&&'//NOMPRO(1:6)//'_SOLUTION  '
 C NOUVELLE CONVENTION POUR LES CHAM_NOS FILS, GESTTION DE NOMS
 C ALEATOIRES
-          CALL GCNCON('.',K8BID)
-          K8BID(1:1)='F'          
-          ARG1=CHPOUT(1:11)//K8BID          
-          ZK24(KFETC+IDD-1)=ARG1
-        ELSE
-          ARG1=CHPOUT
-          ARG2=CHPIN      
-        ENDIF
-        CALL VTDEF1(ARG1,ARG2,BASE,TYPC,LFETI)
+            CALL GCNCON('.',K8BID)
+            K8BID(1:1)='F'          
+            ARG1=CHPOUT(1:11)//K8BID          
+            ZK24(KFETC+IDD-1)=ARG1
+          ELSE
+            ARG1=CHPOUT
+            ARG2=CHPIN      
+          ENDIF
+          CALL VTDEF1(ARG1,ARG2,BASE,TYPC,LFETI)
 
 C MONITORING
-        IF ((INFOFE(1:1).EQ.'T').AND.(LFETI)) THEN
-          IF (IDD.GT.0) THEN
-            WRITE(IFM,*)'<FETI/VTDEFS> SD: ',IDD,' ',ARG2(1:19)
-          ELSE
-            WRITE(IFM,*)'<FETI/VTDEFS> DOMAINE GLOBAL ',ARG2(1:19)
-          ENDIF                           
+          IF ((INFOFE(1:1).EQ.'T').AND.(LFETI)) THEN
+            IF (IDD.GT.0) THEN
+              WRITE(IFM,*)'<FETI/VTDEFS> SD: ',IDD,' ',ARG2(1:19)
+            ELSE
+              WRITE(IFM,*)'<FETI/VTDEFS> DOMAINE GLOBAL ',ARG2(1:19)
+            ENDIF                           
+          ENDIF
+          IF ((INFOFE(2:2).EQ.'T').AND.(IDD.GT.0))
+     &      CALL UTIMSD(IFM,2,.FALSE.,.TRUE.,ARG2(1:19),1,' ')
+          IF ((INFOFE(2:2).EQ.'T').AND.(IDD.EQ.NBSD))
+     &      CALL UTIMSD(IFM,2,.FALSE.,.TRUE.,CHPOUT(1:19),1,' ')
+     
         ENDIF
-        IF ((INFOFE(2:2).EQ.'T').AND.(IDD.GT.0))
-     &    CALL UTIMSD(IFM,2,.FALSE.,.TRUE.,ARG2(1:19),1,' ')
-        IF ((INFOFE(2:2).EQ.'T').AND.(IDD.EQ.NBSD))
-     &    CALL UTIMSD(IFM,2,.FALSE.,.TRUE.,CHPOUT(1:19),1,' ')
+C========================================
+C FIN BOUCLE SUR LES SOUS-DOMAINES + IF MPI:
+C========================================
    10 CONTINUE   
       CALL JEDEMA()
 

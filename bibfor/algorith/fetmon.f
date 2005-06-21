@@ -1,9 +1,8 @@
       SUBROUTINE FETMON(INFOFE,NBI2,NBI,NBTOT,NBSD,DIMGI,IFM,MAMOY,
-     &                  LSTOGI,IFET1)
+     &                  LSTOGI,IFET1,RANG)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/01/2005   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGORITH  DATE 20/06/2005   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -22,17 +21,14 @@ C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C-----------------------------------------------------------------------
 C    - FONCTION REALISEE:  MONITORING DE ALFETI
-C
-C   -------------------------------------------------------------------
-C     ASTER INFORMATIONS:
-C       14/01/05 (OB): CREATION.
+C   RANG: RANG DU PROCESSUS
 C----------------------------------------------------------------------
 C RESPONSABLE BOITEAU O.BOITEAU
 C CORPS DU PROGRAMME
       IMPLICIT NONE
 
 C DECLARATION PARAMETRES D'APPELS
-      INTEGER      NBI2,NBTOT,NBSD,DIMGI,IFM,MAMOY,NBI,IFET1
+      INTEGER      NBI2,NBTOT,NBSD,DIMGI,IFM,MAMOY,NBI,IFET1,RANG
       LOGICAL      LSTOGI
       CHARACTER*24 INFOFE
       
@@ -57,10 +53,10 @@ C DECLARATION VARIABLES LOCALES
       INTEGER    IFET2,IFET3,IFET4,IFET5,IFET6,I
       REAL*8     R1,R2,R3,R1M,R2M,R3M,RAUX2
       
-      IF (INFOFE(9:9).EQ.'T') THEN
+      IF ((INFOFE(9:9).EQ.'T').AND.(RANG.EQ.0)) THEN
         WRITE(IFM,*)
         WRITE(IFM,*)'*****************************************'
-        WRITE(IFM,*)'<FETI/ALFETI>'
+        WRITE(IFM,*)'<FETI/ALFETI',RANG,'>'
         WRITE(IFM,*)'NB SOUS-DOMAINES ',NBSD
         WRITE(IFM,*)'NB DE MODES RIGIDES ',DIMGI
         WRITE(IFM,1081)NBI2,NBTOT,100.D0* NBI2/NBTOT
@@ -107,13 +103,13 @@ C DECLARATION VARIABLES LOCALES
         ENDIF
         WRITE(IFM,1082)RAUX2
         WRITE(IFM,*)'******************************************'
-        CALL JEDETR('&FETI.INFO.STOCKAGE.FVAL')
-        CALL JEDETR('&FETI.INFO.STOCKAGE.FVAF')
-        CALL JEDETR('&FETI.INFO.STOCKAGE.FNBN')
-        CALL JEDETR('&FETI.INFO.CPU.FACS')
-        CALL JEDETR('&FETI.INFO.CPU.ASSE')      
-        CALL JEDETR('&FETI.INFO.CPU.FACN')            
       ENDIF
+      CALL JEDETR('&FETI.INFO.STOCKAGE.FVAL')
+      CALL JEDETR('&FETI.INFO.STOCKAGE.FVAF')
+      CALL JEDETR('&FETI.INFO.STOCKAGE.FNBN')
+      CALL JEDETR('&FETI.INFO.CPU.FACS')
+      CALL JEDETR('&FETI.INFO.CPU.ASSE')      
+      CALL JEDETR('&FETI.INFO.CPU.FACN')            
  1075 FORMAT(' N ',I4,'     : ',I9,' ',I9,' ',I9)
  1080 FORMAT('TOTAL       :',I12,' ',I12,' ',I12)
  1081 FORMAT('POINTS INTERFACE / MAILLAGE / RAPPORT',I12,' ',I12,' ',

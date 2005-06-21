@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF config supervis  DATE 12/05/2005   AUTEUR DURAND C.DURAND */
+/* MODIF config supervis  DATE 20/06/2005   AUTEUR BOITEAU O.BOITEAU */
 /* RESPONSABLE                                 D6BHHJP J.P.LEFEBVRE   */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
@@ -34,20 +34,47 @@
 /* Minimal main program -- everything is loaded from the library */
 
 #include "Python.h"
+#ifdef MPI_FETI
+#include "mpi.h"
+#endif
 
 extern DL_EXPORT(int) Py_Main();
 extern void initaster();
 extern void initaster_fonctions();
 
+#ifdef MPI_FETI
+void terminate(){
+  printf("Fin interpreteur Python\n");
+  MPI_Finalize();
+}
+#endif
+
 int
 main(argc, argv)
 	int argc;
 	char **argv;
+
 {
+        int me,ierr,rc,namelen,nbproc;
+#ifdef MPI_FETI
+	char processor_name[MPI_MAX_PROCESSOR_NAME];
+        rc = MPI_Init(&argc,&argv);
+	if (rc != MPI_SUCCESS) {
+	     fprintf(stderr, "MPI Initialization failed: error code %d\n",rc);
+	     abort();
+	}  
+        atexit(terminate);
+        MPI_Comm_size(MPI_COMM_WORLD, &nbproc);
+        MPI_Comm_rank(MPI_COMM_WORLD, &me);
+        MPI_Get_processor_name(processor_name, &namelen);
+        printf("Processeur/rang/nbproc= %s %d %d\n", processor_name,me,nbproc);
+	
+#endif	
 	PyImport_AppendInittab("aster",initaster);
 
    /* Module définissant des opérations sur les objets fonction_sdaster */
 	PyImport_AppendInittab("aster_fonctions",initaster_fonctions);
 
-	return Py_Main(argc, argv);
+	ierr= Py_Main(argc, argv);
+	return ierr;
 }

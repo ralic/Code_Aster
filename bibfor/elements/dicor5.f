@@ -11,7 +11,7 @@ C ----------------------------------------------------------------------
       REAL*8 SI(12),VARIP2,VARIP3
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 21/02/96   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 16/06/2005   AUTEUR ACBHHCD G.DEVESA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -63,21 +63,30 @@ C       VARIP3 : VARIABLE INTERNE ACTUALISEE
 C
 C**************** DECLARATION DES VARIABLES LOCALES ********************
 C
-      REAL*8 G2,RG2,RGP2
+      REAL*8 G2,RG2
       REAL*8 UBR1,UBR2,TBR1,TBR2,UB1,UB2,TB1,TB2,ZNB1,ZNB2,ZMB1,ZMB2
-      REAL*8 FEQ2,P2,P2B,UR2,TR2,U2,T2
+      REAL*8 FEQ2,P2,P2B,UR2,TR2,U2,T2,FEQ1,UPI,TPI
 C
 C************ FIN DES DECLARATIONS DES VARIABLES LOCALES ***************
 C
+C ICI UI=UI-VARIM4 ET TI=TI-VARIM5
+CC ON REMPLACE APRES UI PAR UU-DUR ET TI PAR TT-DRYR
+      CALL UTMESS('I','DICORN',
+     &                'ON PASSE EN MECANISME 2')
       IF (PI.NE.0.D0) THEN
         UBR1 = UI/DXU1/PI
         TBR1 = TI/DRYU1/PI
       ELSE
-        UBR1 = UU/DXU1/P1
-        TBR1 = TT/DRYU1/P1
+        UBR1 = (UI+DUR)/DXU1/P1
+        TBR1 = (TI+DRYR)/DRYU1/P1
       ENDIF
+      FEQ1 = SQRT(UBR1**2+TBR1**2)
+      UBR1 = UBR1/FEQ1
+      TBR1 = TBR1/FEQ1
       UB1 = UBR1*DXU1
       TB1 = TBR1*DRYU1
+      UPI = UB1*PI
+      TPI = TB1*PI
       ZNB1 = C1*UBR1
       ZMB1 = C1*TBR1
 C
@@ -89,14 +98,14 @@ C
       TBR2 = P2B*ZMB2/FEQ2
       UB2 = UBR2*DXU2
       TB2 = TBR2*DRYU2
-      U2 = UU-UB1+UB2
-      T2 = TT-TB1+TB2
+      U2 = DUR-UB1+UB2+UPI
+      T2 = DRYR-TB1+TB2+TPI
       UR2 = U2/DXU2
       TR2 = T2/DRYU2
       P2 = SQRT(UR2**2+TR2**2)
       G2 = DBAR2*P2
       RG2 = 0.5D0*(-G2+SQRT(G2**2 + 4.D0*G2))
-      RGP2 = (1.D0-RG2)**2/RG2/(2.D0-RG2)
+C      RGP2 = (1.D0-RG2)**2/RG2/(2.D0-RG2)
 C
       VARIP2 = P2
       VARIP3 = 2.D0
@@ -108,15 +117,11 @@ C
 C
       CALL DICOR3 (K0,DUR,DRYR,SIM,SI,DNSDU,DMSDT,DNSDT)
 C
-      DNSDU2 = (NU2/DXU2)*(RG2/P2-UR2**2*RG2/P2**3
-     &       +  DBAR2*RGP2*UR2**2/P2**2)
+      DNSDU2 = RG2*NU2/DXU2/P2
       IF (DUR.EQ.0.D0) DNSDU2 = K0(1)
-      DMSDT2 = (MU2/DRYU2)*(RG2/P2-TR2**2*RG2/P2**3
-     &       + DBAR2*RGP2*TR2**2/P2**2)
+      DMSDT2 = RG2*MU2/DRYU2/P2
       IF (DRYR.EQ.0.D0) DMSDT2 = K0(15)
-      DNSDT2 = (NU2/DRYU2)*(-UR2*TR2*RG2/P2**3
-     &       + DBAR2*RGP2*UR2*TR2/P2**2)
-      IF (DUR.EQ.0.D0.OR.DRYR.EQ.0.D0) DNSDT2 = 0.D0
+      DNSDT2 = 0.D0
 C ----------------------------------------------------------------------
 C
  9999 CONTINUE

@@ -1,4 +1,4 @@
-# MODIF  DATE 14/06/2005   AUTEUR JMBHH01 J.M.PROIX 
+# MODIF  DATE 21/06/2005   AUTEUR GEVAIS V.GERVAIS 
 # TITRE : ESSAI TRIAXIAL DRAINE AVEC LE MODELE DE HOEK_BROWN
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -311,7 +311,7 @@ TEST_RESU(RESU=(
                       NOM_CMP    = 'SIYY',
                       NUME_ORDRE = 42,
                       PRECISION  = 1.E-3,
-                      VALE       = -3.29139722E+01),
+                      VALE       = -3.29136722E+01),
                  _F(  RESULTAT   = U2,
                       REFERENCE  = 'ANALYTIQUE',
                       VERSION    = '8.1.0',

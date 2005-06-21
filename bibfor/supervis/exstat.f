@@ -4,7 +4,7 @@
       REAL*8                             XTT
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 21/02/2002   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF SUPERVIS  DATE 20/06/2005   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -56,6 +56,7 @@ C
       CHARACTER*16 CONCEP, NOMCMD
       REAL*8       TPSD(6),TPSF(6),TP
       CHARACTER*1 K1BID
+      CHARACTER*132 TEXTE
       SAVE         TPSD,TPSF,TP
       DATA         TP/0.D0/
 C
@@ -80,13 +81,11 @@ C
         TP = TPSR
       ENDIF
       IF ( ICOND.EQ.0 .AND. ISTAT .EQ. 2 ) THEN
-         IFM = IUNIFI('MESSAGE')
-         IF (IFM.NE.0) THEN
-            CALL GETRES ( NOMRES, CONCEP, NOMCMD)
-            WRITE(IFM,'(1X,3A,F10.2,A,F8.2,A)')
-     +           ' %  FIN COMMANDE: ',NOMCMD,
-     +           ' DUREE TOTALE: ',TPSF(3),' s (SYST:',TPSF(6),' s)'
-         ENDIF
+         CALL GETRES ( NOMRES, CONCEP, NOMCMD)
+         WRITE(TEXTE,'(1X,3A,F10.2,A,F8.2,A)')
+     +      '  #  FIN COMMANDE: ',NOMCMD, ' DUREE TOTALE: ',TPSF(3),
+     +      ' s (SYST:',TPSF(6),' s)'
+         CALL AFFICH( TEXTE )
          CALL JEEXIN ( KSTAT, IST )
          IF (IST.EQ.0 .AND. INDIC.EQ.1) THEN
 C        --- IMPRESSION DANS LE FICHIER MESSAGE DES ---

@@ -1,6 +1,6 @@
       SUBROUTINE ASSDE1(CHAMP)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 05/05/2004   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ASSEMBLA  DATE 20/06/2005   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,10 +26,7 @@ C       NOMU   : NOM D'UN CONCEPT DE TYPE
 C                    CHAMP_GD(K19)
 
 C     RESULTAT:
-C     ON DETRUIT TOUS LES OBJETS JEVEUX CORRESPONDANT A CE CONCEPT.
-C     -----------------------------------------------------------------
-C     ASTER INFORMATIONS:
-C       02/12/03 (OB): MODIF POUR SOLVEUR FETI. 
+C     ON DETRUIT TOUS LES OBJETS JEVEUX CORRESPONDANT A CE CONCEPT. 
 C ----------------------------------------------------------------------
 
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
@@ -50,7 +47,7 @@ C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 
-      INTEGER      IRET,IDD,NBSD,IFETC
+      INTEGER      IRET,IDD,NBSD,IFETC,ILIMPI
       CHARACTER*5  REFE,VALE,DESC
       CHARACTER*8  K8BID
       CHARACTER*19 K19B
@@ -88,12 +85,21 @@ C FETI OR NOT ?
         VALE='.VALE'
         CALL JELIRA(K24B,'LONMAX',NBSD,K8BID)
         CALL JEVEUO(K24B,'L',IFETC)
+        CALL JEVEUO('&FETI.LISTE.SD.MPI','L',ILIMPI)        
+C========================================
+C BOUCLE SUR LES SOUS-DOMAINES + IF MPI:
+C========================================
         DO 5 IDD=1,NBSD
-          K19B=ZK24(IFETC+IDD-1)(1:19)
-          CALL JEDETR(K19B//DESC)
-          CALL JEDETR(K19B//REFE)
-          CALL JEDETR(K19B//VALE)         
+          IF (ZI(ILIMPI+IDD).EQ.1) THEN
+            K19B=ZK24(IFETC+IDD-1)(1:19)
+            CALL JEDETR(K19B//DESC)
+            CALL JEDETR(K19B//REFE)
+            CALL JEDETR(K19B//VALE)
+          ENDIF         
    5    CONTINUE
+C========================================
+C FIN BOUCLE SUR LES SOUS-DOMAINES + IF MPI:
+C========================================
         CALL JEDETR(K24B)   
       ENDIF                     
    

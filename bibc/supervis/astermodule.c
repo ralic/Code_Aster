@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF astermodule supervis  DATE 11/05/2005   AUTEUR MCOURTOI M.COURTOIS */
+/* MODIF astermodule supervis  DATE 20/06/2005   AUTEUR BOITEAU O.BOITEAU */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -3172,6 +3172,26 @@ PyObject *self; /* Not used */
         return Py_None;
 }
 
+void DEFS(AFFICH,affich,char *,int);
+#define CALL_AFFICH(a) CALLS(AFFICH,affich,a)
+
+static PyObject * aster_affich(self, args)
+PyObject *self; /* Not used */
+PyObject *args;
+{
+        char *texte;
+
+        _DEBUT(aster_affich) ;
+        if (!PyArg_ParseTuple(args, "s:affiche",&texte)) return NULL;
+                                                       SSCRUTE(texte);
+/*jpl        fprintf( stderr , "%s" , texte ) ; */
+        CALL_AFFICH (texte);
+
+        Py_INCREF( Py_None ) ;
+        _FIN(aster_affich) ;
+        return Py_None;
+}
+
 void DEFPPS(REPOUT,repout,INTEGER *,INTEGER *,char *,int);
 #define CALL_REPOUT(a,b,c) CALLPPS(REPOUT,repout,a,b,c)
 
@@ -3639,6 +3659,7 @@ static PyObject *aster_argv( _UNUSED  PyObject *self, _IN PyObject *args )
 /* List of functions defined in the module */
 
 static PyMethodDef aster_methods[] = {
+                {"affiche",     aster_affich ,            METH_VARARGS},
                 {"init",        aster_init ,              METH_VARARGS},
                 {"debut",       aster_debut ,             METH_VARARGS},
                 {"poursu",      aster_poursu ,            METH_VARARGS},

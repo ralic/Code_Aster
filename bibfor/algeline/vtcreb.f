@@ -1,6 +1,6 @@
       SUBROUTINE VTCREB(CHAMPZ,NUMEDZ,BASEZ,TYPCZ,NEQ)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 10/01/2005   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGELINE  DATE 20/06/2005   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -34,10 +34,6 @@ C
 C     PRECAUTIONS D'EMPLOI :
 C       1) LE CHAM_NO "CHAMP" NE DOIT PAS EXISTER
 C       2) LES COEFFICIENTS DU CHAM_NO "CHAMP" NE SONT PAS AFFECTES
-C
-C   -------------------------------------------------------------------
-C     ASTER INFORMATIONS:
-C       20/11/03 (OB): REFONTE POUR SOLVEUR FETI.
 C----------------------------------------------------------------------
 C CORPS DU PROGRAMME
       IMPLICIT NONE
@@ -65,8 +61,7 @@ C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 
 C DECLARATION VARIABLES LOCALES
-      INTEGER      IDIME,NBSD,IFETC,I,IFM,NIV,
-     &             IFETN
+      INTEGER      IDIME,NBSD,IFETC,IDD,IFM,NIV,ILIMPI,IFETN
       CHARACTER*1  CLASSE,TYPC
       CHARACTER*8  K8BID
       CHARACTER*11 K11B      
@@ -104,23 +99,34 @@ C CONSTITUTION DE L'OBJET JEVEUX .FETC
 C STOCKE &&//NOMPRO(1:6)//'.2.' POUR COHERENCE AVEC L'EXISTANT     
         K11B=CHAMP(1:10)//'.'
 
-             
-C BOUCLE SUR LES SOUS-DOMAINES --------------------------------------
         K24B=' '
-        DO 10 I=1,NBSD
-          CALL JEMARQ()        
+        CALL JEVEUO('&FETI.LISTE.SD.MPI','L',ILIMPI)
+C========================================
+C BOUCLE SUR LES SOUS-DOMAINES + IF MPI:
+C========================================
+C IDD=0 --> DOMAINE GLOBAL/ IDD=I --> IEME SOUS-DOMAINE
+        DO 10 IDD=1,NBSD
+          IF (ZI(ILIMPI+IDD).EQ.1) THEN
+          
+            CALL JEMARQ()        
 C REMPLISSAGE OBJET .FETC
 C NOUVELLE CONVENTION POUR LES CHAM_NOS FILS, GESTTION DE NOMS
 C ALEATOIRES
-          CALL GCNCON('.',K8BID)
-          K8BID(1:1)='F'          
-          K24B(1:19)=K11B//K8BID          
-          ZK24(IFETC+I-1)=K24B
-          CALL JEVEUO(NUMEDD(1:14)//'.FETN','L',IFETN)          
-          CALL VTCRE1(K24B,ZK24(IFETN+I-1),CLASSE,TYPC,
-     &      IFM,NIV,K24BID,K24BID,I,NEQ)
-          CALL JEDEMA()
+            CALL GCNCON('.',K8BID)
+            K8BID(1:1)='F'          
+            K24B(1:19)=K11B//K8BID          
+            ZK24(IFETC+IDD-1)=K24B
+            CALL JEVEUO(NUMEDD(1:14)//'.FETN','L',IFETN)          
+            CALL VTCRE1(K24B,ZK24(IFETN+IDD-1),CLASSE,TYPC,
+     &        IFM,NIV,K24BID,K24BID,IDD,NEQ)
+            CALL JEDEMA()
+            
+          ENDIF
    10   CONTINUE
+C========================================
+C FIN BOUCLE SUR LES SOUS-DOMAINES + IF MPI:
+C========================================
+
 C FIN DE IF METHOD='FETI'                                     
       ENDIF
 C-----------------------------------------------------------------------

@@ -1,4 +1,4 @@
-#@ MODIF Graph Utilitai  DATE 24/05/2005   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF Graph Utilitai  DATE 21/06/2005   AUTEUR MCOURTOI M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,6 +19,7 @@
 # ======================================================================
 
 # RESPONSABLE MCOURTOI M.COURTOIS
+__all__ = ['Graph', 'AjoutParaCourbe']
 
 import sys
 import os

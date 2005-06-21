@@ -1,8 +1,9 @@
       SUBROUTINE ASSVEC(BASE,VEC,NBVEC,TLIVEC,LICOEF,NU,VECPRO,MOTCLE,
      &                  TYPE)
       IMPLICIT REAL*8 (A-H,O-Z)
+
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 25/01/2005   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ASSEMBLA  DATE 20/06/2005   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,8 +54,6 @@ C ----------------------------------------------------------------------
       COMMON /RVARJE/ZR(1)
       COMPLEX*16 ZC
       COMMON /CVARJE/ZC(1)
-      LOGICAL ZL
-      COMMON /LVARJE/ZL(1)
       CHARACTER*8 ZK8,NOMACR,EXIELE
       CHARACTER*14 NUM2
       CHARACTER*16 ZK16
@@ -79,13 +78,13 @@ C ---------------------------------------------------------------------
       CHARACTER*19 K19B,VECAS,VPROF      
       CHARACTER*24 METHOD,SDFETI,K24B,SDFETS,KNUEQ,KMAILA,K24PRN,
      &             KNULIL,KVELIL,KVEREF,KVEDSC,RESU,NOMLI,KNEQUA,
-     &             KVALE,NOMOPT,NOMLOG,NOMLID,INFOFE
+     &             KVALE,NOMOPT,NOMLOG,NOMLID,INFOFE,SDFETA
       CHARACTER*32 JEXNUM,JEXNOM,JEXATR     
-      LOGICAL      LFETI,LLIMO,LLICH,LLICHD      
+      LOGICAL      LFETI,LLIMO,LLICH,LLICHD,IDDOK      
       INTEGER      ICODLA(NBECMX),ICODGE(NBECMX),NBEC,EPDMS,JPDMS,NBSD,
      &             IDIME,IDD,ILIGRP,IFETN,IFETC,IREFN,NBREFN,ILIGRT,
      &             ADMODL,LCMODL,ILIGRB,IRET1,ILIGRC,IFEL1,IFEL2,IFEL3,
-     &             IINF,IFCPU
+     &             IINF,IFCPU,IBID,IFM,NIV,ILIMPI
       REAL*8       TEMPS(6)
      
 C ----------------------------------------------------------------------
@@ -158,7 +157,7 @@ C --- DEBUT ------------------------------------------------------------
 C-----RECUPERATION DU NIVEAU D'IMPRESSION
 
       CALL INFNIV(IFM,NIV)
-      INFOFE='FFFFFFFF'
+      INFOFE='FFFFFFFFFFFFFFFFFFFFFFFF'
 
 C     IFM = IUNIFI('MESSAGE')
 C----------------------------------------------------------------------
@@ -229,7 +228,8 @@ C --- NUME_DDL ET DONC CHAM_NO ETENDU, OUI OU NON ?
         CALL JEVEUO(NUDEV(1:14)//'.NUME.REFN','L',IREFN)
         METHOD=ZK24(IREFN+2)
         SDFETI=ZK24(IREFN+3)
-        SDFETS=SDFETI          
+        SDFETS=SDFETI
+        SDFETA=SDFETS(1:19)//'.FETA'          
       ENDIF
         
       LFETI=.FALSE.      
@@ -306,14 +306,30 @@ C ADRESSE JEVEUX DE L'OBJET SDFETI(1:8)//'.MAILLE.NUMSD'
         ILIGRP=ILIGRP-1
 C ADRESSE JEVEUX OBJET AFFICHAGE CPU
         CALL JEVEUO('&FETI.INFO.CPU.ASSE','E',IFCPU)
+C ADRESSE JEVEUX OBJET FETI & MPI
+        CALL JEVEUO('&FETI.LISTE.SD.MPI','L',ILIMPI)
       ENDIF
 
-C==========================
-C BOUCLE SUR LES SOUS-DOMAINES:
-C==========================      
+C========================================
+C BOUCLE SUR LES SOUS-DOMAINES + IF MPI:
+C========================================
 C IDD=0 --> DOMAINE GLOBAL/ IDD=I --> IEME SOUS-DOMAINE
-      DO 195 IDD=0,NBSD        
-C ATTENTION SI FETI LIBERATION MEMOIRE PREVUE EN FIN DE BOUCLE     
+      DO 195 IDD=0,NBSD
+              
+C TRAVAIL PREALABLE POUR DETERMINER SI ON EFFECTUE LA BOUCLE SUIVANT
+C LE SOLVEUR (FETI OU NON), LE TYPE DE RESOLUTION (PARALLELE OU 
+C SEQUENTIELLE) ET L'ADEQUATION "RANG DU PROCESSEUR-NUMERO DU SD"
+        IF (.NOT.LFETI) THEN
+          IDDOK=.TRUE.
+        ELSE 
+          IF (ZI(ILIMPI+IDD).EQ.1) THEN
+            IDDOK=.TRUE.
+          ELSE
+            IDDOK=.FALSE.
+          ENDIF
+        ENDIF
+        IF (IDDOK) THEN
+             
         IF (LFETI) CALL JEMARQ()
 C CALCUL TEMPS  
         IF ((NIV.GE.2).OR.(LFETI)) THEN
@@ -347,7 +363,7 @@ C SI NON FETI OU FETI DOMAINE GLOBAL
           KVEDSC = VECAS//'.DESC'
         ELSE
 C SI SOUS-DOMAINE FETI       
-          CALL JENUNO(JEXNUM(SDFETS(1:19)//'.FETA',IDD),NOMSD)
+          CALL JENUNO(JEXNUM(SDFETA,IDD),NOMSD)
 C          K19B=K11B//NOMSD
 C NOUVELLE CONVENTION POUR LES CHAM_NOS FILS, GESTTION DE NOMS
 C ALEATOIRES
@@ -822,9 +838,12 @@ C MONITORING
           WRITE(IFM,*)'TEMPS CPU/SYS ASSEMBLAGE V: ',TEMPS(5),TEMPS(6)
           IF (LFETI) ZR(IFCPU+IDD)=ZR(IFCPU+IDD)+TEMPS(5)+TEMPS(6)
         ENDIF
-C---- FIN BOUCLE SUR LES SOUS-DOMAINES:
-C--------------------------------------
         IF (LFETI) CALL JEDEMA()
+        
+C========================================
+C BOUCLE SUR LES SOUS-DOMAINES + IF MPI:
+C========================================
+        ENDIF
   195 CONTINUE  
   
       CALL JEDETR(VECAS//'.LILI')

@@ -9,7 +9,7 @@ C ----------------------------------------------------------------------
       REAL*8 P2,UTOT,TTOT,DNSDU,DMSDT,DNSDT,DNSDU2,DMSDT2,DNSDT2
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 21/02/96   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 16/06/2005   AUTEUR ACBHHCD G.DEVESA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -64,10 +64,14 @@ C
 C**************** DECLARATION DES VARIABLES LOCALES ********************
 C
       REAL*8 UBR1,UBR2,TBR1,TBR2,UB1,UB2,TB1,TB2,ZNB1,ZNB2,ZMB1,ZMB2
-      REAL*8 FEQ2,P2B,UR2,TR2,U2,T2
+      REAL*8 FEQ2,P2B,UR2,TR2,U2,T2,UPI,TPI
 C
 C************ FIN DES DECLARATIONS DES VARIABLES LOCALES ***************
 C
+      CALL UTMESS('I','DICORN',
+     &                'ON PASSE EN MECANISME 2')
+C ICI UI=UI-VARIM4 ET TI=TI-VARIM5
+CC ON REMPLACE APRES UI PAR UU-DUR ET TI PAR TT-DRYR        
       IF (PI.NE.0.D0) THEN
          UBR1 = UI/DXU1/PI
          TBR1 = TI/DRYU1/PI
@@ -75,8 +79,13 @@ C
          UBR1 = SIP(7)/NU1/FEQ1
          TBR1 = SIP(11)/MU1/FEQ1
       ENDIF
+      FEQ1 = SQRT(UBR1**2+TBR1**2)
+      UBR1 = UBR1/FEQ1
+      TBR1 = TBR1/FEQ1
       UB1 = UBR1*DXU1
       TB1 = TBR1*DRYU1
+      UPI = UB1*PI
+      TPI = TB1*PI
       ZNB1 = C1*UBR1
       ZMB1 = C1*TBR1
 C
@@ -95,8 +104,8 @@ C
       U2 = UR2*DXU2
       T2 = TR2*DRYU2
 C
-      UTOT = U2+UB1-UB2
-      TTOT = T2+TB1-TB2
+      UTOT = U2+UB1-UB2+UU-DUR-UPI
+      TTOT = T2+TB1-TB2+TT-DRYR-TPI
 C
       IF (DUR.NE.0.D0)  DNSDU2 = SIP(7)/UTOT
       IF (DUR.EQ.0.D0)  DNSDU2 = K0(1)
