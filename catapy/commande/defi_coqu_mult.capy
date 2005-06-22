@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 23/08/2004   AUTEUR CIBHHLV L.VIVAN 
+#& MODIF COMMANDE  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,7 +18,8 @@
 # ======================================================================
 DEFI_COQU_MULT=OPER(nom="DEFI_COQU_MULT",op=56,sd_prod=mater_sdaster,reentrant='n',
             UIinfo={"groupes":("Modélisation",)},
-                    fr="Définition d une coque composite couche par couche",
+                    fr="Déterminer les caractéristiques matériaux homogénéisées d'une coque multicouche à partir"
+                        +" des caractéristiques de chaque couche",
          COUCHE          =FACT(statut='o',max='**',
            EPAIS           =SIMP(statut='o',typ='R',val_min=0.E+0 ),
            MATER           =SIMP(statut='o',typ=(mater_sdaster) ),

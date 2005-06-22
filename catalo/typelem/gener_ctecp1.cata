@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 26/01/2004   AUTEUR VABHHTS J.PELLET 
+%& MODIF TYPELEM  DATE 23/06/2005   AUTEUR VABHHTS J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,21 +20,21 @@ GENER_CTECP1
 TYPE_GENE__
 
 ENTETE__ ELEMENT__ THPLSE22         MAILLE__ SEG22
-   ELREFE__  V_SEG22    GAUSS__  RIGI=FPG1
+   ELREFE__  V_SEG22
    ELREFE__  SE2        GAUSS__  RIGI=FPG2
 ENTETE__ ELEMENT__ THPLSE33         MAILLE__ SEG33
-   ELREFE__  V_SEG33    GAUSS__  RIGI=FPG1
+   ELREFE__  V_SEG33
    ELREFE__  SE3        GAUSS__  RIGI=FPG4
 ENTETE__ ELEMENT__ THAXSE22         MAILLE__ SEG22
-   ELREFE__  V_SEG22    GAUSS__  RIGI=FPG1
+   ELREFE__  V_SEG22
    ELREFE__  SE2        GAUSS__  RIGI=FPG2
 ENTETE__ ELEMENT__ THAXSE33         MAILLE__ SEG33
-   ELREFE__  V_SEG33    GAUSS__  RIGI=FPG1
+   ELREFE__  V_SEG33
    ELREFE__  SE3        GAUSS__  RIGI=FPG4
 
 MODE_LOCAL__
     CHECHPF  = COEH_F   ELEM__         (H        )
-    EHECHPR  = COEH_R   ELGA__ RIGI   (H        )
+    EHECHPR  = COEH_R   ELEM__         (H        )
     NDEPLAR  = DEPL_R   ELNO__ IDEN__  (DX       DY       )
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        )
     CTEMPSR  = INST_R   ELEM__         (INST     DELTAT   THETA    )

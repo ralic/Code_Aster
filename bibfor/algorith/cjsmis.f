@@ -6,7 +6,7 @@
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -47,15 +47,15 @@ C          NITER    :  NOMBRE D ITERATIONS A CONVERGENCE
 C          EPSCON   :  VALEUR ERR FINALE
 C     ------------------------------------------------------------------
 
-        INTEGER       NDT, NDI, NR, NMOD,NITER,NVI
+        INTEGER       NDT, NDI, NR, NMOD,NITER,NVI,IRET
         INTEGER       NITIMP
         PARAMETER     (NMOD = 8 )
         PARAMETER     (NITIMP = 100)
         INTEGER       ITER
-        LOGICAL       NOCONV, AREDEC,STOPNC,FAUX
+        LOGICAL       NOCONV, AREDEC,STOPNC
 
 
-        REAL*8        EPSD(6),DEPS(6)
+        REAL*8        EPSD(6),DEPS(6),DET
         REAL*8        SIGD(6), SIGF(6)
         REAL*8        VIND(*), VINF(*),EPSCON
         REAL*8        MATER(14,2), CRIT(*)
@@ -63,17 +63,14 @@ C     ------------------------------------------------------------------
         REAL*8        DDY(NMOD), DY(NMOD), YD(NMOD), YF(NMOD)
 
         REAL*8        ERR, ERR1, ERR2
-        REAL*8        ZERO
         INTEGER       UMESS, IUNIFI
         REAL*8        ERIMP(NITIMP,3)
         INTEGER       I,J
 
         CHARACTER*8   MOD
+        CHARACTER*1   TRANS,KSTOP
 
         COMMON /TDIM/   NDT, NDI
-
-        ZERO = 0.D0
-        FAUX = .FALSE.
 
 C
 C     ------------------------------------------------------------------
@@ -143,7 +140,9 @@ C    ET CALCUL DU JACOBIEN DU SYSTEME A T+DT :  DRDY(DY)
 C -> RESOLUTION DU SYSTEME LINEAIRE : DRDY(DY).DDY = -R(DY)
 
         CALL LCEQVN( NR, R, DDY)
-        CALL MGAUSS( DRDY, DDY, NMOD, NR, 1, ZERO, FAUX)
+        TRANS=' '
+        KSTOP='S'
+        CALL MGAUSS(TRANS,KSTOP,DRDY, DDY, NMOD, NR, 1, DET, IRET)
 
 
 C -> REACTUALISATION DE DY = DY + DDY

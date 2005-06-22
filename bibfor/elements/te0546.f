@@ -1,7 +1,7 @@
       SUBROUTINE TE0546(OPTION,NOMTE)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 23/05/2005   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 23/06/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -36,10 +36,9 @@ C ......................................................................
       INTEGER IINSTM,IINSTP,IDEPLM,IDEPLP,ICOMPO,ICARCR,IRET
       INTEGER IVECTU,ICONTP,IVARIP,LI,IDEFAM,IDEFAP,JCRET,CODRET
       INTEGER IHYDRM,IHYDRP,ISECHM,ISECHP,ISREF,IVARIX,ICAMAS
-      INTEGER IIRRAM,IIRRAP
       LOGICAL DEFANE
       INTEGER NDDL,KK,NI,MJ,JTAB(7),NZ,NNOS
-      REAL*8 MATNS(3*27*3*27),CORRM,CORRP,R8VIDE,ANGMAS(3),R8DGRD
+      REAL*8 MATNS(3*27*3*27),R8VIDE,ANGMAS(3),R8DGRD
       REAL*8 PFF(6*27*27),DEF(6*27*3),DFDI(3*27),DFDI2(3*27)
       REAL*8 PHASM(7*27),PHASP(7*27)
 
@@ -80,8 +79,6 @@ C - PARAMETRES EN ENTREE
       CALL JEVECH('PDEPLPR','L',IDEPLP)
       CALL JEVECH('PCOMPOR','L',ICOMPO)
       CALL JEVECH('PCARCRI','L',ICARCR)
-      CORRM = R8VIDE()
-      CORRP = R8VIDE()
       CALL TECACH('OON','PVARIMR',7,JTAB,IRET)
       LGPG1 = MAX(JTAB(6),1)*JTAB(7)
       LGPG = LGPG1
@@ -101,8 +98,6 @@ C - VARIABLES DE COMMANDE
       CALL JEVECH('PSECHMR','L',ISECHM)
       CALL JEVECH('PSECHPR','L',ISECHP)
       CALL JEVECH('PSECREF','L',ISREF)
-      CALL JEVECH('PIRRAMR','L',IIRRAM)
-      CALL JEVECH('PIRRAPR','L',IIRRAP)
       CALL TECACH('ONN','PDEFAMR',1,IDEFAM,IRET)
       CALL TECACH('ONN','PDEFAPR',1,IDEFAP,IRET)
       DEFANE = IDEFAM .NE. 0
@@ -199,9 +194,7 @@ C      PETITES DEFORMATIONS (AVEC EVENTUELLEMENT REACTUALISATION)
      &                ZR(ITEMPM),ZR(ITEMPP),ZR(ITREF),
      &                ZR(IHYDRM),ZR(IHYDRP),
      &                ZR(ISECHM),ZR(ISECHP),ZR(ISREF),
-     &                ZR(IIRRAM),ZR(IIRRAP),
      &                NZ,PHASM,PHASP,
-     &                CORRM,CORRP,
      &                ZR(IDEPLM),ZR(IDEPLP),
      &                ANGMAS,
      &                ZR(IDEFAM),ZR(IDEFAP),DEFANE,
@@ -220,9 +213,7 @@ C      GRANDES DEFORMATIONS : FORMULATION SIMO - MIEHE
      &                ZR(ITEMPM),ZR(ITEMPP),ZR(ITREF),
      &                ZR(IHYDRM),ZR(IHYDRP),
      &                ZR(ISECHM),ZR(ISECHP),ZR(ISREF),
-     &                ZR(IIRRAM),ZR(IIRRAP),
      &                NZ,PHASM,PHASP,
-     &                CORRM,CORRP,
      &                ZR(IDEPLM),ZR(IDEPLP),
      &                ANGMAS,
      &                ZR(ICONTM),ZR(IVARIM),
@@ -257,9 +248,7 @@ C 7.3 - GRANDES ROTATIONS ET PETITES DEFORMATIONS
      &                ZR(ITEMPM),ZR(ITEMPP),ZR(ITREF),
      &                ZR(IHYDRM),ZR(IHYDRP),
      &                ZR(ISECHM),ZR(ISECHP),ZR(ISREF),
-     &                ZR(IIRRAM),ZR(IIRRAP),
      &                NZ,PHASM,PHASP,
-     &                CORRM,CORRP,
      &                ZR(IDEPLM),ZR(IDEPLP),
      &                ANGMAS,
      &                ZR(IDEFAM),ZR(IDEFAP),DEFANE,

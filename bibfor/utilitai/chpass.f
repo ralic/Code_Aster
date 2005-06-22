@@ -5,7 +5,7 @@
       CHARACTER*4 TYCHR,TYCH2
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 16/07/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 23/06/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -276,7 +276,7 @@ C              CHAMP "MODELE" :
 C     5 TRANSFORMATION DU CHAMP_S EN CHAMP :
 C     ----------------------------------------------------
       IF (TYCH2.EQ.'NOEU') THEN
-        CALL CNSCNO(CHS3,' ','G',CHOU)
+        CALL CNSCNO(CHS3,' ','NON','G',CHOU)
       ELSE
         CALL CESCEL(CHS3,LIGREL,OPTION,' ',PROL0,'G',CHOU)
       END IF

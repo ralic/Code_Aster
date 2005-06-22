@@ -1,4 +1,4 @@
-#@ MODIF lecture Lecture_Cata_Ele  DATE 14/09/2004   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF lecture Lecture_Cata_Ele  DATE 23/06/2005   AUTEUR VABHHTS J.PELLET 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE VABHHTS J.PELLET
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -43,13 +43,24 @@ def lire_cata(nomfic,format='cata'):
         spark.FIC_CATA = nomfic
         fcata = open(nomfic,"r")
         if format == 'cata' :
-            t0=scan(fcata)
-            fcata.close()
-            t1=parse(t0)
-            ast2=creer_capy(t1)
-            capy=ast2.ast
-            del ast2
-            detruire_kids(capy)
+            try :
+                t0=scan(fcata)
+                fcata.close()
+                t1=parse(t0)
+                ast2=creer_capy(t1)
+                capy=ast2.ast
+                del ast2
+                detruire_kids(capy)
+            except :
+                fcata = open(nomfic,"r")
+                print 80*'/'
+                print "Erreur de lecture d'un morceau contenant des catalogues"
+                print "Impression du morceau (avec ses numéros de lignes):"
+                ilig=0
+                for line in fcata :
+                    ilig=ilig+1; print "%i %s" % (ilig,line)
+                print 80*'/'
+                raise "Erreur_Fatale"
         else :
             raise "Erreur_Fatale"
         return capy

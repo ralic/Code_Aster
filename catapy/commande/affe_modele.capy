@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 26/04/2005   AUTEUR LAVERNE J.LAVERNE 
+#& MODIF COMMANDE  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,7 +19,7 @@
 # RESPONSABLE JMBHH01 J.M.PROIX
 AFFE_MODELE=OPER(nom="AFFE_MODELE",op=18,sd_prod=modele_sdaster,
             UIinfo={"groupes":("Modélisation",)},
-                 fr="Affectation des éléments finis sur le maillage",reentrant='n',
+                 fr="Définir le phénomène physique modélisé et le type d'éléments finis sur le maillage",reentrant='n',
          regles=(AU_MOINS_UN('AFFE','AFFE_SOUS_STRUC'),),
          MAILLAGE        =SIMP(statut='o',typ=(maillage_sdaster) ),
          INFO            =SIMP(statut='f',typ='I',defaut=1,into=(1,2) ),

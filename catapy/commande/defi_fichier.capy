@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 11/05/2005   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF COMMANDE  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -30,7 +30,7 @@ def DEFIC_prod(self,ACTION,UNITE,**args):
 
 DEFI_FICHIER=MACRO(nom="DEFI_FICHIER",op=ops.build_DEFI_FICHIER,sd_prod=DEFIC_prod,reentrant='n',
                   UIinfo={"groupes":("Gestion du travail",)},
-                  fr="Gestion d une unité logique : ajout, suppression",
+                  fr="Ouvre ou ferme un fichier associé à un numéro d'unité logique",
 
             ACTION        =SIMP(statut='f',typ='TXM',into=("ASSOCIER","LIBERER","RESERVER"),defaut="ASSOCIER"),
 

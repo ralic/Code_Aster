@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 01/04/2005   AUTEUR VABHHTS J.PELLET 
+#& MODIF COMMANDE  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -26,7 +26,8 @@ def fact_ldlt_prod(MATR_ASSE,**args):
   if AsType(MATR_ASSE) == matr_asse_pres_c : return matr_asse_pres_c
   raise AsException("type de concept resultat non prevu")
 
-FACT_LDLT=OPER(nom="FACT_LDLT",op=14,sd_prod=fact_ldlt_prod,fr="Factorisation en place ou hors place",
+FACT_LDLT=OPER(nom="FACT_LDLT",op=14,sd_prod=fact_ldlt_prod,
+               fr="Factoriser une matrice assemblée en un produit de deux matrices triangulaires",
                reentrant='f',
             UIinfo={"groupes":("Résolution",)},
          regles=(EXCLUS('BLOC_DEBUT','DDL_DEBUT'),

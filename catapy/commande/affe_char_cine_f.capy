@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 28/01/2005   AUTEUR VABHHTS J.PELLET 
+#& MODIF COMMANDE  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,8 +21,9 @@ def affe_char_cine_f_prod(MECA_IMPO,THER_IMPO,**args):
   if THER_IMPO != None  : return char_cine_ther
   raise AsException("type de concept resultat non prevu")
 
-AFFE_CHAR_CINE_F=OPER(nom="AFFE_CHAR_CINE_F",op= 108,sd_prod=affe_char_cine_f_prod
-                    ,fr="Affectation de conditions aux limites cinématiques pour traitement sans dualisation",
+AFFE_CHAR_CINE_F=OPER(nom="AFFE_CHAR_CINE_F",op= 108,sd_prod=affe_char_cine_f_prod,
+                      fr="Affectation de conditions aux limites cinématiques fonction d'un (ou plusieurs) paramètres"
+                        +" pour un traitement sans dualisation",
                      reentrant='n',
             UIinfo={"groupes":("Modélisation",)},
          regles=(AU_MOINS_UN('MECA_IMPO','THER_IMPO'),

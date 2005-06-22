@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,7 +18,8 @@
 # ======================================================================
 DIST_LIGN_3D=OPER(nom="DIST_LIGN_3D",op= 133,sd_prod=fonction_sdaster,reentrant='n', 
             UIinfo={"groupes":("Outils métier",)},
-                  fr="Calcul sous forme d une fonction du temps de la distance minimale entre deux structures filaires",
+      fr="Calcul (au cours d'un transitoire) de la distance minimale entre deux structures filaires ou entre une structure"
+         +" et un point fixe",
       regles=(EXCLUS('TOUT_ORDRE','NUME_ORDRE','LIST_ORDRE','INST','LIST_INST'),
               UN_PARMI('GROUP_MA_2','POIN_FIXE'),),
          MODELE          =SIMP(statut='o',typ=modele_sdaster),

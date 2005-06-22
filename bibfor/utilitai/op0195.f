@@ -2,7 +2,7 @@
       IMPLICIT  NONE
       INTEGER IER
 C     -----------------------------------------------------------------
-C MODIF UTILITAI  DATE 05/10/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF UTILITAI  DATE 23/06/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -185,7 +185,7 @@ C --------------------------------------------------------------
 
           CNS1 = '&&OP0195.CNS1'
           CALL CNOCNS(CHOU,'V',CNS1)
-          CALL CNSCNO(CNS1,PRCHN1,'G',CHOU)
+          CALL CNSCNO(CNS1,PRCHN1,'NON','G',CHOU)
           CALL DETRSD('CHAM_NO_S',CNS1)
         END IF
       END IF

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,7 +20,7 @@
 # ======================================================================
 #
 POST_K_BETA=OPER(nom="POST_K_BETA",op=198,sd_prod=tabl_post_beta,
-                   fr="Calcul des FIC par la méthode K_BETA",
+                   fr="Calcul des facteurs d'intensité de contraintes par la méthode K_BETA",
                    reentrant='n',
             UIinfo={"groupes":("Post traitements",)},
          MAILLAGE      = SIMP(statut='o',typ=maillage_sdaster),

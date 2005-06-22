@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 01/04/2005   AUTEUR VABHHTS J.PELLET 
+#& MODIF COMMANDE  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -47,7 +47,7 @@ def macro_matr_asse_prod(self,NUME_DDL,MATR_ASSE,**args):
 MACRO_MATR_ASSE=MACRO(nom="MACRO_MATR_ASSE",op=macro_matr_asse_ops,
             UIinfo={"groupes":("Matrices/vecteurs",)},
                       sd_prod=macro_matr_asse_prod,
-                      fr="Calcul des matrices assemblées (matr_asse_gd) par exemple de rigidité, de masse ",
+                      fr="Calcul des matrices assemblées (rigidité, masse, amortissement,...) ",
          MODELE          =SIMP(statut='o',typ=modele_sdaster),
          CHAM_MATER      =SIMP(statut='f',typ=cham_mater),
          INST            =SIMP(statut='f',typ='R',defaut=0.),

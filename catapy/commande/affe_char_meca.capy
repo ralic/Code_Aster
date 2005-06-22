@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 24/05/2005   AUTEUR MABBAS M.ABBAS 
+#& MODIF COMMANDE  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,8 +18,8 @@
 # ======================================================================
 # RESPONSABLE G8BHHXD X.DESROCHES
 
-AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca
-                    ,fr="Affectation de charges et conditions aux limites mécaniques constantes",
+AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca,
+                    fr="Affectation de charges et conditions aux limites mécaniques constantes",
                      reentrant='n',
             UIinfo={"groupes":("Modélisation",)},
          regles=(AU_MOINS_UN('DDL_IMPO','FACE_IMPO','CHAMNO_IMPO','LIAISON_DDL','LIAISON_XFEM','FORCE_NODALE',
@@ -56,6 +56,7 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca
            CENTRE          =SIMP(statut='f',typ='R',defaut=(0.,0.,0.),max=3),),
 
          DDL_IMPO        =FACT(statut='f',max='**',
+             fr="Impose à des noeuds une ou plusieurs valeurs de déplacement (ou de certaines grandeurs asscociées)",
              regles=(AU_MOINS_UN('TOUT','GROUP_MA','MAILLE','GROUP_NO','NOEUD'),
                      AU_MOINS_UN('DX','DY','DZ','DRX','DRY','DRZ','GRX','PRES','PHI',
                                  'TEMP','PRE1','PRE2','UI2','UI3','VI2','VI3','WI2','WI3','UO2',
@@ -119,6 +120,7 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca
 
 
          DDL_POUTRE    =FACT(statut='f',max='**',
+             fr="Bloque des DDLs dans un repère local d'une poutre",
              regles=(AU_MOINS_UN('GROUP_NO','NOEUD'),
                      AU_MOINS_UN('DX','DY','DZ','DRX','DRY','DRZ'),
                      UN_PARMI('VECT_Y','ANGL_VRIL'),),
@@ -141,6 +143,7 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca
 
 
            FACE_IMPO       =FACT(statut='f',max='**',
+             fr="Impose à tous les noeuds d'une face une ou plusieurs valeurs de déplacement (ou de certaines grandeurs associées)",
              regles=(UN_PARMI('GROUP_MA','MAILLE',),
                      AU_MOINS_UN('DX','DY','DZ','DRX','DRY','DRZ','GRX','PRES','PHI',
                                  'TEMP','PRE1','PRE2','DNOR','DTAN'),
@@ -176,7 +179,7 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca
            ),
 
          CHAMNO_IMPO  =FACT(statut='f',max='**',
-                               fr="imposer des ddls aux valeurs d'un concept cham_no_sdaster",
+             fr="Impose des DDLs aux valeurs d'un concept cham_no_sdaster",
 #  type de cham_no_sdaster CO()
              CHAM_NO         =SIMP(statut='o',typ=cham_no_sdaster), #CO()
              COEF_MULT       =SIMP(statut='o',typ='R' ),
@@ -185,7 +188,7 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca
 
 
            LIAISON_DDL     =FACT(statut='f',max='**',
-                                 fr="Définir une relation linéaire entre des ddls de deux ou plusieurs noeuds",
+             fr="Définit une relation linéaire entre des DDLs de deux ou plusieurs noeuds",
              regles=(UN_PARMI('GROUP_NO','NOEUD'),),
              GROUP_NO        =SIMP(statut='f',typ=grno ,max='**'),
              NOEUD           =SIMP(statut='f',typ=no   ,max='**'),
@@ -195,7 +198,8 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca
            ),
 
            LIAISON_OBLIQUE =FACT(statut='f',max='**',
-                                 fr="Appliquer à des noeuds une valeur de déplacement dans un repere oblique",
+             fr="Applique à des noeuds la meme valeur de déplacement définie composante par composante"
+              +" dans un repère oblique quelconque",
              regles=(UN_PARMI('GROUP_NO','NOEUD'),
                      UN_PARMI('DX','DY','DZ','DRX','DRY','DRZ'),),
              GROUP_NO        =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
@@ -210,7 +214,7 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca
            ),
 
            LIAISON_GROUP   =FACT(statut='f',max='**',
-                                 fr="Définir des relations linéaires entre certains ddls de couples de noeuds",
+             fr="Définit la meme relation linéaire entre certains DDLs de couples de noeuds",
              regles=(UN_PARMI('GROUP_MA_1','MAILLE_1','GROUP_NO_1','NOEUD_1'),
                      UN_PARMI('GROUP_MA_2','MAILLE_2','GROUP_NO_2','NOEUD_2'),
                      EXCLUS('GROUP_MA_1','GROUP_NO_2'),
@@ -246,6 +250,7 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca
            ),
 
            LIAISON_MAIL    =FACT(statut='f',max='**',
+             fr="Définit des relations linéaires permettant de recoller deux bords d'une structure",
              regles=(AU_MOINS_UN('GROUP_MA_MAIT','MAILLE_MAIT'),
                      AU_MOINS_UN('GROUP_MA_ESCL','MAILLE_ESCL','GROUP_NO_ESCL','NOEUD_ESCL'),
                      PRESENT_PRESENT('DDL_MAIT','DDL_ESCL'),),
@@ -264,6 +269,7 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca
          ),
 
            LIAISON_CYCL    =FACT(statut='f',max='**',
+             fr="Définit des relations linéaires permettant de recoller les bords de deux parties symétriquement cycliques",
              regles=(AU_MOINS_UN('GROUP_MA_MAIT1','MAILLE_MAIT1'),
                      AU_MOINS_UN('GROUP_MA_ESCL','MAILLE_ESCL','GROUP_NO_ESCL','NOEUD_ESCL'),
                      PRESENT_PRESENT('DDL_MAIT','DDL_ESCL'),
@@ -287,7 +293,7 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca
          ),
 
 
-           LIAISON_SOLIDE  =FACT(statut='f',fr="Modéliser une partie indéformable d'une structure",max='**',
+           LIAISON_SOLIDE  =FACT(statut='f',fr="Modélise une partie indéformable d'une structure",max='**',
              regles=(UN_PARMI('GROUP_NO','NOEUD','GROUP_MA','MAILLE'),),
              GROUP_NO        =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
              NOEUD           =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
@@ -296,7 +302,9 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca
              NUME_LAGR       =SIMP(statut='f',typ='TXM',defaut="NORMAL",into=("NORMAL","APRES") ),
            ),
 
-           LIAISON_ELEM    =FACT(statut='f',fr="Raccorder une poutre à une partie massive 3D ou une coque",max='**',
+           LIAISON_ELEM    =FACT(statut='f',max='**',
+             fr="Modélise le raccord d'une partie massive 3D avec une poutre ou avec un tuyau, le raccord d'une coque"
+              +" avec une poutre ou avec un tuyau",
              regles=(UN_PARMI('GROUP_MA_1','MAILLE_1'),
                      UN_PARMI('GROUP_NO_2','NOEUD_2'),),
              OPTION          =SIMP(statut='o',typ='TXM',into=("3D_TUYAU","3D_POU","COQ_POU","COQ_TUYAU") ),
@@ -311,7 +319,7 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca
            ),
 
            LIAISON_UNIF    =FACT(statut='f',max='**',
-                                 fr="Imposer une meme valeur (inconnue) à des ddls d'un emsemble de noeuds",
+             fr="Impose une meme valeur (inconnue) à des DDLs d'un ensemble de noeuds",
              regles=(UN_PARMI('GROUP_NO','NOEUD','GROUP_MA','MAILLE'),),
              GROUP_NO        =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
              NOEUD           =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
@@ -321,7 +329,7 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca
            ),
 
          LIAISON_CHAMNO  =FACT(statut='f',max='**',
-                               fr="définir une relation linéaire entre tous les ddls d'un concept cham_no_sdaster",
+             fr="Définit une relation linéaire entre tous les DDLs présents dans un concept CHAM_NO",
 #  type de cham_no_sdaster CO()
              CHAM_NO         =SIMP(statut='o',typ=cham_no_sdaster), #CO()
              COEF_IMPO       =SIMP(statut='o',typ='R' ),
@@ -332,7 +340,8 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca
 
          VECT_ASSE       =SIMP(statut='f',typ=cham_no_depl_r ),
 
-         CONTACT         =FACT(statut='f',fr="Imposer du contact avec ou sans frottement",max='**',
+         CONTACT         =FACT(statut='f',max='**',
+           fr="Définit les zones soumises à des conditions de contact unilatéral avec ou sans frottement",
            regles=(UN_PARMI('GROUP_MA_ESCL','MAILLE_ESCL'),),
            APPARIEMENT     =SIMP(statut='f',typ='TXM',defaut="MAIT_ESCL",
                                  into=("NON","NODAL","MAIT_ESCL","MAIT_ESCL_SYME")),
@@ -513,7 +522,7 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca
                      SEUIL_INIT      =SIMP(statut='f',typ='R',defaut=0.E+0),),),
          ),
 
-         FORCE_NODALE    =FACT(statut='f',fr="Imposer des forces nodales en des noeuds",max='**',
+         FORCE_NODALE    =FACT(statut='f',fr="Applique à des noeuds des forces nodales",max='**',
            regles=(AU_MOINS_UN('GROUP_NO','NOEUD'),
                    AU_MOINS_UN('FX','FY','FZ','MX','MY','MZ' ),),
            GROUP_NO        =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
@@ -528,7 +537,7 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca
          ),
 
          FORCE_FACE      =FACT(statut='f',max='**',
-                               fr="Appliquer des forces surfaciques sur une face d'éléments volumiques",
+             fr="Applique des forces surfaciques sur une face d'élément volumique",
              regles=(AU_MOINS_UN('GROUP_MA','MAILLE'),
                      AU_MOINS_UN('FX','FY','FZ'),),
              GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
@@ -539,7 +548,7 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca
            ),
 
          FORCE_ARETE     =FACT(statut='f',max='**',
-                               fr="Appliquer des forces linéiques à une arete d élément volumique ou de coque",
+         fr="Applique des forces linéiques à une arete d'élément volumique ou de coque",
              regles=(AU_MOINS_UN('GROUP_MA','MAILLE',),
                      AU_MOINS_UN('FX','FY','FZ','MX','MY','MZ' ),),
              GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
@@ -553,7 +562,7 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca
            ),
 
          FORCE_CONTOUR   =FACT(statut='f',max='**',
-                               fr="Appliquer des forces linéiques au bord d'un domaine 2D ou AXIS_FOURIER",
+             fr="Applique des forces linéiques au bord d'un domaine 2D ou AXIS ou AXIS_FOURIER",
              regles=(AU_MOINS_UN('GROUP_MA','MAILLE'),
                      AU_MOINS_UN('FX','FY','FZ','MX','MY','MZ'),),
              GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
@@ -567,7 +576,7 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca
            ),
 
          FORCE_INTERNE   =FACT(statut='f',max='**',
-                               fr="Appliquer des forces volumiques (2D ou 3D) à un domaine volumique",
+             fr="Applique des forces volumiques (2D ou 3D) à un domaine volumique",
              regles=(AU_MOINS_UN('TOUT','GROUP_MA','MAILLE'),
                      PRESENT_ABSENT('TOUT','GROUP_MA','MAILLE'),
                      AU_MOINS_UN('FX','FY','FZ' ),),
@@ -580,7 +589,7 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca
            ),
 
          PRES_REP        =FACT(statut='f',max='**',
-                               fr="Appliquer une pression à un domaine de milieu continu 2D ou 3D",
+             fr="Applique une pression à un domaine de milieu continu 2D ou 3D, ou à un domaine de coques et tuyaux",
              regles=(AU_MOINS_UN('TOUT','GROUP_MA','MAILLE'),
                      PRESENT_ABSENT('TOUT','GROUP_MA','MAILLE'),
                      AU_MOINS_UN('PRES','CISA_2D' ),),
@@ -591,7 +600,8 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca
              CISA_2D         =SIMP(statut='f',typ='R' ),
            ),
 
-         EFFE_FOND       =FACT(statut='f',fr="Imposer un effet de fond",max='**',
+         EFFE_FOND       =FACT(statut='f',max='**',
+           fr="Calcul l'effet de fond sur une branche de tuyauterie (modélisation 3D) soumise à une pression",
            regles=(AU_MOINS_UN('GROUP_MA','MAILLE'),),
            GROUP_MA_INT    =SIMP(statut='o',typ=grma,validators=NoRepeat(),max='**'),
            GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
@@ -600,7 +610,7 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca
          ),
 
          EPSI_INIT       =FACT(statut='f',max='**',
-                               fr="Appliquer un chargement de déformation initiale à un volume 3D ou 2D",
+             fr="Applique un chargement de déformation initiale à un élément 2D, 3D ou de structure",
              regles=(AU_MOINS_UN('TOUT','GROUP_MA','MAILLE'),
                      PRESENT_ABSENT('TOUT','GROUP_MA','MAILLE'),
                      AU_MOINS_UN('EPXX','EPYY','EPZZ','EPXY','EPXZ','EPYZ','EPX',
@@ -626,6 +636,7 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca
            ),
 
          ARLEQUIN        =FACT(statut='f',min=1,max='**',
+           fr="Définit les paramètres de la méthode Arlequin",
            GROUP_MA_1     =SIMP(statut='o',typ=grma,max='**'),
            GROUP_MA_2     =SIMP(statut='o',typ=grma,max='**'),
            GROUP_MA_COLL  =SIMP(statut='f',typ=grma,max='**'),
@@ -638,7 +649,8 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca
            POIDS_GROSSIER =SIMP(statut='f',typ='R'),
            POIDS_FIN      =SIMP(statut='f',typ='R'),),
 
-        FORCE_POUTRE    =FACT(statut='f',fr="Appliquer des forces linéiques sur des poutres",max='**',
+        FORCE_POUTRE    =FACT(statut='f',max='**',
+             fr="Applique des forces linéiques sur des éléments de type poutre",
              regles=(AU_MOINS_UN('TOUT','GROUP_MA','MAILLE'),
                      PRESENT_ABSENT('TOUT','GROUP_MA','MAILLE'),
                      AU_MOINS_UN('FX','FY','FZ','N','VY','VZ'),
@@ -663,7 +675,8 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca
 
            ),
 
-         FORCE_TUYAU     =FACT(statut='f',fr="imposer une pression dans un élément TUYAU",max='**',
+         FORCE_TUYAU     =FACT(statut='f',max='**',
+             fr="Applique une pression sur des éléments TUYAU",
              regles=(AU_MOINS_UN('TOUT','GROUP_MA','MAILLE'),
                      PRESENT_ABSENT('TOUT','GROUP_MA','MAILLE'),),
              TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),
@@ -672,7 +685,8 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca
              PRES            =SIMP(statut='f',typ='R' ),
            ),
 
-         FORCE_COQUE     =FACT(statut='f',fr="Appliquer des forces surfaciques sur des coques",max='**',
+         FORCE_COQUE     =FACT(statut='f',max='**',
+             fr="Applique des forces surfaciques sur des éléments de types coques",
              regles=(AU_MOINS_UN('TOUT','GROUP_MA','MAILLE'),
                      PRESENT_ABSENT('TOUT','GROUP_MA','MAILLE'),
                      AU_MOINS_UN('FX','FY','FZ','MX','MY','MZ','PRES','F1','F2','F3','MF1','MF2'),
@@ -712,6 +726,7 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca
 
 
            GRAPPE_FLUIDE   =FACT(statut='f',max='**',
+             fr="Définit les données de calcul des forces fluides lors des études de chute de grappe",
              regles=(EXCLUS('GROUP_NO_EXTR','NOEUD_EXTR'),
                      EXCLUS('GROUP_NO_ORIG','NOEUD_ORIG'),
                      PRESENT_PRESENT('CARA_HYDR','VALE_HYDR'),
@@ -795,6 +810,7 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca
            ),
 
            LIAISON_COQUE   =FACT(statut='f',max='**',
+             fr="Permet de représenter le raccord entre des éléments de coques au moyen des relations linéaires",
              GROUP_MA_1      =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
              MAILLE_1        =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
              GROUP_NO_1      =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
@@ -807,13 +823,16 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca
            ),
 
          RELA_CINE_BP    =FACT(statut='f',max='**',
+           fr="Etablir des relations cinématiques permettant de relier les noeuds cable aux noeuds du béton, et spécifier"
+              +" la prise en compte des contraintes initiales dans les cables",
            CABLE_BP        =SIMP(statut='o',typ=cabl_precont ),
            SIGM_BPEL       =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON") ),
            RELA_CINE       =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
          ),
 
          FORCE_ELEC      =FACT(statut='f',max='**',
-                               fr="Force de Laplace due à la présence d'un conducteur rectiligne secondaire non maillé",
+             fr="Appliquer la force de LAPLACE agissant sur un conducteur principal, due à la présence d'un conducteur"
+                 +" secondaire droit",
              regles=(AU_MOINS_UN('TOUT','GROUP_MA','MAILLE'),
                      PRESENT_ABSENT('TOUT','GROUP_MA','MAILLE'),),
 
@@ -846,7 +865,8 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca
 
 
         INTE_ELEC       =FACT(statut='f',max='**',
-                              fr="Force de Laplace due à la présence d'un conducteur non rectiligne secondaire",
+             fr="Appliquer la force de LAPLACE agissant sur un conducteur principal, due à la présence d'un conducteur"
+               +" secondaire non nécessairement droit",
              regles=(AU_MOINS_UN('TOUT','GROUP_MA','MAILLE'),
                      PRESENT_ABSENT('TOUT','GROUP_MA','MAILLE'),
                      AU_MOINS_UN('GROUP_MA_2','MAILLE_2','TRANS','SYME'),
@@ -861,14 +881,14 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca
            ),
 
 
-         IMPE_FACE       =FACT(statut='f',fr="Appliquer une impédance acoustique à une face",max='**',
+         IMPE_FACE       =FACT(statut='f',fr="Applique une impédance acoustique à une face",max='**',
              regles=(AU_MOINS_UN('GROUP_MA','MAILLE' ),),
              GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
              MAILLE          =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
              IMPE            =SIMP(statut='o',typ='R' ),
            ),
 
-         VITE_FACE       =FACT(statut='f',fr="Imposer des vitesses acoustiquesnormales à une face",max='**',
+         VITE_FACE       =FACT(statut='f',fr="Impose des vitesses normales à une face (phénomène ACOUSTIQUE), ",max='**',
              regles=(AU_MOINS_UN('GROUP_MA','MAILLE'),),
              GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
              MAILLE          =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
@@ -877,7 +897,8 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca
 
 
 
-         ONDE_FLUI       =FACT(statut='f',fr="Appliquer une amplitude de pression d onde incidente",max='**',
+         ONDE_FLUI       =FACT(statut='f',max='**',
+             fr="Applique une amplitude de pression d'onde incidente sinusoidale arrivant normalement à une face",
              regles=(AU_MOINS_UN('GROUP_MA','MAILLE'),),
              GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
              MAILLE          =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
@@ -885,6 +906,8 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca
            ),
 
          FLUX_THM_REP    =FACT(statut='f',max='**',
+             fr="Applique à un domaine de milieu continu 2D ou 3D un flux de chaleur et/ou un apport de masse fluide"
+                 +" (flux hydraulique)",
              regles=(AU_MOINS_UN('TOUT','GROUP_MA','MAILLE'),
                      PRESENT_ABSENT('TOUT','GROUP_MA','MAILLE'),
                      AU_MOINS_UN('FLUN','FLUN_HYDR1','FLUN_HYDR2'),),

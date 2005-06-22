@@ -1,7 +1,7 @@
-      SUBROUTINE MGAUSS(A,B,DIM,NORDRE,NB,DET,IRET)
-
+      SUBROUTINE MGAUSS(TRANS,KSTOP,A,B,DIM,NORDRE,NB,DET,IRET)
+C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 08/11/2004   AUTEUR DURAND C.DURAND 
+C MODIF CALCULEL  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,153 +18,133 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
-
+C TOLE CRP_4
+C
       IMPLICIT NONE
-
-C ----------------------------------------------------------------------
-C     RESOLUTION PAR LA METHODE DE GAUSS D'UN SYSTEME LINEAIRE
-C ----------------------------------------------------------------------
-C     VARIABLES D'ENTREE
-C     INTEGER     DIM             : DIMENSION DE A
-C     INTEGER     NORDRE          : ORDRE DE LA MATRICE
-C     INTEGER     NB              : NOMBRE DE SECONDS MEMBRES
-C     REAL*8      A(DIM, DIM)     : MATRICE CARREE PLEINE
-C     REAL*8      B(DIM, NB)      : SECONDS MEMBRES
-C     REAL*8      DET             : 0 = PAS DE CALCUL DU DETERMINANT
-C     LOGICAL     IRET            : .TRUE. = TEST SINGULARITE
 C
-C     VARIABLES DE SORTIE
-C     REAL*8      B(DIM, NB)      : A-1 * B
-C     REAL*8      DET             : DETERMINANT DE A (SI DEMANDE)
-C     LOGICAL     IRET            : .FALSE. SI A SINGULIERE (SI DEMANDE)
+      CHARACTER*1   TRANS,KSTOP
+      INTEGER     DIM,NB,NORDRE,IRET
+      REAL*8      A(DIM,DIM),B(DIM,NB),DET
 C
 C ----------------------------------------------------------------------
-C     ATTENTION : LA MATRICE A EST MODIFIEE
+C  RESOLUTION PAR FACTORISATION LU D'UN SYSTEME LINEAIRE
 C ----------------------------------------------------------------------
+C  VARIABLES D'ENTREE
+C  CHARACTER  TRANS        : CARACTERE SPECIFIANT LA FORME DU SYSTEME
+C                              TRANS = ' ' :  A * X = B
+C                              TRANS = 'T' :  A'* X = B
+C  CHARACTER   KSTOP       : CARACTERE SPECIFIANT LE CHOIX A ADOPTER
+C                            LORSQU'ON EST EN PRESENCE D'UNE SINGULARITE
+C                              KSTOP = 'S' : ON SORT EN ERREUR FATALE
+C                              KSTOP = 'C' : ON CONTINUE ET ON FAIT
+C                                            REMONTER L'ERREUR VIA IRET
+C  REAL*8      A(DIM, DIM) : MATRICE CARREE PLEINE
+C  REAL*8      B(DIM, NB)  : SECONDS MEMBRES
+C  INTEGER     DIM         : DIMENSION DE A
+C  INTEGER     NORDRE      : ORDRE DE LA MATRICE (NORDRE<DIM)
+C  INTEGER     NB          : NOMBRE DE SECONDS MEMBRES
 C
-C     PARAMETRE
-      REAL*8    CONDMX
-      PARAMETER (CONDMX = 1.D16)
-
-C     VARIABLES
-      INTEGER     DIM,NB,NORDRE,I,J,K
-      REAL*8      A(DIM,DIM),B(DIM,NB),DET,C,D,CMIN,CMAX
-      LOGICAL     IRET,FLAG,LDET
-
-C     POUR EVITER QUE L'OPTIMISEUR NE SE PLANTE SUR : CMAX=CMIN
-C     ALORS QUE IRET=.FALSE.
-      C=0.D0
-      CMIN=0.D0
-      CMAX=0.D0
-
-      IF (DET.EQ.0.D0) THEN
-        LDET = .FALSE.
+C  VARIABLES DE SORTIE
+C  REAL*8      B(DIM, NB)  : A-1 * B
+C  REAL*8      DET         : DETERMINANT DE A
+C  LOGICAL     IRET        : CODE RETOUR
+C                              IRET = 0 : OK
+C
+C ----------------------------------------------------------------------
+      INTEGER N,NRHS,LDA,LDAF,IPIV(DIM),LDB,LDX,IWORK(DIM),IFM,NIV,I,J
+      INTEGER*4 INFO
+      REAL*8 AF(DIM,DIM),R(DIM),C(DIM),X(DIM,NB),RCOND
+      REAL*8 WORK(4*DIM),FERR(NB),BERR(NB)
+      CHARACTER*1 FACT,EQUED
+      CHARACTER*6 NOMPRO
+      PARAMETER(NOMPRO='MGAUSS')
+ 
+      CALL JEMARQ()
+C
+C --- DEFINITION DES PARAMETRES D'ENTREE POUR L'APPEL A LA ROUTINE
+C     LAPACK : DGESVX      
+C     FACT : PERMET D'EQUILIBRER LA MATRICE (SI BESOIN)
+      FACT = 'E'
+C     TRANS : CARACTERE PERMETTANT DE TRANSPOSER A
+      IF(TRANS.EQ.' ')TRANS='N'
+C     N : ORDRE DE LA MATRICE A
+      N =NORDRE 
+C     NRHS : NOMBRE DE COLONNES DE X
+      NRHS = NB
+      LDA=DIM
+      LDAF=DIM
+      LDB=DIM
+      LDX=DIM
+C
+C --- RESOLUTION
+      CALL DGESVX(FACT, TRANS, N, NRHS, A, LDA, AF, LDAF, IPIV,
+     &            EQUED, R, C, B, LDB, X, LDX, RCOND, FERR, BERR,
+     &            WORK, IWORK, INFO)
+C     
+C --- CALCUL DU DETERMINANT
+       IF(INFO.EQ.0)THEN
+         DET=1.D0
+         IRET=0
+         DO 10 I=1,N
+            DET=DET*AF(I,I)
+ 10      CONTINUE
+         DO 20 I=1,N
+            DO 30 J=1,NB
+               B(I,J)=X(I,J)
+ 30         CONTINUE
+ 20      CONTINUE
       ELSE
-        LDET = .TRUE.
-        DET = 1.D0
+         DET=0.D0
+         IF(KSTOP.EQ.'S')THEN
+            IF(INFO.EQ.N+1)THEN
+               CALL UTMESS('F','MGAUSS','LA MATRICE A EST SINGULIERE')
+            ELSEIF(INFO.GT.0 .AND. INFO.LE.N)THEN
+               CALL UTDEBM('F','MGAUSS',' ')
+               CALL UTIMPI('L','L''ELEMENT DIAGONAL U(',1,INFO)
+               CALL UTIMPI('S',',',1,INFO)
+               CALL UTIMPK('S',') DE LA FACTORISATION EST NUL.',1,' ')
+               CALL UTIMPK('L','LA SOLUTION ET LES ESTIMATIONS D'''//
+     &              'ERREURS NE PEUVENT ETRE CALCULEES.',1,' ')
+               CALL UTFINM()
+            ENDIF
+         ELSEIF(KSTOP.EQ.'C')THEN
+            IRET=INFO
+          ENDIF
       ENDIF
 
-      DO 10 I = 1, NORDRE
+C --- IMPRESSIONS (SI LE MOT CLE 'INFO' = 2): RCOND,BERR,FERR
+      CALL INFNIV(IFM,NIV)
+      IF (INFO.NE.0 .OR. NIV.LE.1)GOTO 999
 
-C ----- RECHERCHE DU MEILLEUR PIVOT
+      WRITE (IFM,1001) 'DEBUT DE '//NOMPRO
+      WRITE (IFM,*) 'VALEUR DU DETERMINANT : ',DET
+      IF(EQUED.EQ.'N')THEN
+         WRITE (IFM,*) 'L''EQUILIBRAGE DE LA MATRICE ''A'' '//
+     &        ' N''A PAS ETE NECESSAIRE'
+      ELSEIF(EQUED.EQ.'R')THEN
+         WRITE (IFM,*) 'LA MATRICE ''A'' A ETE EQUILIBREE SOUS LA'//
+     &        ' FORME : DIAG(R)*A'
+      ELSEIF(EQUED.EQ.'C')THEN
+         WRITE (IFM,*) 'LA MATRICE ''A'' A ETE EQUILIBREE SOUS LA'//
+     &        ' FORME : A*DIAG(C)'
+      ELSEIF(EQUED.EQ.'B')THEN
+         WRITE (IFM,*) 'LA MATRICE ''A'' A ETE EQUILIBREE SOUS LA'//
+     &        ' FORME : DIAG(R)*A*DIAG(C)'
+      ENDIF
+      WRITE (IFM,*) 'ESTIMATION DE LA VALEUR DU CONDITIONNEMENT '//
+     &     'DE A :',RCOND
+C     L'ERREUR ARRIERE (BACKWARD ERROR) EST L'ERREUR FAITE EN 
+C     ASSIMILANT LA MATRICE 'A' AU PRODUIT 'LU'
+      WRITE (IFM,*) 'ERREUR ARRIERE : ',BERR
+C     L'ERREUR AVANT (FORWARD ERROR) EST LA DIFFERENCE NORMALISEE ENTRE
+C     LA VALEUR CALCULEE X ET SA VALEUR EXACTE
+      WRITE (IFM,*) 'ERREUR AVANT : ',FERR    
+      WRITE (IFM,1001) 'FIN DE '//NOMPRO
+C
+ 1001 FORMAT(10('='),A,10('='))
 
-        J = I
-        C = A(I,I)
-        FLAG = .FALSE.
-
-        DO 20 K = I+1, NORDRE
-          D = A(K,I)
-          IF (ABS(C) .LT. ABS(D)) THEN
-            C = D
-            J = K
-            FLAG = .TRUE.
-          ENDIF
- 20     CONTINUE
-
-C ----- DETERMINANT
-
-        IF (LDET) DET = DET * C
-
-C ----- ESTIMATION GROSSIERE DU CONDITIONNEMENT
-
-        IF (IRET) THEN
-          IF (I .EQ. 1) THEN
-            CMIN = ABS(C)
-            CMAX = CMIN
-          ELSE
-            IF (ABS(C) .LT. CMIN) THEN
-              CMIN = ABS(C)
-              IF (CMAX .GT. CONDMX*CMIN) THEN
-                IRET = .FALSE.
-                GOTO 100
-              ENDIF
-              GOTO 30
-            ENDIF
-            IF (ABS(C) .GT. CMAX) THEN
-              CMAX = ABS(C)
-              IF (CMAX .GT. CONDMX*CMIN) THEN
-                IRET = .FALSE.
-                GOTO 100
-              ENDIF
-            ENDIF
-          ENDIF
-        ENDIF
-
- 30     CONTINUE
-
-C ----- PERMUTATION
-
-        IF (FLAG) THEN
-
-          DO 40 K = I, NORDRE
-            D = A(I,K)
-            A(I,K) = A(J,K)
-            A(J,K) = D
- 40       CONTINUE
-
-          DO 50 K = 1, NB
-            D = B(I,K)
-            B(I,K) = B(J,K)
-            B(J,K) = D
- 50       CONTINUE
-
-        ENDIF
-
-C ----- ELIMINATION
-
-        DO 10 J = I+1, NORDRE
-
-          IF (A(J,I) .NE. 0.D0) THEN
-
-            D = A(J,I)/C
-
-            DO 60 K = 1, NB
-              B(J,K) = B(J,K) - D*B(I,K)
- 60         CONTINUE
-
-            DO 70 K = I+1, NORDRE
-              A(J,K) = A(J,K) - D*A(I,K)
- 70         CONTINUE
-
-          ENDIF
-
- 10   CONTINUE
-
-C --- RESOLUTION
-
-      DO 80 K = 1, NB
-        B(NORDRE,K) = B(NORDRE,K)/C
-
-        DO 80 I = NORDRE-1, 1, -1
-          D = 0.D0
-          DO 90 J = I+1, NORDRE
-            D = D + A(I,J) * B(J, K)
- 90       CONTINUE
-
-          B(I,K) = (B(I,K) - D) / A(I,I)
-
- 80   CONTINUE
-
- 100  CONTINUE
+ 999  CONTINUE
+     
+      CALL JEDEMA()
 
       END

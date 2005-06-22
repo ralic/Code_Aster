@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 16/05/2005   AUTEUR VABHHTS J.PELLET 
+%& MODIF COMPELEM  DATE 23/06/2005   AUTEUR VABHHTS J.PELLET 
 % RESPONSABLE JMBHH01 J.M.PROIX
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -417,6 +417,12 @@ GRANDEUR_SIMPLE__
                     X105     X106     X107     X108     X109     X110     X111     X112
                     X113     X114     X115     X116     X117     X118     X119     X120
                     X121     X122     X123     X124     X125     X126     X127     X128
+    NEUT_K8 = K8    Z1       Z2       Z3       Z4       Z5       Z6       Z7       Z8
+                    Z9       Z10      Z11      Z12      Z13      Z14      Z15      Z16
+                    Z17      Z18      Z19      Z20      Z21      Z22      Z23      Z24
+    NEUT_K16 = K16  Z1       Z2       Z3       Z4       Z5       Z6       Z7       Z8
+                    Z9       Z10      Z11      Z12      Z13      Z14      Z15      Z16
+                    Z17      Z18      Z19      Z20      Z21      Z22      Z23      Z24
     NEUT_K24 = K24  Z1       Z2       Z3       Z4       Z5       Z6       Z7       Z8
                     Z9       Z10      Z11      Z12      Z13      Z14      Z15      Z16
                     Z17      Z18      Z19      Z20      Z21      Z22      Z23      Z24

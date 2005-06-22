@@ -4,7 +4,7 @@
       IMPLICIT   NONE
       CHARACTER*16 OPTION
 C ......................................................................
-C MODIF ELEMENTS  DATE 23/05/2005   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 23/06/2005   AUTEUR VABHHTS J.PELLET 
 C TOLE CRP_20
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -48,7 +48,7 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
-      INTEGER NBRES,NBRDDL,NC,KPGS,NBCOUM,NBSECM
+      INTEGER NBRES,NBRDDL,NC,KPGS,NBCOUM,NBSECM,KPGVRC
       PARAMETER (NBRES=9)
       CHARACTER*16 NOMTE
       CHARACTER*8 NOMRES(NBRES),NOMPAR,TYPMOD(2),NOMPU(2)
@@ -68,7 +68,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       REAL*8 PASS(NBRDDL,NBRDDL),KTEMP(NBRDDL,NBRDDL)
       REAL*8 PGL(3,3),TMC,TPC,OMEGA,VTEMP(NBRDDL)
       REAL*8 PGL1(3,3),PGL2(3,3),PGL3(3,3),RAYON,THETA
-      REAL*8 HYDRGM,HYDRGP,SECHGM,SECHGP,SREF,IRRAGM,IRRAGP,LC,ANGMAS(3)
+      REAL*8 HYDRGM,HYDRGP,SECHGM,SECHGP,SREF,LC,ANGMAS(3)
       INTEGER NNO,NPG,NBCOU,NBSEC,M,ICOMPO,NDIMV,IVARIX
       INTEGER IPOIDS,IVF,NBVARI,LGPG,JTAB(7)
       INTEGER IMATE,ITEMP,IMATUU,ICAGEP,IGEOM,NBPAR,ITABM(8),ITABP(8)
@@ -77,7 +77,6 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       INTEGER IINSTM,IINSTP,IDEPLM,IDEPLP,ICARCR,NBV,ICOUDE,K1,K2
       INTEGER ITEMPM,ITEMPP,INO,IER,ICOUD2,MMT,NZ,CODRET,COD
       INTEGER JNBSPI,IRET
-      INTEGER IIRRAM,IIRRAP
       INTEGER NDIM,NNOS,JCOOPG,IDFDK,JDFD2,JGANO
       LOGICAL VECTEU,MATRIC,TEMPNO
 
@@ -244,7 +243,7 @@ C     POUR AVOIR UN TABLEAU BIDON A DONNER A NMCOMP
       END IF
 
 C===============================================================
-C     -- RECUPERATION DE LA TEMPERATURE ET DE L IRRADIATION :
+C     -- RECUPERATION DE LA TEMPERATURE :
 C     1- SI LA TEMPERATURE EST CONNUE AUX NOEUDS :
 C        -----------------------------------------
       CALL TECACH('ONN','PTEMPMR',8,ITABM,IRET)
@@ -256,8 +255,6 @@ C        -----------------------------------------
         CALL TECACH('OON','PTEMPPR',8,ITABP,IRET)
         ITEMPP = ITABP(1)
 
-      CALL JEVECH('PIRRAMR','L',IIRRAM)
-      CALL JEVECH('PIRRAPR','L',IIRRAP)
 
 C       -- CALCUL DES TEMPERATURES INF, SUP ET MOY
 C          (MOYENNE DES NNO NOEUDS) ET DES COEF. DES POLY. DE DEGRE 2 :
@@ -268,20 +265,16 @@ C          ------------------------------------------------------------
         TPINF = 0.D0
         TPMOY = 0.D0
         TPSUP = 0.D0
-        IRRAGM= 0.D0
-        IRRAGP= 0.D0
         DO 90,INO = 1,NNO
           CALL DXTPIF(ZR(ITEMPM+3* (INO-1)),ZL(ITABM(8)+3* (INO-1)))
           TMMOY = TMMOY + ZR(ITEMPM-1+3* (INO-1)+1)/DBLE(NNO)
           TMINF = TMINF + ZR(ITEMPM-1+3* (INO-1)+2)/DBLE(NNO)
           TMSUP = TMSUP + ZR(ITEMPM-1+3* (INO-1)+3)/DBLE(NNO)
-          IRRAGM = IRRAGM + ZR(IIRRAM-1+INO)/DBLE(NNO)
 
           CALL DXTPIF(ZR(ITEMPP+3* (INO-1)),ZL(ITABP(8)+3* (INO-1)))
           TPMOY = TPMOY + ZR(ITEMPP-1+3* (INO-1)+1)/DBLE(NNO)
           TPINF = TPINF + ZR(ITEMPP-1+3* (INO-1)+2)/DBLE(NNO)
           TPSUP = TPSUP + ZR(ITEMPP-1+3* (INO-1)+3)/DBLE(NNO)
-          IRRAGP = IRRAGP + ZR(IIRRAP-1+INO)/DBLE(NNO)
    90   CONTINUE
         CM1 = TMMOY
         CP1 = TPMOY
@@ -332,6 +325,7 @@ C     RECUPERATION COMPORTEMENT POUR TERME DE CISAILLEMENT
       CISAIL = VALRES(1)/ (1.D0+VALRES(2))
 
 C==============================================================
+      KPGVRC=0
 
 C BOUCLE SUR LES POINTS DE GAUSS
 
@@ -346,6 +340,7 @@ C BOUCLE SUR LES POINTS DE SIMPSON DANS L'EPAISSEUR
           ELSE
             R = A + (ICOU-1)*H/ (2.D0*NBCOU) - H/2.D0
           END IF
+            KPGVRC=KPGVRC+1
 
 C BOUCLE SUR LES POINTS DE SIMPSON SUR LA CIRCONFERENCE
 
@@ -411,18 +406,17 @@ C         ---------------------------------------------------
             END IF
 
 C -    APPEL A LA LOI DE COMPORTEMENT
-            CALL NMCOMP(2,TYPMOD,ZI(IMATE),ZK16(ICOMPO),ZR(ICARCR),
+            CALL NMCOMP(KPGVRC,2,TYPMOD,ZI(IMATE),
+     &                  ZK16(ICOMPO),ZR(ICARCR),
      &                  ZR(IINSTM),ZR(IINSTP),
      &                  TMC,TPC,ZR(ITREF),
      &                  HYDRGM,HYDRGP,
      &                  SECHGM,SECHGP,SREF, 
-     &                  IRRAGM,IRRAGP, 
      &                  EPS2D,DEPS2D,
      &                  SIGN,ZR(IVARIM+K2),
      &                  OPTION,
      &                  EPSANM,EPSANP,
      &                  NZ,PHASM,PHASP,
-     &                  R8VIDE(),R8VIDE(),
      &                  ANGMAS,
      &                  LC,SIGMA,ZR(IVARIP+K2),DSIDEP,COD)
 

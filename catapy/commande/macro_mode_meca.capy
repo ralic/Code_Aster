@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/02/2005   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,7 +20,7 @@
 from Macro.macro_mode_meca_ops import macro_mode_meca_ops
 
 MACRO_MODE_MECA=MACRO(nom="MACRO_MODE_MECA",op=macro_mode_meca_ops,sd_prod=mode_meca,
-                     reentrant='n',
+                     reentrant='n',fr="Lancer une succession de calculs de modes propres réels",
             UIinfo={"groupes":("Résolution",)},
          MATR_A          =SIMP(statut='o',typ=matr_asse_depl_r ),
          MATR_B          =SIMP(statut='o',typ=matr_asse_depl_r ),

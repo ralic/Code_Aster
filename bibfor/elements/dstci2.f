@@ -1,6 +1,6 @@
       SUBROUTINE DSTCI2 ( DCI , R , HFT2 , DFC, DMC, BCA , AN, AM )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 25/07/2001   AUTEUR RATEAU G.RATEAU 
+C MODIF ELEMENTS  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -90,7 +90,6 @@ C -----  VARIABLES LOCALES
       REAL*8  AW(3,9)
       REAL*8  AB(3,9), AL(3,6), DFCBFB(2,9), DFCBFA(2,3), BFA(3,3)
       REAL*8  BM(3,6), BFB(3,9), DMCTBM(3,6), DCIDMC(2,6), DCIDFB(2,9)
-      LOGICAL FAUX
 C     ------------------ PARAMETRAGE TRIANGLE --------------------------
       INTEGER NPG , NC , NNO
       INTEGER LJACO,LTOR,LQSI,LETA,LWGT,LXYC,LCOTE,LCOS,LSIN
@@ -107,11 +106,11 @@ C     ------------------ PARAMETRAGE TRIANGLE --------------------------
                PARAMETER (LCOS  = LCOTE + NC)
                PARAMETER (LSIN  = LCOS  + NC)
 C     ------------------------------------------------------------------
+      CHARACTER*1 TRANS,KSTOP
 C.========================= DEBUT DU CODE EXECUTABLE ==================
 C
 C --- INITIALISATIONS :
 C     ---------------
-      FAUX   = .FALSE.
       ZERO   = 0.0D0
       UNDEMI = 0.5D0
       UN     = 1.0D0
@@ -355,7 +354,9 @@ C
       DO 210 I = 1, 3
          AAI(I,I) = UN
  210  CONTINUE
-      CALL MGAUSS ( AA , AAI , 3 , 3 , 3, ZERO, FAUX )
+      TRANS=' '
+      KSTOP='S'
+      CALL MGAUSS (TRANS,KSTOP,AA , AAI , 3 , 3 , 3, DET, IRET )
 C
 C===================================================================
 C --- DETERMINATION DE LA MATRICE AW QUI EST TELLE QUE             = 

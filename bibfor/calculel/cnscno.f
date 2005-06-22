@@ -1,8 +1,8 @@
-      SUBROUTINE CNSCNO(CNSZ,PRCHNZ,BASEZ,CNOZ)
+      SUBROUTINE CNSCNO(CNSZ,PRCHNZ,PROL0,BASEZ,CNOZ)
 C RESPONSABLE VABHHTS J.PELLET
 C A_UTIL
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 25/10/2004   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF CALCULEL  DATE 23/06/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,20 +20,30 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
       IMPLICIT NONE
-      CHARACTER*(*) CNSZ,CNOZ,BASEZ,PRCHNZ
+      CHARACTER*(*) CNSZ,CNOZ,BASEZ,PRCHNZ,PROL0
 C ------------------------------------------------------------------
 C BUT : TRANSFORMER UN CHAM_NO_S (CNSZ) EN CHAM_NO (CNOZ)
 C ------------------------------------------------------------------
 C     ARGUMENTS:
 C CNSZ    IN/JXIN  K19 : SD CHAM_NO_S A TRANSFORMER
-C PRCHNZ  IN/JXVAR K19 : SD PROF_CHNO
+C PRCHNZ  IN/JXVAR K19 : SD PROF_CHNO  (OU ' ')
 C          SI PRCHNZ EXISTE ON CREE CNOZ CONFORMEMENT A PRCHNZ :
-C             => ON OUBLIE LES VALEURS EN TROP
-C             => ON S'ARRETE EN <F> S'IL EN MANQUE
+C             => SI CNSZ CONTIENT DES VALEURS QUE L'ON NE SAIT PAS
+C                STOCKER DANS PRCHNZ, ON LES "OUBLIE"
+C             => SI PRCHNZ EXIGE DES VALEURS QUE L'ON NE TROUVE PAS
+C                DANS CNSZ :
+C                  - SI PROL0='OUI' : ON PRENDS LA VALEUR "ZERO"
+C                  - SI PROL0='NON' : ERREUR <F>
+C
 C          SI PRCHNZ N'EXISTE PAS ON CREE CNOZ EN FONCTION
 C             DU CONTENU DE CNSZ
 C             SI PRCHNZ  = ' ' ON CREE UN PROF_CHNO "SOUS-TERRAIN"
 C             SI PRCHNZ /= ' ' ON CREE UN PROF_CHNO DE NOM PRCHNZ
+C PROL0   IN   K3  :  POUR PROLONGER (OU NON) LE CHAMP PAR "ZERO"
+C        /OUI /NON  ( CET ARGUMENT N'EST UTILISE QUE SI PRCHNZ /= ' ')
+C        "ZERO" : / 0       POUR LES CHAMPS NUMERIQUES (R/C/I)
+C                 / ' '     POUR LES CHAMPS "KN"
+C                 / .FALSE. POUR LES CHAMPS DE "L"
 C
 C BASEZ   IN       K1  : BASE DE CREATION POUR CNOZ : G/V/L
 C CNOZ    IN/JXOUT K19 : SD CHAM_NO A CREER
@@ -199,11 +209,31 @@ C     -----------------------------------
         IF (INO*ICMP.GT.0) THEN
           NOMCMP = ZK8(JCMPGD-1+ICMP)
           ICMP1 = ZI(JNUCMP-1+ICMP)
+
           IF (ICMP1.EQ.0 ) THEN
-            CALL JENUNO(JEXNUM(MA//'.NOMNOE',INO),NOMNO)
-            CALL UTMESS('F','CNSCNO','IL MANQUE LA CMP:'//NOMCMP//
+            IF (PROL0.EQ.'NON') THEN
+               CALL JENUNO(JEXNUM(MA//'.NOMNOE',INO),NOMNO)
+               CALL UTMESS('F','CNSCNO','IL MANQUE LA CMP:'//NOMCMP//
      +                  ' SUR LE NOEUD:'//NOMNO)
+            ELSE
+               CALL ASSERT(PROL0.EQ.'OUI')
+               IF (TSCA.EQ.'R') THEN
+                 ZR(JVALE-1+IEQ2) = 0.D0
+               ELSE IF (TSCA.EQ.'C') THEN
+                 ZC(JVALE-1+IEQ2) = (0.D0,0.D0)
+               ELSE IF (TSCA.EQ.'I') THEN
+                 ZI(JVALE-1+IEQ2) = 0
+               ELSE IF (TSCA.EQ.'L') THEN
+                 ZL(JVALE-1+IEQ2) = .FALSE.
+               ELSE IF (TSCA.EQ.'K8') THEN
+                 ZK8(JVALE-1+IEQ2) = ' '
+               ELSE
+                 CALL UTMESS('F','CNSCNO','STOP 3')
+               END IF
+               GO TO 60
+            ENDIF
           ENDIF
+
           IF (ZL(JCNSL-1+ (INO-1)*NCMP1+ICMP1)) THEN
             IF (TSCA.EQ.'R') THEN
               ZR(JVALE-1+IEQ2) = ZR(JCNSV-1+ (INO-1)*NCMP1+ICMP1)
@@ -219,9 +249,27 @@ C     -----------------------------------
               CALL UTMESS('F','CNSCNO','STOP 3')
             END IF
           ELSE
-            CALL JENUNO(JEXNUM(MA//'.NOMNOE',INO),NOMNO)
-            CALL UTMESS('F','CNSCNO','IL MANQUE LA CMP:'//NOMCMP//
+            IF (PROL0.EQ.'NON') THEN
+               CALL JENUNO(JEXNUM(MA//'.NOMNOE',INO),NOMNO)
+               CALL UTMESS('F','CNSCNO','IL MANQUE LA CMP:'//NOMCMP//
      +                  ' SUR LE NOEUD:'//NOMNO)
+            ELSE
+               CALL ASSERT(PROL0.EQ.'OUI')
+               IF (TSCA.EQ.'R') THEN
+                 ZR(JVALE-1+IEQ2) = 0.D0
+               ELSE IF (TSCA.EQ.'C') THEN
+                 ZC(JVALE-1+IEQ2) = (0.D0,0.D0)
+               ELSE IF (TSCA.EQ.'I') THEN
+                 ZI(JVALE-1+IEQ2) = 0
+               ELSE IF (TSCA.EQ.'L') THEN
+                 ZL(JVALE-1+IEQ2) = .FALSE.
+               ELSE IF (TSCA.EQ.'K8') THEN
+                 ZK8(JVALE-1+IEQ2) = ' '
+               ELSE
+                 CALL UTMESS('F','CNSCNO','STOP 3')
+               END IF
+               GO TO 60
+            ENDIF
           END IF
         END IF
    60 CONTINUE

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,7 +18,8 @@
 # ======================================================================
 DEFI_THER_JOULE=OPER(nom="DEFI_THER_JOULE",op= 121,sd_prod=fonction_sdaster,reentrant='n',
             UIinfo={"groupes":("Outils métier",)},
-                    fr="Calculer la fonction d évolution temporelle de température due à l effet JOULE dans un cable",
+                    fr="Calculer l'évolution temporelle de la température due à l'effet JOULE d'un courant de court-circuit"
+                     +" dans un cable conducteur",
          LIST_INST       =SIMP(statut='o',typ=listr8_sdaster),
          INST_CC_INIT    =SIMP(statut='f',typ='R',defaut= 0.0E+0 ),
          INST_CC_FIN     =SIMP(statut='f',typ='R',defaut= 1.0E+10),

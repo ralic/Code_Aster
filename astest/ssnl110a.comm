@@ -1,4 +1,4 @@
-# MODIF  DATE 05/10/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 23/06/2005   AUTEUR VABHHTS J.PELLET 
 # TITRE RESSORT NON LINEAIRE INCLUANT DU FROTTEMENT DE COULOMB
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -169,7 +169,8 @@ MAT=DEFI_MATERIAU(
                        )
 
 CHMAT=AFFE_MATERIAU(   MAILLAGE=MA,
-                          AFFE=_F(  TOUT = 'OUI', MATER = MAT)
+            AFFE=_F(  TOUT = 'OUI', MATER = MAT),
+            AFFE_VARC=_F(NOM_VARC='IRRA', EVOL =FLUENC1, PROL_GAUCHE='CONSTANT', PROL_DROITE='CONSTANT',),
                        )
 
 CHART0=AFFE_CHAR_MECA(   MODELE=MO,
@@ -207,8 +208,6 @@ FONCT2=DEFI_FONCTION(   NOM_PARA='INST',
 
 REST2=STAT_NON_LINE( 
                             MODELE=MO,
-                         VARI_COMM=_F(    
-                IRRA = FLUENC1), 
                         CHAM_MATER=CHMAT,
                          CARA_ELEM=CAREL,EXCIT=(
                              _F( 
@@ -249,8 +248,6 @@ TEST_RESU(RESU=(
 
 REST3=STAT_NON_LINE( 
                             MODELE=MO,
-                         VARI_COMM=_F(    
-                IRRA = FLUENC1), 
                         CHAM_MATER=CHMAT,
                          CARA_ELEM=CAREL,EXCIT=(
                              _F( 

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 08/02/2005   AUTEUR CIBHHLV L.VIVAN 
+#& MODIF COMMANDE  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,7 +17,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 IMPR_MATRICE=PROC(nom="IMPR_MATRICE",op= 159,
-                  fr="Impression des matrices élémentaires et des matrices assemblées",
+                  fr="Imprimer sur un fichier au format IDEAS ou RESULTAT des matrices élémentaires et assemblées",
                   UIinfo={"groupes":("Impression",)},
                   regles=(AU_MOINS_UN('MATR_ELEM','MATR_ASSE'),),
 # ======================================================================

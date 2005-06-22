@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/02/2005   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -41,7 +41,7 @@ def macr_cabri_calc_prod(self,MODELE_THER,MODELE_MECA,CHAM_MATER,
 MACR_CABRI_CALC=MACRO(nom="MACR_CABRI_CALC",
                       op=macr_cabri_calc_ops,
                       sd_prod=macr_cabri_calc_prod,
-                      fr="Calcul d'une jonction boulonnée de tuyauterie",
+                      fr="Calcul thermo-mécanique d'une jonction boulonnée de tuyauterie",
                       reentrant='n',
                       UIinfo={"groupes":("Outils métier",)},
                       MAILLAGE   = SIMP(statut='o',typ=maillage_sdaster,),

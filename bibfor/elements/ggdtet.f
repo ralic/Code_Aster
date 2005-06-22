@@ -2,7 +2,7 @@
       IMPLICIT NONE
       CHARACTER*(*)       GDTETZ, THETAZ, MODELZ
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 08/12/2003   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 23/06/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -98,7 +98,7 @@ C =================================================================
       CHAMS1 = '&&GGDTET.CHAMS1'
       CALL CELCES ( '&&GRAD_THETA_NO', 'V', CHAMS0 )
       CALL CESCNS ( CHAMS0, ' ', 'V', CHAMS1 )
-      CALL CNSCNO ( CHAMS1, ' ', 'G', GDTETA )
+      CALL CNSCNO ( CHAMS1,' ','NON', 'G', GDTETA )
       CALL DETRSD ( 'CHAM_ELEM_S', CHAMS0 )
       CALL DETRSD ( 'CHAM_NO_S'  , CHAMS1 )
 

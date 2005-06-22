@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 01/02/2005   AUTEUR GALENNE E.GALENNE 
+#& MODIF COMMANDE  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,7 +19,8 @@
 # RESPONSABLE GALENNE E.GALENNE
 
 POST_K1_K2_K3=OPER(nom="POST_K1_K2_K3",op=188,sd_prod=tabl_post_k,
-                   fr="Calcul des FIC par extrapolation du champ de déplacements sur les lèvres de la fissure",
+                   fr="Calcul des facteurs d'intensité de contraintes en 2D et en 3D par extrapolation des sauts de déplacements"
+                     +" sur les lèvres de la fissure",
                    reentrant='n',
             UIinfo={"groupes":("Post traitements",)},
 

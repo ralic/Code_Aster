@@ -6,7 +6,7 @@
       CHARACTER*(*) ELREFZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 25/01/2005   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ELEMENTS  DATE 23/06/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -738,6 +738,21 @@ C     ------------------------------------------------------------------
 
         XIN(9) =  0.D0
         YIN(9) =  0.D0
+
+C     ------------------------------------------------------------------
+      ELSE IF (ELREFA.EQ.'PO1') THEN
+        NDIM = 0
+        NNO = 1
+        NNOS = 1
+        VOL = 1.D0
+
+        NBFPG = 3
+        NBPG(1) = 1
+        NBPG(2) = 1
+        NBPG(3) = 1
+        FAPG(1) = 'NOEU'
+        FAPG(2) = 'NOEU_S'
+        FAPG(3) = 'FPG1'
 
 C     ------------------------------------------------------------------
       ELSE IF (ELREFA.EQ.'SE2') THEN

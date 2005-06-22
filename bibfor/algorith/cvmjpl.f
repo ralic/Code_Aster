@@ -3,7 +3,7 @@
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -52,12 +52,11 @@ C                                                     ( SI IOPTIO = 2 )
 C
 C       OUT DSDE   :  MATRICE DE COMPORTEMENT TANGENT = DSIG/DEPS
 C       ----------------------------------------------------------------
-        INTEGER         NDT , NDI , NMAT , NR, NVI
+        INTEGER         NDT , NDI , NMAT , NR, NVI, IRET
         INTEGER         IOPTIO   , IDNR , NOPT
-        REAL*8          UN , ZERO, Z
+        REAL*8          UN , ZERO, DET
         PARAMETER       ( UN   =  1.D0   )
         PARAMETER       ( ZERO =  0.D0   )
-        LOGICAL         FAUX
 
         REAL*8          MATER(NMAT,2)
 C
@@ -91,6 +90,7 @@ C
         INTEGER         N1 , N2 , N3   , N4   , N5  , N6,  N7,  N8,K
 C
         CHARACTER*8     MOD
+        CHARACTER*1     TRANS,KSTOP
 C
 C DIMENSIONNEMENT DYNAMIQUE : TABLEAUX AUTOMATIQUES FORTRAN 90
         REAL*8          DRDY(NR,NR),YD(NDT+NVI),YF(NDT+NVI),DY(NDT+NVI)
@@ -108,8 +108,6 @@ C       ----------------------------------------------------------------
      5                   ZERO   , ZERO  , ZERO  , ZERO  ,ZERO  ,UN/
 C       ----------------------------------------------------------------
 C
-        Z = 0.D0
-        FAUX = .FALSE.
         NOPT = 0
         DO 1 K=1,6
           DGDE3(K) = 0.D0
@@ -225,9 +223,11 @@ C       ----------------------------------------------------------------
 C       L'OPTION 2 MODIFIE DKDS, DKDX1, DKDX2 CALCULES ICI SOUS LES NOMS
 C       DE DKDSET, DKDX1E, ET DKDX2E
 C       ----------------------------------------------------------------
+        TRANS=' '
+        KSTOP='S'
         IF ( IOPTIO .EQ. 2) THEN
            CALL LCEQMA ( I6 , MTMP )
-           CALL MGAUSS ( DXIDXI, MTMP, 6, NDT, NDT, Z, FAUX )
+           CALL MGAUSS (TRANS,KSTOP,DXIDXI,MTMP,6,NDT,NDT,DET,IRET)
            CALL LCPTMV ( MTMP       , DTDXXI    , VTMP2  )
            CALL LCPRSC ( VTMP2      , DXIDP     , XX     )
            CONST1 = DKDR / DRDR * DRDQ
@@ -274,7 +274,7 @@ C
         CALL LCPRTE ( DJDP       , DKDX2E   , MTMP   )
         CALL LCDIMA ( DJDX2      , MTMP      , MTMP   )
         CALL LCEQMA ( I6         , MTMP1              )
-        CALL MGAUSS ( MTMP, MTMP1, 6, NDT, NDT, Z, FAUX )
+        CALL MGAUSS (TRANS,KSTOP,MTMP,MTMP1,6,NDT,NDT,DET,IRET)
         CALL LCPRTE ( DLDP       , DKDX2E   , MTMP   )
         CALL LCDIMA ( DLDX2      , MTMP      , MTMP   )
         CALL LCPRMM ( MTMP       , MTMP1     , MATE   )
@@ -284,7 +284,7 @@ C
         CALL LCPRTE ( DLDP       , DKDX1E   , MTMP   )
         CALL LCDIMA ( DLDX1      , MTMP      , MTMP   )
         CALL LCEQMA ( I6         , MTMP1              )
-        CALL MGAUSS ( MTMP, MTMP1, 6, NDT, NDT, Z, FAUX )
+        CALL MGAUSS (TRANS,KSTOP,MTMP,MTMP1,6,NDT,NDT,DET,IRET)
         CALL LCPRTE ( DJDP       , DKDX1E   , MTMP   )
         CALL LCDIMA ( DJDX1      , MTMP      , MTMP   )
         CALL LCPRMM ( MTMP       , MTMP1     , MATF   )
@@ -298,7 +298,7 @@ C
         CALL LCDIMA ( DLDX1      , MTMP      , MTMP   )
         CALL LCDIMA ( MTMP       , MTMP1     , MTMP1  )
         CALL LCEQMA ( I6         , MTMP2              )
-        CALL MGAUSS ( MTMP1, MTMP2, 6, NDT, NDT, Z, FAUX )
+        CALL MGAUSS (TRANS,KSTOP,MTMP1,MTMP2,6,NDT,NDT,DET,IRET)
 C
         CALL LCPRTE ( DJDP       , DKDSET    , MTMP   )
         CALL LCDIMA ( DJDS       , MTMP      , MTMP   )
@@ -317,7 +317,7 @@ C
         CALL LCDIMA ( DJDX2      , MTMP      , MTMP   )
         CALL LCDIMA ( MTMP       , MTMP1     , MTMP1  )
         CALL LCEQMA ( I6         , MTMP2              )
-        CALL MGAUSS ( MTMP1, MTMP2, 6, NDT, NDT, Z, FAUX )
+        CALL MGAUSS (TRANS,KSTOP,MTMP1,MTMP2,6,NDT,NDT,DET,IRET)
 C
         CALL LCPRTE ( DLDP       , DKDSET    , MTMP   )
         CALL LCDIMA ( DLDS       , MTMP      , MTMP   )
@@ -360,7 +360,7 @@ C
 C - DSDE = (MTMP1)-1 * H
 C
         CALL LCEQMA ( I6     , MTMP1          )
-        CALL MGAUSS ( MTMP, MTMP1, 6, NDT, NDT, Z, FAUX )
+        CALL MGAUSS (TRANS,KSTOP,MTMP,MTMP1,6,NDT,NDT,DET,IRET)
         CALL LCOPLI ('ISOTROPE',MOD,MATER(1,1),HOOKF)
         CALL LCPRMM ( MTMP1  , HOOKF  , DSDE  )
 C

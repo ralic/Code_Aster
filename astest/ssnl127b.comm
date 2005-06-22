@@ -1,21 +1,21 @@
-# MODIF  DATE 14/06/2005   AUTEUR JMBHH01 J.M.PROIX 
+# MODIF  DATE 23/06/2005   AUTEUR VABHHTS J.PELLET 
 # TITRE POUTRE ENCASTREE A UNE EXTREMITE ET CHARGEE PAR UNE TRACTION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # MODELISATION POU_D_EM.
@@ -27,24 +27,24 @@ MA=LIRE_MAILLAGE(  )
 
 MO=AFFE_MODELE(        MAILLAGE=MA,
      AFFE=_F( TOUT = 'OUI', PHENOMENE = 'MECANIQUE',
-                   MODELISATION = 'POU_D_EM'     
+                   MODELISATION = 'POU_D_EM'
      )
                         )
 
 
 CAREL=AFFE_CARA_ELEM(MODELE=MO,INFO=2,
                      POUTRE=_F(GROUP_MA='TOUT',
-                    SECTION='GENERALE',                             
+                    SECTION='GENERALE',
                                CARA=('A','AY','AZ','IY','IZ','JX','EY','EZ'),
                                VALE=(2.82743e-5,1.0,1.0,6.36172e-11,6.36172e-11,12.72344e-11,0.,0.),
                                PREC_AIRE=1.1984e-6,
-                               PREC_INERTIE=1.),                               
+                               PREC_INERTIE=1.),
            AFFE_FIBRE = _F( GROUP_MA = 'TOUT', CARA = 'DIAMETRE',
                            COOR_AXE_POUTRE = (0.,0.,),
-                            VALE =( 0.0, 0.0, 6.E-3,                      
+                            VALE =( 0.0, 0.0, 6.E-3,
                                   ),),
                                   );
- 
+
 
 
 
@@ -64,10 +64,6 @@ MATC2=DEFI_MATERIAU(
                    )
               )
 
-
-CHMAT1=AFFE_MATERIAU(   MAILLAGE=MA,AFFE=(
-                       _F( GROUP_MA = 'TOUT', MATER = MATC2),
-                       ))
 
 CHART=AFFE_CHAR_MECA(  MODELE=MO,DDL_IMPO=(
      _F( GROUP_NO = 'A', DX = 0., DY = 0., DZ = 0.,
@@ -117,12 +113,15 @@ LINST=DEFI_LIST_REEL(DEBUT=0.0,
                                  _F(JUSQU_A=0.02,
                                     NOMBRE=10,),),);
 
+CHMAT1=AFFE_MATERIAU(   MAILLAGE=MA,
+     AFFE= _F( GROUP_MA = 'TOUT', MATER = MATC2),
+      AFFE_VARC=_F(NOM_VARC='CORR', CHAMP_GD=CHCOR,), )
+
 REST=STAT_NON_LINE(MODELE=MO,
                    CHAM_MATER=CHMAT1,
                    CARA_ELEM=CAREL,
                    EXCIT=_F(CHARGE=CHART,
                             FONC_MULT=FONCT,),
-                   VARI_COMM=_F(CORROSION=CHCOR,),
                    COMP_INCR=_F(RELATION='CORR_ACIER',
                                 GROUP_MA='TOUT',),
                    INCREMENT=_F(LIST_INST=LINST,
@@ -187,12 +186,15 @@ LINST2=DEFI_LIST_REEL(DEBUT=0.0,
                                   _F(JUSQU_A=0.018,
                                      NOMBRE=20,),),);
 
+CHMAT2=AFFE_MATERIAU(   MAILLAGE=MA,
+     AFFE= _F( GROUP_MA = 'TOUT', MATER = MATC2),
+      AFFE_VARC=_F(NOM_VARC='CORR', CHAMP_GD=CHCOR2,), )
+
 REST2=STAT_NON_LINE(MODELE=MO,
-                    CHAM_MATER=CHMAT1,
+                    CHAM_MATER=CHMAT2,
                     CARA_ELEM=CAREL,
                     EXCIT=_F(CHARGE=CHART,
                              FONC_MULT=FONCT,),
-                    VARI_COMM=_F(CORROSION=CHCOR2,),
                     COMP_INCR=_F(RELATION='CORR_ACIER',
                                  GROUP_MA='TOUT',),
                     INCREMENT=_F(LIST_INST=LINST2,
@@ -259,12 +261,15 @@ LINST3=DEFI_LIST_REEL(DEBUT=0.0,
                                   _F(JUSQU_A=0.008,
                                      NOMBRE=30,),),);
 
+CHMAT3=AFFE_MATERIAU(   MAILLAGE=MA,
+     AFFE= _F( GROUP_MA = 'TOUT', MATER = MATC2),
+      AFFE_VARC=_F(NOM_VARC='CORR', CHAMP_GD=CHCOR3,), )
+
 REST3=STAT_NON_LINE(MODELE=MO,
-                    CHAM_MATER=CHMAT1,
+                    CHAM_MATER=CHMAT3,
                     CARA_ELEM=CAREL,
                     EXCIT=_F(CHARGE=CHART,
                              FONC_MULT=FONCT,),
-                    VARI_COMM=_F(CORROSION=CHCOR3,),
                     COMP_INCR=_F(RELATION='CORR_ACIER',
                                  GROUP_MA='TOUT',),
                     INCREMENT=_F(LIST_INST=LINST3,

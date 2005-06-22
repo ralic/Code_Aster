@@ -5,7 +5,7 @@
       LOGICAL           DEDANS
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 09/02/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF POSTRELE  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,16 +53,16 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32     JEXNUM, JEXNOM
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
-      INTEGER F,I,J,NBF,NBS,ADESTM,DECF,COL,IRET
-      REAL*8  ZERO,UN,DEUX,CS(3,4),A(10,10),FK(4,4),B(10),VAL1,VAL2
-      LOGICAL FINI,GAUCHE,FAUX
+      INTEGER F,I,J,NBF,NBS,ADESTM,DECF,COL,IRET,ISING
+      REAL*8  ZERO,UN,DEUX,CS(3,4),A(10,10),FK(4,4),B(10),VAL1,VAL2,DET
+      LOGICAL FINI,GAUCHE
+      CHARACTER*1 TRANS,KSTOP
 C
 C======================================================================
 C
       ADESTM =  DESCTM(DESC(K))
       DEDANS = .TRUE.
       FINI   = .FALSE.
-      FAUX   = .FALSE.
       F      =  0
       IRET   =  0
       ZERO   =  0.0D0
@@ -130,7 +130,9 @@ C
                      COL = COL + 1
 131               CONTINUE
 130            CONTINUE
-               CALL MGAUSS(A,B,10,10,1,ZERO,FAUX)
+               TRANS=' '
+               KSTOP='S'
+               CALL MGAUSS(TRANS,KSTOP,A,B,10,10,1,DET,ISING)
             ENDIF
             COL  = 1
             VAL1 = ZERO

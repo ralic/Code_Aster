@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 26/04/2005   AUTEUR LAVERNE J.LAVERNE 
+#& MODIF COMMANDE  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
 # RESPONSABLE MCOURTOI M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,7 +18,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 CREA_MAILLAGE=OPER(nom="CREA_MAILLAGE",op= 167,sd_prod=maillage_sdaster,
-                     reentrant='n',
+            reentrant='n',fr="Crée un maillage à partir d'un maillage existant",
             UIinfo={"groupes":("Maillage",)},
          regles=(EXCLUS('ECLA_PG','CREA_MAILLE'),
                  EXCLUS('ECLA_PG','CREA_GROUP_MA'),
@@ -129,7 +129,7 @@ CREA_MAILLAGE=OPER(nom="CREA_MAILLAGE",op= 167,sd_prod=maillage_sdaster,
            GROUP_MA        =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
          ),
          REPERE          =FACT(statut='f',max='**',
-                               fr="changement de repère servant à déterminer les caractéristiques d une section de poutre",
+                               fr="changement de repère servant à déterminer les caractéristiques d'une section de poutre",
            TABLE           =SIMP(statut='o',typ=tabl_cara_geom,
                                  fr="Nom de la table contenant les caractéristiques de la section de poutre" ),
            NOM_ORIG        =SIMP(statut='f',typ='TXM',into=("CDG","TORSION"),fr="Origine du nouveau repère" ),

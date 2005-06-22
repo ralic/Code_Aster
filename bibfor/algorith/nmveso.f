@@ -2,7 +2,7 @@
      &                   DP, DBETA, NR, CPLAN)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/07/2001   AUTEUR RATEAU G.RATEAU 
+C MODIF ALGORITH  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -33,17 +33,16 @@ C     METHODE ITERATIVE D'EULER IMPLICITE
 C
 C     GENERATION ET RESOLUTION DU SYSTEME LINEAIRE DRDY(DY).DDY = -R(DY)
 C-----------------------------------------------------------------------
-       INTEGER     NMOD, I
-       REAL*8      ZERO, UN, MUN, Z
+       INTEGER     NMOD, I, IRET
+       REAL*8      ZERO, UN, MUN, DET
        PARAMETER  ( NMOD = 25 )
        PARAMETER  ( ZERO = 0.D0   )
        PARAMETER  ( UN   = 1.D0   )
        PARAMETER  ( MUN   = -1.D0   )
 C
        REAL*8      DRDY(NMOD,NMOD), R(NMOD)
+       CHARACTER*1 TRANS,KSTOP
 C 
-       Z = 0.D0
-       FAUX = .FALSE.
 C
 C-----------------------------------------------------------------------
 C-- 1. INITIALISATIONS
@@ -72,7 +71,9 @@ C
            DRDY(3,3) = UN
         ENDIF
 C
-        CALL MGAUSS ( DRDY , R , NMOD , NR , 1, Z, FAUX )
+        TRANS=' '
+        KSTOP='S'
+        CALL MGAUSS ( TRANS,KSTOP,DRDY , R , NMOD , NR , 1, DET, IRET)
         CALL LCEQVN ( NB , R , DBETA )
         CALL LCEQVN ( NP , R(NB+1) , DP )
 C        

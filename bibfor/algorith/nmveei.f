@@ -3,7 +3,7 @@
      &                   OPTION,SIGP,VIP,DSIDEP)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/08/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -91,15 +91,15 @@ C         NR             NB EQUATIONS SYSTEME INTEGRE A RESOUDRE
 C     ATTENTION LES TENSEURS ET MATRICES SONT RANGES DANS
 C     L'ORDRE :  XX YY ZZ XY XZ YZ         RR ZZ TT RZ
 C ----------------------------------------------------------------------
-      INTEGER      NB, NP, NI, NR, NMAT, UN, NT
-      REAL*8       ZERO, DAMMAX, Z
+      INTEGER      NB, NP, NI, NR, NMAT, UN, NT, IRET
+      REAL*8       ZERO, DAMMAX, DET
       PARAMETER  (NB = 6, NP = 2, NI = 9, NR = 8, NT=3*NB)
       PARAMETER  (NMAT = 90)
       PARAMETER  ( UN   = 1.D0   )
       PARAMETER  ( ZERO = 0.D0   )
       PARAMETER  (DAMMAX = 0.99D0)
 C
-      LOGICAL       CPLAN, BZ, FAUX
+      LOGICAL       CPLAN, BZ
 C
       INTEGER       ITMAX, I, IER, ITER
       INTEGER       NDT, NVI, NRV, NDI, K, L
@@ -116,6 +116,7 @@ C
       REAL*8        DBETA(NB), DP(NP), DSEDB(NB), DSEDB2(NB,NB), SE
       REAL*8        HYDRD,HYDRF,SECHD,SECHF, PGL(3,3),ANGMAS(3)
 C
+      CHARACTER*1   TRANS,KSTOP
       CHARACTER*3   MATCST
       CHARACTER*16  LOI, CPMONO(5*NMAT+1)
       CHARACTER*11  METING
@@ -126,8 +127,6 @@ C
         COMMON /METI/   METING
 C ----------------------------------------------------------------------
 C
-      Z = 0.D0
-      FAUX = .FALSE.
 C
 C-- 1. INITIALISATIONS :
 C----------------------
@@ -201,7 +200,9 @@ C
           DO 00142 K = 1,NB
             A(I,K) = A(I,K)+ (UN-DM)*HOOKM(I,K)
 00142   CONTINUE
-        CALL MGAUSS ( A , B , NB , NB , 1, Z, FAUX )
+        TRANS=' '
+        KSTOP='S'
+        CALL MGAUSS ( TRANS,KSTOP, A , B , NB , NB , 1, DET, IRET )
 C
         DO 00143 I = 1,NB
           EP(6+I)=0.D0

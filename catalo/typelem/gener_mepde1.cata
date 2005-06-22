@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 14/04/2005   AUTEUR A3BHHAE H.ANDRIAMBOLOLONA 
+%& MODIF TYPELEM  DATE 23/06/2005   AUTEUR VABHHTS J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,7 +20,7 @@ GENER_MEPDE1
 TYPE_GENE__
 
 ENTETE__ ELEMENT__ MECA_POU_D_E     MAILLE__ SEG2
-   ELREFE__  V_SEG2    GAUSS__  NELGA=FPG2  NELGA2=FPG3
+   ELREFE__  SE2    GAUSS__  NELGA=FPG2  NELGA2=FPG3
 
 MODE_LOCAL__
     CABSCUR  = ABSC_R   ELEM__         (ABSC1    ABSC2    )
@@ -63,7 +63,6 @@ MODE_LOCAL__
     CCOEFC   = IMPE_C   ELEM__         (IMPE     )
     CCOEFR   = IMPE_R   ELEM__         (IMPE     )
     CTEMPSR  = INST_R   ELEM__         (INST     )
-    NIRRAER  = IRRA_R   ELNO__ IDEN__  (IRRA     )
     CLISTMA  = LISTMA   ELEM__         (LISTMA   TRANS    )
     EMASSINE = MASS_R   ELEM__         (M        CDGX     CDGY     CDGZ     IXX      IYY
                                         IZZ      IXY      IXZ      IYZ      )
@@ -158,7 +157,7 @@ OPTION__
                               OUT__  MVECTUR  PVECTUR
     FULL_MECA           247   IN__   CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  CCARCRI  PCARCRI  CCOMPOR  PCOMPOR
                                      EEFGEGA  PCONTMR  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER
-                                     CTEMPSR  PINSTMR  CTEMPSR  PINSTPR  NIRRAER  PIRRAMR  NIRRAER  PIRRAPR
+                                     CTEMPSR  PINSTMR  CTEMPSR  PINSTPR ZVARIPG  PVARCMR  ZVARIPG  PVARCPR
                                      CMATERC  PMATERC  NTEMPER  PTEMPMR  NTEMPER  PTEMPPR  CTEREFE  PTEREF
                                      ZVARIPG  PVARIMR
                               OUT__  ECODRET  PCODRET  EEFGEGA  PCONTPR  MMATUUR  PMATUUR  ZVARIPG  PVARIPR
@@ -193,7 +192,7 @@ OPTION__
                               OUT__  ECOEQNO  PCONTEQ
     RAPH_MECA           247   IN__   CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  CCARCRI  PCARCRI  CCOMPOR  PCOMPOR
                                      EEFGEGA  PCONTMR  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER
-                                     CTEMPSR  PINSTMR  CTEMPSR  PINSTPR  NIRRAER  PIRRAMR  NIRRAER  PIRRAPR
+                                     CTEMPSR  PINSTMR  CTEMPSR  PINSTPR ZVARIPG  PVARCMR  ZVARIPG  PVARCPR
                                      CMATERC  PMATERC  NTEMPER  PTEMPMR  NTEMPER  PTEMPPR  CTEREFE  PTEREF
                                      ZVARIPG  PVARIMR
                               OUT__  ECODRET  PCODRET  EEFGEGA  PCONTPR  ZVARIPG  PVARIPR  MVECTUR  PVECTUR
@@ -221,7 +220,7 @@ OPTION__
                               OUT__  MVECTUC  PVECTUC
     RIGI_MECA_TANG      247   IN__   CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  CCARCRI  PCARCRI  CCOMPOR  PCOMPOR
                                      EEFGEGA  PCONTMR  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER
-                                     CTEMPSR  PINSTMR  CTEMPSR  PINSTPR  NIRRAER  PIRRAMR  NIRRAER  PIRRAPR
+                                     CTEMPSR  PINSTMR  CTEMPSR  PINSTPR ZVARIPG  PVARCMR  ZVARIPG  PVARCPR
                                      CMATERC  PMATERC  NTEMPER  PTEMPMR  NTEMPER  PTEMPPR  CTEREFE  PTEREF
                                      ZVARIPG  PVARIMR
                               OUT__  MMATUUR  PMATUUR

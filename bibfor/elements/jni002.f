@@ -3,7 +3,7 @@
       CHARACTER*8 ELREFA
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 26/01/2004   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 23/06/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -68,7 +68,7 @@ C DEB ------------------------------------------------------------------
       IF (IRET.GT.0) GO TO 150
 
       CALL ELRACA(ELREFA,NDIM,NNO,NNOS,NBFPG,NOFPG,NBPG,XNO,VOL)
-      CALL ASSERT((NDIM.GT.0) .AND. (NDIM.LE.3))
+      CALL ASSERT((NDIM.GE.0) .AND. (NDIM.LE.3))
       CALL ASSERT((NNO.GT.0) .AND. (NNO.LE.NBNOMX))
       CALL ASSERT((NBFPG.GT.0) .AND. (NBFPG.LE.NBFAMX))
 
@@ -180,7 +180,6 @@ C       ON STOCKE DANS L'ORDRE : NNO,NPG,MAPGNO
 
 
   140 CONTINUE
-
 
   150 CONTINUE
 

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -30,8 +30,8 @@ from Macro.calc_precont_ops import calc_precont_ops
 # ===========================================================================
 
 CALC_PRECONT=MACRO(nom="CALC_PRECONT",op=calc_precont_ops,sd_prod=evol_noli,
-                   fr="imposer la tension definie par le BPEL dans les cables",
-                   reentrant='f',
+                   fr="Imposer la tension définie par le BPEL dans les cables",
+                   reentrant='f',UIinfo={"groupe":("Modélisation",)},
          reuse =SIMP(statut='f',typ='evol_noli'),
          MODELE           =SIMP(statut='o',typ=modele_sdaster),
          CHAM_MATER       =SIMP(statut='o',typ=cham_mater),

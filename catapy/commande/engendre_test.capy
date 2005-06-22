@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 23/08/2004   AUTEUR CIBHHLV L.VIVAN 
+#& MODIF COMMANDE  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,6 +19,7 @@
 # RESPONSABLE VABHHTS J.PELLET
 ENGENDRE_TEST=PROC(nom="ENGENDRE_TEST",op=178,
             UIinfo={"groupes":("Impression",)},
+      fr="Engendre des tests pour la non régression du code (pour développeurs)",
       regles=(UN_PARMI('TOUT','CO'),),
          UNITE           =SIMP(statut='f',typ='I',defaut=8),  
          TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),

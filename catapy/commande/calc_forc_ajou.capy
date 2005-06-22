@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/02/2005   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,7 +17,8 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
 CALC_FORC_AJOU=OPER(nom="CALC_FORC_AJOU",op=199,sd_prod=vect_asse_gene_r,
-                   fr="calcul de la force ajoutee ",
+                   fr="Calculer l'effet de surpression hydrodynamique due au mouvement d'entrainement de la structure"
+                       +" en analyse sismique",
                    reentrant ='n',
             UIinfo={"groupes":("Matrices/vecteurs",)},
 

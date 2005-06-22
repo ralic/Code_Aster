@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 14/06/2005   AUTEUR CIBHHPD L.SALMONA 
+#& MODIF COMMANDE  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,6 +18,7 @@
 # ======================================================================
 CALC_FLUI_STRU=OPER(nom="CALC_FLUI_STRU",op= 144,sd_prod=melasflu_sdaster,
                     reentrant='n',
+                    fr="Calculer les paramètres modaux d'une structure soumise à un écoulement",
             UIinfo={"groupes":("Matrices/vecteurs",)},
          VITE_FLUI       =FACT(statut='f',
                                fr="Définir la plage de vitesse fluide étudiée",

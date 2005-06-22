@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -25,7 +25,8 @@ def macr_recal_prod(self,**args ):
 MACR_RECAL = MACRO(nom="MACR_RECAL",op=macr_recal_ops,
             UIinfo={"groupes":("Résultats et champs",)},
                       sd_prod=macr_recal_prod,
-                      fr="Réalise le recalage de modèles Aster",
+                      fr="Réalise le recalage des calculs Aster sur des résultats expérimentaux"
+                        +" ou sur d'autres résultats de calculs",
          UNITE_ESCL      =SIMP(statut='o',typ='I'),
          RESU_EXP        =SIMP(statut='o',typ=assd,max='**'),
          POIDS           =SIMP(statut='f',typ=assd,max='**'),

@@ -1,7 +1,6 @@
-      SUBROUTINE NM1VIL(ICDMAT,CRIT,
+      SUBROUTINE NM1VIL(KPGVRC,ICDMAT,CRIT,
      &                  INSTAM,INSTAP,
      &                  TM,TP,TREF,
-     &                  IRRAM,IRRAP,
      &                  DEPS,
      &                  SIGM,VIM,
      &                  OPTION,
@@ -9,7 +8,7 @@
      &                  ANGMAS,
      &                  SIGP,VIP,DSIDEP)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/05/2005   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ALGORITH  DATE 23/06/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -30,7 +29,7 @@ C TOLE CRP_7
 C ----------------------------------------------------------------------
 C
       IMPLICIT NONE
-      INTEGER            ICDMAT
+      INTEGER            ICDMAT,KPGVRC
       REAL*8             CRIT(*)
       REAL*8             INSTAM,INSTAP
       REAL*8             TM,TP,TREF
@@ -106,7 +105,7 @@ C ELASTIQUES
       REAL*8            ALPHAP,EP,NUP,TROIKP,DEUMUP
       REAL*8            ALPHAM,EM,NUM,TROIKM,DEUMUM   
 C AUTRES 
-      INTEGER    NBCGIL
+      INTEGER    NBCGIL,IRET2
       PARAMETER  (NBCGIL=5)
       REAL*8     COEGIL(NBCGIL)
       CHARACTER*8  NOMGIL(NBCGIL) 
@@ -153,6 +152,11 @@ C CARACTERISTIQUES ELASTIQUES VARIABLES
 
 C     IRRADIATION AU POINT CONSIDERE  
 C     FLUX NEUTRONIQUE        
+      CALL RCVARC('F','IRRA','-',KPGVRC,IRRAM,IRET2)
+      IF (IRET2.GT.0) IRRAM=0.D0
+      CALL RCVARC('F','IRRA','+',KPGVRC,IRRAP,IRET2)
+      IF (IRET2.GT.0) IRRAP=0.D0
+
       FLUPHI = (IRRAP-IRRAM)/DELTAT 
 C     RECUPERATION DES CARACTERISTIQUES DE GRANDISSEMENT       
       CALL RCVALA(ICDMAT,' ','GRAN_IRRA_',0,' ',0.D0,

@@ -3,7 +3,7 @@
      &                     SEUIL,B,D,MULT,ELAS,DBLOQ)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 04/10/2004   AUTEUR GODARD V.GODARD 
+C MODIF ALGORITH  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -58,9 +58,7 @@ C OUT DBLOQ  : BLOQUAGE DE L'ENDOMMAGEMENT DE COMPRESSION
 C ----------------------------------------------------------------------
 C TOLE CRP_20
 
-
-      LOGICAL     IRET
-      INTEGER     I,J,K,COMPTE,T(3,3),R(2,2)
+      INTEGER     I,J,K,COMPTE,T(3,3),R(2,2),IRET
 
       REAL*8      BS(3),BMS(3),DBS(3)
       REAL*8      FB(6),FD,DD,DDG
@@ -68,7 +66,7 @@ C TOLE CRP_20
       REAL*8      CC(6),CPE(6),CCP(6),FBM(6),RESB(3)
       REAL*8      RAC2
       REAL*8      RTEMP2,RTEMP3,DELTA1(3),DELTA2
-      REAL*8      TOLC
+      REAL*8      TOLC,DET
       REAL*8      TATA,NORMRB,RTEMP,CRIT
       REAL*8      MTE1(3,3),MTE2(6,6),MTE2S(3,3)
       REAL*8      VECFBS(2,2),VALFBS(2),FBS(3),FBSM(3)
@@ -79,6 +77,7 @@ C TOLE CRP_20
       REAL*8      INTER1,INTER2,INTER3,INTER4
       REAL*8      INTER,TOTO
       REAL*8      KRON(6)
+      CHARACTER*1 TRANS,KSTOP
 
       DATA  KRON/1.D0,1.D0,1.D0,0.D0,0.D0,0.D0/
 
@@ -320,19 +319,15 @@ C--------------------------------------------------------
                 ENDIF
  47           CONTINUE
  46         CONTINUE
-            IRET=.TRUE.
             CALL R8INIR(9,0.D0,TEME,1)
             DO 48 I=1,3
               DO 49 J=1,3
                 TEME(I,J)=IDE(I,J)
  49           CONTINUE
  48         CONTINUE
-            TOTO=0.D0
-            CALL MGAUSS(TOTI,TEME,3,3,3,TOTO,IRET)
-            IF (IRET.EQV..FALSE.) THEN
-
-              CALL UTMESS('F','LCBETO','KSI NON INVERSIBLE')
-            ENDIF
+            TRANS=' '
+            KSTOP='S'
+            CALL MGAUSS(TRANS,KSTOP,TOTI,TEME,3,3,3,DET,IRET)
             CALL R8INIR(9,0.D0,IKSI,1)
             DO 51 I=1,3
               DO 52 J=1,3

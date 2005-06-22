@@ -1,7 +1,7 @@
       SUBROUTINE SOMMET(PANNOE,DIME,PAN,NSOM,CSOM)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 08/11/2004   AUTEUR DURAND C.DURAND 
+C MODIF CALCULEL  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -37,12 +37,9 @@ C ----------------------------------------------------------------------
       IMPLICIT NONE
 
 C --- VARIABLES
-      INTEGER DIME,NSOM,PANNOE(DIME,*),I,J,K,L
-      REAL*8  PAN(DIME+2,*),CSOM(DIME,*),A(3,3),ZERO 
-      LOGICAL FAUX
-
-      ZERO = 0.D0
-      FAUX = .FALSE.
+      INTEGER DIME,NSOM,PANNOE(DIME,*),I,J,K,L,IRET
+      REAL*8  PAN(DIME+2,*),CSOM(DIME,*),A(3,3),DET
+      CHARACTER*1 TRANS,KSTOP
 
       DO 10 I = 1, NSOM
 
@@ -57,8 +54,9 @@ C --- VARIABLES
           CSOM(J,I) = -PAN(DIME+1,L)
 
  20     CONTINUE         
-
-        CALL MGAUST(A,CSOM(1,I),3,DIME,1,ZERO,FAUX)
+        TRANS='T'
+        KSTOP='S'
+        CALL MGAUSS(TRANS,KSTOP,A,CSOM(1,I),3,DIME,1,DET,IRET)
 
  10   CONTINUE
 

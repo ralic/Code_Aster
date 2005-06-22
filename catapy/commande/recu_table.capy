@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,8 +18,9 @@
 # ======================================================================
 # RESPONSABLE VABHHTS J.PELLET
 RECU_TABLE=OPER(nom="RECU_TABLE",op= 174,sd_prod=table_sdaster,
-                fr=" ",reentrant='n',
-            UIinfo={"groupes":("Résultats et champs",)},
+         fr="Récupérer dans une table les valeurs d'un paramètre d'une SD Résultat ou d'extraire une table contenue"
+            +" dans une autre SD pour celles qui le permettent",
+         UIinfo={"groupes":("Résultats et champs",)},reentrant='n',
          CO              =SIMP(statut='o',typ=assd),
          regles=(UN_PARMI('NOM_TABLE','NOM_PARA')),
          NOM_TABLE       =SIMP(statut='f',typ='TXM' ),

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 07/03/2005   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -26,6 +26,7 @@ def calc_fonc_interp_prod(FONCTION,**args):
 
 CALC_FONC_INTERP=OPER(nom="CALC_FONC_INTERP",op= 134,sd_prod=calc_fonc_interp_prod,
                       docu="U4.32.01-e",reentrant='n',
+           fr="Définit une fonction (ou une nappe) à partir d'une fonction FORMULE à 1 ou 2 variables",
            UIinfo={"groupes":("Fonction",)},
          regles=(UN_PARMI('VALE_PARA','LIST_PARA'),),
          FONCTION        =SIMP(statut='o',typ=(formule,fonction_sdaster,nappe_sdaster,fonction_c) ),

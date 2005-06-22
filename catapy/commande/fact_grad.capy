@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -24,7 +24,7 @@ def fact_grad_prod(MATR_ASSE,**args):
 
 FACT_GRAD=OPER(nom="FACT_GRAD",op=85,sd_prod=fact_grad_prod,
             UIinfo={"groupes":("Résolution",)},
-               fr="Préconditionnement pour résolution par gradient conjugué",
+               fr="Construire une matrice de préconditionnement pour une résolution par gradient conjugué",
                reentrant='n',
          MATR_ASSE       =SIMP(statut='o',
                                typ=(matr_asse_depl_r,matr_asse_temp_r,

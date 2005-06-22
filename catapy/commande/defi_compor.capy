@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 27/09/2004   AUTEUR JMBHH01 J.M.PROIX 
+#& MODIF COMMANDE  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
 # RESPONSABLE JMBHH01 J.M.PROIX
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,7 +18,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 DEFI_COMPOR=OPER(nom="DEFI_COMPOR",op=59,sd_prod=compor_sdaster,
-                   fr="Définition du comportement monocristallin",
+                   fr="Définir le comportement d'un monocristal ou d'un polycristal",
                    reentrant='n',
             UIinfo={"groupes":("Modélisation",)},
                   regles=(EXCLUS('MONOCRISTAL','POLYCRISTAL'),),

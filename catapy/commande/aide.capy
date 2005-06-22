@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 23/08/2004   AUTEUR CIBHHLV L.VIVAN 
+#& MODIF COMMANDE  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,7 +18,8 @@
 # ======================================================================
 AIDE=PROC(nom="AIDE",op=42,
        UIinfo={"groupes":("Modélisation",)},
-       fr="Interrogation sur le catalogue des commandes et les concepts produits",
+       fr="Interroger et imprimer une documentation partielle sur les noms des concepts déjà définis et sur les couples"
+           +" (type d'éléments, option) disponibles dans la version.",
        regles=(AU_MOINS_UN('CONCEPT','TYPE_ELEM', ),),
        UNITE       =SIMP(statut='f',typ='I',defaut=8),  
        TYPE_ELEM   =FACT(fr="couple type_elem option",statut='f',

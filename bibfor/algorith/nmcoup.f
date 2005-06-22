@@ -1,10 +1,10 @@
-        SUBROUTINE NMCOUP ( NDIM, TYPMOD, IMAT, COMP, LCPDB,CRIT,
+        SUBROUTINE NMCOUP(KPGVRC,NDIM,TYPMOD,IMAT,COMP,LCPDB,CRIT,
      1                      TIMED,TIMEF, TEMPD,TEMPF,TREF,HYDRD,
      2                      HYDRF,SECHD,SECHF,SREF,EPSDT,DEPST,SIGD,
      3                      VIND, OPT,ELGEOM,SIGF,VINF,DSDE)
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/11/2004   AUTEUR SMICHEL S.MICHEL-PONNELLE 
+C MODIF ALGORITH  DATE 23/06/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -24,7 +24,7 @@ C ======================================================================
 C RESPONSABLE PBADEL P.BADEL
 C TOLE CRP_21
 C       ----------------------------------------------------------------
-        INTEGER         IMAT , NDIM
+        INTEGER         IMAT , NDIM,KPGVRC
 C
         REAL*8          CRIT(*)
         REAL*8          TIMED,     TIMEF,    TEMPD,   TEMPF  , TREF
@@ -45,7 +45,8 @@ C
 C       ================================================================
 C       ARGUMENTS
 C
-C       IN      NDIM    DIMENSION DE L ESPACE (3D=3,2D=2,1D=1)
+C       IN      KPGVRC  NUMERO DU (SOUS)POINT DE GAUSS
+C               NDIM    DIMENSION DE L ESPACE (3D=3,2D=2,1D=1)
 C               TYPMOD  TYPE DE MODELISATION
 C               IMAT    ADRESSE DU MATERIAU CODE
 C               COMP    COMPORTEMENT DE L ELEMENT
@@ -132,7 +133,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
      &       CMP2(1:15).EQ. 'BETON_DOUBLE_DP'  .OR.
      &       CMP2(1:7) .EQ. 'NADAI_B'              ) THEN
       
-           CALL NMCPLA ( NDIM, TYPMOD, IMAT, COMP, CRIT,
+           CALL NMCPLA (KPGVRC,NDIM,TYPMOD,IMAT,COMP,CRIT,
      1                      TIMED,TIMEF, TEMPD,TEMPF,TREF,HYDRD,
      &                      HYDRF,SECHD,SECHF,SREF,EPSDT,DEPST,SIGD,
      2                      VIND, OPT,ELGEOM,SIGF,VINF,DSDE)

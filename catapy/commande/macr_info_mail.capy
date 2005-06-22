@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 03/11/2004   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF COMMANDE  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,8 +21,8 @@
 from Macro.macr_adap_mail_ops import macr_adap_mail_ops
 
 MACR_INFO_MAIL=MACRO(nom="MACR_INFO_MAIL",op=macr_adap_mail_ops,
-                     docu="U7.03.02-b",
-                     fr="Donner des informations sur un maillage.",
+                     docu="U7.03.02-b",UIinfo={"groupe":("Maillage",)},
+                     fr="Donner des informations sur la qualité d'un maillage.",
                      ang="To give information about a mesh.",
 #
 # 1. Le niveau d'information

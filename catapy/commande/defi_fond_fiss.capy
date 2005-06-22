@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,7 +18,7 @@
 # ======================================================================
 DEFI_FOND_FISS=OPER(nom="DEFI_FOND_FISS",op=55,sd_prod=fond_fiss,reentrant='n',
             UIinfo={"groupes":("Post traitements",)},
-                    fr="Définition de lèvres et d un fond de fissure en 3D",
+                    fr="Définition de lèvres et d'un fond de fissure en 3D",
          regles=(UN_PARMI('FOND_FISS','FOND_FERME'),
                  EXCLUS('FOND_FERME','DTAN_ORIG'),
                  EXCLUS('FOND_FERME','DTAN_EXTR'),

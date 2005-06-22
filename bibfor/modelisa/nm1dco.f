@@ -1,8 +1,8 @@
-      SUBROUTINE NM1DCO(OPTION,IMATE,TM,TP,E,SIGM,EPSM,DEPS,VIM,
-     &                  SIGP,VIP,DSDE,CORRM,CRILDC,CODRET)
+      SUBROUTINE NM1DCO(KPGVRC,OPTION,IMATE,TM,TP,E,SIGM,EPSM,DEPS,VIM,
+     &                  SIGP,VIP,DSDE,CRILDC,CODRET)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 14/06/2005   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF MODELISA  DATE 23/06/2005   AUTEUR VABHHTS J.PELLET 
 C TOLE CRP_20
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -42,8 +42,6 @@ C               UTILISE UNIQUEMENT POUR EVALUER DSDEM
 C IN  DEPS    : DEFORMATION  TOTALE PLUS - DEFORMATION TOTALE MOINS
 C IN  EPSPM   : DEFORMATION  PLASTIQUE MOINS
 C IN  PM      : DEFORMATION  PLASTIQUE CUMULEE MOINS
-C IN  CORRM   : CORROSION A L'INSTUTMEANT MOINS
-C IN  CORRP   : CORROSION A L'INSTANT PLUS
 
 C OUT SIGP     : CONTRAINTES PLUS
 C OUT EPSP    : DEFORMATION  PLASTIQUE PLUS
@@ -53,10 +51,10 @@ C     ------------------------------------------------------------------
 C     ARGUMENTS
 C     ------------------------------------------------------------------
       REAL*8 TP,TM,EM,EP,ET,ALPHAM,ALPHAP,TREF
-      REAL*8 SIGM,DEPS,PM,VIM(*),VIP(*),RESU,EPSPM,CORRM,CORRP
+      REAL*8 SIGM,DEPS,PM,VIM(*),VIP(*),RESU,EPSPM,CORRM
       REAL*8 SIGP,DSDE,RBID,RESI,CRILDC(3)
       CHARACTER*16 OPTION
-      INTEGER IMATE,IRET,CODRET
+      INTEGER IMATE,IRET,CODRET,KPGVRC
 C     ------------------------------------------------------------------
 C     VARIABLES LOCALES
 C     ------------------------------------------------------------------
@@ -65,15 +63,14 @@ C     ------------------------------------------------------------------
       INTEGER JPROLM,JVALEM,NBVALM,NBVALP,NBPAR,JPROLP,JVALEP
       CHARACTER*2 FB2,CODRES
       CHARACTER*8 NOMPAR,NOMRES,NOMECL(2),TYPE
-      REAL*8  EPSIL0,D0,EPSP0,DEPSIL,P0,SIG0,
-     1        ECR0,ECRF,DF,PF,EPSPF,SIGF,E,SY,DC,V,K,M,SF
-C     DECLARATION DES TYPES DES VARIABLES:      
-      REAL*8 EPSILF,EPSD,EPSC,D,P,EPSP,ECR,FPLAS,
-     1    DFDS,DFPDS,DFDECR,DIFECR,LAMBP,FD,VAR1,TC
+      REAL*8  EPSIL0,D0,EPSP0,DEPSIL,P0,SIG0
+      REAL*8 ECR0,ECRF,DF,PF,EPSPF,SIGF,E,SY,DC,V,K,M,SF
+      REAL*8 EPSILF,EPSD,EPSC,D,P,EPSP,ECR,FPLAS
+      REAL*8 DFDS,DFPDS,DFDECR,DIFECR,LAMBP,FD,VAR1
       REAL*8 VAR2,VAR3,RV,FINI,FDINI,FPLAS2,EPSMAX
       LOGICAL DCONV,PCONV,MELAS
-      INTEGER ITER,ITEMAX,ICHAR,NCHAR,I,J
-      
+      INTEGER ITER,ITEMAX,ICHAR,NCHAR,I,J,IBID
+
       FB2 = 'FM'
       NBPAR = 1
       NOMPAR = 'TEMP'
@@ -81,7 +78,7 @@ C     DECLARATION DES TYPES DES VARIABLES:
       EPSPM = VIM(1)
       D  = VIM(2)
       CODRET=0
- 
+
 C --- CARACTERISTIQUES ECROUISSAGE LINEAIRE
       VALPAR = TP
       CALL RCVALA(IMATE,' ','CORR_ACIER',NBPAR,NOMPAR,VALPAR,1,'D_CORR',
@@ -94,23 +91,23 @@ C --- CARACTERISTIQUES ECROUISSAGE LINEAIRE
      &              SY,CODRES,FB2)
       CALL RCVALA(IMATE,' ','ELAS',NBPAR,NOMPAR,VALPAR,1,'NU',
      &              V,CODRES,FB2)
-     
+
 C --- PARAMETRES DE CONVERGENCE
       RESI = CRILDC(3)
       ITEMAX = NINT(CRILDC(1))
 
-        TC = CORRM
-        IF (TC .LE. 15.D0)  THEN
-         EPSC = 2.345D-1-(1.11D-2*TC)
-        ELSE 
-        EPSC = 5.1D-2-(6.D-4*TC)
+        CALL RCVARC('F','CORR','-',KPGVRC,CORRM,IBID)
+        IF (CORRM .LE. 15.D0)  THEN
+         EPSC = 2.345D-1-(1.11D-2*CORRM)
+        ELSE
+        EPSC = 5.1D-2-(6.D-4*CORRM)
         END IF
 C       END IF
-C      
-C    DEFORMATION PLASTIQUE DE DEBUT D'ENDOMMAGMENT 
+C
+C    DEFORMATION PLASTIQUE DE DEBUT D'ENDOMMAGMENT
       EPSD = 0.8D0*EPSC
 C    RV LE PARAMETRE QUI DEPEND DU TAUX DE TRIAXIALITE
-      VAR1 = 1.D0+V 
+      VAR1 = 1.D0+V
       VAR2 = 1.D0-(2.D0*V)
       VAR3 = ((1.D0/3.D0)**2.D0)
       RV = (((2.D0/3.D0)*VAR1)+(3.D0*VAR2*VAR3))
@@ -124,10 +121,10 @@ C    RV LE PARAMETRE QUI DEPEND DU TAUX DE TRIAXIALITE
       IF (OPTION.EQ.'FULL_MECA' .OR. OPTION.EQ.'RAPH_MECA') THEN
 
       ITER = 0
-      DO 30 I = 1,ITEMAX 
-      IF (.NOT. DCONV) THEN   
+      DO 30 I = 1,ITEMAX
+      IF (.NOT. DCONV) THEN
         ITER = ITER+1
-        
+
 C    *******ELASTICITE********************
          SIGP = E*(EPSILF-EPSP)
 CJMP         SIGP =(1.D0-D)* E*(EPSILF-EPSP)
@@ -141,10 +138,10 @@ CJMP         SIGP =(1.D0-D)* E*(EPSILF-EPSP)
         ELSE
           VIP(3) = 1.D0
           PCONV = .FALSE.
-          
+
 C    ******PLASTICITE**********************
-         DO 40 J = 1,ITEMAX  
-         IF (.NOT. PCONV)  THEN 
+         DO 40 J = 1,ITEMAX
+         IF (.NOT. PCONV)  THEN
             DFDS = (1.D0/(1.D0-D))
             DFPDS = (1.D0/(1.D0-D))
             DFDECR = -1.D0
@@ -161,7 +158,7 @@ C    ******PLASTICITE**********************
              GOTO 141
          END IF
    40    CONTINUE
-  141    CONTINUE   
+  141    CONTINUE
           IF(J .GE. ITEMAX) THEN
              CALL UTMESS('I','NM1DCO','ABSENCE DE CONVERGENCE J')
              CODRET=1
@@ -170,14 +167,14 @@ C    ******PLASTICITE**********************
         ENDIF
 C
         END IF
-        
+
 C    *****ENDOMMAGEMENT*********************
         FD = EPSP-EPSD
         IF (FD .LE. 0.D0) THEN
           DCONV = .TRUE.
-          
+
           GOTO 142
-        
+
         ELSE
          D = (DC*((RV*EPSP)-EPSD))/(EPSC-EPSD)
          FPLAS2 = ((ABS(SIGP)/(1.D0-D))-ECR-SY)
@@ -226,12 +223,12 @@ C    *****ENDOMMAGEMENT*********************
      &    (1.D0+(((K*(1.D0/M))/E)*(P**((1.D0/M)-1.D0)))))
              ELSE
               DSDE = (K*(1.D0/M)*(P**((1.D0/M)-1.D0)))
-             END IF   
+             END IF
           END IF
         END IF
-C     CAS RIGI_MECA_ELAS ET FULL_MECA_ELAS AVEC ENDOMMAGEMENT      
+C     CAS RIGI_MECA_ELAS ET FULL_MECA_ELAS AVEC ENDOMMAGEMENT
       END IF
       IF(MELAS)  DSDE=(1.D0-D)*DSDE
 
- 9999 CONTINUE      
+ 9999 CONTINUE
       END

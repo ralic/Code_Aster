@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 14/09/2004   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF COMMANDE  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -33,9 +33,9 @@ def macr_fiabilite_prod ( self , **args ):
 #====
 #
 MACR_FIABILITE = MACRO ( nom="MACR_FIABILITE",op=macr_fiabilite_ops,
-                         docu="U7.03.31",
+                         docu="U7.03.31",UIinfo={"groupe":("Post traitements",)},
                          sd_prod=macr_fiabilite_prod,
-                         fr="Faire de la mécanique fiabiliste.",
+                         fr="Calcule les probabiltés de dépassement de seuil (mécanique de fiabilité).",
                          ang="Fiability mechanics.",
 #
 #====

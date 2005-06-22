@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,9 +18,9 @@
 # ======================================================================
 # RESPONSABLE CAMBIER S.CAMBIER
 GENE_MATR_ALEA=OPER(nom="GENE_MATR_ALEA",op=  27,sd_prod=matr_asse_gene_r,
-               fr="Generateur de matrice aleatoire",
+               fr="Générer une réalisation d'une matrice aléatoire réelle symétrique définie positive selon une loi de probabilité",
                reentrant='n',
-            UIinfo={"groupes":("Fonction",)},
+            UIinfo={"groupes":("Matrice",)},
    MATR_MOYEN   = SIMP(statut='o', typ=matr_asse_gene_r),
    COEF_VAR     = SIMP(statut='f', typ='R', defaut=0.1),
    INIT_ALEA    =SIMP(statut='f',typ='I'),

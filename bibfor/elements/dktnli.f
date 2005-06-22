@@ -6,7 +6,7 @@
       REAL*8          KTAN(*), BTSIG(6,*)
       CHARACTER*16    NOMTE, OPT
 
-C MODIF ELEMENTS  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 23/06/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -157,7 +157,7 @@ C     ------------------ PARAMETRAGE ELEMENT ---------------------------
      &          IER, IGAUH, IINSTM, IINSTP, IMATE, INO, IPG, IRET, ISP,
      &          ITEMP, ITEMPM, ITEMPP, ITREF, IVARIM, IVARIP, IVARIX,
      &          IVPG, J, K, LZR, NBCON, NBSP, NBVAR, NDIMV, NNOEL
-      INTEGER   IADZI, IAZK24
+      INTEGER   IADZI, IAZK24, KPGVRC
       CHARACTER*24 NOMELE
 C     ------------------------------------------------------------------
 C --DEB
@@ -386,6 +386,7 @@ C===============================================================
 
 C     -- BOUCLE SUR LES POINTS DE GAUSS DE LA SURFACE:
 C     -------------------------------------------------
+      KPGVRC=0
       DO 130,IPG = 1,NPG
         CALL R8INIR(3,0.D0,N,1)
         CALL R8INIR(3,0.D0,M,1)
@@ -415,6 +416,7 @@ C          PAR INTEGRATION EN TROIS POINTS
 C       ------------------------------------------------------
         DO 80,ICOU = 1,NBCOU
           DO 70,IGAUH = 1,NPGH
+            KPGVRC=KPGVRC+1
             ISP=(ICOU-1)*NPGH+IGAUH
             IVPG = ((IPG-1)*NBSP + ISP-1)*NBVAR
             ICPG = ((IPG-1)*NBSP + ISP-1)*NBCON
@@ -470,7 +472,7 @@ C         -----------------------------------------------------
 C --- ANGLE DU MOT_CLEF MASSIF (AFFE_CARA_ELEM)
 C --- INITIALISE A R8VIDE (ON NE S'EN SERT PAS)
                CALL R8INIR(3,  R8VIDE(), ANGMAS ,1)
-               CALL NMGRIL(ZI(IMATE),TYPMOD,ZK16(ICOMPO),OPT,
+               CALL NMGRIL(KPGVRC,ZI(IMATE),TYPMOD,ZK16(ICOMPO),OPT,
      &                     EPS2D,DEPS2D,
      &                     ANGMAS,
      &                     ZR(ICONTM+ICPG),ZR(IVARIM+IVPG),
@@ -484,18 +486,16 @@ C --- INITIALISE A R8VIDE (ON NE S'EN SERT PAS)
 C --- ANGLE DU MOT_CLEF MASSIF (AFFE_CARA_ELEM)
 C --- INITIALISE A R8VIDE (ON NE S'EN SERT PAS)
                CALL R8INIR(3,  R8VIDE(), ANGMAS ,1)               
-               CALL NMCOMP(2,TYPMOD,ZI(IMATE),ZK16(ICOMPO),ZR(ICARCR),
-     &                  ZR(IINSTM),ZR(IINSTP),
+               CALL NMCOMP(KPGVRC,2,TYPMOD,ZI(IMATE),ZK16(ICOMPO),
+     &                  ZR(ICARCR),ZR(IINSTM),ZR(IINSTP),
      &                  TMC,TPC,ZR(ITREF),
      &                  HYDRGM,HYDRGP,
      &                  SECHGM,SECHGP,SREF,
-     &                  -1.D0,-1.D0,
      &                  EPS2D,DEPS2D,
      &                  SIGM,ZR(IVARIM+IVPG),
      &                  OPT,
      &                  EPSANM,EPSANP,
      &                  NZ,PHASM,PHASP,
-     &                  R8VIDE(),R8VIDE(),
      &                  ANGMAS,
      &                  LC,
      &                  ZR(ICONTP+ICPG),ZR(IVARIP+IVPG),DSIDEP,COD)

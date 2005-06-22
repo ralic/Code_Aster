@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 15/11/2004   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF COMMANDE  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,7 +20,7 @@
 from Macro.impr_fonction_ops import impr_fonction_ops
 
 IMPR_FONCTION=MACRO(nom="IMPR_FONCTION",op=impr_fonction_ops,sd_prod=None,
-                 fr="Impression de fonctions sur fichiers, les valeurs ayant été récupérées par RECU_FONCTION",
+                 fr="Imprime le contenu d'objets de type fonction ou liste de réels dans un fichier destiné à un traceur de courbe",
             UIinfo={"groupes":("Fonction",)},
          FORMAT          =SIMP(statut='o',typ='TXM',position='global',defaut='TABLEAU',
                                into=("TABLEAU","AGRAF","XMGRACE",),),

@@ -4,7 +4,6 @@
      &                  TM,TP,TREF,
      &                  HYDRM,HYDRP,
      &                  SECHM,SECHP,SREF,
-     &                  IRRAM,IRRAP,
      &                  NZ,PHASM,PHASP,
      &                  DEPLM,DEPLP,
      &                  ANGMAS,
@@ -14,7 +13,7 @@
 
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/11/2004   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ALGORITH  DATE 23/06/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,7 +40,6 @@ C TOLE CRP_21
       REAL*8 INSTAM,INSTAP
       REAL*8 GEOM(2,NNO),CRIT(3),TM(NNO),TP(NNO)
       REAL*8 HYDRM(NNO),HYDRP(NNO),SECHM(NNO),SECHP(NNO),SREF
-      REAL*8 IRRAM(NNO),IRRAP(NNO)
       REAL*8 PHASM(NZ,NPG),PHASP(NZ,NPG),TREF
       REAL*8 DEPLM(1:2,1:NNO),DEPLP(1:2,1:NNO),DFDI(NNO,2)
       REAL*8 DEF(4,NNO,2),EPAM(*),EPAP(*)
@@ -120,7 +118,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       INTEGER KPG,KK,KKD,N,I,M,J,J1,KL,KPGS,PROJ
       REAL*8 DSIDEP(6,6),F(3,3),EPS(6),DEPS(6),R,SIGMA(6),SIGN(6)
       REAL*8 POIDS,TEMPM,TEMPP,TMP,EPSANP(6),EPSANM(6),SIG(6)
-      REAL*8 HYDRGM,HYDRGP,SECHGM,SECHGP,IRRAGM,IRRAGP,ELGEOM(10,9)
+      REAL*8 HYDRGM,HYDRGP,SECHGM,SECHGP,ELGEOM(10,9)
       REAL*8 RAC2,R8VIDE
 
 C     AJ. VARIABLES
@@ -205,8 +203,6 @@ C - ET DES DEFORMATIONS ANELASTIQUES AU POINT DE GAUSS
       HYDRGP = HYDRP(KPG)
       SECHGM = 0.D0
       SECHGP = 0.D0
-      IRRAGM = 0.D0
-      IRRAGP = 0.D0
       DO 40 J = 1,6
         EPSANM(J) = 0.D0
         EPSANP(J) = 0.D0
@@ -225,8 +221,6 @@ C - ET DES DEFORMATIONS ANELASTIQUES AU POINT DE GAUSS
         TEMPP = TEMPP + TP(N)*ZR(IVF+N+(KPG-1)*NNO-1)
         SECHGM = SECHGM + SECHM(N)*ZR(IVF+N+(KPG-1)*NNO-1)
         SECHGP = SECHGP + SECHP(N)*ZR(IVF+N+(KPG-1)*NNO-1)
-        IRRAGM = IRRAGM + IRRAM(N)*ZR(IVF+N+(KPG-1)*NNO-1)
-        IRRAGP = IRRAGP + IRRAP(N)*ZR(IVF+N+(KPG-1)*NNO-1)
 
    60 CONTINUE
 
@@ -270,18 +264,16 @@ C - LOI DE COMPORTEMENT
         OPTIOS = OPTION
       END IF
 
-      CALL NMCOMP(2,TYPMOD,IMATE,COMPOR,CRIT,
+      CALL NMCOMP(KPG,2,TYPMOD,IMATE,COMPOR,CRIT,
      &            INSTAM,INSTAP,
      &            TEMPM,TEMPP,TREF,
      &            HYDRGM,HYDRGP,
      &            SECHGM,SECHGP,SREF,
-     &            IRRAGM,IRRAGP,
      &            EPS,DEPS,
      &            SIGN,VIM(1,KPG),
      &            OPTIOS,
      &            EPSANM,EPSANP,
      &            NZ,PHASM(1,KPG),PHASP(1,KPG),
-     &            R8VIDE(),R8VIDE(),
      &            ANGMAS,
      &            ELGEOM(1,KPG),
      &            SIGMA,VIP(1,KPG),DSIDEP,COD(KPG))

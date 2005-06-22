@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 14/06/2005   AUTEUR JMBHH01 J.M.PROIX 
+#& MODIF COMMANDE  DATE 23/06/2005   AUTEUR VABHHTS J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -78,7 +78,7 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
              K_DESSIC        =SIMP(statut='f',typ='R',defaut= 0.E+0 ),
              B_ENDOGE        =SIMP(statut='f',typ='R',defaut= 0.E+0 ),
              FONC_DESORP     =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
-             VERI_P          =SIMP(statut='c',typ='TXM',max='**',defaut=("TEMP","INST","HYDR","SECH",) ),
+             VERI_P          =SIMP(statut='c',typ='TXM',max='**',defaut=("TEMP","INST","HYDR","SECH","NEUT1","NEUT2",) ),
            ),
            ELAS_FLUI       =FACT(statut='f',
              E               =SIMP(statut='o',typ='R'),
@@ -2687,13 +2687,13 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
              GC              =SIMP(statut='o',typ='R'),
              SIGM_C          =SIMP(statut='f',typ='R'),
              PENA_ADHERENCE  =SIMP(statut='f',typ='R'),
-             PENA_CONTACT    =SIMP(statut='f',typ='R',defaut=1.),                          
+             PENA_CONTACT    =SIMP(statut='f',typ='R',defaut=1.),
            ),
            RUPT_FRAG_FO   =FACT(statut='f',
              GC              =SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster,formule)),
              SIGM_C          =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
              PENA_ADHERENCE  =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
-             PENA_CONTACT    =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule),defaut=1.),             
+             PENA_CONTACT    =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule),defaut=1.),
              VERI_P          =SIMP(statut='c',typ='TXM',max='**',defaut=("TEMP",) ),
            ),
            RCCM            =FACT(statut='f',
@@ -2757,7 +2757,7 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
              ALPHAHB         =SIMP(statut='o',typ='R'),
              PHI_RUP         =SIMP(statut='o',typ='R'),
              PHI_RES         =SIMP(statut='o',typ='R'),
-             PHI_END         =SIMP(statut='f',typ='R'),             
+             PHI_END         =SIMP(statut='f',typ='R'),
            ),
 ####  MONOCRISTAL
 

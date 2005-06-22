@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 20/09/2004   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -26,7 +26,8 @@ def lire_fonction_prod(self,TYPE,**args):
   raise AsException("type de concept resultat non prevu")
 
 LIRE_FONCTION=MACRO(nom="LIRE_FONCTION",op=lire_fonction_ops,sd_prod=lire_fonction_prod,
-                   fr="Lecture d une fonction ou d une nappe dans un fichier ",
+                   fr="Lit les valeurs réelles dans un fichier de données représentant une fonction et"
+                     +" crée un concept de type fonction ou nappe",
                    reentrant='n',
             UIinfo={"groupes":("Fonction",)},
          FORMAT          =SIMP(statut='f',typ='TXM',into=("LIBRE",),defaut="LIBRE"  ),

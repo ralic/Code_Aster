@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 11/05/2005   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF COMMANDE  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -62,8 +62,9 @@ def l_nom_cham_pas_elga(): return (
                            )
 
 LIRE_RESU=OPER(nom="LIRE_RESU",op=150,sd_prod=lire_resu_prod,reentrant='n',
-            UIinfo={"groupes":("Maillage",)},
-               fr="Lecture de champs aux noeuds ou par éléments aux noeuds sur un fichier IDEAS ou EnSight",
+            UIinfo={"groupes":("Résultats et champs",)},
+               fr="Lire dans un fichier, soit format IDEAS, soit au format ENSIGHT soit au format MED,"
+                 +" des champs et les stocker dans une SD résultat",
 
 
 # 0) mots clés généraux :

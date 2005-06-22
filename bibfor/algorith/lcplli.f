@@ -3,7 +3,7 @@
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/06/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,7 +44,7 @@ C           DY     :  INCREMENT DES VARIABLES = ( DSIG  DVIN  (DEPS3)  )
 C           YD     :  VARIABLES A T   = ( SIGD  VIND  (EPSD3)   )
 C           YF     :  VARIABLES A T+DT= ( SIGF  VINF  (EPSF3)   )
 C       ----------------------------------------------------------------
-        INTEGER         NMAT,    NR
+        INTEGER         NMAT,    NR, IRET
         REAL*8          ZERO   , UN
 C
         PARAMETER       ( ZERO = 0.D0   )
@@ -52,22 +52,19 @@ C
 C
         INTEGER         NDT,    NDI,    NVI
 C
-        LOGICAL         FAUX
-C
         REAL*8          HOOK(6,6),      EPSD(6)
         REAL*8          SIGD(6),        SIGF(6)
         REAL*8          VIND(*),        VINF(*)
         REAL*8          R(NR),        DRDY(NR,NR)
-        REAL*8          DY(NR),       YD(NR) , YF(NR)
-        REAL*8          Z
+        REAL*8          DY(NR),       YD(NR) , YF(NR), DET
 C
+        CHARACTER*1     TRANS,KSTOP
         CHARACTER*8     MOD
 C       ----------------------------------------------------------------
         COMMON /TDIM/   NDT  , NDI
 C       ----------------------------------------------------------------
         INTEGER I,J
-        FAUX = .FALSE.
-        Z = 0.D0
+C
         DO 200  I = 1 , NR
         R( I ) = 0.D0
         DO 210  J = 1 , NR
@@ -109,7 +106,9 @@ C
                 ENDIF
 C
           CALL LCEQVN ( NR ,   R ,  DY )
-          CALL MGAUSS ( DRDY , DY , NR , NR , 1, Z, FAUX )
+          TRANS=' '
+          KSTOP='S'
+          CALL MGAUSS (TRANS,KSTOP,DRDY , DY , NR , NR , 1, DET, IRET)
 C
 C --      INCREMENTATION DE YF = YD + DY
 C

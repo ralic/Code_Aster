@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 13/06/2005   AUTEUR CIBHHLV L.VIVAN 
+#& MODIF COMMANDE  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
 # RESPONSABLE VABHHTS J.PELLET
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -21,7 +21,7 @@
 # ======================================================================
 TEST_RESU=PROC(nom="TEST_RESU",op=23,
             UIinfo={"groupes":("Impression",)},
-         fr="Extraction d une valeur et comparaison à une valeur de référence",
+         fr="Extraction d'une valeur d'une structure de donnée et comparaison à une valeur de référence",
          regles=(AU_MOINS_UN('CHAM_NO','CHAM_ELEM','RESU','GENE','OBJET')),
          UNITE           =SIMP(statut='f',typ='I',defaut=8),  
 

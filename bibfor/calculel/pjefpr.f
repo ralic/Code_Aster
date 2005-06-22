@@ -3,7 +3,7 @@ C RESPONSABLE VABHHTS J.PELLET
 C A_UTIL
 C ---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 15/02/2005   AUTEUR NICOLAS O.NICOLAS 
+C MODIF CALCULEL  DATE 23/06/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -64,7 +64,7 @@ C
       INTEGER       IBID, IE, JCONO, IRET, JORDR, NBORDR, I, IORDR
       INTEGER       IAINS1, IAINS2, NBSYM, ISYM, ICO
       LOGICAL       ACCENO
-      CHARACTER*8   KB, MA1, MA2, RAIDE,MASSE,AMOR
+      CHARACTER*8   KB, MA1, MA2, RAIDE,MASSE,AMOR,PROL0
       CHARACTER*16  NOMSYM(200)
       CHARACTER*19  CH1, CH2, PRFCHN,LIGREL,PRFCH2
       CHARACTER*19 NOMS2,REFE
@@ -77,7 +77,7 @@ C     FONCTIONS FORMULES :
 
 C DEB -----------------------------------------------------------------
       CALL JEMARQ()
-C 
+C
       LIGREL=MODEL2//'.MODELE'
 
       CALL DISMOI('F','NOM_MAILLA', RESU1,'RESULTAT',IBID,MA1,IE)
@@ -91,6 +91,8 @@ C
 
       CALL RSUTC4(RESU1,' ',1,200,NOMSYM,NBSYM,ACCENO)
       CALL ASSERT (NBSYM.GT.0)
+
+      CALL GETVTX(' ','PROL_ZERO',1,1,1,PROL0,IER)
 
 
 C     1- CREATION DE LA SD RESULTAT : RESU2
@@ -122,7 +124,7 @@ C des matrices afin de recuperer la numerotation sous-jacente
      &     (TYPRES(1:4).EQ.'BASE')) THEN
 C    On essaye de recuperer la numerotation de matrices assemblees
         CALL GETVID(' ','RIGI_MECA',1,1,1,RAIDE,IER)
-        IF (IER.NE.0) THEN          
+        IF (IER.NE.0) THEN
           CALL GETVID(' ','MASS_MECA',1,1,1,MASSE,IER)
           CALL GETVID(' ','AMOR_MECA',1,1,1,AMOR,IER)
           REFE=RAIDE
@@ -130,7 +132,7 @@ C    On essaye de recuperer la numerotation de matrices assemblees
           PRFCH2=ZK24(LMATAS+1)(1:19)
         ENDIF
       ENDIF
-      
+
 
 C     2- ON CALCULE LES CHAMPS RESULTATS :
 C     ------------------------------------
@@ -147,7 +149,7 @@ C On definit une numerotation 'bidon"
         CALL GNOMSD ( NOOJB,10,14)
         PRFCHN=NOOJB(1:19)
       ENDIF
-      
+
         DO 5,I=1,NBORDR
           IORDR = ZI(JORDR+I-1)
           CALL RSEXCH(RESU1,NOMSYM(ISYM),IORDR,CH1,IRET)
@@ -155,7 +157,7 @@ C On definit une numerotation 'bidon"
 
 C       -- PROJECTION DU CHAMP SI POSSIBLE :
           CALL RSEXCH(RESU2,NOMSYM(ISYM),IORDR,CH2,IRET)
-          CALL PJEFCH(CORRES,CH1,CH2,PRFCHN,LIGREL,IRET)
+          CALL PJEFCH(CORRES,CH1,CH2,PRFCHN,PROL0,LIGREL,IRET)
           IF (IRET.GT.0) THEN
             IF (ACCENO) THEN
               CALL UTMESS('F','PJEFPR','ON NE SAIT PAS ENCORE PROJETER'
@@ -173,13 +175,13 @@ C       -- Attribution des attributs du concept resultat
               CALL RSADPA ( RESU1,'L',1,'FREQ',IORDR,0,IAINS1,KB)
               CALL RSADPA ( RESU2,'E',1,'FREQ',IORDR,0,IAINS2,KB)
               ZR(IAINS2)=ZR(IAINS1)
-C             Recuperation de nume_mode              
+C             Recuperation de nume_mode
               CALL JEEXIN (RESU1//'           .NUMO', IRET )
               IF ( IRET.NE.0 ) THEN
                 CALL JEVEUO (RESU1//'           .NUMO', 'L', IAINS1)
                 CALL JEVEUO (RESU2//'           .NUMO', 'E', IAINS2)
                 ZI(IAINS2+IORDR-1)=ZI(IAINS1+IORDR-1)
-              ENDIF  
+              ENDIF
           ELSEIF (TYPRES(1:9).EQ.'MODE_STAT') THEN
               CALL VPCREA(0,RESU2,MASSE,AMOR,RAIDE,IER)
               CALL RSADPA ( RESU1,'L',1,'NOEUD_CMP',IORDR,0,IAINS1,KB)

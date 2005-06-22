@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 15/02/2005   AUTEUR NICOLAS O.NICOLAS 
+#& MODIF COMMANDE  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,7 +17,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
 DEFI_SQUELETTE=OPER(nom="DEFI_SQUELETTE",op= 110,sd_prod=squelette,
-                    fr="Définition d un maillage de visualisation",
+                    fr="Définit un maillage pour visualiser les résultats d'une sous-structuration dynamique",
                     reentrant='n',
             UIinfo={"groupes":("Maillage",)},
          regles=(UN_PARMI('CYCLIQUE','MODELE_GENE','MAILLAGE'),

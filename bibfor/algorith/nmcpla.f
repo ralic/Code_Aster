@@ -1,11 +1,11 @@
-        SUBROUTINE NMCPLA ( NDIM, TYPMOD, IMAT, COMP, CRIT,
-     1                      TIMED,TIMEF, TEMPD,TEMPF,TREF,HYDRD,
+        SUBROUTINE NMCPLA(KPGVRC,NDIM,TYPMOD,IMAT,COMP,CRIT,
+     1                      TIMED,TIMEF,TEMPD,TEMPF,TREF,HYDRD,
      &                      HYDRF,SECHD,SECHF,SREF,EPSDT,DEPST,SIGD,
      2                      VIND, OPT,ELGEOM,SIGF,VINF,DSDE)
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/08/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 23/06/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -38,7 +38,8 @@ C
 C       ================================================================
 C       ARGUMENTS
 C
-C       IN      NDIM    DIMENSION DE L ESPACE (3D=3,2D=2,1D=1)
+C       IN      KPGVRC  NUMERO DU (SOUS)POINT DE GAUSS
+C               NDIM    DIMENSION DE L ESPACE (3D=3,2D=2,1D=1)
 C               TYPMOD  TYPE DE MODELISATION
 C               IMAT    ADRESSE DU MATERIAU CODE
 C               COMP    COMPORTEMENT DE L ELEMENT
@@ -100,7 +101,7 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C       ----------------------------------------------------------------
-        INTEGER         IMAT , NDIM
+        INTEGER         IMAT , NDIM, KPGVRC
 C
         REAL*8          CRIT(*)
         REAL*8          TIMED,     TIMEF,    TEMPD,   TEMPF  , TREF
@@ -116,25 +117,21 @@ C
 C       ----------------------------------------------------------------
 C       VARIABLES LOCALES
         INTEGER         NDT    , NDI   , NVI1, IBID, IBID2, IBID3
-        INTEGER         NDT2   , NDI2  , NVI2, NN, I, NMAT
-        CHARACTER*2     BL2, FB2, CERR(5)
+        INTEGER         NVI2, NN, I
+        CHARACTER*2     FB2, CERR(5)
         CHARACTER*8     MOD    ,MOD3D  , MODCP,   NOMC(5), NOMPAR(3)
         CHARACTER*16    OPTFLU, CMP1(3), CMP2(3), CMP3(3), CVERI
         REAL*8          RBID, NU, ANGMAS(3)
         REAL*8          EPSFL(6), EPSFLD(6), EPSFLF(6), DEPSFL(6)
         REAL*8          DEPS(6), KOOH(6,6), VALPAD(3), VALPAF(3)
         REAL*8          MATERD(5) , MATERF(5), DEPST2(6), DEPSEL(6)
-        REAL*8          EPSICV, TOLER, NDSIG, NSIGF, HOOK(6,6)
-        REAL*8          NDDEPS, NDEPST, DDEPST(6), DSIGF(6)
+        REAL*8          EPSICV, TOLER, NDSIG, NSIGF
+        REAL*8          DSIGF(6)
         REAL*8          EPSELD(6), EPSELF(6)
 C
-        INTEGER         IRTET,     K
+        INTEGER         K
         INTEGER         ITER ,        ITEMAX
-        REAL*8          EPS(6),       SIGF2(6)
-        REAL*8          TD,           TF,        DELTAT
-        REAL*8          TEMD,         TEMF,      DETEMP
-        REAL*8          HYDD,         HYDF,      DEHYDR
-        REAL*8          SECD,         SECF,      DESECH
+        REAL*8          SIGF2(6)
         REAL*8          TMPDMX,       TMPFMX,    EPSTH
         REAL*8          ALPHAD, ALPHAF, BENDOD, BENDOF, KDESSD, KDESSF
 C
@@ -341,7 +338,7 @@ C
      &    CMP2(1)(1:9) .EQ. 'VMIS_ISOT'        .OR.
      &    CMP2(1)(1:14).EQ. 'VMIS_ISOT_LINE' ) THEN
 C
-          CALL NMISOT (NDIM,  TYPMOD,    IMAT,     CMP2,  CRIT,
+          CALL NMISOT (KPGVRC,NDIM,TYPMOD,IMAT,CMP2,CRIT,
      1                 TIMED, TIMEF,     TEMPD,    TEMPF, TREF,
      2                 HYDRD, HYDRF,     SECHD,    SECHF, SREF,
      3                 DEPS , SIGD,      VIND(NN), OPT,

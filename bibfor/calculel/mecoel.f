@@ -1,7 +1,7 @@
       SUBROUTINE MECOEL()
 C TOLE CRS_230
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 08/09/2003   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 23/06/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -260,5 +260,12 @@ C======================================================================
       COMMON /CAII13/NBSAV
 C     CE COMMON EST INITIALISE PAR DEBCAL
 C     CE COMMON EST UTILISE POUR GAGNER DU TEMPS DANS ELREF4
+C======================================================================
+      INTEGER NBCVRC,JVCNOM
+      COMMON /CAII14/NBCVRC,JVCNOM
+C     CE COMMON EST UTILISE POUR LES VARIABLES DE COMMANDE :
+C       ROUTINES : RCMFMC,RCVARC,RCVALB
+C     NBCVRC : NOMBRE DE CVRC (VARIABLE DE COMMANDE SCALAIRE)
+C     JVCNOM : ADRESSE DANS ZK8 DES NOMS DES CVRC
 C======================================================================
       END

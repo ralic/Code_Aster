@@ -4,7 +4,7 @@
      +          DMF(3,3), AN(4,12), AM(4,8)
       CHARACTER*16  NOMTE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 21/01/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -91,9 +91,9 @@ C     ----- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C -----  VARIABLES LOCALES
-      INTEGER           LZR,I, J, K, IC, INT
+      INTEGER           LZR,I, J, K, IC, INT, IRET
           REAL*8        QSI,ETA,ZERO,UNDEMI,UN,DEUX,TROIS
-          REAL*8        L(4)
+          REAL*8        L(4),DET
           REAL*8        X(4) , Y(4)
           REAL*8        HFT2(2,6), DFCBFA(2,4), HMFT2(2,6)
           REAL*8        DFCBFB(2,12), DCIDFB(2,12), BFA(3,4) 
@@ -102,7 +102,6 @@ C -----  VARIABLES LOCALES
           REAL*8        BCB(2,12), BCA(2,4), BCM(2,8)
           REAL*8        DB(2,4), DCB(2,12)
           REAL*8        AA(4,4), AAI(4,4)
-          LOGICAL       FAUX
 C
 C     ------------------ PARAMETRAGE QUADRANGLE ------------------------
       INTEGER NPG , NC , NNO
@@ -118,6 +117,7 @@ C     ------------------ PARAMETRAGE QUADRANGLE ------------------------
                PARAMETER (LXYC  = LWGT + NPG)
                PARAMETER (LCOTE = LXYC + 2*NC)
 C     ------------------------------------------------------------------
+      CHARACTER*1 TRANS,KSTOP
 C.========================= DEBUT DU CODE EXECUTABLE ==================
       CALL JEMARQ()
 C
@@ -128,7 +128,6 @@ C     ===============
       UN     = 1.0D0
       DEUX   = 2.0D0
       TROIS  = 3.0D0
-      FAUX   = .FALSE.
 C
       DO 10 I = 1, 4
         DO 10 J = 1, 8
@@ -477,7 +476,9 @@ C
       DO 230 I = 1, 4
          AAI(I,I) = UN
  230  CONTINUE
-      CALL MGAUSS ( AA , AAI , 4 , 4 , 4, ZERO, FAUX )
+      TRANS=' '
+      KSTOP='S'
+      CALL MGAUSS (TRANS,KSTOP,AA , AAI , 4 , 4 , 4, DET, IRET )
 C
 C===================================================================
 C --- DETERMINATION DE LA MATRICE AN QUI EST TELLE QUE             = 

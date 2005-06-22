@@ -1,7 +1,7 @@
       SUBROUTINE CAUNDF(CODE,OPT,TE)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 27/03/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 23/06/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -63,20 +63,16 @@ C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*80 ZK80
 C ---------------- FIN COMMUNS NORMALISES  JEVEUX  --------------------
       INTEGER IUNDF,IVIDE
-      REAL*8 RUNDF,RVIDE,R8NNEM,R8VIDE
-      COMPLEX*16 CUNDF,CVIDE
-      CHARACTER*8 KUNDF,KVIDE
+      REAL*8 RVIDE,R8NNEM,R8VIDE
+      COMPLEX*16 CVIDE
+      CHARACTER*8 KVIDE
 
 C DEB-------------------------------------------------------------------
-      IUNDF = ISNNEM()
-      RUNDF = R8NNEM()
-      CUNDF = DCMPLX(RUNDF,RUNDF)
-      KUNDF = '????????'
 
       IVIDE = ISNNEM()
       RVIDE = R8VIDE()
       CVIDE = DCMPLX(RVIDE,RVIDE)
-C     KVIDE='????????'
+      KVIDE='????????'
 
 
 
@@ -140,17 +136,17 @@ C         -- LE CHAMP LOCAL EST-IL ETENDU ?
           TYPSCA = ZK8(IAWTYP-1+IPARG)
 
           IF (TYPSCA.EQ.'R') THEN
-            ZR(IACHLO-1+LGGREL+1) = RUNDF
+            ZR(IACHLO-1+LGGREL+1) = RVIDE
           ELSE IF (TYPSCA.EQ.'C') THEN
-            ZC(IACHLO-1+LGGREL+1) = CUNDF
+            ZC(IACHLO-1+LGGREL+1) = CVIDE
           ELSE IF (TYPSCA.EQ.'I') THEN
-            ZI(IACHLO-1+LGGREL+1) = IUNDF
+            ZI(IACHLO-1+LGGREL+1) = IVIDE
           ELSE IF (TYPSCA.EQ.'K8') THEN
-            ZK8(IACHLO-1+LGGREL+1) = KUNDF
+            ZK8(IACHLO-1+LGGREL+1) = KVIDE
           ELSE IF (TYPSCA.EQ.'K16') THEN
-            ZK16(IACHLO-1+LGGREL+1) = KUNDF
+            ZK16(IACHLO-1+LGGREL+1) = KVIDE
           ELSE IF (TYPSCA.EQ.'K24') THEN
-            ZK24(IACHLO-1+LGGREL+1) = KUNDF
+            ZK24(IACHLO-1+LGGREL+1) = KVIDE
           ELSE
             CALL UTMESS('F','CAUNDF',
      +                  'ERREUR PGMEUR DANS CAUNDF : TYPE_SCALAIRE:'//

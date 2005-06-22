@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/02/2005   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -28,7 +28,7 @@ def macr_ecla_pg_prod(self,RESULTAT,MAILLAGE,RESU_INIT,**args):
 
 MACR_ECLA_PG=MACRO(nom="MACR_ECLA_PG",op=macr_ecla_pg_ops,sd_prod=macr_ecla_pg_prod, reentrant='n',
              UIinfo={"groupes":("Post traitements",)},
-             fr="permettre la visualisation des champs aux points de Gauss d'une SD_RESULTAT.",
+             fr="Permettre la visualisation des champs aux points de Gauss d'une SD_RESULTAT sans lissage ni interpolation",
                     
 
              # SD résultat ,modèle et champs à "éclater" :

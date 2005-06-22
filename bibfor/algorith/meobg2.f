@@ -2,7 +2,7 @@
      &              LAMBDA,MU,ECROB,ECROD,ALPHA,K1,K2,DSIDEP)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 04/10/2004   AUTEUR GODARD V.GODARD 
+C MODIF ALGORITH  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -34,13 +34,10 @@ C
 C
 C-------------------------------------------------------------
 
-
-      LOGICAL           IRET
-
-      INTEGER           I,J,K,T(3,3),T2(2,2)
+      INTEGER            I,J,K,T(3,3),T2(2,2),IRET
       REAL*8             RAC2,KRON(6),NOFBM,UN
       REAL*8             CC(6),VECC(3,3),VALCC(3),CCP(6),CPE(6)
-      REAL*8        VECEPG(3,3),VALEPG(3)
+      REAL*8             VECEPG(3,3),VALEPG(3)
       REAL*8             FB(6),VECFB(3,3),VALFB(3),TREB
       REAL*8             TREPSG,DCOEFD,ENE,FD,TREM
       REAL*8             DFMF(3,3),TDFBDB(6,6),TDFBDE(6,6)
@@ -48,14 +45,16 @@ C-------------------------------------------------------------
       REAL*8             INTERD(3),INTERT(6),INTERG(3)
       REAL*8             PSI(3,6),KSI(3,3),IKSI(3,3)
       REAL*8             MATB(3,6),MATD(6),TOTO
-      REAL*8        FBS(3),VECFBS(2,2),VALFBS(2),DELTAS(3)
-      REAL*8        FBSM(3),SDFBDB(3,3),SDFBDE(3,6)
-      REAL*8        DSIGB(6,6),DSIGD(6),DIB(3,6)      
-      REAL*8         COUPL,DCRIT(6)
-      
+      REAL*8             FBS(3),VECFBS(2,2),VALFBS(2),DELTAS(3)
+      REAL*8             FBSM(3),SDFBDB(3,3),SDFBDE(3,6)
+      REAL*8             DSIGB(6,6),DSIGD(6),DIB(3,6)      
+      REAL*8             COUPL,DCRIT(6),DET
+      CHARACTER*1        TRANS,KSTOP
       
       DATA  KRON/1.D0,1.D0,1.D0,0.D0,0.D0,0.D0/
-      
+
+      TRANS=' '
+      KSTOP='S'      
       RAC2=SQRT(2.D0)
       UN=1.D0
       T(1,1)=1
@@ -291,18 +290,7 @@ C---CALCUL DE KSI ET PSI
         IKSI(I,I)=1.D0
  140  CONTINUE 
 
-
-      IRET=.TRUE.
-      TOTO=0.D0
-      CALL MGAUSS(KSI,IKSI,3,3,3,TOTO,IRET)
-      
-
-      IF (IRET.EQV..FALSE.) THEN
-        CALL UTMESS('F','MTADE2','KSI NON INVERSIBLE')
-      ENDIF
-
-
-
+      CALL MGAUSS(TRANS,KSTOP,KSI,IKSI,3,3,3,DET,IRET)
 
 C-- ! ksi n est plus disponible
 
@@ -366,12 +354,7 @@ C         WRITE(6,*) 'DID(',I,',',J,')=', DSIDEP(I,J),';'
            IKSI(I,I)=1.D0
  505     CONTINUE 
 
-         IRET=.TRUE.
-         TOTO=0.D0
-         CALL MGAUSS(KSI,IKSI,3,3,3,TOTO,IRET)
-         IF (IRET.EQV..FALSE.) THEN
-           CALL UTMESS('F','MTADE2','KSIB NON INVERSIBLE')
-         ENDIF
+         CALL MGAUSS(TRANS,KSTOP,KSI,IKSI,3,3,3,DET,IRET)
 
          CALL R8INIR(18,0.D0,MATB,1)
 

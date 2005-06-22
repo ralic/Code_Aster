@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 30/06/2004   AUTEUR MCOURTOI M.COURTOIS 
+#& MODIF COMMANDE  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,7 +17,8 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 THER_NON_LINE_MO=OPER(nom="THER_NON_LINE_MO",op= 171,sd_prod=evol_ther,
-                     fr="Thermique non lineaire en repere mobile",
+                     fr="Résoudre un problème thermique non linéaire (conditions limites ou comportement matériau)"
+                        +" stationnaire avec chargement mobile",
                      reentrant='n',
             UIinfo={"groupes":("Résolution",)},
          MODELE          =SIMP(statut='o',typ=modele_sdaster ),

@@ -2,7 +2,7 @@
       IMPLICIT   NONE
       CHARACTER*(*)     OPTION,NOMTE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 28/02/2005   AUTEUR MABBAS M.ABBAS 
+C MODIF ELEMENTS  DATE 23/06/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,7 +51,7 @@ C
       INTEGER IGEOM,ICOMPO,IMATE,ISECT,IORIEN,ITEMPM,ITEMPP,ND,NK
       INTEGER ITREF,IINSTM,IINSTP,ICARCR,ICONTM,IDEPLM,IDEPLP,IMATUU
       INTEGER IVECTU,ICONTP,ITYPE,NNO,NC,IVARIM,IVARIP,ITEMP,ICAS,I
-      INTEGER JTAB(7),JCRET,KK,LGPG,IIRRAM,IIRRAP,IRET,IRETM,IRETP
+      INTEGER JTAB(7),JCRET,KK,LGPG,IRET,IRETM,IRETP,IBID,IRET2
       PARAMETER    (NNO=2,NC=6,ND=NC*NNO,NK=ND*(ND+1)/2)
       REAL*8       E   ,  NU , G, EM, NUM, ALPHAP, ALPHAM
       REAL*8       A   ,  XIY ,  XIZ ,  ALFAY ,  ALFAZ ,  XJX ,  EZ,  EY
@@ -74,7 +74,7 @@ C GRANDISSEMENT
       REAL*8       EFFNOM, TEMPM, TEMPP, U(ND), DU(ND), SIGP(ND)
       REAL*8       HOEL(7*7),HOTA(7*7),D1B(7*14),WORK(14*7),RG0(14*14)
       REAL*8       XUG(6),UTG(12),XD(3),XL2,TET1,TET2,ALFA1,BETA1,GAMMA
-      REAL*8       GAMMA1,ANG1(3),R8VIDE
+      REAL*8       GAMMA1,ANG1(3),R8VIDE,IRRAM,IRRAP
       LOGICAL      REACTU
 
       DATA NOMLMA / 'K','N','DE_0','P','P1','P2','M','RM',
@@ -207,12 +207,6 @@ C
         CALL TECACH('OON','PVARIMR',7,JTAB,IRET)
         LGPG = MAX(JTAB(6),1)*JTAB(7)
 C
-        CALL JEVECH('PIRRAMR','L',IIRRAM)
-        CALL JEVECH('PIRRAPR','L',IIRRAP)
-        IF((ZR(IIRRAM).LT.0.D0).OR.(ZR(IIRRAP).LT.0.D0)) THEN
-          CALL UTMESS('F','TE0247','LE CHAMP D''IRRADIATION EST'//
-     &                   'INCOMPLET OU NON PRESENT')
-        ENDIF
 C        
 C-- RECUPERATION DES CARACTERISTIQUES ELASTIQUES
          IF (ITEMP.NE.0) THEN
@@ -271,30 +265,50 @@ C
             IF (ZK16(ICOMPO).EQ.'LMARC_IRRA') THEN
                CALL RCVALA(ZI(IMATE),' ','LMARC_IRRA',0,' ',0.D0,
      &              12,NOMLMA(1),COELMA(1),CODLMA(1), 'FM' )
+               CALL RCVARC(' ','IRRA','-',1,IRRAM,IRET2)
+               IF (IRET2.GT.0) IRRAM=0.D0
+               CALL RCVARC(' ','IRRA','+',1,IRRAP,IRET2)
+               IF (IRET2.GT.0) IRRAP=0.D0
                CALL NMLMAB(PGL,NNO,NC,ZR(IDEPLP),EFFNOM,TEMPM,
      &                  TEMPP,ZR(ICARCR),ZR(IINSTM),ZR(IINSTP),
-     &                   XL,E,A,ALPHAP,COELMA,COEFGR,ZR(IIRRAM),
-     &                  ZR(IIRRAP),ZR(IVARIM),ZR(IVARIP), KLS,FLC,
+     &                   XL,E,A,ALPHAP,COELMA,COEFGR,
+     &                   IRRAM,IRRAP,
+     &                   ZR(IVARIM),ZR(IVARIP), KLS,FLC,
      &                  EFFNOC,ALPHAM,EM,ZR(ITREF))
               DO 52 KK = 1, 4
                 ZR(IVARIP+LGPG+KK-1)   = ZR(IVARIP+KK-1)
                 ZR(IVARIP+2*LGPG+KK-1) = ZR(IVARIP+KK-1)
  52           CONTINUE
-                ZR(IVARIP+5-1)         = ZR(IIRRAP)
-                ZR(IVARIP+LGPG+5-1)    = ZR(IIRRAP)
-                ZR(IVARIP+2*LGPG+5-1)  = ZR(IIRRAP)                
+                CALL RCVARC(' ','IRRA','+',1,IRRAP,IRET2)
+                IF (IRET2.GT.0) IRRAP=0.D0
+                ZR(IVARIP+5-1)         = IRRAP
+                CALL RCVARC(' ','IRRA','+',2,IRRAP,IRET2)
+                IF (IRET2.GT.0) IRRAP=0.D0
+                ZR(IVARIP+LGPG+5-1)    = IRRAP
+                CALL RCVARC(' ','IRRA','+',3,IRRAP,IRET2)
+                IF (IRET2.GT.0) IRRAP=0.D0
+                ZR(IVARIP+2*LGPG+5-1)  = IRRAP
             ELSEIF (ZK16(ICOMPO).EQ.'LEMAITRE_IRRA') THEN
                CALL RCVALA(ZI(IMATE),' ','LEMAITRE_IRRA',0,' ',0.D0,
      &               7,NOMLEM(1),COELEM(1),CODLEM(1), 'FM' )
+             CALL RCVARC(' ','IRRA','-',1,IRRAM,IRET2)
+             IF (IRET2.GT.0) IRRAM=0.D0
+             CALL RCVARC(' ','IRRA','+',1,IRRAP,IRET2)
+             IF (IRET2.GT.0) IRRAP=0.D0
              CALL NMFGAS(PGL,NNO,NC,ZR(IDEPLP),EFFNOM,ZR(IVARIM),TEMPM,
      &               TEMPP,ZR(ICARCR),ZR(IINSTM),ZR(IINSTP),
-     &               ZR(ITREF),XL,E,A,ALPHAP,COELEM,COEFGR,ZR(IIRRAM),
-     &               ZR(IIRRAP),KLS,FLC,EFFNOC,ZR(IVARIP),ALPHAM,EM)
-             ZR(IVARIP+1)        = ZR(IIRRAP)             
+     &               ZR(ITREF),XL,E,A,ALPHAP,COELEM,COEFGR,
+     &               IRRAM,IRRAP,
+     &               KLS,FLC,EFFNOC,ZR(IVARIP),ALPHAM,EM)
+             ZR(IVARIP+1)        = IRRAP
              ZR(IVARIP+LGPG)     = ZR(IVARIP)
-             ZR(IVARIP+LGPG+1)   = ZR(IIRRAP)             
+             CALL RCVARC(' ','IRRA','+',2,IRRAP,IRET2)
+             IF (IRET2.GT.0) IRRAP=0.D0
+             ZR(IVARIP+LGPG+1)   = IRRAP
              ZR(IVARIP+2*LGPG)   = ZR(IVARIP)
-             ZR(IVARIP+2*LGPG+1) = ZR(IIRRAP)       
+             CALL RCVARC(' ','IRRA','+',3,IRRAP,IRET2)
+             IF (IRET2.GT.0) IRRAP=0.D0
+             ZR(IVARIP+2*LGPG+1) = IRRAP
             ENDIF
 C
             DO 55 I = 1,ND

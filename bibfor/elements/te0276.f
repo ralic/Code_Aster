@@ -3,7 +3,7 @@
       CHARACTER*16        OPTION , NOMTE
 C.......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 21/01/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 23/06/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -69,6 +69,7 @@ C
       CALL JEVECH('PGEOMER','L',IGEOM)
       CALL JEVECH('PTEMPSR','L',ITEMPS)
       CALL JEVECH('PHECHPR','L',IHECHP)
+      H = ZR(IHECHP)
       CALL JEVECH('PTEMPEI','L',ITEMP)
       CALL JEVECH('PRESIDU','E',IVERES)
 C
@@ -94,7 +95,6 @@ C
       DO 101 IPG=1,NPG1
         KDEC = (IPG-1)*NNO*NDIM
         LDEC = (IPG-1)*NNO
-        H = ZR(IHECHP+IPG-1)
 C
         NX = 0.0D0
         NY = 0.0D0

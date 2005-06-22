@@ -1,4 +1,4 @@
-# MODIF  DATE 15/02/2005   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 23/06/2005   AUTEUR VABHHTS J.PELLET 
 # TITRE CUBE SOUS FLUAGE VIA LA LOI LEMA_SEUIL
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -44,11 +44,6 @@ MAT = DEFI_MATERIAU(
             LEMA_SEUIL_FO=_F( A=A, S=S,)
            )
 
-CHMAT = AFFE_MATERIAU (MAILLAGE = MA,
-                       AFFE =_F(TOUT='OUI',
-                                MATER = MAT,
-                                )
-                       )
 
 BLOC = AFFE_CHAR_MECA (MODELE = MO,
                        DDL_IMPO=(_F(GROUP_NO ='A',
@@ -93,10 +88,13 @@ FLUENC=CREA_RESU(
                       NOM_CHAM='IRRA',AFFE=
                       _F( CHAM_GD = CHAM, LIST_INST=L_INST)
                       );
+CHMAT = AFFE_MATERIAU (MAILLAGE = MA,
+            AFFE =_F(TOUT='OUI', MATER = MAT, ),
+            AFFE_VARC=_F(NOM_VARC='IRRA', EVOL =FLUENC, ),
+                       )
 
 RESU = STAT_NON_LINE (MODELE = MO,
                       CHAM_MATER = CHMAT,
-                      VARI_COMM=_F(IRRA=FLUENC),
                       EXCIT =(
                          _F( CHARGE = BLOC),
                          _F( CHARGE = PRES),),

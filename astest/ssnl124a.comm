@@ -1,4 +1,4 @@
-# MODIF  DATE 15/02/2005   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 23/06/2005   AUTEUR VABHHTS J.PELLET 
 # RESPONSABLE F6BHHBO P.DEBONNIERES
 # TITRE FLUAGE AXIAL D'UN ELEMENT HEXA8 AVEC COMPORTEMENT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -272,8 +272,9 @@ MAT2=DEFI_MATERIAU(    ELAS=_F( E = 1.E5, NU = 0.3, ALPHA = 0.),
                          GRAN_S = 0.396),
                      )
 
-CHMAT=AFFE_MATERIAU(   MAILLAGE=MA,AFFE=
-                        _F(  MAILLE = 'MA1', MATER = MAT2, TEMP_REF = 299.85)
+CHMAT=AFFE_MATERIAU(   MAILLAGE=MA,
+           AFFE=  _F(  MAILLE = 'MA1', MATER = MAT2, TEMP_REF = 299.85),
+           AFFE_VARC=_F(NOM_VARC='IRRA', EVOL =FLUENC1, ),
                         )
 
 CHART=AFFE_CHAR_MECA(  MODELE=MO,
@@ -327,8 +328,6 @@ CARA1=AFFE_CARA_ELEM(    MODELE=MO,MASSIF=(
 
 REST=STAT_NON_LINE( 
                             MODELE=MO,
-                         VARI_COMM=_F(    
-                IRRA = FLUENC1),              
                         CHAM_MATER=CHMAT,
                         CARA_ELEM = CARA1,
                          EXCIT=(

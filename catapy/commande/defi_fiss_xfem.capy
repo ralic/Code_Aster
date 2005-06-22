@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 25/01/2005   AUTEUR GENIAUT S.GENIAUT 
+#& MODIF COMMANDE  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,7 +19,7 @@
 
 DEFI_FISS_XFEM=OPER(nom="DEFI_FISS_XFEM",op=  41,sd_prod=fiss_xfem,reentrant='f',
             UIinfo={"groupes":("Modélisation",)},
-               fr="Définition des caratéristiques d''une fissure avec XFEM",
+               fr="Définition des caratéristiques d'une fissure avec XFEM",
 
     MODELE                =SIMP(statut='o',typ=modele_sdaster),
     DEFI_FISS             =FACT(statut='o',max=01,

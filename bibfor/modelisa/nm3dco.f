@@ -1,6 +1,6 @@
-      SUBROUTINE NM3DCO(NDIM,OPTION,IMATE,TM,TP,SIGM,
-     &             EPSM,DEPS,VIM,SIGP,VIP,DSIDEP,CORRM,CRILDC,CODRET)
-C MODIF MODELISA  DATE 14/06/2005   AUTEUR JMBHH01 J.M.PROIX 
+      SUBROUTINE NM3DCO(KPGVRC,NDIM,OPTION,IMATE,TM,TP,SIGM,
+     &             EPSM,DEPS,VIM,SIGP,VIP,DSIDEP,CRILDC,CODRET)
+C MODIF MODELISA  DATE 23/06/2005   AUTEUR VABHHTS J.PELLET 
 C TOLE CRP_20
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -30,15 +30,14 @@ C          LOI DE L'ACIER SOUMIS A LA CORROSION 3D
 C IN  NDIM    : DIMENSION
 C IN  OPTION  : OPTION DE CALCUL
 C IN  IMATE   : POINTEUR MATERIAU
-C IN  TM       : TEMPERATURE MOINS
-C IN  TP        : TEMPERATURE PLUS
+C IN  TM      : TEMPERATURE MOINS
+C IN  TP      : TEMPERATURE PLUS
 C IN  SIGM    : CONTRAINTE AU TEMPS MOINS
 C IN  EPSM    : DEFORMATION TOTALE AU TEMPS MOINS
 C IN  DEPS    : DEFORMATION  TOTALE PLUS - DEFORMATION TOTALE MOINS
 C IN VIM      : VARIABLE INTERNES AU TEMPS MOINS
-C IN  CORRM   : CORROSION A L'INSTANT MOINS
 C IN CRILDC   : 1 ITERMAX, 3 RESI_INTE
-C 
+C
 C OUT SIGP     : CONTRAINTES PLUS
 C OUT VIP       : VARIABLE INTERNES PLUS
 C OUT DSIDEP    : DSIG/DEPS
@@ -47,10 +46,10 @@ C     ARGUMENTS
 C     ------------------------------------------------------------------
 C     ------------------------------------------------------------------
       REAL*8 TP,TM
-      REAL*8 SIGM(6),DEPS(6),VIM(*),EPSM(6),CORRM
+      REAL*8 SIGM(6),DEPS(6),VIM(*),EPSM(6)
       REAL*8 SIGP(6),VIP(*),DSIDEP(6,6),CRILDC(3)
       CHARACTER*16 OPTION
-      INTEGER NDIM,IMATE,CODRET
+      INTEGER NDIM,IMATE,CODRET,KPGVRC
 
       REAL*8 YOUNG,NU,KCOEF,MCOEF,COEFDC,LIMIT
       REAL*8 VALPAR
@@ -58,7 +57,7 @@ C     ------------------------------------------------------------------
       CHARACTER*8  NOMPAR
       INTEGER NBPAR
 
-      INTEGER ITER,ITEMAX,NDIMSI,I,J,K,L,M,ITD
+      INTEGER ITER,ITEMAX,NDIMSI,I,J,K,L,M,ITD,IBID
 
       REAL*8 RESI,ECUM,ECUMM,DCOEF,PLAS
       REAL*8 DEFE,DEFC,NUETOI,DEFPC(3),ECUMC,ECUMD
@@ -69,10 +68,10 @@ C     ------------------------------------------------------------------
       REAL*8 CRITEN,CRIT2,CRIT0D,TREPS
 
       REAL*8 SIGFI(6),SIGD(6),RBID,DRDP,HP
-      REAL*8 KCI,LAMDA,DEUMU,ACOEF,BCOEF,CCOEF
+      REAL*8 KCI,LAMDA,DEUMU,ACOEF,BCOEF,CCOEF,CORRM
 
 2327  FORMAT(A4,6(2X,D12.6))
-      
+
       NDIMSI=2*NDIM
 
       VALPAR = TP
@@ -87,36 +86,37 @@ C     ------------------------------------------------------------------
       CALL RCVALA(IMATE,' ','ELAS',NBPAR,NOMPAR,VALPAR,1,'NU',
      &              NU,CODRES,FB2)
        CALL RCVALA(IMATE,' ','ELAS',NBPAR,NOMPAR,VALPAR,1,'E',
-     &              YOUNG,CODRES,FB2)  
+     &              YOUNG,CODRES,FB2)
 
 
       ECUMM = VIM(1)
       DCOEF = VIM(2)
       PLAS  = VIM(3)
-      
+
 C --- PARAMETRES DE CONVERGENCE
       RESI = CRILDC(3)
       ITEMAX = NINT(CRILDC(1))
-  
+
 
 C     CALCUL DE LA DEFORMATION CRITIQUE
       DEFE = LIMIT/YOUNG
+      CALL RCVARC('F','CORR','-',KPGVRC,CORRM,IBID)
       IF (CORRM .LE. 15.D0)  THEN
         DEFC = 2.345D-01-(1.11D-02*CORRM)
-      ELSE 
+      ELSE
         DEFC = 5.1D-02-(6.D-04*CORRM)
       END IF
-      NUETOI=0.5D0-(DEFE/DEFC)*(0.5D0-NU)             
+      NUETOI=0.5D0-(DEFE/DEFC)*(0.5D0-NU)
       DEFPC(1) = DEFC
       DEFPC(2)=-1.D0*NUETOI*DEFC
-      DEFPC(3)=DEFPC(2) 
-          
-C     CALCUL DE LA DEFORMATION PLAST EQUIV CRITIQUE  
+      DEFPC(3)=DEFPC(2)
+
+C     CALCUL DE LA DEFORMATION PLAST EQUIV CRITIQUE
       ECUMC = DEFPC(1) * DEFPC(1)
       ECUMC = ECUMC + DEFPC(2) * DEFPC(2)
       ECUMC = ECUMC + DEFPC(3) * DEFPC(3)
       ECUMC = (2.D0 / 3.D0) * ECUMC
-      ECUMC = ECUMC ** 0.5D0 
+      ECUMC = ECUMC ** 0.5D0
 
 C     CALCUL DE DEFORMATION PLASTIQUE EQUIV DE DEBUT D'ENDOMMAGMENT
       ECUMD = 0.8D0*ECUMC
@@ -131,54 +131,54 @@ C     DES INITIALISATIONS POUR MATRICE TANGENTE ?
       DO 50 I =1,NDIMSI
         SIGP(I) = SIGM(I)
         SIGFI(I)= SIGP(I)
- 50   CONTINUE     
+ 50   CONTINUE
 
-C     DEFORMATION PLASTIQUE EQUIV A L'INSTANT M          
+C     DEFORMATION PLASTIQUE EQUIV A L'INSTANT M
       ECUM = ECUMM
 
 C     CALCUL DES CONTRAINTES ELASTIQUES
-      TREPS = DEPS(1)+DEPS(2)+DEPS(3)   
+      TREPS = DEPS(1)+DEPS(2)+DEPS(3)
       DO 85 I=1,NDIMSI
         SIGP(I) = SIGP(I)+COEF1*DEPS(I)
- 85   CONTINUE          
+ 85   CONTINUE
       DO 90 I=1,3
         SIGP(I) = SIGP(I)+COEF2*TREPS
- 90   CONTINUE   
+ 90   CONTINUE
 
       DP = 0.D0
       DCONV=.FALSE.
       ITER = 0
       ITD=0
       PREMD=.TRUE.
-      
+
 
 C   999=RETOUR ENDO
 999   CONTINUE
 
       IF (.NOT. DCONV) THEN
-        
+
 C      CALCUL DE J2(SIG)
         J2 = 0.D0
         DO 52 I = 1,NDIMSI
           J2 = J2 + (SIGP(I)** 2)
  52     CONTINUE
-        J2 = J2 - ((1.D0 / 3.D0) * 
-     &           ((SIGP(1) + SIGP(2) + SIGP(3)) ** 2)) 
-        J2 = ( 3.D0 / 2.D0  *  J2) ** 0.5D0        
+        J2 = J2 - ((1.D0 / 3.D0) *
+     &           ((SIGP(1) + SIGP(2) + SIGP(3)) ** 2))
+        J2 = ( 3.D0 / 2.D0  *  J2) ** 0.5D0
 
-C      CALCUL D'ECROUISSAGE            
+C      CALCUL D'ECROUISSAGE
         RINI = KCOEF*(ECUM**(1.D0/MCOEF))
-                                          
-C       SURFACE SEUIL                    
-        CRIT0 = ( (J2/(1.D0-DCOEF)) - RINI - LIMIT )    
+
+C       SURFACE SEUIL
+        CRIT0 = ( (J2/(1.D0-DCOEF)) - RINI - LIMIT )
         CRIT=CRIT0
 
-        IF ( OPTION(1:9).EQ.'FULL_MECA' .OR. 
+        IF ( OPTION(1:9).EQ.'FULL_MECA' .OR.
      &      OPTION(1:9).EQ.'RAPH_MECA' ) THEN
 
           IF (CRIT0.LT.0.D0 ) THEN
               PLAS=0.D0
-              VIP(3)=PLAS         
+              VIP(3)=PLAS
               DCONV = .TRUE.
               DP = 0.D0
 C ON SORT COMPLETEMENT
@@ -190,7 +190,7 @@ C ON SORT COMPLETEMENT
 
 C     PLASTICITE  (888 = RETOUR PLASTICITE)
  888          CONTINUE
-              IF (.NOT. PCONV)  THEN         
+              IF (.NOT. PCONV)  THEN
                 ITER = ITER + 1
                 IF (ITER . EQ. ITEMAX) THEN
                    CALL UTMESS('A','NM3DCO','PAS DE CONVERGENCE')
@@ -214,10 +214,10 @@ C     TERME2(*) : DF(SIG,X,R) / DSIG
                 DO 54 I = 4,NDIMSI
                   TERME2(I) = RBID * 1.5D0 * SIGP(I)
  54             CONTINUE
- 
-C     TERME3(*) : DF(SIG,X,R) / DSIG = DF(SIG,X,R) / DSIG 
 
-C     TERME4(*) : KE * TERME2 
+C     TERME3(*) : DF(SIG,X,R) / DSIG = DF(SIG,X,R) / DSIG
+
+C     TERME4(*) : KE * TERME2
                 RBID=COEF2*(TERME2(1) + TERME2(2) + TERME2(3))
                 DO 55 I = 1,NDIMSI
                   TERME4(I) = COEF1 * TERME2(I)
@@ -226,7 +226,7 @@ C     TERME4(*) : KE * TERME2
                   TERME4(I) = TERME4(I) + RBID
  555             CONTINUE
 
-C     TERME5 = TERME2 : TERME4 
+C     TERME5 = TERME2 : TERME4
                 TERME5 = 0.D0
                 DO 56 I = 1,NDIMSI
                   TERME5 = TERME5 + TERME2(I)*TERME4(I)
@@ -237,28 +237,28 @@ C     TER11 : DF/DR*COEFFIC
                 TER11 = J2/(KCOEF*(1.D0-DCOEF)) - TER11
                 TER11 = TER11**(1.D0-MCOEF)
                 TER11 = KCOEF/MCOEF * TER11
-                TER11 = -1.D0 * TER11  
+                TER11 = -1.D0 * TER11
 
 C     DETERMINATION DE DELTAP
                 DELTAP = TERME1 / ( TERME5 - TER11)
-                                                                    
-C      CALCUL  DE TOUTES LES VARIABLES INTERNES : 
+
+C      CALCUL  DE TOUTES LES VARIABLES INTERNES :
                 DO 95 I = 1,NDIMSI
                   SIGP(I) = SIGP(I) - (DELTAP * TERME4(I))
  95             CONTINUE
 
-C     DETERMINATION DE LA DEFORMATION PLASTIQUE ET P                 
+C     DETERMINATION DE LA DEFORMATION PLASTIQUE ET P
                 DP=DELTAP/(1.D0-DCOEF)
                 ECUM = ECUM + DP
-     
+
 C     CALCUL DE J2(SIG)
                 J2 = 0.D0
                 DO 58 I = 1,NDIMSI
                   J2 = J2 + (SIGP(I)** 2)
  58             CONTINUE
-                J2 = J2 - ((1.D0 / 3.D0) * 
-     &             ((SIGP(1) + SIGP(2) + SIGP(3)) ** 2)) 
-                J2 = ( 3.D0 / 2.D0 * J2) ** 0.5D0  
+                J2 = J2 - ((1.D0 / 3.D0) *
+     &             ((SIGP(1) + SIGP(2) + SIGP(3)) ** 2))
+                J2 = ( 3.D0 / 2.D0 * J2) ** 0.5D0
 
 C     DETERMINATION DE L'ECROUISSAGE
                 RINI=KCOEF*(ECUM**(1.D0/MCOEF))
@@ -270,13 +270,13 @@ C FIN IF PCONV
                 GOTO 888
             END IF
           END IF
-        
+
 C     CRITERE D'ENDOMMAGEMENT
           CRITEN = ECUM - ECUMD
-           IF (CRITEN.LE.0.D0) THEN           
-               DCONV = .TRUE.         
+           IF (CRITEN.LE.0.D0) THEN
+               DCONV = .TRUE.
            ELSE
-C     COEFFICIENT D'ENDOMMAGEMENT 
+C     COEFFICIENT D'ENDOMMAGEMENT
              DCOEF = COEFDC*(ECUM-ECUMD)/(ECUMC-ECUMD)
              IF (DCOEF .GT. 0.99D0) THEN
                DCONV = .TRUE.
@@ -287,7 +287,7 @@ C     COEFFICIENT D'ENDOMMAGEMENT
              END IF
 
              CRIT2 = (J2/(1.D0-DCOEF))- RINI - LIMIT
-             IF (PREMD) THEN        
+             IF (PREMD) THEN
                  CRIT0D = CRIT2
                  PREMD=.FALSE.
              ENDIF
@@ -339,19 +339,19 @@ C     PLASTICITE
              SIGD(K) = SIGFI(K)- RBID * (1.D0/3.D0)
 175        CONTINUE
            DO 176 K =4,NDIMSI
-             SIGD(K)= SIGFI(K)           
+             SIGD(K)= SIGFI(K)
 176        CONTINUE
          ELSE
            RBID = SIGP(1) + SIGP(2) + SIGP(3)
            DO 177 K=1,3
-             SIGD(K) = SIGP(K)- RBID*(1.D0 / 3.D0) 
+             SIGD(K) = SIGP(K)- RBID*(1.D0 / 3.D0)
 177        CONTINUE
            DO 178 K =4,NDIMSI
-             SIGD(K)= SIGP(K)             
+             SIGD(K)= SIGP(K)
 178        CONTINUE
-         END IF   
+         END IF
          DRDP = (ECUM**((1.D0/MCOEF)-1.D0))
-         DRDP = (KCOEF/(MCOEF))*DRDP   
+         DRDP = (KCOEF/(MCOEF))*DRDP
 
          IF(DCOEF.LE.0.D0)THEN
 C          PLASTICITE SANS ENDOMMAGEMENT
@@ -376,13 +376,13 @@ C          PLASTICITE SANS ENDOMMAGEMENT
            DO 230 M=1,NDIMSI
               DSIDEP(K,M) = DSIDEP(K,M) -((BCOEF/CCOEF)*
      &        ((SIGD(K)/(RINI+LIMIT))*(SIGD(M)/(RINI+LIMIT))))
- 230       CONTINUE    
- 
+ 230       CONTINUE
+
          ELSE
 C	   PLASTICITE ET ENDOMMAGEMENT
            HP = (1.D0+((3.D0/2.D0)*COEF1*KCI*DP)/
      &                     ((1.D0-DCOEF)*(RINI+LIMIT)))
-           LAMDA = COEF2+((COEF1/3.D0)*(1.D0-(1.D0/HP)))         
+           LAMDA = COEF2+((COEF1/3.D0)*(1.D0-(1.D0/HP)))
            DEUMU = COEF1/HP
            ACOEF = ((COEFDC)/(ECUMC-ECUMD))
            BCOEF = (1.D0- (DP*(((1.D0-DCOEF)*DRDP) -
@@ -400,17 +400,17 @@ C	   PLASTICITE ET ENDOMMAGEMENT
            DO 260 K=1,3
            DO 260 M=1,3
               DSIDEP(K,M) = DSIDEP(K,M) + LAMDA
- 260       CONTINUE      
+ 260       CONTINUE
            DO 270 K=1,NDIMSI
            DO 270 M=1,NDIMSI
               DSIDEP(K,M) = (DSIDEP(K,M) -((BCOEF/CCOEF)*
      &        ((SIGD(K)/((1.D0-DCOEF)*(RINI+LIMIT)))
      &            *(SIGD(M)/((1.D0-DCOEF)*(RINI+LIMIT))))))
- 270       CONTINUE    
+ 270       CONTINUE
         ENDIF
       ENDIF
 
-C     CAS RIGI_MECA_ELAS ET FULL_MECA_ELAS AVEC ENDOMMAGEMENT      
+C     CAS RIGI_MECA_ELAS ET FULL_MECA_ELAS AVEC ENDOMMAGEMENT
       IF(MELAS.AND.(DCOEF.GE.0.D0))THEN
         DO 327 K=1,NDIMSI
         DO 327 M=1,NDIMSI

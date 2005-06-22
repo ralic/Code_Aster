@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,7 +18,7 @@
 # ======================================================================
 DEFI_FONC_ELEC=OPER(nom="DEFI_FONC_ELEC",op=64,sd_prod=fonction_sdaster,reentrant='n',
             UIinfo={"groupes":("Outils métier",)},
-                    fr="Définition d une fonction du temps pour calculer des forces de LAPLACE",
+                    fr="Définir une fonction du temps intervenant dans le calcul des forces de LAPLACE",
       regles=(UN_PARMI('COUR_PRIN','COUR'),
               EXCLUS('COUR','COUR_SECO'), ),
          FREQ            =SIMP(statut='f',typ='R',defaut= 50.),

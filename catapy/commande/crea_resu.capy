@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 17/08/2004   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -27,7 +27,7 @@ def crea_resu_prod(TYPE_RESU,**args):
 
 CREA_RESU=OPER(nom="CREA_RESU",op=124,sd_prod=crea_resu_prod,reentrant='f',
             UIinfo={"groupes":("Modélisation",)},
-               fr="Engendrer ou enrichir une structure de donnees en affectant les cham_gd associes",
+               fr="Créer ou enrichir une structure de donnees resultat à partir de champs aux noeuds",
 
          OPERATION =SIMP(statut='o',typ='TXM',into=("AFFE","ECLA_PG","PERM_CHAM","PROL_RTZ",),
                          fr="choix de la fonction a activer",),

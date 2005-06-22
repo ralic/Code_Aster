@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 15/02/2005   AUTEUR NICOLAS O.NICOLAS 
+#& MODIF COMMANDE  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -29,7 +29,7 @@ PROJ_MESU_MODAL=OPER(nom="PROJ_MESU_MODAL",op= 193,
                      sd_prod=proj_mesu_modal_prod,
                      reentrant='n',
             UIinfo={"groupes":("Résultats et champs",)},
-                     fr="Calcul de coordonnees generalisees de mesure experimentale relatives a une base de projection",
+                     fr="Calcul des coordonnees généralisees de mesure experimentale relatives a une base de projection",
 
          MODELE_CALCUL   =FACT(statut='o',
            MODELE          =SIMP(statut='o',typ=(modele_sdaster) ),

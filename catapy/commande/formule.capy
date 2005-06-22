@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/11/2004   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -28,6 +28,7 @@ def form_pyth_ops(self,d):
 
 FORMULE=FORM(nom="FORMULE",op_init=form_pyth_ops,op=-5,
              sd_prod=formule,UIinfo={"groupes":("Fonction",)},
+             fr="Définit une formule réelle à partir de son expression mathématique",
          VALE     =SIMP(statut='f',typ='TXM'),
          NOM_PARA =SIMP(statut='o',typ='TXM',max='**'),
 );

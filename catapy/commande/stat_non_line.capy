@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 01/04/2005   AUTEUR VABHHTS J.PELLET 
+#& MODIF COMMANDE  DATE 23/06/2005   AUTEUR VABHHTS J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,7 +18,8 @@
 # ======================================================================
 # RESPONSABLE PBADEL P.BADEL
 STAT_NON_LINE=OPER(nom="STAT_NON_LINE",op=70,sd_prod=evol_noli,
-                   fr="Analyse mécanique statique non linéaire",
+                   fr="Calcul de l'évolution mécanique ou thermo-hydro-mécanique couplée, en quasi-statique,"
+                      +" d'une structure en non linéaire",
                    reentrant='f',
             UIinfo={"groupes":("Résolution",)},
          regles=(AU_MOINS_UN('COMP_INCR','COMP_ELAS'),),
@@ -37,11 +38,6 @@ STAT_NON_LINE=OPER(nom="STAT_NON_LINE",op=70,sd_prod=evol_noli,
                 TOUT        =SIMP(statut='f',typ='TXM',into=("OUI",) ),
                 MAILLE      =SIMP(statut='f',typ=ma,validators=NoRepeat(),max='**',),
               ),
-         VARI_COMM           =FACT(statut='f',
-           regles=(AU_MOINS_UN('IRRA','CORROSION'),),
-           IRRA       =SIMP(statut='f',typ=evol_varc),
-           CORROSION  =SIMP(statut='f',typ=carte_corr_r),
-         ),
          COMP_INCR       =C_COMP_INCR(),
          COMP_ELAS       =FACT(statut='f',max='**',
            RELATION        =SIMP(statut='o',typ='TXM',defaut="ELAS",

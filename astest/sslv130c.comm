@@ -1,4 +1,4 @@
-# MODIF  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+# MODIF  DATE 23/06/2005   AUTEUR VABHHTS J.PELLET 
 # TITRE CYLINDRE EN INCOMPRESSIBLE (TRIA6 QUAD8) PLAN
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -42,13 +42,19 @@ MO=AFFE_MODELE(  MAILLAGE=M,
                            PHENOMENE    = 'MECANIQUE',
                            MODELISATION = 'D_PLAN_INCO'))
 
-MA=DEFI_MATERIAU( ELAS=_F(  E = 200000.,
-                            NU = 0.4999,
-                            ALPHA = 0.) )
+
+# POUR TESTER LA POSSIBILITE DE FOURNIR DIRECTEMENT LE CHAMP DE MODULE D'YOUNG :
+#-------------------------------------------------------------------------------
+CHYOUNG=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_NEUT_R',
+                    MAILLAGE=M,  AFFE=_F( TOUT = 'OUI', NOM_CMP = 'X1', VALE = 200000.) )
+NU_F=DEFI_CONSTANTE(VALE=0.4999 )
+E_F = DEFI_FONCTION(NOM_PARA='NEUT1',VALE=(-1.E-9,-1.E-9, 1.E+9,1.E+9));
+MA=DEFI_MATERIAU(ELAS_FO=_F(E=E_F, NU=NU_F,),);
 
 CM=AFFE_MATERIAU( MAILLAGE=M,
-                  AFFE=_F(  TOUT = 'OUI',
-                            MATER = MA))
+                  AFFE=_F(TOUT= 'OUI', MATER= MA),
+                  AFFE_VARC=_F(NOM_VARC='NEUT1', CHAMP_GD=CHYOUNG),
+                  )
 
 CLIM=AFFE_CHAR_MECA( MODELE=MO,
                    DDL_IMPO =_F(  GROUP_NO = 'GRNM11',  DX = 0.),

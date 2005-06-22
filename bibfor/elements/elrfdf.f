@@ -5,7 +5,7 @@
       CHARACTER*(*) ELREFZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 25/01/2005   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ELEMENTS  DATE 23/06/2005   AUTEUR VABHHTS J.PELLET 
 C RESPONSABLE VABHHTS J.PELLET
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -750,6 +750,11 @@ C     ------------------------------------------------------------------
         DFF(2,8) = AL31(X0)*DAL32(Y0)
         DFF(1,9) = DAL32(X0)*AL32(Y0)
         DFF(2,9) = AL32(X0)*DAL32(Y0)
+
+C     ------------------------------------------------------------------
+      ELSE IF (ELREFE.EQ.'PO1') THEN
+        NNO = 1
+        NDIM = 0
 
 C     ------------------------------------------------------------------
       ELSE IF (ELREFE.EQ.'SE2') THEN

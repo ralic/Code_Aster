@@ -8,7 +8,7 @@
      &                  SIGM,VIM,DFDI,SIGP,VIP,
      &                  FINTU, FINTA,KUU , KUA , KAA ,CODRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 23/06/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -222,18 +222,16 @@ C      CONTRAINTE EN T- POUR LA LOI DE COMPORTEMENT
  65     CONTINUE
 
 C -    APPEL A LA LOI DE COMPORTEMENT
-      CALL NMCOMP(3,TYPMOD,IMATE,COMPOR,CRIT,
+      CALL NMCOMP(KPG,3,TYPMOD,IMATE,COMPOR,CRIT,
      &            INSTAM,INSTAP,
      &            TEMPM,TEMPP,TREF,
      &            0.D0, 0.D0,
      &            0.D0, 0.D0, 0.D0,
-     &            -1.D0,-1.D0,
      &            EPSLDC,DEPLDC,
      &            SIGMAM,VIM(1,KPG),
      &            OPTION,
      &            RBID,RBID,
      &            0,RBID,RBID,
-     &            R8VIDE(),R8VIDE(),
      &            ANGMAS,
      &            RBID, 
      &            SIGMA,VIP(1,KPG),DSIDEP,CODRET)

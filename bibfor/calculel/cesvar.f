@@ -2,7 +2,7 @@
       IMPLICIT NONE
       CHARACTER*(*) CARELE,COMPOR,LIGREL,DCEL
 C ----------------------------------------------------------------------
-C MODIF CALCULEL  DATE 11/09/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 23/06/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -25,30 +25,46 @@ C ----------------------------------------------------------------------
 C  BUT : CREER UN CHAM_ELEM_S (DCEL_I) PERMETTANT D'ETENDRE LES
 C        CHAM_ELEM(VARI_R) "OUT" DE CALCUL.
 
-C  IN/JXIN  CARELE K19 : CARA_ELEM
+C  IN/JXIN  CARELE K19 : CARA_ELEM  (OU ' ')
 C                        C'EST CARA_ELEM QUI PERMET LES SOUS-POINTS
-C  IN/JXIN  COMPOR K19 : CARTE DE COMPORTEMENT
+C  IN/JXIN  COMPOR K19 : / CARTE DE COMPORTEMENT
+C                        / ' '
 C  IN/JXIN  LIGREL K19 : LIGREL SUR LEQUEL SERA FAIT LE CALCUL
 C  IN/JXOUT DCEL   K19 : CHAM_ELEM_S(DCEL_I) CONTENANT LE NOMBRE
 C                        REEL DE VARIABLES INTERNES (ET DE SOUS-POINT)
 C                        (MAILLE PAR MAILLE)
-C  CETTE SD EST NECESSAIRE POUR ALLOUER "AU PLUS PRES" LES CHAM_ELEM
-C  DE VARIABLES INTERNES (VARI_R)
+C  REMARQUES :
+C   1) CETTE SD EST NECESSAIRE POUR ALLOUER "AU PLUS PRES" LES CHAM_ELEM
+C      "DYNAMIQUES" : SOUS-POINTS OU  VARIABLES INTERNES (VARI_R)
+C   2) SI LE CARA_ELEM N'A PAS DE SOUS-POINTS ET QUE COMPOR EST ' '
+C      DCEL EST QUAND MEME CREE : IL CONTIENT NBSP=1, NBCDYN=0
 C ----------------------------------------------------------------------
       CHARACTER*8 CAREL2,LPAIN(2)
       CHARACTER*19 LCHIN(2)
-
-      LPAIN(1) = 'PCOMPOR'
-      LCHIN(1) = COMPOR
-
+      INTEGER NBCH,IRET
+C-----------------------------------------------------------------------
       CAREL2 = CARELE
-      LPAIN(2) = 'PNBSP_I'
-      LCHIN(2) = CAREL2//'.CANBSP'
+
+      NBCH=0
+      IF (COMPOR.NE.' ') THEN
+        NBCH=NBCH+1
+        LPAIN(NBCH) = 'PCOMPOR'
+        LCHIN(NBCH) = COMPOR
+      END IF
 
 
-      CALL CALCUL('S','NSPG_NBVA',LIGREL,2,LCHIN,LPAIN,1,
+      CALL JEEXIN(CAREL2//'.CANBSP    .CELD',IRET)
+      IF (IRET.GT.0) THEN
+        NBCH=NBCH+1
+        LPAIN(NBCH) = 'PNBSP_I'
+        LCHIN(NBCH) = CAREL2//'.CANBSP'
+      END IF
+
+
+      CALL CALCUL('S','NSPG_NBVA',LIGREL,NBCH,LCHIN,LPAIN,1,
      &            '&&CESVAR.DCEL','PDCEL_I','V')
 
       CALL CELCES('&&CESVAR.DCEL','V',DCEL)
       CALL DETRSD('CHAM_ELEM','&&CESVAR.DCEL')
+
       END

@@ -1,11 +1,11 @@
-      SUBROUTINE NMCO1D(IMATE, COMPOR, OPTION, 
+      SUBROUTINE NMCO1D(KPGVRC,IMATE, COMPOR, OPTION,
      &                  EPSM, DEPS,
      &                  ANGMAS,
      &                  SIGM, VIM,
      &                  TM, TP, TREF, 
      &                  SIGP, VIP, DSIDEP,CODRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/11/2004   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ALGORITH  DATE 23/06/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -23,7 +23,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
       IMPLICIT NONE
-      INTEGER       IMATE,CODRET
+      INTEGER       IMATE,CODRET,KPGVRC
       CHARACTER*16  COMPOR(*),OPTION
       REAL*8        EPSM,DEPS,SIGM,VIM(*)
       REAL*8        TM,TP,TREF,ANGMAS(3)
@@ -124,11 +124,9 @@ C --- CARACTERISTIQUES ELASTIQUES A TPLUS
         CALL NM1DCI(IMATE,TM,TP,TREF,EM,EP,ALPHAM,ALPHAP,SIGM,
      &            DEPS,VIM,OPTION,SIGP,VIP,DSIDEP)
       ELSE IF (COM1D) THEN
-        CALL COMP1D(OPTION,
+        CALL COMP1D(KPGVRC,OPTION,
      &              SIGM,EPSM,DEPS,
      &              TM,TP,TREF,
-     &              -1.D0,-1.D0,
-     &              R8VIDE(),R8VIDE(),
      &              ANGMAS,
      &              VIM,VIP,SIGP,DSIDEP,CODRET)
       ELSE IF (PINTO) THEN

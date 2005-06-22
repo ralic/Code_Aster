@@ -4,7 +4,7 @@
       CHARACTER*(*) OPTIOZ,NOMTEZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 14/06/2005   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ELEMENTS  DATE 23/06/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -70,13 +70,13 @@ C   CONSTANTES POUR INTO MENEGOTTO
       REAL*8 A,XLONG0,XLONGM,TREF,SIGY,DSDE
       REAL*8 PGL(3,3)
       REAL*8 DUL(NEQ),UML(NEQ),DLONG
-      REAL*8 KLV(NBT),VIP(NVAMAX),VIM(NVAMAX),CORRM,CORRP
+      REAL*8 KLV(NBT),VIP(NVAMAX),VIM(NVAMAX)
       REAL*8 TEMPM,TEMPP,EFFNOM,EFFNOP,FONO(NEQ)
       REAL*8 W(6),ANG1(3),XD(3),MATUU(21),VECTU(6)
       REAL*8 DEPLM(6),DEPLP(6),DSIDEP(6,6),SIGX,EPSX,DEPX,SIGXP
       REAL*8 SIGP(6),SIGM(6),EPS(6),DEPS(6),R8MIEM,ETAN,R8VIDE
       REAL*8 ANGMAS(3),R8NNEM
-      INTEGER I,J,IK,ICORRM,ICORRP
+      INTEGER I,J,IK
 
       LOGICAL VECTEU
 
@@ -105,10 +105,6 @@ C --- PARAMETRES EN ENTREE
       CALL JEVECH('PCOMPOR','L',ICOMPO)
       CALL JEVECH('PCARCRI','L',ICARCR)
 
-      CALL JEVECH('PCORRMR','L',ICORRM)
-      CORRM = ZR(ICORRM)
-      CALL JEVECH('PCORRPR','L',ICORRP)
-      CORRP = ZR(ICORRP)
 C --- ANGLE DU MOT_CLEF MASSIF (AFFE_CARA_ELEM)
 C --- INITIALISE A R8NNEM (ON NE S'EN SERT PAS)
       CALL R8INIR(3,  R8NNEM(), ANGMAS ,1)
@@ -251,16 +247,16 @@ C     ---------------------------------------------------
       IF (ZK16(ICOMPO).EQ.'ELAS' .OR.
      &    ZK16(ICOMPO).EQ.'VMIS_ISOT_LINE' .OR.
      &    ZK16(ICOMPO).EQ.'VMIS_ISOT_TRAC' .OR.
-     &    ZK16(ICOMPO).EQ.'CORR_ACIER' .OR.     
+     &    ZK16(ICOMPO).EQ.'CORR_ACIER' .OR.
      &    ZK16(ICOMPO).EQ.'VMIS_CINE_LINE') THEN
 C     ---------------------------------------------------
 
 C --- RECUPERATION DES CARACTERISTIQUES DU MATERIAU
 
         EPSM = (UML(4)-UML(1))/XLONG0
-        CALL NMICLB(OPTION,ZK16(ICOMPO),ZI(IMATE),XLONG0,A,DLONG,EFFNOM,
-     &              TEMPM,TEMPP,TREF,ZR(IVARIM),EFFNOP,ZR(IVARIP),KLV,
-     &              FONO,EPSM,CORRM,ZR(ICARCR),CODRET)
+        CALL NMICLB(1,OPTION,ZK16(ICOMPO),ZI(IMATE),XLONG0,A,DLONG,
+     &              EFFNOM,TEMPM,TEMPP,TREF,ZR(IVARIM),EFFNOP,
+     &              ZR(IVARIP),KLV,FONO,EPSM,ZR(ICARCR),CODRET)
 
         IF (OPTION(1:10).EQ.'RIGI_MECA_') THEN
           CALL UTPSLG(NNO,NC,PGL,KLV,MATUU)
@@ -341,8 +337,8 @@ C     ------------
         CALL R8INIR(NBT,0.D0,KLV,1)
         VECTEU = ((OPTION(1:9).EQ.'FULL_MECA') .OR.
      &              (OPTION(1:9).EQ.'RAPH_MECA'))
-     
-     
+
+
         CALL JEVECH ('PCOMPOR','L',ICOMPO)
         IF ((ZK16(ICOMPO-1+5)(1:7).NE.'DEBORST').AND.
      &      (ZK16(ICOMPO)(1:4).NE.'SANS')) THEN
@@ -353,19 +349,17 @@ C     ------------
             SIGX=EFFNOM/A
             EPSX=(UML(4)-UML(1))/XLONG0
             DEPX=DLONG/XLONG0
-            
+
             IF (VECTEU) THEN
                CALL TECACH('OON','PVARIMP',7,JTAB,IRET)
                NBVARI = MAX(JTAB(6),1)*JTAB(7)
-               IVARMP=JTAB(1)       
+               IVARMP=JTAB(1)
                CALL DCOPY(NBVARI,ZR(IVARMP),1,ZR(IVARIP),1)
             ENDIF
-            
-          CALL COMP1D(OPTION,
+
+          CALL COMP1D(1,OPTION,
      &                SIGX,EPSX,DEPX,
      &                TEMPM,TEMPP,TREF,
-     &                -1.D0,-1.D0,
-     &                CORRM,CORRP,
      &                ANGMAS,
      &                ZR(IVARIM),ZR(IVARIP),SIGXP,ETAN,CODRET)
 

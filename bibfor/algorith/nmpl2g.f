@@ -12,7 +12,7 @@
      &                    DFDI,DEF,DFDIB,SIGP,VIP,MATRIG,VECTF,CODRET)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/11/2004   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ALGORITH  DATE 23/06/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -344,18 +344,16 @@ C   REUNION DES EPSM, DEPS AVEC EPSRM, DEPSR POUR PASSAGE DANS NMCOMP
 
 C - LOI DE COMPORTEMENT
 
-       CALL NMCOMP(NDIM,TYPMOD,IMATE,COMPOR,CRIT,
+       CALL NMCOMP(KPG,NDIM,TYPMOD,IMATE,COMPOR,CRIT,
      &             INSTAM,INSTAP,
      &             TEMPM,TEMPP,TREF,
      &             HYDRGM,HYDRGP,
      &             SECHGM,SECHGP,SREF,
-     &             -1.D0,-1.D0,
      &             EPSTM,DEPST,
      &             SIGN,VIM(1,KPG),
      &             OPTION,
      &             EPSANM,EPSANP,
      &             NZ,PHASM(1,KPG),PHASP(1,KPG),
-     &             R8VIDE(),R8VIDE(),
      &             ANGMAS,
      &             ELGEOM(1,KPG),
      &             SIGMA,VIP(1,KPG),DSIDPT,COD(KPG))

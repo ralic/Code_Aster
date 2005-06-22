@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 14/06/2005   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,7 +22,8 @@ from Macro.macr_lign_coupe_ops import macr_lign_coupe_ops
 MACR_LIGN_COUPE=MACRO(nom="MACR_LIGN_COUPE",op=macr_lign_coupe_ops,sd_prod=table_sdaster,
                        reentrant='n',
             UIinfo={"groupes":("Outils métier",)},
-                       fr="extraction d un résultat sur des lignes de coupes définies par 2 points ou un group_no",
+            fr="Extraction des valeurs d'un résultat dans une ou plusieurs tables sur des lignes de coupe définies"
+             +" par deux points et un intervalle",
          RESULTAT        =SIMP(statut='o',typ=(evol_elas,evol_noli,evol_ther) ),
 # extraction des résultats
          b_meca        =BLOC(condition = "AsType(RESULTAT) in (evol_elas,evol_noli)",fr="résultat mécanique",

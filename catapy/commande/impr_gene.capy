@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 17/05/2005   AUTEUR CIBHHLV L.VIVAN 
+#& MODIF COMMANDE  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,7 +17,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
 IMPR_GENE=PROC(nom="IMPR_GENE",op= 157,
-               fr="Calcul du dommage subi par une structure soumise à une sollicitation de type aléatoire",
+            fr="Imprimer le résultat d'un calcul dynamique en variables généralisées au format RESULTAT",
             UIinfo={"groupes":("Impression",)},
          FORMAT          =SIMP(statut='f',typ='TXM',defaut="RESULTAT",into=("RESULTAT",) ),
          UNITE           =SIMP(statut='f',typ='I',defaut=8),  

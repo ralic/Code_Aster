@@ -1,7 +1,7 @@
       SUBROUTINE ARLCPL(MAIL,QUADZ,NOMCZ,NOM1Z,CINE1,
      &                 NOM2Z,CINE2,NTM,NORMZ,TANGZ,L,APP)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -87,28 +87,29 @@ C --- PARAMETRES
 
 C --- VARIABLES
       CHARACTER*(*) QUADZ,NOMCZ,NOM1Z,NOM2Z,NORMZ,TANGZ
+      CHARACTER*1   TRANS,KSTOP
       CHARACTER*16  MORSE1,MORSE2
       CHARACTER*10  NOMC,NOM1,NOM2,QUAD,NORM,TANG
       CHARACTER*8   MAIL,CINE1,CINE2,NTM(*),TM0,TM1,TM2
       INTEGER       DIM,NH,NQ,NG,NT,NC,NN0,NN1,NN2,MA1,MA2
       INTEGER       IAS,I1(NNM*NNM),I2(NNM*NNM),IM1,IM2,I,J,K,K1,K2,N
-      INTEGER       A0,A1,A2,A3,A4,A5,P,P0,P1,P2,P3,P4,B0,B1,C0,C1
+      INTEGER       A0,A1,A2,A3,A4,A5,P,P0,P1,P2,P3,P4,B0,B1,C0,C1,IRET
       INTEGER       Z0,Z1,Z2,E0,E1,E2,E3,E4,E5,E6,D0,D1,D2,D3,D4,D5,D6
       REAL*8        PP(NGM),PG(NGM),FG(NGM*NNM),F1(NGM*NNM),F2(NGM*NNM)
       REAL*8        DF1(3*NGM*NNM),DF2(3*NGM*NNM),DFG(3*NGM*NNM)
       REAL*8        NO1(3*NNM),NO2(3*NNM),G(3*NGM),G1(3),G2(3),PREC
-      REAL*8        L1(10*NNM*NNM),L2(10*NNM*NNM),H1,H2,R,L,ZERO
-      LOGICAL       APP(*),IR,NN,IER
-
-      R = 1.D0
-      ZERO = 0.D0
-      
+      REAL*8        L1(10*NNM*NNM),L2(10*NNM*NNM),H1,H2,R,L,R8BID
+      LOGICAL       APP(*),IR,NN
+    
       QUAD = QUADZ
       NOMC = NOMCZ
       NOM1 = NOM1Z
       NOM2 = NOM2Z
       NORM = NORMZ
       TANG = TANGZ
+
+      TRANS='T'
+      KSTOP='S'
       
       MORSE1 = NOM1//'.MORSE'
       MORSE2 = NOM2//'.MORSE'
@@ -262,20 +263,24 @@ C --------- INTEGRATION SUR MA1
 
               CALL DCOPY(DIM*NN1,DFG(P1),1,DF1(P3),1)
               CALL MTPROD(NO1,DIM,0,DIM,0,NN1,DF1(P3),DIM,0,DIM,0,G)
-              CALL MGAUST(G,DF1(P3),DIM,DIM,NN1,R,IR)
-              IF (.NOT.IR) GOTO 140
+              KSTOP='C'
+              CALL MGAUSS(TRANS,KSTOP,G,DF1(P3),DIM,DIM,NN1,R,IRET)
+              IF (IRET.NE.0) GOTO 140
               
               PG(K) = PP(K) * ABS(R)
               
               PREC = H2*PREC0
               CALL MTPROD(NO1,DIM,0,DIM,0,NN1,FG(P0),1,0,1,0,G)
               CALL REFERE(G,NO2,DIM,TM2,PREC,IMAX,.TRUE.,G2,IR,F2(P2))
-              IF (.NOT.IR) GOTO 140
+              IF (.NOT.IR) THEN
+                   IRET=1
+                   GOTO 140
+              ENDIF
 
               CALL FORME1(G2,TM2,DF2(P4),NN2,DIM)
               CALL MTPROD(NO2,DIM,0,DIM,0,NN2,DF2(P4),DIM,0,DIM,0,G)
-              IER=.FALSE.
-              CALL MGAUST(G,DF2(P4),DIM,DIM,NN2,ZERO,IER)
+              KSTOP='S'
+              CALL MGAUSS(TRANS,KSTOP,G,DF2(P4),DIM,DIM,NN2,R8BID,IRET)
 
               P0 = P0 + NN0
               P1 = P1 + NN0*DIM
@@ -295,20 +300,24 @@ C --------- INTEGRATION SUR MA2
 
               CALL DCOPY(DIM*NN2,DFG(P1),1,DF2(P4),1)
               CALL MTPROD(NO2,DIM,0,DIM,0,NN2,DF2(P4),DIM,0,DIM,0,G)
-              CALL MGAUST(G,DF2(P4),DIM,DIM,NN2,R,IR)
-              IF (.NOT.IR) GOTO 140
+              KSTOP='C'
+              CALL MGAUSS(TRANS,KSTOP,G,DF2(P4),DIM,DIM,NN2,R,IRET)
+              IF (IRET.NE.0) GOTO 140
               
               PG(K) = PP(K) * ABS(R)
 
               PREC = H1*PREC0
               CALL MTPROD(NO2,DIM,0,DIM,0,NN2,FG(P0),1,0,1,0,G)
               CALL REFERE(G,NO1,DIM,TM1,PREC,IMAX,.TRUE.,G1,IR,F1(P2))
-              IF (.NOT.IR) GOTO 140
+              IF (.NOT.IR) THEN
+                  IRET=1
+                  GOTO 140
+              ENDIF
 
               CALL FORME1(G1,TM1,DF1(P3),NN1,DIM)
               CALL MTPROD(NO1,DIM,0,DIM,0,NN1,DF1(P3),DIM,0,DIM,0,G)
-              IER=.FALSE.
-              CALL MGAUST(G,DF1(P3),DIM,DIM,NN1,ZERO,IER)
+              KSTOP='S'
+              CALL MGAUSS(TRANS,KSTOP,G,DF1(P3),DIM,DIM,NN1,R8BID,IRET)
 
               P0 = P0 + NN0
               P1 = P1 + NN0*DIM
@@ -367,7 +376,8 @@ C ----------- CALCUL DES FNCT FORME ET DERIVEES POUR LES DEUX MAILLES
              P2 = 1
              P3 = 1
              P4 = 1
-             
+             KSTOP='S'
+
              DO 100 N = 1, NG
 
               CALL MTPROD(ZR(Z0),DIM,0,DIM,ZI(P),NN0,FG(P0),1,0,1,0,G)
@@ -376,21 +386,25 @@ C ----------- CALCUL DES FNCT FORME ET DERIVEES POUR LES DEUX MAILLES
 
               PREC = H1*PREC0
               CALL REFERE(G,NO1,DIM,TM1,PREC,IMAX,.TRUE.,G1,IR,F1(P1))
-              IF (.NOT.IR) GOTO 140
+              IF (.NOT.IR) THEN
+                  IRET=1
+                  GOTO 140
+              ENDIF
 
               PREC = H2*PREC0
               CALL REFERE(G,NO2,DIM,TM2,PREC,IMAX,.TRUE.,G2,IR,F2(P2))
-              IF (.NOT.IR) GOTO 140
+              IF (.NOT.IR) THEN
+                  IRET=1
+                  GOTO 140
+              ENDIF
 
               CALL FORME1(G1,TM1,DF1(P3),NN1,DIM)
               CALL MTPROD(NO1,DIM,0,DIM,0,NN1,DF1(P3),DIM,0,DIM,0,G)
-              IER=.FALSE.
-              CALL MGAUST(G,DF1(P3),DIM,DIM,NN1,ZERO,IER)
+              CALL MGAUSS(TRANS,KSTOP,G,DF1(P3),DIM,DIM,NN1,R8BID,IRET)
 
               CALL FORME1(G2,TM2,DF2(P4),NN2,DIM)
               CALL MTPROD(NO2,DIM,0,DIM,0,NN2,DF2(P4),DIM,0,DIM,0,G)
-              IER=.FALSE.
-              CALL MGAUST(G,DF2(P4),DIM,DIM,NN2,ZERO,IER)
+              CALL MGAUSS(TRANS,KSTOP,G,DF2(P4),DIM,DIM,NN2,R8BID,IRET)
 
               P0 = P0 + NN0
               P1 = P1 + NN1
@@ -449,11 +463,11 @@ C ------- ASSEMBLAGE
 
  30   CONTINUE
         
-      IR = .TRUE.
+      IRET = 0
 
  140  CONTINUE
 
-      IF (.NOT.IR) THEN
+      IF (IRET.NE.0) THEN
         CALL INFMAJ()
         CALL INFNIV(I,J)
         WRITE(I,*) '   <F> POUR LE COUPLE ',IM1,IM2

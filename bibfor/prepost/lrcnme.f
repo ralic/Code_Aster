@@ -6,7 +6,7 @@
 C_____________________________________________________________________
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 14/03/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF PREPOST  DATE 23/06/2005   AUTEUR VABHHTS J.PELLET 
 C RESPONSABLE GNICOLAS G.NICOLAS
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -141,7 +141,7 @@ C====
 C
       CHAMN = CHANOM
 C
-      CALL CNSCNO ( CHAMNS, ' ', 'G', CHAMN )
+      CALL CNSCNO ( CHAMNS,' ','NON', 'G', CHAMN )
 C
       CALL DETRSD ( 'CHAM_NO_S', CHAMNS )
 C

@@ -2,7 +2,7 @@
      &                    MU,ECROB,ECROD,ALPHA,K1,K2,DSIDEP)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 04/10/2004   AUTEUR GODARD V.GODARD 
+C MODIF ALGORITH  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -33,13 +33,10 @@ C
 C
 C-------------------------------------------------------------
 
-
-      LOGICAL           IRET
-
-      INTEGER           I,J,K,T(3,3)
-      REAL*8             RAC2,KRON(6),NOFBM,UN
+      INTEGER           I,J,K,T(3,3),IRET
+      REAL*8             RAC2,KRON(6),NOFBM,UN,DET
       REAL*8             CC(6),VECC(3,3),VALCC(3),CCP(6),CPE(6)
-      REAL*8             VECEPS(3,3),VALEPS(3),TOTO
+      REAL*8             VECEPS(3,3),VALEPS(3)
       REAL*8             FB(6),FBM(6),VECFB(3,3),VALFB(3),TREB
       REAL*8             TREPS,DCOEFD,ENE,FD,TREM
       REAL*8             DFBMDF(6,6),TDFBDB(6,6),TDFBDE(6,6)
@@ -48,7 +45,7 @@ C-------------------------------------------------------------
       REAL*8             PSI(6,6),KSI(6,6),IKSI(6,6)
       REAL*8             MATB(6,6),MATD(6)
       REAL*8             COUPL,DCRIT(6)
-      
+      CHARACTER*1        TRANS,KSTOP     
       
       
       
@@ -56,7 +53,10 @@ C-------------------------------------------------------------
 
       UN=1.D0
       RAC2=SQRT(2.D0)
-      
+
+      TRANS=' '
+      KSTOP='S'
+
       T(1,1)=1
       T(2,2)=2
       T(3,3)=3
@@ -274,29 +274,8 @@ C 783  CONTINUE
  140  CONTINUE 
 
 
-
-
-
-      IRET=.TRUE.
-      TOTO=0.D0
-      CALL MGAUSS(KSI,IKSI,6,6,6,TOTO,IRET)
+      CALL MGAUSS(TRANS,KSTOP,KSI,IKSI,6,6,6,DET,IRET)
      
-
-      IF (IRET.EQV..FALSE.) THEN
-C C -- si une variable evolue beaucoup plus que l autre
-C C -- la matrice ne sera pas inversible et on ne pourra 
-C C -- pas calculer la matrice tangente
-C C -- on propose alors de passer a la matrice tangente
-C C -- pour une seule variable evoluant 
-C 
-C          IF (FD.LT.(SQRT(NOFBM)*1.D-2)) THEN
-C            GOTO 567  
-C          ELSEIF (SQRT(NOFBM).LT.(FD*1.D-2)) THEN
-C            GOTO 568  
-C          ELSE
-            CALL UTMESS('F','MTEOBL3','KSI NON INVERSIBLE')
-C         ENDIF
-      ENDIF
 
 C-- ! ksi n est plus disponible
 
@@ -358,12 +337,7 @@ C 567     CONTINUE
            IKSI(I,I)=1.D0
  505     CONTINUE 
 
-         IRET=.TRUE.
-         TOTO=0.D0
-         CALL MGAUSS(KSI,IKSI,6,6,6,TOTO,IRET)
-         IF (IRET.EQV..FALSE.) THEN
-           CALL UTMESS('F','MTADE3','KSIB NON INVERSIBLE')
-         ENDIF
+         CALL MGAUSS(TRANS,KSTOP,KSI,IKSI,6,6,6,DET,IRET)
 
          CALL R8INIR(36,0.D0,MATB,1)
 

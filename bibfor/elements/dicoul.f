@@ -10,7 +10,7 @@ C ----------------------------------------------------------------------
       CHARACTER*16 OPTION
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ELEMENTS  DATE 23/06/2005   AUTEUR VABHHTS J.PELLET 
 C TOLE CRP_21
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -178,18 +178,12 @@ C --- CARACTERISTIQUES DU MATERIAU
           FKN = VALRE2(2)
         ELSE
 C          PRISE EN COMPTE DE L'IRRADIATION
-          CALL TECACH('OON','PIRRAPR',1,IIRRAP,IRET)
-          IF (IIRRAP.NE.0) THEN
             NBPAR = 1
             NOMPAR = 'INST'
             CALL RCVALA(ICODMA,' ','DIS_CONTACT',NBPAR,NOMPAR,
-     &                 ZR(IIRRAP), NBRE3,NOMRE3,VALRE3,CODRE3,' ')
+     &               IRRAP, NBRE3,NOMRE3,VALRE3,CODRE3,' ')
             FKN = VALRE3(1)
-          ELSE
-            CALL UTMESS('F','DICOUL','LE CHAMP D''IRRADIATION EST '//
-     &                  'INCOMPLET OU NON PRESENT')
           END IF
-        END IF
 
         DUN = DUL(1+NC) - DUL(1)
         UNM = ULM(1+NC) - ULM(1)

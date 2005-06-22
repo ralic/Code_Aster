@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 15/11/2004   AUTEUR ASSIRE A.ASSIRE 
+#& MODIF COMMANDE  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,8 +21,8 @@
 from Macro.defi_part_feti_ops import defi_part_feti_ops
 
 DEFI_PART_FETI=MACRO(nom="DEFI_PART_FETI",op=defi_part_feti_ops,sd_prod=sd_feti_sdaster,
-                     reentrant='n',
-                     fr="Creation partitionnement en sous-domaines pour FETI",
+                     reentrant='n',UIinfo={"groupe":("Maillage",)},
+                     fr="Création de partitionnement en sous-domaines pour FETI",
          MAILLAGE        =SIMP(statut='o',typ=maillage_sdaster),
          MODELE          =SIMP(statut='f',typ=modele_sdaster),
          NB_PART         =SIMP(statut='o',typ='I'),

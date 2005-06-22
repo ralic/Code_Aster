@@ -4,7 +4,7 @@
      &                   DSDE )
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -46,20 +46,20 @@ C
 C     OUT DSDE   :  MATRICE DE COMPORTEMENT TANGENT = DSIG/DEPS
 C      DSDE = INVERSE(Y0-Y1*INVERSE(Y3)*Y2)
 C     ----------------------------------------------------------------
-      INTEGER         NDT , NDI , NMAT , NVI,I,J,NR, NVV
+      INTEGER         NDT , NDI , NMAT , NVI,I,J,NR, NVV, IRET
 C DIMENSIONNEMENT DYNAMIQUE
       REAL*8          DRDY(NR,NR),Y0(6,6),Y1(6,(NVI-7)),DSDE(6,6)
       REAL*8          MATER(NMAT*2),Y2((NVI-7),6),KYL(6,6),DET,I6(6,6)
       REAL*8          Y3((NVI-7),(NVI-7)),HOOK(6,6)
       REAL*8          YD(NR),YF(NR),DY(NR),UN,ZERO,TEMPF
       CHARACTER*8     MOD
-      LOGICAL         IRET
 C      PARAMETER       ( UN   =  1.D0   )
 C      PARAMETER       ( ZERO =  0.D0   )
       
       INTEGER         NBCOMM(NMAT,3)
       REAL*8  SIGF(*),SIGD(*),VIND(*),VINF(*),TIMED,TIMEF,PGL(3,3)
       CHARACTER*16    CPMONO(5*NMAT+1),COMP(*)
+      CHARACTER*1     TRANS,KSTOP
       COMMON /TDIM/ NDT,NDI
 C      DATA  I6        /UN     , ZERO  , ZERO  , ZERO  ,ZERO  ,ZERO,
 C     1                 ZERO   , UN    , ZERO  , ZERO  ,ZERO  ,ZERO,
@@ -108,10 +108,9 @@ C     glissement, il y en a 3*Ns
  40   CONTINUE       
        
 C       Y2=INVERSE(Y3)*Y2
-      IRET = .TRUE.
-      DET=0.D0      
-      CALL MGAUSS ( Y3, Y2, NVV, NVV, 6, DET, IRET )
-      IF (.NOT.IRET) CALL UTMESS('F','LCMMJP','Y3 SINGULIERE')
+      TRANS=' '
+      KSTOP='S'
+      CALL MGAUSS (TRANS,KSTOP,Y3, Y2, NVV, NVV, 6, DET, IRET )
 
 C      KYL=Y1*INVERSE(Y3)*Y2
       CALL PROMAT(Y1,6,6,NVV,Y2,NVV,NVV,6,KYL)

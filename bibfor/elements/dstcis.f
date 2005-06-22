@@ -1,6 +1,6 @@
       SUBROUTINE DSTCIS ( DCI , R , HFT2 , BCA , AN )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 25/07/2001   AUTEUR RATEAU G.RATEAU 
+C MODIF ELEMENTS  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,18 +23,18 @@ C ======================================================================
       REAL*8   HFT2(2,6)
       REAL*8   BCA(2,3)
       REAL*8   AN(3,9)
+      CHARACTER*1 TRANS,KSTOP
 C     --------------------------------------------------------
 C     MATRICES BCA(2,3) ET AN(3,9) DU CISAILLEMENT POUR LE DST
 C     --------------------------------------------------------
 C
       REAL*8  L(3) , C(3) , S(3)
-      REAL*8  X(3) , Y(3), ZERO
+      REAL*8  X(3) , Y(3)
       REAL*8  TA(6,3)
       REAL*8  DB(2,3)
       REAL*8  AA(3,3)
       REAL*8  AAI(3,3)
       REAL*8  AW(3,9)
-      LOGICAL FAUX
 C     ------------------ PARAMETRAGE TRIANGLE --------------------------
       INTEGER NPG , NC , NNO
       INTEGER LJACO,LTOR,LQSI,LETA,LWGT,LXYC,LCOTE,LCOS,LSIN
@@ -51,9 +51,6 @@ C     ------------------ PARAMETRAGE TRIANGLE --------------------------
                PARAMETER (LCOS  = LCOTE + NC)
                PARAMETER (LSIN  = LCOS  + NC)
 C     ------------------------------------------------------------------
-      ZERO = 0.D0
-      FAUX = .FALSE.
-
       C(1) = R(LCOS)
       C(2) = R(LCOS+1)
       C(3) = R(LCOS+2)
@@ -111,7 +108,9 @@ C     -------------- INVERSION DE AA -----------------------------------
       DO 156 I = 1, 3
          AAI(I,I) = 1.D0
  156  CONTINUE
-      CALL MGAUSS ( AA , AAI , 3 , 3 , 3, ZERO, FAUX )
+      TRANS=' '
+      KSTOP='S'
+      CALL MGAUSS ( TRANS,KSTOP,AA , AAI , 3 , 3 , 3, DET, IRET )
 C
 C     -------------- CALCUL DE AW --------------------------------------
       DO 160 K = 1 , 27

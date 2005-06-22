@@ -3,7 +3,7 @@
      &                   NP, NB, NR, DSIDEP)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/07/2001   AUTEUR RATEAU G.RATEAU 
+C MODIF ALGORITH  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -28,6 +28,7 @@ C-----------------------------------------------------------------------
       REAL*8             DRBDE(NB,NB), DRPDE(NP,NB)
       REAL*8             DSGDB(NB,NB), DSGDP(NB,NP), DSGDE(NB,NB)
       REAL*8             DSIDEP(NB,NB)
+      CHARACTER*1 TRANS,KSTOP
 C ----------------------------------------------------------------------
 C     INTEGRATION DE LA LOI DE COMPORTEMENT VISCO PLASTIQUE DE
 C     CHABOCHE AVEC ENDOMAGEMENT
@@ -37,14 +38,10 @@ C     CALCUL DE L'OPERATEUR TANGENT DSIDEP(6,6)
 C ----------------------------------------------------------------------
       INTEGER     NMOD
       PARAMETER  (NMOD = 25)
-      INTEGER     I, J, K 
+      INTEGER     I, J, K,IRET 
       REAL*8      A(6,6), B(6,6), R(NMOD,NMOD), DPDE(2,6), DBDE(6,6)
-      REAL*8      DRDY(NMOD,NMOD), MUN,ZERO
+      REAL*8      DRDY(NMOD,NMOD), MUN,DET
       PARAMETER  (MUN = -1.D0)
-      LOGICAL    FAUX
-
-      FAUX = .FALSE.
-      ZERO = 0.D0
 C
 C ----------------------------------------------------------------------
 C-- 1.1. INITIALISATION DE L OPERATEUR LINEAIRE DU SYSTEME 
@@ -67,7 +64,9 @@ C
 00121 CONTINUE
 C
 C-- 2. CALCUL DE DBDE ET DPDE
-      CALL MGAUSS (DRDY , R , NMOD , NR , NB, ZERO, FAUX)
+      TRANS=' '
+      KSTOP='S'
+      CALL MGAUSS (TRANS,KSTOP,DRDY , R , NMOD , NR , NB, DET, IRET)
       CALL LCICMA (R, NMOD, NMOD, NB, NB, 1, 1, DBDE, NB, NB, 1, 1)
       CALL LCICMA (R, NMOD, NMOD, NP, NB, NB+1, 1, DPDE, NP, NB, 1, 1)
 C

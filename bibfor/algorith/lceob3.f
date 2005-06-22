@@ -3,7 +3,7 @@
      &                     SEUIL,B,D,MULT,ELAS,DBLOQ)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 04/10/2004   AUTEUR GODARD V.GODARD 
+C MODIF ALGORITH  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -57,9 +57,7 @@ C OUT ELAS     : ELASTIQUE OU DISSIPATION?
 C OUT DBLOQ  : BLOQUAGE DE L'ENDOMMAGEMENT DE COMPRESSION
 C ----------------------------------------------------------------------
 
-
-      LOGICAL     IRET
-      INTEGER     I,J,K,COMPTE,T(3,3)
+      INTEGER     I,J,K,COMPTE,T(3,3),IRET
 
       REAL*8      FB(6),DB(6),FD,DD
       REAL*8      TREPS,TREB,TREM
@@ -68,7 +66,7 @@ C ----------------------------------------------------------------------
       REAL*8      RAC2
       REAL*8      RTEMP2,RTEMP3,DELTA1(6),DELTA2
       REAL*8      DDG
-      REAL*8      TOLC,TOTO
+      REAL*8      TOLC,DET
       REAL*8      TATA,NORMRB,RTEMP,CRIT
       REAL*8      MTE1(6,6),MTE2(6,6)
       REAL*8      VECFB(3,3),VALFB(3)
@@ -77,7 +75,7 @@ C ----------------------------------------------------------------------
       REAL*8      TEME(6,6),COUPL
       REAL*8      RESD,ENE,DCOEFD,DDCOED,DFDDD,PSI
       REAL*8      INTER1,INTER2,INTER3,INTER4
-      
+      CHARACTER*1 TRANS,KSTOP
       
       
       DATA  KRON/1.D0,1.D0,1.D0,0.D0,0.D0,0.D0/
@@ -289,18 +287,15 @@ C--------------------------------------------------------
                 ENDIF
  47           CONTINUE
  46         CONTINUE
-            IRET=.TRUE.
             CALL R8INIR(36,0.D0,TEME,1)
             DO 48 I=1,6
               DO 49 J=1,6
                 TEME(I,J)=IDE(I,J)
  49           CONTINUE
  48         CONTINUE
-            TOTO=0.D0
-            CALL MGAUSS(TOTI,TEME,6,6,6,TOTO,IRET)
-            IF (IRET.EQV..FALSE.) THEN
-              CALL UTMESS('F','LCBETO','KSI NON INVERSIBLE')
-            ENDIF
+            TRANS=' '
+            KSTOP='S'
+            CALL MGAUSS(TRANS,KSTOP,TOTI,TEME,6,6,6,DET,IRET)
             CALL R8INIR(36,0.D0,IKSI,1)
             DO 51 I=1,6
               DO 52 J=1,6

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 10/06/2004   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,7 +19,7 @@
 # RESPONSABLE G8BHHXD X.DESROCHES
 INTE_MAIL_2D=OPER(nom="INTE_MAIL_2D",op=50,sd_prod=courbe_sdaster,
             UIinfo={"groupes":("Post traitements",)},
-                  fr="Définition d une courbe sur un maillage 2D",reentrant='n',
+                  fr="Définition d'une courbe dans un maillage 2D",reentrant='n',
 
          MAILLAGE        =SIMP(statut='o',typ=(maillage_sdaster) ),
 

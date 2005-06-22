@@ -3,7 +3,7 @@
       REAL*8   XYZL(3,*), DF(3,3), DCI(2,2), AN(4,12)
       CHARACTER*16  NOMTE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 21/01/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,8 +39,8 @@ C     ----- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
-      INTEGER LZR, K, IC, INT, J, I
-      REAL*8  QSI,ETA,PETA,META,PQSI,MQSI,ZERO
+      INTEGER LZR, K, IC, INT, J, I, IRET
+      REAL*8  QSI,ETA,PETA,META,PQSI,MQSI,DET
       REAL*8  L(4) , C(4) , S(4)
       REAL*8  X(4) , Y(4)
       REAL*8  HFT2(2,6)
@@ -52,7 +52,6 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       REAL*8  AW(4,12)
       REAL*8  AA(4,4)
       REAL*8  AAI(4,4)
-      LOGICAL FAUX
 C     ------------------ PARAMETRAGE QUADRANGLE ------------------------
       INTEGER NPG , NC , NNO
       INTEGER LJACO,LTOR,LQSI,LETA,LWGT,LXYC,LCOTE,LCOS,LSIN
@@ -68,10 +67,9 @@ C     ------------------ PARAMETRAGE QUADRANGLE ------------------------
                PARAMETER (LCOTE = LXYC + 2*NC)
                PARAMETER (LCOS  = LCOTE + NC)
                PARAMETER (LSIN  = LCOS + NC)
+      CHARACTER*1 TRANS,KSTOP
 C     ------------------------------------------------------------------
       CALL JEMARQ()
-      ZERO = 0.D0
-      FAUX = .FALSE.
 C
       CALL JEVETE( '&INEL.'//NOMTE(1:8)//'.DESR' ,' ',LZR )
 C
@@ -185,7 +183,9 @@ C     -------------- INVERSION DE AA -----------------------------------
       DO 320 I = 1, 4
          AAI(I,I) = 1.D0
  320  CONTINUE
-      CALL MGAUSS ( AA , AAI , 4 , 4, 4, ZERO, FAUX )
+      TRANS=' '
+      KSTOP='S'
+      CALL MGAUSS (TRANS,KSTOP,AA , AAI , 4 , 4, 4, DET, IRET )
 C
       AW(1,1)  = AW(1,1)  + 1.D0
       AW(1,2)  = AW(1,2)  - X(1)/2.D0

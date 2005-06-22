@@ -3,7 +3,7 @@
       CHARACTER*(*) TYPESD,NOMSD
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 18/04/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 23/06/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -370,8 +370,7 @@ C     -------------------------------------
         CALL ASSDE1(COM//'.PHAS')
         CALL ASSDE1(COM//'.EPAN')
         CALL ASSDE1(COM//'.INST')
-        CALL ASSDE1(COM//'.IRRA')
-        CALL ASSDE1(COM//'.CORR')
+        CALL ASSDE1(COM//'.TOUT')
         CALL JEDETR(COM//'.EXISTENCE')
 
 C     ------------------------------------------------------------------

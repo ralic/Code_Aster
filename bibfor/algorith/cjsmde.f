@@ -5,7 +5,7 @@
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,8 +43,8 @@ C       ----------------------------------------------------------------
 
         INTEGER   NDT, NDI, NVI, NR, NMOD
         PARAMETER ( NMOD = 14 )
-        INTEGER   ITER,NITER
-        LOGICAL   NOCONV,AREDEC,STOPNC,FAUX
+        INTEGER   ITER,NITER,IRET
+        LOGICAL   NOCONV,AREDEC,STOPNC
 
         REAL*8    EPSD(6), DEPS(6)
         REAL*8    SIGD(6), SIGF(6), GD(6)
@@ -53,7 +53,7 @@ C       ----------------------------------------------------------------
         REAL*8    R(NMOD), DRDY(NMOD,NMOD)
         REAL*8    DDY(NMOD), DY(NMOD), YD(NMOD), YF(NMOD)
         REAL*8    ERR, ERR1, ERR2, SIGNE
-        REAL*8    ZERO,PA,QINIT
+        REAL*8    DET,PA,QINIT
         INTEGER   UMESS,IUNIFI
         INTEGER    NITIMP
         PARAMETER (NITIMP = 200)
@@ -76,12 +76,10 @@ C
         LOGICAL DEVNU1,DEVNU2,TRA1,TRA2
 
         CHARACTER*8 MOD
+        CHARACTER*1 TRANS,KSTOP
 
         COMMON /TDIM/   NDT, NDI
 
-
-        ZERO  = 0.D0
-        FAUX  = .FALSE.
 
 C     ------------------------------------------------------------------
          UMESS = IUNIFI('MESSAGE')
@@ -182,9 +180,9 @@ C ET CALCUL DU JACOBIEN DU SYSTEME A T+DT :  DRDY(DY)
 C -> RESOLUTION DU SYSTEME LINEAIRE : DRDY(DY).DDY = -R(DY)
 
         CALL LCEQVN( NR, R, DDY)
-        CALL MGAUSS( DRDY, DDY, NMOD, NR, 1, ZERO, FAUX)
-
-
+        TRANS=' '
+        KSTOP='S'
+        CALL MGAUSS(TRANS,KSTOP,DRDY, DDY, NMOD, NR, 1, DET, IRET)
 C
         RELAX(1) = 1.D0
 C

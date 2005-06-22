@@ -3,7 +3,7 @@
       CHARACTER*(*) CHIN,CHOU,BASE,CELMOD,TYPE
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 17/06/2003   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 23/06/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -156,7 +156,7 @@ C     ----------------------------------------------------------------
           CALL CARCES(CHIN,'ELNO',' ','V',CES1,IRET)
         END IF
         CALL CESCNS(CES1,MGANO,'V',CNS1)
-        CALL CNSCNO(CNS1,' ',BASE,CHOU)
+        CALL CNSCNO(CNS1,' ','NON',BASE,CHOU)
 
         CALL DETRSD('CHAM_NO_S',CNS1)
         CALL DETRSD('CHAM_ELEM_S',CES1)

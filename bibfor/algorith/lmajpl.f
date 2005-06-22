@@ -3,7 +3,7 @@
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,10 +39,9 @@ C                   ( DKDS  DKDX  DKDX1  DKDX2  DKDV  )
 C
 C       OUT DSDE   :  MATRICE DE COMPORTEMENT TANGENT = DSIG/DEPS
 C       ----------------------------------------------------------------
-        LOGICAL         FAUX
         INTEGER         NDT , NDI , NMAT , NR, NVI
-        INTEGER         N1,  N2,  N3,  N4
-        REAL*8          UN , ZERO, Z
+        INTEGER         N1,  N2,  N3,  N4, IRET
+        REAL*8          UN , ZERO, DET
         PARAMETER       ( UN   =  1.D0   )
         PARAMETER       ( ZERO =  0.D0   )
 
@@ -72,6 +71,7 @@ C
         REAL*8          VTMP(6),    VTMP1(6),   VTMF(6)
 C
         CHARACTER*8     MOD
+        CHARACTER*1     TRANS,KSTOP
 C
 C       ----------------------------------------------------------------
         COMMON /TDIM/   NDT   , NDI
@@ -84,8 +84,6 @@ C       ----------------------------------------------------------------
      5                   ZERO   , ZERO  , ZERO  , ZERO  ,ZERO  ,UN/
 C       ----------------------------------------------------------------
 C
-        FAUX = .FALSE.
-        Z = 0.D0
 
         CALL LCEQVN ( NDT  ,  SIGD , YD )
         CALL LCEQVN ( NDT  ,  SIGF , YF )
@@ -138,11 +136,14 @@ C
 C
 C       ----------------------------------------------------------------
 C
+        TRANS=' '
+        KSTOP='S'
+C
 C - A = MATA = DLDX2 (DIDX2)-1
 C - B = MATB = DJDX2 (DIDX2)-1
         CALL LCEQMA ( DIDX2  , MTMP1          )
         CALL LCEQMA ( I4     , MTMP           )
-        CALL MGAUSS ( MTMP1, MTMP, 6, NDT, NDT, Z, FAUX )
+        CALL MGAUSS (TRANS,KSTOP,MTMP1,MTMP,6,NDT,NDT,DET,IRET)
         CALL LCPRMM ( DLDX2  , MTMP   , MATA  )
         CALL LCPRMM ( DJDX2  , MTMP   , MATB  )
 C
@@ -150,7 +151,7 @@ C - C = MATC = (DLDX1 - A*DIDX1)*(DJDX1 - B*DIDX1)-1
         CALL LCPRMM ( MATB   , DIDX1  , MTMP1 )
         CALL LCDIMA ( DJDX1  , MTMP1  , MTMP1 )
         CALL LCEQMA ( I4     , MTMP           )
-        CALL MGAUSS ( MTMP1, MTMP, 6, NDT, NDT, Z, FAUX )
+        CALL MGAUSS (TRANS,KSTOP,MTMP1,MTMP,6,NDT,NDT,DET,IRET)
         CALL LCPRMM ( MATA   , DIDX1  , MTMP1 )
         CALL LCDIMA ( DLDX1  , MTMP1  , MTMP1 )
         CALL LCPRMM ( MTMP1  , MTMP   , MATC  )
@@ -186,7 +187,7 @@ C
 C - MTMP2 =  ( DGDX - DGDV*DKDX ) *(E)-1*D
         CALL LCEQMA ( I4     , MTMP           )
         CALL LCEQMA ( MATE   , MTMP1          )
-        CALL MGAUSS ( MTMP1, MTMP, 6, NDT, NDT, Z, FAUX )
+        CALL MGAUSS (TRANS,KSTOP,MTMP1,MTMP,6,NDT,NDT,DET,IRET)
         CALL LCPRMM ( MTMP   , MATD   , MTMP1 )
 C
         CALL LCPRTE ( DGDV   , DKDX   , MTMP  )
@@ -200,7 +201,7 @@ C - MTMP1 = DGDS - DGDV*DKDS - MTMP2
 C
 C - DSDE = (MTMP1)-1 * H
         CALL LCEQMA ( I4     , MTMP           )
-        CALL MGAUSS ( MTMP1, MTMP, 6, NDT, NDT, Z, FAUX )
+        CALL MGAUSS (TRANS,KSTOP,MTMP1,MTMP,6,NDT,NDT,DET,IRET)
         CALL LCOPLI ('ISOTROPE',MOD,MATER(1,1),HOOKF)
         CALL LCPRMM ( MTMP   , HOOKF  , DSDE  )
 C

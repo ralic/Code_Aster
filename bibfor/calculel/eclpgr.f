@@ -1,6 +1,6 @@
       SUBROUTINE ECLPGR()
       IMPLICIT   NONE
-C MODIF CALCULEL  DATE 06/09/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF CALCULEL  DATE 23/06/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -307,7 +307,7 @@ C                   PEU LES VALEURS :
 
 C         -- ON TRANSFORME CH2S  EN VRAI CHAM_NO :
 C         ----------------------------------------
-          CALL CNSCNO(CH2S,PRCHNO,'G',CH2)
+          CALL CNSCNO(CH2S,PRCHNO,'NON','G',CH2)
 
           CALL RSNOCH(RESU,NOMSY2,IORDR,' ')
           CALL JELIBE(CH1//'.CELV')

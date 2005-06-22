@@ -1,82 +1,285 @@
-      SUBROUTINE OP0006 (  IER )
+      SUBROUTINE OP0006(IER)
       IMPLICIT   NONE
       INTEGER              IER
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 04/05/2004   AUTEUR SMICHEL S.MICHEL-PONNELLE 
+C MODIF MODELISA  DATE 23/06/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
 C (AT YOUR OPTION) ANY LATER VERSION.
-C
+
 C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
 C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
 C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
 C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
-C
+
 C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C
+
 C     COMMANDE AFFE_MATERIAU
-C
+
 C ----------------------------------------------------------------------
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
-C
+
       INTEGER            ZI
-      COMMON  / IVARJE / ZI(1)
+      COMMON /IVARJE/ZI(1)
       REAL*8             ZR
-      COMMON  / RVARJE / ZR(1)
+      COMMON /RVARJE/ZR(1)
       COMPLEX*16         ZC
-      COMMON  / CVARJE / ZC(1)
+      COMMON /CVARJE/ZC(1)
       LOGICAL            ZL
-      COMMON  / LVARJE / ZL(1)
+      COMMON /LVARJE/ZL(1)
       CHARACTER*8        ZK8
       CHARACTER*16                ZK16
       CHARACTER*24                          ZK24
       CHARACTER*32                                    ZK32
       CHARACTER*80                                              ZK80
-      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
-C
-      INTEGER       N1, NBAPNO, MXMATA, NBOCC, I, NBMA, K
-      CHARACTER*8   K8B, CHMAT, NOMAIL, NOMODE, TYPMCL(2)
-      CHARACTER*16  MOTCLE(2), TYPE, NOMCMD
-      CHARACTER*24  MESMAI
+
+      INTEGER N1,NBAPNO,MXMATA,NBOCC,NBOCCV,I,NBMA,K,NCMP
+      INTEGER IFAC,NBFAC,NMXFAC,NMXCMP,IBID,NBVARC,NBTOU,JMA
+      INTEGER IOCC,JNCMP1,JNCMP2,JVALV1,JVALV2,KVARC,NBCVRC
+      INTEGER JCVNOM,JCVVAR,JCVCMP,JCVGD,JCVDEF,ITROU,NBM1,NBGM1
+
+      CHARACTER*8 K8B,CHMAT,NOMAIL,NOMODE,TYPMCL(2),NOMGD
+      CHARACTER*8 NOMGD2,CHAMGD,EVOL,NOCMP1,NOCMP2
+      CHARACTER*16 MOTCLE(2),TYPE,NOMCMD,NOMCHA,PROLGA,PROLDR
+      LOGICAL GETEXM,EXIST
+      CHARACTER*24 MESMAI,CVNOM,CVVAR,CVGD,CVCMP,CVDEF
+      PARAMETER (NMXFAC=20,NMXCMP=20)
+      CHARACTER*16 MOTFAC(NMXFAC),LIMFAC(NMXFAC),MOFAC
+      CHARACTER*19 CART1,CART2
+      CHARACTER*8  NOVARC,NOVAR1,LIVARC(NMXFAC)
+      REAL*8 VRCREF(NMXCMP),R8VIDE
+      LOGICAL ERRGD
 C ----------------------------------------------------------------------
-C
+
       CALL JEMARQ()
       CALL INFMAJ()
 
       NOMODE = ' '
-      CALL GETVID ( ' ', 'MODELE', 1,1,1, NOMODE, N1 )
-C
-      CALL GETFAC ( 'AFFE' , NBOCC )
-      CALL GETRES ( CHMAT, TYPE, NOMCMD)
-      CALL GETVID ( ' ', 'MAILLAGE', 1,1,1, NOMAIL, N1 )
-C
+      CALL GETVID(' ','MODELE',1,1,1,NOMODE,N1)
+
+      CALL GETFAC('AFFE',NBOCC)
+      CALL GETRES(CHMAT,TYPE,NOMCMD)
+      CALL GETVID(' ','MAILLAGE',1,1,1,NOMAIL,N1)
+
+
+C     1- TRAITEMENT DU MOT CLE AFFE :
+C     -----------------------------------------
       MOTCLE(1) = 'GROUP_MA'
       MOTCLE(2) = 'MAILLE'
       TYPMCL(1) = 'GROUP_MA'
       TYPMCL(2) = 'MAILLE'
-C
+
       MESMAI = '&&OP0006.MES_MAILLES'
-C
+
       NBAPNO = NBOCC
       MXMATA = 0
-      DO 10 I = 1 , NBOCC
-         CALL RELIEM(NOMODE,NOMAIL,'NU_MAILLE','AFFE',I,2, MOTCLE,
-     +                                      TYPMCL, MESMAI, NBMA )
-         CALL JEDETR ( MESMAI )
+      DO 10 I = 1,NBOCC
+        CALL RELIEM(NOMODE,NOMAIL,'NU_MAILLE','AFFE',I,2,MOTCLE,TYPMCL,
+     &              MESMAI,NBMA)
+        CALL JEDETR(MESMAI)
          MXMATA = MXMATA + NBMA
  10   CONTINUE
-C
-      CALL RCMATE ( CHMAT, NOMAIL, MXMATA, NBAPNO, NOMODE )
-      CALL RCTREF ( CHMAT, NOMAIL, MXMATA, NBAPNO, NOMODE )
-      CALL RCSREF ( CHMAT, NOMAIL, MXMATA, NBAPNO, NOMODE )
-C
+
+      CALL RCMATE(CHMAT,NOMAIL,MXMATA,NBAPNO,NOMODE)
+      CALL RCTREF(CHMAT,NOMAIL,MXMATA,NBAPNO,NOMODE)
+      CALL RCSREF(CHMAT,NOMAIL,MXMATA,NBAPNO,NOMODE)
+
+
+C     2- TRAITEMENT DES VARIABLES DE COMMANDE :
+C     -----------------------------------------
+
+
+C     2-1 : CALCUL DE NBVARC, NBCVRC, LIVARC ET LIMFAC
+C           ALLOCATION DES 5 OBJETS : .CVRCNOM .CVRCVARC ...
+C     -------------------------------------------------
+      CALL GETVTX(' ','LIST_NOM_VARC',1,1,NMXFAC,LIVARC,N1)
+      CALL ASSERT(N1.GT.0)
+      NBFAC=N1
+      DO 1,IFAC=1,NBFAC
+        MOTFAC(IFAC)='VARC_'//LIVARC(IFAC)
+1     CONTINUE
+
+      NBVARC = 0
+      NBCVRC=0
+      CALL GETFAC('AFFE_VARC',NBOCCV)
+      DO 20,IFAC = 1,NBFAC
+        MOFAC=MOTFAC(IFAC)
+        CALL ASSERT(MOFAC(1:5).EQ.'VARC_')
+        CALL GETVTX(MOFAC,'NOM_VARC',1,1,1,NOVARC,N1)
+        CALL ASSERT(N1.EQ.1)
+        ITROU=0
+        DO 21,IOCC = 1,NBOCCV
+          CALL GETVTX('AFFE_VARC','NOM_VARC',IOCC,1,1,NOVAR1,N1)
+          CALL ASSERT(N1.EQ.1)
+          IF (NOVAR1.EQ.NOVARC) ITROU=1
+21      CONTINUE
+        IF (ITROU.EQ.0) GO TO 20
+        NBVARC = NBVARC + 1
+        LIVARC(NBVARC) = NOVARC
+        LIMFAC(NBVARC) = MOFAC
+        CALL GETVTX(MOFAC,'CMP_GD',1,1,0,K8B,NCMP)
+        CALL ASSERT(NCMP.LT.0)
+        NCMP=-NCMP
+        NBCVRC=NBCVRC+NCMP
+   20 CONTINUE
+      IF (NBVARC.EQ.0) GO TO 9999
+
+      CVNOM = CHMAT//'.CVRCNOM'
+      CVVAR = CHMAT//'.CVRCVARC'
+      CVGD  = CHMAT//'.CVRCGD'
+      CVCMP = CHMAT//'.CVRCCMP'
+      CVDEF = CHMAT//'.CVRCDEF'
+      CALL WKVECT(CVNOM,'G V K8',NBCVRC,JCVNOM)
+      CALL WKVECT(CVVAR,'G V K8',NBCVRC,JCVVAR)
+      CALL WKVECT(CVGD ,'G V K8',NBCVRC,JCVGD)
+      CALL WKVECT(CVCMP,'G V K8',NBCVRC,JCVCMP)
+      CALL WKVECT(CVDEF,'G V R' ,NBCVRC,JCVDEF)
+
+
+C     2-3 : + ALLOCATION ET REMPLISSAGE DES CARTES
+C           + REMPLISSAGE DE .CVRCNOM .CVRCVARC ...
+C     --------------------------------------------
+      NBCVRC=0
+      DO 90,KVARC = 1,NBVARC
+        MOFAC = LIMFAC(KVARC)
+
+        CART1 = CHMAT//'.'//LIVARC(KVARC)//'.1'
+        CART2 = CHMAT//'.'//LIVARC(KVARC)//'.2'
+        CALL ALCAR2('G',CART1,NOMAIL,'NEUT_R')
+        CALL ALCAR2('G',CART2,NOMAIL,'NEUT_K16')
+        CALL JEVEUO(CART1//'.NCMP','E',JNCMP1)
+        CALL JEVEUO(CART1//'.VALV','E',JVALV1)
+        CALL JEVEUO(CART2//'.NCMP','E',JNCMP2)
+        CALL JEVEUO(CART2//'.VALV','E',JVALV2)
+        NOCMP1 = 'X'
+        DO 30,K = 1,NMXCMP
+          CALL CODENT(K,'G',NOCMP1(2:8))
+          ZK8(JNCMP1-1+K) = NOCMP1
+   30   CONTINUE
+        NOCMP2 = 'Z'
+        DO 40,K = 1,6
+          CALL CODENT(K,'G',NOCMP2(2:8))
+          ZK8(JNCMP2-1+K) = NOCMP2
+   40   CONTINUE
+
+
+C       2-3 REPLISSAGE DE .CVRCNOM, .CVRCVARC, ...
+C       ------------------------------------------------------------
+        CALL GETVTX(MOFAC,'NOM_VARC',1,1,1,NOVARC,N1)
+        CALL GETVTX(MOFAC,'GRANDEUR',1,1,1,NOMGD,N1)
+        CALL GETVTX(MOFAC,'CMP_GD',1,1,NMXCMP,ZK8(JCVCMP+NBCVRC),NCMP)
+        CALL ASSERT(NCMP.GE.1)
+        CALL GETVTX(MOFAC,'CMP_VARC',1,1,NMXCMP,ZK8(JCVNOM+NBCVRC),N1)
+        CALL ASSERT(N1.EQ.NCMP)
+        DO 49,K = 1,NCMP
+            ZK8(JCVVAR+NBCVRC-1+K) = NOVARC
+            ZK8(JCVGD+NBCVRC-1+K) = NOMGD
+   49   CONTINUE
+
+        EXIST = GETEXM(MOFAC,'VALE_DEF')
+        IF (EXIST) THEN
+          CALL GETVR8(MOFAC,'VALE_DEF',1,1,NMXCMP,ZR(JCVDEF+NBCVRC),N1)
+          CALL ASSERT(N1.EQ.NCMP)
+        ELSE
+          DO 50,K = 1,NCMP
+            ZR(JCVDEF+NBCVRC-1+K) = R8VIDE()
+   50     CONTINUE
+        END IF
+
+
+        DO 80,IOCC = 1,NBOCCV
+
+C         2-3 CALCUL DE  VRCREF(:) :
+C         ---------------------------
+          EXIST = GETEXM(MOFAC,'VALE_REF')
+          IF (EXIST) THEN
+            CALL GETVR8('AFFE_VARC','VALE_REF',IOCC,1,NMXCMP,VRCREF,N1)
+            CALL ASSERT(N1.EQ.NCMP)
+          ELSE
+            DO 60,K = 1,NCMP
+              VRCREF(K) = R8VIDE()
+   60       CONTINUE
+          END IF
+
+
+C         2-4 CALCUL DE EVOL,CHAMGD,NOMCHA ET VERIFICATIONS :
+C         ------------------------------------------------------------
+          EVOL = ' '
+          CHAMGD = ' '
+          NOMCHA = ' '
+          ERRGD = .FALSE.
+          CALL GETVID('AFFE_VARC','CHAMP_GD',IOCC,1,1,CHAMGD,N1)
+          IF (N1.GT.0) THEN
+            CALL DISMOI('F','NOM_GD',CHAMGD,'CHAMP',IBID,NOMGD2,
+     &                  IER)
+            IF (NOMGD2.NE.NOMGD) ERRGD = .TRUE.
+          ELSE
+            CALL GETVID('AFFE_VARC','EVOL',IOCC,1,1,EVOL,N1)
+            CALL GETVTX('AFFE_VARC','NOM_CHAM',IOCC,1,1,NOMCHA,N1)
+            CALL GETVTX('AFFE_VARC','PROL_GAUCHE',IOCC,1,1,PROLGA,N1)
+            CALL GETVTX('AFFE_VARC','PROL_DROITE',IOCC,1,1,PROLDR,N1)
+C           A FAIRE ??? VERIFIER QUE EVOL+NOMCHA => LA BONNE GRANDEUR
+          END IF
+          IF (ERRGD) CALL UTMESS('A','OP0006','LA GRANDEUR'//
+     &                           ' ASSOCIEE AU MOT CLE: '//MOFAC//
+     &                           ' DOIT ETRE: '//NOMGD//
+     &                           ' MAIS ELLE EST: '//NOMGD2)
+
+
+C         2-5 ECRITURE DANS LES CARTES :
+C         ------------------------------------------------------------
+          ZK16(JVALV2-1+1) = LIVARC(KVARC)
+          IF (EVOL.EQ.' ') THEN
+            ZK16(JVALV2-1+2) = 'CHAMP'
+            ZK16(JVALV2-1+3) = CHAMGD
+            ZK16(JVALV2-1+4) = ' '
+            ZK16(JVALV2-1+5) = ' '
+            ZK16(JVALV2-1+6) = ' '
+          ELSE
+            ZK16(JVALV2-1+2) = 'EVOL'
+            ZK16(JVALV2-1+3) = EVOL
+            ZK16(JVALV2-1+4) = NOMCHA
+            ZK16(JVALV2-1+5) = PROLGA
+            ZK16(JVALV2-1+6) = PROLDR
+          END IF
+          DO 70,K = 1,NCMP
+            ZR(JVALV1-1+K) = VRCREF(K)
+   70     CONTINUE
+
+C         TOUT='OUI' PAR DEFAUT :
+          CALL GETVTX('AFFE_VARC','TOUT',IOCC,1,1,K8B,NBTOU)
+          CALL GETVID('AFFE_VARC','GROUP_MA',IOCC,1,0,K8B,NBGM1)
+          CALL GETVID('AFFE_VARC','MAILLE',IOCC,1,0,K8B,NBM1)
+          IF (NBGM1+NBM1.EQ.0) NBTOU=1
+
+          IF (NBTOU.NE.0) THEN
+            CALL NOCAR2(CART1,1,' ','NOM',0,' ',0,' ',NCMP)
+            CALL NOCAR2(CART2,1,' ','NOM',0,' ',0,' ',6)
+          ELSE
+            CALL RELIEM(NOMODE,NOMAIL,'NU_MAILLE',MOFAC,IOCC,2,MOTCLE,
+     &                  TYPMCL,MESMAI,NBMA)
+            CALL JEVEUO(MESMAI,'L',JMA)
+            CALL NOCAR2(CART1,3,K8B,'NUM',NBMA,' ',ZI(JMA),' ',NCMP)
+            CALL NOCAR2(CART2,3,K8B,'NUM',NBMA,' ',ZI(JMA),' ',4)
+            CALL JEDETR(MESMAI)
+          END IF
+
+
+   80   CONTINUE
+
+        NBCVRC=NBCVRC+NCMP
+   90 CONTINUE
+
+9999  CONTINUE
+
       CALL JEDEMA()
       END

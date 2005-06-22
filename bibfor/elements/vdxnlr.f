@@ -1,5 +1,5 @@
       SUBROUTINE VDXNLR(OPTION,NOMTE,XI,RIG,NB1,CODRET)
-C MODIF ELEMENTS  DATE 14/06/2005   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ELEMENTS  DATE 23/06/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -38,8 +38,8 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX --------------------
       CHARACTER*8 NOMRES(26),NOMPAR,NOMPU(2),TYPMOD(2)
       CHARACTER*10 PHENOM
       CHARACTER*16 OPTION,NOMTE
-      INTEGER NB1,NB2,NDDLE,NPGE,NPGSR,NPGSN,ITAB(8),NZ,CODRET,COD
-      INTEGER ICORRM,ICORRP
+      INTEGER NB1,NB2,NDDLE,NPGE,NPGSR,NPGSN,ITAB(8),NZ,CODRET
+      INTEGER COD,KPGVRC
       REAL*8 XI(3,9)
       REAL*8 VECTA(9,2,3),VECTN(9,3),VECTPT(9,2,3),VECPT(9,3,3)
       REAL*8 VECTG(2,3),VECTT(3,3)
@@ -89,8 +89,6 @@ C     RECUPERATION DES OBJETS
       CALL JEVECH('PDEPLPR','L',IDEPLP)
       CALL JEVECH('PCOMPOR','L',ICOMPO)
       CALL JEVECH('PNBSP_I','L',JNBSPI)
-      CALL JEVECH('PCORRMR','L',ICORRM)
-      CALL JEVECH('PCORRPR','L',ICORRP)
       NBCOU=ZI(JNBSPI-1+1)
       IF (NBCOU.LE.0) CALL UTMESS('F','VDXNLR',
      &                 'NOMBRE DE COUCHES OBLIGATOIREMENT SUPERIEUR A 0'
@@ -357,18 +355,17 @@ C --- ANGLE DU MOT_CLEF MASSIF (AFFE_CARA_ELEM)
 C --- INITIALISE A R8VIDE (ON NE S'EN SERT PAS)
             CALL R8INIR(3, R8VIDE(), ANGMAS ,1)
 C -    APPEL A LA LOI DE COMPORTEMENT
-            CALL NMCOMP(2,TYPMOD,ZI(IMATE),ZK16(ICOMPO),ZR(ICARCR),
-     &                  ZR(IINSTM),ZR(IINSTP),
+            KPGVRC=(INTSN-1)*NPGE*NBCOU + (ICOU-1)*NPGE + INTE
+            CALL NMCOMP(KPGVRC,2,TYPMOD,ZI(IMATE),ZK16(ICOMPO),
+     &                  ZR(ICARCR),ZR(IINSTM),ZR(IINSTP),
      &                  TMC,TPC,ZR(ITREF),
      &                  HYDRGM,HYDRGP,
      &                  SECHGM,SECHGP,SREF,
-     &                  -1.D0,-1.D0,
      &                  EPS2D,DEPS2D,
      &                  SIGN,ZR(IVARIM+K2),
      &                  OPTION,
      &                  EPSANM,EPSANP,
      &                  NZ,PHASM,PHASP,
-     &                  ZR(ICORRM),ZR(ICORRP),
      &                  ANGMAS,
      &                  LC,
      &                  SIGMA,ZR(IVARIP+K2),DSIDEP,COD)

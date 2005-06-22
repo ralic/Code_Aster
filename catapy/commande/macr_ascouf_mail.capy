@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 17/08/2004   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,8 +19,8 @@
 # RESPONSABLE F1BHHAJ J.ANGLES
 from Macro.macr_ascouf_mail_ops import macr_ascouf_mail_ops
 MACR_ASCOUF_MAIL=MACRO(nom="MACR_ASCOUF_MAIL",op=macr_ascouf_mail_ops,sd_prod=maillage_sdaster,
-                      fr=" ",reentrant='n',
-            UIinfo={"groupes":("Outils métier",)},
+            fr="Engendre le maillage d'un coude sain ou comportant une fissure ou une (ou plusieurs) sous-épaisseur(s)",
+            UIinfo={"groupes":("Outils métier",)},reentrant='n',
 
          regles=(EXCLUS('SOUS_EPAIS_COUDE','FISS_COUDE','SOUS_EPAIS_MULTI'),),
 

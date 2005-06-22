@@ -2,22 +2,22 @@
       IMPLICIT NONE
       INTEGER IER
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 09/05/2005   AUTEUR REZETTE C.REZETTE 
+C MODIF PREPOST  DATE 23/06/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     =================================================================
 C                      OPERATEUR POST_CHAM_XFEM
@@ -75,7 +75,7 @@ C
       CHOUT ='&&'//NOMPRO//'.DEP_RESU'
       CHAMS ='&&'//NOMPRO//'.CHAMS   '
 C
-C     ===========================================     
+C     ===========================================
 C      1. RECUPERATION DES CONCEPTS UTILISATEURS
 C     ===========================================
 C
@@ -90,17 +90,17 @@ C     ON VERIFIE QUE LE MODELE EST COMPATIBLE AVEC LA METHODE XFEM
         CALL UTFINM()
       ENDIF
       CALL JEVEUO(MO//'.FISS','L',JFISS)
-C     
+C
 C --- RECUPERATION DU CHAMP GEOMETRIQUE
       CALL MEGEOM(MO,' ',EXIGEO,CHGEOM)
-      
+
 C --- NOM ET TYPE DE LA SD RESULTAT EN ENTREE : RESUCO , TYSD
       CALL GETVID(' ','RESULTAT',1,1,1,RESUCO,IBID)
       CALL GETTCO(RESUCO,TYSD)
 C
 C --- NOM DE LA SD RESULTAT A CREER : RESUC1
       CALL GETRES(RESUC1,K16B,K16B)
-C     
+C
 C --- NOMBRE DE NUMEROS D'ORDRE : NBORDR
       ORDR=RESUCO//'           .ORDR'
       CALL JEVEUO(ORDR,'L',JORD)
@@ -123,7 +123,7 @@ C
       DO 10 ICHA = 1 , NBSY
 C
         NOMCHA = ZK16(JLICHA+ICHA-1)
-C     
+C
 C       2.1  TRAITEMENT DES DEPLACEMENTS
 C       ================================
 C
@@ -146,7 +146,7 @@ C             EXTRACTION DES DEPLACEMENTS
 C
 C             PASSAGE : CHAMP --> CHAMP_S
               CALL CNOCNS(CHNO,'V',CHNOS)
-C       
+C
 C             COPIE DES DEPLACEMENTS DANS CHS
               CALL JEVEUO(CHNOS//'.CNSV','L',JCNSV1)
               CALL JEVEUO(CHNOS//'.CNSD','L',JCNSD1)
@@ -179,8 +179,8 @@ C             COPIE DES DEPLACEMENTS DANS CHS
                     IDZ=JCO
                  ENDIF
  30           CONTINUE
-C     
-C             SI LE MAILLAGE COMPORTE QUE DES MAILLES XFEM 
+C
+C             SI LE MAILLAGE COMPORTE QUE DES MAILLES XFEM
 C             TRAVERSEES PAR LA FISSURE
               ID=IDX+IDY+IDZ
               QUMAFI=.FALSE.
@@ -188,7 +188,7 @@ C             TRAVERSEES PAR LA FISSURE
                  QUMAFI=.TRUE.
                  GOTO 45
               ENDIF
-C     
+C
               DO 40 JNO = 1 ,ZI(JCNSD1)
                  CALL JENUNO(JEXNUM(ZK8(JCNSK1)//'.NOMNOE',JNO),NOMNOE)
                  CALL JENONU(JEXNOM(MA//'.NOMNOE',NOMNOE),NUMNOE)
@@ -210,7 +210,7 @@ C
                  ENDIF
  40           CONTINUE
  45           CONTINUE
-C     
+C
 C             2 - DETERMINATION DES DEPLACEMENTS AUX NOEUDS X-FEM
 C             ---------------------------------------------------
 C
@@ -237,8 +237,8 @@ C             CALCUL DES DEPLACEMENTS AUX NOEUDS X-FEM
               CALL CALCUL('S',OPTION,LIGREL,6,LCHIN,LPAIN,1,LCHOUT,
      &                    LPAOUT,'G')
 C
-C             PASSAGE D'UN CHAM_ELEM EN UN CHAM_ELEM_S    
-              CALL CELCES ( LCHOUT(1), 'V', CHAMS ) 
+C             PASSAGE D'UN CHAM_ELEM EN UN CHAM_ELEM_S
+              CALL CELCES ( LCHOUT(1), 'V', CHAMS )
 
               CALL JEVEUO(CHAMS//'.CESV','L',JCESV)
               CALL JEVEUO(CHAMS//'.CESD','L',JCESD)
@@ -256,7 +256,7 @@ C             NOMBRE DE MAILLES XFEM : NBMX
               CALL JEVEUO(HEAV,'L',JHEAV)
               CALL JELIRA(HEAV,'LONMAX',NBMX,KBID)
 
-C             TABLEAU INDICATEUR DE MAILLES FISSUREES 
+C             TABLEAU INDICATEUR DE MAILLES FISSUREES
               CALL JEVEUO(ZK8(JCNSK1)//'.DIME','L',JDIM)
               CALL WKVECT('&&'//NOMPRO//'.IND_MAIL','V V I',
      &                    ZI(JDIM+2),JINDMF)
@@ -375,9 +375,9 @@ C
      &                      ZR(JCESV+3*(J-1)+24+90*(I-1)+1)
                        ZR(JCNSV2+3*(NUMNOE-1)+2)=
      &                      ZR(JCESV+3*(J-1)+24+90*(I-1)+2)
-                       ZL(JCNSL2+3*(NUMNOE-1)  )=.TRUE. 
-                       ZL(JCNSL2+3*(NUMNOE-1)+1)=.TRUE. 
-                       ZL(JCNSL2+3*(NUMNOE-1)+2)=.TRUE.            
+                       ZL(JCNSL2+3*(NUMNOE-1)  )=.TRUE.
+                       ZL(JCNSL2+3*(NUMNOE-1)+1)=.TRUE.
+                       ZL(JCNSL2+3*(NUMNOE-1)+2)=.TRUE.
  779                CONTINUE
 C
                    DO 799 J=1,8
@@ -394,8 +394,8 @@ C
      &                      ZR(JCESV+3*(J-1)+90*(I-1)+1)
                        ZR(JCNSV2+3*(NUMNOE-1)+2)=
      &                      ZR(JCESV+3*(J-1)+90*(I-1)+2)
-                       ZL(JCNSL2+3*(NUMNOE-1)  )=.TRUE. 
-                       ZL(JCNSL2+3*(NUMNOE-1)+1)=.TRUE. 
+                       ZL(JCNSL2+3*(NUMNOE-1)  )=.TRUE.
+                       ZL(JCNSL2+3*(NUMNOE-1)+1)=.TRUE.
                        ZL(JCNSL2+3*(NUMNOE-1)+2)=.TRUE.
  799               CONTINUE
                    ENDIF
@@ -423,17 +423,17 @@ C
      &                      ZR(JCESV+3*(J-1)+90*(I-1)+1)
                         ZR(JCNSV2+3*(NUMNOE-1)+2)=
      &                      ZR(JCESV+3*(J-1)+90*(I-1)+2)
-                        ZL(JCNSL2+3*(NUMNOE-1)  )=.TRUE. 
-                        ZL(JCNSL2+3*(NUMNOE-1)+1)=.TRUE. 
-                        ZL(JCNSL2+3*(NUMNOE-1)+2)=.TRUE.   
+                        ZL(JCNSL2+3*(NUMNOE-1)  )=.TRUE.
+                        ZL(JCNSL2+3*(NUMNOE-1)+1)=.TRUE.
+                        ZL(JCNSL2+3*(NUMNOE-1)+2)=.TRUE.
   778                CONTINUE
                   ENDIF
                  CALL JEDETR('&&OP0196.NO_LOC')
  777          CONTINUE
-              
+
               CALL IMPRSD('CHAMP',CHS,8,'--- CHAMP DEPL ---')
-              CALL CNSCNO(CHS,' ','G',CH)
-C     
+              CALL CNSCNO(CHS,' ','NON','G',CH)
+C
 C             3 - AJOUT DU CHAMP DANS LA SD RESULTAT
 C             --------------------------------------
               CALL RSNOCH(RESUC1,'DEPL',IORD,CH)

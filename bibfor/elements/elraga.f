@@ -4,7 +4,7 @@
       CHARACTER*(*) ELREFZ
       INTEGER NBPG,NDIM
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 25/01/2005   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ELEMENTS  DATE 23/06/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -60,8 +60,7 @@ C     ------------------------------------
       IFAM = INDIK8(NOFPG,FAPG,1,NBFPG)
       CALL ASSERT(IFAM.GT.0)
       NBPG = NBPG1(IFAM)
-      CALL ASSERT(NDIM.GE.1)
-      CALL ASSERT(NDIM.LE.3)
+      CALL ASSERT((NDIM.GE.0).AND.(NDIM.LE.3))
 
 
 C     -- TRAITEMENT GENERIQUE DE FAPG='NOEU' :
@@ -70,7 +69,7 @@ C     -----------------------------------------
         CALL ASSERT(NBPG.EQ.NNO)
         DO 10,INO = 1,NNO
           HPG(INO) = VOL/NNO
-          XPG(INO) = XNO(NDIM* (INO-1)+1)
+          IF (NDIM.GE.1) XPG(INO) = XNO(NDIM* (INO-1)+1)
           IF (NDIM.GE.2) YPG(INO) = XNO(NDIM* (INO-1)+2)
           IF (NDIM.EQ.3) ZPG(INO) = XNO(NDIM* (INO-1)+3)
    10   CONTINUE
@@ -86,7 +85,7 @@ C     -----------------------------------------
           HPG(INO) = VOL/NNOS
 C         -- ON UTILISE LE FAIT QUE LES SOMMETS SONT TOUJOURS
 C            NUMEROTES EN PREMIER :
-          XPG(INO) = XNO(NDIM* (INO-1)+1)
+          IF (NDIM.GE.1) XPG(INO) = XNO(NDIM* (INO-1)+1)
           IF (NDIM.GE.2) YPG(INO) = XNO(NDIM* (INO-1)+2)
           IF (NDIM.EQ.3) ZPG(INO) = XNO(NDIM* (INO-1)+3)
    20   CONTINUE
@@ -99,14 +98,15 @@ C     -----------------------------------------
       IF (FAPG.EQ.'FPG1') THEN
         CALL ASSERT(NBPG.EQ.1)
         XPG(1) = 0.D0
+        IF (NDIM.GE.1) XPG(1) = 0.D0
         IF (NDIM.GE.2) YPG(1) = 0.D0
         IF (NDIM.EQ.3) ZPG(1) = 0.D0
         DO 30,INO = 1,NNO
-          XPG(1) = XPG(1) + XNO(NDIM* (INO-1)+1)
+          IF (NDIM.GE.1) XPG(1) = XPG(1) + XNO(NDIM* (INO-1)+1)
           IF (NDIM.GE.2) YPG(1) = YPG(1) + XNO(NDIM* (INO-1)+2)
           IF (NDIM.EQ.3) ZPG(1) = ZPG(1) + XNO(NDIM* (INO-1)+3)
    30   CONTINUE
-        XPG(1) = XPG(1)/NNO
+        IF (NDIM.GE.1) XPG(1) = XPG(1)/NNO
         IF (NDIM.GE.2) YPG(1) = YPG(1)/NNO
         IF (NDIM.EQ.3) ZPG(1) = ZPG(1)/NNO
         HPG(1) = VOL
@@ -831,6 +831,10 @@ C     ------------------------------------------------------------------
           HPG(4) = HPG(3)
         END IF
 
+C     ------------------------------------------------------------------
+      ELSE IF (ELREFA.EQ.'PO1' ) THEN
+          HPG(1) = 1.D0
+
 
 C     ------------------------------------------------------------------
       ELSE
@@ -843,7 +847,7 @@ C     ------------------------------------------------------------------
 C     ------------------------------------------------------------------
       DO 180 I = 1,NBPG
         POIPG(I) = HPG(I)
-        COOPG(NDIM* (I-1)+1) = XPG(I)
+        IF (NDIM.GE.1) COOPG(NDIM* (I-1)+1) = XPG(I)
         IF (NDIM.GE.2) COOPG(NDIM* (I-1)+2) = YPG(I)
         IF (NDIM.EQ.3) COOPG(NDIM* (I-1)+3) = ZPG(I)
   180 CONTINUE

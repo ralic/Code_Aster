@@ -14,7 +14,7 @@
      &                    MATRIG,VECTF,CODRET)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/05/2005   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ALGORITH  DATE 23/06/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -358,18 +358,16 @@ C --- INITIALISE A R8NNEM (ON NE S'EN SERT PAS)
        CALL R8INIR(3, R8NNEM(), ANGMAS ,1)
 
 C -    APPEL A LA LOI DE COMPORTEMENT
-       CALL NMCOMP(NDIM,TYPMOD,IMATE,COMPOR,CRIT,
+       CALL NMCOMP(KPG,NDIM,TYPMOD,IMATE,COMPOR,CRIT,
      &             INSTAM,INSTAP,
      &             TEMPM,TEMPP,TREF,
      &             HYDRGM,HYDRGP,
      &             SECHGM,SECHGP,SREF,
-     &             -1.D0,-1.D0,
      &             EPSTM,DEPST,
      &             SIGN,VIM(1,KPG),
      &             OPTION,
      &             EPSANM,EPSANP,
      &             NZ,PHASM(1,KPG),PHASP(1,KPG),
-     &             R8VIDE(),R8VIDE(),
      &             ANGMAS,
      &             ELGEOM(1,KPG),
      &             SIGMA,VIP(1,KPG),DSIDPT,COD(KPG))

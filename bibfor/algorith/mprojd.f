@@ -2,7 +2,7 @@
 
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/08/2002   AUTEUR ADBHHPM P.MASSIN 
+C MODIF ALGORITH  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -35,19 +35,21 @@ C.......................................................................
 
 
       IMPLICIT NONE
+      CHARACTER*1 TRANS,KSTOP
       CHARACTER*8 ALIAS
-      LOGICAL IRET
       REAL*8 TN(9),TAU1(3),TAU2(3),DR(2,9),DET
       REAL*8 DDR(3,9),TANG(3,3),ALPHA,DX(3),TANG2(2,2)
       REAL*8 GEOM(30),RESIDU(3),VEC(3),DIS(3),DIR(3)
       REAL*8 DER,DES,DIST,XI,YI,NTA1,NTA2,TEST
-      INTEGER K,I,J,NDIM,ICOMPT,NNO,IND1,IND2
+      INTEGER K,I,J,NDIM,ICOMPT,NNO,IND1,IND2,IRET
 
 
 C    INITIALISATION
       XI = -0.D0
       YI = -0.D0
       ALPHA=1.D0
+      TRANS=' '
+      KSTOP='S'
 C   
       IF (ALIAS(1:3).EQ.'SG2') THEN
         NNO = 2
@@ -138,7 +140,7 @@ C  CALCUL DE LA MATRICE
         TANG2(I,2)= DIR(I)
  23   CONTINUE
 
-        CALL MGAUSS(TANG2,DX,2,2,1,DET,IRET)
+        CALL MGAUSS(TRANS,KSTOP,TANG2,DX,2,2,1,DET,IRET)
 
           XI = XI + DX(1)
           YI=0.D0
@@ -153,7 +155,7 @@ C  CALCUL DE LA MATRICE
         TANG(I,3)= DIR(I)
  21     CONTINUE
 
-        CALL MGAUSS(TANG,DX,3,3,1,DET,IRET)
+        CALL MGAUSS(TRANS,KSTOP,TANG,DX,3,3,1,DET,IRET)
 
           XI = XI + DX(1)
           YI = YI + DX(2)

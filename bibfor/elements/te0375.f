@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 24/01/2005   AUTEUR DURAND C.DURAND 
+C MODIF ELEMENTS  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -68,8 +68,9 @@ C
       REAL*8 DSX,DSY,DSZ,SX(9,9),SY(9,9),SZ(9,9)
       REAL*8 TER,ERREST,NOR,NORSIG,SIGCAL,NUEST,COEFF
       REAL*8 TER2,TER3,HF,NORM,NX,NY,NZ,JACO
-      REAL*8 PR(9),VALPAR(4),INST,ZERO
-      LOGICAL PRES,FORC,FAUX
+      REAL*8 PR(9),VALPAR(4),INST,DET
+      LOGICAL PRES,FORC
+      CHARACTER*1 TRANS,KSTOP 
       CHARACTER*2 CODRET
       CHARACTER*4 NOMPAR(4)
       CHARACTER*8 TYPMAV,ELREFE
@@ -94,8 +95,6 @@ C     ------------------------------------------------------------------
 
       CALL ELREF1(ELREFE)
 
-      FAUX = .FALSE.
-      ZERO = 0.D0
       NOMGD2 = ' '
       IFM = IUNIFI('MESSAGE')
 
@@ -135,8 +134,9 @@ C   TETRAEDRE : H = DIAMETRE DU CERCLE CIRCONSCRIT
         B(3) = (A(3,1)* (ZR(IGEOM+9)+ZR(IGEOM))+
      &         A(3,2)* (ZR(IGEOM+10)+ZR(IGEOM+1))+
      &         A(3,3)* (ZR(IGEOM+11)+ZR(IGEOM+2)))/2.0D0
-
-        CALL MGAUSS(A,B,3,3,1,ZERO,FAUX)
+        TRANS=' '
+        KSTOP='S'
+        CALL MGAUSS(TRANS,KSTOP,A,B,3,3,1,DET,IRET)
         H = 2.D0*SQRT((ZR(IGEOM)-B(1))**2+ (ZR(IGEOM+1)-B(2))**2+
      &      (ZR(IGEOM+2)-B(3))**2)
 

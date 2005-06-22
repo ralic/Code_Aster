@@ -1,6 +1,6 @@
       SUBROUTINE TE0239(OPTION,NOMTE)
 
-C MODIF ELEMENTS  DATE 23/05/2005   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 23/06/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -75,7 +75,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       INTEGER NNO,NNOS,JGANO,NDIM,KP,NPG,I,J,K,IMATUU,ITEMPR,ICACO,
      &        NDIMV,IVARIX
       INTEGER IPOIDS,IVF,IDFDK,IGEOM,IMATE,ITER
-      INTEGER NBPAR,IER,COD,IRET
+      INTEGER NBPAR,IER,COD,IRET,KPGVRC
       LOGICAL VECTEU,MATRIC,TESTL1,TESTL2,TEMPNO
 
       PARAMETER (NPGE=3)
@@ -187,6 +187,7 @@ C ---  VARIABLE D HYDRATATION ET DE SECHAGE
       SECHGP = 0.D0
       SREF   = 0.D0
 C-- DEBUT DE BOUCLE D'INTEGRATION SUR LA SURFACE NEUTRE
+      KPGVRC=0
       DO 140 KP = 1,NPG
         K = (KP-1)*NNO
         CALL DFDM1D(NNO,ZR(IPOIDS+KP-1),ZR(IDFDK+K),ZR(IGEOM),DFDX,COUR,
@@ -279,6 +280,7 @@ C-- DEBUT DE BOUCLE D'INTEGRATION DANS L'EPAISSEUR
 
         DO 110 ICOU = 1,NBCOU
           DO 100 INTE = 1,NPGE
+            KPGVRC=KPGVRC+1
             IF (INTE.EQ.1) THEN
               ZIC = ZMIN + (ICOU-1)*HIC
               COEF = 1.D0/3.D0
@@ -369,18 +371,16 @@ C --- INITIALISE A R8NNEM (ON NE S'EN SERT PAS)
             ANGMAS(2) = R8NNEM()
             ANGMAS(3) = R8NNEM()
 
-            CALL NMCOMP(2,TYPMOD,ZI(IMATE),ZK16(ICOMPO),ZR(ICARCR),
-     &                  ZR(IINSTM),ZR(IINSTP),
+            CALL NMCOMP(KPGVRC,2,TYPMOD,ZI(IMATE),ZK16(ICOMPO),
+     &                  ZR(ICARCR),ZR(IINSTM),ZR(IINSTP),
      &                  TMC,TPC,ZR(ITREF),
      &                  HYDRGM,HYDRGP,
      &                  SECHGM,SECHGP,SREF,
-     &                  -1.D0,-1.D0,
      &                  EPS2D,DEPS2D,
      &                  ZR(ICONTM+K1),ZR(IVARIM+K2),
      &                  OPTION,
      &                  EPSANM,EPSANP,NZ,
      &                  PHASM,PHASP,
-     &                  R8VIDE(),R8VIDE(),
      &                  ANGMAS,
      &                  LC,
      &                  ZR(ICONTP+K1),ZR(IVARIP+K2),DSIDEP,COD)

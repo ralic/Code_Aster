@@ -1,6 +1,6 @@
       SUBROUTINE TE0100(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 23/05/2005   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 23/06/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -35,7 +35,6 @@ C ......................................................................
       INTEGER IINSTM,IINSTP,IDEPLM,IDEPLP,ICOMPO,ICARCR
       INTEGER IVECTU,ICONTP,IVARIP,LI,IDEFAM,IDEFAP
       INTEGER IHYDRM,IHYDRP,ISECHM,ISECHP,ISREF,IVARIX,IRET
-      INTEGER IIRRAM, IIRRAP
       INTEGER NDDL,KK,NI,MJ,JTAB(7),IADZI,IAZK24,NZ,JCRET,CODRET
       INTEGER NDIM,NNOS,JGANO,ICAMAS
       REAL*8  VECT1(54), VECT2(4*27*27), VECT3(4*27*2)
@@ -141,8 +140,6 @@ C  PASSAGE DE PPHASMR ET PPHASPR AUX POINTS DE GAUSS
       CALL JEVECH('PSECHMR','L',ISECHM)
       CALL JEVECH('PSECHPR','L',ISECHP)
       CALL JEVECH('PSECREF','L',ISREF)
-      CALL JEVECH('PIRRAMR','L',IIRRAM)
-      CALL JEVECH('PIRRAPR','L',IIRRAP)
 
 C PARAMETRES EN SORTIE
 
@@ -228,7 +225,6 @@ C -       ELEMENT A DISCONTINUITE INTERNE
      &                  ZR(ITEMPM),ZR(ITEMPP),ZR(ITREF),
      &                  ZR(IHYDRM),ZR(IHYDRP),
      &                  ZR(ISECHM),ZR(ISECHP),ZR(ISREF),
-     &                  ZR(IIRRAM),ZR(IIRRAP),
      &                  NZ,PHASM,PHASP,
      &                  ZR(IDEPLM),ZR(IDEPLP),ZR(IDEFAM),ZR(IDEFAP),
      &                  DEFANE,
@@ -249,7 +245,6 @@ C      GRANDES DEFORMATIONS : FORMULATION SIMO - MIEHE
      &                ZR(ITEMPM),ZR(ITEMPP),ZR(ITREF),
      &                ZR(IHYDRM),ZR(IHYDRP),
      &                ZR(ISECHM),ZR(ISECHP),ZR(ISREF),
-     &                ZR(IIRRAM),ZR(IIRRAP),
      &                NZ,PHASM,PHASP,
      &                ZR(IDEPLM),ZR(IDEPLP),
      &                ANGMAS,
@@ -272,7 +267,6 @@ C 7.3 - GRANDES ROTATIONS ET PETITES DEFORMATIONS
      &                ZR(ITEMPM),ZR(ITEMPP),ZR(ITREF),
      &                ZR(IHYDRM),ZR(IHYDRP),
      &                ZR(ISECHM),ZR(ISECHP),ZR(ISREF),
-     &                ZR(IIRRAM),ZR(IIRRAP),
      &                NZ,PHASM,PHASP,
      &                ZR(IDEPLM),ZR(IDEPLP),ZR(IDEFAM),ZR(IDEFAP),
      &                DEFANE,

@@ -6,7 +6,7 @@
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/08/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -77,12 +77,10 @@ C       ----------------------------------------------------------------
         INTEGER         IMAT, NMAT,    NMOD  , ICOMP
 C
 C
-        INTEGER         TYPESS, ITMAX
+        INTEGER         TYPESS, ITMAX, IRET
         INTEGER         NR,     NDT,    NDI,    NVI,  ITER
 C
-        LOGICAL         FAUX
-C
-        REAL*8          TOLER,  ESSAI,  ZERO
+        REAL*8          TOLER,  ESSAI, DET
         REAL*8          EPSD(6),        DEPS(6)
         REAL*8          SIGD(6),        SIGF(6)
         REAL*8          VIND(*),        VINF(*)
@@ -93,6 +91,7 @@ C      DIMENSIONNEMENT DYNAMIQUE (MERCI F90)
         REAL*8          MATERD(NMAT,2) ,MATERF(NMAT,2)
         REAL*8          TEMPD, TEMPF,   TIMED, TIMEF
 C
+        CHARACTER*1     TRANS,KSTOP
         CHARACTER*8     MOD,  NBITER
         CHARACTER*16    LOI
         CHARACTER*3     MATCST
@@ -122,9 +121,6 @@ C       DIMENSION DYNAMIQUE DE YD,YF,DY,R,DDY
            YD( I ) = 0.D0
            YF( I ) = 0.D0
  101   CONTINUE
-
-        ZERO = 0.D0
-        FAUX = .FALSE.
 
 C       ----------------------------------------------------------------
 C
@@ -186,7 +182,9 @@ C
 
         CALL LCEQMN ( NR , DRDY , DRDY1 )
         CALL LCEQVN ( NR ,   R ,   DDY )
-        CALL MGAUSS ( DRDY1 , DDY , NR , NR , 1, ZERO, FAUX )
+        TRANS=' '
+        KSTOP='S'
+        CALL MGAUSS ( TRANS,KSTOP,DRDY1,DDY,NR,NR,1,DET,IRET )
 
 C
 C --    REACTUALISATION DE DY = DY + DDY

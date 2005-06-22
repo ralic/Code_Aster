@@ -7,26 +7,26 @@
       CHARACTER*19        RESU, NOMTAB
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 17/12/2002   AUTEUR CIBHHGB G.BERTRAND 
+C MODIF PREPOST  DATE 23/06/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_6
 C
-C   CALCULE LES FIGURES DE JEU A PARTIR DES TUBES ET OBSTACLES USES 
+C   CALCULE LES FIGURES DE JEU A PARTIR DES TUBES ET OBSTACLES USES
 C ----------------------------------------------------------------------
 C     ---- DEBUT DES COMMUNS JEVEUX ------------------------------------
       INTEGER          ZI
@@ -115,7 +115,7 @@ C
       TABK(2) = NOMFON
       CALL TBAJLI ( NOMTAB, 2, NOPARA, IBID, R8B, C16B, TABK, 0 )
 C
-      N1 = NO 
+      N1 = NO
       DO 104 J = 1 , (N1-1)
          ZR(IJEU+2*(J+N1)-2) = ZR(IJEU+2*J) + 360.D0
          ZR(IJEU+2*(J+N1)-1) = ZR(IJEU+2*J+1)
@@ -144,7 +144,7 @@ C     ------------------------------
       PAS3 = 0.001D-3
 C
       PAS = PAS1
-      N = 1 
+      N = 1
  200  CONTINUE
          I = 1
          ESPACE = ZR(IJEU+2*N-1)
@@ -158,9 +158,9 @@ C
                ANGMIN = ZR(IJEU+2*N-2)-90.D0
             ENDIF
          ENDIF
-C 
+C
          DO 202 K1 = 1,(2*DIMTUB)
-            IF ( ZR(IJEU+2*N-2) .GT. 90.D0 ) THEN 
+            IF ( ZR(IJEU+2*N-2) .GT. 90.D0 ) THEN
                IF ( ZR(IJEU+2*N-2) .LT. 450.D0 ) THEN
                   IF ( ZR(ITUB+2*K1-2).GT.ANGMIN )  GOTO 204
                ENDIF
@@ -196,7 +196,7 @@ C
                DO 208 K = K1,(2*DIMTUB)
                   IF ( ZR(ITUB+2*K-2) .GT. ANGMAX )  GOTO 210
 C
-C --------------- AVANCEE DU CRAYON AU NIVEAU DE L'ANGLE BALAYE 
+C --------------- AVANCEE DU CRAYON AU NIVEAU DE L'ANGLE BALAYE
 C                 DANS LA DIRECTION DE L'ANGLE TRAITE :
 C                 -----------------------------------
 C
@@ -228,7 +228,7 @@ C
 1458              CONTINUE
                      P = P + 1
                      RHO2 = ZR(IOBS+2*P-1)
-                     ANG2 = ZR(IOBS+2*P-2)  
+                     ANG2 = ZR(IOBS+2*P-2)
                      IF ( ZR(IOBS+2*P-2) .LE. TETDEG ) THEN
                         RHO2BI = RHO2
                         ANG2BI = ANG2
@@ -238,7 +238,7 @@ C
                      YA = RHO2*SIN(ANG2*RAD)
                      XABIS = RHO2BI*COS(ANG2BI*RAD)
                      YABIS = RHO2BI*SIN(ANG2BI*RAD)
-                     IF ( ABS(XA-XABIS) .GT.R8PREM( ) ) THEN     
+                     IF ( ABS(XA-XABIS) .GT.R8PREM( ) ) THEN
                         A1   = (YA-YABIS)/(XA-XABIS)
                         B1   = YA - A1*XA
                         RHO2 = B1/(SIN(TETDEG*RAD)-A1*COS(TETDEG*RAD))
@@ -252,11 +252,11 @@ C
                      IF ( RTUBE2 .GT. (RHO2*RHO2) ) THEN
                         IF ( PAS .EQ. PAS1 ) THEN
                            I = I - 1
-                           ICOMP1 = I 
+                           ICOMP1 = I
                            PAS = PAS2
                            ICOMP2 = 0
                            GOTO 206
-                        ELSEIF ( PAS .EQ. PAS2 ) THEN 
+                        ELSEIF ( PAS .EQ. PAS2 ) THEN
                            ICOMP2 = ICOMP2 - 1
                            PAS = PAS3
                            ICOMP3 = 0
@@ -268,7 +268,7 @@ C
                         GOTO 210
                      ENDIF
  208           CONTINUE
- 210           CONTINUE  
+ 210           CONTINUE
                IF ( CONTAC .EQ. 0 ) THEN
                   I=I+1
                   GOTO 206
@@ -295,7 +295,7 @@ C
          DO 302 R=(Q+1),N
             IF ( (ZR(IJPRM+2*R-2).LT.C   ) .AND.
      &           (ZR(IJPRM+2*R-2).GT.0.D0) ) THEN
-               E = C 
+               E = C
                F = D
                C = ZR(IJPRM+2*R-2)
                D = ZR(IJPRM+2*R-1)
@@ -312,7 +312,7 @@ C
  304  CONTINUE
 C
       IF ( RESU(1:8) .NE. OBST ) THEN
-         CALL WKVECT ( RESU//'.REFE', 'G V K24',1 , IDREFE )
+         CALL WKVECT ( RESU//'.REFO', 'G V K24',1 , IDREFE )
          ZK24(IDREFE) = 'DISCRET'
          CALL WKVECT ( RESU//'.VALR', 'G V R'  ,NV, IDRAY )
          CALL WKVECT ( RESU//'.VALT', 'G V R'  ,NV, IDTHE )
@@ -333,7 +333,7 @@ C
 C
       CALL WKVECT ( NOMFON//'.VALE', 'G V R8', 2*NV, LVAL )
 C
-      I = 1 
+      I = 1
       ZR(IDTHE) = 0.D0
       ZR(IDRAY) = GAME
       ZR(LVAL+I-1)    = 0.D0
@@ -342,7 +342,7 @@ C
          IF ( ZR(IJPRM+2*Q-2) .NE. 0.D0 ) THEN
             I = I + 1
             ZR(IDTHE+I-1) = ZR(IJPRM+2*Q-2) * RAD
-            ZR(IDRAY+I-1) = ZR(IJPRM+2*Q-1) 
+            ZR(IDRAY+I-1) = ZR(IJPRM+2*Q-1)
             ZR(LVAL+I-1)    = ZR(IJPRM+2*Q-2)
             ZR(LVAL+NV+I-1) = ZR(IJPRM+2*Q-1)
          ENDIF
@@ -361,5 +361,5 @@ C
       CALL JEDETR ( '&&CALFIG.JEUPRM' )
       CALL JEDETR ( '&&CALFIG.TUB'    )
       CALL JEDETR ( '&&CALFIG.OBS'    )
-      CALL JEDEMA()  
+      CALL JEDEMA()
       END

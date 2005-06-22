@@ -1,9 +1,8 @@
-      SUBROUTINE NMFI2D( NPG,LGPG,MATE,OPTION,GEOM,DEPLM,DDEPL,
-     &                   SIGMA,FINT,KTAN,VIM,VIP,CRIT,
-     &                   COMPOR,TYPMOD,INSTM,INSTP,TM,TP)
+      SUBROUTINE NMFI2D( NPG,LGPG,MATE,OPTION,GEOM,DEPLM,DDEPL,SIGMA,
+     &                   FINT,KTAN,VIM,VIP,CRIT,COMPOR,TYPMOD,TM,TP)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 30/05/2005   AUTEUR LAVERNE J.LAVERNE 
+C MODIF ALGORITH  DATE 23/06/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -25,7 +24,7 @@ C ======================================================================
 
       IMPLICIT NONE
       INTEGER MATE,NPG,LGPG,N
-      REAL*8  GEOM(2,4),DEPLM(8),DDEPL(8),INSTM,INSTP,TM(4),TP(4)
+      REAL*8  GEOM(2,4),DEPLM(8),DDEPL(8),TM(4),TP(4)
       REAL*8  FINT(8),KTAN(8,8),SIGMA(2,NPG),VIM(LGPG,NPG),VIP(LGPG,NPG)
       CHARACTER*8  TYPMOD(*)
       CHARACTER*16 OPTION, COMPOR(*)
@@ -119,18 +118,16 @@ C -   APPEL A LA LOI DE COMPORTEMENT
 C CALCUL DE LA CONTRAINTE DANS L'ELEMENT AINSI QUE LA DERIVEE
 C DE CELLE-CI PAR RAPPORT AU SAUT DE DEPLACEMENT (SIGMA ET DSIDEP) :
 
-        CALL NMCOMP(2,TYPMOD,MATE,COMPOR,CRIT,
+        CALL NMCOMP(KPG,2,TYPMOD,MATE,COMPOR,CRIT,
      &              RBID,RBID,
      &              TEMPM(KPG),TEMPP(KPG),RBID,
      &              RBID,RBID,
      &              RBID,RBID,RBID,
-     &              R8VIDE(),R8VIDE(),
      &              SUM,DSU,
      &              RBID,VIM(1,KPG),
      &              OPTION,
      &              RBID,RBID,
      &              1,RBID,RBID,
-     &              R8VIDE(),R8VIDE(),
      &              ANGMAS,
      &              RBID,
      &              SIGMA(1,KPG),VIP(1,KPG),DSIDEP,IBID)

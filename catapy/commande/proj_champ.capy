@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 21/03/2005   AUTEUR DURAND C.DURAND 
+#& MODIF COMMANDE  DATE 23/06/2005   AUTEUR VABHHTS J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -36,7 +36,7 @@ def proj_champ_prod(RESULTAT=None,CHAM_NO_REFE=None,**args ):
 
 PROJ_CHAMP=OPER(nom="PROJ_CHAMP",op= 166,sd_prod=proj_champ_prod,reentrant='f',
             UIinfo={"groupes":("Résultats et champs",)},
-                fr="Projection d'un champ aux noeuds sur les noeuds d'un autre maillage",
+                fr="Projeter les champs aux noeuds d'une SD résultat de type evol_xxx sur un autre maillage",
 #
          METHODE         =SIMP(statut='f',typ='TXM',defaut="ELEM",
                                into=("NUAGE_DEG_0","NUAGE_DEG_1","ELEM",) ),
@@ -70,10 +70,16 @@ PROJ_CHAMP=OPER(nom="PROJ_CHAMP",op= 166,sd_prod=proj_champ_prod,reentrant='f',
            LIST_FREQ       =SIMP(statut='f',typ=listr8_sdaster),
            NUME_MODE       =SIMP(statut='f',typ='I',validators=NoRepeat(),max='**' ),
            NOEUD_CMP       =SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**'),
+
            DISTANCE_MAX    =SIMP(statut='f',typ='R',
                 fr="Distance maximale entre le noeud et l'élément le plus proche, lorsque le noeud n'est dans aucun élément."),
            TYPE_CHAM       =SIMP(statut='f',typ='TXM',into=("NOEU",),
                 fr="Pour forcer le type des champs projetés. NOEU -> cham_no"),
+
+           PROL_ZERO       =SIMP(statut='f',typ='TXM',into=("OUI","NON"),defaut="NON",
+                fr="Si le résultat est un mode_xxx ou une base_xxx, on peut prolonger"
+                   +" les champs par zéro la ou la projection ne donne pas de valeurs."),
+
            b_modele_gene     =BLOC(condition = "AsType(RESULTAT)     == mode_meca",
              RIGI_MECA          =SIMP(statut='f',typ=(matr_asse_depl_r,matr_asse_depl_c,matr_asse_gene_r,matr_asse_pres_r ) ),
              MASS_MECA          =SIMP(statut='f',typ=(matr_asse_depl_r,matr_asse_gene_r,matr_asse_pres_r ) ),

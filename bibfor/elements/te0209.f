@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 23/06/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -60,13 +60,13 @@ C     ------------------------------------------------------------------
       CALL JEVECH('PGEOMER','L',IGEOM)
       CALL JEVECH('PTEMPSR','L',ITEMPS)
       CALL JEVECH('PHECHPR','L',IHECHP)
+      COEFH = ZR(IHECHP)
       CALL JEVECH('PTEMPER','L',ITEMP)
       CALL JEVECH('PVECTTR','E',IVECTT)
 
       THETA = ZR(ITEMPS+2)
 
       DO 30 KP = 1,NPG
-        COEFH = ZR(IHECHP+KP-1)
         CALL VFF2DN(NDIM,NNO,KP,IPOIDS,IDFDE,ZR(IGEOM),NX,NY,POIDS1)
         CALL VFF2DN(NDIM,NNO,KP,IPOIDS,IDFDE,ZR(IGEOM+2*NNO),NX,
      &              NY,POIDS2)

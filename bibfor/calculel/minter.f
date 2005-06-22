@@ -3,7 +3,7 @@
       IMPLICIT NONE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 08/11/2004   AUTEUR DURAND C.DURAND 
+C MODIF CALCULEL  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,11 +43,10 @@ C ----------------------------------------------------------------------
 
 C --- VARIABLES
       LOGICAL IR
-      INTEGER M1,M2,DIM,D1(*),D2(*),NP1,NP2,I,J,K,NS,P1,P2
+      INTEGER M1,M2,DIM,D1(*),D2(*),NP1,NP2,I,J,K,NS,P1,P2,IRET
       REAL*8  MM1(*),MM2(*),PAN1(DIM+2,*),PAN2(DIM+2,*)
-      REAL*8  ZERO,A(4,9),B(4,3),C(9),S2(9),R0,R1
-
-      ZERO = 0.D0
+      REAL*8  A(4,9),B(4,3),C(9),S2(9),R0,R1,DET
+      CHARACTER*1 TRANS,KSTOP
 
 C --- INTERSECTION MINMAX
 
@@ -100,11 +99,9 @@ C --- INTERSECTION PAN
 
       NS = NP1 + NP2 - DIM
 
-      CALL MGAUSS(B,A,4,DIM,NS,ZERO,IR)
-      IF (.NOT.IR) THEN
-        CALL UTMESS('F','MINTER','BASE SINGULIERE')
-        GOTO 80
-      ENDIF
+      TRANS=' '
+      KSTOP='S'
+      CALL MGAUSS(TRANS,KSTOP,B,A,4,DIM,NS,DET,IRET)
 
       CALL MMPROD(PAN1(1,P1+1),DIM+2,DIM+1,1,0,DIM,A,4,0,0,NS,C)
 
