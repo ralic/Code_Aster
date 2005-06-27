@@ -1,8 +1,8 @@
       SUBROUTINE AVCRIT( NBVEC, NBORDR, VALA, COEFPA, NCYCL, VMIN,
      &                   VMAX, OMIN, OMAX, NOMCRI, VSIGN, VPHYDR,
-     &                   SIGEQ )
+     &                   GDREQ )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 10/01/2005   AUTEUR F1BHHAJ J.ANGLES 
+C MODIF PREPOST  DATE 28/06/2005   AUTEUR F1BHHAJ J.ANGLES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -26,7 +26,7 @@ C RESPONSABLE F1BHHAJ J.ANGLES
       REAL*8        VALA, COEFPA
       REAL*8        VMIN(NBVEC*(NBORDR+2)), VMAX(NBVEC*(NBORDR+2))
       REAL*8        VSIGN(NBVEC*NBORDR), VPHYDR(NBORDR)
-      REAL*8        SIGEQ(NBVEC*NBORDR)
+      REAL*8        GDREQ(NBVEC*NBORDR)
       CHARACTER*16  NOMCRI
 C ----------------------------------------------------------------------
 C BUT: CALCULER LA CONTRAINTE EQUIVALENTE POUR TOUS LES VECTEURS NORMAUX
@@ -56,7 +56,7 @@ C                     VSIGN UNIQUEMENT DANS LE CRITERE DOMM_MAXI.
 C  VPHYDR   IN   R  : VECTEUR CONTENANT LA PRESSION HYDROSTATIQUE A
 C                     TOUS LES INSTANTS, ON UTILISE VPHYDR
 C                     UNIQUEMENT DANS LE CRITERE DE DANG VAN.
-C  SIGEQ    OUT  R  : VECTEUR CONTENANT LES VALEURS DE LA CONTRAINTE
+C  GDREQ    OUT  R  : VECTEUR CONTENANT LES VALEURS DE LA GRANDEUR
 C                     EQUIVALENTE, POUR TOUS LES NUMEROS D'ORDRE
 C                     DE CHAQUE VECTEUR NORMAL.
 C ----------------------------------------------------------------------
@@ -94,10 +94,10 @@ C 1. CRITERE DOMM_MAXI (MATAKE MODIFIE AMPLITUDE VARIABLE)
             DO 20 ICYCL=1, NCYCL(IVECT)
                AD1 = (IVECT-1)*NBORDR + ICYCL
                AD2 = (IVECT-1)*(NBORDR+2) + ICYCL
-               SIGEQ(AD1)= COEPRE*ABS((VMAX(AD2) - VMIN(AD2))/2.0D0) +
+               GDREQ(AD1)= COEPRE*ABS((VMAX(AD2) - VMIN(AD2))/2.0D0) +
      &                       VALA*MAX(VSIGN(AD0+OMAX(AD2)),
      &                                VSIGN(AD0+OMIN(AD2)),0.0D0)
-               SIGEQ(AD1)= SIGEQ(AD1)*COEFPA
+               GDREQ(AD1)= GDREQ(AD1)*COEFPA
 
  20         CONTINUE
  10      CONTINUE
@@ -110,13 +110,31 @@ C 2. CRITERE DE DANG_VAN MODIFIE (AMPLITUDE VARIABLE)
             DO 40 ICYCL=1, NCYCL(IVECT)
                AD1 = (IVECT-1)*NBORDR + ICYCL
                AD2 = (IVECT-1)*(NBORDR+2) + ICYCL
-               SIGEQ(AD1)= COEPRE*ABS((VMAX(AD2) - VMIN(AD2))/2.0D0) +
+               GDREQ(AD1)= COEPRE*ABS((VMAX(AD2) - VMIN(AD2))/2.0D0) +
      &                       VALA*MAX(VPHYDR(OMAX(AD2)),
      &                                VPHYDR(OMIN(AD2)),0.0D0)
-               SIGEQ(AD1)= SIGEQ(AD1)*COEFPA
+               GDREQ(AD1)= GDREQ(AD1)*COEFPA
 
  40         CONTINUE
  30      CONTINUE
+
+C 3. CRITERE DE FATEMI ET SOCIE MODIFIE (ELASTIQUE OU PLASTIQUE ET
+C    AMPLITUDE VARIABLE)
+
+      ELSEIF (NOMCRI(1:12) .EQ. 'FATEMI_SOCIE') THEN
+         DO 50 IVECT=1, NBVEC
+            AD0 = (IVECT-1)*NBORDR
+            DO 60 ICYCL=1, NCYCL(IVECT)
+               AD1 = (IVECT-1)*NBORDR + ICYCL
+               AD2 = (IVECT-1)*(NBORDR+2) + ICYCL
+               GDREQ(AD1)= 
+     &            COEPRE*ABS((VMAX(AD2) - VMIN(AD2))/2.0D0)*
+     &                   (1.0D0 + VALA*MAX(VSIGN(AD0+OMAX(AD2)),
+     &                                     VSIGN(AD0+OMIN(AD2)),0.0D0))
+               GDREQ(AD1)= GDREQ(AD1)*COEFPA
+
+ 60         CONTINUE
+ 50      CONTINUE
 
       ENDIF
 

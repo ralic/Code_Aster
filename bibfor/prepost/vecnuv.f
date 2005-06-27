@@ -1,7 +1,7 @@
       SUBROUTINE VECNUV( IPRE, IDER, GAMMA, PHINIT, DPHI, N, K, DIM,
      &                   VECTN, VECTU, VECTV )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 24/11/2003   AUTEUR F1BHHAJ J.ANGLES 
+C MODIF PREPOST  DATE 28/06/2005   AUTEUR F1BHHAJ J.ANGLES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -58,29 +58,29 @@ C     ------------------------------------------------------------------
       INTEGER       I
       REAL*8        PHI
 C     ------------------------------------------------------------------
-C
+
 C234567                                                              012
-C
+
       CALL JEMARQ()
-C
+
       DO 10 I=IPRE, IDER
          N = N + 1
          PHI = PHINIT + (I-K)*DPHI
-C
+
          VECTN((N-1)*3 + 1) = SIN(GAMMA)*COS(PHI)
          VECTN((N-1)*3 + 2) = SIN(GAMMA)*SIN(PHI)
          VECTN((N-1)*3 + 3) = COS(GAMMA)
-C
+
          VECTU((N-1)*3 + 1) = -SIN(PHI)
          VECTU((N-1)*3 + 2) = COS(PHI)
          VECTU((N-1)*3 + 3) = 0.0D0
-C
+
          VECTV((N-1)*3 + 1) = -COS(GAMMA)*COS(PHI)
          VECTV((N-1)*3 + 2) = -COS(GAMMA)*SIN(PHI)
          VECTV((N-1)*3 + 3) = SIN(GAMMA)
 
  10   CONTINUE
-C
+
       CALL JEDEMA()
-C
+
       END

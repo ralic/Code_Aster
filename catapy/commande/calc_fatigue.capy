@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 28/06/2005   AUTEUR F1BHHAJ J.ANGLES 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -67,9 +67,9 @@ CALC_FATIGUE=OPER(nom="CALC_FATIGUE",op= 151,sd_prod=calc_fatigue_prod,reentrant
                METHODE       =SIMP(statut='o',typ='TXM',into=("CERCLE_EXACT",) ),
            ),
            b_non_period   =BLOC(condition = "TYPE_CHARGE == 'NON_PERIODIQUE'",
-               CRITERE       =SIMP(statut='o',typ='TXM',into=("DOMM_MAXI","DANG_VAN_MODI_AV") ),
+               CRITERE       =SIMP(statut='o',typ='TXM',into=("DOMM_MAXI","DANG_VAN_MODI_AV","FATEMI_SOCIE") ),
                PROJECTION    =SIMP(statut='o',typ='TXM',into=("UN_AXE", "DEUX_AXES") ),
-               DELTA_OSCI    = SIMP(statut='f',typ='R',defaut= 0.0E+0),  
+               DELTA_OSCI    =SIMP(statut='f',typ='R',defaut= 0.0E+0),  
            ),
            b_fati_grmano  =BLOC(condition = "(GROUP_MA != None or MAILLE != None or GROUP_NO != None or NOEUD != None)",
                MAILLAGE      =SIMP(statut='o',typ=maillage_sdaster ),

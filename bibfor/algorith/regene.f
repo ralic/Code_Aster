@@ -3,7 +3,7 @@
       CHARACTER*8         NOMRES, RESGEN
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 15/06/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 28/06/2005   AUTEUR NICOLAS O.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -58,14 +58,13 @@ C
       REAL*8       FREQ,GENEK,GENEM,OMEG2,RBID
       COMPLEX*16   CBID
       CHARACTER*1  K1BID
-      CHARACTER*8  BASMOD,RESPRO,KBID,K8B,MODMEC,MAILSK,MODGEN,BLANC
+      CHARACTER*8  BASMOD,RESPRO,KBID,K8B,MODMEC,MAILSK,MODGEN
       CHARACTER*14 NUMDDL
       CHARACTER*16 DEPL,NOMPAR(5),TYPREP
       CHARACTER*19 CHAMNO,KINT,KREFE,CHAMNE,RAID,NUMGEN,PROFNO
       CHARACTER*24 CHAMOL,MATRIC,INDIRF,CREFE(2),NUMEDD
 C
 C-----------------------------------------------------------------------
-      DATA BLANC    /'        '/
       DATA DEPL   /'DEPL            '/
       DATA NOMPAR /'FREQ','RIGI_GENE','MASS_GENE','OMEGA2','NUME_MODE'/
 C-----------------------------------------------------------------------
@@ -123,7 +122,7 @@ C
 C ------ RECUPERATION DU MODELE GENERALISE
 C
          CALL JEVEUO(RESGEN//'           .REFD','L',LLREF)
-         RAID=ZK24(LLREF+2)
+         RAID=ZK24(LLREF)
          CALL JELIBE(RESGEN//'           .REFD')
          CALL JEVEUO(RAID//'.REFA','L',LLREF)
          NUMGEN(1:14)=ZK24(LLREF+1)
@@ -133,7 +132,7 @@ C
          RESPRO=ZK24(LLREF)
          CALL JELIBE(NUMGEN//'.REFN')
          CALL JEVEUO(RESPRO//'           .REFD','L',LLREF)
-         RAID=ZK24(LLREF+2)
+         RAID=ZK24(LLREF)
          CALL JELIBE(RESPRO//'           .REFD')
          CALL JEVEUO(RAID//'.REFA','L',LLREF)
          NUMGEN(1:14)=ZK24(LLREF+1)
@@ -212,26 +211,26 @@ C-----------------------------------------------------------------------
          CALL RSORAC ( BASMOD, 'LONUTI', IBID, RBID, KBID, CBID, RBID,
      &              KBID, NBMO2, 1, IBID )
 
-         IF (TYPREP(1:9) .EQ. 'BASE_MODA') THEN
-           NUMEDD = ZK24(IADRIF+1)
+C         IF (TYPREP(1:9) .EQ. 'BASE_MODA') THEN
+           NUMEDD = ZK24(IADRIF+3)
            NUMDDL = NUMEDD(1:14)
            CALL DISMOI('F','NB_EQUA',NUMDDL,'NUME_DDL',NEQ,K8B,IRET)
            CALL WKVECT('&&REGENE.BASEMODE','V V R',NBMO2*NEQ,IDBASE)
            CALL COPMO2(BASMOD,NEQ,NUMDDL,NBMO2,ZR(IDBASE))         
-         ELSE
-           IF (TYPREP(1:9) .EQ. 'MODE_MECA') THEN
-             MATRIC = ZK24(IADRIF)
-           ELSEIF (TYPREP(1:9) .EQ. 'MODE_STAT') THEN
-             MATRIC = ZK24(IADRIF)
-             IF (MATRIC(1:8).EQ.BLANC) MATRIC = ZK24(IADRIF+2)
-           ENDIF  
-           CALL DISMOI('F','NOM_NUME_DDL',MATRIC,'MATR_ASSE',IBID,
-     +                 NUMEDD,IRET)
-           NUMDDL = NUMEDD(1:14)
-           CALL DISMOI('F','NB_EQUA',MATRIC,'MATR_ASSE',NEQ,K8B,IRET)
-           CALL WKVECT('&&REGENE.BASEMODE','V V R',NBMO2*NEQ,IDBASE)
-           CALL COPMOD(BASMOD,'DEPL',NEQ,NUMDDL,NBMO2,ZR(IDBASE))
-         ENDIF
+C         ELSE
+C           IF (TYPREP(1:9) .EQ. 'MODE_MECA') THEN
+C             MATRIC = ZK24(IADRIF+2)
+C           ELSEIF (TYPREP(1:9) .EQ. 'MODE_STAT') THEN
+C             MATRIC = ZK24(IADRIF)
+C             IF (MATRIC(1:8).EQ.BLANC) MATRIC = ZK24(IADRIF+2)
+C           ENDIF
+C           CALL DISMOI('F','NOM_NUME_DDL',MATRIC,'MATR_ASSE',IBID,
+C     +                 NUMEDD,IRET)
+C           NUMDDL = NUMEDD(1:14)
+C           CALL DISMOI('F','NB_EQUA',MATRIC,'MATR_ASSE',NEQ,K8B,IRET)
+C           CALL WKVECT('&&REGENE.BASEMODE','V V R',NBMO2*NEQ,IDBASE)
+C           CALL COPMOD(BASMOD,'DEPL',NEQ,NUMDDL,NBMO2,ZR(IDBASE))
+C         ENDIF
 C
 CC
 CCC ---- RESTITUTION PROPREMENT DITE
@@ -272,10 +271,14 @@ C
 20       CONTINUE
 
          KREFE  = NOMRES
-         CALL WKVECT(KREFE//'.REFD','G V K24',3,LREFE)
+         CALL WKVECT(KREFE//'.REFD','G V K24',6,LREFE)
          ZK24(LREFE  ) = ZK24(IADRIF)
-         ZK24(LREFE+1) = '  '
+         ZK24(LREFE+1) = ZK24(IADRIF+1)
+C         ZK24(LREFE+1) = '  '
          ZK24(LREFE+2) = ZK24(IADRIF+2)
+         ZK24(LREFE+3) = ZK24(IADRIF+3)
+         ZK24(LREFE+4) = ZK24(IADRIF+4)
+         ZK24(LREFE+5) = ZK24(IADRIF+5)
          CALL JELIBE(KREFE//'.REFD')
       ENDIF
 

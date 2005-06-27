@@ -4,7 +4,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 15/06/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 28/06/2005   AUTEUR NICOLAS O.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -252,7 +252,7 @@ C
 C ---       DEFORMEES MODALES
 C
             CALL JEVEUO ( BASE//'           .REFD' , 'L', KREF )
-            MASSE = ZK24(KREF  )
+            MASSE = ZK24(KREF+1)
             CALL MTDSCR ( MASSE )
             CALL JEVEUO ( MASSE//'.&INT' , 'L' , LMASSE )
             CALL DISMOI('F','NOM_NUME_DDL',MASSE,
@@ -396,7 +396,7 @@ C                                                --> VECTEUR VECR3  ---
 C            MASSES MODALES EN EAU               --> VECTEUR VECR1  ---
 C
          CALL JEVEUO ( BASE//'           .REFD' , 'L', KREF )
-         MASSE = ZK24(KREF  )
+         MASSE = ZK24(KREF+1)
          CALL MTDSCR ( MASSE )
          CALL JEVEUO ( MASSE//'.&INT' , 'L' , LMASSE )
          CALL DISMOI('F','NOM_NUME_DDL',MASSE,

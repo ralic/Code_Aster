@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 15/06/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 28/06/2005   AUTEUR NICOLAS O.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -94,7 +94,6 @@ C-----------------------------------------------------------------------
             CALL JENUNO(JEXNUM(MAILLA//'.GROUPEMA',JGMA),NOM)
             IF (NOM(1:8).NE.GRMA) GO TO 10
             NOCCU = JGMA
-            WRITE (6,*) 'NOCCU=',NOCCU
    10     CONTINUE
 
           CALL JELIRA(ZK24(INOLI) (1:19)//'.LIEL','NMAXOC',NBLIEL,K1BID)
@@ -113,7 +112,6 @@ C CREATION D UN .LIEL BASE SUR LE GROUP-MA UTILISATEUR
           CALL JEECRA(JEXNUM(GRMA//'.MODELE    .LIEL',1),'LONMAX',
      &                NBELMA+1,' ')
           CALL JEVEUO(JEXNUM(GRMA//'.MODELE    .LIEL',1),'E',INWMOD)
-C     WRITE(6,*)'NBELMA=',NBELMA
 
           DO 40 JLIEL = 1,NBLIEL
             CALL JEVEUO(JEXNUM(ZK24(INOLI) (1:19)//'.LIEL',JLIEL),'L',
@@ -122,7 +120,6 @@ C     WRITE(6,*)'NBELMA=',NBELMA
             DO 30 IELMA = 1,NBELMA
               DO 20 JELMA = 1,NBELMA
                 IF (ZI(IGRMA+IELMA-1).EQ.ZI(ILIEL+JELMA-1)) THEN
-                  WRITE (6,*) ZI(IGRMA+IELMA-1)
                   ZI(INWMOD+IELMA-1) = ZI(ILIEL+JELMA-1)
                   TEMOIN = TEMOIN + 1
                 END IF
@@ -140,7 +137,6 @@ C     WRITE(6,*)'NBELMA=',NBELMA
           CALL JEVEUO(ZK24(INOLI) (1:8)//'.MODELE    .NBNO','L',IVRAI)
           CALL WKVECT(GRMA//'.MODELE    .NBNO','V V I',1,JNBNO)
           ZI(JNBNO) = ZI(IVRAI)
-          WRITE (6,*) 'ZI(JNBNO)=',ZI(JNBNO)
           CALL JEVEUO(ZK24(INOLI) (1:8)//'.MAILLE','L',IMAIL)
           CALL JELIRA(ZK24(INOLI) (1:8)//'.MAILLE','LONMAX',NBMAIL,
      &                K1BID)

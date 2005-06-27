@@ -1,7 +1,7 @@
       SUBROUTINE DELTAU(JRWORK, JNBPG, NBPGT, NBORDR, NMAINI, NBMAP,
      &                  NUMPAQ, TSPAQ, NOMMET, NOMCRI, CESR)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 10/01/2005   AUTEUR F1BHHAJ J.ANGLES 
+C MODIF PREPOST  DATE 28/06/2005   AUTEUR F1BHHAJ J.ANGLES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -74,16 +74,16 @@ C---- COMMUNS NORMALISES  JEVEUX
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     ------------------------------------------------------------------
       INTEGER      I, J, K, KWORK, N, JCERD, JCERL, JCERV, JAD
-      INTEGER      IRET, IMAP, ICESD, ICESL, ICESV, IAD
+      INTEGER      IRET, IMAP, ICESD, ICESL, ICESV, IAD, IBID
       INTEGER      IPG, IVECT, IORDR, TNECES, TDISP, JVECPG, JVECTN
-      INTEGER      JVECTU, JVECTV, NBVEC, NGAM, TAB2(18)
+      INTEGER      JVECTU, JVECTV, NBVEC, NGAM, DIM, TAB2(18)
       INTEGER      NBPG, SOMPGW, NBPGP, L, JDTAUM, JRESUN, MNMAX(2)
       INTEGER      JVPG1, JVPG2, LOR8EM, LOISEM
       INTEGER      JVECN2, JVECU2, JVECV2, JVECN1, JVECU1, JVECV1
       INTEGER      NBPAR, ICMP, ADRS
 C
-      REAL*8       EPSILO, DGAM, GAMMA, PI, R8PI, DPHI, TAB1(18), PHI
-      REAL*8       COEPRE, GAMMAM, PHIM, DGAM2, DPHI2, DTAUM(2)
+      REAL*8       EPSILO, DGAM, GAMMA, PI, R8PI, DPHI, TAB1(18)
+      REAL*8       COEPRE, GAMMAM, PHIM, DGAM2, DPHI2, PHI0, DTAUM(2)
       REAL*8       NXM(2), NYM(2), NZM(2)
       REAL*8       SIXX, SIYY, SIZZ, SIXY, SIXZ, SIYZ, FXM(2), FYM(2)
       REAL*8       FZM(2), EPSXX, EPSYY, EPSZZ, EPSXY, EPSXZ, EPSYZ
@@ -96,6 +96,7 @@ C
 C
       CHARACTER*2  CODRET, CODWO
       CHARACTER*8  NOMPAR, NOMRES, CHMAT1, NOMMAT
+      CHARACTER*10 OPTIO
       CHARACTER*16 PHENOM
       CHARACTER*19 CHMAT, CESMAT
       LOGICAL      ENDUR
@@ -182,27 +183,16 @@ C RECUPERATION MAILLE PAR MAILLE DU MATERIAU DONNE PAR L'UTILISATEUR
       DGAM = 10.0D0
 
       N = 0
+      DIM = 627
       DO 300 J=1, 18
          GAMMA=(J-1)*DGAM*(PI/180.0D0)
          DPHI=TAB1(J)*(PI/180.0D0)
          NGAM=TAB2(J)
-         DO 320 I=1, NGAM
-            PHI=(DPHI/2.0D0) + (I-1)*DPHI
-            N = N + 1
+         PHI0=DPHI/2.0D0
 
-            ZR(JVECTN + (N-1)*3)     = SIN(GAMMA)*COS(PHI)
-            ZR(JVECTN + (N-1)*3 + 1) = SIN(GAMMA)*SIN(PHI)
-            ZR(JVECTN + (N-1)*3 + 2) = COS(GAMMA)
+         CALL VECNUV(1, NGAM, GAMMA, PHI0, DPHI, N, 1, DIM,
+     &               ZR(JVECTN), ZR(JVECTU), ZR(JVECTV))
 
-            ZR(JVECTU + (N-1)*3)     = -SIN(PHI)
-            ZR(JVECTU + (N-1)*3 + 1) = COS(PHI)
-            ZR(JVECTU + (N-1)*3 + 2) = 0.0D0
-
-            ZR(JVECTV + (N-1)*3)     = -COS(GAMMA)*COS(PHI)
-            ZR(JVECTV + (N-1)*3 + 1) = -COS(GAMMA)*SIN(PHI)
-            ZR(JVECTV + (N-1)*3 + 2) = SIN(GAMMA)
-
- 320     CONTINUE
  300  CONTINUE
 
 C CONSTRUCTION DU VECTEUR : CONTRAINTE = F(NUMERO D'ORDRE) EN CHAQUE
@@ -232,84 +222,17 @@ C PASSE DIRECTEMENT A LA MAILLE SUIVANTE.
          ENDIF
 
 C RECUPERATION DU NOM DU MATERIAU AFFECTE A LA MAILLE COURANTE
-         CALL CESEXI('C',ICESD,ICESL,IMAP,1,1,1,IAD)
-         IF (IAD .LE. 0) THEN
-            CALL UTMESS('F', 'DELTAU.2', 'HORS BORNES DEFINIES DANS '//
-     &                       'CESMAT OU CMP NON AFFECTEE.')
-         ELSE
-            NOMMAT = ZK8(ICESV - 1 + IAD)
-         ENDIF
+C ET DES PARAMETRES ASSOCIES AU CRITERE CHOISI POUR LA MAILLE COURANTE.
 
-C RECUPERATION DES PARAMETRES ASSOCIES AU CRITERE DE MATAKE POUR
-C LA MAILLE COURANTE
-         CALL RCCOME (NOMMAT,'CISA_PLAN_CRIT',PHENOM,CODRET)
-         IF(CODRET(1:2) .EQ. 'NO') THEN
-           CALL UTMESS('F','DELTAU.3',
-     &    'POUR CALCULER LE CISAILLEMENT MAX ET LE PLAN CRITIQUE IL'//
-     &    ' FAUT RENSEIGNER CISA_PLAN_CRIT DANS DEFI_MATERIAU')
-         ENDIF
-
-         IF (NOMCRI(1:6) .EQ. 'MATAKE') THEN
-            CALL RCVALE(NOMMAT,'CISA_PLAN_CRIT',0,' ',R8B,1,
-     &                                    'MATAKE_A',VALA,CODRET,'  ')
-            IF (CODRET(1:2) .EQ. 'NO') THEN
-               CALL UTMESS('F', 'DELTAU.4', 'NOUS NE POUVONS '//
-     &             ' PAS RECUPERER LA VALEUR DU PARAMETRE A DU'//
-     &             ' CRITERE DE MATAKE, cf. COMMANDE: '//
-     &             ' DEFI_MATERIAU, OPERANDE: CISA_PLAN_CRIT.')
-            ENDIF
-            CALL RCVALE(NOMMAT,'CISA_PLAN_CRIT',0,' ',R8B,1,
-     &                                    'MATAKE_B',VALB,CODRET,'  ')
-            IF (CODRET(1:2) .EQ. 'NO') THEN
-               CALL UTMESS('F', 'DELTAU.5', 'NOUS NE POUVONS '//
-     &             ' PAS RECUPERER LA VALEUR DU PARAMETRE B DU'//
-     &             ' CRITERE DE MATAKE, cf. COMMANDE: '//
-     &             ' DEFI_MATERIAU, OPERANDE: CISA_PLAN_CRIT.')
-            ENDIF
-C
-            CALL RCVALE(NOMMAT,'CISA_PLAN_CRIT',0,' ',R8B,1,
-     &                           'COEF_FLE',COEFPA,CODRET,'  ')
-            IF (CODRET(1:2) .EQ. 'NO') THEN
-               CALL UTMESS('F', 'DELTAU.6', 'NOUS NE POUVONS'//
-     &            ' PAS RECUPERER LA VALEUR DU COEFFICIENT DE'//
-     &            ' PASSAGE FLEXION-TORSION, cf. COMMANDE: '//
-     &            ' DEFI_MATERIAU, OPERANDE: CISA_PLAN_CRIT.')
-            ENDIF
-
-C RECUPERATION DES PARAMETRES ASSOCIES AU CRITERE DE DANG VAN POUR
-C LA MAILLE COURANTE
-         ELSEIF (NOMCRI(1:16) .EQ. 'DANG_VAN_MODI_AC') THEN
-            CALL RCVALE(NOMMAT,'CISA_PLAN_CRIT',0,' ',R8B,1,
-     &                                 'D_VAN_A',VALA,CODRET,'  ')
-            IF (CODRET(1:2) .EQ. 'NO') THEN
-               CALL UTMESS('F', 'DELTAU.7', 'NOUS NE POUVONS '//
-     &             ' PAS RECUPERER LA VALEUR DU PARAMETRE A DU'//
-     &             ' CRITERE DE DANG_VAN, cf. COMMANDE: '//
-     &             ' DEFI_MATERIAU, OPERANDE: CISA_PLAN_CRIT.')
-            ENDIF
-
-            CALL RCVALE(NOMMAT,'CISA_PLAN_CRIT',0,' ',R8B,1,
-     &                                 'D_VAN_B',VALB,CODRET,'  ')
-            IF (CODRET(1:2) .EQ. 'NO') THEN
-               CALL UTMESS('F', 'DELTAU.8', 'NOUS NE POUVONS '//
-     &             ' PAS RECUPERER LA VALEUR DU PARAMETRE B DU'//
-     &             ' CRITERE DE DANG_VAN, cf. COMMANDE: '//
-     &             ' DEFI_MATERIAU, OPERANDE: CISA_PLAN_CRIT.')
-            ENDIF
-
-            CALL RCVALE(NOMMAT,'CISA_PLAN_CRIT',0,' ',R8B,1,
-     &                           'COEF_CIS',COEFPA,CODRET,'  ')
-            IF (CODRET(1:2) .EQ. 'NO') THEN
-               CALL UTMESS('F', 'DELTAU.9', 'NOUS NE POUVONS '//
-     &            ' PAS RECUPERER LA VALEUR DU COEFFICIENT DE'//
-     &            ' PASSAGE CISAILLEMENT-TRACTION, cf. COMMANDE: '//
-     &            ' DEFI_MATERIAU, OPERANDE: CISA_PLAN_CRIT.')
-            ENDIF
-         ENDIF
+         OPTIO = 'DOMA_ELGA'
+         CALL RNOMAT (ICESD, ICESL, ICESV, IMAP, NOMCRI, IBID, IBID,
+     &                IBID, OPTIO, VALA, VALB, COEFPA, NOMMAT)
 
          DO 420 IPG=1, NBPG
-            CALL JERAZO('&&DELTAU.VECTPG', TNECES, 1)
 
+C PROJECTION DE L'HISTORIQUE DU CISAILLEMENT DANS UN PLAN.
+
+            CALL JERAZO('&&DELTAU.VECTPG', TNECES, 1)
             NBVEC = 209
             CALL TAURLO(NBVEC, JVECTN, JVECTU, JVECTV, NBORDR, KWORK,
      &                  SOMPGW, JRWORK, TSPAQ, IPG, JVECPG)
@@ -358,6 +281,7 @@ C    DEGRES PRES).
 
             PHYDRO = 0.0D0
             PHYDRM = 0.0D0
+            DIM = 27
 
             DO 440 K=1, 2
                NORM(K) = 0.0D0
@@ -387,37 +311,17 @@ C    DEGRES PRES).
                IF (ABS(GAMMAM) .LT. EPSILO) THEN
                   GAMMA = 5.0D0*(PI/180.0D0)
                   DPHI2 = 60.0D0*(PI/180.0D0)
-                  DO 450 I=1, 6
-                     PHI = 0.0D0 + (I-1)*DPHI2
+                  PHI0 = 0.0D0
+                  N = 0
 
-                     ZR(JVECN2 + (I-1)*3)     = SIN(GAMMA)*COS(PHI)
-                     ZR(JVECN2 + (I-1)*3 + 1) = SIN(GAMMA)*SIN(PHI)
-                     ZR(JVECN2 + (I-1)*3 + 2) = COS(GAMMA)
-
-                     ZR(JVECU2 + (I-1)*3)     = -SIN(PHI)
-                     ZR(JVECU2 + (I-1)*3 + 1) = COS(PHI)
-                     ZR(JVECU2 + (I-1)*3 + 2) = 0.0D0
-
-                     ZR(JVECV2 + (I-1)*3)     = -COS(GAMMA)*COS(PHI)
-                     ZR(JVECV2 + (I-1)*3 + 1) = -COS(GAMMA)*SIN(PHI)
-                     ZR(JVECV2 + (I-1)*3 + 2) = SIN(GAMMA)
-
- 450              CONTINUE
+                  CALL VECNUV(1, 6, GAMMA, PHI0, DPHI2, N, 1, DIM,
+     &                        ZR(JVECN2), ZR(JVECU2), ZR(JVECV2))
 
                   GAMMA = 0.0D0
-                  PHI = PI
+                  PHI0 = PI
 
-                  ZR(JVECN2 + 6*3)     = SIN(GAMMA)*COS(PHI)
-                  ZR(JVECN2 + 6*3 + 1) = SIN(GAMMA)*SIN(PHI)
-                  ZR(JVECN2 + 6*3 + 2) = COS(GAMMA)
-
-                  ZR(JVECU2 + 6*3)     = -SIN(PHI)
-                  ZR(JVECU2 + 6*3 + 1) = COS(PHI)
-                  ZR(JVECU2 + 6*3 + 2) = 0.0D0
-
-                  ZR(JVECV2 + 6*3)     = -COS(GAMMA)*COS(PHI)
-                  ZR(JVECV2 + 6*3 + 1) = -COS(GAMMA)*SIN(PHI)
-                  ZR(JVECV2 + 6*3 + 2) = SIN(GAMMA)
+                  CALL VECNUV(1, 1, GAMMA, PHI0, DPHI2, N, 1, DIM,
+     &                        ZR(JVECN2), ZR(JVECU2), ZR(JVECV2))
 
                   NBVEC = 7
                   CALL TAURLO(NBVEC, JVECN2, JVECU2, JVECV2, NBORDR,
@@ -428,23 +332,10 @@ C    DEGRES PRES).
                   N = 0
                   DO 460 J=1, 3
                      GAMMA = GAMMAM + (J-2)*DGAM2
-                     DO 470 I=1, 3
-                        PHI = PHIM + (I-2)*DPHI2
-                        N = N + 1
 
-                        ZR(JVECN2 + (N-1)*3)     = SIN(GAMMA)*COS(PHI)
-                        ZR(JVECN2 + (N-1)*3 + 1) = SIN(GAMMA)*SIN(PHI)
-                        ZR(JVECN2 + (N-1)*3 + 2) = COS(GAMMA)
+                     CALL VECNUV(1, 3, GAMMA, PHIM, DPHI2, N, 2, DIM,
+     &                           ZR(JVECN2), ZR(JVECU2), ZR(JVECV2))
 
-                        ZR(JVECU2 + (N-1)*3)     = -SIN(PHI)
-                        ZR(JVECU2 + (N-1)*3 + 1) = COS(PHI)
-                        ZR(JVECU2 + (N-1)*3 + 2) = 0.0D0
-
-                        ZR(JVECV2 + (N-1)*3)     = -COS(GAMMA)*COS(PHI)
-                        ZR(JVECV2 + (N-1)*3 + 1) = -COS(GAMMA)*SIN(PHI)
-                        ZR(JVECV2 + (N-1)*3 + 2) = SIN(GAMMA)
-
- 470                 CONTINUE
  460              CONTINUE
 
                   NBVEC = 9
@@ -500,37 +391,17 @@ C    DEGRE PRES).
                IF (ABS(GAMMAM) .LT. EPSILO) THEN
                   GAMMA = 1.0D0*(PI/180.0D0)
                   DPHI2 = 60.0D0*(PI/180.0D0)
-                  DO 500 I=1, 6
-                     PHI = 0.0D0 + (I-1)*DPHI2
+                  PHI0 = 0.0D0
+                  N = 0
 
-                     ZR(JVECN1 + (I-1)*3)     = SIN(GAMMA)*COS(PHI)
-                     ZR(JVECN1 + (I-1)*3 + 1) = SIN(GAMMA)*SIN(PHI)
-                     ZR(JVECN1 + (I-1)*3 + 2) = COS(GAMMA)
-
-                     ZR(JVECU1 + (I-1)*3)     = -SIN(PHI)
-                     ZR(JVECU1 + (I-1)*3 + 1) = COS(PHI)
-                     ZR(JVECU1 + (I-1)*3 + 2) = 0.0D0
-
-                     ZR(JVECV1 + (I-1)*3)     = -COS(GAMMA)*COS(PHI)
-                     ZR(JVECV1 + (I-1)*3 + 1) = -COS(GAMMA)*SIN(PHI)
-                     ZR(JVECV1 + (I-1)*3 + 2) = SIN(GAMMA)
-
- 500              CONTINUE
+                  CALL VECNUV(1, 6, GAMMA, PHI0, DPHI2, N, 1, DIM,
+     &                        ZR(JVECN1), ZR(JVECU1), ZR(JVECV1))
 
                   GAMMA = 0.0D0
-                  PHI = PI
+                  PHI0 = PI
 
-                  ZR(JVECN1 + 6*3)     = SIN(GAMMA)*COS(PHI)
-                  ZR(JVECN1 + 6*3 + 1) = SIN(GAMMA)*SIN(PHI)
-                  ZR(JVECN1 + 6*3 + 2) = COS(GAMMA)
-
-                  ZR(JVECU1 + 6*3)     = -SIN(PHI)
-                  ZR(JVECU1 + 6*3 + 1) = COS(PHI)
-                  ZR(JVECU1 + 6*3 + 2) = 0.0D0
-
-                  ZR(JVECV1 + 6*3)     = -COS(GAMMA)*COS(PHI)
-                  ZR(JVECV1 + 6*3 + 1) = -COS(GAMMA)*SIN(PHI)
-                  ZR(JVECV1 + 6*3 + 2) = SIN(GAMMA)
+                  CALL VECNUV(1, 1, GAMMA, PHI0, DPHI2, N, 1, DIM,
+     &                        ZR(JVECN1), ZR(JVECU1), ZR(JVECV1))
 
                   NBVEC = 7
                   CALL TAURLO(NBVEC, JVECN1, JVECU1, JVECV1, NBORDR,
@@ -541,23 +412,10 @@ C    DEGRE PRES).
                   N = 0
                   DO 510 J=1, 3
                      GAMMA = GAMMAM + (J-2)*DGAM2
-                     DO 520 I=1, 3
-                        PHI = PHIM + (I-2)*DPHI2
-                        N = N + 1
 
-                        ZR(JVECN1 + (N-1)*3)     = SIN(GAMMA)*COS(PHI)
-                        ZR(JVECN1 + (N-1)*3 + 1) = SIN(GAMMA)*SIN(PHI)
-                        ZR(JVECN1 + (N-1)*3 + 2) = COS(GAMMA)
+                     CALL VECNUV(1, 3, GAMMA, PHIM, DPHI2, N, 2, DIM,
+     &                        ZR(JVECN1), ZR(JVECU1), ZR(JVECV1))
 
-                        ZR(JVECU1 + (N-1)*3)     = -SIN(PHI)
-                        ZR(JVECU1 + (N-1)*3 + 1) =  COS(PHI)
-                        ZR(JVECU1 + (N-1)*3 + 2) =  0.0D0
-
-                        ZR(JVECV1 + (N-1)*3)     = -COS(GAMMA)*COS(PHI)
-                        ZR(JVECV1 + (N-1)*3 + 1) = -COS(GAMMA)*SIN(PHI)
-                        ZR(JVECV1 + (N-1)*3 + 2) =  SIN(GAMMA)
-
- 520                 CONTINUE
  510              CONTINUE
 
                   NBVEC = 9
@@ -614,13 +472,13 @@ C DE LA DEFORMATION NORMALE MOYENNE SUR LE PLAN CRITIQUE.
                CALL RCVALE(NOMMAT,'ELAS',0,' ',R8B,1,'E',VALE,CODRET,
      &                     '  ')
                IF (CODRET(1:2) .EQ. 'NO') THEN
-                  CALL UTMESS('F', 'DELTAU.10', 'NOUS NE POUVONS PAS'//
+                  CALL UTMESS('F', 'DELTAU.2', 'NOUS NE POUVONS PAS'//
      &                   ' RECUPERER LA VALEUR DU MODULE D''YOUNG : E.')
                ENDIF
                CALL RCVALE(NOMMAT,'ELAS',0,' ',R8B,1,'NU',VALNU,CODRET,
      &                     '  ')
                IF (CODRET(1:2) .EQ. 'NO') THEN
-                  CALL UTMESS('F', 'DELTAU.11', 'NOUS NE POUVONS PAS'//
+                  CALL UTMESS('F', 'DELTAU.3', 'NOUS NE POUVONS PAS'//
      &                    ' RECUPERER LA VALEUR DU COEFFICIENT DE ' //
      &                    'POISSON : NU.')
                ENDIF
@@ -724,16 +582,19 @@ C 2/ CRITERE DE DANG VAN
                   ENDIF
                ENDIF
 
+C PAS DE CRITERE DE FATEMI ET SOCIE EN ELASTIQUE ET AMPLITUDE CONSTANTE,
+C CELA N'A PAS DE SENS.
+
 C CALCUL DU NOMBRE DE CYCLES A LA RUPTURE ET DU DOMMAGE
 
                CALL RCCOME ( NOMMAT, 'FATIGUE', PHENOM, CODRET )
-               IF ( CODRET .EQ. 'NO' ) CALL UTMESS('F','DELTAU.12',
+               IF ( CODRET .EQ. 'NO' ) CALL UTMESS('F','DELTAU.4',
      &            'POUR CALCULER LE DOMMAGE IL FAUT DEFINIR LE '//
      &            'COMPORTEMENT "FATIGUE" DANS DEFI_MATERIAU' )
 
                CALL RCPARE( NOMMAT, 'FATIGUE', 'WOHLER', CODWO )
                IF ( CODWO .EQ. 'OK' ) THEN
-                  CALL LIMEND( NOMMAT,SIGEQ(K),ENDUR)
+                  CALL LIMEND( NOMMAT,SIGEQ(K),'WOHLER',ENDUR)
                   IF (ENDUR) THEN
                      NRUPT(K)=R8MAEM()
                   ELSE
@@ -780,7 +641,7 @@ C AFFECTATION DES RESULTATS DANS UN CHAM_ELEM SIMPLE
                CALL CESEXI('C',JCERD,JCERL,IMAP,IPG,1,ICMP,JAD)
 
                IF (JAD .EQ. 0) THEN
-                  CALL UTMESS('F', 'DELTAU.13', 'HORS BORNES '//
+                  CALL UTMESS('F', 'DELTAU.5', 'HORS BORNES '//
      &                             ' DEFINIES DANS CESCRE.')
                ELSE
                   JAD = ABS(JAD)

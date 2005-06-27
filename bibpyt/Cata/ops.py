@@ -1,4 +1,4 @@
-#@ MODIF ops Cata  DATE 17/05/2005   AUTEUR DURAND C.DURAND 
+#@ MODIF ops Cata  DATE 24/06/2005   AUTEUR BOYERE E.BOYERE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -251,6 +251,7 @@ def detruire(self,d):
      sd=[]
      for mc in self["CONCEPT"]:
        mcs=mc["NOM"]
+       if mcs is None:continue
        if type(mcs) == types.ListType or type(mcs) == types.TupleType:
          for e in mcs:
            if isinstance(e,ASSD):

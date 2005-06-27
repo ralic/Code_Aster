@@ -8,7 +8,7 @@
       LOGICAL             NEWRES
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 15/06/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 28/06/2005   AUTEUR NICOLAS O.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -115,10 +115,13 @@ C
          REFD(1:8) = BASEMO
          CALL JEVEUO ( REFD , 'L', KREF )
          REFD(1:8) = NOMRES
-         CALL WKVECT ( REFD, 'G V K24', 3, LREF )
+         CALL WKVECT ( REFD, 'G V K24', 6, LREF )
          ZK24(LREF  ) = ZK24(KREF  )
          ZK24(LREF+1) = ZK24(KREF+1)
          ZK24(LREF+2) = ZK24(KREF+2)
+         ZK24(LREF+3) = ZK24(KREF+3)
+         ZK24(LREF+4) = ZK24(KREF+4)
+         ZK24(LREF+5) = ZK24(KREF+5)
       ENDIF
 C
 C     --- PARAMETRES SOUS ECOULEMENT ---

@@ -6,7 +6,7 @@
 C
 C TOLE CRP_20
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 15/06/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 28/06/2005   AUTEUR NICOLAS O.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -209,7 +209,7 @@ C=======================================================================
           CALL RSEXCH(RESUCO,'DEPL',1,CHDEPL,IRET)
           CALL JELIRA(CHDEPL(1:19)//'.VALE','LONMAX',NEQ,K8B)
           CALL JEVEUO(REFE//'.REFD','L',LREFE)
-          MASSE = ZK24(LREFE) (1:19)
+          MASSE = ZK24(LREFE+1) (1:19)
           CALL DISMOI('I','SUR_OPTION',MASSE,'MATR_ASSE',IBID,SOP,IE)
           IF (IE.EQ.0) THEN
             IF (SOP(1:14).EQ.'MASS_MECA_DIAG') INUME = 0

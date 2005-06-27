@@ -1,7 +1,7 @@
-      SUBROUTINE AVSIGN( NBVEC, NBORDR, VECTN, VWORK,
-     &                   TDISP, KWORK, SOMMW, TSPAQ, I, VSIGN )
+      SUBROUTINE AVSIGN( NBVEC, NBORDR, VECTN, VWORK, TDISP, KWORK,
+     &                   SOMMW, TSPAQ, I, NOMCRI, VSIGN )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF PREPOST  DATE 28/06/2005   AUTEUR F1BHHAJ J.ANGLES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -19,10 +19,11 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
 C RESPONSABLE F1BHHAJ J.ANGLES
-      IMPLICIT   NONE
-      INTEGER    NBVEC, NBORDR, TDISP, KWORK, SOMMW, TSPAQ, I
-      REAL*8     VECTN(3*NBVEC)
-      REAL*8     VWORK(TDISP), VSIGN(NBVEC*NBORDR)
+      IMPLICIT      NONE
+      INTEGER       NBVEC, NBORDR, TDISP, KWORK, SOMMW, TSPAQ, I
+      REAL*8        VECTN(3*NBVEC)
+      REAL*8        VWORK(TDISP), VSIGN(NBVEC*NBORDR)
+      CHARACTER*16  NOMCRI
 C ----------------------------------------------------------------------
 C BUT: CALCULER LA CONTRAINTE NORMALE POUR TOUS LES VECTEURS NORMAUX
 C      A TOUS LES NUMEROS D'ORDRE.
@@ -48,6 +49,7 @@ C                     MAILLES PRECEDANT LA MAILLE COURANTE.
 C  TSPAQ  : IN   I  : TAILLE DU SOUS-PAQUET DU <<PAQUET>> DE MAILLES
 C                     OU DE NOEUDS COURANT.
 C  I      : IN   I  : IEME POINT DE GAUSS OU IEME NOEUD.
+C  NOMCRI : IN  K16 : NOM DU CRITERE D'ENDOMMAGEMENT PAR FATIGUE.
 C  VSIGN  : OUT  R  : VECTEUR CONTENANT LES VALEURS DE LA CONTRAINTE
 C                     NORMALE, POUR TOUS LES NUMEROS D'ORDRE
 C                     DE CHAQUE VECTEUR NORMAL.
@@ -68,43 +70,48 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*80                                        ZK80
       COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
 C     ------------------------------------------------------------------
-      INTEGER    N, IVECT, IORDR, ADRS
+      INTEGER    N, DECAL, IVECT, IORDR, ADRS
       REAL*8     NX, NY, NZ
       REAL*8     SIXX, SIYY, SIZZ, SIXY, SIXZ, SIYZ, FX, FY, FZ, NORM
 C     ------------------------------------------------------------------
-C
+
 C234567                                                              012
-C
+
       CALL JEMARQ()
 
       N = 1
+      IF ( NOMCRI(1:12) .EQ. 'FATEMI_SOCIE' ) THEN
+         DECAL = 12
+      ELSE
+         DECAL = 6
+      ENDIF
 
       DO 10 IVECT=1, NBVEC
          NX = VECTN((IVECT-1)*3 + 1)
          NY = VECTN((IVECT-1)*3 + 2)
          NZ = VECTN((IVECT-1)*3 + 3)
-C
+
          DO 20 IORDR=1, NBORDR
-            ADRS = (IORDR-1)*TSPAQ + KWORK*SOMMW*6 + (I-1)*6
+            ADRS = (IORDR-1)*TSPAQ + KWORK*SOMMW*DECAL + (I-1)*DECAL
             SIXX = VWORK(ADRS + 1)
             SIYY = VWORK(ADRS + 2)
             SIZZ = VWORK(ADRS + 3)
             SIXY = VWORK(ADRS + 4)
             SIXZ = VWORK(ADRS + 5)
             SIYZ = VWORK(ADRS + 6)
-C
+
 C CALCUL DE vect_F = [SIG].vect_n
             FX = SIXX*NX + SIXY*NY + SIXZ*NZ      
             FY = SIXY*NX + SIYY*NY + SIYZ*NZ      
             FZ = SIXZ*NX + SIYZ*NY + SIZZ*NZ      
-C
+
 C CALCUL DE NORM = vect_F.vect_n
             NORM = FX*NX + FY*NY + FZ*NZ
             VSIGN(N) = NORM
             N = N + 1
  20      CONTINUE
  10   CONTINUE
-C
+
       CALL JEDEMA()
-C
+
       END

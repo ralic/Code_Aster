@@ -4,7 +4,7 @@
       CHARACTER*19                                PROFNO
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 15/06/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 28/06/2005   AUTEUR NICOLAS O.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -99,7 +99,7 @@ C
 C-----RECUPERATION DU MODELE GENERALISE--------------------------------
 C
       CALL JEVEUO(RESGEN//'           .REFD','L',LLREF)
-      RAID=ZK24(LLREF+2)
+      RAID=ZK24(LLREF)
       CALL JELIBE(RESGEN//'           .REFD')
       CALL JEVEUO(RAID//'.REFA','L',LLREF)
       NUMGEN(1:14)=ZK24(LLREF+1)
@@ -207,7 +207,7 @@ C
             KBID='  '
             CALL MGUTDM(MODGEN,KBID,K,'NOM_BASE_MODALE',IBID,BASMOD)
             CALL JEVEUO(BASMOD//'           .REFD','L',LREFE)
-            CALL JEVEUO(ZK24(LREFE)(1:8)//'      .INTD.TYPE','L',
+            CALL JEVEUO(ZK24(LREFE+4)(1:8)//'      .INTD.TYPE','L',
      &                  LTYPE)
             IF (ZK8(LTYPE).EQ.'AUCUN') THEN
              CALL UTDEBM('A','REGEGL',' AUCUN TYPE D''INTERFACE DEFINI')

@@ -3,7 +3,7 @@
       INTEGER            IER
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 15/06/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 28/06/2005   AUTEUR NICOLAS O.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -111,7 +111,7 @@ C INDICATEUR CALCUL SANS MATRICE GENERALISEE (PROJ_MESU_MODAL)
       PROMES = .FALSE.
       IF (CONCEP(1:9).EQ.'TRAN_GENE') THEN
         CALL JEVEUO(RESIN//'           .REFD','L',J1REFE)
-        MATGEN = ZK24(J1REFE+1)
+        MATGEN = ZK24(J1REFE)
         IF (MATGEN(1:8) .EQ. BLANC)
      &       PROMES = .TRUE.
       ELSEIF ((CONCEP(1:9).EQ.'MODE_GENE') .OR.
@@ -127,7 +127,7 @@ C
       IF (CONCEP(1:9).EQ.'TRAN_GENE') THEN
         TYPRES = 'DYNA_TRANS'
         CALL JEVEUO(RESIN//'           .REFD','L',J1REFE)
-        MATGEN = ZK24(J1REFE+1)
+        MATGEN = ZK24(J1REFE)
         IF (PROMES) THEN
           TYPMAT = ' '
         ELSE

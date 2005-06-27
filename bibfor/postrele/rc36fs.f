@@ -9,7 +9,7 @@
       CHARACTER*8         NOMMAT
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 27/06/2003   AUTEUR CIBHHLV L.VIVAN 
+C MODIF POSTRELE  DATE 28/06/2005   AUTEUR F1BHHAJ J.ANGLES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -98,7 +98,7 @@ C
 C
       IF ( TROUVE ) THEN
 C
-         CALL LIMEND( NOMMAT,SALTM,ENDUR)
+         CALL LIMEND( NOMMAT,SALTM,'WOHLER',ENDUR)
          IF (ENDUR) THEN
             U1KL=0.D0
          ELSE
@@ -120,7 +120,7 @@ C
          SPTHER=0.D0
          CALL RC36SA ( NOMMAT, MATSE, MATSE, SNKL, SP, 
      +                TYPEKE, SPMECA, SPTHER, SALTKL, SM )
-         CALL LIMEND( NOMMAT,SALTKL,ENDUR)
+         CALL LIMEND( NOMMAT,SALTKL,'WOHLER',ENDUR)
          IF (ENDUR) THEN
             U2KL=0.D0
          ELSE

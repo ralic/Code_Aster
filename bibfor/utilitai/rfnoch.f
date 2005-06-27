@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 15/06/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 28/06/2005   AUTEUR NICOLAS O.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -38,7 +38,8 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*80                                        ZK80
       COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
-      INTEGER       IBID, N, NC, NG, INT, IND, NSST, IRET, JREFE 
+      INTEGER       IBID, N, NC, NG, INT, IND, NSST, IRET, JREFE1, 
+     &              JREFE2 
       CHARACTER*8   NOMA, SST, BASEMO, RAIDE, NOEUD, INTITU, NOGNO
       CHARACTER*16  PARAX,PARAY, NOMCMD, TYPCON
       CHARACTER*19  LISTR, NOMFON, RESU
@@ -64,10 +65,10 @@ C
 C
       ELSE
 C
-         CALL JEVEUO ( RESU//'.REFD', 'L', JREFE )
-         BASEMO = ZK24(JREFE)(1:8)
-         CALL JEVEUO ( BASEMO//'           .REFD', 'L', JREFE )
-         RAIDE = ZK24(JREFE+2)(1:8)
+         CALL JEVEUO ( RESU//'.REFD', 'L', JREFE1 )
+         BASEMO = ZK24(JREFE1+5)(1:8)
+         CALL JEVEUO ( BASEMO//'           .REFD', 'L', JREFE2 )
+         RAIDE = ZK24(JREFE2)(1:8)
          CALL DISMOI('F','NOM_MAILLA',RAIDE,'MATR_ASSE',IBID,NOMA,IRET)
 C
          CALL UTNONO ( ' ', NOMA, 'NOEUD', NOGNO, NOEUD, IRET )

@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 15/06/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF PREPOST  DATE 28/06/2005   AUTEUR NICOLAS O.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,12 +48,12 @@ C
       CHARACTER*14 NUME
       CHARACTER*16 CONCEP, NOMCMD , NOMSY
       CHARACTER*19 KVEC, KVAL, KNUME
-      CHARACTER*24 NPRNO, DESC, REFE, VALE, ADIA, ABLO, NOPARA(NBPARA)
+      CHARACTER*24 NPRNO, DESC, REFD, VALE, ADIA, ABLO, NOPARA(NBPARA)
       CHARACTER*24 REFA
       REAL*8       R8B, UN, COEF, PREC, OMEGA, ZETA
 C     ------------------------------------------------------------------
       DATA  DESC  /'                   .DESC'/
-      DATA  REFE  /'                   .REFD'/
+      DATA  REFD  /'                   .REFD'/
       DATA  REFA  /'                   .REFA'/
       DATA  VALE  /'                   .VALE'/
       DATA  ADIA  /'                   .ADIA'/
@@ -82,9 +82,9 @@ C
       CALL RSUTNU ( MECA, ' ', 0, KNUME, NBORDR, PREC, CRIT, IRET )
       IF (IRET.NE.0) GOTO 9999
       CALL JEVEUO ( KNUME, 'L', JORDR )
-      REFE(1:8) = MECA
-      CALL JEVEUO(REFE,'L',LMODE)
-      MASSE = ZK24(LMODE  )
+      REFD(1:8) = MECA
+      CALL JEVEUO(REFD,'L',LMODE)
+      MASSE = ZK24(LMODE+1)
       NOMSY = 'DEPL'
       CALL VPRECU ( MECA, NOMSY, NBORDR,ZI(JORDR), KVEC,
      +              NBPARA, NOPARA, K8B, KVAL, K8B,

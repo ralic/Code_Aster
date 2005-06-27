@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 23/06/2005   AUTEUR VABHHTS J.PELLET 
+#& MODIF COMMANDE  DATE 28/06/2005   AUTEUR F1BHHAJ J.ANGLES 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -2639,7 +2639,12 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
              VERI_P          =SIMP(statut='c',typ='TXM',max='**',defaut=("TEMP",) ),
            ),
            CISA_PLAN_CRIT  =FACT(statut='f',
-             CRITERE       =SIMP(statut='o',typ='TXM',into=("MATAKE","DANG_VAN_MODI_AC","DANG_VAN_MODI_AV","DOMM_MAXI") ),
+             CRITERE       =SIMP(statut='o',typ='TXM',into=("MATAKE",
+                                                            "DANG_VAN_MODI_AC",
+                                                            "DANG_VAN_MODI_AV",
+                                                            "DOMM_MAXI",
+                                                            "FATEMI_SOCIE",
+                                                            ) ),
 
              b_critere_matake =BLOC(condition="CRITERE=='MATAKE'",
                                     fr="Cisaillement plan critique  critère de matake",
@@ -2659,6 +2664,12 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
                                       fr="Critère pour chargement non périodique : domm_maxi",
                DOMM_A             =SIMP(statut='o',typ='R'),
                DOMM_B             =SIMP(statut='o',typ='R'),
+               COEF_CISA_TRAC     =SIMP(statut='o',typ='R',val_min=1.0E0,val_max=1.7321E0),
+             ),
+
+             b_critere_fate_soci =BLOC(condition="CRITERE=='FATEMI_SOCIE'",
+                               fr="Critère de Fatemi et Socie, en élasticité ou élastoplasticité, pour le cas amplitude variable",
+               FATSOC_A           =SIMP(statut='o',typ='R'),
                COEF_CISA_TRAC     =SIMP(statut='o',typ='R',val_min=1.0E0,val_max=1.7321E0),
              ),
            ),

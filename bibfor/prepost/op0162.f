@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 15/06/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF PREPOST  DATE 28/06/2005   AUTEUR NICOLAS O.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -84,7 +84,7 @@ C
 C     --- ON RECUPERE LE TYPE D'INTERFACE ---
 C
       CALL JEVEUO(BASEMO(1:8)//'           .REFD','L',JVAL)
-      INTERF = ZK24(JVAL) (1:8)
+      INTERF = ZK24(JVAL+4) (1:8)
       IF (INTERF.NE.' ') THEN
        CALL BMNBMD(BASEMO,'MODE',NBMODE)
        CALL BMNBMD(BASEMO,'DEFORMEE',NBMODS)

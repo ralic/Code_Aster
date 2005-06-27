@@ -3,7 +3,7 @@
       CHARACTER*(*)       MACR
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 15/06/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 28/06/2005   AUTEUR NICOLAS O.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -56,7 +56,7 @@ C     ----- RECUPERATION DES MODES -----
       NOMA   = ZK24(JREFE+1)(1:8)
       CALL JELIRA(BASEMO//'           .ORDR','LONMAX',NBMODT,K8B)
       CALL JEVEUO(BASEMO//'           .REFD','L',JVAL)
-      INTERF = ZK24(JVAL) (1:8)
+      INTERF = ZK24(JVAL+4) (1:8)
       IF (INTERF.NE.' ') THEN
        CALL BMNBMD(BASEMO,'MODE',NBMODE)
        CALL BMNBMD(BASEMO,'DEFORMEE',NBMODS)

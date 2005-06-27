@@ -1,7 +1,7 @@
       SUBROUTINE OP0072(IERR)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 15/06/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 28/06/2005   AUTEUR NICOLAS O.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -99,13 +99,13 @@ C
         NU = NUMDD1
       ELSEIF (TYPBAS(1:9).EQ.'MODE_STAT') THEN
         NUMDD1 = ZK24(IADREF+1)
-        MATRIC = ZK24(IADRIF+2)
+        MATRIC = ZK24(IADRIF)
         CALL DISMOI('F','NOM_NUME_DDL',MATRIC,'MATR_ASSE',IBID,NUMDD2,
      +              IRET)
         NU = NUMDD1
       ELSEIF (TYPBAS(1:9).EQ.'BASE_MODA') THEN
         NUMDD1 = ZK24(IADREF+1)
-        NUMDD2 = ZK24(IADRIF+1)
+        NUMDD2 = ZK24(IADRIF+3)
         NU = NUMDD1
       ELSEIF (TYPBAS(1:9).EQ.'MODE_GENE') THEN
         NUMDD1=ZK24(IADREF+1)

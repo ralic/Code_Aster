@@ -1,4 +1,4 @@
-# MODIF  DATE 03/11/2004   AUTEUR MCOURTOI M.COURTOIS 
+# MODIF  DATE 28/06/2005   AUTEUR DURAND C.DURAND 
 # RESPONSABLE DURAND C.DURAND
 # TITRE VALIDATION DE NON REGRESSION DE LA LECTURE DE DONNEES MED
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -40,139 +40,17 @@ MA=LIRE_MAILLAGE(
                  )
 
 #
-THER1=LIRE_CHAMP(
+THERDEP=LIRE_RESU(
                    MAILLAGE  = MA,
                    FORMAT    = 'MED',
+                   TOUT_ORDRE= 'OUI',
                    UNITE     = 21,
-                   NOM_MED   = 'TMPS        .100000E+04      100',
-                   NOM_CMP   = ('TEMP',),
-                   NOM_CMP_MED=('TEMPERAT', ),
-                   TYPE_CHAM = 'NOEU_TEMP_R'
-                           )
-
-#
-THER2=LIRE_CHAMP(
-                   MAILLAGE  = MA,
-                   FORMAT    = 'MED',
-                   UNITE     = 21,
-                   NOM_MED   = 'TMPS        .200000E+04      200',
-                   NOM_CMP   = ('TEMP',),
-                   NOM_CMP_MED=('TEMPERAT', ),
-                   TYPE_CHAM = 'NOEU_TEMP_R'
-                           )
-
-#
-THER3=LIRE_CHAMP(
-                   MAILLAGE  = MA,
-                   FORMAT    = 'MED',
-                   UNITE     = 21,
-                   NOM_MED   = 'TMPS        .300000E+04      300',
-                   NOM_CMP   = ('TEMP',),
-                   NOM_CMP_MED=('TEMPERAT', ),
-                   TYPE_CHAM = 'NOEU_TEMP_R'
-                           )
-
-#
-THER4=LIRE_CHAMP(
-                   MAILLAGE  = MA,
-                   FORMAT    = 'MED',
-                   UNITE     = 21,
-                   NOM_MED   = 'TMPS        .400000E+04      400',
-                   NOM_CMP   = ('TEMP',),
-                   NOM_CMP_MED=('TEMPERAT', ),
-                   TYPE_CHAM = 'NOEU_TEMP_R'
-                           )
-
-#
-THER5=LIRE_CHAMP(
-                   MAILLAGE  = MA,
-                   FORMAT    = 'MED',
-                   UNITE     = 21,
-                   NOM_MED   = 'TMPS        .500000E+04      500',
-                   NOM_CMP   = ('TEMP',),
-                   NOM_CMP_MED=('TEMPERAT', ),
-                   TYPE_CHAM = 'NOEU_TEMP_R'
-                           )
-
-#
-THER6=LIRE_CHAMP(
-                   MAILLAGE  = MA,
-                   FORMAT    = 'MED',
-                   UNITE     = 21,
-                   NOM_MED   = 'TMPS        .600000E+04      600',
-                   NOM_CMP   = ('TEMP',),
-                   NOM_CMP_MED=('TEMPERAT', ),
-                   TYPE_CHAM = 'NOEU_TEMP_R'
-                           )
-
-#
-THER7=LIRE_CHAMP(
-                   MAILLAGE  = MA,
-                   FORMAT    = 'MED',
-                   UNITE     = 21,
-                   NOM_MED   = 'TMPS        .700000E+04      700',
-                   NOM_CMP   = ('TEMP',),
-                   NOM_CMP_MED=('TEMPERAT', ),
-                   TYPE_CHAM = 'NOEU_TEMP_R'
-                           )
-
-#
-THER8=LIRE_CHAMP(
-                   MAILLAGE  = MA,
-                   FORMAT    = 'MED',
-                   UNITE     = 21,
-                   NOM_MED   = 'TMPS        .800000E+04      800',
-                   NOM_CMP   = ('TEMP',),
-                   NOM_CMP_MED=('TEMPERAT', ),
-                   TYPE_CHAM = 'NOEU_TEMP_R'
-                           )
-
-#
-THER9=LIRE_CHAMP(
-                   MAILLAGE  = MA,
-                   FORMAT    = 'MED',
-                   UNITE     = 21,
-                   NOM_MED   = 'TMPS        .900000E+04      900',
-                   NOM_CMP   = ('TEMP',),
-                   NOM_CMP_MED=('TEMPERAT', ),
-                   TYPE_CHAM = 'NOEU_TEMP_R'
-                           )
-
-#
-THER10=LIRE_CHAMP(
-                   MAILLAGE  = MA,
-                   FORMAT    = 'MED',
-                   UNITE     = 21,
-                   NOM_MED   = 'TMPS        .100000E+05     1000',
-                   NOM_CMP   = ('TEMP',),
-                   NOM_CMP_MED=('TEMPERAT', ),
-                   TYPE_CHAM = 'NOEU_TEMP_R'
-                           )
-
-#
-THERDEP=CREA_RESU(   OPERATION='AFFE', TYPE_RESU='EVOL_THER',
-                        NOM_CHAM='TEMP',AFFE=(
-                        _F(  CHAM_GD = THER1,
-                                  INST = 100.),
-                        _F(  CHAM_GD = THER2,
-                                  INST = 200.),
-                        _F(  CHAM_GD = THER3,
-                                  INST = 300.),
-                        _F(  CHAM_GD = THER4,
-                                  INST = 400.),
-                        _F(  CHAM_GD = THER5,
-                                  INST = 500.),
-                        _F(  CHAM_GD = THER6,
-                                  INST = 600.),
-                        _F(  CHAM_GD = THER7,
-                                  INST = 700.),
-                        _F(  CHAM_GD = THER8,
-                                  INST = 800.),
-                        _F(  CHAM_GD = THER9,
-                                  INST = 900.),
-                        _F(  CHAM_GD = THER10,
-                                  INST = 1000.))
-                    )
+                   FORMAT_MED=_F(  NOM_CHAM   = 'TEMP',
+                                   NOM_CHAM_MED   = 'TEMP_SOLIDE',
+                                   NOM_CMP   = ('TEMP',),
+                                   NOM_CMP_MED=('TEMP_SOLIDE', ),),
+                   INFO      = 2,
+                   TYPE_RESU = 'EVOL_THER' )
 
 #
 # -------------------------------------------------------------------
@@ -234,14 +112,14 @@ MECATERM=AFFE_CHAR_MECA(    MODELE=MODEMECA,
                          )
 
 L_INST=DEFI_LIST_REEL(    DEBUT=0.0,INTERVALLE=(
-                           _F( JUSQU_A = 1.,  NOMBRE = 1),
-                           _F( JUSQU_A = 10.,  NOMBRE = 2),
-                           _F( JUSQU_A = 20.,  NOMBRE = 2),
-                           _F( JUSQU_A = 100.,  NOMBRE = 8),
-                           _F( JUSQU_A = 120.,  NOMBRE = 1),
-                           _F( JUSQU_A = 140.,  NOMBRE = 1),
-                           _F( JUSQU_A = 200.,  NOMBRE = 1),
-                           _F( JUSQU_A = 1000.,  NOMBRE = 4))
+                           _F( JUSQU_A = 10.,     NOMBRE = 1),
+                           _F( JUSQU_A = 100.,    NOMBRE = 2),
+                           _F( JUSQU_A = 200.,    NOMBRE = 2),
+                           _F( JUSQU_A = 1000.,   NOMBRE = 8),
+                           _F( JUSQU_A = 1200.,   NOMBRE = 1),
+                           _F( JUSQU_A = 1400.,   NOMBRE = 1),
+                           _F( JUSQU_A = 2000.,   NOMBRE = 1),
+                           _F( JUSQU_A = 10000.,  NOMBRE = 4))
                         )
 
 #
@@ -283,9 +161,9 @@ TEST_RESU(RESU=(
           NUME_ORDRE = 21,
           NOM_CHAM = 'SIGM_ELNO_DEPL',
           MAILLE = 'MG',
-          NOEUD = 'N1',
+          NOEUD = 'NAH',
           NOM_CMP = 'SIYY',
-          VALE = 2.63537E+05))
+          VALE = 2.56719E+05))
    )
 
 #----------------------------------------------------------
@@ -295,7 +173,7 @@ TEST_RESU(RESU=(
 
 IMPR_RESU(  FORMAT = 'MED', UNITE = 38,
             RESU=(_F( MAILLAGE = MA       ),
-                  _F( NUME_ORDRE = 1, RESULTAT = THERDEP  ))
+                  _F( INST = 1000., RESULTAT = THERDEP  ))
          )
 
 THER_1=LIRE_CHAMP( MAILLAGE=MA,
@@ -303,8 +181,8 @@ THER_1=LIRE_CHAMP( MAILLAGE=MA,
                    NOM_MED='THERDEP_TEMP____________________',
                    NOM_CMP_MED=('TEMP',),
                    NOM_CMP=('TEMP',),
-                   NUME_ORDRE = 1,
-                   NUME_PT = 1,
+                   NUME_ORDRE = 10,
+                   NUME_PT = 10,
                    TYPE_CHAM='NOEU_TEMP_R'
                    )
 
@@ -329,6 +207,4 @@ TEST_RESU(CHAM_NO=(
           VALE = 1.00000E+00))
    )
 #
-#
 FIN()
-#

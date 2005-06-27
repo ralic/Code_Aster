@@ -1,12 +1,14 @@
       SUBROUTINE PROPLA( NBVEC, VECTN, VECTU, VECTV, NBORDR, KWORK,
-     &                   SOMMW, VWORK, TDISP, TSPAQ, I, VECTAU )
-      IMPLICIT   NONE
-      INTEGER    NBVEC, NBORDR, KWORK
-      INTEGER    SOMMW, TDISP, TSPAQ, I
-      REAL*8     VECTN(3*NBVEC), VECTU(3*NBVEC), VECTV(3*NBVEC)
-      REAL*8     VWORK(TDISP), VECTAU(2*NBVEC*NBORDR)
+     &                   SOMMW, VWORK, TDISP, TSPAQ, I, NOMCRI, FATSOC,
+     &                   VECTRA )
+      IMPLICIT      NONE
+      INTEGER       NBVEC, NBORDR, KWORK
+      INTEGER       SOMMW, TDISP, TSPAQ, I
+      REAL*8        VECTN(3*NBVEC), VECTU(3*NBVEC), VECTV(3*NBVEC)
+      REAL*8        VWORK(TDISP), FATSOC, VECTRA(2*NBVEC*NBORDR)
+      CHARACTER*16  NOMCRI
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 24/11/2003   AUTEUR F1BHHAJ J.ANGLES 
+C MODIF PREPOST  DATE 28/06/2005   AUTEUR F1BHHAJ J.ANGLES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -55,10 +57,15 @@ C  TDISP    IN  I  : DIMENSION DU VECTEUR VWORK
 C  TSPAQ    IN  I  : TAILLE DU SOUS-PAQUET DU <<PAQUET>> DE MAILLES
 C                    OU DE NOEUDS COURANT.
 C  I        IN  I  : IEME POINT DE GAUSS OU IEME NOEUD.
-C  VECTAU   OUT R  : VECTEUR DE TRAVAIL CONTENANT 
+C  NOMCRI   IN  K16: NOM DU CRITERE D'ENDOMMAGEMENT PAR FATIGUE.
+C  FATSOC   IN  R  : COEFFICIENT PERMETTANT D'UTILISER LES MEMES
+C                    ROUTINES POUR LE TRAITEMENT DES CONTRAINTES ET
+C                    DES DEFORMATIONS.
+C  VECTRA   OUT R  : VECTEUR DE TRAVAIL CONTENANT 
 C                    LES COMPOSANTES u ET v DU VECTEUR TAU 
-C                    (CISAILLEMENT), POUR TOUS LES NUMEROS
-C                    D'ORDRE DE CHAQUE VECTEUR NORMAL.
+C                    (CONTRAINTE DE CISAILLEMENT) OU
+C                    GAMMA (DEFORMATION DE CISAILLEMENT), POUR TOUS LES
+C                    NUMEROS D'ORDRE DE CHAQUE VECTEUR NORMAL.
 C
 C REMARQUE : CETTE ROUTINE SERT POUR LE TRAITEMENT DES POINTS DE GAUSS
 C            ET DES NOEUDS.
@@ -79,60 +86,71 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*80                                        ZK80
       COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
 C     ------------------------------------------------------------------
-      INTEGER    IVECT, IORDR, N, ADRS
+      INTEGER    IVECT, IORDR, N, DECAL, ADRS
       REAL*8     NX, NY, NZ, UX, UY, UZ, VX, VY, VZ
-      REAL*8     SIXX, SIYY, SIZZ, SIXY, SIXZ, SIYZ, FX, FY, FZ
-      REAL*8     NORM, TAUX, TAUY, TAUZ, CUTAU, CVTAU
+      REAL*8     CMPXX, CMPYY, CMPZZ, CMPXY, CMPXZ, CMPYZ
+      REAL*8     FX, FY, FZ
+      REAL*8     NORM, CISX, CISY, CISZ
+      REAL*8     CUCIS, CVCIS
 C     ------------------------------------------------------------------
 C
 C234567                                                              012
-C
+
       CALL JEMARQ()
-C
+
       N = 0
-C
+
+      IF ( NOMCRI(1:12) .EQ. 'FATEMI_SOCIE' ) THEN
+         DECAL = 12
+      ELSE
+         DECAL = 6
+      ENDIF
+
       DO 10 IVECT=1, NBVEC
          NX = VECTN((IVECT-1)*3 + 1)
          NY = VECTN((IVECT-1)*3 + 2)
          NZ = VECTN((IVECT-1)*3 + 3)
-C
+
          UX = VECTU((IVECT-1)*3 + 1)
          UY = VECTU((IVECT-1)*3 + 2)
          UZ = VECTU((IVECT-1)*3 + 3)
-C
+
          VX = VECTV((IVECT-1)*3 + 1)
          VY = VECTV((IVECT-1)*3 + 2)
          VZ = VECTV((IVECT-1)*3 + 3)
-C
+
          DO 20 IORDR=1, NBORDR
-            ADRS = (IORDR-1)*TSPAQ + KWORK*SOMMW*6 + (I-1)*6
-            SIXX = VWORK(ADRS + 1)
-            SIYY = VWORK(ADRS + 2)
-            SIZZ = VWORK(ADRS + 3)
-            SIXY = VWORK(ADRS + 4)
-            SIXZ = VWORK(ADRS + 5)
-            SIYZ = VWORK(ADRS + 6)
-C
-C CALCUL DE vect_F = [SIG].vect_n
-            FX = SIXX*NX + SIXY*NY + SIXZ*NZ      
-            FY = SIXY*NX + SIYY*NY + SIYZ*NZ      
-            FZ = SIXZ*NX + SIYZ*NY + SIZZ*NZ      
-C
+            ADRS = (IORDR-1)*TSPAQ + KWORK*SOMMW*DECAL
+     &                             + (I-1)*DECAL + (DECAL-6)
+            CMPXX = VWORK(ADRS + 1)
+            CMPYY = VWORK(ADRS + 2)
+            CMPZZ = VWORK(ADRS + 3)
+            CMPXY = VWORK(ADRS + 4)
+            CMPXZ = VWORK(ADRS + 5)
+            CMPYZ = VWORK(ADRS + 6)
+
+C CALCUL DE vect_F = [CMP].vect_n  AVEC [CMP] = [EPS] OU [SIG]
+            FX = CMPXX*NX + CMPXY*NY + CMPXZ*NZ
+            FY = CMPXY*NX + CMPYY*NY + CMPYZ*NZ
+            FZ = CMPXZ*NX + CMPYZ*NY + CMPZZ*NZ
+
 C CALCUL DE NORM = vect_F.vect_n
             NORM = FX*NX + FY*NY + FZ*NZ
-C
-C CALCUL DE vect_TAU = vect_F - NORM vect_n
-            TAUX = FX - NORM*NX
-            TAUY = FY - NORM*NY
-            TAUZ = FZ - NORM*NZ
-C
-C PROJECTION DU vect_TAU SUR LES VECTEURS u ET v DU REPERE LOCAL
-            CUTAU = UX*TAUX + UY*TAUY + UZ*TAUZ
-            CVTAU = VX*TAUX + VY*TAUY + VZ*TAUZ
+
+C CALCUL DE vect_CIS = vect_F - NORM vect_n
+C vect_CIS = VECTEUR CISAILLEMENT EN CONTRAINTE OU EN DEFORMATION
+            CISX = FX - NORM*NX
+            CISY = FY - NORM*NY
+            CISZ = FZ - NORM*NZ
+
+C PROJECTION DU vect_CIS SUR LES VECTEURS u ET v DU REPERE LOCAL
+            CUCIS = UX*CISX + UY*CISY + UZ*CISZ
+            CVCIS = VX*CISX + VY*CISY + VZ*CISZ
+
             N = N + 1
-            VECTAU(N*2 - 1) = CUTAU
-            VECTAU(N*2) = CVTAU
-C
+            VECTRA(N*2 - 1) = FATSOC*CUCIS
+            VECTRA(N*2) = FATSOC*CVCIS
+
  20      CONTINUE
  10   CONTINUE
 C

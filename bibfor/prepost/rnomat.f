@@ -1,7 +1,7 @@
       SUBROUTINE RNOMAT(ICESD,ICESL,ICESV, IMAP, NOMCRI, ADRMA, JTYPMA,
-     &                  K, VALA, VALB, COEFPA, NOMMAT)
+     &                  K, OPTIO, VALA, VALB, COEFPA, NOMMAT)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 10/01/2005   AUTEUR F1BHHAJ J.ANGLES 
+C MODIF PREPOST  DATE 28/06/2005   AUTEUR F1BHHAJ J.ANGLES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -23,6 +23,7 @@ C RESPONSABLE F1BHHAJ J.ANGLES
       INTEGER       ICESD, ICESL, ICESV, IMAP, ADRMA, JTYPMA, K
       REAL*8        VALA, VALB, COEFPA
       CHARACTER*8   NOMMAT
+      CHARACTER*10  OPTIO
       CHARACTER*16  NOMCRI
 C ----------------------------------------------------------------------
 C BUT: RECUPERER POUR LA MAILLE COURANTE LE NOM DU MATERIAU DONNE PAR
@@ -37,6 +38,7 @@ C  NOMCRI   IN   K  : NOM DU CRITERE.
 C  ADRMA*   IN   I  : ADRESSE DE LA MAILLE CORRESPONDANT AU NOEUD.
 C  JTYPMA*  IN   I  : ADRESSE DU TYPE DE LA MAILLE.
 C  K*       IN   I  : POINTEUR SERVANT AU TEST : MATERIAU UNIQUE OU NON.
+C  OPTIO    IN   K  : CALCUL AUX POINTS DE GAUSS OU AUX NOEUDS.
 C  VALA     OUT  R  : VALEUR DU COEFFICIENT A.
 C  VALB     OUT  R  : VALEUR DU COEFFICIENT B.
 C  COEFPA   OUT  R  : COEFFICIENT DE PASSAGE CISAILLEMENT-TRACTION.
@@ -62,18 +64,15 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
 C     ------------------------------------------------------------------
       INTEGER      IAD, NVAL, I, NUMA, JTYP, IBID, IRET
-      REAL*8       PHI, R8B
+      REAL*8       PHI, R8B, MYOUNG, NU
       CHARACTER*2  CODRET
       CHARACTER*8  KTYP, DIMK
-      CHARACTER*10 OPTIO
       CHARACTER*16 PHENOM
 C     ------------------------------------------------------------------
 
 C234567                                                              012
 
       CALL JEMARQ()
-
-      CALL GETVTX(' ','OPTION',1,1,1,OPTIO,NVAL)
 
       IF ( OPTIO .EQ. 'DOMA_ELGA' ) THEN
 
@@ -135,14 +134,76 @@ C (ON PASSE A LA SUIVANTE)
      & ' RENSEIGNER CISA_PLAN_CRIT DANS LA COMMANDE DEFI_MATERIAU')
       ENDIF
 
-C 2.1 RECUPERATION DES PARAMETRES ASSOCIES AU CRITERE DOMM_MAXI POUR
+C 2.1 RECUPERATION DES PARAMETRES ASSOCIES AU CRITERE MATAKE POUR
+C     LA MAILLE COURANTE
+
+      IF (NOMCRI(1:6) .EQ. 'MATAKE') THEN
+         CALL RCVALE(NOMMAT,'CISA_PLAN_CRIT',0,' ',R8B,1,
+     &                                 'MATAKE_A',VALA,CODRET,'  ')
+         IF (CODRET(1:2) .EQ. 'NO') THEN
+            CALL UTMESS('F', 'RNOMAT.5', 'NOUS NE POUVONS '//
+     &          ' PAS RECUPERER LA VALEUR DU PARAMETRE A DU'//
+     &          ' CRITERE DE MATAKE, cf. COMMANDE: '//
+     &          ' DEFI_MATERIAU, OPERANDE: CISA_PLAN_CRIT.')
+         ENDIF
+         CALL RCVALE(NOMMAT,'CISA_PLAN_CRIT',0,' ',R8B,1,
+     &                                 'MATAKE_B',VALB,CODRET,'  ')
+         IF (CODRET(1:2) .EQ. 'NO') THEN
+            CALL UTMESS('F', 'RNOMAT.6', 'NOUS NE POUVONS '//
+     &          ' PAS RECUPERER LA VALEUR DU PARAMETRE B DU'//
+     &          ' CRITERE DE MATAKE, cf. COMMANDE: '//
+     &          ' DEFI_MATERIAU, OPERANDE: CISA_PLAN_CRIT.')
+         ENDIF
+
+         CALL RCVALE(NOMMAT,'CISA_PLAN_CRIT',0,' ',R8B,1,
+     &                        'COEF_FLE',COEFPA,CODRET,'  ')
+         IF (CODRET(1:2) .EQ. 'NO') THEN
+            CALL UTMESS('F', 'RNOMAT.7', 'NOUS NE POUVONS'//
+     &         ' PAS RECUPERER LA VALEUR DU COEFFICIENT DE'//
+     &         ' PASSAGE FLEXION-TORSION, cf. COMMANDE: '//
+     &         ' DEFI_MATERIAU, OPERANDE: CISA_PLAN_CRIT.')
+         ENDIF
+
+C 2.2 RECUPERATION DES PARAMETRES ASSOCIES AU CRITERE DE DANG VAN POUR
+C     LA MAILLE COURANTE
+
+      ELSEIF (NOMCRI(1:16) .EQ. 'DANG_VAN_MODI_AC') THEN
+         CALL RCVALE(NOMMAT,'CISA_PLAN_CRIT',0,' ',R8B,1,
+     &                              'D_VAN_A',VALA,CODRET,'  ')
+         IF (CODRET(1:2) .EQ. 'NO') THEN
+            CALL UTMESS('F', 'RNOMAT.8', 'NOUS NE POUVONS '//
+     &          ' PAS RECUPERER LA VALEUR DU PARAMETRE A DU'//
+     &          ' CRITERE DE DANG_VAN_MODI_AC, cf. COMMANDE: '//
+     &          ' DEFI_MATERIAU, OPERANDE: CISA_PLAN_CRIT.')
+         ENDIF
+
+         CALL RCVALE(NOMMAT,'CISA_PLAN_CRIT',0,' ',R8B,1,
+     &                              'D_VAN_B',VALB,CODRET,'  ')
+         IF (CODRET(1:2) .EQ. 'NO') THEN
+            CALL UTMESS('F', 'RNOMAT.9', 'NOUS NE POUVONS '//
+     &          ' PAS RECUPERER LA VALEUR DU PARAMETRE B DU'//
+     &          ' CRITERE DE DANG_VAN_MODI_AC, cf. COMMANDE: '//
+     &          ' DEFI_MATERIAU, OPERANDE: CISA_PLAN_CRIT.')
+         ENDIF
+
+         CALL RCVALE(NOMMAT,'CISA_PLAN_CRIT',0,' ',R8B,1,
+     &                        'COEF_CIS',COEFPA,CODRET,'  ')
+         IF (CODRET(1:2) .EQ. 'NO') THEN
+            CALL UTMESS('F', 'RNOMAT.10', 'NOUS NE POUVONS '//
+     &         ' PAS RECUPERER LA VALEUR DU COEFFICIENT DE'//
+     &         ' PASSAGE CISAILLEMENT-TRACTION, cf. COMMANDE: '//
+     &         ' DEFI_MATERIAU, OPERANDE: CISA_PLAN_CRIT.')
+         ENDIF
+      ENDIF
+
+C 2.3 RECUPERATION DES PARAMETRES ASSOCIES AU CRITERE DOMM_MAXI POUR
 C     LA MAILLE COURANTE
 
       IF ( NOMCRI(1:9) .EQ. 'DOMM_MAXI' ) THEN
          CALL RCVALE(NOMMAT,'CISA_PLAN_CRIT',0,' ',R8B,1,
      &                                 'DOMM_A',VALA,CODRET,'  ')
          IF (CODRET(1:2) .EQ. 'NO') THEN
-            CALL UTMESS('F', 'RNOMAT.5', 'NOUS NE POUVONS '//
+            CALL UTMESS('F', 'RNOMAT.11', 'NOUS NE POUVONS '//
      &          ' PAS RECUPERER LA VALEUR DU PARAMETRE A DU'//
      &          ' CRITERE DOMM_MAXI, DE LA COMMANDE: '//
      &          ' DEFI_MATERIAU, OPERANDE: CISA_PLAN_CRIT.')
@@ -150,7 +211,7 @@ C     LA MAILLE COURANTE
          CALL RCVALE(NOMMAT,'CISA_PLAN_CRIT',0,' ',R8B,1,
      &                                 'DOMM_B',VALB,CODRET,'  ')
          IF (CODRET(1:2) .EQ. 'NO') THEN
-            CALL UTMESS('F', 'RNOMAT.6', 'NOUS NE POUVONS '//
+            CALL UTMESS('F', 'RNOMAT.12', 'NOUS NE POUVONS '//
      &          ' PAS RECUPERER LA VALEUR DU PARAMETRE B DU'//
      &          ' CRITERE DOMM_MAXI, DE LA COMMANDE: '//
      &          ' DEFI_MATERIAU, OPERANDE: CISA_PLAN_CRIT.')
@@ -159,29 +220,29 @@ C     LA MAILLE COURANTE
          CALL RCVALE(NOMMAT,'CISA_PLAN_CRIT',0,' ',R8B,1,
      &                      'COEF_CIS',COEFPA,CODRET,'  ')
          IF (CODRET(1:2) .EQ. 'NO') THEN
-            CALL UTMESS('F', 'RNOMAT.7', 'NOUS NE POUVONS'//
+            CALL UTMESS('F', 'RNOMAT.13', 'NOUS NE POUVONS'//
      &         ' PAS RECUPERER LA VALEUR DU COEFFICIENT DE'//
      &         ' PASSAGE CISAILLEMENT-TRACTION, DE LA COMMANDE: '//
      &         ' DEFI_MATERIAU, OPERANDE: CISA_PLAN_CRIT.')
          ENDIF
       ENDIF
 
-C 2.2 RECUPERATION DES PARAMETRES ASSOCIES AU CRITERE DANG_VAN_MODI_AV
+C 2.4 RECUPERATION DES PARAMETRES ASSOCIES AU CRITERE DANG_VAN_MODI_AV
 C     POUR LA MAILLE COURANTE
 
       IF ( NOMCRI(1:16) .EQ. 'DANG_VAN_MODI_AV' ) THEN
          CALL RCVALE(NOMMAT,'CISA_PLAN_CRIT',0,' ',R8B,1,
-     &                                 'D_VAN_A',VALA,CODRET,'  ')
+     &                              'D_VAN_A',VALA,CODRET,'  ')
          IF (CODRET(1:2) .EQ. 'NO') THEN
-            CALL UTMESS('F', 'RNOMAT.8', 'NOUS NE POUVONS '//
+            CALL UTMESS('F', 'RNOMAT.14', 'NOUS NE POUVONS '//
      &          ' PAS RECUPERER LA VALEUR DU PARAMETRE A DU'//
      &          ' CRITERE DANG_VAN_MODI_AV, DE LA COMMANDE: '//
      &          ' DEFI_MATERIAU, OPERANDE: CISA_PLAN_CRIT.')
          ENDIF
          CALL RCVALE(NOMMAT,'CISA_PLAN_CRIT',0,' ',R8B,1,
-     &                                 'D_VAN_B',VALB,CODRET,'  ')
+     &                              'D_VAN_B',VALB,CODRET,'  ')
          IF (CODRET(1:2) .EQ. 'NO') THEN
-            CALL UTMESS('F', 'RNOMAT.9', 'NOUS NE POUVONS '//
+            CALL UTMESS('F', 'RNOMAT.15', 'NOUS NE POUVONS '//
      &          ' PAS RECUPERER LA VALEUR DU PARAMETRE B DU'//
      &          ' CRITERE DANG_VAN_MODI_AV, DE LA COMMANDE: '//
      &          ' DEFI_MATERIAU, OPERANDE: CISA_PLAN_CRIT.')
@@ -190,11 +251,37 @@ C     POUR LA MAILLE COURANTE
          CALL RCVALE(NOMMAT,'CISA_PLAN_CRIT',0,' ',R8B,1,
      &                      'COEF_CIS',COEFPA,CODRET,'  ')
          IF (CODRET(1:2) .EQ. 'NO') THEN
-            CALL UTMESS('F', 'RNOMAT.10', 'NOUS NE POUVONS'//
+            CALL UTMESS('F', 'RNOMAT.16', 'NOUS NE POUVONS'//
      &         ' PAS RECUPERER LA VALEUR DU COEFFICIENT DE'//
      &         ' PASSAGE CISAILLEMENT-TRACTION, DE LA COMMANDE: '//
      &         ' DEFI_MATERIAU, OPERANDE: CISA_PLAN_CRIT.')
          ENDIF
+      ENDIF
+
+C 2.5 RECUPERATION DES PARAMETRES ASSOCIES AU CRITERE FATEMI_SOCIE
+C     POUR LA MAILLE COURANTE
+
+      IF ( NOMCRI(1:12) .EQ. 'FATEMI_SOCIE' ) THEN
+         CALL RCVALE(NOMMAT,'CISA_PLAN_CRIT',0,' ',R8B,1,
+     &                                 'FATSOC_A',VALA,CODRET,'  ')
+         IF (CODRET(1:2) .EQ. 'NO') THEN
+            CALL UTMESS('F', 'RNOMAT.17', 'NOUS NE POUVONS '//
+     &          ' PAS RECUPERER LA VALEUR DU PARAMETRE A DU'//
+     &          ' CRITERE FATEMI_SOCIE, DE LA COMMANDE: '//
+     &          ' DEFI_MATERIAU, OPERANDE: CISA_PLAN_CRIT.')
+         ENDIF
+         
+         VALB = 1.0D0
+
+         CALL RCVALE(NOMMAT,'CISA_PLAN_CRIT',0,' ',R8B,1,
+     &                      'COEF_CIS',COEFPA,CODRET,'  ')
+         IF (CODRET(1:2) .EQ. 'NO') THEN
+            CALL UTMESS('F', 'RNOMAT.19', 'NOUS NE POUVONS'//
+     &         ' PAS RECUPERER LA VALEUR DU COEFFICIENT DE'//
+     &         ' PASSAGE CISAILLEMENT-TRACTION, DE LA COMMANDE: '//
+     &         ' DEFI_MATERIAU, OPERANDE: CISA_PLAN_CRIT.')
+         ENDIF
+
       ENDIF
 
  999  CONTINUE

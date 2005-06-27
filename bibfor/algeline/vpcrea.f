@@ -4,7 +4,7 @@
       CHARACTER*(*)             MODES, MASSE, AMOR, RAIDE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 15/06/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 28/06/2005   AUTEUR NICOLAS O.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,10 +44,11 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C     ------------------------------------------------------------------
 C
-      INTEGER       NBVAL,IVAL, LMODE
+      INTEGER       NBVAL,IVAL, LMODE, IRET
       CHARACTER*1   TYPE
       CHARACTER*8   CBID
       CHARACTER*16  NOMCMD
+      CHARACTER*19 NUMDDL
       CHARACTER*24  VALE, REFD
 C     ------------------------------------------------------------------
       DATA  REFD  /'                   .REFD'/
@@ -62,31 +63,41 @@ C     --- AFFECTATION DES INFORMATIONS DE REFERENCE A CHAMP ---
       CALL JEEXIN(REFD,IER1)
       IF ( IER1 .EQ. 0 ) THEN
          IF ( ICOND .EQ. 0 ) THEN
-            NBVAL = 3
+            NBVAL = 6
             CALL WKVECT(REFD,'G V K24',NBVAL,LMODE)
-            ZK24(LMODE    ) = MASSE
-            ZK24(LMODE+1) = AMOR
-            ZK24(LMODE+2) = RAIDE
+C On remplie le REFE avec la numerotation si elle existe
+            CALL EXISD('MATR_ASSE',RAIDE,IBID)
+            IF (IBID.NE.0) THEN
+              CALL DISMOI('F','NOM_NUME_DDL',RAIDE,'MATR_ASSE',IBID,
+     &               NUMDDL,IRET)
+              IF (IRET.EQ.0) THEN
+                ZK24(LMODE+3) = NUMDDL
+              ENDIF
+            ENDIF
+C On remplie les champs relatifs aux matrices assemblees            
+            ZK24(LMODE) = RAIDE
+            ZK24(LMODE+1) = MASSE
+            ZK24(LMODE+2) = AMOR
          ENDIF
       ELSE
          CALL JEVEUO(REFD,'L',LMODE)
-         IF ( ZK24(LMODE    ) .NE. MASSE  ) IER = IER + 1
-         IF ( ZK24(LMODE+1) .NE. AMOR     ) IER = IER + 1
-         IF ( ZK24(LMODE+2) .NE. RAIDE    ) IER = IER + 1
+         IF ( ZK24(LMODE) .NE. RAIDE    ) IER = IER + 1
+         IF ( ZK24(LMODE+1) .NE. MASSE  ) IER = IER + 1
+         IF ( ZK24(LMODE+2) .NE. AMOR     ) IER = IER + 1
          IF ( IER.NE.0 ) THEN
            CALL GETRES(CBID,CBID,NOMCMD)
-           IF ( ZK24(LMODE+1)(1:8) .NE. ' ' ) THEN
+           IF ( ZK24(LMODE+2)(1:8) .NE. ' ' ) THEN
               CALL UTMESS('F',NOMCMD//'.VPCREA',
      +        'LE CONCEPT MODE "'//REFD(1:8)//'" A ETE CREE AVEC '//
      +        'LES MATRICES    MATR_A: '//ZK24(LMODE)(1:8)//
-     +                      ', MATR_B: '//ZK24(LMODE+2)(1:8)//
-     +                      ', MATR_C: '//ZK24(LMODE+1)(1:8)//
+     +                      ', MATR_B: '//ZK24(LMODE+1)(1:8)//
+     +                      ', MATR_C: '//ZK24(LMODE+2)(1:8)//
      +        ' ET NON AVEC CELLES  PASSEES EN ARGUMENTS.')
            ELSE
               CALL UTMESS('F',NOMCMD//'.VPCREA',
      +        'LE CONCEPT MODE "'//REFD(1:8)//'" A ETE CREE AVEC '//
      +        'LES MATRICES    MATR_A: '//ZK24(LMODE)(1:8)//
-     +                      ', MATR_B: '//ZK24(LMODE+2)(1:8)//
+     +                      ', MATR_B: '//ZK24(LMODE+1)(1:8)//
      +        ' ET NON AVEC CELLES  PASSEES EN ARGUMENTS.')
            ENDIF
          ENDIF

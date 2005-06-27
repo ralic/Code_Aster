@@ -18,7 +18,7 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
       IMPLICIT REAL*8 (A-H,O-Z)
 C-----------------------------------------------------------------------
-C MODIF ALGORITH  DATE 15/06/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 28/06/2005   AUTEUR NICOLAS O.NICOLAS 
 C
 C  BUT:  < RESTITUTION CRIAG-BAMPTON ECLATEE >
 C
@@ -101,8 +101,8 @@ C
 C-----------------RECUPERATION DU NOMBRE DE DDL PHYSIQUES---------------
 C
       CALL JEVEUO(BASMOD//'           .REFD','L',LLREF)
-      NUMDDL = ZK24(LLREF+1)
-      MATRIX = ZK24(LLREF+2)
+      NUMDDL = ZK24(LLREF+3)
+      MATRIX = ZK24(LLREF)
       CALL DISMOI('F','NB_EQUA',NUMDDL,'NUME_DDL',NEQ,K8B,IER)
 C
 C-------------RECUPERATION DES FREQUENCES-------------------------------
@@ -111,8 +111,7 @@ C
 C
 C----------------RECUPERATION MATRICE DE MASSE--------------------------
 C
-      CALL JEVEUO(BASMOD//'           .REFD','L',LLREF)
-      MASS = ZK24(LLREF+3)
+      MASS = ZK24(LLREF+1)
       CALL MTEXIS ( MASS, IER )
       IF(IER.EQ.0) THEN
         CALL UTDEBM('F','RECBEC','ARRET SUR MATRICE INEXISTANTE')

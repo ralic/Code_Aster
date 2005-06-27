@@ -1,7 +1,7 @@
       SUBROUTINE OP0106(IER)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 23/06/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF PREPOST  DATE 28/06/2005   AUTEUR NICOLAS O.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -185,7 +185,7 @@ C TRI DES OPTIONS SUIVANT TYSD
           CALL JEEXIN(LERES0//'.REFD',IRET)
           IF (IRET.NE.0) THEN
             CALL JEVEUO(LERES0//'.REFD','L',LREF)
-            MASSE = ZK24(LREF)
+            MASSE = ZK24(LREF+1)
             IF (MASSE.NE.' ') THEN
               CALL MTDSCR(MASSE)
               CALL JEVEUO(MASSE(1:19)//'.&INT','E',LMAT)
@@ -203,7 +203,7 @@ C TRI DES OPTIONS SUIVANT TYSD
           CALL JEEXIN(LERES0//'.REFD',IRET)
           IF (IRET.NE.0) THEN
             CALL JEVEUO(LERES0//'.REFD','L',LREF)
-            MASSE = ZK24(LREF)
+            MASSE = ZK24(LREF+1)
             IF (MASSE.NE.' ') THEN
               CALL MTDSCR(MASSE)
               CALL JEVEUO(MASSE(1:19)//'.&INT','E',LMAT)

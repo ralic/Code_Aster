@@ -3,7 +3,7 @@
       CHARACTER*8         NOMRES, RESGEN, NOMSST
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 15/06/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 28/06/2005   AUTEUR NICOLAS O.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -76,7 +76,7 @@ C
 C --- RECUPERATION DU MODELE GENERALISE
 C
       CALL JEVEUO ( RESGEN//'           .REFD','L',LLREF)
-      RAID = ZK24(LLREF+2)
+      RAID = ZK24(LLREF)
       CALL JELIBE ( RESGEN//'           .REFD')
       CALL JEVEUO ( RAID//'.REFA','L',LLREF)
       NUMGEN(1:14)  = ZK24(LLREF+1)
@@ -127,7 +127,7 @@ C
       ENDIF
 C
       CALL JEVEUO(BASMOD//'           .REFD','L',LLREF)
-      LINT=ZK24(LLREF)
+      LINT=ZK24(LLREF+4)
       CALL JELIBE(BASMOD//'           .REFD')
       CALL DISMOI('F','NOM_MAILLA',LINT,'INTERF_DYNA',IBID,
      &             MAILLA,IRET)

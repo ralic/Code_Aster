@@ -1,7 +1,7 @@
       SUBROUTINE OP0076( IERR )
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 15/06/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 28/06/2005   AUTEUR NICOLAS O.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -65,7 +65,7 @@ C
       CALL JEVEUO(TRANGE//'           .INST','L',IDINST)
       CALL JELIRA(TRANGE//'           .INST','LONMAX',NBINST,K1BID)
       CALL JEVEUO(TRANGE//'           .'//NOMCHA(1:4),'L',IDCHAM)
-      BASEMO = ZK24(IAREFE)(1:8)
+      BASEMO = ZK24(IAREFE+5)(1:8)
       NBMODE = ZI(IADESC+1)
 C
 C     --- CREATION DU VECT_ASSE_GENE RESULTAT ---

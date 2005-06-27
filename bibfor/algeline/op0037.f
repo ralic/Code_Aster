@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 15/06/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 28/06/2005   AUTEUR NICOLAS O.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -195,9 +195,9 @@ C     --- MATRICES DE REFERENCE DES MODES ---
          GOTO 100
       ENDIF
       CALL JEVEUO(REFE,'L',LMODE)
-      MASSE = ZK24(LMODE  )
-      AMOR  = ZK24(LMODE+1)
-      RAIDE = ZK24(LMODE+2)
+      MASSE = ZK24(LMODE+1)
+      AMOR  = ZK24(LMODE+2)
+      RAIDE = ZK24(LMODE)
 C
 C     --- COMPATIBILITE DES MODES ---
       CALL VPCREA(0,MODEOU,MASSE,AMOR,RAIDE,IBID)

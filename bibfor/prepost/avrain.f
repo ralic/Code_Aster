@@ -1,7 +1,7 @@
-      SUBROUTINE AVRAIN(NBVEC, NBORDR, ITRV, NPIC, PIC, OPIC,
+      SUBROUTINE AVRAIN(NBVEC, NBORDR, ITRV, NPIC, PIC, OPIC, FATSOC,
      &                  NCYCL, VMIN, VMAX, OMIN, OMAX)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 24/11/2003   AUTEUR F1BHHAJ J.ANGLES 
+C MODIF PREPOST  DATE 28/06/2005   AUTEUR F1BHHAJ J.ANGLES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -23,7 +23,7 @@ C RESPONSABLE F1BHHAJ J.ANGLES
       INTEGER       NBVEC, NBORDR, ITRV(2*(NBORDR+2)), NPIC(NBVEC)
       INTEGER       OPIC(NBVEC*(NBORDR+2)), NCYCL(NBVEC)
       INTEGER       OMIN(NBVEC*(NBORDR+2)), OMAX(NBVEC*(NBORDR+2))
-      REAL*8        PIC(NBVEC*(NBORDR+2))
+      REAL*8        PIC(NBVEC*(NBORDR+2)), FATSOC
       REAL*8        VMIN(NBVEC*(NBORDR+2)), VMAX(NBVEC*(NBORDR+2))
 C ----------------------------------------------------------------------
 C BUT: COMPTAGE DE CYCLE PAR LA METHODE RAINFLOW (POSTDAM)
@@ -39,6 +39,9 @@ C                     NORMAUX APRES REARANGEMENT DES PICS.
 C OPIC      IN   I  : NUMEROS D'ORDRE ASSOCIES AUX PICS DETECTES POUR
 C                     TOUS LES VECTEURS NORMAUX APRES REARANGEMENT
 C                     DES PICS.
+C FATSOC     IN  R  : COEFFICIENT PERMETTANT D'UTILISER LES MEMES
+C                     ROUTINES POUR LE TRAITEMENT DES CONTRAINTES ET
+C                     DES DEFORMATIONS.
 C NCYCL     OUT  I  : NOMBRE DE CYCLES ELEMENTAIRES POUR TOUS LES
 C                     VECTEURS NORMAUX.
 C VMIN      OUT  R  : VALEURS MIN DES CYCLES ELEMENTAIRES POUR TOUS LES
@@ -81,31 +84,31 @@ C
       CALL JEMARQ()
 C
       DO 10 IVECT=1, NBVEC
-C
+
 C LE TEST SI (NPIC(IVECT) .EQ. 0) EST EQUIVALENT
 C AU TEST SI (IFLAG(IVECT) .EQ. 3).
          IF (NPIC(IVECT) .EQ. 0) THEN
             GOTO 10
          ENDIF
-C
+
          CALL ASSERT((NBORDR+2) .GE. NPIC(IVECT))
          ADRS = (IVECT-1)*(NBORDR+2)
          LRESI = .FALSE.
          NPICB = NPIC(IVECT)
-C
+
          DO 20 I=1, NPICB
             ITRV(I) = I
  20      CONTINUE
-C
+
          NCYCL(IVECT) = 0
-C
+
  1       CONTINUE
-C
+
          I = 1
          J = 1
-C
+
  2       CONTINUE
-C
+
          IF ( I+3 .GT. NPICB ) THEN
             GOTO 100
          ENDIF
@@ -113,25 +116,25 @@ C
          E1 = ABS ( PIC(ADRS + ITRV(I+1)) - PIC(ADRS + ITRV(I)) )
          E2 = ABS ( PIC(ADRS + ITRV(I+2)) - PIC(ADRS + ITRV(I+1)) )
          E3 = ABS ( PIC(ADRS + ITRV(I+3)) - PIC(ADRS + ITRV(I+2)) )
-C
+
          IF ( (E1. GE. E2) .AND. (E3 .GE. E2) ) THEN
             NCYCL(IVECT) = NCYCL(IVECT) + 1
             IF ( PIC(ADRS+ITRV(I+1)) .GE. PIC(ADRS+ITRV(I+2)) ) THEN
-               VMAX(ADRS+NCYCL(IVECT)) = PIC(ADRS + ITRV(I+1))
-               VMIN(ADRS+NCYCL(IVECT)) = PIC(ADRS + ITRV(I+2))
+               VMAX(ADRS+NCYCL(IVECT)) = PIC(ADRS + ITRV(I+1))/FATSOC
+               VMIN(ADRS+NCYCL(IVECT)) = PIC(ADRS + ITRV(I+2))/FATSOC
                OMAX(ADRS+NCYCL(IVECT)) = OPIC(ADRS + ITRV(I+1))
                OMIN(ADRS+NCYCL(IVECT)) = OPIC(ADRS + ITRV(I+2))
             ELSE
-               VMAX(ADRS+NCYCL(IVECT)) = PIC(ADRS + ITRV(I+2))
-               VMIN(ADRS+NCYCL(IVECT)) = PIC(ADRS + ITRV(I+1))
+               VMAX(ADRS+NCYCL(IVECT)) = PIC(ADRS + ITRV(I+2))/FATSOC
+               VMIN(ADRS+NCYCL(IVECT)) = PIC(ADRS + ITRV(I+1))/FATSOC
                OMAX(ADRS+NCYCL(IVECT)) = OPIC(ADRS + ITRV(I+2))
                OMIN(ADRS+NCYCL(IVECT)) = OPIC(ADRS + ITRV(I+1))
             ENDIF
-C
+
             DO 30 K=I+2, J+2, -1
                ITRV(K) = ITRV(K-2)
  30         CONTINUE
-C
+
             J=J+2
             I=J
             GOTO 2
@@ -139,11 +142,11 @@ C
             I=I+1
             GOTO 2
          ENDIF
-C
+
 C  --- TRAITEMENT DU RESIDU -------
-C
+
  100     CONTINUE
-C
+
          IF ( .NOT. LRESI ) THEN
             NPICR = NPICB - 2*NCYCL(IVECT)
             DO 110 I=1, NPICR
@@ -182,13 +185,13 @@ C -- ON ELIMINE RN
             LRESI = .TRUE.
             GOTO 1
          ENDIF
-C
+
   200    CONTINUE
-C
+
          CALL ASSERT((NBORDR+2) .GE. NCYCL(IVECT))
-C
+
  10   CONTINUE
-C
+
       CALL JEDEMA()
 C
       END

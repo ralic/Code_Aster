@@ -4,7 +4,7 @@
       CHARACTER*8         MATER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 01/04/2005   AUTEUR CIBHHLV L.VIVAN 
+C MODIF POSTRELE  DATE 28/06/2005   AUTEUR F1BHHAJ J.ANGLES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -309,7 +309,7 @@ C
 C
 C ----------- CALCUL DU FACTEUR D'USAGE
 C
-              CALL LIMEND( MATER,SALTIJ,ENDUR)
+              CALL LIMEND( MATER,SALTIJ,'WOHLER',ENDUR)
               IF (ENDUR) THEN
                   UG=0.D0
               ELSE

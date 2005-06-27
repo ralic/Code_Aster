@@ -8,7 +8,7 @@
       LOGICAL           LHAIGH,                     LKE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 28/02/2003   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF PREPOST  DATE 28/06/2005   AUTEUR F1BHHAJ J.ANGLES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -71,7 +71,7 @@ C
          NBPAR     = 1
          PHENO     = 'FATIGUE   '
          NOMPAR    = 'SIGM    '
-         CALL LIMEND( NOMMAT,DELTA,ENDUR)
+         CALL LIMEND(NOMMAT,DELTA,'WOHLER',ENDUR)
          IF (ENDUR) THEN
             DOM(I) = 0.D0
          ELSE

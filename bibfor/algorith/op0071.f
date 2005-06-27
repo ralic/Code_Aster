@@ -3,7 +3,7 @@
       INTEGER             IERR
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 15/06/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 28/06/2005   AUTEUR NICOLAS O.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -86,15 +86,15 @@ C NB_VECT DONNE PAR NUME_DDL_GENE
       NBMODE   = ZI(LLDESC)
 
 
-      IF (N1.NE.0) THEN
+C      IF (N1.NE.0) THEN
          CALL DISMOI('F', 'NOM_NUME_DDL', MATRAS, 'MATR_ASSE', IBID,
      +                                            NUMDD1,IER)
          CALL JEVEUO(BASEMO//'           .REFD','L',IADRIF)
-         IF ((TYPBAS.EQ.'MODE_MECA').OR.(TYPBAS.EQ.'MODE_GENE')) THEN
+C         IF ((TYPBAS.EQ.'MODE_MECA').OR.(TYPBAS.EQ.'MODE_GENE')) THEN
             MATRIC = ZK24(IADRIF)
-         ELSE
-            MATRIC = ZK24(IADRIF+2)
-         ENDIF
+C         ELSE
+C            MATRIC = ZK24(IADRIF+2)
+C         ENDIF
          IF (MATRIC.NE.' ') THEN
             CALL DISMOI('F','NOM_NUME_DDL',MATRIC,'MATR_ASSE',IBID,
      +                NUMDD2,IER)
@@ -106,30 +106,30 @@ C NB_VECT DONNE PAR NUME_DDL_GENE
      +                ' NUMEROTATIONS DIFFERENTES')     
          ENDIF
          NU = NUMDD1(1:14)
-      ELSE
-         CALL JEVEUO(MATRAS//'           .REFA','L',LLREFE)
-         NUMDD1 = ZK24(LLREFE+1)
-         CALL JEVEUO(BASEMO//'           .REFD','L',IADRIF)
-         MATRIC = ZK24(IADRIF)
-         MATRI2 = MATRIC(1:16)
-         CALL JEVEUO(MATRI2//'   .REFA','L',LLREFE)
-         NUMDD2 = ZK24(LLREFE+1)
-         IF (NUMDD1.NE.NUMDD2) THEN
-           CALL UTMESS('F',NOMCOM,'BASE MODALE ET MATR_ASSE_GENE AVEC'//
-     +                ' NUMEROTATIONS INCOMPATIBLES')    
-         ENDIF
-         NU = NUMDD1(1:14)
-      ENDIF
+C      ELSE
+C         CALL JEVEUO(MATRAS//'           .REFA','L',LLREFE)
+C         NUMDD1 = ZK24(LLREFE+1)
+C         CALL JEVEUO(BASEMO//'           .REFD','L',IADRIF)
+C         MATRIC = ZK24(IADRIF)
+C         MATRI2 = MATRIC(1:16)
+C         CALL JEVEUO(MATRI2//'   .REFA','L',LLREFE)
+C         NUMDD2 = ZK24(LLREFE+1)
+C         IF (NUMDD1.NE.NUMDD2) THEN
+C       CALL UTMESS('F',NOMCOM,'BASE MODALE ET MATR_ASSE_GENE AVEC'//
+C     +                ' NUMEROTATIONS INCOMPATIBLES')    
+C         ENDIF
+C         NU = NUMDD1(1:14)
+C      ENDIF
 
 C
 C ----- RECUPERATION DU NOMBRE D'EQUATIONS DU SYSTEME PHYSIQUE
 C
-      IF (N1.NE.0) THEN
+C      IF (N1.NE.0) THEN
          CALL DISMOI('F','NB_EQUA',MATRAS,'MATR_ASSE',NEQ,K8B,IER)
-      ELSE
-         CALL JEVEUO(NUMDD1//'.NUME.NEQU','L',LLNEQU)
-         NEQ = ZI(LLNEQU)
-      ENDIF
+C      ELSE
+C         CALL JEVEUO(NUMDD1//'.NUME.NEQU','L',LLNEQU)
+C         NEQ = ZI(LLNEQU)
+C      ENDIF
 C
       IF (TYPMAT.EQ.'R') THEN
          CALL PROJMR(MATRAS,NOMRES,NOMSTO,BASEMO,NOMNUM,NU,NEQ,NBMODE)

@@ -3,7 +3,7 @@
       INTEGER NCHAR,NH,NBOCC
       CHARACTER*(*) RESU,MODELE,MATE,CARA,LCHAR(*)
 C     ------------------------------------------------------------------
-C MODIF UTILITAI  DATE 15/06/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 28/06/2005   AUTEUR NICOLAS O.NICOLAS 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -142,7 +142,7 @@ C        - DANS LE CAS OU CE N'EST PAS UN RESULTAT DE TYPE EVOL_NOLI -
 C        --- ON RECUPERE L'OPTION DE CALCUL DE LA MATRICE DE MASSE ---
         IF (TYPRES(1:9).NE.'EVOL_NOLI') THEN
           CALL JEVEUO(RESUL//'           .REFD','L',JREF)
-          NOMMAS = ZK24(JREF)(1:8)
+          NOMMAS = ZK24(JREF+1)(1:8)
           CALL DISMOI('A','SUR_OPTION',NOMMAS,'MATR_ASSE',IBID,OPT,IE)
           IF (IE.NE.0) THEN
             CALL UTMESS('A','PEECIN','OPTION MASSE COHERENTE.')

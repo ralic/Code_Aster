@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 15/06/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 28/06/2005   AUTEUR NICOLAS O.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -114,24 +114,16 @@ C
 C
       IF ( MODE .EQ. BLANC ) THEN
          CALL JEVEUO(TRANGE//'.REFD','L',IAREFE)
-         BASEMO = ZK24(IAREFE)(1:8)
+         BASEMO = ZK24(IAREFE+5)(1:8)
          CALL JEVEUO(BASEMO//'           .REFD','L',IADRIF)
-C
          CALL JEVEUO(NOMIN//'           .REFD','L',J1REFE)
-         MATGEN = ZK24(J1REFE+1)
+         MATGEN = ZK24(J1REFE)
          IF (MATGEN(1:8) .NE. BLANC) THEN
            CALL JEVEUO(MATGEN//'           .REFA','L',J2REFE)
            NUMGEN = ZK24(J2REFE+1)(1:14)
            CALL JEVEUO(NUMGEN//'.NUME.REFN','L',J3REFE)
            CALL GETTCO(ZK24(J3REFE),TYPREP)
-           IF (TYPREP(1:9).EQ.'MODE_MECA') THEN
-               MATRIC = ZK24(IADRIF)
-           ELSEIF (TYPREP(1:11).EQ.'BASE_MODALE') THEN
-               MATRIC = ZK24(IADRIF+3)
-           ELSEIF (TYPREP(1:11).EQ.'MODE_STAT') THEN
-               MATRIC = ZK24(IADRIF)
-               IF (MATRIC(1:8) .EQ. BLANC) MATRIC = ZK24(IADRIF+2)
-           ENDIF
+           MATRIC = ZK24(IADRIF)
            IF (MATRIC.NE.BLANC) THEN
             CALL DISMOI('F','NOM_NUME_DDL',MATRIC,'MATR_ASSE',IBID,
      +                 NUMDDL,IRET)
@@ -140,7 +132,7 @@ C
             IF ( TOUSNO ) CALL DISMOI('F','NB_EQUA',MATRIC,'MATR_ASSE',
      +                               NEQ,K8B,IRET)
            ELSE
-            NUMDDL = ZK24(IADRIF+1)(1:14)
+            NUMDDL = ZK24(IADRIF+3)(1:14)
             CALL DISMOI('F','NOM_MAILLA',NUMDDL,'NUME_DDL',IBID,
      +                 MAILLA,IRET)
             IF ( TOUSNO ) CALL DISMOI('F','NB_EQUA',NUMDDL,'NUME_DDL',
@@ -148,9 +140,9 @@ C
            ENDIF
          ELSE
 C  POUR LES CALCULS SANS MATRICE GENERALISEE (PROJ_MESU_MODAL)
-           MATRIC = ZK24(IADRIF+1)
+           MATRIC = ZK24(IADRIF+3)
            IF(MATRIC(1:8) .EQ. BLANC) THEN
-             MATRIC=ZK24(IADRIF+2)
+             MATRIC=ZK24(IADRIF)
              CALL DISMOI('F','NOM_NUME_DDL',MATRIC,'MATR_ASSE',
      +                              IBID,NUMDDL,IRET)
            ELSE
@@ -159,7 +151,7 @@ C  POUR LES CALCULS SANS MATRICE GENERALISEE (PROJ_MESU_MODAL)
            CALL JEVEUO(NUMDDL//'.NUME.REFN','L',J3REFE)
            MATRIC = ZK24(J3REFE)
            MAILLA = MATRIC(1:8)
-           MATRIC = ZK24(IADRIF+2)
+           MATRIC = ZK24(IADRIF)
            IF ( TOUSNO ) CALL DISMOI('F','NB_EQUA',NUMDDL,'NUME_DDL',
      +                              NEQ,K8B,IRET)
          ENDIF
@@ -638,24 +630,31 @@ C                 --- ACCELERATION ABSOLUE = RELATIVE + ENTRAINEMENT
       ENDIF
 C
       KREFE  = NOMRES
-      CALL WKVECT(KREFE//'.REFD','G V K24',3,LREFE)
+      CALL WKVECT(KREFE//'.REFD','G V K24',6,LREFE)
       IF (MODE.EQ.BLANC) THEN
+        ZK24(LREFE) = ZK24(IADRIF)
+        ZK24(LREFE+1) = ZK24(IADRIF+1)
+        ZK24(LREFE+2  ) = ZK24(IADRIF+2)
+        ZK24(LREFE+3  ) = ZK24(IADRIF+3)
+        ZK24(LREFE+4  ) = ZK24(IADRIF+4)
+        ZK24(LREFE+5  ) = ZK24(IADRIF+5)
+C A VIRER
 C
-         IF (TYPREP(1:9).EQ.'MODE_MECA') THEN
-             ZK24(LREFE  ) = ZK24(IADRIF)
-         ELSEIF (TYPREP(1:9).EQ.'MODE_STAT') THEN
-           ZK24(LREFE) = ZK24(IADRIF)
-           IF (ZK24(IADRIF)(1:8).EQ.BLANC) ZK24(LREFE)=ZK24(IADRIF+2)
-         ELSEIF (TYPREP(1:11).EQ.'BASE_MODALE') THEN
-             ZK24(LREFE  ) = ZK24(IADRIF+3)
-         ENDIF
+C         IF (TYPREP(1:9).EQ.'MODE_MECA') THEN
+C             ZK24(LREFE  ) = ZK24(IADRIF+3)
+C         ELSEIF (TYPREP(1:9).EQ.'MODE_STAT') THEN
+C           ZK24(LREFE) = ZK24(IADRIF+3)
+C           IF (ZK24(IADRIF)(1:8).EQ.BLANC) ZK24(LREFE)=ZK24(IADRIF+2)
+C         ELSEIF (TYPREP(1:11).EQ.'BASE_MODALE') THEN
+C             ZK24(LREFE  ) = ZK24(IADRIF+3)
+C         ENDIF
+C A VIRER
 C
-         ZK24(LREFE+1) = ZK24(IADRIF+1)
-         ZK24(LREFE+2) = ZK24(IADRIF+2)
       ELSE
          ZK24(LREFE  ) = '  '
          ZK24(LREFE+1) = '  '
-         ZK24(LREFE+2) = ZK24(LLCHA+1)
+         ZK24(LREFE+2) = '  '
+         ZK24(LREFE+3) = ZK24(LLCHA+1)
       ENDIF
       CALL JELIBE(KREFE//'.REFD')
 C

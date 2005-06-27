@@ -4,7 +4,7 @@
       CHARACTER*(*)       NOMMAT
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 27/06/2003   AUTEUR CIBHHLV L.VIVAN 
+C MODIF POSTRELE  DATE 28/06/2005   AUTEUR F1BHHAJ J.ANGLES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -66,7 +66,7 @@ C
 C --- CALCUL DU NOMBRE DE CYCLES ADMISSIBLE NADM EN UTILISANT
 C --- LA COURBE DE WOHLER AUX EXTREMITES DU CHEMIN :
 C     --------------------------------------------
-      CALL LIMEND( NOMMAT,SALT,ENDUR)
+      CALL LIMEND( NOMMAT,SALT,'WOHLER',ENDUR)
       IF (ENDUR) THEN
          NADM=R8MAEM()
       ELSE

@@ -1,7 +1,7 @@
       SUBROUTINE DTAUNO(JRWORK, LISNOE, NBNOT, NBORDR, NNOINI, NBNOP,
      &                  NUMPAQ, TSPAQ, NOMMET, NOMCRI, NOMMAI, CNSR)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 10/01/2005   AUTEUR F1BHHAJ J.ANGLES 
+C MODIF PREPOST  DATE 28/06/2005   AUTEUR F1BHHAJ J.ANGLES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -77,14 +77,14 @@ C     ------------------------------------------------------------------
       INTEGER      I, J, K, L, N, JCNRD, JCNRL, JCNRV, JAD
       INTEGER      IRET, NBMA, ADRMA, NUMA, IMAP, ICESD, ICESL, ICESV
       INTEGER      IAD, IBID, IVECT, IORDR, TNECES, TDISP, JVECNO
-      INTEGER      JVECTN, JVECTU, JVECTV, NBVEC, NGAM, TAB2(18), INOP
-      INTEGER      NUNOE, IBIBD, JDTAUM, JRESUN, MNMAX(2)
-      INTEGER      JVNO1, JVNO2, LOR8EM, LOISEM, JTYPMA, JTYP
+      INTEGER      JVECTN, JVECTU, JVECTV, NBVEC, NGAM, IDEB, DIM
+      INTEGER      TAB2(18), INOP, NUNOE, IBIBD, JDTAUM, JRESUN
+      INTEGER      MNMAX(2), JVNO1, JVNO2, LOR8EM, LOISEM, JTYPMA, JTYP
       INTEGER      JVECN2, JVECU2, JVECV2, JVECN1, JVECU1, JVECV1
       INTEGER      NBPAR, ICMP, ADRS, KWORK, SOMNOW, CNBNO
 C
-      REAL*8       EPSILO, DGAM, GAMMA, PI, R8PI, DPHI, TAB1(18), PHI
-      REAL*8       COEPRE, GAMMAM, PHIM, DGAM2, DPHI2, DTAUM(2)
+      REAL*8       EPSILO, DGAM, GAMMA, PI, R8PI, DPHI, TAB1(18)
+      REAL*8       PHI0, COEPRE, GAMMAM, PHIM, DGAM2, DPHI2, DTAUM(2)
       REAL*8       NXM(2), NYM(2), NZM(2)
       REAL*8       SIXX, SIYY, SIZZ, SIXY, SIXZ, SIYZ, FXM(2), FYM(2)
       REAL*8       FZM(2), EPSXX, EPSYY, EPSZZ, EPSXY, EPSXZ, EPSYZ
@@ -97,6 +97,7 @@ C
 C
       CHARACTER*2  CODRET, CODWO
       CHARACTER*8  NOMPAR, NOMRES, CHMAT1, NOMMAT, KTYP, DIMK, K8B
+      CHARACTER*10 OPTIO
       CHARACTER*16 PHENOM
       CHARACTER*19 CHMAT, CESMAT, NCNCIN
       CHARACTER*24 TYPMA
@@ -184,27 +185,18 @@ C RECUPERATION MAILLE PAR MAILLE DU MATERIAU DONNE PAR L'UTILISATEUR
       DGAM = 10.0D0
 
       N = 0
+      K = 1
+      IDEB = 1
+      DIM = 627
       DO 300 J=1, 18
          GAMMA=(J-1)*DGAM*(PI/180.0D0)
          DPHI=TAB1(J)*(PI/180.0D0)
+         PHI0=DPHI/2.0D0
          NGAM=TAB2(J)
-         DO 320 I=1, NGAM
-            PHI=(DPHI/2.0D0) + (I-1)*DPHI
-            N = N + 1
 
-            ZR(JVECTN + (N-1)*3)     = SIN(GAMMA)*COS(PHI)
-            ZR(JVECTN + (N-1)*3 + 1) = SIN(GAMMA)*SIN(PHI)
-            ZR(JVECTN + (N-1)*3 + 2) = COS(GAMMA)
+         CALL VECNUV(IDEB, NGAM, GAMMA, PHI0, DPHI, N, K, DIM,
+     &               ZR(JVECTN), ZR(JVECTU), ZR(JVECTV))
 
-            ZR(JVECTU + (N-1)*3)     = -SIN(PHI)
-            ZR(JVECTU + (N-1)*3 + 1) = COS(PHI)
-            ZR(JVECTU + (N-1)*3 + 2) = 0.0D0
-
-            ZR(JVECTV + (N-1)*3)     = -COS(GAMMA)*COS(PHI)
-            ZR(JVECTV + (N-1)*3 + 1) = -COS(GAMMA)*SIN(PHI)
-            ZR(JVECTV + (N-1)*3 + 2) = SIN(GAMMA)
-
- 320     CONTINUE
  300  CONTINUE
 
 C CONSTRUCTION DU VECTEUR : CONTRAINTE = F(NUMERO D'ORDRE) EN CHAQUE
@@ -241,109 +233,26 @@ C QUI PORTENT LE NOEUD COURANT.
          CALL JEVEUO( JEXNUM(NCNCIN,NUNOE), 'L', ADRMA )
 
          K = 0
+         OPTIO = 'DOMA_NOEUD'
          DO 410, I=1, NBMA
-            NUMA = ZI(ADRMA-1 + I)
-            JTYP = JTYPMA - 1 + NUMA
-            CALL JENUNO( JEXNUM( '&CATA.TM.NOMTM', ZI(JTYP)), KTYP )
-            CALL DISMOI( 'F', 'TYPE_TYPMAIL',KTYP,'TYPE_MAILLE',IBID,
-     &                   DIMK, IRET )
-
-            IF (DIMK .EQ. 'VOLU') THEN
-               K = K + 1
-               CALL CESEXI('C',ICESD,ICESL,NUMA,1,1,1,IAD)
-               IF (IAD .LE. 0) THEN
-                  CALL UTMESS('F', 'DTAUNO.2', 'HORS BORNES DEFINIES'//
-     &                        ' DANS CESMAT OU CMP NON AFFECTEE.')
-               ELSE
-                  IF ( (K .GT. 1) .AND. 
-     &                 (NOMMAT .NE. ZK8(ICESV - 1 + IAD)) ) THEN
-                     CALL UTMESS('F', 'DTAUNO.3', 'LES MAILLES '//
-     &                        'ATTACHEES AU NOEUD TRAITE NE SONT '//
-     &                        'PAS AFFECTEES DU MEME MATERIAU.')
-                  ELSE            
-                     NOMMAT = ZK8(ICESV - 1 + IAD)
-                  ENDIF
-               ENDIF
-            ENDIF
-
-            IF ( K .EQ. 0 ) THEN
-               CALL UTMESS('F', 'DTAUNO.4', 'LE NOEUD TRAITE '//
-     &                  'N''EST ASSOCIE A AUCUNE MAILLE VOLUMIQUE.')
-            ENDIF
+            CALL RNOMAT (ICESD, ICESL, ICESV, I, NOMCRI, ADRMA, JTYPMA,
+     &                   K, OPTIO, VALA, VALB, COEFPA, NOMMAT)
  410     CONTINUE
 
-C RECUPERATION DES PARAMETRES ASSOCIES AU CRITERE DE MATAKE POUR
-C LA MAILLE COURANTE
-         CALL RCCOME (NOMMAT,'CISA_PLAN_CRIT',PHENOM,CODRET)
-         IF(CODRET(1:2) .EQ. 'NO') THEN
-           CALL UTMESS('F','DTAUNO.3',
-     &    'POUR CALCULER LE CISAILLEMENT MAX ET LE PLAN CRITIQUE IL'//
-     &    ' FAUT RENSEIGNER CISA_PLAN_CRIT DANS DEFI_MATERIAU')
+         IF (K .EQ. 0) THEN
+            CALL UTDEBM('A', 'DTAUNO.2', 'LE NOEUD TRAITE '//
+     &                  'N''EST ASSOCIE A AUCUNE MAILLE VOLUMIQUE.')
+            CALL UTIMPI('L','NUMERO DU NOEUD = ',1,NUNOE)
+            CALL UTIMPI('L','NOMBRE DE MAILLES ATTACHEES AU NOEUD = ',
+     &                   1,NBMA)
+            CALL UTFINM( )
          ENDIF
 
-         IF (NOMCRI(1:6) .EQ. 'MATAKE') THEN
-            CALL RCVALE(NOMMAT,'CISA_PLAN_CRIT',0,' ',R8B,1,
-     &                                    'MATAKE_A',VALA,CODRET,'  ')
-            IF (CODRET(1:2) .EQ. 'NO') THEN
-               CALL UTMESS('F', 'DTAUNO.4', 'NOUS NE POUVONS '//
-     &             ' PAS RECUPERER LA VALEUR DU PARAMETRE A DU'//
-     &             ' CRITERE DE MATAKE, cf. COMMANDE: '//
-     &             ' DEFI_MATERIAU, OPERANDE: CISA_PLAN_CRIT.')
-            ENDIF
-            CALL RCVALE(NOMMAT,'CISA_PLAN_CRIT',0,' ',R8B,1,
-     &                                    'MATAKE_B',VALB,CODRET,'  ')
-            IF (CODRET(1:2) .EQ. 'NO') THEN
-               CALL UTMESS('F', 'DTAUNO.5', 'NOUS NE POUVONS '//
-     &             ' PAS RECUPERER LA VALEUR DU PARAMETRE B DU'//
-     &             ' CRITERE DE MATAKE, cf. COMMANDE: '//
-     &             ' DEFI_MATERIAU, OPERANDE: CISA_PLAN_CRIT.')
-            ENDIF
+         CALL JERAZO('&&DTAUNO.VECTNO', TNECES, 1)
 
-            CALL RCVALE(NOMMAT,'CISA_PLAN_CRIT',0,' ',R8B,1,
-     &                           'COEF_FLE',COEFPA,CODRET,'  ')
-            IF (CODRET(1:2) .EQ. 'NO') THEN
-               CALL UTMESS('F', 'DTAUNO.6', 'NOUS NE POUVONS'//
-     &            ' PAS RECUPERER LA VALEUR DU COEFFICIENT DE'//
-     &            ' PASSAGE FLEXION-TORSION, cf. COMMANDE: '//
-     &            ' DEFI_MATERIAU, OPERANDE: CISA_PLAN_CRIT.')
-            ENDIF
-
-C RECUPERATION DES PARAMETRES ASSOCIES AU CRITERE DE DANG VAN POUR
-C LA MAILLE COURANTE
-         ELSEIF (NOMCRI(1:16) .EQ. 'DANG_VAN_MODI_AC') THEN
-            CALL RCVALE(NOMMAT,'CISA_PLAN_CRIT',0,' ',R8B,1,
-     &                                 'D_VAN_A',VALA,CODRET,'  ')
-            IF (CODRET(1:2) .EQ. 'NO') THEN
-               CALL UTMESS('F', 'DTAUNO.7', 'NOUS NE POUVONS '//
-     &             ' PAS RECUPERER LA VALEUR DU PARAMETRE A DU'//
-     &             ' CRITERE DE DANG_VAN, cf. COMMANDE: '//
-     &             ' DEFI_MATERIAU, OPERANDE: CISA_PLAN_CRIT.')
-            ENDIF
-
-            CALL RCVALE(NOMMAT,'CISA_PLAN_CRIT',0,' ',R8B,1,
-     &                                 'D_VAN_B',VALB,CODRET,'  ')
-            IF (CODRET(1:2) .EQ. 'NO') THEN
-               CALL UTMESS('F', 'DTAUNO.8', 'NOUS NE POUVONS '//
-     &             ' PAS RECUPERER LA VALEUR DU PARAMETRE B DU'//
-     &             ' CRITERE DE DANG_VAN, cf. COMMANDE: '//
-     &             ' DEFI_MATERIAU, OPERANDE: CISA_PLAN_CRIT.')
-            ENDIF
-
-            CALL RCVALE(NOMMAT,'CISA_PLAN_CRIT',0,' ',R8B,1,
-     &                           'COEF_CIS',COEFPA,CODRET,'  ')
-            IF (CODRET(1:2) .EQ. 'NO') THEN
-               CALL UTMESS('F', 'DTAUNO.9', 'NOUS NE POUVONS '//
-     &            ' PAS RECUPERER LA VALEUR DU COEFFICIENT DE'//
-     &            ' PASSAGE CISAILLEMENT-TRACTION, cf. COMMANDE: '//
-     &            ' DEFI_MATERIAU, OPERANDE: CISA_PLAN_CRIT.')
-            ENDIF
-         ENDIF
-
-            CALL JERAZO('&&DTAUNO.VECTNO', TNECES, 1)
-
-            NBVEC = 209
-            CALL TRLONO(NBVEC, JVECTN, JVECTU, JVECTV, NBORDR, KWORK,
-     &                  SOMNOW, JRWORK, TSPAQ, JVECNO)
+         NBVEC = 209
+         CALL TRLONO(NBVEC, JVECTN, JVECTU, JVECTV, NBORDR, KWORK,
+     &               SOMNOW, JRWORK, TSPAQ, JVECNO)
 
 C CALCUL DU MAX DES DELTA_TAU MAX ET DU VECTEUR NORMAL ASSOCIE POUR
 C LE NOEUD COURANT.
@@ -352,379 +261,312 @@ C 1/ REMISE A ZERO DU VECTEUR DE TRAVAIL CONTENANT LES VALEURS DE
 C    DELTA_TAU POUR UN POINT DE GAUSS ET DU VECTEUR DE TRAVAIL
 C    PERMETTANT DE POINTER SUR LE VECTEUR NORMAL ASSOCIE.
 
-            CALL JERAZO('&&DTAUNO.DTAU_MAX', NBVEC, 1)
-            CALL JERAZO('&&DTAUNO.RESU_N', NBVEC, 1)
+         CALL JERAZO('&&DTAUNO.DTAU_MAX', NBVEC, 1)
+         CALL JERAZO('&&DTAUNO.RESU_N', NBVEC, 1)
 
 C 2/ CALCUL DU RAYON CIRCONSCRIT
 
-            CALL RAYCIR(JVECNO, JDTAUM, JRESUN, NBORDR, NBVEC, NOMMET)
+         CALL RAYCIR(JVECNO, JDTAUM, JRESUN, NBORDR, NBVEC, NOMMET)
 
 C 3/ CALCUL DU 1ER MAX DES DELTA_TAU ET DU VECTEUR NORMAL ASSOCIE
 
-            DTAUM(1) = 0.0D0
-            DTAUM(2) = 0.0D0
-            MNMAX(1) = 1
-            MNMAX(2) = 1
+         DTAUM(1) = 0.0D0
+         DTAUM(2) = 0.0D0
+         MNMAX(1) = 1
+         MNMAX(2) = 1
 
-            DO 430 I=1, NBVEC
-              IF ( ZR(JDTAUM + (I-1)) .GT. EPSILO ) THEN
-                 IF ( (ZR(JDTAUM + (I-1))-DTAUM(1))/ZR(JDTAUM + (I-1))
-     &                 .GT. EPSILO ) THEN
-                    DTAUM(2) = DTAUM(1)
-                    MNMAX(2) = MNMAX(1)
-                    DTAUM(1) = ZR(JDTAUM + (I-1))
-                    MNMAX(1) = I
-                 ENDIF
-                 IF ( ((ZR(JDTAUM + (I-1))-DTAUM(2))/ZR(JDTAUM + (I-1))
-     &                 .GT. EPSILO)  .AND. (I .NE. MNMAX(1)) ) THEN
-                    DTAUM(2) = ZR(JDTAUM + (I-1))
-                    MNMAX(2) = I
-                 ENDIF
+         DO 430 I=1, NBVEC
+           IF ( ZR(JDTAUM + (I-1)) .GT. EPSILO ) THEN
+              IF ( (ZR(JDTAUM + (I-1))-DTAUM(1))/ZR(JDTAUM + (I-1))
+     &              .GT. EPSILO ) THEN
+                 DTAUM(2) = DTAUM(1)
+                 MNMAX(2) = MNMAX(1)
+                 DTAUM(1) = ZR(JDTAUM + (I-1))
+                 MNMAX(1) = I
               ENDIF
- 430        CONTINUE
+              IF ( ((ZR(JDTAUM + (I-1))-DTAUM(2))/ZR(JDTAUM + (I-1))
+     &               .GT. EPSILO)  .AND. (I .NE. MNMAX(1)) ) THEN
+                 DTAUM(2) = ZR(JDTAUM + (I-1))
+                 MNMAX(2) = I
+              ENDIF
+           ENDIF
+ 430     CONTINUE
 
 C 4/ PREMIER RAFFINEMENT CONCERNANT LA DETERMINATION DU VECTEUR NORMAL
 C    ET DU MAX DES DELTA_TAU (DETERMINATION DU VECTEUR NORMAL A 2
 C    DEGRES PRES).
 
-            PHYDRO = 0.0D0
-            PHYDRM = 0.0D0
+         PHYDRO = 0.0D0
+         PHYDRM = 0.0D0
+         DIM = 27
 
-            DO 440 K=1, 2
-               NORM(K) = 0.0D0
-               NORMAX(K) = 0.0D0
-               SNORM(K) = 0.0D0
-               EPNORM(K) = 0.0D0
-               EPNMAX(K) = 0.0D0
-               SEPNMX(K) = 0.0D0
-               NXM(K) = ZR(JVECTN + (MNMAX(K)-1)*3)
-               NYM(K) = ZR(JVECTN + (MNMAX(K)-1)*3 + 1)
-               NZM(K) = ZR(JVECTN + (MNMAX(K)-1)*3 + 2)
-               GAMMAM = ATAN2(SQRT(ABS(1.0D0-NZM(K)**2)),NZM(K))
-               IF (GAMMAM .LT. 0.0D0) THEN
-                  GAMMAM = GAMMAM + PI
-               ENDIF
+         DO 440 K=1, 2
+            NORM(K) = 0.0D0
+            NORMAX(K) = 0.0D0
+            SNORM(K) = 0.0D0
+            EPNORM(K) = 0.0D0
+            EPNMAX(K) = 0.0D0
+            SEPNMX(K) = 0.0D0
+            NXM(K) = ZR(JVECTN + (MNMAX(K)-1)*3)
+            NYM(K) = ZR(JVECTN + (MNMAX(K)-1)*3 + 1)
+            NZM(K) = ZR(JVECTN + (MNMAX(K)-1)*3 + 2)
+            GAMMAM = ATAN2(SQRT(ABS(1.0D0-NZM(K)**2)),NZM(K))
+            IF (GAMMAM .LT. 0.0D0) THEN
+               GAMMAM = GAMMAM + PI
+            ENDIF
 
-               IF ((ABS(NYM(K)) .LT. EPSILO) .AND.
-     &             (ABS(NXM(K)) .LT. EPSILO)) THEN
-                 PHIM = 0.0D0
-               ELSE
-                 PHIM = ATAN2(ABS(NYM(K)),NXM(K))
-               ENDIF
-               IF (PHIM .LT. 0.0D0) THEN
-                 PHIM = PHIM + PI
-               ENDIF
+            IF ((ABS(NYM(K)) .LT. EPSILO) .AND.
+     &          (ABS(NXM(K)) .LT. EPSILO)) THEN
+              PHIM = 0.0D0
+            ELSE
+              PHIM = ATAN2(ABS(NYM(K)),NXM(K))
+            ENDIF
+            IF (PHIM .LT. 0.0D0) THEN
+              PHIM = PHIM + PI
+            ENDIF
 
-               IF (ABS(GAMMAM) .LT. EPSILO) THEN
-                  GAMMA = 5.0D0*(PI/180.0D0)
-                  DPHI2 = 60.0D0*(PI/180.0D0)
-                  DO 450 I=1, 6
-                     PHI = 0.0D0 + (I-1)*DPHI2
+            IF (ABS(GAMMAM) .LT. EPSILO) THEN
+               GAMMA = 5.0D0*(PI/180.0D0)
+               DPHI2 = 60.0D0*(PI/180.0D0)
+               PHI0 = 0.0D0
+               N = 0
 
-                     ZR(JVECN2 + (I-1)*3)     = SIN(GAMMA)*COS(PHI)
-                     ZR(JVECN2 + (I-1)*3 + 1) = SIN(GAMMA)*SIN(PHI)
-                     ZR(JVECN2 + (I-1)*3 + 2) = COS(GAMMA)
+               CALL VECNUV(1, 6, GAMMA, PHI0, DPHI2, N, 1, DIM,
+     &                     ZR(JVECN2), ZR(JVECU2), ZR(JVECV2))
 
-                     ZR(JVECU2 + (I-1)*3)     = -SIN(PHI)
-                     ZR(JVECU2 + (I-1)*3 + 1) = COS(PHI)
-                     ZR(JVECU2 + (I-1)*3 + 2) = 0.0D0
+               GAMMA = 0.0D0
 
-                     ZR(JVECV2 + (I-1)*3)     = -COS(GAMMA)*COS(PHI)
-                     ZR(JVECV2 + (I-1)*3 + 1) = -COS(GAMMA)*SIN(PHI)
-                     ZR(JVECV2 + (I-1)*3 + 2) = SIN(GAMMA)
+               CALL VECNUV(1, 1, GAMMA, PI, DPHI2, N, 1, DIM,
+     &                     ZR(JVECN2), ZR(JVECU2), ZR(JVECV2))
 
- 450              CONTINUE
+               NBVEC = 7
+               CALL TRLONO(NBVEC, JVECN2, JVECU2, JVECV2, NBORDR,
+     &                     KWORK, SOMNOW, JRWORK, TSPAQ, JVNO2)
+            ELSE
+               DGAM2 = 2.0D0*(PI/180.0D0)
+               DPHI2 = DGAM2/SIN(GAMMAM)
+               N = 0
+               DO 460 J=1, 3
+                  GAMMA = GAMMAM + (J-2)*DGAM2
 
-                  GAMMA = 0.0D0
-                  PHI = PI
+                  CALL VECNUV(1, 3, GAMMA, PHIM, DPHI2, N, 2, DIM,
+     &                        ZR(JVECN2), ZR(JVECU2), ZR(JVECV2))
 
-                  ZR(JVECN2 + 6*3)     = SIN(GAMMA)*COS(PHI)
-                  ZR(JVECN2 + 6*3 + 1) = SIN(GAMMA)*SIN(PHI)
-                  ZR(JVECN2 + 6*3 + 2) = COS(GAMMA)
+ 460           CONTINUE
 
-                  ZR(JVECU2 + 6*3)     = -SIN(PHI)
-                  ZR(JVECU2 + 6*3 + 1) = COS(PHI)
-                  ZR(JVECU2 + 6*3 + 2) = 0.0D0
-
-                  ZR(JVECV2 + 6*3)     = -COS(GAMMA)*COS(PHI)
-                  ZR(JVECV2 + 6*3 + 1) = -COS(GAMMA)*SIN(PHI)
-                  ZR(JVECV2 + 6*3 + 2) = SIN(GAMMA)
-
-                  NBVEC = 7
-                  CALL TRLONO(NBVEC, JVECN2, JVECU2, JVECV2, NBORDR,
-     &                        KWORK, SOMNOW, JRWORK, TSPAQ, JVNO2)
-               ELSE
-                  DGAM2 = 2.0D0*(PI/180.0D0)
-                  DPHI2 = DGAM2/SIN(GAMMAM)
-                  N = 0
-                  DO 460 J=1, 3
-                     GAMMA = GAMMAM + (J-2)*DGAM2
-                     DO 470 I=1, 3
-                        PHI = PHIM + (I-2)*DPHI2
-                        N = N + 1
-
-                        ZR(JVECN2 + (N-1)*3)     = SIN(GAMMA)*COS(PHI)
-                        ZR(JVECN2 + (N-1)*3 + 1) = SIN(GAMMA)*SIN(PHI)
-                        ZR(JVECN2 + (N-1)*3 + 2) = COS(GAMMA)
-
-                        ZR(JVECU2 + (N-1)*3)     = -SIN(PHI)
-                        ZR(JVECU2 + (N-1)*3 + 1) = COS(PHI)
-                        ZR(JVECU2 + (N-1)*3 + 2) = 0.0D0
-
-                        ZR(JVECV2 + (N-1)*3)     = -COS(GAMMA)*COS(PHI)
-                        ZR(JVECV2 + (N-1)*3 + 1) = -COS(GAMMA)*SIN(PHI)
-                        ZR(JVECV2 + (N-1)*3 + 2) = SIN(GAMMA)
-
- 470                 CONTINUE
- 460              CONTINUE
-
-                  NBVEC = 9
-                  CALL TRLONO(NBVEC, JVECN2, JVECU2, JVECV2, NBORDR,
-     &                        KWORK, SOMNOW, JRWORK, TSPAQ, JVNO2)
-               ENDIF
+               NBVEC = 9
+               CALL TRLONO(NBVEC, JVECN2, JVECU2, JVECV2, NBORDR,
+     &                     KWORK, SOMNOW, JRWORK, TSPAQ, JVNO2)
+            ENDIF
 
 C 4-1/ REMISE A ZERO DU VECTEUR DE TRAVAIL CONTENANT LES VALEURS DE
 C     DELTA_TAU POUR UN POINT DE GAUSS ET DU VECTEUR DE TRAVAIL
 C     PERMETTANT DE POINTER SUR LE VECTEUR NORMAL ASSOCIE.
 
-               CALL JERAZO('&&DTAUNO.DTAU_MAX', NBVEC, 1)
-               CALL JERAZO('&&DTAUNO.RESU_N', NBVEC, 1)
+            CALL JERAZO('&&DTAUNO.DTAU_MAX', NBVEC, 1)
+            CALL JERAZO('&&DTAUNO.RESU_N', NBVEC, 1)
 
 C 4-2/ CALCUL DU RAYON CIRCONSCRIT
 
-               CALL RAYCIR(JVNO2, JDTAUM, JRESUN, NBORDR, NBVEC, NOMMET)
+            CALL RAYCIR(JVNO2, JDTAUM, JRESUN, NBORDR, NBVEC, NOMMET)
 
 C 4-3/ CALCUL DU 2EME MAX DES DELTA_TAU ET DU VECTEUR NORMAL ASSOCIE
 
-               DTAUM(K) = 0.0D0
-               MNMAX(K) = 1
+            DTAUM(K) = 0.0D0
+            MNMAX(K) = 1
 
-               DO 480 I=1, NBVEC
-                  IF ( ZR(JDTAUM + (I-1)) .GT. DTAUM(K)) THEN
-                     DTAUM(K) = ZR(JDTAUM + (I-1))
-                     MNMAX(K) = I
-                  ENDIF
- 480           CONTINUE
+            DO 480 I=1, NBVEC
+               IF ( ZR(JDTAUM + (I-1)) .GT. DTAUM(K)) THEN
+                  DTAUM(K) = ZR(JDTAUM + (I-1))
+                  MNMAX(K) = I
+               ENDIF
+ 480        CONTINUE
 
 C 5/ DEUXIEME RAFFINEMENT CONCERNANT LA DETERMINATION DU VECTEUR NORMAL
 C    ET DU MAX DES DELTA_TAU (DETERMINATION DU VECTEUR NORMAL A 1
 C    DEGRE PRES).
 
-               NXM(K) = ZR(JVECN2 + (MNMAX(K)-1)*3)
-               NYM(K) = ZR(JVECN2 + (MNMAX(K)-1)*3 + 1)
-               NZM(K) = ZR(JVECN2 + (MNMAX(K)-1)*3 + 2)
-               GAMMAM = ATAN2(SQRT(ABS(1.0D0-NZM(K)**2)),NZM(K))
-               IF (GAMMAM .LT. 0.0D0) THEN
-                  GAMMAM = GAMMAM + PI
-               ENDIF
+            NXM(K) = ZR(JVECN2 + (MNMAX(K)-1)*3)
+            NYM(K) = ZR(JVECN2 + (MNMAX(K)-1)*3 + 1)
+            NZM(K) = ZR(JVECN2 + (MNMAX(K)-1)*3 + 2)
+            GAMMAM = ATAN2(SQRT(ABS(1.0D0-NZM(K)**2)),NZM(K))
+            IF (GAMMAM .LT. 0.0D0) THEN
+               GAMMAM = GAMMAM + PI
+            ENDIF
 
-               IF ((ABS(NYM(K)) .LT. EPSILO) .AND.
-     &             (ABS(NXM(K)) .LT. EPSILO)) THEN
-                 PHIM = 0.0D0
-               ELSE
-                 PHIM = ATAN2(ABS(NYM(K)),NXM(K))
-               ENDIF
-               IF (PHIM .LT. 0.0D0) THEN
-                 PHIM = PHIM + PI
-               ENDIF
+            IF ((ABS(NYM(K)) .LT. EPSILO) .AND.
+     &          (ABS(NXM(K)) .LT. EPSILO)) THEN
+              PHIM = 0.0D0
+            ELSE
+              PHIM = ATAN2(ABS(NYM(K)),NXM(K))
+            ENDIF
+            IF (PHIM .LT. 0.0D0) THEN
+              PHIM = PHIM + PI
+            ENDIF
 
-               IF (ABS(GAMMAM) .LT. EPSILO) THEN
-                  GAMMA = 1.0D0*(PI/180.0D0)
-                  DPHI2 = 60.0D0*(PI/180.0D0)
-                  DO 500 I=1, 6
-                     PHI = 0.0D0 + (I-1)*DPHI2
+            IF (ABS(GAMMAM) .LT. EPSILO) THEN
+               GAMMA = 1.0D0*(PI/180.0D0)
+               DPHI2 = 60.0D0*(PI/180.0D0)
+               PHI0 = 0.0D0
+               N = 0
 
-                     ZR(JVECN1 + (I-1)*3)     = SIN(GAMMA)*COS(PHI)
-                     ZR(JVECN1 + (I-1)*3 + 1) = SIN(GAMMA)*SIN(PHI)
-                     ZR(JVECN1 + (I-1)*3 + 2) = COS(GAMMA)
+               CALL VECNUV(1, 6, GAMMA, PHI0, DPHI2, N, 1, DIM,
+     &                     ZR(JVECN1), ZR(JVECU1), ZR(JVECV1))
 
-                     ZR(JVECU1 + (I-1)*3)     = -SIN(PHI)
-                     ZR(JVECU1 + (I-1)*3 + 1) = COS(PHI)
-                     ZR(JVECU1 + (I-1)*3 + 2) = 0.0D0
+               GAMMA = 0.0D0
 
-                     ZR(JVECV1 + (I-1)*3)     = -COS(GAMMA)*COS(PHI)
-                     ZR(JVECV1 + (I-1)*3 + 1) = -COS(GAMMA)*SIN(PHI)
-                     ZR(JVECV1 + (I-1)*3 + 2) = SIN(GAMMA)
+               CALL VECNUV(1, 1, GAMMA, PI, DPHI2, N, 1, DIM,
+     &                     ZR(JVECN1), ZR(JVECU1), ZR(JVECV1))
 
- 500              CONTINUE
+               NBVEC = 7
+               CALL TRLONO(NBVEC, JVECN1, JVECU1, JVECV1, NBORDR,
+     &                     KWORK, SOMNOW, JRWORK, TSPAQ, JVNO1)
+            ELSE
+               DGAM2 = 1.0D0*(PI/180.0D0)
+               DPHI2 = DGAM2/SIN(GAMMAM)
+               N = 0
+               DO 510 J=1, 3
+                  GAMMA = GAMMAM + (J-2)*DGAM2
 
-                  GAMMA = 0.0D0
-                  PHI = PI
+                  CALL VECNUV(1, 3, GAMMA, PHIM, DPHI2, N, 2, DIM,
+     &                        ZR(JVECN1), ZR(JVECU1), ZR(JVECV1))
 
-                  ZR(JVECN1 + 6*3)     = SIN(GAMMA)*COS(PHI)
-                  ZR(JVECN1 + 6*3 + 1) = SIN(GAMMA)*SIN(PHI)
-                  ZR(JVECN1 + 6*3 + 2) = COS(GAMMA)
+ 510           CONTINUE
 
-                  ZR(JVECU1 + 6*3)     = -SIN(PHI)
-                  ZR(JVECU1 + 6*3 + 1) = COS(PHI)
-                  ZR(JVECU1 + 6*3 + 2) = 0.0D0
-
-                  ZR(JVECV1 + 6*3)     = -COS(GAMMA)*COS(PHI)
-                  ZR(JVECV1 + 6*3 + 1) = -COS(GAMMA)*SIN(PHI)
-                  ZR(JVECV1 + 6*3 + 2) = SIN(GAMMA)
-
-                  NBVEC = 7
-                  CALL TRLONO(NBVEC, JVECN1, JVECU1, JVECV1, NBORDR,
-     &                        KWORK, SOMNOW, JRWORK, TSPAQ, JVNO1)
-               ELSE
-                  DGAM2 = 1.0D0*(PI/180.0D0)
-                  DPHI2 = DGAM2/SIN(GAMMAM)
-                  N = 0
-                  DO 510 J=1, 3
-                     GAMMA = GAMMAM + (J-2)*DGAM2
-                     DO 520 I=1, 3
-                        PHI = PHIM + (I-2)*DPHI2
-                        N = N + 1
-
-                        ZR(JVECN1 + (N-1)*3)     = SIN(GAMMA)*COS(PHI)
-                        ZR(JVECN1 + (N-1)*3 + 1) = SIN(GAMMA)*SIN(PHI)
-                        ZR(JVECN1 + (N-1)*3 + 2) = COS(GAMMA)
-
-                        ZR(JVECU1 + (N-1)*3)     = -SIN(PHI)
-                        ZR(JVECU1 + (N-1)*3 + 1) =  COS(PHI)
-                        ZR(JVECU1 + (N-1)*3 + 2) =  0.0D0
-
-                        ZR(JVECV1 + (N-1)*3)     = -COS(GAMMA)*COS(PHI)
-                        ZR(JVECV1 + (N-1)*3 + 1) = -COS(GAMMA)*SIN(PHI)
-                        ZR(JVECV1 + (N-1)*3 + 2) =  SIN(GAMMA)
-
- 520                 CONTINUE
- 510              CONTINUE
-
-                  NBVEC = 9
-                  CALL TRLONO(NBVEC, JVECN1, JVECU1, JVECV1, NBORDR,
-     &                        KWORK, SOMNOW, JRWORK, TSPAQ, JVNO1)
-               ENDIF
+               NBVEC = 9
+               CALL TRLONO(NBVEC, JVECN1, JVECU1, JVECV1, NBORDR,
+     &                     KWORK, SOMNOW, JRWORK, TSPAQ, JVNO1)
+            ENDIF
 
 C 5-1/ REMISE A ZERO DU VECTEUR DE TRAVAIL CONTENANT LES VALEURS DE
 C     DELTA_TAU POUR UN POINT DE GAUSS ET DU VECTEUR DE TRAVAIL
 C     PERMETTANT DE POINTER SUR LE VECTEUR NORMAL ASSOCIE.
 
-               CALL JERAZO('&&DTAUNO.DTAU_MAX', NBVEC, 1)
-               CALL JERAZO('&&DTAUNO.RESU_N', NBVEC, 1)
+            CALL JERAZO('&&DTAUNO.DTAU_MAX', NBVEC, 1)
+            CALL JERAZO('&&DTAUNO.RESU_N', NBVEC, 1)
 
 C 5-2/ CALCUL DU RAYON CIRCONSCRIT
 
-               CALL RAYCIR(JVNO1, JDTAUM, JRESUN, NBORDR, NBVEC, NOMMET)
+            CALL RAYCIR(JVNO1, JDTAUM, JRESUN, NBORDR, NBVEC, NOMMET)
 
 C 5-3/ CALCUL DU 2EME MAX DES DELTA_TAU ET DU VECTEUR NORMAL ASSOCIE
 
-               DTAUM(K) = 0.0D0
-               MNMAX(K) = 1
+            DTAUM(K) = 0.0D0
+            MNMAX(K) = 1
 
-               DO 530 I=1, NBVEC
-                  IF ( ZR(JDTAUM + (I-1)) .GT. DTAUM(K)) THEN
-                     DTAUM(K) = ZR(JDTAUM + (I-1))
-                     MNMAX(K) = I
-                  ENDIF
- 530           CONTINUE
+            DO 530 I=1, NBVEC
+               IF ( ZR(JDTAUM + (I-1)) .GT. DTAUM(K)) THEN
+                  DTAUM(K) = ZR(JDTAUM + (I-1))
+                  MNMAX(K) = I
+               ENDIF
+ 530        CONTINUE
 
-               NXM(K) = ZR(JVECN1 + (MNMAX(K)-1)*3)
-               NYM(K) = ZR(JVECN1 + (MNMAX(K)-1)*3 + 1)
-               NZM(K) = ZR(JVECN1 + (MNMAX(K)-1)*3 + 2)
-               GAMMAM = ATAN2(SQRT(ABS(1.0D0-NZM(K)**2)),NZM(K))
-               IF (GAMMAM .LT. 0.0D0) THEN
-                  GAMMAM = GAMMAM + PI
-               ENDIF
+            NXM(K) = ZR(JVECN1 + (MNMAX(K)-1)*3)
+            NYM(K) = ZR(JVECN1 + (MNMAX(K)-1)*3 + 1)
+            NZM(K) = ZR(JVECN1 + (MNMAX(K)-1)*3 + 2)
+            GAMMAM = ATAN2(SQRT(ABS(1.0D0-NZM(K)**2)),NZM(K))
+            IF (GAMMAM .LT. 0.0D0) THEN
+               GAMMAM = GAMMAM + PI
+            ENDIF
 
-               IF ((ABS(NYM(K)) .LT. EPSILO) .AND.
-     &             (ABS(NXM(K)) .LT. EPSILO)) THEN
-                 PHIM = 0.0D0
-               ELSE
-                 PHIM = ATAN2(ABS(NYM(K)),NXM(K))
-               ENDIF
-               IF (PHIM .LT. 0.0D0) THEN
-                 PHIM = PHIM + PI
-               ENDIF
+            IF ((ABS(NYM(K)) .LT. EPSILO) .AND.
+     &          (ABS(NXM(K)) .LT. EPSILO)) THEN
+              PHIM = 0.0D0
+            ELSE
+              PHIM = ATAN2(ABS(NYM(K)),NXM(K))
+            ENDIF
+            IF (PHIM .LT. 0.0D0) THEN
+              PHIM = PHIM + PI
+            ENDIF
 
 C CALCUL DE LA CONTRAINTE NORMALE MAXIMALE SUR LE PLAN CRITIQUE,
 C DE LA CONTRAINTE NORMALE MOYENNE SUR LE PLAN CRITIQUE,
 C DE LA DEFORMATION NORMALE MAXIMALE SUR LE PLAN CRITIQUE,
 C DE LA DEFORMATION NORMALE MOYENNE SUR LE PLAN CRITIQUE.
 
-               CALL RCVALE(NOMMAT,'ELAS',0,' ',R8B,1,'E',VALE,CODRET,
-     &                     '  ')
-               IF (CODRET(1:2) .EQ. 'NO') THEN
-                  CALL UTMESS('F', 'DTAUNO.10', 'NOUS NE POUVONS PAS'//
-     &                   ' RECUPERER LA VALEUR DU MODULE D''YOUNG : E.')
-               ENDIF
-               CALL RCVALE(NOMMAT,'ELAS',0,' ',R8B,1,'NU',VALNU,CODRET,
-     &                     '  ')
-               IF (CODRET(1:2) .EQ. 'NO') THEN
-                  CALL UTMESS('F', 'DTAUNO.11', 'NOUS NE POUVONS PAS'//
-     &                    ' RECUPERER LA VALEUR DU COEFFICIENT DE ' //
-     &                    'POISSON : NU.')
-               ENDIF
-               C1 = (1+VALNU)/VALE
-               C2 = VALNU/VALE
+            CALL RCVALE(NOMMAT,'ELAS',0,' ',R8B,1,'E',VALE,CODRET,
+     &                  '  ')
+            IF (CODRET(1:2) .EQ. 'NO') THEN
+               CALL UTMESS('F', 'DTAUNO.3', 'NOUS NE POUVONS PAS'//
+     &                ' RECUPERER LA VALEUR DU MODULE D''YOUNG : E.')
+            ENDIF
+            CALL RCVALE(NOMMAT,'ELAS',0,' ',R8B,1,'NU',VALNU,CODRET,
+     &                  '  ')
+            IF (CODRET(1:2) .EQ. 'NO') THEN
+               CALL UTMESS('F', 'DTAUNO.4', 'NOUS NE POUVONS PAS'//
+     &                 ' RECUPERER LA VALEUR DU COEFFICIENT DE ' //
+     &                 'POISSON : NU.')
+            ENDIF
+            C1 = (1+VALNU)/VALE
+            C2 = VALNU/VALE
 
-               DO 540 IORDR=1, NBORDR
-                  ADRS = (IORDR-1)*TSPAQ + KWORK*SOMNOW*6
-                  SIXX = ZR(JRWORK + ADRS + 0 )
-                  SIYY = ZR(JRWORK + ADRS + 1 )
-                  SIZZ = ZR(JRWORK + ADRS + 2 )
-                  SIXY = ZR(JRWORK + ADRS + 3 )
-                  SIXZ = ZR(JRWORK + ADRS + 4 )
-                  SIYZ = ZR(JRWORK + ADRS + 5 )
+            DO 540 IORDR=1, NBORDR
+               ADRS = (IORDR-1)*TSPAQ + KWORK*SOMNOW*6
+               SIXX = ZR(JRWORK + ADRS + 0 )
+               SIYY = ZR(JRWORK + ADRS + 1 )
+               SIZZ = ZR(JRWORK + ADRS + 2 )
+               SIXY = ZR(JRWORK + ADRS + 3 )
+               SIXZ = ZR(JRWORK + ADRS + 4 )
+               SIYZ = ZR(JRWORK + ADRS + 5 )
 
 C CALCUL DE LA PRESSION HYDROSTATIQUE MAXIMALE = Max_t(1/3 Tr[SIG])
 
-                  IF ( K .LT. 2 ) THEN
+               IF ( K .LT. 2 ) THEN
 
 C ON CALCULE PHYDRM UNE FOIS, PARCE QUE LA PRESSION HYDROSTATIQUE
 C EST INVARIANTE PAR RAPPORT AU vect_n.
 
-                     PHYDRO = (SIXX + SIYY + SIZZ)/3.0D0
+                  PHYDRO = (SIXX + SIYY + SIZZ)/3.0D0
 
-                     IF (PHYDRO .GT. PHYDRM) THEN
-                        PHYDRM = PHYDRO
-                     ENDIF
+                  IF (PHYDRO .GT. PHYDRM) THEN
+                     PHYDRM = PHYDRO
                   ENDIF
+               ENDIF
 
-                  EPSXX = C1*SIXX - C2*(SIXX + SIYY + SIZZ)
-                  EPSYY = C1*SIYY - C2*(SIXX + SIYY + SIZZ)
-                  EPSZZ = C1*SIZZ - C2*(SIXX + SIYY + SIZZ)
-                  EPSXY = C1*SIXY
-                  EPSXZ = C1*SIXZ
-                  EPSYZ = C1*SIYZ
+               EPSXX = C1*SIXX - C2*(SIXX + SIYY + SIZZ)
+               EPSYY = C1*SIYY - C2*(SIXX + SIYY + SIZZ)
+               EPSZZ = C1*SIZZ - C2*(SIXX + SIYY + SIZZ)
+               EPSXY = C1*SIXY
+               EPSXZ = C1*SIXZ
+               EPSYZ = C1*SIYZ
 
 C CALCUL DE vect_F = [SIG].vect_n
 
-                  FXM(K) = SIXX*NXM(K) + SIXY*NYM(K) + SIXZ*NZM(K)
-                  FYM(K) = SIXY*NXM(K) + SIYY*NYM(K) + SIYZ*NZM(K)
-                  FZM(K) = SIXZ*NXM(K) + SIYZ*NYM(K) + SIZZ*NZM(K)
+               FXM(K) = SIXX*NXM(K) + SIXY*NYM(K) + SIXZ*NZM(K)
+               FYM(K) = SIXY*NXM(K) + SIYY*NYM(K) + SIYZ*NZM(K)
+               FZM(K) = SIXZ*NXM(K) + SIYZ*NYM(K) + SIZZ*NZM(K)
 
 C CALCUL DE NORM = vect_F.vect_n
 
-                  NORM(K) = FXM(K)*NXM(K) + FYM(K)*NYM(K) +
-     &                      FZM(K)*NZM(K)
+               NORM(K) = FXM(K)*NXM(K) + FYM(K)*NYM(K) +
+     &                   FZM(K)*NZM(K)
 
-                  IF (ABS(NORM(K)) .GT. NORMAX(K)) THEN
-                     NORMAX(K) = NORM(K)
-                  ENDIF
+               IF (ABS(NORM(K)) .GT. NORMAX(K)) THEN
+                  NORMAX(K) = NORM(K)
+               ENDIF
 
-                  SNORM(K) = SNORM(K) + NORM(K)
+               SNORM(K) = SNORM(K) + NORM(K)
 
 C CALCUL DE vect_EPS = [EPS].vect_n
 
-                  EPSXM(K) = EPSXX*NXM(K) + EPSXY*NYM(K) + EPSXZ*NZM(K)
-                  EPSYM(K) = EPSXY*NXM(K) + EPSYY*NYM(K) + EPSYZ*NZM(K)
-                  EPSZM(K) = EPSXZ*NXM(K) + EPSYZ*NYM(K) + EPSZZ*NZM(K)
+               EPSXM(K) = EPSXX*NXM(K) + EPSXY*NYM(K) + EPSXZ*NZM(K)
+               EPSYM(K) = EPSXY*NXM(K) + EPSYY*NYM(K) + EPSYZ*NZM(K)
+               EPSZM(K) = EPSXZ*NXM(K) + EPSYZ*NYM(K) + EPSZZ*NZM(K)
 
 C CALCUL DE EPSILON NORMALE = vect_EPS.vect_n
 
-                  EPNORM(K) = EPSXM(K)*NXM(K) + EPSYM(K)*NYM(K) +
-     &                        EPSZM(K)*NZM(K)
+               EPNORM(K) = EPSXM(K)*NXM(K) + EPSYM(K)*NYM(K) +
+     &                     EPSZM(K)*NZM(K)
 
-                  IF (ABS(EPNORM(K)) .GT. EPNMAX(K)) THEN
-                     EPNMAX(K) = EPNORM(K)
-                  ENDIF
+               IF (ABS(EPNORM(K)) .GT. EPNMAX(K)) THEN
+                  EPNMAX(K) = EPNORM(K)
+               ENDIF
 
-                  SEPNMX(K) = SEPNMX(K) + EPNORM(K)
- 540           CONTINUE
+               SEPNMX(K) = SEPNMX(K) + EPNORM(K)
+ 540        CONTINUE
 
-               NORMOY(K) = SNORM(K)/NBORDR
-               EPNMOY(K) = SEPNMX(K)/NBORDR
+            NORMOY(K) = SNORM(K)/NBORDR
+            EPNMOY(K) = SEPNMX(K)/NBORDR
 
 C ---------------------------------------------------------------------
 C       =============================================
@@ -734,85 +576,88 @@ C ---------------------------------------------------------------------
 
 
 C 1/ CRITERE DE MATAKE
-               IF (NOMCRI(1:6) .EQ. 'MATAKE') THEN
-                  IF ( (VALA*NORMAX(K)) .GT. 0.0D0 ) THEN
-                     SIGEQ(K) = COEPRE*DTAUM(K) + (VALA*NORMAX(K))
-                     SIGEQ(K) = SIGEQ(K)*COEFPA
-                  ELSE
-                     SIGEQ(K) = COEPRE*DTAUM(K)
-                     SIGEQ(K) = SIGEQ(K)*COEFPA
-                  ENDIF
+            IF (NOMCRI(1:6) .EQ. 'MATAKE') THEN
+               IF ( (VALA*NORMAX(K)) .GT. 0.0D0 ) THEN
+                  SIGEQ(K) = COEPRE*DTAUM(K) + (VALA*NORMAX(K))
+                  SIGEQ(K) = SIGEQ(K)*COEFPA
+               ELSE
+                  SIGEQ(K) = COEPRE*DTAUM(K)
+                  SIGEQ(K) = SIGEQ(K)*COEFPA
                ENDIF
+            ENDIF
 
 C 2/ CRITERE DE DANG VAN
-               IF (NOMCRI(1:16) .EQ. 'DANG_VAN_MODI_AC') THEN
-                  IF ( (VALA*PHYDRM) .GT. 0.0D0 ) THEN
-                     SIGEQ(K) = COEPRE*DTAUM(K) + (VALA*PHYDRM)
-                     SIGEQ(K) = SIGEQ(K)*COEFPA
-                  ELSE
-                     SIGEQ(K) = COEPRE*DTAUM(K)
-                     SIGEQ(K) = SIGEQ(K)*COEFPA
-                  ENDIF
+            IF (NOMCRI(1:16) .EQ. 'DANG_VAN_MODI_AC') THEN
+               IF ( (VALA*PHYDRM) .GT. 0.0D0 ) THEN
+                  SIGEQ(K) = COEPRE*DTAUM(K) + (VALA*PHYDRM)
+                  SIGEQ(K) = SIGEQ(K)*COEFPA
+               ELSE
+                  SIGEQ(K) = COEPRE*DTAUM(K)
+                  SIGEQ(K) = SIGEQ(K)*COEFPA
                ENDIF
+            ENDIF
+
+C PAS DE CRITERE DE FATEMI ET SOCIE EN ELASTIQUE ET AMPLITUDE CONSTANTE,
+C CELA N'A PAS DE SENS.
 
 C CALCUL DU NOMBRE DE CYCLES A LA RUPTURE ET DU DOMMAGE
 
-               CALL RCCOME ( NOMMAT, 'FATIGUE', PHENOM, CODRET )
-               IF ( CODRET .EQ. 'NO' ) CALL UTMESS('F','DTAUNO.12',
-     &            'POUR CALCULER LE DOMMAGE IL FAUT DEFINIR LE '//
-     &            'COMPORTEMENT "FATIGUE" DANS DEFI_MATERIAU' )
+            CALL RCCOME ( NOMMAT, 'FATIGUE', PHENOM, CODRET )
+            IF ( CODRET .EQ. 'NO' ) CALL UTMESS('F','DTAUNO.5',
+     &         'POUR CALCULER LE DOMMAGE IL FAUT DEFINIR LE '//
+     &         'COMPORTEMENT "FATIGUE" DANS DEFI_MATERIAU' )
 
-               CALL RCPARE( NOMMAT, 'FATIGUE', 'WOHLER', CODWO )
-               IF ( CODWO .EQ. 'OK' ) THEN
-                  CALL LIMEND( NOMMAT,SIGEQ(K),ENDUR)
-                  IF (ENDUR) THEN
-                     NRUPT(K)=R8MAEM()
-                  ELSE
-                  CALL RCVALE(NOMMAT,'FATIGUE',1,'SIGM',SIGEQ(K),1,
-     &                        'WOHLER',NRUPT(K),CODRET,'F')
-                  ENDIF
+            CALL RCPARE( NOMMAT, 'FATIGUE', 'WOHLER', CODWO )
+            IF ( CODWO .EQ. 'OK' ) THEN
+               CALL LIMEND( NOMMAT,SIGEQ(K),'WOHLER',ENDUR)
+               IF (ENDUR) THEN
+                  NRUPT(K)=R8MAEM()
+               ELSE
+               CALL RCVALE(NOMMAT,'FATIGUE',1,'SIGM',SIGEQ(K),1,
+     &                     'WOHLER',NRUPT(K),CODRET,'F')
                ENDIF
+            ENDIF
 
-               DOM(K) = 1.D0/NRUPT(K)
-               NRUPT(K) = NINT(NRUPT(K))
+            DOM(K) = 1.D0/NRUPT(K)
+            NRUPT(K) = NINT(NRUPT(K))
 
- 440        CONTINUE
+ 440     CONTINUE
 
 C CONSTRUCTION D'UN CHAM_ELEM SIMPLE PUIS D'UN CHAM_ELEM CONTENANT
 C POUR CHAQUE POINT DE GAUSS DE CHAQUE MAILLE MAX DE DTAU_MAX ET LE
 C VECTEUR NORMAL ASSOCIE.
 
-            VRESU(1) = DTAUM(1)
-            VRESU(2) = NXM(1)
-            VRESU(3) = NYM(1)
-            VRESU(4) = NZM(1)
-            VRESU(5) = NORMAX(1)
-            VRESU(6) = NORMOY(1)
-            VRESU(7) = EPNMAX(1)
-            VRESU(8) = EPNMOY(1)
-            VRESU(9) = SIGEQ(1)
-            VRESU(10) = NRUPT(1)
-            VRESU(11) = DOM(1)
-            VRESU(12) = DTAUM(2)
-            VRESU(13) = NXM(2)
-            VRESU(14) = NYM(2)
-            VRESU(15) = NZM(2)
-            VRESU(16) = NORMAX(2)
-            VRESU(17) = NORMOY(2)
-            VRESU(18) = EPNMAX(2)
-            VRESU(19) = EPNMOY(2)
-            VRESU(20) = SIGEQ(2)
-            VRESU(21) = NRUPT(2)
-            VRESU(22) = DOM(2)
+         VRESU(1) = DTAUM(1)
+         VRESU(2) = NXM(1)
+         VRESU(3) = NYM(1)
+         VRESU(4) = NZM(1)
+         VRESU(5) = NORMAX(1)
+         VRESU(6) = NORMOY(1)
+         VRESU(7) = EPNMAX(1)
+         VRESU(8) = EPNMOY(1)
+         VRESU(9) = SIGEQ(1)
+         VRESU(10) = NRUPT(1)
+         VRESU(11) = DOM(1)
+         VRESU(12) = DTAUM(2)
+         VRESU(13) = NXM(2)
+         VRESU(14) = NYM(2)
+         VRESU(15) = NZM(2)
+         VRESU(16) = NORMAX(2)
+         VRESU(17) = NORMOY(2)
+         VRESU(18) = EPNMAX(2)
+         VRESU(19) = EPNMOY(2)
+         VRESU(20) = SIGEQ(2)
+         VRESU(21) = NRUPT(2)
+         VRESU(22) = DOM(2)
 
 C AFFECTATION DES RESULTATS DANS UN CHAM_ELEM SIMPLE
 
-            DO 550 ICMP=1, 22
-                  JAD = 22*(NUNOE-1) + ICMP
-                  ZL(JCNRL - 1 + JAD) = .TRUE.
-                  ZR(JCNRV - 1 + JAD) = VRESU(ICMP)
+         DO 550 ICMP=1, 22
+               JAD = 22*(NUNOE-1) + ICMP
+               ZL(JCNRL - 1 + JAD) = .TRUE.
+               ZR(JCNRV - 1 + JAD) = VRESU(ICMP)
 
- 550        CONTINUE
+ 550     CONTINUE
 
  400  CONTINUE
 

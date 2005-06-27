@@ -9,7 +9,7 @@
       COMPLEX*16        VECPC8(NEQ,*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 15/06/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 28/06/2005   AUTEUR NICOLAS O.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -82,7 +82,7 @@ C     POUR POUVOIR UTILISER VPSTOR DANS STAT_NON_LINE VIA NMOP45
          LREFD = .FALSE.
       ELSE
          CALL JEVEUO (REFD, 'L', JREFD )
-         RAIDE = ZK24(JREFD+2)
+         RAIDE = ZK24(JREFD)
       ENDIF
 C
 C

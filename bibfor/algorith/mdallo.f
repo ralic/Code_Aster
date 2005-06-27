@@ -11,7 +11,7 @@
       LOGICAL LPSTO
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 15/06/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 28/06/2005   AUTEUR NICOLAS O.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -80,11 +80,13 @@ C     ------------------------------------------------------------------
 C
       CALL JEEXIN(NOMRES//'           .REFD',IRET)
       IF (IRET.EQ.0) THEN
-         CALL WKVECT(NOMRES//'           .REFD','G V K24',4,JREFE)
-         ZK24(JREFE  ) = BASEMO(1:8)
+         CALL WKVECT(NOMRES//'           .REFD','G V K24',6,JREFE)
+         ZK24(JREFE) = RIGGEN
          ZK24(JREFE+1) = MASGEN
-         ZK24(JREFE+2) = RIGGEN
-         ZK24(JREFE+3) = AMOGEN
+         ZK24(JREFE+2) = AMOGEN
+         ZK24(JREFE+3) = ' '
+         ZK24(JREFE+4) = ' '
+         ZK24(JREFE+5) = BASEMO(1:8)
       ENDIF
 C
       CALL JEEXIN(NOMRES//'           .DESC',IRET)

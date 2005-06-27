@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 15/06/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF PREPOST  DATE 28/06/2005   AUTEUR NICOLAS O.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -82,7 +82,7 @@ C
       CALL GETVID( 'ENER_SOL','MODE_MECA',1,1,1,MECA,NMM)
       REFD(1:8) = MECA
       CALL JEVEUO(REFD,'L',JREFD)
-      MASSE = ZK24(JREFD)
+      MASSE = ZK24(JREFD+1)
 C
 C     --- ON RECUPERE LA TABLE D'ENERGIE ---
 C

@@ -1,6 +1,6 @@
       SUBROUTINE AVENCA( RVECPG, NBVEC, NBORDR, LSIG0, IFLAG, RMIMA )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 24/11/2003   AUTEUR F1BHHAJ J.ANGLES 
+C MODIF PREPOST  DATE 28/06/2005   AUTEUR F1BHHAJ J.ANGLES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -81,33 +81,33 @@ C
 C
 C-----------------------------------------------------------------------
 C234567                                                              012
-C
+
       CALL JEMARQ()
-C
+
 C-----------------------------------------------------------------------
 C     ------------------------------
 C    |  TRAITEMENT DU CAS GENERAL  |
 C    ------------------------------
 C-----------------------------------------------------------------------
-C
+
       EPSILO = 1.0D-5
-C
+
 C ININTIALISATION
-C
+
       N1 = 0
       NSIG0 = 0
-C
+
       DO 30 IVECT=1, NBVEC
          CUMIN = R8MAEM()
          CUMAX = -R8MAEM()
          CVMIN = R8MAEM()
          CVMAX = -R8MAEM()
-C
+
          DO 40 IORDR=1, NBORDR
             N1 = N1 + 1
             CUI = RVECPG(2*N1 -1)
             CVI = RVECPG(2*N1)
-C
+
             IF (CUI .LT. CUMIN) THEN
                CUMIN = CUI
             ENDIF
@@ -121,44 +121,44 @@ C
                CVMAX = CVI
             ENDIF
  40      CONTINUE
-C
+
 C-----------------------------------------------------------------------
 C   ------------------------------------
 C  |  TRAITEMENT DES CAS PARTICULIERS  |
 C  ------------------------------------
 C-----------------------------------------------------------------------
-C
+
 C 1/ CAS OU TOUS LES POINTS SONT ALIGNES VERTICALEMENT ON PROJETERA
 C    SUR UN SEUL AXE DANS TOUS LES CAS.
-C
+
          IF ( ABS(CUMAX-CUMIN) .LT. EPSILO ) THEN
             IFLAG(IVECT) = 1
-C
+
 C 2/ CAS OU TOUS LES POINTS SONT ALIGNES HORIZONTALEMENT ON PROJETERA
 C    SUR UN SEUL AXE DANS TOUS LES CAS.
-C
+
          ELSEIF ( ABS(CVMAX-CVMIN) .LT. EPSILO ) THEN
             IFLAG(IVECT) = 2
-C
+
 C 3/ CAS OU TOUS LES POINTS SONT DANS UNE BOITE DONT LES DEUX COTES
 C    SONT INFERIEURS A EPSILO.
-C
+
          ELSEIF ( (ABS(CVMAX-CVMIN) .LT. EPSILO) .AND.
      &            (ABS(CUMAX-CUMIN) .LT. EPSILO) ) THEN
             IFLAG(IVECT) = 3
             NSIG0 = NSIG0 + 1
          ENDIF
-C
+
          RMIMA(4*IVECT - 3) = CUMIN
          RMIMA(4*IVECT - 2) = CUMAX
          RMIMA(4*IVECT - 1) = CVMIN
          RMIMA(4*IVECT) = CVMAX
-C
+
          IF (NSIG0 .EQ. NBVEC) THEN
             LSIG0 = .TRUE.
          ENDIF
-C
+
  30   CONTINUE
-C
+
       CALL JEDEMA()
       END

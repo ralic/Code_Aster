@@ -4,7 +4,7 @@
       CHARACTER*(*) TYPESD,NOMSD
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 18/04/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 28/06/2005   AUTEUR NICOLAS O.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -33,7 +33,10 @@ C         / 'CHAMP_GD' (CHAPEAU DESUET AUX CHAM_NO/CHAM_ELEM/...)
 C         / 'TABLE'
 C         / 'RESULTAT'
 C         / 'FONCTION'
-C         / 'MODELE' /'MAILLAGE'
+C         / 'MODELE' 
+C         /'MAILLAGE'
+C         /'NUME_DDL'
+C         /'MATR_ASSE'
 C       NOMSD   : NOM DE LA STRUCTURE DE DONNEES A TESTER
 
 C  OUT:  IRET   : 0 -> LA SD N'EXISTE PAS
@@ -189,6 +192,23 @@ C     -----------------------------------
         CH = NOMSD
         CALL JEEXIN(CH//'.PROL',I1)
         IF (I1.NE.0) GO TO 20
+
+      ELSE IF (TYP2SD.EQ.'MATR_ASSE') THEN
+C     -----------------------------------
+        CH = NOMSD
+        CALL JEEXIN(CH//'.CONL',I1)
+        CALL JEEXIN(CH//'.REFA',I2)
+        CALL JEEXIN(CH//'.VALE',I3)
+        IF (I1*I2*I3.NE.0) GO TO 20
+
+      ELSE IF (TYP2SD.EQ.'NUME_DDL') THEN
+C     -----------------------------------
+        CH = NOMSD
+        CALL JEEXIN(CH(1:14)//'.NUME.DEEQ',I1)
+        CALL JEEXIN(CH(1:14)//'.NUME.DELG',I2)
+        CALL JEEXIN(CH(1:14)//'.NUME.LILI',I3)
+        CALL JEEXIN(CH(1:14)//'.NUME.NUEQ',I4)
+        IF (I1*I2*I3*I4.NE.0) GO TO 20
 
       ELSE
         CALL UTMESS('F','EXISD',' LE MOT CLE :'//TYP2SD//

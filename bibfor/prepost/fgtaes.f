@@ -6,7 +6,7 @@
       INTEGER                  NBCYCL
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 28/02/2003   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF PREPOST  DATE 28/06/2005   AUTEUR F1BHHAJ J.ANGLES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -124,7 +124,7 @@ C
           IF(MODE.EQ.'FONC') THEN
             NBPAR = 1
             NOMPAR = 'SIGM'
-            CALL LIMEND( NOMMAT,DNAP,ENDUR)
+            CALL LIMEND( NOMMAT,DNAP,'WOHLER',ENDUR)
             IF (ENDUR) THEN
                 DOM(I) = 0.D0
             ELSE

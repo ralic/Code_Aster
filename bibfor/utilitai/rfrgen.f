@@ -3,7 +3,7 @@
       CHARACTER*(*)       TRANGE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 15/06/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 28/06/2005   AUTEUR NICOLAS O.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,6 +40,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
       CHARACTER*32     JEXNUM, JEXNOM
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
+      INTEGER      LREFE1,LREFE2
       CHARACTER*1  TYPE,COLI,K1BID
       CHARACTER*4  INTERP(2), INTRES
       CHARACTER*8  K8B, CRIT, NOEUD, CMP, NOMA, NOMACC, NOMMOT, BASEMO
@@ -139,10 +140,10 @@ C                 D E P L   ---   V I T E   ---   A C C E
 C----------------------------------------------------------------------
 C
       ELSE
-         CALL JEVEUO(RESU//'.REFD','L',LREFE)
-         BASEMO = ZK24(LREFE)(1:8)
-         CALL JEVEUO(BASEMO//'           .REFD','L',LREFE)
-         MATRAS = ZK24(LREFE+2)
+         CALL JEVEUO(RESU//'.REFD','L',LREFE1)
+         BASEMO = ZK24(LREFE1+5)(1:8)
+         CALL JEVEUO(BASEMO//'           .REFD','L',LREFE2)
+         MATRAS = ZK24(LREFE2)
          CALL JEVEUO(RESU//'.DESC','L',LDESC)
          NBMODE = ZI(LDESC+1)
          NOMSY = 'DEPL'
@@ -161,7 +162,7 @@ C
            CALL DISMOI('F','NOM_MAILLA'  ,MATRAS,'MATR_ASSE',IBID,NOMA,
      +                 IE)
          ELSE
-           NUME = ZK24(LREFE+1)(1:14)
+           NUME = ZK24(LREFE2+3)(1:14)
            CALL DISMOI('F','NOM_MAILLA',NUME,'NUME_DDL',IBID,NOMA,IE)
            CALL DISMOI('F','NB_EQUA'   ,NUME,'NUME_DDL',NEQ,K8B,IE)
            CALL WKVECT('&&RFRGEN.VECT.PROPRE','V V R',NEQ*NBMODE,IDBASE)

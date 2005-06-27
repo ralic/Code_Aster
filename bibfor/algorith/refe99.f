@@ -1,7 +1,7 @@
       SUBROUTINE  REFE99 (NOMRES)
       IMPLICIT REAL*8 (A-H,O-Z)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 15/06/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 28/06/2005   AUTEUR NICOLAS O.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,7 +49,7 @@ C
       CHARACTER*8  NOMRES,K8BID,RESUL
       CHARACTER*8  MECA
       CHARACTER*19 NUMDDL,NUMBIS
-      CHARACTER*24 RAID,MASS,INTF
+      CHARACTER*24 RAID,MASS,INTF,AMOR
 C
 C-----------------------------------------------------------------------
 C
@@ -61,6 +61,7 @@ C
       NUMDDL = ' '
       RAID = ' '
       MASS = ' '
+      AMOR = ' '
 C
 C --- DETERMINATION DU TYPE DE BASE
 C
@@ -82,8 +83,9 @@ C
         CALL GETVID('CLASSIQUE','MODE_MECA',1,1,NBMOME,ZK8(LTMOME),IBID)
         DO 10 I=1,NBMOME
           CALL JEVEUO(ZK8(LTMOME-1+I)//'           .REFD','L',LLRES)
-          MASS=ZK24(LLRES)
-          RAID=ZK24(LLRES+2)
+          RAID=ZK24(LLRES)
+          MASS=ZK24(LLRES+1)
+          AMOR=ZK24(LLRES+2)
           CALL DISMOI('F','NOM_NUME_DDL',RAID,'MATR_ASSE',IBID,
      &                 NUMBIS,IRET)
           NUMBIS(15:19)='.NUME'
@@ -120,8 +122,9 @@ C
 C - RECUPERATION DE LA MASSE
         CALL GETVID('DIAG_MASS','MODE_MECA',1,1,1,MECA,IBID)
         CALL JEVEUO(MECA//'           .REFD','L',LLRES)
-        MASS = ZK24(LLRES)
-        RAID = ZK24(LLRES+2)
+        RAID = ZK24(LLRES)
+        MASS = ZK24(LLRES+1)
+        AMOR = ZK24(LLRES+2)
 
         CALL DISMOI('F','NOM_NUME_DDL',MASS,'MATR_ASSE',IBID,
      &                 NUMDDL,IRET)
@@ -131,11 +134,13 @@ C --- CREATION DU .REFD
 C
       CALL JEEXIN(NOMRES//'           .REFD',IRET)
       IF (IRET.EQ.0) THEN 
-         CALL WKVECT(NOMRES//'           .REFD','G V K24',4,LDREF)
-         ZK24(LDREF)   = INTF
-         ZK24(LDREF+1) = NUMDDL
-         ZK24(LDREF+2) = RAID
-         ZK24(LDREF+3) = MASS
+         CALL WKVECT(NOMRES//'           .REFD','G V K24',6,LDREF)
+         ZK24(LDREF) = RAID
+         ZK24(LDREF+1) = MASS
+         ZK24(LDREF+2) = AMOR
+         ZK24(LDREF+3) = NUMDDL
+         ZK24(LDREF+4)   = INTF
+         ZK24(LDREF+5) = '  '
       ENDIF
 C
 C

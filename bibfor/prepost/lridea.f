@@ -9,7 +9,7 @@
       INTEGER PRECIS,NBNOCH,MFICH,NBVARI
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 15/06/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF PREPOST  DATE 28/06/2005   AUTEUR NICOLAS O.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -169,10 +169,13 @@ C SINON ON RECHERCHE LE PROFIL DE LA MATRICE DE RIGIDITE (MATRB)
         ELSE
           MATRB = ' '
         ENDIF
-        CALL WKVECT(RESU//'           .REFD','G V K24',3,JREFE)
-        ZK24(JREFE-1+1) = MATRB
-        ZK24(JREFE-1+2) = ' '
-        ZK24(JREFE-1+3) = MATRA
+        CALL WKVECT(RESU//'           .REFD','G V K24',6,JREFE)
+        ZK24(JREFE) = MATRA
+        ZK24(JREFE+1) = MATRB
+        ZK24(JREFE+2) = ' '
+        ZK24(JREFE+3) = ' '
+        ZK24(JREFE+4) = ' '
+        ZK24(JREFE+5) = ' '
       ENDIF
 
 

@@ -18,7 +18,7 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
       IMPLICIT REAL*8 (A-H,O-Z)
 C-----------------------------------------------------------------------
-C MODIF ALGORITH  DATE 15/06/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 28/06/2005   AUTEUR NICOLAS O.NICOLAS 
 C
 C  BUT:  < RESTITUTION MAC-NEAL GLOBALE >
 C
@@ -121,8 +121,8 @@ C
 C-----RECUPERATION DU NOMBRE DE DDL PHYSIQUES DU SECTEUR----------------
 C
       CALL JEVEUO(BASMOD//'           .REFD','L',LLREF)
-      INTF   = ZK24(LLREF)
-      NUMDDL = ZK24(LLREF+1)
+      INTF   = ZK24(LLREF+4)
+      NUMDDL = ZK24(LLREF+3)
       CALL DISMOI('F','NB_EQUA',NUMDDL,'NUME_DDL',NEQSEC,K8B,IER)
       CALL DISMOI('F','NB_CMP_MAX',INTF,'INTERF_DYNA',NBCMP,K8B,IER)
 C
@@ -137,8 +137,7 @@ C
 C
 C-----RECUPERATION MATRICE DE MASSE-------------------------------------
 C
-      CALL JEVEUO(BASMOD//'           .REFD','L',LLREF)
-      MASS = ZK24(LLREF+3)
+      MASS = ZK24(LLREF+1)
       CALL MTEXIS(MASS,IER)
       IF (IER.EQ.0) THEN
         CALL UTDEBM('F','REMNGL','ARRET SUR MATRICE INEXISTANTE')

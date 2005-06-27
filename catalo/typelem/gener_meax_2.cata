@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 23/06/2005   AUTEUR VABHHTS J.PELLET 
+%& MODIF TYPELEM  DATE 28/06/2005   AUTEUR DURAND C.DURAND 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION                        
 % ======================================================================    
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG    
@@ -88,7 +88,7 @@ MODE_LOCAL__
     ENGEOM_R = GEOM_R   ELNO__ IDEN__  (X        Y        )
     EGRDUPG  = G_DEPL_R ELGA__ RIGI    (D_DX_X   D_DX_Y   D_DY_X   D_DY_Y   )
     EGRDUNO  = G_DEPL_R ELNO__ IDEN__  (D_DX_X   D_DX_Y   D_DY_X   D_DY_Y   )
-    EHYDRER  = HYDR_R   ELGA__ RIGI    (HYDR     )
+    EHYDRER  = HYDR_R   ELGA__ MASS    (HYDR     )
     EGINDLO  = IND_LOCA ELGA__ RIGI    (INDICE   DIR1     DIR2     DIR3     DIR4     )
     CTEMPSR  = INST_R   ELEM__         (INST     )
     EGINST_R = INST_R   ELGA__ RIGI    (INST     )

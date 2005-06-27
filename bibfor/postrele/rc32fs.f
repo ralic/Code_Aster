@@ -7,7 +7,7 @@
       CHARACTER*8         MATER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 27/06/2003   AUTEUR CIBHHLV L.VIVAN 
+C MODIF POSTRELE  DATE 28/06/2005   AUTEUR F1BHHAJ J.ANGLES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -97,7 +97,7 @@ C
          IND2 = 4*(IS2-1)
          SALTM = SALIJS(IND1+IND2+IS3)
 C
-         CALL LIMEND( MATER,SALTM,ENDUR)
+         CALL LIMEND( MATER,SALTM,'WOHLER',ENDUR)
          IF (ENDUR) THEN
             U1KL=0.D0
          ELSE
@@ -114,7 +114,7 @@ C
             U1KL = 1.D0 / NADM
          ENDIF
 C
-         CALL LIMEND( MATER,SALTSE,ENDUR)
+         CALL LIMEND( MATER,SALTSE,'WOHLER',ENDUR)
          IF (ENDUR) THEN
             U2KL=0.D0
          ELSE
