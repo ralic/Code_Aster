@@ -1,4 +1,4 @@
-#@ MODIF macr_lign_coupe_ops Macro  DATE 14/06/2005   AUTEUR DURAND C.DURAND 
+#@ MODIF macr_lign_coupe_ops Macro  DATE 04/07/2005   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -120,8 +120,9 @@ def macr_lign_coupe_ops(self,RESULTAT,UNITE_MAILLAGE,LIGN_COUPE,NOM_CHAM,MODELE,
   import os,string,types
   from Accas import _F
   from Noyau.N_utils import AsType
-  import aster
+  import aster,math
   from Utilitai.UniteAster import UniteAster
+  from Utilitai.Utmess import UTMESS
   ier=0
 
   # On importe les definitions des commandes a utiliser dans la macro
@@ -131,6 +132,7 @@ def macr_lign_coupe_ops(self,RESULTAT,UNITE_MAILLAGE,LIGN_COUPE,NOM_CHAM,MODELE,
   PROJ_CHAMP     =self.get_cmd('PROJ_CHAMP')
   POST_RELEVE_T  =self.get_cmd('POST_RELEVE_T')
   CREA_TABLE     =self.get_cmd('CREA_TABLE')
+  MODI_REPERE    =self.get_cmd('MODI_REPERE')
 
   # La macro compte pour 1 dans la numerotation des commandes
   self.set_icmd(1)
@@ -220,6 +222,115 @@ def macr_lign_coupe_ops(self,RESULTAT,UNITE_MAILLAGE,LIGN_COUPE,NOM_CHAM,MODELE,
                      TYPE_CHAM='NOEU',
                      NOM_CHAM=NOM_CHAM,);
 
+  # Expression des contraintes aux noeuds ou des déplacements dans le repere local
+  __remodr=__recou
+  if AsType(RESULTAT).__name__ in ('evol_elas','evol_noli') :
+   for m in LIGN_COUPE :
+      if m['VECT_Y'] !=None :
+        epsi=0.00000001
+        # --- determination des angles nautiques
+        cx1=m['COOR_EXTR'][0]-m['COOR_ORIG'][0]
+        cx2=m['COOR_EXTR'][1]-m['COOR_ORIG'][1]
+        cx3=0.
+        if dime == 3:
+          cx3=m['COOR_EXTR'][2]-m['COOR_ORIG'][2]
+        nvx=math.sqrt(cx1**2+cx2**2+cx3**2)
+        if abs(nvx) < epsi:
+            ier=ier+1
+            self.cr.fatal("<F> <MACR_LIGN_COUPE> definition incorrecte de la ligne de coupe")
+            return ier
+        cx1=cx1/nvx
+        cx2=cx2/nvx
+        cx3=cx3/nvx
+        cy1=m['VECT_Y'][0]
+        cy2=m['VECT_Y'][1]
+        cy3=0.
+        if dime == 3:
+          cy3=m['VECT_Y'][2]
+        nvy=math.sqrt(cy1**2+cy2**2+cy3**2)
+        if abs(nvy) < epsi:
+            ier=ier+1
+            self.cr.fatal("<F> <MACR_LIGN_COUPE> valeurs incorrectes pour VECT_Y")       
+            return ier
+        cy1=cy1/nvy
+        cy2=cy2/nvy
+        cy3=cy3/nvy
+        if ((abs(cx1-cy1)<epsi and abs(cx2-cy2)<epsi and  abs(cx3-cy3)<epsi) or \
+           (abs(cx1+cy1)<epsi and abs(cx2+cy2)<epsi and  abs(cx3+cy3)<epsi)):
+            ier=ier+1
+            self.cr.fatal("<F> <MACR_LIGN_COUPE> valeurs incorrectes pour VECT_Y: x colineaire a y")
+            return ier        
+        if abs(cx1*cy1+cx2*cy2+cx3*cy3) > epsi  :
+          cz1=cx2*cy3-cx3*cy2
+          cz2=cx3*cy1-cx1*cy3
+          cz3=cx1*cy2-cx2*cy1
+          nvz=math.sqrt(cz1**2+cz2**2+cz3**2)
+          cz1=cz1/nvz
+          cz2=cz2/nvz
+          cz3=cz3/nvz
+          cy1=cz2*cx3-cz3*cx2
+          cy2=cz3*cx1-cz1*cx3
+          cy3=cz1*cx2-cz2*cx1
+          nvy=math.sqrt(cy1**2+cy2**2+cy3**2)
+          cy1=cy1/nvy
+          cy2=cy2/nvy
+          cy3=cy3/nvy
+          UTMESS('A','MACR_LIGN_COUPE','LE VECTEUR Y N EST PAS ORTHOGONAL A LA LIGNE DE COUPE'
+                  +'LE VECTEUR Y A ETE ORTHONORMALISE POUR VOUS')
+          UTMESS('A','MACR_LIGN_COUPE','VECT_Y=('+str(cy1)+','+str(cy2)+','+str(cy3)+')')
+        else:     
+          cz1=cx2*cy3-cx3*cy2
+          cz2=cx3*cy1-cx1*cy3
+          cz3=cx1*cy2-cx2*cy1
+        beta=0.
+        gamma=0.
+        if dime ==2:
+          alpha = math.atan2(cx2,cx1)
+        else:
+          if cx1**2 + cx2**2 > epsi :
+            alpha=math.atan2(cx2,cx1)
+            beta=math.asin(cx3)
+            gamma=math.atan2(cy3,cz3)
+          else:
+            alpha=math.atan2(cy1,cz1)
+            beta=math.asin(cx3)
+            gamma=0.
+        alpha=alpha*180/math.pi
+        beta=beta*180/math.pi
+        gamma=gamma*180/math.pi
+
+        # --- MODI_REPERE
+        motscles={}
+        motscles['MODI_CHAM']=[]
+        motscles['DEFI_REPERE']=[]
+        # MODI_CHAM
+        if NOM_CHAM == 'DEPL':
+           if dime == 2:
+              LCMP=['DX','DY']
+              TYPE_CHAM='VECT_2D'
+           elif dime ==3 :
+              LCMP=['DX','DY','DZ']
+              TYPE_CHAM='VECT_3D'
+           motscles['MODI_CHAM'].append(_F(NOM_CHAM=NOM_CHAM,NOM_CMP=LCMP,TYPE_CHAM=TYPE_CHAM),)
+        elif NOM_CHAM in ('SIGM_NOEU_DEPL','SIGM_NOEU_SIEF','SIGM_NOEU_ELGA','SIGM_NOEU_COQU'):
+           if dime == 2:
+              LCMP=['SIXX','SIYY','SIZZ','SIXY']
+              TYPE_CHAM='TENS_2D'
+           elif dime ==3 :
+              LCMP=['SIXX','SIYY','SIZZ','SIXY','SIXZ','SIYZ']
+              TYPE_CHAM='TENS_3D'
+           motscles['MODI_CHAM'].append(_F(NOM_CHAM=NOM_CHAM,NOM_CMP=LCMP,TYPE_CHAM=TYPE_CHAM),)
+        # DEFI_REPERE
+        ANGL_NAUT=[]
+        ANGL_NAUT.append(alpha)
+        if dime ==3:
+           ANGL_NAUT.append(beta)
+           ANGL_NAUT.append(gamma)
+        motscles['DEFI_REPERE'].append(_F(REPERE='UTILISATEUR',ANGL_NAUT=ANGL_NAUT),)
+        __remodr=MODI_REPERE(RESULTAT=__recou,**motscles)
+
+
+
   # Production d'une table pour toutes les lignes de coupe
 
   ioc2=0
@@ -235,7 +346,7 @@ def macr_lign_coupe_ops(self,RESULTAT,UNITE_MAILLAGE,LIGN_COUPE,NOM_CHAM,MODELE,
         if m['INTITULE'] !=None : intitl=m['INTITULE']
         else                    : intitl=groupe
       mcACTION.append( _F(INTITULE  = intitl,
-                          RESULTAT  = __recou,
+                          RESULTAT  = __remodr,
                           GROUP_NO  = groupe,
                           NOM_CHAM  = NOM_CHAM,
                           TOUT_CMP  = 'OUI',

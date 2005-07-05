@@ -1,4 +1,4 @@
-# MODIF  DATE 26/04/2005   AUTEUR LAVERNE J.LAVERNE 
+# MODIF  DATE 04/07/2005   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE PROPAGATION DYNAMIQUE D'UNE FISSURE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -247,7 +247,8 @@ TEST_RESU(RESU=(
                        NOM_CHAM = 'VARI_NOEU_ELGA',
                        NOM_CMP = 'V2',
                        INST=0.00825,
-                       PRECISION = 1.E-5,
+                       CRITERE = ('ABSOLU','RELATIF'),
+                       PRECISION = (0.,1.E-5),
                        VALE = 0.0,
                      ),
 # TAUX DE DISSIPATION

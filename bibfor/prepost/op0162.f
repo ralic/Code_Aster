@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 28/06/2005   AUTEUR NICOLAS O.NICOLAS 
+C MODIF PREPOST  DATE 05/07/2005   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,7 +54,7 @@ C
       REAL*8       R8B, PETIR8, DI(3)
       REAL*8       TINI, TFIN, FINI, FFIN, PAS
 C     ------------------------------------------------------------------
-      DATA  REFE  /'                   .REFE'/
+      DATA  REFE  /'                  _REFE'/
       DATA  VALE  /'                   .VALE'/
       DATA  NOMCH0 /'&&OP0162.CHAMNO'/
 C     ------------------------------------------------------------------
@@ -76,7 +76,7 @@ C     ----- RECUPERATION UNITE DE MISS ---
 C
 C     ----- RECUPERATION DES MODES -----
       CALL GETVID(' ','MACR_ELEM_DYNA',1,1,1,MAEL,NMM)
-      REFE(1:18) = MAEL//'.MAEL.MASS'
+      REFE(1:18) = MAEL//'.MAEL_MASS'
       CALL JEVEUO(REFE,'L',JREFE)
       BASEMO = ZK24(JREFE)
       MASSE = ZK24(JREFE+1)
@@ -88,7 +88,7 @@ C
       IF (INTERF.NE.' ') THEN
        CALL BMNBMD(BASEMO,'MODE',NBMODE)
        CALL BMNBMD(BASEMO,'DEFORMEE',NBMODS)
-       TYPE = INTERF//'      .INTD.TYPE'
+       TYPE = INTERF//'.IDC_TYPE'
        CALL JEVEUO(TYPE,'L',JTYP)
        TYPI = ZK8(JTYP)
       ELSE

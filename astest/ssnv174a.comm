@@ -1,4 +1,4 @@
-# MODIF  DATE 30/08/2004   AUTEUR YLEPAPE Y.LEPAPE 
+# MODIF  DATE 04/07/2005   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE PRISE EN COMPTE DU RETRAIT DANS LE MODELE BETON_UMLV_FP
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -223,7 +223,8 @@ TEST_RESU(RESU=(
           INST = 0.,
           NOM_CMP = 'EPZZ',
           VALE = 0.0E+0,
-          PRECISION = 0.005,
+          CRITERE = 'ABSOLU',
+          PRECISION = 0.0,
           REFERENCE = 'ANALYTIQUE'),
       _F( RESULTAT = U,
           NOM_CHAM = 'EPSI_ELNO_DEPL',

@@ -3,7 +3,7 @@
 
 C---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/01/98   AUTEUR CIBHHLB L.BOURHRARA 
+C MODIF ALGORITH  DATE 05/07/2005   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -73,7 +73,7 @@ C NB DE MODES TOTAL
         CALL JEVEUO(JEXNUM(MODGEN//'      .MODG.SSME',ISST),
      +            'L',IMACL)
         MACEL=ZK8(IMACL)
-        CALL JEVEUO(MACEL//'.MAEL      .REFE','L',IBAMO)
+        CALL JEVEUO(MACEL//'.MAEL_REFE','L',IBAMO)
         CALL RSORAC(ZK24(IBAMO),'LONUTI',IBID,BID,K8BID,CBID,EBID,
      +              'ABSOLU',
      +             NBMODG,1,NBID)
@@ -89,7 +89,7 @@ C TABLEAU INDIQUANT LES MODES PROPRES
      +            'L',IMACL)
         MACEL=ZK8(IMACL)
 
-        CALL JEVEUO(MACEL//'.MAEL      .REFE','L',IBAMO)
+        CALL JEVEUO(MACEL//'.MAEL_REFE','L',IBAMO)
 
         CALL JEVEUO(ZK24(IBAMO)(1:19)//'.TYPE','L',ITYPE)
         CALL JELIRA(ZK24(IBAMO)(1:19)//'.TYPE'

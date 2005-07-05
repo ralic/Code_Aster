@@ -3,7 +3,7 @@
       CHARACTER*(*)       MACR
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 28/06/2005   AUTEUR NICOLAS O.NICOLAS 
+C MODIF UTILITAI  DATE 05/07/2005   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,7 +51,7 @@ C
       PETIR8 = 1.D-40
 C
 C     ----- RECUPERATION DES MODES -----
-      CALL JEVEUO(MAEL//'.MAEL      .REFE','L',JREFE)
+      CALL JEVEUO(MAEL//'.MAEL_REFE','L',JREFE)
       BASEMO = ZK24(JREFE)(1:8)
       NOMA   = ZK24(JREFE+1)(1:8)
       CALL JELIRA(BASEMO//'           .ORDR','LONMAX',NBMODT,K8B)
@@ -67,7 +67,7 @@ C     ----- RECUPERATION DES MODES -----
       ENDIF
       NBMODT = NBMODE + NBMODS
 C
-      CALL JEVEUO(MAEL//'.MAEL.MASS .REFE','L',JREFE)
+      CALL JEVEUO(MAEL//'.MAEL_MASS_REFE','L',JREFE)
       MASSE = ZK24(JREFE+1)
 C
 C     ----- RECUPERATION DES FREQUENCES -----
@@ -103,8 +103,8 @@ C
        CALL WKVECT('&&IREDMI.CAMOR','V V R',NBMODE*NBMODS,ICAMOR)
       ENDIF
 C
-      CALL JEVEUO(MAEL//'.MAEL.MASS .VALE','L',IVAL1)
-      CALL JEVEUO(MAEL//'.MAEL.RAID .VALE','L',IVAL2)
+      CALL JEVEUO(MAEL//'.MAEL_MASS_VALE','L',IVAL1)
+      CALL JEVEUO(MAEL//'.MAEL_RAID_VALE','L',IVAL2)
       DO 20 J = 1,NBMODE
         DO 21 I = 1,J
           K =J*(J-1)/2 + I
@@ -132,9 +132,9 @@ C
  24      CONTINUE
  22   CONTINUE
 C
-      CALL JEEXIN(MAEL//'.MAEL.AMOR .VALE',IRET)
+      CALL JEEXIN(MAEL//'.MAEL_AMOR_VALE',IRET)
       IF ( IRET .NE. 0 ) THEN
-         CALL JEVEUO(MAEL//'.MAEL.AMOR .VALE','L',IVAL3)
+         CALL JEVEUO(MAEL//'.MAEL_AMOR_VALE','L',IVAL3)
          DO 30 J = 1,NBMODE
            DO 31 I = 1,J
              K =J*(J-1)/2 + I

@@ -18,7 +18,7 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
       IMPLICIT REAL*8 (A-H,O-Z)
 C-----------------------------------------------------------------------
-C MODIF ALGORITH  DATE 28/06/2005   AUTEUR NICOLAS O.NICOLAS 
+C MODIF ALGORITH  DATE 05/07/2005   AUTEUR CIBHHPD L.SALMONA 
 C
 C  BUT:  < RESTITUTION CRAIG-BAMPTON GLOBALE >
 C
@@ -96,26 +96,26 @@ C
 C
 C-----RECUPERATION DE LA BASE MODALE AMONT------------------------------
 C
-      CALL JEVEUO(MODCYC//'      .CYCL.REFE','L',LLREF)
+      CALL JEVEUO(MODCYC//'.CYCL_REFE','L',LLREF)
       BASMOD = ZK24(LLREF+2)
 C
 C-----RECUPERATION DU .DESC---------------------------------------------
 C
-      CALL JEVEUO(MODCYC//'      .CYCL.DESC','L',LLDESC)
+      CALL JEVEUO(MODCYC//'.CYCL_DESC','L',LLDESC)
       NBMOD = ZI(LLDESC)
       NBDDR = ZI(LLDESC+1)
       NBDAX = ZI(LLDESC+2)
 C
 C-----RECUPERATION DU NOMBRE DE SECTEURS--------------------------------
 C
-      CALL JEVEUO(MODCYC//'      .CYCL.NBSC','L',LLNSEC)
+      CALL JEVEUO(MODCYC//'.CYCL_NBSC','L',LLNSEC)
       NBSEC  = ZI(LLNSEC)
       MDIAPA = INT(NBSEC/2)*INT(1-NBSEC+(2*INT(NBSEC/2)))
 C
 C-----RECUPERATION DES NOMBRES DE DIAMETRES NODAUX----------------------
 C
-      CALL JEVEUO(MODCYC//'      .CYCL.DIAM','L',LLDIAM)
-      CALL JELIRA(MODCYC//'      .CYCL.DIAM','LONMAX',NBDIA,K8B)
+      CALL JEVEUO(MODCYC//'.CYCL_DIAM','L',LLDIAM)
+      CALL JELIRA(MODCYC//'.CYCL_DIAM','LONMAX',NBDIA,K8B)
       NBDIA = NBDIA / 2
 C
 C-----RECUPERATION DU NOMBRE DE DDL PHYSIQUES DU SECTEUR----------------
@@ -133,7 +133,7 @@ C
 C
 C-----RECUPERATION DES FREQUENCES---------------------------------------
 C
-      CALL JEVEUO(MODCYC//'     .CYCL.FREQ','L',LLFREQ)
+      CALL JEVEUO(MODCYC//'.CYCL_FREQ','L',LLFREQ)
 C
 C-----RECUPERATION MATRICE DE MASSE-------------------------------------
 C
@@ -156,7 +156,7 @@ C
 C
 C-----RECUPERATION DES NUMEROS D'INTERFACE------------------------------
 C
-      CALL JEVEUO(MODCYC//'      .CYCL.NUIN','L',LLNUMI)
+      CALL JEVEUO(MODCYC//'.CYCL_NUIN','L',LLNUMI)
       NUMD = ZI(LLNUMI)
       NUMG = ZI(LLNUMI+1)
       NUMA = ZI(LLNUMI+2)
@@ -206,7 +206,7 @@ C
 C
 C-----RECUPERATION DES MODES COMPLEXES----------------------------------
 C
-      CALL JEVEUO(MODCYC//'     .CYCL.CMODE','L',LLMOC)
+      CALL JEVEUO(MODCYC//'.CYCL_CMODE','L',LLMOC)
       NBDDG = NBMOD + NBDDR + NBDAX
 C
 C-----CALCUL DU TETA DE CHANGEMENT DE BASE GAUCHE-DROITE----------------

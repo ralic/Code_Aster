@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF astermodule supervis  DATE 20/06/2005   AUTEUR BOITEAU O.BOITEAU */
+/* MODIF astermodule supervis  DATE 04/07/2005   AUTEUR GNICOLAS G.NICOLAS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -3288,20 +3288,21 @@ PyObject *args;
 {
         PyObject *temp = (PyObject*)0 ;
         INTEGER lnochm=0;
-        INTEGER lresu=1 ; /* FORTRAN_TRUE */
-        INTEGER codret=0;
+        INTEGER lresu ;
         char *noresu;
         char *nomsym;
-        char nopase[1];
+        char *nopase;
+        INTEGER codret=0;
         char nochmd[33];
 
         _DEBUT(aster_mdnoch) ;
-        if (!PyArg_ParseTuple(args, "ss",&noresu,&nomsym)) return NULL;
+        if (!PyArg_ParseTuple(args, "lsss",&lresu,&noresu,&nomsym,&nopase)) return NULL;
+                                                       ISCRUTE(lresu);
                                                        SSCRUTE(noresu);
                                                        SSCRUTE(nomsym);
+                                                       SSCRUTE(nopase);
         BLANK(nochmd,32);
         nochmd[32]='\0';
-        nopase[0]='\0';
                                                        SSCRUTE(nochmd);
         CALL_MDNOCH (nochmd,&lnochm,&lresu,noresu,nomsym,nopase,&codret);
                                                        ISCRUTE(lnochm);

@@ -1,4 +1,4 @@
-# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 04/07/2005   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE  SYSTEME 2 MASSES - 3 RESSORTS ENCASTRE EN NO1 ET NO4
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -1215,7 +1215,8 @@ TEST_RESU(RESU=(
                         NOM_CMP = 'DX',
                         NOEUD = 'NO1',
                         VALE = 0.0,
-                        PRECISION=0.001,
+                        PRECISION=0.0,
+                        CRITERE = 'ABSOLU',
                         REFERENCE='ANALYTIQUE',
                              ),
                   _F( 
@@ -1245,7 +1246,8 @@ TEST_RESU(RESU=(
                         NOM_CMP = 'DX',
                         NOEUD = 'NO4',
                         VALE = 0.0,
-                        PRECISION=0.001,
+                        PRECISION=0.,
+                        CRITERE = 'ABSOLU',
                         REFERENCE='ANALYTIQUE',
                              ),          
                              ),),
@@ -1437,7 +1439,8 @@ TEST_RESU(RESU=(
                         NOM_CMP = 'DX',
                         NOEUD = 'NO1',
                         VALE = 0.0,
-                        PRECISION=0.001,
+                        PRECISION=0.0,
+                        CRITERE = 'ABSOLU',
                         REFERENCE='ANALYTIQUE',
                              ),
                   _F( 
@@ -1467,7 +1470,8 @@ TEST_RESU(RESU=(
                         NOM_CMP = 'DX',
                         NOEUD = 'NO4',
                         VALE = 0.0,
-                        PRECISION=0.001,
+                        PRECISION=0.0,
+                        CRITERE = 'ABSOLU',
                         REFERENCE='ANALYTIQUE',
                              ),          
                              ),),

@@ -1,0 +1,1207 @@
+
+
+-----------------------------------------------------------------------
+--- AUTEUR acbhhcd G.DEVESA   DATE  le 04/07/2005 a 17:56:23
+
+------------------------------------------------------------------------
+RESTITUTION HORS AREX
+   NB_JOURS_TRAV  : 0.2
+   INTERET_UTILISATEUR : NON
+   TITRE  "relation de comportement ASSE_CORN"
+   FONCTIONNALITE
+   Enrichir la loi de comportement ASSE_CORN pour pouvoir paramétrer la
+   pente à l'origine ou de décharge
+   VALIDATION
+   cas test SSNL102A
+   DETAILS
+   On ajoute au matériau ASSE_CORN une nouvelle entrée R_P0 permettant
+   de paramétrer la pente à l'origine ou de décharge, actuellement fixée
+   dans le code à 1.E4 qui devient la valeur par défaut.
+
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : OUI
+   DOC_U : U4.43.01
+       EXPL_ : modification d'ASSE_CORN dans la doc DEFI_MATERIAU
+
+------------------------------------------------------------------------
+RESTITUTION HORS AREX
+   NB_JOURS_TRAV  : 2
+   INTERET_UTILISATEUR : NON
+   TITRE  "Ajustement des .para et des tolérances des tests Aster-Miss"
+   FONCTIONNALITE
+   Dans tous les fichiers MISS*a.comm, on ajoute les valeurs de
+   référence obtenues pour la version V1_3 de PROMISS3D compatibles
+   avec celles de la version linux et on ajuste toutes les tolérances
+   pour que cela passe quelle que soit la version de PROMISS (V1_2 ou
+   V1_3).
+   En outre, on ajuste le temps maxi dans les fichiers .para pour les
+   tests MISS02A (9000 -> 1800), MISS04A (28000 -> 14400) et MISS05A
+   (16000 -> 14400)
+
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+     Les tests MISS*
+
+
+-----------------------------------------------------------------------
+--- AUTEUR cibhhlv L.VIVAN   DATE  le 04/07/2005 a 13:31:24
+
+--------------------------------------------------------------------------
+CORRECTION AL 2005-209
+   NB_JOURS_TRAV  : 0.5
+   POUR_LE_COMPTE_DE   : M.COURTOIS
+   INTERET_UTILISATEUR : OUI
+   TITRE :  DEFI_FONCTION accepte VALE_PARA et VALE_FONC de cardinaux différents
+   FONCTIONNALITE
+     a ce jour, la longueur de VALE_PARA pouvait etre plus petite que la
+     longueur de VALE_FONC. On prenait les n premieres valeurs de VALE_FONC,
+     tout ceci sans avertir l'utilisateur.
+     Maintenant les longueurs de VALE_PARA et VALE_FONC doivent etre de
+     memes longueurs sinon le code s'arrete en Fatal.
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  OUI
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_U : U4.31.02  commande DEFI_FONCTION
+       EXPL_ : VALE_PARA et VALE_FONC cardinaux identiques
+   VALIDATION
+
+--------------------------------------------------------------------------
+REALISATION EL 2005-161
+   NB_JOURS_TRAV  : 2
+   POUR_LE_COMPTE_DE   : O.NICOLAS
+   INTERET_UTILISATEUR : OUI
+   TITRE : RECU_FONCTION
+   FONCTIONNALITE
+     Dans RECU_FONCTION, on peut utiliser un RESU_GENE de type TRAN_GENE
+     et ainsi recuperer un champ (depl, vite, acce) en base physique sur
+     un groupe. Il faut permettre le RECU_FONCTION avec un resu_gene
+     quelconque : TRAN_GENE, MODE_GENE, HARM_GENE.
+   DETAIL
+     redéfinition de blocs dans le catalogue de commande
+     syntaxe:
+         RESU_GENE =  / RESU_GENE = resu        [tran_gene]
+                        o  /  /  NOEUD_CHOC =
+                              /  GROUP_NO_CHOC =
+                              PARA_X =
+                              PARA_Y =
+                           /  NOM_CHAM =
+                              NOM_CMP =
+                              o  /  NOEUD =
+                                 /  GROUP_NO =
+
+                      / RESU_GENE = resu        [harm_gene]
+                        o  /  NOM_PARA_RESU =
+                           /  NOM_CHAM =
+                              o / NUME_CMP_GENE =
+                                / NOM_CMP =
+                                  o / NOEUD =
+                                    / GROUP_NO =
+                      / RESU_GENE = resu        [mode_gene]
+                        o  /  NOM_PARA_RESU =
+                           /  NOM_CHAM =
+                              NUME_CMP_GENE =
+
+
+   RESU_FAUX_VERSION_EXPLOITATION    : NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   : NON
+   RESTITUTION_VERSION_EXPLOITATION  : NON
+   RESTITUTION_VERSION_DEVELOPPEMENT : OUI
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_U : U4.32.03  commande RECU_FONCTION
+       EXPL_ : prise en compte SD MODE_GENE, HARM_GENE
+   VALIDATION
+     passage des tests validant RECU_FONCTION
+     test shll100a
+
+
+-----------------------------------------------------------------------
+--- AUTEUR cibhhpd L.SALMONA   DATE  le 05/07/2005 a 13:07:55
+
+--------------------------------------------------------------------------
+REALISATION EL 2005-155
+   POUR_LE_COMPTE_DE : O. NICOLAS
+   NB_JOURS_TRAV : 1.5
+   INTERET_UTILISATEUR : NON
+   TITRE  : SD mode_cycl
+   FONCTIONNALITE : Renommage des objets jeveux de cette structure de donnée
+   DETAILS :
+   On modifie les noms des objets jeveux de la SD comme suit
+   <MODE_CYCL>       .CYCL.DESC   -->  <MODE_CYCL>.CYCL_DESC
+   <MODE_CYCL>       .CYCL.DIAM   -->  <MODE_CYCL>.CYCL_DIAM
+   <MODE_CYCL>       .CYCL.NBSC   -->  <MODE_CYCL>.CYCL_NBSC
+   <MODE_CYCL>       .CYCL.NUIN   -->  <MODE_CYCL>.CYCL_NUIN
+   <MODE_CYCL>       .CYCL.REFE   -->  <MODE_CYCL>.CYCL_REFE
+   <MODE_CYCL>       .CYCL.TYPE   -->  <MODE_CYCL>.CYCL_TYPE
+   <MODE_CYCL>      .CYCL.CMODE   -->  <MODE_CYCL>.CYCL_CMODE
+   <MODE_CYCL>       .CYCL.FREQ   -->  <MODE_CYCL>.CYCL_FREQ
+   En plus de renommer la doc on rédige la doc D de cette structure
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_D : D4.08.04
+       EXPL_ : redaction de la doc
+   VALIDATION passage de tous les cas tests faisant du MODE_ITER_CYCL
+
+----------------------------------------------------------------------------
+REALISATION EL 2005-156
+   POUR_LE_COMPTE_DE : O. NICOLAS
+   NB_JOURS_TRAV : 2
+   INTERET_UTILISATEUR : NON
+   TITRE  : SD macr_elem_dyna
+   FONCTIONNALITE : Renommage des objets jeveux de cette structure de donnée
+   DETAILS :
+   On modifie les noms des objets jeveux de la SD comme suit
+          .MAEL    .DESC     -->  .MAEL_DESC
+          .MAEL    .REFE     -->  .MAEL_REFE
+          .MAEL.INER.REFE    -->  .MAEL_INER_REFE
+          .MAEL.INER.VALE    -->  .MAEL_INER_VALE
+          .MAEL.MASS.DESC    -->  .MAEL_MASS_DESC
+          .MAEL.MASS.REFE    -->  .MAEL_MASS_REFE
+          .MAEL.MASS.VALE    -->  .MAEL_MASS_VALE
+          .MAEL.RAID.DESC    -->  .MAEL_RAID_DESC
+          .MAEL.RAID.REFE    -->  .MAEL_RAID_REFE
+          .MAEL.RAID.VALE    -->  .MAEL_RAID_VALE
+          .MAEL.AMOR.DESC    -->  .MAEL_AMOR_DESC
+          .MAEL.AMOR.REFE    -->  .MAEL_AMOR_REFE
+          .MAEL.AMOR.VALE    -->  .MAEL_AMOR_VALE
+   En plus de renommer la doc on rédige la doc D de cette structure
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_D : D4.08.03
+       EXPL_ : redaction de la doc
+   VALIDATION passage de tous les cas tests faisant du MACR_ELEM_DYNA
+
+----------------------------------------------------------------------------
+REALISATION EL 2005-157
+   POUR_LE_COMPTE_DE : O. NICOLAS
+   NB_JOURS_TRAV : 1.5
+   INTERET_UTILISATEUR : NON
+   TITRE  : SD interf_dyna_clas
+   FONCTIONNALITE : Renommage des objets jeveux de cette structure de donnée
+   DETAILS :
+   On modifie les noms des objets jeveux de la SD comme suit
+          .INTD.DDAC     -->    .IDC_DDAC
+          .INTD.DEFO     -->    .IDC_DEFO
+          .INTD.DESC     -->    .IDC_DESC
+          .INTD.LINO     -->    .IDC_LINO
+          .INTD.NOMS     -->    .IDC_NOMS
+          .INTD.REFE     -->    .IDC_REFE
+          .INTD.TYPE     -->    .IDC_TYPE
+          .INTFDY.FREQ   -->    .IDC_DY_FREQ
+   En plus de renommer la doc on rédige la doc D de cette structure
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_D : D4.08.02
+       EXPL_ : redaction de la doc
+   VALIDATION passage de tous les cas tests faisant du DEFI_INTERF_CLAS
+
+
+-----------------------------------------------------------------------
+--- AUTEUR durand C.DURAND   DATE  le 05/07/2005 a 11:09:27
+
+------------------------------------------------------------------------------
+CORRECTION AL 2005-238
+   NB_JOURS_TRAV : 0.5
+   INTERET_UTILISATEUR : NON
+   TITRE  affichage dans le fichier de messages sur alphaserveur
+   FONCTIONNALITE superviseur
+   DETAILS
+    modifs affich.f, ajout du format 'A' dans l'impression :
+                     WRITE(IFM,'(A)') TEXTE
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION : tests
+
+------------------------------------------------------------------------------
+CORRECTION AL 2005-251
+   NB_JOURS_TRAV : 0.
+   INTERET_UTILISATEUR : NON
+   TITRE  pb echos d'impression dans routines datg de macr_ascouf_mail
+   FONCTIONNALITE macr_ascouf_mail
+   DETAILS
+    suppression des impressions
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+
+
+-----------------------------------------------------------------------
+--- AUTEUR gnicolas G.NICOLAS   DATE  le 04/07/2005 a 16:39:32
+
+--------------------------------------------------------------------------
+CORRECTION AL 2005-094
+   NB_JOURS_TRAV : 0,5
+   INTERET_UTILISATEUR : OUI
+   TITRE : MACR_ADAP_MAIL
+   FONCTIONNALITE : La mise à jour des champs est opérationnelle même si on
+                   ne demande aucune modification de maillage.
+   DETAILS :
+     Dans adhc00, on explore tous les champs à mettre à jour dans tous les
+     cas, même s'il n'y a pas d'adaptation. La validation se fait par le
+     3ème étape d'adaptation de zzzz121b.
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION : zzzz121b
+
+--------------------------------------------------------------------------
+REALISATION EL 2005-158
+   NB_JOURS_TRAV : 5
+   INTERET_UTILISATEUR : OUI
+   TITRE : MACR_ADAP_MAIL
+   FONCTIONNALITE : Le pilotage de l'adaptation de maillage était possible
+     uniquement par un champ présent dans une structure de résultats.
+     Désormais, on peut piloter par un champ de grandeur. De même, on peut
+     mettre à jour sur le nouveau maillage un champ de grandeurs aux noeuds
+     ou constant par élément.
+   DETAILS :
+     Dans les macros commandes de pilotage, on a introduit le choix alternatif
+     entre un résultat et un champ de grandeur. Cela est vrai pour l'indicateur
+     d'erreur ou le champ mis à jour. On modifie astermodule.c pour compléter
+     l'interface avec le fortran de mdnoch.
+     Par ailleurs, cela conduit à utiliser la nouvelle version de HOMARD, V7.5,
+     qui devient la version par défaut.
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE:  OUI
+     DOC_U : U7.03.01
+       EXPL_ : macro-commande MACR_ADAP_MAIL ; numéro de version de HOMARD,
+               choix de champs de grandeur.
+     DOC_U : U7.03.02
+       EXPL_ : macro-commande MACR_INFO_MAIL ; numéro de version de HOMARD.
+   VALIDATION : zzzz121a, zzzz121b
+
+
+-----------------------------------------------------------------------
+--- AUTEUR jmbhh01 J.M.PROIX   DATE  le 04/07/2005 a 12:16:07
+
+--------------------------------------------------------------------------
+REALISATION EL 2005-149
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : NON
+   TITRE : AOM : alarme sur les contraintes incompatibles
+   FONCTIONNALITE
+Constat initial :
+-----------------
+Dans l'étude ci-jointe, on récupère une alarme "contraintes incompatibles" à cause du champ de température initiale.
+ <A> <STAT_NON_LINE> <OP0070> LES VARIABLES DE COMMANDES INITIALES INDUISENT DES
+     CONTRAINTES INCOMPATIBLES
+Or, on a tout initialisé à la même température de 20°C.On suspecte les poutres mais
+on n'a pas l'indication de l'endroit où c'est incompatible.
+
+Observations :
+--------------
+La température de référence est de 20 degrés. Pour éviter l'alarme ci-dessus, on a jouté (à l'instant -1) un champ de
+température de la façonsuivante :
+
+TH_T3=CREA_RESU(OPERATION='AFFE',
+                TYPE_RESU='EVOL_THER',
+                NOM_CHAM='TEMP',
+                AFFE=_F(
+                CHAM_GD=T_INIT,  (champ onstant de valeur 20°)
+                INST=-1.0,),);
+
+TH_T3=THER_LINEAIRE(reuse =TH_T3,
+                    MODELE=MO_TH,
+                    CHAM_MATER=CHMAT_T3,
+                    EXCIT=(_F(CHARGE=CH_F_T3,),
+                           _F(CHARGE=CHT_CHA,),
+                           _F(CHARGE=CHT_FON,),
+                           _F(CHARGE=CHT_GOH,),
+                           _F(CHARGE=CHT_GOB,),),
+                    INCREMENT=_F(LIST_INST=LR_T3,NUME_FIN=2),
+                    TEMP_INIT=_F(VALE=285.0,),
+                    TITRE='Choc 9b',);
+
+On constate alors une inversion des instants dans THER_LINEAIRE, et pas d'instant -1 :
+
+ ------>
+ CHAMP AUX NOEUDS DE NOM SYMBOLIQUE  TEMP
+ NUMERO D'ORDRE: 1 INST:  1.00000E+00
+
+ LA VALEUR MAXIMALE DE TEMP     EST  2.85001E+02 EN    1 NOEUD(S) : NO234727
+ LA VALEUR MINIMALE DE TEMP     EST  2.83857E+02 EN    1 NOEUD(S) : NO446504
+
+ ======>
+re le
+ ------>
+ CHAMP AUX NOEUDS DE NOM SYMBOLIQUE  TEMP
+ NUMERO D'ORDRE: 0 INST:  0.00000E+00
+
+ LA VALEUR MAXIMALE DE TEMP     EST  2.85000E+02 EN **** NOEUD(S) : NO100001
+ LA VALEUR MINIMALE DE TEMP     EST  2.85000E+02 EN **** NOEUD(S) : NO100001
+
+ ======>
+
+ ------>
+ CHAMP AUX NOEUDS DE NOM SYMBOLIQUE  TEMP
+ NUMERO D'ORDRE: 2 INST:  3.11111E+00
+
+ LA VALEUR MAXIMALE DE TEMP     EST  2.85008E+02 EN    1 NOEUD(S) : NO407400
+ LA VALEUR MINIMALE DE TEMP     EST  2.77365E+02 EN    2 NOEUD(S) : NO104825
+
+Ce qui du coup explique l'alarme : pas d'instant -1 pour STAT_NON_LINE (dont l'instant initial est -1).
+On calcule directement à t=0 ou la température vaut 350°C, d'où l'alarme.
+
+Par contre si on fait CREA_RESU après THER_LINEAIRE :
+
+TH_T3=THER_LINEAIRE(#reuse =TH_T3,
+                    MODELE=MO_TH,
+                    CHAM_MATER=CHMAT_T3,
+                    EXCIT=(_F(CHARGE=CH_F_T3,),
+                           _F(CHARGE=CHT_CHA,),
+                           _F(CHARGE=CHT_FON,),
+                           _F(CHARGE=CHT_GOH,),
+                           _F(CHARGE=CHT_GOB,),),
+                    INCREMENT=_F(LIST_INST=LR_T3,NUME_FIN=2),
+                    TEMP_INIT=_F(VALE=285.0,),
+                    TITRE='Choc 9b',);
+
+TH_T3=CREA_RESU(reuse=TH_T3,
+                OPERATION='AFFE',
+                TYPE_RESU='EVOL_THER',
+                NOM_CHAM='TEMP',
+                AFFE=_F(
+                CHAM_GD=T_INIT,
+                INST=-1.0,),);
+
+
+On trouve alors
+
+ ------>
+ CHAMP AUX NOEUDS DE NOM SYMBOLIQUE  TEMP
+ NUMERO D'ORDRE: 0 INST:  0.00000E+00
+
+ LA VALEUR MAXIMALE DE TEMP     EST  2.85000E+02 EN **** NOEUD(S) : NO100001
+ LA VALEUR MINIMALE DE TEMP     EST  2.85000E+02 EN **** NOEUD(S) : NO100001
+
+ ======>
+
+ ------>
+ CHAMP AUX NOEUDS DE NOM SYMBOLIQUE  TEMP
+ NUMERO D'ORDRE: 1 INST:  1.00000E+00
+
+ LA VALEUR MAXIMALE DE TEMP     EST  2.85001E+02 EN    1 NOEUD(S) : NO234727
+ LA VALEUR MINIMALE DE TEMP     EST  2.83857E+02 EN    1 NOEUD(S) : NO246504
+
+ ======>
+.....
+ ------>
+ CHAMP AUX NOEUDS DE NOM SYMBOLIQUE  TEMP
+ NUMERO D'ORDRE: 3 INST: -1.00000E+00
+
+ LA VALEUR MAXIMALE DE TEMP     EST  2.00000E+01 EN **** NOEUD(S) : NO100001
+ LA VALEUR MINIMALE DE TEMP     EST  2.00000E+01 EN **** NOEUD(S) : NO100001
+
+Du coup il n'y a plus d'alarme dans STAT_NON_LINE.
+
+
+Remaque en passant : un mélange de modèles dans les charges dans STAT_NON_LINE ne provoque aucun message ???
+
+STAT_NON_LINE :
+                    EXCIT=(_F(CHARGE=CH_T3,),  sur MO_ME3D
+                           _F(CHARGE=CH_CHA3D,),sur MO_ME3D
+                           _F(CHARGE=CH_FON3D,),sur MO_ME3D
+                           _F(CHARGE=CH_GO,),sur MO_ME => poutre + tuyau
+                           _F(CHARGE=CH_SYM3D,),sur MO_ME3D
+                           _F(CHARGE=CH_VB,),),sur MO_ME3D
+
+T_INIT s'appuie sur tout le maillage donc aussi sur les poutres et tuyaux.
+
+Conclusions :
+____________
+
+- L'alarme étati justifiée (car les champs de température n'étaient pas ceux qu l'on pensait)
+=>  Faire CREA_RESU après THER_LINEAIRE
+
+- L'alarme n'était pas importante (sans conséquence) puisque l'on est en COMP_ELAS
+
+- Dans cette étude il serait plus simple et préférable de partir de 350°C,
+et de tout initialiser à cette rempérature (TEMP_REF, les poutres et tuyaux, etc...)
+
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   NON
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION :
+
+--------------------------------------------------------------------------
+RESTITUTION HORS AREX
+   NB_JOURS_TRAV  : 0.
+   INTERET_UTILISATEUR : NON
+   TITRE : fiches ED
+   FONCTIONNALITE
+     Solder les fiches ED dans l'état A_VALIDER suivantes (suite à la mise à jour de la doc 7.4)
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   NON
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION :
+   DETAILS :
+--------------------------------------------------------------------------------------------------------------------------------
+Etat        |  |Fiche   |Demandeur          |vers| Titre                                                         |  Correcteur
+--------------------------------------------------------------------------------------------------------------------------------
+A_VALIDER   |ED|2005-011|Voldoire.François  |STA7|U3.11.02 D Modélisations DIS_T et DIS_TR                       |  J.M.PROIX           |
+A_VALIDER   |ED|2005-009|Emmanuel.BOYERE    |NEW8|DOC U2.01.05 - contraintes, forces et déformations             |  E.BOYERE            |
+A_VALIDER   |ED|2004-035|Voldoire.François  |OLD7|AFFE_CHAR_MECA/CONTACT                                         |  M.ABBAS             |
+A_VALIDER   |ED|2004-034|Jean.ANGLES        |STA7|affe_char_meca et mots clés veri_ddl veri_norm                 |  X.DESROCHES         |
+A_VALIDER   |ED|2004-032|Jean-Francois.Rit  |STA7|Nouveautés et modifications de la version 7                    |  M.COURTOIS          |
+A_VALIDER   |ED|2004-030|durand             |NEW7|mot clé evol_char de AFFE_CHAR_MECA                            |  X.DESROCHES         |
+A_VALIDER   |ED|2004-029|Voldoire.François  |STA7|doc U de dyna_non_line                                         |  J.M.PROIX           |
+A_VALIDER   |ED|2004-028|GRANET             |STA7|affe_char_meca                                                 |  X.DESROCHES         |
+A_VALIDER   |ED|2004-027|Minh               |STA7|doc de dis_choc                                                |  J.M.PROIX           |
+A_VALIDER   |ED|2004-024|Sylvie.Michel-Ponne|STA7|introduire une nouvelle loi de comportement                    |  J.M.PROIX           |
+A_VALIDER   |ED|2004-023|durand             |NEW7|formule                                                        |  J.M.PROIX           |
+A_VALIDER   |ED|2004-022|FERNANDES.Romeo    |NEW7|Modifications des docs ssnv134, ssnv159 et ssnv165             |  R.FERNANDES         |
+A_VALIDER   |ED|2004-020|Shahrokh.GHAVAMIAN |NEW7|MODI_REPERE                                                    |  J.M.PROIX           |
+A_VALIDER   |ED|2004-019|Joumana.EL.Gharib  |NEW7|Doc R de CAM_CLAY R7.01.14-A                                   |  J.EL-GHARIB         |
+A_VALIDER   |ED|2004-018|M.COURTOIS         |NEW7|documentation d'xmgrace                                        |  J.M.PROIX           |
+A_VALIDER   |ED|2004-017|GRANET             |STA7|DEFI_MATERIAU et FICKA_T                                       |  J.M.PROIX           |
+A_VALIDER   |ED|2004-014|J.Pellet           |NEW7|docD profiling et mesusres de performances                     |  J.PELLET            |
+A_VALIDER   |ED|2004-013|Sylvie.Michel-Ponne|NEW7|relation de comportement de Granger                            |  S.MICHEL-PONNELLE   |
+A_VALIDER   |ED|2004-011|Massin             |STA7|ANGL_VRIL pour les poutres                                     |  J.L.FLEJOU          |
+A_VALIDER   |ED|2004-010|xavier.desroches   |NEW7|MACR_LIGN_COUPE                                                |  J.M.PROIX           |
+A_VALIDER   |ED|2004-006|Antoine.BILLEREY   |STA6|stat_non_line et recu_champ                                    |  J.M.PROIX           |
+A_VALIDER   |ED|2004-005|LE-DELLIOU         |STA6|convention de signe poutres                                    |  J.L.FLEJOU          |
+A_VALIDER   |ED|2004-004|badel              |NEW7|doc U elements discrets AFFE_MODELE                            |  J.M.PROIX           |
+A_VALIDER   |ED|2004-003|xavier.desroches   |NEW7|Taux de restitution de l'énergie en thermo-élasticité linéaire |  E.GALENNE           |
+A_VALIDER   |ED|2004-002|Christophe.Durand  |NEW7|MACR_GOUJ2E_MAIL et MACR_GOUJ2E_CALC                           |  J.ANGLES            |
+A_VALIDER   |ED|2003-043|FERNANDES.Romeo    |NEW7|doc U  de defi_materiau                                        |  J.M.PROIX           |
+A_VALIDER   |ED|2003-041|xavier.desroches   |NEW7|THER_LINEAIRE et THER_NON_LINE mot-clé ARCHIVAGE               |  J.M.PROIX           |
+A_VALIDER   |ED|2003-040|boiteau            |STA7|amortissement mécanique U2.06.03                               |  O.NICOLAS           |
+A_VALIDER   |ED|2003-027|J.M.PROIX          |STA6|Modifier la doc Introduire un nouveau comportement             |  J.M.PROIX           |
+A_VALIDER   |ED|2003-025|Gilles.DEBRUYNE    |NEW7|CALC_THETA                                                     |  J.M.PROIX           |
+A_VALIDER   |ED|2003-011|J.P.LEFEBVRE       |NEW7|materiaux THM                                                  |  J.M.PROIX           |
+A_VALIDER   |ED|2002-026|O.BOITEAU          |NEW6|mise à niveau de la doc R5.01.01                               |  O.BOITEAU           |
+
+
+
+-----------------------------------------------------------------------
+--- AUTEUR lebouvie F.LEBOUVIER   DATE  le 04/07/2005 a 16:26:25
+
+------------------------------------------------------------------------------
+CORRECTION AL 2005-216
+   NB_JOURS_TRAV  : 1.5
+   POUR_LE_COMPTE_DE : J. PELLET
+   INTERET_UTILISATEUR : OUI
+   TITRE : CREA_CHAM / EXTR
+   FONCTIONNALITE
+   DETAILS :
+   Dans le test sdls501a, l'utilisateur écrit :
+     DEPL=CREA_CHAMP(TYPE_CHAM='ELNO_DEPL_R',
+                     OPERATION='EXTR',
+                     RESULTAT=MODE,
+                     NOM_CHAM='DEPL',
+                     NUME_ORDRE=1,);
+
+    TYPE_CHAM='ELNO_DEPL_R' est incorrect : c'est en réalité un CHAM_NO
+    et il aurait fallu écrire 'NOEU_DEPL_R'. Pour éviter cela on blinde
+    CREA_CHAMP / EXTR pour que TYPE_CHAM soit cohérent avec le vrai type du champ
+    extrait.
+    La modification effectuée dans la routine chprec.f a consisté à comparer
+    le type du champ extrait avec le type du champ fourni par l'utilisateur.
+      CALL DISMOI('F','TYPE_CHAMP',CHEXTR,'CHAMP',IBID,TYCH,IE)
+      CALL DISMOI('F','NOM_GD',CHEXTR,'CHAMP',IBID,NOMGD,IE)
+    Ces deux appels permettent de connaître le type du champ extrait que l'on
+    peut ensuite comparer au type de champ fourni par TYPE_CHAM.
+    Les vérifications sont effectuées pour :
+      - l'extraction du champ de géométrie d'un maillage,
+      - l'extraction des "level set" d'une SD fin_xfem,
+      - l'extraction d'un champ d'une SD Résultat.
+    Modification du cas-test sdls501a :
+       DEPL=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
+                       OPERATION='EXTR',
+                       RESULTAT=MODE,
+                       NOM_CHAM='DEPL',
+                       NUME_ORDRE=1,);
+
+   Suite au passage de la liste restriente, avec les nouvelles vérifications,
+   le cas-test rccm02 tombe en erreur, on le modifie.
+   Fichiers restitués: chprec.f, sdls501a, rccm02b
+
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION : ssnp129a + liste restriente
+
+------------------------------------------------------------------------------
+REALISATION EL 2005-175
+   NB_JOURS_TRAV  : 1.5
+   POUR_LE_COMPTE_DE : J. PELLET
+   INTERET_UTILISATEUR : OUI
+   TITRE : TEST_RESU de 0. en relatif !
+   FONCTIONNALITE : IMPR_FONCTION
+   DETAILS :
+     29 cas tests testent des valeurs nulles en mode : CRITERE='RELATIF' soit un
+     total de 181 TEST_RESU de ce type qui conduisent (forcément !) à une
+     "vilaine" ligne dans le fichier .resu du style :
+        cabri01a.resu: OK  S_I          RELA   ******* % VALE:         0
+     On remplace donc dans ces cas-tests pour la commande TEST_RESU:
+       CRITERE = 'RELATIF'   par    CRITERE='ABSOLU',PRECISION=0.
+     liste des tests concernés :
+       cabri01a, hsnv104a, hsnv122a, hsnv126a
+       hsnv126b, sdld30a,  sdnl101a, sdns105a,
+       sdnv103d, sensm04a, sensm13a, sensm14a
+       sslv04e,  ssns100e, ssns100f, ssns100g,
+       ssnv115a, ssnv149b, ssnv162a, ssnv162b,
+       ssnv163a, ssnv163b, ssnv163c, ssnv174a,
+       vocab01a, zzzz100a, zzzz111a, zzzz164a,
+       zzzz164b
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION : cas-tests restitués
+
+
+-----------------------------------------------------------------------
+--- AUTEUR nicolas O.NICOLAS   DATE  le 04/07/2005 a 18:08:43
+
+------------------------------------------------------------------------------
+CORRECTION AL 2005-243
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : NON
+   TITRE : DEFI_MATERIAU
+   FONCTIONNALITE : CALC_MATR_ELEM
+   DETAILS
+     Une fiche qui vient du net.
+     Lorsque AMOR_ALPHA est renseigne dans DEFI_MATERIAU mais pas AMOR_BETA,
+     il semble que la matrice d'amortissement est assemblee nulle partout.
+     Donc pb soit dans DEFI_MATERIAU, AFFE_MATERIAU, CALC_MATR_ELEM ou
+     ASSE_MATRICE.
+     En fait, le test dans le te0050 est foireux :
+        NOMRES(1)='AMOR_ALPHA'
+        NOMRES(2)='AMOR_BETA'
+        VALRES(1) = 0.D0
+        VALRES(2) = 0.D0
+        CALL RCVALA(MATER,' ','ELAS',NPARA,NOMPAR,VALPAR,
+     +                2,NOMRES,VALRES,CODRET, BL2 )
+        IF ( CODRET(1) .NE. 'OK' .OR. CODRET(2) .NE. 'OK') THEN
+          CALL RCVALA(MATER,' ','CABLE',NPARA,NOMPAR,VALPAR,
+     +                2,NOMRES,VALRES,CODRET, BL2 )
+          IF ( CODRET(1) .NE. 'OK' .OR. CODRET(2) .NE. 'OK') THEN
+            VALRES(1) = 0.D0
+            VALRES(2) = 0.D0
+          ENDIF
+        ENDIF
+
+    Je modifie en :
+        NOMRES(1)='AMOR_ALPHA'
+        NOMRES(2)='AMOR_BETA'
+        VALRES(1) = 0.D0
+        VALRES(2) = 0.D0
+        CALL RCVALA(MATER,' ','ELAS',NPARA,NOMPAR,VALPAR,
+     +                2,NOMRES,VALRES,CODRET, BL2 )
+C TEST DE PRESENCE MATERIAU CABLE A REVOIR
+        IF ( CODRET(1) .NE. 'OK' .AND. CODRET(2) .NE. 'OK') THEN
+          CALL RCVALA(MATER,' ','CABLE',NPARA,NOMPAR,VALPAR,
+     +                2,NOMRES,VALRES,CODRET, BL2 )
+        ENDIF
+C FIN TEST CABLE
+        IF ( CODRET(1) .NE. 'OK' .AND. CODRET(2) .NE. 'OK') THEN
+            VALRES(1) = 0.D0
+            VALRES(2) = 0.D0
+        ELSEIF  (CODRET(1) .NE. 'OK' .AND. CODRET(2) .EQ. 'OK') THEN
+            VALRES(1) = 0.D0
+        ELSEIF  (CODRET(1) .EQ. 'OK' .AND. CODRET(2) .NE. 'OK') THEN
+            VALRES(2) = 0.D0
+        ENDIF
+
+      Le fait que le materiau CABLE ne commence pas par ELAS est un probleme
+      a surveiller.
+      J'en profite pour modifier les routines dismoi pour tester aussi la
+      presence de AMOR_BETA et la procedure de dyna_non_line, ndlect, pour
+      prendre en compte l'amortissement si seul AMOR_BETA a ete renseigner
+
+   RESU_FAUX_VERSION_EXPLOITATION    :   OUI   DEPUIS : 6.0.0
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   OUI   DEPUIS : 6.0.0
+   RESTITUTION_VERSION_EXPLOITATION  :   OUI
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+     IMPRESSION DU CONCEPT
+
+------------------------------------------------------------------------------
+CORRECTION AL 2005-214
+   NB_JOURS_TRAV  : 0.1
+   INTERET_UTILISATEUR : NON
+   TITRE : DYNA_LINE_HARM
+   FONCTIONNALITE : DYNA_LINE_HARM
+   DETAILS
+     Le catalogue de DYNA_LINE_HARM est incorrect : on teste le type de
+     la matrice de masse (assemblee ou generalisee) complexe ou reelle
+     pour determiner le type du concept resultat.
+     La matrice de masse est FORCEMENT toutjours reelle actuellement dans
+     Aster, c'est la matrice de rigidite qui peut etre reelle ou complexe.
+     De plus, on a juste besoin de distinguer si on est sur un concept
+     generalise ou assemblee, le type de la matrice on s'en moque car le
+     concept resultat DYNA_HARMO est TOUJOURS complexe.
+     On remplace donc les tests sur la matrice de masse par ceux sur matrice
+     de rigidite
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   OUI
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+     Cas test de la base
+
+
+-----------------------------------------------------------------------
+--- AUTEUR pbadel P.BADEL   DATE  le 05/07/2005 a 13:04:00
+
+------------------------------------------------------------------------------
+CORRECTION AL 2005-233
+   NB_JOURS_TRAV  : 1.5
+   INTERET_UTILISATEUR : NON
+   TITRE : redecoupe du pas de temps, archivage et poursuite
+   FONCTIONNALITE : en cas de poursuite, le premier instant de la poursuite
+         etait choisi comme l'instant le plus proche dans la liste utilisateur
+	 avant l'instant d'archivage du premier calcul. Donc l'instant initial
+	 ne correspondait pas forcement a l'instant d'archivage. Ce qui
+	 provoquait des comportements eventuellement bizarres en cas de
+	 redecoupe dans la poursuite. Le plus simple est donc de mettre comme
+	 instant initial l'instant d'archivage pour la poursuite
+   DETAILS :
+     on en profite pour un peu de menage : l'initialisation des SD
+     discretisation, archivage et observation sont maintenant toutes 3
+     faites sous nminit (avant observation etait a part -> duplication
+     de code)
+     impact sur les routines :
+        op0070
+	nminit
+	diinit
+	nmdoet (pas de modif mais carte responsable EL->PB)
+	
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_U : U4.51.03
+       EXPL_ : precision sur la discretisation (ca ne lui fera pas de mal !)
+   VALIDATION : sur l'exemple de la fiche
+
+------------------------------------------------------------------------------
+CORRECTION AL 2005-234
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : NON
+   TITRE : suite de l'AL2005-233
+   FONCTIONNALITE : Cf. AL2005-233
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION :
+
+------------------------------------------------------------------------------
+CORRECTION AL 2005-199
+   NB_JOURS_TRAV  : 1.
+   INTERET_UTILISATEUR : NON
+   TITRE : endo_isot_beton, diagonalisation du tenseur de deformation
+   FONCTIONNALITE : un dernier petit bug dans la routine de diagonalisation
+       analytique d'une matrice 3x3 symétrique
+   DETAILS : le cas d'un tenseur identiquement nul (a une certaine precision
+      pres) n'avait pas encore ete rencontre. c'est fait ! et maintenant
+      ca marche...
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION : sur etude de la fiche
+
+------------------------------------------------------------------------------
+CLASSEMENT SANS SUITE EL 2004-264
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : NON
+   TITRE : subdivision du pas de temps
+   FONCTIONNALITE : la subdivision du pas de temps peut entrainer un increment
+      de temps si petit qu'il pose problème aux lois de comportement
+   IMPACT_DOCUMENTAIRE : NON
+   DETAILS : l'activation de la subdivision du pas de temps impose a
+      l'utilisateur de definir un pas de temps minimum en-dessous duquel
+      on s'arrete (SUBD_PAS_MINI). Si l'utilisateur ne lit pas la doc et met
+      SUBD_PAS_MINI = 0., qu'est-ce qu'on peut faire ? Reponse : rien.
+      Il n'existe pas a priori de valeur minimum raisonnable (depend de l'etude).
+      De plus, si c'est un problème pour les lois de comportement de
+      traiter des increments nuls (ou presque), il faut plutot s'inquieter
+      de la programmation des lois de comportement...
+
+------------------------------------------------------------------------------
+CLASSEMENT SANS SUITE EL 2002-029
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : NON
+   TITRE : matrice tangente et redecoupage local du pas de temps
+   FONCTIONNALITE : lors de l'utilisation de lois de comportement qui
+     utilisent une subdivision locale du pas de temps, la matrice
+     tangente n'est pas coherente (ou plutot, elle est coherente avec
+     le dernier sous-pas)
+   IMPACT_DOCUMENTAIRE : NON
+   DETAILS :
+         Préalable : faire un bilan des lois de comportement qui utilisent le
+	 redécoupage.
+
+         PB+CD le 24/04/05 : problème insuffisamment motivé par les
+	 difficultés d'une étude particulière. On solde sans suite.
+
+------------------------------------------------------------------------------
+CLASSEMENT SANS SUITE EL 2001-227
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : NON
+   TITRE : COMP_INCR, COMP_ELAS
+   FONCTIONNALITE : pourquoi ne pas fusionner COMP_INCR et COMP_ELAS
+   IMPACT_DOCUMENTAIRE : NON
+   DETAILS :
+     PB+CD le 24/04/05 : fiche à solder sans suite.
+
+------------------------------------------------------------------------------
+REALISATION EL 2005-103
+   NB_JOURS_TRAV  : 0.5
+   POUR_LE_COMPTE_DE : S. GENIAUT
+   INTERET_UTILISATEUR : NON
+   TITRE           Solveur pour X-FEM
+   FONCTIONNALITE
+     Prevenir l'utilisateur de X-FEM avec contact par la méthode continue
+     que MUMPS permet résoudre des cas où les autres solveurs directs
+     rencontrent des pivots nuls. C'est donc le solveur recommandé dans
+     ce cas.
+   DETAILS
+    Emission d'une alarme dans nminit.f lorsque on utilise X-FEM avec
+    contact si le solveur n'est pas MUMPS.
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   VALIDATION
+     cas test perso
+   IMPACT_DOCUMENTAIRE : OUI
+      DOC_U : U2.04.10 Notice d'utilisation de X-FEM
+       EXPL_ :
+
+
+-----------------------------------------------------------------------
+--- AUTEUR rezette C.REZETTE   DATE  le 04/07/2005 a 16:58:53
+
+------------------------------------------------------------------------------
+REALISATION EL 2005-150
+   NB_JOURS_TRAV  : 3.0
+   POUR_LE_COMPTE_DE : J.PELLET
+   INTERET_UTILISATEUR : OUI
+   TITRE : DEFI_GROUP option DETRUIRE
+   FONCTIONNALITE
+   DETAILS :
+   1)Objectif:
+   ---------
+   On se donne la possibilité de détruire la définition d'un groupe de mailles
+   ou de noeuds dans un maillage. Sont visés les groupes auxiliaires de
+   construction de groupes utiles dont la prolifération encombre, au moins,
+   l'espace de nom. Bien entendu, dans cette perspective, les noeuds et les
+   mailles du maillages restent intacts dans le maillage.
+
+   2)Développement:
+   ---------------
+   Cette fonctionnalité passe par l'ajout de deux mots clés facteurs dans
+   DEFI_GROUP,DETR_GROUP_MA et DETR_GROUP_NO; ils permettent de détruire
+   respectivement des groupes de mailles et des groupes de noeuds.
+   La syntaxe est la suivante:
+     ma=DEFI_GROUP( o     MAILLAGE      = ma                  [maillage]
+                    f  |  DETR_GROUP_MA = _F( NOM = lgma )    [l_group_ma]
+                       |  DETR_GROUP_NO = _F( NOM = lgno )    [l_group_no]
+		    o  |  CREA_GROUP_MA = _F(...)
+		       |  CREA_GROUP_NO = _F(...)
+                    ...)
+   3)Remarques
+   -----------
+      a) Les mots clés DETR_GROUP_XX ne diront rien si l'on tente de détruire un
+      groupe inexistant.
+      b) Les mots clés DETR_GROUP_XX sont pris en compte avant les mots clés
+      CREA_GROUP_XX ce qui permet de détruire un groupe et de le recréer au
+      sein de la meme commande DEFI_GROUP.
+      exemple:
+          MA=LIRE_MAILLAGE(...)
+          MA=DEFI_GROUP(  reuse=MA,
+                          MAILLAGE=MA,
+                          CREA_GROUP_MA=( _F(  NOM = 'TMP',
+                                               OPTION='BANDE',
+                                               POINT=(0.,0.,0.),
+                                               DIST=0.0005,
+                                               VECT_NORMAL=(0.0,1.0,0.0),),
+                                         _F(   NOM = 'truc',
+                                               INTERSEC=('TMP','machin',),),)
+          MA=DEFI_GROUP(  reuse=MA,
+                          MAILLAGE=MA,
+                          DETR_GROUP_MA =  _F(  NOM = 'TMP',),
+                          CREA_GROUP_MA =( _F(  NOM = 'TMP',
+                                               OPTION='BANDE',
+                                               POINT=(10.,10.,0.),
+                                               DIST=0.006,
+                                               VECT_NORMAL=(1.0,1.0,0.0),),
+                                         _F(   NOM = 'truc2',
+                                               INTERSEC=('TMP','machin2',),),)
+     c) Comme les destructions ont lieu au début de la commande, il sera
+      impossible de modifier un groupe. Par exemple, on ne pourra pas faire
+      grossir un groupe tout en lui ajoutant dans un boucle un petit groupe
+      'b1':
+          for i in range(n):
+             b1=nouveau groupe ...
+	     DEFI_GROUP(reuse=MA,MAILLAGE=MA,
+	                CREA_GROUP_MA=_F(NOM='tout',UNION=('tout','b1'),),)
+       Pour faire cela, il faudra appeler 2 fois DEFI_GROUP:
+          for i in range(n):
+             b1=nouveau groupe ...
+             DEFI_GROUP(reuse=MA,MAILLAGE=MA,
+                        DETR_GROUP_MA=_F(NOM='tout2'),
+                        CREA_GROUP_MA=_F(NOM='tout2',UNION=('tout','b1'),),)
+             DEFI_GROUP(reuse=MA,MAILLAGE=MA,
+                        DETR_GROUP_MA=_F(NOM='tout'),
+                        CREA_GROUP_MA=_F(NOM='tout',UNION=('tout2','b1'),),)
+
+   4)Cas-test
+   -----------
+    On ajoute dans le cas-test zzzz106a un DEFI_GROUP avec des destructions de
+    groupes (mailles et noeuds) suivies des créations des groupes précedemment
+    détruits pour revenir à la configuration initiale.
+
+   Sources modifiées  : op0104.f, defi_group.capy, zzzz106a
+   Source ajoutee     : detgnm.f
+
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_U : U4.22.01
+       EXPL_ : AJOUT DES MOTS CLES DETR_GROUP_MA ET DETR_GROUP_NO
+   VALIDATION : liste restreinte + cas-tests perso
+
+------------------------------------------------------------------------------
+REALISATION EL 2005-140
+   NB_JOURS_TRAV  : 6.0
+   POUR_LE_COMPTE_DE : C. DURAND
+   INTERET_UTILISATEUR : OUI
+   TITRE : MACR_LIGN_COUPE
+   FONCTIONNALITE repère local
+   DETAILS :
+   1- Objectif:
+   Avoir la possibilité de définir un repère local dans MACR_LIGN_COUPE et de
+   sortir des contraintes sur la ligne de coupe dans ce repère local.
+
+   2- Réalisation
+
+   2.1- Syntaxe:
+   MACR_LIGN_COUPE(
+     o  RESULTAT = resu
+     o  NOM_CHAM = /'SIGM_NOEU_DEPL',
+                   /'TEMP'
+		   /champ
+     o  MODELE   = modele
+     o  LIGN_COUPE = _F (
+                          o  NB_POINTS = nb
+			  o  COOR_ORIG = (x1,y1,(z1))
+			  o  COOR_EXTR = (x2,y2,(z2))
+			  o  TABLE     = CO('table')
+			  f  VECT_Y    = (x3,y3,(z3)),
+			 ),
+                     )
+
+    Le nouvreau mot-clé VECT_Y permet de définir le vecteur unitaire normal
+    à la ligne de coupe.
+
+    Remarque:
+      Le mot clé VECT_Y est uniquement réservé :
+         - à la mécanique,
+         - pour les déplacements
+         - pour les contraintes aux noeuds
+
+    3.1- Algorithme
+
+   L'idée consiste à introduire la commande MODI_REPERE dans la macro
+   permettant ainsi de passer du repère global (X,Y,Z) au repère local(x,y,z).
+   Cette étape nécessite le calcul des angles nautiques.
+
+
+    Si VECT_Y est présent et NOM_CHAM = 'SIGM_NOEU_DEPL' ou 'DEPL' :
+
+    a) Détermination de la base locale (x,y,z)
+    - A partir des mots clés COOR_ORIG et COOR_EXTR, on construit le vecteur
+      unitaire x de la base locale
+                  | x2 - x1
+      x =  nxinv  | y2 - y1  , ou nxinv est tel que norme(x)=1
+                  | z2 - z1
+    - A partir du mot clé VECT_Y, on construit le vecteur unitaire y:
+                  | x3
+      y =  nyinv  | y3  , ou nyinv est tel que norme(y)=1
+                  | z3
+    - A partir de x et y précedemment calculé, on obtient le dernier vecteur du
+      trièdre par le produit vectoriel de x et y : z = x ^ y.
+
+      On obtient un système d'équation linéaire reliant (x,y,z) et (X,Y,Z):
+             (x,y,z)=P(i,j).(X,Y,Z), avec P matrice 3x3 d'indices i et j
+
+      Remarque: y doit etre orthogonal à x; si ce n'est pas le cas,
+         aster vous informera que votre mise en donnée est incorrecte
+	 et determinera pour vous un vecteur orthogonal à x apprtenant
+	 au plan (O,x,y) de meme sans que VECT_Y.
+         La méthode est la suivante: à partir des vecteur x et y on
+	 détermine z par produit vectoriel ( z= x ^ y ); puis à partir
+	 de z et x, on redéfinit y: y = z ^ x.
+
+    b) Détermination des angles nautiques alpha, beta, gamma:
+      Le changement de repère s'effectue par la composée de 3 rotations
+      successives:
+       alpha : rotation directe autour de Z:
+               (X,Y,Z) -- alpha --> (u1,v1,w1)  avec w1=Z
+       beta   : rotation indirecte autour de v1:
+               (u1,v1,w1) -- beta --> (u2,v2,w2) avec v2=v1
+       gamma  : rotation directe autour de u2:
+                (u2,v2,w2) -- gamma --> (x,y,z) avec x=u2
+       Les angles nautiques sont determinés de la façon suivante:
+       Si P(1,1)**2 + P(1,2)**2 > epsilon :
+          alpha = arctg(P(1,2)/P(1,1))
+	  beta  = arcsin(P(1,3))
+	  gamma = arctg(P(2,3)/P(3,3))
+       Sinon:
+          alpha = arctg(P(2,1)/P(3,1))
+	  beta  = arcsin(P(1,3))
+	  gamma = 0.
+
+     c) Introduction de MODI_REPERE dans la macro.
+        Le concept issu de MODI_REPERE est repris dans POST_RELEVE_T.
+
+   Sources modifiées  : macr_lign_coupe_ops.py, macr_lign_coupe.capy, sslv07a
+
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_U : U4.81.13
+       EXPL_ : Ajout du mot-clé VECT_Y
+   VALIDATION : liste restreinte + cas-test sslv07a
+
+------------------------------------------------------------------------------
+CORRECTION AL 2005-235
+   NB_JOURS_TRAV  : 0.5
+   POUR_LE_COMPTE_DE : M. COURTOIS
+   INTERET_UTILISATEUR : NON
+   TITRE : TEST ZZZZ107A
+   FONCTIONNALITE
+   DETAILS :
+   Suite aux restitutions générant la version 8.1.3, le cas-test zzzz107a s'arretait
+   en NOOK sur l'alphaserveur clayastr et sur linux.
+   Or ce cas-test va de paire avec le cas-test ssnl102a; en effet, il en dérive
+   et sert à valider la levée d'exception.
+   Le cas-test ssnl102a a été enrichi récemment pour valider un développement
+   concernant la relation de comportement ASSE_CORN (EL 2005-124), mais le
+   cas-test zzzz107a a échappé à cette évolution.
+   Nous avons donc reporté les modifications du cas-test ssnl102a dans zzzz107a.
+   Sources modifiées  : zzzz107a
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION : cas-test zzzz107a (clayastr,linux clp50a8)
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+       C MODIF supervis/astermodule         gnicolas G.NICOLAS         3958      7      6
+ CASTEST MODIF cabri01a                     lebouvie F.LEBOUVIER        327     29     29
+ CASTEST MODIF hsnv104a                     lebouvie F.LEBOUVIER        275      6      6
+ CASTEST MODIF hsnv122a                     lebouvie F.LEBOUVIER        387      2      2
+ CASTEST MODIF hsnv126a                     lebouvie F.LEBOUVIER        380      3      3
+ CASTEST MODIF hsnv126b                     lebouvie F.LEBOUVIER        380      3      3
+ CASTEST MODIF miss01a                       acbhhcd G.DEVESA          2304    124     18
+ CASTEST MODIF miss02a                       acbhhcd G.DEVESA          1327     56      3
+ CASTEST MODIF miss03a                       acbhhcd G.DEVESA           985    127      3
+ CASTEST MODIF miss04a                       acbhhcd G.DEVESA           523     40      2
+ CASTEST MODIF miss05a                       acbhhcd G.DEVESA          2143     75     12
+ CASTEST MODIF miss06a                       acbhhcd G.DEVESA           589     37      5
+ CASTEST MODIF rccm02b                      lebouvie F.LEBOUVIER        354      1      1
+ CASTEST MODIF sdld30a                      lebouvie F.LEBOUVIER       2275      9      5
+ CASTEST MODIF sdls501a                     lebouvie F.LEBOUVIER        244      2      2
+ CASTEST MODIF sdnl101a                     lebouvie F.LEBOUVIER       1022      3      1
+ CASTEST MODIF sdns105a                     lebouvie F.LEBOUVIER        306      3      2
+ CASTEST MODIF sdnv103d                     lebouvie F.LEBOUVIER        243      5      5
+ CASTEST MODIF sensm04a                     lebouvie F.LEBOUVIER        470     20      5
+ CASTEST MODIF sensm13a                     lebouvie F.LEBOUVIER        385     14      3
+ CASTEST MODIF sensm14a                     lebouvie F.LEBOUVIER        657     21      8
+ CASTEST MODIF shll100a                      cibhhlv L.VIVAN            695     62     13
+ CASTEST MODIF sslv04e                      lebouvie F.LEBOUVIER        409      3      3
+ CASTEST MODIF sslv07a                       rezette C.REZETTE          640    146      2
+ CASTEST MODIF ssns100e                     lebouvie F.LEBOUVIER        314     13      7
+ CASTEST MODIF ssns100f                     lebouvie F.LEBOUVIER        491     25     12
+ CASTEST MODIF ssns100g                     lebouvie F.LEBOUVIER        491     25     12
+ CASTEST MODIF ssnv115a                     lebouvie F.LEBOUVIER        242      2      2
+ CASTEST MODIF ssnv149b                     lebouvie F.LEBOUVIER        203      4      2
+ CASTEST MODIF ssnv162a                     lebouvie F.LEBOUVIER        203      2      2
+ CASTEST MODIF ssnv162b                     lebouvie F.LEBOUVIER        195      2      2
+ CASTEST MODIF ssnv163a                     lebouvie F.LEBOUVIER        244      3      2
+ CASTEST MODIF ssnv163b                     lebouvie F.LEBOUVIER        222      3      2
+ CASTEST MODIF ssnv163c                     lebouvie F.LEBOUVIER        223      3      2
+ CASTEST MODIF ssnv174a                     lebouvie F.LEBOUVIER        267      3      2
+ CASTEST MODIF vocab01a                     lebouvie F.LEBOUVIER         86      2      2
+ CASTEST MODIF zzzz100a                     lebouvie F.LEBOUVIER       1829      5      1
+ CASTEST MODIF zzzz106a                      rezette C.REZETTE          384     35      1
+ CASTEST MODIF zzzz107a                      rezette C.REZETTE          402     41     50
+ CASTEST MODIF zzzz111a                     lebouvie F.LEBOUVIER       2047     13     13
+ CASTEST MODIF zzzz121a                     gnicolas G.NICOLAS          271      3      3
+ CASTEST MODIF zzzz121b                     gnicolas G.NICOLAS          401    108      5
+ CASTEST MODIF zzzz164a                     lebouvie F.LEBOUVIER        277      3      3
+ CASTEST MODIF zzzz164b                     lebouvie F.LEBOUVIER        220      5      5
+CATALOPY MODIF commande/defi_group           rezette C.REZETTE          202      6      3
+CATALOPY MODIF commande/defi_materiau        acbhhcd G.DEVESA          2851      2      1
+CATALOPY MODIF commande/dyna_line_harm       nicolas O.NICOLAS           75     14      8
+CATALOPY MODIF commande/impr_fico_homa      gnicolas G.NICOLAS          298      7      9
+CATALOPY MODIF commande/macr_adap_mail      gnicolas G.NICOLAS          351     51     25
+CATALOPY MODIF commande/macr_info_mail      gnicolas G.NICOLAS          104      8      8
+CATALOPY MODIF commande/macr_lign_coupe      rezette C.REZETTE           49      5      2
+CATALOPY MODIF commande/recu_fonction        cibhhlv L.VIVAN            232    104     97
+CATALOPY MODIF entete/accas                   durand C.DURAND          1111      4      4
+    DATG MODIF ascouf_fiss_v4.datg          C.DURAND 12837                1      3      0
+ FORTRAN AJOUT algorith/mdgep5               cibhhlv L.VIVAN             31     31      0
+ FORTRAN AJOUT soustruc/detgnm               rezette C.REZETTE          125    125      0
+ FORTRAN AJOUT utilitai/rfhge1               cibhhlv L.VIVAN            134    134      0
+ FORTRAN AJOUT utilitai/rfhge2               cibhhlv L.VIVAN            192    192      0
+ FORTRAN AJOUT utilitai/rfmge1               cibhhlv L.VIVAN            148    148      0
+ FORTRAN AJOUT utilitai/rfmge2               cibhhlv L.VIVAN             86     86      0
+ FORTRAN MODIF algorith/adhc00              gnicolas G.NICOLAS          869     25     10
+ FORTRAN MODIF algorith/arg126               cibhhpd L.SALMONA          407      2      2
+ FORTRAN MODIF algorith/argu80               cibhhpd L.SALMONA          192      9      9
+ FORTRAN MODIF algorith/axacti               cibhhpd L.SALMONA          150      5      5
+ FORTRAN MODIF algorith/bmnbmd               cibhhpd L.SALMONA          143      3      3
+ FORTRAN MODIF algorith/bmnodi               cibhhpd L.SALMONA          190      5      5
+ FORTRAN MODIF algorith/bmnoin               cibhhpd L.SALMONA          148      4      4
+ FORTRAN MODIF algorith/bmradi               cibhhpd L.SALMONA          182      5      5
+ FORTRAN MODIF algorith/bmrdda               cibhhpd L.SALMONA          185      6      6
+ FORTRAN MODIF algorith/calamo               cibhhpd L.SALMONA          153      6      4
+ FORTRAN MODIF algorith/calctr               cibhhpd L.SALMONA          207      9      9
+ FORTRAN MODIF algorith/calcyc               cibhhpd L.SALMONA          422      9      9
+ FORTRAN MODIF algorith/callis               cibhhpd L.SALMONA          304      9      9
+ FORTRAN MODIF algorith/calmdg               cibhhpd L.SALMONA          318      2      2
+ FORTRAN MODIF algorith/calpro               cibhhpd L.SALMONA          155      4      4
+ FORTRAN MODIF algorith/camoat               cibhhpd L.SALMONA          210      8      8
+ FORTRAN MODIF algorith/camoch               cibhhpd L.SALMONA          234     10     10
+ FORTRAN MODIF algorith/camoco               cibhhpd L.SALMONA          207      8      8
+ FORTRAN MODIF algorith/crlidd               cibhhpd L.SALMONA          387      4      4
+ FORTRAN MODIF algorith/ctetax               cibhhpd L.SALMONA          231      5      5
+ FORTRAN MODIF algorith/ctetgd               cibhhpd L.SALMONA          260      7      7
+ FORTRAN MODIF algorith/cynugl               cibhhpd L.SALMONA          237      5      5
+ FORTRAN MODIF algorith/ddlact               cibhhpd L.SALMONA          174      5      5
+ FORTRAN MODIF algorith/defint               cibhhpd L.SALMONA          301      6      6
+ FORTRAN MODIF algorith/delat                cibhhpd L.SALMONA          104      3      3
+ FORTRAN MODIF algorith/desccy               cibhhpd L.SALMONA          186      7      7
+ FORTRAN MODIF algorith/diagp3                pbadel P.BADEL            293     18      4
+ FORTRAN MODIF algorith/diinit                pbadel P.BADEL            467     51     10
+ FORTRAN MODIF algorith/exmali               cibhhpd L.SALMONA          132      2      2
+ FORTRAN MODIF algorith/exprli               cibhhpd L.SALMONA          164      3      3
+ FORTRAN MODIF algorith/flexib               cibhhpd L.SALMONA          212      7      7
+ FORTRAN MODIF algorith/geolis               cibhhpd L.SALMONA          188      6      6
+ FORTRAN MODIF algorith/gesdef               cibhhpd L.SALMONA          207      3      3
+ FORTRAN MODIF algorith/imbint               cibhhpd L.SALMONA          253      8      8
+ FORTRAN MODIF algorith/immocy               cibhhpd L.SALMONA          192     12     12
+ FORTRAN MODIF algorith/mgutdm               cibhhpd L.SALMONA          163      6      6
+ FORTRAN MODIF algorith/moco99               cibhhpd L.SALMONA          188      2      2
+ FORTRAN MODIF algorith/ndlect               nicolas O.NICOLAS          218      3      1
+ FORTRAN MODIF algorith/nmdoet                pbadel P.BADEL            388      2      2
+ FORTRAN MODIF algorith/nminit                pbadel P.BADEL            517     33      8
+ FORTRAN MODIF algorith/numgcy               cibhhpd L.SALMONA          248      2      2
+ FORTRAN MODIF algorith/numgen               cibhhpd L.SALMONA          330      2      2
+ FORTRAN MODIF algorith/op0070                pbadel P.BADEL            789      3     12
+ FORTRAN MODIF algorith/op0081               cibhhpd L.SALMONA          110      9      9
+ FORTRAN MODIF algorith/op0098               cibhhpd L.SALMONA          103      3      3
+ FORTRAN MODIF algorith/op0110               cibhhpd L.SALMONA          118      3      3
+ FORTRAN MODIF algorith/ortpro               cibhhpd L.SALMONA          202      5      5
+ FORTRAN MODIF algorith/prasmp               cibhhpd L.SALMONA          213      7      7
+ FORTRAN MODIF algorith/prcycb               cibhhpd L.SALMONA          820      9      9
+ FORTRAN MODIF algorith/prcymn               cibhhpd L.SALMONA          463      9      9
+ FORTRAN MODIF algorith/prjlis               cibhhpd L.SALMONA          295     11     11
+ FORTRAN MODIF algorith/projcy               cibhhpd L.SALMONA          110      3      3
+ FORTRAN MODIF algorith/rec110               cibhhpd L.SALMONA          453     11     11
+ FORTRAN MODIF algorith/recbec               cibhhpd L.SALMONA          338      8      8
+ FORTRAN MODIF algorith/recbgl               cibhhpd L.SALMONA          411      9      9
+ FORTRAN MODIF algorith/recyec               cibhhpd L.SALMONA          102      3      3
+ FORTRAN MODIF algorith/recygl               cibhhpd L.SALMONA          167      7      7
+ FORTRAN MODIF algorith/refe80               cibhhpd L.SALMONA          107      2      2
+ FORTRAN MODIF algorith/refe81               cibhhpd L.SALMONA          283      5      5
+ FORTRAN MODIF algorith/regegl               cibhhpd L.SALMONA          321      6      6
+ FORTRAN MODIF algorith/remnec               cibhhpd L.SALMONA          345      8      8
+ FORTRAN MODIF algorith/remngl               cibhhpd L.SALMONA          419      9      9
+ FORTRAN MODIF algorith/vechbn               cibhhpd L.SALMONA          135     11     11
+ FORTRAN MODIF algorith/vecomo               cibhhpd L.SALMONA          416     15     15
+ FORTRAN MODIF algorith/verecy               cibhhpd L.SALMONA          323      2      2
+ FORTRAN MODIF algorith/versst               cibhhpd L.SALMONA          117      3      3
+ FORTRAN MODIF elements/dicorn               acbhhcd G.DEVESA           605      5      6
+ FORTRAN MODIF elements/iner81               cibhhpd L.SALMONA          147      3      3
+ FORTRAN MODIF elements/te0050               nicolas O.NICOLAS          155     10      5
+ FORTRAN MODIF modelisa/chprec              lebouvie F.LEBOUVIER        273     59     12
+ FORTRAN MODIF prepost/op0162                cibhhpd L.SALMONA          276      4      4
+ FORTRAN MODIF prepost/op0163                cibhhpd L.SALMONA          236      4      4
+ FORTRAN MODIF soustruc/op0104               rezette C.REZETTE          167     10      1
+ FORTRAN MODIF supervis/affich                durand C.DURAND            29      2      2
+ FORTRAN MODIF utilitai/dismcm               nicolas O.NICOLAS          260      3      2
+ FORTRAN MODIF utilitai/dismli               cibhhpd L.SALMONA           94      7      7
+ FORTRAN MODIF utilitai/iredca               cibhhpd L.SALMONA          541      4      4
+ FORTRAN MODIF utilitai/iredm1               cibhhpd L.SALMONA          413      2      2
+ FORTRAN MODIF utilitai/iredmi               cibhhpd L.SALMONA          212      7      7
+ FORTRAN MODIF utilitai/iredpl               cibhhpd L.SALMONA          351      4      4
+ FORTRAN MODIF utilitai/iredsu               cibhhpd L.SALMONA          350      4      4
+ FORTRAN MODIF utilitai/op0003               cibhhlv L.VIVAN            260      7      1
+ FORTRAN MODIF utilitai/rfrgen               cibhhlv L.VIVAN            285     25      3
+  PYTHON MODIF Macro/macr_adap_mail_ops     gnicolas G.NICOLAS          789     88     26
+  PYTHON MODIF Macro/macr_lign_coupe_ops     rezette C.REZETTE          377    114      3
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :    6         716       716              +716
+ MODIF :  139       59260      2156     931     +1225
+ SUPPR :    0           0                 0        +0
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :  145       59976      2872     931     +1941 

@@ -1,4 +1,4 @@
-# MODIF  DATE 06/09/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 04/07/2005   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE TOLE ONDULEE EN TRACTION (MISES ECR. ISOT. 2D)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -149,7 +149,7 @@ TEST_RESU(RESU=(
          VALE = 2.3275E+03),
        _F(  RESULTAT = U3B,    NUME_ORDRE = 5,
          NOM_CHAM = 'VARI_ELGA', TYPE_TEST = 'SOMM_ABS',
-         VALE = 0.0000E+00))
+         VALE = 0.0000E+00, PRECISION = 0., CRITERE = 'ABSOLU'))
          )
 
 

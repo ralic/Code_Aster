@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 25/10/2004   AUTEUR CIBHHLV L.VIVAN 
+#& MODIF COMMANDE  DATE 04/07/2005   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -26,9 +26,12 @@ DEFI_GROUP=OPER(nom="DEFI_GROUP",op= 104,sd_prod=defi_group_prod,
                 fr="Définition de nouveaux groupes de noeuds et/ou de mailles dans un concept maillage",
                 reentrant='o',
             UIinfo={"groupes":("Maillage",)},
-         regles=(AU_MOINS_UN('CREA_GROUP_MA','CREA_GROUP_NO'),),
+         regles=(AU_MOINS_UN('CREA_GROUP_MA','CREA_GROUP_NO','DETR_GROUP_NO','DETR_GROUP_MA'),),
          MAILLAGE        =SIMP(statut='o',typ=(maillage_sdaster,squelette) ),
-
+         DETR_GROUP_MA   =FACT(statut='f',max='**',
+           NOM             =SIMP(statut='o',typ=grma,validators=NoRepeat(),max='**'),),
+         DETR_GROUP_NO   =FACT(statut='f',max='**',
+           NOM             =SIMP(statut='o',typ=grno,validators=NoRepeat(),max='**'),),
          CREA_GROUP_MA   =FACT(statut='f',max='**',
 
 regles=(UN_PARMI('TOUT','GROUP_MA','MAILLE','INTERSEC','UNION','DIFFE','OPTION'),),

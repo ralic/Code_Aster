@@ -3,7 +3,7 @@
       INTEGER             IER
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 15/02/2005   AUTEUR NICOLAS O.NICOLAS 
+C MODIF ALGORITH  DATE 05/07/2005   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -67,9 +67,9 @@ C
       IF ( IOC1 .GT. 0 ) THEN
         CALL GETVID ('CYCLIQUE','MODE_CYCL' ,1,1,1,RESCYC,IOC11)
         IF (IOC11.GT.0) THEN
-          CALL JEVEUO(RESCYC//'      .CYCL.REFE','L',LLREF)
+          CALL JEVEUO(RESCYC//'.CYCL_REFE','L',LLREF)
           NOMA = ZK24(LLREF)
-          CALL JEVEUO(RESCYC//'      .CYCL.NBSC','L',LLNBS)
+          CALL JEVEUO(RESCYC//'.CYCL_NBSC','L',LLNBS)
           NBSECT = ZI(LLNBS)
         ELSE
           CALL GETVID ('CYCLIQUE','MAILLAGE', 1,1,1,NOMA,IOC12)

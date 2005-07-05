@@ -3,7 +3,7 @@
       CHARACTER*(*)       MACR
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 14/06/2005   AUTEUR CIBHHPD L.SALMONA 
+C MODIF UTILITAI  DATE 05/07/2005   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -75,7 +75,7 @@ C
       NOSIMP = '        '
       NOPASE = '        '
 C
-      CALL JEVEUO(MACREL//'.MAEL      .REFE','L',JREFE)
+      CALL JEVEUO(MACREL//'.MAEL_REFE','L',JREFE)
       BASEMO = ZK24(JREFE)
       NOMA   = ZK24(JREFE+1)
       MANONO = NOMA//'.NOMNOE'
@@ -215,8 +215,8 @@ C     ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
         CALL WKVECT('&&IREDSU.MASS_INFE','V V R',NBMODE*NBMODS,JPAMI)
       ENDIF
 C
-      CALL JEVEUO(MACREL//'.MAEL.MASS .VALE','L',KMASS)
-      CALL JEVEUO(MACREL//'.MAEL.RAID .VALE','L',KRIGI)
+      CALL JEVEUO(MACREL//'.MAEL_MASS_VALE','L',KMASS)
+      CALL JEVEUO(MACREL//'.MAEL_RAID_VALE','L',KRIGI)
       DO 200 IM = 1 , NBMODE
       DO 200 I = 1,IM
          K =IM*(IM-1)/2 + I

@@ -1,4 +1,4 @@
-# MODIF  DATE 17/05/2005   AUTEUR BOYERE E.BOYERE 
+# MODIF  DATE 04/07/2005   AUTEUR LEBOUVIE F.LEBOUVIER 
 # RESPONSABLE F6BHHBO P.DEBONNIERES
 # TITRE CAVITE 2D CALCUL DE SENSIBILITE (LOI DE DRUCKER-PRAGER)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -364,11 +364,15 @@ for i in range(n):
                                           OPERATION = 'EXTRACTION'));
 
       diff = (TAB_DIF[k,1]-TAB_REF[k,1])/(2*sensible[i]*epsilon)
-
+      CRIT = 'RELATIF'
+      PREC = 1.E-2
+      if diff == 0.:
+          CRIT = 'ABSOLU'
+          PREC = 0.         
       TEST_RESU(RESU=(
        _F(RESULTAT = RES, NUME_ORDRE = j,
           NOM_CHAM = 'DEPL', NOEUD = 'N1000',
-          CRITERE = 'RELATIF', PRECISION = 1.E-2,
+          CRITERE = CRIT, PRECISION = PREC,
           NOM_CMP = k,   SENSIBILITE = PS[i],
           VALE = diff, REFERENCE = 'NON_REGRESSION' )))
     
@@ -488,12 +492,16 @@ for i in range(n):
       TAB_DIFNP = TAB_DIF.EXTR_COMP(k, [], 1)
 
       diff = (TAB_DIFNP.valeurs[3 * 90 + 1 - 4]-TAB_REFNP.valeurs[3 * 90 + 1 - 4])/(2*sensible[i]*epsilon)
-
+      CRIT = 'RELATIF'
+      PREC = 1.E-2
+      if diff == 0.:
+          CRIT = 'ABSOLU'
+          PREC = 0. 
       if i>1 :
         TEST_RESU(RESU=(
            _F(RESULTAT = RES,   NUME_ORDRE = j,
               NOM_CHAM = 'SIEF_ELGA', MAILLE = 'M90', POINT = 1,
-              CRITERE = 'RELATIF', PRECISION = 1.E-2,
+              CRITERE = CRIT, PRECISION = PREC,
               NOM_CMP = k,   SENSIBILITE = PS[i],
               VALE = diff, REFERENCE = 'AUTRE_ASTER' )))
 
@@ -503,7 +511,7 @@ for i in range(n):
             TEST_RESU(RESU=(
                _F(RESULTAT = RES,   NUME_ORDRE = j,
                   NOM_CHAM = 'SIEF_ELGA', MAILLE = 'M90', POINT = 1,
-                  CRITERE = 'RELATIF', PRECISION = 1.E-2,
+                  CRITERE = CRIT, PRECISION = PREC,
                   NOM_CMP = k,   SENSIBILITE = PS[i],
                   VALE = diff, REFERENCE = 'AUTRE_ASTER' )))
         else :
@@ -511,7 +519,7 @@ for i in range(n):
             TEST_RESU(RESU=(
                _F(RESULTAT = RES,   NUME_ORDRE = j,
                   NOM_CHAM = 'SIEF_ELGA', MAILLE = 'M90', POINT = 1,
-                  CRITERE = 'RELATIF', PRECISION = 1.E-2,
+                  CRITERE = CRIT, PRECISION = PREC,
                   NOM_CMP = k,   SENSIBILITE = PS[i],
                   VALE = diff, REFERENCE = 'AUTRE_ASTER' )))
       
@@ -623,11 +631,16 @@ for i in range(n):
     TAB_DIFNP = TAB_DIF.EXTR_COMP('V1', [], 1)
 
     diff = (TAB_DIFNP.valeurs[3 * 90 + 1 - 4]-TAB_REFNP.valeurs[3 * 90 + 1 - 4])/(2*sensible[i]*epsilon)
+    CRIT = 'RELATIF'
+    PREC = 1.E-2
+    if diff == 0.:
+        CRIT = 'ABSOLU'
+        PREC = 0. 
 
     TEST_RESU(RESU=(
        _F(  RESULTAT = RES,   NUME_ORDRE = j,
             NOM_CHAM = 'VARI_ELGA', MAILLE = 'M90', POINT = 1,
-            CRITERE = 'RELATIF', PRECISION = 1.E-2,
+            CRITERE = CRIT, PRECISION = PREC,
             NOM_CMP = 'V1',   SENSIBILITE = PS[i],
             VALE = diff, REFERENCE = 'AUTRE_ASTER' )))
 

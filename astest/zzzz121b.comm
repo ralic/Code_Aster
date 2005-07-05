@@ -1,4 +1,4 @@
-# MODIF  DATE 07/03/2005   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 04/07/2005   AUTEUR GNICOLAS G.NICOLAS 
 # TITRE COUPLAGE ASTER_HOMARD - CAS TRIDIMENSIONNEL
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -21,7 +21,7 @@
 # Attention :ceci est un test de non regression et non pas d'evaluation
 # de l'adaptation de maillage.
 # . Information
-# . 2 adaptations
+# . 3 adaptations, dont la derniere sans modification de maillage
 # . Sans mise a jour de champs
 # . Cas 3D
 # . Elements POI1, TRIA6, TETRA10
@@ -51,7 +51,6 @@ MACR_INFO_MAIL(
               TAILLE='OUI',
               NOMBRE='OUI'
                )
-
 #
 # 3. CALCUL SUR LE MAILLAGE ZERO
 # 3.1. MODELE MECANIQUE
@@ -212,19 +211,39 @@ TEST_RESU(RESU=(
 
 #
 # 7. ADAPTATION DU MAILLAGE DE UN VERS DEUX
+#    REMARQUE : PAR RAPPORT A L'ADAPTATION PRECEDENTE, ON TESTE DES VARIANTES
+#               DE LA COMMANDE :
+#               . RAFFINEMENT ET DERAFFINEMENT AU LIEU DE RAFFINEMENT SEUL
+#               . SELECTION DE L'INDICATEUR PAR UN CHAMP DE GRANDEUR
+#               . MISE A JOUR D'UN CHAMP DE GRANDEUR
+#
+INDIC=CREA_CHAMP(TYPE_CHAM='ELGA_ERREUR',
+                   OPERATION='EXTR',
+                   RESULTAT=RESUUN,
+                   NOM_CHAM = 'ERRE_ELGA_NORE',
+                   NUME_ORDRE = 1);
+#
+DEPLUN=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
+                   OPERATION='EXTR',
+                   RESULTAT=RESUUN,
+                   NOM_CHAM = 'DEPL',
+                   NUME_ORDRE = 1);
 #
 MACR_ADAP_MAIL(
               ADAPTATION=_F( 
                        LIBRE = 'RAFF_DERA',
                        MAILLAGE_N = MUN,
                        MAILLAGE_NP1 = CO("MDEUX"),
-                       RESULTAT_N = RESUUN,
-                       INDICATEUR = 'ERRE_ELGA_NORE',
+                       CHAM_GD = INDIC,
                        NOM_CMP_INDICA = 'ERREST' ,
                        CRIT_RAFF_REL = 0.9,
                        NIVE_MAX = 8,
                        CRIT_DERA_REL = 0.25,
                        NIVE_MIN = 0),
+              MAJ_CHAM=_F( 
+                       CHAM_GD    = DEPLUN,
+                       TYPE_CHAM  = 'NOEU_DEPL_R',
+                       CHAM_MAJ   = CO("DEPLDEUX")),
               QUALITE='OUI',
               INTERPENETRATION='NON'
                )
@@ -291,8 +310,92 @@ TEST_RESU(RESU=(
             NOM_CHAM = 'DEPL',    GROUP_NO = 'OPPOSE',
             CRITERE = 'RELATIF',  PRECISION = 1.E-5,
             NOM_CMP = 'DZ',       VALE = -2.510371E-01, 
+            REFERENCE = 'NON_REGRESSION', VERSION = '7.01.09')),
+          CHAM_NO=(
+       _F(  CHAM_GD = DEPLDEUX, GROUP_NO = 'OPPOSE',
+            CRITERE = 'RELATIF',  PRECISION = 1.E-5,
+            NOM_CMP = 'DY',       VALE = 1.658803E-01, 
             REFERENCE = 'NON_REGRESSION', VERSION = '7.01.09'))
           )
+
+#
+# 10. ADAPTATION DU MAILLAGE DE DEUX VERS TROIS
+#    REMARQUE : PAR RAPPORT A L'ADAPTATION PRECEDENTE, ON TESTE DES VARIANTES
+#               DE LA COMMANDE :
+#               . NI RAFFINEMENT, NI DERAFFINEMENT
+#               . MISE A JOUR DE CHAMP
+#
+MACR_ADAP_MAIL(
+              ADAPTATION=_F( 
+                       UNIFORME = 'RIEN',
+                       MAILLAGE_N = MDEUX,
+                       MAILLAGE_NP1 = CO("MTROI"),
+                           ),
+              MAJ_CHAM=_F( 
+                       RESULTAT   = RESUDEUX,
+                       NOM_CHAM   = 'DEPL',
+                       TYPE_CHAM  = 'NOEU_DEPL_R',
+                       NUME_ORDRE = 1,
+                       CHAM_MAJ   = CO("DEPLTROI")),
+              QUALITE='OUI'
+               )
+#
+# 11. CALCUL SUR LE MAILLAGE TROIS
+# 11.1. MODELE MECANIQUE
+#
+MODETROI=AFFE_MODELE( MAILLAGE=MTROI,
+                      AFFE=_F(  TOUT = 'OUI', PHENOMENE = 'MECANIQUE',
+                                MODELISATION = '3D') )
+
+#
+# 11.2. MISE EN PLACE DES MATERIAUX
+#
+MATETROI=AFFE_MATERIAU(    MAILLAGE=MTROI,AFFE=(
+       _F(  GROUP_MA = 'MOITIE1',  MATER = MATER1, TEMP_REF = 20.),
+       _F(  GROUP_MA = 'MOITIE2',  MATER = MATER2, TEMP_REF = 20.))
+                         )
+
+#
+# 11.4. CHARGEMENTS
+#
+CHARTROI=AFFE_CHAR_MECA(    MODELE=MODETROI,
+     PESANTEUR=(  9.81,  0.,  0.,   -1., ),
+    FORCE_FACE=_F(  GROUP_MA = 'Z_1',  FZ = 78480.),DDL_IMPO=(
+      _F(  GROUP_NO = 'ORIGINE',  DX = 0.,   DY = 0.,   DZ = 0.),
+      _F(  GROUP_NO = 'I',  DY = 0.,   DZ = 0.),
+      _F(  GROUP_NO = 'J',  DZ = 0.))
+                          )
+#
+# 11.5. RESOLUTION
+#
+RESUTROI=MECA_STATIQUE( MODELE=MODETROI,
+                        CHAM_MATER=MATETROI,
+                        EXCIT=_F(  CHARGE = CHARTROI)
+                      )
+#
+# 12. TEST DE NON REGRESSION
+#
+TEST_RESU(RESU=(
+       _F(  RESULTAT = RESUTROI, NUME_ORDRE = 1,
+            NOM_CHAM = 'DEPL',    GROUP_NO = 'OPPOSE',
+            CRITERE = 'RELATIF',  PRECISION = 1.E-5,
+            NOM_CMP = 'DX',       VALE =  9.195670E-02, 
+            REFERENCE = 'NON_REGRESSION', VERSION = '7.01.09'),
+       _F(  RESULTAT = RESUTROI, NUME_ORDRE = 1,
+            NOM_CHAM = 'DEPL',    GROUP_NO = 'OPPOSE',
+            CRITERE = 'RELATIF',  PRECISION = 1.E-5,
+            NOM_CMP = 'DY',       VALE =  3.511732E-01, 
+            REFERENCE = 'NON_REGRESSION', VERSION = '7.01.09'),
+       _F(  RESULTAT = RESUTROI, NUME_ORDRE = 1,
+            NOM_CHAM = 'DEPL',    GROUP_NO = 'OPPOSE',
+            CRITERE = 'RELATIF',  PRECISION = 1.E-5,
+            NOM_CMP = 'DZ',       VALE = -2.510371E-01, 
+            REFERENCE = 'NON_REGRESSION', VERSION = '7.01.09')),
+          CHAM_NO=(
+       _F(  CHAM_GD = DEPLTROI, GROUP_NO = 'OPPOSE',
+            CRITERE = 'RELATIF',  PRECISION = 1.E-5,
+            NOM_CMP = 'DZ',       VALE = -2.510371E-01, 
+            REFERENCE = 'NON_REGRESSION', VERSION = '7.01.09')))
 
 #
 FIN( )

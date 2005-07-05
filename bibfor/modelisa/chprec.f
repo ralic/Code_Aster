@@ -1,7 +1,7 @@
       SUBROUTINE CHPREC(CHOU)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 28/01/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 04/07/2005   AUTEUR LEBOUVIE F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,16 +53,18 @@ C
       CHARACTER*6 NOMPRO
       PARAMETER ( NOMPRO = 'CHPREC' )
 C
-      INTEGER IBID,ICORET,IRET,JORDR,N1,N2,N3,N4,N5,NBORDR,NC,NP
+      INTEGER IBID,ICORET,IRET,JORDR,N1,N2,N3,N4,N5,NBORDR,NC,NP,IE
       INTEGER IAUX, JAUX
       INTEGER NRPASS, NBPASS
       INT EG ER AD  RE  CG
       REAL*8 INST,EPSI
       CHARACTER*1 BASE
+      CHARACTER*4 TYCHA
       CHARACTER*8 RESUCO,INTERP,CRIT,PROLDR,PROLGA,TYPMAX
+      CHARACTER*8 NOMGD
 CC      CHARACTER*8 LERESU, NOPASE
       CHARACTER*8 LERESU
-      CHARACTER*16 K16BID,NOMCMD,NOMCH,ACCES,TYSD
+      CHARACTER*16 K16BID,NOMCMD,NOMCH,ACCES,TYSD,TYCHLU,TYCH
       CHARACTER*19 CHEXTR,NOCH19,KNUM
       CHARACTER*24 NORECG
       CHARACTER*8 K8BID,MA,FIS
@@ -81,7 +83,7 @@ C
      &    'AVEC "NOEUD_CMP", IL FAUT DONNER '//
      &    'UN NOM ET UNE COMPOSANTE.')
       CALL GETVTX(' ','NOM_CHAM',0,1,1,NOMCH,N2)
-
+      CALL GETVTX(' ','TYPE_CHAM',0,1,1,TYCHLU,N2)
 
 C     1. CAS DE LA RECUPERATION DU CHAMP DE GEOMETRIE D'UN MAILLAGE
 C     ==============================================================
@@ -90,7 +92,20 @@ C     ==============================================================
         IF (N1.EQ.0) CALL UTMESS('F',NOMPRO,'POUR RECUPERER '//
      &     'LE CHAMP DE GEOMETRIE, IL FAUT UTILISER LE MOT CLE MAILLAGE'
      &                           )
-
+C
+C     ON VERIFIE QUE LE MOT-CLE TYPE_CHAMP EST COHERENT AVEC LE 
+C     TYPE DU CHAMP EXTRAIT.
+C
+        CALL DISMOI('F','TYPE_CHAMP',MA//'.COORDO','CHAMP',
+     &              IBID,TYCH,IE)
+        CALL DISMOI('F','NOM_GD',MA//'.COORDO','CHAMP',
+     &              IBID,NOMGD,IE)
+        
+        IF ((TYCHLU(1:4).NE.TYCH).OR.(TYCHLU(6:12).NE.NOMGD)) THEN
+           CALL UTMESS('F',NOMPRO,'LE MOT-CLE TYPE_CHAMP = '//TYCHLU//
+     &     'N''EST PAS COHERENT AVEC LE TYPE DU CHAMP EXTRAIT : '//
+     &     TYCH(1:4)//'_'//NOMGD)
+        END IF
         CALL COPISD('CHAMP_GD','G',MA//'.COORDO',NOCH19)
         GO TO 20
       END IF
@@ -100,18 +115,28 @@ C     ==============================================================
       CALL GETVID(' ','FISSURE',0,1,1,FIS,N1)
              IF (N1.EQ.1) THEN
                IF (NOMCH.EQ.'LTNO') THEN
-                 CALL COPISD('CHAMP_GD','G',FIS//'.LTNO',NOCH19)
-                 GO TO 20
+                 CHEXTR = FIS//'.LTNO'
                ELSE IF (NOMCH.EQ.'LNNO') THEN
-                 CALL COPISD('CHAMP_GD','G',FIS//'.LNNO',NOCH19)
-                 GO TO 20
+                 CHEXTR = FIS//'.LNNO'
                ELSE IF (NOMCH.EQ.'GRLNNO') THEN
-                 CALL COPISD('CHAMP_GD','G',FIS//'.GRLNNO',NOCH19)
-                 GO TO 20
+                 CHEXTR = FIS//'.GRLNNO'
                ELSE IF (NOMCH.EQ.'GRLTNO') THEN
-                 CALL COPISD('CHAMP_GD','G',FIS//'.GRLTNO',NOCH19)
-                 GO TO 20
+                 CHEXTR = FIS//'.GRLTNO'
                END IF
+C
+C     ON VERIFIE QUE LE MOT-CLE TYPE_CHAMP EST COHERENT AVEC LE 
+C     TYPE DU CHAMP EXTRAIT.
+C
+               CALL DISMOI('F','TYPE_CHAMP',CHEXTR,'CHAMP',IBID,TYCH,IE)
+               CALL DISMOI('F','NOM_GD',CHEXTR,'CHAMP',IBID,NOMGD,IE)
+        
+               IF ((TYCHLU(1:4).NE.TYCH).OR.(TYCHLU(6:12).NE.NOMGD))THEN
+                   CALL UTMESS('F',NOMPRO,'LE MOT-CLE TYPE_CHAMP = '//
+     &             TYCHLU//'N''EST PAS COHERENT AVEC LE TYPE DU CHAMP'//
+     &             'EXTRAIT : '//TYCH(1:4)//'_'//NOMGD)
+               END IF
+               CALL COPISD('CHAMP_GD','G',CHEXTR,NOCH19)
+               GOTO 20
              END IF
 
 C     3. CAS DE LA RECUPERATION D'UN CHAMP D'UNE SD RESULTAT
@@ -166,6 +191,19 @@ C         ===============================
             CALL JEVEUO(KNUM,'L',JORDR)
             CALL RSEXCH(LERESU,NOMCH,ZI(JORDR),CHEXTR,IRET)
             IF (IRET.EQ.0) THEN
+C
+C     ON VERIFIE QUE LE MOT-CLE TYPE_CHAMP EST COHERENT AVEC LE 
+C     TYPE DU CHAMP EXTRAIT.
+C
+              CALL DISMOI('F','TYPE_CHAMP',CHEXTR,'CHAMP',IBID,TYCH,IE)
+              CALL DISMOI('F','NOM_GD',CHEXTR,'CHAMP',IBID,NOMGD,IE)
+        
+              IF ((TYCHLU(1:4).NE.TYCH).OR.(TYCHLU(6:12).NE.NOMGD)) THEN
+           CALL UTMESS('F',NOMPRO,'LE MOT-CLE TYPE_CHAMP = '//TYCHLU//
+     &     'N''EST PAS COHERENT AVEC LE TYPE DU CHAMP EXTRAIT : '//
+     &     TYCH(1:4)//'_'//NOMGD)
+            END IF
+
               CALL COPISD('CHAMP_GD','G',CHEXTR,NOCH19)
             ELSE IF (IRET.EQ.101 .OR. IRET.EQ.111) THEN
               CALL UTMESS('F',NOMCMD,'LE NOM SYMBOLIQUE : '//NOMCH//
@@ -197,6 +235,15 @@ C         ===========================
           CALL JEVEUO(KNUM,'L',JORDR)
           CALL RSEXCH(LERESU,NOMCH,ZI(JORDR),CHEXTR,IRET)
           IF (IRET.EQ.0) THEN
+              CALL DISMOI('F','TYPE_CHAMP',CHEXTR,'CHAMP',IBID,TYCH,IE)
+              CALL DISMOI('F','NOM_GD',CHEXTR,'CHAMP',IBID,NOMGD,IE)
+        
+              IF ((TYCHLU(1:4).NE.TYCH).OR.(TYCHLU(6:12).NE.NOMGD)) THEN
+           CALL UTMESS('F',NOMPRO,'LE MOT-CLE TYPE_CHAMP = '//TYCHLU//
+     &     'N''EST PAS COHERENT AVEC LE TYPE DU CHAMP EXTRAIT : '//
+     &     TYCH(1:4)//'_'//NOMGD)
+            END IF
+
             CALL COPISD('CHAMP_GD','G',CHEXTR,NOCH19)
           ELSE IF (IRET.EQ.101 .OR. IRET.EQ.111) THEN
             CALL UTMESS('F',NOMCMD,'LE NOM SYMBOLIQUE : '//NOMCH//

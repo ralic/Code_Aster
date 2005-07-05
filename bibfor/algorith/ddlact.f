@@ -1,6 +1,6 @@
       SUBROUTINE DDLACT(NOMRES,NUMDDL)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 05/07/2005   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -72,8 +72,8 @@ C-----------------------------------------------------------------------
 C-----------------------------------------------------------------------
 C
       CALL JEMARQ()
-      NOEINT=NOMRES//'      .INTD.LINO'
-      ACTINT=NOMRES//'      .INTD.DDAC'
+      NOEINT=NOMRES//'.IDC_LINO'
+      ACTINT=NOMRES//'.IDC_DDAC'
 C
 C------RECUPERATION DONNEES RELATIVES A LA GRANDEUR SOUS-JACENTE--------
 C            ET ALLOCATION VECTEUR TRAVAIL DECODAGE
@@ -87,7 +87,7 @@ C
 C
 C-----------REQUETTE ADRESSE DE LA TABLE DESCRIPTION DES DEFORMEES------
 C
-      DESDEF=NOMRES//'      .INTD.DEFO'
+      DESDEF=NOMRES//'.IDC_DEFO'
       CALL JEVEUO(DESDEF,'L',LLDES)
       CALL JELIRA(DESDEF,'LONMAX',NBNOT,K1BID)
       NBNOT=NBNOT/(2+NBEC)
@@ -98,7 +98,7 @@ C
 C
 C---------------RECUPERATION DES TYPES D'INTERFACE ---------------------
 C
-      CALL JEVEUO(NOMRES//'      .INTD.TYPE','L',LLTYPI)
+      CALL JEVEUO(NOMRES//'.IDC_TYPE','L',LLTYPI)
 C
 C----------------COMPTAGE DU NOMBRE MAX DE NOEUDS DES INTERFACE---------
 C

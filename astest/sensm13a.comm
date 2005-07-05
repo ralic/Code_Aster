@@ -1,4 +1,4 @@
-# MODIF  DATE 01/12/2004   AUTEUR BOYERE E.BOYERE 
+# MODIF  DATE 04/07/2005   AUTEUR LEBOUVIE F.LEBOUVIER 
 # RESPONSABLE F6BHHBO P.DEBONNIERES
 # TITRE ETUDE  : ESSAI TRIAXIAL AVEC LE MODELE DE TYPE (3D)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -281,10 +281,15 @@ for i in range(n):
               NOM_CMP = 'SIZZ',   SENSIBILITE = PS[i],
               VALE = 0.0, REFERENCE = 'ANALYTIQUE' )))
     else :
+      CRIT = 'RELATIF'
+      PREC = 1.E-2
+      if diff == 0.:
+          CRIT = 'ABSOLU'
+          PREC = 0.
       TEST_RESU(RESU=(
          _F(  RESULTAT = RES,   NUME_ORDRE = j,
               NOM_CHAM = 'SIEF_ELGA', MAILLE = 'MA1', POINT = 1,
-              CRITERE = 'RELATIF', PRECISION = 1.E-2,
+              CRITERE = CRIT, PRECISION = PREC,
               NOM_CMP = 'SIZZ',   SENSIBILITE = PS[i],
               VALE = diff, REFERENCE = 'AUTRE_ASTER' )))
 
@@ -357,10 +362,16 @@ for i in range(n):
               NOM_CMP = 'V1',   SENSIBILITE = PS[i],
               VALE = 0.0, REFERENCE = 'ANALYTIQUE' )))
     else :
+      CRIT = 'RELATIF'
+      PREC = 1.E-2
+      if diff == 0.:
+          CRIT = 'ABSOLU'
+          PREC = 0.
+ 
       TEST_RESU(RESU=(
          _F(  RESULTAT = RES,   NUME_ORDRE = j,
               NOM_CHAM = 'VARI_ELGA', MAILLE = 'MA1', POINT = 1,
-              CRITERE = 'RELATIF', PRECISION = 1.E-2,
+              CRITERE = CRIT, PRECISION = PREC,
               NOM_CMP = 'V1',   SENSIBILITE = PS[i],
               VALE = diff, REFERENCE = 'AUTRE_ASTER' )))
 

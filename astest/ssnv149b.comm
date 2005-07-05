@@ -1,4 +1,4 @@
-# MODIF  DATE 16/09/2003   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 04/07/2005   AUTEUR LEBOUVIE F.LEBOUVIER 
 
 # TITRE COMPRESSION UNIAXIALE EN 3D - COMPORTEMENT ENDO_ISOT_BETON
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -148,7 +148,9 @@ TEST_RESU(RESU=(
                NOM_CHAM = 'VARI_ELGA',
                NOM_CMP = 'V1',
                REFERENCE='ANALYTIQUE',
-               VALE = 0.00000E+00),
+               VALE = 0.00000E+00,
+               PRECISION = 0.,
+               CRITERE = 'ABSOLU',),
             _F(RESULTAT = SOLNL2,
                NUME_ORDRE = 27,
                NOEUD = 'N2',

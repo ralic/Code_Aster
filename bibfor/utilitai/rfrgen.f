@@ -3,7 +3,7 @@
       CHARACTER*(*)       TRANGE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 28/06/2005   AUTEUR NICOLAS O.NICOLAS 
+C MODIF UTILITAI  DATE 04/07/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,17 +40,39 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
       CHARACTER*32     JEXNUM, JEXNOM
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
-      INTEGER      LREFE1,LREFE2
+      INTEGER      IBID, LREFE1, LREFE2
       CHARACTER*1  TYPE,COLI,K1BID
       CHARACTER*4  INTERP(2), INTRES
       CHARACTER*8  K8B, CRIT, NOEUD, CMP, NOMA, NOMACC, NOMMOT, BASEMO
       CHARACTER*8  MONMOT(2), NOGNO
       CHARACTER*14 NUME
-      CHARACTER*16 NOMCMD, TYPCON, NOMCHA, NOMSY
+      CHARACTER*16 NOMCMD, TYPCON, NOMCHA, NOMSY, TYSD
       CHARACTER*19 NOMFON, KNUME, KINST, RESU, MATRAS, FONCT
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
+C
+      CALL GETTCO ( TRANGE, TYSD )
+      IF ( TYSD .EQ. 'MODE_GENE' ) THEN
+         CALL GETVTX ( ' ', 'NOM_PARA_RESU', 1,1,1, K8B,  N1 )
+         CALL GETVIS ( ' ', 'NUME_CMP_GENE', 1,1,1, IBID, N2 )
+         IF ( (N1+N2) .NE. 0 ) THEN
+            CALL RFMGE1 ( TRANGE )
+         ELSE
+            CALL RFMGE2 ( TRANGE )
+         ENDIF
+         GOTO 9999
+      ELSEIF ( TYSD .EQ. 'HARM_GENE' ) THEN
+         CALL GETVTX ( ' ', 'NOM_PARA_RESU', 1,1,1, K8B,  N1 )
+         CALL GETVIS ( ' ', 'NUME_CMP_GENE', 1,1,1, IBID, N2 )
+         IF ( (N1+N2) .NE. 0 ) THEN
+            CALL RFHGE1 ( TRANGE )
+         ELSE
+            CALL RFHGE2 ( TRANGE )
+         ENDIF
+         GOTO 9999
+      ENDIF
+C
       CALL GETRES ( NOMFON , TYPCON , NOMCMD )
       RESU = TRANGE
       INTERP(1) = 'NON '

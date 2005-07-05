@@ -1,6 +1,6 @@
       SUBROUTINE TE0050 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ELEMENTS  DATE 04/07/2005   AUTEUR NICOLAS O.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -60,9 +60,9 @@ C
 C     -- RECUPERATION DES CHAMPS PARAMETRES ET DE LEURS LONGUEURS:
 C     ------------------------------------------------------------
       IF (OPTION.EQ.'AMOR_MECA') THEN
-      CALL TECACH('ONN','PMATUUR',5,IDRESU,IRET)
+        CALL TECACH('ONN','PMATUUR',5,IDRESU,IRET)
       ELSE IF (OPTION.EQ.'RIGI_MECA_HYST') THEN
-      CALL TECACH('ONN','PMATUUC',5,IDRESU,IRET)
+        CALL TECACH('ONN','PMATUUC',5,IDRESU,IRET)
       ELSE
         CALL UTMESS('F','TE0050','MESSAGE VIDE    ')
       END IF
@@ -107,15 +107,20 @@ C     --------------------------------
         VALRES(2) = 0.D0
         CALL RCVALA(MATER,' ','ELAS',NPARA,NOMPAR,VALPAR,
      +                2,NOMRES,VALRES,CODRET, BL2 )
-        IF ( CODRET(1) .NE. 'OK' .OR. CODRET(2) .NE. 'OK') THEN
+C TEST DE PRESENCE MATERIAU CABLE A REVOIR     
+        IF ( CODRET(1) .NE. 'OK' .AND. CODRET(2) .NE. 'OK') THEN
           CALL RCVALA(MATER,' ','CABLE',NPARA,NOMPAR,VALPAR,
      +                2,NOMRES,VALRES,CODRET, BL2 )
-          IF ( CODRET(1) .NE. 'OK' .OR. CODRET(2) .NE. 'OK') THEN
+        ENDIF
+C FIN TEST CABLE
+        IF ( CODRET(1) .NE. 'OK' .AND. CODRET(2) .NE. 'OK') THEN
             VALRES(1) = 0.D0
             VALRES(2) = 0.D0
-          ENDIF
+        ELSEIF  (CODRET(1) .NE. 'OK' .AND. CODRET(2) .EQ. 'OK') THEN
+            VALRES(1) = 0.D0
+        ELSEIF  (CODRET(1) .EQ. 'OK' .AND. CODRET(2) .NE. 'OK') THEN
+            VALRES(2) = 0.D0
         ENDIF
-C        IF ( CODRET(2) .NE. 'OK' ) VALRES(2) = 0.D0
 C
       ELSE IF (OPTION.EQ.'RIGI_MECA_HYST') THEN
 C     ------------------------------------------

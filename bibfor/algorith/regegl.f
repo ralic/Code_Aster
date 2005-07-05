@@ -4,7 +4,7 @@
       CHARACTER*19                                PROFNO
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/06/2005   AUTEUR NICOLAS O.NICOLAS 
+C MODIF ALGORITH  DATE 05/07/2005   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -207,7 +207,7 @@ C
             KBID='  '
             CALL MGUTDM(MODGEN,KBID,K,'NOM_BASE_MODALE',IBID,BASMOD)
             CALL JEVEUO(BASMOD//'           .REFD','L',LREFE)
-            CALL JEVEUO(ZK24(LREFE+4)(1:8)//'      .INTD.TYPE','L',
+            CALL JEVEUO(ZK24(LREFE+4)(1:8)//'.IDC_TYPE','L',
      &                  LTYPE)
             IF (ZK8(LTYPE).EQ.'AUCUN') THEN
              CALL UTDEBM('A','REGEGL',' AUCUN TYPE D''INTERFACE DEFINI')
@@ -218,12 +218,12 @@ C
                CALL UTFINM
             ENDIF
             CALL MGUTDM(MODGEN,KBID,K,'NOM_MACR_ELEM',IBID,MACREL)
-            CALL JEVEUO(MACREL//'.MAEL.MASS .VALE','L',LLMASS)
-            CALL JELIRA(MACREL//'.MAEL.MASS .VALE','LONMAX',NBMAX,
+            CALL JEVEUO(MACREL//'.MAEL_MASS_VALE','L',LLMASS)
+            CALL JELIRA(MACREL//'.MAEL_MASS_VALE','LONMAX',NBMAX,
      &                  K1BID)
-            CALL JELIRA(MACREL//'.MAEL.MASS .VALE','LONUTI',NBMAS,
+            CALL JELIRA(MACREL//'.MAEL_MASS_VALE','LONUTI',NBMAS,
      &                  K1BID)
-            CALL JEVEUO(MACREL//'.MAEL.INER .VALE','L',LLINER)
+            CALL JEVEUO(MACREL//'.MAEL_INER_VALE','L',LLINER)
 C
 C           --- CALCUL DE LA MATRICE DE ROTAION ---
             CALL JEVEUO(JEXNUM(MODGEN//'      .MODG.SSOR',K),'L',LLROT)

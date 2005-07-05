@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C-----------------------------------------------------------------------
-C MODIF ALGORITH  DATE 11/03/2003   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 05/07/2005   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -66,17 +66,17 @@ C
 C --- CAS CLASSIQUE
 C
       IF ( OPTION .EQ. 'CLASSIQUE' ) THEN
-         NOMMAT=NOMRES//'.MAEL.RAID'
+         NOMMAT=NOMRES//'.MAEL_RAID'
          CALL ORTPRO(NOMMAT,'G',BASMOD,RAID,'RAIDEUR    ')
-         NOMMAT=NOMRES//'.MAEL.MASS'
+         NOMMAT=NOMRES//'.MAEL_MASS'
          CALL ORTPRO(NOMMAT,'G',BASMOD,MASS,'MASSE        ')
          IF (AMOR.NE.BLANC) THEN
-            NOMMAT=NOMRES//'.MAEL.AMOR'
+            NOMMAT=NOMRES//'.MAEL_AMOR'
             CALL CALPRO(NOMMAT,'G',BASMOD,AMOR)
          ELSE
             CALL GETVR8(BLANC,'AMOR_REDUIT',1,1,0,BID,IOC)
             IF (IOC.LT.0) THEN
-               NOMMAT=NOMRES//'.MAEL.AMOR'
+               NOMMAT=NOMRES//'.MAEL_AMOR'
               CALL CALAMO(NOMMAT,'G',BASMOD)
             ENDIF
          ENDIF
@@ -85,12 +85,12 @@ C --- CAS RITZ OU DIAG_MASS
 C
       ELSEIF ( OPTION .EQ. 'RITZ'      .OR.
      +         OPTION .EQ. 'DIAG_MASS' ) THEN
-         NOMMAT = NOMRES//'.MAEL.RAID'
+         NOMMAT = NOMRES//'.MAEL_RAID'
          CALL CALPRO ( NOMMAT, 'G', BASMOD, RAID )
-         NOMMAT = NOMRES//'.MAEL.MASS'
+         NOMMAT = NOMRES//'.MAEL_MASS'
          CALL CALPRO ( NOMMAT, 'G', BASMOD, MASS )
          IF ( AMOR .NE. BLANC ) THEN
-            NOMMAT = NOMRES//'.MAEL.AMOR'
+            NOMMAT = NOMRES//'.MAEL_AMOR'
             CALL CALPRO ( NOMMAT, 'G', BASMOD, AMOR )
          ENDIF
 C
@@ -104,7 +104,7 @@ C
 C
 C --- CALCUL DES FORCES D'INERTIES
 C
-      NOMMAT = NOMRES//'.MAEL.INER'
+      NOMMAT = NOMRES//'.MAEL_INER'
       CALL INER81 ( NOMMAT, 'G', BASMOD, MASS )
 C
       END

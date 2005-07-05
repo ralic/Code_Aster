@@ -1,4 +1,4 @@
-# MODIF  DATE 09/05/2005   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 04/07/2005   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE IMPACT D UNE BARRE DE TAYLOR ELASTOPLASTIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -222,8 +222,8 @@ TEST_TABLE(TABLE=TABJEU,
            FILTRE=_F(NOM_PARA = 'NUME_ORDRE',
                      VALE_I   = 10),
            NOM_PARA ='R',
-           CRITERE  = 'RELATIF',
-           PRECISION=1.E-5,
+           CRITERE  = 'ABSOLU',
+           PRECISION=0.,
            VALE     =0.0000000000000E+00,
            REFERENCE= 'NON_REGRESSION',
            VERSION  = '7.1.1' )
@@ -232,8 +232,8 @@ TEST_TABLE(TABLE=TABJEU,
            FILTRE=_F(NOM_PARA = 'NUME_ORDRE',
                      VALE_I   = 20),
            NOM_PARA ='R',
-           CRITERE  = 'RELATIF',
-           PRECISION=1.E-5,
+           CRITERE  = 'ABSOLU',
+           PRECISION=0.,
            VALE     =0.0000000000000E+00,
            REFERENCE= 'NON_REGRESSION',
            VERSION  = '7.1.1' )

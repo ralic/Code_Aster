@@ -1,4 +1,4 @@
-# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 04/07/2005   AUTEUR CIBHHLV L.VIVAN 
 # TITRE  REPONSE HARMONIQUE D'UNE BARRE PAR SOUS-STRUCTURATION DYNAMIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -23,7 +23,6 @@
 #
 # FICHIER DE COMMANDES ASTER : BARRE ENCASTREE-LIBRE
 #
-#12345678901234567890123456789012345678901234567890123456789012345678901
 #
 DEBUT(CODE=_F( NOM = 'SHLL100A',NIV_PUB_WEB='INTERNET'))
 
@@ -32,7 +31,7 @@ DEBUT(CODE=_F( NOM = 'SHLL100A',NIV_PUB_WEB='INTERNET'))
 MAYAD=LIRE_MAILLAGE( UNITE=22)
 
 MAYAD=DEFI_GROUP( reuse=MAYAD,   MAILLAGE=MAYAD,
-  CREA_GROUP_MA=_F(  NOM = 'TOUTD', TOUT = 'OUI'))
+                  CREA_GROUP_MA=_F(  NOM = 'TOUTD', TOUT = 'OUI'))
 
 #
 MATERID=DEFI_MATERIAU(   ELAS=_F( RHO = 1.E04, NU = 0.3, E = 1.E10,
@@ -58,10 +57,6 @@ CARAD=AFFE_CARA_ELEM(  MODELE=BARRED,
                                    SECTION = 'CERCLE',
                                    CARA = 'R',  VALE = 0.1) )
 
-###############
-#                                   CARA: ('R','EP'),
-#                                   VALE: (0.1 0.01)));
-#
 #
 GUIDAGED=AFFE_CHAR_MECA(   MODELE=BARRED,
                            DDL_IMPO=(
@@ -159,6 +154,7 @@ HARMDIR=DYNA_LINE_HARM(  MATR_MASS=MATASMD,
 
 #
 TEST_RESU( RESU=_F( RESULTAT = HARMDIR,
+                  REFERENCE = 'NON_REGRESSION',VERSION='8.1.16',
                   NOM_CHAM = 'DEPL',
                   NUME_ORDRE = 01,
                   CRITERE = 'RELATIF',
@@ -172,31 +168,58 @@ TEST_RESU( RESU=_F( RESULTAT = HARMDIR,
 
 FD=100.
 
+
+##########################################################################
+# concept harm_gene
+#
 DYNPROD=DYNA_LINE_HARM(  MATR_MASS=MASPROD,
                             MATR_RIGI=RIGPROD,
                             MATR_AMOR=AMOPROD,
                             FREQ=FD,
-                           TOUT_CHAM='OUI',
-#           FREQ:F,NOM_CHAM:'DEPL',
+                            TOUT_CHAM='OUI',
                             EXCIT=_F( VECT_ASSE = VECPROD,
                                    COEF_MULT = 1.))
 
+HFOG1 = RECU_FONCTION ( RESU_GENE = DYNPROD,
+                        NOM_CHAM = 'DEPL', 
+                        NUME_CMP_GENE = 1 ) ;
+
+IMPR_FONCTION ( COURBE = _F( FONCTION = HFOG1 ) ) ;
+
+TEST_FONCTION( VALEUR= _F( FONCTION = HFOG1 ,
+                  REFERENCE = 'NON_REGRESSION',VERSION='8.1.16',
+                           VALE_PARA = 0.00000E+00,
+                           VALE_REFE_C = ('RI',-5.50231E-11,4.11411E-09,), ), ) ;
 #
 DYNHARD=REST_BASE_PHYS(   RESU_GENE=DYNPROD,
-                           #MAILLAGE:MAYAD
                            FREQ=FD,
                            MODE_MECA=MODESD,
                            TOUT_CHAM='OUI')
-
+#
 TEST_RESU( RESU=_F( RESULTAT = DYNHARD,
-                  NOM_CHAM = 'DEPL',
-                  NUME_ORDRE = 01,
-                  CRITERE = 'RELATIF',
-                  PRECISION = 2.E-3,
-                  NOEUD = 'NO11',
-                  NOM_CMP = 'DX',
-                  VALE_C = ('RI',-7.00E-11,5.07E-9,)))
+                  REFERENCE = 'NON_REGRESSION',VERSION='8.1.16',
+                    NOM_CHAM = 'DEPL',
+                    NUME_ORDRE = 01,
+                    CRITERE = 'RELATIF',
+                    PRECISION = 2.E-3,
+                    NOEUD = 'NO11',
+                    NOM_CMP = 'DX',
+                    VALE_C = ('RI',-7.00E-11,5.07E-9,)))
 
+#
+HFX_NO11 = RECU_FONCTION ( RESU_GENE = DYNPROD,
+                           NOM_CHAM = 'DEPL', 
+                           NOEUD = 'NO11',
+                           NOM_CMP = 'DX',  ) ;
+
+IMPR_FONCTION ( COURBE = _F( FONCTION = HFX_NO11 ) ) ;
+
+TEST_FONCTION( VALEUR= _F( FONCTION = HFX_NO11 ,
+                  REFERENCE = 'NON_REGRESSION',VERSION='8.1.16',
+                           VALE_PARA = FD,
+                           VALE_REFE_C = ('RI',-7.00E-11,5.07E-9,), ), ) ;
+
+##########################################################################
 #----------------------------------------------
 #SOUS STRUCTURATION
 #----------------------------------------------
@@ -430,17 +453,38 @@ MASGEN=ASSE_MATR_GENE(  NUME_DDL_GENE=NUMEGE,
 AMOGEN=ASSE_MATR_GENE(  NUME_DDL_GENE=NUMEGE,
                            OPTION='AMOR_GENE')
 
+############################################################
+# concept mode_gene
+#
 RESGAIR=MODE_ITER_SIMULT(     MATR_A=RIGGEN,
                                  MATR_B=MASGEN,
                              CALC_FREQ=_F( OPTION = 'PLUS_PETITE',
                                         NMAX_FREQ = 10)
                             )
 
+FOGEN1 = RECU_FONCTION ( RESU_GENE = RESGAIR,
+                         NOM_CHAM = 'DEPL', 
+                         NUME_CMP_GENE = 7 ) ;
+
+TEST_FONCTION( VALEUR= _F( FONCTION = FOGEN1 ,
+                  REFERENCE = 'NON_REGRESSION',VERSION='8.1.16',
+                           VALE_PARA = 0.00000E+00,
+                           VALE_REFE = 5.46277E+03, ), ) ;
+
+FOGEN2 = RECU_FONCTION ( RESU_GENE = RESGAIR,
+                         INTERPOL = 'LIN',
+                         NOM_PARA_RESU = 'MASS_GENE'  ) ;
+
+TEST_FONCTION( VALEUR= _F( FONCTION = FOGEN2 ,
+                  REFERENCE = 'NON_REGRESSION',VERSION='8.1.16',
+                           VALE_PARA = 2.50258E+02,
+                           VALE_REFE = 3.35302E+01, ), ) ;
+
 #
-SQUEL=DEFI_SQUELETTE(  MODELE_GENE=MODEGE,SOUS_STRUC=(
-                            _F( NOM = 'COTE1',
+SQUEL=DEFI_SQUELETTE(  MODELE_GENE=MODEGE,
+                       SOUS_STRUC=( _F( NOM = 'COTE1',
                                         TOUT = 'OUI'),
-                            _F( NOM = 'COTE2',
+                                    _F( NOM = 'COTE2',
                                         TOUT = 'OUI')))
 
 #
@@ -451,6 +495,8 @@ MODAIR=REST_BASE_PHYS(   RESU_GENE=RESGAIR,
 MODCOT=REST_BASE_PHYS(   RESU_GENE=RESGAIR,
                              SOUS_STRUC='COTE2',
                            TOUT_ORDRE='OUI')
+
+############################################################
 
 NUMEMODE=NUME_DDL_GENE( BASE=RESGAIR,
                            STOCKAGE='PLEIN')
@@ -492,7 +538,6 @@ DYNGEN=DYNA_LINE_HARM(  MATR_MASS=MASGEN,
                             MATR_AMOR=AMOGEN,
                             FREQ=F,
                            TOUT_CHAM='OUI',
-#           FREQ:F,NOM_CHAM:'DEPL',
                             EXCIT=_F( VECT_ASSE = VECTGEN,
                                    COEF_MULT = 1.))
 
@@ -503,7 +548,6 @@ DYNPRO=DYNA_LINE_HARM(  MATR_MASS=MASPRO,
                             MATR_AMOR=AMOPRO,
                             FREQ=F,
                            TOUT_CHAM='OUI',
-#           FREQ:F,NOM_CHAM:'DEPL',
                             EXCIT=_F( VECT_ASSE = VECPRO,
                                    COEF_MULT = 1.))
 
@@ -539,6 +583,7 @@ DYNHAR2=REST_BASE_PHYS( RESU_GENE=DYNGEN,
 
 #
 TEST_RESU( RESU=_F( RESULTAT = DYNHAR2,
+                  REFERENCE = 'NON_REGRESSION',VERSION='8.1.16',
                   NOM_CHAM = 'DEPL',
                   NUME_ORDRE = 01,
                   CRITERE = 'RELATIF',
@@ -550,6 +595,7 @@ TEST_RESU( RESU=_F( RESULTAT = DYNHAR2,
 #
 #
 TEST_RESU( RESU=_F( RESULTAT = DYNHARC,
+                  REFERENCE = 'NON_REGRESSION',VERSION='8.1.16',
                   NOM_CHAM = 'DEPL',
                   NUME_ORDRE = 01,
                   CRITERE = 'RELATIF',
@@ -560,6 +606,7 @@ TEST_RESU( RESU=_F( RESULTAT = DYNHARC,
 
 #
 TEST_RESU( RESU=_F( RESULTAT = DYNHAR2,
+                  REFERENCE = 'NON_REGRESSION',VERSION='8.1.16',
                   NOM_CHAM = 'VITE',
                   NUME_ORDRE = 01,
                   CRITERE = 'RELATIF',
@@ -570,6 +617,7 @@ TEST_RESU( RESU=_F( RESULTAT = DYNHAR2,
 
 #
 TEST_RESU( RESU=_F( RESULTAT = DYNHAR2,
+                  REFERENCE = 'NON_REGRESSION',VERSION='8.1.16',
                   NOM_CHAM = 'ACCE',
                   NUME_ORDRE = 01,
                   CRITERE = 'RELATIF',
@@ -580,6 +628,7 @@ TEST_RESU( RESU=_F( RESULTAT = DYNHAR2,
 
 #
 TEST_RESU( RESU=_F( RESULTAT = DYNHARM2,
+                  REFERENCE = 'NON_REGRESSION',VERSION='8.1.16',
                   NOM_CHAM = 'DEPL',
                   NUME_ORDRE = 01,
                   CRITERE = 'RELATIF',

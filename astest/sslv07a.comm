@@ -1,5 +1,5 @@
 
-# MODIF  DATE 14/02/2005   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 04/07/2005   AUTEUR REZETTE C.REZETTE 
 # TITRE PARALLEPEPIPEDE SOUS SON PROPRE POIDS (HEXA20 GROSSIER)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -145,7 +145,6 @@ RESU=MECA_STATIQUE(MODELE=MO,
 
 
 RESU=CALC_ELEM( reuse= RESU ,RESULTAT= RESU ,
-                NUME_ORDRE=1,
                 OPTION=('SIGM_ELNO_DEPL',),
                 )
 
@@ -489,7 +488,152 @@ TB1=MACR_LIGN_COUPE( RESULTAT= DEPLD2,
 TEST_TABLE(   TABLE=TB1,
               FILTRE=(_F( NOM_PARA = 'NUME_ORDRE', VALE_I = 10,),
                       _F( NOM_PARA = 'ABSC_CURV',  VALE   = 0.,),),
-              NOM_PARA='SIZZ', VALE=114777.0, REFERENCE='ANALYTIQUE',   )
+              NOM_PARA='SIZZ', VALE=114777.0, REFERENCE='ANALYTIQUE', )
+#
+# =====================================================================
+#
+# validation de MACR_LIGN_COUPE en repere local
+#
+
+RESU=CALC_NO( reuse= RESU ,RESULTAT= RESU ,
+                NUME_ORDRE=1,
+                OPTION=('SIGM_NOEU_DEPL',),
+                )
+TB2=MACR_LIGN_COUPE( RESULTAT= RESU,
+                     NOM_CHAM= 'SIGM_NOEU_DEPL',
+                     LIGN_COUPE = _F( NB_POINTS= 4,
+                                      COOR_ORIG= (0.0, 0.0, 1.5),
+                                      COOR_EXTR= (0.0, 0.5, 1.5),
+                                    ) )
+
+IMPR_TABLE ( TABLE = TB2,
+             FORMAT='ASTER',
+             UNITE=40
+             )
+
+DEFI_FICHIER(ACTION='LIBERER',UNITE=40)
+
+TAB2=LIRE_TABLE( UNITE=40,
+                   FORMAT='ASTER', 
+                   NUME_TABLE=1,
+                   TYPE_TABLE='TABLE',
+                   SEPARATEUR=' ',)
+
+TEST_TABLE(    TABLE=TAB2,
+               FILTRE=_F(  NOM_PARA = 'ABSC_CURV',
+                            VALE = 1.66667E-01,),
+               NOM_PARA='SIXX',
+               VALE= -1.57382E-02,
+               REFERENCE = 'NON_REGRESSION',
+          )
+
+TEST_TABLE(    TABLE=TAB2,
+               FILTRE=_F(  NOM_PARA = 'ABSC_CURV',
+                            VALE = 1.66667E-01,),
+               NOM_PARA='SIYY',
+               VALE= 1.36784E-03,
+               REFERENCE = 'NON_REGRESSION',
+          )
+
+TEST_TABLE(    TABLE=TAB2,
+               FILTRE=_F(  NOM_PARA = 'ABSC_CURV',
+                            VALE = 1.66667E-01,),
+               NOM_PARA='SIZZ',
+               VALE= 1.14777E+05,
+               REFERENCE = 'NON_REGRESSION',
+          )
+
+TEST_TABLE(    TABLE=TAB2,
+               FILTRE=_F(  NOM_PARA = 'ABSC_CURV',
+                            VALE = 1.66667E-01,),
+               NOM_PARA='SIXY',
+               VALE= 2.24259E-11,
+               REFERENCE = 'NON_REGRESSION',
+          )
+
+TEST_TABLE(    TABLE=TAB2,
+               FILTRE=_F(  NOM_PARA = 'ABSC_CURV',
+                            VALE = 1.66667E-01,),
+               NOM_PARA='SIXZ',
+               VALE= -1.68750E-11,
+               REFERENCE = 'NON_REGRESSION',
+          )
+
+TEST_TABLE(    TABLE=TAB2,
+               FILTRE=_F(  NOM_PARA = 'ABSC_CURV',
+                            VALE = 1.66667E-01,),
+               NOM_PARA='SIYZ',
+               VALE= 1.11734E-01,
+               REFERENCE = 'NON_REGRESSION',
+          )
+
+TB3=MACR_LIGN_COUPE( RESULTAT= RESU,
+                     NOM_CHAM= 'SIGM_NOEU_DEPL',
+                     LIGN_COUPE = _F( NB_POINTS= 4,VECT_Y=(-1.,0.,0.),
+                                      COOR_ORIG= (0.0, 0.0, 1.5),
+                                      COOR_EXTR= (0.0, 0.5, 1.5),
+                                    ) )
+
+IMPR_TABLE ( TABLE = TB3,
+             FORMAT='ASTER',
+             UNITE=41
+             )
+
+DEFI_FICHIER(ACTION='LIBERER',UNITE=41)
+
+TAB3=LIRE_TABLE( UNITE=41,
+                   FORMAT='ASTER', 
+                   NUME_TABLE=1,
+                   TYPE_TABLE='TABLE',
+                   SEPARATEUR=' ',)
+
+TEST_TABLE(    TABLE=TAB3,
+               FILTRE=_F(  NOM_PARA = 'ABSC_CURV',
+                            VALE = 1.66667E-01,),
+               NOM_PARA='SIXX',
+               VALE= 1.36784E-03,
+               REFERENCE = 'NON_REGRESSION',
+          )
+
+TEST_TABLE(    TABLE=TAB3,
+               FILTRE=_F(  NOM_PARA = 'ABSC_CURV',
+                            VALE = 1.66667E-01,),
+               NOM_PARA='SIYY',
+               VALE= -1.57382E-02,
+               REFERENCE = 'NON_REGRESSION',
+          )
+
+TEST_TABLE(    TABLE=TAB3,
+               FILTRE=_F(  NOM_PARA = 'ABSC_CURV',
+                            VALE = 1.66667E-01,),
+               NOM_PARA='SIZZ',
+               VALE= 1.14777E+05,
+               REFERENCE = 'NON_REGRESSION',
+          )
+
+TEST_TABLE(    TABLE=TAB3,
+               FILTRE=_F(  NOM_PARA = 'ABSC_CURV',
+                            VALE = 1.66667E-01,),
+               NOM_PARA='SIXY',
+               VALE= -2.24259E-11,
+               REFERENCE = 'NON_REGRESSION',
+          )
+
+TEST_TABLE(    TABLE=TAB3,
+               FILTRE=_F(  NOM_PARA = 'ABSC_CURV',
+                            VALE = 1.66667E-01,),
+               NOM_PARA='SIXZ',
+               VALE= 1.11734E-01,
+               REFERENCE = 'NON_REGRESSION',
+          )
+
+TEST_TABLE(    TABLE=TAB3,
+               FILTRE=_F(  NOM_PARA = 'ABSC_CURV',
+                            VALE = 1.66667E-01,),
+               NOM_PARA='SIYZ',
+               VALE=1.68750E-11,
+               REFERENCE = 'NON_REGRESSION',
+          )
 
 
 FIN();

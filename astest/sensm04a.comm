@@ -1,4 +1,4 @@
-# MODIF  DATE 29/11/2004   AUTEUR F6BHHBO P.DEBONNIERES 
+# MODIF  DATE 04/07/2005   AUTEUR LEBOUVIE F.LEBOUVIER 
 # RESPONSABLE PABHHHH N. TARDIEU
 # TITRE SENSIBILITE AUX DONNEES MATERIAUX EN MECA_STATIQUE ORTHOTROPE 2D
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -250,11 +250,15 @@ for i in range(n):
                                OPERATION='EXTRACTION',),);
 
   diff=(TAB_DIF['DY',1]-TAB_REF['DY',1]) / (sensible[i]*epsilon)
-  
+  CRIT = 'RELATIF'
+  PREC = 1.E-2
+  if diff == 0.:
+      CRIT = 'ABSOLU'
+      PREC = 0.
   TEST_RESU(RESU=(
      _F(  RESULTAT = RES,   NUME_ORDRE = 1,
           NOM_CHAM = 'DEPL',   GROUP_NO = 'I',
-          CRITERE = 'RELATIF', PRECISION = 1.E-2,
+          CRITERE = CRIT, PRECISION = PREC,
           NOM_CMP = 'DY',   SENSIBILITE = PS[i],
           VALE = diff, REFERENCE = 'NON_REGRESSION' )))
 
@@ -301,12 +305,18 @@ for i in range(n):
                                OPERATION='EXTRACTION',),);
 
   diff=(TA_D_EP['EPXY',1]-TA_R_EP['EPXY',1]) / (sensible[i]*epsilon)
+
+  CRIT = 'RELATIF'
+  PREC = 1.E-2
+  if diff == 0.:
+      CRIT = 'ABSOLU'
+      PREC = 0.
   
   TEST_RESU(RESU=(
      _F(  RESULTAT = RES,   NUME_ORDRE = 1,
           NOM_CHAM = 'EPSI_ELNO_DEPL',   NOEUD = 'N179',
           MAILLE = 'M47',
-          CRITERE = 'RELATIF', PRECISION = 1.E-2,
+          CRITERE = CRIT, PRECISION = PREC,
           NOM_CMP = 'EPXY',   SENSIBILITE = PS[i],
           VALE = diff, REFERENCE = 'NON_REGRESSION' )))
 
@@ -353,12 +363,17 @@ for i in range(n):
                                OPERATION='EXTRACTION',),);
 
   diff=(TA_D_SI['SIYY',1]-TA_R_SI['SIYY',1]) / (sensible[i]*epsilon)
-  
+  CRIT = 'RELATIF'
+  PREC = 1.5E-2
+  if diff == 0.:
+      CRIT = 'ABSOLU'
+      PREC = 0.
+ 
   TEST_RESU(RESU=(
      _F(  RESULTAT = RES,   NUME_ORDRE = 1,
           NOM_CHAM = 'SIGM_ELNO_DEPL',   NOEUD = 'N179',
           MAILLE = 'M47',
-          CRITERE = 'RELATIF', PRECISION = 1.5E-2,
+          CRITERE = CRIT, PRECISION = PREC,
           NOM_CMP = 'SIYY',   SENSIBILITE = PS[i],
           VALE = diff, REFERENCE = 'NON_REGRESSION' )))
 

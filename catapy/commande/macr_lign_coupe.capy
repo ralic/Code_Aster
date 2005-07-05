@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 04/07/2005   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -41,6 +41,9 @@ MACR_LIGN_COUPE=MACRO(nom="MACR_LIGN_COUPE",op=macr_lign_coupe_ops,sd_prod=table
            NB_POINTS       =SIMP(statut='f',typ='I'),
            b_nbpts = BLOC(condition = "NB_POINTS != None",
               COOR_ORIG       =SIMP(statut='o',typ='R',min=2,max=3),  
-              COOR_EXTR       =SIMP(statut='o',typ='R',min=2,max=3), ), 
+              COOR_EXTR       =SIMP(statut='o',typ='R',min=2,max=3),
+              VECT_Y          =SIMP(statut='f',typ='R',min=2,max=3),), 
          ),
 )  ;
+
+

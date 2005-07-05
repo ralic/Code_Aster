@@ -1,6 +1,6 @@
       SUBROUTINE CAMOAT (NOMRES,NUMREF,INTF,RAID,RAILDL,INORD)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 30/08/2004   AUTEUR NICOLAS O.NICOLAS 
+C MODIF ALGORITH  DATE 05/07/2005   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -102,7 +102,7 @@ C
 C
 C-----------REQUETTE ADRESSE DE LA TABLE DESCRIPTION DES DEFORMEES------
 C
-      DESDEF=INTF//'      .INTD.DEFO'
+      DESDEF=INTF//'.IDC_DEFO'
       CALL JEVEUO(DESDEF,'L',LLDES)
       CALL JELIRA(DESDEF,'LONMAX',NBNOT,K8BID)
 C**************************************************************
@@ -112,8 +112,8 @@ C**************************************************************
 C
 C------------REQUETTE ADRESSE DEFINITION INTERFACE ET TYPE--------------
 C
-      CALL JELIRA(INTF//'      .INTD.LINO','NMAXOC',NBINT,K8BID)
-      CALL JEVEUO(INTF//'      .INTD.TYPE','L',LLTYP)
+      CALL JELIRA(INTF//'.IDC_LINO','NMAXOC',NBINT,K8BID)
+      CALL JEVEUO(INTF//'.IDC_TYPE','L',LLTYP)
 C
 C-----------COMPTAGE DU NOMBRE DE NOEUDS MAC NEAL-----------------------
 C
@@ -121,21 +121,21 @@ C
       NBFIN=0
 C
       DO 10 J=1,NBINT
-        CALL JELIRA(JEXNUM(INTF//'      .INTD.LINO',J),'LONMAX',NBNOE,
+        CALL JELIRA(JEXNUM(INTF//'.IDC_LINO',J),'LONMAX',NBNOE,
      &                      K8BID)
         TYPCOU=ZK8(LLTYP+J-1)
         IF(TYPCOU.EQ.'MNEAL   ') THEN
-          CALL JEVEUO(JEXNUM(INTF//'      .INTD.LINO',J),'L',LLNOIN)
+          CALL JEVEUO(JEXNUM(INTF//'.IDC_LINO',J),'L',LLNOIN)
           DO 15 I=1,NBNOE
             IK=ZI(LLNOIN+I-1)
             NBFIN=MAX(NBFIN,IK)
             NBDEB=MIN(NBDEB,IK)
  15       CONTINUE
-          CALL JELIBE(JEXNUM(INTF//'      .INTD.LINO',J))
+          CALL JELIBE(JEXNUM(INTF//'.IDC_LINO',J))
         ENDIF
  10   CONTINUE
 C
-      CALL JELIBE(INTF//'      .INTD.TYPE')
+      CALL JELIBE(INTF//'.IDC_TYPE')
 C
       IF(NBFIN.GT.0) THEN
         NBMN=NBFIN-NBDEB+1

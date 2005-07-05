@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 05/10/2004   AUTEUR CIBHHLV L.VIVAN 
+#& MODIF COMMANDE  DATE 04/07/2005   AUTEUR GNICOLAS G.NICOLAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -138,8 +138,7 @@ IMPR_FICO_HOMA=PROC(nom="IMPR_FICO_HOMA",op= 189, docu="U7.04.01-b",
            b_indicateur_d_erreur  =BLOC(condition = "ADAPTATION != None",
                            fr="Indicateur d'erreur",
                            ang="Error indicator",
-                           regles=(AU_MOINS_UN('NUME_ORDRE','INST','RESULTAT'),
-                                   EXCLUS('NUME_ORDRE','INST'),
+                           regles=(EXCLUS('NUME_ORDRE','INST'),
                                    EXCLUS('NUME_ORDRE','RESULTAT'),
                                    PRESENT_PRESENT('RESULTAT','NOM_CHAM'),),
                            NOM_MED  =SIMP(statut='o',typ='TXM',
@@ -232,8 +231,7 @@ IMPR_FICO_HOMA=PROC(nom="IMPR_FICO_HOMA",op= 189, docu="U7.04.01-b",
          MAJ_CHAM        =FACT(statut='f',max='**',
                            fr="Mise à jour de champs sur le nouveau maillage.",
                            ang="Updating of fields over the new mesh.",
-                           regles=(AU_MOINS_UN('NUME_ORDRE','INST','RESULTAT'),
-                                   EXCLUS('NUME_ORDRE','INST'),
+                           regles=(EXCLUS('NUME_ORDRE','INST'),
                                    EXCLUS('NUME_ORDRE','RESULTAT'),
                                    PRESENT_PRESENT('RESULTAT','NOM_CHAM'),),
                            NOM_MED  =SIMP(statut='o',typ='TXM',
@@ -279,19 +277,19 @@ IMPR_FICO_HOMA=PROC(nom="IMPR_FICO_HOMA",op= 189, docu="U7.04.01-b",
                           fr="Nombre de noeuds et éléments du maillage",
                           ang="Number of nodes and elements in the mesh" ),
 #
-         QUALITE         =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON"),
+         QUALITE         =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON"),
                           fr="Qualité du maillage",
                           ang="Mesh quality" ),
 #
-         INTERPENETRATION=SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON"),
+         INTERPENETRATION=SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON"),
                           fr="Controle de la non interpénétration des éléments.",
                           ang="Overlapping checking." ),
 #
-         CONNEXITE       =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON"),
+         CONNEXITE       =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON"),
                           fr="Connexité du maillage.",
                           ang="Mesh connexity." ),
 #
-         TAILLE          =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON"),
+         TAILLE          =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON"),
                           fr="Tailles des sous-domaines du maillage.",
                           ang="Sizes of mesh sub-domains." ),
 #

@@ -1,4 +1,4 @@
-# MODIF  DATE 06/04/2004   AUTEUR CIBHHPD S.VANDENBERGHE 
+# MODIF  DATE 04/07/2005   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE VALIDATION DE L'OPERATEUR DEFI_CABLE_BP
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -223,8 +223,8 @@ TEST_TABLE(       TABLE=TABL_CA, REFERENCE='ANALYTIQUE',
                    FILTRE=_F(  NOM_PARA = 'NOEUD_CABLE',
                             VALE_K = 'NC001033'),
                  NOM_PARA='EXCENTRICITE',
-                  CRITERE='RELATIF',
-                PRECISION=1.0E-3,
+                  CRITERE='ABSOLU',
+                PRECISION=0.,
                      VALE=0.000000E+00 )
 
 #
@@ -382,8 +382,8 @@ TEST_TABLE(       TABLE=TABL_CA, REFERENCE='ANALYTIQUE',
                    FILTRE=_F(  NOM_PARA = 'NOEUD_CABLE',
                             VALE_K = 'NC001065'),
                  NOM_PARA='EXCENTRICITE',
-                  CRITERE='RELATIF',
-                PRECISION=1.0E-3,
+                  CRITERE='ABSOLU',
+                PRECISION=0.,
                      VALE=0.000000E+00 )
 
 #
@@ -541,8 +541,8 @@ TEST_TABLE(       TABLE=TABL_CA, REFERENCE='ANALYTIQUE',
                    FILTRE=_F(  NOM_PARA = 'NOEUD_CABLE',
                             VALE_K = 'NC001097'),
                  NOM_PARA='EXCENTRICITE',
-                  CRITERE='RELATIF',
-                PRECISION=1.0E-3,
+                  CRITERE='ABSOLU',
+                PRECISION=0.,
                      VALE=0.000000E+00 )
 
 #
@@ -704,8 +704,8 @@ TEST_TABLE(       TABLE=TABL_CA, REFERENCE='ANALYTIQUE',
                    FILTRE=_F(  NOM_PARA = 'NOEUD_CABLE',
                             VALE_K = 'NC002033'),
                  NOM_PARA='EXCENTRICITE',
-                  CRITERE='RELATIF',
-                PRECISION=1.0E-3,
+                  CRITERE='ABSOLU',
+                PRECISION=0.,
                      VALE=0.000000E+00 )
 
 #
@@ -863,8 +863,8 @@ TEST_TABLE(       TABLE=TABL_CA, REFERENCE='ANALYTIQUE',
                    FILTRE=_F(  NOM_PARA = 'NOEUD_CABLE',
                             VALE_K = 'NC002065'),
                  NOM_PARA='EXCENTRICITE',
-                  CRITERE='RELATIF',
-                PRECISION=1.0E-3,
+                  CRITERE='ABSOLU',
+                PRECISION=0.,
                      VALE=0.000000E+00 )
 
 #
@@ -1022,8 +1022,8 @@ TEST_TABLE(       TABLE=TABL_CA, REFERENCE='ANALYTIQUE',
                    FILTRE=_F(  NOM_PARA = 'NOEUD_CABLE',
                             VALE_K = 'NC002097'),
                  NOM_PARA='EXCENTRICITE',
-                  CRITERE='RELATIF',
-                PRECISION=1.0E-3,
+                  CRITERE='ABSOLU',
+                PRECISION=0.,
                      VALE=0.000000E+00 )
 
 #

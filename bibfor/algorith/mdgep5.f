@@ -1,6 +1,11 @@
-      SUBROUTINE AFFICH (TEXTE)
+      SUBROUTINE MDGEP5 ( NEQ, NBMODE, BMODAL, XGENE, IDDL, U )
+      IMPLICIT   NONE
+      INTEGER    NEQ, NBMODE, IDDL, J
+      REAL*8     BMODAL(NEQ,*)
+      COMPLEX*16 XGENE(*), U
+C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 05/07/2005   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 04/07/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -17,13 +22,10 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
-C 
-      IMPLICIT NONE
-      CHARACTER*(*) TEXTE
-      INTEGER       IFM, IUNIFI, GTNPRO
-C     ----------------------------------------------------------------
-      IF ( GTNPRO() .EQ. 0 ) THEN
-        IFM = IUNIFI ('MESSAGE')
-        WRITE(IFM,'(A)') TEXTE
-      ENDIF
+C-----------------------------------------------------------------------
+      U = DCMPLX(0.D0,0.D0)
+      DO 10 J = 1,NBMODE
+         U = U + BMODAL(IDDL,J)*XGENE(J)
+ 10   CONTINUE
+C
       END

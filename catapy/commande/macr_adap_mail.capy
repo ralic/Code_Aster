@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 04/07/2005   AUTEUR GNICOLAS G.NICOLAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -47,8 +47,8 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",op=macr_adap_mail_ops,sd_prod=macr_ada
 #
 # 2. Version de HOMARD
 #
-         VERSION_HOMARD = SIMP(statut='f',typ='TXM',defaut="V7_1",
-                               into=("V7_1", "V7_N", "V7_N_PERSO"),
+         VERSION_HOMARD = SIMP(statut='f',typ='TXM',defaut="V7_5",
+                               into=("V7_5", "V7_N", "V7_N_PERSO"),
                            fr="Version de HOMARD",
                            ang="HOMARD release"),
 #
@@ -111,47 +111,58 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",op=macr_adap_mail_ops,sd_prod=macr_ada
 #
 # 5.3. Pour de l'adaptation libre, il faut l'indicateur d'erreur
 #
-#
            b_indicateur_d_erreur   =BLOC( condition = " LIBRE != None " ,
                            fr="Choix de l'indicateur d'erreur",
                            ang="Selection of error indicator",
 #
-# 5.3.1. Le nom du concept resultat_sdaster
+# 5.3.1. L'indicateur
 #
-                           RESULTAT_N     = SIMP(statut='o',typ=(evol_elas,evol_noli,evol_ther) ,
+                           regles=(UN_PARMI('CHAM_GD','RESULTAT_N')),
+#
+# 5.3.1.1. Sous forme de champ de grandeur
+#
+                           CHAM_GD        =SIMP(statut='f',typ=cham_gd_sdaster,
+                           fr="Champ de grandeur Code_Aster contenant l'indicateur d'erreur",
+                           ang="Champ de grandeur with error indicator" ),
+#
+# 5.3.1.2. Sous forme de concept resultat_sdaster
+#
+                           RESULTAT_N     = SIMP(statut='f',typ=(evol_elas,evol_noli,evol_ther) ,
                            fr="Concept resultat Code_Aster contenant l'indicateur d'erreur",
                            ang="Result with error indicator" ),
 #
-# 5.3.2. Le champ d'indicateur d'erreur
+                           b_champ_indicateur     =BLOC(condition="(RESULTAT_N != None)",
+                             INDICATEUR     = SIMP(statut='o',typ='TXM',     
+                             fr="Champ de l'indicateur d'erreur",
+                             ang="Error indicator field" ),
+                                                       ),
 #
-                           INDICATEUR     = SIMP(statut='o',typ='TXM',     
-                           fr="Champ de l'indicateur d'erreur",
-                           ang="Error indicator field" ),
-#
-# 5.3.3. La composante retenue
+# 5.3.2. La composante retenue
 #
                            NOM_CMP_INDICA = SIMP(statut='o',typ='TXM',
                            fr="Composante retenue",
                            ang="Selected component" ),
 #
-# 5.3.4. Le paramètre temporel pour l'indicateur
+# 5.3.3. Le paramètre temporel pour l'indicateur
+#
+                           b_parametre_temporel     =BLOC(condition="(RESULTAT_N != None)",
 #
                            regles=(EXCLUS('NUME_ORDRE','INST'),),
 #
-# 5.3.4.1. Soit le numero d'ordre
+# 5.3.3.1. Soit le numero d'ordre
 #
                            NUME_ORDRE     = SIMP(statut='f',typ='I',
                            fr="Numero d ordre",
                            ang="Rank" ),  
 #
-# 5.3.4.2. Soit l'instant
-# 5.3.4.2.1. Sa valeur
+# 5.3.3.2. Soit l'instant
+# 5.3.3.2.1. Sa valeur
 #
                            INST           = SIMP(statut='f',typ='R',
                            fr="Instant associé",
                            ang="Instant" ),
 #
-# 5.3.4.2.2. La précision du choix de l'instant
+# 5.3.3.2.2. La précision du choix de l'instant
 #
                            b_precision     =BLOC(condition="(INST != None)",
                              PRECISION       =SIMP(statut='f',typ='R',defaut=1.0E-3,
@@ -159,7 +170,10 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",op=macr_adap_mail_ops,sd_prod=macr_ada
                              ang="Accuracy over instant choice" ),
                              CRITERE         =SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU"),
                              fr="Critère de précision sur le choix de l'instant associé",
-                             ang="Accuracy criterium over instant choice" ),),
+                             ang="Accuracy criterium over instant choice" ),
+                                                ),
+#
+                                                         ),
 #
                            ) ,
 #
@@ -250,37 +264,47 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",op=macr_adap_mail_ops,sd_prod=macr_ada
                            fr="Type du champ qui contiendra le champ mis à jour",
                            ang="Type of the field for the updated field" ),
 #
-# 7.3. Le nom du resultat du champ a interpoler
+# 7.3. Le champ a interpoler
 #
-           RESULTAT       = SIMP(statut='o',
+           regles=(UN_PARMI('CHAM_GD','RESULTAT')),
+#
+# 7.3.1. Sous forme de champ de grandeur
+#
+           CHAM_GD        =SIMP(statut='f',typ=cham_gd_sdaster,
+                           fr="Champ de grandeur Code_Aster contenant le champ à mettre à jour",
+                           ang="Champ de grandeur with field to be updated" ),
+#
+# 7.3.2. Le nom du resultat du champ a interpoler
+#
+           RESULTAT       = SIMP(statut='f',
                                  typ=(evol_elas,evol_noli,evol_ther),
                            fr="Resultat contenant le champ à mettre à jour",
                            ang="Result with field to be updated" ),
 #
-# 7.4. Le nom du champ a interpoler
-#
-           NOM_CHAM       = SIMP(statut='o',typ='TXM',
+           NOM_CHAM       = SIMP(statut='f',typ='TXM',
                            fr="Nom du champ à mettre à jour",
                            ang="Name of the field to be updated" ),
 #
-# 7.5. Le paramètre temporel pour le champ a interpoler
+# 7.4. Le paramètre temporel pour le champ a interpoler
+#
+                           b_parametre_temporel     =BLOC(condition="(RESULTAT != None)",
 #
                            regles=(EXCLUS('NUME_ORDRE','INST'),),
 #
-# 7.5.1. Soit le numero d'ordre
+# 7.4.1. Soit le numero d'ordre
 #
            NUME_ORDRE     = SIMP(statut='f',typ='I',
                            fr="Numero d ordre du champ à mettre à jour",
                            ang="Rank of the field to be updated" ),
 #
-# 7.5.2. Soit l'instant
-# 7.5.2.1. Sa valeur
+# 7.4.2. Soit l'instant
+# 7.4.2.1. Sa valeur
 #
            INST           = SIMP(statut='f',typ='R',
                            fr="Instant associé",
                            ang="Instant" ),
 #
-# 7.5.2.2. La précision du choix de l'instant
+# 7.4.2.2. La précision du choix de l'instant
 #
                            b_precision     =BLOC(condition="(INST != None)",
                              PRECISION       =SIMP(statut='f',typ='R',defaut=1.0E-3,
@@ -289,6 +313,8 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",op=macr_adap_mail_ops,sd_prod=macr_ada
                              CRITERE         =SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU"),
                              fr="Critère de précision sur le choix de l'instant associé",
                              ang="Accuracy criterium over instant choice" ),),
+#
+                                                         ),
          ),
 #
 # 8. Les options d'analyse de maillage ; par defaut, on ne fait que les nombres

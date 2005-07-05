@@ -1,4 +1,4 @@
-# MODIF  DATE 04/04/2005   AUTEUR CIBHHPD L.SALMONA 
+# MODIF  DATE 04/07/2005   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE THERMO_METALLO_MECANIQUE DECOUPLEE EN TRACTION SIMPLE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -283,7 +283,7 @@ TEST_RESU(RESU=(
               _F( 
                RESULTAT = U,  NOM_CHAM = 'VARI_ELGA',  INST = 47.,
                MAILLE = 'M1', POINT = 1,   NOM_CMP = 'V5',
-               PRECISION = ( 1.E-02, 1.E-03, ),
+               PRECISION = 0., CRITERE = 'ABSOLU',
                VALE = 0.),
               _F( 
                RESULTAT = U,  NOM_CHAM = 'SIEF_ELGA',  INST = 47.,

@@ -1,4 +1,4 @@
-# MODIF  DATE 29/08/2003   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 04/07/2005   AUTEUR REZETTE C.REZETTE 
 # TITRE CRITERES GEOMETRIQUES DANS DEFI_GROUP EN 3D 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -67,6 +67,40 @@ MA=DEFI_GROUP(  reuse=MA,   MAILLAGE=MA,
                                        PRECISION = 0.1)),
                          INFO=1
                                       )
+# -------  VALIDATION DE : DEFI_GROUP / DETR_GROUP_XX -----------
+
+MA=DEFI_GROUP(  reuse=MA,   MAILLAGE=MA,
+                DETR_GROUP_NO=(_F(NOM=('GN1','GN32'),),
+                               _F(NOM=('GN3','GN58'),),),
+                DETR_GROUP_MA=_F(NOM=('GM1','GM3','GM58','GM2'),),
+                CREA_GROUP_NO=_F( NOM = 'GN3', 
+                                  OPTION = 'PLAN',
+                                  NOEUD_CENTRE = 'N14',
+                                  VECT_NORMALE = (1.,0.,0.,),
+                                  PRECISION = 0.1),
+                CREA_GROUP_MA=_F(  NOM = 'GM2', 
+                                   OPTION = 'CYLINDRE',
+                                   NOEUD_CENTRE = 'N1',
+                                   RAYON = 2.,
+                                   ANGL_NAUT = (0.,90.,),),)
+
+MA=DEFI_GROUP(  reuse=MA,   MAILLAGE=MA,
+                CREA_GROUP_NO=_F( NOM = 'GN1', 
+                                  OPTION = 'ENV_SPHERE',
+                                  NOEUD_CENTRE = 'N1',
+                                  RAYON = 2.5,
+                                  PRECISION = 0.1),
+                CREA_GROUP_MA=(_F(  NOM = 'GM1', 
+                                       OPTION = 'SPHERE',
+                                       GROUP_NO_CENTRE = 'GRN1',
+                                       RAYON = 2.),
+                               _F(  NOM = 'GM3', 
+                                       OPTION = 'BANDE',
+                                       NOEUD_CENTRE = 'N1', 
+                                       DIST = 2.,
+                                       VECT_NORMALE = (0.,1.,0.,),),),)
+
+# -------  FIN VALIDATION DE : DEFI_GROUP / DETR_GROUP_XX --------
 
 MO=AFFE_MODELE(  MAILLAGE=MA,
                   AFFE=_F(  TOUT = 'OUI',      PHENOMENE = 'MECANIQUE',

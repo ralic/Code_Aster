@@ -9,7 +9,7 @@ C ----------------------------------------------------------------------
       REAL*8  KLV(NBT),KLV2(NBT),VARIP(7)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 16/06/2005   AUTEUR ACBHHCD G.DEVESA 
+C MODIF ELEMENTS  DATE 04/07/2005   AUTEUR ACBHHCD G.DEVESA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,7 +49,7 @@ C       VARIP$ : VARIABLES INTERNES REACTUALISEES (7 VALEURS)
 C
 C***************** DECLARATION DES VARIABLES LOCALES *******************
 C
-      PARAMETER    ( NBRE1 = 14 )
+      PARAMETER    ( NBRE1 = 15 )
       REAL*8       NU1,MU1,NU2,MU2,KY,KZ,KRX,KRZ,RP0
       REAL*8       SI(12),K01(78),K02(78),KLC(144), VALRE1(NBRE1)
       CHARACTER*2  CODRE1(NBRE1)
@@ -61,8 +61,7 @@ C****************************** DATA ***********************************
 C
       DATA NOMRE1/'NU_1','MU_1','DXU_1','DRYU_1','C_1',
      &            'NU_2','MU_2','DXU_2','DRYU_2','C_2',
-     &            'KY','KZ','KRX','KRZ'/
-C     &            'KY','KZ','KRX','KRZ','R_P0'/
+     &            'KY','KZ','KRX','KRZ','R_P0'/
 C
 C ----------------------------------------------------------------------
 C --- DEFINITION DES PARAMETRES
@@ -95,8 +94,8 @@ C      DRYU1 = NU1 * DXU1 / MU1
 C      DRYU2 = NU2 * DXU2 / MU2
       DRYU1 = VALRE1(4)
       DRYU2 = VALRE1(9)
-C      RP0   = VALRE1(15)
-      RP0   = 1.D4
+      RP0   = VALRE1(15)
+C      RP0   = 1.D4
 C
 C --- CONSTANTES DE LA RELATION DE COMPORTEMENT
 C

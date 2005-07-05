@@ -1,6 +1,6 @@
       SUBROUTINE DIAGP3(TENS,VECP,VALP)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 02/12/2003   AUTEUR PBADEL P.BADEL 
+C MODIF ALGORITH  DATE 05/07/2005   AUTEUR PBADEL P.BADEL 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -28,9 +28,9 @@ C                     (XX XY XZ YY YZ ZZ)
 C ----------------------------------------------------------------------
       
       INTEGER I,J,NRAC,IND
-      LOGICAL INVVP
+      LOGICAL INVVP,TNULL
       REAL*8  TRACE,X(6),Y(6),DET(4),D12,D13,D23,RTEMP,NORM(3)
-      REAL*8  A,B,C,R8PI,THETA,R8MIEM
+      REAL*8  A,B,C,R8PI,THETA,R8MIEM,R8PREM
       REAL*8  F,G
       REAL*8  TPS(6)
       
@@ -43,16 +43,18 @@ C      write (6,*) '-----------------------------------------------'
 C      write (6,*) TENS(1),TENS(4),TENS(6),TENS(2),TENS(3),TENS(5)
 C -- PASSAGE AU DEVIATEUR
       TRACE=(TENS(1)+TENS(4)+TENS(6))/3.D0
-      
+C      write (6,*) TRACE,R8PREM()
       TENS(1)=TENS(1)-TRACE
       TENS(4)=TENS(4)-TRACE
       TENS(6)=TENS(6)-TRACE
+C      write (6,*) TENS(1),TENS(4),TENS(6),TENS(2),TENS(3),TENS(5)
 
 C -- CALCUL DES COEFFICIENTS DU POLYNOME P3   
       
       DET(1)=TENS(4)*TENS(6)-TENS(5)**2
       DET(2)=TENS(1)*TENS(6)-TENS(3)**2
       DET(3)=TENS(1)*TENS(4)-TENS(2)**2
+
       
       DET(4)=TENS(1)*DET(1)-TENS(2)*(TENS(2)*TENS(6)-TENS(5)*TENS(3))
      &       +TENS(3)*(TENS(2)*TENS(5)-TENS(4)*TENS(3))
@@ -71,8 +73,20 @@ C -- CAS DES RACINES DOUBLES QUI PASSENT MAL NUMERIQUEMENT
           ELSE
             VALP(2)=VALP(3)
           ENDIF
-        ELSE 
-          CALL UTMESS('F','DIAGP3','PAS DE VALEURS PROPRES TROUVEES')
+        ELSE
+          TNULL = .TRUE.
+          DO 600 I=1,6
+            IF (ABS(TENS(I)).GT.(R8PREM()*100*ABS(TRACE))) THEN
+              TNULL = .FALSE.
+            ENDIF
+600       CONTINUE
+          IF (TNULL) THEN
+            VALP(1)=0.D0
+            VALP(2)=0.D0
+            VALP(3)=0.D0
+          ELSE
+            CALL UTMESS('F','DIAGP3','PAS DE VALEURS PROPRES TROUVEES')
+          ENDIF
         ENDIF
         IF (VALP(2).GT.VALP(1)) THEN
             RTEMP=VALP(1)

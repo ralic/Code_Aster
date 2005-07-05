@@ -1,4 +1,4 @@
-# MODIF  DATE 17/05/2005   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 04/07/2005   AUTEUR LEBOUVIE F.LEBOUVIER 
 # RESPONSABLE MCOURTOI M.COURTOIS
 # TITRE FONCTIONS, NAPPES, FORMULES.
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -1708,7 +1708,9 @@ IMPR_FONCTION(   COURBE=_F( FONCTION = COMP1) )
 TEST_FONCTION(VALEUR=(   
                     _F(  FONCTION = COMP1,
                       VALE_PARA = 0.,
-                      VALE_REFE = 0., 
+                      VALE_REFE = 0.,
+                      PRECISION = 0.,
+                      CRITERE   = 'ABSOLU', 
                       REFERENCE = 'ANALYTIQUE'),
                     _F(  FONCTION = COMP1,
                       VALE_PARA = 0.1,
@@ -1749,6 +1751,8 @@ TEST_FONCTION(VALEUR=(
                     _F(  FONCTION = COMP1,
                       VALE_PARA = 1.0,
                       VALE_REFE = 0., 
+                      PRECISION = 0.,
+                      CRITERE   = 'ABSOLU', 
                       REFERENCE = 'ANALYTIQUE'))
                 )
 

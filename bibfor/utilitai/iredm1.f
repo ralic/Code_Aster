@@ -8,7 +8,7 @@
      +                   AMORED(*), FREQ(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 28/06/2005   AUTEUR NICOLAS O.NICOLAS 
+C MODIF UTILITAI  DATE 05/07/2005   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -76,7 +76,7 @@ C
       CALL JEVEUO(BASEMO//'           .REFD','L',JVAL)
       INTERF = ZK24(JVAL+4) (1:8)
       IF (INTERF.NE.' ') THEN
-       CALL JEVEUO(INTERF//'      .INTD.TYPE','L',JTYP)
+       CALL JEVEUO(INTERF//'.IDC_TYPE','L',JTYP)
        TYPI   = ZK8(JTYP)
       ELSE
        TYPI = 'CRAIGB'

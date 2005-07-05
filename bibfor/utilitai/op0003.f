@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 05/10/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF UTILITAI  DATE 04/07/2005   AUTEUR CIBHHLV L.VIVAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -211,9 +211,15 @@ C
          CALL GETVID(' ','VALE_FONC',1,1,1,LISTFO,N1)
          CALL JELIRA(LISTPA//'.VALE','LONMAX',NBCOUP,K1BID)
          CALL JELIRA(LISTFO//'.VALE','LONMAX',NBCOU2,K1BID)
-         IF (NBCOU2.LT.NBCOUP) THEN
-            CALL UTMESS('F',NOMCMD,'IL MANQUE DES VALEURS DANS '//
+         IF (NBCOU2.NE.NBCOUP) THEN
+           IF (NBCOU2.LT.NBCOUP) THEN
+             CALL UTMESS('F',NOMCMD,'IL MANQUE DES VALEURS DANS '//
      +                  LISTFO//' ,LISTE PLUS PETITE QUE '//LISTPA)
+           ENDIF
+           IF (NBCOUP.LT.NBCOU2) THEN
+             CALL UTMESS('F',NOMCMD,'IL MANQUE DES VALEURS DANS '//
+     +                  LISTPA//' ,LISTE PLUS PETITE QUE '//LISTFO)
+           ENDIF
          ENDIF
          NBVAL = NBCOUP * 2
          CALL WKVECT(NOMFON//'.VALE','G V R',NBVAL,LVAL)

@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 28/06/2005   AUTEUR NICOLAS O.NICOLAS 
+C MODIF PREPOST  DATE 05/07/2005   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,7 +55,7 @@ C
       CHARACTER*80 TITRE
       REAL*8       R8B, COEF, PREC
 C     ------------------------------------------------------------------
-      DATA  REFE  /'                   .REFE'/
+      DATA  REFE  /'                  _REFE'/
       DATA  KINST /'&&OP0163.INSTANT'/
       DATA  KNUME /'&&OP0163.NUME_RANG'/
       DATA  CHAMNO/'&&OP0163.CHAMNO'/
@@ -87,10 +87,10 @@ C
 
 C     ----- RECUPERATION DES MODES -----
       CALL GETVID(' ','MACR_ELEM_DYNA',1,1,1,MAEL,NMM)
-      REFE(1:18) = MAEL//'.MAEL.RAID'
+      REFE(1:18) = MAEL//'.MAEL_RAID'
       CALL JEVEUO(REFE,'L',JREFE)
       MATRK = ZK24(JREFE+1)
-      REFE(1:18) = MAEL//'.MAEL.MASS'
+      REFE(1:18) = MAEL//'.MAEL_MASS'
       CALL JEVEUO(REFE,'L',JREFE)
       BASEMO = ZK24(JREFE)
       MATRM  = ZK24(JREFE+1)

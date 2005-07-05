@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 05/10/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF SOUSTRUC  DATE 04/07/2005   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -60,6 +60,15 @@ C
      +               'EXISTANT. LE RESULTAT DOIT ETRE IDENTIQUE AU '//
      +               'CONCEPT DONNE DANS L''ARGUMENT MAILLAGE.')
       ENDIF
+C
+C     --- ON REGARDE S'IL Y A DES GROUPES A DETRUIRE ---
+C
+      CALL GETFAC('DETR_GROUP_MA',N1)
+      CALL GETFAC('DETR_GROUP_NO',N2)
+      IF(N1.NE.0 .OR. N2.NE.0)THEN
+         CALL DETGNM(MA)
+      ENDIF
+
       GRPMAI  = MA//'.GROUPEMA       '
       GRPNOE  = MA//'.GROUPENO       '
       GRPMAV  = '&&OP0104'//'.GROUPEMA       '

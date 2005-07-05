@@ -1,4 +1,4 @@
-# MODIF  DATE 06/07/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 04/07/2005   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE VALIDATION ROTATION, TRANSLATION, MODI_BASE ET ECHELLE DANS MODI_MAILLAGE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -166,8 +166,8 @@ TEST_RESU ( RESU = ( _F ( RESULTAT = RES2 ,
                           GROUP_NO = 'P1' ,
                           NOM_CMP = 'DX' ,
                           VALE = ( 0. ) ,
-                          CRITERE = 'RELATIF' ,
-                          PRECISION = PREC1 ,
+                          CRITERE = 'ABSOLU' ,
+                          PRECISION = 0. ,
                           REFERENCE = 'ANALYTIQUE' , ) ,
                      _F ( RESULTAT = RES2 ,
                           NOM_CHAM  = 'DEPL' ,
@@ -175,8 +175,8 @@ TEST_RESU ( RESU = ( _F ( RESULTAT = RES2 ,
                           GROUP_NO = 'P1' ,
                           NOM_CMP = 'DY' ,
                           VALE = ( 0. ) ,
-                          CRITERE = 'RELATIF' ,
-                          PRECISION = PREC1 ,
+                          CRITERE = 'ABSOLU' ,
+                          PRECISION = 0. ,
                           REFERENCE = 'ANALYTIQUE' , ) ,
                      _F ( RESULTAT = RES2 ,
                           NOM_CHAM  = 'DEPL' ,
