@@ -2,7 +2,7 @@
 
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/03/2005   AUTEUR LAMARCHE S.LAMARCHE 
+C MODIF ALGORITH  DATE 06/07/2005   AUTEUR LAMARCHE S.LAMARCHE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -21,7 +21,7 @@ C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 
 C TOLE CRP_20
-      IMPLICIT     NONE
+      IMPLICIT NONE
       CHARACTER*8 NOMA
       CHARACTER*19 CNSINR
       CHARACTER*24 DEFICO,DEPDEL,NUMEDD
@@ -58,27 +58,31 @@ C --------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------
 C ======================================================================
 
 
-      CHARACTER*8 LICMPR(19)
+      CHARACTER*8 LICMPR(19),LICMP4(4),LICMP6(6),LICNT2(2),LICNT3(3)
       CHARACTER*8 ALIAS
       INTEGER IRET,JNOESC,NBNO,INO,JTABF,POSNO,JDIM,NUNOE,NUNORE,ILIST
       INTEGER JCNSVR,JCNSLR,JCONT,JFROT,JNOCO,JZONE,ISUCO,NSUCO
       INTEGER JRECO,JJEU,ICONEX,IATYMA,NUMAMA,NUTYP,NNO,JNOE,NUNO
       INTEGER JDEPDE,I,DIM,IZONE,JCMCF,ILONG,JDIME,JTRAV,POSMA,NUMAES
       INTEGER NTPC,IMA,NTMA,JMAESC,NBNOT,JMACO,JEUTEM,JGLIE,JGLIM
-      INTEGER JCONTA,JPREMI,JZOCO,NBZONE,INTEGR
+      INTEGER JCONTA,JPREMI,JZOCO,NBZONE,INTEGR,JFROL,JCONL,JDEPDL
       REAL*8 LICOEF,RN,RNX,RNY,RNZ,GLI1,GLI2,GLI,RTAX,RTAY,RTAZ,RTGX
       REAL*8 RTGY,RTGZ,RX,RY,RZ,R,X(2),FF(9)
       REAL*8 DEPLP(3),CONT,LAGSF,VECT1(3),VECT2(3)
       REAL*8 CONFRO(3),R8PREM,GLIOLD
-      CHARACTER*19 FCONT,FFROT,FCONTS,FFROTS,DEPDES,DDEPLS
+      CHARACTER*19 FCONT,FFROT,FCONTS,FFROTS,DEPDES,DDEPLS,DEPCN
+      CHARACTER*19 FCTCN, FFROCN
       CHARACTER*24 JEU,GLIE,GLIM,CONTAC,PREMIE
       
       CALL JEMARQ()
       FCONT='&&MMMRES.CONT'
       FCONTS='&&MMMRES.CONT_S'
+      FCTCN='&&MMMRES.FCTCN'
       FFROT='&&MMMRES.FROT'
       FFROTS='&&MMMRES.FROT_S'
+      FFROCN='&&MMMRES.FROTCN'
       DEPDES='&&MMMRES.DEPDES'
+      DEPCN='&&MMMRES.DEPCN'
       CNSINR='&&MMMRES.CNSRINR'
       JEU='&&MMMRES.JEU'
       GLIE='&&MMMRES.GLIE'
@@ -139,8 +143,33 @@ C---------RECHERCHE DE LA METHODE D INTEGRATION
 
 C ------ TRANSFORMATION DU CHAM_NO DES DDL EN UN CHAM_NO_S POUR 
 C ------ UNE LECTURE FACILE
+
+         DIM=ZI(JDIM)
          CALL CNOCNS(DEPDEL,'V',DEPDES)
-         CALL JEVEUO(DEPDES(1:19)//'.CNSV','L',JDEPDE)
+
+         LICMP6(1) = 'DX'
+         LICMP6(2) = 'DY'
+         LICMP6(3) = 'DZ'
+         LICMP6(4) = 'LAGS_C'
+         LICMP6(5) = 'LAGS_F1'
+         LICMP6(6) = 'LAGS_F2'
+
+         LICMP4(1) = 'DX'
+         LICMP4(2) = 'DY'
+         LICMP4(3) = 'LAGS_C'
+         LICMP4(4) = 'LAGS_F1'
+
+
+         IF (DIM.EQ.3) THEN
+         CALL CNSRED(DEPDES,0,0,6,LICMP6,'V',DEPCN)
+         ELSE IF(DIM.EQ.2) THEN
+         CALL CNSRED(DEPDES,0,0,4,LICMP4,'V',DEPCN)
+         ENDIF
+
+         CALL JEVEUO(DEPCN//'.CNSV','L',JDEPDE)
+         CALL JEVEUO(DEPCN//'.CNSL','L',JDEPDL)
+         
+
          
 C ------ CREATION DU CHAM_NO_S POUR L ARCHIVAGE DU CONTACT
 
@@ -153,17 +182,40 @@ C ------ CREATION DU CHAM_NO_S POUR L ARCHIVAGE DU CONTACT
 C ------ ASSEMBLAGE DES SECONDS MEMBRES DU AUX CONTACTS
 C ------ POUR RECUPERER LES FORCES NODALES DE CONTACT 
 
+         LICNT3(1) = 'DX'
+         LICNT3(2) = 'DY'
+         LICNT3(3) = 'DZ'
+
+         LICNT2(1) = 'DX'
+         LICNT2(2) = 'DY'
+
          CALL ASSVEC('V',FCONT,1,'&&MMCCON',LICOEF,
      &    NUMEDD,' ','ZERO',1)
 
          CALL CNOCNS(FCONT,'V',FCONTS)
-         CALL JEVEUO(FCONTS//'.CNSV','L',JCONT)
- 
+         IF (DIM.EQ.3) THEN
+         CALL CNSRED(FCONTS,0,0,3,LICNT3,'V',FCTCN)
+         ELSE IF(DIM.EQ.2) THEN
+         CALL CNSRED(FCONTS,0,0,2,LICNT2,'V',FCTCN)
+         ENDIF         
+         CALL JEVEUO(FCTCN//'.CNSV','L',JCONT)
+         CALL JEVEUO(FCTCN//'.CNSL','L',JCONL)
+
+
          CALL ASSVEC('V',FFROT,1,'&&MMCFROT',LICOEF,
      &    NUMEDD,' ','ZERO',1)
 
          CALL CNOCNS(FFROT,'V',FFROTS)
-         CALL JEVEUO(FFROTS//'.CNSV','L',JFROT)
+         IF (DIM.EQ.3) THEN
+         CALL CNSRED(FFROTS,0,0,3,LICNT3,'V',FFROCN)
+         ELSE IF(DIM.EQ.2) THEN
+         CALL CNSRED(FFROTS,0,0,2,LICNT2,'V',FFROCN)
+         ENDIF         
+         CALL JEVEUO(FFROCN//'.CNSV','L',JFROT)
+         CALL JEVEUO(FFROCN//'.CNSL','L',JFROL)
+
+
+
          CALL JEVEUO (JEXATR(NOMA(1:8)//'.CONNEX','LONCUM'),'L',ILONG)
          CALL JEVEUO (NOMA(1:8)//'.CONNEX','L',ICONEX)
          CALL JEVEUO (NOMA(1:8)//'.DIME','L',JDIME)
@@ -182,9 +234,8 @@ C--------INDICATEUR DE CONTACT
 C--------VECTEUR LOGIQUE INDIQUANT UN PREMIER PASSAGE SUR UN NOEUD
          CALL WKVECT(PREMIE,'V V L',NBNO,JPREMI)
 
-         DIM=ZI(JDIM)
          NBNOT=ZI(JDIM+4)
-
+         
          IF (DIM.EQ.3) THEN
 
 C------CALCUL DU JEU AUX NOEUDS EN PRENANT LE MIN DES JEUX AUX NOEUDS,
@@ -269,16 +320,26 @@ C----POUR LE CALCUL DU GLISSEMENT
 
                 DO 30 I=1,NNO
                    NUNO=ZI(ICONEX+ZI(ILONG-1+NUMAMA)+I-2)
+        
+                   CALL ASSERT(ZL(JDEPDL-1+6*(NUNO-1)+1))
+                   CALL ASSERT(ZL(JDEPDL-1+6*(NUNO-1)+2))
+                   CALL ASSERT(ZL(JDEPDL-1+6*(NUNO-1)+3))
 
                    DEPLP(1)=DEPLP(1)+ZR(JDEPDE-1+6*(NUNO-1)+1)*FF(I)
                    DEPLP(2)=DEPLP(2)+ZR(JDEPDE-1+6*(NUNO-1)+2)*FF(I)
                    DEPLP(3)=DEPLP(3)+ZR(JDEPDE-1+6*(NUNO-1)+3)*FF(I)
+
    30           CONTINUE
 
 C----ECRITURE SUR LES VECTEURS DE TRAVAIL DES JEUX, DU GLISSEMENT ET DE
 C----L INDICATEUR DE CONTACT      
 
                 IF (.NOT.ZL(JPREMI-1+NUNOE)) THEN
+                
+                   CALL ASSERT(ZL(JDEPDL-1+6*(NUNOE-1)+1))
+                   CALL ASSERT(ZL(JDEPDL-1+6*(NUNOE-1)+2))
+                   CALL ASSERT(ZL(JDEPDL-1+6*(NUNOE-1)+3))
+
                    ZR(JEUTEM+NUNOE-1)=ZR(JJEU-1+NTPC+INO)
                    ZL(JPREMI-1+NUNOE)=.TRUE.
                    ZR(JCONTA+NUNOE-1)=ZR(JTABF+16*(NTPC+INO-1)+13)
@@ -311,7 +372,7 @@ C----L INDICATEUR DE CONTACT
      &           +ZR(JDEPDE-1+6*(NUNOE-1)+3)*VECT1(3)
      &           -DEPLP(1)*VECT1(1)-DEPLP(2)*VECT1(2)
      &                -DEPLP(3)*VECT1(3)
-     
+
                    GLI2=ZR(JDEPDE-1+6*(NUNOE-1)+1)*VECT2(1)
      &           +ZR(JDEPDE-1+6*(NUNOE-1)+2)*VECT2(2)
      &           +ZR(JDEPDE-1+6*(NUNOE-1)+3)*VECT2(3)
@@ -319,11 +380,11 @@ C----L INDICATEUR DE CONTACT
      &                -DEPLP(3)*VECT2(3)
 
                    GLI=SQRT(GLI1**2+GLI2**2)
-
+                   
                    GLIOLD=SQRT((ZR(JGLIE+2*(NUNOE-1))-
      &             ZR(JGLIM+2*(NUNOE-1)))**2
      &           +(ZR(JGLIE+2*(NUNOE-1)+1)-ZR(JGLIM+2*(NUNOE-1)+1))**2)
-
+                   
                    IF ( GLI.GT.GLIOLD ) THEN
 
                       ZR(JGLIE+2*(NUNOE-1))=
@@ -381,10 +442,13 @@ C ------ NUMERO ABSOLU DU NOEUD TRAITE
               IF (CONT.EQ.1.D0) THEN
               
 C ------ RECUPERATION DES FORCES NODALES DE CONTACT
+                CALL ASSERT(ZL(JCONL-1+3*(NUNOE-1)+1))
+                CALL ASSERT(ZL(JCONL-1+3*(NUNOE-1)+2))
+                CALL ASSERT(ZL(JCONL-1+3*(NUNOE-1)+3))
 
-                 RNX=ZR(JCONT-1+6*(NUNOE-1)+1)
-                 RNY=ZR(JCONT-1+6*(NUNOE-1)+2)
-                 RNZ=ZR(JCONT-1+6*(NUNOE-1)+3)
+                 RNX=ZR(JCONT-1+3*(NUNOE-1)+1)
+                 RNY=ZR(JCONT-1+3*(NUNOE-1)+2)
+                 RNZ=ZR(JCONT-1+3*(NUNOE-1)+3)
                  RN=SQRT(RNX**2+RNY**2+RNZ**2)
                  GLI1=ZR(JGLIE+2*(NUNOE-1))-ZR(JGLIM+2*(NUNOE-1))
                  GLI2=ZR(JGLIE+2*(NUNOE-1)+1)-ZR(JGLIM+2*(NUNOE-1)+1)
@@ -403,20 +467,24 @@ C ----- Y-A-T-IL DU FROTTEMENT ?
                  
                  IF(ZR(JCMCF+6*(IZONE-1)+5).EQ.3.D0) THEN
 
+                CALL ASSERT(ZL(JFROL-1+3*(NUNOE-1)+1))
+                CALL ASSERT(ZL(JFROL-1+3*(NUNOE-1)+2))
+                CALL ASSERT(ZL(JFROL-1+3*(NUNOE-1)+3))
+
                     IF (LAGSF.GE.0.999D0) THEN
 C ------ LE NOEUD EST GLISSANT
 
-                       RTGX=ZR(JFROT-1+6*(NUNOE-1)+1)
-                       RTGY=ZR(JFROT-1+6*(NUNOE-1)+2)
-                       RTGZ=ZR(JFROT-1+6*(NUNOE-1)+3)
+                       RTGX=ZR(JFROT-1+3*(NUNOE-1)+1)
+                       RTGY=ZR(JFROT-1+3*(NUNOE-1)+2)
+                       RTGZ=ZR(JFROT-1+3*(NUNOE-1)+3)
                        CONT=2.D0
                     ELSE
 
 C ------ LE NOEUD EST ADHERENT
 
-                       RTAX=ZR(JFROT-1+6*(NUNOE-1)+1)
-                       RTAY=ZR(JFROT-1+6*(NUNOE-1)+2)
-                       RTAZ=ZR(JFROT-1+6*(NUNOE-1)+3)
+                       RTAX=ZR(JFROT-1+3*(NUNOE-1)+1)
+                       RTAY=ZR(JFROT-1+3*(NUNOE-1)+2)
+                       RTAZ=ZR(JFROT-1+3*(NUNOE-1)+3)
                     ENDIF
                  ENDIF
               ENDIF
@@ -521,6 +589,8 @@ C----POUR LE CALCUL DU GLISSEMENT
 
                 DO 70 I=1,NNO
                    NUNO=ZI(ICONEX+ZI(ILONG-1+NUMAMA)+I-2)
+                   CALL ASSERT(ZL(JDEPDL-1+4*(NUNO-1)+1))
+                   CALL ASSERT(ZL(JDEPDL-1+4*(NUNO-1)+2))
                    DEPLP(1)=DEPLP(1)+ZR(JDEPDE-1+4*(NUNO-1)+1)*FF(I)
                    DEPLP(2)=DEPLP(2)+ZR(JDEPDE-1+4*(NUNO-1)+2)*FF(I)
    70           CONTINUE
@@ -532,6 +602,9 @@ C----L INDICATEUR DE CONTACT
                    ZL(JPREMI-1+NUNOE)=.TRUE.
                    ZR(JEUTEM+NUNOE-1)=ZR(JJEU-1+NTPC+INO)
                    ZR(JCONTA+NUNOE-1)=ZR(JTABF+16*(NTPC+INO-1)+13)
+
+                   CALL ASSERT(ZL(JDEPDL-1+4*(NUNOE-1)+1))
+                   CALL ASSERT(ZL(JDEPDL-1+4*(NUNOE-1)+2))
 
                    ZR(JGLIE+NUNOE-1)=
      &             ZR(JDEPDE-1+4*(NUNOE-1)+1)*VECT1(1)
@@ -601,8 +674,8 @@ C ------ NUMERO ABSOLU DU NOEUD TRAITE
 C ------ RECUPERATION DES FORCES NODALES DE CONTACT
                  GLI1=ZR(JGLIE+NUNOE-1)-ZR(JGLIM+NUNOE-1)
                  GLI=SQRT(GLI1**2)
-                 RNX=ZR(JCONT-1+4*(NUNOE-1)+1)
-                 RNY=ZR(JCONT-1+4*(NUNOE-1)+2)
+                 RNX=ZR(JCONT-1+2*(NUNOE-1)+1)
+                 RNY=ZR(JCONT-1+2*(NUNOE-1)+2)
                  RN=SQRT(RNX**2+RNY**2)
 
 C ----- NORME DU MULTIPLICATEUR DE LAGRANGE DU FROTTEMENT 
@@ -614,13 +687,13 @@ C ----- Y-A-T-IL DU FROTTEMENT ?
                  IF(ZR(JCMCF+6*(IZONE-1)+5).EQ.3.D0) THEN
                     IF (LAGSF.GE.0.999D0) THEN
 C ------ LE NOEUD EST GLISSANT
-                       RTGX=ZR(JFROT-1+4*(NUNOE-1)+1)
-                       RTGY=ZR(JFROT-1+4*(NUNOE-1)+2)
+                       RTGX=ZR(JFROT-1+2*(NUNOE-1)+1)
+                       RTGY=ZR(JFROT-1+2*(NUNOE-1)+2)
                        CONT=2.D0
                     ELSE
 C ------ LE NOEUD EST ADHERENT
-                       RTAX=ZR(JFROT-1+4*(NUNOE-1)+1)
-                       RTAY=ZR(JFROT-1+4*(NUNOE-1)+2)
+                       RTAX=ZR(JFROT-1+2*(NUNOE-1)+1)
+                       RTAY=ZR(JFROT-1+2*(NUNOE-1)+2)
                     ENDIF
                  ENDIF
               ENDIF
@@ -670,10 +743,13 @@ C ------ ARCHIVAGE DES RESULTATS DANS LE CHAM_NO_S CREE
       ENDIF
       
       CALL JEDETR(FCONT)
-      CALL JEDETR(FCONTS)
+      CALL DETRSD('CHAMP',FCONTS)
+      CALL DETRSD('CHAMP',FCTCN)
       CALL JEDETR(FFROT)
-      CALL JEDETR(FFROTS)
-      CALL JEDETR(DEPDES)
+      CALL DETRSD('CHAMP',FFROTS)
+      CALL DETRSD('CHAMP',FFROCN)
+      CALL DETRSD('CHAMP',DEPDES)
+      CALL DETRSD('CHAMP',DEPCN)
       CALL JEDETR(JEU)
       CALL JEDETR(GLIE)
       CALL JEDETR(GLIM)

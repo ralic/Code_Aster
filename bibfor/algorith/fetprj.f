@@ -1,10 +1,9 @@
-       SUBROUTINE FETPRJ(NBI,VI,VO,JGITGI,LRIGID,DIMGI,OPTION,
-     &                  SDFETI,IPIV,NBSD,VSDF,VDDL,MATAS,GI,LSTOGI,
+       SUBROUTINE FETPRJ(NBI,VI,VO,NOMGGT,LRIGID,DIMGI,OPTION,
+     &                  SDFETI,IPIV,NBSD,VSDF,VDDL,MATAS,NOMGI,LSTOGI,
      &                  INFOFE,IREX,IPRJ,NBPROC,RANG,K24IRG)
-C TOLE CRP_21
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/06/2005   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGORITH  DATE 06/07/2005   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -22,6 +21,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
 C TOLE CRP_4
+C TOLE CRP_21
 C-----------------------------------------------------------------------
 C    - FONCTION REALISEE:  CALCUL AU SENS FETI DE:
 C          * LA PROJECTION COMPLETE P=I-GI.(GIT.GI)-1.GIT SI OPTION=1
@@ -53,18 +53,19 @@ C     IN RANG  : IN  : RANG DU PROCESSEUR
 C     IN NBPROC: IN  : NOMBRE DE PROCESSEURS
 C     IN K24IRG : K24 : NOM DE L'OBJET JEVEUX VDO POUR LE PARALLELISME
 C                   SI K24IRG='VIDE', ON NE FAIT PAS LE MPI_BCAST FINAL
+C    IN NOMGI/NOMGGT: K24 : NOM DES OBJETS JEVEUX GI ET GIT*GI
 C----------------------------------------------------------------------
 C RESPONSABLE BOITEAU O.BOITEAU
 C CORPS DU PROGRAMME
       IMPLICIT NONE
 
 C DECLARATION PARAMETRES D'APPELS
-      INTEGER      NBSD,NBI,JGITGI,DIMGI,OPTION,VSDF(NBSD),VDDL(NBSD),
+      INTEGER      NBSD,NBI,DIMGI,OPTION,VSDF(NBSD),VDDL(NBSD),
      &             IPIV,IREX,IPRJ,RANG,NBPROC
-      REAL*8       VI(NBI),VO(NBI),GI(NBI,DIMGI),RBID
+      REAL*8       VI(NBI),VO(NBI),RBID
       LOGICAL      LRIGID,LSTOGI
       CHARACTER*19 SDFETI,MATAS
-      CHARACTER*24 INFOFE,K24IRG
+      CHARACTER*24 INFOFE,K24IRG,NOMGGT,NOMGI
 
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       INTEGER*4          ZI4
@@ -85,7 +86,8 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       
 C DECLARATION VARIABLES LOCALES
       INTEGER      JGITVI,JGITV1,I,J,IDECAI,K,IDECAO,L,M,IFM,NIVMPI,
-     &             GII,GII1,NBDDL,NBMC,IFETR,IMC,IDD,INFOL8,IBID,IBCAST
+     &             GII,GII1,NBDDL,NBMC,IFETR,IMC,IDD,INFOL8,IBID,IBCAST,
+     &             JGI,JGITGI
       INTEGER*4    INFOLA
       REAL*8       RAUX,DDOT
       CHARACTER*8  NOMSD
@@ -104,10 +106,9 @@ C INITS DIVERSES
       ELSE
         NIVMPI=1
       ENDIF
-      
+              
 C ROUTINE AVEC MOINS DE MONITORING, JEVEUX.. CAR APPELLEE SOUVENT     
       IFM=ZI(IPRJ)        
-
 
 C EN PARALLELE SEUL LE PROCESSUS MAITRE CONSTRUIT CET OBJET VD0
       IF (RANG.EQ.0) THEN
@@ -134,6 +135,10 @@ C PRESENCE DE MODES DE CORPS RIGIDES P (OPTION=1) OU P' (OPTION=2)
 C --------------------------------------------------------------------
 C---------------------------------------------------------------------
 
+C EN PARALLELE, GI ET GIT*GI NE SONT STOCKES QUE PAR LE PROC 0
+          IF (LSTOGI) CALL JEVEUO(NOMGI,'L',JGI)
+          CALL JEVEUO(NOMGGT,'L',JGITGI)
+        
 C --------------------------------------------------------------------
 C CONSTITUTION DE (GI)T*VI STOCKE DANS '&&FETPRJ.GITVI.R'
 C --------------------------------------------------------------------
@@ -141,7 +146,8 @@ C --------------------------------------------------------------------
           JGITV1=JGITVI-1
         
           IF (LSTOGI) THEN        
-            CALL DGEMV('T',NBI,DIMGI,1.D0,GI,NBI,VI,1,0.D0,ZR(JGITVI),1)
+            CALL DGEMV('T',NBI,DIMGI,1.D0,ZR(JGI),NBI,VI,1,0.D0,
+     &                 ZR(JGITVI),1)
           ELSE
 C SANS CONSTRUIRE GI, SEULEMENT EN SEQUENTIEL
             DO 9 I=1,DIMGI
@@ -195,8 +201,8 @@ C --------------------------------------------------------------------
             CALL DCOPY(NBI,VI,1,VO,1)
           
             IF (LSTOGI) THEN          
-              CALL DGEMV('N',NBI,DIMGI,-1.D0,GI,NBI,ZR(JGITVI),1,1.D0,
-     &                    VO,1)
+              CALL DGEMV('N',NBI,DIMGI,-1.D0,ZR(JGI),NBI,ZR(JGITVI),1,
+     &                   1.D0,VO,1)
             ELSE
 C SANS CONSTRUIRE GI, SEULEMENT EN SEQUENTIEL          
               DO 200 IDD=1,NBSD

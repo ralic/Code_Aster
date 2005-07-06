@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 18/04/2005   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ELEMENTS  DATE 06/07/2005   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -20,7 +20,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
-C RESPONSABLE GENIAUT S.GENIAUT
+C.......................................................................
 C
 C         CALCUL DES MATRICES DE CONTACT FROTTEMENT POUR X-FEM 
 C                       (METHODE CONTINUE)
@@ -58,8 +58,8 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX --------------------
       INTEGER      NDIM,DDLH,DDLC,DDLE,DDLS,NDDL,NNO,NNOS,NNOM,NNOF
       INTEGER      NPG,NPGF,AR(12,2),NBAR,XOULA,IN(3),FAC(6,4),NBF
       INTEGER      INDCO(60),NINTER,NFACE,CFACE(5,3),IBID2(12,3),CPT
-
-      CHARACTER*8  ELREF,TYPMA
+      INTEGER      INTEG
+      CHARACTER*8  ELREF,TYPMA,FPG
       REAL*8       LSN(27),HE,SIGN,XG,FFI,FFJ,FFP(27),SAUT(3),KNP(3,3)
       REAL*8       MMAT(27*7,27*7),JAC,AL,RHON,MU,RHOTK,PADIST,MULT
       REAL*8       NDN(3,6),TAU1(3,6),TAU2(3,6),LAMB1(3),LAMB2(3)
@@ -69,12 +69,11 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX --------------------
 C......................................................................
 
       CALL JEMARQ()
+C      WRITE(6,*)'TE0533',OPTION
 C
 C-----------------------------------------------------------------------
 C     INITIALISATIONS
 C-----------------------------------------------------------------------
-
-
 
       CALL ELREF1(ELREF)
       CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
@@ -132,8 +131,18 @@ C     SUR LA TOPOLOGIE DES FACETTES
       MU = ZR(JDONCO-1+2)
       RHOTK = ZR(JDONCO-1+3)
 
+      INTEG = NINT(ZR(JDONCO-1+4))
+      IF (INTEG.EQ.1) THEN
+        FPG='XCON'
+      ELSEIF (INTEG.EQ.2) THEN
+        FPG='NOEU_S'
+      ELSE
+        CALL UTMESS('F','TE0533','PB CHOIX DU SCHEMA D''INTEGRATION')
+      ENDIF
+      
       NINTER=ZI(JLONCH-1+1)
       IF (NINTER.LT.3) GOTO 9999 
+
       NFACE=ZI(JLONCH-1+2)
       DO 11 I=1,NFACE
         DO 12 J=1,3
@@ -141,9 +150,6 @@ C     SUR LA TOPOLOGIE DES FACETTES
  12      CONTINUE
  11   CONTINUE
 C
-
-      IF (OPTION.EQ.'RIGI_FROT') WRITE(6,*)'SEUIL ',ZR(JSEUIL)
-
 C     RÉCUPÉRATION DE LA BASE COVARIANTE AUX POINTS D'INTERSECTION
       DO 13 NLI=1,NINTER
         DO 14 J=1,3
@@ -151,11 +157,6 @@ C     RÉCUPÉRATION DE LA BASE COVARIANTE AUX POINTS D'INTERSECTION
           TAU1(J,NLI)=ZR(JBASEC-1+9*(NLI-1)+J+3)
           TAU2(J,NLI)=ZR(JBASEC-1+9*(NLI-1)+J+6)
  14     CONTINUE
-C        write(6,*)'tau2',TAU2(1,NLI),TAU2(2,NLI),TAU2(3,NLI)
-C           CALL ASSERT(ABS(NDN(1,NLI)).LE.1.D-12)
-C           CALL ASSERT(ABS(NDN(2,NLI)).LE.1.D-12)           
-C           CALL ASSERT(ABS(NDN(3,NLI)-1.D0).LE.1.D-12)           
-           
  13   CONTINUE
 C    
 C     REACTUALISATION DE LA GEOMETRIE AVEC DEPMOI
@@ -166,6 +167,7 @@ C     REACTUALISATION DE LA GEOMETRIE AVEC DEPMOI
      &    ZR(IDEPM-1+(I-1)*DDLS+J) + HE * ZR(IDEPM-1+(I-1)*DDLS+J+3)
  30     CONTINUE
  20   CONTINUE
+
 C
 C-----------------------------------------------------------------------
 C
@@ -187,16 +189,16 @@ C       SI LES 3 SOMMETS DE LA FACETTE SONT DES NOEUDS DE L'ÉLÉMENT
      &            IN(3).EQ.FAC(I,INO))    CPT=CPT+1     
  103        CONTINUE
             IF (CPT.EQ.3) THEN
+C              WRITE(6,*)'MULTIPLICATION PAR 1/2'
               MULT=0.5D0
-
               GOTO 104
             ENDIF  
  102      CONTINUE            
         ENDIF
  104    CONTINUE
-C
-C       LA FAMILLE 'XCON' A 12 PG INTEGRE ORDRE I+J=6
-        CALL ELREF4('TR3','XCON',IBID,NNOF,IBID,NPGF,IPOIDF,IVFF,
+
+C       LA FAMILLE 'XCON' A 12 PG INTEGRE ORDRE I+J=6 (ou bien NOEU_S)
+        CALL ELREF4('TR3',FPG,IBID,NNOF,IBID,NPGF,IPOIDF,IVFF,
      &                                                     IDFDEF,IBID)
 C
 C       BOUCLE SUR LES POINTS DE GAUSS DES FACETTES
@@ -208,8 +210,9 @@ C
 C         CALCUL DE JAC (PRODUIT DU JACOBIEN ET DU POIDS)        
 C         ET DES FF DE L'ÉLÉMENT PARENT AU POINT DE GAUSS
 C         ET LA NORMALE ND ORIENTÉE DE ESCL -> MAIT
-          CALL XJACFF(ELREF,JPTINT,IFA,CFACE,IPGF,NNO,IGEOM,JAC,FFP,ND)
-
+          CALL XJACFF(ELREF,FPG,JPTINT,IFA,CFACE,IPGF,NNO,IGEOM,
+     &                                                    JAC,FFP,ND)
+         
 C         NORMALE AU CENTRE DE LA FACETTE
           CALL LCINVN(NDIM,0.D0,NBARY)
           DO 122 I=1,NNOF
@@ -225,6 +228,9 @@ C         I) CALCUL DES MATRICES DE CONTACT
 C         ..............................
 
           IF (OPTION.EQ.'RIGI_CONT') THEN
+
+C               write(6,*)'statut cont ',INDCO(ISSPG)
+
 C
 C           SI PAS DE CONTACT POUR CE PG : ON REMPLIT LA MATRICE C 
             IF (INDCO(ISSPG).EQ.0) THEN
@@ -459,6 +465,16 @@ C     FIN DE CHANGEMENT ET COPIE
         DO 210 I = 1,J
           IJ = (J-1)*J/2 + I
           ZR(IMATT+IJ-1) = MMAT(I,J)
+
+          IF (ZI(IADZI).EQ.42.AND.ABS(MMAT(I,J)).GT.1.D-12) THEN
+            IF (OPTION.EQ.'RIGI_CONT') THEN
+C              WRITE(6,*)'K2(',I,',',J,')=',MMAT(I,J),';'
+               WRITE(6,*)' ',I,J,MMAT(I,J)           
+            ELSE
+C              WRITE(6,*)'K3(',I,',',J,')=',MMAT(I,J),';'     
+            ENDIF 
+          ENDIF          
+
  210    CONTINUE
  200  CONTINUE
 C

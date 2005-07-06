@@ -2,7 +2,7 @@
      &                  INFOFE,NBPROC)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 20/06/2005   AUTEUR BOITEAU O.BOITEAU 
+C MODIF MODELISA  DATE 06/07/2005   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -64,13 +64,15 @@ C DECLARATION VARIABLES LOCALES
      &             NMGREL,IGREL,J,NUMGRE,NMGRE1,L,NUMGR1,LADR,IFM,NIV,
      &             IFLIN,LONT,NBNO,NBNEMA,INEMA,IBID,INBNO,M,NBMAT2,
      &             MADR,NADR,NBNOET,IFEL2,IFEL3,NBMAS,IDECA,IFEL3O,
-     &             IVLIGR,IDD,IRET1,NBCHA2
+     &             IVLIGR,IDD,IRET1,NBCHA2,NBMAS2,NBNO2,IFETB,NBNOEI,
+     &             LOFETB,LOFEL4,IFEL4,IFEL5,IAUX1,IAUX4,LOFEL5,IDIME,
+     &             IFETI,NBDDLI,NBNOI,IAUXZI,IMULT
       CHARACTER*2  K2BID
       CHARACTER*3  K3BID
       CHARACTER*8  K8BID,NOMSD2
       CHARACTER*19 LIGRCH
       CHARACTER*24 K24B,K24DUL,K24CHL,K24DUN,K24CHN,K24CF1,K24CF2,
-     &             K24CF3,NOMSDA
+     &             K24CF3,NOMSDA,K24CF4,K24CF5
       
       CALL JEMARQ()
 C RECUPERATION ET MAJ DU NIVEAU D'IMPRESSION
@@ -89,7 +91,44 @@ C SOUS-DOMAINE CONCERNE PAR DES LIGRELS TARDIFS DE CHARGE
       CALL WKVECT(LLIGRS,'V V K24',NBCHA+1,IVLIGR)
       ZK24(IVLIGR)='                        '
       ZK24(IVLIGR)=LIGRSD
-      
+
+C-------------
+C PRETRAITEMENT POUR DIMENSIONNER D'EVENTUELS VECTEURS AXILIAIRES .FEL4
+C ET .FEL5
+      CALL JEVEUO(JEXNOM(SDFETI(1:19)//'.FETB',NOMSD),'L',IFETB)
+      CALL JELIRA(JEXNOM(SDFETI(1:19)//'.FETB',NOMSD),'LONMAX',LOFETB,
+     &            K8BID)
+      LOFETB=LOFETB-1
+      NBNOEI=0
+      IMULT=2
+C RECHERCHE DU NOMBRE DE NOEUDS D'INTERFACE DU SOUS-DOMAINE NOMSD
+C (NBNOEI) ET DE LEUR MULTIPLICITE MAXIMALE (IMULT)
+      CALL JEVEUO(SDFETI(1:19)//'.FETI','L',IFETI)
+      CALL JEVEUO(SDFETI(1:19)//'.FDIM','L',IDIME)
+      NBNOI=ZI(IDIME+1)-1
+      NBDDLI=ZI(IDIME+3)
+      DO 305 I=0,LOFETB
+        IAUXZI=-ZI(IFETB+I)
+        IF (IAUXZI.GT.0) THEN
+          NBNOEI=NBNOEI+1
+          DO 300 K=0,NBNOI
+            IF (ZI(IFETI+4*K).EQ.IAUXZI) THEN
+              IF (ZI(IFETI+4*K+1).GT.IMULT) IMULT=ZI(IFETI+4*K+1)
+            ENDIF
+  300     CONTINUE
+        ENDIF
+  305 CONTINUE
+
+C POUR PLUS DE SECURITE ON CONSIDERE QUE CHAQUE DDL D'INTERFACE EST
+C POTENTIELLEMENT LIE A NBSD SOUS-DOMAINES 
+      LOFEL4 = 3*IMULT*NBNOEI*NBDDLI/(NBNOI+1)
+C ON DIMENSIONNE .FEL5 EN TENANT COMPTE DE DEUX LAGRANGES PAR DDLS BLO
+C CABLES, PAR POINTS D'INTERFACE (NBNOEI) ET PAR VOISINS POTENTIELS
+C (NBSD)
+      LOFEL5=LOFEL4*2
+C-------------
+
+         
 C BOUCLE SUR LES CHARGES LIEES AU SOUS-DOMAINE
       IDECA=0             
       DO 100 K=1,NBCHA
@@ -120,9 +159,9 @@ C SINON ON LE CREER
           IF (IRET.EQ.0) THEN
 C CONSTITUTION OBJET STOCKAGE.FEL1
             CALL WKVECT(K24CF1,'V V K24',NBSD,IFEL1)
-            DO 1 I=1,NBSD
+            DO 200 I=1,NBSD
               ZK24(IFEL1+I-1)=' '
-   1        CONTINUE              
+ 200        CONTINUE              
           ELSE
             CALL JEVEUO(K24CF1,'E',IFEL1)
           ENDIF
@@ -144,12 +183,16 @@ C ON DUPLIQUE LES ELEMENTS DU .LIEL ET DU .NEMA
          
 C ON VA STOCKER LES ANCIENS NUMEROS DE MAILLES TARDIVES DANS LE .FEL2
 C ET LES ANCIENS NUMEROS DE NOEUDS TARDIFS DANS LE .FEL3
-C SI IL EXISTE, SINON ON LE CREER
+C SI IL EXISTE, SINON ON LE CREER.
           K24CF2=K24CHL(1:19)//'.FEL2'
           CALL JEEXIN(K24CF2,IRET)
           IF (IRET.EQ.0) THEN
 C CONSTITUTION OBJET STOCKAGE.FEL2
-            CALL WKVECT(K24CF2,'V V I',2*NBMAS,IFEL2)     
+            NBMAS2=2*NBMAS
+            CALL WKVECT(K24CF2,'V V I',NBMAS2,IFEL2)
+            DO 201 I=1,NBMAS2
+              ZI(IFEL2+I-1)=0
+  201       CONTINUE             
           ELSE
             CALL JEVEUO(K24CF2,'E',IFEL2)
           ENDIF
@@ -157,9 +200,31 @@ C CONSTITUTION OBJET STOCKAGE.FEL2
           CALL JEEXIN(K24CF3,IRET)
           IF (IRET.EQ.0) THEN
 C CONSTITUTION OBJET STOCKAGE.FEL3
-            CALL WKVECT(K24CF3,'V V I',2*NBNO,IFEL3)      
+            NBNO2=2*NBNO
+            CALL WKVECT(K24CF3,'V V I',NBNO2,IFEL3)
+            DO 202 I=1,NBNO2
+              ZI(IFEL3+I-1)=0
+  202       CONTINUE      
           ELSE
             CALL JEVEUO(K24CF3,'E',IFEL3)
+          ENDIF
+          K24CF4=K24CHL(1:19)//'.FEL4'
+          CALL JEEXIN(K24CF4,IRET)
+          IF (IRET.EQ.0) THEN
+C CONSTITUTION OBJET STOCKAGE.FEL4
+            CALL WKVECT(K24CF4,'V V I',LOFEL4,IFEL4)
+            ZI(IFEL4)=0
+          ELSE
+            CALL JEVEUO(K24CF4,'E',IFEL4)
+          ENDIF
+          K24CF5=K24CHL(1:19)//'.FEL5'
+          CALL JEEXIN(K24CF5,IRET)
+          IF (IRET.EQ.0) THEN
+C CONSTITUTION OBJET STOCKAGE.FEL5
+            CALL WKVECT(K24CF5,'V V I',LOFEL5,IFEL5)
+            ZI(IFEL5)=0
+          ELSE
+            CALL JEVEUO(K24CF5,'E',IFEL5)
           ENDIF
                                   
 C BOUCLE SUR LES GRELS DU .LIEL
@@ -192,8 +257,40 @@ C ON LA DUPLIQUE DANS .LIEL EN CREEANT UN GREL LIMITE A CETTE MAILLE
 C ON RECOPIE LE NUMERO NEGATIF DE MAILLE ET SON TYPE
                     ZI(LADR)=-NBMAT2
                     ZI(LADR+1)=ZI(IGREL+NMGRE1)
-                    ZI(IFEL2+2*(NUMGR1-1))=-NBMAT2
-                    ZI(IFEL2+2*(NUMGR1-1)+1)=NUMSD
+
+C---------------
+C TRAITEMENTS LIES AUX .FEL2/.FEL4 POUR MAILLE TARDIVE D'INTERFACE
+                    IAUX1=IFEL2+2*(NUMGR1-1)+1
+                    IF (ZI(IAUX1).LT.0) THEN
+                        IAUX4=ZI(IFEL4)
+                        ZI(IFEL4+IAUX4+1)=-NBMAT2
+                        ZI(IFEL4+IAUX4+2)=NUMSD
+                        ZI(IFEL4+IAUX4+3)=NUMGR1
+                        ZI(IAUX1)=ZI(IAUX1)-1
+                        ZI(IFEL4)=IAUX4+3
+                    ELSE
+                      IF ((ZI(IAUX1-1).EQ.0).AND.(ZI(IAUX1).EQ.0)) THEN
+C C'EST LA PREMIERE FOIS QUE CETTE MAILLE TARDIVE EST ENUMEREE: ON
+C L'ENREGISTRE SIMPLEMENT
+                        ZI(IAUX1-1)=-NBMAT2
+                        ZI(IAUX1)=NUMSD
+                      ELSE
+C C'EST LA DEUXIEME FOIS: ON MET EN PLACE LE PROCESSUS VIA .FEL4 CAR
+C C'EST UNE MAILLE TARDIVE CONCERNANT UN POINT D'INTERFACE
+C DERNIERE ADRESSE PRISE PAR L'OBJET .FEL4
+                        IAUX4=ZI(IFEL4)
+                        ZI(IFEL4+IAUX4+1)=ZI(IAUX1-1)
+                        ZI(IFEL4+IAUX4+2)=ZI(IAUX1)
+                        ZI(IFEL4+IAUX4+3)=NUMGR1
+                        ZI(IFEL4+IAUX4+4)=-NBMAT2
+                        ZI(IFEL4+IAUX4+5)=NUMSD
+                        ZI(IFEL4+IAUX4+6)=NUMGR1
+                        ZI(IAUX1)=-2
+                        ZI(IFEL4)=IAUX4+6
+                      ENDIF
+                    ENDIF
+C------------------
+
 C ON DUPLIQUE LES INFOS DU .NEMA (DESCRIPTION DES NOEUDS TARDIFS
 C ASSOCIES A LA MAILLE TARDIVE
                     CALL JELIRA(JEXNUM(K24CHN,NUMGR1),'LONMAX',NBNEMA,
@@ -211,16 +308,53 @@ C NOEUD TARDIF
 C ON VA TESTER LA PRESENCE EVENTUELLE D'UNE VALEUR NON NULLE POUR
 C TRAITER LE CAS DES DDL_IMPO QUI UTILISENT, POUR DES MAILLES TARDIVES
 C DISTINCTES, LES MEMES LAGRANGES (IL NE FAUT DONC PAS INCREMENTER LEURS
-C NOUVELLES VALEURS).                   
-                        IFEL3O=ZI(IFEL3+2*(IBID-1))
-                        IF (IFEL3O.EQ.0) THEN
+C NOUVELLES VALEURS).
+C---------------
+C TRAITEMENTS LIES AUX .FEL3/.FEL5 POUR NOEUD TARDIF D'INTERFACE
+                        IAUX1=IFEL3+2*(IBID-1)+1
+                        IF (ZI(IAUX1).LT.0) THEN
+                          IAUX4=ZI(IFEL5)
                           NBNOET=NBNOET+1
-                          ZI(IFEL3+2*(IBID-1))=-NBNOET
-                          ZI(IFEL3+2*(IBID-1)+1)=NUMSD                  
+                          ZI(IFEL5+IAUX4+1)=-NBNOET
+                          ZI(IFEL5+IAUX4+2)=NUMSD
+                          ZI(IFEL5+IAUX4+3)=IBID
+                          ZI(IAUX1)=ZI(IAUX1)-1
+                          ZI(IFEL5)=IAUX4+3
                           ZI(NADR+M)=-NBNOET
                         ELSE
-                          ZI(NADR+M)=IFEL3O                     
-                        ENDIF
+                          IF ((ZI(IAUX1-1).EQ.0).AND.(ZI(IAUX1).EQ.0))
+     &                    THEN
+C C'EST LA PREMIERE FOIS QUE CE NOEUD TARDIF EST ENUMERE: ON
+C L'ENREGISTRE SIMPLEMENT
+                             NBNOET=NBNOET+1
+                             ZI(IAUX1-1)=-NBNOET
+                             ZI(IAUX1)=NUMSD                  
+                             ZI(NADR+M)=-NBNOET
+                           ELSE IF 
+     &                     ((ZI(IAUX1-1).NE.0).AND.(NUMSD.EQ.ZI(IAUX1)))
+     &                     THEN
+C C'EST UN NOEUD TARDIF DE LIAISON_DDL POUR CE SD, IL NE FAUT PAS LE
+C DUPLIQUER, IL EXISTE DEJA
+                             ZI(NADR+M)=ZI(IAUX1-1)
+                           ELSE
+C C'EST LA DEUXIEME FOIS: ON MET EN PLACE LE PROCESSUS VIA .FEL5 CAR
+C C'EST UN NOEUD TARDIF CONCERNANT UN POINT D'INTERFACE
+C DERNIERE ADRESSE PRISE PAR L'OBJET .FEL5
+                             IAUX4=ZI(IFEL5)
+                             ZI(IFEL5+IAUX4+1)=ZI(IAUX1-1)
+                             ZI(IFEL5+IAUX4+2)=ZI(IAUX1)
+                             ZI(IFEL5+IAUX4+3)=IBID
+                             NBNOET=NBNOET+1
+                             ZI(IFEL5+IAUX4+4)=-NBNOET
+                             ZI(IFEL5+IAUX4+5)=NUMSD
+                             ZI(IFEL5+IAUX4+6)=IBID
+                             ZI(IAUX1)=-2
+                             ZI(IFEL5)=IAUX4+6
+                             ZI(NADR+M)=-NBNOET
+                           ENDIF
+                         ENDIF
+C------------------
+
                       ELSE
 C NOEUD PHYSIQUE                      
                         ZI(NADR+M)=ZI(MADR+M)
@@ -264,7 +398,19 @@ C ON STOCKE LE NOM DU LIGREL DE CHARGE TEMPORAIRE DANS LA LISTE
      &        LIGRCH,' POUR SOUS-DOMAINE ',NOMSD
             WRITE(IFM,*)'NOM DU PROJETE :',ZK24(IVLIGR+K)
           ENDIF
-                     
+
+C ON DETRUIT LES .FEL4 TE .FEL5 INUTILES
+          IF (ZI(IFEL4).EQ.0) CALL JEDETR(K24CF4)
+          IF (ZI(IFEL5).EQ.0) CALL JEDETR(K24CF5)
+
+C POUR MONITORING
+C          CALL UTIMSD(IFM,2,.FALSE.,.TRUE.,K24CF1(1:19),1,'V')
+C          CALL UTIMSD(IFM,2,.FALSE.,.TRUE.,K24CF2(1:19),1,'V')
+C          CALL UTIMSD(IFM,2,.FALSE.,.TRUE.,K24CF3(1:19),1,'V')
+C          CALL UTIMSD(IFM,2,.FALSE.,.TRUE.,K24CF4(1:19),1,'V')
+C          CALL UTIMSD(IFM,2,.FALSE.,.TRUE.,K24CF5(1:19),1,'V')
+C          CALL UTIMSD(IFM,2,.FALSE.,.TRUE.,K24DUL(1:19),1,'V')
+                    
         ELSE
 C-----------------------------------------------------------------------
 C  ON NE DUPLIQUE PAS LA CHARGE
@@ -343,6 +489,7 @@ C CONSTITUTION OBJET STOCKAGE.FEL1
           ENDIF
   150   CONTINUE
       ENDIF             
+
       CALL JEDEMA()
       
       END

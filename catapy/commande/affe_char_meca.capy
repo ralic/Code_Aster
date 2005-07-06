@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 06/07/2005   AUTEUR GENIAUT S.GENIAUT 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -62,7 +62,9 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca,
                                  'TEMP','PRE1','PRE2','UI2','UI3','VI2','VI3','WI2','WI3','UO2',
                                  'UO3','VO2','VO3','WO2','WO3','UI4','UI5','VI4','VI5','WI4',
                                  'WI5','UO4','UO5','VO4','VO5','WO4','WO5','UI6','UO6','VI6',
-                                 'VO6','WI6','WO6','WO','WI1','WO1','GONF','LIAISON'),),
+                                 'VO6','WI6','WO6','WO','WI1','WO1','GONF','LIAISON','DCX',
+                                 'DCY','DCZ','H1X','H1Y','H1Z','E1X','E1Y','E1Z','E2X','E2Y','E2Z',
+                                 'E3X','E3Y','E3Z','E4X','E4Y','E4Z'),),
              TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),
              GROUP_NO        =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
              NOEUD           =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
@@ -115,6 +117,24 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca,
              WI1             =SIMP(statut='f',typ='R' ),
              WO1             =SIMP(statut='f',typ='R' ),
              GONF            =SIMP(statut='f',typ='R' ),
+             DCX             =SIMP(statut='f',typ='R' ),
+             DCY             =SIMP(statut='f',typ='R' ),
+             DCZ             =SIMP(statut='f',typ='R' ),
+             H1X             =SIMP(statut='f',typ='R' ),
+             H1Y             =SIMP(statut='f',typ='R' ),
+             H1Z             =SIMP(statut='f',typ='R' ),                  
+             E1X             =SIMP(statut='f',typ='R' ),
+             E1Y             =SIMP(statut='f',typ='R' ),
+             E1Z             =SIMP(statut='f',typ='R' ),      
+             E2X             =SIMP(statut='f',typ='R' ),
+             E2Y             =SIMP(statut='f',typ='R' ),
+             E2Z             =SIMP(statut='f',typ='R' ),      
+             E3X             =SIMP(statut='f',typ='R' ),
+             E3Y             =SIMP(statut='f',typ='R' ),
+             E3Z             =SIMP(statut='f',typ='R' ),      
+             E4X             =SIMP(statut='f',typ='R' ),
+             E4Y             =SIMP(statut='f',typ='R' ),
+             E4Z             =SIMP(statut='f',typ='R' ),      
            ),
 
 

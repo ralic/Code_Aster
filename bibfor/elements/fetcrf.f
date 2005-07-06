@@ -1,7 +1,7 @@
       SUBROUTINE FETCRF(SDFET1)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 07/02/2005   AUTEUR ASSIRE A.ASSIRE 
+C MODIF ELEMENTS  DATE 06/07/2005   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -81,10 +81,10 @@ C      CHARACTER*8  LSTGMA(1000), LSTBRD(1000),NOMCHA(1000),NOMSD(1000)
      &             LINOMA,IALSMA,IND,JNOMA,JPRNM,NEC,N,INO,DDLC,
      &             IALSK,NUMSD,IALSPO,IPOS,IAJADR,JTMP,IALSTR,IALSTB,
      &             JADRI,JADRJ,IALSFG,NBMATO,NBVM, NBFETE,IALSML,IALSMD,
-     &             IALSCR,NBMAMA
+     &             IALSCR,NBMAMA,ILIDDL,IAUX1,LK,IAUX2,IAUX3,IAUX0
       CHARACTER*1  K1BID
       CHARACTER*4  K4TMP
-      CHARACTER*8  KTMP,NOM,MA,K8B,NOMGMA,NOMO,
+      CHARACTER*8  KTMP,NOM,MA,K8B,NOMGMA,NOMO,NOMN1,
      &             NOMN,NOMA
       CHARACTER*16 CONCEP,CMD,OPTION, MOTCLE, TYPMCL, MOTFAC
       CHARACTER*19 LIGRMO,LIGRCH
@@ -1010,8 +1010,14 @@ C             WRITE(IFM,*) 'ZI:', ZI(IADR-1+1)
 C OBJET TEMPORAIRE POUR STOCKER LES NOEUDS TARDIFS DEJA TRAITES ET
 C AINSI EVITER LES NOEUDS COMPTES DEUX FOIS AVEC LIAISON_DDL....
             INBNO=ZI(IADR)
-            IF (INBNO.NE.0)
-     &        CALL WKVECT('&&FETCRF.LIAISON','V V I',INBNO,ILIAIS)
+            IF (INBNO.NE.0) THEN
+              CALL WKVECT('&&FETCRF.LIAISON','V V I',INBNO,ILIAIS)
+              IAUX1=3*INBNO
+              CALL WKVECT('&&FETCRF.LIAISONDDL','V V I',IAUX1,ILIDDL)
+              DO 807 K=1,IAUX1
+                ZI(ILIDDL+K-1)=0
+  807         CONTINUE
+            ENDIF
             ICOMPT=0
           ENDIF
 
@@ -1038,7 +1044,7 @@ C             WRITE(IFM,*) '_Adr0_Mat_=',ISDMAT
 C             WRITE(IFM,*) 'LIGRCH:', LIGRCH, IDLIG1, N2, NBOBJ1, LONLI1
 C             WRITE(IFM,*) 'ZI:', ZI(IDLIG1-1+1)
 
-      IF (NIV.GE.4) CALL JXVERI('MESSAGE',' ')
+            IF (NIV.GE.4) CALL JXVERI('MESSAGE',' ')
 
 C           POINTEUR VERS LA POSITION DANS LA COLLECTION
             IADR=IDLIG1
@@ -1073,7 +1079,32 @@ C                       WRITE(IFM,*) '_Val_=',ZI( ISDMAT-1+DEC )
                       IF (ZI(ISDMAT-1+DEC).EQ.0) THEN
                           ZI(ISDMAT-1+DEC) = 1
                       ENDIF
-
+C REMPLISSAGE OBJET TEMPORAIRE POUR DETECTER LA PRESENCE DE LIAISONS
+C TRAVERSANT LES INTERFACES. ON NE S'INTERESSE QU'AUX TRIA3 DANS LA
+C CONFIGURATION: NOEUD PHYS NOEUD TARDIF1 NOEUD TARDIF2
+C ON NE STOCKE QUE LES INFOS RELATIVES AU NOEUD TARDIF1
+                      IAUX1=ZI(IADR+1)
+                      IAUX2=ILIDDL+3*(-IAUX1-1)
+                      IAUX3=ZI(IADR+2)
+C CONFIGURATION TRIA3 QUI NOUS INTERESSE
+                      IF ((N3.EQ.4).AND.(K.EQ.1).AND.(IAUX1.LT.0).AND.
+     &                     (IAUX3.LT.0)) THEN
+C CAS DU LIAISON INTER-SOUS-DOMAINES
+                        IF ((ZI(IAUX2+1).NE.0).AND.(ZI(IAUX2+1).NE.
+     &                  NUMSD).AND.(NB1.EQ.1)) THEN
+                          CALL JENUNO(JEXNUM(NOMNOE,NDTAR),NOMN)
+                          CALL JENUNO(JEXNUM(NOMNOE,ZI(IAUX2)),NOMN1)
+                          CALL UTMESS('F','FETCRF',' LE LIAISON_*** DE '
+     &                      //ZK8(NOMCHA-1+ICH)//' IMPLIQUE LES NOEUDS '
+     &                      //'PHYSIQUES '//NOMN//' ET '//NOMN1// 'ET '
+     &                      //'TRAVERSE L''INTERFACE')
+                        ENDIF
+                        IF (ZI(IAUX2+2).LT.2) THEN
+                          ZI(IAUX2)=NDTAR
+                          ZI(IAUX2+1)=NUMSD
+                          ZI(IAUX2+2)=NB1
+                        ENDIF
+                      ENDIF
                     ENDIF
   804             CONTINUE
 
@@ -1081,19 +1112,29 @@ C                 .AJOUT DU NOEUD CHARGE SUR L'INTERFACE DANS LA LISTE
                   IF (NB1.GT.1) THEN
                     NOINCH=NOINCH+1
                     CALL JENUNO(JEXNUM(NOMNOE,NDTAR),NOMN)
-                    CALL UTMESS('A','FETCRF','LE NOEUD '//NOMN//' DU '//
+                    WRITE(IFM,*)'FETCRF, LE NOEUD '//NOMN//' DU '//
      &              'CHARGEMENT '//ZK8(NOMCHA-1+ICH)//' EST SUR '//
-     &              'L''INTERFACE.')
-
+     &              'L''INTERFACE.'
                   ENDIF
 
 C               SINON C'EST UN NOEUD TARDIF
                 ELSE
-C BOUCLE SUR LES NOEUDS TRADIFS DEJA COMPTES
+C BOUCLE SUR LES NOEUDS TARDIFS DEJA COMPTES
                   DO 205 LL=1,ICOMPT
-                    IF (NDTAR.EQ.ZI(ILIAIS-1+LL)) GOTO 206
+                    IF (NDTAR.EQ.ZI(ILIAIS-1+LL)) THEN
+C TEST SUPPLEMENTAIRE POUR SAVOIR SI IL EST CONCERNE PAR UN LIGREL DE
+C CHARGE TOUCHANT L'INTERFACE
+                      IAUX0=ILIDDL+3*(-NDTAR-1)
+                      IF (ZI(IAUX0+2).GT.1) THEN
+                        CALL JENUNO(JEXNUM(NOMNOE,ZI(IAUX0)),NOMN)
+                        CALL UTMESS('F','FETCRF',' LE LIAISON_*** DE '
+     &                      //ZK8(NOMCHA-1+ICH)//' IMPLIQUE LE NOEUD '
+     &                      //'PHYSIQUE '//NOMN// 'ET TOUCHE L''INTER'
+     &                      //'FACE')
+                      ENDIF
+                      GOTO 206
+                    ENDIF
   205             CONTINUE
-C                  ZI(IFNT-1+J)=ZI(IFNT-1+J)+1
                   ZI(IFNT-1+J+NB2)=ZI(IFNT-1+J+NB2)+1
                   NBNOTA=NBNOTA+1
                   ICOMPT=ICOMPT+1
@@ -1166,31 +1207,11 @@ C         FIN SI ON A TROUVE DES MAILLES TARDIVES DANS CETTE CHARGE...
           ENDIF 
 
 C       FIN BOUCLE DE 1 A NBCHAR
-          IF (INBNO.NE.0) CALL JEDETR('&&FETCRF.LIAISON')
+          IF (INBNO.NE.0) THEN
+            CALL JEDETR('&&FETCRF.LIAISON')
+            CALL JEDETR('&&FETCRF.LIAISONDDL')
+          ENDIF
   801   CONTINUE
-
-
-C       VERIFICATION QU'UN NOEUD CHARGE N'EST PAS SUR L'INTERFACE
-        IF (NOINCH.GT.0) THEN
-          NOMNOE = MA//'.NOMNOE'
-C          CALL JELIRA ( NOMNOE, 'NOMMAX', NBNOEU, K1BID )
-C          CALL JEVEUO(JEXNOM('&CATA.GD.NOMCMP',GRAN),'L',IACMP)
-
-
-          IF (NOINCH.EQ.1) THEN
-            CALL UTMESS('F','FETCRF','ON ARRETE : UN NOEUD QUI '//
-     &          'APPARTIENT AU CHARGEMENT EST SUR L''INTERFACE.'//
-     &          ' CE CAS N''EST PAS ENCORE TRAITE.')
-          ENDIF
-          IF (NOINCH.GT.1) THEN
-            CALL UTMESS('F','FETCRF','ON ARRETE : DES NOEUDS QUI '//
-     &          'APPARTIENNENT AU CHARGEMENT SONT SUR L''INTERFACE.'//
-     &          ' CE CAS N''EST PAS ENCORE TRAITE.')
-          ENDIF
-
-        ENDIF
-
-
 
 
 C       VERIFICATION DES OBJETS TEMPORAIRES

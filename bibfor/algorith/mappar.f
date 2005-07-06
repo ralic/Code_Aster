@@ -1,7 +1,7 @@
       SUBROUTINE MAPPAR(PREMIE,NOMA,DEFICO,OLDGEO,NEWGEO,COMGEO,DEPGEO)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/03/2005   AUTEUR LAMARCHE S.LAMARCHE 
+C MODIF ALGORITH  DATE 06/07/2005   AUTEUR LAMARCHE S.LAMARCHE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -28,7 +28,7 @@ C ======================================================================
 C ---------------------------------------------------------------------
 C ROUTINE APPELEE PAR : OP0070
 C ---------------------------------------------------------------------
-C STOCKAGE DES POINTS  DE CONTACT DES SURFACES  ESCALVES ET APPARIEMENT.
+C STOCKAGE DES POINTS  DE CONTACT DES SURFACES  ESCLAVES ET APPARIEMENT.
 
 C IN  NOMA   : NOM DU MAILLAGE
 
@@ -91,6 +91,7 @@ C     RECUPERATION DE QUELQUES DONNEES
       CALL JEVEUO(NORLIS,'L',JNORLI)
       CALL JEVEUO(DIRCO,'L',JDIR)
       CALL JEVEUO(NOMA//'.TYPMAIL','L',IATYMA)  
+      
 
 C=======================================================================
 C APPARIEMENT
@@ -99,7 +100,6 @@ C     SUR  LES MAILLES QUI L'ENTOURANT
 C=======================================================================
 
 C CALCUL DES NORMALES 
-      
       CALL LISSAG(NOMA,DEFICO,NEWGEO)
 
 C   BOUCLE SUR LES POINTS DE CONTACT
@@ -115,9 +115,12 @@ C   BOUCLE SUR LES POINTS DE CONTACT
         TYCO = NINT(ZR(JCMCF+6* (IZONE-1)+1))
         LISSS= ZI(JNORLI+IZONE-1+1)
         LAMBDA = -ABS(ZR(JCMCF+6*(IZONE-1)+6))
+       
         DIR(1)= ZR(JDIR+3* (IZONE-1)) 
         DIR(2)= ZR(JDIR+3* (IZONE-1)+1)  
         DIR(3)= ZR(JDIR+3* (IZONE-1)+2) 
+
+
         NDIR =SQRT(DIR(1)*DIR(1)+DIR(2)*DIR(2)+DIR(3)*DIR(3))
            ITYP = IATYMA - 1 + NUMAE
            NUTYP = ZI(ITYP)
@@ -152,13 +155,14 @@ C   BOUCLE SUR LES POINTS DE CONTACT
              CALL MRECHN(IZONE,GEOM,NEWGEO,DEFICO,POSNO)
              CALL MCHMPS(NOMA,GEOM,POSNO,NEWGEO,DEFICO,POSMIN,T1MIN,
      &               T2MIN,XIMIN,YIMIN)
-          NUMAM = ZI(JMACO+POSMIN-1)
           ENDIF
+          NUMAM = ZI(JMACO+POSMIN-1)
       
           IF (LISSS.EQ.1) THEN 
           CALL COPNOR(NOMA,POSMIN,XIMIN,YIMIN,NEWGEO,DEFICO,
      &    T1MIN,T2MIN)
           END IF
+   
           ZR(JTABF+16*NTPC+16* (INI-1)+1) = NUMAE
           ZR(JTABF+16*NTPC+16* (INI-1)+2) = NUMAM
           ZR(JTABF+16*NTPC+16* (INI-1)+3) = XPG

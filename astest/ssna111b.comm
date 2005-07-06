@@ -1,4 +1,4 @@
-# MODIF  DATE 15/11/2004   AUTEUR MCOURTOI M.COURTOIS 
+# MODIF  DATE 06/07/2005   AUTEUR LAMARCHE S.LAMARCHE 
 # TITRE INDENTATION D'UN MASSIF PAR UN POINCON
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -81,6 +81,7 @@ CHA=AFFE_CHAR_MECA(MODELE=MO,
                               COEF_REGU_CONT = 1000.,
                               INTEGRATION = 'NOEUD',
                               METHODE='CONTINUE',
+                              DIRE_APPA=(0.,-1.,0.),
                               MODL_AXIS='OUI',
                               NORMALE='MAIT_ESCL',
                               ),);

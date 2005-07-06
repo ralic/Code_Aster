@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 18/04/2005   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ELEMENTS  DATE 06/07/2005   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -20,7 +20,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
-C RESPONSABLE GENIAUT S.GENIAUT
+C.......................................................................
 C
 C       CALCUL DES DONNÉES TOPOLOGIQUES CONCERNANT LES INTERSECTIONS
 C              DES ÉLÉMENTS ENRICHIS ET DU PLAN DE LA FISSURE
@@ -56,8 +56,9 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX --------------------
       INTEGER       JOUT1,JOUT2,JOUT3,JOUT4,JOUT5
       INTEGER       JPTINT,JAINT,IADZI,IAZK24
       INTEGER       NINTER,NFACE,CFACE(5,3),AR(12,2),NBAR,IN,IA,NA,NB
-      INTEGER       I,J,NLI
+      INTEGER       I,J,NLI,IMAX,NABS
       REAL*8        LONGAR,AL,ND(3),GRLT(3),TAU1(3),TAU2(3),NORME,PS
+      REAL*8        POINT(3),NORM2,LSN,MAX
 C......................................................................
 
       CALL JEMARQ()
@@ -69,7 +70,7 @@ C     RECUPERATION DES ENTRÉES / SORTIE
       CALL JEVECH('PLEVSET','L',JLSN)
       CALL JEVECH('PGRADLN','L',JGRLSN)
       CALL JEVECH('PGRADLT','L',JGRLST)
-      
+
       CALL JEVECH('PPINTER','E',JOUT1)
       CALL JEVECH('PAINTER','E',JOUT2)
       CALL JEVECH('PCFACE' ,'E',JOUT3)
@@ -112,7 +113,7 @@ C     ARCHIVAGE DE CFACE
 C     ARCHIVAGE DE LONCHAM
       ZI(JOUT4-1+1)=NINTER
       ZI(JOUT4-1+2)=NFACE
-
+      
 C ----------------------------------------------------------------------
 C     CALCUL DE LA BASE COVARIANTE AUX POINTS D'INTERSECTION
 C     ND EST LA NORMALE À LA SURFACE : GRAD(LSN)
@@ -149,6 +150,29 @@ C                   (BOOK IV 01/02/05)
           TAU1(J)=GRLT(J)-PS*ND(J)
  133    CONTINUE
         CALL NORMEV(TAU1,NORME)
+        
+        IF (NORME.LT.1.D-12) THEN
+          CALL UTMESS('A','TE0510','LE VECTEUR '//
+     &    'TAU1 (DIRECTION1 DU FROTTEMENT) EST NUL. LES GRADIENTS '//
+     &    'DES LEVEL SETS SONT SUREMENT COLINEAIRES EN CE POINT.')
+          POINT(1)=ZR(JPTINT-1+3*(NLI-1)+1)
+          POINT(2)=ZR(JPTINT-1+3*(NLI-1)+2)
+          POINT(3)=ZR(JPTINT-1+3*(NLI-1)+3)
+          CALL UTIMPR('L',' POINT ',3,POINT )
+C         ESSAI AVEC LE PROJETE DE OX
+          TAU1(1)=1.D0-ND(1)*ND(1)
+          TAU1(2)=0.D0-ND(1)*ND(2)
+          TAU1(3)=0.D0-ND(1)*ND(3)
+          CALL NORMEV(TAU1,NORM2)
+          IF (NORM2.LT.1.D-12) THEN
+C           ESSAI AVEC LE PROJETE DE OY
+            TAU1(1)=0.D0-ND(2)*ND(1)
+            TAU1(2)=1.D0-ND(2)*ND(2)
+            TAU1(3)=0.D0-ND(2)*ND(3)               
+            CALL NORMEV(TAU1,NORM2)
+          ENDIF
+          CALL ASSERT(NORM2.GT.1.D-12)
+        ENDIF
         CALL PROVEC(ND,TAU1,TAU2) 
 
 C       ARCHIVAGE DE BASECO

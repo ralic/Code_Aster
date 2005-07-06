@@ -1,4 +1,4 @@
-# MODIF  DATE 05/10/2004   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 06/07/2005   AUTEUR LAMARCHE S.LAMARCHE 
 # TITRE REPONSE DYNAMIQUE D'UN PATIN FROTTANT RIGIDE SOUMIS A UNE PRESSION ET UNE fORCE DE RAPPEL
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -51,11 +51,12 @@ MAILL=MODI_MAILLAGE(reuse =MAILL,
 #                         CARACTERISTIQUES ELEMENTAIRES
 #---------------------------------------------------------------------
 
+
 CARA=AFFE_CARA_ELEM(MODELE=MODE,
-                    DISCRET_2D=_F(GROUP_MA='RESLAT',
-                                  CARA='K_T_D_L',
-                                  VALE=(12.E3,0.0),),
-                   )
+                     DISCRET_2D=_F(GROUP_MA='RESLAT',
+                                   CARA='K_T_D_L',
+                                   VALE=(12.E3,0.0),),
+                    )
 
 #---------------------------------------------------------------------
 #                         CARACTERISTIQUES MATERIAUX
@@ -105,7 +106,8 @@ CTACC=AFFE_CHAR_MECA(MODELE=MODE,
                                RECHERCHE='NOEUD_BOUCLE',
                                METHODE='CONTINUE',
                                MODL_AXIS='NON',
-                               ITER_GEOM_MAXI = 0,
+                               ITER_FROT_MAXI=10,
+                               ITER_GEOM_MAXI = 5,
                                FROTTEMENT='COULOMB',
                                COULOMB=0.3,
                                GROUP_MA_MAIT='LMAI',
@@ -220,5 +222,28 @@ TEST_RESU(RESU=(_F(RESULTAT   = UCL,
                    ),
                    ),)
 
+
+DEPB=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL_B',
+                                GROUP_NO=('B',),
+                                RESULTAT=UCM,
+                                NOM_CHAM='DEPL',
+                                TOUT_ORDRE='OUI',
+                                NOM_CMP=('LAGS_C','LAGS_F1',),
+                                OPERATION='EXTRACTION',),);
+
+IMPR_TABLE(TABLE=DEPB);
+
+CNT_B = POST_RELEVE_T(ACTION=_F(INTITULE='CONTACT_B',
+                                  GROUP_NO='B',
+                                  RESULTAT=UCM,
+                                  NOM_CHAM='VALE_CONT',
+                                  NOM_CMP= ('RTAX','RTGX','RN',),
+                                  TOUT_ORDRE='OUI',
+                                  OPERATION='EXTRACTION',),);
+IMPR_TABLE(TABLE=CNT_B);                                  
+
+
+
 FIN()
 #
+

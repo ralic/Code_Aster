@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 06/07/2005   AUTEUR GENIAUT S.GENIAUT 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -37,10 +37,10 @@ DEFI_FISS_XFEM=OPER(nom="DEFI_FISS_XFEM",op=  41,sd_prod=fiss_xfem,reentrant='f'
       VECT_ORIE           =SIMP(statut='o',typ='R',max=03),
       PT_ORIGIN           =SIMP(statut='o',typ='R',max=03),
     ),
-    CONTACT               =FACT(statut='f',max=01,
+    CONTACT               =FACT(statut='o',max=01,
       NOM_CHAM            =SIMP(statut='f',typ='TXM',defaut="DEPL",into=("DEPL",) ),
       FROTTEMENT          =SIMP(statut='f',typ='TXM',defaut="SANS",into=("SANS","COULOMB",) ), 
-      INTEGRATION         =SIMP(statut='f',typ='TXM',defaut="GAUSS",into=("GAUSS",) ),
+      INTEGRATION         =SIMP(statut='f',typ='TXM',defaut="GAUSS",into=("GAUSS","NOEUD",) ),
       COEF_REGU_CONT      =SIMP(statut='f',typ='R',defaut=100.E+0),
       MODL_AXIS           =SIMP(statut='f',typ='TXM',into=("NON",)),
       ITER_CONT_MAXI      =SIMP(statut='f',typ='I',defaut=30),

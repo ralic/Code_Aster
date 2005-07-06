@@ -1,4 +1,4 @@
-%& MODIF OPTIONS  DATE 25/01/2005   AUTEUR GENIAUT S.GENIAUT 
+%& MODIF OPTIONS  DATE 06/07/2005   AUTEUR GENIAUT S.GENIAUT 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -23,6 +23,7 @@ OPTION__
         PAINTER  NEUT_R
         PCFACE   NEUT_I
         PLONCHA  NEUT_I
+        PDONCO   XCONTAC        
    OUT__
         PSEUIL  NEUT_R ELEM__
 

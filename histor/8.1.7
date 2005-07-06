@@ -1,0 +1,480 @@
+
+
+-----------------------------------------------------------------------
+--- AUTEUR boiteau O.BOITEAU   DATE  le 06/07/2005 a 10:24:41
+
+------------------------------------------------------------------------------
+RESTITUTION HORS AREX
+   INTERET_UTILISATEUR : OUI
+   TITRE
+   ------
+              Extension du perimetre d'utilisation du solveur FETI
+                  en sequentiel comme en parallele (part I)
+
+   FONCTIONNALITE  SOLVEUR='FETI' dans MECA_STATIQUE
+   --------------
+
+   Contribution 1 a l'EL 2005-174
+   Point 1: Il est desormais possible de resoudre un probleme multi-domaines
+   comportant des Dirichlets simples sur l'interface (DDL_IMPO/FACE_IMPO) et
+   pouvant comporter bien sur des Dirichlets generalises
+   ne concernant que des noeuds interieurs d'un meme sous-domaine (LIAISON_DDL,
+   _GROUP,_MAIL, _OBLIQUE)
+   Donc, vis-a-vis des Dirichlets la situation actuelle est suppose etre la
+   suivante:
+
+   AFFE_CHAR_CINE                                          UTMESS_F
+
+   AFFE_CHAR_MECA/_F
+   (il faut lire LIGREL de charge resultant de la concatenation d'un ou
+   plusieurs...)
+   DDL_IMPO interne a un SD                               calcul FETI OK
+   DDL_IMPO a cheval ou                            MSG +  calcul FETI OK
+            touchant une interface
+   FACE_IMPO idem
+
+   Noeud d'un LIGREL de charge sur l'interface            MSG
+
+   LIAISON_DDL/GROUP/MAIL/OBLIQUE n'intersectant pas
+   d'interface et ne concernant qu'un SD                  calcul FETI OK
+
+   Idem mais en intersectant l'interface                  UTMESS_F
+
+   Idem mais a cheval entre plusieurs SD et
+   sans intersecter l'interface                           UTMESS_F
+
+
+   Point 2: Amelioration de la gestion memoire des objets lies au pb grossier
+   et a la procedure de reorthogonalisation au detriment du temps CPU. Lorsque
+   le nbre de SD et la taille de l'interface augmentent, ils deviennent trop
+   gros a conserver en memoire. Il vaut mieux les décharger et les reappeler
+   lorsque necessaire (2 fois par iteration).
+
+   Point 3: Amelioration du critere d'arret qui fonctionne directement sur
+   le residu projete (algo desormais conforme aux derniers
+   papiers de Rixen et de Roux). Parfois gains en iterations et en tout cas
+   simplification du critere d'arret, donc leger gain en CPU.
+
+   Point 4: En parallele, attribution d'un nombre de SD au processeur 0,
+   different de celui qui sera attribue automatiquement aux autres procs.
+   Via le mot-cle NB_SD_PROC0 du mot-cle facteur SOLVEUR.
+   Il n'est actif qu'en parallele (nbproc > 1) et que si il est licite
+   (>0, >nproc-1-nbsd).
+
+      Ex: 8 SD 4 Proc NB_SD_PROC0=1
+          SD     1      2/3/4    5/6     7/8
+          PROC   0        1       2       3
+
+   Point 5: Correction de FETSM trop bavard en sequentiel avec un solveur
+   non FETI.
+
+   RESU_FAUX_VERSION_EXPLOITATION  :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : OUI
+   --------------------
+     DOC_R : R6.01.03
+       EXPL_ :  Doc de reference de FETI, comportant notamment un expurge
+                 mis a jour de la note HI precedente.
+     DOC_U : U4.50.01
+       EXPL_ :  Utilisation du mot-cle SOLVEUR
+     DOC D : D9.03.01
+       EXPL_ :  Descriptif informatique du solveur FETI
+     DOC_D : D4.06.21
+       EXPL_ : SD SD_FETI
+     DOC_V : V1.04.105
+       EXPL_ : FETI005A: test DIRICHLET intersectant l'interface
+       DDL_IMPO intersectant l'interface, LIAISON_MAIL touchant l'interface,
+       DDL_IMPO interne a un SD.
+
+   VALIDATION
+   -----------
+     Diverses combinaisons en 2D/3D en variant configurations de blocage et nbre
+     de sous-domaines + cas_test FETI de la base. Sur le cluster CLPASTER et la
+     CLAYASTR.
+     Restitution du cas-test FETI005A
+
+     Sur le cube en elasticite lineaire sur la CLPASTER (nodebug avec MPI, seul
+     sur la machine, a option DEBUT homogene).
+
+                              8.1.3                   Avec cette restit
+                  ----------------------------------------------------------
+
+     90 000 DDLS       Memoire(Mo)/Temps (s CPU+SYS)/Temps elapsed (s)
+     -----------
+
+     MULT_FRONT           400 / 215 / 243               sans objet
+     FETI_10 SD  1 Proc    80 / 105 / 130            68 / 122 / 153
+     FETI_10 SD  2 Proc    80 /  58 /  65            68 /  61 /  74
+     FETI_10 SD  5 Proc    80 /  25 /  27            68 /  29 /  31
+
+
+     Pour info, avec la nouvelle version:
+
+     CAS-TEST NICOLAS TARDIEU (moteur 3D, 530 000 DDLS en elasticite lineaire)
+     -------------------------
+     MULT_FRONT            500 / 391 / 475
+     FETI_10SD   1 Proc    240 / 606 / 722
+     FETI_10SD   2 Proc    240 / 382 / 451
+     FETI_10SD   5 Proc    240 / 133 / 169
+
+   DETAILS
+   --------
+   routines modifiees <M>, nouvelles <N>
+   <M> alfeti,assmam,assvec,cresol,exlim2,fetam,fetarp,fetcpu,fetcrf,fetinl,fetprj,
+   fetreo,fetrin,numero.
+
+   NB_JOURS_TRAV  : 15
+
+
+-----------------------------------------------------------------------
+--- AUTEUR geniaut S.GENIAUT   DATE  le 06/07/2005 a 16:23:37
+
+REALISATION EL 2005-102
+INTERET_UTILISATEUR : OUI
+TITRE           CL de Dirichlet sur des ddls X-FEM
+FONCTIONNALITE
+  Pouvoir imposer des conditions aux limites de type Dirichlet sur les
+  ddls X-FEM : DCX, DCY, DCZ, H1X, H1Y et H1Z avec DDL_IMPO dans
+  AFFE_CHAR_MECA.
+RESU_FAUX_VERSION_EXPLOITATION   :   NON
+RESU_FAUX_VERSION_DEVELOPPEMENT  :   NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+
+VALIDATION
+   cas test perso
+DETAILS
+  Les catalogues d_depl_r.... existent déjà puisque on peut utiliser
+  le mot-clé LIAISON_DDL sur ces ddls. Il suffit juste de modifier
+  affe_char_meca.capy.
+
+IMPACT_DOCUMENTAIRE : OUI
+    DOC_U : U2.04.10 Notice d'utilisation de X-FEM
+       EXPL_ :
+NB_JOURS_TRAV  : 0.5
+
+------------------------------------------------------------------------
+RESTITUTION HORS AREX
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : NON
+   FONCTIONNALITE
+   DETAILS
+   changement d'un 0 en 0.D0 dans xinils.f lors d'un test sur des reels
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   VALIDATION :
+   IMPACT_DOCUMENTAIRE : NON
+
+--------------------------------------------------------------------------
+REALISATION EL 2005-100
+INTERET_UTILISATEUR : OUI
+TITRE           Schémas d'intégration pour le contact avec X-FEM
+FONCTIONNALITE
+  Pouvoir choisir le schéma d'intégration numérique des termes élémentaires
+  sur les facettes triangulaires de contact.
+  Choix possibles :
+  - schéma de Gauss-Legendre à 12 points : intègre exactement les monomes
+  xi.yj avec i+j<7
+  - schéma de Simpson 0 (schéma aux noeuds)
+  ce schéma n'est pas exact, mais permet de sous-intégrer pour améliorer la
+  convergence dans la boucle des contraintes actives (pb d'oscillation des
+  pressions de contact)
+RESU_FAUX_VERSION_EXPLOITATION   :   NON
+RESU_FAUX_VERSION_DEVELOPPEMENT  :   NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+
+VALIDATION
+   ssnv182c
+DETAILS
+  Nouveau mot clé INTEGRATION dans l'opérateur DEFI_FISS_XFEM sous le mot clé
+  facteur CONTACT.
+  INTEGRATION = 'GAUSS' ou 'NOEUD' (Gauss par défaut)
+  Ce choix est passé à tous les te de contact
+  te0533.f : calcul des termes de rigidité
+  te0534.f : calcul des seconds membres
+  te0532.f : mise à jour des statuts de contact
+  te0548.f : mise à jour des seuils de frottement
+
+ autres routines impactées :
+ op0041.f sdconx.f xconli.f xjacff.f xmbca.f xreacl.f
+
+ catalogues impactés :
+ defi_fiss_xfem.capy   xcvbca.cata       xreacl.cata
+ gener_me3d_3.cata     gener_me_xh.cata  grandeur_simple.cata
+
+IMPACT_DOCUMENTAIRE : OUI
+    DOC_U : U4.82.08 DEFI_FISS_XFEM
+       EXPL_ :
+    DOC_V : V6.04.182 Bloc avec interface en contact frottant avec X-FEM
+NB_JOURS_TRAV  : 1.0
+
+--------------------------------------------------------------------------
+CORRECTION AL 2005-137
+INTERET_UTILISATEUR : OUI
+TITRE           Quand la fissure passe "près" d'un noeud avec X-FEM
+FONCTIONNALITE
+  Le reajustement actuel de la level set ne suffit pas à éviter des
+  matrices mal conditionnées. Il faut un critère supplémentaire
+  dépendant de la configuration de la fissure, qui permette de cibler
+  les ddls "genants" qu'il vaudrait mieux supprimer.
+RESU_FAUX_VERSION_EXPLOITATION   :   NON
+RESU_FAUX_VERSION_DEVELOPPEMENT  :   NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+
+VALIDATION
+   SSNV173c
+DETAILS
+
+  Problèmatique :
+  Actuellement, le reajustement de la level set consiste a boucler sur toutes
+  les aretes du maillage, et lorsque la level set passe à moins de 1% du bord
+  de l'arete, on met la level set à zero pour le noeud en question.
+  (Ca revient à changer un peu la géométrie du problème considéré puisqu'on
+  déplace la fissure).
+  Dans certains cas, ce reajustement ne suffit pas à éviter des matrices
+  mal conditionnées. Notamment en 3D, avec des hexaèdres coupés dans un coin.
+  La matrice devient presque singulière, et un nombre important de décimales
+  est perdu lors de la résolution. Ces pivots presque nuls apparaissent sur
+  les ddls de saut (Heaviside), car dans la cas limite où la level set passe
+  sur le noeud du coin, ces ddls de saut ne sont pas activés.
+
+  Solution :
+  L'idée est d'annuler les ddls de saut.
+  Pour répertorier les mailles où il risque d'y avoir un problème, on calcule
+  le rapport entre le petit volume et le grand volume (de part et d'autres de
+  la fissure). Si ce rapport est très faible, il y a de bonnes chances pour
+  que cette maille conduise à des pivots nuls. Mais ce n'est pas tout le temps
+  le cas. Cela arrive seulement dans une configuration précise : un hexa coupé
+  dans un coin (donc seulement en 3D).
+  Ainsi, pour sélectionner les mailles à problème, on vérifie que le rapport
+  de volume est faible (inférieur à une valeur critique basée sur des tests),
+  et on vérifie que la maille est bien un hexa coupé dans un coin.
+  On détermine ensuite les noeuds qui ne "devraient" pas porter de ddls de saut.
+  L'algorithme utilisé est basé sur celui utilisé pour déterminer les ddls
+  enrichis du modèle X-FEM.
+  Finalement, ces ddls sont supprimés lors du passage dans AFFE_CHAR_MECA avec le
+  mot clé LIAISON_XFEM.
+  La valeur critique du rapport de volumes peut etre choisie par l'utilisateur par
+  le mot clé CRITERE dans l'opérateur MODI_MODELE_XFEM. (valeur par défaut : 1.1e-4)
+
+  ATTENTION :
+  Le cas test ajouté possède une ALARME légitime car la structure est
+  entièrement coupée donc il n'y a pas de front de fissure.
+
+ routines impactées :
+ calcul du critère en volume : op0113.f xtopoi.f te0514.f xcrvol.f
+ determination des noeuds    : xstan2.f
+ suppression des ddls        : caxfem.f xdeldh.f
+
+ catalogues impactés :  topose.cata
+                        modi_modele_xfem.capy
+
+IMPACT_DOCUMENTAIRE : OUI
+    DOC_U : U2.04.10 Notice d'utilisation de X-FEM
+       EXPL_ :
+    DOC_U : U4.41.11 MODI_MODELE_XFEM
+       EXPL_ :
+    DOC_V : V6.04.173 Barreau fissuré avec X-FEM
+NB_JOURS_TRAV  : 5.0
+
+
+-----------------------------------------------------------------------
+--- AUTEUR lamarche S.LAMARCHE   DATE  le 06/07/2005 a 09:36:27
+
+CORRECTION AL 2004-231
+   INTERET_UTILISATEUR : NON
+   TITRE METHODE DE CONTACT CONTINUE ET DIRE_APPA
+   FONCTIONNALITE
+   Il n'était pas possible de donner une direction d'appariement (DIRE_APPA) dans la première occurence
+   du mot clef contact avec la méthode continue.
+   RESU_FAUX_VERSION_EXPLOITATION   :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT  :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : OUI
+   DOC_V : V6.01.111
+   VALIDATION
+   SSNA111B
+   DETAILS
+   Dans mappar.f, on n'attribuait pas de valeur à l'indice NUMAM dans le cas de DIRE_APPA.
+   On ajoute un DIRE_APPA au cas test SSNA111B qui s'y prête bien :
+   c'est un poinçon qui descend à déplacement imposé sur un massif.
+   NB_JOURS_TRAV  : 0.5
+
+----------------------------------------------------------------------------------
+CORRECTION AL 2005-124
+   INTERET_UTILISATEUR : NON
+   TITRE RESULTATS DE VALE_CONT AVEC LA METHODE CONTINUE
+   FONCTIONNALITE
+   Dans le cas test SDNV104c, on trouvait des rapports RT/RN (force tangentielle sur force normale de contact)
+   supérieurs au coefficient de Coulomb. C'était dû à une mauvaise convergence du calcul : il faut augmenter
+   iter_geom_maxi.
+   RESU_FAUX_VERSION_EXPLOITATION   :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT  :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+   SDNV104C
+   DETAILS
+   On augmente la valeur de iter_geom_maxi dans le cas test. On note que les problèmes liés au choix des paramètres
+   iter_geom_maxi et iter_frot_maxi et à la détection de la convergence font aussi l'objet de l'AL 2004-302.
+   On a ajouté quelques cas tests pour complèter les cas tests de la méthode continue.
+   NB_JOURS_TRAV  : 1.0
+
+----------------------------------------------------------------------------------
+CORRECTION AL 2005-211
+   INTERET_UTILISATEUR : NON
+   TITRE CONTACT METHODE CONTINUE / ELEMENTS DE STRUCTURE
+   FONCTIONNALITE
+   Par ailleurs le calcul de VALE_CONT ne permettait pas de prendre en compte les éléments de structure
+   et de manière générale les éléments dont les ddl n'étaient pas exactement dx, dy et dz.
+   RESU_FAUX_VERSION_EXPLOITATION   :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT  :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : OUI
+   DOC_V : V6.04.129
+   VALIDATION
+   SSNV129D
+   DETAILS
+   Dans mmmres, on reconstruit les tableaux contenant les ddls, en y mettant que les ddl DX DY DZ,
+   avec CNSRED.f qui réduit un CHAM_NO_S sur un ensemble de noeuds et de composantes.
+   NB_JOURS_TRAV  : 3.0
+
+----------------------------------------------------------------------------------
+RESTITUTION HORS AREX
+   INTERET_UTILISATEUR : NON
+   FONCTIONNALITE CONTRIBUTION PARTIELLE A L'EL 2004-033 (AJOUTS DE CAS TESTS DE LA METHODE CONTINUE)
+   RESU_FAUX_VERSION_EXPLOITATION   :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT  :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : OUI
+   DOC_V : V6.04.127
+           V6.04.504
+   VALIDATION
+   SSNV127F
+   SSNV504D
+   DETAILS
+   Ajout de cas test de la méthode continue,
+   là où on avait déjà des versions avec les méthodes Lagrangien ou Pénalisation.
+   NB_JOURS_TRAV  : 4.0
+----------------------------------------------------------------------------------
+
+
+-----------------------------------------------------------------------
+--- AUTEUR vabhhts J.PELLET   DATE  le 06/07/2005 a 16:28:50
+
+
+------------------------------------------------------------------------------
+CORRECTION AL 2005-256
+   NB_JOURS_TRAV : 0.2
+   INTERET_UTILISATEUR : NON
+   TITRE  "5 tests cassés suite à l'AL 2005-216"
+
+   FONCTIONNALITE
+   Dasn ces 5 tests :
+                  sdll133a.comm  sslv139b.comm
+   rccm02a.comm   sslv139a.comm  zzzz121b.comm
+
+   L'appel à CREA_CHAMP était incorrect (TYPE_CHAM incohérent avec le vrai type
+   du champ créé).
+   Je corrige donc le texte de ces tests.
+
+   4 de ces tests sont en liste complète (ce qui explique que Francis ne soit
+   pas tombé sur le problème)
+
+   Pour zzzz121b en revanche, il y a eu un concours de circonstances malheureux :
+   Au moment où Francis ajoutait le "blindage" du fortran, Gérald modifiait ce test
+   et y introduisait une "faute".
+
+   RESU_FAUX_VERSION_EXPLOITATION   :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT  :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+   DETAILS
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+ CASTEST AJOUT feti005a                      boiteau O.BOITEAU          246    246      0
+ CASTEST AJOUT ssnv127f                     lamarche S.LAMARCHE         465    465      0
+ CASTEST AJOUT ssnv129d                     lamarche S.LAMARCHE         283    283      0
+ CASTEST AJOUT ssnv173c                      geniaut S.GENIAUT          174    174      0
+ CASTEST AJOUT ssnv182c                      geniaut S.GENIAUT          212    212      0
+ CASTEST AJOUT ssnv504d                     lamarche S.LAMARCHE         278    278      0
+ CASTEST MODIF rccm02a                       vabhhts J.PELLET           353      1      1
+ CASTEST MODIF sdll133a                      vabhhts J.PELLET           244      2      2
+ CASTEST MODIF sdnv104c                     lamarche S.LAMARCHE         249     27      2
+ CASTEST MODIF sslv139a                      vabhhts J.PELLET           230      2      2
+ CASTEST MODIF sslv139b                      vabhhts J.PELLET           230      2      2
+ CASTEST MODIF ssna111b                     lamarche S.LAMARCHE         223      2      1
+ CASTEST MODIF zzzz121b                      vabhhts J.PELLET           401      2      2
+CATALOGU MODIF compelem/grandeur_simple__    geniaut S.GENIAUT          573      3      2
+CATALOGU MODIF options/topose                geniaut S.GENIAUT           34      2      1
+CATALOGU MODIF options/xcvbca                geniaut S.GENIAUT           34      2      1
+CATALOGU MODIF options/xreacl                geniaut S.GENIAUT           29      2      1
+CATALOGU MODIF typelem/gener_me_xh           geniaut S.GENIAUT          264     11      6
+CATALOPY MODIF commande/affe_char_meca       geniaut S.GENIAUT          945     22      2
+CATALOPY MODIF commande/defi_fiss_xfem       geniaut S.GENIAUT           55      3      3
+CATALOPY MODIF commande/meca_statique        boiteau O.BOITEAU           96      2      1
+CATALOPY MODIF commande/modi_modele_xfem     geniaut S.GENIAUT           29      2      1
+ FORTRAN AJOUT algorith/xcrvol               geniaut S.GENIAUT          129    129      0
+ FORTRAN AJOUT algorith/xdelh                geniaut S.GENIAUT           96     96      0
+ FORTRAN AJOUT algorith/xstan2               geniaut S.GENIAUT          215    215      0
+ FORTRAN MODIF algeline/alfeti               boiteau O.BOITEAU          738     67     98
+ FORTRAN MODIF algeline/fetcpu               boiteau O.BOITEAU           96      5      4
+ FORTRAN MODIF algeline/fettor               boiteau O.BOITEAU           87      9      9
+ FORTRAN MODIF algorith/cresol               boiteau O.BOITEAU          349      2      2
+ FORTRAN MODIF algorith/fetarp               boiteau O.BOITEAU          156     10     10
+ FORTRAN MODIF algorith/fetinl               boiteau O.BOITEAU          290     17     11
+ FORTRAN MODIF algorith/fetprj               boiteau O.BOITEAU          257     18     12
+ FORTRAN MODIF algorith/fetreo               boiteau O.BOITEAU          223      9      7
+ FORTRAN MODIF algorith/fetrin               boiteau O.BOITEAU          570     36     16
+ FORTRAN MODIF algorith/mappar              lamarche S.LAMARCHE         194      8      4
+ FORTRAN MODIF algorith/mmmres              lamarche S.LAMARCHE         761    102     26
+ FORTRAN MODIF algorith/op0041               geniaut S.GENIAUT          191      5      4
+ FORTRAN MODIF algorith/op0113               geniaut S.GENIAUT          334     20      1
+ FORTRAN MODIF algorith/sdconx               geniaut S.GENIAUT          129     13      4
+ FORTRAN MODIF algorith/xconli               geniaut S.GENIAUT          234      9      3
+ FORTRAN MODIF algorith/xinils               geniaut S.GENIAUT          431      2      2
+ FORTRAN MODIF algorith/xjacff               geniaut S.GENIAUT          126      6      4
+ FORTRAN MODIF algorith/xmmbca               geniaut S.GENIAUT          154      7      4
+ FORTRAN MODIF algorith/xreacl               geniaut S.GENIAUT          115      6      4
+ FORTRAN MODIF algorith/xtopoi               geniaut S.GENIAUT           96      8     12
+ FORTRAN MODIF assembla/assmam               boiteau O.BOITEAU         1011     72      7
+ FORTRAN MODIF assembla/assvec               boiteau O.BOITEAU          948     74      7
+ FORTRAN MODIF assembla/numero               boiteau O.BOITEAU          341      2      1
+ FORTRAN MODIF elements/fetcrf               boiteau O.BOITEAU         1517     57     36
+ FORTRAN MODIF elements/te0510               geniaut S.GENIAUT          192     27      3
+ FORTRAN MODIF elements/te0514               geniaut S.GENIAUT          184      8      3
+ FORTRAN MODIF elements/te0532               geniaut S.GENIAUT          225     29     14
+ FORTRAN MODIF elements/te0533               geniaut S.GENIAUT          484     35     19
+ FORTRAN MODIF elements/te0534               geniaut S.GENIAUT          397     12      7
+ FORTRAN MODIF elements/te0548               geniaut S.GENIAUT          134     13      6
+ FORTRAN MODIF from_c/fetam                  boiteau O.BOITEAU          314     39     11
+ FORTRAN MODIF modelisa/caxfem               geniaut S.GENIAUT          103     10     11
+ FORTRAN MODIF modelisa/exlim2               boiteau O.BOITEAU          495    162     15
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :    9        2098      2098             +2098
+ MODIF :   49       15865       986     407      +579
+ SUPPR :    0           0                 0        +0
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :   58       17963      3084     407     +2677 

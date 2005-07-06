@@ -1,13 +1,14 @@
-      SUBROUTINE XJACFF(ELREFP,JINTER,IFA,CFACE,IPG,NNO,IGEOM,JAC,FF,ND)
+      SUBROUTINE XJACFF(ELREFP,FPG,JINTER,IFA,CFACE,IPG,NNO,IGEOM,
+     &                                                      JAC,FF,ND)
       IMPLICIT NONE 
 
       REAL*8        JAC,FF(*),ND(3)
       INTEGER       JINTER,IFA,CFACE(5,3),IPG,NNO,IGEOM
-      CHARACTER*8   ELREFP
+      CHARACTER*8   ELREFP,FPG
 
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/01/2005   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 06/07/2005   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -30,6 +31,7 @@ C                   ET DES FF DE L'ÉLÉMENT PARENT AU POINT DE GAUSS
 C               ET DE LA NORMALE À LA FACETTE ORIENTÉE DE ESCL -> MAIT
 C     ENTREE
 C       ELREFP  : TYPE DE L'ELEMENT DE REF PARENT
+C       FPG     : FAMILLE DE POINTS DE GAUSS (SCHEMA D'INTEGRATION)
 C       PINTER  : COORDONNÉES DES POINTS D'INTERSECTION
 C       IFA     : INDINCE DE LA FACETTE COURANTE
 C       CFACE   : CONNECTIVITÉ DES NOEUDS DES FACETTES
@@ -70,7 +72,7 @@ C ----------------------------------------------------------------------
 
       CALL JEMARQ()
 
-      CALL ELREF4('TR3','XCON',IBID1,NNOF,IBID2,IBID3,IPOIDF,IVFF,
+      CALL ELREF4('TR3',FPG,IBID1,NNOF,IBID2,IBID3,IPOIDF,IVFF,
      &                                                    IDFDEF,IBID4)
       CALL ASSERT(NNOF.EQ.3)
 

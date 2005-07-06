@@ -5,7 +5,7 @@
 
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/01/2005   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 06/07/2005   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -51,9 +51,9 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
       INTEGER       JNOMA
-      CHARACTER*8   LPAIN(2),LPAOUT(4)
-      CHARACTER*19  LCHIN(2),LCHOUT(4)
-      CHARACTER*19  LIGREL,CHGEOM,PINTTO,CNSETO,HEAVTO,LONCHA
+      CHARACTER*8   LPAIN(2),LPAOUT(5)
+      CHARACTER*19  LCHIN(2),LCHOUT(5)
+      CHARACTER*19  LIGREL,CHGEOM,PINTTO,CNSETO,HEAVTO,LONCHA,CRITER
 
 C ----------------------------------------------------------------------
 
@@ -72,6 +72,7 @@ C     -----------------------
       CNSETO=FISS//'.TOPOSE.CNSETO'
       HEAVTO=FISS//'.TOPOSE.HEAVTO'
       LONCHA=FISS//'.TOPOSE.LONCHAM'
+      CRITER=FISS//'.TOPOSE.CRITER'
 
       LPAIN(1) = 'PGEOMER'
       LCHIN(1) = CHGEOM
@@ -86,15 +87,10 @@ C     -----------------------
       LCHOUT(3) = HEAVTO
       LPAOUT(4) = 'PLONCHA'
       LCHOUT(4) = LONCHA
+      LPAOUT(5) = 'PCRITER'
+      LCHOUT(5) = CRITER
 
-      CALL CALCUL('C','TOPOSE',LIGREL,2,LCHIN,LPAIN,4,LCHOUT,LPAOUT,'G')
-
-C      CALL IMPRSD('CHAMP',PINTTO,6,'PPINTTO')
-C      CALL IMPRSD('CHAMP',CNSETO,6,'PCNSETO')
-C      CALL IMPRSD('CHAMP',HEAVTO,6,'PHEAVTO' )
-C      CALL IMPRSD('CHAMP',LONCHA,6,'PLONCHA')
-
-
+      CALL CALCUL('C','TOPOSE',LIGREL,2,LCHIN,LPAIN,5,LCHOUT,LPAOUT,'G')
 
       CALL JEDEMA()
       END

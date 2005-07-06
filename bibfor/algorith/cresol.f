@@ -5,7 +5,7 @@
       CHARACTER*(*) SUFFI2
 C ----------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/06/2005   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGORITH  DATE 06/07/2005   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -281,7 +281,7 @@ C '&FETI.LISTE.SD.MPI'
         ELSE
           NIVMPI=1
         ENDIF
-
+        K24BID(1:16)=NOMSOL
         CALL FETMPI(1,NBSD,IFM,NIVMPI,RANG,NBPROC,K24BID,K24BID,K24BID,
      &              RBID)
         IF (NBPROC.GT.NBSD)

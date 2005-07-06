@@ -11,7 +11,7 @@ C              IL FAUT APPELER SON "CHAPEAU" : ASMATR.
       CHARACTER*4 MOTCLE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 20/06/2005   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ASSEMBLA  DATE 06/07/2005   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -80,9 +80,10 @@ C-----------------------------------------------------------------------
       INTEGER      NMALIL,IMO,ILAGR,ILIMO,NBNO,EPDMS,JPDMS,NBEC,NLILI,
      &             NBREFN,NBSD,IFETM,IDD,IFETN,IDIME,ILIGRP,GD,NEC,IINF,
      &             DIGDEL,ILIGRT,ILIGRB,IRET1,ILIGRC,IFEL1,IFEL2,IFEL3,
-     &             ADMODL,LCMODL,IFCPU,IBID,IFM,NIV,ILIMPI
+     &             ADMODL,LCMODL,IFCPU,IBID,IFM,NIV,ILIMPI,IFEL4,IFEL5,
+     &             IRET2,IRET3,IAUX1,JFEL4,IAUX2,IAUX3,IAUX4,COMPT
       REAL*8       R,RINF,RSUP,TEMPS(6)
-      LOGICAL      CUMUL,ACREER,LFETI,LLIMO,LLICH,LLICHD,IDDOK
+      LOGICAL      CUMUL,ACREER,LFETI,LLIMO,LLICH,LLICHD,IDDOK,LFEL2
 
 C-----------------------------------------------------------------------
 C     FONCTIONS FORMULES :
@@ -588,6 +589,7 @@ C==========================
 C NOM DU LIGREL GLOBAL        
               NOMLI = ZK24(IAD)
 
+C--------- POUR FETI & LIGREL TARDIF: DEBUT
 C PAR DEFAUT LIGREL DE MODELE
               LLIMO=.TRUE.
               LLICH=.FALSE.
@@ -605,14 +607,20 @@ C LIGREL DE CHARGE A MAILLES TARDIVES
 C LIGREL NE CONCERNANT PAS LE SOUS-DOMAINE IDD
                     GOTO 270              
                   ELSE
-                    CALL JEEXIN(NOMLI(1:19)//'.FEL2',IRET1)
-                    IF (IRET1.NE.0) THEN
+                    CALL JEEXIN(NOMLI(1:19)//'.FEL2',IRET2)
+                    IF (IRET2.NE.0) THEN
 C LIGREL DE CHARGE DUPLIQUE DE FILS NOMLID
                       LLICHD=.TRUE.
 C VRAI NOM DU LIGREL DUPLIQUE CONTENU DANS PROF_CHNO.LILI LOCAL
                       NOMLID=ZK24(IFEL1-1+IDD)
                       CALL JEVEUO(NOMLI(1:19)//'.FEL2','L',IFEL2)
                       CALL JEVEUO(NOMLI(1:19)//'.FEL3','L',IFEL3)
+                      CALL JEEXIN(NOMLI(1:19)//'.FEL4',IRET3) 
+                      IF (IRET3.NE.0)
+     &                  CALL JEVEUO(NOMLI(1:19)//'.FEL4','L',IFEL4)
+                      CALL JEEXIN(NOMLI(1:19)//'.FEL5',IRET3) 
+                      IF (IRET3.NE.0)
+     &                  CALL JEVEUO(NOMLI(1:19)//'.FEL5','L',IFEL5)
                     ELSE
 C LIGREL DE CHARGE NON DUPLIQUE
                       LLICHD=.FALSE.                
@@ -625,6 +633,7 @@ C LIGREL DE MODELE
                   LLICHD=.FALSE.
                 ENDIF
               ENDIF
+C--------- POUR FETI & LIGREL TARDIF: FIN
 
 C ILIMA: INDICE DANS LIST_RESU (GLOBAL) DES MATR_ELEM.LILI DU NOMLI
 C ILINU: INDICE DANS PROF_CHNO.LILI (GLOBAL OU LOCAL) DU NOMLI
@@ -766,13 +775,45 @@ C---- ILAGR = 1 POSSIBILITE DE NOEUDS DE LAGRANGE DANS LA MAILLE
                       IF ((NNOE.EQ.3) .AND. (IMO.EQ.0)) ILAGR = 1
                       NUMA = -NUMA
 
+C--------- POUR FETI & LIGREL TARDIF: DEBUT
 C SI POUR FETI, LIGREL TARDIF DUPLIQUE, ON SE POSE LA QUESTION DE
 C L'APPARTENANCE DE CETTE MAILLE TARDIVE AU SOUS-DOMAINE IDD VIA
 C L'OBJET .FEL2 (C'EST LE PENDANT DE SDFETI.MAILLE.NUMSD POUR LES
 C MAILLES DU MODELE)
                       IF (LLICHD) THEN
-                        IF (ZI(IFEL2+2*(NUMA-1)+1).NE.IDD) GOTO 250
-                      ENDIF                   
+C LFEL2=.TRUE. ON ASSEMBLE LES CONTRIBUTIONS DE CETTE MAILLE TARDIVE
+C LFEL2=.FALSE. ON LA SAUTE
+                        LFEL2=.FALSE.
+                        IAUX1=ZI(IFEL2+2*(NUMA-1)+1)
+C C'EST UNE MAILLE TARDIVE NON SITUEE SUR UNE INTERFACE
+                        IF (IAUX1.GT.0) THEN
+C ELLE CONCERNE LE SD, ON L'ASSEMBLE
+                          IF (IAUX1.EQ.IDD) LFEL2=.TRUE.
+C C'EST UNE MAILLE TRADIVE SITUEE SUR UNE INTERFACE, DONC PARTAGEE
+C ENTRE PLUSIEURS SOUS-DOMAINES
+                        ELSE IF (IAUX1.LT.0) THEN
+                          COMPT=0
+                          IAUX2=(ZI(IFEL4)/3)-1
+                          DO 195 JFEL4=0,IAUX2
+                            IAUX3=IFEL4+3*JFEL4+3
+                            IF (ZI(IAUX3).EQ.NUMA) THEN
+                              COMPT=COMPT+1
+                              IF (ZI(IAUX3-1).EQ.IDD) THEN
+C ELLE CONCERNE LE SD, ON L'ASSEMBLE
+                                LFEL2=.TRUE.
+                                GOTO 196
+                              ENDIF
+C ON A LU TOUTES LES VALEURS POSSIBLES, ON SORT DE LA BOUCLE
+                              IF (COMPT.EQ.-IAUX1) GOTO 196
+                            ENDIF
+  195                     CONTINUE
+  196                     CONTINUE 
+                        ENDIF
+C ON SAUTE LA CONTRIBUTION
+                        IF (.NOT.LFEL2) GOTO 250
+                      ENDIF
+C--------- POUR FETI & LIGREL TARDIF: FIN
+                                         
 C N1 : NBRE DE NOEUDS DE LA MAILLE NUMA               
                       N1 = ZZNSUP(ILIMA,NUMA)
                       DO 240 K1 = 1,NNOE
@@ -781,8 +822,32 @@ C N1 : INDICE DU NOEUDS DS LE .NEMA DU LIGREL DE CHARGE GLOBAL OU LOCAL
 C NOEUD TARDIF                  
                         IF (N1.LT.0) THEN
                           N1 = -N1
+                          
+C--------- POUR FETI & LIGREL TARDIF: DEBUT
 C SI POUR FETI, LIGREL TARDIF DUPLIQUE, VERITABLE N1 DANS LE LIGREL DUPL
-                          IF (LLICHD) N1=-ZI(IFEL3+2*(N1-1))
+                          IF (LLICHD) THEN
+                            IAUX1=ZI(IFEL3+2*(N1-1)+1)
+                            IF (IAUX1.GT.0) THEN
+C C'EST UN NOEUD TARDIF LIE A UN DDL PHYSIQUE NON SUR L'INTERFACE
+                              N1=-ZI(IFEL3+2*(N1-1))
+                            ELSE IF (IAUX1.LT.0) THEN
+C C'EST UN NOEUD TARDIF LIE A UN DDL PHYSIQUE DE L'INTERFACE
+                              IAUX2=(ZI(IFEL5)/3)-1
+                              DO 197 JFEL4=0,IAUX2
+                                IAUX3=IFEL5+3*JFEL4+3
+                                IF (ZI(IAUX3).EQ.N1) THEN
+                                  IF (ZI(IAUX3-1).EQ.IDD) THEN
+C VOICI SON NUMERO LOCAL CONCERNANT LE SD
+                                    N1=-ZI(IAUX3-2)
+                                    GOTO 198
+                                  ENDIF
+                                ENDIF
+  197                         CONTINUE
+  198                         CONTINUE
+                            ENDIF
+                          ENDIF
+C--------- POUR FETI & LIGREL TARDIF: FIN
+
 C NUMERO D'EQUATION DU PREMIER DDL DE N1                          
                           IAD1 = ZZPRNO(ILINU,N1,1)
                           CALL CORDDL(ADMODL,LCMODL,IDPRN1,IDPRN2,ILINU,
