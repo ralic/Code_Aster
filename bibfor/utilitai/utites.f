@@ -7,7 +7,7 @@
       COMPLEX*16                          VALC,REFC
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 13/06/2005   AUTEUR CIBHHLV L.VIVAN 
+C MODIF UTILITAI  DATE 11/07/2005   AUTEUR CIBHHPD L.SALMONA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -63,7 +63,11 @@ C
             ENDIF
             IF ( LOK ) TESTOK = ' OK '
             IF (ABS(ERR).GT.1.0D-03 .AND. ABS(ERR).LT.1.0D+03) THEN
-               WRITE(IFIC,1000) TESTOK, K12, ERR, VALR
+               IF (ERR.LT.-99.9D0) THEN
+                  WRITE(IFIC,1001) TESTOK, K12, ERR, VALR
+               ELSE
+                  WRITE(IFIC,1000) TESTOK, K12, ERR, VALR
+               ENDIF
             ELSE
                WRITE(IFIC,1002) TESTOK, K12, ERR, VALR
             ENDIF
@@ -78,7 +82,11 @@ C
             ERR =       VALR - REFR
             IF ( LOK ) TESTOK = ' OK '
             IF (ABS(ERR).GT.1.0D-03 .AND. ABS(ERR).LT.1.0D+03) THEN
-               WRITE(IFIC,1004) TESTOK, K12, ERR, VALR
+               IF (ERR.LT.-99.9D0) THEN
+                  WRITE(IFIC,1005) TESTOK, K12, ERR, VALR
+               ELSE
+                  WRITE(IFIC,1004) TESTOK, K12, ERR, VALR
+               ENDIF
             ELSE
                WRITE(IFIC,1006) TESTOK, K12, ERR, VALR
             ENDIF
@@ -101,7 +109,11 @@ C
             ENDIF
             IF ( LOK ) TESTOK = ' OK '
             IF (ABS(ERR).GT.1.0D-03 .AND. ABS(ERR).LT.1.0D+03) THEN
-               WRITE(IFIC,1100) TESTOK, K12, ERR, VALI
+               IF (ERR.LT.-99.9D0) THEN
+                  WRITE(IFIC,1101) TESTOK, K12, ERR, VALI
+               ELSE
+                  WRITE(IFIC,1100) TESTOK, K12, ERR, VALI
+               ENDIF
             ELSE
                WRITE(IFIC,1102) TESTOK, K12, ERR, VALI
             ENDIF
@@ -115,7 +127,11 @@ C
             LOK = ( ABS( ERR ) .LE. EPSI )
             IF ( LOK ) TESTOK = ' OK '
             IF (ABS(ERR).GT.1.0D-03 .AND. ABS(ERR).LT.1.0D+03) THEN
-               WRITE(IFIC,1104) TESTOK, K12, ERR, VALI
+               IF (ERR.LT.-99.9D0) THEN
+                  WRITE(IFIC,1105) TESTOK, K12, ERR, VALI
+               ELSE
+                  WRITE(IFIC,1104) TESTOK, K12, ERR, VALI
+               ENDIF
             ELSE
                WRITE(IFIC,1106) TESTOK, K12, ERR, VALI
             ENDIF
@@ -136,7 +152,11 @@ C
             ENDIF
             IF ( LOK ) TESTOK = ' OK '
             IF (ABS(ERR).GT.1.0D-03 .AND. ABS(ERR).LT.1.0D+03) THEN
-               WRITE(IFIC,1200) TESTOK, K12, ERR, VALC
+               IF (ERR.LT.-99.9D0) THEN
+                  WRITE(IFIC,1201) TESTOK, K12, ERR, VALC
+               ELSE
+                  WRITE(IFIC,1200) TESTOK, K12, ERR, VALC
+               ENDIF
             ELSE
                WRITE(IFIC,1202) TESTOK, K12, ERR, VALC
             ENDIF
@@ -151,7 +171,11 @@ C
             ERR =   ABS(VALC - REFC)
             IF ( LOK ) TESTOK = ' OK '
             IF (ABS(ERR).GT.1.0D-03 .AND. ABS(ERR).LT.1.0D+03) THEN
-               WRITE(IFIC,1204) TESTOK, K12, ERR, VALC
+               IF (ERR.LT.-99.9D0) THEN
+                  WRITE(IFIC,1205) TESTOK, K12, ERR, VALC
+               ELSE
+                  WRITE(IFIC,1204) TESTOK, K12, ERR, VALC
+               ENDIF
             ELSE
                WRITE(IFIC,1206) TESTOK, K12, ERR, VALC
             ENDIF
@@ -167,8 +191,10 @@ C     IF (TESTOK.EQ.'NOOK') CALL ABORT()
 
 
 1000  FORMAT(A,1X,A,1X,'RELA',3X,   F7.3,' % VALE:',1P,D20.13)
+1001  FORMAT(A,1X,A,1X,'RELA',3X,   F7.2,' % VALE:',1P,D20.13)
 1002  FORMAT(A,1X,A,1X,'RELA',1X, 1PE9.2,' % VALE:',1P,D20.13)
 1004  FORMAT(A,1X,A,1X,'ABSO',3X,   F7.3,'   VALE:',1P,D20.13)
+1005  FORMAT(A,1X,A,1X,'ABSO',3X,   F7.2,'   VALE:',1P,D20.13)
 1006  FORMAT(A,1X,A,1X,'ABSO',1X, 1PE9.2,'   VALE:',1P,D20.13)
 1010  FORMAT(A     ,1X,'TOLE',3X,   F7.3,' % REFE:',1P,D20.13)
 1012  FORMAT(A     ,1X,'TOLE',1X, 1PE9.2,' % REFE:',1P,D20.13)
@@ -176,8 +202,10 @@ C     IF (TESTOK.EQ.'NOOK') CALL ABORT()
 1016  FORMAT(A     ,1X,'TOLE',1X, 1PE9.2,'   REFE:',1P,D20.13)
 C
 1100  FORMAT(A,1X,A,1X,'RELA',3X,   F7.3,' % VALE:',I9)
+1101  FORMAT(A,1X,A,1X,'RELA',3X,   F7.2,' % VALE:',I9)
 1102  FORMAT(A,1X,A,1X,'RELA',1X, 1PE9.2,' % VALE:',I9)
 1104  FORMAT(A,1X,A,1X,'ABSO',3X,   F7.3,'   VALE:',I9)
+1105  FORMAT(A,1X,A,1X,'ABSO',3X,   F7.2,'   VALE:',I9)
 1106  FORMAT(A,1X,A,1X,'ABSO',1X, 1PE9.2,'   VALE:',I9)
 1110  FORMAT(A     ,1X,'TOLE',3X,   F7.3,' % REFE:',I9)
 1112  FORMAT(A     ,1X,'TOLE',1X, 1PE9.2,' % REFE:',I9)
@@ -185,8 +213,10 @@ C
 1116  FORMAT(A     ,1X,'TOLE',1X, 1PE9.2,'   REFE:',I9)
 C
 1200  FORMAT(A,1X,A,1X,'RELA',3X,   F7.3,' % VALE:',1P,D20.13,1X,D20.13)
+1201  FORMAT(A,1X,A,1X,'RELA',3X,   F7.2,' % VALE:',1P,D20.13,1X,D20.13)
 1202  FORMAT(A,1X,A,1X,'RELA',1X, 1PE9.2,' % VALE:',1P,D20.13,1X,D20.13)
 1204  FORMAT(A,1X,A,1X,'ABSO',3X,   F7.3,'   VALE:',1P,D20.13,1X,D20.13)
+1205  FORMAT(A,1X,A,1X,'ABSO',3X,   F7.2,'   VALE:',1P,D20.13,1X,D20.13)
 1206  FORMAT(A,1X,A,1X,'ABSO',1X, 1PE9.2,'   VALE:',1P,D20.13,1X,D20.13)
 1210  FORMAT(     A,1X,'TOLE',3X,   F7.3,' % REFE:',1P,D20.13,1X,D20.13)
 1212  FORMAT(     A,1X,'TOLE',1X, 1PE9.2,' % REFE:',1P,D20.13,1X,D20.13)

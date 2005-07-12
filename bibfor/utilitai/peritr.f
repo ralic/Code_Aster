@@ -4,7 +4,7 @@
       CHARACTER*(*) RESU,MODELE,CARA,LCHAR(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 26/01/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF UTILITAI  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -150,6 +150,7 @@ C      VARIPG = '&&PERITR.VARIPG'
       CALL WKVECT('&&PERITR.TRAV1','V V R',MXVALE,LVALE)
       DO 90 IORD = 1,NBORDR
         CALL JEMARQ()
+        CALL JERECU('V')
         NUMORD = ZI(JORD+IORD-1)
         INST = ZR(JINS+IORD-1)
         VALER(1) = INST

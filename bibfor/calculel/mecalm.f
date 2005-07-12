@@ -6,7 +6,7 @@
 C
 C TOLE CRP_20
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 28/06/2005   AUTEUR NICOLAS O.NICOLAS 
+C MODIF CALCULEL  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -89,6 +89,8 @@ C     --- VARIABLES LOCALES ---
       INTEGER NBVAL,IAGD,IATYMA,IACMP,ICONX1,ICONX2
       INTEGER CODSEN
       INTEGER IINST1,IINST2
+      INTEGER JDIM,JCOOR,JTYPE
+      INTEGER NNOEM,NELEM,NDIM
 
       CHARACTER*1 BASE,TYPCOE
       CHARACTER*4 TYPE,BUFCH,K4BID
@@ -102,11 +104,13 @@ C     --- VARIABLES LOCALES ---
       CHARACTER*19 INFCHA,CARTEF,CARTEH,CARTET,CARTES,NOMGDF,NOMGDH,
      &             NOMGDT,NOMGDS
       CHARACTER*19 CHDYNR,CHACCE,MASSE,REFE,COMPOR,DCEL
+      CHARACTER*19 CHERRS,CHENES,CHSINS,CHSINN
       CHARACTER*24 CHFLUP,CHFLUM,CHTEMM,CHSOUR
       CHARACTER*24 CHPRES,CHAMGD,CHSIG,CHSIGN,CHEPSP,CHEPS,CHDEPL
       CHARACTER*24 CHGEOM,CHCARA(15),CHTEMP,CHTREF,CHTIME,CHMETA
       CHARACTER*24 CHNUMC,CHHARM,CHFREQ,CHMASS,CHELEM,SOP
       CHARACTER*24 CHERRG,CHERRN,LIGREL,CHEPSA,K24B
+      CHARACTER*24 CHENEG,CHSING,CHERR1,CHERR2,CHERR3
       CHARACTER*24 CHSIG1,CHSIG2,CHVAR1,CHVAR2,NORME,NOMPAR
       CHARACTER*24 MODEL2,MATE2,CARA2,CHARGE,INFOCH,LESOPT
       CHARACTER*24 CHTETA,CHTESE,CHSIGM,DLAGSI,CHDESE,CHSIC,DLAGR
@@ -139,6 +143,7 @@ C     --- VARIABLES LOCALES ---
 
 
       CALL JEMARQ()
+      CALL JERECU('V')
 C               123456789012345678901234
       BLAN24 = '                        '
 C               12   345678   90123
@@ -496,6 +501,7 @@ C ---- TRAITEMENT DE L EXCENTREMENT POUR OPTIONS DE POST TRAITEMENT
 
             DO 70,IAUX = 1,NBORDR
               CALL JEMARQ()
+              CALL JERECU('V')
               IORDR = ZI(JORDR+IAUX-1)
               CALL MEDOM1(MODELE,MATE,CARA,KCHA,NCHAR,CTYP,
      &                    RESUCO,IORDR)
@@ -715,6 +721,7 @@ C ---- VERIF SENSIBILITE FIN
             END IF
             DO 90,IAUX = 1,NBORDR
               CALL JEMARQ()
+              CALL JERECU('V')
               IORDR = ZI(JORDR+IAUX-1)
               CALL MEDOM1(MODELE,MATE,CARA,KCHA,NCHAR,CTYP,
      &                    RESUCO,IORDR)
@@ -788,6 +795,7 @@ C ---- VERIF SENSIBILITE FIN
      &                  R8B,C16B,K8B)
             DO 110,IAUX = 1,NBORDR
               CALL JEMARQ()
+              CALL JERECU('V')
               IORDR = ZI(JORDR+IAUX-1)
               CALL MEDOM1(MODELE,MATE,CARA,KCHA,NCHAR,CTYP,
      &                    RESUCO,IORDR)
@@ -844,6 +852,7 @@ C ---- VERIF SENSIBILITE
 C ---- VERIF SENSIBILITE FIN
             DO 130,IAUX = 1,NBORDR
               CALL JEMARQ()
+              CALL JERECU('V')
               IORDR = ZI(JORDR+IAUX-1)
               CALL MEDOM1(MODELE,MATE,CARA,KCHA,NCHAR,CTYP,
      &                    RESUCO,IORDR)
@@ -886,6 +895,7 @@ C ---- VERIF SENSIBILITE
 C ---- VERIF SENSIBILITE FIN
             DO 140,IAUX = 1,NBORDR
               CALL JEMARQ()
+              CALL JERECU('V')
               IORDR = ZI(JORDR+IAUX-1)
               CALL MEDOM1(MODELE,MATE,CARA,KCHA,NCHAR,CTYP,
      &                    RESUCO,IORDR)
@@ -937,6 +947,7 @@ C ---- VERIF SENSIBILITE
 C ---- VERIF SENSIBILITE FIN
             DO 150,IAUX = 1,NBORDR
               CALL JEMARQ()
+              CALL JERECU('V')
               IORDR = ZI(JORDR+IAUX-1)
               CALL MEDOM1(MODELE,MATE,CARA,KCHA,NCHAR,CTYP,
      &                    RESUCO,IORDR)
@@ -1009,6 +1020,7 @@ C ---- VERIF SENSIBILITE
 C ---- VERIF SENSIBILITE FIN
             DO 160,IAUX = 1,NBORDR
               CALL JEMARQ()
+              CALL JERECU('V')
               IORDR = ZI(JORDR+IAUX-1)
               CHEPS = ' '
               CHSIG = ' '
@@ -1137,6 +1149,7 @@ C ---- VERIF SENSIBILITE FIN
 
             DO 170,IAUX = 1,NBORDR
               CALL JEMARQ()
+              CALL JERECU('V')
               IORDR = ZI(JORDR+IAUX-1)
               CALL MEDOM1(MODELE,MATE,CARA,KCHA,NCHAR,CTYP,
      &                    RESUCO,IORDR)
@@ -1209,6 +1222,7 @@ C ---- VERIF SENSIBILITE
 C ---- VERIF SENSIBILITE FIN
             DO 180,IAUX = 1,NBORDR
               CALL JEMARQ()
+              CALL JERECU('V')
               IORDR = ZI(JORDR+IAUX-1)
               CALL MEDOM1(MODELE,MATE,CARA,KCHA,NCHAR,CTYP,
      &                    RESUCO,IORDR)
@@ -1247,6 +1261,7 @@ C --------- VERIFICATION DU PERIMETRE D'UTILISATION
      &      ,ICONX1,ICONX2)
             DO 190,IAUX = 1,NBORDR
               CALL JEMARQ()
+              CALL JERECU('V')
               IORDR = ZI(JORDR+IAUX-1)
               CALL MEDOM1(MODELE,MATE,CARA,KCHA,NCHAR,CTYP,
      &                    RESUCO,IORDR)
@@ -1297,6 +1312,7 @@ C ---- VERIF SENSIBILITE
 C ---- VERIF SENSIBILITE FIN
             DO 230,IAUX = 1,NBORDR
               CALL JEMARQ()
+              CALL JERECU('V')
               IORDR = ZI(JORDR+IAUX-1)
               CALL RSEXC2(1,1,RESUCO,'ERRE_ELGA_NORE',IORDR,CHERRG,
      &                    OPTION,IRET1)
@@ -1307,6 +1323,184 @@ C ---- VERIF SENSIBILITE FIN
   232         CONTINUE
               CALL JEDEMA()
   230       CONTINUE
+C    ------------------------------------------------------------------
+C    -- OPTION "SING_ELEM"
+C    ------------------------------------------------------------------
+          ELSE IF (OPTION.EQ.'SING_ELEM') THEN
+            
+            CALL GETVR8(' ','PREC_ERR',1,1,1,PREC,IRET1)
+            IF(IRET1.NE.1) THEN
+              CALL UTMESS('F','MECALM','LE MOT CLE PREC_ERR EST'//
+     &                    ' OBLIGATOIRE AVEC'//
+     &                    ' L''OPTION SING_ELEM')
+            ELSE
+              IF(PREC.LE.0.D0.OR.PREC.GT.1.D0) CALL UTMESS('F','MECALM',
+     &                    'LE MOT CLE PREC_ERR DOIT'//
+     &                    ' ETRE STRICTEMENT SUPERIEUR A ZERO'//
+     &                    ' ET INFERIEUR OU EGAL A 1')
+
+            ENDIF
+
+C 1 - RECUPERATION DE :                        
+C  NNOEM : NOMBRE DE NOEUDS
+C  NELEM : NOMBRE D ELEMENTS FINIS (EF)
+C  NDIM  : DIMENSION
+C  JCOOR : ADRESSE DES COORDONNEES
+C  JTYPE : ADRESSE DU TYPE D ELEMENTS FINIS
+
+            CALL DISMOI('F','NOM_MAILLA',MODELE,'MODELE',IBID,NOMA,
+     &                  IERD)     
+            
+            CALL JEVEUO(NOMA//'.DIME','L',JDIM)
+            CALL JEVEUO(NOMA//'.COORDO    .VALE','L',JCOOR)
+            CALL JEVEUO(NOMA//'.TYPMAIL','L',JTYPE)
+            
+            NNOEM=ZI(JDIM)
+            NELEM=ZI(JDIM+2)
+            NDIM=ZI(JDIM+5)
+
+C 2 - CREATION D OBJETS TEMPORAIRES UTILES POUR LA SUITE
+C '&&SINGUM.DIME' (DIM=3) CONTIENT 
+C   NBRE MAX DE NOEUDS SOMMETS CONNECTES AUX EF (NSOMMX)
+C   NBRE MAX D EF CONNECTES AUX NOEUDS (NELCOM)
+C   DEGRE DES EF (1 SI LINEAIRE ET 2 SI QUADRATIQUE)
+C '&&SINGUM.MESU' (DIM=NELEM) CONTIENT L AIRE OU LE VOLUME DES EFS
+C '&&SINGUM.CONN' (DIM=NELEM*(NSOMMX+2)) CONTIENT 
+C   1ERE VALEUR = NBRE DE NOEUDS SOMMETS CONNECTES A L EF N°X
+C   2EME VALEUR = 1 SI EF EST SURFACIQUE EN 2D ET VOLUMIQUE EN 3D 
+C                 0 SINON
+C   CONNECTIVITE EF N°X=>N° DES NOEUDS SOMMETS CONNECTES A X
+C '&&SINGUM.CINV' (DIM=NNOEM*(NELCOM+2)) CONTIENT 
+C   1ERE VALEUR = NBRE D EF CONNECTES AU NOEUD N°X
+C   2EME VALEUR = 0 NOEUD MILIEU OU NON CONNECTE A UN EF UTILE
+C                 1 NOEUD SOMMET A L INTERIEUR + LIE A UN EF UTILE
+C                 2 NOEUD SOMMET BORD + LIE A UN EF UTILE 
+C                 EF UTILE = EF SURF EN 2D ET VOL EN 3D 
+C   CONNECTIVITE INVERSE NOEUD N°X=>N° DES EF CONNECTES A X 
+
+            CALL SINGUM (NOMA,NDIM,NNOEM,NELEM,ZI(JTYPE),ZR(JCOOR))
+
+C 3 - BOUCLE SUR LES INSTANTS DEMANDES
+     
+            DO 200 IAUX = 1,NBORDR 
+              CALL JEMARQ()             
+              IORDR = ZI(JORDR+IAUX-1)
+
+C 3.1 - RECUPERATION DE LA CARTE D ERREUR ET D ENERGIE            
+C       SI PLUSIEURS INDICATEURS ON PREND PAR DEFAUT
+C       ERRE_ELGA_NORE SI IL EST PRESENT
+C       ERRE_ELEM_NOZ2 PAR RAPPORT A ERRE_ELEM_NOZ1
+              
+              CALL RSEXCH(RESUCO,'ERRE_ELGA_NORE',IORDR,CHERR1,IRET1)
+              CALL RSEXCH(RESUCO,'ERRE_ELEM_NOZ1',IORDR,CHERR2,IRET2)
+              CALL RSEXCH(RESUCO,'ERRE_ELEM_NOZ2',IORDR,CHERR3,IRET3)
+                            
+              IF (IRET1.GT.0.AND.IRET2.GT.0.AND.IRET3.GT.0) THEN
+                CALL UTMESS('A','MECALM','PAS D INDICATEUR D ERREUR-'//
+     &                    ' ON NE CALCULE PAS L''OPTION SING_ELEM')
+                IRET=1
+              ENDIF              
+
+              IF(TYSD.EQ.'EVOL_NOLI' ) THEN
+                CALL RSEXC2(1,1,RESUCO,'ETOT_ELEM',IORDR,CHENEG,
+     &                      OPTION,IRET4)
+              ELSE
+                CALL RSEXC2(1,1,RESUCO,'EPOT_ELEM_DEPL',IORDR,CHENEG,
+     &                      OPTION,IRET4)
+              ENDIF
+              
+              IF ((IRET+IRET4).GT.0) GOTO 210
+              
+C 3.2 - TRANSFORMATION DE CES DEUX CARTES EN CHAM_ELEM_S
+              
+              CHERRS='&&MECALM.ERRE'
+              
+              IF (IRET1.EQ.0) THEN
+                CALL CELCES(CHERR1(1:19),'V',CHERRS)
+                IF (IRET2.EQ.0.OR.IRET3.EQ.0) CALL UTMESS('A','MECALM',
+     &           'PAR DEFAUT ON UTILISE ERRE_ELGA_NORE')
+              ELSE IF (IRET3.EQ.0) THEN
+                CALL CELCES(CHERR3(1:19),'V',CHERRS)
+                IF (IRET2.EQ.0) CALL UTMESS('A','MECALM',
+     &           'PAR DEFAUT ON UTILISE ERRE_ELEM_NOZ2')
+              ELSE
+                CALL CELCES(CHERR2(1:19),'V',CHERRS)
+              ENDIF
+              
+              CHENES='&&MECALM.ENER'
+              CALL CELCES(CHENEG(1:19),'V',CHENES)
+
+C 3.3 - ROUTINE PRINCIPALE QUI CALCULE DANS CHAQUE EF :
+C       * LE DEGRE DE LA SINGULARITE
+C       * LE RAPPORT ENTRE L ANCIENNE ET LA NOUVELLE TAILLE 
+C       DE L EF CONSIDERE
+C       => CE RESULAT EST STOCKE DANS CHELEM (CHAM_ELEM)           
+C       CES DEUX COMPOSANTES SONT CONSTANTES PAR ELEMENT
+              
+              CALL RSEXC1(LERES1,OPTION,IORDR,CHELEM)
+              
+              CALL SINGUE (CHERRS,CHENES,NOMA,NDIM,NNOEM,NELEM,
+     &                    ZR(JCOOR),PREC,LIGRMO,IORDR,CHELEM)
+              
+              CALL RSNOCH(LERES1,OPTION,IORDR,' ')
+
+C 3.4 - DESTRUTION DES CHAM_ELEM_S
+
+              CALL DETRSD('CHAM_ELEM_S',CHERRS)
+              CALL DETRSD('CHAM_ELEM_S',CHENES)
+
+ 210          CONTINUE
+              CALL JEDEMA()            
+ 200        CONTINUE
+
+C 4 - DESTRUCTION DES OBJETS TEMPORAIRES            
+
+            CALL JEDETR('&&SINGUM.DIME           ')
+            CALL JEDETR('&&SINGUM.MESU           ') 
+            CALL JEDETR('&&SINGUM.CONN           ') 
+            CALL JEDETR('&&SINGUM.CINV           ')
+C    ------------------------------------------------------------------
+C    -- OPTION "SING_ELNO_ELEM"
+C    ------------------------------------------------------------------
+          ELSE IF (OPTION.EQ.'SING_ELNO_ELEM') THEN
+            DO 220 IAUX = 1,NBORDR 
+              CALL JEMARQ()             
+              IORDR = ZI(JORDR+IAUX-1)
+
+C 1 - RECUPERATION DE LA CARTE DE SINGULARITE             
+
+              CALL RSEXC2(1,1,RESUCO,'SING_ELEM',IORDR,CHSING,
+     &                    OPTION,IRET1) 
+
+              IF (IRET1.GT.0) GOTO 222
+              
+C 2 - TRANSFORMATION DE CE CHAMP EN CHAM_ELEM_S
+
+              CHSINS='&&MECALM.SING'
+              CALL CELCES(CHSING(1:19),'V',CHSINS)
+              
+C 3 - TRANSFOMATION DU CHAMP CHSINS ELEM EN ELNO              
+              
+              CHSINN='&&MECALM.SINN'
+              CALL CESCES(CHSINS,'ELNO',' ',' ','V',CHSINN)
+
+C 4 - STOCKAGE              
+              
+              CALL RSEXC1(LERES1,OPTION,IORDR,CHELEM)
+              
+              CALL CESCEL(CHSINN,LIGRMO(1:19),'SING_ELNO_ELEM',
+     &                   'PSINGNO','NON','G',CHELEM(1:19))
+              
+              CALL RSNOCH(LERES1,OPTION,IORDR,' ')
+
+C 5 - DESTRUTION DES CHAM_ELEM_S
+
+              CALL DETRSD('CHAM_ELEM_S',CHSINS)
+              CALL DETRSD('CHAM_ELEM_S',CHSINN)
+
+ 222          CONTINUE
+              CALL JEDEMA()            
+ 220        CONTINUE
 C    ------------------------------------------------------------------
 C    -- OPTIONS "SIGM_ELNO_CART" ET "EFGE_ELNO_CART"
 C    ------------------------------------------------------------------
@@ -1320,6 +1514,7 @@ C ---- VERIF SENSIBILITE
 C ---- VERIF SENSIBILITE FIN
             DO 240,IAUX = 1,NBORDR
               CALL JEMARQ()
+              CALL JERECU('V')
               IORDR = ZI(JORDR+IAUX-1)
               CALL MEDOM1(MODELE,MATE,CARA,KCHA,NCHAR,CTYP,
      &                    RESUCO,IORDR)
@@ -1365,6 +1560,7 @@ C ---- VERIF SENSIBILITE FIN
             END IF
             DO 250,IAUX = 1,NBORDR
               CALL JEMARQ()
+              CALL JERECU('V')
               IORDR = ZI(JORDR+IAUX-1)
               CALL MEDOM1(MODELE,MATE,CARA,KCHA,NCHAR,CTYP,
      &                    RESUCO,IORDR)
@@ -1411,6 +1607,7 @@ C ---- VERIF SENSIBILITE
 C ---- VERIF SENSIBILITE FIN
             DO 300,IAUX = 1,NBORDR
               CALL JEMARQ()
+              CALL JERECU('V')
               IORDR = ZI(JORDR+IAUX-1)
               CALL MEDOM1(MODELE,MATE,CARA,KCHA,NCHAR,CTYP,
      &                    RESUCO,IORDR)
@@ -1449,6 +1646,7 @@ C ---- VERIF SENSIBILITE FIN
             END IF
             DO 310,IAUX = 1,NBORDR - 1
               CALL JEMARQ()
+              CALL JERECU('V')
               IORDR1 = ZI(JORDR+IAUX-1)
               IORDR2 = ZI(JORDR+IAUX)
               CALL MEDOM1(MODELE,MATE,CARA,KCHA,NCHAR,CTYP,
@@ -1491,6 +1689,7 @@ C ---- VERIF SENSIBILITE
 C ---- VERIF SENSIBILITE FIN
             DO 320,IAUX = 1,NBORDR
               CALL JEMARQ()
+              CALL JERECU('V')
               IORDR = ZI(JORDR+IAUX-1)
               CALL MEDOM1(MODELE,MATE,CARA,KCHA,NCHAR,CTYP,
      &                    RESUCO,IORDR)
@@ -1584,6 +1783,7 @@ C ---- VERIF SENSIBILITE
 C ---- VERIF SENSIBILITE FIN
             DO 340,IAUX = 1,NBORDR
               CALL JEMARQ()
+              CALL JERECU('V')
               IORDR = ZI(JORDR+IAUX-1)
               CALL MEDOM1(MODELE,MATE,CARA,KCHA,NCHAR,CTYP,
      &                    RESUCO,IORDR)
@@ -1782,6 +1982,7 @@ C ---- VERIF SENSIBILITE
 C ---- VERIF SENSIBILITE FIN
             DO 360,IAUX = 1,NBORDR
               CALL JEMARQ()
+              CALL JERECU('V')
               IORDR = ZI(JORDR+IAUX-1)
               CALL MEDOM1(MODELE,MATE,CARA,KCHA,NCHAR,CTYP,
      &                    RESUCO,IORDR)
@@ -1826,6 +2027,7 @@ C ---- VERIF SENSIBILITE
 C ---- VERIF SENSIBILITE FIN
             DO 370,IAUX = 1,NBORDR
               CALL JEMARQ()
+              CALL JERECU('V')
               IORDR = ZI(JORDR+IAUX-1)
               CALL MEDOM1(MODELE,MATE,CARA,KCHA,NCHAR,CTYP,
      &                    RESUCO,IORDR)
@@ -1872,6 +2074,7 @@ C ---- VERIF SENSIBILITE
 C ---- VERIF SENSIBILITE FIN
             DO 380,IAUX = 1,NBORDR
               CALL JEMARQ()
+              CALL JERECU('V')
               IORDR = ZI(JORDR+IAUX-1)
               CALL MEDOM1(MODELE,MATE,CARA,KCHA,NCHAR,CTYP,
      &                    RESUCO,IORDR)
@@ -1911,6 +2114,7 @@ C ---- VERIF SENSIBILITE
 C ---- VERIF SENSIBILITE FIN
             DO 390,IAUX = 1,NBORDR
               CALL JEMARQ()
+              CALL JERECU('V')
               IORDR = ZI(JORDR+IAUX-1)
               CALL MEDOM1(MODELE,MATE,CARA,KCHA,NCHAR,CTYP,
      &                    RESUCO,IORDR)
@@ -1951,6 +2155,7 @@ C ---- VERIF SENSIBILITE
 C ---- VERIF SENSIBILITE FIN
             DO 400,IAUX = 1,NBORDR
               CALL JEMARQ()
+              CALL JERECU('V')
               IORDR = ZI(JORDR+IAUX-1)
               CALL MEDOM1(MODELE,MATE,CARA,KCHA,NCHAR,CTYP,
      &                    RESUCO,IORDR)
@@ -2022,6 +2227,7 @@ C ---- VERIF SENSIBILITE
 C ---- VERIF SENSIBILITE FIN
             DO 410,IAUX = 1,NBORDR
               CALL JEMARQ()
+              CALL JERECU('V')
               IORDR = ZI(JORDR+IAUX-1)
               CALL MEDOM1(MODELE,MATE,CARA,KCHA,NCHAR,CTYP,
      &                    RESUCO,IORDR)
@@ -2056,6 +2262,7 @@ C ---- VERIF SENSIBILITE FIN
             K24B = ' '
             DO 420,IAUX = 1,NBORDR
               CALL JEMARQ()
+              CALL JERECU('V')
               IORDR = ZI(JORDR+IAUX-1)
               CALL MEDOM1(MODELE,MATE,CARA,KCHA,NCHAR,CTYP,
      &                    RESUCO,IORDR)
@@ -2089,6 +2296,7 @@ C ---- VERIF SENSIBILITE
 C ---- VERIF SENSIBILITE FIN
             DO 430,IAUX = 1,NBORDR
               CALL JEMARQ()
+              CALL JERECU('V')
               IORDR = ZI(JORDR+IAUX-1)
               CALL MEDOM1(MODELE,MATE,CARA,KCHA,NCHAR,CTYP,
      &                    RESUCO,IORDR)
@@ -2141,6 +2349,7 @@ C ---- VERIF SENSIBILITE
 C ---- VERIF SENSIBILITE FIN
             DO 450,IAUX = 1,NBORDR
               CALL JEMARQ()
+              CALL JERECU('V')
               IORDR = ZI(JORDR+IAUX-1)
               CALL MEDOM1(MODELE,MATE,CARA,KCHA,NCHAR,CTYP,
      &                    RESUCO,IORDR)
@@ -2175,6 +2384,7 @@ C ---- VERIF SENSIBILITE
 C ---- VERIF SENSIBILITE FIN
             DO 460,IAUX = 1,NBORDR
               CALL JEMARQ()
+              CALL JERECU('V')
               IORDR = ZI(JORDR+IAUX-1)
               CALL MEDOM1(MODELE,MATE,CARA,KCHA,NCHAR,CTYP,
      &                    RESUCO,IORDR)
@@ -2210,6 +2420,7 @@ C ---- VERIF SENSIBILITE
 C ---- VERIF SENSIBILITE FIN
             DO 470,IAUX = 1,NBORDR
               CALL JEMARQ()
+              CALL JERECU('V')
               IORDR = ZI(JORDR+IAUX-1)
               CALL MEDOM1(MODELE,MATE,CARA,KCHA,NCHAR,CTYP,
      &                    RESUCO,IORDR)
@@ -2244,6 +2455,7 @@ C ---- VERIF SENSIBILITE
 C ---- VERIF SENSIBILITE FIN
             DO 480,IAUX = 1,NBORDR
               CALL JEMARQ()
+              CALL JERECU('V')
               IORDR = ZI(JORDR+IAUX-1)
               CALL MEDOM1(MODELE,MATE,CARA,KCHA,NCHAR,CTYP,
      &                    RESUCO,IORDR)

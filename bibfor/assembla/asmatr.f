@@ -1,6 +1,6 @@
       SUBROUTINE ASMATR(NBMAT,TLIMAT,LICOEF,NU,SOLVEU,INFCHA,MOTCLE,
      &                  BASE,TYPE,MATAS)
-C MODIF ASSEMBLA  DATE 18/04/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ASSEMBLA  DATE 11/07/2005   AUTEUR LAMARCHE S.LAMARCHE 
 C RESPONSABLE VABHHTS J.PELLET
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
@@ -28,7 +28,7 @@ C ======================================================================
       CHARACTER*19 SOLVE2,INFCH2
       INTEGER ILICOE,I,ISLVK,INDSYM,IRET,IBID,IDBGAV,ILIMAT,IER
       INTEGER IDLRE2,NBRESU,IRESU,K
-      LOGICAL INDSUI
+      LOGICAL INDSUI,INDMAS
 C-----------------------------------------------------------------------
 
 C --- DESCRIPTION DES PARAMETRES
@@ -94,15 +94,19 @@ CDEB-------------------------------------------------------------------
 
       IF (MOTCLE.EQ.'ZERO') CALL DETRSD('MATR_ASSE',MATAS)
       INDSUI=.FALSE.
+      INDMAS=.FALSE.
 
 C     -- ON AJOUTE '&&CFMMEL' SI NECESSAIRE :
 C      IF (NBMAT2.GT.99) CALL JXABOR()
       DO 10,K = 1,NBMAT2
         TLIMA2(K) = TLIMAT(K)
         IF (TLIMA2(K).EQ.'&&ASCOMA') INDSUI=.TRUE.
+        IF ((NBMAT2.EQ.1).AND.(TLIMAT(K).EQ.'&&OP0070.MEMASS')) 
+     &  INDMAS=.TRUE.
    10 CONTINUE
       CALL JEEXIN('&&CFMMEL.LISTE_RESU',IRET)
-      IF ((IRET.GT.0).AND.(.NOT.INDSUI)) THEN
+     
+      IF ((IRET.GT.0).AND.(.NOT.INDSUI).AND.(.NOT.INDMAS)) THEN
         NBMAT2 = NBMAT2 + 1
         TLIMA2(NBMAT2) = '&&CFMMEL'
       END IF

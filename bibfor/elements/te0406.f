@@ -2,26 +2,26 @@
       IMPLICIT   NONE
       CHARACTER*16    OPTION , NOMTE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 06/05/2003   AUTEUR CIBHHPD D.NUNEZ 
+C MODIF ELEMENTS  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C ......................................................................
 C     FONCTION  :  CALCUL DES OBJETS ELEMENTS FINIS EN DYNAMIQUE
-C                  LINEAIRE 
+C                  LINEAIRE
 C                  COQUE_3D
 C
 C     OPTIONS   :  MASS_MECA      MATRICE DE MASSE COHERENTE
@@ -35,14 +35,14 @@ C ......................................................................
 C ......................................................................
 C
 C     FONCTION  :  CALCUL DES OBJETS ELEMENTS FINIS EN DYNAMIQUE
-C                  LINEAIRE 
+C                  LINEAIRE
 C                  COQUE_3D
 C
 C ......................................................................
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
-      REAL*8             ZR
+      REAL*8             ZR ,DDOT
       COMMON  / RVARJE / ZR(1)
       COMPLEX*16         ZC
       COMMON  / CVARJE / ZC(1)
@@ -59,14 +59,14 @@ C
 C
 C---- DECLARATIONS STANDARDS
 C
-      INTEGER IGEOM 
+      INTEGER IGEOM
 C
       INTEGER LZI , LZR , JCARA
 C
       INTEGER NB1 , NB2
 C
       INTEGER     INTSN , NPGSN
-      INTEGER     INTE  , NPGE 
+      INTEGER     INTE  , NPGE
 C
       REAL * 8 RHO , EPAIS , CTOR
 C
@@ -85,7 +85,7 @@ C
 C
       INTEGER       JENER , JFREQ , IU
 C
-      REAL * 8      MAS ( 2601 ) , MASU ( 51 ) 
+      REAL * 8      MAS ( 2601 ) , MASU ( 51 )
       REAL * 8    MANTN ( 2601 )
 C
       REAL * 8 BID33 ( 3 , 3 )
@@ -95,7 +95,7 @@ C
       PARAMETER       ( NPGE = 2 )
       REAL * 8 EPSVAL ( NPGE ) , KSI3S2
 C
-      REAL * 8 XMIN 
+      REAL * 8 XMIN
 C
       REAL * 8 R8PREM
 C
@@ -107,10 +107,10 @@ C---- DECLARATIONS ROTATION GLOBAL LOCAL AU NOEUDS
 C
       INTEGER IMAS
 C
-      REAL * 8 LAM0  ( 3 , 3 ) 
-      REAL * 8 MASRG ( 3 , 3 ) 
-      REAL * 8 MASRL ( 3 , 3 ) 
-      REAL * 8 MNN 
+      REAL * 8 LAM0  ( 3 , 3 )
+      REAL * 8 MASRG ( 3 , 3 )
+      REAL * 8 MASRL ( 3 , 3 )
+      REAL * 8 MNN
 C
 C DEB
 C
@@ -146,7 +146,7 @@ C------- NOMBRE DE NOEUDS ( NB1 : SERENDIP , NB2 : LAGRANGE )
 C
          NB1   = ZI ( LZI - 1 + 1 )
          NB2   = ZI ( LZI - 1 + 2 )
-C      
+C
 C------- NBRE POINTS INTEGRATIONS ( NPGSR : REDUITE , NPGSN : NORMALE )
 C
          NPGSN = ZI ( LZI - 1 + 4 )
@@ -155,7 +155,7 @@ C....... LES REELS ( FONCTIONS DE FORMES, DERIVEES ET POIDS )
 C
          CALL JEVETE ( '&INEL.'//NOMTE(1:8)//'.DESR' , ' ' , LZR )
 C
-C------ CARACTERISTIQUES DE COQUE 
+C------ CARACTERISTIQUES DE COQUE
 C
         CALL JEVECH ( 'PCACOQU' , 'L' , JCARA )
 C
@@ -188,7 +188,7 @@ C------- BOUCLE SUR LES POINTS D INTEGRATION NORMALE
 C
          DO 610 INTSN = 1 , NPGSN
 C
-C---------- VECTEUR LOCAUX 
+C---------- VECTEUR LOCAUX
 C
             CALL VECTGT ( 1 , NB1 , ZR ( IGEOM ) , KSI3S2 , INTSN ,
      &                    ZR ( LZR ) , EPAIS , VECTN , VECTG , VECTT )
@@ -197,20 +197,20 @@ C---------- CALCUL DE DETJ
 C
             CALL JACBM1 ( EPAIS , VECTG , VECTT , BID33 , JM1 , DETJ )
 C
-C---------  MATRICE N 
+C---------  MATRICE N
 C
-            CALL MATRN( NB1 , NB2 , ZR (LZR) , KSI3S2 , EPAIS , INTSN , 
-     &                  VECTN , 
+            CALL MATRN( NB1 , NB2 , ZR (LZR) , KSI3S2 , EPAIS , INTSN ,
+     &                  VECTN ,
      &                  MATN )
 C
 C---------- TRANSPOSE DE MATN
 C
-            CALL TRANSP ( MATN  , 3           , 3 , 6 * NB1 + 3  ,    
+            CALL TRANSP ( MATN  , 3           , 3 , 6 * NB1 + 3  ,
      &                    MATNT , 6 * NB1 + 3 )
 C
 C---------- PRODUIT MANT * MATN
 C
-            CALL PROMAT 
+            CALL PROMAT
      &           ( MATNT , 6 * NB1 + 3 , 6 * NB1 + 3 , 3           ,
      &             MATN  , 3           , 3           , 6 * NB1 + 3 ,
      &             MANTN )
@@ -221,10 +221,10 @@ C
                DO 210 I = 1 , 6 * NB1 + 3
                       JD = ( 6 * NB1 + 3 ) * ( J - 1 ) + I
                   MAS ( JD ) = MAS ( JD ) +
-     & ( 
+     & (
      &   RHO * MANTN ( JD ) * ZR ( LZR - 1 + 127 +       INTSN - 1 ) *
      &   DETJ * 1.D0
-     & ) 
+     & )
  210           CONTINUE
  200        CONTINUE
 C
@@ -234,7 +234,7 @@ C
  600  CONTINUE
 C
 C
-      XMIN = 1.D0 / R8PREM ( ) 
+      XMIN = 1.D0 / R8PREM ( )
 C
 C---- EN CHAQUE NOEUD
 C
@@ -242,9 +242,9 @@ C
 C
 C------- ON CONSTRUIT LAMBDA0
 C
-         DO 411 II = 1 , 3 
-            LAM0 ( II , 1 ) = VECTPT ( IN , 1 , II ) 
-            LAM0 ( II , 2 ) = VECTPT ( IN , 2 , II ) 
+         DO 411 II = 1 , 3
+            LAM0 ( II , 1 ) = VECTPT ( IN , 1 , II )
+            LAM0 ( II , 2 ) = VECTPT ( IN , 2 , II )
             LAM0 ( II , 3 ) = VECTN  ( IN ,     II )
  411     CONTINUE
 C
@@ -258,7 +258,7 @@ C-------------- NOEUDS DE SERENDIP
                        J    = 6 * ( IN - 1 ) + JJ + 3
                        I    = 6 * ( IN - 1 ) + II + 3
                        IMAS = ( 6 * NB1 + 3 ) * ( J - 1 ) + I
-                       MASRG ( II , JJ ) = MAS ( IMAS ) 
+                       MASRG ( II , JJ ) = MAS ( IMAS )
  441               CONTINUE
  431            CONTINUE
 C
@@ -276,7 +276,7 @@ C-------------- SUPERNOEUD
 C
          ENDIF
 C
-C------- ROTATION DE MASRG : LOCALES --> GLOBALES 
+C------- ROTATION DE MASRG : LOCALES --> GLOBALES
 C
 C        MASRL =  ( LAMBDA0 )   * SIGMT * ( LAMBDA0 ) T
 C
@@ -317,7 +317,7 @@ C-------------- SUPERNOEUD
                        J    = 6 * NB1        + JJ
                        I    = 6 * NB1        + II
                MAS ( ( 6 * NB1 + 3 ) * ( J - 1 ) + I ) =
-     &         MAS ( ( 6 * NB1 + 3 ) * ( J - 1 ) + I ) 
+     &         MAS ( ( 6 * NB1 + 3 ) * ( J - 1 ) + I )
      &         + MNN  * VECTN ( IN , II ) * VECTN ( IN , JJ )
  361               CONTINUE
  351            CONTINUE
@@ -389,13 +389,13 @@ C
 C
          CALL R8INIR ( 51 , 0.D0 , MASU , 1 )
 C
-         CALL PMAVEC('ZERO', 6 * NB1 + 3 , MAS ,ZR ( IU ), MASU ) 
+         CALL PMAVEC('ZERO', 6 * NB1 + 3 , MAS ,ZR ( IU ), MASU )
 C
-         CALL PSCAL ( 6 * NB1 + 3 , ZR ( IU ) , MASU , ZR ( JENER ) )
+         ZR (JENER)=DDOT(6 * NB1 + 3,ZR (IU ),1,MASU,1)
 C
 C------- VITESSE = OMEGA * MODE
 C
-         ZR ( JENER ) = 0.5D0 * ZR ( JFREQ ) * ZR ( JENER ) 
+         ZR ( JENER ) = 0.5D0 * ZR ( JFREQ ) * ZR ( JENER )
 C
 C------- ENERGIE DE MEMBRANE = ENERGIE TOTALE
 C        ENERGIE DE FLEXION  = ENERGIE TOTALE
@@ -403,11 +403,11 @@ C
          CALL R8INIR ( 2 , ZR ( JENER ) , ZR ( JENER + 1 ) , 1 )
 C
 CCC         CALL UTMESS('A','TE0406',
-CCC     &   'ENERGIE CINETIQUE DE TRANSLATION SEULEMENT 
+CCC     &   'ENERGIE CINETIQUE DE TRANSLATION SEULEMENT
 CCC     &    ELLE N EST PAS SEPARABLE EN MEMBRANE ET EN FLEXION')
 C
 C---------------------------------------------
-      ELSE 
+      ELSE
 C---------------------------------------------
          CALL UTMESS ('F' , 'TE0406' , 'OPTION NON TRAITEE')
 C

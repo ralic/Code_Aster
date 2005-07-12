@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 08/02/2005   AUTEUR CIBHHPD L.SALMONA 
+#& MODIF COMMANDE  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -82,6 +82,7 @@ CALC_ELEM=OPER(nom="CALC_ELEM",op=58,sd_prod=calc_elem_prod,reentrant='f',
                               #  estimateurs erreur 
                                  "SIGM_NOZ1_ELGA","ERRE_ELEM_NOZ1","SIGM_NOZ2_ELGA","ERRE_ELEM_NOZ2",
                                  "SIRE_ELNO_DEPL","ERRE_ELGA_NORE","ERRE_ELNO_ELGA",
+                                 "SING_ELEM","SING_ELNO_ELEM",
                               #  CRIT    
                                  "EQUI_ELNO_SIGM","EQUI_ELGA_SIGM","CRIT_ELNO_RUPT",
                                  "EQUI_ELNO_EPSI","EQUI_ELGA_EPSI","EQUI_ELNO_EPME","EQUI_ELGA_EPME",
@@ -102,7 +103,11 @@ CALC_ELEM=OPER(nom="CALC_ELEM",op=58,sd_prod=calc_elem_prod,reentrant='f',
                PLAN =     SIMP(statut='f',typ='TXM',defaut="MAIL",into=("SUP","INF","MOY","MAIL"),
                                fr="Plan de calcul pour les plaques excentrées" ),
               
-              
+               b_sing =BLOC(condition= "OPTION == 'SING_ELEM' or \
+                               (type(OPTION)==type(()) and  'SING_ELEM' in OPTION)",
+                    PREC_ERR=SIMP(statut='o',typ='R',val_min= 0.,val_max= 1.,
+                                  fr="precision demandee pour calculer la carte de taille des elements"),),   
+               
                EXCIT           =FACT(statut='f',max='**',
                                      fr="Charges contenant les températures, les efforts répartis pour les poutres...",
                                      regles=(EXCLUS('FONC_MULT','FONC_MULT_C','COEF_MULT','COEF_MULT_C'),),
@@ -274,8 +279,15 @@ b_charge =BLOC( condition = "OPTION in ('EPME_ELNO_DEPL','EPSI_ELGA_DEPL','EPME_
                OPTION    =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**',defaut="ERRE_ELGA_NORE",
                            into=("SIGM_NOZ1_ELGA","ERRE_ELEM_NOZ1","SIGM_NOZ2_ELGA","ERRE_ELEM_NOZ2",
                                  "SIRE_ELNO_DEPL","ERRE_ELGA_NORE","ERRE_ELNO_ELGA",
-                                 ) ),
-                EXCIT           =FACT(statut='f',max='**',fr="charge contenant les temperatures",
+                                 "SING_ELEM","SING_ELNO_ELEM",
+                                 )),
+               
+               b_sing =BLOC(condition= "OPTION == 'SING_ELEM' or \
+                               (type(OPTION)==type(()) and  'SING_ELEM' in OPTION)",
+                    PREC_ERR=SIMP(statut='o',typ='R',val_min= 0.,val_max=1.,
+                                  fr="precision demandee pour calculer la de taille des elements" ),),     
+
+               EXCIT           =FACT(statut='f',max='**',fr="charge contenant les temperatures",
                      CHARGE          =SIMP(statut='o',typ=(char_meca,char_ther,char_acou) ),),
                                  ),
                                  ),
@@ -306,8 +318,8 @@ b_charge =BLOC( condition = "OPTION in ('EPME_ELNO_DEPL','EPSI_ELGA_DEPL','EPME_
                                  "ERRE_ELGA_NORE","ERRE_ELNO_ELGA","ERRE_ELEM_NOZ1","ERRE_ELEM_NOZ2",
                                  "EQUI_ELNO_EPSI","EQUI_ELGA_EPSI","EQUI_ELNO_EPME","EQUI_ELGA_EPME",
                                  "DCHA_ELNO_SIGM","DCHA_ELGA_SIGM","RADI_ELNO_SIGM","RADI_ELGA_SIGM",
-                                 "ENDO_ELGA","ENDO_ELNO_ELGA","INDI_LOCA_ELGA",
-                                 "ENDO_ELNO_SIGA","ENDO_ELNO_SINO",
+                                 "ENDO_ELGA","ENDO_ELNO_ELGA","INDI_LOCA_ELGA","SING_ELEM",
+                                 "SING_ELNO_ELEM","ENDO_ELNO_SIGA","ENDO_ELNO_SINO",
                                  "PMPB_ELNO_SIEF","PMPB_ELGA_SIEF","ENEL_ELGA","ENEL_ELNO_ELGA",
                                  "ETOT_ELGA","ETOT_ELNO_ELGA","ETOT_ELEM","VALE_NCOU_MAXI"),
                                ),
@@ -322,7 +334,13 @@ b_charge =BLOC( condition = "OPTION in ('EPME_ELNO_DEPL','EPSI_ELGA_DEPL','EPME_
                NOM_CHAM  =SIMP(statut='f',typ='TXM',fr="Nom du champ pour VALE_NCOU_MAXI"),
                NOM_CMP   =SIMP(statut='f',typ='TXM',fr="Nom de la composante pour VALE_NCOU_MAXI"),
                PLAN =     SIMP(statut='f',typ='TXM',defaut="MAIL",into=("SUP","INF","MOY","MAIL") ),
-              
+               
+               b_sing =BLOC(condition= "OPTION == 'SING_ELEM' or \
+                               (type(OPTION)==type(()) and  'SING_ELEM' in OPTION)",
+                    PREC_ERR=SIMP(statut='o',typ='R',val_min= 0.,val_max=1.,
+                                  fr="precision demandee pour calculer la carte de taille des elements" ),),     
+
+               
                b_extr = BLOC( condition = "OPTION in ('EXTR_ELNO_VARI','EXTR_ELGA_VARI')",
                              NOM_VARI =SIMP(statut='o',typ='TXM',min= 1,max=1,fr="nom de la variable à extraire",
                          into=("DPORO","DRHOLQ","DPVP","SATLIQ","EVP","IND_ETA","D","IND_END","TEMP_MAX","GAMP","PCR",
@@ -465,7 +483,13 @@ b_charge =BLOC( condition = "OPTION in ('EPME_ELNO_DEPL','EPSI_ELGA_DEPL','EPME_
                OPTION    =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**',defaut="ERRE_ELGA_NORE",
                            into=("ERRE_ELGA_NORE","ERRE_ELNO_ELGA","ERRE_ELEM_NOZ1","ERRE_ELEM_NOZ2",
                                  "DCHA_ELNO_SIGM","DCHA_ELGA_SIGM","RADI_ELNO_SIGM","RADI_ELGA_SIGM",
-                                 ) ),
+                                 "SING_ELEM","SING_ELNO_ELEM",) ),
+               
+               b_sing =BLOC(condition= "OPTION == 'SING_ELEM' or \
+                               (type(OPTION)==type(()) and  'SING_ELEM' in OPTION)",
+                    PREC_ERR=SIMP(statut='o',typ='R',val_min= 0.,val_max=1.,
+                                  fr="precision demandee pour calculer la carte de taille des elements" ),), 
+               
                b_indic = BLOC( condition ="OPTION in ('DCHA_ELNO_SIGM','DCHA_ELGA_SIGM','RADI_ELNO_SIGM','RADI_ELGA_SIGM') or\
                                             (type(OPTION)==type(()) and 'DCHA_ELNO_SIGM' in OPTION) or\
                                             (type(OPTION)==type(()) and 'DCHA_ELGA_SIGM' in OPTION) or\

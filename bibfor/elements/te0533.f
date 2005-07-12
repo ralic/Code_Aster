@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 06/07/2005   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ELEMENTS  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -36,7 +36,7 @@ C......................................................................
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX --------------------
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
-      REAL*8 ZR 
+      REAL*8 ZR,DDOT
       COMMON /RVARJE/ZR(1)
       COMPLEX*16 ZC
       COMMON /CVARJE/ZC(1)
@@ -321,10 +321,10 @@ C           SI PAS DE CONTACT POUR CE PG : ON REMPLIT QUE LA MATRICE F
                   CALL XPLMAT(NDIM,DDLH,DDLE,DDLC,NNO,NNOM,NJ,PLJ)
 
 C             METR : MÉTRIQUE DE LA BASE COVARIANTE AUX PTS D'INTERSECT
-              CALL PSCAL(3,TAU1(1,NLI),TAU1(1,NLJ),METR(1,1))
-              CALL PSCAL(3,TAU1(1,NLI),TAU2(1,NLJ),METR(1,2))
-              CALL PSCAL(3,TAU2(1,NLI),TAU1(1,NLJ),METR(2,1))
-              CALL PSCAL(3,TAU2(1,NLI),TAU2(1,NLJ),METR(2,2))
+              METR(1,1)=DDOT(3,TAU1(1,NLI),1,TAU1(1,NLJ),1)
+              METR(1,2)=DDOT(3,TAU1(1,NLI),1,TAU2(1,NLJ),1)
+              METR(2,1)=DDOT(3,TAU2(1,NLI),1,TAU1(1,NLJ),1)
+              METR(2,2)=DDOT(3,TAU2(1,NLI),1,TAU2(1,NLJ),1)
 
                   DO 152 K = 1,2
                     DO 153 L = 1,2

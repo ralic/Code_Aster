@@ -1,0 +1,564 @@
+# MODIF  DATE 11/07/2005   AUTEUR CAMBIER S.CAMBIER 
+# TITRE MODELE PROBABILISTE NONPARAMETRIQUE EN HARMONIQUE SOUS-STRUCTURE
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# RESPONSABLE CAMBIER S.CAMBIER
+##############################################################################
+#                                                                            #
+# PLAQUE RECTANGULAIRE EN APPPUI  SIMPLE SUR QUATRE BORDS, AVEC MASSES ET    #
+# RAIDEURS LOCALISEES. LE CHARGEMENT EST HARMONIQUE ET LOCALISE              #
+#                                                                            #
+##############################################################################
+
+DEBUT(CODE=_F(  NOM = 'SHLS200A', NIV_PUB_WEB ='INTERNET',VISU_EFICAS='NON') ,
+      PAR_LOT='NON')
+
+##############################################################################
+#                                                                            #
+# CONSTRUCTION DU MODELE MOYEN ELEMENTS FINIS SOUS STRUCUTRE ET REDUCTION    #
+# SUR LES MODES                                                              #
+#                                                                            #
+##############################################################################
+
+# MODELE MECANIQUE 
+M1=3.
+M2=4.
+K=2.388E+7
+
+PRE_GIBI();
+
+AC=LIRE_MAILLAGE();
+
+MAT=DEFI_MATERIAU( ELAS=_F( E   = 2.1E+11,  
+                            NU  = 0.29,  
+                            RHO = 7800.) 
+                           )
+CHMAT1=AFFE_MATERIAU(MAILLAGE=AC,
+                       AFFE=(_F(GROUP_MA='SURF1',
+                                MATER=MAT,),),);
+CHMAT2=AFFE_MATERIAU(MAILLAGE=AC,
+                       AFFE=(_F(GROUP_MA='SURF2',
+                                MATER=MAT,),),);
+
+MO1=AFFE_MODELE(MAILLAGE=AC,
+                   AFFE=( _F( GROUP_MA = 'SURF1',  
+                           PHENOMENE = 'MECANIQUE',
+                           MODELISATION = 'DKT'),
+                          _F(GROUP_MA='MASS1',
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='DIS_T',),
+                          _F(GROUP_MA = ('RESSO1','RESSO2'),  
+                           PHENOMENE = 'MECANIQUE',
+                           MODELISATION = 'DIS_TR'),
+                           ),);
+ 
+MO2=AFFE_MODELE(MAILLAGE=AC,
+                   AFFE=( _F( GROUP_MA = 'SURF2',  
+                           PHENOMENE = 'MECANIQUE',
+                           MODELISATION = 'DKT'),
+                          _F(GROUP_MA='MASS2',
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='DIS_T',),
+                          _F(GROUP_MA = ('RESSO3'),  
+                           PHENOMENE = 'MECANIQUE',
+                           MODELISATION = 'DIS_TR'),
+                           ),);
+                           
+CA1=AFFE_CARA_ELEM( MODELE=MO1,
+                   COQUE=_F( GROUP_MA = 'SURF1',
+                               EPAIS = 4.0E-4),
+                   DISCRET=( _F( GROUP_MA = ('RESSO1','RESSO2'),
+                                 CARA = 'K_TR_D_L', 
+                                 VALE = ( K,K,K,0.,0.,0.,),),
+                             _F( GROUP_MA = 'MASS1', 
+                                 CARA = 'M_T_D_N', 
+                                 VALE = M1)),
+                                 )
+CA2=AFFE_CARA_ELEM( MODELE=MO2,
+                   COQUE=_F( GROUP_MA = 'SURF2',
+                               EPAIS = 4.0E-4),
+                   DISCRET=( _F( GROUP_MA = ('RESSO3'),
+                                 CARA = 'K_TR_D_L', 
+                                 VALE = ( K,K,K,0.,0.,0.,)),
+                             _F( GROUP_MA = 'MASS2', 
+                                 CARA = 'M_T_D_N', 
+                                 VALE = M2)),
+                                 )
+      
+CH1=AFFE_CHAR_MECA( MODELE=MO1, 
+                   DDL_IMPO=( _F( GROUP_MA=('SURF1','RESSO1','RESSO2',),
+                                   DX=0.,
+                                   DY=0.,
+                                   DRZ=0.
+                                 ),
+                              _F(  GROUP_MA='PI1',
+                                   DZ=0.,
+                                   DRY=0.
+                                 ),
+                              _F(  GROUP_NO=('PY1','PY2','PY3','PY4','PY5','PY6',
+                              'PY7','PY8','PY9','PY10',
+     'PY11','PY12','PY13','PY14','PY15','PY16','PY17','PY18','PY19','PY20',
+     'PY21','PY22','PY23','PY24','PY25','PY26','PY27','PY28','PY29','PY30',
+     'PY31','PY32','PY33','PY34','PY35','PY36','PY37','PY38','PY39','PY40',
+     'PY41','PY42','PY43','PY44','PY45','PY46','PY47','PY48','PY49','PY50',
+     'PY51',),
+                                   DZ=0.,
+                                   DRX=0.,
+                                   DRY=0.,
+                                 ),
+                              _F(  GROUP_NO=('PRES01','PRES02',),
+                                   DZ=0.,
+                                   DRX=0.,
+                                   DRY=0.,
+                                 ),
+                              _F(  GROUP_MA='CONT4',
+                                   DZ=0.,
+                                   DRX=0.,
+                                 ),
+                              _F(  GROUP_MA='PI4',
+                                   DZ=0.,
+                                   DRY=0.
+                                 ),
+                           ),    
+                  )
+CH2=AFFE_CHAR_MECA( MODELE=MO2, 
+                   DDL_IMPO=( _F( GROUP_MA=('SURF2','RESSO3',),
+                                   DX=0.,
+                                   DY=0.,
+                                   DRZ=0.
+                                 ),
+                              _F(  GROUP_MA='PI2',
+                                   DZ=0.,
+                                   DRY=0.
+                                 ),
+                              _F(  GROUP_NO=('PRES03',),
+                                   DZ=0.,
+                                   DRX=0.,
+                                   DRY=0.,
+                                 ),
+                              _F(  GROUP_NO=('PY1','PY2','PY3','PY4','PY5',
+                              'PY6','PY7','PY8','PY9','PY10',
+     'PY11','PY12','PY13','PY14','PY15','PY16','PY17','PY18','PY19','PY20',
+     'PY21','PY22','PY23','PY24','PY25','PY26','PY27','PY28','PY29','PY30',
+     'PY31','PY32','PY33','PY34','PY35','PY36','PY37','PY38','PY39','PY40',
+     'PY41','PY42','PY43','PY44','PY45','PY46','PY47','PY48','PY49','PY50',
+     'PY51',),
+                                   DZ=0.,
+                                   DRX=0.,
+                                   DRY=0.
+                                 ),
+                              _F(  GROUP_MA='CONT2',
+                                   DZ=0.,
+                                   DRX=0.
+                                 ),
+                              _F(  GROUP_MA='PI3',
+                                   DZ=0.,
+                                   DRY=0.
+                                 ),
+                           ),    
+                  )
+
+MACRO_MATR_ASSE(MODELE=MO1,
+                CHAM_MATER=CHMAT1,
+                CARA_ELEM=CA1,
+                CHARGE=CH1,
+                NUME_DDL=CO('NUMDDL1'),
+                SOLVEUR=_F(METHODE='LDLT',),
+                MATR_ASSE=(_F(MATRICE=CO('MATR1'),
+                              OPTION='RIGI_MECA',),
+                           _F(MATRICE=CO('MATM1'),
+                              OPTION='MASS_MECA',),),);
+MACRO_MATR_ASSE(MODELE=MO2,
+                CHAM_MATER=CHMAT2,
+                CARA_ELEM=CA2,
+                CHARGE=CH2,
+                NUME_DDL=CO('NUMDDL2'),
+                SOLVEUR=_F(METHODE='LDLT',),
+                MATR_ASSE=(_F(MATRICE=CO('MATR2'),
+                              OPTION='RIGI_MECA',),
+                           _F(MATRICE=CO('MATM2'),
+                              OPTION='MASS_MECA',),),);
+
+
+MODE1=MODE_ITER_SIMULT( MATR_A=MATR1,   
+                       MATR_B=MATM1,
+                       CALC_FREQ=_F( NMAX_FREQ= 12,
+#                       CALC_FREQ=_F( NMAX_FREQ= 20,
+                                     OPTION ='PLUS_PETITE'
+                                    ),
+                       VERI_MODE=_F( SEUIL = 1.E-5 )  
+                      )
+
+MODE2=MODE_ITER_SIMULT( MATR_A=MATR2,   
+                       MATR_B=MATM2,
+                       CALC_FREQ=_F( NMAX_FREQ= 6,
+#                        CALC_FREQ=_F( NMAX_FREQ= 20,
+                                    OPTION ='PLUS_PETITE'
+                                    ),
+                       VERI_MODE=_F( SEUIL = 1.E-5 )  
+                      )
+
+# COEFFICIENT DE RAYLEIGH
+
+from Numeric import pi
+amred=0.03
+Omin=5.2*pi
+Omax=212.8*pi
+a= 2*amred*Omax*Omin/(Omax+Omin)
+b=2*amred/(Omax+Omin)
+
+MATD1=COMB_MATR_ASSE( COMB_R=( _F( MATR_ASSE=MATM1,
+                                  COEF_R = a ),
+                              _F( MATR_ASSE=MATR1,
+                                  COEF_R = b ),
+                             )
+                    )                               
+MATD2=COMB_MATR_ASSE( COMB_R=( _F( MATR_ASSE=MATM2,
+                                  COEF_R = a ),
+                              _F( MATR_ASSE=MATR2,
+                                  COEF_R = b ),
+                             )
+                    )                               
+CHARGE=AFFE_CHAR_MECA( MODELE=MO1,
+                         FORCE_NODALE=_F( 
+                                          GROUP_NO= 'PCHAR1',
+                                          FZ = 1
+                                         )
+                        )
+VECTEL=CALC_VECT_ELEM( CHARGE=CHARGE,  
+                       OPTION='CHAR_MECA'
+                      )                    
+VECTASS=ASSE_VECTEUR(VECT_ELEM=VECTEL,NUME_DDL=NUMDDL1)
+
+
+INTERF1=DEFI_INTERF_DYNA(   NUME_DDL=NUMDDL1, 
+                             INTERFACE=_F( NOM = 'LIAI1', 
+                                        TYPE = 'CB_HARMO', 
+                                        MASQUE = ('DRZ','DX','DY'),
+                                        GROUP_NO = ('PY1','PY2','PY3','PY4',
+                                        'PY5','PY6','PY7','PY8','PY9','PY10',
+     'PY11','PY12','PY13','PY14','PY15','PY16','PY17','PY18','PY19','PY20',
+     'PY21','PY22','PY23','PY24','PY25','PY26','PY27','PY28','PY29','PY30',
+     'PY31','PY32','PY33','PY34','PY35','PY36','PY37','PY38','PY39','PY40',
+     'PY41','PY42','PY43','PY44','PY45','PY46','PY47','PY48','PY49','PY50',
+                                         'PY51',),
+                                     ),
+                                  )
+
+
+BAMO1=DEFI_BASE_MODALE( CLASSIQUE=_F(INTERF_DYNA = INTERF1,
+                                    MODE_MECA = MODE1,
+                                    NMAX_MODE=100,),)
+                              
+
+INTERF2=DEFI_INTERF_DYNA(   NUME_DDL=NUMDDL2, 
+                             INTERFACE=_F( NOM = 'LIAI2', 
+                                        TYPE = 'CB_HARMO', 
+                                        MASQUE = ('DRZ','DX','DY'),
+                                        GROUP_NO = ('PY1','PY2','PY3','PY4',
+                                        'PY5','PY6','PY7','PY8','PY9','PY10',
+     'PY11','PY12','PY13','PY14','PY15','PY16','PY17','PY18','PY19','PY20',
+     'PY21','PY22','PY23','PY24','PY25','PY26','PY27','PY28','PY29','PY30',
+     'PY31','PY32','PY33','PY34','PY35','PY36','PY37','PY38','PY39','PY40',
+     'PY41','PY42','PY43','PY44','PY45','PY46','PY47','PY48','PY49','PY50',
+                              'PY51',),
+                                     ),
+                                  )
+
+
+BAMO2=DEFI_BASE_MODALE( CLASSIQUE=_F(INTERF_DYNA = INTERF2,
+                                    MODE_MECA = MODE2,
+                                    NMAX_MODE=100,),)
+                              
+MACRO1M=MACR_ELEM_DYNA(  BASE_MODALE=BAMO1,
+                         MATR_AMOR =  MATD1,
+                                OPTION='CLASSIQUE' )
+MACRO2M=MACR_ELEM_DYNA(  BASE_MODALE=BAMO2,
+                         MATR_AMOR =  MATD2,
+                                OPTION='CLASSIQUE' )
+                                
+
+LFREQ=DEFI_LIST_REEL(DEBUT=30.,
+                          INTERVALLE=_F(JUSQU_A=60.,
+                                        PAS=10.),   )
+#LFREQ=DEFI_LIST_REEL(DEBUT=0.5,
+#                          INTERVALLE=_F(JUSQU_A=100.,
+#                                        PAS=0.5),  )
+
+##############################################################################
+#                                                                            #
+# CALCUL PAR MONTE-CARLO DE LA MOYENNE ET DU "DOMAINE DE CONFIANCE" DE LA    #
+# REPONSE HARMONIQUE                                                         #
+#                                                                            #
+##############################################################################
+
+# PREPARATION POST-TRAITEMENT
+DYNHAR=[None]*2
+ss_struct=['PLQ1','PLQ2']
+pt_obs=['POBS1','POBS2']
+num_ss_struct=[0,1]
+n_obs=len(pt_obs)
+SUPOBS=[None]*n_obs
+INFOBS=[None]*n_obs
+M1_OBS=[None]*n_obs
+M2_OBS=[None]*n_obs
+
+# COEFFICIENT DE VARIATION PAR SOUS STRUCTURE
+DELTA_M1 = 0.1
+DELTA_K1 = 0.1
+DELTA_D1 = 0.1
+
+DELTA_M2 = 0.1
+DELTA_K2 = 0.1
+DELTA_D2 = 0.1
+
+ns=3
+# 3 REALISATIONS DES PROCESSUS STOCHASTIQUES ( 3 TIRAGES)
+
+for k in range(1,ns+1):
+
+   MACRO1=GENE_MATR_ALEA( MATR_MOYEN=MACRO1M,
+                           COEF_VAR_RIGI=DELTA_K1,
+                           COEF_VAR_MASS=DELTA_M1,
+                           COEF_VAR_AMOR=DELTA_D1,                          
+                          )
+
+#
+   MACRO2=GENE_MATR_ALEA( MATR_MOYEN=MACRO2M,
+                           COEF_VAR_RIGI=DELTA_K2,
+                           COEF_VAR_MASS=DELTA_M2,
+                           COEF_VAR_AMOR=DELTA_D2,                          
+                          )
+
+
+
+#
+###
+###### MODELE GENERALISE :
+###
+#
+
+
+   MODEGE=DEFI_MODELE_GENE( SOUS_STRUC=(_F( NOM = 'PLQ1', 
+                                         MACR_ELEM_DYNA = MACRO1), 
+                             _F( NOM = 'PLQ2', 
+                                         MACR_ELEM_DYNA = MACRO2,)),LIAISON=( 
+                                _F( SOUS_STRUC_1 = 'PLQ1', 
+                                         SOUS_STRUC_2 = 'PLQ2', 
+                                         INTERFACE_1 = 'LIAI1',
+                                         INTERFACE_2 = 'LIAI2',),
+                                         ),
+                                 VERIF=_F(STOP_ERREUR='NON',),
+                                 )
+
+   NUMEGE=NUME_DDL_GENE(  MODELE_GENE=MODEGE)
+
+#
+   K_GENE=ASSE_MATR_GENE(  NUME_DDL_GENE=NUMEGE, 
+                                  OPTION='RIGI_GENE')
+
+#
+   M_GENE=ASSE_MATR_GENE(  NUME_DDL_GENE=NUMEGE, 
+                                  OPTION='MASS_GENE')
+
+   A_GENE=ASSE_MATR_GENE(  NUME_DDL_GENE=NUMEGE, 
+                                  OPTION='AMOR_GENE')
+                                  
+   EFFO1 = ASSE_VECT_GENE(NUME_DDL_GENE= NUMEGE,
+                           CHAR_SOUS_STRUC=_F( SOUS_STRUC = 'PLQ1',
+                           VECT_ASSE= VECTASS ),
+                                    
+                      )
+                  
+# CALCUL HARMONIQUE
+
+   HARM=DYNA_LINE_HARM(MATR_MASS=M_GENE,
+                            MATR_RIGI=K_GENE,
+                            MATR_AMOR=A_GENE,
+                            LIST_FREQ=LFREQ,
+                            EXCIT=_F( VECT_ASSE = EFFO1,
+                            COEF_MULT = 1.,
+                                    ),
+                         )
+# BOUCLE SUR SOUS STRUCTURES       
+   for i in range(2):
+     DYNHAR[i]=REST_BASE_PHYS(  RESU_GENE=HARM,
+                          SOUS_STRUC=ss_struct[i])
+
+# POST-TRAITEMENT  
+# BOUCLE SUR POINTS D'OBSERVATION       
+   for i in range(n_obs):
+
+     DZOBS=RECU_FONCTION(RESULTAT = DYNHAR[num_ss_struct[i]],
+                          NOM_CHAM='DEPL',
+                          GROUP_NO=pt_obs[i],
+                          NOM_CMP='DZ',
+#                          INTERPOL='LIN',
+#                          PROL_DROITE='LINEAIRE', 
+#                          PROL_GAUCHE='LINEAIRE',
+                          )
+     SPOBS=  CALC_FONCTION(EXTRACTION=_F(FONCTION=DZOBS,
+                                        PARTIE='MODULE',),
+                               )
+
+# CONSTRCTION DES ESTIMATIONS STATISTIQUES
+     if k==1:                                
+    #  ON INITIALISE LES ESTIMATEURS                              
+        SUPOBS[i]=  CALC_FONCTION(COMB=_F(FONCTION=SPOBS,
+                                        COEF=1.,),
+                               )
+        INFOBS[i]=  CALC_FONCTION(COMB=_F(FONCTION=SPOBS,
+                                        COEF=1.,),
+                                )
+        M1_OBS[i]=  CALC_FONCTION(COMB=_F(FONCTION=SPOBS,
+                                        COEF=1.),
+                                )
+        M2_OBS[i]=  CALC_FONCTION(PUISSANCE=_F(FONCTION=SPOBS,
+                                             EXPOSANT=2),)
+
+     else:
+    #  ON CALCULE LES NOUVEAUX ESTIMATEURS EN PRENANT EN COMPTE LE
+    #  DERNIER TIRAGE.                                
+
+    # VARIABLES TEMPORAIRES INTERMEDIAIRES (CAR PAS DE CONCEPT REENTRANT) 
+        SUP=CALC_FONCTION(ENVELOPPE=_F(
+                                         FONCTION=(SUPOBS[i],SPOBS),
+                                         CRITERE='SUP'
+                                         ),
+                              )
+        INF=CALC_FONCTION(ENVELOPPE=_F(
+                                         FONCTION=(INFOBS[i],SPOBS),
+                                         CRITERE='INF'
+                                         ),
+                              )      
+        M1 =  CALC_FONCTION( COMB=(_F(FONCTION=SPOBS,COEF=1.),
+                                    _F(FONCTION=M1_OBS[i],COEF=1.))
+                             )
+        S2 = CALC_FONCTION(PUISSANCE=_F(FONCTION=SPOBS,
+                                       EXPOSANT=2), )      
+
+        M2 =  CALC_FONCTION( COMB=(_F(FONCTION=S2,COEF=1.),
+                                    _F(FONCTION=M2_OBS[i],COEF=1.))
+                             )
+        DETRUIRE(CONCEPT=_F(NOM=(SUPOBS[i],INFOBS[i],M1_OBS[i] ,M2_OBS[i],S2,)),INFO=1)     
+
+   # STOCKAGE DES ESTIMATEURS ET DESTRUCTION DES VARIABLES INTERMEDIAIRES 
+        SUPOBS[i]=  CALC_FONCTION(COMB=_F(FONCTION=SUP,
+                                        COEF=1.),
+                               ) 
+        INFOBS[i]= CALC_FONCTION(COMB=_F(FONCTION=INF,
+                                        COEF=1.),
+                               )
+        M1_OBS[i]=  CALC_FONCTION(COMB=_F(FONCTION=M1,
+                                        COEF=1.),
+                               )
+        M2_OBS[i]=  CALC_FONCTION(COMB=_F(FONCTION=M2,
+                                        COEF=1.),
+                               )           
+        DETRUIRE(CONCEPT=_F(NOM=(M1,M2,INF,SUP)),INFO=1)            
+      
+     DETRUIRE(CONCEPT=_F(NOM=(DZOBS,SPOBS)),INFO=1)
+
+   DETRUIRE(CONCEPT=_F(NOM=(HARM,MACRO1,MACRO2,DYNHAR[0],DYNHAR[1],
+    MODEGE,NUMEGE,K_GENE,M_GENE,A_GENE,EFFO1,)),INFO=1)                              
+
+# CALCUL DES ESTIMATEURS FINAUX
+M1OBS=[None]*n_obs
+M2OBS=[None]*n_obs
+for i in range(n_obs):
+   M1OBS[i]=  CALC_FONCTION(COMB=_F(   FONCTION=M1_OBS[i], COEF=1./ns),)
+   M2OBS[i]=  CALC_FONCTION(COMB=_F(   FONCTION=M2_OBS[i], COEF=1./ns),) 
+
+#################################
+#                               #
+#     TESTS DE VALIDATION       #
+#                               #
+#################################
+# LA VALIDATION A ETE EFFECTUEE SUR CE CAS A PARTIR DE RESULTATS PUBLIES SOUS
+# FORME DE COURBE (CF. DOC. V)
+# ICI TESTS DE NON REGRESSION
+
+# LES REFERENCES CI-DESSOUS NE SONT PAS CONVERGES STATISTIQUEMENT CAR LE NOMBRE
+# ns DE SIMULATIONS EST TROP PETIT (AFIN DE NE PAS AUGMENTER LE TEMPS CPU NECESSAIRE
+# POUR LE CAS TEST).
+# CES RESULTATS NE SONT DONC VALABLES QUE POUR LA SUITE DE NOMBRES PSEUDO-ALEATOIRES
+# UTILISEE (I.E. CELLE DE PYTHON v2.3).
+
+TEST_FONCTION(VALEUR=(
+               _F(FONCTION=M1OBS[0],
+                        REFERENCE='NON_REGRESSION', 
+                        VERSION  ='8.1.06',
+                        NOM_PARA=('FREQ') ,
+                        VALE_PARA=(30.),
+                        VALE_REFE= 6.0802671417375E-05 ,
+                        PRECISION = 1.E-7,),
+              _F(FONCTION=M2OBS[0],
+                        REFERENCE='NON_REGRESSION', 
+                        VERSION  ='8.1.06',
+                        NOM_PARA=('FREQ') ,
+                        VALE_PARA=(30.),
+                        VALE_REFE= 3.7457833680156E-09 ,
+                        PRECISION = 1.E-7,),
+              _F(FONCTION=INFOBS[0],
+                        REFERENCE='NON_REGRESSION', 
+                        VERSION  ='8.1.06',
+                        NOM_PARA=('FREQ') ,
+                        VALE_PARA=(30.),
+                        VALE_REFE= 5.1116761251425E-05  ,
+                        PRECISION = 1.E-7,),
+              _F(FONCTION=SUPOBS[0],
+                        REFERENCE='NON_REGRESSION', 
+                        VERSION  ='8.1.06',
+                        NOM_PARA=('FREQ') ,
+                        VALE_PARA=(30.),
+                        VALE_REFE= 6.7338296870618E-05  ,
+                        PRECISION = 1.E-7,),
+               _F(FONCTION=M1OBS[1],
+                        REFERENCE='NON_REGRESSION', 
+                        VERSION  ='8.1.06',
+                        NOM_PARA=('FREQ') ,
+                        VALE_PARA=(50.),
+                        VALE_REFE=  3.5186242151806E-04 ,
+                        PRECISION = 1.E-7,),
+              _F(FONCTION=M2OBS[1],
+                        REFERENCE='NON_REGRESSION', 
+                        VERSION  ='8.1.06',
+                        NOM_PARA=('FREQ') ,
+                        VALE_PARA=(50.),
+                        VALE_REFE= 1.2765909447885E-07 ,
+                        PRECISION = 1.E-7,),
+              _F(FONCTION=INFOBS[1],
+                        REFERENCE='NON_REGRESSION', 
+                        VERSION  ='8.1.06',
+                        NOM_PARA=('FREQ') ,
+                        VALE_PARA=(50.),
+                        VALE_REFE= 2.8511128677169E-04 ,
+                        PRECISION = 1.E-7,),
+              _F(FONCTION=SUPOBS[1],
+                        REFERENCE='NON_REGRESSION', 
+                        VERSION  ='8.1.06',
+                        NOM_PARA=('FREQ') ,
+                        VALE_PARA=(50.),
+                        VALE_REFE= 4.3459496115461E-04 ,
+                        PRECISION = 1.E-7,),
+            ))
+
+
+FIN();
+

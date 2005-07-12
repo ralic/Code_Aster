@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C ---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 15/11/2004   AUTEUR DURAND C.DURAND 
+C MODIF CALCULEL  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -185,7 +185,7 @@ C - D'UN OU PLUSIEURS DEPLACEMENTS A PARTIR D'UN RESULTAT  ------------
         NOPRUP(3) = 'G_LOCAL'
         TYPRUP(3) = 'R'
       END IF
-      
+
       CHVITE = ' '
       CHACCE = ' '
       CALL GETVID(' ','VITE',0,1,1,CHVITE,NVITES)
@@ -248,7 +248,7 @@ C ---  CHARGE ---------------------------------------------------------
  21     CONTINUE
         N3=MAX(1,NCHA)
         CALL WKVECT(VCHAR,'V V K8',N3,ICHA)
-        IF (NCHA.NE.0) THEN 
+        IF (NCHA.NE.0) THEN
          DO 22 , I = 1,NCHA
            CALL GETVID('EXCIT','CHARGE',I,1,1,ZK8(ICHA+I-1),IBID)
  22      CONTINUE
@@ -460,6 +460,7 @@ C=======================================================================
          DO 110 I=1, LONVEC
             DO 120 J=1, I
                CALL JEMARQ()
+               CALL JERECU('V')
                IF ( NRES .NE. 0 ) THEN
                   IORD1 = ZI(IVEC-1+I)
                   CALL MEDOM1(MODELE,MATE,K8BID,VCHAR,NCHA,K4BID,
@@ -538,6 +539,7 @@ C=======================================================================
 
          DO 30 I = 1,LONVEC
            CALL JEMARQ()
+           CALL JERECU('V')
            IF (NRES.NE.0) THEN
              IORD = ZI(IVEC-1+I)
              CALL MEDOM1(MODELE,MATE,K8BID,VCHAR,NCHA,K4BID,

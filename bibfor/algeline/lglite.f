@@ -6,24 +6,24 @@ C
       REAL*8        DEVG(6), DEVGII, TRACEG, DY(10)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
+C MODIF ALGELINE  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
-C                                                                       
-C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+C
+C
 C ======================================================================
 C ======================================================================
 C --- BUT : CALCUL DES DIFFERENTS INCREMENTS ---------------------------
@@ -57,7 +57,7 @@ C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C ======================================================================
       INTEGER       JPARA, JDERIV, NDT, NDI
       REAL*8        PREF, EPSSIG, GAMCJS, MU, K, SNII, RN, GN
-      REAL*8        RCOS3T, COS3T, HLODE, GDEV, UCRITP
+      REAL*8        RCOS3T, COS3T, HLODE, GDEV, UCRITP,DDOT
       REAL*8        DFDL, SN(6), INVN, GAMPN, EVPN, DELTAN, Q(6)
       CHARACTER*16  PARECR, DERIVE
 C ======================================================================
@@ -95,7 +95,7 @@ C ======================================================================
 C ======================================================================
 C --- CALCUL DES VARIABLES ELASTIQUES INITIALES ------------------------
 C ======================================================================
-      CALL     PSCAL (NDT, SN, SN, SNII)
+      SNII=DDOT(NDT,SN,1,SN,1)
       SNII   = SQRT  (SNII)
       RCOS3T = COS3T (SN, PREF, EPSSIG)
       RN     = HLODE (GAMCJS, RCOS3T)
@@ -112,7 +112,7 @@ C ======================================================================
 C ======================================================================
 C --- CALCUL DES DIFFERENTS INCREMENTS ---------------------------------
 C ======================================================================
-      CALL CALCDY(MU, K, F0, DEVG, DEVGII, TRACEG, DFDL, 
+      CALL CALCDY(MU, K, F0, DEVG, DEVGII, TRACEG, DFDL,
      +            DELTAN, DY)
 C ======================================================================
 C --- DESTRUCTION DES VECTEURS INUTILES --------------------------------

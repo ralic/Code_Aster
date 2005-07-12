@@ -1,6 +1,6 @@
       SUBROUTINE TE0161(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 16/10/2004   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF ELEMENTS  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -169,13 +169,13 @@ C          ------------------------------
         C2(2) = ZR(IFORC+1)
         C2(3) = ZR(IFORC+2)
         IF (NORMAL) THEN
-          CALL PSCAL(3,C2,C2,S)
+          S=DDOT(3,C2,1,C2,1)
           S4 = SQRT(S)
           IF (S4.GT.R8MIN) THEN
-            CALL PSCAL(3,W2,W2,S)
+            S=DDOT(3,W2,1,W2,1)
             S2 = 1.D0/S
             CALL PROVEC(W2,C2,U)
-            CALL PSCAL(3,U,U,S)
+            S=DDOT(3,U,1,U,1)
             S3 = SQRT(S)
             S5 = S3*SQRT(S2)/S4
             CALL PROVEC(U,W2,V)
@@ -201,13 +201,13 @@ C            ------------------------------
             CALL FOINTE('FM',ZK8(IFORC+IC-1),NBPAR,NOMPAR,X,C2(IC),IRET)
    50     CONTINUE
           IF (NORMAL) THEN
-            CALL PSCAL(3,C2,C2,S)
+            S=DDOT(3,C2,1,C2,1)
             S4 = SQRT(S)
             IF (S4.GT.R8MIN) THEN
-              CALL PSCAL(3,W2,W2,S)
+              S=DDOT(3,W2,1,W2,1)
               S2 = 1.D0/S
               CALL PROVEC(W2,C2,U)
-              CALL PSCAL(3,U,U,S)
+              S=DDOT(3,U,1,U,1)
               S3 = SQRT(S)
               S5 = S3*SQRT(S2)/S4
               CALL PROVEC(U,W2,V)
@@ -223,17 +223,17 @@ C         RECUPERATION DE LA VITESSE DE VENT RELATIVE AU NOEUD
           C2(3) = ZR(IFORC+2)
 
 C         CALCUL DU VECTEUR VITESSE PERPENDICULAIRE
-          CALL PSCAL(3,C2,C2,S)
+          S=DDOT(3,C2,1,C2,1)
           S4 = SQRT(S)
           FCX = 0.0D0
           IF (S4.GT.R8MIN) THEN
-            CALL PSCAL(3,W2,W2,S)
+            S=DDOT(3,W2,1,W2,1)
             S2 = 1.D0/S
             CALL PROVEC(W2,C2,U)
             CALL PROVEC(U,W2,V)
             CALL PSCVEC(3,S2,V,VP)
 C           NORME DE LA VITESSE PERPENDICULAIRE
-            CALL PSCAL(3,VP,VP,VITE2)
+            VITE2=DDOT(3,VP,1,VP,1)
             VALPAV(1) = SQRT(VITE2)
             IF (VALPAV(1).GT.R8MIN) THEN
 C             RECUPERATION DE L'EFFORT EN FONCTION DE LA VITESSE

@@ -1,4 +1,4 @@
-# MODIF  DATE 07/06/2000   AUTEUR VABHHTS J.PELLET 
+# MODIF  DATE 11/07/2005   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE DISTRIBUTION DE LA TEMPERATURE DANS SECTION D'UNE CHEMINEE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -96,7 +96,6 @@ TEST_RESU(CHAM_NO=(
   _F( CHAM_GD = TEMP, NOEUD = 'N5',  NOM_CMP = 'TEMP', VALE = 8.611, PRECISION = 1.E-2),
   _F( CHAM_GD = TEMP, NOEUD = 'N5',  NOM_CMP = 'TEMP', VALE = 8.611, PRECISION = 1.E0,
                                                   CRITERE = 'ABSOLU'),
-  _F( CHAM_GD = TEMP, NOEUD = 'N2',  NOM_CMP = 'TEMP', VALE = -1.333, PRECISION = 90.E-2),
   _F( CHAM_GD = TEMP, NOEUD = 'N2',  NOM_CMP = 'TEMP', VALE = -1.333, PRECISION = 2.E0,
                                                   CRITERE = 'ABSOLU'),
   _F( CHAM_GD = TEMP, NOEUD = 'N12', NOM_CMP = 'TEMP', VALE = -5.444, PRECISION = 2.E-2),

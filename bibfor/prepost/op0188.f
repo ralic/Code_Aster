@@ -5,22 +5,22 @@
 C RESPONSABLE GALENNE E.GALENNE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 01/02/2005   AUTEUR GALENNE E.GALENNE 
+C MODIF PREPOST  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C
 C     OPERATEUR POST_K1_K2_K3
@@ -47,7 +47,7 @@ C
      +             NDIM, I, JDZI, NFON, IFM , NIV,NRE,
      +             JCOXS, JCOYS, JCOZS, JCOXI, JCOYI, JCOZI
       PARAMETER  ( NBPAR1=10 , NBPAR2=8  )
-      REAL*8       RMAX, COEFD, COEFG, COEFG3, COEFD3, PREC, PRECV, 
+      REAL*8       RMAX, COEFD, COEFG, COEFG3, COEFD3, PREC, PRECV,
      +             KG2(9),KG1(9),KG3(9),VECTY(3),VO(3),VE(3),RMAXEM,
      +             DINST
       COMPLEX*16   CBID
@@ -61,11 +61,11 @@ C
      +             DEPINF, DXINF, DYINF, DZINF,
      +             COORXS, COORYS, COORZS, COORXI, COORYI, COORZI
 C
-      DATA  NOMPA1 / 'INST' , 'METHODE' , 'K1_MAX' , 'K1_MIN' , 
+      DATA  NOMPA1 / 'INST' , 'METHODE' , 'K1_MAX' , 'K1_MIN' ,
      +               'K2_MAX' , 'K2_MIN' , 'K3_MAX' , 'K3_MIN' ,
      +               'G_MAX' , 'G_MIN' /
       DATA  TYPPA1 / 'R', 'I', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R' /
-      DATA  NOMPA2 / 'INST' , 'METHODE' , 'K1_MAX' , 'K1_MIN' , 
+      DATA  NOMPA2 / 'INST' , 'METHODE' , 'K1_MAX' , 'K1_MIN' ,
      +               'K2_MAX' , 'K2_MIN' , 'G_MAX' ,  'G_MIN' /
       DATA  TYPPA2 / 'R' , 'I' , 'R' , 'R' , 'R' , 'R' , 'R' , 'R'  /
 C DEB ------------------------------------------------------------------
@@ -128,7 +128,7 @@ C     ------------------------------------------------------------------
       CALL TBEXIP ( DEPSUP, 'INST', EXIST, K8B )
       IF ( EXIST ) THEN
          MOTFAC = ' '
-         CALL TBUTNU ( MOTFAC, 1, '&&OP0188.INSTANT', NBINST, DEPSUP, 
+         CALL TBUTNU ( MOTFAC, 1, '&&OP0188.INSTANT', NBINST, DEPSUP,
      +                                                 PREC, CRIT )
          CALL JEVEUO ( '&&OP0188.INSTANT', 'L', JINST )
       ELSE
@@ -159,7 +159,7 @@ C
 
       CALL GETVTX(' ','SYME_CHAR',0,1,1,SYMECH,IBID)
       IF (SYMECH .NE. 'SANS' ) THEN
-           CALL PKSYME (NOMRES,DEPSUP, RMAX, VECTY, NDIM, COEFD, 
+           CALL PKSYME (NOMRES,DEPSUP, RMAX, VECTY, NDIM, COEFD,
      +                COEFD3,COEFG,COEFG3,JINST,NBINST,EXIST,SYMECH)
            GOTO 8888
        ENDIF
@@ -200,6 +200,7 @@ C     --- BOUCLE SUR LES INSTANTS ---
 C
       DO 100 I = 1 , NBINST
          CALL JEMARQ()
+         CALL JERECU('V')
          IF ( EXIST ) THEN
             DINST = ZR(JINST+I-1)
             CALL TBEXTB ( DEPSUP, 'V', DEPSU2, 1, 'INST', 'EQ',
@@ -248,7 +249,7 @@ C
          VE(2) = ( ZR(JCOYS) + ZR(JCOYI) ) / 2
          VE(3) = ( ZR(JCOZS) + ZR(JCOZI) ) / 2
 C
-         CALL PKCHGR ( VO, VE, VECTY, NBVAL, ZR(JDXS), ZR(JDYS), 
+         CALL PKCHGR ( VO, VE, VECTY, NBVAL, ZR(JDXS), ZR(JDYS),
      +             ZR(JDZS), ZR(JDXI), ZR(JDYI), ZR(JDZI), ZR(JABSCS),
      +            SYMECH)
 C
@@ -259,13 +260,13 @@ C
          KG1(1) = DINST
          KG2(1) = DINST
          KG3(1) = DINST
-         CALL PKCALC ( NDIM, NBVAL, ABSSUP, DXSUP, DYSUP,  
-     +                 DZSUP, DXINF, DYINF, DZINF, 
+         CALL PKCALC ( NDIM, NBVAL, ABSSUP, DXSUP, DYSUP,
+     +                 DZSUP, DXINF, DYINF, DZINF,
      +                 COEFD,COEFD3,COEFG,COEFG3,KG1(2),KG2(2),KG3(2))
 C
          IF ( NDIM .EQ. 3 ) THEN
             IF ( EXIST ) THEN
-                              
+
                CALL TBAJLI ( NOMRES, NBPAR1, NOMPA1, 1, KG1,
      +                       CBID, K8B, 0 )
                CALL TBAJLI ( NOMRES, NBPAR1, NOMPA1, 2, KG2,
@@ -273,7 +274,7 @@ C
                CALL TBAJLI ( NOMRES, NBPAR1, NOMPA1, 3, KG3,
      +                       CBID, K8B, 0 )
             ELSE
-            
+
                CALL TBAJLI ( NOMRES, NBPAR1-1, NOMPA1(2), 1, KG1(2),
      +                       CBID, K8B, 0 )
                CALL TBAJLI ( NOMRES, NBPAR1-1, NOMPA1(2), 2, KG2(2),

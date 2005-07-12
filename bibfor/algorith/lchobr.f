@@ -2,22 +2,22 @@
      1                 DEPSM, SIGM, VIM, SEUIL, VP, VECP, ICOMP, SIGP,
      2                 VIP, IRTET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 14/06/2005   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C ======================================================================
       IMPLICIT      NONE
@@ -57,10 +57,10 @@ C                     MATERF(*,1) = CARACTERISTIQUES ELASTIQUES
 C                     MATERF(*,2) = CARACTERISTIQUES PLASTIQUES
 C            NDT      NOMBRE DE COMPOSANTES TOTALES DES TENSEURS
 C            NDI      NOMBRE DE COMPOSANTES DIRECTES DES TENSEURS
-C            NVI      NOMBRE DE VARIABLES INTERNES 
+C            NVI      NOMBRE DE VARIABLES INTERNES
 C ======================================================================
       INTEGER      NDT,NDI,II,ITERI,ITER,JJ
-      REAL*8       GM,ETAM,ETAP,AUX,SIG3,MU,K,AUX2,AUX3
+      REAL*8       GM,ETAM,ETAP,AUX,SIG3,MU,K,AUX2,AUX3,DDOT
       REAL*8       EPSM(6),EPSP(6),SIGE(6),SE(6),SEB(6)
       REAL*8       TOLER2,SEQ,I1E,SEUIL2,PLAS,DG,SIGEQE
       REAL*8       HOOKF(6,6),DKOOH(6,6),DEUX,TROIS,TRACE
@@ -94,8 +94,8 @@ C =====================================================================
       ETAM = DEUX*SIN(PARAME(4)*PI)/(TROIS+SIN(PARAME(4)*PI))
 C =====================================================================
       CALL LCDEVI(SIGP,SE)
-      CALL PSCAL(NDT,SE,SE,SEQ)
-      SIGEQE = SQRT(TROIS*SEQ/DEUX) 
+      SEQ=DDOT(NDT,SE,1,SE,1)
+      SIGEQE = SQRT(TROIS*SEQ/DEUX)
       I1E    = TRACE(NDI,SIGP)
 C ======================================================================
       DG = 0.0D0
@@ -104,7 +104,7 @@ C --- CALCUL DE DELTA GAMMA --------------------------------------------
 C ======================================================================
       PLAS = 1.0D0
       CALL HBCREL(VP,GM,DG,NBMAT,MATERF,SIGEQE,I1E,ETAM,PARAME,SEUIL2)
-      FMOINS = SEUIL2    
+      FMOINS = SEUIL2
 C ======================================================================
 C --------- CALCUL DE L INCREMENT DE GAMMA PAR METHODE DE NEWTON -------
 C ======================================================================
@@ -122,7 +122,7 @@ C --------- PREMIERE ITERATION -----------------------------------------
 C ======================================================================
          CALL HBCALC(SEUIL2,GNP,DGNP,NBMAT,MATERF,I1E,SIGEQE,VP,ETANP,
      &           VH,VG,PARAME,DERIVE,INCRG)
- 2       CONTINUE 
+ 2       CONTINUE
          GNP    = GNP + INCRG
          DGNP   = DGNP + INCRG
 C ======================================================================
@@ -130,12 +130,12 @@ C -- ON OBTIENT DGAMMA_P NEGATIF : ON ESSAIE DE DECOUPER LE PAS DE TEMPS
 C ======================================================================
          IF (DGNP.LT.0.D0) THEN
             IF ((ICOMP.EQ.0) .OR. (ICOMP.EQ.1)) THEN
-               CALL UTMESS('I','LCHOBR','ERREUR: 
+               CALL UTMESS('I','LCHOBR','ERREUR:
      &               PB DE CONVERGENCE (DGP NEG)')
                ITERI = 1
                GOTO 100
             ELSE
-               CALL UTMESS('I','LCHOBR','ERREUR: 
+               CALL UTMESS('I','LCHOBR','ERREUR:
      &                 PB DE CONVERGENCE 2 (DGP NEG)')
                GOTO 100
             ENDIF
@@ -154,7 +154,7 @@ C --------- ON DETECTE LES SOLUTIONS NON ADMISSIBLES -------------------
 C ======================================================================
             AUX = SIGEQE*(ETANP+1.0D0)/(TROIS*MATERF(4,1))
             IF (DGNP.GT.AUX) THEN
-              CALL UTMESS('I','LCHOBR','ERREUR: 
+              CALL UTMESS('I','LCHOBR','ERREUR:
      &                 PAS DE SOLUTION')
               ITERI = 1
               GOTO 100
@@ -185,9 +185,9 @@ C ======================================================================
                GOTO 100
             ELSE
                CALL UTMESS('F','LBHOBR','ERREUR: PB DE CONV 2')
-            ENDIF        
+            ENDIF
          ENDIF
- 100     CONTINUE   
+ 100     CONTINUE
          IF (ITERI.GE.1) GOTO (1),ITERI
 C ======================================================================
          ETAP = ETANP
@@ -200,6 +200,6 @@ C ======================================================================
       GOTO 9999
  1    CONTINUE
       IRTET = 1
- 9999 CONTINUE            
+ 9999 CONTINUE
 C ======================================================================
       END

@@ -6,22 +6,22 @@
 C TOLE CRP_20
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 28/06/2005   AUTEUR NICOLAS O.NICOLAS 
+C MODIF CALCULEL  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C ------------------------------------------------------------------
 C COMMANDE DE CALC_ELEM SPECIFIQUE A LA THERMIQUE ET A L'ACCOUSTIQUE
@@ -99,6 +99,7 @@ C     --- VARIABLES LOCALES ---
       PARAMETER (CZERO= (0.D0,0.D0))
 
       CALL JEMARQ()
+      CALL JERECU('V')
 
 C          '123456789012345678901234'
       BLAN24 ='                        '
@@ -118,7 +119,7 @@ C          '123456789012345678901234'
       CHDYNR = ' '
       CHELEM = BLAN24
       SOP = BLAN24
-      K24B = BLAN24 
+      K24B = BLAN24
       BASE = 'G'
       COEF = UN
       LESOPT = '&&'//NOMPRO//'.LES_OPTION     '
@@ -237,7 +238,7 @@ C            12   345678
       JAUX = 1
       CALL PSRESE(' ',IBID,IAUX,RESUC1,JAUX,NBPASS,NORECG,IRET)
       CALL JEVEUO(NORECG,'L',ADRECG)
-      
+
       NOCRRS = '&&'//NOMPRO//'_RESU_CREES     '
       CALL WKVECT(NOCRRS,'V V K24',NBPASS,ADCRRS)
 
@@ -346,6 +347,7 @@ C        VERIF SENSIBILITE
 C
          DO 100,IAUX = 1,NBORDR
             CALL JEMARQ()
+            CALL JERECU('V')
             IORDR = ZI(JORDR+IAUX-1)
             CALL MEDOM1(MODELE,MATE,CARA,KCHA,NCHAR,CTYP,
      &           RESUCO,IORDR)
@@ -438,6 +440,7 @@ C PREPARATION DES CALCULS D'INDICATEUR (CONNECTIVITE INVERSE, CHARGE)
 C BOUCLE SUR LES PAS DE TEMPS
             DO 210,IAUX = 1,NBORDR
               CALL JEMARQ()
+              CALL JERECU('V')
               IORDR = ZI(JORDR+IAUX-1)
               CALL MEDOM1(MODELE,MATE,CARA,KCHA,NCHAR,CTYP,
      &                    RESUCO,IORDR)
@@ -557,6 +560,7 @@ C ---- VERIF SENSIBILITE
 C ---- VERIF SENSIBILITE FIN
             DO 220,IAUX = 1,NBORDR
               CALL JEMARQ()
+              CALL JERECU('V')
               IORDR = ZI(JORDR+IAUX-1)
 C RECUPERATION DU NOM DU CHAMP_GD = RESUCO('ERTH_ELEM_TEMP',IORDR)
               CALL RSEXC2(1,1,RESUCO,'ERTH_ELEM_TEMP',IORDR,CHERRG,
@@ -619,6 +623,7 @@ C CALCUL
             CHTREF = ' '
             DO 280,IAUX = 1,NBORDR
               CALL JEMARQ()
+              CALL JERECU('V')
               IORDR = ZI(JORDR+IAUX-1)
               CALL MEDOM1(MODELE,MATE,CARA,KCHA,NCHAR,CTYP,
      &                    RESUCO,IORDR)
@@ -715,6 +720,7 @@ C ---- VERIF SENSIBILITE
 C ---- VERIF SENSIBILITE FIN
             DO 770,IAUX = 1,NBORDR
               CALL JEMARQ()
+              CALL JERECU('V')
               IORDR = ZI(JORDR+IAUX-1)
               CALL MEDOM1(MODELE,MATE,CARA,KCHA,NCHAR,CTYP,
      &                    RESUCO,IORDR)
@@ -756,6 +762,7 @@ C ---- VERIF SENSIBILITE FIN
             CHTREF = ' '
             DO 350,IAUX = 1,NBORDR
               CALL JEMARQ()
+              CALL JERECU('V')
               IORDR = ZI(JORDR+IAUX-1)
               CALL MEDOM1(MODELE,MATE,CARA,KCHA,NCHAR,CTYP,
      &                    RESUCO,IORDR)
@@ -840,7 +847,7 @@ C       ====== FIN DE LA BOUCLE SUR LES OPTIONS A CALCULER =======
           ZK24(ADCRRS+NRPASS-1)(1:19) = LERES1
         END IF
   480 CONTINUE
- 
+
 
 C=====================================================
 C        PHENOMENE ACOUSTIQUE
@@ -848,12 +855,12 @@ C====================================================
 
       ELSE IF (PHENO(1:4).EQ.'ACOU')THEN
 
-        LERES1=RESUCO          
+        LERES1=RESUCO
 
 C      ======== DEBUT DE LA BOUCLE SUR LES OPTIONS A CALCULER ======
         DO 987 IOPT = 1,NBOPT
 
-          OPTION = ZK16(JOPT+IOPT-1)          
+          OPTION = ZK16(JOPT+IOPT-1)
 C
           CALL JEVEUO(KNUM,'L',JORDR)
           NUORD = ZI(JORDR)
@@ -876,6 +883,7 @@ C    ------------------------------------------------------------------
      &             OPTION.EQ.'INTE_ELNO_REAC') THEN
             DO 772,IAUX = 1,NBORDR
               CALL JEMARQ()
+              CALL JERECU('V')
               IORDR = ZI(JORDR+IAUX-1)
               CALL MEDOM1(MODELE,MATE,CARA,KCHA,NCHAR,CTYP,
      &                    RESUCO,IORDR)
@@ -902,10 +910,10 @@ C    ------------------------------------------------------------------
   772       CONTINUE
 
            ELSE
-             CALL UTMESS('A',NOMCMD,' OPTION INEXISTANTE:'//OPTION) 
+             CALL UTMESS('A',NOMCMD,' OPTION INEXISTANTE:'//OPTION)
            ENDIF
 C
-        
+
   987 CONTINUE
 
        ENDIF

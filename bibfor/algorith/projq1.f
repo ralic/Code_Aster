@@ -7,22 +7,22 @@
      &                  DIAG,ARETE,NOEUD,DEBORD)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/11/2004   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_21
 C TOLE CRP_20
@@ -41,7 +41,7 @@ C TOLE CRP_20
       INTEGER      LISSA
       REAL*8       VLISSA(9)
       INTEGER      DIAGNO
-      REAL*8       TOLEIN
+      REAL*8       TOLEIN ,DDOT
       REAL*8       TOLEOU
       REAL*8       NORM(3)
       REAL*8       TANG(6)
@@ -52,7 +52,7 @@ C TOLE CRP_20
       INTEGER      DIAG(2)
       INTEGER      ARETE(4)
       INTEGER      NOEUD(4)
-      REAL*8       DEBORD 
+      REAL*8       DEBORD
 C
 C ----------------------------------------------------------------------
 C ROUTINE APPELEE PAR : PROJQU
@@ -60,7 +60,7 @@ C ----------------------------------------------------------------------
 C
 C "PROJECTION" D'UN NOEUD ESCLAVE P SUR UN QUADRANGLE MAITRE.
 C CAS 1: ON CHERCHE LE TRIANGLE (CONTENANT 3 SOMMETS DU QUADRANGLE)
-C   DONT IL EST LE PLUS PROCHE ET ON ECRIT LA RELATION DE NON 
+C   DONT IL EST LE PLUS PROCHE ET ON ECRIT LA RELATION DE NON
 C   PENETRATION
 C   ENTRE LE NOEUD ESCLAVE ET LES 3 SOMMETS DE CE TRIANGLE.
 C   LES NOEUDS MILIEUX NE SONT JAMAIS PRIS EN COMPTE.
@@ -75,24 +75,24 @@ C IN  COORDD : COORDONNEES DU SOMMET D DU QUADRANGLE
 C IN  COORDP : COORDONNEES DU NOEUD ESCLAVE P
 C IN  PROJ   : PROJECTION LINEAIRE (1) OU QUADRATIQUE (2) SUR LA MAILLE
 C              OU PAS DE NOUVELLE PROJECTION (0)
-C IN  TANGDF : INDICATEUR DE PRESENCE D'UN VECT_Y DEFINI PAR 
+C IN  TANGDF : INDICATEUR DE PRESENCE D'UN VECT_Y DEFINI PAR
 C              L'UTILISATEUR
 C               0 PAS DE VECT_Y
 C               1 UN VECT_Y EST DEFINI
 C IN  MOYEN  : NORMALES D'APPARIEMENT
-C               0 MAIT 
-C               1 MAIT_ESCL 
-C IN  LISSA  : LISSAGE DES NORMALES 
-C               0 PAS DE LISSAGE 
-C               1 LISSAGE 
+C               0 MAIT
+C               1 MAIT_ESCL
+C IN  LISSA  : LISSAGE DES NORMALES
+C               0 PAS DE LISSAGE
+C               1 LISSAGE
 C IN  VLISSA : NORMALES LISSEES
 C IN  DIAGNO : NIVEAU DE DIAGNOSTIC
-C               0 PAS DE VERIFICATIONS 
+C               0 PAS DE VERIFICATIONS
 C               1 VERIFICATIONS FINES
 C IN  TOLEIN : TOLERANCE <IN> POUR LA PROJECTION GEOMETRIQUE
 C               ( SUR ARETE OU NOEUD )
 C I/O NORM   : NORMALE ENTRANTE A LA MAILLE MAITRE
-C I/O TANG   : VECTEURS TANGENTS 
+C I/O TANG   : VECTEURS TANGENTS
 C OUT COORDM : COORDONNEES DE LA "PROJECTION" M
 C OUT COEF   : VALEURS EN M DES FONCTIONS DE FORME ASSOCIEES
 C              AUX NOEUDS MAITRES
@@ -110,7 +110,7 @@ C              ARETE(1) : SEGMENT AB
 C              ARETE(2) : SEGMENT BC
 C              ARETE(3) : SEGMENT CD
 C              ARETE(3) : SEGMENT DA
-C OUT NOEUD  : DETECTION DE PROJECTION SUR NOEUD 
+C OUT NOEUD  : DETECTION DE PROJECTION SUR NOEUD
 C                 (1: SUR LE NOEUD, 0: NON)
 C              NOEUD(1) : NOEUD A
 C              NOEUD(2) : NOEUD B
@@ -142,7 +142,7 @@ C
       INTEGER      NOEUT3(3)
       INTEGER      ARETT4(3)
       INTEGER      NOEUT4(3)
-      INTEGER      OUTTRI(4)           
+      INTEGER      OUTTRI(4)
 C
 C ----------------------------------------------------------------------
 C
@@ -151,18 +151,18 @@ C
         COEF(K) = 0.D0
  10   CONTINUE
 
- 
+
 C
 C ----------------------------------------------------------------------
 C --- CONTROLE DE LA PROJECTION
-C --- LE NOEUD ESCLAVE SE PROJETE HORS DE LA MAILLE MAITRE 
+C --- LE NOEUD ESCLAVE SE PROJETE HORS DE LA MAILLE MAITRE
 C ---    SI    DEBORD.GT.0.DO
 C ---    SINON DEBORD.LT.0.D0
 C ----------------------------------------------------------------------
 C
       DEBORD    = -1.D0
-      OUTSID(1) = -1.D0  
-      OUTSID(2) = -1.D0   
+      OUTSID(1) = -1.D0
+      OUTSID(2) = -1.D0
       OUTTRI(1) = 0
       OUTTRI(2) = 0
       OUTTRI(3) = 0
@@ -171,7 +171,7 @@ C
 C
 C ----------------------------------------------------------------------
 C --- CONTROLE DE LA PROJECTION
-C --- LE NOEUD ESCLAVE SE PROJETE SUR ARETES/NOEUDS/DIAGONALES 
+C --- LE NOEUD ESCLAVE SE PROJETE SUR ARETES/NOEUDS/DIAGONALES
 C ----------------------------------------------------------------------
 C
       DIAG(1)   = 0
@@ -259,26 +259,26 @@ C --- GESTION DES DEBORDEMENTS DE MAILLE SUR LES TRIANGLES
 C
       DO 4 K = 1,4
         IF (DEBEN(K).GT.0.D0) THEN
-           IF (TOLEOU.GT.0.D0) THEN               
+           IF (TOLEOU.GT.0.D0) THEN
               IF (DEBEN(K).GT.TOLEOU) THEN
                 OUTTRI(K) = 1
               ENDIF
-           ENDIF  
+           ENDIF
         ENDIF
 4     CONTINUE
 C
 C --- PROJECTION SUR LES PSEUDOS-DIAGONALES ?
 C
-       IF (ARETT1(3).EQ.1) THEN 
+       IF (ARETT1(3).EQ.1) THEN
           DIAG(1) = 1
         ENDIF
-        IF (ARETT2(1).EQ.1) THEN 
+        IF (ARETT2(1).EQ.1) THEN
           DIAG(1) = 1
         ENDIF
-        IF (ARETT3(2).EQ.1) THEN 
+        IF (ARETT3(2).EQ.1) THEN
           DIAG(2) = 1
         ENDIF
-        IF (ARETT4(3).EQ.1) THEN 
+        IF (ARETT4(3).EQ.1) THEN
           DIAG(2) = 1
         ENDIF
 
@@ -289,7 +289,7 @@ C --- ECRITE ENTRE LE NOEUD ESCLAVE ET LES 3 SOMMETS DE CE TRIANGLE.
 C
         JEUMIN = R8GAEM()
         DO 20 K = 1,4
-        
+
 
           IF ((OLDJ(K).LE.JEUMIN).AND.
      &        (ABS(OLDJ(K)-JEUMIN).GT.1D-15)) THEN
@@ -392,23 +392,23 @@ C
           IF ((KMIN.EQ.1).OR.(KMIN.EQ.2)) THEN
             IF (DIAG(1).EQ.0) THEN
               OUTSID(1) = DEBEN(KMIN)
-              OUTSID(2) = DEBEN(KMIN) 
-            ELSE 
-              OUTSID(1) = -1.D0  
-              OUTSID(2) = -1.D0 
+              OUTSID(2) = DEBEN(KMIN)
+            ELSE
+              OUTSID(1) = -1.D0
+              OUTSID(2) = -1.D0
             ENDIF
           ELSE
             IF (DIAG(2).EQ.0) THEN
               OUTSID(1) = DEBEN(KMIN)
-              OUTSID(2) = DEBEN(KMIN) 
-            ELSE 
-              OUTSID(1) = -1.D0  
-              OUTSID(2) = -1.D0  
+              OUTSID(2) = DEBEN(KMIN)
+            ELSE
+              OUTSID(1) = -1.D0
+              OUTSID(2) = -1.D0
             ENDIF
-          ENDIF         
+          ENDIF
         ELSE
-          OUTSID(1) = -1.D0  
-          OUTSID(2) = -1.D0 
+          OUTSID(1) = -1.D0
+          OUTSID(2) = -1.D0
         ENDIF
 
         JEU    = NEWJ(KMIN)
@@ -423,7 +423,7 @@ C --- RECUPERATION NORMALES ET TANGENTES
           TANG(K+3) = TANGEN(6*(KMIN-1)+K+3)
  30     CONTINUE
 
- 
+
         IF ((MATYP.EQ.'QUA4').OR.(PROJ.EQ.1)) THEN
            IF (KMIN.EQ.1) THEN
               COEF(1) = COEFFI(1)
@@ -453,11 +453,11 @@ C --- RECUPERATION NORMALES ET TANGENTES
                  AB(K) = COORDB(K) - COORDA(K)
                  BC(K) = COORDC(K) - COORDB(K)
  100          CONTINUE
-              CALL PSCAL (NDIM,AM,AB,KSI1)
-              CALL PSCAL (NDIM,AB,AB,LAB)
+              KSI1=DDOT(NDIM,AM,1,AB,1)
+              LAB=DDOT(NDIM,AB,1,AB,1)
               KSI1 = KSI1 / LAB
-              CALL PSCAL (NDIM,AM,BC,KSI2)
-              CALL PSCAL (NDIM,BC,BC,LBC)
+              KSI2=DDOT(NDIM,AM,1,BC,1)
+              LBC=DDOT(NDIM,BC,1,BC,1)
               KSI2 = KSI2 / LBC
            ELSE IF (KMIN.EQ.2) THEN
               DO 200 K = 1, NDIM
@@ -465,11 +465,11 @@ C --- RECUPERATION NORMALES ET TANGENTES
                  DC(K) = COORDC(K) - COORDD(K)
                  AD(K) = COORDD(K) - COORDA(K)
  200          CONTINUE
-              CALL PSCAL (NDIM,AM,DC,KSI1)
-              CALL PSCAL (NDIM,DC,DC,LDC)
+              KSI1=DDOT(NDIM,AM,1,DC,1)
+              LDC=DDOT(NDIM,DC,1,DC,1)
               KSI1 = KSI1 / LDC
-              CALL PSCAL (NDIM,AM,AD,KSI2)
-              CALL PSCAL (NDIM,AD,AD,LAD)
+              KSI2=DDOT(NDIM,AM,1,AD,1)
+              LAD=DDOT(NDIM,AD,1,AD,1)
               KSI2 = KSI2 / LAD
            ELSE IF (KMIN.EQ.3) THEN
               DO 300 K = 1, NDIM
@@ -477,11 +477,11 @@ C --- RECUPERATION NORMALES ET TANGENTES
                  AB(K) = COORDB(K) - COORDA(K)
                  AD(K) = COORDD(K) - COORDA(K)
  300          CONTINUE
-              CALL PSCAL (NDIM,AM,AB,KSI1)
-              CALL PSCAL (NDIM,AB,AB,LAB)
+              KSI1=DDOT(NDIM,AM,1,AB,1)
+              LAB=DDOT(NDIM,AB,1,AB,1)
               KSI1 = KSI1 / LAB
-              CALL PSCAL (NDIM,AM,AD,KSI2)
-              CALL PSCAL (NDIM,AD,AD,LAD)
+              KSI2=DDOT(NDIM,AM,1,AD,1)
+              LAD=DDOT(NDIM,AD,1,AD,1)
               KSI2 = KSI2 / LAD
            ELSE
               DO 400 K = 1, NDIM
@@ -489,28 +489,28 @@ C --- RECUPERATION NORMALES ET TANGENTES
                  DC(K) = COORDC(K) - COORDD(K)
                  BC(K) = COORDC(K) - COORDB(K)
  400          CONTINUE
-              CALL PSCAL (NDIM,AM,DC,KSI1)
-              CALL PSCAL (NDIM,DC,DC,LDC)
+              KSI1=DDOT(NDIM,AM,1,DC,1)
+              LDC=DDOT(NDIM,DC,1,DC,1)
               KSI1 = KSI1 / LDC
-              CALL PSCAL (NDIM,AM,BC,KSI2)
-              CALL PSCAL (NDIM,BC,BC,LBC)
+              KSI2=DDOT(NDIM,AM,1,BC,1)
+              LBC=DDOT(NDIM,BC,1,BC,1)
               KSI2 = KSI2 / LBC
            ENDIF
 
-           IF (KSI1.LT.0.0D0) THEN 
+           IF (KSI1.LT.0.0D0) THEN
              OUTSID(1) = ABS(KSI1)
              KSI1 = 0.0D0
            ENDIF
-           IF (KSI1.GT.1.0D0) THEN 
+           IF (KSI1.GT.1.0D0) THEN
              OUTSID(1) = 1-KSI1
              KSI1 = 1.0D0
            ENDIF
-           IF (KSI2.LT.0.0D0) THEN 
-             OUTSID(2) = ABS(KSI2) 
+           IF (KSI2.LT.0.0D0) THEN
+             OUTSID(2) = ABS(KSI2)
              KSI2 = 0.0D0
            ENDIF
-           IF (KSI2.GT.1.0D0) THEN 
-             OUTSID(2) = 1-KSI2 
+           IF (KSI2.GT.1.0D0) THEN
+             OUTSID(2) = 1-KSI2
              KSI2 = 1.0D0
            ENDIF
 

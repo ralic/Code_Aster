@@ -1,4 +1,4 @@
-#@ MODIF lecture Lecture_Cata_Ele  DATE 23/06/2005   AUTEUR VABHHTS J.PELLET 
+#@ MODIF lecture Lecture_Cata_Ele  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE VABHHTS J.PELLET
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -315,16 +315,17 @@ class MonParser(GenericASTBuilder):
         entete      ::=  entet1
 
         entet1      ::=  ENTETE__  ELEMENT__ ident MAILLE__ ident  l_elref1
+        entet1      ::=  ENTETE__  ELEMENT__ ident MAILLE__ ident  l_elref1  ATTRIBUT__ l_attr_val
 
         l_elref1  ::=  l_elref1  elref1
         l_elref1  ::=  elref1
         elref1    ::=  ELREFE__ ident
-        elref1    ::=  ELREFE__ ident gauss2
+        elref1    ::=  ELREFE__ ident gauss1
 
-        gauss2    ::=  GAUSS__  l_gauss1
-        l_gauss1  ::=  l_gauss1  gauss1
-        l_gauss1  ::=  gauss1
-        gauss1    ::=  ident =  ident
+        gauss1    ::=  GAUSS__  l_attr_val
+        l_attr_val  ::=  l_attr_val  attr_val
+        l_attr_val  ::=  attr_val
+        attr_val    ::=  ident =  ident
 
         l_decl_opt  ::=  l_decl_opt  decl_opt
         l_decl_opt  ::=  decl_opt
@@ -382,6 +383,7 @@ class MonParser(GenericASTBuilder):
         l_modeli    ::=  l_modeli modeli
         l_modeli    ::=  modeli
         modeli      ::=  MODELISATION__ chaine DIM__ entier entier CODE__ chaine l_affe_te
+        modeli      ::=  MODELISATION__ chaine DIM__ entier entier CODE__ chaine  ATTRIBUT__ l_attr_val l_affe_te
         l_affe_te   ::=  l_affe_te  affe_te
         l_affe_te   ::=  affe_te
         affe_te     ::=  MAILLE__ ident ELEMENT__ ident
@@ -641,10 +643,15 @@ class creer_capy(GenericASTTraversal):
            node.l_affe_te.append(node[1].affe_te)
 
     def n_modeli(self, node):
-#                             0           1     2      3      4     5       6       7
+#                             0           1     2      3      4     5       6       7           8          9
 #       modeli      ::=  MODELISATION__ chaine DIM__ entier entier CODE__ chaine l_affe_te
+#       modeli      ::=  MODELISATION__ chaine DIM__ entier entier CODE__ chaine  ATTRIBUT__ l_attr_val l_affe_te
         ERR.contexte('Définition de la modélisation: '+node[1].attr)
-        node.modeli=(node[1].attr,node[7].l_affe_te,node[6].attr,(node[3].attr,node[4].attr))
+        if len(node)== 8 :
+           node.modeli=(node[1].attr,node[7].l_affe_te,node[6].attr,(node[3].attr,node[4].attr),None)
+        else :
+           node.modeli=(node[1].attr,node[9].l_affe_te,node[6].attr,(node[3].attr,node[4].attr),node[8].l_attr_val)
+
         if len(node[6].attr) != 5 :
            ERR.mess('E',"le code d'une modélisation doit avoir 3 caractères exactement: "+node[6].attr)
         if not node[3].attr in ("0","1","2","3")  :
@@ -929,28 +936,28 @@ class creer_capy(GenericASTTraversal):
             node.l_decl_opt.extend(node[0].l_decl_opt)
             node.l_decl_opt.append(node[1].decl_opt)
 
-    def n_gauss1(self, node):
-#       gauss1    ::=  ident =  ident
-        node.gauss1=(node[0].attr,node[2].attr)
+    def n_attr_val(self, node):
+#       attr_val    ::=  ident =  ident
+        node.attr_val=(node[0].attr,node[2].attr)
 
-    def n_l_gauss1(self, node):
-#       l_gauss1  ::=  l_gauss1  gauss1
-#       l_gauss1  ::=  gauss1
-        node.l_gauss1=[]
-        if len(node)==1 : node.l_gauss1.append(node[0].gauss1)
+    def n_l_attr_val(self, node):
+#       l_attr_val  ::=  l_attr_val  attr_val
+#       l_attr_val  ::=  attr_val
+        node.l_attr_val=[]
+        if len(node)==1 : node.l_attr_val.append(node[0].attr_val)
         if len(node)==2 :
-            node.l_gauss1.extend(node[0].l_gauss1)
-            node.l_gauss1.append(node[1].gauss1)
+            node.l_attr_val.extend(node[0].l_attr_val)
+            node.l_attr_val.append(node[1].attr_val)
 
-    def n_gauss2(self, node):
-#       gauss2    ::=  GAUSS__  l_gauss1
-        node.gauss2=node[1].l_gauss1
+    def n_gauss1(self, node):
+#       gauss1    ::=  GAUSS__  l_attr_val
+        node.gauss1=node[1].l_attr_val
 
     def n_elref1(self, node):
 #       elref1    ::=  ELREFE__ ident
-#       elref1    ::=  ELREFE__ ident gauss2
+#       elref1    ::=  ELREFE__ ident gauss1
         if len(node)==2 : node.elref1=(node[1].attr,None)
-        if len(node)==3 : node.elref1=(node[1].attr,node[2].gauss2)
+        if len(node)==3 : node.elref1=(node[1].attr,node[2].gauss1)
 
     def n_l_elref1(self, node):
 #       l_elref1  ::=  l_elref1  elref1
@@ -975,9 +982,13 @@ class creer_capy(GenericASTTraversal):
             node.l_decl_en.append(node[1].decl_en)
 
     def n_entet1(self, node):
-#                          0         1         2      3       4       5
+#                          0         1         2      3       4       5         6          7
 #       entet1      ::=  ENTETE__  ELEMENT__ ident MAILLE__ ident  l_elref1
-        node.entet1=(node[2].attr,node[4].attr,node[5].l_elref1)
+#       entet1      ::=  ENTETE__  ELEMENT__ ident MAILLE__ ident  l_elref1  ATTRIBUT__ l_attr_val
+        if len(node)==6 :
+           node.entet1=(node[2].attr,node[4].attr,node[5].l_elref1,None)
+        else :
+           node.entet1=(node[2].attr,node[4].attr,node[5].l_elref1,node[7].l_attr_val)
 
 
     def n_entete(self, node):

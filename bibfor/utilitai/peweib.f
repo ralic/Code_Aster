@@ -5,7 +5,7 @@
       CHARACTER*(*) RESU,MODELE,MATE,CARA,NOMCMD,LCHAR(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 28/05/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+C MODIF UTILITAI  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -239,6 +239,7 @@ C CAS WEIBULL
       CALL WKVECT('&&PEWEIB.TRAV1','V V R',MXVALE,LVALE)
       DO 80 IORD = 1,NBORDR
         CALL JEMARQ()
+        CALL JERECU('V')
         NUMORD = ZI(JORD+IORD-1)
         INST = ZR(JINS+IORD-1)
         VALER(1) = INST

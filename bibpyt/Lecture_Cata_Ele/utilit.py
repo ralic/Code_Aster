@@ -1,4 +1,4 @@
-#@ MODIF utilit Lecture_Cata_Ele  DATE 14/09/2004   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF utilit Lecture_Cata_Ele  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -303,6 +303,7 @@ class JV_COLLEC:
 
           for oc1 in self.objs:
               if self.acces=="NO":
+                   # les collections ayant leur pointeur de nom en interne ont un accès K8
                    file.write( "|NOM="+chaine(oc1.nom,8)+"|LONMAX="+chaine(len(oc1.valeurs),12,'D')+"\n")
               else:
                    file.write( "|LONMAX="+chaine(len(oc1.valeurs),12,'D')+"\n")
@@ -338,9 +339,9 @@ class JV_SIMPLE:
 
       def ecri_os(self,indice,valeur):
           if indice <1 or indice > len(self.valeurs) : ERR.mess('F', "Erreur")
-          if self.tsca[0]=="K" and type(valeur) != type("a"):  ERR.mess('F', "Erreur : on attend une chaine.")
-          if self.tsca[0]=="I" and type(valeur) != type(1):    ERR.mess('F', "Erreur : on attend un entier.")
-          if self.tsca[0]=="R" and type(valeur) != type(1.e0): ERR.mess('F', "Erreur : on attend un réel.")
+          if self.tsca[0]=="K" and type(valeur) != type("a"):  ERR.mess('F', "Erreur : on attend une chaine: "+str(valeur))
+          if self.tsca[0]=="I" and type(valeur) != type(1):    ERR.mess('F', "Erreur : on attend un entier: "+str(valeur))
+          if self.tsca[0]=="R" and type(valeur) != type(1.e0): ERR.mess('F', "Erreur : on attend un réel: "+str(valeur))
 
           if self.tsca[0]=="K" :
               # on tronque éventuellement la chaine :

@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 06/07/2005   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ELEMENTS  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -35,7 +35,7 @@ C......................................................................
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX --------------------
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
-      REAL*8 ZR 
+      REAL*8 ZR ,DDOT
       COMMON /RVARJE/ZR(1)
       COMPLEX*16 ZC
       COMMON /CVARJE/ZC(1)
@@ -145,7 +145,7 @@ C                   (BOOK IV 01/02/05)
         ENDIF  
 
         CALL NORMEV(ND,NORME)
-        CALL PSCAL(3,GRLT,ND,PS)
+        PS=DDOT(3,GRLT,1,ND,1)
         DO 133 J=1,3
           TAU1(J)=GRLT(J)-PS*ND(J)
  133    CONTINUE

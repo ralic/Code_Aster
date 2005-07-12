@@ -1,4 +1,4 @@
-# MODIF  DATE 23/05/2005   AUTEUR D6BHHJP J.P.LEFEBVRE 
+# MODIF  DATE 11/07/2005   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE Propagation d'un reseau de fissures en fatigue thermomecanique 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -743,7 +743,7 @@ NETAP=DEFI_FONCTION(    NOM_PARA='X',   NOM_RESU='netap',
 
 TEST_FONCTION(VALEUR=( _F(  FONCTION = NETAP,   VALE_PARA = 1,
                     REFERENCE = 'NON_REGRESSION',
-                          VALE_REFE = 21290.,  
+                          VALE_REFE = 212900.,  
                     PRECISION = 100.0),  
     _F(  FONCTION = NETAP,   VALE_PARA = 2,
                     REFERENCE = 'NON_REGRESSION',

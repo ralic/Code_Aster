@@ -7,24 +7,24 @@ C
       CHARACTER*8   MOD
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
+C MODIF ALGELINE  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
-C                                                                       
-C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+C
+C
 C ======================================================================
 C ======================================================================
 C --- BUT : CALCUL DE DSIG/DEPS ----------------------------------------
@@ -59,7 +59,7 @@ C ======================================================================
       REAL*8        EPSSIG, SIGC, GAMCJS, PREF, SN(6), SNII, INVN, H0
       REAL*8        MUN, HLODE, GAMPN, RCOS3T, COS3T, RN, GN, GDEV
       REAL*8        UCRITP, DUDS(6), DUDG, DFDS(6), DFDG, TRACE
-      REAL*8        Q(6), HOOK(6,6)
+      REAL*8        Q(6), HOOK(6,6),DDOT
       CHARACTER*16  PARECR, DERIVE
 C ======================================================================
 C --- INITIALISATION DE PARAMETRES -------------------------------------
@@ -94,7 +94,7 @@ C ======================================================================
 C --- CALCULS INITIAUX DE VARIABLES INTERMEDIAIRES ---------------------
 C ======================================================================
       CALL     LCDEVI(SIG, SN)
-      CALL     PSCAL (NDT, SN, SN, SNII)
+      SNII=DDOT(NDT,SN,1,SN,1)
       SNII   = SQRT  (SNII)
       INVN   = TRACE (NDI, SIG)
       H0     = HLODE (GAMCJS, MUN)

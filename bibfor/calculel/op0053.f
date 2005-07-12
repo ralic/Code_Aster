@@ -1,7 +1,7 @@
       SUBROUTINE OP0053 ( IER )
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 25/10/2004   AUTEUR LEBOUVIE F.LEBOUVIER 
+C MODIF CALCULEL  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -83,7 +83,7 @@ C
       CHARACTER*8 NOPASE
       CHARACTER*13 INPSCO
       CHARACTER*16 TYPCO, OPER, OPTION, NOPRUP(6), OPTIO1, OPTIO2
-      CHARACTER*16 TYSD      
+      CHARACTER*16 TYSD
       CHARACTER*19 KCHA
       CHARACTER*24 BLAN24
       CHARACTER*24 STYPSE, NORECG
@@ -243,7 +243,7 @@ C=======================================================================
           IF(IRET.NE.0) CALL JEDETR(VCHAR)
           N3=MAX(1,NCHA)
           CALL WKVECT(VCHAR,'V V K8',N3,ICHA)
-          IF (NCHA .NE. 0) THEN 
+          IF (NCHA .NE. 0) THEN
            DO 22 , I = 1,NCHA
              CALL GETVID('EXCIT','CHARGE',I,1,1,ZK8(ICHA+I-1),IBID)
  22        CONTINUE
@@ -354,7 +354,7 @@ C
           IF(NEXCI .GT. 0) THEN
             CALL GETVID('EXCIT','CHARGE',ICHAR,1,1,NOMCHA,N1)
           ELSE
-            NOMCHA = ZK8(ICHA+ICHAR-1)        
+            NOMCHA = ZK8(ICHA+ICHAR-1)
           ENDIF
 
           DO 2931 , NRPASE = 1 , NBPASE
@@ -566,6 +566,7 @@ C 3.3.1.1. ==> CALCUL DE LA FORME BILINEAIRE DU TAUX DE RESTITUTION
         DO 3311 I = 1 , LONVEC
           DO 3312 J = 1,I
             CALL JEMARQ()
+            CALL JERECU('V')
             IF (NRES.NE.0) THEN
               IORD1 = ZI(IVEC-1+I)
               CALL MEDOM1(MODELE,MATE,K8BID,VCHAR,NCHA,K4BID,
@@ -634,6 +635,7 @@ C==============================================================
 
         DO 34 , I = 1 , LONVEC
           CALL JEMARQ()
+          CALL JERECU('V')
           IF(NRES.NE.0) THEN
             IORD = ZI(IVEC-1+I)
             CALL MEDOM1(MODELE,MATE,K8BID,VCHAR,NCHA,K4BID,
@@ -677,7 +679,7 @@ C
      &            IORD)
                 CALL UTIMPK('L','EST INEXISTANTE DANS LA SD ',1,RESUCO)
                 CALL UTIMPK('L','DERIVEE PAR RAPPORT A ',1,NOPASE)
-                CALL UTFINM()            
+                CALL UTFINM()
               ENDIF
        CALL RSEXC2(1,1,LERES0,'EPSI_ELGA_DEPL',IORD,CHEPSE,OPTIO1,IRET)
               IF (IRET.GT.0) THEN
@@ -686,7 +688,7 @@ C
      &            IORD)
                 CALL UTIMPK('L','EST INEXISTANTE DANS LA SD ',1,RESUCO)
                 CALL UTIMPK('L','DERIVEE PAR RAPPORT A ',1,NOPASE)
-                CALL UTFINM()            
+                CALL UTFINM()
               ENDIF
        CALL RSEXC2(1,1,LERES0,'SIEF_ELGA_DEPL',IORD,CHSISE,OPTIO1,IRET)
               IF (IRET.GT.0) THEN
@@ -695,7 +697,7 @@ C
      &            IORD)
                 CALL UTIMPK('L','EST INEXISTANTE DANS LA SD ',1,RESUCO)
                 CALL UTIMPK('L','DERIVEE PAR RAPPORT A ',1,NOPASE)
-                CALL UTFINM()            
+                CALL UTFINM()
               ENDIF
             ENDIF
           ENDIF

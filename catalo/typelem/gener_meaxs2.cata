@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 23/06/2005   AUTEUR VABHHTS J.PELLET 
+%& MODIF TYPELEM  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION                        
 % ======================================================================    
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG    
@@ -103,6 +103,10 @@ MODE_LOCAL__
     ECOEQNO  = SIEF_R   ELNO__ IDEN__  (VMIS     TRESCA   PRIN_1   PRIN_2   PRIN_3   VMIS_SG  )
     ETRIAXS  = SIEF_R   ELNO__ IDEN__  (TRIAX    SI_ENDO  )
     DDL_NOZ1 = SIZZ_R   ELNO__ IDEN__  (SIZZ     )
+
+    ESINGUL  = SING_R   ELEM__         (DEGRE   TAILLE   )
+    ESINGNO  = SING_R   ELNO__ IDEN__  (DEGRE   TAILLE   )
+
     CTEREFE  = TEMP_R   ELEM__         (TEMP     )
     NTEMPER  = TEMP_R   ELNO__ IDEN__  (TEMP     )
     NSECHER  = TEMP_R   ELNO__ IDEN__  (TEMP     )
@@ -495,6 +499,10 @@ OPTION__
                                      EHYDRER  PHYDRER  CMATERC  PMATERC  CMATERC  PMATSEN  NTEMPER  PSECHER  
                                      CTEREFE  PSECREF  NTEMPER  PTEMPER  CTEREFE  PTEREF   
                               OUT__  ECONTNO  PCONTRR  
+    SING_ELEM           99    IN__   NGEOMER  PGEOMER
+                              OUT__  ESINGUL  PSING_R
+    SING_ELNO_ELEM      99    IN__   ESINGUL  PSING_R
+                              OUT__  ESINGNO  PSINGNO
     SIRE_ELNO_DEPL      376   IN__   DDL_MECA PDEPLAR  NGEOMER  PGEOMER  CMATERC  PMATERC  NTEMPER  PTEMPER  
                                      CTEREFE  PTEREF   
                               OUT__  ECONTNO  PCONTRR  

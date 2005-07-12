@@ -5,7 +5,7 @@
       CHARACTER*(*) RESU,MODELE,MATE,CARA,LCHAR(1),OPTIOZ
 C.======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 26/01/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF UTILITAI  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -243,6 +243,7 @@ C --- BOUCLE SUR LES NUMEROS D'ORDRE DU RESULTAT :
 C     ------------------------------------------
       DO 60 IORD = 1,NBORDR
         CALL JEMARQ()
+        CALL JERECU('V')
 
 C ---  RECUPERATION DU NUMERO D'ORDRE :
 C      ------------------------------
@@ -593,7 +594,7 @@ C ---  L ENERGIE TOTAL
               IF ((COMPT(1:9).NE.'VMIS_ISOT') .AND.
      &            (COMPT(1:4).NE.'ELAS') .AND.
      &            (OPTION.NE.'ENER_ELAS')) THEN
- 
+
 
                 ENERGI = ENERGI + WORK(1)
               ELSE

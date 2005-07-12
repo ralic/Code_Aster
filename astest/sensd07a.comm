@@ -1,4 +1,4 @@
-# MODIF  DATE 07/03/2005   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 11/07/2005   AUTEUR LEBOUVIE F.LEBOUVIER 
 # TITRE SENSIBILITE EN DYNAMIQUE NON LINEAIRE (3D-VON-MISES ISOT LINEAIRE)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -333,7 +333,10 @@ for i in range(n):
                      VALE=diff_X, 
                      REFERENCE='AUTRE_ASTER')))
 
-  if mot_cle[i]=="FORCE_NODALE" : tole=150.E-2
+  crit = 'RELATIF'
+  if mot_cle[i]=="FORCE_NODALE" : 
+      tole = 1.E-12
+      crit = 'ABSOLU'
   else : tole=5.E-3
   # Le reajustement de la tolerance sur les differences finies est necessaire
   # car les valeurs tres faibles sont sensibles a la non convergence parfaite
@@ -342,7 +345,7 @@ for i in range(n):
                   _F(RESULTAT=DYT,NUME_ORDRE=10,
                       NOM_CHAM=nom_cham,
                       GROUP_NO='OPPOSE',
-                     CRITERE='RELATIF',PRECISION=tole,
+                     CRITERE=crit,PRECISION=tole,
                      NOM_CMP='DY',
                      SENSIBILITE=PS[i],
                      VALE=diff_Y, 

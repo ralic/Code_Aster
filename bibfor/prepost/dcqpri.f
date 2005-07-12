@@ -1,0 +1,53 @@
+      SUBROUTINE DCQPRI(COORP1,COORP2,COORI,SPRIM)
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF PREPOST  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+
+C************************************
+C          BUT DE CETTE ROUTINE :   *
+C CALCUL LA SURFACE D UN QUADRANGLE *
+C************************************
+
+C IN   COOR*  : COORDONNEES DES NOEUDS DU QUADRANGLE
+C OUT  SPRIM  : AIRE DU QUADRANGLE
+
+      IMPLICIT NONE
+
+C DECLARATION GLOBALE
+      
+      REAL*8  COORP1(2),COORP2(2),COORI(2,2),SPRIM
+
+C DECLARATION LOCALE
+
+      REAL*8  X1,Y1,X2,Y2,X3,Y3,X4,Y4
+
+      X1 = COORP1(1)
+      Y1 = COORP1(2)
+      X2 = COORI(1,1)
+      Y2 = COORI(2,1)
+      X3 = COORI(1,2)
+      Y3 = COORI(2,2)
+      X4 = COORP2(1)
+      Y4 = COORP2(2)
+
+      SPRIM =((X2-X1)*(Y4-Y1)-(Y2-Y1)*(X4-X1))
+     &     +((X4-X3)*(Y2-Y3)-(Y4-Y3)*(X2-X3))
+
+      SPRIM = ABS(SPRIM)/2.D+0
+
+      END

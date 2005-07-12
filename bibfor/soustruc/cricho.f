@@ -4,7 +4,7 @@
       IMPLICIT  REAL*8  (A-H,O-Z)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 11/01/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF SOUSTRUC  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -147,7 +147,7 @@ C     SINGULIERE (MODES STATIQUES)
 C FIMPO : DEFORMEE STATIQUE (K-1*N)
             CALL RLDLGG(IRIGI,FIMPO,CBID,1)
 C NORMX : NORME K-1*N
-            CALL MDSCAL(FIMPO,FIMPO,NORMX,NEQ)
+            NORMX=DDOT(NEQ,FIMPO,1,FIMPO,1)
             ZR(JNORMX-1+ICOLC)=NORMX
 C RFIMPOX : K-1*N (SAUVEGARDE DEFORMEE STATIQUE)
             DO 41 K=1,NEQ
@@ -172,8 +172,8 @@ C     CALCUL DE SOUP : TN*K-1*N
                ENDIF
 C     RSCF : TYNU*K*N
 C     SCF : TYNU*N
-               CALL MDSCAL(BMODAL(1,J),RFIMPO,RSCF,NEQ)
-               CALL MDSCAL(BMODAL(1,J), FIMPO, SCF,NEQ)
+               RSCF=DDOT(NEQ,BMODAL(1,J),1,RFIMPO,1)
+               SCF=DDOT(NEQ,BMODAL(1,J),1,FIMPO,1)
                CC=SCF*RSCF*USR
                CS=SCF**2*USR
                IF (INFO.GE.2) THEN
@@ -282,7 +282,7 @@ C
 C
 C     NORMY : TYN*YN
           DO 51 JJ = 1,NBMODE
-            CALL MDSCAL(BMODAL(1,JJ),BMODAL(1,JJ),ZR(JNORMY-1+JJ),NEQ)
+            ZR(JNORMY-1+JJ)=DDOT(NEQ,BMODAL(1,JJ),1,BMODAL(1,JJ),1)
 51        CONTINUE
 C
           N = ICOLC+1

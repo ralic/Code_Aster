@@ -1,6 +1,6 @@
       SUBROUTINE CHRPEL(CHAMP1, REPERE, NBCMP, ICHAM, TYPE, NOMCH)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 31/01/2005   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -57,7 +57,7 @@ C
       INTEGER      NDIM  , LICMPU(6), NBM, IDMAIL, NBMAIL, IMAI
       INTEGER      INOEU , IRET0 , IGRNO , IRET1 , NBGNO , IGNO
       LOGICAL      TEST
-      REAL*8       ANGNOT(3), PGL(3,3), VALER(6), VALED(6)
+      REAL*8       ANGNOT(3), PGL(3,3), VALER(6), VALED(6),DDOT
       REAL*8       VALET(6) , EPSI    , XNORMR  , PROSCA,  R8DGRD
       REAL*8       ORIG(3)  , AXEZ(3) , AXER(3) , AXET(3),PGL2(3,3)
       CHARACTER*1  K1B
@@ -82,7 +82,7 @@ C
       ELSE
            CALL UTMESS('F','CHRPNO','IL FAUT DEFINIR NOM_CMP')
       ENDIF
- 
+
 
 C
 C ----- DEFINITION ET CREATION DU CHAM_NO SIMPLE CHAMS1
@@ -108,14 +108,14 @@ C     ON EXCLUT LES MOT-CLES 'NOEUD' ET 'GROUP_NO'
            K8B='NOEUD   '
       ELSE IF(IRET1.LT.0)THEN
            K8B='GROUP_NO'
-      ELSE 
+      ELSE
         GOTO 100
       ENDIF
       CALL UTDEBM('F','CHRPEL','LE ')
       CALL UTIMPK('S','MOT-CLE ',1,K8B)
       CALL UTIMPK('S','EST INCOMPATIBLE AVEC LE CHAMP',1,NOMCH)
       CALL UTIMPK('S','. UTILISER ''GROUP_MA'' OU ''MAILLE'''
-     +   //' POUR RESTREINDRE LE CHANGEMENT DE REPERE A CERTAINES' 
+     +   //' POUR RESTREINDRE LE CHANGEMENT DE REPERE A CERTAINES'
      +   //' MAILLES.',0,' ')
       CALL UTFINM()
  100  CONTINUE
@@ -130,7 +130,7 @@ C
 
       CALL RELIEM(' ',MA,'NU_MAILLE','MODI_CHAM',ICHAM,2,MOTCLE,TYPMCL,
      +                                                   MESMAI,NBM)
-      
+
       IF (NBM.GT.0) THEN
         NBMAIL = NBM
         CALL JEVEUO(MESMAI,'L',IDMAIL)
@@ -332,7 +332,7 @@ C
                      ELSE
                         AXER(3) = 0.0D0
                      ENDIF
-                     CALL PSCAL(3,AXER,AXEZ,PROSCA)
+                     PROSCA=DDOT(3,AXER,1,AXEZ,1)
                      AXER(1) = AXER(1) - PROSCA*AXEZ(1)
                      AXER(2) = AXER(2) - PROSCA*AXEZ(2)
                      IF (NDIM.EQ.3) THEN
@@ -362,7 +362,7 @@ C
                         AXER(1) = AXER(1)/NBPT - ORIG(1)
                         AXER(2) = AXER(2)/NBPT - ORIG(2)
                         AXER(3) = AXER(3)/NBPT - ORIG(3)
-                        CALL PSCAL(3,AXER,AXEZ,PROSCA)
+                        PROSCA=DDOT(3,AXER,1,AXEZ,1)
                         AXER(1) = AXER(1) - PROSCA*AXEZ(1)
                         AXER(2) = AXER(2) - PROSCA*AXEZ(2)
                         IF (NDIM.EQ.3) THEN
@@ -452,7 +452,7 @@ C
                      ELSE
                         AXER(3) = 0.0D0
                      ENDIF
-                     CALL PSCAL(3,AXER,AXEZ,PROSCA)
+                     PROSCA=DDOT(3,AXER,1,AXEZ,1)
                      AXER(1) = AXER(1) - PROSCA*AXEZ(1)
                      AXER(2) = AXER(2) - PROSCA*AXEZ(2)
                      IF (NDIM.EQ.3) THEN
@@ -482,7 +482,7 @@ C
                         AXER(1) = AXER(1)/NBPT - ORIG(1)
                         AXER(2) = AXER(2)/NBPT - ORIG(2)
                         AXER(3) = AXER(3)/NBPT - ORIG(3)
-                        CALL PSCAL(3,AXER,AXEZ,PROSCA)
+                        PROSCA=DDOT(3,AXER,1,AXEZ,1)
                         AXER(1) = AXER(1) - PROSCA*AXEZ(1)
                         AXER(2) = AXER(2) - PROSCA*AXEZ(2)
                         IF (NDIM.EQ.3) THEN

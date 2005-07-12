@@ -1,6 +1,6 @@
       SUBROUTINE XCFACE(ELREF,LSN,JGRLSN,IGEOM,
      &                            PINTER,NINTER,AINTER,NFACE,CFACE)
-      IMPLICIT NONE 
+      IMPLICIT NONE
 
       REAL*8        LSN(*)
       INTEGER       JGRLSN,IGEOM,NINTER,NFACE,CFACE(5,3)
@@ -8,28 +8,28 @@
       CHARACTER*24  PINTER,AINTER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/01/2005   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C                      TROUVER LES PTS D'INTERSECTION ENTRE LES ARETES
-C                      ET LE PLAN DE FISSURE ET DÉCOUPAGE EN FACETTES 
-C                    
+C                      ET LE PLAN DE FISSURE ET DÉCOUPAGE EN FACETTES
+C
 C     ENTREE
-C       ELREF    : ÉLÉMENT DE RÉFÉRENCE	 
+C       ELREF    : ÉLÉMENT DE RÉFÉRENCE	
 C       LSN      : VALEURS DE LA LEVEL SET NORMALE
 C       JGRLSN   : ADRESSE DU GRADIENT DE LA LEVEL SET NORMALE
 C       IGEOM    : ADRESSE DES COORDONNÉES DES NOEUDS DE L'ELT PARENT
@@ -62,7 +62,7 @@ C
       REAL*8          A(3),B(3),C(3),LSNA,LSNB,PADIST,LONGAR,TAMPOR(4)
       REAL*8          ALPHA,BAR(3),OA(3),M(3),AM(3),ND(3),PS,PS1,LAMBDA
       REAL*8          H(3),OH(3),NOH,COS,NOA,TRIGOM,R3(3),THETA(6),EPS
-      REAL*8          R8PI
+      REAL*8          R8PI,DDOT
       INTEGER         J,AR(12,2),NBAR,NTA,NTB,NA,NB,JPTINT,INS,JAINT
       INTEGER         IA,I,IPT,IBID,PP,PD,TAMPOI,NNO,K
       INTEGER         IADZI,IAZK24
@@ -81,10 +81,10 @@ C     --------------------------------------
 C     CRÉATION DU VECTEUR DES COORDONNÉES DES POINTS D'INTERSECTION
       CALL WKVECT(PINTER,'V V R',12*3,JPTINT)
 
-C     VECTEUR RÉEL À 4 COMPOSANTES, POUR CHAQUE PT D'INTER : 
+C     VECTEUR RÉEL À 4 COMPOSANTES, POUR CHAQUE PT D'INTER :
 C     - NUMÉRO ARETE CORRESPONDANTE         (0 SI C'EST UN NOEUD SOMMET)
 C     - NUMÉRO NOEUD SI NOEUD SOMMET        (0 SINON)
-C     - LONGUEUR DE L'ARETE                 
+C     - LONGUEUR DE L'ARETE
 C     - POSITION DU PT SUR L'ARETE          (0 SI C'EST UN NOEUD SOMMET)
       CALL WKVECT(AINTER,'V V R',12*4,JAINT)
 
@@ -97,17 +97,17 @@ C     COMPTEUR DE POINT INTERSECTION = NOEUD SOMMENT
       CALL CONARE(TYPMA,AR,NBAR)
 
 C     BOUCLE SUR LES ARETES POUR DÉTERMINER LES POINTS D'INTERSECTION
-      DO 100 IA=1,NBAR                
+      DO 100 IA=1,NBAR
 
 C       NUM NO DE L'ÉLÉMENT
         NA=AR(IA,1)
-        NB=AR(IA,2)   
+        NB=AR(IA,2)
         LSNA=LSN(NA)
         LSNB=LSN(NB)
-        DO 110 I=1,3  
+        DO 110 I=1,3
           A(I)=ZR(IGEOM-1+3*(NA-1)+I)
           B(I)=ZR(IGEOM-1+3*(NB-1)+I)
- 110    CONTINUE       
+ 110    CONTINUE
         LONGAR=PADIST(3,A,B)
         IF ((LSNA*LSNB).LE.0) THEN
           IF (LSNA.EQ.0) THEN
@@ -120,8 +120,8 @@ C           ON AJOUTE A LA LISTE LE POINT B
           ENDIF
           IF (LSNA.NE.0.AND.LSNB.NE.0) THEN
 C           INTERPOLATION DES COORDONNÉES DE C
-            DO 130 I=1,3          
-              C(I)=A(I)-LSNA/(LSNB-LSNA)*(B(I)-A(I))            
+            DO 130 I=1,3
+              C(I)=A(I)-LSNA/(LSNB-LSNA)*(B(I)-A(I))
  130        CONTINUE
 C           POSITION DU PT D'INTERSECTION SUR L'ARETE
             ALPHA=PADIST(3,A,C)
@@ -131,7 +131,7 @@ C           ON AJOUTE A LA LISTE LE POINT C
         ENDIF
 
  100  CONTINUE
-      NINTER=IPT 
+      NINTER=IPT
 
       IF (0.EQ.1) THEN
         WRITE(6,*)'POINTS D''INTERSECTION NON TRIES'
@@ -147,11 +147,11 @@ C     ------------------------------------------------------------
 
 C                  (BOOK IV 09/09/04)
 
-      IF (NINTER.LT.3) GOTO 500 
+      IF (NINTER.LT.3) GOTO 500
 
       DO 200 I=1,5
         DO 201 J=1,3
-          CFACE(I,J)=0 
+          CFACE(I,J)=0
  201    CONTINUE
  200  CONTINUE
 
@@ -182,15 +182,15 @@ C     BOUCLE SUR LES POINTS D'INTERSECTION POUR CALCULER L'ANGLE THETA
           M(J)=ZR(JPTINT-1+(I-1)*3+J)
           AM(J)=M(J)-A(J)
  241    CONTINUE
-        CALL PSCAL(3,AM,ND,PS)
+        PS=DDOT(3,AM,1,ND,1)
 
-        CALL PSCAL(3,ND,ND,PS1)
+        PS1=DDOT(3,ND,1,ND,1)
         LAMBDA=-PS/PS1
         DO 242 J=1,3
           H(J)=M(J)+LAMBDA*ND(J)
           OH(J)=H(J)-BAR(J)
  242    CONTINUE
-        CALL PSCAL(3,OA,OH,PS)
+        PS=DDOT(3,OA,1,OH,1)
 
         NOH=SQRT(OH(1)*OH(1) + OH(2)*OH(2)  +  OH(3)*OH(3))
         COS=PS/(NOA*NOH)
@@ -198,10 +198,10 @@ C     BOUCLE SUR LES POINTS D'INTERSECTION POUR CALCULER L'ANGLE THETA
         THETA(I)=TRIGOM('ACOS',COS)
 C       SIGNE DE THETA (06/01/2004)
         CALL PROVEC(OA,OH,R3)
-        CALL PSCAL(3,R3,ND,PS)
+        PS=DDOT(3,R3,1,ND,1)
         IF (PS.LT.EPS) THETA(I) = -1 * THETA(I) + 2 * R8PI()
 
- 240  CONTINUE 
+ 240  CONTINUE
 
 C     TRI SUIVANT THETA CROISSANT
       DO 250 PD=1,NINTER-1
@@ -229,47 +229,47 @@ C     TRI SUIVANT THETA CROISSANT
 
       IF (NINTER.GT.6) THEN
         CALL UTMESS('F','XCFACE','NOMBRE DE POINTS D''INTERSECTION '//
-     &                                                'IMPOSSIBLE.') 
+     &                                                'IMPOSSIBLE.')
       ELSEIF (NINTER.EQ.6) THEN
          NFACE=4
          CFACE(1,1)=1
-         CFACE(1,2)=2 
+         CFACE(1,2)=2
          CFACE(1,3)=3
          CFACE(2,1)=1
-         CFACE(2,2)=3 
-         CFACE(2,3)=5 
+         CFACE(2,2)=3
+         CFACE(2,3)=5
          CFACE(3,1)=1
-         CFACE(3,2)=5 
+         CFACE(3,2)=5
          CFACE(3,3)=6
          CFACE(4,1)=3
-         CFACE(4,2)=4 
-         CFACE(4,3)=5 
+         CFACE(4,2)=4
+         CFACE(4,3)=5
       ELSEIF (NINTER.EQ.5) THEN
          NFACE=3
          CFACE(1,1)=1
-         CFACE(1,2)=2 
+         CFACE(1,2)=2
          CFACE(1,3)=3
          CFACE(2,1)=1
-         CFACE(2,2)=3 
-         CFACE(2,3)=4 
+         CFACE(2,2)=3
+         CFACE(2,3)=4
          CFACE(3,1)=1
-         CFACE(3,2)=4 
+         CFACE(3,2)=4
          CFACE(3,3)=5
       ELSEIF (NINTER.EQ.4) THEN
          NFACE=2
          CFACE(1,1)=1
-         CFACE(1,2)=2 
+         CFACE(1,2)=2
          CFACE(1,3)=3
          CFACE(2,1)=1
-         CFACE(2,2)=3 
-         CFACE(2,3)=4 
+         CFACE(2,2)=3
+         CFACE(2,3)=4
       ELSEIF (NINTER.EQ.3) THEN
          NFACE=1
-         CFACE(1,1)=1 
-         CFACE(1,2)=2 
+         CFACE(1,1)=1
+         CFACE(1,2)=2
          CFACE(1,3)=3
       ELSE
-         NFACE=0         
+         NFACE=0
       ENDIF
 
       IF (0.EQ.1) THEN

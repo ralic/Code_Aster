@@ -1,5 +1,5 @@
       SUBROUTINE VDPNLR ( OPTION , NOMTE , CODRET )
-C MODIF ELEMENTS  DATE 23/06/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -50,7 +50,7 @@ C
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
-      REAL*8 ZR,R8VIDE
+      REAL*8 ZR,R8VIDE,DDOT
       COMMON  / RVARJE / ZR(1)
       COMPLEX*16         ZC
       COMMON  / CVARJE / ZC(1)
@@ -1238,7 +1238,7 @@ C
                THETA ( II ) = VECTHE ( IN , II )
  910         CONTINUE
 C
-             CALL PSCAL ( 3 , THETA , VECNI , THETAN )
+             THETAN=DDOT(3,THETA,1,VECNI,1)
 C
 C+++++++++++ MATRICE T MOIUNS 1 DE THETA
 C

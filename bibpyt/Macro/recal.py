@@ -1,4 +1,4 @@
-#@ MODIF recal Macro  DATE 14/03/2005   AUTEUR DURAND C.DURAND 
+#@ MODIF recal Macro  DATE 11/07/2005   AUTEUR PABHHHH N.TARDIEU 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -157,8 +157,8 @@ def calcul_F(self,UL,para,val,reponses):
       Fichier_Resu.append('Lrep=[]'+'\n')
       for i in range(len(reponses)):
          Fichier_Resu.append('t'+str(reponses[i][0])+'='+str(reponses[i][0])+'.EXTR_TABLE()'+'\n')
-         Fichier_Resu.append('F = '+'t'+str(reponses[i][0])+'.Array('+"'"+str(reponses[i][1])+"'"+','+"'"+str(reponses[i][2])+"'"+')'+'\n')
-         Fichier_Resu.append('Lrep.append(F)'+'\n')
+         Fichier_Resu.append('_F_ = '+'t'+str(reponses[i][0])+'.Array('+"'"+str(reponses[i][1])+"'"+','+"'"+str(reponses[i][2])+"'"+')'+'\n')
+         Fichier_Resu.append('Lrep.append(_F_)'+'\n')
       
       #ouverture du fichier fort.3 et mise a jour de celui ci
       x=open('fort.'+str(UL),'w')

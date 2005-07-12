@@ -1,4 +1,4 @@
-#@ MODIF imprime Lecture_Cata_Ele  DATE 14/09/2004   AUTEUR MCOURTOI M.COURTOIS 
+#@ MODIF imprime Lecture_Cata_Ele  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE VABHHTS J.PELLET
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -142,8 +142,11 @@ def imprime_cata(file2,capy,seq,format):
            file.write( "PHENOMENE_MODELISATION__  " +"\n")
            for (ph,lmod,codph) in cata.l_pheno:
                file.write( "\n   PHENOMENE__  "+ph+"       CODE__  "+codph+"\n")
-               for (mod,laffe,codmod,(d1,d2)) in lmod:
+               for (mod,laffe,codmod,(d1,d2),lattrib) in lmod:
                    file.write( "\n       MODELISATION__ %-16s   DIM__ %-1s %-1s   CODE__ %s\n" % (mod,d1,d2,codmod) )
+                   if (lattrib) :
+                       file.write( "\n    ATTRIBUT__",)
+                       for (x,y) in lattrib :  file.write( "  %s  %s" % (x,y))
                    for (tyma,tyel) in laffe:
                        file.write( "              MAILLE__ %-8s  ELEMENT__ %-16s\n" %(tyma,tyel))
            file.write( "\n")
@@ -183,8 +186,8 @@ def imprime_cata(file2,capy,seq,format):
 
 
            for entete in l_entete:
-               l_elref1=entete[2];l_decl_en=entete[3];l_decl_opt=entete[4]
-               impr_entete(file,entete,l_elref1,l_decl_en,l_decl_opt)
+               l_elref1=entete[2];lattrib=entete[3];l_decl_en=entete[4];l_decl_opt=entete[5]
+               impr_entete(file,entete,l_elref1,lattrib,l_decl_en,l_decl_opt)
 
            #impression des modes locaux et des options
            impr_moloc_opt(file,modlocs,opts,format)
@@ -196,12 +199,12 @@ def imprime_cata(file2,capy,seq,format):
        for cata in capy.te:
            entete,modlocs,opts=cata.cata_te
            if seq=="non": file = open(file2+"/"+string.lower(entete[0])+".cata","w")
-           l_elref1=entete[2];l_decl_en=entete[3]
+           l_elref1=entete[2];lattrib=entete[3];l_decl_en=entete[4]
            file.write( cata.cmodif +"\n")
            imprime_copyright(file)
            file.write( entete[0]+"\n\n")
            file.write( "\nTYPE_ELEM__ ")
-           impr_entete(file,entete,l_elref1,l_decl_en,None)
+           impr_entete(file,entete,l_elref1,lattrib,l_decl_en,None)
 
            #impression des modes locaux et des options
            impr_moloc_opt(file,modlocs,opts,format)
@@ -331,7 +334,7 @@ def impr_moloc_opt(file,modlocs,opts,format):
     file.write( "\n")
 
 
-def impr_entete(file,entete,l_elref1,l_decl_en,l_decl_opt):
+def impr_entete(file,entete,l_elref1,lattrib,l_decl_en,l_decl_opt):
      file.write( "\nENTETE__ ")
      file.write( "%s %-16s " %("ELEMENT__",entete[0]))
      file.write( "%s %-8s " %("MAILLE__",entete[1]))
@@ -343,6 +346,10 @@ def impr_entete(file,entete,l_elref1,l_decl_en,l_decl_opt):
            file.write( "  GAUSS__")
            for gauss1 in elref1[1] :
               file.write("  %s=%s" %(gauss1[0],gauss1[1]))
+
+     if lattrib :
+         file.write( "\n    ATTRIBUT__",)
+         for (x,y) in lattrib :  file.write( "  %s  %s" % (x,y))
 
      if l_decl_en :
          for decl in l_decl_en :
@@ -592,6 +599,7 @@ def imprime_ojb(file,capy):
    #  catalogues des TYPE_ELEM__ :
    #-------------------------------------------
 
+
    # fonction de calcul d'une suite d'entiers codés correspondant à une liste de CMPS:
    def entiers_codes(note,lcmp,lcmp_gd):
       nbec=(len(lcmp_gd)-1)/30 + 1
@@ -650,13 +658,14 @@ def imprime_ojb(file,capy):
 
    optmod=ut.cree_co(d,nom='&CATA.TE.OPTMOD',tsca='I',tsca_pn='K8',contig='CONTIG',acces='NU',longv=0)
    optnom=ut.cree_co(d,nom='&CATA.TE.OPTNOM',tsca='K8',tsca_pn='K8',contig='CONTIG',acces='NU',longv=0)
+   cte_attr=ut.cree_co(d,nom='&CATA.TE.CTE_ATTR',tsca='K16',tsca_pn='K16',contig='CONTIG',acces='NU',longv=0)
 
 
    k=0 ; ioptte=0; ielrefe=0; iflpg=0;
    for cata in capy.te:
        k=k+1
        entete,modlocs,opts=cata.cata_te
-       l_elref1=entete[2];l_decl_en=entete[3]
+       l_elref1=entete[2];l_decl_en=entete[4]
        note=entete[0]
        print "<I> On va traiter le TYPE_ELEM: "+note
        ERR.contexte("Examen du catalogue de TYPE_ELEM__: "+note)
@@ -695,6 +704,14 @@ def imprime_ojb(file,capy):
                ifpg=nofpg.jenonu(txtpad(8,elref1[0])+gauss1[1])
                pnlocfpg.ecri_os(indice=iflpg,valeur=noflpg)
                nolocfpg.ecri_os(indice=iflpg,valeur=ifpg)
+
+       # objet cte_attr:
+       # ---------------------------------
+       liattr=get_liattr(capy,cata)
+       nbattr=len(liattr)
+       cte_attr.cree_oc(nom=note,long=nbattr)
+       for iattr in range(nbattr):
+          cte_attr.ecri_co(nom=note,indice=iattr+1,valeur=liattr[iattr])
 
 
        # modes locaux :
@@ -843,7 +860,7 @@ def imprime_ojb(file,capy):
        phenomene.ajout_nom(ph)
        modeli=ut.cree_co(d,nom='&CATA.'+ph,tsca='I',tsca_pn='K16',contig='CONTIG',acces='NU',longv=(nbtm+2))
        nommodeli=ut.cree_pn(d,nom='&CATA.'+txtpad(13,ph)+'.MODL',tsca='K16')
-       for (mod,laffe,codmod,(d1,d2)) in lmod:
+       for (mod,laffe,codmod,(d1,d2),lattrib) in lmod:
            mod=mod[1:len(mod)-1]
            nommodeli.ajout_nom(mod)
            modeli.cree_oc(nom=mod,long=(nbtm+2))
@@ -879,17 +896,16 @@ def degenerise(capy):
         # on vérifie qu'un catalogue "générique" a bien un nom de la forme GENER_XXXX:
         if nogene[0:6]!="GENER_" :  ERR.mess('E','Le TYPE_GENE__: '+nogene+' doit avoir un nom de la forme : GENER_XXXX')
 
-        for entete in l_entete:
-            l_decl_opt=entete[4]
+        for entete in l_entete :
+            l_decl_opt=entete[5]
 
-            entete=entete[0:4]+(None,)
+            entete=entete[0:5]+(None,)
             cata2=copy.deepcopy(cata) ; del cata2.cata_tg; del cata2.cmodif
 
             if l_decl_opt :
                 opts2=copy.deepcopy(opts)
                 for decl in l_decl_opt:
                     nomop,numte=decl
-
 
                     for iopt in range(len(opts2)) :
                         if nomop==opts2[iopt][0] :
@@ -927,3 +943,60 @@ def degenerise(capy):
        liste2.append(capy.te[capy.dicte[ke]])
        dico2[ke]=k; k=k+1
     capy.te=liste2 ; capy.dicte=dico2
+
+
+#---------------------------------------------------------------------------
+def get_liattr(capy,cata):
+#     retourne la liste des attributs d'un type_element :
+#     (y compris les attributs définis au niveau des modélisations)
+#---------------------------------------------------------------------------
+      entete,modlocs,opts=cata.cata_te
+      note  = entete[0]
+      tyma1 = entete[1]
+
+      # recherche d'informations sur le type de maille : codtma (K3) + dimension topologique
+      for tm in capy.tm.ltm :
+         if not tm[0]==tyma1 : continue
+         dimtma=tm[2]
+         codtma=tm[3]
+
+      dicattr={}
+
+      # attributs définis pour toute la modélisation :
+      for (ph,lmod,codph) in capy.ph.l_pheno:
+          for (mod,laffe,codmod,(d1,d2),lattrib) in lmod:
+             # la modélisation inclut-elle le type_element note ?
+             trouve=0
+             for (tyma,tyel) in laffe:
+                if tyel==note : trouve=1
+
+             if trouve :
+                # pour les type_element appartenant à plusieurs modélisation,
+                # c'est la dernière modélisation qui impose sa loi (dans quel ordre ?).
+                # si cette loi est embetante, il faut redéfinir l'attribut au niveau du type_element
+                dicattr['ALIAS8']=str(codph)[1:3]+str(codmod)[1:4]+str(codtma)[1:4]
+                dicattr['DIM_TOPO_MAILLE']=str(dimtma)
+                assert d1 <= d2 , ("dimensions incohérentes :",d1,d2)
+                dicattr['DIM_TOPO_MODELI']=str(d1)
+                dicattr['DIM_COOR_MODELI']=str(d2)
+
+                if lattrib :
+                   for k in range(len(lattrib)) :
+                      no_attr =lattrib[k][0]
+                      val_attr=lattrib[k][1]
+                      dicattr[no_attr]=val_attr
+
+
+      # surcharge éventuelle des attributs définis pour le type_element:
+      lattrib=entete[3]
+      if lattrib :
+            for k in range(len(lattrib)) :
+               no_attr =lattrib[k][0]
+               val_attr=lattrib[k][1]
+               dicattr[no_attr]=val_attr
+
+      liattr=[]
+      for k in dicattr.keys() :
+         liattr.append(k)
+         liattr.append(dicattr[k])
+      return liattr

@@ -4,7 +4,7 @@
       REAL*8     DELTA, MATMOY(*), MAT(*), MAT1(*), MAT2(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/07/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 11/07/2005   AUTEUR CAMBIER S.CAMBIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -23,9 +23,7 @@ C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C
 C  GENERATEUR DE MATRICE ALEATOIRE DU MODELE PROBABILISTE 
-C  NON PARAMETRIQUE.
-C
-C  LA PROCEDURE EST DUE AU PROFESSEUR CHRISTIAN SOIZE (2001).
+C  NON PARAMETRIQUE.(CF. C.SOIZE 2001).
 C
 C
 C  N      : N X N EST LA DIMENSION DE LA MATRICE A GENERER  
@@ -37,11 +35,22 @@ C  MAT2   : TABLEAU DE TRAVAIL
 C
 C ----------------------------------------------------------------------
       INTEGER   I, J, K, L, IIND, JIND, LIND, KIND
-      REAL*8    SUM, TLII, P, SIGMA, ALPHA, V, GAMDEV, U, GASDEV
+      REAL*8    SUM, TLII, P, SIGMA, ALPHA, V, GAMDEV, U, GASDEV, BORNE
+      CHARACTER*8 K8BID
+      CHARACTER*16 K16BID, NOMCMD 
 C DEB ------------------------------------------------------------------
 C      
       CALL JEMARQ()
 C
+      CALL GETRES(K8BID,K16BID,NOMCMD)
+
+C --- VERIFICATION BORNE SUR DELTA
+      BORNE=SQRT(DBLE(N+1)/DBLE(N+5))
+      IF (DELTA.GT.BORNE) THEN
+                  CALL UTMESS('F',NOMCMD,
+     &       'COEFFICIENT DE DISPERSION TROP GRAND, CF. DOC. U')
+      ENDIF
+      
 C --- CALCUL DES PARAMETRES P ET SIGMA ET 
 C     INITIALISATION DE LA MATRICE TL
 C     
@@ -81,7 +90,7 @@ C
 99       CONTINUE
 100   CONTINUE
 C
-C --- FACTORISATION DE CHOLESKI DE K
+C --- FACTORISATION DE CHOLESKY DE K
 C
       DO 113 I=1,N
          IIND = I*(I-1)/2
@@ -93,8 +102,8 @@ C
 111         CONTINUE
             IF(I.EQ.J) THEN
                IF(SUM.LE.0.D0) THEN
-                  CALL UTMESS('F','GEMATG',
-     +                        'MATRICE MOYENNE NON DEFINIE POSITIVE')
+                  CALL UTMESS('F',NOMCMD,
+     &                      'MATRICE MOYENNE NON DEFINIE POSITIVE')
                ENDIF
                TLII = SQRT(SUM)
                MAT2(IIND+I) = TLII

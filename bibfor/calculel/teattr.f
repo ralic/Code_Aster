@@ -1,0 +1,124 @@
+      SUBROUTINE TEATTR (TYPEL,KSTOP,NOATTR,VATTR,IRET)
+      IMPLICIT NONE
+
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF CALCULEL  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C RESPONSABLE VABHHTS J.PELLET
+      CHARACTER*(*) TYPEL,KSTOP,NOATTR,VATTR
+      INTEGER IRET
+C---------------------------------------------------------------------
+C BUT : RECUPERER LA VALEUR D'UN ATTRIBUT D'UN TYPE_ELEMENT
+C---------------------------------------------------------------------
+C     ARGUMENTS:
+C     ----------
+C     IN TYPEL  (K16) : NOM DU TYPE_ELEMENT A INTERROGER
+C                        (OU ' ' SI L'ON EST "SOUS" LA ROUTINE TE0000)
+C     IN NOATTR (K16) : NOM DE L'ATTRIBUT RECHERCHE
+C     IN KSTOP  (K1)  : 'S' => ERREUR <F> SI ATTRIBUT ABSENT
+C                     : 'C' => ON CONTINUE SI ATTRIBUT ABSENT (IRET=1)
+C    OUT VATTR  (K16) : VALEUR DE L'ATTRIBUT (OU "NON_DEFINI" SI ABSENT)
+C    OUT IRET   (I)   : CODE DE RETOUR :  0 -> OK
+C                                         1 -> ATTRIBUT ABSENT
+C-----------------------------------------------------------------------
+C  CETTE ROUTINE EST ACCESSIBLE PARTOUT DANS LE CODE. SI ELLE EST
+C  APPELEE EN DEHORS DE TE0000 (OU AVEC TYPEL != ' '), ELLE NECESSITE
+C  DES APPELS JEVEUX, ELLE DEVIENT DONC UN PEU COUTEUSE.
+C-----------------------------------------------------------------------
+C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
+      COMMON /IVARJE/ZI(1)
+      COMMON /RVARJE/ZR(1)
+      COMMON /CVARJE/ZC(1)
+      COMMON /LVARJE/ZL(1)
+      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+      INTEGER ZI
+      REAL*8 ZR
+      COMPLEX*16 ZC
+      LOGICAL ZL
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32,JEXNUM,JEXNOM
+      CHARACTER*80 ZK80
+C------------FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
+C     COMMON CALCUL :
+      INTEGER NUTE,JNBELR,JNOELR,IACTIF,JPNLFP,JNOLFP,NBLFPG
+      COMMON /CAII11/NUTE,JNBELR,JNOELR,IACTIF,JPNLFP,JNOLFP,NBLFPG
+
+      CHARACTER*16 OPTION,NOMTE,NOMTM,PHENO,MODELI
+      COMMON /CAKK01/OPTION,NOMTE,NOMTM,PHENO,MODELI
+
+      INTEGER        IAWLOC,IAWTYP,NBELGR,IGR,JCTEAT,LCTEAT
+      COMMON /CAII06/IAWLOC,IAWTYP,NBELGR,IGR,JCTEAT,LCTEAT
+
+C  VARIABLES LOCALES :
+      CHARACTER*16 NOMT2,NOATT2,VATTR2,KBID
+      INTEGER JCTE,N1,NBATTR,K,ITE
+      LOGICAL APELJE
+
+C----------------------------------------------------------------------
+      NOMT2=TYPEL
+      NOATT2=NOATTR
+
+      IF (NOMT2.EQ.' ') THEN
+        IF (IACTIF.EQ.1) THEN
+           NOMT2=NOMTE
+        ELSE
+           CALL ASSERT(.FALSE.)
+        END IF
+      END IF
+
+      APELJE=.TRUE.
+      IF ((IACTIF.EQ.1) .AND. (NOMT2.EQ.NOMTE))  APELJE=.FALSE.
+
+
+      IF (APELJE) THEN
+         CALL JENONU(JEXNOM('&CATA.TE.NOMTE',NOMT2),ITE)
+         CALL JELIRA(JEXNUM('&CATA.TE.CTE_ATTR',ITE),'LONMAX',N1,KBID)
+         IF (N1.GT.0) THEN
+            CALL JEVEUO(JEXNUM('&CATA.TE.CTE_ATTR',ITE),'L',JCTE)
+         ELSE
+            JCTE=0
+         END IF
+      ELSE
+         JCTE=JCTEAT
+         N1=LCTEAT
+      END IF
+
+      NBATTR=N1/2
+      DO 1, K=1,NBATTR
+         IF (ZK16(JCTE-1+2*(K-1)+1).EQ.NOATT2) THEN
+            VATTR2=ZK16(JCTE-1+2*(K-1)+2)
+            GO TO 2
+         END IF
+1     CONTINUE
+
+      IRET=1
+      VATTR='NON_DEFINI'
+      IF (KSTOP.EQ.'S') CALL UTMESS('F','TEATTR','L''ATTRIBUT: '
+     &       //NOATT2//' N''EXISTE PAS POUR LE TYPE: '//NOMT2)
+      CALL ASSERT(KSTOP.EQ.'C')
+      GO TO 3
+
+2     CONTINUE
+      IRET=0
+      VATTR=VATTR2
+
+3     CONTINUE
+
+      END

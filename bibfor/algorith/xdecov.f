@@ -1,31 +1,31 @@
       SUBROUTINE XDECOV(IT,CONNEC,LSN,IGEOM,PINTER,NINTER,NPTS,
      &                                    AINTER,NSE,CNSE,COORSE,HEAV)
-      IMPLICIT NONE 
+      IMPLICIT NONE
 
       REAL*8        LSN(*)
       INTEGER       IT,CONNEC(6,4),IGEOM,NINTER,NPTS,NSE,CNSE(6,4)
       CHARACTER*24  PINTER,AINTER,COORSE,HEAV
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/01/2005   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C                      DÉCOUPER LE TETRA EN NSE SOUS-TETRAS 
-C                    
+C                      DÉCOUPER LE TETRA EN NSE SOUS-TETRAS
+C
 C     ENTREE
 C       IT       : INDICE DU TETRA EN COURS
 C       CONNEC   : CONNECTIVITÉ DES NOEUDS DU TETRA
@@ -45,7 +45,7 @@ C     ------------------------------------------------------------------
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER          ZI
       COMMON  /IVARJE/ ZI(1)
-      REAL*8           ZR
+      REAL*8           ZR,DDOT
       COMMON  /RVARJE/ ZR(1)
       COMPLEX*16       ZC
       COMMON  /CVARJE/ ZC(1)
@@ -63,7 +63,7 @@ C
       INTEGER         JPTINT,JAINT,JCOSE,JHEAV
       INTEGER         NSEMAX,IN,INH,I,J,AR(12,2),NBAR,ISE
       INTEGER         A1,A2,A3,A4,A,B,C
-      PARAMETER      (NSEMAX=6)  
+      PARAMETER      (NSEMAX=6)
       CHARACTER*8     TYPMA
 C ----------------------------------------------------------------------
 
@@ -75,7 +75,7 @@ C ----------------------------------------------------------------------
 
       DO 10 IN=1,6
         DO 20 J=1,4
-          CNSE(IN,J)=0 
+          CNSE(IN,J)=0
  20     CONTINUE
  10   CONTINUE
 
@@ -84,37 +84,37 @@ C ----------------------------------------------------------------------
 
 C-----------------------------------------------------------------------
 C     REMPLISSAGE DE LA CONNECTIVITÉ DES SOUS-ELEMENTS TÉTRAS
-C                  ALGO BOOK III (26/04/04) 
+C                  ALGO BOOK III (26/04/04)
 C-----------------------------------------------------------------------
 
       IF (NINTER.LT.3) THEN
 
-C     1°) AVEC MOINS DE TROIS POINTS D'INTERSECTION 
+C     1°) AVEC MOINS DE TROIS POINTS D'INTERSECTION
 C     ---------------------------------------------
 
         IF (NPTS.NE.NINTER) CALL UTMESS('F','XDECOV','INTER DOUTEUSE')
 C       ON A UN SEUL ELEMENT
-        NSE=1         
+        NSE=1
         DO 100 IN=1,4
-            CNSE(1,IN)=CONNEC(IT,IN)    
- 100    CONTINUE   
+            CNSE(1,IN)=CONNEC(IT,IN)
+ 100    CONTINUE
 
       ELSEIF (NINTER.EQ.3) THEN
 
-C     2°) AVEC TROIS POINTS D'INTERSECTION 
+C     2°) AVEC TROIS POINTS D'INTERSECTION
 C     ------------------------------------
         A1=NINT(ZR(JAINT-1+4*(1-1)+1))
         A2=NINT(ZR(JAINT-1+4*(2-1)+1))
         A3=NINT(ZR(JAINT-1+4*(3-1)+1))
 
-        IF (NPTS.EQ.3) THEN 
+        IF (NPTS.EQ.3) THEN
 C         ON A UN SEUL ELEMENT
-          NSE=1 
+          NSE=1
           DO 110 IN=1,4
-            CNSE(1,IN)=CONNEC(IT,IN)    
- 110      CONTINUE   
+            CNSE(1,IN)=CONNEC(IT,IN)
+ 110      CONTINUE
 
-        ELSEIF (NPTS.EQ.2) THEN 
+        ELSEIF (NPTS.EQ.2) THEN
 C         ON A DEUX SOUS-ELEMENTS
           NSE=2
           CALL ASSERT(A1.EQ.0.AND.A2.EQ.0)
@@ -129,14 +129,14 @@ C         AVEC 101, 102 ET 103 LES 3 PTS D'INTERSECTION
           CNSE(2,3)=103
           CNSE(2,4)=CONNEC(IT,AR(A3,2))
 
-        ELSEIF (NPTS.EQ.1) THEN 
+        ELSEIF (NPTS.EQ.1) THEN
 C         ON A TROIS SOUS-ELEMENTS
           NSE=3
           CALL ASSERT(A1.EQ.0.AND.A2.NE.0)
 C         ON SE PLACE DANS LA CONF DE REF (VOIR ALGO)
           DO 30 I=1,2
             DO 40 J=1,2
-              IF (AR(A2,I).EQ.AR(A3,J)) THEN 
+              IF (AR(A2,I).EQ.AR(A3,J)) THEN
                  A=AR(A2,I)
                  B=AR(A2,3-I)
                  C=AR(A3,3-J)
@@ -156,7 +156,7 @@ C         ON SE PLACE DANS LA CONF DE REF (VOIR ALGO)
           CNSE(3,3)=CONNEC(IT,B)
           CNSE(3,4)=CONNEC(IT,C)
 
-        ELSEIF (NPTS.EQ.0) THEN 
+        ELSEIF (NPTS.EQ.0) THEN
 C         ON A QUATRE SOUS-ELEMENTS
           NSE=4
           CNSE(1,1)=101
@@ -184,15 +184,15 @@ C           CONFIGURATION N°4
             CNSE(1,4)=CONNEC(IT,4)
             CALL XPENTE(2,CNSE,CONNEC(IT,1),CONNEC(IT,2),CONNEC(IT,3),
      &                                                    101,102,103)
-          ELSE         
+          ELSE
             CALL UTMESS('F','XDECOV','PROBLEME DE DECOUPAGE A 3 PTS')
           ENDIF
-        
+
         ENDIF
 
       ELSEIF (NINTER.EQ.4) THEN
 
-C     2°) AVEC QUATRE POINTS D'INTERSECTION 
+C     2°) AVEC QUATRE POINTS D'INTERSECTION
 C     -------------------------------------
         A1=NINT(ZR(JAINT-1+4*(1-1)+1))
         A2=NINT(ZR(JAINT-1+4*(2-1)+1))
@@ -213,7 +213,7 @@ C         CONFIGURATION N°2
 C         CONFIGURATION N°3
           CALL XPENTE(1,CNSE,101,103,CONNEC(IT,3),102,104,CONNEC(IT,4))
           CALL XPENTE(4,CNSE,CONNEC(IT,2),104,103,CONNEC(IT,1),102,101)
-        ELSE         
+        ELSE
           CALL UTMESS('F','XDECOV','PROBLEME DE DECOUPAGE A 4 PTS')
         ENDIF
 
@@ -226,8 +226,8 @@ C 99   CONTINUE
 C        WRITE(6,*)'  '
 
 C-----------------------------------------------------------------------
-C     VÉRIFICATION DU SENS DES SOUS-ÉLÉMENTS TETRA 
-C                  ALGO BOOK III (28/04/04) 
+C     VÉRIFICATION DU SENS DES SOUS-ÉLÉMENTS TETRA
+C                  ALGO BOOK III (28/04/04)
 C-----------------------------------------------------------------------
 
       DO 200 ISE=1,NSE
@@ -236,7 +236,7 @@ C-----------------------------------------------------------------------
           INH=CNSE(ISE,IN)
           IF (INH.LT.100) THEN
             DO 220 J=1,3
-              XYZ(IN,J)=ZR(IGEOM-1+3*(INH-1)+J)           
+              XYZ(IN,J)=ZR(IGEOM-1+3*(INH-1)+J)
  220        CONTINUE
           ELSE
             DO 221 J=1,3
@@ -251,10 +251,10 @@ C-----------------------------------------------------------------------
           AD(J)=XYZ(4,J)-XYZ(1,J)
  230    CONTINUE
 
-        CALL PROVEC(AB,AC,VN) 
-        CALL PSCAL(3,VN,AD,PS) 
+        CALL PROVEC(AB,AC,VN)
+        PS=DDOT(3,VN,1,AD,1)
 
-        IF (PS.LT.0) THEN 
+        IF (PS.LT.0) THEN
 C          WRITE(6,*)'MAUVAIS SENS DU TETRA'
 C         ON INVERSE LES NOEUDS 3 ET 4
           INH=CNSE(ISE,3)
@@ -264,11 +264,11 @@ C         ON INVERSE LES NOEUDS 3 ET 4
 C          WRITE(6,*)'VERIF SENS OK'
         ENDIF
 
- 200  CONTINUE          
+ 200  CONTINUE
 
 C-----------------------------------------------------------------------
 C             MATRICE DES COORDONNÉES ET FONCTION HEAVYSIDE
-C             ALGO BOOK III (28/04/04) 
+C             ALGO BOOK III (28/04/04)
 C-----------------------------------------------------------------------
 
       CALL WKVECT(HEAV,'V V R',NSE,JHEAV)
@@ -286,7 +286,7 @@ C-----------------------------------------------------------------------
           ELSE
             DO 330 J=1,3
           ZR(JCOSE-1+12*(ISE-1)+3*(IN-1)+J)=ZR(JPTINT-1+3*(INH-100-1)+J)
- 330        CONTINUE 
+ 330        CONTINUE
           ENDIF
  310    CONTINUE
 

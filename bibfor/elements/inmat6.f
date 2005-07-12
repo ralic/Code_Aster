@@ -1,6 +1,6 @@
       SUBROUTINE INMAT6(ELREFA,FAPG,MGANOS)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
+C MODIF ELEMENTS  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -28,7 +28,6 @@ C----------------------------------------------------------------------
       REAL*8 XNO(3*27),VOL,FF(27),M(27*27)
       REAL*8 P(27*27),MGANOS(27,27)
       REAL*8 XPG(3*27),POIPG(27),XG(3),DET
-      CHARACTER*1 TRANS,KSTOP
       CHARACTER*8 NOFPG(10),ELREFA,ELREF2,FAPG
       LOGICAL SINGU
 C DEB ------------------------------------------------------------------
@@ -106,9 +105,7 @@ C     ----------------------------
 
 C     CALCUL DE LA MATRICE M-1*P :
 C     ----------------------------
-      TRANS=' '
-      KSTOP='S'
-      CALL MGAUSS(TRANS,KSTOP,M,P,NNOS,NNOS,NPG,DET,IRET)
+      CALL MGAUSS('NFVP',M,P,NNOS,NNOS,NPG,DET,IRET)
 
       DO 90 I = 1,NNOS
         DO 80 KP = 1,NPG

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 11/07/2005   AUTEUR CAMBIER S.CAMBIER 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,12 +17,34 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 # RESPONSABLE CAMBIER S.CAMBIER
-GENE_MATR_ALEA=OPER(nom="GENE_MATR_ALEA",op=  27,sd_prod=matr_asse_gene_r,
-               fr="Générer une réalisation d'une matrice aléatoire réelle symétrique définie positive selon une loi de probabilité",
+def gene_matr_alea_prod(MATR_MOYEN,**args ):
+  if (AsType(MATR_MOYEN) == matr_asse_gene_r )  : return matr_asse_gene_r
+  if (AsType(MATR_MOYEN) == macr_elem_dyna) : return macr_elem_dyna
+  raise AsException("type de concept resultat non prevu")
+
+GENE_MATR_ALEA=OPER(nom="GENE_MATR_ALEA",op=  27,
+#sd_prod=matr_asse_gene_r,
+sd_prod=gene_matr_alea_prod,
+               fr="Générer une réalisation d'une matrice aléatoire réelle sym. déf. positive ou d'un macro élément dynamique",
                reentrant='n',
             UIinfo={"groupes":("Matrice",)},
-   MATR_MOYEN   = SIMP(statut='o', typ=matr_asse_gene_r),
-   COEF_VAR     = SIMP(statut='f', typ='R', defaut=0.1),
+   MATR_MOYEN   = SIMP(statut='o', typ=(matr_asse_gene_r,macr_elem_dyna)),
+
+#    cas matrice generalisee 
+   b_matr =BLOC( condition = "AsType(MATR_MOYEN) in (matr_asse_gene_r,)",
+           COEF_VAR     = SIMP(statut='f', typ='R', defaut=0.1, val_min=0.E+0 ,
+                                fr="coefficient de variation de la matrice a generer" ),
+           ),
+#    cas macr_elem_dyna 
+   b_macr =BLOC( condition = "AsType(MATR_MOYEN) in (macr_elem_dyna,)",
+           fr="cas macr_elem_dyna (sous-structuratio)",
+           COEF_VAR_RIGI     = SIMP(statut='f', typ='R', defaut=0.1, val_min=0.E+0 ,
+                                fr="coefficient de variation de la matrice de raideur" ),
+           COEF_VAR_MASS     = SIMP(statut='f', typ='R', defaut=0., val_min=0.E+0 ,
+                                fr="coefficient de variation de la matrice de masse" ),
+           COEF_VAR_AMOR     = SIMP(statut='f', typ='R', defaut=0., val_min=0.E+0 ,
+                                fr="coefficient de variation de la matrice d'amortissement" ),),
+
    INIT_ALEA    =SIMP(statut='f',typ='I'),
 ) ;
    

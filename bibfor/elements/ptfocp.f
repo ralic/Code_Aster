@@ -7,22 +7,22 @@
       REAL*8                               XL,RAD,ANGS2
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 08/03/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF ELEMENTS  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     ------------------------------------------------------------------
 C
@@ -96,42 +96,42 @@ C         --- FORCE POUTRE A VALEURS COMPLEXES ---
  30      CONTINUE
 C
          IF ( NORMAL ) THEN
-           CALL PSCAL(3,W2,W2,S)
+           S=DDOT(3,W2,1,W2,1)
            S2=1.D0/S
            CALL PROVEC(W2,QR(1),U)
-           CALL PSCAL(3,U,U,S)
+           S=DDOT(3,U,1,U,1)
            S3 = SQRT(S)
-           CALL PSCAL(3,QR(1),QR(1),S)
+           S=DDOT(3,QR(1),1,QR(1),1)
            S4 = SQRT(S)
            S5 = S3*SQRT(S2)/S4
            CALL PROVEC(U,W2,V)
            CALL PSCVEC(3,S2,V,U)
            CALL PSCVEC(3,S5,U,QR(1))
            CALL PROVEC(W2,QR(7),U)
-           CALL PSCAL(3,U,U,S)
+           S=DDOT(3,U,1,U,1)
            S3 = SQRT(S)
-           CALL PSCAL(3,QR(7),QR(7),S)
+           S=DDOT(3,QR(7),1,QR(7),1)
            S4 = SQRT(S)
            S5 = S3*SQRT(S2)/S4
            CALL PROVEC(U,W2,V)
            CALL PSCVEC(3,S2,V,U)
            CALL PSCVEC(3,S5,U,QR(7))
 C
-           CALL PSCAL(3,W2,W2,S)
+           S=DDOT(3,W2,1,W2,1)
            S2=1.D0/S
            CALL PROVEC(W2,QI(1),U)
-           CALL PSCAL(3,U,U,S)
+           S=DDOT(3,U,1,U,1)
            S3 = SQRT(S)
-           CALL PSCAL(3,QI(1),QI(1),S)
+           S=DDOT(3,QI(1),1,QI(1),1)
            S4 = SQRT(S)
            S5 = S3*SQRT(S2)/S4
            CALL PROVEC(U,W2,V)
            CALL PSCVEC(3,S2,V,U)
            CALL PSCVEC(3,S5,U,QI(1))
            CALL PROVEC(W2,QI(7),U)
-           CALL PSCAL(3,U,U,S)
+           S=DDOT(3,U,1,U,1)
            S3 = SQRT(S)
-           CALL PSCAL(3,QI(7),QI(7),S)
+           S=DDOT(3,QI(7),1,QI(7),1)
            S4 = SQRT(S)
            S5 = S3*SQRT(S2)/S4
            CALL PROVEC(U,W2,V)

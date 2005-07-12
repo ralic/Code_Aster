@@ -2,7 +2,7 @@
       IMPLICIT  NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 14/03/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -288,6 +288,7 @@ C
 C
         DO 3 J = 1 , NBINST
           IF (J.GE.2) CALL JEMARQ()
+          CALL JERECU('V')
           ICOMPT = ZI(JCPT + J - 1)
           TPS    = ZR(JINST+ J - 1)
           CALL RSEXCH ( RESU, NSYMB, ICOMPT, NOMCH, IRET )

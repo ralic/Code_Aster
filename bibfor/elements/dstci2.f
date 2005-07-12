@@ -1,49 +1,49 @@
       SUBROUTINE DSTCI2 ( DCI , R , HFT2 , DFC, DMC, BCA , AN, AM )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
+C MODIF ELEMENTS  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C.======================================================================
       IMPLICIT REAL*8 (A-H,O-Z)
-C  
+C
 C  DSTCI2 -- DETERMINATION DES MATRICES AN ET AM QUI SONT TELLES QUE
 C            ALPHA = AN*UN + AM*UM
 C            POUR OBTENIR CETTE EXPRESSION ON PASSE PAR LA RELATION :
 C            AA*ALPHA = (AW + AB)*UN + AL*UM
-C            UN DESIGNE LES DEPLACEMENTS DE FLEXION (W,BETAX,BETAY)  
-C            UM DESIGNE LES DEPLACEMENTS DE MEMBRANE (UX,UY)    
-C            FORMELLEMENT :  
-C                                       
-C            |L4 0  0|   |L4C4 L4S4|                        
-C   AA = 2/3*|0 L5  0| - |L5C5 L5S5|*DCI*(BCA - DFC_T*BFA)  
-C            |0  0 L6|   |L6C6 L6S6|                        
-C                       
-C           |L4C4 L4S4|                                      
-C    AB = - |L5C5 L5S5|*DCI*DFC_T*BFB                        
+C            UN DESIGNE LES DEPLACEMENTS DE FLEXION (W,BETAX,BETAY)
+C            UM DESIGNE LES DEPLACEMENTS DE MEMBRANE (UX,UY)
+C            FORMELLEMENT :
+C
+C            |L4 0  0|   |L4C4 L4S4|
+C   AA = 2/3*|0 L5  0| - |L5C5 L5S5|*DCI*(BCA - DFC_T*BFA)
+C            |0  0 L6|   |L6C6 L6S6|
+C
+C           |L4C4 L4S4|
+C    AB = - |L5C5 L5S5|*DCI*DFC_T*BFB
 C           |L6C6 L6S6|
-C                                      
-C           |L4C4 L4S4|                                      
-C    AL = - |L5C5 L5S5|*DCI*DMC_T*BM                         
-C           |L6C6 L6S6|                                      
-C                                    
-C              |-2  L4C4 L4S4   2  L4C4 L4S4   0     0      0|  
-C    AW = -1/2*| 0     0    0  -2  L5C5 L5S5   2  L5C5   L5S5|  
-C              | 2  L6C6 L6S6   0     0    0  -2  L6C6   L6S6|  
-C                                     
+C
+C           |L4C4 L4S4|
+C    AL = - |L5C5 L5S5|*DCI*DMC_T*BM
+C           |L6C6 L6S6|
+C
+C              |-2  L4C4 L4S4   2  L4C4 L4S4   0     0      0|
+C    AW = -1/2*| 0     0    0  -2  L5C5 L5S5   2  L5C5   L5S5|
+C              | 2  L6C6 L6S6   0     0    0  -2  L6C6   L6S6|
+C
 C
 C   ARGUMENT        E/S  TYPE         ROLE
 C    DCI(2,2)       IN    R       INVERSE DE LA MATRICE DE CISAILLEMENT
@@ -52,7 +52,7 @@ C    R(*)           IN    R       TABLEAU DE CARACTERISTIQUES
 C                                 GEOMETRIQUES DE L'ELEMENT :
 C                                 COS ET SIN DES ANGLES, LONGUEUR
 C                                 DES COTES ,...
-C    HFT2(2,6)      IN    R       MATRICE DEFINIE PAR T = [HF.T2] 
+C    HFT2(2,6)      IN    R       MATRICE DEFINIE PAR T = [HF.T2]
 C                                 T = [HF.T2] BETA,QSI2
 C                                 OU T EST LE VECTEUR DES EFFORTS
 C                                 TRANCHANTS ET BETA,QSI2 DESIGNE LE
@@ -60,16 +60,16 @@ C                                 VECTEUR DES DERIVEES SECONDES DES
 C                                 ROTATIONS BETA PAR RAPPORT AUX
 C                                 COORDONNEES DE L'ELEMENT DE REFERENCE
 C    DF(3,3)        IN    R       MATRICE DE FLEXION DE HOOKE
-C    DFC(3,2)       IN    R       MATRICE DE COUPLAGE 
+C    DFC(3,2)       IN    R       MATRICE DE COUPLAGE
 C                                 FLEXION-CISAILLEMENT DE HOOKE
-C    DMC(3,2)       IN    R       MATRICE DE COUPLAGE 
+C    DMC(3,2)       IN    R       MATRICE DE COUPLAGE
 C                                 MEMBRANE-CISAILLEMENT DE HOOKE
 C    BCA(2,3)       OUT   R       MATRICE RELIANT LES EFFORTS TRANCHANTS
 C                                 AUX INCONNUES ALPHA : T = [BCA]*ALPHA
 C                                 PLUS PRECISEMMENT  :
 C                                 T = [HFT.T2]*[TA]*ALPHA
 C    AN(3,9)        OUT   R       MATRICE RELIANT LES ROTATIONS ALPHA
-C                                 AUX INCONNUES DE FLEXION UN 
+C                                 AUX INCONNUES DE FLEXION UN
 C    AM(3,6)        OUT   R       MATRICE RELIANT LES ROTATIONS ALPHA
 C                                 AUX INCONNUES DE MEMBRANE UM
 C
@@ -106,7 +106,6 @@ C     ------------------ PARAMETRAGE TRIANGLE --------------------------
                PARAMETER (LCOS  = LCOTE + NC)
                PARAMETER (LSIN  = LCOS  + NC)
 C     ------------------------------------------------------------------
-      CHARACTER*1 TRANS,KSTOP
 C.========================= DEBUT DU CODE EXECUTABLE ==================
 C
 C --- INITIALISATIONS :
@@ -149,7 +148,7 @@ C
         DO 50 J = 1, 3
           TA(I,J) = ZERO
   50  CONTINUE
-C      
+C
       C(1) = R(LCOS)
       C(2) = R(LCOS+1)
       C(3) = R(LCOS+2)
@@ -186,7 +185,7 @@ C     -------------------------
   60  CONTINUE
 C
 C================================================================
-C --- DETERMINATION DE LA MATRICE AA QUI EST TELLE QUE          = 
+C --- DETERMINATION DE LA MATRICE AA QUI EST TELLE QUE          =
 C --- AA*ALPHA = (AW + AB)*UN + AL*UM                           =
 C --- UN DESIGNE LES DEPLACEMENTS DE FLEXION (W,BETAX,BETAY)    =
 C --- UM DESIGNE LES DEPLACEMENTS DE MEMBRANE (UX,UY)           =
@@ -210,8 +209,8 @@ C
 C ---   BOUCLE SUR LES POINTS D'INTEGRATION DU COTE COURANT :
 C       ---------------------------------------------------
         DO 90 INT = 1, 2
-C 
-C ---     CALCUL DE LA MATRICE BFA AU POINT D'INTEGRATION COURANT 
+C
+C ---     CALCUL DE LA MATRICE BFA AU POINT D'INTEGRATION COURANT
 C ---     RELIANT LES COURBURES AUX INCONNUES ALPHA
 C ---     I.E. X = BFB*UN + BFA*ALPHA :
 C         ---------------------------
@@ -260,7 +259,7 @@ C --  FIN DE LA BOUCLE SUR LES COTES DE L'ELEMENT
 C     -------------------------------------------
 C
 C================================================================
-C --- DETERMINATION DE LA MATRICE AB QUI EST TELLE QUE          = 
+C --- DETERMINATION DE LA MATRICE AB QUI EST TELLE QUE          =
 C --- AA*ALPHA = (AW + AB)*UN + AL*UM                           =
 C --- UN DESIGNE LES DEPLACEMENTS DE FLEXION (W,BETAX,BETAY)    =
 C --- UM DESIGNE LES DEPLACEMENTS DE MEMBRANE (UX,UY)           =
@@ -290,10 +289,10 @@ C     -------------------------------
          DCIDFB(2,J) = DCI(2,1)*DFCBFB(1,J) + DCI(2,2)*DFCBFB(2,J)
  150  CONTINUE
 C
-C ---  CALCUL DE :                                            
-C ---          |L4C4 L4S4|                                     
-C ---   AB = - |L5C5 L5S5|*DCI*DFC_T*BFB                       
-C ---          |L6C6 L6S6|                                     
+C ---  CALCUL DE :
+C ---          |L4C4 L4S4|
+C ---   AB = - |L5C5 L5S5|*DCI*DFC_T*BFB
+C ---          |L6C6 L6S6|
 C --- LES LKCK SONT DANS X , LES LKSK SONT DANS Y :
 C     -------------------------------------------
       DO 160 I = 1 , 3
@@ -302,7 +301,7 @@ C     -------------------------------------------
  160  CONTINUE
 C
 C================================================================
-C --- DETERMINATION DE LA MATRICE AL QUI EST TELLE QUE          = 
+C --- DETERMINATION DE LA MATRICE AL QUI EST TELLE QUE          =
 C --- AA*ALPHA = (AW + AB)*UN + AL*UM                           =
 C --- UN DESIGNE LES DEPLACEMENTS DE FLEXION (W,BETAX,BETAY)    =
 C --- UM DESIGNE LES DEPLACEMENTS DE MEMBRANE (UX,UY)           =
@@ -332,10 +331,10 @@ C     ------------------------------
          DCIDMC(2,J) = DCI(2,1)*DMCTBM(1,J) + DCI(2,2)*DMCTBM(2,J)
  180  CONTINUE
 C
-C ---  CALCUL DE :                                            
-C ---          |L4C4 L4S4|                                     
-C ---   AL = - |L5C5 L5S5|*DCI*DMC_T*BM                       
-C ---          |L6C6 L6S6|                                     
+C ---  CALCUL DE :
+C ---          |L4C4 L4S4|
+C ---   AL = - |L5C5 L5S5|*DCI*DMC_T*BM
+C ---          |L6C6 L6S6|
 C --- LES LKCK SONT DANS X , LES LKSK SONT DANS Y :
 C     -------------------------------------------
       DO 190 I = 1 , 3
@@ -354,12 +353,10 @@ C
       DO 210 I = 1, 3
          AAI(I,I) = UN
  210  CONTINUE
-      TRANS=' '
-      KSTOP='S'
-      CALL MGAUSS (TRANS,KSTOP,AA , AAI , 3 , 3 , 3, DET, IRET )
+      CALL MGAUSS ('NFVP',AA , AAI , 3 , 3 , 3, DET, IRET )
 C
 C===================================================================
-C --- DETERMINATION DE LA MATRICE AW QUI EST TELLE QUE             = 
+C --- DETERMINATION DE LA MATRICE AW QUI EST TELLE QUE             =
 C --- AA*ALPHA = (AW + AB)*UN + AL*UM                              =
 C --- UN DESIGNE LES DEPLACEMENTS DE FLEXION (W,BETAX,BETAY)       =
 C --- UM DESIGNE LES DEPLACEMENTS DE MEMBRANE (UX,UY)              =
@@ -389,7 +386,7 @@ C
       AW(3,9) = - UNDEMI*Y(3)
 C
 C===================================================================
-C --- DETERMINATION DE LA MATRICE AN QUI EST TELLE QUE             = 
+C --- DETERMINATION DE LA MATRICE AN QUI EST TELLE QUE             =
 C --- ALPHA = AN*UN + AM*UM                                        =
 C --- SOIT AN = AAI * (AW + AB)                                    =
 C --- UN DESIGNE LES DEPLACEMENTS DE FLEXION (W,BETAX,BETAY)       =
@@ -403,7 +400,7 @@ C
  220  CONTINUE
 C
 C===================================================================
-C --- DETERMINATION DE LA MATRICE AM QUI EST TELLE QUE             = 
+C --- DETERMINATION DE LA MATRICE AM QUI EST TELLE QUE             =
 C --- ALPHA = AN*UN + AM*UM                                        =
 C --- SOIT AM = AAI*AL                                             =
 C===================================================================

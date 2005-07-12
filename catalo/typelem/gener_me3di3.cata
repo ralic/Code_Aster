@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 23/06/2005   AUTEUR VABHHTS J.PELLET 
+%& MODIF TYPELEM  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION                        
 % ======================================================================    
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG    
@@ -72,6 +72,10 @@ MODE_LOCAL__
     ECONTNO  = SIEF_R   ELNO__ IDEN__  (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     
                                         SIP      )
     ECOEQNO  = SIEF_R   ELNO__ IDEN__  (VMIS     TRESCA   PRIN_1   PRIN_2   PRIN_3   VMIS_SG  )
+
+    ESINGUL  = SING_R   ELEM__         (DEGRE   TAILLE   )
+    ESINGNO  = SING_R   ELNO__ IDEN__  (DEGRE   TAILLE   )
+
     CTEREFE  = TEMP_R   ELEM__         (TEMP     )
     NTEMPER  = TEMP_R   ELNO__ IDEN__  (TEMP     )
     ZVARIPG  = VARI_R   ELGA__ RIGI    (VARI     )
@@ -176,6 +180,10 @@ OPTION__
                               OUT__  XXXXXX   XXXXXX   
     SIEF_ELNO_ELGA      20    IN__   ECONTPG  PCONTRR  
                               OUT__  ECONTNO  PSIEFNOR 
+    SING_ELEM           99    IN__   NGEOMER  PGEOMER
+                              OUT__  ESINGUL  PSING_R
+    SING_ELNO_ELEM      99    IN__   ESINGUL  PSING_R
+                              OUT__  ESINGNO  PSINGNO
     SYME_MDNS_R         222   IN__   MMATUNS  PNOSYM   
                               OUT__  MMATUUR  PSYM     
     TOU_INI_ELGA        99    IN__   NGEOMER  PGEOMER  

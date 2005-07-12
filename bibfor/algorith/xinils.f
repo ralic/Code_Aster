@@ -5,7 +5,7 @@
       CHARACTER*19  CNSLT,CNSLN
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/07/2005   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -179,32 +179,32 @@ C             PROJECTION DE P SUR LA MAILLE VOIR R5.03.50-B
               CALL PROVEC(AB,AC,VN)              
               CALL NORMEV(VN,NORME)      
               CALL PROVEC(AP,VN,VNT)
-              CALL PSCAL(3,VNT,AC,PS)            
+              PS=DDOT(3,VNT,1,AC,1)
               EPS1=-1*PS/NORME              
-              CALL PSCAL(3,VNT,AB,PS)
+              PS=DDOT(3,VNT,1,AB,1)
               EPS2=PS/NORME
               EPS3=1-EPS1-EPS2
              
 C             SI M EST DS LE SECTEUR 1
               IF (EPS1.LT.0) THEN                
-                CALL PSCAL(3,AC,AC,PS)
-                CALL PSCAL(3,AB,AC,PS1)
+                PS=DDOT(3,AC,1,AC,1)
+                PS1=DDOT(3,AB,1,AC,1)
                 EPS2=EPS2+EPS1*PS1/PS
                 EPS1=0 
               END IF
 C             SI M EST DS LE SECTEUR 2
               IF (EPS2.LT.0) THEN               
-                CALL PSCAL(3,AB,AB,PS)
-                CALL PSCAL(3,AB,AC,PS1)            
+                PS=DDOT(3,AB,1,AB,1)
+                PS1=DDOT(3,AB,1,AC,1)
                 EPS1=EPS1+EPS2*PS1/PS
                 EPS2=0
               END IF
 C             SI M EST DS LE SECTEUR 3
               IF (EPS3.LT.0) THEN                
-                CALL PSCAL(3,AB,AB,PS)
-                CALL PSCAL(3,BC,BC,PS)
-                CALL PSCAL(3,AB,BC,PS1)            
-                CALL PSCAL(3,AC,BC,PS2) 
+                PS=DDOT(3,AB,1,AB,1)
+                PS=DDOT(3,BC,1,BC,1)
+                PS1=DDOT(3,AB,1,BC,1)
+                PS2=DDOT(3,AC,1,BC,1)
                 EPS1=(-1*EPS1*PS1+(1-EPS2)*PS2)/PS
                 EPS2=1-EPS1
               END IF             
@@ -226,7 +226,7 @@ C            CALCUL DE LA DISTANCE PM
 C            ON VÉRIFIE QUE CETTE NORMALE EST ORIENTÉE COMME LA 
 C            PRÉCENDENTE, À PART POUR LE 1ER TRIANGLE DE LA 1ER MAILLE! 
              IF ((IMAFIS.NE.1) .OR. (ITRI.NE.1))THEN
-               CALL PSCAL(3,VN,VNREF,PS)     
+               PS=DDOT(3,VN,1,VNREF,1)
                IF (PS.LT.0) VN(1)=-1*VN(1)
                IF (PS.LT.0) VN(2)=-1*VN(2)
                IF (PS.LT.0) VN(3)=-1*VN(3)
@@ -240,7 +240,7 @@ C            ON GARDE CETTE NORMALE COMME RÉFÉR POUR LA MAILLE SUIVANTE
 C            MISE EN MÉMOIRE DE LST POUR LA MAILLE LA PLUS PROCHE
              IF (D.LT.DMIN) THEN
                DMIN=D             
-               CALL PSCAL(3,VN,PM,XLN)                         
+               XLN=DDOT(3,VN,1,PM,1)
              END IF 
 
  21        CONTINUE
@@ -314,7 +314,7 @@ C               ON VÉRIFIE QUE CETTE NORMALE EST ORIENTÉE
 C               COMME LA PRÉCENDENTE (À PART POUR LE 1ER SEG!)
 C               MAIS CA DEVRAIT JAMAIS ARRIVER
                 IF (ISEFIS.NE.1) THEN
-                  CALL PSCAL(3,VN,VNREF,PS)
+                  PS=DDOT(3,VN,1,VNREF,1)
                   IF (PS.LT.0) THEN
                     CALL UTMESS('F','XINILS','PB DANS ORIENTATION '//
      &                   'DES NORMALES A FOND_FISS. VERIFIER LA '//
@@ -331,8 +331,8 @@ C               ON GARDE CETTE NORMALE COMME RÉF POUR LE SEG SUIVANT
                 VNREF(3)=VN(3)
 
 C               PROJECTION SUR LE SEGMENT
-                CALL PSCAL(3,AP,AB,PS) 
-                CALL PSCAL(3,AB,AB,PS1)          
+                PS=DDOT(3,AP,1,AB,1)
+                PS1=DDOT(3,AB,1,AB,1)
                 EPS=PS/PS1
 
 C               ON RAMÈNE M SUR LES BORDS S'IL LE FAUT
@@ -349,7 +349,7 @@ C               CALCUL DE LA DISTANCE PM
 C               MISE EN MÉMOIRE DE LSN=PM.N POUR LE SEG LE PLUS PROCHE
                 IF (D.LT.DMIN) THEN
                   DMIN=D
-                  CALL PSCAL(3,VN,PM,XLT)
+                  XLT=DDOT(3,VN,1,PM,1)
                 END IF
 
               END IF

@@ -2,22 +2,22 @@
      &                 LAMBDA,MU,ECROB,ECROD,ALPHA,K1,K2,DSIDEP)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 
       IMPLICIT NONE
@@ -46,15 +46,13 @@ C-------------------------------------------------------------
       REAL*8             PSI(6,6),KSI(6,6),IKSI(6,6)
       REAL*8             MATB(6,6),MATD(6)
       REAL*8             DSIGB(6,6),DSIGD(6)
-      REAL*8             COUPL,DCRIT(6)      
-      CHARACTER*1        TRANS,KSTOP
-      
-      
+      REAL*8             COUPL,DCRIT(6)
+
+
       DATA  KRON/1.D0,1.D0,1.D0,0.D0,0.D0,0.D0/
-      
+
       RAC2=SQRT(2.D0)
       UN=1.D0
-      TRANS=' '
       T(1,1)=1
       T(2,2)=2
       T(3,3)=3
@@ -64,7 +62,7 @@ C-------------------------------------------------------------
       T(3,1)=5
       T(2,3)=6
       T(3,2)=6
-      
+
       CALL R8INIR(36,0.D0,DSIDEP,1)
 
 
@@ -72,9 +70,9 @@ C-------------------------------------------------------
 C-------------------------------------------------------
 C----CALCUL DE FB: FORCE THERMO ASSOCIEE A
 C-------------------ENDOMMAGEMENT ANISOTROPE DE TRACTION
-      
+
       CALL R8INIR(6,0.D0,CC,1)
-      
+
       DO 9 I=1,3
         DO 10 J=I,3
           DO 11 K=1,3
@@ -106,12 +104,12 @@ C-------------------ENDOMMAGEMENT ANISOTROPE DE TRACTION
   18      CONTINUE
   17    CONTINUE
   16  CONTINUE
-  
+
       CALL R8INIR(6,0.D0,FB,1)
       TREB=0.D0
       DO 301 I=1,3
-      TREB=TREB+CC(I)/2 
- 301  CONTINUE      
+      TREB=TREB+CC(I)/2
+ 301  CONTINUE
       IF (TREB.GT.0.D0) THEN
         DO 19 I=1,6
           FB(I)=-LAMBDA*TREB*EPSG(I)
@@ -134,9 +132,9 @@ C-------------------ENDOMMAGEMENT ANISOTROPE DE TRACTION
             FBM(T(I,J))=FBM(T(I,J))+VECFB(I,K)*VALFB(K)*VECFB(J,K)
   28      CONTINUE
   27    CONTINUE
-  26  CONTINUE   
+  26  CONTINUE
 
-     
+
 C----CALCUL DE FD: FORCE THERMO ASSOCIEE A
 C-------------------ENDOMMAGEMENT ISOTROPE DE COMPRESSION
 
@@ -195,7 +193,7 @@ C---CALCUL DE DERIVEES UTILES----------------------------------
       COUPL=SQRT(ALPHA*NOFBM+(1.D0-ALPHA)*FD**2.D0)
 
       IF ((FD.NE.0.D0).AND.(NOFBM.NE.0.D0)) THEN
-      
+
 C---CALCUL DE DBDE ET DDDE-------------------------------------
 
 C---CALCUL DE KSI ET PSI
@@ -221,7 +219,7 @@ C---CALCUL DE KSI ET PSI
 
 
 
-      
+
       DO 120 I=1,6
         KSI(I,I)=KSI(I,I)-(1.D0-ALPHA)*FD
  120  CONTINUE
@@ -238,10 +236,9 @@ C---CALCUL DE KSI ET PSI
       CALL R8INIR(36,0.D0,IKSI,1)
       DO 140 I=1,6
         IKSI(I,I)=1.D0
- 140  CONTINUE 
+ 140  CONTINUE
 
-      KSTOP='C'
-      CALL MGAUSS(TRANS,KSTOP,KSI,IKSI,6,6,6,DET,IRET)
+      CALL MGAUSS('NCVP',KSI,IKSI,6,6,6,DET,IRET)
 
       IF (IRET.NE.0) GOTO 999
 
@@ -260,13 +257,13 @@ C-- ! ksi n est plus disponible
      &                   /(1.D0-ALPHA)/FD/TDFDDD
 152          CONTINUE
 151        CONTINUE
-150    CONTINUE 
+150    CONTINUE
 
 
 
       CALL R8INIR(36,0.D0,DSIDEP,1)
-       
-       
+
+
        DO 201 I=1,6
          DO 202 J=1,6
            DSIDEP(I,J)=-DSIGD(I)*MATD(J)
@@ -275,17 +272,17 @@ C-- ! ksi n est plus disponible
  203             CONTINUE
  202           CONTINUE
  201   CONTINUE
- 
- 
- 
-       ELSEIF ((FD.EQ.0.D0).AND.(NOFBM.NE.0.D0)) THEN
-       
-         CALL R8INIR(36,0.D0,KSI,1)       
-         CALL R8INIR(36,0.D0,PSI,1)       
 
- 
+
+
+       ELSEIF ((FD.EQ.0.D0).AND.(NOFBM.NE.0.D0)) THEN
+
+         CALL R8INIR(36,0.D0,KSI,1)
+         CALL R8INIR(36,0.D0,PSI,1)
+
+
          DO 500 I=1,6
-           DO 501 J=1,6 
+           DO 501 J=1,6
              KSI(I,J)=-FBM(I)*FBM(J)/NOFBM
              PSI(I,J)=PSI(I,J)-FBM(I)*ALPHA*MULT/COUPL*DCRIT(J)
              DO 502 K=1,6
@@ -294,18 +291,17 @@ C-- ! ksi n est plus disponible
  502         CONTINUE
  501       CONTINUE
  500     CONTINUE
- 
+
          DO 504 I=1,6
            KSI(I,I)=KSI(I,I)+1
  504     CONTINUE
- 
+
          CALL R8INIR(36,0.D0,IKSI,1)
          DO 505 I=1,6
            IKSI(I,I)=1.D0
- 505     CONTINUE 
+ 505     CONTINUE
 
-         KSTOP='S'
-         CALL MGAUSS(TRANS,KSTOP,KSI,IKSI,6,6,6,DET,IRET)
+         CALL MGAUSS('NFVP',KSI,IKSI,6,6,6,DET,IRET)
 
          CALL R8INIR(36,0.D0,MATB,1)
 
@@ -315,8 +311,8 @@ C-- ! ksi n est plus disponible
                MATB(I,J)=MATB(I,J)+IKSI(I,K)*PSI(K,J)
 552               CONTINUE
 551             CONTINUE
-550      CONTINUE 
- 
+550      CONTINUE
+
          CALL R8INIR(36,0.D0,DSIDEP,1)
          DO 561 I=1,6
            DO 562 J=1,6
@@ -325,9 +321,9 @@ C-- ! ksi n est plus disponible
  563               CONTINUE
  562             CONTINUE
  561     CONTINUE
- 
+
        ELSEIF ((FD.NE.0.D0).AND.(NOFBM.EQ.0.D0)) THEN
- 
+
          CALL R8INIR(36,0.D0,DSIDEP,1)
          DO 661 I=1,6
            DO 662 J=1,6
@@ -335,12 +331,12 @@ C-- ! ksi n est plus disponible
      &                      *DCRIT(J)/FD)/TDFDDD
  662             CONTINUE
  661     CONTINUE
- 
-      
- 
- 
+
+
+
+
       ENDIF
- 
+
  999  CONTINUE
-  
+
       END

@@ -3,22 +3,22 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 28/06/2005   AUTEUR NICOLAS O.NICOLAS 
+C MODIF ALGELINE  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     OPERATEUR  EXTR_MODE
 C     ------------------------------------------------------------------
@@ -63,7 +63,7 @@ C     ------------------------------------------------------------------
      +  'ITER_ARNO'       , 'ITER_JACOBI'     , 'ITER_SEPARE'     ,
      +  'ITER_AJUSTE'     , 'ITER_INVERSE'    ,
      +  'NORME'           , 'METHODE'         ,
-     +  'FREQ'            , 
+     +  'FREQ'            ,
      +  'OMEGA2'          , 'AMOR_REDUIT'     , 'ERREUR'          ,
      +  'MASS_GENE'       , 'RIGI_GENE'       , 'AMOR_GENE'       ,
      +  'MASS_EFFE_DX'    , 'MASS_EFFE_DY'    , 'MASS_EFFE_DZ'    ,
@@ -178,7 +178,7 @@ C
                   NUME = ZI(JADR)
                   DO 32 K = 1 , NBMODU
                      IF ( NUME . EQ. ZI(JME+K-1) ) THEN
-                        NBMODE = NBMODE + 1 
+                        NBMODE = NBMODE + 1
                         ZI(JORDR+NBMODE-1) = IORD
                      ENDIF
  32               CONTINUE
@@ -201,10 +201,10 @@ C
                   IORD = ZI(JOR+J-1)
                   CALL RSADPA(MODEIN,'L',1,'NUME_MODE',IORD,0,JADR,K8B)
                   NUME = ZI(JADR)
-                  DO 42 K = 1 , NBME 
+                  DO 42 K = 1 , NBME
                      IF ( NUME . EQ. ZI(JME+K-1) ) GOTO 40
  42               CONTINUE
-                  NBMODE = NBMODE + 1 
+                  NBMODE = NBMODE + 1
                   ZI(JORDR+NBMODE-1) = IORD
  40            CONTINUE
                CALL JEECRA(JEXNUM(KMODE,NBMR),'LONUTI',NBMODE,' ')
@@ -295,6 +295,7 @@ C
       NOMSY = 'DEPL'
       DO 100 I = 1 , NBMR
          CALL JEMARQ()
+         CALL JERECU('V')
          MODEIN = ZK8(JNOM+I-1)
          CALL JELIRA(JEXNUM(KMODE,I),'LONUTI',NBMODE,K1B)
          IF ( NBMODE .EQ. 0 ) THEN
@@ -304,7 +305,7 @@ C
             GOTO 102
          ENDIF
          CALL JEVEUO(JEXNUM(KMODE,I),'L',JORDR)
-         CALL VPRECU ( MODEIN, NOMSY, NBMODE, ZI(JORDR), KVEC, 
+         CALL VPRECU ( MODEIN, NOMSY, NBMODE, ZI(JORDR), KVEC,
      +                 NBPARA, NOPARA, KVALI, KVALR, KVALK,
      +                 NEQ, NBMODE, TYPMOD, NPARI, NPARR, NPARK )
          IF (NPARI.NE.NBPARI) CALL UTMESS('F','OP0168','Y A UN BUG')
@@ -315,11 +316,11 @@ C
          CALL JEVEUO ( KVALR, 'L', LVALR )
          CALL JEVEUO ( KVALK, 'L', LVALK )
          IF ( TYPMOD .EQ. 'R' ) THEN
-            CALL VPSTOR ( -1, TYPMOD, MODEOU, NBMODE, NEQ, ZR(LMOD), 
+            CALL VPSTOR ( -1, TYPMOD, MODEOU, NBMODE, NEQ, ZR(LMOD),
      +                    C16B, NBMODE, NBPARI, NBPARR, NBPARK, NOPARA,
      +                    ZI(LVALI), ZR(LVALR), ZK24(LVALK), IPREC )
          ELSEIF ( TYPMOD .EQ. 'C' ) THEN
-            CALL VPSTOR ( -1, TYPMOD, MODEOU, NBMODE, NEQ, R8B, 
+            CALL VPSTOR ( -1, TYPMOD, MODEOU, NBMODE, NEQ, R8B,
      +                 ZC(LMOD), NBMODE, NBPARI, NBPARR, NBPARK, NOPARA,
      +                    ZI(LVALI), ZR(LVALR), ZK24(LVALK), IPREC )
          ELSE
@@ -395,7 +396,7 @@ C
                CUMULY = CUMULY + DY
                CUMULZ = CUMULZ + DZ
                IF ( OUINON .EQ. 'OUI' ) THEN
-                  WRITE(IFR,1020) IORD, NUME, FREQ, DX, CUMULX, 
+                  WRITE(IFR,1020) IORD, NUME, FREQ, DX, CUMULX,
      +                            DY, CUMULY, DZ, CUMULZ
                ELSE
                   WRITE(IFR,1120) IORD, NUME, FREQ, DX, DY, DZ
@@ -422,7 +423,7 @@ C
                DX = ZR(LPAR(1))
                CUMULX = CUMULX + DX
                IF ( OUINON .EQ. 'OUI' ) THEN
-                  WRITE(IFR,1220) IORD, NUME, FREQ, DX, CUMULX 
+                  WRITE(IFR,1220) IORD, NUME, FREQ, DX, CUMULX
                ELSE
                   WRITE(IFR,1320) IORD, NUME, FREQ, DX
                ENDIF

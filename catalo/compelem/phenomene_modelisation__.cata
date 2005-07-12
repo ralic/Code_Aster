@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 10/05/2005   AUTEUR GJBHHEL E.LORENTZ 
+%& MODIF COMPELEM  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
 % RESPONSABLE JMBHH01 J.M.PROIX
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -25,7 +25,7 @@ PHENOMENE_MODELISATION__
               MAILLE__ SEG2      ELEMENT__ CFS2E2D
               MAILLE__ SEG3      ELEMENT__ CFS3E2D
 
-       MODELISATION__ 'CONT_DVP_3D'      DIM__ 2 3   CODE__ 'CT3'
+       MODELISATION__ 'CONT_DVP_3D'      DIM__ 2 3  CODE__ 'CT3'
               MAILLE__ TRIA3     ELEMENT__ CFT3E3D
               MAILLE__ QUAD4     ELEMENT__ CFQ4E3D
               MAILLE__ QUAD8     ELEMENT__ CFQ8E3D
@@ -47,6 +47,7 @@ PHENOMENE_MODELISATION__
               MAILLE__ QUAD8     ELEMENT__ MEGMQU8
 
        MODELISATION__ 'COQUE_AXIS'       DIM__ 1 2   CODE__ 'CQA'
+              ATTRIBUT__  AXIS=OUI
               MAILLE__ SEG3      ELEMENT__ MECXSE3
 
        MODELISATION__ 'COQUE_C_PLAN'     DIM__ 1 2   CODE__ 'CQC'
@@ -175,6 +176,7 @@ PHENOMENE_MODELISATION__
               MAILLE__ SEG2      ELEMENT__ MEBOQ4G
 
        MODELISATION__ 'AXIS'             DIM__ 2 2   CODE__ 'AX_'
+              ATTRIBUT__  AXIS=OUI
               MAILLE__ TRIA3     ELEMENT__ MEAXTR3
               MAILLE__ QUAD4     ELEMENT__ MEAXQU4
               MAILLE__ SEG2      ELEMENT__ MEAXSE2
@@ -184,10 +186,12 @@ PHENOMENE_MODELISATION__
               MAILLE__ SEG3      ELEMENT__ MEAXSE3
 
        MODELISATION__ 'AXIS_SI'          DIM__ 2 2   CODE__ 'AXS'
+              ATTRIBUT__  AXIS=OUI
               MAILLE__ QUAD8     ELEMENT__ MEAXQS8
               MAILLE__ SEG3      ELEMENT__ MEAXSE3
 
        MODELISATION__ 'AXIS_FOURIER'     DIM__ 2 2   CODE__ 'AFO'
+              ATTRIBUT__  AXIS=OUI
               MAILLE__ TRIA3     ELEMENT__ MEFOTR3
               MAILLE__ QUAD4     ELEMENT__ MEFOQU4
               MAILLE__ SEG2      ELEMENT__ MEFOSE2
@@ -197,31 +201,37 @@ PHENOMENE_MODELISATION__
               MAILLE__ SEG3      ELEMENT__ MEFOSE3
 
        MODELISATION__ 'AXIS_INCO'        DIM__ 2 2   CODE__ 'AXC'
+              ATTRIBUT__  AXIS=OUI
               MAILLE__ TRIA6     ELEMENT__ MIAXTR6
               MAILLE__ QUAD8     ELEMENT__ MIAXQU8
               MAILLE__ SEG3      ELEMENT__ MEAXSE3
 
        MODELISATION__ 'AXIS_THHM'        DIM__ 2 2   CODE__ 'AH4'
+              ATTRIBUT__  AXIS=OUI
               MAILLE__ QUAD8     ELEMENT__ THHM_AXIS_QU8
               MAILLE__ TRIA6     ELEMENT__ THHM_AXIS_TR6
               MAILLE__ SEG3      ELEMENT__ THHM_AXIS_SE3
 
        MODELISATION__ 'AXIS_HM'          DIM__ 2 2   CODE__ 'AH2'
+              ATTRIBUT__  AXIS=OUI
               MAILLE__ QUAD8     ELEMENT__ HM_AXIS_QU8
               MAILLE__ TRIA6     ELEMENT__ HM_AXIS_TR6
               MAILLE__ SEG3      ELEMENT__ HM_AXIS_SE3
 
        MODELISATION__ 'AXIS_THH'         DIM__ 2 2   CODE__ 'AH3'
+              ATTRIBUT__  AXIS=OUI
               MAILLE__ QUAD8     ELEMENT__ THH_AXIS_QU8
               MAILLE__ TRIA6     ELEMENT__ THH_AXIS_TR6
               MAILLE__ SEG3      ELEMENT__ THH_AXIS_SE3
 
        MODELISATION__ 'AXIS_HHM'         DIM__ 2 2   CODE__ 'AH1'
+              ATTRIBUT__  AXIS=OUI
               MAILLE__ QUAD8     ELEMENT__ HHM_AXIS_QU8
               MAILLE__ TRIA6     ELEMENT__ HHM_AXIS_TR6
               MAILLE__ SEG3      ELEMENT__ HHM_AXIS_SE3
 
        MODELISATION__ 'AXIS_THM'         DIM__ 2 2   CODE__ 'AH5'
+              ATTRIBUT__  AXIS=OUI
               MAILLE__ QUAD8     ELEMENT__ THM_AXIS_QU8
               MAILLE__ TRIA6     ELEMENT__ THM_AXIS_TR6
               MAILLE__ SEG3      ELEMENT__ THM_AXIS_SE3
@@ -326,21 +336,25 @@ PHENOMENE_MODELISATION__
               MAILLE__ TRIA6     ELEMENT__ THM_FACE6
 
        MODELISATION__ 'AXIS_HHMD'        DIM__ 2 2   CODE__ 'AH6'
+              ATTRIBUT__  AXIS=OUI
               MAILLE__ QUAD8     ELEMENT__ HHM_AXIS_QU8D
               MAILLE__ TRIA6     ELEMENT__ HHM_AXIS_TR6D
               MAILLE__ SEG3      ELEMENT__ HHM_AXIS_SE3
 
        MODELISATION__ 'AXIS_HH2MD'        DIM__ 2 2   CODE__ 'AA3'
+              ATTRIBUT__  AXIS=OUI
               MAILLE__ QUAD8     ELEMENT__ HH2M_AXIS_QU8D
               MAILLE__ TRIA6     ELEMENT__ HH2M_AXIS_TR6D
               MAILLE__ SEG3      ELEMENT__ HH2M_AXIS_SE3
 
        MODELISATION__ 'AXIS_HMD'         DIM__ 2 2   CODE__ 'AH7'
+              ATTRIBUT__  AXIS=OUI
               MAILLE__ QUAD8     ELEMENT__ HM_AXIS_QU8D
               MAILLE__ TRIA6     ELEMENT__ HM_AXIS_TR6D
               MAILLE__ SEG3      ELEMENT__ HM_AXIS_SE3
 
        MODELISATION__ 'AXIS_THHD'        DIM__ 2 2   CODE__ 'AH8'
+              ATTRIBUT__  AXIS=OUI
               MAILLE__ QUAD8     ELEMENT__ THH_AXIS_QU8D
               MAILLE__ TRIA6     ELEMENT__ THH_AXIS_TR6D
               MAILLE__ QUAD4     ELEMENT__ THH_AXIS_QU4D
@@ -349,6 +363,7 @@ PHENOMENE_MODELISATION__
               MAILLE__ SEG2      ELEMENT__ THH_AXIS_SE2
 
        MODELISATION__ 'AXIS_THH2D'        DIM__ 2 2   CODE__ 'AA1'
+              ATTRIBUT__  AXIS=OUI
               MAILLE__ QUAD8     ELEMENT__ THH2_AXIS_QU8D
               MAILLE__ TRIA6     ELEMENT__ THH2_AXIS_TR6D
               MAILLE__ QUAD4     ELEMENT__ THH2_AXIS_QU4D
@@ -357,16 +372,19 @@ PHENOMENE_MODELISATION__
               MAILLE__ SEG2      ELEMENT__ THH2_AXIS_SE2
 
        MODELISATION__ 'AXIS_THHMD'       DIM__ 2 2   CODE__ 'AH9'
+              ATTRIBUT__  AXIS=OUI
               MAILLE__ QUAD8     ELEMENT__ THHM_AXIS_QU8D
               MAILLE__ TRIA6     ELEMENT__ THHM_AXIS_TR6D
               MAILLE__ SEG3      ELEMENT__ THHM_AXIS_SE3
 
        MODELISATION__ 'AXIS_THH2MD'       DIM__ 2 2   CODE__ 'AA2'
+              ATTRIBUT__  AXIS=OUI
               MAILLE__ QUAD8     ELEMENT__ THH2M_AXIS_QU8D
               MAILLE__ TRIA6     ELEMENT__ THH2M_AXIS_TR6D
               MAILLE__ SEG3      ELEMENT__ THH2M_AXIS_SE3
 
        MODELISATION__ 'AXIS_THMD'        DIM__ 2 2   CODE__ 'AH0'
+              ATTRIBUT__  AXIS=OUI
               MAILLE__ QUAD8     ELEMENT__ THM_AXIS_QU8D
               MAILLE__ TRIA6     ELEMENT__ THM_AXIS_TR6D
               MAILLE__ SEG3      ELEMENT__ THM_AXIS_SE3
@@ -449,6 +467,7 @@ PHENOMENE_MODELISATION__
               MAILLE__ QUAD4     ELEMENT__ THV_FACE4
 
        MODELISATION__ 'AXIS_THVD'        DIM__ 2 2   CODE__ 'AG3'
+              ATTRIBUT__  AXIS=OUI
               MAILLE__ QUAD8     ELEMENT__ THV_AXIS_QU8D
               MAILLE__ TRIA6     ELEMENT__ THV_AXIS_TR6D
               MAILLE__ QUAD4     ELEMENT__ THV_AXIS_QU4D
@@ -491,6 +510,7 @@ PHENOMENE_MODELISATION__
               MAILLE__ QUAD8     ELEMENT__ MVDPQS8
 
        MODELISATION__ 'AXIS_GRAD_VARI'   DIM__ 2 2   CODE__ 'AXV'
+              ATTRIBUT__  AXIS=OUI
               MAILLE__ SEG3      ELEMENT__ MEAXSE3
               MAILLE__ TRIA6     ELEMENT__ MVAXTR6
               MAILLE__ QUAD8     ELEMENT__ MVAXQS8
@@ -507,13 +527,15 @@ PHENOMENE_MODELISATION__
               MAILLE__ QUAD4     ELEMENT__ MFPLQU4
 
        MODELISATION__ 'AXIS_JOINT'     DIM__ 2 2   CODE__ 'AFI'
+              ATTRIBUT__  AXIS=OUI
               MAILLE__ QUAD4     ELEMENT__ MFAXQU4
 
        MODELISATION__ 'PLAN_ELDI'     DIM__ 2 2   CODE__ 'PDI'
               MAILLE__ QUAD4     ELEMENT__ MDDPQU4
               MAILLE__ SEG2      ELEMENT__ MEPLSE2
-              
+
        MODELISATION__ 'AXIS_ELDI'     DIM__ 2 2   CODE__ 'ADI'
+              ATTRIBUT__  AXIS=OUI
               MAILLE__ QUAD4     ELEMENT__ MDAXQU4
               MAILLE__ SEG2      ELEMENT__ MEAXSE2
 
@@ -627,6 +649,7 @@ PHENOMENE_MODELISATION__
               MAILLE__ QUAD9     ELEMENT__ MEFP_FACE9
 
        MODELISATION__ 'AXIS_FLUIDE'      DIM__ 2 2   CODE__ 'AXF'
+              ATTRIBUT__  AXIS=OUI
               MAILLE__ TRIA3     ELEMENT__ MEAXFLT3
               MAILLE__ QUAD4     ELEMENT__ MEAXFLQ4
               MAILLE__ TRIA6     ELEMENT__ MEAXFLT6
@@ -636,6 +659,7 @@ PHENOMENE_MODELISATION__
               MAILLE__ SEG3      ELEMENT__ MEAXFLS3
 
        MODELISATION__ 'AXIS_FLUI_STRU'   DIM__ 1 2   CODE__ 'AFS'
+              ATTRIBUT__  AXIS=OUI
               MAILLE__ SEG2      ELEMENT__ MEAXFSS2
               MAILLE__ SEG3      ELEMENT__ MEAXFSS3
 
@@ -708,6 +732,7 @@ PHENOMENE_MODELISATION__
               MAILLE__ TRIA3     ELEMENT__ THER_FACE3_D
 
        MODELISATION__ 'AXIS'             DIM__ 2 2   CODE__ 'AX_'
+              ATTRIBUT__  AXIS=OUI
               MAILLE__ TRIA3     ELEMENT__ THAXTR3
               MAILLE__ QUAD4     ELEMENT__ THAXQU4
               MAILLE__ SEG2      ELEMENT__ THAXSE2
@@ -717,6 +742,7 @@ PHENOMENE_MODELISATION__
               MAILLE__ SEG3      ELEMENT__ THAXSE3
 
        MODELISATION__ 'AXIS_DIAG'        DIM__ 2 2   CODE__ 'AXD'
+              ATTRIBUT__  AXIS=OUI
               MAILLE__ TRIA3     ELEMENT__ THAXTL3
               MAILLE__ QUAD4     ELEMENT__ THAXQL4
               MAILLE__ SEG2      ELEMENT__ THAXSL2
@@ -725,6 +751,7 @@ PHENOMENE_MODELISATION__
               MAILLE__ SEG3      ELEMENT__ THAXSL3
 
        MODELISATION__ 'AXIS_FOURIER'     DIM__ 2 2   CODE__ 'AXF'
+              ATTRIBUT__  AXIS=OUI
               MAILLE__ TRIA3     ELEMENT__ THFOTR3
               MAILLE__ QUAD4     ELEMENT__ THFOQU4
               MAILLE__ SEG2      ELEMENT__ THFOSE2
@@ -784,3 +811,4 @@ PHENOMENE_MODELISATION__
               MAILLE__ QUAD9     ELEMENT__ ACPLQU9
               MAILLE__ SEG2      ELEMENT__ ACPLSE2
               MAILLE__ SEG3      ELEMENT__ ACPLSE3
+

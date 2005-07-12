@@ -1,6 +1,6 @@
       SUBROUTINE CHRPNO( CHAMP1, REPERE, NBCMP, ICHAM, TYPE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/06/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,7 +54,7 @@ C
       INTEGER      JCNSD , JCNSK , JCNSV , JCONX1, JCONX2, NBPT
       INTEGER      IPT   , INOT  , NDIM  , LICMPU(6), JCNSL
       INTEGER      NBN, IDNOEU, NBNOEU, INOE
-      REAL*8       ANGNOT(3), PGL(3,3), VALER(6), VALED(6)
+      REAL*8       ANGNOT(3), PGL(3,3), VALER(6), VALED(6),DDOT
       REAL*8       ORIG(3)  , AXEZ(3) , AXER(3) , AXET(3)
       REAL*8       EPSI     , PROSCA  , XNORMR  , VALET(6)
       REAL*8       R8DGRD, PGL2(3,3)
@@ -276,7 +276,7 @@ C REPERE CYLINDRIQUE
                ELSE
                   AXER(3) = 0.0D0
                ENDIF
-               CALL PSCAL(3,AXER,AXEZ,PROSCA)
+               PROSCA=DDOT(3,AXER,1,AXEZ,1)
                AXER(1) = AXER(1) - PROSCA*AXEZ(1)
                AXER(2) = AXER(2) - PROSCA*AXEZ(2)
                IF (NDIM.EQ.3) THEN
@@ -331,7 +331,7 @@ C                LE NOEUD SUR L'AXE N'APPARTIENT A AUCUNE MAILLE
                   AXER(1) = AXER(1) - ORIG(1)
                   AXER(2) = AXER(2) - ORIG(2)
                   AXER(3) = AXER(3) - ORIG(3)
-                  CALL PSCAL(3,AXER,AXEZ,PROSCA)
+                  PROSCA=DDOT(3,AXER,1,AXEZ,1)
                   AXER(1) = AXER(1) - PROSCA*AXEZ(1)
                   AXER(2) = AXER(2) - PROSCA*AXEZ(2)
                   IF (NDIM.EQ.3) THEN
@@ -398,7 +398,7 @@ C VECTEUR
                ELSE
                   AXER(3) = 0.0D0
                ENDIF
-               CALL PSCAL(3,AXER,AXEZ,PROSCA)
+               PROSCA=DDOT(3,AXER,1,AXEZ,1)
                AXER(1) = AXER(1) - PROSCA*AXEZ(1)
                AXER(2) = AXER(2) - PROSCA*AXEZ(2)
                IF (NDIM.EQ.3) THEN
@@ -451,7 +451,7 @@ C                LE NOEUD SUR L'AXE N'APPARTIENT A AUCUNE MAILLE
                   AXER(1) = AXER(1) - ORIG(1)
                   AXER(2) = AXER(2) - ORIG(2)
                   AXER(3) = AXER(3) - ORIG(3)
-                  CALL PSCAL(3,AXER,AXEZ,PROSCA)
+                  PROSCA=DDOT(3,AXER,1,AXEZ,1)
                   AXER(1) = AXER(1) - PROSCA*AXEZ(1)
                   AXER(2) = AXER(2) - PROSCA*AXEZ(2)
                   IF (NDIM.EQ.3) THEN

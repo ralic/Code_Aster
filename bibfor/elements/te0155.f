@@ -3,22 +3,22 @@
       CHARACTER*(*)     OPTION,NOMTE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 16/10/2004   AUTEUR D6BHHJP J.P.LEFEBVRE 
+C MODIF ELEMENTS  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     1- CALCUL FORCES ELEMENTAIRES LINEIQUES
 C     2- CALCULE LE CHARGEMENT INDUIT PAR UNE ELEVATION UNIFORME DE
@@ -96,7 +96,7 @@ C          ------------------------------
             W(I)   = ZR(LX+I)   + ZR(IDEPLA-1+I) + ZR(IDEPLP-1+I)
             W(I+2) = ZR(LX+I+2) + ZR(IDEPLA+1+I) + ZR(IDEPLP+1+I)
             W2(I)  = W(I+2) - W(I)
-11        CONTINUE        
+11        CONTINUE
         ENDIF
         CALL ANGVX(W2,ANG1(1),ANG1(2))
         ANG1(3) = ZR(LORIEN+2)
@@ -118,9 +118,9 @@ C          ------------------------------
         CALL MATROT ( ZR(LORIEN) , PGL )
       ENDIF
       IF (NOMTE.EQ.'MECA_BARRE') THEN
-        CALL PSCAL(3,W2,W2,S)
+        S=DDOT(3,W2,1,W2,1)
       ELSE IF (NOMTE.EQ.'MECA_2D_BARRE') THEN
-        CALL PSCAL(2,W2,W2,S)
+        S=DDOT(2,W2,1,W2,1)
       ENDIF
       XL = SQRT(S)
       IF( XL .EQ. 0.D0 ) THEN
@@ -164,7 +164,7 @@ C         FL(4) = QL(4) * A * XL / 2.D0
            FL(I)= QL(I) * A * XL / 2.D0
  22      CONTINUE
          CALL UTPVLG ( NNO, NC, PGL, FL(1), VECT )
-      ENDIF  
+      ENDIF
 C
 C ECRITURE DANS LE VECTEUR PVECTUR SUIVANT L'ELEMENT
 C
@@ -177,7 +177,7 @@ C
         ZR(LVECT+1)   = VECT(2)
         ZR(LVECT+2)   = VECT(4)
         ZR(LVECT+3)   = VECT(5)
-      ENDIF          
+      ENDIF
 C
       OKVENT = .FALSE.
       IF ( OPTION .EQ. 'CHAR_MECA_FR1D1D' .OR.
@@ -221,24 +221,24 @@ C     --- FORCES REPARTIES PAR VALEURS REELLES---
             QG(I+3) =  QG(I)
 30       CONTINUE
          IF ( NORMAL ) THEN
-           CALL PSCAL(3,W2,W2,S)
+           S=DDOT(3,W2,1,W2,1)
            S2=1.D0/S
-           CALL PSCAL(3,QG(1),QG(1),S)
+           S=DDOT(3,QG(1),1,QG(1),1)
            S4 = SQRT(S)
            IF ( S4 .GT. R8MIN) THEN
              CALL PROVEC(W2,QG(1),U)
-             CALL PSCAL(3,U,U,S)
+             S=DDOT(3,U,1,U,1)
              S3 = SQRT(S)
              S5 = S3*SQRT(S2)/S4
              CALL PROVEC(U,W2,V)
              CALL PSCVEC(3,S2,V,U)
              CALL PSCVEC(3,S5,U,QG(1))
            ENDIF
-           CALL PSCAL(3,QG(4),QG(4),S)
+           S=DDOT(3,QG(4),1,QG(4),1)
            S4 = SQRT(S)
            IF ( S4 .GT. R8MIN) THEN
              CALL PROVEC(W2,QG(4),U)
-             CALL PSCAL(3,U,U,S)
+             S=DDOT(3,U,1,U,1)
              S3 = SQRT(S)
              S5 = S3*SQRT(S2)/S4
              CALL PROVEC(U,W2,V)
@@ -273,7 +273,7 @@ C
           ZR(LVECT+1)   = VECT(2)
           ZR(LVECT+2)   = VECT(4)
           ZR(LVECT+3)   = VECT(5)
-      ENDIF          
+      ENDIF
 C
       ELSEIF ( OPTION .EQ.'CHAR_MECA_FF1D1D' .OR.
      &         OPTION .EQ.'CHAR_MECA_SF1D1D' ) THEN
@@ -290,13 +290,13 @@ C     --- FORCES REPARTIES PAR FONCTIONS ---
 42       CONTINUE
 C
          IF ( NORMAL ) THEN
-           CALL PSCAL(3,W2,W2,S)
+           S=DDOT(3,W2,1,W2,1)
            S2=1.D0/S
-           CALL PSCAL(3,QG(1),QG(1),S)
+           S=DDOT(3,QG(1),1,QG(1),1)
            S4 = SQRT(S)
            IF ( S4 .GT. R8MIN) THEN
              CALL PROVEC(W2,QG(1),U)
-             CALL PSCAL(3,U,U,S)
+             S=DDOT(3,U,1,U,1)
              S3 = SQRT(S)
              S5 = S3*SQRT(S2)/S4
              CALL PROVEC(U,W2,V)
@@ -304,11 +304,11 @@ C
              CALL PSCVEC(3,S5,U,QG(1))
            ENDIF
 
-           CALL PSCAL(3,QG(4),QG(4),S)
+           S=DDOT(3,QG(4),1,QG(4),1)
            S4 = SQRT(S)
            IF ( S4 .GT. R8MIN) THEN
              CALL PROVEC(W2,QG(4),U)
-             CALL PSCAL(3,U,U,S)
+             S=DDOT(3,U,1,U,1)
              S3 = SQRT(S)
              S5 = S3*SQRT(S2)/S4
              CALL PROVEC(U,W2,V)
@@ -343,7 +343,7 @@ C
           ZR(LVECT+1)   = VECT(2)
           ZR(LVECT+2)   = VECT(4)
           ZR(LVECT+3)   = VECT(5)
-      ENDIF          
+      ENDIF
 C
 C
       ELSEIF ( OPTION.EQ.'CHAR_MECA_SR1D1D' ) THEN
@@ -360,10 +360,10 @@ C        RECUPERATION DE LA VITESSE DE VENT RELATIVE AUX NOEUDS
 51       CONTINUE
 
 C        CALCUL DU VECTEUR VITESSE PERPENDICULAIRE
-         CALL PSCAL(3,W2,W2,S)
+         S=DDOT(3,W2,1,W2,1)
          S2=1.D0/S
 
-         CALL PSCAL(3,QG(1),QG(1),S)
+         S=DDOT(3,QG(1),1,QG(1),1)
          S4 = SQRT(S)
          FCX = 0.0D0
          IF ( S4 .GT. R8MIN) THEN
@@ -371,7 +371,7 @@ C        CALCUL DU VECTEUR VITESSE PERPENDICULAIRE
            CALL PROVEC(U,W2,V)
            CALL PSCVEC(3,S2,V,VP)
 C          NORME DE LA VITESSE PERPENDICULAIRE
-           CALL PSCAL(3,VP,VP,VITE2)
+           VITE2=DDOT(3,VP,1,VP,1)
            VALPAV(1) = SQRT( VITE2 )
            IF ( VALPAV(1) .GT. R8MIN ) THEN
 C            RECUPERATION DE L'EFFORT EN FONCTION DE LA VITESSE
@@ -384,7 +384,7 @@ C            RECUPERATION DE L'EFFORT EN FONCTION DE LA VITESSE
          ENDIF
          CALL PSCVEC(3,FCX,VP,QG(1))
 
-         CALL PSCAL(3,QG(4),QG(4),S)
+         S=DDOT(3,QG(4),1,QG(4),1)
          S4 = SQRT(S)
          FCX = 0.0D0
          IF ( S4 .GT. R8MIN) THEN
@@ -392,7 +392,7 @@ C            RECUPERATION DE L'EFFORT EN FONCTION DE LA VITESSE
            CALL PROVEC(U,W2,V)
            CALL PSCVEC(3,S2,V,VP)
 C          NORME DE LA VITESSE PERPENDICULAIRE
-           CALL PSCAL(3,VP,VP,VITE2)
+           VITE2=DDOT(3,VP,1,VP,1)
            VALPAV(1) = SQRT( VITE2 )
            IF ( VALPAV(1) .GT. R8MIN ) THEN
 C            RECUPERATION DE L'EFFORT EN FONCTION DE LA VITESSE
@@ -423,7 +423,7 @@ C
           ZR(LVECT+1)   = VECT(2)
           ZR(LVECT+2)   = VECT(4)
           ZR(LVECT+3)   = VECT(5)
-      ENDIF          
+      ENDIF
 C
 
       ELSEIF ( OPTION.EQ.'CHAR_MECA_TEMP_R' ) THEN
@@ -467,7 +467,7 @@ C
           ZR(LVECT+1)   = VECT(2)
           ZR(LVECT+2)   = VECT(4)
           ZR(LVECT+3)   = VECT(5)
-      ENDIF          
+      ENDIF
 C
       ENDIF
 C

@@ -2,7 +2,7 @@
 C RESPONSABLE CAMBIER S.CAMBIER
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/10/2004   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 11/07/2005   AUTEUR CAMBIER S.CAMBIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -47,9 +47,8 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
       INTEGER      IRET, N1, NBLOC, N, I, M, IAK,IADR,IADR1,IADR2,IBID
-      INTEGER      IBLO, IDESC, IALIME, IACONL, IAREFE, IAREFA, IADESC
-      INTEGER      JUMP
-      
+      INTEGER      IBLO, IDESC, IALIME, IACONL, IAREFE, IAREFA
+      INTEGER      JUMP, IRET2
       REAL*8       DELTA
       CHARACTER*8  NOMRES, NOMMAT, K8B
       CHARACTER*16 NOMCMD, CONCEP
@@ -61,65 +60,199 @@ C
       IER=0
 C
       CALL GETRES ( NOMRES, CONCEP, NOMCMD )
-C      
+C 
+     
       CALL GETVID ( ' ', 'MATR_MOYEN', 1,1,1, NOMMAT, N1 )
-      CALL GETVR8 ( ' ', 'COEF_VAR'     , 1,1,1, DELTA,  N1 )
 C
       CALL GETVIS ( ' ', 'INIT_ALEA'    , 0,1,1, JUMP , N1 )       
       IF (N1 .NE. 0) CALL INIRAN(JUMP)
+
+      IF (CONCEP.EQ.'MATR_ASSE_GENE_R') THEN
+
+C===================================================
+C --- GENERATION D UNE MATRICE GENERALISEE ALEATOIRE
+C===================================================
+
+        CALL GETVR8 ( ' ', 'COEF_VAR'     , 1,1,1, DELTA,  N1 )
+
+        CALL JEVEUO(NOMMAT//'           .DESC','L',IDESC)
+
+C --- VERIF PROFIL=PLEIN
+        IF (ZI(IDESC+2).NE.2) THEN
+        CALL UTMESS('F',NOMCMD,'LES MATRICES ASSEMBLEES GENERALISEES'//
+     &          ' DOIVENT AVOIR UN STOCKAGE PLEIN (CF. NUME_DDL_GENE)')
+        ENDIF
+
+        N = ZI(IDESC+1)     
+        M = N*(N+1)/2
       
-      CALL JEVEUO (NOMMAT//'           .DESC','L',IDESC)
-      N = ZI(IDESC+1)     
-      M = N*(N+1)/2
-      
-      CALL JEEXIN(NOMRES//'           .VALE',IRET)
+        CALL JEEXIN(NOMRES//'           .VALE',IRET)
 C
-      IF (IRET.EQ.0) THEN
-         NBLOC = 1
-         IBLO  = 1
-         CALL JEVEUO(NOMMAT//'           .REFA','L',IAREFA)
+        IF (IRET.EQ.0) THEN
+          NBLOC = 1
+          IBLO  = 1
+          CALL JEVEUO(NOMMAT//'           .REFA','L',IAREFA)
 C
 C ------ CREATION DES BASES DE DONNEES DE LA MATRICE A GENERER.
 C        SUIVANT LE MODELE DE OP0071
 C
-        CALL JECREC(NOMRES//'           .VALE','G V R','NU','DISPERSE',
-     &                                         'CONSTANT',NBLOC)
-        CALL JECROC(JEXNUM(NOMRES//'           .VALE',IBLO))
-        CALL JEECRA(NOMRES//'           .VALE','LONMAX',M,K8B)
-        CALL JEECRA(NOMRES//'           .VALE','DOCU',IBID,'MS')
+          CALL JECREC(NOMRES//'           .VALE','G V R','NU',
+     &                           'DISPERSE', 'CONSTANT',NBLOC)
+          CALL JECROC(JEXNUM(NOMRES//'           .VALE',IBLO))
+          CALL JEECRA(NOMRES//'           .VALE','LONMAX',M,K8B)
+          CALL JEECRA(NOMRES//'           .VALE','DOCU',IBID,'MS')
 C
-         CALL WKVECT(NOMRES//'           .DESC','G V I',3,IADESC)
-         ZI(IADESC)   = 2
-         ZI(IADESC+1) = N
-         ZI(IADESC+2) = 2
+          
+          CALL WKVECT(NOMRES//'           .DESC','G V I',3,IDESC)
+          ZI(IDESC)   = 2
+          ZI(IDESC+1) = N
+          ZI(IDESC+2) = 2
 C
-         CALL WKVECT ( NOMRES//'           .LIME', 'G V K8',1, IALIME)
-         ZK8(IALIME) = '        '
+          CALL WKVECT ( NOMRES//'           .LIME', 'G V K8',1, IALIME)
+          ZK8(IALIME) = '        '
 C
-         CALL WKVECT ( NOMRES//'           .CONL', 'G V R', N, IACONL)
-         DO 10 I = 1 , N
+          CALL WKVECT ( NOMRES//'           .CONL', 'G V R', N, IACONL)
+          DO 10 I = 1 , N
             ZR(IACONL+I-1) = 1.0D0
- 10      CONTINUE
+ 10       CONTINUE
 C
-         CALL WKVECT(NOMRES//'           .REFA', 'G V K24', 4, IAREFE)
-         CALL JEECRA(NOMRES//'           .REFA', 'DOCU', IBID, 'SLCS')
-         ZK24(IAREFE)   = ZK24(IAREFA)
-         ZK24(IAREFE+1) = ZK24(IAREFA+1)
-         ZK24(IAREFE+2) = ZK24(IAREFA+2)
+          CALL WKVECT(NOMRES//'           .REFA', 'G V K24', 4, IAREFE)
+          CALL JEECRA(NOMRES//'           .REFA', 'DOCU', IBID, 'SLCS')
+          ZK24(IAREFE)   = ZK24(IAREFA)
+          ZK24(IAREFE+1) = ZK24(IAREFA+1)
+          ZK24(IAREFE+2) = ZK24(IAREFA+2)
 C
+        ENDIF
+C
+        IBLO = 1
+        CALL JEVEUO(JEXNUM(NOMMAT//'           .VALE',IBLO),'L',IAK)
+        CALL JEVEUO(JEXNUM(NOMRES//'           .VALE',IBLO),'E',IADR)
+        DO 20 I=1,M
+          ZR(IADR-1+I) = 0.D0
+ 20     CONTINUE
+
+        CALL WKVECT ( '&&OP0027.VECTTRA1', 'V V R', M, IADR1 )
+        CALL WKVECT ( '&&OP0027.VECTTRA2', 'V V R', M, IADR2 )
+
+        CALL GEMATG (N, DELTA, ZR(IAK), ZR(IADR), ZR(IADR1), ZR(IADR2))
+
+
+      ELSE 
+C===================================================
+C --- GENERATION D UN MACRO-ELEMENT DYNAMIQUE ALEATOIRE
+C===================================================
+C     
+        CALL JEVEUO (NOMMAT//'.MAEL_RAID_DESC','L',IDESC)
+
+        N = ZI(IDESC+1)     
+        M = N*(N+1)/2
+        CALL WKVECT ( '&&OP0027.VECTTRA1', 'V V R', M, IADR1 )
+        CALL WKVECT ( '&&OP0027.VECTTRA2', 'V V R', M, IADR2 )
+
+C -- EXISTENCE DES MATRICES, PRESENCE AMORTISSEMENT, COPIE STUCTURES
+        CALL JEEXIN(NOMRES//'.MAEL_RAID_VALE',IRET)
+        IF (IRET.EQ.0) THEN
+          CALL COPISD(' ','G',NOMMAT,NOMRES)
+        ELSE
+          CALL JEEXIN(NOMMAT//'.MAEL_AMOR_VALE',IRET2)
+          IF (IRET2.NE.0) THEN
+            CALL JEEXIN(NOMRES//'.MAEL_AMOR_VALE',IRET2)
+            IF (IRET2.EQ.0) THEN
+              CALL COPISD(' ','G',NOMMAT,NOMRES)
+            ENDIF        
+          ENDIF
+        ENDIF
+
+C -- RAIDEUR
+        CALL GETVR8 ( ' ', 'COEF_VAR_RIGI'     , 1,1,1, DELTA,  N1 )
+        IF (DELTA.GT.0.D0) THEN
+C GENRRATION RAIDEUR
+        
+          IBLO = 1
+          CALL JEVEUO(JEXNUM(NOMMAT//'.MAEL_RAID_VALE',IBLO),'L',IAK)
+          CALL JEVEUO(JEXNUM(NOMRES//'.MAEL_RAID_VALE',IBLO),'E',IADR)
+          DO 30 I=1,M
+            ZR(IADR-1+I) = 0.D0
+ 30       CONTINUE
+
+          CALL GEMATG (N,DELTA, ZR(IAK), ZR(IADR), ZR(IADR1), ZR(IADR2))
+
+        ELSE
+C COPIE VALEURS RAIDEUR
+          IF (IRET.NE.0) THEN
+           CALL JEVEUO(JEXNUM(NOMMAT//'.MAEL_RAID_VALE',IBLO),'L',IAK)
+           CALL JEVEUO(JEXNUM(NOMRES//'.MAEL_RAID_VALE',IBLO),'E',IADR)
+           DO 35 I=1,M
+             ZR(IADR-1+I) = ZR(IAK-1+I)
+ 35        CONTINUE
+           ENDIF
+          
+        ENDIF
+
+C -- MASSE
+        CALL GETVR8 ( ' ', 'COEF_VAR_MASS'     , 1,1,1, DELTA,  N1 )
+
+        IF (DELTA.GT.0.D0) THEN
+C GENRRATION MASSE
+        
+          IBLO = 1
+          CALL JEVEUO(JEXNUM(NOMMAT//'.MAEL_MASS_VALE',IBLO),'L',IAK)
+          CALL JEVEUO(JEXNUM(NOMRES//'.MAEL_MASS_VALE',IBLO),'E',IADR)
+          DO 40 I=1,M
+            ZR(IADR-1+I) = 0.D0
+ 40       CONTINUE
+
+          CALL GEMATG (N,DELTA, ZR(IAK), ZR(IADR), ZR(IADR1), ZR(IADR2))
+
+        ELSE
+C COPIE VALEURS MASSE
+          IF (IRET.NE.0) THEN
+           CALL JEVEUO(JEXNUM(NOMMAT//'.MAEL_MASS_VALE',IBLO),'L',IAK)
+           CALL JEVEUO(JEXNUM(NOMRES//'.MAEL_MASS_VALE',IBLO),'E',IADR)
+           DO 45 I=1,M
+               ZR(IADR-1+I) = ZR(IAK-1+I)
+ 45        CONTINUE
+          ENDIF        
+
+        ENDIF
+
+C -- AMORTISSEMNT
+        CALL GETVR8 ( ' ', 'COEF_VAR_AMOR'     , 1,1,1, DELTA,  N1 )
+
+        IF (DELTA.GT.0.D0) THEN
+C GENRRATION AMORTISSEMENT
+          CALL JEEXIN(NOMMAT//'.MAEL_AMOR_VALE',IRET)
+          IF (IRET.EQ.0) THEN
+            CALL UTMESS('A',NOMCMD,
+     +         'COEFF_VAR_AMOR NON NUL ET AMORTISSEMENT NON PRESENT')
+          ELSE
+        
+            IBLO = 1
+          CALL JEVEUO(JEXNUM(NOMMAT//'.MAEL_AMOR_VALE',IBLO),'L',IAK)
+          CALL JEVEUO(JEXNUM(NOMRES//'.MAEL_AMOR_VALE',IBLO),'E',IADR)
+            DO 50 I=1,M
+              ZR(IADR-1+I) = 0.D0
+ 50         CONTINUE
+
+          CALL GEMATG (N,DELTA, ZR(IAK), ZR(IADR), ZR(IADR1), ZR(IADR2))
+          
+          END IF
+          
+        ELSE
+C COPIE VALEURS AMORTISSEMENT
+          IF (IRET.NE.0) THEN
+            CALL JEEXIN(NOMMAT//'.MAEL_AMOR_VALE',IRET)
+            IF (IRET.NE.0) THEN
+           CALL JEVEUO(JEXNUM(NOMMAT//'.MAEL_AMOR_VALE',IBLO),'L',IAK)
+           CALL JEVEUO(JEXNUM(NOMRES//'.MAEL_AMOR_VALE',IBLO),'E',IADR)
+              DO 55 I=1,M
+                ZR(IADR-1+I) = ZR(IAK-1+I)
+ 55           CONTINUE
+            ENDIF
+          ENDIF
+        ENDIF       
+
       ENDIF
-C
-      IBLO = 1
-      CALL JEVEUO(JEXNUM(NOMMAT//'           .VALE',IBLO),'L',IAK)
-      CALL JEVEUO(JEXNUM(NOMRES//'           .VALE',IBLO),'E',IADR)
-      DO 20 I=1,M
-         ZR(IADR-1+I) = 0.D0
- 20   CONTINUE
-
-      CALL WKVECT ( '&&OP0027.VECTTRA1', 'V V R', M, IADR1 )
-      CALL WKVECT ( '&&OP0027.VECTTRA2', 'V V R', M, IADR2 )
-
-      CALL GEMATG ( N, DELTA, ZR(IAK), ZR(IADR), ZR(IADR1), ZR(IADR2) )
 
 C
       CALL JEDEMA()

@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/06/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -47,7 +47,7 @@ C
       INTEGER       JCNSVE, AXYZMF, JTBCOR, JTBRES
       INTEGER       IMIN  , IMAX  , INOI  , INOF  , INDICE, JTBPDG
       INTEGER       JTBNOE, ORDEF , INO   , INOMIN, INOMAX
-      REAL*8        XNORMR, PREC  , R8PREM, RMIN  , RMAX
+      REAL*8        XNORMR, PREC  , R8PREM, RMIN  , RMAX,DDOT
       REAL*8        RVAL  , MAX   , MIN   , PROSCA, RREF  , RPRO
       REAL*8        LAMBDA, ORIG(3), AXER(3), AXET(3), AXEZ(3)
       REAL*8        DINST
@@ -112,6 +112,7 @@ C
 C
       DO 1 IORD = 1 , NBINST
          CALL JEMARQ()
+         CALL JERECU('V')
 C
 C ------ ON EXTRAIT LA SOUS-TABLE POUR L'INSTANT COURANT
 C
@@ -149,12 +150,12 @@ C ------ ON TRIE PAR ORDRE CROISSANT
 C
          CALL TBTRIR ( NBNOI, ZR(JTBCOR), ZI(JTBRES) )
 C
-         CALL PSCAL ( 3 , ORIG , AXEZ , PROSCA )
+         PROSCA=DDOT(3,ORIG,1,AXEZ,1)
          AXER(1) = ORIG(1) - PROSCA*AXEZ(1)
          AXER(2) = ORIG(2) - PROSCA*AXEZ(2)
          AXER(3) = ORIG(3) - PROSCA*AXEZ(3)
          CALL NORMEV ( AXER, XNORMR )
-         CALL PSCAL ( 3 , ORIG , AXER , RREF )
+         RREF=DDOT(3,ORIG,1,AXER,1)
          RREF = ABS( RREF )
 C
          NOMGD = 'TEMP_R'
@@ -169,12 +170,12 @@ C
             AXET(1) = ZR( AXYZMF + 3*(INOF-1) - 1 + 1 )
             AXET(2) = ZR( AXYZMF + 3*(INOF-1) - 1 + 2 )
             AXET(3) = ZR( AXYZMF + 3*(INOF-1) - 1 + 3 )
-            CALL PSCAL ( 3 , AXET , AXEZ , PROSCA )
+            PROSCA=DDOT(3,AXET,1,AXEZ,1)
             AXER(1) = AXET(1) - PROSCA*AXEZ(1)
             AXER(2) = AXET(2) - PROSCA*AXEZ(2)
             AXER(3) = AXET(3) - PROSCA*AXEZ(3)
             CALL NORMEV(AXER,XNORMR)
-            CALL PSCAL ( 3 , AXET , AXER , RPRO )
+            RPRO=DDOT(3,AXET,1,AXER,1)
             RVAL = RPRO - RREF
             IF (RVAL.LT.0.0D0) THEN
                INDICE = INDICE + 1
