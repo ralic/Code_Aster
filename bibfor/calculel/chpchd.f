@@ -3,7 +3,7 @@
       CHARACTER*(*) CHIN,CHOU,BASE,CELMOD,TYPE
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 23/06/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 18/07/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -42,9 +42,9 @@ C -----------------------------------------------------------------
 
       INTEGER IB,IRET
       CHARACTER*3 PROL0
-      CHARACTER*8 MA,MA2,TYCHI,NOMGD,NOPAR2
+      CHARACTER*8 MA,MA2,TYCHI,NOMGD,NOPAR2,PARAM
       CHARACTER*16 CAS,OPTION
-      CHARACTER*19 CESMOD,CES1,CNS1,MNOGA,MGANO,LIGREL
+      CHARACTER*19 CESMOD,CES1,CNS1,MNOGA,MGANO,LIGREL,CES2
 
 C---- COMMUNS NORMALISES  JEVEUX
       INTEGER ZI
@@ -83,6 +83,7 @@ C ---------------------------------------------------------------
         CALL ASSERT(CELMOD.NE.' ')
         CALL DISMOI('F','NOM_LIGREL',CELMOD,'CHAM_ELEM',IB,LIGREL,IB)
         CALL DISMOI('F','NOM_OPTION',CELMOD,'CHAM_ELEM',IB,OPTION,IB)
+        CALL DISMOI('F','NOM_PARAM',CELMOD,'CHAM_ELEM',IB,PARAM,IB)
         CALL DISMOI('F','NOM_MAILLA',LIGREL,'LIGREL',IB,MA2,IB)
         IF (MA.NE.MA2) CALL UTMESS('F','CHPCHD','MAILLAGES DIFFERENTS.')
         CESMOD = '&&CHPCHD.CESMOD'
@@ -100,6 +101,7 @@ C         /'CART->ELNO'   : CARTE   -> ELNO
 C         /'CART->NOEU'   : CARTE   -> CHAM_NO
 C         /'ELGA->NOEU'   : ELGA    -> CHAM_NO
 C         /'ELNO->NOEU'   : ELNO    -> CHAM_NO
+C         /'ELNO->ELGA'   : ELNO    -> ELGA
 
       CAS = ' '
       CAS(1:4) = TYCHI(1:4)
@@ -122,8 +124,24 @@ C     ----------------------------------
         CALL DETRSD('CHAM_NO_S',CNS1)
         CALL DETRSD('CHAM_ELEM_S',MNOGA)
 
-        CALL CESCEL(CES1,LIGREL,OPTION,' ',PROL0,BASE,CHOU)
+        CALL CESCEL(CES1,LIGREL,OPTION,PARAM,PROL0,BASE,CHOU)
         CALL DETRSD('CHAM_ELEM_S',CES1)
+
+
+      ELSE IF (CAS.EQ.'ELNO->ELGA') THEN
+C     ----------------------------------
+        CES1 = '&&CHPCHD.CES1'
+        CES2 = '&&CHPCHD.CES2'
+        MNOGA = '&&CHPCHD.MANOGA'
+        CALL MANOPG(LIGREL,MNOGA)
+
+        CALL CELCES(CHIN,'V',CES1)
+        CALL CESCES(CES1,'ELGA',CESMOD,MNOGA,'V',CES2)
+        CALL DETRSD('CHAM_ELEM_S',CES1)
+        CALL DETRSD('CHAM_ELEM_S',MNOGA)
+
+        CALL CESCEL(CES2,LIGREL,OPTION,PARAM,PROL0,BASE,CHOU)
+        CALL DETRSD('CHAM_ELEM_S',CES2)
 
 
       ELSE IF (CAS.EQ.'NOEU->ELNO') THEN
@@ -135,7 +153,7 @@ C     ----------------------------------------------------------------
         CALL CNSCES(CNS1,'ELNO',CESMOD,' ','V',CES1)
         CALL DETRSD('CHAM_NO_S',CNS1)
 
-        CALL CESCEL(CES1,LIGREL,OPTION,' ',PROL0,BASE,CHOU)
+        CALL CESCEL(CES1,LIGREL,OPTION,PARAM,PROL0,BASE,CHOU)
         CALL DETRSD('CHAM_ELEM_S',CES1)
 
 
@@ -169,7 +187,7 @@ C     ----------------------------------------------------------------
         CES1 = '&&CHPCHD.CES1'
         CALL CARCES(CHIN,CAS(7:10),CESMOD,'V',CES1,IB)
 
-        CALL CESCEL(CES1,LIGREL,OPTION,' ',PROL0,BASE,CHOU)
+        CALL CESCEL(CES1,LIGREL,OPTION,PARAM,PROL0,BASE,CHOU)
         CALL DETRSD('CHAM_ELEM_S',CES1)
 
 

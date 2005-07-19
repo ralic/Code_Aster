@@ -3,7 +3,7 @@
       CHARACTER*(*) CHARGZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 14/03/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 18/07/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,7 +53,7 @@ C---------------- FIN COMMUNS NORMALISES  JEVEUX  ----------------------
       INTEGER NBTYP,NDDL2,NBMA2,IDMAI2,JLISTK,JDIM,NDIM1
       INTEGER JNBN,JNUNOE,JNORM,IDIM,IJ,N1,N2,NORIEN
       INTEGER KNO2,KKNO2,JNU2BS,JELIM
-      LOGICAL LROTA,DNOR,LREORI
+      LOGICAL LROTA,DNOR
       REAL*8 BETA,COEF1,MROTA(3,3),ZERO,NORMAL(3)
       COMPLEX*16 BETAC
       CHARACTER*2 TYPLAG
@@ -64,7 +64,7 @@ C---------------- FIN COMMUNS NORMALISES  JEVEUX  ----------------------
       CHARACTER*16 MOTFAC,CORRES,TYMOCL(4),MOTCLE(4),NOMCMD
       CHARACTER*19 LIGRMO
       CHARACTER*19 LISREL
-      CHARACTER*24 GEOM2,MAILMA
+      CHARACTER*24 GEOM2
       CHARACTER*1 KB
       REAL*8 RBID
 C ----------------------------------------------------------------------
@@ -96,13 +96,11 @@ C ----------------------------------------------------------------------
       TYPLAG = '12'
       M8BLAN = '        '
       NDIM1 = 3
-      LREORI = .FALSE.
 
       CALL DISMOI('F','NOM_MODELE',CHARGE(1:8),'CHARGE',IBID,MO,IER)
       LIGRMO = MO//'.MODELE'
       CALL JEVEUO(LIGRMO//'.NOMA','L',JNOMA)
       NOMA = ZK8(JNOMA)
-      MAILMA = NOMA//'.NOMMAI'
 
       NDIM = 3
       CALL DISMOI('F','Z_CST',MO,'MODELE',IBID,ZCST,IER)
@@ -206,20 +204,6 @@ C        ---------------------------------------------
             CALL UTFINM()
           END IF
           CALL JEVEUO('&&CALIRC.LIMANU2','L',IDMAI2)
-
-          DO 30 I = 1,NBMA2
-            CALL JENUNO(JEXNUM(MAILMA,ZI(IDMAI2+I-1)),NOMAIL)
-            CALL ORIEMA(NOMAIL,MO,LREORI,NORIEN)
-            IF (NORIEN.NE.0) THEN
-              IER = IER + 1
-              CALL UTDEBM('E','CALIRC','MAILLE MAL ORIENTEE')
-              CALL UTIMPK('S',' : ',1,NOMAIL)
-              CALL UTFINM()
-            END IF
-   30     CONTINUE
-          IF (IER.NE.0) THEN
-            CALL UTMESS('F','CALIRC','ARRET SUR ERREUR(S)')
-          END IF
 
 C ---        CREATION DU TABLEAU DES NUMEROS DES NOEUDS '&&NBNLMA.LN'
 C ---        ET DES NOMBRES D'OCCURENCES DE CES NOEUDS '&&NBNLMA.NBN'

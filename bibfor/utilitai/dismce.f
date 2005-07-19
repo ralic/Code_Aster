@@ -4,7 +4,7 @@
       CHARACTER*(*)       QUESTI, CODMES, NOMOBZ, REPKZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 17/06/2003   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 18/07/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -98,6 +98,10 @@ C
       ELSEIF ( QUESTI .EQ. 'NOM_OPTION' ) THEN
          CALL JEVEUO ( NOMOB//'.CELK', 'L', IACELK )
          REPK = ZK24(IACELK-1+2)(1:16)
+C
+      ELSEIF ( QUESTI .EQ. 'NOM_PARAM' ) THEN
+         CALL JEVEUO ( NOMOB//'.CELK', 'L', IACELK )
+         REPK = ZK24(IACELK-1+6)(1:8)
 C
       ELSEIF ( QUESTI .EQ. 'NOM_MAILLA') THEN
          CALL JEVEUO ( NOMOB//'.CELK', 'L', IACELK )

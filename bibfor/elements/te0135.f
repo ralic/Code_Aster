@@ -1,6 +1,6 @@
       SUBROUTINE TE0135 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ELEMENTS  DATE 18/07/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,8 +48,8 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       REAL*8             BETA,LAMBDA,THETA,DELTAT,KHI,TPG,TPGM
-      REAL*8             DFDX(9),DFDY(9),POIDS,R,R8BID
-      REAL*8             DTPGDX,DTPGDY,CHAL,AFFINI,ARR
+      REAL*8             DFDX(9),DFDY(9),POIDS,R,R8BID,HYDRGM(9)
+      REAL*8             DTPGDX,DTPGDY,CHAL,AFFINI,ARR,HYDRGP(9)
       REAL*8             TZ0,R8T0,DIFF, TPSEC
       CHARACTER*2        CODRET
       CHARACTER*8        ELREFE
@@ -132,13 +132,20 @@ C
 C --  -RECUPERATION DES PARAMETRES POUR L HYDRATATION
 C
         IF(ZK16(ICOMP)(1:9).EQ.'THER_HYDR') THEN
-          CALL JEVECH('PHYDRPG','L',IHYDR )
+          CALL JEVECH('PHYDRPM','L',IHYDR )
           CALL JEVECH('PHYDRPP','E',IHYDRP )
           CALL JEVECH('PTEMPER','L',ITEMPR)
           CALL RCVALA(ZI(IMATE),' ','THER_HYDR',0,' ',R8BID,1,
      &     'CHALHYDR',CHAL,CODRET,'FM')
           CALL RCVALA(ZI(IMATE),' ','THER_HYDR',0,' ',R8BID,1,'QSR_K',
      &     ARR,CODRET,'FM')
+          DO 150 KP = 1,NPG2
+             K = NNO*(KP-1)
+             HYDRGM(KP)=0.D0
+             DO 160 I = 1,NNO
+                HYDRGM(KP)=HYDRGM(KP)+ZR(IHYDR)*ZR(IVF+K+I-1)
+ 160         CONTINUE
+ 150      CONTINUE
         ENDIF
 C
 C --------------
@@ -164,10 +171,10 @@ C
             DO 103 I=1,NNO
               TPGM = TPGM + ZR(ITEMPR+I-1)*ZR(IVF+K+I-1)
 103         CONTINUE
-            CALL RCFODE (IFON(3),ZR(IHYDR+KP-1),AFFINI,R8BID)
-            ZR(IHYDRP+KP-1) = ZR(IHYDR+KP-1) +
-     &         DELTAT*AFFINI* THETA      *EXP(-ARR/(TZ0+TPG) ) +
-     &         DELTAT*AFFINI*(1.D0-THETA)*EXP(-ARR/(TZ0+TPGM))
+            CALL RCFODE (IFON(3),HYDRGM(KP),AFFINI,R8BID)
+            HYDRGP(KP) = HYDRGM(KP) +
+     &        DELTAT*AFFINI*THETA*EXP(-ARR/(TZ0+TPG))+
+     &        DELTAT*AFFINI* (1.D0-THETA)*EXP(-ARR/(TZ0+TPGM))
           ENDIF
 C
 C --------------
@@ -182,7 +189,7 @@ C --- THERMIQUE NON LINEAIRE AVEC HYDRATATION
             DO 104 I=1,NNO
                K=(KP-1)*NNO
                ZR(IVERES+I-1) = ZR(IVERES+I-1) + POIDS *
-     &          ( (BETA-CHAL*ZR(IHYDRP+KP-1))/DELTAT*KHI*ZR(IVF+K+I-1)+
+     &          ( (BETA-CHAL*HYDRGP(KP))/DELTAT*KHI*ZR(IVF+K+I-1)+
      &           THETA*LAMBDA*(DFDX(I)*DTPGDX+DFDY(I)*DTPGDY) )
 104         CONTINUE
           ELSE
@@ -195,6 +202,8 @@ C --- THERMIQUE NON LINEAIRE SEULE
 105         CONTINUE
           ENDIF
 101     CONTINUE
+        IF (ZK16(ICOMP) (1:9).EQ.'THER_HYDR')
+     &                       CALL PPGAN2(JGANO,1,HYDRGP,ZR(IHYDRP))
       ENDIF
 C FIN ------------------------------------------------------------------
       END

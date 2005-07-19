@@ -1,4 +1,4 @@
-# MODIF  DATE 09/11/2004   AUTEUR SMICHEL S.MICHEL-PONNELLE 
+# MODIF  DATE 18/07/2005   AUTEUR VABHHTS J.PELLET 
 # TITRE PRISE EN COMPTE DE LA DILATATION THERMIQUE ET DU FLUAGE DE DESSICCATION DANS LE MODELE BETON_UMLV_FP
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -112,14 +112,14 @@ SECH1=CREA_RESU(OPERATION='AFFE',
                 _F(CHAM_GD=SECHF,
                    INST=64800000.0,),   ),);
 
-HYDRI=CREA_CHAMP(TYPE_CHAM='ELGA_HYDR_R',
+HYDRI=CREA_CHAMP(TYPE_CHAM='ELNO_HYDR_R',
                 OPERATION='AFFE',
                 MODELE = MO,
                 AFFE=_F(TOUT='OUI',
                         NOM_CMP='HYDR',
                         VALE=0.0,),);
 
-HYDRF=CREA_CHAMP(TYPE_CHAM='ELGA_HYDR_R',
+HYDRF=CREA_CHAMP(TYPE_CHAM='ELNO_HYDR_R',
                 OPERATION='AFFE',
                 MODELE = MO,
                 AFFE=_F(TOUT='OUI',
@@ -128,7 +128,7 @@ HYDRF=CREA_CHAMP(TYPE_CHAM='ELGA_HYDR_R',
 
 HYDR1=CREA_RESU(OPERATION='AFFE',
                 TYPE_RESU='EVOL_THER',
-                NOM_CHAM='HYDR_ELGA',
+                NOM_CHAM='HYDR_ELNO_ELGA',
                 AFFE=(
                 _F(CHAM_GD=HYDRI,
                    INST=0.0,),

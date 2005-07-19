@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
+%& MODIF COMPELEM  DATE 18/07/2005   AUTEUR VABHHTS J.PELLET 
 % RESPONSABLE JMBHH01 J.M.PROIX
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -18,6 +18,58 @@
 %    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 % ======================================================================
 PHENOMENE_MODELISATION__
+
+
+% =====================================================================================
+% Définition des ATTRIBUTS :
+% --------------------------
+%
+%  ALIAS8 : chaine formée par concaténation de 3 codes  :
+%           ALIAS(1:2) : code du phenomène
+%           ALIAS(3:5) : code de la modélisation
+%           ALIAS(6:8) : code du type_maille
+%
+%           exemple :   MEFL_HEXA8 => ALIAS8=ME3FLHE8
+%
+%
+%  DIM_TOPO_MODELI : dimension "topologique" de la modélisation a laquelle appartient
+%                    l'élément.
+%                      - 2 pour plaques et coques en 3D
+%                      - 1 pour les poutres ou pour les coques en 2D
+%                      - ...
+%  DIM_COOR_MODELI : dimension de l'espace du maillage
+%                    (nombre de coordonnées des points de l'espace) : 2 ou 3
+%  DIM_TOPO_MAILLE : dimension topologique de la maille.
+%                     POI1 : 0 ; SEG: 1 ; TRIA/QUAD : 2 ; HEXA:3 ; ...
+%
+%
+%  AXIS =  'OUI' : l'élément est axisymétrique.
+%          C'est a dire qu'il est maillé en 2D mais qu'il représente en réalité un "anneau" de
+%          révolution autour de l'axe OY.
+%
+%
+%  PRINCIPAL =  'OUI' :
+%       l'élément est "principal" pour la modélisation (i.e. ce n'est pas un élément de "bord").
+%       La dimension toplogique de sa maille (DIM_TOPO_MAILLE)
+%       est en principe identique a celle de sa modélisation (DIM_TOPO_MODELI)
+%
+%
+%  BORD =  'OUI' :
+%        l'élément "borde" un élément "principal" (de dimension topologique supérieure)
+%        Il sert a en général a appliquer des efforts répartis sur l'élément principal qu'il
+%        borde. Il fait partie de la meme modélisation que l'élément principal.
+%        Il n'a pas de sens sans un élément principal a coté de lui.
+%        Ses noeuds sont en principe ceux d'une face (ou d'une arrete) de son élément
+%        principal
+%
+%        Un élément de coque "plaqué" sur un élément de volume n'est pas un élément de bord.
+%
+%
+%
+%
+% ==========================================================================================
+
+
 
    PHENOMENE__  MECANIQUE       CODE__  'ME'
 

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 19/07/2005   AUTEUR ASSIRE A.ASSIRE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,22 +16,49 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-# RESPONSABLE BOITEAU O.BOITEAU
+# RESPONSABLE ASSIRE A.ASSIRE
 
 from Macro.defi_part_feti_ops import defi_part_feti_ops
 
 DEFI_PART_FETI=MACRO(nom="DEFI_PART_FETI",op=defi_part_feti_ops,sd_prod=sd_feti_sdaster,
                      reentrant='n',UIinfo={"groupe":("Maillage",)},
-                     fr="Création de partitionnement en sous-domaines pour FETI",
-         MAILLAGE        =SIMP(statut='o',typ=maillage_sdaster),
+                     fr="Creation partitionnement en sous-domaines pour FETI",
+         regles=(UN_PARMI('MAILLAGE','MODELE'),),
+         MAILLAGE        =SIMP(statut='f',typ=maillage_sdaster),
          MODELE          =SIMP(statut='f',typ=modele_sdaster),
-         NB_PART         =SIMP(statut='o',typ='I'),
+         NB_PART         =SIMP(statut='o',typ='I',val_min=2),
          EXCIT           =FACT(statut='f',max='**',
            CHARGE          =SIMP(statut='f',typ=(char_meca,char_cine_meca)),),
-         METHODE         =SIMP(statut='o',typ='TXM',into=("PMETIS","KMETIS","AUTRE",), defaut="PMETIS" ),
-         b_methode       =BLOC(condition="METHODE == 'AUTRE'", fr="Autre logiciel",
-             LOGICIEL        =SIMP(statut='f',typ='TXM'),
+
+         # Methode de partitionnement
+         METHODE         =SIMP(statut='f',typ='TXM',into=("PMETIS","SCOTCH","KMETIS",), defaut="SCOTCH" ),
+         b_methode =BLOC(condition="METHODE != 'SCOTCH'", fr="Utilisation d'un logiciel externe",
+           LOGICIEL      =SIMP(statut='f',typ='TXM'),
              ),
+
+         # Verification de la connexite des sous-domaines
+         VERI_CONNEX    =SIMP(statut='f',typ='TXM',defaut='NON',into=('OUI','NON')),
+
+         # Permet de grouper des mailles dans un meme sous-doamine
+         GROUPAGE        =FACT(statut='f',max='**',
+           GROUP_MA       =SIMP(statut='o',typ=grma,),
+                          ),
+         # Permet d'appliquer des poids sur certaines mailles
+         POIDS_MAILLES   =FACT(statut='f',max='**',
+           GROUP_MA       =SIMP(statut='o',typ=grma,),
+           POIDS          =SIMP(statut='f',typ='I',val_min=2),
+                          ),
+         # Prefixe pour le nom des group_ma definissant les sous-domaines 
          NOM_GROUP_MA    =SIMP(statut='f',typ='TXM',defaut='SD' ),
-         INFO            =SIMP(statut='f',typ='I',into=(1, 2, 3, 4,5), defaut=1),
+
+         # Traiter les mailles de bords (elles sont enlevees du graphe puis reinjectees)
+         TRAITER_BORDS   =SIMP(statut='f',typ='TXM',defaut='OUI',into=('OUI','NON') ),
+         
+         # Si le mot-clé suivant est renseigné, crée de nouveau group_ma a partir des bords
+         # Note : le calcul FETI sera impossible
+         b_traiter_bords =BLOC(condition="TRAITER_BORDS == 'OUI'", fr="Crée t on des nouveaux group_ma",
+           NOM_GROUP_MA_BORD  =SIMP(statut='f',typ='TXM'),
+             ),
+
+         INFO            =SIMP(statut='f',typ='I',into=(1, 2), defaut=1),
 );

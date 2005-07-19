@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
+%& MODIF TYPELEM  DATE 18/07/2005   AUTEUR VABHHTS J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION                        
 % ======================================================================    
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG    
@@ -21,7 +21,7 @@ MEDPQS8
 
 TYPE_ELEM__ 
 ENTETE__ ELEMENT__ MEDPQS8          MAILLE__ QUAD8    
-   ELREFE__  QU8       GAUSS__  RIGI=FPG4  MASS=FPG9  GANO=FPG4  NOEU_S=NOEU_S  NOEU=NOEU  FPG1=FPG1
+   ELREFE__  QU8       GAUSS__  RIGI=FPG4  MASS=FPG9  GANO=FPG4    NOEU=NOEU
    ELREFE__  SE3       GAUSS__  RIGI=FPG4
 
 MODE_LOCAL__ 
@@ -69,6 +69,7 @@ MODE_LOCAL__
     EGRDUPG  = G_DEPL_R ELGA__ RIGI    (D_DX_X   D_DX_Y   D_DY_X   D_DY_Y   )
     EGRDUNO  = G_DEPL_R ELNO__ IDEN__  (D_DX_X   D_DX_Y   D_DY_X   D_DY_Y   )
     EHYDRER  = HYDR_R   ELGA__ RIGI    (HYDR     )
+    EHYDREN  = HYDR_R   ELNO__ IDEN__  (HYDR     )
     CTEMPSR  = INST_R   ELEM__         (INST     )
     EGINST_R = INST_R   ELGA__ RIGI    (INST     )
     ENINST_R = INST_R   ELNO__ IDEN__  (INST     )
@@ -503,6 +504,7 @@ OPTION__
     TOU_INI_ELNO        99    IN__   NGEOMER  PGEOMER  
                               OUT__  EDOMGNO  PDOMMAG  EDEFONO  PEPSI_R  ENGEOM_R PGEOM_R  ENINST_R PINST_R  
                                      ENNEUT_F PNEUT_F  ENNEUT_R PNEUT_R  ECONTNO  PSIEF_R  ZVARINO  PVARI_R  
+                                     EHYDREN  PHYDR_R
     VARI_ELGA_ELNO      98    IN__   CCOMPOR  PCOMPOR  ZVARINO  PVARINR  
                               OUT__  ZVARIPG  PVARIGR  
     VARI_ELNO_ELGA      98    IN__   CCOMPOR  PCOMPOR  ZVARIPG  PVARIGR  

@@ -1,4 +1,4 @@
-# MODIF  DATE 31/08/2004   AUTEUR JMBHH01 J.M.PROIX 
+# MODIF  DATE 18/07/2005   AUTEUR VABHHTS J.PELLET 
 # TITRE THERMO-HYDRATATION EN ADIABATIQUE 3D - HEXA8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -195,18 +195,6 @@ RESULTAT=RESUTHYD, NOM_CHAM='TEMP', NUME_ORDRE=120)
 T60=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_TEMP_R',
 RESULTAT=RESUTHYD, NOM_CHAM='TEMP', NUME_ORDRE=200)
 
-H05=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='ELGA_HYDR_R',
-RESULTAT=RESUTHYD, NOM_CHAM='HYDR_ELGA',
-  NUME_ORDRE=40 )
-
-H15=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='ELGA_HYDR_R',
-RESULTAT=RESUTHYD, NOM_CHAM='HYDR_ELGA',
- NUME_ORDRE=120 )
-
-H60=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='ELGA_HYDR_R',
-RESULTAT=RESUTHYD, NOM_CHAM='HYDR_ELGA',
-  NUME_ORDRE=200 )
-
 TEST_RESU(CHAM_NO=( 
 _F(  CHAM_GD = T05, NOEUD = 'N1', NOM_CMP = 'TEMP', VALE = 22.5,
   PRECISION = 1.E-2),
@@ -214,15 +202,6 @@ _F(  CHAM_GD = T15, NOEUD = 'N1', NOM_CMP = 'TEMP', VALE = 57.8,
   PRECISION = 2.E-2),
 _F(  CHAM_GD = T60, NOEUD = 'N1', NOM_CMP = 'TEMP', VALE = 79.1,
   PRECISION = 4.E-2))
-           )
-
-TEST_RESU(CHAM_ELEM=( 
-_F(  CHAM_GD = H05, MAILLE = 'M1', POINT = 1, NOM_CMP = 'HYDR', VALE = 2.58E-02,
-  PRECISION = 3.E-2),
-_F(  CHAM_GD = H15, MAILLE = 'M1', POINT = 1, NOM_CMP = 'HYDR', VALE = 0.594,
-  PRECISION = 2.E-2),
-_F(  CHAM_GD = H60, MAILLE = 'M1', POINT = 1, NOM_CMP = 'HYDR', VALE = 0.94,
-  PRECISION = 2.E-2))
            )
 
 # NON REGRESSION
@@ -241,25 +220,8 @@ _F(  CHAM_GD = T60, NOEUD = 'N1', NOM_CMP = 'TEMP', VALE = 79.1,
   PRECISION = 4.E-2))
            )
 
-TEST_RESU(CHAM_ELEM=( 
-_F(  CHAM_GD = H05, MAILLE = 'M1', POINT = 1, NOM_CMP = 'HYDR', VALE = 2.58E-02,
-  REFERENCE = 'NON_REGRESSION',  VERSION = '5.01.10',
-  PRECISION = 3.E-2),
-_F(  CHAM_GD = H15, MAILLE = 'M1', POINT = 1, NOM_CMP = 'HYDR', VALE = 0.594,
-  REFERENCE = 'NON_REGRESSION',  VERSION = '5.01.10',
-  PRECISION = 2.E-2),
-_F(  CHAM_GD = H60, MAILLE = 'M1', POINT = 1, NOM_CMP = 'HYDR', VALE = 0.94,
-  REFERENCE = 'NON_REGRESSION',  VERSION = '5.01.10',
-  PRECISION = 2.E-2))
-           )
-
 # TESTS DE HYDR_ELNO_ELGA ET HYDR_NOEU_ELGA
 
-RESUTHYD=CALC_ELEM(  reuse=RESUTHYD,
-                     OPTION=('HYDR_ELNO_ELGA'),
-                     RESULTAT=RESUTHYD,
-              )
-              
 RESUTHYD=CALC_NO  (  reuse=RESUTHYD,
                      OPTION=('HYDR_NOEU_ELGA'),
                      RESULTAT=RESUTHYD,
@@ -442,25 +404,15 @@ TEST_RESU( RESU=(
 # --------------------------------------------------------------------
 #
 EVOL_1 = CREA_RESU ( OPERATION = 'AFFE', TYPE_RESU = 'EVOL_THER',
-                     NOM_CHAM  = 'HYDR_ELGA',
-                     AFFE      = _F( CHAM_GD = H05,
-                                     INST    = 5.00000E+00  )
-                   )
-EVOL_1 = CREA_RESU ( reuse=EVOL_1,
-                     OPERATION = 'AFFE', TYPE_RESU = 'EVOL_THER',
                      NOM_CHAM  = 'TEMP',
                      AFFE      = _F( CHAM_GD = T05,
                                      INST    = 5.00000E+00  )
                    )
 #
 TEST_RESU( RESU=( 
-       _F(  RESULTAT = EVOL_1,  INST = 5.00000E+00,  NOM_CHAM = 'TEMP', 
-            REFERENCE = 'NON_REGRESSION',  VERSION = '5.01.10',
-            NOEUD = 'N1',  NOM_CMP = 'TEMP',  VALE = 22.5,  PRECISION = 1.E-2 ),
-       _F(  RESULTAT = EVOL_1,  INST = 5.00000E+00,  NOM_CHAM = 'HYDR_ELGA', 
-            MAILLE = 'M1', POINT = 1, NOM_CMP = 'HYDR', VALE = 2.58E-02,
-            REFERENCE = 'NON_REGRESSION',  VERSION = '5.01.10',
-            PRECISION = 3.E-2 ),)
+       _F( RESULTAT = EVOL_1,  INST = 5.00000E+00,  NOM_CHAM = 'TEMP', 
+           REFERENCE = 'NON_REGRESSION',  VERSION = '5.01.10',
+           NOEUD = 'N1',  NOM_CMP = 'TEMP',  VALE = 22.5,  PRECISION = 1.E-2 ),)
          )
 FIN()
 #

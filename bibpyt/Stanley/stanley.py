@@ -1,4 +1,4 @@
-#@ MODIF stanley Stanley  DATE 23/11/2004   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF stanley Stanley  DATE 19/07/2005   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -1551,6 +1551,12 @@ class DRIVER :
       type_resu = 'EVOL_THER'
     elif contexte.resultat.__class__ == evol_noli :
       type_resu = 'EVOL_NOLI'
+    elif contexte.resultat.__class__ == dyna_trans :
+      type_resu = 'DYNA_TRANS'
+    elif contexte.resultat.__class__ == dyna_harmo :
+      type_resu = 'DYNA_HARMO'
+    elif contexte.resultat.__class__ == mode_meca :
+      type_resu = 'MODE_MECA'
     else :
       raise SELECTION.NondeveloppeRS
 
@@ -1912,6 +1918,12 @@ class PRE_STANLEY :
           t_evol.append( i )
         if self.jdc_recupere.sds_dict[i].__class__.__name__ == 'evol_ther':
           t_evol.append( i )
+        if self.jdc_recupere.sds_dict[i].__class__.__name__ == 'mode_meca':
+          t_evol.append( i )
+        if self.jdc_recupere.sds_dict[i].__class__.__name__ == 'dyna_harmo':
+          t_evol.append( i )
+        if self.jdc_recupere.sds_dict[i].__class__.__name__ == 'dyna_trans':
+          t_evol.append( i )
         if self.jdc_recupere.sds_dict[i].__class__.__name__ == 'cham_mater':
           t_cham_mater.append( i )
         if self.jdc_recupere.sds_dict[i].__class__.__name__ == 'cara_elem_sdaster':
@@ -1927,7 +1939,7 @@ class PRE_STANLEY :
     _lst = []
     if len(t_maillage) ==0:   _lst.append('MAILLAGE')
     if len(t_modele) ==0:     _lst.append('MODELE')
-    if len(t_evol) ==0:       _lst.append('EVOL_ELAS ou EVOL_NOLI ou EVOL_THER')
+    if len(t_evol) ==0:       _lst.append('EVOL_ELAS ou EVOL_NOLI ou EVOL_THER ou DYNA_TRANS ou DYNA_HARMO ou MODE_MECA')
     if len(t_cham_mater) ==0: _lst.append('CHAM_MATER')
     if len(_lst) > 0:
       txt = """Tous les concepts Aster necessaires à Stanley n'ont

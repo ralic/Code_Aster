@@ -1,6 +1,6 @@
       SUBROUTINE TE0236(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ELEMENTS  DATE 18/07/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -66,7 +66,7 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
       REAL*8 BETA,DBETA,LAMBDA,THETA,DELTAT,TPG,CHAL,R8BID,DFDX(27),
      &       DFDY(27),DFDZ(27),POIDS,DTPGDX,DTPGDY,DTPGDZ,DIFF,TPSEC,
      &       PREC,R8PREM,LAMBS,CPS,TPGM,DLAMBD,DTPGMX,DTPGMY,DTPGMZ,
-     &       DTPGPX,TPGBUF,DTPGPY,DTPGPZ,TEMS,FLUXS(3)
+     &       DTPGPX,TPGBUF,DTPGPY,DTPGPZ,TEMS,FLUXS(3),HYDRPG(27)
       INTEGER JGANO,IPOIDS,IVF,IDFDE,IGEOM,IMATE,ITEMP,NNO,
      &        KP,NPG1,I,L,IFON(3),NDIM,ICOMP,IHYDR,ISECHI,ISECHF,
      &        IVECTT,IVECTI,ITEMPS,IMATSE,IVAPRI,IVAPRM,IFONS(3),TETYPS,
@@ -211,7 +211,15 @@ C====
           IF (LSENS) CALL UTMESS('F',NOMPRO,
      &                'OPTION SENSIBILITE NON DEVELOPPEE EN HYDRATATION'
      &                           )
-          CALL JEVECH('PHYDRPG','L',IHYDR)
+          CALL JEVECH('PHYDRPM','L',IHYDR)
+          DO 150 KP = 1,NPG1
+             L = NNO*(KP-1)
+             HYDRPG(KP)=0.D0
+             DO 160 I = 1,NNO
+                HYDRPG(KP)=HYDRPG(KP)+ZR(IHYDR)*ZR(IVF+L+I-1)
+ 160         CONTINUE
+ 150      CONTINUE
+ 
           CALL RCVALA(ZI(IMATE),' ','THER_HYDR',0,' ',R8BID,1,
      &               'CHALHYDR', CHAL,CODRET,'FM')
         ELSE
@@ -302,13 +310,13 @@ C THER_HYDR
 
             DO 80 I = 1,NNO
               ZR(IVECTT+I-1) = ZR(IVECTT+I-1) +
-     &                         POIDS* ((BETA-CHAL*ZR(IHYDR+KP-1))*
+     &                         POIDS* ((BETA-CHAL*HYDRPG(KP))*
      &                         ZR(IVF+L+I-1)/DELTAT-
      &                         (1.0D0-THETA)*LAMBDA*
      &                         (DFDX(I)*DTPGDX+DFDY(I)*DTPGDY+
      &                         DFDZ(I)*DTPGDZ))
               ZR(IVECTI+I-1) = ZR(IVECTI+I-1) +
-     &                         POIDS* ((DBETA*TPG-CHAL*ZR(IHYDR+KP-1))*
+     &                         POIDS* ((DBETA*TPG-CHAL*HYDRPG(KP))*
      &                         ZR(IVF+L+I-1)/DELTAT-
      &                         (1.0D0-THETA)*LAMBDA*
      &                         (DFDX(I)*DTPGDX+DFDY(I)*DTPGDY+

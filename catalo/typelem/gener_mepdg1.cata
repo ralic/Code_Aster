@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
+%& MODIF TYPELEM  DATE 18/07/2005   AUTEUR VABHHTS J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,7 +20,7 @@ GENER_MEPDG1
 TYPE_GENE__
 
 ENTETE__ ELEMENT__ MECA_POU_D_TG    MAILLE__ SEG2
-   ELREFE__  SE2    GAUSS__  NELGA=FPG2  NELGA2=FPG3
+   ELREFE__  SE2    GAUSS__    RIGI=FPG3
 
 MODE_LOCAL__
     CMATERC  = ADRSJEVE ELEM__         (I1       )
@@ -50,18 +50,18 @@ MODE_LOCAL__
                                         REP      )
     CGEOMER  = GEOM_R   ELEM__         (X        Y        Z        )
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        Z        )
-    EHYDRER  = HYDR_R   ELGA__ NELGA2  (HYDR     )
+    EHYDRER  = HYDR_R   ELGA__ RIGI  (HYDR     )
     CTEMPSR  = INST_R   ELEM__         (INST     )
     CPESANR  = PESA_R   ELEM__         (G        AG       BG       CG       )
     EEFGENOC = SIEF_C   ELNO__ IDEN__  (N        VY       VZ       MT       MFY      MFZ
                                         BX       )
-    EEFGEGA  = SIEF_R   ELGA__ NELGA2  (N        VY       VZ       MT       MFY      MFZ
+    EEFGEGA  = SIEF_R   ELGA__ RIGI  (N        VY       VZ       MT       MFY      MFZ
                                         BX       )
     EEFGENO  = SIEF_R   ELNO__ IDEN__  (N        VY       VZ       MT       MFY      MFZ
                                         BX       )
     CTEREFE  = TEMP_R   ELEM__         (TEMP     )
     NTEMPER  = TEMP_R   ELNO__ IDEN__  (TEMP     )
-    ZVARIPG  = VARI_R   ELGA__ NELGA2  (VARI     )
+    ZVARIPG  = VARI_R   ELGA__ RIGI  (VARI     )
     ZVARINO  = VARI_R   ELNO__ IDEN__  (VARI     )
     CVENTCX  = VENTCX_F ELEM__         (FCXP     )
 

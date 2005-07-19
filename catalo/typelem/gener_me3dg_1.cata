@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
+%& MODIF TYPELEM  DATE 18/07/2005   AUTEUR VABHHTS J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION                        
 % ======================================================================    
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG    
@@ -20,9 +20,9 @@ GENER_ME3DG_1
 TYPE_GENE__
 
 ENTETE__ ELEMENT__ MGCA_TETRA4      MAILLE__ TETRA4   
-   ELREFE__  TE4       GAUSS__  RIGI=FPG1  MASS=FPG4  GANO=FPG1  NOEU_S=NOEU_S  NOEU=NOEU  FPG1=FPG1
-   ELREFE__  TE4       GAUSS__  RIGI=FPG1  MASS=FPG4  GANO=FPG1  NOEU_S=NOEU_S  NOEU=NOEU  FPG1=FPG1
-   ELREFE__  TR3       GAUSS__  RIGI=COT3  MASS=COT3  NOEU_S=NOEU_S  NOEU=NOEU  FPG1=FPG1
+   ELREFE__  TE4       GAUSS__  RIGI=FPG1  MASS=FPG4
+   ELREFE__  TE4       GAUSS__  RIGI=FPG1  MASS=FPG4
+   ELREFE__  TR3       GAUSS__  RIGI=COT3  MASS=COT3
 
 MODE_LOCAL__ 
     CMATERC  = ADRSJEVE ELEM__         (I1       )
@@ -61,6 +61,7 @@ MODE_LOCAL__
     EGGEOP_R = GEOM_R   ELGA__ RIGI    (X        Y        Z        W        )
     ENGEOM_R = GEOM_R   ELNO__ IDEN__  (X        Y        Z        )
     EHYDRER  = HYDR_R   ELGA__ RIGI    (HYDR     )
+    EHYDREN  = HYDR_R   ELNO__ IDEN__  (HYDR     )
     CTEMPSR  = INST_R   ELEM__         (INST     )
     EGINST_R = INST_R   ELGA__ RIGI    (INST     )
     ENINST_R = INST_R   ELNO__ IDEN__  (INST     )
@@ -325,6 +326,7 @@ OPTION__
     TOU_INI_ELNO        99    IN__   NGEOMER  PGEOMER  
                               OUT__  EDOMGNO  PDOMMAG  EDEFONO  PEPSI_R  ENGEOM_R PGEOM_R  ENINST_R PINST_R  
                                      ENNEUT_F PNEUT_F  ENNEUT_R PNEUT_R  ECONTNO  PSIEF_R  ZVARINO  PVARI_R  
+                                     EHYDREN  PHYDR_R
     VARI_ELGA_ELNO      20    IN__   CCOMPOR  PCOMPOR  ZVARINO  PVARINR  
                               OUT__  ZVARIPG  PVARIGR  
     VARI_ELNO_ELGA      20    IN__   CCOMPOR  PCOMPOR  ZVARIPG  PVARIGR  

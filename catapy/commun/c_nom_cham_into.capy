@@ -1,4 +1,4 @@
-#& MODIF COMMUN  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
+#& MODIF COMMUN  DATE 18/07/2005   AUTEUR VABHHTS J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -111,7 +111,6 @@ def C_NOM_CHAM_INTO() : return  ("ACCE",    #COMMUN#
                         "FVOL_2D",
                         "FVOL_3D",
                         "GRAD_NOEU_THETA",
-                        "HYDR_ELGA",
                         "HYDR_ELNO_ELGA",
                         "HYDR_NOEU_ELGA",
                         "INDI_LOCA_ELGA",

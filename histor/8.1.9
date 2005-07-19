@@ -1,0 +1,794 @@
+
+
+-----------------------------------------------------------------------
+--- AUTEUR assire A.ASSIRE   DATE  le 19/07/2005 a 14:33:48
+
+------------------------------------------------------------------------------
+CORRECTION AO 2005-116
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : OUI
+   TITRE  STANLEY avec certains concepts issus de la dynamique.
+   FONCTIONNALITE
+     On ajoute la possibilité d'avoir en entrée de Stanley les concepts
+     dyna_trans, mode_meca, dyna_harmo.
+   DETAILS
+     Modification de stanley.py (interface de pre-selection des concepts
+     PRE_STANLEY) et stanley.capy (pour utilisation directe de Stanley
+     sans passer par PRE_STANLEY).
+
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+
+------------------------------------------------------------------------------
+REALISATION EL 2005-170
+   NB_JOURS_TRAV  : 95.
+   INTERET_UTILISATEUR : OUI
+   TITRE Integration du partitionneur Scotch dans Aster
+   FONCTIONNALITE
+     Reecriture complete de la commande de partitionnement de maillage,
+     DEFI_PART_FETI.
+   Amelioration importante de la performance (temps, memoire) de la commande.
+   On ajoute quelques fonctionnalites :
+   - ajout de la methode de partitionnement SCOTCH (logiciel developpe a
+     l'INRIA).
+   - Metis est toujours utilisable avec la nouvelle commande, et beneficie des
+     ameliorations.
+   - verification de la connexite des sous-domaines
+   - possibilite d'appliquer des poids sur certaines mailles
+   - possibilite de grouper certaines mailles dans un meme sous-domaine
+   DETAILS
+   La commande DEFI_PART_FETI a ete reecrite en Fortran. Les performances ont
+   ete notablement ameliorees. Il faut maintenant moins de 2 gigas et 15 min
+   pour partitionner 10 millions de mailles.
+
+   Pour pouvoir utiliser METIS, il faut avoir les executables kmetis et/ou
+   pmetis accessibles depuis aster/outils, ou bien mettre le chemin complet
+   vers l'executable sous le mot_clé LOGICIEL.
+
+   Pour pouvoir utiliser SCOTCH, il est necessaire de construire l'executable
+   Aster en linkant avec les librairies de SCOTCH.
+
+   Dans le cas ou l'on ne voudrait pas SCOTCH, rajouter bibc/scotch devant le
+   mot-clé NOBUILD dans config.txt.
+
+   Remarque : l'utilisation des contraintes de partitionnement (GROUPAGE et
+   POIDS_MAILLE) complexifie le travail du partitionneur et peut conduire a des
+   sous-domaines non-connexes.
+
+   Limitation actuelles de la commande :
+   - on ne gere pas le cas de mailles qui ne seraient pas geometriquement
+   connectées. Par exemple un bloc de beton (HEXA) avec un cable (SEG)qui passe
+   au milieu des mailles betons (pas de concordance entre les noeuds du cable
+   et du beton).
+
+   Catalogue de la commande :
+
+   sd_feti = DEFI_PART_FETI (
+         MAILLAGE        = maillage_sdaster,
+         MODELE          = modele_sdaster,
+         NB_PART         = I,
+         EXCIT           = FACT(
+           CHARGE        = char_meca,char_cine_meca,
+         ),
+
+         # Methode de partitionnement
+         METHODE         = into=("PMETIS","SCOTCH","KMETIS",)
+         b_methode =BLOC(condition="METHODE != 'SCOTCH'"
+           LOGICIEL      = chemin,
+         ),
+
+         # Verification de la connexite des sous-domaines
+         VERI_CONNEX     = into=('OUI','NON'),
+
+         # Permet de grouper des mailles dans un meme sous-doamine
+         GROUPAGE        = FACT(
+           GROUP_MA      = grma,
+         ),
+
+         # Permet d'appliquer des poids sur certaines mailles
+         POIDS_MAILLE   = FACT(
+           GROUP_MA     = grma,
+           POIDS        = I,
+         ),
+
+         # Prefixe pour le nom des group_ma definissant les sous-domaines
+         NOM_GROUP_MA    = typ='TXM',defaut='SD'
+
+         # Traiter les mailles de bords (elles sont enlevees du graphe puis
+         reinjectees)
+         TRAITER_BORDS   = into=('OUI','NON'),
+         b_traiter_bords =BLOC(condition="TRAITER_BORDS == 'OUI'",
+           NOM_GROUP_MA_BORD = typ='TXM',
+         ),
+
+         INFO            =into=(1, 2),
+         );
+
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_U : U4.23.05
+       EXPL_ : documentation de DEFI_PART_FETI
+     DOC_V : V1.04.103
+       EXPL_ : nouvelle modelisation C
+     DOC_V : V1.04.107
+       EXPL_ : nouveau cas-test
+   VALIDATION
+   feti003c, feti007a, feti007b
+
+
+-----------------------------------------------------------------------
+--- AUTEUR cibhhlv L.VIVAN   DATE  le 19/07/2005 a 10:29:20
+
+--------------------------------------------------------------------------
+CLASSEMENT SANS SUITE AL 2005-255
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : OUI
+   TITRE : THER_LINEAIRE et CREA_RESU
+   FONCTIONNALITE
+     données de l'utilisateur
+       TEMPE = CREA_RESU( OPERATION='AFFE',
+                          TYPE_RESU='EVOL_THER',
+                          NOM_CHAM='TEMP',
+                          AFFE=_F( CHAM_GD=T_INIT,
+                                   INST=-1.0,),);
+       TEMPE = THER_LINEAIRE( reuse =TEMPE,
+                              TEMP_INIT=_F( VALE = 100. ),
+                              ...  )
+    L'impression donne :
+       ------>
+        CHAMP AUX NOEUDS DE NOM SYMBOLIQUE  TEMP
+        NUMERO D'ORDRE: 1 INST:  1.00000E+00
+        ...
+       ------>
+        CHAMP AUX NOEUDS DE NOM SYMBOLIQUE  TEMP
+        NUMERO D'ORDRE: 0 INST:  0.00000E+00
+        ...
+       ------>
+        CHAMP AUX NOEUDS DE NOM SYMBOLIQUE  TEMP
+        NUMERO D'ORDRE: 2 INST:  3.11111E+00
+        ...
+
+    L'utilisateur constate alors une inversion des instants dans THER_LINEAIRE,
+    et pas d'instant -1.
+
+    ANALYSE :
+    C'est un fonctionnement normal, et il n'y a pas d'anomalie.
+    La SD evol_ther est créée par l'opérateur CREA_RESU et comporte 1 numéro
+    d'ordre (NUME_ORDRE=1, INST=-1.).
+    L'utilisateur met "reuse" dans sa commande THER_LINEAIRE mais ne donne
+    pas le résultat sous le mot clé EVOL_THER sous le mot clé facteur TEMP_INIT.
+    L'opérateur ne créée pas de nouvelle SD evol_ther puisqu'elle existe deja
+    et archive les champs calculés aux numéros d'ordre 0 INST=0. (champ initial)
+    puis numéros d'ordre 1 INST=1. (il y a surcharge du champ),
+    numéros d'ordre 2 INST=3.1 (le champ suivant), ...
+    Le numéro d'ordre 1 est le premier numéro d'ordre créé et stocké dans la SD.
+    L'IMPR_RESU imprime les numéros d'ordre par ordre de rangement dans la SD.
+    Il est normal d'imprimer le numero dordre 1, qui a été surchargé, puis le
+    numero dordre 0, puis le 2 et ...
+
+   IMPACT_DOCUMENTAIRE : NON
+
+
+-----------------------------------------------------------------------
+--- AUTEUR d6bhhjp J.P.LEFEBVRE   DATE  le 18/07/2005 a 13:52:22
+
+------------------------------------------------------------------------------
+RESTITUTION HORS AREX
+   NB_JOURS_TRAV : 0.2
+   INTERET_UTILISATEUR : NON
+   FONCTIONNALITE
+     En version NEW8.1.8, les tests ssnp130a,b,c et d ont été oubliés dans la
+     restitution de Jacques pour Valérie.
+
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+
+------------------------------------------------------------------------------
+CLASSEMENT SANS SUITE AL 2005-220
+   NB_JOURS_TRAV : 0.5
+   INTERET_UTILISATEUR : NON
+   TITRE "Incompatibilité entre bhdf et partition memoire en POURSUITE"
+   FONCTIONNALITE
+     Ni en travaillant à partir d'un test simple, ni à partir des fichiers
+     déposés sous le répertoire spécifié par Aimery, il n'a été possible de
+     reproduire le problème avec la version STA8, je propose donc de mettre
+     sans suite cette fiche en attendant éventuellement que l'on reproduise
+     l'erreur
+   IMPACT_DOCUMENTAIRE : NON
+
+------------------------------------------------------------------------------
+REALISATION EO 2005-169
+   NB_JOURS_TRAV : 0.0
+   INTERET_UTILISATEUR : NON
+   TITRE "menage des liens de /aster/v8/NEW8/fort"
+   FONCTIONNALITE
+     Il s'agissait d'un problème de droit unix pour le groupe sur l'arborescence
+     des sources de Code_Aster. Les droits sont rétablis et la destruction des
+     liens et des fichiers de diff est réalisée en fonction du contenu des
+     différents compte-rendus de /aster/v8/NEW8/crd/*
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   NON
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+
+------------------------------------------------------------------------------
+CORRECTION AO 2005-160
+   NB_JOURS_TRAV : 0.5
+   INTERET_UTILISATEUR : NON
+   TITRE "Entete version Aster"
+   FONCTIONNALITE
+   Corrigé en version NEW8.0.24
+   Modification du message d'entête
+   Le début d'une exécution commence systématiquement par l'affichage de la
+   version utilisée.
+   Or lors des exécutions lancées en interactif sur l'AlphaServer ou bien
+   lancées sur des versions locales, on avait le message "RESULTATS PRODUITS
+   PAR SURCHARGE NON OFFICIELLE, NE DOIVENT PAS ETRE PUBLIES EN FAISANT
+   REFERENCE A CODE_ASTER..."
+   On se contente maintenant d'afficher :
+       - VERSION D'EXPLOITATION               pour 7.4.0
+       - VERSION DE DEVELOPPEMENT par exemple pour 7.4.5 ou 8.0.12
+       - VERSION DE DEVELOPPEMENT FIGEE       pour 8.1.0
+
+   Ceci n'entrera en vigueur qu'à partir de la 7.5 et 8.1.
+   Pour les versions précédentes, il apparaitra toujours "SURCHARGE NON
+   OFFICIELLE" quand l'exécution n'est pas lancée par les scripts de l'AGLA.
+   DETAILS
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   NON
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+
+------------------------------------------------------------------------------
+CLASSEMENT SANS SUITE AO 2004-398
+   NB_JOURS_TRAV : 0.0
+   INTERET_UTILISATEUR : NON
+   TITRE "pb Agla"
+   FONCTIONNALITE
+   Il s'agissait d'un problème d'accès aux commandes de base sous unix, du certainement
+   a la mise a jour du script envAster.csh corrigé pendant l'exécution des tests pour
+   eviter de cumuler le path.
+   Un astout seur ces tests prouve qu'ils fonctionnent correctement :
+
+--- 5 cas-tests demandes
+--- Lancement de tous les cas-tests : le 08/11/2004 a 09:48:43
+--- Parametres de passage des cas-tests :
+    Repertoire des fichiers de reference : /aster/v7/NEW7/astest
+    Repertoire des fichiers de surcharge : /home/d6bhhjp/uaster/agla/test_astout
+    Repertoire des resutats        : /home/d6bhhjp/uaster/agla
+    Executable Aster utilise       : /aster/v7/NEW7/asteru
+    Catalogue des commandes        : /aster/v7/NEW7/catobj/commande
+    Catalogue des elements         : /aster/v7/NEW7/catobj/elements
+    Classe des jobs LSF            : jour
+    Nombre maximum des jobs non OK : 5
+    Version Aster                  : NEW7
+    Flag Copie des resultats OK    : RESNOOK
+
+--- Attente de la fin de tous les cas-tests ....
+
+                                                DE LA VERSION  7.03.27 DU CODE_ASTER
+
+--- Fin de tous les cas tests       :  le 08/11/2004 a 09:51:02
+--- Voici les resultats :
+
+                                       Temps CPU   Temps SYS   Temps Total Temps Job
+sdls109g  OK                                2.90        1.80        4.70        5.91
+ssls100l  OK                                2.00        1.80        3.80        5.03
+sslv04p   OK                               21.30        3.70       25.00       26.56
+ssns101c  OK                               19.50        1.50       21.00       21.94
+ttll01c   OK                                1.80        1.40        3.20        4.05
+--------  ---------  ----------------  ---------   ---------   ---------   ---------
+       5      5          0                 47.50       10.20       57.70       63.49
+
+
+PAS DE CAS-TESTS NON OK
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   NON
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+
+------------------------------------------------------------------------------
+CORRECTION AO 2003-071
+   NB_JOURS_TRAV : 0.5
+   INTERET_UTILISATEUR : NON
+   TITRE "asterix et astk avec enchainement de commandes"
+   FONCTIONNALITE
+     Corrigé dans astk (ASTK_REF)
+     Afin de pouvoir récupérer la base Globale, cette dernière est maintenant
+     sauvegardée non plus sous le répertoire d'exécution temporaire (détruit
+     lorsque le job s'arrete) mais sous le /tmp sous un un nom construit à
+     partir du numéro du job. Il est alors possible de récupérer les fichiers
+     en cas d'arrêt brutal (dans la limite de la durée d'existence des fichiers
+     sous /tmp).
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   NON
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+
+
+-----------------------------------------------------------------------
+--- AUTEUR vabhhts J.PELLET   DATE  le 18/07/2005 a 17:19:52
+
+
+------------------------------------------------------------------------------
+CLASSEMENT SANS SUITE AL 2005-236
+   NB_JOURS_TRAV : 0.5
+   INTERET_UTILISATEUR : NON
+   TITRE "Contradiction entre le chantier variables de commande et calcul des quantité ELNO"
+   FONCTIONNALITE
+   Je m'étais inquiété du fait que les options de calcul ELNO utilisaient le comportement
+   matériel (et donc implicitement les variables de commande) sur une famille de points
+   de Gauss (appelée 'GANO' dans la programmation) différente de la famille pour laquelle
+   les variables de commandes sont "préparées" (famille 'RIGI').
+   En fait, le problème est plus général. Il ne concerne pas que le calcul des quantités
+   ELNO.
+
+   Après concertation, les responsables du chantier VC (EL et JP) ont décidé de résoudre le
+   problème de la façon suivante :
+   1) la préparation des variables de commande se fait a priori sur TOUTES les familles
+      déclarées dans le catalogue des type_element utilisés dans le modèle.
+   2) On ajoute un argument (nom de la famille de PG: NOFPG) aux routines :
+       RCVARC et RCVALC.
+   3) Remarque :
+      On n'est pas obligés de transmettre ce nouvel argument depuis les routines te00IJ
+      jusqu'au fond des routines de comportement.
+      On définira (d'une manière ou d'une autre : pour l'instant le nom : 'RIGI')
+      la famille à toujours utiliser dans le calcul du comportement non linéaire.
+
+   IMPACT_DOCUMENTAIRE : NON
+
+------------------------------------------------------------------------------
+CORRECTION AL 2005-263
+   NB_JOURS_TRAV : 0.1
+   INTERET_UTILISATEUR : NON
+   TITRE "sslv07a cassé en 8.1.6 sur Linux Rocks"
+   FONCTIONNALITE
+     On a introduit récemment des TEST_TABLE sur des contraintes de cisaillement
+     qui sont négligeables (NON_REGRESSION).
+     Par défaut, le test est fait en "relatif" ce qui n'est pas bon du tout car
+     la valeur trouvée (qui devrait etre théoriquement nulle) dépend fortement
+     de la plateforme.
+     Je remplace donc 4 TEST_TABLE sur des valeurs de l'ordre de 1.E-11
+     par :
+               VALE= 0., CRITERE='ABSOLU',PRECISION=1.E-8,
+
+     Comme les contraintes significatives (SIZZ) sont de l'ordre de 1.E+5,
+     le TEST_TABLE vérifie bien la "nullité" des cisaillements.
+   DETAILS
+     Liste des fichiers modifiés:  sslv07a.comm
+
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+
+------------------------------------------------------------------------------
+CLASSEMENT SANS SUITE EL 2004-200
+   NB_JOURS_TRAV : 0.1
+   INTERET_UTILISATEUR : NON
+   TITRE   "Variables de commande : faire un catalogue de lois de comportement"
+   FONCTIONNALITE
+   A l'époque où cette fiche a été émise, on pensait que ce catalogue était nécessaire
+   au chantier des variables de commande (VC):
+   On pensait ne "préparer" que les VC connues de la loi de comportement.
+   Pour cela, il fallait bien dire quelque part (dans un catalogue), la liste
+   des variables connues par chaque comportement.
+   Maintenant que l'ambition est plus grande : tout comportement doit accepter
+   a priori toutes les VC (voire même les VC "utilisateur" NEUT1 et NEUT2), ce catalogue
+   ne présente plus d'intérêt (pour les VC).
+   Son intérêt n'est plus que de nommer les variables internes pour un éventuel bénéfice
+   dans les post-traitements.
+   Si ce besoin de post-traitement est important, il faut réemetre une fiche
+   spécifiant mieux ce qu'on en attend. Car l'aspect "cataloguer" les noms de v.i.
+   est très simple à faire : soit un nouveau catalogue, soit une "bête" routine
+   fortran avec des noms en dur. En revanche, le vrai gros boulot, c'est de prendre
+   en compte ces noms en "pré" ou en "post".
+
+   IMPACT_DOCUMENTAIRE : NON
+
+------------------------------------------------------------------------------
+REALISATION EL 2005-110
+   NB_JOURS_TRAV : 0.2
+   INTERET_UTILISATEUR : OUI
+   POUR_LE_COMPTE_DE : J. PELLET
+   TITRE AFFE_CHAR_MECA : liaison_maille avec DNOR
+   FONCTIONNALITE
+     Eric a tout à fait raison : LIASON_MAILLE/DNOR  sert à liaisoner 2 structures
+     dans la direction "normale" à leurs surfaces (et laisser libre la direction
+     tangentielle).
+     Mais que l'on trouve une normale (ou son inverse), le résultat sera le même.
+     Il est donc inutile de vouloir orienter toutes les mailles de la surface
+     de façon cohérente.
+     Je supprime donc le bloc de lignes 210 à 222 qui ne sert à rien d'autre que
+     d'arrêter en erreur fatale les personnes qui utilisent des surfaces plongées
+     qui ne bordent pas un volume 3D.
+   DETAILS
+     Liste des fichiers modifiés:  calirc.f
+
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION : passage des cas test utilisant LIAISON_MAILLE
+     Mais je n'ajoute pas de test illustrant la nouvelle possibilité car je
+     n'arrive pas à imaginer un exemple "réaliste" de ce besoin. Je suis sûr
+     qu'Eric saura se plaindre si nécessaire.
+
+------------------------------------------------------------------------------
+REALISATION EL 2005-127
+   NB_JOURS_TRAV : 0.1
+   INTERET_UTILISATEUR : NON
+   TITRE  "résorbtion de l'option MATR_NO_PG"
+   FONCTIONNALITE
+     Cette option n'est plus utilisée dans le fortran.
+     On la supprime des derniers catalogues qui la déclaraient encore
+     et on détruit les 2 te00ij associés.
+   DETAILS
+     Liste des fichiers modifiés:
+     gener_me2db1.cata  gener_me_xh.cata   gener_meafo2.cata  gener_mebar1.cata
+     gener_mepmf1.cata  gener_mepmf2.cata  gener_th3d_3.cata  gener_th3dd3.cata
+     gener_thax_2.cata  gener_thaxd2.cata  gener_thaxf2.cata  gener_thcq_2.cata
+     gener_thpl_2.cata  gener_thpld2.cata  thaxtr6.cata       thpltr6.cata
+
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+
+------------------------------------------------------------------------------
+RESTITUTION HORS AREX   (H2)
+   (Petite contribution à la réalisation EL 2004-201)
+   NB_JOURS_TRAV : 1
+   INTERET_UTILISATEUR : NON
+   FONCTIONNALITE
+   En voulant généraliser le chantier "variables de commande" pour traiter l'hydratation,
+   on s'est aperçu que l'utilisation du matériau dans les commandes MECA_STATIQUE,
+   CALC_ELEM, ... ne se faisait pas sur une seule famille de points de Gauss.
+   Il faut donc compliquer un peu le chantier en décidant que les VC seront prochainement
+   préparées sur un ensemble de familles de points de Gauss.
+   Pour ne pas payer trop cher cet ensemble de familles, je propose de "réduire"
+   l'ensemble à ce qui est nécessaire et pour cela, je supprime les familles déclarées
+   inutilement dans les catalogues d'éléments.
+
+   DETAILS
+1) Avant le ménage, les noms locaux de famille utilisés dans les catalogues sont :
+   FPG1    FPG4    FPG5    FPG6    FPG9    GANO    MASS    NELGA   NELGA2
+   NOEU    NOEU_S  RIGI    XCON    XFEM
+
+2) Avant le ménage, les noms de famille utilisés dans le fortran sont :
+   GANO    MASS   NOEU    NOEU_S  RIGI    XCON
+
+3) On retire toutes (300 environ) les definitions de famille du style : GANO=XXX
+   qui ne servent à rien dans le fortran.
+   Pour cela, j'ai regardé (par script) quel était l'usage des familles dans
+   les routines appelées par les te00ij de chaque type_element.
+
+4) Certains éléments n'utilisent qu'une seule famille mais ne l'appelle pas 'RIGI'
+   comme les autres. Je renomme cette famille 'RIGI'.
+      catalogues : gener_mepdg1.cata  gener_meaxf2.cata  gener_me2fl2.cata
+      fortran  te0157.f te0253.f te0254.f
+
+5) Usage de la famille 'GANO' :
+   J'ai vérifié que cette famille servait toujours pour la situation suivante :
+      - calcul d'une quantité sur la famille 'GANO'
+      - extrapolation de cette quantité sur les noeuds par PPGAN2 => champ ELNO
+
+6) J'ai ensuite essayé de regarder l'usage des familles NOEU, NOEU_S, MASS ...
+   pour voir si leur nom était bien choisi et si on pouvait décrire de façon
+   consensuelle ces familles, mais j'ai un peu craqué devant la tache.
+
+   J'aurais bien aimé par exemple que la famille 'MASS' puisse etre définie comme
+   la famille à utiliser dans les fortran lorsque l'on intègre les "carrés" de
+   fonctions de forme (non dérivées) (comme par exemple dans l'option MASS_MECA).
+
+   Liste des fichiers modifiés:
+  te0157.f  te0253.f  te0254.f
+  gener_ac3d_2.cata   gener_ac3d_3.cata   gener_acpla2.cata   gener_ctecp2.cata   gener_me2dg_1.cata
+  gener_me2dg_2.cata  gener_me2fl2.cata   gener_me2fp2.cata   gener_me3d_2.cata   gener_me3d_3.cata
+  gener_me3da2.cata   gener_me3dg_1.cata  gener_me3dg_3.cata  gener_me3di3.cata   gener_me3dj2.cata
+  gener_me3fa2.cata   gener_me3fl2.cata   gener_me3fl3.cata   gener_me3g32.cata   gener_me3g33.cata
+  gener_me3h12.cata   gener_me3h13.cata   gener_me3h22.cata   gener_me3h23.cata   gener_me3h32.cata
+  gener_me3h33.cata   gener_me3h42.cata   gener_me3h43.cata   gener_me3h52.cata   gener_me3h53.cata
+  gener_me_x.cata     gener_me_xh.cata    gener_me_xht.cata   gener_me_xt.cata    gener_meaa12.cata
+  gener_meaa22.cata   gener_meaa32.cata   gener_meafo2.cata   gener_meag32.cata   gener_meah12.cata
+  gener_meah22.cata   gener_meah32.cata   gener_meah42.cata   gener_meah52.cata   gener_meapp2.cata
+  gener_measg2.cata   gener_meax_2.cata   gener_meaxf2.cata   gener_meaxs2.cata   gener_mecpg2.cata
+  gener_mecpl2.cata   gener_meda12.cata   gener_meda22.cata   gener_meda32.cata   gener_medg32.cata
+  gener_medh12.cata   gener_medh22.cata   gener_medh32.cata   gener_medh42.cata   gener_medh52.cata
+  gener_medkg1.cata   gener_medkt2.cata   gener_medpg2.cata   gener_medpl2.cata   gener_mefls2.cata
+  gener_megri2.cata   gener_megrm2.cata   gener_mepdg1.cata   gener_mepli2.cata   gener_meshb3.cata
+  gener_mv2d_2.cata   gener_mv3d_3.cata   gener_th3d_2.cata   gener_th3d_3.cata   gener_th3dd2.cata
+  gener_th3dd3.cata   gener_thax_2.cata   gener_thaxd2.cata   gener_thaxf2.cata   gener_thcq_2.cata
+  gener_thpl_2.cata   gener_thpld2.cata   mecpqs4.cata        mecptr3.cata        mecptr6.cata
+  medpqs4.cata        medpqs8.cata        medptr6.cata        thaxtr6.cata        thpltr6.cata
+
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+
+------------------------------------------------------------------------------
+RESTITUTION HORS AREX   (H1)
+   NB_JOURS_TRAV : 1 (JP+JPL)
+   INTERET_UTILISATEUR : NON
+   FONCTIONNALITE
+   Je réintroduis dans le catalogue de PHENOMENE_MODELISATION__ les
+   commentaires décrivant les attributs des type_element.
+   J'avais été obligé de retirer ces commentaires car ils plantaient l'agla.
+   (un problème de "'é" mal accepté par "lex" et "yacc" corrigé maintenant par JPL).
+
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+
+   DETAILS
+   Rien à voir avec ce qui précède :
+   ---------------------------------
+   j'ajoute CALL JERECU('V') dans op0070.f car je n'avais pas pu le faire la
+   semaine dernière.
+   Liste des fichiers modifiés:  op0070.f
+                                 phenomene_modelisation__.cata
+
+======================================================================================
+Restitution pour Lionel Salmona :
+---------------------------------
+
+REALISATION EL 2004-188
+   POUR_LE_COMPTE_DE : G.DEBRUYNE
+   NB_JOURS_TRAV  : 8.
+   INTERET_UTILISATEUR : OUI
+   TITRE : Echange de l'hydratation aux point de Gauss
+   FONCTIONNALITE : Le passage de l'hydratation entre un calcul thermique et un
+   calcul mécanique se faisait via les points de Gauss ce qui pouvait limiter
+   leur utilisation.
+   DETAIL :
+   Dorénavant, le calcul de l'hydratation se fait au noeuds de l'élément. A noter
+   que pour des raisons de stabilités, à l'entrée de chaque te thermique on passe le
+   champ aux noeuds en un champ aux points de Gauss.
+   De meme le champ transmis au calcul mécanique se fait par un champ aux noeuds mais
+   ce champ est tout de suite transformé en un champ au points de Gauss ( ceux de la
+   mécanique bien sur ). En mécanique on ne travaille donc qu'avec un champ aux points
+   de Gauss.
+   Le champ stocké dans l'evol_ther continue de s'appeler HYDR_ELNO_ELGA pour des raisons de
+   syntaxes. En effet a plusieurs endroits dans le code on s'appui sur ce nom en particulier
+   pour réaliser le calcul. Typiquement, pour calculer HYDR_NOEU_ELNO, il faut le champ
+   HYDR_ELNO_ELGA.
+   routines supprimés :
+     te0133.f passage gauss noeud pour l'hydratation
+     te0124.f passage gauss noeud pour l'hydratation
+   catalogues supprimés
+     hydr_elno_elga.cata
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : OUI
+   DOC_U : U4.81.01
+   EXPL_ : suppression de l'option HYDR_ELNO_ELGA de CALC_ELEM
+   VALIDATION :
+   cas test de la base modifié : ssla103a,b,c,d,e,f,ssnv174a,ssnv180a,ttnl03a et
+   ttnl03b
+
+
+   Liste des fichiers modifiés:
+  chpchd.f  dismce.f  medehy.f  nmdehy.f  ntarch.f  ntdoet.f
+  ntrepr.f  rscrsd.f  te0126.f  te0135.f  te0235.f  te0236.f
+  thaclm.f  verstp.f  vetnth.f
+  char_sens_evolni.cata  char_ther_evolni.cata  gener_me2dg_1.cata     gener_me2dg_2.cata     gener_me3d_3.cata
+  gener_me3dg_1.cata     gener_me3dg_3.cata     gener_meax_2.cata      gener_meaxs2.cata      gener_mecpl2.cata
+  gener_medkg1.cata      gener_medkt2.cata      gener_medpl2.cata      gener_meshb3.cata      gener_mv2d_2.cata
+  gener_mv3d_3.cata      gener_th3d_3.cata      gener_th3dd3.cata      gener_thax_2.cata      gener_thaxd2.cata
+  gener_thpl_2.cata      gener_thpld2.cata      mecpqs4.cata           mecptr3.cata           mecptr6.cata
+  medpqs4.cata           medpqs8.cata           medptr6.cata           resi_rigi_mass.cata    thaxtr6.cata
+  thpltr6.cata
+  c_nom_cham_into.capy
+  ssla103a.comm  ssla103b.comm  ssla103c.comm  ssla103d.comm  ssla103e.comm
+  ssla103f.comm  ssnv174a.comm  ssnv180a.comm  ttnl03a.comm   ttnl03b.comm
+
+======================================================================================
+Dernière minute :
+-----------------
+Je suis obligé d'ajouter un peu de temps CPU au test zzzz180a.
+Il était limité à 120s, mais il flirtait un peu avec la limite.
+=> je le passe à 200s
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+       C AJOUT scotch/fetsco                  assire A.ASSIRE            75     75      0
+ CASTEST AJOUT feti003c                       assire A.ASSIRE           248    248      0
+ CASTEST AJOUT feti007a                       assire A.ASSIRE           179    179      0
+ CASTEST AJOUT feti007b                       assire A.ASSIRE           177    177      0
+ CASTEST AJOUT ssnp130a                      d6bhhjp J.P.LEFEBVRE       269    269      0
+ CASTEST AJOUT ssnp130b                      d6bhhjp J.P.LEFEBVRE       268    268      0
+ CASTEST AJOUT ssnp130c                      d6bhhjp J.P.LEFEBVRE       228    228      0
+ CASTEST AJOUT ssnp130d                      d6bhhjp J.P.LEFEBVRE       248    248      0
+ CASTEST MODIF feti003b                       assire A.ASSIRE           243      1      2
+ CASTEST MODIF ssla103a                      vabhhts J.PELLET           217      4      4
+ CASTEST MODIF ssla103b                      vabhhts J.PELLET           221      4      4
+ CASTEST MODIF ssla103c                      vabhhts J.PELLET           219      4      4
+ CASTEST MODIF ssla103d                      vabhhts J.PELLET           221      4      4
+ CASTEST MODIF ssla103e                      vabhhts J.PELLET           192      4      4
+ CASTEST MODIF ssla103f                      vabhhts J.PELLET           208      4      4
+ CASTEST MODIF sslv07a                       vabhhts J.PELLET           640      5      5
+ CASTEST MODIF ssnv174a                      vabhhts J.PELLET           267      4      4
+ CASTEST MODIF ssnv180a                      vabhhts J.PELLET           278      4      4
+ CASTEST MODIF ttnl03a                       vabhhts J.PELLET           419      2     50
+ CASTEST MODIF ttnl03b                       vabhhts J.PELLET           437      1     37
+ CASTEST MODIF zzzz180a                      vabhhts J.PELLET           888      1      1
+CATALOGU MODIF compelem/phenomene_modelisation__    vabhhts J.PELLET           866     53      1
+CATALOGU MODIF options/char_sens_evolni      vabhhts J.PELLET            44      2      2
+CATALOGU MODIF options/char_ther_evolni      vabhhts J.PELLET            33      2      2
+CATALOGU MODIF options/resi_rigi_mass        vabhhts J.PELLET            34      3      3
+CATALOGU MODIF typelem/gener_ac3d_2          vabhhts J.PELLET            51      6      6
+CATALOGU MODIF typelem/gener_ac3d_3          vabhhts J.PELLET            74     17     17
+CATALOGU MODIF typelem/gener_acpla2          vabhhts J.PELLET            66      6      6
+CATALOGU MODIF typelem/gener_ctecp2          vabhhts J.PELLET            79      6      6
+CATALOGU MODIF typelem/gener_me2db1          vabhhts J.PELLET           197      1      3
+CATALOGU MODIF typelem/gener_me2dg_1         vabhhts J.PELLET           359      7      5
+CATALOGU MODIF typelem/gener_me2dg_2         vabhhts J.PELLET           375     11      9
+CATALOGU MODIF typelem/gener_me2fl2          vabhhts J.PELLET            94     11     11
+CATALOGU MODIF typelem/gener_me2fp2          vabhhts J.PELLET            83      6      6
+CATALOGU MODIF typelem/gener_me3d_2          vabhhts J.PELLET           113      6      6
+CATALOGU MODIF typelem/gener_me3d_3          vabhhts J.PELLET           586     27     25
+CATALOGU MODIF typelem/gener_me3da2          vabhhts J.PELLET            53      6      6
+CATALOGU MODIF typelem/gener_me3dg_1         vabhhts J.PELLET           334      6      4
+CATALOGU MODIF typelem/gener_me3dg_3         vabhhts J.PELLET           358     17     15
+CATALOGU MODIF typelem/gener_me3di3          vabhhts J.PELLET           195     11     11
+CATALOGU MODIF typelem/gener_me3dj2          vabhhts J.PELLET            89      3      3
+CATALOGU MODIF typelem/gener_me3fa2          vabhhts J.PELLET            50      6      6
+CATALOGU MODIF typelem/gener_me3fl2          vabhhts J.PELLET            61      6      6
+CATALOGU MODIF typelem/gener_me3fl3          vabhhts J.PELLET           102     17     17
+CATALOGU MODIF typelem/gener_me3g32          vabhhts J.PELLET            48      5      5
+CATALOGU MODIF typelem/gener_me3g33          vabhhts J.PELLET           122     18     18
+CATALOGU MODIF typelem/gener_me3h12          vabhhts J.PELLET            52      2      2
+CATALOGU MODIF typelem/gener_me3h13          vabhhts J.PELLET           143      5      5
+CATALOGU MODIF typelem/gener_me3h22          vabhhts J.PELLET            52      2      2
+CATALOGU MODIF typelem/gener_me3h23          vabhhts J.PELLET           139      5      5
+CATALOGU MODIF typelem/gener_me3h32          vabhhts J.PELLET            49      5      5
+CATALOGU MODIF typelem/gener_me3h33          vabhhts J.PELLET           133     20     20
+CATALOGU MODIF typelem/gener_me3h42          vabhhts J.PELLET            54      3      3
+CATALOGU MODIF typelem/gener_me3h43          vabhhts J.PELLET           167     21     21
+CATALOGU MODIF typelem/gener_me3h52          vabhhts J.PELLET            54      3      3
+CATALOGU MODIF typelem/gener_me3h53          vabhhts J.PELLET           163     21     21
+CATALOGU MODIF typelem/gener_me_x            vabhhts J.PELLET           571     11     11
+CATALOGU MODIF typelem/gener_me_xh           vabhhts J.PELLET           262      9     11
+CATALOGU MODIF typelem/gener_me_xht          vabhhts J.PELLET           134      6      6
+CATALOGU MODIF typelem/gener_me_xt           vabhhts J.PELLET           135      6      6
+CATALOGU MODIF typelem/gener_meaa12          vabhhts J.PELLET           117      5      5
+CATALOGU MODIF typelem/gener_meaa22          vabhhts J.PELLET           147      3      3
+CATALOGU MODIF typelem/gener_meaa32          vabhhts J.PELLET           145      3      3
+CATALOGU MODIF typelem/gener_meafo2          vabhhts J.PELLET           160      6      8
+CATALOGU MODIF typelem/gener_meag32          vabhhts J.PELLET           108      5      5
+CATALOGU MODIF typelem/gener_meah12          vabhhts J.PELLET           150      5      5
+CATALOGU MODIF typelem/gener_meah22          vabhhts J.PELLET           148      5      5
+CATALOGU MODIF typelem/gener_meah32          vabhhts J.PELLET           122      7      7
+CATALOGU MODIF typelem/gener_meah42          vabhhts J.PELLET           152      5      5
+CATALOGU MODIF typelem/gener_meah52          vabhhts J.PELLET           150      5      5
+CATALOGU MODIF typelem/gener_meapp2          vabhhts J.PELLET            46      6      6
+CATALOGU MODIF typelem/gener_measg2          vabhhts J.PELLET            50      2      2
+CATALOGU MODIF typelem/gener_meax_2          vabhhts J.PELLET           563      9      7
+CATALOGU MODIF typelem/gener_meaxf2          vabhhts J.PELLET            66     11     11
+CATALOGU MODIF typelem/gener_meaxs2          vabhhts J.PELLET           528      5      3
+CATALOGU MODIF typelem/gener_mebar1          vabhhts J.PELLET           197      1      3
+CATALOGU MODIF typelem/gener_mecpg2          vabhhts J.PELLET           354      3      3
+CATALOGU MODIF typelem/gener_mecpl2          vabhhts J.PELLET           550      7      5
+CATALOGU MODIF typelem/gener_meda12          vabhhts J.PELLET           117      5      5
+CATALOGU MODIF typelem/gener_meda22          vabhhts J.PELLET           153      5      5
+CATALOGU MODIF typelem/gener_meda32          vabhhts J.PELLET           151      5      5
+CATALOGU MODIF typelem/gener_medg32          vabhhts J.PELLET           108      5      5
+CATALOGU MODIF typelem/gener_medh12          vabhhts J.PELLET           162      9      9
+CATALOGU MODIF typelem/gener_medh22          vabhhts J.PELLET           160      9      9
+CATALOGU MODIF typelem/gener_medh32          vabhhts J.PELLET           128      9      9
+CATALOGU MODIF typelem/gener_medh42          vabhhts J.PELLET           164      9      9
+CATALOGU MODIF typelem/gener_medh52          vabhhts J.PELLET           162      9      9
+CATALOGU MODIF typelem/gener_medkg1          vabhhts J.PELLET           212      7      5
+CATALOGU MODIF typelem/gener_medkt2          vabhhts J.PELLET           305     13     11
+CATALOGU MODIF typelem/gener_medpg2          vabhhts J.PELLET           356      3      3
+CATALOGU MODIF typelem/gener_medpl2          vabhhts J.PELLET           571      8      6
+CATALOGU MODIF typelem/gener_mefls2          vabhhts J.PELLET            48      6      6
+CATALOGU MODIF typelem/gener_megri2          vabhhts J.PELLET           199      3      3
+CATALOGU MODIF typelem/gener_megrm2          vabhhts J.PELLET           164      5      5
+CATALOGU MODIF typelem/gener_mepdg1          vabhhts J.PELLET           214      5      5
+CATALOGU MODIF typelem/gener_mepli2          vabhhts J.PELLET           185      9      9
+CATALOGU MODIF typelem/gener_mepmf1          vabhhts J.PELLET           174      1      3
+CATALOGU MODIF typelem/gener_mepmf2          vabhhts J.PELLET           211      1      3
+CATALOGU MODIF typelem/gener_meshb3          vabhhts J.PELLET           314      5      3
+CATALOGU MODIF typelem/gener_mv2d_2          vabhhts J.PELLET           315     15     13
+CATALOGU MODIF typelem/gener_mv3d_3          vabhhts J.PELLET           415     10      8
+CATALOGU MODIF typelem/gener_th3d_2          vabhhts J.PELLET           156      6      6
+CATALOGU MODIF typelem/gener_th3d_3          vabhhts J.PELLET           237     22     27
+CATALOGU MODIF typelem/gener_th3dd2          vabhhts J.PELLET           150      3      3
+CATALOGU MODIF typelem/gener_th3dd3          vabhhts J.PELLET           208     15     20
+CATALOGU MODIF typelem/gener_thax_2          vabhhts J.PELLET           201      9     14
+CATALOGU MODIF typelem/gener_thaxd2          vabhhts J.PELLET           228     11     16
+CATALOGU MODIF typelem/gener_thaxf2          vabhhts J.PELLET           126      6      8
+CATALOGU MODIF typelem/gener_thcq_2          vabhhts J.PELLET           127      7      9
+CATALOGU MODIF typelem/gener_thpl_2          vabhhts J.PELLET           210      9     14
+CATALOGU MODIF typelem/gener_thpld2          vabhhts J.PELLET           229     11     16
+CATALOGU MODIF typelem/mecpqs4               vabhhts J.PELLET           505      4      2
+CATALOGU MODIF typelem/mecptr3               vabhhts J.PELLET           539      4      2
+CATALOGU MODIF typelem/mecptr6               vabhhts J.PELLET           535      4      2
+CATALOGU MODIF typelem/medpqs4               vabhhts J.PELLET           516      4      2
+CATALOGU MODIF typelem/medpqs8               vabhhts J.PELLET           516      4      2
+CATALOGU MODIF typelem/medptr6               vabhhts J.PELLET           550      4      2
+CATALOGU MODIF typelem/thaxtr6               vabhhts J.PELLET           193      6     11
+CATALOGU MODIF typelem/thpltr6               vabhhts J.PELLET           202      6     11
+CATALOGU SUPPR options/hydr_elno_elga        vabhhts J.PELLET            27      0     27
+CATALOGU SUPPR options/matr_no_pg            vabhhts J.PELLET            31      0     31
+CATALOPY AJOUT commande/defi_part_pa_ops      assire A.ASSIRE            61     61      0
+CATALOPY MODIF commande/defi_part_feti        assire A.ASSIRE            64     35      8
+CATALOPY MODIF commande/stanley               assire A.ASSIRE            30      2      2
+CATALOPY MODIF commun/c_nom_cham_into        vabhhts J.PELLET           185      1      2
+ FORTRAN AJOUT utilitai/fetskp                assire A.ASSIRE          1027   1027      0
+ FORTRAN AJOUT utilitai/op0029                assire A.ASSIRE            76     76      0
+ FORTRAN MODIF algorith/medehy               vabhhts J.PELLET           287     16     10
+ FORTRAN MODIF algorith/nmdehy               vabhhts J.PELLET           208     12      4
+ FORTRAN MODIF algorith/ntarch               vabhhts J.PELLET           139      3      3
+ FORTRAN MODIF algorith/ntdoet               vabhhts J.PELLET           250     18      5
+ FORTRAN MODIF algorith/ntrepr               vabhhts J.PELLET           122      2      2
+ FORTRAN MODIF algorith/op0070               vabhhts J.PELLET           790      2      1
+ FORTRAN MODIF algorith/verstp               vabhhts J.PELLET           229      3      4
+ FORTRAN MODIF algorith/vetnth               vabhhts J.PELLET           390      2      2
+ FORTRAN MODIF calculel/chpchd               vabhhts J.PELLET           205     24      6
+ FORTRAN MODIF calculel/thaclm               vabhhts J.PELLET           890      2     36
+ FORTRAN MODIF elements/te0126               vabhhts J.PELLET           213     21     11
+ FORTRAN MODIF elements/te0135               vabhhts J.PELLET           209     18      9
+ FORTRAN MODIF elements/te0157               vabhhts J.PELLET           153      2      2
+ FORTRAN MODIF elements/te0235               vabhhts J.PELLET           373     12      5
+ FORTRAN MODIF elements/te0236               vabhhts J.PELLET           385     13      5
+ FORTRAN MODIF elements/te0253               vabhhts J.PELLET           181      2      2
+ FORTRAN MODIF elements/te0254               vabhhts J.PELLET           134      2      2
+ FORTRAN MODIF modelisa/calirc               vabhhts J.PELLET           521      3     19
+ FORTRAN MODIF utilitai/dismce               vabhhts J.PELLET           143      5      1
+ FORTRAN MODIF utilitai/rscrsd               vabhhts J.PELLET           843      3      3
+ FORTRAN SUPPR elements/te0118               vabhhts J.PELLET            63      0     63
+ FORTRAN SUPPR elements/te0119               vabhhts J.PELLET            74      0     74
+ FORTRAN SUPPR elements/te0124               vabhhts J.PELLET            74      0     74
+ FORTRAN SUPPR elements/te0133               vabhhts J.PELLET            61      0     61
+  PYTHON MODIF Macro/defi_part_feti_ops       assire A.ASSIRE           194     78     55
+  PYTHON MODIF Stanley/stanley                assire A.ASSIRE          2047     14      2
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :   11        2856      2856             +2856
+ MODIF :  136       34378      1099    1054       +45
+ SUPPR :    6         330               330      -330
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :  153       37564      3955    1384     +2571 

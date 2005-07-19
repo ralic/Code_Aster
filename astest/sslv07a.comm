@@ -1,5 +1,5 @@
 
-# MODIF  DATE 04/07/2005   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 18/07/2005   AUTEUR VABHHTS J.PELLET 
 # TITRE PARALLEPEPIPEDE SOUS SON PROPRE POIDS (HEXA20 GROSSIER)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -514,7 +514,7 @@ IMPR_TABLE ( TABLE = TB2,
 DEFI_FICHIER(ACTION='LIBERER',UNITE=40)
 
 TAB2=LIRE_TABLE( UNITE=40,
-                   FORMAT='ASTER', 
+                   FORMAT='ASTER',
                    NUME_TABLE=1,
                    TYPE_TABLE='TABLE',
                    SEPARATEUR=' ',)
@@ -547,7 +547,7 @@ TEST_TABLE(    TABLE=TAB2,
                FILTRE=_F(  NOM_PARA = 'ABSC_CURV',
                             VALE = 1.66667E-01,),
                NOM_PARA='SIXY',
-               VALE= 2.24259E-11,
+               VALE= 0., CRITERE='ABSOLU',PRECISION=1.E-8,
                REFERENCE = 'NON_REGRESSION',
           )
 
@@ -555,7 +555,7 @@ TEST_TABLE(    TABLE=TAB2,
                FILTRE=_F(  NOM_PARA = 'ABSC_CURV',
                             VALE = 1.66667E-01,),
                NOM_PARA='SIXZ',
-               VALE= -1.68750E-11,
+               VALE= 0., CRITERE='ABSOLU',PRECISION=1.E-8,
                REFERENCE = 'NON_REGRESSION',
           )
 
@@ -582,7 +582,7 @@ IMPR_TABLE ( TABLE = TB3,
 DEFI_FICHIER(ACTION='LIBERER',UNITE=41)
 
 TAB3=LIRE_TABLE( UNITE=41,
-                   FORMAT='ASTER', 
+                   FORMAT='ASTER',
                    NUME_TABLE=1,
                    TYPE_TABLE='TABLE',
                    SEPARATEUR=' ',)
@@ -615,7 +615,7 @@ TEST_TABLE(    TABLE=TAB3,
                FILTRE=_F(  NOM_PARA = 'ABSC_CURV',
                             VALE = 1.66667E-01,),
                NOM_PARA='SIXY',
-               VALE= -2.24259E-11,
+               VALE= 0., CRITERE='ABSOLU',PRECISION=1.E-8,
                REFERENCE = 'NON_REGRESSION',
           )
 
@@ -631,7 +631,7 @@ TEST_TABLE(    TABLE=TAB3,
                FILTRE=_F(  NOM_PARA = 'ABSC_CURV',
                             VALE = 1.66667E-01,),
                NOM_PARA='SIYZ',
-               VALE=1.68750E-11,
+               VALE= 0., CRITERE='ABSOLU',PRECISION=1.E-8,
                REFERENCE = 'NON_REGRESSION',
           )
 

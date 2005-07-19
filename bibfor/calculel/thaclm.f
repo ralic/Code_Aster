@@ -6,7 +6,7 @@
 C TOLE CRP_20
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 18/07/2005   AUTEUR VABHHTS J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -334,44 +334,10 @@ C
 
 
 C    ------------------------------------------------------------------
-C    -- OPTION "HYDR_ELNO_ELGA"
-C    ------------------------------------------------------------------
-
-      IF (OPTION.EQ.'HYDR_ELNO_ELGA') THEN
-
-C        VERIF SENSIBILITE
-         IF (TYPESE.NE.0) THEN
-            CODSEN = 1
-         ENDIF
-         IF(CODSEN.NE.0) GO TO 123
-C
-         DO 100,IAUX = 1,NBORDR
-            CALL JEMARQ()
-            CALL JERECU('V')
-            IORDR = ZI(JORDR+IAUX-1)
-            CALL MEDOM1(MODELE,MATE,CARA,KCHA,NCHAR,CTYP,
-     &           RESUCO,IORDR)
-            CALL MECARA(CARA,EXICAR,CHCARA)
-            CALL RSEXC2(1,1,RESUCO,'HYDR_ELGA',IORDR,CHSIG,OPTION,
-     &           IRET1)
-            IF (IRET1.GT.0) GO TO 102
-            CALL RSEXC1(LERES1,OPTION,IORDR,CHELEM)
-            CALL MECALC(OPTION,MODELE,CHAMGD,CHGEOM,MATE,CHCARA,K24B,
-     &           K24B,K24B,K24B,K24B,CHSIG,K24B,K24B,K24B,K24B,
-     &           K24B,TYPCOE,ALPHA,CALPHA,K24B,SOP,CHELEM,
-     &           LIGREL,BASE,K24B,K24B,K24B,K24B,COMPOR,CHTESE,
-     &           CHDESE,NOPASE,TYPESE,IRET)
-            IF (IRET.GT.0) GO TO 102
-            CALL RSNOCH(LERES1,OPTION,IORDR,' ')
- 102        CONTINUE
-            CALL JEDEMA()
- 100     CONTINUE
-
-C    ------------------------------------------------------------------
 C    -- OPTION "ERTH_ELEM_TEMP"
 C    ------------------------------------------------------------------
 
-          ELSE IF (OPTION.EQ.'ERTH_ELEM_TEMP') THEN
+          IF (OPTION.EQ.'ERTH_ELEM_TEMP') THEN
 
 C ---- VERIF SENSIBILITE
             IF (TYPESE.NE.0) THEN
