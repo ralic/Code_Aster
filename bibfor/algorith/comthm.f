@@ -3,11 +3,11 @@
      +                    YAP2,NBPHA2,YATE,ADDEME,ADCOME,ADDEP1,ADCP11,
      +                    ADCP12,ADDEP2,ADCP21,ADCP22,ADDETE,ADCOTE,
      +                    DEFGEM,DEFGEP,CONGEM,CONGEP,VINTM,VINTP,
-     +                    DSDE,PESA,RETCOM)
+     +                    DSDE,PESA,RETCOM,KPI,NPG)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 31/01/2005   AUTEUR ROMEO R.FERNANDES 
+C MODIF ALGORITH  DATE 16/08/2005   AUTEUR ROMEO R.FERNANDES 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -89,7 +89,7 @@ C ======================================================================
 C VARIABLES IN / OUT
 C ======================================================================
       IMPLICIT      NONE
-      INTEGER       RETCOM
+      INTEGER       RETCOM,KPI,NPG
       INTEGER       NDIM,DIMDEF,DIMCON,NBVARI,IMATE,YAMEC,YAP1,NBPHA1
       INTEGER       YAP2,NBPHA2,YATE,ADDEME,ADDEP1,ADDEP2,ADDETE
       INTEGER       ADCOME,ADCP11,ADCP12,ADCP21,ADCP22,ADCOTE
@@ -115,6 +115,10 @@ C ======================================================================
       REAL*8        DLAMBT,VISCG, DVISCG, MAMOLG, CPVG, VISCVG, DVISVG
       REAL*8        FICKAD,DFADT,KH,LAMBCT, ALPHA,ISOT(3)
       CHARACTER*16  MECA,THMC,THER,HYDR
+C ======================================================================
+C --- INITIALISATION ---------------------------------------------------
+C ======================================================================
+      RETCOM = 0
 C ======================================================================
 C --- MISE AU POINT POUR LES VARIABLES INTERNES ------------------------
 C --- DEFINITION DES POINTEURS POUR LES DIFFERENTES RELATIONS DE -------
@@ -162,9 +166,11 @@ C ======================================================================
          ENDIF
       ENDIF
 C ======================================================================
-C --- CALCUL DES GRANDEURS MECANIQUES PURES UNIQUEMENT SI YAMEC = 1 ----
+C --- CALCUL DES GRANDEURS MECANIQUES PURES UNIQUEMENT SI YAMEC = 1 -
+C ET SI ON EST SUR UN POINT DE GAUSS (POUR L'INTEGRATION REDUITE)
+C  C'EST A DIRE SI KPI<NPG
 C ======================================================================
-      IF (YAMEC.EQ.1) THEN 
+      IF (YAMEC.EQ.1 .AND. KPI .LE. NPG) THEN 
          CALL CALCME(OPTION,COMPOR,MECA,IMATE,TYPMOD,CRIT,INSTAM,INSTAP,
      +               T0,NDIM,DIMDEF,DIMCON,NVIM,NVITH,YATE,ADDEME,
      +               ADCOME,ADDETE,DEFGEM,CONGEM,CONGEP,VINTM,VINTP,

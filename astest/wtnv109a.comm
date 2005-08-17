@@ -1,4 +1,4 @@
-# MODIF  DATE 31/01/2005   AUTEUR ROMEO R.FERNANDES 
+# MODIF  DATE 16/08/2005   AUTEUR ROMEO R.FERNANDES 
 # TITRE TEST THM, 3D
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -144,25 +144,23 @@ CHMAT0=AFFE_MATERIAU(   MAILLAGE=MAIL,
                         MATER = ARGILE0)
                  )
 
-CHAR0=AFFE_CHAR_MECA(   MODELE=MODELE,DDL_IMPO=(
-                          _F(  TOUT = 'OUI',
-                                     PRE1 = 500.),
-                         _F(  GROUP_NO = 'BAS',
-                                     DX = 0.,
-                                     DY = 0.,
-                                     DZ = 0.,
+CHAR0=AFFE_CHAR_MECA(MODELE=MODELE,
+                     DDL_IMPO=(_F(NOEUD=('NO1','NO3','NO8','NO6','NO13','NO15','NO20','NO18'),
+                                  PRE1=500.0,),
+                               _F(GROUP_NO='BAS',
+                                  DX=0.0,
+                                  DY=0.0,
+                                  DZ = 0.,),
+                               _F(NOEUD=('NO13','NO18','NO20','NO15'),
                                      TEMP = 0.),
-                         _F(  NOEUD = ('NO9','NO10','NO11','NO12',),
-                                     DX = 0.,
-                                     DY = 0.,
-                                     DZ = 0.5E-3),
-
-                         _F(  GROUP_NO = 'HAUT',
-                                     DX = 0.,
-                                     DY = 0.,
-                                     DZ = 1.E-3,
-                                     ))
-                  )
+                               _F(NOEUD=('NO9','NO10','NO11','NO12'),
+                                  DX=0.0,
+                                  DY=0.0,
+                                  DZ=5.0000000000000001E-4,),
+                               _F(GROUP_NO='HAUT',
+                                  DX=0.0,
+                                  DY=0.0,
+                                  DZ=1.E-3,),),);
 
 MESTAT=STAT_NON_LINE( 
                             MODELE=MODELE,

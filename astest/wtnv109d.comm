@@ -1,4 +1,4 @@
-# MODIF  DATE 31/01/2005   AUTEUR ROMEO R.FERNANDES 
+# MODIF  DATE 16/08/2005   AUTEUR ROMEO R.FERNANDES 
 # TITRE TEST THM, 3D
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -167,14 +167,16 @@ CHMAT0=AFFE_MATERIAU(MAILLAGE=MAIL,
                      AFFE=_F(GROUP_MA='VOLUME',
                              MATER=ARGILE0,),);
 
-CHAR0=AFFE_CHAR_MECA(MODELE=MODELE,
-                     DDL_IMPO=(_F(TOUT='OUI',
+
+CHAR0=AFFE_CHAR_MECA(   MODELE=MODELE,
+                     DDL_IMPO=(_F(NOEUD=('NO1','NO3','NO2','NO7','NO9','NO8','NO16','NO19',),
                                   PRE1=500.0,),
                                _F(GROUP_NO='BAS',
                                   DX=0.0,
                                   DY=0.0,
-                                  DZ=0.0,
-                                  TEMP=0.0,),
+                                  DZ = 0.,),
+                               _F(NOEUD=('NO2','NO3','NO9','NO8'),
+                                     TEMP = 0.),
                                _F(NOEUD=('NO5','NO4','NO18','NO21','NO10','NO11'),
                                   DX=0.0,
                                   DY=0.0,
@@ -195,7 +197,6 @@ CHAR0=AFFE_CHAR_MECA(MODELE=MODELE,
                                      DDL=('TEMP','TEMP'),
                                      COEF_MULT=(1.0,-1.0),
                                      COEF_IMPO=0.0,),),);
-
 MESTAT=STAT_NON_LINE(MODELE=MODELE,
                      CHAM_MATER=CHMAT0,
                      EXCIT=_F(CHARGE=CHAR0,),

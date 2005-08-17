@@ -1,4 +1,4 @@
-# MODIF  DATE 18/05/2005   AUTEUR ROMEO R.FERNANDES 
+# MODIF  DATE 16/08/2005   AUTEUR ROMEO R.FERNANDES 
 # TITRE CONDITION DE SUINTEMENT SUR UN BLOC SATURE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -21,6 +21,7 @@
 DEBUT(CODE=_F(NOM='WTNP109A',NIV_PUB_WEB='INTERNET'),);
 
 PRE_GIBI()
+
 MAIL=LIRE_MAILLAGE();
 
 MAIL=DEFI_GROUP(reuse =MAIL,
@@ -34,6 +35,27 @@ MAIL=DEFI_GROUP(reuse =MAIL,
                                _F(GROUP_MA='GM17',),
                                _F(GROUP_MA='GM18',),
                                _F(GROUP_MA='BORD',),
+                                _F(NOM = 'SOM_GM13',
+                                 CRIT_NOEUD='SOMMET',
+                                 GROUP_MA = 'GM13'),
+                                _F(NOM = 'SOM_GM15',
+                                 CRIT_NOEUD='SOMMET',
+                                 GROUP_MA = 'GM15'),
+                                _F(NOM = 'SOM_GM17',
+                                 CRIT_NOEUD='SOMMET',
+                                 GROUP_MA = 'GM17'),
+                                _F(NOM = 'SOM_GM14',
+                                 CRIT_NOEUD='SOMMET',
+                                 GROUP_MA = 'GM14'),
+                                _F(NOM = 'SOM_GM16',
+                                 CRIT_NOEUD='SOMMET',
+                                 GROUP_MA = 'GM16'),
+                                _F(NOM = 'MIL_GM14',
+                                 CRIT_NOEUD='MILIEU',
+                                 GROUP_MA = 'GM14'),
+                                _F(NOM = 'MIL_GM16',
+                                 CRIT_NOEUD='MILIEU',
+                                 GROUP_MA = 'GM16'),
                       ),);
 
 MODELE=AFFE_MODELE(MAILLAGE=MAIL,
@@ -88,14 +110,15 @@ CHAR0=AFFE_CHAR_MECA(MODELE=MODELE,
                                   DY=0.0,),
                                _F(GROUP_NO=('GM12','GM18'),
                                   DX=0.0,),
-                               _F(GROUP_MA=('GM13','GM17','GM15'),
-                                 PRE1=0.0)
+                               _F(GROUP_NO=('SOM_GM13','SOM_GM17','SOM_GM15'),
+                                 PRE1=0.0),
                                               ),
                       )
 
 CHAR1=AFFE_CHAR_MECA(MODELE=MODELE,
                      CONTACT=_F(APPARIEMENT='NON',
                                GROUP_MA_ESCL=('GM14','GM16'),
+                                SANS_GROUP_NO=('MIL_GM14','MIL_GM16',),
                                 NOM_CHAM='PRE1',
                                 COEF_IMPO=3.0,
                                 COEF_MULT_ESCL=1.0,),);
@@ -114,13 +137,67 @@ MESTAT=STAT_NON_LINE(MODELE=MODELE,
                                   RELATION_KIT=('ELAS','LIQU_SATU','HYDR_UTIL',),),
                      INCREMENT=_F(LIST_INST=LI,),
                      NEWTON=_F(MATRICE='TANGENTE',
-                               REAC_ITER=20,),
-                     CONVERGENCE=_F(ITER_GLOB_MAXI=10,
+                               REAC_ITER=1,),
+                     CONVERGENCE=_F(RESI_GLOB_RELA=10E-6,
+                                    ITER_GLOB_MAXI=10,
                                     ITER_INTE_MAXI=5,),
                      PARM_THETA=1.0,);
-
-
  
+#############################################
+# POST-TRAITEMENT POUR MODELISATION REDUITE #
+#############################################
+
+MAILLIN = CREA_MAILLAGE(
+                         MAILLAGE  = MAIL,
+                         QUAD_LINE = _F(TOUT = 'OUI'),
+                       )
+
+MODELIN=AFFE_MODELE(MAILLAGE=MAILLIN,
+                   AFFE=_F(TOUT='OUI',
+                           PHENOMENE='MECANIQUE',
+                           MODELISATION='D_PLAN',),);
+
+RESULIN = PROJ_CHAMP(
+               METHODE='ELEM',
+               RESULTAT=MESTAT,
+               MODELE_1=MODELE,
+               MODELE_2=MODELIN,
+               NOM_CHAM ='DEPL',
+               TOUT_ORDRE='OUI')        
+                   
+IMPR_RESU(RESU=_F( RESULTAT  =  MESTAT,
+                   IMPR_COOR = 'OUI',
+                   NUME_ORDRE = 3,
+                   GROUP_NO  = 'SOM_GM14',
+                   NOM_CHAM  = 'DEPL',
+                   ),)                   
+                   
+MESTAT=CALC_ELEM( reuse      = MESTAT,
+              OPTION     = ('SIEF_ELNO_ELGA','VARI_ELNO_ELGA'),
+              RESULTAT   = MESTAT,
+              MODELE     = MODELE,
+              CHAM_MATER = CHMATO,
+              );
+ 
+MESTAT= CALC_NO( reuse    = MESTAT,     
+                   RESULTAT = MESTAT,
+                   OPTION   = ( 'SIEF_NOEU_ELGA', 'VARI_NOEU_ELGA')
+                  )
+
+IMPR_RESU(RESU=_F( RESULTAT = MESTAT,
+                   IMPR_COOR = 'OUI',
+                   NUME_ORDRE = 3,
+                   GROUP_NO  = 'SOM_GM14',
+                   NOM_CHAM ='SIEF_NOEU_ELGA',
+                   ),)
+
+IMPR_RESU(RESU=_F( RESULTAT = MESTAT,
+                   IMPR_COOR = 'OUI',
+                   NUME_ORDRE = 3,
+                   GROUP_NO  = 'SOM_GM14',
+                   NOM_CHAM ='VARI_NOEU_ELGA',
+                   ),)
+
 TEST_RESU(RESU=_F(RESULTAT=MESTAT,
                   NUME_ORDRE=3,
                   NOM_CHAM='DEPL',
@@ -134,8 +211,8 @@ TEST_RESU(RESU=_F(RESULTAT=MESTAT,
                   NUME_ORDRE=3,
                   NOM_CHAM='DEPL',
                   NOM_CMP='PRE1',
-                  NOEUD='N444',
-                  VALE= 2.9807640599334,
+                  NOEUD='N106',
+                  VALE= 3.0,
                   REFERENCE='NON_REGRESSION',
                   VERSION = '7.3.27', ),)
 

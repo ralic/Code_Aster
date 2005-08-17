@@ -1,5 +1,5 @@
-# MODIF  DATE 31/01/2005   AUTEUR ROMEO R.FERNANDES 
-# TITRE TEST THM_D_PLAN_DPTR6, MASSIF POREUX SATURE CHAUFFE PAR UN FLUX
+# MODIF  DATE 16/08/2005   AUTEUR ROMEO R.FERNANDES 
+# TITRE TEST THM_D_PLAN_DPQ8, MASSIF POREUX SATURE CHAUFFE PAR UN FLUX
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -88,7 +88,8 @@ MATERIAU=DEFI_MATERIAU(     THM_LIQU=_F(
    ALPHA = 8.E-6,
    CP = 2.85E6,
    VISC = UN,
-   D_VISC_TEMP = ZERO,),
+   D_VISC_TEMP = ZERO,
+   ),
 #
                               THM_GAZ=_F( 
    MASS_MOL = 28.96E-3,
@@ -133,12 +134,12 @@ CHMAT0=AFFE_MATERIAU(   MAILLAGE=MAIL,
 
 CHAR0=AFFE_CHAR_MECA(   MODELE=MODELE,DDL_IMPO=(
                           _F(  TOUT = 'OUI',
-                                     PRE1 = 0.,
                                      DX = 0.,
                                      DY = 0.),
-                         _F(  GROUP_NO = 'BAS',
+                          _F(NOEUD=('N1','N2','N3','N4'),
+                                    PRE1=0.),
+                          _F(NOEUD=('N1','N2'),
                                      TEMP = 0.)),
-
                         FLUX_THM_REP=_F(  GROUP_MA = 'HAUT',
                                    FLUN = 0.5,
                                    FLUN_HYDR1 = 0.)
@@ -149,7 +150,7 @@ MESTAT=STAT_NON_LINE(   MODELE=MODELE,
                           CHAM_MATER=CHMAT0,
                           EXCIT=_F( CHARGE = CHAR0),
                           COMP_INCR=_F( RELATION = 'KIT_THM',
-                      RELATION_KIT = ('ELAS', 'LIQU_SATU', 'HYDR_UTIL',)),
+                      RELATION_KIT = ('ELAS', 'LIQU_SATU',  'HYDR_UTIL',)),
 
                          INCREMENT=_F( LIST_INST = LI),
                           NEWTON=_F( MATRICE = 'TANGENTE',
@@ -176,38 +177,11 @@ TEST_RESU(
              NOM_CHAM = 'DEPL', 
              NOM_CMP = 'TEMP',
              NOEUD = 'N3',   
-             VALE = 2.94118E-01, 
-             PRECISION = 1.E-4)
+             VALE = 2.94118E-01,   
+             CRITERE = 'RELATIF',
+             PRECISION = 1.E-2)
            )
-
-TEST_RESU( 
-           RESU=_F(  RESULTAT = MESTAT,         NUME_ORDRE = 1,
-             NOM_CHAM = 'DEPL', 
-             NOM_CMP = 'TEMP',
-             NOEUD = 'N6',   
-             VALE = 1.47059E-01, 
-             PRECISION = 1.E-4)
-           )
-
-TEST_RESU( 
-           RESU=_F(  RESULTAT = MESTAT,         NUME_ORDRE = 1,
-             NOM_CHAM = 'DEPL', 
-             NOM_CMP = 'TEMP',
-             NOEUD = 'N9',   
-             VALE = 1.47059E-01,  
-             PRECISION = 1.E-4)
-           )
-         
-TEST_RESU( 
-           RESU=_F(  RESULTAT = MESTAT,         NUME_ORDRE = 1,
-             NOM_CHAM='SIEF_ELGA',
-             NOM_CMP='SIXX',
-             VALE=-2.3606751129179E+02,
-             PRECISION=1.E-5,
-             MAILLE='M1',
-             POINT=6,
-             REFERENCE='NON_REGRESSION',
-             VERSION = '7.2.26', ),);
 
 
 FIN()
+#

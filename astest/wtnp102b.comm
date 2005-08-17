@@ -1,4 +1,4 @@
-# MODIF  DATE 18/05/2005   AUTEUR ROMEO R.FERNANDES 
+# MODIF  DATE 16/08/2005   AUTEUR ROMEO R.FERNANDES 
 # ======================================================================
 # TITRE MODELISATION D_PLAN_THHD EN QUAD4
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -34,7 +34,13 @@ INST1=DEFI_LIST_REEL(DEBUT=0.0,
                       JUSQU_A=10000.,NOMBRE=1,),);
 
 
-MAIL=LIRE_MAILLAGE();
+MAILIN=LIRE_MAILLAGE();
+
+MAIL = CREA_MAILLAGE(
+                         MAILLAGE  = MAILIN,
+                         LINE_QUAD = _F(TOUT = 'OUI'),
+                       )
+
 
 MAIL=DEFI_GROUP(reuse =MAIL,
                 MAILLAGE=MAIL,

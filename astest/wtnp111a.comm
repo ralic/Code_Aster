@@ -1,4 +1,4 @@
-# MODIF  DATE 18/05/2005   AUTEUR ROMEO R.FERNANDES 
+# MODIF  DATE 16/08/2005   AUTEUR ROMEO R.FERNANDES 
 # TITRE TEST ELEMENTAIRE DU SUINTEMENT : EPONGE SOUS PRESSION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -20,7 +20,12 @@
 
 DEBUT(CODE=_F(NOM='WTNP111A',NIV_PUB_WEB='INTERNET'),);
 
-MAIL=LIRE_MAILLAGE();
+MAILIN=LIRE_MAILLAGE();
+
+MAIL = CREA_MAILLAGE(
+                         MAILLAGE  = MAILIN,
+                         LINE_QUAD = _F(TOUT = 'OUI'),
+                       )
 
 MAIL=DEFI_GROUP(reuse =MAIL,  
                 MAILLAGE=MAIL,
@@ -28,6 +33,18 @@ MAIL=DEFI_GROUP(reuse =MAIL,
                                _F(GROUP_MA='DROITE',),
                                _F(GROUP_MA='HAUT',),
                                _F(GROUP_MA='BAS',),
+                                _F(NOM = 'SOM_BAS',
+                                 CRIT_NOEUD='SOMMET',
+                                 GROUP_MA = 'BAS'),
+                                _F(NOM = 'SOM_HAUT',
+                                 CRIT_NOEUD='SOMMET',
+                                 GROUP_MA = 'HAUT'),
+                                _F(NOM = 'SOM_GAUCHE',
+                                 CRIT_NOEUD='SOMMET',
+                                 GROUP_MA = 'GAUCHE'),
+                                _F(NOM = 'MIL_DROITE',
+                                 CRIT_NOEUD='MILIEU',
+                                 GROUP_MA = 'DROITE'),
                                                        ))
 
 MODELE=AFFE_MODELE(MAILLAGE=MAIL,
@@ -76,13 +93,14 @@ CHAR0=AFFE_CHAR_MECA(MODELE=MODELE,
                      DDL_IMPO=(
                                _F(GROUP_MA=('GAUCHE','DROITE','BAS','HAUT'),
                                   DX=0.0,DY=0.0,),
-                               _F(GROUP_NO=('GAUCHE','BAS','HAUT'),
+                               _F(GROUP_NO=('SOM_GAUCHE','SOM_BAS','SOM_HAUT'),
                                   PRE1=1000.0,),
                                                          ))
 
 CHAR1=AFFE_CHAR_MECA_F(MODELE=MODELE,
                      CONTACT=_F(APPARIEMENT='NON',
                                 GROUP_MA_ESCL=('DROITE'),
+                                SANS_GROUP_NO=('MIL_DROITE'),
                                 NOM_CHAM='PRE1',
                                 COEF_IMPO=FONCT1,
                                 COEF_MULT_ESCL=1.0,),);
@@ -101,8 +119,6 @@ MESTAT=STAT_NON_LINE(MODELE=MODELE,
                      CONVERGENCE=_F(ITER_GLOB_MAXI=10,
                                     ITER_INTE_MAXI=5,),
                      PARM_THETA=1.0,);
-
-
 
 TEST_RESU(RESU=_F(RESULTAT=MESTAT,
                   NUME_ORDRE=1,

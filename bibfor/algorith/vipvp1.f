@@ -8,7 +8,7 @@
       REAL*8        DP2,T,DT,MAMOLV,R,RHO11,CP11,CP12,PVP,PVPM,P2,SIGNE
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 31/01/2005   AUTEUR ROMEO R.FERNANDES 
+C MODIF ALGORITH  DATE 16/08/2005   AUTEUR ROMEO R.FERNANDES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -27,11 +27,11 @@ C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_21
 C ======================================================================
-C --- CALCUL ET STOCKAGE DES PRESSIONS DE VAPEUR DANS LES CAS SANS -----
-C --- AIR DISSOUS ------------------------------------------------------
+C --- BUT : CALCUL ET STOCKAGE DES PRESSIONS DE VAPEUR -----------------
+C -------   DANS LES CAS SANS AIR DISSOUS ------------------------------
 C ======================================================================
       INTEGER       IADZI,IAZK24,UMESS,IUNIFI
-      REAL*8        VARBIO,EPXMAX
+      REAL*8        VARBIO,EPXMAX,R8PREM
       PARAMETER    (EPXMAX = 5.D0)
       CHARACTER*8   NOMAIL
 C ======================================================================
@@ -80,6 +80,14 @@ C ======================================================================
          NOMAIL = ZK24(IAZK24-1+3) (1:8)
          WRITE (UMESS,9001) 'VIPVP1','PGAZ-PVAP <=0 A LA MAILLE: ',
      +                                                            NOMAIL
+         RETCOM = 1
+         GO TO 30
+      ENDIF
+      IF ((PVP).LT.R8PREM()) THEN
+         UMESS  = IUNIFI('MESSAGE')
+         CALL TECAEL(IADZI,IAZK24)
+         NOMAIL = ZK24(IAZK24-1+3) (1:8)
+         WRITE (UMESS,9001) 'VIPVP1','PVAP =0 A LA MAILLE: ',NOMAIL
          RETCOM = 1
          GO TO 30
       ENDIF

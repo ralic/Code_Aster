@@ -1,4 +1,4 @@
-# MODIF  DATE 31/01/2005   AUTEUR ROMEO R.FERNANDES 
+# MODIF  DATE 16/08/2005   AUTEUR ROMEO R.FERNANDES 
 # TITRE MODELISATION DE LA DIFFUSION DE L AIR DISSOUS DANS L EAU
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -52,7 +52,17 @@ MODELE=AFFE_MODELE(MAILLAGE=MAIL,
                            MODELISATION='AXIS_HH2MD',),);
 #
 #
-
+MAIL=DEFI_GROUP( reuse=MAIL,
+               MAILLAGE=MAIL,
+               CREA_GROUP_MA=(_F(NOM='ROCHE',
+                                     TOUT='OUI'),),
+               CREA_GROUP_NO=(_F(NOM='ROCHES',
+                                 CRIT_NOEUD='SOMMET',
+                                 GROUP_MA='ROCHE'),
+                              _F(NOM='GAUCHES',
+                                 CRIT_NOEUD='SOMMET',
+                                 GROUP_MA='GAUCHE'),                                 
+                                 ),)
 
 UN=DEFI_CONSTANTE(VALE=1.0,);
 UNDEMI=DEFI_CONSTANTE(VALE=0.5,);
@@ -184,9 +194,9 @@ TIMP=AFFE_CHAR_MECA(MODELE=MODELE,
                              DX=0.0,),
                      _F(GROUP_NO=('HAUT','BAS','GAUCHE','DROIT'),
                              DY=0.0,),
-                     _F(GROUP_MA='GAUCHE',
+                     _F(GROUP_NO='GAUCHES',
                              PRE2=15000.,),
-                     _F(GROUP_MA='GAUCHE',
+                     _F(GROUP_NO='GAUCHES',
                              PRE1=1.E6,),
                              ),
                              );

@@ -1,4 +1,4 @@
-# MODIF  DATE 18/05/2005   AUTEUR ROMEO R.FERNANDES 
+# MODIF  DATE 16/08/2005   AUTEUR ROMEO R.FERNANDES 
 # TITRE DESATURATION D UN MILIEU POREUX SANS AIR
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -42,7 +42,29 @@ MAIL=DEFI_GROUP(reuse =MAIL,
                                _F(GROUP_MA='DROIT',),
                                _F(GROUP_MA='BO',),
                                ),);
-
+MAIL=DEFI_GROUP(reuse =MAIL,
+                MAILLAGE=MAIL,
+                CREA_GROUP_MA=(_F(NOM='ROCHE',
+                                  TOUT='OUI',),),
+                CREA_GROUP_NO=(_F(NOM='ROCHES',
+                                  CRIT_NOEUD='SOMMET',
+                                  GROUP_MA='ROCHE',),
+                               _F(NOM='BASS',
+                                  CRIT_NOEUD='SOMMET',
+                                  GROUP_MA='BAS',),
+                               _F(NOM='HAUTS',
+                                  CRIT_NOEUD='SOMMET',
+                                  GROUP_MA='HAUT',),
+                               _F(NOM='GAUCHES',
+                                  CRIT_NOEUD='SOMMET',
+                                  GROUP_MA='GAUCHE',),
+                               _F(NOM='DROITS',
+                                  CRIT_NOEUD='SOMMET',
+                                  GROUP_MA='DROIT',),
+                               _F(NOM='BOS',
+                                  CRIT_NOEUD='SOMMET',
+                                  GROUP_MA='BO',),
+                               ),);
 MODELE=AFFE_MODELE(MAILLAGE=MAIL,
                    AFFE=_F(TOUT='OUI',
                            PHENOMENE='MECANIQUE',
@@ -183,10 +205,10 @@ CHMAT0=AFFE_MATERIAU(MAILLAGE=MAIL,
 CHAMNO=CREA_CHAMP(MAILLAGE=MAIL,
                     OPERATION='AFFE', 
                     TYPE_CHAM='NOEU_DEPL_R',
-                    AFFE=(_F(TOUT='OUI',
+                    AFFE=(_F(GROUP_NO='ROCHES',
                              NOM_CMP='TEMP',
                              VALE=0.0,),
-                          _F(GROUP_NO='BO',
+                          _F(GROUP_NO='BOS',
                              NOM_CMP='PRE1',
                              VALE=1.E5,),
                              ),);

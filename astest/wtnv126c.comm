@@ -1,0 +1,828 @@
+# MODIF  DATE 16/08/2005   AUTEUR ROMEO R.FERNANDES 
+# ======================================================================
+# TITRE REPONSE A DES CHEMINS MIXTES DE SATURATION
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+#       CONSOLIDATION EN AXIS
+# ======================================================================
+
+DEBUT(   CODE=_F( NOM = 'WTNV126C', NIV_PUB_WEB='INTERNET' )  )
+
+UN=DEFI_CONSTANTE(    VALE=1.)
+
+ZERO=DEFI_CONSTANTE(    VALE=0.)
+
+VISCOLIQ=DEFI_CONSTANTE(    VALE=1.E-3)
+
+VISCOGAZ=DEFI_CONSTANTE(    VALE=1.8E-5)
+
+DVISCOL=DEFI_CONSTANTE(    VALE=0.)
+
+DVISCOG=DEFI_CONSTANTE(    VALE=0.)
+
+KINT=DEFI_CONSTANTE(    VALE=1.E-18)
+
+
+
+####  FONCTION SATURATION ET SA DERIVEE : UNITE DE PRESSION : PA  
+
+LI2=DEFI_LIST_REEL(DEBUT=0.0,
+                   INTERVALLE=_F(JUSQU_A=1.6E8,
+                                 PAS=1.E6,),);
+  
+SL = FORMULE(NOM_PARA='PCAP',VALE='0.99*(1.-PCAP*6.E-9)')
+
+SATU=CALC_FONC_INTERP(FONCTION=SL,  
+                      LIST_PARA=LI2,  
+                       NOM_PARA='PCAP',  
+                      PROL_DROITE='CONSTANT',  
+                      PROL_GAUCHE='CONSTANT',  
+                      INFO=2,);  
+  
+DSL = FORMULE(NOM_PARA='PCAP',VALE='-6.E-9*0.99')
+
+DSATU=CALC_FONC_INTERP(FONCTION=DSL,  
+                       LIST_PARA=LI2,  
+                       NOM_PARA='PCAP',  
+                       PROL_DROITE='CONSTANT',  
+                       PROL_GAUCHE='CONSTANT',  
+                       INFO=2,);  
+
+# MAILLAGE + MODELE
+
+#PRE_GIBI();
+
+MAILLAGE=LIRE_MAILLAGE( );
+
+MAILLAGE=DEFI_GROUP(reuse =MAILLAGE,
+                MAILLAGE=MAILLAGE,
+                CREA_GROUP_NO=(_F(GROUP_MA='AB',),
+                               _F(GROUP_MA='BC',),
+                               _F(GROUP_MA='CD',),
+                               _F(GROUP_MA='DA',),),);
+
+
+MAILLAGE=DEFI_GROUP(reuse =MAILLAGE,
+                MAILLAGE=MAILLAGE,
+                CREA_GROUP_MA=(_F(NOM='ROCHE',
+                                  TOUT='OUI',),),
+                CREA_GROUP_NO=(_F(NOM='ROCHES',
+                                  CRIT_NOEUD='SOMMET',
+                                  GROUP_MA='ROCHE',),),);
+                                  
+MODELE=AFFE_MODELE(     MAILLAGE=MAILLAGE,
+                             AFFE=_F(  TOUT = 'OUI',
+                                    PHENOMENE = 'MECANIQUE',
+                                    MODELISATION = 'AXIS_HHMS',
+                                   )
+                          )
+
+MAILLAGE=MODI_MAILLAGE( reuse=MAILLAGE,   MAILLAGE=MAILLAGE,
+                                MODELE=MODELE,
+                       ORIE_PEAU_2D=_F(  GROUP_MA = ('BC', 'CD'),  )
+                     )
+
+# MATERIAU 
+
+SOL=DEFI_MATERIAU(    ELAS=_F(  E = 26.E6,    NU = 0.3,  
+                                     RHO = 2500.,  
+                                     ALPHA = 1.E-5,  
+                                   ), 
+                    CAM_CLAY=_F(PORO=0.14,
+                                LAMBDA=0.2,
+                                KAPA=0.02,           
+                                M=1.,
+                                PRES_CRIT=2.E5,
+                                PA=1.E5,),
+                    BARCELONE=_F(R=0.75,
+                                BETA=12.5E-6,
+                                KC=0.6,           
+                                PC0_INIT=3.E5,
+                                KAPAS=0.008,
+                                LAMBDAS=0.08,),
+                     COMP_THM = 'LIQU_GAZ',
+                     THM_LIQU=_F(  
+                                RHO = 1000.,  
+                                UN_SUR_K = 0.5E-9,  
+                                ALPHA = 1.E-4,  
+                                CP = 4180.,  
+                                VISC = VISCOLIQ,   
+                                D_VISC_TEMP = DVISCOL,  
+                                        ),
+                      THM_GAZ=_F( 
+                                MASS_MOL = 28.96E-3,  
+                                CP = 1000.,  
+                                VISC = VISCOGAZ,  
+                                D_VISC_TEMP = DVISCOG,  
+                                  ),
+                       THM_VAPE_GAZ=_F( 
+                                MASS_MOL = 18.E-3,  
+                                CP = 1870.,  
+                                VISC = VISCOGAZ,    
+                                D_VISC_TEMP = ZERO,    
+                                 ),      
+                       THM_DIFFU=_F( 
+                                R_GAZ = 8.315,  
+                                RHO = 2400.,  
+                                CP = 800.,  
+                                BIOT_COEF = 1.,    
+                                SATU_PRES = SATU,  
+                                D_SATU_PRES = DSATU,  
+                                PESA_X = 0.,  
+                                PESA_Y = 0.,  
+                                PESA_Z = 0.,  
+                                PERM_IN = KINT, 
+                                PERM_LIQU = UN,  
+                                D_PERM_LIQU_SATU = ZERO,  
+                                PERM_GAZ = UN,  
+                                D_PERM_SATU_GAZ = ZERO,  
+                                D_PERM_PRES_GAZ = ZERO,  
+                                 ),
+                        THM_INIT=_F( 
+                                TEMP = 293.,  
+                                PRE1 = 0.E5,  
+                                PRE2 = 1.E5,  
+                                PORO = 0.14,  
+                                PRES_VAPE = 2269.8,
+                                DEGR_SATU=0.9,  
+                                )
+                           )
+
+CHMAT=AFFE_MATERIAU(    MAILLAGE=MAILLAGE,
+                             AFFE=_F(  TOUT = 'OUI',    MATER = SOL,  )
+                          )
+
+# CONDITIONS AUX LIMITES
+
+PR=AFFE_CHAR_MECA(    MODELE=MODELE,
+                              PRES_REP=_F(   GROUP_MA = ( 'BC', 'CD', ),  
+                                          PRES = 1.,  
+                                    )
+                       )
+
+
+DEP_SYM=AFFE_CHAR_MECA(    MODELE=MODELE,DDL_IMPO=(
+                              _F(  GROUP_NO = 'DA',    DX = 0.,   ),
+                              _F(  GROUP_NO = 'AB',    DY = 0.,   ))
+                           )
+
+# LISTES D INSTANT
+
+TEMPS1=DEFI_LIST_REEL(   DEBUT=0.,INTERVALLE=(
+                            _F(  JUSQU_A = 1.,    NOMBRE = 5, ),
+                            _F(  JUSQU_A = 3.,    NOMBRE = 5, ),
+                            _F(  JUSQU_A = 6.,    NOMBRE = 15, ),)
+                         )
+TEMPS2=DEFI_LIST_REEL(   DEBUT=6.,INTERVALLE=(
+                            _F(  JUSQU_A = 12.,    NOMBRE = 25,  ),)
+                         )
+
+TEMPS3=DEFI_LIST_REEL(   DEBUT=12.,INTERVALLE=(
+                            _F(  JUSQU_A = 18.,    NOMBRE = 25,  ),)
+                         )
+
+TEMPS4=DEFI_LIST_REEL(   DEBUT=18.,INTERVALLE=(
+                            _F(  JUSQU_A = 24.,    NOMBRE = 40,  ),)
+                         )
+
+# AFFECTATION DE L ETAT INITIAL NON SATURE 
+
+DEPINIT=CREA_CHAMP(MAILLAGE=MAILLAGE,
+                    OPERATION='AFFE',
+                    TYPE_CHAM='NOEU_DEPL_R',
+                    AFFE=(_F(GROUP_NO='ROCHES',
+                             NOM_CMP='PRE1',
+                             VALE=2.E5,
+                              ),
+                          _F(GROUP_NO='ROCHES',
+                             NOM_CMP='PRE2',
+                              VALE=0.,
+                              ),    ),);
+
+
+SIGINIT=CREA_CHAMP(MAILLAGE=MAILLAGE,
+                   OPERATION='AFFE',
+                   TYPE_CHAM='CART_SIEF_R',
+                   AFFE=_F(TOUT='OUI',
+                           NOM_CMP=
+                           ('SIXX','SIYY','SIZZ','SIXY','SIXZ',
+                            'SIYZ','SIP','M11','FH11X','FH11Y','FH11Z',
+                            'ENT11','M12','FH12X','FH12Y','FH12Z','ENT12',
+                            'M21','FH21X','FH21Y','FH21Z','ENT21','QPRIM',
+                                     'FHTX','FHTY','FHTZ'),
+                           VALE=
+                           (-7E4,-7E4,-7E4,0.0,0.0,
+                            0.0,-8E4,0.0,0.0,0.0,0.0,
+                           -200.,0.0,0.0,0.0,0.0,0.0,
+                            0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0),),);
+
+# PREMIER MOUILLAGE 
+
+P0=AFFE_CHAR_MECA(    MODELE=MODELE,
+                      DDL_IMPO=_F( GROUP_NO='ROCHES',   
+                                    PRE1 =1.,PRE2=0,
+                                 )
+                 )
+
+
+EVO_DES0=DEFI_FONCTION(      NOM_PARA='INST',
+                           PROL_DROITE='CONSTANT',
+                          PROL_GAUCHE='CONSTANT',
+                         VALE=( 0.0,  2.E5,
+                                2.0,  1.33E5,
+                                4.0,  0.66E5,
+                                6.0,  0.E5,
+                               ),
+                      )
+
+
+EVO_HYD0=DEFI_FONCTION(      NOM_PARA='INST',
+                           PROL_DROITE='CONSTANT',
+                         VALE=( 0.0,  1.5E5,
+                               1.0,   1.5E5,
+                               3.0,   1.5E5,
+                               6.0,   1.5E5,)
+                       )
+
+U1=STAT_NON_LINE(ETAT_INIT = _F(SIGM=SIGINIT,DEPL=DEPINIT),
+                        MODELE=MODELE,
+                        CHAM_MATER=CHMAT,EXCIT=(
+                             _F( 
+                CHARGE = PR,            
+                FONC_MULT = EVO_HYD0,         
+                ), _F( 
+                CHARGE = DEP_SYM,            
+                ), _F( 
+                CHARGE = P0,            
+                FONC_MULT = EVO_DES0,         
+                ),
+                ),
+                         COMP_INCR=_F( 
+                RELATION = 'KIT_HHM',          
+                RELATION_KIT = (
+                  'BARCELONE',        'LIQU_GAZ',
+                  'HYDR_UTIL',  ),      
+                ),
+                       NEWTON=_F(
+                     MATRICE='TANGENTE',
+                      REAC_ITER=1,
+                     ),
+                         INCREMENT=_F(
+                INST_INIT = 0., 
+                LIST_INST = TEMPS1,
+                INST_FIN=6.,
+                ),
+                       CONVERGENCE=_F(
+                       ITER_GLOB_MAXI=50,
+                       ITER_INTE_MAXI=100, 
+                       RESI_GLOB_RELA = 1.E-6,    
+                )
+              )
+              
+# PREMIER CHARGEMENT HYDROSTATIQUE
+
+P1=AFFE_CHAR_MECA(    MODELE=MODELE,
+                               DDL_IMPO=_F(GROUP_NO='ROCHES',   
+                               PRE1 =0.,PRE2=0,
+                                )
+                           )
+
+
+EVO_HYD1=DEFI_FONCTION(      NOM_PARA='INST',
+                           PROL_DROITE='CONSTANT',
+                         VALE=( 6.0,  1.5E5,
+                                12.0, 7.0E5,
+                               ))
+                               
+U1=STAT_NON_LINE(reuse=U1, 
+                  MODELE=MODELE,
+                 CHAM_MATER=CHMAT,EXCIT=(
+                             _F( 
+                CHARGE = DEP_SYM,            
+                ), _F( 
+                CHARGE = PR,            
+                FONC_MULT = EVO_HYD1,         
+                ), _F( 
+                CHARGE = P1,            
+                ),
+                ),
+                         COMP_INCR=_F( 
+                RELATION = 'KIT_HHM',          
+                RELATION_KIT = (
+                  'BARCELONE',        'LIQU_GAZ',
+                  'HYDR_UTIL',  ),      
+                ),
+                         ETAT_INIT=_F( 
+                EVOL_NOLI = U1,        
+                ),
+                         INCREMENT=_F( 
+                LIST_INST = TEMPS2,
+                INST_INIT = 6., 
+                ),
+                            NEWTON=_F( 
+                MATRICE = 'TANGENTE', 
+                REAC_ITER=1,
+                ),
+                CONVERGENCE=_F( 
+                ITER_GLOB_MAXI=50,
+                ITER_INTE_MAXI=100, 
+                RESI_GLOB_RELA = 1.E-6,     
+                )
+              )
+
+# POURSUITE DU PREMIER CHARGEMENT HYDROSTATIQUE
+
+
+EVO_HYD4=DEFI_FONCTION(      NOM_PARA='INST',
+                           PROL_DROITE='CONSTANT',
+                         VALE=( 12.0, 7.E5,
+                                18.0, 8.E5,
+                               ))
+                               
+U1=STAT_NON_LINE(reuse=U1, 
+                  MODELE=MODELE,
+                 CHAM_MATER=CHMAT,EXCIT=(
+                             _F( 
+                CHARGE = DEP_SYM,            
+                ),  _F( 
+                CHARGE = PR,            
+                FONC_MULT = EVO_HYD4,         
+                ), _F( 
+                CHARGE = P1,            
+                ),
+                ),
+                         COMP_INCR=_F( 
+                RELATION = 'KIT_HHM',          
+                RELATION_KIT = (
+                  'BARCELONE',        'LIQU_GAZ',
+                  'HYDR_UTIL',  ),      
+                ),
+                         ETAT_INIT=_F( 
+                EVOL_NOLI = U1,        
+                ),
+                         INCREMENT=_F( 
+                LIST_INST = TEMPS3,
+                INST_INIT = 12., 
+                INST_FIN = 18., 
+                ),
+                            NEWTON=_F( 
+                MATRICE = 'TANGENTE', 
+                REAC_ITER=1,
+                ),
+                CONVERGENCE=_F( 
+                ITER_GLOB_MAXI=50,
+                ITER_INTE_MAXI=100, 
+                RESI_GLOB_RELA = 1.E-6,     
+                )
+              )
+
+# SECHAGE 
+
+EVO_DES4=DEFI_FONCTION(      NOM_PARA='INST',
+                           PROL_DROITE='CONSTANT',
+                          PROL_GAUCHE='CONSTANT',
+                         VALE=( 18.0,  0.E5,
+                                20.0,  0.66E5,
+                                22.0,  1.33E5,
+                                24.0,  2.E5,
+                               ),)
+                               
+U1=STAT_NON_LINE(reuse=U1, 
+                  MODELE=MODELE,
+                 CHAM_MATER=CHMAT,EXCIT=(
+                             _F( 
+                CHARGE = DEP_SYM,            
+                ), _F( 
+                CHARGE = PR,            
+                FONC_MULT = EVO_HYD4,         
+                ), _F( 
+                CHARGE = P0,            
+                FONC_MULT = EVO_DES4,         
+                )),
+                         COMP_INCR=_F( 
+                RELATION = 'KIT_HHM',          
+                RELATION_KIT = (
+                  'BARCELONE',        'LIQU_GAZ',
+                  'HYDR_UTIL',  ),      
+                ),
+                         ETAT_INIT=_F( 
+                EVOL_NOLI = U1,        
+                ),
+                         INCREMENT=_F( 
+                LIST_INST = TEMPS4,
+                INST_INIT = 18.,
+                INST_FIN = 24.,
+                ),
+                            NEWTON=_F( 
+                MATRICE = 'TANGENTE', 
+                REAC_ITER=1,
+                ),
+                CONVERGENCE=_F( 
+                ITER_GLOB_MAXI=50,
+                ITER_INTE_MAXI=100, 
+                RESI_GLOB_RELA = 1.E-6,     
+                )
+              )
+
+U1=CALC_ELEM(reuse =U1,
+               RESULTAT=U1,
+               PRECISION = 1.E-10,
+               CHAM_MATER=CHMAT,
+               MODELE=MODELE,
+               OPTION=('SIEF_ELNO_ELGA','VARI_ELNO_ELGA'),);
+
+U1=CALC_NO(reuse =U1,
+               RESULTAT=U1,
+               PRECISION = 1.E-10,
+               CHAM_MATER=CHMAT,
+               OPTION=('SIEF_NOEU_ELGA','VARI_NOEU_ELGA'),);
+
+                     
+
+# DEUXIEME CHARGEMENT HYDROSTATIQUE
+
+EVO_HYD2=DEFI_FONCTION(      NOM_PARA='INST',
+                           PROL_DROITE='CONSTANT',
+                         VALE=( 0.0,  1.5E5,
+                                6.0,  7.E5,
+                               ))
+                               
+EVO_DES2=DEFI_FONCTION(      NOM_PARA='INST',
+                           PROL_DROITE='CONSTANT',
+                          PROL_GAUCHE='CONSTANT',
+                         VALE=( 0.0,  2.E5,
+                                2.0,  2.E5,
+                                4.0,  2.E5,
+                                5.0,  2.E5,
+                                6.0,  2.E5,
+                               ),)
+
+U2=STAT_NON_LINE(ETAT_INIT = _F(SIGM=SIGINIT,DEPL=DEPINIT),
+                 MODELE=MODELE,
+                 CHAM_MATER=CHMAT,EXCIT=(
+                             _F( 
+                CHARGE = DEP_SYM,            
+                ), _F( 
+                CHARGE = PR,            
+                FONC_MULT = EVO_HYD2,         
+                ), _F( 
+                CHARGE = P0,            
+                FONC_MULT = EVO_DES2,         
+                ),
+                ),
+                         COMP_INCR=_F( 
+                RELATION = 'KIT_HHM',          
+                RELATION_KIT = (
+                  'BARCELONE',        'LIQU_GAZ',
+                  'HYDR_UTIL',  ),      
+                ),
+                         INCREMENT=_F( 
+                LIST_INST = TEMPS1,
+                INST_INIT = 0., 
+                INST_FIN = 6., 
+                ),
+                            NEWTON=_F( 
+                MATRICE = 'TANGENTE', 
+                REAC_ITER=1,
+                ),
+                CONVERGENCE=_F( 
+                ITER_GLOB_MAXI=50,
+                ITER_INTE_MAXI=100, 
+                RESI_GLOB_RELA = 1.E-6,     
+                )
+              )
+
+
+# DEUXIEME MOUILLAGE 
+
+EVO_DES3=DEFI_FONCTION(      NOM_PARA='INST',
+                           PROL_DROITE='CONSTANT',
+                          PROL_GAUCHE='CONSTANT',
+                         VALE=( 6.0,  2.E5,
+                                8.0,  1.33E5,
+                                10.0,  0.66E5,
+                                12.0,  0.E5,
+                               ),)
+                               
+U3=STAT_NON_LINE(MODELE=MODELE,
+                 CHAM_MATER=CHMAT,EXCIT=(
+                             _F( 
+                CHARGE = DEP_SYM,            
+                ), _F( 
+                CHARGE = PR,            
+                FONC_MULT = EVO_HYD2,         
+                ), _F( 
+                CHARGE = P0,            
+                FONC_MULT = EVO_DES3,         
+                )),
+                         COMP_INCR=_F( 
+                RELATION = 'KIT_HHM',          
+                RELATION_KIT = (
+                  'BARCELONE',        'LIQU_GAZ',
+                  'HYDR_UTIL',  ),      
+                ),
+                         ETAT_INIT=_F( 
+                EVOL_NOLI = U2,        
+                ),
+                         INCREMENT=_F( 
+                LIST_INST = TEMPS2,
+                INST_INIT = 6.,
+                INST_FIN = 12.,
+                ),
+                            NEWTON=_F( 
+                MATRICE = 'TANGENTE', 
+                REAC_ITER=1,
+                ),
+                CONVERGENCE=_F( 
+                ITER_GLOB_MAXI=50,
+                ITER_INTE_MAXI=100, 
+                RESI_GLOB_RELA = 1.E-6,     
+                )
+              )
+
+U3=CALC_ELEM(reuse =U3,
+               RESULTAT=U3,
+               PRECISION = 1.E-10,
+               CHAM_MATER=CHMAT,
+               MODELE=MODELE,
+               OPTION=('SIEF_ELNO_ELGA','VARI_ELNO_ELGA'),);
+
+U3=CALC_NO(reuse =U3,
+               RESULTAT=U3,
+               PRECISION = 1.E-10,
+               CHAM_MATER=CHMAT,
+               OPTION=('SIEF_NOEU_ELGA','VARI_NOEU_ELGA'),);
+
+# PREMIER TEST AU PREMIER POINT D ARRIVEE 
+
+
+TEST_RESU(RESU=(
+
+# DEPLACEMENT DZ
+
+                _F(    RESULTAT = U1,  
+                       REFERENCE = 'ANALYTIQUE',  
+                       NOEUD = 'N3',      
+                       NOM_CHAM = 'DEPL',    
+                       NOM_CMP = 'DX',     
+                       INST=12.,  
+                       PRECISION = (1.5E-2, 1.E-6),  
+                       VALE = -3.2671E-02,        
+                     ),
+# PRESSION CRITIQUE
+                _F(    RESULTAT = U1,    
+                       REFERENCE = 'ANALYTIQUE',  
+                       NOEUD = 'N3',      
+                       NOM_CHAM = 'VARI_NOEU_ELGA',    
+                       NOM_CMP = 'V1',     
+                       INST=12.,  
+                       PRECISION = (1.E-5, 1.E-6),  
+                       VALE =  3.E5,        
+                     ),
+# ETAT PLASTIQUE MECANIQUE
+                _F(    RESULTAT = U1,    
+                       REFERENCE = 'ANALYTIQUE',  
+                       NOEUD = 'N3',      
+                       NOM_CHAM = 'VARI_NOEU_ELGA',    
+                       NOM_CMP = 'V2',     
+                       INST=12.,  
+                       PRECISION = (1.E-5, 1.E-6),  
+                       VALE =  1,        
+                     ),
+# ETAT PLASTIQUE HYDRIQUE
+                _F(    RESULTAT = U1,    
+                       REFERENCE = 'ANALYTIQUE',  
+                       NOEUD = 'N3',      
+                       NOM_CHAM = 'VARI_NOEU_ELGA',    
+                       NOM_CMP = 'V4',     
+                       INST=12.,  
+                       PRECISION = (1.E-5, 1.E-6),  
+                       VALE =  0,
+                       CRITERE='ABSOLU',        
+                     ),
+     ),),
+
+# DEUXIEME TEST AU PREMIER POINT D ARRIVEE 
+
+TEST_RESU(RESU=(
+
+# DEPLACEMENT DZ
+
+                _F(    RESULTAT = U3,  
+                       REFERENCE = 'ANALYTIQUE',  
+                       NOEUD = 'N3',      
+                       NOM_CHAM = 'DEPL',    
+                       NOM_CMP = 'DX',     
+                       INST=12.,  
+                       PRECISION = (1.5E-2, 1.E-6),  
+                       VALE = -3.266E-02,        
+                     ),
+# PRESSION CRITIQUE
+                _F(    RESULTAT = U3,    
+                       REFERENCE = 'ANALYTIQUE',  
+                       NOEUD = 'N3',      
+                       NOM_CHAM = 'VARI_NOEU_ELGA',    
+                       NOM_CMP = 'V1',     
+                       INST=12.,  
+                       PRECISION = (1.E-5, 1.E-6),  
+                       VALE =  3.E5,        
+                     ),
+# ETAT PLASTIQUE MECANIQUE
+                _F(    RESULTAT = U3,    
+                       REFERENCE = 'ANALYTIQUE',  
+                       NOEUD = 'N3',      
+                       NOM_CHAM = 'VARI_NOEU_ELGA',    
+                       NOM_CMP = 'V2',     
+                       INST=12.,  
+                       PRECISION = (1.E-5, 1.E-6),  
+                       VALE =  1,        
+                     ),
+# ETAT PLASTIQUE HYDRIQUE
+                _F(    RESULTAT = U3,    
+                       REFERENCE = 'ANALYTIQUE',  
+                       NOEUD = 'N3',      
+                       NOM_CHAM = 'VARI_NOEU_ELGA',    
+                       NOM_CMP = 'V4',     
+                       INST=12.,  
+                       PRECISION = (1.E-5, 1.E-6),  
+                       VALE =  0,
+                       CRITERE='ABSOLU',        
+                     ),
+                     ),),
+                     
+#
+# POURSUITE DU DEUXIEME CHARGEMENT HYDROSTATIQUE
+
+EVO_HYD3=DEFI_FONCTION(      NOM_PARA='INST',
+                           PROL_DROITE='CONSTANT',
+                         VALE=( 6.0,  7.E5,
+                                12.0, 8.E5,
+                               ))
+                               
+
+U4=STAT_NON_LINE(ETAT_INIT=_F( 
+                EVOL_NOLI = U2,        
+                             ),
+                 MODELE=MODELE,
+                 CHAM_MATER=CHMAT,EXCIT=(
+                             _F( 
+                CHARGE = DEP_SYM,            
+                ), _F( 
+                CHARGE = PR,            
+                FONC_MULT = EVO_HYD3,         
+                ), _F( 
+                CHARGE = P0,            
+                FONC_MULT = EVO_DES2,         
+                ),
+                ),
+                         COMP_INCR=_F( 
+                RELATION = 'KIT_HHM',          
+                RELATION_KIT = (
+                  'BARCELONE',        'LIQU_GAZ',
+                  'HYDR_UTIL',  ),      
+                ),
+                         INCREMENT=_F( 
+                LIST_INST = TEMPS2,
+                INST_INIT = 6., 
+                INST_FIN = 12., 
+                ),
+                            NEWTON=_F( 
+                MATRICE = 'TANGENTE', 
+                REAC_ITER=1,
+                ),
+                CONVERGENCE=_F( 
+                ITER_GLOB_MAXI=50,
+                ITER_INTE_MAXI=100, 
+                RESI_GLOB_RELA = 1.E-6,     
+                )
+              )
+
+U4=CALC_ELEM(reuse =U4,
+               RESULTAT=U4,
+               PRECISION = 1.E-10,
+               CHAM_MATER=CHMAT,
+               MODELE=MODELE,
+               OPTION=('SIEF_ELNO_ELGA','VARI_ELNO_ELGA'),);
+
+U4=CALC_NO(reuse =U4,
+               RESULTAT=U4,
+               PRECISION = 1.E-10,
+               CHAM_MATER=CHMAT,
+               OPTION=('SIEF_NOEU_ELGA','VARI_NOEU_ELGA'),);
+
+# PREMIER TEST AU DEUXIEME POINT D ARRIVEE 
+
+TEST_RESU(RESU=(
+
+# DEPLACEMENT DZ
+
+                _F(    RESULTAT = U4,  
+                       REFERENCE = 'ANALYTIQUE',  
+                       NOEUD = 'N3',      
+                       NOM_CHAM = 'DEPL',    
+                       NOM_CMP = 'DX',     
+                       INST=12.,  
+                       PRECISION = (1.5E-2,1.E-6),   
+                       VALE = -1.8415E-02,        
+                     ),
+# PRESSION CRITIQUE
+                _F(    RESULTAT = U4,    
+                       REFERENCE = 'ANALYTIQUE',  
+                       NOEUD = 'N3',      
+                       NOM_CHAM = 'VARI_NOEU_ELGA',    
+                       NOM_CMP = 'V1',     
+                       INST=12.,  
+                       PRECISION = (1.E-5, 1.E-6),  
+                       VALE =  3.5E5,        
+                     ),
+# ETAT PLASTIQUE MECANIQUE
+                _F(    RESULTAT = U4,    
+                       REFERENCE = 'ANALYTIQUE',  
+                       NOEUD = 'N3',      
+                       NOM_CHAM = 'VARI_NOEU_ELGA',    
+                       NOM_CMP = 'V2',     
+                       INST=12.,  
+                       PRECISION = (1.E-5,1.E-6),   
+                       VALE =  1,        
+                     ),
+# ETAT PLASTIQUE HYDRIQUE
+                _F(    RESULTAT = U4,    
+                       REFERENCE = 'ANALYTIQUE',  
+                       NOEUD = 'N3',      
+                       NOM_CHAM = 'VARI_NOEU_ELGA',    
+                       NOM_CMP = 'V4',     
+                       INST=12.,  
+                       PRECISION = (1.E-5,1.E-6),   
+                       VALE =  0,
+                       CRITERE='ABSOLU',        
+                     ),
+                     ),),
+
+# DEUXIEME TEST AU DEUXIEME POINT D ARRIVEE 
+
+TEST_RESU(RESU=(
+
+# DEPLACEMENT DZ
+
+                _F(    RESULTAT = U1,  
+                       REFERENCE = 'ANALYTIQUE',  
+                       NOEUD = 'N3',      
+                       NOM_CHAM = 'DEPL',    
+                       NOM_CMP = 'DX',     
+                       INST=24.,  
+                       PRECISION = (1.5E-2,1.E-6),   
+                       VALE = -4.4036E-02,        
+                     ),
+# PRESSION CRITIQUE
+                _F(    RESULTAT = U1,    
+                       REFERENCE = 'ANALYTIQUE',  
+                       NOEUD = 'N3',      
+                       NOM_CHAM = 'VARI_NOEU_ELGA',    
+                       NOM_CMP = 'V1',     
+                       INST=24.,  
+                       PRECISION = (1.E-3, 1.E-6),  
+                       VALE =  6.8128E5,        
+                     ),
+# ETAT PLASTIQUE MECANIQUE
+                _F(    RESULTAT = U1,    
+                       REFERENCE = 'ANALYTIQUE',  
+                       NOEUD = 'N3',      
+                       NOM_CHAM = 'VARI_NOEU_ELGA',    
+                       NOM_CMP = 'V2',     
+                       INST=24.,  
+                       PRECISION =( 1.E-5, 1.E-6),  
+                       VALE =  0,        
+                       CRITERE='ABSOLU',        
+                     ),
+# ETAT PLASTIQUE HYDRIQUE
+                _F(    RESULTAT = U1,    
+                       REFERENCE = 'ANALYTIQUE',  
+                       NOEUD = 'N3',      
+                       NOM_CHAM = 'VARI_NOEU_ELGA',    
+                       NOM_CMP = 'V4',     
+                       INST=24.,  
+                       PRECISION = (1.E-5, 1.E-6),  
+                       VALE =  0,
+                       CRITERE='ABSOLU',        
+                     ),
+                     ),),
+
+
+
+
+FIN () ;

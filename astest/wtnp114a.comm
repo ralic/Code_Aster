@@ -1,4 +1,4 @@
-# MODIF  DATE 31/01/2005   AUTEUR ROMEO R.FERNANDES 
+# MODIF  DATE 16/08/2005   AUTEUR ROMEO R.FERNANDES 
 # TITRE : CAS TEST DE REFERENCE POUR LE CALCUL DES DEFORMATIONS MECANIQUES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -23,7 +23,13 @@ DEBUT(CODE=_F( NOM = 'WTNP114A',NIV_PUB_WEB='INTERNET'));
 
 PRE_GIBI();
 
-MAILLAGE = LIRE_MAILLAGE();
+MAILIN=LIRE_MAILLAGE();
+
+MAILLAGE = CREA_MAILLAGE(
+                         MAILLAGE  = MAILIN,
+                         LINE_QUAD = _F(TOUT = 'OUI'),
+                       )
+
 
 MODELE   = AFFE_MODELE( MAILLAGE = MAILLAGE,
                         AFFE     = _F( TOUT         = 'OUI',
@@ -46,7 +52,11 @@ MAILLAGE = DEFI_GROUP( reuse    = MAILLAGE,
                                          _F(GROUP_MA='CAVITE',),
                                          _F(GROUP_MA='HAUT',),
                                          _F(GROUP_MA='BAS',),),);
-
+MAILLAGE=DEFI_GROUP( reuse=MAILLAGE,
+               MAILLAGE=MAILLAGE,
+               CREA_GROUP_NO=(_F(NOM='ROCHES',
+                                 CRIT_NOEUD='SOMMET',
+                                 GROUP_MA='ROCHE'),),)
 UNM3 = DEFI_CONSTANTE(VALE = 1.0E-3,);
 
 ZERO = DEFI_CONSTANTE(VALE = 0.0,);
@@ -105,7 +115,7 @@ CALDRO=AFFE_CHAR_MECA_F(MODELE=MODELE,
                                   PRES     = FSY,),);
 
 CALPRE=AFFE_CHAR_MECA(MODELE=MODELE,
-                      DDL_IMPO=_F(TOUT='OUI',
+                      DDL_IMPO=_F(GROUP_NO='ROCHES',
                                   PRE1     = 0.00,),);
 
 TEMPS_EL=DEFI_LIST_REEL(

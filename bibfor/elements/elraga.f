@@ -4,7 +4,7 @@
       CHARACTER*(*) ELREFZ
       INTEGER NBPG,NDIM
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 23/06/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 16/08/2005   AUTEUR ROMEO R.FERNANDES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -139,8 +139,32 @@ C           DIRECTION ( ORDRE 5 )
           H(1) = 0.555555555555556D00
           H(2) = 0.888888888888889D00
           H(3) = H(1)
-        END IF
 
+        ELSE IF (FAPG.EQ.'FPG8NOS') THEN
+C ======================================================================
+C --- POUR LES POINTS DE GAUSS -----------------------------------------
+C ======================================================================
+          NPAR = 2
+          A(1) = -0.577350269189626D00
+          A(2) = -A(1)
+          H(1) = UN
+          H(2) = UN
+C ======================================================================
+C --- POUR LES SOMMETS -------------------------------------------------
+C ======================================================================
+          DO 300,INO = 1,NNOS
+             HPG(INO+8) = VOL/NNOS
+C ======================================================================
+C --- ON UTILISE LE FAIT QUE LES SOMMETS SONT TOUJOURS -----------------
+C --- NUMEROTES EN PREMIER ---------------------------------------------
+C ======================================================================
+             XPG(INO+8) = XNO(NDIM* (INO-1)+1)
+             IF (NDIM.GE.2) YPG(INO+8) = XNO(NDIM* (INO-1)+2)
+             IF (NDIM.EQ.3) ZPG(INO+8) = XNO(NDIM* (INO-1)+3)
+ 300      CONTINUE
+
+        ENDIF
+        
         NPI = 0
         DO 60 IX = 1,NPAR
           DO 50 IY = 1,NPAR
@@ -175,8 +199,8 @@ C         IL FAUT MULTIPLIER LES POIDS PAR 4 POUR OBTENIR VOL=8
             ZPG(IZ) = XXG5(IZ)
             HPG(IZ) = PXG5(IZ)*4.D0
    70     CONTINUE
-
         END IF
+
 C     ------------------------------------------------------------------
       ELSE IF (ELREFA.EQ.'PE6' .OR. ELREFA.EQ.'P15' .OR.
      &         ELREFA.EQ.'X15') THEN
@@ -268,6 +292,42 @@ C --------- FORMULE DE HAMMER
           HT(5) = 0.0629695902724135D00
           HT(6) = HT(5)
           HT(7) = HT(5)
+
+        ELSEIF (FAPG.EQ.'FPG6NOS') THEN
+C ======================================================================
+C --- POUR LES POINTS DE GAUSS -----------------------------------------
+C ======================================================================
+          NPX = 2
+          NPYZ = 3
+          A(1) = -0.577350269189626D00
+          A(2) = 0.577350269189626D00
+          ATY(1) = UNDEMI
+          ATY(2) = ZERO
+          ATY(3) = UNDEMI
+          ATZ(1) = UNDEMI
+          ATZ(2) = UNDEMI
+          ATZ(3) = ZERO
+          H(1) = UN
+          H(2) = UN
+          HT(1) = 0.166666666666667D00
+          HT(2) = HT(1)
+          HT(3) = HT(1)
+          
+C ======================================================================
+C --- POUR LES SOMMETS -------------------------------------------------
+C ======================================================================
+          DO 280,INO = 1,NNOS
+             HPG(INO+6) = VOL/NNOS
+C ======================================================================
+C --- ON UTILISE LE FAIT QUE LES SOMMETS SONT TOUJOURS -----------------
+C --- NUMEROTES EN PREMIER ---------------------------------------------
+C ======================================================================
+             XPG(INO+6) = XNO(NDIM* (INO-1)+1)
+             IF (NDIM.GE.2) YPG(INO+6) = XNO(NDIM* (INO-1)+2)
+             IF (NDIM.EQ.3) ZPG(INO+6) = XNO(NDIM* (INO-1)+3)
+ 280      CONTINUE
+        ELSE
+          CALL ASSERT(.FALSE.)
         END IF
 
         NPI = 0
@@ -278,8 +338,8 @@ C --------- FORMULE DE HAMMER
             YPG(NPI) = ATY(IY)
             ZPG(NPI) = ATZ(IY)
             HPG(NPI) = H(IX)*HT(IY)
-   80     CONTINUE
-   90   CONTINUE
+ 80       CONTINUE
+ 90     CONTINUE
 
 C     ------------------------------------------------------------------
       ELSE IF (ELREFA.EQ.'TE4' .OR. ELREFA.EQ.'T10' .OR. 
@@ -400,6 +460,41 @@ C                   ORDRE 5 EN X Y Z
           YPG(15) = YPG(13)
           ZPG(15) = XPG(10)
           HPG(15) = 5.0D00/567.0D00
+
+        ELSEIF (FAPG.EQ.'FPG4NOS') THEN
+C ======================================================================
+C --- POUR LES POINTS DE GAUSS -----------------------------------------
+C ======================================================================
+          RAC5 = SQRT(5.D00)
+          AA = (5.D00-RAC5)/20.D00
+          BB = (5.D00+3.D00*RAC5)/20.D00
+          HH = UN/24.D00
+          NPI = 0
+          DO 140 I = 1,4
+            NPI = NPI + 1
+            XPG(NPI) = AA
+            YPG(NPI) = AA
+            ZPG(NPI) = AA
+            HPG(NPI) = HH
+  140     CONTINUE
+          ZPG(2) = BB
+          YPG(3) = BB
+          XPG(4) = BB
+C ======================================================================
+C --- POUR LES SOMMETS -------------------------------------------------
+C ======================================================================
+          DO 260,INO = 1,NNOS
+             HPG(INO+4) = VOL/NNOS
+C ======================================================================
+C --- ON UTILISE LE FAIT QUE LES SOMMETS SONT TOUJOURS -----------------
+C --- NUMEROTES EN PREMIER ---------------------------------------------
+C ======================================================================
+             XPG(INO+4) = XNO(NDIM* (INO-1)+1)
+             IF (NDIM.GE.2) YPG(INO+4) = XNO(NDIM* (INO-1)+2)
+             IF (NDIM.EQ.3) ZPG(INO+4) = XNO(NDIM* (INO-1)+3)
+ 260      CONTINUE
+        ELSE
+          CALL ASSERT(.FALSE.)
         END IF
 
 C     ------------------------------------------------------------------
@@ -601,6 +696,53 @@ C     -------------------------------------------------------------
           DO 120 I = 1,27
             HPG(I) = HPG(I)*UNQUAR* (UN-ZPG(I))* (UN-ZPG(I))
   120     CONTINUE
+
+        ELSEIF (FAPG.EQ.'FPG5NOS') THEN
+C ======================================================================
+C --- POUR LES POINTS DE GAUSS -----------------------------------------
+C ======================================================================
+          P1 = 0.1333333333333333D0
+          H1 = 0.1531754163448146D0
+          H2 = 0.6372983346207416D0
+
+          XPG(1) = UNDEMI
+          XPG(2) = ZERO
+          XPG(3) = -UNDEMI
+          XPG(4) = ZERO
+          XPG(5) = ZERO
+
+          YPG(1) = ZERO
+          YPG(2) = UNDEMI
+          YPG(3) = ZERO
+          YPG(4) = -UNDEMI
+          YPG(5) = ZERO
+
+          ZPG(1) = H1
+          ZPG(2) = H1
+          ZPG(3) = H1
+          ZPG(4) = H1
+          ZPG(5) = H2
+
+          HPG(1) = P1
+          HPG(2) = P1
+          HPG(3) = P1
+          HPG(4) = P1
+          HPG(5) = P1
+C ======================================================================
+C --- POUR LES SOMMETS -------------------------------------------------
+C ======================================================================
+          DO 240,INO = 1,NNOS
+             HPG(INO+5) = VOL/NNOS
+C ======================================================================
+C --- ON UTILISE LE FAIT QUE LES SOMMETS SONT TOUJOURS -----------------
+C --- NUMEROTES EN PREMIER ---------------------------------------------
+C ======================================================================
+             XPG(INO+5) = XNO(NDIM* (INO-1)+1)
+             IF (NDIM.GE.2) YPG(INO+5) = XNO(NDIM* (INO-1)+2)
+             IF (NDIM.EQ.3) ZPG(INO+5) = XNO(NDIM* (INO-1)+3)
+ 240      CONTINUE
+        ELSE
+          CALL ASSERT(.FALSE.)
         END IF
 
 C     ------------------------------------------------------------------
@@ -737,6 +879,32 @@ C     ------------------------------------------------------------------
           HPG(10) = P3
           HPG(11) = P3
           HPG(12) = P3
+      ELSE IF (FAPG.EQ.'FPG3NOS') THEN
+C ======================================================================
+C --- POUR LES POINTS DE GAUSS -----------------------------------------
+C ======================================================================
+          XPG(1) = UN/6.D00
+          YPG(1) = UN/6.D00
+          XPG(2) = 2.D0/3.D0
+          YPG(2) = UN/6.D00
+          XPG(3) = UN/6.D00
+          YPG(3) = 2.D0/3.D0
+          HPG(1) = UN/6.D00
+          HPG(2) = UN/6.D00
+          HPG(3) = UN/6.D00
+C ======================================================================
+C --- POUR LES SOMMETS -------------------------------------------------
+C ======================================================================
+          DO 220,INO = 1,NNOS
+             HPG(INO+3) = VOL/NNOS
+C ======================================================================
+C --- ON UTILISE LE FAIT QUE LES SOMMETS SONT TOUJOURS -----------------
+C --- NUMEROTES EN PREMIER ---------------------------------------------
+C ======================================================================
+             XPG(INO+3) = XNO(NDIM* (INO-1)+1)
+             IF (NDIM.GE.2) YPG(INO+3) = XNO(NDIM* (INO-1)+2)
+             IF (NDIM.EQ.3) ZPG(INO+3) = XNO(NDIM* (INO-1)+3)
+ 220      CONTINUE
         ELSE
           CALL ASSERT(.FALSE.)
         END IF
@@ -798,6 +966,35 @@ C ------- ELEMENT PARTICULIER DE FISSURE, S'APPUIE SUR UN SEG2
           YPG(8) = ZERO
           XPG(9) = ZERO
           YPG(9) = ZERO
+        ELSEIF (FAPG.EQ.'FPG4NOS') THEN
+C ======================================================================
+C --- POUR LES POINTS DE GAUSS -----------------------------------------
+C ======================================================================
+          XPG(1) = -0.577350269189626D00
+          YPG(1) = -0.577350269189626D00
+          XPG(2) =  0.577350269189626D00
+          YPG(2) = -0.577350269189626D00
+          XPG(3) =  0.577350269189626D00
+          YPG(3) =  0.577350269189626D00
+          XPG(4) = -0.577350269189626D00
+          YPG(4) =  0.577350269189626D00
+          HPG(1) = UN
+          HPG(2) = UN
+          HPG(3) = UN
+          HPG(4) = UN
+C ======================================================================
+C --- POUR LES SOMMETS -------------------------------------------------
+C ======================================================================
+          DO 200,INO = 1,NNOS
+             HPG(INO+4) = VOL/NNOS
+C ======================================================================
+C --- ON UTILISE LE FAIT QUE LES SOMMETS SONT TOUJOURS -----------------
+C --- NUMEROTES EN PREMIER ---------------------------------------------
+C ======================================================================
+             XPG(INO+4) = XNO(NDIM* (INO-1)+1)
+             IF (NDIM.GE.2) YPG(INO+4) = XNO(NDIM* (INO-1)+2)
+             IF (NDIM.EQ.3) ZPG(INO+4) = XNO(NDIM* (INO-1)+3)
+ 200      CONTINUE
         ELSE
           CALL ASSERT(.FALSE.)
         END IF

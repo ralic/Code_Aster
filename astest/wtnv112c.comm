@@ -1,4 +1,4 @@
-# MODIF  DATE 31/01/2005   AUTEUR ROMEO R.FERNANDES 
+# MODIF  DATE 16/08/2005   AUTEUR ROMEO R.FERNANDES 
 # TITRE TEST HHM 2D (HHM_DPQ4),CALCUL DECOUPLE (S=0.5, DSDP=0)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -24,7 +24,13 @@ DEBUT(CODE=_F( NOM = 'WTNV112C',NIV_PUB_WEB='INTERNET'))
 #   OPERATIONS SUR LE MAILLAGE
 #
 ####################################
-MAIL=LIRE_MAILLAGE()
+MAILIN=LIRE_MAILLAGE();
+
+MAIL = CREA_MAILLAGE(
+                         MAILLAGE  = MAILIN,
+                         LINE_QUAD = _F(TOUT = 'OUI'),
+                       )
+
 
 MODELE=AFFE_MODELE(   MAILLAGE=MAIL,
                         AFFE=_F(  TOUT = 'OUI', 

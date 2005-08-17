@@ -6,7 +6,7 @@
       CHARACTER*(*) ELREFZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 23/06/2005   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 16/08/2005   AUTEUR ROMEO R.FERNANDES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,19 +54,23 @@ C     ------------------------------------------------------------------
         NNOS = 8
         VOL = 8.D0
 
-        NBFPG = 6
+        NBFPG = 7
+        
         NBPG(1) = NNO
         NBPG(2) = NNOS
         NBPG(3) = 1
         NBPG(4) = 8
         NBPG(5) = 27
         NBPG(6) = 5
+        NBPG(7) = 16
+        
         FAPG(1) = 'NOEU'
         FAPG(2) = 'NOEU_S'
         FAPG(3) = 'FPG1'
         FAPG(4) = 'FPG8'
         FAPG(5) = 'FPG27'
         FAPG(6) = 'SHB5'
+        FAPG(7) = 'FPG8NOS'
 
         DO 10 I = 1,8
           XIN(I) = -1.D0
@@ -90,17 +94,21 @@ C     ------------------------------------------------------------------
         NNOS = 8
         VOL = 8.D0
 
-        NBFPG = 5
+        NBFPG = 6
+        
         NBPG(1) = NNO
         NBPG(2) = NNOS
         NBPG(3) = 1
         NBPG(4) = 8
         NBPG(5) = 27
+        NBPG(6) = 16
+        
         FAPG(1) = 'NOEU'
         FAPG(2) = 'NOEU_S'
         FAPG(3) = 'FPG1'
         FAPG(4) = 'FPG8'
         FAPG(5) = 'FPG27'
+        FAPG(6) = 'FPG8NOS'
 
         DO 40 I = 1,20
           XIN(I) = -1.D0
@@ -240,19 +248,23 @@ C     ------------------------------------------------------------------
         NNOS = 4
         VOL = 1.D0/6.D0
 
-        NBFPG = 6
+        NBFPG = 7
+        
         NBPG(1) = NNO
         NBPG(2) = NNOS
         NBPG(3) = 1
         NBPG(4) = 4
         NBPG(5) = 5
         NBPG(6) = 15
+        NBPG(7) = 8
+        
         FAPG(1) = 'NOEU'
         FAPG(2) = 'NOEU_S'
         FAPG(3) = 'FPG1'
         FAPG(4) = 'FPG4'
         FAPG(5) = 'FPG5'
         FAPG(6) = 'FPG15'
+        FAPG(7) = 'FPG4NOS'
 
         DO 70 I = 1,4
           XIN(I) = 0.D0
@@ -270,19 +282,23 @@ C     ------------------------------------------------------------------
         NNOS = 4
         VOL = 1.D0/6.D0
 
-        NBFPG = 6
+        NBFPG = 7
+        
         NBPG(1) = NNO
         NBPG(2) = NNOS
         NBPG(3) = 1
         NBPG(4) = 4
         NBPG(5) = 5
         NBPG(6) = 15
+        NBPG(7) = 8
+        
         FAPG(1) = 'NOEU'
         FAPG(2) = 'NOEU_S'
         FAPG(3) = 'FPG1'
         FAPG(4) = 'FPG4'
         FAPG(5) = 'FPG5'
         FAPG(6) = 'FPG15'
+        FAPG(7) = 'FPG4NOS'
 
         DO 80 I = 1,10
           XIN(I) = 0.D0
@@ -309,19 +325,23 @@ C     ------------------------------------------------------------------
         NNOS = 6
         VOL = 1.D0
 
-        NBFPG = 6
+        NBFPG = 7
+        
         NBPG(1) = NNO
         NBPG(2) = NNOS
         NBPG(3) = 1
         NBPG(4) = 6
         NBPG(5) = 8
         NBPG(6) = 21
+        NBPG(7) = 12
+        
         FAPG(1) = 'NOEU'
         FAPG(2) = 'NOEU_S'
         FAPG(3) = 'FPG1'
         FAPG(4) = 'FPG6'
         FAPG(5) = 'FPG8'
         FAPG(6) = 'FPG21'
+        FAPG(7) = 'FPG6NOS'
 
         DO 90 I = 1,6
           YIN(I) = 0.D0
@@ -343,19 +363,23 @@ C     ------------------------------------------------------------------
         NNOS = 6
         VOL = 1.D0
 
-        NBFPG = 6
+        NBFPG = 7
+        
         NBPG(1) = NNO
         NBPG(2) = NNOS
         NBPG(3) = 1
         NBPG(4) = 6
         NBPG(5) = 8
         NBPG(6) = 21
+        NBPG(7) = 12
+        
         FAPG(1) = 'NOEU'
         FAPG(2) = 'NOEU_S'
         FAPG(3) = 'FPG1'
         FAPG(4) = 'FPG6'
         FAPG(5) = 'FPG8'
         FAPG(6) = 'FPG21'
+        FAPG(7) = 'FPG6NOS'
 
         DO 110 I = 1,15
           XIN(I) = 0.D0
@@ -388,19 +412,23 @@ C     ------------------------------------------------------------------
         NNOS = 5
         VOL = 2.D0/3.D0
 
-        NBFPG = 6
+        NBFPG = 7
+        
         NBPG(1) = NNO
         NBPG(2) = NNOS
         NBPG(3) = 1
         NBPG(4) = 5
         NBPG(5) = 6
         NBPG(6) = 27
+        NBPG(7) = 10
+        
         FAPG(1) = 'NOEU'
         FAPG(2) = 'NOEU_S'
         FAPG(3) = 'FPG1'
         FAPG(4) = 'FPG5'
         FAPG(5) = 'FPG6'
         FAPG(6) = 'FPG27'
+        FAPG(7) = 'FPG5NOS'
 
         XIN(1) = +1.D0
         YIN(1) = 0.D0
@@ -429,19 +457,23 @@ C     ------------------------------------------------------------------
         NNOS = 5
         VOL = 2.D0/3.D0
 
-        NBFPG = 6
+        NBFPG = 7
+        
         NBPG(1) = NNO
         NBPG(2) = NNOS
         NBPG(3) = 1
         NBPG(4) = 5
         NBPG(5) = 6
         NBPG(6) = 27
+        NBPG(7) = 10
+        
         FAPG(1) = 'NOEU'
         FAPG(2) = 'NOEU_S'
         FAPG(3) = 'FPG1'
         FAPG(4) = 'FPG5'
         FAPG(5) = 'FPG6'
         FAPG(6) = 'FPG27'
+        FAPG(7) = 'FPG5NOS'
 
         XIN(1) = +1.D0
         YIN(1) = 0.D0
@@ -502,7 +534,7 @@ C     ------------------------------------------------------------------
         NNOS = 3
         VOL = 1.D0/2.D0
 
-        NBFPG = 8
+        NBFPG = 9
         NBPG(1) = NNO
         NBPG(2) = NNOS
         NBPG(3) = 1
@@ -511,6 +543,7 @@ C     ------------------------------------------------------------------
         NBPG(6) = 4        
         NBPG(7) = 6 
         NBPG(8) = 12 
+        NBPG(9) = 6
 
         FAPG(1) = 'NOEU'
         FAPG(2) = 'NOEU_S'
@@ -520,6 +553,7 @@ C     ------------------------------------------------------------------
         FAPG(6) = 'FPG4'
         FAPG(7) = 'FPG6'
         FAPG(8) = 'FPG12'
+        FAPG(9) = 'FPG3NOS'
 
         XIN(1) = 0.D0
         YIN(1) = 0.D0
@@ -537,13 +571,14 @@ C     ------------------------------------------------------------------
         NNOS = 3
         VOL = 1.D0/2.D0
 
-        NBFPG = 6
+        NBFPG = 7
         NBPG(1) = NNO
         NBPG(2) = NNOS
         NBPG(3) = 1
         NBPG(4) = 3
         NBPG(5) = 4
         NBPG(6) = 6
+        NBPG(7) = 6
 
         FAPG(1) = 'NOEU'
         FAPG(2) = 'NOEU_S'
@@ -551,6 +586,7 @@ C     ------------------------------------------------------------------
         FAPG(4) = 'FPG3'
         FAPG(5) = 'FPG4'
         FAPG(6) = 'FPG6'
+        FAPG(7) = 'FPG3NOS'
 
         XIN(1) = 0.D0
         YIN(1) = 0.D0
@@ -620,14 +656,14 @@ C     ------------------------------------------------------------------
         NNOS = 4
         VOL = 4.D0
 
-
-        NBFPG = 6
+        NBFPG = 7
         NBPG(1) = NNO
         NBPG(2) = NNOS
         NBPG(3) = 1
         NBPG(4) = 4
         NBPG(5) = 9
         NBPG(6) = 2
+        NBPG(7) = 8
 
         FAPG(1) = 'NOEU'
         FAPG(2) = 'NOEU_S'
@@ -635,6 +671,7 @@ C     ------------------------------------------------------------------
         FAPG(4) = 'FPG4'
         FAPG(5) = 'FPG9'
         FAPG(6) = 'FIS2'
+        FAPG(7) = 'FPG4NOS'
 
         XIN(1) = -1.D0
         YIN(1) = -1.D0
@@ -655,18 +692,20 @@ C     ------------------------------------------------------------------
         NNOS = 4
         VOL = 4.D0
 
-        NBFPG = 5
+        NBFPG = 6
         NBPG(1) = NNO
         NBPG(2) = NNOS
         NBPG(3) = 1
         NBPG(4) = 4
         NBPG(5) = 9
+        NBPG(6) = 8
 
         FAPG(1) = 'NOEU'
         FAPG(2) = 'NOEU_S'
         FAPG(3) = 'FPG1'
         FAPG(4) = 'FPG4'
         FAPG(5) = 'FPG9'
+        FAPG(6) = 'FPG4NOS'
 
         XIN(1) = -1.D0
         YIN(1) = -1.D0

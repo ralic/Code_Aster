@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 23/06/2005   AUTEUR VABHHTS J.PELLET 
+%& MODIF COMPELEM  DATE 16/08/2005   AUTEUR ROMEO R.FERNANDES 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -82,6 +82,7 @@ MAILLE__ TRIA3      3       DIM__  2   CODE__  'TR3'
          FAMILLE__ NOEU_S      3
          FAMILLE__ FPG1        1
          FAMILLE__ FPG3        3
+         FAMILLE__ FPG3NOS     6
          FAMILLE__ COT3        3
          FAMILLE__ FPG4        4
          FAMILLE__ FPG6        6
@@ -97,6 +98,7 @@ MAILLE__ TRIA6      6       DIM__  2   CODE__  'TR6'
          FAMILLE__ NOEU_S      3
          FAMILLE__ FPG1        1
          FAMILLE__ FPG3        3
+         FAMILLE__ FPG3NOS     6
          FAMILLE__ FPG4        4
          FAMILLE__ FPG6        6
 
@@ -122,6 +124,7 @@ MAILLE__ QUAD4      4       DIM__  2   CODE__  'QU4'
          FAMILLE__ FPG1        1
          FAMILLE__ FIS2        2
          FAMILLE__ FPG4        4
+         FAMILLE__ FPG4NOS     8
          FAMILLE__ FPG9        9
 
 MAILLE__ QUAD44     8       DIM__  2   CODE__  'Q44'
@@ -134,6 +137,7 @@ MAILLE__ QUAD8      8       DIM__  2   CODE__  'QU8'
          FAMILLE__ NOEU_S      4
          FAMILLE__ FPG1        1
          FAMILLE__ FPG4        4
+         FAMILLE__ FPG4NOS     8
          FAMILLE__ FPG9        9
 
 MAILLE__ QUAD88     16      DIM__  2   CODE__  'Q88'
@@ -160,6 +164,7 @@ MAILLE__ TETRA4     4       DIM__  3   CODE__  'TE4'
          FAMILLE__ NOEU_S      4
          FAMILLE__ FPG1        1
          FAMILLE__ FPG4        4
+         FAMILLE__ FPG4NOS     8
          FAMILLE__ FPG5        5
          FAMILLE__ FPG15       15
          FAMILLE__ XFEM24      24
@@ -170,6 +175,7 @@ MAILLE__ TETRA10    10      DIM__  3   CODE__  'T10'
          FAMILLE__ NOEU_S      4
          FAMILLE__ FPG1        1
          FAMILLE__ FPG4        4
+         FAMILLE__ FPG4NOS     8
          FAMILLE__ FPG5        5
          FAMILLE__ FPG15       15
    ELREFE__ X10
@@ -187,6 +193,7 @@ MAILLE__ PENTA6     6       DIM__  3   CODE__  'PE6'
          FAMILLE__ NOEU_S      6
          FAMILLE__ FPG1        1
          FAMILLE__ FPG6        6
+         FAMILLE__ FPG6NOS     12
          FAMILLE__ FPG8        8
          FAMILLE__ FPG21       21
          FAMILLE__ XFEM72      72
@@ -197,6 +204,7 @@ MAILLE__ PENTA15    15      DIM__  3   CODE__  'P15'
          FAMILLE__ NOEU_S      6
          FAMILLE__ FPG1        1
          FAMILLE__ FPG6        6
+         FAMILLE__ FPG6NOS     12
          FAMILLE__ FPG8        8
          FAMILLE__ FPG21       21
    ELREFE__ X15
@@ -232,6 +240,7 @@ MAILLE__ HEXA8      8       DIM__  3   CODE__  'HE8'
          FAMILLE__ NOEU_S      8
          FAMILLE__ FPG1        1
          FAMILLE__ FPG8        8
+         FAMILLE__ FPG8NOS     16
          FAMILLE__ FPG27       27
          FAMILLE__ SHB5        5
          FAMILLE__ XFEM540     540
@@ -242,6 +251,7 @@ MAILLE__ HEXA20     20      DIM__  3   CODE__  'H20'
          FAMILLE__ NOEU_S      8
          FAMILLE__ FPG1        1
          FAMILLE__ FPG8        8
+         FAMILLE__ FPG8NOS     16
          FAMILLE__ FPG27       27
    ELREFE__ X20
          FAMILLE__ NOEU        8

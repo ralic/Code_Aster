@@ -1,4 +1,4 @@
-# MODIF  DATE 31/01/2005   AUTEUR ROMEO R.FERNANDES 
+# MODIF  DATE 16/08/2005   AUTEUR ROMEO R.FERNANDES 
 # TITRE RESATURATION D UNE ALVEOLE TEST THHD, 2D , MODELISATION THMC=LIQU_GAZ
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -27,8 +27,17 @@ DEBUT(CODE=_F( NOM = 'WTNP113A',NIV_PUB_WEB='INTERNET'))
 #   OPERATIONS SUR LE MAILLAGE
 #
 ####################################
-MAIL=LIRE_MAILLAGE()
-MAIL=DEFI_GROUP( reuse=MAIL,  MAILLAGE=MAIL,CREA_GROUP_NO=(
+MAILIN=LIRE_MAILLAGE();
+
+MAIL = CREA_MAILLAGE(
+                         MAILLAGE  = MAILIN,
+                         LINE_QUAD = _F(TOUT = 'OUI'),
+                       )
+
+MAIL=DEFI_GROUP( reuse=MAIL,  MAILLAGE=MAIL,
+                CREA_GROUP_MA=(_F(NOM='ROCHE',
+                                 TOUT='OUI',),),
+                CREA_GROUP_NO=(
                      _F( GROUP_MA = 'GAUCHB'),
                      _F( GROUP_MA = 'GAUCHH'),
                      _F( GROUP_MA = 'ALVEOL'),
@@ -39,17 +48,29 @@ MAIL=DEFI_GROUP( reuse=MAIL,  MAILLAGE=MAIL,CREA_GROUP_NO=(
                         NOM='ALV_G',),
                      _F( GROUP_MA = 'DROIT'),
                      _F(GROUP_MA='BAS',),
-                     _F(DIFFE=('BAS','A'),
+                     _F(GROUP_MA='HAUT',),
+                     _F( GROUP_MA = 'INT_ALV'), 
+                     _F(NOM='INT_ALVS',
+                                 CRIT_NOEUD='SOMMET',
+                                 GROUP_MA='INT_ALV'),
+                               _F(NOM='HAUTS',
+                                 CRIT_NOEUD='SOMMET',
+                                 GROUP_MA='HAUT'),
+                               _F(NOM='BASS',
+                                 CRIT_NOEUD='SOMMET',
+                                 GROUP_MA='BAS'),
+                               _F(NOM='ROCHES',
+                                 CRIT_NOEUD='SOMMET',
+                                 GROUP_MA='ROCHE'),
+                     _F(DIFFE=('BASS','A'),
                         NOM='BAS1',),
                      _F(DIFFE=('BAS1','B'),
                         NOM='BAS2',),
-                     _F(GROUP_MA='HAUT',), 
-                     _F(DIFFE=('HAUT','D'),
+                     _F(DIFFE=('HAUTS','D'),
                         NOM='HAUT1',),
                      _F(DIFFE=('HAUT1','C'),
                         NOM='HAUT2',),
-                     _F( GROUP_MA = 'INT_ALV'),
-                      ),
+                    ),
                      )
 
 MODELE=AFFE_MODELE(   MAILLAGE=MAIL,
@@ -214,14 +235,14 @@ CALBAS=AFFE_CHAR_MECA(MODELE=MODELE,
                        DDL_IMPO=_F(GROUP_NO='BAS2',
                                    PRE1=1E5,),);
 CAL_IA=AFFE_CHAR_MECA(MODELE=MODELE,
-                       DDL_IMPO=_F(GROUP_NO='INT_ALV',
+                       DDL_IMPO=_F(GROUP_NO='INT_ALVS',
                                    PRE1=9.4E+7,),);
 
 CALGAZ=AFFE_CHAR_MECA(MODELE=MODELE,
-                       DDL_IMPO=_F(TOUT='OUI',
+                       DDL_IMPO=_F(GROUP_NO='ROCHES',
                                    PRE2=0.,),);
 CALTEMP=AFFE_CHAR_MECA(MODELE=MODELE,
-                       DDL_IMPO=_F(TOUT='OUI',
+                       DDL_IMPO=_F(GROUP_NO='ROCHES',
                                    TEMP=0.,),);
 
 RESU0=STAT_NON_LINE( 
@@ -408,9 +429,9 @@ TEST_RESU(RESU=_F(RESULTAT=RESU0,
                   NOM_CHAM='DEPL',
                   NOM_CMP='PRE1',
                   NOEUD='NO823',
-                  VALE=4.2E6,
+                  VALE=3.6E6,
                   CRITERE='RELATIF',
-                  PRECISION=1.E-1,
+                  PRECISION=1.8E-1,
                   REFERENCE='NON_REGRESSION',),);   
 
 TEST_RESU(RESU=_F(RESULTAT=RESU0,

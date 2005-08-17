@@ -1,4 +1,4 @@
-# MODIF  DATE 31/01/2005   AUTEUR ROMEO R.FERNANDES 
+# MODIF  DATE 16/08/2005   AUTEUR ROMEO R.FERNANDES 
 # TITRE TEST THM, 3D, MASSIF POREUX SATURE CHAUFFE PAR UN FLUX
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -133,19 +133,21 @@ CHMAT0=AFFE_MATERIAU(   MAILLAGE=MAIL,
                         MATER = ARGILE0)
                  )
 
-CHAR0=AFFE_CHAR_MECA(   MODELE=MODELE,DDL_IMPO=(
-                          _F(  TOUT = 'OUI',
-                                     PRE1 = 0.,
+CHAR0=AFFE_CHAR_MECA(   MODELE=MODELE,
+                        DDL_IMPO=(
+                                  _F(  TOUT = 'OUI',
                                      DX = 0.,
                                      DY = 0.,
                                      DZ = 0.),
-                         _F(  GROUP_NO = 'BAS',
-                                     TEMP = 0.)),
+                                  _F(NOEUD=('NO1','NO3','NO8','NO6','NO13','NO15','NO20','NO18'),
+                                     PRE1 = 0.),             
+                                  _F(NOEUD=('NO13','NO18','NO20','NO15'),
+                                     TEMP = 0.),),
 
                         FLUX_THM_REP=_F(  GROUP_MA = 'HAUT',
                                    FLUN = 0.5,
                                    FLUN_HYDR1 = 0.)
-                  )
+                  );
 
 MESTAT=STAT_NON_LINE( 
                             MODELE=MODELE,
@@ -180,15 +182,6 @@ TEST_RESU(
              PRECISION = 1.E-2)
            )
 
-TEST_RESU( 
-           RESU=_F(  RESULTAT = MESTAT,         NUME_ORDRE = 1,
-             NOM_CHAM = 'DEPL', 
-             NOM_CMP = 'TEMP',
-             NOEUD = 'NO12',   
-             VALE = 1.47059E-01,   
-             CRITERE = 'RELATIF',
-             PRECISION = 1.E-2)
-           )
 
 TEST_RESU( 
            RESU=_F(  RESULTAT = MESTAT,         NUME_ORDRE = 1,

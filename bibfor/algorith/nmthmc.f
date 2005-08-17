@@ -1,7 +1,7 @@
       SUBROUTINE NMTHMC(COMP, MODELE, MOCLEF, K, COMEL, NCOMEL, NBNVI)
 C =====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 14/06/2005   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ALGORITH  DATE 16/08/2005   AUTEUR ROMEO R.FERNANDES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -152,20 +152,14 @@ C =====================================================================
      &            (COMEL(JJ)(1:12).EQ.'LIQU_GAZ_ATM')) THEN
 
                   IF ((MODELI(1:6).NE.'3D_THM').AND.
-     &               (MODELI(1:5).NE.'3D_HM').AND.
-     &               (MODELI(1:6).NE.'3D_HMD').AND.
-     &               (MODELI(1:7).NE.'3D_THMD').AND.
-     &               (MODELI(1:8).NE.'AXIS_THM').AND.
-     &               (MODELI(1:9).NE.'AXIS_THMD').AND.
-     &               (MODELI(1:7).NE.'AXIS_HM').AND.
-     &               (MODELI(1:8).NE.'AXIS_HMD').AND.
-     &               (MODELI(1:10).NE.'D_PLAN_THM').AND.
-     &               (MODELI(1:11).NE.'D_PLAN_THMD').AND.
-     &               (MODELI(1:9).NE.'D_PLAN_HM').AND.
-     &               (MODELI(1:10).NE.'D_PLAN_HMD').AND.
-     &               (MODELI.NE.' ')) THEN
+     &                (MODELI(1:5).NE.'3D_HM').AND.
+     &                (MODELI(1:8).NE.'AXIS_THM').AND.
+     &                (MODELI(1:7).NE.'AXIS_HM').AND.
+     &                (MODELI(1:10).NE.'D_PLAN_THM').AND.
+     &                (MODELI(1:9).NE.'D_PLAN_HM').AND.
+     &                (MODELI.NE.' ')) THEN
 
-                        CALL UTMESS('F','NMTHMC','INCOMPATIBILITE '//
+                         CALL UTMESS('F','NMTHMC','INCOMPATIBILITE '//
      &                     'ENTRE LA LOI DE COUPLAGE '//COMEL(JJ)//
      &                     ' ET LA MODELISATION CHOISI '//MODELI)
                   ENDIF
@@ -173,24 +167,12 @@ C =====================================================================
                ELSEIF ((COMEL(JJ)(1:13).EQ.'LIQU_VAPE_GAZ').OR.
      &                      (COMEL(JJ)(1:8).EQ.'LIQU_GAZ')) THEN
    
-                  IF ((MODELI(1:7).NE.'3D_THHM').AND.
-     &                (MODELI(1:6).NE.'3D_THH').AND.
+                  IF ((MODELI(1:6).NE.'3D_THH').AND.
      &                (MODELI(1:6).NE.'3D_HHM').AND.
-     &                (MODELI(1:7).NE.'3D_HHMD').AND.
-     &                (MODELI(1:7).NE.'3D_THHD').AND.
-     &                (MODELI(1:8).NE.'3D_THHMD').AND.
-     &                (MODELI(1:9).NE.'AXIS_THHM').AND.
      &                (MODELI(1:8).NE.'AXIS_THH').AND.
      &                (MODELI(1:8).NE.'AXIS_HHM').AND.
-     &                (MODELI(1:9).NE.'AXIS_HHMD').AND.
-     &                (MODELI(1:9).NE.'AXIS_THHD').AND.
-     &                (MODELI(1:10).NE.'AXIS_THHMD').AND.
-     &                (MODELI(1:11).NE.'D_PLAN_THHM').AND.
      &                (MODELI(1:10).NE.'D_PLAN_THH').AND.
      &                (MODELI(1:10).NE.'D_PLAN_HHM').AND.
-     &                (MODELI(1:11).NE.'D_PLAN_HHMD').AND.
-     &                (MODELI(1:11).NE.'D_PLAN_THHD').AND.
-     &                (MODELI(1:12).NE.'D_PLAN_THHMD').AND.
      &                (MODELI.NE.' ')) THEN
 
                      CALL UTMESS('F','NMTHMC','INCOMPATIBILITE '//
@@ -201,9 +183,9 @@ C =====================================================================
 
                ELSEIF   (COMEL(JJ)(1:9).EQ.'LIQU_VAPE') THEN
 
-                  IF ((MODELI(1:7).NE.'3D_THVD').AND.
-     &                (MODELI(1:9).NE.'AXIS_THVD').AND.
-     &                (MODELI(1:11).NE.'D_PLAN_THVD').AND.
+                  IF ((MODELI(1:6).NE.'3D_THV').AND.
+     &                (MODELI(1:8).NE.'AXIS_THV').AND.
+     &                (MODELI(1:10).NE.'D_PLAN_THV').AND.
      &                (MODELI.NE.' ')) THEN
 
                       CALL UTMESS('F','NMTHMC','INCOMPATIBILITE '//
@@ -213,12 +195,10 @@ C =====================================================================
 
                ELSEIF  (COMEL(JJ)(1:16).EQ.'LIQU_AD_GAZ_VAPE') THEN
 
-                  IF ((MODELI(1:10).NE.'AXIS_HH2MD').AND.
-     &                (MODELI(1:10).NE.'AXIS_THH2D').AND.
-     &                (MODELI(1:11).NE.'AXIS_THH2MD').AND.
-     &                (MODELI(1:12).NE.'D_PLAN_HH2MD').AND.
-     &                (MODELI(1:12).NE.'D_PLAN_THH2D').AND.
-     &                (MODELI(1:13).NE.'D_PLAN_THH2MD').AND.
+                  IF ((MODELI(1:9).NE.'AXIS_HH2M').AND.
+     &                (MODELI(1:9).NE.'AXIS_THH2').AND.
+     &                (MODELI(1:11).NE.'D_PLAN_HH2M').AND.
+     &                (MODELI(1:11).NE.'D_PLAN_THH2').AND.
      &                (MODELI.NE.' ')) THEN
 
 

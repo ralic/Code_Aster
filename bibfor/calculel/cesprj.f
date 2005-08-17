@@ -1,6 +1,6 @@
       SUBROUTINE CESPRJ(CES1Z,CORREZ,BASEZ,CES2Z,IRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 09/11/2004   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 16/08/2005   AUTEUR ROMEO R.FERNANDES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -128,7 +128,6 @@ C     ----------------------------------------------------
 
       MA2 = ZK8(IACONO-1+2)
 
-
 C------------------------------------------------------------------
 C     3- QUELQUES VERIFS :
 C     ------------------------
@@ -175,6 +174,7 @@ C          LONGUEUR CUMULEE SUR LES OBJETS .PJEF_NU ET .PJEF_CF
       CALL DISMOI('F','NB_NO_MAILLA',MA2,'MAILLAGE',NBNO2,KBID,IBID)
       CALL WKVECT('&&CESPRJ.IDECAL','V V I',NBNO2,JDECAL)
       IDECAL = 0
+
       DO 10,INO2 = 1,NBNO2
         NBNO1 = ZI(IACONB-1+INO2)
         ZI(JDECAL-1+INO2) = IDECAL
@@ -192,12 +192,23 @@ C          LONGUEUR CUMULEE SUR LES OBJETS .PJEF_NU ET .PJEF_CF
           IMA1 = ZI(IACOM1-1+NUNO2)
           IDECAL = ZI(JDECAL-1+NUNO2)
           DO 40 ICMP = 1,NCMPMX
-C                 -- ON NE PROJETTE UNE CMP QUE SI ELLE EST PORTEE
-C                    PAR TOUS LES NOEUDS DE LA MAILLE SOUS-JACENTE
+C ================================================================
+C --- ON NE PROJETTE UNE CMP QUE SI ELLE EST PORTEE : ------------
+C --- * PAR TOUS LES NOEUDS DE LA MAILLE SOUS-JACENTE ------------
+C --- * PAR TOUS LES NOEUDS SOMMETS DE LA MAILLE SOUS-JACENTE ET -
+C ---   QU'ELLE N'EST PAS DEFINIE AUX NOEUDS MILIEUX -------------
+C ================================================================
             ICO = 0
             DO 20,INO1 = 1,NBNO1
-              CALL CESEXI('C',JCE1D,JCE1L,IMA1,INO1,1,ICMP,IAD1)
-              IF (IAD1.GT.0) ICO = ICO + 1
+               CALL CESEXI('C',JCE1D,JCE1L,IMA1,INO1,1,ICMP,IAD1)
+               COEF1 = ZR(IACOCF+IDECAL-1+INO1)
+               IF (IAD1.GT.0) THEN
+                  ICO = ICO + 1
+               ELSE IF (IAD1.EQ.0) THEN
+                  IF (COEF1.LT.1.0D-6) THEN
+                     ICO = ICO + 1
+                  ENDIF
+               ENDIF
    20       CONTINUE
             IF (ICO.LT.NBNO1) GO TO 40
 
@@ -206,7 +217,13 @@ C                    PAR TOUS LES NOEUDS DE LA MAILLE SOUS-JACENTE
                DO 30,INO1 = 1,NBNO1
                  COEF1 = ZR(IACOCF+IDECAL-1+INO1)
                  CALL CESEXI('C',JCE1D,JCE1L,IMA1,INO1,1,ICMP,IAD1)
-                 V1 = ZR(JCE1V-1+IAD1)
+                 IF (IAD1.GT.0) THEN
+                    V1  = ZR(JCE1V-1+IAD1)
+                 ELSE IF (IAD1.EQ.0) THEN
+                    IF (COEF1.LT.1.0D-6) THEN
+                        V1 = 0.0D0
+                    ENDIF
+                 ENDIF
                  V2 = V2 + COEF1*V1
    30          CONTINUE
                CALL CESEXI('S',JCE2D,JCE2L,IMA2,INO2,1,ICMP,IAD2)
@@ -219,7 +236,13 @@ C                    PAR TOUS LES NOEUDS DE LA MAILLE SOUS-JACENTE
                DO 31,INO1 = 1,NBNO1
                  COEF1 = ZR(IACOCF+IDECAL-1+INO1)
                  CALL CESEXI('C',JCE1D,JCE1L,IMA1,INO1,1,ICMP,IAD1)
-                 V1C = ZC(JCE1V-1+IAD1)
+                 IF (IAD1.GT.0) THEN
+                    V1C = ZC(JCE1V-1+IAD1)
+                 ELSE IF (IAD1.EQ.0) THEN
+                    IF (COEF1.LT.1.0D-6) THEN
+                        V1C = 0.0D0
+                    ENDIF
+                 ENDIF
                  V2C = V2C + COEF1*V1C
    31          CONTINUE
                CALL CESEXI('S',JCE2D,JCE2L,IMA2,INO2,1,ICMP,IAD2)

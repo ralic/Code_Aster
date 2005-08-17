@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 11/07/2005   AUTEUR VABHHTS J.PELLET 
+%& MODIF TYPELEM  DATE 16/08/2005   AUTEUR ROMEO R.FERNANDES 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,13 +19,16 @@
 GENER_MEDA31
 TYPE_GENE__
 
-ENTETE__ ELEMENT__ HH2M_D_PLAN_SE2   MAILLE__ SEG2
-   ELREFE__  SE2       GAUSS__  RIGI=FPG2
 ENTETE__ ELEMENT__ HH2M_D_PLAN_SE3   MAILLE__ SEG3
-   ELREFE__  SE3       GAUSS__  RIGI=FPG4
+   ELREFE__  SE3        GAUSS__  RIGI=FPG4
+   ELREFE__  SE2        GAUSS__  RIGI=FPG4
+   ENS_NOEUD__  EN2     =     3
+   ENS_NOEUD__  EN1     =     1  2
 
 MODE_LOCAL__
-    DDL_MECA = DEPL_R   ELNO__ IDEN__  (DX       DY       PRE1     PRE2     )
+    DDL_MECA = DEPL_R   ELNO__ DIFF__
+                                 EN1   (DX       DY       PRE1     PRE2     )
+                                 EN2   (DX       DY       )
     CFLUXF   = FTHM_F   ELEM__         (PFLU1    PFLU2    )
     EFLUXE   = FTHM_R   ELGA__ RIGI   (PFLU1    PFLU2    )
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        )

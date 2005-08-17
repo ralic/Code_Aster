@@ -1,4 +1,4 @@
-# MODIF  DATE 18/05/2005   AUTEUR ROMEO R.FERNANDES 
+# MODIF  DATE 16/08/2005   AUTEUR ROMEO R.FERNANDES 
 # ======================================================================
 # TITRE CALCUL DE RESATURATION D UNE BO PAR UNE BG SUR UN BI-MATERIAUX BO-BG
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -56,6 +56,13 @@ MODELE=AFFE_MODELE(MAILLAGE=MAIL,
                    AFFE=_F(TOUT='OUI',
                            PHENOMENE='MECANIQUE',
                            MODELISATION='3D_THH',),);
+MAIL=DEFI_GROUP( reuse=MAIL,
+               MAILLAGE=MAIL,
+               CREA_GROUP_MA=(_F(NOM='ROCHE',
+                                     TOUT='OUI'),),
+               CREA_GROUP_NO=(_F(NOM='ROCHES',
+                                 CRIT_NOEUD='SOMMET',
+                                 GROUP_MA='ROCHE'),),)
 
 UN=DEFI_CONSTANTE(VALE=1.0,);
 
@@ -301,9 +308,9 @@ CHAMNO=CREA_CHAMP(MAILLAGE=MAIL,
                              VALE=0.0,),),);
 
 CALEXT=AFFE_CHAR_MECA(MODELE=MODELE,
-                      DDL_IMPO=(_F(TOUT='OUI',
+                      DDL_IMPO=(_F(GROUP_NO='ROCHES',
                                    TEMP=0.0,),
-                                _F(TOUT='OUI',
+                                _F(GROUP_NO='ROCHES',
                                    PRE2=0.0,),),);
 
 

@@ -1,4 +1,4 @@
-# MODIF  DATE 07/03/2005   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 16/08/2005   AUTEUR ROMEO R.FERNANDES 
 # RESPONSABLE JOUMANA J.EL-GHARIB
 # TITRE MOUILLAGE D'UNE COLONNE EN BETON AVEC LOI D'ENDOMMMAGEMENT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -43,12 +43,7 @@ PRE_GIBI()
   
 MA=LIRE_MAILLAGE( )  
   
-MA=DEFI_GROUP( reuse=MA,  
-               MAILLAGE=MA,  
-               CREA_GROUP_NO=_F(   
-                TOUT_GROUP_MA = 'OUI')  
-              )  
-  
+ 
 MO=AFFE_MODELE(   
                 MAILLAGE=MA,  
                 AFFE=_F(   
@@ -56,7 +51,24 @@ MO=AFFE_MODELE(
                PHENOMENE = 'MECANIQUE',  
                MODELISATION = '3D_HHM')  
              )  
-  
+MA=DEFI_GROUP( reuse=MA,
+               MAILLAGE=MA,
+               CREA_GROUP_MA=(_F(NOM='ROCHE',
+                                     TOUT='OUI'),),
+               CREA_GROUP_NO=(_F(TOUT_GROUP_MA = 'OUI'),),)
+                
+                
+                
+                
+MA=DEFI_GROUP( reuse=MA,
+               MAILLAGE=MA,                
+                CREA_GROUP_NO=(_F(NOM='FIXE1S',
+                                 CRIT_NOEUD='SOMMET',
+                                 GROUP_MA='FIXE1',),
+                              _F(NOM='ROCHES',
+                                 CRIT_NOEUD='SOMMET',
+                                 GROUP_MA='ROCHE',),),
+              )  
 #  
 # PROPRIETES DU MATERIAU  
 #  
@@ -246,7 +258,7 @@ CLIM=AFFE_CHAR_MECA(
 #CHARGEMENT - MOUILLAGE
 #  
 CHARGT = AFFE_CHAR_MECA(MODELE=MO,  
-                          DDL_IMPO=(_F( GROUP_NO=('FIXE1') ,PRE1=1.0),),);                                
+                          DDL_IMPO=(_F( GROUP_NO=('FIXE1S') ,PRE1=1.0),),);                                
   
   
 CAP = DEFI_FONCTION(NOM_PARA='INST',  
@@ -262,7 +274,7 @@ CAP = DEFI_FONCTION(NOM_PARA='INST',
 DEPINIT=CREA_CHAMP(MAILLAGE=MA,  
                     OPERATION='AFFE',   
                     TYPE_CHAM='NOEU_DEPL_R',  
-                    AFFE=(_F(TOUT='OUI',  
+                    AFFE=(_F(GROUP_NO='ROCHES',  
                              NOM_CMP='PRE1',  
                              VALE=6.92413E7,),),);  
   

@@ -1,5 +1,5 @@
 
-# MODIF  DATE 31/01/2005   AUTEUR ROMEO R.FERNANDES 
+# MODIF  DATE 16/08/2005   AUTEUR ROMEO R.FERNANDES 
 # TITRE TEST THM, D_PLAN_DPTR6
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -147,11 +147,12 @@ CHMAT0=AFFE_MATERIAU(MAILLAGE=MAIL,
                              MATER=MATERIAU,),);
 
 CHAR0=AFFE_CHAR_MECA(MODELE=MODELE,
-                     DDL_IMPO=(_F(TOUT='OUI',
+                     DDL_IMPO=(_F(NOEUD=('N1','N2','N3','N4'),
                                   PRE1=500.0,),
                                _F(GROUP_NO='BAS',
                                   DX=0.0,
-                                  DY=0.0,
+                                  DY=0.0,),
+                               _F(NOEUD=('N1','N2'),
                                   TEMP=0.0,),
                                _F(NOEUD=('N6','N8'),
                                   DX=0.0,

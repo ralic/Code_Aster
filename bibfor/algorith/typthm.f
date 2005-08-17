@@ -1,10 +1,12 @@
-      SUBROUTINE LUMTHM(NOMTE,LUMPED)
+      SUBROUTINE TYPTHM(NOMTE,AXI,TYPMOD,NDIM)
       IMPLICIT      NONE
-      LOGICAL       LUMPED
+      LOGICAL       AXI
+      INTEGER       NDIM
+      CHARACTER*8   TYPMOD(2)
       CHARACTER*16  NOMTE
 C =====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 31/01/2005   AUTEUR ROMEO R.FERNANDES 
+C MODIF ALGORITH  DATE 16/08/2005   AUTEUR ROMEO R.FERNANDES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -22,14 +24,29 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
 C =====================================================================
-C --- DETERMINATION DES MODELISATIONS LUMPEE OU NON LUMPEE ------------
+C --- BUT : DETERMINER LE TYPE DE MODELISATION (AXI DPLAN 3D) ---------
 C =====================================================================
-      INTEGER       DIMETE,LXLGUT
-C =====================================================================
-      LUMPED = .FALSE.
-      DIMETE = LXLGUT(NOMTE)
-      IF (NOMTE(DIMETE:DIMETE).EQ.'D') THEN
-         LUMPED = .TRUE.
+      AXI       = .FALSE.
+      IF ( NOMTE(6:9) .EQ.'AXIS' .OR.
+     +     NOMTE(4:7) .EQ.'AXIS' .OR.
+     +     NOMTE(5:8) .EQ.'AXIS' .OR.
+     +     NOMTE(7:10).EQ.'AXIS' ) THEN
+         AXI       = .TRUE.
+         TYPMOD(1) = 'AXIS    '
+         NDIM      = 2
+      ELSE IF ( NOMTE(6:7) .EQ.'DP' .OR.
+     +          NOMTE(7:8) .EQ.'DP' .OR.
+     +          NOMTE(4:5) .EQ.'DP' .OR.
+     +          NOMTE(5:6) .EQ.'DP' .OR.
+     +          NOMTE(6:9) .EQ.'D_PL' .OR.
+     +          NOMTE(7:10) .EQ.'D_PL' .OR.
+     +          NOMTE(4:7) .EQ.'D_PL' .OR.
+     +          NOMTE(5:8) .EQ.'D_PL') THEN
+         TYPMOD(1) = 'D_PLAN  '
+         NDIM      = 2
+      ELSE
+         TYPMOD(1) = '3D      '
+         NDIM      = 3
       ENDIF
 C =====================================================================
       END

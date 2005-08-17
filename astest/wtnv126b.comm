@@ -1,4 +1,4 @@
-# MODIF  DATE 23/05/2005   AUTEUR JOUMANA J.EL-GHARIB 
+# MODIF  DATE 16/08/2005   AUTEUR ROMEO R.FERNANDES 
 # TITRE REPONSE A DES CHEMINS MIXTES DE SATURATION - CONSOLIDATION en AXIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -73,6 +73,15 @@ MAILLAGE=DEFI_GROUP(reuse =MAILLAGE,
                                _F(GROUP_MA='CD',),
                                _F(GROUP_MA='DA',),),);
 
+
+MAILLAGE=DEFI_GROUP(reuse =MAILLAGE,
+                MAILLAGE=MAILLAGE,
+                CREA_GROUP_MA=(_F(NOM='ROCHE',
+                                  TOUT='OUI',),),
+                CREA_GROUP_NO=(_F(NOM='ROCHES',
+                                  CRIT_NOEUD='SOMMET',
+                                  GROUP_MA='ROCHE',),),);
+                                  
 MODELE=AFFE_MODELE(     MAILLAGE=MAILLAGE,
                              AFFE=_F(  TOUT = 'OUI',
                                     PHENOMENE = 'MECANIQUE',
@@ -193,11 +202,11 @@ TEMPS4=DEFI_LIST_REEL(   DEBUT=18.,INTERVALLE=(
 DEPINIT=CREA_CHAMP(MAILLAGE=MAILLAGE,
                     OPERATION='AFFE',
                     TYPE_CHAM='NOEU_DEPL_R',
-                    AFFE=(_F(TOUT='OUI',
+                    AFFE=(_F(GROUP_NO='ROCHES',
                              NOM_CMP='PRE1',
                              VALE=2.E5,
                               ),
-                          _F(TOUT='OUI',
+                          _F(GROUP_NO='ROCHES',
                              NOM_CMP='PRE2',
                               VALE=0.,
                               ),    ),);
@@ -222,7 +231,7 @@ SIGINIT=CREA_CHAMP(MAILLAGE=MAILLAGE,
 # PREMIER MOUILLAGE 
 
 P0=AFFE_CHAR_MECA(    MODELE=MODELE,
-                      DDL_IMPO=_F(  TOUT = 'OUI',   
+                      DDL_IMPO=_F( GROUP_NO='ROCHES',   
                                     PRE1 =1.,PRE2=0,
                                  )
                  )
@@ -285,7 +294,7 @@ U1=STAT_NON_LINE(ETAT_INIT = _F(SIGM=SIGINIT,DEPL=DEPINIT),
 # PREMIER CHARGEMENT HYDROSTATIQUE
 
 P1=AFFE_CHAR_MECA(    MODELE=MODELE,
-                               DDL_IMPO=_F(  TOUT = 'OUI',   
+                               DDL_IMPO=_F(GROUP_NO='ROCHES',   
                                PRE1 =0.,PRE2=0,
                                 )
                            )

@@ -1,20 +1,21 @@
-         SUBROUTINE  EPSTHM(NDDL,NNO,NNOS,DIMDEF,NDIM,NPG,IPOIDS,IVF,
-     &               IDFDE,GEOM,DEPLA,NMEC,MECANI,PRESS1,PRESS2,
-     &               TEMPE,NP1,NP2,AXI,NVOMAX,NNOMAX,NSOMAX,NBVOS,
-     &               VOISIN,P2P1,EPSM)
+         SUBROUTINE  EPSTHM(NDDLS,NDDLM,NNO,NNOS,NNOM,
+     &               DIMDEF,DIMUEL,NDIM,NPI,IPOIDS,IPOID2,IVF,IVF2,
+     &               IDFDE,IDFDE2,GEOM,DEPLA,NMEC,MECANI,PRESS1,PRESS2,
+     &               TEMPE,NP1,NP2,AXI,EPSM)
 
        IMPLICIT NONE
-       INTEGER      NVOMAX,NNOMAX,NSOMAX,CODRET
-       INTEGER      VOISIN(NVOMAX,NNOMAX)
-       INTEGER      NBVOS(NSOMAX)
-       INTEGER      NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,DIMDEF
-       INTEGER      NDDL,NMEC,NP1,NP2,NDIM
+       INTEGER      CODRET,DIMUEL,NNO,NNOS,NNOM,NPI
+       INTEGER      IPOIDS,IPOID2,IVF,IVF2,IDFDE,IDFDE2,DIMDEF
+       INTEGER      NDDLS,NDDLM,NMEC,NP1,NP2,NDIM
        INTEGER      MECANI(5),PRESS1(7),PRESS2(7),TEMPE(5)
-       REAL*8       GEOM(NDIM,NNO),EPSM(6,NPG),DEPLA(NDDL,NNO)
-       REAL*8       DFDI(NNO,3)
-       LOGICAL      P2P1,AXI
+       REAL*8       GEOM(NDIM,NNO),EPSM(6,NPI),DEPLA(DIMUEL)
+       REAL*8       DFDI(NNO,3),DFDI2(NNOS,3)
+       LOGICAL      AXI
+       INTEGER      YAMEC,YAP1,YAP2,YATE
+       INTEGER      ADDEME,ADDEP1,ADDEP2,ADDETE
+C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 04/01/2005   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ALGORITH  DATE 16/08/2005   AUTEUR ROMEO R.FERNANDES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -32,12 +33,10 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
 C TOLE  CRP_21
-
-C.......................................................................
-C
+C ======================================================================
 C     BUT:  CALCUL  DES DEFORMATIONS MECANIQUES AU POINT DE GAUSS 
 C           EN MECANIQUE DES MILIEUX POREUX AVEC COUPLAGE THM 
-C.......................................................................
+C ======================================================================
 C IN  NDDL    : NOMBRE DE DEGRES DE LIBERTES PAR NOEUD DE L'ELEMENT
 C IN  NNO     : NOMBRE DE NOEUDS DE L'ELEMENT
 C IN  NNOS    : NOMBRE DE NOEUDS SOMMET DE L'ELEMENT
@@ -60,44 +59,38 @@ C               COMME VARIABLE
 C IN  NP2     : VAUT 1 SI LA MODELISATION CONTIENT UNE DEUXIEME
 C               PRESSION COMME VARIABLE
 C IN  AXI     : VRAI SI ELEMENT APPELANT AXI
-C IN VOISIN
-C  POUR UN SOMMET J DE 1 A NNOS : 
-C         VOISIN(1:NDIM,J) =  LES NDIM NOEUDS MILIEUX VOSIN DU SOMMMET
-C
-C
-C  POUR UN MILIEU J DE 1 A NNOS +1 A NNO: 
-C         VOISIN(1:2,J) =  LES 2 NOEUDS DU SEGMENT DONT IL EST LE MILIEU
-C
-C IN  P2P1   : VRAI SI ELEMENT APPELANT P2P1
-C
 C OUT EPSM  : DEFORMATIONS AUX POINTS DE GAUSS SUR L ELEMENT COURANT
-C......................................................................
-C
+C ======================================================================
+      INTEGER  KPI,I,N,J
+      REAL*8   POIDS,POIDS2,B(DIMDEF,DIMUEL)   
 
+      YAMEC  = MECANI(1)
+      ADDEME = MECANI(2)
+      YAP1   = PRESS1(1)
+      ADDEP1 = PRESS1(3)
+      YAP2   = PRESS2(1)
+      ADDEP2 = PRESS2(3)
+      YATE   = TEMPE(1)
+      ADDETE = TEMPE(2)
 
-      INTEGER KPG,I,N,J
-      REAL*8   POIDS,B(DIMDEF,NDDL*NNO)
-
-      DO 10 KPG=1,NPG
-C        CALCUL DE LA MATRICE B AU POINT DE GAUSS
-C
-         CALL CABTHM(NDDL,NNO,NNOS,
-     >               DIMDEF,NDIM,NPG,KPG,IPOIDS,IVF,IDFDE,DFDI,GEOM,
-     &               POIDS,B,NMEC,MECANI(1),MECANI(2),PRESS1(1),
-     &               PRESS1(3),PRESS2(1),PRESS2(3),TEMPE(1),TEMPE(2),
-     &               NP1,NP2,AXI,NVOMAX,NNOMAX,NSOMAX,NBVOS,VOISIN,P2P1)
-
-C
-C  CALCUL DES DEFORMATIONS 
-C
-            DO 108 I=1,6
-                EPSM(I,KPG)=0.D0
-                DO 109 N=1,NNO
-                   DO 110 J=1,NDDL
-                      EPSM(I,KPG)=EPSM(I,KPG)
-     &                  +B(I+NDIM,(N-1)*NDDL+J)*DEPLA(J,N)
- 110               CONTINUE
- 109            CONTINUE
- 108        CONTINUE
+      DO 10 KPI=1,NPI
+C ======================================================================
+C --- CALCUL DE LA MATRICE B AU POINT DE GAUSS -------------------------
+C ======================================================================
+         CALL CABTHM(NDDLS,NDDLM,NNO,NNOS,NNOM,DIMUEL,
+     +               DIMDEF,NDIM,NPI,KPI,IPOIDS,IPOID2,IVF,IVF2,
+     +               IDFDE,IDFDE2,DFDI,DFDI2,
+     +               GEOM,POIDS,POIDS2,B,NMEC,YAMEC,ADDEME,YAP1,
+     +               ADDEP1,YAP2,ADDEP2,YATE,ADDETE,NP1,NP2,AXI)
+C ======================================================================
+C --- CALCUL DES DEFORMATIONS ------------------------------------------
+C ======================================================================
+         DO 108 I=1,6
+            EPSM(I,KPI)=0.D0
+            DO 109 J=1,DIMUEL
+               EPSM(I,KPI)=EPSM(I,KPI)+B(I+NDIM,J)*DEPLA(J)
+ 109        CONTINUE
+ 108     CONTINUE
  10   CONTINUE
-            END
+C ======================================================================
+      END

@@ -1,13 +1,12 @@
-      SUBROUTINE CABTHM(NDDL,NNO,NNOS,
-     >               DIMDEF,NDIM,NPG,KPG,IPOIDS,IVF,IDFDE,
-     &               DFDI,GEOM,POIDS,B,NMEC,YAMEC,ADDEME,YAP1,
-     &               ADDEP1,YAP2,ADDEP2,YATE,ADDETE,NP1,NP2,AXI,
-     >               NVOMAX,NNOMAX,NSOMAX,NBVOS,VOISIN,P2P1)
-
+      SUBROUTINE CABTHM(NDDLS,NDDLM,NNO,NNOS,NNOM,DIMUEL,DIMDEF,NDIM,
+     +               NPI,KPI,IPOIDS,IPOID2,IVF,IVF2,IDFDE,IDFDE2,DFDI,
+     +               DFDI2,GEOM,POIDS,POIDS2,B,NMEC,YAMEC,ADDEME,YAP1,
+     +               ADDEP1,YAP2,ADDEP2,YATE,ADDETE,NP1,NP2,AXI)
+C
        IMPLICIT NONE
-
+C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 14/09/2004   AUTEUR ROMEO R.FERNANDES 
+C MODIF ALGORITH  DATE 16/08/2005   AUTEUR ROMEO R.FERNANDES 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -27,43 +26,49 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_20
 C TOLE CRP_21
-C
-C     BUT:  CALCUL  DE LA MATRICE B
+C ======================================================================
+C     BUT:  CALCUL  DE LA MATRICE B EN MODE D'INTEGRATION MIXTE
+C              AVEC ELEMENTS P2P1
 C     EN MECANIQUE DES MILIEUX POREUX PARTIELLEMENT SATURE
 C     AVEC COUPLAGE THM 
+C ======================================================================
 C.......................................................................
 C ARGUMENTS D'ENTREE
 C
-C IN  NDIM    : DIMENSION DE L'ESPACE
-C IN  NNO     : NOMBRE DE NOEUDS DE L'ELEMENT
-C IN  NNOS    : NOMBRE DE NOEUDS SOMMET DE L'ELEMENT
-C IN  NPG     : NOMBRE DE POINTS DE GAUSS
-C IN  POIDSG  : POIDS DES POINTS DE GAUSS
-C IN  VFF     : VALEUR  DES FONCTIONS DE FORME
-C IN  DFDE    : DERIVEE DES FONCTIONS DE FORME ELEMENT DE REFERENCE
-C IN  DFDN    : DERIVEE DES FONCTIONS DE FORME ELEMENT DE REFERENCE
-C IN  DFDK    : DERIVEE DES FONCTIONS DE FORME ELEMENT DE REFERENCE
-C IN  GEOM    : COORDONEES DES NOEUDS
-C IN  DIMDEF  : DIMENSION DU TABLEAU DES DEFORMATIONS GENERALISEES 
-C               AU POINT DE GAUSS
-C IN  AXI     : VRAI SI ELEMENT APPELANT AXI
-C IN  P2P1   : VRAI SI ELEMENT APPELANT P2P1
-C IN VOISIN
-C  POUR UN SOMMET J DE 1 A NNOS : 
-C         VOISIN(1:NBVOS(J),J) =  
-C                    LES NBVOS(J) NOEUDS MILIEUX VOSIN DU SOMMMET
+C ======================================================================
+C AXI       AXISYMETRIQUE?
+C TYPMOD    MODELISATION (D_PLAN, AXI, 3D ?)
+C MODINT    METHODE D'INTEGRATION (CLASSIQUE,LUMPEE(D),REDUITE(R) ?)
+C NNO       NB DE NOEUDS DE L'ELEMENT
+C NNOS      NB DE NOEUDS SOMMETS DE L'ELEMENT
+C NNOM      NB DE NOEUDS MILIEUX DE L'ELEMENT
+C NDDLS     NB DE DDL SUR LES SOMMETS
+C NDDLM     NB DE DDL SUR LES MILIEUX
+C NPI       NB DE POINTS D'INTEGRATION DE L'ELEMENT
+C NPG       NB DE POINTS DE GAUSS     POUR CLASSIQUE(=NPI)
+C                 SOMMETS             POUR LUMPEE   (=NPI=NNOS)
+C                 POINTS DE GAUSS     POUR REDUITE  (<NPI)
+C NDIM      DIMENSION DE L'ESPACE
+C DIMUEL    NB DE DDL TOTAL DE L'ELEMENT
+C DIMCON    DIMENSION DES CONTRAINTES GENERALISEES ELEMENTAIRES
+C DIMDEF    DIMENSION DES DEFORMATIONS GENERALISEES ELEMENTAIRES
+C IVF       FONCTIONS DE FORMES QUADRATIQUES
+C IVF2      FONCTIONS DE FORMES LINEAIRES
 C
+C                     sommets              |    milieux
+C           u v p t u v p t u v p t u v p t u v u v u v u v
+C          ------------------------------------------------
+C        u|                                |               |
+C        v|     Fonctions de forme         |               |
+C        E|              P2                |       P2      |
+C          ------------------------------------------------
+C        P|                                |               |
+C       DP|                                |         0     |
+C        T|              P1                |               |
+C       DT|                                |               |
+C          ------------------------------------------------
 C
-C  POUR UN MILIEU J DE 1 A NNOS +1 A NNO: 
-C         VOISIN(1:2,J) =  LES 2 NOEUDS DU SEGMENT DONT IL EST LE MILIEU
-C
-C
-C.......................................................................
-C ARGUMENTS DE SORTIE
-C OUT DFDI    : DERIVEE DES FCT FORME
-C OUT POIDS  : JACOBIEN AUX POINTS DE GAUSS
-C.......................................................................
-C
+C ======================================================================
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       INTEGER  ZI
       COMMON  / IVARJE / ZI(1)
@@ -80,234 +85,243 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
-      INTEGER      NDDL,NMEC,NP1,NP2,NDIM,NNO
-      INTEGER      NNOS,NPG,KPG,DIMDEF
-      INTEGER      I,N,G,KK
-      REAL*8       DFDI(NNO,3)
-      REAL*8       GEOM(NDIM,NNO),POIDS
-      REAL*8       B(DIMDEF,NDDL*NNO)
-      INTEGER      YAMEC,ADDEME,YAP1,YAP2,ADDEP1,ADDEP2,YATE,ADDETE
-      REAL*8       RAC,R,RMAX
-      LOGICAL AXI,P2P1
-      INTEGER NVOMAX,NNOMAX,NSOMAX
-      INTEGER VOISIN(NVOMAX,NNOMAX)
-      INTEGER NBVOS(NSOMAX),IPOIDS,IDFDE,IVF
-      
-      INTEGER IDL,IDL1M,IV
-C
-C  CALCUL DE CONSTANTES UTILES
-C
+C ======================================================================
+      LOGICAL      AXI
+      INTEGER      NDDLS,NDDLM,NMEC,NP1,NP2,NDIM,NNO,I,N,G,KK,J,YAMEC
+      INTEGER      NNOS,NNOM,NPI,KPI,DIMDEF,DIMUEL,IPOIDS,IDFDE,IVF
+      INTEGER      ADDEME,YAP1,YAP2,ADDEP1,ADDEP2,YATE,ADDETE
+      INTEGER      IPOID2,IDFDE2,IVF2,IDL,IDL1M,IV
+      REAL*8       DFDI(NNO,3),DFDI2(NNOS,3),GEOM(NDIM,NNO),POIDS,POIDS2
+      REAL*8       B(DIMDEF,DIMUEL),RAC,R,RMAX
+C ======================================================================
+C --- CALCUL DE CONSTANTES UTILES --------------------------------------
+C ======================================================================
       RAC= SQRT(2.D0)
-C
-C        INITIALISATION DE LA MATRICE
-C
-         DO 100 N=1,NDDL*NNO
-            DO 101 G=1,DIMDEF
-               B(G,N)=0.D0
- 101        CONTINUE
- 100     CONTINUE
-C
-C      RECUPERATION DES DERIVEES DES FONCTIONS DE FORME
-C
-         IF (NDIM.EQ.3) THEN
-            CALL DFDM3D ( NNO, KPG, IPOIDS, IDFDE,
-     &                    GEOM,DFDI(1,1),DFDI(1,2),DFDI(1,3),POIDS)
+C ======================================================================
+C --- INITIALISATION DE LA MATRICE B -----------------------------------
+C ======================================================================
+      DO 100 N=1,DIMUEL
+         DO 101 G=1,DIMDEF
+            B(G,N)=0.D0
+ 101     CONTINUE
+ 100  CONTINUE
+C ======================================================================
+C --- RECUPERATION DES DERIVEES DES FONCTIONS DE FORME -----------------
+C ======================================================================
+C --- EN 3D ------------------------------------------------------------
+C ======================================================================
+      IF (NDIM.EQ.3) THEN
+C ======================================================================
+C --- CAS QUADRATIQUES -------------------------------------------------
+C ======================================================================
+         CALL DFDM3D (NNO,KPI,IPOIDS,IDFDE,
+     +                         GEOM,DFDI(1,1),DFDI(1,2),DFDI(1,3),POIDS)
+C ======================================================================
+C --- CAS LINEAIRES ----------------------------------------------------
+C ======================================================================
+         CALL DFDM3D (NNOS,KPI,IPOID2,IDFDE2,GEOM,DFDI2(1,1),
+     +                                     DFDI2(1,2),DFDI2(1,3),POIDS2)
+C ======================================================================
+C --- EN 2D ------------------------------------------------------------
+C ======================================================================
+      ELSE
+C ======================================================================
+C --- CAS QUADRATIQUES -------------------------------------------------
+C ======================================================================
+         CALL DFDM2D(NNO,KPI,IPOIDS,IDFDE,GEOM,DFDI(1,1),
+     +                                                  DFDI(1,2),POIDS)
+C ======================================================================
+C --- CAS LINEAIRES ----------------------------------------------------
+C ======================================================================
+         CALL DFDM2D(NNOS,KPI,IPOID2,IDFDE2,GEOM,DFDI2(1,1),
+     +                                                DFDI2(1,2),POIDS2)
+
+         DO 200 N=1,NNOS
+            DFDI2(N,3)=0.D0
+ 200     CONTINUE
+         DO 201 N=1,NNO
+            DFDI(N,3)=0.D0
+ 201     CONTINUE
+      ENDIF
+C ======================================================================
+C --- MODIFICATION DU POIDS POUR LES MODELISATIONS AXIS ----------------
+C ======================================================================
+      IF (AXI) THEN
+         KK = (KPI-1)*NNO
+         R  = 0.D0
+         DO 10 N=1,NNO
+            R  = R + ZR(IVF + N + KK - 1)*GEOM(1,N) 
+ 10      CONTINUE
+C ======================================================================
+C --- DANS LE CAS OU R EGAL 0, ON A UN JACOBIEN NUL --------------------
+C --- EN UN POINT DE GAUSS, ON PREND LE MAX DU RAYON -------------------
+C --- SUR L ELEMENT MULTIPLIE PAR 1E-3 ---------------------------------
+C ======================================================================
+         IF (R .EQ. 0.D0) THEN
+            RMAX=GEOM(1,1)
+            DO 15 N=2,NNO
+               RMAX=MAX(GEOM(1,N),RMAX)
+ 15         CONTINUE
+            POIDS = POIDS*1.D-03*RMAX
          ELSE
-            CALL DFDM2D(NNO,KPG,IPOIDS,IDFDE,GEOM,DFDI(1,1),
-     &                  DFDI(1,2),POIDS)
-            IF (AXI) THEN
-              KK = (KPG-1)*NNO
-              R  = 0.D0
-              DO 10 N=1,NNO
-                 R  = R + ZR(IVF + N + KK - 1)*GEOM(1,N) 
-  10          CONTINUE
-
-C                 DANS LE CAS OU R EGAL 0, ON A UN JACOBIEN NUL 
-C                 EN UN POINT DE GAUSS, ON PREND LE MAX DU RAYON
-C                 SUR L ELEMENT MULTIPLIE PAR 1E-3
-
-              IF (R .EQ. 0.D0) THEN
-                 RMAX=GEOM(1,1)
-                 DO 15 N=2,NNO
-                    RMAX=MAX(GEOM(1,N),RMAX)
-  15             CONTINUE
-                 POIDS = POIDS*1.D-03*RMAX
-              ELSE
-                 POIDS = POIDS*R
-              ENDIF
-            ENDIF
-            DO 200 N=1,NNO
-              DFDI(N,3)=0.D0
- 200        CONTINUE
+            POIDS = POIDS*R
          ENDIF
-C
-C      REMPLISSAGE DES TERMES DE LA MATRICE B
-C 
-         DO 102 N=1,NNO
-            IF (YAMEC.EQ.1) THEN 
-               DO 103 I=1,NDIM
-                  B(ADDEME-1+I,(N-1)*NDDL+I)=B(ADDEME-1+I,(N-1)*NDDL+I)
-     &                 +ZR(IVF+N+(KPG-1)*NNO-1)
-C
- 103               CONTINUE
-C
-C --- CALCUL DE DEPSX, DEPSY, DEPSZ (DEPSZ INITIALISE A 0 EN 2D)
-C
-
-               DO 104 I=1,3
-                  B(ADDEME+NDIM-1+I,(N-1)*NDDL+I)=
-     &                    B(ADDEME+NDIM-1+I,(N-1)*NDDL+I)+DFDI(N,I)
-C
- 104           CONTINUE
-C
-C --- TERME U/R DANS EPSZ EN AXI
-               IF (AXI) THEN
-                  IF (R .EQ. 0.D0) THEN
-                     B(ADDEME+4,(N-1)*NDDL+1)= DFDI(N,1)
-                     
-                  ELSE
-                    KK=(KPG-1)*NNO 
-                    B(ADDEME+4,(N-1)*NDDL+1)=ZR(IVF+N+KK-1)/R
-                  ENDIF
-               ENDIF
-C
-
-C
-C CALCUL DE EPSXY
-C
-               B(ADDEME+NDIM+3,(N-1)*NDDL+1)=
-     &                    B(ADDEME+NDIM+3,(N-1)*NDDL+1)+DFDI(N,2)/RAC
-               B(ADDEME+NDIM+3,(N-1)*NDDL+2)=
-     &                    B(ADDEME+NDIM+3,(N-1)*NDDL+2)+DFDI(N,1)/RAC
-C
-C
-C CALCUL DE EPSXZ ET EPSYZ EN 3D
-C
-               IF(NDIM .EQ. 3) THEN
-                 B(ADDEME+NDIM+4,(N-1)*NDDL+1)=
-     &                    B(ADDEME+NDIM+4,(N-1)*NDDL+1)+DFDI(N,3)/RAC
-
-                 B(ADDEME+NDIM+4,(N-1)*NDDL+3)=
-     &                    B(ADDEME+NDIM+4,(N-1)*NDDL+3)+DFDI(N,1)/RAC
-C
-                 B(ADDEME+NDIM+5,(N-1)*NDDL+2)=
-     &                    B(ADDEME+NDIM+5,(N-1)*NDDL+2)+DFDI(N,3)/RAC
-                 B(ADDEME+NDIM+5,(N-1)*NDDL+3)=
-     &                    B(ADDEME+NDIM+5,(N-1)*NDDL+3)+DFDI(N,2)/RAC
+      ENDIF
+C ======================================================================
+C --- REMPLISSAGE DE L OPERATEUR B -------------------------------------
+C ======================================================================
+C --- ON COMMENCE PAR LA PARTIE GAUCHE DE B CORRESPONDANT --------------
+C --- AUX NOEUDS SOMMETS -----------------------------------------------
+C ======================================================================
+      DO 102 N=1,NNOS
+C ======================================================================
+         IF (YAMEC.EQ.1) THEN 
+            DO 103 I=1,NDIM
+               B(ADDEME-1+I,(N-1)*NDDLS+I)=
+     +         B(ADDEME-1+I,(N-1)*NDDLS+I)+ZR(IVF+N+(KPI-1)*NNO-1)
+ 103        CONTINUE
+C ======================================================================
+C --- CALCUL DE DEPSX, DEPSY, DEPSZ (DEPSZ INITIALISE A 0 EN 2D) -------
+C ======================================================================
+            DO 104 I=1,NDIM
+               B(ADDEME+NDIM-1+I,(N-1)*NDDLS+I)=
+     +         B(ADDEME+NDIM-1+I,(N-1)*NDDLS+I)+DFDI(N,I)
+ 104        CONTINUE
+C ======================================================================
+C --- TERME U/R DANS EPSZ EN AXI ---------------------------------------
+C ======================================================================
+            IF (AXI) THEN
+               IF (R .EQ. 0.D0) THEN
+                  B(ADDEME+4,(N-1)*NDDLS+1)= DFDI(N,1)
+               ELSE
+                  KK=(KPI-1)*NNO 
+                  B(ADDEME+4,(N-1)*NDDLS+1)=ZR(IVF+N+KK-1)/R
                ENDIF
             ENDIF
-C
-C
-            IF (YAP1.EQ.1) THEN
-               B(ADDEP1,(N-1)*NDDL+NMEC+1)=B(ADDEP1,(N-1)*NDDL+NMEC+1)
-     &                 +ZR(IVF+N+(KPG-1)*NNO-1)
-C
-               DO 105 I=1,NDIM
-                  B(ADDEP1+I,(N-1)*NDDL+NMEC+1)=
-     &                    B(ADDEP1+I,(N-1)*NDDL+NMEC+1)+DFDI(N,I)
-C
- 105           CONTINUE
+C ======================================================================
+C --- CALCUL DE EPSXY --------------------------------------------------
+C ======================================================================
+            B(ADDEME+NDIM+3,(N-1)*NDDLS+1)=
+     +      B(ADDEME+NDIM+3,(N-1)*NDDLS+1)+DFDI(N,2)/RAC
+
+            B(ADDEME+NDIM+3,(N-1)*NDDLS+2)=
+     +      B(ADDEME+NDIM+3,(N-1)*NDDLS+2)+DFDI(N,1)/RAC
+C ======================================================================
+C --- CALCUL DE EPSXZ ET EPSYZ EN 3D -----------------------------------
+C ======================================================================
+            IF (NDIM .EQ. 3) THEN
+               B(ADDEME+NDIM+4,(N-1)*NDDLS+1)=
+     +         B(ADDEME+NDIM+4,(N-1)*NDDLS+1)+DFDI(N,3)/RAC
+
+               B(ADDEME+NDIM+4,(N-1)*NDDLS+3)=
+     +         B(ADDEME+NDIM+4,(N-1)*NDDLS+3)+DFDI(N,1)/RAC
+
+               B(ADDEME+NDIM+5,(N-1)*NDDLS+2)=
+     +         B(ADDEME+NDIM+5,(N-1)*NDDLS+2)+DFDI(N,3)/RAC
+
+               B(ADDEME+NDIM+5,(N-1)*NDDLS+3)=
+     +         B(ADDEME+NDIM+5,(N-1)*NDDLS+3)+DFDI(N,2)/RAC
             ENDIF
-C
-            IF (YAP2.EQ.1) THEN
-               B(ADDEP2,(N-1)*NDDL+NMEC+NP1+1)=
-     &         B(ADDEP2,(N-1)*NDDL+NMEC+NP1+1)+ZR(IVF+N+(KPG-1)*NNO-1)
-               DO 106 I=1,NDIM
-                  B(ADDEP2+I,(N-1)*NDDL+NMEC+NP1+1)=
-     &            B(ADDEP2+I,(N-1)*NDDL+NMEC+NP1+1)+DFDI(N,I)
- 106           CONTINUE
+         ENDIF
+C ======================================================================
+C --- TERMES THERMO-HYDRAULIQUES (FONCTIONS DE FORMES P1) --------------
+C ======================================================================
+C --- SI PRESS1 --------------------------------------------------------
+C ======================================================================
+         IF (YAP1.EQ.1) THEN
+            B(ADDEP1,(N-1)*NDDLS+NMEC+1)=
+     +      B(ADDEP1,(N-1)*NDDLS+NMEC+1)+ZR(IVF2+N+(KPI-1)*NNOS-1)
+            DO 105 I=1,NDIM
+               B(ADDEP1+I,(N-1)*NDDLS+NMEC+1)=
+     +         B(ADDEP1+I,(N-1)*NDDLS+NMEC+1)+DFDI2(N,I)
+ 105        CONTINUE
+         ENDIF
+C ======================================================================
+C --- SI PRESS2 --------------------------------------------------------
+C ======================================================================
+         IF (YAP2.EQ.1) THEN
+            B(ADDEP2,(N-1)*NDDLS+NMEC+NP1+1)=
+     +      B(ADDEP2,(N-1)*NDDLS+NMEC+NP1+1)+ZR(IVF2+N+(KPI-1)*NNOS-1)
+            DO 106 I=1,NDIM
+               B(ADDEP2+I,(N-1)*NDDLS+NMEC+NP1+1)=
+     +         B(ADDEP2+I,(N-1)*NDDLS+NMEC+NP1+1)+DFDI2(N,I)
+ 106        CONTINUE
+         ENDIF
+C ======================================================================
+C --- SI TEMPE ---------------------------------------------------------
+C ======================================================================
+         IF (YATE.EQ.1) THEN
+            B(ADDETE,(N-1)*NDDLS+NMEC+NP1+NP2+1)=
+     +      B(ADDETE,(N-1)*NDDLS+NMEC+NP1+NP2+1)
+     +                                        +ZR(IVF2+N+(KPI-1)*NNOS-1)
+            DO 107 I=1,NDIM
+               B(ADDETE+I,(N-1)*NDDLS+NMEC+NP1+NP2+1)=
+     +         B(ADDETE+I,(N-1)*NDDLS+NMEC+NP1+NP2+1)+DFDI2(N,I)
+ 107        CONTINUE
+         ENDIF
+ 102  CONTINUE
+C ======================================================================
+C --- ON REMPLIT MAINTENANT LE COIN SUPERIEUR DROIT DE B CORRESPONDANT -
+C --- AUX NOEUDS MILIEUX (MECANIQUE - FONCTIONS DE FORMES P2) ----------
+C ======================================================================
+      IF (YAMEC.EQ.1) THEN
+         DO 300 N= 1,NNOM
+            DO 301 I=1,NDIM
+               B(ADDEME-1+I,NNOS*NDDLS+(N-1)*NDDLM+I)=
+     +         B(ADDEME-1+I,NNOS*NDDLS+(N-1)*NDDLM+I)
+     +                                    +ZR(IVF+N+NNOS+(KPI-1)*NNO-1)
+ 301        CONTINUE
+C ======================================================================
+C --- CALCUL DE DEPSX, DEPSY, DEPSZ (DEPSZ INITIALISE A 0 EN 2D) -------
+C ======================================================================
+            DO 304 I=1,NDIM
+               B(ADDEME+NDIM-1+I,NNOS*NDDLS+(N-1)*NDDLM+I)=
+     +         B(ADDEME+NDIM-1+I,NNOS*NDDLS+(N-1)*NDDLM+I)
+     +                                                   +DFDI(N+NNOS,I)
+ 304        CONTINUE
+C ======================================================================
+C --- TERME U/R DANS EPSZ EN AXI ---------------------------------------
+C ======================================================================
+            IF (AXI) THEN
+               IF (R .EQ. 0.D0) THEN
+                  B(ADDEME+4,NNOS*NDDLS+(N-1)*NDDLM+1)=DFDI(N+NNOS,1)
+               ELSE
+                  KK=(KPI-1)*NNO 
+                  B(ADDEME+4,NNOS*NDDLS+(N-1)*NDDLM+1)=
+     +                                             ZR(IVF+N+NNOS+KK-1)/R
+               ENDIF
             ENDIF
-            IF (YATE.EQ.1) THEN
-               B(ADDETE,(N-1)*NDDL+NMEC+NP1+NP2+1)=
-     &     B(ADDETE,(N-1)*NDDL+NMEC+NP1+NP2+1)+ZR(IVF+N+(KPG-1)*NNO-1)
-               DO 107 I=1,NDIM
-                  B(ADDETE+I,(N-1)*NDDL+NMEC+NP1+NP2+1)=
-     &            B(ADDETE+I,(N-1)*NDDL+NMEC+NP1+NP2+1)+DFDI(N,I)
- 107           CONTINUE
+C ======================================================================
+C --- CALCUL DE EPSXY POUR LES NOEUDS MILIEUX --------------------------
+C ======================================================================
+            B(ADDEME+NDIM+3,NNOS*NDDLS+(N-1)*NDDLM+1)=
+     +      B(ADDEME+NDIM+3,NNOS*NDDLS+(N-1)*NDDLM+1)+DFDI(N+NNOS,2)/RAC
+
+            B(ADDEME+NDIM+3,NNOS*NDDLS+(N-1)*NDDLM+2)=
+     +      B(ADDEME+NDIM+3,NNOS*NDDLS+(N-1)*NDDLM+2)+DFDI(N+NNOS,1)/RAC
+C ======================================================================
+C --- CALCUL DE EPSXZ ET EPSYZ EN 3D POUR NOEUDS MILIEUX ---------------
+C ======================================================================
+            IF (NDIM .EQ. 3) THEN
+               B(ADDEME+NDIM+4,NNOS*NDDLS+(N-1)*NDDLM+1)=
+     +         B(ADDEME+NDIM+4,NNOS*NDDLS+(N-1)*NDDLM+1)
+     +                                               +DFDI(N+NNOS,3)/RAC
+
+               B(ADDEME+NDIM+4,NNOS*NDDLS+(N-1)*NDDLM+3)=
+     +         B(ADDEME+NDIM+4,NNOS*NDDLS+(N-1)*NDDLM+3)
+     +                                               +DFDI(N+NNOS,1)/RAC
+
+               B(ADDEME+NDIM+5,NNOS*NDDLS+(N-1)*NDDLM+2)=
+     +         B(ADDEME+NDIM+5,NNOS*NDDLS+(N-1)*NDDLM+2)
+     +                                               +DFDI(N+NNOS,3)/RAC
+
+               B(ADDEME+NDIM+5,NNOS*NDDLS+(N-1)*NDDLM+3)=
+     +         B(ADDEME+NDIM+5,NNOS*NDDLS+(N-1)*NDDLM+3)
+     +                                               +DFDI(N+NNOS,2)/RAC
             ENDIF
- 102     CONTINUE
-C
-C  ELEMENTS P2P1
-C
-      IF ( P2P1) THEN
-      IDL1M = NMEC+1
-      IF ( YAP1.EQ.1) THEN
-C
-C  FONCTIONS P1 POUR NOEUDS SOMETS = UN DE MI DES P2 VOISINS
-C
-        DO 301 N = 1 , NNOS
-         DO 302 IV = 1 , NBVOS(N)
-          DO 303 I=0,NDIM
-           DO 304 IDL = IDL1M,NDDL
-             B(ADDEP1+I,(N-1)*NDDL+IDL)=B(ADDEP1+I,(N-1)*NDDL+IDL)+
-     >               B(ADDEP1+I,(VOISIN(IV,N)-1)*NDDL+IDL)/2.D0
-  304           CONTINUE
-  303          CONTINUE
-  302         CONTINUE
-  301   CONTINUE
-C
-C  FONCTIONS P1 POUR NOEUDS MILIEUX = 0
-C
-        DO 401 N = NNOS+1 , NNO
-          DO 402 I=0,NDIM
-           DO 403 IDL = IDL1M,NDDL
-             B(ADDEP1+I,(N-1)*NDDL+IDL)=0.D0
-  403      CONTINUE
-  402     CONTINUE
-  401   CONTINUE
+ 300     CONTINUE
       ENDIF
-C
-      IF ( YAP2.EQ.1) THEN
-C
-C  FONCTIONS P1 POUR NOEUDS SOMETS = UN DE MI DES P2 VOISINS
-C
-        DO 501 N = 1 , NNOS
-         DO 502 IV = 1 , NDIM
-          DO 503 I=0,NDIM
-           DO 504 IDL = IDL1M,NDDL
-             B(ADDEP2+I,(N-1)*NDDL+IDL)=B(ADDEP2+I,(N-1)*NDDL+IDL)+
-     >               B(ADDEP2+I,(VOISIN(IV,N)-1)*NDDL+IDL)/2.D0
-  504           CONTINUE
-  503          CONTINUE
-  502         CONTINUE
-  501   CONTINUE
-C
-C  FONCTIONS P1 POUR NOEUDS MILIEUX = 0
-C
-        DO 601 N = NNOS+1 , NNO
-          DO 602 I=0,NDIM
-           DO 603 IDL = IDL1M,NDDL
-             B(ADDEP2+I,(N-1)*NDDL+IDL)=0.D0
-  603      CONTINUE
-  602     CONTINUE
-  601   CONTINUE
-      ENDIF
-C
-      IF ( YATE.EQ.1) THEN
-C
-C  FONCTIONS P1 POUR NOEUDS SOMETS = UN DE MI DES P2 VOISINS
-C
-        DO 701 N = 1 , NNOS
-         DO 702 IV = 1 , NDIM
-          DO 703 I=0,NDIM
-           DO 704 IDL = IDL1M,NDDL
-             B(ADDETE+I,(N-1)*NDDL+IDL)=B(ADDETE+I,(N-1)*NDDL+IDL)+
-     >               B(ADDETE+I,(VOISIN(IV,N)-1)*NDDL+IDL)/2.D0
-  704           CONTINUE
-  703          CONTINUE
-  702         CONTINUE
-  701   CONTINUE
-C
-C  FONCTIONS P1 POUR NOEUDS MILIEUX = 0
-C
-        DO 801 N = NNOS+1 , NNO
-          DO 802 I=0,NDIM
-           DO 803 IDL = IDL1M,NDDL
-             B(ADDETE+I,(N-1)*NDDL+IDL)=0.D0
-  803      CONTINUE
-  802     CONTINUE
-  801   CONTINUE
-      ENDIF
-C
-      ENDIF
-      END 
+C ======================================================================
+C --- LE COIN INFERIEUR DROIT EST NUL ----------------------------------
+C ======================================================================
+      END

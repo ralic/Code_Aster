@@ -1,9 +1,9 @@
       SUBROUTINE TE0549(OPTION,NOMTE)
-      IMPLICIT NONE
+      IMPLICIT     NONE
       CHARACTER*16 OPTION,NOMTE
-C =====================================================================
+C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 08/02/2005   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ELEMENTS  DATE 16/08/2005   AUTEUR ROMEO R.FERNANDES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -20,12 +20,12 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
-C =====================================================================
+C ======================================================================
 C    - FONCTION REALISEE:  EXTRACTION DES VARIABLES INTERNES EN THM
 C    - ARGUMENTS:
 C        DONNEES:      OPTION       -->  OPTION DE CALCUL
 C                      NOMTE        -->  NOM DU TYPE ELEMENT
-C =====================================================================
+C ======================================================================
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
@@ -42,28 +42,23 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
-C =====================================================================
-      INTEGER IL,NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO
-      INTEGER ICHG,ICOMPO,ICHGS,NUME,IBID,I,NCMP,INOVA
+C ======================================================================
+      INTEGER      IL,NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO
+      INTEGER      ICHG,ICOMPO,ICHGS,NUME,IBID,I,NCMP,INOVA
+      REAL*8       R8VIDE
+      CHARACTER*3  MODINT
       CHARACTER*16 VARI
-      LOGICAL LUMPED
-      REAL*8 R8VIDE
-C =====================================================================
-      CALL LUMTHM(NOMTE,LUMPED)
-      IF ( LUMPED ) THEN
-         CALL ELREF4(' ','NOEU_S',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,
-     &               JGANO)
-      ELSE
-         CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,
-     &               JGANO)
-      ENDIF
+C ======================================================================
+C --- SELECTION DU TYPE D'INTEGRATION ----------------------------------
+C ======================================================================
+      CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
      
-      CALL JEVECH('PNOVARI','L',INOVA)
+      CALL JEVECH('PNOVARI','L',INOVA )
       CALL JEVECH('PCOMPOR','L',ICOMPO)
 
       IF (OPTION.EQ.'EXTR_ELGA_VARI') THEN
 
-         CALL JEVECH('PVARIGR','L',ICHG)
+         CALL JEVECH('PVARIGR','L',ICHG )
          CALL JEVECH('PVARIGS','E',ICHGS)
 
          CALL POSVAR(ZK16(ICOMPO),NDIM,ZK24(INOVA),NUME)

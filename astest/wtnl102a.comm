@@ -1,4 +1,4 @@
-# MODIF  DATE 18/05/2005   AUTEUR ROMEO R.FERNANDES 
+# MODIF  DATE 16/08/2005   AUTEUR ROMEO R.FERNANDES 
 # TITRE  - COUPLE TH ANALYTIQUE  
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -35,6 +35,12 @@ MAIL=DEFI_GROUP(reuse =MAIL,
                                _F(GROUP_MA='GAUCHE',),
                                _F(GROUP_MA='DROIT',),
                                _F(GROUP_MA='BO',),
+                               _F(NOM='SOM_GAUCHE',
+                                 CRIT_NOEUD='SOMMET',
+                                 GROUP_MA='GAUCHE'),
+                               _F(NOM='SOM_DROIT',
+                                 CRIT_NOEUD='SOMMET',
+                                 GROUP_MA='DROIT',),
                                ),);
 
 MODELE=AFFE_MODELE(MAILLAGE=MAIL,
@@ -130,10 +136,10 @@ CHAR=AFFE_CHAR_MECA(MODELE=MODELE,
                     DDL_IMPO=(_F(TOUT='OUI',
                                  DX=0.0,
                                  DY=0.0,),
-                              _F(GROUP_NO='GAUCHE',
+                              _F(GROUP_NO='SOM_GAUCHE',
                                  TEMP=0.0,
-                                 PRE1=1,),
-                              _F(GROUP_NO='DROIT',
+                                 PRE1=1.0,),
+                              _F(GROUP_NO='SOM_DROIT',
                                  TEMP=1.0,
                                  PRE1=0.0,),),);
 

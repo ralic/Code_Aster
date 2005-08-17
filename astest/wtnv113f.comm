@@ -1,4 +1,4 @@
-# MODIF  DATE 31/01/2005   AUTEUR ROMEO R.FERNANDES 
+# MODIF  DATE 16/08/2005   AUTEUR ROMEO R.FERNANDES 
 # TITRE TEST HM 2D, MODELISATION THMC=LIQU_GAZ_ATM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -160,11 +160,12 @@ CHMAT0=AFFE_MATERIAU(   MAILLAGE=MAIL,
                         MATER = MATERIAU))
 
 CHARHO=AFFE_CHAR_MECA(   MODELE=MODELE,
-                          DDL_IMPO=_F(  TOUT = 'OUI',
+                          DDL_IMPO=(_F(  TOUT = 'OUI',
                                    DX = 0.,
-                                   DY = 0.,
-                                   TEMP = 0.)
-                                  )
+                                   DY = 0.,),
+                                    _F(NOEUD=('N1','N2','N3','N4'),
+                                       TEMP = 0.),
+                                  ),)
 
 RESU0=STAT_NON_LINE(   MODELE=MODELE,
             SOLVEUR=_F( METHODE = 'LDLT'),

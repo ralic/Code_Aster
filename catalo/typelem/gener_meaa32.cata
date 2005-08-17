@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 18/07/2005   AUTEUR VABHHTS J.PELLET 
+%& MODIF TYPELEM  DATE 16/08/2005   AUTEUR ROMEO R.FERNANDES 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION                        
 % ======================================================================    
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG    
@@ -20,11 +20,29 @@ GENER_MEAA32
 TYPE_GENE__
 
 ENTETE__ ELEMENT__ HH2M_AXIS_QU8D   MAILLE__ QUAD8    
-   ELREFE__  QU8       GAUSS__  RIGI=FPG4      NOEU_S=NOEU_S
+   ELREFE__  QU8       GAUSS__  RIGI=NOEU_S
+   ELREFE__  QU4       GAUSS__  RIGI=NOEU_S
    ELREFE__  SE3       GAUSS__  RIGI=FPG4
+   ENS_NOEUD__  EN2     =     5  6  7  8
+   ENS_NOEUD__  EN1     =     1  2  3  4
 ENTETE__ ELEMENT__ HH2M_AXIS_TR6D   MAILLE__ TRIA6    
-   ELREFE__  TR6       GAUSS__  RIGI=FPG3      NOEU_S=NOEU_S
+   ELREFE__  TR6       GAUSS__  RIGI=NOEU_S
+   ELREFE__  TR3       GAUSS__  RIGI=NOEU_S
    ELREFE__  SE3       GAUSS__  RIGI=FPG4
+   ENS_NOEUD__  EN2     =     4  5  6
+   ENS_NOEUD__  EN1     =     1  2  3
+ENTETE__ ELEMENT__ HH2M_AXIS_QU8S   MAILLE__ QUAD8    
+   ELREFE__  QU8       GAUSS__  RIGI=FPG4NOS  MASS=FPG4  NOEU_S=NOEU_S
+   ELREFE__  QU4       GAUSS__  RIGI=FPG4NOS  MASS=FPG4  NOEU_S=NOEU_S
+   ELREFE__  SE3       GAUSS__  RIGI=FPG4
+   ENS_NOEUD__  EN2     =     5  6  7  8
+   ENS_NOEUD__  EN1     =     1  2  3  4
+ENTETE__ ELEMENT__ HH2M_AXIS_TR6S   MAILLE__ TRIA6    
+   ELREFE__  TR6       GAUSS__  RIGI=FPG3NOS  MASS=FPG3  NOEU_S=NOEU_S
+   ELREFE__  TR3       GAUSS__  RIGI=FPG3NOS  MASS=FPG3  NOEU_S=NOEU_S
+   ELREFE__  SE3       GAUSS__  RIGI=FPG4
+   ENS_NOEUD__  EN2     =     4  5  6
+   ENS_NOEUD__  EN1     =     1  2  3
 
 MODE_LOCAL__ 
     CMATERC  = ADRSJEVE ELEM__         (I1       )
@@ -36,7 +54,9 @@ MODE_LOCAL__
                                         NVI_H    NVI_M    )
     CCOMPO2  = COMPOR   ELEM__         (NBVARI   )
     EDCEL_I  = DCEL_I   ELEM__         (NPG_DYN  NCMP_DYN )
-    DDL_MECA = DEPL_R   ELNO__ IDEN__  (DX       DY       PRE1     PRE2     )
+    DDL_MECA = DEPL_R   ELNO__ DIFF__
+                                 EN1   (DX       DY       PRE1     PRE2     )
+                                 EN2   (DX       DY       )
     EDEFOPG  = EPSI_R   ELGA__ RIGI    (EPXX     EPYY     EPZZ     EPXY     EPXZ     EPYZ     )
     EDEFONO  = EPSI_R   ELNO__ IDEN__  (EPXX     EPYY     EPZZ     EPXY     EPXZ     EPYZ     )
     EFORCER  = FORC_R   ELGA__ RIGI    (FX       FY       )

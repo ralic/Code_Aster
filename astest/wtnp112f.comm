@@ -1,0 +1,291 @@
+# MODIF  DATE 16/08/2005   AUTEUR ROMEO R.FERNANDES 
+# ======================================================================
+# TITRE RESATURATION D UNE COLONNE TEST THHD, 2D ,
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+#       MODELISATION THMC=LIQU_GAZ 
+# ======================================================================
+#                          TEST31 ALLIANCES
+# ======================================================================
+DEBUT(CODE=_F( NOM = 'WTNP112F',NIV_PUB_WEB='INTERNET'))
+
+####################################
+#   OPERATIONS SUR LE MAILLAGE
+#
+####################################
+
+#PRE_GIBI();
+
+MAIL=LIRE_MAILLAGE()
+
+MAIL=DEFI_GROUP( reuse=MAIL,  MAILLAGE=MAIL,CREA_GROUP_NO=(
+                      _F( GROUP_MA = 'DROIT'),
+                      _F( GROUP_MA = 'GAUCHE'),
+                      _F( GROUP_MA = 'HAUT'),
+                      _F( GROUP_MA = 'BAS'),  ),
+                     )
+MAIL=DEFI_GROUP(reuse =MAIL,
+                MAILLAGE=MAIL,
+                CREA_GROUP_MA=(_F(NOM='ROCHE',
+                                  TOUT='OUI',),),
+                CREA_GROUP_NO=(_F(NOM='ROCHES',
+                                  CRIT_NOEUD='SOMMET',
+                                  GROUP_MA='ROCHE',),
+                               _F(NOM='BASS',
+                                  CRIT_NOEUD='SOMMET',
+                                  GROUP_MA='BAS',),
+                               _F(NOM='HAUTS',
+                                  CRIT_NOEUD='SOMMET',
+                                  GROUP_MA='HAUT',),
+                               _F(NOM='GAUCHES',
+                                  CRIT_NOEUD='SOMMET',
+                                  GROUP_MA='GAUCHE',),
+                               _F(NOM='DROITS',
+                                  CRIT_NOEUD='SOMMET',
+                                  GROUP_MA='DROIT',),
+                               ),);
+MODELE=AFFE_MODELE(   MAILLAGE=MAIL,
+                        AFFE=_F(  TOUT = 'OUI', 
+                      PHENOMENE = 'MECANIQUE',
+                      MODELISATION = 'D_PLAN_THHS')
+                     )
+
+####################################
+#  LISTE DES INSTANTS DE CALCUL
+####################################
+LI=DEFI_LIST_REEL(   DEBUT=0.,INTERVALLE=(
+                       _F(  JUSQU_A = 36000,  NOMBRE = 20),),
+                     );
+
+
+LI_AR=DEFI_LIST_REEL(   DEBUT=0.,INTERVALLE=(
+                       _F(  JUSQU_A = 36000,  NOMBRE = 1),),
+                     );
+
+
+############################################
+#
+# DEFINITION DES FONCTIONS DE COMPORTEMENT :
+# VISCOSITE LIQUIDE ET GAZ : UNITE : PA.S
+#
+####
+
+VISCOL=DEFI_CONSTANTE(VALE=1.,);
+
+VISCOG=DEFI_CONSTANTE(VALE=1.8E-05,);
+
+DVISCOL=DEFI_CONSTANTE(VALE=0.0,);
+
+DVISCOG=DEFI_CONSTANTE(VALE=0.0,);
+
+####                             
+UN=DEFI_CONSTANTE(    VALE=1.,);
+
+ZERO=DEFI_CONSTANTE(    VALE=0.,);
+
+LI1=DEFI_LIST_REEL(DEBUT=0.1,
+                   INTERVALLE=_F(JUSQU_A=0.999,
+                                 PAS=0.001,),);
+
+LI2=DEFI_LIST_REEL(DEBUT=0.0,
+                   INTERVALLE=_F(JUSQU_A=50,
+                                 PAS=0.01,),);
+#
+# PRESSION CAPILLAIRE S(PC)
+#
+SL = FORMULE(NOM_PARA='PCAP',VALE='0.81667/(1+(2.9227*PCAP)**2.0304)**0.5075+0.18333');
+SATU=CALC_FONC_INTERP(FONCTION=SL,
+                      LIST_PARA=LI2,
+                      NOM_PARA='PCAP',
+                      PROL_DROITE='CONSTANT',
+                      PROL_GAUCHE='CONSTANT',
+                      INFO=2,);
+DSL = FORMULE(NOM_PARA='PCAP',VALE='-2.4595*(2.9227*PCAP)**1.0304/((1+(2.9227*PCAP)**2.0304)**1.5075)');
+
+DSATU=CALC_FONC_INTERP(FONCTION=DSL,
+                       LIST_PARA=LI2,
+                       NOM_PARA='PCAP',
+                       PROL_DROITE='CONSTANT',
+                       PROL_GAUCHE='CONSTANT',
+                       INFO=2,);
+#
+# PERMEABILITE INTRINSEQUE, RELATIVE DU LIQUIDE, RELATIVE DU GAZ
+# UNITE INTRINSEQUE : METRES CARRES , UNITE RELATIVE : SANS
+#
+KINT=DEFI_CONSTANTE(    VALE=1.625E-5)
+
+A=0.81667;
+B=0.4925;
+C=1-A;
+D=2.4977;
+E=2.304;
+ADB=2*A*A*D*B;
+
+PL = FORMULE(NOM_PARA='SAT',VALE='exp(-D*((A/(SAT-C))**2-1)**B)');
+
+PERML=CALC_FONC_INTERP(FONCTION=PL,
+                       LIST_PARA=LI1,
+                       NOM_PARA='SAT',
+                       PROL_DROITE='CONSTANT',
+                       PROL_GAUCHE='CONSTANT',
+                       INFO=2,);
+
+DPL= FORMULE(NOM_PARA='SAT',VALE='(ADB/(SAT-C)**3)*(A*A/(SAT-C)**2-1)**(B-1)*exp(-D*((A/(SAT-C))**2-1)**B) ');
+DPERML=CALC_FONC_INTERP(FONCTION=DPL,
+                       LIST_PARA=LI1,
+                       NOM_PARA='SAT',
+                       PROL_DROITE='CONSTANT',
+                       PROL_GAUCHE='CONSTANT',
+                       INFO=2,);
+
+
+MATERIAU=DEFI_MATERIAU(  
+  ELAS=_F( 
+         E = 225.E6,
+         NU = 0.,
+         RHO = 2000.,
+         ALPHA = 0.),
+   THM_LIQU=_F(  
+         RHO = 1000.,
+         UN_SUR_K = 1.E-10,
+         CP=1000.0,
+         ALPHA = 1.E-4,
+         VISC = UN, 
+         D_VISC_TEMP = ZERO,),
+   COMP_THM = 'LIQU_GAZ',
+   THM_GAZ=_F( 
+         MASS_MOL = 28.96E-3,
+         CP=1000.0,
+         VISC = UN,
+         D_VISC_TEMP = ZERO,), 
+   THM_DIFFU=_F(
+        R_GAZ=8.315,
+        RHO = 1.6E3,
+        CP=1000.0,
+        BIOT_COEF = 1.,
+        SATU_PRES=SATU,
+        D_SATU_PRES=DSATU,
+        PESA_X = 0.,
+        PESA_Y = 0.,
+        PESA_Z = 0.,
+        PERM_IN = KINT,
+        PERM_LIQU=PERML,
+        D_PERM_LIQU_SATU=DPERML,
+        PERM_GAZ=ZERO,
+        D_PERM_SATU_GAZ=ZERO,
+        D_PERM_PRES_GAZ=ZERO,
+        LAMB_T=ZERO,
+        ),
+   THM_INIT=_F( 
+         TEMP = 293.,
+         PRE1 = 0.,
+         PRE2 = 1.E5,
+         PORO = 0.3,
+         DEGR_SATU = 0.408,), );
+
+CHMAT0=AFFE_MATERIAU(MAILLAGE=MAIL,
+                     AFFE=_F( TOUT = 'OUI',
+                     MATER = MATERIAU),)
+
+CHAMNO=CREA_CHAMP(MAILLAGE=MAIL,
+                    OPERATION='AFFE', 
+                    TYPE_CHAM='NOEU_DEPL_R',
+                    AFFE=(
+                           _F(TOUT='OUI',
+                             NOM_CMP='PRE1',
+                             VALE=1.15,),
+                             ),);
+CALGAU=AFFE_CHAR_MECA(MODELE=MODELE,
+                       DDL_IMPO=_F(GROUP_NO='GAUCHES',
+                                   PRE1=0.,),);
+CALDRO=AFFE_CHAR_MECA(MODELE=MODELE,
+                       DDL_IMPO=_F(GROUP_NO='DROITS',
+                                   PRE1=1.15,),);
+CALGAZ=AFFE_CHAR_MECA(MODELE=MODELE,
+                       DDL_IMPO=_F(GROUP_NO='ROCHES',
+                                   PRE2=0.,),); 
+CALTEMP=AFFE_CHAR_MECA(MODELE=MODELE,
+                       DDL_IMPO=_F(GROUP_NO='ROCHES',
+                                   TEMP=0.,),);                                  
+                           
+
+
+RESU0=STAT_NON_LINE( 
+                MODELE=MODELE,
+                CHAM_MATER=CHMAT0,
+                EXCIT=(_F(CHARGE=CALDRO,),
+                        _F(CHARGE=CALGAU,),
+                        _F(CHARGE=CALTEMP,),
+                        _F(CHARGE=CALGAZ,),),
+                 ETAT_INIT=_F(DEPL=CHAMNO,
+                              ),
+                COMP_INCR=_F( 
+                RELATION = 'KIT_THH',
+                RELATION_KIT = ('LIQU_GAZ','HYDR_UTIL')),
+                INCREMENT=_F(  LIST_INST = LI,
+                               SUBD_PAS=4,
+                               SUBD_PAS_MINI=10.0),
+                NEWTON=_F(MATRICE='TANGENTE',
+                           REAC_ITER=1,),
+                CONVERGENCE=_F(ITER_GLOB_MAXI=10,),
+                ARCHIVAGE  = _F(LIST_INST = LI_AR),
+              );
+
+RESU0=CALC_ELEM(reuse =RESU0,
+             MODELE=MODELE,
+             CHAM_MATER=CHMAT0,
+             TOUT_ORDRE='OUI',
+             OPTION=('SIEF_ELNO_ELGA','VARI_ELNO_ELGA'),
+             RESULTAT=RESU0,);
+
+TRB=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
+                            GROUP_NO=('BASS'),
+                            RESULTAT=RESU0,
+                            NOM_CHAM='DEPL',
+                            INST = 36000,
+                            NOM_CMP=('PRE1'),
+                            OPERATION='EXTRACTION',),);
+IMPR_TABLE(TABLE=TRB,
+           FORMAT='AGRAF',
+           PAGINATION='INST',
+           NOM_PARA=('INST','COOR_X','PRE1'),);
+
+TRV=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
+                            GROUP_NO=('BAS'),
+                            RESULTAT=RESU0,
+                            NOM_CHAM='VARI_ELNO_ELGA',
+                            INST = 36000,
+                            NOM_CMP=('V4'),
+                            OPERATION='EXTRACTION',),);
+IMPR_TABLE(TABLE=TRV,
+           FORMAT='AGRAF',
+           PAGINATION='INST',
+           NOM_PARA=('INST','COOR_X','V4'),);
+
+TEST_RESU(RESU=_F(RESULTAT=RESU0,
+                  INST = 36000,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='PRE1',
+                  NOEUD='N58',
+                  VALE=0.44,
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-1,
+                  REFERENCE='SOURCE_EXTERNE',),);   
+
+FIN()
+#

@@ -1,4 +1,4 @@
-# MODIF  DATE 31/01/2005   AUTEUR ROMEO R.FERNANDES 
+# MODIF  DATE 16/08/2005   AUTEUR ROMEO R.FERNANDES 
 # ======================================================================
 # TITRE RESATURATION D UNE COLONNE TEST THHD, 2D , MODELISATION THMC=LIQU_GAZ 
 #       TEST31 ALLIANCES
@@ -36,7 +36,26 @@ MAIL=DEFI_GROUP( reuse=MAIL,  MAILLAGE=MAIL,CREA_GROUP_NO=(
                       _F( GROUP_MA = 'HAUT'),
                       _F( GROUP_MA = 'BAS'),  ),
                      )
-
+MAIL=DEFI_GROUP(reuse =MAIL,
+                MAILLAGE=MAIL,
+                CREA_GROUP_MA=(_F(NOM='ROCHE',
+                                  TOUT='OUI',),),
+                CREA_GROUP_NO=(_F(NOM='ROCHES',
+                                  CRIT_NOEUD='SOMMET',
+                                  GROUP_MA='ROCHE',),
+                               _F(NOM='BASS',
+                                  CRIT_NOEUD='SOMMET',
+                                  GROUP_MA='BAS',),
+                               _F(NOM='HAUTS',
+                                  CRIT_NOEUD='SOMMET',
+                                  GROUP_MA='HAUT',),
+                               _F(NOM='GAUCHES',
+                                  CRIT_NOEUD='SOMMET',
+                                  GROUP_MA='GAUCHE',),
+                               _F(NOM='DROITS',
+                                  CRIT_NOEUD='SOMMET',
+                                  GROUP_MA='DROIT',),
+                               ),);
 MODELE=AFFE_MODELE(   MAILLAGE=MAIL,
                         AFFE=_F(  TOUT = 'OUI', 
                       PHENOMENE = 'MECANIQUE',
@@ -179,21 +198,21 @@ CHAMNO=CREA_CHAMP(MAILLAGE=MAIL,
                     OPERATION='AFFE', 
                     TYPE_CHAM='NOEU_DEPL_R',
                     AFFE=(
-                           _F(TOUT='OUI',
+                           _F(GROUP_NO='ROCHES',
                              NOM_CMP='PRE1',
                              VALE=1.15,),
                              ),);
 CALGAU=AFFE_CHAR_MECA(MODELE=MODELE,
-                       DDL_IMPO=_F(GROUP_NO='GAUCHE',
+                       DDL_IMPO=_F(GROUP_NO='GAUCHES',
                                    PRE1=0.,),);
 CALDRO=AFFE_CHAR_MECA(MODELE=MODELE,
-                       DDL_IMPO=_F(GROUP_NO='DROIT',
+                       DDL_IMPO=_F(GROUP_NO='DROITS',
                                    PRE1=1.15,),);
 CALGAZ=AFFE_CHAR_MECA(MODELE=MODELE,
-                       DDL_IMPO=_F(TOUT='OUI',
+                       DDL_IMPO=_F(GROUP_NO='ROCHES',
                                    PRE2=0.,),); 
 CALTEMP=AFFE_CHAR_MECA(MODELE=MODELE,
-                       DDL_IMPO=_F(TOUT='OUI',
+                       DDL_IMPO=_F(GROUP_NO='ROCHES',
                                    TEMP=0.,),);                                  
 
 
@@ -221,36 +240,13 @@ RESU0=CALC_ELEM(reuse =RESU0,
              TOUT_ORDRE='OUI',
              OPTION=('SIEF_ELNO_ELGA','VARI_ELNO_ELGA'),
              RESULTAT=RESU0,);
-TRB=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
-                            GROUP_NO=('BAS'),
-                            RESULTAT=RESU0,
-                            NOM_CHAM='DEPL',
-                            NUME_ORDRE=(2,4,6,8,10,12,14,16,18,20),
-                            NOM_CMP=('PRE1'),
-                            OPERATION='EXTRACTION',),);
-IMPR_TABLE(TABLE=TRB,
-           FORMAT='AGRAF',
-           PAGINATION='INST',
-           NOM_PARA=('INST','COOR_X','PRE1'),);
-
-TRV=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
-                            GROUP_NO=('BAS'),
-                            RESULTAT=RESU0,
-                            NOM_CHAM='VARI_ELNO_ELGA',
-                            NUME_ORDRE=(2,4,6,8,10,12,14,16,18,20),
-                            NOM_CMP=('V4'),
-                            OPERATION='EXTRACTION',),);
-IMPR_TABLE(TABLE=TRV,
-           FORMAT='AGRAF',
-           PAGINATION='INST',
-           NOM_PARA=('INST','COOR_X','V4'),);
 
 TEST_RESU(RESU=_F(RESULTAT=RESU0,
                   NUME_ORDRE=20,
                   NOM_CHAM='DEPL',
                   NOM_CMP='PRE1',
-                  NOEUD='N31',
-                  VALE=0.44,
+                  NOEUD='N32',
+                  VALE=0.56,
                   CRITERE='RELATIF',
                   PRECISION=1.E-1,
                   REFERENCE='SOURCE_EXTERNE',),);   

@@ -8,7 +8,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 31/01/2005   AUTEUR ROMEO R.FERNANDES 
+C MODIF ALGORITH  DATE 16/08/2005   AUTEUR ROMEO R.FERNANDES 
 C RESPONSABLE GRANET S.GRANET
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -33,7 +33,6 @@ C   ET LA MATRICE TANGENTE DES GRANDEURS COUPLEES, A SAVOIR CELLES QUI
 C   NE SONT PAS DES GRANDEURS DE MECANIQUE PURE OU DES FLUX PURS
 C   DANS LE CAS OU THMC = 'LIQU_AD_GAZ_VAPE'
 C **********************************************************************
-
 C OUT RETCOM : RETOUR LOI DE COMPORTEMENT
 C COMMENTAIRE DE NMCONV :
 C                       = 0 OK
@@ -117,7 +116,6 @@ C --- RECUPERATION DES COEFFICIENTS MECANIQUES ------------------------
 C =====================================================================
       CALL INITHM(IMATE,YAMEC,PHI0,EM,ALPHA0,K0,CS,BIOT,
      +                                                EPSV,DEPSV,EPSVM)
-     
 C *********************************************************************
 C *** LES VARIABLES INTERNES ******************************************
 C *********************************************************************
@@ -140,6 +138,9 @@ C =====================================================================
          CALL VIPVP1(NBVARI,VINTM,VINTP,ADVICO,VICPVP,DIMCON,PINF,
      +     CONGEM,ADCP11,ADCP12,NDIM,PVP0,DP1,DP2,T,DT,MAMOLV,R,RHO11M,
      +                          SIGNE,CP11,CP12,YATE,PVP1,PVP1M,RETCOM)
+      IF (RETCOM.NE.0) THEN
+         GO TO 30
+      ENDIF
 C =====================================================================
 C --- CALCUL DE LA VARIABLE INTERNE DE PRESSION DE VAPEUR -------------
 C --- SELON FORMULE DOCR ----------------------------------------------
@@ -186,7 +187,7 @@ C ======================================================================
       RHO21  = MASVOL(MAMOLG,P2-PVP     ,R,T   )
       RHO21M = MASVOL(MAMOLG,P2-DP2-PVPM,R,T-DT)
       RHO22  = MASVOL(MAMOLG,PADP       ,R,T   )
-      RHO22M = MASVOL(MAMOLV,PADM       ,R,T-DT)
+      RHO22M = MASVOL(MAMOLG,PADM       ,R,T-DT)
       PAS    = MAJPAS(P2,PVP)
 C =====================================================================
 C --- CALCULS UNIQUEMENT SI PRESENCE DE THERMIQUE ---------------------

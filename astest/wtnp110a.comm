@@ -1,4 +1,4 @@
-# MODIF  DATE 31/01/2005   AUTEUR ROMEO R.FERNANDES 
+# MODIF  DATE 16/08/2005   AUTEUR ROMEO R.FERNANDES 
 # TITRE  - ECOULEMENT ORTHOTOPE SATURE EN 2D
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -31,12 +31,24 @@ MAIL=DEFI_GROUP(reuse =MAIL,
                 CREA_GROUP_NO=(_F(GROUP_MA='DROIT',),
                                _F(GROUP_MA='GAUCHE',),
                                _F(GROUP_MA='BAS',),
-                               _F(DIFFE=('BAS','A'),
+                               _F(NOM='GAUCHES',
+                                 CRIT_NOEUD='SOMMET',
+                                 GROUP_MA='GAUCHE'),
+                               _F(NOM='DROITS',
+                                 CRIT_NOEUD='SOMMET',
+                                 GROUP_MA='DROIT'),
+                               _F(NOM='HAUTS',
+                                 CRIT_NOEUD='SOMMET',
+                                 GROUP_MA='HAUT'),
+                               _F(NOM='BASS',
+                                 CRIT_NOEUD='SOMMET',
+                                 GROUP_MA='BAS'),
+                               _F(DIFFE=('BASS','A'),
                                   NOM='BAS1',),
                                _F(DIFFE=('BAS1','B'),
                                   NOM='BAS2',),
                                _F(GROUP_MA='HAUT',),
-                               _F(DIFFE=('HAUT','D'),
+                               _F(DIFFE=('HAUTS','D'),
                                   NOM='HAUT1',),
                                _F(DIFFE=('HAUT1','C'),
                                   NOM='HAUT2',),
@@ -118,11 +130,11 @@ CALBAS=AFFE_CHAR_MECA_F(MODELE=MODELE,
                                    PRE1=P_AB,),);
 
 CALGAU=AFFE_CHAR_MECA_F(MODELE=MODELE,
-                       DDL_IMPO=_F(GROUP_NO='GAUCHE',
+                       DDL_IMPO=_F(GROUP_NO='GAUCHES',
                                    PRE1=P_AD,),);
 
 CALDRO=AFFE_CHAR_MECA_F(MODELE=MODELE,
-                       DDL_IMPO=_F(GROUP_NO='DROIT',
+                       DDL_IMPO=_F(GROUP_NO='DROITS',
                                    PRE1=P_BC,),);
 
 
@@ -154,7 +166,7 @@ TEST_RESU(RESU=(
                    NUME_ORDRE=1,
                    NOM_CHAM='DEPL',
                    NOM_CMP='PRE1',
-                   NOEUD='N689', VALE=28.8,
+                   NOEUD='N241', VALE=28.8,
                    PRECISION=0.01,
                    REFERENCE='ANALYTIQUE',),
                  _F(RESULTAT=U0,
@@ -172,25 +184,5 @@ TEST_RESU(RESU=(
                    PRECISION=0.01,
                    REFERENCE='ANALYTIQUE',),
                    ),);
-#
-#
-# VITESSE ANALYTIQUE = (45Kx; 80 Ky) = (45 ; 60)
-#                   
-VIT=POST_RELEVE_T(ACTION=_F(INTITULE='Vitesse',
-                            GROUP_NO=('DROIT'),
-                            RESULTAT=U0,
-                            NOM_CHAM='SIEF_ELNO_ELGA',
-                            NUME_ORDRE = 1,
-                            TOUT_CMP='OUI',
-                            OPERATION='EXTRACTION',),);
-# Grandeurs en fonction de COOR_Y
 
-IMPR_TABLE ( FORMAT = 'AGRAF',
-             TABLE = VIT,
-             TRI=_F(NOM_PARA=('COOR_Y'),
-             ORDRE='CROISSANT',),
-             PAGINATION=('INST'),
-             NOM_PARA = ('INTITULE','INST','COOR_X','COOR_Y',
-             'FH11X','FH11Y',),);
-                  
 FIN();

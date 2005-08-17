@@ -1,0 +1,708 @@
+
+
+-----------------------------------------------------------------------
+--- AUTEUR romeo R.FERNANDES   DATE  le 16/08/2005 a 15:40:07
+
+REALISATION EL 2004-249
+   NB_JOURS_TRAV  : 110.0
+   INTERET_UTILISATEUR : OUI
+   TITRE  Nouvelles Modelisations pour la THM
+
+   FONCTIONNALITE
+   Cette evolution a pour objet l'introdution d'une modelisation selective
+   pour la resolution du couplage THM. Une presentation detaillee de la
+   theorie et de l'algorithme est presentee dans la note
+   "Definition d'une modelisation a integration selective pour la THM"
+   R.Fernandes, C.Chavant, G.Du Suau.
+
+   Les modelisations existantes (classique et lumpee) sont tout de meme
+   impactees car dans le cadre de cette evolution on en profite pour
+   developper une architecture P2P1 reduite (suppression des degres de
+   libertes d'ordre 1 aux noeuds milieux) - voir details ci-dessous + note.
+
+   De plus, il faudra dorenavant definir obligatoirement un maillage
+   quadratique :
+   - L'utilisation d'un maillage lineaire n'a pas d'interet en presence
+     de mecanique,
+   - Pour les modelisations THH il n'y a plus aucune
+     difference entre une etude avec maillage quadratique ou lineaire.
+
+   DETAILS
+   On introduit une nouvelle famille d'integration numerique :
+   les modelisations Selectives (cf doc R7.01.10)
+
+   Le principe de ces modelisations repose sur des methodes
+   d'integrations (cf doc D9.05.03) :
+        * aux sommets pour les termes de type capacitif
+	* aux points de gauss pour les termes de type diffusif
+
+   Pour toutes les modelisations (Classique, Lumpee et Selective)
+   on definit de "vrais" elements P2P1 :
+   - les degres de libertes mecanique (DX DY DZ) sont definit sur
+     tous les noeuds du maillage
+   - les degres de libertes thermo-hydraulique (TEMP PRE1 PRE2)
+     sont definit sur les noeuds sommets uniquement.
+
+   Exemples :   On considere un calcul THHM 2D en deformation plane.
+   --------     Maillage : on discretise un carre en N*N QUAD8.
+                On considere une modelisation "classique" pour la
+		comparaison.
+
+         ------------------------------------------------
+         |  N   |     Nb  ddls      |       Temps       |
+         |      |                   |     de calcul (s) |
+         |      |---------------------------------------|
+         |      | Actuel  | Nouveau | Actuel  | Nouveau |
+         ------------------------------------------------
+         |   5  |     612 |     412 |       3 |       1 |
+         ------------------------------------------------
+         |  20  |   6.897 |   4.297 |      45 |       8 |
+         ------------------------------------------------
+         |  50  |  39.717 |  24.217 |     299 |      60 |
+         ------------------------------------------------
+         | 100  | 154.417 |  93.417 |   1.275 |     289 |
+         ------------------------------------------------
+         | 250  | 948.517 | 571.017 |   9.394 |   2.200 |
+         ------------------------------------------------
+        => Gain en nb ddls : 40%    | Gain en CPU : 80%
+
+
+
+   Impact Utilisateur :
+   ------------------
+
+   - Definition du maillage :
+     ----------------------
+     Il faut tout d'abord definir necessairement un maillage de type quadratique.
+     Penser a utiliser l'option LINE_QUAD de la commande CREA_MAILLAGE si le
+     maillage est lineaire.
+
+   - Affectation d'un modele :
+     -----------------------
+     La modelisation selective prend l'extension 'S' (voir ci-dessous pour toutes
+     les possibilites).
+
+     MODELE=AFFE_MODELE(MAILLAGE =MAIL,
+                        AFFE     =_F(TOUT        = 'OUI',
+                                    PHENOMENE    = 'MECANIQUE',
+                                    MODELISATION = 'D_PLAN_THMS',),);
+
+
+   - Application des Conditions aux Limites en DDLS imposes :
+     ------------------------------------------------------
+     Les DDLS Thermo-Hydraulique n'existant plus, il faut appliquer
+     les conditions aux limites (TEMP PRE1 PRE2) uniquement aux noeuds sommets.
+     Il faut donc penser à extraire les sommets des elements des groupes de mailles
+     sur lesquels on souhaite appliquer les conditions aux limites. Penser a
+     utiliser l'option CRIT_NOEUD = 'SOMMET' de la commande DEFI_GROUP:
+
+     MAIL = DEFI_GROUP(reuse = MAIL,
+                       MAILLAGE=MAIL,
+                       CREA_GROUP_NO =(_F(NOM        = 'SOM_HAUT',
+                                          CRIT_NOEUD = 'SOMMET'  ,
+                                          GROUP_MA   = 'HAUT'    ),
+			               _F(NOM        = 'SOM_BAS' ,
+                                          CRIT_NOEUD = 'SOMMET'  ,
+                                          GROUP_MA   = 'BAS'     ),),)
+
+     CHAR0=AFFE_CHAR_MECA(MODELE=MODELE,
+           DDL_IMPO=(
+           _F(GROUP_NO=('BAS',), <== (SOMMETS + MILIEUX POUR DDLS MECA)
+              DY=0.0,),
+           _F(GROUP_NO=('GAUCHE'),
+              DX=0.0,),
+           _F(GROUP_NO=('SOM_HAUT','SOM_BAS'), <== (SOMMETS UNIQUEMENT
+              PRE1=0.0)                             POUR DDLS TH)
+           _F(GROUP_NO=('SOM_HAUT','SOM_BAS'),
+              TEMP=100.0),),)
+
+   - Application des Conditions aux Limites de suintement :
+     ----------------------------------------------------
+     Les DDLS Thermo-Hydraulique n'existant plus, il faut appliquer
+     les conditions aux limites (TEMP PRE1 PRE2) uniquement aux sommets.
+
+     La difference dans ce cas vient du fait qu'il est absolument necessaire
+     de definir un GROUPE DE MAILLE sous le mot-cle CONTACT pour les
+     conditions de suintement. Il faut donc définir les groupes de noeuds
+     milieux à supprimer des mailles de contact. Pour cela on utilie
+     l'option CRIT_NOEUD = 'MILIEU' de la commande DEFI_GROUP, puis l'OPTION
+     SANS_GROUP_NO de la commande CONTACT.
+
+     MAIL = DEFI_GROUP(reuse = MAIL,
+                      MAILLAGE=MAIL,
+                      CREA_GROUP_NO =( _F(NOM        = 'MIL_GAUCHE',
+                                          CRIT_NOEUD = 'MILIEU'  ,
+                                          GROUP_MA   = 'GAUCHE'    ),
+			               _F(NOM        = 'MIL_DROITE' ,
+                                          CRIT_NOEUD = 'MILIEU'  ,
+                                          GROUP_MA   = 'DROITE'     ),),)
+
+
+     CHAR1=AFFE_CHAR_MECA(MODELE =  MODELE,
+                         CONTACT = _F(APPARIEMENT    = 'NON',
+                                      GROUP_MA_ESCL  = ('GAUCHE','DROITE'),
+                                      SANS_GROUP_NO  = ('MIL_GAUCHE','MIL_DROITE'),
+                                      NOM_CHAM       = 'PRE1',
+                                      COEF_IMPO      = 3.0,
+                                      COEF_MULT_ESCL = 1.0,),);
+
+
+   - Conditions Initiales :
+     --------------------
+     Les DDLS Thermo-Hydraulique n'existant plus, il "faudrait" ici aussi
+     definir les conditions initiales (TEMP PRE1 PRE2) uniquement aux noeuds
+     sommets.
+
+     Probleme de coherence rencontre a signaler mais non bloquant :
+     On definit les conditions initiales en DDLS a partir de la commande
+     CREA_CHAMP. On peut initialiser tous les DDLS Thermo-Hydraulique sur le
+     maillage quadratique (y compris aux noeuds milieux).
+     L'initialisation est correcte au sommet et le calcul se passe correctement.
+
+     Les conditions initiales Thermo-Hydraulique aux noeuds milieux semblent
+     simplement ignorees. Ce n'est pas un probleme bloquant mais plutot de
+     coherence. A VERIFIER.
+
+			
+   - Post-traitement :
+     ---------------
+     * Pour les DDLS :
+       -------------
+       Il faut definir un maillage lineaire issu du maillage quadratique
+       du calcul via la commande CREA_MAILLAGE et le mot-cle QUAD_LINE.
+       Il faut ensuite projeter le champ RESULTAT 'DEPL' du maillage
+       quadratique vers le maillage lineaire (commande PROJ_CHAMP).
+
+       MAILLIN = CREA_MAILLAGE(
+                            MAILLAGE  = MAIL,
+                            QUAD_LINE = _F(TOUT = 'OUI'),)
+
+
+    # Definition d'un modele pour le maillage precedent. Obligatoire pour pouvoir
+    # utiliser la commande PROJ_CHAMP mais ce modele n'intervient pas.
+    # Prendre n'importe quelle modelisation.
+
+       MODELIN=AFFE_MODELE(MAILLAGE = MAILLIN,
+                        AFFE     =_F(TOUT         = 'OUI',
+                                     PHENOMENE    = 'MECANIQUE',
+                                     MODELISATION = 'D_PLAN',),);
+
+       RESULIN = PROJ_CHAMP(
+                          METHODE    = 'ELEM',
+                          RESULTAT   =  RESUQUAD,
+                          MODELE_1   =  MODELE,
+                          MODELE_2   =  MODELIN,
+	                  NOM_CHAM   = 'DEPL',
+                          TOUT_ORDRE = 'OUI')
+
+    # Exemple d'impression d'isovaleurs sur les DDLS
+       IMPR_RESU(FORMAT = 'IDEAS', UNITE = 30,
+                 RESU   = _F( RESULTAT   = RESULIN,
+	                      MAILLAGE   = MAILLIN,
+	                      NOM_CHAM   ='DEPL',
+	                      NOM_CMP    ='PRE1',
+                              TOUT_ORDRE ='OUI', ) )
+
+
+       On precise de plus que ce developpement permettant de projeter
+       les ddls d'un maillage quadratique sur un maillage lineaire
+       est independant de la THM.
+
+   * Post-traitement POST_RELEVE_T sur les DDLS :
+     ------------------------------------------
+
+       ATTENTION ! :
+       Si on definit un chemin d'interpolation pour les DDLS Thermo-Hydraulique
+       (PRE1, PRE2, TEMP) avec le maillage quadratique, on obtient des resultats
+       completement faux! La commande POST_RELEVE_T associe la valeur 0 pour
+       les DDLS aux noeuds milieux.
+
+       Le probleme n'est pas bloquant car la demarche a suivre est de projeter
+       le champ de deplacements 'DEPL' sur le maillage lineaire comme defini
+       precedemment.
+
+       Ce probleme est tout de meme genant : il faudrait a minima faire echouer
+       la commande POST_RELEVE_T s'il y a incompatibilite entre le maillage et
+       l'existence des DDLs.
+
+       HORIZ=INTE_MAIL_2D(MAILLAGE=MAILLIN,
+                       DEFI_SEGMENT = _F(ORIGINE   = ( 0.,  10., ),
+                                         EXTREMITE = ( 7.,  10., )));
+
+       TRVB=POST_RELEVE_T(ACTION=_F(INTITULE  = 'DEPL',
+                                    CHEMIN    =  HORIZ,
+                                    RESULTAT  =  RESULIN,
+                                    NOM_CHAM  = 'DEPL',
+                                    NOM_CMP   = ('PRE1','PRE2','TEMPE'),
+                                    OPERATION = 'EXTRACTION',),);
+
+       Pour definir un chemin, il est d'ailleurs conseille d'utiliser la commande :
+       MACR_LIGN_COUPE.
+
+
+    - Pour les contraintes generalisees (SIEF_ELNO_ELGA) :
+       --------------------------------------------------
+       Pour les modelisations actuelles il n'y a pas d'impact.
+
+       Pour la modelisation selective les contraintes generalisees (SIEF_ELGA)
+       sont stockees de la meme facon que pour les modelisations actuelles
+       aux points d'integrations (Points de Gauss ET Sommets). Cependant,
+       seules les contraintes mecaniques sont calculees aux points de Gauss.
+       En effet la partie mecanique n'est pas calculee aux sommets.
+
+       Par consequent nous faisons le choix suivant pour le calcul de
+       SIEF_ELNO_ELGA :
+       - Les contraintes mecaniques sont extrapolees a partir du champ
+         stocke aux Points de Gauss.
+       - Les autres contraintes sont extrapolees a partir du champ stocke
+         aux Sommets.
+
+     - Pour les variables internes (VARI_ELNO_ELGA) :
+       --------------------------------------------
+       Pour les modelisations actuelles il n'y a pas d'impact.
+
+       Pour la modelisation selective les variables internes (VARI_ELGA)
+       sont stockees de la meme facon que pour les modelisations actuelles
+       aux points d'integration (Points de Gauss ET Sommets). Seules les
+       variables internes mecaniques sont calculees aux points de Gauss.
+
+       Par consequent nous faisons le choix suivant pour le calcul de
+       VARI_ELNO_ELGA :
+       - Les variables internes mecaniques sont extrapolees a partir du champ
+         stocke aux Points de Gauss.
+       - Les autres variables internes sont extrapolees a partir du champ stocke
+         aux Sommets.
+
+
+#################################################################################
+
+   Bilan des modelisations possibles :
+   (sans extension pour les modelisations classiques,
+    extension D    pour les modelisations Lumpees,
+    extension S    pour les modelisations Selectives)
+
+   D_PLAN_HM      D_PLAN_HMD       D_PLAN_HMS
+   D_PLAN_HHM     D_PLAN_HHMD      D_PLAN_HHMS
+   D_PLAN_THH     D_PLAN_THHD      D_PLAN_THHS
+   D_PLAN_THHM    D_PLAN_THHMD     D_PLAN_THHMS
+   D_PLAN_THM     D_PLAN_THMD      D_PLAN_THMS
+    	          D_PLAN_HH2MD     D_PLAN_HH2MS
+    	          D_PLAN_THH2D     D_PLAN_THH2S
+    	          D_PLAN_THVD      D_PLAN_THVS
+    	          D_PLAN_THH2MD    D_PLAN_THH2MS
+
+   AXIS_HM        AXIS_HMD         AXIS_HMS
+   AXIS_HHM       AXIS_HHMD        AXIS_HHMS
+   AXIS_THH       AXIS_THHD        AXIS_THHS
+   AXIS_THHM      AXIS_THHMD       AXIS_THHMS
+   AXIS_THM       AXIS_THMD        AXIS_THMS
+    	          AXIS_HH2MD       AXIS_HH2MS
+    	          AXIS_THH2D       AXIS_THH2S
+    	          AXIS_THVD        AXIS_THVS
+    	          AXIS_THH2MD      AXIS_THH2MS
+
+   3D_HM          3D_HMD           3D_HMS
+   3D_HHM         3D_HHMD          3D_HHMS
+   3D_THH         3D_THHD          3D_THHS
+   3D_THHM        3D_THHMD         3D_THHMS
+   3D_THM         3D_THMD          3D_THMS
+    	          3D_THVD          3D_THVS
+
+   routines modifiees :
+   assthm  cabthm  caethm  cafthm  cesprj  cnsprj  comthm
+   elraca  elraga  epsthm  equthm  fnothm  nmthmc  refthm
+   te0466  te0472  te0549  te0600
+
+   routines crees :
+   borthm  dimthm  grdthm  itgthm  modthm  pmathm  posthm
+   typthm
+
+   routine supprimee :
+   lumthm
+
+   ajout CRP_21 routine CAETHM, ITGTHM
+
+   catalogues d'elements modifies :
+   gener_me3g32     gener_meaa32    gener_meda31
+   gener_me3g33     gener_meag31    gener_meda32
+   gener_me3h12     gener_meag32    gener_medg31
+   gener_me3h13     gener_meah11    gener_medg32
+   gener_me3h22     gener_meah12    gener_medh11
+   gener_me3h23     gener_meah21    gener_medh12
+   gener_me3h32     gener_meah22    gener_medh21
+   gener_me3h33     gener_meah31    gener_medh22
+   gener_me3h42     gener_meah32    gener_medh31
+   gener_me3h43     gener_meah41    gener_medh32
+   gener_me3h52     gener_meah42    gener_medh41
+   gener_me3h53     gener_meah51    gener_medh42
+   gener_meaa11     gener_meah52    gener_medh51
+   gener_meaa12     gener_meda11    gener_medh52
+   gener_meaa21     gener_meda12    phenomene_modelisation__
+   gener_meaa22     gener_meda21    type_maille__
+   gener_meaa31     gener_meda22
+
+   catalogue python modifie :
+   affe_modele
+
+   VALIDATION
+   ----------
+   Actuellement 90 cas-tests THM dans la base aster.
+   On propose la suppression des cas-tests suivant :
+   wtnv115[a,b]    |
+   wtnv116[a,b,c]  |  cas-tests avec modelisations a supprimer
+   wtnv117[a]      |
+   wtnv118[c]      |
+
+   wtnv110[a,b,c] : etudes THM avec HM bloques.
+                    maillage quadratique avec 1 seul element
+                   (HEXA20, QUAD8, TRIA6). On impose aux noeuds
+                    sommets une temperature et on teste la temperature
+                    aux noeuds milieux. Sans interet maintenant.
+
+   wtnl103[b] : Cas-test extrait du GdR MoMas. Il s'agit d'un test
+                qui a ete modifie dans le cadre du GdR.
+		On note que l'introduction des cas-tests extrait
+		du GdR MoMas doivent etre introduit dans la base du
+		Code_Aster.
+
+   Execution des 79 cas-tests THM de la base aster :
+   Actuel  : 37.375 s  (temps d'execution total sur portable linux)
+   Nouveau : 29.198 s
+   => gain : 22%
+
+   Ajout des cas-tests suivant pour tester les modelisations selectives :
+
+   Nom      : Modelisation  : Couplage         : Particularite
+   --------   ------------    --------           -------------
+   wtna100b : AXIS_THHMS    : LIQU_GAZ
+   wtna102b : AXIS_THH2S    : LIQU_AD_GAZ_VAPE
+   wtna103b : AXIS_THH2MS   : LIQU_AD_GAZ_VAPE
+   wtna104b : AXIS_HH2MS    : LIQU_AD_GAZ_VAPE
+   wtnl100c : D_PLAN_HMS    : LIQU_SATU        : Analytique
+   wtnl100d : 3D_HMS	    : LIQU_SATU        : Analytique
+   wtnl101b : D_PLAN_THMS   : LIQU_SATU        : Analytique
+   wtnl102b : D_PLAN_THMS   : LIQU_SATU        : Analytique
+   wtnp100c : D_PLAN_THVS   : LIQU_VAPE
+   wtnp101b : D_PLAN_HMS    : GAZ
+   wtnp104b : D_PLAN_THH2MS : LIQU_AD_GAZ_VAPE
+   wtnp105b : D_PLAN_HH2MS  : LIQU_AD_GAZ_VAPE
+   wtnp106b : D_PLAN_THH2S  : LIQU_AD_GAZ_VAPE : Analytique
+   wtnp111b : D_PLAN_HMS    : LIQU_SATU        : Suintement
+   wtnp112e : D_PLAN_HMS    : LIQU_GAZ         : Alliances
+   wtnp112f : D_PLAN_THHS   : LIQU_GAZ         : Alliances
+   wtnp112g : D_PLAN_THHS   : LIQU_AD_GAZ_VAPE : Alliances
+   wtnp112h : D_PLAN_THH2S  : LIQU_GAZ_ATM     : Alliances
+   wtnp113c : D_PLAN_THHS   : LIQU_GAZ         : Alliances
+   wtnp113d : D_PLAN_THH2S  : LIQU_AD_GAZ_VAPE : Alliances
+   wtnp115b : D_PLAN_THVS   : LIQU_VAPE        : Analytique
+   wtnv112e : D_PLAN_HHMS   : LIQU_GAZ
+   wtnv114f : 3D_HMS	    : LIQU_GAZ_ATM
+   wtnv124b : 3D_HHMS	    : LIQU_GAZ         : Analytique
+   wtnv125b : 3D_THHS	    : LIQU_GAZ
+   wtnv126c : AXIS_HHMS     : LIQU_GAZ         : Analytique
+   wtnv127b : 3D_THVS	    : LIQU_VAPE        : Analytique
+   wtnv128b : 3D_HMS	    : LIQU_SATU
+
+   wtnp111 (modelisations classique, lumpee et selective)
+   cas-test avec suintement OK     sur clpaster, clp50a8, linux
+   MATRICE DE CONTACT SINGULIERE   SUR COMPAQ
+
+   => declaration d'anomalie.
+
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_R : R7.01.10
+       EXPL_ :  Doc de reference algorithmique THHM
+                 mise a jour de la note HI.
+     DOC_UD: D9.05.03
+       EXPL_ :  Doc de reference informatique de l'architecture THM.
+                Integration des equations d'equilibre.
+     DOC_V : V7.33.102 : wtna102
+       EXPL_ :  Diffusion d'air dissous (axi)
+             V7.30.102 : wtnl102
+       EXPL_ :  Probleme mono dimensionnel de convection forcee
+	     V7.32.106 : wtnp106
+       EXPL_ :  Chauffage d'un milieu poreux desature avec air
+                dissous
+	     V7.32.112 : wtnp112
+       EXPL_ :  Resaturation d'une colonne
+	     V7.32.113 : wtnp113
+       EXPL_ :  Resaturation d'une alveole
+	     V7.31.124 : wtnv124
+       EXPL_ :  Essai de desaturation-consolidation avec le
+                modele de Barcelone
+
+---------------------------------------------------------------------------------
+CORRECTION AL 2005-239
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : NON
+   TITRE  Initialisation de la variable RETCOM
+
+   FONCTIONNALITE
+   DETAILS
+   On initialise la variable RETCOM (controle pour le redecoupage) a 0 dans
+   la routine COMTHM.
+
+   VALIDATION
+   base astest
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   NON
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+
+   IMPACT_DOCUMENTAIRE : NON
+
+---------------------------------------------------------------------------------
+RESTITUTION HORS AREX
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : OUI
+   TITRE   Corrections d'anomalies
+
+   FONCTIONNALITE
+   --------------
+   LIQU_AD_GAZ_VAPE
+
+   DETAILS
+   -------
+   Le calcul de la pression de vapeur se fait en deux temps dans le cas de la
+   loi de couplage LIQU_AD_GAZ_VAPE. Il faut rajouter un test entre les deux
+   pour verifier une division (en effet le denominateur peut devenir nul).
+   Dans ce cas on propose un redecoupage du pas de temps.
+
+   De plus, lors du nettoyage du fortran pour la THM (etape preliminaire
+   a cette evolution, version 8.0.6 du 31 janvier 2005)
+   j'ai introduit une erreur de copier-coller:
+   il faut remplacer la ligne 189 de la routine hmlvga :
+         RHO22M = MASVOL(MAMOLV,PADM,R,T-DT)
+   par :
+         RHO22M = MASVOL(MAMOLG,PADM,R,T-DT)
+
+   VALIDATION
+   test perso
+
+   RESU_FAUX_VERSION_EXPLOITATION    :   NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :   OUI   DEPUIS : 8.0.6
+   RESTITUTION_VERSION_EXPLOITATION  :   NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :   OUI
+   IMPACT_DOCUMENTAIRE : NON
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+ CASTEST AJOUT wtna100b                        romeo R.FERNANDES        531    531      0
+ CASTEST AJOUT wtna102b                        romeo R.FERNANDES        310    310      0
+ CASTEST AJOUT wtna103b                        romeo R.FERNANDES        275    275      0
+ CASTEST AJOUT wtna104b                        romeo R.FERNANDES        264    264      0
+ CASTEST AJOUT wtnl100c                        romeo R.FERNANDES        547    547      0
+ CASTEST AJOUT wtnl100d                        romeo R.FERNANDES        275    275      0
+ CASTEST AJOUT wtnl101b                        romeo R.FERNANDES        225    225      0
+ CASTEST AJOUT wtnl102b                        romeo R.FERNANDES        214    214      0
+ CASTEST AJOUT wtnp100c                        romeo R.FERNANDES        363    363      0
+ CASTEST AJOUT wtnp101b                        romeo R.FERNANDES        329    329      0
+ CASTEST AJOUT wtnp104b                        romeo R.FERNANDES        281    281      0
+ CASTEST AJOUT wtnp105b                        romeo R.FERNANDES        266    266      0
+ CASTEST AJOUT wtnp106b                        romeo R.FERNANDES        263    263      0
+ CASTEST AJOUT wtnp111b                        romeo R.FERNANDES        170    170      0
+ CASTEST AJOUT wtnp112e                        romeo R.FERNANDES        282    282      0
+ CASTEST AJOUT wtnp112f                        romeo R.FERNANDES        291    291      0
+ CASTEST AJOUT wtnp112g                        romeo R.FERNANDES        296    296      0
+ CASTEST AJOUT wtnp112h                        romeo R.FERNANDES        275    275      0
+ CASTEST AJOUT wtnp113c                        romeo R.FERNANDES        484    484      0
+ CASTEST AJOUT wtnp113d                        romeo R.FERNANDES        492    492      0
+ CASTEST AJOUT wtnp115b                        romeo R.FERNANDES        259    259      0
+ CASTEST AJOUT wtnv112e                        romeo R.FERNANDES        490    490      0
+ CASTEST AJOUT wtnv114f                        romeo R.FERNANDES        300    300      0
+ CASTEST AJOUT wtnv124b                        romeo R.FERNANDES        554    554      0
+ CASTEST AJOUT wtnv125b                        romeo R.FERNANDES        487    487      0
+ CASTEST AJOUT wtnv126c                        romeo R.FERNANDES        828    828      0
+ CASTEST AJOUT wtnv127b                        romeo R.FERNANDES        226    226      0
+ CASTEST AJOUT wtnv128b                        romeo R.FERNANDES        529    529      0
+ CASTEST MODIF ssnv147i                        romeo R.FERNANDES        480      1      1
+ CASTEST MODIF wtna100a                        romeo R.FERNANDES        529     10      4
+ CASTEST MODIF wtna101a                        romeo R.FERNANDES        367     10      2
+ CASTEST MODIF wtna101b                        romeo R.FERNANDES        367      9      2
+ CASTEST MODIF wtna102a                        romeo R.FERNANDES        313     18      5
+ CASTEST MODIF wtna103a                        romeo R.FERNANDES        278     15      5
+ CASTEST MODIF wtna104a                        romeo R.FERNANDES        274     14      4
+ CASTEST MODIF wtnl100a                        romeo R.FERNANDES        502    122     86
+ CASTEST MODIF wtnl100b                        romeo R.FERNANDES        279     30     19
+ CASTEST MODIF wtnl101a                        romeo R.FERNANDES        225      1     85
+ CASTEST MODIF wtnl102a                        romeo R.FERNANDES        205     10      4
+ CASTEST MODIF wtnp100a                        romeo R.FERNANDES        361     26      4
+ CASTEST MODIF wtnp100b                        romeo R.FERNANDES        324      8      2
+ CASTEST MODIF wtnp101a                        romeo R.FERNANDES        327      1      1
+ CASTEST MODIF wtnp102a                        romeo R.FERNANDES        404     26      3
+ CASTEST MODIF wtnp102b                        romeo R.FERNANDES        357      8      2
+ CASTEST MODIF wtnp103a                        romeo R.FERNANDES        287     15      4
+ CASTEST MODIF wtnp104a                        romeo R.FERNANDES        288     29      7
+ CASTEST MODIF wtnp105a                        romeo R.FERNANDES        271     14      4
+ CASTEST MODIF wtnp106a                        romeo R.FERNANDES        263      1      1
+ CASTEST MODIF wtnp107a                        romeo R.FERNANDES        361      9     19
+ CASTEST MODIF wtnp109a                        romeo R.FERNANDES        219     84      7
+ CASTEST MODIF wtnp110a                        romeo R.FERNANDES        188     18     26
+ CASTEST MODIF wtnp111a                        romeo R.FERNANDES        168     21      5
+ CASTEST MODIF wtnp112a                        romeo R.FERNANDES        255     28     32
+ CASTEST MODIF wtnp112b                        romeo R.FERNANDES        256     27     30
+ CASTEST MODIF wtnp112c                        romeo R.FERNANDES        282     20      7
+ CASTEST MODIF wtnp112d                        romeo R.FERNANDES        236     17     28
+ CASTEST MODIF wtnp113a                        romeo R.FERNANDES        458     33     12
+ CASTEST MODIF wtnp113b                        romeo R.FERNANDES        474     34     12
+ CASTEST MODIF wtnp114a                        romeo R.FERNANDES        268     14      4
+ CASTEST MODIF wtnp115a                        romeo R.FERNANDES        275      2      2
+ CASTEST MODIF wtnv100c                        romeo R.FERNANDES        443      9      2
+ CASTEST MODIF wtnv101a                        romeo R.FERNANDES        485      9      2
+ CASTEST MODIF wtnv102a                        romeo R.FERNANDES        343      1      1
+ CASTEST MODIF wtnv102b                        romeo R.FERNANDES        359      8      2
+ CASTEST MODIF wtnv109a                        romeo R.FERNANDES        233     17     19
+ CASTEST MODIF wtnv109b                        romeo R.FERNANDES        201      4      3
+ CASTEST MODIF wtnv109c                        romeo R.FERNANDES        210      4      3
+ CASTEST MODIF wtnv109d                        romeo R.FERNANDES        264      7      6
+ CASTEST MODIF wtnv111a                        romeo R.FERNANDES        203      8     15
+ CASTEST MODIF wtnv111b                        romeo R.FERNANDES        187      4     13
+ CASTEST MODIF wtnv111c                        romeo R.FERNANDES        187     10     36
+ CASTEST MODIF wtnv112a                        romeo R.FERNANDES        441      1      1
+ CASTEST MODIF wtnv112b                        romeo R.FERNANDES        448      1      1
+ CASTEST MODIF wtnv112c                        romeo R.FERNANDES        435      8      2
+ CASTEST MODIF wtnv112d                        romeo R.FERNANDES        436      8      2
+ CASTEST MODIF wtnv113a                        romeo R.FERNANDES        295      1      1
+ CASTEST MODIF wtnv113b                        romeo R.FERNANDES        314      1      1
+ CASTEST MODIF wtnv113c                        romeo R.FERNANDES        309      1      1
+ CASTEST MODIF wtnv113d                        romeo R.FERNANDES        312      1      1
+ CASTEST MODIF wtnv113e                        romeo R.FERNANDES        289      6      5
+ CASTEST MODIF wtnv113f                        romeo R.FERNANDES        308      6      5
+ CASTEST MODIF wtnv113g                        romeo R.FERNANDES        302      6      5
+ CASTEST MODIF wtnv113h                        romeo R.FERNANDES        305      6      5
+ CASTEST MODIF wtnv113i                        romeo R.FERNANDES        292      8      2
+ CASTEST MODIF wtnv113j                        romeo R.FERNANDES        311      8      2
+ CASTEST MODIF wtnv113k                        romeo R.FERNANDES        292      8      2
+ CASTEST MODIF wtnv113l                        romeo R.FERNANDES        311      8      2
+ CASTEST MODIF wtnv114a                        romeo R.FERNANDES        270      1      1
+ CASTEST MODIF wtnv114b                        romeo R.FERNANDES        278      1      1
+ CASTEST MODIF wtnv114c                        romeo R.FERNANDES        269      1      1
+ CASTEST MODIF wtnv114d                        romeo R.FERNANDES        278      1      1
+ CASTEST MODIF wtnv114e                        romeo R.FERNANDES        301      1      1
+ CASTEST MODIF wtnv118a                        romeo R.FERNANDES        311      9      9
+ CASTEST MODIF wtnv118b                        romeo R.FERNANDES        309      7      8
+ CASTEST MODIF wtnv121a                        romeo R.FERNANDES        422     20      9
+ CASTEST MODIF wtnv121b                        romeo R.FERNANDES        367     20      8
+ CASTEST MODIF wtnv122a                        romeo R.FERNANDES        447      9      3
+ CASTEST MODIF wtnv122b                        romeo R.FERNANDES        456      9      3
+ CASTEST MODIF wtnv122c                        romeo R.FERNANDES        456      9      3
+ CASTEST MODIF wtnv123a                        romeo R.FERNANDES        599     14      4
+ CASTEST MODIF wtnv123b                        romeo R.FERNANDES        473     11      5
+ CASTEST MODIF wtnv123c                        romeo R.FERNANDES        844     11      5
+ CASTEST MODIF wtnv124a                        romeo R.FERNANDES        560     11      5
+ CASTEST MODIF wtnv125a                        romeo R.FERNANDES        487     10      3
+ CASTEST MODIF wtnv126a                        romeo R.FERNANDES        852     12      6
+ CASTEST MODIF wtnv126b                        romeo R.FERNANDES        825     14      5
+ CASTEST MODIF wtnv127a                        romeo R.FERNANDES        229      1      1
+ CASTEST MODIF wtnv128a                        romeo R.FERNANDES        541      9      3
+ CASTEST SUPPR wtnl103b.comm                   romeo R.FERNANDES        426      0    426
+ CASTEST SUPPR wtnv110a.comm                   romeo R.FERNANDES        195      0    195
+ CASTEST SUPPR wtnv110b.comm                   romeo R.FERNANDES        184      0    184
+ CASTEST SUPPR wtnv110c.comm                   romeo R.FERNANDES        194      0    194
+ CASTEST SUPPR wtnv115a.comm                   romeo R.FERNANDES        308      0    308
+ CASTEST SUPPR wtnv115b.comm                   romeo R.FERNANDES        307      0    307
+ CASTEST SUPPR wtnv116a.comm                   romeo R.FERNANDES        293      0    293
+ CASTEST SUPPR wtnv116b.comm                   romeo R.FERNANDES        294      0    294
+ CASTEST SUPPR wtnv116c.comm                   romeo R.FERNANDES        296      0    296
+ CASTEST SUPPR wtnv117a.comm                   romeo R.FERNANDES        406      0    406
+ CASTEST SUPPR wtnv118c.comm                   romeo R.FERNANDES        287      0    287
+CATALOGU MODIF compelem/phenomene_modelisation__      romeo R.FERNANDES        955    373    284
+CATALOGU MODIF compelem/type_maille__          romeo R.FERNANDES        358     11      1
+CATALOGU MODIF typelem/gener_me3g32            romeo R.FERNANDES         52     11      7
+CATALOGU MODIF typelem/gener_me3g33            romeo R.FERNANDES        157     58     23
+CATALOGU MODIF typelem/gener_me3h12            romeo R.FERNANDES         62     12      2
+CATALOGU MODIF typelem/gener_me3h13            romeo R.FERNANDES        196     59      6
+CATALOGU MODIF typelem/gener_me3h22            romeo R.FERNANDES         62     12      2
+CATALOGU MODIF typelem/gener_me3h23            romeo R.FERNANDES        192     59      6
+CATALOGU MODIF typelem/gener_me3h32            romeo R.FERNANDES         53     11      7
+CATALOGU MODIF typelem/gener_me3h33            romeo R.FERNANDES        165     57     25
+CATALOGU MODIF typelem/gener_me3h42            romeo R.FERNANDES         62     11      3
+CATALOGU MODIF typelem/gener_me3h43            romeo R.FERNANDES        198     56     25
+CATALOGU MODIF typelem/gener_me3h52            romeo R.FERNANDES         62     11      3
+CATALOGU MODIF typelem/gener_me3h53            romeo R.FERNANDES        194     55     24
+CATALOGU MODIF typelem/gener_meaa11            romeo R.FERNANDES         47      7      4
+CATALOGU MODIF typelem/gener_meaa12            romeo R.FERNANDES        131     24     10
+CATALOGU MODIF typelem/gener_meaa21            romeo R.FERNANDES         53      7      2
+CATALOGU MODIF typelem/gener_meaa22            romeo R.FERNANDES        167     24      4
+CATALOGU MODIF typelem/gener_meaa31            romeo R.FERNANDES         53      7      2
+CATALOGU MODIF typelem/gener_meaa32            romeo R.FERNANDES        165     24      4
+CATALOGU MODIF typelem/gener_meag31            romeo R.FERNANDES         47      7      4
+CATALOGU MODIF typelem/gener_meag32            romeo R.FERNANDES        122     24     10
+CATALOGU MODIF typelem/gener_meah11            romeo R.FERNANDES         54      7      2
+CATALOGU MODIF typelem/gener_meah12            romeo R.FERNANDES        176     32      6
+CATALOGU MODIF typelem/gener_meah21            romeo R.FERNANDES         54      7      2
+CATALOGU MODIF typelem/gener_meah22            romeo R.FERNANDES        174     32      6
+CATALOGU MODIF typelem/gener_meah31            romeo R.FERNANDES         48      7      4
+CATALOGU MODIF typelem/gener_meah32            romeo R.FERNANDES        142     32     12
+CATALOGU MODIF typelem/gener_meah41            romeo R.FERNANDES         54      7      2
+CATALOGU MODIF typelem/gener_meah42            romeo R.FERNANDES        178     32      6
+CATALOGU MODIF typelem/gener_meah51            romeo R.FERNANDES         54      7      2
+CATALOGU MODIF typelem/gener_meah52            romeo R.FERNANDES        176     32      6
+CATALOGU MODIF typelem/gener_meda11            romeo R.FERNANDES         47      7      4
+CATALOGU MODIF typelem/gener_meda12            romeo R.FERNANDES        131     24     10
+CATALOGU MODIF typelem/gener_meda21            romeo R.FERNANDES         53      7      4
+CATALOGU MODIF typelem/gener_meda22            romeo R.FERNANDES        167     24     10
+CATALOGU MODIF typelem/gener_meda31            romeo R.FERNANDES         53      7      4
+CATALOGU MODIF typelem/gener_meda32            romeo R.FERNANDES        165     24     10
+CATALOGU MODIF typelem/gener_medg31            romeo R.FERNANDES         47      7      4
+CATALOGU MODIF typelem/gener_medg32            romeo R.FERNANDES        122     24     10
+CATALOGU MODIF typelem/gener_medh11            romeo R.FERNANDES         54      7      4
+CATALOGU MODIF typelem/gener_medh12            romeo R.FERNANDES        176     32     18
+CATALOGU MODIF typelem/gener_medh21            romeo R.FERNANDES         54      7      4
+CATALOGU MODIF typelem/gener_medh22            romeo R.FERNANDES        174     32     18
+CATALOGU MODIF typelem/gener_medh31            romeo R.FERNANDES         48      7      4
+CATALOGU MODIF typelem/gener_medh32            romeo R.FERNANDES        142     32     18
+CATALOGU MODIF typelem/gener_medh41            romeo R.FERNANDES         54      7      4
+CATALOGU MODIF typelem/gener_medh42            romeo R.FERNANDES        178     32     18
+CATALOGU MODIF typelem/gener_medh51            romeo R.FERNANDES         54      7      4
+CATALOGU MODIF typelem/gener_medh52            romeo R.FERNANDES        176     32     18
+CATALOPY MODIF commande/affe_modele            romeo R.FERNANDES        204     66     41
+ FORTRAN AJOUT algorith/borthm                 romeo R.FERNANDES         41     41      0
+ FORTRAN AJOUT algorith/dimthm                 romeo R.FERNANDES         86     86      0
+ FORTRAN AJOUT algorith/grdthm                 romeo R.FERNANDES        214    214      0
+ FORTRAN AJOUT algorith/itgthm                 romeo R.FERNANDES         97     97      0
+ FORTRAN AJOUT algorith/modthm                 romeo R.FERNANDES         37     37      0
+ FORTRAN AJOUT algorith/pmathm                 romeo R.FERNANDES         61     61      0
+ FORTRAN AJOUT algorith/posthm                 romeo R.FERNANDES        129    129      0
+ FORTRAN AJOUT algorith/typthm                 romeo R.FERNANDES         52     52      0
+ FORTRAN MODIF algorith/assthm                 romeo R.FERNANDES        434    285    182
+ FORTRAN MODIF algorith/cabthm                 romeo R.FERNANDES        327    229    215
+ FORTRAN MODIF algorith/comthm                 romeo R.FERNANDES        258     11      5
+ FORTRAN MODIF algorith/epsthm                 romeo R.FERNANDES         96     43     50
+ FORTRAN MODIF algorith/equthm                 romeo R.FERNANDES        698    186    122
+ FORTRAN MODIF algorith/fnothm                 romeo R.FERNANDES        294    131    158
+ FORTRAN MODIF algorith/hmlvga                 romeo R.FERNANDES        370      5      4
+ FORTRAN MODIF algorith/nmthmc                 romeo R.FERNANDES        526      9     29
+ FORTRAN MODIF algorith/refthm                 romeo R.FERNANDES        156     33     50
+ FORTRAN MODIF algorith/vipvp1                 romeo R.FERNANDES         99     12      4
+ FORTRAN MODIF calculel/cesprj                 romeo R.FERNANDES        276     28      5
+ FORTRAN MODIF calculel/cnsprj                 romeo R.FERNANDES        203     27      4
+ FORTRAN MODIF elements/caethm                 romeo R.FERNANDES         65     25    294
+ FORTRAN MODIF elements/elraca                 romeo R.FERNANDES        887     53     14
+ FORTRAN MODIF elements/elraga                 romeo R.FERNANDES       1052    200      3
+ FORTRAN MODIF elements/te0466                 romeo R.FERNANDES        509    109    147
+ FORTRAN MODIF elements/te0472                 romeo R.FERNANDES        380    162    263
+ FORTRAN MODIF elements/te0549                 romeo R.FERNANDES         99     13     18
+ FORTRAN MODIF elements/te0600                 romeo R.FERNANDES        517    224    378
+ FORTRAN MODIF modelisa/cafthm                 romeo R.FERNANDES        144      8     58
+ FORTRAN SUPPR algorith/lumthm                 romeo R.FERNANDES         35      0     35
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :   36       10823     10823            +10823
+ MODIF :  151       42382      4308    3370      +938
+ SUPPR :   12        3225              3225     -3225
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :  199       56430     15131    6595     +8536 

@@ -1,4 +1,4 @@
-# MODIF  DATE 31/01/2005   AUTEUR ROMEO R.FERNANDES 
+# MODIF  DATE 16/08/2005   AUTEUR ROMEO R.FERNANDES 
 # TITRE TEST THM_D_PLAN_DPQ8, MASSIF POREUX SATURE CHAUFFE PAR UN FLUX
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -134,12 +134,12 @@ CHMAT0=AFFE_MATERIAU(   MAILLAGE=MAIL,
 
 CHAR0=AFFE_CHAR_MECA(   MODELE=MODELE,DDL_IMPO=(
                           _F(  TOUT = 'OUI',
-                                     PRE1 = 0.,
                                      DX = 0.,
                                      DY = 0.),
-                         _F(  GROUP_NO = 'BAS',
+                          _F(NOEUD=('N1','N2','N3','N4'),
+                                    PRE1=0.),
+                          _F(NOEUD=('N1','N2'),
                                      TEMP = 0.)),
-
                         FLUX_THM_REP=_F(  GROUP_MA = 'HAUT',
                                    FLUN = 0.5,
                                    FLUN_HYDR1 = 0.)
@@ -182,15 +182,6 @@ TEST_RESU(
              PRECISION = 1.E-2)
            )
 
-TEST_RESU( 
-           RESU=_F(  RESULTAT = MESTAT,         NUME_ORDRE = 1,
-             NOM_CHAM = 'DEPL', 
-             NOM_CMP = 'TEMP',
-             NOEUD = 'N6',   
-             VALE = 1.47059E-01,   
-             CRITERE = 'RELATIF',
-             PRECISION = 1.E-2)
-           )
 
 FIN()
 #

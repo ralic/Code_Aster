@@ -1,4 +1,4 @@
-# MODIF  DATE 18/05/2005   AUTEUR ROMEO R.FERNANDES 
+# MODIF  DATE 16/08/2005   AUTEUR ROMEO R.FERNANDES 
 # TITRE TEST THHM, 2D: LA COLONNE D ABOUSTIT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -32,7 +32,6 @@ MODELE=AFFE_MODELE(   MAILLAGE=MAIL,
                       MODELISATION = 'D_PLAN_THHM')
                      )
 
-#
 #
 ####################################
 #  LISTE DES INSTANTS DE CALCUL
@@ -214,11 +213,12 @@ CHAR0=AFFE_CHAR_MECA(   MODELE=MODELE,DDL_IMPO=(
                           _F(  TOUT = 'OUI',
                                      DX = 0.),
                          _F(  GROUP_NO = 'BASE',
-                                     DY = 0.,
+                                     DY = 0.,),
+                         _F(  NOEUD=('NO1','NO3'),             
                                                          PRE1 = 0.,
                                                          PRE2 = 0.,
                                                          TEMP = 0.),
-                         _F(  GROUP_NO = 'TOP',
+                         _F(  NOEUD=('NO71','NO73'),
                                      TEMP = 50.,
                                      PRE1 = .6E5,
                                      PRE2 = 1.E5))
@@ -251,7 +251,7 @@ TEST_RESU(
            RESU=_F(  RESULTAT = MESTAT,         NUME_ORDRE = 50,
              NOM_CHAM = 'DEPL',
              NOM_CMP = 'TEMP',
-             NOEUD = 'NO37',
+             NOEUD = 'NO36',
              VALE = 3.01207E+01,
              REFERENCE = 'NON_REGRESSION',  
              CRITERE = 'RELATIF',  PRECISION = 1.E-5)
@@ -261,7 +261,7 @@ TEST_RESU(
            RESU=_F(  RESULTAT = MESTAT,         NUME_ORDRE = 50,
              NOM_CHAM = 'DEPL',
              NOM_CMP = 'PRE1',
-             NOEUD = 'NO32',
+             NOEUD = 'NO31',
              VALE = 2.92122E+04,
              REFERENCE = 'NON_REGRESSION',  
              CRITERE = 'RELATIF',  PRECISION = 1.E-5)
@@ -271,7 +271,7 @@ TEST_RESU(
            RESU=_F(  RESULTAT = MESTAT,         NUME_ORDRE = 100,
              NOM_CHAM = 'DEPL',
              NOM_CMP = 'TEMP',
-             NOEUD = 'NO37',
+             NOEUD = 'NO36',
              VALE = 3.19992E+01,
              REFERENCE = 'NON_REGRESSION',  
              CRITERE = 'RELATIF',  PRECISION = 1.E-5)
@@ -281,7 +281,7 @@ TEST_RESU(
            RESU=_F(  RESULTAT = MESTAT,         NUME_ORDRE = 200,
              NOM_CHAM = 'DEPL',
              NOM_CMP = 'TEMP',
-             NOEUD = 'NO17',
+             NOEUD = 'NO16',
              VALE = 1.55461E+01,
              REFERENCE = 'NON_REGRESSION',  
              CRITERE = 'RELATIF',  PRECISION = 1.E-5)
@@ -291,7 +291,7 @@ TEST_RESU(
            RESU=_F(  RESULTAT = MESTAT,         NUME_ORDRE = 200,
              NOM_CHAM = 'DEPL',
              NOM_CMP = 'PRE1',
-             NOEUD = 'NO17',
+             NOEUD = 'NO16',
              VALE = 1.3409974E+04,
              REFERENCE = 'NON_REGRESSION',  
              CRITERE = 'RELATIF',  PRECISION = 1.E-5)

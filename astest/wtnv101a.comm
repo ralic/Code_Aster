@@ -1,4 +1,4 @@
-# MODIF  DATE 31/01/2005   AUTEUR ROMEO R.FERNANDES 
+# MODIF  DATE 16/08/2005   AUTEUR ROMEO R.FERNANDES 
 # ======================================================================
 # TITRE ETUDE  : ESSAI TRIAXIAL NON DRAINE AVEC LE MODELE DE LAIGLE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -55,6 +55,13 @@ MAILLAGE=MODI_MAILLAGE( reuse=MAILLAGE,   MAILLAGE=MAILLAGE,
                                 MODELE=MODELE,
                        ORIE_PEAU_3D=_F(  GROUP_MA = ('HAUT', 'DEVANT', 'DROITE',),  )
                      )
+MAILLAGE = DEFI_GROUP( reuse        = MAILLAGE,
+                          MAILLAGE     = MAILLAGE,
+                          CREA_GROUP_MA=(_F(NOM='ROCHE',
+                                            TOUT='OUI',)),
+                          CREA_GROUP_NO=(_F(NOM='ROCHES',
+                                            CRIT_NOEUD='SOMMET',
+                                            GROUP_MA='ROCHE'),),);
 
 SOL=DEFI_MATERIAU(    ELAS=_F(  E     = 1500.E6,
                                 RHO   = 2500.,  
@@ -146,7 +153,7 @@ DEP_SYM=AFFE_CHAR_MECA(    MODELE=MODELE,FACE_IMPO=(
                            )
 
 P0=AFFE_CHAR_MECA(    MODELE=MODELE,
-                               DDL_IMPO=_F(  TOUT = 'OUI',   PRE1 = 0.,  )
+                               DDL_IMPO=_F( GROUP_NO='ROCHES',   PRE1 = 0.,  )
                            )
 
 EVOL_HYD=DEFI_FONCTION(      NOM_PARA='INST',

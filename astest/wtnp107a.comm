@@ -1,4 +1,4 @@
-# MODIF  DATE 31/01/2005   AUTEUR ROMEO R.FERNANDES 
+# MODIF  DATE 16/08/2005   AUTEUR ROMEO R.FERNANDES 
 # TITRE CHAUFFAGE D UN MILIEU POREUX SANS AIR
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -39,7 +39,11 @@ MAIL=DEFI_GROUP(reuse =MAIL,
                                _F(GROUP_MA='DROITE',),
                                _F(GROUP_MA='GAUCHE',)
                   ,),);
-
+MAIL=DEFI_GROUP( reuse=MAIL,
+               MAILLAGE=MAIL,
+               CREA_GROUP_NO=(_F(NOM='DROITES',
+                                 CRIT_NOEUD='SOMMET',
+                                 GROUP_MA='DROITE'),),)
 MODELE=AFFE_MODELE(MAILLAGE=MAIL,
                    AFFE=(_F(TOUT='OUI',
                             PHENOMENE='MECANIQUE',
@@ -278,7 +282,7 @@ FPRES = FORMULE(NOM_PARA=('X','Y','Z'),VALE=' 0.0 ');
 #             AFFECTATION DES CONDITIONS AUX LIMITES
 
 CALDEP=AFFE_CHAR_MECA_F(MODELE=MODELE,
-                        DDL_IMPO=(_F(GROUP_NO='DROITE',
+                        DDL_IMPO=(_F(GROUP_NO='DROITES',
                                      TEMP=T80,
                                      PRE1=FPRES,),
                                  ),);
@@ -342,28 +346,14 @@ U0=CALC_ELEM(reuse =U0,
 ZMP=INTE_MAIL_2D (MAILLAGE=MAIL,
                DEFI_CHEMIN=_F(GROUP_MA='BAS',),);
                
-TEMPE=POST_RELEVE_T (ACTION=_F(INTITULE='TEMPERATURE',
-                     CHEMIN=ZMP,
-                     RESULTAT=U0,
-                     NOM_CHAM='DEPL',
-                     TOUT_ORDRE='OUI',
-                     PRECISION=1.E-9,
-                     NOM_CMP=('PRE1','TEMP'),
-                     OPERATION='EXTRACTION',),);
 
-IMPR_TABLE(TABLE=TEMPE,
-           UNITE=8,
-           FORMAT='AGRAF',
-           PAGINATION='INST',
-           NOM_PARA=('INST','COOR_X','PRE1','TEMP'),
-           );
            
 TEST_RESU(RESU=_F(RESULTAT=U0,
                   INST = 250.0,
                   NOM_CHAM='DEPL',
                   NOM_CMP='TEMP',
-                  NOEUD='NO34',
-                  VALE=1.14534E+2,
+                  NOEUD='NO13',
+                  VALE=1.15730E+2,
                   CRITERE='RELATIF',
                   PRECISION=1.E-3,
                   REFERENCE='NON_REGRESSION',),);   

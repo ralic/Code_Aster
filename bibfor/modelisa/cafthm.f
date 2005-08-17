@@ -1,12 +1,13 @@
       SUBROUTINE CAFTHM (CHAR, LIGRMO, NBCA, NBET, NOMA, FONREE )
-      IMPLICIT   NONE
-      INTEGER           NBCA, NBET
-      CHARACTER*4       FONREE
-      CHARACTER*8       CHAR, NOMA
-      CHARACTER*(*)     LIGRMO
-C-----------------------------------------------------------------------
+      IMPLICIT      NONE
+      INTEGER       NBCA, NBET
+      CHARACTER*4   FONREE
+      CHARACTER*8   CHAR, NOMA
+      CHARACTER*(*) LIGRMO
+C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 06/04/2004   AUTEUR DURAND C.DURAND 
+C ======================================================================
+C MODIF MODELISA  DATE 16/08/2005   AUTEUR ROMEO R.FERNANDES 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -35,7 +36,7 @@ C      NOMA   : NOM DU MAILLAGE
 C      NBCA   : NOMBRE D'APPEL A NOCART
 C      NBET   : NOMBRE TOTAL DE MAILLES
 C      FONREE : FONC OU REEL
-C-----------------------------------------------------------------------
+C ======================================================================
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER          ZI
       COMMON  /IVARJE/ ZI(1)
@@ -52,13 +53,14 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*80                                        ZK80
       COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
-      INTEGER       IBID, N1, N2, N3, NFLUX, JVALV, JNCMP, IOCC,
-     +              NBTOU, NBMA, JMA, IER, NCMP
+C ======================================================================
+      INTEGER       IBID, N1, N2, N3, NFLUX, JVALV, JNCMP, IOCC
+      INTEGER       NBTOU, NBMA, JMA, IER, NCMP
       CHARACTER*8   K8B, MOD, TYPMCL(2)
       CHARACTER*16  MOTCLF, MOTCLE(2), MODELI
       CHARACTER*19  CARTE
       CHARACTER*24  MESMAI
-C-----------------------------------------------------------------------
+C ======================================================================
       CALL JEMARQ()
 C
       MOTCLF = 'FLUX_THM_REP'
@@ -122,58 +124,6 @@ C
 C
 C --- TEST SUR LES CAL
 C
-         IF (MODELI.EQ.'3D_THH'.OR.MODELI.EQ.'AXIS_THH'.OR.
-     +      MODELI .EQ.'D_PLAN_THH'.OR.MODELI .EQ. '3D_THHM'.OR.
-     +      MODELI.EQ.'AXIS_THHM'.OR.MODELI.EQ.'D_PLAN_THHM')THEN
-           IF((N3+N1+N2).NE.3)THEN
-             CALL UTMESS('F','CAFTHM',' LES CONDITIONS DE FLUX '
-     +     // 'FLUN,FLUN_HYDR1 ET FLUN_HYDR2 DOIVENT FIGURER '
-     +     // 'SIMULTANEMENT EN MODELISATION ' //MODELI)
-           ENDIF
-         ENDIF
-C
-         IF (MODELI .EQ. '3D_THM'.OR. MODELI.EQ.'AXIS_THM'
-     +        .OR.MODELI.EQ.'D_PLAN_THM')THEN
-           IF((N3+N1).NE.2 )THEN
-             CALL UTMESS('F','CAFTHM',' LES CONDITIONS DE FLUX '
-     +     // 'FLUN ET FLUN_HYDR1 DOIVENT FIGURER '
-     +     // 'SIMULTANEMENT EN MODELISATION '// MODELI)
-           ENDIF
-           IF(N2.NE.0 )THEN
-             CALL UTMESS('F','CAFTHM',' LA CONDITION DE FLUX '
-     +     // ' FLUN_HYDR2 NE DOIT PAS FIGURER'
-     +     // ' EN MODELISATION '// MODELI)
-           ENDIF
-         ENDIF
-C
-         IF (MODELI .EQ. '3D_HHM'.OR .MODELI.EQ.'AXIS_HHM'
-     +       .OR.MODELI.EQ.'D_PLAN_HHM')THEN
-           IF((N1+N2).NE.2 )THEN
-             CALL UTMESS('F','CAFTHM',' LES CONDITIONS DE FLUX '
-     +     // 'FLUN_HYDR1 ET FLUN_HYDR2 DOIVENT FIGURER '
-     +     // 'SIMULTANEMENT ET FLUN NE DOIT PAS FIGURER'
-     +     // ' EN MODELISATION ' //MODELI)
-           ENDIF
-           IF(N3 .NE.0 )THEN
-             CALL UTMESS('F','CAFTHM','LA CONDITION DE FLUX '
-     +     // ' FLUN NE DOIT PAS FIGURER '
-     +     // ' EN MODELISATION ' //MODELI)
-           ENDIF
-         ENDIF
-C
-         IF (MODELI .EQ. '3D_HM'.OR. MODELI.EQ.'AXIS_HM'
-     +        .OR.MODELI.EQ.'D_PLAN_HM')THEN
-           IF(N3.NE.0)THEN
-             CALL UTMESS('F','CAFTHM',' LA CONDITION DE FLUX '
-     +     // 'FLUN NE DOIT PAS FIGURER '
-     +     // ' EN MODELISATION ' //MODELI)
-           ENDIF
-           IF(N2.NE.0)THEN
-             CALL UTMESS('F','CAFTHM',' LA CONDITION DE FLUX '
-     +     // 'FLUN_HYDR2 NE DOIT PAS FIGURER '
-     +     // ' EN MODELISATION ' //MODELI)
-           ENDIF
-         ENDIF
 C
          CALL GETVTX ( MOTCLF, 'TOUT', IOCC, 1, 1, K8B, NBTOU )
 C

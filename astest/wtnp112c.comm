@@ -1,4 +1,4 @@
-# MODIF  DATE 31/01/2005   AUTEUR ROMEO R.FERNANDES 
+# MODIF  DATE 16/08/2005   AUTEUR ROMEO R.FERNANDES 
 # ======================================================================
 # TITRE RESATURATION D UNE COLONNE TEST THH2D, 2D , MODELISATION THMC=LIQU_AD_GAZ_VAPE
 #       TEST31 ALLIANCES
@@ -40,7 +40,20 @@ MODELE=AFFE_MODELE(   MAILLAGE=MAIL,
                       PHENOMENE = 'MECANIQUE',
                       MODELISATION = 'D_PLAN_THH2D')
                      )
-
+MAIL=DEFI_GROUP( reuse=MAIL,
+               MAILLAGE=MAIL,
+               CREA_GROUP_MA=(_F(NOM='ROCHE',
+                                     TOUT='OUI'),),
+               CREA_GROUP_NO=(_F(NOM='ROCHES',
+                                 CRIT_NOEUD='SOMMET',
+                                 GROUP_MA='ROCHE'),
+                              _F(NOM='GAUCHES',
+                                 CRIT_NOEUD='SOMMET',
+                                 GROUP_MA='GAUCHE'),
+                              _F(NOM='DROITS',
+                                 CRIT_NOEUD='SOMMET',
+                                 GROUP_MA='DROIT'),                                 
+                                 ),)
 ####################################
 #  LISTE DES INSTANTS DE CALCUL
 ####################################
@@ -194,16 +207,16 @@ CHAMNO=CREA_CHAMP(MAILLAGE=MAIL,
                              VALE=1.15,),
                              ),);
 CALGAU=AFFE_CHAR_MECA(MODELE=MODELE,
-                       DDL_IMPO=_F(GROUP_NO='GAUCHE',
+                       DDL_IMPO=_F(GROUP_NO='GAUCHES',
                                    PRE1=0.,),);
 CALDRO=AFFE_CHAR_MECA(MODELE=MODELE,
-                       DDL_IMPO=_F(GROUP_NO='DROIT',
+                       DDL_IMPO=_F(GROUP_NO='DROITS',
                                    PRE1=1.15,),);
 CALGAZ=AFFE_CHAR_MECA(MODELE=MODELE,
-                       DDL_IMPO=_F(TOUT='OUI',
+                       DDL_IMPO=_F(GROUP_NO='ROCHES',
                                    PRE2=0.,),); 
 CALTEMP=AFFE_CHAR_MECA(MODELE=MODELE,
-                       DDL_IMPO=_F(TOUT='OUI',
+                       DDL_IMPO=_F(GROUP_NO='ROCHES',
                                    TEMP=0.,),);                                  
 
 
@@ -259,7 +272,7 @@ TEST_RESU(RESU=_F(RESULTAT=RESU0,
                   NUME_ORDRE=20,
                   NOM_CHAM='DEPL',
                   NOM_CMP='PRE1',
-                  NOEUD='N351',
+                  NOEUD='N270',
                   VALE=0.44,
                   CRITERE='RELATIF',
                   PRECISION=1.E-1,

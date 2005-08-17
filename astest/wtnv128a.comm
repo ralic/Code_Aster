@@ -1,4 +1,4 @@
-# MODIF  DATE 14/06/2005   AUTEUR JMBHH01 J.M.PROIX 
+# MODIF  DATE 16/08/2005   AUTEUR ROMEO R.FERNANDES 
 # TITRE : ESSAI TRIAXIAL 3D NON DRAINE AVEC LE MODELE DE HOEK_BROWN MODIFIE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -64,7 +64,13 @@ MAILLAGE = MODI_MAILLAGE( reuse        = MAILLAGE,
                                     'DERRIERE',
                                           'DROITE',),  )
                                              )
-
+MAILLAGE = DEFI_GROUP( reuse        = MAILLAGE,
+                          MAILLAGE     = MAILLAGE,
+                          CREA_GROUP_MA=(_F(NOM='ROCHE',
+                                            TOUT='OUI',)),
+                          CREA_GROUP_NO=(_F(NOM='ROCHES',
+                                            CRIT_NOEUD='SOMMET',
+                                            GROUP_MA='ROCHE'),),);
 #***********************************************************************
 #    LISTE DES INSTANTS DE CALCUL
 #***********************************************************************
@@ -173,7 +179,7 @@ COEF1    = DEFI_FONCTION( NOM_PARA    = 'INST',
                         )
 
 P0=AFFE_CHAR_MECA(    MODELE=MODELE,
-                               DDL_IMPO=_F(  TOUT = 'OUI',   PRE1 = 0.,  )
+                               DDL_IMPO=_F(GROUP_NO='ROCHES',   PRE1 = 0.,  )
                                                )
 
 #***********************************************************************

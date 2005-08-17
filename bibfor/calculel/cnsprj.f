@@ -1,6 +1,6 @@
       SUBROUTINE CNSPRJ(CNS1Z,CORREZ,BASEZ,CNS2Z,IRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 09/11/2004   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 16/08/2005   AUTEUR ROMEO R.FERNANDES 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -141,12 +141,23 @@ C     -------------------------------
         NBNO1=ZI(IACONB-1+INO2)
         IF (NBNO1 .EQ. 0) GOTO 1
         DO 3,ICMP=1,NCMP
-C          -- ON NE CALCULE UNE CMP QUE SI ELLE EST PRESENTE
-C          -- SUR TOUS LES NOEUDS INO1
+C ================================================================
+C --- ON NE PROJETTE UNE CMP QUE SI ELLE EST PRESENTE : ----------
+C --- * SUR TOUS LES NOEUDS DE LA MAILLE SOUS-JACENTE ------------
+C --- * SUR TOUS LES NOEUDS SOMMETS DE LA MAILLE SOUS-JACENTE ET -
+C ---   QU'ELLE N'EST PAS DEFINIE AUX NOEUDS MILIEUX -------------
+C ================================================================
            ICO=0
            DO 4,INO1=1,NBNO1
-             NUNO1=ZI(IACONU+IDECAL-1+INO1)
-             IF (ZL(JCNS1L-1+ (NUNO1-1)*NCMP+ICMP)) ICO=ICO+1
+              NUNO1=ZI(IACONU+IDECAL-1+INO1)
+              COEF1=ZR(IACOCF+IDECAL-1+INO1)
+              IF (ZL(JCNS1L-1+ (NUNO1-1)*NCMP+ICMP)) THEN
+                 ICO=ICO+1
+              ELSE
+                 IF (COEF1.LT.1.0D-6) THEN
+                    ICO = ICO + 1
+                 ENDIF
+              ENDIF
  4         CONTINUE
            IF (ICO.LT.NBNO1) GO TO 3
 
@@ -155,7 +166,13 @@ C          -- SUR TOUS LES NOEUDS INO1
               DO 2,INO1=1,NBNO1
                 NUNO1=ZI(IACONU+IDECAL-1+INO1)
                 COEF1=ZR(IACOCF+IDECAL-1+INO1)
-                V1=ZR(JCNS1V-1+ (NUNO1-1)*NCMP+ICMP)
+                IF (ZL(JCNS1L-1+ (NUNO1-1)*NCMP+ICMP)) THEN
+                   V1=ZR(JCNS1V-1+ (NUNO1-1)*NCMP+ICMP)
+                ELSE
+                   IF (COEF1.LT.1.0D-6) THEN
+                      V1 = 0.0D0
+                   ENDIF
+                ENDIF
                 V2=V2+COEF1*V1
  2            CONTINUE
               ZL(JCNS2L-1+ (INO2-1)*NCMP+ICMP)=.TRUE.
@@ -165,7 +182,13 @@ C          -- SUR TOUS LES NOEUDS INO1
               DO 21,INO1=1,NBNO1
                 NUNO1=ZI(IACONU+IDECAL-1+INO1)
                 COEF1=ZR(IACOCF+IDECAL-1+INO1)
-                V1C=ZC(JCNS1V-1+ (NUNO1-1)*NCMP+ICMP)
+                IF (ZL(JCNS1L-1+ (NUNO1-1)*NCMP+ICMP)) THEN
+                   V1C=ZC(JCNS1V-1+ (NUNO1-1)*NCMP+ICMP)
+                ELSE
+                   IF (COEF1.LT.1.0D-6) THEN
+                      V1C = 0.0D0
+                   ENDIF
+                ENDIF
                 V2C=V2C+COEF1*V1C
  21           CONTINUE
               ZL(JCNS2L-1+ (INO2-1)*NCMP+ICMP)=.TRUE.

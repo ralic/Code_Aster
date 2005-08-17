@@ -4,7 +4,7 @@
 C =====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C =====================================================================
-C MODIF ELEMENTS  DATE 31/01/2005   AUTEUR ROMEO R.FERNANDES 
+C MODIF ELEMENTS  DATE 16/08/2005   AUTEUR ROMEO R.FERNANDES 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C =====================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -32,6 +32,9 @@ C        DONNEES:      OPTION       -->  OPTION DE CALCUL
 C                      NOMTE        -->  NOM DU TYPE ELEMENT
 C =====================================================================
       INTEGER JGANO,NNO,IMATUU,NDIM,IMATE,IINSTM,IFORC,JCRET
+      INTEGER IPOID2,IVF2
+      INTEGER IDFDE2,NPI,NPG,NVIM
+C
       INTEGER RETLOI,IRET,IRETP,IRETM
       INTEGER IPOIDS,IVF,IDFDE,IGEOM,IDEFO
       INTEGER IINSTP,IDEPLM,IDEPLP,IDEPLA,ICOMPO,ICARCR,IPESA
@@ -55,24 +58,22 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C =====================================================================
-      INTEGER MECANI(5),PRESS1(7),PRESS2(7),TEMPE(5)
-      INTEGER DIMDEF,DIMCON,NBVARI,NDDL,II,KPG,N,INO
-      INTEGER NMEC,NP1,NP2,NT,I,NPGU,NCMP,NNOS,ICHG,ICHN
-      INTEGER JTAB(7),IGAU,ISIG,DIMETE,LXLGUT
+      INTEGER MECANI(5),PRESS1(7),PRESS2(7),TEMPE(5),DIMUEL
+      INTEGER DIMDEF,DIMCON,NBVARI,NDDLS,NDDLM,II,KPI,N,INO
+      INTEGER NMEC,NP1,NP2,I,NCMP,NNOS,ICHG,ICHN
+      INTEGER JTAB(7),IGAU,ISIG,DIMETE,LXLGUT,NNOM
       REAL*8 DEFGEP(21),DEFGEM(21)
       REAL*8 DFDX(27),DFDY(27),DFDZ(27),POIDS
-      REAL*8 DFDI(20,3),B(21,120),EPSM(162),EPSNO(162)
-      REAL*8 DRDE(21,21),DRDS(21,31),DSDE(31,21),R(21)
+      REAL*8 DFDX2(27),DFDY2(27),DFDZ2(27),POIDS2
+      REAL*8 DFDI(20,3),DFDI2(20,3),B(21,120),EPSM(162),EPSNO(162)
+      REAL*8 DRDS(22,31),DSDE(31,21),R(22)
+      CHARACTER*3 MODINT
       CHARACTER*8 TYPMOD(2)
 C =====================================================================
-      INTEGER NNOMAX,NVOMAX,NSOMAX
-      PARAMETER (NNOMAX=20,NVOMAX=4,NSOMAX=8)
-      INTEGER VOISIN(NVOMAX,NNOMAX)
-      INTEGER NBVOS(NSOMAX)
-      INTEGER     ISMAEM,LI,KP,J,L,K
-      REAL*8      R8BID,RHO,COEF,RX
+      INTEGER    ISMAEM,LI,KP,J,L,K
+      REAL*8      R8BID,RHO,COEF,RX,PG(31),SOMM(31)
       CHARACTER*2 CODRET
-      LOGICAL     AXI,P2P1,LUMPED
+      LOGICAL     AXI
 C =====================================================================
 C  CETTE ROUTINE FAIT UN CALCUL EN THHM , HM , HHM , THH
 C  21 = 9 DEF MECA + 4 POUR P1 + 4 POUR P2 + 4 POUR T
@@ -105,480 +106,321 @@ C   POUR L OPTION FORCNODA
 C  SI LES TEMPS PLUS ET MOINS SONT PRESENTS
 C  C EST QUE L ON APPELLE DEPUIS STAT NON LINE  : FNOEVO = VRAI
 C  ET ALORS LES TERMES DEPENDANT DE DT SONT EVALUES
-
 C  SI LES TEMPS PLUS ET MOINS NE SONT PAS PRESENTS
 C  C EST QUE L ON APPELLE DEPUIS CALCNO  : FNOEVO = FAUX
 C  ET ALORS LES TERMES DEPENDANT DE DT SONT PAS EVALUES
 C =====================================================================
+C AXI       AXISYMETRIQUE?
+C TYPMOD    MODELISATION (D_PLAN, AXI, 3D ?)
+C MODINT    METHODE D'INTEGRATION (CLASSIQUE,LUMPEE(D),REDUITE(R) ?)
+C NNO       NB DE NOEUDS DE L'ELEMENT
+C NNOS      NB DE NOEUDS SOMMETS DE L'ELEMENT
+C NNOM      NB DE NOEUDS MILIEUX DE L'ELEMENT
+C NDDLS     NB DE DDL SUR LES SOMMETS
+C NDDLM     NB DE DDL SUR LES MILIEUX
+C NPI       NB DE POINTS D'INTEGRATION DE L'ELEMENT
+C NPG       NB DE POINTS DE GAUSS     POUR CLASSIQUE(=NPI)
+C                 SOMMETS             POUR LUMPEE   (=NPI=NNOS)
+C                 POINTS DE GAUSS     POUR REDUITE  (<NPI)
+C NDIM      DIMENSION DE L'ESPACE
+C DIMUEL    NB DE DDL TOTAL DE L'ELEMENT
+C DIMCON    DIMENSION DES CONTRAINTES GENERALISEES ELEMENTAIRES
+C DIMDEF    DIMENSION DES DEFORMATIONS GENERALISEES ELEMENTAIRES
+C IVF       FONCTIONS DE FORMES QUADRATIQUES
+C IVF2      FONCTIONS DE FORMES LINEAIRES
+C =====================================================================
       LOGICAL FNOEVO
       REAL*8 DT
 C =====================================================================
-C  SUIVANT ELEMENT, DEFINITION DE CARACTERISTIQUES
+C --- SUIVANT ELEMENT, DEFINITION DES CARACTERISTIQUES : --------------
+C --- CHOIX DU TYPE D'INTEGRATION -------------------------------------
+C --- RECUPERATION DE LA GEOMETRIE ET POIDS DES POINTS D'INTEGRATION --
+C --- RECUPERATION DES FONCTIONS DE FORME -----------------------------
 C =====================================================================
-      CALL LUMTHM(NOMTE,LUMPED)
-      IF ( LUMPED ) THEN
-         CALL ELREF4(' ','NOEU_S',NDIM,NNO,NNOS,NPGU,IPOIDS,IVF,IDFDE,
-     &               JGANO)
-      ELSE
-         CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPGU,IPOIDS,IVF,IDFDE,
-     &               JGANO)
-      ENDIF
-      
-      CALL CAETHM(NOMTE,AXI,TYPMOD,NNOS,NNOMAX,NVOMAX,NSOMAX,VOISIN,
-     +                                                    NBVOS,P2P1)
-
-C SI MODELISATION = THHM
-
-      IF (NOMTE(1:4).EQ.'THHM') THEN
-        MECANI(1) = 1
-        PRESS1(1) = 1
-        PRESS2(1) = 1
-        TEMPE(1) = 1
-        PRESS1(2) = 2
-        PRESS2(2) = 1
-      END IF
-
-C SI MODELISATION = THH2M
-
-      IF (NOMTE(1:5).EQ.'THH2M') THEN
-        MECANI(1) = 1
-        PRESS1(1) = 1
-        PRESS2(1) = 1
-        TEMPE(1) = 1
-        PRESS1(2) = 2
-        PRESS2(2) = 2
-      END IF
-
-C SI MODELISATION = HM
-
-      IF (NOMTE(1:2).EQ.'HM') THEN
-        MECANI(1) = 1
-        PRESS1(1) = 1
-        PRESS2(1) = 0
-        TEMPE(1) = 0
-        PRESS1(2) = 1
-        PRESS2(2) = 0
-      END IF
-
-C SI MODELISATION = HHM
-C ON RESERVE DE LA PLACE POUR LES TROIS CONSTITUANTS. MAIS IL EST
-C POSSIBLE DE N'EN REMPLIR QUE DEUX EN LAISSANT LE DERNIER A ZERO
-
-      IF (NOMTE(1:3).EQ.'HHM') THEN
-        MECANI(1) = 1
-        PRESS1(1) = 1
-        PRESS2(1) = 1
-        TEMPE(1) = 0
-        PRESS1(2) = 2
-        PRESS2(2) = 1
-      END IF
-C SI MODELISATION = HHM
-C ON RESERVE DE LA PLACE POUR LES TROIS CONSTITUANTS. MAIS IL EST
-C POSSIBLE DE N'EN REMPLIR QUE DEUX EN LAISSANT LE DERNIER A ZERO
-
-      IF (NOMTE(1:4).EQ.'HH2M') THEN
-        MECANI(1) = 1
-        PRESS1(1) = 1
-        PRESS2(1) = 1
-        TEMPE(1) = 0
-        PRESS1(2) = 2
-        PRESS2(2) = 2
-      END IF
-
-C SI MODELISATION = THH
-
-      IF (NOMTE(1:4).EQ.'THH_') THEN
-        MECANI(1) = 0
-        PRESS1(1) = 1
-        PRESS2(1) = 1
-        TEMPE(1) = 1
-        PRESS1(2) = 2
-        PRESS2(2) = 1
-      END IF
-C SI MODELISATION = THH2
-
-      IF (NOMTE(1:5).EQ.'THH2_') THEN
-        MECANI(1) = 0
-        PRESS1(1) = 1
-        PRESS2(1) = 1
-        TEMPE(1) = 1
-        PRESS1(2) = 2
-        PRESS2(2) = 2
-      END IF
-C SI MODELISATION = THV
-
-      IF (NOMTE(1:4).EQ.'THV_') THEN
-        MECANI(1) = 0
-        PRESS1(1) = 1
-        PRESS2(1) = 0
-        TEMPE(1) = 1
-        PRESS1(2) = 2
-        PRESS2(2) = 0
-      END IF
-
-C SI MODELISATION = THM
-
-      IF (NOMTE(1:4).EQ.'THM_') THEN
-        MECANI(1) = 1
-        PRESS1(1) = 1
-        PRESS2(1) = 0
-        TEMPE(1) = 1
-        PRESS1(2) = 1
-        PRESS2(2) = 0
-      END IF
-
+      CALL CAETHM(NOMTE,AXI,TYPMOD,MODINT,MECANI,PRESS1,PRESS2,
+     +            TEMPE,DIMDEF,DIMCON,NMEC,NP1,NP2,NDIM,NNO,
+     +            NNOS,NNOM,NPI,NPG,NDDLS,NDDLM,DIMUEL,
+     +            IPOIDS,IVF,IDFDE,IPOID2,IVF2,IDFDE2,JGANO)
 C =====================================================================
-C   LES AUTRES VALEURS DES TABLEAUX MECA,PRESS1,PRESS2,TEMPE
-C   SE DEFINISSENT AUTOMATIQUEMENT :
+C --- DEBUT DES DIFFERENTES OPTIONS -----------------------------------
 C =====================================================================
-
-C NOMBRE DE DEFORMATIONS ET DE CONTRAINTES DE CHAQUE PROBLEME
-      IF (MECANI(1).EQ.1) THEN
-        MECANI(4) = NDIM + 6
-        MECANI(5) = 7
-        NMEC = NDIM
-      ELSE
-        MECANI(4) = 0
-        MECANI(5) = 0
-        NMEC = 0
-      END IF
-
-      IF (PRESS1(1).EQ.1) THEN
-        PRESS1(6) = 1 + NDIM
-        PRESS1(7) = 1 + NDIM
-        NP1 = 1
-        IF (TEMPE(1).EQ.1) PRESS1(7) = PRESS1(7) + 1
-      ELSE
-        PRESS1(6) = 0
-        PRESS1(7) = 0
-        NP1 = 0
-      END IF
-
-      IF (PRESS2(1).EQ.1) THEN
-        PRESS2(6) = 1 + NDIM
-        PRESS2(7) = 1 + NDIM
-        NP2 = 1
-        IF (TEMPE(1).EQ.1) PRESS2(7) = PRESS2(7) + 1
-      ELSE
-        PRESS2(6) = 0
-        PRESS2(7) = 0
-        NP2 = 0
-      END IF
-
-      IF (TEMPE(1).EQ.1) THEN
-        TEMPE(4) = 1 + NDIM
-        TEMPE(5) = 1 + NDIM
-        NT = 1
-      ELSE
-        TEMPE(4) = 0
-        TEMPE(5) = 0
-        NT = 0
-      END IF
-
-C NOMBRE DE DEGRES DE LIBERTE DE CHAQUE NOEUD
-
-      NDDL = NMEC + NP1 + NP2 + NT
-
-C ADRESSE DES DEFORMATIONS ET DES CONTRAINTES
-
-      IF (MECANI(1).EQ.1) THEN
-        MECANI(2) = 1
-        MECANI(3) = 1
-      ELSE
-        MECANI(2) = 0
-        MECANI(3) = 0
-      END IF
-
-      IF (PRESS1(1).EQ.1) THEN
-        PRESS1(3) = MECANI(4) + 1
-        PRESS1(4) = MECANI(5) + 1
-        IF (PRESS1(2).EQ.2) PRESS1(5) = PRESS1(4) + PRESS1(7)
-      END IF
-
-      IF (PRESS2(1).EQ.1) THEN
-        PRESS2(3) = PRESS1(3) + PRESS1(6)
-        PRESS2(4) = PRESS1(4) + PRESS1(2)*PRESS1(7)
-        IF (PRESS2(2).EQ.2) PRESS2(5) = PRESS2(4) + PRESS2(7)
-      END IF
-
-      IF (TEMPE(1).EQ.1) THEN
-        TEMPE(2) = MECANI(4) + PRESS1(6) + PRESS2(6) + 1
-        TEMPE(3) = MECANI(5) + PRESS1(2)*PRESS1(7) +
-     &             PRESS2(2)*PRESS2(7) + 1
-      END IF
-
-C AUTRES GRANDEURS A METTRE DANS ASSTHM
-
-      NDDL = MECANI(1)*NDIM + PRESS1(1) + PRESS2(1) + TEMPE(1)
-      DIMDEF = MECANI(4) + PRESS1(6) + PRESS2(6) + TEMPE(4)
-      DIMCON = MECANI(5) + PRESS1(2)*PRESS1(7) + PRESS2(2)*PRESS2(7) +
-     &         TEMPE(5)
-
+C --- OPTIONS : RIGI_MECA_TANG , FULL_MECA , RAPH_MECA ----------------
 C =====================================================================
-C  DEBUT DES DIFFERENTES OPTIONS
-C =====================================================================
-
-C  OPTIONS : RIGI_MECA_TANG , FULL_MECA , RAPH_MECA
-
-
       IF ((OPTION(1:9).EQ.'RIGI_MECA' ) .OR.
-     &    (OPTION(1:9).EQ.'RAPH_MECA' ) .OR.
-     &    (OPTION(1:9).EQ.'FULL_MECA' )) THEN
-
-C - PARAMETRES EN ENTREE
-
-        CALL JEVECH('PGEOMER','L',IGEOM)
-        CALL JEVECH('PMATERC','L',IMATE)
-        CALL JEVECH('PINSTMR','L',IINSTM)
-        CALL JEVECH('PINSTPR','L',IINSTP)
-        CALL JEVECH('PDEPLMR','L',IDEPLM)
-        CALL JEVECH('PDEPLPR','L',IDEPLP)
-        CALL JEVECH('PCOMPOR','L',ICOMPO)
-        CALL JEVECH('PCARCRI','L',ICARCR)
-        CALL JEVECH('PVARIMR','L',IVARIM)
-        CALL JEVECH('PCONTMR','L',ICONTM)
-        CALL JEVECH('PTEREF','L',ITREF)
-
-        READ (ZK16(ICOMPO-1+2),'(I16)') NBVARI
-
-C - PARAMETRES EN SORTIE
-
-        IF (OPTION(1:9).EQ.'RIGI_MECA' .OR.
-     &      OPTION(1:9).EQ.'FULL_MECA') THEN
-          CALL JEVECH('PMATUNS','E',IMATUU)
-        ELSE
-          IMATUU = ISMAEM()
-        END IF
-
-        IF (OPTION(1:9).EQ.'RAPH_MECA' .OR.
-     &      OPTION(1:9).EQ.'FULL_MECA') THEN
-          CALL JEVECH('PVECTUR','E',IVECTU)
-        ELSE
-          IVECTU = ISMAEM()
-        END IF
-
-        IF (OPTION(1:9).EQ.'RAPH_MECA' .OR.
-     &      OPTION(1:9).EQ.'FULL_MECA') THEN
-          CALL JEVECH('PCONTPR','E',ICONTP)
-          CALL JEVECH('PVARIPR','E',IVARIP)
-        ELSE
-          ICONTP = ISMAEM()
-          IVARIP = ISMAEM()
-        END IF
-
-        IF (OPTION(1:9).EQ.'RAPH_MECA' .OR.
-     &      OPTION(1:9).EQ.'FULL_MECA') THEN
-          CALL JEVECH('PCODRET','E',JCRET)
-          ZI(JCRET) = 0
-        END IF
-        RETLOI = 0
-
-        IF (OPTION(1:9).EQ.'RIGI_MECA') THEN
-          CALL ASSTHM(NNO,NNOS,NPGU,IPOIDS,IVF,IDFDE,
-     &                ZR(IGEOM),NOMTE,ZR(ICARCR),
-     &                ZR(ITREF),ZR(IDEPLM),ZR(IDEPLM),ZR(ICONTM),
-     &                ZR(ICONTM),ZR(IVARIM),ZR(IVARIM),DEFGEM,DEFGEP,
-     &                DRDS,DRDE,DSDE,B,DFDI,R,ZR(IMATUU),ZR(IVECTU),
-     &                ZR(IINSTM),ZR(IINSTP),OPTION,ZI(IMATE),MECANI,
-     &                PRESS1,PRESS2,TEMPE,DIMDEF,DIMCON,NBVARI,NDDL,
-     &                NMEC,NP1,NP2,NDIM,ZK16(ICOMPO),TYPMOD,AXI,NVOMAX,
-     &                NNOMAX,NSOMAX,NBVOS,VOISIN,P2P1,RETLOI)
-        ELSE
-          DO 30 LI = 1,NDDL*NNO
-            ZR(IDEPLP+LI-1) = ZR(IDEPLM+LI-1) + ZR(IDEPLP+LI-1)
-
-   30     CONTINUE
-
-          CALL ASSTHM(NNO,NNOS,NPGU,IPOIDS,IVF,IDFDE,
-     &                ZR(IGEOM),NOMTE,ZR(ICARCR),
-     &                ZR(ITREF),ZR(IDEPLM),ZR(IDEPLP),ZR(ICONTM),
-     &                ZR(ICONTP),ZR(IVARIM),ZR(IVARIP),DEFGEM,DEFGEP,
-     &                DRDS,DRDE,DSDE,B,DFDI,R,ZR(IMATUU),ZR(IVECTU),
-     &                ZR(IINSTM),ZR(IINSTP),OPTION,ZI(IMATE),MECANI,
-     &                PRESS1,PRESS2,TEMPE,DIMDEF,DIMCON,NBVARI,NDDL,
-     &                NMEC,NP1,NP2,NDIM,ZK16(ICOMPO),TYPMOD,AXI,NVOMAX,
-     &                NNOMAX,NSOMAX,NBVOS,VOISIN,P2P1,RETLOI)
-          IF (OPTION(1:9).EQ.'RAPH_MECA' .OR.
-     &        OPTION(1:9).EQ.'FULL_MECA') THEN
-            ZI(JCRET) = RETLOI
-          END IF
-
-
-        END IF
-      END IF
-
+     +    (OPTION(1:9).EQ.'RAPH_MECA' ) .OR.
+     +    (OPTION(1:9).EQ.'FULL_MECA' )) THEN
 C =====================================================================
-C   OPTION : 'CHAR_MECA_PESA_R '
+C --- PARAMETRES EN ENTREE --------------------------------------------
+C =====================================================================
+         CALL JEVECH('PGEOMER','L',IGEOM )
+         CALL JEVECH('PMATERC','L',IMATE )
+         CALL JEVECH('PINSTMR','L',IINSTM)
+         CALL JEVECH('PINSTPR','L',IINSTP)
+         CALL JEVECH('PDEPLMR','L',IDEPLM)
+         CALL JEVECH('PDEPLPR','L',IDEPLP)
+         CALL JEVECH('PCOMPOR','L',ICOMPO)
+         CALL JEVECH('PCARCRI','L',ICARCR)
+         CALL JEVECH('PVARIMR','L',IVARIM)
+         CALL JEVECH('PCONTMR','L',ICONTM)
+         CALL JEVECH('PTEREF', 'L',ITREF )
+
+         READ (ZK16(ICOMPO-1+2),'(I16)') NBVARI
+C =====================================================================
+C --- PARAMETRES EN SORTIE ISMAEM? ------------------------------------
+C =====================================================================
+         IF (OPTION(1:9).EQ.'RIGI_MECA' .OR.
+     +       OPTION(1:9).EQ.'FULL_MECA') THEN
+            CALL JEVECH('PMATUNS','E',IMATUU)
+         ELSE
+            IMATUU = ISMAEM()
+         END IF
+
+         IF (OPTION(1:9).EQ.'RAPH_MECA' .OR.
+     +       OPTION(1:9).EQ.'FULL_MECA') THEN
+            CALL JEVECH('PVECTUR','E',IVECTU)
+            CALL JEVECH('PCONTPR','E',ICONTP)
+            CALL JEVECH('PVARIPR','E',IVARIP)
+            CALL JEVECH('PCODRET','E',JCRET)
+            ZI(JCRET) = 0
+         ELSE
+            IVECTU = ISMAEM()
+            ICONTP = ISMAEM()
+            IVARIP = ISMAEM()
+         END IF
+
+         RETLOI = 0
+
+         IF (OPTION(1:9).EQ.'RIGI_MECA') THEN
+
+            CALL ASSTHM(NNO,NNOS,NNOM,NPG,NPI,IPOIDS,IPOID2,
+     +                IVF,IVF2,IDFDE, IDFDE2,
+     +                ZR(IGEOM),NOMTE,ZR(ICARCR),
+     +                ZR(ITREF),ZR(IDEPLM),ZR(IDEPLM),ZR(ICONTM),
+     +                ZR(ICONTM),ZR(IVARIM),ZR(IVARIM),DEFGEM,DEFGEP,
+     +                DRDS,DSDE,B,DFDI, DFDI2, R,ZR(IMATUU),ZR(IVECTU),
+     +                ZR(IINSTM),ZR(IINSTP),OPTION,ZI(IMATE),MECANI,
+     +                PRESS1,PRESS2,TEMPE,DIMDEF,DIMCON,DIMUEL, 
+     +                NBVARI,NDDLS,NDDLM,
+     +                NMEC,NP1,NP2,NDIM,ZK16(ICOMPO),TYPMOD,AXI,MODINT,
+     +                RETLOI)
+         ELSE
+            DO 30 LI = 1,DIMUEL
+               ZR(IDEPLP+LI-1) = ZR(IDEPLM+LI-1) + ZR(IDEPLP+LI-1)
+ 30         CONTINUE
+
+            CALL ASSTHM(NNO,NNOS,NNOM,NPG,NPI,IPOIDS,IPOID2,
+     +                IVF,IVF2,IDFDE, IDFDE2,
+     +                ZR(IGEOM),NOMTE,ZR(ICARCR),
+     +                ZR(ITREF),ZR(IDEPLM),ZR(IDEPLP),ZR(ICONTM),
+     +                ZR(ICONTP),ZR(IVARIM),ZR(IVARIP),DEFGEM,DEFGEP,
+     +                DRDS,DSDE,B,DFDI, DFDI2, R,ZR(IMATUU),ZR(IVECTU),
+     +                ZR(IINSTM),ZR(IINSTP),OPTION,ZI(IMATE),MECANI,
+     +                PRESS1,PRESS2,TEMPE,DIMDEF,DIMCON,DIMUEL, 
+     +                NBVARI,NDDLS,NDDLM,
+     +                NMEC,NP1,NP2,NDIM,ZK16(ICOMPO),TYPMOD,AXI,MODINT,
+     +                RETLOI)
+            ZI(JCRET) = RETLOI
+         END IF
+      END IF
+C =====================================================================
+C --- OPTION : CHAR_MECA_PESA_R ---------------------------------------
 C =====================================================================
       IF (OPTION.EQ.'CHAR_MECA_PESA_R') THEN
+         CALL JEVECH('PGEOMER','L',IGEOM)
+         CALL JEVECH('PMATERC','L',IMATE)
+         CALL JEVECH('PPESANR','L',IPESA)
+         CALL JEVECH('PVECTUR','E',IVECTU)
 
-        CALL JEVECH('PGEOMER','L',IGEOM)
-        CALL JEVECH('PMATERC','L',IMATE)
-        CALL JEVECH('PPESANR','L',IPESA)
-        CALL JEVECH('PVECTUR','E',IVECTU)
+         CALL RCCOMA(ZI(IMATE),'THM_DIFFU',PHENOM,CODRET)
+         CALL RCVALA(ZI(IMATE),' ',PHENOM,1,' ',R8BID,1,'RHO',RHO,
+     +                                                    CODRET,'FM')
+         IF (NDIM.EQ.3) THEN
+C =====================================================================
+C --- CAS 3D ----------------------------------------------------------
+C =====================================================================
+            DO 40 I = 1,DIMUEL
+               ZR(IVECTU+I-1) = 0.0D0
+ 40         CONTINUE
+C =====================================================================
+C --- BOUCLE SUR LES POINTS DE GAUSS ----------------------------------
+C =====================================================================
+            DO 70 KP = 1,NPG
+               L = (KP-1)*NNO
+               CALL DFDM3D ( NNO, KP, IPOIDS, IDFDE,
+     +                             ZR(IGEOM), DFDX, DFDY, DFDZ, POIDS )
+               COEF = RHO*POIDS*ZR(IPESA)
+               DO 60 I = 1,NNOS
+                  II = NDDLS* (I-1)
+                  DO 50 J = 1,3
+                     ZR(IVECTU+II+J-1) = ZR(IVECTU+II+J-1) +
+     +                                  COEF*ZR(IVF+L+I-1)*ZR(IPESA+J)
+ 50               CONTINUE
+ 60            CONTINUE
+               DO 65 I = 1,NNOM
+                  II = NNOS*NDDLS+NDDLM*(I-1)
+                  DO 55 J = 1,3
+                     ZR(IVECTU+II+J-1) = ZR(IVECTU+II+J-1) +
+     +                             COEF*ZR(IVF+L+I+NNOS-1)*ZR(IPESA+J)
+ 55               CONTINUE
+ 65            CONTINUE
+ 70         CONTINUE
+         ELSE
+C =====================================================================
+C --- CAS 2D ----------------------------------------------------------
+C =====================================================================
+            DO 110 KP = 1,NPG
+               K = (KP-1)*NNO
+               CALL DFDM2D(NNO,KP,IPOIDS,IDFDE,ZR(IGEOM),DFDX,DFDY,
+     +                                                           POIDS)
+               POIDS = POIDS*RHO*ZR(IPESA)
+               IF (TYPMOD(1).EQ.'AXIS    ') THEN
+                  RX = 0.D0
+                  DO 80 I = 1,NNO
+                     RX = RX + ZR(IGEOM+2*I-2)*ZR(IVF+K+I-1)
+ 80               CONTINUE
+                  POIDS = POIDS*RX
+                  DO 90 I = 1,NNOS
+                     K = (KP-1)*NNO
+                     ZR(IVECTU+NDDLS*(I-1)+1)=ZR(IVECTU+NDDLS*(I-1)+1)
+     +                                +POIDS*ZR(IPESA+2)*ZR(IVF+K+I-1)
+ 90               CONTINUE
+                  DO 95 I = 1,NNOM
+                     K = (KP-1)*NNO
+                     ZR(IVECTU+NDDLS*NNOS+NDDLM*(I-1)+1) = 
+     +               ZR(IVECTU+NDDLS*NNOS+NDDLM*(I-1)+1) +
+     +                            POIDS*ZR(IPESA+2)*ZR(IVF+K+I+NNOS-1)
+ 95               CONTINUE   
+               ELSE
 
-        CALL RCCOMA(ZI(IMATE),'THM_DIFFU',PHENOM,CODRET)
-        CALL RCVALA(ZI(IMATE),' ',PHENOM,1,' ',R8BID,1,'RHO',RHO,CODRET,
-     &              'FM')
-        IF (NDIM.EQ.3) THEN
-C  CAS 3D
-          DO 40 I = 1,NDDL*NNO
-            ZR(IVECTU+I-1) = 0.0D0
-   40     CONTINUE
-
-C    BOUCLE SUR LES POINTS DE GAUSS
-
-          DO 70 KP = 1,NPGU
-            L = (KP-1)*NNO
-            CALL DFDM3D ( NNO, KP, IPOIDS, IDFDE,
-     &                    ZR(IGEOM), DFDX, DFDY, DFDZ, POIDS )
-            COEF = RHO*POIDS*ZR(IPESA)
-            DO 60 I = 1,NNO
-              II = NDDL* (I-1)
-              DO 50 J = 1,3
-                ZR(IVECTU+II+J-1) = ZR(IVECTU+II+J-1) +
-     &                           COEF*ZR(IVF+L+I-1)*ZR(IPESA+J)
-   50         CONTINUE
-   60       CONTINUE
-   70     CONTINUE
-        ELSE
-C  CAS 2D
-          DO 110 KP = 1,NPGU
-            K = (KP-1)*NNO
-            CALL DFDM2D(NNO,KP,IPOIDS,IDFDE,ZR(IGEOM),DFDX,DFDY,
-     &                  POIDS)
-            POIDS = POIDS*RHO*ZR(IPESA)
-            IF (TYPMOD(1).EQ.'AXIS    ') THEN
-              RX = 0.D0
-              DO 80 I = 1,NNO
-                RX = RX + ZR(IGEOM+2*I-2)*ZR(IVF+K+I-1)
-   80         CONTINUE
-              POIDS = POIDS*RX
-              DO 90 I = 1,NNO
-                K = (KP-1)*NNO
-                ZR(IVECTU+NDDL* (I-1)+1) = ZR(IVECTU+NDDL* (I-1)+1) +
-     &                                     POIDS*ZR(IPESA+2)*
-     &                                     ZR(IVF+K+I-1)
-   90         CONTINUE
-            ELSE
-              DO 100 I = 1,NNO
-                K = (KP-1)*NNO
-                ZR(IVECTU+NDDL* (I-1)) = ZR(IVECTU+NDDL* (I-1)) +
-     &                                   POIDS*ZR(IPESA+1)*ZR(IVF+K+I-1)
-                ZR(IVECTU+NDDL* (I-1)+1) = ZR(IVECTU+NDDL* (I-1)+1) +
-     &                                     POIDS*ZR(IPESA+2)*
-     &                                     ZR(IVF+K+I-1)
-  100         CONTINUE
-            END IF
-  110     CONTINUE
-        END IF
-
-
+                  DO 100 I = 1,NNOS
+                     K = (KP-1)*NNO
+                     ZR(IVECTU+NDDLS*(I-1)) = ZR(IVECTU+NDDLS*(I-1))
+     +                                +POIDS*ZR(IPESA+1)*ZR(IVF+K+I-1)
+                     ZR(IVECTU+NDDLS*(I-1)+1)=ZR(IVECTU+NDDLS*(I-1)+1)
+     +                                +POIDS*ZR(IPESA+2)*ZR(IVF+K+I-1)
+ 100              CONTINUE
+                  DO 400 I = 1,NNOM
+                     K = (KP-1)*NNO
+                     ZR(IVECTU+NDDLS*NNOS+NDDLM*(I-1))=
+     +               ZR(IVECTU+NDDLS*NNOS+NDDLM*(I-1)) +
+     +                            POIDS*ZR(IPESA+1)*ZR(IVF+K+I+NNOS-1)
+                     ZR(IVECTU+NDDLS*NNOS+NDDLM*(I-1)+1)=
+     +               ZR(IVECTU+NDDLS*NNOS+NDDLM*(I-1)+1) +
+     +                            POIDS*ZR(IPESA+2)*ZR(IVF+K+I+NNOS-1)
+  400             CONTINUE
+               END IF
+  110       CONTINUE
+         END IF
       END IF
-
 C =====================================================================
-C  OPTION : CHAR_MECA_FR3D3D
+C --- OPTION : CHAR_MECA_FR3D3D----------------------------
 C =====================================================================
-
       IF (OPTION.EQ.'CHAR_MECA_FR3D3D') THEN
-        CALL JEVECH('PGEOMER','L',IGEOM)
-        CALL JEVECH('PVECTUR','E',IVECTU)
-        CALL JEVECH('PFR3D3D','L',IFORC)
+         CALL JEVECH('PGEOMER','L',IGEOM)
+         CALL JEVECH('PVECTUR','E',IVECTU)
+         CALL JEVECH('PFR3D3D','L',IFORC)
 
-        DO 120 I = 1,NDDL*NNO
-          ZR(IVECTU+I-1) = 0.0D0
-  120   CONTINUE
+         DO 120 I = 1,DIMUEL
+            ZR(IVECTU+I-1) = 0.0D0
+ 120     CONTINUE
+C ======================================================================
+C --- BOUCLE SUR LES POINTS DE GAUSS -----------------------------------
+C ======================================================================
+         DO 150 KP = 1,NPG
+            L = (KP-1)*NNO
+            CALL DFDM3D(NNO,KP,IPOIDS,IDFDE,ZR(IGEOM),DFDX,DFDY,DFDZ,
+     +                                                            POIDS)
 
-C    BOUCLE SUR LES POINTS DE GAUSS
-
-        DO 150 KP = 1,NPGU
-
-          L = (KP-1)*NNO
-          CALL DFDM3D ( NNO, KP, IPOIDS, IDFDE,
-     &                  ZR(IGEOM), DFDX, DFDY, DFDZ, POIDS )
-
-          DO 140 I = 1,NNO
-            II = NDDL* (I-1)
-            DO 130 J = 1,3
-              ZR(IVECTU+II+J-1) = ZR(IVECTU+II+J-1) +
-     &                            POIDS*ZR(IVF+L+I-1)*ZR(IFORC+J-1)
-  130       CONTINUE
-  140     CONTINUE
-  150   CONTINUE
-
+            DO 140 I = 1,NNOS
+               II = NDDLS* (I-1)
+               DO 130 J = 1,3
+                  ZR(IVECTU+II+J-1) = ZR(IVECTU+II+J-1) +
+     +                                 POIDS*ZR(IVF+L+I-1)*ZR(IFORC+J-1)
+ 130           CONTINUE
+ 140        CONTINUE
+             DO 145 I = 1,NNOM
+               II = NNOS*NDDLS+NDDLS*(I-1)
+               DO 135 J = 1,3
+                  ZR(IVECTU+II+J-1) = ZR(IVECTU+II+J-1) +
+     +                            POIDS*ZR(IVF+L+I+NNOS-1)*ZR(IFORC+J-1)
+ 135           CONTINUE
+ 145        CONTINUE
+ 150     CONTINUE
       END IF
-
-C***********************************************************************
-C  OPTION : CHAR_MECA_FR2D2D
-C***********************************************************************
-
+C ======================================================================
+C --- OPTION : CHAR_MECA_FR2D2D ----------------------------------------
+C ======================================================================
       IF (OPTION.EQ.'CHAR_MECA_FR2D2D') THEN
+         CALL JEVECH('PGEOMER','L',IGEOM)
+         CALL JEVECH('PFR2D2D','L',IFORC)
+         CALL JEVECH('PVECTUR','E',IVECTU)
 
-        CALL JEVECH('PGEOMER','L',IGEOM)
-        CALL JEVECH('PFR2D2D','L',IFORC)
-        CALL JEVECH('PVECTUR','E',IVECTU)
-
-        DO 180 KP = 1,NPGU
-          K = (KP-1)*NNO
-          CALL DFDM2D(NNO,KP,IPOIDS,IDFDE,ZR(IGEOM),DFDX,DFDY,
-     &                POIDS)
-          IF (TYPMOD(1).EQ.'AXIS    ') THEN
-            RX = 0.D0
-            DO 160 I = 1,NNO
-              RX = RX + ZR(IGEOM+2* (I-1))*ZR(IVF+K+I-1)
-  160       CONTINUE
-            POIDS = POIDS*RX
-          END IF
-          DO 170 I = 1,NNO
+         DO 180 KP = 1,NPG
             K = (KP-1)*NNO
-            L = (KP-1)*2
-            ZR(IVECTU+NDDL* (I-1)) = ZR(IVECTU+NDDL* (I-1)) +
-     &                               POIDS*ZR(IFORC+L)*ZR(IVF+K+I-1)
-            ZR(IVECTU+NDDL* (I-1)+1) = ZR(IVECTU+NDDL* (I-1)+1) +
-     &                                 POIDS*ZR(IFORC+L+1)*ZR(IVF+K+I-1)
-  170     CONTINUE
-  180   CONTINUE
+            CALL DFDM2D(NNO,KP,IPOIDS,IDFDE,ZR(IGEOM),DFDX,DFDY,POIDS)
+            IF (TYPMOD(1).EQ.'AXIS    ') THEN
+               RX = 0.D0
+               DO 160 I = 1,NNO
+                  RX = RX + ZR(IGEOM+2*(I-1))*ZR(IVF+K+I-1)
+ 160           CONTINUE
+               POIDS = POIDS*RX
+            END IF
+            DO 170 I = 1,NNOS
+               K = (KP-1)*NNO
+               L = (KP-1)*2
+               ZR(IVECTU+NDDLS*(I-1)) = ZR(IVECTU+NDDLS*(I-1)) +
+     +                                   POIDS*ZR(IFORC+L)*ZR(IVF+K+I-1)
+               ZR(IVECTU+NDDLS*(I-1)+1) = ZR(IVECTU+NDDLS*(I-1)+1) +
+     +                                 POIDS*ZR(IFORC+L+1)*ZR(IVF+K+I-1)
+ 170        CONTINUE
+            DO 171 I = 1,NNOM
+               K = (KP-1)*NNO
+               L = (KP-1)*2
+               ZR(IVECTU+NDDLS*NNOS+NDDLM*(I-1))=
+     +         ZR(IVECTU+NDDLS*NNOS+NDDLM*(I-1)) +
+     +                              POIDS*ZR(IFORC+L)*ZR(IVF+K+I+NNOS-1)
+               ZR(IVECTU+NDDLS*NNOS+NDDLM*(I-1)+1) =
+     +         ZR(IVECTU+NDDLS*NNOS+NDDLM*(I-1)+1) +
+     +                            POIDS*ZR(IFORC+L+1)*ZR(IVF+K+I+NNOS-1)
+ 171        CONTINUE 
+ 180     CONTINUE
       END IF
-
-C***********************************************************************
-C  OPTION : FORC_NODA
-C***********************************************************************
-
-
+C ======================================================================
+C --- OPTION : FORC_NODA -----------------------------------------------
+C ======================================================================
       IF (OPTION.EQ.'FORC_NODA') THEN
-
-
-C - PARAMETRES EN ENTREE
+C ======================================================================
+C --- PARAMETRES EN ENTREE ---------------------------------------------
+C ======================================================================
         CALL JEVECH('PGEOMER','L',IGEOM)
         CALL JEVECH('PCONTMR','L',ICONTM)
         CALL JEVECH('PMATERC','L',IMATE)
-
-C  SI LES TEMPS PLUS ET MOINS SONT PRESENTS
-C  C EST QUE L ON APPELLE DEPUIS STAT NON LINE ET
-C  ALORS LES TERMES DEPENDANT DE DT SONT EVALUES
-
+C ======================================================================
+C --- SI LES TEMPS PLUS ET MOINS SONT PRESENTS -------------------------
+C --- C EST QUE L ON APPELLE DEPUIS STAT NON LINE ET -------------------
+C --- ALORS LES TERMES DEPENDANT DE DT SONT EVALUES --------------------
+C ======================================================================
         CALL TECACH('ONN','PINSTMR ',1,IINSTM,IRETM)
         CALL TECACH('ONN','PINSTPR ',1,IINSTP,IRETP)
         IF (IRETM.EQ.0 .AND. IRETP.EQ.0) THEN
-          DT = ZR(IINSTP) - ZR(IINSTM)
-          FNOEVO = .TRUE.
+           DT = ZR(IINSTP) - ZR(IINSTM)
+           FNOEVO = .TRUE.
         ELSE
-          FNOEVO = .FALSE.
-          DT = 0.D0
-        END IF
-
-
-C - PARAMETRES EN SORTIE
+           FNOEVO = .FALSE.
+           DT = 0.D0
+        ENDIF
+C ======================================================================
+C --- PARAMETRES EN SORTIE ---------------------------------------------
+C ======================================================================
         CALL JEVECH('PVECTUR','E',IVECTU)
 
-
-        CALL FNOTHM(FNOEVO,DT,NNO,NNOS,NPGU,IPOIDS,IVF,IDFDE,
-     &              ZR(IGEOM),ZR(ICONTM),
-     &              B,DFDI,R,ZR(IVECTU),ZI(IMATE),MECANI,PRESS1,PRESS2,
-     &              TEMPE,DIMDEF,DIMCON,NDDL,NMEC,NP1,NP2,NDIM,
-     &              AXI,NVOMAX,NNOMAX,NSOMAX,NBVOS,VOISIN,P2P1)
+        CALL FNOTHM(FNOEVO,DT,NNO,NNOS,NNOM,NPI,
+     +              NPG,IPOIDS,IPOID2,IVF,IVF2,IDFDE,IDFDE2,
+     +              ZR(IGEOM),ZR(ICONTM),B,DFDI,DFDI2,
+     +              R,ZR(IVECTU),ZI(IMATE),MECANI,PRESS1,PRESS2,
+     +              TEMPE,DIMDEF,DIMCON,NDDLS,NDDLM,DIMUEL,
+     +              NMEC,NP1,NP2,NDIM,AXI)
       END IF
-
 C ======================================================================
 C --- OPTION : REFE_FORC_NODA ------------------------------------------
 C ======================================================================
@@ -607,36 +449,41 @@ C ======================================================================
 C ======================================================================
 C --- APPEL A LA ROUTINE SUR LES CRITERES DE CONVERGENCE ---------------
 C ======================================================================
-        CALL REFTHM(FNOEVO,DT,NNO,NNOS,NPGU,IPOIDS,IVF,IDFDE,ZR(IGEOM),
-     &              B,DFDI,R,ZR(IVECTU),ZI(IMATE),MECANI,PRESS1,PRESS2,
-     &              TEMPE,DIMDEF,DIMCON,NDDL,NMEC,NP1,NP2,NDIM,AXI,
-     &              NVOMAX,NNOMAX,NSOMAX,NBVOS,VOISIN,P2P1,ZR(ICONTM))
+        CALL REFTHM(FNOEVO,DT,NNO,NNOS,NNOM,NPI,NPG,
+     &              IPOIDS,IPOID2,IVF,IVF2,IDFDE,IDFDE2,ZR(IGEOM),
+     &              B,DFDI,DFDI2,R,ZR(IVECTU),ZI(IMATE),MECANI,
+     &              PRESS1,PRESS2,TEMPE,DIMDEF,DIMCON,DIMUEL,
+     &              NDDLS,NDDLM,NMEC,NP1,NP2,NDIM,AXI,
+     &              ZR(ICONTM))
       END IF
-C***********************************************************************
-
-C  OPTION : SIEF_ELNO_ELGA ET VARI_ELNO_ELGA
-
-C***********************************************************************
-
-      IF ((OPTION.EQ.'SIEF_ELNO_ELGA') .OR.
-     &    (OPTION.EQ.'VARI_ELNO_ELGA')) THEN
-        NCMP = DIMCON
-
-        IF (OPTION.EQ.'SIEF_ELNO_ELGA  ') THEN
-          CALL JEVECH('PCONTRR','L',ICHG)
-          CALL JEVECH('PSIEFNOR','E',ICHN)
-        END IF
-        IF (OPTION.EQ.'VARI_ELNO_ELGA  ') THEN
-          CALL JEVECH('PVARIGR','L',ICHG)
-          CALL JEVECH('PCOMPOR','L',ICOMPO)
-          CALL JEVECH('PVARINR','E',ICHN)
-          READ (ZK16(ICOMPO+1),'(I16)') NCMP
-          CALL TECACH('OON','PVARIGR',7,JTAB,IRET)
-        END IF
-
-        CALL PPGAN2(JGANO,NCMP,ZR(ICHG),ZR(ICHN))
+C ======================================================================
+C --- OPTION : SIEF_ELNO_ELGA ------------------------------------------
+C ======================================================================
+      IF (OPTION.EQ.'SIEF_ELNO_ELGA  ') THEN
+         NCMP = DIMCON
+         CALL JEVECH('PCONTRR', 'L',ICHG)
+         CALL JEVECH('PSIEFNOR','E',ICHN)
+         
+         NVIM = MECANI(5)
+         CALL POSTHM(OPTION,MODINT,JGANO,NCMP,NVIM,ZR(ICHG),ZR(ICHN))
+      ENDIF
+C ======================================================================
+C --- OPTION : VARI_ELNO_ELGA ------------------------------------------
+C ======================================================================
+      IF (OPTION.EQ.'VARI_ELNO_ELGA  ') THEN
+         CALL JEVECH('PVARIGR','L',ICHG)
+         CALL JEVECH('PVARINR','E',ICHN)
+         
+         CALL JEVECH('PCOMPOR','L',ICOMPO)
+         READ (ZK16(ICOMPO+1),'(I16)') NCMP
+         READ (ZK16(ICOMPO-1+7+9+4),'(I16)') NVIM
+         CALL TECACH('OON','PVARIGR',7,JTAB,IRET)
+         
+         CALL POSTHM(OPTION,MODINT,JGANO,NCMP,NVIM,ZR(ICHG),ZR(ICHN))
       END IF
-      
+C ======================================================================
+C --- OPTION : EPSI_ELGA_DEPL OU EPSI_ELNO_DEPL ------------------------
+C ======================================================================
       IF ((OPTION.EQ.'EPSI_ELGA_DEPL') .OR.
      &    (OPTION.EQ.'EPSI_ELNO_DEPL')) THEN
      
@@ -644,13 +491,13 @@ C***********************************************************************
          CALL JEVECH('PDEPLAR','L',IDEPLA)
          CALL JEVECH('PDEFORR','E',IDEFO)
 
-         CALL EPSTHM(NDDL,NNO,NNOS,DIMDEF,NDIM,NPGU,IPOIDS,IVF,IDFDE,
+         CALL EPSTHM(NDDLS,NDDLM,NNO,NNOS,NNOM,DIMDEF,DIMUEL,
+     &               NDIM,NPI,IPOIDS,IPOID2,IVF,IVF2,IDFDE,IDFDE2,
      &               ZR(IGEOM),ZR(IDEPLA),NMEC,MECANI,PRESS1,PRESS2,
-     &               TEMPE,NP1,NP2,AXI,NVOMAX,NNOMAX,NSOMAX,NBVOS,
-     &               VOISIN,P2P1,EPSM)
-     
+     &               TEMPE,NP1,NP2,AXI,EPSM)
+
          IF (OPTION(6:9).EQ.'ELGA') THEN
-            DO 200 IGAU = 1,NPGU
+            DO 200 IGAU = 1,NPI
                DO 210 ISIG = 1,6
                   ZR(IDEFO+6*(IGAU-1)+ISIG-1) = EPSM(6*(IGAU-1)+ISIG)
   210          CONTINUE
@@ -662,10 +509,9 @@ C***********************************************************************
                   ZR(IDEFO+6*(INO-1)+ISIG-1) = EPSNO(6*(INO-1)+ISIG)
   310          CONTINUE
   300       CONTINUE
-         
          ELSE
             CALL ASSERT(.FALSE.)
          ENDIF
       ENDIF
-            
+C ======================================================================
       END

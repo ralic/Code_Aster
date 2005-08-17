@@ -1,13 +1,12 @@
-      SUBROUTINE  FNOTHM(FNOEVO,DT,
-     >                   NNO, NNOS, NPG, IPOIDS, IVF, IDFDE,
-     &                   GEOM,CONGEM,B,DFDI,R,VECTU,IMATE,MECANI,
-     &                   PRESS1,PRESS2,TEMPE,DIMDEF,DIMCON,NDDL,
-     &                   NMEC,NP1,NP2,NDIM,AXI,
-     >                   NVOMAX,NNOMAX,NSOMAX,NBVOS,VOISIN,P2P1)
-
-
+      SUBROUTINE  FNOTHM(FNOEVO,DT,NNO,NNOS,NNOM,NPI,NPG,IPOIDS,
+     +                   IPOID2,IVF,IVF2,IDFDE,IDFDE2,GEOM,CONGEM,B,
+     +                   DFDI,DFDI2,R,VECTU,IMATE,MECANI,PRESS1,PRESS2,
+     +                   TEMPE,DIMDEF,DIMCON,NDDLS,NDDLM,DIMUEL,
+     +                   NMEC,NP1,NP2,NDIM,AXI)
+C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
+C ======================================================================
+C MODIF ALGORITH  DATE 16/08/2005   AUTEUR ROMEO R.FERNANDES 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -27,27 +26,19 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_20
 C TOLE CRP_21
-       IMPLICIT NONE
-C
-       LOGICAL      FNOEVO
-       REAL*8       DT
-       INTEGER      NNO,NNOS,NPG,IMATE,DIMDEF,DIMCON
-       INTEGER      NDDL,NMEC,NP1,NP2,NDIM,IPOIDS, IVF, IDFDE
-       REAL*8       DFDI(NNO,3),GEOM(NDIM,NNO),POIDS
-       REAL*8       CONGEM(1:NPG*DIMCON)
-       REAL*8       VECTU(NDDL,NNO)
-       REAL*8       B(DIMDEF,NDDL*NNO)
-       REAL*8       R(1:DIMDEF)  
-       INTEGER      MECANI(5),PRESS1(7),PRESS2(7),TEMPE(5)
-       INTEGER      YAMEC,YAP1,YAP2,YATE,ADCOME,NBPHA1,ADCP11
-       INTEGER      ADCP12,NBPHA2,ADCP21,ADCP22,ADCOTE 
-       INTEGER      ADDEME,ADDEP1,ADDEP2,ADDETE  
-       LOGICAL AXI,P2P1
-       INTEGER NVOMAX,NNOMAX,NSOMAX
-       INTEGER VOISIN(NVOMAX,NNOMAX)
-       INTEGER NBVOS(NSOMAX)
-C.......................................................................
-C
+C ======================================================================
+       IMPLICIT     NONE
+       LOGICAL      FNOEVO,AXI
+       INTEGER      NNO,NNOS,NPG,IMATE,DIMDEF,DIMCON,NDDLS,NDDLM,NNOM
+       INTEGER      DIMUEL,NMEC,NP1,NP2,NDIM,IPOIDS,IPOID2,IVF,IVF2
+       INTEGER      IDFDE,IDFDE2,NPI,MECANI(5),PRESS1(7),PRESS2(7)
+       INTEGER      TEMPE(5),YAMEC,YAP1,YAP2,YATE,ADCOME,NBPHA1,ADCP11
+       INTEGER      ADCP12,NBPHA2,ADCP21,ADCP22,ADCOTE,ADDEME,ADDEP1
+       INTEGER      ADDEP2,ADDETE
+       REAL*8       DT,DFDI(NNO,3),DFDI2(NNOS,3),GEOM(NDIM,NNO)
+       REAL*8       CONGEM(1:NPI*DIMCON),POIDS,POIDS2
+       REAL*8       VECTU(DIMUEL),B(DIMDEF,DIMUEL),R(1:DIMDEF+1)  
+C ======================================================================
 C     BUT:  CALCUL  DE L'OPTION FORC_NODA EN MECANIQUE
 C           DES MILIEUX POREUX AVEC COUPLAGE THM 
 C  
@@ -58,60 +49,54 @@ C
 C  SI  FNOEVO = FAUX
 C  C EST QUE L ON APPELLE DEPUIS CALCNO  :
 C  ET ALORS LES TERMES DEPENDANT DE DT SONT PAS EVALUES
-C
-C
-C.......................................................................
-C IN  NNO     : NOMBRE DE NOEUDS DE L'ELEMENT
-C IN  NNOS    : NOMBRE DE NOEUDS SOMMET DE L'ELEMENT
-C IN  NPG     : NOMBRE DE POINTS DE GAUSS
-C IN  IPOIDS  : POIDS DES POINTS DE GAUSS
-C IN  IVF     : VALEUR  DES FONCTIONS DE FORME
-C IN  IDFDE   : DERIVEE DES FONCTIONS DE FORME ELEMENT DE REFERENCE
-C IN  GEOM    : COORDONEES DES NOEUDS
-C IN  IMATE   : MATERIAU CODE
-C IN  CONGEM  : TABLEAU DES CONTRAINTES GENERALISEES AU POINT DE  
-C               GAUSS AU TEMPS MOINS (VIENT D ETRE CALCULE)
-C IN  AXI     : VRAI SI ELEMENT APPELANT AXI
-C IN  P2P1   : VRAI SI ELEMENT APPELANT P2P1
-C IN VOISIN
-C  POUR UN SOMMET J DE 1 A NNOS : 
-C         VOISIN(1:NDIM,J) =  LES NDIM NOEUDS MILIEUX VOSIN DU SOMMMET
-C
-C
-C  POUR UN MILIEU J DE 1 A NNOS +1 A NNO: 
-C         VOISIN(1:2,J) =  LES 2 NOEUDS DU SEGMENT DONT IL EST LE MILIEU
-C
-C
+C ======================================================================
+C IN
+C ======================================================================
+C AXI       AXISYMETRIQUE?
+C TYPMOD    MODELISATION (D_PLAN, AXI, 3D ?)
+C MODINT    METHODE D'INTEGRATION (CLASSIQUE,LUMPEE(D),REDUITE(R) ?)
+C NNO       NB DE NOEUDS DE L'ELEMENT
+C NNOS      NB DE NOEUDS SOMMETS DE L'ELEMENT
+C NNOM      NB DE NOEUDS MILIEUX DE L'ELEMENT
+C NDDLS     NB DE DDL SUR LES SOMMETS
+C NDDLM     NB DE DDL SUR LES MILIEUX
+C NPI       NB DE POINTS D'INTEGRATION DE L'ELEMENT
+C NPG       NB DE POINTS DE GAUSS     POUR CLASSIQUE(=NPI)
+C                 SOMMETS             POUR LUMPEE   (=NPI=NNOS)
+C                 POINTS DE GAUSS     POUR REDUITE  (<NPI)
+C NDIM      DIMENSION DE L'ESPACE
+C DIMUEL    NB DE DDL TOTAL DE L'ELEMENT
+C DIMCON    DIMENSION DES CONTRAINTES GENERALISEES ELEMENTAIRES
+C DIMDEF    DIMENSION DES DEFORMATIONS GENERALISEES ELEMENTAIRES
+C IVF       FONCTIONS DE FORMES QUADRATIQUES
+C IVF2      FONCTIONS DE FORMES LINEAIRES
+C ======================================================================
+C OUT
+C ======================================================================
 C OUT DFDI    : DERIVEE DES FCT FORME
 C OUT R       : TABLEAU DES RESIDUS
 C OUT VECTU   : FORCES NODALES
-C......................................................................
-C
-      INTEGER KPG,I,J,N,K
-      REAL*8 DEUX,RAC2
-      PARAMETER(DEUX = 2.D0)
-C
-      INTEGER         NHOM
-      PARAMETER     ( NHOM=3)
-      REAL*8          HOM(NHOM) 
-      REAL*8          PESA(3)
-      CHARACTER*2     CODRET(NHOM)
-      CHARACTER*8     NCRA5(NHOM)
-      DATA NCRA5 / 'PESA_X','PESA_Y','PESA_Z' /  
-C 
+C ======================================================================
+      INTEGER      KPI,I,J,N,K,NHOM
+      PARAMETER   (NHOM=3)
+      REAL*8       DEUX,RAC2,HOM(NHOM),PESA(3)
+      PARAMETER   (DEUX = 2.D0)
+      CHARACTER*2  CODRET(NHOM)
+      CHARACTER*8  NCRA5(NHOM)
+      DATA NCRA5 / 'PESA_X','PESA_Y','PESA_Z' /
+C ======================================================================
       RAC2 = SQRT(DEUX)
-C
-C
-C  RECUPERATION DE LA PESANTEUR DANS DEFIMATERIAU 
-C
+C ======================================================================
+C --- RECUPERATION DE LA PESANTEUR DANS DEFI_MATERIAU ------------------
+C ======================================================================
        CALL RCVALA(IMATE,' ','THM_DIFFU',0,' ',0.D0,
-     &            NHOM,NCRA5,HOM,CODRET,'FM') 
+     +                                       NHOM,NCRA5,HOM,CODRET,'FM')
        PESA(1)=HOM(1)
        PESA(2)=HOM(2)
        PESA(3)=HOM(3)
-C
-C  DETERMINATION DES VARIABLES CARACTERISANT LE MILIEU
-C      
+C ======================================================================
+C --- DETERMINATION DES VARIABLES CARACTERISANT LE MILIEU --------------
+C ======================================================================
       YAMEC  = MECANI(1)
       ADDEME = MECANI(2)
       ADCOME = MECANI(3)
@@ -128,194 +113,182 @@ C
       YATE   = TEMPE(1)
       ADDETE = TEMPE(2)
       ADCOTE = TEMPE(3)
-C
-C **********************************************************************
-C  INITIALISATION DE VECTU
-C **********************************************************************
-C
-      DO 1 I=1,NDDL
-         DO 2 J=1,NNO
-            VECTU(I,J)=0.D0
- 2       CONTINUE
+C ======================================================================
+C --- INITIALISATION DE VECTU ------------------------------------------
+C ======================================================================
+      DO 1 I=1,DIMUEL
+         VECTU(I)=0.D0
  1    CONTINUE
-      
-C
-C **********************************************************************
-C     CALCUL POUR CHAQUE POINT DE GAUSS : BOUCLE SUR KPG
-C
-      DO 10 KPG=1,NPG
-      
-C        CALCUL DE LA MATRICE B AU POINT DE GAUSS
-C
-         CALL CABTHM(NDDL,NNO,NNOS,
-     >               DIMDEF,NDIM,NPG,KPG,IPOIDS,IVF,IDFDE,
-     &               DFDI,GEOM,POIDS,B,NMEC,YAMEC,ADDEME,YAP1,
-     &               ADDEP1,YAP2,ADDEP2,YATE,ADDETE,NP1,NP2,AXI,
-     >               NVOMAX,NNOMAX,NSOMAX,NBVOS,VOISIN,P2P1)
-
-            
-C
-C   COMME CONGEM CONTIENT LES VRAIES CONTRAINTES ET
-C   COMME PAR LA SUITE ON TRAVAILLE AVEC SQRT(2)*SXY
-C   ON COMMENCE PAR MODIFIER LES CONGEM EN CONSEQUENCE    
-C
-      IF(YAMEC.EQ.1) THEN
-       DO 100 I = 4 , 6
-        CONGEM((KPG-1)*DIMCON+ADCOME+I-1)= 
-     >  CONGEM((KPG-1)*DIMCON+ADCOME+I-1)*RAC2
-  100  CONTINUE
-      ENDIF
-
-C
-C **********************************************************************
-C  INITIALISATION DE R
-C **********************************************************************
-C
-      DO 22 I=1,DIMDEF
-        R(I)=0.D0
-  22  CONTINUE
-C
-C **********************************************************************
-C    CALCUL DU RESIDU R : 
-C **********************************************************************
-C
-      IF(YAMEC.EQ.1) THEN
-C
-C        CONTRIBUTIONS A R2 INDEPENDANTE DE YAP1 , YAP2 ET YATE
-C        CONTRAINTES SIGPRIMPLUS PAGE 33 
-          DO 6 I=1,6
-            R(ADDEME+NDIM+I-1)= R(ADDEME+NDIM+I-1)
-     >      +CONGEM((KPG-1)*DIMCON+ADCOME-1+I)
-  6       CONTINUE
-
-C         SCALAIRE SIGPPLUS MULTIPLIE PAR LE TENSEUR UNITE PAGE 33 
-          DO 7 I=1,3
-            R(ADDEME+NDIM-1+I)=R(ADDEME+NDIM-1+I)+
-     >                         CONGEM((KPG-1)*DIMCON+ADCOME+6)
-  7       CONTINUE
-
-C         CONTRIBUTIONS A R1 DEPENDANTES DE YAP1 
-          IF(YAP1.EQ.1) THEN
-C           CONTRIBUTION A R1 DEPENDANTE DE YAP1
-            DO 8 I=1,NDIM
-              R(ADDEME+I-1)=R(ADDEME+I-1)
-     &        - PESA(I)*CONGEM((KPG-1)*DIMCON+ADCP11)
-  8         CONTINUE
-
-            IF(NBPHA1.GT.1) THEN
-C           CONTRIBUTION A R1 DEPENDANTE DE YAP1 ET NBPHA1
-              DO 9 I=1,NDIM
-                R(ADDEME+I-1)=R(ADDEME+I-1)
-     &          - PESA(I)*CONGEM((KPG-1)*DIMCON+ADCP12)
-   9          CONTINUE
+C ======================================================================
+C --- CALCUL POUR CHAQUE POINT DE GAUSS : BOUCLE SUR KPG ---------------
+C ======================================================================
+      DO 10 KPI=1,NPG
+C ======================================================================
+C --- CALCUL DE LA MATRICE B AU POINT DE GAUSS -------------------------
+C ======================================================================
+         CALL CABTHM(NDDLS,NDDLM,NNO,NNOS,NNOM,DIMUEL,
+     +               DIMDEF,NDIM,NPI,KPI,IPOIDS,IPOID2,IVF,IVF2,
+     +               IDFDE,IDFDE2,DFDI,DFDI2,
+     +               GEOM,POIDS,POIDS2,B,NMEC,YAMEC,ADDEME,YAP1,
+     +               ADDEP1,YAP2,ADDEP2,YATE,ADDETE,NP1,NP2,AXI)
+C ======================================================================
+C --- COMME CONGEM CONTIENT LES VRAIES CONTRAINTES ET ------------------
+C --- COMME PAR LA SUITE ON TRAVAILLE AVEC SQRT(2)*SXY -----------------
+C --- ON COMMENCE PAR MODIFIER LES CONGEM EN CONSEQUENCE ---------------
+C ======================================================================
+         IF(YAMEC.EQ.1) THEN
+            DO 100 I = 4 , 6
+               CONGEM((KPI-1)*DIMCON+ADCOME+I-1)= 
+     +                           CONGEM((KPI-1)*DIMCON+ADCOME+I-1)*RAC2
+ 100        CONTINUE
+         ENDIF
+C ======================================================================
+C --- INITIALISATION DE R ----------------------------------------------
+C ======================================================================
+         DO 22 I=1,DIMDEF+1
+            R(I)=0.D0
+ 22      CONTINUE
+C ======================================================================
+C --- CALCUL DU RESIDU R -----------------------------------------------
+C ======================================================================
+         IF(YAMEC.EQ.1) THEN
+C ======================================================================
+C --- CONTRIBUTIONS A R2 INDEPENDANTE DE YAP1, YAP2 ET YATE ------------
+C --- CONTRAINTES SIGPRIMPLUS PAGE 33 ----------------------------------
+C ======================================================================
+            DO 6 I=1,6
+               R(ADDEME+NDIM+I-1)= R(ADDEME+NDIM+I-1)
+     +                                +CONGEM((KPI-1)*DIMCON+ADCOME-1+I)
+ 6          CONTINUE
+C ======================================================================
+C --- SCALAIRE SIGPPLUS MULTIPLIE PAR LE TENSEUR UNITE -----------------
+C ======================================================================
+            DO 7 I=1,3
+               R(ADDEME+NDIM-1+I)=R(ADDEME+NDIM-1+I)+
+     +                                   CONGEM((KPI-1)*DIMCON+ADCOME+6)
+ 7          CONTINUE
+C ======================================================================
+C --- CONTRIBUTION A R DEPENDANTE DE YAP1 ------------------------------
+C ======================================================================
+            IF(YAP1.EQ.1) THEN
+               DO 8 I=1,NDIM
+                  R(ADDEME+I-1)=R(ADDEME+I-1)
+     +                           - PESA(I)*CONGEM((KPI-1)*DIMCON+ADCP11)
+ 8             CONTINUE
+               IF(NBPHA1.GT.1) THEN
+                  DO 9 I=1,NDIM
+                     R(ADDEME+I-1)=R(ADDEME+I-1)
+     +                           - PESA(I)*CONGEM((KPI-1)*DIMCON+ADCP12)
+ 9                CONTINUE
+               ENDIF
             ENDIF
-          ENDIF
+C ======================================================================
+C --- CONTRIBUTIONS A R DEPENDANTE DE YAP2 -----------------------------
+C ======================================================================
+            IF(YAP2.EQ.1) THEN
+               DO 11 I=1,NDIM
+                  R(ADDEME+I-1)=R(ADDEME+I-1)
+     +                           - PESA(I)*CONGEM((KPI-1)*DIMCON+ADCP21)
+ 11            CONTINUE
+               IF(NBPHA2.GT.1) THEN
+                  DO 12 I=1,NDIM
+                     R(ADDEME+I-1)=R(ADDEME+I-1)
+     +                           - PESA(I)*CONGEM((KPI-1)*DIMCON+ADCP22)
+ 12               CONTINUE
+               ENDIF
+            ENDIF
+         ENDIF
+C ======================================================================
+         IF(FNOEVO) THEN
+C ======================================================================
+C --- TERMES DEPENDANT DE DT DANS FORC_NODA POUR STAT_NON_LINE ---------
+C ======================================================================
+            IF(YAP1.EQ.1) THEN
 
-C         CONTRIBUTIONS A R1 DEPENDANTES DE YAP2 
-          IF(YAP2.EQ.1) THEN
-C            CONTRIBUTION A R1 DEPENDANTE DE YAP1
-            DO 11 I=1,NDIM
-              R(ADDEME+I-1)=R(ADDEME+I-1)
-     &        - PESA(I)*CONGEM((KPG-1)*DIMCON+ADCP21)
-   11        CONTINUE
+               DO 112 I=1,NDIM
+                  R(ADDEP1+I)=R(ADDEP1+I)+DT*CONGEM(ADCP11+I)
+ 112           CONTINUE
+ 
+               IF(NBPHA1.GT.1) THEN
+                  DO 13 I=1,NDIM
+                     R(ADDEP1+I)=R(ADDEP1+I)+DT*CONGEM(ADCP12+I)
+ 13               CONTINUE
+               ENDIF
 
-            IF(NBPHA2.GT.1) THEN
-C           CONTRIBUTION A R1 DEPENDANTE DE YAP2 ET NBPHA2
-              DO 12 I=1,NDIM
-                R(ADDEME+I-1)=R(ADDEME+I-1)
-     &          - PESA(I)*CONGEM((KPG-1)*DIMCON+ADCP22)
-  12          CONTINUE
-            ENDIF
-          ENDIF
-      ENDIF
-C
-        IF(FNOEVO) THEN
-C
-C  TERMES DEPENDANT  DE DT DANS FORC NODA POUR STAT NONLINE
-C
-        IF(YAP1.EQ.1) THEN
-          DO 112 I=1,NDIM
-            R(ADDEP1+I)=R(ADDEP1+I)+DT*CONGEM(ADCP11+I)
- 112      CONTINUE
-          IF(NBPHA1.GT.1) THEN
-            DO 13 I=1,NDIM
-              R(ADDEP1+I)=R(ADDEP1+I)+DT*CONGEM(ADCP12+I)
-  13        CONTINUE
-          ENDIF
-          IF(YATE.EQ.1) THEN
-            DO 14 I=1,NDIM
-              R(ADDETE)=R(ADDETE)+DT*CONGEM(ADCP11+I)*PESA(I)
-  14        CONTINUE
-            IF(NBPHA1.GT.1) THEN
-              DO 15 I=1,NDIM
-                R(ADDETE)=R(ADDETE) +DT*CONGEM(ADCP12+I)*PESA(I)
-  15          CONTINUE
-            ENDIF
-            DO 16 I=1,NDIM
-              R(ADDETE+I)=R(ADDETE+I)+
-     >                   DT*CONGEM(ADCP11+NDIM+1)*CONGEM(ADCP11+I)
-  16        CONTINUE
-            IF(NBPHA1.GT.1) THEN
-              DO 17 I=1,NDIM
-                R(ADDETE+I)=R(ADDETE+I)+
-     >                   DT*CONGEM(ADCP12+NDIM+1)*CONGEM(ADCP12+I)
-  17          CONTINUE
-            ENDIF
-          ENDIF
-        ENDIF
-C
-        IF(YAP2.EQ.1) THEN
-          DO 18 I=1,NDIM
-            R(ADDEP2+I)=R(ADDEP2+I)+DT*CONGEM(ADCP21+I)
-  18      CONTINUE
-          IF(NBPHA2.GT.1) THEN
-            DO 19 I=1,NDIM
-              R(ADDEP2+I)=R(ADDEP2+I)+DT*CONGEM(ADCP22+I)
-  19        CONTINUE
-          ENDIF
-C
-          IF(YATE.EQ.1) THEN
-            DO 20 I=1,NDIM
-              R(ADDETE)=R(ADDETE)+DT*CONGEM(ADCP21+I)*PESA(I)
-  20        CONTINUE
-            IF(NBPHA2.GT.1) THEN
-              DO 21 I=1,NDIM
-                R(ADDETE)=R(ADDETE)+DT*CONGEM(ADCP22+I)*PESA(I)
-  21          CONTINUE
-            ENDIF
-            DO 122 I=1,NDIM
-              R(ADDETE+I)=R(ADDETE+I)+
-     >         DT*CONGEM(ADCP21+NDIM+1)*CONGEM(ADCP21+I)
- 122        CONTINUE
-            IF(NBPHA2.GT.1) THEN
-              DO 23 I=1,NDIM
-                R(ADDETE+I)=R(ADDETE+I)+
-     >           DT*CONGEM(ADCP22+NDIM+1)*CONGEM(ADCP22+I)
-  23          CONTINUE
-            ENDIF
-          ENDIF
-        ENDIF
-C
-        IF(YATE.EQ.1) THEN
-          DO 24 I=1,NDIM
-            R(ADDETE+I)=R(ADDETE+I)+DT*CONGEM(ADCOTE+I)
-  24      CONTINUE
-        ENDIF
-      ENDIF
+               IF(YATE.EQ.1) THEN
 
-        
+                  DO 14 I=1,NDIM
+                     R(ADDETE)=R(ADDETE)+DT*CONGEM(ADCP11+I)*PESA(I)
+ 14               CONTINUE
+ 
+                  IF(NBPHA1.GT.1) THEN
+                     DO 15 I=1,NDIM
+                        R(ADDETE)=R(ADDETE) +DT*CONGEM(ADCP12+I)*PESA(I)
+ 15                  CONTINUE
+                  ENDIF
+
+                  DO 16 I=1,NDIM
+                     R(ADDETE+I)=R(ADDETE+I)+
+     +                         DT*CONGEM(ADCP11+NDIM+1)*CONGEM(ADCP11+I)
+ 16               CONTINUE
+ 
+                  IF(NBPHA1.GT.1) THEN
+                     DO 17 I=1,NDIM
+                        R(ADDETE+I)=R(ADDETE+I)+
+     +                         DT*CONGEM(ADCP12+NDIM+1)*CONGEM(ADCP12+I)
+ 17                  CONTINUE 
+                  ENDIF
+
+               ENDIF
+            ENDIF
 C
-C    CONTRIBUTION DU POINT DE GAUSS KPG AU RESIDU
+            IF(YAP2.EQ.1) THEN
+               DO 18 I=1,NDIM
+                  R(ADDEP2+I)=R(ADDEP2+I)+DT*CONGEM(ADCP21+I)
+ 18            CONTINUE
+               IF(NBPHA2.GT.1) THEN
+                  DO 19 I=1,NDIM
+                     R(ADDEP2+I)=R(ADDEP2+I)+DT*CONGEM(ADCP22+I)
+ 19               CONTINUE
+               ENDIF
 C
-            DO 117 I=1,NDDL
-               DO 118 N=1, NNO
-                  DO 119 K=1,DIMDEF
-                     VECTU(I,N)=VECTU(I,N)+
-     &                     B(K,NDDL*(N-1)+I)*R(K)*POIDS
- 119              CONTINUE
- 118           CONTINUE
- 117        CONTINUE
+               IF(YATE.EQ.1) THEN
+                  DO 20 I=1,NDIM
+                     R(ADDETE)=R(ADDETE)+DT*CONGEM(ADCP21+I)*PESA(I)
+ 20               CONTINUE
+                  IF(NBPHA2.GT.1) THEN
+                     DO 21 I=1,NDIM
+                        R(ADDETE)=R(ADDETE)+DT*CONGEM(ADCP22+I)*PESA(I)
+ 21                  CONTINUE
+                  ENDIF
+                  DO 122 I=1,NDIM
+                     R(ADDETE+I)=R(ADDETE+I)+
+     +                        DT*CONGEM(ADCP21+NDIM+1)*CONGEM(ADCP21+I)
+ 122              CONTINUE
+                  IF(NBPHA2.GT.1) THEN
+                     DO 23 I=1,NDIM
+                        R(ADDETE+I)=R(ADDETE+I)+
+     +                       DT*CONGEM(ADCP22+NDIM+1)*CONGEM(ADCP22+I)
+ 23                  CONTINUE
+                  ENDIF
+               ENDIF
+            ENDIF
 C
+            IF(YATE.EQ.1) THEN
+               DO 24 I=1,NDIM
+                  R(ADDETE+I)=R(ADDETE+I)+DT*CONGEM(ADCOTE+I)
+ 24            CONTINUE
+            ENDIF
+         ENDIF
+C ======================================================================
+C --- CONTRIBUTION DU POINT D'INTEGRATION KPI AU RESIDU ----------------
+C ======================================================================
+         DO 117 I=1,DIMUEL
+            DO 118 N=1,DIMDEF
+               VECTU(I)=VECTU(I)+B(N,I)*R(N)*POIDS
+ 118        CONTINUE
+ 117     CONTINUE
+C ======================================================================
  10   CONTINUE
-C
+C ======================================================================
       END
