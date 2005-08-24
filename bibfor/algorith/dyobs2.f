@@ -1,10 +1,7 @@
-      SUBROUTINE DYOBS2 ( MAILLA, NBOCC, NTOBS )
-      IMPLICIT   NONE
-      INTEGER             NBOCC, NTOBS
-      CHARACTER*8         MAILLA
+      SUBROUTINE DYOBS2(MAILLA,NBOCC,NTOBS)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/05/2000   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 24/08/2005   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,12 +18,24 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
+      IMPLICIT     NONE
+      CHARACTER*8  MAILLA
+      INTEGER      NBOCC
+      INTEGER      NTOBS
+C
 C ----------------------------------------------------------------------
-C     SAISIE DU MOT CLE FACTEUR "OBSERVATION"
-C            VERIFICATION DES DONNEES
-C            COMPTAGE DES FONCTIONS
+C ROUTINE APPELEE PAR : DYOBSE
 C ----------------------------------------------------------------------
-C     --- DEBUT DECLARATIONS NORMALISEES JEVEUX ------------------------
+C
+C SAISIE DU MOT CLE FACTEUR "OBSERVATION"
+C  CREATION DE LA SD DYOBS2
+C
+C IN  MAILLA : NOM DU MAILLAGE
+C IN  NBOCC  : NOMBRE D'OCCURENCES DU MOT-CLEF FACTEUR OBSERVATION
+C IN  NTOBS  : NOMBRE D'OBSERVATIONS PAR INSTANT D'OBSERVATION
+C
+C -------------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ----------------
+C
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
@@ -42,28 +51,31 @@ C     --- DEBUT DECLARATIONS NORMALISEES JEVEUX ------------------------
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
       CHARACTER*32       JEXNUM , JEXNOM
-C     --- FIN DECLARATIONS NORMALISEES JEVEUX --------------------------
-      INTEGER      N1, N2, N3, N4, N5, N6, N7, I, J, K, L, INO,
-     +             IGNO, IOCC, NBTNO, NBN, IOBS, KNBNC, IBID, NTCMP,
-     +             NCHP, NCMP, NBNC, NBNO, NBMA, NBGN, NBPO,
-     +             JNOE, JGRN, JMAI, JPOI, JNOG, KNCMP, KNCHP,
-     +             KKKMA, KCHAM, KCOMP, KNUCM, KNOEU, KMAIL, KPOIN
+C
+C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
+C
+      INTEGER      N1, N2, N4, N5, N6, N7, I, J, K, L, INO
+      INTEGER      IGNO, IOCC, NBTNO, NBN, IOBS, KNBNC, IBID, NTCMP
+      INTEGER      NCHP, NCMP, NBNC, NBNO, NBMA, NBGN, NBPO
+      INTEGER      JNOE, JGRN, JMAI, JPOI, JNOG, KNCMP, KNCHP
+      INTEGER      KKKMA, KCHAM, KCOMP, KNUCM, KNOEU, KMAIL, KPOIN
       CHARACTER*8  K8B, NOMGD
       CHARACTER*24 NOMNOE, GRPNO
-C DEB------------------------------------------------------------------
+C
+C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
 C
       NOMNOE = MAILLA//'.NOMNOE'
       GRPNO  = MAILLA//'.GROUPENO'
 C
-      CALL WKVECT ( '&&DYOBSE.MAILLA'   , 'V V K8' , 1     , KKKMA )
-      CALL WKVECT ( '&&DYOBSE.NOM_CHAM' , 'V V K16', NTOBS , KCHAM )
-      CALL WKVECT ( '&&DYOBSE.NOM_CMP ' , 'V V K8' , NTOBS , KCOMP )
-      CALL WKVECT ( '&&DYOBSE.NUME_CMP' , 'V V I'  , NTOBS , KNUCM )
-      CALL WKVECT ( '&&DYOBSE.NOEUD'    , 'V V K8' , NTOBS , KNOEU )
-      CALL WKVECT ( '&&DYOBSE.MAILLE'   , 'V V K8' , NTOBS , KMAIL )
-      CALL WKVECT ( '&&DYOBSE.POINT'    , 'V V I'  , NTOBS , KPOIN )
+      CALL WKVECT ('&&DYOBSE.MAILLA'   ,'V V K8' ,1    ,KKKMA)
+      CALL WKVECT ('&&DYOBSE.NOM_CHAM' ,'V V K16',NTOBS,KCHAM)
+      CALL WKVECT ('&&DYOBSE.NOM_CMP ' ,'V V K8' ,NTOBS,KCOMP)
+      CALL WKVECT ('&&DYOBSE.NUME_CMP' ,'V V I'  ,NTOBS,KNUCM)
+      CALL WKVECT ('&&DYOBSE.NOEUD'    ,'V V K8' ,NTOBS,KNOEU)
+      CALL WKVECT ('&&DYOBSE.MAILLE'   ,'V V K8' ,NTOBS,KMAIL)
+      CALL WKVECT ('&&DYOBSE.POINT'    ,'V V I'  ,NTOBS,KPOIN)
 C
       ZK8 ( KKKMA ) = MAILLA
 C
@@ -73,11 +85,11 @@ C
 C
 C ------ LES CHAMPS ----------------------------------------------------
 C
-         CALL GETVTX ( 'OBSERVATION', 'NOM_CHAM', IOCC,1,0, K8B, N1 )
+         CALL GETVTX ('OBSERVATION','NOM_CHAM',IOCC,1,0,K8B,N1)
          NCHP = -N1
-         CALL WKVECT ( '&&DYOBS2.NOM_CHAM', 'V V K16', NCHP, KNCHP )
-         CALL GETVTX ( 'OBSERVATION', 'NOM_CHAM', IOCC,1,NCHP,
-     +                                            ZK16(KNCHP), N1 )
+         CALL WKVECT ('&&DYOBS2.NOM_CHAM', 'V V K16', NCHP, KNCHP )
+         CALL GETVTX ('OBSERVATION','NOM_CHAM',IOCC,1,NCHP,
+     &                ZK16(KNCHP),N1)
          DO 12 I = 1 , NCHP
             IF ( ZK16(KNCHP+I-1)(1:4) .EQ. 'DEPL' ) THEN
                NOMGD = 'DEPL_R'
@@ -85,6 +97,8 @@ C
                NOMGD = 'DEPL_R'
             ELSEIF ( ZK16(KNCHP+I-1)(1:4) .EQ. 'ACCE' ) THEN
                NOMGD = 'DEPL_R'
+            ELSEIF ( ZK16(KNCHP+I-1)(1:9) .EQ. 'VALE_CONT' ) THEN
+               NOMGD = 'INFC_R'
             ELSEIF ( ZK16(KNCHP+I-1)(1:9) .EQ. 'SIEF_ELGA' ) THEN
                NOMGD = 'SIEF_R'
             ELSEIF ( ZK16(KNCHP+I-1)(1:9) .EQ. 'VARI_ELGA' ) THEN
@@ -95,16 +109,14 @@ C
 C ------ LES COMPOSANTES -----------------------------------------------
 C
          NBNC = 0
-         CALL GETVTX ( 'OBSERVATION', 'NOM_CMP' , IOCC,1,0, K8B, N2 )
-C        CALL GETVIS ( 'OBSERVATION', 'NUME_CMP', IOCC,1,0, IBID,N3 )
-         N3=0
+         CALL GETVTX ('OBSERVATION','NOM_CMP',IOCC,1,0,K8B,N2)
          NCMP = -N2
-         IF ( N3 .NE. 0 ) NBNC = -N3
+
          NTCMP = NCMP * MAX(1,NBNC)
-         CALL WKVECT ( '&&DYOBS2.NOM_CMP' , 'V V K8', NTCMP, KNCMP )
-         CALL WKVECT ( '&&DYOBS2.NUME_CMP', 'V V I' , NTCMP, KNBNC )
-         CALL UTCMP2 ( NOMGD, 'OBSERVATION', IOCC, ZK8(KNCMP), NCMP,
-     +                                             ZI(KNBNC),  NBNC )
+         CALL WKVECT ('&&DYOBS2.NOM_CMP' ,'V V K8',NTCMP,KNCMP)
+         CALL WKVECT ('&&DYOBS2.NUME_CMP','V V I' ,NTCMP,KNBNC)
+         CALL UTCMP2 (NOMGD,'OBSERVATION',IOCC,ZK8(KNCMP),NCMP,
+     &                ZI(KNBNC),NBNC)
 C
 C ------ LES NOEUDS ET MAILLES -----------------------------------------
 C
@@ -164,7 +176,8 @@ C
 C
                IF (     ZK16(KNCHP+I-1)(1:4) .EQ. 'DEPL' .OR.
      +                  ZK16(KNCHP+I-1)(1:4) .EQ. 'VITE' .OR.
-     +                  ZK16(KNCHP+I-1)(1:4) .EQ. 'ACCE' ) THEN
+     +                  ZK16(KNCHP+I-1)(1:4) .EQ. 'ACCE' .OR.
+     +                  ZK16(KNCHP+I-1)(1:9) .EQ. 'VALE_CONT') THEN
 C
                   DO 120 K = 1 , NBNO
                      ZK16(KCHAM+IOBS) = ZK16(KNCHP+I-1)
@@ -213,7 +226,10 @@ C
 C
  10   CONTINUE
 C
-      IF (IOBS.GT.NTOBS) CALL UTMESS('F','DYOBS2','DEBORDEMENT TABLEAU')
+      IF (IOBS.GT.NTOBS) THEN 
+        CALL UTMESS('F','DYOBS2','DEBORDEMENT TABLEAU')
+      ENDIF
+
       CALL JEECRA ( '&&DYOBSE.NOM_CHAM', 'LONUTI', IOBS, ' ' )
 C
       CALL JEDEMA()

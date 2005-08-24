@@ -1,10 +1,8 @@
-      SUBROUTINE DYOBS3 ( NBOCC, NBPAS, JOBSE, LISINS, NBOBSE )
-      IMPLICIT   NONE
-      INTEGER             NBOCC, NBPAS, JOBSE(*), NBOBSE
-      CHARACTER*(*)       LISINS
+      SUBROUTINE DYOBS3(NBOCC,NBPAS,JOBSE,LISINS,NBOBSE)
+
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/11/2001   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ALGORITH  DATE 24/08/2005   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,10 +19,31 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
+      IMPLICIT      NONE
+      INTEGER       NBOCC
+      INTEGER       NBPAS
+      INTEGER       JOBSE(*)
+      CHARACTER*(*) LISINS
+      INTEGER       NBOBSE
+C
 C ----------------------------------------------------------------------
-C     SAISIE DU MOT CLE FACTEUR "OBSERVATION"
+C ROUTINE APPELEE PAR : DYOBSE
 C ----------------------------------------------------------------------
-C     --- DEBUT DECLARATIONS NORMALISEES JEVEUX ------------------------
+C
+C SAISIE DU MOT CLE FACTEUR "OBSERVATION"
+C TRAITEMENT DES INSTANTS D'OBSERVATION
+C
+C IN  NBOCC  : NOMBRE D'OCCURENCES DU MOT-CLEF FACTEUR OBSERVATION
+C IN  NBPAS  : NOMBRE DE PAS DE CALCUL
+C OUT JOBSE  : NUMEROS D'ORDRE DES INSTANTS A OBSERVER
+C       LE VECTEUR LISBOS = '&&OP0070.OBSERVATIO' (CREE DANS DYOBSE)
+C       CONTIENT 1 A CHAQUE INSTANT DE CALCUL DEVANT ETRE OBSERVE
+C IN  LISINS : NOM DE LA LISTE DES INSTANTS DE CALCUL 
+C               (MOT-CLEF INCREMENT/LIST_INST DE STAT_NON_LINE)
+C OUT NBOBSE : NOMBRE D'OBSERVATIONS
+C
+C -------------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ----------------
+C
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
@@ -39,22 +58,37 @@ C     --- DEBUT DECLARATIONS NORMALISEES JEVEUX ------------------------
       CHARACTER*32                                    ZK32
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
-C     --- FIN DECLARATIONS NORMALISEES JEVEUX --------------------------
-      INTEGER      IOCC, N1, N2, N3, N4, N5, N6, I, JNUM, LNUM, JINSC, 
-     +             IPACH, NUME, IBID
+C
+C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
+C
+      INTEGER      IOCC,N1,N2,N3,N4,I,JNUM,LNUM,JINSC 
+      INTEGER      IPACH,NUME,IBID
       REAL*8       EPSI
-      CHARACTER*8  K8B, RELA
+      CHARACTER*8  K8B,RELA
       CHARACTER*19 NUMOBS
-C DEB ------------------------------------------------------------------
+C
+C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
 C
+C --- RECUPERATION DE LIST_INST D'INCRMEENT DANS STAT_NON_LINE
+C
+      IF ( LISINS(1:1) .NE.  ' ' ) THEN
+         CALL JEVEUO ( LISINS(1:19)//'.VALE', 'L', JINSC )
+      ELSE
+         CALL UTMESS ('F','DYOBS3' ,'PAS DE LIST_INST '//
+     &                'DANS INCREMENT !?!?!')
+      ENDIF
+C
+C --- BOUCLE SOUR LES DIFFERENTES OCCURRENCES D'OBSERVATION
+C
       DO 10 IOCC = 1 , NBOCC
 C
-         CALL GETVID ( 'OBSERVATION', 'LIST_ARCH',IOCC,1,0, K8B , N1 )
-         CALL GETVID ( 'OBSERVATION', 'LIST_INST',IOCC,1,0, K8B , N2 )
-         CALL GETVR8 ( 'OBSERVATION', 'INST'     ,IOCC,1,0, EPSI, N3 )
-         CALL GETVIS ( 'OBSERVATION', 'PAS_OBSE' ,IOCC,1,0, IBID, N4 )
+         CALL GETVID( 'OBSERVATION', 'LIST_ARCH',IOCC,1,0,K8B ,N1)
+         CALL GETVID( 'OBSERVATION', 'LIST_INST',IOCC,1,0,K8B ,N2)
+         CALL GETVR8( 'OBSERVATION', 'INST'     ,IOCC,1,0,EPSI,N3)
+         CALL GETVIS( 'OBSERVATION', 'PAS_OBSE' ,IOCC,1,0,IBID,N4)
+
 C
          IF ( IOCC .EQ. 1 ) THEN
             IF ( N1+N2+N3+N4 .EQ. 0 ) THEN
@@ -71,13 +105,15 @@ C
             GOTO 10
          ENDIF
 C
-         CALL GETVR8 ( 'OBSERVATION', 'PRECISION', IOCC,1,1, EPSI, N5 )
-         CALL GETVTX ( 'OBSERVATION', 'CRITERE'  , IOCC,1,1, RELA, N6 )
+         CALL GETVR8( 'OBSERVATION', 'PRECISION', IOCC,1,1,EPSI,IBID)
+         CALL GETVTX( 'OBSERVATION', 'CRITERE'  , IOCC,1,1,RELA,IBID)
+C
+C --- TRAITEMENT DU CAS OU ON FOURNIT LA LISTE DES NUMEROS D'OBSERVATION
 C
          IF ( N1 .NE. 0 ) THEN
-            CALL GETVID ('OBSERVATION','LIST_ARCH',IOCC,1,1, NUMOBS,N1)
-            CALL JEVEUO ( NUMOBS//'.VALE', 'L', JNUM )
-            CALL JELIRA ( NUMOBS//'.VALE', 'LONUTI', LNUM, K8B )
+            CALL GETVID('OBSERVATION','LIST_ARCH',IOCC,1,1,NUMOBS,N1)
+            CALL JEVEUO(NUMOBS//'.VALE', 'L', JNUM )
+            CALL JELIRA(NUMOBS//'.VALE', 'LONUTI', LNUM, K8B )
             DO 20 I = 1 , LNUM
                NUME = ZI(JNUM+I-1)
                IF ( NUME .LE. 0 ) THEN
@@ -89,43 +125,58 @@ C
                ENDIF
  20         CONTINUE
  22         CONTINUE
+C --- LE DERNIER PAS DE CALCUL EST TOUJOURS OBSERVE
             JOBSE(NBPAS) = 1
             GOTO 10
          ENDIF
 C
-         IF ( LISINS(1:1) .NE.  ' ' ) THEN
-            CALL JEVEUO ( LISINS(1:19)//'.VALE', 'L', JINSC )
-            IF ( N2 .NE. 0 ) THEN
-               CALL GETVID('OBSERVATION','LIST_INST',IOCC,1,1,NUMOBS,N2)
-               CALL JEVEUO ( NUMOBS//'.VALE', 'L', JNUM )
-               CALL JELIRA ( NUMOBS//'.VALE', 'LONUTI', LNUM, K8B )
-               CALL DYARC1 ( ZR(JINSC), NBPAS, ZR(JNUM), LNUM, JOBSE,
-     +                       EPSI, RELA  )
-               GOTO 10
-            ENDIF
-            IF ( N3 .NE. 0 ) THEN
-               CALL GETVR8 ( 'OBSERVATION', 'INST', IOCC,1,0, EPSI,N3)
-               LNUM = -N3
-               CALL WKVECT ( '&&DYOBS3.VALE_INST', 'V V R', LNUM, JNUM )
-               CALL GETVR8 ( 'OBSERVATION', 'INST', IOCC,1,LNUM,
-     &                                              ZR(JNUM), N3 )
-               CALL DYARC1 ( ZR(JINSC), NBPAS, ZR(JNUM), LNUM, JOBSE,
-     +                       EPSI, RELA  )
-               CALL JEDETR ( '&&DYOBS3.VALE_INST' )
-               GOTO 10
-            ENDIF
+C --- TRAITEMENT DU CAS OU ON FOURNIT LA LISTE DES INSTANTS
+C --- D'OBSERVATION
+C
+         IF ( N2 .NE. 0 ) THEN
+
+           CALL GETVID('OBSERVATION','LIST_INST',IOCC,1,1,NUMOBS,N2)
+           CALL JEVEUO(NUMOBS//'.VALE', 'L', JNUM )
+           CALL JELIRA(NUMOBS//'.VALE', 'LONUTI', LNUM, K8B )
+           CALL DYARC1(ZR(JINSC), NBPAS, ZR(JNUM), LNUM, JOBSE,
+     &                   EPSI, RELA  )
+           GOTO 10
          ENDIF
 C
-         CALL GETVIS ( 'OBSERVATION', 'PAS_OBSE', IOCC,1,1, IPACH, N4 )
-         IF ( N4 .EQ. 0 ) IPACH = 1
+C --- TRAITEMENT DU CAS OU ON FOURNIT UN INSTANT D'OBSERVATION
+C
+         IF ( N3 .NE. 0 ) THEN
+            CALL GETVR8 ( 'OBSERVATION','INST', IOCC,1,0, EPSI,N3)
+            LNUM = -N3
+            CALL WKVECT ( '&&DYOBS3.VALE_INST', 'V V R', LNUM, JNUM )
+            CALL GETVR8 ( 'OBSERVATION', 'INST', IOCC,1,LNUM,
+     &                                           ZR(JNUM), N3 )
+            CALL DYARC1 ( ZR(JINSC), NBPAS, ZR(JNUM), LNUM, JOBSE,
+     &                    EPSI, RELA  )
+            CALL JEDETR ( '&&DYOBS3.VALE_INST' )
+            GOTO 10
+         ENDIF
+C
+C --- TRAITEMENT DU CAS OU ON FOURNIT UN PAS D'OBSERVATION
+C
+         IF ( N4 .NE. 0 ) THEN
+            CALL GETVIS ('OBSERVATION','PAS_OBSE',IOCC,1,1,IPACH,N4)
+         ELSE
+            IPACH = 1
+         ENDIF
+
          DO 30 I = IPACH , NBPAS , IPACH
             JOBSE(I) = 1
  30      CONTINUE
-         JOBSE(NBPAS) = 1
 C
+C --- LE DERNIER INSTANT DE CALCUL EST TOUJOURS OBSERVE
+C
+         JOBSE(NBPAS) = 1
+
  10   CONTINUE
 C
-C      NBOBSE = 1
+C --- NOMBRE D'OBSERVATIONS TOTAL
+C
       NBOBSE = 0
       DO 40 I = 1 , NBPAS
          NBOBSE = NBOBSE + JOBSE(I)

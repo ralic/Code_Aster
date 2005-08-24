@@ -8,7 +8,7 @@
      &                  LICCVG)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 12/04/2005   AUTEUR PBADEL P.BADEL 
+C MODIF ALGORITH  DATE 24/08/2005   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -140,7 +140,7 @@ C ----------------------------------------------------------------------
       TYPMAT   = 'R'
 
 
-      CALL NMIMPR('IMPR','ASSE_MATR',OPTION,0.D0,0)
+      CALL NMIMPR('IMPR','MATR_ASSE','YTR',0.D0,0)
           
 C -- CALCUL DE LA MATRICE DE RIGIDITE
 

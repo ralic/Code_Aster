@@ -1,7 +1,7 @@
       SUBROUTINE ALGOCP(DEFICO,RESOCO,LMAT,LDSCON,NOMA,
      &                  RESU,DEPTOT,LREAC,DEPDEL)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/05/2005   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 24/08/2005   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -117,14 +117,14 @@ C
       INTEGER      NBDDL,NBLCIN,NBLIG,LLF,LLF1,LLF2
       CHARACTER*24 MACONT
       CHARACTER*19 MAFROT
-      INTEGER      IBID,II,IER,KK
+      INTEGER      IBID,II,IER,KK,ITER
       CHARACTER*19 MAT
       CHARACTER*14 NUMEDD
       CHARACTER*1  TYPEAJ
       CHARACTER*2  TYPEC0
       INTEGER      JRESU,JDEPP,JDEPDE
       INTEGER      JDECAL,POSIT
-      REAL*8       VAL,XMU
+      REAL*8       VAL,XMU,R8BID
       LOGICAL      CFEXCL
 C
 C ======================================================================
@@ -229,7 +229,8 @@ C                          -- ZERO --
 C ======================================================================
       NESCL  = ZI(JAPPAR)
       NBLIAI = NESCL
-      NEQ    = ZI(LMAT+2)   
+      NEQ    = ZI(LMAT+2)  
+      ITER   = 0 
       LLF    = 0 
       LLF1   = 0 
       LLF2   = 0   
@@ -358,6 +359,10 @@ C ======================================================================
       END IF
 C
  999  CONTINUE
+C ======================================================================
+C --- SAUVEGARDE DES INFOS DE DIAGNOSTIC (NOMBRE D'ITERATIONS)
+C ======================================================================
+      CALL CFITER(RESOCO,'E','ITER',ITER,R8BID)
 C
       CALL JEDEMA()
 C

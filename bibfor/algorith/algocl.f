@@ -1,7 +1,7 @@
        SUBROUTINE ALGOCL(DEFICO,RESOCO,LMAT,LDSCON,NOMA,CINE,
      &                   DEPTOT,ITERAT,LREAC,RESU,LICCVG)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/05/2005   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 24/08/2005   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -137,7 +137,7 @@ C
       CHARACTER*1  TYPEAJ
       CHARACTER*2  TYPEC0
       LOGICAL      GCPC,TROUAC,DELPOS,LELPIV
-      REAL*8       XJVMAX,AJEU,VAL,AADELT,RHO,RHORHO,X1
+      REAL*8       XJVMAX,AJEU,VAL,AADELT,RHO,RHORHO,X1,R8BID
       REAL*8       R8MAEM,R8PREM
       INTEGER      ITER,ITEMAX,ITEMUL,ISTO
       LOGICAL      CFEXCL
@@ -660,6 +660,10 @@ C ======================================================================
         CALL DETRSD('CHAMP_GD','&&ALGOCL.CHASOL')
         CALL DETRSD('CHAMP_GD','&&ALGOCL.CHASEC')
       ENDIF
+C ======================================================================
+C --- SAUVEGARDE DES INFOS DE DIAGNOSTIC (NOMBRE D'ITERATIONS)
+C ======================================================================
+      CALL CFITER(RESOCO,'E','ITER',ITER,R8BID)
 C
       CALL JEDEMA()
 C

@@ -2,7 +2,7 @@
      &                   IWRITE,JSUMA,JSUNO,JNOQUA)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 07/10/2004   AUTEUR MABBAS M.ABBAS 
+C MODIF MODELISA  DATE 24/08/2005   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -74,11 +74,19 @@ C
 C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
 C
       CHARACTER*8  TYPENT,K8BID
-      INTEGER      NBENT,NB,NBMA,NBNO,NBNOQU
+      CHARACTER*16 PROJ
+      INTEGER      NBENT,NB,NBMA,NBNO,NBNOQU,INPROJ,NOC
 C
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
+
+      CALL GETVTX (MOTFAC,'PROJECTION',IREAD,1,1,PROJ,NOC)   
+        IF (PROJ.EQ.'QUADRATIQUE') THEN
+           INPROJ = 2
+        ELSE
+           INPROJ = 1
+        ENDIF
 
       IF (MOTCLE(1:6).EQ.'MAILLE') THEN
          TYPENT = 'MAILLE'    
@@ -99,10 +107,10 @@ C
      +           IREAD,1,NBENT,ZK8(JTRAV),NB)
           IF (TYPENT.EQ.'MAILLE') THEN
             CALL NBNOEL(CHAR,NOMA,TYPENT,0,ZK8(JTRAV),INDQUA,
-     +                NBMA,NBNO,NBNOQU)
+     +                INPROJ,NBMA,NBNO,NBNOQU)
           ELSE
             CALL NBNOEL(CHAR,NOMA,TYPENT,NB,ZK8(JTRAV),INDQUA,
-     +                NBMA,NBNO,NBNOQU)
+     +                INPROJ,NBMA,NBNO,NBNOQU)
           ENDIF
 
           ZI(JSUMA  + IWRITE) = ZI(JSUMA  + IWRITE-1) + NBMA

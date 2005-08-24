@@ -1,0 +1,841 @@
+
+
+-----------------------------------------------------------------------
+--- AUTEUR durand C.DURAND   DATE  le 22/08/2005 a 17:58:33
+
+------------------------------------------------------------------------------
+CORRECTION AL 2005-289
+   NB_JOURS_TRAV : 0.5
+   INTERET_UTILISATEUR : NON
+   TITRE mot clé LIST_PARA inactif dans CALC_FONCTION
+   FONCTIONNALITE CALC_FONCTION
+   DETAILS
+     C'est un oubli lors de la reprogrammation de CALC_FONCTION du à l'absence
+     de validation de ce mot clé ... il est donc passé à travers les mailles.
+     En fait, on a pas besoin de ce mot clé. Il suffit, après la définition de
+     la fonction par COMB, de faire un appel à CALC_FONC_INTERP. Cette commande
+     sert à passer d'une formule à une fonction (ou nappe), mais AUSSI de
+     redéfinir les paramètres et support d'une fonction donnée en entrée.
+     Par conséquent, je résorbe le mot clé LIST_PARA de CALC_FONCTION.
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+   étude jointe
+
+------------------------------------------------------------------------------
+CORRECTION AL 2005-279
+   NB_JOURS_TRAV : 0.
+   INTERET_UTILISATEUR : NON
+   TITRE ajustement de mémoires pour tests
+   FONCTIONNALITE mémoire
+   DETAILS
+     ssnl119a, hpla100j et ssnp14e passent de 16 à 32 Mo de mémoire
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+   tests
+
+
+-----------------------------------------------------------------------
+--- AUTEUR mabbas M.ABBAS   DATE  le 24/08/2005 a 16:45:57
+
+-----------------------------------------------------------------------
+REALISATION EL 2005-015
+   NB_JOURS_TRAV  : 10
+   INTERET_UTILISATEUR : OUI
+   TITRE : STAT_NON_LINE - Evolution des affichages
+   FONCTIONNALITE
+     Faire évoluer les affichages de STAT_NON_LINE:
+     * Ajouter une colonne dans le tableau de convergence pour afficher des
+       informations sur le contact
+       1/ Nombre d'itérations internes de contact pour chaque itération de Newton
+       2/ Etat particulier: attente point fixe et réactualisation géométrique
+         (supprimer les affichages intempestifs)
+     * Ajouter des informations sur la convergence
+       Nouvelle colonne dans le tableau récapitulatif indiquant le DDL (noeud+composante)
+       correspondant au résidu qui évalue la convergence.
+     * Intégrer les informations relatives à De Borst au sein du tableau de convergence
+     * Donner la possibilité à l'utilisateur de personnaliser entierement l'affichage
+       du tableau de convergence (choisir les colonnes affichées). Nouveau mot-clef.
+     * Afficher des statistiques globales à la fin de STAT_NON_LINE:
+       1/ Nombre total d'itérations de Newton
+       2/ Nombre total d'incréments de temps
+       3/ Nombre total d'itérations internes de contact
+       4/ Nombre total de réactualisations géométriques de contact
+       5/ Temps total passé dans la résolution du contact (différencier géométrie/algorithme)
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_U : U4.51.03
+       EXPL_ : STAT_NON_LINE, nouvelle option AFFICHAGE
+   VALIDATION
+
+   DETAILS
+     Nouvelle option dans STAT_NON_LINE
+
+**************************************************************************************
+         AFFICHAGE      = FACT(statut='f',max=16,
+            UNITE       = SIMP(statut='f',typ='I',val_min=1),
+
+            LONG_R      = SIMP(statut='f',typ='I',defaut=12,val_min=1,val_max=12),
+            PREC_R      = SIMP(statut='f',typ='I',defaut=5, val_min=1,val_max=8),
+            LONG_I      = SIMP(statut='f',typ='I',defaut=6, val_min=1,val_max=12),
+
+            NOM_COLONNE = SIMP(statut='o',typ='TXM',defaut="STANDARD",
+                                into=("STANDARD","MINIMUM",
+                                      "ITER_NEWT",
+                                      "INCR_TPS",
+                                      "RESI_RELA","RELA_NOEU",
+                                      "RESI_MAXI","MAXI_NOEU",
+                                      "RESI_REFE","REFE_NOEU",
+                                      "RELI_ITER","RELI_COEF",
+                                      "PILO_PARA",
+                                      "LAGR_ECAR","LAGR_INCR","LAGR_ITER",
+                                      "MATR_ASSE",
+                                      "ITER_DEBO",
+                                      "CTCD_ITER","CTCD_INFO","CTCD_GEOM","CTCD_NOEU",
+                                      "CTCC_GEOM","CTCC_FROT","CTCC_CONT",
+                                      "SUIV_1","SUIV_2","SUIV_3","SUIV_4",
+                                     ),
+                               ),
+            b_residu    = BLOC(condition = " NOM_COLONNE == 'RESI_RELA' or \
+                    NOM_COLONNE == 'RESI_MAXI' or\
+                    NOM_COLONNE == 'RESI_REFE' or\
+                    NOM_COLONNE == 'CTCD_GEOM' or\
+                    NOM_COLONNE == 'STANDARD' ",
+                            INFO_RESIDU = SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON")),
+                          ),
+         ),
+**************************************************************************************
+
+    Le mot_clef facteur "AFFICHAGE" est limite a 16 occurrences, pour limiter
+    La largeur du tableau a 256 colonnes (16 colonnes de largeur 16)
+
+    Le mot_clef FICHIER permet de sortir le tableau de convergence simultanement dans
+    un fichier designe par UNITE.
+
+    NOM_COLONNE designe la colonne a afficher:
+     STANDARD: VALEURS PAR DEFAUT DE L'AFFICHAGE DU TABLEAU DE CONVERGENCE
+               * ITERATION DE NEWTON
+               * TOUTES LES FONCTIONNALITES ACTIVEES
+               * RESI_MAXI ET RESI_RELA
+               * LES SUIVIS EN TEMPS REEL EVENTUELS (option SUIVI de STAT_NON_LINE)
+               * LES INFO DETAILLEES SUR LES RESIDUS SI DEMANDE (INFO_RESIDU)
+     MINIMUM : VALEURS MINIMALES DE L'AFFICHAGE
+               * ITERATION DE NEWTON
+               * RESI_RELA
+               * RESI_MAXI
+               * LES INFO DETAILLEES SUR LES RESIDUS SI DEMANDE (INFO_RESIDU)
+     Nom des colonnes specialisees:
+* ITER_NEWT : ITERATION DE NEWTON
+       /\ colonne marquee par un X tant que pas convergence sur tous les criteres du
+          calcul
+* INCR_TPS  : INSTANT COURANT
+
+* RESI_RELA, RELA_NOEU : RESI_GLOB_RELA  et affichage du noeud ou il est maxi
+       /\ RESI_RELA marquee par un X tant que residu plus grand que specifie
+* RESI_MAXI,MAXI_NOEU : RESI_GLOB_MAXI  et affichage du noeud ou il est maxi
+       /\ RESI_MAXI marquee par un X tant que residu plus grand que specifie
+* RESI_REFE,REFE_NOEU : RESI_REFE_RELA  et affichage du noeud ou il est maxi
+       /\ RESI_REFE marquee par un X tant que residu plus grand que specifie
+* RELI_ITER,RELI_COEF : nombre iterations recherche lineaire
+                          coefficient recherche lineaire
+* PILO_PARA: parametre de pilotage (eta)
+* LAGR_ECAR,LAGR_INCR,LAGR_ITER: lagrangien augmente pour emdommagement non local
+* MATR_ASSE: option d'assemblage matrice
+* ITER_DEBO: iterations de DEBORST
+* CTCD_ITER,CTCD_INFO,CTCD_GEOM,CTCD_NOEU: infos sur contact discret
+             * CTCD_ITER nombre d'iterations internes de contact
+       /\ colonne marquee par un X tant que contact non converge sur geometrie
+             * CTCD_INFO informations sur etat contact (attente point fixe, reac geom)
+                  ALGO: iterations internes de contact
+                  ALGO/REAC_GEOM: iterations internes de contact + reactualisation geometrique
+                  ATT_PT_FIXE: attente point fixe contact
+             * CTCD_GEOM valeur de deplacement max pour reactualisation geometrique du contact
+             * CTCD_NOEU noeud ou la valeur de deplacement est max pour
+                   reactualisation geometrique du contact
+
+* CTCC_GEOM,CTCC_FROT,CTCC_CONT: infos sur contact continu
+             * CTCC_GEOM numero d'iteration de la boucle sur geometrie
+       /\ colonne marquee par un X tant que non converge sur geometrie
+             * CTCC_FROT numero d'iteration de la boucle sur seuils de frottement
+       /\ colonne marquee par un X tant que non converge sur seuils de frottement
+             * CTCC_CONT numero d'iteration de la boucle sur contraintes actives
+       /\ colonne marquee par un X tant que non converge sur contraintes actives
+
+* SUIV_1,SUIV_2,SUIV_3,SUIV_4: informations sur suivi en temps reel
+    (option SUIVI_DDL de STAT_NON_LINE)
+ /\ PAS ENCORE BRANCHE (EL en cours) /\
+
+
+L'ordre des occurrences de NOM_COLONNE est repercute dans le tableau.
+On peut cumuler les colonnes
+
+LONG_R,PREC_R: format des reels dans le tableau de convergence
+     (1PE<LONG_R>.<PREC_R)
+LONG_I: format des entiers dans le tableau de convergence
+     (I<LONG_I>)
+Pour les chaines, le format est K16 en dur
+
+INFO_RESIDU ajoute une colonne RELA_NOEU, MAXI_NOEU et/ou REFE_NOEU qui donne
+le noeud sur lequel le residu est max a chaque iteration de Newton.
+
+Autres affichages:
+
+A la fin de chaque pas de temps
+
+  <*> CRITERE(S) DE CONVERGENCE ATTEINT(S)
+  RESIDU RESI_GLOB_MAXI   VAUT  3.464658710E-02 SUR N80     DY
+
+  -> on donne tous les criteres ayant permis la convergence (residus)
+
+Temps CPU ajuste et infos sur temps passe dans contact
+
+Mise en oeuvre
+Nouvelles routines
+
+cfconv.f: remplace cvgcnt - Gere la convergence du contact
+cfinit.f: remplace inicnt - Gere l'initialisation du contact
+cfiter.f: routine utilitaire pour stocker les infos sur nombre d'iterations internes du contact, et temps CPU
+
+impcmp.f: routine utilitaire affichage
+ RETOURNE UNE CHAINE FORMATEE K16 POUR LES INFOS SUR UNE COMPOSANTE DONNEE en entree
+
+impcod.f: routine utilitaire affichage
+ RETOURNE LE CODE INTERNE D'UNE COLONNE DU TABLEAU DE CONVERGENCE
+   code entre 1 et ZDEF pour le mot_clef (voir NOM_COLONNE)
+
+impdea.f: routine utilitaire affichage
+ DEFINITION DES COLONNES ACTIVEES
+   La SD reperee par JIMCOL contient les codes internes (voir impcod) de chaque
+  colonne affichee.
+
+impdef.f: routine utilitaire affichage
+ DEFINITION DES COLONNES A ACTIVER POUR LES CAS "STANDARD" ET "MINIMUM"
+
+impfih.f: routine utilitaire affichage
+ RECUPERATION DES INFOS SUR FICHIER POUR AFFICHAGE DES COLONNES DANS LE TABLEAU DE CONVERGENCE
+ INDIQUEES DANS L'OPTION 'AFFICHAGE' de STAT_NON_LINE
+
+impfoi.f: routine utilitaire affichage
+ IMPRESSION D'UN ENTIER CORRECTEMENT FORMATEE SUR UNE UNITE LOGICIELLE
+
+impfok.f: routine utilitaire affichage
+ IMPRESSION D'UNE CHAINE CORRECTEMENT FORMATEE SUR UNE UNITE LOGICIELLE
+
+impfor.f: routine utilitaire affichage
+ IMPRESSION D'UN REEL CORRECTEEENT FORMATEE SUR UNE UNITE LOGICIELLE
+
+impinf.f: routine utilitaire affichage
+ RETOURNE DIVERSES INFOS SUR LA SD AFFICHAGE
+
+impini.f: routine utilitaire affichage
+ ROUTINE PRINCIPAL POUR L'OPTION AFFICHAGE
+
+impmin.f: routine utilitaire affichage
+ DEFINITION DES COLONNES A ACTIVER POUR LE CAS "MINIMUM"
+
+impper.f: routine utilitaire affichage
+ DEFINITION DES COLONNES A ACTIVER POUR LE CAS PERSONNALISE
+
+imppre.f: routine utilitaire affichage
+ RECUPERATION DES INFOS DE PRECISION POUR AFFICHAGE DES COLONNES DANS LE TABLEAU DE CONVERGENCE
+ INDIQUEES DANS L'OPTION 'AFFICHAGE' de STAT_NON_LINE
+
+impref.f: routine utilitaire affichage
+ RETOURNE LES INFOS PAR DEFAUT D'UNE COLONNE DU TABLEAU DE CONVERGENCE
+   - LE TITRE DE LA COLONNE (SUR 3 LIGNES)
+   - LE TYPE DE LA COLONNE
+ LE CODE EST RETOURNE PAR IMPCOD
+
+impsda.f: routine utilitaire affichage
+ OPERATIONS ELEMENTAIRES SUR LA SD AFFICHAGE DE COLONNES
+ <*> AFFECTATION DES VALEURS DE DEFINITION: CODE/TITRE/FORMAT/PRECISIONS
+ OPERATIONS POSSIBLES:
+  'AJOU': AJOUTER UNE COLONNE A LA FIN (ICOL=0 OBLIGATOIRE)
+  'SUPP': SUPPRIMER UNE COLONNE EN ICOL
+  'LIRE': LIRE UNE COLONNE
+  'ECRI': ECRIRE UNE COLONNE
+
+impsdm.f: routine utilitaire affichage
+ OPERATIONS ELEMENTAIRES SUR LA SD AFFICHAGE DE COLONNES
+ <*> AFFECTATION D'UN MARQUAGE POUR LA COLONNE
+
+impsdr.f: routine utilitaire affichage
+ OPERATIONS ELEMENTAIRES SUR LA SD AFFICHAGE DE COLONNES
+ <*> AFFECTATION DES VALEURS RESULTATS POUR LA COLONNE
+
+impsdv.f: routine utilitaire affichage
+ OPERATIONS ELEMENTAIRES SUR LA SD AFFICHAGE DE COLONNES
+ <*> LECTURE DES VALEURS RESULTATS POUR LA COLONNE
+
+impstd.f: routine utilitaire affichage
+ DEFINITION DES COLONNES A ACTIVER POUR LE CAS "STANDARD"
+
+imptit.f: routine utilitaire affichage
+ PREPARATION DE LA LIGNE DE TITRE POUR LE TABLEAU DE CONVERGENCE
+ OPERATION FAITE UNE SEULE FOIS PAR NMIMPR
+
+nmbors.f: routine utilitaire generique
+  PRECISE S'IL Y A INTEGRATION DE DE BORST SUR AU MOINS UN MATERIAU
+
+nmimpa.f: routine utilitaire affichage
+  GESTION DES IMPRESSIONS DE LA COMMANDE STAT_NON_LINE
+  MESSAGES D'ERREUR
+
+nmimpf.f: routine utilitaire affichage
+  PREPARATION (OUVERTURE) DU FICHIER D'IMPRESSION POUR LES AFFICHAGES (option 'FICHIER='OUI')
+
+nmimpm.f: routine utilitaire affichage
+  ROUTINE PRINCIPALE D'AFFICHAGE DES INFORMATIONS DANS STAT_NON_LINE (ex-NMIMPR)
+
+
+nmresi.f: routine utilitaire
+  les operations etaient autrefois faites directement dans NMCONV
+  CALCULS DES RESIDUS D'EQUILIBRE ET DES CHARGEMENTS POUR ESTIMATION DE LA CONVERGENCE
+  REPERAGE DU NOEUD SUR LEQUEL LE RESIDU EST MAXIMUM
+
+
+Routines modifiees
+algocl.f: appel a CFITER pour stat sur contact
+algoco.f: appel a CFITER pour stat sur contact
+algocp.f: appel a CFITER pour stat sur contact
+cfalgo.f: mesure temps CPU et appel a CFITER pour stat sur contact
+cfcrsd.f: creation SD contact pour statistiques (cf cfiter)
+cfdisc.f: evol pour detecter frottement active dans methode continue
+cfgeom.f: mesure temps CPU et appel a CFITER pour stat sur contact
+fro2gd.f: appel a CFITER pour stat sur contact
+frogdp.f: appel a CFITER pour stat sur contact
+frolgd.f: appel a CFITER pour stat sur contact
+fropgd.f: appel a CFITER pour stat sur contact
+mappar.f: suppression de l'appel a NMIMPR (gere par NMIBLE)
+nmcofr.f: mesure temps CPU et appel a CFITER pour stat sur contact
+nmconv.f: Re-ecriture complete pour affinage et affichage
+nmdepl.f: suppression du parametre IEECP0 et ICONTX
+             XFEM avec ou sans contact
+         -> desormais, on utilise le vecteur FONACT
+nmible.f: modif pour affichage (contact methode continue)
+nmimpr.f: re-ecriture. Sert de passerelle pour nmimpm
+nmini0.f: initialisation du vecteur FONACT
+nminit.f: diverses modif pour FONACT
+        Le vecteur FONACT indique les fonctionnalites activees. Sa taille est indiquee par le                parametre ZFON
+        FONACT(1):  RECHERCHE LINEAIRE
+        FONACT(2):  PILOTAGE
+        FONACT(3):  LOIS NON LOCALES
+        FONACT(4):  CONTACT DISCRET
+        FONACT(5):  CONTACT CONTINU
+        FONACT(6):  METHODE XFEM
+        FONACT(7):  ALGORITHME DE DE BORST
+        FONACT(8):  CONVERGENCE PAR RESIDU DE REFERENCE
+        FONACT(9):  METHODE XFEM AVEC CONTACT
+nmmatr.f: modif pour affichage option d'assemblage (MATR_ASSE)
+nmtble.f: modif pour affichage (contact methode continue)
+op0070.f: modif globales
+
+Nouvelles structures de donnees:
+
+<CONTACT> - Creation dans cfcrsd - Routine utilitaire: cfiter
+
+ *** RESOCO//'.DIAG.ITER': NOMBRE D'ITERATIONS INTERNES DE CONTACT
+  ZI(JBID-1+3): TOTAL ITER POUR STAT_NON_LINE
+  ZI(JBID-1+2): TOTAL ITER POUR PAS DE TEMPS EN COURS
+  ZI(JBID-1+1): TOTAL ITER POUR ITERATION DE NEWTON EN COURS
+ *** RESOCO//'.DIAG.TIME': TEMPS PASSE DANS CONTACT
+  ZI(JBID-1+6): TEMPS GEOM POUR STAT_NON_LINE
+  ZI(JBID-1+5): TEMPS ALGO POUR STAT_NON_LINE
+  ZI(JBID-1+4): TEMPS GEOM POUR PAS DE TEMPS EN COURS
+  ZI(JBID-1+3): TEMPS ALGO POUR PAS DE TEMPS EN COURS
+  ZI(JBID-1+2): TEMPS GEOM POUR ITERATION DE NEWTON EN COURS
+  ZI(JBID-1+1): TEMPS ALGO POUR ITERATION DE NEWTON EN COURS
+
+<AFFICHAGE> - Creation dans impini
+  Le prefixe du nom est defini par IMPRCO(1:14) dans OP0070
+
+ *** IMPINF = IMPRCO(1:14)//'INFO'   <JIMPIN>
+    VECTEUR VOLATILE D'ENTIERS DE LONGUEUR ZIMP (PARAMETER)
+
+    DIFFERENTES INFORMATIONS SUR L'AFFICHAGE
+     ZI(JIMPIN-1+1): NOMBRE D'INFOS DANS LE VECTEUR
+                      (Y COMPRIS CELUI-CI)
+     ZI(JIMPIN-1+2): NOMBRE MAXI DE COLONNES (COLMAX)
+     ZI(JIMPIN-1+3): LARGEUR MAXI D'UNE LIGNE (LIGMAX)
+     ZI(JIMPIN-1+4): NOMBRE UTILE (REEL) DE COLONNES (COLUTI)
+     ZI(JIMPIN-1+5): LARGEUR UTILE (REEL) D'UNE LIGNE (LIGUTI)
+     ZI(JIMPIN-1+6): 0 SI AFFICHAGE STANDARD
+                     1 SI AFFICHAGE PERSONNALISE
+                     2 SI AFFICHAGE MINIMUM
+     ZI(JIMPIN-1+7): NOMBRE MAXI DE LIGNES D'UN TITRE (TITMAX)
+     ZI(JIMPIN-1+8): 0 SI PAS DE SORTIE SUR FICHIER EXTERNE
+                     UNITE SI SORTIE SUR FICHIER EXTERNE
+     ZI(JIMPIN-1+9): LARGEUR MAXI D'UNE COLONNE
+
+ *** IMPCOL = IMPRCO(1:14)//'DEFI.COL'    <JIMPCO>
+    VECTEUR VOLATILE D'ENTIERS DE LONGUEUR COLMAX
+
+    CODE (ENTIER) DEFINISSANT LE TYPE DE LA COLONNE. VOIR IMPDEF
+    POUR LA SIGNIFICATION ET LE CODE DE TOUTES LES COLONNES
+
+ *** IMPCOL = IMPRCO(1:14)//'DEFI.FOR'    <JIMPFO>
+    VECTEUR VOLATILE D'ENTIERS DE LONGUEUR 4*COLMAX
+
+    VALEURS DES LONGUEURS D'AFFICHAGES POUR LES DIFFERENTS FORMATS
+    POUR LA COLONNE ICOL:
+         ZI(JIMPFO+4*(ICOL-1)+ICOL-1)   = LONGR
+         ZI(JIMPFO+4*(ICOL-1)+ICOL-1+1) = PRECR
+         ZI(JIMPFO+4*(ICOL-1)+ICOL-1+2) = LONGI
+         ZI(JIMPFO+4*(ICOL-1)+ICOL-1+3) = LONGK
+         LONGR  : LONGUEUR D'AFFICHAGE DU REEL
+         PRECR  : LONGUEUR D'AFFICHAGE DE LA PRECISION DU REEL
+         LONGI  : LONGUEUR D'AFFICHAGE DE L'ENTIER
+         LONGK  : LONGUEUR D'AFFICHAGE DE LA CHAINE
+    * POUR L'AFFICHAGE PAR DEFAUT, UN SEUL FORMAT EST DISPONIBLE POUR
+    CHAQUE TYPE (UN ENTIER SERA DE LONGUEUR LONGI POUR TOUTES LES
+    COLONNES DE TYPE ENTIER).
+    * POUR L'AFFICHAGE PERSONNALISE, ON PEUT CHANGER LE FORMAT D'UNE
+    COLONNE A L'AUTRE.
+
+    /!\ L'INFORMATION EST SURABONDANTE: CHAQUE COLONNE DEFINIT LES QUATRE
+    PARAMETRES DE FORMAT ALORS QU'ELLE N'EN UTILISE QU'UN (CHOISI
+    DANS '&&OP0070.DEFI.TYP'
+
+ *** IMPCOL = IMPRCO(1:14)//'DEFI.TYP'    <JIMPTY>
+    VECTEUR VOLATILE D'ENTIERS DE LONGUEUR COLMAX
+
+    FORMAT D'AFFICHAGE POUR CHAQUE COLONNE
+      POUR LA COLONNE ICOL:
+        ZI(JIMPTY-1+ICOL)   = ITYP
+        ITYP = 1: ENTIER
+        ITYP = 2: REEL
+        ITYP = 3: CHAINE
+
+ *** IMPCOL = IMPRCO(1:14)//'DEFI.TIT'    <JIMPTI>
+    VECTEUR VOLATILE DE K16 DE LONGUEUR TITMAX*COLMAX
+    TITRE DE CHAQUE COLONNE (AVEC TITMAX LIGNES POUR CHAQUE)
+
+ *** IMPCOL = IMPRCO(1:14)//'DEFI.RER' <JIMPRR>
+    VECTEUR VOLATILE DE REELS
+    CONTENU DE LA COLONNE (SI TYPE = REEL)
+
+ *** IMPCOL = IMPRCO(1:14)//'DEFI.REI' <JIMPRI>
+    VECTEUR VOLATILE D'ENTIERS
+    CONTENU DE LA COLONNE (SI TYPE = ENTIER)
+
+ *** IMPCOL = IMPRCO(1:14)//'DEFI.REK' <JIMPRK>
+    VECTEUR VOLATILE DE K16
+    CONTENU DE LA COLONNE (SI TYPE = CHAINE)
+
+    /!\ L'INFORMATION EST SURABONDANTE: CHAQUE COLONNE PEUT STOCKER
+    LES TROIS FORMATS ALORS QU'ELLE N'EN UTILISE QU'UN (CHOISI
+    DANS '&&OP0070.DEFI.TYP'
+
+ *** IMPCOL = IMPRCO(1:14)//'DEFI.MAR' <JIMPMA>
+    EVENTUEL MARQUAGE DANS LES COLONNES (X OU B PAR EXEMPLE)
+
+-----------------------------------------------------------------------
+RESTITUTION HORS AREX
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : NON
+   TITRE : CONTACT PROJECTION QUADRATIQUE
+   FONCTIONNALITE
+    P.Massin
+     Desactivation de la projection quadratique pour le contact
+    glissiere
+   DETAILS
+     Quand on a des mailles de type quadratique, Aster lie les
+     noeuds sommets avec les noeuds milieux par une relation lineaire.
+     Cette operation ne DOIT pas etre faite dans le cas du contact
+     glissiere.
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+
+-----------------------------------------------------------------------
+RESTITUTION HORS AREX
+   POUR_LE_COMPTE_DE   : P.MASSIN
+   NB_JOURS_TRAV : 0.5
+   INTERET_UTILISATEUR : NON
+   TITRE   "Matrice de rigidite coques_3d"
+   FONCTIONNALITE
+     Coque_3d : matrices de rigidité.
+     Erreur d'écriture dans les routines:
+     btdmsr.f aux lignes: 108 et 109, 117 et 118, 126 et 127
+     btdfn.f aux lignes: 91 et 92, 100 et 101, 109 et 110
+   DETAILS
+     On remplace dans ces routines aux endroits indiqués XR(I3+J) par XR(I3+NB2).
+     Fort heureusement J prenait la valeur NB2 due à l'incrémentation automatique
+     après la boucle précédente sur NB1 (NB2 valant NB1 + 1).
+     Cela ne corrige donc pas une AL mais facilitera la reprise du fortran.
+     Modification suggérée par A. Laulusa.
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+     La base de cas-tests des coques_3d
+
+-----------------------------------------------------------------------
+CORRECTION AL 2005-287
+   POUR_LE_COMPTE_DE   : P.MASSIN
+   NB_JOURS_TRAV : 10.
+   INTERET_UTILISATEUR : NON
+   TITRE   "Contact, Methode Continue: VALE_CONT"
+   FONCTIONNALITE
+     Valeurs des champs-solution VALE_CONT incorrectes pour la méthode continue
+     de contact quand les points d'integration ne coincident pas exactement aux noeuds
+     du maillage: par ex. pour des éléments quadratiques de contact SEG3, le
+     choix d'une integration aux noeuds génère des résultats incorrects, car le
+     noeud-milieu du SEG3 ne coincide à aucun point d'intégration.
+   DETAILS
+      Post-traitement de VALE_CONT pour la méthode continue de contact opéré dans MMMRES.F
+      Ajout d'un test IF sur les coordonnées absolues pour détecter la coincidence des
+      points d'integration avec les noeuds de la maille esclave de contact. Calcul
+      (jeu, glissement ...) et stockage des solutions aux noeuds de contact.
+      Modification supportée en 2D et en 3D.
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : OUI
+      DOC_V : V6.04.128
+       EXPL_: Ajout modèle de contact, méthode continue avec éléments quadratiques en 2D.
+   VALIDATION
+      - SSNV128P: Plaque en contact et frottement sur un plan rigide
+                  Modélisation 2D avec éléments quadratiques (SEG3)
+                  METHODE CONTINUE
+      - SSNV128R: Modélisation 3D avec éléments linéaires (CUB8)
+                  METHODE CONTINUE AVEC TRAITEMENT DE LA REDONDANCE (cf. EL 2004-183)
+      - SSNV504J: Extrusion d'un lopin
+                  Modélisation 2D avec éléments quadratiques (SEG3)
+                  METHODE CONTINUE
+      - SSNV504L: Modélisation 3D avec éléments linéaires (CUB8)
+                  METHODE CONTINUE
+
+-----------------------------------------------------------------------
+REALISATION EL 2005-208
+   POUR_LE_COMPTE_DE   : P.MASSIN
+   NB_JOURS_TRAV : 2.0
+   INTERET_UTILISATEUR : NON
+   TITRE :  "Contact, Méthode Continue: Glissière"
+   FONCTIONNALITE
+     L'option glissière est ajoutée à la méthode CONTINUE comme
+     cela a été déjà fait pour la méthode CONTRAINTE (ref EL 2005-004).
+     Elle permet de créer un contact de type "collant" sur toute la zone
+     de contact, ie, un contact permanent maintenu tout le long du calcul.
+
+   DETAILS
+     Syntaxe :
+     Dans AFFE_CHAR_MECA et sous le mot clé CONTACT, on donne GLISSIERE = 'OUI'
+     (ou 'NON' valeur par défaut).Si GLISSIERE='OUI', renseigner éventuellement
+     ALARM_JEU, tolérance maximale sur le jeu admissible (Valeur par défaut = 0.D0).
+
+     Développements :
+     Les subroutines concernés par la modification sont:
+     mappar.f, mmmbca.f, cazoco.f, quadco.f, cfdisc.f, initcnt.f, nminit.f,
+     sufco.f, mmacon.f.
+
+     On force le contact dans mmmbca.f pour la totalité des noeuds de la zone
+     de contact glissante, en affectant:
+     ZR(JTABF+20*INOEU+13) = 1.D0
+     Parallèlement, tjs dans mmmbca.f, on désactive le test de contrainte
+     active sur la valeur de la reaction normale (si lambda_contact < 0 =>
+     Pas de contact => on enlève le noeud correspondant du groupe de noeuds
+     contactants)
+
+     ATTENTION: Quand GLISSIERE='OUI', il ne faut pas mettre de frottement.
+     Pour l'instant, l'exclusion n'est pas automatique. Il faudrait à terme
+     imaginer un moyen de le mettre en place dans AFFE_CHAR_MECA.
+
+     J'en profite pour restituer des cas-tests SSNV504 effectués par P. Massin
+     utilisant GLISSIERE avec la méthode CONTRAINTE, en 2D quadratique SSNV504E
+     et 3D linéaire (SSNV504F) et quadratique (SSNV504G).
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_U : U4.44.01
+       EXPL_: AFFE_CHAR_MECA : ajout des nouveaux motclés liés à la nouvelle
+              fonctionnalité
+     DOC_V : V6.04.504
+       EXPL_: ajout d'un modèle glissière utilisant la méthode continue
+   VALIDATION
+     - SSNV504I: extrusion d'un lopin en 2D avec éléments quadratiques (SEG3)
+                 METHODE CONTINUE AVEC GLISSIERE.
+                 Validation par rapport au calcul avec METHODE CONTRAINTE
+                 AVEC GLISSIERE (ssnv504e)
+     - SSNV504K: extrusion d'un lopin en 3D avec éléments linéaires (CUB8)
+                 Validation par rapport au calcul avec METHODE CONTRAINTE
+                 AVEC GLISSIERE (ssnv504f)
+
+-----------------------------------------------------------------------
+REALISATION EL 2004-183
+   POUR_LE_COMPTE_DE   : P.MASSIN
+   NB_JOURS_TRAV  : 10.
+   INTERET_UTILISATEUR : NON
+   TITRE "CONTACT METHODE CONTINUE CONDITIONS AUX LIMITES"
+   FONCTIONNALITE
+     Cette modification permet de resoudre des problemes de pivots nuls
+     causes par des incompatibilites entre les conditions cinematiques
+     de type Dirichlet et les conditions de contact frottant.
+     Elle n'est valable que pour la methode continue.
+     Elle permet de lever les redondances entre les blocages et les
+     conditions de frottement suivant une direction donnee (typiquement
+     les conditions de symetrie ou d'axisymetrie et le contact frottant).
+     Ce travail dans la gestion des incompatibilites entre les conditions
+     cinematiques et le contact frottant est analogue a la fonctionnalite
+     VECT_Y dans la methode lagrangienne.
+
+   DETAILS
+    1) Nouveaux mot-cles simples SANS_GROUP_NO et SANS_NO dans l'operateur AFFE_CHAR_MECA
+       (mot-cles facultatifs de type GROUP_NO et NOEUD respectivement).
+       Ces mot-cles permettent a l'utilisateur averti de specifier les noeuds ou groupes de noeuds
+       susceptibles de presenter des problemes de redondances. Pour le moment, on ne fait pas de
+       detection automatique des incompatibilites.
+       Nouveaux mot-cles simples VECT_Y et VECT_Z correspondant :
+       - en 3D respectivement à la direction attendue de glissement dans laquelle apparaissent
+         les redondances et a l'autre direction de glissement (2 directions en 3D).
+       - en 2D, il ne faut renseigner que VECT_Y correspondant a la direction de glissement attendue.
+
+   Avertissements :
+   - En 3D :
+     a)	quand une maille contient un seul noeud 'redondant', l'utilisateur doit donner les valeurs de
+         VECT_Y et VECT_Z
+     b)	quand une maille contient 2 ou 3 noeuds 'redondants', on construit automatiquement les
+         directions locales de glissement dans MAPPAR.f (decomposition de semi-multiplicateur de
+         frottement en partie ortho-normale normale au SEG2 ou SEG3 de points redondants appartenant
+         a la maille et en partie tangentielle portee par ce segment : La direction de redondance
+         à traiter est donc la partie normale de ce multiplicateur)
+           - Il ne faut donner que les noeuds problematiques (la qualite de la solution en depend ie
+             risque davoir des NOOK TESTRESU par perte d'information).
+           - Il est important de noter que le traitement realise ne permet de resoudre que le probleme
+             specifique de redondance entre les conditions cinematiques et les conditions de frottement
+             (pour les redondances avec le contact, on peut utiliser loption CONTACT_INIT par exemple).
+   Les noeuds specifies par SANS_NO ou SANS_GROUP_NO gardent leur contribution contactante mais perdent
+   celle due au frottement.
+
+    2) Modifications des structures de donnees contact
+    Les structures de donnees relatives aux options SANS_GROUP_NO et SANS_NO (tableaux
+    DEFICO(1:16) // '.SSNOCO' et DEFICO(1:16) // '.PSSNOCO') ont ete utilisees pour le
+    stockage des goupes de noeuds ou noeuds sur lesquelles on veut traiter les redondances.
+    La structure de donnees relative a l'option VECT_Y, initialement prevue pour la methode
+    lagrangienne (tableau DEFICO(1:16) // '.TANDEF') a ete etendue et ensuite utilisee pour le
+    stockage des directions attendues de glissement.
+
+    3) Routines modifiees
+   La routine CAZOCC.f permet la lecture des principales caracteristiques du contact et le
+   remplissage de la SD 'DEFICO' pour la methode continue.
+   Une variable intermediaire de type REEL permet donc de recuperer, par zone de contact, les
+   valeurs des vecteurs  VECT_Y et VECT_Z.
+   Dans la routine MAPPAR.f, au moment de l'appariement, on detecte les mailles 'infectees'
+   par des redondances et on met un flag dessus valant 0,1,2 ou 3 selon le nombre de noeuds
+   appartenant a la fois a cette maille et a la direction de redondance attendue. On stocke
+   aussi les numeros d'ordre de ces noeuds dans le tableau de connectivite de la maille. Le stockage
+   se fait dans la carte de contact PCONFR (cf. FRAPP2.f).
+   Dans les routines elementaires de contact TE0364 et TE0365, selon que la maille comporte ou non
+   des noeuds presentant des redondances, un traitement specifique est applique (decouplage des
+   semi-multiplicateurs de Lagrange de contact frottant et des deplacements dans la direction
+   attendue des redondances).
+
+    4) Cas-test: Ajout dune nouvelle version du cas-test ssnv128 avec presence de redondances entre
+   les conditions de symetrie (selon X) et le frottement.
+   Sans traitement dans le cadre de la methode continue, on a un message d'erreur de type :
+
+  PIVOT VRAIMENT NUL A LA LIGNE
+  NOEUD >    < CMP >LAGR    < TARDIF  >CHA2    .CHME.LIGRE<
+  IL S'AGIT SANS DOUTE D'UNE RELATION DE BLOCAGE SURABONDANTE
+  BLOCAGE >NOEUD:                       CMP: DX
+
+   Apres application du traitement dans les routines elementaires de contact,
+   le cas-test passe.
+
+   Impact: MAPPAR.f, CARACO.f, CAZOCO.f, CAZOCC.f, FRAPP2.f, MMACON.f, MMMBCA.f, MMMRES.f,SURFCO.f
+         REACLM.f, TE0364.f, TE0365.f
+   Catalogues impactes: affe_char_meca
+   Extension de la carte de contact    gener_cmcfz1.cata
+                                       gener_cmcfz2.cata
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : OUI
+     DOC_U : U4.44.01
+       EXPL_ : Ajout de mot-cles SANS_GROUP_NO, SANS_NO, VECT_Y et VECT_Z dans
+              AFFE_CHAR_MECA/CONTACT/METHODE='CONTINUE'
+     DOC_V : V6.04.128
+       EXPL_ : Rajout d'une modélisation
+     DOC_D : D6.04.14
+       EXPL_ : utilisation de la structure de donnees relative a SANS_GROUP_NO pour
+               le stockage des points "redondants"  et le renseignement des directions
+               de glissement par VECT_Y et VECT_Z.
+   VALIDATION
+     SSNV128M
+
+-----------------------------------------------------------------------
+CORRECTION AL 2005-085
+   POUR_LE_COMPTE_DE   : P.MASSIN
+   NB_JOURS_TRAV  : 0.5
+   INTERET_UTILISATEUR : OUI
+   TITRE   "affe_char_meca/contact methode continue"
+   FONCTIONNALITE:
+     Possibilite d'utilisation de 2 occurrences de l'operateur affe_char_meca
+     pour 2 charges de contact differentes dans le meme fichier de commande.
+     La methode utilisee est la methode continue.
+   DETAILS:
+    PROBLEME:
+      L'objet CALICO.LIGREL est concatene à la charge globale et est vu
+      par la deuxieme charge de contact .
+      Erreur de type:  le nom >&&CALICO.LIGREL    .LIEL        < existe
+      deja dans la base globale.
+    SOLUTION:
+      Detruire l'objet >&&CALICO.LIGREL...< juste apres concatenation
+      DU LIGREL DE CONTACT 'CONTINUE' ET DU LIGREL DE CHARGE.
+      routine impactee : charme.f
+
+   RESU_FAUX_VERSION_EXPLOITATION    :  NON
+   RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+   RESTITUTION_VERSION_EXPLOITATION  :  NON
+   RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+   IMPACT_DOCUMENTAIRE : NON
+   VALIDATION
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+ CASTEST AJOUT ssnv128p                       mabbas M.ABBAS            201    201      0
+ CASTEST AJOUT ssnv128q                       mabbas M.ABBAS            238    238      0
+ CASTEST AJOUT ssnv128r                       mabbas M.ABBAS            188    188      0
+ CASTEST AJOUT ssnv504e                       mabbas M.ABBAS            245    245      0
+ CASTEST AJOUT ssnv504f                       mabbas M.ABBAS            301    301      0
+ CASTEST AJOUT ssnv504g                       mabbas M.ABBAS            303    303      0
+ CASTEST AJOUT ssnv506f                       mabbas M.ABBAS            231    231      0
+ CASTEST MODIF hpla100j                       durand C.DURAND           404      1      1
+ CASTEST MODIF ssnl119a                       durand C.DURAND           186      1      1
+ CASTEST MODIF ssnp14e                        durand C.DURAND           277      1      1
+ CASTEST MODIF ssnv104e                       mabbas M.ABBAS            231     45      1
+ CASTEST MODIF ssnv167b                       mabbas M.ABBAS            457     33     37
+ CASTEST MODIF zzzz100a                       durand C.DURAND          1832      6      3
+CATALOGU MODIF typelem/gener_cmcfz1           mabbas M.ABBAS             57      3      2
+CATALOGU MODIF typelem/gener_cmcfz2           mabbas M.ABBAS            149      3      2
+CATALOPY MODIF commande/affe_char_meca        mabbas M.ABBAS            955     11      1
+CATALOPY MODIF commande/affe_char_meca_c      mabbas M.ABBAS             79      1      1
+CATALOPY MODIF commande/affe_char_meca_f      mabbas M.ABBAS            603      7      1
+CATALOPY MODIF commande/calc_fonction         durand C.DURAND           169      1      4
+CATALOPY MODIF commande/dyna_non_line         mabbas M.ABBAS            356     48      1
+CATALOPY MODIF commande/dyna_tran_expli       mabbas M.ABBAS            295     35      1
+CATALOPY MODIF commande/stat_non_line         mabbas M.ABBAS            324     54      3
+ FORTRAN AJOUT algorith/cfconv                mabbas M.ABBAS            206    206      0
+ FORTRAN AJOUT algorith/cfinit                mabbas M.ABBAS            147    147      0
+ FORTRAN AJOUT algorith/cfiter                mabbas M.ABBAS            163    163      0
+ FORTRAN AJOUT algorith/dyoext                mabbas M.ABBAS            192    192      0
+ FORTRAN AJOUT algorith/impcmp                mabbas M.ABBAS             85     85      0
+ FORTRAN AJOUT algorith/impcod                mabbas M.ABBAS             86     86      0
+ FORTRAN AJOUT algorith/impdea                mabbas M.ABBAS             86     86      0
+ FORTRAN AJOUT algorith/impdef                mabbas M.ABBAS            241    241      0
+ FORTRAN AJOUT algorith/impfih                mabbas M.ABBAS             84     84      0
+ FORTRAN AJOUT algorith/impfoi                mabbas M.ABBAS             85     85      0
+ FORTRAN AJOUT algorith/impfok                mabbas M.ABBAS             41     41      0
+ FORTRAN AJOUT algorith/impfor                mabbas M.ABBAS            109    109      0
+ FORTRAN AJOUT algorith/impinf                mabbas M.ABBAS            106    106      0
+ FORTRAN AJOUT algorith/impini                mabbas M.ABBAS            356    356      0
+ FORTRAN AJOUT algorith/impmin                mabbas M.ABBAS            131    131      0
+ FORTRAN AJOUT algorith/impper                mabbas M.ABBAS            199    199      0
+ FORTRAN AJOUT algorith/imppre                mabbas M.ABBAS            100    100      0
+ FORTRAN AJOUT algorith/impref                mabbas M.ABBAS            254    254      0
+ FORTRAN AJOUT algorith/impsda                mabbas M.ABBAS            240    240      0
+ FORTRAN AJOUT algorith/impsdm                mabbas M.ABBAS            119    119      0
+ FORTRAN AJOUT algorith/impsdr                mabbas M.ABBAS            129    129      0
+ FORTRAN AJOUT algorith/impsdv                mabbas M.ABBAS            125    125      0
+ FORTRAN AJOUT algorith/impstd                mabbas M.ABBAS            127    127      0
+ FORTRAN AJOUT algorith/imptit                mabbas M.ABBAS            169    169      0
+ FORTRAN AJOUT algorith/nmbors                mabbas M.ABBAS             89     89      0
+ FORTRAN AJOUT algorith/nmimpa                mabbas M.ABBAS            114    114      0
+ FORTRAN AJOUT algorith/nmimpf                mabbas M.ABBAS             63     63      0
+ FORTRAN AJOUT algorith/nmimpm                mabbas M.ABBAS            515    515      0
+ FORTRAN AJOUT algorith/nmresi                mabbas M.ABBAS            229    229      0
+ FORTRAN AJOUT algorith/suicmp                mabbas M.ABBAS            198    198      0
+ FORTRAN AJOUT algorith/suiext                mabbas M.ABBAS            274    274      0
+ FORTRAN AJOUT algorith/suiini                mabbas M.ABBAS             98     98      0
+ FORTRAN MODIF algorith/algocl                mabbas M.ABBAS            678      6      2
+ FORTRAN MODIF algorith/algoco                mabbas M.ABBAS            695      8      3
+ FORTRAN MODIF algorith/algocp                mabbas M.ABBAS            376      8      3
+ FORTRAN MODIF algorith/cfalgo                mabbas M.ABBAS            198      3      4
+ FORTRAN MODIF algorith/cfcrsd                mabbas M.ABBAS            645     69     42
+ FORTRAN MODIF algorith/cfdisc                mabbas M.ABBAS            193     17      2
+ FORTRAN MODIF algorith/cfgeom                mabbas M.ABBAS            183      4      1
+ FORTRAN MODIF algorith/dyobar                mabbas M.ABBAS            287    193    114
+ FORTRAN MODIF algorith/dyobs1                mabbas M.ABBAS            221     66     42
+ FORTRAN MODIF algorith/dyobs2                mabbas M.ABBAS            237     53     37
+ FORTRAN MODIF algorith/dyobs3                mabbas M.ABBAS            187     85     34
+ FORTRAN MODIF algorith/dyobse                mabbas M.ABBAS            168     86     60
+ FORTRAN MODIF algorith/frapp2                mabbas M.ABBAS            677    272    285
+ FORTRAN MODIF algorith/fro2gd                mabbas M.ABBAS            761      6      2
+ FORTRAN MODIF algorith/frogdp                mabbas M.ABBAS            652      8      3
+ FORTRAN MODIF algorith/frolgd                mabbas M.ABBAS           1109      6      2
+ FORTRAN MODIF algorith/fropgd                mabbas M.ABBAS            854      6      2
+ FORTRAN MODIF algorith/iniobs                mabbas M.ABBAS            109     25     16
+ FORTRAN MODIF algorith/lobs                  mabbas M.ABBAS             92     33     12
+ FORTRAN MODIF algorith/mappar                mabbas M.ABBAS            332    216     78
+ FORTRAN MODIF algorith/mmacon                mabbas M.ABBAS            236    110    111
+ FORTRAN MODIF algorith/mmmbca                mabbas M.ABBAS            276    125     80
+ FORTRAN MODIF algorith/mmmres                mabbas M.ABBAS           1027    486    220
+ FORTRAN MODIF algorith/mxmass                mabbas M.ABBAS            201      2      2
+ FORTRAN MODIF algorith/nmcofr                mabbas M.ABBAS            185     24      9
+ FORTRAN MODIF algorith/nmconv                mabbas M.ABBAS            654    467    243
+ FORTRAN MODIF algorith/nmdepl                mabbas M.ABBAS            307     36     17
+ FORTRAN MODIF algorith/nmible                mabbas M.ABBAS            177     61     31
+ FORTRAN MODIF algorith/nmimpr                mabbas M.ABBAS            127     36    536
+ FORTRAN MODIF algorith/nmini0                mabbas M.ABBAS            133     17      3
+ FORTRAN MODIF algorith/nminit                mabbas M.ABBAS            550     85     52
+ FORTRAN MODIF algorith/nmmatr                mabbas M.ABBAS            439     19     22
+ FORTRAN MODIF algorith/nmtble                mabbas M.ABBAS            235    135     40
+ FORTRAN MODIF algorith/op0070                mabbas M.ABBAS            806     60     44
+ FORTRAN MODIF algorith/reaclm                mabbas M.ABBAS            112     60     33
+ FORTRAN MODIF algorith/ttprsm                mabbas M.ABBAS            100      3      3
+ FORTRAN MODIF elements/btdfn                 mabbas M.ABBAS            134      7      7
+ FORTRAN MODIF elements/btdmsr                mabbas M.ABBAS            173      7      7
+ FORTRAN MODIF elements/te0364                mabbas M.ABBAS            968    325    218
+ FORTRAN MODIF elements/te0365                mabbas M.ABBAS            621    273    247
+ FORTRAN MODIF modelisa/caraco                mabbas M.ABBAS            185      2      2
+ FORTRAN MODIF modelisa/cazocc                mabbas M.ABBAS            230    107     86
+ FORTRAN MODIF modelisa/cazoco                mabbas M.ABBAS            563    238    247
+ FORTRAN MODIF modelisa/charme                mabbas M.ABBAS            389      2      1
+ FORTRAN MODIF modelisa/nbnoco                mabbas M.ABBAS            126     12      4
+ FORTRAN MODIF modelisa/nbnoel                mabbas M.ABBAS            220     17      7
+ FORTRAN MODIF modelisa/quadco                mabbas M.ABBAS            113     13     11
+ FORTRAN MODIF modelisa/surfco                mabbas M.ABBAS            390    176    168
+ FORTRAN MODIF utilitai/detrsd                mabbas M.ABBAS            471      3      1
+ FORTRAN SUPPR algorith/cvgcnt                mabbas M.ABBAS            196      0    196
+ FORTRAN SUPPR algorith/inicnt                mabbas M.ABBAS            162      0    162
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :   39        6867      6867             +6867
+ MODIF :   64       25176      4328    3256     +1072
+ SUPPR :    2         358               358      -358
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :  105       32401     11195    3614     +7581 

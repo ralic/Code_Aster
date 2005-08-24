@@ -1,16 +1,9 @@
-      SUBROUTINE DYOBAR ( NOMTAB, MAILLA, NBOBS, INST, INSTAP, 
-     +                    VALPLU, VITPLU,
-     +                    ACCPLU, NBMODS, DEPENT, VITENT, ACCENT)
-      IMPLICIT   NONE
-      INTEGER             NBOBS, INST, NBMODS
-      INTEGER             KCHAM, KCOMP, KNUCM, KNOEU, KMAIL, KPOIN
-      REAL*8              INSTAP
-      CHARACTER*8         MAILLA
-      CHARACTER*19        NOMTAB
-      CHARACTER*24        DEPPLU, SIGPLU, VARPLU, VITPLU, ACCPLU
-      CHARACTER*24        VALPLU, ACCENT, DEPENT, VITENT
+      SUBROUTINE DYOBAR(MAILLA,NOMTAB,
+     &                  NBMODS,NBOBS,NUOBSE,INSTAP, 
+     &                  VITPLU,ACCPLU,VALPLU,
+     &                  DEPENT,VITENT,ACCENT,CNSINR)
 C ----------------------------------------------------------------------
-C MODIF ALGORITH  DATE 22/11/2004   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF ALGORITH  DATE 24/08/2005   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -29,10 +22,45 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
 C TOLE CRP_21
+      IMPLICIT     NONE
+      CHARACTER*19 NOMTAB
+      CHARACTER*8  MAILLA
+      INTEGER      NBOBS
+      INTEGER      NUOBSE
+      REAL*8       INSTAP
+      CHARACTER*24 VALPLU
+      CHARACTER*24 VITPLU
+      CHARACTER*24 ACCPLU
+      INTEGER      NBMODS
+      CHARACTER*24 DEPENT
+      CHARACTER*24 VITENT
+      CHARACTER*24 ACCENT
+      CHARACTER*19 CNSINR
+C
 C ----------------------------------------------------------------------
-C     ARCHIVAGE DU MOT CLE FACTEUR "OBSERVATION"
+C ROUTINE APPELEE PAR : OP0070
 C ----------------------------------------------------------------------
-C     --- DEBUT DECLARATIONS NORMALISEES JEVEUX ------------------------
+C
+C REALISATION D'UNE OBSERVATION 
+C
+C IN  NOMTAB : NOM DE LA TABLE DES OBSERVATIONS
+C IN  MAILLA : NOM DU MAILLAGE
+C IN  NBOBS  : NOMBRE DE FONCTIONS (= NOMBRE D'OBSERVATIONS PAR INSTANT
+C               D'OBSERVATION)
+C IN  NUOBSE : NUMERO DE L'OBSERVATION
+C IN  INSTAP : VALEUR DE L'INSTANT ACTUEL
+C IN  VALPLU : VARIABLES A L'INSTANT ACTUEL (DANS CHAPEAU)
+C IN  VITPLU : VITESSES A L'INSTANT ACTUEL
+C IN  ACCPLU : ACCELERATIONS A L'INSTANT ACTUEL
+C IN  NBMODS : NOMBRE DE MODES STATIQUES
+C IN  DEPENT : DEPLACEMENTS DE REFERENCE POUR LES DEPLACEMENTS ABSOLUS
+C IN  VITENT : VITESSES DE REFERENCE POUR LES VITESSES ABSOLUS
+C IN  ACCENT : ACCELERATIONS DE REFERENCE POUR LES ACCELERATIONS
+C              ABSOLUS
+C IN  CNSINR : CHAM_NO_S CONTENANT LES INFOS SUR LE CONTACT
+C
+C -------------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ----------------
+C
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
@@ -47,22 +75,29 @@ C     --- DEBUT DECLARATIONS NORMALISEES JEVEUX ------------------------
       CHARACTER*32                                    ZK32
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
-C     --- FIN DECLARATIONS NORMALISEES JEVEUX --------------------------
-      INTEGER       IRET, TABI(2), IOCC, INOEUD, ICMP
-      INTEGER       JDEPP, JVITP, JACCP, JDEPEN, JVITEN, JACCEN
-      REAL*8        VALR, TABR(2)
-      CHARACTER*13  RESULT, CONCEP, NOMCMD
-      COMPLEX*16    CBID
-      CHARACTER*16  TABK(4)
-      CHARACTER*16  NPARAN(6), NPARAS(7)
-      CHARACTER*24  K24BID
+C
+C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
+C
+      INTEGER      TABI(2),IOCC,INOEUD,ICMP,VARINT,ICTC
+      INTEGER      JDEPP,JVITP,JACCP,JDEPEN,JVITEN,JACCEN,JCONT
+      REAL*8       VALR,TABR(2)
+      CHARACTER*13 RESULT,CONCEP,NOMCMD
+      COMPLEX*16   CBID
+      CHARACTER*16 TABK(4),CHAM
+      CHARACTER*16 NPARAN(6),NPARAS(7)
+      CHARACTER*24 K24BID
+      INTEGER      KCHAM,KCOMP,KNUCM,KNOEU,KMAIL,KPOIN,SUBTOP,TYPCHA
+      CHARACTER*24 DEPPLU,SIGPLU,VARPLU
+      CHARACTER*19 CNSINZ
+      CHARACTER*8  CMP,TOPO      
 C
       DATA NPARAN / 'NUME_ORDRE' , 'INST' , 'NOM_CHAM' , 'NOM_CMP',
      +              'NOEUD' , 'VALE' /
 C
       DATA NPARAS / 'NUME_ORDRE' , 'INST' , 'NOM_CHAM' , 'NOM_CMP',
      +              'MAILLE'  , 'POINT' , 'VALE' /
-C DEB------------------------------------------------------------------
+C
+C ----------------------------------------------------------------------
 C
       CALL GETRES(RESULT,CONCEP,NOMCMD)
 C
@@ -74,135 +109,179 @@ C
       CALL JEVEUO ( '&&DYOBSE.NOEUD'    , 'L' , KNOEU )
       CALL JEVEUO ( '&&DYOBSE.MAILLE'   , 'L' , KMAIL )
       CALL JEVEUO ( '&&DYOBSE.POINT'    , 'L' , KPOIN )
-
+C
+C --- SI ON DEMANDE DES DDL ABSOLUS EN STATIQUE -> ARRET
+C
+      IF (NOMCMD(1:13).EQ.'STAT_NON_LINE')THEN
+        DO 10 IOCC = 1 , NBOBS 
+          CHAM   = ZK16(KCHAM-1+IOCC)
+          IF (  CHAM(1:11) .EQ. 'DEPL_ABSOLU'.OR.
+     &         CHAM(1:11) .EQ. 'VITE_ABSOLU'.OR.
+     &         CHAM(1:11) .EQ. 'ACCE_ABSOLU') THEN
+                 
+                 CALL UTDEBM('F','DYOBAR','ERREUR FATALE')
+                 CALL UTIMPK('L','LE CHAMP',1,CHAM(1:11))
+                 CALL UTIMPK('S','EST INCOMPATIBLE AVEC'//
+     &            ' LE MODE ',1,NOMCMD(1:13))
+                 CALL UTFINM()
+          ENDIF
+ 10     CONTINUE
+      ENDIF
+C
+C --- DECOMPACTION DES VARIABLES CHAPEAUX
+C
       CALL DESAGG(VALPLU,DEPPLU,SIGPLU,VARPLU,K24BID,K24BID,K24BID,
      &            K24BID,K24BID)
-      CALL JEVEUO(DEPPLU(1:19)//'.VALE','L',JDEPP) 
-C
-      IF(NOMCMD(1:13).EQ.'STAT_NON_LINE')THEN
-         DO 10 IOCC = 1 , NBOBS 
-            IF (  ZK16(KCHAM-1+IOCC)(1:4).NE.'DEPL'     .AND.
-     &            ZK16(KCHAM-1+IOCC)(1:9).NE.'SIEF_ELGA'.AND.
-     &            ZK16(KCHAM-1+IOCC)(1:9).NE.'VARI_ELGA') THEN
-                CALL UTDEBM('F','DYOBAR','ERREUR FATALE')
-                CALL UTIMPK('L','LE CHAMP',1,ZK16(KCHAM-1+IOCC)(1:11))
-                CALL UTIMPK('S','EST INCOMPATIBLE AVEC'//
-     +               ' LE MODE',1,NOMCMD(1:13))
-                CALL UTFINM()
-             ENDIF
- 10       CONTINUE
-       ELSE
-          CALL JEVEUO(VITPLU(1:19)//'.VALE','L',JVITP) 
-          CALL JEVEUO(ACCPLU(1:19)//'.VALE','L',JACCP)
-          CALL JEVEUO(DEPENT(1:19)//'.VALE','L',JDEPEN)
-          CALL JEVEUO(VITENT(1:19)//'.VALE','L',JVITEN)
-          CALL JEVEUO(ACCENT(1:19)//'.VALE','L',JACCEN)
-       ENDIF
 
-       TABI(1) = INST
-       TABR(1) = INSTAP
 C
+C --- RECUPERATIONS DES POINTEURS JEVEUX SUR LES CHAMPS
+C
+      CALL JEVEUO(DEPPLU(1:19)//'.VALE','L',JDEPP) 
+
+      IF (NOMCMD(1:13).NE.'STAT_NON_LINE')THEN
+         CALL JEVEUO(VITPLU(1:19)//'.VALE','L',JVITP) 
+         CALL JEVEUO(ACCPLU(1:19)//'.VALE','L',JACCP)
+         CALL JEVEUO(DEPENT(1:19)//'.VALE','L',JDEPEN)
+         CALL JEVEUO(VITENT(1:19)//'.VALE','L',JVITEN)
+         CALL JEVEUO(ACCENT(1:19)//'.VALE','L',JACCEN)
+      ENDIF
+C
+C --- POUR LE CONTACT: CONVERSION CHAM_NO EN CHAM_NO_S
+C
+      CALL JEEXIN(CNSINR//'.CNSV',ICTC)
+      IF (ICTC.NE.0) THEN
+        CNSINZ = '&&DYOBAR.CNSINZ'
+        CALL CNSCNO(CNSINR,' ','NON','V',CNSINZ)
+        CALL JEVEUO(CNSINZ(1:19)//'.VALE','L',JCONT)
+      ENDIF
+C
+      TABI(1) = NUOBSE
+      TABR(1) = INSTAP
 C
       DO 20 IOCC = 1 , NBOBS 
 C
+C --- CHAMP
 C
-         TABK(1) = ZK16(KCHAM-1+IOCC)
+         CHAM   = ZK16(KCHAM-1+IOCC)
 C
-         TABK(2) = ZK8(KCOMP-1+IOCC)
+C --- IDENTIFICATION DU CHAMP A EXTRAIRE
 C
-         IF (     ZK16(KCHAM-1+IOCC)(1:11) .EQ. 'DEPL_ABSOLU' ) THEN
-C                 ----------------------------
-           IF (NBMODS.EQ.0) THEN
-            CALL UTMESS ('F','DYNA_NON_LINE','LE CHAMP DEPL_ABSOLU'//
-     +       ' N''EST ACCESSIBLE QU''EN PRESENCE DE MODES STATIQUES')
-           ELSE
-            TABK(3) = ZK8(KNOEU-1+IOCC)
-            CALL POSDDL ( 'CHAM_NO', DEPPLU, ZK8(KNOEU-1+IOCC),
-     +                               ZK8(KCOMP-1+IOCC), INOEUD, ICMP )
-            CALL POSDDL ( 'CHAM_NO', DEPENT, ZK8(KNOEU-1+IOCC),
-     +                               ZK8(KCOMP-1+IOCC), INOEUD, ICMP )
-
-            TABR(2) = ZR(JDEPP+ICMP-1) + ZR(JDEPEN+ICMP-1)
-            CALL TBAJLI ( NOMTAB, 6, NPARAN, TABI, TABR, CBID, TABK,0)
-           ENDIF
-C
-          ELSEIF ( ZK16(KCHAM-1+IOCC)(1:11) .EQ. 'VITE_ABSOLU' ) THEN
-C                 ----------------------------
-           IF (NBMODS.EQ.0) THEN
-            CALL UTMESS ('F','DYNA_NON_LINE','LE CHAMP VITE_ABSOLU'//
-     +       ' N''EST ACCESSIBLE QU''EN PRESENCE DE MODES STATIQUES')
-           ELSE
-            TABK(3) = ZK8(KNOEU-1+IOCC)
-            CALL POSDDL ( 'CHAM_NO', VITPLU, ZK8(KNOEU-1+IOCC),
-     +                               ZK8(KCOMP-1+IOCC), INOEUD, ICMP )
-            CALL POSDDL ( 'CHAM_NO', VITENT, ZK8(KNOEU-1+IOCC),
-     +                               ZK8(KCOMP-1+IOCC), INOEUD, ICMP )
-            TABR(2) = ZR(JVITP+ICMP-1) + ZR(JVITEN+ICMP-1)
-            CALL TBAJLI ( NOMTAB, 6, NPARAN, TABI, TABR, CBID, TABK,0)
-          ENDIF
-C
-         ELSEIF ( ZK16(KCHAM-1+IOCC)(1:11) .EQ. 'ACCE_ABSOLU' ) THEN
-C                 ----------------------------
-           IF (NBMODS.EQ.0) THEN
-            CALL UTMESS ('F','DYNA_NON_LINE','LE CHAMP ACCE_ABSOLU'//
-     +       ' N''EST ACCESSIBLE QU''EN PRESENCE DE MODES STATIQUES')
-           ELSE
-            TABK(3) = ZK8(KNOEU-1+IOCC)
-            CALL POSDDL ( 'CHAM_NO', ACCPLU, ZK8(KNOEU-1+IOCC),
-     +                               ZK8(KCOMP-1+IOCC), INOEUD, ICMP )
-            CALL POSDDL ( 'CHAM_NO', ACCENT, ZK8(KNOEU-1+IOCC),
-     +                               ZK8(KCOMP-1+IOCC), INOEUD, ICMP )
-            TABR(2) = ZR(JACCP+ICMP-1) + ZR(JACCEN+ICMP-1)
-            CALL TBAJLI ( NOMTAB, 6, NPARAN, TABI, TABR, CBID, TABK,0)
-C
+         TYPCHA = 0
+         IF     ( CHAM(1:11) .EQ. 'DEPL_ABSOLU' ) THEN
+           TYPCHA = 1        
+         ELSEIF ( CHAM(1:11) .EQ. 'VITE_ABSOLU' ) THEN
+           TYPCHA = 2         
+         ELSEIF ( CHAM(1:11) .EQ. 'ACCE_ABSOLU' ) THEN
+           TYPCHA = 3         
+         ELSEIF ( CHAM(1:4) .EQ. 'DEPL' ) THEN
+           TYPCHA = 4         
+         ELSEIF ( CHAM(1:9) .EQ. 'VALE_CONT' ) THEN
+           TYPCHA = 5         
+         ELSEIF ( CHAM(1:4) .EQ. 'VITE' ) THEN
+           TYPCHA = 6         
+         ELSEIF ( CHAM(1:4) .EQ. 'ACCE' ) THEN
+           TYPCHA = 7         
+         ELSEIF ( CHAM(1:9) .EQ. 'SIEF_ELGA' ) THEN
+           TYPCHA = 8         
+         ELSEIF ( CHAM(1:9) .EQ. 'VARI_ELGA' ) THEN
+           TYPCHA = 9         
+         ELSE
+           CALL UTMESS('F','DYOBAR','TYPE DE CHAMP INCONNU')
          ENDIF
-         ELSEIF (     ZK16(KCHAM-1+IOCC)(1:4) .EQ. 'DEPL' ) THEN
-C                 ----------------------------
-            TABK(3) = ZK8(KNOEU-1+IOCC)
-            CALL POSDDL ( 'CHAM_NO', DEPPLU, ZK8(KNOEU-1+IOCC),
-     +                               ZK8(KCOMP-1+IOCC), INOEUD, ICMP )
-            TABR(2) = ZR(JDEPP+ICMP-1)
-            CALL TBAJLI ( NOMTAB, 6, NPARAN, TABI, TABR, CBID, TABK,0)
 C
-         ELSEIF ( ZK16(KCHAM-1+IOCC)(1:4) .EQ. 'VITE' ) THEN
-C                 ----------------------------
-            TABK(3) = ZK8(KNOEU-1+IOCC)
-            CALL POSDDL ( 'CHAM_NO', VITPLU, ZK8(KNOEU-1+IOCC),
-     +                               ZK8(KCOMP-1+IOCC), INOEUD, ICMP )
-            TABR(2) = ZR(JVITP+ICMP-1)
-            CALL TBAJLI ( NOMTAB, 6, NPARAN, TABI, TABR, CBID, TABK,0)
+C --- COMPOSANTE
 C
-         ELSEIF ( ZK16(KCHAM-1+IOCC)(1:4) .EQ. 'ACCE' ) THEN
-C                 ----------------------------
-            TABK(3) = ZK8(KNOEU-1+IOCC)
-            CALL POSDDL ( 'CHAM_NO', ACCPLU, ZK8(KNOEU-1+IOCC),
-     +                               ZK8(KCOMP-1+IOCC), INOEUD, ICMP )
-            TABR(2) = ZR(JACCP+ICMP-1)
-            CALL TBAJLI ( NOMTAB, 6, NPARAN, TABI, TABR, CBID, TABK,0)
+         CMP    = ZK8(KCOMP-1+IOCC)
 C
-         ELSEIF ( ZK16(KCHAM-1+IOCC)(1:9) .EQ. 'SIEF_ELGA' ) THEN
-C                 ---------------------------------
-            TABK(3) = ZK8(KMAIL-1+IOCC)
-            TABI(2) = ZI(KPOIN-1+IOCC)
-            CALL UTCH19 (SIGPLU(1:19),MAILLA,ZK8(KMAIL-1+IOCC),' ',
-     +                ZI(KPOIN-1+IOCC), 0,     1,ZK8(KCOMP-1+IOCC), 
-     +                'R',VALR,CBID,IRET)
-            TABR(2) = VALR
-            CALL TBAJLI ( NOMTAB, 7, NPARAS, TABI, TABR, CBID, TABK,0)
+C --- ENTITE TOPOLOGIQUE PRINCIPALE (NOEUD OU MAILLE)
+C --- SI MAILLE -> SOUS-ENTITE TOPOLOGIQUE  (POINT DE GAUSS)
 C
-         ELSEIF ( ZK16(KCHAM-1+IOCC)(1:9) .EQ. 'VARI_ELGA' ) THEN
-C                 ---------------------------------
-            TABK(3) = ZK8(KMAIL-1+IOCC)
-            TABI(2) = ZI(KPOIN-1+IOCC)
-            CALL UTCH19 (VARPLU(1:19),MAILLA,ZK8(KMAIL-1+IOCC),' ',
-     +              ZI(KPOIN-1+IOCC),
-     +              0,    ZI(KNUCM-1+IOCC),'VARI','R',VALR,CBID,IRET)
-            TABR(2) = VALR
-            CALL TBAJLI ( NOMTAB, 7, NPARAS, TABI, TABR, CBID, TABK,0)
+         SUBTOP = 0
+         IF (TYPCHA.GE.8) THEN
+           TOPO   = ZK8(KMAIL-1+IOCC)
+           SUBTOP = ZI(KPOIN-1+IOCC)
+         ELSE
+           TOPO   = ZK8(KNOEU-1+IOCC)
+         ENDIF
 C
+C --- NUMERO DE VARIABLE INTERNE 
+C
+         VARINT = 0
+         IF (TYPCHA.EQ.9) THEN
+           VARINT  = ZI(KNUCM-1+IOCC)
+         ENDIF
+C
+C --- DEPL, VITE ET ACCE ABSOLUS -> MODES STATIQUES ?
+C
+         IF ((TYPCHA.GE.1).AND.(TYPCHA.LE.3)) THEN
+           IF (NBMODS.EQ.0) THEN
+             CALL UTMESS ('F','OBSERVATION','LE CHAMP ABSOLU'//
+     &        ' N''EST ACCESSIBLE QU''EN PRESENCE DE MODES STATIQUES')
+           ENDIF
+         ENDIF
+C
+         CALL DYOEXT(MAILLA,TYPCHA,TOPO,SUBTOP,CMP,VARINT,
+     &               DEPPLU,VITPLU,ACCPLU,SIGPLU,VARPLU,
+     &               DEPENT,VITENT,ACCENT,
+     &               ICTC,CNSINZ,
+     &               0,K24BID,K24BID,K24BID,K24BID,
+     &               INOEUD,ICMP,VALR)
+C
+         IF ((ICMP.EQ.0).OR.(INOEUD.EQ.0)) THEN
+           CALL UTDEBM('F','DYOBAR','ERREUR FATALE')
+           CALL UTIMPK('L','L''ENTITE ',1,TOPO(1:8))
+           CALL UTIMPK('S',' N''EST PAS POSSIBLE ',0,' ')
+           CALL UTFINM()
+         ENDIF
+C
+C ---
+C
+         TABK(1) = CHAM
+         TABK(2) = CMP
+         IF     (TYPCHA.EQ.1) THEN
+           TABK(3) = TOPO
+           TABR(2) = ZR(JDEPP+ICMP-1) + ZR(JDEPEN+ICMP-1)
+           CALL TBAJLI(NOMTAB,6,NPARAN,TABI,TABR,CBID,TABK,0)
+         ELSEIF (TYPCHA.EQ.2) THEN
+           TABK(3) = TOPO
+           TABR(2) = ZR(JVITP+ICMP-1) + ZR(JVITEN+ICMP-1)
+           CALL TBAJLI(NOMTAB,6,NPARAN,TABI,TABR,CBID,TABK,0)
+         ELSEIF (TYPCHA.EQ.3) THEN
+           TABK(3) = TOPO
+           TABR(2) = ZR(JACCP+ICMP-1) + ZR(JACCEN+ICMP-1)
+           CALL TBAJLI(NOMTAB,6,NPARAN,TABI,TABR,CBID,TABK,0)
+         ELSEIF (TYPCHA.EQ.4) THEN
+           TABK(3) = TOPO
+           TABR(2) = ZR(JDEPP+ICMP-1)
+           CALL TBAJLI(NOMTAB,6,NPARAN,TABI,TABR,CBID,TABK,0)
+         ELSEIF (TYPCHA.EQ.5) THEN
+           TABK(3) = TOPO
+           TABR(2) = ZR(JCONT+ICMP-1)
+           CALL TBAJLI(NOMTAB,6,NPARAN,TABI,TABR,CBID,TABK,0)
+         ELSEIF (TYPCHA.EQ.6) THEN
+           TABK(3) = TOPO
+           TABR(2) = ZR(JVITP+ICMP-1)
+           CALL TBAJLI(NOMTAB,6,NPARAN,TABI,TABR,CBID,TABK,0)
+         ELSEIF (TYPCHA.EQ.7) THEN
+           TABK(3) = TOPO
+           TABR(2) = ZR(JACCP+ICMP-1)
+           CALL TBAJLI(NOMTAB,6,NPARAN,TABI,TABR,CBID,TABK,0)
+         ELSEIF (TYPCHA.EQ.8) THEN
+           TABK(3) = TOPO
+           TABI(2) = SUBTOP
+           TABR(2) = VALR
+           CALL TBAJLI(NOMTAB,7,NPARAS,TABI,TABR,CBID,TABK,0)
+         ELSEIF (TYPCHA.EQ.9) THEN
+           TABK(3) = TOPO
+           TABI(2) = SUBTOP
+           TABR(2) = VALR
+           CALL TBAJLI(NOMTAB,7,NPARAS,TABI,TABR,CBID,TABK,0)
+         ELSE 
+           CALL UTMESS('F','DYOEXT','TYPE DE CHAMP INCONNU')
          ENDIF
 C
  20   CONTINUE
 C
       CALL JEDEMA()
+
       END

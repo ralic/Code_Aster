@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/06/2005   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 24/08/2005   AUTEUR MABBAS M.ABBAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -191,6 +191,40 @@ DYNA_TRAN_EXPLI=OPER(nom="DYNA_TRAN_EXPLI",op= 70,sd_prod=evol_noli,reentrant='f
            ITER_INTE_PAS   =SIMP(statut='f',typ='I',defaut= 0 ),
            RESO_INTE       =SIMP(statut='f',typ='TXM',defaut="IMPLICITE",
                                  into=("RUNGE_KUTTA_2","RUNGE_KUTTA_4","IMPLICITE")),
+         ),
+#-------------------------------------------------------------------
+        AFFICHAGE      = FACT(statut='f',max=16,
+
+            UNITE       = SIMP(statut='f',typ='I',val_min=1),
+
+            LONG_R      = SIMP(statut='f',typ='I',defaut=12,val_min=1,val_max=12),
+            PREC_R      = SIMP(statut='f',typ='I',defaut=5, val_min=1,val_max=8),
+            LONG_I      = SIMP(statut='f',typ='I',defaut=6, val_min=1,val_max=12),
+            
+            NOM_COLONNE = SIMP(statut='o',typ='TXM',defaut="STANDARD",
+                                into=("STANDARD","MINIMUM",
+                                      "ITER_NEWT",
+                                      "INCR_TPS",
+                                      "RESI_RELA","RELA_NOEU",
+                                      "RESI_MAXI","MAXI_NOEU",
+                                      "RESI_REFE","REFE_NOEU",
+                                      "RELI_ITER","RELI_COEF",
+                                      "PILO_PARA",
+                                      "LAGR_ECAR","LAGR_INCR","LAGR_ITER",
+                                      "MATR_ASSE",
+                                      "ITER_DEBO",
+                                      "CTCD_ITER","CTCD_INFO","CTCD_GEOM","CTCD_NOEU",
+                                      "CTCC_GEOM","CTCC_FROT","CTCC_CONT",
+                                      "SUIV_1","SUIV_2","SUIV_3","SUIV_4",
+                                     ),
+                               ),
+            b_residu    = BLOC(condition = " NOM_COLONNE == 'RESI_RELA' or \
+                    NOM_COLONNE == 'RESI_MAXI' or\
+                    NOM_COLONNE == 'RESI_REFE' or\
+                    NOM_COLONNE == 'CTCD_GEOM' or\
+                    NOM_COLONNE == 'STANDARD' ",
+                            INFO_RESIDU = SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON")),   
+                          ),
          ),
 #-------------------------------------------------------------------
          ARCHIVAGE       =FACT(statut='f',

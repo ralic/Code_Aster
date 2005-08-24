@@ -2,7 +2,7 @@
      &           RESU,DEPTOT,ITERAT,LREAC,CONV,DEPDEL,LICCVG)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/05/2005   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 24/08/2005   AUTEUR MABBAS M.ABBAS 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -131,7 +131,7 @@ C
       INTEGER      BTOTAL,ITEMUL
       REAL*8       R8MAEM,R8PREM,AJEU,RHO,RHORHO,AADELT,AJEUFY,XF
       REAL*8       X1,VAL,XXMIN,XXMAX,XX
-      REAL*8       XTOL,AJEUFX,XK,XMU
+      REAL*8       XTOL,AJEUFX,XK,XMU,R8BID
       REAL*8       ALPHA,BETA,RESIGR,XJVMAX
       INTEGER      ITER,ITEMAX
       INTEGER      AJLIAI,SPLIAI,LLF,LLF1,LLF2
@@ -837,6 +837,10 @@ C ======================================================================
       END IF
 C ======================================================================
   999 CONTINUE
+C ======================================================================
+C --- SAUVEGARDE DES INFOS DE DIAGNOSTIC (NOMBRE D'ITERATIONS)
+C ======================================================================
+      CALL CFITER(RESOCO,'E','ITER',ITER,R8BID)
 C ======================================================================
  1000 FORMAT (' <CONTACT> <> NBRE DE LIAISONS POSSIBLES: ',I6)
  1001 FORMAT (' <CONTACT> <> DEBUT DES ITERATIONS (MAX: ',I6,')')

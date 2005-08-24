@@ -1,8 +1,8 @@
       SUBROUTINE NBNOEL(CHAR,NOMA,MOTCLE,NGR,CALCMA,INDQUA,
-     +                 NBMA,NBNO,NBNOQU)
+     +                 INPROJ,NBMA,NBNO,NBNOQU)
                 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 07/10/2004   AUTEUR MABBAS M.ABBAS 
+C MODIF MODELISA  DATE 24/08/2005   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,12 +23,13 @@ C
       IMPLICIT NONE
 C     
 C  IN  <-    
+      CHARACTER*16   MOTFAC
       CHARACTER*8    CHAR
       CHARACTER*8    NOMA
       CHARACTER*8    MOTCLE
       INTEGER        NGR
       CHARACTER*8    CALCMA(*)
-      INTEGER        INDQUA
+      INTEGER        INDQUA,INPROJ
 C  I/O <->
       INTEGER        NBMA
 C  OUT ->
@@ -74,7 +75,7 @@ C -------------- DEBUT DECLARATIONS NORMALISEES JEVEUX -----------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 
 C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
-
+     
       INTEGER IATYMA,ITYP,NUTYP,JGRO,NBMAIL,NUMAIL
       INTEGER NOEUSO,NOEUMI,N1,II1,II2,NBNOMI
       INTEGER IRET,NEL,IGREL,NBGREL,ITYPEL,IALIEL
@@ -112,11 +113,12 @@ C ----------------------------------------------------------------------
             IF (INDQUA.EQ.1) THEN
               NOEUMI = 0
               NOEUSO = N1
-            ELSE IF (NOMTM(1:5).EQ.'QUAD8' .OR.
+            ELSE
+             IF (NOMTM(1:5).EQ.'QUAD8' .OR.
      &               NOMTM(1:5).EQ.'TRIA6') THEN
               NOEUMI = NBNOMI(NOMTM(1:5))
               NOEUSO = N1 - NOEUMI
-            ELSE IF (NOMTM(1:5).EQ.'QUAD9' .OR.
+             ELSE IF (NOMTM(1:5).EQ.'QUAD9' .OR.
      &               NOMTM(1:5).EQ.'TRIA7') THEN
               CALL DISMOI('F','NOM_MODELE',CHAR(1:8),'CHARGE',IBID,
      &                    NOMOB,IER)
@@ -131,6 +133,9 @@ C ----------------------------------------------------------------------
                 ITYPEL = ZI(IALIEL-1+NEL)
                 CALL JENUNO(JEXNUM('&CATA.TE.NOMTE',ITYPEL),NOMTE)
                 IF (NOMTE.EQ.'MEC3QU9H' .OR. NOMTE.EQ.'MEC3TR7H') THEN
+              IF(INPROJ.EQ.2) CALL UTMESS('F',
+     &         'NBNOEL','PROJECTION QUADRATIQUE INTERDITE AVEC MAILLES 
+     &          LINEARISEES' )
                   DO 10 II3 = 1,NEL - 1
                     NUMAI2 = ZI(IALIEL-1+II3)
                     IF (NUMAI2.EQ.NUMAIL) THEN
@@ -139,15 +144,16 @@ C ----------------------------------------------------------------------
                       GO TO 30
                     END IF
    10             CONTINUE
-                ELSEIF (NOMTE.EQ.'MECA_FACE9') THEN
+                ELSE IF (NOMTE.EQ.'MECA_FACE9') THEN
                   NOEUMI = 0
                   NOEUSO = N1                
                 END IF
    20         CONTINUE
    30         CONTINUE
-            ELSE
+             ELSE
               NOEUMI = 0
               NOEUSO = N1
+             END IF
             END IF
             NBNO = NBNO + NOEUSO
             NBNOQU = NBNOQU + NOEUMI
@@ -164,11 +170,12 @@ C ----------------------------------------------------------------------
           IF (INDQUA.EQ.1) THEN
             NOEUMI = 0
             NOEUSO = N1
-          ELSE IF (NOMTM(1:5).EQ.'QUAD8' .OR.
+          ELSE
+           IF (NOMTM(1:5).EQ.'QUAD8' .OR.
      &             NOMTM(1:5).EQ.'TRIA6') THEN
             NOEUMI = NBNOMI(NOMTM(1:5))
             NOEUSO = N1 - NOEUMI
-          ELSE IF (NOMTM(1:5).EQ.'QUAD9' .OR.
+           ELSE IF (NOMTM(1:5).EQ.'QUAD9' .OR.
      &             NOMTM(1:5).EQ.'TRIA7') THEN
             CALL DISMOI('F','NOM_MODELE',CHAR(1:8),'CHARGE',IBID,NOMOB,
      &                  IER)
@@ -183,6 +190,9 @@ C ----------------------------------------------------------------------
               ITYPEL = ZI(IALIEL-1+NEL)
               CALL JENUNO(JEXNUM('&CATA.TE.NOMTE',ITYPEL),NOMTE)
               IF (NOMTE.EQ.'MEC3QU9H' .OR. NOMTE.EQ.'MEC3TR7H') THEN
+              IF(INPROJ.EQ.2) CALL UTMESS('F',
+     &        'NBNOEL','PROJECTION QUADRATIQUE INTERDITE AVEC MAILLES 
+     &          LINEARISEES')
                 DO 60 II3 = 1,NEL - 1
                   NUMAI2 = ZI(IALIEL-1+II3)
                   IF (NUMAI2.EQ.NUMAIL) THEN
@@ -197,14 +207,14 @@ C ----------------------------------------------------------------------
               END IF
    70       CONTINUE
    80       CONTINUE
-          ELSE
+           ELSE
             NOEUMI = 0
             NOEUSO = N1
+           END IF
           END IF
           NBNO = NBNO + NOEUSO
           NBNOQU = NBNOQU + NOEUMI
    90   CONTINUE
       END IF
-
       CALL JEDEMA()
       END

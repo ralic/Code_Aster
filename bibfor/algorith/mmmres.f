@@ -1,8 +1,7 @@
       SUBROUTINE MMMRES(DEFICO,DEPDEL,NUMEDD,NOMA,CNSINR)
 
-
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/07/2005   AUTEUR LAMARCHE S.LAMARCHE 
+C MODIF ALGORITH  DATE 24/08/2005   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -21,7 +20,7 @@ C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 
 C TOLE CRP_20
-      IMPLICIT NONE
+      IMPLICIT     NONE
       CHARACTER*8 NOMA
       CHARACTER*19 CNSINR
       CHARACTER*24 DEFICO,DEPDEL,NUMEDD
@@ -60,19 +59,23 @@ C ======================================================================
 
       CHARACTER*8 LICMPR(19),LICMP4(4),LICMP6(6),LICNT2(2),LICNT3(3)
       CHARACTER*8 ALIAS
-      INTEGER IRET,JNOESC,NBNO,INO,JTABF,POSNO,JDIM,NUNOE,NUNORE,ILIST
+      INTEGER IRET,JNOESC,INO,JTABF,POSNO,JDIM,NUNOE,NUNORE,ILIST
+      INTEGER NBNO,NBNOC,NBNOT,NNOM,NNOE,JCOODE,INOE,IN
       INTEGER JCNSVR,JCNSLR,JCONT,JFROT,JNOCO,JZONE,ISUCO,NSUCO
-      INTEGER JRECO,JJEU,ICONEX,IATYMA,NUMAMA,NUTYP,NNO,JNOE,NUNO
-      INTEGER JDEPDE,I,DIM,IZONE,JCMCF,ILONG,JDIME,JTRAV,POSMA,NUMAES
-      INTEGER NTPC,IMA,NTMA,JMAESC,NBNOT,JMACO,JEUTEM,JGLIE,JGLIM
+      INTEGER JRECO,JJEU,ICONEX,IATYMA,NUMAMA,NUMAES,NUTYP,JNOE,NUNO
+      INTEGER JDEPDE,I,DIM,IZONE,JCMCF,ILONG,JDIME,JCOOR,JTRAV
+      INTEGER NTPC,IMA,NTMAE,JMAESC,NBNOCT,JMACO,JEUTEM,JGLIE,JGLIM
       INTEGER JCONTA,JPREMI,JZOCO,NBZONE,INTEGR,JFROL,JCONL,JDEPDL
       REAL*8 LICOEF,RN,RNX,RNY,RNZ,GLI1,GLI2,GLI,RTAX,RTAY,RTAZ,RTGX
       REAL*8 RTGY,RTGZ,RX,RY,RZ,R,X(2),FF(9)
-      REAL*8 DEPLP(3),CONT,LAGSF,VECT1(3),VECT2(3)
+      REAL*8 DEPLPM(3),DEPLPE(3),CONT,LAGSF,VECT1(3),VECT2(3)
       REAL*8 CONFRO(3),R8PREM,GLIOLD
+      REAL*8 COOR(3),COORE(3),ERR(3),EPS
       CHARACTER*19 FCONT,FFROT,FCONTS,FFROTS,DEPDES,DDEPLS,DEPCN
       CHARACTER*19 FCTCN, FFROCN
       CHARACTER*24 JEU,GLIE,GLIM,CONTAC,PREMIE
+      
+      PARAMETER (EPS=1.D-6)
       
       CALL JEMARQ()
       FCONT='&&MMMRES.CONT'
@@ -139,8 +142,6 @@ C---------RECHERCHE DE LA METHODE D INTEGRATION
          LICMPR(18) = 'RZ'
          LICMPR(19) = 'R'
 
-
-
 C ------ TRANSFORMATION DU CHAM_NO DES DDL EN UN CHAM_NO_S POUR 
 C ------ UNE LECTURE FACILE
 
@@ -159,18 +160,15 @@ C ------ UNE LECTURE FACILE
          LICMP4(3) = 'LAGS_C'
          LICMP4(4) = 'LAGS_F1'
 
-
          IF (DIM.EQ.3) THEN
-         CALL CNSRED(DEPDES,0,0,6,LICMP6,'V',DEPCN)
+           CALL CNSRED(DEPDES,0,0,6,LICMP6,'V',DEPCN)
          ELSE IF(DIM.EQ.2) THEN
-         CALL CNSRED(DEPDES,0,0,4,LICMP4,'V',DEPCN)
+           CALL CNSRED(DEPDES,0,0,4,LICMP4,'V',DEPCN)
          ENDIF
 
          CALL JEVEUO(DEPCN//'.CNSV','L',JDEPDE)
          CALL JEVEUO(DEPCN//'.CNSL','L',JDEPDL)
-         
-
-         
+               
 C ------ CREATION DU CHAM_NO_S POUR L ARCHIVAGE DU CONTACT
 
          CALL CNSCRE(NOMA,'INFC_R',19,LICMPR,'V',CNSINR)
@@ -178,7 +176,6 @@ C ------ CREATION DU CHAM_NO_S POUR L ARCHIVAGE DU CONTACT
          CALL JEVEUO(CNSINR//'.CNSL','E',JCNSLR)
          LICOEF=1.D0
          
-
 C ------ ASSEMBLAGE DES SECONDS MEMBRES DU AUX CONTACTS
 C ------ POUR RECUPERER LES FORCES NODALES DE CONTACT 
 
@@ -194,33 +191,39 @@ C ------ POUR RECUPERER LES FORCES NODALES DE CONTACT
 
          CALL CNOCNS(FCONT,'V',FCONTS)
          IF (DIM.EQ.3) THEN
-         CALL CNSRED(FCONTS,0,0,3,LICNT3,'V',FCTCN)
+           CALL CNSRED(FCONTS,0,0,3,LICNT3,'V',FCTCN)
          ELSE IF(DIM.EQ.2) THEN
-         CALL CNSRED(FCONTS,0,0,2,LICNT2,'V',FCTCN)
+           CALL CNSRED(FCONTS,0,0,2,LICNT2,'V',FCTCN)
          ENDIF         
          CALL JEVEUO(FCTCN//'.CNSV','L',JCONT)
          CALL JEVEUO(FCTCN//'.CNSL','L',JCONL)
-
 
          CALL ASSVEC('V',FFROT,1,'&&MMCFROT',LICOEF,
      &    NUMEDD,' ','ZERO',1)
 
          CALL CNOCNS(FFROT,'V',FFROTS)
          IF (DIM.EQ.3) THEN
-         CALL CNSRED(FFROTS,0,0,3,LICNT3,'V',FFROCN)
+           CALL CNSRED(FFROTS,0,0,3,LICNT3,'V',FFROCN)
          ELSE IF(DIM.EQ.2) THEN
-         CALL CNSRED(FFROTS,0,0,2,LICNT2,'V',FFROCN)
+           CALL CNSRED(FFROTS,0,0,2,LICNT2,'V',FFROCN)
          ENDIF         
          CALL JEVEUO(FFROCN//'.CNSV','L',JFROT)
          CALL JEVEUO(FFROCN//'.CNSL','L',JFROL)
 
-
-
          CALL JEVEUO (JEXATR(NOMA(1:8)//'.CONNEX','LONCUM'),'L',ILONG)
          CALL JEVEUO (NOMA(1:8)//'.CONNEX','L',ICONEX)
-         CALL JEVEUO (NOMA(1:8)//'.DIME','L',JDIME)
-         NBNO=ZI(JDIME)
+         CALL JEVEUO (NOMA(1:8)//'.COORDO    .VALE','L',JCOOR)
+         CALL JEVEUO (NOMA(1:8)//'.COORDO    .DESC','L',JCOODE)
+                           
+C ---- NBNO = NOMBRE DE POINTS D'INTEGRATION DE CONTACT
 
+         NBNO  = 0
+         NTMAE = ZI(JMAESC)
+         DO 5 IMA = 1,NTMAE
+           NBNOC  = ZI(JMAESC+3* (IMA-1)+3)
+           NBNO = NBNO + NBNOC
+ 5       CONTINUE
+C         WRITE(6,*)'NBNO=',NBNO
 
 C--------CREATION D OBJETS DE TRAVAIL
 C--------JEU DES POINTS DE CONTACT 
@@ -233,8 +236,12 @@ C--------INDICATEUR DE CONTACT
          CALL WKVECT(CONTAC,'V V R',NBNO,JCONTA)
 C--------VECTEUR LOGIQUE INDIQUANT UN PREMIER PASSAGE SUR UN NOEUD
          CALL WKVECT(PREMIE,'V V L',NBNO,JPREMI)
-
+C ---- NBNOT: NOMBRE DE NOEUDS DE CONTACT
          NBNOT=ZI(JDIM+4)
+C         WRITE(6,*)'NBNOT =',NBNOT
+
+C ---- TRAITEMENT EN DIMENSION TROIS
+C      ____________________________
          
          IF (DIM.EQ.3) THEN
 
@@ -243,187 +250,188 @@ C------DU GLISSEMENT EN PRENANT LE MAX DU GLISSEMENT AUX NOEUDS
 C------DE L INDICATEUR DE CONTACT EN CONSIDERANT QU UN NOEUD EST EN
 C------CONTACT A PARTIR DU MOMENT OU IL L EST SUR AU MOINS UNE 
 C------DES MAILLES.
+
          NTPC=0
-         NTMA = ZI(JMAESC)
-         DO 10 IMA = 1,NTMA
-             POSMA = ZI(JMAESC+3*(IMA-1)+1)
-             NUMAES = ZI(JMACO-1+POSMA)
-             NBNO  = ZI(JMAESC+3* (IMA-1)+3)
+         NTMAE = ZI(JMAESC)
+         DO 10 IMA = 1,NTMAE
+             NBNOC  = ZI(JMAESC+3* (IMA-1)+3)
              IZONE  = ZI(JMAESC+3* (IMA-1)+2)
              INTEGR=INT(ZR(JCMCF)+6*(IZONE-1)+1)
-
+             
+C ---- INTEGR>2 : INTEGRATION DE SIMPSON
         IF (INTEGR.EQ.3 .OR. INTEGR.EQ.4 .OR. INTEGR.EQ.5) THEN
-        NBNO=NBNO/2
+          NBNOC=NBNOC/2
         ENDIF
-        
 
-             DO 20 INO = 1,NBNO
-                NUNOE=ZI(ICONEX+ZI(ILONG-1+NUMAES)+INO-2)
+             DO 20 INO = 1,NBNOC
+                NUMAES=ZR(JTABF+20*(NTPC+INO-1)+1)
+                NUMAMA=ZR(JTABF+20*(NTPC+INO-1)+2)
+C            NUNOE=ZI(ICONEX+ZI(ILONG-1+NUMAES)+INO-2)               
+C            WRITE(6,*)'NUNOE=',NUNOE
 
 C ------ VECTEURS DIRECTEURS DU PLAN DE CONTACT 
 
-                VECT1(1)=ZR(JTABF+16*(NTPC+INO-1)+6)
-                VECT1(2)=ZR(JTABF+16*(NTPC+INO-1)+7)
-                VECT1(3)=ZR(JTABF+16*(NTPC+INO-1)+8)
-                VECT2(1)=ZR(JTABF+16*(NTPC+INO-1)+9)
-                VECT2(2)=ZR(JTABF+16*(NTPC+INO-1)+10)
-                VECT2(3)=ZR(JTABF+16*(NTPC+INO-1)+11)
+                VECT1(1)=ZR(JTABF+20*(NTPC+INO-1)+6)
+                VECT1(2)=ZR(JTABF+20*(NTPC+INO-1)+7)
+                VECT1(3)=ZR(JTABF+20*(NTPC+INO-1)+8)
+                VECT2(1)=ZR(JTABF+20*(NTPC+INO-1)+9)
+                VECT2(2)=ZR(JTABF+20*(NTPC+INO-1)+10)
+                VECT2(3)=ZR(JTABF+20*(NTPC+INO-1)+11)
+                
+C ------ DEPLACEMENT DU NOEUD ESCLAVE DE LA MAILLE ESCLAVE
 
-                NUMAMA=ZR(JTABF+16*(NTPC+INO-1)+2)
-                NUTYP=ZI(IATYMA-1+NUMAMA)
-
+                NUTYP=ZI(IATYMA-1+NUMAES)
                 IF (NUTYP.EQ.2) THEN
                     ALIAS = 'SG2'
-                    NNO =2
-                    X(1)=ZR(JTABF+16*(NTPC+INO-1)+4)
+                    NNOM =2
+                    X(1)=ZR(JTABF+20*(NTPC+INO-1)+3)
                 ELSE IF (NUTYP.EQ.4) THEN
                     ALIAS = 'SG3'
-                    NNO =3
-                    X(1)=ZR(JTABF+16*(NTPC+INO-1)+4)
+                    NNOM =3
+                    X(1)=ZR(JTABF+20*(NTPC+INO-1)+3)
                 ELSE IF (NUTYP.EQ.7) THEN
                     ALIAS = 'TR3'
-                    NNO =3
-                    X(1)=ZR(JTABF+16*(NTPC+INO-1)+4)
-                    X(2)=ZR(JTABF+16*(NTPC+INO-1)+12)
+                    NNOM =3
+                    X(1)=ZR(JTABF+20*(NTPC+INO-1)+3)
+                    X(2)=ZR(JTABF+20*(NTPC+INO-1)+12)
                 ELSE IF (NUTYP.EQ.9) THEN
                     ALIAS = 'TR6'
-                    NNO =6
-                    X(1)=ZR(JTABF+16*(NTPC+INO-1)+4)
-                    X(2)=ZR(JTABF+16*(NTPC+INO-1)+12)
+                    NNOM =6
+                    X(1)=ZR(JTABF+20*(NTPC+INO-1)+3)
+                    X(2)=ZR(JTABF+20*(NTPC+INO-1)+12)
                 ELSE IF (NUTYP.EQ.12) THEN
                     ALIAS = 'QU4'
-                    NNO =4
-                    X(1)=ZR(JTABF+16*(NTPC+INO-1)+4)
-                    X(2)=ZR(JTABF+16*(NTPC+INO-1)+12)
+                    NNOM =4
+                    X(1)=ZR(JTABF+20*(NTPC+INO-1)+3)
+                    X(2)=ZR(JTABF+20*(NTPC+INO-1)+12)
                 ELSE IF (NUTYP.EQ.14) THEN
                     ALIAS = 'QU8'
-                    NNO =8
-                    X(1)=ZR(JTABF+16*(NTPC+INO-1)+4)
-                    X(2)=ZR(JTABF+16*(NTPC+INO-1)+12)
+                    NNOM =8
+                    X(1)=ZR(JTABF+20*(NTPC+INO-1)+3)
+                    X(2)=ZR(JTABF+20*(NTPC+INO-1)+12)
                 ELSE IF (NUTYP.EQ.16) THEN
                     ALIAS = 'QU9'
-                    NNO =9
-                    X(1)=ZR(JTABF+16*(NTPC+INO-1)+4)
-                    X(2)=ZR(JTABF+16*(NTPC+INO-1)+12)
+                    NNOM =9
+                    X(1)=ZR(JTABF+20*(NTPC+INO-1)+3)
+                    X(2)=ZR(JTABF+20*(NTPC+INO-1)+12)
                 ELSE
                     CALL UTMESS('F','MMMRES','TYPE DE MAILLE INCONNU')
                 ENDIF
                 
                 CALL CALFFX(ALIAS,X(1),X(2),FF)
 
-                DEPLP(1)=0.D0
-                DEPLP(2)=0.D0
-                DEPLP(3)=0.D0
+                DEPLPE(1)=0.D0
+                DEPLPE(2)=0.D0
+                DEPLPE(3)=0.D0
 
 C----DEPLACEMENT DE LA PROJECTION DU NOEUD ESCLAVE SUR LA MAILLE MAITRE
 C----POUR LE CALCUL DU GLISSEMENT
 
-                DO 30 I=1,NNO
+                DO 30 I=1,NNOM
+                   NUNO=ZI(ICONEX+ZI(ILONG-1+NUMAES)+I-2)
+        
+                   CALL ASSERT(ZL(JDEPDL-1+6*(NUNO-1)+1))
+                   CALL ASSERT(ZL(JDEPDL-1+6*(NUNO-1)+2))
+                   CALL ASSERT(ZL(JDEPDL-1+6*(NUNO-1)+3))
+
+                   DEPLPE(1)=DEPLPE(1)+ZR(JDEPDE-1+6*(NUNO-1)+1)*FF(I)
+                   DEPLPE(2)=DEPLPE(2)+ZR(JDEPDE-1+6*(NUNO-1)+2)*FF(I)
+                   DEPLPE(3)=DEPLPE(3)+ZR(JDEPDE-1+6*(NUNO-1)+3)*FF(I)
+
+   30           CONTINUE
+   
+C ------ DEPLACEMENT DU NOEUD MAITRE,
+C        PROJETE DU NOEUD ESCLAVE SUR LA MAILLE MAITRE 
+
+                NUTYP=ZI(IATYMA-1+NUMAMA)
+
+                IF (NUTYP.EQ.2) THEN
+                    ALIAS = 'SG2'
+                    NNOM =2
+                    X(1)=ZR(JTABF+20*(NTPC+INO-1)+4)
+                ELSE IF (NUTYP.EQ.4) THEN
+                    ALIAS = 'SG3'
+                    NNOM =3
+                    X(1)=ZR(JTABF+20*(NTPC+INO-1)+4)
+                ELSE IF (NUTYP.EQ.7) THEN
+                    ALIAS = 'TR3'
+                    NNOM =3
+                    X(1)=ZR(JTABF+20*(NTPC+INO-1)+4)
+                    X(2)=ZR(JTABF+20*(NTPC+INO-1)+5)
+                ELSE IF (NUTYP.EQ.9) THEN
+                    ALIAS = 'TR6'
+                    NNOM =6
+                    X(1)=ZR(JTABF+20*(NTPC+INO-1)+4)
+                    X(2)=ZR(JTABF+20*(NTPC+INO-1)+5)
+                ELSE IF (NUTYP.EQ.12) THEN
+                    ALIAS = 'QU4'
+                    NNOM =4
+                    X(1)=ZR(JTABF+20*(NTPC+INO-1)+4)
+                    X(2)=ZR(JTABF+20*(NTPC+INO-1)+5)
+                ELSE IF (NUTYP.EQ.14) THEN
+                    ALIAS = 'QU8'
+                    NNOM =8
+                    X(1)=ZR(JTABF+20*(NTPC+INO-1)+4)
+                    X(2)=ZR(JTABF+20*(NTPC+INO-1)+5)
+                ELSE IF (NUTYP.EQ.16) THEN
+                    ALIAS = 'QU9'
+                    NNOM =9
+                    X(1)=ZR(JTABF+20*(NTPC+INO-1)+4)
+                    X(2)=ZR(JTABF+20*(NTPC+INO-1)+5)
+                ELSE
+                    CALL UTMESS('F','MMMRES','TYPE DE MAILLE INCONNU')
+                ENDIF
+                
+                CALL CALFFX(ALIAS,X(1),X(2),FF)
+
+                DEPLPM(1)=0.D0
+                DEPLPM(2)=0.D0
+                DEPLPM(3)=0.D0
+
+C----DEPLACEMENT DE LA PROJECTION DU NOEUD ESCLAVE SUR LA MAILLE MAITRE
+
+                DO 35 I=1,NNOM
                    NUNO=ZI(ICONEX+ZI(ILONG-1+NUMAMA)+I-2)
         
                    CALL ASSERT(ZL(JDEPDL-1+6*(NUNO-1)+1))
                    CALL ASSERT(ZL(JDEPDL-1+6*(NUNO-1)+2))
                    CALL ASSERT(ZL(JDEPDL-1+6*(NUNO-1)+3))
 
-                   DEPLP(1)=DEPLP(1)+ZR(JDEPDE-1+6*(NUNO-1)+1)*FF(I)
-                   DEPLP(2)=DEPLP(2)+ZR(JDEPDE-1+6*(NUNO-1)+2)*FF(I)
-                   DEPLP(3)=DEPLP(3)+ZR(JDEPDE-1+6*(NUNO-1)+3)*FF(I)
+                   DEPLPM(1)=DEPLPM(1)+ZR(JDEPDE-1+6*(NUNO-1)+1)*FF(I)
+                   DEPLPM(2)=DEPLPM(2)+ZR(JDEPDE-1+6*(NUNO-1)+2)*FF(I)
+                   DEPLPM(3)=DEPLPM(3)+ZR(JDEPDE-1+6*(NUNO-1)+3)*FF(I)
 
-   30           CONTINUE
-
+   35           CONTINUE
+   
 C----ECRITURE SUR LES VECTEURS DE TRAVAIL DES JEUX, DU GLISSEMENT ET DE
 C----L INDICATEUR DE CONTACT      
 
-                IF (.NOT.ZL(JPREMI-1+NUNOE)) THEN
-                
-                   CALL ASSERT(ZL(JDEPDL-1+6*(NUNOE-1)+1))
-                   CALL ASSERT(ZL(JDEPDL-1+6*(NUNOE-1)+2))
-                   CALL ASSERT(ZL(JDEPDL-1+6*(NUNOE-1)+3))
-
-                   ZR(JEUTEM+NUNOE-1)=ZR(JJEU-1+NTPC+INO)
-                   ZL(JPREMI-1+NUNOE)=.TRUE.
-                   ZR(JCONTA+NUNOE-1)=ZR(JTABF+16*(NTPC+INO-1)+13)
-
-                   ZR(JGLIE+2*(NUNOE-1))=
-     &             ZR(JDEPDE-1+6*(NUNOE-1)+1)*VECT1(1)
-     &             +ZR(JDEPDE-1+6*(NUNOE-1)+2)*VECT1(2)
-     &             +ZR(JDEPDE-1+6*(NUNOE-1)+3)*VECT1(3)
-
-                   ZR(JGLIE+2*(NUNOE-1)+1)=
-     &             ZR(JDEPDE-1+6*(NUNOE-1)+1)*VECT2(1)
-     &             +ZR(JDEPDE-1+6*(NUNOE-1)+2)*VECT2(2)
-     &             +ZR(JDEPDE-1+6*(NUNOE-1)+3)*VECT2(3)
-
-                   ZR(JGLIM+2*(NUNOE-1))=DEPLP(1)*VECT1(1)
-     &             +DEPLP(2)*VECT1(2)+DEPLP(3)*VECT1(3)
+                   ZR(JGLIE+2*(NTPC+INO-1))=DEPLPE(1)*VECT1(1)
+     &             +DEPLPE(2)*VECT1(2)+DEPLPE(3)*VECT1(3)
      
-                   ZR(JGLIM+2*(NUNOE-1)+1)=DEPLP(1)*VECT2(1)
-     &             +DEPLP(2)*VECT2(2)+DEPLP(3)*VECT2(3)
+                   ZR(JGLIE+2*(NTPC+INO-1)+1)=DEPLPE(1)*VECT2(1)
+     &             +DEPLPE(2)*VECT2(2)+DEPLPE(3)*VECT2(3)
+
+                   ZR(JGLIM+2*(NTPC+INO-1))=DEPLPM(1)*VECT1(1)
+     &             +DEPLPM(2)*VECT1(2)+DEPLPM(3)*VECT1(3)
      
-                ELSE
-                   ZR(JEUTEM+NUNOE-1)=MIN(ZR(JEUTEM+NUNOE-1),
-     &                             ZR(JJEU-1+NTPC+INO))
-     
-                   ZR(JCONTA+NUNOE-1)=MAX(ZR(JCONTA+NUNOE-1),
-     &                             ZR(JTABF+16*(NTPC+INO-1)+13))
-     
-                   GLI1=ZR(JDEPDE-1+6*(NUNOE-1)+1)*VECT1(1)
-     &           +ZR(JDEPDE-1+6*(NUNOE-1)+2)*VECT1(2)
-     &           +ZR(JDEPDE-1+6*(NUNOE-1)+3)*VECT1(3)
-     &           -DEPLP(1)*VECT1(1)-DEPLP(2)*VECT1(2)
-     &                -DEPLP(3)*VECT1(3)
-
-                   GLI2=ZR(JDEPDE-1+6*(NUNOE-1)+1)*VECT2(1)
-     &           +ZR(JDEPDE-1+6*(NUNOE-1)+2)*VECT2(2)
-     &           +ZR(JDEPDE-1+6*(NUNOE-1)+3)*VECT2(3)
-     &           -DEPLP(1)*VECT2(1)-DEPLP(2)*VECT2(2)
-     &                -DEPLP(3)*VECT2(3)
-
-                   GLI=SQRT(GLI1**2+GLI2**2)
-                   
-                   GLIOLD=SQRT((ZR(JGLIE+2*(NUNOE-1))-
-     &             ZR(JGLIM+2*(NUNOE-1)))**2
-     &           +(ZR(JGLIE+2*(NUNOE-1)+1)-ZR(JGLIM+2*(NUNOE-1)+1))**2)
-                   
-                   IF ( GLI.GT.GLIOLD ) THEN
-
-                      ZR(JGLIE+2*(NUNOE-1))=
-     &                ZR(JDEPDE-1+6*(NUNOE-1)+1)*VECT1(1)
-     &                +ZR(JDEPDE-1+6*(NUNOE-1)+2)*VECT1(2)
-     &                +ZR(JDEPDE-1+6*(NUNOE-1)+3)*VECT1(3)
-
-                      ZR(JGLIE+2*(NUNOE-1)+1)=
-     &                ZR(JDEPDE-1+6*(NUNOE-1)+1)*VECT2(1)
-     &                +ZR(JDEPDE-1+6*(NUNOE-1)+2)*VECT2(2)
-     &                +ZR(JDEPDE-1+6*(NUNOE-1)+3)*VECT2(3)
-
-                      ZR(JGLIM+2*(NUNOE-1))=DEPLP(1)*VECT1(1)
-     &                +DEPLP(2)*VECT1(2)+DEPLP(3)*VECT1(3)
-     
-                      ZR(JGLIM+2*(NUNOE-1)+1)=DEPLP(1)*VECT2(1)
-     &                +DEPLP(2)*VECT2(2)+DEPLP(3)*VECT2(3)
-                   ENDIF 
-                ENDIF
+                   ZR(JGLIM+2*(NTPC+INO-1)+1)=DEPLPM(1)*VECT2(1)
+     &             +DEPLPM(2)*VECT2(2)+DEPLPM(3)*VECT2(3)
+         
+C                 WRITE(6,*)'JEU=',ZR(JJEU-1+NTPC+INO)
+C                 WRITE(6,*)'CONT=',ZR(JTABF+20*(NTPC+INO-1)+13)
 
  20          CONTINUE
-             NTPC=NTPC+NBNO
+             NTPC=NTPC+NBNOC
  10      CONTINUE
 
 C ------ BOUCLE SUR TOUS LES NOEUDS DE CONTACT
+
          DO 40 INO=1,NBNOT
-         
+
 C ------ TRAITEMENT DES NOEUDS ESCLAVES SEULEMENT
+
             IF (ZR(JNOESC+10*(INO-1)+1) .EQ. -1.D0) THEN
-
-C ------ NUMERO ABSOLU DU NOEUD TRAITE
-
-              NUNOE=ZI(JNOCO+INO-1)
-              ZR(JCNSVR-1+19*(NUNOE-1)+2)=ZR(JEUTEM+NUNOE-1)
-              CONT=ZR(JCONTA+NUNOE-1)
-
-              GLI1=ZR(JGLIE+2*(NUNOE-1))-ZR(JGLIM+2*(NUNOE-1))
-              GLI2=ZR(JGLIE+2*(NUNOE-1)+1)-ZR(JGLIM+2*(NUNOE-1)+1)
-              GLI=SQRT(GLI1**2+GLI2**2)
 
               GLI1=0.D0
               GLI2=0.D0
@@ -439,7 +447,165 @@ C ------ NUMERO ABSOLU DU NOEUD TRAITE
               RNY=0.D0
               RNZ=0.D0
 
-              IF (CONT.EQ.1.D0) THEN
+C ------ COORD ABSOLUES DU NOEUD TRAITE: COOR
+
+              NUNOE=ZI(JNOCO+INO-1)
+              ZL(JPREMI-1+NUNOE)=.FALSE.
+              COOR(1)=ZR(JCOOR-1+3*(NUNOE-1)+1)
+              COOR(2)=ZR(JCOOR-1+3*(NUNOE-1)+2)
+              COOR(3)=ZR(JCOOR-1+3*(NUNOE-1)+3)
+              
+C ------ ON REBOUCLE SUR LES POINTS D INTEGRATION POUR TESTER
+C        LEUR COINCIDENCE AVEC LES NOEUDS DE CONTACT
+
+              NTPC=0
+              INOE=0
+              NTMAE = ZI(JMAESC)
+              DO 41 IMA = 1,NTMAE
+                NBNOC  = ZI(JMAESC+3* (IMA-1)+3)
+                IZONE  = ZI(JMAESC+3* (IMA-1)+2)
+                INTEGR=INT(ZR(JCMCF)+6*(IZONE-1)+1)
+
+             IF (INTEGR.EQ.3 .OR. INTEGR.EQ.4 .OR. INTEGR.EQ.5) THEN
+                NBNOC=NBNOC/2
+             ENDIF
+
+                DO 42 IN = 1,NBNOC
+                  NUMAES=ZR(JTABF+20*(NTPC+IN-1)+1)
+                
+C ------ COORD ABSOLUES DU POINT D INTEGRATION: COORE
+
+                  NUTYP=ZI(IATYMA-1+NUMAES)
+
+                  IF (NUTYP.EQ.2) THEN
+                    ALIAS = 'SG2'
+                    NNOM =2
+                    X(1)=ZR(JTABF+20*(NTPC+IN-1)+3)
+                  ELSE IF (NUTYP.EQ.4) THEN
+                    ALIAS = 'SG3'
+                    NNOM =3
+                    X(1)=ZR(JTABF+20*(NTPC+IN-1)+3)
+                  ELSE IF (NUTYP.EQ.7) THEN
+                    ALIAS = 'TR3'
+                    NNOM =3
+                    X(1)=ZR(JTABF+20*(NTPC+IN-1)+3)
+                    X(2)=ZR(JTABF+20*(NTPC+IN-1)+12)
+                  ELSE IF (NUTYP.EQ.9) THEN
+                    ALIAS = 'TR6'
+                    NNOM =6
+                    X(1)=ZR(JTABF+20*(NTPC+IN-1)+3)
+                    X(2)=ZR(JTABF+20*(NTPC+IN-1)+12)
+                  ELSE IF (NUTYP.EQ.12) THEN
+                    ALIAS = 'QU4'
+                    NNOM =4
+                    X(1)=ZR(JTABF+20*(NTPC+IN-1)+3)
+                    X(2)=ZR(JTABF+20*(NTPC+IN-1)+12)
+                  ELSE IF (NUTYP.EQ.14) THEN
+                    ALIAS = 'QU8'
+                    NNOM =8
+                    X(1)=ZR(JTABF+20*(NTPC+IN-1)+3)
+                    X(2)=ZR(JTABF+20*(NTPC+IN-1)+12)
+                  ELSE IF (NUTYP.EQ.16) THEN
+                    ALIAS = 'QU9'
+                    NNOM =9
+                    X(1)=ZR(JTABF+20*(NTPC+IN-1)+3)
+                    X(2)=ZR(JTABF+20*(NTPC+IN-1)+12)
+                  ELSE
+                    CALL UTMESS('F','MMMRES','TYPE DE MAILLE INCONNU')
+                  ENDIF
+                
+                  CALL CALFFX(ALIAS,X(1),X(2),FF)
+
+                  COORE(1)=0.D0
+                  COORE(2)=0.D0
+                  COORE(3)=0.D0
+
+C----DEPLACEMENT DE LA PROJECTION DU NOEUD ESCLAVE SUR LA MAILLE MAITRE
+C----POUR LE CALCUL DU GLISSEMENT
+
+                  DO 43 I=1,NNOM
+                   NUNO=ZI(ICONEX+ZI(ILONG-1+NUMAES)+I-2)
+        
+                   CALL ASSERT(ZL(JDEPDL-1+6*(NUNO-1)+1))
+                   CALL ASSERT(ZL(JDEPDL-1+6*(NUNO-1)+2))
+                   CALL ASSERT(ZL(JDEPDL-1+6*(NUNO-1)+3))
+
+                   COORE(1)=COORE(1)+ZR(JCOOR-1+3*(NUNO-1)+1)*FF(I)
+                   COORE(2)=COORE(2)+ZR(JCOOR-1+3*(NUNO-1)+2)*FF(I)
+                   COORE(3)=COORE(3)+ZR(JCOOR-1+3*(NUNO-1)+3)*FF(I)
+
+   43             CONTINUE
+              
+                  IF(COOR(1).NE.0) THEN
+                    ERR(1)=ABS((COOR(1)-COORE(1))/COOR(1))
+                  ELSE
+                    ERR(1)=ABS(COORE(1))
+                  ENDIF
+                  IF(COOR(2).NE.0) THEN
+                    ERR(2)=ABS((COOR(2)-COORE(2))/COOR(2))
+                  ELSE
+                    ERR(2)=ABS(COORE(2))
+                  ENDIF
+                  IF(COOR(3).NE.0) THEN
+                    ERR(3)=ABS((COOR(3)-COORE(3))/COOR(3))
+                  ELSE
+                    ERR(3)=ABS(COORE(3))
+                  ENDIF
+                  INOE=INOE+1
+                  
+            IF(ERR(1).LE.EPS .AND. ERR(2).LE.EPS
+     &               .AND. ERR(3).LE.EPS) THEN
+     
+C______ POST-TRAITEMENT DES RESULTATS
+C              WRITE(6,*)'NUNOE=',NUNOE
+C ____ RECUPERATION DES DONNES AUX NOEUDS
+
+              IF (.NOT.ZL(JPREMI-1+NUNOE)) THEN
+                
+                CALL ASSERT(ZL(JDEPDL-1+6*(NUNOE-1)+1))
+                CALL ASSERT(ZL(JDEPDL-1+6*(NUNOE-1)+2))
+                CALL ASSERT(ZL(JDEPDL-1+6*(NUNOE-1)+3))
+
+                ZL(JPREMI-1+NUNOE)=.TRUE.
+                
+                ZR(JCNSVR-1+19*(NUNOE-1)+2)=ZR(JJEU-1+INOE)
+                ZR(JCNSVR-1+19*(NUNOE-1)+1)=
+     &                         ZR(JTABF+20*(INOE-1)+13)
+     
+C        WRITE(6,*)'JEU1=',ZR(JCNSVR-1+19*(NUNOE-1)+2)
+C        WRITE(6,*)'CONT1=',ZR(JTABF+20*(INOE-1)+13)
+
+                GLI1=ZR(JGLIE+2*(INOE-1))-ZR(JGLIM+2*(INOE-1))
+                GLI2=ZR(JGLIE+2*(INOE-1)+1)-ZR(JGLIM+2*(INOE-1)+1)
+                ZR(JCNSVR-1+19*(NUNOE-1)+7)=GLI1
+                ZR(JCNSVR-1+19*(NUNOE-1)+8)=GLI2
+                ZR(JCNSVR-1+19*(NUNOE-1)+9)=SQRT(GLI1**2+GLI2**2)
+     
+                ELSE
+                CALL ASSERT(ZL(JCNSVR-1+19*(NUNOE-1)+1))                
+                ZR(JCNSVR-1+19*(NUNOE-1)+2)=
+     &          MIN(ZR(JCNSVR-1+19*(NUNOE-1)+2),ZR(JJEU-1+INOE))
+     
+C        WRITE(6,*)'CONT2=',ZR(JTABF+20*(INOE-1)+13)
+C        WRITE(6,*)'JEU2=',ZR(JCNSVR-1+19*(NUNOE-1)+2)
+        
+                ZR(JCNSVR-1+19*(NUNOE-1)+1)=
+     &          MAX(ZR(JCNSVR-1+19*(NUNOE-1)+1),
+     &              ZR(JTABF+20*(INOE-1)+13))
+
+                GLI1=ZR(JGLIE+2*(INOE-1))-ZR(JGLIM+2*(INOE-1))
+                GLI2=ZR(JGLIE+2*(INOE-1)+1)-ZR(JGLIM+2*(INOE-1)+1)
+                GLI= SQRT(GLI1**2+GLI2**2)
+                IF(GLI.GT.ZR(JCNSVR-1+19*(NUNOE-1)+9)) THEN
+                  ZR(JCNSVR-1+19*(NUNOE-1)+9)=GLI
+                  ZR(JCNSVR-1+19*(NUNOE-1)+7)=GLI1
+                  ZR(JCNSVR-1+19*(NUNOE-1)+8)=GLI2
+                ENDIF
+                
+              ENDIF
+
+              CONT=ZR(JCNSVR-1+19*(NUNOE-1)+1)
+              IF (CONT.GE.1.D0) THEN
               
 C ------ RECUPERATION DES FORCES NODALES DE CONTACT
                 CALL ASSERT(ZL(JCONL-1+3*(NUNOE-1)+1))
@@ -450,17 +616,12 @@ C ------ RECUPERATION DES FORCES NODALES DE CONTACT
                  RNY=ZR(JCONT-1+3*(NUNOE-1)+2)
                  RNZ=ZR(JCONT-1+3*(NUNOE-1)+3)
                  RN=SQRT(RNX**2+RNY**2+RNZ**2)
-                 GLI1=ZR(JGLIE+2*(NUNOE-1))-ZR(JGLIM+2*(NUNOE-1))
-                 GLI2=ZR(JGLIE+2*(NUNOE-1)+1)-ZR(JGLIM+2*(NUNOE-1)+1)
-                 GLI=SQRT(GLI1**2+GLI2**2)
-
 
 C ----- NORME DU MULTIPLICATEUR DE LAGRANGE DU FROTTEMENT 
 
                  LAGSF=SQRT((ZR(JDEPDE-1+6*(NUNOE-1)+5))**2
      &                   +(ZR(JDEPDE-1+6*(NUNOE-1)+6))**2)
-                
-                 
+                          
 C ----- Y-A-T-IL DU FROTTEMENT ?
 
                  IZONE=ZI(JZOCO-1+INO)
@@ -477,7 +638,7 @@ C ------ LE NOEUD EST GLISSANT
                        RTGX=ZR(JFROT-1+3*(NUNOE-1)+1)
                        RTGY=ZR(JFROT-1+3*(NUNOE-1)+2)
                        RTGZ=ZR(JFROT-1+3*(NUNOE-1)+3)
-                       CONT=2.D0
+                       ZR(JCNSVR-1+19*(NUNOE-1)+1)=2.D0
                     ELSE
 
 C ------ LE NOEUD EST ADHERENT
@@ -488,18 +649,19 @@ C ------ LE NOEUD EST ADHERENT
                     ENDIF
                  ENDIF
               ENDIF
-                            
+            ENDIF
+C______ FIN POST-TRAITEMENT DES RESULTATS
+ 42             CONTINUE
+                NTPC = NTPC + NBNOC
+ 41           CONTINUE
 
+                            
 C ------ ARCHIVAGE DES RESULTATS DANS LE CHAM_NO_S CREE
 
-              ZR(JCNSVR-1+19*(NUNOE-1)+1)=CONT
               ZR(JCNSVR-1+19*(NUNOE-1)+3)=RN
               ZR(JCNSVR-1+19*(NUNOE-1)+4)=RNX
               ZR(JCNSVR-1+19*(NUNOE-1)+5)=RNY
               ZR(JCNSVR-1+19*(NUNOE-1)+6)=RNZ
-              ZR(JCNSVR-1+19*(NUNOE-1)+7)=GLI1
-              ZR(JCNSVR-1+19*(NUNOE-1)+8)=GLI2
-              ZR(JCNSVR-1+19*(NUNOE-1)+9)=GLI
               ZR(JCNSVR-1+19*(NUNOE-1)+10)=RTAX
               ZR(JCNSVR-1+19*(NUNOE-1)+11)=RTAY
               ZR(JCNSVR-1+19*(NUNOE-1)+12)=RTAZ
@@ -534,7 +696,10 @@ C ------ ARCHIVAGE DES RESULTATS DANS LE CHAM_NO_S CREE
             ENDIF
            
  40      CONTINUE
-      
+
+C ---- TRAITEMENT EN DIMENSION DEUX
+C      ____________________________
+
          ELSE IF (DIM.EQ.2) THEN
 
 C------CALCUL DU JEU AUX NOEUDS EN PRENANT LE MIN DES JEUX AUX NOEUDS,
@@ -544,120 +709,115 @@ C------EN CONTACT A PARTIR DU MOMENT OU IL L EST SUR AU MOINS
 C------UNE DES MAILLES.
 
          NTPC=0
-         NTMA = ZI(JMAESC)
-         DO 50 IMA = 1,NTMA
-             POSMA = ZI(JMAESC+3*(IMA-1)+1)
-             NUMAES = ZI(JMACO-1+POSMA)
+         NTMAE = ZI(JMAESC)
+         DO 50 IMA = 1,NTMAE
              IZONE  = ZI(JMAESC+3* (IMA-1)+2)
              INTEGR=INT(ZR(JCMCF)+6*(IZONE-1)+1)
-             NBNO  = ZI(JMAESC+3* (IMA-1)+3)
-
+             
+C----NBNOC= NOMBRE DE POINTS D'INTEGRATION DE CONTACT DE LA MAILLE IMA
+             NBNOC  = ZI(JMAESC+3* (IMA-1)+3)
+             
+C----INTEGR>2 : INTEGRATION DE SIMPSON
         IF (INTEGR.EQ.3 .OR. INTEGR.EQ.4 .OR. INTEGR.EQ.5) THEN
-        NBNO=NBNO/2
+          NBNOC=NBNOC/2
         ENDIF
-        
-
-             DO 60 INO = 1,NBNO
+                     
+             DO 60 INO = 1,NBNOC
+             
+                NUMAES=ZR(JTABF+20*(NTPC+INO-1)+1)
+                NUMAMA=ZR(JTABF+20*(NTPC+INO-1)+2)
                 NUNOE=ZI(ICONEX+ZI(ILONG-1+NUMAES)+INO-2)
+C                WRITE(6,*)'NUNOE =',NUNOE
 
-C -----VECTEURS DIRECTEURS DU PLAN DE CONTACT 
+C ---- VECTEURS DIRECTEURS DU PLAN DE CONTACT 
 
-                VECT1(1)=ZR(JTABF+16*(NTPC+INO-1)+6)
-                VECT1(2)=ZR(JTABF+16*(NTPC+INO-1)+7)
-                NUMAMA=ZR(JTABF+16*(NTPC+INO-1)+2)
+                VECT1(1)=ZR(JTABF+20*(NTPC+INO-1)+6)
+                VECT1(2)=ZR(JTABF+20*(NTPC+INO-1)+7)
 
-                NUTYP=ZI(IATYMA-1+NUMAMA)
+                NUTYP=ZI(IATYMA-1+NUMAES)
                 IF (NUTYP.EQ.2) THEN
                     ALIAS = 'SG2'
-                    NNO =2
-                    X(1)=ZR(JTABF+16*(NTPC+INO-1)+4)
+                    NNOE =2                   
+                    X(1)=ZR(JTABF+20*(NTPC+INO-1)+3)
                 ELSE IF (NUTYP.EQ.4) THEN
                     ALIAS = 'SG3'
-                    NNO =3
-                    X(1)=ZR(JTABF+16*(NTPC+INO-1)+4)
+                    NNOE =3
+                    X(1)=ZR(JTABF+20*(NTPC+INO-1)+3)
                 ELSE
                     CALL UTMESS('F','MMMRES','TYPE DE MAILLE INCONNU')
                 ENDIF
                 
                 CALL CALFFX(ALIAS,X(1),X(2),FF)
 
-                DEPLP(1)=0.D0
-                DEPLP(2)=0.D0
+                DEPLPE(1)=0.D0
+                DEPLPE(2)=0.D0
 
-C----DEPLACEMENT DE LA PROJECTION DU NOEUD ESCLAVE SUR LA MAILLE MAITRE
-C----POUR LE CALCUL DU GLISSEMENT
+C ---- DEPLACEMENT TANGENTIEL DU NOEUD ESCLAVE DE LA MAILLE ESCLAVE
 
-                DO 70 I=1,NNO
+                DO 65 I=1,NNOE
+                   NUNO=ZI(ICONEX+ZI(ILONG-1+NUMAES)+I-2)
+                   CALL ASSERT(ZL(JDEPDL-1+4*(NUNO-1)+1))
+                   CALL ASSERT(ZL(JDEPDL-1+4*(NUNO-1)+2))
+                   DEPLPE(1)=DEPLPE(1)+ZR(JDEPDE-1+4*(NUNO-1)+1)*FF(I)
+                   DEPLPE(2)=DEPLPE(2)+ZR(JDEPDE-1+4*(NUNO-1)+2)*FF(I)
+   65           CONTINUE                
+              
+
+                NUTYP=ZI(IATYMA-1+NUMAMA)
+                IF (NUTYP.EQ.2) THEN
+                    ALIAS = 'SG2'
+                    NNOM =2                   
+                    X(1)=ZR(JTABF+20*(NTPC+INO-1)+4)
+                ELSE IF (NUTYP.EQ.4) THEN
+                    ALIAS = 'SG3'
+                    NNOM =3
+                    X(1)=ZR(JTABF+20*(NTPC+INO-1)+4)
+                ELSE
+                    CALL UTMESS('F','MMMRES','TYPE DE MAILLE INCONNU')
+                ENDIF
+                
+                CALL CALFFX(ALIAS,X(1),X(2),FF)
+
+                DEPLPM(1)=0.D0
+                DEPLPM(2)=0.D0
+
+C ---- DEPLACEMENT DU NOEUD MAITRE,
+C      PROJETE DU NOEUD ESCLAVE SUR LA MAILLE MAITRE
+
+                DO 70 I=1,NNOM
                    NUNO=ZI(ICONEX+ZI(ILONG-1+NUMAMA)+I-2)
                    CALL ASSERT(ZL(JDEPDL-1+4*(NUNO-1)+1))
                    CALL ASSERT(ZL(JDEPDL-1+4*(NUNO-1)+2))
-                   DEPLP(1)=DEPLP(1)+ZR(JDEPDE-1+4*(NUNO-1)+1)*FF(I)
-                   DEPLP(2)=DEPLP(2)+ZR(JDEPDE-1+4*(NUNO-1)+2)*FF(I)
+                   DEPLPM(1)=DEPLPM(1)+ZR(JDEPDE-1+4*(NUNO-1)+1)*FF(I)
+                   DEPLPM(2)=DEPLPM(2)+ZR(JDEPDE-1+4*(NUNO-1)+2)*FF(I)
    70           CONTINUE
       
 C----ECRITURE SUR LES VECTEURS DE TRAVAIL DES JEUX, DU GLISSEMENT ET DE
 C----L INDICATEUR DE CONTACT      
 
-                IF (.NOT.ZL(JPREMI-1+NUNOE)) THEN
-                   ZL(JPREMI-1+NUNOE)=.TRUE.
-                   ZR(JEUTEM+NUNOE-1)=ZR(JJEU-1+NTPC+INO)
-                   ZR(JCONTA+NUNOE-1)=ZR(JTABF+16*(NTPC+INO-1)+13)
+C                   WRITE(6,*)'JEU=',ZR(JJEU-1+NTPC+INO)
+C                   WRITE(6,*)'CONT=',ZR(JTABF+20*(NTPC+INO-1)+13)
 
-                   CALL ASSERT(ZL(JDEPDL-1+4*(NUNOE-1)+1))
-                   CALL ASSERT(ZL(JDEPDL-1+4*(NUNOE-1)+2))
+                   ZR(JGLIE+NTPC+INO-1)=DEPLPE(1)*VECT1(1)
+     &             +DEPLPE(2)*VECT1(2)
 
-                   ZR(JGLIE+NUNOE-1)=
-     &             ZR(JDEPDE-1+4*(NUNOE-1)+1)*VECT1(1)
-     &             +ZR(JDEPDE-1+4*(NUNOE-1)+2)*VECT1(2)
-
-                   ZR(JGLIM+NUNOE-1)=DEPLP(1)*VECT1(1)
-     &             +DEPLP(2)*VECT1(2)
+                   ZR(JGLIM+NTPC+INO-1)=DEPLPM(1)*VECT1(1)
+     &             +DEPLPM(2)*VECT1(2)
      
-                ELSE
-                   ZR(JEUTEM+NUNOE-1)=MIN(ZR(JEUTEM+NUNOE-1),
-     &                             ZR(JJEU-1+NTPC+INO))
-     
-
-                   ZR(JCONTA+NUNOE-1)=MAX(ZR(JCONTA+NUNOE-1),
-     &                             ZR(JTABF+16*(NTPC+INO-1)+13))
-     
-                   GLI1=ZR(JDEPDE-1+4*(NUNOE-1)+1)*VECT1(1)
-     &           +ZR(JDEPDE-1+4*(NUNOE-1)+2)*VECT1(2)
-     &           -DEPLP(1)*VECT1(1)-DEPLP(2)*VECT1(2)
-
-                   GLI=SQRT(GLI1**2)
-
-                   GLIOLD=SQRT((ZR(JGLIE+NUNOE-1)-
-     &                         ZR(JGLIM+NUNOE-1))**2)
-
-                   IF ( GLI.GT.GLIOLD ) THEN
-
-                      ZR(JGLIE+NUNOE-1)=
-     &                ZR(JDEPDE-1+4*(NUNOE-1)+1)*VECT1(1)
-     &                +ZR(JDEPDE-1+4*(NUNOE-1)+2)*VECT1(2)
-
-                      ZR(JGLIM+NUNOE-1)=DEPLP(1)*VECT1(1)
-     &                +DEPLP(2)*VECT1(2)
-                   ENDIF    
-                ENDIF
  60          CONTINUE
-             NTPC=NTPC+NBNO
+             NTPC=NTPC+NBNOC
  50      CONTINUE
-C ------ BOUCLE SUR TOUS LES NOEUDS DE CONTACT
+
+C ______ NOMBRE DE NOEUDS DE CONTACT = NBNOT
+C        NOMBRE DE POINTS D'INTEGRATION DE CONTACT = NBNO
 
          DO 80 INO=1,NBNOT
          
-
 C ------ TRAITEMENT DES NOEUDS ESCLAVES SEULEMENT
 
             IF (ZR(JNOESC+10*(INO-1)+1) .EQ. -1.D0) THEN
-
-C ------ NUMERO ABSOLU DU NOEUD TRAITE
-
-              NUNOE=ZI(JNOCO+INO-1)
-
-              ZR(JCNSVR-1+19*(NUNOE-1)+2)=ZR(JEUTEM+NUNOE-1)
-              CONT=ZR(JCONTA+NUNOE-1)
+                     
+C ____ INITIALISATION DES DONNEES DE SORTIE
 
               GLI1=0.D0
               GLI=0.D0
@@ -669,11 +829,114 @@ C ------ NUMERO ABSOLU DU NOEUD TRAITE
               RNY=0.D0
               RN=0.D0
 
-              IF (CONT.EQ.1.D0) THEN
+C ---- NUMERO ABSOLU DU NOEUD ESCL: NUNOE ET COORD ABSOLUES: COOR
+
+              NUNOE=ZI(JNOCO+INO-1)
+              COOR(1)=ZR(JCOOR-1+3*(NUNOE-1)+1)
+              COOR(2)=ZR(JCOOR-1+3*(NUNOE-1)+2)
+              COOR(3)=ZR(JCOOR-1+3*(NUNOE-1)+3)
+              
+C              WRITE(6,*)'NUNOE =',NUNOE
+C              WRITE(6,*)'COORD =',(COOR(K),K=1,2)
+
+C ------ ON REBOUCLE SUR LES POINTS D INTEGRATION POUR TESTER
+C        LEUR COINCIDENCE AVEC LES NOEUDS DU MAILLAGE
+
+              NTPC  = 0
+              INOE  = 0
+              NTMAE = ZI(JMAESC)
+              ZL(JPREMI-1+NUNOE)=.FALSE.
+              DO 90 IMA = 1,NTMAE
+                IZONE  = ZI(JMAESC+3* (IMA-1)+2)
+                INTEGR=INT(ZR(JCMCF)+6*(IZONE-1)+1)
+                NBNOC  = ZI(JMAESC+3* (IMA-1)+3)
+              
+                IF (INTEGR.EQ.3 .OR. INTEGR.EQ.4 .OR. INTEGR.EQ.5) THEN
+                  NBNOC=NBNOC/2
+                ENDIF
+
+                DO 95 IN = 1,NBNOC
+                  NUMAES=ZR(JTABF+20*(NTPC+IN-1)+1)
+                  NUTYP=ZI(IATYMA-1+NUMAES)
+                  IF (NUTYP.EQ.2) THEN
+                    ALIAS = 'SG2'
+                    NNOE =2                   
+                    X(1)=ZR(JTABF+20*(NTPC+IN-1)+3)
+                  ELSE IF (NUTYP.EQ.4) THEN
+                    ALIAS = 'SG3'
+                    NNOE =3
+                    X(1)=ZR(JTABF+20*(NTPC+IN-1)+3)
+                  ELSE
+                    CALL UTMESS('F','MMMRES','TYPE DE MAILLE INCONNU')
+                  ENDIF
+                
+                  CALL CALFFX(ALIAS,X(1),X(2),FF)
+                  COORE(1)=0.D0
+                  COORE(2)=0.D0
+                  DO 100 I=1,NNOE
+                    NUNO=ZI(ICONEX+ZI(ILONG-1+NUMAES)+I-2)
+                    COORE(1)=COORE(1)+ZR(JCOOR-1+3*(NUNO-1)+1)*FF(I)
+                    COORE(2)=COORE(2)+ZR(JCOOR-1+3*(NUNO-1)+2)*FF(I)
+ 100              CONTINUE
+ 
+                  IF(COOR(1).NE.0) THEN
+                    ERR(1)=ABS((COOR(1)-COORE(1))/COOR(1))
+                  ELSE
+                    ERR(1)=ABS(COORE(1))
+                  ENDIF
+                  IF(COOR(2).NE.0) THEN
+                    ERR(2)=ABS((COOR(2)-COORE(2))/COOR(2))
+                  ELSE
+                    ERR(2)=ABS(COORE(2))
+                  ENDIF
+                  INOE=INOE+1
+                  
+            IF(ERR(1).LE.EPS .AND. ERR(2).LE.EPS) THEN
+                  
+C ____ POST-TRAITEMENT DES RESULTATS
+
+              IF (.NOT.ZL(JPREMI-1+NUNOE)) THEN
+               ZL(JPREMI-1+NUNOE)=.TRUE.
+               ZR(JCNSVR-1+19*(NUNOE-1)+2)=
+     &                           ZR(JJEU-1+INOE)
+               ZR(JCNSVR-1+19*(NUNOE-1)+1)=
+     &                           ZR(JTABF+20*(INOE-1)+13)
+     
+C               WRITE(6,*)'JEU1=',ZR(JJEU-1+INOE)
+C               WRITE(6,*)'CONT1=',ZR(JTABF+20*(INOE-1)+13)
+               
+     
+               GLI1=ZR(JGLIE+INOE-1)-ZR(JGLIM+INOE-1)
+               GLI= SQRT(GLI1**2)
+               ZR(JCNSVR-1+19*(NUNOE-1)+7)=GLI1
+               ZR(JCNSVR-1+19*(NUNOE-1)+9)=GLI
+                 
+               ELSE
+               
+               ZR(JCNSVR-1+19*(NUNOE-1)+2)=
+     &            MIN(ZR(JCNSVR-1+19*(NUNOE-1)+2),ZR(JJEU-1+INOE))
+               ZR(JCNSVR-1+19*(NUNOE-1)+1)=
+     &            MAX(ZR(JCNSVR-1+19*(NUNOE-1)+1),
+     &                ZR(JTABF+20*(INOE-1)+13))
+     
+C               WRITE(6,*)'JEU2=',ZR(JJEU-1+INOE)
+C               WRITE(6,*)'CONT2=',ZR(JTABF+20*(INOE-1)+13)
+
+               GLI1=ZR(JGLIE+INOE-1)-ZR(JGLIM+INOE-1)
+               GLI= SQRT(GLI1**2)
+               IF(GLI.GT.ZR(JCNSVR-1+19*(NUNOE-1)+9)) THEN
+                 ZR(JCNSVR-1+19*(NUNOE-1)+9)=GLI
+                 ZR(JCNSVR-1+19*(NUNOE-1)+7)=GLI1
+               ENDIF
+               
+             ENDIF
+
+C ---- ETAT DU CONTACT: CONT
+
+              CONT=ZR(JCNSVR-1+19*(NUNOE-1)+1)
+              IF (CONT.GE.1.D0) THEN
               
 C ------ RECUPERATION DES FORCES NODALES DE CONTACT
-                 GLI1=ZR(JGLIE+NUNOE-1)-ZR(JGLIM+NUNOE-1)
-                 GLI=SQRT(GLI1**2)
                  RNX=ZR(JCONT-1+2*(NUNOE-1)+1)
                  RNY=ZR(JCONT-1+2*(NUNOE-1)+2)
                  RN=SQRT(RNX**2+RNY**2)
@@ -689,7 +952,7 @@ C ----- Y-A-T-IL DU FROTTEMENT ?
 C ------ LE NOEUD EST GLISSANT
                        RTGX=ZR(JFROT-1+2*(NUNOE-1)+1)
                        RTGY=ZR(JFROT-1+2*(NUNOE-1)+2)
-                       CONT=2.D0
+                       ZR(JCNSVR-1+19*(NUNOE-1)+1)=2.D0
                     ELSE
 C ------ LE NOEUD EST ADHERENT
                        RTAX=ZR(JFROT-1+2*(NUNOE-1)+1)
@@ -697,14 +960,17 @@ C ------ LE NOEUD EST ADHERENT
                     ENDIF
                  ENDIF
               ENDIF
+    
+            ENDIF
+            
+ 95             CONTINUE
+                NTPC = NTPC + NBNOC
+ 90           CONTINUE       
                             
 C ------ ARCHIVAGE DES RESULTATS DANS LE CHAM_NO_S CREE
-              ZR(JCNSVR-1+19*(NUNOE-1)+1)=CONT
               ZR(JCNSVR-1+19*(NUNOE-1)+3)=RN
               ZR(JCNSVR-1+19*(NUNOE-1)+4)=RNX
               ZR(JCNSVR-1+19*(NUNOE-1)+5)=RNY
-              ZR(JCNSVR-1+19*(NUNOE-1)+7)=GLI1
-              ZR(JCNSVR-1+19*(NUNOE-1)+9)=GLI
               ZR(JCNSVR-1+19*(NUNOE-1)+10)=RTAX
               ZR(JCNSVR-1+19*(NUNOE-1)+11)=RTAY
               ZR(JCNSVR-1+19*(NUNOE-1)+13)=RTGX
@@ -728,12 +994,12 @@ C ------ ARCHIVAGE DES RESULTATS DANS LE CHAM_NO_S CREE
               ZL(JCNSLR-1+ (NUNOE-1)*19+16) = .TRUE.
               ZL(JCNSLR-1+ (NUNOE-1)*19+17) = .TRUE.
               ZL(JCNSLR-1+ (NUNOE-1)*19+19) = .TRUE.
-            ENDIF
-           
+              
+            ENDIF          
  80      CONTINUE
       
          ELSE
-         CALL UTMESS('F','MMMRES','DIMENSION DU PROBLEME INCONNU')
+           CALL UTMESS('F','MMMRES','DIMENSION DU PROBLEME INCONNU')
          ENDIF
       ELSE
          CALL UTMESS('F','MMMRES','ERREUR DANS LA PROGRAMMATION, '//

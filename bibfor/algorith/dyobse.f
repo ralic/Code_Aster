@@ -1,11 +1,8 @@
-      SUBROUTINE DYOBSE(NBPAS,LISINS,LISOBS,NBOBSE,RESU8)
-      IMPLICIT   NONE
-      INTEGER NBPAS,NBOBSE
-      CHARACTER*8 RESU8
-      CHARACTER*(*) LISINS,LISOBS
+      SUBROUTINE DYOBSE(NBPAS,LISINS,LISOBS,NBOBSE,RESULT)
+
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/05/2000   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 24/08/2005   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,17 +19,30 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
+      IMPLICIT      NONE
+      INTEGER       NBPAS
+      INTEGER       NBOBSE
+      CHARACTER*8   RESULT
+      CHARACTER*(*) LISINS
+      CHARACTER*19  LISOBS
+C
 C ----------------------------------------------------------------------
-C     SAISIE DU MOT CLE FACTEUR "OBSERVATION"
-C     DUPLICATION DE DYARCH
-C IN  : NBPAS   : NOMBRE DE PAS DE CALCUL
-C IN  : LISINS  : INSTANTS DE CALCUL
-C IN  : LISOBS  : LISTE D'OBSERVATION DES PAS DE CALCUL
-C OUT : NBOBSE  : NOMBRE DE PAS A OBSERVER + CI
-C OUT : RESU8   :
-
+C ROUTINE APPELEE PAR : INIOBS
 C ----------------------------------------------------------------------
-C     --- DEBUT DECLARATIONS NORMALISEES JEVEUX ------------------------
+C
+C SAISIE DU MOT CLE FACTEUR "OBSERVATION"
+C  _CETTE ROUTINE EST UNE DUPLICATION DE DYARCH_
+C
+C IN  NBPAS  : NOMBRE DE PAS DE CALCUL
+C IN  LISINS : NOM DE LA LISTE DES INSTANTS DE CALCUL 
+C               (MOT-CLEF INCREMENT/LIST_INST DE STAT_NON_LINE)
+C IN  LISOBS : NOM DE LA LISTE D'OBSERVATION 
+C               (MOT-CLEF OBSERVATION/LIST_INST DE STAT_NON_LINE)
+C OUT NBOBSE : NOMBRE DE PAS A OBSERVER + CI
+C IN  RESULT : NOM DU RESULTAT EVOL_NOLI DE STAT_NON_LINE
+C
+C -------------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ----------------
+C
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
       REAL*8 ZR
@@ -47,22 +57,24 @@ C     --- DEBUT DECLARATIONS NORMALISEES JEVEUX ------------------------
       CHARACTER*32 ZK32
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-C     --- FIN DECLARATIONS NORMALISEES JEVEUX --------------------------
-      INTEGER IBID,NBPARA,JOBSE,NBOCC,N1,IRET,NTOBS,IFM,I,NIV,KCHAM,
-     &        KCOMP,KNUCM,KNOEU,KMAIL,KPOIN
-      PARAMETER (NBPARA=8)
-      CHARACTER*4 CH4
-      CHARACTER*8 MODELE,MAILLA,TYPARA(NBPARA)
+C
+C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
+C
+      INTEGER      IBID,NBPARA,JOBSE,NBOCC,N1,IRET,NTOBS,IFM,I,NIV,KCHAM
+      INTEGER      KCOMP,KNUCM,KNOEU,KMAIL,KPOIN
+      PARAMETER   (NBPARA=8)
+      CHARACTER*4  CH4
+      CHARACTER*8  MODELE,MAILLA,TYPARA(NBPARA)
       CHARACTER*16 NOPARA(NBPARA)
       CHARACTER*19 NOMT19
 
       DATA NOPARA/'NUME_ORDRE','INST','NOM_CHAM','NOM_CMP','NOEUD',
      &     'MAILLE','POINT','VALE'/
       DATA TYPARA/'I','R','K16','K8','K8','K8','I','R'/
-C DEB------------------------------------------------------------------
-
+C
+C ----------------------------------------------------------------------
+C
       CALL JEMARQ()
-
       CALL INFNIV(IFM,NIV)
 
       NBOBSE = 0
@@ -71,49 +83,61 @@ C DEB------------------------------------------------------------------
 
       CALL GETFAC('OBSERVATION',NBOCC)
 
-      IF (NBOCC.EQ.0) GO TO 20
-
+      IF (NBOCC.EQ.0) THEN 
+        GOTO 999
+      ENDIF
+C
+C --- NOM DU MAILLAGE
+C
       CALL GETVID(' ','MODELE',0,1,1,MODELE,N1)
       CALL DISMOI('F','NOM_MAILLA',MODELE,'MODELE',IBID,MAILLA,IRET)
-
-C     ------------------------------------------------------------------
-C                    VERIFICATION DES DONNEES
-C                     COMPTAGE DES FONCTIONS
-C     ------------------------------------------------------------------
-
+C 
+C --- VERIFICATION DES DONNEES ET 
+C --- COMPTAGE DES FONCTIONS (NOMBRE D'OBSERVATIONS PAR INSTANT
+C --- D'OBSERVATION)
+C
       CALL DYOBS1(MAILLA,NBOCC,NTOBS)
-
-C     ------------------------------------------------------------------
-C                       SAISIE DES DONNEES
-C     ------------------------------------------------------------------
-
+C 
+C --- SAISIE DES DONNEES
+C --- CREATION DE LA STRUCTURE DE DONNEES DYOBSE
+C 
       CALL DYOBS2(MAILLA,NBOCC,NTOBS)
-
-C     ------------------------------------------------------------------
-C                      TRAITEMENT DES INSTANTS
-C     ------------------------------------------------------------------
-
+C 
+C --- TRAITEMENT DES INSTANTS
+C 
       CALL DYOBS3(NBOCC,NBPAS,ZI(JOBSE),LISINS,NBOBSE)
-
-C     ------------------------------------------------------------------
-C                       CREATION DE LA TABLE
-C     ------------------------------------------------------------------
-
-      CALL JEEXIN(RESU8//'           .LTNT',IRET)
-      IF (IRET.EQ.0) CALL LTCRSD(RESU8,'G')
-
+C 
+C --- CREATION DE LA LISTE DE TABLES SI ELLE N'EXISTE PAS
+C 
+      CALL JEEXIN(RESULT//'           .LTNT',IRET)
+      IF (IRET.EQ.0) THEN 
+        CALL LTCRSD(RESULT,'G')
+      ENDIF
+C
+C --- RECUPERATION DE LA TABLE CORRESPONDANT AUX OBSERVATIONS
+C
       NOMT19 = ' '
-      CALL LTNOTB(RESU8,'OBSERVATION',NOMT19)
+      CALL LTNOTB(RESULT,'OBSERVATION',NOMT19)     
+C
+C --- CREATION DE LA TABLE CORRESPONDANT AUX OBSERVATIONS
+C
       CALL JEEXIN(NOMT19//'.TBBA',IRET)
-      IF (IRET.EQ.0) CALL TBCRSD(NOMT19,'G')
-
+      IF (IRET.EQ.0) THEN 
+        CALL TBCRSD(NOMT19,'G')
+      ENDIF
+C
+C --- AJOUT DES PARAMETRES DANS LA TABLE
+C
       CALL TBAJPA(NOMT19,NBPARA,NOPARA,TYPARA)
-
-C     ------------------------------------------------------------------
-
-C1234567890123456...12345678...12345678...12345678....4567
-C    NOM_CHAM        NOM_CMP     NOEUD     MAILLE    POINT
-C      IF ( NIV .EQ. 2 ) THEN
+C
+C ----------------------------------------------------------------------
+C
+C
+C --- AFFICHAGE DES INFOS STOCKEES DANS LA TABLE D'OBSERVATION
+C
+C --- 1234567890123456...12345678...12345678...12345678....4567
+C ---     NOM_CHAM        NOM_CMP     NOEUD     MAILLE    POINT
+C
       CALL JEVEUO('&&DYOBSE.NOM_CHAM','L',KCHAM)
       CALL JEVEUO('&&DYOBSE.NOM_CMP ','L',KCOMP)
       CALL JEVEUO('&&DYOBSE.NUME_CMP','L',KNUCM)
@@ -130,13 +154,15 @@ C      IF ( NIV .EQ. 2 ) THEN
         WRITE (IFM,1010) ZK16(KCHAM+I),ZK8(KCOMP+I),ZK8(KNOEU+I),
      &    ZK8(KMAIL+I),CH4
    10 CONTINUE
-C      ENDIF
-C     ------------------------------------------------------------------
+
+C
+C ----------------------------------------------------------------------
+C
  1000 FORMAT (/,'=> OBSERVATION:',/,5X,
      &       'NOM_CHAM        NOM_CMP     NOEUD     MAILLE    POINT')
  1010 FORMAT (1X,A16,3X,A8,3X,A8,3X,A8,4X,A4)
-
-   20 CONTINUE
+C
+  999 CONTINUE
       CALL JEDEMA()
 
       END

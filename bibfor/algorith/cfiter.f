@@ -1,0 +1,163 @@
+      SUBROUTINE CFITER(RESOCO,ACCES,TYPOPE,VALI,VALR)
+C
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 24/08/2005   AUTEUR MABBAS M.ABBAS 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C RESPONSABLE MABBAS M.ABBAS
+C
+      IMPLICIT     NONE 
+      CHARACTER*24 RESOCO
+      CHARACTER*1  ACCES
+      CHARACTER*4  TYPOPE
+      INTEGER      VALI
+      REAL*8       VALR
+
+C
+C ======================================================================
+C ROUTINE APPELEE PAR : ALGOCO/ALGOCL/ALGCP/ALGOGL/NMCONV/FRO2GD...
+C ======================================================================
+C 
+C MISE A JOUR DU VECTEUR DIAGNOSTIC
+C 
+C IN  RESOCO  : SD DE TRAITEMENT NUMERIQUE DU CONTACT
+C IN  ACCES   : TYPE D'ACCES
+C                'L':    LECTURE DONNEE
+C                'E':    ECRITURE DONNEE
+C IN  TYPOPE  : OPERATION SUR LE VECTEUR DIAGNOSTIC
+C                    !!! IMPORTANT !!!
+C               QUAND ON ECRIT UNE INFO POUR L'ITERATION DE NEWTON
+C               ON MET A JOUR SIMULTANEMENT L'INFO POUR LE 
+C               PAS DE TEMPS ET POUR LE STAT_NON_LINE EN AJOUTANT
+C               LA VALEUR DONNEE POUR L'ITERATION A CE QUI EST DEJA 
+C               STOCKEE POUR LE PAS DE TEMPS ET LE STAT_NON_LINE
+C                'ITER': NOMBRE D'ITERATIONS SUR ITERATION DE NEWTON
+C                         COURANTE 
+C                        (+ MAJ PAS DE TEMPS + MAJ STAT_NON_LINE)
+C                'ITEP': NOMBRE D'ITERATIONS SUR PAS DE TEMPS COURANT 
+C                'ITES': NOMBRE D'ITERATIONS SUR STAT_NON_LINE COURANT 
+C                'TIMG': TEMPS GEOM SUR ITERATION DE NEWTON COURANTE 
+C                        (+ MAJ PAS DE TEMPS + MAJ STAT_NON_LINE)
+C                'TIMA': TEMPS ALGO SUR ITERATION DE NEWTON COURANTE 
+C                        (+ MAJ PAS DE TEMPS + MAJ STAT_NON_LINE)
+C                'TIPG': TEMPS GEOM SUR PAS DE TEMPS COURANT 
+C                'TIPA': TEMPS ALGO SUR PAS DE TEMPS COURANT 
+C                'TISG': TEMPS GEOM SUR STAT_NON_LINE COURANT 
+C                'TISA': TEMPS ALGO SUR STAT_NON_LINE COURANT 
+C I/O  VALI   : VALEUR ENTIERE A LIRE OU ECRIRE
+C I/O  VALR   : VALEUR REELLE A LIRE OU ECRIRE
+C
+C --------------- DEBUT DECLARATIONS NORMALISEES JEVEUX ---------------
+C 
+      INTEGER            ZI 
+      COMMON  / IVARJE / ZI(1) 
+      REAL*8             ZR 
+      COMMON  / RVARJE / ZR(1) 
+      COMPLEX*16         ZC 
+      COMMON  / CVARJE / ZC(1) 
+      LOGICAL            ZL 
+      COMMON  / LVARJE / ZL(1) 
+      CHARACTER*8        ZK8 
+      CHARACTER*16                ZK16 
+      CHARACTER*24                          ZK24 
+      CHARACTER*32                                    ZK32 
+      CHARACTER*80                                              ZK80 
+      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1) 
+C
+C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
+C
+      CHARACTER*24 DIAGI,DIAGT
+      INTEGER      JDIAGI,JDIAGT
+      INTEGER      IER
+C
+C ----------------------------------------------------------------------
+C
+      CALL JEMARQ()
+      DIAGI  = RESOCO(1:14)//'.DIAG.ITER'
+      DIAGT  = RESOCO(1:14)//'.DIAG.TIME'
+      
+      CALL JEEXIN(DIAGI,IER)
+
+      IF (IER.EQ.0) THEN
+        CALL UTMESS('F','CFDIAG','VECTEUR DIAGNOSTIC ABSENT (DVLP)')
+      ENDIF
+
+      CALL JEVEUO(DIAGI,ACCES,JDIAGI)
+      CALL JEVEUO(DIAGT,ACCES,JDIAGT)
+C
+C ---
+C
+      IF (ACCES.EQ.'E') THEN
+        IF (TYPOPE.EQ.'ITER') THEN
+          ZI(JDIAGI-1+1) = VALI
+          ZI(JDIAGI-1+2) = ZI(JDIAGI-1+2)+VALI
+          ZI(JDIAGI-1+3) = ZI(JDIAGI-1+3)+VALI
+        ELSE IF (TYPOPE.EQ.'ITEP') THEN
+          ZI(JDIAGI-1+2) = VALI
+        ELSE IF (TYPOPE.EQ.'ITES') THEN
+          ZI(JDIAGI-1+3) = VALI
+        ELSE IF (TYPOPE.EQ.'TIMA') THEN
+          ZR(JDIAGT-1+1) = VALR
+          ZR(JDIAGT-1+3) = ZR(JDIAGT-1+3) + VALR
+          ZR(JDIAGT-1+5) = ZR(JDIAGT-1+5) + VALR
+        ELSE IF (TYPOPE.EQ.'TIMG') THEN
+          ZR(JDIAGT-1+2) = VALR
+          ZR(JDIAGT-1+4) = ZR(JDIAGT-1+4) + VALR
+          ZR(JDIAGT-1+6) = ZR(JDIAGT-1+6) + VALR
+        ELSE IF (TYPOPE.EQ.'TIPA') THEN
+          ZR(JDIAGT-1+3) = VALR
+        ELSE IF (TYPOPE.EQ.'TIPG') THEN
+          ZR(JDIAGT-1+4) = VALR
+        ELSE IF (TYPOPE.EQ.'TISA') THEN
+          ZR(JDIAGT-1+5) = VALR
+        ELSE IF (TYPOPE.EQ.'TISG') THEN
+          ZR(JDIAGT-1+6) = VALR
+        ELSE
+           CALL UTMESS('F','CFITER',
+     &     'OPERATION INCONNUE SUR LE VECTEUR DIAGNOSTIC (DVLP)')
+        ENDIF
+      ELSE IF (ACCES.EQ.'L') THEN
+        IF (TYPOPE.EQ.'ITER') THEN
+          VALI = ZI(JDIAGI-1+1) 
+        ELSE IF (TYPOPE.EQ.'ITEP') THEN
+          VALI = ZI(JDIAGI-1+2)
+        ELSE IF (TYPOPE.EQ.'ITES') THEN
+          VALI = ZI(JDIAGI-1+3) 
+        ELSE IF (TYPOPE.EQ.'TIMA') THEN
+          VALR = ZR(JDIAGT-1+1)
+        ELSE IF (TYPOPE.EQ.'TIMG') THEN
+          VALR = ZR(JDIAGT-1+2)
+        ELSE IF (TYPOPE.EQ.'TIAP') THEN
+          VALR = ZR(JDIAGT-1+3)
+        ELSE IF (TYPOPE.EQ.'TIGP') THEN
+          VALR = ZR(JDIAGT-1+4) 
+        ELSE IF (TYPOPE.EQ.'TIAS') THEN
+          VALR = ZR(JDIAGT-1+5) 
+        ELSE IF (TYPOPE.EQ.'TIGS') THEN
+          VALR = ZR(JDIAGT-1+6) 
+        ELSE
+           CALL UTMESS('F','CFITER',
+     &     'OPERATION INCONNUE SUR LE VECTEUR DIAGNOSTIC (DVLP)')
+        ENDIF
+      ELSE
+        CALL UTMESS('F','CFITER',
+     &     'ACCES INCORRECT AU VECTEUR DIAGNOSTIC (DVLP)')
+      ENDIF
+
+
+      CALL JEDEMA()
+      END

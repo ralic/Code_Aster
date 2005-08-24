@@ -1,0 +1,84 @@
+      SUBROUTINE IMPFIH(MOTFAC,IOCC,UNIT)
+C
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 24/08/2005   AUTEUR MABBAS M.ABBAS 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C
+      IMPLICIT NONE
+      CHARACTER*16 MOTFAC
+      INTEGER      IOCC
+      INTEGER      UNIT
+C
+C ----------------------------------------------------------------------
+C ROUTINE APPELEE PAR : IMPINI
+C ----------------------------------------------------------------------
+C
+C RECUPERATION DES PRECISIONS POUR AFFICHAGE DES COLONNES DANS LE
+C TABLEAU DE CONVERGENCE
+C
+C IN  MOTFAC : MOT-CLEF FACTEUR 
+C IN  IOCC   : OCCURRENCE DU MOT-CLEF FACTEUR
+C I/O UNIT   : NUMERO D'UNITE
+C               SI UNITE DIFFERENTE DE ZERO EN ENTREE -> ERREUR
+C               DEFINITION MULTIPLE DU MOT-CLEF FICHIER
+C
+C -------------- DEBUT DECLARATIONS NORMALISEES JEVEUX -----------------
+C
+      INTEGER ZI
+      COMMON /IVARJE/ZI(1)
+      REAL*8 ZR
+      COMMON /RVARJE/ZR(1)
+      COMPLEX*16 ZC
+      COMMON /CVARJE/ZC(1)
+      LOGICAL ZL
+      COMMON /LVARJE/ZL(1)
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32
+      CHARACTER*80 ZK80
+      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+C
+C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
+C
+      INTEGER      NBVAL
+C
+C ----------------------------------------------------------------------
+C
+      CALL JEMARQ()
+C
+C ---
+C
+      CALL GETVIS(MOTFAC,'UNITE',IOCC,1,1,UNIT,NBVAL)
+      IF (NBVAL.NE.0) THEN
+        IF (IOCC.NE.1) THEN
+          CALL UTMESS('F','IMPINI','FICHIER DOIT ETRE DEFINI DANS '//
+     &                'LA PREMIERE OCCURRENCE')
+        ENDIF
+        IF (NBVAL.EQ.0) THEN
+          CALL UTMESS('F','IMPINI','FICHIER SANS UNITE')
+        ENDIF 
+      ELSE
+        UNIT = 0     
+      ENDIF
+C
+C ---
+C
+      CALL JEDEMA()
+
+      END

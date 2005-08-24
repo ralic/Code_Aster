@@ -2,7 +2,7 @@
      &                  DEPTOT,ITERAT,LREAC,CONV,DEPDEL)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/05/2005   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 24/08/2005   AUTEUR MABBAS M.ABBAS 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -124,10 +124,10 @@ C
       INTEGER      NEQ,NESCL,NBLIAC,NBLIAI,NBLCIN,NBLIG,NBDDL
       INTEGER      LLIAC,JDECAL,IPENA
       INTEGER      JAPPAR,JAPPTR,JAPCOE,JAPJEU,JAPDDL,JNOCO,JMACO
-      INTEGER      JAPCOF,JAFMU,LMAF1,JCM1A,JCM3A,IFRO
+      INTEGER      JAPCOF,JAFMU,LMAF1,JCM1A,JCM3A,IFRO,ITER
       INTEGER      JDIM,NESMAX,LLF,LLF1,LLF2,AJLIAI,SPLIAI,INDIC,POSIT
       REAL*8       AJEUFX,AJEUFY,XF,XX,XK,XMU,VAL,XMU1,XMU2
-      REAL*8       BETA,RESIGR,VAL1,VAL2
+      REAL*8       BETA,RESIGR,VAL1,VAL2,R8BID
       CHARACTER*1  TYPEAJ
       CHARACTER*2  TYPEC0
       CHARACTER*14 NUMEDD
@@ -258,6 +258,7 @@ C ======================================================================
       NBLIAI = NESCL
       RESIGR = CONV(20)
       NEQ    = ZI(LMAT+2)
+      ITER   = 0
       LLF    = 0
       LLF1   = 0
       LLF2   = 0
@@ -633,6 +634,10 @@ C ======================================================================
       END IF
 C
  9999 CONTINUE
+C ======================================================================
+C --- SAUVEGARDE DES INFOS DE DIAGNOSTIC (NOMBRE D'ITERATIONS)
+C ======================================================================
+      CALL CFITER(RESOCO,'E','ITER',ITER,R8BID)
 C
       CALL JEDEMA ()
 C

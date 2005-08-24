@@ -2,7 +2,7 @@
      &                   DEPTOT,ITERAT,LREAC,CONV,DEPDEL,LICCVG)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION 
-C MODIF ALGORITH  DATE 09/05/2005   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 24/08/2005   AUTEUR MABBAS M.ABBAS 
 C TOLE CRP_20 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -144,7 +144,7 @@ C
       INTEGER      INDFAC,POSIT,BTOTAL,JVECC,COMPT0,JZOCO
       REAL*8       R8MAEM,R8PREM,AJEU,RHO,RHORHO,AADELT,AJEUFY
       REAL*8       X1,VAL,XX
-      REAL*8       AJEUFX,XK,XMU 
+      REAL*8       AJEUFX,XK,XMU,R8BID
       REAL*8       ALPHA,BETA,RESIGR,XMUL,XVAL,VDIAGM,XJVMAX 
       COMPLEX*16   CBID 
       CHARACTER*1  TYPEAJ 
@@ -1084,6 +1084,10 @@ C ======================================================================
       END IF
 C ======================================================================
  9990 CONTINUE 
+C ======================================================================
+C --- SAUVEGARDE DES INFOS DE DIAGNOSTIC (NOMBRE D'ITERATIONS)
+C ======================================================================
+      CALL CFITER(RESOCO,'E','ITER',ITER,R8BID)
 C ======================================================================
       CALL JEDEMA () 
 C ======================================================================

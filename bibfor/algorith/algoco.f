@@ -1,7 +1,7 @@
       SUBROUTINE ALGOCO(DEFICO,RESOCO,LMAT,LDSCON,NOMA,CINE,RESU,
      &                  DEPTOT,LICCVG)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/05/2005   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 24/08/2005   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -109,14 +109,14 @@ C
       LOGICAL      TROUAC,DELPOS,GCPC,LELPIV,CFEXCL
       CHARACTER*19 MATASS,MATAS1,MATPRE
       INTEGER      IER,IFM,NIV,NDECI,ISINGU,NPVNEG,IZONE
-      INTEGER      II,KK,ITER,ILIAC,NEQMAX
+      INTEGER      II,KK,ITER,ILIAC,NEQMAX,ITEX
       INTEGER      JRESU,JDEPP    
       INTEGER      INDIC,KKMIN,LLMIN
       INTEGER      LLIAC,JDECAL,LLF,LLF1,LLF2
       INTEGER      INDFAC,AJLIAI,SPLIAI,POSIT,SPAVAN
       INTEGER      NEQ,NESCL,NBLIAC,NBLIAI,NBDDL,NDIM,NESMAX
       REAL*8       R8MAEM,AJEU,RHO,RHORHO,AADELT,RMINMU,VAL,R8PREM
-      REAL*8       XJVMAX,X1
+      REAL*8       XJVMAX,X1,R8BID
       CHARACTER*1  TYPEAJ,TYPESP
       CHARACTER*2  TYPEC0
       CHARACTER*24 MACONT
@@ -668,6 +668,11 @@ C ======================================================================
       END IF
 
   999 CONTINUE
+C ======================================================================
+C --- SAUVEGARDE DES INFOS DE DIAGNOSTIC (NOMBRE D'ITERATIONS)
+C ======================================================================
+      ITEX = ITER+1
+      CALL CFITER(RESOCO,'E','ITER',ITEX,R8BID)
 C ======================================================================
 C --- DESTRUCTION DES VECTEURS INUTILES
 C ======================================================================

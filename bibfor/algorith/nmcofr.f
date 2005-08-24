@@ -1,9 +1,10 @@
-      SUBROUTINE NMCOFR (NOMA,DEPPLU,DEPDEL,DDEPLA,DEFICO,
-     &                   RESOCO,CNCINE,ITERAT,INST,CONV,LICCVG,LREAC)
+      SUBROUTINE NMCOFR(NOMA,DEPPLU,DEPDEL,DDEPLA,
+     &                  DEFICO,RESOCO,CNCINE,ITERAT,INST,
+     &                  CONV,LICCVG,LREAC)
 C
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/02/2005   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 24/08/2005   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -33,7 +34,7 @@ C
       REAL*8       INST
       REAL*8       CONV(*)
       INTEGER      LICCVG(*)
-      LOGICAL      LREAC(4)
+      LOGICAL      LREAC(2)
 C
 C ======================================================================
 C ROUTINE APPELEE PAR : NMDEPL
@@ -67,8 +68,6 @@ C                       (3) CONTACT/FROTTEMENT: NOMBRE MAXI D'ITERATIONS
 C                       (4) CONTACT/FROTTEMENT: MATRICE SINGULIERE
 C I/O LREAC  : (1) = TRUE  SI REACTUALISATION A FAIRE  
 C              (2) = TRUE  SI ATTENTE POINT FIXE CONTACT
-C              (3) = TRUE  SI METHODE CONTINUE
-C              (4) = TRUE  SI MODELISATION DU CONTACT
 C
 C -------------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ----------------
 C
@@ -90,9 +89,9 @@ C
 C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C
       LOGICAL      PREMIE,GEOM,ALGO
-      INTEGER      ICONTA,JPREM
+      INTEGER      ICONTA,JPREM,IBID,INIITE
       INTEGER      IFM,NIV
-      REAL*8       TPS1(4),TPS2(4),TPSGEO,TPSALG
+      REAL*8       TPS1(4),TPS2(4),TPSGEO,TPSALG,INITPS,R8BID
 C
 C ----------------------------------------------------------------------
 C
@@ -102,9 +101,19 @@ C
 C --- TRAITEMENT DU CONTACT ?
 C
       CALL JEEXIN ( RESOCO(1:14)//'.APREAC', ICONTA )
-
       IF (ICONTA.EQ.0) THEN
          GOTO 999
+      ENDIF
+C
+C --- INITIALISATION DES TEMPS ET DES ITERATIONS
+C --- SI ITERAT = 0 C'EST QU'ON DEBUTE UN NOUVEAU PAS DE TEMPS
+C
+      IF (ITERAT.EQ.0) THEN
+        INITPS = 0.D0
+        INIITE = 0
+        CALL CFITER(RESOCO,'E','TIPA',IBID,INITPS)
+        CALL CFITER(RESOCO,'E','TIPG',IBID,INITPS)
+        CALL CFITER(RESOCO,'E','ITEP',INIITE,R8BID)
       ENDIF
 
       IF (NIV.GE.2) THEN
@@ -163,6 +172,12 @@ C
          ENDIF
          WRITE (IFM,*) '<CONTACT> *** FIN DU TRAITEMENT *** <CONTACT>'
       ENDIF
+C
+C -- STOCKAGE DU TEMPS
+C      
+      CALL CFITER(RESOCO,'E','TIMA',IBID,TPSALG)
+      CALL CFITER(RESOCO,'E','TIMG',IBID,TPSGEO)
+       
 C
   999 CONTINUE
 C

@@ -1,0 +1,301 @@
+# MODIF  DATE 24/08/2005   AUTEUR MABBAS M.ABBAS 
+# TITRE EXTRUSION D'UN LOPIN
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+#       REPRISE CAS_TEST SSNV504B AVEC GLISSIERE (METHODE DES CONTRAINTES)
+# MODELE 
+# MAILLAGE : MODELISATION : 3D
+#             SOLIDE : HEXA8 PENTA6
+#             CONTACT : QUAD4 ET TRIA3
+# UNITES   : NEWTON , METRE , SECONDE (N,M,S)
+#
+
+DEBUT(CODE=_F(NOM='SSNV504F',NIV_PUB_WEB='INTERNET'),);
+
+#......................................................................
+#  CALCUL VALIDATION DU PASSAGE DES SINGULARITES GEOMETRIQUES
+#......................................................................
+
+PRE_GIBI();
+
+MAILL1=LIRE_MAILLAGE();
+
+MAILL1=DEFI_GROUP(reuse =MAILL1,
+                  MAILLAGE=MAILL1,
+                  CREA_GROUP_MA=_F(NOM='TOUT',
+                                   UNION=('LOPIN','FILIERE'),),
+                  CREA_GROUP_NO=(_F(GROUP_MA='FIL_SYM1',),
+                                 _F(GROUP_MA='FIL_SYM2',),
+                                 _F(GROUP_MA='FIL_EXT',),
+                                 _F(GROUP_MA='LOP_SYM1',),
+                                 _F(GROUP_MA='LOP_SYM2',),
+                                 _F(GROUP_MA='LOP_ESC1',),
+                                 _F(GROUP_MA='LOP_DDL',),),);
+                                 
+#_____________________________________________________________________
+#
+#                    DEFINITION DU MODELE
+#_____________________________________________________________________
+#
+
+MO=AFFE_MODELE(MAILLAGE=MAILL1,
+               AFFE=_F(TOUT='OUI',
+                       PHENOMENE='MECANIQUE',
+                       MODELISATION='3D',),);
+#
+# REORIENTATION DU MAILLAGE
+#
+
+MAILL1=MODI_MAILLAGE(reuse =MAILL1,
+                     MAILLAGE=MAILL1,
+                     ORIE_PEAU_3D=_F(GROUP_MA=('FIL_MAI1','FIL_MAI2'),),
+                     MODELE=MO,);
+
+MAILL1=MODI_MAILLAGE(reuse =MAILL1,
+                     MAILLAGE=MAILL1,
+                     ORIE_PEAU_3D=_F(GROUP_MA=('LOP_ESC1','LOP_ESC2'),),
+                     MODELE=MO,);
+#_____________________________________________________________________
+#
+#                    DEFINITION DES MATERIAUX
+#_____________________________________________________________________
+#
+
+MLOPIN=DEFI_MATERIAU(ELAS=_F(E=5000.0,
+                             NU=0.45000000000000001,),);
+
+MFILIERE=DEFI_MATERIAU(ELAS=_F(E=2.E5,
+                               NU=0.29999999999999999,),);
+
+CM=AFFE_MATERIAU(MAILLAGE=MAILL1,
+                 AFFE=(_F(GROUP_MA='LOPIN',
+                          MATER=MLOPIN,),
+                       _F(GROUP_MA='FILIERE',
+                          MATER=MFILIERE,),),);
+#_____________________________________________________________________
+#
+#                    AFFECTATION DES CONDITIONS AUX LIMITES
+#                       ET DU DEPLACEMENT IMPOSE 
+#_____________________________________________________________________
+#
+
+COND_LIM=AFFE_CHAR_MECA(MODELE=MO,
+                        DDL_IMPO=(_F(GROUP_NO='FIL_EXT',
+                                     DX=0.0,
+                                     DY=0.0,
+                                     DZ=0.0,),
+                                  _F(GROUP_NO='FIL_SYM1',
+                                     DZ=0.0,),
+                                  _F(GROUP_NO='FIL_SYM2',
+                                     DX=0.0,),
+                                  _F(GROUP_NO='LOP_SYM1',
+                                     DZ=0.0,),
+                                  _F(GROUP_NO='LOP_SYM2',
+                                     DX=0.0,),),);
+
+DDLIMP=AFFE_CHAR_MECA(MODELE=MO,
+                      DDL_IMPO=_F(GROUP_NO='LOP_DDL',
+                                  DY=1.0,),);
+
+CONTACT=AFFE_CHAR_MECA(MODELE=MO,
+                       CONTACT=(_F(APPARIEMENT='MAIT_ESCL',
+                                   RECHERCHE='NOEUD_BOUCLE',
+                                   METHODE='CONTRAINTE',
+                                   GLISSIERE='OUI',
+                                   ALARME_JEU=0.1,
+                                   REAC_GEOM='CONTROLE',
+                                   NB_REAC_GEOM=2,                                  
+                                   GROUP_MA_MAIT='FIL_MAI1',
+                                   GROUP_MA_ESCL='LOP_ESC1',),),);
+#_____________________________________________________________________
+#
+#                    DEFINITIONS DES FONCTIONS TEMPORELLES 
+#_____________________________________________________________________
+#
+
+DPLY=DEFI_FONCTION(NOM_PARA='INST',
+                   VALE=(0.0,0.0,1.0,1.0),
+                   PROL_DROITE='LINEAIRE',
+                   PROL_GAUCHE='LINEAIRE',);
+
+L_INST=DEFI_LIST_REEL(DEBUT=0.0,
+                      INTERVALLE=(_F(JUSQU_A=5.0,
+                                     PAS=5.0,),
+                                  _F(JUSQU_A=15.0,
+                                     PAS=10.0,),
+                                  _F(JUSQU_A=20.0,
+                                     PAS=5.0,),
+                                  _F(JUSQU_A=50.0,
+                                     PAS=10.0,),
+                                  _F(JUSQU_A=70.0,
+                                     PAS=10.0,),
+                                  _F(JUSQU_A=140.0,
+                                     PAS=35.0,),
+                                  _F(JUSQU_A=155.0,
+                                     PAS=15.0,),),);
+
+U=STAT_NON_LINE(MODELE=MO,
+                INFO=1,
+                CHAM_MATER=CM,
+                EXCIT=(_F(CHARGE=COND_LIM,),
+                       _F(CHARGE=DDLIMP,
+                          FONC_MULT=DPLY,),
+                       _F(CHARGE=CONTACT,),),
+                COMP_INCR=_F(RELATION='ELAS',
+                             TOUT='OUI',),
+                INCREMENT=_F(LIST_INST=L_INST,),
+                NEWTON=_F(MATRICE='TANGENTE',
+                          REAC_ITER=1,),
+                CONVERGENCE=_F(RESI_GLOB_MAXI=9.9999999999999995E-07,),);
+
+U=CALC_ELEM(reuse =U,
+               MODELE=MO,
+               CHAM_MATER=CM,
+               OPTION='SIEF_ELNO_ELGA',
+               RESULTAT=U,);
+
+U=CALC_NO(reuse =U,
+               OPTION='SIEF_NOEU_ELGA',
+               RESULTAT=U,);
+
+IMPR_RESU(MODELE=MO,
+          FORMAT='ASTER',UNITE=20,
+          RESU=_F(RESULTAT=U,
+                  MAILLAGE=MAILL1,
+                  ),);
+
+DEPLAC=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLAC',
+                               GROUP_NO='LOP_ESC1',
+                               RESULTAT=U,
+                               NOM_CHAM='DEPL',
+                               LIST_INST=L_INST,
+                               TOUT_CMP='OUI',
+                               OPERATION='EXTRACTION',),);
+                              
+TCONT=POST_RELEVE_T(ACTION=_F(INTITULE='CONT',
+                              GROUP_NO='LOP_ESC1',
+                              RESULTAT=U,
+                              NOM_CHAM='VALE_CONT',
+                              LIST_INST=L_INST,
+                              TOUT_CMP='OUI',
+                              OPERATION='EXTRACTION',),);
+
+IMPR_TABLE(TABLE=DEPLAC,);
+IMPR_TABLE(TABLE=TCONT,);
+
+DEFI_FICHIER(ACTION='ASSOCIER',UNITE=37)
+
+IMPR_RESU(MODELE=MO,
+          FORMAT='CASTEM',UNITE=37,
+          RESU=_F(RESULTAT=U,
+                  MAILLAGE=MAILL1,
+                  NOM_CHAM=('DEPL',
+                            'VALE_CONT',
+                            'SIEF_NOEU_ELGA',
+                            ),
+                  TOUT_ORDRE='OUI',
+                  ),);
+
+DEFI_FICHIER(ACTION='LIBERER',UNITE=37)
+
+TEST_RESU(RESU=(_F(RESULTAT=U,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   GROUP_NO='K',
+                   VALE=5.0,
+                   PRECISION=1.E-2,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=U,
+                   NUME_ORDRE=1,
+                   PARA='ITER_GLOB',
+                   VALE_I=1,
+                   PRECISION=1.E-2,
+                   REFERENCE='NON_REGRESSION',),
+                _F(RESULTAT=U,
+                   NUME_ORDRE=3,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   GROUP_NO='K',
+                   VALE=20.824999999999999,
+                   PRECISION=1.8E-2,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=U,
+                   NUME_ORDRE=3,
+                   PARA='ITER_GLOB',
+                   VALE_I=1,
+                   PRECISION=1.E-2,
+                   REFERENCE='NON_REGRESSION',),
+                _F(RESULTAT=U,
+                   NUME_ORDRE=6,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   GROUP_NO='K',
+                   VALE=55.880000000000003,
+                   PRECISION=1.03E-2,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=U,
+                   NUME_ORDRE=6,
+                   PARA='ITER_GLOB',
+                   VALE_I=1,
+                   PRECISION=1.E-2,
+                   REFERENCE='NON_REGRESSION',),
+                _F(RESULTAT=U,
+                   NUME_ORDRE=8,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   GROUP_NO='K',
+                   VALE=78.689999999999998,
+                   PRECISION=1.E-2,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=U,
+                   NUME_ORDRE=8,
+                   PARA='ITER_GLOB',
+                   VALE_I=1,
+                   PRECISION=1.E-2,
+                   REFERENCE='NON_REGRESSION',),
+                _F(RESULTAT=U,
+                   NUME_ORDRE=10,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   GROUP_NO='K',
+                   VALE=144.89500000000001,
+                   PRECISION=1.E-2,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=U,
+                   NUME_ORDRE=10,
+                   PARA='ITER_GLOB',
+                   VALE_I=1,
+                   PRECISION=1.E-2,
+                   REFERENCE='NON_REGRESSION',),
+                _F(RESULTAT=U,
+                   NUME_ORDRE=11,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   GROUP_NO='K',
+                   VALE=155.096,
+                   PRECISION=5.E-2,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=U,
+                   NUME_ORDRE=11,
+                   PARA='ITER_GLOB',
+                   VALE_I=1,
+                   PRECISION=5.E-2,
+                   REFERENCE='NON_REGRESSION',),),);
+
+FIN();

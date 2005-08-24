@@ -1,7 +1,7 @@
       SUBROUTINE CFDISC(DEFICO,RESOCO,TYPALC,TYPALF,FROT3D,MATTAN)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/02/2005   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 24/08/2005   AUTEUR MABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -77,7 +77,8 @@ C
       PARAMETER    (ZMETH=8)
       INTEGER      ICONTA,NBLIAC,LLF
       CHARACTER*24 COCO,METHCO
-      INTEGER      JCOCO,JMETH,IMETH,IZONE
+      INTEGER      JCOCO,JMETH
+      INTEGER      IMETH,IZONE
 C
 C ----------------------------------------------------------------------
 C
@@ -147,6 +148,20 @@ C --- RECUPERATION METHODE CONTACT/FROTTEMENT
         TYPALF = -3
         MATTAN = 1
         FROT3D = 1
+      ELSE IF  (IMETH.EQ.7) THEN
+        TYPALC = -4
+        TYPALF = 0
+        MATTAN = 0
+        FROT3D = 0
+      ELSE IF  (IMETH.EQ.8) THEN
+        TYPALC = -3
+        TYPALF = 0
+        MATTAN = 1
+        FROT3D = 0
+      ELSE
+        CALL UTMESS('F',
+     &              'CFDISC',
+     &              'CODE METHODE CONTACT INCORRECT (DVLP)')   
       ENDIF
 
 C -- DETECTION SI LIAISONS ACTIVES DE CONTACT OU FROTTEMENT
